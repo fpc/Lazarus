@@ -275,6 +275,7 @@ resourcestring
   lisMenuViewAnchorEditor = 'View Anchor Editor';
   lisKMToggleViewComponentPalette = 'Toggle view component palette';
   lisMenuViewComponentPalette = 'View Component Palette';
+  lisMenuViewTodoList = 'ToDo List';
   lisMenuViewIDESpeedButtons = 'View IDE speed buttons';
   lisMenuDebugWindows = 'Debug windows';
   lisMenuViewWatches = 'Watches';
@@ -297,11 +298,9 @@ resourcestring
   lisKMAddActiveUnitToProject = 'Add active unit to project';
   lisKMRemoveActiveUnitFromProject = 'Remove active unit from project';
   lisKMViewProjectSource = 'View project source';
-  lisKMViewProjectToDoList = 'View project ToDo list';
   lisMenuAddToProject = 'Add editor file to Project';
   lisMenuRemoveFromProject = 'Remove from Project ...';
   lisMenuViewSource = '&View Source';
-  lisMenuViewProjectTodos = 'View ToDo List ...';
   lisMenuProjectOptions = 'Project Options ...';
   
   lisMenuBuild = 'Build';
@@ -1832,6 +1831,7 @@ resourcestring
   srkmecToggleRestrictionBrowser  = 'View restriction browser';
   srkmecToggleCompPalette         = 'View component palette';
   srkmecToggleIDESpeedBtns        = 'View IDE speed buttons';
+  srkmecViewToDoList              = 'View todo list';
 
   // codetools
   srkmecWordCompletion            = 'Word completion';

@@ -2551,7 +2551,6 @@ images/menu/menu_project_options.png -text svneol=unset#image/png
 images/menu/menu_project_remove.png -text svneol=unset#image/png
 images/menu/menu_project_save.png -text svneol=unset#image/png
 images/menu/menu_project_saveas.png -text svneol=unset#image/png
-images/menu/menu_project_todo.png -text svneol=unset#image/png
 images/menu/menu_project_viewsource.png -text svneol=unset#image/png
 images/menu/menu_quick_compile.png -text svneol=unset#image/png
 images/menu/menu_redo.png -text svneol=unset#image/png
@@ -2594,6 +2593,7 @@ images/menu/menu_view_forms.png -text svneol=unset#image/png
 images/menu/menu_view_inspector.png -text svneol=unset#image/png
 images/menu/menu_view_rectriction_browser.png -text
 images/menu/menu_view_source_editor.png -text svneol=unset#image/png
+images/menu/menu_view_todo.png -text svneol=unset#image/png
 images/menu/menu_view_toggle_form_unit.png -text svneol=unset#image/png
 images/menu/menu_view_unit_info.png -text svneol=unset#image/png
 images/menu/menu_view_units.png -text svneol=unset#image/png

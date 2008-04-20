@@ -60,7 +60,6 @@ menu/menu_project_options.png
 menu/menu_project_remove.png
 menu/menu_project_save.png
 menu/menu_project_saveas.png
-menu/menu_project_todo.png
 menu/menu_project_viewsource.png
 menu/menu_quick_compile.png
 menu/menu_redo.png
@@ -103,6 +102,7 @@ menu/menu_view_forms.png
 menu/menu_view_inspector.png
 menu/menu_view_rectriction_browser.png
 menu/menu_view_source_editor.png
+menu/menu_view_todo.png
 menu/menu_view_toggle_form_unit.png
 menu/menu_view_units.png
 menu/menu_view_unit_info.png

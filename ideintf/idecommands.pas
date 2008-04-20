@@ -177,6 +177,7 @@ const
   ecToggleIDESpeedBtns      = ecFirstLazarus + 320;
   ecViewComponents          = ecFirstLazarus + 321;
   ecToggleRestrictionBrowser = ecFirstLazarus + 322;
+  ecViewTodoList            = ecFirstLazarus + 323;
 
   // sourcenotebook commands
   ecNextEditor              = ecFirstLazarus + 330;
@@ -236,7 +237,6 @@ const
   ecAddCurUnitToProj        = ecFirstLazarus + 508;
   ecRemoveFromProj          = ecFirstLazarus + 509;
   ecViewProjectSource       = ecFirstLazarus + 510;
-  ecViewProjectTodos        = ecFirstLazarus + 511;
   ecProjectOptions          = ecFirstLazarus + 512;
 
   // components menu

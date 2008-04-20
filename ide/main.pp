@@ -244,6 +244,7 @@ type
     procedure mnuViewAnchorEditorClicked(Sender: TObject);
     procedure mnuViewComponentPaletteClicked(Sender: TObject);
     procedure mnuViewIDESpeedButtonsClicked(Sender: TObject);
+    procedure mnuViewTodoListClicked(Sender: TObject);
 
     // project menu
     procedure mnuNewProjectClicked(Sender: TObject);
@@ -257,7 +258,6 @@ type
     procedure mnuAddToProjectClicked(Sender: TObject);
     procedure mnuRemoveFromProjectClicked(Sender: TObject);
     procedure mnuViewProjectSourceClicked(Sender: TObject);
-    procedure mnuViewProjectTodosClicked(Sender: TObject);
     procedure mnuProjectOptionsClicked(Sender: TObject);
     {$ifdef EnableNewDialogs}
     procedure mnuProjectOptionsClicked_new(Sender: TObject);
@@ -2152,6 +2152,7 @@ begin
     itmViewAnchorEditor.OnClick := @mnuViewAnchorEditorClicked;
     itmViewComponentPalette.OnClick := @mnuViewComponentPaletteClicked;
     itmViewIDESpeedButtons.OnClick := @mnuViewIDESpeedButtonsClicked;
+    itmViewToDoList.OnClick := @mnuViewTodoListClicked;
   end;
 end;
 
@@ -2179,7 +2180,6 @@ begin
     itmProjectAddTo.OnClick := @mnuAddToProjectClicked;
     itmProjectRemoveFrom.OnClick := @mnuRemoveFromProjectClicked;
     itmProjectViewSource.OnClick := @mnuViewProjectSourceClicked;
-    itmProjectViewToDos.OnClick := @mnuViewProjectTodosClicked;
   end;
 end;
 
@@ -2291,6 +2291,11 @@ end;
 procedure TMainIDE.mnuViewIDESpeedButtonsClicked(Sender: TObject);
 begin
   DoToggleViewIDESpeedButtons;
+end;
+
+procedure TMainIDE.mnuViewTodoListClicked(Sender: TObject);
+begin
+  DoShowToDoList;
 end;
 
 Procedure TMainIDE.SetDesigning(AComponent: TComponent; Value: Boolean);
@@ -3376,11 +3381,6 @@ end;
 procedure TMainIDE.mnuViewProjectSourceClicked(Sender: TObject);
 begin
   DoOpenMainUnit([]);
-end;
-
-procedure TMainIDE.mnuViewProjectTodosClicked(Sender: TObject);
-begin
-  DoShowToDoList;
 end;
 
 procedure TMainIDE.mnuProjectOptionsClicked(Sender: TObject);

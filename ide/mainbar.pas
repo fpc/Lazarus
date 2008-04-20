@@ -186,6 +186,7 @@ type
         itmViewCodeBrowser: TIDEMenuCommand;
         itmViewRestrictionBrowser: TIDEMenuCommand;
         itmViewComponents: TIDEMenuCommand;
+        itmViewToDoList: TIDEMenuCommand;
       //itmViewUnitWindows: TIDEMenuSection;
         itmViewUnits: TIDEMenuCommand;
         itmViewForms: TIDEMenuCommand;
@@ -230,7 +231,6 @@ type
         {$ifdef EnableNewDialogs}
         itmProjectCompilerOptions_new: TIDEMenuCommand;
         {$endif}
-        itmProjectViewToDos: TIDEMenuCommand;
       //itmProjectAddRemoveSection: TIDEMenuSection;
         itmProjectAddTo: TIDEMenuCommand;
         itmProjectRemoveFrom: TIDEMenuCommand;

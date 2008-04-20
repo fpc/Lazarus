@@ -513,6 +513,7 @@ begin
     CreateMenuItem(ParentMI,itmViewCodeBrowser,'itmViewCodeBrowser',lisMenuViewCodeBrowser, 'menu_view_code_browser');
     CreateMenuItem(ParentMI,itmViewRestrictionBrowser,'itmViewRestrictionBrowser',lisMenuViewRestrictionBrowser, 'menu_view_rectriction_browser');
     CreateMenuItem(ParentMI,itmViewComponents,'itmViewComponents',lisMenuViewComponents);
+    CreateMenuItem(ParentMI,itmViewToDoList,'itmViewToDoList',lisMenuViewTodoList, 'menu_view_todo');
 
     CreateMenuSeparatorSection(mnuView,itmViewUnitWindows,'itmViewUnitWindows');
     ParentMI:=itmViewUnitWindows;
@@ -582,7 +583,6 @@ begin
     {$ifdef EnableNewDialogs}
     CreateMenuItem(ParentMI,itmProjectCompilerOptions_new,'itmProjectCompilerOptions_new',lisMenuCompilerOptions+' (new)','menu_compiler_options');
     {$endif}
-    CreateMenuItem(ParentMI,itmProjectViewToDos,'itmProjectViewToDos',lisMenuViewProjectTodos, 'menu_project_todo');
 
     CreateMenuSeparatorSection(mnuProject,itmProjectAddRemoveSection,'itmProjectAddRemoveSection');
     ParentMI:=itmProjectAddRemoveSection;

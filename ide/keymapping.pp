@@ -483,6 +483,7 @@ begin
   ecToggleRestrictionBrowser: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleCompPalette: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleIDESpeedBtns: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecViewTodoList: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // project menu
   ecNewProject: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -496,7 +497,6 @@ begin
   ecAddCurUnitToProj: SetResult(VK_F11,[ssShift],VK_UNKNOWN,[]);
   ecRemoveFromProj: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecViewProjectSource: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecViewProjectTodos: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecProjectOptions: SetResult(VK_F11,[ssShift,ssCtrl],VK_UNKNOWN,[]);
 
   // run menu
@@ -807,6 +807,7 @@ begin
   ecToggleRestrictionBrowser: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleCompPalette: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleIDESpeedBtns: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecViewTodoList: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // project menu
   ecNewProject: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -820,7 +821,6 @@ begin
   ecAddCurUnitToProj: SetResult(VK_F11,[ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRemoveFromProj: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecViewProjectSource: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecViewProjectTodos: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecProjectOptions: SetResult(VK_F11,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // run menu
@@ -1433,6 +1433,7 @@ begin
     ecToggleCodeBrowser       : Result:= srkmecToggleCodeBrowser;
     ecToggleRestrictionBrowser: Result:= srkmecToggleRestrictionBrowser;
     ecViewComponents          : Result:= srkmecViewComponents;
+    ecViewTodoList            : Result:= srkmecViewToDoList;
     ecToggleCompPalette       : Result:= srkmecToggleCompPalette;
     ecToggleIDESpeedBtns      : Result:= srkmecToggleIDESpeedBtns;
 
@@ -1470,7 +1471,6 @@ begin
     ecAddCurUnitToProj        : Result:= lisMenuAddToProject;
     ecRemoveFromProj          : Result:= lisMenuRemoveFromProject;
     ecViewProjectSource       : Result:= lisMenuViewSource;
-    ecViewProjectTodos        : Result:= lisMenuViewProjectTodos;
     ecProjectOptions          : Result:= lisMenuProjectOptions;
 
     // run menu (menu string resource)
@@ -2448,6 +2448,7 @@ begin
     lisKMToggleViewComponentPalette, ecToggleCompPalette);
   AddDefault(C, 'Toggle view IDE speed buttons',
     lisKMToggleViewIDESpeedButtons, ecToggleIDESpeedBtns);
+  AddDefault(C, 'View  ToDo list', srkmecViewToDoList, ecViewTodoList);
 
   // project menu
   C:=Categories[AddCategory('ProjectMenu',srkmCatProjectMenu,nil)];
@@ -2467,8 +2468,6 @@ begin
     lisKMRemoveActiveUnitFromProject, ecRemoveFromProj);
   AddDefault(C, 'View project source', lisKMViewProjectSource,
     ecViewProjectSource);
-  AddDefault(C, 'View project ToDo list', lisKMViewProjectToDoList,
-    ecViewProjectTodos);
   AddDefault(C, 'View project options', lisKMViewProjectOptions,
     ecProjectOptions);
 
