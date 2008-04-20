@@ -28,6 +28,7 @@
    Olivier GUILBAUD <golivier@free.fr>,
    Gerard Visent <gerardusmercator@gmail.com>
    Mattias Gaertner
+   Alexander du Plessis
 
   Abstract:
     List all to do comments of current project and the file
@@ -128,19 +129,25 @@ type
   TfrmTodo = class(TForm)
     acGoto: TAction;
     acRefresh: TAction;
+    acExport: TAction;
     ActionList: TActionList;
-    lvTodo: TListView;// lvTodo.Items.Data is TTodoItem (they belong to the TTLScannedFile)
+    lvTodo: TListView;
+    SaveDialog1: TSaveDialog;
     StatusBar: TStatusBar;
     ToolBar: TToolBar;
     tbGoto: TToolButton;
     tbOptions: TToolButton;
     tbPrint: TToolButton;
     tbRefresh: TToolButton;
+    tbExport: TToolButton;
+    procedure acExportExecute(Sender: TObject);
     procedure acGotoExecute(Sender: TObject);
     procedure acRefreshExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift:TShiftState);
     procedure lvTodoClick(Sender: TObject);
+    procedure SaveDialog1Show(Sender: TObject);
+    procedure ToolButton1Click(Sender: TObject);
   private
     fBuild       : Boolean;
     fMainSourceFilename    : String;
@@ -207,6 +214,16 @@ end;
 procedure TfrmTodo.lvTodoClick(Sender: TObject);
 begin
   acGoto.Execute;
+end;
+
+procedure TfrmTodo.SaveDialog1Show(Sender: TObject);
+begin
+ SaveDialog1.InitialDir:=GetCurrentDir;
+end;
+
+procedure TfrmTodo.ToolButton1Click(Sender: TObject);
+begin
+
 end;
 
 //Initialise the todo project and find them
@@ -458,6 +475,39 @@ begin
       LazarusIDE.DoOpenFileAndJumpToPos(CurFilename,Point(1,TheLine),-1,-1,
         [ofOnlyIfExists,ofRegularFile,ofVirtualFile,ofDoNotLoadResource]);
   end;
+end;
+
+procedure TfrmTodo.acExportExecute(Sender: TObject);
+
+var   CommaList     : TStringList;
+      s,t           : string;
+      todoItm       : TTodoItem;
+      i             : integer;
+
+      
+
+begin
+ SaveDialog1.FileName:='TodoList_'+FormatDateTime('YYYY_MM_DD',now);
+ if SaveDialog1.Execute then
+ begin
+  CommaList:=TStringList.Create;
+  CommaList.Add('Done,Description,Priority,Module,Line,Owner,Category');
+  i:=0;
+  while i<lvTodo.Items.Count do
+  begin
+   todoItm:=TTodoItem(lvTodo.Items[i].Data);
+   if todoItm.Done then s:='X,' else s:=' ,';
+   t:=DelChars(todoItm.Text,',');{Strip any commas that can cause a faulty csv file}
+   s:=s+t+','+IntToStr(todoItm.Priority)+','+todoItm.Filename+
+      ','+IntToStr(todoItm.LineNumber)+','+todoItm.Owner+','+todoItm.Category;
+   CommaList.Add(s);
+   i:=i+1;
+  end;
+  CommaList.SaveToFile(SaveDialog1.FileName);
+ end
+ else MessageDlg('Warning','Filename is: '+SaveDialog1.FileName,mtWarning,[mbClose],0);
+ CommaList.Clear;
+ CommaList.Free;
 end;
 
 procedure TfrmTodo.acRefreshExecute(Sender: TObject);

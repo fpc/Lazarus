@@ -1,7 +1,7 @@
 object frmTodo: TfrmTodo
-  Left = 429
+  Left = 451
   Height = 300
-  Top = 227
+  Top = 665
   Width = 643
   HorzScrollBar.Page = 642
   VertScrollBar.Page = 299
@@ -13,14 +13,15 @@ object frmTodo: TfrmTodo
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   Position = poScreenCenter
+  LCLVersion = '0.9.25'
   object StatusBar: TStatusBar
-    Height = 21
-    Top = 279
+    Height = 20
+    Top = 280
     Width = 643
     Panels = <>
   end
   object lvTodo: TListView
-    Height = 231
+    Height = 232
     Top = 48
     Width = 643
     Align = alClient
@@ -28,22 +29,22 @@ object frmTodo: TfrmTodo
       item
         AutoSize = True
         Caption = 'Caption'
-        Width = 59
+        Width = 42
       end    
       item
         AutoSize = True
         Caption = 'Caption'
-        Width = 59
+        Width = 42
       end    
       item
         AutoSize = True
         Caption = 'Caption'
-        Width = 59
+        Width = 42
       end    
       item
         AutoSize = True
         Caption = 'Caption'
-        Width = 59
+        Width = 42
       end    
       item
         Caption = 'Caption'
@@ -74,7 +75,7 @@ object frmTodo: TfrmTodo
     ShowHint = True
     TabOrder = 1
     object tbOptions: TToolButton
-      Left = 132
+      Left = 161
       Top = 2
       AllowAllUp = True
       AutoSize = True
@@ -82,7 +83,7 @@ object frmTodo: TfrmTodo
       Visible = False
     end
     object tbPrint: TToolButton
-      Left = 95
+      Left = 128
       Top = 2
       AutoSize = True
       Caption = 'Print'
@@ -95,9 +96,15 @@ object frmTodo: TfrmTodo
       AutoSize = True
     end
     object tbGoto: TToolButton
-      Left = 56
+      Left = 51
       Top = 2
       Action = acGoto
+      AutoSize = True
+    end
+    object tbExport: TToolButton
+      Left = 85
+      Top = 2
+      Action = acExport
       AutoSize = True
     end
   end
@@ -114,5 +121,18 @@ object frmTodo: TfrmTodo
       DisableIfNoHandler = True
       OnExecute = acRefreshExecute
     end
+    object acExport: TAction
+      Caption = 'Export'
+      DisableIfNoHandler = True
+      OnExecute = acExportExecute
+    end
+  end
+  object SaveDialog1: TSaveDialog
+    OnShow = SaveDialog1Show
+    DefaultExt = '.csv'
+    Filter = 'csv|*.csv'
+    Options = [ofCreatePrompt, ofEnableSizing, ofViewDetail]
+    left = 448
+    top = 11
   end
 end
