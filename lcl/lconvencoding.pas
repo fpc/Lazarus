@@ -4013,21 +4013,28 @@ begin
   
   // use system encoding
   Result:=GetSystemEncoding;
+
+  if NormalizeEncoding(Result)=EncodingUTF8 then begin
+    // the system encoding is UTF-8, but it is not UTF-8
+    // use ISO-8859-1 instead. This encoding has a full 1:1 mapping to unicode,
+    // so no character is lost during conversions.
+    Result:='ISO-8859-1';
+  end;
 end;
 
 function ConvertEncoding(const s, FromEncoding, ToEncoding: string): string;
-// FromEncoding and ToEncoding must be normalized
 var
-  AFrom, ATo: String;
+  AFrom, ATo, SysEnc: String;
   {$ifdef Unix}
   SL: TStringList;
   FN1, FN2: String;
   {$endif}
 begin
-  AFrom:=FromEncoding;
-  ATo:=ToEncoding;
-  if AFrom=GetSystemEncoding then AFrom:=EncodingAnsi;
-  if ATo=GetSystemEncoding then ATo:=EncodingAnsi;
+  AFrom:=NormalizeEncoding(FromEncoding);
+  ATo:=NormalizeEncoding(ToEncoding);
+  SysEnc:=NormalizeEncoding(GetSystemEncoding);
+  if AFrom=EncodingAnsi then AFrom:=SysEnc;
+  if ATo=EncodingAnsi then ATo:=SysEnc;
   if AFrom=ATo then begin
     Result:=s;
     exit;
@@ -4035,19 +4042,19 @@ begin
   //DebugLn(['ConvertEncoding ',AFrom,' ',ATo]);
   
   if (AFrom=EncodingUTF8) then begin
-    if AFrom='iso88591' then begin Result:=UTF8ToISO_8859_1(s); exit; end;
-    if AFrom='cp1250' then begin Result:=UTF8ToCP1250(s); exit; end;
-    if AFrom='cp1251' then begin Result:=UTF8ToCP1251(s); exit; end;
-    if AFrom='cp1252' then begin Result:=UTF8ToCP1252(s); exit; end;
-    if AFrom='cp1253' then begin Result:=UTF8ToCP1253(s); exit; end;
-    if AFrom='cp1254' then begin Result:=UTF8ToCP1254(s); exit; end;
-    if AFrom='cp1255' then begin Result:=UTF8ToCP1255(s); exit; end;
-    if AFrom='cp1256' then begin Result:=UTF8ToCP1256(s); exit; end;
-    if AFrom='cp1257' then begin Result:=UTF8ToCP1257(s); exit; end;
-    if AFrom='cp1258' then begin Result:=UTF8ToCP1258(s); exit; end;
-    if AFrom='cp874' then begin  Result:=UTF8ToCP874(s);  exit; end;
+    if ATo='iso88591' then begin Result:=UTF8ToISO_8859_1(s); exit; end;
+    if ATo='cp1250' then begin Result:=UTF8ToCP1250(s); exit; end;
+    if ATo='cp1251' then begin Result:=UTF8ToCP1251(s); exit; end;
+    if ATo='cp1252' then begin Result:=UTF8ToCP1252(s); exit; end;
+    if ATo='cp1253' then begin Result:=UTF8ToCP1253(s); exit; end;
+    if ATo='cp1254' then begin Result:=UTF8ToCP1254(s); exit; end;
+    if ATo='cp1255' then begin Result:=UTF8ToCP1255(s); exit; end;
+    if ATo='cp1256' then begin Result:=UTF8ToCP1256(s); exit; end;
+    if ATo='cp1257' then begin Result:=UTF8ToCP1257(s); exit; end;
+    if ATo='cp1258' then begin Result:=UTF8ToCP1258(s); exit; end;
+    if ATo='cp874' then begin  Result:=UTF8ToCP874(s);  exit; end;
 
-    if (ATo=EncodingAnsi) and Assigned(ConvertUTF8ToAnsi) then begin
+    if (ATo=SysEnc) and Assigned(ConvertUTF8ToAnsi) then begin
       Result:=ConvertUTF8ToAnsi(s);
       exit;
     end;
@@ -4064,7 +4071,7 @@ begin
     if AFrom='cp1258' then begin Result:=CP1258ToUTF8(s); exit; end;
     if AFrom='cp874' then begin  Result:=CP874ToUTF8(s);  exit; end;
 
-    if (AFrom=EncodingAnsi) and Assigned(ConvertAnsiToUTF8) then begin
+    if (AFrom=SysEnc) and Assigned(ConvertAnsiToUTF8) then begin
       Result:=ConvertAnsiToUTF8(s);
       exit;
     end;

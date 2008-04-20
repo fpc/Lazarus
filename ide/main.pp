@@ -11471,14 +11471,23 @@ procedure TMainIDE.OnCodeBufferDecodeLoaded(Code: TCodeBuffer;
   const Filename: string; var Source, DiskEncoding, MemEncoding: string);
 begin
   //DebugLn(['TMainIDE.OnCodeBufferDecodeLoaded Filename=',Filename,' Encoding=',GuessEncoding(Source)]);
-  //DiskEncoding:=GuessEncoding(Source);
-  //MemEncoding:=EncodingUTF8;
+  DiskEncoding:=GuessEncoding(Source);
+  MemEncoding:=EncodingUTF8;
+  if (DiskEncoding<>MemEncoding) then begin
+    //DebugLn(['TMainIDE.OnCodeBufferDecodeLoaded Filename=',Filename,' Disk=',DiskEncoding,' to Mem=',MemEncoding]);
+    Source:=ConvertEncoding(Source,DiskEncoding,MemEncoding);
+    //DebugLn(['TMainIDE.OnCodeBufferDecodeLoaded ',Source]);
+  end;
 end;
 
 procedure TMainIDE.OnCodeBufferEncodeSaving(Code: TCodeBuffer;
   const Filename: string; var Source: string);
 begin
-
+  if (Code.DiskEncoding<>'') and (Code.MemEncoding<>'')
+  and (Code.DiskEncoding<>Code.MemEncoding) then begin
+    //DebugLn(['TMainIDE.OnCodeBufferEncodeSaving Filename=',Code.Filename,' Mem=',Code.MemEncoding,' to Disk=',Code.DiskEncoding]);
+    Source:=ConvertEncoding(Source,Code.MemEncoding,Code.DiskEncoding);
+  end;
 end;
 
 procedure TMainIDE.CodeToolBossPrepareTree(Sender: TObject);
