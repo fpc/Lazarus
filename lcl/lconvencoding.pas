@@ -61,6 +61,7 @@ function CP1256ToUTF8(const s: string): string; // arabic
 function CP1257ToUTF8(const s: string): string; // baltic
 function CP1258ToUTF8(const s: string): string; // vietnam
 function CP874ToUTF8(const s: string): string;  // thai
+function KOI8ToUTF8(const s: string): string;  // russian cyrillic
 function SingleByteToUTF8(const s: string;
                           const Table: TCharToUTF8Table): string;
 
@@ -75,6 +76,7 @@ function UTF8ToCP1256(const s: string): string; // arabic
 function UTF8ToCP1257(const s: string): string; // baltic
 function UTF8ToCP1258(const s: string): string; // vietnam
 function UTF8ToCP874(const s: string): string;  // thai
+function UTF8ToKOI8(const s: string): string;  // russian cyrillic
 function UTF8ToSingleByte(const s: string;
                           const UTF8CharConvFunc: TUnicodeToCharID): string;
 
@@ -2982,6 +2984,265 @@ const
     ''                  // #255
   );
 
+  ArrayKOI8ToUTF8: TCharToUTF8Table = (
+    #0,                 // #0
+    #1,                 // #1
+    #2,                 // #2
+    #3,                 // #3
+    #4,                 // #4
+    #5,                 // #5
+    #6,                 // #6
+    #7,                 // #7
+    #8,                 // #8
+    #9,                 // #9
+    #10,                // #10
+    #11,                // #11
+    #12,                // #12
+    #13,                // #13
+    #14,                // #14
+    #15,                // #15
+    #16,                // #16
+    #17,                // #17
+    #18,                // #18
+    #19,                // #19
+    #20,                // #20
+    #21,                // #21
+    #22,                // #22
+    #23,                // #23
+    #24,                // #24
+    #25,                // #25
+    #26,                // #26
+    #27,                // #27
+    #28,                // #28
+    #29,                // #29
+    #30,                // #30
+    #31,                // #31
+    ' ',                // ' '
+    '!',                // '!'
+    '"',                // '"'
+    '#',                // '#'
+    '$',                // '$'
+    '%',                // '%'
+    '&',                // '&'
+    '''',               // ''''
+    '(',                // '('
+    ')',                // ')'
+    '*',                // '*'
+    '+',                // '+'
+    ',',                // ','
+    '-',                // '-'
+    '.',                // '.'
+    '/',                // '/'
+    '0',                // '0'
+    '1',                // '1'
+    '2',                // '2'
+    '3',                // '3'
+    '4',                // '4'
+    '5',                // '5'
+    '6',                // '6'
+    '7',                // '7'
+    '8',                // '8'
+    '9',                // '9'
+    ':',                // ':'
+    ';',                // ';'
+    '<',                // '<'
+    '=',                // '='
+    '>',                // '>'
+    '?',                // '?'
+    '@',                // '@'
+    'A',                // 'A'
+    'B',                // 'B'
+    'C',                // 'C'
+    'D',                // 'D'
+    'E',                // 'E'
+    'F',                // 'F'
+    'G',                // 'G'
+    'H',                // 'H'
+    'I',                // 'I'
+    'J',                // 'J'
+    'K',                // 'K'
+    'L',                // 'L'
+    'M',                // 'M'
+    'N',                // 'N'
+    'O',                // 'O'
+    'P',                // 'P'
+    'Q',                // 'Q'
+    'R',                // 'R'
+    'S',                // 'S'
+    'T',                // 'T'
+    'U',                // 'U'
+    'V',                // 'V'
+    'W',                // 'W'
+    'X',                // 'X'
+    'Y',                // 'Y'
+    'Z',                // 'Z'
+    '[',                // '['
+    '\',                // '\'
+    ']',                // ']'
+    '^',                // '^'
+    '_',                // '_'
+    '`',                // '`'
+    'a',                // 'a'
+    'b',                // 'b'
+    'c',                // 'c'
+    'd',                // 'd'
+    'e',                // 'e'
+    'f',                // 'f'
+    'g',                // 'g'
+    'h',                // 'h'
+    'i',                // 'i'
+    'j',                // 'j'
+    'k',                // 'k'
+    'l',                // 'l'
+    'm',                // 'm'
+    'n',                // 'n'
+    'o',                // 'o'
+    'p',                // 'p'
+    'q',                // 'q'
+    'r',                // 'r'
+    's',                // 's'
+    't',                // 't'
+    'u',                // 'u'
+    'v',                // 'v'
+    'w',                // 'w'
+    'x',                // 'x'
+    'y',                // 'y'
+    'z',                // 'z'
+    '{',                // '{'
+    '|',                // '|'
+    '}',                // '}'
+    '~',                // '~'
+    #127,               // #127
+    '',                 // #128
+    '',                 // #129
+    '',                 // #130
+    '',                 // #131
+    '',                 // #132
+    '',                 // #133
+    '',                 // #134
+    '',                 // #135
+    '',                 // #136
+    '',                 // #137
+    '',                 // #138
+    '',                 // #139
+    '',                 // #140
+    '',                 // #141
+    '',                 // #142
+    '',                 // #143
+    '',                 // #144
+    '',                 // #145
+    '',                 // #146
+    '',                 // #147
+    '',                 // #148
+    '',                 // #149
+    '',                 // #150
+    '',                 // #151
+    '',                 // #152
+    '',                 // #153
+    '',                 // #154
+    '',                 // #155
+    '',                 // #156
+    '',                 // #157
+    '',                 // #158
+    '',                 // #159
+    '',                 // #160
+    '',                 // #161
+    '',                 // #162
+    '',                 // #163
+    '',                 // #164
+    '',                 // #165
+    '',                 // #166
+    '',                 // #167
+    '',                 // #168
+    '',                 // #169
+    '',                 // #170
+    '',                 // #171
+    '',                 // #172
+    '',                 // #173
+    '',                 // #174
+    '',                 // #175
+    '',                 // #176
+    '',                 // #177
+    '',                 // #178
+    '',                 // #179
+    '',                 // #180
+    '',                 // #181
+    '',                 // #182
+    '',                 // #183
+    '',                 // #184
+    '',                 // #185
+    '',                 // #186
+    '',                 // #187
+    '',                 // #188
+    '',                 // #189
+    '',                 // #190
+    '',                 // #191
+    #209#142,           // #192
+    #208#176,           // #193
+    #208#177,           // #194
+    #209#134,           // #195
+    #208#180,           // #196
+    #208#181,           // #197
+    #209#132,           // #198
+    #208#179,           // #199
+    #209#133,           // #200
+    #208#184,           // #201
+    #208#185,           // #202
+    #208#186,           // #203
+    #208#187,           // #204
+    #208#188,           // #205
+    #208#189,           // #206
+    #208#190,           // #207
+    #208#191,           // #208
+    #209#143,           // #209
+    #209#128,           // #210
+    #209#129,           // #211
+    #209#130,           // #212
+    #209#131,           // #213
+    #208#182,           // #214
+    #208#178,           // #215
+    #209#140,           // #216
+    #209#139,           // #217
+    #208#183,           // #218
+    #209#136,           // #219
+    #209#141,           // #220
+    #209#137,           // #221
+    #209#135,           // #222
+    #209#138,           // #223
+    #208#174,           // #224
+    #208#144,           // #225
+    #208#145,           // #226
+    #208#166,           // #227
+    #208#148,           // #228
+    #208#149,           // #229
+    #208#164,           // #230
+    #208#147,           // #231
+    #208#165,           // #232
+    #208#152,           // #233
+    #208#153,           // #234
+    #208#154,           // #235
+    #208#155,           // #236
+    #208#156,           // #237
+    #208#157,           // #238
+    #208#158,           // #239
+    #208#159,           // #240
+    #208#175,           // #241
+    #208#160,           // #242
+    #208#161,           // #243
+    #208#162,           // #244
+    #208#163,           // #245
+    #208#150,           // #246
+    #208#146,           // #247
+    #208#172,           // #248
+    #208#171,           // #249
+    #208#151,           // #250
+    #208#168,           // #251
+    #208#173,           // #252
+    #208#169,           // #253
+    #208#167,           // #254
+    ''                  // #255
+  );
+
 function ISO_8859_1ToUTF8(const s: string): string;
 begin
   Result:=SingleByteToUTF8(s,ArrayISO_8859_1ToUTF8);
@@ -3035,6 +3296,11 @@ end;
 function CP874ToUTF8(const s: string): string;
 begin
   Result:=SingleByteToUTF8(s,ArrayCP874ToUTF8);
+end;
+
+function KOI8ToUTF8(const s: string): string;
+begin
+  Result:=SingleByteToUTF8(s,ArrayKOI8ToUTF8);
 end;
 
 function SingleByteToUTF8(const s: string; const Table: TCharToUTF8Table
@@ -3619,6 +3885,53 @@ begin
   end;
 end;
 
+function UnicodeToKOI8(Unicode: cardinal): integer;
+begin
+  case Unicode of
+  0..127: Result:=Unicode;
+  1040..1041: Result:=Unicode-815;
+  1042: Result:=247;
+  1043: Result:=231;
+  1044..1045: Result:=Unicode-816;
+  1046: Result:=246;
+  1047: Result:=250;
+  1048..1055: Result:=Unicode-815;
+  1056..1059: Result:=Unicode-814;
+  1060: Result:=230;
+  1061: Result:=232;
+  1062: Result:=227;
+  1063: Result:=254;
+  1064: Result:=251;
+  1065: Result:=253;
+  1067: Result:=249;
+  1068: Result:=248;
+  1069: Result:=252;
+  1070: Result:=224;
+  1071: Result:=241;
+  1072..1073: Result:=Unicode-879;
+  1074: Result:=215;
+  1075: Result:=199;
+  1076..1077: Result:=Unicode-880;
+  1078: Result:=214;
+  1079: Result:=218;
+  1080..1087: Result:=Unicode-879;
+  1088..1091: Result:=Unicode-878;
+  1092: Result:=198;
+  1093: Result:=200;
+  1094: Result:=195;
+  1095: Result:=222;
+  1096: Result:=219;
+  1097: Result:=221;
+  1098: Result:=223;
+  1099: Result:=217;
+  1100: Result:=216;
+  1101: Result:=220;
+  1102: Result:=192;
+  1103: Result:=209;
+  else Result:=-1;
+  end;
+end;
+
 function UnicodeToISO_8859_1(Unicode: cardinal): integer;
 begin
   case Unicode of
@@ -3680,6 +3993,11 @@ end;
 function UTF8ToCP874(const s: string): string;
 begin
   Result:=UTF8ToSingleByte(s,@UnicodeToCP874);
+end;
+
+function UTF8ToKOI8(const s: string): string;
+begin
+  Result:=UTF8ToSingleByte(s,@UnicodeToKOI8);
 end;
 
 function UTF8ToSingleByte(const s: string;
@@ -3978,7 +4296,7 @@ begin
     exit;
   end;
   
-  // try BOM
+  // try BOM (Byte Order Mark)
   if CompareI(@s[1],#$EF#$BB#$BF,3) then begin
     Result:=EncodingUTF8;
     exit;
@@ -4053,6 +4371,7 @@ begin
     if ATo='cp1257' then begin Result:=UTF8ToCP1257(s); exit; end;
     if ATo='cp1258' then begin Result:=UTF8ToCP1258(s); exit; end;
     if ATo='cp874' then begin  Result:=UTF8ToCP874(s);  exit; end;
+    if ATo='koi8' then begin  Result:=UTF8ToKOI8(s);  exit; end;
 
     if (ATo=SysEnc) and Assigned(ConvertUTF8ToAnsi) then begin
       Result:=ConvertUTF8ToAnsi(s);
@@ -4070,6 +4389,7 @@ begin
     if AFrom='cp1257' then begin Result:=CP1257ToUTF8(s); exit; end;
     if AFrom='cp1258' then begin Result:=CP1258ToUTF8(s); exit; end;
     if AFrom='cp874' then begin  Result:=CP874ToUTF8(s);  exit; end;
+    if AFrom='koi8' then begin  Result:=KOI8ToUTF8(s);  exit; end;
 
     if (AFrom=SysEnc) and Assigned(ConvertAnsiToUTF8) then begin
       Result:=ConvertAnsiToUTF8(s);
