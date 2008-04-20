@@ -98,6 +98,8 @@ install-arch-stamp: build-arch-stamp debian-files-stamp
 	convert -geometry 32x32 $(CURDIR)/images/ide_icon48x48.png $(INSTALL_DIR)/usr/share/pixmaps/lazarus.xpm
 	chmod 644 $(INSTALL_DIR)/usr/share/pixmaps/lazarus.xpm
 	install -m 644 $(CURDIR)/install/lazarus.desktop $(INSTALL_DIR)/usr/share/applications/lazarus.desktop
+# Install man pages
+	$(MAKE) -C install/man installman $(INSTALLOPTS) INSTALL_PREFIX=$(INSTALL_DIR)/usr/share
 	touch install-arch-stamp
 
 arrange-arch: arrange-arch-stamp

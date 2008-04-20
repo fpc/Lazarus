@@ -2,7 +2,15 @@ lazarus (0.9.25-0) unstable; urgency=low
 
   * Merged debian rules with official debian svn.
 
- -- Mazen Neifer <mazen@freepascal.org>  Tue, 08 Apr 2008 22:35:37 +0200
+ -- Mazen Neifer <mazen@freepascal.org>  Tue, 20 Apr 2008 10:21:40 +0200
+
+lazarus (0.9.24-0-7) unstable; urgency=low
+
+  [ Mazen Neifer ]
+  * Added a link of lazbuild tool into /usr/bin
+  * Added man pages for binaries.
+
+ -- Mazen Neifer <mazen@freeapscal.org>  Sun, 20 Apr 2008 02:32:21 +0200
 
 lazarus (0.9.24-0-6) unstable; urgency=low
 
