@@ -4718,7 +4718,6 @@ end;
 procedure TWinControl.WSSetText(const AText: String);
 begin
   TWSWinControlClass(WidgetSetClass).SetText(Self, AText);
-  InvalidatePreferredSize;
 end;
 
 {------------------------------------------------------------------------------
@@ -7206,10 +7205,10 @@ begin
   begin
     WSSetText(AValue);
     InvalidatePreferredSize;
-    //DebugLn(['TWinControl.RealSetText ',DbgSName(Self),' ',AValue]);
+    inherited RealSetText(AValue);
     AdjustSize;
-  end;
-  inherited RealSetText(AValue);
+  end
+  else inherited RealSetText(AValue);
 end;
 
 {------------------------------------------------------------------------------
