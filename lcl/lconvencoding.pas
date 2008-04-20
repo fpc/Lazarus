@@ -4055,6 +4055,7 @@ begin
   List.Add('CP1258');
   List.Add('CP874');
   List.Add('ISO-8859-1');
+  List.Add('KOI-8');
 end;
 
 function Utf2Cp1251(s:string):string;
