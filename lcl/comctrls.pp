@@ -1395,6 +1395,7 @@ type
     procedure MouseLeave; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Paint; override;
+    procedure TextChanged; override;
     procedure CalculatePreferredSize(
                          var PreferredWidth, PreferredHeight: integer;
                          WithThemeSpace: Boolean); override;
@@ -1414,6 +1415,9 @@ type
     procedure Click; override;
     procedure GetCurrentIcon(var ImageList: TCustomImageList;
                              var TheIndex: integer); virtual;
+    procedure GetPreferredSize(var PreferredWidth, PreferredHeight: integer;
+                               Raw: boolean = false;
+                               WithThemeSpace: boolean = true); override;
     property Index: Integer read GetIndex;
   published
     property Action;

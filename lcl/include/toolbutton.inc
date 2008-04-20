@@ -591,6 +591,14 @@ begin
     RefreshControl;
 end;
 
+procedure TToolButton.TextChanged;
+begin
+  inherited TextChanged;
+  if FToolbar = nil then Exit;
+  if FToolbar.ShowCaptions
+  then Invalidate;
+end;
+
 procedure TToolButton.SetMouseInControl(NewMouseInControl: Boolean);
 begin
   //DebugLn('TToolButton.SetMouseInControl A ',Name,' Old=',FMouseInControl,' New=',NewMouseInControl);
@@ -656,6 +664,17 @@ begin
     Result := FToolBar.FButtons.IndexOf(Self)
   else
     Result := -1;
+end;
+
+procedure TToolButton.GetPreferredSize(var PreferredWidth, PreferredHeight: integer; Raw: boolean; WithThemeSpace: boolean);
+begin
+  inherited GetPreferredSize(PreferredWidth, PreferredHeight, Raw, WithThemeSpace);
+
+  if FToolbar = nil then Exit;
+  if FToolbar.ButtonHeight <= 0 then Exit;
+  // buttonheight overrules in hor toolbar
+  if FToolbar.Align in [alTop, alBottom]
+  then PreferredHeight := FToolbar.ButtonHeight;
 end;
 
 function TToolButton.IsWidthStored: Boolean;
