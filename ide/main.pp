@@ -11474,7 +11474,9 @@ begin
   DiskEncoding:=GuessEncoding(Source);
   MemEncoding:=EncodingUTF8;
   if (DiskEncoding<>MemEncoding) then begin
-    //DebugLn(['TMainIDE.OnCodeBufferDecodeLoaded Filename=',Filename,' Disk=',DiskEncoding,' to Mem=',MemEncoding]);
+    {$IFDEF VerboseIDEEncoding}
+    DebugLn(['TMainIDE.OnCodeBufferDecodeLoaded Filename=',Filename,' Disk=',DiskEncoding,' to Mem=',MemEncoding]);
+    {$ENDIF}
     Source:=ConvertEncoding(Source,DiskEncoding,MemEncoding);
     //DebugLn(['TMainIDE.OnCodeBufferDecodeLoaded ',Source]);
   end;
@@ -11485,7 +11487,9 @@ procedure TMainIDE.OnCodeBufferEncodeSaving(Code: TCodeBuffer;
 begin
   if (Code.DiskEncoding<>'') and (Code.MemEncoding<>'')
   and (Code.DiskEncoding<>Code.MemEncoding) then begin
-    //DebugLn(['TMainIDE.OnCodeBufferEncodeSaving Filename=',Code.Filename,' Mem=',Code.MemEncoding,' to Disk=',Code.DiskEncoding]);
+    {$IFDEF VerboseIDEEncoding}
+    DebugLn(['TMainIDE.OnCodeBufferEncodeSaving Filename=',Code.Filename,' Mem=',Code.MemEncoding,' to Disk=',Code.DiskEncoding]);
+    {$ENDIF}
     Source:=ConvertEncoding(Source,Code.MemEncoding,Code.DiskEncoding);
   end;
 end;
