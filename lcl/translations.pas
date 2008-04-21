@@ -53,8 +53,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, FileUtil, StringHashList
-  {$IFDEF UNIX}{$IFNDEF DisableCWString}, cwstring{$ENDIF}{$ENDIF}
-  {$IFDEF MultiLocale},LConvEncoding{$ENDIF};
+  {$IFDEF UNIX}{$IFNDEF DisableCWString}, cwstring{$ENDIF}{$ENDIF};
 
 type
   { TPOFileItem }
@@ -98,28 +97,19 @@ procedure TranslateUnitResourceStrings(const ResUnitName, BaseFilename,
   Lang, FallbackLang: string);
 function TranslateUnitResourceStrings(const ResUnitName, AFilename: string
   ): boolean;
-function UTF8ToSystemCharSet(const s: string): string;
-  {$ifndef MultiLocale} inline;{$endif}
+function UTF8ToSystemCharSet(const s: string): string; inline;
 
 
 implementation
 
-function UTF8ToSystemCharSet(const s: string): string; {$ifndef MultiLocale} inline;{$endif}
+function UTF8ToSystemCharSet(const s: string): string; inline;
 begin
   if SystemCharSetIsUTF8 then
     exit(s);
   {$IFDEF NoUTF8Translations}
   Result:=s;
   {$ELSE}
-    {$IFNDEF MultiLocale}
-    Result:=Utf8ToAnsi(s);
-    {$ELSE}
-    try
-    if (LowerCase(GetDefaultCodepage)<>'utf8')
-      and (LowerCase(GetDefaultCodepage)<>'utf-8')then
-      Result:=CPConvert(s,'utf8',LowerCase(GetDefaultCodepage)) else Result:=s;
-    except Result:=s;end;
-    {$ENDIF}
+  Result:=Utf8ToAnsi(s);
   {$ENDIF}
 end;
 

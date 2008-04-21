@@ -84,9 +84,33 @@ procedure GetSupportedEncodings(List: TStrings);
 
 implementation
 
+{$IFDEF Windows}
+uses Windows;
+{$ENDIF}
 
 var EncodingValid: boolean = false;
     SystemEncoding: string = EncodingAnsi;
+
+{$IFDEF Windows}
+function GetWindowsEncoding: string;
+var
+  Buffer : PChar;
+  Size : integer;
+begin
+  Size := GetLocaleInfo (LOCALE_USER_DEFAULT, LOCALE_ILANGUAGE, nil, 0);
+  GetMem(Buffer, Size);
+  try
+    GetLocaleInfo (LOCALE_USER_DEFAULT, LOCALE_ILANGUAGE, Buffer, Size);
+    Result := string(Buffer);
+    while (Result<>'') and (Result[1]='0') do
+      Result:=copy(Result,2,length(Result));
+    if Result<>'' then
+      Result:='cp'+Result;
+  finally
+    FreeMem(Buffer);
+  end
+end;
+{$ENDIF}
 
 function GetSystemEncoding: string;
 var Lang: string;
@@ -98,7 +122,12 @@ begin
     exit;
   end;
 
+  {$IFDEF Windows}
+  Result:=GetWindowsEncoding;
+  {$ELSE}
   Result:=EncodingAnsi;
+  {$ENDIF}
+
   lang := GetEnv('LC_ALL');
   if Length(lang) = 0 then
   begin
