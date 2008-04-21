@@ -4196,23 +4196,23 @@ begin
   end;
 
   //Stupid code. Works anyway, but extra-slow
+  Result:=s;
   {$ifdef Unix}
   DebugLn(['CPConvert NOTE: using slow iconv workaround to convert from ',AFrom,' to ',ATo]);
-  SL:=TStringList.Create;
-  SL.Text:=s;
-  FN1:=GetTempFileName;
-  SL.SaveToFile(FN1);
-  FN2:=GetTempFileName;
-  fpSystem('iconv -f '+FromEncoding+' -t '+ToEncoding+' '+FN1+' >'+FN2);
-  SL.LoadFromFile(FN2);
-  if SL.Text<>'' then
-    Result:=SL.Text
-  else
-    Result:=s;
-  DeleteFile(FN1);
-  DeleteFile(FN2);
-  {$else}
-  Result:=s;
+  try
+    SL:=TStringList.Create;
+    SL.Text:=s;
+    FN1:=GetTempFileName;
+    SL.SaveToFile(FN1);
+    FN2:=GetTempFileName;
+    fpSystem('iconv -f '+FromEncoding+' -t '+ToEncoding+' '+FN1+' >'+FN2);
+    SL.LoadFromFile(FN2);
+    if SL.Text<>'' then
+      Result:=SL.Text;
+    DeleteFile(FN1);
+    DeleteFile(FN2);
+  except
+  end;
   {$endif}
 end;
 
