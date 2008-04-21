@@ -4425,6 +4425,8 @@ begin
     Result:=s;
   DeleteFile(FN1);
   DeleteFile(FN2);
+  {$else}
+  Result:=s;
   {$endif}
 end;
 
