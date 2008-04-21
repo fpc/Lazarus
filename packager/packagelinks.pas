@@ -325,7 +325,7 @@ end;
 procedure TPackageLinks.UpdateGlobalLinks;
 
   function ParseFilename(const Filename: string;
-    var PkgName: string; var PkgVersion: TPkgVersion): boolean;
+    out PkgName: string; PkgVersion: TPkgVersion): boolean;
   // checks if filename has the form
   // <identifier>-<version>.lpl
   var
@@ -335,6 +335,7 @@ procedure TPackageLinks.UpdateGlobalLinks;
     ints: array[1..4] of integer;
   begin
     Result:=false;
+    PkgName:='';
     if CompareFileExt(Filename,'.lpl',false)<>0 then exit;
     StartPos:=1;
     // parse identifier

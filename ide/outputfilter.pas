@@ -27,7 +27,7 @@ unit OutputFilter;
 interface
 
 uses
-  Classes, Math, SysUtils, Forms, Controls, CompilerOptions, Project, Process,
+  Classes, Math, SysUtils, Forms, Controls, CompilerOptions, Process,
   AsyncProcess, LCLProc, DynQueue, FileUtil,
   IDEMsgIntf, IDEExternToolIntf,
   IDEProcs, LazConf;

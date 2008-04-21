@@ -30,7 +30,7 @@ unit IDETranslations;
 interface
 
 uses
-  Classes, SysUtils, GetText, LCLProc, LCLStrConsts, Translations,
+  Classes, SysUtils, GetText, LCLProc, Translations,
   IDEProcs, FileUtil,
   avl_tree, LazarusIDEStrConsts;
   { IDE Language (Human, not computer) }
@@ -193,7 +193,7 @@ var
   s: string;
   NextLineStartPos: integer;
 
-  procedure ReadLine(var Line: string);
+  procedure ReadLine(out Line: string);
   var
     p: LongInt;
   begin

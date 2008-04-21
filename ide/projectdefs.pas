@@ -39,8 +39,7 @@ interface
 uses
   Classes, SysUtils, Laz_XMLCfg,
   Forms, SynRegExpr, FileUtil, LCLProc,
-  NewItemIntf, ProjectIntf,
-  LazarusIDEStrConsts, PublishModule;
+  ProjectIntf, PublishModule;
 
 type
   TOnLoadSaveFilename = procedure(var Filename:string; Load:boolean) of object;

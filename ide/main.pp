@@ -646,7 +646,6 @@ type
     procedure SaveSrcEditorProjectSpecificSettings(AnUnitInfo: TUnitInfo);
     procedure SaveSourceEditorProjectSpecificSettings;
     function DoShowSaveProjectAsDialog: TModalResult;
-    function DoUpdateLRSFromLFM(const LRSFilename: string): TModalResult;
 
     // methods for open project, create project from source
     function DoCompleteLoadingProjectInfo: TModalResult;
@@ -718,7 +717,6 @@ type
     function DoRemoveFromProjectDialog: TModalResult;
     function DoWarnAmbiguousFiles: TModalResult;
     procedure DoUpdateProjectResourceInfo;
-    function DoUpdateProjectAutomaticFiles: TModalResult;
     function DoSaveForBuild: TModalResult; override;
     function DoCheckIfProjectNeedsCompilation(AProject: TProject;
                     const CompilerFilename, CompilerParams, SrcFilename: string;
@@ -5475,7 +5473,7 @@ begin
   end;
 
   NewComponent:=AnUnitInfo.Component;
-  // create the designer
+  // create the designer (if not already done)
   if ([ofProjectLoading,ofLoadHiddenResource]*OpenFlags=[]) then
     FormEditor1.ClearSelection;
   FormEditor1.CreateComponentInterface(NewComponent,true);
@@ -6458,27 +6456,6 @@ begin
   IncreaseCompilerParseStamp;
 
   Result:=mrOk;
-end;
-
-function TMainIDE.DoUpdateLRSFromLFM(const LRSFilename: string): TModalResult;
-var
-  LFMFilename: String;
-begin
-  Result:=mrOk;
-  // check if there is a .lrs file
-  if LRSFilename='' then exit;
-  if not FilenameIsAbsolute(LRSFilename) then exit;
-  LFMFilename:=ChangeFileExt(LRSFilename,'.lfm');
-  if LRSFilename=LFMFilename then exit;
-  // check if there is a .lfm file
-  if not FileExists(LFMFilename) then exit;
-  // check if .lrs file is newer than .lfm file
-  if FileExists(LRSFilename) and (FileAge(LFMFilename)<=FileAge(LRSFilename))
-  then exit;
-  debugln('TMainIDE.DoUpdateLRSFromLFM ',LRSFilename,' ',dbgs(FileAge(LFMFilename)),' ',dbgs(FileAge(LRSFilename)));
-  // the .lrs file does not exist, or is older than the .lfm file
-  // -> update .lrs file
-  Result:=ConvertLFMToLRSFileInteractive(LFMFilename,LRSFilename);
 end;
 
 function TMainIDE.DoCompleteLoadingProjectInfo: TModalResult;
@@ -8012,7 +7989,7 @@ begin
   end;
 
   // update all lrs files
-  DoUpdateProjectAutomaticFiles;
+  MainBuildBoss.UpdateProjectAutomaticFiles;
   
   // everything went well => clear all modified flags
   Project1.ClearModifieds(true);
@@ -8590,21 +8567,6 @@ begin
       or (not FilenameIsAbsolute(AnUnitInfo.ResourceFileName)) then begin
         AnUnitInfo.ResourceFileName:=ChangeFileExt(AnUnitInfo.Filename,'.lrs');
       end;
-    end;
-    AnUnitInfo:=AnUnitInfo.NextPartOfProject;
-  end;
-end;
-
-function TMainIDE.DoUpdateProjectAutomaticFiles: TModalResult;
-var
-  AnUnitInfo: TUnitInfo;
-begin
-  AnUnitInfo:=Project1.FirstPartOfProject;
-  while AnUnitInfo<>nil do begin
-    if AnUnitInfo.HasResources then begin
-      Result:=DoUpdateLRSFromLFM(AnUnitInfo.ResourceFileName);
-      if Result=mrIgnore then Result:=mrOk;
-      if Result<>mrOk then exit;
     end;
     AnUnitInfo:=AnUnitInfo.NextPartOfProject;
   end;

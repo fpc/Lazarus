@@ -68,6 +68,8 @@ type
                                     ): TModalResult; virtual; abstract;
 
     function BackupFile(const Filename: string): TModalResult; virtual; abstract;
+
+    function UpdateProjectAutomaticFiles: TModalResult; virtual; abstract;
   end;
 
 var

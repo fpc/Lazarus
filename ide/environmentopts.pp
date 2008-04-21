@@ -667,7 +667,7 @@ function CheckExecutable(const OldFilename, NewFilename: string;
 function CheckDirPathExists(const Dir,
   ErrorCaption, ErrorMsg: string): TModalResult;
 function SimpleDirectoryCheck(const OldDir, NewDir,
-  NotFoundErrMsg: string; var StopChecking: boolean): boolean;
+  NotFoundErrMsg: string; out StopChecking: boolean): boolean;
 
 procedure SetComboBoxText(AComboBox:TComboBox; const AText:AnsiString);
 procedure SetComboBoxText(AComboBox:TComboBox; const AText:AnsiString;
@@ -749,7 +749,7 @@ begin
 end;
 
 function SimpleDirectoryCheck(const OldDir, NewDir,
-  NotFoundErrMsg: string; var StopChecking: boolean): boolean;
+  NotFoundErrMsg: string; out StopChecking: boolean): boolean;
 var
   SubResult: TModalResult;
 begin

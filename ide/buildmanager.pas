@@ -135,6 +135,9 @@ type
                                     ): TModalResult; override;
     function BackupFile(const Filename: string): TModalResult; override;
 
+    function UpdateLRSFromLFM(const LRSFilename: string): TModalResult;
+    function UpdateProjectAutomaticFiles: TModalResult; override;
+
     // methods for building
     procedure SetBuildTarget(const TargetOS, TargetCPU, LCLWidgetType: string;
                              DoNotScanFPCSrc: boolean = false);
@@ -970,6 +973,43 @@ begin
       if Result=mrIgnore then Result:=mrOk;
     end;
   until Result<>mrRetry;
+end;
+
+function TBuildManager.UpdateLRSFromLFM(const LRSFilename: string
+  ): TModalResult;
+var
+  LFMFilename: String;
+begin
+  Result:=mrOk;
+  // check if there is a .lrs file
+  if LRSFilename='' then exit;
+  if not FilenameIsAbsolute(LRSFilename) then exit;
+  LFMFilename:=ChangeFileExt(LRSFilename,'.lfm');
+  if LRSFilename=LFMFilename then exit;
+  // check if there is a .lfm file
+  if not FileExists(LFMFilename) then exit;
+  // check if .lrs file is newer than .lfm file
+  if FileExists(LRSFilename) and (FileAge(LFMFilename)<=FileAge(LRSFilename))
+  then exit;
+  debugln('TBuildManager.UpdateLRSFromLFM ',LRSFilename,' LFMAge=',dbgs(FileAge(LFMFilename)),' LRSAge=',dbgs(FileAge(LRSFilename)));
+  // the .lrs file does not exist, or is older than the .lfm file
+  // -> update .lrs file
+  Result:=ConvertLFMToLRSFileInteractive(LFMFilename,LRSFilename);
+end;
+
+function TBuildManager.UpdateProjectAutomaticFiles: TModalResult;
+var
+  AnUnitInfo: TUnitInfo;
+begin
+  AnUnitInfo:=Project1.FirstPartOfProject;
+  while AnUnitInfo<>nil do begin
+    if AnUnitInfo.HasResources then begin
+      Result:=UpdateLRSFromLFM(AnUnitInfo.ResourceFileName);
+      if Result=mrIgnore then Result:=mrOk;
+      if Result<>mrOk then exit;
+    end;
+    AnUnitInfo:=AnUnitInfo.NextPartOfProject;
+  end;
 end;
 
 function TBuildManager.MacroFuncMakeExe(const Filename: string;

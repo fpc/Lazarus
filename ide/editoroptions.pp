@@ -3236,6 +3236,8 @@ begin
   end;
   if NewIndex < 0 then
   begin
+    Token:='';
+    Attri:=nil;
     ColorPreview.GetHighlighterAttriAtRowCol(XY, Token, Attri);
     if Attri = Nil then
       Attri := PreviewSyn.WhitespaceAttribute;

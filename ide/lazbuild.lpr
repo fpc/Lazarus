@@ -459,6 +459,9 @@ begin
     end;
   end;
   
+  // update all lrs files
+  MainBuildBoss.UpdateProjectAutomaticFiles;
+
   WorkingDir:=Project1.ProjectDirectory;
   SrcFilename:=CreateRelativePath(Project1.MainUnitInfo.Filename,WorkingDir);
 

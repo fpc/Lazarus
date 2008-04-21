@@ -456,7 +456,7 @@ procedure FindNextEqualLine(
   const Text1: string; const Start1: TLineExtends;
   const Text2: string; const Start2: TLineExtends;
   Flags: TTextDiffFlags;
-  var EqualLine1, EqualLine2: TLineExtends
+  out EqualLine1, EqualLine2: TLineExtends
   );
 var
   Max1, Max2, Cur1, Cur2: TLineExtends;

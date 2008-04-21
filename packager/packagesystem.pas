@@ -2160,6 +2160,7 @@ function TLazPackageGraph.FindFPCConflictUnit(APackage: TLazPackage;
   begin
     Result:=false;
     if AnUnitName='' then exit;
+    Filename:='';
     OnFindFPCUnit(AnUnitName,Directory,Filename);
     Result:=Filename<>'';
   end;
@@ -3219,7 +3220,7 @@ end;
 procedure TLazPackageGraph.CalculateTopologicalLevels;
 
   procedure GetTopologicalOrder(CurDependency: TPkgDependency;
-    var MaxChildLevel: integer);
+    out MaxChildLevel: integer);
   var
     RequiredPackage: TLazPackage;
     CurMaxChildLevel: integer;
@@ -3317,7 +3318,6 @@ begin
       CurLvl:=Dependency.RequiredPackage.TopologicalLevel
     else
       CurLvl:=0;
-    //debugln('BBB1 BucketStarts[',dbgs(CurLvl),']=',dbgs(BucketStarts[CurLvl]),' ',Dependency.AsString);
     if Dependencies[BucketStarts[CurLvl]]<>nil then
       RaiseException('');
     Dependencies[BucketStarts[CurLvl]]:=Dependency;

@@ -177,14 +177,14 @@ function KeyAndShiftStateToEditorKeyString(const Key: TIDEShortCut): String;
 function ShowKeyMappingEditForm(Index: integer;
                 AKeyCommandRelationList: TKeyCommandRelationList): TModalResult;
 function FindKeymapConflicts(Keymap: TKeyCommandRelationList;
-                      Protocol: TStrings; var Index1, Index2: integer): integer;
+                      Protocol: TStrings; out Index1, Index2: integer): integer;
 function EditorCommandToDescriptionString(cmd: word): String;
 function EditorCommandLocalizedName(cmd: word;
                                     const DefaultName: string): string;
 function EditorKeyStringToVKCode(const s: string): word;
 
 procedure GetDefaultKeyForCommand(Command: word;
-                                  var TheKeyA, TheKeyB: TIDEShortCut);
+                                  out TheKeyA, TheKeyB: TIDEShortCut);
 procedure GetDefaultKeyForClassicScheme(Command: word;
                                         var TheKeyA, TheKeyB: TIDEShortCut);
 procedure GetDefaultKeyForMacOSXScheme(Command: word;
@@ -242,7 +242,7 @@ begin
 end;
 
 procedure GetDefaultKeyForCommand(Command: word;
-  var TheKeyA, TheKeyB: TIDEShortCut);
+  out TheKeyA, TheKeyB: TIDEShortCut);
 
   procedure SetResult(NewKeyA: word; NewShiftA: TShiftState;
     NewKeyB: word; NewShiftB: TShiftState);
@@ -1545,7 +1545,7 @@ begin
 end;
 
 function FindKeymapConflicts(Keymap: TKeyCommandRelationList;
-   Protocol: TStrings; var Index1,Index2:integer):integer;
+   Protocol: TStrings; out Index1,Index2:integer):integer;
 // 0 = ok, no errors
 // >0 number of errors found
 var
@@ -1592,6 +1592,8 @@ var
   
 begin
   Result:=0;
+  Index1:=0;
+  Index2:=0;
   for a:=0 to Keymap.Count-1 do begin
     Key1:=Keymap[a];
     for b:=a+1 to Keymap.Count-1 do begin

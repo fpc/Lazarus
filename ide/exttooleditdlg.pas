@@ -43,9 +43,9 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, LCLType, Controls, Forms, Buttons, StdCtrls, ComCtrls,
-  Dialogs, LResources, LazConfigStorage, Laz_XMLCfg,
+  Dialogs, LResources,
   IDEExternToolIntf,
-  KeyMapping, TransferMacros, IDEProcs, LazarusIDEStrConsts, ExtCtrls;
+  KeyMapping, TransferMacros, LazarusIDEStrConsts, ExtCtrls;
 
 type
   { TExternalToolOptions }

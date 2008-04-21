@@ -41,10 +41,9 @@ unit BuildLazDialog;
 interface
 
 uses
-  Classes, SysUtils, Math, LCLProc, Forms, Controls, LCLType, LCLIntf,
+  Classes, SysUtils, LCLProc, Forms, Controls, LCLType, LCLIntf,
   Graphics, GraphType, StdCtrls, ExtCtrls, Buttons, FileUtil, Dialogs,
-  LResources,  Laz_XMLCfg, InterfaceBase, ImgList, Themes, ComCtrls,
-  IDEExternToolIntf,
+  LResources,  Laz_XMLCfg, InterfaceBase, Themes, ComCtrls,
   LazarusIDEStrConsts, TransferMacros, LazConf, IDEProcs, DialogProcs,
   IDEWindowIntf, InputHistory, ExtToolDialog, ExtToolEditDlg,
   {$IFDEF win32}
@@ -240,7 +239,7 @@ type
   private
     FAdvanced: Boolean;
     FOptions: TBuildLazarusOptions;
-    function GetMakeModeAtX(const X: Integer; var MakeMode: TMakeMode): boolean;
+    function GetMakeModeAtX(const X: Integer; out MakeMode: TMakeMode): boolean;
     function MakeModeToInt(MakeMode: TMakeMode): integer;
     function IntToMakeMode(i: integer): TMakeMode;
     procedure SetAdvanced(AValue: boolean);
@@ -979,11 +978,12 @@ begin
 end;
 
 function TConfigureBuildLazarusDlg.GetMakeModeAtX(const X: Integer;
-  var MakeMode: TMakeMode): boolean;
+  out MakeMode: TMakeMode): boolean;
 var
   i: integer;
 begin
   Result:=True;
+  MakeMode:=mmNone;
   i := X div ButtonSize;
   case i of
     0: MakeMode:=mmNone;

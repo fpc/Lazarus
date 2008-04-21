@@ -104,7 +104,7 @@ function FileIsTextCached(const AFilename: string): boolean;
 
 // cmd line
 procedure SplitCmdLine(const CmdLine: string;
-                       var ProgramFilename, Params: string);
+                       out ProgramFilename, Params: string);
 function PrepareCmdLineOption(const Option: string): string;
 function AddCmdLineParameter(const CmdLine, AddParameter: string): string;
 
@@ -1025,7 +1025,7 @@ begin
 end;
 
 procedure SplitCmdLine(const CmdLine: string;
-                       var ProgramFilename, Params: string);
+                       out ProgramFilename, Params: string);
 var p, s, l: integer;
   quote: char;
 begin
