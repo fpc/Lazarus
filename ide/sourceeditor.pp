@@ -527,8 +527,8 @@ type
 
     procedure UpdateActiveEditColors;
     procedure SetIncrementalSearchStr(const AValue: string);
-    procedure DoIncrementalSearch;
-    
+    procedure IncrementalSearch(ANext: Boolean; ABackward: Boolean);
+
     // macros
     function MacroFuncCol(const s:string; const Data: PtrInt;
                           var Abort: boolean): string;
@@ -1228,11 +1228,15 @@ procedure TSourceEditor.FindNext;
 var
   OldOptions: TSynSearchOptions;
 begin
-  if LazFindReplaceDialog.FindText = '' then
+  if snIncrementalFind in FSourceNoteBook.States
+  then begin
+    FSourceNoteBook.IncrementalSearch(True, False);
+  end
+  else if LazFindReplaceDialog.FindText = ''
+  then begin
     StartFindAndReplace(False)
-  else if snIncrementalFind in FSourceNoteBook.States then begin
-    FSourceNoteBook.fIncrementalSearchStartPos:=FEditor.LogicalCaretXY;
-  end else begin
+  end
+  else begin
     OldOptions:=LazFindReplaceDialog.Options;
     LazFindReplaceDialog.Options:=LazFindReplaceDialog.Options
                                      -[ssoEntireScope,ssoReplaceAll];
@@ -1243,20 +1247,27 @@ End;
 
 {---------------------------F I N D   P R E V I O U S ------------------------}
 procedure TSourceEditor.FindPrevious;
-var OldOptions: TSynSearchOptions;
-Begin
-  OldOptions:=LazFindReplaceDialog.Options;
-  LazFindReplaceDialog.Options:=LazFindReplaceDialog.Options-[ssoEntireScope];
-  if ssoBackwards in LazFindReplaceDialog.Options then
-    LazFindReplaceDialog.Options:=LazFindReplaceDialog.Options-[ssoBackwards]
-  else
-    LazFindReplaceDialog.Options:=LazFindReplaceDialog.Options+[ssoBackwards];
-  if LazFindReplaceDialog.FindText = '' then
-    StartFindAndReplace(False)
-  else
-    DoFindAndReplace;
-  LazFindReplaceDialog.Options:=OldOptions;
-End;
+var
+  OldOptions: TSynSearchOptions;
+begin
+  if snIncrementalFind in FSourceNoteBook.States
+  then begin
+    FSourceNoteBook.IncrementalSearch(True, True);
+  end
+  else begin
+    OldOptions:=LazFindReplaceDialog.Options;
+    LazFindReplaceDialog.Options:=LazFindReplaceDialog.Options-[ssoEntireScope];
+    if ssoBackwards in LazFindReplaceDialog.Options then
+      LazFindReplaceDialog.Options:=LazFindReplaceDialog.Options-[ssoBackwards]
+    else
+      LazFindReplaceDialog.Options:=LazFindReplaceDialog.Options+[ssoBackwards];
+    if LazFindReplaceDialog.FindText = '' then
+      StartFindAndReplace(False)
+    else
+      DoFindAndReplace;
+    LazFindReplaceDialog.Options:=OldOptions;
+  end;
+end;
 
 procedure TSourceEditor.FindNextWordOccurrence(DirectionForward: boolean);
 var
@@ -6197,34 +6208,55 @@ procedure TSourceNotebook.SetIncrementalSearchStr(const AValue: string);
 begin
   if FIncrementalSearchStr=AValue then exit;
   FIncrementalSearchStr:=AValue;
-  DoIncrementalSearch;
+  IncrementalSearch(False, False);
 end;
 
-procedure TSourceNotebook.DoIncrementalSearch;
+procedure TSourceNotebook.IncrementalSearch(ANext, ABackward: Boolean);
+const
+  SEARCH_OPTS: array[Boolean] of TSynSearchOptions = ([], [ssoBackwards]);
 var
   CurEdit: TSynEdit;
 begin
-  if snIncrementalFind in States then begin
-    Include(States,snIncrementalSearching);
-    // search string
-    CurEdit:=GetActiveSE.EditorComponent;
-    CurEdit.BeginUpdate;
-    if fIncrementalSearchStr<>'' then begin
-      // search from search start position
-      CurEdit.LogicalCaretXY:=fIncrementalSearchStartPos;
-      CurEdit.SearchReplace(fIncrementalSearchStr,'',[]);
-      CurEdit.LogicalCaretXY:=CurEdit.BlockEnd;
-      FIncrementalSearchStr:=CurEdit.SelText;
-    end else begin
-      // go to start
-      CurEdit.LogicalCaretXY:=fIncrementalSearchCancelPos;
-      CurEdit.BlockBegin:=CurEdit.LogicalCaretXY;
-      CurEdit.BlockEnd:=CurEdit.BlockBegin;
-    end;
-    FIncrementalSearchPos:=CurEdit.LogicalCaretXY;
-    CurEdit.EndUpdate;
-    Exclude(States,snIncrementalSearching);
+  if not (snIncrementalFind in States)
+  then begin
+    UpdateStatusBar;
+    Exit;
   end;
+  
+  Include(States,snIncrementalSearching);
+  // search string
+  CurEdit:=GetActiveSE.EditorComponent;
+  CurEdit.BeginUpdate;
+  if FIncrementalSearchStr<>''
+  then begin
+    // search from search start position when not searching for the next
+    if not ANext
+    then CurEdit.LogicalCaretXY := FIncrementalSearchStartPos
+    else if ABackward
+    then CurEdit.LogicalCaretXY := CurEdit.BlockBegin;
+    CurEdit.SearchReplace(FIncrementalSearchStr,'', SEARCH_OPTS[ABackward]);
+    CurEdit.LogicalCaretXY:=CurEdit.BlockEnd;
+
+    // searching next resets incremental history
+    if ANext
+    then begin
+      FIncrementalSearchStartPos := CurEdit.BlockBegin;
+      FIncrementalSearchCancelPos := FIncrementalSearchStartPos;
+    end;
+
+    // MWE:??? is it needed to set the SearchStr again. In theory we just searched it
+    FIncrementalSearchStr:=CurEdit.SelText;
+  end
+  else begin
+    // go to start
+    CurEdit.LogicalCaretXY:=fIncrementalSearchCancelPos;
+    CurEdit.BlockBegin:=CurEdit.LogicalCaretXY;
+    CurEdit.BlockEnd:=CurEdit.BlockBegin;
+  end;
+  FIncrementalSearchPos:=CurEdit.LogicalCaretXY;
+  CurEdit.EndUpdate;
+  Exclude(States,snIncrementalSearching);
+
   UpdateStatusBar;
 end;
 
