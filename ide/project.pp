@@ -3508,11 +3508,12 @@ procedure TProject.UpdateUnitComponentDependencies;
       while CurCount>0 do begin
         // point PropInfo to next propinfo record.
         // Located at Name[Length(Name)+1] !
-        if (PropInfo^.PropType=ClassTypeInfo(TComponent)) then begin
-          // property of kind TComponent
+        if (PropInfo^.PropType^.Kind=tkClass) then begin
+          // property of kind TObject
           ReferenceComponent:=TComponent(GetObjectProp(AComponent,PropInfo));
           //debugln('TProject.UpdateUnitComponentDependencies Property ',dbgsName(AComponent),' Name=',PropInfo^.Name,' Type=',PropInfo^.PropType^.Name,' Value=',dbgsName(ReferenceComponent),' TypeInfo=',TypeInfo^.Name);
-          if ReferenceComponent<>nil then begin
+          if ReferenceComponent is TComponent then begin
+            // reference is a TComponent
             OwnerComponent:=ReferenceComponent;
             while OwnerComponent.Owner<>nil do
               OwnerComponent:=OwnerComponent.Owner;
@@ -3660,8 +3661,8 @@ procedure TProject.FindUnitsUsingSubComponent(SubComponent: TComponent;
       while CurCount>0 do begin
         // point PropInfo to next propinfo record.
         // Located at Name[Length(Name)+1] !
-        if (PropInfo^.PropType=ClassTypeInfo(TComponent)) then begin
-          // property of kind TComponent
+        if PropInfo^.PropType^.Kind=tkClass then begin
+          // property of kind TObject
           ReferenceComponent:=TComponent(GetObjectProp(AComponent,PropInfo));
           //debugln('TProject.FindUnitsUsingSubComponent Property ',dbgsName(AComponent),' Name=',PropInfo^.Name,' Type=',PropInfo^.PropType^.Name,' Value=',dbgsName(ReferenceComponent),' TypeInfo=',TypeInfo^.Name);
           if ReferenceComponent=SubComponent then begin
