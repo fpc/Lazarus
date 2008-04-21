@@ -868,7 +868,11 @@ var
   C: TCustomBitmap;
   B: TBitmap;
 begin
-  C := CreateBitmapFromLazarusResource(AName);
+  if AName = '' then
+    C := nil
+  else
+    C := CreateBitmapFromLazarusResource(AName);
+
   if C = nil
   then begin
     SetGlyph(nil);
