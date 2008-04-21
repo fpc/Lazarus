@@ -18,8 +18,6 @@
   This unit is a message dialog composer for Lazarus/FPC. It take in account all message dialogs platform indipendent.
 }
 
-
-
 unit MessageComposer;
 
 {$mode objfpc}{$H+}
