@@ -5258,12 +5258,6 @@ var
   LFMFilename: string;
   LFMBuf: TCodeBuffer;
 begin
-  Result:=CloseUnitComponent(AnUnitInfo,CloseFlags);
-  if Result<>mrOk then begin
-    DebugLn(['TMainIDE.DoLoadLFM failed due to CloseUnitComponent for file ',AnUnitInfo.Filename]);
-    exit;
-  end;
-
   // Note: think about virtual and normal .lfm files.
   LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lfm');
   LFMBuf:=nil;
@@ -5280,8 +5274,7 @@ begin
   Result:=LoadIDECodeBuffer(LFMBuf,LFMFilename,[lbfUpdateFromDisk]);
   if Result<>mrOk then exit;
 
-  Result:=DoLoadLFM(AnUnitInfo,LFMBuf,OpenFlags,
-                    CloseFlags-[cfSaveFirst,cfSaveDependencies]);
+  Result:=DoLoadLFM(AnUnitInfo,LFMBuf,OpenFlags,CloseFlags);
 end;
 
 function TMainIDE.DoLoadLFM(AnUnitInfo: TUnitInfo; LFMBuf: TCodeBuffer;
@@ -5303,10 +5296,12 @@ var
 begin
   debugln('TMainIDE.DoLoadLFM A ',AnUnitInfo.Filename,' IsPartOfProject=',dbgs(AnUnitInfo.IsPartOfProject),' ');
 
-  // close old designer form
-  Result:=CloseUnitComponent(AnUnitInfo,CloseFlags);
-  if Result<>mrOk then exit;
-  
+  if ofRevert in OpenFlags then begin
+    // close old designer form
+    Result:=CloseUnitComponent(AnUnitInfo,CloseFlags);
+    if Result<>mrOk then exit;
+  end;
+
   // check installed packages
   if (AnUnitInfo.Component=nil) and AnUnitInfo.IsPartOfProject
   and (not (ofProjectLoading in OpenFlags)) then begin
