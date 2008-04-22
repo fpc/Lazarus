@@ -1085,6 +1085,8 @@ begin
 end;
 
 constructor TMainIDE.Create(TheOwner: TComponent);
+var
+  Layout: TIDEWindowLayout;
 begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create START');{$ENDIF}
   inherited Create(TheOwner);
@@ -1129,6 +1131,9 @@ begin
   MainIDEBar.Constraints.MaxHeight:=110;
   {$ENDIF}
   MainIDEBar.Name := NonModalIDEWindowNames[nmiwMainIDEName];
+  Layout:=EnvironmentOptions.IDEWindowLayoutList.ItemByEnum(nmiwMainIDEName);
+  if not (Layout.WindowState in [iwsNormal,iwsMaximized]) then
+    Layout.WindowState:=iwsNormal;
   EnvironmentOptions.IDEWindowLayoutList.Apply(MainIDEBar,MainIDEBar.Name);
   HiddenWindowsOnRun:=TList.Create;
 
@@ -14075,6 +14080,7 @@ begin
   case ALayout.WindowPlacement of
   iwpCustomPosition,iwpRestoreWindowGeometry:
     begin
+      //DebugLn(['TMainIDE.OnApplyWindowLayout ',IDEWindowStateNames[ALayout.WindowState]]);
       case ALayout.WindowState of
       iwsMinimized: ALayout.Form.WindowState:=wsMinimized;
       iwsMaximized: ALayout.Form.WindowState:=wsMaximized;
