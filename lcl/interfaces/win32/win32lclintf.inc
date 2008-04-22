@@ -338,35 +338,52 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.GetControlConstraints(Constraints: TObject): boolean;
 var
-  SizeConstraints: TSizeConstraints;
+  SizeConstraints: TSizeConstraints absolute Constraints;
   SizeRect: TRect;
   Height, Width: Integer;
   FixedHeight, FixedWidth: boolean;
+  MinWidth, MinHeight, MaxWidth, MaxHeight: Integer;
 begin
-  Result:=true;
-  if Constraints is TSizeConstraints then begin
-    SizeConstraints:=TSizeConstraints(Constraints);
+  Result := True;
 
+  if Constraints is TSizeConstraints then
+  begin
     if (SizeConstraints.Control=nil) then exit;
 
     FixedHeight := false;
     FixedWidth := false;
+
+    MinWidth := 1;
+    MinHeight := 1;
+    MaxWidth := 0;
+    MaxHeight := 0;
+
     if SizeConstraints.Control is TCustomCalendar then
     begin
       FixedHeight := true;
       FixedWidth := true;
     end
-    else
-    if SizeConstraints.Control is TCustomComboBox then
+    else if SizeConstraints.Control is TCustomComboBox then
     begin
       // win32 combo (but not csSimple) has fixed height
       FixedHeight := TCustomComboBox(SizeConstraints.Control).Style <> csSimple;
+    end
+    // The ProgressBar needs a minimum Height of 10 when themed,
+    // as required by Windows, otherwise it's image is corrupted
+    // For consistency, we add the constrain even when not themed.
+    else if SizeConstraints.Control is TCustomProgressBar then
+    begin
+      MinHeight := 10;
+
+      SizeConstraints.SetInterfaceConstraints(
+        MinWidth, MinHeight, MaxWidth, MaxHeight);
     end;
     
     if (FixedHeight or FixedWidth)
       and TWinControl(SizeConstraints.Control).HandleAllocated then 
     begin
       Windows.GetWindowRect(TWinControl(SizeConstraints.Control).Handle, @SizeRect);
+
       if FixedHeight then
         Height := SizeRect.Bottom - SizeRect.Top
       else
@@ -375,6 +392,7 @@ begin
         Width := SizeRect.Right - SizeRect.Left
       else
         Width := 0;
+        
       SizeConstraints.SetInterfaceConstraints(Width, Height, Width, Height);
     end;
   end;

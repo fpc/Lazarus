@@ -622,20 +622,21 @@ end;
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.GetControlConstraints(Constraints: TObject): boolean;
 var
-  SizeConstraints: TSizeConstraints;
+  SizeConstraints: TSizeConstraints absolute Constraints;
   Widget: PGtkWidget;
   MinWidth: Integer;
   MinHeight: Integer;
   MaxWidth: Integer;
   MaxHeight: Integer;
 begin
-  Result:=true;
-  if Constraints is TSizeConstraints then begin
-    MinWidth:=1;
-    MinHeight:=1;
-    MaxWidth:=0;
-    MaxHeight:=0;
-    SizeConstraints:=TSizeConstraints(Constraints);
+  Result := True;
+
+  if Constraints is TSizeConstraints then
+  begin
+    MinWidth := 1;
+    MinHeight := 1;
+    MaxWidth := 0;
+    MaxHeight := 0;
 
     if (SizeConstraints.Control=nil) then exit;
 
