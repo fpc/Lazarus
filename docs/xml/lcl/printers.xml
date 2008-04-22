@@ -38,7 +38,7 @@
       <!-- object Visibility: default -->
       <element name="EPrinter">
         <short>
-          <var>EPrinter</var> - Exception handler for printer errror</short>
+          <var>EPrinter</var> - Exception handler for printer error</short>
         <descr/>
         <errors/>
         <seealso/>

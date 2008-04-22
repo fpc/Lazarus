@@ -7,7 +7,7 @@
   ====================================================================
 -->
     <module name="MaskEdit">
-      <short/>
+      <short>Defines classes for Mask Editing, ie editing with a masking string in place to obscure the text being entered</short>
       <descr/>
       <!-- unresolved type reference Visibility: default -->
       <element name="Classes">
