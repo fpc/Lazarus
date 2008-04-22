@@ -166,7 +166,11 @@ var
 
     // fill with background color
     OldBitmapHandle := SelectObject(hdcNewBitmap, NewBitmap);
-    Windows.FillRect(hdcNewBitmap, BitmapRect, BitBtn.Brush.Reference.Handle);
+
+    // dont use BitBtn.Brush.Reference.Handle - since button is painted with BtnFact color and
+    // only glyph will have that bg - this will look very ugly
+
+    Windows.FillRect(hdcNewBitmap, BitmapRect, GetSysColorBrush(COLOR_BTNFACE));
     if AState <> bsDisabled then
     begin
       if (srcWidth <> 0) and (srcHeight <> 0) then
@@ -193,7 +197,7 @@ var
         begin
           // non-themed winapi wants white/other as background/picture-disabled colors
           // themed winapi draws bitmap-as, with transparency defined by bitbtn.brush color
-          SetBkColor(hdcNewBitmap, ColorToRGB(BitBtn.Brush.Color));
+          SetBkColor(hdcNewBitmap, GetSysColor(COLOR_BTNFACE));
           SetTextColor(hdcNewBitmap, GetSysColor(COLOR_BTNSHADOW));
         end
         else
@@ -354,7 +358,7 @@ begin
       for I := 1 to 6 do
       begin
         DrawBitmap(XPBitBtn_ImageIndexToState[I]);
-        ImageList_AddMasked(ButtonImageList.himl, NewBitmap, ColorToRGB(BitBtn.Brush.Color));
+        ImageList_AddMasked(ButtonImageList.himl, NewBitmap, GetSysColor(COLOR_BTNFACE));
       end;
     end
     else
