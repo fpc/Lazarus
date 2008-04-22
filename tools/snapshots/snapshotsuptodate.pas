@@ -22,7 +22,7 @@ type
     property MatchingFiles: TStrings read GetMatchingFiles;
   public
     class function FileMaskSuite(const AName, AFileMask: string): TTestSuite;
-    constructor Create(const AName, AFileMask, ATestName: string);
+    constructor Create(const AName, AFileMask, ATestName: string); reintroduce;
     destructor Destroy; override;
   published
     procedure TestHookUp; 
@@ -33,7 +33,7 @@ type
 implementation
 
 uses
-  monitorcfg;
+  monitorcfg, masks;
 
 var
   FileList: TStrings;
@@ -53,25 +53,19 @@ end;
 function TFtpMonitorTestcase.GetMatchingFiles: TStrings;
 var
   i: integer;
-  starpos: integer;
-  FirstPart, LastPart: string;
-  FtpFile : TFtpFile;
+  FileMask: TMask;
+  FtpFile: TFtpFile;
 begin
   if not assigned(FMatchingFiles) then begin
-    starpos := pos('*', FFileMask);
-    if starpos=0 then
-      Fail('Invalid Filemask: '+ FFileMask);
-    FirstPart := Copy(FFileMask, 1, starpos-1);
-    LastPart := Copy(FFileMask, starpos + 1, Length(FFileMask)-starpos);
+    FileMask := TMask.Create(FFileMask);
     FMatchingFiles := TStringList.Create;
-    for i := 0 to Files.Count-1 do begin
+    for i := 0 to Files.Count-1 do
+    begin
       FtpFile := TFtpFile.Create(Files[i]);
-      if (copy(FtpFile.FileName, 1, starpos-1)=FirstPart)
-        and (copy(FtpFile.FileName, Length(FtpFile.FileName)-Length(LastPart)+1, Length(LastPart))=LastPart) then
-        FMatchingFiles.AddObject(FtpFile.FileName, FtpFile)
-      else
-        FtpFile.Free;
+      if FileMask.Matches(FtpFile.FileName) then
+        FMatchingFiles.AddObject(FtpFile.FileName, FtpFile);
     end;
+    FileMask.Free;
   end;
   Result := FMatchingFiles;
 end;

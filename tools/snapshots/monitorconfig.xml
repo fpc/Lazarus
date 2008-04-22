@@ -17,15 +17,31 @@
         />
         <File
             Mask="Lazarus-$LAZVER-fpc-$FPCRELEASEVER-*-win32.exe"
-            Description="Lazarus win32 with fpc fixes branch ($FPCRELEASEVER)"
+            Description="Lazarus win32 with fpc release ($FPCRELEASEVER)"
         />
         <File
-            Mask="Lazarus-$LAZVER-fpc-$FPCFIXESVER-*-win32.exe"
+            Mask="Lazarus-$LAZVER-fpc-$FPCFIXESVER-????????-win32.exe"
             Description="Lazarus win32 with fpc fixes branch ($FPCFIXESVER)"
+        />
+        <File
+            Mask="Lazarus-$LAZVER-fpc-$FPCFIXESVER-????????-cross-arm-wince-win32.exe"
+            Description="Lazarus win32 cross arm-wince with fpc fixes branch ($FPCFIXESVER)"
+        />
+        <File
+            Mask="Lazarus-$LAZVER-fpc-$FPCDEVELVER-????????-win32.exe"
+            Description="Lazarus win32 with fpc development branch ($FPCDEVELVER)"
+        />
+        <File
+            Mask="Lazarus-$LAZVER-fpc-$FPCRELEASEVER-*-win64.exe"
+            Description="Lazarus win64 with fpc release ($FPCRELEASEVER)"
         />
         <File
             Mask="Lazarus-$LAZVER-fpc-$FPCFIXESVER-*-win64.exe"
             Description="Lazarus win64 with fpc fixes branch ($FPCFIXESVER)"
+        />
+        <File
+            Mask="Lazarus-$LAZVER-fpc-$FPCDEVELVER-*-win64.exe"
+            Description="Lazarus win64 with fpc fixes branch ($FPCDEVELVER)"
         />
         <File
             Mask="fpc-$FPCRELEASEVER-*-powerpc-macosx.dmg"
@@ -40,12 +56,12 @@
             Description="lazarus Mac OS X powerpc"
         />
         <File
-            Mask="fpc-$FPCFIXESVER-*-i386-macosx.dmg"
-            Description="fpc $FPCFIXESVER Mac OS X i386"
+            Mask="fpc-$FPCRELEASEVER-*-i386-macosx.dmg"
+            Description="fpc $FPCRELEASEVER Mac OS X i386"
         />
         <File
-            Mask="fpcsrc-$FPCFIXESVER-*-i386-macosx.dmg"
-            Description="fpc source $FPCFIXESVER Mac OS X i386"
+            Mask="fpcsrc-$FPCRELEASEVER-*-i386-macosx.dmg"
+            Description="fpc source $FPCRELEASEVER Mac OS X i386"
         />
         <File
             Mask="lazarus-$LAZVER-*-i386-macosx.dmg"
