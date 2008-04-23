@@ -5275,7 +5275,10 @@ begin
 
   // there is a lazarus form text file -> load it
   Result:=LoadIDECodeBuffer(LFMBuf,LFMFilename,[lbfUpdateFromDisk]);
-  if Result<>mrOk then exit;
+  if Result<>mrOk then begin
+    DebugLn(['TMainIDE.DoLoadLFM LoadIDECodeBuffer failed']);
+    exit;
+  end;
 
   Result:=DoLoadLFM(AnUnitInfo,LFMBuf,OpenFlags,CloseFlags);
 end;
@@ -5296,185 +5299,218 @@ var
   ACaption, AText: String;
   NewUnitName: String;
   AncestorUnitInfo: TUnitInfo;
+  ReferencesLocked: Boolean;
 begin
   debugln('TMainIDE.DoLoadLFM A ',AnUnitInfo.Filename,' IsPartOfProject=',dbgs(AnUnitInfo.IsPartOfProject),' ');
 
-  if ofRevert in OpenFlags then begin
-    // close old designer form
-    Result:=CloseUnitComponent(AnUnitInfo,CloseFlags);
-    if Result<>mrOk then exit;
-  end;
-
-  // check installed packages
-  if (AnUnitInfo.Component=nil) and AnUnitInfo.IsPartOfProject
-  and (not (ofProjectLoading in OpenFlags)) then begin
-    // opening a form of the project -> check installed packages
-    Result:=PkgBoss.CheckProjectHasInstalledPackages(Project1,
-                                     OpenFlags*[ofProjectLoading,ofQuiet]=[]);
-    if not (Result in [mrOk,mrIgnore]) then exit;
-  end;
-
-  //debugln('TMainIDE.DoLoadLFM LFM file loaded, parsing "',LFMBuf.Filename,'" ...');
-
-  if not AnUnitInfo.HasResources then begin
-    // someone created a .lfm file -> Update HasResources
-    AnUnitInfo.HasResources:=true;
-  end;
-
-  //debugln('TMainIDE.DoLoadLFM LFM="',LFMBuf.Source,'"');
-
-  if AnUnitInfo.Component=nil then begin
-    // load/create new instance
-  
-    // find the classname of the LFM, and check for inherited form
-    ReadLFMHeader(LFMBuf.Source,NewClassName,LFMType);
-    if (NewClassName='') or (LFMType='') then begin
-      Result:=MessageDlg(lisLFMFileCorrupt,
-        Format(lisUnableToFindAValidClassnameIn, ['"', LFMBuf.Filename, '"']),
-        mtError,[mbIgnore,mbCancel,mbAbort],0);
-      exit;
+  ReferencesLocked:=false;
+  try
+    if (ofRevert in OpenFlags) and (AnUnitInfo.Component<>nil) then begin
+      // the component must be destroyed and recreated
+      // => store references
+      ReferencesLocked:=true;
+      Project1.LockUnitComponentDependencies;
+      Project1.UpdateUnitComponentDependencies;
+      
+      // close old designer form
+      Result:=CloseUnitComponent(AnUnitInfo,CloseFlags);
+      if Result<>mrOk then begin
+        DebugLn(['TMainIDE.DoLoadLFM CloseUnitComponent failed']);
+        exit;
+      end;
     end;
 
-    BinStream:=nil;
-    AncestorBinStream:=nil;
-    try
-      // find the ancestor type in the source
-      AncestorClassName:='';
-      AncestorType:=nil;
-      AncestorUnitInfo:=nil;
-      if not CodeToolBoss.FindFormAncestor(AnUnitInfo.Source,NewClassName,
-                                           AncestorClassName,true)
-      then begin
-        DebugLn('TMainIDE.DoLoadLFM Filename="',AnUnitInfo.Filename,'" NewClassName=',NewClassName,'. Unable to find ancestor class: ',CodeToolBoss.ErrorMessage);
+    // check installed packages
+    if (AnUnitInfo.Component=nil) and AnUnitInfo.IsPartOfProject
+    and (not (ofProjectLoading in OpenFlags)) then begin
+      // opening a form of the project -> check installed packages
+      Result:=PkgBoss.CheckProjectHasInstalledPackages(Project1,
+                                       OpenFlags*[ofProjectLoading,ofQuiet]=[]);
+      if not (Result in [mrOk,mrIgnore]) then begin
+        DebugLn(['TMainIDE.DoLoadLFM PkgBoss.CheckProjectHasInstalledPackages failed']);
+        exit;
       end;
-      if AncestorClassName<>'' then begin
-        if CompareText(AncestorClassName,'TForm')=0 then begin
-          AncestorType:=TForm;
-        end else if CompareText(AncestorClassName,'TDataModule')=0 then begin
-          // use our TDataModule
-          // (some fpc versions have non designable TDataModule)
-          AncestorType:=TDataModule;
-        end else if CompareText(AncestorClassName,'TCustomForm')=0 then begin
-          // this is a common user mistake
-          MessageDlg(lisCodeTemplError, Format(
-            lisTheResourceClassDescendsFromProbablyThisIsATypoFor, ['"',
-            NewClassName, '"', '"', AncestorClassName, '"']),
-            mtError,[mbCancel],0);
-          Result:=mrCancel;
-          exit;
-        end else if CompareText(AncestorClassName,'TComponent')=0 then begin
-          // this is not yet implemented
-          MessageDlg(lisCodeTemplError, Format(
-            lisUnableToOpenDesignerTheClassDoesNotDescendFromADes, [#13,
-            NewClassName]),
-            mtError,[mbCancel],0);
-          Result:=mrCancel;
-          exit;
-        end else begin
-          // search in the registered classes
-          AncestorType:=
-                     FormEditor1.FindDesignerBaseClassByName(AncestorClassName);
-        end;
-      end else begin
-        AncestorType:=TForm;
+    end;
+
+    //debugln('TMainIDE.DoLoadLFM LFM file loaded, parsing "',LFMBuf.Filename,'" ...');
+
+    if not AnUnitInfo.HasResources then begin
+      // someone created a .lfm file -> Update HasResources
+      AnUnitInfo.HasResources:=true;
+    end;
+
+    //debugln('TMainIDE.DoLoadLFM LFM="',LFMBuf.Source,'"');
+
+    if AnUnitInfo.Component=nil then begin
+      // load/create new instance
+
+      // find the classname of the LFM, and check for inherited form
+      ReadLFMHeader(LFMBuf.Source,NewClassName,LFMType);
+      if (NewClassName='') or (LFMType='') then begin
+        DebugLn(['TMainIDE.DoLoadLFM LFM file corrupt']);
+        Result:=MessageDlg(lisLFMFileCorrupt,
+          Format(lisUnableToFindAValidClassnameIn, ['"', LFMBuf.Filename, '"']),
+          mtError,[mbIgnore,mbCancel,mbAbort],0);
+        exit;
       end;
 
-      // try loading the ancestor first (unit, lfm and component instance)
-      if (AncestorType=nil) then begin
-        Result:=DoLoadComponentDependencyHidden(AnUnitInfo,AncestorClassName,
-                                       OpenFlags,AncestorType,AncestorUnitInfo);
-        if Result=mrAbort then exit;
-        case  Result of
-        mrAbort: exit;
-        mrOk:
-          if AncestorUnitInfo<>nil then begin
-            Result:=DoSaveUnitComponentToBinStream(AncestorUnitInfo,
-                                                   AncestorBinStream);
-            if Result<>mrOk then exit;
-            AncestorBinStream.Position:=0;
-          end;
-        mrIgnore:
-          begin
-            // use TForm as default
-            AncestorType:=TForm;
-            AncestorUnitInfo:=nil;
-          end;
-        else
-          // cancel
-          Result:=mrCancel;
-          exit;
-        end;
-      end;
-
-      // use TForm as default ancestor
-      if AncestorType=nil then
-        AncestorType:=TForm;
-      //DebugLn('TMainIDE.DoLoadLFM Filename="',AnUnitInfo.Filename,'" AncestorClassName=',AncestorClassName,' AncestorType=',AncestorType.ClassName);
-
-      // convert text to binary format
-      BinStream:=TExtMemoryStream.Create;
-      TxtLFMStream:=TExtMemoryStream.Create;
+      BinStream:=nil;
+      AncestorBinStream:=nil;
       try
-        LFMBuf.SaveToStream(TxtLFMStream);
-        AnUnitInfo.ComponentLastLFMStreamSize:=TxtLFMStream.Size;
-        TxtLFMStream.Position:=0;
+        // find the ancestor type in the source
+        AncestorClassName:='';
+        AncestorType:=nil;
+        AncestorUnitInfo:=nil;
+        if not CodeToolBoss.FindFormAncestor(AnUnitInfo.Source,NewClassName,
+                                             AncestorClassName,true)
+        then begin
+          DebugLn('TMainIDE.DoLoadLFM Filename="',AnUnitInfo.Filename,'" NewClassName=',NewClassName,'. Unable to find ancestor class: ',CodeToolBoss.ErrorMessage);
+        end;
+        if AncestorClassName<>'' then begin
+          if CompareText(AncestorClassName,'TForm')=0 then begin
+            AncestorType:=TForm;
+          end else if CompareText(AncestorClassName,'TDataModule')=0 then begin
+            // use our TDataModule
+            // (some fpc versions have non designable TDataModule)
+            AncestorType:=TDataModule;
+          end else if CompareText(AncestorClassName,'TCustomForm')=0 then begin
+            // this is a common user mistake
+            MessageDlg(lisCodeTemplError, Format(
+              lisTheResourceClassDescendsFromProbablyThisIsATypoFor, ['"',
+              NewClassName, '"', '"', AncestorClassName, '"']),
+              mtError,[mbCancel],0);
+            Result:=mrCancel;
+            exit;
+          end else if CompareText(AncestorClassName,'TComponent')=0 then begin
+            // this is not yet implemented
+            MessageDlg(lisCodeTemplError, Format(
+              lisUnableToOpenDesignerTheClassDoesNotDescendFromADes, [#13,
+              NewClassName]),
+              mtError,[mbCancel],0);
+            Result:=mrCancel;
+            exit;
+          end else begin
+            // search in the registered classes
+            AncestorType:=
+                       FormEditor1.FindDesignerBaseClassByName(AncestorClassName);
+          end;
+        end else begin
+          AncestorType:=TForm;
+        end;
 
-        try
-          if AnUnitInfo.ComponentLastBinStreamSize>0 then
-            BinStream.Capacity:=AnUnitInfo.ComponentLastBinStreamSize+BufSize;
-          LRSObjectTextToBinary(TxtLFMStream,BinStream);
-          AnUnitInfo.ComponentLastBinStreamSize:=BinStream.Size;
-          BinStream.Position:=0;
-          Result:=mrOk;
-        except
-          on E: Exception do begin
-            DumpExceptionBackTrace;
-            ACaption:=lisFormatError;
-            AText:=Format(lisUnableToConvertTextFormDataOfFileIntoBinaryStream,
-              [#13, '"', LFMBuf.Filename, '"', #13, E.Message]);
-            Result:=MessageDlg(ACaption, AText, mtError, [mbOk, mbCancel], 0);
-            if Result=mrCancel then Result:=mrAbort;
+        // try loading the ancestor first (unit, lfm and component instance)
+        if (AncestorType=nil) then begin
+          Result:=DoLoadComponentDependencyHidden(AnUnitInfo,AncestorClassName,
+                                         OpenFlags,AncestorType,AncestorUnitInfo);
+          if Result<>mrOk then begin
+            DebugLn(['TMainIDE.DoLoadLFM DoLoadComponentDependencyHidden failed']);
+          end;
+          case  Result of
+          mrAbort: exit;
+          mrOk:
+            if AncestorUnitInfo<>nil then begin
+              Result:=DoSaveUnitComponentToBinStream(AncestorUnitInfo,
+                                                     AncestorBinStream);
+              if Result<>mrOk then begin
+                DebugLn(['TMainIDE.DoLoadLFM DoSaveUnitComponentToBinStream failed']);
+                exit;
+              end;
+              AncestorBinStream.Position:=0;
+            end;
+          mrIgnore:
+            begin
+              // use TForm as default
+              AncestorType:=TForm;
+              AncestorUnitInfo:=nil;
+            end;
+          else
+            // cancel
+            Result:=mrCancel;
             exit;
           end;
         end;
-      finally
-        TxtLFMStream.Free;
-      end;
-      if ([ofProjectLoading,ofLoadHiddenResource]*OpenFlags=[]) then
-        FormEditor1.ClearSelection;
 
-      // create JIT component
-      NewUnitName:=AnUnitInfo.UnitName;
-      if NewUnitName='' then
-        NewUnitName:=ExtractFileNameOnly(AnUnitInfo.Filename);
-      NewComponent:=FormEditor1.CreateRawComponentFromStream(BinStream,
-                   AncestorType,AncestorBinStream,copy(NewUnitName,1,255),true);
-      Project1.InvalidateUnitComponentDesignerDependencies;
-      AnUnitInfo.Component:=NewComponent;
-      if (AncestorUnitInfo<>nil) then
-        AnUnitInfo.AddRequiresComponentDependency(AncestorUnitInfo,[ucdtAncestor]);
-      if NewComponent<>nil then begin
-        // component loaded, now load the referenced units
-        Result:=DoFixupComponentReferences(AnUnitInfo,OpenFlags);
-        if Result<>mrOk then exit;
-      end else begin
-        // error streaming component -> examine lfm file
-        DebugLn('ERROR: streaming failed lfm="',LFMBuf.Filename,'"');
-        // open lfm file in editor
-        Result:=DoOpenEditorFile(LFMBuf.Filename,AnUnitInfo.EditorIndex+1,
-          OpenFlags+[ofOnlyIfExists,ofQuiet,ofRegularFile]);
-        if Result<>mrOk then exit;
-        Result:=DoCheckLFMInEditor;
-        if Result=mrOk then Result:=mrCancel;
-        exit;
+        // use TForm as default ancestor
+        if AncestorType=nil then
+          AncestorType:=TForm;
+        //DebugLn('TMainIDE.DoLoadLFM Filename="',AnUnitInfo.Filename,'" AncestorClassName=',AncestorClassName,' AncestorType=',AncestorType.ClassName);
+
+        // convert text to binary format
+        BinStream:=TExtMemoryStream.Create;
+        TxtLFMStream:=TExtMemoryStream.Create;
+        try
+          LFMBuf.SaveToStream(TxtLFMStream);
+          AnUnitInfo.ComponentLastLFMStreamSize:=TxtLFMStream.Size;
+          TxtLFMStream.Position:=0;
+
+          try
+            if AnUnitInfo.ComponentLastBinStreamSize>0 then
+              BinStream.Capacity:=AnUnitInfo.ComponentLastBinStreamSize+BufSize;
+            LRSObjectTextToBinary(TxtLFMStream,BinStream);
+            AnUnitInfo.ComponentLastBinStreamSize:=BinStream.Size;
+            BinStream.Position:=0;
+            Result:=mrOk;
+          except
+            on E: Exception do begin
+              DumpExceptionBackTrace;
+              ACaption:=lisFormatError;
+              AText:=Format(lisUnableToConvertTextFormDataOfFileIntoBinaryStream,
+                [#13, '"', LFMBuf.Filename, '"', #13, E.Message]);
+              Result:=MessageDlg(ACaption, AText, mtError, [mbOk, mbCancel], 0);
+              if Result=mrCancel then Result:=mrAbort;
+              exit;
+            end;
+          end;
+        finally
+          TxtLFMStream.Free;
+        end;
+        if ([ofProjectLoading,ofLoadHiddenResource]*OpenFlags=[]) then
+          FormEditor1.ClearSelection;
+
+        // create JIT component
+        NewUnitName:=AnUnitInfo.UnitName;
+        if NewUnitName='' then
+          NewUnitName:=ExtractFileNameOnly(AnUnitInfo.Filename);
+        NewComponent:=FormEditor1.CreateRawComponentFromStream(BinStream,
+                     AncestorType,AncestorBinStream,copy(NewUnitName,1,255),true);
+        Project1.InvalidateUnitComponentDesignerDependencies;
+        AnUnitInfo.Component:=NewComponent;
+        if (AncestorUnitInfo<>nil) then
+          AnUnitInfo.AddRequiresComponentDependency(AncestorUnitInfo,[ucdtAncestor]);
+        if NewComponent<>nil then begin
+          // component loaded, now load the referenced units
+          Result:=DoFixupComponentReferences(AnUnitInfo,OpenFlags);
+          if Result<>mrOk then begin
+            DebugLn(['TMainIDE.DoLoadLFM DoFixupComponentReferences failed']);
+            exit;
+          end;
+        end else begin
+          // error streaming component -> examine lfm file
+          DebugLn('ERROR: streaming failed lfm="',LFMBuf.Filename,'"');
+          // open lfm file in editor
+          Result:=DoOpenEditorFile(LFMBuf.Filename,AnUnitInfo.EditorIndex+1,
+            OpenFlags+[ofOnlyIfExists,ofQuiet,ofRegularFile]);
+          if Result<>mrOk then begin
+            DebugLn(['TMainIDE.DoLoadLFM DoOpenEditorFile failed']);
+            exit;
+          end;
+          Result:=DoCheckLFMInEditor;
+          if Result=mrOk then Result:=mrCancel;
+          exit;
+        end;
+      finally
+        BinStream.Free;
+        AncestorBinStream.Free;
       end;
-    finally
-      BinStream.Free;
-      AncestorBinStream.Free;
+    end else begin
+      // keep old instance, just add a designer
+      DebugLn(['TMainIDE.DoLoadLFM Creating designer for hidden component of ',AnUnitInfo.Filename]);
     end;
-  end else begin
-    // keep old instance, just add a designer
-    DebugLn(['TMainIDE.DoLoadLFM Creating designer for hidden component of ',AnUnitInfo.Filename]);
+  finally
+    if ReferencesLocked then begin
+      if Project1<>nil then
+        Project1.UnlockUnitComponentDependencies;
+    end;
   end;
 
   NewComponent:=AnUnitInfo.Component;
@@ -5982,6 +6018,7 @@ var
   AForm: TCustomForm;
   OldDesigner: TDesigner;
   LookupRoot: TComponent;
+  ComponentStillUsed: Boolean;
 begin
   LookupRoot:=AnUnitInfo.Component;
   if LookupRoot=nil then exit(mrOk);
@@ -5992,19 +6029,26 @@ begin
   Project1.LockUnitComponentDependencies;
   try
     // save
-    if (cfSaveFirst in Flags) and (AnUnitInfo.EditorIndex>=0) then begin
+    if (cfSaveFirst in Flags) and (AnUnitInfo.EditorIndex>=0)
+    and (not AnUnitInfo.IsReverting) then begin
       Result:=DoSaveEditorFile(AnUnitInfo.EditorIndex,[sfCheckAmbiguousFiles]);
-      if Result<>mrOk then exit;
+      if Result<>mrOk then begin
+        DebugLn(['TMainIDE.CloseUnitComponent DoSaveEditorFile failed']);
+        exit;
+      end;
     end;
 
     // close dependencies
     if cfCloseDependencies in Flags then begin
       {$IFDEF VerboseIDEMultiForm}
       DebugLn(['TMainIDE.CloseUnitComponent cfCloseDependencies ',AnUnitInfo.Filename,' ',dbgsName(LookupRoot)]);
-      DumpStack;
       {$ENDIF}
       Result:=CloseDependingUnitComponents(AnUnitInfo,Flags);
-      if Result<>mrOk then exit;
+      if Result<>mrOk then begin
+        DebugLn(['TMainIDE.CloseUnitComponent CloseDependingUnitComponents failed']);
+        exit;
+      end;
+      // now only soft dependencies are left. The component can be freed.
     end;
 
     AForm:=FormEditor1.GetDesignerForm(LookupRoot);
@@ -6013,10 +6057,12 @@ begin
       OldDesigner:=TDesigner(AForm.Designer);
     if FLastFormActivated=AForm then
       FLastFormActivated:=nil;
+    ComponentStillUsed:=(not (cfCloseDependencies in Flags))
+                        and UnitComponentIsUsed(AnUnitInfo,false);
     if (OldDesigner=nil) then begin
       // hidden component
       //DebugLn(['TMainIDE.CloseUnitComponent freeing hidden component without designer: ',AnUnitInfo.Filename,' ',DbgSName(AnUnitInfo.Component)]);
-      if UnitComponentIsUsed(AnUnitInfo,false) then begin
+      if ComponentStillUsed then begin
         // hidden component is still used => keep it
         {$IFDEF VerboseIDEMultiForm}
         DebugLn(['TMainIDE.CloseUnitComponent hidden component is still used => keep it ',AnUnitInfo.Filename,' ',DbgSName(AnUnitInfo.Component)]);
@@ -6032,7 +6078,7 @@ begin
       end;
     end else begin
       // component with designer
-      if UnitComponentIsUsed(AnUnitInfo,false) then begin
+      if ComponentStillUsed then begin
         // free designer, keep component hidden
         {$IFDEF VerboseIDEMultiForm}
         DebugLn(['TMainIDE.CloseUnitComponent hiding component and freeing designer: ',AnUnitInfo.Filename,' ',DbgSName(AnUnitInfo.Component)]);
@@ -6059,34 +6105,57 @@ end;
 function TMainIDE.CloseDependingUnitComponents(AnUnitInfo: TUnitInfo;
   Flags: TCloseFlags): TModalResult;
 var
-  DependingUnitInfo: TUnitInfo;
   UserAsked: Boolean;
-  DependenciesFlags: TCloseFlags;
-begin
-  Result:=mrCancel;
-  UserAsked:=false;
-  Project1.LockUnitComponentDependencies;
-  try
+
+  function CloseNext(var ModResult: TModalresult;
+    Types: TUnitCompDependencyTypes): boolean;
+  var
+    DependingUnitInfo: TUnitInfo;
+    DependenciesFlags: TCloseFlags;
+  begin
     repeat
-      DependingUnitInfo:=Project1.UnitUsingComponentUnit(AnUnitInfo);
-      if DependingUnitInfo=nil then exit(mrOk);
-      if (not UserAsked) and (not (cfQuiet in Flags)) then begin
-        Result:=IDEQuestionDialog('Close component?',
+      DependingUnitInfo:=Project1.UnitUsingComponentUnit(AnUnitInfo,Types);
+      if DependingUnitInfo=nil then break;
+      if (not UserAsked) and (not (cfQuiet in Flags))
+      and (not DependingUnitInfo.IsReverting) then begin
+        // ToDo: collect in advance all components to close and show user the list
+        ModResult:=IDEQuestionDialog('Close component?',
           'Close component '+dbgsName(DependingUnitInfo.Component)+'?',
           mtConfirmation,[mrYes,mrAbort]);
-        if Result<>mrYes then exit;
+        if ModResult<>mrYes then exit(false);
         UserAsked:=true;
       end;
       // close recursively
       DependenciesFlags:=Flags+[cfCloseDependencies];
       if cfSaveDependencies in Flags then
         Include(DependenciesFlags,cfSaveFirst);
-      Result:=CloseUnitComponent(DependingUnitInfo,DependenciesFlags);
-      if Result<>mrOk then exit;
+      ModResult:=CloseUnitComponent(DependingUnitInfo,DependenciesFlags);
+      if ModResult<>mrOk then exit(false);
     until false;
+    Result:=true;
+  end;
+  
+begin
+  UserAsked:=false;
+  Project1.LockUnitComponentDependencies;
+  try
+    // Important:
+    // This function is called recursively.
+    // It is important that first the hard, non cyclic dependencies
+    // are freed in the correct order.
+    // After that the soft, cyclic dependencies can be freed in any order.
+    
+    // first close all descendants recursively
+    // This must happen in the right order (descendants before ancestor)
+    if not CloseNext(Result,[ucdtAncestor]) then exit;
+
+    // then close all referring components
+    // These can build circles and can be freed in any order.
+    if not CloseNext(Result,[ucdtProperty]) then exit;
   finally
     Project1.UnlockUnitComponentDependencies;
   end;
+  Result:=mrOk;
 end;
 
 function TMainIDE.UnitComponentIsUsed(AnUnitInfo: TUnitInfo;
@@ -6802,6 +6871,12 @@ begin
   end;
   GetUnitWithPageIndex(PageIndex,ActiveSrcEdit,ActiveUnitInfo);
   if ActiveUnitInfo=nil then exit;
+  
+  // check if the unit is currently reverting
+  if ActiveUnitInfo.IsReverting then begin
+    Result:=mrOk;
+    exit;
+  end;
 
   // check if file is writable on disk
   if (not ActiveUnitInfo.IsVirtual)
@@ -7018,6 +7093,7 @@ var
   FilenameNoPath: String;
   LoadBufferFlags: TLoadBufferFlags;
   DiskFilename: String;
+  Reverting: Boolean;
 
   function OpenResource: TModalResult;
   var
@@ -7039,7 +7115,10 @@ var
         if ofRevert in Flags then
           Include(CloseFlags,cfCloseDependencies);
         Result:=DoLoadLFM(NewUnitInfo,Flags,CloseFlags);
-        if Result<>mrOk then exit;
+        if Result<>mrOk then begin
+          DebugLn(['OpenResource DoLoadLFM failed']);
+          exit;
+        end;
       end else begin
         Result:=mrOk;
       end;
@@ -7049,10 +7128,12 @@ var
       // -> close form
       Result:=CloseUnitComponent(NewUnitInfo,
                                  [cfCloseDependencies,cfSaveDependencies]);
+      if Result<>mrOk then begin
+        DebugLn(['OpenResource CloseUnitComponent failed']);
+      end;
     end else
       Result:=mrOk;
   end;
-
 
 begin
   {$IFDEF IDE_VERBOSE}
@@ -7181,78 +7262,89 @@ begin
       Project1.Modified:=true;
     end;
   end;
+  
+  Reverting:=false;
+  if ofRevert in Flags then begin
+    Reverting:=true;
+    Project1.BeginRevertUnit(NewUnitInfo);
+  end;
+  try
 
-  // check if file exists
-  if FilenameIsAbsolute(AFilename) and (not FileExists(AFilename)) then begin
-    // file does not exist
-    if (ofRevert in Flags) then begin
-      // revert failed, due to missing file
-      if not (ofQuiet in Flags) then begin
-        MessageDlg(lisRevertFailed, Format(lisPkgMangFileNotFound, ['"',
-          AFilename, '"']),
-          mtError,[mbCancel],0);
+    // check if file exists
+    if FilenameIsAbsolute(AFilename) and (not FileExists(AFilename)) then begin
+      // file does not exist
+      if (ofRevert in Flags) then begin
+        // revert failed, due to missing file
+        if not (ofQuiet in Flags) then begin
+          MessageDlg(lisRevertFailed, Format(lisPkgMangFileNotFound, ['"',
+            AFilename, '"']),
+            mtError,[mbCancel],0);
+        end;
+        Result:=mrCancel;
+        exit;
+      end else begin
+        Result:=DoOpenNotExistingFile(AFilename,Flags);
+        exit;
       end;
-      Result:=mrCancel;
-      exit;
+    end;
+
+    // load the source
+    if ReOpen then begin
+      // project knows this file => all the meta data is known
+      // -> just load the source
+      NewUnitInfo:=Project1.Units[UnitIndex];
+      LoadBufferFlags:=[lbfCheckIfText];
+      if FilenameIsAbsolute(AFilename) then begin
+        if (not (ofUseCache in Flags)) then
+          Include(LoadBufferFlags,lbfUpdateFromDisk);
+        if ofRevert in Flags then
+          Include(LoadBufferFlags,lbfRevert);
+      end;
+      Result:=LoadCodeBuffer(NewBuf,AFileName,LoadBufferFlags);
+      if Result<>mrOk then begin
+        DebugLn(['TMainIDE.DoOpenEditorFile failed LoadCodeBuffer: ',AFilename]);
+        exit;
+      end;
+      NewUnitInfo.Source:=NewBuf;
+      if FilenameIsPascalUnit(NewUnitInfo.Filename) then
+        NewUnitInfo.ReadUnitNameFromSource(false);
+      NewUnitInfo.Modified:=NewUnitInfo.Source.FileOnDiskNeedsUpdate;
     end else begin
-      Result:=DoOpenNotExistingFile(AFilename,Flags);
-      exit;
+      // open unknown file
+      Handled:=false;
+      Result:=DoOpenUnknownFile(AFilename,Flags,NewUnitInfo,Handled);
+      if Result<>mrOk then exit;
+      if Handled then exit;
     end;
-  end;
 
-  // load the source
-  if ReOpen then begin
-    // project knows this file => all the meta data is known
-    // -> just load the source
-    NewUnitInfo:=Project1.Units[UnitIndex];
-    LoadBufferFlags:=[lbfCheckIfText];
-    if FilenameIsAbsolute(AFilename) then begin
-      if (not (ofUseCache in Flags)) then
-        Include(LoadBufferFlags,lbfUpdateFromDisk);
-      if ofRevert in Flags then
-        Include(LoadBufferFlags,lbfRevert);
-    end;
-    Result:=LoadCodeBuffer(NewBuf,AFileName,LoadBufferFlags);
+    // check readonly
+    NewUnitInfo.FileReadOnly:=FileExists(NewUnitInfo.Filename)
+                              and (not FileIsWritable(NewUnitInfo.Filename));
+
+
+    {$IFDEF IDE_DEBUG}
+    writeln('[TMainIDE.DoOpenEditorFile] B');
+    {$ENDIF}
+    // open file in source notebook
+    Result:=DoOpenFileInSourceEditor(NewUnitInfo,PageIndex,Flags);
     if Result<>mrOk then begin
-      DebugLn(['TMainIDE.DoOpenEditorFile failed LoadCodeBuffer: ',AFilename]);
+      DebugLn(['TMainIDE.DoOpenEditorFile failed DoOpenFileInSourceEditor: ',AFilename]);
       exit;
     end;
-    NewUnitInfo.Source:=NewBuf;
-    if FilenameIsPascalUnit(NewUnitInfo.Filename) then
-      NewUnitInfo.ReadUnitNameFromSource(false);
-    NewUnitInfo.Modified:=NewUnitInfo.Source.FileOnDiskNeedsUpdate;
-  end else begin
-    // open unknown file
-    Handled:=false;
-    Result:=DoOpenUnknownFile(AFilename,Flags,NewUnitInfo,Handled);
-    if Result<>mrOk then exit;
-    if Handled then exit;
-  end;
 
-  // check readonly
-  NewUnitInfo.FileReadOnly:=FileExists(NewUnitInfo.Filename)
-                            and (not FileIsWritable(NewUnitInfo.Filename));
+    {$IFDEF IDE_DEBUG}
+    writeln('[TMainIDE.DoOpenEditorFile] C');
+    {$ENDIF}
 
-
-  {$IFDEF IDE_DEBUG}
-  writeln('[TMainIDE.DoOpenEditorFile] B');
-  {$ENDIF}
-  // open file in source notebook
-  Result:=DoOpenFileInSourceEditor(NewUnitInfo,PageIndex,Flags);
-  if Result<>mrOk then begin
-    DebugLn(['TMainIDE.DoOpenEditorFile failed DoOpenFileInSourceEditor: ',AFilename]);
-    exit;
-  end;
-
-  {$IFDEF IDE_DEBUG}
-  writeln('[TMainIDE.DoOpenEditorFile] C');
-  {$ENDIF}
-
-  // open resource component (designer, form, datamodule, ...)
-  Result:=OpenResource;
-  if Result<>mrOk then begin
-    DebugLn(['TMainIDE.DoOpenEditorFile failed OpenResource: ',AFilename]);
-    exit;
+    // open resource component (designer, form, datamodule, ...)
+    Result:=OpenResource;
+    if Result<>mrOk then begin
+      DebugLn(['TMainIDE.DoOpenEditorFile failed OpenResource: ',AFilename]);
+      exit;
+    end;
+  finally
+    if Reverting then
+      Project1.EndRevertUnit(NewUnitInfo);
   end;
 
   Result:=mrOk;

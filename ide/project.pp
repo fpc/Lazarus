@@ -89,7 +89,8 @@ type
     );
   TUnitCompDependencyType = (
     ucdtAncestor, // RequiresUnit is ancestor
-    ucdtProperty  // a property references RequiresUnit's component or sub component
+    ucdtProperty, // a property references RequiresUnit's component or sub component
+    ucdtOldProperty // like ucdtProperty, but for the old state before the revert
     );
   TUnitCompDependencyTypes = set of TUnitCompDependencyType;
 
@@ -97,22 +98,35 @@ const
   AllUnitCompDependencyTypes = [low(TUnitCompDependencyType)..high(TUnitCompDependencyType)];
 
 type
-    
+
+  { TUCDComponentProperty }
+
+  TUCDComponentProperty = class
+  public
+    constructor Create(const SrcPath, DestPath: string);
+    UsedByPropPath: string;
+    RequiresPropPath: string;
+  end;
+
   { TUnitComponentDependency }
 
   TUnitComponentDependency = class
   private
+    FCompProps: TFPList;// list of TUCDComponentProperty
     FRequiresUnit: TUnitInfo;
     FTypes: TUnitCompDependencyTypes;
     FUsedByUnit: TUnitInfo;
+    function GetCompPropCount: integer;
+    function GetCompProps(Index: integer): TUCDComponentProperty;
     procedure SetRequiresUnit(const AValue: TUnitInfo);
+    procedure SetTypes(const AValue: TUnitCompDependencyTypes);
     procedure SetUsedByUnit(const AValue: TUnitInfo);
   public
     NextDependency, PrevDependency:
                      array[TUnitCompDependencyList] of TUnitComponentDependency;
     constructor Create;
     destructor Destroy; override;
-    procedure Clear;
+    procedure ClearComponentProperties;
     function NextUsedByDependency: TUnitComponentDependency;
     function PrevUsedByDependency: TUnitComponentDependency;
     function NextRequiresDependency: TUnitComponentDependency;
@@ -123,7 +137,14 @@ type
                              ListType: TUnitCompDependencyList);
     property RequiresUnit: TUnitInfo read FRequiresUnit write SetRequiresUnit;
     property UsedByUnit: TUnitInfo read FUsedByUnit write SetUsedByUnit;
-    property Types: TUnitCompDependencyTypes read FTypes write FTypes;
+    property Types: TUnitCompDependencyTypes read FTypes write SetTypes;
+    property CompPropCount: integer read GetCompPropCount;
+    property CompProps[Index: integer]: TUCDComponentProperty read GetCompProps;
+    function FindUsedByPropPath(const UsedByPropPath: string): TUCDComponentProperty;
+    function SetUsedByPropPath(const UsedByPropPath, RequiresPropPath: string
+                               ): TUCDComponentProperty;
+    function CreatePropPath(AComponent: TComponent;
+                            const PropName: string = ''): string;
   end;
 
   //---------------------------------------------------------------------------
@@ -140,7 +161,7 @@ type
   TUnitInfo = class(TLazProjectFile)
   private
     FAutoReferenceSourceDir: boolean;
-    fAutoRevertLockCount: integer;
+    fAutoRevertLockCount: integer;// =0 means, codetools can auto update from disk
     fBookmarks: TFileBookmarks;
     FBuildFileIfActive: boolean;
     fComponent: TComponent;
@@ -173,6 +194,7 @@ type
     FOnUnitNameChange: TOnUnitNameChange;
     FProject: TProject;
     FResourceFilename: string;
+    FRevertLockCount: integer;// >0 means IDE is currently reverting this unit
     FRunFileIfActive: boolean;
     FSessionModified: boolean;
     fSource: TCodeBuffer;
@@ -223,6 +245,7 @@ type
 
     function ChangedOnDisk(CompareOnlyLoadSaveTime: boolean): boolean;
     function IsAutoRevertLocked: boolean;
+    function IsReverting: boolean;
     function IsMainUnit: boolean;
     function IsVirtual: boolean;
     function GetDirectory: string;
@@ -235,11 +258,12 @@ type
     procedure Clear;
     procedure ClearModifieds; override;
     procedure ClearComponentDependencies;
+    procedure WriteDebugReportUnitComponentDependencies(Prefix: string);
     procedure CreateStartCode(Descriptor: TProjectFileDescriptor;
                               const NewUnitName: string);
-    procedure DecreaseAutoRevertLock;
     procedure IgnoreCurrentFileDateOnDisk;
     procedure IncreaseAutoRevertLock;
+    procedure DecreaseAutoRevertLock;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                                 Merge: boolean);
     function ParseUnitNameFromSource(TryCache: boolean): string;
@@ -566,6 +590,7 @@ type
     fProjectDirectoryReferenced: string;
     fProjectInfoFile: String;  // the lpi filename
     FPublishOptions: TPublishProjectOptions;
+    FRevertLockCount: integer;
     FRunParameterOptions: TRunParamsOptions;
     FSourceDirectories: TFileReferenceList;
     FStateFileDate: longint;
@@ -634,6 +659,9 @@ type
     procedure EndUpdate;
     procedure UnitModified(AnUnitInfo: TUnitInfo);
     function NeedsDefineTemplates: boolean;
+    procedure BeginRevertUnit(AnUnitInfo: TUnitInfo);
+    procedure EndRevertUnit(AnUnitInfo: TUnitInfo);
+    function IsReverting(AnUnitInfo: TUnitInfo): boolean;
 
     // load/save
     function IsVirtual: boolean;
@@ -682,7 +710,8 @@ type
     function UnitWithComponentName(AComponentName: String): TUnitInfo;
     function UnitComponentInheritingFrom(AClass: TComponentClass;
                                          Ignore: TUnitInfo): TUnitInfo;
-    function UnitUsingComponentUnit(ComponentUnit: TUnitInfo): TUnitInfo;
+    function UnitUsingComponentUnit(ComponentUnit: TUnitInfo;
+                                    Types: TUnitCompDependencyTypes): TUnitInfo;
     function UnitComponentIsUsed(ComponentUnit: TUnitInfo;
                                  CheckHasDesigner: boolean): boolean;
     function UnitInfoWithFilename(const AFilename: string): TUnitInfo;
@@ -749,6 +778,7 @@ type
                    ClearTypes: TUnitCompDependencyTypes);
     procedure FindUnitsUsingSubComponent(SubComponent: TComponent;
                      List: TFPList; IgnoreOwner: boolean);
+    procedure WriteDebugReportUnitComponentDependencies(Prefix: string);
 
     // paths
     procedure AddSrcPath(const SrcPathAddition: string); override;
@@ -849,7 +879,8 @@ var
 
 procedure AddCompileReasonsDiff(Tool: TCompilerDiffTool;
   const PropertyName: string; const Old, New: TCompileReasons);
-
+function dbgs(aType: TUnitCompDependencyType): string; overload;
+function dbgs(Types: TUnitCompDependencyTypes): string; overload;
 
 implementation
 
@@ -864,6 +895,29 @@ begin
   if Old=New then exit;
   Tool.AddSetDiff(PropertyName,integer(Old),integer(New),
                   PString(@CompileReasonNames[Low(TCompileReasons)]));
+end;
+
+function dbgs(aType: TUnitCompDependencyType): string;
+begin
+  case aType of
+  ucdtAncestor: Result:='Ancestor';
+  ucdtProperty: Result:='Property';
+  ucdtOldProperty: Result:='OldProperty';
+  else Result:='?'
+  end;
+end;
+
+function dbgs(Types: TUnitCompDependencyTypes): string;
+var
+  t: TUnitCompDependencyType;
+begin
+  Result:='';
+  for t:=low(Types) to High(Types) do
+    if t in Types then begin
+      if Result<>'' then Result:=Result+';';
+      Result:=Result+dbgs(t);
+    end;
+  Result:='['+Result+']';
 end;
 
 {------------------------------------------------------------------------------
@@ -1047,6 +1101,29 @@ procedure TUnitInfo.ClearComponentDependencies;
 begin
   while FFirstRequiredComponent<>nil do FFirstRequiredComponent.Free;
   while FFirstUsedByComponent<>nil do FFirstUsedByComponent.Free;
+end;
+
+procedure TUnitInfo.WriteDebugReportUnitComponentDependencies(Prefix: string);
+var
+  Dependency: TUnitComponentDependency;
+begin
+  DebugLn([Prefix+'TUnitInfo.WriteDebugReportUnitComponentDependencies ',Filename]);
+  Dependency:=FirstRequiredComponent;
+  if Dependency<>nil then begin
+    DebugLn([Prefix+'  Requires:  >>> ']);
+    while Dependency<>nil do begin
+      DebugLn([Prefix+'    '+Dependency.RequiresUnit.Filename+' '+dbgs(Dependency.Types)]);
+      Dependency:=Dependency.NextRequiresDependency;
+    end;
+  end;
+  Dependency:=FirstUsedByComponent;
+  if Dependency<>nil then begin
+    DebugLn([Prefix+'  UsedBy:    <<<']);
+    while Dependency<>nil do begin
+      DebugLn([Prefix+'    '+Dependency.UsedByUnit.Filename+' '+dbgs(Dependency.Types)]);
+      Dependency:=Dependency.NextUsedByDependency;
+    end;
+  end;
 end;
 
 
@@ -1291,6 +1368,11 @@ begin
   Result:=fAutoRevertLockCount>0;
 end;
 
+function TUnitInfo.IsReverting: boolean;
+begin
+  Result:=FRevertLockCount>0;
+end;
+
 function TUnitInfo.ChangedOnDisk(CompareOnlyLoadSaveTime: boolean): boolean;
 begin
   Result:=(Source<>nil) and (Source.FileOnDiskHasChanged);
@@ -1379,6 +1461,7 @@ function TUnitInfo.AddRequiresComponentDependency(RequiredUnit: TUnitInfo;
   Types: TUnitCompDependencyTypes): TUnitComponentDependency;
 begin
   if RequiredUnit=nil then RaiseGDBException('inconsistency');
+  if RequiredUnit=Self then RaiseGDBException('inconsistency');
   // search a dependency to this RequiredUnit
   Result:=FirstRequiredComponent;
   while Result<>nil do begin
@@ -1388,8 +1471,8 @@ begin
   // if none exists, then create one
   if Result=nil then
     Result:=TUnitComponentDependency.Create;
-  Result.RequiresUnit:=RequiredUnit;
   Result.UsedByUnit:=Self;
+  Result.RequiresUnit:=RequiredUnit;
   Result.Types:=Result.Types+Types;
 end;
 
@@ -2624,6 +2707,40 @@ begin
   Result:=not Destroying;
 end;
 
+procedure TProject.BeginRevertUnit(AnUnitInfo: TUnitInfo);
+begin
+  if AnUnitInfo<>nil then
+    inc(AnUnitInfo.FRevertLockCount);
+  inc(FRevertLockCount);
+  if FRevertLockCount=1 then begin
+    Include(FStateFlags,lpsfPropertyDependenciesChanged);
+    ClearUnitComponentDependencies([ucdtOldProperty,ucdtProperty]);
+    LockUnitComponentDependencies;
+    UpdateUnitComponentDependencies;
+  end;
+end;
+
+procedure TProject.EndRevertUnit(AnUnitInfo: TUnitInfo);
+begin
+  if FRevertLockCount<=0 then
+    raise Exception.Create('TProject.EndRevertUnit Project');
+  if (AnUnitInfo<>nil) and (AnUnitInfo.FRevertLockCount<=0) then
+    raise Exception.Create('TProject.EndRevertUnit Filename='+AnUnitInfo.Filename);
+  if AnUnitInfo<>nil then
+    dec(AnUnitInfo.FRevertLockCount);
+  dec(FRevertLockCount);
+  if FRevertLockCount=0 then
+    UnlockUnitComponentDependencies;
+end;
+
+function TProject.IsReverting(AnUnitInfo: TUnitInfo): boolean;
+begin
+  if AnUnitInfo=nil then
+    Result:=FRevertLockCount>0
+  else
+    Result:=AnUnitInfo.FRevertLockCount>0;
+end;
+
 function TProject.GetUnits(Index:integer):TUnitInfo;
 begin
   Result:=TUnitInfo(FUnitList[Index]);
@@ -3492,6 +3609,7 @@ procedure TProject.UpdateUnitComponentDependencies;
     ReferenceComponent: TComponent;
     OwnerComponent: TComponent;
     ReferenceUnit: TUnitInfo;
+    Dependency: TUnitComponentDependency;
   begin
     // read all properties and remove doubles
     TypeInfo:=PTypeInfo(AComponent.ClassInfo);
@@ -3528,6 +3646,13 @@ procedure TProject.UpdateUnitComponentDependencies;
                 {$ENDIF}
                 AnUnitInfo.AddRequiresComponentDependency(
                                      ReferenceUnit,[ucdtProperty]);
+                if FRevertLockCount>0 then begin
+                  Dependency:=AnUnitInfo.AddRequiresComponentDependency(
+                                       ReferenceUnit,[ucdtOldProperty]);
+                  Dependency.SetUsedByPropPath(
+                    Dependency.CreatePropPath(AComponent,PropInfo^.Name),
+                    Dependency.CreatePropPath(ReferenceComponent));
+                end;
               end;
             end;
           end;
@@ -3555,7 +3680,7 @@ procedure TProject.UpdateUnitComponentDependencies;
       and (not (uifComponentIndirectlyUsedByDesigner in UsedByUnitInfo.FFlags))
       then begin
         {$IFDEF VerboseIDEMultiForm}
-        DebugLn(['DFSUsedByDesigner used indirect by designer: ',UsedByUnitInfo.Filename]);
+        DebugLn(['TProject.UpdateUnitComponentDependencies.DFSUsedByDesigner ',UsedByUnitInfo.Filename,' is used indirect by designer of ',AnUnitInfo.Filename]);
         {$ENDIF}
         Include(UsedByUnitInfo.FFlags,uifComponentIndirectlyUsedByDesigner);
         DFSUsedByDesigner(UsedByUnitInfo,IgnoreUnitInfo);
@@ -3584,6 +3709,7 @@ begin
         Search(AnUnitInfo,AnUnitInfo.Component.Components[i]);
       AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
     end;
+    //WriteDebugReportUnitComponentDependencies('P ');
   end;
   
   if (FLockUnitComponentDependencies=0)
@@ -3617,6 +3743,7 @@ begin
       end;
       AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
     end;
+    //WriteDebugReportUnitComponentDependencies('D ');
   end;
 end;
 
@@ -3697,6 +3824,19 @@ begin
         Search(AnUnitInfo,AnUnitInfo.Component.Components[i]);
     end;
     AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
+  end;
+end;
+
+procedure TProject.WriteDebugReportUnitComponentDependencies(Prefix: string);
+var
+  i: Integer;
+  AnUnitInfo: TUnitInfo;
+begin
+  for i:=0 to UnitCount-1 do begin
+    AnUnitInfo:=Units[i];
+    if (AnUnitInfo.FirstUsedByComponent<>nil)
+    or (AnUnitInfo.FirstRequiredComponent<>nil) then
+      AnUnitInfo.WriteDebugReportUnitComponentDependencies(Prefix);
   end;
 end;
 
@@ -3999,12 +4139,15 @@ begin
   end;
 end;
 
-function TProject.UnitUsingComponentUnit(ComponentUnit: TUnitInfo): TUnitInfo;
+function TProject.UnitUsingComponentUnit(ComponentUnit: TUnitInfo;
+  Types: TUnitCompDependencyTypes): TUnitInfo;
+var
+  Dependency: TUnitComponentDependency;
 begin
   Result:=nil;
-  if ComponentUnit.Component=nil then exit;
-  if ComponentUnit.FirstUsedByComponent=nil then exit;
-  Result:=ComponentUnit.FirstUsedByComponent.UsedByUnit;
+  Dependency:=ComponentUnit.FindUsedByComponentDependency(Types);
+  if Dependency=nil then exit;
+  Result:=Dependency.UsedByUnit;
 end;
 
 function TProject.UnitComponentIsUsed(ComponentUnit: TUnitInfo;
@@ -5145,6 +5288,8 @@ end;
 procedure TUnitComponentDependency.SetRequiresUnit(const AValue: TUnitInfo);
 begin
   if FRequiresUnit=AValue then exit;
+  if (AValue<>nil) and (FUsedByUnit=AValue) then
+    raise Exception.Create('TUnitComponentDependency.SetRequiresUnit inconsistency');
   if FRequiresUnit<>nil then
     RemoveFromList(FRequiresUnit.FFirstUsedByComponent,ucdlUsedBy);
   FRequiresUnit:=AValue;
@@ -5152,9 +5297,34 @@ begin
     AddToList(FRequiresUnit.FFirstUsedByComponent,ucdlUsedBy);
 end;
 
+procedure TUnitComponentDependency.SetTypes(
+  const AValue: TUnitCompDependencyTypes);
+begin
+  if AValue=FTypes then exit;
+  FTypes:=AValue;
+  if (not (ucdtOldProperty in FTypes)) and (FCompProps<>nil) then
+    ClearComponentProperties;
+end;
+
+function TUnitComponentDependency.GetCompPropCount: integer;
+begin
+  if FCompProps=nil then
+    Result:=0
+  else
+    Result:=FCompProps.Count;
+end;
+
+function TUnitComponentDependency.GetCompProps(Index: integer
+  ): TUCDComponentProperty;
+begin
+  Result:=TUCDComponentProperty(FCompProps[Index]);
+end;
+
 procedure TUnitComponentDependency.SetUsedByUnit(const AValue: TUnitInfo);
 begin
   if FUsedByUnit=AValue then exit;
+  if (AValue<>nil) and (FRequiresUnit=AValue) then
+    raise Exception.Create('TUnitComponentDependency.SetUsedByUnit inconsistency');
   if FUsedByUnit<>nil then
     RemoveFromList(FUsedByUnit.FFirstRequiredComponent,ucdlRequires);
   FUsedByUnit:=AValue;
@@ -5164,19 +5334,24 @@ end;
 
 constructor TUnitComponentDependency.Create;
 begin
-  Clear;
+
 end;
 
 destructor TUnitComponentDependency.Destroy;
 begin
   RequiresUnit:=nil;
   UsedByUnit:=nil;
+  ClearComponentProperties;
   inherited Destroy;
 end;
 
-procedure TUnitComponentDependency.Clear;
+procedure TUnitComponentDependency.ClearComponentProperties;
+var
+  i: Integer;
 begin
-
+  if FCompProps=nil then exit;
+  for i:=0 to FCompProps.Count-1 do TObject(FCompProps[i]).Free;
+  FreeAndNil(FCompProps);
 end;
 
 function TUnitComponentDependency.NextUsedByDependency
@@ -5225,6 +5400,49 @@ begin
     PrevDependency[ListType].NextDependency[ListType]:=NextDependency[ListType];
   NextDependency[ListType]:=nil;
   PrevDependency[ListType]:=nil;
+end;
+
+function TUnitComponentDependency.FindUsedByPropPath(
+  const UsedByPropPath: string): TUCDComponentProperty;
+var
+  i: Integer;
+begin
+  if FCompProps=nil then exit(nil);
+  for i:=FCompProps.Count-1 downto 0 do begin
+    Result:=CompProps[i];
+    if SysUtils.CompareText(Result.UsedByPropPath,UsedByPropPath)=0 then exit;
+  end;
+  Result:=nil;
+end;
+
+function TUnitComponentDependency.SetUsedByPropPath(const UsedByPropPath,
+  RequiresPropPath: string): TUCDComponentProperty;
+begin
+  DebugLn(['TUnitComponentDependency.SetUsedByPropPath ',UsedByPropPath,'=',RequiresPropPath]);
+  if (not (ucdtOldProperty in FTypes)) then
+    raise Exception.Create('TUnitComponentDependency.SetUsedByPropPath inconsistency');
+  Result:=FindUsedByPropPath(UsedByPropPath);
+  if Result=nil then begin
+    if FCompProps=nil then
+      FCompProps:=TFPList.Create;
+    Result:=TUCDComponentProperty.Create(UsedByPropPath,RequiresPropPath);
+    FCompProps.Add(Result);
+  end else begin
+    Result.UsedByPropPath:=UsedByPropPath;// update case
+    Result.RequiresPropPath:=RequiresPropPath;
+  end;
+end;
+
+function TUnitComponentDependency.CreatePropPath(AComponent: TComponent;
+  const PropName: string): string;
+begin
+  Result:=PropName;
+  while AComponent<>nil do begin
+    if Result<>'' then
+      Result:='.'+Result;
+    Result:=AComponent.Name+Result;
+    AComponent:=AComponent.Owner;
+  end;
 end;
 
 { TProjectConsoleApplicationDescriptor }
@@ -5384,6 +5602,14 @@ function TProjectConsoleApplicationDescriptor.CreateStartFiles(
 begin
   Result:=LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,
                                       [ofProjectLoading,ofRegularFile]);
+end;
+
+{ TUCDComponentProperty }
+
+constructor TUCDComponentProperty.Create(const SrcPath, DestPath: string);
+begin
+  UsedByPropPath:=SrcPath;
+  RequiresPropPath:=DestPath;
 end;
 
 end.
