@@ -89,6 +89,7 @@ type
     property Constraints;
     property DecimalPlaces;
     property Enabled;
+    property Font;
     property Increment;
     property MaxValue;
     property MinValue;
@@ -105,6 +106,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
+    property ParentFont;
     property ParentShowHint;
     property PopupMenu;
     property ReadOnly;
@@ -151,6 +153,7 @@ type
     property BorderSpacing;
     property Constraints;
     property Enabled;
+    property Font;
     property Increment;
     property MaxValue;
     property MinValue;
@@ -167,6 +170,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
+    property ParentFont;
     property ParentShowHint;
     property PopupMenu;
     property ReadOnly;
