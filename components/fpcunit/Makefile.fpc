@@ -1,4 +1,8 @@
+#   File generated automatically by Lazarus Package Manager
+#
 #   Makefile.fpc for FPCUnitTestRunner 0.1
+#
+#   This file was generated on 22-4-2008
 
 [package]
 name=fpcunittestrunner
@@ -41,5 +45,3 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/fpcunittestrunner$(PPUEXT)
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) fpcunittestrunner$(PPUEXT)
-
-cleanall: clean
