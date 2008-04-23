@@ -86,6 +86,13 @@ end;
 
 {------------------------------------------------------------------------------
   Setter for CaretPos
+
+  The index of the first line is zero
+
+  The index of the caret before the first char is zero
+
+  If there is a selection, the caret is considered to be right after
+  the last selected char, being that "last" here means the right-most char.
  ------------------------------------------------------------------------------}
 procedure TCustomEdit.SetCaretPos(const Value: TPoint);
 begin
@@ -458,6 +465,13 @@ end;
 
 {------------------------------------------------------------------------------
   Getter for CaretPos
+
+  The index of the first line is zero
+
+  The index of the caret before the first char is zero
+
+  If there is a selection, the caret is considered to be right after
+  the last selected char, being that "last" here means the right-most char.
  ------------------------------------------------------------------------------}
 function TCustomEdit.GetCaretPos: TPoint;
 begin
