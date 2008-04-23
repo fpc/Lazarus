@@ -25,7 +25,7 @@ unit Graphics;
 
 {$mode objfpc}{$H+}
 
-{$define BITMAP_OLDSTYLE}
+{.$define BITMAP_OLDSTYLE}
 
 interface
 
