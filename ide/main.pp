@@ -9667,7 +9667,6 @@ begin
       DoJumpToCodeToolBossError;
       exit;
     end;
-
   end else begin
     // ToDo: load .lfi file
     MessageDlg('Not implemented',

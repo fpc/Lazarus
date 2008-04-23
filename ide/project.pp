@@ -324,6 +324,7 @@ type
     property CursorPos: TPoint read fCursorPos write fCursorPos; // physical (screen) position
     property CustomHighlighter: boolean
                                read fCustomHighlighter write fCustomHighlighter;
+    property Directives: TStrings;
     property EditorIndex: integer read fEditorIndex write SetEditorIndex;
     property FileReadOnly: Boolean read fFileReadOnly write SetFileReadOnly;
     property FirstRequiredComponent: TUnitComponentDependency
@@ -1152,6 +1153,8 @@ begin
       fOnLoadSaveFilename(AFilename,false);
     XMLConfig.SetDeleteValue(Path+'ResourceFilename/Value',AFilename,'');
     XMLConfig.SetDeleteValue(Path+'UnitName/Value',fUnitName,'');
+    // save custom data
+    SaveStringToStringTree(XMLConfig,CustomData,Path+'CustomData/');
   end;
 
   // session data
@@ -1171,6 +1174,8 @@ begin
                              FBuildFileIfActive,false);
     XMLConfig.SetDeleteValue(Path+'RunFileIfActive/Value',
                              FRunFileIfActive,false);
+    // save custom session data
+    SaveStringToStringTree(XMLConfig,CustomSessionData,Path+'CustomSessionData/');
   end;
 end;
 
@@ -1203,6 +1208,9 @@ begin
       FResourceFilename:='';
     if FilenameIsPascalSource(Filename) then
       fUnitName:=XMLConfig.GetValue(Path+'UnitName/Value','');
+
+    // save custom data
+    LoadStringToStringTree(XMLConfig,CustomData,Path+'CustomData/');
   end;
 
   // session data
@@ -1225,6 +1233,8 @@ begin
       UpdateUsageCount(uuIsPartOfProject,1);
   end;
   FBookmarks.LoadFromXMLConfig(XMLConfig,Path+'Bookmarks/');
+  // load custom session data
+  LoadStringToStringTree(XMLConfig,CustomSessionData,Path+'CustomSessionData/');
 end;
 
 function TUnitInfo.ParseUnitNameFromSource(TryCache: boolean): string;

@@ -284,12 +284,16 @@ type
 
   TLazProjectFile = class(TPersistent)
   private
+    FCustomData: TStringToStringTree;
+    FCustomSessionData: TStringToStringTree;
     FIsPartOfProject: boolean;
   protected
     function GetFilename: string; virtual; abstract;
     procedure SetFilename(const AValue: string); virtual; abstract;
     procedure SetIsPartOfProject(const AValue: boolean); virtual;
   public
+    constructor Create;
+    destructor Destroy; override;
     procedure SetSourceText(const SourceText: string); virtual; abstract;
     function GetSourceText: string; virtual; abstract;
     procedure ClearModifieds; virtual; abstract;
@@ -297,6 +301,8 @@ type
     property IsPartOfProject: boolean read FIsPartOfProject
                                       write SetIsPartOfProject;
     property Filename: string read GetFilename write SetFilename;
+    property CustomData: TStringToStringTree read FCustomData;
+    property CustomSessionData: TStringToStringTree read FCustomSessionData;
   end;
   TLazProjectFileClass = class of TLazProjectFile;
   
@@ -1154,6 +1160,19 @@ end;
 procedure TLazProjectFile.SetIsPartOfProject(const AValue: boolean);
 begin
   FIsPartOfProject:=AValue;
+end;
+
+constructor TLazProjectFile.Create;
+begin
+  FCustomData:=TStringToStringTree.Create(true);
+  FCustomSessionData:=TStringToStringTree.Create(true);
+end;
+
+destructor TLazProjectFile.Destroy;
+begin
+  FreeAndNil(FCustomData);
+  FreeAndNil(FCustomSessionData);
+  inherited Destroy;
 end;
 
 { TLazCompilerOptions }
