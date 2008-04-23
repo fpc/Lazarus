@@ -353,8 +353,8 @@ begin
     FixedHeight := false;
     FixedWidth := false;
 
-    MinWidth := 1;
-    MinHeight := 1;
+    MinWidth := 0;
+    MinHeight := 0;
     MaxWidth := 0;
     MaxHeight := 0;
 
@@ -370,8 +370,7 @@ begin
     end
     // The ProgressBar needs a minimum Height of 10 when themed,
     // as required by Windows, otherwise it's image is corrupted
-    // For consistency, we add the constrain even when not themed.
-    else if SizeConstraints.Control is TCustomProgressBar then
+    else if ThemeServices.ThemesEnabled and (SizeConstraints.Control is TCustomProgressBar) then
     begin
       MinHeight := 10;
 
