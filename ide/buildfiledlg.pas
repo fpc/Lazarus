@@ -268,8 +268,11 @@ begin
       exit;
     end;
     case DirectiveValue[ReadPos] of
-    '+': CurValue:=true;
-    '-': CurValue:=false;
+    '+','-':
+      begin
+        CurValue:=DirectiveValue[ReadPos]='+';
+        inc(ReadPos);
+      end;
     ' ':
       begin
         if not ReadNextWord(ReadPos,ValueStart,ValueEnd) then exit;

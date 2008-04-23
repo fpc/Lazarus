@@ -9676,6 +9676,7 @@ begin
     end;
   end else begin
     StringToStringList(AnUnitInfo.CustomData['IDEDirectives'],DirectiveList);
+    //DebugLn(['TMainIDE.GetIDEDirectives ',dbgstr(DirectiveList.Text)]);
   end;
   Result:=mrOk;
 end;
