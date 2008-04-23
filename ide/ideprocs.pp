@@ -204,7 +204,9 @@ function StringListToText(List: TStrings; const Delimiter: string;
 function StringListPartToText(List: TStrings; FromIndex, ToIndex: integer;
                               const Delimiter: string;
                               IgnoreEmptyLines: boolean = false): string;
-
+function StringListToString(List: TStrings; FromIndex, ToIndex: integer;
+                            IgnoreEmptyLines: boolean = false): string;
+procedure StringToStringList(const s: string; List: TStrings);
 
 // environment
 function GetCurrentUserName: string;
@@ -1800,6 +1802,7 @@ begin
     Result:='';
     exit;
   end;
+  if FromIndex<0 then FromIndex:=0;
   if ToIndex>=List.Count then ToIndex:=List.Count-1;
   // calculate size
   Size:=0;
@@ -1823,6 +1826,133 @@ begin
     if s<>'' then begin
       System.Move(s[1],Result[p],length(s));
       inc(p,length(s));
+    end;
+  end;
+end;
+
+function StringListToString(List: TStrings; FromIndex, ToIndex: integer;
+  IgnoreEmptyLines: boolean): string;
+// concatenates strings with #10 characters
+// and quotes strings containing #10 with '
+var
+  Size: PtrInt;
+  i: PtrInt;
+  s: string;
+  j: PtrInt;
+  p: PtrInt;
+begin
+  if (List=nil) or (FromIndex>ToIndex) or (FromIndex>=List.Count) then begin
+    Result:='';
+    exit;
+  end;
+  if FromIndex<0 then FromIndex:=0;
+  if ToIndex>=List.Count then ToIndex:=List.Count-1;
+  // calculate size
+  Size:=0;
+  for i:=FromIndex to ToIndex do begin
+    s:=List[i];
+    if IgnoreEmptyLines and (s='') then continue;
+    if Size>0 then
+      inc(Size);// adding #10 as delimiter
+    inc(Size,length(s));
+    if System.Pos(#10,s)>0 then begin
+      inc(Size,2);
+      for j:=1 to length(s) do begin
+        if s[j]='''' then
+          inc(Size);
+      end;
+    end;
+  end;
+  // build string
+  SetLength(Result,Size);
+  p:=1;
+  for i:=FromIndex to ToIndex do begin
+    s:=List[i];
+    if IgnoreEmptyLines and (s='') then continue;
+    if p>1 then begin
+      Result[p]:=#10;
+      inc(p);
+    end;
+    if System.Pos(#10,s)<1 then begin
+      // just copy the string
+      if s<>'' then begin
+        System.Move(s[1],Result[p],length(s));
+        inc(p,length(s));
+      end;
+    end else begin
+      // quote
+      Result[p]:='''';
+      inc(p);
+      for j:=1 to length(s) do begin
+        if s[p]='''' then begin
+          Result[p]:='''';
+          inc(p);
+        end;
+        Result[p]:=s[j];
+        inc(p);
+      end;
+      Result[p]:='''';
+      inc(p);
+    end;
+  end;
+  //DebugLn(['StringListToString ',dbgstr(Result),' ',Size,' ',p]);
+  if Size<>p-1 then
+    RaiseException('StringListToString');
+end;
+
+procedure StringToStringList(const s: string; List: TStrings);
+var
+  p: PtrInt;
+  LineStartPos: PtrInt;
+  Size: PtrInt;
+  DstPos: PtrInt;
+  Line: string;
+begin
+  if s='' then exit;
+  p:=1;
+  while true do begin
+    if s[p]='''' then begin
+      // quoted
+      Size:=0;
+      inc(p);
+      LineStartPos:=p;
+      while p<=length(s) do begin
+        if (s[p]='''') then begin
+          inc(p);
+          if (p>length(s)) or (s[p]<>'''') then break;
+        end;
+        inc(Size);
+        inc(p);
+      end;
+      SetLength(Line,Size);
+      p:=LineStartPos;
+      DstPos:=1;
+      while p<=length(s) do begin
+        if (s[p]='''') then begin
+          inc(p);
+          if (p>length(s)) or (s[p]<>'''') then break;
+        end;
+        Line[DstPos]:=s[p];
+        inc(DstPos);
+        inc(p);
+      end;
+      List.Add(Line);
+      // skip line end
+      if p>length(s) then exit;
+      if s[p]=#10 then
+        inc(p);
+    end else begin
+      // just copy the string
+      LineStartPos:=p;
+      while (p<=length(s)) and (s[p]<>#10) do inc(p);
+      List.Add(copy(s,LineStartPos,p-LineStartPos));
+      // skip line end
+      if p>length(s) then exit;
+      inc(p);
+    end;
+    if p>length(s) then begin
+      List.Add('');
+      exit;
     end;
   end;
 end;

@@ -9601,6 +9601,7 @@ var
   DirectiveList: TStringList;
   CodeResult: Boolean;
   BuildFileDialog: TBuildFileDialog;
+  s: String;
 begin
   Result:=mrCancel;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
@@ -9622,6 +9623,7 @@ begin
       BuildFileDialog.Filename:=
         CreateRelativePath(ActiveUnitInfo.Filename,Project1.ProjectDirectory);
       if BuildFileDialog.ShowModal<>mrOk then begin
+        DebugLn(['TMainIDE.DoConfigBuildFile cancelled']);
         Result:=mrCancel;
         exit;
       end;
@@ -9631,6 +9633,8 @@ begin
       BuildFileDialog.Free;
     end;
 
+    //DebugLn(['TMainIDE.DoConfigBuildFile ',ActiveUnitInfo.Filename,' ',DirectiveList.DelimitedText]);
+    
     // save IDE directives
     if FilenameIsPascalSource(ActiveUnitInfo.Filename) then begin
       // parse source for IDE directives (i.e. % comments)
@@ -9643,8 +9647,11 @@ begin
       end;
 
     end else begin
-      // ToDo: load .lfi file
-      exit;
+      s:=StringListToString(DirectiveList,0,DirectiveList.Count-1,true);
+      if ActiveUnitInfo.CustomData['IDEDirectives']<>s then begin
+        ActiveUnitInfo.CustomData['IDEDirectives']:=s;
+        ActiveUnitInfo.Modified:=true;
+      end;
     end;
 
   finally
@@ -9668,11 +9675,7 @@ begin
       exit;
     end;
   end else begin
-    // ToDo: load .lfi file
-    MessageDlg('Not implemented',
-      'Sorry, IDE directives are only implemented for pascal sources',
-      mtInformation,[mbCancel],0);
-    exit;
+    StringToStringList(AnUnitInfo.CustomData['IDEDirectives'],DirectiveList);
   end;
   Result:=mrOk;
 end;

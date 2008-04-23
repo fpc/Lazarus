@@ -5,9 +5,10 @@ unit BuildFileDlg;
 interface
 
 uses
-  Classes, SysUtils, LResources, LCLType, Forms, Controls, Graphics, Dialogs,
-  Buttons, ExtCtrls, StdCtrls, BasicCodeTools, FileUtil, IDEProcs, InputHistory,
-  LazarusIDEStrConsts, EnvironmentOpts, TransferMacros, IDEContextHelpEdit;
+  Classes, SysUtils, LCLProc, LResources, LCLType, Forms, Controls, Graphics,
+  Dialogs, Buttons, ExtCtrls, StdCtrls, BasicCodeTools, FileUtil, IDEProcs,
+  InputHistory, LazarusIDEStrConsts, EnvironmentOpts, TransferMacros,
+  IDEContextHelpEdit;
 
 type
   TIDEDirective = (
@@ -79,6 +80,7 @@ type
     Notebook1: TNOTEBOOK;
     OverrideBuildProjectCheckbox: TCHECKBOX;
     OverrideRunProjectCheckbox: TCHECKBOX;
+    BtnPanel: TPanel;
     RunBrowseWorkDirButton: TBUTTON;
     RunCommandGroupbox: TGROUPBOX;
     RunCommandMemo: TMEMO;
@@ -303,6 +305,7 @@ var
   NewEntry: String;
 begin
   if (DirectiveName='') or (DirectiveList=nil) then exit;
+  //DebugLn(['SetIDEDirective ',DirectiveName,' NewValue="',NewValue,'" DefaultValue="',DefaultValue,'"']);
   Index:=IndexOfIDEDirective(DirectiveList,DirectiveName);
   if NewValue=DefaultValue then begin
     // value is default -> remove entry
@@ -711,6 +714,7 @@ begin
   RunCommand:=Trim(SpecialCharsToSpaces(RunCommandMemo.Lines.Text));
   
   // set values to directivelist
+  //DebugLn(['TBuildFileDialog.WriteDirectiveList ']);
   SetIDEDirective(DirectiveList,IDEDirectiveNames[idedBuildWorkingDir],
                   BuildWorkingDir,'');
   SetIDEDirective(DirectiveList,IDEDirectiveNames[idedBuildCommand],
