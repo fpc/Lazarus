@@ -4624,9 +4624,10 @@ begin
   DstRect := Bounds(X, Y, Width, Height);
   SrcRect := Bounds(XSrc, YSrc, SrcWidth, SrcHeight);
   MaskRect := Bounds(XMask, YMask, SrcWidth, SrcHeight);
-  DstQDC.CorrectCoordinates(DstRect);
-  DstQDC.CorrectCoordinates(SrcRect);
-  DstQDC.CorrectCoordinates(MaskRect);
+  // #0011187 - makes painting wrong
+  //DstQDC.CorrectCoordinates(DstRect);
+  //DstQDC.CorrectCoordinates(SrcRect);
+  //DstQDC.CorrectCoordinates(MaskRect);
   if Mask <> 0 then
     QMask := TQtImage(Mask).Handle
   else
