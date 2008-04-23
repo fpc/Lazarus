@@ -85,6 +85,14 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Setter for CaretPos
+ ------------------------------------------------------------------------------}
+procedure TCustomMemo.SetCaretPos(const Value: TPoint);
+begin
+  TWSCustomMemoClass(WidgetSetClass).SetCaretPos(Self, Value);
+end;
+
+{------------------------------------------------------------------------------
   procedure TCustomMemo.SetVertScrollBar(const AValue: TMemoScrollBar);
  ------------------------------------------------------------------------------}
 procedure TCustomMemo.SetVertScrollBar(const AValue: TMemoScrollBar);
@@ -166,6 +174,14 @@ end;
 function TCustomMemo.GetCachedText(var CachedText: TCaption): boolean;
 begin
   Result:= false;
+end;
+
+{------------------------------------------------------------------------------
+  Getter for CaretPos
+ ------------------------------------------------------------------------------}
+function TCustomMemo.GetCaretPos: TPoint;
+begin
+  Result := TWSCustomMemoClass(WidgetSetClass).GetCaretPos(Self);
 end;
 
 {------------------------------------------------------------------------------

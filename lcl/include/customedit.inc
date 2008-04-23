@@ -85,6 +85,14 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Setter for CaretPos
+ ------------------------------------------------------------------------------}
+procedure TCustomEdit.SetCaretPos(const Value: TPoint);
+begin
+  TWSCustomEditClass(WidgetSetClass).SetCaretPos(Self, Value);
+end;
+
+{------------------------------------------------------------------------------
   Method: TCustomEdit.SetSelText
   Params: val - new string for text-field
   Returns: nothings
@@ -446,6 +454,14 @@ procedure TCustomEdit.DoExit;
 begin
   FAutoSelected := False;
   inherited DoExit;
+end;
+
+{------------------------------------------------------------------------------
+  Getter for CaretPos
+ ------------------------------------------------------------------------------}
+function TCustomEdit.GetCaretPos: TPoint;
+begin
+  Result := TWSCustomEditClass(WidgetSetClass).GetCaretPos(Self);
 end;
 
 

@@ -129,9 +129,11 @@ type
   { TWSCustomEdit }
 
   TWSCustomEdit = class(TWSWinControl)
+    class function  GetCaretPos(const ACustomEdit: TCustomEdit): TPoint; virtual;
     class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; virtual;
     class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; virtual;
 
+    class procedure SetCaretPos(const ACustomEdit: TCustomEdit; const NewPos: TPoint); virtual;
     class procedure SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase); virtual;
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); virtual;
     class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); virtual;
@@ -390,6 +392,11 @@ end;
 
 { TWSCustomEdit }
 
+class function TWSCustomEdit.GetCaretPos(const ACustomEdit: TCustomEdit): TPoint;
+begin
+  Result := Point(0, 0);
+end;
+
 class function  TWSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
 begin
   result := -1;
@@ -398,6 +405,11 @@ end;
 class function  TWSCustomEdit.GetSelLength(const ACustomEdit: TCustomEdit): integer;
 begin
   result := 0;
+end;
+
+class procedure TWSCustomEdit.SetCaretPos(const ACustomEdit: TCustomEdit; const NewPos: TPoint);
+begin
+
 end;
 
 class procedure TWSCustomEdit.SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase);

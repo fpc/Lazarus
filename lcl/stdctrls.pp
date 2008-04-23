@@ -671,9 +671,11 @@ type
     procedure Change; dynamic;
     procedure DoEnter; override;
     procedure DoExit; override;
+    function GetCaretPos: TPoint; virtual;
     function GetSelLength: integer; virtual;
     function GetSelStart: integer; virtual;
     function GetSelText: string; virtual;
+    procedure SetCaretPos(const Value: TPoint); virtual;
     procedure SetEchoMode(Val: TEchoMode); virtual;
     procedure SetReadOnly(Value: Boolean); virtual;
     procedure SetSelLength(Val: integer); virtual;
@@ -697,6 +699,7 @@ type
     procedure PasteFromClipboard; virtual;
   public
     property BorderStyle;
+    property CaretPos: TPoint read GetCaretPos write SetCaretPos;
     property CharCase: TEditCharCase read FCharCase write SetCharCase default ecNormal;
     property EchoMode: TEchoMode read FEchoMode write SetEchoMode default emNormal;
     property MaxLength: Integer read FMaxLength write SetMaxLength default -1;
@@ -752,7 +755,9 @@ type
     function  RealGetText: TCaption; override;
     procedure RealSetText(const Value: TCaption); override;
     function GetCachedText(var CachedText: TCaption): boolean; override;
+    function GetCaretPos: TPoint; override;
     procedure SetAlignment(const AValue: TAlignment);
+    procedure SetCaretPos(const Value: TPoint); override;
     procedure SetLines(const Value: TStrings);
     procedure SetSelText(const Val: string); override;
     procedure SetWantReturns(const AValue: Boolean);

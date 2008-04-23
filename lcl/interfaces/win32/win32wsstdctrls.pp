@@ -162,11 +162,13 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
+    class function  GetCaretPos(const ACustomEdit: TCustomEdit): TPoint; override;
     class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetMaxLength(const ACustomEdit: TCustomEdit): integer; {override;}
     class function  GetText(const AWinControl: TWinControl; var AText: string): boolean; override;
 
+    class procedure SetCaretPos(const ACustomEdit: TCustomEdit; const NewPos: TPoint); override;
     class procedure SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase); override;
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
     class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
@@ -184,9 +186,13 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
-    class function  GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
     class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); override;
+
+    class function  GetCaretPos(const ACustomEdit: TCustomEdit): TPoint; override;
+    class function  GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
+
     class procedure SetAlignment(const ACustomMemo: TCustomMemo; const AAlignment: TAlignment); override;
+    class procedure SetCaretPos(const ACustomEdit: TCustomEdit; const NewPos: TPoint); override;
     class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
     class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); override;
@@ -1030,6 +1036,16 @@ begin
   Result := Params.Window;
 end;
 
+class function TWin32WSCustomEdit.GetCaretPos(const ACustomEdit: TCustomEdit): TPoint;
+var
+  BufferX: Longword;
+begin
+  // EM_GETSEL expects a pointer to 32-bits buffer in lParam
+  Windows.SendMessageW(ACustomEdit.Handle, EM_GETSEL, 0, PtrInt(@BufferX));
+  Result.X := BufferX;
+  Result.Y := 0;
+end;
+
 class function TWin32WSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
 begin
   Result := EditGetSelStart(ACustomEdit.Handle);
@@ -1051,6 +1067,11 @@ begin
   if not Result then
     exit;
   AText := GetControlText(AWinControl.Handle);
+end;
+
+class procedure TWin32WSCustomEdit.SetCaretPos(const ACustomEdit: TCustomEdit; const NewPos: TPoint);
+begin
+  Windows.SendMessageW(ACustomEdit.Handle, EM_SETSEL, NewPos.X, NewPos.X);
 end;
 
 class procedure TWin32WSCustomEdit.SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase);
@@ -1151,11 +1172,57 @@ begin
   end;
 end;
 
+{
+  The index of the first line is zero
+  
+  The index of the caret before the first char is zero
+  
+  If there is a selection, the caret is considered to be right after
+  the last selected char, being that "last" here means the right-most char.
+}
+class function TWin32WSCustomMemo.GetCaretPos(const ACustomEdit: TCustomEdit): TPoint;
+var
+  BufferX: Longword;
+begin
+  { X position calculation }
+  
+  { EM_GETSET returns the char index of the caret, but this index
+    doesn't go back to zero in new lines, so we need to subtract
+    the char index from the line
+
+    EM_GETSEL expects a pointer to 32-bits buffer in lParam
+  }
+  Windows.SendMessageW(ACustomEdit.Handle, EM_GETSEL, 0, PtrInt(@BufferX));
+  { EM_LINEINDEX returns the char index of a given line
+    wParam = -1 indicates the line of the caret
+  }
+  Result.X := BufferX - Windows.SendMessageW(ACustomEdit.Handle, EM_LINEINDEX, -1, 0);
+
+  { Y position calculation }
+
+  { EM_LINEFROMCHAR returns the number of the line of a given
+    char index.
+  }
+  Result.Y := Windows.SendMessageW(ACustomEdit.Handle, EM_LINEFROMCHAR, BufferX, 0);
+end;
+
 class procedure TWin32WSCustomMemo.SetAlignment(const ACustomMemo: TCustomMemo;
   const AAlignment: TAlignment);
 begin
   // SetWidowLong is not working here
   RecreateWnd(ACustomMemo);
+end;
+
+class procedure TWin32WSCustomMemo.SetCaretPos(const ACustomEdit: TCustomEdit; const NewPos: TPoint);
+var
+  CharIndex: Longword;
+begin
+  { EM_LINEINDEX returns the char index of a given line }
+  CharIndex := Windows.SendMessageW(ACustomEdit.Handle, EM_LINEINDEX, NewPos.Y, 0) + NewPos.X;
+  { EM_SETSEL expects the character position in char index, which
+    doesn't go back to zero in new lines
+  }
+  Windows.SendMessageW(ACustomEdit.Handle, EM_SETSEL, CharIndex, CharIndex);
 end;
 
 class procedure TWin32WSCustomMemo.SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle);
