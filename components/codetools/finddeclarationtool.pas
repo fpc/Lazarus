@@ -2088,7 +2088,7 @@ begin
   else
     DebugLn('NOT FOUND');
   {$ENDIF}
-  Result:=true;
+  Result:=Params.NewNode<>nil;
 end;
 
 function TFindDeclarationTool.IdentifierIsDefined(IdentAtom: TAtomPosition;
