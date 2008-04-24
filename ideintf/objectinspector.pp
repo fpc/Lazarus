@@ -3880,11 +3880,14 @@ var
   S: TSize;
   Platform: TLCLPlatform;
   None: Boolean;
+  OldStyle: TBrushStyle;
 begin
   if RestrictedProps = nil then Exit;
   
   X := 0;
   Y := (WidgetSetsRestrictedBox.Height - IDEImages.Images_16.Height) div 2;
+  OldStyle := WidgetSetsRestrictedBox.Canvas.Brush.Style;
+  WidgetSetsRestrictedBox.Canvas.Brush.Style := bsClear;
   None := True;
   for Platform := Low(TLCLPlatform) to High(TLCLPlatform) do
   begin
@@ -3907,6 +3910,7 @@ begin
     S := WidgetSetsRestrictedBox.Canvas.TextExtent(oisNone);
     WidgetSetsRestrictedBox.Canvas.TextOut(4, (WidgetSetsRestrictedBox.Height - S.CY) div 2, oisNone);
   end;
+  WidgetSetsRestrictedBox.Canvas.Brush.Style := OldStyle;
 end;
 
 procedure TObjectInspectorDlg.ComponentRestrictedPaint(Sender: TObject);
@@ -3916,11 +3920,15 @@ var
   Platform: TLCLPlatform;
   WidgetSetRestrictions: Array [TLCLPlatform] of Integer;
   None: Boolean;
+  OldStyle: TBrushStyle;
 begin
   for Platform := Low(TLCLPlatform) to High(TLCLPlatform) do WidgetSetRestrictions[Platform] := 0;
 
   if RestrictedProps = nil then Exit;
   if Selection = nil then Exit;
+
+  OldStyle := ComponentRestrictedBox.Canvas.Brush.Style;
+  ComponentRestrictedBox.Canvas.Brush.Style := bsClear;
 
   for I := 0 to RestrictedProps.Count - 1 do
   begin
@@ -3959,6 +3967,7 @@ begin
     S := ComponentRestrictedBox.Canvas.TextExtent(oisNone);
     ComponentRestrictedBox.Canvas.TextOut(4, (ComponentRestrictedBox.Height - S.CY) div 2, oisNone);
   end;
+  ComponentRestrictedBox.Canvas.Brush.Style := OldStyle;
 end;
 
 procedure TObjectInspectorDlg.CreateSplitter;
