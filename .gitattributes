@@ -2762,6 +2762,7 @@ lcl/fpcadds.pas svneol=native#text/pascal
 lcl/graphics.pp svneol=native#text/pascal
 lcl/graphmath.pp svneol=native#text/pascal
 lcl/graphtype.pp svneol=native#text/pascal
+lcl/graphutil.pp svneol=native#text/pascal
 lcl/grids.pas svneol=native#text/pascal
 lcl/helpintfs.pas svneol=native#text/plain
 lcl/imagelistcache.pas svneol=native#text/pascal

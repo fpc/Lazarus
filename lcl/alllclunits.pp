@@ -37,8 +37,9 @@ uses
   FPCAdds, LazLinkedList, DynHashArray, LCLMemManager, AvgLvlTree, DynQueue,
   StringHashList, ExtendedStrings, DynamicArray, UTrace, TextStrings,
   // base types and base functions
-  LCLProc, LCLType, LCLResCache, GraphMath, FileCtrl, LMessages, LResources,
-  LConvEncoding, FileUtil, Translations, LazConfigStorage,
+  LCLProc, LCLType, LCLResCache, GraphMath, GraphType, GraphUtil, FileCtrl, 
+  LMessages, LResources, LConvEncoding, FileUtil, Translations, 
+  LazConfigStorage,
   // the interface base
   InterfaceBase,
   IntfGraphics,
