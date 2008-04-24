@@ -916,6 +916,9 @@ begin
       ReleaseEvent(Event);
     end;
   end;
+  
+  // scroll bars can change client rect - update it
+  UpdateLCLClientRect;
 end;
 
 {------------------------------------------------------------------------------
