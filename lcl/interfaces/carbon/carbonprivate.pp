@@ -676,8 +676,6 @@ begin
     FTextFractional := True;
     
   inherited;
-  
-  UpdateLCLClientRect; // force update client rect
 end;
 
 {------------------------------------------------------------------------------
@@ -819,6 +817,9 @@ begin
     ScrollCode := SB_THUMBPOSITION;
   end;
   DeliverMessage(LCLObject, ScrollMsg);
+  
+  // scroll bars can change client rect - update it
+  UpdateLCLClientRect;
   
   OSError(
     HiViewSetNeedsDisplay(Widget, True), Self, 'ScrollTo', SViewNeedsDisplay);
