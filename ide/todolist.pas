@@ -491,23 +491,26 @@ begin
  if SaveDialog1.Execute then
  begin
   CommaList:=TStringList.Create;
-  CommaList.Add('Done,Description,Priority,Module,Line,Owner,Category');
-  i:=0;
-  while i<lvTodo.Items.Count do
-  begin
-   todoItm:=TTodoItem(lvTodo.Items[i].Data);
-   if todoItm.Done then s:='X,' else s:=' ,';
-   t:=DelChars(todoItm.Text,',');{Strip any commas that can cause a faulty csv file}
-   s:=s+t+','+IntToStr(todoItm.Priority)+','+todoItm.Filename+
-      ','+IntToStr(todoItm.LineNumber)+','+todoItm.Owner+','+todoItm.Category;
-   CommaList.Add(s);
-   i:=i+1;
+  try
+   CommaList.Add('Done,Description,Priority,Module,Line,Owner,Category');
+   i:=0;
+   while i<lvTodo.Items.Count do
+   begin
+    todoItm:=TTodoItem(lvTodo.Items[i].Data);
+    if todoItm.Done then s:='X,' else s:=' ,';
+    t:=DelChars(todoItm.Text,',');{Strip any commas that can cause a faulty csv file}
+    s:=s+t+','+IntToStr(todoItm.Priority)+','+todoItm.Filename+
+       ','+IntToStr(todoItm.LineNumber)+','+todoItm.Owner+','+todoItm.Category;
+    CommaList.Add(s);
+    i:=i+1;
+   end;
+   CommaList.SaveToFile(SaveDialog1.FileName);
+  finally
+   CommaList.Clear;
+   CommaList.Free;
   end;
-  CommaList.SaveToFile(SaveDialog1.FileName);
  end
  else MessageDlg('Warning','Filename is: '+SaveDialog1.FileName,mtWarning,[mbClose],0);
- CommaList.Clear;
- CommaList.Free;
 end;
 
 procedure TfrmTodo.acRefreshExecute(Sender: TObject);
