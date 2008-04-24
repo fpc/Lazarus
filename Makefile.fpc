@@ -62,6 +62,10 @@ bigidecomponents:
 	$(MAKE) -C components bigidecomponents
 	
 #-----------------------------------------------------------------------------
+bigideclean: cleanlaz
+	$(MAKE) -C components bigideclean
+
+#-----------------------------------------------------------------------------
 starter:
 	$(MAKE) -C ide starter
 
