@@ -1427,11 +1427,12 @@ begin
        Hint := FileN [i] + '(normal buton)';
     end; 
     Color       := clBtnFace;
-    Glyph       := Pixmap1;
+    Glyph.Assign(Pixmap1);
     Enabled     := True;
     Visible     := True;
     ShowHint    := true;
   end;
+  FreeAndNil(Pixmap1);
 end;
     
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1784,7 +1785,8 @@ begin
     finally
       S.Free;
     end;
-    BitBtn1.Glyph := PixMap1;
+    BitBtn1.Glyph.Assign(PixMap1);
+    FreeAndNil(PixMap1);
   end;
 
   lbEvents.Items.Add('<<< WORKS WITH STREAM.PIXMAPS >>>');

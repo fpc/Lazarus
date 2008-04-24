@@ -93,7 +93,6 @@ type
       PaintBox1         : TPaintBox;
       Panel1            : TPanel;
       PixMap1           : TPixMap;
-      png               : TPortableNetworkGraphic;
       PopupMenu1        : TPopupMenu;
       Hello             : TMenuItem;
       Doctor            : TMenuItem;
@@ -915,9 +914,7 @@ Bevel1 := TBevel.Create(Self);
     Width := 100;
   end;
 //++++++++++++++++++++++++++++++++++ TBitBtn1 +++++++++++++++++++++++++++++++++++++++
-  png := TPortableNetworkGraphic.Create;
-  png.LoadFromLazarusResource('topendialog');
-  
+
 BitBtn1 := TBitBtn.Create(Self);
   With BitBtn1 do
   begin
@@ -953,7 +950,7 @@ BitBtn1 := TBitBtn.Create(Self);
     Font.Pitch 	   := fpDefault;
     Font.Size 	   := 10;
     Font.Style 	   := BitBtn1.Font.Style+[fsBold];
-    Glyph	   := png;
+    Glyph.LoadFromLazarusResource('topendialog');
   //height	   := 28;		Has to be set before Glyph
   //HelpContext    := 0;		Identifier not found
     Hint 	   := 'Settings for BitBtn1 >>';
@@ -2237,9 +2234,6 @@ ScrollBar1 := TScrollBar.Create(Self);
     Visible := True;
   end;}
 //++++++++++++++++++++++++++++++++++++ SpeedButton1..4 ++++++++++++++++++++++++++++++
-   png := TPortableNetworkGraphic.Create;
-   png.LoadFromLazarusResource('open');
-
 SpeedButton1 := TSpeedButton.Create(Self);
    With SpeedButton1 do
    begin
@@ -2256,12 +2250,10 @@ SpeedButton1 := TSpeedButton.Create(Self);
      Hint := 'SpeedButton1';
      Color := clBtnFace;
      ShowHint := True;
-     Glyph := png;
+     Glyph.LoadFromLazarusResource('open');
      Visible := True;
   end;
 
-   png := TPortableNetworkGraphic.Create;
-   png.LoadFromLazarusResource('menu_save');
 
 SpeedButton2 := TSpeedButton.Create(Self);
    With SpeedButton2 do
@@ -2277,13 +2269,10 @@ SpeedButton2 := TSpeedButton.Create(Self);
      Hint := 'SpeedButton1';
      Color := clBtnFace;
      ShowHint := True;
-     Glyph := png;
+     Glyph.LoadFromLazarusResource('menu_save');
      Enabled := True;
      Visible := True;
   end;
-
-   png := TPortableNetworkGraphic.Create;
-   png.LoadFromLazarusResource('item_font');
 
 SpeedButton3 := TSpeedButton.Create(Self);
    With SpeedButton3 do
@@ -2299,13 +2288,10 @@ SpeedButton3 := TSpeedButton.Create(Self);
      Hint := 'SpeedButton1';
      Color := clBtnFace;
      ShowHint := True;
-     Glyph := png;
+     Glyph.LoadFromLazarusResource('item_font');
      Enabled := True;
      Visible := True;
   end;
-
-   png := TPortableNetworkGraphic.Create;
-   png.LoadFromLazarusResource('tcolordialog');
 
 SpeedButton4 := TSpeedButton.Create(Self);
    With SpeedButton4 do
@@ -2321,7 +2307,7 @@ SpeedButton4 := TSpeedButton.Create(Self);
      Hint := 'SpeedButton4';
      Color := clBtnFace;
      ShowHint := True;
-     Glyph:=png;
+     Glyph.LoadFromLazarusResource('tcolordialog');
      Enabled := True;
      Visible := True;
   end;
