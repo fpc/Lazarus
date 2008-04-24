@@ -449,6 +449,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonWidget.FocusSet;
 begin
+  {$IFDEF VerboseCommonEvent}
+    DebugLn('TCarbonWidget.FocusSet: ', DbgSName(LCLObject));
+  {$ENDIF}
   LCLSendSetFocusMsg(LCLObject);
 end;
 
@@ -459,6 +462,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonWidget.FocusKilled;
 begin
+  {$IFDEF VerboseCommonEvent}
+    DebugLn('TCarbonWidget.FocusKilled: ', DbgSName(LCLObject));
+  {$ENDIF}
   LCLSendKillFocusMsg(LCLObject);
 end;
 
@@ -675,6 +681,7 @@ var
   StartControl, ParentControl, ResultControl: TWinControl;
   TabList: TFPObjectList;
   TabIndex: Integer;
+  
 begin
   Result := nil;
   ResultControl := nil;
@@ -703,6 +710,12 @@ begin
         (not Next and (TabIndex < 1)) then
       begin
         StartControl := ParentControl;
+
+        if ParentControl.Parent = nil then
+          if Next then
+            ResultControl := TabList.First as TWinControl
+          else
+            ResultControl := TabList.Last as TWinControl;
       end
       else
         if TabIndex = -1 then
