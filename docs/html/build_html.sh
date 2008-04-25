@@ -7,8 +7,8 @@
 set -x
 set -e
 
-sh ./update_lcl_html.sh $@
-sh ./update_gtkintf_html.sh $@
+sh ./build_lcl_html.sh $@
+sh ./build_gtkintf_html.sh $@
 
 # end.
 
