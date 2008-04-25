@@ -12,11 +12,12 @@ object AddToProjectDialog: TAddToProjectDialog
   ClientWidth = 500
   OnClose = AddToProjectDialogClose
   Position = poScreenCenter
+  LCLVersion = '0.9.25'
   object Notebook: TNotebook
     Height = 300
     Width = 500
     Align = alClient
-    PageIndex = 1
+    PageIndex = 2
     TabOrder = 0
     object AddEditorFilePage: TPage
       Caption = 'AddEditorFilePage'
@@ -123,7 +124,7 @@ object AddToProjectDialog: TAddToProjectDialog
       end
       object DependPkgNameComboBox: TComboBox
         Left = 218
-        Height = 25
+        Height = 29
         Top = 14
         Width = 272
         Anchors = [akTop, akLeft, akRight]
@@ -168,6 +169,7 @@ object AddToProjectDialog: TAddToProjectDialog
         MultiSelect = True
         TabOrder = 0
         ViewStyle = vsReport
+        OnSelectItem = FilesListViewSelectItem
       end
       object FilesBrowseButton: TButton
         Left = 6

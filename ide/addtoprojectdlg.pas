@@ -86,6 +86,8 @@ type
     procedure AddFileButtonClick(Sender: TObject);
     procedure AddToProjectDialogClose(Sender: TObject;
                                       var CloseAction: TCloseAction);
+    procedure FilesListViewSelectItem(Sender: TObject; Item: TListItem;
+      Selected: Boolean);
     procedure NewDependButtonClick(Sender: TObject);
     procedure FilesAddButtonClick(Sender: TObject);
     procedure FilesBrowseButtonClick(Sender: TObject);
@@ -107,6 +109,7 @@ type
     destructor Destroy; override;
     procedure UpdateAvailableDependencyNames;
     procedure UpdateAvailableFiles;
+    procedure UpdateFilesButtons;
   end;
   
 function ShowAddToProjectDlg(AProject: TProject;
@@ -192,6 +195,12 @@ procedure TAddToProjectDialog.AddToProjectDialogClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
+end;
+
+procedure TAddToProjectDialog.FilesListViewSelectItem(Sender: TObject;
+  Item: TListItem; Selected: Boolean);
+begin
+  UpdateFilesButtons;
 end;
 
 procedure TAddToProjectDialog.NewDependButtonClick(Sender: TObject);
@@ -334,6 +343,7 @@ begin
           NewListItem.SubItems.Add(GetPkgFileTypeLocalizedName(NewPgkFileType));
         end;
       end;
+      UpdateFilesButtons;
     end;
     InputHistories.StoreFileDialogSettings(OpenDialog);
   finally
@@ -348,6 +358,7 @@ begin
   for i:=FilesListView.Items.Count-1 downto 0 do
     if FilesListView.Items[i].Selected then
       FilesListView.Items.Delete(i);
+  UpdateFilesButtons;
 end;
 
 procedure TAddToProjectDialog.FilesShortenButtonClick(Sender: TObject);
@@ -416,6 +427,7 @@ begin
   FilesShortenButton.Caption:=lisA2PSwitchPaths;
   FilesDeleteButton.Caption:=dlgEdDelete;
   FilesAddButton.Caption:=lisA2PAddFilesToPackage;
+  UpdateFilesButtons;
 end;
 
 procedure TAddToProjectDialog.OnIteratePackages(APackageID: TLazPackageID);
@@ -553,6 +565,14 @@ begin
     AddFileListBox.Items.Clear;
   end;
   AddFileListBox.Items.EndUpdate;
+  UpdateFilesButtons;
+end;
+
+procedure TAddToProjectDialog.UpdateFilesButtons;
+begin
+  FilesShortenButton.Enabled:=FilesListView.Items.Count>0;
+  FilesDeleteButton.Enabled:=FilesListView.SelCount>0;
+  FilesAddButton.Enabled:=FilesListView.Items.Count>0;
 end;
 
 { TAddToProjectResult }
