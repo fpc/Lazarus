@@ -1349,7 +1349,6 @@ docs/html/localfclfooter.xml svneol=native#text/plain
 docs/html/locallclfooter.xml svneol=native#text/plain
 docs/html/localrtlfooter.xml svneol=native#text/plain
 docs/html/sourceforgefooter.xml svneol=native#text/xml
-docs/html/update_lcl_html.sh -text svneol=native#mime-type%3Dtext/plain
 docs/images/laztitle.png -text
 docs/images/laztitle.svg -text svneol=native#image/svg%2Bxml
 docs/index.html svneol=native#text/html
