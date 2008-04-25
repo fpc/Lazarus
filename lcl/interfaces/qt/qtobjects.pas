@@ -33,7 +33,7 @@ uses
   // Free Pascal
   Classes, SysUtils, Types,
   // LCL
-  LCLType, LCLIntf, Menus, LCLProc, Graphics;
+  LCLType, LCLIntf, Menus, LCLProc, Graphics, ClipBrd;
 
 type
   // forward declarations
@@ -406,13 +406,13 @@ type
   
   TQtClipboard = class(TQtObject)
   private
-    {$IFNDEF MSWINDOWS}
-    FClipChanged: Boolean;
-    FClipCounter: Integer;
+    // {$IFNDEF MSWINDOWS}
     FClipDataChangedHook: QClipboard_hookH;
-    {$ENDIF}
+    // {$ENDIF}
+    FClipChanged: Boolean;
     FClipBoardFormats: TStringList;
     FOnClipBoardRequest: TClipboardRequestEvent;
+    function IsClipboardChanged: Boolean;
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -2527,10 +2527,6 @@ end;
 constructor TQtClipboard.Create;
 begin
   inherited Create;
-  {$IFNDEF MSWINDOWS}
-  FClipChanged := True;
-  FClipCounter := 0;
-  {$ENDIF}
   FOnClipBoardRequest := nil;
   FClipBoardFormats := TStringList.Create;
   FClipBoardFormats.Add('foo'); // 0 is reserved
@@ -2546,28 +2542,50 @@ begin
 end;
 
 procedure TQtClipboard.AttachEvents;
-{$IFNDEF MSWINDOWS}
 var
   Method: TMethod;
-{$ENDIF}
 begin
   inherited AttachEvents;
-  {$IFNDEF MSWINDOWS}
   FClipDataChangedHook := QClipboard_hook_create(TheObject);
   QClipboard_dataChanged_Event(Method) := @signalDataChanged;
   QClipboard_hook_hook_dataChanged(FClipDataChangedHook, Method);
-  {$ENDIF}
 end;
 
 procedure TQtClipboard.signalDataChanged; cdecl;
 begin
-  {$IFNDEF MSWINDOWS}
   {$IFDEF VERBOSE_QT_CLIPBOARD}
   writeln('signalDataChanged()');
   {$ENDIF}
-  FClipChanged := True;
-  inc(FClipCounter);
-  {$ENDIF}
+  FClipChanged := IsClipboardChanged;
+end;
+
+function TQtClipboard.IsClipboardChanged: Boolean;
+var
+  ClipBord: TClipboard;
+  AMimeData: QMimeDataH;
+  Str: WideString;
+  Str2: WideString;
+  P: PChar;
+begin
+  Result := False;
+  AMimeData := getMimeData(QClipboardClipboard);
+  if (AMimeData <> nil) and
+  (QMimeData_hasText(AMimeData) or QMimeData_hasHtml(AMimeData) or
+    QMimeData_hasURLS(AMimeData)) then
+  begin
+    QMimeData_text(AMimeData, @Str);
+    Str := UTF8Encode(Str);
+    
+    {we must check for null terminator}
+    if Copy(Str, length(Str), 1) = #0 then
+      Str2 := Clipbrd.Clipboard.AsText + #0
+    else
+      Str2 := Clipbrd.Clipboard.AsText;
+
+    Result := Str <> Str2;
+    if Result then
+      Clipbrd.Clipboard.AsText := Str;
+  end;
 end;
 
 function TQtClipboard.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
@@ -2577,23 +2595,13 @@ begin
 
   if QEvent_type(Event) = QEventClipboard then
   begin
-    {$IFDEF MSWINDOWS}
-    Result := True;
-    {$ELSE}
     Result := FClipChanged;
-    {$IFDEF VERBOSE_QT_CLIPBOARD}
-    writeln('TQtClipboard.EventFilter() RESULT=',Result);
-    {$ENDIF}
-    
-    if FClipCounter > 0 then
-      dec(FClipCounter);
-
-    FClipChanged := FClipCounter > 0;
-    {$ENDIF}
-    QEvent_accept(Event);
-
     // Clipboard is changed, but we have no ability at moment to pass that info
     // to LCL since LCL has no support for that event
+    // so we are using signalDataChanged() to pass changes to Clipbrd.Clipboard
+    if FClipChanged then
+      FClipChanged := False;
+    QEvent_accept(Event);
   end;
   EndEventProcessing;
 end;
@@ -2677,11 +2685,8 @@ begin
 
   try
     Count := QStringList_size(QtList);
-    {$IFNDEF MSWINDOWS}
-    if Count > 0 then
-    {$ENDIF}
-      GetMem(List, Count * SizeOf(TClipboardFormat));
-
+    GetMem(List, Count * SizeOf(TClipboardFormat));
+    
     for i := 0 to Count - 1 do
     begin
       QStringList_at(QtList, @Str, i);
@@ -2719,7 +2724,11 @@ function TQtClipboard.GetOwnerShip(ClipboardType: TClipboardType;
       MimeType := FormatToMimeType(Formats[I]);
       FOnClipBoardRequest(Formats[I], DataStream);
 
-      Data := QByteArray_create(PAnsiChar(DataStream.Memory), DataStream.Size);
+      {TODO: check if this is correct on darwin (win32,linux are OK!),
+        seem that data stream always puts an extra #0
+       which confuses clip operations. If you remove this -1
+       then we'll get a mess !!!}
+      Data := QByteArray_create(PAnsiChar(DataStream.Memory), DataStream.Size - 1);
       QMimeData_setData(MimeData, @MimeType, Data);
       QByteArray_destroy(Data);
     end;
@@ -2741,10 +2750,6 @@ begin
   { clear OnClipBoardRequest to prevent destroying the LCL clipboard,
     when emptying the clipboard}
     FOnClipBoardRequest := nil;
-    {Clipboard is cleared each time when setMimeData is called !}
-    {$IFNDEF MSWINDOWS}
-    Clear(ClipbBoardTypeToQtClipboard[ClipBoardType]);
-    {$ENDIF}
     FOnClipBoardRequest := OnRequestProc;
     PutOnClipBoard;
     Result := True;
