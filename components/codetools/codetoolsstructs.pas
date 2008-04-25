@@ -51,6 +51,7 @@ type
     pcsPublic,
     pcsPublished
     );
+  TPascalClassSections = set of TPascalClassSection;
 
   { TCodeXYPositions - a list of PCodeXYPosition }
 

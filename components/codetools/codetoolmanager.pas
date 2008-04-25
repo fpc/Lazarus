@@ -472,6 +472,11 @@ type
                                       TreeOfCodeTreeNodeExt: TAVLTree): boolean;
     function ReplaceAllTypeCastFunctions(Code: TCodeBuffer): boolean;
     function FixForwardDefinitions(Code: TCodeBuffer): boolean;
+    function FindEmptyMethods(Code: TCodeBuffer; X,Y: integer;
+                              const Sections: TPascalClassSections;
+                              ListOfPCodeXYPosition: TFPList): boolean;
+    function RemoveEmptyMethods(Code: TCodeBuffer; X,Y: integer;
+                                const Sections: TPascalClassSections): boolean;
 
     // custom class completion
     function InitClassCompletion(Code: TCodeBuffer;
@@ -3307,6 +3312,48 @@ begin
   if not InitCurCodeTool(Code) then exit;
   try
     Result:=FCurCodeTool.FixForwardDefinitions(SourceChangeCache);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.FindEmptyMethods(Code: TCodeBuffer; X, Y: integer;
+  const Sections: TPascalClassSections; ListOfPCodeXYPosition: TFPList
+  ): boolean;
+var
+  CursorPos: TCodeXYPosition;
+begin
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindEmptyMethods A ',Code.Filename);
+  {$ENDIF}
+  Result:=false;
+  if not InitCurCodeTool(Code) then exit;
+  CursorPos.X:=X;
+  CursorPos.Y:=Y;
+  CursorPos.Code:=Code;
+  try
+    Result:=FCurCodeTool.FindEmptyMethods(CursorPos,Sections,
+                                          ListOfPCodeXYPosition);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.RemoveEmptyMethods(Code: TCodeBuffer; X,Y: integer;
+  const Sections: TPascalClassSections): boolean;
+var
+  CursorPos: TCodeXYPosition;
+begin
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.RemoveEmptyMethods A ',Code.Filename);
+  {$ENDIF}
+  Result:=false;
+  if not InitCurCodeTool(Code) then exit;
+  CursorPos.X:=X;
+  CursorPos.Y:=Y;
+  CursorPos.Code:=Code;
+  try
+    Result:=FCurCodeTool.RemoveEmptyMethods(CursorPos,Sections,SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
   end;

@@ -98,6 +98,7 @@ type
     function FindCorrespondingProcNode(ProcNode: TCodeTreeNode;
         Attr: TProcHeadAttributes): TCodeTreeNode;
     function FindProcBody(ProcNode: TCodeTreeNode): TCodeTreeNode;
+    function ProcBodyIsEmpty(ProcNode: TCodeTreeNode): boolean;
     procedure MoveCursorToFirstProcSpecifier(ProcNode: TCodeTreeNode);
     function MoveCursorToProcSpecifier(ProcNode: TCodeTreeNode;
         ProcSpec: TProcedureSpecifier): boolean;
@@ -610,7 +611,7 @@ begin
     StartNode:=ClassNode.GetNodeOfType(ctnTypeSection)
   end else if NodeIsMethodBody(ProcNode) then begin
     //debugln('TPascalReaderTool.FindCorrespondingProcNode Method');
-    // in a method body -> search class
+    // in a method body -> search in class
     StartNode:=FindClassNodeInUnit(ExtractClassNameOfProcNode(ProcNode),true,
                                    false,false,true);
     BuildSubTreeForClass(StartNode);
@@ -645,12 +646,48 @@ function TPascalReaderTool.FindProcBody(ProcNode: TCodeTreeNode
 begin
   Result:=ProcNode;
   if Result=nil then exit;
+  if Result.Desc<>ctnProcedure then exit;
   Result:=Result.FirstChild;
   while Result<>nil do begin
     if Result.Desc in [ctnBeginBlock,ctnAsmBlock] then
       exit;
     Result:=Result.NextBrother;
   end;
+end;
+
+function TPascalReaderTool.ProcBodyIsEmpty(ProcNode: TCodeTreeNode): boolean;
+var
+  BodyNode: TCodeTreeNode;
+  LastPos: LongInt;
+begin
+  Result:=false;
+  BodyNode:=FindProcBody(ProcNode);
+  if (BodyNode=nil) then exit;
+  // check if there are nodes in front (e.g. local variables)
+  if (BodyNode.PriorBrother<>nil)
+  and (BodyNode.PriorBrother.Desc<>ctnProcedureHead) then
+    exit;
+  // check if there are child nodes
+  if BodyNode.FirstChild<>nil then exit;
+  // check if bodynode is only 'asm end' or 'begin end'
+  // not even a comment should be there, only spaces are allowed
+  if ProcNode.FirstChild.Desc<>ctnProcedureHead then exit;
+  MoveCursorToCleanPos(ProcNode.FirstChild.EndPos);
+  LastPos:=CurPos.EndPos;
+  ReadNextAtom;
+  if FindNextNonSpace(Src,LastPos)<>CurPos.StartPos then exit;
+  if CurPos.Flag=cafSemicolon then begin
+    // semicolon is allowed
+    LastPos:=CurPos.EndPos;
+    ReadNextAtom;
+    if FindNextNonSpace(Src,LastPos)<>CurPos.StartPos then exit;
+  end;
+  if not (UpAtomIs('ASM') or UpAtomIs('BEGIN')) then exit;
+  LastPos:=CurPos.EndPos;
+  ReadNextAtom;
+  if FindNextNonSpace(Src,LastPos)<>CurPos.StartPos then exit;
+  if not UpAtomIs('END') then exit;
+  Result:=true;
 end;
 
 procedure TPascalReaderTool.MoveCursorToFirstProcSpecifier(

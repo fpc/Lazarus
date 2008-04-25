@@ -97,12 +97,19 @@ const
   NewClassPartProcs = [ncpPrivateProcs,ncpProtectedProcs,ncpPublicProcs,ncpPublishedProcs];
   NewClassPartVars = [ncpPrivateVars,ncpProtectedVars,ncpPublicVars,ncpPublishedVars];
 
-  NewClassPartVisibilty: array[TNewClassPart] of TPascalClassSection = (
+  NewClassPartVisibility: array[TNewClassPart] of TPascalClassSection = (
     pcsPrivate, pcsPrivate,
     pcsProtected, pcsProtected,
     pcsPublic, pcsPublic,
     pcsPublished, pcsPublished
     );
+    
+  PascalClassSectionToNodeDesc: array[TPascalClassSection] of TCodeTreeNodeDesc = (
+    ctnClassPrivate,   // pcsPrivate
+    ctnClassProtected, // pcsProtected
+    ctnClassPublic,    // pcsPublic
+    ctnClassPublished  // pcsPublished
+  );
   
 type
   TCodeCompletionCodeTool = class;
@@ -233,6 +240,15 @@ type
                         out DefinitionsTreeOfCodeTreeNodeExt: TAVLTree;
                         out Graph: TCodeGraph; OnlyInterface: boolean): boolean;
     procedure WriteCodeGraphDebugReport(Graph: TCodeGraph);
+    function FindEmptyMethods(CursorPos: TCodeXYPosition;
+                              const Sections: TPascalClassSections;
+                              ListOfPCodeXYPosition: TFPList): boolean;
+    function FindEmptyMethods(CursorPos: TCodeXYPosition;
+                              const Sections: TPascalClassSections;
+                              CodeTreeNodeExtensions: TAVLTree): boolean;
+    function RemoveEmptyMethods(CursorPos: TCodeXYPosition;
+                              const Sections: TPascalClassSections;
+                              SourceChangeCache: TSourceChangeCache): boolean;
 
     // custom class completion
     function InitClassCompletion(const UpperClassName: string;
@@ -325,7 +341,12 @@ procedure TCodeCompletionCodeTool.SetCodeCompleteClassNode(
   const AClassNode: TCodeTreeNode);
 begin
   FreeClassInsertionList;
+  FJumpToProcName:='';
   FCodeCompleteClassNode:=AClassNode;
+  if FCodeCompleteClassNode=nil then begin
+    FCompletingStartNode:=nil;
+    exit;
+  end;
   BuildSubTreeForClass(FCodeCompleteClassNode);
   if FCodeCompleteClassNode.Desc=ctnClassInterface then
     FCompletingStartNode:=FCodeCompleteClassNode
@@ -335,7 +356,6 @@ begin
     FCompletingStartNode:=FCompletingStartNode.NextBrother;
   if FCompletingStartNode<>nil then
     FCompletingStartNode:=FCompletingStartNode.FirstChild;
-  FJumpToProcName:='';
 end;
 
 procedure TCodeCompletionCodeTool.SetCodeCompleteSrcChgCache(
@@ -3989,6 +4009,134 @@ begin
   end;
 end;
 
+function TCodeCompletionCodeTool.FindEmptyMethods(CursorPos: TCodeXYPosition;
+  const Sections: TPascalClassSections; ListOfPCodeXYPosition: TFPList
+  ): boolean;
+var
+  ProcBodyNodes: TAVLTree;
+  AVLNode: TAVLTreeNode;
+  NodeExt: TCodeTreeNodeExtension;
+  Caret: TCodeXYPosition;
+  CaretP: PCodeXYPosition;
+begin
+  Result:=false;
+  ProcBodyNodes:=TAVLTree.Create(@CompareCodeTreeNodeExt);
+  try
+    Result:=FindEmptyMethods(CursorPos,Sections,ProcBodyNodes);
+    if Result then begin
+      AVLNode:=ProcBodyNodes.FindLowest;
+      while AVLNode<>nil do begin
+        NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
+        if CleanPosToCaret(NodeExt.Node.StartPos,Caret) then begin
+          New(CaretP);
+          CaretP^:=Caret;
+          ListOfPCodeXYPosition.Add(CaretP);
+        end;
+        AVLNode:=ProcBodyNodes.FindSuccessor(AVLNode);
+      end;
+    end;
+    Result:=true;
+  finally
+    ProcBodyNodes.FreeAndClear;
+    ProcBodyNodes.Free;
+  end;
+end;
+
+function TCodeCompletionCodeTool.FindEmptyMethods(CursorPos: TCodeXYPosition;
+  const Sections: TPascalClassSections; CodeTreeNodeExtensions: TAVLTree
+  ): boolean;
+var
+  CleanCursorPos: integer;
+  CursorNode: TCodeTreeNode;
+  TypeSectionNode: TCodeTreeNode;
+  ProcBodyNodes, ClassProcs: TAVLTree;
+  AVLNode: TAVLTreeNode;
+  NodeExt: TCodeTreeNodeExtension;
+  NextAVLNode: TAVLTreeNode;
+  DefAVLNode: TAVLTreeNode;
+  DefNodeExt: TCodeTreeNodeExtension;
+  Desc: TCodeTreeNodeDesc;
+  Fits: Boolean;
+  s: TPascalClassSection;
+  
+  procedure GatherClassProcs;
+  begin
+    // gather existing proc definitions in the class
+    if ClassProcs=nil then begin
+      ClassProcs:=GatherProcNodes(FCompletingStartNode,
+         [phpInUpperCase,phpAddClassName],
+         ExtractClassName(FCodeCompleteClassNode,true));
+    end;
+  end;
+  
+begin
+  Result:=false;
+  BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
+  CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+  CodeCompleteClassNode:=FindClassNode(CursorNode);
+  if FCodeCompleteClassNode=nil then begin
+    DebugLn(['TCodeCompletionCodeTool.FindEmptyMethods no class at ',DbgsCXY(CursorPos)]);
+    exit;
+  end;
+  ProcBodyNodes:=nil;
+  ClassProcs:=nil;
+  try
+    // gather body nodes
+    TypeSectionNode:=FCodeCompleteClassNode.GetNodeOfType(ctnTypeSection);
+    ProcBodyNodes:=GatherProcNodes(TypeSectionNode,
+                        [phpInUpperCase,phpIgnoreForwards,phpOnlyWithClassname],
+                         ExtractClassName(FCodeCompleteClassNode,true));
+    // collect all emtpy bodies
+    AVLNode:=ProcBodyNodes.FindLowest;
+    while AVLNode<>nil do begin
+      NextAVLNode:=ProcBodyNodes.FindSuccessor(AVLNode);
+      NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
+      DebugLn(['TCodeCompletionCodeTool.FindEmptyMethods ',NodeExt.Txt,' ',ProcBodyIsEmpty(NodeExt.Node)]);
+      // check if proc body is empty (no code, no comments)
+      if ProcBodyIsEmpty(NodeExt.Node) then begin
+        GatherClassProcs;
+        // search the corresponding node in the class
+        DefAVLNode:=ClassProcs.Find(NodeExt);
+        if (DefAVLNode<>nil) then begin
+          DefNodeExt:=TCodeTreeNodeExtension(DefAVLNode.Data);
+          // check visibility section
+          if (DefNodeExt.Node.Parent<>nil) then begin
+            Desc:=DefNodeExt.Node.Parent.Desc;
+            Fits:=false;
+            for s:=Low(TPascalClassSection) to High(TPascalClassSection) do
+              if (s in Sections) and (PascalClassSectionToNodeDesc[s]=Desc) then
+                Fits:=true;
+            if Fits then begin
+              // empty and right section => add to tree
+              ProcBodyNodes.Delete(AVLNode);
+              CodeTreeNodeExtensions.Add(NodeExt);
+            end;
+          end;
+        end;
+      end;
+      AVLNode:=NextAVLNode;
+    end;
+    Result:=true;
+  finally
+    if ClassProcs<>nil then begin
+      ClassProcs.FreeAndClear;
+      ClassProcs.Free;
+    end;
+    if ProcBodyNodes<>nil then begin
+      ProcBodyNodes.FreeAndClear;
+      ProcBodyNodes.Free;
+    end;
+  end;
+end;
+
+function TCodeCompletionCodeTool.RemoveEmptyMethods(CursorPos: TCodeXYPosition;
+  const Sections: TPascalClassSections; SourceChangeCache: TSourceChangeCache
+  ): boolean;
+begin
+  Result:=false;
+  // ToDo
+end;
+
 function TCodeCompletionCodeTool.InitClassCompletion(
   const UpperClassName: string;
   SourceChangeCache: TSourceChangeCache): boolean;
@@ -4591,7 +4739,7 @@ var ANodeExt: TCodeTreeNodeExtension;
   Visibility: TPascalClassSection;
 begin
   ANodeExt:=FirstInsert;
-  Visibility:=NewClassPartVisibilty[PartType];
+  Visibility:=NewClassPartVisibility[PartType];
   // insert all nodes of specific type
   while ANodeExt<>nil do begin
     IsVariable:=NodeExtIsVariable(ANodeExt);
