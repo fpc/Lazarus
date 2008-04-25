@@ -1,0 +1,427 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lcl">
+
+<!--
+  ====================================================================
+    GraphUtil
+  ====================================================================
+-->
+
+<module name="GraphUtil">
+<short></short>
+<descr>
+</descr>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Types">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Graphics">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Math">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLType">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
+<element name="ColorToGray">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="ColorToGray.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ColorToGray.AColor">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="ColorToHLS">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ColorToHLS.AColor">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ColorToHLS.H">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ColorToHLS.L">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ColorToHLS.S">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="RGBtoHLS">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="RGBtoHLS.R">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="RGBtoHLS.G">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="RGBtoHLS.B">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="RGBtoHLS.H">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="RGBtoHLS.L">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="RGBtoHLS.S">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="HLStoColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="HLStoColor.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="HLStoColor.H">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="HLStoColor.L">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="HLStoColor.S">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="HLStoRGB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="HLStoRGB.H">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="HLStoRGB.L">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="HLStoRGB.S">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="HLStoRGB.R">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="HLStoRGB.G">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="HLStoRGB.B">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="DrawVerticalGradient">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DrawVerticalGradient.Canvas">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DrawVerticalGradient.ARect">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DrawVerticalGradient.TopColor">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DrawVerticalGradient.BottomColor">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="DrawGradientWindow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DrawGradientWindow.Canvas">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DrawGradientWindow.WindowRect">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DrawGradientWindow.TitleHeight">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DrawGradientWindow.BaseColor">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="ColorRGBToHLS">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ColorRGBToHLS.clrRGB">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ColorRGBToHLS.Hue">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ColorRGBToHLS.Luminance">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ColorRGBToHLS.Saturation">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="ColorHLSToRGB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="ColorHLSToRGB.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ColorHLSToRGB.Hue">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ColorHLSToRGB.Luminance">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ColorHLSToRGB.Saturation">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="ColorAdjustLuma">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="ColorAdjustLuma.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ColorAdjustLuma.clrRGB">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ColorAdjustLuma.n">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ColorAdjustLuma.fScale">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetHighLightColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetHighLightColor.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetHighLightColor.Color">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetHighLightColor.Luminance">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetShadowColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetShadowColor.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetShadowColor.Color">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetShadowColor.Luminance">
+<short></short>
+</element>
+
+</module> <!-- GraphUtil -->
+
+</package>
+</fpdoc-descriptions>
