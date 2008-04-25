@@ -177,7 +177,8 @@ begin
   Clear;
   if FileType <> [] then
   begin
-    if SysUtils.FindFirst(IncludeTrailingPathDelimiter(FDirectory)+AllDirectoryEntriesMask,
+    if SysUtils.FindFirst(
+      IncludeTrailingPathDelimiter(Utf8ToAnsi(FDirectory))+AllDirectoryEntriesMask,
       FileTypeToFileAttribute(FileType), Info) = 0
     then
       repeat
@@ -186,9 +187,9 @@ begin
           if (ftNormal in FileType) or ((Info.Attr and AttrNotNormal) > 0) then
           begin
             if (Info.Attr and faDirectory) > 0 then
-              Items.Add('['+Info.Name+']')
+              Items.Add('['+AnsiToUtf8(Info.Name)+']')
             else
-              Items.Add(Info.Name);
+              Items.Add(AnsiToUtf8(Info.Name));
           end;
         end;
       until SysUtils.FindNext(Info) <> 0;
@@ -304,7 +305,8 @@ end;
 
 constructor TCustomFileListBox.Create(TheOwner: TComponent);
 var
-  FileDrive: String;
+  FileDrive: string;
+  CurrentDir: string;
 begin
   inherited Create(TheOwner);
   //Initializes the Mask property.
@@ -312,8 +314,9 @@ begin
   //Initializes the FileType property.
   FFileType := [ftNormal];
   //Initializes the Directory and Drive properties to the current directory.
-  FDirectory := GetCurrentDir;
-  FileDrive := ExtractFileDrive(FDirectory);
+  CurrentDir := GetCurrentDir;
+  FDirectory := AnsiToUtf8(CurrentDir);
+  FileDrive := ExtractFileDrive(CurrentDir);
   if FileDrive<>'' then
     FDrive:=FileDrive[1]
   else
