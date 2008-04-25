@@ -149,8 +149,8 @@ const
     $E1FFFF,     {COLOR_INFOBK}
     $000000,     {unassigned}
     $000000,     {COLOR_HOTLIGHT}
-    $000000,     {COLOR_GRADIENTACTIVECAPTION}
-    $000000,     {COLOR_GRADIENTINACTIVECAPTION}
+    $800000,     {COLOR_GRADIENTACTIVECAPTION}
+    $808080,     {COLOR_GRADIENTINACTIVECAPTION}
     $D0D0D0,     {COLOR_FORM}
     
     // CLX base, mapped, pseudo, rgb values

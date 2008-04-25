@@ -2590,13 +2590,16 @@ function TQtWidgetSet.GetSysColor(nIndex: Integer): DWORD;
     Result:=(QColor^.r and $00FF) or ((QColor^.g and $00FF) shl 8) or ((QColor^.b and $00FF) shl 16);
   end;
   
-  function GetClInfoBk: TColor;
+  function GetClInfo(Bk: Boolean): TColor;
   var
     APalette: QPaletteH;
   begin
     APalette := QPalette_create();
     QToolTip_palette(APalette);
-    Result := GetPaletteColor(APalette, QPaletteActive, QPaletteWindow);
+    if Bk then
+      Result := GetPaletteColor(APalette, QPaletteActive, QPaletteWindow)
+    else
+      Result := GetPaletteColor(APalette, QPaletteActive, QPaletteWindowText);
     QPalette_destroy(APalette);
   end;
 
@@ -2630,7 +2633,7 @@ begin
   case nIndex of
     COLOR_SCROLLBAR               : Result:=GetColor(QPaletteActive,   QPaletteMid);
     COLOR_BACKGROUND              : Result:=GetColor(QPaletteActive,   QPaletteWindow);
-    COLOR_ACTIVECAPTION           : Result:=GetColor(QPaletteActive,   QPaletteBase);
+    COLOR_ACTIVECAPTION           : Result:=GetColor(QPaletteActive,   QPaletteHighlight);
     COLOR_INACTIVECAPTION         : Result:=GetColor(QPaletteInActive, QPaletteBase);
     COLOR_MENU                    : Result:=GetColor(QPaletteActive,   QPaletteWindow);
     COLOR_WINDOW                  : Result:=GetColor(QPaletteInActive, QPaletteBase);
@@ -2651,14 +2654,14 @@ begin
     COLOR_BTNHIGHLIGHT            : Result:=GetColor(QPaletteActive,   QPaletteLight);
     COLOR_3DDKSHADOW              : Result:=GetColor(QPaletteActive,   QPaletteShadow);
     COLOR_3DLIGHT                 : Result:=GetColor(QPaletteActive,   QPaletteMidlight);
-    COLOR_INFOTEXT                : Result:=GetColor(QPaletteActive,   QPaletteText);
-    COLOR_INFOBK                  : Result:=GetClInfoBk;
+    COLOR_INFOTEXT                : Result:=GetClInfo(False);
+    COLOR_INFOBK                  : Result:=GetClInfo(True);
     // PBD: 25 is unassigned in all the docs I can find
     //      if someone finds what this is supposed to be then fill it in
     //      note defaults below, and cl[ColorConst] in graphics
     COLOR_HOTLIGHT                : Result:=GetColor(QPaletteActive,   QPaletteLight);
-    COLOR_GRADIENTACTIVECAPTION   : Result:=GetColor(QPaletteActive,   QPaletteText);
-    COLOR_GRADIENTINACTIVECAPTION : Result:=GetColor(QPaletteInactive, QPaletteText);
+    COLOR_GRADIENTACTIVECAPTION   : Result:=GetColor(QPaletteActive,   QPaletteHighlight);
+    COLOR_GRADIENTINACTIVECAPTION : Result:=GetColor(QPaletteInactive, QPaletteBase);
     COLOR_FORM                    : Result:=GetColor(QPaletteActive,   QPaletteWindow);
 
     COLOR_clForeground..COLOR_clHighlightedText

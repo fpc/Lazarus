@@ -30,10 +30,10 @@ uses
   Types, Graphics, Math, LCLType;
 
 function ColorToGray(const AColor: TColor): Byte;
-procedure ColorToHLS(const AColor: TColor; var H, L, S: Byte);
-procedure RGBtoHLS(const R, G, B: Byte; var H, L, S: Byte);
+procedure ColorToHLS(const AColor: TColor; out H, L, S: Byte);
+procedure RGBtoHLS(const R, G, B: Byte; out H, L, S: Byte);
 function HLStoColor(const H, L, S: Byte): TColor;
-procedure HLStoRGB(const H, L, S: Byte; var R, G, B: Byte);
+procedure HLStoRGB(const H, L, S: Byte; out R, G, B: Byte);
 
 // specific things:
 
@@ -76,7 +76,7 @@ begin
   Result := Trunc(0.222 * (RGB and $FF) + 0.707 * ((RGB shr 8) and $FF) + 0.071 * (RGB shr 16 and $FF));
 end;
 
-procedure ColorToHLS(const AColor: TColor; var H, L, S: Byte);
+procedure ColorToHLS(const AColor: TColor; out H, L, S: Byte);
 var
   R, G, B: Byte;
   RGB: Cardinal;
@@ -103,7 +103,7 @@ const
   HUE_240 = 170;
   HUE_300 = 213;
 
-procedure RGBtoHLS(const R, G, B: Byte; var H, L, S: Byte);
+procedure RGBtoHLS(const R, G, B: Byte; out H, L, S: Byte);
 var
   cMax, cMin: Byte;             // max and min RGB values
   Rdelta, Gdelta, Bdelta: Byte; // intermediate value: % of spread from max
@@ -142,7 +142,7 @@ begin
 end;
 
 
-procedure HLStoRGB(const H, L, S: Byte; var R, G, B: Byte);
+procedure HLStoRGB(const H, L, S: Byte; out R, G, B: Byte);
 
   // utility routine for HLStoRGB
   function HueToRGB(const n1, n2: Byte; Hue: Integer): Byte;
