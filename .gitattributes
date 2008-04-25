@@ -1344,6 +1344,7 @@ docs/html/build_html.bat svneol=native#text/plain
 docs/html/build_html.sh -text svneol=native#application/x-sh
 docs/html/build_lcl_docs.lpi svneol=native#text/plain
 docs/html/build_lcl_docs.lpr svneol=native#text/plain
+docs/html/build_lcl_html.sh -text svneol=native#application/x-sh
 docs/html/fpdoc.css svneol=native#text/css
 docs/html/localfclfooter.xml svneol=native#text/plain
 docs/html/locallclfooter.xml svneol=native#text/plain
