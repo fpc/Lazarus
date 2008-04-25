@@ -182,7 +182,7 @@ function gtkDialogSelectRowCB(widget: PGtkWidget; Row, Column: gInt;
 var
   theDialog: TCommonDialog;
   MenuWidget: PGtkWidget;
-  AFilterEntry: PFileSelFilterEntry;
+  AFilterEntry: TFileSelFilterEntry;
   FileSelWidget: PGtkFileSelection;
   ShiftState: TShiftState;
   loop : gint;
@@ -203,10 +203,10 @@ begin
       MenuWidget := gtk_object_get_data(PGtkObject(FileSelWidget),
                                         'LCLFilterMenu');
       if MenuWidget <> nil then begin
-        AFilterEntry := gtk_object_get_data(PGtkObject(
-             gtk_menu_get_active(PGtkMenu(MenuWidget))), 'LCLIsFilterMenuItem');
-        if (AFilterEntry<>nil) and (AFilterEntry^.Mask<>nil) then
-          PopulateFileAndDirectoryLists(FileSelWidget,AFilterEntry^.Mask);
+        AFilterEntry := TFileSelFilterEntry(gtk_object_get_data(PGtkObject(
+            gtk_menu_get_active(PGtkMenu(MenuWidget))), 'LCLIsFilterMenuItem'));
+        if (AFilterEntry<>nil) and (AFilterEntry.Mask<>nil) then
+          PopulateFileAndDirectoryLists(FileSelWidget,AFilterEntry.Mask);
       end;
     end
     else if (bevent <> nil)
@@ -349,7 +349,7 @@ var
   {$IFDEF GTK1}
   var
     MenuWidget: PGtkWidget;
-    AFilterEntry: PFileSelFilterEntry;
+    AFilterEntry: TFileSelFilterEntry;
   {$ENDIF}
   begin
     Result:=true;
@@ -373,10 +373,10 @@ var
         // populate file list
         MenuWidget := gtk_object_get_data(PGtkObject(PGtkFileSelection(FPointer)), 'LCLFilterMenu');
         if (MenuWidget <> nil) then begin
-          AFilterEntry := gtk_object_get_data(PGtkObject(gtk_menu_get_active(
-                                              PGtkMenu(MenuWidget))), 'LCLIsFilterMenuItem');
-          if ((AFilterEntry<>nil) and (AFilterEntry^.Mask<>nil)) then
-          PopulateFileAndDirectoryLists(PGtkFileSelection(FPointer), AFilterEntry^.Mask);
+          AFilterEntry := TFileSelFilterEntry(gtk_object_get_data(PGtkObject(gtk_menu_get_active(
+                                              PGtkMenu(MenuWidget))), 'LCLIsFilterMenuItem'));
+          if ((AFilterEntry<>nil) and (AFilterEntry.Mask<>nil)) then
+            PopulateFileAndDirectoryLists(PGtkFileSelection(FPointer), AFilterEntry.Mask);
         end;
       end;
       // wait for correct input
@@ -718,16 +718,16 @@ var
 
   procedure CheckFilterActivated(FilterWidget: PGtkWidget);
   var
-    AFilterEntry: PFileSelFilterEntry;
+    AFilterEntry: TFileSelFilterEntry;
   begin
     if FilterWidget=nil then exit;
-    AFilterEntry:=gtk_object_get_data(PGtkObject(FilterWidget),
-                                      'LCLIsFilterMenuItem');
-    if (AFilterEntry<>nil) and (AFilterEntry^.Mask<>nil) then
+    AFilterEntry:=TFileSelFilterEntry(gtk_object_get_data(PGtkObject(FilterWidget),
+                                      'LCLIsFilterMenuItem'));
+    if (AFilterEntry<>nil) and (AFilterEntry.Mask<>nil) then
     begin
       PopulateFileAndDirectoryLists(PGtkFileSelection(theDialog.Handle),
-        AFilterEntry^.Mask);
-      TFileDialog(TheDialog).IntfFileTypeChanged(AFilterEntry^.FilterIndex + 1);
+        AFilterEntry.Mask);
+      TFileDialog(TheDialog).IntfFileTypeChanged(AFilterEntry.FilterIndex + 1);
       UpdateDetailView(TOpenDialog(theDialog));
     end;
   end;
@@ -947,7 +947,8 @@ end;
   Adds a Filter pulldown to a gtk file selection dialog. Returns the
   inital filter mask.
  ------------------------------------------------------------------------------}
-class function TGtkWSOpenDialog.CreateOpenDialogFilter(OpenDialog: TOpenDialog; SelWidget: PGtkWidget): string;
+class function TGtkWSOpenDialog.CreateOpenDialogFilter(OpenDialog: TOpenDialog;
+  SelWidget: PGtkWidget): string;
 var
   FilterList: TFPList;
   HBox, LabelWidget, FilterPullDownWidget,
@@ -984,7 +985,7 @@ begin
     for i:=0 to FilterList.Count-1 do begin
       // create the menu items in the filter menu
       MenuItemWidget:=gtk_menu_item_new_with_label(
-                               PFileSelFilterEntry(FilterList[i])^.Description);
+                               TFileSelFilterEntry(FilterList[i]).Description);
       // connect the new MenuItem to the FilterList entry
       gtk_object_set_data(PGtkObject(MenuItemWidget), 'LCLIsFilterMenuItem',
         FilterList[i]);
@@ -1012,14 +1013,14 @@ begin
     if j<0 then j:=0;
     CurMask:=0;
     while (i<FilterList.Count) do begin
-      if PFileSelFilterEntry(FilterList[i])^.FilterIndex=j
+      if TFileSelFilterEntry(FilterList[i]).FilterIndex=j
       then begin
         CurMask:=i;
         break;
       end;
       inc(i);
     end;
-    Result := PFileSelFilterEntry(FilterList[CurMask])^.Mask;
+    Result := TFileSelFilterEntry(FilterList[CurMask]).Mask;
     gtk_option_menu_set_history(GTK_OPTION_MENU(FilterPullDownWidget), CurMask);
   end;
 end;

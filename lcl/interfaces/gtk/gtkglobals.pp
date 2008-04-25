@@ -370,13 +370,17 @@ type
       MenuItem: PGtkWidget;
     end;
 
-  PFileSelFilterEntry = ^TFileSelFilterEntry;
-  TFileSelFilterEntry = record
-      Description: PChar;
-      Mask: PChar;
-      FilterIndex: integer;
-      MenuItem: PGtkWidget;
-    end;
+  { TFileSelFilterEntry }
+
+  TFileSelFilterEntry = class
+  public
+    Description: PChar;
+    Mask: PChar;
+    FilterIndex: integer;
+    MenuItem: PGtkWidget;
+    constructor Create(const ADescription, AMask: string);
+    destructor Destroy; override;
+  end;
     
   { Menu }
 
@@ -557,6 +561,25 @@ begin
   AddCharsetEncoding(FCS_ISO_8859_9,      'iso8859',  '9');
   AddCharsetEncoding(FCS_ISO_8859_10,     'iso8859',  '10');
   AddCharsetEncoding(FCS_ISO_8859_15,     'iso8859',  '15');
+end;
+
+{ TFileSelFilterEntry }
+
+constructor TFileSelFilterEntry.Create(const ADescription, AMask: string);
+begin
+  Description:=StrAlloc(length(ADescription)+1);
+  StrPCopy(Description, ADescription);
+  Mask:=StrAlloc(length(AMask)+1);
+  StrPCopy(Mask, AMask);
+end;
+
+destructor TFileSelFilterEntry.Destroy;
+begin
+  StrDispose(Description);
+  Description:=nil;
+  StrDispose(Mask);
+  Mask:=nil;
+  inherited Destroy;
 end;
 
 initialization

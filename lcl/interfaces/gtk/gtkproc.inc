@@ -1238,8 +1238,10 @@ var
   ImageHeight: Integer;
   WindowWidth, WindowHeight: integer;
   DestDC: HDC;
-  FixedWidget: PGtkWidget;
   Offset: TPoint;
+  {$ifdef gtk2}
+  FixedWidget: PGtkWidget;
+  {$ENDIF}
 begin
   if ImgList=nil then exit;
   if (Index<0) or (Index>=ImgList.Count) then exit;
@@ -1254,8 +1256,7 @@ begin
   WindowHeight := DestWidget^.allocation.height;
 
   Offset := Point(0, 0);
-
-  {$ifndef gtk1}
+  {$ifdef gtk2}
   // if our widget is placed on non-window fixed then we should substract its allocation here
   // since in GetDC we will get this difference in offset
   FixedWidget := GetFixedWidget(DestWidget);
@@ -3429,12 +3430,11 @@ var
   FileSelWidget: PGtkFileSelection;
   LCLHistoryMenu: PGTKWidget;
   {$IFDEF Gtk1}
-  AFilterEntry: PFileSelFilterEntry;
+  AFilterEntry: TFileSelFilterEntry;
   FilterList: TFPList; // list of TFileSelFilterListEntry
   LCLFilterMenu: PGTKWidget;
   {$ENDIF}
 begin
-
   if (ADialog=nil) or (not ADialog.HandleAllocated) then exit;
   DlgWindow:=PGtkWidget(ADialog.Handle);
   {$IFDEF VerboseTransient}
@@ -3476,14 +3476,8 @@ begin
     FilterList:=TFPList(gtk_object_get_data(PGtkObject(DlgWindow),
                                             'LCLFilterList'));
     if FilterList<>nil then begin
-      for i:=0 to FilterList.Count-1 do begin
-        AFilterEntry:=PFileSelFilterEntry(FilterList[i]);
-        StrDispose(AFilterEntry^.Description);
-        AFilterEntry^.Description:=nil;
-        StrDispose(AFilterEntry^.Mask);
-        AFilterEntry^.Mask:=nil;
-        Dispose(AFilterEntry);
-      end;
+      for i:=0 to FilterList.Count-1 do
+        TObject(FilterList[i]).Free;
       FilterList.Free;
       gtk_object_set_data(PGtkObject(DlgWindow),'LCLFilterList',nil);
     end;

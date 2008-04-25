@@ -3,7 +3,7 @@
 {------------------------------------------------------------------------------
   Function: ExtractFilterList
   Params: const Filter: string; var FilterIndex: integer;
-          var FilterList: TStringList
+          var ListOfPFileSelFilterEntry: TStringList
   Returns: -
 
   Converts a Delphi file filter of the form
@@ -20,7 +20,8 @@
         'Pascal files (*.pp)'  + '*.pp'
         'Pascal files (*.lpr)' + '*.lpr'
  ------------------------------------------------------------------------------}
-procedure ExtractFilterList(const Filter: string; out FilterList: TFPList;
+procedure ExtractFilterList(const Filter: string;
+  out ListOfFileSelFilterEntry: TFPList;
   SplitMultiMask: boolean);
 var
   Masks: TStringList;
@@ -51,15 +52,11 @@ var
   end;
 
   procedure AddEntry(const Desc, Mask: string);
-  var NewFilterEntry: PFileSelFilterEntry;
+  var NewFilterEntry: TFileSelFilterEntry;
   begin
-    New(NewFilterEntry);
-    NewFilterEntry^.Description:= StrAlloc(length(Desc)+1);
-    StrPCopy(NewFilterEntry^.Description, Desc);
-    NewFilterEntry^.Mask:= StrAlloc(length(Mask)+1);
-    StrPCopy(NewFilterEntry^.Mask, Mask);
-    NewFilterEntry^.FilterIndex:=CurFilterIndex;
-    FilterList.Add(NewFilterEntry);
+    NewFilterEntry:=TFileSelFilterEntry.Create(Desc,Mask);
+    NewFilterEntry.FilterIndex:=CurFilterIndex;
+    ListOfFileSelFilterEntry.Add(NewFilterEntry);
   end;
 
   // remove all but one masks from description string
@@ -111,7 +108,7 @@ var
   CurDescStart, CurDescEnd, CurMultiMaskStart, CurMultiMaskEnd: integer;
   CurDesc, CurMultiMask: string;
 begin
-  FilterList:=TFPList.Create;
+  ListOfFileSelFilterEntry:=TFPList.Create;
   Masks:=nil;
   CurFilterIndex:=0;
   CurDescStart:=1;
@@ -137,3 +134,12 @@ begin
   Masks.Free;
 end;
 
+procedure FreeListOfFileSelFilterEntry(ListOfFileSelFilterEntry: TFPList);
+var
+  i: Integer;
+begin
+  if ListOfFileSelFilterEntry=nil then exit;
+  for i:=0 to ListOfFileSelFilterEntry.Count-1 do
+    TObject(ListOfFileSelFilterEntry[i]).Free;
+  ListOfFileSelFilterEntry.Free;
+end;

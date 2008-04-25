@@ -282,7 +282,7 @@ function gtkDialogSelectRowCB(widget: PGtkWidget; Row, Column: gInt;
 var
   theDialog: TCommonDialog;
   MenuWidget: PGtkWidget;
-  AFilterEntry: PFileSelFilterEntry;
+  AFilterEntry: TFileSelFilterEntry;
   FileSelWidget: PGtkFileSelection;
   ShiftState: TShiftState;
   loop : gint;
@@ -303,10 +303,10 @@ begin
       MenuWidget := gtk_object_get_data(PGtkObject(FileSelWidget),
                                         'LCLFilterMenu');
       if MenuWidget <> nil then begin
-        AFilterEntry := gtk_object_get_data(PGtkObject(
-             gtk_menu_get_active(PGtkMenu(MenuWidget))), 'LCLIsFilterMenuItem');
-        if (AFilterEntry<>nil) and (AFilterEntry^.Mask<>nil) then
-          PopulateFileAndDirectoryLists(FileSelWidget,AFilterEntry^.Mask);
+        AFilterEntry := TFileSelFilterEntry(gtk_object_get_data(PGtkObject(
+            gtk_menu_get_active(PGtkMenu(MenuWidget))), 'LCLIsFilterMenuItem'));
+        if (AFilterEntry<>nil) and (AFilterEntry.Mask<>nil) then
+          PopulateFileAndDirectoryLists(FileSelWidget,AFilterEntry.Mask);
       end;
     end
     else if (bevent <> nil)
@@ -728,16 +728,16 @@ var
 
   procedure CheckFilterActivated(FilterWidget: PGtkWidget);
   var
-    AFilterEntry: PFileSelFilterEntry;
+    AFilterEntry: TFileSelFilterEntry;
   begin
     if FilterWidget=nil then exit;
-    AFilterEntry:=gtk_object_get_data(PGtkObject(FilterWidget),
-                                      'LCLIsFilterMenuItem');
-    if (AFilterEntry<>nil) and (AFilterEntry^.Mask<>nil) then
+    AFilterEntry:=TFileSelFilterEntry(gtk_object_get_data(PGtkObject(FilterWidget),
+                                      'LCLIsFilterMenuItem'));
+    if (AFilterEntry<>nil) and (AFilterEntry.Mask<>nil) then
     begin
       PopulateFileAndDirectoryLists(PGtkFileSelection(theDialog.Handle),
-        AFilterEntry^.Mask);
-      TFileDialog(TheDialog).IntfFileTypeChanged(AFilterEntry^.FilterIndex + 1);
+                                    AFilterEntry.Mask);
+      TFileDialog(TheDialog).IntfFileTypeChanged(AFilterEntry.FilterIndex + 1);
       UpdateDetailView(TOpenDialog(theDialog));
     end;
   end;
@@ -769,27 +769,29 @@ end;
 class function TGtk2WSOpenDialog.CreateOpenDialogFilter(
   OpenDialog: TOpenDialog; SelWidget: PGtkWidget): string;
 var
-  FilterList: TFPList;
+  ListOfFileSelFilterEntry: TFPList;
   i, j, k: integer;
   GtkFilter: PGtkFileFilter;
   MaskList: TStringList;
+  FilterEntry: TFileSelFilterEntry;
 begin
-  ExtractFilterList(OpenDialog.Filter, FilterList, false);
-  if FilterList.Count > 0 then
+  ExtractFilterList(OpenDialog.Filter, ListOfFileSelFilterEntry, false);
+  if ListOfFileSelFilterEntry.Count > 0 then
   begin
     j := 1;
     MaskList := TStringList.Create;
     MaskList.Delimiter := ';';
-    for i := 0 to FilterList.Count-1 do
+    for i := 0 to ListOfFileSelFilterEntry.Count-1 do
     begin
       GtkFilter := gtk_file_filter_new();
 
-      MaskList.DelimitedText := PFileSelFilterEntry(FilterList[i])^.Mask;
+      FilterEntry:=TFileSelFilterEntry(ListOfFileSelFilterEntry[i]);
+      MaskList.DelimitedText := FilterEntry.Mask;
 
       for k := 0 to MaskList.Count-1 do
         gtk_file_filter_add_pattern(GtkFilter, PChar(MaskList.Strings[k]));
 
-      gtk_file_filter_set_name(GtkFilter, PFileSelFilterEntry(FilterList[i])^.Description);
+      gtk_file_filter_set_name(GtkFilter, FilterEntry.Description);
 
       gtk_file_chooser_add_filter(SelWidget, GtkFilter);
 
@@ -802,7 +804,8 @@ begin
     MaskList.Free;
   end;
 
-  gtk_object_set_data(PGtkObject(SelWidget), 'LCLFilterList', FilterList);
+  FreeListOfFileSelFilterEntry(ListOfFileSelFilterEntry);
+  //gtk_object_set_data(PGtkObject(SelWidget), 'LCLFilterList', ListOfFileSelFilterEntry);
 
   Result := 'hm'; { Don't use '' as null return as this is used for *.* }
 end;
