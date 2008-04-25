@@ -4050,6 +4050,8 @@ end;
 function TCodeCompletionCodeTool.FindEmptyMethods(CursorPos: TCodeXYPosition;
   const Sections: TPascalClassSections; CodeTreeNodeExtensions: TAVLTree;
   out AllEmpty: boolean): boolean;
+// NodeExt.Node is the body node
+// NodeExt.Data is the definition node
 var
   CleanCursorPos: integer;
   CursorNode: TCodeTreeNode;
@@ -4115,6 +4117,7 @@ begin
             if Fits then begin
               // empty and right section => add to tree
               ProcBodyNodes.Delete(AVLNode);
+              NodeExt.Data:=DefNodeExt.Node;
               CodeTreeNodeExtensions.Add(NodeExt);
             end;
           end;
@@ -4152,6 +4155,8 @@ var
   CommentEnd: TCodeXYPosition;
   CommentEndPos: integer;
   CommentStartPos: integer;
+  ProcDefNodes: TAVLTree;
+  NextAVLNode: TAVLTreeNode;
 begin
   Result:=false;
   AllRemoved:=false;
@@ -4163,6 +4168,9 @@ begin
     if Result and (ProcBodyNodes<>nil) and (ProcBodyNodes.Count>0) then begin
       // sort the nodes for position
       ProcBodyNodes.OnCompare:=@CompareCodeTreeNodeExtWithPos;
+      ProcDefNodes:=TAVLTree.Create(@CompareCodeTreeNodeExtWithPos);
+      
+      // delete bodies
       AVLNode:=ProcBodyNodes.FindLowest;
       FirstGroup:=true;
       while AVLNode<>nil do begin
@@ -4195,11 +4203,55 @@ begin
           exit;
         FirstGroup:=false;
       end;
+      
+      // create the tree of proc definitions: ProcDefNodes
+      AVLNode:=ProcBodyNodes.FindLowest;
+      while AVLNode<>nil do begin
+        NextAVLNode:=ProcBodyNodes.FindSuccessor(AVLNode);
+        NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
+        // remove NodeExt from ProcBodyNodes
+        ProcBodyNodes.Delete(AVLNode);
+        // and add it to ProcDefNodes
+        // the definition node is the Data
+        NodeExt.Node:=TCodeTreeNode(NodeExt.Data);
+        if NodeExt.Node<>nil then begin
+          ProcDefNodes.Add(NodeExt);
+        end else begin
+          NodeExt.Free;
+        end;
+        AVLNode:=NextAVLNode;
+      end;
+      
+      // delete definitions
+      AVLNode:=ProcDefNodes.FindLowest;
+      while AVLNode<>nil do begin
+        // gather a group of continuous proc nodes
+        FirstNodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
+        LastNodeExt:=FirstNodeExt;
+        AVLNode:=ProcBodyNodes.FindSuccessor(AVLNode);
+        while (AVLNode<>nil) do begin
+          NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
+          if NodeExt.Node<>LastNodeExt.Node.NextBrother then break;
+          LastNodeExt:=NodeExt;
+          AVLNode:=ProcBodyNodes.FindSuccessor(AVLNode);
+        end;
+        // delete group
+        FromPos:=FindLineEndOrCodeInFrontOfPosition(FirstNodeExt.Node.StartPos,true);
+        ToPos:=FindLineEndOrCodeAfterPosition(LastNodeExt.Node.EndPos,true);
+        if not SourceChangeCache.Replace(gtNone,gtNone,FromPos,ToPos,'') then
+          exit;
+      end;
     end;
     Result:=SourceChangeCache.Apply;
   finally
-    ProcBodyNodes.FreeAndClear;
-    ProcBodyNodes.Free;
+    if ProcBodyNodes<>nil then begin
+      ProcBodyNodes.FreeAndClear;
+      ProcBodyNodes.Free;
+    end;
+    if ProcDefNodes<>nil then begin
+      ProcDefNodes.FreeAndClear;
+      ProcDefNodes.Free;
+    end;
   end;
 end;
 
