@@ -27,13 +27,20 @@ unit GraphUtil;
 interface
 
 uses
-  Graphics, Math;
+  Graphics, Math, LCLType;
 
 function ColorToGray(const AColor: TColor): Byte;
 procedure ColorToHLS(const AColor: TColor; var H, L, S: Byte);
 procedure RGBtoHLS(const R, G, B: Byte; var H, L, S: Byte);
 function HLStoColor(const H, L, S: Byte): TColor;
 procedure HLStoRGB(const H, L, S: Byte; var R, G, B: Byte);
+
+// delphi compatibility
+procedure ColorRGBToHLS(clrRGB: COLORREF; var Hue, Luminance, Saturation: Word);
+function ColorHLSToRGB(Hue, Luminance, Saturation: Word): TColorRef;
+function ColorAdjustLuma(clrRGB: TColor; n: Integer; fScale: BOOL): TColor;
+function GetHighLightColor(const Color: TColor; Luminance: Integer = 19): TColor;
+function GetShadowColor(const Color: TColor; Luminance: Integer = -50): TColor;
 
 implementation
 
@@ -166,6 +173,40 @@ begin
     G := HueToRGB(n1, n2, H);
     B := HueToRGB(n1, n2, H - HUE_120);
   end;
+end;
+
+procedure ColorRGBToHLS(clrRGB: COLORREF; var Hue, Luminance, Saturation: Word);
+var
+  H, L, S: Byte;
+begin
+  ColorToHLS(clrRGB, H, L, S);
+  Hue := H;
+  Luminance := L;
+  Saturation := S;
+end;
+
+function ColorHLSToRGB(Hue, Luminance, Saturation: Word): TColorRef;
+begin
+  Result := HLStoColor(Hue, Luminance, Saturation);
+end;
+
+function ColorAdjustLuma(clrRGB: TColor; n: Integer; fScale: BOOL): TColor;
+var
+  H, L, S: Byte;
+begin
+  // what is fScale?
+  ColorToHLS(clrRGB, H, L, S);
+  Result := HLStoColor(H, L + n, S);
+end;
+
+function GetHighLightColor(const Color: TColor; Luminance: Integer): TColor;
+begin
+  Result := ColorAdjustLuma(Color, Luminance, False);
+end;
+
+function GetShadowColor(const Color: TColor; Luminance: Integer): TColor;
+begin
+  Result := ColorAdjustLuma(Color, Luminance, False);
 end;
 
 
