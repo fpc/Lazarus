@@ -42,6 +42,7 @@ var
   ListOfPCodeXYPosition: TFPList;
   i: Integer;
   P: PCodeXYPosition;
+  All: boolean;
 begin
   if (ParamCount>=1) and (Paramcount<>3) then begin
     writeln('Usage:');
@@ -70,12 +71,21 @@ begin
     // complete code
     ListOfPCodeXYPosition:=TFPList.Create;
     if CodeToolBoss.FindEmptyMethods(Code,X,Y,[pcsPublished],
-      ListOfPCodeXYPosition)
+      ListOfPCodeXYPosition,All)
     then begin
-      writeln('Found ',ListOfPCodeXYPosition.Count,' empty methods:');
+      writeln('Found ',ListOfPCodeXYPosition.Count,' empty methods (All=',All,'):');
       for i:=0 to ListOfPCodeXYPosition.Count-1 do begin
         P:=PCodeXYPosition(ListOfPCodeXYPosition[i]);
         writeln(i,' ',DbgsCXY(P^));
+      end;
+      if CodeToolBoss.RemoveEmptyMethods(Code,X,Y,[pcsPublished],All)
+      then begin
+        writeln('Empty methods removed:');
+        writeln('=========================');
+        writeln(Code.Source);
+        writeln('=========================');
+      end else begin
+        writeln('RemoveEmptyMethods failed: ',CodeToolBoss.ErrorMessage);
       end;
     end else begin
       writeln('FindEmptyMethods failed: ',CodeToolBoss.ErrorMessage);

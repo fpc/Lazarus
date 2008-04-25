@@ -474,9 +474,11 @@ type
     function FixForwardDefinitions(Code: TCodeBuffer): boolean;
     function FindEmptyMethods(Code: TCodeBuffer; X,Y: integer;
                               const Sections: TPascalClassSections;
-                              ListOfPCodeXYPosition: TFPList): boolean;
+                              ListOfPCodeXYPosition: TFPList;
+                              out AllEmpty: boolean): boolean;
     function RemoveEmptyMethods(Code: TCodeBuffer; X,Y: integer;
-                                const Sections: TPascalClassSections): boolean;
+                                const Sections: TPascalClassSections;
+                                out AllRemoved: boolean): boolean;
 
     // custom class completion
     function InitClassCompletion(Code: TCodeBuffer;
@@ -3318,8 +3320,8 @@ begin
 end;
 
 function TCodeToolManager.FindEmptyMethods(Code: TCodeBuffer; X, Y: integer;
-  const Sections: TPascalClassSections; ListOfPCodeXYPosition: TFPList
-  ): boolean;
+  const Sections: TPascalClassSections; ListOfPCodeXYPosition: TFPList;
+  out AllEmpty: boolean): boolean;
 var
   CursorPos: TCodeXYPosition;
 begin
@@ -3333,14 +3335,14 @@ begin
   CursorPos.Code:=Code;
   try
     Result:=FCurCodeTool.FindEmptyMethods(CursorPos,Sections,
-                                          ListOfPCodeXYPosition);
+                                          ListOfPCodeXYPosition,AllEmpty);
   except
     on e: Exception do Result:=HandleException(e);
   end;
 end;
 
 function TCodeToolManager.RemoveEmptyMethods(Code: TCodeBuffer; X,Y: integer;
-  const Sections: TPascalClassSections): boolean;
+  const Sections: TPascalClassSections; out AllRemoved: boolean): boolean;
 var
   CursorPos: TCodeXYPosition;
 begin
@@ -3353,7 +3355,8 @@ begin
   CursorPos.Y:=Y;
   CursorPos.Code:=Code;
   try
-    Result:=FCurCodeTool.RemoveEmptyMethods(CursorPos,Sections,SourceChangeCache);
+    Result:=FCurCodeTool.RemoveEmptyMethods(CursorPos,Sections,
+                                            SourceChangeCache,AllRemoved);
   except
     on e: Exception do Result:=HandleException(e);
   end;

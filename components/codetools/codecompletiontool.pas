@@ -242,13 +242,16 @@ type
     procedure WriteCodeGraphDebugReport(Graph: TCodeGraph);
     function FindEmptyMethods(CursorPos: TCodeXYPosition;
                               const Sections: TPascalClassSections;
-                              ListOfPCodeXYPosition: TFPList): boolean;
+                              ListOfPCodeXYPosition: TFPList;
+                              out AllEmpty: boolean): boolean;
     function FindEmptyMethods(CursorPos: TCodeXYPosition;
                               const Sections: TPascalClassSections;
-                              CodeTreeNodeExtensions: TAVLTree): boolean;
+                              CodeTreeNodeExtensions: TAVLTree;
+                              out AllEmpty: boolean): boolean;
     function RemoveEmptyMethods(CursorPos: TCodeXYPosition;
                               const Sections: TPascalClassSections;
-                              SourceChangeCache: TSourceChangeCache): boolean;
+                              SourceChangeCache: TSourceChangeCache;
+                              out AllRemoved: boolean): boolean;
 
     // custom class completion
     function InitClassCompletion(const UpperClassName: string;
@@ -4010,8 +4013,8 @@ begin
 end;
 
 function TCodeCompletionCodeTool.FindEmptyMethods(CursorPos: TCodeXYPosition;
-  const Sections: TPascalClassSections; ListOfPCodeXYPosition: TFPList
-  ): boolean;
+  const Sections: TPascalClassSections; ListOfPCodeXYPosition: TFPList;
+  out AllEmpty: boolean): boolean;
 var
   ProcBodyNodes: TAVLTree;
   AVLNode: TAVLTreeNode;
@@ -4022,7 +4025,7 @@ begin
   Result:=false;
   ProcBodyNodes:=TAVLTree.Create(@CompareCodeTreeNodeExt);
   try
-    Result:=FindEmptyMethods(CursorPos,Sections,ProcBodyNodes);
+    Result:=FindEmptyMethods(CursorPos,Sections,ProcBodyNodes,AllEmpty);
     if Result then begin
       AVLNode:=ProcBodyNodes.FindLowest;
       while AVLNode<>nil do begin
@@ -4043,8 +4046,8 @@ begin
 end;
 
 function TCodeCompletionCodeTool.FindEmptyMethods(CursorPos: TCodeXYPosition;
-  const Sections: TPascalClassSections; CodeTreeNodeExtensions: TAVLTree
-  ): boolean;
+  const Sections: TPascalClassSections; CodeTreeNodeExtensions: TAVLTree;
+  out AllEmpty: boolean): boolean;
 var
   CleanCursorPos: integer;
   CursorNode: TCodeTreeNode;
@@ -4071,6 +4074,7 @@ var
   
 begin
   Result:=false;
+  AllEmpty:=false;
   BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
   CodeCompleteClassNode:=FindClassNode(CursorNode);
@@ -4116,6 +4120,7 @@ begin
       end;
       AVLNode:=NextAVLNode;
     end;
+    AllEmpty:=ProcBodyNodes.Count=0;
     Result:=true;
   finally
     if ClassProcs<>nil then begin
@@ -4130,11 +4135,52 @@ begin
 end;
 
 function TCodeCompletionCodeTool.RemoveEmptyMethods(CursorPos: TCodeXYPosition;
-  const Sections: TPascalClassSections; SourceChangeCache: TSourceChangeCache
-  ): boolean;
+  const Sections: TPascalClassSections; SourceChangeCache: TSourceChangeCache;
+  out AllRemoved: boolean): boolean;
+var
+  ProcBodyNodes: TAVLTree;
+  AVLNode: TAVLTreeNode;
+  NodeExt: TCodeTreeNodeExtension;
+  FirstNodeExt: TCodeTreeNodeExtension;
+  LastNodeExt: TCodeTreeNodeExtension;
+  FromPos: LongInt;
+  ToPos: LongInt;
 begin
   Result:=false;
-  // ToDo
+  AllRemoved:=false;
+  if (SourceChangeCache=nil) or (Scanner=nil) then exit;
+  SourceChangeCache.MainScanner:=Scanner;
+  ProcBodyNodes:=TAVLTree.Create(@CompareCodeTreeNodeExt);
+  try
+    Result:=FindEmptyMethods(CursorPos,Sections,ProcBodyNodes,AllRemoved);
+    if Result and (ProcBodyNodes<>nil) and (ProcBodyNodes.Count>0) then begin
+      // sort the nodes for position
+      ProcBodyNodes.OnCompare:=@CompareCodeTreeNodeExtWithPos;
+      AVLNode:=ProcBodyNodes.FindLowest;
+      while AVLNode<>nil do begin
+        // gather a group of continuous proc nodes
+        FirstNodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
+        LastNodeExt:=FirstNodeExt;
+        AVLNode:=ProcBodyNodes.FindSuccessor(AVLNode);
+        while (AVLNode<>nil) do begin
+          NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
+          if NodeExt.Node<>LastNodeExt.Node.NextBrother then break;
+          LastNodeExt:=NodeExt;
+          AVLNode:=ProcBodyNodes.FindSuccessor(AVLNode);
+        end;
+        // delete group
+        FromPos:=FindLineEndOrCodeInFrontOfPosition(FirstNodeExt.Node.StartPos,true);
+        ToPos:=FindLineEndOrCodeAfterPosition(LastNodeExt.Node.EndPos,AllRemoved);
+        if not SourceChangeCache.Replace(gtNone,gtNone,FromPos,ToPos,'')
+        then
+          exit;
+      end;
+    end;
+    Result:=SourceChangeCache.Apply;
+  finally
+    ProcBodyNodes.FreeAndClear;
+    ProcBodyNodes.Free;
+  end;
 end;
 
 function TCodeCompletionCodeTool.InitClassCompletion(
