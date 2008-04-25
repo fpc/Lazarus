@@ -794,6 +794,8 @@ begin
   Prompt := PromptEdit.Text;
   MsgDefault := DefaultEdit.Text;
   Value := ValueEdit.Text;
+  HelpFileName:='';
+  MsgHelpKeyword:='';
   case KindMessageComboBox.ItemIndex of
     0: MessageDlg(Msg, DlgType, MsgButtons, HelpCtx);
     1: MessageDlg(MsgCaption, Msg, DlgType, MsgButtons, HelpCtx);

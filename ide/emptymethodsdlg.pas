@@ -141,18 +141,19 @@ end;
 
 procedure TEmptyMethodsDialog.FormCreate(Sender: TObject);
 begin
-  Caption:='Emtpy Methods';
-  SectionsGroupBox.Caption:='Search in these class sections:';
-  PrivateCheckBox.Caption:='Private';
-  ProtectedCheckBox.Caption:='Protected';
-  PublicCheckBox.Caption:='Public';
-  PublishedButton.Caption:='Published';
-  AllButton.Caption:='All';
-  PublishedButton.Caption:='Only published';
-  MethodsGroupBox.Caption:='Found empty methods:';
+  Caption:=lisEMDEmtpyMethods;
+  SectionsGroupBox.Caption:=lisEMDSearchInTheseClassSections;
+  PrivateCheckBox.Caption:=lisPrivate;
+  ProtectedCheckBox.Caption:=lisProtected;
+  PublicCheckBox.Caption:=lisEMDPublic;
+  PublishedButton.Caption:=lisEMDPublished;
+  AllButton.Caption:=lisEMDAll;
+  PublishedButton.Caption:=lisEMDOnlyPublished;
+  MethodsGroupBox.Caption:=lisEMDFoundEmptyMethods;
   Sections:=AllPascalClassSections;
   
   ButtonPanel1.OKButton.OnClick:=@OKButtonClick;
+  ButtonPanel1.OKButton.Caption:=lisEMDRemoveMethods;
 end;
 
 procedure TEmptyMethodsDialog.OKButtonClick(Sender: TObject);

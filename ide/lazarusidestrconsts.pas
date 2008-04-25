@@ -1356,6 +1356,8 @@ resourcestring
   dlgCCOTestMissingPPU = 'Test: Checking missing fpc ppu ...';
   dlgCCOTestCompilerDate = 'Test: Checking compiler date ...';
   lisCCOErrorCaption = 'Error';
+  lisEMDEmtpyMethods = 'Emtpy Methods';
+  lisEMDSearchInTheseClassSections = 'Search in these class sections:';
   lisUnableToLoadPackage = 'Unable to load package %s%s%s';
   lisSAMThisMethodCanNotBeOverriddenBecauseItIsDefinedInTh = 'This method can '
     +'not be overridden because it is defined in the current class';
@@ -1494,6 +1496,12 @@ resourcestring
   lisFilter = 'Filter';
   lisPrivate = 'Private';
   lisProtected = 'Protected';
+  lisEMDPublic = 'Public';
+  lisEMDPublished = 'Published';
+  lisEMDAll = 'All';
+  lisEMDOnlyPublished = 'Only published';
+  lisEMDFoundEmptyMethods = 'Found empty methods:';
+  lisEMDRemoveMethods = 'Remove methods';
   lisExpandAllPackages = 'Expand all packages';
   lisCollapseAllPackages = 'Collapse all packages';
   lisExpandAllUnits = 'Expand all units';
