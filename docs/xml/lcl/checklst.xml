@@ -59,7 +59,8 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomCheckListBox">
-        <short/>
+        <short>
+          <var>TCustomCheckListBox</var> - base class for TCheckListBox, the box found on CheckLists</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -78,9 +79,13 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomCheckListBox.GetChecked.Result"><short/></element>
+      <element name="TCustomCheckListBox.GetChecked.Result">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomCheckListBox.GetChecked.AIndex"><short/></element>
+      <element name="TCustomCheckListBox.GetChecked.AIndex">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomCheckListBox.SetChecked">
         <short/>
@@ -89,9 +94,13 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomCheckListBox.SetChecked.AIndex"><short/></element>
+      <element name="TCustomCheckListBox.SetChecked.AIndex">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomCheckListBox.SetChecked.AValue"><short/></element>
+      <element name="TCustomCheckListBox.SetChecked.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomCheckListBox.SendItemChecked">
         <short/>
@@ -100,9 +109,13 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomCheckListBox.SendItemChecked.AIndex"><short/></element>
+      <element name="TCustomCheckListBox.SendItemChecked.AIndex">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomCheckListBox.SendItemChecked.AChecked"><short/></element>
+      <element name="TCustomCheckListBox.SendItemChecked.AChecked">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomCheckListBox.AssignItemDataToCache">
         <short/>
@@ -111,9 +124,13 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomCheckListBox.AssignItemDataToCache.AIndex"><short/></element>
+      <element name="TCustomCheckListBox.AssignItemDataToCache.AIndex">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomCheckListBox.AssignItemDataToCache.AData"><short/></element>
+      <element name="TCustomCheckListBox.AssignItemDataToCache.AData">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomCheckListBox.AssignCacheToItemData">
         <short/>
@@ -122,9 +139,13 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomCheckListBox.AssignCacheToItemData.AIndex"><short/></element>
+      <element name="TCustomCheckListBox.AssignCacheToItemData.AIndex">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomCheckListBox.AssignCacheToItemData.AData"><short/></element>
+      <element name="TCustomCheckListBox.AssignCacheToItemData.AData">
+        <short/>
+      </element>
       <!-- function Visibility: protected -->
       <element name="TCustomCheckListBox.GetCachedDataSize">
         <short/>
@@ -133,27 +154,38 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomCheckListBox.GetCachedDataSize.Result"><short/></element>
+      <element name="TCustomCheckListBox.GetCachedDataSize.Result">
+        <short/>
+      </element>
       <!-- constructor Visibility: public -->
       <element name="TCustomCheckListBox.Create">
-        <short/>
+        <short>
+          <var>Create</var> a new instance of <var>TCustomCheckListBox</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomCheckListBox.Create.AOwner"><short/></element>
+      <element name="TCustomCheckListBox.Create.AOwner">
+        <short/>
+      </element>
       <!-- property Visibility: public -->
       <element name="TCustomCheckListBox.Checked">
-        <short/>
+        <short>
+          <var>Checked</var> - True if the box with the specified Index has been checked</short>
         <descr/>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomCheckListBox.Checked.AIndex"><short/></element>
+      <element name="TCustomCheckListBox.Checked.AIndex">
+        <short/>
+      </element>
       <!-- object Visibility: default -->
       <element name="TCheckListBox">
-        <short/>
+        <short>
+          <var>TCheckListBox</var> - the box found beside each item on a <var>CheckList</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -209,7 +241,9 @@
       <!-- property Visibility: published -->
       <element name="TCheckListBox.MultiSelect">
         <short>Allows multiple selected list items.</short>
-        <seealso><link id="StdCtrls"/></seealso>
+        <seealso>
+          <link id="StdCtrls"/>
+        </seealso>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckListBox.OnClick">
@@ -337,6 +371,26 @@
         <descr/>
         <errors/>
         <seealso/>
+      </element>
+      <element name="TCustomCheckListBox.Toggle">
+        <short>
+          <var>Toggle</var> the checked/unchecked state of this box </short>
+      </element>
+      <element name="TCustomCheckListBox.AllowGrayed">
+        <short>
+          <var>AllowGrayed</var> - if True, the box is allowed to be greyed, and impossible to select</short>
+      </element>
+      <element name="TCustomCheckListBox.State">
+        <short>The <var>State</var> of the box with the specified index - checked, unchecked or greyed</short>
+      </element>
+      <element name="TCustomCheckListBox.Count"/>
+      <element name="TCustomCheckListBox.OnClickCheck">
+        <short>
+          <var>OnClickCheck</var> - event handler for a mouse click on the CheckBox</short>
+      </element>
+      <element name="TCustomCheckListBox.OnItemClick">
+        <short>
+          <var>OnItemClick</var> - event handler for a mouse click on the data item associated with the checkbox</short>
       </element>
     </module>
     <!-- CheckLst -->
