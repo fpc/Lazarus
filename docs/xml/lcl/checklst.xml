@@ -7,7 +7,7 @@
   ====================================================================
 -->
     <module name="CheckLst">
-      <short/>
+      <short>Classes defining the CheckBox placed beside list items in a CheckList</short>
       <descr/>
       <!-- unresolved type reference Visibility: default -->
       <element name="Classes">

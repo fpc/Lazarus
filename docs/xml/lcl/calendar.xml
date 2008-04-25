@@ -7,7 +7,7 @@
   ====================================================================
 -->
     <module name="Calendar">
-      <short/>
+      <short>Classes defining Calendar, a graphic allowing the user to select a date</short>
       <descr/>
       <!-- unresolved type reference Visibility: default -->
       <element name="SysUtils">
