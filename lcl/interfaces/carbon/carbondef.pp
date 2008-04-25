@@ -438,8 +438,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonWidget.UpdateLCLClientRect;
 begin
-  LCLObject.InvalidateClientRectCache(False);
-  LCLSendSizeMsg(LCLObject, LCLObject.Width, LCLObject.Height, Size_SourceIsInterface);
+  //LCLObject.InvalidateClientRectCache(False);
+  //LCLSendSizeMsg(LCLObject, LCLObject.Width, LCLObject.Height, Size_SourceIsInterface);
 end;
 
 {------------------------------------------------------------------------------
