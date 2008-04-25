@@ -43,6 +43,7 @@ var
   i: Integer;
   P: PCodeXYPosition;
   All: boolean;
+  Sections: TPascalClassSections;
 begin
   if (ParamCount>=1) and (Paramcount<>3) then begin
     writeln('Usage:');
@@ -54,7 +55,7 @@ begin
     CodeToolBoss.SimpleInit(ConfigFilename);
     
     X:=10;
-    Y:=16;
+    Y:=22;
     Filename:=ExpandFileName('scanexamples'+PathDelim+'emptymethods1.pas');
     
     if (ParamCount>=3) then begin
@@ -70,15 +71,15 @@ begin
 
     // complete code
     ListOfPCodeXYPosition:=TFPList.Create;
-    if CodeToolBoss.FindEmptyMethods(Code,X,Y,[pcsPublished],
-      ListOfPCodeXYPosition,All)
+    Sections:=[pcsPublished,pcsPrivate,pcsProtected,pcsPublic];
+    if CodeToolBoss.FindEmptyMethods(Code,X,Y,Sections,ListOfPCodeXYPosition,All)
     then begin
       writeln('Found ',ListOfPCodeXYPosition.Count,' empty methods (All=',All,'):');
       for i:=0 to ListOfPCodeXYPosition.Count-1 do begin
         P:=PCodeXYPosition(ListOfPCodeXYPosition[i]);
         writeln(i,' ',DbgsCXY(P^));
       end;
-      if CodeToolBoss.RemoveEmptyMethods(Code,X,Y,[pcsPublished],All)
+      if CodeToolBoss.RemoveEmptyMethods(Code,X,Y,Sections,All)
       then begin
         writeln('Empty methods removed:');
         writeln('=========================');

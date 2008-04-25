@@ -152,6 +152,8 @@ type
     function InsertClassHeaderComment: boolean;
     function InsertMissingClassSemicolons: boolean;
     function InsertAllNewUnitsToMainUsesSection: boolean;
+    function FindClassMethodsComment(StartPos: integer;
+           out CommentStart, CommentEnd: TCodeXYPosition): boolean;
     function CreateMissingProcBodies: boolean;
     function ApplyChangesAndJumpToFirstNewProc(CleanPos: integer;
            OldTopLine: integer;
@@ -4095,7 +4097,7 @@ begin
     while AVLNode<>nil do begin
       NextAVLNode:=ProcBodyNodes.FindSuccessor(AVLNode);
       NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
-      DebugLn(['TCodeCompletionCodeTool.FindEmptyMethods ',NodeExt.Txt,' ',ProcBodyIsEmpty(NodeExt.Node)]);
+      //DebugLn(['TCodeCompletionCodeTool.FindEmptyMethods ',NodeExt.Txt,' ',ProcBodyIsEmpty(NodeExt.Node)]);
       // check if proc body is empty (no code, no comments)
       if ProcBodyIsEmpty(NodeExt.Node) then begin
         GatherClassProcs;
@@ -4145,6 +4147,11 @@ var
   LastNodeExt: TCodeTreeNodeExtension;
   FromPos: LongInt;
   ToPos: LongInt;
+  FirstGroup: Boolean;
+  CommentStart: TCodeXYPosition;
+  CommentEnd: TCodeXYPosition;
+  CommentEndPos: integer;
+  CommentStartPos: integer;
 begin
   Result:=false;
   AllRemoved:=false;
@@ -4157,6 +4164,7 @@ begin
       // sort the nodes for position
       ProcBodyNodes.OnCompare:=@CompareCodeTreeNodeExtWithPos;
       AVLNode:=ProcBodyNodes.FindLowest;
+      FirstGroup:=true;
       while AVLNode<>nil do begin
         // gather a group of continuous proc nodes
         FirstNodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
@@ -4170,10 +4178,22 @@ begin
         end;
         // delete group
         FromPos:=FindLineEndOrCodeInFrontOfPosition(FirstNodeExt.Node.StartPos,true);
-        ToPos:=FindLineEndOrCodeAfterPosition(LastNodeExt.Node.EndPos,AllRemoved);
-        if not SourceChangeCache.Replace(gtNone,gtNone,FromPos,ToPos,'')
-        then
+        ToPos:=FindLineEndOrCodeAfterPosition(LastNodeExt.Node.EndPos,true);
+        if AllRemoved and FirstGroup
+        and FindClassMethodsComment(FromPos,CommentStart,CommentEnd) then begin
+          // all method bodies will be removed => remove the default comment too
+          if CaretToCleanPos(CommentEnd,CommentEndPos)=0 then begin
+            if FindNextNonSpace(Src,CommentEndPos)>=FromPos then begin
+              // the default comment is directly in front
+              // => remove it too
+              if CaretToCleanPos(CommentStart,CommentStartPos)=0 then
+                FromPos:=FindLineEndOrCodeInFrontOfPosition(CommentStartPos,true);
+            end;
+          end;
+        end;
+        if not SourceChangeCache.Replace(gtNone,gtNone,FromPos,ToPos,'') then
           exit;
+        FirstGroup:=false;
       end;
     end;
     Result:=SourceChangeCache.Apply;
@@ -5287,6 +5307,20 @@ begin
   end;
 end;
 
+function TCodeCompletionCodeTool.FindClassMethodsComment(StartPos: integer; out
+  CommentStart, CommentEnd: TCodeXYPosition): boolean;
+var
+  InsertXYPos: TCodeXYPosition;
+  Code: String;
+begin
+  Result:=false;
+  if not CleanPosToCaret(StartPos,InsertXYPos) then exit;
+  Code:=ExtractClassName(CodeCompleteClassNode,false);
+  // search the comment
+  Result:=FindCommentInFront(InsertXYPos,Code,false,true,false,false,true,true,
+                        CommentStart,CommentEnd)
+end;
+
 procedure TCodeCompletionCodeTool.AddNewPropertyAccessMethodsToClassProcs(
   ClassProcs: TAVLTree;  const TheClassName: string);
 var ANodeExt: TCodeTreeNodeExtension;
@@ -5537,19 +5571,13 @@ var
   
   procedure InsertClassMethodsComment;
   var
-    Code: String;
-    InsertXYPos, CommentStart, CommentEnd: TCodeXYPosition;
+    CommentStart, CommentEnd: TCodeXYPosition;
   begin
     // insert class comment
     if ClassProcs.Count=0 then exit;
     // find the start of the class (the position in front of the class name)
-    if not CleanPosToCaret(InsertPos,InsertXYPos) then exit;
-    
-    Code:=ExtractClassName(CodeCompleteClassNode,false);
     // check if there is already a comment in front
-    if FindCommentInFront(InsertXYPos,Code,false,true,false,false,true,true,
-                          CommentStart,CommentEnd)
-    then begin
+    if FindClassMethodsComment(InsertPos,CommentStart,CommentEnd) then begin
       // comment already exists
       exit;
     end;

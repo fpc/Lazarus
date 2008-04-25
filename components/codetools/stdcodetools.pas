@@ -3481,10 +3481,10 @@ function TStandardCodeTool.FindCommentInFront(const StartPos: TCodeXYPosition;
   out CommentStart, CommentEnd: TCodeXYPosition): boolean;
 // searches a comment in front.
 var
-  FoundStartPos: LongInt;
-  FoundEndPos: LongInt;
+  FoundStartPos: integer;
+  FoundEndPos: integer;
 
-  procedure CompareComment(StartPos, EndPos: integer);
+  procedure CompareComment(CStartPos, CEndPos: integer);
   var
     Found: LongInt;
     CompareStartPos: LongInt;
@@ -3492,10 +3492,10 @@ var
     CompareLen: Integer;
     CompareCommentLength: Integer;
   begin
-    //debugln('CompareComment "',copy(Src,StartPos,EndPos-StartPos),'"');
+    //debugln('CompareComment "',copy(Src,CStartPos,CEndPos-CStartPos),'"');
 
-    CompareStartPos:=StartPos;
-    CompareEndPos:=EndPos;
+    CompareStartPos:=CStartPos;
+    CompareEndPos:=CEndPos;
     if not WithCommentBounds then begin
       // chomp comment boundaries
       case Src[CompareStartPos] of
@@ -3535,12 +3535,12 @@ var
                           CaseSensitive);
     end else begin
       Found:=CompareText(@Src[CompareStartPos],CompareLen,
-                          @CommentText[1],length(CommentText),
-                          CaseSensitive);
+                         @CommentText[1],length(CommentText),
+                         CaseSensitive);
     end;
     if Found=0 then begin
-      FoundStartPos:=StartPos;
-      FoundEndPos:=EndPos;
+      FoundStartPos:=CStartPos;
+      FoundEndPos:=CEndPos;
     end;
   end;
 
