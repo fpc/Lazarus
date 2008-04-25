@@ -424,6 +424,7 @@ begin
   ecFindBlockStart: SetResult2(VK_Q,[ssCtrl],VK_B,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecGotoIncludeDirective: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecShowAbstractMethods: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecRemoveEmptyMethods: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // source notebook
   ecNextEditor: SetResult(VK_TAB, [ssCtrl], VK_UNKNOWN, []);
@@ -748,6 +749,7 @@ begin
   ecFindBlockStart: SetResult(VK_Q,[ssCtrl],VK_B,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecGotoIncludeDirective: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecShowAbstractMethods: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecRemoveEmptyMethods: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // source notebook
   ecNextEditor: SetResult(VK_F6,[],VK_UNKNOWN,[],VK_TAB, [ssCtrl], VK_UNKNOWN, []);
@@ -1458,6 +1460,7 @@ begin
     ecFindBlockOtherEnd       : Result:= srkmecFindBlockOtherEnd;
     ecFindBlockStart          : Result:= srkmecFindBlockStart;
     ecShowAbstractMethods     : Result:= srkmecShowAbstractMethods;
+    ecRemoveEmptyMethods      : Result:= srkmecRemoveEmptyMethods;
 
     // project (menu string resource)
     ecNewProject              : Result:= lisMenuNewProject;
@@ -2372,6 +2375,8 @@ begin
     ecGotoIncludeDirective);
   AddDefault(C, 'Show abstract methods', srkmecShowAbstractMethods,
     ecShowAbstractMethods);
+  AddDefault(C, 'Remove empty methods', srkmecRemoveEmptyMethods,
+    ecRemoveEmptyMethods);
 
   // source notebook - without menu items in the IDE bar
   C:=Categories[AddCategory('SourceNotebook',srkmCatSrcNoteBook,

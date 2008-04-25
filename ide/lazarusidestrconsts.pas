@@ -1594,6 +1594,7 @@ resourcestring
     +'be shown incorrect.%sYou can select another font in the editor options.';
   lisUEDoNotSho = 'Do not show this message again.';
   uemInsertTodo = 'Insert Todo';
+  lisCodeHelpShowEmptyMethods = 'Show empty methods';
   uemHighlighter = 'Highlighter';
 
   // Form designer
@@ -1847,6 +1848,7 @@ resourcestring
   srkmecFindBlockOtherEnd         = 'Find block other end';
   srkmecFindBlockStart            = 'Find block start';
   srkmecShowAbstractMethods       = 'Show abstract methods';
+  srkmecRemoveEmptyMethods        = 'Remove empty methods';
 
   // run menu
   srkmecBuild                     = 'build program/project';

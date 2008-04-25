@@ -52,6 +52,11 @@ type
     pcsPublished
     );
   TPascalClassSections = set of TPascalClassSection;
+  
+const
+  AllPascalClassSections = [low(TPascalClassSection)..high(TPascalClassSection)];
+  
+type
 
   { TCodeXYPositions - a list of PCodeXYPosition }
 

@@ -420,6 +420,7 @@ type
     procedure FindIdentifierReferencesMenuItemClick(Sender: TObject);
     procedure RenameIdentifierMenuItemClick(Sender: TObject);
     procedure ShowAbstractMethodsMenuItemClick(Sender: TObject);
+    procedure ShowEmptyMethodsMenuItemClick(Sender: TObject);
     procedure RunToClicked(Sender: TObject);
     procedure ViewCallStackClick(Sender: TObject);
     procedure AddWatchAtCursor(Sender: TObject);
@@ -527,7 +528,7 @@ type
 
     procedure UpdateActiveEditColors;
     procedure SetIncrementalSearchStr(const AValue: string);
-    procedure IncrementalSearch(ANext: Boolean; ABackward: Boolean);
+    procedure IncrementalSearch(ANext, ABackward: Boolean);
 
     // macros
     function MacroFuncCol(const s:string; const Data: PtrInt;
@@ -849,6 +850,7 @@ var
     SrcEditMenuExtractProc: TIDEMenuCommand;
     SrcEditMenuInvertAssignment: TIDEMenuCommand;
     SrcEditMenuShowAbstractMethods: TIDEMenuCommand;
+    SrcEditMenuShowEmptyMethods: TIDEMenuCommand;
   SrcEditMenuInsertTodo: TIDEMenuCommand;
   SrcEditMenuMoveEditorLeft: TIDEMenuCommand;
   SrcEditMenuMoveEditorRight: TIDEMenuCommand;
@@ -1005,6 +1007,8 @@ begin
                                         'InvertAssignment',uemInvertAssignment);
     SrcEditMenuShowAbstractMethods:=RegisterIDEMenuCommand(AParent,
                                'ShowAbstractMethods',srkmecShowAbstractMethods);
+    SrcEditMenuShowEmptyMethods:=RegisterIDEMenuCommand(AParent,
+                               'ShowEmptyMethods', lisCodeHelpShowEmptyMethods);
 
   SrcEditMenuInsertTodo:=RegisterIDEMenuCommand(SourceEditorMenuRoot,
                                         'InsertTodo',uemInsertTodo, nil, nil, nil, 'item_todo');
@@ -3988,6 +3992,7 @@ begin
                                      IsValidIdent(ASrcEdit.GetWordAtCurrentCaret)
                                      and (not ASrcEdit.ReadOnly);
       SrcEditMenuShowAbstractMethods.Enabled:=not ASrcEdit.ReadOnly;
+      SrcEditMenuShowEmptyMethods.Enabled:=not ASrcEdit.ReadOnly;
     end else begin
       // user clicked on gutter
       SourceEditorMarks.GetMarksForLine(EditorComp,EditorComp.CaretY,
@@ -4151,6 +4156,7 @@ begin
                                          @FindIdentifierReferencesMenuItemClick;
   SrcEditMenuRenameIdentifier.OnClick:=@RenameIdentifierMenuItemClick;
   SrcEditMenuShowAbstractMethods.OnClick:=@ShowAbstractMethodsMenuItemClick;
+  SrcEditMenuShowEmptyMethods.OnClick:=@ShowEmptyMethodsMenuItemClick;
 
   SrcEditMenuReadOnly.OnClick:=@ReadOnlyClicked;
   SrcEditMenuShowLineNumbers.OnClick:=@ToggleLineNumbersClicked;
@@ -5369,6 +5375,11 @@ end;
 procedure TSourceNotebook.ShowAbstractMethodsMenuItemClick(Sender: TObject);
 begin
   MainIDEInterface.DoCommand(ecShowAbstractMethods);
+end;
+
+procedure TSourceNotebook.ShowEmptyMethodsMenuItemClick(Sender: TObject);
+begin
+  MainIDEInterface.DoCommand(ecRemoveEmptyMethods);
 end;
 
 procedure TSourceNotebook.RunToClicked(Sender: TObject);

@@ -127,7 +127,7 @@ uses
   ProcessList, InitialSetupDlgs, NewDialog, MakeResStrDlg, ToDoList,
   DialogProcs, FindReplaceDialog, FindInFilesDlg, CodeExplorer, BuildFileDlg,
   ProcedureList, ExtractProcDlg, FindRenameIdentifier, AbstractsMethodsDlg,
-  CleanDirDlg, CodeContextForm, AboutFrm, BuildManager,
+  EmptyMethodsDlg, CleanDirDlg, CodeContextForm, AboutFrm, BuildManager,
   CompatibilityRestrictions, RestrictionBrowser,
   // main ide
   MainBar, MainIntf, MainBase;
@@ -845,6 +845,7 @@ type
     procedure DoFindDeclarationAtCaret(const LogCaretXY: TPoint);
     function DoFindRenameIdentifier(Rename: boolean): TModalResult;
     function DoShowAbstractMethods: TModalResult;
+    function DoRemoveEmptyMethods: TModalResult;
     function DoInitIdentCompletion(JumpToError: boolean): boolean;
     function DoShowCodeContext(JumpToError: boolean): boolean;
     procedure DoCompleteCodeAtCursor;
@@ -2651,6 +2652,9 @@ begin
 
   ecShowAbstractMethods:
     DoShowAbstractMethods;
+
+  ecRemoveEmptyMethods:
+    DoRemoveEmptyMethods;
 
   ecFindBlockOtherEnd:
     DoGoToPascalBlockOtherEnd;
@@ -12064,6 +12068,11 @@ end;
 function TMainIDE.DoShowAbstractMethods: TModalResult;
 begin
   Result:=ShowAbstractMethodsDialog;
+end;
+
+function TMainIDE.DoRemoveEmptyMethods: TModalResult;
+begin
+  Result:=ShowEmptyMethodsDialog;
 end;
 
 {-------------------------------------------------------------------------------

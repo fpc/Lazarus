@@ -137,6 +137,7 @@ const
   ecInvertAssignment        = ecFirstLazarus + 116;
   ecShowCodeContext         = ecFirstLazarus + 117;
   ecShowAbstractMethods     = ecFirstLazarus + 118;
+  ecRemoveEmptyMethods      = ecFirstLazarus + 119;
 
   // file menu
   ecNew                     = ecFirstLazarus + 201;

@@ -117,6 +117,7 @@ begin
     if not CodeToolBoss.FindAbstractMethods(Code,Caret.X,Caret.Y,
       ListOfPCodeXYPosition,false) then
     begin
+      DebugLn(['ShowAbstractMethodsDialog CodeToolBoss.FindAbstractMethods failed']);
       if CodeToolBoss.ErrorMessage<>'' then begin
         ErrMsg:='';
         LazarusIDE.DoJumpToCodeToolBossError;
