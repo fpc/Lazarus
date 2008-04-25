@@ -27,13 +27,26 @@ unit GraphUtil;
 interface
 
 uses
-  Graphics, Math, LCLType;
+  Types, Graphics, Math, LCLType;
 
 function ColorToGray(const AColor: TColor): Byte;
 procedure ColorToHLS(const AColor: TColor; var H, L, S: Byte);
 procedure RGBtoHLS(const R, G, B: Byte; var H, L, S: Byte);
 function HLStoColor(const H, L, S: Byte): TColor;
 procedure HLStoRGB(const H, L, S: Byte; var R, G, B: Byte);
+
+// specific things:
+
+{
+  Draw gradient from top to bottom with parabolic color grow
+}
+procedure DrawVerticalGradient(Canvas: TCanvas; ARect: TRect; TopColor, BottomColor: TColor);
+
+{
+ Draw nice looking window with Title
+}
+procedure DrawGradientWindow(Canvas: TCanvas; WindowRect: TRect; TitleHeight: Integer; BaseColor: TColor);
+
 
 // delphi compatibility
 procedure ColorRGBToHLS(clrRGB: COLORREF; var Hue, Luminance, Saturation: Word);
@@ -45,6 +58,13 @@ function GetShadowColor(const Color: TColor; Luminance: Integer = -50): TColor;
 implementation
 
 //TODO: Check code on endianess
+
+procedure ExtractRGB(RGB: Cardinal; var R, G, B: Byte); inline;
+begin
+  R := RGB and $FF;
+  G := (RGB shr 8) and $FF;
+  B := (RGB shr 16) and $FF;
+end;
 
 function ColorToGray(const AColor: TColor): Byte;
 var
@@ -62,9 +82,7 @@ var
   RGB: Cardinal;
 begin
   RGB := ColorToRGB(AColor);
-  R := RGB and $FF;
-  G := (RGB shr 8) and $FF;
-  B := (RGB shr 16) and $FF;
+  ExtractRGB(RGB, R, G, B);
 
   RGBtoHLS(R, G, B, H, L, S);
 end;
@@ -209,5 +227,56 @@ begin
   Result := ColorAdjustLuma(Color, Luminance, False);
 end;
 
+procedure DrawVerticalGradient(Canvas: TCanvas; ARect: TRect; TopColor, BottomColor: TColor);
+var
+  y, h: Integer;
+  r1, g1, b1: byte;
+  r2, g2, b2: byte;
+  dr, dg, db: integer;
+
+ function GetColor(pos, total: integer): TColor;
+
+   function GetComponent(c1, dc: integer): integer;
+   begin
+     Result := Round(dc / sqr(total) * sqr(pos) + c1);
+   end;
+
+ begin
+   Result :=
+     GetComponent(r1, dr) or
+     (GetComponent(g1, dg) shl 8) or
+     (GetComponent(b1, db) shl 16);
+ end;
+
+ procedure CalcDeltas;
+ begin
+   ExtractRGB(TopColor, r1, g1, b1);
+   ExtractRGB(BottomColor, r2, g2, b2);
+   dr := r2 - r1;
+   dg := g2 - g1;
+   db := b2 - b1;
+ end;
+
+begin
+  TopColor := ColorToRGB(TopColor);
+  BottomColor := ColorToRGB(BottomColor);
+  CalcDeltas;
+
+  h := ARect.Bottom - ARect.Top;
+  for y := ARect.Top to ARect.Bottom do
+  begin
+    Canvas.Pen.Color := GetColor(y - ARect.Top, h);
+    Canvas.Line(ARect.Left, y, ARect.Right, y);
+  end;
+end;
+
+procedure DrawGradientWindow(Canvas: TCanvas; WindowRect: TRect; TitleHeight: Integer; BaseColor: TColor);
+begin
+  Canvas.Brush.Color := BaseColor;
+  Canvas.FrameRect(WindowRect);
+  InflateRect(WindowRect, -1, -1);
+  WindowRect.Bottom := WindowRect.Top + TitleHeight;
+  DrawVerticalGradient(Canvas, WindowRect, GetHighLightColor(BaseColor), GetShadowColor(BaseColor));
+end;
 
 end.
