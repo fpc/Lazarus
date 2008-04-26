@@ -443,6 +443,7 @@ type
     FHandle: QPrinterH;
     FPrinterContext: TQtDeviceContext;
   private
+    FPrinterActive: Boolean;
     function getPrinterContext: TQtDeviceContext;
     function getCollateCopies: Boolean;
     function getColorMode: QPrinterColorMode;
@@ -517,6 +518,7 @@ type
     property PaperSource: QPrinterPaperSource read getPaperSource write setPaperSource;
     property PrinterContext: TQtDeviceContext read getPrinterContext;
     property PrinterName: WideString read getPrinterName write setPrinterName;
+    property PrinterActive: Boolean read FPrinterActive;
     property PrintRange: QPrinterPrintRange read getPrintRange write setPrintRange;
     property PrinterState: QPrinterPrinterState read getPrinterState;
     property PrintProgram: WideString read getPrintProgram write setPrintProgram;
@@ -2774,6 +2776,7 @@ end;
 constructor TQtPrinter.Create;
 begin
   inherited Create;
+  FPrinterActive := False;
   FHandle := QPrinter_create();
 end;
 
@@ -2787,8 +2790,7 @@ end;
 procedure TQtPrinter.beginDoc;
 begin
   getPrinterContext;
-  if not QPainter_isActive(FPrinterContext.Widget) then
-    QPainter_begin(FPrinterContext.Widget, QtDefaultPrinter.Handle);
+  FPrinterActive := FPrinterContext <> nil;
 end;
 
 procedure TQtPrinter.endDoc;
@@ -2800,6 +2802,7 @@ begin
     FPrinterContext.Free;
     FPrinterContext := nil;
   end;
+  FPrinterActive := False;
 end;
 
 function TQtPrinter.getPrinterContext: TQtDeviceContext;
