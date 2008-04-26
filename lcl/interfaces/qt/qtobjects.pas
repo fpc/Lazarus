@@ -272,6 +272,7 @@ type
   public
     { Our own functions }
     constructor Create(AWidget: QWidgetH; const APaintEvent: Boolean = False); virtual;
+    constructor CreatePrinterContext(ADevice: QPrinterH); virtual;
     constructor CreateFromPainter(APainter: QPainterH);
     destructor Destroy; override;
     procedure CreateObjects;
@@ -406,9 +407,7 @@ type
   
   TQtClipboard = class(TQtObject)
   private
-    // {$IFNDEF MSWINDOWS}
     FClipDataChangedHook: QClipboard_hookH;
-    // {$ENDIF}
     FClipChanged: Boolean;
     FClipBoardFormats: TStringList;
     FOnClipBoardRequest: TClipboardRequestEvent;
@@ -442,7 +441,9 @@ type
   TQtPrinter = class(TQtObject)
   protected
     FHandle: QPrinterH;
+    FPrinterContext: TQtDeviceContext;
   private
+    function getPrinterContext: TQtDeviceContext;
     function getCollateCopies: Boolean;
     function getColorMode: QPrinterColorMode;
     function getCreator: WideString;
@@ -484,6 +485,10 @@ type
   public
     constructor Create; override;
     destructor Destroy; override;
+    
+    procedure beginDoc;
+    procedure endDoc;
+    
     function NewPage: Boolean;
     function Abort: Boolean;
     procedure setFromPageToPage(Const AFromPage, AToPage: Integer);
@@ -510,6 +515,7 @@ type
     property PageOrder: QPrinterPageOrder read getPageOrder write setPageOrder;
     property PageSize: QPrinterPageSize read getPageSize write setPageSize;
     property PaperSource: QPrinterPaperSource read getPaperSource write setPaperSource;
+    property PrinterContext: TQtDeviceContext read getPrinterContext;
     property PrinterName: WideString read getPrinterName write setPrinterName;
     property PrintRange: QPrinterPrintRange read getPrintRange write setPrintRange;
     property PrinterState: QPrinterPrinterState read getPrinterState;
@@ -658,12 +664,10 @@ begin
 end;
 *)
 
-  
-
 function QtDefaultContext: TQtDeviceContext;
 begin
   if FDefaultContext = nil then
-    FDefaultContext := TQtDeviceContext.Create(nil);
+    FDefaultContext := TQtDeviceContext.Create(nil, False);
   Result := FDefaultContext;
 end;
 
@@ -673,7 +677,7 @@ begin
     FScreenContext := TQtDeviceContext.Create(QApplication_desktop(), False);
   Result := FScreenContext;
 end;
-  
+
 { TQtObject }
 
 constructor TQtObject.Create;
@@ -1518,6 +1522,16 @@ begin
       Widget := QPainter_create(QWidget_to_QPaintDevice(Parent));
     end;
   end;
+  FOwnPainter := True;
+  CreateObjects;
+  FPenPos.X := 0;
+  FPenPos.Y := 0;
+end;
+
+constructor TQtDeviceContext.CreatePrinterContext(ADevice: QPrinterH);
+begin
+  Parent := nil;
+  Widget := QPainter_Create(ADevice);
   FOwnPainter := True;
   CreateObjects;
   FPenPos.X := 0;
@@ -2562,18 +2576,17 @@ end;
 function TQtClipboard.IsClipboardChanged: Boolean;
 var
   ClipBord: TClipboard;
-  AMimeData: QMimeDataH;
+  TempMimeData: QMimeDataH;
   Str: WideString;
   Str2: WideString;
-  P: PChar;
 begin
   Result := False;
-  AMimeData := getMimeData(QClipboardClipboard);
-  if (AMimeData <> nil) and
-  (QMimeData_hasText(AMimeData) or QMimeData_hasHtml(AMimeData) or
-    QMimeData_hasURLS(AMimeData)) then
+  TempMimeData := getMimeData(QClipboardClipboard);
+  if (TempMimeData <> nil) and
+  (QMimeData_hasText(TempMimeData) or QMimeData_hasHtml(TempMimeData) or
+    QMimeData_hasURLS(TempMimeData)) then
   begin
-    QMimeData_text(AMimeData, @Str);
+    QMimeData_text(TempMimeData, @Str);
     Str := UTF8Encode(Str);
     
     {we must check for null terminator}
@@ -2769,6 +2782,31 @@ begin
   if FHandle <> nil then
     QPrinter_destroy(FHandle);
   inherited Destroy;
+end;
+
+procedure TQtPrinter.beginDoc;
+begin
+  getPrinterContext;
+  if not QPainter_isActive(FPrinterContext.Widget) then
+    QPainter_begin(FPrinterContext.Widget, QtDefaultPrinter.Handle);
+end;
+
+procedure TQtPrinter.endDoc;
+begin
+  if FPrinterContext <> nil then
+  begin
+    if QPainter_isActive(FPrinterContext.Widget) then
+      QPainter_end(FPrinterContext.Widget);
+    FPrinterContext.Free;
+    FPrinterContext := nil;
+  end;
+end;
+
+function TQtPrinter.getPrinterContext: TQtDeviceContext;
+begin
+  if FPrinterContext = nil then
+    FPrinterContext := TQtDeviceContext.CreatePrinterContext(Handle);
+  Result := FPrinterContext;
 end;
 
 function TQtPrinter.getCollateCopies: Boolean;
