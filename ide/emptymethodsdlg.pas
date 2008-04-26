@@ -32,11 +32,12 @@ unit EmptyMethodsDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  ExtCtrls, StdCtrls, ButtonPanel, SynEdit, SynHighlighterPas,
+  Classes, SysUtils, TypInfo, LCLProc, LResources, Forms, Controls, Graphics,
+  Dialogs, ExtCtrls, StdCtrls, ButtonPanel, SynEdit, SynHighlighterPas,
   CodeToolsStructs, CodeAtom, CodeCache, CodeToolManager, PascalParserTool,
   CodeTree,
-  SrcEditorIntf, LazIDEIntf,
+  SrcEditorIntf, LazIDEIntf, PropEdits,
+  Project,
   LazarusIDEStrConsts;
 
 type
@@ -158,17 +159,125 @@ end;
 
 procedure TEmptyMethodsDialog.OKButtonClick(Sender: TObject);
 var
-  AllEmpty: boolean;
   RemovedProcHeads: TStrings;
+  PropChanged: boolean;
+
+  function ExtractClassName: string;
+  var
+    ProcName: string;
+    p: LongInt;
+    i: Integer;
+  begin
+    Result:='';
+    if (RemovedProcHeads=nil) or (RemovedProcHeads.Count=0) then exit;
+    for i:=RemovedProcHeads.Count-1 downto 0 do begin
+      ProcName:=RemovedProcHeads[i];
+      p:=System.Pos('.',ProcName);
+      if p<1 then
+        RemovedProcHeads.Delete(i)
+      else begin
+        Result:=copy(ProcName,1,p-1);
+        RemovedProcHeads[i]:=copy(ProcName,p+1,length(ProcName));
+        //DebugLn(['ExtractClassName RemovedProcHeads[i]=',RemovedProcHeads[i]]);
+      end;
+    end;
+  end;
+
+  procedure CheckEvents(LookupRoot, AComponent: TComponent);
+  var
+    TypeInfo: PTypeInfo;
+    TypeData: PTypeData;
+    PropInfo: PPropInfo;
+    CurCount: Word;
+    AMethod: TMethod;
+    AMethodName: String;
+    i: Integer;
+  begin
+    // read all properties and remove doubles
+    TypeInfo:=PTypeInfo(AComponent.ClassInfo);
+    repeat
+      // read all property infos of current class
+      TypeData:=GetTypeData(TypeInfo);
+      // skip unitname
+      PropInfo:=PPropInfo(PByte(@TypeData^.UnitName)+Length(TypeData^.UnitName)+1);
+      // read property count
+      CurCount:=PWord(PropInfo)^;
+      inc(PtrUInt(PropInfo),SizeOf(Word));
+      // read properties
+      while CurCount>0 do begin
+        // point PropInfo to next propinfo record.
+        // Located at Name[Length(Name)+1] !
+        if (PropInfo^.PropType^.Kind=tkMethod) then begin
+          // event
+          AMethod:=GetMethodProp(AComponent,PropInfo);
+          AMethodName:=GlobalDesignHook.GetMethodName(AMethod,nil);
+          //DebugLn(['CheckEvents ',PropInfo^.Name,' AMethodName=',AMethodName]);
+          if AMethodName<>'' then begin
+            i:=RemovedProcHeads.Count-1;
+            while (i>=0)
+            and (SysUtils.CompareText(RemovedProcHeads[i],AMethodName)<>0) do
+              dec(i);
+            if i>=0 then begin
+              DebugLn(['TEmptyMethodsDialog.OKButtonClick Clearing Property=',PropInfo^.Name,' AMethodName=',AMethodName]);
+              FillByte(AMethod,SizeOf(AMethod),0);
+              SetMethodProp(AComponent,PropInfo,AMethod);
+              PropChanged:=true;
+            end;
+          end;
+        end;
+        PropInfo:=PPropInfo(pointer(@PropInfo^.Name)+PByte(@PropInfo^.Name)^+1);
+        dec(CurCount);
+      end;
+      TypeInfo:=TypeData^.ParentInfo;
+    until TypeInfo=nil;
+  end;
+
+var
+  AllEmpty: boolean;
+  AnUnitInfo: TUnitInfo;
+  i: Integer;
+  LookupRoot: TComponent;
+  CurClassName: String;
 begin
-  DebugLn(['TEmptyMethodsDialog.OKButtonClick ']);
+  //DebugLn(['TEmptyMethodsDialog.OKButtonClick ']);
   RemovedProcHeads:=nil;
   try
     if (not CodeToolBoss.RemoveEmptyMethods(Code,Caret.X,Caret.Y,Sections,
-      AllEmpty,[],RemovedProcHeads))
+      AllEmpty,
+      [phpAddClassName,phpDoNotAddSemicolon,phpWithoutParamList,
+       phpWithoutBrackets,phpWithoutClassKeyword,phpWithoutSemicolon],
+      RemovedProcHeads))
     then begin
       DebugLn(['TEmptyMethodsDialog.OKButtonClick failed']);
       exit;
+    end;
+    if (RemovedProcHeads<>nil) and (RemovedProcHeads.Count>0) then begin
+      // RemovedProcHeads contains a list of classname.procname
+      // remove the classname from the list
+      CurClassName:=ExtractClassName;
+      //DebugLn(['TEmptyMethodsDialog.OKButtonClick CurClassName=',CurClassName]);
+      if CurClassName<>'' then begin
+        if (Project1<>nil) then begin
+          AnUnitInfo:=Project1.UnitInfoWithFilename(Code.Filename);
+          //DebugLn(['TEmptyMethodsDialog.OKButtonClick AnUnitInfo=',AnUnitInfo<>nil]);
+          if AnUnitInfo<>nil then begin
+            // fix events of designer components
+            LookupRoot:=AnUnitInfo.Component;
+            //DebugLn(['TEmptyMethodsDialog.OKButtonClick LookupRoot=',DbgSName(LookupRoot)]);
+            if (LookupRoot<>nil)
+            and (SysUtils.CompareText(LookupRoot.ClassName,CurClassName)=0) then
+            begin
+              PropChanged:=false;
+              CheckEvents(LookupRoot,LookupRoot);
+              for i:=0 to LookupRoot.ComponentCount-1 do
+                CheckEvents(LookupRoot,LookupRoot.Components[i]);
+              // update objectinspector
+              if PropChanged and (GlobalDesignHook.LookupRoot=LookupRoot) then
+                GlobalDesignHook.RefreshPropertyValues;
+            end;
+          end;
+        end;
+      end;
     end;
   finally
     RemovedProcHeads.Free;
