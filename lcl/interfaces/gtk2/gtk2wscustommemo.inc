@@ -328,5 +328,50 @@ begin
   Result := Abs(gtk_text_iter_get_offset(@EndIter) - gtk_text_iter_get_offset(@StartIter));
 end;
 
+class function TGtk2WSCustomMemo.GetCaretPos(const ACustomEdit: TCustomEdit
+  ): TPoint;
+var
+  TextView: PGtkTextView;
+  TextBuffer: PGtkTextBuffer;
+  TextMark: PGtkTextMark;
+  TextIter: TGtkTextIter;
+begin
+  Result := Point(0, 0);
+  if not WSCheckHandleAllocated(ACustomEdit, 'GetCaretPos') then
+    Exit;
+  TextView := PGtkTextView(GetWidgetInfo(Pointer(ACustomEdit.Handle), False)^.CoreWidget);
+  TextBuffer := gtk_text_view_get_buffer(TextView);
+  TextMark := gtk_text_buffer_get_insert(TextBuffer);
+  gtk_text_buffer_get_iter_at_mark(TextBuffer, @TextIter, TextMark);
 
+  Result.X := gtk_text_iter_get_line_offset(@TextIter);
+  Result.Y := gtk_text_iter_get_line(@TextIter);
+end;
 
+class procedure TGtk2WSCustomMemo.SetCaretPos(const ACustomEdit: TCustomEdit;
+  const NewPos: TPoint);
+var
+  TextView: PGtkTextView;
+  TextBuffer: PGtkTextBuffer;
+  TextIter: TGtkTextIter;
+begin
+  if not WSCheckHandleAllocated(ACustomEdit, 'SetCaretPos') then
+    Exit;
+  TextView := PGtkTextView(GetWidgetInfo(Pointer(ACustomEdit.Handle), False)^.CoreWidget);
+  TextBuffer := gtk_text_view_get_buffer(TextView);
+
+  if (NewPos.X < 0) or (NewPos.Y < 0)
+    then Exit;
+
+{ this is quicker, but crashes if given invalid coords:
+  gtk_text_buffer_get_iter_at_line_offset(TextBuffer, @TextIter, NewPos.Y, NewPos.X); }
+
+  if (NewPos.Y >= gtk_text_buffer_get_line_count(TextBuffer))
+    then Exit;
+  gtk_text_buffer_get_iter_at_line(TextBuffer, @TextIter, NewPos.Y);
+  if (NewPos.X >= gtk_text_iter_get_chars_in_line(@TextIter))
+    then Exit;
+  gtk_text_iter_set_line_offset(@TextIter, NewPos.X);
+
+  gtk_text_buffer_place_cursor(TextBuffer, @TextIter);
+end;

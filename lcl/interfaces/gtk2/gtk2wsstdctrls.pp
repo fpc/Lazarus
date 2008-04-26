@@ -221,6 +221,9 @@ type
     class procedure GetPreferredSize(const AWinControl: TWinControl;
                         var PreferredWidth, PreferredHeight: integer;
                         WithThemeSpace: Boolean); override;
+
+    class function GetCaretPos(const ACustomEdit: TCustomEdit): TPoint; override;
+    class procedure SetCaretPos(const ACustomEdit: TCustomEdit; const NewPos: TPoint); override;
   end;
 
   { TGtk2WSEdit }
