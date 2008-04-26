@@ -2671,10 +2671,12 @@ begin
   // Get the invalidated rect. Compute the invalid area in lines / columns.
   {$IFDEF SYN_LAZARUS}
     {$IFDEF EnableDoubleBuf}
-  rcClip:=Rect(0,0,ClientWidth,ClientHeight);
+  //rcClip:=Rect(0,0,ClientWidth,ClientHeight);
+  rcClip := Canvas.ClipRect;
   StartPaintBuffer(rcClip);
     {$ELSE}
   rcClip := Canvas.ClipRect;
+  //DebugLn(['TCustomSynEdit.Paint rcClip=',dbgs(rcClip)]);
     {$ENDIF}
   Include(fStateFlags,sfPainting);
   {$ELSE}
