@@ -159,12 +159,19 @@ end;
 procedure TEmptyMethodsDialog.OKButtonClick(Sender: TObject);
 var
   AllEmpty: boolean;
+  RemovedProcHeads: TStrings;
 begin
   DebugLn(['TEmptyMethodsDialog.OKButtonClick ']);
-  if (not CodeToolBoss.RemoveEmptyMethods(Code,Caret.X,Caret.Y,Sections,AllEmpty))
-  then begin
-    DebugLn(['TEmptyMethodsDialog.OKButtonClick failed']);
-    exit;
+  RemovedProcHeads:=nil;
+  try
+    if (not CodeToolBoss.RemoveEmptyMethods(Code,Caret.X,Caret.Y,Sections,
+      AllEmpty,[],RemovedProcHeads))
+    then begin
+      DebugLn(['TEmptyMethodsDialog.OKButtonClick failed']);
+      exit;
+    end;
+  finally
+    RemovedProcHeads.Free;
   end;
   ModalResult:=mrOk;
 end;

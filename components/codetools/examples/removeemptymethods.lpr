@@ -30,7 +30,8 @@ program RemoveEmptyMethods;
 
 uses
   Classes, SysUtils, CodeCache, CodeToolManager, DefineTemplates,
-  CodeAtom, CodeToolsConfig, CodeToolsStructs, EmptyMethods1;
+  CodeAtom, CodeToolsConfig, CodeToolsStructs, PascalParserTool,
+  EmptyMethods1;
 
 const
   ConfigFilename = 'codetools.config';
@@ -44,6 +45,7 @@ var
   P: PCodeXYPosition;
   All: boolean;
   Sections: TPascalClassSections;
+  RemovedProcHeads: TStrings;
 begin
   if (ParamCount>=1) and (Paramcount<>3) then begin
     writeln('Usage:');
@@ -79,15 +81,18 @@ begin
         P:=PCodeXYPosition(ListOfPCodeXYPosition[i]);
         writeln(i,' ',DbgsCXY(P^));
       end;
-      if CodeToolBoss.RemoveEmptyMethods(Code,X,Y,Sections,All)
+      if CodeToolBoss.RemoveEmptyMethods(Code,X,Y,Sections,All,[],RemovedProcHeads)
       then begin
         writeln('Empty methods removed:');
+        if RemovedProcHeads<>nil then
+          writeln(RemovedProcHeads.Text);
         writeln('=========================');
         writeln(Code.Source);
         writeln('=========================');
       end else begin
         writeln('RemoveEmptyMethods failed: ',CodeToolBoss.ErrorMessage);
       end;
+      RemovedProcHeads.Free;
     end else begin
       writeln('FindEmptyMethods failed: ',CodeToolBoss.ErrorMessage);
     end;

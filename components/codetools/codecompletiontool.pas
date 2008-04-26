@@ -253,7 +253,9 @@ type
     function RemoveEmptyMethods(CursorPos: TCodeXYPosition;
                               const Sections: TPascalClassSections;
                               SourceChangeCache: TSourceChangeCache;
-                              out AllRemoved: boolean): boolean;
+                              out AllRemoved: boolean;
+                              const Attr: TProcHeadAttributes;
+                              out RemovedProcHeads: TStrings): boolean;
 
     // custom class completion
     function InitClassCompletion(const UpperClassName: string;
@@ -4141,7 +4143,8 @@ end;
 
 function TCodeCompletionCodeTool.RemoveEmptyMethods(CursorPos: TCodeXYPosition;
   const Sections: TPascalClassSections; SourceChangeCache: TSourceChangeCache;
-  out AllRemoved: boolean): boolean;
+  out AllRemoved: boolean;
+  const Attr: TProcHeadAttributes; out RemovedProcHeads: TStrings): boolean;
 var
   ProcBodyNodes: TAVLTree;
   AVLNode: TAVLTreeNode;
@@ -4157,9 +4160,11 @@ var
   CommentStartPos: integer;
   ProcDefNodes: TAVLTree;
   NextAVLNode: TAVLTreeNode;
+  ProcHead: String;
 begin
   Result:=false;
   AllRemoved:=false;
+  RemovedProcHeads:=nil;
   if (SourceChangeCache=nil) or (Scanner=nil) then exit;
   SourceChangeCache.MainScanner:=Scanner;
   ProcBodyNodes:=TAVLTree.Create(@CompareCodeTreeNodeExt);
@@ -4219,6 +4224,10 @@ begin
         NodeExt.Position:=NodeExt.Node.StartPos;
         if (NodeExt.Node<>nil) and (ProcDefNodes.Find(NodeExt)=nil) then begin
           ProcDefNodes.Add(NodeExt);
+          if RemovedProcHeads=nil then
+            RemovedProcHeads:=TStringList.Create;
+          ProcHead:=ExtractProcHead(NodeExt.Node,Attr);
+          RemovedProcHeads.Add(ProcHead);
         end else begin
           NodeExt.Free;
         end;

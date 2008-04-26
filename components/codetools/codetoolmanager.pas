@@ -478,7 +478,9 @@ type
                               out AllEmpty: boolean): boolean;
     function RemoveEmptyMethods(Code: TCodeBuffer; X,Y: integer;
                                 const Sections: TPascalClassSections;
-                                out AllRemoved: boolean): boolean;
+                                out AllRemoved: boolean;
+                                const Attr: TProcHeadAttributes;
+                                out RemovedProcHeads: TStrings): boolean;
 
     // custom class completion
     function InitClassCompletion(Code: TCodeBuffer;
@@ -3342,7 +3344,8 @@ begin
 end;
 
 function TCodeToolManager.RemoveEmptyMethods(Code: TCodeBuffer; X,Y: integer;
-  const Sections: TPascalClassSections; out AllRemoved: boolean): boolean;
+  const Sections: TPascalClassSections; out AllRemoved: boolean;
+  const Attr: TProcHeadAttributes; out RemovedProcHeads: TStrings): boolean;
 var
   CursorPos: TCodeXYPosition;
 begin
@@ -3356,7 +3359,7 @@ begin
   CursorPos.Code:=Code;
   try
     Result:=FCurCodeTool.RemoveEmptyMethods(CursorPos,Sections,
-                                            SourceChangeCache,AllRemoved);
+                            SourceChangeCache,AllRemoved,Attr,RemovedProcHeads);
   except
     on e: Exception do Result:=HandleException(e);
   end;
