@@ -4213,8 +4213,11 @@ begin
         ProcBodyNodes.Delete(AVLNode);
         // and add it to ProcDefNodes
         // the definition node is the Data
+        // Note: the class can contain errors and therefore some method bodies
+        // refer to the same definition => skip doubles
         NodeExt.Node:=TCodeTreeNode(NodeExt.Data);
-        if NodeExt.Node<>nil then begin
+        NodeExt.Position:=NodeExt.Node.StartPos;
+        if (NodeExt.Node<>nil) and (ProcDefNodes.Find(NodeExt)=nil) then begin
           ProcDefNodes.Add(NodeExt);
         end else begin
           NodeExt.Free;
