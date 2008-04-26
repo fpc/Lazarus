@@ -95,8 +95,13 @@ begin
       Down := True;
       AllowAllUp := True;
       
-      IDEImages.Images_16.GetBitmap(
+      try
+        IDEImages.Images_16.GetBitmap(
                IDEImages.LoadImage(16, 'issue_'+LCLPlatformDirNames[P]), Glyph);
+      except
+        DebugLn('Restriction Browser: Unable to load image for ' + LCLPlatformDirNames[P] + '!');
+      end;
+      
       ShowHint := True;
       Hint := LCLPlatformDisplayNames[P];
       OnClick := @NameFilterEditChange;
