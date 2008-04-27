@@ -40,10 +40,10 @@ uses
   InterfaceBase, LCLProc, LCLType, LMessages,
   Controls, ExtCtrls, Forms, Dialogs, StdCtrls, Comctrls, LCLIntf,
   GraphType,
-  // Interface
-  fpgfx,
-  gui_form,
-  FPGUIWSPrivate;
+  // Bindings
+  fpgfx, gui_form,
+  // Widgetset
+  FPGUIWSPrivate, fpguiobjects;
 
 type
 
@@ -83,7 +83,7 @@ type
     function IsValidDC(const DC: HDC): Boolean; virtual;
     function IsValidGDIObject(const GDIObject: HGDIOBJ): Boolean; virtual;
   public
-    {.$I fpguiwinapih.inc}
+    {$I fpguiwinapih.inc}
     {.$I fpguilclintfh.inc}
   end;
 
@@ -128,7 +128,7 @@ uses
   Graphics, buttons, Menus;
 
 {$I fpguiobject.inc}
-{.$I fpguiwinapi.inc}
+{$I fpguiwinapi.inc}
 {.$I fpguilclintf.inc}
 {.$I fpguicallback.inc}
 

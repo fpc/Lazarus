@@ -27,13 +27,14 @@
 
 unit fpguiwsprivate;
 
-{$mode objfpc}{$H+}
+{$mode delphi}
 
 interface
 
 uses
   // LCL
   LCLType, LMessages, LCLProc, Controls, Classes, SysUtils, Forms,
+  LCLIntf,
   // widgetset
   WSControls, WSLCLClasses, WSProc,
   // interface
@@ -63,7 +64,6 @@ type
   { TFPGUIPrivateWidget }
   { Private class for widgets }
 
-
   TFPGUIPrivateWidget = class(TFPGUIPrivate)
   private
     FWidget: TfpgWidget;
@@ -72,12 +72,16 @@ type
     procedure SetVisible(const AValue: Boolean);
   protected
   public
+    { Constructors / Destructors }
     constructor Create(ALCLObject: TWinControl; const AParams: TCreateParams); virtual;
     destructor Destroy; override;
+    { Virtual methods }
     procedure CreateWidget(const AParams: TCreateParams); virtual; abstract;
+    procedure SetEvents; virtual;
     procedure SetSize(AWidth, AHeight: LongInt); virtual;
     procedure SetPosition(AX, AY: Integer); virtual;
-
+  public
+    { Properties }
     property LCLObject: TWinControl read FLCLObject;
     property Visible: Boolean read GetVisible write SetVisible;
     property Widget: TfpgWidget read FWidget write FWidget;
@@ -114,15 +118,22 @@ type
 
   TFPGUIPrivateWindow = class(TFPGUIPrivateBin, ISimpleText)
   private
+    { Event Handlers }
+    procedure PaintHandler(Sender: TObject{; const ARect: TfpgRect});
   protected
   public
-    function Form: TfpgForm;
+    { Constructors / Destructors }
     constructor Create(ALCLObject: TWinControl; const AParams: TCreateParams); override;
-    procedure CreateWidget(const AParams: TCreateParams); override;
     destructor Destroy; override;
+    { Virtual methods }
+    procedure CreateWidget(const AParams: TCreateParams); override;
+    procedure SetEvents; override;
     procedure SetSize(AWidth, AHeight: LongInt); override;
     procedure SetPosition(AX, AY: Integer); override;
-  // ISimpleText
+  public
+    { Other methods }
+    function Form: TfpgForm;
+    { ISimpleText }
     procedure SetText(const AText: String);
     function GetText: String;
   end;
@@ -249,6 +260,8 @@ begin
   FLCLObject := ALCLObject;
 
   CreateWidget(AParams);
+  
+  SetEvents;
 end;
 
 destructor TFPGUIPrivateWidget.Destroy;
@@ -256,6 +269,11 @@ begin
   FreeAndNil(Widget);
 
   inherited Destroy;
+end;
+
+procedure TFPGUIPrivateWidget.SetEvents;
+begin
+
 end;
 
 procedure TFPGUIPrivateWidget.SetSize(AWidth, AHeight: LongInt);
@@ -324,6 +342,49 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: TFPGUIPrivateWindow.PaintHandler
+
+  Sends a LM_PAINT message to the LCL. This is for windowed controls only
+ ------------------------------------------------------------------------------}
+procedure TFPGUIPrivateWindow.PaintHandler(Sender: TObject);
+var
+  Msg: TLMPaint;
+  AStruct: PPaintStruct;
+begin
+  {$ifdef VerboseFPGUIPrivate}
+    WriteLn('TFPGUIPrivateWindow.PaintHandler');
+  {$endif}
+  
+  if (LCLObject is TWinControl) then
+  begin
+    FillChar(Msg, SizeOf(Msg), #0);
+
+    Msg.Msg := LM_PAINT;
+    New(AStruct);
+    FillChar(AStruct^, SizeOf(TPaintStruct), 0);
+    Msg.PaintStruct := AStruct;
+    Msg.DC := BeginPaint(THandle(Self), AStruct^);
+
+//    Msg.PaintStruct^.rcPaint := PaintData.ClipRect^;
+    Msg.PaintStruct^.hdc := Msg.DC;
+
+
+    // send paint message
+    try
+      // Saving clip rect and clip region
+      try
+        LCLObject.WindowProc(TLMessage(Msg));
+      finally
+        EndPaint(THandle(Self), AStruct^);
+        Dispose(AStruct);
+      end;
+    except
+      Application.HandleException(nil);
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Method: TFPGUIPrivateWindow.Create
   Params:  None
   Returns: Nothing
@@ -347,6 +408,18 @@ begin
 {$ENDIF}
   Widget := TfpgForm.Create(nil);
   Form.SetPosition(AParams.X, AParams.Y, AParams.Width, AParams.Height);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TFPGUIPrivateWindow.SetEvents
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TFPGUIPrivateWindow.SetEvents;
+begin
+  inherited SetEvents;
+
+  Form.OnPaint := PaintHandler;
 end;
 
 {------------------------------------------------------------------------------
@@ -434,7 +507,7 @@ begin
   inherited Create(ALCLObject, AParams);
 
   // Events
-  Button.OnClick := @Clicked;
+  Button.OnClick := Clicked;
 end;
 
 {------------------------------------------------------------------------------
