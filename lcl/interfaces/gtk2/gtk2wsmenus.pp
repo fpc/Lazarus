@@ -59,6 +59,7 @@ type
   private
   protected
   public
+    class procedure SetBiDiMode(const AMenu: TMenu; UseRightToLeftAlign, UseRightToLeftReading : Boolean); override;
   end;
 
   { TGtk2WSMainMenu }
@@ -79,6 +80,8 @@ type
 
 
 implementation
+
+{$I gtkdefines.inc}
 
 { TGtk2WSMenuItem }
 
@@ -339,6 +342,29 @@ begin
   if not WSCheckMenuItem(AMenuItem, 'UpdateMenuIcon') then
     Exit;
   // TODO
+end;
+
+{ TGtk2WSMenu }
+
+class procedure TGtk2WSMenu.SetBiDiMode(const AMenu : TMenu;
+  UseRightToLeftAlign, UseRightToLeftReading : Boolean
+  );
+{$ifdef GTK_2_8}
+const
+  MenuDirection : array[Boolean] of Longint = (GTK_PACK_DIRECTION_LTR, GTK_PACK_DIRECTION_RTL);
+{$endif}
+
+begin
+  {$ifdef GTK_2_8}
+     gtk_menu_bar_set_pack_direction(PGtkMenuBar(AMenu.Handle), MenuDirection[UseRightToLeftAlign]);
+  {$endif}
+
+  if UseRightToLeftReading then
+   begin
+   end
+  else begin
+       end;
+
 end;
 
 initialization

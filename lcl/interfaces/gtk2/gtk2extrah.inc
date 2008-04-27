@@ -153,6 +153,17 @@ procedure gdk_pango_renderer_set_override_color(gdk_renderer: PGdkPangoRenderer;
 // gdk 2.8
 procedure gdk_display_warp_pointer(display: PGdkDisplay; screen: PGdkScreen; x, y: gint); cdecl; external gdklib;
 function gdk_screen_get_rgba_colormap(screen: PGdkScreen): PGdkColormap; cdecl; external gdklib;
+
+type
+  TGtkPackDirection = longint;
+  
+const
+  GTK_PACK_DIRECTION_LTR = 0;
+  GTK_PACK_DIRECTION_RTL = 1;
+  GTK_PACK_DIRECTION_TTB = 2;
+  GTK_PACK_DIRECTION_BTT = 3;
+
+procedure gtk_menu_bar_set_pack_direction(menubar : PGtkMenuBar; pack_dir : TGtkPackDirection); cdecl; external gtklib;
 {$endif}
 {$ifdef GTK_2_10}
 function gdk_screen_is_composited(screen: PGdkScreen): gboolean; cdecl; external gdklib;

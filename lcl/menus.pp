@@ -317,6 +317,8 @@ type
     function IsShortcut(var Message: TLMKey): boolean;
     function HandleAllocated: Boolean;
     function IsRightToLeft: Boolean; virtual;
+    function UseRightToLeftAlignment: Boolean; virtual;
+    function UseRightToLeftReading: Boolean; virtual;
     procedure HandleNeeded;
     function DispatchCommand(ACommand: Word): Boolean;
   public

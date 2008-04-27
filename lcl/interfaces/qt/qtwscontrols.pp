@@ -79,7 +79,7 @@ type
     class function  GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
     class function  GetClientRect(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
 
-    class procedure SetBiDiMode(const AWinControl: TWinControl; const ABiDiMode: TBiDiMode); override;
+    class procedure SetBiDiMode(const AWinControl: TWinControl; UseRightToLeftAlign, UseRightToLeftReading, UseRightToLeftScrollBar : Boolean); override;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
     class procedure SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); override;
@@ -317,12 +317,14 @@ begin
   Result := True;
 end;
 
-class procedure TQtWSWinControl.SetBiDiMode(const AWinControl: TWinControl;
-  const ABiDiMode: TBiDiMode);
+class procedure TQtWSWinControl.SetBiDiMode(const AWinControl : TWinControl;
+  UseRightToLeftAlign, UseRightToLeftReading, UseRightToLeftScrollBar : Boolean
+  );
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetBiDiMode') then
     Exit;
-  TQtWidget(AWinControl.Handle).setLayoutDirection(TLayoutDirectionMap[AWinControl.UseRightToLeftReading]);
+
+  TQtWidget(AWinControl.Handle).setLayoutDirection(TLayoutDirectionMap[UseRightToLeftAlign]);
 end;
 
 class procedure TQtWSWinControl.GetPreferredSize(const AWinControl: TWinControl;

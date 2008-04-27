@@ -5970,7 +5970,7 @@ begin
   inherited;
   NotifyControls(CM_PARENTBIDIMODECHANGED);
   if HandleAllocated and (Message.wParam = 0) then
-    TWSWinControlClass(WidgetSetClass).SetBiDiMode(Self, BiDiMode);
+    TWSWinControlClass(WidgetSetClass).SetBiDiMode(Self, UseRightToLeftAlignment, UseRightToLeftReading, UseRightToLeftScrollBar);
 end;
 
 {------------------------------------------------------------------------------

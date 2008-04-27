@@ -66,7 +66,7 @@ type
   protected
   public
     class function  CreateHandle(const AMenu: TMenu): HMENU; override;
-    class procedure SetBiDiMode(const AMenu: TMenu; const ABiDiMode: TBiDiMode); override;
+    class procedure SetBiDiMode(const AMenu: TMenu; UseRightToLeftAlign, UseRightToLeftReading : Boolean); override;
   end;
 
   { TQtWSMainMenu }
@@ -387,11 +387,12 @@ begin
   {$endif}
 end;
 
-class procedure TQtWSMenu.SetBiDiMode(const AMenu: TMenu;
-  const ABiDiMode: TBiDiMode);
+class procedure TQtWSMenu.SetBiDiMode(const AMenu : TMenu; UseRightToLeftAlign,
+  UseRightToLeftReading : Boolean);
 begin
-  TQtWidget(AMenu.Handle).setLayoutDirection(TLayoutDirectionMap[AMenu.IsRightToLeft]);
+  TQtWidget(AMenu.Handle).setLayoutDirection(TLayoutDirectionMap[UseRightToLeftAlign]);
 end;
+
 
 { TQtWSPopupMenu }
 

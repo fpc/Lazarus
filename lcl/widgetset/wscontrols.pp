@@ -91,7 +91,7 @@ type
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; virtual;
     class function  GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean; virtual;
 
-    class procedure SetBiDiMode(const AWinControl: TWinControl; const ABiDiMode: TBiDiMode); virtual;
+    class procedure SetBiDiMode(const AWinControl: TWinControl; UseRightToLeftAlign, UseRightToLeftReading, UseRightToLeftScrollBar : Boolean); virtual;
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); virtual;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); virtual;
     class procedure SetColor(const AWinControl: TWinControl); virtual;
@@ -203,8 +203,7 @@ begin
   then ALength := Length(S);
 end;
 
-class procedure TWSWinControl.SetBiDiMode(const AWinControl: TWinControl;
-  const ABiDiMode: TBiDiMode);
+class procedure TWSWinControl.SetBiDiMode(const AWinControl: TWinControl; UseRightToLeftAlign, UseRightToLeftReading, UseRightToLeftScrollBar : Boolean);
 begin
 end;
 

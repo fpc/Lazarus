@@ -73,7 +73,7 @@ type
   TWSMenu = class(TWSLCLComponent)
     class function CreateHandle(const AMenu: TMenu): HMENU; virtual;
     
-    class procedure SetBiDiMode(const AMenu: TMenu; const ABiDiMode: TBiDiMode); virtual;
+    class procedure SetBiDiMode(const AMenu: TMenu; UseRightToLeftAlign, UseRightToLeftReading : Boolean); virtual;
   end;
 
   { TWSMainMenu }
@@ -158,9 +158,11 @@ begin
   Result := 0;
 end;
 
-class procedure TWSMenu.SetBiDiMode(const AMenu: TMenu; const ABiDiMode: TBiDiMode);
+class procedure TWSMenu.SetBiDiMode(const AMenu : TMenu; UseRightToLeftAlign,
+  UseRightToLeftReading : Boolean);
 begin
 end;
+
 
 { TWSPopupMenu }
 

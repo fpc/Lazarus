@@ -74,7 +74,7 @@ end;
 procedure TMenu.BidiModeChanged;
 begin
   if HandleAllocated then
-    TWSMenuClass(WidgetSetClass).SetBiDiMode(Self, BidiMode);
+    TWSMenuClass(WidgetSetClass).SetBiDiMode(Self, UseRightToLeftAlignment, UseRightToLeftReading);
 end;
 
 procedure TMenu.ParentBidiModeChanged(AOwner: TComponent);
@@ -348,6 +348,16 @@ end;
 function TMenu.IsRightToLeft : Boolean;
 Begin
   Result := BidiMode <> bdLeftToRight;
+end;
+
+function TMenu.UseRightToLeftAlignment : Boolean;
+begin
+  Result := (BiDiMode = bdRightToLeft);
+end;
+
+function TMenu.UseRightToLeftReading : Boolean;
+begin
+  Result := (BiDiMode <> bdLeftToRight);
 end;
 
 // included by menus.pp

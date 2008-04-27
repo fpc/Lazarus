@@ -75,7 +75,7 @@ type
     class procedure AddControl(const AControl: TControl); override;
 
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
-    class procedure SetBiDiMode(const AWinControl: TWinControl; const ABiDiMode: TBiDiMode); override;
+    class procedure SetBiDiMode(const AWinControl: TWinControl; UseRightToLeftAlign, UseRightToLeftReading, UseRightToLeftScrollBar : Boolean); override;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
     class procedure SetChildZPosition(const AWinControl, AChild: TWinControl;
@@ -144,7 +144,6 @@ procedure WindowCreateInitBuddy(const AWinControl: TWinControl;
   
 // Must be in win32proc but TCreateWindowExParams declared here
 procedure SetStdBiDiModeParams(const AWinControl: TWinControl; var Params:TCreateWindowExParams);
-procedure UpdateStdBiDiModeFlags(const AWinControl: TWinControl);
 
 implementation
 
@@ -304,24 +303,6 @@ begin
   end;
 end;
 
-procedure UpdateStdBiDiModeFlags(const AWinControl: TWinControl);
-var
-  FlagsEx: dword;
-begin
-  //UpdateStdBiDiModeFlags must called after form loaded when the BidiMode changed at run time
-  if not WSCheckHandleAllocated(AWinControl, 'UpdateStdBiDiModeFlags') then Exit;
-
-  FlagsEx := GetWindowLong(AWinControl.Handle, GWL_EXSTYLE);
-  FlagsEx := FlagsEx and not (WS_EX_RTLREADING or WS_EX_RIGHT or WS_EX_LEFTSCROLLBAR);
-  if AWinControl.UseRightToLeftAlignment then
-    FlagsEx := FlagsEx or WS_EX_RIGHT;
-  if AWinControl.UseRightToLeftReading then
-    FlagsEx := FlagsEx or WS_EX_RTLREADING ;
-  if AWinControl.UseRightToLeftScrollBar then
-    FlagsEx := FlagsEx or WS_EX_LEFTSCROLLBAR;
-  SetWindowLong(AWinControl.Handle, GWL_EXSTYLE, FlagsEx);
-end;
-
 { TWin32WSWinControl }
 
 class function TWin32WSWinControl.CreateHandle(const AWinControl: TWinControl;
@@ -374,10 +355,24 @@ begin
   Result := false;
 end;
 
-class procedure TWin32WSWinControl.SetBiDiMode(const AWinControl: TWinControl;
-  const ABiDiMode: TBiDiMode);
+class procedure TWin32WSWinControl.SetBiDiMode(const AWinControl : TWinControl;
+  UseRightToLeftAlign, UseRightToLeftReading, UseRightToLeftScrollBar : Boolean
+  );
+var
+  FlagsEx: dword;
 begin
-  UpdateStdBiDiModeFlags(AWinControl);
+  if not WSCheckHandleAllocated(AWinControl, 'SetBiDiMode') then
+    Exit;
+
+  FlagsEx := GetWindowLong(AWinControl.Handle, GWL_EXSTYLE);
+  FlagsEx := FlagsEx and not (WS_EX_RTLREADING or WS_EX_RIGHT or WS_EX_LEFTSCROLLBAR);
+  if UseRightToLeftAlign then
+    FlagsEx := FlagsEx or WS_EX_RIGHT;
+  if UseRightToLeftReading then
+    FlagsEx := FlagsEx or WS_EX_RTLREADING ;
+  if UseRightToLeftScrollBar then
+    FlagsEx := FlagsEx or WS_EX_LEFTSCROLLBAR;
+  SetWindowLong(AWinControl.Handle, GWL_EXSTYLE, FlagsEx);
 end;
 
 class procedure TWin32WSWinControl.SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);

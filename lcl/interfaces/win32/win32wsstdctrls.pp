@@ -63,7 +63,8 @@ type
           const AParams: TCreateParams): HWND; override;
     class procedure AdaptBounds(const AWinControl: TWinControl;
           var Left, Top, Width, Height: integer; var SuppressMove: boolean); override;
-    class procedure SetBiDiMode(const AWinControl: TWinControl; const ABiDiMode: TBiDiMode); override;
+    class procedure SetBiDiMode(const AWinControl: TWinControl; UseRightToLeftAlign,
+      UseRightToLeftReading, UseRightToLeftScrollBar : Boolean); override;
   end;
 
   { TWin32WSGroupBox }
@@ -272,7 +273,8 @@ type
     class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
     class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox;
           const OldShortCut, NewShortCut: TShortCut); override;
-    class procedure SetBiDiMode(const AWinControl: TWinControl; const ABiDiMode: TBiDiMode); override;
+    class procedure SetBiDiMode(const AWinControl: TWinControl; UseRightToLeftAlign,
+      UseRightToLeftReading, UseRightToLeftScrollBar : Boolean); override;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
   end;
 
@@ -525,7 +527,8 @@ begin
 end;
 
 class procedure TWin32WSCustomGroupBox.SetBiDiMode(
-  const AWinControl: TWinControl; const ABiDiMode: TBiDiMode);
+  const AWinControl: TWinControl; UseRightToLeftAlign,
+  UseRightToLeftReading, UseRightToLeftScrollBar : Boolean);
 begin
   RecreateWnd(AWinControl);
 end;
@@ -1443,7 +1446,8 @@ begin
 end;
 
 class procedure TWin32WSCustomCheckBox.SetBiDiMode(
-  const AWinControl: TWinControl; const ABiDiMode: TBiDiMode);
+  const AWinControl: TWinControl; UseRightToLeftAlign,
+  UseRightToLeftReading, UseRightToLeftScrollBar : Boolean);
 begin
 //  UpdateStdBiDiModeFlags(AWinControl); not worked
   RecreateWnd(AWinControl);

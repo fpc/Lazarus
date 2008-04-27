@@ -68,7 +68,7 @@ type
   public
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
     
-    class procedure SetBiDiMode(const AWinControl: TWinControl; const ABiDiMode: TBiDiMode); override;
+    class procedure SetBiDiMode(const AWinControl: TWinControl; UseRightToLeftAlign, UseRightToLeftReading, UseRightToLeftScrollBar : Boolean); override;
     
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
@@ -235,20 +235,24 @@ begin
 end;
 
 class procedure TGtk2WSWinControl.SetBiDiMode(const AWinControl : TWinControl;
-  const ABiDiMode : TBiDiMode);
+  UseRightToLeftAlign, UseRightToLeftReading, UseRightToLeftScrollBar : Boolean
+  );
+const
+  WidgetDirection : array[boolean] of longint = (GTK_TEXT_DIR_LTR, GTK_TEXT_DIR_RTL);
 begin
-  case ABiDiMode of
-     bdLeftToRight            : begin
-                                  DebugLn('Setting Left to Right control', []);
-                                  gtk_widget_set_direction(PGtkWidget(AWinControl.Handle), GTK_TEXT_DIR_LTR);
-                                end;
-     bdRightToLeft            : begin
-                                  DebugLn('Setting Right to left control', []);
-                                  gtk_widget_set_direction(PGtkWidget(AWinControl.Handle), GTK_TEXT_DIR_RTL);
-                                end;
-     bdRightToLeftNoAlign     : ; // I don't know how to do it for now (if possible)
-     bdRightToLeftReadingOnly : ; // By default GTK2 support bidi regardless of the layout
-  end;
+  gtk_widget_set_direction(PGtkWidget(AWinControl.Handle), WidgetDirection[UseRightToLeftAlign]);
+       
+  if UseRightToLeftReading then // By default GTK2 support bidi regardless of the layout
+    begin
+    end
+  else begin
+       end;
+
+  if UseRightToLeftScrollBar then  // I don't know how to do it for now (if possible)
+   begin
+   end
+  else begin
+       end;
 end;
 
 class function TGtk2WSWinControl.GetText(const AWinControl: TWinControl;

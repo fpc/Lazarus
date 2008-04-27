@@ -66,7 +66,7 @@ type
   protected
   public
     class function  CreateHandle(const AMenu: TMenu): HMENU; override;
-    class procedure SetBiDiMode(const AMenu: TMenu; const ABiDiMode: TBiDiMode); override;
+    class procedure SetBiDiMode(const AMenu: TMenu; UseRightToLeftAlign, UseRightToLeftReading : Boolean); override;
   end;
 
   { TWin32WSMainMenu }
@@ -782,7 +782,8 @@ begin
   Result := CreateMenu;
 end;
 
-class procedure TWin32WSMenu.SetBiDiMode(const AMenu: TMenu; const ABiDiMode: TBiDiMode);
+class procedure TWin32WSMenu.SetBiDiMode(const AMenu : TMenu;
+  UseRightToLeftAlign, UseRightToLeftReading : Boolean);
 begin
   if not WSCheckHandleAllocated(AMenu, 'SetBiDiMode')
   then Exit;
@@ -793,9 +794,10 @@ begin
   if not (AMenu.Parent is TCustomForm) then Exit;
   if not TCustomForm(AMenu.Parent).HandleAllocated then Exit;
   if csDestroying in AMenu.Parent.ComponentState then Exit;
-  
+
   AddToChangedMenus(TCustomForm(AMenu.Parent).Handle);
 end;
+
 
 { TWin32WSPopupMenu }
 
