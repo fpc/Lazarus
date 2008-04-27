@@ -2366,6 +2366,10 @@ end;
 
 procedure TQtWidget.SetCursor(const ACursor: QCursorH);
 begin
+  {$IFDEF DARWIN}
+  if not QWidget_isVisible(Widget) then
+    exit;
+  {$ENDIF}
   if ACursor <> nil then
     QWidget_setCursor(Widget, ACursor)
   else
