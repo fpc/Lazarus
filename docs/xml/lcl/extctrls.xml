@@ -122,15 +122,15 @@
       <!-- object Visibility: default -->
       <element name="TCustomPage">
         <short>
-          <i>TCustomPage</i>
+          <var>TCustomPage</var>
 
 
 
 
-: The base type for <i>Page</i>
+: The base type for <var>Page</var>
         </short>
         <descr>
-          <i>TCustomPage</i>
+          <var>TCustomPage</var>
 
 
 
@@ -259,12 +259,7 @@
       <!-- property Visibility: public -->
       <element name="TCustomPage.PageIndex">
         <short>
-          <i>PageIndex </i>
-
-
-
-
-- integer index value for this page in the notebook</short>
+          <var>PageIndex </var>- integer index value for this page in the notebook</short>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TCustomPage.Create">
@@ -279,7 +274,9 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomPage.AdjustClientRect">
-        <short/>
+        <short>
+          <var>AdjustClientRect</var> - adjust the size of the client rectangle to fit the specified coordinates <var>ARect</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -289,7 +286,10 @@
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TCustomPage.CanTab"/>
+      <element name="TCustomPage.CanTab">
+        <short>
+          <var>CanTab</var> - if True, this control can be reached by use of the Tab key</short>
+      </element>
       <!-- function result Visibility: default -->
       <element name="TCustomPage.CanTab.Result"/>
       <!-- function Visibility: public -->
@@ -306,12 +306,7 @@
       <!-- property Visibility: public -->
       <element name="TCustomPage.ImageIndex">
         <short>
-          <i>ImageIndex</i>
-
-
-
-
- - integer index value for the image associated with this page</short>
+          <var>ImageIndex</var> - integer index value for the image associated with this page</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomPage.Left">
@@ -579,18 +574,18 @@
       <!-- object Visibility: default -->
       <element name="TCustomNotebook">
         <short>
-          <i>TCustomNotebook</i>       : The base type for <i>TNotebook</i>
+          <var>TCustomNotebook</var>       : The base type for <var>TNotebook</var>
         </short>
         <descr>
           <p>
-            <i>TCustom Notebook</i>
+            <var>TCustom Notebook</var>
 
 
 
 
-: The base type for <i>TNotebook</i>
+: The base type for <var>TNotebook</var>
           </p>
-          <p>A notebook consists of several <i>Pages</i>, usually of similar type and kept indexed. They may contain <i>Images</i> listed in a table. One page is displayed at a time, but the other pages are indicated by tabs which may have their names on them, and a different page can be selected for display by clicking its tab </p>
+          <p>A notebook consists of several <var>Pages</var>, usually of similar type and kept indexed. They may contain <var>Images</var> listed in a table. One page is displayed at a time, but the other pages are indicated by tabs which may have their names on them, and a different page can be selected for display by clicking its tab </p>
         </descr>
       </element>
       <!-- variable Visibility: private -->
@@ -1054,7 +1049,9 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomNotebook.TabIndexAtClientPos">
-        <short/>
+        <short>
+          <var>TabIndexAtClientPos</var> - the index value of the Tab at the specified position <var>ClientPos</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1068,14 +1065,18 @@
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TCustomNotebook.CanTab"/>
+      <element name="TCustomNotebook.CanTab">
+        <short>
+          <var>CanTab</var> - if True, this location can be reached by using the Tab key</short>
+      </element>
       <!-- function result Visibility: default -->
       <element name="TCustomNotebook.CanTab.Result">
         <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomNotebook.GetImageIndex">
-        <short/>
+        <short>
+          <var>GetImageIndex</var> - find the index number of the image associated with the specified Page index</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1090,7 +1091,8 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomNotebook.IndexOf">
-        <short/>
+        <short>
+          <var>IndexOf</var> - returns the index value of a specified page</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1105,7 +1107,9 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomNotebook.CustomPage">
-        <short/>
+        <short>
+          <var>CustomPage</var> - returns the page specified by <var>Index</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1120,7 +1124,8 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomNotebook.CanChangePageIndex">
-        <short/>
+        <short>
+          <var>CanChangePageIndex</var> - determine whether it is permissible to change the index of the page</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1131,7 +1136,8 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomNotebook.GetMinimumTabWidth">
-        <short/>
+        <short>
+          <var>GetMinimumTabWidth</var> - find the smallest permissible tab width</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1142,7 +1148,8 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomNotebook.GetMinimumTabHeight">
-        <short/>
+        <short>
+          <var>GetMinimumTabHeight</var> - find th eleast permissible height for a tab</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1164,43 +1171,48 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomNotebook.Images">
-        <short/>
+        <short>
+          <var>Images</var> - the list of images associated with the pages of this notebook</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomNotebook.OnChanging">
-        <short/>
+        <short>
+          <var>OnChanging</var> - event handler for changing a tab</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomNotebook.OnCloseTabClicked">
-        <short/>
+        <short>
+          <var>OnCloseTabClicked</var> - event handler for clicking on the Close button to close a tab</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomNotebook.OnGetImageIndex">
-        <short/>
+        <short>
+          <var>OnGetImageIndex</var> - event handler for getting an image index</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomNotebook.OnPageChanged">
-        <short/>
+        <short>
+          <var>OnPageChanged</var> - event handler for a change in the page</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomNotebook.Options">
-        <short/>
+        <short>The set of <var>Options</var> for the Notebook: Show close buttons on the tabs, multi-line tabs</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomNotebook.Page">
-        <short/>
+        <short>The current <var>Page</var> of the Notebook</short>
         <descr/>
         <seealso/>
       </element>
@@ -1210,58 +1222,59 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomNotebook.PageCount">
-        <short/>
+        <short>
+          <var>PageCount</var> - the number of Pages in the Notebook</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomNotebook.PageIndex">
-        <short/>
+        <short>
+          <var>PageIndex</var> - Index number of the current page</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomNotebook.PageList">
-        <short/>
+        <short>
+          <var>PageList</var> - the Indexed list of the Pages in the Notebook</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomNotebook.Pages">
-        <short/>
+        <short>The contents of the <var>Pages</var> in the Notebook (as Strings)</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomNotebook.ShowTabs">
-        <short/>
+        <short>
+          <var>ShowTabs</var> - if True (default condition), show the tabs for each page</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomNotebook.TabPosition">
-        <short/>
+        <short>
+          <var>TabPosition</var> - top, bottom, left or right</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TCustomNotebook.TabStop">
-        <short/>
+        <short>
+          <var>TabStop</var> - if True (default condition) this control can be reached using the Tab key</short>
         <descr/>
         <seealso/>
       </element>
       <!-- object Visibility: default -->
       <element name="TPage">
         <short>
-          <i>TPage</i>
-
-
-
-
- : One of the pages in a tabbed Notebook</short>
+          <var>TPage</var> : One of the pages in a tabbed Notebook</short>
         <descr>
           <p>
-            <i>TPage</i>
+            <var>TPage</var>
 
 
 
@@ -1403,16 +1416,16 @@
       <!-- object Visibility: default -->
       <element name="TNotebook">
         <short>
-          <i>TNotebook</i>       : A series of tabbed <i>pages</i>   placed together to make a notebook</short>
+          <var>TNotebook</var>       : A series of tabbed <var>pages</var>   placed together to make a notebook</short>
         <descr>
           <p>
-            <i>TNotebook</i>
+            <var>TNotebook</var>
 
 
 
 
-: A series of tabbed <i>pages</i> placed together to make a notebook</p>
-          <p>A notebook consists of several <i>Pages</i>, usually of similar type and kept indexed. They may contain <i>Images</i> listed in a table. One page is displayed at a time, but the other pages are indicated by tabs which may have their names on them, and a different page can be selected by clicking its tab </p>
+: A series of tabbed <var>pages</var> placed together to make a notebook</p>
+          <p>A notebook consists of several <var>Pages</var>, usually of similar type and kept indexed. They may contain <var>Images</var> listed in a table. One page is displayed at a time, but the other pages are indicated by tabs which may have their names on them, and a different page can be selected by clicking its tab </p>
           <p>Inherits most of its properties from <link id="#lcl.ExtCtrls.TCustomNotebook">TCustomNoteBook</link>
           </p>
         </descr>
@@ -1620,10 +1633,10 @@
       <!-- object Visibility: default -->
       <element name="TTimer">
         <short>
-          <i>TTimer</i>: An elapsed timer useful in many applications</short>
+          <var>TTimer</var>: An elapsed timer useful in many applications</short>
         <descr>
           <p>
-            <i>TTimer</i>: An elapsed timer useful in many applications</p>
+            <var>TTimer</var>: An elapsed timer useful in many applications</p>
           <p>Inherits most of its properties from <link id="#lcl.CustomTimer.TCustomTimer">TCustomTimer</link>
           </p>
         </descr>
@@ -1655,10 +1668,10 @@
       <!-- object Visibility: default -->
       <element name="TIdleTimer">
         <short>
-          <i>TIdleTimer</i> : A timer to measure idle time between processes</short>
+          <var>TIdleTimer</var> : A timer to measure idle time between processes</short>
         <descr>
           <p>
-            <i>TIdleTimer</i>: A timer to measure idle time between processes</p>
+            <var>TIdleTimer</var>: A timer to measure idle time between processes</p>
           <p>Inherits most of its properties from <link id="#lcl.CustomTimer.TCustomTimer">TCustomTimer</link>
           </p>
         </descr>
@@ -2088,11 +2101,11 @@
       <!-- object Visibility: default -->
       <element name="TCustomSplitter">
         <short>
-          <i>TCustomSplitter</i> : the base type for <i>TSplitter</i>
+          <var>TCustomSplitter</var> : the base type for <var>TSplitter</var>
         </short>
         <descr>
           <p>
-            <i>TCustomSplitter</i>: the base type for <i>TSplitter</i>
+            <var>TCustomSplitter</var>: the base type for <var>TSplitter</var>
           </p>
           <p>A Splitter is a vertical or horizontal bar that can be placed on a panel or form, to separate sub-panels functionally and allow re-sizing of the constituent sub-panels</p>
           <p>This class defines many of the basic properties for the children classes, such as positioning, sizing and alignment</p>
@@ -2404,11 +2417,11 @@
       <!-- object Visibility: default -->
       <element name="TSplitter">
         <short>
-          <i>TSplitter</i> : A vertical or horizontal bar placed on a panel or form, to separate sub-panels functionally</short>
+          <var>TSplitter</var> : A vertical or horizontal bar placed on a panel or form, to separate sub-panels functionally</short>
         <descr>
           <p>
-            <i>TSplitter</i>: A vertical or horizontal bar that can be placed on a panel or form, to separate sub-panels functionally and allow re-sizing of the constituent sub-panels</p>
-          <p>The splitter extends for the full height (if vertical) or full width (if horizontal) of the parent control (form or panel) and is anchored to the edges; its position along the length or height of the parent is determined by the programmer or user by moving the whole control with the mouse, and its size can be adjusted using the sizing bars and with the <i>ResizeAnchor</i> property </p>
+            <var>TSplitter</var>: A vertical or horizontal bar that can be placed on a panel or form, to separate sub-panels functionally and allow re-sizing of the constituent sub-panels</p>
+          <p>The splitter extends for the full height (if vertical) or full width (if horizontal) of the parent control (form or panel) and is anchored to the edges; its position along the length or height of the parent is determined by the programmer or user by moving the whole control with the mouse, and its size can be adjusted using the sizing bars and with the <var>ResizeAnchor</var> property </p>
         </descr>
         <seealso>
           <link id="#lcl.StdCtrls.HowToUseStdCtrls">HowToUseStdCtrls</link>
@@ -2525,10 +2538,10 @@
       <!-- object Visibility: default -->
       <element name="TPaintBox">
         <short>
-          <i>TPaintBox</i>: a painted rectangular box with defined size and color</short>
+          <var>TPaintBox</var>: a painted rectangular box with defined size and color</short>
         <descr>
           <p>
-            <i>TPaintBox</i>: a painted rectangular box with defined size and colour</p>
+            <var>TPaintBox</var>: a painted rectangular box with defined size and colour</p>
         </descr>
         <seealso>
           <link id="#lcl.StdCtrls.HowToUseStdCtrls">HowToUseStdCtrls</link>
@@ -2711,10 +2724,10 @@
       <!-- object Visibility: default -->
       <element name="TCustomImage">
         <short>
-          <i>TCustomImage</i> - the base type for <i>TImage</i>
+          <var>TCustomImage</var> - the base type for <var>TImage</var>
         </short>
         <descr>
-          <i>TCustomImage</i>
+          <var>TCustomImage</var>
 
 
 
@@ -2722,8 +2735,8 @@
 
 
 
-: The base type for <i>TImage</i>
-. This is a control of the class <i>TGraphicControl</i>
+: The base type for <var>TImage</var>
+. This is a control of the class <var>TGraphicControl</var>
 , designed to be lightweight and fast</descr>
         <seealso>
           <link id="#lcl.Controls.TGraphicControl">TGraphicControl</link>
@@ -2894,7 +2907,7 @@
       <!-- property Visibility: public -->
       <element name="TCustomImage.Picture">
         <short>
-          <i>Picture </i>
+          <var>Picture </var>
 
 
 
@@ -2948,10 +2961,10 @@
       <!-- object Visibility: default -->
       <element name="TImage">
         <short>
-          <i>TImage</i> - a graphic image placed on the form; usually loaded from a picture file.</short>
+          <var>TImage</var> - a graphic image placed on the form; usually loaded from a picture file.</short>
         <descr>
           <p>
-            <i>TImage</i>
+            <var>TImage</var>
 
 
 
@@ -2960,7 +2973,7 @@
 
 
 : a graphic image placed on the form; usually loaded from a picture file.</p>
-          <p>The actual image is found in <i>Picture</i> or <i>Canvas</i>
+          <p>The actual image is found in <var>Picture</var> or <var>Canvas</var>
           </p>
           <p>Inherits most of its properties from its ancestors, <link id="TCustomImage">TCustomImage</link>, <link id="#lcl.Controls.TGraphicControl">TGraphicControl</link> and <link id="#lcl.Controls.TControl">TControl</link>
           </p>
@@ -3134,7 +3147,7 @@
         <short>A bevel placed around the edge of buttons and other components</short>
         <descr>
           <p>
-            <i>TBevel</i>
+            <var>TBevel</var>
 
 
 
@@ -3204,8 +3217,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TBevel.Paint">
-        <short>Virtual <i>Paint</i> method called in response to paint requests.</short>
-        <descr>Virtual <i>Paint</i> method called in response to paint requests received by the parent control.
+        <short>Virtual <var>Paint</var> method called in response to paint requests.</short>
+        <descr>Virtual <var>Paint</var> method called in response to paint requests received by the parent control.
 </descr>
         <errors/>
         <seealso/>
@@ -3240,7 +3253,7 @@
         <short>Used to align the control in one of four directions.</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>Either reads a flag containing alignment instructions (<i>FAlign</i>) or writes alignment instructions (<i>SetAlign</i>)</p>
+          <p>Either reads a flag containing alignment instructions (<var>FAlign</var>) or writes alignment instructions (<var>SetAlign</var>)</p>
           <p>May have no alignment, may have custom or client alignment, or can be aligned to top, bottom, left or right</p>
         </descr>
         <seealso/>
@@ -3251,7 +3264,7 @@
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determines how the control is to be anchored to its client or parent conrol</p>
-          <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <i>IsAnchorsStored</i>
+          <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <var>IsAnchorsStored</var>
           </p>
         </descr>
         <seealso/>
@@ -3270,24 +3283,24 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TBevel.Constraints">
-        <short>Determine <i>Constraints</i> (max and min height and width) for this control</short>
+        <short>Determine <var>Constraints</var> (max and min height and width) for this control</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>Determine <i>Constraints</i> (max and min height and width) for this control; reads the size constraints or stores new ones.</p>
+          <p>Determine <var>Constraints</var> (max and min height and width) for this control; reads the size constraints or stores new ones.</p>
         </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBevel.Height">
         <short>
-          <i>Height</i> - the vertical dimension of the control</short>
+          <var>Height</var> - the vertical dimension of the control</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBevel.Left">
         <short>
-          <i>Left</i> - the coordinate of the left edge of the control</short>
+          <var>Left</var> - the coordinate of the left edge of the control</short>
         <descr/>
         <seealso/>
       </element>
@@ -3310,7 +3323,7 @@ being raised.
       <!-- property Visibility: published -->
       <element name="TBevel.Shape">
         <short>
-          <i>Shape</i>  - whether a box, a frame or a line along one of the edges</short>
+          <var>Shape</var>  - whether a box, a frame or a line along one of the edges</short>
         <seealso>
           <link id="#lcl.ExtCtrls.TBevelShape"/>
         </seealso>
@@ -3318,14 +3331,14 @@ being raised.
       <!-- property Visibility: published -->
       <element name="TBevel.Top">
         <short>
-          <i>Top</i> - the coordinates of the top edge of the control</short>
+          <var>Top</var> - the coordinates of the top edge of the control</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBevel.Style">
         <short>
-          <i>Style</i> - whether raised or lowered</short>
+          <var>Style</var> - whether raised or lowered</short>
         <seealso>
           <link id="#lcl.ExtCtrls.TBevelStyle"/>
         </seealso>
@@ -3333,7 +3346,7 @@ being raised.
       <!-- property Visibility: published -->
       <element name="TBevel.Visible">
         <short>
-          <i>Visible</i> - can the control be seen?</short>
+          <var>Visible</var> - can the control be seen?</short>
         <descr>
           <pre>The Visible property represents the ability to see a visual control. 
           If Visible is True the control is shown, otherwise it is hidden.
@@ -3346,7 +3359,7 @@ being raised.
       <!-- property Visibility: published -->
       <element name="TBevel.Width">
         <short>
-          <i>Width </i>- the horizontal dimension of the control</short>
+          <var>Width </var>- the horizontal dimension of the control</short>
         <descr/>
         <seealso/>
       </element>
@@ -3388,7 +3401,7 @@ Reads or Writes flag if control is re-sized.
       <!-- property Visibility: published -->
       <element name="TBevel.OnPaint">
         <short>
-          <i>OnPaint</i> - event handler for request to paint canvas</short>
+          <var>OnPaint</var> - event handler for request to paint canvas</short>
         <descr/>
         <seealso/>
       </element>
@@ -3407,15 +3420,15 @@ Reads or Writes flag if control is re-sized.
       <!-- object Visibility: default -->
       <element name="TCustomRadioGroup">
         <short>
-          <i>TCustomRadioGroup:</i>   the base type for <i>TRadioGroup</i>
+          <var>TCustomRadioGroup:</var>   the base type for <var>TRadioGroup</var>
         </short>
         <descr>
           <p>
-            <i>TCustomRadioGroup:</i> the base type for <i>TRadioGroup</i>
+            <var>TCustomRadioGroup:</var> the base type for <var>TRadioGroup</var>
           </p>
           <p>A group of related but mutually exclusive radio buttons,
 requiring the user to select one af a set of alternatives</p>
-          <p>This class defines <i>Items</i>, where the captions for individual radio boxes are stored, <i>Rows</i> and <i>Columns</i> for arranging the radio boxes, and ColumnLayout to determine whether the data are arranged down the columns first, or across the rows first.</p>
+          <p>This class defines <var>Items</var>, where the captions for individual radio boxes are stored, <var>Rows</var> and <var>Columns</var> for arranging the radio boxes, and ColumnLayout to determine whether the data are arranged down the columns first, or across the rows first.</p>
         </descr>
       </element>
       <!-- variable Visibility: private -->
@@ -3590,17 +3603,17 @@ requiring the user to select one af a set of alternatives</p>
       <!-- property Visibility: protected -->
       <element name="TCustomRadioGroup.Items">
         <short>
-          <i>Items</i> - a string list containing the captions for the radio boxes</short>
+          <var>Items</var> - a string list containing the captions for the radio boxes</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomRadioGroup.Columns">
         <short>
-          <i>Columns</i>  - the number of columns in which the <i>Items</i>  (radio buttons) are to be arranges</short>
+          <var>Columns</var>  - the number of columns in which the <var>Items</var>  (radio buttons) are to be arranges</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomRadioGroup.ColumnLayout">
         <short>
-          <i>ColumnLayout</i>  - <i>HorizontalThenVertical </i> or vice versa</short>
+          <var>ColumnLayout</var>  - <var>HorizontalThenVertical </var> or vice versa</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomRadioGroup.OnClick">
@@ -3647,7 +3660,7 @@ requiring the user to select one af a set of alternatives</p>
       <!-- function Visibility: public -->
       <element name="TCustomRadioGroup.Rows">
         <short>
-          <i>Rows </i>- the number of rows in which Items (radio boxes) are held</short>
+          <var>Rows </var>- the number of rows in which Items (radio boxes) are held</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TCustomRadioGroup.Rows.Result">
@@ -3656,19 +3669,19 @@ requiring the user to select one af a set of alternatives</p>
       <!-- object Visibility: default -->
       <element name="TRadioGroup">
         <short>
-          <i>TRadioGroup</i>   : A group of related but mutually exclusive radio buttons, requiring the user to select one af a set of alternatives</short>
+          <var>TRadioGroup</var>   : A group of related but mutually exclusive radio buttons, requiring the user to select one af a set of alternatives</short>
         <descr>
           <p>
-            <i>TRadioGroup</i>: A group of related but mutually exclusive radio buttons, requiring the user to select one af a set of alternatives. As one button becomes selected, the remaining buttons in the group become automatically deselected.</p>
-          <p>To Use this control, place it in the required position on the form, then in the Object Inspector select <i>Items</i> and click on the ellipsis (...) to open the string editor. Type in the captions to accompany each check box, then close the string editor and you will see a series of Radio Boxes with their captions displayed beside them. (Note - unlike <link id="#lcl.ExtCtrls.TCheckGroup">TCheckGroup</link>, there is no special RadioGroup editor)</p>
+            <var>TRadioGroup</var>: A group of related but mutually exclusive radio buttons, requiring the user to select one af a set of alternatives. As one button becomes selected, the remaining buttons in the group become automatically deselected.</p>
+          <p>To Use this control, place it in the required position on the form, then in the Object Inspector select <var>Items</var> and click on the ellipsis (...) to open the string editor. Type in the captions to accompany each check box, then close the string editor and you will see a series of Radio Boxes with their captions displayed beside them. (Note - unlike <link id="#lcl.ExtCtrls.TCheckGroup">TCheckGroup</link>, there is no special RadioGroup editor)</p>
           <p>Inherits properties from <link id="#lcl.ExtCtrls.TCustomRadioGroup">TCustomRadioGroup</link> and <link id="#lcl.StdCtrls.TCustomGroupBox">TCustomGroupBox</link>
           </p>
           <p>
-            <i>TRadioGroup</i> behaves differently from a group of <i>TRadioButton</i> controls placed arbitrarily around a form. </p>
-          <p>In the case of <i>TRadioButton</i>, the mutual exclusivity is a feature that applies to any <i>RadioButton</i> anywhere in the Form, and the <i>RadioButtons</i> can be rearranged in any order or placed anywhere within the containing <i>Form</i>, while in <i>TRadioGroup</i> the exclusivity applies only to buttons within the Group, which are ordered strictly according to their <i>ItemIndex</i> within the <i>Items</i> stringlist. </p>
+            <var>TRadioGroup</var> behaves differently from a group of <var>TRadioButton</var> controls placed arbitrarily around a form. </p>
+          <p>In the case of <var>TRadioButton</var>, the mutual exclusivity is a feature that applies to any <var>RadioButton</var> anywhere in the Form, and the <var>RadioButtons</var> can be rearranged in any order or placed anywhere within the containing <var>Form</var>, while in <var>TRadioGroup</var> the exclusivity applies only to buttons within the Group, which are ordered strictly according to their <var>ItemIndex</var> within the <var>Items</var> stringlist. </p>
           <p>
-            <i>TRadioButton</i> is an entity in itself, with a number of additional properties, whereas the buttons within <i>TRadioGroup</i>  are not separate entities, but rather are simply entries in a list of strings, each of which is associated with the on-screen image of a <i>RadioButton</i>. </p>
-          <p>The example shows the difference between the use of <i>TRadioButton</i> and <i>TRadioGroup</i>
+            <var>TRadioButton</var> is an entity in itself, with a number of additional properties, whereas the buttons within <var>TRadioGroup</var>  are not separate entities, but rather are simply entries in a list of strings, each of which is associated with the on-screen image of a <var>RadioButton</var>. </p>
+          <p>The example shows the difference between the use of <var>TRadioButton</var> and <var>TRadioGroup</var>
           </p>
         </descr>
         <seealso>
@@ -3698,7 +3711,7 @@ requiring the user to select one af a set of alternatives</p>
       <!-- property Visibility: published -->
       <element name="TRadioGroup.Caption">
         <short>
-          <i>Caption </i>- the text string appearing above the whole RadioGroup box</short>
+          <var>Caption </var>- the text string appearing above the whole RadioGroup box</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TRadioGroup.ChildSizing">
@@ -3751,11 +3764,11 @@ requiring the user to select one af a set of alternatives</p>
       <!-- property Visibility: published -->
       <element name="TRadioGroup.Items">
         <short>
-          <i>Items</i> - a string list containing the captions of the radio boxes</short>
+          <var>Items</var> - a string list containing the captions of the radio boxes</short>
         <descr>
           <p>
-            <i>Items</i> - a string list containing the captions of the radio boxes</p>
-          <p>Use the String List editor, opened by selecting <i>Items</i> and the ellipsis (...) in the Object Inspector, to insert the captions for the radio boxes, and determine their order and layout using the <i>Rows</i>, <i>Columns</i> and <i>ColumnLayout</i> properties
+            <var>Items</var> - a string list containing the captions of the radio boxes</p>
+          <p>Use the String List editor, opened by selecting <var>Items</var> and the ellipsis (...) in the Object Inspector, to insert the captions for the radio boxes, and determine their order and layout using the <var>Rows</var>, <var>Columns</var> and <var>ColumnLayout</var> properties
           </p>
         </descr>
       </element>
@@ -3884,13 +3897,13 @@ requiring the user to select one af a set of alternatives</p>
       <!-- object Visibility: default -->
       <element name="TCustomCheckGroup">
         <short>
-          <i>TCustomCheckGroup</i>: The base type for <i>TCheckGroup</i>
+          <var>TCustomCheckGroup</var>: The base type for <var>TCheckGroup</var>
         </short>
         <descr>
           <p>
-            <i>TCustomCheckGroup</i>: The base type for <i>TCheckGroup</i>
+            <var>TCustomCheckGroup</var>: The base type for <var>TCheckGroup</var>
           </p>
-          <p>This class defines <i>Items</i>, where the captions for individual check boxes are stored, <i>Rows</i> and <i>Columns</i> for arranging the check boxes, and ColumnLayout to determine whether the data are arranged down the columns first, or across the rows first.</p>
+          <p>This class defines <var>Items</var>, where the captions for individual check boxes are stored, <var>Rows</var> and <var>Columns</var> for arranging the check boxes, and ColumnLayout to determine whether the data are arranged down the columns first, or across the rows first.</p>
         </descr>
         <seealso>
           <link id="#lcl.StdCtrls.TCustomGroupBox">TCustomGroupBox</link>
@@ -4140,7 +4153,7 @@ requiring the user to select one af a set of alternatives</p>
       <!-- function Visibility: public -->
       <element name="TCustomCheckGroup.Rows">
         <short>
-          <i>Rows</i> - the number of rows in which the Items (check boxes) are arranged</short>
+          <var>Rows</var> - the number of rows in which the Items (check boxes) are arranged</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TCustomCheckGroup.Rows.Result">
@@ -4149,7 +4162,7 @@ requiring the user to select one af a set of alternatives</p>
       <!-- property Visibility: public -->
       <element name="TCustomCheckGroup.Items">
         <short>
-          <i>Items</i> - a string list for the captions of the check boxes</short>
+          <var>Items</var> - a string list for the captions of the check boxes</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomCheckGroup.Checked">
@@ -4174,27 +4187,27 @@ requiring the user to select one af a set of alternatives</p>
       <!-- property Visibility: public -->
       <element name="TCustomCheckGroup.Columns">
         <short>
-          <i>Columns</i>  - the number of columns in which the <i>Items</i>  (check boxes) are to be arranges</short>
+          <var>Columns</var>  - the number of columns in which the <var>Items</var>  (check boxes) are to be arranges</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomCheckGroup.ColumnLayout">
         <short>
-          <i>ColumnLayout</i> - <i>HorizontalThenVertical </i>or vice versa</short>
+          <var>ColumnLayout</var> - <var>HorizontalThenVertical </var>or vice versa</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomCheckGroup.OnItemClick">
         <short>
-          <i>OnItemClick</i> - event handler for mouse click on one of the Items in the Check Group</short>
+          <var>OnItemClick</var> - event handler for mouse click on one of the Items in the Check Group</short>
       </element>
       <!-- object Visibility: default -->
       <element name="TCheckGroup">
         <short>
-          <i>TCheckGroup</i>  : A group of Check Boxes physically and logically grouped together on a form</short>
+          <var>TCheckGroup</var>  : A group of Check Boxes physically and logically grouped together on a form</short>
         <descr>
           <p>
-            <i>TCheckGroup</i>: A group of Check Boxes physically and logically grouped together on a form</p>
+            <var>TCheckGroup</var>: A group of Check Boxes physically and logically grouped together on a form</p>
           <p>To Use this control, place it in the required position on the form, then
-either right-click on the control to see the pop-up CheckGroup editor, or in the Object Inspector select <i>Items</i> and click on the ellipsis (...) to open the string editor. In either case, type in the captions to accompany each check box, then close the string or CheckGroup editor and you will see a series of boxes with their captions displayed beside them.</p>
+either right-click on the control to see the pop-up CheckGroup editor, or in the Object Inspector select <var>Items</var> and click on the ellipsis (...) to open the string editor. In either case, type in the captions to accompany each check box, then close the string or CheckGroup editor and you will see a series of boxes with their captions displayed beside them.</p>
           <p>Inherits properties from <link id="#lcl.ExtCtrls.TCustomCheckGroup">TCustomCheckGroup</link> and <link id="#lcl.StdCtrls.TCustomGroupBox">TCustomGroupBox</link>
           </p>
         </descr>
@@ -4224,10 +4237,10 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
       <!-- property Visibility: published -->
       <element name="TCheckGroup.Caption">
         <short>
-          <i>Caption</i>: the string which appears at the top of the Check Group Box</short>
+          <var>Caption</var>: the string which appears at the top of the Check Group Box</short>
         <descr>
           <p>
-            <i>Caption</i>: the string which appears as a caption at the top of the Check Group Box to describe the function of the Check Group as a whole</p>
+            <var>Caption</var>: the string which appears as a caption at the top of the Check Group Box to describe the function of the Check Group as a whole</p>
         </descr>
       </element>
       <!-- property Visibility: published -->
@@ -4275,10 +4288,10 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
       <!-- property Visibility: published -->
       <element name="TCheckGroup.Items">
         <short>
-          <i>Items</i>  - a string list containing the captions of the check boxes</short>
+          <var>Items</var>  - a string list containing the captions of the check boxes</short>
         <descr>
           <p>
-            <i>Items</i> - a string list containing the captions of the check boxes</p>
+            <var>Items</var> - a string list containing the captions of the check boxes</p>
           <p>Use the String List editor or the CheckGroup editor (opened by right-clicking on the control in the Form) to insert the captions for the check boxes, and determine their order and layout</p>
         </descr>
       </element>
@@ -4399,10 +4412,10 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
       <!-- object Visibility: default -->
       <element name="TBoundLabel">
         <short>
-          <i>TBoundLabel</i>: A label bound to another object, for example in <i>TLabeledEdit</i>
+          <var>TBoundLabel</var>: A label bound to another object, for example in <var>TLabeledEdit</var>
         </short>
         <descr>
-          <i>TBoundLabel</i>: A label bound to another object, for example in <i>TLabeledEdit</i>
+          <var>TBoundLabel</var>: A label bound to another object, for example in <var>TLabeledEdit</var>
         </descr>
         <seealso>
           <link id="#lcl.ExtCtrls.TLabeledEdit">TLabeledEdit</link>
@@ -4422,7 +4435,7 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
       <!-- property Visibility: public -->
       <element name="TBoundLabel.FocusControl">
         <short>
-          <i>FocusControl</i> - whether this control has focus</short>
+          <var>FocusControl</var> - whether this control has focus</short>
         <descr/>
         <seealso/>
       </element>
@@ -4579,14 +4592,14 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <short>Custom Labelled Edit</short>
         <descr>
           <p>
-            <i>TCustomLabeledEdit</i>
+            <var>TCustomLabeledEdit</var>
 
 
 
 
 
 
-: The base type for <i>LabeledEdit</i>.</p>
+: The base type for <var>LabeledEdit</var>.</p>
           <p>Note particularly the <link id="TCustomLabeledEdit.EditLabel">EditLabel</link> property (see <link id="#lcl.Extctrls.TBoundLabel">TBoundLabel</link>), which contains the label attached to the Edit control.</p>
         </descr>
         <seealso>
@@ -4744,12 +4757,12 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
       <!-- property Visibility: public -->
       <element name="TCustomLabeledEdit.EditLabel">
         <short>
-          <i>EditLabel </i>- the label attached to the edit box</short>
+          <var>EditLabel </var>- the label attached to the edit box</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomLabeledEdit.LabelPosition">
         <short>
-          <i>LabelPosition </i>
+          <var>LabelPosition </var>
 
 
 
@@ -4761,7 +4774,7 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
       <!-- property Visibility: public -->
       <element name="TCustomLabeledEdit.LabelSpacing">
         <short>
-          <i>LabelSpacing</i>
+          <var>LabelSpacing</var>
 
 
 
@@ -4775,7 +4788,7 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <short>Labelled Edit: An Edit Box with a permanently attached Label</short>
         <descr>
           <p>
-            <i>TLabeledEdit</i>
+            <var>TLabeledEdit</var>
 
 
 
@@ -4907,7 +4920,7 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
       <!-- property Visibility: published -->
       <element name="TLabeledEdit.Text">
         <short>
-          <i>Text</i>
+          <var>Text</var>
 
 
 
@@ -5003,15 +5016,15 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
       <!-- object Visibility: default -->
       <element name="TCustomPanel">
         <short>
-          <i>TCustomPanel</i>: The base type for <i>TPanel</i>
+          <var>TCustomPanel</var>: The base type for <var>TPanel</var>
         </short>
         <descr>
           <p>
-            <i>TCustomPanel</i>: The base type for <i>TPanel</i>
+            <var>TCustomPanel</var>: The base type for <var>TPanel</var>
           </p>
           <p>A Panel is a defined rectangular area of the form into which other components can be placed to group them functionally and geographically.</p>
           <p>
-            <i>TCustomPanel </i>defines the positioning and bevelling properties of any descendant classes, and provides methods for painting and writing text to the panel.</p>
+            <var>TCustomPanel </var>defines the positioning and bevelling properties of any descendant classes, and provides methods for painting and writing text to the panel.</p>
         </descr>
       </element>
       <!-- variable Visibility: private -->
@@ -5176,22 +5189,22 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
       <!-- property Visibility: public -->
       <element name="TCustomPanel.Alignment">
         <short>
-          <i>Alignment</i> - whether text is left or right justified, or centered</short>
+          <var>Alignment</var> - whether text is left or right justified, or centered</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomPanel.BevelInner">
         <short>
-          <i>BevelInner</i> - determines the nature of the Inner Bevel of the panel (whether raised, lowered etc)</short>
+          <var>BevelInner</var> - determines the nature of the Inner Bevel of the panel (whether raised, lowered etc)</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomPanel.BevelOuter">
         <short>
-          <i>BevelOuter</i>  - determines the nature of the Outer Bevel of the panel (whether raised, lowered etc)</short>
+          <var>BevelOuter</var>  - determines the nature of the Outer Bevel of the panel (whether raised, lowered etc)</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomPanel.BevelWidth">
         <short>
-          <i>BevelWidth </i>- the Width of the panel's bevel in pixels</short>
+          <var>BevelWidth </var>- the Width of the panel's bevel in pixels</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomPanel.BorderWidth"/>
@@ -5228,10 +5241,10 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
       <!-- object Visibility: default -->
       <element name="TPanel">
         <short>
-          <i>TPanel</i>: A defined rectangular area of the form into which other components can be placed</short>
+          <var>TPanel</var>: A defined rectangular area of the form into which other components can be placed</short>
         <descr>
           <p>
-            <i>TPanel</i>: A defined rectangular area of the form into which other components can be placed to group them functionally and geographically</p>
+            <var>TPanel</var>: A defined rectangular area of the form into which other components can be placed to group them functionally and geographically</p>
           <p>Most of the properties are defined in ancestor classes including <link id="#lcl.ExtCtrls.TCustomPanel">TCustomPanel</link>, <link id="#lcl.Controls.TCustomControl">TCustomControl</link> and <link id="#lcl.Controls.TWinControl">TWinControl</link>
           </p>
           <p>Any controls such as buttons or check boxes that are placed inside the panel become its children, and inherit many of its properties. If the Panel is moved, the child controls move with it. Any part of a child control that falls outside the panel becomes invisible.</p>
@@ -5441,12 +5454,12 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
       <!-- property Visibility: published -->
       <element name="TPanel.OnEnter">
         <short>
-          <i>OnEnter</i>  - event handler for mouse entering the control or the control getting focus</short>
+          <var>OnEnter</var>  - event handler for mouse entering the control or the control getting focus</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TPanel.OnExit">
         <short>
-          <i>OnExit </i>- event handler for mouse leaving the control or the control losing focus</short>
+          <var>OnExit </var>- event handler for mouse leaving the control or the control losing focus</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TPanel.OnMouseDown">
@@ -5505,11 +5518,11 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
       </element>
       <element name="TCustomTrayIcon">
         <short>
-          <i>TCustomTrayIcon </i>- the base class for <i>TTrayIcon</i>, a multiplatform System Tray component.</short>
+          <var>TCustomTrayIcon </var>- the base class for <var>TTrayIcon</var>, a multiplatform System Tray component.</short>
       </element>
       <element name="TTrayIcon">
         <short>
-          <i>TTrayIcon</i> is a multiplatform System Tray component. It adds an icon to the tray and signifies an application that is inactive but ready to be activated. Under Windows the System tray is usually located on the bottom-right corner of the screen, but it may be elsewhere. On other operating systems this position varies.</short>
+          <var>TTrayIcon</var> is a multiplatform System Tray component. It adds an icon to the tray and signifies an application that is inactive but ready to be activated. Under Windows the System tray is usually located on the bottom-right corner of the screen, but it may be elsewhere. On other operating systems this position varies.</short>
       </element>
       <element name="TCustomTrayIcon.Create">
         <short>Creates a new instance of the component.</short>
@@ -5538,7 +5551,7 @@ After that, the parent's destroy method is called.
       </element>
       <element name="TCustomTrayIcon.ShowBalloonHint">
         <short>
-          <i>ShowBalloonHint</i> displays a smal balloon-like window near the tray icon. It can be used to send notifications about the status of an action, or notify of a received message or any other event which doesn't require an imediate response. The Ballon window disappears after <i>BallonHintTimeout</i> milliseconds of when the user clicks it or it's close button.</short>
+          <var>ShowBalloonHint</var> displays a smal balloon-like window near the tray icon. It can be used to send notifications about the status of an action, or notify of a received message or any other event which doesn't require an imediate response. The Ballon window disappears after <var>BallonHintTimeout</var> milliseconds of when the user clicks it or it's close button.</short>
       </element>
       <element name="TCustomTrayIcon.GetPosition">
         <short>Find the position of the Tray Icon and thus a position suitable to display the hinting BalloonHint. Under Windows an approximate location is detected.</short>
@@ -5568,10 +5581,10 @@ After that, the parent's destroy method is called.
         <short>A simple hint that is shown when the mouse hovers over the icon.</short>
       </element>
       <element name="TCustomTrayIcon.ShowIcon">
-        <short>Determines if <i>Icon</i> should be painted to the System Tray. This can be set to false if one wishes to instead paint to the Canvas of the Tray Icon.</short>
+        <short>Determines if <var>Icon</var> should be painted to the System Tray. This can be set to false if one wishes to instead paint to the Canvas of the Tray Icon.</short>
       </element>
       <element name="TCustomTrayIcon.Visible">
-        <short>It is set to true when the icon is shown and remains true until Hide is called. Setting <i>Visible</i> has the same effect as calling Hide or Show.</short>
+        <short>It is set to true when the icon is shown and remains true until Hide is called. Setting <var>Visible</var> has the same effect as calling Hide or Show.</short>
       </element>
       <element name="TCustomTrayIcon.OnClick">
         <short>Event Handler for Mouse Click on Tray Icon</short>
@@ -5613,7 +5626,7 @@ After that, the parent's destroy method is called.
         <short>A simple hint that is shown when the mouse hovers over the icon.</short>
       </element>
       <element name="TTrayIcon.Visible">
-        <short>It is set to true when the icon is shown and remains true until Hide is called. Setting <i>Visible</i> has the same effect as calling Hide or Show.</short>
+        <short>It is set to true when the icon is shown and remains true until Hide is called. Setting <var>Visible</var> has the same effect as calling Hide or Show.</short>
       </element>
       <element name="TTrayIcon.OnClick">
         <short>Event Handler for Mouse Click on Tray Icon</short>
@@ -5661,7 +5674,7 @@ achieve the same as a statement of the form
 </code>
             <p>After the former statement, both <var>Source</var> and
 <var>Destination</var> will point to the same object. The latter statemtent
-will copy the <i>contents</i> of the <var>Source</var> class to the
+will copy the <var>contents</var> of the <var>Source</var> class to the
 <var>Destination</var> class.
 </p>
           </remark>
@@ -5684,6 +5697,20 @@ will copy the <i>contents</i> of the <var>Source</var> class to the
       </element>
       <element name="TBoundLabel.OnStartDrag">
         <short>Event handler for beginning of drag manoeuvre</short>
+      </element>
+      <element name="TCustomPage.AutoSizeDelayed"/>
+      <element name="TCustomPage.IsControlVisible"/>
+      <element name="TCustomPage.VisibleIndex">
+        <short>
+          <var>VisibleIndex</var> - returns the index number of a visible page</short>
+      </element>
+      <element name="TCustomPage.OnHide">
+        <short>
+          <var>OnHide</var> - event handler for hiding this page in a notebook</short>
+      </element>
+      <element name="TCustomPage.OnShow">
+        <short>
+          <var>OnShow</var> - event handler for showing (making visible) this page of a notebook</short>
       </element>
     </module>
     <!-- ExtCtrls -->
