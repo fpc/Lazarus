@@ -157,10 +157,15 @@ type
     procedure Clicked(Sender: TObject);
   protected
   public
-    function Button: TfpgButton;
+    { Constructors / Destructors }
     constructor Create(ALCLObject: TWinControl; const AParams: TCreateParams); override;
+    { Virtual methods }
     procedure CreateWidget(const AParams: TCreateParams); override;
-    // ISimpleText
+    procedure SetEvents; override;
+  public
+    { Other methods }
+    function Button: TfpgButton;
+    { ISimpleText }
     procedure SetText(const AText: String);
     function GetText: String;
   end;
@@ -171,9 +176,13 @@ type
   private
   protected
   public
-    function ComboBox: TfpgComboBox;
+    { Constructors / Destructors }
     constructor Create(ALCLObject: TWinControl; const AParams: TCreateParams); override;
+    { Virtual methods }
     procedure CreateWidget(const AParams: TCreateParams); override;
+  public
+    { Other methods }
+    function ComboBox: TfpgComboBox;
   end;
 
 
@@ -183,10 +192,14 @@ type
   private
   protected
   public
-    function Edit: TfpgEdit;
+    { Constructors / Destructors }
     constructor Create(ALCLObject: TWinControl; const AParams: TCreateParams); override;
+    { Virtual methods }
     procedure CreateWidget(const AParams: TCreateParams); override;
-    // ISimpleText
+  public
+    { Other methods }
+    function Edit: TfpgEdit;
+    { ISimpleText }
     procedure SetText(const AText: String);
     function GetText: String;
   end;
@@ -197,10 +210,14 @@ type
   private
   protected
   public
-    function CheckBox: TfpgCheckBox;
+    { Constructors / Destructors }
     constructor Create(ALCLObject: TWinControl; const AParams: TCreateParams); override;
+    { Virtual methods }
     procedure CreateWidget(const AParams: TCreateParams); override;
-    // ISimpleText
+  public
+    { Other methods }
+    function CheckBox: TfpgCheckBox;
+    { ISimpleText }
     procedure SetText(const AText: String);
     function GetText: String;
   end;
@@ -211,10 +228,14 @@ type
   private
   protected
   public
-    function RadioButton: TfpgRadioButton;
+    { Constructors / Destructors }
     constructor Create(ALCLObject: TWinControl; const AParams: TCreateParams); override;
+    { Virtual methods }
     procedure CreateWidget(const AParams: TCreateParams); override;
-    // ISimpleText
+  public
+    { Other methods }
+    function RadioButton: TfpgRadioButton;
+    { ISimpleText }
     procedure SetText(const AText: String);
     function GetText: String;
   end;
@@ -403,7 +424,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TFPGUIPrivateWindow.CreateWidget(const AParams: TCreateParams);
 begin
-{$IFDEF VerboseFPGUIIntf}
+{$IFDEF VerboseFPGUIPrivate}
   WriteLn('[TFPGUIPrivateWindow.CreateWidget]');
 {$ENDIF}
   Widget := TfpgForm.Create(nil);
@@ -429,7 +450,7 @@ end;
  ------------------------------------------------------------------------------}
 destructor TFPGUIPrivateWindow.Destroy;
 begin
-{$IFDEF VerboseFPGUIIntf}
+{$IFDEF VerboseFPGUIPrivate}
   WriteLn('[TFPGUIPrivateWindow.Destroy]');
 {$ENDIF}
 
@@ -487,7 +508,7 @@ procedure TFPGUIPrivateButton.CreateWidget(const AParams: TCreateParams);
 var
   ParentContainer: TFPGUIPrivateContainer;
 begin
-{$IFDEF VerboseFPGUIIntf}
+{$IFDEF VerboseFPGUIPrivate}
   WriteLn('[TFPGUIPrivateButton.CreateWidget]');
 {$ENDIF}
 
@@ -498,6 +519,16 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: TFPGUIPrivateButton.SetEvents
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TFPGUIPrivateButton.SetEvents;
+begin
+  Button.OnClick := Clicked;
+end;
+
+{------------------------------------------------------------------------------
   Method: TFPGUIPrivateButton.Create
   Params:  None
   Returns: Nothing
@@ -505,9 +536,6 @@ end;
 constructor TFPGUIPrivateButton.Create(ALCLObject: TWinControl; const AParams: TCreateParams);
 begin
   inherited Create(ALCLObject, AParams);
-
-  // Events
-  Button.OnClick := Clicked;
 end;
 
 {------------------------------------------------------------------------------
@@ -566,8 +594,6 @@ constructor TFPGUIPrivateComboBox.Create(ALCLObject: TWinControl;
   const AParams: TCreateParams);
 begin
   inherited Create(ALCLObject, AParams);
-
-  // Events
 end;
 
 { TFPGUIPrivateEdit }
@@ -581,8 +607,6 @@ constructor TFPGUIPrivateEdit.Create(ALCLObject: TWinControl;
   const AParams: TCreateParams);
 begin
   inherited Create(ALCLObject, AParams);
-
-  // Events
 end;
 
 {------------------------------------------------------------------------------
