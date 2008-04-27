@@ -41,6 +41,7 @@ uses
   GraphType, LCLIntf, LCLProc, LCLType, LResources, StdCtrls,
   // synedit
   SynEdit, SynEditAutoComplete, SynEditHighlighter, SynEditKeyCmds,
+  SynEditStrConst,
   SynHighlighterCPP, SynHighlighterHTML, SynHighlighterJava, SynHighlighterLFM,
   SynHighlighterPas, SynHighlighterPerl, SynHighlighterPHP, SynHighlighterSQL,
   SynHighlighterPython, SynHighlighterUNIXShellScript, SynHighlighterXML,
@@ -62,15 +63,30 @@ type
   TLazSyntaxHighlighter =
     (lshNone, lshText, lshFreePascal, lshDelphi, lshLFM, lshXML, lshHTML,
     lshCPP, lshPerl, lshJava, lshBash, lshPython, lshPHP, lshSQL);
+    
+  TPascalHilightAttribute = (
+    phaAssembler, phaComment, phaDirective, phaReservedWord, phaNumber,
+    phaString, phaSymbol
+  );
+  
+const
+  PascalHilightAttributeNames: array[TPascalHilightAttribute] of String = (
+    SYNS_AttrAssembler,
+    SYNS_AttrComment,
+    SYNS_AttrDirective,
+    SYNS_AttrReservedWord,
+    SYNS_AttrNumber,
+    SYNS_AttrString,
+    SYNS_AttrSymbol
+  );
 
+type
   TAdditionalHilightAttribute = (ahaNone, ahaTextBlock, ahaExecutionPoint,
     ahaEnabledBreakpoint, ahaDisabledBreakpoint,
     ahaInvalidBreakpoint, ahaUnknownBreakpoint,
-    ahaErrorLine);
+    ahaErrorLine, ahaIncrementalSearch);
 
 const
-  EditorOptsFormatVersion = 2;
-
   AdditionalHighlightAttributes: array[TAdditionalHilightAttribute] of String =
     (
     '',
@@ -80,8 +96,153 @@ const
     'Disabled breakpoint',
     'Invalid breakpoint',
     'Unknown breakpoint',
-    'Error line'
+    'Error line',
+    'Incremental search match'
     );
+    
+type
+  TSchemeAttribute = record
+    BG, FG: TColor;
+    Styles: TFontStyles;
+  end;
+
+  TPascalColorScheme = record
+    Name: String;
+    Default: TSchemeAttribute;
+    Attributes: array[TPascalHilightAttribute] of TSchemeAttribute;
+    Additional: array[TAdditionalHilightAttribute] of TSchemeAttribute;
+  end;
+  
+const
+  DEFAULT_COLOR_SCHEME: TPascalColorScheme = (
+    Name: 'Default';
+    Default: (BG: clNone;  FG: clNone; Styles: []);
+    Attributes: (
+      { phaAssembler    } (BG: clNone;  FG: clGreen; Styles: []),
+      { phaComment      } (BG: clNone;  FG: clBlue;  Styles: [fsBold]),
+      { phaDirective    } (BG: clNone;  FG: clRed;   Styles: [fsBold]),
+      { phaReservedWord } (BG: clNone;  FG: clNone;  Styles: [fsBold]),
+      { phaNumber       } (BG: clNone;  FG: clNavy;  Styles: []),
+      { phaString       } (BG: clNone;  FG: clBlue;  Styles: []),
+      { phaSymbol       } (BG: clNone;  FG: clRed;   Styles: [])
+    );
+    Additional: (
+      { ahaNone               } (BG: clWhite;  FG: clBlack; Styles: []),
+      { ahaTextBlock          } (BG: clNavy;   FG: clWhite; Styles: []),
+      { ahaExecutionPoint     } (BG: clDKGray; FG: clWhite; Styles: []),
+      { ahaEnabledBreakpoint  } (BG: clRed;    FG: clBlack; Styles: []),
+      { ahaDisabledBreakpoint } (BG: clGreen;  FG: clBlack; Styles: []),
+      { ahaInvalidBreakpoint  } (BG: clOlive;  FG: clGreen; Styles: []),
+      { ahaUnknownBreakpoint  } (BG: clRed;    FG: clBlack; Styles: []),
+      { ahaErrorLine          } (BG: $50a0ff;  FG: clBlack; Styles: []),
+      { ahaIncrementalSearch  } (BG: $30D070;  FG: clWhite; Styles: [])
+    )
+  );
+  
+  TWILIGHT_COLOR_SCHEME: TPascalColorScheme = (
+    Name: 'Twilight';
+    Default: (BG: clBlack;  FG: clWhite; Styles: []);
+    Attributes: (
+      { phaAssembler    } (BG: clNone;  FG: clLime;    Styles: []),
+      { phaComment      } (BG: clNone;  FG: clGray;    Styles: []),
+      { phaDirective    } (BG: clNone;  FG: clRed;     Styles: []),
+      { phaReservedWord } (BG: clNone;  FG: clAqua;    Styles: [fsBold]),
+      { phaNumber       } (BG: clNone;  FG: clFuchsia; Styles: []),
+      { phaString       } (BG: clNone;  FG: clYellow;  Styles: []),
+      { phaSymbol       } (BG: clNone;  FG: clAqua;    Styles: [])
+    );
+    Additional: (
+      { ahaNone               } (BG: clNone;   FG: clNone;  Styles: []),
+      { ahaTextBlock          } (BG: clWhite;  FG: clBlack; Styles: []),
+      { ahaExecutionPoint     } (BG: clBlue;   FG: clWhite; Styles: []),
+      { ahaEnabledBreakpoint  } (BG: clRed;    FG: clWhite; Styles: []),
+      { ahaDisabledBreakpoint } (BG: clLime;   FG: clRed;   Styles: []),
+      { ahaInvalidBreakpoint  } (BG: clOlive;  FG: clGreen; Styles: []),
+      { ahaUnknownBreakpoint  } (BG: clRed;    FG: clBlack; Styles: []),
+      { ahaErrorLine          } (BG: $50a0ff;  FG: clBlack; Styles: []),
+      { ahaIncrementalSearch  } (BG: $30D070;  FG: clWhite; Styles: [])
+    )
+  );
+
+  CLASSIC_COLOR_SCHEME: TPascalColorScheme = (
+    Name: 'Pascal Classic';
+    Default: (BG: clNavy;  FG: clYellow; Styles: []);
+    Attributes: (
+      { phaAssembler    } (BG: clNone;  FG: clLime;    Styles: []),
+      { phaComment      } (BG: clNone;  FG: clSilver;  Styles: []),
+      { phaDirective    } (BG: clNone;  FG: clSilver;  Styles: []),
+      { phaReservedWord } (BG: clNone;  FG: clWhite;   Styles: []),
+      { phaNumber       } (BG: clNone;  FG: clYellow;  Styles: []),
+      { phaString       } (BG: clNone;  FG: clYellow;  Styles: []),
+      { phaSymbol       } (BG: clNone;  FG: clYellow;  Styles: [])
+    );
+    Additional: (
+      { ahaNone               } (BG: clNone;   FG: clNone;  Styles: []),
+      { ahaTextBlock          } (BG: clBlue;   FG: clWhite; Styles: []),
+      { ahaExecutionPoint     } (BG: clAqua;   FG: clBlack; Styles: []),
+      { ahaEnabledBreakpoint  } (BG: clRed;    FG: clWhite; Styles: []),
+      { ahaDisabledBreakpoint } (BG: clLime;   FG: clRed;   Styles: []),
+      { ahaInvalidBreakpoint  } (BG: clOlive;  FG: clLime;  Styles: []),
+      { ahaUnknownBreakpoint  } (BG: clNone;   FG: clNone;  Styles: []),
+      { ahaErrorLine          } (BG: clMaroon; FG: clWhite; Styles: []),
+      { ahaIncrementalSearch  } (BG: $30D070;  FG: clWhite; Styles: [])
+    )
+  );
+  
+  OCEAN_COLOR_SCHEME: TPascalColorScheme = (
+    Name: 'Ocean';
+    Default: (BG: clNavy;  FG: clYellow; Styles: []);
+    Attributes: (
+      { phaAssembler    } (BG: clNone;  FG: clLime;    Styles: []),
+      { phaComment      } (BG: clNone;  FG: clGray;    Styles: []),
+      { phaDirective    } (BG: clNone;  FG: clRed;     Styles: []),
+      { phaReservedWord } (BG: clNone;  FG: clAqua;    Styles: [fsBold]),
+      { phaNumber       } (BG: clNone;  FG: clFuchsia; Styles: []),
+      { phaString       } (BG: clNone;  FG: clYellow;  Styles: []),
+      { phaSymbol       } (BG: clNone;  FG: clAqua;    Styles: [])
+    );
+    Additional: (
+      { ahaNone               } (BG: clNone;   FG: clNone;  Styles: []),
+      { ahaTextBlock          } (BG: clWhite;  FG: clBlack; Styles: []),
+      { ahaExecutionPoint     } (BG: clBlue;   FG: clWhite; Styles: []),
+      { ahaEnabledBreakpoint  } (BG: clRed;    FG: clWhite; Styles: []),
+      { ahaDisabledBreakpoint } (BG: clLime;   FG: clRed;   Styles: []),
+      { ahaInvalidBreakpoint  } (BG: clOlive;  FG: clGreen; Styles: []),
+      { ahaUnknownBreakpoint  } (BG: clRed;    FG: clBlack; Styles: []),
+      { ahaErrorLine          } (BG: $50A0FF;  FG: clBlack; Styles: []),
+      { ahaIncrementalSearch  } (BG: $30D070;  FG: clWhite; Styles: [])
+    )
+  );
+
+  DELPHI_COLOR_SCHEME: TPascalColorScheme = (
+    Name: 'Delphi';
+    Default: (BG: clNone;  FG: clNone; Styles: []);
+    Attributes: (
+      { phaAssembler    } (BG: clNone;  FG: clBlack;   Styles: []),
+      { phaComment      } (BG: clNone;  FG: clNavy;    Styles: [fsItalic]),
+      { phaDirective    } (BG: clNone;  FG: clGreen;   Styles: []),
+      { phaReservedWord } (BG: clNone;  FG: clBlack;   Styles: [fsBold]),
+      { phaNumber       } (BG: clNone;  FG: clNavy;    Styles: []),
+      { phaString       } (BG: clNone;  FG: clNavy;    Styles: []),
+      { phaSymbol       } (BG: clNone;  FG: clBlack;   Styles: [])
+    );
+    Additional: (
+      { ahaNone               } (BG: clNone;      FG: clNone;          Styles: []),
+      { ahaTextBlock          } (BG: clHighlight; FG: clHighlightText; Styles: []),
+      { ahaExecutionPoint     } (BG: clNavy;      FG: clWhite;         Styles: []),
+      { ahaEnabledBreakpoint  } (BG: clRed;       FG: clWhite;         Styles: []),
+      { ahaDisabledBreakpoint } (BG: clLime;      FG: clRed;           Styles: []),
+      { ahaInvalidBreakpoint  } (BG: clOlive;     FG: clLime;          Styles: []),
+      { ahaUnknownBreakpoint  } (BG: clRed;       FG: clBlack;         Styles: []),
+      { ahaErrorLine          } (BG: clMaroon;    FG: clWhite;         Styles: []),
+      { ahaIncrementalSearch  } (BG: $30D070;     FG: clWhite;         Styles: [])
+    )
+  );
+
+
+
+const
+  EditorOptsFormatVersion = 2;
 
   LazSyntaxHighlighterClasses: array[TLazSyntaxHighlighter] of
     TCustomSynClass =
@@ -236,7 +397,6 @@ type
               // read synedit settings from config file
     procedure SetSynEditSettings(ASynEdit: TSynEdit);
               // write synedit settings to file
-    procedure GetSynEditSelectedColor(ASynEdit: TSynEdit);
     procedure GetSynEditPreviewSettings(APreviewEditor: TObject);
     procedure AddSpecialHilightAttribsToHighlighter(Syn: TCustomSyn);
 
@@ -253,10 +413,8 @@ type
                                                  DefaultPascalSyn: TPreviewPasSyn);
     procedure WriteHighlighterSettings(Syn: TCustomSyn;
                                        SynColorScheme: String);
-    procedure GetSpecialLineColors(Syn: TCustomSyn;
-                                   AddHilightAttr:
-                                   TAdditionalHilightAttribute;
-                                   var Special: Boolean; var FG, BG: TColor);
+    function GetLineColors(Syn: TCustomSyn; AddHilightAttr: TAdditionalHilightAttribute;
+                           out FG, BG: TColor): Boolean;
   published
     // general options
     property SynEditOptions: TSynEditorOptions
@@ -583,8 +741,6 @@ const
     lshPHP,
     lshSQL
     );
-
-  DefaultColorScheme      = 'Default';
 
 
 function ShowEditorOptionsDialog: TModalResult;
@@ -1606,7 +1762,7 @@ function TEditorOptions.ReadColorScheme(const LanguageName: String): String;
 begin
   if LanguageName = '' then
   begin
-    Result := DefaultColorScheme;
+    Result := DEFAULT_COLOR_SCHEME.Name;
     exit;
   end;
   if LanguageName <> TPreviewPasSyn.GetLanguageName then
@@ -1631,7 +1787,7 @@ begin
   else
     Result := XMLConfig.GetValue('EditorOptions/Color/ColorScheme', '');
   if Result = '' then
-    Result := DefaultColorScheme;
+    Result := DEFAULT_COLOR_SCHEME.Name;
 end;
 
 procedure TEditorOptions.WriteColorScheme(
@@ -1648,384 +1804,53 @@ procedure TEditorOptions.GetDefaultsForPascalAttribute(
   Attr: TSynHighlightElement; const SynColorScheme: String);
 var
   AttriName: String;
-  DefBGCol, DefFGCol: TColor;
-  DefFontStyles: TFontStyles;
+  Scheme: TPascalColorScheme;
+  pha: TPascalHilightAttribute;
+  aha: TAdditionalHilightAttribute;
 begin
-  AttriName := Attr.Name;
+  AttriName := LowerCase(Attr.Name);
   if AttriName = '' then
     exit;
 
-  DefFGCol := clNone;
-  DefBGCol := clNone;
-  DefFontStyles := [];
-  if lowercase(SynColorScheme) = 'twilight' then
-  begin
-    // default for twilight color scheme
-    DefBGCol := clBlack;
-    DefFGCol := clWhite;
-    if AttriName = 'Assembler' then
-      DefFGCol := clLime
-    else
-    if AttriName = 'Comment' then
-      DefFGCol := clGray
-    else
-    if AttriName = 'Directive' then
-      DefFGCol := clRed
-    else
-    if AttriName = 'Reserved word' then
-    begin
-      DefFGCol := clAqua;
-      DefFontStyles := [fsBold];
-    end
-    else
-    if AttriName = 'Number' then
-      DefFGCol := clFuchsia
-    else
-    if AttriName = 'String' then
-      DefFGCol := clYellow
-    else
-    if AttriName = 'Symbol' then
-      DefFGCol := clAqua
-    else
-    if AttriName = AdditionalHighlightAttributes[ahaTextBlock] then
-    begin
-      DefBGCol := clWhite;
-      DefFGCol := clBlack;
-    end
-    else
-    if AttriName = AdditionalHighlightAttributes[ahaExecutionPoint] then
-    begin
-      DefBGCol := clBlue;
-      DefFGCol := clWhite;
-    end
-    else
-    if AttriName = AdditionalHighlightAttributes[ahaEnabledBreakpoint] then
-    begin
-      DefBGCol := clRed;
-      DefFGCol := clWhite;
-    end
-    else
-    if AttriName = AdditionalHighlightAttributes[ahaDisabledBreakpoint] then
-    begin
-      DefBGCol := clLime;
-      DefFGCol := clRed;
-    end
-    else
-    if AttriName = AdditionalHighlightAttributes[ahaInvalidBreakpoint] then
-    begin
-      DefBGCol := clOlive;
-      DefFGCol := clGreen;
-    end
-    else
-    if AttriName = AdditionalHighlightAttributes[ahaUnknownBreakpoint] then
-    begin
-      DefBGCol := clRed;
-      DefFGCol := clBlack;
-    end
-    else
-    if AttriName = AdditionalHighlightAttributes[ahaErrorLine] then
-    begin
-      DefBGCol := $50a0ff;
-      DefFGCol := clBlack;
-    end;
-  end
+  case StringCase(SynColorScheme, [
+    TWILIGHT_COLOR_SCHEME.Name,
+    CLASSIC_COLOR_SCHEME.Name,
+    OCEAN_COLOR_SCHEME.Name,
+    DELPHI_COLOR_SCHEME.Name
+  ], True, False) of
+    0: Scheme := TWILIGHT_COLOR_SCHEME;
+    1: Scheme := CLASSIC_COLOR_SCHEME;
+    2: Scheme := OCEAN_COLOR_SCHEME;
+    3: Scheme := DELPHI_COLOR_SCHEME;
   else
-  if lowercase(SynColorScheme) = 'pascal classic' then
-  begin
-    // defaults for pascal classic color scheme
-    DefBGCol := clNavy;
-    DefFGCol := clYellow;
-    if AttriName = 'Assembler' then
-    begin
-      DefBGCol := clNone;
-      DefFGCol := clLime;
-    end
-    else
-    if AttriName = 'Comment' then
-    begin
-      DefBGCol := clNone;
-      DefFGCol := clSilver;
-    end
-    else
-    if AttriName = 'Directive' then
-    begin
-      DefBGCol := clNone;
-      DefFGCol := clSilver;
-    end
-    else
-    if AttriName = 'Reserved word' then
-    begin
-      DefBGCol := clNone;
-      DefFGCol := clWhite;
-    end
-    else
-    if AttriName = 'Number' then
-    begin
-      DefBGCol := clNone;
-      DefFGCol := clYellow;
-    end
-    else
-    if AttriName = 'String' then
-    begin
-      DefBGCol := clNone;
-      DefFGCol := clYellow;
-    end
-    else
-    if AttriName = 'Symbol' then
-    begin
-      DefBGCol := clNone;
-      DefFGCol := clYellow;
-    end
-    else
-    if AttriName = AdditionalHighlightAttributes[ahaTextBlock] then
-    begin
-      DefBGCol := clBlue;
-      DefFGCol := clWhite;
-    end
-    else
-    if AttriName = AdditionalHighlightAttributes[ahaExecutionPoint] then
-    begin
-      DefBGCol := clAqua;
-      DefFGCol := clBlack;
-    end
-    else
-    if AttriName = AdditionalHighlightAttributes[ahaEnabledBreakpoint] then
-    begin
-      DefBGCol := clRed;
-      DefFGCol := clWhite;
-    end
-    else
-    if AttriName = AdditionalHighlightAttributes[ahaDisabledBreakpoint] then
-    begin
-      DefBGCol := clLime;
-      DefFGCol := clRed;
-    end
-    else
-    if AttriName = AdditionalHighlightAttributes[ahaInvalidBreakpoint] then
-    begin
-      DefBGCol := clOlive;
-      DefFGCol := clLime;
-    end
-    else
-    if AttriName = AdditionalHighlightAttributes[ahaUnknownBreakpoint] then
-    begin
-      DefBGCol := clNone;
-      DefFGCol := clNone;
-    end
-    else
-    if AttriName = AdditionalHighlightAttributes[ahaErrorLine] then
-    begin
-      DefBGCol := clMaroon;
-      DefFGCol := clWhite;
-    end;
-  end
-  else
-  if lowercase(SynColorScheme) = 'ocean' then
-  begin
-    // default for ocean color scheme
-    DefBGCol := clNavy;
-    DefFGCol := clYellow;
-    if AttriName = 'Assembler' then
-      DefFGCol := clLime
-    else
-    if AttriName = 'Comment' then
-      DefFGCol := clGray
-    else
-    if AttriName = 'Directive' then
-      DefFGCol := clRed
-    else
-    if AttriName = 'Reserved word' then
-    begin
-      DefFGCol := clAqua;
-      DefFontStyles := [fsBold];
-    end
-    else
-    if AttriName = 'Number' then
-      DefFGCol := clFuchsia
-    else
-    if AttriName = 'String' then
-      DefFGCol := clYellow
-    else
-    if AttriName = 'Symbol' then
-      DefFGCol := clAqua
-    else
-    if AttriName = AdditionalHighlightAttributes[ahaTextBlock] then
-    begin
-      DefBGCol := clWhite;
-      DefFGCol := clBlack;
-    end
-    else
-    if AttriName = AdditionalHighlightAttributes[ahaExecutionPoint] then
-    begin
-      DefBGCol := clBlue;
-      DefFGCol := clWhite;
-    end
-    else
-    if AttriName = AdditionalHighlightAttributes[ahaEnabledBreakpoint] then
-    begin
-      DefBGCol := clRed;
-      DefFGCol := clWhite;
-    end
-    else
-    if AttriName = AdditionalHighlightAttributes[ahaDisabledBreakpoint] then
-    begin
-      DefBGCol := clLime;
-      DefFGCol := clRed;
-    end
-    else
-    if AttriName = AdditionalHighlightAttributes[ahaInvalidBreakpoint] then
-    begin
-      DefBGCol := clOlive;
-      DefFGCol := clGreen;
-    end
-    else
-    if AttriName = AdditionalHighlightAttributes[ahaUnknownBreakpoint] then
-    begin
-      DefBGCol := clRed;
-      DefFGCol := clBlack;
-    end
-    else
-    if AttriName = AdditionalHighlightAttributes[ahaErrorLine] then
-    begin
-      DefBGCol := $50a0ff;
-      DefFGCol := clBlack;
-    end;
-  end
-  else
-  if lowercase(SynColorScheme) = 'delphi' then
-  begin
-    // default for delphi color scheme
-    if AttriName = 'Assembler' then
-      DefFGCol := clBlack
-    else
-    if AttriName = 'Comment' then
-    begin
-      DefFGCol := clNavy;
-      DefFontStyles := [fsItalic];
-    end
-    else
-    if AttriName = 'Directive' then
-      DefFGCol := clGreen
-    else
-    if AttriName = 'Reserved word' then
-    begin
-      DefFGCol := clBlack;
-      DefFontStyles := [fsBold];
-    end
-    else
-    if AttriName = 'Number' then
-      DefFGCol := clNavy
-    else
-    if AttriName = 'String' then
-      DefFGCol := clNavy
-    else
-    if AttriName = 'Symbol' then
-      DefFGCol := clBlack
-    else
-    if AttriName = AdditionalHighlightAttributes[ahaTextBlock] then
-    begin
-      DefBGCol := clHighlight;
-      DefFGCol := clHighlightText;
-    end
-    else
-    if AttriName = AdditionalHighlightAttributes[ahaExecutionPoint] then
-    begin
-      DefBGCol := clNavy;
-      DefFGCol := clWhite;
-    end
-    else
-    if AttriName = AdditionalHighlightAttributes[ahaEnabledBreakpoint] then
-    begin
-      DefBGCol := clRed;
-      DefFGCol := clWhite;
-    end
-    else
-    if AttriName = AdditionalHighlightAttributes[ahaDisabledBreakpoint] then
-    begin
-      DefBGCol := clLime;
-      DefFGCol := clRed;
-    end
-    else
-    if AttriName = AdditionalHighlightAttributes[ahaInvalidBreakpoint] then
-    begin
-      DefBGCol := clOlive;
-      DefFGCol := clLime;
-    end
-    else
-    if AttriName = AdditionalHighlightAttributes[ahaUnknownBreakpoint] then
-    begin
-      DefBGCol := clRed;
-      DefFGCol := clBlack;
-    end
-    else
-    if AttriName = AdditionalHighlightAttributes[ahaErrorLine] then
-    begin
-      DefBGCol := clMaroon;
-      DefFGCol := clWhite;
-    end;
-  end
-  else
-  if AttriName = 'Assembler' then
-    DefFGCol := clGreen
-  else
-  if AttriName = 'Comment' then
-  begin
-    DefFGCol := clBlue;
-    DefFontStyles := [fsBold];
-  end
-  else
-  if AttriName = 'Directive' then
-  begin
-    DefFGCol := clRed;
-    DefFontStyles := [fsBold];
-  end
-  else
-  if AttriName = 'Reserved word' then
-    DefFontStyles := [fsBold]
-  else
-  if AttriName = 'Number' then
-    DefFGCol := clNavy
-  else
-  if AttriName = 'String' then
-    DefFGCol := clBlue
-  else
-  if AttriName = 'Symbol' then
-    DefFGCol := clRed
-  else
-  if AttriName = AdditionalHighlightAttributes[ahaTextBlock] then
-  begin
-    DefBGCol := clNavy;
-    DefFGCol := clWhite;
-  end
-  else
-  if AttriName = AdditionalHighlightAttributes[ahaExecutionPoint] then
-  begin
-    DefBGCol := clDKGray;
-    DefFGCol := clWhite;
-  end
-  else
-  if AttriName = AdditionalHighlightAttributes[ahaEnabledBreakpoint] then
-  begin
-    DefBGCol := clRed;
-    DefFGCol := clBlack;
-  end
-  else
-  if AttriName = AdditionalHighlightAttributes[ahaDisabledBreakpoint] then
-  begin
-    DefBGCol := clGreen;
-    DefFGCol := clBlack;
-  end
-  else
-  if AttriName = AdditionalHighlightAttributes[ahaErrorLine] then
-  begin
-    DefBGCol := $50a0ff;
-    DefFGCol := clBlack;
-  end// default for all other color schemes
-  ;
+    Scheme := DEFAULT_COLOR_SCHEME;
+  end;
 
-  Attr.Foreground := DefFGCol;
-  Attr.Background := DefBGCol;
-  Attr.Style      := DefFontStyles;
+  for pha := low(pha) to High(pha) do
+  begin
+    if AttriName <> LowerCase(PascalHilightAttributeNames[pha]) then Continue;
+    if Scheme.Attributes[pha].FG = clNone
+    then Attr.Foreground := Scheme.Default.FG
+    else Attr.Foreground := Scheme.Attributes[pha].FG;
+    if Scheme.Attributes[pha].BG = clNone
+    then Attr.Background := Scheme.Default.BG
+    else Attr.Background := Scheme.Attributes[pha].BG;
+    Attr.Style := Scheme.Attributes[pha].Styles;
+    Exit;
+  end;
+  
+  for aha := low(aha) to High(aha) do
+  begin
+    if AttriName <> LowerCase(AdditionalHighlightAttributes[aha]) then Continue;
+    if Scheme.Additional[aha].FG = clNone
+    then Attr.Foreground := Scheme.Default.FG
+    else Attr.Foreground := Scheme.Additional[aha].FG;
+    if Scheme.Additional[aha].BG = clNone
+    then Attr.Background := Scheme.Default.BG
+    else Attr.Background := Scheme.Additional[aha].BG;
+    Attr.Style := Scheme.Additional[aha].Styles;
+    Exit;
+  end;
 end;
 
 procedure TEditorOptions.ReadDefaultsForHighlighterSettings(Syn: TCustomSyn;
@@ -2250,107 +2075,39 @@ begin
   WriteHighlighterSettings(Syn, '');
 end;
 
-procedure TEditorOptions.GetSpecialLineColors(Syn: TCustomSyn;
-  AddHilightAttr: TAdditionalHilightAttribute; var Special: Boolean;
-  var FG, BG: TColor);
+function TEditorOptions.GetLineColors(Syn: TCustomSyn; AddHilightAttr: TAdditionalHilightAttribute;
+  out FG, BG: TColor{; out Styles: TFontStyles}): Boolean;
 var
   i: Integer;
-  NewFG, NewBG: TColor;
+  Attrib: TSynHighlighterAttributes;
 begin
-  if Syn <> Nil then
+  if Syn <> nil
+  then begin
     for i := 0 to Syn.AttrCount - 1 do
     begin
-      if Syn.Attribute[i].Name = '' then
-        continue;
-      if Syn.Attribute[i].Name = AdditionalHighlightAttributes[AddHilightAttr]
-      then
-      begin
-        NewFG := Syn.Attribute[i].Foreground;
-        NewBG := Syn.Attribute[i].Background;
-        Special := (NewFG <> clNone) or (NewBG <> clNone);
-        if NewFG <> clNone then
-          FG := NewFG;
-        if NewBG <> clNone then
-          BG := NewBG;
-        exit;
-      end;
-    end;
-  // set default
-  case AddHilightAttr of
-    ahaTextBlock:
-    begin
-      NewBG := clNavy;
-      NewFG := clWhite;
-    end;
-    ahaExecutionPoint:
-    begin
-      NewBG := clDKGray;
-      NewFG := clWhite;
-    end;
-    ahaEnabledBreakpoint:
-    begin
-      NewBG := clRed;
-      NewFG := clWhite;
-    end;
-    ahaDisabledBreakpoint:
-    begin
-      NewBG := clGreen;
-      NewFG := clBlack;
-    end;
-    ahaInvalidBreakpoint:
-    begin
-      NewBG := clOlive;
-      NewFG := clGreen;
-    end;
-    ahaUnknownBreakpoint:
-    begin
-      NewBG := clRed;
-      NewFG := clBlack;
-    end;
-    ahaErrorLine:
-    begin
-      NewBG := $50a0ff;
-      NewFG := clBlack;
-    end;
-    else
-    begin
-      NewBG := clWhite;
-      NewFG := clBlack;
+      Attrib := Syn.Attribute[i];
+      if Attrib.Name = '' then Continue;
+      if LowerCase(Attrib.Name) <> LowerCase(AdditionalHighlightAttributes[AddHilightAttr])
+      then Continue;
+      
+      FG := Attrib.Foreground;
+      BG := Attrib.Background;
+//      Styles := Attrib.Style;
+      Exit((FG <> clNone) or (BG <> clNone) {or (Styles <> [])});
     end;
   end;
-  Special := (NewFG <> clNone) or (NewBG <> clNone);
-  if NewFG <> clNone then
-    FG := NewFG;
-  if NewBG <> clNone then
-    BG := NewBG;
-end;
-
-procedure TEditorOptions.GetSynEditSelectedColor(ASynEdit: TSynEdit);
-var
-  i: Integer;
-begin
-  if ASynEdit.Highlighter <> Nil then
-    for i := 0 to ASynEdit.Highlighter.AttrCount - 1 do
-      with ASynEdit.Highlighter.Attribute[i] do
-      begin
-        if Name = '' then
-          continue;
-        if AnsiCompareText(StrToValidXMLName(Name),
-          StrToValidXMLName(
-          AdditionalHighlightAttributes[ahaTextBlock])) = 0 then
-        begin
-          ASynEdit.SelectedColor.Background := Background;
-          ASynEdit.SelectedColor.Foreground := Foreground;
-          exit;
-        end;
-      end;
-  // set defaults
-  ASynEdit.SelectedColor.Background := clBlue;
-  ASynEdit.SelectedColor.Foreground := clWhite;
+    
+  // set default
+  FG := DEFAULT_COLOR_SCHEME.Additional[AddHilightAttr].FG;
+  BG := DEFAULT_COLOR_SCHEME.Additional[AddHilightAttr].BG;
+//  Styles := DEFAULT_COLOR_SCHEME.Additional[AddHilightAttr].Styles;
+  Result := True;
 end;
 
 procedure TEditorOptions.GetSynEditSettings(ASynEdit: TSynEdit);
 // read synedit setings from config file
+var
+  FG, BG: TColor;
 begin
   // general options
   ASynEdit.Options := fSynEditOptions;
@@ -2380,7 +2137,9 @@ begin
   ASynEdit.Font.Name := fEditorFont;
   ASynEdit.ExtraLineSpacing := fExtraLineSpacing;
   ASynEdit.MaxUndo := fUndoLimit;
-  GetSynEditSelectedColor(ASynEdit);
+  GetLineColors(ASynEdit.Highlighter, ahaTextBlock, FG, BG);
+  ASynEdit.SelectedColor.Foreground := FG;
+  ASynEdit.SelectedColor.Background := BG;
   
   // Code Folding
   ASynEdit.CFDividerDrawLevel := FCFDividerDrawLevel;
@@ -3776,14 +3535,14 @@ begin
     begin
       BeginUpdate;
       // ToDo: fill also with custom color schemes
-      Add(DefaultColorScheme);
-      Add('Delphi');
-      Add('Pascal Classic');
-      Add('Twilight');
-      Add('Ocean');
+      Add(DEFAULT_COLOR_SCHEME.Name);
+      Add(DELPHI_COLOR_SCHEME.Name);
+      Add(CLASSIC_COLOR_SCHEME.Name);
+      Add(TWILIGHT_COLOR_SCHEME.Name);
+      Add(OCEAN_COLOR_SCHEME.Name);
       EndUpdate;
     end;
-    Text := DefaultColorScheme;
+    Text := DEFAULT_COLOR_SCHEME.Name;
   end;
 
   FileExtensionsLabel.Caption := dlgFileExts;

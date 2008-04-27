@@ -423,9 +423,9 @@ var
   CurError: TLFMError;
 begin
   CurError:=LFMTree.FindErrorAtLine(Line);
-  if CurError<>nil then begin
-    EditorOpts.GetSpecialLineColors(SynLFMSyn1,ahaErrorLine,Special,FG,BG);
-  end;
+  if CurError = nil then Exit;
+  
+  Special := EditorOpts.GetLineColors(SynLFMSyn1,ahaErrorLine,FG,BG);
 end;
 
 procedure TCheckLFMDialog.CheckLFMDialogCREATE(Sender: TObject);

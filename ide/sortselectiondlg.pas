@@ -41,7 +41,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, SynEdit, Buttons, StdCtrls,
-  ExtCtrls, IDEOptionDefs, Dialogs, BasicCodeTools,
+  ExtCtrls, IDEOptionDefs, Dialogs, BasicCodeTools, Graphics,
   AVL_Tree, TextTools, IDEWindowIntf,
   LazarusIDEStrConsts, EditorOptions, MiscOptions, SynEditHighlighter;
   
@@ -105,12 +105,15 @@ function ShowSortSelectionDialog(const TheText: string;
   var SortedText: string): TModalResult;
 var
   SortSelectionDialog: TSortSelectionDialog;
+  FG, BG: TCOlor;
 begin
   SortSelectionDialog:=TSortSelectionDialog.Create(nil);
   SortSelectionDialog.BeginUpdate;
   SortSelectionDialog.TheText:=TheText;
   SortSelectionDialog.PreviewSynEdit.Highlighter:=Highlighter;
-  EditorOpts.GetSynEditSelectedColor(SortSelectionDialog.PreviewSynEdit);
+  EditorOpts.GetLineColors(Highlighter, ahaTextBlock, FG, BG);
+  SortSelectionDialog.PreviewSynEdit.SelectedColor.Foreground := FG;
+  SortSelectionDialog.PreviewSynEdit.SelectedColor.Background := BG;
   SortSelectionDialog.UpdatePreview;
   SortSelectionDialog.EndUpdate;
   Result:=SortSelectionDialog.ShowModal;
