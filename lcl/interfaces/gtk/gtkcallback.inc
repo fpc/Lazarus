@@ -507,14 +507,18 @@ function gtkDrawAfterCB(Widget: PGtkWidget; area: PGDKRectangle;
   data: gPointer) : GBoolean; cdecl;
   
   function WidgetHasDrawAllBug: boolean;
+  {$IFDEF Gtk1}
   var
     WidgetStyle: PGtkStyle;
+  {$ENDIF}
   begin
     Result:=false;
+    {$IFDEF Gtk1}
     WidgetStyle := gtk_widget_get_style(Widget);
     if (WidgetStyle=nil) then exit;
     if (WidgetStyle^.engine=nil) then exit;
     Result:=true;
+    {$ENDIF}
     //DebugLn(['WidgetHasDrawAllBug ',dbgs(WidgetStyle^.engine)]);
   end;
   
@@ -573,9 +577,13 @@ begin
 
   //DebugLn(['gtkExposeEvent ',GetWidgetDebugReport(Widget),' ',dbgGRect(@Event^.Area)]);
 
+  {$IFDEF Gtk1}
   // the expose area is ok, but some gtk widgets repaint everything on expose
   // -> maximize the area
   DeliverGtkPaintMessage(Data, Widget, @Event^.Area, True, False);
+  {$ELSE}
+  DeliverGtkPaintMessage(Data, Widget, @Event^.Area, False, False);
+  {$ENDIF}
 end;
 
 function gtkExposeEventAfter(Widget: PGtkWidget; Event : PGDKEventExpose;
@@ -608,10 +616,13 @@ begin
 
   //DebugLn(['gtkExposeEventAfter ',GetWidgetDebugReport(Widget),' ',dbgGRect(@Event^.Area)]);
 
+  {$IFDEF Gtk1}
   // the expose area is ok, but some gtk widgets repaints everything on expose
   // -> maximize the area
   DeliverGtkPaintMessage(Data,Widget,@Event^.Area,true,true);
-  {$IFDEF GTK2}
+  {$ELSE}
+  DeliverGtkPaintMessage(Data,Widget,@Event^.Area,false,true);
+
   // Some widgets in gtk2 don't have their own exclusive "windows" so a synthetic event must be sent
   // MG: That is already done by the gtk2. For which widgets does this not work?
   //     Enabling this results in double painting, which is slower and
