@@ -2547,6 +2547,7 @@ type
     FState: THeaderSectionState;
     FText: string;
     FWidth: Integer;
+    FOriginalIndex: Integer;
     function GetLeft: Integer;
     function GetRight: Integer;
     procedure SetAlignment(const AValue: TAlignment);
@@ -2570,6 +2571,8 @@ type
     property MinWidth: Integer read FMinWidth write SetMinWidth default 0;
     property Text: string read FText write SetText;
     property Width: Integer read FWidth write SetWidth;
+    //index which doesn't change when the user reorders the sections
+    property OriginalIndex: Integer read FOriginalIndex;
   end;
   
   THeaderSectionClass = class of THeaderSection;
@@ -2590,11 +2593,14 @@ type
     function Add: THeaderSection;
     function AddItem(Item: THeaderSection; Index: Integer): THeaderSection;
     function Insert(Index: Integer): THeaderSection;
+    procedure Delete(Index: Integer);
     property Items[Index: Integer]: THeaderSection read GetItem write SetItem; default;
   end;
 
   TSectionTrackState = (tsTrackBegin, tsTrackMove, tsTrackEnd);
-  TCustomSectionTrackEvent = procedure(HeaderControl: TCustomHeaderControl; Section: THeaderSection; Width: Integer; State: TSectionTrackState) of object;
+    TCustomSectionTrackEvent = procedure(HeaderControl: TCustomHeaderControl; Section: THeaderSection; Width: Integer; State: TSectionTrackState) of object;
+  TSectionDragEvent = procedure (Sender: TObject; FromSection, ToSection: THeaderSection;
+    var AllowDrag: Boolean) of object;
   TCustomSectionNotifyEvent = procedure(HeaderControl: TCustomHeaderControl;
     Section: THeaderSection) of object;
   TCustomHCCreateSectionClassEvent = procedure(Sender: TCustomHeaderControl;
@@ -2605,18 +2611,23 @@ type
   
   TCustomHeaderControl = class(TCustomControl)
   private
+    FDragReorder: boolean;
     FSections: THeaderSections;
     FImages: TCustomImageList;
     FPaintRect: TRect;
     FDown: Boolean;
     FDownPoint: TPoint;
-    FTracking: Boolean;
-    FSelectedSelection: longint;
+    FTracking, FDragging: Boolean;
+    FEndDragSectionIndex: longint;
+    FSelectedSection: longint;
     FMouseInControl: Boolean;
     
     FOnSectionClick: TCustomSectionNotifyEvent;
     FOnSectionResize: TCustomSectionNotifyEvent;
     FOnSectionTrack: TCustomSectionTrackEvent;
+    FOnSectionSeparatorDblClick: TCustomSectionNotifyEvent;
+    FOnSectionDrag: TSectionDragEvent;
+    FOnSectionEndDrag: TNotifyEvent;
     FOnCreateSectionClass: TCustomHCCreateSectionClassEvent;
     procedure SetImages(const AValue: TCustomImageList);
     procedure SetSections(const AValue: THeaderSections);
@@ -2629,6 +2640,9 @@ type
     procedure SectionClick(Section: THeaderSection); dynamic;
     procedure SectionResize(Section: THeaderSection); dynamic;
     procedure SectionTrack(Section: THeaderSection; State: TSectionTrackState); dynamic;
+    procedure SectionSeparatorDblClick(Section: THeaderSection); dynamic;
+    procedure SectionEndDrag(); dynamic;
+    function SectionDrag(FromSection, ToSection: THeaderSection):boolean; dynamic;
     procedure MouseEnter; override;
     procedure MouseLeave; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -2643,19 +2657,26 @@ type
     destructor Destroy; override;
     
     procedure Click; override;
+    procedure DblClick; override;
     function GetSectionAt(P: TPoint): Integer;
     procedure Paint; override;
     procedure PaintSection(Index: Integer); virtual;
   published
+    property DragReorder: boolean read FDragReorder write FDragReorder;
     property Images: TCustomImageList read FImages write SetImages;
     property Sections: THeaderSections read FSections write SetSections;
 
+    property OnSectionDrag: TSectionDragEvent read FOnSectionDrag
+      write FOnSectionDrag;
+    property OnSectionEndDrag: TNotifyEvent read FOnSectionEndDrag write FOnSectionEndDrag;
     property OnSectionClick: TCustomSectionNotifyEvent read FOnSectionClick
       write FOnSectionClick;
     property OnSectionResize: TCustomSectionNotifyEvent read FOnSectionResize
       write FOnSectionResize;
     property OnSectionTrack: TCustomSectionTrackEvent read FOnSectionTrack
       write FOnSectionTrack;
+    property OnSectionSeparatorDblClick: TCustomSectionNotifyEvent read FOnSectionSeparatorDblClick
+      write FOnSectionSeparatorDblClick;
     property OnCreateSectionClass: TCustomHCCreateSectionClassEvent read FOnCreateSectionClass
       write FOnCreateSectionClass;
   end;

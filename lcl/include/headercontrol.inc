@@ -21,6 +21,7 @@
 { TCustomHeaderControl }
 
 const HeaderBorderSize = 2;
+      DragStartDistance = 5;
 
 procedure TCustomHeaderControl.SetImages(const AValue: TCustomImageList);
 begin
@@ -82,12 +83,21 @@ procedure TCustomHeaderControl.Click;
 var
   Index: Integer;
 begin
-  if not FTracking then
+  if FDown and not FDragging then
   begin
     inherited Click;
     Index := GetSectionAt(ScreenToClient(Mouse.CursorPos));
     if Index <> -1 then
       SectionClick(Sections[Index]);
+  end;
+end;
+
+procedure TCustomHeaderControl.DblClick;
+begin
+  inherited DblClick;
+  if FTracking then
+  begin
+    SectionSeparatorDblClick(Sections[FSelectedSection]);
   end;
 end;
 
@@ -131,6 +141,27 @@ begin
     FOnSectionTrack(Self, Section, Section.FWidth, State);
 end;
 
+procedure TCustomHeaderControl.SectionSeparatorDblClick(Section: THeaderSection
+  );
+begin
+  if Assigned(FOnSectionSeparatorDblClick) then
+    FOnSectionSeparatorDblClick(Self, Section);
+end;
+
+procedure TCustomHeaderControl.SectionEndDrag();
+begin
+  if Assigned(FOnSectionEndDrag) then
+    FOnSectionEndDrag(self);
+end;
+
+function TCustomHeaderControl.SectionDrag(FromSection,
+  ToSection: THeaderSection): boolean;
+begin
+  Result:=DragReorder;
+  if Result and Assigned(FOnSectionDrag) then
+    FOnSectionDrag(self,FromSection,ToSection,Result);
+end;
+
 procedure TCustomHeaderControl.MouseEnter;
 begin
   inherited MouseEnter;
@@ -161,45 +192,69 @@ begin
     FDown := True;
     FDownPoint := Point(X, Y);
     if Button = mbLeft then
-      if GetSectionAt(Point(X - HeaderBorderSize, Y))<>GetSectionAt(Point(X + HeaderBorderSize, Y)) then
+      if (X > HeaderBorderSize ) and
+         (GetSectionAt(Point(X - HeaderBorderSize, Y))<>GetSectionAt(Point(X + HeaderBorderSize, Y))) then
       begin
         FTracking:=true;
-        FSelectedSelection:=GetSectionAt(Point(X - HeaderBorderSize, Y));
-        if FSelectedSelection = -1 then
+        FSelectedSection:=GetSectionAt(Point(X - HeaderBorderSize, Y));
+        if FSelectedSection = -1 then
           FTracking:=false
         else
           Cursor:=crSizeE;
         if FTracking then
         begin
           FDown := False;
-          SectionTrack(Sections[FSelectedSelection], tsTrackBegin);
+          SectionTrack(Sections[FSelectedSection], tsTrackBegin);
         end;
-      end;
+      end else
+        FSelectedSection:=GetSectionAt(Point(X, Y));
     UpdateState;
   end;
 end;
 
 procedure TCustomHeaderControl.MouseMove(Shift: TShiftState; X, Y: Integer);
+var CurrentSectionIndex: Integer;
 begin
   inherited MouseMove(Shift, X, Y);
   if not (csDesigning in ComponentState) then
   begin
     if FTracking and (ssLeft in shift) then
     begin
-      if x>=FSections[FSelectedSelection].Left then
+      if x>=FSections[FSelectedSection].Left then
       begin
-        FSections[FSelectedSelection].Width := X - FSections[FSelectedSelection].Left;
-        SectionTrack(Sections[FSelectedSelection], tsTrackMove);
+        FSections[FSelectedSection].Width := X - FSections[FSelectedSection].Left;
+        SectionTrack(Sections[FSelectedSection], tsTrackMove);
       end;
     end
-    else
-    if FDown then
+    else if FDragging and (ssLeft in shift) then
     begin
-      if GetSectionAt(Point(X, Y)) <> GetSectionAt(FDownPoint) then
-        FDown := False;
+      CurrentSectionIndex:=GetSectionAt(Point(x,y));
+      if CurrentSectionIndex>-1 then
+      begin
+        if (Sections[CurrentSectionIndex].GetLeft + Sections[CurrentSectionIndex].Width div 2 < X) then
+          FEndDragSectionIndex:=CurrentSectionIndex+1
+         else
+          FEndDragSectionIndex:=CurrentSectionIndex;
+        if FEndDragSectionIndex < Sections.Count - 1 then
+          FDragging:=SectionDrag(Sections[FSelectedSection],Sections[FEndDragSectionIndex])
+         else
+          FDragging:=SectionDrag(Sections[FSelectedSection],Sections[Sections.Count - 1]);
+        RePaint;
+      end;
+    end
+    else if FDown then
+    begin
+      if DragReorder and (abs(X-FDownPoint.X) >= DragStartDistance) then
+      begin
+       FDragging:=true;
+       FEndDragSectionIndex:=FSelectedSection;
+      end else
+       if GetSectionAt(Point(X, Y)) <> GetSectionAt(FDownPoint) then
+         FDown := False;
     end;
     if shift = [] then
-      if GetSectionAt(Point(X - HeaderBorderSize, Y))<>GetSectionAt(Point(X + HeaderBorderSize, Y)) then
+      if (X > HeaderBorderSize) and
+         (GetSectionAt(Point(X - HeaderBorderSize, Y))<>GetSectionAt(Point(X + HeaderBorderSize, Y))) then
         Cursor:=crSizeE
        else
         Cursor:=crDefault;
@@ -213,11 +268,19 @@ begin
   inherited MouseUp(Button, Shift, X, Y);
   if FTracking then
   begin
-    SectionTrack(Sections[FSelectedSelection],tsTrackEnd);
-    SectionResize(Sections[FSelectedSelection]);
+    SectionTrack(Sections[FSelectedSection],tsTrackEnd);
+    SectionResize(Sections[FSelectedSection]);
+  end;
+  if FDragging then begin
+    if FSelectedSection<FEndDragSectionIndex then
+      Sections[FSelectedSection].Index:=FEndDragSectionIndex - 1
+     else if FSelectedSection>FEndDragSectionIndex then
+      Sections[FSelectedSection].Index:=FEndDragSectionIndex;
+    SectionEndDrag();
   end;
   FDown := False;
   FTracking:=false;
+  FDragging:=false;
   UpdateState;
 end;
 
@@ -230,13 +293,16 @@ begin
   MaxState := hsNormal;
   if Enabled then
     if FDown then
-      MaxState := hsPressed
-    else
-    if FMouseInControl then
+    begin
+      MaxState := hsPressed;
+      Index := FSelectedSection;
+    end else if FMouseInControl then
+    begin
       MaxState := hsHot;
+      P := ScreenToClient(Mouse.CursorPos);
+      Index := GetSectionAt(P);
+    end;
 
-  P := ScreenToClient(Mouse.CursorPos);
-  Index := GetSectionAt(P);
   for i := 0 to Sections.Count - 1 do
     if (i <> Index) then
       Sections[i].State := hsNormal
@@ -265,6 +331,17 @@ begin
     FPaintRect.Left := Sections[Sections.Count - 1].Right;
   Details := ThemeServices.GetElementDetails(thHeaderItemRightNormal);
   ThemeServices.DrawElement(Canvas.Handle, Details, FPaintRect);
+
+  if FDragging then
+  begin
+    canvas.Pen.Width:=2;
+    canvas.Pen.Color:=clHotLight;
+    if FEndDragSectionIndex < Sections.Count then
+      canvas.MoveTo(Sections[FEndDragSectionIndex].Left,0)
+     else
+      canvas.MoveTo(Sections[Sections.Count - 1].Right,0);
+    canvas.LineTo(canvas.PenPos.x,ClientHeight);
+  end;
 end;
 
 procedure TCustomHeaderControl.PaintSection(Index: Integer);
@@ -342,23 +419,42 @@ end;
 
 function THeaderSections.Add: THeaderSection;
 begin
-  Result := AddItem(nil, -1);
+  Result := AddItem(nil, Count);
 end;
 
 function THeaderSections.AddItem(Item: THeaderSection; Index: Integer): THeaderSection;
+var i:longint;
 begin
   if Item = nil then
     Result := FHeaderControl.CreateSection;
 
   Result.Collection := Self;
-  if Index < Count then
+  if Index > Count then
     Index := Count - 1;
   Result.Index := Index;
+  //updates OriginalIndex so that it has the value Index would have if there
+  //never was a move
+  for i:=0 to Count - 1 do
+    if Items[i].FOriginalIndex>=Index then
+      Items[i].FOriginalIndex:=Items[i].FOriginalIndex + 1;
+  Result.FOriginalIndex := Index;
+  
 end;
 
 function THeaderSections.Insert(Index: Integer): THeaderSection;
 begin
   Result := AddItem(nil, Index);
+end;
+
+procedure THeaderSections.Delete(Index: Integer);
+var i:longint;
+begin
+  inherited Delete(Index);
+  //updates OriginalIndex so that it has the value Index would have if there
+  //never was a move
+  for i:=0 to Count - 1 do
+    if items[i].FOriginalIndex > Index then
+      items[i].FOriginalIndex := items[i].FOriginalIndex - 1;
 end;
 
 { THeaderSection }
@@ -471,6 +567,7 @@ begin
   FState := hsNormal;
   FMinWidth := 0;
   FMaxWidth := 10000;
+  FOriginalIndex:=ACollection.Count-1;
 end;
 
 procedure THeaderSection.Assign(Source: TPersistent);
