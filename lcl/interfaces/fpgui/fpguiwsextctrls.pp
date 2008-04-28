@@ -27,14 +27,12 @@ unit FpGuiWSExtCtrls;
 interface
 
 uses
-////////////////////////////////////////////////////
-// I M P O R T A N T                                
-////////////////////////////////////////////////////
-// To get as little as posible circles,
-// uncomment only when needed for registration
-////////////////////////////////////////////////////
-//  ExtCtrls,
-////////////////////////////////////////////////////
+  // Bindings
+  fpguiwsprivate,
+  // LCL
+  Classes,
+  ExtCtrls, Controls, LCLType,
+  // Widgetset
   WSExtCtrls, WSLCLClasses;
 
 type
@@ -53,6 +51,9 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
   end;
 
   { TFpGuiWSPage }
@@ -159,14 +160,6 @@ type
   public
   end;
 
-  { TFpGuiWSBoundLabel }
-
-  TFpGuiWSBoundLabel = class(TWSBoundLabel)
-  private
-  protected
-  public
-  end;
-
   { TFpGuiWSCustomLabeledEdit }
 
   TFpGuiWSCustomLabeledEdit = class(TWSCustomLabeledEdit)
@@ -199,8 +192,64 @@ type
   public
   end;
 
+  { TFpGuiWSCustomTrayIcon }
+
+  TFpGuiWSCustomTrayIcon = class(TWSCustomTrayIcon)
+  public
+    class function Hide(const ATrayIcon: TCustomTrayIcon): Boolean; override;
+    class function Show(const ATrayIcon: TCustomTrayIcon): Boolean; override;
+    class procedure InternalUpdate(const ATrayIcon: TCustomTrayIcon); override;
+    class function ShowBalloonHint(const ATrayIcon: TCustomTrayIcon): Boolean; override;
+    class function GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint; override;
+  end;
 
 implementation
+
+{ TFpGuiWSCustomNotebook }
+
+class function TFpGuiWSCustomNotebook.CreateHandle(
+  const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
+begin
+  Result := TLCLIntfHandle(TFPGUIPrivatePageControl.Create(AWinControl, AParams));
+end;
+
+class procedure TFpGuiWSCustomNotebook.DestroyHandle(
+  const AWinControl: TWinControl);
+begin
+  TFPGUIPrivatePageControl(AWinControl.Handle).Free;
+
+  AWinControl.Handle := 0;
+end;
+
+{ TFpGuiWSCustomTrayIcon }
+
+class function TFpGuiWSCustomTrayIcon.Hide(const ATrayIcon: TCustomTrayIcon): Boolean;
+begin
+  Result:=inherited Hide(ATrayIcon);
+end;
+
+class function TFpGuiWSCustomTrayIcon.Show(const ATrayIcon: TCustomTrayIcon): Boolean;
+begin
+  Result:=inherited Show(ATrayIcon);
+end;
+
+class procedure TFpGuiWSCustomTrayIcon.InternalUpdate(
+  const ATrayIcon: TCustomTrayIcon);
+begin
+  inherited InternalUpdate(ATrayIcon);
+end;
+
+class function TFpGuiWSCustomTrayIcon.ShowBalloonHint(
+  const ATrayIcon: TCustomTrayIcon): Boolean;
+begin
+  Result:=inherited ShowBalloonHint(ATrayIcon);
+end;
+
+class function TFpGuiWSCustomTrayIcon.GetPosition(
+  const ATrayIcon: TCustomTrayIcon): TPoint;
+begin
+  Result:=inherited GetPosition(ATrayIcon);
+end;
 
 initialization
 
@@ -211,7 +260,7 @@ initialization
 // which actually implement something
 ////////////////////////////////////////////////////
 //  RegisterWSComponent(TCustomPage, TFpGuiWSCustomPage);
-//  RegisterWSComponent(TCustomNotebook, TFpGuiWSCustomNotebook);
+  RegisterWSComponent(TCustomNotebook, TFpGuiWSCustomNotebook);
 //  RegisterWSComponent(TPage, TFpGuiWSPage);
 //  RegisterWSComponent(TNotebook, TFpGuiWSNotebook);
 //  RegisterWSComponent(TShape, TFpGuiWSShape);

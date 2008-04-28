@@ -112,7 +112,7 @@ uses
 // FpGuiWSDialogs,
 // FpGuiWSDirSel,
 // FpGuiWSEditBtn,
-// FpGuiWSExtCtrls,
+ FpGuiWSExtCtrls,
 // FpGuiWSExtDlgs,
 // FpGuiWSFileCtrl,
  FpGuiWSForms,

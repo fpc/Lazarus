@@ -39,7 +39,7 @@ uses
   WSControls, WSLCLClasses, WSProc,
   // interface
   gfx_widget, gui_form, gui_button, gui_combobox, gui_dialogs,
-  gui_edit, gui_checkbox, gui_radiobutton;
+  gui_edit, gui_checkbox, gui_radiobutton, gui_tab;
 
 
 type
@@ -240,11 +240,15 @@ type
     function GetText: String;
   end;
 
-  {TFPGUIPrivateNotebook = class(TPrivateNotebook)
+  { TFPGUIPrivatePageControl }
+
+  TFPGUIPrivatePageControl = class(TFPGUIPrivateWidget)
   private
   protected
   public
-  end;}
+    { Virtual methods }
+    procedure CreateWidget(const AParams: TCreateParams); override;
+  end;
 
 
 implementation
@@ -718,6 +722,18 @@ end;
 function TFPGUIPrivateRadioButton.GetText: String;
 begin
   Result := RadioButton.Text;
+end;
+
+{ TFPGUIPrivateNotebook }
+
+procedure TFPGUIPrivatePageControl.CreateWidget(const AParams: TCreateParams);
+var
+  ParentContainer: TFPGUIPrivateContainer;
+begin
+  ParentContainer := TFPGUIPrivateContainer(LCLObject.Parent.Handle);
+
+  Widget := TfpgPageControl.Create(ParentContainer.Widget);
+  Widget.SetPosition(LCLObject.Left, LCLObject.Top, LCLObject.Width, LCLObject.Height);
 end;
 
 end.

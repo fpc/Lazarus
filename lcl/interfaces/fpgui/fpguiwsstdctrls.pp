@@ -178,9 +178,11 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
+
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
   { TFpGuiWSCustomCheckBox }
@@ -189,18 +191,18 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl;
+      const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
+
     class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
     class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox;
       const OldShortCut, NewShortCut: TShortCut); override;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
-  public
+
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
 
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
-
-    class function  CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLIntfHandle; override;
-    class procedure DestroyHandle(const AWinControl: TWinControl); override;
   end;
 
   { TFpGuiWSCheckBox }
@@ -225,18 +227,17 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl;
+      const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
+
     class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
     class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox;
       const OldShortCut, NewShortCut: TShortCut); override;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
-  public
+
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
-
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
-
-    class function  CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLIntfHandle; override;
-    class procedure DestroyHandle(const AWinControl: TWinControl); override;
   end;
 
   { TFpGuiWSCustomStaticText }
@@ -288,9 +289,9 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TFpGuiWSCustomComboBox.DestroyHandle(const AWinControl: TWinControl);
 begin
-//  TFPGUIPrivateComboBox(AWinControl.Handle).Free;
+  TFPGUIPrivateComboBox(AWinControl.Handle).Free;
 
-//  AWinControl.Handle := 0;
+  AWinControl.Handle := 0;
 end;
 
 {------------------------------------------------------------------------------
@@ -358,7 +359,9 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TFpGuiWSCustomEdit.DestroyHandle(const AWinControl: TWinControl);
 begin
+  TFPGUIPrivateEdit(AWinControl.Handle).Free;
 
+  AWinControl.Handle := 0;
 end;
 
 {------------------------------------------------------------------------------
@@ -431,6 +434,13 @@ begin
   Result := TLCLIntfHandle(TFPGUIPrivateButton.Create(AWinControl, AParams));
 end;
 
+class procedure TFpGuiWSButton.DestroyHandle(const AWinControl: TWinControl);
+begin
+  TFPGUIPrivateButton(AWinControl.Handle).Free;
+
+  AWinControl.Handle := 0;
+end;
+
 { TFpGuiWSCustomCheckBox }
 
 class function TFpGuiWSCustomCheckBox.RetrieveState(
@@ -496,7 +506,9 @@ end;
 class procedure TFpGuiWSCustomCheckBox.DestroyHandle(
   const AWinControl: TWinControl);
 begin
+  TFPGUIPrivateCheckBox(AWinControl.Handle).Free;
 
+  AWinControl.Handle := 0;
 end;
 
 { TFpGuiWSRadioButton }
@@ -562,7 +574,9 @@ end;
 
 class procedure TFpGuiWSRadioButton.DestroyHandle(const AWinControl: TWinControl);
 begin
+  TFPGUIPrivateRadioButton(AWinControl.Handle).Free;
 
+  AWinControl.Handle := 0;
 end;
 
 initialization
