@@ -22,7 +22,8 @@ unit IDEMsgIntf;
 interface
 
 uses
-  Classes, SysUtils, Forms, LCLProc, TextTools, IDECommands, IDEExternToolIntf;
+  Classes, SysUtils, Forms, LCLProc,
+  TextTools, IDECommands, IDEExternToolIntf;
   
 type
 

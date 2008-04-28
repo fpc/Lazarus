@@ -27,7 +27,7 @@ uses
     files and are able to convert them.
 }
 const
-  ExternalToolOptionsVersion = '1';
+  ExternalToolOptionsVersion = '2';
 
 type
   TIDEExternalToolOptions = class;
@@ -70,6 +70,7 @@ type
     FEnvironmentOverrides: TStringList;
     fFilename: string;
     FOnParseLine: TOnIDEExtToolParseLine;
+    FScanners: TStrings;
     FScanOutput: boolean;
     fScanOutputForFPCMessages: boolean;
     fScanOutputForMakeMessages: boolean;
@@ -93,16 +94,17 @@ type
     property CmdLineParams: string read fCmdLineParams write fCmdLineParams;
     property Filename: string read fFilename write fFilename;
     property Title: string read fTitle write fTitle;
+    property WorkingDirectory: string
+      read fWorkingDirectory write fWorkingDirectory;
+    property EnvironmentOverrides: TStringList read FEnvironmentOverrides;
     property ScanOutputForFPCMessages: boolean
       read fScanOutputForFPCMessages write fScanOutputForFPCMessages;
     property ScanOutputForMakeMessages: boolean
       read fScanOutputForMakeMessages write fScanOutputForMakeMessages;
-    property WorkingDirectory: string
-      read fWorkingDirectory write fWorkingDirectory;
-    property EnvironmentOverrides: TStringList read FEnvironmentOverrides;
     property ScanOutput: boolean read FScanOutput write SetScanOutput;
     property ShowAllOutput: boolean read FShowAllOutput write SetShowAllOutput;
     property OnParseLine: TOnIDEExtToolParseLine read FOnParseLine write FOnParseLine;
+    property Scanners: TStrings read FScanners;
   end;
   
 type
@@ -150,12 +152,14 @@ constructor TIDEExternalToolOptions.Create;
 begin
   inherited Create;
   FEnvironmentOverrides:=TStringList.Create;
+  FScanners:=TStringList.Create;
   Clear;
 end;
 
 destructor TIDEExternalToolOptions.Destroy;
 begin
-  FEnvironmentOverrides.Free;
+  FreeAndNil(FEnvironmentOverrides);
+  FreeAndNil(FScanners);
   inherited Destroy;
 end;
 
@@ -169,6 +173,8 @@ begin
   fScanOutputForMakeMessages:=false;
   FScanOutput:=false;
   FShowAllOutput:=false;
+  FEnvironmentOverrides.Clear;
+  FScanners.Clear;
 end;
 
 function TIDEExternalToolOptions.Load(Config: TConfigStorage): TModalResult;
@@ -184,6 +190,7 @@ begin
                                   'ScanOutputForMakeMessages/Value',false);
   FShowAllOutput:=Config.GetValue('ShowAllOutput/Value',false);
   Config.GetValue('EnvironmentOverrides/',FEnvironmentOverrides);
+  Config.GetValue('Scanners/',FScanners);
   Result:=mrOk;
 end;
 
@@ -202,6 +209,7 @@ begin
              false);
   Config.SetDeleteValue('ShowAllOutput/Value',FShowAllOutput,false);
   Config.SetValue('EnvironmentOverrides/',FEnvironmentOverrides);
+  Config.SetValue('Scanners/',FScanners);
   Result:=mrOk;
 end;
 
