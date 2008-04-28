@@ -4544,8 +4544,6 @@ begin
 end;
 
 procedure TSourceNotebook.EndIncrementalFind;
-var
-  TempEditor: TSourceEditor;
 begin
   if not (snIncrementalFind in States) then exit;
 

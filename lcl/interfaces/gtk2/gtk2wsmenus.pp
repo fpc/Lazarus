@@ -227,11 +227,11 @@ end;
 
 class procedure TGtk2WSMenuItem.SetShortCut(const AMenuItem: TMenuItem;
   const OldShortCut, NewShortCut: TShortCut);
-var
-  MenuWidget: PGtkMenuItem;
-  accel_path: String;
-  CurKey: Word;
-  CurShift: TShiftState;
+//var
+  //MenuWidget: PGtkMenuItem;
+  //accel_path: String;
+  //CurKey: Word;
+  //CurShift: TShiftState;
 begin
   if not WSCheckMenuItem(AMenuItem, 'SetShortCut') then  Exit;
   
