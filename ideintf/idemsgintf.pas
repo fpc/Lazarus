@@ -113,6 +113,60 @@ type
     property Parts[Index: integer]: TStrings read GetParts write SetParts;
   end;
 
+  TIDEMsgScannerType = class;
+
+  { TIDEMsgScanner }
+
+  TIDEMsgScanner = class(TPersistent)
+  private
+    FLines: TIDEMessageLineList;
+    FScannerType: TIDEMsgScannerType;
+    FWorkingDirectory: string;
+  protected
+    procedure SetWorkingDirectory(const AValue: string);
+  public
+    constructor Create(TheScannerType: TIDEMsgScannerType;
+                       TheLines: TIDEMessageLineList);
+    function ParseLine(MsgLine: TIDEMessageLine; var Show: boolean): boolean; virtual; abstract;// true if line was handled
+    procedure EndScan; virtual;
+    property Lines: TIDEMessageLineList read FLines;
+    property ScannerType: TIDEMsgScannerType read FScannerType;
+    property WorkingDirectory: string read FWorkingDirectory write SetWorkingDirectory;
+  end;
+
+  { TIDEMsgScannerType }
+
+  TIDEMsgScannerType = class(TComponent)
+  public
+    function ShortDescription: string; virtual; abstract;
+    function Description: string; virtual; abstract;
+    function StartScan(Lines: TIDEMessageLineList): TIDEMsgScanner; virtual; abstract;
+  end;
+
+  { TIDEMsgScanners }
+
+  TIDEMsgScanners = class(TPersistent)
+  private
+    fScanners: TFPList;// current instances
+    fTypes: TFPList;// registered scanner types
+    function GetCount: integer;
+    function GetItems(Index: integer): TIDEMsgScannerType;
+    function GetScannerCount: integer;
+    function GetScanners(Index: integer): TIDEMsgScanner;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure RegisterType(aType: TIDEMsgScannerType);
+    procedure UnregisterType(aType: TIDEMsgScannerType);
+    function CreateUniqueName(const aName: string): string;
+    function IndexOfName(const aTypeName: string): integer;
+    function TypeOfName(const aTypeName: string): TIDEMsgScannerType;
+    property Count: integer read GetCount;
+    property Items[Index: integer]: TIDEMsgScannerType read GetItems; default;
+    property ScannerCount: integer read GetScannerCount;
+    property Scanners[Index: integer]: TIDEMsgScanner read GetScanners;
+  end;
+
   { TIDEMsgQuickFixItem }
   
   TIMQuickFixStep = (
@@ -189,16 +243,19 @@ type
     procedure BeginBlock(ClearOldBlocks: Boolean = true); virtual; abstract;
     procedure EndBlock; virtual; abstract;
   end;
-
+  
 var
   IDEMsgQuickFixes: TIDEMsgQuickFixItems = nil; // initialized by the IDE
   IDEMessagesWindow: TIDEMessagesWindowInterface = nil;// initialized by the IDE
+  IDEMsgScanners: TIDEMsgScanners = nil;// initialized by the IDE
   
 procedure RegisterIDEMsgQuickFix(Item: TIDEMsgQuickFixItem);
 function RegisterIDEMsgQuickFix(const Name, Caption, RegExpr: string;
   Steps: TIMQuickFixSteps;
   const ExecuteMethod: TIMQFExecuteMethod;
   const ExecuteProc: TIMQFExecuteProc = nil): TIDEMsgQuickFixItem; overload;
+  
+procedure RegisterIDEMsgScanner(Item: TIDEMsgScannerType);
 
 implementation
 
@@ -220,6 +277,11 @@ begin
   Result.OnExecuteMethod:=ExecuteMethod;
   Result.OnExecuteProc:=ExecuteProc;
   IDEMsgQuickFixes.Add(Result);
+end;
+
+procedure RegisterIDEMsgScanner(Item: TIDEMsgScannerType);
+begin
+  IDEMsgScanners.RegisterType(Item);
 end;
 
 { TIDEMsgQuickFixItem }
@@ -502,6 +564,109 @@ procedure TIDEMessageLineList.Delete(Index: Integer);
 begin
   TObject(FItems[Index]).Free;
   FItems.Delete(Index);
+end;
+
+{ TIDEMsgScanner }
+
+procedure TIDEMsgScanner.SetWorkingDirectory(const AValue: string);
+begin
+  if FWorkingDirectory=AValue then exit;
+  FWorkingDirectory:=AValue;
+end;
+
+constructor TIDEMsgScanner.Create(TheScannerType: TIDEMsgScannerType;
+  TheLines: TIDEMessageLineList);
+begin
+  FScannerType:=TheScannerType;
+  FLines:=TheLines;
+end;
+
+procedure TIDEMsgScanner.EndScan;
+begin
+
+end;
+
+{ TIDEMsgScanners }
+
+function TIDEMsgScanners.GetCount: integer;
+begin
+  Result:=fTypes.Count;
+end;
+
+function TIDEMsgScanners.GetItems(Index: integer): TIDEMsgScannerType;
+begin
+  Result:=TIDEMsgScannerType(fTypes[Index]);
+end;
+
+function TIDEMsgScanners.GetScannerCount: integer;
+begin
+  Result:=fScanners.Count;
+end;
+
+function TIDEMsgScanners.GetScanners(Index: integer): TIDEMsgScanner;
+begin
+  Result:=TIDEMsgScanner(fScanners[Index]);
+end;
+
+constructor TIDEMsgScanners.Create;
+begin
+  fTypes:=TFPList.Create;
+  fScanners:=TFPList.Create;
+end;
+
+destructor TIDEMsgScanners.Destroy;
+var
+  i: Integer;
+begin
+  for i:=0 to fTypes.Count do TObject(fTypes[i]).Free;
+  FreeAndNil(fTypes);
+  for i:=0 to fScanners.Count do TObject(fScanners[i]).Free;
+  FreeAndNil(fScanners);
+  inherited Destroy;
+end;
+
+procedure TIDEMsgScanners.RegisterType(aType: TIDEMsgScannerType);
+begin
+  if (aType.Name='') or (not IsValidIdent(aType.Name)) then
+    raise Exception.Create('TIDEMsgScanners.RegisterType invalid name "'+dbgstr(aType.Name)+'"');
+  aType.Name:=CreateUniqueName(aType.Name);
+  fTypes.Add(aType);
+end;
+
+procedure TIDEMsgScanners.UnregisterType(aType: TIDEMsgScannerType);
+begin
+  fTypes.Remove(aType);
+end;
+
+function TIDEMsgScanners.CreateUniqueName(const aName: string): string;
+var
+  i: Integer;
+begin
+  Result:=aName;
+  if IndexOfName(Result)<0 then exit;
+  i:=1;
+  repeat
+    Result:=aName+'_'+IntToStr(i);
+  until IndexOfName(Result)<0;
+end;
+
+function TIDEMsgScanners.IndexOfName(const aTypeName: string): integer;
+begin
+  Result:=fTypes.Count-1;
+  while (Result>=0) and (SysUtils.CompareText(aTypeName,aTypeName)<>0) do
+    dec(Result);
+end;
+
+function TIDEMsgScanners.TypeOfName(const aTypeName: string
+  ): TIDEMsgScannerType;
+var
+  i: LongInt;
+begin
+  i:=IndexOfName(aTypeName);
+  if i>=0 then
+    Result:=Items[i]
+  else
+    Result:=nil;
 end;
 
 end.

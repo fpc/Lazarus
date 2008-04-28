@@ -1245,6 +1245,7 @@ begin
   FreeThenNil(DebugBoss);
   FreeThenNil(TheCompiler);
   FreeThenNil(HiddenWindowsOnRun);
+  FreeThenNil(IDEMsgScanners);
   FreeThenNil(TheOutputFilter);
   FreeThenNil(GlobalMacroList);
   FreeThenNil(IDEMacros);
@@ -1609,6 +1610,7 @@ procedure TMainIDE.SetupOutputFilter;
 begin
   TheOutputFilter:=TOutputFilter.Create;
   TheOutputFilter.OnGetIncludePath:=@CodeToolBoss.GetIncludePathForDirectory;
+  IDEMsgScanners:=TMessageScanners.Create;
 end;
 
 procedure TMainIDE.SetupObjectInspector;

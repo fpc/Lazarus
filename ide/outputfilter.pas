@@ -33,6 +33,13 @@ uses
   IDEProcs, LazConf;
 
 type
+
+  { TMessageScanners }
+
+  TMessageScanners = class(TIDEMsgScanners)
+  public
+  end;
+
   TOnOutputString = procedure(Line: TIDEScanMessageLine) of object;
   TOnAddFilteredLine = procedure(const Msg, Directory: String;
                                  OriginalIndex: integer) of object;
