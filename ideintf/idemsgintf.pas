@@ -618,9 +618,9 @@ destructor TIDEMsgScanners.Destroy;
 var
   i: Integer;
 begin
-  for i:=0 to fTypes.Count do TObject(fTypes[i]).Free;
+  for i:=0 to fTypes.Count-1 do TObject(fTypes[i]).Free;
   FreeAndNil(fTypes);
-  for i:=0 to fScanners.Count do TObject(fScanners[i]).Free;
+  for i:=0 to fScanners.Count-1 do TObject(fScanners[i]).Free;
   FreeAndNil(fScanners);
   inherited Destroy;
 end;

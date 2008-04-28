@@ -1,0 +1,91 @@
+object EditMsgScannersDialog: TEditMsgScannersDialog
+  Left = 301
+  Height = 354
+  Top = 196
+  Width = 486
+  HorzScrollBar.Page = 485
+  VertScrollBar.Page = 353
+  Caption = 'EditMsgScannersDialog'
+  ClientHeight = 354
+  ClientWidth = 486
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  LCLVersion = '0.9.25'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 50
+    Top = 304
+    Width = 474
+    Align = alBottom
+    AutoSize = True
+    TabOrder = 0
+    ShowButtons = [pbOK, pbClose]
+    ShowGlyphs = [pbOK, pbCancel, pbClose, pbHelp]
+  end
+  object AvailableGroupBox: TGroupBox
+    Left = 301
+    Height = 304
+    Width = 185
+    Align = alRight
+    Caption = 'AvailableGroupBox'
+    ClientHeight = 285
+    ClientWidth = 181
+    TabOrder = 1
+    object AvailableListBox: TListBox
+      Height = 285
+      Width = 181
+      Align = alClient
+      TabOrder = 0
+      TopIndex = -1
+    end
+  end
+  object ScannersGroupBox: TGroupBox
+    Height = 304
+    Width = 257
+    Align = alClient
+    Caption = 'ScannersGroupBox'
+    ClientHeight = 285
+    ClientWidth = 253
+    TabOrder = 2
+    object ScannersListBox: TListBox
+      Height = 285
+      Width = 253
+      Align = alClient
+      TabOrder = 0
+      TopIndex = -1
+    end
+  end
+  object MoveBtnPanel: TPanel
+    Left = 257
+    Height = 304
+    Width = 39
+    Align = alRight
+    BevelOuter = bvNone
+    ClientHeight = 304
+    ClientWidth = 39
+    TabOrder = 3
+    object AddSpeedButton: TSpeedButton
+      Left = 8
+      Height = 22
+      Top = 84
+      Width = 23
+      Color = clBtnFace
+      NumGlyphs = 0
+    end
+    object RemoveSpeedButton: TSpeedButton
+      Left = 8
+      Height = 22
+      Top = 152
+      Width = 23
+      Color = clBtnFace
+      NumGlyphs = 0
+    end
+  end
+  object Splitter1: TSplitter
+    Left = 296
+    Height = 304
+    Width = 5
+    Align = alRight
+    ResizeAnchor = akRight
+  end
+end

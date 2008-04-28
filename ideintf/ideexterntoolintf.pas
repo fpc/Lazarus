@@ -77,6 +77,7 @@ type
     FShowAllOutput: boolean;
     fTitle: string;
     fWorkingDirectory: string;
+    procedure SetScanners(const AValue: TStrings);
     procedure SetScanOutput(const AValue: boolean);
     procedure SetShowAllOutput(const AValue: boolean);
   public
@@ -104,7 +105,7 @@ type
     property ScanOutput: boolean read FScanOutput write SetScanOutput;
     property ShowAllOutput: boolean read FShowAllOutput write SetShowAllOutput;
     property OnParseLine: TOnIDEExtToolParseLine read FOnParseLine write FOnParseLine;
-    property Scanners: TStrings read FScanners;
+    property Scanners: TStrings read FScanners write SetScanners;
   end;
   
 type
@@ -121,6 +122,12 @@ procedure TIDEExternalToolOptions.SetScanOutput(const AValue: boolean);
 begin
   if FScanOutput=AValue then exit;
   FScanOutput:=AValue;
+end;
+
+procedure TIDEExternalToolOptions.SetScanners(const AValue: TStrings);
+begin
+  if FScanners=AValue then exit;
+  FScanners.Assign(AValue);
 end;
 
 procedure TIDEExternalToolOptions.SetShowAllOutput(const AValue: boolean);

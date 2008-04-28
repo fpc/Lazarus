@@ -43,9 +43,9 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, LCLType, Controls, Forms, Buttons, StdCtrls, ComCtrls,
-  Dialogs, LResources,
-  IDEExternToolIntf,
-  KeyMapping, TransferMacros, LazarusIDEStrConsts, ExtCtrls;
+  Dialogs, LResources, ExtCtrls,
+  IDEMsgIntf, IDEExternToolIntf,
+  KeyMapping, TransferMacros, LazarusIDEStrConsts, EditMsgScannersDlg;
 
 type
   { TExternalToolOptions }
@@ -62,14 +62,12 @@ type
     property Shift: TShiftState read fShift write fShift;
   end;
 
-  {
-    the editor dialog for a single external tool
-  }
-
-  { TExternalToolOptionDlg }
+  { TExternalToolOptionDlg -
+    the editor dialog for a single external tool}
 
   TExternalToolOptionDlg = class(TForm)
     BtnPanel: TPanel;
+    ScannersButton: TButton;
     TitleLabel: TLabel;
     TitleEdit: TEdit;
     FilenameLabel: TLabel;
@@ -102,15 +100,19 @@ type
     procedure MacrosListboxClick(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
     procedure OpenButtonClick(sender : TOBject);
+    procedure ScannersButtonClick(Sender: TObject);
   private
     fOptions: TExternalToolOptions;
     fTransferMacros: TTransferMacroList;
+    fScanners: TStrings;
     GrabbingKey: integer; // 0=none, 1=Default key
     procedure ActivateGrabbing(AGrabbingKey: integer);
     procedure DeactivateGrabbing;
     procedure FillMacroList;
     procedure LoadFromOptions;
     procedure SaveToOptions;
+    procedure UpdateButtons;
+    function ScannersToString(List: TStrings): string;
     procedure SetComboBox(AComboBox: TComboBox; const AValue: string);
     procedure SetOptions(TheOptions: TExternalToolOptions);
     procedure SetTransferMacros(TransferMacroList: TTransferMacroList);
@@ -152,6 +154,12 @@ begin
   If OpenDialog.Execute Then FilenameEdit.Text := OpenDialog.FileName;
 End;
 
+procedure TExternalToolOptionDlg.ScannersButtonClick(Sender: TObject);
+begin
+  if ShowEditMsgScannersDialog(fScanners)=mrOk then
+    UpdateButtons;
+end;
+
 procedure TExternalToolOptionDlg.SaveToOptions;
 begin
   fOptions.Title:=TitleEdit.Text;
@@ -172,6 +180,37 @@ begin
     OptionScanOutputForFPCMessagesCheckBox.Checked;
   fOptions.ScanOutputForMakeMessages:=
     OptionScanOutputForMakeMessagesCheckBox.Checked;
+  fOptions.Scanners:=fScanners;
+end;
+
+procedure TExternalToolOptionDlg.UpdateButtons;
+begin
+  if IDEMsgScanners.Count>0 then begin
+    ScannersButton.Visible:=true;
+    ScannersButton.Caption:='Edit custom scanners ('+ScannersToString(fScanners)+')';
+  end else begin
+    ScannersButton.Visible:=false;
+  end;
+end;
+
+function TExternalToolOptionDlg.ScannersToString(List: TStrings): string;
+var
+  i: Integer;
+begin
+  if (List=nil) or (List.Count=0) then begin
+    Result:='none';
+  end else begin
+    Result:='';
+    for i:=0 to List.Count-1 do begin
+      if Result<>'' then
+        Result:=Result+',';
+      Result:=Result+List[i];
+      if length(Result)>20 then begin
+        Result:=copy(Result,1,20);
+        break;
+      end;
+    end;
+  end;
 end;
 
 procedure TExternalToolOptionDlg.LoadFromOptions;
@@ -188,6 +227,8 @@ begin
     fOptions.ScanOutputForFPCMessages;
   OptionScanOutputForMakeMessagesCheckBox.Checked:=
     fOptions.ScanOutputForMakeMessages;
+  fScanners.Assign(fOptions.Scanners);
+  UpdateButtons;
 end;
 
 procedure TExternalToolOptionDlg.FormCreate(Sender: TObject);
@@ -195,6 +236,7 @@ var
   i: word;
   s: string;
 begin
+  fScanners:=TStringList.Create;
   GrabbingKey:=0;
   Caption:=lisEdtExtToolEditTool;
 
@@ -262,7 +304,8 @@ end;
 
 procedure TExternalToolOptionDlg.FormDestroy(Sender: TObject);
 begin
-  fOptions.Free;
+  FreeAndNil(fOptions);
+  FreeAndNil(fScanners);
 end;
 
 procedure TExternalToolOptionDlg.KeyGrabButtonClick(Sender: TObject);
