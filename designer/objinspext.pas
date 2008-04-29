@@ -114,6 +114,7 @@ begin
   Add(TCustomPanel,'Align');
   Add(TMenuItem,'OnClick');
   Add(TCustomSpeedButton,'GroupIndex');
+  Add(TCustomSpeedButton,'Glyph');
   Add(TCustomImage,'Picture');
   Add(TCustomImage,'Align');
   Add(TCustomNotebook,'Align');
