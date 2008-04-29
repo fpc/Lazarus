@@ -1,0 +1,159 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="3"/>
+    <General>
+      <ProjectType Value="Program"/>
+      <MainUnit Value="0"/>
+      <ActiveEditorIndexAtStart Value="1"/>
+      <IconPath Value="./"/>
+      <TargetFileExt Value=""/>
+      <Title Value="testsuite"/>
+    </General>
+    <JumpHistory Count="12" HistoryIndex="11">
+      <Position1>
+        <Filename Value="dbwhtml.pp"/>
+        <Caret Line="85" Column="3" TopLine="82"/>
+      </Position1>
+      <Position2>
+        <Filename Value="dbwhtml.pp"/>
+        <Caret Line="204" Column="5" TopLine="164"/>
+      </Position2>
+      <Position3>
+        <Filename Value="dbwhtml.pp"/>
+        <Caret Line="205" Column="5" TopLine="165"/>
+      </Position3>
+      <Position4>
+        <Filename Value="dbwhtml.pp"/>
+        <Caret Line="203" Column="25" TopLine="168"/>
+      </Position4>
+      <Position5>
+        <Filename Value="dbwhtml.pp"/>
+        <Caret Line="212" Column="15" TopLine="195"/>
+      </Position5>
+      <Position6>
+        <Filename Value="dbwhtml.pp"/>
+        <Caret Line="70" Column="67" TopLine="52"/>
+      </Position6>
+      <Position7>
+        <Filename Value="utests.pp"/>
+        <Caret Line="594" Column="5" TopLine="554"/>
+      </Position7>
+      <Position8>
+        <Filename Value="utests.pp"/>
+        <Caret Line="66" Column="1" TopLine="34"/>
+      </Position8>
+      <Position9>
+        <Filename Value="dbwhtml.pp"/>
+        <Caret Line="396" Column="4" TopLine="361"/>
+      </Position9>
+      <Position10>
+        <Filename Value="utests.pp"/>
+        <Caret Line="66" Column="14" TopLine="35"/>
+      </Position10>
+      <Position11>
+        <Filename Value="utests.pp"/>
+        <Caret Line="600" Column="56" TopLine="568"/>
+      </Position11>
+      <Position12>
+        <Filename Value="utests.pp"/>
+        <Caret Line="31" Column="77" TopLine="14"/>
+      </Position12>
+    </JumpHistory>
+    <Units Count="8">
+      <Unit0>
+        <CursorPos X="19" Y="5"/>
+        <EditorIndex Value="0"/>
+        <Filename Value="testsuite.pp"/>
+        <IsPartOfProject Value="True"/>
+        <Loaded Value="True"/>
+        <TopLine Value="1"/>
+        <UnitName Value="testsuite"/>
+        <UsageCount Value="56"/>
+      </Unit0>
+      <Unit1>
+        <CursorPos X="23" Y="595"/>
+        <EditorIndex Value="1"/>
+        <Filename Value="utests.pp"/>
+        <IsPartOfProject Value="True"/>
+        <Loaded Value="True"/>
+        <TopLine Value="568"/>
+        <UnitName Value="utests"/>
+        <UsageCount Value="56"/>
+      </Unit1>
+      <Unit2>
+        <CursorPos X="6" Y="136"/>
+        <EditorIndex Value="4"/>
+        <Filename Value="/home/michael/fixbranch/rtl/linux/syslinux.pp"/>
+        <Loaded Value="True"/>
+        <TopLine Value="94"/>
+        <UnitName Value="SysLinux"/>
+        <UsageCount Value="28"/>
+      </Unit2>
+      <Unit3>
+        <CursorPos X="1" Y="1"/>
+        <Filename Value="/home/michael/test.sql"/>
+        <SyntaxHighlighter Value="None"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="8"/>
+      </Unit3>
+      <Unit4>
+        <CursorPos X="27" Y="23"/>
+        <EditorIndex Value="3"/>
+        <Filename Value="/home/michael/fixbranch/rtl/unix/linux.pp"/>
+        <Loaded Value="True"/>
+        <TopLine Value="1"/>
+        <UnitName Value="Linux"/>
+        <UsageCount Value="25"/>
+      </Unit4>
+      <Unit5>
+        <CursorPos X="56" Y="251"/>
+        <Filename Value="/home/michael/projects/lazarus/components/editbutton/editbtn.pas"/>
+        <TopLine Value="248"/>
+        <UnitName Value="EditBtn"/>
+        <UsageCount Value="8"/>
+      </Unit5>
+      <Unit6>
+        <CursorPos X="31" Y="8"/>
+        <Filename Value="/home/michael/projects/lazarus/components/editbutton/demo/frmmain.pp"/>
+        <ComponentName Value="Form1"/>
+        <ResourceFilename Value="/home/michael/projects/lazarus/components/editbutton/demo/frmmain.lrs"/>
+        <TopLine Value="1"/>
+        <UnitName Value="frmmain"/>
+        <UsageCount Value="20"/>
+      </Unit6>
+      <Unit7>
+        <CursorPos X="27" Y="393"/>
+        <EditorIndex Value="2"/>
+        <Filename Value="dbwhtml.pp"/>
+        <Loaded Value="True"/>
+        <TopLine Value="384"/>
+        <UnitName Value="dbwhtml"/>
+        <UsageCount Value="25"/>
+      </Unit7>
+    </Units>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="1">
+      <Item1>
+        <PackageName Value="editbutton"/>
+        <MinVersion Valid="True"/>
+      </Item1>
+    </RequiredPackages>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+</CONFIG>
