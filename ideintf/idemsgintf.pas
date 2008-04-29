@@ -161,6 +161,8 @@ type
     function CreateUniqueName(const aName: string): string;
     function IndexOfName(const aTypeName: string): integer;
     function TypeOfName(const aTypeName: string): TIDEMsgScannerType;
+    function IndexOfShortDesc(const ShortDescription: string): integer;
+    function TypeOfShortDesc(const ShortDescription: string): TIDEMsgScannerType;
     property Count: integer read GetCount;
     property Items[Index: integer]: TIDEMsgScannerType read GetItems; default;
     property ScannerCount: integer read GetScannerCount;
@@ -653,7 +655,8 @@ end;
 function TIDEMsgScanners.IndexOfName(const aTypeName: string): integer;
 begin
   Result:=fTypes.Count-1;
-  while (Result>=0) and (SysUtils.CompareText(aTypeName,aTypeName)<>0) do
+  while (Result>=0)
+  and (SysUtils.CompareText(Items[Result].Name,aTypeName)<>0) do
     dec(Result);
 end;
 
@@ -663,6 +666,27 @@ var
   i: LongInt;
 begin
   i:=IndexOfName(aTypeName);
+  if i>=0 then
+    Result:=Items[i]
+  else
+    Result:=nil;
+end;
+
+function TIDEMsgScanners.IndexOfShortDesc(const ShortDescription: string
+  ): integer;
+begin
+  Result:=fTypes.Count-1;
+  while (Result>=0)
+  and (SysUtils.CompareText(Items[Result].ShortDescription,ShortDescription)<>0) do
+    dec(Result);
+end;
+
+function TIDEMsgScanners.TypeOfShortDesc(const ShortDescription: string
+  ): TIDEMsgScannerType;
+var
+  i: LongInt;
+begin
+  i:=IndexOfShortDesc(ShortDescription);
   if i>=0 then
     Result:=Items[i]
   else

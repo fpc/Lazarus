@@ -151,6 +151,7 @@ begin
     fScanOutputForMakeMessages:=Src.fScanOutputForMakeMessages;
     FScanOutput:=Src.FScanOutput;
     FShowAllOutput:=Src.FShowAllOutput;
+    FScanners.Assign(Src.FScanners);
   end else
     inherited Assign(Source);
 end;

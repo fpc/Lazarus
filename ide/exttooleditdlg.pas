@@ -151,12 +151,14 @@ end;
 procedure TExternalToolOptionDlg.OpenButtonClick(sender : TOBject);
 begin
   OpenDialog.FileName := FilenameEdit.Text;
-  If OpenDialog.Execute Then FilenameEdit.Text := OpenDialog.FileName;
+  if OpenDialog.Execute then FilenameEdit.Text := OpenDialog.FileName;
 End;
 
 procedure TExternalToolOptionDlg.ScannersButtonClick(Sender: TObject);
 begin
-  if ShowEditMsgScannersDialog(fScanners)=mrOk then
+  if ShowEditMsgScannersDialog('Edit tool '+copy(TitleEdit.Text,1,20),
+    fScanners)=mrOk
+  then
     UpdateButtons;
 end;
 
@@ -187,7 +189,8 @@ procedure TExternalToolOptionDlg.UpdateButtons;
 begin
   if IDEMsgScanners.Count>0 then begin
     ScannersButton.Visible:=true;
-    ScannersButton.Caption:='Edit custom scanners ('+ScannersToString(fScanners)+')';
+    ScannersButton.Caption:=Format(lisetEditCustomScanners, [ScannersToString(
+      fScanners)]);
   end else begin
     ScannersButton.Visible:=false;
   end;

@@ -3743,6 +3743,7 @@ resourcestring
   lisLocals = 'Locals';
   lisLocalsDlgName = 'Name';
   lisLocalsDlgValue = 'Value';
+  lisetEditCustomScanners = 'Edit custom scanners (%s)';
   
 implementation
 

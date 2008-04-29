@@ -45,30 +45,37 @@ type
     AddSpeedButton: TSpeedButton;
     RemoveSpeedButton: TSpeedButton;
     Splitter1: TSplitter;
+    procedure AddSpeedButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure RemoveSpeedButtonClick(Sender: TObject);
   private
     FScanners: TStrings;
     procedure SetScanners(const AValue: TStrings);
+    procedure UpdateButtons;
   public
     procedure FillAvailableListbox;
+    procedure FillScannersListbox;
     function IndexOfUsedScanner(const ScannerName: string): integer;
     property Scanners: TStrings read FScanners write SetScanners;
   end;
 
-function ShowEditMsgScannersDialog(Scanners: TStrings): TModalResult;
+function ShowEditMsgScannersDialog(const Title: string;
+  Scanners: TStrings): TModalResult;
 
 
 implementation
 
 
-function ShowEditMsgScannersDialog(Scanners: TStrings): TModalResult;
+function ShowEditMsgScannersDialog(const Title: string;
+  Scanners: TStrings): TModalResult;
 var
   EditMsgScannersDialog: TEditMsgScannersDialog;
 begin
   EditMsgScannersDialog:=TEditMsgScannersDialog.Create(nil);
   try
     EditMsgScannersDialog.Scanners:=Scanners;
+    EditMsgScannersDialog.Caption:=Title;
     Result:=EditMsgScannersDialog.ShowModal;
     if Result=mrOk then
       Scanners.Assign(EditMsgScannersDialog.Scanners);
@@ -82,6 +89,37 @@ end;
 procedure TEditMsgScannersDialog.FormCreate(Sender: TObject);
 begin
   FScanners:=TStringList.Create;
+  
+  AvailableGroupBox.Caption:='Available scanners';
+  ScannersGroupBox.Caption:='Scanners';
+  AddSpeedButton.Hint:='Add';
+  RemoveSpeedButton.Hint:='Remove';
+  
+  FillAvailableListbox;
+end;
+
+procedure TEditMsgScannersDialog.AddSpeedButtonClick(Sender: TObject);
+var
+  i: LongInt;
+  ShortDesc: string;
+  Scanner: TIDEMsgScannerType;
+  HasChanged: Boolean;
+begin
+  HasChanged:=false;
+  for i:=0 to AvailableListBox.Items.Count-1 do begin
+    if not AvailableListBox.Selected[i] then continue;
+    ShortDesc:=AvailableListBox.Items[i];
+    Scanner:=IDEMsgScanners.TypeOfShortDesc(ShortDesc);
+    if Scanner=nil then continue;
+    if IndexOfUsedScanner(Scanner.Name)>=0 then continue;
+    HasChanged:=true;
+    FScanners.Add(Scanner.Name);
+  end;
+  if HasChanged then begin
+    FillAvailableListbox;
+    FillScannersListbox;
+    UpdateButtons;
+  end;
 end;
 
 procedure TEditMsgScannersDialog.FormDestroy(Sender: TObject);
@@ -89,11 +127,38 @@ begin
   FreeAndNil(FScanners);
 end;
 
+procedure TEditMsgScannersDialog.RemoveSpeedButtonClick(Sender: TObject);
+var
+  i: Integer;
+  HasChanged: Boolean;
+begin
+  HasChanged:=false;
+  for i:=ScannersListBox.Items.Count-1 downto 0 do begin
+    if not ScannersListBox.Selected[i] then continue;
+    if i>=FScanners.Count then continue;
+    HasChanged:=true;
+    FScanners.Delete(i);
+  end;
+  if HasChanged then begin
+    FillAvailableListbox;
+    FillScannersListbox;
+    UpdateButtons;
+  end;
+end;
+
 procedure TEditMsgScannersDialog.SetScanners(const AValue: TStrings);
 begin
   if FScanners=AValue then exit;
   FScanners.Assign(AValue);
-  ScannersListBox.Items.Assign(FScanners);
+  FillScannersListbox;
+  FillAvailableListbox;
+  UpdateButtons;
+end;
+
+procedure TEditMsgScannersDialog.UpdateButtons;
+begin
+  AddSpeedButton.Enabled:=AvailableListBox.SelCount>=0;
+  RemoveSpeedButton.Enabled:=ScannersListBox.SelCount>=0;
 end;
 
 procedure TEditMsgScannersDialog.FillAvailableListbox;
@@ -111,10 +176,29 @@ begin
   sl.Free;
 end;
 
+procedure TEditMsgScannersDialog.FillScannersListbox;
+var
+  sl: TStringList;
+  i: Integer;
+  Scanner: TIDEMsgScannerType;
+  s: string;
+begin
+  sl:=TStringList.Create;
+  for i:=0 to FScanners.Count-1 do begin
+    s:=FScanners[i];
+    Scanner:=IDEMsgScanners.TypeOfName(s);
+    if Scanner<>nil then
+      s:=Scanner.ShortDescription;
+    sl.Add(s);
+  end;
+  ScannersListBox.Items.Assign(sl);
+  sl.Free;
+end;
+
 function TEditMsgScannersDialog.IndexOfUsedScanner(const ScannerName: string
   ): integer;
 begin
-  Result:=FScanners.Count;
+  Result:=FScanners.Count-1;
   while (Result>=0) do begin
     if SysUtils.CompareText(ScannerName,FScanners[Result])=0 then exit;
     dec(Result);

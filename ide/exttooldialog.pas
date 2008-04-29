@@ -55,11 +55,8 @@ type
   TOnFreeOutputFilter = procedure(OutputFilter: TOutputFilter;
                            ErrorOccurred: boolean) of object;
 
-  {
-    the storage object for all external tools
-  }
-
-  { TExternalToolList }
+  { TExternalToolList -
+    the storage object for all external tools }
 
   TExternalToolList = class(TList)
   private
@@ -99,12 +96,9 @@ type
     property OnNeedsOutputFilter: TOnNeedsOutputFilter
       read fOnNeedsOutputFilter write fOnNeedsOutputFilter;
   end;
-  
-  {
-    the dialog to edit all external tools
-  }
 
-  { TExternalToolDialog }
+  { TExternalToolDialog -
+    the dialog to edit all external tools }
 
   TExternalToolDialog = class(TForm)
     OKButton: TBitBtn;
@@ -595,11 +589,14 @@ begin
 end;
 
 procedure TExternalToolDialog.EditButtonClick(Sender: TObject);
+var
+  i: LongInt;
 begin
-  if Listbox.ItemIndex<0 then exit;
-  if ShowExtToolOptionDlg(fTransferMacros,fExtToolList[Listbox.ItemIndex])=mrOk
+  i:=Listbox.ItemIndex;
+  if i<0 then exit;
+  if ShowExtToolOptionDlg(fTransferMacros,fExtToolList[i])=mrOk
   then begin
-    Listbox.Items[Listbox.ItemIndex]:=ToolDescription(Listbox.ItemIndex);
+    Listbox.Items[i]:=ToolDescription(i);
     EnableButtons;
   end;
 end;
