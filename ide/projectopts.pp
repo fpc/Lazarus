@@ -56,10 +56,10 @@ type
     PoOutDirLabel: TLabel;
 
     Notebook: TNotebook;
-    ApplicationPage:    TPage;
-    FormsPage:    TPage;
-    MiscPage:    TPage;
-    LazDocPage:    TPage;
+    ApplicationPage: TPage;
+    FormsPage: TPage;
+    MiscPage: TPage;
+    LazDocPage: TPage;
     i18nPage: TPage;
     POOutDirButton: TButton;
     POOutDirEdit: TEdit;

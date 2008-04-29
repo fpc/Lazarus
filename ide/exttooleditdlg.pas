@@ -43,7 +43,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, LCLType, Controls, Forms, Buttons, StdCtrls, ComCtrls,
-  Dialogs, LResources, ExtCtrls,
+  Dialogs, LResources, ExtCtrls, LCLProc,
   IDEMsgIntf, IDEExternToolIntf,
   KeyMapping, TransferMacros, LazarusIDEStrConsts, EditMsgScannersDlg;
 

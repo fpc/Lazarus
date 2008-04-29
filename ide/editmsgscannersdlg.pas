@@ -27,7 +27,7 @@ unit EditMsgScannersDlg;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   ButtonPanel, StdCtrls, ExtCtrls, Buttons,
   IDEMsgIntf;
 
@@ -69,7 +69,7 @@ begin
   EditMsgScannersDialog:=TEditMsgScannersDialog.Create(nil);
   try
     EditMsgScannersDialog.Scanners:=Scanners;
-    Result:=EditMsgScannersDialog.ModalResult;
+    Result:=EditMsgScannersDialog.ShowModal;
     if Result=mrOk then
       Scanners.Assign(EditMsgScannersDialog.Scanners);
   finally
