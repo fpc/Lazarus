@@ -3474,6 +3474,7 @@ begin
   BeginUpdate(true);
   APackage.AddRequiredDependency(Dependency);
   Dependency.LoadPackageResult:=lprUndefined;
+  IncreaseCompilerParseStamp;
   OpenDependency(Dependency);
   EndUpdate;
 end;
