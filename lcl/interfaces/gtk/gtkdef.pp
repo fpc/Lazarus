@@ -323,6 +323,7 @@ type
     function SelectBitmap(AGdiObject: PGdiObject): PGdiObject; virtual;
     function SelectPen(AGdiObject: PGdiObject): PGdiObject; virtual;
   public
+    constructor Create; virtual;
     procedure CreateGDIObject(AGDIType: TGDIType);
     procedure SelectBrushProps; virtual;
     procedure SelectTextProps; virtual;

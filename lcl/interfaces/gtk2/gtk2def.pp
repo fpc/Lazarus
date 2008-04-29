@@ -37,13 +37,22 @@ uses
 
 type
 
+  TSetTextArgs = record
+    Font: PPangoLayout;
+    Len: LongInt;
+    Text: array of char;
+  end;
+
   { TGtk2DeviceContext }
 
   TGtk2DeviceContext = class(TGtkDeviceContext)
   private
+    OldText: TSetTextArgs;
   protected
     function GetFunction: TGdkFunction; override;
   public
+    constructor Create; override;
+    procedure SetText(AFont: PPangoLayout; AText: PChar; ALength: LongInt);
     procedure DrawTextWithColors(AText: PChar; ALength: LongInt; X, Y: Integer; FGColor, BGColor: PGdkColor);
   end;
 

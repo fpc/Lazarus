@@ -31,6 +31,24 @@ begin
   Result := GCValues._function;
 end;
 
+constructor TGtk2DeviceContext.Create;
+begin
+  inherited Create;
+  FillChar(OldText, SizeOf(OldText), 0);
+end;
+
+procedure TGtk2DeviceContext.SetText(AFont: PPangoLayout; AText: PChar; ALength: LongInt);
+begin
+  if (OldText.Font <> AFont) or (OldText.Len <> ALength) or (CompareChar(AText^, OldText.Text[0], ALength) <> 0) then
+  begin
+    pango_layout_set_text(AFont, AText, ALength);
+    OldText.Font := AFont;
+    OldText.Len := ALength;
+    SetLength(OldText.Text, ALength);
+    Move(AText^, OldText.Text[0], ALength);
+  end;
+end;
+
 procedure TGtk2DeviceContext.DrawTextWithColors(AText: PChar; ALength: LongInt;
   X, Y: Integer; FGColor, BGColor: PGdkColor);
 var
@@ -50,7 +68,7 @@ var
   
 begin
   AFont := GetFont;
-  pango_layout_set_text(AFont^.GDIFontObject, AText, ALength);
+  SetText(AFont^.GDIFontObject, AText, ALength);
 
   if AFont^.LogFont.lfEscapement <> 0 then
   begin

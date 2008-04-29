@@ -727,6 +727,11 @@ begin
   SelectedColors := dcscCustom;
 end;
 
+constructor TGtkDeviceContext.Create;
+begin
+  // nothing
+end;
+
 {------------------------------------------------------------------------------
   Procedure: TGtkDeviceContext.SelectPenProps
   Params:  DC: a (LCL)devicecontext
