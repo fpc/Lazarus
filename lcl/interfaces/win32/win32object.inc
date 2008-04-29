@@ -488,7 +488,7 @@ begin
   AMenu := AMenuObject as TMenu;
   if AMenu is TMainMenu then
   begin
-    AWinControl := TWinControl(AMenu.Owner);
+    AWinControl := TWinControl(AMenu.Parent);
     Windows.SetMenu(AWinControl.Handle, AMenu.Handle);
     //Set the right order menu after attach the menu
     SetMenuFlag(AMenu.Handle, MFT_RIGHTORDER or MFT_RIGHTJUSTIFY, AMenu.IsRightToLeft);
