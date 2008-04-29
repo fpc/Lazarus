@@ -1337,7 +1337,7 @@ begin
   and (OldCaretXY.Y=EditorComponent.CaretY)
   and not (ssoReplaceAll in LazFindReplaceDialog.Options) then begin
     ACaption:=lisUENotFound;
-    AText:=Format(lisUESearchStringNotFound, [LazFindReplaceDialog.FindText]);
+    AText:=Format(lisUESearchStringNotFound, [dbgstr(LazFindReplaceDialog.FindText)]);
     MessageDlg(ACaption,AText,mtInformation,[mbOk],0);
     TSourceNotebook(Owner).DeleteLastJumpPointClicked(Self);
   end else begin

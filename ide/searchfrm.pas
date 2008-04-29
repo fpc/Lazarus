@@ -718,7 +718,7 @@ begin
       if fSearchProject or fSearchOpen then
         DoFindInSearchList;
       if Assigned(fResultsList) and (fResultsList.Count = 0) then
-        fResultsList.Add(lisFileNotFound);
+        fResultsList.Add(Format(lisUESearchStringNotFound,[dbgstr(fSearchFor)]));
     finally
       if fResultsListUpdating then begin
         fResultsListUpdating:=false;
