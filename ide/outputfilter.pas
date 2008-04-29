@@ -26,9 +26,9 @@ unit OutputFilter;
 interface
 
 uses
-  Classes, Math, SysUtils, Forms, Controls, CompilerOptions, Process,
-  AsyncProcess, LCLProc, DynQueue, FileUtil,
-  IDEMsgIntf, IDEExternToolIntf,
+  Classes, Math, SysUtils, Forms, Controls, Dialogs, CompilerOptions,
+  Process, AsyncProcess, LCLProc, DynQueue, FileUtil,
+  IDEDialogs, IDEMsgIntf, IDEExternToolIntf,
   IDEProcs, LazConf;
 
 type
@@ -37,6 +37,8 @@ type
 
   TMessageScanners = class(TIDEMsgScanners)
   public
+    constructor Create;
+    destructor Destroy; override;
   end;
 
   TOnOutputString = procedure(Line: TIDEScanMessageLine) of object;
@@ -125,16 +127,21 @@ type
     fLastSearchedIncFilename: string;
     fProcess: TProcess;
     FAsyncOutput: TDynamicDataQueue;
+    FScanners: TFPList; // list of TIDEMsgScanner
     FTool: TIDEExternalToolOptions;
     procedure DoAddFilteredLine(const s: string; OriginalIndex: integer = -1);
     procedure DoAddLastLinkerMessages(SkipLastLine: boolean);
     procedure DoAddLastAssemblerMessages;
     function GetCurrentMessageParts: TStrings;
+    function GetScanners(Index: integer): TIDEMsgScanner;
+    function GetScannerCount: integer;
     function SearchIncludeFile(const ShortIncFilename: string): string;
     procedure SetStopExecute(const AValue: boolean);
     procedure InternalSetCurrentDirectory(const Dir: string);
     procedure OnAsyncTerminate(Sender: TObject);
     procedure OnAsyncReadData(Sender: TObject);
+    function CreateScanners(ScannerOptions: TStrings): boolean;
+    procedure ClearScanners;
   public
     ErrorExists: boolean;
     Aborted: boolean;
@@ -178,6 +185,8 @@ type
     property Caller: TObject read FCaller;
     property ScanLine: TOFScanLine read FScanLine;
     property Tool: TIDEExternalToolOptions read FTool;
+    property ScannerCount: integer read GetScannerCount;
+    property Scanners[Index: integer]: TIDEMsgScanner read GetScanners;
   end;
   
   EOutputFilterError = class(Exception)
@@ -188,6 +197,7 @@ type
 
 var
   TOutputFilterProcess: TProcessClass = nil;
+  MessageScanners: TMessageScanners = nil;
 
 const
   ErrorTypeNames : array[TErrorType] of string = (
@@ -259,19 +269,25 @@ begin
   OutputLine:='';
   ErrorExists:=true;
   Aborted:=false;
+  TheAsyncProcess:=nil;
   try
     BeginBufferingOutput;
-    
+
+    // create custom scanners
+    ClearScanners;
+    if (Tool<>nil) and (Tool.Scanners<>nil)
+    and (not CreateScanners(Tool.Scanners)) then
+      exit;
+
     if fProcess is TAsyncProcess then begin
       TheAsyncProcess:=TAsyncProcess(fProcess);
       TheAsyncProcess.OnReadData:=@OnAsyncReadData;
       TheAsyncProcess.OnTerminate:=@OnAsyncTerminate;
       FAsyncOutput:=TDynamicDataQueue.Create;
-    end else
-      TheAsyncProcess:=nil;
+    end;
 
     fProcess.Execute;
-    LastProcessMessages:=Now-1;// force one at start
+    LastProcessMessages:=Now-1;// force one update at start
     repeat
       if (Application<>nil) and (abs(LastProcessMessages-Now)>((1/86400)/3))
       then begin
@@ -349,12 +365,15 @@ begin
     FreeAndNil(FScanLine);
     FTool:=nil;
     FCaller:=nil;
+    ClearScanners;
   end;
 end;
 
 procedure TOutputFilter.ReadLine(var s: string; DontFilterLine: boolean);
 // this is called for every line written by the external tool (=Output)
 // it parses the output
+var
+  i: Integer;
 begin
   //debugln('TOutputFilter: "',s,'"');
   fLastMessageType:=omtNone;
@@ -370,6 +389,11 @@ begin
     if Assigned(OnReadLine) then begin
       OnReadLine(FScanLine);
       s:=FScanLine.Line;
+    end;
+    if FScanners<>nil then begin
+      for i:=0 to ScannerCount-1 do begin
+        //Scanners[i].ParseLine();
+      end;
     end;
   end;
 
@@ -1052,6 +1076,19 @@ begin
   end;
 end;
 
+function TOutputFilter.GetScanners(Index: integer): TIDEMsgScanner;
+begin
+  Result:=TIDEMsgScanner(fScanners[Index]);
+end;
+
+function TOutputFilter.GetScannerCount: integer;
+begin
+  if FScanners<>nil then
+    Result:=FScanners.Count
+  else
+    Result:=0;
+end;
+
 function TOutputFilter.SearchIncludeFile(const ShortIncFilename: string
   ): string;
 // search the include file and make it relative to the current start directory
@@ -1144,12 +1181,71 @@ begin
     FAsyncOutput.Push(TStream(TAsyncProcess(fProcess).Output),Count);
 end;
 
+function TOutputFilter.CreateScanners(ScannerOptions: TStrings): boolean;
+var
+  i: Integer;
+  ScannerName: string;
+  ScannerType: TIDEMsgScannerType;
+  MsgResult: TModalResult;
+  CurScanner: TIDEMsgScanner;
+begin
+  if (ScannerOptions=nil) or (ScannerOptions.Count=0) then exit(true);
+  
+  // first check if all scanners are there
+  for i:=0 to ScannerOptions.Count-1 do begin
+    ScannerName:=ScannerOptions[i];
+    ScannerType:=MessageScanners.TypeOfName(ScannerName);
+    if ScannerType=nil then begin
+      MsgResult:=IDEMessageDialog('Unknown Scanner',
+        'Scanner "'+ScannerName+'" not found. Maybe you forgot to install a package?',
+        mtError,[mbCancel]);
+      if MsgResult<>mrIgnore then begin
+        Result:=false;
+        exit;
+      end;
+    end;
+  end;
+  
+  // create scanners
+  Result:=false;
+  ScannerName:='';
+  try
+    for i:=0 to ScannerOptions.Count-1 do begin
+      ScannerName:=ScannerOptions[i];
+      ScannerType:=MessageScanners.TypeOfName(ScannerName);
+      if ScannerType=nil then continue;
+      CurScanner:=ScannerType.StartScan(nil);
+      if CurScanner=nil then
+        raise Exception.Create('TOutputFilter.CreateScanners failed to create scanner: '+dbgsName(ScannerType));
+    end;
+    Result:=true;
+  except
+    on E: Exception do begin
+      MsgResult:=IDEMessageDialog('Scanner creation failed',
+        'Failed to create scanner "'+ScannerName+'":'#13
+        +E.Message,
+        mtError,[mbCancel]);
+    end;
+  end;
+end;
+
+procedure TOutputFilter.ClearScanners;
+var
+  i: Integer;
+begin
+  if FScanners<>nil then begin
+    for i:=0 to FScanners.Count-1 do TObject(FScanners[i]).Free;
+    FreeAndNil(FScanners);
+  end;
+end;
+
 destructor TOutputFilter.Destroy;
 begin
-  fFilteredOutput.Free;
-  fOutput.Free;
-  fMakeDirHistory.Free;
-  fCompilingHistory.Free;
+  ClearScanners;
+  FreeAndNil(fFilteredOutput);
+  FreeAndNil(fOutput);
+  FreeAndNil(fMakeDirHistory);
+  FreeAndNil(fCompilingHistory);
   inherited Destroy;
 end;
 
@@ -1366,6 +1462,20 @@ end;
 procedure TOFScanLine.WorkingDirectoryChanged(const OldValue: string);
 begin
 
+end;
+
+{ TMessageScanners }
+
+constructor TMessageScanners.Create;
+begin
+  MessageScanners:=Self;
+  inherited Create;
+end;
+
+destructor TMessageScanners.Destroy;
+begin
+  MessageScanners:=nil;
+  inherited Destroy;
 end;
 
 end.

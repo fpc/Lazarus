@@ -240,8 +240,10 @@ end;
 
 function TIDEExternalToolOptions.NeedsOutputFilter: boolean;
 begin
-  Result:=ScanOutput or ScanOutputForFPCMessages or ScanOutputForMakeMessages
-                     or ShowAllOutput;
+  Result:=ScanOutput
+       or ScanOutputForFPCMessages or ScanOutputForMakeMessages
+       or ShowAllOutput
+       or ((FScanners<>nil) and (FScanners.Count>0));
 end;
 
 { TIDEScanMessageLine }
