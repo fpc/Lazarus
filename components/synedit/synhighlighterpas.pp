@@ -181,6 +181,7 @@ type
     function Func81: TtkTokenKind;
     function Func84: TtkTokenKind;
     function Func85: TtkTokenKind;
+    function Func86: TtkTokenKind;
     function Func87: TtkTokenKind;
     function Func88: TtkTokenKind;
     function Func91: TtkTokenKind;
@@ -420,6 +421,7 @@ begin
   fIdentFuncTable[81] := @Func81;
   fIdentFuncTable[84] := @Func84;
   fIdentFuncTable[85] := @Func85;
+  fIdentFuncTable[86] := @Func86;
   fIdentFuncTable[87] := @Func87;
   fIdentFuncTable[88] := @Func88;
   fIdentFuncTable[91] := @Func91;
@@ -505,6 +507,7 @@ begin
   fIdentFuncTable[81] := Func81;
   fIdentFuncTable[84] := Func84;
   fIdentFuncTable[85] := Func85;
+  fIdentFuncTable[86] := Func86;
   fIdentFuncTable[87] := Func87;
   fIdentFuncTable[88] := Func88;
   fIdentFuncTable[91] := Func91;
@@ -551,7 +554,7 @@ begin
     if IsUnderScoreOrNumberChar[ToHash^] then
       inc(ToHash);
     fStringLen := PtrUInt(ToHash) - PtrUInt(Start);
-    //if CompareText(copy(fLineStr,fToIdent+1,fStringLen),'bitpacked')=0 then debugln('TSynPasSyn.KeyHash '+copy(fLineStr,fToIdent+1,fStringLen)+'='+dbgs(Result));
+    //if CompareText(copy(fLineStr,fToIdent+1,fStringLen),'varargs')=0 then debugln('TSynPasSyn.KeyHash '+copy(fLineStr,fToIdent+1,fStringLen)+'='+dbgs(Result));
   end else begin
     fStringLen := 0;
   end;
@@ -924,6 +927,11 @@ function TSynPasSyn.Func85: TtkTokenKind;
 begin
   if KeyComp('Forward') then Result := tkKey else
     if KeyComp('Library') then Result := tkKey else Result := tkIdentifier;
+end;
+
+function TSynPasSyn.Func86: TtkTokenKind;
+begin
+  if KeyComp('VarArgs') then Result := tkKey else Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func87: TtkTokenKind;
@@ -2001,4 +2009,5 @@ initialization
   RegisterPlaceableHighlighter(TSynPasSyn);
 {$ENDIF}
 end.
+
 
