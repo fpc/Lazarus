@@ -967,21 +967,28 @@ begin
     SynClass := LazSyntaxHighlighterClasses[TheType];
     SetBothFilextensions('pp;pas;inc;lpr;lrs;dpr;dpk;fpd');
     SampleSource :=
-      '{ Comment }'#13 + '{$R- compiler directive}'#13 +
+      '{ Comment }'#13 +
+      '{$R- compiler directive}'#13 +
       'procedure TForm1.Button1Click(Sender: TObject);'#13 +
-      'var  // Delphi Comment'#13 + '  Number, I, X: Integer;'#13 +
-      'begin'#13 + '  Number := 12345;'#13 +
+      'var  // Delphi Comment'#13 +
+      '  Number, I, X: Integer;'#13 +
+      'begin'#13 +
+      '  Number := 12345;'#13 +
       '  Caption := ''The number is '' + IntToStr(Number);'#13 +
-      '  asm'#13 + '    MOV AX,1234h'#13 + '    MOV Number,AX'#13 +
-      '  end;'#13 + '  X := 10;'#13 +
+      '  asm'#13 + '    MOV AX,1234h'#13 +
+      '    MOV Number,AX'#13 +
+      '  end;'#13 +
+      '  X := 10;'#13 +
       '  { Search Match, Text Block }'#13 +
       '  for I := 0 to Number do { execution point }'#13 +
-      '  begin'#13 + '    Inc(X); { Enabled breakpoint }'#13 +
+      '  begin'#13 +
+      '    Inc(X); { Enabled breakpoint }'#13 +
       '    Dec(X); { Disabled breakpoint }'#13 +
       '    // { Invalid breakpoint }'#13 +
       '    WriteLN(X); { Unknown breakpoint }'#13 +
       '    X := X + 1.0; { Error line }'#13 +
-      '    ListBox1.Items.Add(IntToStr(X));'#13 + '  end;'#13 +
+      '    ListBox1.Items.Add(IntToStr(X));'#13 +
+      '  end;'#13 +
       'end;'#13 + #13;
     AddAttrSampleLines[ahaDisabledBreakpoint] := 18;
     AddAttrSampleLines[ahaEnabledBreakpoint] := 17;
@@ -1836,6 +1843,7 @@ begin
     if Scheme.Attributes[pha].BG = clNone
     then Attr.Background := Scheme.Default.BG
     else Attr.Background := Scheme.Attributes[pha].BG;
+    //DebugLn(['TEditorOptions.GetDefaultsForPascalAttribute SynColorScheme=',SynColorScheme,' AttriName=',AttriName,' BG=',ColorToString(Scheme.Attributes[pha].BG),' Background=',ColorToString(Attr.Background),' SchemeBG=',ColorToString(Scheme.Default.BG)]);
     Attr.Style := Scheme.Attributes[pha].Styles;
     Exit;
   end;
@@ -1852,6 +1860,10 @@ begin
     Attr.Style := Scheme.Additional[aha].Styles;
     Exit;
   end;
+  
+  Attr.Foreground := Scheme.Default.FG;
+  Attr.Background := Scheme.Default.BG;
+  Attr.Style := Scheme.Additional[aha].Styles;
 end;
 
 procedure TEditorOptions.ReadDefaultsForHighlighterSettings(Syn: TCustomSyn;
@@ -1871,9 +1883,11 @@ begin
     exit;
   CustomPascalSyn := (DefaultPascalSyn <> Nil);
   if (Syn is TPreviewPasSyn) then
+  begin
     for i := 0 to Syn.AttrCount - 1 do
-      GetDefaultsForPascalAttribute(Syn.Attribute[i], SynColorScheme)
+      GetDefaultsForPascalAttribute(Syn.Attribute[i], SynColorScheme);
     // the defaults for pascal are fix programmed
+  end
   else
   begin
     // the defaults of all non pascal languages are the mapped current values of
