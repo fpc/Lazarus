@@ -12,6 +12,7 @@ object EditorOptionsForm: TEditorOptionsForm
   Constraints.MinHeight = 500
   Constraints.MinWidth = 400
   Position = poScreenCenter
+  LCLVersion = '0.9.25'
   object MainNotebook: TNotebook
     AnchorSideBottom.Control = BtnPanel
     Height = 484
@@ -19,7 +20,7 @@ object EditorOptionsForm: TEditorOptionsForm
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Bottom = 6
-    PageIndex = 1
+    PageIndex = 3
     TabOrder = 0
     object GeneralPage: TPage
       Caption = 'GeneralPage'
@@ -245,7 +246,7 @@ object EditorOptionsForm: TEditorOptionsForm
         end
         object RightMarginComboBox: TComboBox
           Left = 246
-          Height = 25
+          Height = 29
           Top = 8
           Width = 100
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
@@ -307,7 +308,7 @@ object EditorOptionsForm: TEditorOptionsForm
         object EditorFontComboBox: TComboBox
           AnchorSideRight.Control = EditorFontButton
           Left = 6
-          Height = 25
+          Height = 29
           Top = 29
           Width = 404
           Anchors = [akTop, akLeft, akRight]
@@ -330,7 +331,7 @@ object EditorOptionsForm: TEditorOptionsForm
         end
         object EditorFontHeightComboBox: TComboBox
           Left = 6
-          Height = 25
+          Height = 29
           Top = 58
           Width = 100
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
@@ -353,7 +354,7 @@ object EditorOptionsForm: TEditorOptionsForm
         end
         object ExtraLineSpacingComboBox: TComboBox
           Left = 6
-          Height = 25
+          Height = 29
           Top = 88
           Width = 100
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
@@ -762,7 +763,7 @@ object EditorOptionsForm: TEditorOptionsForm
         Width = 465
         Align = alClient
         BorderSpacing.Around = 6
-        DefaultItemHeight = 21
+        DefaultItemHeight = 23
         Images = ImageList
         ReadOnly = True
         RowSelect = True
@@ -809,7 +810,7 @@ object EditorOptionsForm: TEditorOptionsForm
       end
       object LanguageComboBox: TComboBox
         Left = 3
-        Height = 25
+        Height = 29
         Top = 10
         Width = 200
         AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
@@ -822,7 +823,7 @@ object EditorOptionsForm: TEditorOptionsForm
       end
       object ColorSchemeComboBox: TComboBox
         Left = 3
-        Height = 25
+        Height = 29
         Top = 34
         Width = 200
         AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
@@ -835,7 +836,7 @@ object EditorOptionsForm: TEditorOptionsForm
       end
       object FileExtensionsComboBox: TComboBox
         Left = 3
-        Height = 25
+        Height = 29
         Top = 58
         Width = 200
         AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
@@ -1199,6 +1200,8 @@ object EditorOptionsForm: TEditorOptionsForm
         Height = 242
         Top = 108
         Width = 200
+        ClickOnSelChange = False
+        OnClick = ColorElementListBoxClick
         OnSelectionChange = ColorElementListBoxSelectionChange
         TabOrder = 4
         TopIndex = -1

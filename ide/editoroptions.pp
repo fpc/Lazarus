@@ -591,6 +591,7 @@ type
     CancelButton: TButton;
 
     // general
+    procedure ColorElementListBoxClick(Sender: TObject);
     procedure GeneralCheckBoxOnChange(Sender: TObject; Index: integer);
     procedure ComboBoxOnChange(Sender: TObject);
     procedure ComboBoxOnExit(Sender: TObject);
@@ -2487,6 +2488,11 @@ begin
   end;
 end;
 
+procedure TEditorOptionsForm.ColorElementListBoxClick(Sender: TObject);
+begin
+  FindCurHighlightElement;
+end;
+
 procedure TEditorOptionsForm.chkCodeFoldingEnabledChange(Sender: TObject);
 begin
   lblDividerDrawLevel.Enabled := chkCodeFoldingEnabled.Checked;
@@ -2816,7 +2822,7 @@ end;
 
 procedure TEditorOptionsForm.ShowCurAttribute;
 begin
-  if (CurHighlightElement = Nil) or UpdatingColor then
+  if (CurHighlightElement = nil) or UpdatingColor then
     exit;
   UpdatingColor := True;
   TextBoldCheckBox.Checked := fsBold in CurHighlightElement.Style;
