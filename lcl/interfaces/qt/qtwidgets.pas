@@ -922,6 +922,7 @@ type
   private
     FIcon: QIconH;
     FTriggeredHook: QAction_hookH;
+    FHoveredHook: QAction_hookH;
     FAboutToHideHook: QMenu_hookH;
     FActionHandle: QActionH;
     FMenuItem: TMenuItem;
@@ -936,6 +937,7 @@ type
     procedure AttachEvents; override;
     procedure DetachEvents; override;
     
+    procedure SlotHovered; cdecl;
     procedure SlotAboutToHide; cdecl;
     procedure SlotDestroy; cdecl;
     procedure SlotTriggered(checked: Boolean = False); cdecl;
@@ -6587,6 +6589,7 @@ var
   Method: TMethod;
 begin
   FTriggeredHook := QAction_hook_create(ActionHandle);
+  FHoveredHook := QAction_hook_create(ActionHandle);
   FAboutToHideHook := QMenu_hook_create(Widget);
   FEventHook := QObject_hook_create(Widget);
 
@@ -6594,6 +6597,9 @@ begin
   QAction_hook_hook_triggered(FTriggeredHook, Method);
   TEventFilterMethod(Method) := @EventFilter;
 
+  QAction_hovered_Event(Method) := @SlotHovered;
+  QAction_hook_hook_hovered(FHoveredHook, Method);
+  
   QMenu_aboutToHide_Event(Method) := @SlotAboutToHide;
   QMenu_hook_hook_aboutToHide(FAboutToHideHook, Method);
 
@@ -6609,6 +6615,12 @@ begin
     FTriggeredHook := nil;
   end;
 
+  if FHoveredHook <> nil then
+  begin
+    QAction_hook_destroy(FHoveredHook);
+    FHoveredHook := nil;
+  end;
+  
   if FAboutToHideHook <> nil then
   begin
     QMenu_hook_destroy(FAboutToHideHook);
@@ -6616,6 +6628,11 @@ begin
   end;
 
   inherited DetachEvents;
+end;
+
+procedure TQtMenu.SlotHovered; cdecl;
+begin
+  FMenuItem.IntfDoSelect;
 end;
 
 procedure TQtMenu.SlotAboutToHide; cdecl;

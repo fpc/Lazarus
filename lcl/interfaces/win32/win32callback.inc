@@ -1285,6 +1285,15 @@ begin
       end;
     end;
     
+    WM_MENUSELECT:
+    begin
+      TargetObject := GetMenuItemObject;
+      if TargetObject is TMenuItem then
+        TMenuItem(TargetObject).IntfDoSelect
+      else
+        Application.Hint := '';
+    end;
+    
     WM_COMMAND:
     begin
       if LParam=0 then

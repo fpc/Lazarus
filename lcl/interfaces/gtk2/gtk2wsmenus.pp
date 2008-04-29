@@ -39,6 +39,7 @@ type
   TGtk2WSMenuItem = class(TWSMenuItem)
   private
   protected
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo);
   public
     class procedure AttachMenu(const AMenuItem: TMenuItem); override;
     class function CreateHandle(const AMenuItem: TMenuItem): HMENU; override;
@@ -83,7 +84,31 @@ implementation
 
 {$I gtkdefines.inc}
 
+function Gtk2MenuItemSelect(item: Pointer; AMenuItem: TMenuItem): GBoolean; cdecl;
+begin
+  AMenuItem.IntfDoSelect;
+  Result := CallBackDefaultReturn;
+end;
+
+function Gtk2MenuItemDeselect(item: Pointer; AMenuItem: TMenuItem): GBoolean; cdecl;
+begin
+  Application.Hint := '';
+  Result := CallBackDefaultReturn;
+end;
+
 { TGtk2WSMenuItem }
+
+class procedure TGtk2WSMenuItem.SetCallbacks(const AGtkWidget: PGtkWidget;
+  const AWidgetInfo: PWidgetInfo);
+begin
+  // connect activate signal (i.e. clicked)
+  g_signal_connect(PGTKObject(AGtkWidget), 'activate',
+                   TGTKSignalFunc(@gtkactivateCB), AWidgetInfo^.LCLObject);
+  g_signal_connect(PGTKObject(AGtkWidget), 'select',
+    TGTKSignalFunc(@Gtk2MenuItemSelect), AWidgetInfo^.LCLObject);
+  g_signal_connect(PGTKObject(AGtkWidget), 'deselect',
+    TGTKSignalFunc(@Gtk2MenuItemDeselect), AWidgetInfo^.LCLObject);
+end;
 
 class procedure TGtk2WSMenuItem.AttachMenu(const AMenuItem: TMenuItem);
 var
@@ -197,9 +222,7 @@ begin
   // create the hbox containing the label and the icon
   UpdateInnerMenuItem(AMenuItem, Widget);
 
-  // connect activate signal (i.e. clicked)
-  g_signal_connect(PGTKObject(Widget), 'activate',
-                   TGTKSignalFunc(@gtkactivateCB), AMenuItem);
+  SetCallbacks(Widget, WidgetInfo);
 
   gtk_widget_show(Widget);
   {$IFDEF DebugLCLComponents}

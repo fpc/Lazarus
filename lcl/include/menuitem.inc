@@ -263,6 +263,11 @@ begin
     DesignerMenuItemClick(Self);
 end;
 
+procedure TMenuItem.IntfDoSelect;
+begin
+  Application.Hint := GetLongHint(Hint);
+end;
+
 {------------------------------------------------------------------------------
   Function: TMenuItem.GetChildren
   Params:   Proc - proc to be called for each child
@@ -274,7 +279,7 @@ end;
 procedure TMenuItem.GetChildren(Proc: TGetChildProc; Root: TComponent);
 var
   i : Integer;
-Begin
+begin
   if not assigned (FItems) then exit;
 
   for i := 0 to FItems.Count - 1 do

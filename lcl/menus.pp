@@ -200,6 +200,7 @@ type
     function HasIcon: boolean; virtual;
     function HasParent: Boolean; override;
     procedure InitiateAction; virtual;
+    procedure IntfDoSelect; virtual;
     function IndexOf(Item: TMenuItem): Integer;
     function IndexOfCaption(const ACaption: string): Integer; virtual;
     function VisibleIndexOf(Item: TMenuItem): Integer;
