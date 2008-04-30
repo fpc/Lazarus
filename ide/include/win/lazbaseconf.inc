@@ -180,10 +180,13 @@ begin
   DefaultDrive := ExtractFileDrive(ProgramDirectory);
   DefaultFPCTarget:= {$I %FPCTARGET%};
   DefaultFPCVersion:= {$I %FPCVERSION%};
-  PrimaryConfigPath := ChompPathDelim(ExtractFilePath(Paramstr(0)));
-  SecondaryConfigPath := SysUtils.GetEnvironmentVariable('WINDIR');
-  If SecondaryConfigPath = '' Then
-    SecondaryConfigPath := DefaultDrive + '\windows';
+  {$ifndef ver2_2_0}
+  PrimaryConfigPath:=GetAppConfigDir(False);
+  {$else}
+  // fpc 2.2.0 cannot handle spaces in path in some circumstances
+  PrimaryConfigPath:=ChompPathDelim(ProgramDirectory);
+  {$endif}
+  SecondaryConfigPath:=ChompPathDelim(ProgramDirectory);
   DefaultFPCSrcDirs[1] := AppendPathDelim(ProgramDirectory) + 'fpcsrc';
   DefaultLazarusSrcDirs[1] := DefaultDrive + '\lazarus';
 end;
