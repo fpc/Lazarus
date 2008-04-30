@@ -43,12 +43,21 @@ interface
       {$I carbonprinters_h.inc}
     {$ENDIF}
   {$ELSE}
+  {$IFDEF LCLQt}
+    {$I qtprinters_h.inc}
+  {$ELSE}
     {$I cupsprinters_h.inc}
   {$ENDIF}
+  {$ENDIF}
+  
 {$ENDIF}
 
 {$IFDEF MSWindows}
-{$I winprinters_h.inc}
+  {$IFDEF LCLQt}
+    {$I qtprinters_h.inc}
+  {$ELSE}
+    {$I winprinters_h.inc}
+  {$ENDIF}
 {$ENDIF}
 
 implementation
@@ -60,13 +69,20 @@ implementation
     {$ELSE}
       {$I carbonprinters.inc}
     {$ENDIF}
+  {$ENDIF}
+  {$IFDEF LCLQt}
+    {$I qtprinters.inc}
   {$ELSE}
     {$I cupsprinters.inc}
   {$ENDIF}
 {$ENDIF}
 
 {$IFDEF MSWindows}
-{$I winprinters.inc}
+  {$IFDEF LCLQt}
+    {$I qtprinters.inc}
+  {$ELSE}
+    {$I winprinters.inc}
+  {$ENDIF}
 {$ENDIF}
 
 end.

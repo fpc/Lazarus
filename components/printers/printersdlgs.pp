@@ -88,17 +88,26 @@ uses Controls, Math, CarbonProc, FPCMacOSAll, LCLProc;
 
     {$ENDIF}
   {$ELSE}
-  
+    {$IFDEF LCLQt}
+    uses Controls, qtobjects, qtwidgets, qt4, FileUtil;
+    {$I qtprndialogs.inc}
+   {$ELSE}
 uses Controls, udlgSelectPrinter, udlgPropertiesPrinter, FileUtil;
 {$I cupsprndialogs.inc}
-
+  {$ENDIF}
   {$ENDIF}
 {$ENDIF}
 
 {$IFDEF MSWindows}
+  {$IFDEF LCLQt}
+    uses Windows, Controls,
+    qtobjects, qtwidgets, qt4, LCLIntf, LCLType, FileUtil;
+    {$I qtprndialogs.inc}
+  {$ELSE}
 
-uses Windows, WinUtilPrn, InterfaceBase, LCLIntf, LCLType, WinVer;
-{$I winprndialogs.inc}
+  uses Windows, WinUtilPrn, InterfaceBase, LCLIntf, LCLType, WinVer;
+  {$I winprndialogs.inc}
+  {$ENDIF}
 
 {$ENDIF}
 
@@ -119,5 +128,10 @@ end;
 
 initialization
   {$I printersdlgs.lrs}
+{$IFDEF LCLQt}
+finalization
+  if QtPrnDlg<>nil then
+    QPrintDialog_destroy(QtPrnDlg);
+{$ENDIF}
   
 end.

@@ -6,17 +6,17 @@
     <CompilerOptions>
       <Version Value="5"/>
       <SearchPaths>
-        <IncludeFiles Value="unix/;win32/;carbon/"/>
-        <OtherUnitFiles Value="unix/;win32/;carbon/"/>
+        <IncludeFiles Value="unix/;win32/;carbon/;qt/"/>
+        <OtherUnitFiles Value="unix/;win32/;carbon/;qt/"/>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
-        <LCLWidgetType Value="carbon"/>
       </SearchPaths>
       <CodeGeneration>
         <Generate Value="Faster"/>
       </CodeGeneration>
       <Other>
         <CustomOptions Value="-dUseCache
--dNativePrint"/>
+-dNativePrint
+"/>
         <CompilerPath Value="$(CompPath)"/>
         <CreateMakefileOnBuild Value="True"/>
       </Other>
@@ -26,7 +26,7 @@
     <License Value="LGPL
 "/>
     <Version Minor="5"/>
-    <Files Count="28">
+    <Files Count="31">
       <Item1>
         <Filename Value="printersdlgs.lrs"/>
         <Type Value="LRS"/>
@@ -145,6 +145,18 @@
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CarbonPrinting"/>
       </Item28>
+      <Item29>
+        <Filename Value="qt/qtprndialogs.inc"/>
+        <Type Value="Include"/>
+      </Item29>
+      <Item30>
+        <Filename Value="qt/qtprinters_h.inc"/>
+        <Type Value="Include"/>
+      </Item30>
+      <Item31>
+        <Filename Value="qt/qtprinters.inc"/>
+        <Type Value="Include"/>
+      </Item31>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
