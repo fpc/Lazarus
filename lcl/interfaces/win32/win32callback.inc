@@ -313,9 +313,9 @@ var
     PopupMenu := WindowInfo^.PopupMenu;
     if PopupMenu <> nil
     then begin
-      WindowInfo^.PopupMenu := nil;
       Result := PopupMenu.FindItem(LOWORD(WParam), fkCommand);
-      if Result <> nil then Exit;
+      if Result <> nil then
+        Exit;
     end;
 
     // nothing found, process main menu
