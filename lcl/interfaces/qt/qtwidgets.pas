@@ -1779,6 +1779,7 @@ begin
     WriteLn('sending char ', UTF8Char);
   {$endif}
     if LCLObject.IntfUTF8KeyPress(UTF8Char, 1, IsSysKey) then
+    // if LCLObject.IntfUTF8KeyPress(TUTF8Char(UTF8Encode(Text)), 1, IsSysKey) then
     begin
       // the LCL has handled the key
   {$ifdef VerboseQt}
@@ -4360,6 +4361,7 @@ end;
 function TQtScrollBar.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
   cdecl;
 begin
+  beginEventProcessing;
   case QEvent_type(Event) of
     QEventKeyPress,
     QEventKeyRelease: Result := False;
@@ -4367,6 +4369,10 @@ begin
     if FOwnWidget then
       Result := inherited EventFilter(Sender, Event);
   end;
+  endEventProcessing;
+  {$IFDEF DARWIN}
+  Result := False;
+  {$ENDIF}
 end;
 
 procedure TQtScrollBar.AttachEvents;
