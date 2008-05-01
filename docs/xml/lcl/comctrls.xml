@@ -761,7 +761,9 @@
         <short/>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.ExtCtrls.Multi-PageControls">Multi-PageControls</link>
+        </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TTabSheet.FOnHide">
@@ -1021,10 +1023,19 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TPageControl">
-        <short/>
-        <descr/>
+        <short>
+          <var>TPageControl</var> - provides a series of tabs along the edge of a multi-page component, to allow selection of one of the pages (TTabSheet) of the component.</short>
+        <descr>
+          <p>
+            <var>TPageControl</var> - provides a series of tabs along the edge of a multi-page component, to allow selection of one of the pages (<var>TTabSheet</var>) of the component.</p>
+          <p>To use <var>TPageControl</var>, select its icon from the Common Controls tab of the IDE Component Palette, and place it at the desired location on the Form.</p>
+          <p>Use the Form Designer and Object Inspector to adjust its shape, size, alignment, anchoring, docking and other properties, then select the object and right click with the mouse to bring up a pop-up menu whose frst item is 'AddPage'. After you have added as many pages as you need, the individual pages can be edited by selecting <var>ActivePage</var> in the Object Inspector, choosing the page required, and editing its properties. </p>
+          <p>While a given page is selected, it is also possible to drop other controls (such as buttons, memo boxes etc) on to the page from the Component Palette.</p>
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.ExtCtrls.Multi-PageControls">Multi-PageControls</link>
+        </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TPageControl.FOnChanging">
@@ -1126,7 +1137,8 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TPageControl.FindNextPage">
-        <short/>
+        <short>
+          <var>FindNextPage</var> - returns the next page (<var>TTabSheet</var>) in the sequence</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1149,7 +1161,8 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TPageControl.SelectNextPage">
-        <short/>
+        <short>
+          <var>SelectNextPage</var> - checking that its Tab is supposed to be visible</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1175,13 +1188,15 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TPageControl.ActivePageIndex">
-        <short/>
+        <short>
+          <var>ActivePageIndex</var> - index value of currently selected (active) page</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TPageControl.Pages">
-        <short/>
+        <short>
+          <var>Pages</var> - the actual Pages (<var>TTabSheet</var>) that comprise the component</short>
         <descr/>
         <seealso/>
       </element>
@@ -1191,8 +1206,13 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TPageControl.ActivePage">
-        <short/>
-        <descr/>
+        <short>
+          <var>ActivePage</var> - the currently selected active page (<var>TTabSheet</var>)</short>
+        <descr>
+          <p>
+            <var>ActivePage</var> - the currently selected active page (<var>TTabSheet</var>)</p>
+          <p>Note that this overrides the definition in <var>TCustomNoteBook</var>, where <var>ActivePage</var> is defined as a String.</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
@@ -1263,7 +1283,8 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TPageControl.TabIndex">
-        <short/>
+        <short>
+          <var>TabIndex</var> - the Index value of the currently selected Tab</short>
         <descr/>
         <seealso/>
       </element>
@@ -1293,7 +1314,8 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TPageControl.OnChange">
-        <short/>
+        <short>
+          <var>OnChange</var> - event handler for a change in the current page</short>
         <descr/>
         <seealso/>
       </element>
@@ -2071,10 +2093,16 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomTabControl">
-        <short/>
-        <descr/>
+        <short>
+          <var>TCustomTabControl</var> - base class for <var>TTabControl</var>, a series of <var>Tabs</var> along the edge of a display area; selection of a <var>Tab</var> governs the contents of the <var>DisplayRect</var>
+        </short>
+        <descr>
+          <var>TCustomTabControl</var> - base class for <var>TTabControl</var>, a series of <var>Tabs</var> along the edge of a display area; selection of a <var>Tab</var> governs the contents of the <var>DisplayRect</var>
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.ExtCtrls.Multi-PageControls">Multi-PageControls</link>
+        </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomTabControl.FImageChangeLink">
@@ -2570,7 +2598,9 @@
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTabControl.DisplayRect">
-        <short/>
+        <short>
+          <var>DisplayRect</var> - the rectangular area to be used for displaying information determined by the identity of the selected <var>Tab</var>
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -2582,97 +2612,114 @@
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTabControl.Images">
-        <short/>
+        <short>
+          <var>Images</var> - the list of Images available for display in the <var>DisplayRect</var>
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTabControl.MultiLine">
-        <short/>
+        <short>
+          <var>MultiLine</var> - whether the Tab's caption is allowed to have multiple lines</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTabControl.MultiSelect">
-        <short/>
+        <short>
+          <var>MultiSelect</var> - whether multiple Tabs are allowed to be selected at the same time (eg by pressing Shift or Ctrl while selecting)</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTabControl.OnChange">
-        <short/>
+        <short>
+          <var>OnChange</var> - event handler for a change in the Tabs</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTabControl.OnChanging">
-        <short/>
+        <short>
+          <var>OnChanging</var> - event handler while Tab is changing</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTabControl.OnDrawTab">
-        <short/>
+        <short>
+          <var>OnDrawTab</var> - event handler for drawing a Tab</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTabControl.OnGetImageIndex">
-        <short/>
+        <short>
+          <var>OnGetImageIndex</var> - event handler for finding the index value of the required image</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTabControl.OwnerDraw">
-        <short/>
+        <short>
+          <var>OwnerDraw</var> - is the calling routine (<var>Owner</var>) allowed to specify the drawing method?</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTabControl.RaggedRight">
-        <short/>
+        <short>
+          <var>RaggedRight</var> - un-justified or un-aligned text</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTabControl.ScrollOpposite">
-        <short/>
+        <short>
+          <var>ScrollOpposite</var> - is scrolling to happen in the opposite direction to usual?</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTabControl.Style">
-        <short/>
+        <short>
+          <var>Style</var> - Tabs, buttons or flat buttons?</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTabControl.TabHeight">
-        <short/>
+        <short>
+          <var>TabHeight</var> - height of the tabs</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTabControl.TabIndex">
-        <short/>
+        <short>
+          <var>TabIndex</var> - index value of current Tab. If none selected, default value of -1 is returned</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTabControl.TabPosition">
-        <short/>
+        <short>
+          <var>TabPosition</var> - top, bottom, left or right</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTabControl.Tabs">
-        <short/>
+        <short>
+          <var>Tabs</var> - the actual Tabs expressed as strings</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTabControl.TabWidth">
-        <short/>
+        <short>
+          <var>TabWidth</var> - width of the tabs</short>
         <descr/>
         <seealso/>
       </element>
@@ -2696,7 +2743,8 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomTabControl.IndexOfTabAt">
-        <short/>
+        <short>
+          <var>IndexOfTabAt</var> - returns the index value of the Tab located at specified X, Y</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2715,7 +2763,8 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomTabControl.GetHitTestInfoAt">
-        <short/>
+        <short>
+          <var>GetHitTestInfoAt</var> - returns information about hit tests at location X, Y</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2734,7 +2783,8 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomTabControl.TabRect">
-        <short/>
+        <short>
+          <var>TabRect</var> - the rectangle occupied by the specified Tab</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2749,7 +2799,8 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomTabControl.RowCount">
-        <short/>
+        <short>
+          <var>RowCount</var> - the number of rows in the list of tabs</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2760,7 +2811,9 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomTabControl.ScrollTabs">
-        <short/>
+        <short>
+          <var>ScrollTabs</var> - scroll through the list of tabs by an amount specifid by <var>Delta</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2771,21 +2824,24 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomTabControl.BeginUpdate">
-        <short/>
+        <short>
+          <var>BeginUpdate</var> - start the Update procedure</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomTabControl.EndUpdate">
-        <short/>
+        <short>
+          <var>EndUpdate</var> - finish the update procedure</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomTabControl.IsUpdating">
-        <short/>
+        <short>
+          <var>IsUpdating</var> - returns True if in process of updating</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2802,10 +2858,20 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TTabControl">
-        <short/>
-        <descr/>
+        <short>
+          <var>TTabControl</var> - a series of <var>Tabs</var> along the edge of a display area; selection of a <var>Tab</var> governs the contents of the <var>DisplayRect</var>
+        </short>
+        <descr>
+          <p>
+            <var>TTabControl</var> - a series of <var>Tabs</var> along the edge of a display area; selection of a <var>Tab</var> governs the contents of the <var>DisplayRect</var>
+          </p>
+          <p>Use <var>TTabControl </var>by selecting its icon from the Common Controls tab of the IDE Component Palette and placing it at the desired location on the <var>Form</var>. Use the Form Designer and Object Inspector to adjust its shape, size, alignment, anchoring and other properties. Tabs can be aded or removed from the component by selecting it, then right-clicking with the mouse to get a pop-up menu whose first item is 'Add Tab'. Once created, the Tabs can be edited by selecting the <var>Tabs</var> entry in the Object Inspector, and selecting the ellipsis (...) which will cause a pop-up String editor to appear. The tabs can be given new captions, moved up and down the list, or removed altogether, as required.</p>
+          <p>Each Tab has an Index (starting from 0) and this index can be used to specify an entry from <var>Images</var> for display in the <var>DisplayRect</var>.</p>
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.ExtCtrls.Multi-PageControls">Multi-PageControls</link>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TTabControl.DisplayRect">
@@ -2983,7 +3049,8 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TTabControl.OnGetSiteInfo">
-        <short/>
+        <short>
+          <var>OnGetSiteInfo</var> - event handler for getting information about the current site</short>
         <descr/>
         <seealso/>
       </element>
@@ -15575,6 +15642,125 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       <!-- procedure Visibility: default -->
       <element name="Register">
         <short>Procedure used to <var>register</var> the components.</short>
+      </element>
+      <element name="TCustomHeaderControl">
+        <short>
+          <var>TCustomHeaderControl</var> - base class for <var>THeaderControl</var>, a header strip of user-designed sections which allow selection of pages or actions</short>
+        <descr>
+          <p>
+            <var>TCustomHeaderControl</var> - base class for <var>THeaderControl</var>, a header strip of user-designed sections which allow selection of pages or actions</p>
+          <p>
+            <var>THeaderControl</var> offers a widget that could be placed along the edge of a <var>Panel</var> or <var>Form</var>, allowing a highly customised mechanism for selection. However, there are no intrinsically associated display areas, and it is the developer's responsibility to supply an index associated with the selection from the <var>THeaderControl</var> and determining what action is to occur or what is to be displayed in any attached Panel or Form.</p>
+        </descr>
+        <seealso>
+          <link id="#lcl.ExtCtrls.Multi-PageControls">Multi-PageControls</link>
+        </seealso>
+      </element>
+      <element name="THeaderControl">
+        <short>
+          <var>THeaderControl</var>, a header strip of user-designed sections which allow selection of pages or actions</short>
+        <descr>
+          <p>
+            <var>THeaderControl</var>, a header strip of user-designed sections which allow selection of pages or actions</p>
+          <p>
+            <var>THeaderControl</var> offers a widget that could be placed along the edge of a <var>Panel</var> or <var>Form</var>, allowing a highly customised mechanism for selection. However, there are no intrinsically associated display areas, and it is the developer's responsibility to supply an index associated with the selection from the <var>THeaderControl</var> and determine what action is to occur or what is to be displayed in any attached Panel or Form.</p>
+          <p>THeaderControl is used by selecting its icon from the Common Controls tab of the IDE Component Palette, and placing it on the Form in the desired position. It may be convenient to dock it with a <var>Form</var> or <var>Panel</var> whose properties it is to be used for controlling. </p>
+          <p>After size, position, docking, alignment, anchoring etc have been performed using the Object Inspector or Form Designer, the Sections of the Header can be created by selecting the control, right-clicking with the mouse and choosing 'Section Editor'. A Stringlist editor will pop up, with options to add, delete or move entries up or down the list. Each entry is given an Index which can be used in OnClick event handlers to determine the action to be taken when that section is selected at run-time.</p>
+        </descr>
+        <seealso>
+          <link id="#lcl.ExtCtrls.Multi-PageControls">Multi-PageControls</link>
+        </seealso>
+      </element>
+      <element name="TCustomHeaderControl.PaintSection">
+        <short>
+          <var>PaintSection</var> - method for painting the current section (specified by Index) of the Header</short>
+      </element>
+      <element name="TCustomHeaderControl.Paint"/>
+      <element name="TCustomHeaderControl.GetSectionAt">
+        <short>
+          <var>GetSectionAt</var> - find the index for the section located at point P</short>
+      </element>
+      <element name="TCustomHeaderControl.DblClick"/>
+      <element name="TCustomHeaderControl.Click"/>
+      <element name="TCustomHeaderControl.Destroy"/>
+      <element name="TCustomHeaderControl.Create"/>
+      <element name="TCustomHeaderControl.DragReorder">
+        <short>
+          <var>DragReorder</var> - find out if the sections are allowed to be re-ordered by dragging</short>
+      </element>
+      <element name="TCustomHeaderControl.Images">
+        <short>
+          <var>Images</var> - the list of Images available for selection using this tool</short>
+      </element>
+      <element name="TCustomHeaderControl.Sections">
+        <short>
+          <var>Sections</var> - the short segments of the header, separated by vertical bars, that function as the elementary selection units of the header</short>
+      </element>
+      <element name="TCustomHeaderControl.OnSectionDrag">
+        <short>
+          <var>OnSectionDrag</var> - event handler for dragging the section of header</short>
+      </element>
+      <element name="TCustomHeaderControl.OnSectionEndDrag">
+        <short>
+          <var>OnSectionEndDrag</var> - event handler for ending the drag process for this section</short>
+      </element>
+      <element name="TCustomHeaderControl.OnSectionClick">
+        <short>
+          <var>OnSectionClick</var> - event handler for mouse click on this section of header</short>
+      </element>
+      <element name="TCustomHeaderControl.OnSectionResize">
+        <short>
+          <var>OnSectionResize</var> - event handler for re-sizing this section of the header</short>
+      </element>
+      <element name="TCustomHeaderControl.OnSectionTrack">
+        <short>
+          <var>OnSectionTrack</var> - event handler for tracking this section</short>
+      </element>
+      <element name="TCustomHeaderControl.OnSectionSeparatorDblClick">
+        <short>
+          <var>OnSectionSeparatorDblClick</var> - event handler for double-click on the separator between sections</short>
+      </element>
+      <element name="THeaderControl.Align"/>
+      <element name="THeaderControl.Anchors"/>
+      <element name="THeaderControl.BiDiMode"/>
+      <element name="THeaderControl.BorderWidth"/>
+      <element name="THeaderControl.DragCursor"/>
+      <element name="THeaderControl.DragKind"/>
+      <element name="THeaderControl.DragMode"/>
+      <element name="THeaderControl.Enabled"/>
+      <element name="THeaderControl.Font"/>
+      <element name="THeaderControl.Images"/>
+      <element name="THeaderControl.Constraints"/>
+      <element name="THeaderControl.Sections"/>
+      <element name="THeaderControl.ShowHint"/>
+      <element name="THeaderControl.ParentBiDiMode"/>
+      <element name="THeaderControl.ParentFont"/>
+      <element name="THeaderControl.ParentShowHint"/>
+      <element name="THeaderControl.PopupMenu"/>
+      <element name="THeaderControl.Visible"/>
+      <element name="THeaderControl.OnContextPopup"/>
+      <element name="THeaderControl.OnCreateSectionClass"/>
+      <element name="THeaderControl.OnDragDrop"/>
+      <element name="THeaderControl.OnDragOver"/>
+      <element name="THeaderControl.OnEndDock"/>
+      <element name="THeaderControl.OnEndDrag"/>
+      <element name="THeaderControl.OnMouseDown"/>
+      <element name="THeaderControl.OnMouseEnter"/>
+      <element name="THeaderControl.OnMouseLeave"/>
+      <element name="THeaderControl.OnMouseMove"/>
+      <element name="THeaderControl.OnMouseUp"/>
+      <element name="THeaderControl.OnResize"/>
+      <element name="THeaderControl.OnSectionClick"/>
+      <element name="THeaderControl.OnSectionResize"/>
+      <element name="THeaderControl.OnSectionTrack"/>
+      <element name="TPageControl.OnGetDockCaption"/>
+      <element name="TPageControl.OnGetSiteInfo">
+        <short>
+          <var>OnGetSiteInfo</var> - event handler for getting information about the current site</short>
+      </element>
+      <element name="TCustomTabControl.IndexOfTabWithCaption">
+        <short>
+          <var>IndexOfTabWithCaption</var> - returns the index value of the tab that has the specified Caption</short>
       </element>
     </module>
     <!-- ComCtrls -->
