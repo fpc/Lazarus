@@ -114,6 +114,10 @@ begin
       if CodeToolBoss.ErrorMessage<>'' then begin
         ErrMsg:='';
         LazarusIDE.DoJumpToCodeToolBossError;
+      end else begin
+        MessageDlg('No class',
+          'No class at '+Code.Filename+'('+IntToStr(Caret.Y)+','+IntToStr(Caret.X)+')',
+          mtError,[mbCancel],0);
       end;
       exit;
     end;

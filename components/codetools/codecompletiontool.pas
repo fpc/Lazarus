@@ -4042,7 +4042,6 @@ begin
         AVLNode:=ProcBodyNodes.FindSuccessor(AVLNode);
       end;
     end;
-    Result:=true;
   finally
     ProcBodyNodes.FreeAndClear;
     ProcBodyNodes.Free;
