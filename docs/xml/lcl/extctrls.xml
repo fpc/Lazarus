@@ -122,13 +122,15 @@
       <!-- object Visibility: default -->
       <element name="TCustomPage">
         <short>
-          <var>TCustomPage</var>: The base type for <var>Page</var>
+          <var>TCustomPage</var>: The base type for 
+          <var>Page</var>
         </short>
         <descr>
           <var>TCustomPage</var>: The base type for the tabbed pages found in notebooks
         </descr>
-        <seealso><link id="#lcl.ExtCtrls.Multi-PageControls">Multi-PageControls</link>
-       </seealso>
+        <seealso>
+          <link id="#lcl.ExtCtrls.Multi-PageControls">Multi-PageControls</link>
+        </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomPage.FFlags">
@@ -269,7 +271,8 @@
       <!-- procedure Visibility: public -->
       <element name="TCustomPage.AdjustClientRect">
         <short>
-          <var>AdjustClientRect</var> - adjust the size of the client rectangle to fit the specified coordinates <var>ARect</var>
+          <var>AdjustClientRect</var> - adjust the size of the client rectangle to fit the specified coordinates 
+          <var>ARect</var>
         </short>
         <descr/>
         <errors/>
@@ -569,20 +572,24 @@
       <!-- object Visibility: default -->
       <element name="TCustomNotebook">
         <short>
-          <var>TCustomNotebook</var>: The base type for <var>TNotebook</var> and <var>TPageControl</var>
+          <var>TCustomNotebook</var>: The base type for  <var>TNotebook</var> and  <var>TPageControl</var>
         </short>
         <descr>
           <p>
-		  <var>TCustom Notebook</var>: The base type for <var>TNotebook</var> and <var>TPageControl</var>
+            <var>TCustom Notebook</var>: The base type for 
+            <var>TNotebook</var> and 
+            <var>TPageControl</var>
           </p>
           <p>A notebook consists of several <var>Pages</var>, usually of similar type and kept indexed. They may contain <var>Images</var> listed in a table. One page is displayed at a time, but the other pages are indicated by tabs which may have their names on them, and a different page can be selected for display by clicking its tab </p>
         </descr>
+        <seealso>
+          <link id="#lcl.ExtCtrls.Multi-PageControls">Multi-PageControls</link>
+        </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomNotebook.FAccess">
         <short/>
         <descr/>
-	<seealso><link id="Multi-PageControls">Multi-PageControls</link></seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomNotebook.FAddingPages">
@@ -1011,6 +1018,7 @@
       <element name="TCustomNotebook.ActivePageComponent">
         <short>
           <var>ActivePageComponent</var> - the actual contents of the currently selected 
+          
           <var>Page</var>
         </short>
       </element>
@@ -1018,6 +1026,7 @@
       <element name="TCustomNotebook.ActivePage">
         <short>
           <var>ActivePage</var> - the  name (string) of the 
+          
           <var>Page</var> that is currently selected and is available for interaction</short>
       </element>
       <!-- constructor Visibility: public -->
@@ -1042,6 +1051,7 @@
       <element name="TCustomNotebook.TabIndexAtClientPos">
         <short>
           <var>TabIndexAtClientPos</var> - the index value of the Tab at the specified position 
+          
           <var>ClientPos</var>
         </short>
         <descr/>
@@ -1101,6 +1111,7 @@
       <element name="TCustomNotebook.CustomPage">
         <short>
           <var>CustomPage</var> - returns the page specified by 
+          
           <var>Index</var>
         </short>
         <descr/>
@@ -1199,9 +1210,14 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomNotebook.Options">
-        <short>The set of <var>Options</var> for the Notebook: Show close buttons on the tabs, multi-line tabs</short>
-        <descr/>
-        <seealso/>
+        <short>The set of  <var>Options</var> for the Notebook: Show close buttons on the tabs, multi-line tabs</short>
+        <descr>
+          <p>The set of  <var>Options</var> for the Notebook: </p>
+          <p>
+            <var>nboShowCloseButtons</var> (display a little CloseButton on the Tab next to the label, to allow the user to close that tab),</p>
+          <p>
+            <var>nboMultiLine</var> (allows multi-line captions on the Tabs)</p>
+        </descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomNotebook.Page">
@@ -1273,7 +1289,7 @@
         </descr>
         <seealso>
           <link id="#lcl.StdCtrls.HowToUseStdCtrls">HowToUseStdCtrls</link>
-	  <link id="#lcl.ExtCtrls.MultiPageControls">Multi-PageControls</link>
+          <link id="#lcl.ExtCtrls.Multi-PageControls">Multi-PageControls</link>
         </seealso>
       </element>
       <!-- property Visibility: published -->
@@ -1405,18 +1421,23 @@
       <!-- object Visibility: default -->
       <element name="TNotebook">
         <short>
-          <var>TNotebook</var>: A series of tabbed <var>pages</var> placed together to make a notebook</short>
+          <var>TNotebook</var>: A series of tabbed  
+          <var>pages</var> placed together to make a notebook</short>
         <descr>
           <p>
-            <var>TNotebook</var>: A series of tabbed <var>pages</var> placed together to make a notebook</p>
+            <var>TNotebook</var>: A series of tabbed 
+  
+            <var>pages</var> placed together to make a notebook</p>
           <p>A notebook consists of several <var>Pages</var>, usually of similar type and kept indexed. They may contain <var>Images</var> listed in a table. One page is displayed at a time, but the other pages are indicated by tabs which may have their names on them, and a different page can be selected by clicking its tab </p>
           <p>Inherits most of its properties from <link id="#lcl.ExtCtrls.TCustomNotebook">TCustomNoteBook</link>
           </p>
+          <p>To use a Notebook, select its icon from the 'Additional' tab of the Component Palette and place it on the Form. Adjust its size, position, alignment and anchoring as required, by moving the object on the Form or by using the Object Inspector.</p>
+          <p>Tabbed Pages are added to the NoteBook by selecting the control and right-clicking with the mouse to get a pop-up menu whose first item is 'Add Page'. Pages already in the NoteBook can be edited by selecting the appropriate ActivePage in the Object Inspector and modifying its properties or adding additional components to that Page.</p>
         </descr>
         <seealso>
-          <link id="#lcl.StdCtrls.HowToUseStdCtrls">HowToUseStdCtrls</link>
-          <link id="#lcl.ExtCtrls.TPage">TPage</link>
-	  <seealso><link id="Multi-PageControls">Multi-PageControls</link></seealso>
+          <link id="#lcl.StdCtrls.HowToUseStdCtrls"/>
+          <link id="#lcl.ExtCtrls.TPage"/>
+          <link id="#lcl.ExtCtrls.Multi-PageControls"/>
         </seealso>
       </element>
       <!-- function Visibility: private -->
@@ -1599,9 +1620,14 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TNotebook.Options">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Set of <var>Options</var> for this Notebook. Include <var>nboShowCloseButtons</var>, <var>nboMultiLine</var>
+        </short>
+        <descr>
+          <p>Set of <var>Options</var> for this Notebook. Include <var>nboShowCloseButtons</var>, <var>nboMultiLine</var>
+          </p>
+          <p>To use the Options, select the tag in the Object Inspector, then select for inclusion any of the listed options, setting them True or False as appropriate.</p>
+          <p>For example, setting <var>nboShowCloseButtons</var> to True will cause a CloseButton (a small CheckBox with an 'x' in it) to appear on each Tab of the NoteBook, allowing the tabbed Page to be closed when the user clicks on the CloseButton.</p>
+        </descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TNotebook.PageIndex">
@@ -1846,11 +1872,13 @@
       <!-- object Visibility: default -->
       <element name="TShape">
         <short>
-          <var>TShape</var> - An arbitrary graphic geometrical shape placed on the Form. It may be one of a series of standard shapes defined by <var>TShapeType </var>
+          <var>TShape</var> - An arbitrary graphic geometrical shape placed on the Form. It may be one of a series of standard shapes defined by 
+          <var>TShapeType </var>
         </short>
         <descr>
           <p>
-            <var>TShape</var>: An arbitrary graphic geometrical shape placed on the Form. It may be one of a series of standard shapes defined by <var>TShapeType</var> (stRectangle, stSquare, stRoundRect, stRoundSquare, stEllipse, stCircle, stSquaredDiamond, stDiamond).</p>
+            <var>TShape</var>: An arbitrary graphic geometrical shape placed on the Form. It may be one of a series of standard shapes defined by 
+            <var>TShapeType</var> (stRectangle, stSquare, stRoundRect, stRoundSquare, stEllipse, stCircle, stSquaredDiamond, stDiamond).</p>
           <p>It can be displayed using the <var>Paint</var> method and the <var>Brush</var> and <var>Pen</var> tools.</p>
         </descr>
       </element>
@@ -2035,7 +2063,18 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TShape.Shape">
-        <short>Which Shape? (Rectangle, Square, RoundRect, RoundSquare, Ellipse, Circle,  SquaredDiamond, Diamond)</short>
+        <short>Which <var>Shape</var>? (Rectangle, Square, RoundRect, RoundSquare, Ellipse, Circle,  SquaredDiamond, Diamond)</short>
+        <descr>
+          <p>Which <var>Shape</var>? </p>
+          <p>stRectangle,</p>
+          <p>stSquare,</p>
+          <p>stRoundRect,</p>
+          <p>stRoundSquare,</p>
+          <p>stEllipse,</p>
+          <p>stCircle,</p>
+          <p>stSquaredDiamond,</p>
+          <p>stDiamond</p>
+        </descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TShape.ShowHint">
@@ -2093,11 +2132,13 @@
       <element name="TCustomSplitter">
         <short>
           <var>TCustomSplitter</var> : the base type for 
+          
           <var>TSplitter</var>
         </short>
         <descr>
           <p>
             <var>TCustomSplitter</var>: the base type for 
+            
             <var>TSplitter</var>
           </p>
           <p>A Splitter is a vertical or horizontal bar that can be placed on a panel or form, to separate sub-panels functionally and allow re-sizing of the constituent sub-panels</p>
@@ -2718,6 +2759,7 @@
       <element name="TCustomImage">
         <short>
           <var>TCustomImage</var> - the base type for 
+          
           <var>TImage</var>
         </short>
         <descr>
@@ -2730,8 +2772,10 @@
 
 
 : The base type for 
+          
           <var>TImage</var>
 . This is a control of the class 
+          
           <var>TGraphicControl</var>
 , designed to be lightweight and fast</descr>
         <seealso>
@@ -3417,11 +3461,13 @@ Reads or Writes flag if control is re-sized.
       <element name="TCustomRadioGroup">
         <short>
           <var>TCustomRadioGroup:</var>   the base type for 
+          
           <var>TRadioGroup</var>
         </short>
         <descr>
           <p>
             <var>TCustomRadioGroup:</var> the base type for 
+            
             <var>TRadioGroup</var>
           </p>
           <p>A group of related but mutually exclusive radio buttons,
@@ -3607,12 +3653,14 @@ requiring the user to select one af a set of alternatives</p>
       <element name="TCustomRadioGroup.Columns">
         <short>
           <var>Columns</var>  - the number of columns in which the 
+          
           <var>Items</var>  (radio buttons) are to be arranges</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomRadioGroup.ColumnLayout">
         <short>
           <var>ColumnLayout</var>  - 
+          
           <var>HorizontalThenVertical </var> or vice versa</short>
       </element>
       <!-- property Visibility: protected -->
@@ -3678,11 +3726,14 @@ requiring the user to select one af a set of alternatives</p>
           </p>
           <p>
             <var>TRadioGroup</var> behaves differently from a group of 
+            
             <var>TRadioButton</var> controls placed arbitrarily around a form. </p>
           <p>In the case of <var>TRadioButton</var>, the mutual exclusivity is a feature that applies to any <var>RadioButton</var> anywhere in the Form, and the <var>RadioButtons</var> can be rearranged in any order or placed anywhere within the containing <var>Form</var>, while in <var>TRadioGroup</var> the exclusivity applies only to buttons within the Group, which are ordered strictly according to their <var>ItemIndex</var> within the <var>Items</var> stringlist. </p>
           <p>
             <var>TRadioButton</var> is an entity in itself, with a number of additional properties, whereas the buttons within 
+            
             <var>TRadioGroup</var>  are not separate entities, but rather are simply entries in a list of strings, each of which is associated with the on-screen image of a 
+            
             <var>RadioButton</var>. </p>
           <p>The example shows the difference between the use of <var>TRadioButton</var> and <var>TRadioGroup</var>
           </p>
@@ -3901,11 +3952,13 @@ requiring the user to select one af a set of alternatives</p>
       <element name="TCustomCheckGroup">
         <short>
           <var>TCustomCheckGroup</var>: The base type for 
+          
           <var>TCheckGroup</var>
         </short>
         <descr>
           <p>
             <var>TCustomCheckGroup</var>: The base type for 
+            
             <var>TCheckGroup</var>
           </p>
           <p>This class defines <var>Items</var>, where the captions for individual check boxes are stored, <var>Rows</var> and <var>Columns</var> for arranging the check boxes, and ColumnLayout to determine whether the data are arranged down the columns first, or across the rows first.</p>
@@ -4193,12 +4246,14 @@ requiring the user to select one af a set of alternatives</p>
       <element name="TCustomCheckGroup.Columns">
         <short>
           <var>Columns</var>  - the number of columns in which the 
+          
           <var>Items</var>  (check boxes) are to be arranges</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomCheckGroup.ColumnLayout">
         <short>
           <var>ColumnLayout</var> - 
+          
           <var>HorizontalThenVertical </var>or vice versa</short>
       </element>
       <!-- property Visibility: public -->
@@ -4420,10 +4475,12 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
       <element name="TBoundLabel">
         <short>
           <var>TBoundLabel</var>: A label bound to another object, for example in 
+          
           <var>TLabeledEdit</var>
         </short>
         <descr>
           <var>TBoundLabel</var>: A label bound to another object, for example in 
+          
           <var>TLabeledEdit</var>
         </descr>
         <seealso>
@@ -4609,6 +4666,7 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
 
 
 : The base type for 
+            
             <var>LabeledEdit</var>.</p>
           <p>Note particularly the <link id="TCustomLabeledEdit.EditLabel">EditLabel</link> property (see <link id="#lcl.Extctrls.TBoundLabel">TBoundLabel</link>), which contains the label attached to the Edit control.</p>
         </descr>
@@ -5027,11 +5085,13 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
       <element name="TCustomPanel">
         <short>
           <var>TCustomPanel</var>: The base type for 
+          
           <var>TPanel</var>
         </short>
         <descr>
           <p>
             <var>TCustomPanel</var>: The base type for 
+            
             <var>TPanel</var>
           </p>
           <p>A Panel is a defined rectangular area of the form into which other components can be placed to group them functionally and geographically.</p>
@@ -5531,6 +5591,7 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
       <element name="TCustomTrayIcon">
         <short>
           <var>TCustomTrayIcon </var>- the base class for 
+          
           <var>TTrayIcon</var>, a multiplatform System Tray component.</short>
       </element>
       <element name="TTrayIcon">
@@ -5541,9 +5602,12 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <short>Creates a new instance of the component.</short>
         <descr>
           <var>Create</var> creates a new instance of a 
+          
           <var>TCustomTrayIcon</var> class.
 If 
+          
           <var>AOwner</var> is not 
+          
           <var>Nil</var>, the new component attempts to 
 insert itself in the list of owned components of the owner.
 </descr>
@@ -5552,9 +5616,11 @@ insert itself in the list of owned components of the owner.
         <short>Destroys the instance of the component.</short>
         <descr>
           <var>Destroy</var> sends a 
+          
           <var>opRemove</var> notification to all components 
 in the free-notification list. After that, all owned components are
 destroyed by calling 
+          
           <link id="TComponent.DestroyComponents">DestroyComponents</link> 
 (and hence removed from the list of owned components). When this
 is done, the component removes itself from its owner's child component list.
@@ -5570,6 +5636,7 @@ After that, the parent's destroy method is called.
       <element name="TCustomTrayIcon.ShowBalloonHint">
         <short>
           <var>ShowBalloonHint</var> displays a smal balloon-like window near the tray icon. It can be used to send notifications about the status of an action, or notify of a received message or any other event which doesn't require an imediate response. The Ballon window disappears after 
+          
           <var>BallonHintTimeout</var> milliseconds of when the user clicks it or it's close button.</short>
       </element>
       <element name="TCustomTrayIcon.GetPosition">
@@ -5670,8 +5737,10 @@ After that, the parent's destroy method is called.
         <descr>
           <p>
             <var>Assign</var> copies the contents of 
+            
             <var>Source</var> to
 
+            
             <var>Self</var>, if the classes of the destination and source classes are
 compatible.
 </p>
@@ -5739,18 +5808,38 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
         <descr>
           <p>
             <var>Multi-PageControls</var> - controls that offer a selection of alternative pages for display</p>
-          <p>A number of controls, found in Units <var>ExtCtrls</var> and <var>ComCtrls</var>, offer the ability to create multi-page forms with a series of <var>Tabs</var> along one edge that allow the user to select one of the <p>Pages</p> for display and interaction.</p>
+          <p>A number of controls, found in Units <var>ExtCtrls</var> and <var>ComCtrls</var>, offer the ability to create multi-page forms with a series of <var>Tabs</var> along one edge that allow the user to select one of the <var>Pages</var> for display and interaction.</p>
           <p>These include: <var>TPageControl</var>, <var>TNoteBook</var>, <var>TTabControl</var> and <var>THeaderControl</var> (the Header Control components have a very different structure and function). Icons for all of these exist on the <var>Additional</var> or <var>Common Controls</var> tabs of the Component Palette in the Lazarus IDE.</p>
           <p>While the various components may look superficially similar, they differ in properties, inheritance, method of adding additional pages, behaviour at run-time, methods for referencing pages and so on.</p>
-          <p>We have to be very clear when using the various properties, to distinguish between the word 'Tab' as referring to a Tab indicating an identifier for a page, and 'Tab' as referring to the <b>TAB</b> key on the standard keyboard. In common with most Lazarus components, it is possible to enable each control to be inclused in the <var>TabOrder</var> of <var>TabStops</var> for a <var>Form</var>, so that the component can be reached by repeated pressing of the <b>TAB</b> key, and we must not confuse this use of 'Tab' with the use to denote a <var>Page</var>.</p>
+          <p>We have to be very clear when using the various properties, to distinguish between the word 'Tab' as referring to a Tab indicating an identifier for a page, and 'Tab' as referring to the <b>TAB</b> key on the standard keyboard. In common with most Lazarus components, it is possible to enable each control to be included in the <var>TabOrder</var> of <var>TabStops</var> for a <var>Form</var>, so that the component can be reached by repeated pressing of the <b>TAB</b> key, and we must not confuse this use of 'Tab' with the use to denote a <var>Page</var>.</p>
           <p>The properties <var>CanTab</var>, <var>TabStop</var> and <var>TabOrder</var> refer to the use of the <b>TAB</b> key to navigate to the relevant control.</p>
           <p>Properties such as <var>Tabs</var>, <var>TabIndex</var>, <var>IndexOfTabAt()</var>, <var>TabIndexAtClientPos()</var>,  <var>TabPosition</var>, <var>TabHeight</var>, <var>TabWidth</var>, <var>TabVisible</var>, <var>OnCloseTabClicked</var> refer to the use for <var>Page</var> selection.</p>
           <p>
             <var>TNoteBook</var> and 
+            
+  
+  
+  
             <var>TPageControl</var> are both descended from 
+            
+  
+  
+  
             <var>TCustomNoteBook</var> (which is in turn descended from 
+            
+  
+  
+  
             <var>TWinControl</var>) and have many inherited properties in common. 
+            
+  
+  
+  
             <var>TPageControl</var> has, in general, more advanced features and is probably intended to replace 
+            
+  
+  
+  
             <var>TNoteBook</var>.</p>
           <p>The following table summarises the main differences between the two components.</p>
           <table>
@@ -5765,8 +5854,14 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
             </th>
             <tr>
               <td>Pages, ActivePage</td>
-              <td>String, TPage</td>
-              <td>TTabSheet, a more advanced version of TPAge</td>
+              <td>String, <var>TPage</var>
+              </td>
+              <td>
+                <var>TTabSheet</var>, a more advanced version of 
+      
+      
+                <var>TPage</var>
+              </td>
             </tr>
             <tr>
               <td>Drag/Drop/Dock</td>
@@ -5775,28 +5870,63 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
             </tr>
             <tr>
               <td>Indexing</td>
-              <td>PageIndex</td>
-              <td>ActivePageIndex, TabIndex</td>
+              <td>
+                <var>PageIndex</var>
+              </td>
+              <td>
+                <var>ActivePageIndex</var>, 
+      
+      
+                <var>TabIndex</var>
+              </td>
             </tr>
             <tr>
               <td>Showing/Hiding Tabs</td>
-              <td>ShowTabs</td>
-              <td>TabVisible in TTabSheet</td>
+              <td>
+                <var>ShowTabs</var>
+              </td>
+              <td>
+                <var>TabVisible</var> in 
+      
+      
+                <var>TTabSheet</var>
+              </td>
             </tr>
             <tr>
               <td>Hints</td>
               <td>No Hinting methods</td>
-              <td>ShowHint, ParentShowHint</td>
+              <td>
+                <var>ShowHint</var>, 
+      
+      
+                <var>ParentShowHint</var>
+              </td>
             </tr>
             <tr>
               <td>Font</td>
               <td>No Font properties</td>
-              <td>Font, ParentFont</td>
+              <td>
+                <var>Font</var>, 
+      
+      
+                <var>ParentFont</var>
+              </td>
             </tr>
             <tr>
               <td>Sensing position of Tab</td>
               <td>None</td>
-              <td>TabPosition, OnGetSiteInfo</td>
+              <td>
+                <var>TabPosition</var>, 
+      
+      
+                <var>OnGetSiteInfo</var>
+              </td>
+            </tr>
+            <tr>
+              <td>Options</td>
+              <td>Published property <var>Options</var>, include <var>nboShowCloseButtons</var>, <var>nboMultiLine</var>
+              </td>
+              <td>No published <var>Options</var> property, but inherits <var>Options</var> (public property) from <var>TCustomNoteBook</var>, so they could be set explicitly in code</td>
             </tr>
           </table>
           <p>The individual Pages in both of the above controls (descended from <var>TCustomNoteBook</var>) are separate and can have their own specific collections of widgets which appear only when the relevant Page is selected by its Tab.</p>
@@ -5808,8 +5938,13 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
           <p>The pages in<var>TNoteBook</var> or <var>TPageControl</var> can be edited by selecting the <var>ActivePage</var> in the Object Inspector and then editing the properties of the individual page.</p>
           <p>
             <var>THeaderControl</var> offers a widget that could be placed along the edge of a Panel or Form, allowing a highly customised mechanism for selection. However, there are no intrinsically associated display areas, and it is the developer's responsibility to supply an index associated with the selection from the 
+            
+  
+  
+  
             <var>THeaderControl</var> and determining what action is to occur or what is to be displayed in any attached Panel or Form.</p>
-          <p>When the control is first placed selected from the Component Palette and placed on  a Form, it consists of an unadorned rectangle. However, selecting the control and right-clicking (or selecting the 'Sections' property in the Object Inspector) gives access to a Sections editor (a StringList editor) and Sections can be added to the control. The sections are separated by vertical lines, and each section can have a string inserted as a label, associated with an Index value. The Sections can be rearranged, re-ordered, or be individually painted</p>
+          <p>When the control is first selected from the Component Palette and placed on  a Form, it consists of an unadorned rectangle. However, selecting the control and right-clicking (or selecting the 'Sections' property in the Object Inspector) gives access to a Sections editor (a StringList editor) and Sections can be added to the control. The sections are separated by vertical lines, and each section can have a string inserted as a label, associated with an Index value. The Sections can be rearranged, re-ordered, or be individually painted.</p>
+          <p>In a typical application a <var>THeaderControl</var> and a <var>TPanel</var> or <var>TForm</var> would be docked together, and code would be written to find which Section of the Header had been selected, then use its index to control the display in the other docked control.</p>
         </descr>
       </topic>
     </module>
