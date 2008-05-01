@@ -70,10 +70,10 @@ type
     class procedure SetColor(const AWinControl: TWinControl); override;
     class procedure SetCursor(const AWinControl: TWinControl; const ACursor: HCursor); override;
 
-{    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
 
-    class procedure AddControl(const AControl: TControl); override;
+{    class procedure AddControl(const AControl: TControl); override;
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
 
     class procedure SetChildZPosition(const AWinControl, AChild: TWinControl;
@@ -242,6 +242,25 @@ class procedure TFpGuiWSWinControl.SetCursor(const AWinControl: TWinControl;
   const ACursor: HCursor);
 begin
 
+end;
+
+class function TFpGuiWSWinControl.GetText(const AWinControl: TWinControl;
+  var AText: String): Boolean;
+var
+  FPPrivateWidget: TFPGUIPrivateWidget;
+begin
+  FPPrivateWidget := TFPGUIPrivateWidget(AWinControl.Handle);
+  Result := FPPrivateWidget.HasStaticText;
+  if Result then AText := FPPrivateWidget.GetText;
+end;
+
+class procedure TFpGuiWSWinControl.SetText(const AWinControl: TWinControl;
+  const AText: string);
+var
+  FPPrivateWidget: TFPGUIPrivateWidget;
+begin
+  FPPrivateWidget := TFPGUIPrivateWidget(AWinControl.Handle);
+  FPPrivateWidget.SetText(AText);
 end;
 
 initialization

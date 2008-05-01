@@ -39,7 +39,7 @@ uses
   WSControls, WSLCLClasses, WSProc,
   // interface
   gfx_widget, gui_form, gui_button, gui_combobox, gui_dialogs,
-  gui_edit, gui_checkbox, gui_radiobutton, gui_tab;
+  gui_edit, gui_checkbox, gui_radiobutton, gui_tab, gui_memo;
 
 
 type
@@ -47,11 +47,6 @@ type
   IContainer = interface(IInterface)
     procedure AddChild(AWidget: TfpgWidget);
     procedure RemoveChild(AWidget: TfpgWidget);
-  end;
-
-  ISimpleText = interface(IInterface)
-    procedure SetText(const AText: String);
-    function GetText: String;
   end;
 
   { TFPGUIPrivate }
@@ -80,6 +75,9 @@ type
     procedure SetEvents; virtual;
     procedure SetSize(AWidth, AHeight: LongInt); virtual;
     procedure SetPosition(AX, AY: Integer); virtual;
+    function  HasStaticText: Boolean; virtual;
+    procedure SetText(const AText: String); virtual;
+    function  GetText: String; virtual;
   public
     { Properties }
     property LCLObject: TWinControl read FLCLObject;
@@ -116,7 +114,7 @@ type
   { TFPGUIPrivateWindow }
   { Private class for windows }
 
-  TFPGUIPrivateWindow = class(TFPGUIPrivateBin, ISimpleText)
+  TFPGUIPrivateWindow = class(TFPGUIPrivateBin)
   private
     { Event Handlers }
     procedure PaintHandler(Sender: TObject{; const ARect: TfpgRect});
@@ -131,12 +129,12 @@ type
     procedure SetEvents; override;
     procedure SetSize(AWidth, AHeight: LongInt); override;
     procedure SetPosition(AX, AY: Integer); override;
+    function  HasStaticText: Boolean; override;
+    procedure SetText(const AText: String); override;
+    function  GetText: String; override;
   public
     { Other methods }
     function Form: TfpgForm;
-    { ISimpleText }
-    procedure SetText(const AText: String);
-    function GetText: String;
   end;
 
 
@@ -153,7 +151,7 @@ type
   { TFPGUIPrivateButton }
   { Private class for buttons }
 
-  TFPGUIPrivateButton = class(TFPGUIPrivateWidget, ISimpleText)
+  TFPGUIPrivateButton = class(TFPGUIPrivateWidget)
   private
     procedure Clicked(Sender: TObject);
   protected
@@ -163,12 +161,12 @@ type
     { Virtual methods }
     procedure CreateWidget(const AParams: TCreateParams); override;
     procedure SetEvents; override;
+    function  HasStaticText: Boolean; override;
+    procedure SetText(const AText: String); override;
+    function  GetText: String; override;
   public
     { Other methods }
     function Button: TfpgButton;
-    { ISimpleText }
-    procedure SetText(const AText: String);
-    function GetText: String;
   end;
 
   { TFPGUIPrivateComboBox }
@@ -177,8 +175,6 @@ type
   private
   protected
   public
-    { Constructors / Destructors }
-    constructor Create(ALCLObject: TWinControl; const AParams: TCreateParams); override;
     { Virtual methods }
     procedure CreateWidget(const AParams: TCreateParams); override;
   public
@@ -189,56 +185,50 @@ type
 
   { TFPGUIPrivateEdit }
 
-  TFPGUIPrivateEdit = class(TFPGUIPrivateWidget, ISimpleText)
+  TFPGUIPrivateEdit = class(TFPGUIPrivateWidget)
   private
   protected
   public
-    { Constructors / Destructors }
-    constructor Create(ALCLObject: TWinControl; const AParams: TCreateParams); override;
     { Virtual methods }
     procedure CreateWidget(const AParams: TCreateParams); override;
+    function  HasStaticText: Boolean; override;
+    procedure SetText(const AText: String); override;
+    function  GetText: String; override;
   public
     { Other methods }
     function Edit: TfpgEdit;
-    { ISimpleText }
-    procedure SetText(const AText: String);
-    function GetText: String;
   end;
 
   { TFPGUIPrivateCheckBox }
 
-  TFPGUIPrivateCheckBox = class(TFPGUIPrivateWidget, ISimpleText)
+  TFPGUIPrivateCheckBox = class(TFPGUIPrivateWidget)
   private
   protected
   public
-    { Constructors / Destructors }
-    constructor Create(ALCLObject: TWinControl; const AParams: TCreateParams); override;
     { Virtual methods }
     procedure CreateWidget(const AParams: TCreateParams); override;
+    function  HasStaticText: Boolean; override;
+    procedure SetText(const AText: String); override;
+    function  GetText: String; override;
   public
     { Other methods }
     function CheckBox: TfpgCheckBox;
-    { ISimpleText }
-    procedure SetText(const AText: String);
-    function GetText: String;
   end;
 
   { TFPGUIPrivateRadioButton }
 
-  TFPGUIPrivateRadioButton = class(TFPGUIPrivateWidget, ISimpleText)
+  TFPGUIPrivateRadioButton = class(TFPGUIPrivateWidget)
   private
   protected
   public
-    { Constructors / Destructors }
-    constructor Create(ALCLObject: TWinControl; const AParams: TCreateParams); override;
     { Virtual methods }
     procedure CreateWidget(const AParams: TCreateParams); override;
+    function  HasStaticText: Boolean; override;
+    procedure SetText(const AText: String); override;
+    function  GetText: String; override;
   public
     { Other methods }
     function RadioButton: TfpgRadioButton;
-    { ISimpleText }
-    procedure SetText(const AText: String);
-    function GetText: String;
   end;
 
   { TFPGUIPrivatePageControl }
@@ -251,6 +241,21 @@ type
     procedure CreateWidget(const AParams: TCreateParams); override;
   end;
 
+  { TFPGUIPrivateMemo }
+
+  TFPGUIPrivateMemo = class(TFPGUIPrivateWidget)
+  private
+  protected
+  public
+    { Virtual methods }
+    procedure CreateWidget(const AParams: TCreateParams); override;
+    function  HasStaticText: Boolean; override;
+    procedure SetText(const AText: String); override;
+    function  GetText: String; override;
+  public
+    { Other methods }
+    function Memo: TfpgMemo;
+  end;
 
 implementation
 
@@ -312,6 +317,21 @@ begin
   Widget.SetPosition(AX, AY, Widget.Width, Widget.Height);
 end;
 
+function TFPGUIPrivateWidget.HasStaticText: Boolean;
+begin
+  Result := False;
+end;
+
+procedure TFPGUIPrivateWidget.SetText(const AText: String);
+begin
+
+end;
+
+function TFPGUIPrivateWidget.GetText: String;
+begin
+  Result := '';
+end;
+
 { TFPGUIPrivateContainer }
 
 constructor TFPGUIPrivateContainer.Create(ALCLObject: TWinControl;
@@ -345,6 +365,11 @@ end;
 function TFPGUIPrivateWindow.Form: TfpgForm;
 begin
   Result := TfpgForm(Widget);
+end;
+
+function TFPGUIPrivateWindow.HasStaticText: Boolean;
+begin
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -550,6 +575,11 @@ begin
   Button.OnClick := Clicked;
 end;
 
+function TFPGUIPrivateButton.HasStaticText: Boolean;
+begin
+  Result := True;
+end;
+
 {------------------------------------------------------------------------------
   Method: TFPGUIPrivateButton.Create
   Params:  None
@@ -607,29 +637,7 @@ begin
   Widget.SetPosition(LCLObject.Left, LCLObject.Top, LCLObject.Width, LCLObject.Height);
 end;
 
-{------------------------------------------------------------------------------
-  Method: TFPGUIPrivateComboBox.Create
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-constructor TFPGUIPrivateComboBox.Create(ALCLObject: TWinControl;
-  const AParams: TCreateParams);
-begin
-  inherited Create(ALCLObject, AParams);
-end;
-
 { TFPGUIPrivateEdit }
-
-{------------------------------------------------------------------------------
-  Method: TFPGUIPrivateEdit.Create
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-constructor TFPGUIPrivateEdit.Create(ALCLObject: TWinControl;
-  const AParams: TCreateParams);
-begin
-  inherited Create(ALCLObject, AParams);
-end;
 
 {------------------------------------------------------------------------------
   Method: TFPGUIPrivateEdit.CreateWidget
@@ -644,6 +652,11 @@ begin
 
   Widget := TfpgEdit.Create(ParentContainer.Widget);
   Widget.SetPosition(LCLObject.Left, LCLObject.Top, LCLObject.Width, LCLObject.Height);
+end;
+
+function TFPGUIPrivateEdit.HasStaticText: Boolean;
+begin
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -683,12 +696,6 @@ begin
   Result := TfpgCheckBox(Widget);
 end;
 
-constructor TFPGUIPrivateCheckBox.Create(ALCLObject: TWinControl;
-  const AParams: TCreateParams);
-begin
-  inherited Create(ALCLObject, AParams);
-end;
-
 procedure TFPGUIPrivateCheckBox.CreateWidget(const AParams: TCreateParams);
 var
   ParentContainer: TFPGUIPrivateContainer;
@@ -697,6 +704,11 @@ begin
 
   Widget := TfpgCheckBox.Create(ParentContainer.Widget);
   Widget.SetPosition(LCLObject.Left, LCLObject.Top, LCLObject.Width, LCLObject.Height);
+end;
+
+function TFPGUIPrivateCheckBox.HasStaticText: Boolean;
+begin
+  Result := True;
 end;
 
 procedure TFPGUIPrivateCheckBox.SetText(const AText: String);
@@ -716,12 +728,6 @@ begin
   Result := TfpgRadioButton(Widget);
 end;
 
-constructor TFPGUIPrivateRadioButton.Create(ALCLObject: TWinControl;
-  const AParams: TCreateParams);
-begin
-  inherited Create(ALCLObject, AParams);
-end;
-
 procedure TFPGUIPrivateRadioButton.CreateWidget(const AParams: TCreateParams);
 var
   ParentContainer: TFPGUIPrivateContainer;
@@ -730,6 +736,11 @@ begin
 
   Widget := TfpgRadioButton.Create(ParentContainer.Widget);
   Widget.SetPosition(LCLObject.Left, LCLObject.Top, LCLObject.Width, LCLObject.Height);
+end;
+
+function TFPGUIPrivateRadioButton.HasStaticText: Boolean;
+begin
+  Result := True;
 end;
 
 procedure TFPGUIPrivateRadioButton.SetText(const AText: String);
@@ -752,6 +763,38 @@ begin
 
   Widget := TfpgPageControl.Create(ParentContainer.Widget);
   Widget.SetPosition(LCLObject.Left, LCLObject.Top, LCLObject.Width, LCLObject.Height);
+end;
+
+{ TFPGUIPrivateMemo }
+
+procedure TFPGUIPrivateMemo.CreateWidget(const AParams: TCreateParams);
+var
+  ParentContainer: TFPGUIPrivateContainer;
+begin
+  ParentContainer := TFPGUIPrivateContainer(LCLObject.Parent.Handle);
+
+  Widget := TfpgMemo.Create(ParentContainer.Widget);
+  Widget.SetPosition(LCLObject.Left, LCLObject.Top, LCLObject.Width, LCLObject.Height);
+end;
+
+function TFPGUIPrivateMemo.HasStaticText: Boolean;
+begin
+  Result := True;
+end;
+
+function TFPGUIPrivateMemo.Memo: TfpgMemo;
+begin
+  Result := TfpgMemo(Widget);
+end;
+
+procedure TFPGUIPrivateMemo.SetText(const AText: String);
+begin
+  Memo.Text := AText;
+end;
+
+function TFPGUIPrivateMemo.GetText: String;
+begin
+  Result := Memo.Text;
 end;
 
 end.

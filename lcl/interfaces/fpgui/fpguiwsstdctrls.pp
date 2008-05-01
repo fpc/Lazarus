@@ -120,10 +120,7 @@ type
   public
     class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): TLCLIntfHandle; override;
-    class procedure DestroyHandle(const AWinControl: TWinControl); override;
   public
-    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
-    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
 {    class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
 
@@ -146,6 +143,16 @@ type
   private
   protected
   public
+    class function CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): TLCLIntfHandle; override;
+  public
+{    class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); override;
+    class procedure SetAlignment(const ACustomMemo: TCustomMemo; const AAlignment: TAlignment); override;}
+    class function GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
+{    class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); override;
+    class procedure SetWantReturns(const ACustomMemo: TCustomMemo; const NewWantReturns: boolean); override;
+    class procedure SetWantTabs(const ACustomMemo: TCustomMemo; const NewWantTabs: boolean); override;
+    class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); override;}
   end;
 
   { TFpGuiWSEdit }
@@ -352,50 +359,6 @@ begin
   Result := TLCLIntfHandle(TFPGUIPrivateEdit.Create(AWinControl, AParams));
 end;
 
-{------------------------------------------------------------------------------
-  Method: TFpGuiWSCustomEdit.DestroyHandle
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-class procedure TFpGuiWSCustomEdit.DestroyHandle(const AWinControl: TWinControl);
-begin
-  TFPGUIPrivateEdit(AWinControl.Handle).Free;
-
-  AWinControl.Handle := 0;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TFpGuiWSCustomEdit.GetText
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-class function TFpGuiWSCustomEdit.GetText(const AWinControl: TWinControl;
-  var AText: String): Boolean;
-var
-  vEdit: TfpgEdit;
-begin
-  vEdit := TFPGUIPrivateEdit(AWinControl.Handle).Edit;
-
-  AText := vEdit.Text;
-  
-  Result := True;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TFpGuiWSCustomEdit.SetText
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-class procedure TFpGuiWSCustomEdit.SetText(const AWinControl: TWinControl;
-  const AText: string);
-var
-  vEdit: TfpgEdit;
-begin
-  vEdit := TFPGUIPrivateEdit(AWinControl.Handle).Edit;
-
-  vEdit.Text := AText;
-end;
-
 { TFpGuiWSButton }
 
 {------------------------------------------------------------------------------
@@ -577,6 +540,19 @@ begin
   TFPGUIPrivateRadioButton(AWinControl.Handle).Free;
 
   AWinControl.Handle := 0;
+end;
+
+{ TFpGuiWSCustomMemo }
+
+class function TFpGuiWSCustomMemo.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+begin
+  Result:=inherited CreateHandle(AWinControl, AParams);
+end;
+
+class function TFpGuiWSCustomMemo.GetStrings(const ACustomMemo: TCustomMemo): TStrings;
+begin
+  Result:=inherited GetStrings(ACustomMemo);
 end;
 
 initialization
