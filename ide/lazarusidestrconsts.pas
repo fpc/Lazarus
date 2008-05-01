@@ -1484,6 +1484,7 @@ resourcestring
   dlgPromptOnReplace = '&Prompt On Replace';
   lisAskBeforeReplacingEachFoundText = 'Ask before replacing each found text';
   dlgSROrigin = 'Origin';
+  dlgPLDPackageGroup = 'Package group';
   lisPLDExists = 'Exists';
   dlgFromCursor = '&From Cursor';
   dlgEntireScope = '&Entire Scope';

@@ -17,7 +17,7 @@ set ArchOS=i386-win32
 
 echo.
 
-REM Compile tools if updatepofiles if missing
+REM Compile tools if updatepofiles is missing
 
 if exist tools\updatepofiles.exe goto SkipTools
 echo The updatepofiles tool was not found, compiling tools ...
@@ -121,6 +121,10 @@ tools\updatepofiles components\turbopower_ipro\languages\ipconst.po
 @set TP_IPro_RST=components\turbopower_ipro\units\%ArchOS%\iputils.rst
 rstconv -c UTF-8 -i %TP_IPro_RST% -o components\turbopower_ipro\languages\iputils.po
 tools\updatepofiles components\turbopower_ipro\languages\iputils.po
+
+@set MessageComposer_RST=components\messagecomposer\lib\%ArchOS%\messagecomposer.rst
+rstconv -c UTF-8 -i %MessageComposer_RST% -o components\messagecomposer\languages\messagecomposer.po
+tools\updatepofiles components\messagecomposer\languages\messagecomposer.po
 
 @goto Exit
 

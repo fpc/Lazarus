@@ -39,6 +39,7 @@ RSTFILES=(
   "components/turbopower_ipro iputils"
   "components/cgi cgimodules"
   "components/memds frmselectdataset"
+  "components/messagecomposer messagecomposer"  
   "components/printers/design ideprinting"
   "components/projecttemplates projecttemplates"
   "components/projecttemplates frmtemplatevariables"
