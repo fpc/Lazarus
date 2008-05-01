@@ -27,6 +27,7 @@ type
     gptVLine,
     gptShadow,
     gptBox,
+    gptBoxGap,
     gptFlatBox,
     gptCheck,
     gptOption,
@@ -52,6 +53,9 @@ type
     Orientation: TGtkOrientation; // Orientation (horizontal/vertical)
     ArrowType  : TGtkArrowType;   // type of arrow
     Fill       : Boolean;         // fill inside area
+    GapSide    : TGtkPositionType;//
+    GapX       : gint;
+    GapWidth   : gint;
 {$ifdef gtk2}
     Expander   : TGtkExpanderStyle; // treeview expander
     Edge       : TGdkWindowEdge;
@@ -214,6 +218,9 @@ begin
   Result.ArrowType := GTK_ARROW_UP;
   Result.Fill := False;
   Result.IsHot := False;
+  Result.GapSide := GTK_POS_LEFT;
+  Result.GapWidth := 0;
+  Result.GapX := 0;
 
   case Details.Element of
     teButton:
@@ -375,6 +382,20 @@ to alternate splitter painting}
           Result.Painter := gptPixmap;
         end;
       end;
+    teTab:
+      begin
+        Result.Widget := GetStyleWidget(lgsNotebook);
+        Result.State := GTK_STATE_NORMAL;
+        Result.Shadow := GTK_SHADOW_OUT;
+        Result.Detail := 'notebook';
+        if Details.Part in [TABP_PANE, TABP_BODY] then
+        begin
+          Result.GapSide := GTK_POS_TOP;
+          Result.GapX := 20;
+          Result.GapWidth := 40;
+          Result.Painter := gptBoxGap;
+        end;
+      end;
   end;
 end;
 
@@ -437,6 +458,14 @@ begin
               @Area, Widget, PChar(Detail),
               Area.x, Area.y,
               Area.Width, Area.Height);
+          gptBoxGap:
+            gtk_paint_box_gap(
+              Style, Window,
+              State, Shadow,
+              @Area, Widget, PChar(Detail),
+              Area.x, Area.y,
+              Area.Width, Area.Height,
+              GapSide, GapX, GapWidth);
           gptHLine  : gtk_paint_hline(
               Style, Window,
               State, @Area,

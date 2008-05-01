@@ -450,6 +450,7 @@ type
     function GetScrollOpposite: Boolean;
     function GetTabHeight: Smallint;
     function GetTabIndex: Integer;
+    function GetTabRectWithBorder: TRect;
     function GetTabWidth: Smallint;
     procedure SetHotTrack(const AValue: Boolean);
     procedure SetImages(const AValue: TCustomImageList);
@@ -1077,11 +1078,13 @@ type
     property MultiSelect;
 //    property OwnerData;
 //    property OwnerDraw;
+    property ParentShowHint;
     property PopupMenu;
     property ReadOnly;
     property RowSelect;
     property ScrollBars;
     property ShowColumnHeaders;
+    property ShowHint;
 //    property ShowWorkAreas;
     property SmallImages;
     property SortColumn;

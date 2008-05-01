@@ -266,8 +266,8 @@ end;
 function TTabControlNoteBookStrings.GetSize: integer;
 begin
   case TabControl.TabPosition of
-  tpTop, tpBottom: Result:=FNoteBook.Height;
-  tpLeft, tpRight: Result:=FNoteBook.Width;
+    tpTop, tpBottom: Result:=FNoteBook.Height;
+    tpLeft, tpRight: Result:=FNoteBook.Width;
   end;
 end;
 
@@ -539,21 +539,22 @@ end;
 procedure TCustomTabControl.Paint;
 var
   ARect: TRect;
-  TS : TTextStyle;
+  TS: TTextStyle;
+  Details: TThemedElementDetails;
 begin
   //DebugLn(['TCustomTabControl.Paint Bounds=',dbgs(BoundsRect),' ClientRect=',dbgs(ClientRect),' CientOrigin=',dbgs(ClientOrigin)]);
-  // clear the whole area
-  // Note: The tabs are painted above and are not opaque. So the background of
-  // the tabs must be painted here
-  ARect:=ClientRect;
-  Canvas.Brush.Color:=clBackground;
-  Canvas.FillRect(ARect);
+  // clear only display area since button area is painted by another control
   // draw a frame
-  ARect:=GetDisplayRectWithBorder;
+  ARect := GetDisplayRectWithBorder;
+
+  Details := ThemeServices.GetElementDetails(ttPane);
+  ThemeServices.DrawElement(Canvas.Handle, Details, ARect);
+
   InflateRect(ARect,BorderWidth,BorderWidth);
   Canvas.Frame3d(ARect, BorderWidth, bvRaised);
 
-  if (csDesigning in ComponentState) and (Caption <> '') then begin
+  if (csDesigning in ComponentState) and (Caption <> '') then
+  begin
     ARect:=GetDisplayRect;
     TS := Canvas.TextStyle;
     TS.Alignment:=taCenter;
@@ -568,19 +569,33 @@ function TCustomTabControl.GetDisplayRectWithBorder: TRect;
 var
   TabAreaSize: LongInt;
 begin
-  Result:=ClientRect;
-  TabAreaSize:=TTabControlStrings(FTabs).GetSize;
+  Result := ClientRect;
+  TabAreaSize := TTabControlStrings(FTabs).GetSize;
   case TabPosition of
-  tpTop:    Result.Top:=Min(TabAreaSize,Result.Bottom);
-  tpBottom: Result.Bottom:=Max(Result.Bottom-TabAreaSize,Result.Top);
-  tpLeft:   Result.Left:=Min(TabAreaSize,Result.Right);
-  tpRight:  Result.Right:=Max(Result.Right-TabAreaSize,Result.Left);
+    tpTop:    Result.Top:=Min(TabAreaSize,Result.Bottom);
+    tpBottom: Result.Bottom:=Max(Result.Bottom-TabAreaSize,Result.Top);
+    tpLeft:   Result.Left:=Min(TabAreaSize,Result.Right);
+    tpRight:  Result.Right:=Max(Result.Right-TabAreaSize,Result.Left);
+  end;
+end;
+
+function TCustomTabControl.GetTabRectWithBorder: TRect;
+var
+  TabAreaSize: LongInt;
+begin
+  Result := ClientRect;
+  TabAreaSize := TTabControlStrings(FTabs).GetSize;
+  case TabPosition of
+    tpTop:    Result.Bottom:=Min(TabAreaSize,Result.Bottom);
+    tpBottom: Result.Top:=Max(Result.Bottom-TabAreaSize,Result.Top);
+    tpLeft:   Result.Right:=Min(TabAreaSize,Result.Right);
+    tpRight:  Result.Left:=Max(Result.Right-TabAreaSize,Result.Left);
   end;
 end;
 
 procedure TCustomTabControl.AdjustClientRect(var ARect: TRect);
 begin
-  ARect:=GetDisplayRect;
+  ARect := GetDisplayRect;
 end;
 
 constructor TCustomTabControl.Create(TheOwner: TComponent);

@@ -1830,6 +1830,15 @@ procedure TThemeServices.DrawElement(DC: HDC; Details: TThemedElementDetails; co
     inc(ARect.Right, 2);
     LCLIntf.DrawEdge(DC, ARect, EDGE_ETCHED, BF_LEFT);
   end;
+  
+  procedure FillWithColor(ARect: TRect; AColor: TColor);
+  var
+    Brush: HBrush;
+  begin
+    Brush := CreateSolidBrush(ColorToRGB(AColor));
+    FillRect(DC, ARect, Brush);
+    DeleteObject(Brush);
+  end;
 
 var
   ADrawFlags: DWord;
@@ -1941,6 +1950,11 @@ begin
           ADrawFlags := ADrawFlags or DFCS_HOT;
 
         WidgetSet.DrawFrameControl(DC, ARect, DFC_CAPTION, ADrawFlags);
+      end;
+    teTab:
+      begin
+        if Details.Part in [TABP_PANE, TABP_BODY] then
+          FillWithColor(ARect, clBackground);
       end;
   end;
 end;
