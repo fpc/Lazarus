@@ -120,6 +120,7 @@ type
   private
     { Event Handlers }
     procedure PaintHandler(Sender: TObject{; const ARect: TfpgRect});
+    procedure CloseHandler(Sender: TObject; var CloseAction: TCloseAction);
   protected
   public
     { Constructors / Destructors }
@@ -291,7 +292,7 @@ end;
 
 destructor TFPGUIPrivateWidget.Destroy;
 begin
-  FreeAndNil(Widget);
+  if (Widget <> nil) then FreeAndNil(Widget);
 
   inherited Destroy;
 end;
@@ -409,6 +410,12 @@ begin
   end;
 end;
 
+procedure TFPGUIPrivateWindow.CloseHandler(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  CloseAction := caFree;
+end;
+
 {------------------------------------------------------------------------------
   Method: TFPGUIPrivateWindow.Create
   Params:  None
@@ -428,9 +435,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TFPGUIPrivateWindow.CreateWidget(const AParams: TCreateParams);
 begin
-{$IFDEF VerboseFPGUIPrivate}
-  WriteLn('[TFPGUIPrivateWindow.CreateWidget]');
-{$ENDIF}
+  {$IFDEF VerboseFPGUIPrivate}
+    WriteLn('[TFPGUIPrivateWindow.CreateWidget]');
+  {$ENDIF}
+
   Widget := TfpgForm.Create(nil);
   Form.SetPosition(AParams.X, AParams.Y, AParams.Width, AParams.Height);
 end;
@@ -445,6 +453,7 @@ begin
   inherited SetEvents;
 
   Form.OnPaint := PaintHandler;
+  Form.OnClose := CloseHandler;
 end;
 
 {------------------------------------------------------------------------------
@@ -457,6 +466,15 @@ begin
 {$IFDEF VerboseFPGUIPrivate}
   WriteLn('[TFPGUIPrivateWindow.Destroy]');
 {$ENDIF}
+
+  // Instead of destroying the form immediately, we call Close
+  // and set CloseAction to caFree in OnClose,
+  // which will do a delayed close
+  Form.Close;
+
+  // By setting the Widget to nil we prevent it's future
+  // destruction
+  Widget := nil;
 
   inherited Destroy;
 end;

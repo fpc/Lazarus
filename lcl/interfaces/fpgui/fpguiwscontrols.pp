@@ -32,7 +32,7 @@ uses
   // LCL
   Controls, LCLType,
   // Widgetset
-  WSControls, WSLCLClasses;
+  fpguiproc, WSControls, WSLCLClasses;
 
 type
 
@@ -67,7 +67,7 @@ type
     class procedure SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); override;
     class procedure SetSize(const AWinControl: TWinControl; const AWidth, AHeight: Integer); override;
     class procedure ShowHide(const AWinControl: TWinControl); override; //TODO: rename to SetVisible(control, visible)
-//    class procedure SetColor(const AWinControl: TWinControl); override;
+    class procedure SetColor(const AWinControl: TWinControl); override;
     class procedure SetCursor(const AWinControl: TWinControl; const ACursor: HCursor); override;
 
 {    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
@@ -138,9 +138,9 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TFpGuiWSWinControl.DestroyHandle(const AWinControl: TWinControl);
 begin
-//  TFPGUIPrivateWidget(AWinControl.Handle).Free;
+  TFPGUIPrivateWidget(AWinControl.Handle).Free;
 
-//  AWinControl.Handle := 0;
+  AWinControl.Handle := 0;
 end;
 
 {------------------------------------------------------------------------------
@@ -221,6 +221,14 @@ var
 begin
   FPWidget := TFPGUIPrivateWidget(AWinControl.Handle).Widget;
   FPWidget.Visible := not FPWidget.Visible;
+end;
+
+class procedure TFpGuiWSWinControl.SetColor(const AWinControl: TWinControl);
+var
+  FPWidget: TfpgWidget;
+begin
+  FPWidget := TFPGUIPrivateWidget(AWinControl.Handle).Widget;
+  FPWidget.BackgroundColor := TColorToTfpgColor(AWinControl.Color);
 end;
 
 {------------------------------------------------------------------------------

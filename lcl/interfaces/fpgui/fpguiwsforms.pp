@@ -146,15 +146,14 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 class procedure TFpGuiWSCustomForm.DestroyHandle(const AWinControl: TWinControl);
-var
-  FPForm: TFPGUIPrivateWindow;
 begin
   {$ifdef VerboseFPGUIIntf}
     WriteLn('TFpGuiWSCustomForm.DestroyHandle');
   {$endif}
 
-  FPForm := TFPGUIPrivateWindow(AWinControl.Handle);
-  FPForm.Free;
+  TFPGUIPrivateWindow(AWinControl.Handle).Free;
+
+  AWinControl.Handle := 0;
 end;
 
 {------------------------------------------------------------------------------

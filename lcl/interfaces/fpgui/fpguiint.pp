@@ -84,7 +84,7 @@ type
     function IsValidGDIObject(const GDIObject: HGDIOBJ): Boolean; virtual;
   public
     {$I fpguiwinapih.inc}
-    {.$I fpguilclintfh.inc}
+    {$I fpguilclintfh.inc}
   end;
 
 
@@ -129,7 +129,7 @@ uses
 
 {$I fpguiobject.inc}
 {$I fpguiwinapi.inc}
-{.$I fpguilclintf.inc}
+{$I fpguilclintf.inc}
 {.$I fpguicallback.inc}
 
 
