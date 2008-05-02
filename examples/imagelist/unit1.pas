@@ -46,7 +46,7 @@ implementation
 
 { TForm1 }
 
-function LoadBitmapFromFile(AFileName: String): TBitmap;
+function LoadBitmapFromFile(AFileName: String): TCustomBitmap;
 var
   Stream: TStream;
   GraphicClass: TGraphicClass;
@@ -56,9 +56,9 @@ begin
   try
     Stream := TFileStream.Create(AFileName, fmOpenRead or fmShareDenyNone);
     GraphicClass := GetGraphicClassForFileExtension(ExtractFileExt(AFileName));
-    if (GraphicClass <> nil) and (GraphicClass.InheritsFrom(TBitmap)) then
+    if (GraphicClass <> nil) and (GraphicClass.InheritsFrom(TCustomBitmap)) then
     begin
-      Result := TBitmap(GraphicClass.Create);
+      Result := TCustomBitmap(GraphicClass.Create);
       Result.LoadFromStream(Stream);
     end;
   finally
@@ -114,7 +114,7 @@ end;
 
 procedure TForm1.AddFile(AFileName: String);
 var
-  bmp: TBitmap;
+  bmp: TCustomBitmap;
 begin
   bmp := LoadBitmapFromFile(AFileName);
   if bmp <> nil then
