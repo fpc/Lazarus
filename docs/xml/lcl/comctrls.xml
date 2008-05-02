@@ -1375,7 +1375,9 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TTabControlStrings">
-        <short/>
+        <short>
+          <var>TTabControlStrings</var> - the Strings that appear on the tabs of <var>TTabControl</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1448,7 +1450,8 @@
       </element>
       <!-- function Visibility: protected -->
       <element name="TTabControlStrings.GetTabIndex">
-        <short/>
+        <short>
+          <var>GetTabIndex</var> - returns the Index value of the current Tab</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1580,7 +1583,8 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TTabControlStrings.GetHitTestInfoAt">
-        <short/>
+        <short>
+          <var>GetHitTestInfoAt</var> - returns the results of a hit test at the specified location X, Y</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1599,7 +1603,8 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TTabControlStrings.GetSize">
-        <short/>
+        <short>
+          <var>GetSize</var> - returns the size of the tab string</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1610,7 +1615,8 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TTabControlStrings.IndexOfTabAt">
-        <short/>
+        <short>
+          <var>IndexOfTabAt</var> - returns the Index value of the tab at the specified location, X, Y</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1629,7 +1635,8 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TTabControlStrings.RowCount">
-        <short/>
+        <short>
+          <var>RowCount</var> - number of rows (for a multi-row string)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1640,7 +1647,8 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TTabControlStrings.TabRect">
-        <short/>
+        <short>
+          <var>TabRec</var> - returns the coordinates of the rectangle for the tab with specified index</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1716,13 +1724,14 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TTabControlStrings.TabControl">
-        <short/>
+        <short>The <var>TabControl</var> to which these strings apply</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TTabControlStrings.TabIndex">
-        <short/>
+        <short>
+          <var>TabIndex</var> - the index of the current Tab</short>
         <descr/>
         <seealso/>
       </element>
@@ -1734,55 +1743,64 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TTabControlStrings.Images">
-        <short/>
+        <short>The list of <var>Images</var> associated with the Strings for these tabs</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TTabControlStrings.MultiLine">
-        <short/>
+        <short>
+          <var>MultiLine</var> - if True, multiple lines may be used in Tab strings</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TTabControlStrings.MultiSelect">
-        <short/>
+        <short>
+          <var>MultiSelect</var> - if True, multiple tabs can be selected, for example by holding down Shift or Ctrl keys while selecting</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TTabControlStrings.OwnerDraw">
-        <short/>
+        <short>
+          <var>OwnerDraw</var> - if True, Owner object (or calling routine) can specify drawing methods</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TTabControlStrings.RaggedRight">
-        <short/>
+        <short>
+          <var>RaggedRight</var> - if True, strings are un-justified or un-aligned, with ragged right margin</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TTabControlStrings.ScrollOpposite">
-        <short/>
+        <short>
+          <var>ScrollOpposite</var> - if True, scrolling proceeds in opposite direction to usual</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TTabControlStrings.TabHeight">
-        <short/>
+        <short>
+          <var>TabHeight</var>- height of the tab</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TTabControlStrings.TabWidth">
-        <short/>
+        <short>
+          <var>TabWidth</var> - width of the tab</short>
         <descr/>
         <seealso/>
       </element>
       <!-- object Visibility: default -->
       <element name="TTabControlNoteBookStrings">
-        <short/>
+        <short>
+          <var>TTabControlNoteBookStrings</var> - instance of <var>TTabControlStrings</var> for use with a <var>TNoteBook</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2065,7 +2083,7 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TTabControlNoteBookStrings.NoteBook">
-        <short/>
+        <short>The <var>NoteBook</var> for which the tab strings are to be used</short>
         <descr/>
         <seealso/>
       </element>
