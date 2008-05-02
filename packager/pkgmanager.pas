@@ -1124,6 +1124,16 @@ begin
           if EnvironmentOptions.CharcaseFileAction = ccfaAutoRename then NewFileName:=LowerFilename;
         end;
       end;
+      
+      // check unit name conflict
+      PkgFile:=APackage.FindUnit(NewPkgName);
+      if PkgFile<>nil then begin
+        Result:=IDEMessageDialog(lisNameConflict,
+          lisThePackageAlreadyContainsAUnitWithThisName,
+          mtWarning,[mbRetry,mbAbort]);
+        if Result=mrAbort then exit;
+        continue; // try again
+      end;
 
       // check package name conflict
       ConflictPkg:=PackageGraph.FindAPackageWithName(NewPkgName,APackage);

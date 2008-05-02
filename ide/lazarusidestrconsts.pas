@@ -2712,6 +2712,9 @@ resourcestring
   lisPkgMangShouldTheFileRenamedLowercaseTo = 'Should the file be renamed '
     +'lowercase to%s%s%s%s?';
   lisPkgMangPackageNameAlreadyExists = 'Package name already exists';
+  lisNameConflict = 'Name conflict';
+  lisThePackageAlreadyContainsAUnitWithThisName = 'The package already '
+    +'contains a unit with this name.';
   lisPkgMangThereIsAlreadyAnotherPackageWithTheName = 'There is already '
     +'another package with the name %s%s%s.%sConflict package: %s%s%s%sFile: %'
     +'s%s%s';
