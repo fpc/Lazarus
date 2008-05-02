@@ -181,7 +181,13 @@ begin
       end;
       qdvPrimitive:
       begin
-        opt := QStyleOption_create(Integer(QStyleOptionVersion), Integer(QStyleOptionSO_Default));
+        if Element.PrimitiveElement = QStylePE_FrameTabWidget then
+        begin
+          opt := QStyleOptionTabWidgetFrame_create();
+          // need widget to draw gradient
+        end
+        else
+          opt := QStyleOption_create(Integer(QStyleOptionVersion), Integer(QStyleOptionSO_Default));
         QStyleOption_setState(opt, GetControlState(Details));
         QStyleOption_setRect(opt, @ARect);
         QStyle_drawPrimitive(Style, Element.PrimitiveElement, opt, Context.Widget);
@@ -403,6 +409,14 @@ begin
           Result.StandardPixmap := QStyleSP_TitleBarCloseButton;
         end;
 }
+      end;
+    teTab:
+      begin
+        if Details.Part = TABP_PANE then
+        begin
+          Result.DrawVariant := qdvPrimitive;
+          Result.PrimitiveElement := QStylePE_FrameTabWidget;
+        end;
       end;
   end;
 end;
