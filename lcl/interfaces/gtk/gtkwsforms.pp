@@ -153,8 +153,10 @@ var
   WidgetInfo: PWidgetInfo;
   Adjustment: PGtkAdjustment;
 begin
+  // create a gtk_frame for the outer border
   Frame := PGtkFrame(gtk_frame_new(nil));
   gtk_frame_set_shadow_type(Frame, BorderStyleShadowMap[TScrollingWinControl(AWinControl).BorderStyle]);
+  // create a gtk_scrolled_window for the scrollbars
   Scrolled := PGtkScrolledWindow(gtk_scrolled_window_new(nil, nil));
   gtk_container_add(PGTKContainer(Frame), PGtkWidget(Scrolled));
   gtk_widget_show(PGtkWidget(Scrolled));
@@ -178,6 +180,8 @@ begin
   if Adjustment <> nil then
     gtk_object_set_data(PGTKObject(Adjustment), odnScrollBar, Scrolled^.hscrollbar);
 
+  // create a gtk_layout for the client area, so childs can be added at
+  // free x,y positions and the scrollbars automatically scrolls the childs
   Layout := gtk_layout_new(nil, nil);
   gtk_container_add(PGTKContainer(Scrolled), Layout);
   gtk_widget_show(Layout);

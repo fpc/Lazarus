@@ -2950,26 +2950,39 @@ procedure TGtkWidgetSet.SetCallbackEx(const AMsg: LongInt;
     if Vertical then begin
       if ALCLObject is TScrollBar then
         result := PGtkObject(PgtkhScrollBar(gObject)^.Scrollbar.Range.Adjustment)
-      else if (ALCLObject is TScrollBox) or (ALCLObject is TCustomForm) then begin
+      else if (ALCLObject is TScrollBox)
+           or (ALCLObject is TCustomForm)
+           or (ALCLObject is TCustomFrame)
+      then begin
         Scroll := gtk_object_get_data(gObject, odnScrollArea);
         Result := PGtkObject(gtk_scrolled_window_get_vadjustment(
           PGTKScrolledWindow(Scroll)));
       end
-      else
+      else if GtkWidgetIsA(PGtkWidget(gObject),gtk_scrolled_window_get_type) then
+      begin
         Result := PGtkObject(gtk_scrolled_window_get_vadjustment(
-          PGTKScrolledWindow(gObject)));
+          PGTKScrolledWindow(gObject)))
+      end else
+        DebugLn(['TGtkWidgetSet.SetCallbackEx.GetAdjustment WARNING: invalid widget: ',GetWidgetDebugReport(PGtkWidget(gObject))]);
 
     end else begin
       if ALCLObject is TScrollBar then
         Result := PgtkObject(PgtkhScrollBar(gObject)^.Scrollbar.Range.Adjustment)
-      else if (ALCLObject is TScrollBox)  or (ALCLObject is TCustomForm) then begin
+      else if (ALCLObject is TScrollBox)
+           or (ALCLObject is TCustomForm)
+           or (ALCLObject is TCustomFrame)
+      then begin
         Scroll := gtk_object_get_data(gObject, odnScrollArea);
         Result := PgtkObject(gtk_scrolled_window_get_hadjustment(
           PGTKScrolledWindow(Scroll)));
       end
-      else
+      else if GtkWidgetIsA(PGtkWidget(gObject),gtk_scrolled_window_get_type) then
+      begin
+        DebugLn(['GetAdjustment ',GetWidgetDebugReport(PGtkWidget(gObject))]);
         Result := PgtkObject(gtk_scrolled_window_get_hadjustment(
           PGTKScrolledWindow(gObject)));
+      end else
+        DebugLn(['TGtkWidgetSet.SetCallbackEx.GetAdjustment WARNING: invalid widget: ',GetWidgetDebugReport(PGtkWidget(gObject))]);
     end;
   end;
 
