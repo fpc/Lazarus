@@ -1333,7 +1333,8 @@ begin
   for i:=0 to Screen.CustomFormCount-1 do begin
     AForm:=Screen.CustomForms[i];
     //debugln('TGtkWidgetSet.AppMinimize B ',DbgSName(AForm),' AForm.Parent=',DbgSName(AForm.Parent),' AForm.HandleAllocated=',dbgs(AForm.HandleAllocated));
-    if (AForm.Parent=nil) and AForm.HandleAllocated then begin
+    if (AForm.Parent=nil) and AForm.HandleAllocated
+    and AForm.Visible then begin
       ShowWindow(AForm.Handle, SW_MINIMIZE);
     end;
   end;
