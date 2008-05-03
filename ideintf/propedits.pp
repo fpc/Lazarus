@@ -6188,6 +6188,8 @@ begin
     TControl, 'ClientHeight', THiddenPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
     TForm, 'LCLVersion', THiddenPropertyEditor);
+  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
+    TFrame, 'LCLVersion', THiddenPropertyEditor);
 end;
 
 procedure FinalPropEdits;

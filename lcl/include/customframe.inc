@@ -102,4 +102,17 @@ begin
   end;
 end;
 
+{ TFrame }
+
+function TFrame.LCLVersionIsStored: boolean;
+begin
+  Result:=Parent=nil;
+end;
+
+constructor TFrame.Create(TheOwner: TComponent);
+begin
+  FLCLVersion:=lcl_version;
+  inherited Create(TheOwner);
+end;
+
 // included by forms.pp

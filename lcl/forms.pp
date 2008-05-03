@@ -263,31 +263,28 @@ type
   { TFrame - not implemented yet }
 
   TFrame = class(TCustomFrame)
+  private
+    FLCLVersion: string;
+    function LCLVersionIsStored: boolean;
+  public
+    constructor Create(TheOwner: TComponent); override;
   published
     property Align;
     property Anchors;
     property AutoScroll;
     property AutoSize;
-    property ClientWidth;
     property ClientHeight;
+    property ClientWidth;
+    property Color nodefault;
     property Constraints;
+    property Ctl3D;
     property DockSite;
     property DragCursor;
     property DragKind;
     property DragMode;
     property Enabled;
-    property Color nodefault;
-    property Ctl3D;
     property Font;
-    property ParentColor;
-    property ParentCtl3D;
-    property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
-    property ShowHint;
-    property TabOrder;
-    property TabStop;
-    property Visible;
+    property LCLVersion: string read FLCLVersion write FLCLVersion stored LCLVersionIsStored;
     property OnClick;
     property OnConstrainedResize;
     property OnContextPopup;
@@ -311,6 +308,15 @@ type
     property OnStartDock;
     property OnStartDrag;
     property OnUnDock;
+    property ParentColor;
+    property ParentCtl3D;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property Visible;
   end;
 
 
