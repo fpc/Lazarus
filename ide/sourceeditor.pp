@@ -3127,6 +3127,7 @@ var
   i: Integer;
 begin
   // completion form
+  if aCompletion<>nil then exit;
   aCompletion := TSynCompletion.Create(Self);
     with aCompletion do
       Begin
@@ -3213,8 +3214,8 @@ begin
       Font.Color:=FActiveEditSelectedFGColor;
   end;
   MaxX := Screen.Width-20;
-  Result := PaintCompletionItem(AKey,ACanvas,0,0,MaxX,ItemSelected,Index,aCompletion,
-                      CurrentCompletionType, True);
+  Result := PaintCompletionItem(AKey,ACanvas,0,0,MaxX,ItemSelected,Index,
+                                aCompletion,CurrentCompletionType, True);
   if CurCompletionControl<>nil then
     Result.Y:=CurCompletionControl.FontHeight;
 end;
