@@ -2742,7 +2742,7 @@ begin
     QtKey_At: Result := VK_2; // some bug, but Ctrl + Shit + 2 produce QtKey_At
     QtKey_Escape: Result := VK_ESCAPE;
     QtKey_Tab: Result := VK_TAB;
-    QtKey_Backtab: Result := VK_UNKNOWN; // ???
+    QtKey_Backtab: Result := VK_TAB; // ???
     QtKey_Backspace: Result := VK_BACK;
     QtKey_Return: Result := VK_RETURN;
     QtKey_Enter: Result := VK_RETURN;
