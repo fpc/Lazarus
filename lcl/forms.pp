@@ -268,6 +268,8 @@ type
     property Anchors;
     property AutoScroll;
     property AutoSize;
+    property ClientWidth;
+    property ClientHeight;
     property Constraints;
     property DockSite;
     property DragCursor;
