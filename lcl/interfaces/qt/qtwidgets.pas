@@ -1779,7 +1779,6 @@ begin
     WriteLn('sending char ', UTF8Char);
   {$endif}
     if LCLObject.IntfUTF8KeyPress(UTF8Char, 1, IsSysKey) then
-    // if LCLObject.IntfUTF8KeyPress(TUTF8Char(UTF8Encode(Text)), 1, IsSysKey) then
     begin
       // the LCL has handled the key
   {$ifdef VerboseQt}
@@ -4363,6 +4362,15 @@ function TQtScrollBar.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 begin
   beginEventProcessing;
   case QEvent_type(Event) of
+    {$IFDEF DARWIN}
+    {if any of those events returs TRUE our scrollbar becomes invisible.}
+    QEventMouseButtonPress,
+    QEventMouseButtonRelease,
+    QEventMouseButtonDblClick,
+    QEventMouseMove,
+    QEventWheel,
+    QEventPaint,
+    {$ENDIF}
     QEventKeyPress,
     QEventKeyRelease: Result := False;
   else
@@ -4370,9 +4378,6 @@ begin
       Result := inherited EventFilter(Sender, Event);
   end;
   endEventProcessing;
-  {$IFDEF DARWIN}
-  Result := False;
-  {$ENDIF}
 end;
 
 procedure TQtScrollBar.AttachEvents;
