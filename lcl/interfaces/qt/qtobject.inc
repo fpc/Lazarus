@@ -329,12 +329,6 @@ begin
   end;
   if NewWidget <> nil then
   begin
-    // workaround. when form get focus it set focus to ActiveControl
-    // qt in some cases wants to return focus back to form => we have endless loop
-    if (NewWidget.LCLObject is TCustomForm) and
-       (OldWidget <> nil) and
-       (GetParentForm(OldWidget.LCLObject) = NewWidget.LCLObject) then
-      Exit;
     //WriteLn('SET: ', NewWidget.LCLObject.ClassName);
     Msg.msg := LM_SETFOCUS;
     Msg.wParam := PtrUInt(OldWidget);

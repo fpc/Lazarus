@@ -188,7 +188,11 @@ begin
   if (TCustomForm(AWinControl).FormStyle in [fsMDIChild]) and
      (Application.MainForm.FormStyle = fsMdiForm) and
      not (csDesigning in AWinControl.ComponentState) then
+  begin
     QMdiArea_addSubWindow(TQtMainWindow(Application.MainForm.Handle).MDIAreaHandle, QtMainWindow.Widget, QtWindow);
+    QWidget_setFocusProxy(QtMainWindow.Widget, QtMainWindow.getContainerWidget);
+  end;
+    
 
   // Return the handle
   Result := TLCLIntfHandle(QtMainWindow);
