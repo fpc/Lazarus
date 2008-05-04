@@ -272,7 +272,7 @@ LAZARUS_CONFIG_DIR=$(HOME)/.lazarus
 endif
 endif
 export LAZARUS_CONFIG_DIR
-LAZARUS_IDE_CONFIG=$(LAZARUS_CONFIG_DIR)/idemake.cfg
+LAZARUS_IDE_CONFIG='$(LAZARUS_CONFIG_DIR)/idemake.cfg'
 LAZARUS_OPT=$(LAZARUS_LIBPATHS)
 BIG_IDE_OPTIONS=-dBigIDE $(LAZARUS_LIBPATHS) \
   -Fu../components/rtticontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
@@ -3172,13 +3172,13 @@ ide: $(COMPILER_UNITTARGETDIR) revisioninc
 ifeq ($(LAZARUS_OPT),)
 	$(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT)
 else
-	$(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT)'
+	$(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT="$(LAZARUS_OPT) $(OPT)"
 endif
 idepkg: $(COMPILER_UNITTARGETDIR)
-	$(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT) @$(LAZARUS_IDE_CONFIG)'
+	$(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT="$(LAZARUS_OPT) $(OPT) @$(LAZARUS_IDE_CONFIG)"
 bigide: $(COMPILER_UNITTARGETDIR) revisioninc
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/pkgmanager$(PPUEXT)
-	$(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(OPT) $(BIG_IDE_OPTIONS)'
+	$(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT="$(OPT) $(BIG_IDE_OPTIONS)"
 starter: $(COMPILER_UNITTARGETDIR)
 ifeq ($(LAZARUS_OPT),)
 	$(MAKE) --assume-new=startlazarus.lpr startlazarus$(EXEEXT)
