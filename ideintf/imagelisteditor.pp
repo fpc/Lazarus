@@ -493,7 +493,7 @@ begin
     Picture.LoadFromFile(FileName);
     
     Bmp := TBitmap.Create;
-    Bmp.Assign(Picture.Bitmap);
+    Bmp.Assign(Picture.Graphic);
   finally
     Picture.Free;
   end;
