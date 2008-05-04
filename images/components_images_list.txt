@@ -43,6 +43,7 @@ components/tfilenameedit.png
 components/tfinddialog.png
 components/tfloatspinedit.png
 components/tfontdialog.png
+components/tframe.png
 components/tgroupbox.png
 components/theadercontrol.png
 components/thtmlbrowserhelpviewer.png

@@ -2404,6 +2404,7 @@ images/components/tfilenameedit.png -text svneol=unset#image/png
 images/components/tfinddialog.png -text svneol=unset#image/png
 images/components/tfloatspinedit.png -text svneol=unset#image/png
 images/components/tfontdialog.png -text svneol=unset#image/png
+images/components/tframe.png -text svneol=unset#image/png
 images/components/tgroupbox.png -text svneol=unset#image/png
 images/components/theadercontrol.png -text svneol=unset#image/png
 images/components/thtmlbrowserhelpviewer.png -text svneol=unset#image/png
