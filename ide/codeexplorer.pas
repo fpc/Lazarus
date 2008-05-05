@@ -790,6 +790,7 @@ begin
   FLastCodeFilter:=TheFilter;
   CodeTreeview.BeginUpdate;
   CodeTreeview.Options:=CodeTreeview.Options+[tvoAllowMultiselect];
+  DebugLn(['TCodeExplorerView.ApplyCodeFilter =====================']);
   ANode:=CodeTreeview.Items.GetFirstNode;
   while ANode<>nil do begin
     FilterNode(ANode,TheFilter);
@@ -1131,8 +1132,8 @@ begin
     ChildNode:=ChildNode.GetNextSibling;
   end;
   ANode.Expanded:=HasVisibleChilds;
-  ANode.Selected:=FilterFits(ANode.Text,TheFilter);
-  Result:=ANode.Expanded or ANode.Selected;
+  ANode.MultiSelected:=FilterFits(ANode.Text,TheFilter);
+  Result:=ANode.Expanded or ANode.MultiSelected;
 end;
 
 function TCodeExplorerView.FilterFits(const NodeText, TheFilter: string
@@ -1156,6 +1157,7 @@ begin
           while (UpChars[Src[i]]=UpChars[PFilter[i]]) and (PFilter[i]<>#0) do
             inc(i);
           if PFilter[i]=#0 then begin
+            //DebugLn(['TCodeExplorerView.FilterFits Fits "',NodeText,'" "',TheFilter,'"']);
             exit(true);
           end;
         end;
