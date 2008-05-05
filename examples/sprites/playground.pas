@@ -38,9 +38,9 @@ type
     procedure UpdateImage;
   public
     PictureControl: TPictureControl;
-    SpriteImg: TBitmap;
-    BackgroundImg: TBitmap;
-    BufferImg: TBitmap;
+    SpriteImg: TCustomBitmap;
+    BackgroundImg: TCustomBitmap;
+    BufferImg: TCustomBitmap;
   end;
 
 var
@@ -59,11 +59,11 @@ begin
   end;
 
   SpriteImg:=TPortableNetworkGraphic.Create;
-  BackgroundImg:=TBitmap.Create;
+  BackgroundImg:=TPortableNetworkGraphic.Create;
   BufferImg:=TBitmap.Create;
 
   SpriteImg.LoadFromFile(SetDirSeparators('../../images/ide_icon48x48.png'));
-  BackgroundImg.LoadFromFile(SetDirSeparators('../../images/lazarus.xpm'));
+  BackgroundImg.LoadFromFile(SetDirSeparators('../../images/splash_logo.png'));
   BufferImg.Width:=BackgroundImg.Width;
   BufferImg.Height:=BackgroundImg.Height;
   
