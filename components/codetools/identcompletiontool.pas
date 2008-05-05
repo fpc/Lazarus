@@ -80,7 +80,8 @@ type
     iliIsAbstractMethod,
     iliIsAbstractMethodValid,
     iliParamListValid,
-    iliNodeValid
+    iliNodeValid,
+    iliNodeHashValid
     );
   TIdentListItemFlags = set of TIdentListItemFlag;
   
@@ -100,6 +101,9 @@ type
     FParamList: string;
     FNode: TCodeTreeNode;
     FToolNodesDeletedStep: integer;// only valid if iliNodeValid
+    FNodeStartPos: integer;
+    FNodeDesc: TCodeTreeNodeDesc;
+    FNodeHash: string;
     function GetNode: TCodeTreeNode;
     function GetParamList: string;
     procedure SetNode(const AValue: TCodeTreeNode);
@@ -129,6 +133,10 @@ type
     function IsFunction: boolean;
     function IsAbstractMethod: boolean;
     procedure Clear;
+    procedure UnbindNode;
+    procedure StoreNodeHash;
+    function RestoreNode: boolean;
+    function GetNodeHash(ANode: TCodeTreeNode): string;
     function CompareParamList(CompareItem: TIdentifierListItem): integer;
     function CompareParamList(CompareItem: TIdentifierListSearchItem): integer;
   public
@@ -183,6 +191,7 @@ type
     function StartUpAtomInFrontIs(const s: string): boolean;
     function StartUpAtomBehindIs(const s: string): boolean;
     function CompletePrefix(const OldPrefix: string): string;
+    procedure ToolTreeChange(Tool: TCustomCodeTool; NodesDeleting: boolean);
   public
     property Context: TFindContext read FContext write FContext;
     property ContextFlags: TIdentifierListContextFlags
@@ -721,6 +730,31 @@ begin
       end;
     end;
     AnAVLNode:=FItems.FindSuccessor(AnAVLNode);
+  end;
+end;
+
+procedure TIdentifierList.ToolTreeChange(Tool: TCustomCodeTool;
+  NodesDeleting: boolean);
+var
+  AVLNode: TAVLTreeNode;
+  Item: TIdentifierListItem;
+  RootNode: TCodeTreeNode;
+begin
+  DebugLn(['TIdentifierList.ToolTreeChange ',Tool.MainFilename,' ',NodesDeleting]);
+  if (Tool.Tree=nil) then exit;
+  RootNode:=Tool.Tree.Root;
+  DebugLn(['TIdentifierList.ToolTreeChange AAA1']);
+  if FIdentView.Count>0 then CTDumpStack;
+  if RootNode=nil then exit;
+  AVLNode:=FIdentView.FindLowest;
+  DebugLn(['TIdentifierList.ToolTreeChange AAA2 ',FIdentView.Count]);
+  while AVLNode<>nil do begin
+    Item:=TIdentifierListItem(AVLNode.Data);
+    if (Item.Node<>nil) and Item.Node.HasAsRoot(RootNode) then begin
+      Item.UnbindNode;
+      DebugLn(['TIdentifierList.ToolTreeChange ',Item.FNodeHash]);
+    end;
+    AVLNode:=FIdentView.FindSuccessor(AVLNode);
   end;
 end;
 
@@ -1760,8 +1794,16 @@ end;
 
 function TIdentifierListItem.GetNode: TCodeTreeNode;
 begin
-  if (not (iliNodeValid in Flags)) or (Tool=nil) then begin
-    Result:=nil;
+  Result:=nil;
+  if Tool=nil then
+    exit;
+  if (not (iliNodeValid in Flags)) then begin
+    if iliNodeHashValid in Flags then begin
+      RestoreNode;
+      if (iliNodeValid in Flags) then begin
+        Result:=FNode;
+      end;
+    end;
     exit;
   end else begin
     if FToolNodesDeletedStep=Tool.NodesDeletedChangeStep then begin
@@ -1783,6 +1825,7 @@ procedure TIdentifierListItem.SetNode(const AValue: TCodeTreeNode);
 begin
   FNode:=AValue;
   Include(Flags,iliNodeValid);
+  Exclude(Flags,iliNodeHashValid);
   if (FNode<>nil) and (Tool=nil) then
     RaiseToolMissing;
   if (Tool<>nil) then
@@ -1965,6 +2008,59 @@ begin
   DefaultDesc:=ctnNone;
   Flags:=[];
   BaseExprType:=CleanExpressionType;
+end;
+
+procedure TIdentifierListItem.UnbindNode;
+begin
+  if Node=nil then exit;
+  StoreNodeHash;
+  Exclude(Flags,iliNodeValid);
+  FNode:=nil;
+end;
+
+procedure TIdentifierListItem.StoreNodeHash;
+begin
+  Include(Flags,iliNodeHashValid);
+  FNodeStartPos:=FNode.StartPos;
+  FNodeDesc:=FNode.Desc;
+  FNodeHash:=GetNodeHash(FNode);
+end;
+
+function TIdentifierListItem.RestoreNode: boolean;
+var
+  NewNode: TCodeTreeNode;
+  NewHash: String;
+begin
+  if not (iliNodeHashValid in Flags) then exit(true);
+  NewNode:=Tool.FindDeepestExpandedNodeAtPos(FNodeStartPos,false);
+  Result:=false;
+  if (NewNode=nil) or (NewNode.StartPos<>FNodeStartPos) then begin
+    Exclude(Flags,iliNodeHashValid);
+    exit;
+  end;
+  NewHash:=GetNodeHash(NewNode);
+  if NewHash<>FNodeHash then begin
+    Exclude(Flags,iliNodeHashValid);
+    exit;
+  end;
+  Node:=NewNode;
+  Result:=true;
+end;
+
+function TIdentifierListItem.GetNodeHash(ANode: TCodeTreeNode): string;
+var
+  StartPos: LongInt;
+  EndPos: LongInt;
+begin
+  case Node.Desc of
+  ctnVarDefinition,ctnConstDefinition,ctnTypeDefinition,ctnGenericType:
+    Result:=Tool.ExtractDefinitionName(Node)
+  else
+    StartPos:=Node.StartPos;
+    EndPos:=StartPos+20;
+    if EndPos>Node.EndPos then EndPos:=Node.EndPos;
+    Result:=copy(Tool.Src,StartPos,EndPos);
+  end;
 end;
 
 function TIdentifierListItem.CompareParamList(CompareItem: TIdentifierListItem

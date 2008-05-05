@@ -1151,7 +1151,6 @@ end;
 procedure TCodeToolManager.ClearCurCodeTool;
 begin
   ClearError;
-  if IdentifierList<>nil then IdentifierList.Clear;
   FCurCodeTool:=nil;
 end;
 
@@ -4380,6 +4379,8 @@ begin
       inc(FCodeTreeNodesDeletedStep)
     else
       FCodeTreeNodesDeletedStep:=Low(Integer);
+    if IdentifierList<>nil then
+      IdentifierList.ToolTreeChange(Tool,NodesDeleting);
   end;
 end;
 

@@ -228,6 +228,7 @@ type
     function HasAsParent(Node: TCodeTreeNode): boolean;
     function HasAsChild(Node: TCodeTreeNode): boolean;
     function HasParentOfType(ParentDesc: TCodeTreeNodeDesc): boolean;
+    function HasAsRoot(RootNode: TCodeTreeNode): boolean;
     function GetNodeOfType(ADesc: TCodeTreeNodeDesc): TCodeTreeNode;
     function GetNodeOfTypes(Descriptors: array of TCodeTreeNodeDesc): TCodeTreeNode;
     function GetFindContextParent: TCodeTreeNode;
@@ -688,6 +689,18 @@ begin
   while (ANode<>nil) and (ANode.Desc<>ParentDesc) do
     ANode:=ANode.Parent;
   Result:=ANode<>nil;
+end;
+
+function TCodeTreeNode.HasAsRoot(RootNode: TCodeTreeNode): boolean;
+var
+  CurNode: TCodeTreeNode;
+begin
+  CurNode:=Self;
+  repeat
+    if CurNode=RootNode then exit(true);
+    CurNode:=CurNode.Parent;
+  until CurNode=nil;
+  Result:=false;
 end;
 
 function TCodeTreeNode.GetNodeOfType(ADesc: TCodeTreeNodeDesc

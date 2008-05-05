@@ -3558,6 +3558,7 @@ var
   OldCompletionControl: TSynCompletion;
 begin
   if CurCompletionControl=nil then exit;
+  CodeToolBoss.IdentifierList.Clear;
   OldCompletionControl:=CurCompletionControl;
   CurCompletionControl:=nil;
 
@@ -3637,7 +3638,7 @@ var
   OldCompletionType: TCompletionType; 
 Begin
   if CurCompletionControl=nil then exit;
-  OldCompletionType:= CurrentCompletionType; 
+  OldCompletionType:=CurrentCompletionType;
   case CurrentCompletionType of
 
     ctIdentCompletion:
