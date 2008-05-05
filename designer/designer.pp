@@ -2812,7 +2812,7 @@ begin
 
   AddComponentEditorMenuItems(PopupMenuComponentEditor,true);
 
-  DesignerMenuAlign.Enabled := MultiCompsAreSelected;
+  DesignerMenuAlign.Enabled := CompsAreSelected;
   DesignerMenuMirrorHorizontal.Enabled := MultiCompsAreSelected;
   DesignerMenuMirrorVertical.Enabled := MultiCompsAreSelected;
   DesignerMenuScale.Enabled := CompsAreSelected and not OnlyNonVisualsAreSelected;

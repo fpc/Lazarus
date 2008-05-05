@@ -740,19 +740,15 @@ var
   Item: TIdentifierListItem;
   RootNode: TCodeTreeNode;
 begin
-  DebugLn(['TIdentifierList.ToolTreeChange ',Tool.MainFilename,' ',NodesDeleting]);
   if (Tool.Tree=nil) then exit;
   RootNode:=Tool.Tree.Root;
-  DebugLn(['TIdentifierList.ToolTreeChange AAA1']);
   if FIdentView.Count>0 then CTDumpStack;
   if RootNode=nil then exit;
   AVLNode:=FIdentView.FindLowest;
-  DebugLn(['TIdentifierList.ToolTreeChange AAA2 ',FIdentView.Count]);
   while AVLNode<>nil do begin
     Item:=TIdentifierListItem(AVLNode.Data);
     if (Item.Node<>nil) and Item.Node.HasAsRoot(RootNode) then begin
       Item.UnbindNode;
-      DebugLn(['TIdentifierList.ToolTreeChange ',Item.FNodeHash]);
     end;
     AVLNode:=FIdentView.FindSuccessor(AVLNode);
   end;
