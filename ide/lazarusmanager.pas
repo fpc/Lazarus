@@ -161,6 +161,15 @@ begin
     else
       FCmdLineParams.Add(Param);
   end;
+  // make sure that all the values of the command line parameters are still
+  // double quoted, if they contain spaces
+  for i := 0 to FCmdLineParams.Count -1 do
+  begin
+    if pos(' ',FCmdLineParams.ValueFromIndex[i])>0 then
+    begin
+      FCmdLineParams.ValueFromIndex[i] := '"' + FCmdLineParams.ValueFromIndex[i] + '"';
+    end;
+  end;
 end;
 
 function TLazarusManager.GetCommandLineParameters: string;
