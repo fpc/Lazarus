@@ -223,9 +223,6 @@ begin
   if Sender is TControlCanvas then
     Window := TControlCanvas(Sender).Handle
   else 
-  if Sender is TCustomForm then
-    Window := TCustomForm(Sender).Handle
-  else
     Window := TWinControl(Sender).Handle;
 
   if Window = 0 then Exit;

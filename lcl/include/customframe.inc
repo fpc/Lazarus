@@ -113,6 +113,17 @@ begin
   end;
 end;
 
+procedure TCustomFrame.SetBounds(aLeft, aTop, aWidth, aHeight: integer);
+begin
+  if csDesignInstance in ComponentState then
+  begin
+    // dont move frame in the designer
+    aLeft := 0;
+    aTop := 0;
+  end;
+  inherited SetBounds(aLeft, aTop, aWidth, aHeight);
+end;
+
 { TFrame }
 
 function TFrame.LCLVersionIsStored: boolean;

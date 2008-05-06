@@ -255,6 +255,7 @@ type
     class function GetControlClassDefaultSize: TPoint; override;
   public
     constructor Create(AOwner: TComponent); override;
+    procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); override;
   end;
 
   TCustomFrameClass = class of TCustomFrame;
