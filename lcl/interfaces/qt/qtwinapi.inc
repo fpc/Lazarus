@@ -2162,7 +2162,6 @@ function TQtWidgetSet.GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer)
 var
   aObject: TObject;
   AFont: TQtFont absolute aObject;
-  Width, Height: Longint;
   BitmapSection : TDIBSECTION;
   ALogFont: PLogFont absolute Buf;
   {$ifdef VerboseQtWinAPI}
@@ -2242,65 +2241,35 @@ begin
       Result := SizeOf(TDIBSECTION)
     else
     begin
-      Width := TQtImage(aObject).width;
-      Height := TQtImage(aObject).height;
-    
       FillChar(BitmapSection, SizeOf(TDIBSECTION), 0);
 
-      {dsBM - BITMAP}
-      BitmapSection.dsBm.bmType := $4D42;
-      BitmapSection.dsBm.bmWidth := Width;
-      BitmapSection.dsBm.bmHeight := Height;
-      BitmapSection.dsBm.bmWidthBytes := 0;
-      BitmapSection.dsBm.bmPlanes := 1;//Does Bitmap Format support more?
-      BitmapSection.dsBm.bmBitsPixel := 1;
-      BitmapSection.dsBm.bmBits := nil;
+      with TQtImage(aObject) do
+      begin
+        {dsBM - BITMAP}
+        BitmapSection.dsBm.bmType := $4D42;
+        BitmapSection.dsBm.bmWidth := width;
+        BitmapSection.dsBm.bmHeight := height;
+        BitmapSection.dsBm.bmWidthBytes := bytesPerLine;
+        BitmapSection.dsBm.bmPlanes := 1;//Does Bitmap Format support more?
+        BitmapSection.dsBm.bmBitsPixel := depth;
+        BitmapSection.dsBm.bmBits := bits;
 
-      {dsBmih - BITMAPINFOHEADER}
-      BitmapSection.dsBmih.biSize := 40;
-      BitmapSection.dsBmih.biWidth := Width;
-      BitmapSection.dsBmih.biHeight := Height;
-      BitmapSection.dsBmih.biPlanes := BitmapSection.dsBm.bmPlanes;
-      BitmapSection.dsBmih.biBitCount := 1;
+        {dsBmih - BITMAPINFOHEADER}
+        BitmapSection.dsBmih.biSize := 40;
+        BitmapSection.dsBmih.biWidth := BitmapSection.dsBm.bmWidth;
+        BitmapSection.dsBmih.biHeight := BitmapSection.dsBm.bmHeight;
+        BitmapSection.dsBmih.biPlanes := BitmapSection.dsBm.bmPlanes;
+        BitmapSection.dsBmih.biBitCount := BitmapSection.dsBm.bmBitsPixel;
 
-      BitmapSection.dsBmih.biCompression := 0;
-      BitmapSection.dsBmih.biSizeImage := 0;
+        BitmapSection.dsBmih.biCompression := 0;
+      
+        BitmapSection.dsBmih.biSizeImage := numBytes;
+        BitmapSection.dsBmih.biXPelsPerMeter := dotsPerMeterX;
+        BitmapSection.dsBmih.biYPelsPerMeter := dotsPerMeterY;
 
-      BitmapSection.dsBmih.biXPelsPerMeter := 0;
-      BitmapSection.dsBmih.biYPelsPerMeter := 0;
-
-      BitmapSection.dsBmih.biClrUsed   := 0;
-      BitmapSection.dsBmih.biClrImportant := 0;
-
-{             case GDIBitmapType of
-                gbBitmap:
-                  If GDIBitmapObject <> nil then begin
-                    GDK_WINDOW_GET_SIZE(GDIBitmapObject, @biWidth, @biHeight);
-                    NumColors := 2;
-                    biBitCount := 1;
-                  end;
-                gbPixmap:
-                  If GDIPixmapObject <> nil then begin
-                     biBitCount := word(gdk_drawable_get_depth(GDIPixmapObject));
-                     gdk_drawable_get_size(GDIPixmapObject,@biWidth, @biHeight);
-                  end;
-              end;}
-
-      BitmapSection.dsBmih.biBitCount := 32;
-
-//              biSizeImage := (((biBitCount*biWidth+31) shr 5) shl 2)*biHeight;
-
-//      BitmapSection.dsBmih.biXPelsPerMeter := ;
-
-//      BitmapSection.dsBmih.biYPelsPerMeter := ;
-
-//        BitmapSection.dsBm.bmHeight :=      bmWidth := biWidth;
-//              bmHeight := biHeight;
-//              bmBitsPixel := biBitCount;
-
-      {dsBitfields: array[0..2] of DWORD;
-       dshSection: THandle;
-       dsOffset: DWORD;}
+        BitmapSection.dsBmih.biClrUsed := 0;
+        BitmapSection.dsBmih.biClrImportant := 0;
+      end;
 
       if BufSize >= SizeOf(BitmapSection) then
       begin

@@ -116,8 +116,12 @@ type
   public
     function height: Integer;
     function width: Integer;
+    function depth: Integer;
+    function dotsPerMeterX: Integer;
+    function dotsPerMeterY: Integer;
     function bits: PByte;
     function numBytes: Integer;
+    function bytesPerLine: Integer;
     procedure invertPixels(InvertMode: QImageInvertMode = QImageInvertRgb);
   end;
 
@@ -983,6 +987,21 @@ begin
   Result := QImage_width(Handle);
 end;
 
+function TQtImage.depth: Integer;
+begin
+  Result := QImage_depth(Handle);
+end;
+
+function TQtImage.dotsPerMeterX: Integer;
+begin
+  Result := QImage_dotsPerMeterX(Handle);
+end;
+
+function TQtImage.dotsPerMeterY: Integer;
+begin
+  Result := QImage_dotsPerMeterY(Handle);
+end;
+
 {------------------------------------------------------------------------------
   Method: TQtImage.bits
   Params:  None
@@ -1001,6 +1020,11 @@ end;
 function TQtImage.numBytes: Integer;
 begin
   Result := QImage_numBytes(Handle);
+end;
+
+function TQtImage.bytesPerLine: Integer;
+begin
+  Result := QImage_bytesPerLine(Handle);
 end;
 
 procedure TQtImage.invertPixels(InvertMode: QImageInvertMode = QImageInvertRgb);
