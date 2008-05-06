@@ -742,12 +742,15 @@ var
 begin
   if (Tool.Tree=nil) then exit;
   RootNode:=Tool.Tree.Root;
-  if FIdentView.Count>0 then CTDumpStack;
   if RootNode=nil then exit;
+  DebugLn(['TIdentifierList.ToolTreeChange START ',Tool.MainFilename]);
+  if FIdentView.Count=0 then exit;
+  DebugLn(['TIdentifierList.ToolTreeChange ',Tool.MainFilename]);
   AVLNode:=FIdentView.FindLowest;
   while AVLNode<>nil do begin
     Item:=TIdentifierListItem(AVLNode.Data);
-    if (Item.Node<>nil) and Item.Node.HasAsRoot(RootNode) then begin
+    if (Item.FNode<>nil) and (Item.Tool=Tool) then begin
+      DebugLn(['TIdentifierList.ToolTreeChange ',Item.Identifier]);
       Item.UnbindNode;
     end;
     AVLNode:=FIdentView.FindSuccessor(AVLNode);
@@ -1805,7 +1808,7 @@ begin
     if FToolNodesDeletedStep=Tool.NodesDeletedChangeStep then begin
       Result:=FNode;
     end else begin
-      DebugLn(['TIdentifierListItem.GetNode node is gone from ',Tool.MainFilename]);
+      DebugLn(['TIdentifierListItem.GetNode node ',Identifier,' is gone from ',Tool.MainFilename]);
       FNode:=nil;
     end;
   end;
@@ -2008,7 +2011,7 @@ end;
 
 procedure TIdentifierListItem.UnbindNode;
 begin
-  if Node=nil then exit;
+  if FNode=nil then exit;
   StoreNodeHash;
   Exclude(Flags,iliNodeValid);
   FNode:=nil;
@@ -2020,6 +2023,7 @@ begin
   FNodeStartPos:=FNode.StartPos;
   FNodeDesc:=FNode.Desc;
   FNodeHash:=GetNodeHash(FNode);
+  DebugLn(['TIdentifierListItem.StoreNodeHash ',Identifier,' Pos=',FNodeStartPos,' Hash=',FNodeHash]);
 end;
 
 function TIdentifierListItem.RestoreNode: boolean;
@@ -2028,17 +2032,22 @@ var
   NewHash: String;
 begin
   if not (iliNodeHashValid in Flags) then exit(true);
+  DebugLn(['TIdentifierListItem.RestoreNode ',Identifier]);
   NewNode:=Tool.FindDeepestExpandedNodeAtPos(FNodeStartPos,false);
   Result:=false;
-  if (NewNode=nil) or (NewNode.StartPos<>FNodeStartPos) then begin
+  if (NewNode=nil) or (NewNode.StartPos<>FNodeStartPos)
+  or (NewNode.Desc<>FNodeDesc) then begin
+    DebugLn(['TIdentifierListItem.RestoreNode not found: ',Identifier]);
     Exclude(Flags,iliNodeHashValid);
     exit;
   end;
   NewHash:=GetNodeHash(NewNode);
   if NewHash<>FNodeHash then begin
+    DebugLn(['TIdentifierListItem.RestoreNode hash changed: ',Identifier]);
     Exclude(Flags,iliNodeHashValid);
     exit;
   end;
+  DebugLn(['TIdentifierListItem.RestoreNode Success ',Identifier]);
   Node:=NewNode;
   Result:=true;
 end;
@@ -2048,13 +2057,13 @@ var
   StartPos: LongInt;
   EndPos: LongInt;
 begin
-  case Node.Desc of
+  case ANode.Desc of
   ctnVarDefinition,ctnConstDefinition,ctnTypeDefinition,ctnGenericType:
-    Result:=Tool.ExtractDefinitionName(Node)
+    Result:=Tool.ExtractDefinitionName(ANode)
   else
-    StartPos:=Node.StartPos;
+    StartPos:=ANode.StartPos;
     EndPos:=StartPos+20;
-    if EndPos>Node.EndPos then EndPos:=Node.EndPos;
+    if EndPos>ANode.EndPos then EndPos:=ANode.EndPos;
     Result:=copy(Tool.Src,StartPos,EndPos);
   end;
 end;

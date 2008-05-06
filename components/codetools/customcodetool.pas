@@ -1984,6 +1984,7 @@ begin
   else
     inc(FTreeChangeStep);
   if NodesDeleting then begin
+    DebugLn(['TCustomCodeTool.IncreaseTreeChangeStep NodesDeleting ',MainFilename,' ',Tree<>nil,' ',(Tree<>nil) and (Tree.Root<>nil)]);
     if FNodesDeletedChangeStep=High(integer) then
       FNodesDeletedChangeStep:=Low(integer)
     else
@@ -2484,8 +2485,10 @@ end;
 procedure TCustomCodeTool.DoDeleteNodes;
 begin
   if Tree.Root<>nil then begin
-    Tree.Clear;
+    // first notify, so that references could be deleted clean
     IncreaseTreeChangeStep(true);
+    // then change
+    Tree.Clear;
   end;
 end;
 
