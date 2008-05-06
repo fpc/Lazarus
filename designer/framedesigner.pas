@@ -31,94 +31,30 @@ interface
 
 uses
   Classes, SysUtils, Math, LCLProc, Graphics, GraphType, Forms, Controls,
-  IDEProcs;
+  IDEProcs, CustomNonFormDesigner;
   
 type
 
   { TFrameDesignerForm }
 
-  TFrameDesignerForm = class(TForm)
-  private
-    FFrameWidth: integer;
-    FLookupRoot: TComponent;
-    FOnLoadBounds: TNotifyEvent;
-    FOnSaveBounds: TNotifyEvent;
+  TFrameDesignerForm = class(TCustomNonFormDesignerForm)
   protected
-    procedure SetFrameWidth(const AValue: integer); virtual;
-    procedure SetLookupRoot(const AValue: TComponent); virtual;
+    procedure SetLookupRoot(const AValue: TComponent); override;
   public
-    constructor Create(TheOwner: TComponent); override;
-    destructor Destroy; override;
-    procedure DoLoadBounds; virtual;
-    procedure DoSaveBounds; virtual;
-  public
-    property LookupRoot: TComponent read FLookupRoot write SetLookupRoot;
-    property FrameWidth: integer read FFrameWidth write SetFrameWidth;
-    property OnLoadBounds: TNotifyEvent read FOnLoadBounds write FOnLoadBounds;
-    property OnSaveBounds: TNotifyEvent read FOnSaveBounds write FOnSaveBounds;
+    procedure DoLoadBounds; override;
+    procedure DoSaveBounds; override;
   end;
   
   
-function CompareFrameDesignerForms(Data1, Data2: Pointer): integer;
-function CompareLookupRootAndFrameDesignerForm(Key, Data: Pointer): integer;
-
 implementation
-
-
-function CompareFrameDesignerForms(Data1, Data2: Pointer): integer;
-var
-  Form1: TFrameDesignerForm;
-  Form2: TFrameDesignerForm;
-begin
-  Form1 := TFrameDesignerForm(Data1);
-  Form2 := TFrameDesignerForm(Data2);
-  Result := PtrInt(Form1.LookupRoot) - PtrInt(Form2.LookupRoot);
-end;
-
-function CompareLookupRootAndFrameDesignerForm(Key, Data: Pointer): integer;
-var
-  LookupRoot: TComponent;
-  Form: TFrameDesignerForm;
-begin
-  LookupRoot := TComponent(Key);
-  Form := TFrameDesignerForm(Data);
-  Result := PtrInt(LookupRoot) - PtrInt(Form.LookupRoot);
-end;
 
 { TFrameDesignerForm }
 
 procedure TFrameDesignerForm.SetLookupRoot(const AValue: TComponent);
 begin
-  if FLookupRoot = AValue then 
-    Exit;
-  DoSaveBounds;
-  FLookupRoot := AValue;
-  if FLookupRoot <> nil then 
-  begin
-    if FLookupRoot is TCustomFrame then
-      TCustomFrame(FLookupRoot).Parent := Self;
-    Caption := FLookupRoot.Name;
-  end;
-  DoLoadBounds;
-end;
-
-procedure TFrameDesignerForm.SetFrameWidth(const AValue: integer);
-begin
-  if FFrameWidth = AValue then 
-    Exit;
-  FFrameWidth := AValue;
-  invalidate;
-end;
-
-constructor TFrameDesignerForm.Create(TheOwner: TComponent);
-begin
-  inherited Create(TheOwner);
-  FFrameWidth := 1;
-end;
-
-destructor TFrameDesignerForm.Destroy;
-begin
-  inherited Destroy;
+  if (AValue <> nil) and (AValue is TCustomFrame) then
+    TCustomFrame(AValue).Parent := Self;
+  inherited;
 end;
 
 procedure TFrameDesignerForm.DoLoadBounds;
@@ -138,8 +74,8 @@ var
   NewWidth: Integer;
   NewHeight: Integer;
 begin
-  if Assigned(OnLoadBounds) then 
-    OnLoadBounds(Self);
+  inherited;
+
   if LookupRoot is TCustomFrame then 
   begin
     CurFrame := TCustomFrame(LookupRoot);
@@ -162,7 +98,7 @@ begin
   else 
   if LookupRoot <> nil then
     ;//?
-  if Assigned(OnSaveBounds) then OnSaveBounds(Self);
+  inherited;  
 end;
 
 end.

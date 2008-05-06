@@ -2972,10 +2972,7 @@ begin
   if (AComponent is TCustomForm) then
     DesignerForm := TCustomForm(AComponent)
   else
-  if (AComponent is TCustomFrame) then
-    DesignerForm := FormEditor1.CreateFrameForm(AComponent)
-  else
-    DesignerForm := FormEditor1.CreateNonControlForm(AComponent);
+    DesignerForm := FormEditor1.CreateNonFormForm(AComponent);
   // create designer
   DesignerForm.Designer := TDesigner.Create(DesignerForm, TheControlSelection);
   {$IFDEF IDE_DEBUG}

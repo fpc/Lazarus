@@ -476,7 +476,7 @@ begin
   inherited Create;
   Name := FileDescNameFrame;
   ResourceClass := TFrame;
-  UseCreateFormStatements := True;
+  UseCreateFormStatements := False;
 end;
 
 function TFileDescPascalUnitWithFrame.GetInterfaceUsesSection: string;

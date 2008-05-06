@@ -33,91 +33,45 @@ interface
 
 uses
   Classes, SysUtils, Math, LCLProc, Graphics, GraphType, Forms, Controls,
-  IDEProcs;
+  IDEProcs, CustomNonFormDesigner;
   
 type
 
   { TNonControlDesignerForm }
 
-  TNonControlDesignerForm = class(TForm)
+  TNonControlDesignerForm = class(TCustomNonFormDesignerForm)
   private
     FFrameWidth: integer;
-    FLookupRoot: TComponent;
-    FOnLoadBounds: TNotifyEvent;
-    FOnSaveBounds: TNotifyEvent;
   protected
     procedure SetFrameWidth(const AValue: integer); virtual;
-    procedure SetLookupRoot(const AValue: TComponent); virtual;
   public
     constructor Create(TheOwner: TComponent); override;
-    destructor Destroy; override;
     procedure Paint; override;
-    procedure DoLoadBounds; virtual;
-    procedure DoSaveBounds; virtual;
+    procedure DoLoadBounds; override;
+    procedure DoSaveBounds; override;
   public
-    property LookupRoot: TComponent read FLookupRoot write SetLookupRoot;
     property FrameWidth: integer read FFrameWidth write SetFrameWidth;
-    property OnLoadBounds: TNotifyEvent read FOnLoadBounds write FOnLoadBounds;
-    property OnSaveBounds: TNotifyEvent read FOnSaveBounds write FOnSaveBounds;
   end;
   
   
-function CompareNonControlDesignerForms(Data1, Data2: Pointer): integer;
-function CompareLookupRootAndNonControlDesignerForm(Key, Data: Pointer): integer;
-
 implementation
 
 
-function CompareNonControlDesignerForms(Data1, Data2: Pointer): integer;
-var
-  Form1: TNonControlDesignerForm;
-  Form2: TNonControlDesignerForm;
-begin
-  Form1:=TNonControlDesignerForm(Data1);
-  Form2:=TNonControlDesignerForm(Data2);
-  Result:=PtrInt(Form1.LookupRoot)-PtrInt(Form2.LookupRoot);
-end;
-
-function CompareLookupRootAndNonControlDesignerForm(Key, Data: Pointer): integer;
-var
-  LookupRoot: TComponent;
-  Form: TNonControlDesignerForm;
-begin
-  LookupRoot:=TComponent(Key);
-  Form:=TNonControlDesignerForm(Data);
-  Result:=PtrInt(LookupRoot)-PtrInt(Form.LookupRoot);
-end;
-
 { TNonControlDesignerForm }
-
-procedure TNonControlDesignerForm.SetLookupRoot(const AValue: TComponent);
-begin
-  if FLookupRoot=AValue then exit;
-  DoSaveBounds;
-  FLookupRoot:=AValue;
-  if FLookupRoot<>nil then begin
-    Caption:=FLookupRoot.Name;
-  end;
-  DoLoadBounds;
-end;
 
 procedure TNonControlDesignerForm.SetFrameWidth(const AValue: integer);
 begin
-  if FFrameWidth=AValue then exit;
-  FFrameWidth:=AValue;
+  if FFrameWidth = AValue then 
+    Exit;
+  FFrameWidth := AValue;
   Invalidate;
 end;
 
 constructor TNonControlDesignerForm.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  FFrameWidth:=1;
-  ControlStyle:=ControlStyle-[csAcceptsControls];
-end;
-
-destructor TNonControlDesignerForm.Destroy;
-begin
-  inherited Destroy;
+  FFrameWidth := 1;
+  ControlStyle := ControlStyle - [csAcceptsControls];
 end;
 
 procedure TNonControlDesignerForm.Paint;
@@ -160,7 +114,8 @@ var
   NewWidth: Integer;
   NewHeight: Integer;
 begin
-  if Assigned(OnLoadBounds) then OnLoadBounds(Self);
+  inherited DoLoadBounds;
+
   if LookupRoot is TDataModule then begin
     CurDataModule:=TDataModule(LookupRoot);
     NewLeft:=CurDataModule.DesignOffset.X;
@@ -189,7 +144,7 @@ begin
     LongRec(LookupRoot.DesignInfo).Lo:=Left;
     LongRec(LookupRoot.DesignInfo).Hi:=Top;
   end;
-  if Assigned(OnSaveBounds) then OnSaveBounds(Self);
+  inherited DoSaveBounds;
 end;
 
 end.
