@@ -41,24 +41,24 @@ type
 
   TCodeHintProvider = class(TComponent)
   private
-    FControl: TControl;
+    FControl: TWinControl;
   protected
-    procedure SetControl(const AValue: TControl); virtual;
+    procedure SetControl(const AValue: TWinControl); virtual;
   public
     procedure GetPreferredSize(var PreferredWidth, PreferredHeight: integer); virtual;
-    procedure Paint(Canvas: TCanvas; const ARect: TRect); virtual; abstract;
     procedure UpdateHint; virtual;
-    property Control: TControl read FControl write SetControl;
+    property Control: TWinControl read FControl write SetControl;
   end;
 
   { TCodeHintFrm }
+
+  { TSrcEditHintWindow }
 
   TSrcEditHintWindow = class(THintWindow)
     procedure ApplicationIdle(Sender: TObject; var Done: Boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure FormPaint(Sender: TObject);
     procedure FormUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
   private
     FAnchorForm: TCustomForm;
@@ -132,18 +132,6 @@ begin
       // redirect keys
       SrcEdit.EditorControl.KeyDown(Key,Shift);
       SetActiveWindow(SourceEditorWindow.Handle);
-    end;
-  end;
-end;
-
-procedure TSrcEditHintWindow.FormPaint(Sender: TObject);
-begin
-  if Provider<>nil then begin
-    Provider.Paint(Canvas,Rect(0,0,ClientWidth,ClientHeight));
-  end else begin
-    with Canvas do begin
-      Font.SetDefault;
-      TextOut(6,20,'No help available (missing provider)');
     end;
   end;
 end;
@@ -311,7 +299,7 @@ end;
 
 procedure TSrcEditHintWindow.Paint;
 begin
-  FormPaint(Self);
+
 end;
 
 constructor TSrcEditHintWindow.Create(TheOwner: TComponent);
@@ -352,7 +340,7 @@ end;
 
 { TCodeHintProvider }
 
-procedure TCodeHintProvider.SetControl(const AValue: TControl);
+procedure TCodeHintProvider.SetControl(const AValue: TWinControl);
 begin
   if FControl=AValue then exit;
   FControl:=AValue;

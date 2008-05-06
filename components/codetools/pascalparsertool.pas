@@ -4072,9 +4072,13 @@ var HasForwardModifier, IsFunction, IsOperator, IsMethod: boolean;
 begin
   if ProcNode.Desc=ctnProcedureHead then ProcNode:=ProcNode.Parent;
   if (ProcNode=nil) or (not (ProcNode.Desc in [ctnProcedure,ctnProcedureType]))
-  or (ProcNode.FirstChild=nil) then
+  or (ProcNode.FirstChild=nil) then begin
+    {$IFDEF CheckNodeTool}
+    CTDumpStack;
+    {$ENDIF}
     RaiseException('[TPascalParserTool.BuildSubTreeForProcHead] '
       +'internal error: invalid ProcNode');
+  end;
   if (ProcNode.FirstChild.SubDesc and ctnsNeedJITParsing)=0 then exit;
   ProcNode.FirstChild.SubDesc:=
                        ProcNode.FirstChild.SubDesc and (not ctnsNeedJITParsing);

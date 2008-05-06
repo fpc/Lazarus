@@ -30,10 +30,10 @@ unit FPDocHints;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Graphics,
-  CodeToolManager, CodeCache, BasicCodeTools, IdentCompletionTool,
-  SrcEditorIntf,
-  SrcEditHintFrm, CodeHelp;
+  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, StdCtrls,
+  CodeToolManager, CodeCache, BasicCodeTools, IdentCompletionTool, CodeTree,
+  CodeAtom,
+  IDEHelpIntf, SrcEditorIntf, SrcEditHintFrm, CodeHelp;
 
 type
 
@@ -43,13 +43,18 @@ type
   private
     FHintValid: boolean;
     FWaitingForIdle: boolean;
+    FBaseURL: string;
+    FHTMLHint: string;
+    FHTMLControl: TControl;
+    FHTMLProvider: TAbstractIDEHTMLProvider;
+    FTextControl: TLabel;
     procedure SetHintValid(const AValue: boolean);
     procedure SetWaitingForIdle(const AValue: boolean);
     procedure ApplicationIdle(Sender: TObject; var Done: Boolean);
     procedure ReadLazDocData;
+    procedure UpdateHintControl;
   public
     destructor Destroy; override;
-    procedure Paint(Canvas: TCanvas; const ARect: TRect); override;
     procedure UpdateHint; override;
     property WaitingForIdle: boolean read FWaitingForIdle write SetWaitingForIdle;
     property HintValid: boolean read FHintValid write SetHintValid;
@@ -88,11 +93,16 @@ procedure TFPDocHintProvider.ReadLazDocData;
 var
   Position: LongInt;
   Item: TIdentifierListItem;
-  Code: TCodeBuffer;
   CacheWasUsed: boolean;
-  Chain: TCodeHelpElementChain;
-  Y,X: integer;
+  Node: TCodeTreeNode;
+  HelpResult: TCodeHelpParseResult;
+  Caret: TCodeXYPosition;
+  CleanPos: LongInt;
 begin
+  FBaseURL:='';
+  FHTMLHint:='';
+  
+  // find current completion item
   if (SourceEditorWindow=nil) or (CodeToolBoss=nil)
   or (CodeToolBoss.IdentifierList=nil) then
     exit;
@@ -101,43 +111,95 @@ begin
     exit;
   Item:=CodeToolBoss.IdentifierList.FilteredItems[Position];
   DebugLn(['TFPDocHintProvider.ReadLazDocData Identifier=',Item.Identifier]);
-  Chain:=nil;
   try
-    if (Item.Node<>nil) then begin
-      if (Item.Tool.Scanner=nil) then exit;
-      Code:=TCodeBuffer(Item.Tool.Scanner.MainCode);
-      if Code=nil then begin
-        DebugLn(['TFPDocHintProvider.ReadLazDocData FAILED Tool without MainCode']);
-        exit;
+    // find current codetool node
+    Node:=Item.Node;
+    if (Node=nil) then begin
+      DebugLn(['TFPDocHintProvider.ReadLazDocData FAILED no node']);
+      exit;
+    end;
+    if (Item.Tool.Scanner=nil) then exit;
+    //DebugLn(['TFPDocHintProvider.ReadLazDocData Src=',copy(Item.Tool.Src,Node.StartPos,30),' ',Node.DescAsString]);
+    
+    // search the position of the identifier, not the keyword
+    CleanPos:=Node.StartPos;
+    case Node.Desc of
+    ctnProcedure:
+      begin
+        Item.Tool.MoveCursorToProcName(Node,true);
+        CleanPos:=Item.Tool.CurPos.StartPos;
       end;
-      Code.AbsoluteToLineCol(Item.Node.StartPos,Y,X);
-      if (Y<1) or (X<1) then begin
-        DebugLn(['TFPDocHintProvider.ReadLazDocData FAILED X=',X,' Y=',Y]);
-        exit;
+    ctnProperty:
+      begin
+        if Item.Tool.MoveCursorToPropName(Node) then
+          CleanPos:=Item.Tool.CurPos.StartPos;
       end;
-      CodeHelpBoss.GetElementChain(Code,X,Y,true,Chain,CacheWasUsed);
-      DebugLn(['TFPDocHintProvider.ReadLazDocData Chain=',Chain<>nil]);
-      if Chain=nil then begin
-        DebugLn(['TFPDocHintProvider.ReadLazDocData FAILED Chain=nil']);
-        exit;
-      end;
-    end else begin
-
+    end;
+    
+    // get help text
+    if (not Item.Tool.CleanPosToCaret(CleanPos,Caret)) then begin
+      DebugLn(['TFPDocHintProvider.ReadLazDocData FAILED CleanPosToCaret']);
+      exit;
+    end;
+    //DebugLn(['TFPDocHintProvider.ReadLazDocData ',Item.Identifier,' ',Item.Tool.MainFilename,' ',Caret.Code.Filename,' ',Caret.X,',',Caret.Y]);
+    HelpResult:=CodeHelpBoss.GetHTMLHint(Caret.Code,Caret.X,Caret.Y,true,
+                                         FBaseURL,FHTMLHint,CacheWasUsed);
+    if HelpResult<>chprSuccess then begin
+      DebugLn(['TFPDocHintProvider.ReadLazDocData FAILED Identifier=',Item.Identifier]);
+      exit;
     end;
   finally
-    Chain.Free;
+    UpdateHintControl;
+  end;
+end;
+
+procedure TFPDocHintProvider.UpdateHintControl;
+var
+  IsHTML: Boolean;
+  ms: TMemoryStream;
+begin
+  IsHTML:=SysUtils.CompareText(copy(FHTMLHint,1,6),'<HTML>')=0;
+  if IsHTML then begin
+    if (FHTMLControl=nil) then begin
+      FHTMLProvider:=nil;
+      FHTMLControl:=CreateIDEHTMLControl(nil,FHTMLProvider);
+      FHTMLControl.Parent:=Control;
+      FHTMLControl.Align:=alClient;
+    end;
+    if FTextControl<>nil then
+      FTextControl.Visible:=false;
+    FHTMLControl.Visible:=true;
+    FHTMLProvider.BaseURL:=FBaseURL;
+    ms:=TMemoryStream.Create;
+    try
+      if FHTMLHint<>'' then
+        ms.Write(FHTMLHint[1],length(FHTMLHint));
+      ms.Position:=0;
+      FHTMLProvider.ControlIntf.SetHTMLContent(ms);
+    finally
+      ms.Free;
+    end;
+  end else begin
+    if (FTextControl=nil) then begin
+      FTextControl:=TLabel.Create(nil);
+      FTextControl.Parent:=Control;
+      FTextControl.Align:=alClient;
+      FTextControl.WordWrap:=true;
+    end;
+    if FHTMLControl<>nil then
+      FHTMLControl.Visible:=false;
+    FTextControl.Visible:=true;
+    FTextControl.Caption:=FHTMLHint;
   end;
 end;
 
 destructor TFPDocHintProvider.Destroy;
 begin
+  FHTMLProvider:=nil;
+  FreeAndNil(FHTMLControl);
+  FreeAndNil(FTextControl);
   WaitingForIdle:=false;
   inherited Destroy;
-end;
-
-procedure TFPDocHintProvider.Paint(Canvas: TCanvas; const ARect: TRect);
-begin
-
 end;
 
 procedure TFPDocHintProvider.UpdateHint;

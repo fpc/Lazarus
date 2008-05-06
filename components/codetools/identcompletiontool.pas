@@ -743,14 +743,14 @@ begin
   if (Tool.Tree=nil) then exit;
   RootNode:=Tool.Tree.Root;
   if RootNode=nil then exit;
-  DebugLn(['TIdentifierList.ToolTreeChange START ',Tool.MainFilename]);
+  //DebugLn(['TIdentifierList.ToolTreeChange START ',Tool.MainFilename]);
   if FIdentView.Count=0 then exit;
-  DebugLn(['TIdentifierList.ToolTreeChange ',Tool.MainFilename]);
+  //DebugLn(['TIdentifierList.ToolTreeChange ',Tool.MainFilename]);
   AVLNode:=FIdentView.FindLowest;
   while AVLNode<>nil do begin
     Item:=TIdentifierListItem(AVLNode.Data);
     if (Item.FNode<>nil) and (Item.Tool=Tool) then begin
-      DebugLn(['TIdentifierList.ToolTreeChange ',Item.Identifier]);
+      //DebugLn(['TIdentifierList.ToolTreeChange ',Item.Identifier]);
       Item.UnbindNode;
     end;
     AVLNode:=FIdentView.FindSuccessor(AVLNode);
@@ -2023,7 +2023,7 @@ begin
   FNodeStartPos:=FNode.StartPos;
   FNodeDesc:=FNode.Desc;
   FNodeHash:=GetNodeHash(FNode);
-  DebugLn(['TIdentifierListItem.StoreNodeHash ',Identifier,' Pos=',FNodeStartPos,' Hash=',FNodeHash]);
+  //DebugLn(['TIdentifierListItem.StoreNodeHash ',Identifier,' Pos=',FNodeStartPos,' Hash=',FNodeHash]);
 end;
 
 function TIdentifierListItem.RestoreNode: boolean;
@@ -2032,7 +2032,7 @@ var
   NewHash: String;
 begin
   if not (iliNodeHashValid in Flags) then exit(true);
-  DebugLn(['TIdentifierListItem.RestoreNode ',Identifier]);
+  //DebugLn(['TIdentifierListItem.RestoreNode ',Identifier]);
   NewNode:=Tool.FindDeepestExpandedNodeAtPos(FNodeStartPos,false);
   Result:=false;
   if (NewNode=nil) or (NewNode.StartPos<>FNodeStartPos)
@@ -2047,7 +2047,7 @@ begin
     Exclude(Flags,iliNodeHashValid);
     exit;
   end;
-  DebugLn(['TIdentifierListItem.RestoreNode Success ',Identifier]);
+  //DebugLn(['TIdentifierListItem.RestoreNode Success ',Identifier]);
   Node:=NewNode;
   Result:=true;
 end;

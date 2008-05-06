@@ -1984,7 +1984,7 @@ begin
   else
     inc(FTreeChangeStep);
   if NodesDeleting then begin
-    DebugLn(['TCustomCodeTool.IncreaseTreeChangeStep NodesDeleting ',MainFilename,' ',Tree<>nil,' ',(Tree<>nil) and (Tree.Root<>nil)]);
+    //DebugLn(['TCustomCodeTool.IncreaseTreeChangeStep NodesDeleting ',MainFilename,' ',Tree<>nil,' ',(Tree<>nil) and (Tree.Root<>nil)]);
     if FNodesDeletedChangeStep=High(integer) then
       FNodesDeletedChangeStep:=Low(integer)
     else

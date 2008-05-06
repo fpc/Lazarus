@@ -3558,11 +3558,15 @@ var
   OldCompletionControl: TSynCompletion;
 begin
   if CurCompletionControl=nil then exit;
+  
+  // clear the IdentifierList (otherwise it would try to update everytime
+  // the codetools are used)
   CodeToolBoss.IdentifierList.Clear;
+  
   OldCompletionControl:=CurCompletionControl;
   CurCompletionControl:=nil;
-
   OldCompletionControl.Deactivate;
+  
   CurrentCompletionType:=ctNone;
   ActSE:=GetActiveSE;
   if ActSE<>nil then begin
