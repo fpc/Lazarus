@@ -30,6 +30,7 @@ const
   FileDescNamePascalUnit = 'Unit';
   FileDescNameLCLForm = 'Form';
   FileDescNameDatamodule = 'Datamodule';
+  FileDescNameFrame = 'Frame';
   FileDescNameText = 'Text';
   
   ProjDescGroupName = 'Project';

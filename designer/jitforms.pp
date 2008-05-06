@@ -878,7 +878,8 @@ begin
     TComponent(FCurReadJITComponent):=Instance;
     try
       // set into design mode
-      SetComponentDesignMode(Instance,true);
+      SetComponentDesignMode(Instance, True);
+      SetComponentDesignInstanceMode(Instance, True);
       if (not Visible) and (Instance is TControl) then
         TControl(Instance).ControlStyle:=
                             TControl(Instance).ControlStyle+[csNoDesignVisible];

@@ -44,7 +44,7 @@ uses
   Forms, Controls, GraphType, Graphics, Dialogs, ExtCtrls, Menus, ClipBrd,
   PropEdits, ComponentEditors, MenuIntf, IDEImagesIntf,
   LazarusIDEStrConsts, EnvironmentOpts, IDECommands, ComponentReg,
-  NonControlDesigner, AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg, TabOrderDlg,
+  NonControlDesigner, FrameDesigner, AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg, TabOrderDlg,
   DesignerProcs, CustomFormEditor,
   ControlSelection, ChangeClassDialog, EditorOptions;
 
@@ -451,13 +451,16 @@ begin
   inherited Create;
   FForm := TheDesignerForm;
   if FForm is TNonControlDesignerForm then
-    FLookupRoot:=TNonControlDesignerForm(FForm).LookupRoot
+    FLookupRoot := TNonControlDesignerForm(FForm).LookupRoot
   else
-    FLookupRoot:=FForm;
+  if FForm is TFrameDesignerForm then
+    FLookupRoot := TFrameDesignerForm(FForm).LookupRoot
+  else
+    FLookupRoot := FForm;
 
-  ControlSelection:=AControlSelection;
-  FFlags:=[];
-  FGridColor:=clGray;
+  ControlSelection := AControlSelection;
+  FFlags := [];
+  FGridColor := clGray;
 
   FHintTimer := TTimer.Create(nil);
   FHintTimer.Interval := 500;

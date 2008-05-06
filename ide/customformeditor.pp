@@ -45,7 +45,7 @@ uses
   // components
   PropEdits, ObjectInspector, IDECommands,
   // IDE
-  LazarusIDEStrConsts, JITForms, NonControlDesigner, FormEditingIntf,
+  LazarusIDEStrConsts, JITForms, NonControlDesigner, FrameDesigner, FormEditingIntf,
   ComponentReg, IDEProcs, ComponentEditors, KeyMapping, EditorOptions,
   DesignerProcs;
 
@@ -124,6 +124,7 @@ each control that's dropped onto the form
                                     ): TAVLTreeNode;
   protected
     FNonControlForms: TAVLTree; // tree of TNonControlDesignerForm sorted for LookupRoot
+    FFrameForms: TAVLTree;
     procedure SetSelection(const ASelection: TPersistentSelectionList);
     procedure OnObjectInspectorModified(Sender: TObject);
     procedure SetObj_Inspector(AnObjectInspector: TObjectInspectorDlg); virtual;
@@ -136,6 +137,7 @@ each control that's dropped onto the form
     function GetDesignerBaseClasses(Index: integer): TComponentClass; override;
     procedure OnDesignerMenuItemClick(Sender: TObject); virtual;
     function FindNonControlFormNode(LookupRoot: TComponent): TAVLTreeNode;
+    function FindFrameFormNode(LookupRoot: TComponent): TAVLTreeNode;
   public
     JITFormList: TJITForms;// designed forms
     JITNonFormList: TJITNonFormComponents;// designed custom components like data modules
@@ -168,8 +170,13 @@ each control that's dropped onto the form
     function FindJITListByClass(AComponentClass: TComponentClass
                                 ): TJITComponentList;
     function GetDesignerForm(AComponent: TComponent): TCustomForm; override;
+
     function FindNonControlForm(LookupRoot: TComponent): TNonControlDesignerForm;
+    function FindFrameForm(LookupRoot: TComponent): TFrameDesignerForm;
+
     function CreateNonControlForm(LookupRoot: TComponent): TNonControlDesignerForm;
+    function CreateFrameForm(LookupRoot: TComponent): TFrameDesignerForm;
+
     procedure RenameJITComponent(AComponent: TComponent;
                                  const NewClassName: shortstring);
     procedure RenameJITComponentUnitname(AComponent: TComponent;
@@ -301,10 +308,12 @@ each control that's dropped onto the form
   
 
 const
-  StandardDesignerBaseClasses: array[1..2] of TComponentClass = (
+  StandardDesignerBaseClasses: array[1..3] of TComponentClass = 
+  (
     Forms.TForm,
-    TDataModule
-    );
+    TDataModule,
+    Forms.TFrame
+  );
   
   
 function CompareComponentInterfaces(Data1, Data2: Pointer): integer;
@@ -804,11 +813,11 @@ var
 begin
   inherited Create;
   FComponentInterfaces := TAVLTree.Create(@CompareComponentInterfaces);
-  FNonControlForms:=TAVLTree.Create(@CompareNonControlDesignerForms);
+  FNonControlForms := TAVLTree.Create(@CompareNonControlDesignerForms);
+  FFrameForms := TAVLTree.Create(@CompareFrameDesignerForms);
   FSelection := TPersistentSelectionList.Create;
   FDesignerBaseClasses:=TFPList.Create;
-  for l:=Low(StandardDesignerBaseClasses) to High(StandardDesignerBaseClasses)
-  do
+  for l:=Low(StandardDesignerBaseClasses) to High(StandardDesignerBaseClasses) do
     FDesignerBaseClasses.Add(StandardDesignerBaseClasses[l]);
 
   JITFormList := TJITForms.Create;
@@ -838,6 +847,7 @@ begin
   FreeAndNil(FComponentInterfaces);
   FreeAndNil(FSelection);
   FreeAndNil(FNonControlForms);
+  FreeAndNil(FFrameForms);
   inherited Destroy;
 end;
 
@@ -891,13 +901,23 @@ Begin
     end else if JITNonFormList.IsJITNonForm(AComponent) then begin
       // free/unbind a non form component and its designer form
       AForm:=GetDesignerForm(AComponent);
-      if (AForm<>nil) and (not (AForm is TNonControlDesignerForm)) then
+      if (AForm<>nil) and (not (AForm is TNonControlDesignerForm)) and (not (AForm is TFrameDesignerForm)) then
         RaiseException('TCustomFormEditor.DeleteComponent  Where is the TNonControlDesignerForm? '+AComponent.ClassName);
-      if AForm<>nil then begin
+
+      if (AForm <> nil) and (AForm is TNonControlDesignerForm) then 
+      begin
         FNonControlForms.Remove(AForm);
-        TNonControlDesignerForm(AForm).LookupRoot:=nil;
+        TNonControlDesignerForm(AForm).LookupRoot := nil;
         TryFreeComponent(AForm);
       end;
+
+      if (AForm <> nil) and (AForm is TFrameDesignerForm) then 
+      begin
+        FFrameForms.Remove(AForm);
+        TFrameDesignerForm(AForm).LookupRoot := nil;
+        TryFreeComponent(AForm);
+      end;
+
       if FreeComponent then
         JITNonFormList.DestroyJITComponent(AComponent);
     end else
@@ -1124,8 +1144,7 @@ begin
     Result:=nil;
 end;
 
-function TCustomFormEditor.GetDesignerForm(AComponent: TComponent
-  ): TCustomForm;
+function TCustomFormEditor.GetDesignerForm(AComponent: TComponent): TCustomForm;
 var
   OwnerComponent: TComponent;
 begin
@@ -1135,28 +1154,40 @@ begin
   while OwnerComponent.Owner<>nil do
     OwnerComponent:=OwnerComponent.Owner;
   if OwnerComponent is TCustomForm then
-    Result:=TCustomForm(OwnerComponent)
+    Result := TCustomForm(OwnerComponent)
   else
-    Result:=FindNonControlForm(OwnerComponent);
+  if OwnerComponent is TCustomFrame then
+    Result := FindFrameForm(OwnerComponent)
+  else
+    Result := FindNonControlForm(OwnerComponent);
 end;
 
-function TCustomFormEditor.FindNonControlForm(LookupRoot: TComponent
-  ): TNonControlDesignerForm;
+function TCustomFormEditor.FindNonControlForm(LookupRoot: TComponent): TNonControlDesignerForm;
 var
   AVLNode: TAVLTreeNode;
 begin
-  AVLNode:=FindNonControlFormNode(LookupRoot);
-  if AVLNode<>nil then
-    Result:=TNonControlDesignerForm(AVLNode.Data)
+  AVLNode := FindNonControlFormNode(LookupRoot);
+  if AVLNode <> nil then
+    Result := TNonControlDesignerForm(AVLNode.Data)
   else
-    Result:=nil;
+    Result := nil;
 end;
 
-function TCustomFormEditor.CreateNonControlForm(LookupRoot: TComponent
-  ): TNonControlDesignerForm;
+function TCustomFormEditor.FindFrameForm(LookupRoot: TComponent): TFrameDesignerForm;
+var
+  AVLNode: TAVLTreeNode;
+begin
+  AVLNode := FindFrameFormNode(LookupRoot);
+  if AVLNode <> nil then
+    Result := TFrameDesignerForm(AVLNode.Data)
+  else
+    Result := nil;
+end;
+
+function TCustomFormEditor.CreateNonControlForm(LookupRoot: TComponent): TNonControlDesignerForm;
 begin
   if FindNonControlFormNode(LookupRoot)<>nil then
-    RaiseException('TCustomFormEditor.CreateNonControlForm exists already');
+    RaiseException('TCustomFormEditor.CreateNonControlForm already exists');
   if LookupRoot is TComponent then begin
     Result:=TNonControlDesignerForm.Create(nil);
     Result.LookupRoot:=LookupRoot;
@@ -1164,6 +1195,19 @@ begin
   end else
     RaiseException('TCustomFormEditor.CreateNonControlForm Unknown type '
       +LookupRoot.ClassName);
+end;
+
+function TCustomFormEditor.CreateFrameForm(LookupRoot: TComponent): TFrameDesignerForm;
+begin
+  if FindFrameFormNode(LookupRoot) <> nil then
+    RaiseException('TCustomFormEditor.CreateFrameForm already exists');
+  if LookupRoot is TFrame then 
+  begin
+    Result := TFrameDesignerForm.Create(nil);
+    Result.LookupRoot := LookupRoot;
+    FFrameForms.Add(Result);
+  end else
+    RaiseException('TCustomFormEditor.CreateFrameForm Unknown type ' + LookupRoot.ClassName);
 end;
 
 procedure TCustomFormEditor.RenameJITComponent(AComponent: TComponent;
@@ -1191,11 +1235,15 @@ end;
 procedure TCustomFormEditor.UpdateDesignerFormName(AComponent: TComponent);
 var
   ANonControlForm: TNonControlDesignerForm;
+  AFrameForm: TFrameDesignerForm;
 begin
-  ANonControlForm:=FindNonControlForm(AComponent);
+  ANonControlForm := FindNonControlForm(AComponent);
   //DebugLn(['TCustomFormEditor.UpdateDesignerFormName ',ANonControlForm<>nil, ' ',AComponent.Name]);
-  if ANonControlForm<>nil then
-    ANonControlForm.Caption:=AComponent.Name;
+  if ANonControlForm <> nil then
+    ANonControlForm.Caption := AComponent.Name;
+  AFrameForm := FindFrameForm(AComponent);
+  if AFrameForm <> nil then
+    AFrameForm.Caption := AComponent.Name;
 end;
 
 function TCustomFormEditor.CreateNewJITMethod(AComponent: TComponent;
@@ -1224,10 +1272,15 @@ procedure TCustomFormEditor.SaveHiddenDesignerFormProperties(
   AComponent: TComponent);
 var
   NonControlForm: TNonControlDesignerForm;
+  AFrameForm: TFrameDesignerForm;
 begin
-  NonControlForm:=FindNonControlForm(AComponent);
-  if NonControlForm<>nil then
+  NonControlForm := FindNonControlForm(AComponent);
+  if NonControlForm <> nil then
     NonControlForm.DoSaveBounds;
+
+  AFrameForm := FindFrameForm(AComponent);
+  if AFrameForm <> nil then
+    AFrameForm.DoSaveBounds;  
 end;
 
 function TCustomFormEditor.FindJITComponentByClassName(
@@ -1345,10 +1398,10 @@ begin
   Result:=ACompIntf.GetComponentEditor;
 end;
 
-Function TCustomFormEditor.CreateComponent(ParentCI: TIComponentInterface;
+function TCustomFormEditor.CreateComponent(ParentCI: TIComponentInterface;
   TypeClass: TComponentClass; const AUnitName: shortstring; X,Y,W,H: Integer
   ): TIComponentInterface;
-Var
+var
   Temp: TComponentInterface;
   NewJITIndex: Integer;
   CompLeft, CompTop, CompWidth, CompHeight: integer;
@@ -1362,7 +1415,7 @@ Var
   DesignForm: TCustomForm;
   NewUnitName: String;
   s: String;
-Begin
+begin
   Result:=nil;
   Temp:=nil;
   ParentComponent:=nil;
@@ -1560,7 +1613,7 @@ Begin
   end;
 end;
 
-Function TCustomFormEditor.CreateComponentFromStream(
+function TCustomFormEditor.CreateComponentFromStream(
   BinStream: TStream;
   AncestorType: TComponentClass; AncestorBinStream: TStream;
   const NewUnitName: ShortString;
@@ -1973,11 +2026,16 @@ begin
   end;
 end;
 
-function TCustomFormEditor.FindNonControlFormNode(LookupRoot: TComponent
-  ): TAVLTreeNode;
+function TCustomFormEditor.FindNonControlFormNode(LookupRoot: TComponent): TAVLTreeNode;
 begin
-  Result:=FNonControlForms.FindKey(Pointer(LookupRoot),
+  Result := FNonControlForms.FindKey(Pointer(LookupRoot),
                                    @CompareLookupRootAndNonControlDesignerForm);
+end;
+
+function TCustomFormEditor.FindFrameFormNode(LookupRoot: TComponent): TAVLTreeNode;
+begin
+  Result := FFrameForms.FindKey(Pointer(LookupRoot),
+                                   @CompareLookupRootAndFrameDesignerForm);
 end;
 
 procedure TCustomFormEditor.JITListPropertyNotFound(Sender: TObject;
@@ -2119,6 +2177,7 @@ var
   MaxX: Integer;
   MaxY: Integer;
 begin
+  // TODO: Frames
   Result:=true;
   X:=10;
   Y:=10;

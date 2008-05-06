@@ -244,6 +244,15 @@ type
     function GetLocalizedDescription: string; override;
   end;
 
+  { TFileDescPascalUnitWithFrame }
+
+  TFileDescPascalUnitWithFrame = class(TFileDescPascalUnitWithResource)
+  public
+    constructor Create; override;
+    function GetInterfaceUsesSection: string; override;
+    function GetLocalizedName: string; override;
+    function GetLocalizedDescription: string; override;
+  end;
 
   { TFileDescSimplePascalProgram }
 
@@ -458,6 +467,31 @@ begin
          +'begin'+LE
          +'end.'+LE
          +LE;
+end;
+
+{ TFileDescPascalUnitWithFrame }
+
+constructor TFileDescPascalUnitWithFrame.Create;
+begin
+  inherited Create;
+  Name := FileDescNameFrame;
+  ResourceClass := TFrame;
+  UseCreateFormStatements := True;
+end;
+
+function TFileDescPascalUnitWithFrame.GetInterfaceUsesSection: string;
+begin
+  Result:='Classes, SysUtils, LResources, Forms';
+end;
+
+function TFileDescPascalUnitWithFrame.GetLocalizedName: string;
+begin
+  Result:='Frame';
+end;
+
+function TFileDescPascalUnitWithFrame.GetLocalizedDescription: string;
+begin
+  Result := lisNewDlgCreateANewUnitWithAFrame;
 end;
 
 end.

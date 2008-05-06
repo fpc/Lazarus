@@ -56,20 +56,40 @@ type
   TJITClass = class of TPersistent;
 
 procedure SetComponentDesignMode(AComponent: TComponent; Value: Boolean);
+procedure SetComponentDesignInstanceMode(AComponent: TComponent; Value: Boolean);
+procedure SetComponentInlineMode(AComponent: TComponent; Value: Boolean);
   
 implementation
 
-// Define a dummy component to set the csDesigning flag which can not be set
-// by a TForm, because SetDesigning is protected.
+// Define a dummy component to set the csDesigning, csDesignInstance, csInline flags which 
+// can not be set by a TForm, because SetDesigning, SetDesignInstance and SetInline are protected.
 type
   TSetDesigningComponent = class(TComponent)
   public
     class procedure SetDesigningOfComponent(AComponent: TComponent; Value: Boolean);
+    class procedure SetDesignInstanceOfComponent(AComponent: TComponent; Value: Boolean);
+    class procedure SetInlineOfComponent(AComponent: TComponent; Value: Boolean);
   end;
 
 procedure SetComponentDesignMode(AComponent: TComponent; Value: Boolean);
 begin
-  TSetDesigningComponent.SetDesigningOfComponent(AComponent,true);
+  TSetDesigningComponent.SetDesigningOfComponent(AComponent, True);
+end;
+
+procedure SetComponentDesignInstanceMode(AComponent: TComponent; Value: Boolean);
+begin
+{$IFDEF EnableTFrame}
+  // requires fpc >= 2.2.1
+  TSetDesigningComponent.SetDesignInstanceOfComponent(AComponent, True);
+{$ENDIF}
+end;
+
+procedure SetComponentInlineMode(AComponent: TComponent; Value: Boolean);
+begin
+{$IFDEF EnableTFrame}
+  // requires fpc >= 2.2.1
+  TSetDesigningComponent.SetInlineOfComponent(AComponent, True);
+{$ENDIF}
 end;
 
 {$IFOPT R+}{$DEFINE RangeCheckOn}{$ENDIF}
@@ -77,6 +97,18 @@ class procedure TSetDesigningComponent.SetDesigningOfComponent(
   AComponent: TComponent; Value: Boolean);
 begin
   TSetDesigningComponent(AComponent).SetDesigning(Value);
+end;
+
+class procedure TSetDesigningComponent.SetDesignInstanceOfComponent(
+  AComponent: TComponent; Value: Boolean);
+begin
+  TSetDesigningComponent(AComponent).SetDesignInstance(Value);
+end;
+
+class procedure TSetDesigningComponent.SetInlineOfComponent(
+  AComponent: TComponent; Value: Boolean);
+begin
+  TSetDesigningComponent(AComponent).SetInline(Value);
 end;
 
 { TPersistentWithTemplates }

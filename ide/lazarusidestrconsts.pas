@@ -2484,6 +2484,7 @@ resourcestring
   lisNewDlgCreateANewPascalUnit = 'Create a new pascal unit.';
   lisNewDlgCreateANewUnitWithALCLForm = 'Create a new unit with a LCL form.';
   lisNewDlgCreateANewUnitWithADataModule = 'Create a new unit with a datamodule.';
+  lisNewDlgCreateANewUnitWithAFrame = 'Create a new unit with a frame';
   lisNewDlgCreateANewEmptyTextFile = 'Create a new empty text file.';
   lisASimplePascalProgramFileThisCanBeUsedForQuickAndDi = 'A simple Pascal '
     +'Program file.%sThis can be used for quick and dirty testing.%sBetter '

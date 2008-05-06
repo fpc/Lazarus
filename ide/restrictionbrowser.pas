@@ -191,6 +191,7 @@ begin
         FClasses.Add(TCustomForm);
         FClasses.Add(TForm);
         FClasses.Add(TDataModule);
+        FClasses.Add(TFrame);
         
         for I := 0 to FClasses.Count - 1 do
         begin

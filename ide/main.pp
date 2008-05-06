@@ -889,6 +889,7 @@ type
     procedure DoShowDesignerFormOfCurrentSrc;
     procedure DoShowSourceOfActiveDesignerForm;
     procedure SetDesigning(AComponent: TComponent; Value: Boolean);
+    procedure SetDesignInstance(AComponent: TComponent; Value: Boolean);
     procedure CreateDesignerForComponent(AComponent: TComponent);
     procedure InvalidateAllDesignerForms;
     procedure UpdateIDEComponentPalette;
@@ -1315,7 +1316,9 @@ begin
     else
       if C.InheritsFrom(TCustomForm) then C := TCustomForm
         else
-          if C.InheritsFrom(TDataModule) then C := TDataModule;
+          if C.InheritsFrom(TDataModule) then C := TDataModule
+            else
+              if C.InheritsFrom(TFrame) then C := TFrame;
   end;
       
   
@@ -2025,6 +2028,9 @@ begin
   RegisterProjectFileDescriptor(TFileDescPascalUnit.Create);
   RegisterProjectFileDescriptor(TFileDescPascalUnitWithForm.Create);
   RegisterProjectFileDescriptor(TFileDescPascalUnitWithDataModule.Create);
+{$IFDEF EnableTFrame}
+  RegisterProjectFileDescriptor(TFileDescPascalUnitWithFrame.Create);
+{$ENDIF}
   RegisterProjectFileDescriptor(TFileDescSimplePascalProgram.Create);
   RegisterProjectFileDescriptor(TFileDescText.Create);
 
@@ -2304,10 +2310,16 @@ begin
   DoShowToDoList;
 end;
 
-Procedure TMainIDE.SetDesigning(AComponent: TComponent; Value: Boolean);
-Begin
-  SetComponentDesignMode(AComponent,Value);
-  if Value then WidgetSet.SetDesigning(AComponent);
+procedure TMainIDE.SetDesigning(AComponent: TComponent; Value: Boolean);
+begin
+  SetComponentDesignMode(AComponent, Value);
+  if Value then 
+    WidgetSet.SetDesigning(AComponent);
+end;
+
+procedure TMainIDE.SetDesignInstance(AComponent: TComponent; Value: Boolean);
+begin
+  SetComponentDesignInstanceMode(AComponent, Value);
 end;
 
 {------------------------------------------------------------------------------}
@@ -2949,18 +2961,21 @@ begin
   end;
 end;
 
-Procedure TMainIDE.CreateDesignerForComponent(AComponent: TComponent);
+procedure TMainIDE.CreateDesignerForComponent(AComponent: TComponent);
 var
   DesignerForm: TCustomForm;
-Begin
+begin
   {$IFDEF IDE_DEBUG}
   writeln('[TMainIDE.CreateDesignerForComponent] A ',AComponent.Name,':',AComponent.ClassName);
   {$ENDIF}
   // create designer form
   if (AComponent is TCustomForm) then
-    DesignerForm:=TCustomForm(AComponent)
+    DesignerForm := TCustomForm(AComponent)
   else
-    DesignerForm:=FormEditor1.CreateNonControlForm(AComponent);
+  if (AComponent is TCustomFrame) then
+    DesignerForm := FormEditor1.CreateFrameForm(AComponent)
+  else
+    DesignerForm := FormEditor1.CreateNonControlForm(AComponent);
   // create designer
   DesignerForm.Designer := TDesigner.Create(DesignerForm, TheControlSelection);
   {$IFDEF IDE_DEBUG}
@@ -2988,9 +3003,11 @@ Begin
     ShowComponentCaptionHints:=EnvironmentOptions.ShowComponentCaptions;
   end;
   // set component and designer form into design mode (csDesigning)
-  SetDesigning(AComponent,True);
-  if AComponent<>DesignerForm then
-    SetDesigning(DesignerForm,True);
+  SetDesigning(AComponent, True);
+  if AComponent <> DesignerForm then
+    SetDesigning(DesignerForm, True);
+  if (AComponent is TForm) or (AComponent is TFrame) or (AComponent is TDataModule) then
+    SetDesignInstance(AComponent, True);
 end;
 
 {-------------------------------------------------------------------------------
@@ -5376,9 +5393,9 @@ begin
           if CompareText(AncestorClassName,'TForm')=0 then begin
             AncestorType:=TForm;
           end else if CompareText(AncestorClassName,'TDataModule')=0 then begin
-            // use our TDataModule
-            // (some fpc versions have non designable TDataModule)
             AncestorType:=TDataModule;
+          end else if CompareText(AncestorClassName,'TFrame')=0 then begin
+            AncestorType := TFrame;
           end else if CompareText(AncestorClassName,'TCustomForm')=0 then begin
             // this is a common user mistake
             MessageDlg(lisCodeTemplError, Format(

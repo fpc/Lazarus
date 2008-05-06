@@ -3831,10 +3831,15 @@ begin
   if GetComponent(0) = PropertyHook.LookupRoot then begin
     Root:=PropertyHook.LookupRoot;
     if Root is TCustomForm then
-      Result:='Form'
-    else if Root is TDataModule then
-      Result:='DataModule'
-    else begin;
+      Result := 'Form'
+    else 
+    if Root is TDataModule then
+      Result := 'DataModule'
+    else
+    if Root is TFrame then
+      Result := 'Frame'
+    else 
+    begin;
       Result := PropertyHook.GetRootClassName;
       if (Result <> '') and (Result[1] = 'T') then
         System.Delete(Result, 1, 1);
@@ -3872,10 +3877,15 @@ begin
   if Root=nil then exit;
   if Component = Root then begin
     if Root is TCustomForm then
-      Result:='Form'
-    else if Root is TDataModule then
-      Result:='DataModule'
-    else begin;
+      Result := 'Form'
+    else 
+    if Root is TDataModule then
+      Result := 'DataModule'
+    else
+    if Root is TFrame then
+      Result := 'Frame'
+    else 
+    begin
       Result := RootClassName;
       if (Result <> '') and (Result[1] = 'T') then
         System.Delete(Result, 1, 1);
