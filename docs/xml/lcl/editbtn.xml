@@ -1228,7 +1228,10 @@
           <var>TDirectoryEdit</var> - an EditBox to hold a directory name, with an attached SpeedButton that will summon a Directory Open dialog</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+		<link id="#lcl.dirsel.tdirseldlg">Directory Select Dialog</link>
+		<link id="#lcl.dialogs.tselectdirectorydialog">TSelectDirectoryDialog</link>
+	</seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TDirectoryEdit.FDialogTitle">
