@@ -235,6 +235,7 @@ each control that's dropped onto the form
                        ParentControl: TWinControl): TIComponentInterface; override;
     procedure SetComponentNameAndClass(CI: TIComponentInterface;
       const NewName, NewClassName: shortstring);
+    function GetDescendantTypeClass(TypeClass: TComponentClass): TComponentClass;
       
     // ancestors
     function GetAncestorLookupRoot(AComponent: TComponent): TComponent; override;
@@ -1398,6 +1399,17 @@ begin
   Result:=ACompIntf.GetComponentEditor;
 end;
 
+function TCustomFormEditor.GetDescendantTypeClass(TypeClass: TComponentClass): TComponentClass;
+begin
+  // maybe we should do that through hooks?
+  if (TypeClass <> nil) and (TypeClass = TFrame) then
+  begin
+    Result := nil;
+  end
+  else
+    Result := TypeClass;
+end;
+
 function TCustomFormEditor.CreateComponent(ParentCI: TIComponentInterface;
   TypeClass: TComponentClass; const AUnitName: shortstring; X,Y,W,H: Integer
   ): TIComponentInterface;
@@ -1429,11 +1441,14 @@ begin
     if Assigned(ParentCI) then
     begin
       // add as child component
-      ParentComponent:=TComponentInterface(ParentCI).Component;
-      OwnerComponent:=ParentComponent;
-      if OwnerComponent.Owner<>nil then
-        OwnerComponent:=OwnerComponent.Owner;
+      ParentComponent := TComponentInterface(ParentCI).Component;
+      OwnerComponent := ParentComponent;
+      if OwnerComponent.Owner <> nil then
+        OwnerComponent := OwnerComponent.Owner;
       try
+        TypeClass := GetDescendantTypeClass(TypeClass);
+        if TypeClass = nil then
+          Exit;
         NewComponent := TypeClass.Create(OwnerComponent);
       except
         on e: Exception do begin
@@ -1445,7 +1460,7 @@ begin
         end;
       end;
       // check if Owner was properly set
-      if NewComponent.Owner<>OwnerComponent then begin
+      if NewComponent.Owner <> OwnerComponent then begin
         MessageDlg('Invalid component owner',
           'The component of type '+NewComponent.ClassName
           +' failed to set its owner to '
