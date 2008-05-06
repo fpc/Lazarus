@@ -90,7 +90,7 @@ type
   TProcHeadExtractPos = (phepNone, phepStart, phepName, phepParamList,
     phepResultType, phepSpecifiers);
     
-  TTreeRange = (trInterface, trAll, trTillCursor);
+  TTreeRange = (trInterface, trAll, trTillCursor, trTillCursorSection);
   
   TBuildTreeFlag = (
     btSetIgnoreErrorPos,
@@ -210,7 +210,6 @@ type
     InterfaceSectionFound: boolean;
     ImplementationSectionFound: boolean;
     EndOfSourceFound: boolean;
-    
 
     procedure BuildTree(OnlyInterfaceNeeded: boolean); virtual;
     procedure BuildTreeAndGetCleanPos(TreeRange: TTreeRange;
@@ -3931,7 +3930,11 @@ procedure TPascalParserTool.BuildTreeAndGetCleanPos(
 var
   CaretType: integer;
   IgnorePos: TCodePosition;
+  RealTreeRange: TTreeRange;
+  Node: TCodeTreeNode;
 begin
+  RealTreeRange:=TreeRange;
+
   //DebugLn(['TPascalParserTool.BuildTreeAndGetCleanPos ',MainFilename,' btSetIgnoreErrorPos=',btSetIgnoreErrorPos in BuildTreeFlags,' btKeepIgnoreErrorPos=',btKeepIgnoreErrorPos in BuildTreeFlags,' CursorPos=x=',CursorPos.X,',y=',CursorPos.Y]);
   if (btSetIgnoreErrorPos in BuildTreeFlags) then begin
     // ignore errors after cursor position
@@ -3947,7 +3950,34 @@ begin
   else if not (btKeepIgnoreErrorPos in BuildTreeFlags) then
     ClearIgnoreErrorAfter;
 
-  if (TreeRange=trTillCursor) and (not UpdateNeeded(false)) then begin
+
+  if (RealTreeRange in [trTillCursor,trTillCursorSection]) then begin
+    // find out, if interface is enough
+    if (Tree<>nil) and (Tree.Root<>nil) then begin
+      Node:=Tree.Root;
+      while (Node<>nil) and (Node.Desc<>ctnImplementation) do
+        Node:=Node.NextBrother;
+      if Node<>nil then begin
+        // start of implementation section found
+        // => whole interface was read
+        CaretType:=CaretToCleanPos(CursorPos, CleanCursorPos);
+        if (CaretType=0) or (CaretType=-1) then begin
+          if (CleanCursorPos<=Node.StartPos)
+          and (not UpdateNeeded(true)) then begin
+            // interface section is already parsed, is still valid and
+            // cursor is in this section
+            exit;
+          end;
+        end;
+      end;
+    end;
+    if RealTreeRange=trTillCursorSection then begin
+      // interface is no enough => parse whole unit
+      RealTreeRange:=trAll;
+    end;
+  end;
+
+  if (RealTreeRange=trTillCursor) and (not UpdateNeeded(false)) then begin
     // tree is valid
     // -> if there was an error, raise it again
     if (LastErrorPhase in [CodeToolPhaseScan,CodeToolPhaseParse])
@@ -3971,7 +4001,7 @@ begin
   end;
 
   // parse code
-  BuildTree(TreeRange=trInterface);
+  BuildTree(RealTreeRange=trInterface);
   if (not IgnoreErrorAfterValid) and (not EndOfSourceFound) then
     SaveRaiseException(ctsEndOfSourceNotFound);
   // find the CursorPos in cleaned source

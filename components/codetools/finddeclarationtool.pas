@@ -3385,7 +3385,7 @@ begin
 
   ActivateGlobalWriteLock;
   try
-    BuildTreeAndGetCleanPos(trAll,CursorPos,CleanPos,[]);
+    BuildTreeAndGetCleanPos(trTillCursorSection,CursorPos,CleanPos,[]);
 
     NodeList:=TFPList.Create;
     NewTool:=Self;
