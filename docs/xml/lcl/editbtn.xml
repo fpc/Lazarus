@@ -922,7 +922,7 @@
       <!-- property Visibility: published -->
       <element name="TFileNameEdit.FileName">
         <short>
-          <var>FileName</var> - the name of the selected file: either the initial value placed in the Tsxt Box, or the value selected from the dialog</short>
+          <var>FileName</var> - the name of the selected file: either the initial value placed in the Text Box, or the value selected from the dialog</short>
         <descr/>
         <seealso/>
       </element>
@@ -1368,7 +1368,7 @@
       <!-- property Visibility: published -->
       <element name="TDirectoryEdit.OnAcceptDirectory">
         <short>
-          <var>OnAcceptDirectory</var> - event handler for acceptng the name of a directory</short>
+          <var>OnAcceptDirectory</var> - event handler for accepting the name of a directory</short>
         <descr/>
         <seealso/>
       </element>
