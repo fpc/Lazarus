@@ -39,8 +39,19 @@ begin
 end;
 
 procedure TCustomFrame.GetChildren(Proc: TGetChildProc; Root: TComponent);
+var
+  I: Integer;
+  OwnedComponent: TComponent;
 begin
+  // behave as TCustomForm
+
   inherited GetChildren(Proc, Root);
+  if Root = Self then
+    for I := 0 to ComponentCount - 1 do begin
+      OwnedComponent := Components[I];
+      if OwnedComponent.HasParent = False
+        then Proc(OwnedComponent);
+    end;
 end;
 
 procedure TCustomFrame.Notification(AComponent: TComponent;
