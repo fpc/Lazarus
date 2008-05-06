@@ -195,7 +195,7 @@ type
     property BorderStyle;
     property ChildSizing;
     property Constraints;
-    //property DockSite;
+    property DockSite;
     property DragCursor;
     property DragKind;
 
@@ -218,15 +218,15 @@ type
     property OnClick;
     property OnConstrainedResize;
     property OnDblClick;
-    //property OnDockDrop;
-    //property OnDockOver;
+    property OnDockDrop;
+    property OnDockOver;
     property OnDragDrop;
     property OnDragOver;
-    //property OnEndDock;
+    property OnEndDock;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
-    //property OnGetSiteInfo;
+    property OnGetSiteInfo;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
@@ -234,9 +234,9 @@ type
     property OnMouseWheelDown;
     property OnMouseWheelUp;
     property OnResize;
-    //property OnStartDock;
+    property OnStartDock;
     property OnStartDrag;
-    //property OnUnDock;
+    property OnUnDock;
     property OnPaint;
   end;
 
