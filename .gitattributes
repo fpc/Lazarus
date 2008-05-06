@@ -1227,6 +1227,7 @@ designer/changeclassdialog.lfm svneol=native#text/plain
 designer/changeclassdialog.lrs svneol=native#text/pascal
 designer/changeclassdialog.pas svneol=native#text/pascal
 designer/controlselection.pp svneol=native#text/pascal
+designer/customnonformdesigner.pas svneol=native#text/pascal
 designer/designer.pp svneol=native#text/pascal
 designer/designermenu.lfm svneol=native#text/plain
 designer/designermenu.lrs svneol=native#text/plain
