@@ -40,7 +40,7 @@ const
   cMask_AllCharsFixed = 'a'; // a char from space and #122
   cMask_Number        = '0'; // only a number but not necessary
   cMask_NumberFixed   = '9'; // only a number
-  cMask_HourSeparator = ';'; // automatically put the hour separator char
+  cMask_HourSeparator = ':'; // automatically put the hour separator char
   cMask_DateSeparator = '/'; // automatically but the date separator char
   cMask_SpaceOnly     = '_'; // automatically put a space
 
