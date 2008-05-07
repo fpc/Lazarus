@@ -108,11 +108,13 @@ each control that's dropped onto the form
     property Designer: TComponentEditorDesigner read GetDesigner write FDesigner;
   end;
 
+  TSelectFrameEvent = procedure(Sender: TObject; var AComponentClass: TComponentClass) of Object;
 
   { TCustomFormEditor }
 
   TCustomFormEditor = class(TAbstractFormEditor)
   private
+    FOnSelectFrame: TSelectFrameEvent;
     FComponentInterfaces: TAVLTree; // tree of TComponentInterface sorted for
                                     // component
     FSelection: TPersistentSelectionList;
@@ -259,6 +261,7 @@ each control that's dropped onto the form
     property Obj_Inspector: TObjectInspectorDlg
                                      read FObj_Inspector write SetObj_Inspector;
     property PropertyEditorHook: TPropertyEditorHook read GetPropertyEditorHook;
+    property OnSelectFrame: TSelectFrameEvent read FOnSelectFrame write FOnSelectFrame;
   end;
   
   
@@ -1359,7 +1362,10 @@ begin
   // maybe we should do that through hooks?
   if (TypeClass <> nil) and (TypeClass = TFrame) then
   begin
-    Result := nil;
+    if Assigned(OnSelectFrame) then
+      OnSelectFrame(Self, Result)
+    else 
+      Result := nil;
   end
   else
     Result := TypeClass;

@@ -1312,6 +1312,7 @@ resourcestring
   dlgCOLoadSave = 'Load/Save';
   dlgMainViewForms = 'View project forms';
   dlgMainViewUnits = 'View project units';
+  dlgMainViewFrames = 'View project frames';
   dlgMultiSelect = 'Multi Select';
   
   // check compiler options dialog

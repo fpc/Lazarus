@@ -133,12 +133,17 @@ uses
   MainBar, MainIntf, MainBase;
 
 type
+  TIDEProjectItem =
+  (
+    piUnit,
+    piComponent,
+    piFrame
+  );
 
   { TMainIDE }
-
+  
   TMainIDE = class(TMainIDEBase)
     // event handlers
-
     procedure MainIDEFormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure MainIDEFormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure OnApplicationUserInput(Sender: TObject; Msg: Cardinal);
@@ -149,6 +154,7 @@ type
     procedure OnApplicationDropFiles(Sender: TObject; const FileNames: array of String);
     procedure OnScreenRemoveForm(Sender: TObject; AForm: TCustomForm);
     procedure OnRemoteControlTimer(Sender: TObject);
+    procedure OnSelectFrame(Sender: TObject; var AComponentClass: TComponentClass);
 
     // file menu
     procedure mnuFileClicked(Sender: TObject);
@@ -691,6 +697,7 @@ type
     function DoOpenMainUnit(Flags: TOpenFlags): TModalResult;
     function DoRevertMainUnit: TModalResult;
     function DoViewUnitsAndForms(OnlyForms: boolean): TModalResult;
+    function DoSelectFrame: TComponentClass;
     procedure DoViewUnitDependencies;
     procedure DoViewUnitInfo;
     procedure DoShowCodeExplorer;
@@ -858,6 +865,7 @@ type
 
     procedure DoGotoIncludeDirective;
     procedure SaveIncludeLinks;
+    function SelectProjectItems(ItemList: TStringList; ItemType: TIDEProjectItem): TModalResult;
 
     // tools
     function DoMakeResourceString: TModalResult;
@@ -1673,6 +1681,7 @@ procedure TMainIDE.SetupFormEditor;
 begin
   CreateFormEditor;
   FormEditor1.Obj_Inspector := ObjectInspector1;
+  FormEditor1.OnSelectFrame := @OnSelectFrame;
 end;
 
 procedure TMainIDE.SetupSourceNotebook;
@@ -7415,94 +7424,148 @@ begin
   end;
 end;
 
-function TMainIDE.DoViewUnitsAndForms(OnlyForms: boolean): TModalResult;
+function TMainIDE.SelectProjectItems(ItemList: TStringList; ItemType: TIDEProjectItem): TModalResult;
 var
-  UnitList: TStringList;
   i: integer;
   MainUnitName, DlgCaption: string;
-  MainUnitInfo, AnUnitInfo: TUnitInfo;
+  MainUnitInfo: TUnitInfo;
   ActiveSourceEditor: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
-  AForm: TCustomForm;
-Begin
-  GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo);
-  UnitList := TStringList.Create;
-  UnitList.Sorted := True;
-  try
-    for i:=0 to Project1.UnitCount-1 do begin
-      if not Project1.Units[i].IsPartOfProject then continue;
-      //debugln('TMainIDE.DoViewUnitsAndForms OnlyForms=',dbgs(OnlyForms),' CompName=',Project1.Units[i].ComponentName,' UnitName=',Project1.Units[i].UnitName);
-      if OnlyForms then
+begin
+  GetCurrentUnit(ActiveSourceEditor, ActiveUnitInfo);
+  for i := 0 to Project1.UnitCount - 1 do
+  begin
+    if not Project1.Units[i].IsPartOfProject then
+      Continue;
+    if ItemType in [piComponent, piFrame] then
+    begin
+      // add all form names of project
+      if Project1.Units[i].ComponentName <> '' then
       begin
-        // add all form names of project
-        if Project1.Units[i].ComponentName<>'' then
-        begin
-          UnitList.AddObject(Project1.Units[i].UnitName, TViewUnitsEntry.Create(
-            Project1.Units[i].ComponentName, i, Project1.Units[i]=ActiveUnitInfo));
-        end;
-      end else
+        if (ItemType = piComponent) or
+           ((ItemType = piFrame) and (Project1.Units[i].Component is TFrame)) then
+          ItemList.AddObject(Project1.Units[i].UnitName,
+            TViewUnitsEntry.Create(Project1.Units[i].ComponentName, i, Project1.Units[i] = ActiveUnitInfo));
+      end;
+    end else
+    begin
+      // add all unit names of project
+      if (Project1.Units[i].UnitName <> '') then
       begin
-        // add all unit names of project
-        if (Project1.Units[i].UnitName <> '') then
+        ItemList.AddObject(Project1.Units[i].UnitName,
+          TViewUnitsEntry.Create(Project1.Units[i].UnitName, i, Project1.Units[i] = ActiveUnitInfo));
+      end
+      else
+      if Project1.MainUnitID = i then
+      begin
+        MainUnitInfo := Project1.MainUnitInfo;
+        if pfMainUnitIsPascalSource in Project1.Flags then
         begin
-          UnitList.AddObject(Project1.Units[i].UnitName, TViewUnitsEntry.Create(
-            Project1.Units[i].UnitName, i, Project1.Units[i]=ActiveUnitInfo));
-        end
-        else if Project1.MainUnitID = i then
-        begin
-          MainUnitInfo := Project1.MainUnitInfo;
-          if pfMainUnitIsPascalSource in Project1.Flags then
+          MainUnitName := CreateSrcEditPageName('',
+            MainUnitInfo.Filename, MainUnitInfo.EditorIndex);
+          if MainUnitName <> '' then
           begin
-            MainUnitName := CreateSrcEditPageName('',
-              MainUnitInfo.Filename,MainUnitInfo.EditorIndex);
-            if MainUnitName <> '' then
-            begin
-              UnitList.AddObject(MainUnitName, TViewUnitsEntry.Create(
-                MainUnitName,i,MainUnitInfo=ActiveUnitInfo));
-            end;
+            ItemList.AddObject(MainUnitName,
+              TViewUnitsEntry.Create(MainUnitName, i, MainUnitInfo = ActiveUnitInfo));
           end;
         end;
       end;
     end;
-    if OnlyForms then
-      DlgCaption := dlgMainViewForms
-    else
-      DlgCaption := dlgMainViewUnits ;
-    if ShowViewUnitsDlg(UnitList,true,DlgCaption) = mrOk then
+  end;
+  case ItemType of
+    piUnit: DlgCaption := dlgMainViewUnits;
+    piComponent: DlgCaption := dlgMainViewForms;
+    piFrame: DlgCaption := dlgMainViewFrames;
+  end;
+  Result := ShowViewUnitsDlg(ItemList, True, DlgCaption);
+end;
+
+function TMainIDE.DoSelectFrame: TComponentClass;
+var
+  UnitList: TStringList;
+  i: integer;
+  AnUnitInfo: TUnitInfo;
+begin
+  Result := nil;
+  UnitList := TStringList.Create;
+  UnitList.Sorted := True;
+  try
+    if SelectProjectItems(UnitList, piFrame) = mrOk then
     begin
       { This is where we check what the user selected. }
-      AnUnitInfo:=nil;
+      AnUnitInfo := nil;
       for i := 0 to UnitList.Count-1 do
       begin
-        if TViewUnitsEntry(UnitList.Objects[i]).Selected then begin
+        if TViewUnitsEntry(UnitList.Objects[i]).Selected then
+        begin
           AnUnitInfo := Project1.Units[TViewUnitsEntry(UnitList.Objects[i]).ID];
-          if AnUnitInfo.EditorIndex >= 0 then begin
+          if (AnUnitInfo.ComponentName <> '') then
+          begin
+            // Result := ...
+            DebugLn(AnUnitInfo.ComponentName + ' has been selected');
+            break;
+          end;
+        end;
+      end;  { for }
+    end;  { if ShowViewUnitDlg... }
+  finally
+    for i := 0 to UnitList.Count-1 do
+      TViewUnitsEntry(UnitList.Objects[i]).Free;
+    UnitList.Free;
+  end;
+end;
+
+function TMainIDE.DoViewUnitsAndForms(OnlyForms: boolean): TModalResult;
+const
+  UseItemType: array[Boolean] of TIDEProjectItem = (piUnit, piComponent);
+var
+  UnitList: TStringList;
+  i: integer;
+  AForm: TCustomForm;
+  AnUnitInfo: TUnitInfo;
+begin
+  UnitList := TStringList.Create;
+  UnitList.Sorted := True;
+  try
+    if SelectProjectItems(UnitList, UseItemType[OnlyForms]) = mrOk then
+    begin
+      { This is where we check what the user selected. }
+      AnUnitInfo := nil;
+      for i := 0 to UnitList.Count-1 do
+      begin
+        if TViewUnitsEntry(UnitList.Objects[i]).Selected then
+        begin
+          AnUnitInfo := Project1.Units[TViewUnitsEntry(UnitList.Objects[i]).ID];
+          if AnUnitInfo.EditorIndex >= 0 then
+          begin
             SourceNoteBook.Notebook.PageIndex := AnUnitInfo.EditorIndex;
-          end else begin
+          end else
+          begin
             if Project1.MainUnitInfo = AnUnitInfo then
               Result:=DoOpenMainUnit([])
             else
               Result:=DoOpenEditorFile(AnUnitInfo.Filename,-1,[ofOnlyIfExists]);
             if Result=mrAbort then exit;
           end;
-          if OnlyForms and (AnUnitInfo.ComponentName<>'') then begin
-            AForm:=GetDesignerFormOfSource(AnUnitInfo,true);
-            if AForm<>nil then
+          if OnlyForms and (AnUnitInfo.ComponentName<>'') then
+          begin
+            AForm := GetDesignerFormOfSource(AnUnitInfo,true);
+            if AForm <> nil then
               ShowDesignerForm(AForm);
           end;
         end;
       end;  { for }
-      if (AnUnitInfo<>nil) and (not OnlyForms) then
+      if (AnUnitInfo <> nil) and (not OnlyForms) then
       begin
         SourceNotebook.ShowOnTop;
       end;
     end;  { if ShowViewUnitDlg... }
   finally
-    for i:=0 to UnitList.Count-1 do
+    for i := 0 to UnitList.Count-1 do
       TViewUnitsEntry(UnitList.Objects[i]).Free;
     UnitList.Free;
   end;
-  Result:=mrOk;
+  Result := mrOk;
 end;
 
 procedure TMainIDE.DoViewUnitDependencies;
@@ -13315,6 +13378,11 @@ begin
   FRemoteControlTimer.Enabled:=false;
   DoExecuteRemoteControl;
   FRemoteControlTimer.Enabled:=true;
+end;
+
+procedure TMainIDE.OnSelectFrame(Sender: TObject; var AComponentClass: TComponentClass);
+begin
+  AComponentClass := DoSelectFrame;
 end;
 
 procedure TMainIDE.mnuFileClicked(Sender: TObject);
