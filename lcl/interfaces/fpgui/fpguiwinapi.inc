@@ -78,7 +78,7 @@ var
 begin
   AStr := string(Str);
 
-  ADC.fpgCanvas.DrawText(X, Y, AStr, [txtLeft]);
+  ADC.fpgCanvas.DrawText(X, Y, AStr);
 end;
 
 function TFpGuiWidgetSet.GetSysColor(nIndex: Integer): DWORD;

@@ -78,9 +78,11 @@ type
     
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
+
+    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
+
     class procedure SetFormBorderStyle(const AForm: Forms.TCustomForm;
                              const AFormBorderStyle: TFormBorderStyle); override;
-    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
   end;
 
   { TFpGuiWSForm }
@@ -151,9 +153,9 @@ begin
     WriteLn('TFpGuiWSCustomForm.DestroyHandle');
   {$endif}
 
-  TFPGUIPrivateWindow(AWinControl.Handle).Free;
+//  TFPGUIPrivateWindow(AWinControl.Handle).Free;
 
-  AWinControl.Handle := 0;
+//  AWinControl.Handle := 0;
 end;
 
 {------------------------------------------------------------------------------

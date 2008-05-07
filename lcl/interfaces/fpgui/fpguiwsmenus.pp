@@ -27,15 +27,9 @@ unit FpGuiWSMenus;
 interface
 
 uses
-////////////////////////////////////////////////////
-// I M P O R T A N T                                
-////////////////////////////////////////////////////
-// To get as little as posible circles,
-// uncomment only when needed for registration
-////////////////////////////////////////////////////
-//  Menus,
-////////////////////////////////////////////////////
-  WSMenus, WSLCLClasses;
+  Menus,
+  WSMenus, WSLCLClasses, LCLType,
+  fpguiobjects;
 
 type
 
@@ -45,6 +39,17 @@ type
   private
   protected
   public
+    class procedure AttachMenu(const AMenuItem: TMenuItem); override;
+    class function CreateHandle(const AMenuItem: TMenuItem): HMENU; override;
+    class procedure DestroyHandle(const AMenuItem: TMenuItem); override;
+    class procedure SetCaption(const AMenuItem: TMenuItem; const ACaption: string); override;
+//    class procedure SetShortCut(const AMenuItem: TMenuItem; const OldShortCut, NewShortCut: TShortCut); override;
+    class procedure SetVisible(const AMenuItem: TMenuItem; const Visible: boolean); override;
+    class function SetCheck(const AMenuItem: TMenuItem; const Checked: boolean): boolean; override;
+    class function SetEnable(const AMenuItem: TMenuItem; const Enabled: boolean): boolean; override;
+//    class function SetRadioItem(const AMenuItem: TMenuItem; const RadioItem: boolean): boolean; override;
+//    class function SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean; override;
+//    class procedure UpdateMenuIcon(const AMenuItem: TMenuItem; const HasIcon: Boolean; const AIcon: TBitmap); override;
   end;
 
   { TFpGuiWSMenu }
@@ -53,6 +58,8 @@ type
   private
   protected
   public
+//    class function  CreateHandle(const AMenu: TMenu): HMENU; override;
+//    class procedure SetBiDiMode(const AMenu: TMenu; UseRightToLeftAlign, UseRightToLeftReading : Boolean); override;
   end;
 
   { TFpGuiWSMainMenu }
@@ -69,10 +76,60 @@ type
   private
   protected
   public
+    class procedure Popup(const APopupMenu: TPopupMenu; const X, Y: integer); override;
   end;
 
 
 implementation
+
+{ TFpGuiWSMenuItem }
+
+class procedure TFpGuiWSMenuItem.AttachMenu(const AMenuItem: TMenuItem);
+begin
+
+end;
+
+class function TFpGuiWSMenuItem.CreateHandle(const AMenuItem: TMenuItem): HMENU;
+begin
+  Result := HMENU(TFPGUIPrivateMenuItem.Create(AMenuItem));
+end;
+
+class procedure TFpGuiWSMenuItem.DestroyHandle(const AMenuItem: TMenuItem);
+begin
+
+end;
+
+class procedure TFpGuiWSMenuItem.SetCaption(const AMenuItem: TMenuItem;
+  const ACaption: string);
+begin
+
+end;
+
+class procedure TFpGuiWSMenuItem.SetVisible(const AMenuItem: TMenuItem;
+  const Visible: boolean);
+begin
+
+end;
+
+class function TFpGuiWSMenuItem.SetCheck(const AMenuItem: TMenuItem;
+  const Checked: boolean): boolean;
+begin
+
+end;
+
+class function TFpGuiWSMenuItem.SetEnable(const AMenuItem: TMenuItem;
+  const Enabled: boolean): boolean;
+begin
+
+end;
+
+{ TFpGuiWSPopupMenu }
+
+class procedure TFpGuiWSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X,
+  Y: integer);
+begin
+
+end;
 
 initialization
 
@@ -82,9 +139,9 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TMenuItem, TFpGuiWSMenuItem);
+  RegisterWSComponent(TMenuItem, TFpGuiWSMenuItem);
 //  RegisterWSComponent(TMenu, TFpGuiWSMenu);
 //  RegisterWSComponent(TMainMenu, TFpGuiWSMainMenu);
-//  RegisterWSComponent(TPopupMenu, TFpGuiWSPopupMenu);
+  RegisterWSComponent(TPopupMenu, TFpGuiWSPopupMenu);
 ////////////////////////////////////////////////////
 end.

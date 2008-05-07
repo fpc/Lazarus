@@ -66,6 +66,8 @@ type
     function GetVisible: Boolean;
     procedure SetVisible(const AValue: Boolean);
   protected
+    { Helper methods for descendents }
+    function GetParentContainerWidget: TfpgWidget;
   public
     { Constructors / Destructors }
     constructor Create(ALCLObject: TWinControl; const AParams: TCreateParams); virtual;
@@ -256,7 +258,7 @@ type
     { Other methods }
     function Memo: TfpgMemo;
   end;
-
+  
 implementation
 
 uses
@@ -279,6 +281,22 @@ end;
 procedure TFPGUIPrivateWidget.SetVisible(const AValue: Boolean);
 begin
   Widget.Visible := AValue;
+end;
+
+function TFPGUIPrivateWidget.GetParentContainerWidget: TfpgWidget;
+var
+  ParentContainer: TFPGUIPrivateContainer;
+begin
+  if Assigned(LCLObject.Parent) then
+  begin
+    ParentContainer := TFPGUIPrivateContainer(LCLObject.Parent.Handle);
+    
+    if Assigned(ParentContainer) then
+      Result := ParentContainer.Widget
+    else Result := nil;
+  end
+  else
+    Result := nil;
 end;
 
 function TFPGUIPrivateWidget.GetVisible: Boolean;
@@ -552,16 +570,12 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 procedure TFPGUIPrivateButton.CreateWidget(const AParams: TCreateParams);
-var
-  ParentContainer: TFPGUIPrivateContainer;
 begin
 {$IFDEF VerboseFPGUIPrivate}
   WriteLn('[TFPGUIPrivateButton.CreateWidget]');
 {$ENDIF}
 
-  ParentContainer := TFPGUIPrivateContainer(LCLObject.Parent.Handle);
-
-  Widget := TfpgButton.Create(ParentContainer.Widget);
+  Widget := TfpgButton.Create(GetParentContainerWidget());
   Widget.SetPosition(LCLObject.Left, LCLObject.Top, LCLObject.Width, LCLObject.Height);
 end;
 
@@ -628,12 +642,8 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 procedure TFPGUIPrivateComboBox.CreateWidget(const AParams: TCreateParams);
-var
-  ParentContainer: TFPGUIPrivateContainer;
 begin
-  ParentContainer := TFPGUIPrivateContainer(LCLObject.Parent.Handle);
-
-  Widget := TfpgComboBox.Create(ParentContainer.Widget);
+  Widget := TfpgComboBox.Create(GetParentContainerWidget());
   Widget.SetPosition(LCLObject.Left, LCLObject.Top, LCLObject.Width, LCLObject.Height);
 end;
 
@@ -645,12 +655,8 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 procedure TFPGUIPrivateEdit.CreateWidget(const AParams: TCreateParams);
-var
-  ParentContainer: TFPGUIPrivateContainer;
 begin
-  ParentContainer := TFPGUIPrivateContainer(LCLObject.Parent.Handle);
-
-  Widget := TfpgEdit.Create(ParentContainer.Widget);
+  Widget := TfpgEdit.Create(GetParentContainerWidget());
   Widget.SetPosition(LCLObject.Left, LCLObject.Top, LCLObject.Width, LCLObject.Height);
 end;
 
@@ -697,12 +703,8 @@ begin
 end;
 
 procedure TFPGUIPrivateCheckBox.CreateWidget(const AParams: TCreateParams);
-var
-  ParentContainer: TFPGUIPrivateContainer;
 begin
-  ParentContainer := TFPGUIPrivateContainer(LCLObject.Parent.Handle);
-
-  Widget := TfpgCheckBox.Create(ParentContainer.Widget);
+  Widget := TfpgCheckBox.Create(GetParentContainerWidget());
   Widget.SetPosition(LCLObject.Left, LCLObject.Top, LCLObject.Width, LCLObject.Height);
 end;
 
@@ -729,12 +731,8 @@ begin
 end;
 
 procedure TFPGUIPrivateRadioButton.CreateWidget(const AParams: TCreateParams);
-var
-  ParentContainer: TFPGUIPrivateContainer;
 begin
-  ParentContainer := TFPGUIPrivateContainer(LCLObject.Parent.Handle);
-
-  Widget := TfpgRadioButton.Create(ParentContainer.Widget);
+  Widget := TfpgRadioButton.Create(GetParentContainerWidget());
   Widget.SetPosition(LCLObject.Left, LCLObject.Top, LCLObject.Width, LCLObject.Height);
 end;
 
@@ -756,24 +754,16 @@ end;
 { TFPGUIPrivateNotebook }
 
 procedure TFPGUIPrivatePageControl.CreateWidget(const AParams: TCreateParams);
-var
-  ParentContainer: TFPGUIPrivateContainer;
 begin
-  ParentContainer := TFPGUIPrivateContainer(LCLObject.Parent.Handle);
-
-  Widget := TfpgPageControl.Create(ParentContainer.Widget);
+  Widget := TfpgPageControl.Create(GetParentContainerWidget());
   Widget.SetPosition(LCLObject.Left, LCLObject.Top, LCLObject.Width, LCLObject.Height);
 end;
 
 { TFPGUIPrivateMemo }
 
 procedure TFPGUIPrivateMemo.CreateWidget(const AParams: TCreateParams);
-var
-  ParentContainer: TFPGUIPrivateContainer;
 begin
-  ParentContainer := TFPGUIPrivateContainer(LCLObject.Parent.Handle);
-
-  Widget := TfpgMemo.Create(ParentContainer.Widget);
+  Widget := TfpgMemo.Create(GetParentContainerWidget());
   Widget.SetPosition(LCLObject.Left, LCLObject.Top, LCLObject.Width, LCLObject.Height);
 end;
 

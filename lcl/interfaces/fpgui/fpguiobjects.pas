@@ -29,9 +29,9 @@ uses
   // RTL, FCL
   Classes, SysUtils,
   // LCL
-  Graphics,
+  Graphics, Menus,
   // interface
-  fpgfx;
+  fpgfx, gui_menu;
 
 type
 
@@ -44,6 +44,18 @@ type
     constructor Create(AfpgCanvas: TfpgCanvas);
   end;
 
+  { TFPGUIPrivateMenuItem }
+
+  TFPGUIPrivateMenuItem = class(TObject)
+  private
+  protected
+  public
+    MenuItem: TfpgMenuItem;
+  public
+    constructor Create(const AMenuItem: TMenuItem); virtual;
+    destructor  Destroy; override;
+  end;
+
 implementation
 
 { TFpGuiDeviceContext }
@@ -51,6 +63,20 @@ implementation
 constructor TFpGuiDeviceContext.Create(AfpgCanvas: TfpgCanvas);
 begin
   fpgCanvas := AfpgCanvas;
+end;
+
+{ TFPGUIPrivateMenuItem }
+
+constructor TFPGUIPrivateMenuItem.Create(const AMenuItem: TMenuItem);
+begin
+  MenuItem := TfpgMenuItem.Create(nil)
+end;
+
+destructor TFPGUIPrivateMenuItem.Destroy;
+begin
+  MenuItem.Free;
+
+  inherited Destroy;
 end;
 
 end.

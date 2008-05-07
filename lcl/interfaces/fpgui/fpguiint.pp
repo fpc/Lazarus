@@ -119,7 +119,7 @@ uses
 // FpGuiWSGrids,
 // FpGuiWSImgList,
 // FpGuiWSMaskEdit,
-// FpGuiWSMenus,
+ FpGuiWSMenus,
 // FpGuiWSPairSplitter,
 // FpGuiWSSpin,
  FpGuiWSStdCtrls,
