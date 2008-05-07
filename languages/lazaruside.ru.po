@@ -2833,6 +2833,10 @@ msgstr "Редактировать контекстную справку"
 msgid "Edit context sensitive help"
 msgstr "Редактировать контекстную справку"
 
+#: lazarusidestrconsts:liseteditcustomscanners
+msgid "Edit custom scanners (%s)"
+msgstr ""
+
 #: lazarusidestrconsts:srkmeditforcmd
 msgid "Edit keys for command"
 msgstr "Править клавиши для команды"
@@ -5709,6 +5713,10 @@ msgstr "ПРИМЕЧАНИЕ: в настоящий момент поддерж�
 msgid "Name"
 msgstr "Имя"
 
+#: lazarusidestrconsts:lisnameconflict
+msgid "Name conflict"
+msgstr ""
+
 #: lazarusidestrconsts:lisnameofnewprocedure
 msgid "Name of new procedure"
 msgstr "Имя новой процедуры"
@@ -6384,6 +6392,10 @@ msgstr "Файл пакета не сохранён"
 #: lazarusidestrconsts:liskmpackagegraph
 msgid "Package graph"
 msgstr "Диаграмма пакетов"
+
+#: lazarusidestrconsts:dlgpldpackagegroup
+msgid "Package group"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangpackageisnodesigntimepackage
 msgid "Package is no designtime package"
@@ -9088,6 +9100,10 @@ msgstr "Пакет %s%s%s помечен на установку.%sСейчас 
 #: lazarusidestrconsts:lispkgmangthepackagewasmarkedcurrentlylazarus
 msgid "The package %s%s%s was marked.%sCurrently lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of lazarus.%s%sDo you want to rebuild Lazarus now?"
 msgstr "Пакет %s%s%s отмечен.%sСейчас lazarus поддерживает только статически связанные пакеты. Действительное удаление требует пересборки и перезапуска lazarus.%s%sВы хотите пересобрать Lazarus сейчас?"
+
+#: lazarusidestrconsts:listhepackagealreadycontainsaunitwiththisname
+msgid "The package already contains a unit with this name."
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthepackagefilenameinisnotavalidlazaruspackagename
 msgid "The package file name %s%s%s in%s%s%s%s is not a valid lazarus package name."

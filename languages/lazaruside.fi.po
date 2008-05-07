@@ -676,6 +676,10 @@ msgstr "Sijoittele"
 msgid "Alignment"
 msgstr "Sijoita"
 
+#: lazarusidestrconsts:lisemdall
+msgid "All"
+msgstr ""
+
 #: lazarusidestrconsts:lisallfiles
 msgid "All Files"
 msgstr "Kaikki tiedostot"
@@ -2824,6 +2828,10 @@ msgstr ""
 msgid "Edit context sensitive help"
 msgstr ""
 
+#: lazarusidestrconsts:liseteditcustomscanners
+msgid "Edit custom scanners (%s)"
+msgstr ""
+
 #: lazarusidestrconsts:srkmeditforcmd
 msgid "Edit keys for command"
 msgstr ""
@@ -2870,6 +2878,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefselseif
 msgid "ElseIf"
+msgstr ""
+
+#: lazarusidestrconsts:lisemdemtpymethods
+msgid "Emtpy Methods"
 msgstr ""
 
 #: lazarusidestrconsts:lisenableallinsamesource
@@ -3627,6 +3639,10 @@ msgstr "Eteenpäin"
 #: lazarusidestrconsts:fdmorderforwardone
 msgid "Forward one"
 msgstr "Yksi eteenpäin"
+
+#: lazarusidestrconsts:lisemdfoundemptymethods
+msgid "Found empty methods:"
+msgstr ""
 
 #: lazarusidestrconsts:lisfreepascalcompilernotfound
 msgid "Free Pascal Compiler not found"
@@ -5692,6 +5708,10 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
+#: lazarusidestrconsts:lisnameconflict
+msgid "Name conflict"
+msgstr ""
+
 #: lazarusidestrconsts:lisnameofnewprocedure
 msgid "Name of new procedure"
 msgstr "Uuden aliohjelman nimi"
@@ -5758,6 +5778,14 @@ msgstr "Uusi käännösyksikkö (Unit)"
 
 #: lazarusidestrconsts:lisa2pnewclassname
 msgid "New class name:"
+msgstr ""
+
+#: lazarusidestrconsts:liskmnewpackage
+msgid "New package"
+msgstr ""
+
+#: lazarusidestrconsts:lismenunewpackage
+msgid "New package ..."
 msgstr ""
 
 #: lazarusidestrconsts:liskmnewproject
@@ -5986,6 +6014,10 @@ msgstr "Avustusta ei ole vielä tehty"
 
 #: lazarusidestrconsts:lispldonlyexistingfiles
 msgid "Only existing files"
+msgstr ""
+
+#: lazarusidestrconsts:lisemdonlypublished
+msgid "Only published"
 msgstr ""
 
 #: lazarusidestrconsts:lisonlysearchforwholewords
@@ -6354,6 +6386,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liskmpackagegraph
 msgid "Package graph"
+msgstr ""
+
+#: lazarusidestrconsts:dlgpldpackagegroup
+msgid "Package group"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangpackageisnodesigntimepackage
@@ -6828,6 +6864,10 @@ msgstr "Protected - metodi"
 msgid "Provides"
 msgstr ""
 
+#: lazarusidestrconsts:lisemdpublic
+msgid "Public"
+msgstr ""
+
 #: lazarusidestrconsts:lispublicmethod
 msgid "Public Method"
 msgstr "Public - metodi"
@@ -6846,6 +6886,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispublishprojdir
 msgid "Publish project directory"
+msgstr ""
+
+#: lazarusidestrconsts:lisemdpublished
+msgid "Published"
 msgstr ""
 
 #: lazarusidestrconsts:lispublishedmethod
@@ -7024,6 +7068,10 @@ msgstr "Poista riippuvuus"
 msgid "Remove dependency %s%s%s%sfrom package %s%s%s?"
 msgstr ""
 
+#: lazarusidestrconsts:srkmecremoveemptymethods
+msgid "Remove empty methods"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditremovefile
 msgid "Remove file"
 msgstr "Poista tiedosto"
@@ -7055,6 +7103,10 @@ msgstr ""
 #: lazarusidestrconsts:lisremovefromproject
 msgid "Remove from project"
 msgstr "Valitse projektista poistettava käännösyksikkö"
+
+#: lazarusidestrconsts:lisemdremovemethods
+msgid "Remove methods"
+msgstr ""
 
 #: lazarusidestrconsts:liscodehelpdeletepathbutton
 msgid "Remove path"
@@ -7604,6 +7656,10 @@ msgstr "Etsi uudelleen"
 msgid "Search in comments too"
 msgstr "Käy kommentit myöskin läpi"
 
+#: lazarusidestrconsts:lisemdsearchintheseclasssections
+msgid "Search in these class sections:"
+msgstr ""
+
 #: lazarusidestrconsts:lisvsrsearchorfilterphrasesinlist
 msgid "Search or Filter Phrases In List"
 msgstr ""
@@ -8059,6 +8115,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgshowedrhints
 msgid "Show editor hints"
 msgstr "Näytä editointivihjeet"
+
+#: lazarusidestrconsts:liscodehelpshowemptymethods
+msgid "Show empty methods"
+msgstr ""
 
 #: lazarusidestrconsts:dlgshoweverything
 msgid "Show everything"
@@ -9036,6 +9096,10 @@ msgstr "Paketti  %s%s%s  on merkitty asennettavaksi.%sNykyinen lazarus tukee ain
 msgid "The package %s%s%s was marked.%sCurrently lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of lazarus.%s%sDo you want to rebuild Lazarus now?"
 msgstr "Komponenttipaketti %s%s%s oli merkitty.%sNykyinen Lazarus tukee ainoastaan staattisesti linkitettyjä komponenttipaketteja. komponenttipakettien poistaminen vatii Lazaruksen uudelleen rakentamisen ja käynnistämisen.%s%sTehdäänkö tämä nyt?"
 
+#: lazarusidestrconsts:listhepackagealreadycontainsaunitwiththisname
+msgid "The package already contains a unit with this name."
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangthepackagefilenameinisnotavalidlazaruspackagename
 msgid "The package file name %s%s%s in%s%s%s%s is not a valid lazarus package name."
 msgstr ""
@@ -9344,7 +9408,7 @@ msgstr ""
 msgid "Title:"
 msgstr "Nimi:"
 
-#: lazarusidestrconsts:listodolistcaption
+#: lazarusidestrconsts:lismenuviewtodolist
 msgid "ToDo List"
 msgstr "Tehtävälista (ToDo List)"
 
@@ -10264,10 +10328,6 @@ msgstr "Näytä lomakkeen koodi (.lfm)"
 msgid "View Source Editor"
 msgstr ""
 
-#: lazarusidestrconsts:lismenuviewprojecttodos
-msgid "View ToDo List ..."
-msgstr "Näytä tehtävälista (ToDo List) ..."
-
 #: lazarusidestrconsts:lispeviewtodolist
 msgid "View ToDo list"
 msgstr ""
@@ -10336,10 +10396,6 @@ msgstr ""
 msgid "View messages"
 msgstr ""
 
-#: lazarusidestrconsts:liskmviewprojecttodolist
-msgid "View project ToDo list"
-msgstr ""
-
 #: lazarusidestrconsts:dlgmainviewforms
 msgid "View project forms"
 msgstr "Näytä projektin lomakkeet (forms)"
@@ -10358,6 +10414,10 @@ msgstr "Näytä projektin käännösyksiköt (units)"
 
 #: lazarusidestrconsts:srkmectogglerestrictionbrowser
 msgid "View restriction browser"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecviewtodolist
+msgid "View todo list"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecviewunitdependencies

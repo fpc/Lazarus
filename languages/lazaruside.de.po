@@ -684,6 +684,10 @@ msgstr "Ausrichten"
 msgid "Alignment"
 msgstr "Ausrichtung"
 
+#: lazarusidestrconsts:lisemdall
+msgid "All"
+msgstr ""
+
 #: lazarusidestrconsts:lisallfiles
 msgid "All Files"
 msgstr "Alle Dateien"
@@ -2832,6 +2836,10 @@ msgstr "Kontextsensitive Hilfe bearbeiten"
 msgid "Edit context sensitive help"
 msgstr "Kontextsensitive Hilfe bearbeiten"
 
+#: lazarusidestrconsts:liseteditcustomscanners
+msgid "Edit custom scanners (%s)"
+msgstr ""
+
 #: lazarusidestrconsts:srkmeditforcmd
 msgid "Edit keys for command"
 msgstr "Tasten für diesen Befehl editieren"
@@ -2879,6 +2887,10 @@ msgstr "Else"
 #: lazarusidestrconsts:liscodetoolsdefselseif
 msgid "ElseIf"
 msgstr "ElseIf"
+
+#: lazarusidestrconsts:lisemdemtpymethods
+msgid "Emtpy Methods"
+msgstr ""
 
 #: lazarusidestrconsts:lisenableallinsamesource
 msgid "Enable All in same source"
@@ -3635,6 +3647,10 @@ msgstr "Vorwärts suchen"
 #: lazarusidestrconsts:fdmorderforwardone
 msgid "Forward one"
 msgstr "Einen weiter"
+
+#: lazarusidestrconsts:lisemdfoundemptymethods
+msgid "Found empty methods:"
+msgstr ""
 
 #: lazarusidestrconsts:lisfreepascalcompilernotfound
 msgid "Free Pascal Compiler not found"
@@ -5700,6 +5716,10 @@ msgstr "Hinweis: momentan werden nur absolute Pfade unterstützt"
 msgid "Name"
 msgstr "Name"
 
+#: lazarusidestrconsts:lisnameconflict
+msgid "Name conflict"
+msgstr ""
+
 #: lazarusidestrconsts:lisnameofnewprocedure
 msgid "Name of new procedure"
 msgstr "Name der neuen Prozedur"
@@ -5767,6 +5787,14 @@ msgstr "Neue Unit"
 #: lazarusidestrconsts:lisa2pnewclassname
 msgid "New class name:"
 msgstr "Neuer Klassenname"
+
+#: lazarusidestrconsts:liskmnewpackage
+msgid "New package"
+msgstr ""
+
+#: lazarusidestrconsts:lismenunewpackage
+msgid "New package ..."
+msgstr ""
 
 #: lazarusidestrconsts:liskmnewproject
 msgid "New project"
@@ -5995,6 +6023,10 @@ msgstr "Online-Hilfe noch nicht verfügbar"
 #: lazarusidestrconsts:lispldonlyexistingfiles
 msgid "Only existing files"
 msgstr "Nur vorhandene Dateien"
+
+#: lazarusidestrconsts:lisemdonlypublished
+msgid "Only published"
+msgstr ""
 
 #: lazarusidestrconsts:lisonlysearchforwholewords
 msgid "Only search for whole words"
@@ -6363,6 +6395,10 @@ msgstr "Package-Datei nicht gesichert"
 #: lazarusidestrconsts:liskmpackagegraph
 msgid "Package graph"
 msgstr "Package-Graph"
+
+#: lazarusidestrconsts:dlgpldpackagegroup
+msgid "Package group"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangpackageisnodesigntimepackage
 msgid "Package is no designtime package"
@@ -6836,6 +6872,10 @@ msgstr "Protected-Methode"
 msgid "Provides"
 msgstr "Stellt zur Verfügung"
 
+#: lazarusidestrconsts:lisemdpublic
+msgid "Public"
+msgstr ""
+
 #: lazarusidestrconsts:lispublicmethod
 msgid "Public Method"
 msgstr "Public-Methode (öffentlich)"
@@ -6855,6 +6895,10 @@ msgstr "Projekt veröffentlichen"
 #: lazarusidestrconsts:lispublishprojdir
 msgid "Publish project directory"
 msgstr "Veröffentliche Projektverzeichnis"
+
+#: lazarusidestrconsts:lisemdpublished
+msgid "Published"
+msgstr ""
 
 #: lazarusidestrconsts:lispublishedmethod
 msgid "Published Method"
@@ -7032,6 +7076,10 @@ msgstr "Entferne Abhängigkeit"
 msgid "Remove dependency %s%s%s%sfrom package %s%s%s?"
 msgstr "Abhängigkeit %s%s%s%saus dem package %s%s%s entfernen?"
 
+#: lazarusidestrconsts:srkmecremoveemptymethods
+msgid "Remove empty methods"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditremovefile
 msgid "Remove file"
 msgstr "Datei entfernen"
@@ -7063,6 +7111,10 @@ msgstr "Von den bevorzugten Eigenschaften entfernen"
 #: lazarusidestrconsts:lisremovefromproject
 msgid "Remove from project"
 msgstr "Vom Projekt entfernen"
+
+#: lazarusidestrconsts:lisemdremovemethods
+msgid "Remove methods"
+msgstr ""
 
 #: lazarusidestrconsts:liscodehelpdeletepathbutton
 msgid "Remove path"
@@ -7612,6 +7664,10 @@ msgstr "Erneut suchen"
 msgid "Search in comments too"
 msgstr "Auch in Kommentaren suchen"
 
+#: lazarusidestrconsts:lisemdsearchintheseclasssections
+msgid "Search in these class sections:"
+msgstr ""
+
 #: lazarusidestrconsts:lisvsrsearchorfilterphrasesinlist
 msgid "Search or Filter Phrases In List"
 msgstr "Suchen oder Filtern von Ausdrücken in der Liste"
@@ -8067,6 +8123,10 @@ msgstr "Definierte Makros anzeigen"
 #: lazarusidestrconsts:dlgshowedrhints
 msgid "Show editor hints"
 msgstr "Editor-Hinweise anzeigen"
+
+#: lazarusidestrconsts:liscodehelpshowemptymethods
+msgid "Show empty methods"
+msgstr ""
 
 #: lazarusidestrconsts:dlgshoweverything
 msgid "Show everything"
@@ -9044,6 +9104,10 @@ msgstr "Das Package %s%s%s war für die Installation markiert.%sDerzeit unterst�
 msgid "The package %s%s%s was marked.%sCurrently lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of lazarus.%s%sDo you want to rebuild Lazarus now?"
 msgstr "Das Package %s%s%s war markiert.%sDerzeit unterstützt Lazarus nur statisch gelinkte Packages. Eine echte Deinstallation verlangt die Neuerstellung und Neustart von Lazarus.%s%sWollen Sie Lazarus jetzt neu erstellen?"
 
+#: lazarusidestrconsts:listhepackagealreadycontainsaunitwiththisname
+msgid "The package already contains a unit with this name."
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangthepackagefilenameinisnotavalidlazaruspackagename
 msgid "The package file name %s%s%s in%s%s%s%s is not a valid lazarus package name."
 msgstr "Der Package-Dateiname %s%s%s in%s%s%s%s ist kein gültiger Lazarus-Package-Name."
@@ -9352,7 +9416,7 @@ msgstr "Titel und Dateiname benötigt"
 msgid "Title:"
 msgstr "Titel:"
 
-#: lazarusidestrconsts:listodolistcaption
+#: lazarusidestrconsts:lismenuviewtodolist
 msgid "ToDo List"
 msgstr "ToDo-Liste"
 
@@ -10272,10 +10336,6 @@ msgstr "Quelltext (.lfm) anzeigen"
 msgid "View Source Editor"
 msgstr "Quelltexteditor anzeigen"
 
-#: lazarusidestrconsts:lismenuviewprojecttodos
-msgid "View ToDo List ..."
-msgstr "ToDo-Liste ..."
-
 #: lazarusidestrconsts:lispeviewtodolist
 msgid "View ToDo list"
 msgstr "ToDo-Liste ansehen"
@@ -10344,10 +10404,6 @@ msgstr "Menübefehle anzeigen"
 msgid "View messages"
 msgstr "Meldungen anzeigen"
 
-#: lazarusidestrconsts:liskmviewprojecttodolist
-msgid "View project ToDo list"
-msgstr "ToDo-Liste des Projekts anzeigen"
-
 #: lazarusidestrconsts:dlgmainviewforms
 msgid "View project forms"
 msgstr "Projektformulare anzeigen"
@@ -10367,6 +10423,10 @@ msgstr "Projektunits anzeigen"
 #: lazarusidestrconsts:srkmectogglerestrictionbrowser
 msgid "View restriction browser"
 msgstr "Browser für bedingte Eigenschaften anzeigen"
+
+#: lazarusidestrconsts:srkmecviewtodolist
+msgid "View todo list"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecviewunitdependencies
 msgid "View unit dependencies"

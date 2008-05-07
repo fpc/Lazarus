@@ -681,6 +681,10 @@ msgstr "Allinea"
 msgid "Alignment"
 msgstr "Allineamento"
 
+#: lazarusidestrconsts:lisemdall
+msgid "All"
+msgstr ""
+
 #: lazarusidestrconsts:lisallfiles
 msgid "All Files"
 msgstr "Tutti i files"
@@ -2829,6 +2833,10 @@ msgstr ""
 msgid "Edit context sensitive help"
 msgstr ""
 
+#: lazarusidestrconsts:liseteditcustomscanners
+msgid "Edit custom scanners (%s)"
+msgstr ""
+
 #: lazarusidestrconsts:srkmeditforcmd
 msgid "Edit keys for command"
 msgstr "Modifica tasti per il comando"
@@ -2876,6 +2884,10 @@ msgstr "Else"
 #: lazarusidestrconsts:liscodetoolsdefselseif
 msgid "ElseIf"
 msgstr "ElseIf"
+
+#: lazarusidestrconsts:lisemdemtpymethods
+msgid "Emtpy Methods"
+msgstr ""
 
 #: lazarusidestrconsts:lisenableallinsamesource
 msgid "Enable All in same source"
@@ -3632,6 +3644,10 @@ msgstr ""
 #: lazarusidestrconsts:fdmorderforwardone
 msgid "Forward one"
 msgstr "Avanti di uno"
+
+#: lazarusidestrconsts:lisemdfoundemptymethods
+msgid "Found empty methods:"
+msgstr ""
 
 #: lazarusidestrconsts:lisfreepascalcompilernotfound
 msgid "Free Pascal Compiler not found"
@@ -5697,6 +5713,10 @@ msgstr "Attenzione: ora sono validi solo i percorsi assoluti"
 msgid "Name"
 msgstr "Nome"
 
+#: lazarusidestrconsts:lisnameconflict
+msgid "Name conflict"
+msgstr ""
+
 #: lazarusidestrconsts:lisnameofnewprocedure
 msgid "Name of new procedure"
 msgstr "Nome della nuova procedura"
@@ -5764,6 +5784,14 @@ msgstr "Nuova unit"
 #: lazarusidestrconsts:lisa2pnewclassname
 msgid "New class name:"
 msgstr "Nome nuova classe:"
+
+#: lazarusidestrconsts:liskmnewpackage
+msgid "New package"
+msgstr ""
+
+#: lazarusidestrconsts:lismenunewpackage
+msgid "New package ..."
+msgstr ""
 
 #: lazarusidestrconsts:liskmnewproject
 msgid "New project"
@@ -5991,6 +6019,10 @@ msgstr "Guida in linea non ancora implementata"
 
 #: lazarusidestrconsts:lispldonlyexistingfiles
 msgid "Only existing files"
+msgstr ""
+
+#: lazarusidestrconsts:lisemdonlypublished
+msgid "Only published"
 msgstr ""
 
 #: lazarusidestrconsts:lisonlysearchforwholewords
@@ -6360,6 +6392,10 @@ msgstr "File del pacchetto non salvato"
 #: lazarusidestrconsts:liskmpackagegraph
 msgid "Package graph"
 msgstr "Pacchetto grafico"
+
+#: lazarusidestrconsts:dlgpldpackagegroup
+msgid "Package group"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangpackageisnodesigntimepackage
 msgid "Package is no designtime package"
@@ -6833,6 +6869,10 @@ msgstr "Metodo protetto"
 msgid "Provides"
 msgstr ""
 
+#: lazarusidestrconsts:lisemdpublic
+msgid "Public"
+msgstr ""
+
 #: lazarusidestrconsts:lispublicmethod
 msgid "Public Method"
 msgstr "Metodo pubblico"
@@ -6852,6 +6892,10 @@ msgstr "Pubblica il progetto"
 #: lazarusidestrconsts:lispublishprojdir
 msgid "Publish project directory"
 msgstr "Pubblica directory progetto"
+
+#: lazarusidestrconsts:lisemdpublished
+msgid "Published"
+msgstr ""
 
 #: lazarusidestrconsts:lispublishedmethod
 msgid "Published Method"
@@ -7029,6 +7073,10 @@ msgstr "Rimuovi dipendenza"
 msgid "Remove dependency %s%s%s%sfrom package %s%s%s?"
 msgstr "Rimuovere le dipendenze %s%s%s%sdal pacchetto %s%s%s?"
 
+#: lazarusidestrconsts:srkmecremoveemptymethods
+msgid "Remove empty methods"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditremovefile
 msgid "Remove file"
 msgstr "Rimuovi file"
@@ -7060,6 +7108,10 @@ msgstr "Rimuovi dalle proprietà favorite"
 #: lazarusidestrconsts:lisremovefromproject
 msgid "Remove from project"
 msgstr "Rimuovi dal progetto"
+
+#: lazarusidestrconsts:lisemdremovemethods
+msgid "Remove methods"
+msgstr ""
 
 #: lazarusidestrconsts:liscodehelpdeletepathbutton
 msgid "Remove path"
@@ -7609,6 +7661,10 @@ msgstr "Cerca ancora"
 msgid "Search in comments too"
 msgstr "Cerca anche nei commenti"
 
+#: lazarusidestrconsts:lisemdsearchintheseclasssections
+msgid "Search in these class sections:"
+msgstr ""
+
 #: lazarusidestrconsts:lisvsrsearchorfilterphrasesinlist
 msgid "Search or Filter Phrases In List"
 msgstr ""
@@ -8064,6 +8120,10 @@ msgstr "Mostra le macro definite"
 #: lazarusidestrconsts:dlgshowedrhints
 msgid "Show editor hints"
 msgstr "Mostra dritte dell'editor"
+
+#: lazarusidestrconsts:liscodehelpshowemptymethods
+msgid "Show empty methods"
+msgstr ""
 
 #: lazarusidestrconsts:dlgshoweverything
 msgid "Show everything"
@@ -9041,6 +9101,10 @@ msgstr "Il pacchetto %s%s%s è stato marchiato per l'installazione.%sAttualmente
 msgid "The package %s%s%s was marked.%sCurrently lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of lazarus.%s%sDo you want to rebuild Lazarus now?"
 msgstr "Il pacchetto %s%s%s è stato marcato.%sAttualmente lazarus supporta solo pacchetti con link statico. La vera disinstallazione necessita dell'operazione di build e della ripartenza di lazarus.%s%sVuoi fare subito un rebuild?"
 
+#: lazarusidestrconsts:listhepackagealreadycontainsaunitwiththisname
+msgid "The package already contains a unit with this name."
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangthepackagefilenameinisnotavalidlazaruspackagename
 msgid "The package file name %s%s%s in%s%s%s%s is not a valid lazarus package name."
 msgstr "Il nome del pacchetto %s%s%s in%s%s%s%s non è un nome pacchetto lazarus valido."
@@ -9349,7 +9413,7 @@ msgstr "Sono richiesti un titolo ed un nome file"
 msgid "Title:"
 msgstr "Titolo:"
 
-#: lazarusidestrconsts:listodolistcaption
+#: lazarusidestrconsts:lismenuviewtodolist
 msgid "ToDo List"
 msgstr "Elenco ToDo"
 
@@ -10269,10 +10333,6 @@ msgstr "Visualizza il sorgente (.lfm)"
 msgid "View Source Editor"
 msgstr "Mostra l'editor dei sorgenti"
 
-#: lazarusidestrconsts:lismenuviewprojecttodos
-msgid "View ToDo List ..."
-msgstr "Vista lista cose da fare ..."
-
 #: lazarusidestrconsts:lispeviewtodolist
 msgid "View ToDo list"
 msgstr ""
@@ -10341,10 +10401,6 @@ msgstr "Comandi per il menu visualizza"
 msgid "View messages"
 msgstr "Mostra i messaggi"
 
-#: lazarusidestrconsts:liskmviewprojecttodolist
-msgid "View project ToDo list"
-msgstr ""
-
 #: lazarusidestrconsts:dlgmainviewforms
 msgid "View project forms"
 msgstr "Visualizza le form del progetto"
@@ -10363,6 +10419,10 @@ msgstr "Visualizza le unit del progetto"
 
 #: lazarusidestrconsts:srkmectogglerestrictionbrowser
 msgid "View restriction browser"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecviewtodolist
+msgid "View todo list"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecviewunitdependencies

@@ -788,6 +788,10 @@ msgstr ""
 msgid "View Component Palette"
 msgstr ""
 
+#: lazarusidestrconsts:lismenuviewtodolist
+msgid "ToDo List"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuviewidespeedbuttons
 msgid "View IDE speed buttons"
 msgstr ""
@@ -872,10 +876,6 @@ msgstr ""
 msgid "View project source"
 msgstr ""
 
-#: lazarusidestrconsts:liskmviewprojecttodolist
-msgid "View project ToDo list"
-msgstr ""
-
 #: lazarusidestrconsts:lismenuaddtoproject
 msgid "Add editor file to Project"
 msgstr ""
@@ -886,10 +886,6 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuviewsource
 msgid "&View Source"
-msgstr ""
-
-#: lazarusidestrconsts:lismenuviewprojecttodos
-msgid "View ToDo List ..."
 msgstr ""
 
 #: lazarusidestrconsts:lismenuprojectoptions
@@ -1026,6 +1022,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuaddbpsource
 msgid "Source breakpoint"
+msgstr ""
+
+#: lazarusidestrconsts:lismenunewpackage
+msgid "New package ..."
 msgstr ""
 
 #: lazarusidestrconsts:lismenuopenpackage
@@ -4144,6 +4144,14 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
+#: lazarusidestrconsts:lisemdemtpymethods
+msgid "Emtpy Methods"
+msgstr ""
+
+#: lazarusidestrconsts:lisemdsearchintheseclasssections
+msgid "Search in these class sections:"
+msgstr ""
+
 #: lazarusidestrconsts:lisunabletoloadpackage
 msgid "Unable to load package %s%s%s"
 msgstr ""
@@ -4544,6 +4552,10 @@ msgstr ""
 msgid "Origin"
 msgstr ""
 
+#: lazarusidestrconsts:dlgpldpackagegroup
+msgid "Package group"
+msgstr ""
+
 #: lazarusidestrconsts:lispldexists
 msgid "Exists"
 msgstr ""
@@ -4590,6 +4602,30 @@ msgstr ""
 
 #: lazarusidestrconsts:lisprotected
 msgid "Protected"
+msgstr ""
+
+#: lazarusidestrconsts:lisemdpublic
+msgid "Public"
+msgstr ""
+
+#: lazarusidestrconsts:lisemdpublished
+msgid "Published"
+msgstr ""
+
+#: lazarusidestrconsts:lisemdall
+msgid "All"
+msgstr ""
+
+#: lazarusidestrconsts:lisemdonlypublished
+msgid "Only published"
+msgstr ""
+
+#: lazarusidestrconsts:lisemdfoundemptymethods
+msgid "Found empty methods:"
+msgstr ""
+
+#: lazarusidestrconsts:lisemdremovemethods
+msgid "Remove methods"
 msgstr ""
 
 #: lazarusidestrconsts:lisexpandallpackages
@@ -4950,6 +4986,10 @@ msgstr ""
 
 #: lazarusidestrconsts:ueminserttodo
 msgid "Insert Todo"
+msgstr ""
+
+#: lazarusidestrconsts:liscodehelpshowemptymethods
+msgid "Show empty methods"
 msgstr ""
 
 #: lazarusidestrconsts:uemhighlighter
@@ -5804,6 +5844,10 @@ msgstr ""
 msgid "View IDE speed buttons"
 msgstr ""
 
+#: lazarusidestrconsts:srkmecviewtodolist
+msgid "View todo list"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecwordcompletion
 msgid "Word completion"
 msgstr ""
@@ -5854,6 +5898,10 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecshowabstractmethods
 msgid "Show abstract methods"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecremoveemptymethods
+msgid "Remove empty methods"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecbuild
@@ -8004,6 +8052,10 @@ msgstr ""
 msgid "Maximum Version (optional):"
 msgstr ""
 
+#: lazarusidestrconsts:liskmnewpackage
+msgid "New package"
+msgstr ""
+
 #: lazarusidestrconsts:liscomppalopenpackage
 msgid "Open package"
 msgstr ""
@@ -8414,6 +8466,14 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmangpackagenamealreadyexists
 msgid "Package name already exists"
+msgstr ""
+
+#: lazarusidestrconsts:lisnameconflict
+msgid "Name conflict"
+msgstr ""
+
+#: lazarusidestrconsts:listhepackagealreadycontainsaunitwiththisname
+msgid "The package already contains a unit with this name."
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthereisalreadyanotherpackagewiththename
@@ -11418,5 +11478,9 @@ msgstr ""
 
 #: lazarusidestrconsts:lislocalsdlgvalue
 msgid "Value"
+msgstr ""
+
+#: lazarusidestrconsts:liseteditcustomscanners
+msgid "Edit custom scanners (%s)"
 msgstr ""
 
