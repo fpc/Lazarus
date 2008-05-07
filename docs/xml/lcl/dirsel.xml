@@ -9,9 +9,6 @@
     <module name="DirSel">
       <short>A dialog for displaying a directory structure and selecting a directory</short>
       <descr/>
-      <seealso><link id="#lcl.editbtn.tdirectoryedit">TDirectoryEdit</link>
-	      <link id="#lcl.dialogs.tselectdirectorydialog">TSelectDirectoryDialog</link>
-      </seealso>
       <!-- unresolved type reference Visibility: default -->
       <element name="Classes">
         <short/>
@@ -90,7 +87,9 @@
           <var>TDirSelDlg</var> - a dialog for selecting a directory from a TreeView list</short>
         <descr/>
         <errors/>
-        <seealso/>
+	<seealso><link id="#lcl.editbtn.tdirectoryedit">TDirectoryEdit</link>
+		<link id="#lcl.dialogs.tselectdirectorydialog">TSelectDirectoryDialog</link>
+      </seealso>
       </element>
       <!-- variable Visibility: default -->
       <element name="TDirSelDlg.Button1">
