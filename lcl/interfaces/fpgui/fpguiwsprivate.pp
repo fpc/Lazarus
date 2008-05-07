@@ -34,12 +34,13 @@ interface
 uses
   // LCL
   LCLType, LMessages, LCLProc, Controls, Classes, SysUtils, Forms,
-  LCLIntf,
+  LCLIntf, Menus,
   // widgetset
   WSControls, WSLCLClasses, WSProc,
   // interface
   gfx_widget, gui_form, gui_button, gui_combobox, gui_dialogs,
-  gui_edit, gui_checkbox, gui_radiobutton, gui_tab, gui_memo;
+  gui_edit, gui_checkbox, gui_radiobutton, gui_tab, gui_memo,
+  gui_menu;
 
 
 type
@@ -135,6 +136,7 @@ type
     procedure SetText(const AText: String); override;
     function  GetText: String; override;
   public
+    MenuBar: TfpgMenuBar;
     { Other methods }
     function Form: TfpgForm;
   end;
@@ -259,6 +261,23 @@ type
     function Memo: TfpgMemo;
   end;
   
+  { TFPGUIPrivatePopUpMenu }
+
+  TFPGUIPrivatePopUpMenu = class(TFPGUIPrivateWidget)
+  private
+    FLCLMenu: TPopUpMenu;
+    FItems: TMenuItem;
+  protected
+  public
+    { Constructors / Destructors }
+    constructor Create(ALCLObject: TPopUpMenu; AItems: TMenuItem); virtual;
+    { Virtual methods }
+  public
+    { Other methods }
+    function PopUpMenu: TfpgPopUpMenu;
+    procedure PopUp(X, Y: Integer);
+  end;
+
 implementation
 
 uses
@@ -284,17 +303,11 @@ begin
 end;
 
 function TFPGUIPrivateWidget.GetParentContainerWidget: TfpgWidget;
-var
-  ParentContainer: TFPGUIPrivateContainer;
 begin
+  // Note, if the Handle of the parent doesn't exist, it's automatically
+  // created
   if Assigned(LCLObject.Parent) then
-  begin
-    ParentContainer := TFPGUIPrivateContainer(LCLObject.Parent.Handle);
-    
-    if Assigned(ParentContainer) then
-      Result := ParentContainer.Widget
-    else Result := nil;
-  end
+    Result := TFPGUIPrivateContainer(LCLObject.Parent.Handle).Widget
   else
     Result := nil;
 end;
@@ -484,6 +497,9 @@ begin
 
   Widget := TfpgForm.Create(nil);
   Form.SetPosition(AParams.X, AParams.Y, AParams.Width, AParams.Height);
+
+  MenuBar := TfpgMenuBar.Create(Widget);
+  MenuBar.Visible := False;
 end;
 
 {------------------------------------------------------------------------------
@@ -785,6 +801,30 @@ end;
 function TFPGUIPrivateMemo.GetText: String;
 begin
   Result := Memo.Text;
+end;
+
+{ TFPGUIPrivatePopUpMenu }
+
+constructor TFPGUIPrivatePopUpMenu.Create(ALCLObject: TPopUpMenu; AItems: TMenuItem);
+begin
+  FLCLMenu := ALCLObject;
+  FItems := AItems;
+
+  // CreateWidget
+
+  Widget := TfpgPopUpMenu.Create(nil);
+
+  SetEvents;
+end;
+
+function TFPGUIPrivatePopUpMenu.PopUpMenu: TfpgPopUpMenu;
+begin
+  Result := TfpgPopUpMenu(Widget);
+end;
+
+procedure TFPGUIPrivatePopUpMenu.PopUp(X, Y: Integer);
+begin
+  PopUpMenu.ShowAt(PopUpMenu, X, Y);
 end;
 
 end.

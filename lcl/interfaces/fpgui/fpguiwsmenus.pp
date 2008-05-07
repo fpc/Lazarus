@@ -27,9 +27,12 @@ unit FpGuiWSMenus;
 interface
 
 uses
-  Menus,
-  WSMenus, WSLCLClasses, LCLType,
-  fpguiobjects;
+  // LCL
+  Menus, Forms,
+  // widgetset
+  WSMenus, WSLCLClasses, LCLType, fpguiobjects, fpguiwsprivate,
+  // interface
+  gui_menu;
 
 type
 
@@ -58,7 +61,7 @@ type
   private
   protected
   public
-//    class function  CreateHandle(const AMenu: TMenu): HMENU; override;
+    class function  CreateHandle(const AMenu: TMenu): HMENU; override;
 //    class procedure SetBiDiMode(const AMenu: TMenu; UseRightToLeftAlign, UseRightToLeftReading : Boolean); override;
   end;
 
@@ -96,7 +99,7 @@ end;
 
 class procedure TFpGuiWSMenuItem.DestroyHandle(const AMenuItem: TMenuItem);
 begin
-
+  TFPGUIPrivateMenuItem(AMenuItem.Handle).Free;
 end;
 
 class procedure TFpGuiWSMenuItem.SetCaption(const AMenuItem: TMenuItem;
@@ -123,12 +126,42 @@ begin
 
 end;
 
+{ TFpGuiWSMenu }
+
+class function TFpGuiWSMenu.CreateHandle(const AMenu: TMenu): HMENU;
+var
+  MenuBar: TfpgMenuBar;
+  Menu: TFPGUIPrivatePopUpMenu;
+begin
+  { If the menu is a main menu, there is no need to create a handle for it.
+    It's already created on the window }
+  if (AMenu is TMainMenu) and (AMenu.Owner is TCustomForm) then
+  begin
+    MenuBar := TFPGUIPrivateWindow(TCustomForm(AMenu.Owner).Handle).MenuBar;
+
+    Result := HMENU(MenuBar);
+  end
+  else if (AMenu is TPopUpMenu) then
+  begin
+    Menu := TFPGUIPrivatePopUpMenu.Create(TPopUpMenu(AMenu), AMenu.Items);
+
+    Result := HMENU(Menu);
+  end;
+
+  {$ifdef VerboseFPGUIPrivate}
+    Write('[TFpGuiWSMenu.CreateHandle] ');
+
+    if (AMenu is TMainMenu) then Write('IsMainMenu ');
+
+    WriteLn(' Handle: ', dbghex(Result), ' Name: ', AMenu.Name);
+  {$endif}
+end;
+
 { TFpGuiWSPopupMenu }
 
-class procedure TFpGuiWSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X,
-  Y: integer);
+class procedure TFpGuiWSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X, Y: integer);
 begin
-
+  TFPGUIPrivatePopUpMenu(APopUpMenu.Handle).PopUp(X, Y);
 end;
 
 initialization
@@ -140,7 +173,7 @@ initialization
 // which actually implement something
 ////////////////////////////////////////////////////
   RegisterWSComponent(TMenuItem, TFpGuiWSMenuItem);
-//  RegisterWSComponent(TMenu, TFpGuiWSMenu);
+  RegisterWSComponent(TMenu, TFpGuiWSMenu);
 //  RegisterWSComponent(TMainMenu, TFpGuiWSMainMenu);
   RegisterWSComponent(TPopupMenu, TFpGuiWSPopupMenu);
 ////////////////////////////////////////////////////

@@ -362,7 +362,7 @@ var
   Menu: TQtMenu;
 begin
   { If the menu is a main menu, there is no need to create a handle for it.
-    It´s already created on the window }
+    It's already created on the window }
   if (AMenu is TMainMenu) and (AMenu.Owner is TCustomForm) then
   begin
     MenuBar := TQtMainWindow(TCustomForm(AMenu.Owner).Handle).MenuBar;
