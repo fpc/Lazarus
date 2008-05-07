@@ -41,14 +41,22 @@ type
   protected
     procedure SetLookupRoot(const AValue: TComponent); override;
   public
+    constructor Create(AOwner: TComponent); override;
     procedure DoLoadBounds; override;
     procedure DoSaveBounds; override;
+    procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); override;
   end;
   
   
 implementation
 
 { TFrameDesignerForm }
+
+constructor TFrameDesignerForm.Create(AOwner: TComponent);
+begin
+  Position := poDefaultPosOnly; // let it be at default position since frame TopLeft is always (0,0)
+  inherited Create(AOwner);
+end;
 
 procedure TFrameDesignerForm.SetLookupRoot(const AValue: TComponent);
 begin
@@ -61,44 +69,45 @@ procedure TFrameDesignerForm.DoLoadBounds;
 
   procedure SetNewBounds(NewLeft, NewTop, NewWidth, NewHeight: integer);
   begin
-    if NewWidth<= 0 then NewWidth := Width;
-    if NewHeight<= 0 then NewHeight := Height;
+    if NewWidth <= 0 then NewWidth := Width;
+    if NewHeight <= 0 then NewHeight := Height;
 
     NewWidth := Max(20, Min(NewWidth, Screen.Width - 50));
     NewHeight := Max(20, Min(NewHeight, Screen.Height - 50));
-    SetBounds(Left, Top, Max(20, NewWidth), Max(NewHeight, 20));
+    SetBounds(NewLeft, NewTop, Max(20, NewWidth), Max(NewHeight, 20));
   end;
 
 var
   CurFrame: TCustomFrame;
-  NewWidth: Integer;
-  NewHeight: Integer;
 begin
   inherited;
 
   if LookupRoot is TCustomFrame then 
   begin
     CurFrame := TCustomFrame(LookupRoot);
-    NewWidth := CurFrame.Width;
-    NewHeight := CurFrame.Height;
-    
-    SetNewBounds(Left, Top, NewWidth, NewHeight);
+    SetNewBounds(Left, Top, CurFrame.Width, CurFrame.Height);
   end 
   else 
   if LookupRoot <> nil then 
-  begin
-    // ?
-  end;
+    DebugLn(['Unsupported component type in TFrameDesignerForm.DoLoadBounds: ', LookupRoot.ClassName])
 end;
 
 procedure TFrameDesignerForm.DoSaveBounds;
 begin
-  if LookupRoot is TFrame then 
+  if LookupRoot is TCustomFrame then 
     TFrame(LookupRoot).SetBounds(0, 0, Width, Height)
   else 
   if LookupRoot <> nil then
-    ;//?
+    DebugLn(['Unsupported component type in TFrameDesignerForm.DoSaveBounds: ', LookupRoot.ClassName]);
   inherited;  
+end;
+
+procedure TFrameDesignerForm.SetBounds(aLeft, aTop, aWidth, aHeight: integer);
+begin
+  // auto apply width and height
+  inherited SetBounds(aLeft, aTop, aWidth, aHeight);
+  if (LookupRoot <> nil) and (LookupRoot is TCustomFrame) then
+    TCustomFrame(LookupRoot).SetBounds(0, 0, Width, Height);
 end;
 
 end.
