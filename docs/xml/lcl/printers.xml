@@ -29,8 +29,7 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TPrinter">
-        <short>
-          <var>TPrinter</var> - class defining printer to be used in Lazarus applications</short>
+        <short/>
         <descr/>
         <errors/>
         <seealso/>
@@ -505,7 +504,8 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TPrinter">
-        <short/>
+	<short>
+          <var>TPrinter</var> - class defining printer to be used in Lazarus applications</short>
         <descr/>
         <errors/>
         <seealso/>
