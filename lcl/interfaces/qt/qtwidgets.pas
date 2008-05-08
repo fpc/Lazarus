@@ -2304,6 +2304,15 @@ end;
 procedure TQtWidget.Activate;
 begin
   QWidget_activateWindow(Widget);
+  {$IFDEF LINUX}
+  // qt X11 bug ?  activates window but it's not in
+  // front of others.
+  {$note Check this with next qt version (>4.3.4)}
+  if QWidget_isWindow(Widget)
+  and not QWidget_isModal(Widget)
+  and (QApplication_activeWindow() <> Widget) then
+    QWidget_raise(Widget);
+  {$ENDIF}
 end;
 
 procedure TQtWidget.BringToFront;
