@@ -2470,6 +2470,8 @@ resourcestring
   
   // new dialog
   lisNewDlgNoItemSelected = 'No item selected';
+  lisErrorOpeningComponent = 'Error opening component';
+  lisUnableToOpenAncestorComponent = 'Unable to open ancestor component';
   lisNewDlgPleaseSelectAnItemFirst = 'Please select an item first.';
   lisNewDlgCreateANewEditorFileChooseAType = 'Create a new editor file.%'
     +'sChoose a type.';
@@ -2477,6 +2479,9 @@ resourcestring
     +'type.';
   lisChooseOneOfTheseItemsToCreateANewFile = 'Choose one of these items to '
     +'create a new File';
+  lisChooseOneOfTheseItemsToInheritFromAnExistingOne = 'Choose one of these items to '
+    +'inherit from an existing one';
+  lisInheritedItem = 'Inherited Item';
   lisChooseOneOfTheseItemsToCreateANewProject = 'Choose one of these items to '
     +'create a new Project';
   lisChooseOneOfTheseItemsToCreateANewPackage = 'Choose one of these items to '
@@ -2487,6 +2492,7 @@ resourcestring
   lisNewDlgCreateANewUnitWithADataModule = 'Create a new unit with a datamodule.';
   lisNewDlgCreateANewUnitWithAFrame = 'Create a new unit with a frame';
   lisNewDlgCreateANewEmptyTextFile = 'Create a new empty text file.';
+  lisNewDlgInheritAnExistingComponent = 'Inherit from an existing component.';
   lisASimplePascalProgramFileThisCanBeUsedForQuickAndDi = 'A simple Pascal '
     +'Program file.%sThis can be used for quick and dirty testing.%sBetter '
     +'create a new project.';

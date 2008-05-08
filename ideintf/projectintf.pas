@@ -32,7 +32,10 @@ const
   FileDescNameDatamodule = 'Datamodule';
   FileDescNameFrame = 'Frame';
   FileDescNameText = 'Text';
-  
+
+  InheritedItemsGroupName = 'Inherited Items';
+  FileDescNameLCLInheritedComponent = 'Inherited Component';
+
   ProjDescGroupName = 'Project';
   ProjDescNameApplication = 'Application';
   ProjDescNameProgram = 'Program';
@@ -347,7 +350,7 @@ type
     constructor Create; virtual;
     function GetLocalizedName: string; virtual;
     function GetLocalizedDescription: string; virtual;
-    function GetResourceSource: string; virtual;
+    function GetResourceSource(const ResourceName: string): string; virtual;
     procedure Release;
     procedure Reference;
     function CreateSource(const Filename, SourceName,
@@ -670,44 +673,54 @@ function CompilationExecutableTypeNameToType(const s: string
 
 procedure RegisterProjectFileDescriptor(FileDesc: TProjectFileDescriptor);
 procedure RegisterProjectDescriptor(ProjDesc: TProjectDescriptor);
-procedure RegisterProjectFileDescriptor(FileDesc: TProjectFileDescriptor; ACategory : String);
-procedure RegisterProjectDescriptor(ProjDesc: TProjectDescriptor; ACategory : String);
+procedure RegisterProjectFileDescriptor(FileDesc: TProjectFileDescriptor;
+                       const ACategory : String;
+                       DefaultCreateFlag: TNewIDEItemFlag = niifCopy;
+                       const AllowedCreateFlags: TNewIDEItemFlags = [niifCopy]);
+procedure RegisterProjectDescriptor(ProjDesc: TProjectDescriptor;
+                       const ACategory : String;
+                       DefaultCreateFlag: TNewIDEItemFlag = niifCopy;
+                       const AllowedCreateFlags: TNewIDEItemFlags = [niifCopy]);
 
 
 implementation
 
 
 procedure RegisterProjectFileDescriptor(FileDesc: TProjectFileDescriptor);
-
 begin
   RegisterProjectFileDescriptor(FileDesc,FileDescGroupName);
 end;
 
-procedure RegisterProjectFileDescriptor(FileDesc: TProjectFileDescriptor; ACategory : String);
+procedure RegisterProjectFileDescriptor(FileDesc: TProjectFileDescriptor;
+  const ACategory : String;
+  DefaultCreateFlag: TNewIDEItemFlag; const AllowedCreateFlags: TNewIDEItemFlags);
 var
   NewItemFile: TNewItemProjectFile;
 begin
   ProjectFileDescriptors.RegisterFileDescriptor(FileDesc);
   if FileDesc.VisibleInNewDialog then begin
-    NewItemFile:=TNewItemProjectFile.Create(FileDesc.Name,niifCopy,[niifCopy]);
+    NewItemFile:=TNewItemProjectFile.Create(FileDesc.Name,
+                                          DefaultCreateFlag,AllowedCreateFlags);
     NewItemFile.Descriptor:=FileDesc;
     RegisterNewDialogItem(ACategory,NewItemFile);
   end;
 end;
 
 procedure RegisterProjectDescriptor(ProjDesc: TProjectDescriptor);
-
 begin
   RegisterProjectDescriptor(ProjDesc,ProjDescGroupName);
 end;
 
-procedure RegisterProjectDescriptor(ProjDesc: TProjectDescriptor; ACategory : String);
+procedure RegisterProjectDescriptor(ProjDesc: TProjectDescriptor;
+  const ACategory : String;
+  DefaultCreateFlag: TNewIDEItemFlag; const AllowedCreateFlags: TNewIDEItemFlags);
 var
   NewItemProject: TNewItemProject;
 begin
   ProjectDescriptors.RegisterDescriptor(ProjDesc);
   if ProjDesc.VisibleInNewDialog then begin
-    NewItemProject:=TNewItemProject.Create(ProjDesc.Name,niifCopy,[niifCopy]);
+    NewItemProject:=TNewItemProject.Create(ProjDesc.Name,
+                                          DefaultCreateFlag,AllowedCreateFlags);
     NewItemProject.Descriptor:=ProjDesc;
     RegisterNewDialogItem(ACategory,NewItemProject);
   end;
@@ -863,7 +876,7 @@ begin
   Result:=GetLocalizedName;
 end;
 
-function TProjectFileDescriptor.GetResourceSource: string;
+function TProjectFileDescriptor.GetResourceSource(const ResourceName: string): string;
 // This function can override the automatic creation of the .lfm file source.
 begin
   Result:=''; // if empty, the IDE will create the source automatically
@@ -1226,4 +1239,5 @@ initialization
   ProjectFileDescriptors:=nil;
 
 end.
+
 

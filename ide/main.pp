@@ -691,6 +691,9 @@ type
         const CursorPosition: TPoint; TopLine: integer;
         PageIndex: integer; Flags: TOpenFlags): TModalResult; override;
     function DoRevertEditorFile(const Filename: string): TModalResult; override;
+    function DoOpenComponent(const UnitFilename: string; OpenFlags: TOpenFlags;
+                             CloseFlags: TCloseFlags;
+                             out Component: TComponent): TModalResult; override;
     function DoSaveAll(Flags: TSaveFlags): TModalResult;
     procedure DoRestart;
     procedure DoExecuteRemoteControl;
@@ -2028,6 +2031,7 @@ end;
 procedure TMainIDE.SetupStandardProjectTypes;
 begin
   NewIDEItems.Add(TNewLazIDEItemCategoryFile.Create(FileDescGroupName));
+  NewIDEItems.Add(TNewLazIDEItemCategoryInheritedItem.Create(InheritedItemsGroupName));
   NewIDEItems.Add(TNewLazIDEItemCategoryProject.Create(ProjDescGroupName));
 
   // file descriptors
@@ -2042,6 +2046,8 @@ begin
 {$ENDIF}
   RegisterProjectFileDescriptor(TFileDescSimplePascalProgram.Create);
   RegisterProjectFileDescriptor(TFileDescText.Create);
+
+  RegisterProjectFileDescriptor(TFileDescInheritedComponent.Create, InheritedItemsGroupName);
 
   // project descriptors
   LazProjectDescriptors:=TLazProjectDescriptors.Create;
@@ -4351,6 +4357,69 @@ begin
   Result:=mrOk;
 end;
 
+function TMainIDE.DoOpenComponent(const UnitFilename: string;
+  OpenFlags: TOpenFlags; CloseFlags: TCloseFlags;
+  out Component: TComponent): TModalResult;
+var
+  AnUnitInfo: TUnitInfo;
+  LFMFilename: String;
+  UnitCode: TCodeBuffer;
+  LFMCode: TCodeBuffer;
+begin
+  if not FileExistsInIDE(UnitFilename,[]) then begin
+    DebugLn(['TMainIDE.DoOpenComponent file not found ',UnitFilename]);
+    exit(mrCancel);
+  end;
+  AnUnitInfo:=Project1.UnitInfoWithFilename(UnitFilename);
+  if (not (ofRevert in OpenFlags))
+  and (AnUnitInfo<>nil) and (AnUnitInfo.Component<>nil) then begin
+    // already open
+    Component:=AnUnitInfo.Component;
+    Result:=mrOk;
+    exit;
+  end;
+  
+  LFMFilename:=ChangeFileExt(UnitFilename,'.lfm');
+  if not FileExistsInIDE(LFMFilename,[]) then begin
+    DebugLn(['TMainIDE.DoOpenComponent file not found ',LFMFilename]);
+    exit(mrCancel);
+  end;
+
+  // load unit source
+  Result:=LoadCodeBuffer(UnitCode,UnitFilename,[lbfCheckIfText]);
+  if Result<>mrOk then begin
+    debugln('TMainIDE.DoOpenComponent Failed loading ',UnitFilename);
+    exit;
+  end;
+
+  // create unit info
+  if AnUnitInfo=nil then begin
+    AnUnitInfo:=TUnitInfo.Create(UnitCode);
+    AnUnitInfo.ReadUnitNameFromSource(true);
+    Project1.AddFile(AnUnitInfo,false);
+  end;
+
+  // load lfm source
+  Result:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText]);
+  if Result<>mrOk then begin
+    debugln('TMainIDE.DoOpenComponent Failed loading ',LFMFilename);
+    exit;
+  end;
+
+  // load resource
+  Result:=DoLoadLFM(AnUnitInfo,LFMCode,OpenFlags,CloseFlags);
+  if Result<>mrOk then begin
+    debugln('TMainIDE.DoOpenComponent DoLoadLFM failed ',LFMFilename);
+    exit;
+  end;
+  
+  Component:=AnUnitInfo.Component;
+  if Component<>nil then
+    Result:=mrOk
+  else
+    Result:=mrCancel;
+end;
+
 function TMainIDE.DoShowSaveFileAsDialog(AnUnitInfo: TUnitInfo;
   var ResourceCode: TCodeBuffer): TModalResult;
 var
@@ -5958,7 +6027,7 @@ begin
   AnUnitInfo.LoadingComponent:=true;
   try
     // search component lfm
-    debugln('TMainIDE.DoLoadComponentDependencyHidden ',AnUnitInfo.Filename,' AComponentName=',AComponentClassName,' AComponentClass=',dbgsName(AComponentClass));
+    debugln('TMainIDE.DoLoadComponentDependencyHidden ',AnUnitInfo.Filename,' AComponentClassName=',AComponentClassName,' AComponentClass=',dbgsName(AComponentClass));
 
     // first search the resource of ComponentUnitInfo
     if ComponentUnitInfo<>nil then begin
@@ -6714,7 +6783,8 @@ var
   LFMCode: TCodeBuffer;
   AProject: TProject;
 begin
-  debugln('TMainIDE.DoNewEditorFile A NewFilename=',NewFilename);
+  //debugln('TMainIDE.DoNewEditorFile A NewFilename=',NewFilename);
+  // empty NewFilename is ok, it will be auto generated
   SaveSourceEditorChangesToCodeCache(-1);
 
   // convert macros in filename
@@ -6799,8 +6869,10 @@ begin
 
     // create component
     AncestorType:=NewFileDescriptor.ResourceClass;
+    //DebugLn(['TMainIDE.DoNewFile AncestorType=',dbgsName(AncestorType),' ComponentName',NewUnitInfo.ComponentName]);
     if AncestorType<>nil then begin
-      LFMSourceText:=NewFileDescriptor.GetResourceSource;
+      LFMSourceText:=NewFileDescriptor.GetResourceSource(NewUnitInfo.ComponentName);
+      //DebugLn(['TMainIDE.DoNewFile LFMSourceText=',LFMSourceText]);
       if LFMSourceText<>'' then begin
         // the NewFileDescriptor provides a custom .lfm source
         // -> put it into a new .lfm buffer and load it
@@ -6809,6 +6881,7 @@ begin
         LFMCode.Source:=LFMSourceText;
         //debugln('TMainIDE.DoNewEditorFile A ',LFMFilename);
         Result:=DoLoadLFM(NewUnitInfo,LFMCode,[],[]);
+        //DebugLn(['TMainIDE.DoNewFile ',dbgsName(NewUnitInfo.Component),' ',dbgsName(NewUnitInfo.Component.ClassParent)]);
       end else begin
         // create a default form/datamodule
         Result:=CreateNewForm(NewUnitInfo,AncestorType,nil);
@@ -14382,4 +14455,5 @@ initialization
   ShowSplashScreen:=true;
 
 end.
+
 

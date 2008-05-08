@@ -233,7 +233,6 @@ type
     function GetLocalizedDescription: string; override;
   end;
 
-
   { TFileDescPascalUnitWithDataModule }
 
   TFileDescPascalUnitWithDataModule = class(TFileDescPascalUnitWithResource)
@@ -254,6 +253,32 @@ type
     function GetLocalizedDescription: string; override;
   end;
 
+  { TFileDescInheritedItem }
+
+  TFileDescInheritedItem = class(TFileDescPascalUnitWithResource)
+  private
+    FInheritedUnits: string;
+  public
+    function GetResourceSource(const ResourceName: string): string; override;
+    function GetInterfaceSource(const Filename, SourceName,
+                                ResourceName: string): string; override;
+    property InheritedUnits: string read FInheritedUnits write FInheritedUnits;
+  end;
+
+  { TFileDescInheritedComponent }
+
+  TFileDescInheritedComponent = class(TFileDescInheritedItem)
+  private
+    FInheritedUnit: TUnitInfo;
+    procedure SetInheritedUnit(const AValue: TUnitInfo);
+  public
+    constructor Create; override;
+    function GetInterfaceUsesSection: string; override;
+    function GetLocalizedName: string; override;
+    function GetLocalizedDescription: string; override;
+    property InheritedUnit: TUnitInfo read FInheritedUnit write SetInheritedUnit;
+  end;
+
   { TFileDescSimplePascalProgram }
 
   TFileDescSimplePascalProgram = class(TFileDescPascalUnit)
@@ -264,7 +289,6 @@ type
     function CreateSource(const Filename, SourceName,
                           ResourceName: string): string; override;
   end;
-
 
   { TFileDescText }
 
@@ -494,5 +518,70 @@ begin
   Result := lisNewDlgCreateANewUnitWithAFrame;
 end;
 
+{ TFileDescInheritedComponent }
+
+procedure TFileDescInheritedComponent.SetInheritedUnit(const AValue: TUnitInfo
+  );
+begin
+  if FInheritedUnit=AValue then exit;
+  FInheritedUnit:=AValue;
+  InheritedUnits:=FInheritedUnit.UnitName;
+end;
+
+constructor TFileDescInheritedComponent.Create;
+begin
+  inherited Create;
+  Name := FileDescNameLCLInheritedComponent;
+  ResourceClass := TForm;// will be adjusted on the fly
+  UseCreateFormStatements := true;
+end;
+
+function TFileDescInheritedComponent.GetInterfaceUsesSection: string;
+begin
+  Result:=inherited GetInterfaceUsesSection;
+  Result := Result+', Forms, Controls, Graphics, Dialogs';
+  if InheritedUnits<>'' then
+    Result := Result+', '+InheritedUnits;
+end;
+
+function TFileDescInheritedComponent.GetLocalizedName: string;
+begin
+  Result:='Inherited Component';
+end;
+
+function TFileDescInheritedComponent.GetLocalizedDescription: string;
+begin
+  Result:=lisNewDlgInheritAnExistingComponent;
+end;
+
+{ TFileDescInheritedItem }
+
+function TFileDescInheritedItem.GetResourceSource(const ResourceName: string): string;
+begin
+  Result := 'inherited '+ ResourceName+': T'+ResourceName+LineEnding+
+            'end';
+end;
+
+function TFileDescInheritedItem.GetInterfaceSource(const Filename, SourceName,
+  ResourceName: string): string;
+var
+  LE: string;
+begin
+  LE:=LineEnding;
+  Result:=
+     'type'+LE
+    +'  T'+ResourceName+' = class('+ResourceClass.ClassName+')'+LE
+    +'  private'+LE
+    +'    { private declarations }'+LE
+    +'  public'+LE
+    +'    { public declarations }'+LE
+    +'  end;'+LE
+    +LE
+    +'var'+LE
+    +'  '+ResourceName+': T'+ResourceName+';'+LE
+    +LE;
+end;
+
 end.
+
 

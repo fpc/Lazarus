@@ -181,6 +181,9 @@ type
         const CursorPosition: TPoint; TopLine: integer;
         PageIndex: integer; Flags: TOpenFlags): TModalResult; virtual; abstract;
     function DoRevertEditorFile(const Filename: string): TModalResult; virtual; abstract;
+    function DoOpenComponent(const UnitFilename: string; OpenFlags: TOpenFlags;
+                       CloseFlags: TCloseFlags;
+                       out Component: TComponent): TModalResult; virtual; abstract;
 
     // project
     property ActiveProject: TLazProject read GetActiveProject;

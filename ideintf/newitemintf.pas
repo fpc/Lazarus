@@ -94,6 +94,7 @@ type
   private
     fCategory: TNewIDEItemCategory;
     FVisibleInNewDialog: boolean;
+    FIsInherited: boolean;
   protected
     FAllowedFlags: TNewIDEItemFlags;
     FDefaultFlag: TNewIDEItemFlag;
@@ -111,6 +112,7 @@ type
     property Name: string read FName;
     property Category: TNewIDEItemCategory read fCategory write fCategory; // main category
     property VisibleInNewDialog: boolean read FVisibleInNewDialog write FVisibleInNewDialog;
+    property IsInheritedItem: boolean read FIsInherited write FIsInherited;
   end;
   TNewIDEItemTemplateClass = class of TNewIDEItemTemplate;
   
@@ -161,6 +163,7 @@ begin
   FDefaultFlag:=ADefaultFlag;
   FAllowedFlags:=TheAllowedFlags;
   FVisibleInNewDialog:=true;
+  FIsInherited := False;
   Include(FAllowedFlags,FDefaultFlag);
 end;
 
@@ -195,4 +198,5 @@ begin
 end;
 
 end.
+
 

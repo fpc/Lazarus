@@ -40,9 +40,11 @@ unit NewDialog;
 interface
 
 uses
-  Buttons, Classes, ComCtrls, Controls, Dialogs, Forms, IDEWindowIntf,
-  LazarusIDEStrConsts, LCLProc, LResources, NewItemIntf, PackageIntf,
-  ProjectIntf, StdCtrls, SysUtils, ExtCtrls, IDEContextHelpEdit, IDEImagesIntf;
+  Buttons, SysUtils, Classes, LCLProc, LResources,ComCtrls, Controls, Dialogs,
+  Forms, StdCtrls, ExtCtrls, FileProcs,
+  IDEWindowIntf, IDEImagesIntf, NewItemIntf, PackageIntf, ProjectIntf,
+  LazIDEIntf,
+  LazarusIDEStrConsts, IDEContextHelpEdit, Project, MainIntf;
 
 type
   { TNewLazIDEItemCategory }
@@ -106,6 +108,14 @@ type
     function Description: string; override;
   end;
 
+  { TNewLazIDEItemCategoryInheritedItem }
+
+  TNewLazIDEItemCategoryInheritedItem = class(TNewLazIDEItemCategory)
+  public
+    function LocalizedName: string; override;
+    function Description: string; override;
+  end;
+  
   { TNewLazIDEItemCategoryProject }
 
   TNewLazIDEItemCategoryProject = class(TNewLazIDEItemCategory)
@@ -121,7 +131,7 @@ type
     function LocalizedName: string; override;
     function Description: string; override;
   end;
-
+  
   //----------------------------------------------------------------------------
 
 
@@ -132,6 +142,7 @@ type
     DescriptionGroupBox: TGroupBox;
     DescriptionLabel: TLabel;
     ItemsTreeView: TTreeView;
+    InheritableComponentsListView: TListView;
     OkButton: TButton;
     CancelButton: TButton;
     Panel1: TPanel;
@@ -143,6 +154,7 @@ type
     ImageIndexFolder: integer;
     ImageIndexTemplate: integer;
     FNewItem: TNewIDEItemTemplate;
+    procedure FillProjectInheritableItemsList;
     procedure FillItemsTree;
     procedure SetupComponents;
     procedure UpdateDescription;
@@ -176,8 +188,14 @@ end;
 
 procedure TNewOtherDialog.OkButtonClick(Sender: TObject);
 var
+  AInheritedNode: TListItem;
   ANode: TTreeNode;
+  NewFile: TNewItemProjectFile;
+  AncestorComponent: TComponent;
+  AnUnitInfo: TUnitInfo;
+  InhCompItem: TFileDescInheritedComponent;
 begin
+
   ANode := ItemsTreeView.Selected;
   if (ANode = nil) or (ANode.Data = nil) or
     (not (TObject(ANode.Data) is TNewIDEItemTemplate)) then
@@ -189,8 +207,85 @@ begin
     FNewItem := nil;
     exit;
   end;
-  FNewItem    := TNewIDEItemTemplate(ANode.Data);
+  FNewItem := TNewIDEItemTemplate(ANode.Data);
+  
+  // if the selected item is an inherited one
+  if FNewItem is TNewItemProjectFile then
+  begin
+    //
+    NewFile:=TNewItemProjectFile(FNewItem);
+    if (NewFile.Descriptor is TFileDescInheritedItem) then
+    begin
+      AInheritedNode := nil;
+      // If we are inheriting from a form
+      if (NewFile.Descriptor is TFileDescInheritedComponent) then begin
+        InhCompItem:=TFileDescInheritedComponent(NewFile.Descriptor);
+        AInheritedNode := InheritableComponentsListView.Selected;
+        // load the ancestor component
+        AnUnitInfo:=TUnitInfo(AInheritedNode.Data);
+        if LazarusIDE.DoOpenComponent(AnUnitInfo.Filename,
+          [ofOnlyIfExists,ofQuiet,ofLoadHiddenResource,ofUseCache],[],
+          AncestorComponent)<>mrOk then
+        begin
+          MessageDlg(lisErrorOpeningComponent,
+            lisUnableToOpenAncestorComponent, mtError, [mbCancel], 0);
+          exit;
+        end;
+        // Set the resource class of the file descriptor
+        InhCompItem.ResourceClass := TPersistentClass(AncestorComponent.ClassType);
+        InhCompItem.InheritedUnit := AnUnitInfo;
+      end
+      else
+      begin
+        MessageDlg(lisNewDlgNoItemSelected,
+          lisNewDlgPleaseSelectAnItemFirst, mtInformation, [mbOK], 0);
+        FNewItem := nil;
+        Exit;
+      end
+    end;
+  end;
+
   ModalResult := mrOk;
+end;
+
+// Fill the list of inheritable items in the project
+procedure TNewOtherDialog.FillProjectInheritableItemsList;
+var
+  aComponentList: TStringList;
+  i: integer;
+  alistItem: TListItem;
+  AnUnitInfo: TUnitInfo;
+Begin
+  try
+    // Auxiliar stringlist to sort component list
+    aComponentList := TStringList.Create;
+
+    // Loop trough project units which have a component
+    for i := 0 to Project1.UnitCount-1 do begin
+      if (not Project1.Units[i].IsPartOfProject)
+      or (not FilenameIsPascalUnit(Project1.Units[i].Filename)) then
+        continue;
+
+      if Project1.Units[i].ComponentName<>'' then
+        aComponentList.AddObject(Project1.Units[i].ComponentName, Project1.Units[i]);
+    end;
+
+    // Sort lists (by component name)
+    aComponentList.Sort;
+
+    // Populate components listview, keeping references to each UnitInfo
+    for i := 0 to aComponentList.Count-1 do
+    begin
+      alistItem := InheritableComponentsListView.Items.Add;
+      alistItem.Caption := aComponentList[i];
+      AnUnitInfo:=TUnitInfo(aComponentList.Objects[i]);
+      alistItem.SubItems.Add(AnUnitInfo.ShortFilename);
+      aListItem.Data := aComponentList.Objects[i];
+    end;
+
+  finally
+    aComponentList.Free;
+  end;
 end;
 
 procedure TNewOtherDialog.FillItemsTree;
@@ -259,14 +354,29 @@ procedure TNewOtherDialog.UpdateDescription;
 var
   Desc:  string;
   ANode: TTreeNode;
+  aNewItemTemplate: TNewIDEItemTemplate;
 begin
   ANode := ItemsTreeView.Selected;
+  InheritableComponentsListView.Visible := false;
   if (ANode <> nil) and (ANode.Data <> nil) then
   begin
     if TObject(ANode.Data) is TNewLazIDEItemCategory then
       Desc := TNewLazIDEItemCategory(ANode.Data).Description
     else
-      Desc := TNewIDEItemTemplate(ANode.Data).Description;
+    begin
+      aNewItemTemplate := TNewIDEItemTemplate(ANode.Data);
+      Desc := aNewItemTemplate.Description;
+      if aNewItemTemplate is TNewItemProjectFile then
+      begin
+        if TNewItemProjectFile(aNewItemTemplate).Descriptor is TFileDescInheritedComponent
+        then begin
+          InheritableComponentsListView.Visible := true;
+          InheritableComponentsListView.Height:=InheritableComponentsListView.Parent.ClientHeight-50;
+          if InheritableComponentsListView.Items.Count>0 then
+            InheritableComponentsListView.Selected := InheritableComponentsListView.Items[0];
+        end
+      end;
+    end;
   end
   else
     Desc := '';
@@ -276,11 +386,12 @@ end;
 constructor TNewOtherDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-
   Caption := lisMenuNewOther;
   SetupComponents;
   FillItemsTree;
-  IDEDialogLayoutList.ApplyLayout(Self, 400, 300);
+  FillProjectInheritableItemsList;
+  InheritableComponentsListView.Visible := false;
+  IDEDialogLayoutList.ApplyLayout(Self, 470, 400);
 end;
 
 destructor TNewOtherDialog.Destroy;
@@ -553,6 +664,19 @@ end;
 function TNewLazIDEItemCategoryPackage.Description: string;
 begin
   Result := lisChooseOneOfTheseItemsToCreateANewPackage;
+end;
+
+
+{ TNewLazIDEItemCategoryInheritedItem }
+
+function TNewLazIDEItemCategoryInheritedItem.LocalizedName: string;
+begin
+  Result := lisInheritedItem;
+end;
+
+function TNewLazIDEItemCategoryInheritedItem.Description: string;
+begin
+  Result := lisChooseOneOfTheseItemsToInheritFromAnExistingOne;
 end;
 
 initialization

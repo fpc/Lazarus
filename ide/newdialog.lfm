@@ -1,24 +1,25 @@
 object NewOtherDialog: TNewOtherDialog
-  Left = 254
-  Height = 296
-  Top = 202
-  Width = 397
-  HorzScrollBar.Page = 396
-  VertScrollBar.Page = 295
-  ActiveControl = CancelButton
+  Left = 271
+  Height = 395
+  Top = 156
+  Width = 476
+  HorzScrollBar.Page = 475
+  VertScrollBar.Page = 394
+  ActiveControl = ItemsTreeView
   BorderIcons = [biSystemMenu]
   Caption = 'NewOtherDialog'
-  ClientHeight = 296
-  ClientWidth = 397
+  ClientHeight = 395
+  ClientWidth = 476
   Position = poScreenCenter
+  LCLVersion = '0.9.25'
   object CancelButton: TButton
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 293
+    Left = 372
     Height = 29
-    Top = 261
+    Top = 360
     Width = 98
     Anchors = [akRight, akBottom]
     AutoSize = True
@@ -33,9 +34,9 @@ object NewOtherDialog: TNewOtherDialog
     AnchorSideRight.Control = CancelButton
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 212
+    Left = 291
     Height = 29
-    Top = 261
+    Top = 360
     Width = 75
     Anchors = [akRight, akBottom]
     AutoSize = True
@@ -50,22 +51,22 @@ object NewOtherDialog: TNewOtherDialog
   object Panel1: TPanel
     AnchorSideBottom.Control = OkButton
     Left = 6
-    Height = 249
+    Height = 348
     Top = 6
-    Width = 385
+    Width = 464
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     BevelOuter = bvNone
-    ClientHeight = 249
-    ClientWidth = 385
+    ClientHeight = 348
+    ClientWidth = 464
     TabOrder = 2
     object ItemsTreeView: TTreeView
       AnchorSideLeft.Control = Owner
       AnchorSideTop.Control = Owner
       AnchorSideBottom.Control = CancelButton
-      Height = 249
-      Width = 182
+      Height = 348
+      Width = 178
       Align = alClient
       DefaultItemHeight = 19
       ScrollBars = ssAutoBoth
@@ -80,29 +81,49 @@ object NewOtherDialog: TNewOtherDialog
       AnchorSideRight.Control = Owner
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = CancelButton
-      Left = 187
-      Height = 249
-      Width = 198
+      Left = 183
+      Height = 348
+      Width = 281
       Align = alRight
       Caption = 'DescriptionGroupBox'
-      ClientHeight = 230
-      ClientWidth = 194
+      ClientHeight = 329
+      ClientWidth = 277
       TabOrder = 1
       object DescriptionLabel: TLabel
         Left = 6
-        Height = 218
+        Height = 173
         Top = 6
-        Width = 182
+        Width = 265
         Align = alClient
         BorderSpacing.Around = 6
         Caption = 'DescriptionLabel'
         ParentColor = False
         WordWrap = True
       end
+      object InheritableComponentsListView: TListView
+        Height = 144
+        Top = 185
+        Width = 277
+        Align = alBottom
+        Columns = <        
+          item
+            Caption = 'Form'
+            Width = 100
+          end        
+          item
+            Caption = 'Unit'
+            Width = 250
+          end>
+        HideSelection = False
+        ReadOnly = True
+        RowSelect = True
+        TabOrder = 0
+        ViewStyle = vsReport
+      end
     end
     object Splitter1: TSplitter
-      Left = 182
-      Height = 249
+      Left = 178
+      Height = 348
       Width = 5
       Align = alRight
       ResizeAnchor = akRight
@@ -114,7 +135,7 @@ object NewOtherDialog: TNewOtherDialog
     AnchorSideBottom.Side = asrBottom
     Left = 6
     Height = 29
-    Top = 261
+    Top = 360
     Width = 84
     Anchors = [akLeft, akBottom]
     AutoSize = True
