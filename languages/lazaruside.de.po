@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-04-13 21:26+0100\n"
-"Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
+"PO-Revision-Date: 2008-05-09 11:18+0100\n"
+"Last-Translator: samuel herzog\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -686,7 +686,7 @@ msgstr "Ausrichtung"
 
 #: lazarusidestrconsts:lisemdall
 msgid "All"
-msgstr ""
+msgstr "Alle"
 
 #: lazarusidestrconsts:lisallfiles
 msgid "All Files"
@@ -2890,7 +2890,7 @@ msgstr "ElseIf"
 
 #: lazarusidestrconsts:lisemdemtpymethods
 msgid "Emtpy Methods"
-msgstr ""
+msgstr "Leere Methoden"
 
 #: lazarusidestrconsts:lisenableallinsamesource
 msgid "Enable All in same source"
@@ -5790,11 +5790,11 @@ msgstr "Neuer Klassenname"
 
 #: lazarusidestrconsts:liskmnewpackage
 msgid "New package"
-msgstr ""
+msgstr "Neues Packet"
 
 #: lazarusidestrconsts:lismenunewpackage
 msgid "New package ..."
-msgstr ""
+msgstr "Neues Packet..."
 
 #: lazarusidestrconsts:liskmnewproject
 msgid "New project"
@@ -6398,7 +6398,7 @@ msgstr "Package-Graph"
 
 #: lazarusidestrconsts:dlgpldpackagegroup
 msgid "Package group"
-msgstr ""
+msgstr "Packet Gruppe"
 
 #: lazarusidestrconsts:lispkgmangpackageisnodesigntimepackage
 msgid "Package is no designtime package"
@@ -7078,7 +7078,7 @@ msgstr "Abhängigkeit %s%s%s%saus dem package %s%s%s entfernen?"
 
 #: lazarusidestrconsts:srkmecremoveemptymethods
 msgid "Remove empty methods"
-msgstr ""
+msgstr "Leere Methoden entfernen"
 
 #: lazarusidestrconsts:lispckeditremovefile
 msgid "Remove file"
@@ -7114,7 +7114,7 @@ msgstr "Vom Projekt entfernen"
 
 #: lazarusidestrconsts:lisemdremovemethods
 msgid "Remove methods"
-msgstr ""
+msgstr "Methoden entfernen"
 
 #: lazarusidestrconsts:liscodehelpdeletepathbutton
 msgid "Remove path"
@@ -8126,7 +8126,7 @@ msgstr "Editor-Hinweise anzeigen"
 
 #: lazarusidestrconsts:liscodehelpshowemptymethods
 msgid "Show empty methods"
-msgstr ""
+msgstr "Leere Methoden anzeigen"
 
 #: lazarusidestrconsts:dlgshoweverything
 msgid "Show everything"
@@ -9106,7 +9106,7 @@ msgstr "Das Package %s%s%s war markiert.%sDerzeit unterstützt Lazarus nur stati
 
 #: lazarusidestrconsts:listhepackagealreadycontainsaunitwiththisname
 msgid "The package already contains a unit with this name."
-msgstr ""
+msgstr "Dieses Packet enthält bereits eine Unit mit diesem Namen."
 
 #: lazarusidestrconsts:lispkgmangthepackagefilenameinisnotavalidlazaruspackagename
 msgid "The package file name %s%s%s in%s%s%s%s is not a valid lazarus package name."
@@ -10426,7 +10426,7 @@ msgstr "Browser für bedingte Eigenschaften anzeigen"
 
 #: lazarusidestrconsts:srkmecviewtodolist
 msgid "View todo list"
-msgstr ""
+msgstr "TODO Liste anzeigen"
 
 #: lazarusidestrconsts:srkmecviewunitdependencies
 msgid "View unit dependencies"
