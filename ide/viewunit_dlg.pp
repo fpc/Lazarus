@@ -73,7 +73,8 @@ type
     procedure ListboxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure MultiselectCheckBoxClick(Sender :TObject);
   private
-    procedure LM_USER1(var Message: TLMessage); message LM_USER + 1;
+    FBlockListBoxChange: boolean;
+    procedure FocusEdit;
   public
     constructor Create(TheOwner: TComponent); override;
   end;
@@ -204,6 +205,10 @@ procedure TViewUnitDialog.EditChange(Sender: TObject);
 var
   Index: Integer;
 begin
+  // the change was initiated by the listbox,
+  // so don't make any changes to the listbox
+  if FBlockListBoxChange then exit;
+  
   Index := SearchItem(ListBox.Items, Edit.Text);
   ListBox.ItemIndex := Index;
   ListBox.MakeCurrentVisible;
@@ -218,7 +223,7 @@ end;
 
 procedure TViewUnitDialog.EditEnter(Sender: TObject);
 begin
-  PostMessage(Handle, LM_USER + 1, 0, 0);
+  FocusEdit;
 end;
 
 Procedure TViewUnitDialog.btnCancelClick(Sender : TOBject);
@@ -229,9 +234,13 @@ end;
 
 procedure TViewUnitDialog.ListboxClick(Sender: TObject);
 begin
+  FBlockListBoxChange := true;
+  
   if ListBox.ItemIndex <> -1 then
     Edit.Text := ListBox.Items[ListBox.ItemIndex];
-  PostMessage(Handle, LM_USER + 1, 0, 0);
+  FocusEdit;
+  
+  FBlockListBoxChange := false;
 end;
 
 procedure TViewUnitDialog.ListboxKeyDown(Sender: TObject; var Key: Word;
@@ -246,7 +255,7 @@ begin
   ListBox.Multiselect := MultiselectCheckBox.Checked;
 end;
 
-procedure TViewUnitDialog.LM_USER1(var Message: TLMessage);
+procedure TViewUnitDialog.FocusEdit;
 begin
   Edit.SelectAll;
   Edit.SetFocus;

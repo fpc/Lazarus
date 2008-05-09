@@ -12,6 +12,7 @@ object ViewUnitDialog: TViewUnitDialog
   ClientWidth = 378
   OnCreate = FormCreate
   Position = poScreenCenter
+  LCLVersion = '0.9.25'
   object Edit: TEdit
     Left = 6
     Height = 25
@@ -30,7 +31,7 @@ object ViewUnitDialog: TViewUnitDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = MultiSelectCheckBox
     Left = 6
-    Height = 180
+    Height = 183
     Top = 37
     Width = 366
     Align = alTop
@@ -41,16 +42,15 @@ object ViewUnitDialog: TViewUnitDialog
     OnDblClick = BTNOKCLICK
     OnKeyDown = ListboxKeyDown
     TabOrder = 0
-    TopIndex = -1
   end
   object MultiSelectCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Side = asrBottom
     AnchorSideBottom.Control = BtnPanel
     Left = 6
-    Height = 22
-    Top = 223
-    Width = 98
+    Height = 19
+    Top = 226
+    Width = 81
     Anchors = [akLeft, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Multi Select'
@@ -72,9 +72,9 @@ object ViewUnitDialog: TViewUnitDialog
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = Owner
       AnchorSideBottom.Side = asrBottom
-      Left = 293
-      Height = 36
-      Top = 7
+      Left = 294
+      Height = 38
+      Top = 6
       Width = 78
       Align = alRight
       Anchors = [akRight, akBottom]
@@ -94,9 +94,9 @@ object ViewUnitDialog: TViewUnitDialog
       AnchorSideRight.Control = btnCancel
       AnchorSideBottom.Control = Owner
       AnchorSideBottom.Side = asrBottom
-      Left = 212
-      Height = 36
-      Top = 7
+      Left = 213
+      Height = 38
+      Top = 6
       Width = 75
       Align = alRight
       Anchors = [akRight, akBottom]
@@ -116,9 +116,9 @@ object ViewUnitDialog: TViewUnitDialog
       AnchorSideLeft.Control = Owner
       AnchorSideBottom.Control = Owner
       AnchorSideBottom.Side = asrBottom
-      Left = 7
-      Height = 36
-      Top = 7
+      Left = 6
+      Height = 38
+      Top = 6
       Width = 75
       Align = alLeft
       Anchors = [akLeft, akBottom]
