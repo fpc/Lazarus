@@ -702,7 +702,11 @@ var
   i: Integer;
 begin
   i:=ItemIndex;
+  
   if (i<0) or (i>=Items.Count) then exit;
+  // don't change top index if items is already fully visible
+  if ItemFullyVisible(i) then exit;
+  
   TopIndex:=ItemIndex;
 end;
 
