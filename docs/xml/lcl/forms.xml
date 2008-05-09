@@ -2923,9 +2923,9 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomForm.DoExecuteAction">
-        <short>Asks every visible control to ExecuteAction the action <var>ExeAction</var>.</short>
+        <short>Asks every visible control to Execute the specified action <var>ExeAction</var>.</short>
         <descr>
-          <p>DoExecuteAction asks every visible control to ExecuteAction the action <var>ExeAction</var>. If some control executes it and returns true, then the traversal of visible components is stopped. All child controls (and its childs etc) are queried too.</p>
+          <p>DoExecuteAction asks every visible control to Execute the specified action <var>ExeAction</var>. If some control executes it and returns true, then the traversal of visible components is stopped. All child controls (and its children etc) are queried too.</p>
           <p>For example you have</p>
           <code>TForm
    TPanel
@@ -3293,7 +3293,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomForm.IsShortcut">
-        <short/>
+        <short>
+          <var>IsShortcut</var> - if True, the specified Key and Message are active as a shortcut</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6503,7 +6504,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short>Create Form or any other kind of component</short>
         <descr>Note: The name is confusing and only kept for Delphi compatibility. <br/>
 
-It can actually create any kind of component<br/><br/>
+It can actually create any kind of component<br/>
+          <br/>
 
 Creates a Component instance, sets the pointer to the component variable and loads the component. <br/>
 
@@ -6775,9 +6777,11 @@ It also writes details of the exception to the appropriate place for debugging.<
       <!-- function result Visibility: default -->
       <element name="TApplication.MessageBox.Result">
         <short>Result</short>
-        <descr>Result: integer value returned by the function to signify which box was selected<br/><br/>
+        <descr>Result: integer value returned by the function to signify which box was selected<br/>
+          <br/>
 
-Can be one of the following values:<br/><br/>
+Can be one of the following values:<br/>
+          <br/>
 
  IDOK<br/>
 
@@ -6814,9 +6818,11 @@ Can be one of the following values:<br/><br/>
         <descr>Flags: longint - an integer constructed by adding together various constants to define the contents and behaviour of the box, for example<br/>
  
 		MB_ABORTRETRYIGNORE + MR_ICONQUESTION will cause the application to display a query (?) icon in a box with three buttons: <br/>
-ABORT RETRY IGNORE.<br/><br/>
+ABORT RETRY IGNORE.<br/>
+          <br/>
 
-The following button constants are available:<br/><br/>
+The following button constants are available:<br/>
+          <br/>
 
  MB_OK<br/>
 
@@ -6828,9 +6834,11 @@ The following button constants are available:<br/><br/>
 
  MB_YESNO<br/>
 
- MB_RETRYCANCEL<br/><br/>
+ MB_RETRYCANCEL<br/>
+          <br/>
 
-And the following icon constants:<br/><br/>
+And the following icon constants:<br/>
+          <br/>
 
  MB_ICONHAND<br/>
 
@@ -6846,7 +6854,8 @@ And the following icon constants:<br/><br/>
 
  MB_ICONSTOP = MB_ICONHAND<br/>
 
- MB_ICONINFORMATION = MB_ICONASTERICK<br/><br/>
+ MB_ICONINFORMATION = MB_ICONASTERICK<br/>
+          <br/>
 
 These constants are declared on the LCLType unit.
         </descr>
@@ -7608,7 +7617,8 @@ These constants are declared on the LCLType unit.
       <!-- property Visibility: public -->
       <element name="TApplication.Hint">
         <short>The hint associated with the main application</short>
-        <descr>A hint is a small pop-up mesage that appears briefly while the mouse hovers over a specified area of the screen. It usually displays useful information about how to use an object or what data should be entered, etc<br/><br/>
+        <descr>A hint is a small pop-up mesage that appears briefly while the mouse hovers over a specified area of the screen. It usually displays useful information about how to use an object or what data should be entered, etc<br/>
+          <br/>
 
 Reads or writes a flag to determine the hint associated with the application</descr>
         <seealso/>
@@ -7665,7 +7675,8 @@ Does <b>Esc</b>
  perform the cancel action? <br/>
 
 Does <b>F1</b>
- activate a Help system?<br/><br/>
+ activate a Help system?<br/>
+          <br/>
 
 Navigation Options is a set, so can take zero or more of the available values</descr>
         <seealso>
