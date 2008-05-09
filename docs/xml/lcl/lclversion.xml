@@ -24,7 +24,7 @@ support for these kind of expressions in <i>{$mode objfpc}</i>.</p>
 <!-- constant Visibility: default -->
 <element name="lcl_major">
 <short>LCL major version</short>
-<descr>Given een complete version string like 0.9.25, the lcl_major constant
+<descr>Given a complete version string like 0.9.25, the lcl_major constant
 contains the first number.
 </descr>
 <seealso>

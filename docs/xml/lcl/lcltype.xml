@@ -9,7 +9,7 @@
 -->
 
 <module name="LCLType">
-<short></short>
+	<short>This unit is being created specifically for compatibility with Delphi. It should only be used for constants and type definitions that are included in the Delphi Windows unit. This is only done for compatibiltiy.</short>
 <descr>
 </descr>
 

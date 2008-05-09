@@ -1,107 +1,97 @@
-<?xml version="1.0" encoding="ISO8859-1"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
-<package name="lcl">
-
-<!--
+  <package name="lcl">
+    <!--
   ====================================================================
     LCLClasses
   ====================================================================
 -->
-
-<module name="LCLClasses">
-<short></short>
-<descr>
-</descr>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Classes">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="WSLCLClasses">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TLCLComponent">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TLCLComponent.FWidgetSetClass">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TLCLComponent.WidgetSetClass">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TLCLComponent.BeforeDestruction">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TLCLComponent.NewInstance">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TLCLComponent.NewInstance.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TLCLComponent.RemoveAllHandlersOfObject">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TLCLComponent.RemoveAllHandlersOfObject.AnObject">
-<short></short>
-</element>
-</module> <!-- LCLClasses -->
-</package>
+    <module name="LCLClasses">
+      <short>Defines the base class for all LCL TComponents including controls</short>
+      <descr/>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Classes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="WSLCLClasses">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TLCLComponent">
+        <short>
+          <var>TLCLComponent</var> - base class for LCL components</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TLCLComponent.FWidgetSetClass">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TLCLComponent.WidgetSetClass">
+        <short>
+          <var>WidgetSetClass</var> - the set of Widgets to be used by this Component</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TLCLComponent.BeforeDestruction">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TLCLComponent.NewInstance">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TLCLComponent.NewInstance.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TLCLComponent.RemoveAllHandlersOfObject">
+        <short>
+          <var>RemoveAllHandlersOfObject</var> - part of clean-up procedure</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TLCLComponent.RemoveAllHandlersOfObject.AnObject">
+        <short/>
+      </element>
+      <element name="TLCLComponent.Create"/>
+      <element name="TLCLComponent.Destroy"/>
+      <element name="TLCLReferenceComponent">
+        <short>
+          <var>TLCLReferenceComponent</var> - A base class for all components having a handle</short>
+      </element>
+      <element name="TLCLReferenceComponent.Destroy"/>
+      <element name="TLCLReferenceComponent.Handle">
+        <short>
+          <var>Handle</var> a handle (sort of pointer or reference) allocated by the operating system to this component</short>
+      </element>
+      <element name="TLCLReferenceComponent.HandleAllocated">
+        <short>
+          <var>HandleAllocated</var> - if True, a handle (reference) has been allocated to this component</short>
+      </element>
+      <element name="TLCLReferenceComponent.ReferenceAllocated">
+        <short>
+          <var>ReferenceAllocated</var> - if True, a handle (reference) has been allocated to this component</short>
+      </element>
+    </module>
+    <!-- LCLClasses -->
+  </package>
 </fpdoc-descriptions>

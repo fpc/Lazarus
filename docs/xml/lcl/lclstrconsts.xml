@@ -9,7 +9,7 @@
 -->
 
 <module name="LCLStrConsts">
-<short></short>
+	<short>This unit contains all resource strings of the LCL</short>
 <descr>
 </descr>
 
