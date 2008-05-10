@@ -26,7 +26,7 @@ interface
 
 uses
   // RTL, FCL
-  Windows, Classes, SysUtils, {WinExt,}
+  Windows, Classes, SysUtils, commctrl, {WinExt,}
   // Compatibility
   {$ifdef Win32}win32compat,{$endif}
   // LCL
@@ -35,7 +35,6 @@ uses
   LCLProc, InterfaceBase,
   // widgetset
   WSComCtrls, WSLCLClasses, WSProc,
-  // wince widgetset
   WinCEInt, WinCEProc, WinCEWSControls, WinCEExtra;
 
 type

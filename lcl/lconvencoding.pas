@@ -94,7 +94,11 @@ var EncodingValid: boolean = false;
 {$IFDEF Windows}
 function GetWindowsEncoding: string;
 var
+  {$ifdef WinCE}
+  Buffer : PWideChar;
+  {$else}
   Buffer : PChar;
+  {$endif}
   Size : integer;
 begin
   Size := GetLocaleInfo (LOCALE_USER_DEFAULT, LOCALE_ILANGUAGE, nil, 0);

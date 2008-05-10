@@ -51,11 +51,15 @@ Interface
 Uses
   // Compatibility
   {$ifdef Win32}win32compat,{$endif}
-  // Everything else
-  Windows, Classes, ComCtrls, Controls, Buttons, Dialogs, DynHashArray,
+  // Libs
+  Windows,
+  {$ifndef win32}aygshell,{$endif}
+  // RTL, LCL
+  Classes, ComCtrls, Controls, Buttons, Dialogs, DynHashArray,
   ExtCtrls, Forms, GraphMath, GraphType, InterfaceBase, LCLIntf, LCLType,
-  LMessages, StdCtrls, SysUtils, Graphics, Menus, WinCEProc, WinCEExtra,
-  WinExt, WinCEDef, Themes;
+  LMessages, StdCtrls, SysUtils, Graphics, Menus,
+  // Widgetset
+  WinCEProc, WinCEExtra, WinExt, WinCEDef, Themes;
 
 const
   {$ifdef Win32}

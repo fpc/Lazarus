@@ -5,8 +5,13 @@ unit winceproc;
 interface
 
 uses
-  Windows, Classes, LMessages, LCLType, LCLProc, Controls, Forms, Menus,
+  // Libs
+  Windows,
+  {$ifndef Win32}oleaut32,{$endif}
+  // compatibility
   {$ifdef Win32}win32compat,{$endif}
+  // RTL, LCL
+  Classes, LMessages, LCLType, LCLProc, Controls, Forms, Menus,
   WinCEExtra, GraphType;
   
 Type

@@ -29,6 +29,7 @@ interface
 uses
   // Libs
   Windows,
+  {$ifndef win32}oleaut32,{$endif}
   // Compatibility
   {$ifdef Win32}win32compat,{$endif}
   // RTL, FCL, LCL

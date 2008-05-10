@@ -26,17 +26,15 @@ unit WinCEWSMenus;
 interface
 
 uses
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To get as little as posible circles,
-// uncomment only when needed for registration
-////////////////////////////////////////////////////
+  // LCL
   Graphics, GraphType, ImgList, Menus, Forms, LCLIntf, {keep before Windows }
-////////////////////////////////////////////////////
-  WSMenus, WSLCLClasses,
-  Windows, Controls, Classes, SysUtils, WinceInt, WinceProc, WinCEWSImgList,
-  InterfaceBase, LCLProc;
+  Controls,  InterfaceBase, LCLProc,
+  // RTL, FCL
+  Windows, Classes, SysUtils, commctrl,
+  {$ifndef win32}aygshell,{$endif}
+  // widgetset
+  WinceInt, WinceProc, WinCEWSImgList,
+  WSMenus, WSLCLClasses;
 
 type
 
