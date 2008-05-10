@@ -99,8 +99,7 @@ begin
 
   // dont use ListView_GetColumnWidth since we cant detect errors
   lvc.Mask := LVCF_WIDTH;
-  if ListView_GetColumn(ALV.Handle, AIndex, lvc) <> 0
-  then Result := lvc.cx;
+  if LongInt(ListView_GetColumn(ALV.Handle, AIndex, lvc)) <> 0 then Result := lvc.cx;
 end;
 
 class procedure TWinCEWSCustomListView.ColumnInsert(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn);
@@ -531,7 +530,7 @@ var
   hwndHeader: HWND;
   dwStyle: DWORD;
   rc: TRect;
-  hdLayout: THDLAYOUT;
+  hdLayout: HD_LAYOUT; // THDLAYOUT;
   wpos: TWINDOWPOS;
 begin
   dwStyle := GetWindowLong(AHandle, GWL_STYLE);

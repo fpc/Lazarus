@@ -27,15 +27,12 @@ unit wincewsimglist;
 interface
 
 uses
-////////////////////////////////////////////////////
-// I M P O R T A N T                                
-////////////////////////////////////////////////////
-// To get as little as posible circles,
-// uncomment only when needed for registration
-////////////////////////////////////////////////////
-  Windows, SysUtils, Classes, ImgList, GraphType, Graphics, LCLType,
+  // Libs
+  Windows, commctrl,
+  // RTL, LCL
+  SysUtils, Classes, ImgList, GraphType, Graphics, LCLType,
+  // Widgetset
   WinCEExtra, WinCEInt, WinCEProc, InterfaceBase,
-////////////////////////////////////////////////////
   WSImgList, WSLCLClasses, WSProc, WSReferences;
 
 type

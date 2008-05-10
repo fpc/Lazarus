@@ -1115,12 +1115,14 @@ begin
 
     atPDA, atSmartphone, atDefault:
     begin
+      {$ifdef WinCE}
       // Adds an "OK" close button to the title bar instead of the standard
       // "X" minimize button, unless the developer overrides that decision
       if WinCEWidgetset.WinCETitlePolicy = tpAlwaysUseOKButton then
         Result := WS_EX_CAPTIONOKBTN
       else
         if Style = bsDialog then Result := WS_EX_CAPTIONOKBTN;
+      {$endif}
     end;
 
   end;
