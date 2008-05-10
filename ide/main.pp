@@ -589,7 +589,7 @@ type
         NewOwner: TObject; NewFilename: string; var NewCodeBuffer: TCodeBuffer;
         var NewUnitName: string): TModalResult;
     function CreateNewForm(NewUnitInfo: TUnitInfo;
-        AncestorType: TPersistentClass; ResourceCode: TCodeBuffer): TModalResult;
+        AncestorType: TPersistentClass; ResourceCode: TCodeBuffer; UseCreateFormStatements: Boolean): TModalResult;
 
     // methods for 'save unit'
     function DoShowSaveFileAsDialog(AnUnitInfo: TUnitInfo;
@@ -4253,7 +4253,7 @@ begin
 end;
 
 function TMainIDE.CreateNewForm(NewUnitInfo: TUnitInfo;
-  AncestorType: TPersistentClass; ResourceCode: TCodeBuffer): TModalResult;
+  AncestorType: TPersistentClass; ResourceCode: TCodeBuffer; UseCreateFormStatements: Boolean): TModalResult;
 var
   CInterface: TComponentInterface;
   NewComponent: TComponent;
@@ -4301,8 +4301,11 @@ begin
 
   NewUnitInfo.ComponentName:=NewComponent.Name;
   NewUnitInfo.ComponentResourceName:=NewUnitInfo.ComponentName;
-  if NewUnitInfo.IsPartOfProject and Project1.AutoCreateForms
-  and (pfMainUnitHasCreateFormStatements in Project1.Flags) then begin
+  if UseCreateFormStatements and
+     NewUnitInfo.IsPartOfProject and 
+     Project1.AutoCreateForms and 
+     (pfMainUnitHasCreateFormStatements in Project1.Flags) then 
+  begin
     Project1.AddCreateFormToProjectFile(NewComponent.ClassName,
                                         NewComponent.Name);
   end;
@@ -6884,7 +6887,7 @@ begin
         //DebugLn(['TMainIDE.DoNewFile ',dbgsName(NewUnitInfo.Component),' ',dbgsName(NewUnitInfo.Component.ClassParent)]);
       end else begin
         // create a default form/datamodule
-        Result:=CreateNewForm(NewUnitInfo,AncestorType,nil);
+        Result := CreateNewForm(NewUnitInfo, AncestorType, nil, NewFileDescriptor.UseCreateFormStatements);
       end;
       if Result<>mrOk then exit;
     end;
