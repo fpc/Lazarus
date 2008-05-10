@@ -32,6 +32,10 @@ interface
 uses
   // libs
   FPCMacOSAll,
+  // Cocoa
+  {$ifdef CarbonUseCocoa}
+  appkit, foundation,
+  {$endif CarbonUseCocoa}
   // LCL
   Classes, Controls, ExtCtrls, LCLType, LCLProc, Graphics, Math,
   // widgetset
@@ -208,6 +212,18 @@ type
   public
   end;
 
+  { TCarbonWSCustomTrayIcon }
+
+  TCarbonWSCustomTrayIcon = class(TWSCustomTrayIcon)
+  public
+    {$ifdef CarbonUseCocoa}
+    class function Hide(const ATrayIcon: TCustomTrayIcon): Boolean; override;
+    class function Show(const ATrayIcon: TCustomTrayIcon): Boolean; override;
+    class procedure InternalUpdate(const ATrayIcon: TCustomTrayIcon); override;
+    class function ShowBalloonHint(const ATrayIcon: TCustomTrayIcon): Boolean; override;
+    class function GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint; override;
+    {$endif CarbonUseCocoa}
+  end;
 
 implementation
 
@@ -354,6 +370,8 @@ begin
   TCarbonTabsControl(ANotebook.Handle).ShowTabs(AShowTabs);
 end;
 
+{$include carbontrayicon.inc}
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -382,5 +400,7 @@ initialization
 //  RegisterWSComponent(TLabeledEdit, TCarbonWSLabeledEdit);
 //  RegisterWSComponent(TCustomPanel, TCarbonWSCustomPanel);
 //  RegisterWSComponent(TPanel, TCarbonWSPanel);
+  RegisterWSComponent(TCustomTrayIcon, TCarbonWSCustomTrayIcon);
 ////////////////////////////////////////////////////
 end.
+
