@@ -1350,7 +1350,7 @@ type
   
   TToolBar = class;
 
-  TToolButton = class(TCustomControl)
+  TToolButton = class(TGraphicControl)
   private
     FAllowAllUp: Boolean;
     FDown: Boolean;

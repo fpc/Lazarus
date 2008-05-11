@@ -4714,9 +4714,7 @@ begin
   end;
   LCLObject:=GetNearestLCLObject(Widget);
   if LCLObject=nil then exit;
-  if ((TWinControl(LCLObject) is TCustomSplitter)
-  or (TWinControl(LCLObject) is TToolButton))
-  and (TWinControl(LCLObject).HandleAllocated)
+  if (TWinControl(LCLObject) is TCustomSplitter) and (TWinControl(LCLObject).HandleAllocated)
   then begin
     WidgetInfo:=GetWidgetInfo(PGtkWidget(TWinControl(LCLObject).Handle),false);
     if WidgetInfo<>nil then

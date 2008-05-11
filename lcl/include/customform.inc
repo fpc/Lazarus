@@ -1663,7 +1663,8 @@ begin
   end;
 
   // update FActiveControl
-  if (FDesigner = nil) and (not (csLoading in ComponentState)) then begin
+  if (FDesigner = nil) and (not (csLoading in ComponentState)) then
+  begin
     if Control <> Self then
       FActiveControl := Control
     else

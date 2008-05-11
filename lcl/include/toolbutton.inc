@@ -70,9 +70,9 @@ begin
   NewFlags := FToolButtonFlags - [tbfPressed, tbfArrowPressed];
   if (Button = mbLeft) then
   begin
-    if (Style = tbsDropDown) and Enabled then
+    if Enabled then
     begin
-      if (FToolBar <> nil) and (X > ClientWidth - FToolBar.FDropDownWidth) then
+      if (Style = tbsDropDown) and (FToolBar <> nil) and (X > ClientWidth - FToolBar.FDropDownWidth) then
         Include(NewFlags, tbfArrowPressed)
       else
         Include(NewFlags, tbfPressed);
@@ -863,7 +863,7 @@ end;
 
 function TToolButton.DialogChar(var Message: TLMKey): boolean;
 begin
-  if IsAccel(Message.CharCode, Caption) and CanFocus then
+  if IsAccel(Message.CharCode, Caption) and FToolBar.CanFocus then
   begin
     Click;
     Result := true;
@@ -888,10 +888,11 @@ begin
     // calculate text size
     TextSize.cx:=0;
     TextSize.cy:=0;
-    if (Style in [tbsButton,tbsDropDown,tbsCheck])
-    and (FToolBar.ShowCaptions) then begin
-      if (Caption<>'') then begin
-        if HandleAllocated then
+    if (Style in [tbsButton,tbsDropDown,tbsCheck]) and (FToolBar.ShowCaptions) then
+    begin
+      if (Caption<>'') then
+      begin
+        if FToolBar.HandleAllocated then
           TextSize:=Canvas.TextExtent(Caption);
       end;
       // add space around text
