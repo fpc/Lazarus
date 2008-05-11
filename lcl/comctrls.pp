@@ -1548,6 +1548,7 @@ type
     procedure EndUpdate; virtual;
     procedure Paint; override;
     procedure SetButtonSize(NewButtonWidth, NewButtonHeight: integer);
+    function CanFocus: Boolean; override;
   public
     property ButtonCount: Integer read GetButtonCount;
     property Buttons[Index: Integer]: TToolButton read GetButton;

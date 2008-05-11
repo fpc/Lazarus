@@ -413,6 +413,11 @@ begin
   end;
 end;
 
+function TToolBar.CanFocus: Boolean;
+begin
+  Result := False;
+end;
+
 function TToolBar.CanAutoSize(var NewWidth, NewHeight: Integer): Boolean;
 begin
   Result := WrapButtons(NewWidth, NewHeight);
