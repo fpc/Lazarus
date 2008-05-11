@@ -1,0 +1,141 @@
+object Form1: TForm1
+  Left = 290
+  Height = 164
+  Top = 164
+  Width = 277
+  HorzScrollBar.Page = 276
+  VertScrollBar.Page = 163
+  Caption = 'Standard actions demo'
+  ClientHeight = 164
+  ClientWidth = 277
+  LCLVersion = '0.9.25'
+  object Edit1: TEdit
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ToolBar1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 5
+    Height = 23
+    Top = 31
+    Width = 267
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 5
+    BorderSpacing.Top = 5
+    BorderSpacing.Right = 5
+    TabOrder = 0
+    Text = 'Edit1'
+  end
+  object ToolBar1: TToolBar
+    Height = 26
+    Width = 277
+    Caption = 'ToolBar1'
+    Flat = True
+    ShowCaptions = True
+    TabOrder = 1
+    object ToolButton1: TToolButton
+      Left = 1
+      Hint = 'Cut'
+      Top = 2
+      Action = EditCut1
+    end
+    object ToolButton2: TToolButton
+      Left = 33
+      Hint = 'Copy'
+      Top = 2
+      Action = EditCopy1
+    end
+    object ToolButton3: TToolButton
+      Left = 73
+      Hint = 'Paste'
+      Top = 2
+      Action = EditPaste1
+    end
+    object ToolButton4: TToolButton
+      Left = 115
+      Hint = 'Select All'
+      Top = 2
+      Action = EditSelectAll1
+    end
+    object ToolButton5: TToolButton
+      Left = 173
+      Hint = 'Delete'
+      Top = 2
+      Action = EditDelete1
+    end
+    object ToolButton6: TToolButton
+      Left = 219
+      Hint = 'Undo'
+      Top = 2
+      Action = EditUndo1
+    end
+  end
+  object Memo1: TMemo
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Edit1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 5
+    Height = 100
+    Top = 59
+    Width = 267
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 5
+    BorderSpacing.Top = 5
+    BorderSpacing.Right = 5
+    BorderSpacing.Bottom = 5
+    Lines.Strings = (
+      'Memo1'
+    )
+    TabOrder = 2
+  end
+  object ActionList1: TActionList
+    left = 184
+    top = 32
+    object EditCut1: TEditCut
+      Category = 'Edit'
+      Caption = 'Cu&t'
+      DisableIfNoHandler = True
+      Hint = 'Cut'
+      ShortCut = 16472
+    end
+    object EditCopy1: TEditCopy
+      Category = 'Edit'
+      Caption = '&Copy'
+      DisableIfNoHandler = True
+      Hint = 'Copy'
+      ShortCut = 16451
+    end
+    object EditPaste1: TEditPaste
+      Category = 'Edit'
+      Caption = '&Paste'
+      DisableIfNoHandler = True
+      Hint = 'Paste'
+      ShortCut = 16470
+    end
+    object EditSelectAll1: TEditSelectAll
+      Category = 'Edit'
+      Caption = 'Select &All'
+      DisableIfNoHandler = True
+      Hint = 'Select All'
+      ShortCut = 16449
+    end
+    object EditUndo1: TEditUndo
+      Category = 'Edit'
+      Caption = '&Undo'
+      DisableIfNoHandler = True
+      Hint = 'Undo'
+      ShortCut = 16474
+    end
+    object EditDelete1: TEditDelete
+      Category = 'Edit'
+      Caption = '&Delete'
+      DisableIfNoHandler = True
+      Hint = 'Delete'
+      ShortCut = 46
+    end
+  end
+end
