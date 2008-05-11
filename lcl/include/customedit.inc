@@ -236,6 +236,12 @@ begin
     SelText := Clipboard.AsText;
 end;
 
+procedure TCustomEdit.Undo;
+begin
+  if HandleAllocated then
+    TWSCustomEditClass(WidgetSetClass).Undo(Self);
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCustomEdit.GetModified
   Params:  none
@@ -244,6 +250,14 @@ end;
 function TCustomEdit.GetModified : Boolean;
 begin
   Result := FModified;
+end;
+
+function TCustomEdit.GetCanUndo: Boolean;
+begin
+  if HandleAllocated then
+    Result := TWSCustomEditClass(WidgetSetClass).GetCanUndo(Self)
+  else
+    Result := False;
 end;
 
 {------------------------------------------------------------------------------

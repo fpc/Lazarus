@@ -163,11 +163,12 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
-    class function  GetCaretPos(const ACustomEdit: TCustomEdit): TPoint; override;
-    class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
-    class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
-    class function  GetMaxLength(const ACustomEdit: TCustomEdit): integer; {override;}
-    class function  GetText(const AWinControl: TWinControl; var AText: string): boolean; override;
+    class function GetCanUndo(const ACustomEdit: TCustomEdit): Boolean; override;
+    class function GetCaretPos(const ACustomEdit: TCustomEdit): TPoint; override;
+    class function GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
+    class function GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
+    class function GetMaxLength(const ACustomEdit: TCustomEdit): integer; {override;}
+    class function GetText(const AWinControl: TWinControl; var AText: string): boolean; override;
 
     class procedure SetCaretPos(const ACustomEdit: TCustomEdit; const NewPos: TPoint); override;
     class procedure SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase); override;
@@ -177,6 +178,8 @@ type
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
+
+    class procedure Undo(const ACustomEdit: TCustomEdit); override;
   end;
 
   { TWin32WSCustomMemo }
@@ -1039,6 +1042,15 @@ begin
   Result := Params.Window;
 end;
 
+class function TWin32WSCustomEdit.GetCanUndo(const ACustomEdit: TCustomEdit
+  ): Boolean;
+begin
+  Result := False;
+  if not WSCheckHandleAllocated(ACustomEdit, 'GetCanUndo') then
+    Exit;
+  Result := Windows.SendMessage(ACustomEdit.Handle, EM_CANUNDO, 0, 0) <> 0;
+end;
+
 class function TWin32WSCustomEdit.GetCaretPos(const ACustomEdit: TCustomEdit): TPoint;
 var
   BufferX: Longword;
@@ -1117,6 +1129,13 @@ end;
 class procedure TWin32WSCustomEdit.SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer);
 begin
   EditSetSelLength(ACustomEdit.Handle, NewLength);
+end;
+
+class procedure TWin32WSCustomEdit.Undo(const ACustomEdit: TCustomEdit);
+begin
+  if not WSCheckHandleAllocated(ACustomEdit, 'Undo') then
+    Exit;
+  SendMessage(ACustomEdit.Handle, EM_UNDO, 0, 0)
 end;
 
 { TWin32WSCustomMemo }

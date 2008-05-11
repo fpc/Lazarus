@@ -129,9 +129,10 @@ type
   { TWSCustomEdit }
 
   TWSCustomEdit = class(TWSWinControl)
-    class function  GetCaretPos(const ACustomEdit: TCustomEdit): TPoint; virtual;
-    class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; virtual;
-    class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; virtual;
+    class function GetCanUndo(const ACustomEdit: TCustomEdit): Boolean; virtual;
+    class function GetCaretPos(const ACustomEdit: TCustomEdit): TPoint; virtual;
+    class function GetSelStart(const ACustomEdit: TCustomEdit): integer; virtual;
+    class function GetSelLength(const ACustomEdit: TCustomEdit): integer; virtual;
 
     class procedure SetCaretPos(const ACustomEdit: TCustomEdit; const NewPos: TPoint); virtual;
     class procedure SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase); virtual;
@@ -141,6 +142,8 @@ type
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); virtual;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); virtual;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); virtual;
+
+    class procedure Undo(const ACustomEdit: TCustomEdit); virtual;
   end;
   TWSCustomEditClass = class of TWSCustomEdit;
 
@@ -392,6 +395,12 @@ end;
 
 { TWSCustomEdit }
 
+class function TWSCustomEdit.GetCanUndo(const ACustomEdit: TCustomEdit
+  ): Boolean;
+begin
+  Result := False;
+end;
+
 class function TWSCustomEdit.GetCaretPos(const ACustomEdit: TCustomEdit): TPoint;
 begin
   Result := Point(0, 0);
@@ -438,6 +447,11 @@ end;
 
 class procedure TWSCustomEdit.SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer);
 begin
+end;
+
+class procedure TWSCustomEdit.Undo(const ACustomEdit: TCustomEdit);
+begin
+  // nothing
 end;
 
 { TWSCustomMemo }

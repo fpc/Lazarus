@@ -60,10 +60,12 @@ type
     function getMaxLength: Integer;
     function getSelectionStart: Integer;
     function getSelectionLength: Integer;
+    function isUndoAvailable: Boolean;
     procedure setEchoMode(const AMode: QLineEditEchoMode);
     procedure setMaxLength(const ALength: Integer);
     procedure setReadOnly(const AReadOnly: Boolean);
     procedure setSelection(const AStart, ALength: Integer);
+    procedure Undo;
   end;
 
   // classes
@@ -532,6 +534,7 @@ type
     function getSelectionLength: Integer;
     function getText: WideString; override;
     function getTextStatic: Boolean; override;
+    function isUndoAvailable: Boolean;
     function hasSelectedText: Boolean;
     procedure selectAll;
     procedure setColor(const Value: PQColor); override;
@@ -541,6 +544,7 @@ type
     procedure setReadOnly(const AReadOnly: Boolean);
     procedure setSelection(const AStart, ALength: Integer);
     procedure setText(const AText: WideString); override;
+    procedure Undo;
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
@@ -554,6 +558,8 @@ type
   TQtTextEdit = class(TQtAbstractScrollArea, IQtEdit)
   private
     FTextChangedHook: QTextEdit_hookH;
+    FUndoAvailableHook: QTextEdit_hookH;
+    FUndoAvailable: Boolean;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
@@ -565,6 +571,7 @@ type
     function getSelectionStart: Integer;
     function getSelectionEnd: Integer;
     function getSelectionLength: Integer;
+    function isUndoAvailable: Boolean;
     procedure setAlignment(const AAlignment: QtAlignment);
     procedure setColor(const Value: PQColor); override;
     procedure setEchoMode(const AMode: QLineEditEchoMode);
@@ -574,10 +581,12 @@ type
     procedure setReadOnly(const AReadOnly: Boolean);
     procedure setSelection(const AStart, ALength: Integer);
     procedure setTabChangesFocus(const AValue: Boolean);
+    procedure Undo;
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
     procedure SignalTextChanged; cdecl;
+    procedure SignalUndoAvailable(b: Boolean); cdecl;
   end;
 
   { TQtTabWidget }
@@ -638,10 +647,12 @@ type
     function getMaxLength: Integer;
     function getSelectionStart: Integer;
     function getSelectionLength: Integer;
+    function isUndoAvailable: Boolean;
     procedure setEchoMode(const AMode: QLineEditEchoMode);
     procedure setMaxLength(const ALength: Integer);
     procedure setReadOnly(const AReadOnly: Boolean);
     procedure setSelection(const AStart, ALength: Integer);
+    procedure Undo;
   public
     FList: TStrings;
     destructor Destroy; override;
@@ -690,9 +701,11 @@ type
     function getMaxLength: Integer;
     function getSelectionStart: Integer;
     function getSelectionLength: Integer;
+    function isUndoAvailable: Boolean;
     procedure setEchoMode(const AMode: QLineEditEchoMode);
     procedure setMaxLength(const ALength: Integer);
     procedure setSelection(const AStart, ALength: Integer);
+    procedure Undo;
   public
     function getValue: single; virtual; abstract;
     function getReadOnly: Boolean;
@@ -4589,6 +4602,11 @@ begin
   Result := False;
 end;
 
+function TQtLineEdit.isUndoAvailable: Boolean;
+begin
+  Result := QLineEdit_isUndoAvailable(QLineEditH(Widget));
+end;
+
 function TQtLineEdit.hasSelectedText: Boolean;
 begin
   Result := QLineEdit_hasSelectedText(QLineEditH(Widget));
@@ -4697,6 +4715,11 @@ begin
   QLineEdit_setText(QLineEditH(Widget), @AText);
 end;
 
+procedure TQtLineEdit.Undo;
+begin
+  QLineEdit_undo(QLineEditH(Widget));
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtLineEdit.SignalTextChanged
   Params:  PWideString
@@ -4724,6 +4747,7 @@ begin
 
   Result := QTextEdit_create();
   FKeysToEat := [];
+  FUndoAvailable := False;
 end;
 
 procedure TQtTextEdit.append(AStr: WideString);
@@ -4770,6 +4794,11 @@ end;
 function TQtTextEdit.getSelectionLength: Integer;
 begin
   Result := getSelectionEnd - getSelectionStart;
+end;
+
+function TQtTextEdit.isUndoAvailable: Boolean;
+begin
+  Result := QTextEdit_isUndoRedoEnabled(QTextEditH(Widget)) and FUndoAvailable;
 end;
 
 {------------------------------------------------------------------------------
@@ -4838,6 +4867,11 @@ begin
   QTextEdit_setTabChangesFocus(QTextEditH(Widget), AValue);
 end;
 
+procedure TQtTextEdit.Undo;
+begin
+  QTextEdit_undo(QTextEditH(Widget));
+end;
+
 procedure TQtTextEdit.SetAlignment(const AAlignment: QtAlignment);
 var
   TextCursor: QTextCursorH;
@@ -4867,10 +4901,14 @@ begin
   inherited AttachEvents;
 
   FTextChangedHook := QTextEdit_hook_create(Widget);
+  FUndoAvailableHook := QTextEdit_hook_create(Widget);
   {TODO: BUG CopyUnicodeToPWideString() segfaults while calling SetLength()
    workaround: add try..except around SetLength() }
   QTextEdit_textChanged_Event(Method) := @SignalTextChanged;
   QTextEdit_hook_hook_textChanged(FTextChangedHook, Method);
+  
+  QTextEdit_undoAvailable_Event(Method) := @SignalUndoAvailable;
+  QTextEdit_hook_hook_undoAvailable(FUndoAvailableHook, Method);
 end;
 
 procedure TQtTextEdit.DetachEvents;
@@ -4893,6 +4931,11 @@ begin
   FillChar(Msg, SizeOf(Msg), #0);
   Msg.Msg := CM_TEXTCHANGED;
   DeliverMessage(Msg);
+end;
+
+procedure TQtTextEdit.SignalUndoAvailable(b: Boolean); cdecl;
+begin
+  FUndoAvailable := b;
 end;
 
 { TQtTabWidget }
@@ -5190,6 +5233,14 @@ begin
     Result := FSelLength;
 end;
 
+function TQtComboBox.isUndoAvailable: Boolean;
+begin
+  if LineEdit <> nil then
+    Result := LineEdit.isUndoAvailable
+  else
+    Result := False;
+end;
+
 procedure TQtComboBox.setEchoMode(const AMode: QLineEditEchoMode);
 begin
   if LineEdit <> nil then
@@ -5213,6 +5264,12 @@ begin
   FSelLength := ALength;
   if LineEdit <> nil then
     LineEdit.setSelection(AStart, ALength);
+end;
+
+procedure TQtComboBox.Undo;
+begin
+  if LineEdit <> nil then
+    LineEdit.Undo;
 end;
 
 {------------------------------------------------------------------------------
@@ -5528,6 +5585,14 @@ begin
     Result := FSelLength;
 end;
 
+function TQtAbstractSpinBox.isUndoAvailable: Boolean;
+begin
+  if LineEdit <> nil then
+    Result := QLineEdit_isUndoAvailable(LineEdit)
+  else
+    Result := False;
+end;
+
 procedure TQtAbstractSpinBox.setEchoMode(const AMode: QLineEditEchoMode);
 begin
   if LineEdit <> nil then
@@ -5546,6 +5611,12 @@ begin
   FSelLength := ALength;
   if LineEdit <> nil then
     QLineEdit_setSelection(LineEdit, AStart, ALength);
+end;
+
+procedure TQtAbstractSpinBox.Undo;
+begin
+  if LineEdit <> nil then
+    QLineEdit_undo(LineEdit);
 end;
 
 function TQtAbstractSpinBox.getReadOnly: Boolean;

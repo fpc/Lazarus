@@ -149,6 +149,7 @@ type
     class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
   public
+    class function GetCanUndo(const ACustomEdit: TCustomEdit): Boolean; override;
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
     class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
@@ -158,6 +159,7 @@ type
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
 
     //class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); override;
+    class procedure Undo(const ACustomEdit: TCustomEdit); override;
   end;
 
   { TQtWSCustomMemo }
@@ -749,6 +751,19 @@ begin
   Result := TLCLIntfHandle(QtLineEdit);
 end;
 
+class function TQtWSCustomEdit.GetCanUndo(const ACustomEdit: TCustomEdit): Boolean;
+var
+  Widget: TQtWidget;
+  QtEdit: IQtEdit;
+begin
+  Result := False;
+  if not WSCheckHandleAllocated(ACustomEdit, 'GetCanUndo') then
+    Exit;
+  Widget := TQtWidget(ACustomEdit.Handle);
+  if Supports(Widget, IQtEdit, QtEdit) then
+    Result := QtEdit.isUndoAvailable;
+end;
+
 {------------------------------------------------------------------------------
   Method: TQtWSCustomEdit.SetEchoMode
   Params:  None
@@ -869,6 +884,18 @@ begin
   AStart := GetSelStart(ACustomEdit);
   if Supports(Widget, IQtEdit, QtEdit) then
     QtEdit.setSelection(AStart, NewLength);
+end;
+
+class procedure TQtWSCustomEdit.Undo(const ACustomEdit: TCustomEdit);
+var
+  Widget: TQtWidget;
+  QtEdit: IQtEdit;
+begin
+  if not WSCheckHandleAllocated(ACustomEdit, 'Undo') then
+    Exit;
+  Widget := TQtWidget(ACustomEdit.Handle);
+  if Supports(Widget, IQtEdit, QtEdit) then
+    QtEdit.Undo;
 end;
 
 { TQtWSStaticText }

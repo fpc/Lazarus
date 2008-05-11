@@ -658,6 +658,7 @@ type
     FOnChange: TNotifyEvent;
     FSelLength: integer;
     FSelStart: integer;
+    function GetCanUndo: Boolean;
     function GetModified: Boolean;
     procedure SetCharCase(Value: TEditCharCase);
     procedure SetMaxLength(Value: Integer);
@@ -697,8 +698,10 @@ type
     procedure CopyToClipboard; virtual;
     procedure CutToClipboard; virtual;
     procedure PasteFromClipboard; virtual;
+    procedure Undo; virtual;
   public
     property BorderStyle;
+    property CanUndo: Boolean read GetCanUndo;
     property CaretPos: TPoint read GetCaretPos write SetCaretPos;
     property CharCase: TEditCharCase read FCharCase write SetCharCase default ecNormal;
     property EchoMode: TEchoMode read FEchoMode write SetEchoMode default emNormal;
