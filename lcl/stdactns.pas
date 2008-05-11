@@ -30,7 +30,7 @@ unit StdActns;
 interface
 
 uses
-  Classes, SysUtils, ActnList, Forms, Dialogs, StdCtrls;
+  Classes, SysUtils, ActnList, Forms, Dialogs, StdCtrls, Clipbrd;
 
 type
 
@@ -47,23 +47,28 @@ type
     FControl: TCustomEdit;
     procedure SetControl(const AValue: TCustomEdit);
   protected
-    function GetControl(Target: TObject): TCustomEdit; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     destructor Destroy; override;
     function HandlesTarget(Target: TObject): Boolean; override;
-    procedure UpdateTarget(Target: TObject); override;
+    // limits target to the specific control
     property Control: TCustomEdit read FControl write SetControl;
   end;
+
+  { TEditCut }
 
   TEditCut = class(TEditAction)
   public
     procedure ExecuteTarget(Target: TObject); override;
+    procedure UpdateTarget(Target: TObject); override;
   end;
+
+  { TEditCopy }
 
   TEditCopy = class(TEditAction)
   public
     procedure ExecuteTarget(Target: TObject); override;
+    procedure UpdateTarget(Target: TObject); override;
   end;
 
   TEditPaste = class(TEditAction)
@@ -87,8 +92,6 @@ type
   TEditDelete = class(TEditAction)
   public
     procedure ExecuteTarget(Target: TObject); override;
-    { UpdateTarget is required because TEditAction.UpdateTarget specifically
-      checks to see if the action is TEditCut or TEditCopy }
     procedure UpdateTarget(Target: TObject); override;
   end;
 
@@ -491,19 +494,20 @@ end;
 
 procedure TEditAction.SetControl(const AValue: TCustomEdit);
 begin
-  if FControl=AValue then exit;
-  FControl:=AValue;
+  if FControl = AValue then
+    Exit;
+  if FControl <> nil then
+    FControl.RemoveFreeNotification(Self);
+  FControl := AValue;
+  if FControl <> nil then
+    FControl.FreeNotification(Self);
 end;
 
-function TEditAction.GetControl(Target: TObject): TCustomEdit;
-begin
-  Result := TCustomEdit(Target);
-end;
-
-procedure TEditAction.Notification(AComponent: TComponent; Operation: TOperation
-  );
+procedure TEditAction.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (AComponent = FControl) then
+    FControl := nil;
 end;
 
 destructor TEditAction.Destroy;
@@ -513,74 +517,83 @@ end;
 
 function TEditAction.HandlesTarget(Target: TObject): Boolean;
 begin
-  Result:=inherited HandlesTarget(Target);
-end;
-
-procedure TEditAction.UpdateTarget(Target: TObject);
-begin
-  inherited UpdateTarget(Target);
+  Result := Target <> nil;
+  if Result then
+    Result :=
+      (Control = Target) or
+      ((Control = nil) and (Target is TCustomEdit));
 end;
 
 { TEditCut }
 
 procedure TEditCut.ExecuteTarget(Target: TObject);
 begin
-  inherited ExecuteTarget(Target);
+  (Target as TCustomEdit).CutToClipboard;
+end;
+
+procedure TEditCut.UpdateTarget(Target: TObject);
+begin
+  Enabled := (Target as TCustomEdit).SelLength <> 0;
 end;
 
 { TEditCopy }
 
 procedure TEditCopy.ExecuteTarget(Target: TObject);
 begin
-  inherited ExecuteTarget(Target);
+  (Target as TCustomEdit).CopyToClipboard;
+end;
+
+procedure TEditCopy.UpdateTarget(Target: TObject);
+begin
+  Enabled := (Target as TCustomEdit).SelLength <> 0;
 end;
 
 { TEditPaste }
 
 procedure TEditPaste.UpdateTarget(Target: TObject);
 begin
-  inherited UpdateTarget(Target);
+  Enabled := Clipboard.HasFormat(CF_TEXT);
 end;
 
 procedure TEditPaste.ExecuteTarget(Target: TObject);
 begin
-  inherited ExecuteTarget(Target);
+  (Target as TCustomEdit).PasteFromClipboard;
 end;
 
 { TEditSelectAll }
 
 procedure TEditSelectAll.ExecuteTarget(Target: TObject);
 begin
-  inherited ExecuteTarget(Target);
+  (Target as TCustomEdit).SelectAll;
 end;
 
 procedure TEditSelectAll.UpdateTarget(Target: TObject);
 begin
-  inherited UpdateTarget(Target);
+  Enabled := (Target as TCustomEdit).Text <> '';
 end;
 
 { TEditUndo }
 
 procedure TEditUndo.ExecuteTarget(Target: TObject);
 begin
-  inherited ExecuteTarget(Target);
+  (Target as TCustomEdit).Undo;
 end;
 
 procedure TEditUndo.UpdateTarget(Target: TObject);
 begin
-  inherited UpdateTarget(Target);
+  Enabled := (Target as TCustomEdit).CanUndo;
 end;
 
 { TEditDelete }
 
 procedure TEditDelete.ExecuteTarget(Target: TObject);
 begin
-  inherited ExecuteTarget(Target);
+  (Target as TCustomEdit).ClearSelection;
 end;
 
 procedure TEditDelete.UpdateTarget(Target: TObject);
 begin
-  inherited UpdateTarget(Target);
+  Enabled := (Target as TCustomEdit).SelLength <> 0;
 end;
 
 { THelpAction }
