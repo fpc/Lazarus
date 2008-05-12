@@ -1080,7 +1080,7 @@ begin
   else
   begin
     SetLength(s, count);
-    move(str^, s[1], count);  
+    if count > 0 then move(str^, s[1], count);
   end;
   // the length of utf8 vs Wide/Ansi the strings differ, so recalc.
   if UnicodeEnabledOS then
@@ -1247,7 +1247,7 @@ begin
   else
   begin
     SetLength(s, count);
-    move(str^, s[1], count);  
+    if count > 0 then move(str^, s[1], count);
   end;
   // the length of utf8 vs Wide/Ansi the strings differ, so recalc.
   if UnicodeEnabledOS 
