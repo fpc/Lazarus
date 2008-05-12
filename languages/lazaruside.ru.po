@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-04-27 19:33+0300\n"
+"PO-Revision-Date: 2008-05-11 21:30+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -1437,6 +1437,10 @@ msgstr "Выберите один из этих элементов для соз
 msgid "Choose one of these items to create a new Project"
 msgstr "Выберите один из этих элементов для создания нового Проекта"
 
+#: lazarusidestrconsts:lischooseoneoftheseitemstoinheritfromanexistingone
+msgid "Choose one of these items to inherit from an existing one"
+msgstr "Выберите один из этих элементов для наследования от уже существующего"
+
 #: lazarusidestrconsts:lislazbuildabochooseoutputdir
 msgid "Choose output directory of the IDE executable "
 msgstr "Выберите каталог для вывода исполнимого файла IDE "
@@ -2201,6 +2205,10 @@ msgstr "Создать модуль с формой LCL."
 msgid "Create a new unit with a datamodule."
 msgstr "Создать модуль с модулем данных."
 
+#: lazarusidestrconsts:lisnewdlgcreateanewunitwithaframe
+msgid "Create a new unit with a frame"
+msgstr "Создать новый модуль с фреймом"
+
 #: lazarusidestrconsts:liscreateaprojectfirst
 msgid "Create a project first!"
 msgstr "Создайте сперва проект!"
@@ -2835,7 +2843,7 @@ msgstr "Редактировать контекстную справку"
 
 #: lazarusidestrconsts:liseteditcustomscanners
 msgid "Edit custom scanners (%s)"
-msgstr ""
+msgstr "Настройка пользовательских сканеров (%s)"
 
 #: lazarusidestrconsts:srkmeditforcmd
 msgid "Edit keys for command"
@@ -3032,6 +3040,10 @@ msgstr "Ошибка перемещения компонента %s:%s"
 #: lazarusidestrconsts:lisabcreationfailed
 msgid "Error occured during Application Bundle creation: "
 msgstr "Во время создания Application Bundle произошла ошибка: "
+
+#: lazarusidestrconsts:liserroropeningcomponent
+msgid "Error opening component"
+msgstr "Ошибка при открытии компонента"
 
 #: lazarusidestrconsts:liserrorparsinglfmcomponentstream
 msgid "Error parsing lfm component stream."
@@ -4313,6 +4325,10 @@ msgstr "Индонезийский"
 msgid "Information about %s"
 msgstr "Информация о %s"
 
+#: lazarusidestrconsts:lisnewdlginheritanexistingcomponent
+msgid "Inherit from an existing component."
+msgstr "Унаследовать от существующего компонента."
+
 #: lazarusidestrconsts:liscmplstinheritance
 msgid "Inheritance"
 msgstr "Наследование"
@@ -4320,6 +4336,10 @@ msgstr "Наследование"
 #: lazarusidestrconsts:dlgcoinherited
 msgid "Inherited"
 msgstr "Унаследованные"
+
+#: lazarusidestrconsts:lisinheriteditem
+msgid "Inherited Item"
+msgstr "Унаследованный элемент"
 
 #: lazarusidestrconsts:srvk_insert
 msgid "Insert"
@@ -5715,7 +5735,7 @@ msgstr "Имя"
 
 #: lazarusidestrconsts:lisnameconflict
 msgid "Name conflict"
-msgstr ""
+msgstr "Конфликт имён"
 
 #: lazarusidestrconsts:lisnameofnewprocedure
 msgid "Name of new procedure"
@@ -6395,7 +6415,7 @@ msgstr "Диаграмма пакетов"
 
 #: lazarusidestrconsts:dlgpldpackagegroup
 msgid "Package group"
-msgstr ""
+msgstr "Группа пакетов"
 
 #: lazarusidestrconsts:lispkgmangpackageisnodesigntimepackage
 msgid "Package is no designtime package"
@@ -9103,7 +9123,7 @@ msgstr "Пакет %s%s%s отмечен.%sСейчас lazarus поддержи
 
 #: lazarusidestrconsts:listhepackagealreadycontainsaunitwiththisname
 msgid "The package already contains a unit with this name."
-msgstr ""
+msgstr "Пакет уже содержит модуль с таким именем."
 
 #: lazarusidestrconsts:lispkgmangthepackagefilenameinisnotavalidlazaruspackagename
 msgid "The package file name %s%s%s in%s%s%s%s is not a valid lazarus package name."
@@ -9765,6 +9785,10 @@ msgstr "Невозможно загрузить пакет %s%s%s"
 msgid "Unable to load the component class %s%s%s, because it depends on itself."
 msgstr "Невозможно загрузить класс компонента %s%s%s, так как он зависит сам от себя."
 
+#: lazarusidestrconsts:lisunabletoopenancestorcomponent
+msgid "Unable to open ancestor component"
+msgstr "Невозможно открыть компонент-предок"
+
 #: lazarusidestrconsts:lisunabletoopendesignertheclassdoesnotdescendfromades
 msgid "Unable to open designer.%sThe class %s does not descend from a designable class like TForm or TDataModule."
 msgstr "Невозможно открыть дизайнер. %sКласс %s не унаследован от класса, подобного TForm или TDataModule."
@@ -10404,6 +10428,10 @@ msgstr "Просмотр сообщений"
 #: lazarusidestrconsts:dlgmainviewforms
 msgid "View project forms"
 msgstr "Показать формы проекта"
+
+#: lazarusidestrconsts:dlgmainviewframes
+msgid "View project frames"
+msgstr "Показать фреймы проекта"
 
 #: lazarusidestrconsts:liskmviewprojectoptions
 msgid "View project options"
