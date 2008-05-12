@@ -816,7 +816,7 @@
       <element name="PrimarySelection">
         <short>
           <var>PrimarySelection</var> - the first selection if multiple clipboards exist</short>
-        <descr/>
+        <descr>The PrimarySelection is available on platforms like X. Normally when the user selects some text with the mouse the primary selection is set and when the user clicks the middle mouse button the text is copied to the mouse position. On platforms without multiple clipboards, the PrimarySelection still works in the LCL application, but does not communicate with other applications.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -828,25 +828,25 @@
       <element name="SecondarySelection">
         <short>
           <var>SecondarySelection</var> - the second selection if multiple clipboards exist</short>
-        <descr/>
+        <descr>The SecondarySelection is available on platforms like X. See PrimarySelection for more details. There is no standard how to use the secondary selection, so it is free to use. X supports a dozen more selections, but they are not supported by the LCL.</descr>
         <errors/>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
       <element name="SecondarySelection.Result">
-	<short>Returns a variable of type TClipboard</short>
+        <short>Returns a variable of type TClipboard</short>
       </element>
       <!-- function Visibility: default -->
       <element name="Clipboard">
         <short>
           <var>Clipboard</var> the function called to access the clipboard with an optional type specifier</short>
-        <descr/>
+        <descr>The Clipboard is available on most platforms and normally used by Copy/Paste.</descr>
         <errors/>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
       <element name="Clipboard.Result">
-	<short>Returns a variable of type TClipboard</short>
+        <short>Returns a variable of type TClipboard</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="Clipboard.ClipboardType">
@@ -863,7 +863,7 @@
       </element>
       <!-- function result Visibility: default -->
       <element name="SetClipboard.Result">
-	<short>Returns a variable of type TClipboard</short>
+        <short>Returns a variable of type TClipboard</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="SetClipboard.ClipboardType">
