@@ -39,7 +39,7 @@ uses
   SynHighlighterLFM, SynEdit, BasicCodeTools, CodeCache, CodeToolManager,
   LFMTrees,
   // IDE
-  PropEdits, ComponentReg, PackageIntf, IDEWindowIntf,
+  PropEdits, IDEDialogs, ComponentReg, PackageIntf, IDEWindowIntf,
   LazarusIDEStrConsts, OutputFilter, IDEProcs, IDEOptionDefs, EditorOptions;
 
 type
@@ -77,16 +77,22 @@ type
     property LFMTree: TLFMTree read FLFMTree write SetLFMTree;
     property LFMSource: TCodeBuffer read FLFMSource write SetLFMSource;
   end;
-  
-function CheckLFMBuffer(PascalBuffer, LFMBuffer: TCodeBuffer;
+
+// check and repair lfm files
+function QuickCheckLFMBuffer(PascalBuffer, LFMBuffer: TCodeBuffer;
+  out LCLVersion: string;
+  out MissingClasses: TStrings// e.g. MyFrame2:TMyFrame
+  ): TModalResult;
+function RepairLFMBuffer(PascalBuffer, LFMBuffer: TCodeBuffer;
   const OnOutput: TOnAddFilteredLine;
   RootMustBeClassInIntf, ObjectsMustExists: boolean): TModalResult;
-function CheckLFMText(PascalBuffer: TCodeBuffer; var LFMText: string;
+function RepairLFMText(PascalBuffer: TCodeBuffer; var LFMText: string;
   const OnOutput: TOnAddFilteredLine;
   RootMustBeClassInIntf, ObjectsMustExists: boolean): TModalResult;
 function ShowRepairLFMWizard(LFMBuffer: TCodeBuffer;
   LFMTree: TLFMTree): TModalResult;
 
+// dangling events
 function RemoveDanglingEvents(RootComponent: TComponent;
   PascalBuffer: TCodeBuffer; OkOnCodeErrors: boolean;
   out ComponentModified: boolean): TModalResult;
@@ -101,7 +107,42 @@ type
     NewText: string;
   end;
 
-function CheckLFMBuffer(PascalBuffer, LFMBuffer: TCodeBuffer;
+function QuickCheckLFMBuffer(PascalBuffer, LFMBuffer: TCodeBuffer; out
+  LCLVersion: string; out MissingClasses: TStrings): TModalResult;
+var
+  LFMTree: TLFMTree;
+  LCLVersionNode: TLFMPropertyNode;
+  LCLVersionValueNode: TLFMValueNode;
+begin
+  DebugLn(['QuickCheckLFMBuffer LFMBuffer=',LFMBuffer.Filename]);
+  LCLVersion:='';
+  MissingClasses:=nil;
+
+  LFMTree:=DefaultLFMTrees.GetLFMTree(LFMBuffer,true);
+  if not LFMTree.ParseIfNeeded then begin
+    DebugLn(['QuickCheckLFMBuffer LFM error: ',LFMTree.FirstErrorAsString]);
+    exit(mrCancel);
+  end;
+  
+  //LFMTree.WriteDebugReport;
+
+  // first search the version
+  LCLVersionNode:=LFMTree.FindProperty('LCLVersion',LFMTree.Root);
+  //DebugLn(['QuickCheckLFMBuffer LCLVersionNode=',LCLVersionNode<>nil]);
+  if (LCLVersionNode<>nil) and (LCLVersionNode.FirstChild is TLFMValueNode) then
+  begin
+    LCLVersionValueNode:=TLFMValueNode(LCLVersionNode.FirstChild);
+    //DebugLn(['QuickCheckLFMBuffer ',TLFMValueTypeNames[LCLVersionValueNode.ValueType]]);
+    if LCLVersionValueNode.ValueType=lfmvString then begin
+      LCLVersion:=LCLVersionValueNode.ReadString;
+      //DebugLn(['QuickCheckLFMBuffer LCLVersion=',LCLVersion]);
+    end;
+  end;
+  
+  Result:=mrOk;
+end;
+
+function RepairLFMBuffer(PascalBuffer, LFMBuffer: TCodeBuffer;
   const OnOutput: TOnAddFilteredLine;
   RootMustBeClassInIntf, ObjectsMustExists: boolean): TModalResult;
 var
@@ -257,7 +298,6 @@ begin
     DebugLn(['CheckLFMBuffer failed parsing unit: ',PascalBuffer.Filename]);
     exit;
   end;
-
   if CodeToolBoss.CheckLFM(PascalBuffer,LFMBuffer,LFMTree,
                            RootMustBeClassInIntf,ObjectsMustExists)
   then begin
@@ -274,7 +314,7 @@ begin
   Result:=ShowRepairLFMWizard(LFMBuffer,LFMTree);
 end;
 
-function CheckLFMText(PascalBuffer: TCodeBuffer; var LFMText: string;
+function RepairLFMText(PascalBuffer: TCodeBuffer; var LFMText: string;
   const OnOutput: TOnAddFilteredLine;
   RootMustBeClassInIntf, ObjectsMustExists: boolean): TModalResult;
 var
@@ -284,8 +324,8 @@ begin
   LFMBuf:=CodeToolBoss.CreateTempFile('temp.lfm');
   try
     LFMBuf.Source:=LFMText;
-    Result:=CheckLFMBuffer(PascalBuffer,LFMBuf,OnOutput,RootMustBeClassInIntf,
-                           ObjectsMustExists);
+    Result:=RepairLFMBuffer(PascalBuffer,LFMBuf,OnOutput,RootMustBeClassInIntf,
+                            ObjectsMustExists);
     LFMText:=LFMBuf.Source;
   finally
     CodeToolBoss.ReleaseTempFile(LFMBuf);

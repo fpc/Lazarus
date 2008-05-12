@@ -30,7 +30,8 @@ unit LFMTrees;
 interface
 
 uses
-  Classes, SysUtils, AVL_Tree, FileProcs, CodeCache, CodeAtom, TypInfo;
+  Classes, SysUtils, AVL_Tree, FileProcs, BasicCodeTools, CodeCache, CodeAtom,
+  TypInfo;
   
 type
   { TLFMTreeNode }
@@ -132,6 +133,7 @@ type
   public
     ValueType: TLFMValueType;
     constructor CreateVirtual; override;
+    function ReadString: string;
   end;
 
 
@@ -238,6 +240,8 @@ type
   TLFMTree = class
   protected
     Parser: TParser;
+    TokenStart: LongInt;
+    function NextToken: Char;
     procedure ProcessValue;
     procedure ProcessProperty;
     procedure ProcessObject;
@@ -266,6 +270,11 @@ type
     function FindErrorAtNode(Node: TLFMTreeNode): TLFMError;
     function FindError(ErrorTypes: TLFMErrorTypes): TLFMError;
     function FirstErrorAsString: string;
+
+    function FindProperty(PropertyPath: string;
+                          ContextNode: TLFMTreeNode): TLFMPropertyNode;
+
+    procedure WriteDebugReport;
   end;
   
   { TLFMTrees }
@@ -301,6 +310,18 @@ const
     'EndNotFound'
     );
     
+  TLFMValueTypeNames: array[TLFMValueType] of string = (
+    'None',
+    'Integer',
+    'Float',
+    'String',
+    'Symbol',
+    'Set',
+    'List',
+    'Collection',
+    'Binary'
+    );
+    
 procedure FreeListOfPInstancePropInfo(List: TFPList);
 function CompareLFMTreesByLFMBuffer(Data1, Data2: Pointer): integer;
 function CompareLFMBufWithTree(Buf, Tree: Pointer): integer;
@@ -334,6 +355,7 @@ begin
   Result:=ComparePointers(Buf,TLFMTree(Tree).LFMBuffer);
 end;
 
+
 { TLFMTree }
 
 constructor TLFMTree.Create;
@@ -349,7 +371,8 @@ end;
 
 procedure TLFMTree.Clear;
 begin
-  LFMBuffer:=nil;
+  // do not set LFMBuffer to nil
+  TokenStart:=0;
   CurNode:=nil;
   ClearErrors;
   while Root<>nil do Root.Free;
@@ -368,6 +391,8 @@ begin
   Result:=false;
   Clear;
   if LFMBuf<>LFMBuffer then begin
+    DebugLn(['TLFMTree.Parse New=',LFMBuf.Filename]);
+    DebugLn(['TLFMTree.Parse Old=',LFMBuffer.Filename]);
     if Trees<>nil then
       raise Exception.Create('TLFMTree.Parse: changing LFMBuffer in Tree is not allowed');
     LFMBuffer:=LFMBuf;
@@ -466,9 +491,80 @@ begin
   if FirstError<>nil then Result:=FirstError.ErrorMessage;
 end;
 
+function TLFMTree.FindProperty(PropertyPath: string; ContextNode: TLFMTreeNode
+  ): TLFMPropertyNode;
+var
+  Node: TLFMTreeNode;
+  ObjNode: TLFMObjectNode;
+  p: LongInt;
+  FirstPart: String;
+  RestParts: String;
+begin
+  if ContextNode=nil then
+    Node:=Root
+  else
+    Node:=ContextNode.FirstChild;
+  p:=System.Pos(PropertyPath,'.');
+  FirstPart:=copy(PropertyPath,1,p-1);
+  RestParts:=copy(PropertyPath,p+1,length(PropertyPath));
+  while Node<>nil do begin
+    if Node is TLFMPropertyNode then begin
+      Result:=TLFMPropertyNode(Node);
+      if SysUtils.CompareText(Result.CompleteName,PropertyPath)=0 then
+        exit;
+    end else if (Node is TLFMObjectNode)
+    and (RestParts<>'') then begin
+      ObjNode:=TLFMObjectNode(Node);
+      if CompareIdentifierPtrs(Pointer(ObjNode.Name),Pointer(FirstPart))=0 then
+      begin
+        Result:=FindProperty(RestParts,ObjNode);
+        exit;
+      end;
+    end;
+    Node:=Node.NextSibling;
+  end;
+  Result:=nil;
+end;
+
+procedure TLFMTree.WriteDebugReport;
+var
+  Src: string;
+
+  procedure WriteNode(const Prefix: string; Node: TLFMTreeNode);
+  var
+    Child: TLFMTreeNode;
+    EndPos: LongInt;
+  begin
+    if Node=nil then exit;
+    Child:=Node.FirstChild;
+    EndPos:=Node.EndPos;
+    if (Child<>nil) and (EndPos>Child.StartPos) then
+      EndPos:=Child.StartPos;
+    DebugLn([Prefix,dbgstr(copy(Src,Node.StartPos,EndPos-Node.StartPos))]);
+    while Child<>nil do begin
+      WriteNode(Prefix+'  ',Child);
+      Child:=Child.NextSibling;
+    end;
+  end;
+
+begin
+  if LFMBuffer=nil then begin
+    DebugLn(['TLFMTree.WriteDebugReport LFMBuffer=nil']);
+  end;
+  DebugLn(['TLFMTree.WriteDebugReport ',LFMBuffer.Filename]);
+  Src:=LFMBuffer.Source;
+  WriteNode('',Root);
+end;
+
 {$if not declared(toWString)}
   const toWString = char(5);
 {$endif}
+
+function TLFMTree.NextToken: Char;
+begin
+  TokenStart:=Parser.SourcePos+1;
+  Result:=Parser.NextToken;
+end;
 
 procedure TLFMTree.ProcessValue;
 var
@@ -482,7 +578,7 @@ begin
     begin
       CreateChildNode(TLFMValueNode);
       TLFMValueNode(CurNode).ValueType:=lfmvInteger;
-      Parser.NextToken;
+      NextToken;
       CloseChildNode;
     end;
     
@@ -490,7 +586,7 @@ begin
     begin
       CreateChildNode(TLFMValueNode);
       TLFMValueNode(CurNode).ValueType:=lfmvFloat;
-      Parser.NextToken;
+      NextToken;
       CloseChildNode;
     end;
     
@@ -498,8 +594,8 @@ begin
     begin
       CreateChildNode(TLFMValueNode);
       TLFMValueNode(CurNode).ValueType:=lfmvString;
-      while Parser.NextToken = '+' do begin
-        Parser.NextToken;   // Get next string fragment
+      while NextToken = '+' do begin
+        NextToken;   // Get next string fragment
         if not (Parser.Token in [toString,toWString]) then
           Parser.CheckToken(toString);
       end;
@@ -512,13 +608,13 @@ begin
       SymbolNode:=TLFMValueNodeSymbol(CurNode);
       if SymbolNode=nil then ;
       s := Parser.TokenString;
-      if CompareText(s, 'End') = 0 then
+      if SysUtils.CompareText(s, 'End') = 0 then
         SymbolNode.SymbolType:=lfmsNone
-      else if CompareText(s, 'True') = 0 then
+      else if SysUtils.CompareText(s, 'True') = 0 then
         SymbolNode.SymbolType:=lfmsTrue
-      else if CompareText(s, 'False') = 0 then
+      else if SysUtils.CompareText(s, 'False') = 0 then
         SymbolNode.SymbolType:=lfmsFalse
-      else if CompareText(s, 'nil') = 0 then
+      else if SysUtils.CompareText(s, 'nil') = 0 then
         SymbolNode.SymbolType:=lfmsNil
       else
       begin
@@ -526,7 +622,7 @@ begin
         Parser.TokenComponentIdent;
       end;
       if SymbolNode.SymbolType<>lfmsNone then
-        Parser.NextToken;
+        NextToken;
       CloseChildNode;
     end;
     
@@ -534,20 +630,20 @@ begin
   '[':
     begin
       CreateChildNode(TLFMValueNodeSet);
-      Parser.NextToken;
+      NextToken;
       if Parser.Token <> ']' then
         while True do
         begin
           CreateChildNode(TLFMEnumNode);
           Parser.CheckToken(toSymbol);
           CloseChildNode;
-          Parser.NextToken;
+          NextToken;
           if Parser.Token = ']' then
             break;
           Parser.CheckToken(',');
-          Parser.NextToken;
+          NextToken;
         end;
-      Parser.NextToken;
+      NextToken;
       CloseChildNode;
     end;
     
@@ -555,10 +651,10 @@ begin
   '(':
     begin
       CreateChildNode(TLFMValueNodeList);
-      Parser.NextToken;
+      NextToken;
       while Parser.Token <> ')' do
         ProcessValue;
-      Parser.NextToken;
+      NextToken;
       CloseChildNode;
     end;
     
@@ -566,18 +662,18 @@ begin
   '<':
     begin
       CreateChildNode(TLFMValueNodeCollection);
-      Parser.NextToken;
+      NextToken;
       while Parser.Token <> '>' do
       begin
         Parser.CheckTokenSymbol('item');
-        Parser.NextToken;
+        NextToken;
         CreateChildNode(TLFMValueNodeList);
         while not Parser.TokenSymbolIs('end') do
           ProcessProperty;
-        Parser.NextToken;   // Skip 'end'
+        NextToken;   // Skip 'end'
         CloseChildNode;
       end;
-      Parser.NextToken;
+      NextToken;
       CloseChildNode;
     end;
     
@@ -591,7 +687,7 @@ begin
       finally
         MemStream.Free;
       end;
-      Parser.NextToken;
+      NextToken;
       CloseChildNode;
     end;
     
@@ -611,14 +707,14 @@ begin
   Parser.CheckToken(toSymbol);
   PropertyNode.Add(Parser.TokenString,Parser.SourcePos+1);
   while True do begin
-    Parser.NextToken;
+    NextToken;
     if Parser.Token <> '.' then break;
-    Parser.NextToken;
+    NextToken;
     Parser.CheckToken(toSymbol);
     PropertyNode.Add(Parser.TokenString,Parser.SourcePos+1);
   end;
   Parser.CheckToken('=');
-  Parser.NextToken;
+  NextToken;
   ProcessValue;
   CloseChildNode;
 end;
@@ -636,7 +732,7 @@ begin
     Parser.CheckTokenSymbol('INHERITED');
     ObjectNode.IsInherited := True;
   end;
-  Parser.NextToken;
+  NextToken;
   Parser.CheckToken(toSymbol);
   if not Parser.TokenSymbolIs('END') then begin
     ObjectStartLine:=Parser.SourceLine;
@@ -644,21 +740,21 @@ begin
     ObjectNode.TypeName := Parser.TokenString;
     ObjectNode.TypeNamePosition:=Parser.SourcePos+1;
     ObjectNode.ChildPos := -1;
-    Parser.NextToken;
+    NextToken;
     if Parser.Token = ':' then begin
-      Parser.NextToken;
+      NextToken;
       Parser.CheckToken(toSymbol);
       ObjectNode.Name := ObjectNode.TypeName;
       ObjectNode.NamePosition:=ObjectNode.TypeNamePosition;
       ObjectNode.TypeName := Parser.TokenString;
       ObjectNode.TypeNamePosition:=Parser.SourcePos+1;
-      Parser.NextToken;
+      NextToken;
       if parser.Token = '[' then begin
-        parser.NextToken;
+        NextToken;
         ObjectNode.ChildPos := parser.TokenInt;
-        parser.NextToken;
+        NextToken;
         parser.CheckToken(']');
-        parser.NextToken;
+        NextToken;
       end;
     end;
 
@@ -678,7 +774,7 @@ begin
       ProcessObject;
     end;
   end;
-  Parser.NextToken; // Skip 'END' token
+  NextToken; // Skip 'END' token
   
   CloseChildNode;
 end;
@@ -689,8 +785,8 @@ var
 begin
   NewNode:=NodeClass.CreateVirtual;
   NewNode.Tree:=Self;
-  NewNode.StartPos:=Parser.SourcePos+1;
-  NewNode.EndPos:=NewNode.StartPos;
+  NewNode.StartPos:=TokenStart;
+  NewNode.EndPos:=0;
   if CurNode<>nil then begin
     CurNode.AddChild(NewNode);
   end else begin
@@ -701,7 +797,8 @@ end;
 
 procedure TLFMTree.CloseChildNode;
 begin
-  CurNode.EndPos:=Parser.SourcePos+1;
+  if CurNode.EndPos<1 then
+    CurNode.EndPos:=TokenStart;
   CurNode:=CurNode.Parent;
 end;
 
@@ -882,6 +979,34 @@ constructor TLFMValueNode.CreateVirtual;
 begin
   TheType:=lfmnValue;
   ValueType:=lfmvNone;
+end;
+
+function TLFMValueNode.ReadString: string;
+var
+  p: LongInt;
+  Src: String;
+  i: integer;
+  AtomStart: LongInt;
+begin
+  Result:='';
+  if ValueType<>lfmvString then exit;
+  p:=StartPos;
+  AtomStart:=p;
+  Src:=Tree.LFMBuffer.Source;
+  repeat
+    ReadRawNextPascalAtom(Src,p,AtomStart);
+    if AtomStart>length(Src) then exit;
+    if Src[AtomStart]='''' then begin
+      Result:=Result+copy(Src,AtomStart+1,p-AtomStart-2)
+    end else if Src[AtomStart]='+' then begin
+      // skip
+    end else if Src[AtomStart]='#' then begin
+      i:=StrToIntDef(copy(Src,AtomStart+1,p-AtomStart-1),-1);
+      if (i<0) or (i>255) then exit;
+      Result:=Result+chr(i);
+    end else
+      exit;
+  until false;
 end;
 
 { TLFMValueNodeSymbol }

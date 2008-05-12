@@ -5401,6 +5401,8 @@ var
   NewUnitName: String;
   AncestorUnitInfo: TUnitInfo;
   ReferencesLocked: Boolean;
+  LCLVersion: string;
+  MissingClasses: TStrings;
 begin
   debugln('TMainIDE.DoLoadLFM A ',AnUnitInfo.Filename,' IsPartOfProject=',dbgs(AnUnitInfo.IsPartOfProject),' ');
 
@@ -5444,6 +5446,8 @@ begin
 
     if AnUnitInfo.Component=nil then begin
       // load/create new instance
+      
+      QuickCheckLFMBuffer(AnUnitInfo.Source,LFMBuf,LCLVersion,MissingClasses);
 
       // find the classname of the LFM, and check for inherited form
       ReadLFMHeader(LFMBuf.Source,NewClassName,LFMType);
@@ -9924,8 +9928,8 @@ begin
   DoArrangeSourceEditorAndMessageView(false);
 
   // parse the LFM file and the pascal unit
-  if CheckLFMBuffer(PascalBuf,LFMUnitInfo.Source,@MessagesView.AddMsg,
-                    true,true)<>mrOk
+  if RepairLFMBuffer(PascalBuf,LFMUnitInfo.Source,@MessagesView.AddMsg,
+                     true,true)<>mrOk
   then begin
     DoJumpToCompilerMessage(-1,true);
   end;

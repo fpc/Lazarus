@@ -727,7 +727,7 @@ begin
     if HasDFMFile and (LFMCode=nil) then
       DebugLn('WARNING: ConvertDelphiToLazarusUnit unable to load LFMCode');
     if (LFMCode<>nil)
-    and (CheckLFMBuffer(UnitCode,LFMCode,@IDEMessagesWindow.AddMsg,true,true)<>mrOk)
+    and (RepairLFMBuffer(UnitCode,LFMCode,@IDEMessagesWindow.AddMsg,true,true)<>mrOk)
     then begin
       LazarusIDE.DoJumpToCompilerMessage(-1,true);
       exit(mrAbort);

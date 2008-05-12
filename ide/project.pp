@@ -155,7 +155,7 @@ type
     uifMarked
     );
   TUnitInfoFlags = set of TUnitInfoFlag;
-
+  
   { TUnitInfo }
 
   TUnitInfo = class(TLazProjectFile)
@@ -165,6 +165,7 @@ type
     fBookmarks: TFileBookmarks;
     FBuildFileIfActive: boolean;
     fComponent: TComponent;
+    FResourceBaseClass: TPFComponentBaseClass;
     fComponentName: string; { classname is always T<ComponentName>
          this attribute contains the component name,
          even if the unit is not loaded,
@@ -176,6 +177,7 @@ type
     FComponentLastLRSStreamSize: TStreamSeekType;
     fCursorPos: TPoint;
     fCustomHighlighter: boolean; // do not change highlighter on file extension change
+    FDirectives: TStrings;
     fEditorIndex: integer;
     fFileName: string;
     fFileReadOnly: Boolean;
@@ -222,6 +224,7 @@ type
     function GetPrevUnitWithEditorIndex: TUnitInfo;
     procedure SetAutoReferenceSourceDir(const AValue: boolean);
     procedure SetBuildFileIfActive(const AValue: boolean);
+    procedure SetDirectives(const AValue: TStrings);
     procedure SetEditorIndex(const AValue: integer);
     procedure SetFileReadOnly(const AValue: Boolean);
     procedure SetComponent(const AValue: TComponent);
@@ -264,12 +267,12 @@ type
     procedure IgnoreCurrentFileDateOnDisk;
     procedure IncreaseAutoRevertLock;
     procedure DecreaseAutoRevertLock;
-    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
-                                Merge: boolean);
     function ParseUnitNameFromSource(TryCache: boolean): string;
     procedure ReadUnitNameFromSource(TryCache: boolean);
     function CreateUnitName: string;
     procedure ImproveUnitNameCache(const NewUnitName: string);
+    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
+                                Merge: boolean);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                               SaveData, SaveSession: boolean);
     procedure UpdateUsageCount(Min, IfBelowThis, IncIfBelow: extended);
@@ -315,6 +318,8 @@ type
     property ComponentName: string read fComponentName write fComponentName;
     property ComponentResourceName: string read fComponentResourceName
                                            write fComponentResourceName;
+    property ResourceBaseClass: TPFComponentBaseClass read FResourceBaseClass
+                                                      write FResourceBaseClass;
     property ComponentLastBinStreamSize: TStreamSeekType
              read FComponentLastBinStreamSize write FComponentLastBinStreamSize;
     property ComponentLastLRSStreamSize: TStreamSeekType
@@ -324,7 +329,7 @@ type
     property CursorPos: TPoint read fCursorPos write fCursorPos; // physical (screen) position
     property CustomHighlighter: boolean
                                read fCustomHighlighter write fCustomHighlighter;
-    property Directives: TStrings;
+    property Directives: TStrings read FDirectives write SetDirectives;
     property EditorIndex: integer read fEditorIndex write SetEditorIndex;
     property FileReadOnly: Boolean read fFileReadOnly write SetFileReadOnly;
     property FirstRequiredComponent: TUnitComponentDependency
@@ -869,14 +874,14 @@ type
     property EnableI18N: boolean read FEnableI18N write SetEnableI18N;
     property POOutputDirectory: string read FPOOutputDirectory
                                        write SetPOOutputDirectory;
-
   end;
 
+  
 const
   ResourceFileExt = '.lrs';
 
 var
-  Project1: TProject = nil;
+  Project1: TProject = nil;// the main project
 
 procedure AddCompileReasonsDiff(Tool: TCompilerDiffTool;
   const PropertyName: string; const Old, New: TCompileReasons);
@@ -1148,6 +1153,9 @@ begin
     XMLConfig.SetDeleteValue(Path+'ComponentName/Value',fComponentName,'');
     XMLConfig.SetDeleteValue(Path+'HasResources/Value',fHasResources,false);
     XMLConfig.SetDeleteValue(Path+'IsPartOfProject/Value',IsPartOfProject,false);
+    XMLConfig.SetDeleteValue(Path+'ResourceBaseClass/Value',
+                             PFComponentBaseClassNames[FResourceBaseClass],
+                             PFComponentBaseClassNames[pfcbcNone]);
     AFilename:=FResourceFilename;
     if Assigned(fOnLoadSaveFilename) then
       fOnLoadSaveFilename(AFilename,false);
@@ -1198,6 +1206,8 @@ begin
     if fComponentName='' then
       fComponentName:=XMLConfig.GetValue(Path+'FormName/Value','');
     HasResources:=XMLConfig.GetValue(Path+'HasResources/Value',false);
+    FResourceBaseClass:=StrToComponentBaseClass(
+                         XMLConfig.GetValue(Path+'ResourceBaseClass/Value',''));
     IsPartOfProject:=XMLConfig.GetValue(Path+'IsPartOfProject/Value',false);
     AFilename:=XMLConfig.GetValue(Path+'ResourceFilename/Value','');
     if (AFilename<>'') and Assigned(fOnLoadSaveFilename) then
@@ -1695,6 +1705,12 @@ begin
   SessionModified:=true;
 end;
 
+procedure TUnitInfo.SetDirectives(const AValue: TStrings);
+begin
+  if FDirectives=AValue then exit;
+  FDirectives:=AValue;
+end;
+
 procedure TUnitInfo.SetEditorIndex(const AValue: integer);
 begin
   if fEditorIndex=AValue then exit;
@@ -1717,7 +1733,10 @@ begin
   if fComponent=AValue then exit;
   fComponent:=AValue;
   UpdateList(uilWithComponent,fComponent<>nil);
-  if fComponent=nil then ClearComponentDependencies;
+  if fComponent=nil then
+    ClearComponentDependencies
+  else
+    FResourceBaseClass:=GetComponentBaseClass(fComponent.ClassType);
 end;
 
 procedure TUnitInfo.SetIsPartOfProject(const AValue: boolean);

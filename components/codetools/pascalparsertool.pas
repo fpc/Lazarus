@@ -4140,7 +4140,7 @@ begin
   if ProcNode.Desc=ctnProcedureHead then
     ProcNode:=ProcNode.Parent;
   if ProcNode.Desc<>ctnProcedure then
-    RaiseException('INTERNAL ERROR: TPascalParserTool.BuildSubTreeForProcHead');
+    RaiseException('INTERNAL ERROR: TPascalParserTool.BuildSubTreeForProcHead with FunctionResult');
   BuildSubTreeForProcHead(ProcNode);
   FunctionResult:=ProcNode.FirstChild.FirstChild;
   if (FunctionResult<>nil) and (FunctionResult.Desc=ctnParameterList) then

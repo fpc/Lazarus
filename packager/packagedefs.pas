@@ -148,6 +148,25 @@ const
   PkgFileUnitTypes = [pftUnit,pftVirtualUnit];
   
 type
+  TPFComponentBaseClass = (
+    pfcbcNone,      // unknown
+    pfcbcForm,      // is TForm
+    pfcbcFrame,     // is TFrame
+    pfcbcDataModule // is TDataModule
+    );
+    
+const
+  PFComponentBaseClassNames: array[TPFComponentBaseClass] of string = (
+    'None',
+    'Form',
+    'Frame',
+    'DataModule'
+    );
+    
+function StrToComponentBaseClass(const s: string): TPFComponentBaseClass;
+function GetComponentBaseClass(aClass: TClass): TPFComponentBaseClass;
+
+type
   TPkgFileFlag = (
     pffHasRegisterProc,  // file is unit and has a 'register' procedure
     pffAddToPkgUsesSection,// unit is added to uses section
@@ -170,6 +189,7 @@ type
     fFullFilename: string;
     fFullFilenameStamp: integer;
     FPackage: TLazPackage;
+    FResourceBaseClass: TPFComponentBaseClass;
     FSourceDirectoryReferenced: boolean;
     FSourceDirNeedReference: boolean;
     FUnitName: string;
@@ -204,23 +224,25 @@ type
     procedure UpdateSourceDirectoryReference;
     function GetFullFilename: string;
   public
-    property Removed: boolean read FRemoved write SetRemoved;
+    property AddToUsesPkgSection: boolean
+                       read GetAddToUsesPkgSection write SetAddToUsesPkgSection;
+    property AutoReferenceSourceDir: boolean read FAutoReferenceSourceDir
+                                             write SetAutoReferenceSourceDir;
+    property ResourceBaseClass: TPFComponentBaseClass read FResourceBaseClass
+                                                      write FResourceBaseClass;
+    property ComponentPriority: TComponentPriority read FComponentPriority
+                                                   write FComponentPriority;
+    property Components[Index: integer]: TPkgComponent read GetComponents;// registered components
     property Directory: string read FDirectory;
     property Filename: string read FFilename write SetFilename;
     property FileType: TPkgFileType read FFileType write SetFileType;
     property Flags: TPkgFileFlags read FFlags write SetFlags;
     property HasRegisterProc: boolean
                                read GetHasRegisterProc write SetHasRegisterProc;
-    property AddToUsesPkgSection: boolean
-                       read GetAddToUsesPkgSection write SetAddToUsesPkgSection;
     property LazPackage: TLazPackage read FPackage;
-    property UnitName: string read FUnitName write FUnitName;
-    property ComponentPriority: TComponentPriority read FComponentPriority
-                                                   write FComponentPriority;
-    property Components[Index: integer]: TPkgComponent read GetComponents;
+    property Removed: boolean read FRemoved write SetRemoved;
     property SourceDirectoryReferenced: boolean read FSourceDirectoryReferenced;
-    property AutoReferenceSourceDir: boolean read FAutoReferenceSourceDir
-                                             write SetAutoReferenceSourceDir;
+    property UnitName: string read FUnitName write FUnitName;
   end;
   
   
@@ -1109,6 +1131,25 @@ begin
   end;
 end;
 
+function StrToComponentBaseClass(const s: string): TPFComponentBaseClass;
+begin
+  for Result:=low(TPFComponentBaseClass) to high(TPFComponentBaseClass) do
+    if SysUtils.CompareText(PFComponentBaseClassNames[Result],s)=0 then exit;
+  Result:=pfcbcNone;
+end;
+
+function GetComponentBaseClass(aClass: TClass): TPFComponentBaseClass;
+begin
+  Result:=pfcbcNone;
+  if aClass=nil then exit;
+  if aClass.InheritsFrom(TForm) then
+    Result:=pfcbcForm
+  else if aClass.InheritsFrom(TFrame) then
+    Result:=pfcbcFrame
+  else if aClass.InheritsFrom(TDataModule) then
+    Result:=pfcbcDataModule;
+end;
+
 function CompareLazPackageID(Data1, Data2: Pointer): integer;
 var
   Pkg1: TLazPackageID;
@@ -1541,6 +1582,8 @@ begin
     if CompareText(fUnitName,CaseInsensitiveUnitName)<>0 then
       fUnitName:=CaseInsensitiveUnitName;
   end;
+  FResourceBaseClass:=StrToComponentBaseClass(
+                         XMLConfig.GetValue(Path+'ResourceBaseClass/Value',''));
 end;
 
 procedure TPkgFile.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
@@ -1557,6 +1600,9 @@ begin
   XMLConfig.SetDeleteValue(Path+'Type/Value',PkgFileTypeIdents[FileType],
                            PkgFileTypeIdents[pftUnit]);
   XMLConfig.SetDeleteValue(Path+'UnitName/Value',FUnitName,'');
+  XMLConfig.SetDeleteValue(Path+'ResourceBaseClass/Value',
+                           PFComponentBaseClassNames[FResourceBaseClass],
+                           PFComponentBaseClassNames[pfcbcNone]);
 end;
 
 procedure TPkgFile.ConsistencyCheck;
