@@ -678,7 +678,7 @@ msgstr "Sijoita"
 
 #: lazarusidestrconsts:lisemdall
 msgid "All"
-msgstr ""
+msgstr "Kaikki"
 
 #: lazarusidestrconsts:lisallfiles
 msgid "All Files"
@@ -786,7 +786,7 @@ msgstr "Epäselviä (tai moniselitteisiä) tiedostoja löytyi"
 
 #: lazarusidestrconsts:lisambiguousunitfound2
 msgid "Ambiguous unit found"
-msgstr ""
+msgstr "Epäselvä (tai moniselitteinen) käännösyksikkö löytyi"
 
 #: lazarusidestrconsts:lispkgmangambiguousunitsfound
 msgid "Ambiguous units found"
@@ -1578,7 +1578,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuviewcodeexplorer
 msgid "Code Explorer"
-msgstr "Koodiselain"
+msgstr ""
 
 #: lazarusidestrconsts:lismenueditcodetemplates
 msgid "Code Templates ..."
@@ -2882,7 +2882,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisemdemtpymethods
 msgid "Emtpy Methods"
-msgstr ""
+msgstr "Tyhjät metodit (luokan tyhjät aliohjelmarungot)"
 
 #: lazarusidestrconsts:lisenableallinsamesource
 msgid "Enable All in same source"
@@ -3430,11 +3430,11 @@ msgstr ""
 
 #: lazarusidestrconsts:lispefilename
 msgid "Filename:"
-msgstr ""
+msgstr "Tiedostonimi:"
 
 #: lazarusidestrconsts:lisoipfilename
 msgid "Filename:  %s"
-msgstr ""
+msgstr "Tiedostonimi: %s"
 
 #: lazarusidestrconsts:dlgenvfiles
 msgid "Files"
@@ -3642,7 +3642,7 @@ msgstr "Yksi eteenpäin"
 
 #: lazarusidestrconsts:lisemdfoundemptymethods
 msgid "Found empty methods:"
-msgstr ""
+msgstr "Löydetyt tyhjät metodit:"
 
 #: lazarusidestrconsts:lisfreepascalcompilernotfound
 msgid "Free Pascal Compiler not found"
@@ -3858,7 +3858,7 @@ msgstr ""
 
 #: lazarusidestrconsts:listodogoto
 msgid "Goto"
-msgstr ""
+msgstr "Mene"
 
 #: lazarusidestrconsts:srkmecgotoxy
 msgid "Goto XY"
@@ -4030,11 +4030,11 @@ msgstr "Pienennä Lazaruksen käyttöliittymä ohjelmaa suorittaessa "
 
 #: lazarusidestrconsts:uemhighlighter
 msgid "Highlighter"
-msgstr ""
+msgstr "Syntaksin korostus"
 
 #: lazarusidestrconsts:lishintcheckiftwopackagescontainaunitwiththesamename
 msgid "Hint: Check if two packages contain a unit with the same name."
-msgstr ""
+msgstr "Vihje: Tarkista sisältääkö kaksi eri komponenttipakettia käännösyksikön samalla nimellä."
 
 #: lazarusidestrconsts:lishintthemakeresourcestringfunctionexpectsastringcon2
 msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select only a string expression and try again."
@@ -4174,7 +4174,7 @@ msgstr "Jätä välilyönnit huomiotta"
 
 #: lazarusidestrconsts:lisignoreall
 msgid "Ignore all"
-msgstr ""
+msgstr "Ohita kaikki"
 
 #: lazarusidestrconsts:lisdiffdlgignoreifspacecharswereadd
 msgid "Ignore amount of space chars"
@@ -4466,7 +4466,7 @@ msgstr ""
 
 #: lazarusidestrconsts:ueminserttodo
 msgid "Insert Todo"
-msgstr ""
+msgstr "Lisää tehtävälista merkintä (ToDo)"
 
 #: lazarusidestrconsts:srkmecinsertguid
 msgid "Insert a GUID"
@@ -4574,7 +4574,7 @@ msgstr "Asenna"
 
 #: lazarusidestrconsts:lispckexplinstallonnextstart
 msgid "Install on next start"
-msgstr ""
+msgstr "Asennetaan seuraavan käynnistyksen yhteydessä"
 
 #: lazarusidestrconsts:lispckeditinstallpackageintheide
 msgid "Install package in the IDE"
@@ -5346,7 +5346,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgmakepath
 msgid "Make path"
-msgstr ""
+msgstr "Make -ohjelman hakupolku"
 
 #: lazarusidestrconsts:srkmecmakeresourcestring
 msgid "Make resource string"
@@ -5522,7 +5522,7 @@ msgstr "Siirrä alaspäin (tai oikeallepäin)"
 
 #: lazarusidestrconsts:uemmoveeditorleft
 msgid "Move Editor Left"
-msgstr "Siirry vasemmanpuoleiselle välilehdelle"
+msgstr "Siirrä vasemmanpuoleiselle välilehdelle"
 
 #: lazarusidestrconsts:uemmoveeditorleftmost
 msgid "Move Editor Leftmost"
@@ -5530,7 +5530,7 @@ msgstr ""
 
 #: lazarusidestrconsts:uemmoveeditorright
 msgid "Move Editor Right"
-msgstr "Siirry oikeanpuoleiselle välilehdelle"
+msgstr "Siirrä oikeanpuoleiselle välilehdelle"
 
 #: lazarusidestrconsts:uemmoveeditorrightmost
 msgid "Move Editor Rightmost"
@@ -5538,7 +5538,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismovepage
 msgid "Move Page ..."
-msgstr ""
+msgstr "Siirrä välilehdelle ..."
 
 #: lazarusidestrconsts:lismenueditormoveup
 msgid "Move Up (or left)"
@@ -6018,7 +6018,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisemdonlypublished
 msgid "Only published"
-msgstr ""
+msgstr "Vain published"
 
 #: lazarusidestrconsts:lisonlysearchforwholewords
 msgid "Only search for whole words"
@@ -6054,7 +6054,7 @@ msgstr "Avaa eroavuudet editorissa"
 
 #: lazarusidestrconsts:lisopenfile2
 msgid "Open File ..."
-msgstr ""
+msgstr "Avaa tiedosto ..."
 
 #: lazarusidestrconsts:liscpopenpackage
 msgid "Open Package %s"
@@ -6170,7 +6170,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuopenrecentpkg
 msgid "Open recent package ..."
-msgstr ""
+msgstr "Avaa esillä ollut komponenttipaketti ..."
 
 #: lazarusidestrconsts:lisopensymlink
 msgid "Open symlink"
@@ -6394,7 +6394,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmangpackageisnodesigntimepackage
 msgid "Package is no designtime package"
-msgstr ""
+msgstr "Ei ole suunnitteluaikainen komponenttipaketti"
 
 #: lazarusidestrconsts:lisaf2ppackageisreadonly
 msgid "Package is read only"
@@ -7106,7 +7106,7 @@ msgstr "Valitse projektista poistettava käännösyksikkö"
 
 #: lazarusidestrconsts:lisemdremovemethods
 msgid "Remove methods"
-msgstr ""
+msgstr "Poista metodit"
 
 #: lazarusidestrconsts:liscodehelpdeletepathbutton
 msgid "Remove path"
@@ -7658,7 +7658,7 @@ msgstr "Käy kommentit myöskin läpi"
 
 #: lazarusidestrconsts:lisemdsearchintheseclasssections
 msgid "Search in these class sections:"
-msgstr ""
+msgstr "Haetaan näistä luokan (class) osista:"
 
 #: lazarusidestrconsts:lisvsrsearchorfilterphrasesinlist
 msgid "Search or Filter Phrases In List"
@@ -8118,7 +8118,7 @@ msgstr "Näytä editointivihjeet"
 
 #: lazarusidestrconsts:liscodehelpshowemptymethods
 msgid "Show empty methods"
-msgstr ""
+msgstr "Näytä tyhjät metodit"
 
 #: lazarusidestrconsts:dlgshoweverything
 msgid "Show everything"
@@ -9058,7 +9058,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthepackageisaruntimeonlypackageruntimeonlypackages
 msgid "The package %s is a runtime only package.%sRuntime only packages can not be installed in the IDE."
-msgstr ""
+msgstr "Komponenttipaketti %s on ainoastaan ajonaikainen.%sVain ajonaikaisia komponenttipaketteja ei asenneta kehitysympäristöön."
 
 #: lazarusidestrconsts:lisaf2pthepackageisreadonly
 msgid "The package %s is read only."
@@ -9174,7 +9174,7 @@ msgstr ""
 
 #: lazarusidestrconsts:listheunitexiststwiceintheunitpathofthe
 msgid "The unit %s exists twice in the unit path of the %s:"
-msgstr ""
+msgstr "Käännösyksikkö (unit) %s löytyy %s:n kahdesta eri käännösyksikön hakupolusta:"
 
 #: lazarusidestrconsts:lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
 msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
@@ -9710,7 +9710,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisunabletofindfile
 msgid "Unable to find file %s%s%s."
-msgstr ""
+msgstr "Ei löydetä tiedostoa %s%s%s."
 
 #: lazarusidestrconsts:lisunabletofindfilechecksearchpathinprojectcompileroption
 msgid "Unable to find file %s%s%s.%sIf it belongs to your project, check search path in%sProject->Compiler Options...->Search Paths->Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions ... -> Test"
@@ -9750,11 +9750,11 @@ msgstr "Resurssitiedoston lukeminen ei onnistunut.%sResurssitiedosto pitää oll
 
 #: lazarusidestrconsts:lispkgmangunabletoloadpackage
 msgid "Unable to load package"
-msgstr ""
+msgstr "Ei pystytä lataamaan komponenttipakettia"
 
 #: lazarusidestrconsts:lisunabletoloadpackage
 msgid "Unable to load package %s%s%s"
-msgstr ""
+msgstr "Ei pystytä lataamaan komponenttipakettia %s%s%s"
 
 #: lazarusidestrconsts:lisunabletoloadthecomponentclassbecauseitdependsonits
 msgid "Unable to load the component class %s%s%s, because it depends on itself."
@@ -9766,7 +9766,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmangunabletoopenthepackage
 msgid "Unable to open the package %s%s%s.%sThis package was marked for installation."
-msgstr ""
+msgstr "Ei pystytä avaamaan komponenttipakettia  %s%s%s.%sTämä komponenttipaketti oli merkitty asennettavaksi."
 
 #: lazarusidestrconsts:lisunabletoreadfile
 msgid "Unable to read file"
@@ -9978,11 +9978,11 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmanguninstallpackage2
 msgid "Uninstall package %s?"
-msgstr ""
+msgstr "Poistetaanko komponenttipaketti %s ?"
 
 #: lazarusidestrconsts:lispkgmanguninstallpackage
 msgid "Uninstall package?"
-msgstr ""
+msgstr "Poistetaanko komponenttipaketti Lazaruksen asennuksesta?"
 
 #: lazarusidestrconsts:lisuninstallselection
 msgid "Uninstall selection"
@@ -10418,7 +10418,7 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecviewtodolist
 msgid "View todo list"
-msgstr ""
+msgstr "Näytä tehtävälista (ToDo List)"
 
 #: lazarusidestrconsts:srkmecviewunitdependencies
 msgid "View unit dependencies"
