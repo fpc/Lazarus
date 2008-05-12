@@ -148,7 +148,9 @@ ln -s $LazDestDirInstalled/lazbuild $LazBuildDir/usr/bin/lazbuild
 
 # docs
 mkdir -p $LazBuildDir/usr/share/man/man1
-cat $LazDestDir/docs/lazbuild.1 | gzip > $LazBuildDir/usr/share/man/man1/lazbuild.1.gz
+cat $LazDestDir/install/man/man1/lazbuild.1 | gzip > $LazBuildDir/usr/share/man/man1/lazbuild.1.gz
+cat $LazDestDir/install/man/man1/lazarus-ide.1 | gzip > $LazBuildDir/usr/share/man/man1/lazarus-ide.1.gz
+cat $LazDestDir/install/man/man1/startlazarus.1 | gzip > $LazBuildDir/usr/share/man/man1/startlazarus.1.gz
 
 # default configs
 mkdir -p $LazBuildDir/etc/lazarus
