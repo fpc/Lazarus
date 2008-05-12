@@ -3366,6 +3366,11 @@ begin
       ReadNextAtom;
       AtomIsIdentifier(true);
       ReadNextAtom;
+      if CurPos.Flag=cafPoint then begin
+        ReadNextAtom;
+        AtomIsIdentifier(true);
+        ReadNextAtom;
+      end;
     end else begin
       RaiseCharExpectedButAtomFound(':');
     end;
