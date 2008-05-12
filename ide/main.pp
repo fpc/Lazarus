@@ -5403,10 +5403,12 @@ var
   ReferencesLocked: Boolean;
   LCLVersion: string;
   MissingClasses: TStrings;
+  LFMComponentName: string;
 begin
   debugln('TMainIDE.DoLoadLFM A ',AnUnitInfo.Filename,' IsPartOfProject=',dbgs(AnUnitInfo.IsPartOfProject),' ');
 
   ReferencesLocked:=false;
+  MissingClasses:=nil;
   try
     if (ofRevert in OpenFlags) and (AnUnitInfo.Component<>nil) then begin
       // the component must be destroyed and recreated
@@ -5447,10 +5449,9 @@ begin
     if AnUnitInfo.Component=nil then begin
       // load/create new instance
       
-      QuickCheckLFMBuffer(AnUnitInfo.Source,LFMBuf,LCLVersion,MissingClasses);
-
       // find the classname of the LFM, and check for inherited form
-      ReadLFMHeader(LFMBuf.Source,NewClassName,LFMType);
+      QuickCheckLFMBuffer(AnUnitInfo.Source,LFMBuf,LFMType,LFMComponentName,
+                          NewClassName,LCLVersion,MissingClasses);
       if (NewClassName='') or (LFMType='') then begin
         DebugLn(['TMainIDE.DoLoadLFM LFM file corrupt']);
         Result:=MessageDlg(lisLFMFileCorrupt,
@@ -5497,7 +5498,7 @@ begin
           end else begin
             // search in the registered classes
             AncestorType:=
-                       FormEditor1.FindDesignerBaseClassByName(AncestorClassName);
+                     FormEditor1.FindDesignerBaseClassByName(AncestorClassName);
           end;
         end else begin
           AncestorType:=TForm;
@@ -5506,7 +5507,7 @@ begin
         // try loading the ancestor first (unit, lfm and component instance)
         if (AncestorType=nil) then begin
           Result:=DoLoadComponentDependencyHidden(AnUnitInfo,AncestorClassName,
-                                         OpenFlags,AncestorType,AncestorUnitInfo);
+                                       OpenFlags,AncestorType,AncestorUnitInfo);
           if Result<>mrOk then begin
             DebugLn(['TMainIDE.DoLoadLFM DoLoadComponentDependencyHidden failed']);
           end;
@@ -5612,6 +5613,7 @@ begin
       DebugLn(['TMainIDE.DoLoadLFM Creating designer for hidden component of ',AnUnitInfo.Filename]);
     end;
   finally
+    MissingClasses.Free;
     if ReferencesLocked then begin
       if Project1<>nil then
         Project1.UnlockUnitComponentDependencies;

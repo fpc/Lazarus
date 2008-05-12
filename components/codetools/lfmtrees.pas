@@ -63,6 +63,7 @@ type
     function GetIdentifier: string;
     procedure FindIdentifier(var IdentStart, IdentEnd: integer);
     function GetPath: string;
+    function Next: TLFMTreeNode;
   end;
   
   TLFMTreeNodeClass = class of TLFMTreeNode;
@@ -933,6 +934,22 @@ begin
        Result:=PrependStr+Result;
     end;
     ANode:=ANode.Parent;
+  end;
+end;
+
+function TLFMTreeNode.Next: TLFMTreeNode;
+begin
+  if FirstChild<>nil then
+    Result:=FirstChild
+  else begin
+    Result:=Self;
+    while Result<>nil do begin
+      if Result.NextSibling<>nil then begin
+        Result:=Result.NextSibling;
+        exit;
+      end;
+      Result:=Result.Parent;
+    end;
   end;
 end;
 

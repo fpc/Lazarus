@@ -41,6 +41,7 @@
         <Filename Value="playground.pas"/>
         <ComponentName Value="PlayGroundForm"/>
         <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <ResourceFilename Value="playground.lrs"/>
         <UnitName Value="PlayGround"/>
       </Unit1>

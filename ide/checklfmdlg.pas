@@ -80,6 +80,7 @@ type
 
 // check and repair lfm files
 function QuickCheckLFMBuffer(PascalBuffer, LFMBuffer: TCodeBuffer;
+  out LFMType, LFMComponentName, LFMClassName: string;
   out LCLVersion: string;
   out MissingClasses: TStrings// e.g. MyFrame2:TMyFrame
   ): TModalResult;
@@ -107,17 +108,62 @@ type
     NewText: string;
   end;
 
-function QuickCheckLFMBuffer(PascalBuffer, LFMBuffer: TCodeBuffer; out
-  LCLVersion: string; out MissingClasses: TStrings): TModalResult;
+function QuickCheckLFMBuffer(PascalBuffer, LFMBuffer: TCodeBuffer;
+  out LFMType, LFMComponentName, LFMClassName: string;
+  out LCLVersion: string; out MissingClasses: TStrings): TModalResult;
 var
   LFMTree: TLFMTree;
-  LCLVersionNode: TLFMPropertyNode;
-  LCLVersionValueNode: TLFMValueNode;
+  
+  procedure FindLCLVersion;
+  var
+    LCLVersionNode: TLFMPropertyNode;
+    LCLVersionValueNode: TLFMValueNode;
+  begin
+    // first search the version
+    LCLVersionNode:=LFMTree.FindProperty('LCLVersion',LFMTree.Root);
+    //DebugLn(['QuickCheckLFMBuffer LCLVersionNode=',LCLVersionNode<>nil]);
+    if (LCLVersionNode<>nil) and (LCLVersionNode.FirstChild is TLFMValueNode) then
+    begin
+      LCLVersionValueNode:=TLFMValueNode(LCLVersionNode.FirstChild);
+      //DebugLn(['QuickCheckLFMBuffer ',TLFMValueTypeNames[LCLVersionValueNode.ValueType]]);
+      if LCLVersionValueNode.ValueType=lfmvString then begin
+        LCLVersion:=LCLVersionValueNode.ReadString;
+        //DebugLn(['QuickCheckLFMBuffer LCLVersion=',LCLVersion]);
+      end;
+    end;
+  end;
+  
+  procedure FindMissingClasses;
+  var
+    Node: TLFMTreeNode;
+    ObjNode: TLFMObjectNode;
+    RegComp: TRegisteredComponent;
+  begin
+    Node:=LFMTree.Root;
+    while Node<>nil do begin
+      if Node is TLFMObjectNode then begin
+        ObjNode:=TLFMObjectNode(Node);
+        RegComp:=IDEComponentPalette.FindComponent(ObjNode.TypeName);
+        if (RegComp=nil) or (RegComp.GetUnitName='') then begin
+          DebugLn(['FindMissingClasses ',ObjNode.Name,':',ObjNode.TypeName,' IsInherited=',ObjNode.IsInherited]);
+          if MissingClasses=nil then
+            MissingClasses:=TStringList.Create;
+          MissingClasses.Add(ObjNode.TypeName);
+        end;
+      end;
+      Node:=Node.Next;
+    end;
+  end;
+  
 begin
   DebugLn(['QuickCheckLFMBuffer LFMBuffer=',LFMBuffer.Filename]);
   LCLVersion:='';
   MissingClasses:=nil;
 
+  // read header
+  ReadLFMHeader(LFMBuffer.Source,LFMType,LFMComponentName,LFMClassName);
+
+  // parse tree
   LFMTree:=DefaultLFMTrees.GetLFMTree(LFMBuffer,true);
   if not LFMTree.ParseIfNeeded then begin
     DebugLn(['QuickCheckLFMBuffer LFM error: ',LFMTree.FirstErrorAsString]);
@@ -125,19 +171,8 @@ begin
   end;
   
   //LFMTree.WriteDebugReport;
-
-  // first search the version
-  LCLVersionNode:=LFMTree.FindProperty('LCLVersion',LFMTree.Root);
-  //DebugLn(['QuickCheckLFMBuffer LCLVersionNode=',LCLVersionNode<>nil]);
-  if (LCLVersionNode<>nil) and (LCLVersionNode.FirstChild is TLFMValueNode) then
-  begin
-    LCLVersionValueNode:=TLFMValueNode(LCLVersionNode.FirstChild);
-    //DebugLn(['QuickCheckLFMBuffer ',TLFMValueTypeNames[LCLVersionValueNode.ValueType]]);
-    if LCLVersionValueNode.ValueType=lfmvString then begin
-      LCLVersion:=LCLVersionValueNode.ReadString;
-      //DebugLn(['QuickCheckLFMBuffer LCLVersion=',LCLVersion]);
-    end;
-  end;
+  FindLCLVersion;
+  FindMissingClasses;
   
   Result:=mrOk;
 end;
