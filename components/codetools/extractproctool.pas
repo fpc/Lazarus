@@ -401,6 +401,7 @@ var
     DeleteStartPos: Integer;
     DeleteEndPos: Integer;
     CurProcVar: TExtractedProcVariable;
+    FrontGap: TGapTyp;
   begin
     Result:=false;
     if not ProcVar.RemovedFromOldProc then begin
@@ -442,9 +443,7 @@ var
             // this is the last variable in the definition
             DeleteEndPos:=CurPos.StartPos;
             if (DeleteStartPos=VarNode.StartPos)
-            and (VarNode.PriorBrother<>nil)
-            and (VarNode.PriorBrother.Desc=ctnVarDefinition)
-            and (VarNode.PriorBrother.FirstChild=nil) then begin
+            and (VarNode<>FirstVarNode) then begin
               // there is a variable in front in the same definition, that is
               // not deleted. Delete also the comma in front. Example:
               //   var i, X: integer;   ->  var i[, X]: integer;
@@ -475,6 +474,7 @@ var
         if VarNode=LastVarNode then break;
         VarNode:=VarNode.NextBrother;
       until VarNode=nil;
+      FrontGap:=gtNone;
       if DeleteCompleteDefinition and (DeleteStartPos>0) then begin
         // all variables of the definition should be deleted
         // -> delete type declaration
@@ -483,6 +483,9 @@ var
           // all variables of the 'var' section are deleted
           // -> delete var section
           DeleteStartPos:=FirstVarNode.Parent.StartPos;
+        end else if FirstVarNode.PriorBrother=nil then begin
+          // keep a space between 'var' and the next identifier
+          FrontGap:=gtSpace;
         end;
         DeleteStartPos:=FindLineEndOrCodeInFrontOfPosition(DeleteStartPos,true);
       end;
@@ -490,7 +493,7 @@ var
         {$IFDEF CTDebug}
         DebugLn('DeleteLocalVariable Delete Rest: "',copy(Src,DeleteStartPos,DeleteEndPos-DeleteStartPos),'"');
         {$ENDIF}
-        if not SourceChangeCache.Replace(gtNone,gtNone,
+        if not SourceChangeCache.Replace(FrontGap,gtNone,
                                          DeleteStartPos,DeleteEndPos,'')
         then
           exit;
