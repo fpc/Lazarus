@@ -5,7 +5,7 @@ unit PlayGround;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, LMessages,
   ExtCtrls;
 
 type
@@ -17,6 +17,7 @@ type
   private
     FPicture: TPicture;
     procedure SetPicture(const AValue: TPicture);
+    procedure WMEraseBkgnd(var Msg: TLMessage); message LM_ERASEBKGND;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -129,6 +130,11 @@ procedure TPictureControl.SetPicture(const AValue: TPicture);
 begin
   if FPicture=AValue then exit;
   FPicture.Assign(AValue);
+end;
+
+procedure TPictureControl.WMEraseBkgnd(var Msg: TLMessage);
+begin
+  Msg.Result := 1;
 end;
 
 procedure TPictureControl.PictureChanged(Sender: TObject);

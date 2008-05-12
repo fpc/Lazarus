@@ -2,38 +2,18 @@
 <CONFIG>
   <ProjectOptions>
     <PathDelim Value="/"/>
-    <Version Value="5"/>
+    <Version Value="6"/>
     <General>
       <Flags>
         <SaveClosedFiles Value="False"/>
         <SaveOnlyProjectUnits Value="True"/>
       </Flags>
       <MainUnit Value="0"/>
-      <ActiveEditorIndexAtStart Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
       <Title Value="spriteexample"/>
+      <ActiveEditorIndexAtStart Value="0"/>
     </General>
-    <Units Count="2">
-      <Unit0>
-        <Filename Value="spriteexample.lpr"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="SpriteExample"/>
-        <UsageCount Value="22"/>
-      </Unit0>
-      <Unit1>
-        <CursorPos X="12" Y="80"/>
-        <EditorIndex Value="0"/>
-        <Filename Value="playground.pas"/>
-        <ComponentName Value="PlayGroundForm"/>
-        <IsPartOfProject Value="True"/>
-        <Loaded Value="True"/>
-        <ResourceFilename Value="playground.lrs"/>
-        <TopLine Value="63"/>
-        <UnitName Value="PlayGround"/>
-        <UsageCount Value="22"/>
-      </Unit1>
-    </Units>
     <PublishOptions>
       <Version Value="2"/>
       <IgnoreBinaries Value="False"/>
@@ -51,9 +31,29 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
+    <Units Count="2">
+      <Unit0>
+        <Filename Value="spriteexample.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="SpriteExample"/>
+        <UsageCount Value="22"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="playground.pas"/>
+        <ComponentName Value="PlayGroundForm"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="playground.lrs"/>
+        <UnitName Value="PlayGround"/>
+        <CursorPos X="58" Y="135"/>
+        <TopLine Value="131"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="22"/>
+        <Loaded Value="True"/>
+      </Unit1>
+    </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="4"/>
+    <Version Value="5"/>
     <SearchPaths>
       <SrcPath Value="$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)/"/>
     </SearchPaths>
