@@ -8,11 +8,11 @@
         <SaveClosedFiles Value="False"/>
         <SaveOnlyProjectUnits Value="True"/>
       </Flags>
+      <SessionStorage Value="InIDEConfig"/>
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
       <Title Value="spriteexample"/>
-      <ActiveEditorIndexAtStart Value="0"/>
     </General>
     <PublishOptions>
       <Version Value="2"/>
@@ -36,7 +36,6 @@
         <Filename Value="spriteexample.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="SpriteExample"/>
-        <UsageCount Value="22"/>
       </Unit0>
       <Unit1>
         <Filename Value="playground.pas"/>
@@ -44,11 +43,6 @@
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="playground.lrs"/>
         <UnitName Value="PlayGround"/>
-        <CursorPos X="58" Y="135"/>
-        <TopLine Value="131"/>
-        <EditorIndex Value="0"/>
-        <UsageCount Value="22"/>
-        <Loaded Value="True"/>
       </Unit1>
     </Units>
   </ProjectOptions>
