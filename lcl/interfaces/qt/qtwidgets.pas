@@ -6017,8 +6017,13 @@ begin
 end;
 
 procedure TQtListWidget.insertItem(AIndex: Integer; AText: PWideString);
+var
+  Item: QListWidgetItemH;
 begin
-  QListWidget_insertItem(QListWidgetH(Widget), AIndex, AText);
+  Item := QListWidgetItem_create(AText, nil, 0);
+  if LCLObject is TCustomCheckListBox then
+    QListWidgetItem_setCheckState(Item, QtUnChecked);
+  QListWidget_insertItem(QListWidgetH(Widget), AIndex, Item);
 
   if QListWidget_count(QListWidgetH(Widget)) = 1 then
   begin
