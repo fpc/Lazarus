@@ -910,13 +910,15 @@ begin
   if not WSCheckHandleAllocated(ALV, 'ItemGetChecked') then
     Exit;
 
+  Result := ALV.CheckBoxes;
+  if not Result then
+    exit;
+    
   TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
   TWI := QTreeWidget_topLevelItem(TW, AIndex);
   AState := QTreeWidgetItem_checkState(TWI, 0);
   if AState = QtChecked then
   	Result := True
-  else
-  	Result := False;
 end;
 
 {------------------------------------------------------------------------------
@@ -981,6 +983,9 @@ var
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemSetChecked') then
     Exit;
+    
+  if not ALV.CheckBoxes then
+    exit;
 
   TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
   TWI := QTreeWidget_topLevelItem(TW, AIndex);
@@ -1031,7 +1036,7 @@ begin
   TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
   TWI := QTreeWidgetItem_create(TW, 0);
   Str := GetUtf8String(AItem.Caption);
-  
+
   if ALV.CheckBoxes then
   begin
     if AItem.Checked then
