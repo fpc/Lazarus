@@ -1,24 +1,24 @@
 #!/usr/bin/make -f
+# debian/rules for Lazarus
 
-# stolen from cdbs:
 DEB_DH_BUILDDEB_ARGS := -- -Z bzip2
 
-# Define FPC and FPCDIR if it was not set
-ifndef FPC
-export FPC=fpc
-endif
+# Define FPCDIR if it was not set
 ifndef FPCDIR
-export FPCDIR=/usr/lib/fpc/2.2.0
+export FPCDIR=/usr/share/fpcsrc
 endif
 # Get directories
 CURDIR:=$(shell pwd)
 BUILD_DIR=$(CURDIR)/debian/build
 INSTALL_DIR=$(CURDIR)/debian/tmp
 DOC_DIR=$(INSTALL_DIR)/usr/share/doc
-EXAMPLE_TEMP=$(DOC_DIR)/fpc-$(FPCVERSION)
+# Get utils
+FPC=/usr/bin/fpc
+# Create default options
+BUILDOPTS=PP=$(FPC)
 INSTALLOPTS=INSTALL_PREFIX=$(INSTALL_DIR)/usr
 
-#export DH_VERBOSE=1
+# export DH_VERBOSE=1
 
 ###################
 # Clean
@@ -29,13 +29,14 @@ clean-patched:
 	@echo "--- Cleaning"
 	dh_testdir
 	dh_testroot
-	rm -f build-arch-stamp install-arch-stamp arrange-arch-stamp configure-stamp lazbuild
+	rm -f build-arch-stamp install-arch-stamp arrange-arch-stamp configure-stamp
 	rm -f build-doc-stamp install-doc-stamp
 	rm -f build-indep-stamp install-indep-stamp
 	rm -f debian-files-stamp
 	rm -f debian/*.files debian/*.docs debian/*.examples debian/*.postinst debian/*.postrm
+	rm -f lazarus startlazarus lazbuild
 	$(MAKE) distclean
-	-(find . -name \*.a | xargs rm)
+	-(find -name '*.a' -or -name '*.o' -or -name '*.ppu' | xargs rm)
 	dh_clean 
 
 patch: patch-stamp
@@ -65,19 +66,21 @@ debian-files-stamp: patch
 configure: configure-stamp
 configure-stamp:
 	dh_testdir
-	# Add here commands to configure the package.
-	find -name 'Makefile.fpc' | xargs fpcmake
+	# Remove auto-generated make files.
+	find -name Makefile.fpc -execdir 'sh' '-c' '${RM} $$(basename {} .fpc)' ';'
+	# Regenrate make files using fpcmake.
+	fpcmake -r -Tall
 	touch configure-stamp
 
 build-arch: build-arch-stamp
-build-arch-stamp: debian-files-stamp configure-stamp 
+build-arch-stamp: debian-files-stamp configure-stamp
 	@echo "--- Building"
 	dh_testdir
-	$(MAKE) lcl packager/registration ideintf bigidecomponents examples
-	$(MAKE) lcl packager/registration ideintf bigidecomponents examples LCL_PLATFORM=gtk2
-	$(MAKE) bigide USESVN2REVISIONINC=0
-	$(MAKE) lazbuilder
-	$(MAKE) tools
+	$(MAKE) lcl packager/registration ideintf bigidecomponents examples $(BUILDOPTS)
+	$(MAKE) lcl packager/registration ideintf bigidecomponents examples LCL_PLATFORM=gtk2 $(BUILDOPTS)
+	$(MAKE) bigide USESVN2REVISIONINC=0 $(BUILDOPTS)
+	$(MAKE) lazbuilder $(BUILDOPTS)
+	$(MAKE) tools $(BUILDOPTS)
 	touch build-arch-stamp
 
 install-arch: install-arch-stamp
@@ -183,6 +186,8 @@ binary-indep: build-doc install-doc install-source debian-files
 	dh_installdocs -i
 	dh_installchangelogs -i
 	dh_install -i --sourcedir=debian/tmp --list-missing
+#	install -m644 -D debian/overrides/lazarus-src \
+#	  debian/lazarus-src/usr/share/lintian/overrides/lazarus-src
 	dh_compress -i -X.pdf
 	dh_fixperms -i
 	dh_installdeb -i
@@ -201,7 +206,7 @@ binary-arch: build-arch arrange-arch  debian-files
 	dh_installmenu
 	fpc-depends
 	dh_installman -s
-	dh_strip
+	dh_strip -s
 	dh_compress -a
 	dh_fixperms -a
 	dh_installdeb -s

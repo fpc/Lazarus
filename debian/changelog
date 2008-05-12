@@ -2,15 +2,34 @@ lazarus (0.9.25-0) unstable; urgency=low
 
   * Merged debian rules with official debian svn.
 
- -- Mazen Neifer <mazen@freepascal.org>  Tue, 20 Apr 2008 10:21:40 +0200
+ -- Mazen Neifer <mazen@freepascal.org>  Fri, 09 May 2008 00:58:40 +0200
+
+lazarus (0.9.24-0-8) unstable; urgency=low
+
+  [ Mazen Neifer ]
+  * Added patch from upstream fixing compilation using lazbuild by making it
+  	generating LRS files from LFM files.
+  * Added gdb as recommended package. (closes: #477293)
+  * Call fpcmake with -Tall to allow user rebuilding Lazarus from lazarus-src
+    package on all supported targets. This results in making build depending on
+    package fpc-source (>= 2.2.0-dfsg1-7). (closes: #477361)
+  * Updated build dependency on compiler setting fp-compiler (>=2.2.0-dfsg1-8)
+    and fpc-source (>= 2.2.0-dfsg1-8)
+  * Added fp-docs to list of package lazarus suggest packages.
+
+ -- Mazen Neifer <mazen@freepascal.org>  Wed, 30 Apr 2008 14:17:06 +0200
 
 lazarus (0.9.24-0-7) unstable; urgency=low
 
   [ Mazen Neifer ]
   * Added a link of lazbuild tool into /usr/bin
   * Added man pages for binaries.
+  * Fixed compilation of printer support component.
 
- -- Mazen Neifer <mazen@freeapscal.org>  Sun, 20 Apr 2008 02:32:21 +0200
+  [ Torsten Werner ]
+  * Add Mazen to Uploaders.
+
+ -- Torsten Werner <twerner@debian.org>  Sun, 20 Apr 2008 17:06:38 +0200
 
 lazarus (0.9.24-0-6) unstable; urgency=low
 
