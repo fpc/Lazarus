@@ -19,9 +19,6 @@
  *                                                                           *
  *****************************************************************************
 
-  Only types, no code yet.
-
-  ToDo: Implement the actions.
 }
 unit StdActns;
 
@@ -39,7 +36,6 @@ type
   THintAction = class(TCustomHintAction)
   end;
   
-
   { Edit actions }
 
   TEditAction = class(TAction)
@@ -143,6 +139,7 @@ type
     procedure DoBeforeExecute;
     procedure DoCancel;
     function GetDialogClass: TCommonDialogClass; virtual;
+    procedure CreateDialog; virtual;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -153,7 +150,6 @@ type
     property OnAccept: TNotifyEvent read FOnAccept write FOnAccept;
     property OnCancel: TNotifyEvent read FOnCancel write FOnCancel;
   end;
-
 
   { File Actions }
 
@@ -290,14 +286,18 @@ type
     property OnHint;
   end;
 
-
   { Search Actions }
+
+  { TSearchAction }
 
   TSearchAction = class(TCommonDialogAction)
   protected
     FControl: TCustomEdit;
-    FFindFirst: Boolean;
+    procedure CreateDialog; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure UpdateControl(NewControl: TCustomEdit);
+    function PerformSearch: Boolean;
+    procedure ShowNotFound; virtual;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -307,7 +307,9 @@ type
     procedure ExecuteTarget(Target: TObject); override;
   end;
 
-  {TSearchFind = class(TSearchAction)
+  { TSearchFind }
+
+  TSearchFind = class(TSearchAction)
   private
     function GetFindDialog: TFindDialog;
   protected
@@ -330,13 +332,16 @@ type
     property OnHint;
   end;
 
+  { TSearchReplace }
+
   TSearchReplace = class(TSearchAction)
   private
     function GetReplaceDialog: TReplaceDialog;
   protected
     function GetDialogClass: TCommonDialogClass; override;
+    procedure CreateDialog; override;
   public
-    procedure ExecuteTarget(Target: TObject); override;
+    procedure Replace(Sender: TObject); virtual;
   published
     property Caption;
     property Dialog: TReplaceDialog read GetReplaceDialog;
@@ -355,10 +360,12 @@ type
     property OnHint;
   end;
 
+  { TSearchFindFirst }
+
   TSearchFindFirst = class(TSearchFind)
-  public
-    constructor Create(TheOwner: TComponent); override;
   end;
+
+  { TSearchFindNext }
 
   TSearchFindNext = class(TCustomAction)
   private
@@ -381,8 +388,7 @@ type
     property SecondaryShortCuts;
     property Visible;
     property OnHint;
-  end;}
-
+  end;
 
   { TFontEdit }
 
@@ -408,7 +414,6 @@ type
     property OnCancel;
     property OnHint;
   end;
-
 
   { TColorSelect }
 
@@ -469,15 +474,18 @@ implementation
 procedure Register;
 begin
   // register edit actions
-  RegisterNoIcon([TEditCut,TEditCopy,TEditPaste,TEditSelectAll,
-                  TEditUndo,TEditDelete]);
+  RegisterNoIcon([TEditCut, TEditCopy, TEditPaste, TEditSelectAll,
+                  TEditUndo, TEditDelete]);
+  // register search actions
+  RegisterNoIcon([TSearchFind, TSearchReplace, TSearchFindFirst,
+                  TSearchFindNext]);
   // register help actions
-  RegisterNoIcon([THelpAction,THelpContents,THelpTopicSearch,
-                  THelpOnHelp,THelpContextAction]);
+  RegisterNoIcon([THelpAction, THelpContents, THelpTopicSearch,
+                  THelpOnHelp, THelpContextAction]);
   // register dialog actions
-  RegisterNoIcon([TFontEdit,TColorSelect]);
+  RegisterNoIcon([TFontEdit, TColorSelect]);
   // register file actions
-  RegisterNoIcon([TFileOpen,TFileOpenWith,TFileSaveAs,TFileExit]);
+  RegisterNoIcon([TFileOpen, TFileOpenWith, TFileSaveAs, TFileExit]);
 end;
 
 { TEditAction }
@@ -661,18 +669,23 @@ begin
   Result := nil;
 end;
 
-constructor TCommonDialogAction.Create(TheOwner: TComponent);
+procedure TCommonDialogAction.CreateDialog;
 var
   DlgClass: TCommonDialogClass;
 begin
-  inherited Create(TheOwner);
   DlgClass := GetDialogClass;
   if Assigned(DlgClass) then
   begin
     FDialog := DlgClass.Create(Self);
     FDialog.Name := DlgClass.ClassName;
   end;
+end;
 
+constructor TCommonDialogAction.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  CreateDialog;
+  
   DisableIfNoHandler := False;
   Enabled := True;
 end;
@@ -759,39 +772,137 @@ end;
 
 { TSearchAction }
 
+procedure TSearchAction.CreateDialog;
+begin
+  inherited CreateDialog;
+  TFindDialog(FDialog).OnFind := @Search;
+end;
+
 procedure TSearchAction.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (AComponent = FControl) then
+    FControl := nil;
+end;
+
+procedure TSearchAction.UpdateControl(NewControl: TCustomEdit);
+begin
+  if FControl <> nil then
+    FControl.RemoveFreeNotification(Self);
+  FControl := NewControl;
+  if FControl <> nil then
+    FControl.FreeNotification(Self);
+end;
+
+function TSearchAction.PerformSearch: Boolean;
+var
+  StartPos, Position, Increment, CharsToMatch: Integer;
+  S, Text: String;
+  Down: Boolean;
+  P: PChar;
+  
+  procedure RestoreSearch; inline;
+  begin
+    CharsToMatch := Length(S);
+    if not Down then
+      P := PChar(S) + CharsToMatch - 1
+    else
+      P := PChar(S);
+  end;
+  
+begin
+  S := UTF8Decode(TFindDialog(FDialog).FindText);
+  Text := UTF8Decode(FControl.Text);
+  
+  Result := (S <> '') and (Text <> '');
+  if not Result then
+    Exit;
+
+  if not (frMatchCase in TFindDialog(FDialog).Options) then
+    Text := LowerCase(Text);
+  
+  Down := frDown in TFindDialog(FDialog).Options;
+  if not Down then
+  begin
+    Increment := -1;
+    if InheritsFrom(TSearchFindFirst) then
+      StartPos := Length(Text)
+    else
+      StartPos := FControl.SelStart - 1;
+  end
+  else
+  begin
+    Increment := 1;
+    if InheritsFrom(TSearchFindFirst) then
+      StartPos := 1
+    else
+      StartPos := FControl.SelStart + FControl.SelLength + 1;
+  end;
+
+  Result := False;
+  RestoreSearch;
+  Position := StartPos;
+  while (Position > 0) and (Position <= Length(Text)) and (CharsToMatch > 0) do
+  begin
+    if Text[Position] = P^ then
+    begin
+      Dec(CharsToMatch);
+      P := P + Increment;
+    end
+    else
+      RestoreSearch;
+    if CharsToMatch = 0 then
+      break;
+    Position := Position + Increment;
+  end;
+  Result := CharsToMatch = 0;
+  
+  if Result then
+  begin
+    FControl.SelStart := Position - Length(S);
+    FControl.SelLength := Length(S);
+  end;
+end;
+
+procedure TSearchAction.ShowNotFound;
+begin
+  MessageDlg(Format('Text "%s" is not found', [TFindDialog(FDialog).FindText]),
+    mtWarning, [mbOk], 0);
 end;
 
 constructor TSearchAction.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+  FControl := nil;
 end;
 
 destructor TSearchAction.Destroy;
 begin
+  if FControl <> nil then
+    FControl.RemoveFreeNotification(Self);
   inherited Destroy;
 end;
 
 function TSearchAction.HandlesTarget(Target: TObject): Boolean;
 begin
-  Result:=inherited HandlesTarget(Target);
+  Result := Target is TCustomEdit;
 end;
 
 procedure TSearchAction.Search(Sender: TObject);
 begin
-
+  if not PerformSearch then
+    ShowNotFound;
 end;
 
 procedure TSearchAction.UpdateTarget(Target: TObject);
 begin
-  inherited UpdateTarget(Target);
+  Enabled := (Target as TCustomEdit).Text <> '';
 end;
 
 procedure TSearchAction.ExecuteTarget(Target: TObject);
 begin
+  UpdateControl(Target as TCustomEdit);
   inherited ExecuteTarget(Target);
 end;
 
@@ -817,6 +928,84 @@ end;
 function TColorSelect.GetDialogClass: TCommonDialogClass;
 begin
   Result := TColorDialog;
+end;
+
+{ TSearchFind }
+
+function TSearchFind.GetFindDialog: TFindDialog;
+begin
+  Result := TFindDialog(FDialog);
+end;
+
+function TSearchFind.GetDialogClass: TCommonDialogClass;
+begin
+  Result := TFindDialog;
+end;
+
+{ TSearchReplace }
+
+function TSearchReplace.GetReplaceDialog: TReplaceDialog;
+begin
+  Result := TReplaceDialog(FDialog);
+end;
+
+function TSearchReplace.GetDialogClass: TCommonDialogClass;
+begin
+  Result := TReplaceDialog;
+end;
+
+procedure TSearchReplace.CreateDialog;
+begin
+  inherited CreateDialog;
+  TReplaceDialog(FDialog).OnReplace := @Replace;
+end;
+
+procedure TSearchReplace.Replace(Sender: TObject);
+var
+  Text, RText: String;
+  p1, p2: integer;
+begin
+  if PerformSearch then
+  begin
+    Text := UTF8Decode(FControl.Text);
+    RText := UTF8Decode(Dialog.ReplaceText);
+    p1 := FControl.SelStart;
+    p2 := FControl.SelLength;
+    FControl.ClearSelection;
+    Delete(Text, p1 + 1, p2);
+    Insert(RText, Text, p1 + 1);
+    FControl.Text := UTF8Encode(Text);
+    FControl.SelStart := p1;
+    FControl.SelLength := Length(RText);
+  end
+  else
+    ShowNotFound;
+end;
+
+{ TSearchFindNext }
+
+constructor TSearchFindNext.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  FSearchFind := nil;
+end;
+
+function TSearchFindNext.HandlesTarget(Target: TObject): Boolean;
+begin
+  Result := (Target is TCustomEdit);
+end;
+
+procedure TSearchFindNext.UpdateTarget(Target: TObject);
+begin
+  Enabled := ((Target as TCustomEdit).Text <> '') and
+             (SearchFind <> nil) and
+             (frFindNext in SearchFind.Dialog.Options);
+end;
+
+procedure TSearchFindNext.ExecuteTarget(Target: TObject);
+begin
+  SearchFind.UpdateControl(Target as TCustomEdit);
+  SearchFind.Search(Target);
 end;
 
 end.

@@ -185,6 +185,11 @@ begin
   fActStdProperty.Add(TEditSelectAll, oiStdActEditSelectAllHeadLine, oiStdActEditSelectAllShortCut, oiStdActEditSelectAllShortHint);
   fActStdProperty.Add(TEditUndo, oiStdActEditUndoHeadLine, oiStdActEditUndoShortCut, oiStdActEditUndoShortHint);
   fActStdProperty.Add(TEditDelete, oiStdActEditDeleteHeadLine, oiStdActEditDeleteShortCut, oiStdActEditDeleteShortHint);
+
+  fActStdProperty.Add(TSearchFind, oiStdActSearchFindHeadLine, oiStdActSearchFindShortCut, '');
+  fActStdProperty.Add(TSearchFindFirst, oiStdActSearchFindFirstHeadLine, '', '');
+  fActStdProperty.Add(TSearchFindNext, oiStdActSearchFindNextHeadLine, oiStdActSearchFindNextShortCut, '');
+  fActStdProperty.Add(TSearchReplace, oiStdActSearchReplaceHeadLine, '', '');
   
   fActStdProperty.Add(THelpContents, oiStdActHelpContentsHeadLine, '', oiStdActHelpContentsHint);
   fActStdProperty.Add(THelpTopicSearch, oiStdActHelpTopicSearchHeadLine, '', oiStdActHelpTopicSearchHint);

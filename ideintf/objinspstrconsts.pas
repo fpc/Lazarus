@@ -195,6 +195,7 @@ resourcestring
   cActionListEditorUnknownCategory = '(Unknown)';
   cActionListEditorAllCategory = '(All)';
   cActionListEditorEditCategory = 'Edit';
+  cActionListEditorSearchCategory = 'Search';
   cActionListEditorHelpCategory = 'Help';
   oisCategory = 'Category';
   oisAction = 'Action';
@@ -227,6 +228,10 @@ resourcestring
   oiStdActEditSelectAllHeadLine = 'Select &All';
   oiStdActEditUndoHeadLine = '&Undo';
   oiStdActEditDeleteHeadLine = '&Delete';
+  oiStdActSearchFindHeadLine = '&Find...';
+  oiStdActSearchFindFirstHeadLine = 'F&ind First';
+  oiStdActSearchFindNextHeadLine = 'Find &Next';
+  oiStdActSearchReplaceHeadLine = '&Replace';
   oiStdActHelpContentsHeadLine = '&Contents';
   oiStdActHelpTopicSearchHeadLine = '&Topic Search';
   oiStdActHelpHelpHelpHeadLine = '&Help on Help';
@@ -254,14 +259,20 @@ resourcestring
   oiStdActEditSelectAllShortCut = 'Ctrl+A';
   oiStdActEditUndoShortCut = 'Ctrl+Z';
   oiStdActEditDeleteShortCut = 'Del';
+  oiStdActSearchFindShortCut = 'Ctrl+F';
+  oiStdActSearchFindNextShortCut = 'F3';
   oiStdActFileOpenShortCut = 'Ctrl+O';
+
   oiStdActEditCutShortHint = 'Cut';
   oiStdActEditCopyShortHint = 'Copy';
   oiStdActEditPasteShortHint = 'Paste';
   oiStdActEditSelectAllShortHint = 'Select All';
   oiStdActEditUndoShortHint = 'Undo';
   oiStdActEditDeleteShortHint = 'Delete';
-
+  oiStdActSearchFindHint = 'Find';
+  oiStdActSearchFindFirstHint = 'Find first';
+  oiStdActSearchFindNextHint = 'Find next';
+  oiStdActSearchReplaceHint = 'Replace';
   oiStdActHelpContentsHint = 'Help Contents';
   oiStdActHelpTopicSearchHint = 'Topic Search';
   oiStdActHelpHelpHelpHint = 'Help on help';

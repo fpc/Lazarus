@@ -1120,21 +1120,24 @@ begin
   // TODO
   //  - default images for actions
 
-  RegisterActions(cActionListEditorUnknownCategory,[TAction],nil);
+  RegisterActions(cActionListEditorUnknownCategory, [TAction], nil);
   // register edit actions
-  RegisterActions(cActionListEditorEditCategory,[TEditCut,TEditCopy,TEditPaste,TEditSelectAll,
-   TEditUndo,TEditDelete],nil);
+  RegisterActions(cActionListEditorEditCategory, [TEditCut, TEditCopy, TEditPaste, TEditSelectAll,
+   TEditUndo, TEditDelete], nil);
+  // register search/replace actions
+  RegisterActions(cActionListEditorSearchCategory, [TSearchFind, TSearchReplace, TSearchFindFirst, 
+   TSearchFindNext], nil);
   // register help actions
-  RegisterActions(cActionListEditorHelpCategory,[THelpAction,THelpContents,THelpTopicSearch,
-    THelpOnHelp,THelpContextAction],nil);
+  RegisterActions(cActionListEditorHelpCategory, [THelpAction, THelpContents, THelpTopicSearch,
+    THelpOnHelp, THelpContextAction], nil);
   // register dialog actions
-  RegisterActions(cActionListEditorDialogCategory,[TColorSelect,TFontEdit],nil);
+  RegisterActions(cActionListEditorDialogCategory, [TColorSelect, TFontEdit], nil);
   // register file actions
-  RegisterActions(cActionListEditorFileCategory,[TFileOpen,TFileOpenWith,TFileSaveAs,TFileExit],nil);
+  RegisterActions(cActionListEditorFileCategory, [TFileOpen, TFileOpenWith, TFileSaveAs, TFileExit], nil);
   // register database actions
-  RegisterActions(cActionListEditorDatabaseCategory,[TDataSetFirst,TDataSetLast,TDataSetNext,
-    TDataSetPrior,TDataSetRefresh,TDataSetCancel,TDataSetDelete,TDataSetEdit,
-    TDataSetInsert,TDataSetPost],nil);
+  RegisterActions(cActionListEditorDatabaseCategory, [TDataSetFirst, TDataSetLast, TDataSetNext,
+    TDataSetPrior, TDataSetRefresh, TDataSetCancel, TDataSetDelete, TDataSetEdit,
+    TDataSetInsert, TDataSetPost], nil);
 end;
 
 initialization

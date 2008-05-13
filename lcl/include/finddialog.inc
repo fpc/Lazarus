@@ -166,7 +166,7 @@ end;
 function TFindDialog.CreateForm: TForm;
 begin
   Result:=TFindDialogForm.Create(nil);// do not use Self as Owner, otherwise as desgntime this will not work
-  DebugLn(['TFindDialog.CreateForm ',DbgSName(Result),' ',Result.ControlCount]);
+  //DebugLn(['TFindDialog.CreateForm ',DbgSName(Result),' ',Result.ControlCount]);
   with TFindDialogForm(Result) do begin
     FindButton.Caption:=rsFind;
     CancelButton.Caption:=rsMbCancel;

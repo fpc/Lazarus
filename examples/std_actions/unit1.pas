@@ -45,13 +45,22 @@ type
     MenuItem7: TMenuItem;
     MenuItem8: TMenuItem;
     MenuItem9: TMenuItem;
+    SearchFind1: TSearchFind;
+    SearchFindFirst1: TSearchFindFirst;
+    SearchFindNext1: TSearchFindNext;
+    SearchReplace1: TSearchReplace;
     ToolBar1: TToolBar;
     ToolButton1: TToolButton;
+    ToolButton10: TToolButton;
+    ToolButton11: TToolButton;
     ToolButton2: TToolButton;
     ToolButton3: TToolButton;
     ToolButton4: TToolButton;
     ToolButton5: TToolButton;
     ToolButton6: TToolButton;
+    ToolButton7: TToolButton;
+    ToolButton8: TToolButton;
+    ToolButton9: TToolButton;
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
   private
     { private declarations }
