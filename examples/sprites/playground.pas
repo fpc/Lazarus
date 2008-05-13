@@ -112,8 +112,7 @@ begin
   x:=CenterX+round(cos(t)*CenterX*2/3)-(SpriteImg.Width div 2);
   y:=CenterY+round(sin(t*0.7)*CenterY*2/3)-(SpriteImg.Height div 2);
   //writeln('TPlayGroundForm.UpdateImage B ',x,',',y,' ',t);
-  BufferImg.Canvas.CopyRect(Rect(x,y,x+SpriteImg.Width,y+SpriteImg.Height),
-                   SpriteImg.Canvas,Rect(0,0,SpriteImg.Width,SpriteImg.Height));
+  BufferImg.Canvas.Draw(x, y, SpriteImg);
   //writeln('TPlayGroundForm.UpdateImage C');
 
   // copy to image
