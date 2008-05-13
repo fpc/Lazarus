@@ -157,7 +157,8 @@ end;
 procedure TPictureControl.Paint;
 begin
   if Picture.Graphic<>nil then
-    Canvas.StretchDraw(Rect(0,0,Width,Height),Picture.Graphic);
+    // Canvas.Draw(0,0,Picture.Graphic); // copy is fast
+    Canvas.StretchDraw(Rect(0,0,Width,Height),Picture.Graphic); // stretch is slow
   inherited Paint;
 end;
 
