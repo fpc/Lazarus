@@ -25,6 +25,7 @@ type
     FileOpen1: TFileOpen;
     FileOpenWith1: TFileOpenWith;
     FileSaveAs1: TFileSaveAs;
+    ImageList1: TImageList;
     MainMenu1: TMainMenu;
     Memo1: TMemo;
     MenuItem1: TMenuItem;
