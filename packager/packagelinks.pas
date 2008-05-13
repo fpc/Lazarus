@@ -138,7 +138,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
-    function GetUserLinkFile: string;
+    function GetUserLinkFile(WithPath: boolean = true): string;
     function GetGlobalLinkDirectory: string;
     procedure UpdateGlobalLinks;
     procedure UpdateUserLinks;
@@ -310,9 +310,11 @@ begin
   FStates:=[plsUserLinksNeedUpdate,plsGlobalLinksNeedUpdate];
 end;
 
-function TPackageLinks.GetUserLinkFile: string;
+function TPackageLinks.GetUserLinkFile(WithPath: boolean): string;
 begin
-  Result:=AppendPathDelim(GetPrimaryConfigPath)+'packagefiles.xml';
+  Result:='packagefiles.xml';
+  if WithPath then
+    Result:=AppendPathDelim(GetPrimaryConfigPath)+Result;
 end;
 
 function TPackageLinks.GetGlobalLinkDirectory: string;
@@ -462,6 +464,9 @@ begin
   if UserLinkLoadTimeValid and FileExists(ConfigFilename)
   and (FileAge(ConfigFilename)=UserLinkLoadTime) then
     exit;
+  
+  // copy system default if needed
+  CopySecondaryConfigFile(GetUserLinkFile(false));
   
   FUserLinksSortID.FreeAndClear;
   FUserLinksSortFile.Clear;
