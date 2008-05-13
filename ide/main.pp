@@ -1045,6 +1045,9 @@ begin
     if ParamIsOption(i,EnableRemoteControlOpt) then
       EnableRemoteControl:=true;
   end;
+  DebugLn('TMainIDE.ParseCmdLineOptions:');
+  Debugln('  PrimaryConfigPath="',GetPrimaryConfigPath,'"');
+  Debugln('  SecondaryConfigPath="',GetSecondaryConfigPath,'"');
 end;
 
 procedure TMainIDE.LoadGlobalOptions;
