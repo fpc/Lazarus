@@ -4,10 +4,6 @@
     <PathDelim Value="/"/>
     <Version Value="6"/>
     <General>
-      <Flags>
-        <SaveClosedFiles Value="False"/>
-        <SaveOnlyProjectUnits Value="True"/>
-      </Flags>
       <SessionStorage Value="InIDEConfig"/>
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
