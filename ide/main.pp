@@ -619,6 +619,9 @@ type
     function DoLoadLFM(AnUnitInfo: TUnitInfo; LFMBuf: TCodeBuffer;
                        OpenFlags: TOpenFlags;
                        CloseFlags: TCloseFlags): TModalResult;
+    function FindBaseComponentClass(const AComponentClassName,
+                                    DescendantClassName: string;
+                                    out AComponentClass: TComponentClass): boolean;
     function DoFixupComponentReferences(AnUnitInfo: TUnitInfo;
                                         OpenFlags: TOpenFlags): TModalResult;
     function DoLoadComponentDependencyHidden(AnUnitInfo: TUnitInfo;
@@ -5466,47 +5469,25 @@ begin
       BinStream:=nil;
       AncestorBinStream:=nil;
       try
-        // find the ancestor type in the source
         AncestorClassName:='';
         AncestorType:=nil;
         AncestorUnitInfo:=nil;
+
+        // find the ancestor type in the source
         if not CodeToolBoss.FindFormAncestor(AnUnitInfo.Source,NewClassName,
                                              AncestorClassName,true)
         then begin
           DebugLn('TMainIDE.DoLoadLFM Filename="',AnUnitInfo.Filename,'" NewClassName=',NewClassName,'. Unable to find ancestor class: ',CodeToolBoss.ErrorMessage);
         end;
-        if AncestorClassName<>'' then begin
-          if CompareText(AncestorClassName,'TForm')=0 then begin
-            AncestorType:=TForm;
-          end else if CompareText(AncestorClassName,'TDataModule')=0 then begin
-            AncestorType:=TDataModule;
-          end else if CompareText(AncestorClassName,'TFrame')=0 then begin
-            AncestorType := TFrame;
-          end else if CompareText(AncestorClassName,'TCustomForm')=0 then begin
-            // this is a common user mistake
-            MessageDlg(lisCodeTemplError, Format(
-              lisTheResourceClassDescendsFromProbablyThisIsATypoFor, ['"',
-              NewClassName, '"', '"', AncestorClassName, '"']),
-              mtError,[mbCancel],0);
-            Result:=mrCancel;
-            exit;
-          end else if CompareText(AncestorClassName,'TComponent')=0 then begin
-            // this is not yet implemented
-            MessageDlg(lisCodeTemplError, Format(
-              lisUnableToOpenDesignerTheClassDoesNotDescendFromADes, [#13,
-              NewClassName]),
-              mtError,[mbCancel],0);
-            Result:=mrCancel;
-            exit;
-          end else begin
-            // search in the registered classes
-            AncestorType:=
-                     FormEditor1.FindDesignerBaseClassByName(AncestorClassName);
-          end;
-        end else begin
-          AncestorType:=TForm;
+        
+        // try the base designer classes
+        if not FindBaseComponentClass(AncestorClassName,NewClassName,
+          AncestorType) then
+        begin
+          DebugLn(['TMainIDE.DoLoadLFM FindUnitComponentClass failed for AncestorClassName=',AncestorClassName]);
+          exit;
         end;
-
+        
         // try loading the ancestor first (unit, lfm and component instance)
         if (AncestorType=nil) then begin
           Result:=DoLoadComponentDependencyHidden(AnUnitInfo,AncestorClassName,
@@ -5660,6 +5641,49 @@ begin
   debugln('[TMainIDE.DoLoadLFM] LFM end');
   {$ENDIF}
   Result:=mrOk;
+end;
+
+function TMainIDE.FindBaseComponentClass(const AComponentClassName,
+  DescendantClassName: string;
+  out AComponentClass: TComponentClass): boolean;
+// returns false if an error occured
+// Important: returns true even if AComponentClass=nil
+begin
+  // find the ancestor class
+  if AComponentClassName<>'' then begin
+    if CompareText(AComponentClassName,'TForm')=0 then begin
+      AComponentClass:=TForm;
+    end else if CompareText(AComponentClassName,'TDataModule')=0 then begin
+      AComponentClass:=TDataModule;
+    end else if CompareText(AComponentClassName,'TFrame')=0 then begin
+      AComponentClass:=TFrame;
+    end else if (DescendantClassName<>'')
+    and (CompareText(AComponentClassName,'TCustomForm')=0) then begin
+      // this is a common user mistake
+      MessageDlg(lisCodeTemplError, Format(
+        lisTheResourceClassDescendsFromProbablyThisIsATypoFor, ['"',
+        DescendantClassName, '"', '"', AComponentClassName, '"']),
+        mtError,[mbCancel],0);
+      Result:=false;
+      exit;
+    end else if (DescendantClassName<>'')
+    and (CompareText(AComponentClassName,'TComponent')=0) then begin
+      // this is not yet implemented
+      MessageDlg(lisCodeTemplError, Format(
+        lisUnableToOpenDesignerTheClassDoesNotDescendFromADes, [#13,
+        DescendantClassName]),
+        mtError,[mbCancel],0);
+      Result:=false;
+      exit;
+    end else begin
+      // search in the registered base classes
+      AComponentClass:=FormEditor1.FindDesignerBaseClassByName(AComponentClassName);
+    end;
+  end else begin
+    // default is TForm
+    AComponentClass:=TForm;
+  end;
+  Result:=true;
 end;
 
 function TMainIDE.DoFixupComponentReferences(AnUnitInfo: TUnitInfo;
