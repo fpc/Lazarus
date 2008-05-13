@@ -283,6 +283,7 @@ type
   TLFMTrees = class
   private
     FItems: TAVLTree;// tree of TLFMTree sorted for LFMBuffer
+    FClearing: Boolean;
   public
     constructor Create;
     destructor Destroy; override;
@@ -366,7 +367,7 @@ end;
 destructor TLFMTree.Destroy;
 begin
   Clear;
-  if Trees<>nil then Trees.FItems.Remove(Self);
+  if (Trees<>nil) and (not Trees.FClearing) then Trees.FItems.Remove(Self);
   inherited Destroy;
 end;
 
@@ -1221,7 +1222,9 @@ end;
 
 procedure TLFMTrees.Clear;
 begin
+  FClearing:=true;
   FItems.FreeAndClear;
+  FClearing:=false;
 end;
 
 function TLFMTrees.GetLFMTree(LFMBuffer: TCodeBuffer; CreateIfNotExists: boolean
