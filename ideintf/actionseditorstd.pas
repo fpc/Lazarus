@@ -191,6 +191,7 @@ begin
   fActStdProperty.Add(THelpOnHelp, oiStdActHelpHelpHelpHeadLine, '', oiStdActHelpHelpHelpHint);
 
   fActStdProperty.Add(TFileOpen, oiStdActFileOpenHeadLine, oiStdActFileOpenShortCut, oiStdActFileOpenHint);
+  fActStdProperty.Add(TFileOpenWith, oiStdActFileOpenWithHeadLine, '', oiStdActFileOpenHint);
   fActStdProperty.Add(TFileSaveAs, oiStdActFileSaveAsHeadLine, '', oiStdActFileSaveAsHint);
   fActStdProperty.Add(TFileExit, oiStdActFileExitHeadLine, '', oiStdActFileExitHint);
 

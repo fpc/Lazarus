@@ -140,10 +140,9 @@ type
   protected
     FDialog: TCommonDialog;
     procedure DoAccept;
+    procedure DoBeforeExecute;
     procedure DoCancel;
     function GetDialogClass: TCommonDialogClass; virtual;
-    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    procedure SetupDialog;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -173,12 +172,9 @@ type
     function GetDialog: TOpenDialog;
   protected
     function GetDialogClass: TCommonDialogClass; override;
-  public
-    constructor Create(TheOwner: TComponent); override;
-    procedure ExecuteTarget(Target: TObject); override;
-    property Dialog: TOpenDialog read GetDialog;
   published
     property Caption;
+    property Dialog: TOpenDialog read GetDialog;
     property Enabled;
     property HelpContext;
     property HelpKeyword;
@@ -200,8 +196,6 @@ type
   private
     FAfterOpen: TNotifyEvent;
     FFileName: TFileName;
-  public
-    procedure ExecuteTarget(Target: TObject); override;
   published
     property FileName: TFileName read FFileName write FFileName;
     property HelpContext;
@@ -216,11 +210,9 @@ type
     function GetSaveDialog: TSaveDialog;
   protected
     function GetDialogClass: TCommonDialogClass; override;
-  public
-    constructor Create(TheOwner: TComponent); override;
-    property Dialog: TSaveDialog read GetSaveDialog;
   published
     property Caption;
+    property Dialog: TSaveDialog read GetSaveDialog;
     property Enabled;
     property HelpContext;
     property Hint;
@@ -650,28 +642,25 @@ end;
 
 procedure TCommonDialogAction.DoAccept;
 begin
+  if Assigned(FOnAccept) then
+    OnAccept(Self);
+end;
 
+procedure TCommonDialogAction.DoBeforeExecute;
+begin
+  if Assigned(FBeforeExecute) then
+    BeforeExecute(Self);
 end;
 
 procedure TCommonDialogAction.DoCancel;
 begin
-
+  if Assigned(FOnCancel) then
+    OnCancel(Self);
 end;
 
 function TCommonDialogAction.GetDialogClass: TCommonDialogClass;
 begin
-  Result:=nil;
-end;
-
-procedure TCommonDialogAction.Notification(AComponent: TComponent;
-  Operation: TOperation);
-begin
-  inherited Notification(AComponent, Operation);
-end;
-
-procedure TCommonDialogAction.SetupDialog;
-begin
-
+  Result := nil;
 end;
 
 constructor TCommonDialogAction.Create(TheOwner: TComponent);
@@ -680,8 +669,11 @@ var
 begin
   inherited Create(TheOwner);
   DlgClass := GetDialogClass;
-  if Assigned(DlgClass)
-  then FDialog := DlgClass.Create(Self);
+  if Assigned(DlgClass) then
+  begin
+    FDialog := DlgClass.Create(Self);
+    FDialog.Name := DlgClass.ClassName;
+  end;
 
   DisableIfNoHandler := False;
   Enabled := True;
@@ -694,12 +686,18 @@ end;
 
 function TCommonDialogAction.Handlestarget(Target: TObject): Boolean;
 begin
-  Result:=inherited Handlestarget(Target);
+  // no target
+  Result := True;
 end;
 
 procedure TCommonDialogAction.ExecuteTarget(Target: TObject);
 begin
-  inherited ExecuteTarget(Target);
+  DoBeforeExecute;
+  FExecuteResult := FDialog.Execute;
+  if FExecuteResult then
+    DoAccept
+  else
+    DoCancel;
 end;
 
 { TFileAction }
@@ -728,24 +726,7 @@ end;
 
 function TFileOpen.GetDialogClass: TCommonDialogClass;
 begin
-  Result:=inherited GetDialogClass;
-end;
-
-constructor TFileOpen.Create(TheOwner: TComponent);
-begin
-  inherited Create(TheOwner);
-end;
-
-procedure TFileOpen.ExecuteTarget(Target: TObject);
-begin
-  inherited ExecuteTarget(Target);
-end;
-
-{ TFileOpenWith }
-
-procedure TFileOpenWith.ExecuteTarget(Target: TObject);
-begin
-  inherited ExecuteTarget(Target);
+  Result := TOpenDialog;
 end;
 
 { TFileSaveAs }
@@ -757,24 +738,25 @@ end;
 
 function TFileSaveAs.GetDialogClass: TCommonDialogClass;
 begin
-  Result:=inherited GetDialogClass;
-end;
-
-constructor TFileSaveAs.Create(TheOwner: TComponent);
-begin
-  inherited Create(TheOwner);
+  Result := TSaveDialog;
 end;
 
 { TFileExit }
 
 function TFileExit.HandlesTarget(Target: TObject): Boolean;
 begin
-  Result:=inherited HandlesTarget(Target);
+  Result := True;
 end;
 
 procedure TFileExit.ExecuteTarget(Target: TObject);
 begin
-  inherited ExecuteTarget(Target);
+  if Assigned(Application) then
+    if Assigned(Application.MainForm) then
+      Application.MainForm.Close
+    else
+      Application.Terminate
+  else
+    halt(0);
 end;
 
 { TSearchAction }

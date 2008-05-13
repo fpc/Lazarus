@@ -4,10 +4,12 @@ object Form1: TForm1
   Top = 164
   Width = 277
   HorzScrollBar.Page = 276
-  VertScrollBar.Page = 163
+  VertScrollBar.Page = 143
   Caption = 'Standard actions demo'
-  ClientHeight = 164
+  ClientHeight = 144
   ClientWidth = 277
+  Menu = MainMenu1
+  OnCloseQuery = FormCloseQuery
   LCLVersion = '0.9.25'
   object Edit1: TEdit
     AnchorSideLeft.Control = Owner
@@ -79,7 +81,7 @@ object Form1: TForm1
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 5
-    Height = 100
+    Height = 80
     Top = 59
     Width = 267
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -136,6 +138,67 @@ object Form1: TForm1
       DisableIfNoHandler = True
       Hint = 'Delete'
       ShortCut = 46
+    end
+    object FileOpen1: TFileOpen
+      Category = 'File'
+      Caption = '&Open...'
+      Hint = 'Open'
+      ShortCut = 16463
+    end
+    object FileOpenWith1: TFileOpenWith
+      Category = 'File'
+      Caption = 'Open with...'
+      Hint = 'Open'
+    end
+    object FileSaveAs1: TFileSaveAs
+      Category = 'File'
+      Caption = 'Save &As...'
+      Hint = 'Save As'
+    end
+    object FileExit1: TFileExit
+      Category = 'File'
+      Caption = 'E&xit'
+      Hint = 'Exit'
+    end
+  end
+  object MainMenu1: TMainMenu
+    left = 213
+    top = 32
+    object MenuItem8: TMenuItem
+      Caption = 'File'
+      object MenuItem11: TMenuItem
+        Action = FileOpen1
+      end
+      object MenuItem13: TMenuItem
+        Action = FileOpenWith1
+      end
+      object MenuItem16: TMenuItem
+        Action = FileSaveAs1
+      end
+      object MenuItem17: TMenuItem
+        Action = FileExit1
+      end
+    end
+    object MenuItem1: TMenuItem
+      Caption = 'Edit'
+      object MenuItem2: TMenuItem
+        Action = EditCut1
+      end
+      object MenuItem3: TMenuItem
+        Action = EditCopy1
+      end
+      object MenuItem4: TMenuItem
+        Action = EditPaste1
+      end
+      object MenuItem5: TMenuItem
+        Action = EditSelectAll1
+      end
+      object MenuItem6: TMenuItem
+        Action = EditDelete1
+      end
+      object MenuItem7: TMenuItem
+        Action = EditUndo1
+      end
     end
   end
 end

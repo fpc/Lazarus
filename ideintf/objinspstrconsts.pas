@@ -231,6 +231,7 @@ resourcestring
   oiStdActHelpTopicSearchHeadLine = '&Topic Search';
   oiStdActHelpHelpHelpHeadLine = '&Help on Help';
   oiStdActFileOpenHeadLine = '&Open...';
+  oiStdActFileOpenWithHeadLine = 'Open with...';
   oiStdActFileSaveAsHeadLine = 'Save &As...';
   oiStdActFileExitHeadLine = 'E&xit';
   oiStdActColorSelect1HeadLine = 'Select &Color...';
@@ -265,6 +266,7 @@ resourcestring
   oiStdActHelpTopicSearchHint = 'Topic Search';
   oiStdActHelpHelpHelpHint = 'Help on help';
   oiStdActFileOpenHint = 'Open';
+  oiStdActFileOpenWithHint = 'Open with';
   oiStdActFileSaveAsHint = 'Save As';
   oiStdActFileExitHint = 'Exit';
   oiStdActColorSelectHint = 'Color Select';
