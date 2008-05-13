@@ -14,6 +14,7 @@ type
 
   TForm1 = class(TForm)
     ActionList1: TActionList;
+    ColorSelect1: TColorSelect;
     Edit1: TEdit;
     EditCopy1: TEditCopy;
     EditCut1: TEditCut;
@@ -25,11 +26,14 @@ type
     FileOpen1: TFileOpen;
     FileOpenWith1: TFileOpenWith;
     FileSaveAs1: TFileSaveAs;
+    FontEdit1: TFontEdit;
     ImageList1: TImageList;
     MainMenu1: TMainMenu;
     Memo1: TMemo;
     MenuItem1: TMenuItem;
+    MenuItem10: TMenuItem;
     MenuItem11: TMenuItem;
+    MenuItem12: TMenuItem;
     MenuItem13: TMenuItem;
     MenuItem16: TMenuItem;
     MenuItem17: TMenuItem;
@@ -40,6 +44,7 @@ type
     MenuItem6: TMenuItem;
     MenuItem7: TMenuItem;
     MenuItem8: TMenuItem;
+    MenuItem9: TMenuItem;
     ToolBar1: TToolBar;
     ToolButton1: TToolButton;
     ToolButton2: TToolButton;

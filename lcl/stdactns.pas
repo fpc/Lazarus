@@ -391,10 +391,9 @@ type
     function GetDialog: TFontDialog;
   protected
     function GetDialogClass: TCommonDialogClass; override;
-  public
-    property Dialog: TFontDialog read GetDialog;
   published
     property Caption;
+    property Dialog: TFontDialog read GetDialog;
     property Enabled;
     property HelpContext;
     property HelpKeyword;
@@ -418,10 +417,9 @@ type
     function GetDialog: TColorDialog;
   protected
     function GetDialogClass: TCommonDialogClass; override;
-  public
-    property Dialog: TColorDialog read GetDialog;
   published
     property Caption;
+    property Dialog: TColorDialog read GetDialog;
     property Enabled;
     property HelpContext;
     property HelpKeyword;
@@ -687,7 +685,7 @@ end;
 function TCommonDialogAction.Handlestarget(Target: TObject): Boolean;
 begin
   // no target
-  Result := True;
+  Result := FDialog <> nil;
 end;
 
 procedure TCommonDialogAction.ExecuteTarget(Target: TObject);
@@ -806,7 +804,7 @@ end;
 
 function TFontEdit.GetDialogClass: TCommonDialogClass;
 begin
-  Result:=inherited GetDialogClass;
+  Result := TFontDialog;
 end;
 
 { TColorSelect }
@@ -818,7 +816,7 @@ end;
 
 function TColorSelect.GetDialogClass: TCommonDialogClass;
 begin
-  Result:=inherited GetDialogClass;
+  Result := TColorDialog;
 end;
 
 end.
