@@ -673,6 +673,7 @@ type
     procedure DoEnter; override;
     procedure DoExit; override;
     function GetCaretPos: TPoint; virtual;
+    function GetReadOnly: Boolean; virtual;
     function GetSelLength: integer; virtual;
     function GetSelStart: integer; virtual;
     function GetSelText: string; virtual;
@@ -710,7 +711,7 @@ type
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property PasswordChar: Char read FPasswordChar write SetPasswordChar default #0;
     property PopupMenu;
-    property ReadOnly: Boolean read FReadOnly write SetReadOnly default false;
+    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default false;
     property SelLength: integer read GetSelLength write SetSelLength;
     property SelStart: integer read GetSelStart write SetSelStart;
     property SelText: String read GetSelText write SetSelText;

@@ -41,6 +41,8 @@ type
   private
     FButton: TSpeedButton;
     FButtonNeedsFocus: Boolean;
+    FDirectInput: Boolean;
+    FIsReadOnly: boolean;
     FOnButtonClick : TNotifyEvent;
     function GetButtonHint: TTranslateString;
     function GetButtonWidth: Integer;
@@ -60,10 +62,11 @@ type
     procedure WMSetFocus(var Message: TLMSetFocus); message LM_SETFOCUS;
     procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
   protected
+    function GetReadOnly: Boolean; override;
     function GetDefaultGlyph: TBitmap; virtual;
     function GetDefaultGlyphName: String; virtual;
     procedure SetParent(AParent: TWinControl); override;
-    procedure SetReadOnly(Value: Boolean); override;
+    procedure SetReadOnly(AValue: Boolean); override;
     procedure DoPositionButton; virtual;
     procedure DoButtonClick (Sender: TObject); virtual;
     procedure Loaded; override;
@@ -72,7 +75,7 @@ type
     procedure CMEnabledChanged(var Msg: TLMessage); message CM_ENABLEDCHANGED;
     // New properties.
     property ButtonWidth : Integer read GetButtonWidth write SetButtonWidth;
-    property DirectInput : Boolean read GetDirectInput write SetDirectInput stored False Default True;
+    property DirectInput : Boolean read GetDirectInput write SetDirectInput default true;
     property Glyph : TBitmap read GetGlyph write SetGlyph;
     property NumGlyphs : Integer read GetNumGlyphs write SetNumGlyphs;
     property OnButtonClick : TNotifyEvent read FOnButtonClick write FOnButtonClick;
@@ -80,7 +83,7 @@ type
     property ButtonHint: TTranslateString read GetButtonHint write SetButtonHint;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
+    destructor  Destroy; override;
     property Flat : Boolean read GetFlat write SetFlat;
     property ButtonOnlyWhenFocused : Boolean read FButtonNeedsFocus write SetButtonNeedsFocus;
   end;
@@ -347,10 +350,8 @@ type
     property OnCustomDate : TCustomDateEvent read FOnCustomDate write FOnCustomDate;
     property OKCaption:TCaption read FOKCaption write FOKCaption;
     property CancelCaption:TCaption read FCancelCaption write FCancelCaption;
-    property ReadOnly default true;
-    property DefaultToday: Boolean read FDefaultToday write FDefaultToday
-      default False;
-
+    property ReadOnly;
+    property DefaultToday: Boolean read FDefaultToday write FDefaultToday;
     property ButtonOnlyWhenFocused;
     property ButtonWidth;
     property Action;
@@ -362,6 +363,7 @@ type
     property Color;
     property Constraints;
     property CharCase;
+    property DirectInput;
     property Glyph;
     property NumGlyphs;
     property DragMode;
@@ -493,6 +495,7 @@ var
   B: TBitmap;
 begin
   inherited Create(AOwner);
+  FDirectInput:=true;
   FButton := TSpeedButton.Create(Self);
   FButton.Width := Self.Height;
   FButton.Height := Self.Height;
@@ -541,7 +544,7 @@ end;
 
 function TCustomEditButton.GetDirectInput: Boolean;
 begin
-  Result := not ReadOnly;
+  Result := FDirectInput;
 end;
 
 function TCustomEditButton.GetFlat: Boolean;
@@ -580,7 +583,8 @@ end;
 
 procedure TCustomEditButton.SetDirectInput(const AValue: Boolean);
 begin
-  ReadOnly := not AValue;
+  FDirectInput := AValue;
+  Inherited SetReadOnly((not FDirectInput) or (FIsReadOnly))
 end;
 
 procedure TCustomEditButton.SetFlat(const AValue: Boolean);
@@ -622,7 +626,7 @@ procedure TCustomEditButton.CMEnabledChanged(var Msg: TLMessage);
 begin
   inherited CMEnabledChanged(Msg);
 
-  if FButton<>nil then
+  if (FButton<>nil) and (not ReadOnly) then
     FButton.Enabled:=Enabled;
 end;
 
@@ -652,6 +656,11 @@ begin
   inherited;
 end;
 
+function TCustomEditButton.GetReadOnly: Boolean;
+begin
+  Result := FIsReadOnly;
+end;
+
 procedure TCustomEditButton.SetParent(AParent: TWinControl);
 begin
   inherited SetParent(AParent);
@@ -662,12 +671,12 @@ begin
   end;
 end;
 
-procedure TCustomEditButton.SetReadOnly(Value: Boolean);
+procedure TCustomEditButton.SetReadOnly(AValue: Boolean);
 begin
-  inherited SetReadOnly(Value);
-  // Paul: ReadOnly should affect only editbox to prevent editing it by hands
-
-  //FButton.Enabled := not Value;
+  FIsReadOnly := AValue;
+  if Assigned(FButton) then
+    FButton.Enabled := not FIsReadOnly and Enabled;
+  inherited SetReadOnly(FIsReadOnly or (not DirectInput));
 end;
 
 procedure TCustomEditButton.DoPositionButton;
@@ -885,7 +894,6 @@ constructor TDateEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FDisplaySettings:=[dsShowHeadings, dsShowDayNames];
-  ReadOnly:=true;
   DialogTitle:=rsPickDate;
   OKCaption:='OK';
   CancelCaption:='Cancel';

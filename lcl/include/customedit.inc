@@ -260,6 +260,11 @@ begin
     Result := False;
 end;
 
+function TCustomEdit.GetReadOnly: Boolean;
+begin
+  Result := FReadOnly;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCustomEdit.SetCharCase
   Params:  Value to set FCharCase to
