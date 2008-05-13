@@ -63,7 +63,7 @@ interface
 implementation
 
 {$IFDEF UNIX}
-  {$IFDEF LCLCarbon}    
+  {$IFDEF LCLCarbon}
     {$IFNDEF NativePrint}
       {$I cupsprinters.inc}
     {$ELSE}

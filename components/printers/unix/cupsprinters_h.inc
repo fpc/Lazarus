@@ -167,4 +167,4 @@ type
     function PrintFile(aFileName: String): longint;
     procedure GetDebugOptions(Lst : TStrings);
   end;
-  
+
