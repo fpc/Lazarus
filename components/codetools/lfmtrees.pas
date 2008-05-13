@@ -348,10 +348,7 @@ end;
 
 function CompareLFMTreesByLFMBuffer(Data1, Data2: Pointer): integer;
 begin
-  if (Data1 = nil) or (Data2 = nil) then
-    Result := 0
-  else
-    Result:=ComparePointers(TLFMTree(Data1).LFMBuffer,TLFMTree(Data2).LFMBuffer);
+  Result:=ComparePointers(TLFMTree(Data1).LFMBuffer,TLFMTree(Data2).LFMBuffer);
 end;
 
 function CompareLFMBufWithTree(Buf, Tree: Pointer): integer;
