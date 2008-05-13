@@ -98,7 +98,7 @@ uses
   W32VersionInfo, ImExportCompilerOpts,
   // projects
   Project, ProjectDefs, NewProjectDlg, ProjectOpts,
-  PublishProjectDlg, ProjectInspector,
+  PublishProjectDlg, ProjectInspector, PackageDefs,
   // help manager
   IDEContextHelpEdit, HelpManager,
   // designer
@@ -7525,7 +7525,7 @@ begin
       if Project1.Units[i].ComponentName <> '' then
       begin
         if (ItemType = piComponent) or
-           ((ItemType = piFrame) and (Project1.Units[i].Component is TFrame)) then
+           ((ItemType = piFrame) and (Project1.Units[i].ResourceBaseClass = pfcbcFrame)) then
           ItemList.AddObject(Project1.Units[i].UnitName,
             TViewUnitsEntry.Create(Project1.Units[i].ComponentName, i, Project1.Units[i] = ActiveUnitInfo));
       end;
