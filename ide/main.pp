@@ -626,6 +626,7 @@ type
                                         OpenFlags: TOpenFlags): TModalResult;
     function DoLoadComponentDependencyHidden(AnUnitInfo: TUnitInfo;
                            const AComponentClassName: string; Flags: TOpenFlags;
+                           MustHaveLFM: boolean;
                            var AComponentClass: TComponentClass;
                            var ComponentUnitInfo: TUnitInfo): TModalResult;
 
@@ -5491,7 +5492,7 @@ begin
         // try loading the ancestor first (unit, lfm and component instance)
         if (AncestorType=nil) then begin
           Result:=DoLoadComponentDependencyHidden(AnUnitInfo,AncestorClassName,
-                                       OpenFlags,AncestorType,AncestorUnitInfo);
+                                 OpenFlags,false,AncestorType,AncestorUnitInfo);
           if Result<>mrOk then begin
             DebugLn(['TMainIDE.DoLoadLFM DoLoadComponentDependencyHidden failed']);
           end;
@@ -5858,6 +5859,7 @@ end;
 
 function TMainIDE.DoLoadComponentDependencyHidden(AnUnitInfo: TUnitInfo;
   const AComponentClassName: string; Flags: TOpenFlags;
+  MustHaveLFM: boolean;
   var AComponentClass: TComponentClass; var ComponentUnitInfo: TUnitInfo
   ): TModalResult;
 var
@@ -5904,7 +5906,7 @@ var
       UsedFilename:=UnitCode.Filename;
       Project1.ShortenFilename(UsedFilename);
       TheModalResult:=QuestionDlg(lisCodeTemplError,
-        Format(lisClassConflictsWithLfmFileTheUnitUsesTheTheUnitWhic, [#13,
+        Format(lisClassConflictsWithLfmFileTheUnitUsesTheUnitWhic, [#13,
           UsingFilename, #13, UsedFilename, #13, AComponentClassName, #13, #13,
           #13, AComponentClassName]),
         mtError,
@@ -6070,9 +6072,9 @@ begin
       if TryUnit(ComponentUnitInfo.Filename,Result,false) then exit;
     end;
 
-    // then try registered classes
+    // then try registered global classes
     if TryRegisteredClasses(Result) then exit;
-
+    
     // finally search in used units
     UsedUnitFilenames:=nil;
     try
@@ -6089,9 +6091,10 @@ begin
           if TryUnit(UsedUnitFilenames[i],Result,false) then exit;
         end;
         // search in every used unit the class
-        for i:=UsedUnitFilenames.Count-1 downto 0 do begin
-          if TryUnit(UsedUnitFilenames[i],Result,true) then exit;
-        end;
+        if not MustHaveLFM then
+          for i:=UsedUnitFilenames.Count-1 downto 0 do begin
+            if TryUnit(UsedUnitFilenames[i],Result,true) then exit;
+          end;
         if CTErrorMsg<>'' then begin
           // class not found and there was a parser error
           // maybe that's the reason, why the class was not found
@@ -6108,6 +6111,7 @@ begin
       UsedUnitFilenames.Free;
     end;
 
+    // not found => tell the user
     Result:=QuestionDlg(lisCodeTemplError, Format(
       lisUnableToFindTheUnitOfComponentClass, ['"', AComponentClassName, '"']),
       mtError, [mrCancel, lisCancelLoadingThisComponent,

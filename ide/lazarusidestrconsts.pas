@@ -2305,8 +2305,8 @@ resourcestring
   lisUnableToOpenDesignerTheClassDoesNotDescendFromADes = 'Unable to open '
     +'designer.%sThe class %s does not descend from a designable class like '
     +'TForm or TDataModule.';
-  lisClassConflictsWithLfmFileTheUnitUsesTheTheUnitWhic = 'Class conflicts '
-    +'with .lfm file:%sThe unit %s%suses the the unit %s%swhich contains the '
+  lisClassConflictsWithLfmFileTheUnitUsesTheUnitWhic = 'Class conflicts '
+    +'with .lfm file:%sThe unit %s%suses the unit %s%swhich contains the '
     +'class %s,%sbut the .lfm file contains already another class.%sThere can '
     +'only be one design class per unit.%sPlease move %s to another unit.';
   lisUnableToFindTheUnitOfComponentClass = 'Unable to find the unit of '
