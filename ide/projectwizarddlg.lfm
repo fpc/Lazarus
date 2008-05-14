@@ -1,22 +1,26 @@
 object ProjectWizardDialog: TProjectWizardDialog
   Left = 314
-  Height = 300
+  Height = 256
   Top = 208
   Width = 350
   HorzScrollBar.Page = 349
-  VertScrollBar.Page = 299
+  VertScrollBar.Page = 255
+  ActiveControl = btnNewProject
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Project Wizard '
-  ClientHeight = 300
+  ClientHeight = 256
   ClientWidth = 350
   Position = poDesktopCenter
   LCLVersion = '0.9.25'
   object btnNewProject: TBitBtn
-    Left = 24
-    Height = 30
-    Top = 40
-    Width = 299
+    Left = 15
+    Height = 29
+    Top = 15
+    Width = 320
+    Align = alTop
+    AutoSize = True
+    BorderSpacing.Around = 15
     Caption = 'New Project'
     ModalResult = 1
     NumGlyphs = 0
@@ -24,10 +28,13 @@ object ProjectWizardDialog: TProjectWizardDialog
     TabOrder = 0
   end
   object btnOpenProject: TBitBtn
-    Left = 24
-    Height = 30
-    Top = 80
-    Width = 299
+    Left = 15
+    Height = 29
+    Top = 59
+    Width = 320
+    Align = alTop
+    AutoSize = True
+    BorderSpacing.Around = 15
     Caption = 'Open Project'
     ModalResult = 1
     NumGlyphs = 0
@@ -35,10 +42,13 @@ object ProjectWizardDialog: TProjectWizardDialog
     TabOrder = 1
   end
   object btnConvertProject: TBitBtn
-    Left = 24
-    Height = 30
-    Top = 120
-    Width = 299
+    Left = 15
+    Height = 29
+    Top = 103
+    Width = 320
+    Align = alTop
+    AutoSize = True
+    BorderSpacing.Around = 15
     Caption = 'Convert Delphi Project'
     ModalResult = 1
     NumGlyphs = 0
@@ -46,10 +56,13 @@ object ProjectWizardDialog: TProjectWizardDialog
     TabOrder = 2
   end
   object btnCloseIDE: TBitBtn
-    Left = 24
-    Height = 30
-    Top = 248
-    Width = 299
+    Left = 15
+    Height = 29
+    Top = 212
+    Width = 320
+    Align = alBottom
+    AutoSize = True
+    BorderSpacing.Around = 15
     Caption = 'Close Lazarus'
     ModalResult = 1
     NumGlyphs = 0
