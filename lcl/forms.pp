@@ -523,9 +523,10 @@ type
     procedure RemoveHandlerClose(OnCloseHandler: TCloseEvent);
     procedure AddHandlerCreate(OnCreateHandler: TNotifyEvent; AsLast: Boolean=true);
     procedure RemoveHandlerCreate(OnCreateHandler: TNotifyEvent);
-    function  IsShortcut(var Message: TLMKey): boolean; virtual;
+    function IsShortcut(var Message: TLMKey): boolean; virtual;
     procedure IntfDropFiles(const FileNames: Array of String);
     procedure IntfHelp(AComponent: TComponent);
+    function GetFormImage: TBitmap;
   public
     // drag and dock
     procedure Dock(NewDockSite: TWinControl; ARect: TRect); override;
