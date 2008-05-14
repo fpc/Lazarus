@@ -39,7 +39,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, LResources, StdCtrls,
-  Buttons, Menus, ComCtrls, IDEProcs, Debugger, DebuggerDlg;
+  Buttons, Menus, ComCtrls, IDEProcs, Debugger, DebuggerDlg, lclType;
 
 type
   TBreakPointsDlgState = (
@@ -71,8 +71,8 @@ type
     procedure BreakpointsDlgCREATE(Sender: TObject);
     procedure lvBreakPointsColumnClick(Sender: TObject; Column: TListColumn);
     procedure lvBreakPointsDBLCLICK(Sender: TObject);
-    procedure lvBreakPointsSelectItem(Sender: TObject; AItem: TListItem;
-      Selected: Boolean);
+    procedure lvBreakPointsKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
     procedure mnuPopupPopup(Sender: TObject);
     procedure popAddSourceBPClick(Sender: TObject);
     procedure popDeleteAllSameSourceCLICK(Sender: TObject);
@@ -103,6 +103,9 @@ type
     procedure UpdateItem(const AnItem: TListItem;
                          const ABreakpoint: TIDEBreakPoint);
     procedure UpdateAll;
+    
+    procedure DeleteSelectedBreakpoints;
+    procedure ShowProperties;
   protected
     procedure DoEndUpdate; override;
     procedure JumpToCurrentBreakPoint; virtual;
@@ -299,10 +302,44 @@ begin
   JumpToCurrentBreakPoint;
 end;
 
-procedure TBreakPointsDlg.lvBreakPointsSelectItem(Sender: TObject;
-  AItem: TListItem; Selected: Boolean);
+procedure TBreakPointsDlg.lvBreakPointsKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+var
+  Handled : Boolean;
+  xyScreenPos : TPoint;
 begin
+  Handled := true;
+
+  if shift= [ssAlt] then
+  begin
+    case key of
+      VK_F10:
+        begin // <ALT-F10> default behaviour: open context menu
+          xyScreenPos.x:=left+width div 2;
+          xyScreenPos.y:=top+  height div 2;
+          mnuPopup.PopUp(xyScreenPos.x,xyScreenPos.y);
+        end;
+    else
+      Handled := false;
+    end;
+  end
+  else
+  if shift=[] then
+  begin
+    case key of
+      VK_RETURN:
+        ShowProperties;
+    else
+      Handled := false;
+    end;
+  end
+  else
+    Handled := false;
+
+  if Handled then
+    Key := 0;
 end;
+
 
 procedure TBreakPointsDlg.mnuPopupPopup(Sender: TObject);
 var
@@ -425,48 +462,8 @@ begin
 end;
 
 procedure TBreakPointsDlg.popDeleteClick(Sender: TObject);
-var
-  Item: TListItem;
-  CurBreakPoint: TIDEBreakPoint;
-  Msg: String;
-  List: TList;
-  n: Integer;
 begin
-  Item:=lvBreakPoints.Selected;
-  if Item = nil then exit;
-
-  if lvBreakPoints.SelCount = 1 then
-  begin
-    CurBreakPoint:=TIDEBreakPoint(Item.Data);
-    Msg := Format(lisDeleteBreakpointAtLine, [#13, CurBreakPoint.Source,
-      CurBreakPoint.Line]);
-  end
-  else
-    Msg := lisDeleteAllSelectedBreakpoints;
-  if MessageDlg(Msg, mtConfirmation, [mbYes,mbCancel],0) <> mrYes then exit;
-  
-  if lvBreakPoints.SelCount = 1
-  then begin
-    TObject(Item.Data).Free;
-    Exit;
-  end;
-  
-  List := TList.Create;
-  for n := 0 to lvBreakPoints.Items.Count - 1 do
-  begin
-    Item := lvBreakPoints.Items[n];
-    if Item.Selected
-    then List.Add(Item);
-  end;
-  
-  lvBreakPoints.BeginUpdate;
-  try
-    for n := 0 to List.Count - 1 do
-      TObject(List[n]).Free;
-  finally
-    lvBreakPoints.EndUpdate;
-  end;
-  List.Free;
+  DeleteSelectedBreakpoints
 end;
 
 procedure TBreakPointsDlg.popDisableAllClick(Sender: TObject);
@@ -522,7 +519,7 @@ end;
 
 procedure TBreakPointsDlg.popPropertiesClick(Sender: TObject);
 begin
-  ShowMessage(lisNotImplementedYet2);
+  ShowProperties;
 end;
 
 procedure TBreakPointsDlg.DoEndUpdate;
@@ -586,6 +583,56 @@ begin
     CurItem:=lvBreakPoints.Items[i];
     UpdateItem(CurItem,TIDEBreakPoint(CurItem.Data));
   end;
+end;
+
+procedure TBreakPointsDlg.DeleteSelectedBreakpoints;
+var
+  Item: TListItem;
+  CurBreakPoint: TIDEBreakPoint;
+  Msg: String;
+  List: TList;
+  n: Integer;
+begin
+  Item:=lvBreakPoints.Selected;
+  if Item = nil then exit;
+
+  if lvBreakPoints.SelCount = 1 then
+  begin
+    CurBreakPoint:=TIDEBreakPoint(Item.Data);
+    Msg := Format(lisDeleteBreakpointAtLine, [#13, CurBreakPoint.Source,
+      CurBreakPoint.Line]);
+  end
+  else
+    Msg := lisDeleteAllSelectedBreakpoints;
+  if MessageDlg(Msg, mtConfirmation, [mbYes,mbCancel],0) <> mrYes then exit;
+
+  if lvBreakPoints.SelCount = 1
+  then begin
+    TObject(Item.Data).Free;
+    Exit;
+  end;
+
+  List := TList.Create;
+  for n := 0 to lvBreakPoints.Items.Count - 1 do
+  begin
+    Item := lvBreakPoints.Items[n];
+    if Item.Selected
+    then List.Add(Item);
+  end;
+
+  lvBreakPoints.BeginUpdate;
+  try
+    for n := 0 to List.Count - 1 do
+      TObject(List[n]).Free;
+  finally
+    lvBreakPoints.EndUpdate;
+  end;
+  List.Free;
+end;
+
+procedure TBreakPointsDlg.ShowProperties;
+begin
+  ShowMessage(lisNotImplementedYet2);
 end;
 
 

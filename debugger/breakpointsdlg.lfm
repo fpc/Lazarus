@@ -8,6 +8,8 @@ inherited BreakpointsDlg: TBreakpointsDlg
   VertScrollBar.Page = 204
   ActiveControl = lvBreakPoints
   Caption = 'Breakpoint list'
+  ClientHeight = 205
+  ClientWidth = 560
   OnCreate = BreakpointsDlgCREATE
   Visible = True
   object lvBreakPoints: TListView
@@ -52,7 +54,7 @@ inherited BreakpointsDlg: TBreakpointsDlg
     ViewStyle = vsReport
     OnColumnClick = lvBreakPointsColumnClick
     OnDblClick = lvBreakPointsDBLCLICK
-    OnSelectItem = lvBreakPointsSelectItem
+    OnKeyDown = lvBreakPointsKeyDown
   end
   object mnuPopup: TPopupMenu
     OnPopup = mnuPopupPopup
@@ -61,6 +63,7 @@ inherited BreakpointsDlg: TBreakpointsDlg
     object popShow: TMenuItem
       Caption = 'Show'
       Default = True
+      ShortCut = 16470
       OnClick = popShowClick
     end
     object N0: TMenuItem
