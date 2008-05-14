@@ -173,7 +173,8 @@ type
     destructor Destroy; override;
   public
     function height: Integer;
-    function width(p1: PWideString): Integer;
+    function width(p1: PWideString): Integer; overload;
+    function width(p1: PWideString; ALen: Integer): Integer; overload;
     function ascent: Integer;
     function descent: Integer;
     function leading: Integer;
@@ -1206,6 +1207,11 @@ begin
   Result := QFontMetrics_width(Widget, p1);
 end;
 
+function TQtFontMetrics.width(p1: PWideString; ALen: Integer): Integer;
+begin
+  Result := QFontMetrics_width(Widget, p1, ALen);
+end;
+
 function TQtFontMetrics.ascent: Integer;
 begin
   Result := QFontMetrics_ascent(Widget);
@@ -1723,8 +1729,8 @@ var
 begin
   if Palette = nil then
     Palette := QWidget_palette(Parent);
-
   // since q_DrawWinPanel doesnot supports lineWidth we should do it ourself
+
   for i := 1 to lineWidth - 1 do
   begin
     q_DrawWinPanel(Widget, x, y, w, h, Palette, Sunken);

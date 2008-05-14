@@ -1691,6 +1691,7 @@ begin
     bvSpace: QtDC.qDrawPlainRect(ARect.Left, ARect.Top,
       ARect.Right - ARect.Left, ARect.Bottom - ARect.Top, nil, FrameWidth);
   end;
+
   if Style <> bvNone then
     InflateRect(ARect, -FrameWidth, -FrameWidth);
   Result := True;
@@ -2985,7 +2986,7 @@ begin
   if not IsValidDC(DC) then Exit;
 
   WideStr := GetUtf8String(Str);
-  Size.cx := QtDC.font.Metrics.width(@WideStr);
+  Size.cx := QtDC.font.Metrics.width(@WideStr, Count);
   Size.cy := QtDC.font.Metrics.height;
 
   Result := True;
