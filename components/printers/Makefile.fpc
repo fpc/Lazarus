@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for Printer4Lazarus 0.5
 #
-#   This file was generated on 30/4/08
+#   This file was generated on 14-5-08
 
 [package]
 name=printer4lazarus
