@@ -106,7 +106,7 @@ uses
   ObjInspExt, Designer, FormEditor, CustomFormEditor,
   ControlSelection, AnchorEditor,
   MenuEditorForm,
-  //LRT stuff
+  // LRT stuff
   LrtPoTools,
   // debugger
   RunParamsOpts, BaseDebugManager, DebugManager,
@@ -128,7 +128,7 @@ uses
   DialogProcs, FindReplaceDialog, FindInFilesDlg, CodeExplorer, BuildFileDlg,
   ProcedureList, ExtractProcDlg, FindRenameIdentifier, AbstractsMethodsDlg,
   EmptyMethodsDlg, CleanDirDlg, CodeContextForm, AboutFrm, BuildManager,
-  CompatibilityRestrictions, RestrictionBrowser,ProjectWizardDlg,
+  CompatibilityRestrictions, RestrictionBrowser, ProjectWizardDlg,
   // main ide
   MainBar, MainIntf, MainBase;
 
