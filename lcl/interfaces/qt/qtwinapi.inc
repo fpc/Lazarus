@@ -4272,7 +4272,10 @@ var
     begin
       // segfaults if we don't check Enabled property
       if ScrollBar.getEnabled then
+      begin
         ScrollBar.setPageStep(ScrollInfo.nPage);
+        ScrollBar.setSingleStep((ScrollBar.getPageStep div 6) + 1);
+      end;
     end;
 
     if (ScrollInfo.FMask and SIF_POS) <> 0 then
