@@ -313,8 +313,13 @@ var
 begin
   UnitNode:=TUnitNode(Node.Data);
   if UnitNode.HasChildren then begin
-    AllowExpansion:=true;
-    UnitNode.CreateGrandChildren;
+    UnitTreeView.BeginUpdate;
+    try
+      AllowExpansion:=true;
+      UnitNode.CreateGrandChildren;
+    finally
+      UnitTreeView.EndUpdate;
+    end;
   end else begin
     AllowExpansion:=false;
   end;
