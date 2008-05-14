@@ -95,7 +95,7 @@ const
 
   // returns the standard executable extension (e.g '.exe')
   function GetExecutableExt(TargetOS: string = ''): string;
-  // returns the standard library extension (e.g '.dll' or '.dynlib')
+  // returns the standard library extension (e.g '.dll' or '.dylib')
   function GetLibraryExt(TargetOS: string = ''): string;
 
   // returns the standard file extension for compiled units (e.g '.ppu')
