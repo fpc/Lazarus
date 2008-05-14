@@ -1,0 +1,19 @@
+LazarusResources.Add('TProjectWizardDialog','FORMDATA',[
+  'TPF0'#20'TProjectWizardDialog'#19'ProjectWizardDialog'#4'Left'#3':'#1#6'Heig'
+  +'ht'#3','#1#3'Top'#3#208#0#5'Width'#3'^'#1#18'HorzScrollBar.Page'#3']'#1#18
+  +'VertScrollBar.Page'#3'+'#1#11'BorderIcons'#11#12'biSystemMenu'#0#11'BorderS'
+  +'tyle'#7#8'bsDialog'#7'Caption'#6#15'Project Wizard '#12'ClientHeight'#3','#1
+  +#11'ClientWidth'#3'^'#1#8'Position'#7#15'poDesktopCenter'#10'LCLVersion'#6#6
+  +'0.9.25'#0#7'TBitBtn'#13'btnNewProject'#4'Left'#2#24#6'Height'#2#30#3'Top'#2
+  +'('#5'Width'#3'+'#1#7'Caption'#6#11'New Project'#11'ModalResult'#2#1#9'NumGl'
+  +'yphs'#2#0#7'OnClick'#7#18'btnNewProjectClick'#8'TabOrder'#2#0#0#0#7'TBitBtn'
+  +#14'btnOpenProject'#4'Left'#2#24#6'Height'#2#30#3'Top'#2'P'#5'Width'#3'+'#1#7
+  +'Caption'#6#12'Open Project'#11'ModalResult'#2#1#9'NumGlyphs'#2#0#7'OnClick'
+  +#7#19'btnOpenProjectClick'#8'TabOrder'#2#1#0#0#7'TBitBtn'#17'btnConvertProje'
+  +'ct'#4'Left'#2#24#6'Height'#2#30#3'Top'#2'x'#5'Width'#3'+'#1#7'Caption'#6#22
+  +'Convert Delphi Project'#11'ModalResult'#2#1#9'NumGlyphs'#2#0#7'OnClick'#7#22
+  +'btnConvertProjectClick'#8'TabOrder'#2#2#0#0#7'TBitBtn'#11'btnCloseIDE'#4'Le'
+  +'ft'#2#24#6'Height'#2#30#3'Top'#3#248#0#5'Width'#3'+'#1#7'Caption'#6#13'Clos'
+  +'e Lazarus'#11'ModalResult'#2#1#9'NumGlyphs'#2#0#7'OnClick'#7#16'btnCloseIDE'
+  +'Click'#8'TabOrder'#2#3#0#0#0
+]);

@@ -128,7 +128,7 @@ uses
   DialogProcs, FindReplaceDialog, FindInFilesDlg, CodeExplorer, BuildFileDlg,
   ProcedureList, ExtractProcDlg, FindRenameIdentifier, AbstractsMethodsDlg,
   EmptyMethodsDlg, CleanDirDlg, CodeContextForm, AboutFrm, BuildManager,
-  CompatibilityRestrictions, RestrictionBrowser,
+  CompatibilityRestrictions, RestrictionBrowser,ProjectWizardDlg,
   // main ide
   MainBar, MainIntf, MainBase;
 
@@ -3382,19 +3382,16 @@ begin
   DoCloseProject;
   
   // ask what to do next
-  while Project1=nil do begin
-    DlgResult:=QuestionDlg(lisProjectClosed,
-      Format(lisTheProjectIsClosedThereAreNowThreePossibilitiesHin, [#13]),
-      mtInformation,
-      [mrNo, lisQuitLazarus, mrYes, lisCreateNewProject, mrOk, lisOpenProject2
-        ], 0);
-    case DlgResult of
-    mrNo:
-      if QuitIDE then exit;
-    mrYes:
+  while (Project1=nil) do begin
+    case ShowProjectWizardDlg of
+    tpws_new:
       mnuNewProjectClicked(Sender);
-    mrOk:
+    tpws_open:
       mnuOpenProjectClicked(Sender);
+    tpws_convert:
+      mnuToolConvertDelphiProjectClicked(Sender);
+    tpws_closeIDE:
+      if QuitIDE then exit;
     end;
   end;
 end;

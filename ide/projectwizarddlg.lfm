@@ -1,0 +1,59 @@
+object ProjectWizardDialog: TProjectWizardDialog
+  Left = 314
+  Height = 300
+  Top = 208
+  Width = 350
+  HorzScrollBar.Page = 349
+  VertScrollBar.Page = 299
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsDialog
+  Caption = 'Project Wizard '
+  ClientHeight = 300
+  ClientWidth = 350
+  Position = poDesktopCenter
+  LCLVersion = '0.9.25'
+  object btnNewProject: TBitBtn
+    Left = 24
+    Height = 30
+    Top = 40
+    Width = 299
+    Caption = 'New Project'
+    ModalResult = 1
+    NumGlyphs = 0
+    OnClick = btnNewProjectClick
+    TabOrder = 0
+  end
+  object btnOpenProject: TBitBtn
+    Left = 24
+    Height = 30
+    Top = 80
+    Width = 299
+    Caption = 'Open Project'
+    ModalResult = 1
+    NumGlyphs = 0
+    OnClick = btnOpenProjectClick
+    TabOrder = 1
+  end
+  object btnConvertProject: TBitBtn
+    Left = 24
+    Height = 30
+    Top = 120
+    Width = 299
+    Caption = 'Convert Delphi Project'
+    ModalResult = 1
+    NumGlyphs = 0
+    OnClick = btnConvertProjectClick
+    TabOrder = 2
+  end
+  object btnCloseIDE: TBitBtn
+    Left = 24
+    Height = 30
+    Top = 248
+    Width = 299
+    Caption = 'Close Lazarus'
+    ModalResult = 1
+    NumGlyphs = 0
+    OnClick = btnCloseIDEClick
+    TabOrder = 3
+  end
+end

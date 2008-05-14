@@ -693,10 +693,7 @@ resourcestring
   lisExePrograms = 'Programs';
   lisSelectFile = 'Select the file';
   lisClickHereToBrowseTheFileHint = 'Click here to browse the file';
-  lisProjectClosed = 'Project closed';
-  lisTheProjectIsClosedThereAreNowThreePossibilitiesHin = 'The project is '
-    +'closed. There are now three possibilities.%sHint: You do not need to '
-    +'close a project yourself, since this is done automatically.';
+  lisProjectWizard = 'Project Wizard';
   lisQuitLazarus = 'Quit Lazarus';
   lisCreateNewProject = 'Create new project';
   lisOpenPackageFile = 'Open Package File';
@@ -3756,6 +3753,11 @@ resourcestring
   lisLocalsDlgName = 'Name';
   lisLocalsDlgValue = 'Value';
   lisetEditCustomScanners = 'Edit custom scanners (%s)';
+  
+  // ProjectWizard Dialog
+  lisPWNewProject = 'New Project';
+  lisPWOpenProject = 'Open Project';
+  lisPWConvertProject = 'Convert Delphi Project';
   
 implementation
 
