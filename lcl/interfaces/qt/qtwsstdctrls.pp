@@ -485,13 +485,14 @@ class function TQtWSCustomListBox.GetItemRect(
   const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect
   ): boolean;
 var
-  ModelIndex: QModelIndexH;
+  Item: QListWidgetItemH;
 begin
-  ModelIndex := QModelIndex_create();
-  TQtListWidget(ACustomListBox.Handle).ModelIndex(ModelIndex, Index, 0);
-  ARect := TQtListWidget(ACustomListBox.Handle).visualRect(ModelIndex);
-  QModelIndex_destroy(ModelIndex);
-  Result := True;
+  Item := QListWidget_item(QListWidgetH(TQtListWidget(ACustomListBox.Handle).Widget), Index);
+  Result := Item <> nil;
+  if Result then
+    QListWidget_visualItemRect(QListWidgetH(TQtListWidget(ACustomListBox.Handle).Widget), @ARect, Item)
+  else
+    ARect := Rect(-1,-1,-1,-1);
 end;
 
 {------------------------------------------------------------------------------
