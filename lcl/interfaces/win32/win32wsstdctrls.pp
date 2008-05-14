@@ -79,6 +79,7 @@ type
 
   TWin32WSCustomComboBox = class(TWSCustomComboBox)
   private
+    class function GetStringList(const ACustomComboBox: TCustomComboBox): TWin32ComboBoxStringList;
   protected
   public
     class function  CreateHandle(const AWinControl: TWinControl;
@@ -95,6 +96,7 @@ type
 
     class procedure SetArrowKeysTraverseList(const ACustomComboBox: TCustomComboBox;
       NewTraverseList: boolean); override;
+    class procedure SetDropDownCount(const ACustomComboBox: TCustomComboBox; NewCount: Integer); override;
     class procedure SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer); override;
     class procedure SetSelLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
     class procedure SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer); override;
@@ -753,6 +755,14 @@ begin
     Result := Result or ComboBoxReadOnlyStyles[AComboBox.ReadOnly];
 end;
 
+class function TWin32WSCustomComboBox.GetStringList(
+  const ACustomComboBox: TCustomComboBox): TWin32ComboBoxStringList;
+begin
+  Result := nil;
+  if ACustomComboBox.Style <> csSimple then
+    Result := TWin32ComboBoxStringList(GetWindowInfo(ACustomComboBox.Handle)^.List);
+end;
+
 class function TWin32WSCustomComboBox.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
@@ -805,16 +815,11 @@ end;
 class procedure TWin32WSCustomComboBox.AdaptBounds(const AWinControl: TWinControl;
   var Left, Top, Width, Height: integer; var SuppressMove: boolean);
 var
-  WinHandle: HWND;
   StringList: TWin32ComboBoxStringList;
 begin
-  WinHandle := AWinControl.Handle;
-  if TCustomComboBox(AWinControl).Style <> csSimple then
-  begin
-    StringList := TWin32ComboBoxStringList(GetWindowInfo(WinHandle)^.List);
-    if StringList <> nil then
-      Height := StringList.ComboHeight;
-  end;
+  StringList := GetStringList(TCustomComboBox(AWinControl));
+  if StringList <> nil then
+    Height := StringList.ComboHeight;
 end;
 
 class procedure TWin32WSCustomComboBox.GetPreferredSize(
@@ -879,6 +884,17 @@ class procedure TWin32WSCustomComboBox.SetArrowKeysTraverseList(const ACustomCom
   NewTraverseList: boolean);
 begin
   // TODO: implement me?
+end;
+
+class procedure TWin32WSCustomComboBox.SetDropDownCount(
+  const ACustomComboBox: TCustomComboBox; NewCount: Integer);
+var
+  WinHandle: HWND;
+  StringList: TWin32ComboBoxStringList;
+begin
+  StringList := GetStringList(ACustomComboBox);
+  if StringList <> nil then
+    StringList.DropDownCount := NewCount;
 end;
 
 class procedure TWin32WSCustomComboBox.SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer);

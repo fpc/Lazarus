@@ -366,6 +366,12 @@ begin
     inherited Assign(Source);
 end;
 
+procedure TWin32ComboBoxStringList.SetDropDownCount(const AValue: integer);
+begin
+  FDropDownCount:=AValue;
+  UpdateComboHeight;
+end;
+
 function TWin32ComboBoxStringList.GetComboHeight: integer;
 begin
   if (FSender is TCustomComboBox) and (TCustomComboBox(FSender).Style = csSimple) then

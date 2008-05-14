@@ -82,6 +82,7 @@ Type
     FEditHeight: Integer;
     FItemHeight: Integer;
     FDropDownCount: Integer;
+    procedure SetDropDownCount(const AValue: integer);
   protected
     function GetComboHeight: integer;
     procedure InitFlags; override;
@@ -93,6 +94,7 @@ Type
     procedure Insert(Index: integer; const S: string); override;
 
     property ComboHeight: integer read GetComboHeight;
+    property DropDownCount: integer read FDropDownCount write SetDropDownCount;
   end;
     
   PWin32CheckListBoxItemRecord = ^TWin32CheckListBoxItemRecord;
