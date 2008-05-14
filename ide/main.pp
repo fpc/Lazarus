@@ -3468,6 +3468,7 @@ var
   POFileAgeValid: Boolean;
   POOutDir: String;
   LRTFilename: String;
+  UnitOutputDir: String;
   RSTFilename: String;
 begin
   Result:=mrCancel;
@@ -3507,7 +3508,17 @@ begin
         and ((not POFileAgeValid) or (FileAge(LRTFilename)>POFileAge)) then
           Files.Add(LRTFilename);
         // check .rst file
-        RSTFilename:=ChangeFileExt(CurFilename,'.rst');
+        RSTFilename:=ExtractFileName(ChangeFileExt(CurFilename,'.rst'));
+        
+        // the compiler puts the .rst in the unit output directory
+        UnitOutputDir:=AProject.GetOutputDirectory;
+        if UnitOutputDir='' then
+          UnitOutputDir:=AProject.ProjectDirectory;
+
+        RSTFilename:=TrimFilename(AppendPathDelim(UnitOutputDir)+RSTFilename);
+
+        //DebugLn(['TMainIDE.UpdateProjectPOFile Looking for .rst file ="',RSTFilename,'"']);
+
         if FileExistsCached(RSTFilename)
         and ((not POFileAgeValid) or (FileAge(RSTFilename)>POFileAge)) then
           Files.Add(RSTFilename);
