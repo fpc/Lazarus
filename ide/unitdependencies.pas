@@ -770,7 +770,7 @@ begin
         else if unfParseError in Flags then
           Result := IDEImages.LoadImage(16, 'state_error')
         else
-          Result := IDEImages.LoadImage(16, 'state_unknnown');
+          Result := IDEImages.LoadImage(16, 'state_unknown');
       end;
     end;
   end else 

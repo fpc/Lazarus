@@ -5563,7 +5563,7 @@ begin
         if NewUnitName='' then
           NewUnitName:=ExtractFileNameOnly(AnUnitInfo.Filename);
         NewComponent:=FormEditor1.CreateRawComponentFromStream(BinStream,
-                     AncestorType,AncestorBinStream,copy(NewUnitName,1,255),true);
+                   AncestorType,AncestorBinStream,copy(NewUnitName,1,255),true);
         Project1.InvalidateUnitComponentDesignerDependencies;
         AnUnitInfo.Component:=NewComponent;
         if (AncestorUnitInfo<>nil) then
