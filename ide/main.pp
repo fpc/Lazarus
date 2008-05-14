@@ -624,6 +624,12 @@ type
                                     out AComponentClass: TComponentClass): boolean;
     function DoFixupComponentReferences(AnUnitInfo: TUnitInfo;
                                         OpenFlags: TOpenFlags): TModalResult;
+    function DoLoadAncestorDependencyHidden(AnUnitInfo: TUnitInfo;
+                           const DescendantClassName: string;
+                           OpenFlags: TOpenFlags;
+                           out AncestorClass: TComponentClass;
+                           out AncestorUnitInfo: TUnitInfo;
+                           out AncestorBinStream: TExtMemoryStream): TModalResult;
     function DoLoadComponentDependencyHidden(AnUnitInfo: TUnitInfo;
                            const AComponentClassName: string; Flags: TOpenFlags;
                            MustHaveLFM: boolean;
@@ -5403,7 +5409,6 @@ var
   DesignerForm: TCustomForm;
   NewClassName: String;
   LFMType: String;
-  AncestorClassName: String;
   ACaption, AText: String;
   NewUnitName: String;
   AncestorUnitInfo: TUnitInfo;
@@ -5470,62 +5475,9 @@ begin
       BinStream:=nil;
       AncestorBinStream:=nil;
       try
-        AncestorClassName:='';
-        AncestorType:=nil;
-        AncestorUnitInfo:=nil;
-
-        // find the ancestor type in the source
-        if not CodeToolBoss.FindFormAncestor(AnUnitInfo.Source,NewClassName,
-                                             AncestorClassName,true)
-        then begin
-          DebugLn('TMainIDE.DoLoadLFM Filename="',AnUnitInfo.Filename,'" NewClassName=',NewClassName,'. Unable to find ancestor class: ',CodeToolBoss.ErrorMessage);
-        end;
+        Result:=DoLoadAncestorDependencyHidden(AnUnitInfo,NewClassName,OpenFlags,
+                               AncestorType,AncestorUnitInfo,AncestorBinStream);
         
-        // try the base designer classes
-        if not FindBaseComponentClass(AncestorClassName,NewClassName,
-          AncestorType) then
-        begin
-          DebugLn(['TMainIDE.DoLoadLFM FindUnitComponentClass failed for AncestorClassName=',AncestorClassName]);
-          exit;
-        end;
-        
-        // try loading the ancestor first (unit, lfm and component instance)
-        if (AncestorType=nil) then begin
-          Result:=DoLoadComponentDependencyHidden(AnUnitInfo,AncestorClassName,
-                                 OpenFlags,false,AncestorType,AncestorUnitInfo);
-          if Result<>mrOk then begin
-            DebugLn(['TMainIDE.DoLoadLFM DoLoadComponentDependencyHidden failed']);
-          end;
-          case  Result of
-          mrAbort: exit;
-          mrOk:
-            if AncestorUnitInfo<>nil then begin
-              Result:=DoSaveUnitComponentToBinStream(AncestorUnitInfo,
-                                                     AncestorBinStream);
-              if Result<>mrOk then begin
-                DebugLn(['TMainIDE.DoLoadLFM DoSaveUnitComponentToBinStream failed']);
-                exit;
-              end;
-              AncestorBinStream.Position:=0;
-            end;
-          mrIgnore:
-            begin
-              // use TForm as default
-              AncestorType:=TForm;
-              AncestorUnitInfo:=nil;
-            end;
-          else
-            // cancel
-            Result:=mrCancel;
-            exit;
-          end;
-        end;
-
-        // use TForm as default ancestor
-        if AncestorType=nil then
-          AncestorType:=TForm;
-        //DebugLn('TMainIDE.DoLoadLFM Filename="',AnUnitInfo.Filename,'" AncestorClassName=',AncestorClassName,' AncestorType=',AncestorType.ClassName);
-
         // convert text to binary format
         BinStream:=TExtMemoryStream.Create;
         TxtLFMStream:=TExtMemoryStream.Create;
@@ -5562,6 +5514,7 @@ begin
         NewUnitName:=AnUnitInfo.UnitName;
         if NewUnitName='' then
           NewUnitName:=ExtractFileNameOnly(AnUnitInfo.Filename);
+        // ToDo: create AncestorBinStream(s) via hook, not via parameters
         NewComponent:=FormEditor1.CreateRawComponentFromStream(BinStream,
                    AncestorType,AncestorBinStream,copy(NewUnitName,1,255),true);
         Project1.InvalidateUnitComponentDesignerDependencies;
@@ -5855,6 +5808,73 @@ begin
     UsedUnitFilenames.Free;
     ComponentNameToUnitFilename.Free;
   end;
+end;
+
+function TMainIDE.DoLoadAncestorDependencyHidden(AnUnitInfo: TUnitInfo;
+  const DescendantClassName: string;
+  OpenFlags: TOpenFlags;
+  out AncestorClass: TComponentClass;
+  out AncestorUnitInfo: TUnitInfo;
+  out AncestorBinStream: TExtMemoryStream): TModalResult;
+var
+  AncestorClassName: String;
+begin
+  AncestorClassName:='';
+  AncestorClass:=nil;
+  AncestorUnitInfo:=nil;
+  AncestorBinStream:=nil;
+
+  // find the ancestor type in the source
+  if not CodeToolBoss.FindFormAncestor(AnUnitInfo.Source,DescendantClassName,
+                                       AncestorClassName,true)
+  then begin
+    DebugLn('TMainIDE.DoLoadAncestorDependencyHidden Filename="',AnUnitInfo.Filename,'" ClassName=',DescendantClassName,'. Unable to find ancestor class: ',CodeToolBoss.ErrorMessage);
+  end;
+
+  // try the base designer classes
+  if not FindBaseComponentClass(AncestorClassName,DescendantClassName,
+    AncestorClass) then
+  begin
+    DebugLn(['TMainIDE.DoLoadAncestorDependencyHidden FindUnitComponentClass failed for AncestorClassName=',AncestorClassName]);
+    exit;
+  end;
+
+  // try loading the ancestor first (unit, lfm and component instance)
+  if (AncestorClass=nil) then begin
+    Result:=DoLoadComponentDependencyHidden(AnUnitInfo,AncestorClassName,
+                           OpenFlags,false,AncestorClass,AncestorUnitInfo);
+    if Result<>mrOk then begin
+      DebugLn(['TMainIDE.DoLoadAncestorDependencyHidden DoLoadComponentDependencyHidden failed AnUnitInfo=',AnUnitInfo.Filename]);
+    end;
+    case  Result of
+    mrAbort: exit;
+    mrOk:
+      if AncestorUnitInfo<>nil then begin
+        Result:=DoSaveUnitComponentToBinStream(AncestorUnitInfo,
+                                               AncestorBinStream);
+        if Result<>mrOk then begin
+          DebugLn(['TMainIDE.DoLoadAncestorDependencyHidden DoSaveUnitComponentToBinStream failed AncestorUnitInfo=',AncestorUnitInfo.Filename]);
+          exit;
+        end;
+        AncestorBinStream.Position:=0;
+      end;
+    mrIgnore:
+      begin
+        // use TForm as default
+        AncestorClass:=TForm;
+        AncestorUnitInfo:=nil;
+      end;
+    else
+      // cancel
+      Result:=mrCancel;
+      exit;
+    end;
+  end;
+
+  // use TForm as default ancestor
+  if AncestorClass=nil then
+    AncestorClass:=TForm;
+  //DebugLn('TMainIDE.DoLoadAncestorDependencyHidden Filename="',AnUnitInfo.Filename,'" AncestorClassName=',AncestorClassName,' AncestorClass=',dbgsName(AncestorClass));
 end;
 
 function TMainIDE.DoLoadComponentDependencyHidden(AnUnitInfo: TUnitInfo;
