@@ -411,13 +411,11 @@ type
     MDIAreaHandle: QMDIAreaH;
     MenuBar: TQtMenuBar;
     ToolBar: TQtToolBar;
-    StatusBar: TQtStatusBar;
     destructor Destroy; override;
     function getText: WideString; override;
     function getTextStatic: Boolean; override;
     procedure setText(const W: WideString); override;
     procedure setMenuBar(AMenuBar: QMenuBarH);
-    procedure setStatusBar(AStatusBar: QStatusBarH);
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure OffsetMousePos(APoint: PQtPoint); override;
     procedure SlotWindowStateChange; cdecl;
@@ -3571,7 +3569,6 @@ begin
   begin
   
     IsMainForm := True;
-    StatusBar := nil;
     Result := QMainWindow_create(nil, QtWindow);
 
     {$ifdef darwin}
@@ -3687,12 +3684,6 @@ begin
     QMainWindow_setMenuBar(QMainWindowH(Widget), AMenuBar)
   else
     QLayout_setMenuBar(LayoutWidget, AMenuBar);
-end;
-
-procedure TQtMainWindow.setStatusBar(AStatusBar: QStatusBarH);
-begin
-  if IsMainForm then
-    QMainWindow_setStatusBar(QMainWindowH(Widget), AStatusBar);
 end;
 
 {------------------------------------------------------------------------------

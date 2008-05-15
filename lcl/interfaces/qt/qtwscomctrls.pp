@@ -47,7 +47,6 @@ type
     class procedure ClearPanels(const Widget: TQtStatusBar);
     class procedure RecreatePanels(const AStatusBar: TStatusBar; const Widget: TQtStatusBar);
   public
-    class procedure AddControl(const AControl: TControl); override;
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer); override;
@@ -495,27 +494,6 @@ begin
       QWidget_setGeometry(Widget.Panels[i], 0, 0, AStatusBar.Panels[i].Width, R.Bottom);
       Widget.addWidget(Widget.Panels[i], AStatusBar.Panels[i].Width);
     end;
-  end;
-end;
-
-class procedure TQtWSStatusBar.AddControl(const AControl: TControl);
-var
-  QtStatusBar: TQtStatusBar;
-  Parent: TQtWidget;
-begin
-  if not WSCheckHandleAllocated(TStatusBar(AControl), 'AddControl') then
-    Exit;
-
-  TQtWSWinControl.AddControl(AControl);
-
-  QtStatusBar := TQtStatusBar(TWinControl(AControl).Handle);
-
-  Parent := TQtWidget(AControl.Parent.Handle);
-  if (Parent is TQtMainWindow) and (TQtMainWindow(Parent).IsMainForm) and
-     (TQtMainWindow(Parent).StatusBar = nil) then
-  begin
-    TQtMainWindow(Parent).StatusBar := QtStatusBar;
-    TQtMainWindow(Parent).setStatusBar(QStatusBarH(QtStatusBar.Widget));
   end;
 end;
 
