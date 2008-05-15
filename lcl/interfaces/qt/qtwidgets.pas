@@ -163,6 +163,7 @@ type
     function getVisible: Boolean; virtual;
     function getParent: QWidgetH;
     function getPos: TQtPoint;
+    function getFrameSize: TSize;
     function getSize: TSize;
     function getText: WideString; virtual;
     function getTextStatic: Boolean; virtual;
@@ -174,6 +175,7 @@ type
     procedure move(ANewLeft, ANewTop: Integer);
     procedure preferredSize(var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); virtual;
     procedure raiseWidget; virtual;
+    procedure frame_resize(ANewWidth, ANewHeight: Integer);
     procedure resize(ANewWidth, ANewHeight: Integer);
     procedure releaseMouse;
     procedure scroll(dx, dy: integer);
@@ -2247,6 +2249,7 @@ begin
     WriteLn('TQtWidget.SlotResize');
   {$endif}
   
+  // return size w/o frame
   NewSize := QResizeEvent_size(QResizeEventH(Event))^;
 {
   WriteLn('SlotResize: ', dbgsName(LCLObject),
@@ -2511,6 +2514,11 @@ begin
   QWidget_pos(Widget, @Result);
 end;
 
+function TQtWidget.getFrameSize: TSize;
+begin
+  QWidget_frameSize(Widget, @Result);
+end;
+
 function TQtWidget.getSize: TSize;
 begin
   QWidget_size(Widget, @Result);
@@ -2579,6 +2587,18 @@ end;
 procedure TQtWidget.raiseWidget;
 begin
   QWidget_raise(Widget);
+end;
+
+procedure TQtWidget.frame_resize(ANewWidth, ANewHeight: Integer);
+var
+  R1, R2: TRect;
+  dw, dh: integer;
+begin
+  R1 := getGeometry;
+  R2 := getFrameGeometry;
+  dw := (R1.Left - R2.Left) + (R2.Right - R1.Right);
+  dh := (R1.Top - R2.Top) + (R2.Bottom - R1.Bottom);
+  QWidget_resize(Widget, ANewWidth - dw, ANewHeight - dh);
 end;
 
 procedure TQtWidget.resize(ANewWidth, ANewHeight: Integer);
