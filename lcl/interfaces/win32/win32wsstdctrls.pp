@@ -34,8 +34,8 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Classes, StdCtrls, Controls, Graphics, Forms, SysUtils,
-  Themes,
+  Classes, SysUtils, CommCtrl,
+  StdCtrls, Controls, Graphics, Forms, Themes,
 ////////////////////////////////////////////////////
   WSControls, WSStdCtrls, WSLCLClasses, WSProc, Windows, LCLType, InterfaceBase,
   Win32Int, Win32Proc, Win32WSControls, Win32Extra;
@@ -892,9 +892,16 @@ var
   WinHandle: HWND;
   StringList: TWin32ComboBoxStringList;
 begin
-  StringList := GetStringList(ACustomComboBox);
-  if StringList <> nil then
-    StringList.DropDownCount := NewCount;
+  if ThemeServices.ThemesEnabled then
+  // CB_SETMINVISIBLE is available,
+  // if the application specifies comctl32.dll version 6 in the manifest
+    SendMessage(ACustomComboBox.Handle, CB_SETMINVISIBLE, NewCount, 0)
+  else
+  begin
+    StringList := GetStringList(ACustomComboBox);
+    if StringList <> nil then
+      StringList.DropDownCount := NewCount;
+  end;
 end;
 
 class procedure TWin32WSCustomComboBox.SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer);
