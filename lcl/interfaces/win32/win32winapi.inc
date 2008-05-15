@@ -2263,7 +2263,7 @@ end;
   Params:  DC, Points, NumPts, Filled, Continous
   Returns: Boolean
 
-  Use Polybezier to draw cubic Bézier curves. The first curve is drawn from the
+  Use Polybezier to draw cubic BÃ©zier curves. The first curve is drawn from the
   first point to the fourth point with the second and third points being the
   control points. If the Continuous flag is TRUE then each subsequent curve
   requires three more points, using the end-point of the previous Curve as its
@@ -2273,7 +2273,7 @@ end;
   excatly as in the first curve. Any additonal points which do not add up to
   a full bezier(4 for Continuous, 3 otherwise) are ingored. There must be at
   least 4 points for an drawing to occur. If the Filled Flag is set to TRUE
-  then the resulting Poly-Bézier will be drawn as a Polygon.
+  then the resulting Poly-BÃ©zier will be drawn as a Polygon.
 
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer;
