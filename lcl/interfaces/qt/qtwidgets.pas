@@ -156,7 +156,7 @@ type
     procedure ShowMaximized;
     function getActionByIndex(AIndex: Integer): QActionH;
     function getClientBounds: TRect; virtual;
-    function getClientOffset: TPoint;
+    function getClientOffset: TPoint; virtual;
     function getEnabled: Boolean;
     function getFocusPolicy: QtFocusPolicy;
     function getFrameGeometry: TRect;
@@ -314,6 +314,7 @@ type
     function viewport: TQtViewPort;
     function GetContainerWidget: QWidgetH; override;
 
+    function getClientOffset: TPoint; override;
     function getClientBounds: TRect; override;
     procedure grabMouse; override;
     procedure preferredSize(var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
@@ -7435,6 +7436,12 @@ begin
     Result := viewport.Widget
   else
     Result := Widget;
+end;
+
+function TQtAbstractScrollArea.getClientOffset: TPoint;
+begin
+  with getClientBounds do
+    Result := Point(Left, Top);
 end;
 
 function TQtAbstractScrollArea.getClientBounds: TRect;
