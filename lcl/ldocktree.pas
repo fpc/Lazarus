@@ -1901,7 +1901,7 @@ begin
         DropCtlTitlePos:=GetPreferredTitlePosition(DropCtl.ClientWidth,
                                                    DropCtl.ClientHeight);
 
-        ParentDisabledAlign:=false;
+        ParentDisabledAlign := False;
         try
           NewDropCtlBounds:=DropCtl.BoundsRect;
           if DropCtlTitlePos=akLeft then
@@ -1914,9 +1914,9 @@ begin
             // remember bounds
             NewDropCtlBounds:=Rect(0,0,DropCtl.ClientWidth,DropCtl.ClientHeight);
             // create a TLazDockForm as new parent with the size of DropCtl
-            NewParent:=CreateForm;// starts with Visible=false
+            NewParent := CreateForm;// starts with Visible=false
             NewParent.DisableAlign;
-            ParentDisabledAlign:=true;
+            ParentDisabledAlign := True;
             NewParent.BoundsRect:=DropCtl.BoundsRect;
             // move the WindowState to the new parent
             if DropCtl is TCustomForm then
@@ -1943,19 +1943,20 @@ begin
             end;
           end;
 
-          if not ParentDisabledAlign then begin
+          if not ParentDisabledAlign then 
+          begin
             DropCtl.Parent.DisableAlign;
-            ParentDisabledAlign:=true;
+            ParentDisabledAlign := True;
           end;
           // create a splitter
-          Splitter:=TLazDockSplitter.Create(Control);
+          Splitter := TLazDockSplitter.Create(Control);
           Splitter.Align:=alNone;
           Splitter.Beveled:=true;
           Splitter.ResizeAnchor:=ControlAnchor;
           //debugln('TCustomAnchoredDockManager.InsertControl A Control.Bounds=',DbgSName(Control),dbgs(Control.BoundsRect),' DropCtl.Bounds=',DbgSName(DropCtl),dbgs(DropCtl.BoundsRect),' Splitter.Bounds=',DbgSName(Splitter),dbgs(Splitter.BoundsRect));
 
           // calculate new bounds
-          NewControlBounds:=NewDropCtlBounds;
+          NewControlBounds := NewDropCtlBounds;
           if InsertAt in [alLeft,alRight] then begin
             SplitterWidth:=Splitter.Constraints.MinMaxWidth(SplitterSize);
             NewDropCtlWidth:=NewDropCtlBounds.Right-NewDropCtlBounds.Left;
@@ -2007,10 +2008,10 @@ begin
             Splitter.AnchorSide[akRight].Assign(DropCtl.AnchorSide[akRight]);
             Splitter.Anchors:=[akLeft,akTop,akRight];
           end;
-          Splitter.Parent:=DropCtl.Parent;
+          Splitter.Parent := DropCtl.Parent;
 
           // position Control
-          Control.Align:=alNone;
+          Control.Align := alNone;
           for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
             Control.AnchorSide[a].Control:=nil;
             Control.BorderSpacing.Space[a]:=0;
@@ -2024,9 +2025,9 @@ begin
             Control.AnchorSide[akLeft].Assign(DropCtl.AnchorSide[akLeft]);
             Control.AnchorSide[akRight].Assign(DropCtl.AnchorSide[akRight]);
           end;
-          Control.Anchors:=[akLeft,akTop,akRight,akBottom];
+          Control.Anchors := [akLeft,akTop,akRight,akBottom];
           Control.Dock(DropCtl.Parent, Rect(0, 0, 0, 0));
-          Control.Visible:=true;
+          Control.Visible := true;
 
           // position DropCtl
           DropCtl.AnchorToNeighbour(DropCtlAnchor,0,Splitter);
@@ -2037,7 +2038,8 @@ begin
 
           //debugln('TCustomAnchoredDockManager.InsertControl BEFORE ALIGNING Control.Bounds=',DbgSName(Control),dbgs(Control.BoundsRect),' DropCtl.Bounds=',DbgSName(DropCtl),dbgs(DropCtl.BoundsRect),' Splitter.Bounds=',DbgSName(Splitter),dbgs(Splitter.BoundsRect));
         finally
-          if ParentDisabledAlign then
+          // in case of Exception inside try-finally Parent can be nil
+          if ParentDisabledAlign and (DropCtl.Parent <> nil) then
             DropCtl.Parent.EnableAlign;
         end;
         //debugln('TCustomAnchoredDockManager.InsertControl END Control.Bounds=',DbgSName(Control),dbgs(Control.BoundsRect),' DropCtl.Bounds=',DbgSName(DropCtl),dbgs(DropCtl.BoundsRect),' Splitter.Bounds=',DbgSName(Splitter),dbgs(Splitter.BoundsRect));
