@@ -1107,6 +1107,7 @@ type
     FIcon: QIconH;
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function getIcon: QIconH;
     function getIndex: Integer;
     function getTabWidget: QTabWidgetH;
@@ -7758,6 +7759,13 @@ begin
   FHasPaint := True;
   Result := QWidget_create;
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
+end;
+
+function TQtPage.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+begin
+  if QEvent_type(Event) = QEventResize then
+    LCLObject.Parent.InvalidateClientRectCache(False);
+  Result:=inherited EventFilter(Sender, Event);
 end;
 
 function TQtPage.getIcon: QIconH;
