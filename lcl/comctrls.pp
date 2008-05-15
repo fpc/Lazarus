@@ -170,6 +170,7 @@ type
     property SimpleText: String read FSimpleText write SetSimpleText;
     property SimplePanel: Boolean read FSimplePanel write SetSimplePanel default True;
     property SizeGrip: Boolean read FSizeGrip write SetSizeGrip default True;
+    property ShowHint;
     property Visible default true;
     property Color default clBtnFace;
     property OnClick;
