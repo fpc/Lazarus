@@ -2215,6 +2215,8 @@ begin
     Msg.PaintStruct^.rcPaint := PaintData.ClipRect^;
     Msg.PaintStruct^.hdc := FContext;
 
+    if LCLObject is THintWindow then
+      Msg.DC := Msg.DC;
 
     with getClientOffset do
       SetWindowOrgEx(Msg.DC, -X, -Y, nil);
@@ -2560,7 +2562,12 @@ var
   P: TQtPoint;
   R: TRect;
 begin
-  QWidget_pos(GetContainerWidget, @P);
+  // we need an offset of container inside widget, but if container = widget then
+  // offset = 0
+  if Widget <> GetContainerWidget then
+    QWidget_pos(GetContainerWidget, @P)
+  else
+    P := QtPoint(0, 0);
   R := getClientBounds;
   Result := Point(P.x + R.Left, P.y + R.Top);
 end;
