@@ -382,7 +382,7 @@ begin
       [LogBrush.lbStyle, LogBrush.lbColor, ColorToString(LogBrush.lbColor)]));
   {$endif}
 
-  result := 0;
+  Result := 0;
 
   QtBrush := TQtBrush.Create(True);
 
@@ -429,7 +429,7 @@ begin
         QtBrush.setTextureImage(TQtImage(LogBrush.lbHatch).Handle);
       end;
     else
-      WriteLn(Format('Unsupported Style %d',[LogBrush.lbStyle]));
+      DebugLn(Format('Unsupported Style %d',[LogBrush.lbStyle]));
     end;
 
     {
@@ -457,6 +457,7 @@ begin
   end;
 
   Result := HBRUSH(QtBrush);
+  //WriteLn('Created brush ', Result);
 
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:< [WinAPI CreateBrushIndirect] Result: ', dbghex(Result));
@@ -837,15 +838,18 @@ begin
   end;
 
   if AObject is TQtResource then
-    if TQtResource(AObject).Owner<>nil then
+    if TQtResource(AObject).Owner <> nil then
     begin
       // this is an owned (default) resource, let owner free it
       DebugLn('WARNING: Trying to Free a default resource');
-      AObject:=nil;
+      AObject := nil;
     end;
   
   if AObject <> nil then
+  begin
+    //WriteLn('Delete object: ', PtrUInt(AObject));
     AObject.Free;
+  end;
   
   // Find out if we want to release internal GDI object
 {    case GDIType of

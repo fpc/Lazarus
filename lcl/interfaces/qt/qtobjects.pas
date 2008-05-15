@@ -71,6 +71,7 @@ type
   public
     Owner: TObject;
     FShared: Boolean;
+    FSelected: Boolean;
   end;
 
   { TQtAction }
@@ -254,6 +255,7 @@ type
   private
     FPenPos: TQtPoint;
     FOwnPainter: Boolean;
+    FInDestroyObjects: Boolean;
     SelFont: TQTFont;
     SelBrush: TQTBrush;
     SelPen: TQtPen;
@@ -1256,9 +1258,11 @@ begin
     WriteLn('TQtBrush.Create CreateHandle: ', dbgs(CreateHandle));
   {$endif}
 
-  if CreateHandle then Widget := QBrush_create;
+  if CreateHandle then
+    Widget := QBrush_create;
   
   FShared := AShared;
+  FSelected := False;
 end;
 
 {------------------------------------------------------------------------------
@@ -1272,7 +1276,7 @@ begin
     WriteLn('TQtBrush.Destroy');
   {$endif}
 
-  if not FShared and (Widget <> nil) then
+  if not FShared and (Widget <> nil) and not FSelected then
     QBrush_destroy(Widget);
 
   inherited Destroy;
@@ -1605,6 +1609,8 @@ end;
 
 procedure TQtDeviceContext.CreateObjects;
 begin
+  FInDestroyObjects := False;
+
   vFont := TQtFont.Create(False);
   vFont.Owner := Self;
 
@@ -1625,16 +1631,21 @@ end;
 
 procedure TQtDeviceContext.DestroyObjects;
 begin
+  if FInDestroyObjects then
+    Exit;
+  FInDestroyObjects := True;
   vFont.Widget := nil;
-  vFont.Free;
+  FreeAndNil(vFont);
+  //WriteLn('Destroying brush: ', PtrUInt(vBrush), ' ', ClassName, ' ', PtrUInt(Self));
   vBrush.Widget := nil;
-  vBrush.Free;
+  FreeAndNil(vBrush);
   vPen.Widget := nil;
-  vPen.Free;
+  FreeAndNil(vPen);
   vRegion.Widget := nil;
-  vRegion.Free;
+  FreeAndNil(vRegion);
   vBackgroundBrush.Widget := nil;
-  vBackgroundBrush.Free;
+  FreeAndNil(vBackgroundBrush);
+  FInDestroyObjects := False;
 end;
 
 {------------------------------------------------------------------------------
@@ -2082,7 +2093,7 @@ begin
   if vBrush <> nil then
     vBrush.Widget := QPainter_brush(Widget);
     
-  if SelBrush=nil then
+  if SelBrush = nil then
     Result := vBrush
   else
     Result := SelBrush;
@@ -2098,7 +2109,12 @@ begin
   {$ifdef VerboseQt}
   Write('TQtDeviceContext.setBrush() ');
   {$endif}
+  if SelBrush <> nil then
+    SelBrush.FSelected := False;
   SelBrush := ABrush;
+  if SelBrush <> nil then
+    SelBrush.FSelected := True;
+    
   if (ABrush.Widget <> nil) and (Widget <> nil) then
     QPainter_setBrush(Widget, ABrush.Widget);
 end;

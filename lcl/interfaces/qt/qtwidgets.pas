@@ -8203,9 +8203,12 @@ end;
 
 procedure TQtDesignWidget.DestroyWidget;
 begin
-  removeProperty(FDesignControl, 'lclwidget');
-  QObject_deleteLater(FDesignControl);
-  FDesignControl := nil;
+  if FDesignControl <> nil then
+  begin
+    removeProperty(FDesignControl, 'lclwidget');
+    QObject_deleteLater(FDesignControl);
+    FDesignControl := nil;
+  end;
   inherited DestroyWidget;
 end;
 
@@ -8217,6 +8220,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtWidget.SlotPaint ', dbgsName(LCLObject));
   {$endif}
+
   if (LCLObject is TWinControl) then
   begin
     FillChar(Msg, SizeOf(Msg), #0);
@@ -8329,14 +8333,18 @@ var
   Method: TMethod;
 begin
   inherited AttachEvents;
-  FDesignControlEventHook := QObject_hook_create(FDesignControl);
-  TEventFilterMethod(Method) := @DesignControlEventFilter;
-  QObject_hook_hook_events(FDesignControlEventHook, Method);
+  if FDesignControl <> nil then
+  begin
+    FDesignControlEventHook := QObject_hook_create(FDesignControl);
+    TEventFilterMethod(Method) := @DesignControlEventFilter;
+    QObject_hook_hook_events(FDesignControlEventHook, Method);
+  end;
 end;
 
 procedure TQtDesignWidget.DetachEvents;
 begin
-  QObject_hook_destroy(FDesignControlEventHook);
+  if FDesignControlEventHook <> nil then
+    QObject_hook_destroy(FDesignControlEventHook);
   inherited DetachEvents;
 end;
 

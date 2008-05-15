@@ -437,11 +437,19 @@ begin
   if GDIObject = 0 then Exit;
   
   aObject := TObject(GDIObject);
-
-  if aObject is TObject then
-  begin
-    Result := (aObject is TQtFont) or (aObject is TQtBrush) or (aObject is TQtImage)
-      or (aObject is TQtPen) or (aObject is TQTRegion);
+  try
+    if aObject is TObject then
+    begin
+      Result :=
+        (aObject is TQtFont) or
+        (aObject is TQtBrush) or
+        (aObject is TQtImage) or
+        (aObject is TQtPen) or
+        (aObject is TQTRegion);
+    end;
+  except
+    DebugLn(['Gdi object: ', GDIObject, ' is not an object!']);
+    raise;
   end;
 end;
 
