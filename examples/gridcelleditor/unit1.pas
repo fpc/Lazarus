@@ -35,8 +35,8 @@ var
   x: Integer;
 begin
   // fill the grid
-  for y:=0 to StringGrid1.ColCount-1 do begin
-    for x:=0 to StringGrid1.RowCount-1 do begin
+  for x:=0 to StringGrid1.ColCount-1 do begin
+    for y:=0 to StringGrid1.RowCount-1 do begin
       StringGrid1.Cells[x,y]:=IntToStr(x)+','+IntToStr(y);
     end;
   end;
