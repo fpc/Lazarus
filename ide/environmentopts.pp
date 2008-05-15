@@ -1582,8 +1582,8 @@ end;
 function TEnvironmentOptions.GetXMLCfg(CleanConfig: boolean): TXMLConfig;
 begin
   if FileHasChangedOnDisk or (FXMLCfg=nil) then begin
-    FConfigStore.Free;
-    FXMLCfg.Free;
+    FreeAndNil(FConfigStore);
+    FreeAndNil(FXMLCfg);
     InvalidateFileStateCache;
     if CleanConfig then
       FXMLCfg:=TXMLConfig.CreateClean(Filename)
