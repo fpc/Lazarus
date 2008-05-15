@@ -538,6 +538,11 @@ begin
   FCaptureWidget := 0;
   
   RegisterEvents;
+
+  // if using Cocoa, we need an autorelease pool
+  {$ifdef CarbonUseCocoa}
+    pool := NSAutoreleasePool.Create;
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -553,6 +558,11 @@ begin
 
   inherited Destroy;
   CarbonWidgetSet := nil;
+
+  // if using Cocoa, release autorelease the pool
+  {$ifdef CarbonUseCocoa}
+    if pool <> nil then pool := NSAutoreleasePool.Create;
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------

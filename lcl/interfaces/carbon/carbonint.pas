@@ -36,19 +36,23 @@ interface
 {$I carbondebug.inc}
 
 uses
- // rtl+ftl
+  // rtl+ftl
   Types, Classes, SysUtils, Math, FPCAdds,
- // carbon bindings
+  // carbon bindings
   FPCMacOSAll,
- // interfacebase
+  // Cocoa bindings
+  {$ifdef CarbonUseCocoa}
+    foundation,
+  {$endif}
+  // interfacebase
   InterfaceBase,
- // widgetset
+  // widgetset
   CarbonGDIObjects,
- {$ifdef DebugBitmaps}
-  CarbonDebug,
- {$endif}
-   glgrab,
- // LCL
+  {$ifdef DebugBitmaps}
+   CarbonDebug,
+  {$endif}
+  glgrab,
+  // LCL
   LCLStrConsts, LMessages, LCLMessageGlue, LCLProc, LCLIntf, LCLType,
   GraphType, GraphMath, Graphics, Controls, Forms, Dialogs, Menus, Maps, Themes;
 
@@ -68,6 +72,10 @@ type
     FOpenEventHandlerUPP: AEEventHandlerUPP;
     FQuitEventHandlerUPP: AEEventHandlerUPP;
 
+    {$ifdef CarbonUseCocoa}
+      pool: NSAutoreleasePool;
+    {$endif}
+    
     function RawImage_DescriptionFromCarbonBitmap(out ADesc: TRawImageDescription; ABitmap: TCarbonBitmap): Boolean;
     function RawImage_FromCarbonBitmap(out ARawImage: TRawImage; ABitmap, AMask: TCarbonBitmap; const ARect: TRect): Boolean;
     function GetImagePixelData(AImage: CGImageRef; var bitmapByteCount: PtrUInt): Pointer;

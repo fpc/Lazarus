@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectSession>
-    <PathDelim Value="\"/>
+    <PathDelim Value="/"/>
     <Version Value="6"/>
     <Units Count="3">
       <Unit0>
@@ -15,10 +15,11 @@
         <ComponentName Value="Form1"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <ResourceFilename Value="frmtest.lrs"/>
         <UnitName Value="frmtest"/>
-        <CursorPos X="7" Y="51"/>
-        <TopLine Value="60"/>
+        <CursorPos X="69" Y="67"/>
+        <TopLine Value="126"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="23"/>
         <Loaded Value="True"/>
