@@ -161,14 +161,12 @@ begin
     else
       FCmdLineParams.Add(Param);
   end;
-  // make sure that all the values of the command line parameters are still
+  // make sure that command line parameters are still
   // double quoted, if they contain spaces
   for i := 0 to FCmdLineParams.Count -1 do
   begin
-    if pos(' ',FCmdLineParams.ValueFromIndex[i])>0 then
-    begin
-      FCmdLineParams.ValueFromIndex[i] := '"' + FCmdLineParams.ValueFromIndex[i] + '"';
-    end;
+    if pos(' ',FCmdLineParams[i])>0 then
+      FCmdLineParams[i] := '"' + FCmdLineParams[i] + '"';
   end;
 end;
 
