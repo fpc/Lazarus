@@ -7440,18 +7440,13 @@ end;
 
 function TQtAbstractScrollArea.getClientBounds: TRect;
 begin
-{  if LCLObject is TCustomControl then
-    Result := viewport.getClientBounds
-  else}
-  begin
-    Result := inherited getClientBounds;
+  QWidget_contentsRect(Widget, @Result);
 
-    if (verticalScrollBar.getVisible) then
-      dec(Result.Right, verticalScrollBar.getWidth);
+  if (verticalScrollBar.getVisible) then
+    dec(Result.Right, verticalScrollBar.getWidth);
 
-    if (horizontalScrollBar.getVisible) then
-      dec(Result.Bottom, horizontalScrollBar.getHeight);
-  end;
+  if (horizontalScrollBar.getVisible) then
+    dec(Result.Bottom, horizontalScrollBar.getHeight);
 end;
 
 procedure TQtAbstractScrollArea.grabMouse;
