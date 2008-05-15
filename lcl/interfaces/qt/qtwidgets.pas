@@ -156,6 +156,7 @@ type
     procedure ShowMaximized;
     function getActionByIndex(AIndex: Integer): QActionH;
     function getClientBounds: TRect; virtual;
+    function getClientOffset: TPoint;
     function getEnabled: Boolean;
     function getFocusPolicy: QtFocusPolicy;
     function getFrameGeometry: TRect;
@@ -402,6 +403,7 @@ type
   TQtMainWindow = class(TQtWidget)
   private
     LayoutWidget: QBoxLayoutH;
+    FCWEventHook: QObject_hookH;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
@@ -411,7 +413,6 @@ type
     ToolBar: TQtToolBar;
     StatusBar: TQtStatusBar;
     destructor Destroy; override;
-    function getClientBounds: TRect; override;
     function getText: WideString; override;
     function getTextStatic: Boolean; override;
     procedure setText(const W: WideString); override;
@@ -421,6 +422,10 @@ type
     procedure OffsetMousePos(APoint: PQtPoint); override;
     procedure SlotWindowStateChange; cdecl;
     procedure setShowInTaskBar(AValue: Boolean);
+  public
+    procedure AttachEvents; override;
+    procedure DetachEvents; override;
+    function CWEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
   end;
   
   { TQtHintWindow }
@@ -1197,6 +1202,7 @@ begin
   inherited Create;
 
   FOwner := nil;
+  FCentralWidget := nil;
   FOwnWidget := True;
   // Initializes the properties
   FProps := nil;
@@ -1215,6 +1221,7 @@ begin
 
   FOwner := nil;
   FOwnWidget := False;
+  FCentralWidget := nil;
   // Initializes the properties
   FProps := niL;
   LCLObject := AWinControl;
@@ -2210,8 +2217,8 @@ begin
     Msg.PaintStruct^.hdc := FContext;
 
 
-    with getClientBounds do
-      SetWindowOrgEx(Msg.DC, -Left, -Top, nil);
+    with getClientOffset do
+      SetWindowOrgEx(Msg.DC, -X, -Y, nil);
 
     // send paint message
     try
@@ -2344,10 +2351,10 @@ end;
 
 procedure TQtWidget.OffsetMousePos(APoint: PQtPoint);
 begin
-  with getClientBounds do
+  with getClientOffset do
   begin
-    dec(APoint^.x, Left);
-    dec(APoint^.y, Top);
+    dec(APoint^.x, x);
+    dec(APoint^.y, y);
   end;
 end;
 
@@ -2546,7 +2553,17 @@ end;
 
 function TQtWidget.getClientBounds: TRect;
 begin
-  QWidget_contentsRect(Widget, @Result);
+  QWidget_contentsRect(getContainerWidget, @Result);
+end;
+
+function TQtWidget.getClientOffset: TPoint;
+var
+  P: TQtPoint;
+  R: TRect;
+begin
+  QWidget_pos(GetContainerWidget, @P);
+  R := getClientBounds;
+  Result := Point(P.x + R.Left, P.y + R.Top);
 end;
 
 procedure TQtWidget.grabMouse;
@@ -3649,20 +3666,6 @@ begin
   inherited Destroy;
 end;
 
-function TQtMainWindow.getClientBounds: TRect;
-var
-  R: TRect;
-begin
-  Result := inherited getClientBounds;
-  if (MenuBar <> nil) and (MenuBar.getVisible) and
-  not (TCustomForm(LCLObject).FormStyle in [fsMDIForm, fsMDIChild]) then
-  begin
-    R := MenuBar.getGeometry;
-    if TCustomForm(LCLObject).FormStyle <> fsMDIChild then
-      inc(Result.Top, R.Bottom - R.Top);
-  end;
-end;
-
 function TQtMainWindow.getText: WideString;
 begin
   WindowTitle(@Result);
@@ -3776,6 +3779,46 @@ begin
     setParent(nil);
     setWindowFlags(Flags);
     setVisible(Visible);
+  end;
+end;
+
+procedure TQtMainWindow.AttachEvents;
+var
+  Method: TMethod;
+begin
+  inherited AttachEvents;
+
+  if FCentralWidget <> nil then
+  begin
+    FCWEventHook := QObject_hook_create(FCentralWidget);
+    TEventFilterMethod(Method) := @CWEventFilter;
+    QObject_hook_hook_events(FCWEventHook, Method);
+  end;
+end;
+
+procedure TQtMainWindow.DetachEvents;
+begin
+  if FCWEventHook <> nil then
+  begin
+    QObject_hook_destroy(FCWEventHook);
+    FCWEventHook := nil;
+  end;
+
+  inherited DetachEvents;
+end;
+
+function TQtMainWindow.CWEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+begin
+  Result := False;
+  if LCLObject <> nil then
+  begin
+    case QEvent_type(Event) of
+      QEventResize:
+        begin
+          LCLObject.InvalidateClientRectCache(true);
+          LCLObject.DoAdjustClientRectChange;
+        end;
+    end;
   end;
 end;
 
@@ -7389,7 +7432,10 @@ end;
 
 function TQtAbstractScrollArea.GetContainerWidget: QWidgetH;
 begin
-  Result := viewport.Widget;
+  if ClassType = TQtAbstractScrollArea then
+    Result := viewport.Widget
+  else
+    Result := Widget;
 end;
 
 function TQtAbstractScrollArea.getClientBounds: TRect;
@@ -8188,8 +8234,8 @@ begin
     Msg.PaintStruct^.hdc := FDesignContext;
 
 
-    with getClientBounds do
-      SetWindowOrgEx(Msg.DC, -Left, -Top, nil);
+    with getClientOffset do
+      SetWindowOrgEx(Msg.DC, -X, -Y, nil);
 
     // send paint message
     try

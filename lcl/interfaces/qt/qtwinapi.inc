@@ -148,20 +148,14 @@ end;
 function TQtWidgetSet.ClientToScreen(Handle: HWND; var P: TPoint) : Boolean;
 var
   APoint: TQtPoint;
-  R: TRect;
 begin
-  Result := True;
-  if Handle <> 0 then
+  Result := Handle <> 0;
+  if Result then
   begin
-    APoint.x := P.X;
-    APoint.y := P.Y;
+    APoint := QtPoint(P.X, P.Y);
     
-    QWidget_mapToGlobal(TQtWidget(Handle).Widget, @APoint, @APoint);
-    P.X := APoint.x;
-    P.Y := APoint.y;
-    R := TQtWidget(Handle).getClientBounds;
-    inc(P.X, R.Left);
-    inc(P.Y, R.Top);
+    QWidget_mapToGlobal(TQtWidget(Handle).GetContainerWidget, @APoint, @APoint);
+    P := Point(APoint.x, APoint.y);
   end;
 end;
 
@@ -1806,7 +1800,6 @@ begin
   {$endif}
 
   ARect := TQtWidget(handle).getClientBounds;
-
   Result := True;
 end;
 
@@ -1826,9 +1819,8 @@ begin
     WriteLn('[WinAPI GetClientRect]');
   {$endif}
 
-  ARect := TQtWidget(handle).getClientBounds;
+  GetClientBounds(Handle, ARect);
   OffsetRect(ARect, -ARect.Left, -ARect.Top);
-  //WriteLn('ClientRect: ', dbgsName(TQtWidget(handle).LCLObject), ' Width = ', ARect.Right, ' Height = ', ARect.Bottom);
 
   Result := True;
 end;
@@ -3102,6 +3094,7 @@ function TQtWidgetSet.GetWindowRect(Handle: HWND; var ARect: TRect): Integer;
 var
   APos: TQtPoint;
   AParent: QWidgetH;
+  R1: TRect;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI GetWindowRect]');
@@ -3122,10 +3115,15 @@ begin
   if AParent <> nil then
     QWidget_mapToGlobal(AParent, @APos, @APos);
 
+  R1 := TQtWidget(Handle).getFrameGeometry;
+
   ARect.Left := APos.x;
   ARect.Top := APos.y;
-  ARect.Bottom := ARect.Top + TQtWidget(Handle).getHeight;
-  ARect.Right := ARect.Left + TQtWidget(Handle).getWidth;
+  with R1 do
+  begin
+    ARect.Right := ARect.Left + (Right - Left);
+    ARect.Bottom := ARect.Top + (Bottom - Top);
+  end;
 
   Result := -1;
 end;
@@ -3165,10 +3163,11 @@ begin
     WriteLn('[WinAPI GetWindowSize]');
   {$endif}
 
-  Result := False;
-
-  Height := TQtWidget(Handle).getHeight;
-  Width := TQtWidget(Handle).getWidth;
+  with TQtWidget(Handle).getSize do
+  begin
+    Height := cy;
+    Width := cx;
+  end;
 
   Result := True;
 
@@ -3446,8 +3445,6 @@ end;
 
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.InvalidateRect(aHandle: HWND; Rect: pRect; bErase: Boolean): Boolean;
-var
-  R: TRect;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI Invalidate Rect]');
@@ -3455,8 +3452,8 @@ begin
   
   if Rect <> nil then
   begin
-    R := TQtWidget(aHandle).getClientBounds;
-    OffsetRect(Rect^, R.Left, R.Top);
+    with TQtWidget(aHandle).getClientOffset do
+      OffsetRect(Rect^, x, y);
     // no need to handle bErase. Qt automatically erase rect on paint event according to docs
     TQtWidget(aHandle).Update(Rect);
   end else
@@ -3822,19 +3819,13 @@ end;
 function TQtWidgetSet.ScreenToClient(Handle : HWND; var P : TPoint) : Integer;
 var
   APoint: TQtPoint;
-  R: TRect;
 begin
   Result := 0;
   if Handle <> 0 then
   begin
-    APoint.x := P.X;
-    APoint.y := P.Y;
-    QWidget_mapFromGlobal(TQtWidget(Handle).Widget, @APoint, @APoint);
-    P.X := APoint.x;
-    P.Y := APoint.y;
-    R := TQtWidget(Handle).getClientBounds;
-    dec(P.X, R.Left);
-    dec(P.Y, R.Top);
+    APoint := QtPoint(P.X, P.Y);
+    QWidget_mapFromGlobal(TQtWidget(Handle).GetContainerWidget, @APoint, @APoint);
+    P := Point(APoint.x, APoint.y);
     Result := 1;
   end;
 end;
@@ -4687,8 +4678,7 @@ var
   Widget: QWidgetH;
   APoint: TQtPoint;
 begin
-  APoint.x := Point.x;
-  APoint.y := Point.y;
+  APoint := QtPoint(Point.x, Point.y);
   Widget := QApplication_widgetAt(@APoint);
   if Widget <> nil then
   begin

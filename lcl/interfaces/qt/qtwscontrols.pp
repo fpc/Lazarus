@@ -416,23 +416,27 @@ class procedure TQtWSWinControl.PaintTo(const AWinControl: TWinControl;
   ADC: HDC; X, Y: Integer);
 var
   Context: TQtDeviceContext absolute ADC;
+  Widget: TQtWidget;
   Pixmap: TQtPixmap;
   DCSize: TSize;
   APoint: TQtPoint;
-  ARect: TRect;
+  ARect, GRect: TRect;
 begin
   if not WSCheckHandleAllocated(AWincontrol, 'PaintTo') or (ADC = 0) then
     Exit;
 
-  with DCSize, TQtWidget(AWinControl.Handle) do
+  Widget := TQtWidget(AWinControl.Handle);
+  ARect := Widget.getFrameGeometry;
+  GRect := Widget.getGeometry;
+  with DCSize, ARect do
   begin
-    cx := getWidth;
-    cy := getHeight;
+    cx := Right - Left;
+    cy := Bottom - Top;
   end;
   Pixmap := TQtPixmap.Create(@DCSize);
-  Pixmap.grabWidget(TQtWidget(AWinControl.Handle).Widget, 0, 0);
-  APoint.x := X;
-  APoint.Y := Y;
+  OffsetRect(GRect, -ARect.Left, -ARect.Top);
+  Pixmap.grabWidget(Widget.Widget, 0, 0);
+  APoint := QtPoint(X + GRect.Left, Y + GRect.Top);
   ARect := Rect(0, 0, Pixmap.getWidth, Pixmap.getHeight);
   Context.drawPixmap(@APoint, Pixmap.Handle, @ARect);
   Pixmap.Free;
