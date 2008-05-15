@@ -316,7 +316,6 @@ begin
   with Params do
   begin
     pClassName := @ClsName[0];
-    WindowTitle := StrCaption;
     SubClassWndProc := nil;
   end;
   // create window
