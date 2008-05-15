@@ -7,7 +7,7 @@ interface
 uses
   // Libs
   Windows,
-  {$ifndef Win32}oleaut32,{$endif}
+  {$ifndef Win32}oleauto,{$endif}
   // compatibility
   {$ifdef Win32}win32compat,{$endif}
   // RTL, LCL
