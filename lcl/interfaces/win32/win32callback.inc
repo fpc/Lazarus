@@ -1450,7 +1450,9 @@ begin
         menuItem := TObject(PDrawItemStruct(LParam)^.itemData);
         if menuItem is TMenuItem then
         begin
-          DrawMenuItem(TMenuItem(menuItem), PDrawItemStruct(LParam)^._hDC, PDrawItemStruct(LParam)^.rcItem, PDrawItemStruct(LParam)^.itemState and ODS_SELECTED <> 0);
+          DrawMenuItem(TMenuItem(menuItem), PDrawItemStruct(LParam)^._hDC,
+             PDrawItemStruct(LParam)^.rcItem,
+             PDrawItemStruct(LParam)^.itemState and ODS_SELECTED <> 0);
         end
       end;
 

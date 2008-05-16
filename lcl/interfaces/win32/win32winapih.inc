@@ -169,6 +169,7 @@ function SendMessage(HandleWnd: HWND; Msg: Cardinal; WParam: WParam; LParam: LPa
 function SetActiveWindow(Window: HWND): HWND; override;
 function SetBkColor(DC: HDC; Color: TColorRef): TColorRef; override;
 function SetBkMode(DC: HDC; BkMode: Integer): Integer; override;
+function SetComboMinDropDownSize(Handle: HWND; MinItemsWidth, MinItemsHeight, MinItemCount: integer): boolean; override;
 function SetCapture(Value: HWND): HWND; override;
 function SetCaretPos(X, Y: Integer): Boolean; override;
 function SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean; override;

@@ -889,7 +889,6 @@ end;
 class procedure TWin32WSCustomComboBox.SetDropDownCount(
   const ACustomComboBox: TCustomComboBox; NewCount: Integer);
 var
-  WinHandle: HWND;
   StringList: TWin32ComboBoxStringList;
 begin
   if ThemeServices.ThemesEnabled then

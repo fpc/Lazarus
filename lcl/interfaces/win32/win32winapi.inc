@@ -2673,6 +2673,13 @@ begin
   Result := Windows.SetBkMode(DC, BkMode);
 end;
 
+function TWin32WidgetSet.SetComboMinDropDownSize(Handle: HWND; MinItemsWidth,
+  MinItemsHeight, MinItemCount: integer): boolean;
+begin
+  Result:= ThemeServices.ThemesEnabled and
+    boolean(Windows.SendMessage(Handle, CB_SETMINVISIBLE, MinItemCount, 0));
+end;
+
 {------------------------------------------------------------------------------
   Method:  SetCapture
   Params:  Value - Handle of window to capture
