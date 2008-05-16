@@ -28,11 +28,11 @@ interface
 
 uses
   // LCL
-  Menus, Forms,
+  SysUtils, Menus, Forms,
   // widgetset
   WSMenus, WSLCLClasses, LCLType, fpguiobjects, fpguiwsprivate,
   // interface
-  gui_menu;
+  fpgfx, gui_menu;
 
 type
 
@@ -92,9 +92,82 @@ begin
 
 end;
 
+{------------------------------------------------------------------------------
+  Function: TFpGuiWSMenuItem.CreateHandle
+  Params:  None
+  Returns: Nothing
+
+  Creates a Menu Item
+ ------------------------------------------------------------------------------}
 class function TFpGuiWSMenuItem.CreateHandle(const AMenuItem: TMenuItem): HMENU;
+var
+  Menu: TFPGUIPrivateMenuItem;
+  AMenuName, hotkeydef: string;
+  { Possible parents }
+{  ParentPrivateItem: TFPGUIPrivateMenuItem; }
+  ParentMenuBar: TfpgMenuBar;
+  ParentPrivatePopUp: TFPGUIPrivatePopUpMenu;
 begin
-  Result := HMENU(TFPGUIPrivateMenuItem.Create(AMenuItem));
+  {$ifdef VerboseFPGUIIntf}
+    WriteLn('trace:> [TFPGuiWSMenuItem.CreateHandle] Caption: ', AMenuItem.Caption,
+     ' Subitems: ' + IntToStr(AMenuItem.Count));
+
+    Write('trace:< [TFPGuiWSMenuItem.CreateHandle]');
+  {$endif}
+
+  {------------------------------------------------------------------------------
+    Set's default values for variables used at several places bellow
+   ------------------------------------------------------------------------------}
+  AMenuName := AMenuItem.Caption;
+
+  Menu := nil;
+
+  {------------------------------------------------------------------------------
+    This case should not happen. A menu item must have a parent, but it seams LCL
+   will sometimes create a menu item prior to creating it's parent.
+    So, if we arrive here, we must create this item as if it was a TMenu
+   ------------------------------------------------------------------------------}
+  if (not AMenuItem.HasParent) then
+  begin
+    {$ifdef VerboseFPGUIIntf}
+      Write(' Parent: Menu without parent');
+    {$endif}
+
+//    Result := TQtWSMenu.CreateHandle(AMenuItem.GetParentMenu);
+  end
+  {------------------------------------------------------------------------------
+    If the parent has no parent, then this item is directly owned by a TMenu
+    In this case we have to detect if the parent is a TMainMenu or a TPopUpMenu
+   because TMainMenu uses the special Handle QMenuBar while TPopUpMenu can be
+   treat like if this menu item was a subitem of another item
+   ------------------------------------------------------------------------------}
+  else
+  if ((not AMenuItem.Parent.HasParent) and (AMenuItem.GetParentMenu is TMainMenu)) then
+  begin
+    Menu := TFPGUIPrivateMenuItem.Create;
+    Menu.LCLMenuItem := AMenuItem;
+    ParentMenuBar := TfpgMenuBar(AMenuItem.GetParentMenu.Handle);
+    Menu.MenuItem := ParentMenuBar.AddMenuItem(AMenuName, nil);
+    Result := HMENU(Menu);
+  end
+{      ParentPrivatePopUp := TFPGUIPrivatePopUpMenu(LCLMenuItem.Parent.Handle);
+      MenuItem := ParentPrivatePopUp.PopUpMenu.AddMenuItem(AMenuName, hotkeydef, nil);}
+  {------------------------------------------------------------------------------
+    If the parent has a parent, then that item's Handle is necessarely a TFPGUIPrivateMenuItem
+   ------------------------------------------------------------------------------}
+  else
+  begin
+    Menu := TFPGUIPrivateMenuItem.Create;
+    Menu.LCLMenuItem := AMenuItem;
+//    Menu.MenuItem := AMenuItem;
+//    ParentPrivateItem := TFPGUIPrivateMenuItem(LCLMenuItem.Parent.Handle);
+//    MenuItem := TfpgMenuItem.Create(nil);
+    Result := HMENU(Menu);
+  end;
+
+  {$ifdef VerboseFPGUIIntf}
+    WriteLn(' Result: ', IntToStr(Result));
+  {$endif}
 end;
 
 class procedure TFpGuiWSMenuItem.DestroyHandle(const AMenuItem: TMenuItem);
@@ -133,27 +206,36 @@ var
   MenuBar: TfpgMenuBar;
   Menu: TFPGUIPrivatePopUpMenu;
 begin
-  { If the menu is a main menu, there is no need to create a handle for it.
-    It's already created on the window }
+  {------------------------------------------------------------------------------
+    If the menu is a main menu, there is no need to create a handle for it.
+    It's already created on the window
+   ------------------------------------------------------------------------------}
   if (AMenu is TMainMenu) and (AMenu.Owner is TCustomForm) then
   begin
     MenuBar := TFPGUIPrivateWindow(TCustomForm(AMenu.Owner).Handle).MenuBar;
-
+    MenuBar.Visible := True;
+    MenuBar.Align := alTop;
+    
     Result := HMENU(MenuBar);
   end
+  {------------------------------------------------------------------------------
+    The menu is a popup menu
+   ------------------------------------------------------------------------------}
   else if (AMenu is TPopUpMenu) then
   begin
     Menu := TFPGUIPrivatePopUpMenu.Create(TPopUpMenu(AMenu), AMenu.Items);
 
     Result := HMENU(Menu);
-  end;
+  end
+  else
+    Result := HMENU(0);
 
-  {$ifdef VerboseFPGUIPrivate}
+  {$ifdef VerboseFPGUIIntf}
     Write('[TFpGuiWSMenu.CreateHandle] ');
 
     if (AMenu is TMainMenu) then Write('IsMainMenu ');
 
-    WriteLn(' Handle: ', dbghex(Result), ' Name: ', AMenu.Name);
+    WriteLn(' Handle: ', IntToStr(Result), ' Name: ', AMenu.Name);
   {$endif}
 end;
 

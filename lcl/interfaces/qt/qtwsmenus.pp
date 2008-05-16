@@ -174,7 +174,7 @@ begin
     Result := HMENU(Menu);
   end
   {------------------------------------------------------------------------------
-    If the parent has a parent, then that item´s Handle is necessarely a TQtMenu
+    If the parent has a parent, then that item's Handle is necessarely a TQtMenu
    ------------------------------------------------------------------------------}
   else
   begin
