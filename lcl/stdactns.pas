@@ -370,11 +370,13 @@ type
   TSearchFindNext = class(TCustomAction)
   private
     FSearchFind: TSearchFind;
+    procedure SetSearchFind(const AValue: TSearchFind);
   public
     constructor Create(TheOwner: TComponent); override;
     function HandlesTarget(Target: TObject): Boolean; override;
     procedure UpdateTarget(Target: TObject); override;
     procedure ExecuteTarget(Target: TObject); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   published
     property Caption;
     property Enabled;
@@ -383,7 +385,7 @@ type
     property HelpType;
     property Hint;
     property ImageIndex;
-    property SearchFind: TSearchFind read FSearchFind write FSearchFind;
+    property SearchFind: TSearchFind read FSearchFind write SetSearchFind;
     property ShortCut;
     property SecondaryShortCuts;
     property Visible;
@@ -984,6 +986,17 @@ end;
 
 { TSearchFindNext }
 
+procedure TSearchFindNext.SetSearchFind(const AValue: TSearchFind);
+begin
+  if FSearchFind = AValue then
+    Exit;
+  if FSearchFind <> nil then
+    FSearchFind.RemoveFreeNotification(Self);
+  FSearchFind := AValue;
+  if FSearchFind <> nil then
+    FSearchFind.FreeNotification(Self);
+end;
+
 constructor TSearchFindNext.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -1006,6 +1019,14 @@ procedure TSearchFindNext.ExecuteTarget(Target: TObject);
 begin
   SearchFind.UpdateControl(Target as TCustomEdit);
   SearchFind.Search(Target);
+end;
+
+procedure TSearchFindNext.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (AComponent = FSearchFind) then
+    FSearchFind := nil;
 end;
 
 end.
