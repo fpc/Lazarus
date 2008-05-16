@@ -456,14 +456,14 @@ type
     function GetSplitterPosition: integer;
   public
     property Align default alLeft;
-    property ResizeStyle: TResizeStyle read FResizeStyle write SetResizeStyle default rsUpdate;
     property AutoSnap: boolean read FAutoSnap write SetAutoSnap default true;
     property Beveled: boolean read FBeveled write SetBeveled default false;
+    property Cursor default crHSplit;
     property MinSize: integer read FMinSize write SetMinSize default 30;
     property OnCanResize: TCanResizeEvent read FOnCanResize write FOnCanResize;
     property OnMoved: TNotifyEvent read FOnMoved write FOnMoved;
-    property Cursor default crHSplit;
     property ResizeAnchor: TAnchorKind read FResizeAnchor write SetResizeAnchor default akLeft;
+    property ResizeStyle: TResizeStyle read FResizeStyle write SetResizeStyle default rsUpdate;
   end;
 
 
@@ -480,16 +480,17 @@ type
     property Cursor;
     property Height;
     property MinSize;
+    property OnCanResize;
+    property OnChangeBounds;
+    property OnMoved;
     property ParentColor;
     property ParentShowHint;
+    property PopupMenu;
+    property ResizeAnchor;
     property ResizeStyle;
     property ShowHint;
     property Visible;
     property Width;
-    property OnCanResize;
-    property OnChangeBounds;
-    property OnMoved;
-    property ResizeAnchor;
   end;
 
 
