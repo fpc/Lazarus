@@ -3592,9 +3592,8 @@ begin
     if (Application.MainForm <> nil) and (Application.MainForm.FormStyle = fsMDIForm)
     and not (csDesigning in LCLObject.ComponentState) then
     begin
-      MDIAreaHandle := QMdiArea_create(Result);
-      FCentralWidget := MDIAreaHandle;
-      QMainWindow_setCentralWidget(QMainWindowH(Result), MDIAreaHandle);
+      FCentralWidget := QMdiArea_create(Result);
+      MDIAreaHandle := QMdiAreaH(FCentralWidget);
     end
     else
     begin
