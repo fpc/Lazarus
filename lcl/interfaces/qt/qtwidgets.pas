@@ -3567,12 +3567,10 @@ begin
     WriteLn('TQtMainWindow.CreateWidget Name: ', LCLObject.Name);
   {$endif}
   
-
   FHasPaint := True;
   IsMainForm := False;
 
   w := QApplication_activeWindow;
-
   if not Assigned(w) and not ((Application.MainForm <> nil) and (Application.MainForm.Visible))
   and (TCustomForm(LCLObject).FormStyle <> fsSplash) then
   begin
@@ -3592,8 +3590,9 @@ begin
     if (Application.MainForm <> nil) and (Application.MainForm.FormStyle = fsMDIForm)
     and not (csDesigning in LCLObject.ComponentState) then
     begin
-      FCentralWidget := QMdiArea_create(Result);
-      MDIAreaHandle := QMdiAreaH(FCentralWidget);
+      FCentralWidget := QWidget_create(Result);
+      MDIAreaHandle := QMdiArea_create(Result);
+      QWidget_setParent(MdiAreaHandle, FCentralWidget);
     end
     else
     begin
@@ -3635,7 +3634,6 @@ begin
     end;
 
     // Main menu bar
-    
     {$ifdef darwin}
       MenuBar := TQtMenuBar.Create(nil);
     {$else}
@@ -3643,6 +3641,7 @@ begin
     {$endif}
 
     FCentralWidget := QWidget_create(Result);
+      
     LayoutWidget := QBoxLayout_create(QBoxLayoutTopToBottom, Result);
 
     QBoxLayout_setSpacing(LayoutWidget, 0);
@@ -3807,8 +3806,13 @@ begin
 end;
 
 function TQtMainWindow.CWEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+var
+  R: TRect;
+  R2: TRect;
+  i: Integer;
 begin
   Result := False;
+  
   if LCLObject <> nil then
   begin
     case QEvent_type(Event) of
@@ -3816,6 +3820,47 @@ begin
         begin
           LCLObject.InvalidateClientRectCache(true);
           LCLObject.DoAdjustClientRectChange;
+          
+          {mdi area part begins}
+          if MdiAreaHandle <> nil then
+          begin
+            {first must get contents rect - all except main menu}
+            QWidget_contentsRect(FCentralWidget, @R);
+            
+            {TODO: find better way to find out which controls are top,left,right & bottom aligned ...}
+            for i := 0 to LCLObject.ComponentCount - 1 do
+            begin
+            
+              {find statusbars}
+              if LCLObject.Components[i] is TStatusBar then
+              begin
+                R2 := TWinControl(LCLObject.Components[i]).ClientRect;
+                case TWinControl(LCLObject.Components[i]).Align of
+                  alLeft: R.Left := R.Left + (R2.Right - R2.Left);
+                  alTop: R.Top := R.Top + (R2.Bottom - R2.Top);
+                  alRight: R.Right := R.Right - (R2.Right - R2.Left);
+                  alBottom: R.Bottom := R.Bottom - (R2.Bottom - R2.Top);
+                end;
+              end;
+              
+              {find toolbars}
+              if LCLObject.Components[i] is TToolBar then
+              begin
+                R2 := TWinControl(LCLObject.Components[i]).ClientRect;
+                case TWinControl(LCLObject.Components[i]).Align of
+                  alLeft: R.Left := R.Left + (R2.Right - R2.Left);
+                  alTop: R.Top := R.Top + (R2.Bottom - R2.Top);
+                  alRight: R.Right := R.Right - (R2.Right - R2.Left);
+                  alBottom: R.Bottom := R.Bottom - (R2.Bottom - R2.Top);
+                end;
+              end;
+              
+            end; {components loop}
+            
+            QWidget_setGeometry(MDIAreaHandle, @R);
+          end;
+          {mdi area part end}
+          
         end;
     end;
   end;
