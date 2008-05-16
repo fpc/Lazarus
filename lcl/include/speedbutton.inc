@@ -383,12 +383,6 @@ end;
 
 procedure TCustomSpeedButton.ActionChange(Sender: TObject;
   CheckDefaults: Boolean);
-
-  procedure CopyImage(ImageList: TCustomImageList; Index: Integer);
-  begin
-    ImageList.GetBitmap(Index, Glyph);
-  end;
-
 begin
   inherited ActionChange(Sender,CheckDefaults);
   if Sender is TCustomAction then begin
@@ -397,7 +391,7 @@ begin
         Self.GroupIndex := GroupIndex;
       if (Glyph.Empty) and (ActionList <> nil) and (ActionList.Images <> nil)
       and (ImageIndex >= 0) and (ImageIndex < ActionList.Images.Count) then
-        CopyImage(ActionList.Images,ImageIndex);
+        ActionList.Images.GetBitmap(ImageIndex, Glyph);
     end;
   end;
 end;

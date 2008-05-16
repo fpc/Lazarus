@@ -90,29 +90,13 @@ begin
 end;
 
 procedure TCustomBitBtn.ActionChange(Sender: TObject; CheckDefaults: Boolean);
-
-  procedure CopyImage(ImageList: TCustomImageList; Index: Integer);
-  var
-    CurGlyph: TBitmap;
-  begin
-    CurGlyph:=Glyph;
-    with CurGlyph do begin
-      // ToDo: transparency
-      Width := ImageList.Width;
-      Height := ImageList.Height;
-      Canvas.Brush.Color := clMaroon; // whatever
-      Canvas.FillRect(Rect(0,0,Width, Height));
-      ImageList.Draw(Canvas,0,0,Index,true);
-    end;
-  end;
-
 begin
   inherited ActionChange(Sender,CheckDefaults);
   if Sender is TCustomAction then begin
     with TCustomAction(Sender) do begin
       if (Glyph.Empty) and (ActionList <> nil) and (ActionList.Images <> nil)
       and (ImageIndex >= 0) and (ImageIndex < ActionList.Images.Count) then
-        CopyImage(ActionList.Images,ImageIndex);
+        ActionList.Images.GetBitmap(ImageIndex, Glyph);
     end;
   end;
 end;
