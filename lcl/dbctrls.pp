@@ -130,13 +130,13 @@ Type
     function GetDataSource: TDataSource;
     function GetField: TField;
 
-    function GetReadOnly: Boolean;
 
     procedure SetDataField(Value: string);
     procedure SetDataSource(Value: TDataSource);
     function IsReadOnly: boolean;
     procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
+    function GetReadOnly: Boolean; override;
     procedure SetReadOnly(Value: Boolean); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: char); override;
@@ -573,12 +573,12 @@ Type
     function GetDataField: string;
     function GetDataSource: TDataSource;
     function GetField: TField;
-    function GetReadOnly: Boolean;
     procedure SetAutoDisplay(const AValue: Boolean);
     procedure SetDataField(const AValue: string);
     procedure SetDataSource(const AValue: TDataSource);
     procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
+    function GetReadOnly: Boolean; override;
     procedure SetReadOnly(AValue: Boolean); override;
     function WordWrapIsStored: boolean; override;
     procedure DataChange(Sender: TObject); virtual;
