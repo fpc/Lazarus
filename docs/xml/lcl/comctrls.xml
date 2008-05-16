@@ -758,11 +758,19 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TTabSheet">
-        <short/>
-        <descr/>
+        <short><var>TTabSheet</var> - individual page of a <var>TPageControl</var>; a more elaborate version of <var>TPage</var></short>
+	<descr>
+		<p><var>TTabSheet</var> - individual page of a <var>TPageControl</var>; a more elaborate version of <var>TPage</var></p>
+		<p>Contains the following features lacked by <var>TPage</var>:</p>
+		<ul><li>Drag/Drop properties</li>
+			<li>Ability to Enable/Disable the page</li>
+			<li>Ability to make the Tab visible or not</li>
+		</ul>
+	</descr>
         <errors/>
         <seealso>
           <link id="#lcl.ExtCtrls.Multi-PageControls">Multi-PageControls</link>
+	  <link id="#lcl.stdctrls.HowToUseStdCtrls">HowToUseStdCtrls</link>
         </seealso>
       </element>
       <!-- variable Visibility: private -->
