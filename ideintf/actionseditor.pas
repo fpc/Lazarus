@@ -104,6 +104,8 @@ type
     procedure ActionListEditorKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure ActionListEditorKeyPress(Sender: TObject; var Key: char);
+    procedure lstActionNameDrawItem(Control: TWinControl; Index: Integer;
+      ARect: TRect; State: TOwnerDrawState);
     procedure SBShowMenuNewActionsClick(Sender: TObject);
     procedure SplitterCanResize(Sender: TObject; var NewSize: Integer;
       var Accept: Boolean);
@@ -629,6 +631,53 @@ begin
   if Ord(Key) = VK_ESCAPE then Self.Close;
 end;
 
+procedure TActionListEditor.lstActionNameDrawItem(Control: TWinControl;
+  Index: Integer; ARect: TRect; State: TOwnerDrawState);
+var
+  ACanvas: TCanvas;
+  R: TRect;
+  dh, dth: Integer;
+  AAction: TCustomAction;
+  S: String;
+begin
+  ACanvas := TListBox(Control).Canvas;
+  if odSelected in State then
+  begin
+    ACanvas.Brush.Color := clHighlight;
+    ACanvas.Font.Color := clHighlightText;
+  end
+  else
+  begin
+    ACanvas.Brush.Color := clWindow;
+    ACanvas.Font.Color := clWindowText;
+  end;
+
+  AAction := TListBox(Control).Items.Objects[Index] as TCustomAction;
+  S := TListBox(Control).Items[Index];
+
+  R := ARect;
+  dh := R.Bottom - R.Top;
+  ACanvas.FillRect(R);
+  inc(R.Left, 2);
+  if FActionList.Images <> nil then
+  begin
+    R.Right := R.Left + dh;
+    if AAction.ImageIndex <> -1 then
+    begin
+      dth := FActionList.Images.Height;
+      if dth > dh then
+        FActionList.Images.StretchDraw(ACanvas, AAction.ImageIndex, Rect(R.Left, R.Top + 1, R.Left + dh - 2, R.Bottom - 1))
+      else
+        FActionList.Images.Draw(ACanvas, R.Left, R.Top + (dh -dth) div 2, AAction.ImageIndex);
+    end;
+    Inc(R.Left, dh + 2);
+  end;
+  dth := Canvas.TextHeight(S);
+  ACanvas.TextOut(R.Left, R.Top + (dh - dth) div 2, S);
+  if odFocused in State then
+    ACanvas.DrawFocusRect(ARect);
+end;
+
 procedure TActionListEditor.SBShowMenuNewActionsClick(Sender: TObject);
 var
   MousePoint: TPoint;
@@ -773,7 +822,8 @@ end;
 
 procedure TActionListEditor.SetActionList(AActionList: TActionList);
 begin
-  if FActionList <> AActionList then begin
+  if FActionList <> AActionList then
+  begin
     FActionList := AActionList;
     FillCategories;
     FillActionByCategory(-1);
@@ -856,7 +906,7 @@ begin
     // handle all
     if iIndex = lstCategory.Items.IndexOf(cActionListEditorAllCategory) then begin
       for i := 0 to FActionList.ActionCount-1 do
-        lstActionName.Items.Add(FActionList.Actions[i].Name);
+        lstActionName.Items.AddObject(FActionList.Actions[i].Name, FActionList.Actions[i]);
       Exit; //throught finally
     end;
 
@@ -864,7 +914,7 @@ begin
     if iIndex = lstCategory.Items.IndexOf(cActionListEditorUnknownCategory) then begin
       for i := 0 to FActionList.ActionCount-1 do begin
         if Trim(FActionList.Actions[i].Category) = '' then
-          lstActionName.Items.Add(FActionList.Actions[i].Name);
+          lstActionName.Items.AddObject(FActionList.Actions[i].Name, FActionList.Actions[i]);
       end;
       Exit; //throught finally
     end;
@@ -874,7 +924,7 @@ begin
     for i := 0 to FActionList.ActionCount-1 do
     begin
       if FActionList.Actions[i].Category = sCategory
-      then lstActionName.Items.Add(FActionList.Actions[i].Name);
+      then lstActionName.Items.AddObject(FActionList.Actions[i].Name, FActionList.Actions[i]);
     end;
   finally
     lstActionName.Items.EndUpdate;

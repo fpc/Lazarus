@@ -1,4 +1,10 @@
 object ActionListEditor: TActionListEditor
+  Left = 290
+  Height = 300
+  Top = 159
+  Width = 400
+  HorzScrollBar.Page = 399
+  VertScrollBar.Page = 299
   Caption = 'ActionListEditor'
   ClientHeight = 300
   ClientWidth = 400
@@ -6,15 +12,12 @@ object ActionListEditor: TActionListEditor
   OnClose = ActionListEditorClose
   OnKeyDown = ActionListEditorKeyDown
   OnKeyPress = ActionListEditorKeyPress
-  PixelsPerInch = 112
   Position = poScreenCenter
-  HorzScrollBar.Page = 399
-  VertScrollBar.Page = 299
-  Left = 290
-  Height = 300
-  Top = 159
-  Width = 400
+  LCLVersion = '0.9.25'
   object PanelDescr: TPanel
+    Height = 26
+    Top = 26
+    Width = 400
     Align = alTop
     BevelOuter = bvNone
     ClientHeight = 26
@@ -22,38 +25,34 @@ object ActionListEditor: TActionListEditor
     FullRepaint = False
     PopupMenu = PopMenuActions
     TabOrder = 1
-    Height = 26
-    Top = 26
-    Width = 400
     object lblCategory: TLabel
-      Caption = 'Categories:'
-      Color = clNone
       Left = 6
       Height = 17
       Top = 6
       Width = 69
+      Caption = 'Categories:'
+      ParentColor = False
     end
     object lblName: TLabel
-      Caption = 'Actions:'
-      Color = clNone
       Left = 162
       Height = 17
       Top = 6
       Width = 49
+      Caption = 'Actions:'
+      ParentColor = False
     end
   end
   object Splitter: TSplitter
-    AutoSnap = False
-    Height = 248
-    ParentColor = True
-    OnCanResize = SplitterCanResize
-    Cursor = crHSplit
     Left = 152
     Height = 248
     Top = 52
     Width = 5
+    AutoSnap = False
+    OnCanResize = SplitterCanResize
   end
   object PanelToolbar: TPanel
+    Height = 26
+    Width = 400
     Align = alTop
     BevelInner = bvRaised
     BevelOuter = bvLowered
@@ -61,65 +60,71 @@ object ActionListEditor: TActionListEditor
     ClientWidth = 400
     FullRepaint = False
     TabOrder = 0
-    Height = 26
-    Width = 400
     object btnAdd: TSpeedButton
-      Action = ActNew
-      Flat = True
-      NumGlyphs = 0
-      Spacing = 0
-      ShowHint = True
-      ParentShowHint = False
       Left = 1
       Height = 22
       Top = 2
       Width = 24
-    end
-    object btnDelete: TSpeedButton
-      Action = ActDelete
+      Action = ActNew
+      Color = clBtnFace
       Flat = True
       NumGlyphs = 0
       Spacing = 0
       ShowHint = True
       ParentShowHint = False
+    end
+    object btnDelete: TSpeedButton
       Left = 35
       Height = 22
       Top = 2
       Width = 24
-    end
-    object btnUp: TSpeedButton
-      Action = ActMoveUp
+      Action = ActDelete
+      Color = clBtnFace
       Flat = True
       NumGlyphs = 0
       Spacing = 0
       ShowHint = True
       ParentShowHint = False
+    end
+    object btnUp: TSpeedButton
       Left = 64
       Height = 22
       Top = 2
       Width = 24
-    end
-    object btnDown: TSpeedButton
-      Action = ActMoveDown
+      Action = ActMoveUp
+      Color = clBtnFace
       Flat = True
       NumGlyphs = 0
       Spacing = 0
       ShowHint = True
       ParentShowHint = False
+    end
+    object btnDown: TSpeedButton
       Left = 89
       Height = 22
       Top = 2
       Width = 24
+      Action = ActMoveDown
+      Color = clBtnFace
+      Flat = True
+      NumGlyphs = 0
+      Spacing = 0
+      ShowHint = True
+      ParentShowHint = False
     end
     object SBShowMenuNewActions: TSpeedButton
+      Left = 25
+      Height = 22
+      Top = 2
+      Width = 10
       AllowAllUp = True
-      BorderSpacing.OnChange = nil
+      Color = clBtnFace
       Flat = True
       Glyph.Data = {
-        720000002F2A2058504D202A2F0A7374617469632063686172202A2062746E5F
-        646F776E6172726F775F78706D5B5D203D207B0A2235203320322031222C0A22
-        200963204E6F6E65222C0A222E09632023303030303030222C0A222E2E2E2E2E
-        222C0A22202E2E2E20222C0A2220202E2020227D3B0A
+        72000000424D7200000000000000360000002800000005000000030000000100
+        2000000000003C00000064000000640000000000000000000000000000000000
+        0000000000FF000000000000000000000000000000FF000000FF000000FF0000
+        0000000000FF000000FF000000FF000000FF000000FF
       }
       GroupIndex = 1
       NumGlyphs = 0
@@ -127,80 +132,83 @@ object ActionListEditor: TActionListEditor
       OnClick = SBShowMenuNewActionsClick
       ShowHint = True
       ParentShowHint = False
-      Left = 25
-      Height = 22
-      Top = 2
-      Width = 10
     end
   end
   object lstActionName: TListBox
-    Align = alClient
-    OnClick = lstActionNameClick
-    OnDblClick = lstActionNameDblClick
-    OnKeyDown = lstActionNameKeyDown
-    OnMouseDown = lstActionNameMouseDown
-    PopupMenu = PopMenuActions
-    TabOrder = 2
-    TopIndex = -1
     Left = 157
     Height = 248
     Top = 52
     Width = 243
+    Align = alClient
+    OnClick = lstActionNameClick
+    OnDblClick = lstActionNameDblClick
+    OnDrawItem = lstActionNameDrawItem
+    OnKeyDown = lstActionNameKeyDown
+    OnMouseDown = lstActionNameMouseDown
+    PopupMenu = PopMenuActions
+    Style = lbOwnerDrawFixed
+    TabOrder = 2
   end
   object lstCategory: TListBox
+    Height = 248
+    Top = 52
+    Width = 152
     Align = alLeft
     OnClick = lstCategoryClick
     OnMouseDown = lstActionNameMouseDown
     PopupMenu = PopMenuActions
     TabOrder = 3
-    TopIndex = -1
-    Height = 248
-    Top = 52
-    Width = 152
   end
   object ActionListSelf: TActionList
     top = 240
     object ActDelete: TAction
+      Category = 'AddDelete'
+      DisableIfNoHandler = True
       OnExecute = ActDeleteExecute
       OnUpdate = ActDeleteUpdate
       ShortCut = 46
-      Category = 'AddDelete'
     end
     object ActNew: TAction
+      Category = 'AddDelete'
+      DisableIfNoHandler = True
       OnExecute = ActNewExecute
       ShortCut = 45
-      Category = 'AddDelete'
     end
     object ActNewStd: TAction
+      Category = 'AddDelete'
+      DisableIfNoHandler = True
       OnExecute = ActNewStdExecute
       ShortCut = 16429
-      Category = 'AddDelete'
     end
     object ActMoveUp: TAction
+      Category = 'MoveUpDown'
+      DisableIfNoHandler = True
       OnExecute = ActMoveDownExecute
       OnUpdate = ActMoveUpUpdate
       ShortCut = 16422
-      Category = 'MoveUpDown'
     end
     object ActMoveDown: TAction
+      Category = 'MoveUpDown'
+      DisableIfNoHandler = True
       OnExecute = ActMoveDownExecute
       OnUpdate = ActMoveDownUpdate
       ShortCut = 16424
-      Category = 'MoveUpDown'
     end
     object ActPanelDescr: TAction
+      Category = 'Panels'
       AutoCheck = True
       Caption = 'ActPanelDescr'
       Checked = True
+      DisableIfNoHandler = True
       OnExecute = ActPanelDescrExecute
-      Category = 'Panels'
     end
     object ActPanelToolBar: TAction
+      Category = 'Panels'
       AutoCheck = True
       Caption = 'ActPanelToolBar'
       Checked = True
+      DisableIfNoHandler = True
       OnExecute = ActPanelToolBarExecute
-      Category = 'Panels'
     end
   end
   object PopMenuActions: TPopupMenu
