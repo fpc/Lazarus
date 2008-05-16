@@ -804,14 +804,12 @@ begin
 
     APaintEngine := QImage_paintEngine(TQtImage(AObject).Handle);
     
-    if (APaintEngine <> NiL)
-    and QPaintEngine_isActive(APaintEngine) then
+    if (APaintEngine <> nil) and QPaintEngine_isActive(APaintEngine) then
     begin
       APainter := QPaintEngine_painter(APaintEngine);
       if APainter <> nil then
         QPainter_end(APainter);
-    end ;
-
+    end;
   end
   {------------------------------------------------------------------------------
     Region
@@ -851,19 +849,6 @@ begin
     AObject.Free;
   end;
   
-  // Find out if we want to release internal GDI object
-{    case GDIType of
-      gdiBrush:
-      gdiBitmap:
-      gdiPen:
-      gdiRegion:
-      gdiPalette:
-      else begin
-        Result:= false;
-        DebugLn('[TGtkWidgetSet.DeleteObject] TODO : Unimplemented GDI type');
-        Assert(False, 'Trace:TODO : Unimplemented GDI object in delete object');
-  end;}
-
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:< [WinAPI DeleteObject] Result=', dbgs(Result), ' ObjectType=', ObjType);
   {$endif}

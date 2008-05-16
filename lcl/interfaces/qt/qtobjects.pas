@@ -255,7 +255,6 @@ type
   private
     FPenPos: TQtPoint;
     FOwnPainter: Boolean;
-    FInDestroyObjects: Boolean;
     SelFont: TQTFont;
     SelBrush: TQTBrush;
     SelPen: TQtPen;
@@ -1609,8 +1608,6 @@ end;
 
 procedure TQtDeviceContext.CreateObjects;
 begin
-  FInDestroyObjects := False;
-
   vFont := TQtFont.Create(False);
   vFont.Owner := Self;
 
@@ -1631,9 +1628,6 @@ end;
 
 procedure TQtDeviceContext.DestroyObjects;
 begin
-  if FInDestroyObjects then
-    Exit;
-  FInDestroyObjects := True;
   vFont.Widget := nil;
   FreeAndNil(vFont);
   //WriteLn('Destroying brush: ', PtrUInt(vBrush), ' ', ClassName, ' ', PtrUInt(Self));
@@ -1645,7 +1639,6 @@ begin
   FreeAndNil(vRegion);
   vBackgroundBrush.Widget := nil;
   FreeAndNil(vBackgroundBrush);
-  FInDestroyObjects := False;
 end;
 
 {------------------------------------------------------------------------------
@@ -1763,7 +1756,7 @@ begin
   {$ifdef VerboseQt}
   writeln('TQtDeviceContext.CreateDCData() ');
   {$endif}
-  Qpainter_save(Widget);
+  QPainter_save(Widget);
   Result := nil; // doesn't matter;
 end;
 
@@ -2055,7 +2048,7 @@ begin
   if vFont <> nil then
     vFont.Widget := QPainter_font(Widget);
     
-  if SelFont=nil then
+  if SelFont = nil then
     Result := vFont
   else
     Result := SelFont;
@@ -2142,7 +2135,7 @@ begin
   if vPen <> nil then
     vPen.Widget := QPainter_pen(Widget);
     
-  if SelPen=nil then
+  if SelPen = nil then
     Result := vPen
   else
     Result := SelPen;
@@ -3259,6 +3252,7 @@ begin
 end;
 
 end.
+
 
 
 
