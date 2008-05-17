@@ -1162,7 +1162,10 @@ begin
     
   QtDC :=TQtDeviceContext(DC);
 
-  WideStr := GetUtf8String(Str);
+  if Count >= 0 then
+    WideStr := GetUtf8String(Copy(Str, 1, Count))
+  else
+    WideStr := GetUtf8String(Str);
 
   // convert DT flags to QT Flags
   F := 0;
@@ -1355,7 +1358,7 @@ var
       for j := 0 to Result - 1 do
       begin
         QStringList_at(StrLst, @Str, j);
-        List.Add(GetUtf8String(Str));
+        List.Add(Utf8Encode(Str));
       end;
     finally
       QFontDatabase_destroy(FontDB);
