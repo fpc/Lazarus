@@ -104,7 +104,7 @@ var
   Menu: TFPGUIPrivateMenuItem;
   AMenuName, hotkeydef: string;
   { Possible parents }
-{  ParentPrivateItem: TFPGUIPrivateMenuItem; }
+  ParentPrivateItem: TFPGUIPrivateMenuItem;
   ParentMenuBar: TfpgMenuBar;
   ParentPrivatePopUp: TFPGUIPrivatePopUpMenu;
 begin
@@ -138,8 +138,7 @@ begin
   {------------------------------------------------------------------------------
     If the parent has no parent, then this item is directly owned by a TMenu
     In this case we have to detect if the parent is a TMainMenu or a TPopUpMenu
-   because TMainMenu uses the special Handle QMenuBar while TPopUpMenu can be
-   treat like if this menu item was a subitem of another item
+   because TMainMenu uses the special Handle TfpgMenuBar
    ------------------------------------------------------------------------------}
   else
   if ((not AMenuItem.Parent.HasParent) and (AMenuItem.GetParentMenu is TMainMenu)) then
@@ -159,10 +158,17 @@ begin
   begin
     Menu := TFPGUIPrivateMenuItem.Create;
     Menu.LCLMenuItem := AMenuItem;
-//    Menu.MenuItem := AMenuItem;
-//    ParentPrivateItem := TFPGUIPrivateMenuItem(LCLMenuItem.Parent.Handle);
-//    MenuItem := TfpgMenuItem.Create(nil);
+    ParentPrivateItem := TFPGUIPrivateMenuItem(AMenuItem.Parent.Handle);
+    Menu.MenuItem := ParentPrivateItem.MenuItem.SubMenu.AddMenuItem(AMenuName, '', nil);
     Result := HMENU(Menu);
+  end;
+
+  {------------------------------------------------------------------------------
+    If the menuitem has submenus, create a popupmenu for the submenu
+   ------------------------------------------------------------------------------}
+  if AMenuItem.Count > 0 then
+  begin
+    Menu.MenuItem.SubMenu := TfpgPopupMenu.Create(Menu.MenuItem);
   end;
 
   {$ifdef VerboseFPGUIIntf}
