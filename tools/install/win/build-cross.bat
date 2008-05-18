@@ -96,6 +96,8 @@ gmkdir -p %BUILDDIR%\image\packager\units
 cp -pr %BUILDDIR%\packager\units\%FPCFULLTARGET% %BUILDDIR%\image\packager\units\%FPCFULLTARGET%
 
 %SVN% export %LAZSVNDIR%\ideintf %BUILDDIR%\ideintf
+:: export images dir, the ideintf includes them
+%SVN% export %LAZSVNDIR%\images %BUILDDIR%\images
 cd %BUILDDIR%\ideintf
 %MAKEEXE% FPC=%compiler%
 gmkdir -p %BUILDDIR%\image\ideintf\units
