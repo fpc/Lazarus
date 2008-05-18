@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-05-11 21:30+0300\n"
+"PO-Revision-Date: 2008-05-18 02:20+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -1431,11 +1431,11 @@ msgstr "Выберите один из этих элементов для соз
 
 #: lazarusidestrconsts:lischooseoneoftheseitemstocreateanewpackage
 msgid "Choose one of these items to create a new Package"
-msgstr "Выберите один из этих элементов для создания нового Пакета"
+msgstr "Выберите один из этих элементов для создания нового пакета"
 
 #: lazarusidestrconsts:lischooseoneoftheseitemstocreateanewproject
 msgid "Choose one of these items to create a new Project"
-msgstr "Выберите один из этих элементов для создания нового Проекта"
+msgstr "Выберите один из этих элементов для создания нового проекта"
 
 #: lazarusidestrconsts:lischooseoneoftheseitemstoinheritfromanexistingone
 msgid "Choose one of these items to inherit from an existing one"
@@ -1473,9 +1473,9 @@ msgstr "Класс %s%s%s не найден."
 msgid "Class Name already exists"
 msgstr "Имя класса уже существует"
 
-#: lazarusidestrconsts:lisclassconflictswithlfmfiletheunitusesthetheunitwhic
-msgid "Class conflicts with .lfm file:%sThe unit %s%suses the the unit %s%swhich contains the class %s,%sbut the .lfm file contains already another class.%sThere can only be one design class per unit.%sPlease move %s to another unit."
-msgstr "Класс конфликтует с файлом .lfm:%sМодуль %s%sиспользует модуль %s%s, который содержит класс %s,%sно файл .lfm уже содержит другой класс. %sВ модуле может быть только один такой класс. %sПожалуйста, переместите %s в другой модуль."
+#: lazarusidestrconsts:lisclassconflictswithlfmfiletheunitusestheunitwhic
+msgid "Class conflicts with .lfm file:%sThe unit %s%suses the unit %s%swhich contains the class %s,%sbut the .lfm file contains already another class.%sThere can only be one design class per unit.%sPlease move %s to another unit."
+msgstr "Класс конфликтует с файлом .lfm:%sМодуль %s%sиспользует модуль %s,%sкоторый содержит класс %s,%sно файл .lfm уже содержит другой класс. %sВ модуле может быть только один такой класс. %sПереместите %s в другой модуль."
 
 #: lazarusidestrconsts:lisclassnotfound
 msgid "Class not found"
@@ -2000,6 +2000,10 @@ msgstr "Преобразовать файл DFM в LFM"
 #: lazarusidestrconsts:lismenuconvertdfmtolfm
 msgid "Convert DFM file to LFM ..."
 msgstr "Преобразовать файл DFM в LFM ..."
+
+#: lazarusidestrconsts:lispwconvertproject
+msgid "Convert Delphi Project"
+msgstr "Преобразовать проект Delphi"
 
 #: lazarusidestrconsts:liskmconvertdelphipackagetolazaruspackage
 msgid "Convert Delphi package to Lazarus package"
@@ -5781,6 +5785,10 @@ msgstr "Новый Файл"
 msgid "New Form"
 msgstr "Создать форму"
 
+#: lazarusidestrconsts:lispwnewproject
+msgid "New Project"
+msgstr "Новый проект"
+
 #: lazarusidestrconsts:lismenunewproject
 msgid "New Project ..."
 msgstr "Создать проект ..."
@@ -6096,6 +6104,10 @@ msgstr "Открыть пакет?"
 #: lazarusidestrconsts:lisctdefsopenpreview
 msgid "Open Preview"
 msgstr "Открыть предпросмотр"
+
+#: lazarusidestrconsts:lispwopenproject
+msgid "Open Project"
+msgstr "Открыть проект"
 
 #: lazarusidestrconsts:lismenuopenproject
 msgid "Open Project ..."
@@ -6817,13 +6829,13 @@ msgstr "Путь модулей проекта"
 msgid "Project UnitPath"
 msgstr "Путь модулей проекта"
 
+#: lazarusidestrconsts:lisprojectwizard
+msgid "Project Wizard"
+msgstr "Мастер создания проекта"
+
 #: lazarusidestrconsts:lisprojectchanged
 msgid "Project changed"
 msgstr "Проект изменен"
-
-#: lazarusidestrconsts:lisprojectclosed
-msgid "Project closed"
-msgstr "Проект закрыт"
 
 #: lazarusidestrconsts:lisprojectdirectory
 msgid "Project directory"
@@ -9172,10 +9184,6 @@ msgstr "Проект уже зависит от пакета %s%s%s."
 #: lazarusidestrconsts:listheprojectinfofileisequaltotheprojectmainsource
 msgid "The project info file %s%s%s%sis equal to the project main source file!"
 msgstr "Файл сведений проекта %s%s%s%sсовпадает с главным файлом исходного кода!"
-
-#: lazarusidestrconsts:listheprojectisclosedtherearenowthreepossibilitieshin
-msgid "The project is closed. There are now three possibilities.%sHint: You do not need to close a project yourself, since this is done automatically."
-msgstr "Проект закрыт. Теперь есть три возможности. %sПодсказка: Закрывать проект самому необязательно, так как это делается автоматически."
 
 #: lazarusidestrconsts:listheprojectmustbesavedbeforebuildingifyousetthetest
 msgid "The project must be saved before building%sIf you set the Test Directory in the environment options,%syou can create new projects and build them at once.%sSave project?"
