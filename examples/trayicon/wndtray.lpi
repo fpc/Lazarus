@@ -37,7 +37,7 @@
       </Unit0>
       <Unit1>
         <Filename Value="frmtest.pas"/>
-        <ComponentName Value="Form1"/>
+        <ComponentName Value="frmTrayTest"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>

@@ -32,32 +32,33 @@ uses
 
 type
 
-  { TForm1 }
+  { TfrmTrayTest }
 
-  TForm1 = class(TForm)
-    Button1: TButton;
-    Button2: TButton;
-    Button3: TButton;
-    Button4: TButton;
+  TfrmTrayTest = class(TForm)
+    btnShow: TButton;
+    btnHide: TButton;
+    btnPaintTest: TButton;
+    btnDisplayMessage: TButton;
     MenuItem1: TMenuItem;
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
     PopupMenu: TPopupMenu;
     SystrayIcon: TTrayIcon;
-    procedure Button1Click(Sender: TObject);
-    procedure Button2Click(Sender: TObject);
-    procedure Button3Click(Sender: TObject);
+    procedure btnShowClick(Sender: TObject);
+    procedure btnHideClick(Sender: TObject);
+    procedure btnPaintTestClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure HandleClick(Sender: TObject);
   private
     { private declarations }
+    pathMedia: string;
     procedure DoPaint(Sender: TObject);
   public
     { public declarations }
   end;
 
 var
-  Form1: TForm1;
+  frmTrayTest: TfrmTrayTest;
 
 {$ifndef fpc}
   {$R frmtest.dfm}
@@ -72,38 +73,40 @@ uses Windows;
 uses FPCMacOSAll;
 {$ENDIF}
 
-{ TForm1 }
+{ TfrmTrayTest }
 
-procedure TForm1.Button1Click(Sender: TObject);
+procedure TfrmTrayTest.btnShowClick(Sender: TObject);
 begin
   SystrayIcon.Visible := True;
 end;
 
-procedure TForm1.Button2Click(Sender: TObject);
+procedure TfrmTrayTest.btnHideClick(Sender: TObject);
 begin
   SystrayIcon.Visible := False;
 end;
 
-procedure TForm1.Button3Click(Sender: TObject);
+procedure TfrmTrayTest.btnPaintTestClick(Sender: TObject);
 var
   MyImage, SecondImage: TIcon;
 begin
   MyImage := TIcon.Create;
   SecondImage := TIcon.Create;
 
-  MyImage.LoadFromFile('icon.ico');
-  SecondImage.Height := 22;
-  SecondImage.Width := 22;
-  {$IFDEF FPC}
-  SecondImage.Canvas.Draw(0, 0, MyImage);
-  {$ENDIF}
-  Canvas.Draw(0, 0, SecondImage);
-
-  SecondImage.Free;
-  MyImage.Free;
+  try
+    MyImage.LoadFromFile(pathMedia + 'icon.ico');
+    SecondImage.Height := 22;
+    SecondImage.Width := 22;
+    {$IFDEF FPC}
+    SecondImage.Canvas.Draw(0, 0, MyImage);
+    {$ENDIF}
+    Canvas.Draw(0, 0, SecondImage);
+  finally
+    SecondImage.Free;
+    MyImage.Free;
+  end;
 end;
 
-procedure TForm1.FormCreate(Sender: TObject);
+procedure TfrmTrayTest.FormCreate(Sender: TObject);
 const
   IDI_ICON1         = 101;
   IDI_ICON2         = 115;
@@ -114,7 +117,6 @@ var
   pathCFStr: CFStringRef;
   pathStr: shortstring;
 {$ENDIF}
-  pathMedia: string;
 begin
   pathMedia := '';
 
@@ -147,21 +149,24 @@ begin
   SystrayIcon.PopUpMenu := PopupMenu;
 end;
 
-procedure TForm1.HandleClick(Sender: TObject);
+procedure TfrmTrayTest.HandleClick(Sender: TObject);
 begin
   Application.MessageBox('Text', 'Caption', 0);
 end;
 
-procedure TForm1.DoPaint(Sender: TObject);
+procedure TfrmTrayTest.DoPaint(Sender: TObject);
 var
   MyImage: TIcon;
 begin
   MyImage := TIcon.Create;
-  MyImage.LoadFromFile('icon.ico');
-  {$IFDEF FPC}
-  SystrayIcon.Canvas.Draw(0, 0, MyImage);
-  {$ENDIF}
-  MyImage.Free;
+  try
+    MyImage.LoadFromFile(pathMedia + 'icon.ico');
+    {$IFDEF FPC}
+    SystrayIcon.Canvas.Draw(0, 0, MyImage);
+    {$ENDIF}
+  finally
+    MyImage.Free;
+  end;
   WriteLn('Paint');
 end;
 

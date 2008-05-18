@@ -1,21 +1,22 @@
 { This is an automatically generated lazarus resource file }
 
-LazarusResources.Add('TForm1','FORMDATA',[
-  'TPF0'#6'TForm1'#5'Form1'#4'Left'#3'"'#1#6'Height'#3','#1#3'Top'#3#175#0#5'Wi'
-  +'dth'#3#144#1#18'HorzScrollBar.Page'#3#143#1#18'VertScrollBar.Page'#3'+'#1#13
-  +'ActiveControl'#7#7'Button1'#7'Caption'#6#5'Form1'#12'ClientHeight'#3','#1#11
-  +'ClientWidth'#3#144#1#8'OnCreate'#7#10'FormCreate'#0#7'TButton'#7'Button1'#4
-  +'Left'#2'8'#6'Height'#2'!'#3'Top'#2'8'#5'Width'#2'^'#25'BorderSpacing.InnerB'
-  +'order'#2#4#7'Caption'#6#4'Show'#7'OnClick'#7#12'Button1Click'#8'TabOrder'#2
-  +#0#0#0#7'TButton'#7'Button2'#4'Left'#2'8'#6'Height'#2'!'#3'Top'#2'p'#5'Width'
-  +#2'^'#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#4'Hide'#7'OnClick'#7#12
-  +'Button2Click'#8'TabOrder'#2#1#0#0#7'TButton'#7'Button3'#4'Left'#3#224#0#6'H'
-  +'eight'#2'!'#3'Top'#2'8'#5'Width'#2'^'#25'BorderSpacing.InnerBorder'#2#4#7'C'
-  +'aption'#6#10'Paint Test'#7'OnClick'#7#12'Button3Click'#8'TabOrder'#2#2#0#0#7
-  +'TButton'#7'Button4'#4'Left'#2'8'#6'Height'#2' '#3'Top'#3#168#0#5'Width'#2'^'
-  +#7'Caption'#6#15'Display Message'#8'TabOrder'#2#3#0#0#10'TPopupMenu'#9'Popup'
-  +'Menu'#4'left'#3#180#0#3'top'#3#4#1#0#9'TMenuItem'#9'MenuItem1'#7'Caption'#6
-  +#9'New Item1'#0#0#9'TMenuItem'#9'MenuItem3'#7'Caption'#6#9'New Item3'#0#0#9
-  +'TMenuItem'#9'MenuItem2'#7'Caption'#6#9'New Item2'#0#0#0#9'TTrayIcon'#11'Sys'
-  +'trayIcon'#4'left'#3#221#0#3'top'#3#145#0#0#0#0
+LazarusResources.Add('TfrmTrayTest','FORMDATA',[
+  'TPF0'#12'TfrmTrayTest'#11'frmTrayTest'#4'Left'#3'"'#1#6'Height'#3#249#0#3'To'
+  +'p'#3#175#0#5'Width'#3#137#1#18'HorzScrollBar.Page'#3#136#1#18'VertScrollBar'
+  +'.Page'#3#248#0#13'ActiveControl'#7#7'btnShow'#7'Caption'#6#26'TTrayIcon tes'
+  +'t application'#12'ClientHeight'#3#249#0#11'ClientWidth'#3#137#1#8'OnCreate'
+  +#7#10'FormCreate'#10'LCLVersion'#6#6'0.9.25'#0#7'TButton'#7'btnShow'#4'Left'
+  +#2' '#6'Height'#2'!'#3'Top'#2' '#5'Width'#3#136#0#25'BorderSpacing.InnerBord'
+  +'er'#2#4#7'Caption'#6#4'Show'#7'OnClick'#7#12'btnShowClick'#8'TabOrder'#2#0#0
+  +#0#7'TButton'#7'btnHide'#4'Left'#2' '#6'Height'#2'!'#3'Top'#2'X'#5'Width'#3
+  +#136#0#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#4'Hide'#7'OnClick'#7#12
+  +'btnHideClick'#8'TabOrder'#2#1#0#0#7'TButton'#12'btnPaintTest'#4'Left'#3#216
+  +#0#6'Height'#2'!'#3'Top'#2' '#5'Width'#3#136#0#25'BorderSpacing.InnerBorder'
+  +#2#4#7'Caption'#6#10'Paint Test'#7'OnClick'#7#17'btnPaintTestClick'#8'TabOrd'
+  +'er'#2#2#0#0#7'TButton'#17'btnDisplayMessage'#4'Left'#3#216#0#6'Height'#2'!'
+  +#3'Top'#2'X'#5'Width'#3#136#0#7'Caption'#6#15'Display Message'#8'TabOrder'#2
+  +#3#0#0#10'TPopupMenu'#9'PopupMenu'#4'left'#3#136#0#3'top'#3#184#0#0#9'TMenuI'
+  +'tem'#9'MenuItem1'#7'Caption'#6#9'New Item1'#0#0#9'TMenuItem'#9'MenuItem3'#7
+  +'Caption'#6#9'New Item3'#0#0#9'TMenuItem'#9'MenuItem2'#7'Caption'#6#9'New It'
+  +'em2'#0#0#0#9'TTrayIcon'#11'SystrayIcon'#4'left'#3#181#0#3'top'#3#184#0#0#0#0
 ]);

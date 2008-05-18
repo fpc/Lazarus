@@ -35,7 +35,7 @@ uses
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TfrmTrayTest, frmTrayTest);
   Application.Run;
 end.
 

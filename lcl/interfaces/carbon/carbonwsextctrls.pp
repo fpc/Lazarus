@@ -41,7 +41,7 @@ uses
   // widgetset
   WSExtCtrls, WSLCLClasses, WSControls, WSProc,
   // LCL Carbon
-  CarbonWSControls;
+  carbongdiobjects, CarbonWSControls;
 
 type
 

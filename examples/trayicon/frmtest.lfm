@@ -1,56 +1,57 @@
-object Form1: TForm1
+object frmTrayTest: TfrmTrayTest
   Left = 290
-  Height = 300
+  Height = 249
   Top = 175
-  Width = 400
-  HorzScrollBar.Page = 399
-  VertScrollBar.Page = 299
-  ActiveControl = Button1
-  Caption = 'Form1'
-  ClientHeight = 300
-  ClientWidth = 400
+  Width = 393
+  HorzScrollBar.Page = 392
+  VertScrollBar.Page = 248
+  ActiveControl = btnShow
+  Caption = 'TTrayIcon test application'
+  ClientHeight = 249
+  ClientWidth = 393
   OnCreate = FormCreate
-  object Button1: TButton
-    Left = 56
+  LCLVersion = '0.9.25'
+  object btnShow: TButton
+    Left = 32
     Height = 33
-    Top = 56
-    Width = 94
+    Top = 32
+    Width = 136
     BorderSpacing.InnerBorder = 4
     Caption = 'Show'
-    OnClick = Button1Click
+    OnClick = btnShowClick
     TabOrder = 0
   end
-  object Button2: TButton
-    Left = 56
+  object btnHide: TButton
+    Left = 32
     Height = 33
-    Top = 112
-    Width = 94
+    Top = 88
+    Width = 136
     BorderSpacing.InnerBorder = 4
     Caption = 'Hide'
-    OnClick = Button2Click
+    OnClick = btnHideClick
     TabOrder = 1
   end
-  object Button3: TButton
-    Left = 224
+  object btnPaintTest: TButton
+    Left = 216
     Height = 33
-    Top = 56
-    Width = 94
+    Top = 32
+    Width = 136
     BorderSpacing.InnerBorder = 4
     Caption = 'Paint Test'
-    OnClick = Button3Click
+    OnClick = btnPaintTestClick
     TabOrder = 2
   end
-  object Button4: TButton
-    Left = 56
-    Height = 32
-    Top = 168
-    Width = 94
+  object btnDisplayMessage: TButton
+    Left = 216
+    Height = 33
+    Top = 88
+    Width = 136
     Caption = 'Display Message'
     TabOrder = 3
   end
   object PopupMenu: TPopupMenu
-    left = 180
-    top = 260
+    left = 136
+    top = 184
     object MenuItem1: TMenuItem
       Caption = 'New Item1'
     end
@@ -62,7 +63,7 @@ object Form1: TForm1
     end
   end
   object SystrayIcon: TTrayIcon
-    left = 221
-    top = 145
+    left = 181
+    top = 184
   end
 end

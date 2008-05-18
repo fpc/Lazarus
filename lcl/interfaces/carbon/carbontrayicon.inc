@@ -31,6 +31,9 @@ end;
 class function TCarbonWSCustomTrayIcon.Show(const ATrayIcon: TCustomTrayIcon): Boolean;
 var
   APrivateTrayIcon: TPrivateCocoaCarbonTrayIcon;
+  ASize: NSSize;
+  ACGSize: CGRect absolute ASize;
+  AcurrentContext: NSGraphicsContext;
 begin
   Result := False;
 
@@ -50,11 +53,18 @@ begin
  graphicsPort], *(CGRect*)&rect, imageRef);
    [image unlockFocus];}
    
-//  APrivateTrayIcon.image := NSImage.initWithSize_rect_size
+  ASize.width := TCarbonBitmap(ATrayIcon.Icon.Handle).Width;
+  ASize.height := TCarbonBitmap(ATrayIcon.Icon.Handle).Height;
+
+  APrivateTrayIcon.image := NSImage.initWithSize(ASize);
+  APrivateTrayIcon.image.lockFocus;
+  AcurrentContext := NSGraphicsContext.currentContext();
+  CGContextDrawImage(AcurrentContext.graphicsPort, ACGSize, TCarbonBitmap(ATrayIcon.Icon.Handle).CGImage);
+  APrivateTrayIcon.image.unlockFocus;
 
   { Shows the icon }
 
-  if APrivateTrayIcon.item <> nil then Exit;
+  if APrivateTrayIcon.item <> nil then Exit(True);
 
   APrivateTrayIcon.item := APrivateTrayIcon.bar.statusItemWithLength(NSSquareStatusItemLength);
   APrivateTrayIcon.item.retain();

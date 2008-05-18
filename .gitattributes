@@ -1879,7 +1879,6 @@ examples/trayicon/icon.ico -text
 examples/trayicon/magnifier.res -text
 examples/trayicon/wndtray.dpr -text
 examples/trayicon/wndtray.lpi -text
-examples/trayicon/wndtray.lps -text
 examples/treeview/README.txt svneol=native#text/plain
 examples/treeview/TV_Add_Remove.dpr svneol=native#text/pascal
 examples/treeview/TV_Add_Remove.res svneol=native#unset
