@@ -1168,6 +1168,9 @@ type
     property OnEndDrag;
     property OnEnter;
     property OnExit;
+    property OnKeyPress;
+    property OnKeyDown;
+    property OnKeyUp;
     property OnMouseDown;
     property OnMouseEnter;
     property OnMouseLeave;
