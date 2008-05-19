@@ -493,7 +493,8 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TTabPosition">
-        <short/>
+        <short>
+          <var>TTabPosition</var> - position of tab relative to page: top, bottom, left or right</short>
         <descr/>
         <seealso/>
       </element>
@@ -515,7 +516,8 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TTabStyle">
-        <short/>
+        <short>
+          <var>TTabStyle</var> - normal tab style, buttons or flat buttons</short>
         <descr/>
         <seealso/>
       </element>
@@ -551,7 +553,8 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TNoteBookOption">
-        <short/>
+        <short>
+          <var>TNoteBookOption</var> - Show the close button on a tab, allow multi-line tabs</short>
         <descr/>
         <seealso/>
       </element>
@@ -5947,6 +5950,36 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
           <p>In a typical application a <var>THeaderControl</var> and a <var>TPanel</var> or <var>TForm</var> would be docked together, and code would be written to find which Section of the Header had been selected, then use its index to control the display in the other docked control.</p>
         </descr>
       </topic>
+      <element name="TCustomSplitter.AnchorSplitter">
+        <short>
+          <var>AnchorSplitter</var> - anchor the splitter to <var>Acontrol </var>using the specified <var>Kind </var>of anchor</short>
+      </element>
+      <element name="TCustomSplitter.ResizeControl">
+        <short>
+          <var>ResizeControl</var> - the control that is to be re-sized with the splitter</short>
+      </element>
+      <element name="TCustomSplitter.GetOtherResizeControl">
+        <short>
+          <var>GetOtherResizeControl</var> - find out which other control is to be re-sized</short>
+      </element>
+      <element name="TCustomSplitter.MoveSplitter">
+        <short>
+          <var>MoveSplitter</var> - by an amount specified by <var>Offset</var>
+        </short>
+      </element>
+      <element name="TCustomSplitter.SetSplitterPosition">
+        <short>
+          <var>SetSplitterPosition</var> - to specified <var>NewPosition</var>
+        </short>
+      </element>
+      <element name="TCustomSplitter.GetSplitterPosition">
+        <short>
+          <var>GetSplitterPosition</var> - returns the current position of the splitter</short>
+      </element>
+      <element name="TCustomSplitter.ResizeAnchor">
+        <short>
+          <var>ResizeAnchor</var> - the kind of anchor to be used for resizing</short>
+      </element>
     </module>
     <!-- ExtCtrls -->
   </package>
