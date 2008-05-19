@@ -236,6 +236,7 @@ type
     property ChildSizing;
     property ClientWidth;
     property ClientHeight;
+    property Font;
     property ImageIndex;
     property Left stored False;
     property Top stored False;
@@ -249,6 +250,7 @@ type
     property OnMouseUp;
     property OnResize;
     property PageIndex stored False;
+    property ParentFont;
     property ParentShowHint;
     property PopupMenu;
     property TabOrder stored False;
@@ -278,6 +280,7 @@ type
     property DragCursor;
     property DragMode;
     property Enabled;
+    property Font;
     property Images;
     property OnChangeBounds;
     property OnChanging;
@@ -297,6 +300,7 @@ type
     property OnStartDrag;
     property Options;
     property PageIndex;
+    property ParentFont;
     property PopupMenu;
     property ShowTabs;
     property TabOrder;
