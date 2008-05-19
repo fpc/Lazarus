@@ -561,7 +561,7 @@ begin
 
   // if using Cocoa, release autorelease the pool
   {$ifdef CarbonUseCocoa}
-    if pool <> nil then pool := NSAutoreleasePool.Create;
+    if pool <> nil then pool.Free;
   {$endif}
 end;
 

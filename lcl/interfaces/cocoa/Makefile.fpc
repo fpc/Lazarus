@@ -14,8 +14,8 @@ units=interfaces
 implicitunits=cocoaint
 
 [compiler]
-options=-gl -dcocoa
-unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) . pascocoa/foundation pascocoa/appkit
+options=-gl -dcocoa1
+unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) .
 unittargetdir=../../units/$(CPU_TARGET)-$(OS_TARGET)/cocoa
 
 [clean]
