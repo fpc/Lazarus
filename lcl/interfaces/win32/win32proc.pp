@@ -1278,7 +1278,8 @@ begin
   begin
     TextLen := Windows.GetWindowTextLengthW(AHandle);
     SetLength(WideBuffer, TextLen);
-    TextLen := Windows.GetWindowTextW(AHandle, @WideBuffer[1], TextLen + 1);
+    If TextLen > 0 // Never give Windows the chance to write to System.emptychar
+    Then TextLen := Windows.GetWindowTextW(AHandle, PWideChar(WideBuffer), TextLen + 1);
     SetLength(WideBuffer, TextLen);
     Result := Utf8Encode(WideBuffer);
   end
@@ -1286,7 +1287,8 @@ begin
   begin
     TextLen := Windows.GetWindowTextLength(AHandle);
     SetLength(AnsiBuffer, TextLen);
-    TextLen := Windows.GetWindowText(AHandle, @AnsiBuffer[1], TextLen + 1);
+    If TextLen > 0 // Never give Windows the chance to write to System.emptychar
+    Then TextLen := Windows.GetWindowText(AHandle, PChar(AnsiBuffer), TextLen + 1);
     SetLength(AnsiBuffer, TextLen);
     Result := AnsiToUtf8(AnsiBuffer);
   end;

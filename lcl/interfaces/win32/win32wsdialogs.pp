@@ -164,7 +164,7 @@ var
 begin
   AnsiChars:= Utf8ToAnsi(s);
   Result := GetMem(length(AnsiChars)+1);
-  Move(AnsiChars[1], Result^, length(AnsiChars)+1);
+  Move(PChar(AnsiChars)^, Result^, length(AnsiChars)+1);
 end;
 
 {------------------------------------------------------------------------------
@@ -467,7 +467,7 @@ begin
       else
         FileNameBufferSize := Length(FileNameWide);
 
-      Move(FileNameWide[1], FileNameWideBuffer^, FileNameBufferSize * 2);
+      Move(PChar(FileNameWide)^, FileNameWideBuffer^, FileNameBufferSize * 2);
     end
     else begin
       FileNameBuffer := AllocMem(FileNameBufferLen + 1);

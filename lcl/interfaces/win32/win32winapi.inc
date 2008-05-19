@@ -625,9 +625,9 @@ function TWin32WidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
       if FormatID=Windows.CF_UNICODETEXT then
       begin
         SetLength(BufferString, DataStream.Size);
-        DataStream.Read(BufferString[1], DataStream.Size);
+        DataStream.Read(PChar(BufferString)^, DataStream.Size);
         BufferWideString := Utf8Decode(BufferString);
-        BufferStream.Write(BufferWideString[1], Length(BufferString) * 2);
+        BufferStream.Write(PChar(BufferWideString)^, Length(BufferString) * 2);
         BufferStream.Position := 0;
 
         WriteStreamToClipBoard(FormatID, BufferStream);
@@ -1080,7 +1080,7 @@ begin
   else
   begin
     SetLength(s, count);
-    if count > 0 then move(str^, s[1], count);
+    move(str^, PChar(s)^, count);
   end;
   // the length of utf8 vs Wide/Ansi the strings differ, so recalc.
   if UnicodeEnabledOS then
@@ -1247,7 +1247,7 @@ begin
   else
   begin
     SetLength(s, count);
-    if count > 0 then move(str^, s[1], count);
+    move(str^, PChar(s)^, count);
   end;
   // the length of utf8 vs Wide/Ansi the strings differ, so recalc.
   if UnicodeEnabledOS 
@@ -1842,7 +1842,7 @@ begin
   else
   begin
     SetLength(s, count);
-    move(str^, s[1], count);  
+    move(str^, PChar(s)^, count);
   end;
   // the length of utf8 vs Wide/Ansi the strings differ, so recalc.
   if UnicodeEnabledOS then
