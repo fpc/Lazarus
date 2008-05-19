@@ -591,7 +591,7 @@ begin
   
   if Result = 0 then exit;
   {$IFDEF DebugLCLComponents}
-  // already called by inherited: DebugGtkWidgets.MarkCreated(p,dbgsName(AWinControl));
+  DebugGtkWidgets.MarkCreated(p,dbgsName(AWinControl));
   {$ENDIF}
 
   GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.hscrollbar, GTK_CAN_FOCUS);
@@ -610,6 +610,8 @@ begin
   renderer := LCLIntfCellRenderer_New();
   column := gtk_tree_view_column_new_with_attributes ('LISTITEMS', renderer,
                                                       ['text', 0, nil]);
+  gtk_cell_layout_set_cell_data_func(PGtkCellLayout(column), renderer,
+    @LCLIntfCellRenderer_CellDataFunc, nil, nil);
   gtk_tree_view_append_column (GTK_TREE_VIEW (TVWidget), column);
   gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (column), TRUE);
 
@@ -1004,6 +1006,8 @@ begin
   gtk_cell_layout_clear(PGtkCellLayout(AWidget));
   gtk_cell_layout_pack_start(PGtkCellLayout(AWidget), renderer, True);
   gtk_cell_layout_set_attributes(PGtkCellLayout(AWidget), renderer, ['text', 0, nil]);
+  gtk_cell_layout_set_cell_data_func(PGtkCellLayout(AWidget), renderer,
+    @LCLIntfCellRenderer_CellDataFunc, nil, nil);
 end;
 
 procedure GtkPopupShowCB(AMenu: PGtkMenuShell; WidgetInfo: PWidgetInfo); cdecl;
@@ -1039,7 +1043,8 @@ begin
     begin
       LCLSendDropDownMsg(TControl(WidgetInfo^.LCLObject));
       AMenu := PGtkComboBoxPrivate(PGtkComboBox(WidgetInfo^.CoreWidget)^.priv)^.popup_widget;
-      gtk_menu_reposition(PGtkMenu(AMenu));
+      if GTK_IS_MENU(AMenu) then
+        gtk_menu_reposition(PGtkMenu(AMenu));
     end;
   end;
 end;

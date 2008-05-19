@@ -511,9 +511,6 @@ type
       State: TOwnerDrawState); virtual;
     procedure DoSelectionChange(User: Boolean); virtual;
     procedure SendItemIndex;
-  protected
-    property OnMeasureItem: TMeasureItemEvent
-                                       read FOnMeasureItem write FOnMeasureItem;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -556,6 +553,8 @@ type
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
+    property OnMeasureItem: TMeasureItemEvent
+                                       read FOnMeasureItem write FOnMeasureItem;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
@@ -617,6 +616,7 @@ type
     property OnKeyPress;
     property OnKeyDown;
     property OnKeyUp;
+    property OnMeasureItem;
     property OnMouseMove;
     property OnMouseDown;
     property OnMouseUp;
@@ -1536,6 +1536,7 @@ initialization
   DefaultButtonControlUseOnChange:=false;
 
 end.
+
 
 
 

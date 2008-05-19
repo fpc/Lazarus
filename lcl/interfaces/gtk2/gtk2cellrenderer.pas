@@ -39,39 +39,119 @@ type
   TLCLIntfCellRenderer = record
     // ! the TextRenderer must be the first attribute of this record !
     TextRenderer: TGtkCellRendererText;
-    ItemIndex: integer; // for TCustomListBox: the ItemIndex of the cell
+    iter: PGtkTreeIter;
   end;
 
   PLCLIntfCellRendererClass = ^TLCLIntfCellRendererClass;
   TLCLIntfCellRendererClass = record
     ParentClass: TGtkCellRendererTextClass;
-    DefaultGtkRender : procedure (cell:PGtkCellRenderer; window:PGdkWindow;
-                 widget:PGtkWidget; background_area:PGdkRectangle;
-                 cell_area:PGdkRectangle;
-                 expose_area:PGdkRectangle; flags:TGtkCellRendererState); cdecl;
+    DefaultGtkGetSize: procedure(cell: PGtkCellRenderer;
+                                 widget: PGtkWidget;
+                                 cell_area: PGdkRectangle;
+                                 x_offset: pgint;
+                                 y_offset: pgint;
+                                 width: pgint;
+                                 height: pgint); cdecl;
+    DefaultGtkRender: procedure(cell: PGtkCellRenderer;
+                                window: PGdkWindow;
+                                widget: PGtkWidget;
+                                background_area: PGdkRectangle;
+                                cell_area: PGdkRectangle;
+                                expose_area:PGdkRectangle;
+                                flags: TGtkCellRendererState); cdecl;
   end;
 
 function LCLIntfCellRenderer_GetType: TGtkType;
 function LCLIntfCellRenderer_New: PGtkCellRenderer;
+procedure LCLIntfCellRenderer_CellDataFunc(cell_layout:PGtkCellLayout;
+                                           cell: PGtkCellRenderer;
+                                           tree_model: PGtkTreeModel;
+                                           iter: PGtkTreeIter;
+                                           data: gpointer); cdecl;
 
 implementation
 uses GtkExtra;
+
+function GetControl(cell: PGtkCellRenderer; Widget: PGtkWidget): TWinControl;
+var
+  WidgetInfo: PWidgetInfo;
+  LCLObject: TObject;
+  MainWidget: PGtkWidget;
+begin
+  Result := nil;
+  MainWidget := GetMainWidget(Widget);
+  if MainWidget = nil then
+    exit;
+  WidgetInfo := GetWidgetInfo(MainWidget, false);
+  if WidgetInfo = nil then
+    WidgetInfo := GetWidgetInfo(cell, false);
+  if WidgetInfo = nil then
+    exit;
+  LCLObject := WidgetInfo^.LCLObject; // the listbox or combobox
+  Result := LCLObject as TWinControl;
+end;
+
+function GetItemIndex(cell: PLCLIntfCellRenderer; widget: PGtkWidget): Integer;
+var
+  APath: PGtkTreePath;
+begin
+  if GTK_IS_TREE_VIEW(Widget) then
+  begin
+    APath := gtk_tree_model_get_path(gtk_tree_view_get_model(GTK_TREE_VIEW(Widget)),
+      cell^.iter);
+    Result := StrToInt(gtk_tree_path_to_string(APath));
+    gtk_tree_path_free(APath);
+  end
+  else
+    Result := -1;
+end;
+
+procedure LCLIntfCellRenderer_GetSize(cell: PGtkCellRenderer; widget: PGtkWidget;
+  cell_area: PGdkRectangle; x_offset, y_offset, width, height: pgint); cdecl;
+var
+  CellClass: PLCLIntfCellRendererClass;
+  AWinControl: TWinControl;
+  ItemIndex: Integer;
+  Msg: TLMMeasureItem;
+  MeasureItemStruct: TMeasureItemStruct;
+begin
+  CellClass:=PLCLIntfCellRendererClass(gtk_object_get_class(cell));
+  CellClass^.DefaultGtkGetSize(cell, Widget, cell_area, x_offset, y_offset,
+                               width, height);
+  AWinControl := GetControl(cell, widget);
+  if [csDestroying,csLoading]*AWinControl.ComponentState<>[] then exit;
+
+  if AWinControl is TCustomListbox then
+    if TCustomListbox(AWinControl).Style < lbOwnerDrawVariable then
+      exit;
+  if AWinControl is TCustomCombobox then
+    if TCustomCombobox(AWinControl).Style < csOwnerDrawVariable then
+      exit;
+
+  ItemIndex := GetItemIndex(PLCLIntfCellRenderer(cell), Widget);
+  if ItemIndex < 0 then
+    ItemIndex := 0;
+
+  MeasureItemStruct.itemID := ItemIndex;
+  MeasureItemStruct.itemWidth := width^;
+  MeasureItemStruct.itemHeight := height^;
+  Msg.Msg := LM_MEASUREITEM;
+  Msg.MeasureItemStruct := @MeasureItemStruct;
+  DeliverMessage(AWinControl, Msg);
+  width^ := MeasureItemStruct.itemWidth;
+  height^ := MeasureItemStruct.itemHeight;
+end;
 
 procedure LCLIntfCellRenderer_Render(cell: PGtkCellRenderer; Window: PGdkWindow;
   Widget: PGtkWidget; background_area: PGdkRectangle; cell_area: PGdkRectangle;
   expose_area: PGdkRectangle; flags: TGtkCellRendererState); cdecl;
 var
   CellClass: PLCLIntfCellRendererClass;
-  WidgetInfo: PWidgetInfo;
-  LCLObject: TObject;
-  MainWidget: PGtkWidget;
   AWinControl: TWinControl;
   ItemIndex: Integer;
   AreaRect: TRect;
   State: TBaseOwnerDrawState;
   Msg: TLMDrawListItem;
-  ItemPath: PGtkTreePath;
-  Column: PGtkTreeViewColumn;
   DCWidget: PGtkWidget;
 begin
   {DebugLn(['LCLIntfCellRenderer_Render cell=',dbgs(cell),
@@ -81,18 +161,12 @@ begin
     ' expose_area=',dbgGRect(expose_area)]);}
 
   // draw default
-  CellClass:=PLCLIntfCellRendererClass(gtk_object_get_class(cell));
-  CellClass^.DefaultGtkRender(cell, Window, Widget, background_area,cell_area,
+  CellClass := PLCLIntfCellRendererClass(gtk_object_get_class(cell));
+  CellClass^.DefaultGtkRender(cell, Window, Widget, background_area, cell_area,
                               expose_area, flags);
   
   // send LM_DrawListItem message
-  MainWidget:=GetMainWidget(Widget);
-  if MainWidget=nil then exit;
-  WidgetInfo:=GetWidgetInfo(MainWidget,false);
-  if WidgetInfo=nil then WidgetInfo:=GetWidgetInfo(cell,false);
-  if WidgetInfo=nil then exit;
-  LCLObject:=WidgetInfo^.LCLObject; // the listbox or combobox
-  AWinControl:=LCLObject as TWinControl;
+  AWinControl := GetControl(cell, widget);
   if [csDestroying,csLoading]*AWinControl.ComponentState<>[] then exit;
   
   // check if the LCL object wants item paint messages
@@ -105,40 +179,13 @@ begin
 
   // get itemindex and area
   
-  AreaRect:=Bounds(background_area^.x,background_area^.y,
-                   background_area^.Width,background_area^.Height);
+  AreaRect := Bounds(background_area^.x, background_area^.y,
+                     background_area^.Width, background_area^.Height);
 
-  ItemIndex:=-1;
-  if GTK_IS_TREE_VIEW(Widget) then begin
-    //check the four possible corners of the cell
-    if gtk_tree_view_get_path_at_pos(PGtkTreeView(Widget),cell_area^.x, cell_area^.y, ItemPath, column, nil, nil)
-    or gtk_tree_view_get_path_at_pos(PGtkTreeView(Widget),cell_area^.x, cell_area^.y+cell_area^.height, ItemPath, column, nil, nil)
-    or gtk_tree_view_get_path_at_pos(PGtkTreeView(Widget),cell_area^.x+cell_area^.width, cell_area^.y, ItemPath, column, nil, nil)
-    or gtk_tree_view_get_path_at_pos(PGtkTreeView(Widget),cell_area^.x+cell_area^.width, cell_area^.y+cell_area^.height, ItemPath, column, nil, nil)
-    then
-    begin
-      ItemIndex := StrToInt(gtk_tree_path_to_string(ItemPath));
-      gtk_tree_path_free(ItemPath);
-    end;
-  end
-  else if AWinControl is TCustomComboBox then begin
-    ItemPath := gtk_cell_view_get_displayed_row(Widget);
-    if ItemPath <> nil then
-    begin
-      ItemIndex := StrToInt(gtk_tree_path_to_string(ItemPath));
-      gtk_tree_path_free(ItemPath);
-      if (Widget^.parent <> nil) and (GtkWidgetIsA(Widget^.parent,gtk_menu_item_get_type)) then
-        AreaRect:=Bounds(0,0,
-                         Widget^.Parent^.allocation.width,
-                         Widget^.Parent^.allocation.height)
-      else
-        AreaRect:=Bounds(0,0,
-                         Widget^.allocation.width,
-                         Widget^.allocation.height);
-    end;
-  end;
+  ItemIndex := GetItemIndex(PLCLIntfCellRenderer(cell), Widget);
 
-  if ItemIndex < 0 then ItemIndex := 0;
+  if ItemIndex < 0 then
+    ItemIndex := 0;
 
   // collect state flags
   State:=[odPainted];
@@ -193,10 +240,12 @@ var
   RendererClass: PGtkCellRendererClass;
 begin
   //DebugLn(['LCLIntfCellRenderer_ClassInit ']);
-  LCLClass:=PLCLIntfCellRendererClass(aClass);
-  RendererClass:=GTK_CELL_RENDERER_CLASS(aClass);
-  LCLClass^.DefaultGtkRender:=RendererClass^.render;
-  RendererClass^.render:=@LCLIntfCellRenderer_Render;
+  LCLClass := PLCLIntfCellRendererClass(aClass);
+  RendererClass := GTK_CELL_RENDERER_CLASS(aClass);
+  LCLClass^.DefaultGtkGetSize := RendererClass^.get_size;
+  LCLClass^.DefaultGtkRender := RendererClass^.render;
+  RendererClass^.get_size := @LCLIntfCellRenderer_GetSize;
+  RendererClass^.render := @LCLIntfCellRenderer_Render;
 end;
 
 procedure LCLIntfCellRenderer_Init(Instance:PGTypeInstance;
@@ -236,5 +285,17 @@ begin
   Result := g_object_new(LCLIntfCellRenderer_GetType, nil,[]);
 end;
 
+procedure LCLIntfCellRenderer_CellDataFunc(cell_layout:PGtkCellLayout;
+  cell: PGtkCellRenderer; tree_model: PGtkTreeModel; iter: PGtkTreeIter;
+  data: gpointer); cdecl;
+var
+  LCLCellRenderer: PLCLIntfCellRenderer absolute cell;
+begin
+  // maybe copy iter?
+  // maybe copy something else?
+  LCLCellRenderer^.iter := iter;
+end;
+
 end.
+
 
