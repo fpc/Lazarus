@@ -887,9 +887,10 @@ begin
             '}':
               begin
                 dec(CommentLvl);
-                inc(CurPos.StartPos);
-                if CommentLvl=0 then
+                if CommentLvl=0 then begin
+                  inc(CurPos.StartPos);
                   break;
+                end;
               end;
             end;
           end;
