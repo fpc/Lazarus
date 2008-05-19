@@ -108,7 +108,7 @@ type
                              const AUnitName: shortstring;
                              X,Y,W,H: Integer): TIComponentInterface; virtual; abstract;
     function CreateComponentFromStream(BinStream: TStream;
-                      AncestorType: TComponentClass; AncestorBinStream: TStream;
+                      AncestorType: TComponentClass;
                       const NewUnitName: ShortString;
                       Interactive: boolean;
                       Visible: boolean = true): TIComponentInterface; virtual; abstract;

@@ -48,7 +48,8 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, AvgLvlTree, TypInfo, LCLProc, LResources, Forms, Controls,
-  LCLIntf, Dialogs, JITForm, ComponentReg, IDEProcs, BasePkgManager;
+  LCLMemManager, LCLIntf, Dialogs, JITForm, ComponentReg, IDEProcs,
+  BasePkgManager;
 
 type
   //----------------------------------------------------------------------------
@@ -62,10 +63,13 @@ type
   TJITFormErrors = set of TJITFormError;
   
   TJITReaderErrorEvent = procedure(Sender: TObject; ErrorType: TJITFormError;
-    var Action: TModalResult) of object;
+                                   var Action: TModalResult) of object;
   TJITPropertyNotFoundEvent = procedure(Sender: TObject; Reader: TReader;
-    Instance: TPersistent; var PropName: string; IsPath: boolean;
-    var Handled, Skip: Boolean) of object;
+                   Instance: TPersistent; var PropName: string; IsPath: boolean;
+                   var Handled, Skip: Boolean) of object;
+  TJITFindAncestorBinStream = procedure(Sender: TObject; AClass: TClass;
+                                        var BinStream: TExtMemoryStream;
+                                        var IsBaseClass, Abort: boolean) of object;
 
 
   { TJITComponentList }
@@ -80,6 +84,7 @@ type
     FCurUnknownClass: string;
     FCurUnknownProperty: string;
     FErrors: TLRPositionLinks;
+    FOnFindAncestorBinStream: TJITFindAncestorBinStream;
     FOnPropertyNotFound: TJITPropertyNotFoundEvent;
   protected
     FCurReadErrorMsg: string;
@@ -139,7 +144,7 @@ type
     function AddNewJITComponent(const NewUnitName: shortstring;
                                 ParentClass: TClass): integer;
     function AddJITComponentFromStream(BinStream: TStream;
-                                ParentClass: TClass; ParentBinStream: TStream;
+                                ParentClass: TClass;
                                 const NewUnitName: ShortString;
                                 Interactive, Visible: Boolean):integer;
     procedure DestroyJITComponent(JITComponent: TComponent);
@@ -168,6 +173,8 @@ type
                                        read FOnReaderError write FOnReaderError;
     property OnPropertyNotFound: TJITPropertyNotFoundEvent
                              read FOnPropertyNotFound write FOnPropertyNotFound;
+    property OnFindAncestorBinStream: TJITFindAncestorBinStream
+                   read FOnFindAncestorBinStream write FOnFindAncestorBinStream;
     property CurReadJITComponent: TComponent read FCurReadJITComponent;
     property CurReadClass: TClass read FCurReadClass;
     property CurReadChild: TComponent read FCurReadChild;
@@ -727,7 +734,7 @@ begin
 end;
 
 function TJITComponentList.AddJITComponentFromStream(BinStream: TStream;
-  ParentClass: TClass; ParentBinStream: TStream;
+  ParentClass: TClass;
   const NewUnitName: ShortString;
   Interactive, Visible: Boolean): integer;
 //  returns new index
@@ -760,6 +767,43 @@ function TJITComponentList.AddJITComponentFromStream(BinStream: TStream;
       Reader.Free;
     end;
   end;
+  
+  function ReadAncestorStreams: boolean;
+  
+    function ReadAncestor(AClass: TClass): boolean;
+    var
+      Abort: boolean;
+      AncestorStream: TExtMemoryStream;
+      IsBaseClass: Boolean;
+    begin
+      // stop at base class
+      if (AClass=nil) or (AClass=TComponent) then exit(true);
+      // now read the stream
+      Abort:=false;
+      AncestorStream:=nil;
+      IsBaseClass:=false;
+      try
+        OnFindAncestorBinStream(Self,AClass,AncestorStream,IsBaseClass,Abort);
+        if Abort then exit(false);
+        if not IsBaseClass then begin
+          // read ancestor streams first
+          if not ReadAncestor(AClass.ClassParent) then exit(false);
+        end;
+        {$IFDEF VerboseJITForms}
+        DebugLn(['TJITComponentList.AddJITComponentFromStream.ReadAncestor ',DbgSName(AClass),' HasStream=',AncestorStream<>nil]);
+        {$ENDIF}
+        if AncestorStream<>nil then
+          ReadStream(AncestorStream);
+      finally
+        FreeAndNil(AncestorStream);
+      end;
+      Result:=true;
+    end;
+  
+  begin
+    if not Assigned(OnFindAncestorBinStream) then exit(true);
+    Result:=ReadAncestor(ParentClass);
+  end;
 
 var
   NewClassName: shortstring;
@@ -780,8 +824,7 @@ begin
   try
     Result:=DoCreateJITComponent('',NewClassName,NewUnitName,ParentClass,Visible);
     if Result<0 then exit;
-    if ParentBinStream<>nil then
-      ReadStream(ParentBinStream);
+    ReadAncestorStreams;
     ReadStream(BinStream);
 
     if FCurReadJITComponent.Name='' then begin

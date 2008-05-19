@@ -39,19 +39,22 @@ uses
   MemCheck,
 {$ENDIF}
   // LCL+FCL
-  Classes, SysUtils, TypInfo, Math, LCLIntf, LCLType,
-  AVL_Tree,
+  Classes, SysUtils, TypInfo, Math, LCLIntf, LCLType, LResources,
+  AVL_Tree, LCLMemManager,
   LCLProc, Graphics, Controls, Forms, Menus, Dialogs,
-  // components
-  PropEdits, ObjectInspector, IDECommands,
+  // IDEIntf
+  PropEdits, ObjectInspector, IDECommands, FormEditingIntf,
   // IDE
-  LazarusIDEStrConsts, JITForms, FormEditingIntf,
+  LazarusIDEStrConsts, Project, JITForms,
   CustomNonFormDesigner, NonControlDesigner, FrameDesigner,
   ComponentReg, IDEProcs, ComponentEditors, KeyMapping, EditorOptions,
   DesignerProcs;
 
 const
   OrdinalTypes = [tkInteger,tkChar,tkEnumeration,tkbool];
+
+const
+  LRSStreamChunkSize = 4096; // allocating mem in 4k chunks helps many mem managers
 
 type
 {
@@ -135,6 +138,9 @@ each control that's dropped onto the form
     procedure JITListPropertyNotFound(Sender: TObject; Reader: TReader;
       Instance: TPersistent; var PropName: string; IsPath: boolean;
       var Handled, Skip: Boolean);
+    procedure JITListFindAncestorBinStream(Sender: TObject; AClass: TClass;
+                                           var BinStream: TExtMemoryStream;
+                                           var IsBaseClass, Abort: boolean);
 
     function GetDesignerBaseClasses(Index: integer): TComponentClass; override;
     procedure OnDesignerMenuItemClick(Sender: TObject); virtual;
@@ -193,6 +199,8 @@ each control that's dropped onto the form
     procedure WriteMethodPropertyEvent(Writer: TWriter; Instance: TPersistent;
       PropInfo: PPropInfo; const MethodValue, DefMethodValue: TMethod;
       var Handled: boolean);
+    function SaveUnitComponentToBinStream(AnUnitInfo: TUnitInfo;
+      var BinCompStream: TExtMemoryStream): TModalResult;
 
     // designers
     function DesignerCount: integer; override;
@@ -220,12 +228,12 @@ each control that's dropped onto the form
                              const AUnitName: shortstring;
                              X,Y,W,H: Integer): TIComponentInterface; override;
     function CreateComponentFromStream(BinStream: TStream;
-                      AncestorType: TComponentClass; AncestorBinStream: TStream;
+                      AncestorType: TComponentClass;
                       const NewUnitName: ShortString;
                       Interactive: boolean;
                       Visible: boolean = true): TIComponentInterface; override;
     function CreateRawComponentFromStream(BinStream: TStream;
-                      AncestorType: TComponentClass; AncestorBinStream: TStream;
+                      AncestorType: TComponentClass;
                       const NewUnitName: ShortString;
                       Interactive: boolean;
                       Visible: boolean = true): TComponent;
@@ -823,10 +831,12 @@ begin
   JITFormList := TJITForms.Create;
   JITFormList.OnReaderError:=@JITListReaderError;
   JITFormList.OnPropertyNotFound:=@JITListPropertyNotFound;
+  JITFormList.OnFindAncestorBinStream:=@JITListFindAncestorBinStream;
 
   JITNonFormList := TJITNonFormComponents.Create;
   JITNonFormList.OnReaderError:=@JITListReaderError;
   JITNonFormList.OnPropertyNotFound:=@JITListPropertyNotFound;
+  JITNonFormList.OnFindAncestorBinStream:=@JITListFindAncestorBinStream;
 
   DesignerMenuItemClick:=@OnDesignerMenuItemClick;
   OnGetDesignerForm:=@GetDesignerForm;
@@ -1308,6 +1318,56 @@ begin
   {$ENDIF}
 end;
 
+function TCustomFormEditor.SaveUnitComponentToBinStream(AnUnitInfo: TUnitInfo;
+  var BinCompStream: TExtMemoryStream): TModalResult;
+var
+  Writer: TWriter;
+  DestroyDriver: Boolean;
+begin
+  // save designer form properties to the component
+  SaveHiddenDesignerFormProperties(AnUnitInfo.Component);
+
+  // stream component to binary stream
+  if BinCompStream=nil then
+    BinCompStream:=TExtMemoryStream.Create;
+  if AnUnitInfo.ComponentLastBinStreamSize>0 then
+    BinCompStream.Capacity:=Max(BinCompStream.Capacity,BinCompStream.Position+
+                      AnUnitInfo.ComponentLastBinStreamSize+LRSStreamChunkSize);
+  Writer:=nil;
+  DestroyDriver:=false;
+  try
+    Result:=mrOk;
+    try
+      BinCompStream.Position:=0;
+      Writer:=CreateLRSWriter(BinCompStream,DestroyDriver);
+      Writer.WriteDescendent(AnUnitInfo.Component,nil);
+      if DestroyDriver then Writer.Driver.Free;
+      FreeAndNil(Writer);
+      AnUnitInfo.ComponentLastBinStreamSize:=BinCompStream.Size;
+    except
+      on E: Exception do begin
+        DumpExceptionBackTrace;
+        Result:=MessageDlg(lisStreamingError,
+            Format(lisUnableToStreamT, [AnUnitInfo.ComponentName,
+                              AnUnitInfo.ComponentName])+#13
+                              +E.Message,
+            mtError,[mbAbort, mbRetry, mbIgnore], 0);
+        if Result=mrAbort then exit;
+        if Result=mrIgnore then Result:=mrOk;
+      end;
+    end;
+  finally
+    try
+      if DestroyDriver and (Writer<>nil) then Writer.Driver.Free;
+      Writer.Free;
+    except
+      on E: Exception do begin
+        debugln('TCustomFormEditor.SaveUnitComponentToBinStream Error cleaning up: ',E.Message);
+      end;
+    end;
+  end;
+end;
+
 function TCustomFormEditor.DesignerCount: integer;
 begin
   Result:=JITFormList.Count+JITNonFormList.Count;
@@ -1591,7 +1651,7 @@ end;
 
 function TCustomFormEditor.CreateComponentFromStream(
   BinStream: TStream;
-  AncestorType: TComponentClass; AncestorBinStream: TStream;
+  AncestorType: TComponentClass;
   const NewUnitName: ShortString;
   Interactive: boolean; Visible: boolean
   ): TIComponentInterface;
@@ -1599,13 +1659,13 @@ var
   NewComponent: TComponent;
 begin
   NewComponent:=CreateRawComponentFromStream(BinStream,
-                AncestorType,AncestorBinStream,NewUnitName,Interactive,Visible);
+                AncestorType,NewUnitName,Interactive,Visible);
   Result:=CreateComponentInterface(NewComponent,true);
 end;
 
 function TCustomFormEditor.CreateRawComponentFromStream(BinStream: TStream;
-  AncestorType: TComponentClass; AncestorBinStream: TStream;
-  const NewUnitName: ShortString; Interactive: boolean; Visible: boolean
+  AncestorType: TComponentClass; const NewUnitName: ShortString;
+  Interactive: boolean; Visible: boolean
   ): TComponent;
 var
   NewJITIndex: integer;
@@ -1617,8 +1677,7 @@ begin
     RaiseException('TCustomFormEditor.CreateComponentFromStream ClassName='+
                    AncestorType.ClassName);
   NewJITIndex := JITList.AddJITComponentFromStream(BinStream,
-                         AncestorType,AncestorBinStream,
-                         NewUnitName,Interactive,Visible);
+                         AncestorType,NewUnitName,Interactive,Visible);
   if NewJITIndex < 0 then begin
     Result:=nil;
     exit;
@@ -2015,6 +2074,36 @@ begin
   DebugLn(['TCustomFormEditor.JITListPropertyNotFound ',Sender.ClassName,
     ' Instance=',Instance.ClassName,' PropName="',PropName,
     '" IsPath=',IsPath]);
+end;
+
+procedure TCustomFormEditor.JITListFindAncestorBinStream(Sender: TObject;
+  AClass: TClass; var BinStream: TExtMemoryStream;
+  var IsBaseClass, Abort: boolean);
+var
+  AnUnitInfo: TUnitInfo;
+begin
+  if Project1=nil then exit;
+  if (AClass=nil) or (AClass=TComponent)
+  or (AClass=TForm) or (AClass=TCustomForm)
+  or (AClass=TDataModule)
+  or (not AClass.InheritsFrom(TComponent))
+  or (IndexOfDesignerBaseClass(TComponentClass(AClass))>=0) then begin
+    IsBaseClass:=true;
+    exit;
+  end;
+  //DebugLn(['TCustomFormEditor.JITListFindAncestorBinStream Class=',DbgSName(AClass)]);
+  AnUnitInfo:=Project1.FirstUnitWithComponent;
+  while AnUnitInfo<>nil do begin
+    if (AnUnitInfo.Component<>nil)
+    and (AnUnitInfo.Component.ClassType=AClass) then begin
+      //DebugLn(['TCustomFormEditor.JITListFindAncestorBinStream FOUND class, streaming ...']);
+      if SaveUnitComponentToBinStream(AnUnitInfo,BinStream)<>mrOk then
+        Abort:=true;
+      BinStream.Position:=0;
+      exit;
+    end;
+    AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
+  end;
 end;
 
 function TCustomFormEditor.GetDesignerBaseClasses(Index: integer

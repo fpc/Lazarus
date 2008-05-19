@@ -596,8 +596,6 @@ type
         var ResourceCode: TCodeBuffer): TModalResult;
     function DoSaveUnitComponent(AnUnitInfo: TUnitInfo;
         ResourceCode, LFMCode: TCodeBuffer; Flags: TSaveFlags): TModalResult;
-    function DoSaveUnitComponentToBinStream(AnUnitInfo: TUnitInfo;
-        var BinCompStream: TExtMemoryStream): TModalResult;
     function DoRemoveDanglingEvents(AnUnitInfo: TUnitInfo;
         OkOnCodeErrors: boolean): TModalResult;
     function DoRenameUnit(AnUnitInfo: TUnitInfo; NewFilename, NewUnitName: string;
@@ -628,8 +626,7 @@ type
                            const DescendantClassName: string;
                            OpenFlags: TOpenFlags;
                            out AncestorClass: TComponentClass;
-                           out AncestorUnitInfo: TUnitInfo;
-                           out AncestorBinStream: TExtMemoryStream): TModalResult;
+                           out AncestorUnitInfo: TUnitInfo): TModalResult;
     function DoLoadComponentDependencyHidden(AnUnitInfo: TUnitInfo;
                            const AComponentClassName: string; Flags: TOpenFlags;
                            MustHaveLFM: boolean;
@@ -936,9 +933,6 @@ implementation
 
 uses
   Math;
-
-const
-  LRSStreamChunkSize = 4096; // allocating mem in 4k chunks helps many mem managers
 
 var
   SkipAutoLoadingLastProject: boolean = false;
@@ -4919,56 +4913,6 @@ begin
   {$ENDIF}
 end;
 
-function TMainIDE.DoSaveUnitComponentToBinStream(AnUnitInfo: TUnitInfo;
-  var BinCompStream: TExtMemoryStream): TModalResult;
-var
-  Writer: TWriter;
-  DestroyDriver: Boolean;
-begin
-  // save designer form properties to the component
-  FormEditor1.SaveHiddenDesignerFormProperties(AnUnitInfo.Component);
-
-  // stream component to binary stream
-  if BinCompStream=nil then
-    BinCompStream:=TExtMemoryStream.Create;
-  if AnUnitInfo.ComponentLastBinStreamSize>0 then
-    BinCompStream.Capacity:=Max(BinCompStream.Capacity,BinCompStream.Position+
-                      AnUnitInfo.ComponentLastBinStreamSize+LRSStreamChunkSize);
-  Writer:=nil;
-  DestroyDriver:=false;
-  try
-    Result:=mrOk;
-    try
-      BinCompStream.Position:=0;
-      Writer:=CreateLRSWriter(BinCompStream,DestroyDriver);
-      Writer.WriteDescendent(AnUnitInfo.Component,nil);
-      if DestroyDriver then Writer.Driver.Free;
-      FreeAndNil(Writer);
-      AnUnitInfo.ComponentLastBinStreamSize:=BinCompStream.Size;
-    except
-      on E: Exception do begin
-        DumpExceptionBackTrace;
-        Result:=MessageDlg(lisStreamingError,
-            Format(lisUnableToStreamT, [AnUnitInfo.ComponentName,
-                              AnUnitInfo.ComponentName])+#13
-                              +E.Message,
-            mtError,[mbAbort, mbRetry, mbIgnore], 0);
-        if Result=mrAbort then exit;
-        if Result=mrIgnore then Result:=mrOk;
-      end;
-    end;
-  finally
-    try
-      if DestroyDriver and (Writer<>nil) then Writer.Driver.Free;
-      Writer.Free;
-    except
-      on E: Exception do begin
-        debugln('TMainIDE.DoSaveFileResourceToBinStream Error cleaning up: ',E.Message);
-      end;
-    end;
-  end;
-end;
-
 function TMainIDE.DoRemoveDanglingEvents(AnUnitInfo: TUnitInfo;
   OkOnCodeErrors: boolean): TModalResult;
 var
@@ -5411,7 +5355,7 @@ function TMainIDE.DoLoadLFM(AnUnitInfo: TUnitInfo; LFMBuf: TCodeBuffer;
 const
   BufSize = 4096; // allocating mem in 4k chunks helps many mem managers
 var
-  TxtLFMStream, BinStream, AncestorBinStream: TExtMemoryStream;
+  TxtLFMStream, BinStream: TExtMemoryStream;
   NewComponent: TComponent;
   AncestorType: TComponentClass;
   DesignerForm: TCustomForm;
@@ -5481,10 +5425,9 @@ begin
       end;
 
       BinStream:=nil;
-      AncestorBinStream:=nil;
       try
         Result:=DoLoadAncestorDependencyHidden(AnUnitInfo,NewClassName,OpenFlags,
-                               AncestorType,AncestorUnitInfo,AncestorBinStream);
+                               AncestorType,AncestorUnitInfo);
         
         // convert text to binary format
         BinStream:=TExtMemoryStream.Create;
@@ -5524,7 +5467,7 @@ begin
           NewUnitName:=ExtractFileNameOnly(AnUnitInfo.Filename);
         // ToDo: create AncestorBinStream(s) via hook, not via parameters
         NewComponent:=FormEditor1.CreateRawComponentFromStream(BinStream,
-                   AncestorType,AncestorBinStream,copy(NewUnitName,1,255),true);
+                   AncestorType,copy(NewUnitName,1,255),true);
         Project1.InvalidateUnitComponentDesignerDependencies;
         AnUnitInfo.Component:=NewComponent;
         if (AncestorUnitInfo<>nil) then
@@ -5552,7 +5495,6 @@ begin
         end;
       finally
         BinStream.Free;
-        AncestorBinStream.Free;
       end;
     end else begin
       // keep old instance, just add a designer
@@ -5822,15 +5764,13 @@ function TMainIDE.DoLoadAncestorDependencyHidden(AnUnitInfo: TUnitInfo;
   const DescendantClassName: string;
   OpenFlags: TOpenFlags;
   out AncestorClass: TComponentClass;
-  out AncestorUnitInfo: TUnitInfo;
-  out AncestorBinStream: TExtMemoryStream): TModalResult;
+  out AncestorUnitInfo: TUnitInfo): TModalResult;
 var
   AncestorClassName: String;
 begin
   AncestorClassName:='';
   AncestorClass:=nil;
   AncestorUnitInfo:=nil;
-  AncestorBinStream:=nil;
 
   // find the ancestor type in the source
   if not CodeToolBoss.FindFormAncestor(AnUnitInfo.Source,DescendantClassName,
@@ -5856,16 +5796,7 @@ begin
     end;
     case  Result of
     mrAbort: exit;
-    mrOk:
-      if AncestorUnitInfo<>nil then begin
-        Result:=DoSaveUnitComponentToBinStream(AncestorUnitInfo,
-                                               AncestorBinStream);
-        if Result<>mrOk then begin
-          DebugLn(['TMainIDE.DoLoadAncestorDependencyHidden DoSaveUnitComponentToBinStream failed AncestorUnitInfo=',AncestorUnitInfo.Filename]);
-          exit;
-        end;
-        AncestorBinStream.Position:=0;
-      end;
+    mrOk: ;
     mrIgnore:
       begin
         // use TForm as default
