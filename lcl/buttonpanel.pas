@@ -55,6 +55,8 @@ type
     procedure SetShowGlyphs(Value: TPanelButtons);
   protected
     procedure Loaded; override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation
+            ); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -119,10 +121,14 @@ end;
 
 procedure TCustomButtonPanel.DoShowButtons;
 begin
-  FOKButton.Visible     := (pbOK in FShowButtons);
-  FCancelButton.Visible := (pbCancel in FShowButtons);
-  FCloseButton.Visible  := (pbClose in FShowButtons);
-  FHelpButton.Visible   := (pbHelp in FShowButtons);
+  if FOKButton<>nil then
+    FOKButton.Visible     := (pbOK in FShowButtons);
+  if FCancelButton<>nil then
+    FCancelButton.Visible := (pbCancel in FShowButtons);
+  if FCloseButton<>nil then
+    FCloseButton.Visible  := (pbClose in FShowButtons);
+  if FHelpButton<>nil then
+    FHelpButton.Visible   := (pbHelp in FShowButtons);
 
   DoButtonOrder;
 end;
@@ -139,37 +145,49 @@ end;
 
 procedure TCustomButtonPanel.DoShowGlyphs;
 begin
-  if not (pbOK in FShowGlyphs) then
+  if FOKButton<>nil then
   begin
-    FOKGlyph.Assign(FOKButton.Glyph);
-    FOKButton.Glyph.Assign(nil);
-  end
-  else
-    FOKButton.Glyph.Assign(FOKGlyph);
+    if not (pbOK in FShowGlyphs) then
+    begin
+      FOKGlyph.Assign(FOKButton.Glyph);
+      FOKButton.Glyph.Assign(nil);
+    end
+    else
+      FOKButton.Glyph.Assign(FOKGlyph);
+   end;
 
-  if not (pbCancel in FShowGlyphs) then
+  if FCancelButton<>nil then
   begin
-    FCancelGlyph.Assign(FCancelButton.Glyph);
-    FCancelButton.Glyph.Assign(nil);
-  end
-  else
-    FCancelButton.Glyph.Assign(FCancelGlyph);
+    if not (pbCancel in FShowGlyphs) then
+    begin
+      FCancelGlyph.Assign(FCancelButton.Glyph);
+      FCancelButton.Glyph.Assign(nil);
+    end
+    else
+      FCancelButton.Glyph.Assign(FCancelGlyph);
+  end;
 
-  if not (pbClose in FShowGlyphs) then
+  if FCloseButton<>nil then
   begin
-    FCloseGlyph.Assign(FCloseButton.Glyph);
-    FCloseButton.Glyph.Assign(nil);
-  end
-  else
-    FCloseButton.Glyph.Assign(FCloseGlyph);
+    if not (pbClose in FShowGlyphs) then
+    begin
+      FCloseGlyph.Assign(FCloseButton.Glyph);
+      FCloseButton.Glyph.Assign(nil);
+    end
+    else
+      FCloseButton.Glyph.Assign(FCloseGlyph);
+  end;
 
-  if not (pbHelp in FShowGlyphs) then
+  if FHelpButton<>nil then
   begin
-    FHelpGlyph.Assign(FHelpButton.Glyph);
-    FHelpButton.Glyph.Assign(nil);
-  end
-  else
-    FHelpButton.Glyph.Assign(FHelpGlyph);
+    if not (pbHelp in FShowGlyphs) then
+    begin
+      FHelpGlyph.Assign(FHelpButton.Glyph);
+      FHelpButton.Glyph.Assign(nil);
+    end
+    else
+      FHelpButton.Glyph.Assign(FHelpGlyph);
+  end;
 end;
 
 procedure TCustomButtonPanel.SetShowGlyphs(Value: TPanelButtons);
@@ -199,23 +217,32 @@ end;
 
 procedure TCustomButtonPanel.OrderButtonsRightToLeft(TheButtons: array of TControl);
  // reorder aligned buttons from left to right.
- // The buttons are Align=alRight. The order is determined by the Left property.
+ // The buttons are Align=alRight. The order is determined by the right edge.
  // Set the Left+Wifth property to some values in ascending order and the LCL
  // will do the rest.
 var
   i, x: integer;
 begin
   i := High(TheButtons);
-  while (i > Low(TheButtons)) and (TheButtons[i - 1].Left < TheButtons[i].Left) do
+  while (i >= Low(TheButtons)) and (TheButtons[i]=nil) do dec(i);
+  if i < Low(TheButtons) then
+    exit; // no buttons
+  x:=TheButtons[i].Left+TheButtons[i].Width;
+  Dec(i);
+  while (i >= Low(TheButtons)) and (TheButtons[i].Left+TheButtons[i].Width < x) do
+  begin
+    x:=TheButtons[i].Left+TheButtons[i].Width;
     Dec(i);
-  if i = Low(TheButtons) then
-    exit;
+  end;
+  if i < Low(TheButtons) then
+    exit; // all buttons are already in the correct order
 
   DisableAlign;
   try
     x := ClientWidth;
     for i := High(TheButtons) downto Low(TheButtons) do
     begin
+      if TheButtons[i]=nil then continue;
       Dec(x, TheButtons[i].Width);
       TheButtons[i].Left := x;
     end;
@@ -229,10 +256,14 @@ begin
   OrderButtonsRightToLeft([FCloseButton, FCancelButton, FOKButton]);
 
   //set taborder
-  FOKButton.TabOrder     := 0;
-  FCancelButton.TabOrder := 1;
-  FCloseButton.TabOrder  := 2;
-  FHelpButton.TabOrder   := 3;
+  if FOKButton<>nil then
+    FOKButton.TabOrder     := 0;
+  if FCancelButton<>nil then
+    FCancelButton.TabOrder := 1;
+  if FCloseButton<>nil then
+    FCloseButton.TabOrder  := 2;
+  if FHelpButton<>nil then
+    FHelpButton.TabOrder   := 3;
 end;
 
 procedure TCustomButtonPanel.ButtonOrderCloseOKCancel;
@@ -240,10 +271,14 @@ begin
   OrderButtonsRightToLeft([FCloseButton, FOKButton, FCancelButton]);
 
   //set taborder
-  FCancelButton.TabOrder := 0;
-  FOKButton.TabOrder     := 1;
-  FCloseButton.TabOrder  := 2;
-  FHelpButton.TabOrder   := 3;
+  if FCancelButton<>nil then
+    FCancelButton.TabOrder := 0;
+  if FOKButton<>nil then
+    FOKButton.TabOrder     := 1;
+  if FCloseButton<>nil then
+    FCloseButton.TabOrder  := 2;
+  if FHelpButton<>nil then
+    FHelpButton.TabOrder   := 3;
 end;
 
 procedure TCustomButtonPanel.SetButtonOrder(Value: TButtonOrder);
@@ -258,10 +293,14 @@ end;
 
 procedure TCustomButtonPanel.DoDefaultButton;
 begin
-  FOKButton.Default     := FDefaultButton = pbOk;
-  FCancelButton.Default := FDefaultButton = pbCancel;
-  FCloseButton.Default  := FDefaultButton = pbClose;
-  FHelpButton.Default   := FDefaultButton = pbHelp;
+  if FOKButton<>nil then
+    FOKButton.Default     := FDefaultButton = pbOk;
+  if FCancelButton<>nil then
+    FCancelButton.Default := FDefaultButton = pbCancel;
+  if FCloseButton<>nil then
+    FCloseButton.Default  := FDefaultButton = pbClose;
+  if FHelpButton<>nil then
+    FHelpButton.Default   := FDefaultButton = pbHelp;
 end;
 
 procedure TCustomButtonPanel.SetDefaultButton(Value: TPanelButton);
@@ -280,6 +319,31 @@ begin
   DoDefaultButton;
   DoShowGlyphs;
   DoShowButtons;
+end;
+
+procedure TCustomButtonPanel.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  if Operation=opRemove then begin
+    if AComponent=FOKButton then
+    begin
+      FOKButton:=nil;
+      Exclude(FShowButtons,pbOK);
+    end else if AComponent=FCancelButton then
+    begin
+      FCancelButton:=nil;
+      Exclude(FShowButtons,pbCancel);
+    end else if AComponent=FCloseButton then
+    begin
+      FCloseButton:=nil;
+      Exclude(FShowButtons,pbClose);
+    end else if AComponent=FHelpButton then
+    begin
+      FHelpButton:=nil;
+      Exclude(FShowButtons,pbHelp);
+    end;
+  end;
+  inherited Notification(AComponent, Operation);
 end;
 
 constructor TCustomButtonPanel.Create(AOwner: TComponent);
