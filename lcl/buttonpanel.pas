@@ -13,6 +13,11 @@ type
   TPanelButton  = (pbOK, pbCancel, pbClose, pbHelp);
   TPanelButtons = set of TPanelButton;
 
+const
+  DefShowButtons = [pbOK, pbCancel, pbClose, pbHelp];
+  DefShowGlyphs = [pbOK, pbCancel, pbClose, pbHelp];
+
+type
   TPanelBitBtn = class(TCustomBitBtn)
   public
     constructor Create(AOwner: TComponent); override;
@@ -67,8 +72,8 @@ type
     property CancelButton: TPanelBitBtn Read FCancelButton stored False;
     property ButtonOrder: TButtonOrder Read FButtonOrder Write SetButtonOrder;
     property DefaultButton: TPanelButton Read FDefaultButton Write SetDefaultButton;
-    property ShowButtons: TPanelButtons Read FShowButtons Write SetShowButtons;
-    property ShowGlyphs: TPanelButtons Read FShowGlyphs Write SetShowGlyphs;
+    property ShowButtons: TPanelButtons Read FShowButtons Write SetShowButtons default DefShowButtons;
+    property ShowGlyphs: TPanelButtons Read FShowGlyphs Write SetShowGlyphs default DefShowGlyphs;
   published
   end;
 
@@ -154,7 +159,7 @@ begin
     end
     else
       FOKButton.Glyph.Assign(FOKGlyph);
-   end;
+  end;
 
   if FCancelButton<>nil then
   begin
@@ -425,8 +430,8 @@ begin
 
   FDefaultButton := pbOK;
   FButtonOrder   := boDefault;
-  FShowButtons   := [pbOK, pbCancel, pbClose, pbHelp];
-  FShowGlyphs    := [pbOK, pbCancel, pbClose, pbHelp];
+  FShowButtons   := DefShowButtons;
+  FShowGlyphs    := DefShowGlyphs;
 
   if not (csLoading in ComponentState) then
   begin
