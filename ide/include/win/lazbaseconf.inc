@@ -181,7 +181,10 @@ begin
   DefaultFPCTarget:= {$I %FPCTARGET%};
   DefaultFPCVersion:= {$I %FPCVERSION%};
   {$ifndef ver2_2_0}
-  PrimaryConfigPath:=GetAppConfigDir(False);
+  // the last part of the path returned by GetAppConfigDir is the application
+  // name. Replace that by 'lazarus', to make sure that lazbuild uses
+  // the same primary config path
+  PrimaryConfigPath:= ExtractFilePath(GetAppConfigDir(False)) + 'lazarus';
   {$else}
   // fpc 2.2.0 cannot handle spaces in path in some circumstances
   PrimaryConfigPath:=ChompPathDelim(ProgramDirectory);
