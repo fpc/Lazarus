@@ -1628,6 +1628,9 @@ resourcestring
     +'class %s%s%s has created the error:%s%s%s%s';
   fdInvalidMultiselectionText='Multiselected components must be of a single form.';
   lisInvalidDelete = 'Invalid delete';
+  lisTheComponentIsInheritedFromToDeleteAnInheritedComp = 'The component %s '
+    +'is inherited from %s.%sTo delete an inherited component open the '
+    +'ancestor and delete it there.';
   lisTheRootComponentCanNotBeDeleted = 'The root component can not be deleted.';
   fdmAlignWord='Align';
   fdmMirrorHorizontal='Mirror horizontal';

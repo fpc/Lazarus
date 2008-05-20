@@ -1856,6 +1856,7 @@ var
   i: integer;
   APersistent: TPersistent;
   AncestorRoot: TComponent;
+  AComponent: TComponent;
 begin
   Result:=true;
   if (ControlSelection.Count=0) or (ControlSelection.SelectionForm<>Form) then
@@ -1876,13 +1877,25 @@ begin
                                     TComponent(ControlSelection[i].Persistent));
     if AncestorRoot<>nil then begin
       MessageDlg(lisInvalidDelete,
-       'The component '+dbgsName(ControlSelection[i].Persistent)
-       +' is inherited from '+dbgsName(AncestorRoot)+'.'#13
-       +'To delete an inherited component open the ancestor and delete it there.',
+       Format(lisTheComponentIsInheritedFromToDeleteAnInheritedComp, [dbgsName(
+         ControlSelection[i].Persistent), dbgsName(AncestorRoot), #13]),
        mtInformation, [mbCancel],0);
       exit;
     end;
   end;
+  // check if a selected component is not owned by lookuproot (can not be deleted)
+  for i:=0 to ControlSelection.Count-1 do begin
+    if not ControlSelection[i].IsTComponent then continue;
+    AComponent:=TComponent(ControlSelection[i].Persistent);
+    if AComponent.Owner<>FLookupRoot then begin
+      MessageDlg(lisInvalidDelete,
+       'The component '+dbgsName(ControlSelection[i].Persistent)
+       +' can not be deleted, because it is not owned by '+dbgsName(FLookupRoot)+'.',
+       mtInformation, [mbCancel],0);
+      exit;
+    end;
+  end;
+  
   // mark selected components for deletion
   for i:=0 to ControlSelection.Count-1 do
     MarkPersistentForDeletion(ControlSelection[i].Persistent);
