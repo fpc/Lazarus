@@ -5575,9 +5575,9 @@ begin
           if TCustomComboBox(LCLObject).Items.IndexOf(Str) < 0 then
             TCustomComboBox(LCLObject).AddItem(Str, nil);
         end;
-        
         QEvent_accept(Event);
       	Result := SlotKey(Sender, Event);
+        exit;
       end;
     end;
     Result := inherited EventFilter(Sender, Event);
