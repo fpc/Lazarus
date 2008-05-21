@@ -94,25 +94,14 @@ var EncodingValid: boolean = false;
 {$IFDEF Windows}
 function GetWindowsEncoding: string;
 var
-  {$ifdef WinCE}
-  Buffer : PWideChar;
-  {$else}
-  Buffer : PChar;
-  {$endif}
-  Size : integer;
+  cp : UINT;
 begin
-  Size := GetLocaleInfo (LOCALE_USER_DEFAULT, LOCALE_ILANGUAGE, nil, 0);
-  GetMem(Buffer, Size);
-  try
-    GetLocaleInfo (LOCALE_USER_DEFAULT, LOCALE_ILANGUAGE, Buffer, Size);
-    Result := string(Buffer);
-    while (Result<>'') and (Result[1]='0') do
-      Result:=copy(Result,2,length(Result));
-    if Result<>'' then
-      Result:='cp'+Result;
-  finally
-    FreeMem(Buffer);
-  end
+  cp := GetACP;
+  case cp of
+    CP_UTF8: Result := EncodingUTF8;
+  else
+    Result:='cp'+IntToStr(GetACP);
+  end;
 end;
 {$ENDIF}
 
