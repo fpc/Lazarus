@@ -9042,6 +9042,7 @@ begin
   if Result<>mrOk then exit;
 
   // show messages
+  MessagesView.EnsureVisible;
   MessagesView.BeginBlock;
 
   try
@@ -9189,6 +9190,7 @@ begin
     DoCheckFilesOnDisk;
 
     MessagesView.EndBlock;
+    MessagesView.EnsureVisible;
   end;
   Result:=mrOk;
 end;
