@@ -41,7 +41,7 @@ unit BuildLazDialog;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, LCLType, LCLIntf,
+  Classes, SysUtils, LCLProc, LConvEncoding, Forms, Controls, LCLType, LCLIntf,
   Graphics, GraphType, StdCtrls, ExtCtrls, Buttons, FileUtil, Dialogs,
   LResources,  Laz_XMLCfg, InterfaceBase, Themes, ComCtrls,
   LazarusIDEStrConsts, TransferMacros, LazConf, IDEProcs, DialogProcs,
@@ -329,7 +329,7 @@ var
   CurItem: TBuildLazarusItem;
   ExtraOptions, LinkerAddition: String;
   CurMakeMode: TMakeMode;
-  
+
   {$IFDEF win32}
   // add compiler directory to the PATH, so that windres called by the compiler
   // can find the preprocessor
@@ -351,6 +351,24 @@ var
   end;
   {$ENDIF}
   
+  {$IFDEF windows}
+  // Set the code page of the console to the same code page as the windows
+  // code page to prevent problems with changed meaning of accented
+  // characters in Makefile paramaters, when Make call the shell
+  // to execute command with " in them
+  procedure SetLazWinCodePage;
+  var
+    CodePage: string;
+  begin
+    CodePage := GetSystemEncoding;
+    if CodePage=EncodingUTF8 then
+      CodePage := '65001'
+    else
+      Delete(CodePage, 1, 2);
+    Tool.EnvironmentOverrides.Values['LAZWINCODEPAGE'] := CodePage;
+  end;
+  {$ENDIF}
+  
 begin
   Result:=mrCancel;
   
@@ -365,6 +383,9 @@ begin
     Tool.EnvironmentOverrides.Values['LCL_PLATFORM']:=
       LCLPlatformDirNames[Options.LCLPlatform];
     Tool.EnvironmentOverrides.Values['LANG']:= 'en_US';
+    {$IFDEF windows}
+    SetLazWinCodePage;
+    {$ENDIF}
     if CompilerPath<>'' then
       Tool.EnvironmentOverrides.Values['PP']:=CompilerPath;
     if not FileExists(Tool.Filename) then begin

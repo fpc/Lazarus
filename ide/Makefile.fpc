@@ -117,7 +117,7 @@ endif
 
 #-----------------------------------------------------------------------------
 [rules]
-.PHONY: ide idepkg bigide starter lazbuilder all clean cleanide purge revisioninc
+.PHONY: ide idepkg bigide starter lazbuilder all clean cleanide purge revisioninc codepage
 
 #-----------------------------------------------------------------------------
 revisioninc:
@@ -128,9 +128,16 @@ endif
 	../tools/svn2revisioninc$(SRCEXEEXT) .. revision.inc
 endif
 
+codepage:
+ifneq ($(findstring $(OS_TARGET),win32 win64),)
+ifneq ($(LAZWINCODEPAGE),)
+	chcp $(LAZWINCODEPAGE)
+endif
+endif
+
 
 #-----------------------------------------------------------------------------
-ide: $(COMPILER_UNITTARGETDIR) revisioninc
+ide: $(COMPILER_UNITTARGETDIR) revisioninc codepage
 ifeq ($(LAZARUS_OPT),)
         $(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT)
 else
