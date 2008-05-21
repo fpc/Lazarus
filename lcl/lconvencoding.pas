@@ -108,7 +108,6 @@ end;
 function GetSystemEncoding: string;
 var Lang: string;
     i: integer;
-    s: string;
 begin
   if EncodingValid then begin
     Result:=SystemEncoding;
@@ -133,13 +132,6 @@ begin
   i:=pos('.',Lang);
   if (i>0) and (i<=length(Lang)) then
     Result:=copy(Lang,i+1,length(Lang)-i);
-
-  // check parameters
-  for i:=1 to ParamCount do
-  begin
-    s:=ParamStr(i);
-    if s='--charset=' then Result:=copy(s,pos(#61,s),length(s));
-  end;
 
   Result:=NormalizeEncoding(Result);
 
