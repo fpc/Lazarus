@@ -93,7 +93,7 @@ type
 
   TOIFavouriteProperties = class
   private
-    FItems: TList;
+    FItems: TFPList; // list of TOIFavouriteProperty
     FModified: Boolean;
     FSorted: Boolean;
     FDoublesDeleted: Boolean;
@@ -236,18 +236,23 @@ type
     FWidgetSets: TLCLPlatforms;
     procedure GetLvl;
   public
-    constructor Create(PropertyTree:TOICustomPropertyGrid;
+    constructor Create(PropertyTree: TOICustomPropertyGrid;
        PropEditor:TPropertyEditor; ParentNode:TOIPropertyGridRow; WidgetSets: TLCLPlatforms);
     destructor Destroy; override;
     function ConsistencyCheck: integer;
     function HasChild(Row: TOIPropertyGridRow): boolean;
+    procedure WriteDebugReport(const Prefix: string);
   public
     Index:integer;
-    LastPaintedValue:string;
-    function GetBottom:integer;
+    LastPaintedValue: string;
+    function GetBottom: integer;
     function IsReadOnly: boolean;
     function IsDisabled: boolean;
     procedure MeasureHeight(ACanvas: TCanvas);
+    function Sort(const Compare: TListSortCompare): boolean;// true if changed
+    function IsSorted(const Compare: TListSortCompare): boolean;
+    function Next: TOIPropertyGridRow;
+    function NextSkipChilds: TOIPropertyGridRow;
   public
     property Editor:TPropertyEditor read FEditor;
     property Top:integer read FTop write FTop;
@@ -301,7 +306,7 @@ type
     FCurrentEditorLookupRoot: TPersistent;
     FDefaultItemHeight:integer;
     FDragging: boolean;
-    FExpandedProperties: TStringList;
+    FExpandedProperties: TStringList;// used to restore expanded state when switching selected component(s)
     FExpandingRow: TOIPropertyGridRow;
     FFavourites: TOIFavouriteProperties;
     FFilter: TTypeKinds;
@@ -312,7 +317,7 @@ type
     FOnModified: TNotifyEvent;
     FPreferredSplitterX: integer; // best splitter position
     FPropertyEditorHook: TPropertyEditorHook;
-    FRows: TList;
+    FRows: TFPList;// list of TOIPropertyGridRow
     FSelection: TPersistentSelectionList;
     FNotificationComponents: TFPList;
     FSplitterX: integer; // current splitter position
@@ -362,6 +367,8 @@ type
     procedure ExpandRow(Index: integer);
     procedure ShrinkRow(Index: integer);
     procedure AddSubEditor(PropEditor: TPropertyEditor);
+    procedure SortSubEditors(ParentRow: TOIPropertyGridRow);
+    function CanExpandRow(Row: TOIPropertyGridRow): boolean;
 
     procedure SetRowValue;
     procedure DoCallEdit;
@@ -746,7 +753,8 @@ const
 
 function SortGridRows(Item1, Item2 : pointer) : integer;
 begin
-  Result:= AnsiCompareText(TOIPropertyGridRow(Item1).Name, TOIPropertyGridRow(Item2).Name);
+  Result:=SysUtils.CompareText(TOIPropertyGridRow(Item1).Name,
+                               TOIPropertyGridRow(Item2).Name);
 end;
 
 function CompareOIFavouriteProperties(Data1, Data2: Pointer): integer;
@@ -775,7 +783,7 @@ begin
   FFilter:=TypeFilter;
   FItemIndex:=-1;
   FStates:=[];
-  FRows:=TList.Create;
+  FRows:=TFPList.Create;
   FExpandingRow:=nil;
   FDragging:=false;
   FExpandedProperties:=TStringList.Create;
@@ -1485,9 +1493,9 @@ begin
 end;
 
 procedure TOICustomPropertyGrid.BuildPropertyList(OnlyIfNeeded: boolean);
-var a:integer;
-  CurRow:TOIPropertyGridRow;
-  OldSelectedRowPath:string;
+var a: integer;
+  CurRow: TOIPropertyGridRow;
+  OldSelectedRowPath: string;
 begin
   if OnlyIfNeeded and (not (pgsBuildPropertyListNeeded in FStates)) then exit;
   Exclude(FStates,pgsBuildPropertyListNeeded);
@@ -1579,12 +1587,13 @@ var a:integer;
 begin
   FExpandingRow:=Rows[Index];
   if (FExpandingRow.Expanded)
-  or (not (paSubProperties in FExpandingRow.Editor.GetAttributes))
+  or (not CanExpandRow(FExpandingRow))
   then begin
     FExpandingRow:=nil;
     exit;
   end;
   FExpandingRow.Editor.GetProperties(@AddSubEditor);
+  SortSubEditors(FExpandingRow);
   SetItemsTops;
   FExpandingRow.FExpanded:=true;
   a:=0;
@@ -1660,6 +1669,7 @@ var NewRow:TOIPropertyGridRow;
 begin
   NewRow:=TOIPropertyGridRow.Create(Self,PropEditor,FExpandingRow, []);
   NewIndex:=FExpandingRow.Index+1+FExpandingRow.ChildCount;
+  NewRow.Index:=NewIndex;
   FRows.Insert(NewIndex,NewRow);
   if NewIndex<FItemIndex
     then inc(FItemIndex);
@@ -1670,6 +1680,33 @@ begin
   if NewRow.FPriorBrother<>nil then
     NewRow.FPriorBrother.FNextBrother:=NewRow;
   inc(FExpandingRow.FChildCount);
+end;
+
+procedure TOICustomPropertyGrid.SortSubEditors(ParentRow: TOIPropertyGridRow);
+var
+  Item: TOIPropertyGridRow;
+  Index: Integer;
+  Next: TOIPropertyGridRow;
+begin
+  if not ParentRow.Sort(@SortGridRows) then exit;
+  // update FRows
+  Item:=ParentRow.FirstChild;
+  Index:=ParentRow.Index+1;
+  Next:=ParentRow.NextSkipChilds;
+  while (Item<>nil) and (Item<>Next) do begin
+    FRows[Index]:=Item;
+    Item.Index:=Index;
+    Item:=Item.Next;
+    inc(Index);
+  end;
+end;
+
+function TOICustomPropertyGrid.CanExpandRow(Row: TOIPropertyGridRow): boolean;
+begin
+  Result:=false;
+  if (Row=nil) or (Row.Editor=nil) then exit;
+  if (not (paSubProperties in Row.Editor.GetAttributes)) then exit;
+  Result:=true;
 end;
 
 function TOICustomPropertyGrid.MouseToIndex(y:integer;MustExist:boolean):integer;
@@ -1798,7 +1835,7 @@ begin
       if (Index>=0) and (Index<FRows.Count) then
       begin
         PointedRow:=Rows[Index];
-        if paSubProperties in PointedRow.Editor.GetAttributes then
+        if CanExpandRow(PointedRow) then
         begin
           IconX:=GetTreeIconX(Index);
           if ((X>=IconX) and (X<=IconX+FIndent)) or (ssDouble in Shift) then
@@ -1940,7 +1977,7 @@ begin
         VK_RIGHT:
           if ((FCurrentEdit = nil) or not FCurrentEdit.Focused)
           and (ItemIndex >= 0) and (not Rows[ItemIndex].Expanded)
-          and (paSubProperties in Rows[ItemIndex].Editor.GetAttributes) then
+          and CanExpandRow(Rows[ItemIndex]) then
             ExpandRow(ItemIndex)
           else
             Handled:=false;
@@ -2256,10 +2293,8 @@ begin
     end;
 
     // draw icon
-    if paSubProperties in CurRow.Editor.GetAttributes
-    then begin
+    if CanExpandRow(CurRow) then
       DrawTreeIcon(IconX,IconY,not CurRow.Expanded);
-    end;
 
     // draw name
     OldFont:=Font;
@@ -2448,7 +2483,7 @@ end;
 procedure TOICustomPropertyGrid.SetItemsTops;
 // compute row tops from row heights
 // set indices of all rows
-var a,scrollmax:integer;
+var a:integer;
 begin
   for a:=0 to FRows.Count-1 do begin
     Rows[a].Index:=a;
@@ -2458,12 +2493,6 @@ begin
     Rows[0].Top:=0;
   for a:=1 to FRows.Count-1 do
     Rows[a].FTop:=Rows[a-1].Bottom + FRowSpacing;
-  if FRows.Count>0 then
-    scrollmax:=Rows[FRows.Count-1].Bottom-Height
-  else
-    scrollmax:=0;
-  // always show something
-  if scrollmax<10 then scrollmax:=10;
 end;
 
 procedure TOICustomPropertyGrid.ClearRows;
@@ -2913,6 +2942,21 @@ begin
   Result:=false;
 end;
 
+procedure TOIPropertyGridRow.WriteDebugReport(const Prefix: string);
+var
+  i: Integer;
+  Item: TOIPropertyGridRow;
+begin
+  DebugLn([Prefix+'TOIPropertyGridRow.WriteDebugReport ',Name]);
+  i:=0;
+  Item:=FirstChild;
+  while Item<>nil do begin
+    DebugLn([Prefix+'  ',i,' ',Item.Name]);
+    inc(i);
+    Item:=Item.NextBrother;
+  end;
+end;
+
 procedure TOIPropertyGridRow.GetLvl;
 var n:TOIPropertyGridRow;
 begin
@@ -2955,6 +2999,80 @@ procedure TOIPropertyGridRow.MeasureHeight(ACanvas: TCanvas);
 begin
   FHeight:=FTree.DefaultItemHeight;
   Editor.PropMeasureHeight(Name,ACanvas,FHeight);
+end;
+
+function TOIPropertyGridRow.Sort(const Compare: TListSortCompare): boolean;
+var
+  List: TFPList;
+  Item: TOIPropertyGridRow;
+  i: Integer;
+begin
+  if IsSorted(Compare) then exit(false);
+  List:=TFPList.Create;
+  try
+    // create a TFPList of the childs
+    List.Capacity:=ChildCount;
+    Item:=FirstChild;
+    while Item<>nil do begin
+      List.Add(Item);
+      Item:=Item.NextBrother;
+    end;
+    // sort the TFPList
+    List.Sort(Compare);
+    // sort in double linked list
+    for i:=0 to List.Count-1 do begin
+      Item:=TOIPropertyGridRow(List[i]);
+      if i=0 then begin
+        FFirstChild:=Item;
+        Item.FPriorBrother:=nil;
+      end else
+        Item.FPriorBrother:=TOIPropertyGridRow(List[i-1]);
+      if i=List.Count-1 then begin
+        FLastChild:=Item;
+        Item.FNextBrother:=nil;
+      end else
+        Item.FNextBrother:=TOIPropertyGridRow(List[i+1]);
+    end;
+  finally
+    List.Free;
+  end;
+  Result:=true;
+end;
+
+function TOIPropertyGridRow.IsSorted(const Compare: TListSortCompare): boolean;
+var
+  Item1: TOIPropertyGridRow;
+  Item2: TOIPropertyGridRow;
+begin
+  if ChildCount<2 then exit(true);
+  Item1:=FirstChild;
+  while true do begin
+    Item2:=Item1.NextBrother;
+    if Item2=nil then break;
+    if Compare(Item1,Item2)>0 then exit(false);
+    Item1:=Item2;
+  end;
+  Result:=true;
+end;
+
+function TOIPropertyGridRow.Next: TOIPropertyGridRow;
+begin
+  if fFirstChild<>nil then
+    Result:=fFirstChild
+  else
+    Result:=NextSkipChilds;
+end;
+
+function TOIPropertyGridRow.NextSkipChilds: TOIPropertyGridRow;
+begin
+  Result:=Self;
+  while (Result<>nil) do begin
+    if Result.NextBrother<>nil then begin
+      Result:=Result.NextBrother;
+      exit;
+    end;
+    Result:=Result.Parent;
+  end;
 end;
 
 //==============================================================================
@@ -4350,7 +4468,7 @@ end;
 
 constructor TOIFavouriteProperties.Create;
 begin
-  FItems:=TList.Create;
+  FItems:=TFPList.Create;
 end;
 
 destructor TOIFavouriteProperties.Destroy;
@@ -4662,7 +4780,7 @@ var
   CurItem: TOIFavouriteProperty;
   cmp: LongInt;
 begin
-  Result:=TList. Create;
+  Result:=TList.Create;
   DeleteDoubles; // this also sorts descending
   FavouritesToSubtract.DeleteDoubles; // this also sorts descending
   SelfIndex:=0;

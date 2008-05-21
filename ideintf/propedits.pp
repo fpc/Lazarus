@@ -1397,8 +1397,8 @@ type
 
 // Global flags:
 var
-  GReferenceExpandable: Boolean;
-  GShowReadOnlyProps: Boolean;
+  GReferenceExpandable: Boolean = true;
+  GShowReadOnlyProps: Boolean = true;
 
 // default Hook - set by IDE
 var
@@ -4062,7 +4062,7 @@ begin
     Result := Result + [paSubProperties, paVolatileSubProperties];
 end;
 
-procedure TPersistentPropertyEditor.GetProperties(Proc:TGetPropEditProc);
+procedure TPersistentPropertyEditor.GetProperties(Proc: TGetPropEditProc);
 var
   LPersistents: TPersistentSelectionList;
 begin
@@ -6133,9 +6133,6 @@ end;
 
 procedure InitPropEdits;
 begin
-  GReferenceExpandable:=true;
-  GShowReadOnlyProps:=true;
-
   PropertyClassList:=TList.Create;
   PropertyEditorMapperList:=TList.Create;
   // register the standard property editors
