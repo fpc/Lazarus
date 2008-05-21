@@ -141,6 +141,9 @@ each control that's dropped onto the form
     procedure JITListFindAncestorBinStream(Sender: TObject; AClass: TClass;
                                            var BinStream: TExtMemoryStream;
                                            var IsBaseClass, Abort: boolean);
+    procedure JITListFindClass(Sender: TObject;
+                               const ComponentClassName: string;
+                               var ComponentClass: TComponentClass);
 
     function GetDesignerBaseClasses(Index: integer): TComponentClass; override;
     procedure OnDesignerMenuItemClick(Sender: TObject); virtual;
@@ -251,7 +254,7 @@ each control that's dropped onto the form
     function DesignerBaseClassCount: Integer; override;
     procedure UnregisterDesignerBaseClass(AClass: TComponentClass); override;
     function IndexOfDesignerBaseClass(AClass: TComponentClass): integer; override;
-    function FindDesignerBaseClassByName(const AClassName: shortstring): TComponentClass; override;
+    function FindDesignerBaseClassByName(const AClassName: shortstring; WithDefaults: boolean): TComponentClass; override;
 
     // define properties
     procedure FindDefineProperty(const APersistentClassName,
@@ -335,6 +338,8 @@ function TryFreeComponent(var AComponent: TComponent): boolean;
 
 procedure RegisterStandardClasses;
 
+var
+  BaseFormEditor1: TCustomFormEditor = nil;
 
 implementation
 
@@ -817,6 +822,15 @@ end;
 { TCustomFormEditor }
 
 constructor TCustomFormEditor.Create;
+
+  procedure InitJITList(List: TJITComponentList);
+  begin
+    List.OnReaderError:=@JITListReaderError;
+    List.OnPropertyNotFound:=@JITListPropertyNotFound;
+    List.OnFindAncestorBinStream:=@JITListFindAncestorBinStream;
+    List.OnFindClass:=@JITListFindClass;
+  end;
+
 var
   l: Integer;
 begin
@@ -829,14 +843,10 @@ begin
     FDesignerBaseClasses.Add(StandardDesignerBaseClasses[l]);
 
   JITFormList := TJITForms.Create;
-  JITFormList.OnReaderError:=@JITListReaderError;
-  JITFormList.OnPropertyNotFound:=@JITListPropertyNotFound;
-  JITFormList.OnFindAncestorBinStream:=@JITListFindAncestorBinStream;
+  InitJITList(JITFormList);
 
   JITNonFormList := TJITNonFormComponents.Create;
-  JITNonFormList.OnReaderError:=@JITListReaderError;
-  JITNonFormList.OnPropertyNotFound:=@JITListPropertyNotFound;
-  JITNonFormList.OnFindAncestorBinStream:=@JITListFindAncestorBinStream;
+  InitJITList(JITNonFormList);
 
   DesignerMenuItemClick:=@OnDesignerMenuItemClick;
   OnGetDesignerForm:=@GetDesignerForm;
@@ -1781,10 +1791,20 @@ begin
 end;
 
 function TCustomFormEditor.FindDesignerBaseClassByName(
-  const AClassName: shortstring): TComponentClass;
+  const AClassName: shortstring; WithDefaults: boolean): TComponentClass;
 var
   i: Integer;
 begin
+  if WithDefaults then begin
+    for i:=Low(StandardDesignerBaseClasses) to high(StandardDesignerBaseClasses)
+    do begin
+      if CompareText(AClassName,StandardDesignerBaseClasses[i].ClassName)=0 then
+      begin
+        Result:=StandardDesignerBaseClasses[i];
+        exit;
+      end;
+    end;
+  end;
   for i:=FDesignerBaseClasses.Count-1 downto 0 do begin
     Result:=DesignerBaseClasses[i];
     if CompareText(Result.ClassName,AClassName)=0 then exit;
@@ -1861,12 +1881,12 @@ var
       if APersistent<>nil then
         debugln('TCustomFormEditor.GetDefineProperties ComponentClass ',
           AClassName,' is a resource,'
-          +' but inheriting design is not yet implemented');
+          +' but inheriting design properties is not yet implemented');
     end;
 
     // try default classes
     if (APersistent=nil) then begin
-      AncestorClass:=FindDesignerBaseClassByName(AClassName);
+      AncestorClass:=FindDesignerBaseClassByName(AClassName,true);
       if AncestorClass<>nil then begin
         if not CreateTempPersistent(AncestorClass) then exit;
       end;
@@ -2104,6 +2124,35 @@ begin
     end;
     AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
   end;
+end;
+
+procedure TCustomFormEditor.JITListFindClass(Sender: TObject;
+  const ComponentClassName: string; var ComponentClass: TComponentClass);
+var
+  AnUnitInfo: TUnitInfo;
+  Component: TComponent;
+  RegComp: TRegisteredComponent;
+begin
+  DebugLn(['TCustomFormEditor.JITListFindClass ',ComponentClassName]);
+  RegComp:=IDEComponentPalette.FindComponent(ComponentClassName);
+  if RegComp<>nil then begin
+    //DebugLn(['TCustomFormEditor.JITListFindClass ',ComponentClassName,' is registered as ',DbgSName(RegComp.ComponentClass)]);
+    ComponentClass:=RegComp.ComponentClass;
+  end else begin
+    // ToDo: search only in reachable forms
+    AnUnitInfo:=Project1.FirstUnitWithComponent;
+    while AnUnitInfo<>nil do begin
+      Component:=AnUnitInfo.Component;
+      if SysUtils.CompareText(Component.ClassName,ComponentClassName)=0 then
+      begin
+        DebugLn(['TCustomFormEditor.JITListFindClass found nested class '+DbgSName(Component)+' in unit '+AnUnitInfo.Filename]);
+        ComponentClass:=TComponentClass(Component.ClassType);
+        break;
+      end;
+      AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
+    end;
+  end;
+  DebugLn(['TCustomFormEditor.JITListFindClass ',ComponentClassName,' Class=',DbgSName(ComponentClass)]);
 end;
 
 function TCustomFormEditor.GetDesignerBaseClasses(Index: integer

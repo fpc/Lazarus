@@ -40,7 +40,8 @@ uses
   LFMTrees,
   // IDE
   PropEdits, IDEDialogs, ComponentReg, PackageIntf, IDEWindowIntf,
-  LazarusIDEStrConsts, OutputFilter, IDEProcs, IDEOptionDefs, EditorOptions;
+  CustomFormEditor, LazarusIDEStrConsts, OutputFilter, IDEProcs, IDEOptionDefs,
+  EditorOptions;
 
 type
   TCheckLFMDialog = class(TForm)
@@ -133,23 +134,46 @@ var
     end;
   end;
   
+  procedure FindMissingClass(ObjNode: TLFMObjectNode);
+  var
+    i: Integer;
+    AClassName: String;
+    RegComp: TRegisteredComponent;
+  begin
+    AClassName:=ObjNode.TypeName;
+    // search in already missing classes
+    if (MissingClasses<>nil) then begin
+      for i:=0 to MissingClasses.Count-1 do
+        if SysUtils.CompareText(AClassName,MissingClasses[i])=0 then
+          exit;
+    end;
+    // search in designer base classes
+    if BaseFormEditor1.FindDesignerBaseClassByName(AClassName,true)<>nil then
+      exit;
+    // search in registered classes
+    RegComp:=IDEComponentPalette.FindComponent(ObjNode.TypeName);
+    if (RegComp<>nil) and (RegComp.GetUnitName<>'') then exit;
+    // class is missing
+    DebugLn(['FindMissingClass ',ObjNode.Name,':',ObjNode.TypeName,' IsInherited=',ObjNode.IsInherited]);
+    if MissingClasses=nil then
+      MissingClasses:=TStringList.Create;
+    MissingClasses.Add(AClassName);
+  end;
+  
   procedure FindMissingClasses;
   var
     Node: TLFMTreeNode;
     ObjNode: TLFMObjectNode;
-    RegComp: TRegisteredComponent;
   begin
     Node:=LFMTree.Root;
+    if Node=nil then exit;
+    // skip root
+    Node:=Node.Next;
+    // check all other
     while Node<>nil do begin
       if Node is TLFMObjectNode then begin
         ObjNode:=TLFMObjectNode(Node);
-        RegComp:=IDEComponentPalette.FindComponent(ObjNode.TypeName);
-        if (RegComp=nil) or (RegComp.GetUnitName='') then begin
-          DebugLn(['FindMissingClasses ',ObjNode.Name,':',ObjNode.TypeName,' IsInherited=',ObjNode.IsInherited]);
-          if MissingClasses=nil then
-            MissingClasses:=TStringList.Create;
-          MissingClasses.Add(ObjNode.TypeName);
-        end;
+        FindMissingClass(ObjNode);
       end;
       Node:=Node.Next;
     end;

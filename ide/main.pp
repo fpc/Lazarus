@@ -5368,6 +5368,10 @@ var
   LCLVersion: string;
   MissingClasses: TStrings;
   LFMComponentName: string;
+  i: Integer;
+  NestedClassName: string;
+  NestedClass: TComponentClass;
+  NestedUnitInfo: TUnitInfo;
 begin
   debugln('TMainIDE.DoLoadLFM A ',AnUnitInfo.Filename,' IsPartOfProject=',dbgs(AnUnitInfo.IsPartOfProject),' ');
 
@@ -5424,11 +5428,38 @@ begin
         exit;
       end;
 
+      // load missing component classes (e.g. ancestor and frames)
+      Result:=DoLoadAncestorDependencyHidden(AnUnitInfo,NewClassName,OpenFlags,
+                                             AncestorType,AncestorUnitInfo);
+      if Result<>mrOk then begin
+        DebugLn(['TMainIDE.DoLoadLFM DoLoadAncestorDependencyHidden failed for ',AnUnitInfo.Filename]);
+        exit;
+      end;
+      if MissingClasses<>nil then begin
+        for i:=MissingClasses.Count-1 downto 0 do begin
+          {$IFNDEF EnableTFrame}
+          if i>=0 then continue;// just skip
+          {$ENDIF}
+          NestedClassName:=MissingClasses[i];
+          if SysUtils.CompareText(NestedClassName,AncestorType.ClassName)=0 then
+          begin
+            MissingClasses.Delete(i);
+          end else begin
+            DebugLn(['TMainIDE.DoLoadLFM loading nested class ',NestedClassName,' needed by ',AnUnitInfo.Filename]);
+            NestedClass:=nil;
+            NestedUnitInfo:=nil;
+            Result:=DoLoadComponentDependencyHidden(AnUnitInfo,NestedClassName,
+                                     OpenFlags,true,NestedClass,NestedUnitInfo);
+            if Result<>mrOk then begin
+              DebugLn(['TMainIDE.DoLoadLFM DoLoadComponentDependencyHidden NestedClassName=',NestedClassName,' failed for ',AnUnitInfo.Filename]);
+              exit;
+            end;
+          end;
+        end;
+      end;
+
       BinStream:=nil;
       try
-        Result:=DoLoadAncestorDependencyHidden(AnUnitInfo,NewClassName,OpenFlags,
-                               AncestorType,AncestorUnitInfo);
-        
         // convert text to binary format
         BinStream:=TExtMemoryStream.Create;
         TxtLFMStream:=TExtMemoryStream.Create;
@@ -5555,13 +5586,7 @@ function TMainIDE.FindBaseComponentClass(const AComponentClassName,
 begin
   // find the ancestor class
   if AComponentClassName<>'' then begin
-    if CompareText(AComponentClassName,'TForm')=0 then begin
-      AComponentClass:=TForm;
-    end else if CompareText(AComponentClassName,'TDataModule')=0 then begin
-      AComponentClass:=TDataModule;
-    end else if CompareText(AComponentClassName,'TFrame')=0 then begin
-      AComponentClass:=TFrame;
-    end else if (DescendantClassName<>'')
+    if (DescendantClassName<>'')
     and (CompareText(AComponentClassName,'TCustomForm')=0) then begin
       // this is a common user mistake
       MessageDlg(lisCodeTemplError, Format(
@@ -5581,7 +5606,7 @@ begin
       exit;
     end else begin
       // search in the registered base classes
-      AComponentClass:=FormEditor1.FindDesignerBaseClassByName(AComponentClassName);
+      AComponentClass:=FormEditor1.FindDesignerBaseClassByName(AComponentClassName,true);
     end;
   end else begin
     // default is TForm
@@ -5784,7 +5809,7 @@ begin
     AncestorClass) then
   begin
     DebugLn(['TMainIDE.DoLoadAncestorDependencyHidden FindUnitComponentClass failed for AncestorClassName=',AncestorClassName]);
-    exit;
+    exit(mrCancel);
   end;
 
   // try loading the ancestor first (unit, lfm and component instance)
@@ -5814,6 +5839,7 @@ begin
   if AncestorClass=nil then
     AncestorClass:=TForm;
   //DebugLn('TMainIDE.DoLoadAncestorDependencyHidden Filename="',AnUnitInfo.Filename,'" AncestorClassName=',AncestorClassName,' AncestorClass=',dbgsName(AncestorClass));
+  Result:=mrOk;
 end;
 
 function TMainIDE.DoLoadComponentDependencyHidden(AnUnitInfo: TUnitInfo;
@@ -5949,7 +5975,7 @@ var
       end;
     end;
 
-    debugln('TMainIDE.DoLoadComponentDependencyHidden ',AnUnitInfo.Filename,' Loading ancestor unit ',UnitFilename);
+    debugln('TMainIDE.DoLoadComponentDependencyHidden ',AnUnitInfo.Filename,' Loading referenced form ',UnitFilename);
     // load unit source
     TheModalResult:=LoadCodeBuffer(UnitCode,UnitFilename,[lbfCheckIfText]);
     if TheModalResult<>mrOk then begin
@@ -5987,7 +6013,7 @@ var
   begin
     Result:=false;
     AComponentClass:=
-                   FormEditor1.FindDesignerBaseClassByName(AComponentClassName);
+              FormEditor1.FindDesignerBaseClassByName(AComponentClassName,true);
     if AComponentClass<>nil then begin
       DebugLn(['TMainIDE.DoLoadComponentDependencyHidden.TryRegisteredClasses found: ',AComponentClass.ClassName]);
       TheModalResult:=mrOk;

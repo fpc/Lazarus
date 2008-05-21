@@ -27,11 +27,6 @@
     and such stuff. Also these forms can be loaded from streams and missing
     components and methods are added just-in-time to the class definition.
     Hence the name for the class: TJITForms.
-    Subcomponents are looked up in the list of registered components
-    (TJITForms.RegCompList).
-
-  ToDo:
-    -Add recursion needed for frames.
 }
 unit JITForms;
 
@@ -48,7 +43,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, AvgLvlTree, TypInfo, LCLProc, LResources, Forms, Controls,
-  LCLMemManager, LCLIntf, Dialogs, JITForm, ComponentReg, IDEProcs,
+  LCLMemManager, LCLIntf, Dialogs, JITForm, IDEProcs,
   BasePkgManager;
 
 type
@@ -70,6 +65,9 @@ type
   TJITFindAncestorBinStream = procedure(Sender: TObject; AClass: TClass;
                                         var BinStream: TExtMemoryStream;
                                         var IsBaseClass, Abort: boolean) of object;
+  TJITFindClass = procedure(Sender: TObject;
+                            const ComponentClassName: string;
+                            var ComponentClass: TComponentClass) of object;
 
 
   { TJITComponentList }
@@ -85,6 +83,7 @@ type
     FCurUnknownProperty: string;
     FErrors: TLRPositionLinks;
     FOnFindAncestorBinStream: TJITFindAncestorBinStream;
+    FOnFindClass: TJITFindClass;
     FOnPropertyNotFound: TJITPropertyNotFoundEvent;
   protected
     FCurReadErrorMsg: string;
@@ -175,6 +174,7 @@ type
                              read FOnPropertyNotFound write FOnPropertyNotFound;
     property OnFindAncestorBinStream: TJITFindAncestorBinStream
                    read FOnFindAncestorBinStream write FOnFindAncestorBinStream;
+    property OnFindClass: TJITFindClass read FOnFindClass write FOnFindClass;
     property CurReadJITComponent: TComponent read FCurReadJITComponent;
     property CurReadClass: TClass read FCurReadClass;
     property CurReadChild: TComponent read FCurReadChild;
@@ -1558,19 +1558,15 @@ end;
 
 procedure TJITComponentList.ReaderFindComponentClass(Reader: TReader;
   const FindClassName: Ansistring; var ComponentClass: TComponentClass);
-var
-  RegComp: TRegisteredComponent;
 begin
   fCurReadChild:=nil;
   fCurReadChildClass:=ComponentClass;
   FCurUnknownClass:=FindClassName;
   if ComponentClass=nil then begin
-    RegComp:=IDEComponentPalette.FindComponent(FindClassName);
-    if RegComp<>nil then begin
-      //debugln('[TJITComponentList.ReaderFindComponentClass] '''+FindClassName
-      //   +''' is registered');
-      ComponentClass:=RegComp.ComponentClass;
-    end else begin
+    if Assigned(OnFindClass) then
+      OnFindClass(Self,FindClassName,ComponentClass);
+    fCurReadChildClass:=ComponentClass;
+    if ComponentClass=nil then begin
       DebugLn('[TJITComponentList.ReaderFindComponentClass] '''+FindClassName
          +''' is unregistered');
       // The reader will create a ReaderError automatically

@@ -59,6 +59,7 @@ procedure CreateFormEditor;
 begin
   if FormEditor1=nil then begin
     FormEditor1 := TFormEditor.Create;
+    BaseFormEditor1 := FormEditor1;
     FormEditingHook := FormEditor1;
     IDECmdScopeDesignerOnly.AddWindowClass(TDesignerIDECommandForm);
   end;
@@ -70,6 +71,7 @@ begin
   FormEditingHook:=nil;
   FormEditor1.Free;
   FormEditor1:=nil;
+  BaseFormEditor1 := nil;
 end;
 
 procedure TFormEditor.SetObj_Inspector(AnObjectInspector: TObjectInspectorDlg);
