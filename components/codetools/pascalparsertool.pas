@@ -2402,8 +2402,9 @@ begin
           UndoReadNextAtom;
           exit;
         end;
-      cafSemicolon, cafNone: exit;
+      cafSemicolon: exit;
       else
+        if CurPos.StartPos>SrcLen then exit;
         ReadNextAtom;
       end;
     end;
