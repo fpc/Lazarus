@@ -407,7 +407,9 @@
       <element name="CompareFileExt.CaseSensitive">
         <short>
           <var>CaseSensitive</var> - if True, case of 
+          
           <var>Ext</var> must match case in 
+          
           <var>FileName</var>
         </short>
       </element>
@@ -504,41 +506,66 @@
       </element>
       <!-- function Visibility: default -->
       <element name="CreateAbsoluteSearchPath">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          <var>CreateAbsoluteSearchPath</var> - concatenates  
+          <var>BaseDirectory </var>and  
+          <var>SearchPath</var> to form an absolute path to search for files</short>
+        <descr>
+          <p>
+            <var>CreateAbsoluteSearchPath</var> - concatenates 
+  
+            <var>BaseDirectory </var>and 
+  
+            <var>SearchPath</var> to form an absolute path to search for files</p>
+          <p>Adds appropriate path delimiters to the BaseDirectory string, then adds the search path, checking that each directory in the path is in fact an absolutely specified directory, then returns the fully formed absolute search path.</p>
+        </descr>
+        <errors>If 
+<var>BaseDirectory</var> is empty, functions exits and returns with 
+<var>Result</var> equal to 
+<var>SearchPath</var>; if 
+<var>SearchPath</var> is empty, function exits with empty 
+<var>Result</var>
+        </errors>
       </element>
       <!-- function result Visibility: default -->
       <element name="CreateAbsoluteSearchPath.Result">
-        <short/>
+        <short>The absolute path formed by concatenating <var>BaseDirectory</var> and <var>SearchPath</var>
+        </short>
       </element>
       <!-- argument Visibility: default -->
       <element name="CreateAbsoluteSearchPath.SearchPath">
-        <short/>
+        <short>The search path (a relative path)</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="CreateAbsoluteSearchPath.BaseDirectory">
-        <short/>
+        <short>The base directory from which to form the absolute path</short>
       </element>
       <!-- function Visibility: default -->
       <element name="CreateRelativePath">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          <var>CreateRelativePath</var> - given an absolute path and a 
+          <var>BaseDirectory,</var> create a search path relative to the current directory</short>
+        <descr>
+          <p>
+            <var>CreateRelativePath</var> - given an absolute path and a 
+            <var>BaseDirectory,</var> create a search path relative to the current directory</p>
+          <p>The returned string includes the correct number of dots and double dots to signify relativity to the current directory (eg ../../or ..\..\ etc)</p>
+        </descr>
+        <errors>If <var>BaseDirectory</var> is empty, functions exits and returns with <var>Result</var> equal to <var>Filename</var>; if <var>Filename</var> is empty, function exits with empty <var>Result</var>
+        </errors>
       </element>
       <!-- function result Visibility: default -->
       <element name="CreateRelativePath.Result">
-        <short/>
+        <short>The file name expressed as path relative to the current directory</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="CreateRelativePath.Filename">
-        <short/>
+        <short>The absolute <var>FileName</var> for which a relative path is to be created</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="CreateRelativePath.BaseDirectory">
-        <short/>
+        <short>
+          <var>BaseDirectory </var>of the absolute search path</short>
       </element>
       <!-- function Visibility: default -->
       <element name="FileIsInPath">
