@@ -95,6 +95,11 @@ var EncodingValid: boolean = false;
 function GetWindowsEncoding: string;
 var
   cp : UINT;
+{$IFDEF WinCE}
+// CP_UTF8 is missing in the windows unit of the Windows CE RTL
+const
+  CP_UTF8 = 65001;
+{$ENDIF}
 begin
   cp := GetACP;
   case cp of
