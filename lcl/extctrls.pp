@@ -585,7 +585,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property Stretch: Boolean read FStretch write SetStretch;
-    property Transparent: Boolean read FTransparent write SetTransparent default true;
+    property Transparent: Boolean read FTransparent write SetTransparent default false;
     property Proportional: Boolean read FProportional write SetProportional default false;
   end;
 
