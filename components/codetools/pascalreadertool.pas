@@ -49,9 +49,6 @@ type
   protected
     CachedSourceName: string;
   public
-    function FindDeepestExpandedNodeAtPos(CleanCursorPos: integer;
-        ExceptionOnNotFound: boolean): TCodeTreeNode;
-
     // comments
     function CleanPosIsInComment(CleanPos, CleanCodePosInFront: integer;
         var CommentStart, CommentEnd: integer): boolean;
@@ -1135,23 +1132,6 @@ begin
         break;
     end;
     if Run=1 then SetLength(Result,ResultLen);
-  end;
-end;
-
-function TPascalReaderTool.FindDeepestExpandedNodeAtPos(
-  CleanCursorPos: integer; ExceptionOnNotFound: boolean): TCodeTreeNode;
-begin
-  Result:=FindDeepestNodeAtPos(CleanCursorPos,ExceptionOnNotFound);
-  if Result=nil then exit;
-  if Result.Desc in [ctnClass,ctnClassInterface] then begin
-    BuildSubTreeForClass(Result);
-    Result:=FindDeepestNodeAtPos(CleanCursorPos,true);
-    if Result=nil then exit;
-  end;
-  if Result.Desc=ctnBeginBlock then begin
-    BuildSubTreeForBeginBlock(Result);
-    Result:=FindDeepestNodeAtPos(CleanCursorPos,true);
-    if Result=nil then exit;
   end;
 end;
 

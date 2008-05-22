@@ -1140,7 +1140,7 @@ begin
     DebugLn('TFindDeclarationTool.FindDeclarationOfIdentifier B CleanCursorPos=',dbgs(CleanCursorPos));
     {$ENDIF}
     // find CodeTreeNode at cursor
-    CursorNode:=BuildSubTreeAndFindDeepestNodeAtPos(Tree.Root,CleanCursorPos,true);
+    CursorNode:=BuildSubTreeAndFindDeepestNodeAtPos(CleanCursorPos,true);
     // search
     Params:=TFindDeclarationParams.Create;
     Params.ContextNode:=CursorNode;
@@ -1319,8 +1319,7 @@ begin
     {$ENDIF}
     // find CodeTreeNode at cursor
     if (Tree.Root<>nil) and (Tree.Root.StartPos<=CleanCursorPos) then begin
-      CursorNode:=BuildSubTreeAndFindDeepestNodeAtPos(Tree.Root,CleanCursorPos,
-                                                      true);
+      CursorNode:=BuildSubTreeAndFindDeepestNodeAtPos(CleanCursorPos,true);
       if (fsfFindMainDeclaration in SearchSmartFlags)
       and CleanPosIsDeclarationIdentifier(CleanCursorPos,CursorNode)
       then begin
@@ -3389,7 +3388,7 @@ begin
 
     NodeList:=TFPList.Create;
     NewTool:=Self;
-    NewNode:=FindDeepestExpandedNodeAtPos(CleanPos,true);
+    NewNode:=BuildSubTreeAndFindDeepestNodeAtPos(CleanPos,true);
     NewPos:=CursorPos;
     if StartPositionAtDefinition then
       AddPos;
@@ -3579,7 +3578,7 @@ var
       if CleanPosToCaret(StartPos,ReferencePos) then
         debugln('  x=',dbgs(ReferencePos.X),' y=',dbgs(ReferencePos.Y),' ',ReferencePos.Code.Filename);
 
-      CursorNode:=BuildSubTreeAndFindDeepestNodeAtPos(Tree.Root,StartPos,true);
+      CursorNode:=BuildSubTreeAndFindDeepestNodeAtPos(StartPos,true);
       debugln('  CursorNode=',CursorNode.DescAsString,' Forward=',dbgs(CursorNode.SubDesc and ctnsForwardDeclaration));
 
       if (DeclarationTool=Self)
@@ -3772,7 +3771,7 @@ var
     DeclarationTool.BuildTreeAndGetCleanPos(trAll,CursorPos,CleanDeclCursorPos,
                                             []);
     DeclarationNode:=DeclarationTool.BuildSubTreeAndFindDeepestNodeAtPos(
-                             DeclarationTool.Tree.Root,CleanDeclCursorPos,true);
+                                           CleanDeclCursorPos,true);
     Identifier:=DeclarationTool.ExtractIdentifier(CleanDeclCursorPos);
     if Identifier='' then begin
       debugln('FindDeclarationNode Identifier="',Identifier,'"');

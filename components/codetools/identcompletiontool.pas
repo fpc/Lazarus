@@ -1241,7 +1241,7 @@ begin
                 [{$IFNDEF DisableIgnoreErrorAfter}btSetIgnoreErrorPos{$ENDIF}]);
 
   // find node at position
-  CursorNode:=FindDeepestExpandedNodeAtPos(CleanCursorPos,true);
+  CursorNode:=BuildSubTreeAndFindDeepestNodeAtPos(CleanCursorPos,true);
   if CurrentIdentifierList<>nil then begin
     StartContext:=CurrentIdentifierList.StartContext;
     StartContext.Node:=CursorNode;
@@ -1716,7 +1716,7 @@ begin
                   [{$IFNDEF DisableIgnoreErrorAfter}btSetIgnoreErrorPos{$ENDIF}]);
 
     // find node at position
-    CursorNode:=FindDeepestExpandedNodeAtPos(CleanCursorPos,true);
+    CursorNode:=BuildSubTreeAndFindDeepestNodeAtPos(CleanCursorPos,true);
 
     // if cursor is on type node, find class node
     if CursorNode.Desc=ctnTypeDefinition then
@@ -2033,7 +2033,7 @@ var
 begin
   if not (iliNodeHashValid in Flags) then exit(true);
   //DebugLn(['TIdentifierListItem.RestoreNode ',Identifier]);
-  NewNode:=Tool.FindDeepestExpandedNodeAtPos(FNodeStartPos,false);
+  NewNode:=Tool.BuildSubTreeAndFindDeepestNodeAtPos(FNodeStartPos,false);
   Result:=false;
   if (NewNode=nil) or (NewNode.StartPos<>FNodeStartPos)
   or (NewNode.Desc<>FNodeDesc) then begin

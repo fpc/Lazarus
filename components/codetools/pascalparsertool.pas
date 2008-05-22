@@ -223,6 +223,8 @@ type
     procedure BuildSubTree(CleanCursorPos: integer); virtual;
     procedure BuildSubTree(ANode: TCodeTreeNode); virtual;
     function NodeNeedsBuildSubTree(ANode: TCodeTreeNode): boolean; virtual;
+    function BuildSubTreeAndFindDeepestNodeAtPos(
+      P: integer; ExceptionOnNotFound: boolean): TCodeTreeNode;
     function BuildSubTreeAndFindDeepestNodeAtPos(StartNode: TCodeTreeNode;
       P: integer; ExceptionOnNotFound: boolean): TCodeTreeNode;
 
@@ -2418,7 +2420,16 @@ function TPascalParserTool.ReadWithStatement(ExceptionOnError,
     if CreateNodes then begin
       EndPos:=CurPos.EndPos;
       if CurNode.Desc=ctnWithStatement then begin
+        if not (CurPos.Flag in [cafSemicolon,cafEnd]) then begin
+          // the with statement is valid until the next atom
+          // this is important for context when cursor is behind last atom of the
+          // with statement, but in front of the next atom
+          ReadNextAtom;
+          EndPos:=CurPos.StartPos;
+          UndoReadNextAtom;
+        end;
         CurNode.EndPos:=EndPos;
+        //DebugLn(['CloseNodes "',copy(Src,CurNode.StartPos,CurNode.EndPos-CurNode.STartPos),'"']);
         EndChildNode; // ctnWithStatement
       end;
       WithVarNode:=CurNode;
@@ -4182,16 +4193,22 @@ begin
   end;
 end;
 
+function TPascalParserTool.BuildSubTreeAndFindDeepestNodeAtPos(P: integer;
+  ExceptionOnNotFound: boolean): TCodeTreeNode;
+begin
+  Result:=BuildSubTreeAndFindDeepestNodeAtPos(Tree.Root,P,ExceptionOnNotFound);
+end;
+
 function TPascalParserTool.BuildSubTreeAndFindDeepestNodeAtPos(
   StartNode: TCodeTreeNode; P: integer; ExceptionOnNotFound: boolean
   ): TCodeTreeNode;
 begin
   Result:=FindDeepestNodeAtPos(StartNode,P,ExceptionOnNotFound);
-  debugln('TPascalParserTool.BuildSubTreeAndFindDeepestNodeAtPos A ',Result.DescAsString,' ',dbgs(NodeNeedsBuildSubTree(Result)));
+  //debugln('TPascalParserTool.BuildSubTreeAndFindDeepestNodeAtPos A ',Result.DescAsString,' ',dbgs(NodeNeedsBuildSubTree(Result)));
   while NodeNeedsBuildSubTree(Result) do begin
     BuildSubTree(Result);
     Result:=FindDeepestNodeAtPos(Result,P,ExceptionOnNotFound);
-    debugln('TPascalParserTool.BuildSubTreeAndFindDeepestNodeAtPos B ',Result.DescAsString,' ',dbgs(NodeNeedsBuildSubTree(Result)));
+    //debugln('TPascalParserTool.BuildSubTreeAndFindDeepestNodeAtPos B ',Result.DescAsString,' ',dbgs(NodeNeedsBuildSubTree(Result)));
   end;
 end;
 

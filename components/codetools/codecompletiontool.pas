@@ -6543,7 +6543,7 @@ begin
       // parse unit
       NewCodeTool.BuildTreeAndGetCleanPos(trAll,CodeXYPos,CleanCursorPos,[]);
       // find node at position
-      ProcNode:=NewCodeTool.FindDeepestExpandedNodeAtPos(CleanCursorPos,true);
+      ProcNode:=NewCodeTool.BuildSubTreeAndFindDeepestNodeAtPos(CleanCursorPos,true);
       if (ProcNode.Desc<>ctnProcedure)
       or (ProcNode.Parent=nil) then begin
         NewCodeTool.MoveCursorToNodeStart(ProcNode);
