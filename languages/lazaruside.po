@@ -8305,7 +8305,7 @@ msgid "Edit Tool"
 msgstr ""
 
 #: lazarusidestrconsts:lisedtexttoolprogramfilename
-msgid "Programfilename:"
+msgid "Program Filename:"
 msgstr ""
 
 #: lazarusidestrconsts:lisedtexttoolparameters

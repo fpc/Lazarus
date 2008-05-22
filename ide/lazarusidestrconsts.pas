@@ -2669,7 +2669,7 @@ resourcestring
   
   // edit external tools
   lisEdtExtToolEditTool = 'Edit Tool';
-  lisEdtExtToolProgramfilename = 'Programfilename:';
+  lisEdtExtToolProgramfilename = 'Program Filename:';
   lisEdtExtToolParameters = 'Parameters:';
   lisEdtExtToolWorkingDirectory = 'Working Directory:';
   lisEdtExtToolScanOutputForFreePascalCompilerMessages = 'Scan output for '

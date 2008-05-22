@@ -6731,7 +6731,7 @@ msgid "Program%sA freepascal program. The program file is automatically maintain
 msgstr "Programme%sUn programme FreePascal. Le fichier source du programme est automatiquement géré par Lazarus."
 
 #: lazarusidestrconsts:lisedtexttoolprogramfilename
-msgid "Programfilename:"
+msgid "Program Filename:"
 msgstr "Fichier du programme"
 
 #: lazarusidestrconsts:lisexeprograms
