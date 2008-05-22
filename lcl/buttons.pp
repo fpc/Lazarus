@@ -223,22 +223,22 @@ type
 
   TCustomSpeedButton = class(TGraphicControl)
   private
-    FAllowAllUp: Boolean;
-    FDown: Boolean;
-    FDownLoaded : Boolean;// value of Down set during loading
-    FDragging: Boolean;
-    FFlat: Boolean;
     FGlyph: TButtonGlyph;
     FGroupIndex: Integer;
     FLastDrawDetails: TThemedElementDetails;
     FLayout: TButtonLayout;
     FMargin: integer;
-    FMouseInControl: Boolean;
+    FSpacing: integer;
     FShortcut: TShortCut;
     FShowAccelChar: boolean;
     FShowCaption: boolean;
-    FSpacing: integer;
     FTransparent: Boolean;
+    FAllowAllUp: Boolean;
+    FDown: Boolean;
+    FDownLoaded : Boolean;// value of Down set during loading
+    FDragging: Boolean;
+    FFlat: Boolean;
+    FMouseInControl: Boolean;
     function GetGlyph: TBitmap;
     procedure SetShowCaption(const AValue: boolean);
     procedure UpdateExclusive;

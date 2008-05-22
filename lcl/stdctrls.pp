@@ -970,8 +970,8 @@ type
 
   TButtonControl = class(TWinControl)
   private
-    FClicksDisabled: Boolean;
     FOnChange: TNotifyEvent;
+    FClicksDisabled: Boolean;
     FUseOnChange: boolean;
     function IsCheckedStored: boolean;
     function UseOnChangeIsStored: boolean;
@@ -1009,11 +1009,11 @@ type
 
   TCustomButton = class(TButtonControl)
   private
+    FModalResult: TModalResult;
+    FShortCut: TShortcut;
     FCancel: Boolean;
     FDefault: Boolean;
     FActive: boolean;
-    FModalResult: TModalResult;
-    FShortCut: TShortcut;
     procedure SetCancel(NewCancel: boolean);
     procedure SetDefault(Value: Boolean);
     procedure SetModalResult(const AValue: TModalResult);
@@ -1536,6 +1536,7 @@ initialization
   DefaultButtonControlUseOnChange:=false;
 
 end.
+
 
 
 

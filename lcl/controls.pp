@@ -774,9 +774,7 @@ type
     FAnchors: TAnchors;
     FAnchorSides: array[TAnchorKind] of TAnchorSide;
     fAnchoredControls: TFPList; // list of TControl anchored to this control
-    FAutoSizing: Boolean;
     FAutoSizingLockCount: Integer;
-    FAutoSize: Boolean;
     FBaseBounds: TRect;
     FBaseBoundsLock: integer;
     FBaseParentClientSize: TPoint;
@@ -789,12 +787,10 @@ type
     FControlFlags: TControlFlags;
     FControlHandlers: array[TControlHandlerType] of TMethodList;
     FControlStyle: TControlStyle;
-    FCtl3D: Boolean;
     FDockOrientation: TDockOrientation;
     FDragCursor: TCursor;
     FDragKind: TDragKind;
     FDragMode: TDragMode;
-    FEnabled: Boolean;
     FFloatingDockSiteClass: TWinControlClass;
     FFont: TFont;
     FHeight: Integer;
@@ -803,7 +799,6 @@ type
     FHelpType: THelpType;
     FHint: TTranslateString;
     FHostDockSite: TWinControl;
-    FIsControl: Boolean;
     fLastAlignedBounds: TRect;
     fLastAlignedBoundsTried: integer;
     FLastChangebounds: TRect;
@@ -816,7 +811,6 @@ type
     FLeft: Integer;
     FLoadedClientSize: TPoint;
     FLRDockWidth: Integer;
-    FMouseEntered: boolean;
     FOnChangeBounds: TNotifyEvent;
     FOnClick: TNotifyEvent;
     FOnConstrainedResize: TConstrainedResizeEvent;
@@ -839,9 +833,6 @@ type
     FOnStartDrag: TStartDragEvent;
     FOnTripleClick: TNotifyEvent;
     FParent: TWinControl;
-    FParentColor: Boolean;
-    FParentFont: Boolean;
-    FParentShowHint: Boolean;
     FPopupMenu: TPopupMenu;
     FPreferredMinWidth: integer;// without theme space
     FPreferredMinHeight: integer;// without theme space
@@ -849,15 +840,25 @@ type
     FPreferredHeight: integer;// with theme space
     FReadBounds: TRect;
     FSessionProperties: string;
-    FShowHint: Boolean;
     FSizeLock: integer;
     FTBDockHeight: Integer;
     FTop: Integer;
     FUndockHeight: Integer;
     FUndockWidth: Integer;
-    FVisible: Boolean;
     FWidth: Integer;
     FWindowProc: TWndMethod;
+    //boolean fields
+    FIsControl: Boolean;
+    FCtl3D: Boolean;
+    FShowHint: Boolean;
+    FParentColor: Boolean;
+    FParentFont: Boolean;
+    FParentShowHint: Boolean;
+    FAutoSize: Boolean;
+    FAutoSizing: Boolean;
+    FEnabled: Boolean;
+    FMouseEntered: boolean;
+    FVisible: Boolean;
     function CaptureMouseButtonsIsStored: boolean;
     procedure DoActionChange(Sender: TObject);
     function GetAnchorSide(Kind: TAnchorKind): TAnchorSide;
@@ -1487,7 +1488,6 @@ type
 
   TWinControl = class(TControl)
   private
-    FAlignLevel: Word;
     FBorderWidth: TBorderWidth;
     FBoundsLockCount: integer;
     FBoundsRealized: TRect;
@@ -1500,11 +1500,9 @@ type
     FWinControls: TFPList; // the child controls (only TWinControl, no TControl)
     FDefWndProc: Pointer;
     FDockClients: TFPList;
-    FDoubleBuffered: Boolean;
     FClientWidth: Integer;
     FClientHeight: Integer;
     FDockManager: TDockManager;
-    FDockSite: Boolean;
     FOnDockDrop: TDockDropEvent;
     FOnDockOver: TDockOverEvent;
     FOnGetSiteInfo: TGetSiteInfoEvent;
@@ -1519,13 +1517,16 @@ type
     FOnUnDock: TUnDockEvent;
     FOnUTF8KeyPress: TUTF8KeyPressEvent;
     FParentWindow: hwnd;
-    FParentCtl3D: Boolean;
     FRealizeBoundsLockCount: integer;
     FHandle: Hwnd;
-    FShowing: Boolean;
     FTabOrder: integer;
-    FTabStop: Boolean;
     FTabList: TFPList;
+    FAlignLevel: Word;
+    FTabStop: Boolean;
+    FShowing: Boolean;
+    FParentCtl3D: Boolean;
+    FDoubleBuffered: Boolean;
+    FDockSite: Boolean;
     FUseDockManager: Boolean;
     procedure AlignControl(AControl: TControl);
     function GetBrush: TBrush;

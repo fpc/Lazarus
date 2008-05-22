@@ -99,14 +99,9 @@ type
   TMenuItem = class(TLCLComponent)
   private
     FActionLink: TMenuActionLink;
-    FAutoCheck: boolean;
     FCaption: string;
-    FChecked: Boolean;
     FCommand: integer;
-    FDefault: Boolean;
-    FEnabled: Boolean;
     FBitmap: TBitmap;
-    FGroupIndex: Byte;
     FHandle: HMenu;
     FHelpContext: THelpContext;
     FHint: String;
@@ -117,16 +112,21 @@ type
     FOnChange: TMenuChangeEvent;
     FOnClick: TNotifyEvent;
     FParent: TMenuItem;
+    FMenuItemHandlers: array[TMenuItemHandlerType] of TMethodList;
+    FSubMenuImages: TCustomImageList;
+    FShortCut: TShortCut;
+    FGroupIndex: Byte;
     FRadioItem: Boolean;
     FRightJustify: boolean;
-    FShortCut: TShortCut;
     FShowAlwaysCheckable: boolean;
-    FSubMenuImages: TCustomImageList;
     FVisible: Boolean;
     // True => Bitmap property indicates assigned Bitmap.
     // False => Bitmap property is not assigned but can represent imagelist bitmap
     FBitmapIsValid: Boolean;
-    FMenuItemHandlers: array[TMenuItemHandlerType] of TMethodList;
+    FAutoCheck: Boolean;
+    FChecked: Boolean;
+    FDefault: Boolean;
+    FEnabled: Boolean;
     function GetBitmap: TBitmap;
     function GetCount: Integer;
     function GetItem(Index: Integer): TMenuItem;
