@@ -40,7 +40,7 @@ begin
   DC := GetDC(Parent.Handle);
   try
     R := Rect(0, 0, Width, Height);
-    OldFont := SelectObject(DC, Font.Reference.Handle);
+    OldFont := SelectObject(DC, HGDIOBJ(Font.Reference.Handle));
     Flags := DT_CALCRECT or DT_EXPANDTABS;
     if WordWrap then
       inc(Flags, DT_WORDBREAK)
@@ -338,7 +338,7 @@ begin
     and (CurFontHeight<=MaxFontHeight) do begin
       AFont.Height:=CurFontHeight; // NOTE: some TFont do not allow any integer
       //debugln('TCustomLabel.CalcFittingFontHeight A ',dbgs(MinFontHeight),'<=',dbgs(AFont.Height),'<=',dbgs(MaxFontHeight));
-      OldFont := SelectObject(DC, AFont.Reference.Handle);
+      OldFont := SelectObject(DC, HGDIOBJ(AFont.Reference.Handle));
       DrawText(DC, PChar(TheText), Length(TheText), R, Flags);
       SelectObject(DC, OldFont);
       NeededWidth := R.Right - R.Left;
