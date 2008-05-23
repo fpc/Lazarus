@@ -138,7 +138,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TBrush.SetHandle(const Value: HBRUSH);
 begin
-  if FReference.Handle = Value then Exit;
+  if HBRUSH(FReference.Handle) = Value then Exit;
 
   FreeReference;
   FReference._lclHandle := TLCLHandle(Value);
@@ -154,7 +154,7 @@ end;
  ------------------------------------------------------------------------------}
 function TBrush.GetHandle: HBRUSH;
 begin
-  Result := Reference.Handle;
+  Result := HBRUSH(Reference.Handle);
 end;
 
 {------------------------------------------------------------------------------

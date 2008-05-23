@@ -1082,7 +1082,7 @@ end;
  ------------------------------------------------------------------------------}
 function TFont.GetHandle: HFONT;
 begin
-  Result := Reference.Handle;
+  Result := HFONT(Reference.Handle);
 end;
 
 {------------------------------------------------------------------------------
@@ -1112,7 +1112,7 @@ function TFont.GetCanUTF8: boolean;
 begin
   if not FCanUTF8Valid then
   begin
-    FCanUTF8 := FontCanUTF8(Reference.Handle);
+    FCanUTF8 := FontCanUTF8(HFONT(Reference.Handle));
     FCanUTF8Valid := True;
   end;
   Result := FCanUTF8;
@@ -1148,7 +1148,7 @@ function TFont.GetIsMonoSpace: boolean;
 begin
   if not FIsMonoSpaceValid then
   begin
-    FIsMonoSpace := FontIsMonoSpace(Reference.Handle);
+    FIsMonoSpace := FontIsMonoSpace(HFONT(Reference.Handle));
     FIsMonoSpaceValid := True;
   end;
   Result := FIsMonoSpace;
@@ -1169,7 +1169,7 @@ procedure TFont.SetData(const FontData: TFontData);
 var
   OldStyle: TFontStylesbase;
 begin
-  if (FReference.Handle <> FontData.Handle) or not FReference.Allocated then
+  if (HFONT(FReference.Handle) <> FontData.Handle) or not FReference.Allocated then
   begin
     OldStyle := FStyle;
     FreeReference;

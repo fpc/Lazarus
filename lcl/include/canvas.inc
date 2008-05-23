@@ -132,7 +132,7 @@ begin
 // ,'  Brush=',DbgS(Brush));
   OldHandle := SelectObject(FHandle, HGDIOBJ(Brush.Reference.Handle));
   //debugln('TCanvas.CreateBrush ',ClassName,' Self=',DbgS(Self),' OldHandle=',DbgS(OldHandle),8),' NewHandle=',DbgS(Brush.Handle),' FSavedBrushHandle=',DbgS(Cardinal(FSavedBrushHandle));
-  if (OldHandle <> Brush.Reference.Handle) and (FSavedBrushHandle=0) then
+  if (OldHandle <> HBRUSH(Brush.Reference.Handle)) and (FSavedBrushHandle=0) then
     FSavedBrushHandle := OldHandle;
   Include(FState, csBrushValid);
   SetBkColor(FHandle, Brush.Color);
@@ -176,7 +176,7 @@ begin
 //DebugLn('[TCanvas.CreatePen] ',Classname,'  Self=',DbgS(Self)
 // ,'  Pen=',DbgS(Pen));
   OldHandle := SelectObject(FHandle, HGDIOBJ(Pen.Reference.Handle));
-  if (OldHandle <> Pen.Reference.Handle) and (FSavedPenHandle=0) then
+  if (OldHandle <> HPEN(Pen.Reference.Handle)) and (FSavedPenHandle=0) then
     FSavedPenHandle := OldHandle;
   MoveTo(PenPos.X, PenPos.Y);
   Include(FState, csPenValid);
@@ -198,7 +198,7 @@ begin
   // The TFont will call DeleteObject itself, so we never need to call it.
   OldHandle := SelectObject(FHandle, HGDIOBJ(Font.Reference.Handle));
   //DebugLn(['TCanvas.CreateFont OldHandle=',dbghex(OldHandle),' Font.Handle=',dbghex(Font.Handle)]);
-  if (OldHandle <> Font.Reference.Handle) and (FSavedFontHandle=0) then
+  if (OldHandle <> HFONT(Font.Reference.Handle)) and (FSavedFontHandle=0) then
     FSavedFontHandle := OldHandle;
   Include(FState, csFontValid);
   SetTextColor(FHandle, Font.Color);
@@ -212,7 +212,7 @@ var
   OldHandle: HRGN;
 begin
   OldHandle := SelectObject(FHandle, HGDIOBJ(Region.Reference.Handle));
-  if (OldHandle <> Region.Reference.Handle) and (FSavedRegionHandle=0) then
+  if (OldHandle <> HRGN(Region.Reference.Handle)) and (FSavedRegionHandle=0) then
     FSavedRegionHandle := OldHandle;
   Include(FState, csRegionValid);
 end;
@@ -850,7 +850,7 @@ procedure TCanvas.FillRect(const ARect : TRect);
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid]);
-  LCLIntf.FillRect(FHandle, ARect, Brush.Reference.Handle);
+  LCLIntf.FillRect(FHandle, ARect, HBRUSH(Brush.Reference.Handle));
   Changed;
 end;
 
@@ -874,7 +874,7 @@ procedure TCanvas.FloodFill(X, Y: Integer; FillColor: TColor;
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid]);
-  LCLIntf.FloodFill(FHandle, X, Y, FillColor, FillStyle, Brush.Reference.Handle);
+  LCLIntf.FloodFill(FHandle, X, Y, FillColor, FillStyle, HBRUSH(Brush.Reference.Handle));
   Changed;
 end;
 

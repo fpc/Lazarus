@@ -72,7 +72,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TRegion.SetHandle(const Value: HRGN);
 begin
-  if FRegionData.Reference.Handle = Value then Exit;
+  if HRGN(FRegionData.Reference.Handle) = Value then Exit;
 
   FreeReference;
   FRegionData.Reference._lclHandle := TLCLHandle(Value);
@@ -90,7 +90,7 @@ end;
  ------------------------------------------------------------------------------}
 function TRegion.GetHandle: HRGN;
 begin
-  Result := Reference.Handle;
+  Result := HRGN(Reference.Handle);
 end;
 
 function TRegion.GetReference: TWSRegionReference;
@@ -177,7 +177,7 @@ function TRegion.GetClipRect : TRect;
 begin
   if FRegionData.Reference.Allocated
   then begin
-    GetRgnBox(FRegionData.Reference.Handle, @Result)
+    GetRgnBox(HRGN(FRegionData.Reference.Handle), @Result)
   end
   else begin
     if FRegionData.Polygon <> nil

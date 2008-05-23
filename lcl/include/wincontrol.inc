@@ -4341,7 +4341,7 @@ var
 begin
   if DC = 0 then Exit;
   ARect := Rect(0, 0, Width, Height);
-  FillRect(DC, ARect, Brush.Reference.Handle)
+  FillRect(DC, ARect, HBRUSH(Brush.Reference.Handle));
 end;
 
 {------------------------------------------------------------------------------

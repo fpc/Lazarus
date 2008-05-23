@@ -158,7 +158,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TPen.SetHandle(const Value: HPEN);
 begin
-  if FReference.Handle = Value then Exit;
+  if HPEN(FReference.Handle) = Value then Exit;
 
   FreeReference;
   FReference._lclHandle := TLCLHandle(Value);
@@ -174,7 +174,7 @@ end;
  ------------------------------------------------------------------------------}
 function TPen.GetHandle: HPEN;
 begin
-  Result := Reference.Handle;
+  Result := HPEN(Reference.Handle);
 end;
 
 function TPen.GetReference: TWSPenReference;
