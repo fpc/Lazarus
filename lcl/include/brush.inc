@@ -21,7 +21,7 @@
 
 procedure TBrushHandleCache.RemoveItem(Item: TResourceCacheItem);
 begin
-  DeleteObject(HGIOBJ(Item.Handle));
+  DeleteObject(HGDIOBJ(Item.Handle));
   inherited RemoveItem(Item);
 end;
 
