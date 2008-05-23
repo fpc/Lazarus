@@ -9216,8 +9216,8 @@ begin
     DoCheckFilesOnDisk;
 
     MessagesView.EndBlock;
-    MessagesView.EnsureVisible;
   end;
+  MessagesView.EnsureVisible;
   Result:=mrOk;
 end;
 
