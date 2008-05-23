@@ -287,10 +287,21 @@ end;
 
 procedure TWin32ThemeServices.DrawText(DC: HDC; Details: TThemedElementDetails;
   const S: String; R: TRect; Flags, Flags2: Cardinal);
+{$IFDEF WindowsUnicodeSupport}
+var
+  w: widestring;
+{$ENDIF}
 begin
   if ThemesEnabled then
     with Details do
+{$IFDEF WindowsUnicodeSupport}
+    begin
+      w := UTF8Decode(S);
+      DrawThemeText(Theme[Element], DC, Part, State, PWideChar(w), Length(w), Flags, Flags2, R);
+    end
+{$ELSE}
       DrawThemeText(Theme[Element], DC, Part, State, PWideChar(WideString(S)), Length(S), Flags, Flags2, R)
+{$ENDIF}
   else
     inherited;
 end;
