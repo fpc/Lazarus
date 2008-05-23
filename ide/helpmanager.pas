@@ -361,7 +361,7 @@ begin
   DC := GetDC(Parent.Handle);
   try
     R := Rect(0, 0, 600, 200);
-    OldFont := SelectObject(DC, Font.Reference.Handle);
+    OldFont := SelectObject(DC, HGDIOBJ(Font.Reference.Handle));
     Flags := DT_CalcRect;
     inc(Flags, DT_WordBreak);
     LabelText := GetLabelText;
