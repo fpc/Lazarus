@@ -145,7 +145,7 @@ type
                                            read FOnCompareDescPtrWithDescriptor;
   end;
 
-function ComparePHandleWithResourceCacheItem(HandlePtr: PHandle; Item:
+function ComparePHandleWithResourceCacheItem(HandlePtr: PLCLHandle; Item:
   TResourceCacheItem): integer;
 function CompareDescPtrWithBlockResDesc(DescPtr: Pointer;
   Item: TBlockResourceCacheDescriptor): integer;
@@ -154,10 +154,10 @@ function CompareDescPtrWithBlockResDesc(DescPtr: Pointer;
 implementation
 
 
-function ComparePHandleWithResourceCacheItem(HandlePtr: PHandle; Item:
+function ComparePHandleWithResourceCacheItem(HandlePtr: PLCLHandle; Item:
   TResourceCacheItem): integer;
 begin
-  Result := CompareHandles(HandlePtr^, Item.Handle);
+  Result := CompareLCLHandles(HandlePtr^, Item.Handle);
 end;
 
 function CompareDescPtrWithBlockResDesc(DescPtr: Pointer;
@@ -383,8 +383,8 @@ end;
 function TResourceCache.CompareItems(Tree: TAvgLvlTree; Item1, Item2: Pointer
   ): integer;
 begin
-  Result:=CompareHandles(TResourceCacheItem(Item1).Handle,
-                         TResourceCacheItem(Item2).Handle);
+  Result:=CompareLCLHandles(TResourceCacheItem(Item1).Handle,
+                            TResourceCacheItem(Item2).Handle);
 end;
 
 procedure TResourceCache.ConsistencyCheck;

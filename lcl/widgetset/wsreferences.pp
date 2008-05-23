@@ -33,6 +33,7 @@ interface
 type
   // use TLCLHandle instead of THandle since THandle = longint under 64bit linux
   TLCLHandle = PtrUInt;
+  PLCLHandle = ^TLCLHandle;
 
   { TWSReference }
   {

@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, Math, TypInfo, Types, FPCAdds, AvgLvlTree, FileUtil,
-  LCLStrConsts, LCLType;
+  LCLStrConsts, LCLType, WSReferences;
 
 type
   { TMethodList - array of TMethod }
@@ -163,6 +163,7 @@ function BreakString(const s: string; MaxLineLength, Indent: integer): string;
 
 function ComparePointers(p1, p2: Pointer): integer;
 function CompareHandles(h1, h2: THandle): integer;
+function CompareLCLHandles(h1, h2: TLCLHandle): integer;
 function CompareRect(R1, R2: PRect): Boolean;
 function ComparePoints(const p1, p2: TPoint): integer;
 
@@ -1054,6 +1055,16 @@ begin
 end;
 
 function CompareHandles(h1, h2: THandle): integer;
+begin
+  if h1>h2 then
+    Result:=1
+  else if h1<h2 then
+    Result:=-1
+  else
+    Result:=0;
+end;
+
+function CompareLCLHandles(h1, h2: TLCLHandle): integer;
 begin
   if h1>h2 then
     Result:=1
