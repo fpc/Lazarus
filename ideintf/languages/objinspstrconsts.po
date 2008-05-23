@@ -580,6 +580,10 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
+#: objinspstrconsts:cactionlisteditorsearchcategory
+msgid "Search"
+msgstr ""
+
 #: objinspstrconsts:cactionlisteditorhelpcategory
 msgid "Help"
 msgstr ""
@@ -700,6 +704,22 @@ msgstr ""
 msgid "&Delete"
 msgstr ""
 
+#: objinspstrconsts:oistdactsearchfindheadline
+msgid "&Find..."
+msgstr ""
+
+#: objinspstrconsts:oistdactsearchfindfirstheadline
+msgid "F&ind First"
+msgstr ""
+
+#: objinspstrconsts:oistdactsearchfindnextheadline
+msgid "Find &Next"
+msgstr ""
+
+#: objinspstrconsts:oistdactsearchreplaceheadline
+msgid "&Replace"
+msgstr ""
+
 #: objinspstrconsts:oistdacthelpcontentsheadline
 msgid "&Contents"
 msgstr ""
@@ -714,6 +734,10 @@ msgstr ""
 
 #: objinspstrconsts:oistdactfileopenheadline
 msgid "&Open..."
+msgstr ""
+
+#: objinspstrconsts:oistdactfileopenwithheadline
+msgid "Open with..."
 msgstr ""
 
 #: objinspstrconsts:oistdactfilesaveasheadline
@@ -796,6 +820,14 @@ msgstr ""
 msgid "Del"
 msgstr ""
 
+#: objinspstrconsts:oistdactsearchfindshortcut
+msgid "Ctrl+F"
+msgstr ""
+
+#: objinspstrconsts:oistdactsearchfindnextshortcut
+msgid "F3"
+msgstr ""
+
 #: objinspstrconsts:oistdactfileopenshortcut
 msgid "Ctrl+O"
 msgstr ""
@@ -824,6 +856,22 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
+#: objinspstrconsts:oistdactsearchfindhint
+msgid "Find"
+msgstr ""
+
+#: objinspstrconsts:oistdactsearchfindfirsthint
+msgid "Find first"
+msgstr ""
+
+#: objinspstrconsts:oistdactsearchfindnexthint
+msgid "Find next"
+msgstr ""
+
+#: objinspstrconsts:oistdactsearchreplacehint
+msgid "Replace"
+msgstr ""
+
 #: objinspstrconsts:oistdacthelpcontentshint
 msgid "Help Contents"
 msgstr ""
@@ -838,6 +886,10 @@ msgstr ""
 
 #: objinspstrconsts:oistdactfileopenhint
 msgid "Open"
+msgstr ""
+
+#: objinspstrconsts:oistdactfileopenwithhint
+msgid "Open with"
 msgstr ""
 
 #: objinspstrconsts:oistdactfilesaveashint

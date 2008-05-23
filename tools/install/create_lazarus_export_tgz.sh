@@ -33,6 +33,7 @@ fi
 # add ide/revision.inc
 Revision=$(svnversion /tmp/lazarus)
 echo "const RevisionStr = '$Revision';" > /tmp/lazarus/ide/revision.inc
+exit -1
 
 cd /tmp
 echo "packing ..."

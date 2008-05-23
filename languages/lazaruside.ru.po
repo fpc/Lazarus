@@ -6749,6 +6749,10 @@ msgstr "Процесс"
 msgid "Program"
 msgstr "Программа"
 
+#: lazarusidestrconsts:lisedtexttoolprogramfilename
+msgid "Program Filename:"
+msgstr "Имя файла программы:"
+
 #: lazarusidestrconsts:lisprogramdetected
 msgid "Program detected"
 msgstr "Обнаружена программа"
@@ -6760,10 +6764,6 @@ msgstr "Исходный код программы должен иметь ра�
 #: lazarusidestrconsts:lisprogramafreepascalprogramtheprogramfileisautomatic
 msgid "Program%sA freepascal program. The program file is automatically maintained by lazarus."
 msgstr "Программа%sПрограмма FreePascal. Файл программы автоматически поддерживается lazarus."
-
-#: lazarusidestrconsts:lisedtexttoolprogramfilename
-msgid "Program Filename:"
-msgstr "Имя файла программы:"
 
 #: lazarusidestrconsts:lisexeprograms
 msgid "Programs"
@@ -8884,6 +8884,10 @@ msgstr "Файл компилятора \"%s\" не исполняемый."
 #: lazarusidestrconsts:lispkgmangthecompilerfileforpackageisnotavalidexecutable
 msgid "The compiler file for package %s is not a valid executable:%s%s"
 msgstr "Файл компилятора для пакета %s - недопустимый исполняемый:%s%s"
+
+#: lazarusidestrconsts:listhecomponentisinheritedfromtodeleteaninheritedcomp
+msgid "The component %s is inherited from %s.%sTo delete an inherited component open the ancestor and delete it there."
+msgstr ""
 
 #: lazarusidestrconsts:listhecomponenteditorofclasshascreatedtheerror
 msgid "The component editor of class %s%s%s has created the error:%s%s%s%s"

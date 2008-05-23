@@ -38,6 +38,10 @@ msgstr "&Suprimir"
 msgid "&Edit"
 msgstr "&Editar"
 
+#: objinspstrconsts:oistdactsearchfindheadline
+msgid "&Find..."
+msgstr ""
+
 #: objinspstrconsts:oistdactdatasetfirstheadline
 msgid "&First"
 msgstr "&Primero"
@@ -81,6 +85,10 @@ msgstr "An&terior"
 #: objinspstrconsts:oistdactdatasetrefreshheadline
 msgid "&Refresh"
 msgstr "&Refrescar"
+
+#: objinspstrconsts:oistdactsearchreplaceheadline
+msgid "&Replace"
+msgstr ""
 
 #: objinspstrconsts:oissave
 msgid "&Save"
@@ -306,6 +314,10 @@ msgstr ""
 msgid "Ctrl+C"
 msgstr ""
 
+#: objinspstrconsts:oistdactsearchfindshortcut
+msgid "Ctrl+F"
+msgstr ""
+
 #: objinspstrconsts:oistdactfileopenshortcut
 msgid "Ctrl+O"
 msgstr ""
@@ -446,6 +458,14 @@ msgstr "Eventos"
 msgid "Exit"
 msgstr "Salir"
 
+#: objinspstrconsts:oistdactsearchfindfirstheadline
+msgid "F&ind First"
+msgstr ""
+
+#: objinspstrconsts:oistdactsearchfindnextshortcut
+msgid "F3"
+msgstr ""
+
 #: objinspstrconsts:oisfavorites
 msgid "Favorites"
 msgstr "Favoritos"
@@ -461,6 +481,22 @@ msgstr ""
 #: objinspstrconsts:cactionlisteditorfilecategory
 msgid "File"
 msgstr "Archivo"
+
+#: objinspstrconsts:oistdactsearchfindhint
+msgid "Find"
+msgstr ""
+
+#: objinspstrconsts:oistdactsearchfindnextheadline
+msgid "Find &Next"
+msgstr ""
+
+#: objinspstrconsts:oistdactsearchfindfirsthint
+msgid "Find first"
+msgstr ""
+
+#: objinspstrconsts:oistdactsearchfindnexthint
+msgid "Find next"
+msgstr ""
 
 #: objinspstrconsts:oistdactdatasetfirsthint
 msgid "First"
@@ -690,6 +726,14 @@ msgstr "Abrir archivo de imagen"
 msgid "Open masks file (*.dem)"
 msgstr "Abrir archivo de máscaras (*.dem)"
 
+#: objinspstrconsts:oistdactfileopenwithhint
+msgid "Open with"
+msgstr ""
+
+#: objinspstrconsts:oistdactfileopenwithheadline
+msgid "Open with..."
+msgstr ""
+
 #: objinspstrconsts:oisoptions
 msgid "Options"
 msgstr "Opciones"
@@ -750,6 +794,10 @@ msgstr "Refrescar"
 msgid "Remove from Favorites"
 msgstr "Quitar de Favoritos"
 
+#: objinspstrconsts:oistdactsearchreplacehint
+msgid "Replace"
+msgstr ""
+
 #: objinspstrconsts:oisrestricted
 msgid "Restricted"
 msgstr ""
@@ -793,6 +841,10 @@ msgstr "Guardar imagen"
 #: objinspstrconsts:sccsiledtsave
 msgid "Save..."
 msgstr "Guardar..."
+
+#: objinspstrconsts:cactionlisteditorsearchcategory
+msgid "Search"
+msgstr ""
 
 #: objinspstrconsts:sccshceditsections
 msgid "Sections Editor ..."

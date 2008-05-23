@@ -1440,6 +1440,10 @@ msgstr "Zvoľte položku pre vytvorenie nového balíčka"
 msgid "Choose one of these items to create a new Project"
 msgstr "Zvoľte položku pre vytvorenie nového projektu"
 
+#: lazarusidestrconsts:lischooseoneoftheseitemstoinheritfromanexistingone
+msgid "Choose one of these items to inherit from an existing one"
+msgstr ""
+
 #: lazarusidestrconsts:lislazbuildabochooseoutputdir
 msgid "Choose output directory of the IDE executable "
 msgstr "Zvoľte výstupný adresár pre spustiteľné súbory IDE"
@@ -1472,9 +1476,9 @@ msgstr "Trieda %s%s%s nenájdená."
 msgid "Class Name already exists"
 msgstr "Meno triedy už existuje"
 
-#: lazarusidestrconsts:lisclassconflictswithlfmfiletheunitusesthetheunitwhic
-msgid "Class conflicts with .lfm file:%sThe unit %s%suses the the unit %s%swhich contains the class %s,%sbut the .lfm file contains already another class.%sThere can only be one design class per unit.%sPlease move %s to another unit."
-msgstr "Konflikty triedy so súborom .lfm:%sJednotka %s%spoužíva jednotku %s%s, ktorá obsahuje triedu %s,%s, ale súbor .lfm už obsahuje inú triedu .%sMôže existovať len jedna design trieda na jendotku.%sProsím presuňte %s do inej jednotky."
+#: lazarusidestrconsts:lisclassconflictswithlfmfiletheunitusestheunitwhic
+msgid "Class conflicts with .lfm file:%sThe unit %s%suses the unit %s%swhich contains the class %s,%sbut the .lfm file contains already another class.%sThere can only be one design class per unit.%sPlease move %s to another unit."
+msgstr ""
 
 #: lazarusidestrconsts:lisclassnotfound
 msgid "Class not found"
@@ -2000,6 +2004,10 @@ msgstr "Konvertovať súbor DFM na LFM"
 msgid "Convert DFM file to LFM ..."
 msgstr "Konvertovať súbor DFM na LFM ..."
 
+#: lazarusidestrconsts:lispwconvertproject
+msgid "Convert Delphi Project"
+msgstr ""
+
 #: lazarusidestrconsts:liskmconvertdelphipackagetolazaruspackage
 msgid "Convert Delphi package to Lazarus package"
 msgstr "Konvertovať balíček Delhi na Lazarus"
@@ -2203,6 +2211,10 @@ msgstr "Vytvoriť novú jednotku s formulárom LCL."
 #: lazarusidestrconsts:lisnewdlgcreateanewunitwithadatamodule
 msgid "Create a new unit with a datamodule."
 msgstr "Vytvoriť novú jednotku s dátovým modulom."
+
+#: lazarusidestrconsts:lisnewdlgcreateanewunitwithaframe
+msgid "Create a new unit with a frame"
+msgstr ""
 
 #: lazarusidestrconsts:liscreateaprojectfirst
 msgid "Create a project first!"
@@ -3035,6 +3047,10 @@ msgstr "Chyba presúvania komponentu %s:%s"
 #: lazarusidestrconsts:lisabcreationfailed
 msgid "Error occured during Application Bundle creation: "
 msgstr "Nastala chyba pri vytváraní zväzku aplikácií:"
+
+#: lazarusidestrconsts:liserroropeningcomponent
+msgid "Error opening component"
+msgstr ""
 
 #: lazarusidestrconsts:liserrorparsinglfmcomponentstream
 msgid "Error parsing lfm component stream."
@@ -4316,6 +4332,10 @@ msgstr "Indonézsky"
 msgid "Information about %s"
 msgstr "Informácie o %s"
 
+#: lazarusidestrconsts:lisnewdlginheritanexistingcomponent
+msgid "Inherit from an existing component."
+msgstr ""
+
 #: lazarusidestrconsts:liscmplstinheritance
 msgid "Inheritance"
 msgstr "Dedičnosť"
@@ -4323,6 +4343,10 @@ msgstr "Dedičnosť"
 #: lazarusidestrconsts:dlgcoinherited
 msgid "Inherited"
 msgstr "Zdedené"
+
+#: lazarusidestrconsts:lisinheriteditem
+msgid "Inherited Item"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_insert
 msgid "Insert"
@@ -5764,6 +5788,10 @@ msgstr "Nový súbor"
 msgid "New Form"
 msgstr "Nový formulár"
 
+#: lazarusidestrconsts:lispwnewproject
+msgid "New Project"
+msgstr ""
+
 #: lazarusidestrconsts:lismenunewproject
 msgid "New Project ..."
 msgstr "Nový projekt ..."
@@ -6079,6 +6107,10 @@ msgstr "Otvoriť balíček?"
 #: lazarusidestrconsts:lisctdefsopenpreview
 msgid "Open Preview"
 msgstr "Otvoriť ukážku"
+
+#: lazarusidestrconsts:lispwopenproject
+msgid "Open Project"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuopenproject
 msgid "Open Project ..."
@@ -6720,6 +6752,10 @@ msgstr "Proces"
 msgid "Program"
 msgstr "Program"
 
+#: lazarusidestrconsts:lisedtexttoolprogramfilename
+msgid "Program Filename:"
+msgstr "Meno súboru programu:"
+
 #: lazarusidestrconsts:lisprogramdetected
 msgid "Program detected"
 msgstr "Program zistený"
@@ -6731,10 +6767,6 @@ msgstr "Zdrojový kód programu musí mať príponu Pascalu ako .pas, .pp or .lp
 #: lazarusidestrconsts:lisprogramafreepascalprogramtheprogramfileisautomatic
 msgid "Program%sA freepascal program. The program file is automatically maintained by lazarus."
 msgstr "Program%sFreePascal program. Súbor programu je automaticky spravovaný Lazarom."
-
-#: lazarusidestrconsts:lisedtexttoolprogramfilename
-msgid "Program Filename:"
-msgstr "Meno súboru programu:"
 
 #: lazarusidestrconsts:lisexeprograms
 msgid "Programs"
@@ -6800,13 +6832,13 @@ msgstr "Cesta k jednotkám projektu"
 msgid "Project UnitPath"
 msgstr "Cesta k jednotkám projektu"
 
+#: lazarusidestrconsts:lisprojectwizard
+msgid "Project Wizard"
+msgstr ""
+
 #: lazarusidestrconsts:lisprojectchanged
 msgid "Project changed"
 msgstr "Projekt zmenený"
-
-#: lazarusidestrconsts:lisprojectclosed
-msgid "Project closed"
-msgstr "Projekt zatvorený"
 
 #: lazarusidestrconsts:lisprojectdirectory
 msgid "Project directory"
@@ -8856,6 +8888,10 @@ msgstr "Súbor prekladača \"%s\" nie je spustiteľný."
 msgid "The compiler file for package %s is not a valid executable:%s%s"
 msgstr "Súbor prekladača pre balíček %s nie je platný spustiteľný súbor:%S%S"
 
+#: lazarusidestrconsts:listhecomponentisinheritedfromtodeleteaninheritedcomp
+msgid "The component %s is inherited from %s.%sTo delete an inherited component open the ancestor and delete it there."
+msgstr ""
+
 #: lazarusidestrconsts:listhecomponenteditorofclasshascreatedtheerror
 msgid "The component editor of class %s%s%s has created the error:%s%s%s%s"
 msgstr "Editor komponentu triedy %s%s%s vytvoril chybu:%s%s%s%s"
@@ -9154,10 +9190,6 @@ msgstr ""
 
 #: lazarusidestrconsts:listheprojectinfofileisequaltotheprojectmainsource
 msgid "The project info file %s%s%s%sis equal to the project main source file!"
-msgstr ""
-
-#: lazarusidestrconsts:listheprojectisclosedtherearenowthreepossibilitieshin
-msgid "The project is closed. There are now three possibilities.%sHint: You do not need to close a project yourself, since this is done automatically."
 msgstr ""
 
 #: lazarusidestrconsts:listheprojectmustbesavedbeforebuildingifyousetthetest
@@ -9767,6 +9799,10 @@ msgstr "Nemožno načítať balíček %s%s%s"
 #: lazarusidestrconsts:lisunabletoloadthecomponentclassbecauseitdependsonits
 msgid "Unable to load the component class %s%s%s, because it depends on itself."
 msgstr "Nemožno načítať triedu komponentu %s%s%s, pretože závisí sama na sebe."
+
+#: lazarusidestrconsts:lisunabletoopenancestorcomponent
+msgid "Unable to open ancestor component"
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletoopendesignertheclassdoesnotdescendfromades
 msgid "Unable to open designer.%sThe class %s does not descend from a designable class like TForm or TDataModule."
@@ -10407,6 +10443,10 @@ msgstr "Zobraziť Správy"
 #: lazarusidestrconsts:dlgmainviewforms
 msgid "View project forms"
 msgstr "Zobraziť formuláre projektu"
+
+#: lazarusidestrconsts:dlgmainviewframes
+msgid "View project frames"
+msgstr ""
 
 #: lazarusidestrconsts:liskmviewprojectoptions
 msgid "View project options"

@@ -42,6 +42,10 @@ msgstr "Paša&linti"
 msgid "&Edit"
 msgstr "&Taisa"
 
+#: objinspstrconsts:oistdactsearchfindheadline
+msgid "&Find..."
+msgstr ""
+
 #: objinspstrconsts:oistdactdatasetfirstheadline
 msgid "&First"
 msgstr "&Pirmasis"
@@ -85,6 +89,10 @@ msgstr "Ank&stesnis"
 #: objinspstrconsts:oistdactdatasetrefreshheadline
 msgid "&Refresh"
 msgstr "Atnau&jinti"
+
+#: objinspstrconsts:oistdactsearchreplaceheadline
+msgid "&Replace"
+msgstr ""
 
 #: objinspstrconsts:oissave
 msgid "&Save"
@@ -310,6 +318,10 @@ msgstr "Ctrl+A"
 msgid "Ctrl+C"
 msgstr "Ctrl+C"
 
+#: objinspstrconsts:oistdactsearchfindshortcut
+msgid "Ctrl+F"
+msgstr ""
+
 #: objinspstrconsts:oistdactfileopenshortcut
 msgid "Ctrl+O"
 msgstr "Ctrl+O"
@@ -450,6 +462,14 @@ msgstr "Įvykiai"
 msgid "Exit"
 msgstr "Baigti darbą"
 
+#: objinspstrconsts:oistdactsearchfindfirstheadline
+msgid "F&ind First"
+msgstr ""
+
+#: objinspstrconsts:oistdactsearchfindnextshortcut
+msgid "F3"
+msgstr ""
+
 #: objinspstrconsts:oisfavorites
 msgid "Favorites"
 msgstr "Mėgstamiausi"
@@ -465,6 +485,22 @@ msgstr "FieldDefs"
 #: objinspstrconsts:cactionlisteditorfilecategory
 msgid "File"
 msgstr "Failas"
+
+#: objinspstrconsts:oistdactsearchfindhint
+msgid "Find"
+msgstr ""
+
+#: objinspstrconsts:oistdactsearchfindnextheadline
+msgid "Find &Next"
+msgstr ""
+
+#: objinspstrconsts:oistdactsearchfindfirsthint
+msgid "Find first"
+msgstr ""
+
+#: objinspstrconsts:oistdactsearchfindnexthint
+msgid "Find next"
+msgstr ""
 
 #: objinspstrconsts:oistdactdatasetfirsthint
 msgid "First"
@@ -697,6 +733,14 @@ msgstr "Atverti paveikslo failą"
 msgid "Open masks file (*.dem)"
 msgstr "Įkelti kaukes iš failo (*.dem)"
 
+#: objinspstrconsts:oistdactfileopenwithhint
+msgid "Open with"
+msgstr ""
+
+#: objinspstrconsts:oistdactfileopenwithheadline
+msgid "Open with..."
+msgstr ""
+
 #: objinspstrconsts:oisoptions
 msgid "Options"
 msgstr "Parinktys"
@@ -757,6 +801,10 @@ msgstr "Atnaujinti"
 msgid "Remove from Favorites"
 msgstr "Išmesti iš mėgstamiausiųjų sąrašo"
 
+#: objinspstrconsts:oistdactsearchreplacehint
+msgid "Replace"
+msgstr ""
+
 #: objinspstrconsts:oisrestricted
 msgid "Restricted"
 msgstr "Apribota"
@@ -800,6 +848,10 @@ msgstr "Įrašyti paveikslą"
 #: objinspstrconsts:sccsiledtsave
 msgid "Save..."
 msgstr "Įrašyti..."
+
+#: objinspstrconsts:cactionlisteditorsearchcategory
+msgid "Search"
+msgstr ""
 
 #: objinspstrconsts:sccshceditsections
 msgid "Sections Editor ..."

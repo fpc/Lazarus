@@ -4,31 +4,31 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: messagecomposer:skindofmessage
-msgid "KIND OF MESSAGE"
-msgstr ""
-
-#: messagecomposer:smaskinput
-msgid "Mask Input"
-msgstr ""
-
 #: messagecomposer:smessagecomposercaption
 msgid "Message Composer ..."
 msgstr ""
 
-#: messagecomposer:snotimplementedyet
-msgid "Not Implemented Yet"
-msgstr ""
-
-#: messagecomposer:ssourcewrapper
-msgid "SOURCE WRAPPER"
+#: messagecomposer:smsgcaption
+msgid "The message to be shown"
 msgstr ""
 
 #: messagecomposer:spromptcaption
 msgid "Text asking the user for input"
 msgstr ""
 
-#: messagecomposer:smsgcaption
-msgid "The message to be shown"
+#: messagecomposer:smaskinput
+msgid "Mask Input"
+msgstr ""
+
+#: messagecomposer:ssourcewrapper
+msgid "SOURCE WRAPPER"
+msgstr ""
+
+#: messagecomposer:skindofmessage
+msgid "KIND OF MESSAGE"
+msgstr ""
+
+#: messagecomposer:snotimplementedyet
+msgid "Not Implemented Yet"
 msgstr ""
 

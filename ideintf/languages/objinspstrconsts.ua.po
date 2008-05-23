@@ -36,6 +36,10 @@ msgstr "&Видалити"
 msgid "&Edit"
 msgstr "&Редагувати"
 
+#: objinspstrconsts:oistdactsearchfindheadline
+msgid "&Find..."
+msgstr ""
+
 #: objinspstrconsts:oistdactdatasetfirstheadline
 msgid "&First"
 msgstr "&Перший"
@@ -79,6 +83,10 @@ msgstr "&Попередній"
 #: objinspstrconsts:oistdactdatasetrefreshheadline
 msgid "&Refresh"
 msgstr "&Перезавантажити"
+
+#: objinspstrconsts:oistdactsearchreplaceheadline
+msgid "&Replace"
+msgstr ""
 
 #: objinspstrconsts:oissave
 msgid "&Save"
@@ -304,6 +312,10 @@ msgstr "Ctrl+A"
 msgid "Ctrl+C"
 msgstr "Ctrl+C"
 
+#: objinspstrconsts:oistdactsearchfindshortcut
+msgid "Ctrl+F"
+msgstr ""
+
 #: objinspstrconsts:oistdactfileopenshortcut
 msgid "Ctrl+O"
 msgstr "Ctrl+O"
@@ -444,6 +456,14 @@ msgstr "Події"
 msgid "Exit"
 msgstr "Вихід"
 
+#: objinspstrconsts:oistdactsearchfindfirstheadline
+msgid "F&ind First"
+msgstr ""
+
+#: objinspstrconsts:oistdactsearchfindnextshortcut
+msgid "F3"
+msgstr ""
+
 #: objinspstrconsts:oisfavorites
 msgid "Favorites"
 msgstr "Улюблені"
@@ -459,6 +479,22 @@ msgstr ""
 #: objinspstrconsts:cactionlisteditorfilecategory
 msgid "File"
 msgstr "Файл"
+
+#: objinspstrconsts:oistdactsearchfindhint
+msgid "Find"
+msgstr ""
+
+#: objinspstrconsts:oistdactsearchfindnextheadline
+msgid "Find &Next"
+msgstr ""
+
+#: objinspstrconsts:oistdactsearchfindfirsthint
+msgid "Find first"
+msgstr ""
+
+#: objinspstrconsts:oistdactsearchfindnexthint
+msgid "Find next"
+msgstr ""
 
 #: objinspstrconsts:oistdactdatasetfirsthint
 msgid "First"
@@ -688,6 +724,14 @@ msgstr ""
 msgid "Open masks file (*.dem)"
 msgstr ""
 
+#: objinspstrconsts:oistdactfileopenwithhint
+msgid "Open with"
+msgstr ""
+
+#: objinspstrconsts:oistdactfileopenwithheadline
+msgid "Open with..."
+msgstr ""
+
 #: objinspstrconsts:oisoptions
 msgid "Options"
 msgstr "Параметри"
@@ -748,6 +792,10 @@ msgstr "Перезавантажити"
 msgid "Remove from Favorites"
 msgstr "Прибрати з Улюблених"
 
+#: objinspstrconsts:oistdactsearchreplacehint
+msgid "Replace"
+msgstr ""
+
 #: objinspstrconsts:oisrestricted
 msgid "Restricted"
 msgstr ""
@@ -790,6 +838,10 @@ msgstr "Зберегти зображення"
 
 #: objinspstrconsts:sccsiledtsave
 msgid "Save..."
+msgstr ""
+
+#: objinspstrconsts:cactionlisteditorsearchcategory
+msgid "Search"
 msgstr ""
 
 #: objinspstrconsts:sccshceditsections

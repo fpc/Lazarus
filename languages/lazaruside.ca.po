@@ -1437,6 +1437,10 @@ msgstr "Tria un dels següents elements per crear un nou Paquet"
 msgid "Choose one of these items to create a new Project"
 msgstr "Tra un dels següents elements per crear un nou Projecte"
 
+#: lazarusidestrconsts:lischooseoneoftheseitemstoinheritfromanexistingone
+msgid "Choose one of these items to inherit from an existing one"
+msgstr ""
+
 #: lazarusidestrconsts:lislazbuildabochooseoutputdir
 msgid "Choose output directory of the IDE executable "
 msgstr ""
@@ -1469,8 +1473,8 @@ msgstr "No s'ha trobat la Classe %s%s%S"
 msgid "Class Name already exists"
 msgstr "Ja existeix el nom de la classe"
 
-#: lazarusidestrconsts:lisclassconflictswithlfmfiletheunitusesthetheunitwhic
-msgid "Class conflicts with .lfm file:%sThe unit %s%suses the the unit %s%swhich contains the class %s,%sbut the .lfm file contains already another class.%sThere can only be one design class per unit.%sPlease move %s to another unit."
+#: lazarusidestrconsts:lisclassconflictswithlfmfiletheunitusestheunitwhic
+msgid "Class conflicts with .lfm file:%sThe unit %s%suses the unit %s%swhich contains the class %s,%sbut the .lfm file contains already another class.%sThere can only be one design class per unit.%sPlease move %s to another unit."
 msgstr ""
 
 #: lazarusidestrconsts:lisclassnotfound
@@ -1997,6 +2001,10 @@ msgstr ""
 msgid "Convert DFM file to LFM ..."
 msgstr "Converteix el fitxer DFM a LFM ..."
 
+#: lazarusidestrconsts:lispwconvertproject
+msgid "Convert Delphi Project"
+msgstr ""
+
 #: lazarusidestrconsts:liskmconvertdelphipackagetolazaruspackage
 msgid "Convert Delphi package to Lazarus package"
 msgstr ""
@@ -2200,6 +2208,10 @@ msgstr "Crea una nova unitat amb una forma LCL."
 #: lazarusidestrconsts:lisnewdlgcreateanewunitwithadatamodule
 msgid "Create a new unit with a datamodule."
 msgstr "Crea una nova unitat amb un mòdul de dades."
+
+#: lazarusidestrconsts:lisnewdlgcreateanewunitwithaframe
+msgid "Create a new unit with a frame"
+msgstr ""
 
 #: lazarusidestrconsts:liscreateaprojectfirst
 msgid "Create a project first!"
@@ -3031,6 +3043,10 @@ msgstr "S'ha produït un error mentre es movia el component %s:%s"
 
 #: lazarusidestrconsts:lisabcreationfailed
 msgid "Error occured during Application Bundle creation: "
+msgstr ""
+
+#: lazarusidestrconsts:liserroropeningcomponent
+msgid "Error opening component"
 msgstr ""
 
 #: lazarusidestrconsts:liserrorparsinglfmcomponentstream
@@ -4313,6 +4329,10 @@ msgstr "Indonés"
 msgid "Information about %s"
 msgstr "Informació de %s"
 
+#: lazarusidestrconsts:lisnewdlginheritanexistingcomponent
+msgid "Inherit from an existing component."
+msgstr ""
+
 #: lazarusidestrconsts:liscmplstinheritance
 msgid "Inheritance"
 msgstr ""
@@ -4320,6 +4340,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgcoinherited
 msgid "Inherited"
 msgstr "Heretat"
+
+#: lazarusidestrconsts:lisinheriteditem
+msgid "Inherited Item"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_insert
 msgid "Insert"
@@ -5761,6 +5785,10 @@ msgstr "Nou Arxiu"
 msgid "New Form"
 msgstr "Nova forma"
 
+#: lazarusidestrconsts:lispwnewproject
+msgid "New Project"
+msgstr ""
+
 #: lazarusidestrconsts:lismenunewproject
 msgid "New Project ..."
 msgstr "Nou projecte ..."
@@ -6076,6 +6104,10 @@ msgstr "Voleu obrir el paquet?"
 #: lazarusidestrconsts:lisctdefsopenpreview
 msgid "Open Preview"
 msgstr "Obre la vista prèvia"
+
+#: lazarusidestrconsts:lispwopenproject
+msgid "Open Project"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuopenproject
 msgid "Open Project ..."
@@ -6717,6 +6749,10 @@ msgstr "Procés"
 msgid "Program"
 msgstr "programa"
 
+#: lazarusidestrconsts:lisedtexttoolprogramfilename
+msgid "Program Filename:"
+msgstr "Nom de programa:"
+
 #: lazarusidestrconsts:lisprogramdetected
 msgid "Program detected"
 msgstr "S'ha detectat el programa"
@@ -6728,10 +6764,6 @@ msgstr "El codi font del programa ha de tenir una extensió pascal com .pas, .pp
 #: lazarusidestrconsts:lisprogramafreepascalprogramtheprogramfileisautomatic
 msgid "Program%sA freepascal program. The program file is automatically maintained by lazarus."
 msgstr "Programa%sUn programa FreePascal. El Lazarus manté automàticament el fitxer del programa."
-
-#: lazarusidestrconsts:lisedtexttoolprogramfilename
-msgid "Program Filename:"
-msgstr "Nom de programa:"
 
 #: lazarusidestrconsts:lisexeprograms
 msgid "Programs"
@@ -6797,13 +6829,13 @@ msgstr "Trajectòria de les unitats del projecte"
 msgid "Project UnitPath"
 msgstr "Trajectòria de les unitats del projecte"
 
+#: lazarusidestrconsts:lisprojectwizard
+msgid "Project Wizard"
+msgstr ""
+
 #: lazarusidestrconsts:lisprojectchanged
 msgid "Project changed"
 msgstr "El projecte ha canviat"
-
-#: lazarusidestrconsts:lisprojectclosed
-msgid "Project closed"
-msgstr ""
 
 #: lazarusidestrconsts:lisprojectdirectory
 msgid "Project directory"
@@ -8853,6 +8885,10 @@ msgstr "El fitxer del compilador \"%s\" no és executable"
 msgid "The compiler file for package %s is not a valid executable:%s%s"
 msgstr "El fitxer de compilador pel paquet %s no és un executable vàlid:%s%s"
 
+#: lazarusidestrconsts:listhecomponentisinheritedfromtodeleteaninheritedcomp
+msgid "The component %s is inherited from %s.%sTo delete an inherited component open the ancestor and delete it there."
+msgstr ""
+
 #: lazarusidestrconsts:listhecomponenteditorofclasshascreatedtheerror
 msgid "The component editor of class %s%s%s has created the error:%s%s%s%s"
 msgstr ""
@@ -9152,10 +9188,6 @@ msgstr "El projecte ja té una dependència pel paquet %s%s%s."
 #: lazarusidestrconsts:listheprojectinfofileisequaltotheprojectmainsource
 msgid "The project info file %s%s%s%sis equal to the project main source file!"
 msgstr "El fitxer d'informació del projecte %s%s%s%sés igual al fitxer principal del codi font del projecte!"
-
-#: lazarusidestrconsts:listheprojectisclosedtherearenowthreepossibilitieshin
-msgid "The project is closed. There are now three possibilities.%sHint: You do not need to close a project yourself, since this is done automatically."
-msgstr ""
 
 #: lazarusidestrconsts:listheprojectmustbesavedbeforebuildingifyousetthetest
 msgid "The project must be saved before building%sIf you set the Test Directory in the environment options,%syou can create new projects and build them at once.%sSave project?"
@@ -9763,6 +9795,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisunabletoloadthecomponentclassbecauseitdependsonits
 msgid "Unable to load the component class %s%s%s, because it depends on itself."
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletoopenancestorcomponent
+msgid "Unable to open ancestor component"
 msgstr ""
 
 #: lazarusidestrconsts:lisunabletoopendesignertheclassdoesnotdescendfromades
@@ -10404,6 +10440,10 @@ msgstr "Mostra els missatges"
 #: lazarusidestrconsts:dlgmainviewforms
 msgid "View project forms"
 msgstr "Mostra les formes del projecte"
+
+#: lazarusidestrconsts:dlgmainviewframes
+msgid "View project frames"
+msgstr ""
 
 #: lazarusidestrconsts:liskmviewprojectoptions
 msgid "View project options"

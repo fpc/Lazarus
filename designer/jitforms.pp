@@ -126,6 +126,7 @@ type
     procedure ReaderCreateComponent(Reader: TReader;
       ComponentClass: TComponentClass; var Component: TComponent);
     procedure ReaderReadComponent(Component: TComponent);
+    
     // some useful functions
     function GetItem(Index:integer):TComponent;
     function OnFindGlobalComponent(const AName:AnsiString):TComponent;

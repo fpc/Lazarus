@@ -36,6 +36,10 @@ msgstr ""
 msgid "&Edit"
 msgstr ""
 
+#: objinspstrconsts:oistdactsearchfindheadline
+msgid "&Find..."
+msgstr ""
+
 #: objinspstrconsts:oistdactdatasetfirstheadline
 msgid "&First"
 msgstr ""
@@ -78,6 +82,10 @@ msgstr ""
 
 #: objinspstrconsts:oistdactdatasetrefreshheadline
 msgid "&Refresh"
+msgstr ""
+
+#: objinspstrconsts:oistdactsearchreplaceheadline
+msgid "&Replace"
 msgstr ""
 
 #: objinspstrconsts:oissave
@@ -304,6 +312,10 @@ msgstr ""
 msgid "Ctrl+C"
 msgstr ""
 
+#: objinspstrconsts:oistdactsearchfindshortcut
+msgid "Ctrl+F"
+msgstr ""
+
 #: objinspstrconsts:oistdactfileopenshortcut
 msgid "Ctrl+O"
 msgstr ""
@@ -444,6 +456,14 @@ msgstr "イベント"
 msgid "Exit"
 msgstr ""
 
+#: objinspstrconsts:oistdactsearchfindfirstheadline
+msgid "F&ind First"
+msgstr ""
+
+#: objinspstrconsts:oistdactsearchfindnextshortcut
+msgid "F3"
+msgstr ""
+
 #: objinspstrconsts:oisfavorites
 msgid "Favorites"
 msgstr ""
@@ -458,6 +478,22 @@ msgstr ""
 
 #: objinspstrconsts:cactionlisteditorfilecategory
 msgid "File"
+msgstr ""
+
+#: objinspstrconsts:oistdactsearchfindhint
+msgid "Find"
+msgstr ""
+
+#: objinspstrconsts:oistdactsearchfindnextheadline
+msgid "Find &Next"
+msgstr ""
+
+#: objinspstrconsts:oistdactsearchfindfirsthint
+msgid "Find first"
+msgstr ""
+
+#: objinspstrconsts:oistdactsearchfindnexthint
+msgid "Find next"
 msgstr ""
 
 #: objinspstrconsts:oistdactdatasetfirsthint
@@ -688,6 +724,14 @@ msgstr ""
 msgid "Open masks file (*.dem)"
 msgstr ""
 
+#: objinspstrconsts:oistdactfileopenwithhint
+msgid "Open with"
+msgstr ""
+
+#: objinspstrconsts:oistdactfileopenwithheadline
+msgid "Open with..."
+msgstr ""
+
 #: objinspstrconsts:oisoptions
 msgid "Options"
 msgstr ""
@@ -748,6 +792,10 @@ msgstr ""
 msgid "Remove from Favorites"
 msgstr ""
 
+#: objinspstrconsts:oistdactsearchreplacehint
+msgid "Replace"
+msgstr ""
+
 #: objinspstrconsts:oisrestricted
 msgid "Restricted"
 msgstr ""
@@ -790,6 +838,10 @@ msgstr ""
 
 #: objinspstrconsts:sccsiledtsave
 msgid "Save..."
+msgstr ""
+
+#: objinspstrconsts:cactionlisteditorsearchcategory
+msgid "Search"
 msgstr ""
 
 #: objinspstrconsts:sccshceditsections

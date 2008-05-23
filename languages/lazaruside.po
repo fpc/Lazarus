@@ -2052,12 +2052,8 @@ msgstr ""
 msgid "Click here to browse the file"
 msgstr ""
 
-#: lazarusidestrconsts:lisprojectclosed
-msgid "Project closed"
-msgstr ""
-
-#: lazarusidestrconsts:listheprojectisclosedtherearenowthreepossibilitieshin
-msgid "The project is closed. There are now three possibilities.%sHint: You do not need to close a project yourself, since this is done automatically."
+#: lazarusidestrconsts:lisprojectwizard
+msgid "Project Wizard"
 msgstr ""
 
 #: lazarusidestrconsts:lisquitlazarus
@@ -3996,6 +3992,10 @@ msgstr ""
 msgid "View project units"
 msgstr ""
 
+#: lazarusidestrconsts:dlgmainviewframes
+msgid "View project frames"
+msgstr ""
+
 #: lazarusidestrconsts:dlgmultiselect
 msgid "Multi Select"
 msgstr ""
@@ -5054,6 +5054,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisinvaliddelete
 msgid "Invalid delete"
+msgstr ""
+
+#: lazarusidestrconsts:listhecomponentisinheritedfromtodeleteaninheritedcomp
+msgid "The component %s is inherited from %s.%sTo delete an inherited component open the ancestor and delete it there."
 msgstr ""
 
 #: lazarusidestrconsts:listherootcomponentcannotbedeleted
@@ -7308,8 +7312,8 @@ msgstr ""
 msgid "Unable to open designer.%sThe class %s does not descend from a designable class like TForm or TDataModule."
 msgstr ""
 
-#: lazarusidestrconsts:lisclassconflictswithlfmfiletheunitusesthetheunitwhic
-msgid "Class conflicts with .lfm file:%sThe unit %s%suses the the unit %s%swhich contains the class %s,%sbut the .lfm file contains already another class.%sThere can only be one design class per unit.%sPlease move %s to another unit."
+#: lazarusidestrconsts:lisclassconflictswithlfmfiletheunitusestheunitwhic
+msgid "Class conflicts with .lfm file:%sThe unit %s%suses the unit %s%swhich contains the class %s,%sbut the .lfm file contains already another class.%sThere can only be one design class per unit.%sPlease move %s to another unit."
 msgstr ""
 
 #: lazarusidestrconsts:lisunabletofindtheunitofcomponentclass
@@ -7796,6 +7800,14 @@ msgstr ""
 msgid "No item selected"
 msgstr ""
 
+#: lazarusidestrconsts:liserroropeningcomponent
+msgid "Error opening component"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletoopenancestorcomponent
+msgid "Unable to open ancestor component"
+msgstr ""
+
 #: lazarusidestrconsts:lisnewdlgpleaseselectanitemfirst
 msgid "Please select an item first."
 msgstr ""
@@ -7810,6 +7822,14 @@ msgstr ""
 
 #: lazarusidestrconsts:lischooseoneoftheseitemstocreateanewfile
 msgid "Choose one of these items to create a new File"
+msgstr ""
+
+#: lazarusidestrconsts:lischooseoneoftheseitemstoinheritfromanexistingone
+msgid "Choose one of these items to inherit from an existing one"
+msgstr ""
+
+#: lazarusidestrconsts:lisinheriteditem
+msgid "Inherited Item"
 msgstr ""
 
 #: lazarusidestrconsts:lischooseoneoftheseitemstocreateanewproject
@@ -7836,8 +7856,16 @@ msgstr ""
 msgid "Create a new unit with a datamodule."
 msgstr ""
 
+#: lazarusidestrconsts:lisnewdlgcreateanewunitwithaframe
+msgid "Create a new unit with a frame"
+msgstr ""
+
 #: lazarusidestrconsts:lisnewdlgcreateanewemptytextfile
 msgid "Create a new empty text file."
+msgstr ""
+
+#: lazarusidestrconsts:lisnewdlginheritanexistingcomponent
+msgid "Inherit from an existing component."
 msgstr ""
 
 #: lazarusidestrconsts:lisasimplepascalprogramfilethiscanbeusedforquickanddi
@@ -11482,5 +11510,17 @@ msgstr ""
 
 #: lazarusidestrconsts:liseteditcustomscanners
 msgid "Edit custom scanners (%s)"
+msgstr ""
+
+#: lazarusidestrconsts:lispwnewproject
+msgid "New Project"
+msgstr ""
+
+#: lazarusidestrconsts:lispwopenproject
+msgid "Open Project"
+msgstr ""
+
+#: lazarusidestrconsts:lispwconvertproject
+msgid "Convert Delphi Project"
 msgstr ""
 

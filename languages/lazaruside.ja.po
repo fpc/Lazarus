@@ -1436,6 +1436,10 @@ msgstr "新しいパッケージを作成するためにこの中の一つの項
 msgid "Choose one of these items to create a new Project"
 msgstr "新しいプロジェクトを作成するためにこの中の一つの項目を選択してください。"
 
+#: lazarusidestrconsts:lischooseoneoftheseitemstoinheritfromanexistingone
+msgid "Choose one of these items to inherit from an existing one"
+msgstr ""
+
 #: lazarusidestrconsts:lislazbuildabochooseoutputdir
 msgid "Choose output directory of the IDE executable "
 msgstr ""
@@ -1468,9 +1472,9 @@ msgstr "クラス %s%s%s がありません"
 msgid "Class Name already exists"
 msgstr "クラス名はすでにあります"
 
-#: lazarusidestrconsts:lisclassconflictswithlfmfiletheunitusesthetheunitwhic
-msgid "Class conflicts with .lfm file:%sThe unit %s%suses the the unit %s%swhich contains the class %s,%sbut the .lfm file contains already another class.%sThere can only be one design class per unit.%sPlease move %s to another unit."
-msgstr "クラスは .lfmファイルと衝突します: %s ユニット %s%s は クラス %s を含むユニット %s%s を用いています。 %s しかし、その .lfmファイルは既に他のクラスを含んでいます。 %s 各ユニットには一つの設計クラスしか許されません。 %s クラス %s を他のユニットに移動してください。"
+#: lazarusidestrconsts:lisclassconflictswithlfmfiletheunitusestheunitwhic
+msgid "Class conflicts with .lfm file:%sThe unit %s%suses the unit %s%swhich contains the class %s,%sbut the .lfm file contains already another class.%sThere can only be one design class per unit.%sPlease move %s to another unit."
+msgstr ""
 
 #: lazarusidestrconsts:lisclassnotfound
 msgid "Class not found"
@@ -1996,6 +2000,10 @@ msgstr "DFMファイルをLFMに変換"
 msgid "Convert DFM file to LFM ..."
 msgstr "DFMファイルをLFMへ変換 ..."
 
+#: lazarusidestrconsts:lispwconvertproject
+msgid "Convert Delphi Project"
+msgstr ""
+
 #: lazarusidestrconsts:liskmconvertdelphipackagetolazaruspackage
 msgid "Convert Delphi package to Lazarus package"
 msgstr "DelphiパッケージをLazarusパッケージに変換"
@@ -2199,6 +2207,10 @@ msgstr "新規にLCLフォームを有するユニットを作成"
 #: lazarusidestrconsts:lisnewdlgcreateanewunitwithadatamodule
 msgid "Create a new unit with a datamodule."
 msgstr "新規にデータモジュールを有するユニットを作成"
+
+#: lazarusidestrconsts:lisnewdlgcreateanewunitwithaframe
+msgid "Create a new unit with a frame"
+msgstr ""
 
 #: lazarusidestrconsts:liscreateaprojectfirst
 msgid "Create a project first!"
@@ -3030,6 +3042,10 @@ msgstr "コンポーネント%sの移動中にエラー:%s"
 
 #: lazarusidestrconsts:lisabcreationfailed
 msgid "Error occured during Application Bundle creation: "
+msgstr ""
+
+#: lazarusidestrconsts:liserroropeningcomponent
+msgid "Error opening component"
 msgstr ""
 
 #: lazarusidestrconsts:liserrorparsinglfmcomponentstream
@@ -4312,6 +4328,10 @@ msgstr "インドネシア語"
 msgid "Information about %s"
 msgstr "%s に関する情報"
 
+#: lazarusidestrconsts:lisnewdlginheritanexistingcomponent
+msgid "Inherit from an existing component."
+msgstr ""
+
 #: lazarusidestrconsts:liscmplstinheritance
 msgid "Inheritance"
 msgstr ""
@@ -4319,6 +4339,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgcoinherited
 msgid "Inherited"
 msgstr "継承"
+
+#: lazarusidestrconsts:lisinheriteditem
+msgid "Inherited Item"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_insert
 msgid "Insert"
@@ -5760,6 +5784,10 @@ msgstr "新規のファイル"
 msgid "New Form"
 msgstr "新規フォーム"
 
+#: lazarusidestrconsts:lispwnewproject
+msgid "New Project"
+msgstr ""
+
 #: lazarusidestrconsts:lismenunewproject
 msgid "New Project ..."
 msgstr "新規プロジェクト ..."
@@ -6075,6 +6103,10 @@ msgstr "パッケージをオープンしますか?"
 #: lazarusidestrconsts:lisctdefsopenpreview
 msgid "Open Preview"
 msgstr "プレビューを開く"
+
+#: lazarusidestrconsts:lispwopenproject
+msgid "Open Project"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuopenproject
 msgid "Open Project ..."
@@ -6716,6 +6748,10 @@ msgstr "プロセス"
 msgid "Program"
 msgstr "プログラム"
 
+#: lazarusidestrconsts:lisedtexttoolprogramfilename
+msgid "Program Filename:"
+msgstr "プログラムファイル名"
+
 #: lazarusidestrconsts:lisprogramdetected
 msgid "Program detected"
 msgstr "プログラムが削除されました。"
@@ -6727,10 +6763,6 @@ msgstr "プログラムソースは .pas, .ppあるいは.lprのようなpascal�
 #: lazarusidestrconsts:lisprogramafreepascalprogramtheprogramfileisautomatic
 msgid "Program%sA freepascal program. The program file is automatically maintained by lazarus."
 msgstr "プログラム%s freepascalプログラム。プログラムファイルはlazarusにより自動的に管理されます。"
-
-#: lazarusidestrconsts:lisedtexttoolprogramfilename
-msgid "Program Filename:"
-msgstr "プログラムファイル名"
 
 #: lazarusidestrconsts:lisexeprograms
 msgid "Programs"
@@ -6796,13 +6828,13 @@ msgstr "プロジェクトのユニットパス"
 msgid "Project UnitPath"
 msgstr "プロジェクトのユニットパス"
 
+#: lazarusidestrconsts:lisprojectwizard
+msgid "Project Wizard"
+msgstr ""
+
 #: lazarusidestrconsts:lisprojectchanged
 msgid "Project changed"
 msgstr "プロジェクトが変更されました。"
-
-#: lazarusidestrconsts:lisprojectclosed
-msgid "Project closed"
-msgstr "プロジェクトが閉じられました"
 
 #: lazarusidestrconsts:lisprojectdirectory
 msgid "Project directory"
@@ -8852,6 +8884,10 @@ msgstr "コンパイラファイル\"%s\"は実行可能ではありません。
 msgid "The compiler file for package %s is not a valid executable:%s%s"
 msgstr "パッケージ%sのコンパイラファイルは有効な実行ファイルではありません。"
 
+#: lazarusidestrconsts:listhecomponentisinheritedfromtodeleteaninheritedcomp
+msgid "The component %s is inherited from %s.%sTo delete an inherited component open the ancestor and delete it there."
+msgstr ""
+
 #: lazarusidestrconsts:listhecomponenteditorofclasshascreatedtheerror
 msgid "The component editor of class %s%s%s has created the error:%s%s%s%s"
 msgstr ""
@@ -9151,10 +9187,6 @@ msgstr "そのプロジェクトは既にパッケージ%s%s%sへの依存性を
 #: lazarusidestrconsts:listheprojectinfofileisequaltotheprojectmainsource
 msgid "The project info file %s%s%s%sis equal to the project main source file!"
 msgstr "プロジェクト情報ファイル%s%s%s%sがプロジェクトメインソースファイルに等しいです！"
-
-#: lazarusidestrconsts:listheprojectisclosedtherearenowthreepossibilitieshin
-msgid "The project is closed. There are now three possibilities.%sHint: You do not need to close a project yourself, since this is done automatically."
-msgstr "そのプロジェクトは閉じています。３つの可能性があります。%sヒント：プロジェクトは自動的に閉じられるため、あなた自身が閉じる必要はありません。"
 
 #: lazarusidestrconsts:listheprojectmustbesavedbeforebuildingifyousetthetest
 msgid "The project must be saved before building%sIf you set the Test Directory in the environment options,%syou can create new projects and build them at once.%sSave project?"
@@ -9763,6 +9795,10 @@ msgstr ""
 #: lazarusidestrconsts:lisunabletoloadthecomponentclassbecauseitdependsonits
 msgid "Unable to load the component class %s%s%s, because it depends on itself."
 msgstr "コンポーネントクラス %s%s%s を読み込めません。なぜならそれはそれ自身に依存しているからです。"
+
+#: lazarusidestrconsts:lisunabletoopenancestorcomponent
+msgid "Unable to open ancestor component"
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletoopendesignertheclassdoesnotdescendfromades
 msgid "Unable to open designer.%sThe class %s does not descend from a designable class like TForm or TDataModule."
@@ -10403,6 +10439,10 @@ msgstr "メッセージを表示"
 #: lazarusidestrconsts:dlgmainviewforms
 msgid "View project forms"
 msgstr "プロジェクトフォームを表示"
+
+#: lazarusidestrconsts:dlgmainviewframes
+msgid "View project frames"
+msgstr ""
 
 #: lazarusidestrconsts:liskmviewprojectoptions
 msgid "View project options"
