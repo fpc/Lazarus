@@ -21,9 +21,9 @@
 
 procedure TPenHandleCache.RemoveItem(Item: TResourceCacheItem);
 begin
-  if Item=nil then
+  if Item = nil then
     RaiseGDBException('TPenHandleCache.RemoveItem');
-  DeleteObject(Item.Handle);
+  DeleteObject(HGDIOBJ(Item.Handle));
   inherited RemoveItem(Item);
 end;
 
@@ -235,7 +235,7 @@ begin
     PenResourceCache.FindItem(FReference.Handle).DecreaseRefCount;
     FPenHandleCached := False;
   end else
-    DeleteObject(FReference.Handle);
+    DeleteObject(HGDIOBJ(FReference.Handle));
   FReference._lclHandle := 0;
 end;
 

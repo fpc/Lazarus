@@ -21,7 +21,7 @@
 
 procedure TBrushHandleCache.RemoveItem(Item: TResourceCacheItem);
 begin
-  DeleteObject(Item.Handle);
+  DeleteObject(HGIOBJ(Item.Handle));
   inherited RemoveItem(Item);
 end;
 
@@ -179,7 +179,7 @@ begin
       CacheItem.DecreaseRefCount;
     FBrushHandleCached := False;
   end else
-    DeleteObject(FReference.Handle);
+    DeleteObject(HGDIOBJ(FReference.Handle));
   FReference._lclHandle := 0;
 end;
 

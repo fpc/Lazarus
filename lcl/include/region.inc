@@ -139,7 +139,7 @@ procedure TRegion.FreeReference;
 begin
   if not FRegionData.Reference.Allocated then Exit;
 
-  DeleteObject(FRegionData.Reference.Handle);
+  DeleteObject(HGDIOBJ(FRegionData.Reference.Handle));
   FRegionData.Reference._lclHandle := 0;
 end;
 

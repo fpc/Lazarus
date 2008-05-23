@@ -130,7 +130,7 @@ var
 begin
 //DebugLn('[TCanvas.CreateBrush] ',Classname,'  Self=',DbgS(Self)
 // ,'  Brush=',DbgS(Brush));
-  OldHandle := SelectObject(FHandle, Brush.Reference.Handle);
+  OldHandle := SelectObject(FHandle, HGDIOBJ(Brush.Reference.Handle));
   //debugln('TCanvas.CreateBrush ',ClassName,' Self=',DbgS(Self),' OldHandle=',DbgS(OldHandle),8),' NewHandle=',DbgS(Brush.Handle),' FSavedBrushHandle=',DbgS(Cardinal(FSavedBrushHandle));
   if (OldHandle <> Brush.Reference.Handle) and (FSavedBrushHandle=0) then
     FSavedBrushHandle := OldHandle;
@@ -175,7 +175,7 @@ const
 begin
 //DebugLn('[TCanvas.CreatePen] ',Classname,'  Self=',DbgS(Self)
 // ,'  Pen=',DbgS(Pen));
-  OldHandle := SelectObject(FHandle, Pen.Reference.Handle);
+  OldHandle := SelectObject(FHandle, HGDIOBJ(Pen.Reference.Handle));
   if (OldHandle <> Pen.Reference.Handle) and (FSavedPenHandle=0) then
     FSavedPenHandle := OldHandle;
   MoveTo(PenPos.X, PenPos.Y);
@@ -196,7 +196,7 @@ begin
   // The first time the font handle is selected, the default font handle
   // is returned. Save this font handle to restore it later in DeselectHandles.
   // The TFont will call DeleteObject itself, so we never need to call it.
-  OldHandle := SelectObject(FHandle, Font.Reference.Handle);
+  OldHandle := SelectObject(FHandle, HGDIOBJ(Font.Reference.Handle));
   //DebugLn(['TCanvas.CreateFont OldHandle=',dbghex(OldHandle),' Font.Handle=',dbghex(Font.Handle)]);
   if (OldHandle <> Font.Reference.Handle) and (FSavedFontHandle=0) then
     FSavedFontHandle := OldHandle;
@@ -211,7 +211,7 @@ procedure TCanvas.CreateRegion;
 var
   OldHandle: HRGN;
 begin
-  OldHandle := SelectObject(FHandle, Region.Reference.Handle);
+  OldHandle := SelectObject(FHandle, HGDIOBJ(Region.Reference.Handle));
   if (OldHandle <> Region.Reference.Handle) and (FSavedRegionHandle=0) then
     FSavedRegionHandle := OldHandle;
   Include(FState, csRegionValid);

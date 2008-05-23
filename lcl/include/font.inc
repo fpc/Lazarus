@@ -38,7 +38,7 @@ end;
 
 procedure TFontHandleCache.RemoveItem(Item: TResourceCacheItem);
 begin
-  DeleteObject(Item.Handle);
+  DeleteObject(HGDIOBJ(Item.Handle));
   inherited RemoveItem(Item);
 end;
 
@@ -1104,7 +1104,7 @@ begin
     FontResourceCache.FindFont(FReference.Handle).DecreaseRefCount;
     FFontHandleCached := False;
   end else
-    DeleteObject(FReference.Handle);
+    DeleteObject(HGDIOBJ(FReference.Handle));
   FReference._lclHandle := 0;
 end;
 
