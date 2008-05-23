@@ -62,11 +62,11 @@ begin
                           SizeOf(Descriptor1.LogFont));
 end;
 
-function TFontHandleCache.FindFont(TheFont: HFONT): TResourceCacheItem;
+function TFontHandleCache.FindFont(TheFont: TLCLHandle): TResourceCacheItem;
 var
   ANode: TAvgLvlTreeNode;
 begin
-  ANode:=FItems.FindKey(@THandle(TheFont),
+  ANode:=FItems.FindKey(@TheFont,
                         TListSortCompare(@ComparePHandleWithResourceCacheItem));
   if ANode<>nil then
     Result:=TResourceCacheItem(ANode.Data)
@@ -90,7 +90,7 @@ begin
     Result:=nil;
 end;
 
-function TFontHandleCache.Add(TheFont: HFONT; const LogFont: TLogFont;
+function TFontHandleCache.Add(TheFont: TLCLHandle; const LogFont: TLogFont;
   const LongFontName: string): TFontHandleCacheDescriptor;
 var
   Item: TResourceCacheItem;

@@ -442,10 +442,10 @@ type
   public
     constructor Create;
     function CompareDescriptors(Tree: TAvgLvlTree; Desc1, Desc2: Pointer): integer; override;
-    function FindFont(TheFont: HFONT): TResourceCacheItem;
+    function FindFont(TheFont: TLCLHandle): TResourceCacheItem;
     function FindFontDesc(const LogFont: TLogFont;
                           const LongFontName: string): TFontHandleCacheDescriptor;
-    function Add(TheFont: HFONT; const LogFont: TLogFont;
+    function Add(TheFont: TLCLHandle; const LogFont: TLogFont;
                  const LongFontName: string): TFontHandleCacheDescriptor;
   end;
 
