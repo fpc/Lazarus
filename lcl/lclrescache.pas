@@ -25,7 +25,7 @@ unit LCLResCache;
 interface
 
 uses
-  Classes, SysUtils, FPCAdds, Types, LCLType, LCLProc, AvgLvlTree;
+  Classes, SysUtils, FPCAdds, Types, LCLType, LCLProc, AvgLvlTree, WSReferences;
   
 {off $DEFINE CheckResCacheConsistency}
 
@@ -40,11 +40,11 @@ type
     FDestroying: boolean;
     FReferenceCount: integer;
   public
-    Handle: THandle;
+    Handle: TLCLHandle;
     Cache: TResourceCache;
     FirstDescriptor, LastDescriptor: TResourceCacheDescriptor;
     Next, Prev: TResourceCacheItem;
-    constructor Create(TheCache: TResourceCache; TheHandle: THandle);
+    constructor Create(TheCache: TResourceCache; TheHandle: TLCLHandle);
     destructor Destroy; override;
     procedure IncreaseRefCount;
     procedure DecreaseRefCount;
@@ -112,7 +112,7 @@ type
 
   THandleResourceCache = class(TResourceCache)
   public
-    function FindItem(Handle: THandle): TResourceCacheItem;
+    function FindItem(Handle: TLCLHandle): TResourceCacheItem;
   end;
 
 
@@ -135,7 +135,7 @@ type
   public
     constructor Create(TheDataSize: integer);
     function FindDescriptor(DescPtr: Pointer): TBlockResourceCacheDescriptor;
-    function AddResource(Handle: THandle; DescPtr: Pointer
+    function AddResource(Handle: TLCLHandle; DescPtr: Pointer
                          ): TBlockResourceCacheDescriptor;
     function CompareDescriptors(Tree: TAvgLvlTree;
                                 Desc1, Desc2: Pointer): integer; override;
@@ -171,7 +171,7 @@ end;
 { TResourceCacheItem }
 
 constructor TResourceCacheItem.Create(TheCache: TResourceCache;
-  TheHandle: THandle);
+  TheHandle: TLCLHandle);
 begin
   Cache:=TheCache;
   Handle:=TheHandle;
@@ -446,7 +446,7 @@ end;
 
 { THandleResourceCache }
 
-function THandleResourceCache.FindItem(Handle: THandle): TResourceCacheItem;
+function THandleResourceCache.FindItem(Handle: TLCLHandle): TResourceCacheItem;
 var
   ANode: TAvgLvlTreeNode;
 begin
@@ -481,7 +481,7 @@ begin
     Result:=nil;
 end;
 
-function TBlockResourceCache.AddResource(Handle: THandle; DescPtr: Pointer
+function TBlockResourceCache.AddResource(Handle: TLCLHandle; DescPtr: Pointer
   ): TBlockResourceCacheDescriptor;
 var
   Item: TResourceCacheItem;

@@ -161,7 +161,7 @@ begin
   if FReference.Handle = Value then Exit;
 
   FreeReference;
-  FReference._lclHandle := Value;
+  FReference._lclHandle := TLCLHandle(Value);
   Changed;
 end;
 
@@ -211,7 +211,7 @@ begin
     FReference._lclHandle := CachedPen.Item.Handle;
   end else
   begin
-    FReference._lclHandle := CreatePenIndirect(LogPen);
+    FReference._lclHandle := TLCLHandle(CreatePenIndirect(LogPen));
     PenResourceCache.AddResource(FReference.Handle, @LogPen);
   end;
   FPenHandleCached := True;

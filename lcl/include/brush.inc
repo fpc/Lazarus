@@ -141,7 +141,7 @@ begin
   if FReference.Handle = Value then Exit;
 
   FreeReference;
-  FReference._lclHandle := Value;
+  FReference._lclHandle := TLCLHandle(Value);
   Changed;
 end;
 
@@ -227,9 +227,9 @@ begin
   end else
   begin
     if LogBrush.lbStyle <> BS_PATTERN then
-      FReference._lclHandle := CreateBrushIndirect(LogBrush)
+      FReference._lclHandle := TLCLHandle(CreateBrushIndirect(LogBrush))
     else
-      FReference._lclHandle := CreatePatternBrush(LogBrush.lbHatch);
+      FReference._lclHandle := TLCLHandle(CreatePatternBrush(LogBrush.lbHatch));
     BrushResourceCache.AddResource(FReference.Handle, @LogBrush);
   end;
   FBrushHandleCached := True;

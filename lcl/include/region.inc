@@ -75,7 +75,7 @@ begin
   if FRegionData.Reference.Handle = Value then Exit;
 
   FreeReference;
-  FRegionData.Reference._lclHandle := Value;
+  FRegionData.Reference._lclHandle := TLCLHandle(Value);
   FRegionData.Rect := GetClipRect;
   //TODO: query polygon params
   Changed;
@@ -111,8 +111,8 @@ begin
     then FillMode := Winding
     else FillMode := Alternate;
     
-    FRegionData.Reference._lclHandle := CreatePolygonRgn(
-      FRegionData.Polygon, FRegionData.NumPoints, FillMode);
+    FRegionData.Reference._lclHandle := TLCLHandle(CreatePolygonRgn(
+      FRegionData.Polygon, FRegionData.NumPoints, FillMode));
     Exit;
   end;
     
@@ -120,7 +120,7 @@ begin
   begin
     if (Right - Left <> 0) or (Bottom - Top <> 0)
     then begin
-      FRegionData.Reference._lclHandle := CreateRectRgn(Left, Top, Right, Bottom);
+      FRegionData.Reference._lclHandle := TLCLHandle(CreateRectRgn(Left, Top, Right, Bottom));
       Exit;
     end;
   end;

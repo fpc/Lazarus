@@ -1065,7 +1065,7 @@ begin
   end else
   begin
     // ask the interface for the nearest font
-    FReference._lclHandle := CreateFontIndirectEx(ALogFont, Name);
+    FReference._lclHandle := TLCLHandle(CreateFontIndirectEx(ALogFont, Name));
     FontResourceCache.Add(FReference.Handle, ALogFont, Name);
   end;
   FFontHandleCached := True;
@@ -1173,7 +1173,7 @@ begin
   begin
     OldStyle := FStyle;
     FreeReference;
-    FReference._lclHandle := FontData.Handle;
+    FReference._lclHandle := TLCLHandle(FontData.Handle);
     inherited SetSize(-MulDiv(FontData.Height, 72, FPixelsPerInch));
     FHeight := FontData.Height;
     FPitch := FontData.Pitch;
