@@ -44,6 +44,7 @@ uses
   SynHighlighterCPP, SynHighlighterHTML, SynHighlighterJava, SynHighlighterLFM,
   SynHighlighterPas, SynHighlighterPerl, SynHighlighterPHP, SynHighlighterSQL,
   SynHighlighterPython, SynHighlighterUNIXShellScript, SynHighlighterXML,
+  SynHighlighterJScript,
   // codetools
   Laz_XMLCfg,
   // IDEIntf

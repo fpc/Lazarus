@@ -45,6 +45,7 @@ uses
   SynHighlighterCPP, SynHighlighterHTML, SynHighlighterJava, SynHighlighterLFM,
   SynHighlighterPas, SynHighlighterPerl, SynHighlighterPHP, SynHighlighterSQL,
   SynHighlighterPython, SynHighlighterUNIXShellScript, SynHighlighterXML,
+  SynHighlighterJScript,
   // codetools
   Laz_XMLCfg,
   // IDEIntf
@@ -62,7 +63,7 @@ type
 
   TLazSyntaxHighlighter =
     (lshNone, lshText, lshFreePascal, lshDelphi, lshLFM, lshXML, lshHTML,
-    lshCPP, lshPerl, lshJava, lshBash, lshPython, lshPHP, lshSQL);
+    lshCPP, lshPerl, lshJava, lshBash, lshPython, lshPHP, lshSQL, lshJScript);
     
   TPascalHilightAttribute = (
     phaAssembler, phaComment, phaDirective, phaReservedWord, phaNumber,
@@ -248,7 +249,7 @@ const
     TCustomSynClass =
     (Nil, Nil, TSynFreePascalSyn, TSynPasSyn, TSynLFMSyn, TSynXMLSyn,
     TSynHTMLSyn, TSynCPPSyn, TSynPerlSyn, TSynJavaSyn, TSynUNIXShellScriptSyn,
-    TSynPythonSyn, TSynPHPSyn, TSynSQLSyn);
+    TSynPythonSyn, TSynPHPSyn, TSynSQLSyn, TSynJScriptSyn);
 
 
 { Comments }
@@ -267,7 +268,8 @@ const
     comtPerl,  // lshBash
     comtPerl,  // lshPython
     comtHTML,  // lshPHP
-    comtCPP    // lshSQL
+    comtCPP,   // lshSQL
+    comtCPP    // lshJScript
     );
 
 const
@@ -702,7 +704,8 @@ const
     'Bash',
     'Python',
     'PHP',
-    'SQL'
+    'SQL',
+    'JScript'
     );
 
 var
@@ -740,7 +743,8 @@ const
     lshBash,
     lshPython,
     lshPHP,
-    lshSQL
+    lshSQL,
+    lshJScript
     );
 
 
@@ -1295,6 +1299,34 @@ begin
       Add('Number=Number');
       Add('Key=Key');
       Add('String=String');
+    end;
+  end;
+  Add(NewInfo);
+
+  // create info for JScript
+  NewInfo := TEditOptLanguageInfo.Create;
+  with NewInfo do
+  begin
+    TheType := lshJScript;
+    DefaultCommentType := DefaultCommentTypes[TheType];
+    SynClass := LazSyntaxHighlighterClasses[TheType];
+    SetBothFilextensions('js');
+    SampleSource :=
+      '/* JScript */'#13#10 +
+      '/* To be written ... /*'#13#10 + #13#10 +
+      '/* Text Block */'#13#10 + #13#10;
+    AddAttrSampleLines[ahaTextBlock] := 2;
+    MappedAttributes := TStringList.Create;
+    with MappedAttributes do
+    begin
+      Add('Comment=Comment');
+      Add('Documentation=Comment');
+      Add('Identifier=Identifier');
+      Add('Reserved_word=Reserved_word');
+      Add('Number=Number');
+      Add('Space=Space');
+      Add('String=String');
+      Add('Symbol=Symbol');
     end;
   end;
   Add(NewInfo);
