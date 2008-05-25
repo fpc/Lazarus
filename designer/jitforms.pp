@@ -43,7 +43,8 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, AvgLvlTree, TypInfo, LCLProc, LResources, Forms, Controls,
-  LCLMemManager, LCLIntf, Dialogs, JITForm, IDEProcs,
+  LCLMemManager, LCLIntf, Dialogs,
+  PropEdits, JITForm, IDEProcs,
   BasePkgManager;
 
 type
@@ -57,7 +58,8 @@ type
     );
   TJITFormErrors = set of TJITFormError;
   
-  TJITReaderErrorEvent = procedure(Sender: TObject; ErrorType: TJITFormError;
+  TJITReaderErrorEvent = procedure(Sender: TObject; Reader: TReader;
+                                   ErrorType: TJITFormError;
                                    var Action: TModalResult) of object;
   TJITPropertyNotFoundEvent = procedure(Sender: TObject; Reader: TReader;
                    Instance: TPersistent; var PropName: string; IsPath: boolean;
@@ -87,10 +89,11 @@ type
     FOnPropertyNotFound: TJITPropertyNotFoundEvent;
   protected
     FCurReadErrorMsg: string;
-    FCurReadJITComponent:TComponent;
-    FCurReadClass:TClass;
+    FCurReadJITComponent: TComponent;
+    FCurReadClass: TClass;
     FCurReadChild: TComponent;
     FCurReadChildClass: TComponentClass;
+    FCurReadStreamClass: TClass;
     FOnReaderError: TJITReaderErrorEvent;
     FJITComponents: TList;
     FFlags: TJITCompListFlags;
@@ -180,6 +183,7 @@ type
     property OnFindClass: TJITFindClass read FOnFindClass write FOnFindClass;
     property CurReadJITComponent: TComponent read FCurReadJITComponent;
     property CurReadClass: TClass read FCurReadClass;
+    property CurReadStreamClass: TClass read FCurReadStreamClass;
     property CurReadChild: TComponent read FCurReadChild;
     property CurReadChildClass: TComponentClass read FCurReadChildClass;
     property CurReadErrorMsg: string read FCurReadErrorMsg;
@@ -620,8 +624,8 @@ end;
 destructor TJITComponentList.Destroy;
 begin
   while FJITComponents.Count>0 do DestroyJITComponent(FJITComponents.Count-1);
-  FJITComponents.Free;
-  FErrors.Free;
+  FreeAndNil(FJITComponents);
+  FreeAndNil(FErrors);
   inherited Destroy;
 end;
 
@@ -743,7 +747,7 @@ function TJITComponentList.AddJITComponentFromStream(BinStream: TStream;
 //  returns new index
 // -1 = invalid stream
 
-  procedure ReadStream(AStream: TStream);
+  procedure ReadStream(AStream: TStream; StreamClass: TClass);
   var
     Reader:TReader;
     DestroyDriver: Boolean;
@@ -752,6 +756,7 @@ function TJITComponentList.AddJITComponentFromStream(BinStream: TStream;
     debugln('[TJITComponentList.AddJITComponentFromStream] InitReading ...');
     {$ENDIF}
 
+    FCurReadStreamClass:=StreamClass;
     DestroyDriver:=false;
     InitReading(AStream,Reader,DestroyDriver);
     {$IFDEF VerboseJITForms}
@@ -796,7 +801,7 @@ function TJITComponentList.AddJITComponentFromStream(BinStream: TStream;
         DebugLn(['TJITComponentList.AddJITComponentFromStream.ReadAncestor ',DbgSName(AClass),' HasStream=',AncestorStream<>nil]);
         {$ENDIF}
         if AncestorStream<>nil then
-          ReadStream(AncestorStream);
+          ReadStream(AncestorStream,AClass);
       finally
         FreeAndNil(AncestorStream);
       end;
@@ -828,7 +833,7 @@ begin
     Result:=DoCreateJITComponent('',NewClassName,NewUnitName,ParentClass,Visible);
     if Result<0 then exit;
     ReadAncestorStreams;
-    ReadStream(BinStream);
+    ReadStream(BinStream,FCurReadJITComponent.ClassType);
 
     if FCurReadJITComponent.Name='' then begin
       NewName:=FCurReadJITComponent.ClassName;
@@ -870,6 +875,7 @@ procedure TJITComponentList.InitReading(BinStream: TStream;
   var Reader: TReader; DestroyDriver: Boolean);
 begin
   FFlags:=FFlags-[jclAutoRenameComponents];
+  FErrors.Clear;
   
   MyFindGlobalComponentProc:=@OnFindGlobalComponent;
   RegisterFindGlobalComponentProc(@MyFindGlobalComponent);
@@ -916,6 +922,7 @@ begin
   Result:=-1;
   Instance:=nil;
   FCurReadClass:=nil;
+  FCurReadStreamClass:=nil;
   FCurReadJITComponent:=nil;
   
   try
@@ -954,6 +961,7 @@ begin
       try
         if FCurReadClass<>nil then
           FreeJITClass(FCurReadClass);
+        FCurReadStreamClass:=nil;
         Instance.Free;
       except
         on E: Exception do begin
@@ -1078,6 +1086,7 @@ begin
     try
       FCurReadJITComponent:=JITOwnerComponent;
       FCurReadClass:=JITOwnerComponent.ClassType;
+      FCurReadStreamClass:=FCurReadClass;
 
       FFlags:=FFlags+[jclAutoRenameComponents];
       {$IFDEF VerboseJITForms}
@@ -1556,7 +1565,7 @@ begin
     FErrors.Add(-1,ErrorBinPos,nil);
   end;
   if Assigned(OnReaderError) then
-    OnReaderError(Self,ErrorType,Action);
+    OnReaderError(Self,Reader,ErrorType,Action);
   Handled:=Action in [mrIgnore];
   FCurUnknownProperty:='';
   
@@ -1586,7 +1595,7 @@ end;
 
 procedure TJITComponentList.ReaderCreateComponent(Reader: TReader;
   ComponentClass: TComponentClass; var Component: TComponent);
-{$IFDEF EnableTFrame2}
+{$IFDEF EnableTFrame}
 var
   DestroyDriver: Boolean;
   SubReader: TReader;
@@ -1598,7 +1607,7 @@ begin
   fCurReadChild:=Component;
   fCurReadChildClass:=ComponentClass;
   
-  {$IFDEF EnableTFrame2}
+  {$IFDEF EnableTFrame}
   if Assigned(OnFindAncestorBinStream) then begin
     BinStream:=nil;
     DestroyDriver:=false;

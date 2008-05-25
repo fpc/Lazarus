@@ -713,6 +713,7 @@ type
     function ProjectUnitWithUnitname(const AnUnitName: string): TUnitInfo;
     function UnitWithEditorIndex(Index:integer): TUnitInfo;
     function UnitWithComponent(AComponent: TComponent): TUnitInfo;
+    function UnitWithComponentClass(AClass: TComponentClass): TUnitInfo;
     function UnitWithComponentName(AComponentName: String): TUnitInfo;
     function UnitComponentInheritingFrom(AClass: TComponentClass;
                                          Ignore: TUnitInfo): TUnitInfo;
@@ -4147,6 +4148,13 @@ function TProject.UnitWithComponent(AComponent: TComponent): TUnitInfo;
 begin
   Result:=fFirst[uilWithComponent];
   while (Result<>nil) and (Result.Component<>AComponent) do
+    Result:=Result.fNext[uilWithComponent];
+end;
+
+function TProject.UnitWithComponentClass(AClass: TComponentClass): TUnitInfo;
+begin
+  Result:=fFirst[uilWithComponent];
+  while (Result<>nil) and (Result.Component.ClassType<>AClass) do
     Result:=Result.fNext[uilWithComponent];
 end;
 

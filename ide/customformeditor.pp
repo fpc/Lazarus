@@ -133,8 +133,8 @@ each control that's dropped onto the form
     procedure SetSelection(const ASelection: TPersistentSelectionList);
     procedure OnObjectInspectorModified(Sender: TObject);
     procedure SetObj_Inspector(AnObjectInspector: TObjectInspectorDlg); virtual;
-    procedure JITListReaderError(Sender: TObject; ErrorType: TJITFormError;
-          var Action: TModalResult); virtual;
+    procedure JITListReaderError(Sender: TObject; Reader: TReader;
+          ErrorType: TJITFormError; var Action: TModalResult); virtual;
     procedure JITListPropertyNotFound(Sender: TObject; Reader: TReader;
       Instance: TPersistent; var PropName: string; IsPath: boolean;
       var Handled, Skip: Boolean);
@@ -2005,33 +2005,58 @@ begin
 end;
 
 procedure TCustomFormEditor.JITListReaderError(Sender: TObject;
-  ErrorType: TJITFormError; var Action: TModalResult);
+  Reader: TReader; ErrorType: TJITFormError; var Action: TModalResult);
 var
   aCaption, aMsg: string;
   DlgType: TMsgDlgType;
   Buttons: TMsgDlgButtons;
   HelpCtx: Longint;
   JITComponentList: TJITComponentList;
+  StreamClass: TComponentClass;
+  AnUnitInfo: TUnitInfo;
+  LFMFilename: String;
+  ErrorBinPos: Int64;
 begin
   JITComponentList:=TJITComponentList(Sender);
-  aCaption:='Error reading '+JITComponentList.ClassName;
+  aCaption:='Read error';
   aMsg:='';
   DlgType:=mtError;
   Buttons:=[mbCancel];
   HelpCtx:=0;
   
+  // get current lfm filename
+  LFMFilename:='';
+  if (JITComponentList.CurReadStreamClass<>nil)
+  and (JITComponentList.CurReadStreamClass.InheritsFrom(TComponent)) then begin
+    StreamClass:=TComponentClass(JITComponentList.CurReadStreamClass);
+    AnUnitInfo:=Project1.UnitWithComponentClass(StreamClass);
+    if AnUnitInfo<>nil then begin
+      LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lfm');
+    end;
+  end;
+  if LFMFilename<>'' then
+    aCaption:='Error reading '+ExtractFilename(LFMFilename);
+  
   with JITComponentList do begin
-    aMsg:=aMsg+ClassName+': ';
-    if CurReadJITComponent<>nil then
-      aMsg:=aMsg+CurReadJITComponent.Name+':'+CurReadJITComponent.ClassName
+    if LFMFilename<>'' then
+      aMsg:=aMsg+LFMFilename
+    else if CurReadStreamClass<>nil then
+      aMsg:=aMsg+'Stream='+CurReadStreamClass.ClassName
     else
-      aMsg:=aMsg+'?';
+      aMsg:=aMsg+'JITList='+ClassName;
+    aMsg:=aMsg+': ';
+    if CurReadJITComponent<>nil then
+      aMsg:=aMsg+'Root='+CurReadJITComponent.Name+':'+CurReadJITComponent.ClassName;
     if CurReadChild<>nil then
       aMsg:=aMsg+#13'Component: '
         +CurReadChild.Name+':'+CurReadChild.ClassName
     else if CurReadChildClass<>nil then
       aMsg:=aMsg+#13'Component Class: '+CurReadChildClass.ClassName;
     aMsg:=aMsg+#13+CurReadErrorMsg;
+  end;
+  if (Reader<>nil) and (Reader.Driver is TLRSObjectReader) then begin
+    ErrorBinPos:=TLRSObjectReader(Reader.Driver).Stream.Position;
+    aMsg:=aMsg+#13+'Stream position: '+dbgs(ErrorBinPos);
   end;
 
   case ErrorType of

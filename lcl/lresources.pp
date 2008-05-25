@@ -238,6 +238,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    procedure Clear;
     procedure Sort(LFMPositions: Boolean);
     function IndexOf(const Position: int64; LFMPositions: Boolean): integer;
     function IndexOfRange(const FromPos, ToPos: int64;
@@ -4307,6 +4308,11 @@ begin
   Count:=0;
   FItems.Free;
   inherited Destroy;
+end;
+
+procedure TLRPositionLinks.Clear;
+begin
+  Count:=0;
 end;
 
 procedure TLRPositionLinks.Sort(LFMPositions: Boolean);
