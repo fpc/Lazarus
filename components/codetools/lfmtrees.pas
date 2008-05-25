@@ -74,6 +74,7 @@ type
   TLFMObjectNode = class(TLFMTreeNode)
   public
     IsInherited: boolean;
+    IsInline: boolean;
     ChildPos: Integer;
     Name: string;
     NamePosition: integer;
@@ -413,7 +414,8 @@ begin
       repeat
         ProcessObject;
       until (not Parser.TokenSymbolIs('OBJECT'))
-        and (not Parser.TokenSymbolIs('INHERITED'));
+        and (not Parser.TokenSymbolIs('INHERITED'))
+        and (not Parser.TokenSymbolIs('INLINE'));
       Result:=true;
     except
       on E: EParserError do begin
@@ -730,9 +732,11 @@ begin
   ObjectNode:=TLFMObjectNode(CurNode);
   if Parser.TokenSymbolIs('OBJECT') then
     ObjectNode.IsInherited := False
+  else if Parser.TokenSymbolIs('INHERITED') then
+    ObjectNode.IsInherited := True
   else begin
-    Parser.CheckTokenSymbol('INHERITED');
-    ObjectNode.IsInherited := True;
+    Parser.CheckTokenSymbol('INLINE');
+    ObjectNode.IsInline := True;
   end;
   NextToken;
   Parser.CheckToken(toSymbol);
@@ -763,7 +767,8 @@ begin
     // read property list
     while not (Parser.TokenSymbolIs('END')
     or Parser.TokenSymbolIs('OBJECT')
-    or Parser.TokenSymbolIs('INHERITED')) do
+    or Parser.TokenSymbolIs('INHERITED')
+    or Parser.TokenSymbolIs('INLINE')) do
       ProcessProperty;
 
     // read child objects
@@ -893,7 +898,7 @@ begin
     inc(IdentEnd);
 
   if TheType=lfmnObject then begin
-    // skip object/inherited
+    // skip object/inherited/inline
     IdentStart:=IdentEnd;
     while (IdentStart<=SrcLen) and (Src[IdentStart] in [#0..#32]) do
       inc(IdentStart);

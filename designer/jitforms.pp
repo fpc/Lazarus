@@ -1590,6 +1590,9 @@ procedure TJITComponentList.ReaderCreateComponent(Reader: TReader;
 var
   DestroyDriver: Boolean;
   SubReader: TReader;
+  BinStream: TExtMemoryStream;
+  IsBaseClass: boolean;
+  Abort: boolean;
 {$ENDIF}
 begin
   fCurReadChild:=Component;
@@ -1601,6 +1604,7 @@ begin
     DestroyDriver:=false;
     SubReader:=nil;
     try
+      Abort:=false;
       OnFindAncestorBinStream(Self, ComponentClass, BinStream, IsBaseClass, Abort);
       if Abort then begin
         DebugLn(['TJITComponentList.ReaderCreateComponent aborted reading ComponentClass=',DbgSName(ComponentClass)]);
@@ -1611,15 +1615,31 @@ begin
         DebugLn(['TJITComponentList.ReaderCreateComponent Has Stream: ',DbgSName(ComponentClass),' IsBaseClass=',IsBaseClass]);
         if Component=nil then begin
           DebugLn(['TJITComponentList.ReaderCreateComponent creating ',DbgSName(ComponentClass),' Owner=',DbgSName(Reader.Owner),' ...']);
-          Component:=ComponentClass.Create(Reader.Owner);
+          // allocate memory without running the constructor
+          Component:=TComponent(ComponentClass.newinstance);
+          // set csDesigning and csDesignInstance
+          // csDesigning is set for all components at designtime
+          // csDesignInstance is set for Delphi compatibility. It is used by TFrame.
+          SetComponentDesignMode(Component,true);
+          SetComponentDesignInstanceMode(Component,true);
+          // this is a streamed sub component => set csInline
+          SetComponentInlineMode(Component,true);
+          // now run the constructor
+          Component.Create(Reader.Owner);
         end;
+        fCurReadChild:=Component;
+        fCurReadChildClass:=ComponentClass;
         DestroyDriver:=false;
         CreateReader(BinStream,SubReader,DestroyDriver);
-
+        SubReader.ReadRootComponent(Component);
       end;
     finally
+      if DestroyDriver then SubReader.Driver.Free;
+      SubReader.Free;
       BinStream.Free;
     end;
+    fCurReadChild:=Component;
+    fCurReadChildClass:=ComponentClass;
   end;
   {$ENDIF}
   //debugln(['[TJITComponentList.ReaderCreateComponent] Class=',ComponentClass.ClassName,' Component=',dbgsName(Component)]);

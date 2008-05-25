@@ -105,7 +105,8 @@ begin
   inherited Create(AOwner);
   ControlStyle:=[csAcceptsControls,csCaptureMouse,csClickEvents,csSetCaption,
                  csDoubleClicks, csParentBackground];
-  if (ClassType<>TFrame) and not (csDesignInstance in ComponentState) then begin
+  if (ClassType<>TFrame) and ([csDesignInstance,csDesigning]*ComponentState=[])
+  then begin
     if not InitInheritedComponent(Self,TFrame) then
       raise EResNotFound.CreateFmt(rsResourceNotFound, [ClassName]);
   end else begin
