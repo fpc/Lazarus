@@ -132,6 +132,8 @@ type
     function OnFindGlobalComponent(const AName:AnsiString):TComponent;
     procedure InitReading(BinStream: TStream; var Reader: TReader;
                           DestroyDriver: Boolean); virtual;
+    procedure CreateReader(BinStream: TStream; var Reader: TReader;
+                           DestroyDriver: Boolean); virtual;
     function DoCreateJITComponent(const NewComponentName, NewClassName,
                          NewUnitName: shortstring; ParentClass: TClass;
                          Visible: boolean):integer;
@@ -869,15 +871,21 @@ procedure TJITComponentList.InitReading(BinStream: TStream;
 begin
   FFlags:=FFlags-[jclAutoRenameComponents];
   
-  DestroyDriver:=false;
-  Reader:=CreateLRSReader(BinStream,DestroyDriver);
   MyFindGlobalComponentProc:=@OnFindGlobalComponent;
   RegisterFindGlobalComponentProc(@MyFindGlobalComponent);
   Application.FindGlobalComponentEnabled:=false;
+  
+  CreateReader(BinStream,Reader,DestroyDriver);
+end;
 
+procedure TJITComponentList.CreateReader(BinStream: TStream;
+  var Reader: TReader; DestroyDriver: Boolean);
+begin
   {$IFDEF VerboseJITForms}
   debugln('[TJITComponentList.InitReading] A');
   {$ENDIF}
+  DestroyDriver:=false;
+  Reader:=CreateLRSReader(BinStream,DestroyDriver);
   // connect TReader events
   Reader.OnError:=@ReaderError;
   Reader.OnPropertyNotFound:=@ReaderPropertyNotFound;
@@ -1578,9 +1586,42 @@ end;
 
 procedure TJITComponentList.ReaderCreateComponent(Reader: TReader;
   ComponentClass: TComponentClass; var Component: TComponent);
+{$IFDEF EnableTFrame2}
+var
+  DestroyDriver: Boolean;
+  SubReader: TReader;
+{$ENDIF}
 begin
   fCurReadChild:=Component;
   fCurReadChildClass:=ComponentClass;
+  
+  {$IFDEF EnableTFrame2}
+  if Assigned(OnFindAncestorBinStream) then begin
+    BinStream:=nil;
+    DestroyDriver:=false;
+    SubReader:=nil;
+    try
+      OnFindAncestorBinStream(Self, ComponentClass, BinStream, IsBaseClass, Abort);
+      if Abort then begin
+        DebugLn(['TJITComponentList.ReaderCreateComponent aborted reading ComponentClass=',DbgSName(ComponentClass)]);
+        raise EReadError.Create('TJITComponentList.ReaderCreateComponent aborted reading ComponentClass='+DbgSName(ComponentClass));
+      end;
+      if BinStream<>nil then begin
+        // read ancestor streams
+        DebugLn(['TJITComponentList.ReaderCreateComponent Has Stream: ',DbgSName(ComponentClass),' IsBaseClass=',IsBaseClass]);
+        if Component=nil then begin
+          DebugLn(['TJITComponentList.ReaderCreateComponent creating ',DbgSName(ComponentClass),' Owner=',DbgSName(Reader.Owner),' ...']);
+          Component:=ComponentClass.Create(Reader.Owner);
+        end;
+        DestroyDriver:=false;
+        CreateReader(BinStream,SubReader,DestroyDriver);
+
+      end;
+    finally
+      BinStream.Free;
+    end;
+  end;
+  {$ENDIF}
   //debugln(['[TJITComponentList.ReaderCreateComponent] Class=',ComponentClass.ClassName,' Component=',dbgsName(Component)]);
 end;
 
