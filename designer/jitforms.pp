@@ -64,9 +64,10 @@ type
   TJITPropertyNotFoundEvent = procedure(Sender: TObject; Reader: TReader;
                    Instance: TPersistent; var PropName: string; IsPath: boolean;
                    var Handled, Skip: Boolean) of object;
-  TJITFindAncestorBinStream = procedure(Sender: TObject; AClass: TClass;
-                                        var BinStream: TExtMemoryStream;
-                                        var IsBaseClass, Abort: boolean) of object;
+  TJITFindAncestors = procedure(Sender: TObject; AClass: TClass;
+                                var Ancestors: TFPList;// list of TComponent
+                                var BinStreams: TFPList;// list of TExtMemoryStream;
+                                var Abort: boolean) of object;
   TJITFindClass = procedure(Sender: TObject;
                             const ComponentClassName: string;
                             var ComponentClass: TComponentClass) of object;
@@ -84,7 +85,7 @@ type
     FCurUnknownClass: string;
     FCurUnknownProperty: string;
     FErrors: TLRPositionLinks;
-    FOnFindAncestorBinStream: TJITFindAncestorBinStream;
+    FOnFindAncestors: TJITFindAncestors;
     FOnFindClass: TJITFindClass;
     FOnPropertyNotFound: TJITPropertyNotFoundEvent;
   protected
@@ -98,7 +99,7 @@ type
     FJITComponents: TList;
     FFlags: TJITCompListFlags;
     // jit procedures
-    function CreateNewJITClass(ParentClass: TClass;
+    function CreateNewJITClass(AncestorClass: TClass;
                           const NewClassName, NewUnitName: ShortString): TClass;
     procedure FreeJITClass(var AClass: TClass);
     procedure DoAddNewMethod(JITClass: TClass; const AName: ShortString;
@@ -138,7 +139,7 @@ type
     procedure CreateReader(BinStream: TStream; var Reader: TReader;
                            DestroyDriver: Boolean); virtual;
     function DoCreateJITComponent(const NewComponentName, NewClassName,
-                         NewUnitName: shortstring; ParentClass: TClass;
+                         NewUnitName: shortstring; AncestorClass: TClass;
                          Visible: boolean):integer;
     procedure DoFinishReading; virtual;
   public
@@ -147,9 +148,10 @@ type
     property Items[Index: integer]: TComponent read GetItem; default;
     function Count: integer;
     function AddNewJITComponent(const NewUnitName: shortstring;
-                                ParentClass: TClass): integer;
+                                AncestorClass: TClass): integer;
     function AddJITComponentFromStream(BinStream: TStream;
-                                ParentClass: TClass;
+                                Ancestor: TComponent;// can be nil
+                                AncestorClass: TClass;
                                 const NewUnitName: ShortString;
                                 Interactive, Visible: Boolean):integer;
     procedure DestroyJITComponent(JITComponent: TComponent);
@@ -178,8 +180,8 @@ type
                                        read FOnReaderError write FOnReaderError;
     property OnPropertyNotFound: TJITPropertyNotFoundEvent
                              read FOnPropertyNotFound write FOnPropertyNotFound;
-    property OnFindAncestorBinStream: TJITFindAncestorBinStream
-                   read FOnFindAncestorBinStream write FOnFindAncestorBinStream;
+    property OnFindAncestors: TJITFindAncestors read FOnFindAncestors
+                                                write FOnFindAncestors;
     property OnFindClass: TJITFindClass read FOnFindClass write FOnFindClass;
     property CurReadJITComponent: TComponent read FCurReadJITComponent;
     property CurReadClass: TClass read FCurReadClass;
@@ -723,33 +725,35 @@ begin
 end;
 
 function TJITComponentList.AddNewJITComponent(const NewUnitName: shortstring;
-  ParentClass: TClass): integer;
+  AncestorClass: TClass): integer;
 var
   NewComponentName, NewClassName: shortstring;
 begin
   {$IFDEF VerboseJITForms}
   debugln('[TJITComponentList] AddNewJITComponent');
   {$ENDIF}
-  NewClassName:=ParentClass.ClassName;
+  NewClassName:=AncestorClass.ClassName;
   GetUnusedNames(NewComponentName,NewClassName);
   {$IFDEF VerboseJITForms}
   debugln('TJITComponentList.AddNewJITComponent NewComponentName=',NewComponentName,' NewClassName=',NewClassName,
-    ' NewUnitName=',NewUnitName,' ParentClass=',ParentClass.ClassName);
+    ' NewUnitName=',NewUnitName,' AncestorClass=',AncestorClass.ClassName);
   {$ENDIF}
   Result:=DoCreateJITComponent(NewComponentName,NewClassName,NewUnitName,
-                               ParentClass,true);
+                               AncestorClass,true);
 end;
 
 function TJITComponentList.AddJITComponentFromStream(BinStream: TStream;
-  ParentClass: TClass;
+  Ancestor: TComponent;// can be nil
+  AncestorClass: TClass;
   const NewUnitName: ShortString;
   Interactive, Visible: Boolean): integer;
 //  returns new index
 // -1 = invalid stream
 
-  procedure ReadStream(AStream: TStream; StreamClass: TClass);
+  procedure ReadStream(AStream: TStream; StreamClass: TClass;
+    AnAncestor: TComponent);
   var
-    Reader:TReader;
+    Reader: TReader;
     DestroyDriver: Boolean;
   begin
     {$IFDEF VerboseJITForms}
@@ -763,6 +767,8 @@ function TJITComponentList.AddJITComponentFromStream(BinStream: TStream;
     debugln('[TJITComponentList.AddJITComponentFromStream] Read ...');
     {$ENDIF}
     try
+      Reader.Ancestor:=AnAncestor;
+      DebugLn(['TJITComponentList.AddJITComponentFromStream.ReadStream FCurReadJITComponent=',DbgSName(FCurReadJITComponent),' StreamClass=',DbgSName(StreamClass),' Ancestor=',DbgSName(Ancestor)]);
       Reader.ReadRootComponent(FCurReadJITComponent);
       {$IFDEF VerboseJITForms}
       debugln('[TJITComponentList.AddJITComponentFromStream] Finish Reading ...');
@@ -777,40 +783,35 @@ function TJITComponentList.AddJITComponentFromStream(BinStream: TStream;
   end;
   
   function ReadAncestorStreams: boolean;
-  
-    function ReadAncestor(AClass: TClass): boolean;
-    var
-      Abort: boolean;
-      AncestorStream: TExtMemoryStream;
-      IsBaseClass: Boolean;
-    begin
-      // stop at base class
-      if (AClass=nil) or (AClass=TComponent) then exit(true);
-      // now read the stream
-      Abort:=false;
-      AncestorStream:=nil;
-      IsBaseClass:=false;
-      try
-        OnFindAncestorBinStream(Self,AClass,AncestorStream,IsBaseClass,Abort);
-        if Abort then exit(false);
-        if not IsBaseClass then begin
-          // read ancestor streams first
-          if not ReadAncestor(AClass.ClassParent) then exit(false);
-        end;
-        {$IFDEF VerboseJITForms}
-        DebugLn(['TJITComponentList.AddJITComponentFromStream.ReadAncestor ',DbgSName(AClass),' HasStream=',AncestorStream<>nil]);
-        {$ENDIF}
-        if AncestorStream<>nil then
-          ReadStream(AncestorStream,AClass);
-      finally
-        FreeAndNil(AncestorStream);
-      end;
-      Result:=true;
-    end;
-  
+  var
+    i: Integer;
+    Ancestors: TFPList;
+    AncestorStreams: TFPList;
+    Abort: boolean;
   begin
-    if not Assigned(OnFindAncestorBinStream) then exit(true);
-    Result:=ReadAncestor(ParentClass);
+    if not Assigned(OnFindAncestors) then exit(true);
+    Ancestors:=nil;
+    AncestorStreams:=nil;
+    try
+      Abort:=false;
+      OnFindAncestors(Self,AncestorClass,Ancestors,AncestorStreams,Abort);
+      if Abort then exit(false);
+      if Ancestors<>nil then begin
+        Ancestor:=nil;
+        for i:=Ancestors.Count-1 downto 0 do begin
+          ReadStream(TExtMemoryStream(AncestorStreams[i]),
+                     TComponent(Ancestors[i]).ClassType,
+                     Ancestor);
+          Ancestor:=TComponent(Ancestors[i]);
+        end;
+      end;
+    finally
+      Ancestors.Free;
+      if AncestorStreams<>nil then
+        for i:=0 to AncestorStreams.Count-1 do
+          TObject(AncestorStreams[i]).Free;
+      AncestorStreams.Free;
+    end;
   end;
 
 var
@@ -830,10 +831,10 @@ begin
   debugln('[TJITComponentList.AddJITComponentFromStream] Create ...');
   {$ENDIF}
   try
-    Result:=DoCreateJITComponent('',NewClassName,NewUnitName,ParentClass,Visible);
+    Result:=DoCreateJITComponent('',NewClassName,NewUnitName,AncestorClass,Visible);
     if Result<0 then exit;
     ReadAncestorStreams;
-    ReadStream(BinStream,FCurReadJITComponent.ClassType);
+    ReadStream(BinStream,FCurReadJITComponent.ClassType,Ancestor);
 
     if FCurReadJITComponent.Name='' then begin
       NewName:=FCurReadJITComponent.ClassName;
@@ -914,7 +915,7 @@ end;
 
 function TJITComponentList.DoCreateJITComponent(
   const NewComponentName, NewClassName, NewUnitName: shortstring;
-  ParentClass: TClass; Visible: boolean):integer;
+  AncestorClass: TClass; Visible: boolean):integer;
 var
   Instance:TComponent;
   ok: boolean;
@@ -929,9 +930,9 @@ begin
     ok:=false;
     // create new class and an instance
     //debugln('[TJITForms.DoCreateJITComponent] Creating new JIT class '''+NewClassName+''' ...');
-    Pointer(FCurReadClass):=CreateNewJITClass(ParentClass,NewClassName,
+    Pointer(FCurReadClass):=CreateNewJITClass(AncestorClass,NewClassName,
                                               NewUnitName);
-    //debugln('[TJITForms.DoCreateJITComponent] Creating an instance of JIT class "'+NewClassName+'" = class('+ParentClass.ClassName+') ...');
+    //debugln('[TJITForms.DoCreateJITComponent] Creating an instance of JIT class "'+NewClassName+'" = class('+AncestorClass.ClassName+') ...');
     Instance:=TComponent(FCurReadClass.NewInstance);
     //debugln('[TJITForms.DoCreateJITComponent] Initializing new instance ... ',DbgS(Instance));
     TComponent(FCurReadJITComponent):=Instance;
@@ -1167,10 +1168,10 @@ begin
   {$ENDIF}
 end;
 
-function TJITComponentList.CreateNewJITClass(ParentClass: TClass;
+function TJITComponentList.CreateNewJITClass(AncestorClass: TClass;
   const NewClassName, NewUnitName: ShortString): TClass;
 // Create a new class (vmt, virtual method table, field table and typeinfo)
-// that descends from ParentClass.
+// that descends from AncestorClass.
 // The new class will have no new variables, no new methods and no new fields.
 var
   NewVMT: Pointer;
@@ -1184,8 +1185,8 @@ var
   vmtSize: Integer;
   vmtTailSize: Integer;
 begin
-  if ParentClass=nil then
-    raise Exception.Create('CreateNewClass ParentClass=nil');
+  if AncestorClass=nil then
+    raise Exception.Create('CreateNewClass AncestorClass=nil');
   if NewClassName='' then
     raise Exception.Create('CreateNewClass NewClassName empty');
   if not IsValidIdent(NewClassName) then
@@ -1197,17 +1198,17 @@ begin
   Result:=nil;
 
   // create vmt
-  vmtSize:=GetVMTSize(ParentClass);
+  vmtSize:=GetVMTSize(AncestorClass);
   vmtTailSize:=vmtSize-vmtMethodStart;
   GetMem(NewVMT,vmtSize);
   FillChar(NewVMT^,vmtSize,0);
 
   // set vmtInstanceSize
-  PPtrInt(NewVMT+vmtInstanceSize)^:=ParentClass.InstanceSize;
-  PPtrInt(NewVMT+vmtInstanceSizeNeg)^:=-ParentClass.InstanceSize;
+  PPtrInt(NewVMT+vmtInstanceSize)^:=AncestorClass.InstanceSize;
+  PPtrInt(NewVMT+vmtInstanceSizeNeg)^:=-AncestorClass.InstanceSize;
 
   // set vmtParent
-  TClass(Pointer(NewVMT+vmtParent)^):=ParentClass;
+  TClass(Pointer(NewVMT+vmtParent)^):=AncestorClass;
 
   // set vmtClassName: create pointer to classname (PShortString)
   GetMem(ClassNamePShortString,SizeOf(ShortString));
@@ -1241,19 +1242,19 @@ begin
 
   // set TypeData (PropCount is the total number of properties, including ancestors)
   NewTypeData^.ClassType:=TClass(NewVMT);
-  NewTypeData^.ParentInfo:=ParentClass.ClassInfo;
+  NewTypeData^.ParentInfo:=AncestorClass.ClassInfo;
   NewTypeData^.PropCount:=GetTypeData(NewTypeData^.ParentInfo)^.PropCount;
   NewTypeData^.UnitName:=NewUnitName;
   AddedPropCount:=GetTypeDataPropCountAddr(NewTypeData);
   AddedPropCount^:=0;
 
   // copy the standard methods
-  System.Move(Pointer(Pointer(ParentClass)+vmtMethodStart)^,
+  System.Move(Pointer(Pointer(AncestorClass)+vmtMethodStart)^,
               Pointer(NewVMT+vmtMethodStart)^,
               vmtTailSize);
 
   // override 'ValidateRename' for TComponent descendants
-  if ParentClass.InheritsFrom(TComponent) then begin
+  if AncestorClass.InheritsFrom(TComponent) then begin
     Pointer(Pointer(NewVMT+TComponentValidateRenameOffset)^):=
                            @TComponentWithOverrideValidateRename.ValidateRename;
   end;
@@ -1600,52 +1601,74 @@ var
   DestroyDriver: Boolean;
   SubReader: TReader;
   BinStream: TExtMemoryStream;
-  IsBaseClass: boolean;
+  Ancestor: TComponent;
   Abort: boolean;
+  Ancestors: TFPList;
+  AncestorStreams: TFPList;
+  i: Integer;
 {$ENDIF}
 begin
   fCurReadChild:=Component;
   fCurReadChildClass:=ComponentClass;
   
   {$IFDEF EnableTFrame}
-  if Assigned(OnFindAncestorBinStream) then begin
-    BinStream:=nil;
-    DestroyDriver:=false;
-    SubReader:=nil;
+  if Assigned(OnFindAncestors) then begin
+    Ancestors:=nil;
+    AncestorStreams:=nil;
     try
       Abort:=false;
-      OnFindAncestorBinStream(Self, ComponentClass, BinStream, IsBaseClass, Abort);
+      OnFindAncestors(Self,ComponentClass,Ancestors,AncestorStreams,Abort);
       if Abort then begin
         DebugLn(['TJITComponentList.ReaderCreateComponent aborted reading ComponentClass=',DbgSName(ComponentClass)]);
         raise EReadError.Create('TJITComponentList.ReaderCreateComponent aborted reading ComponentClass='+DbgSName(ComponentClass));
       end;
-      if BinStream<>nil then begin
+      if Ancestors<>nil then begin
         // read ancestor streams
-        DebugLn(['TJITComponentList.ReaderCreateComponent Has Stream: ',DbgSName(ComponentClass),' IsBaseClass=',IsBaseClass]);
-        if Component=nil then begin
-          DebugLn(['TJITComponentList.ReaderCreateComponent creating ',DbgSName(ComponentClass),' Owner=',DbgSName(Reader.Owner),' ...']);
-          // allocate memory without running the constructor
-          Component:=TComponent(ComponentClass.newinstance);
-          // set csDesigning and csDesignInstance
-          // csDesigning is set for all components at designtime
-          // csDesignInstance is set for Delphi compatibility. It is used by TFrame.
-          SetComponentDesignMode(Component,true);
-          SetComponentDesignInstanceMode(Component,true);
-          // this is a streamed sub component => set csInline
-          SetComponentInlineMode(Component,true);
-          // now run the constructor
-          Component.Create(Reader.Owner);
+        Ancestor:=nil;
+        for i:=Ancestors.Count-1 downto 0 do begin
+          BinStream:=TExtMemoryStream(AncestorStreams[i]);
+          FCurReadStreamClass:=TComponent(Ancestors[i]).ClassType;
+          
+          DebugLn(['TJITComponentList.ReaderCreateComponent Has Stream: ',DbgSName(FCurReadStreamClass)]);
+          // create component
+          if Component=nil then begin
+            DebugLn(['TJITComponentList.ReaderCreateComponent creating ',DbgSName(ComponentClass),' Owner=',DbgSName(Reader.Owner),' ...']);
+            // allocate memory without running the constructor
+            Component:=TComponent(ComponentClass.newinstance);
+            // set csDesigning and csDesignInstance
+            // csDesigning is set for all components at designtime
+            // csDesignInstance is set for Delphi compatibility. It is used by TFrame.
+            SetComponentDesignMode(Component,true);
+            SetComponentDesignInstanceMode(Component,true);
+            // this is a streamed sub component => set csInline
+            SetComponentInlineMode(Component,true);
+            // now run the constructor
+            Component.Create(Reader.Owner);
+          end;
+          // read stream
+          fCurReadChild:=Component;
+          fCurReadChildClass:=ComponentClass;
+          SubReader:=nil;
+          DestroyDriver:=false;
+          try
+            CreateReader(BinStream,SubReader,DestroyDriver);
+            SubReader.Ancestor:=Ancestor;
+            SubReader.ReadRootComponent(Component);
+          finally
+            if DestroyDriver then SubReader.Driver.Free;
+            SubReader.Free;
+          end;
+
+          // next
+          Ancestor:=TComponent(Ancestors[i]);
         end;
-        fCurReadChild:=Component;
-        fCurReadChildClass:=ComponentClass;
-        DestroyDriver:=false;
-        CreateReader(BinStream,SubReader,DestroyDriver);
-        SubReader.ReadRootComponent(Component);
       end;
     finally
-      if DestroyDriver then SubReader.Driver.Free;
-      SubReader.Free;
-      BinStream.Free;
+      Ancestors.Free;
+      if AncestorStreams<>nil then
+        for i:=0 to AncestorStreams.Count-1 do
+          TObject(AncestorStreams[i]).Free;
+      AncestorStreams.Free;
     end;
     fCurReadChild:=Component;
     fCurReadChildClass:=ComponentClass;

@@ -138,9 +138,10 @@ each control that's dropped onto the form
     procedure JITListPropertyNotFound(Sender: TObject; Reader: TReader;
       Instance: TPersistent; var PropName: string; IsPath: boolean;
       var Handled, Skip: Boolean);
-    procedure JITListFindAncestorBinStream(Sender: TObject; AClass: TClass;
-                                           var BinStream: TExtMemoryStream;
-                                           var IsBaseClass, Abort: boolean);
+    procedure JITListFindAncestors(Sender: TObject; AClass: TClass;
+      var Ancestors: TFPList;// list of TComponent
+      var BinStreams: TFPList;// list of TExtMemoryStream;
+      var Abort: boolean);
     procedure JITListFindClass(Sender: TObject;
                                const ComponentClassName: string;
                                var ComponentClass: TComponentClass);
@@ -234,12 +235,14 @@ each control that's dropped onto the form
                       AncestorType: TComponentClass;
                       const NewUnitName: ShortString;
                       Interactive: boolean;
-                      Visible: boolean = true): TIComponentInterface; override;
+                      Visible: boolean = true;
+                      Ancestor: TComponent = nil): TIComponentInterface; override;
     function CreateRawComponentFromStream(BinStream: TStream;
                       AncestorType: TComponentClass;
                       const NewUnitName: ShortString;
                       Interactive: boolean;
-                      Visible: boolean = true): TComponent;
+                      Visible: boolean = true;
+                      Ancestor: TComponent = nil): TComponent;
     function CreateChildComponentFromStream(BinStream: TStream;
                        ComponentClass: TComponentClass; Root: TComponent;
                        ParentControl: TWinControl): TIComponentInterface; override;
@@ -827,7 +830,7 @@ constructor TCustomFormEditor.Create;
   begin
     List.OnReaderError:=@JITListReaderError;
     List.OnPropertyNotFound:=@JITListPropertyNotFound;
-    List.OnFindAncestorBinStream:=@JITListFindAncestorBinStream;
+    List.OnFindAncestors:=@JITListFindAncestors;
     List.OnFindClass:=@JITListFindClass;
   end;
 
@@ -1663,19 +1666,22 @@ function TCustomFormEditor.CreateComponentFromStream(
   BinStream: TStream;
   AncestorType: TComponentClass;
   const NewUnitName: ShortString;
-  Interactive: boolean; Visible: boolean
+  Interactive: boolean; Visible: boolean;
+  Ancestor: TComponent
   ): TIComponentInterface;
 var
   NewComponent: TComponent;
 begin
   NewComponent:=CreateRawComponentFromStream(BinStream,
-                AncestorType,NewUnitName,Interactive,Visible);
+                AncestorType,NewUnitName,Interactive,Visible,Ancestor);
   Result:=CreateComponentInterface(NewComponent,true);
 end;
 
 function TCustomFormEditor.CreateRawComponentFromStream(BinStream: TStream;
-  AncestorType: TComponentClass; const NewUnitName: ShortString;
-  Interactive: boolean; Visible: boolean
+  AncestorType: TComponentClass;
+  const NewUnitName: ShortString;
+  Interactive: boolean; Visible: boolean;
+  Ancestor: TComponent
   ): TComponent;
 var
   NewJITIndex: integer;
@@ -1687,7 +1693,7 @@ begin
     RaiseException('TCustomFormEditor.CreateComponentFromStream ClassName='+
                    AncestorType.ClassName);
   NewJITIndex := JITList.AddJITComponentFromStream(BinStream,
-                         AncestorType,NewUnitName,Interactive,Visible);
+                         Ancestor,AncestorType,NewUnitName,Interactive,Visible);
   if NewJITIndex < 0 then begin
     Result:=nil;
     exit;
@@ -2121,33 +2127,44 @@ begin
     '" IsPath=',IsPath]);
 end;
 
-procedure TCustomFormEditor.JITListFindAncestorBinStream(Sender: TObject;
-  AClass: TClass; var BinStream: TExtMemoryStream;
-  var IsBaseClass, Abort: boolean);
+procedure TCustomFormEditor.JITListFindAncestors(Sender: TObject;
+  AClass: TClass;
+  var Ancestors: TFPList;// list of TComponent
+  var BinStreams: TFPList;// list of TExtMemoryStream;
+  var Abort: boolean);
 var
   AnUnitInfo: TUnitInfo;
+  Ancestor: TComponent;
+  BinStream: TExtMemoryStream;
 begin
+  Ancestors:=nil;
+  BinStreams:=nil;
   if Project1=nil then exit;
   if (AClass=nil) or (AClass=TComponent)
   or (AClass=TForm) or (AClass=TCustomForm)
   or (AClass=TDataModule)
   or (not AClass.InheritsFrom(TComponent))
   or (IndexOfDesignerBaseClass(TComponentClass(AClass))>=0) then begin
-    IsBaseClass:=true;
     exit;
   end;
-  //DebugLn(['TCustomFormEditor.JITListFindAncestorBinStream Class=',DbgSName(AClass)]);
-  AnUnitInfo:=Project1.FirstUnitWithComponent;
+  //DebugLn(['TCustomFormEditor.JITListFindAncestors Class=',DbgSName(AClass)]);
+  AnUnitInfo:=Project1.UnitWithComponentClass(TComponentClass(AClass));
   while AnUnitInfo<>nil do begin
-    if (AnUnitInfo.Component<>nil)
-    and (AnUnitInfo.Component.ClassType=AClass) then begin
-      //DebugLn(['TCustomFormEditor.JITListFindAncestorBinStream FOUND class, streaming ...']);
-      if SaveUnitComponentToBinStream(AnUnitInfo,BinStream)<>mrOk then
-        Abort:=true;
-      BinStream.Position:=0;
+    DebugLn(['TCustomFormEditor.JITListFindAncestors FOUND ancestor ',DbgSName(AnUnitInfo.Component),', streaming ...']);
+    Ancestor:=AnUnitInfo.Component;
+    BinStream:=nil;
+    if SaveUnitComponentToBinStream(AnUnitInfo,BinStream)<>mrOk then begin
+      Abort:=true;
       exit;
     end;
-    AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
+    BinStream.Position:=0;
+    if Ancestors=nil then begin
+      Ancestors:=TFPList.Create;
+      BinStreams:=TFPList.Create;
+    end;
+    Ancestors.Add(Ancestor);
+    BinStreams.Add(BinStream);
+    AnUnitInfo:=AnUnitInfo.FindAncestorUnit;
   end;
 end;
 
@@ -2158,7 +2175,7 @@ var
   Component: TComponent;
   RegComp: TRegisteredComponent;
 begin
-  DebugLn(['TCustomFormEditor.JITListFindClass ',ComponentClassName]);
+  //DebugLn(['TCustomFormEditor.JITListFindClass ',ComponentClassName]);
   RegComp:=IDEComponentPalette.FindComponent(ComponentClassName);
   if RegComp<>nil then begin
     //DebugLn(['TCustomFormEditor.JITListFindClass ',ComponentClassName,' is registered as ',DbgSName(RegComp.ComponentClass)]);
@@ -2177,7 +2194,7 @@ begin
       AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
     end;
   end;
-  DebugLn(['TCustomFormEditor.JITListFindClass ',ComponentClassName,' Class=',DbgSName(ComponentClass)]);
+  DebugLn(['TCustomFormEditor.JITListFindClass Searched=',ComponentClassName,' Found=',DbgSName(ComponentClass)]);
 end;
 
 function TCustomFormEditor.GetDesignerBaseClasses(Index: integer

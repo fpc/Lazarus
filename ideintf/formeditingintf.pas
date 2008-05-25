@@ -111,7 +111,8 @@ type
                       AncestorType: TComponentClass;
                       const NewUnitName: ShortString;
                       Interactive: boolean;
-                      Visible: boolean = true): TIComponentInterface; virtual; abstract;
+                      Visible: boolean = true;
+                      Ancestor: TComponent = nil): TIComponentInterface; virtual; abstract;
     function CreateChildComponentFromStream(BinStream: TStream;
                                      ComponentClass: TComponentClass;
                                      Root: TComponent;
