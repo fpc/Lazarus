@@ -247,15 +247,19 @@ type
   private
     procedure AddActionList(ActionList: TCustomActionList);
     procedure RemoveActionList(ActionList: TCustomActionList);
+    procedure ReadDesignLeft(Reader: TReader);
+    procedure ReadDesignTop(Reader: TReader);
+    procedure WriteDesignLeft(Writer: TWriter);
+    procedure WriteDesignTop(Writer: TWriter);
   protected
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
     procedure SetParent(AParent: TWinControl); override;
     class function GetControlClassDefaultSize: TPoint; override;
+    procedure DefineProperties(Filer: TFiler); override;
   public
     constructor Create(AOwner: TComponent); override;
-    procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); override;
   end;
 
   TCustomFrameClass = class of TCustomFrame;

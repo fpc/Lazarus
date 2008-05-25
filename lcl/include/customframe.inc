@@ -38,6 +38,34 @@ begin
     ParentForm.FActionLists.Remove(ActionList);
 end;
 
+procedure TCustomFrame.ReadDesignLeft(Reader: TReader);
+var
+  Temp: LongInt;
+begin
+  Temp:=DesignInfo;
+  LongRec(Temp).Lo:=Reader.ReadInteger;
+  DesignInfo:=Temp;
+end;
+
+procedure TCustomFrame.ReadDesignTop(Reader: TReader);
+var
+  Temp: LongInt;
+begin
+  Temp:=DesignInfo;
+  LongRec(Temp).Hi:=Reader.ReadInteger;
+  DesignInfo:=Temp;
+end;
+
+procedure TCustomFrame.WriteDesignLeft(Writer: TWriter);
+begin
+  Writer.WriteInteger(LongRec(DesignInfo).Lo);
+end;
+
+procedure TCustomFrame.WriteDesignTop(Writer: TWriter);
+begin
+  Writer.WriteInteger(LongRec(DesignInfo).Hi);
+end;
+
 procedure TCustomFrame.GetChildren(Proc: TGetChildProc; Root: TComponent);
 var
   I: Integer;
@@ -100,6 +128,20 @@ begin
   Result.Y:=240;
 end;
 
+procedure TCustomFrame.DefineProperties(Filer: TFiler);
+Var
+  Ancestor: TComponent;
+  Temp: longint;
+begin
+  Temp:=0;
+  Ancestor:=TComponent(Filer.Ancestor);
+  if Assigned(Ancestor) then Temp:=Ancestor.DesignInfo;
+  Filer.Defineproperty('DesignLeft',@ReadDesignLeft,@WriteDesignLeft,
+                       (longrec(DesignInfo).Lo<>Longrec(Temp).Lo));
+  Filer.Defineproperty('DesignTop',@ReadDesignTop,@WriteDesignTop,
+                       (longrec(DesignInfo).Hi<>Longrec(Temp).Hi));
+end;
+
 constructor TCustomFrame.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -112,17 +154,6 @@ begin
   end else begin
     SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
   end;
-end;
-
-procedure TCustomFrame.SetBounds(aLeft, aTop, aWidth, aHeight: integer);
-begin
-  if csDesignInstance in ComponentState then
-  begin
-    // dont move frame in the designer
-    aLeft := 0;
-    aTop := 0;
-  end;
-  inherited SetBounds(aLeft, aTop, aWidth, aHeight);
 end;
 
 { TFrame }

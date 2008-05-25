@@ -60,8 +60,8 @@ end;
 
 procedure TFrameDesignerForm.SetLookupRoot(const AValue: TComponent);
 begin
-  if (AValue <> nil) and (AValue is TCustomFrame) then
-    TCustomFrame(AValue).Parent := Self;
+  if (AValue is TControl) then
+    TControl(AValue).Parent := Self;
   inherited;
 end;
 
@@ -78,15 +78,22 @@ procedure TFrameDesignerForm.DoLoadBounds;
   end;
 
 var
-  CurFrame: TCustomFrame;
+  CurControl: TControl;
+  NewLeft: integer;
+  NewTop: integer;
 begin
   inherited;
 
-  if LookupRoot is TCustomFrame then 
+  if LookupRoot is TControl then
   begin
-    CurFrame := TCustomFrame(LookupRoot);
-    SetNewBounds(Left, Top, CurFrame.Width, CurFrame.Height);
-  end 
+    CurControl := TControl(LookupRoot);
+    // restore designer position
+    NewLeft:=LongRec(LookupRoot.DesignInfo).Lo;
+    NewTop:=LongRec(LookupRoot.DesignInfo).Hi;
+    // resize designer form
+    SetNewBounds(NewLeft,NewTop,CurControl.Width,CurControl.Height);
+    DebugLn(['TFrameDesignerForm.DoLoadBounds ',NewLeft,',',NewTop]);
+  end
   else 
   if LookupRoot <> nil then 
     DebugLn(['Unsupported component type in TFrameDesignerForm.DoLoadBounds: ', LookupRoot.ClassName])
@@ -94,9 +101,14 @@ end;
 
 procedure TFrameDesignerForm.DoSaveBounds;
 begin
-  if LookupRoot is TCustomFrame then 
-    TFrame(LookupRoot).SetBounds(0, 0, Width, Height)
-  else 
+  if LookupRoot is TControl then begin
+    // store designer position
+    LongRec(LookupRoot.DesignInfo).Lo:=Left;
+    LongRec(LookupRoot.DesignInfo).Hi:=Top;
+    // always fill the whole designer form
+    TControl(LookupRoot).SetBounds(0, 0, Width, Height);
+    DebugLn(['TFrameDesignerForm.DoSaveBounds ',Left,',',Top,' ',LongRec(LookupRoot.DesignInfo).Lo,',',LongRec(LookupRoot.DesignInfo).hi]);
+  end else
   if LookupRoot <> nil then
     DebugLn(['Unsupported component type in TFrameDesignerForm.DoSaveBounds: ', LookupRoot.ClassName]);
   inherited;  
@@ -106,8 +118,8 @@ procedure TFrameDesignerForm.SetBounds(aLeft, aTop, aWidth, aHeight: integer);
 begin
   // auto apply width and height
   inherited SetBounds(aLeft, aTop, aWidth, aHeight);
-  if (LookupRoot <> nil) and (LookupRoot is TCustomFrame) then
-    TCustomFrame(LookupRoot).SetBounds(0, 0, Width, Height);
+  if (LookupRoot is TControl) then
+    TControl(LookupRoot).SetBounds(0, 0, Width, Height);
 end;
 
 end.
