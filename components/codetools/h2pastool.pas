@@ -346,6 +346,8 @@ begin
       Add('signed int*','pcsint');
       Add('unsigned int','cuint');
       Add('unsigned int*','pcuint');
+      // ToDo: signed -> cint
+      // ToDo: unsigned -> cuint
       // short
       Add('short','cshort');
       Add('short*','pcshort');
