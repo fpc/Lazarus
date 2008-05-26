@@ -4650,6 +4650,8 @@ var
   ADesigner: TDesigner;
   Grubber: TLRTGrubber;
   LRTFilename: String;
+  AncestorUnit: TUnitInfo;
+  Ancestor: TComponent;
 begin
   Result:=mrCancel;
 
@@ -4699,6 +4701,11 @@ begin
           {$ENDIF}
           //DebugLn(['TMainIDE.DoSaveUnitComponent AncestorInstance=',dbgsName(AncestorInstance)]);
           Writer.OnFindAncestor:=@FormEditor1.WriterFindAncestor;
+          AncestorUnit:=AnUnitInfo.FindAncestorUnit;
+          Ancestor:=nil;
+          if AncestorUnit<>nil then
+            Ancestor:=AncestorUnit.Component;
+          Writer.WriteDescendent(AnUnitInfo.Component,Ancestor);
           Writer.WriteDescendent(AnUnitInfo.Component,nil);
           if DestroyDriver then Writer.Driver.Free;
           FreeAndNil(Writer);

@@ -1339,8 +1339,12 @@ function TCustomFormEditor.SaveUnitComponentToBinStream(AnUnitInfo: TUnitInfo;
 var
   Writer: TWriter;
   DestroyDriver: Boolean;
-  AncestorUnitInfo: TUnitInfo;
+  { $IFDEF VerboseSaveUnitComponent}
+  memStream: TMemoryStream;
+  s: string;
+  AncestorUnit: TUnitInfo;
   Ancestor: TComponent;
+  { $ENDIF}
 begin
   // save designer form properties to the component
   SaveHiddenDesignerFormProperties(AnUnitInfo.Component);
@@ -1359,10 +1363,27 @@ begin
       BinCompStream.Position:=0;
       Writer:=CreateLRSWriter(BinCompStream,DestroyDriver);
       Writer.OnFindAncestor:=@WriterFindAncestor;
-      Writer.WriteDescendent(AnUnitInfo.Component,nil);
+      AncestorUnit:=AnUnitInfo.FindAncestorUnit;
+      Ancestor:=nil;
+      if AncestorUnit<>nil then
+        Ancestor:=AncestorUnit.Component;
+      Writer.WriteDescendent(AnUnitInfo.Component,Ancestor);
       if DestroyDriver then Writer.Driver.Free;
       FreeAndNil(Writer);
       AnUnitInfo.ComponentLastBinStreamSize:=BinCompStream.Size;
+
+      { $IFDEF VerboseSaveUnitComponent}
+      BinCompStream.Position:=0;
+      memStream:=TMemoryStream.Create;
+      LRSObjectBinaryToText(BinCompStream,memStream);
+      memStream.Position:=0;
+      SetLength(s,memStream.Size);
+      memStream.Read(s[1],length(s));
+      DebugLn(['TCustomFormEditor.SaveUnitComponentToBinStream START ==================']);
+      debugln(s);
+      DebugLn(['TCustomFormEditor.SaveUnitComponentToBinStream END ==================']);
+      memStream.Free;
+      { $ENDIF}
     except
       on E: Exception do begin
         DumpExceptionBackTrace;
