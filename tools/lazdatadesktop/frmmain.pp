@@ -27,7 +27,7 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Menus,
   ActnList, StdActns, ComCtrls, dicteditor, fpdatadict, IniPropStorage,
-  conneditor,
+  conneditor, LCLType,
   inifiles, inicol, RTTICtrls, ExtCtrls, StdCtrls, propertystorage, ddfiles;
 
 type
@@ -144,9 +144,11 @@ type
     procedure HaveTab(Sender: TObject);
     procedure HaveTables(Sender: TObject);
     procedure LVConnectionsDblClick(Sender: TObject);
+    procedure LVConnectionsKeyUp(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
     procedure LVDictsDblClick(Sender: TObject);
-    procedure LVDictsKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState
-      );
+    procedure LVDictsKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure MIDataDictClick(Sender: TObject);
     procedure PCDDChange(Sender: TObject);
     procedure SaveAsExecute(Sender: TObject);
   private
@@ -392,7 +394,7 @@ begin
     MaybeRegisterConnectionStringCallback('TSQLDBMySql5DDEngine',@GetSQLConnectionDlg);
     MaybeRegisterConnectionStringCallback('TSQLDBODBCDDEngine',@GetSQLConnectionDlg);
     MaybeRegisterConnectionStringCallback('TSQLDBPOSTGRESQLDDEngine',@GetSQLConnectionDlg);
-    MaybeRegisterConnectionStringCallback('TSQLDBIBDDEngine',@GetSQLConnectionDlg);
+    MaybeRegisterConnectionStringCallback('TSQLDBFBDDEngine',@GetSQLConnectionDlg);
     MaybeRegisterConnectionStringCallback('TSQLDBSQLite3DDEngine',@GetSQLConnectionDlg);
   finally
     L.free;
@@ -779,6 +781,16 @@ begin
    OpenConnection(TRecentConnection(LVConnections.Selected.Data));
 end;
 
+procedure TMainForm.LVConnectionsKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if key=VK_DELETE then
+    begin
+      FRecentConnections.Delete(FRecentConnections.FindByName(LVConnections.ItemFocused.Caption).Index);
+      ShowRecentConnections;
+    end;
+end;
+
 procedure TMainForm.SaveAsExecute(Sender: TObject);
 begin
   SaveCurrentEditorAs;
@@ -1109,10 +1121,21 @@ begin
    OpenDataDict(TRecentDataDict(LVDicts.Selected.Data));
 end;
 
-procedure TMainForm.LVDictsKeyDown(Sender: TObject; var Key: Word;
+procedure TMainForm.LVDictsKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
+  if key=VK_DELETE then
+    begin
+      FRecentDicts.Delete(FRecentDicts.FindByName(LVDicts.ItemFocused.Caption).Index);
+      ShowRecentDictionaries;
+    end;
+end;
 
+procedure TMainForm.MIDataDictClick(Sender: TObject);
+begin
+  MIDataDict.Items[0].Clear;
+  ShowImportRecentconnections;
+  ShowDDImports;
 end;
 
 procedure TMainForm.PCDDChange(Sender: TObject);
@@ -1255,6 +1278,7 @@ begin
   CDE:=NewConnectionEditor(Aname);
   CDE.Engine:=DDE;
   CDE.Connect(CS);
+  ShowRecentConnections;
 end;
 
 Function TMainForm.NewConnectionEditor(AName : String) : TConnectionEditor;
