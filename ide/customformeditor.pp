@@ -1767,8 +1767,10 @@ begin
       // Component is a nested, inline component
       // the stream ancestor is the component of the class
     end;
-    if (AnUnitInfo<>nil) and (AnUnitInfo.Component<>nil) then
+    if (AnUnitInfo<>nil) and (AnUnitInfo.Component<>nil) then begin
       Ancestor:=AnUnitInfo.Component;
+      RootAncestor:=AnUnitInfo.Component;
+    end;
     DebugLn(['TCustomFormEditor.WriterFindAncestor Component=',DbgSName(Component),' Ancestor=',DbgSName(Ancestor)]);
   end;
 end;
