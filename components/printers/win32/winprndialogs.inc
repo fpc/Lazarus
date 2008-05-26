@@ -11,8 +11,6 @@ var
     DeviceMode : THandle;
     DevNames   : PDevNames;
     St         : PChar;
-    Extra,Size : Integer;
-    Fields     : Dword;
 begin
   Result:=False;
   if not Assigned(Printer) then Exit;
@@ -86,8 +84,6 @@ var
     DeviceMode : THandle;
     DevNames   : PDevNames;
     St         : PChar;
-    Extra,Size : Integer;
-    Fields     : Dword;
 begin
   Result:=False;
   if not Assigned(Printer) then Exit;
@@ -159,8 +155,6 @@ var lpp        : tagPD;
     DeviceMode : THandle;
     DevNames   : PDevNames;
     St         : PChar;
-    Extra,Size : Integer;
-    Fields     : Dword;
 begin
   Result:=False;
   if not Assigned(Printer) then Exit;
