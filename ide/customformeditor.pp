@@ -1336,6 +1336,8 @@ function TCustomFormEditor.SaveUnitComponentToBinStream(AnUnitInfo: TUnitInfo;
 var
   Writer: TWriter;
   DestroyDriver: Boolean;
+  AncestorUnitInfo: TUnitInfo;
+  Ancestor: TComponent;
 begin
   // save designer form properties to the component
   SaveHiddenDesignerFormProperties(AnUnitInfo.Component);
@@ -1353,7 +1355,11 @@ begin
     try
       BinCompStream.Position:=0;
       Writer:=CreateLRSWriter(BinCompStream,DestroyDriver);
-      Writer.WriteDescendent(AnUnitInfo.Component,nil);
+      AncestorUnitInfo:=AnUnitInfo.FindAncestorUnit;
+      Ancestor:=nil;
+      if AncestorUnitInfo<>nil then
+        Ancestor:=AncestorUnitInfo.Component;
+      Writer.WriteDescendent(AnUnitInfo.Component,Ancestor);
       if DestroyDriver then Writer.Driver.Free;
       FreeAndNil(Writer);
       AnUnitInfo.ComponentLastBinStreamSize:=BinCompStream.Size;

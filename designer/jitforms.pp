@@ -404,7 +404,7 @@ procedure TComponentWithOverrideValidateRename.ValidateRename(
 var
   Designer: TIDesigner;
 begin
-  //debugln('TComponentWithOverrideValidateRename.ValidateRename ',DbgSName(Self));
+  //debugln(['TComponentWithOverrideValidateRename.ValidateRename ',DbgSName(Self),' ',DbgSName(AComponent),' CurName=',CurName,' NewName=',NewName]);
   inherited ValidateRename(AComponent, CurName, NewName);
   Designer:=FindRootDesigner(Self);
   if Designer <> nil then
@@ -763,12 +763,11 @@ function TJITComponentList.AddJITComponentFromStream(BinStream: TStream;
     FCurReadStreamClass:=StreamClass;
     DestroyDriver:=false;
     InitReading(AStream,Reader,DestroyDriver);
-    {$IFDEF VerboseJITForms}
-    debugln('[TJITComponentList.AddJITComponentFromStream] Read ...');
-    {$ENDIF}
+    { $IFDEF VerboseJITForms}
+    DebugLn(['TJITComponentList.AddJITComponentFromStream.ReadStream Reading: FCurReadJITComponent=',DbgSName(FCurReadJITComponent),' StreamClass=',DbgSName(StreamClass),' Ancestor=',DbgSName(Ancestor)]);
+    { $ENDIF}
     try
       Reader.Ancestor:=AnAncestor;
-      DebugLn(['TJITComponentList.AddJITComponentFromStream.ReadStream FCurReadJITComponent=',DbgSName(FCurReadJITComponent),' StreamClass=',DbgSName(StreamClass),' Ancestor=',DbgSName(Ancestor)]);
       Reader.ReadRootComponent(FCurReadJITComponent);
       {$IFDEF VerboseJITForms}
       debugln('[TJITComponentList.AddJITComponentFromStream] Finish Reading ...');

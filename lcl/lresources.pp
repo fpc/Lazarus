@@ -2645,7 +2645,8 @@ var
     // Convert property list
     while not (parser.TokenSymbolIs('END') or
       parser.TokenSymbolIs('OBJECT') or
-      parser.TokenSymbolIs('INHERITED'))
+      parser.TokenSymbolIs('INHERITED') or
+      parser.TokenSymbolIs('INLINE'))
     do
       ProcessProperty;
     Output.WriteByte(0);        // Terminate property list
