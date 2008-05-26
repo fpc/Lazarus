@@ -39,9 +39,12 @@ type
 
   TFrameDesignerForm = class(TCustomNonFormDesignerForm)
   protected
+    FChangingBounds: Boolean;
     procedure SetLookupRoot(const AValue: TComponent); override;
+    procedure OnControlChangeBounds(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     procedure DoLoadBounds; override;
     procedure DoSaveBounds; override;
     procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); override;
@@ -58,11 +61,45 @@ begin
   inherited Create(AOwner);
 end;
 
-procedure TFrameDesignerForm.SetLookupRoot(const AValue: TComponent);
+destructor TFrameDesignerForm.Destroy;
 begin
-  if (AValue is TControl) then
-    TControl(AValue).Parent := Self;
-  inherited;
+  if LookupRoot is TControl then
+    TControl(LookupRoot).RemoveAllHandlersOfObject(Self);
+  inherited Destroy;
+end;
+
+procedure TFrameDesignerForm.SetLookupRoot(const AValue: TComponent);
+var
+  AControl: TControl;
+begin
+  if AValue=LookupRoot then exit;
+  if LookupRoot is TControl then
+    TControl(LookupRoot).RemoveAllHandlersOfObject(Self);
+  if (AValue is TControl) then begin
+    AControl:=TControl(AValue);
+    AControl.Parent := Self;
+    AControl.AddHandlerOnChangeBounds(@OnControlChangeBounds,true);
+  end;
+  inherited SetLookupRoot(AValue);
+end;
+
+procedure TFrameDesignerForm.OnControlChangeBounds(Sender: TObject);
+var
+  AControl: TControl;
+  a: TAnchorKind;
+begin
+  if FChangingBounds then exit;
+  AControl:=TControl(LookupRoot);
+  FChangingBounds:=true;
+  try
+    // reset anchors
+    for a:=Low(TAnchorKind) to High(TAnchorKind) do
+      AControl.AnchorSide[a].Control:=nil;
+    // reset bounds
+    AControl.SetBounds(0, 0, Width, Height);
+  finally
+    FChangingBounds:=false;
+  end;
 end;
 
 procedure TFrameDesignerForm.DoLoadBounds;
@@ -92,7 +129,7 @@ begin
     NewTop:=LongRec(LookupRoot.DesignInfo).Hi;
     // resize designer form
     SetNewBounds(NewLeft,NewTop,CurControl.Width,CurControl.Height);
-    DebugLn(['TFrameDesignerForm.DoLoadBounds ',NewLeft,',',NewTop]);
+    //DebugLn(['TFrameDesignerForm.DoLoadBounds ',NewLeft,',',NewTop]);
   end
   else 
   if LookupRoot <> nil then 
@@ -107,7 +144,7 @@ begin
     LongRec(LookupRoot.DesignInfo).Hi:=Top;
     // always fill the whole designer form
     TControl(LookupRoot).SetBounds(0, 0, Width, Height);
-    DebugLn(['TFrameDesignerForm.DoSaveBounds ',Left,',',Top,' ',LongRec(LookupRoot.DesignInfo).Lo,',',LongRec(LookupRoot.DesignInfo).hi]);
+    //DebugLn(['TFrameDesignerForm.DoSaveBounds ',Left,',',Top,' ',LongRec(LookupRoot.DesignInfo).Lo,',',LongRec(LookupRoot.DesignInfo).hi]);
   end else
   if LookupRoot <> nil then
     DebugLn(['Unsupported component type in TFrameDesignerForm.DoSaveBounds: ', LookupRoot.ClassName]);

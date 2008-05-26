@@ -1634,11 +1634,8 @@ begin
             DebugLn(['TJITComponentList.ReaderCreateComponent creating ',DbgSName(ComponentClass),' Owner=',DbgSName(Reader.Owner),' ...']);
             // allocate memory without running the constructor
             Component:=TComponent(ComponentClass.newinstance);
-            // set csDesigning and csDesignInstance
-            // csDesigning is set for all components at designtime
-            // csDesignInstance is set for Delphi compatibility. It is used by TFrame.
+            // set csDesigning
             SetComponentDesignMode(Component,true);
-            SetComponentDesignInstanceMode(Component,true);
             // this is a streamed sub component => set csInline
             SetComponentInlineMode(Component,true);
             // now run the constructor
