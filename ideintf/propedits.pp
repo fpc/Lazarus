@@ -323,6 +323,8 @@ type
     function GetStrValueAt(Index: Integer): AnsiString;
     function GetVarValue: Variant;
     function GetVarValueAt(Index: Integer):Variant;
+    function GetWideStrValue: WideString;
+    function GetWideStrValueAt(Index: Integer): WideString;
     function GetValue: ansistring; virtual;
     function GetHint(HintType: TPropEditHint; x, y: integer): string; virtual;
     function GetDefaultValue: ansistring; virtual;
@@ -340,6 +342,7 @@ type
     procedure SetPtrValue(const NewValue: Pointer);
     procedure SetStrValue(const NewValue: AnsiString);
     procedure SetVarValue(const NewValue: Variant);
+    procedure SetWideStrValue(const NewValue: WideString);
     procedure Modified;
     function ValueAvailable: Boolean;
     procedure ListMeasureWidth(const AValue: ansistring; Index:integer;
@@ -475,6 +478,16 @@ type
   public
     function AllEqual: Boolean; override;
     function GetEditLimit: Integer; override;
+    function GetValue: ansistring; override;
+    procedure SetValue(const NewValue: ansistring); override;
+  end;
+
+{ TWideStringPropertyEditor
+  The default property editor for widestrings}
+
+  TWideStringPropertyEditor = class(TPropertyEditor)
+  public
+    function AllEqual: Boolean; override;
     function GetValue: ansistring; override;
     procedure SetValue(const NewValue: ansistring); override;
   end;
@@ -1552,29 +1565,29 @@ const
 }
 
   PropClassMap:array[TypInfo.TTypeKind] of TPropertyEditorClass=(
-    nil,                   // tkUnknown
-    TIntegerPropertyEditor,// tkInteger
-    TCharpropertyEditor,   // tkChar
-    TEnumPropertyEditor,   // tkEnumeration
-    TFloatPropertyEditor,  // tkFloat
-    TSetPropertyEditor,    // tkSet
-    TMethodPropertyEditor, // tkMethod
-    TStringPropertyEditor, // tkSString
-    TStringPropertyEditor, // tkLString
-    TStringPropertyEditor, // tkAString
-    TStringPropertyEditor, // tkWString
-    TPropertyEditor,       // tkVariant
-    nil,                   // tkArray
-    nil,                   // tkRecord
-    nil,                   // tkInterface
-    TClassPropertyEditor,  // tkClass
-    nil,                   // tkObject
-    TPropertyEditor,       // tkWChar
-    TBoolPropertyEditor,   // tkBool
-    TInt64PropertyEditor,  // tkInt64
-    TQWordPropertyEditor,  // tkQWord
-    nil,                   // tkDynArray
-    nil                    // tkInterfaceRaw
+    nil,                       // tkUnknown
+    TIntegerPropertyEditor,    // tkInteger
+    TCharpropertyEditor,       // tkChar
+    TEnumPropertyEditor,       // tkEnumeration
+    TFloatPropertyEditor,      // tkFloat
+    TSetPropertyEditor,        // tkSet
+    TMethodPropertyEditor,     // tkMethod
+    TStringPropertyEditor,     // tkSString
+    TStringPropertyEditor,     // tkLString
+    TStringPropertyEditor,     // tkAString
+    TWideStringPropertyEditor, // tkWString
+    TPropertyEditor,           // tkVariant
+    nil,                       // tkArray
+    nil,                       // tkRecord
+    nil,                       // tkInterface
+    TClassPropertyEditor,      // tkClass
+    nil,                       // tkObject
+    TPropertyEditor,           // tkWChar
+    TBoolPropertyEditor,       // tkBool
+    TInt64PropertyEditor,      // tkInt64
+    TQWordPropertyEditor,      // tkQWord
+    nil,                       // tkDynArray
+    nil                        // tkInterfaceRaw
     );
 
 // -----------------------------------------------------------
@@ -2264,6 +2277,16 @@ begin
   with FPropList^[Index] do Result:=GetVariantProp(Instance,PropInfo);
 end;
 
+function TPropertyEditor.GetWideStrValue: WideString;
+begin
+  Result:=GetWideStrValueAt(0);
+end;
+
+function TPropertyEditor.GetWideStrValueAt(Index: Integer): WideString;
+begin
+  with FPropList^[Index] do Result:=GetWideStrProp(Instance,PropInfo);
+end;
+
 function TPropertyEditor.GetValue:ansistring;
 begin
   Result:=oisUnknown;
@@ -2441,6 +2464,22 @@ begin
   if Changed then begin
     for I:=0 to FPropCount-1 do
       with FPropList^[I] do SetVariantProp(Instance,PropInfo,NewValue);
+    Modified;
+  end;
+end;
+
+procedure TPropertyEditor.SetWideStrValue(const NewValue: WideString);
+var
+  I:Integer;
+  Changed: boolean;
+begin
+  Changed:=false;
+  for I:=0 to FPropCount-1 do
+    with FPropList^[I] do
+      Changed:=Changed or (GetWideStrProp(Instance,PropInfo)<>NewValue);
+  if Changed then begin
+    for I:=0 to FPropCount-1 do
+      with FPropList^[I] do SetWideStrProp(Instance,PropInfo,NewValue);
     Modified;
   end;
 end;
@@ -2940,6 +2979,33 @@ end;
 procedure TStringPropertyEditor.SetValue(const NewValue: ansistring);
 begin
   SetStrValue(NewValue);
+end;
+
+
+{ TWideStringPropertyEditor }
+
+function TWideStringPropertyEditor.AllEqual: Boolean;
+var
+  I: Integer;
+  V: widestring;
+begin
+  Result := False;
+  if PropCount > 1 then begin
+    V := GetWideStrValue;
+    for I := 1 to PropCount - 1 do
+      if GetWideStrValueAt(I) <> V then Exit;
+  end;
+  Result := True;
+end;
+
+function TWideStringPropertyEditor.GetValue: ansistring;
+begin
+  Result:=UTF8Encode(GetWideStrValue);
+end;
+
+procedure TWideStringPropertyEditor.SetValue(const NewValue: ansistring);
+begin
+  SetWideStrValue(UTF8Encode(NewValue));
 end;
 
 { TNestedPropertyEditor }
