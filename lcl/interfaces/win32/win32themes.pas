@@ -1,6 +1,7 @@
 unit Win32Themes;
 
 {$mode objfpc}{$H+}
+{$I win32defines.inc}
 
 interface
 
