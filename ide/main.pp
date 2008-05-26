@@ -5791,12 +5791,19 @@ function TMainIDE.DoLoadAncestorDependencyHidden(AnUnitInfo: TUnitInfo;
   out AncestorUnitInfo: TUnitInfo): TModalResult;
 var
   AncestorClassName: String;
+  CodeBuf: TCodeBuffer;
 begin
   AncestorClassName:='';
   AncestorClass:=nil;
   AncestorUnitInfo:=nil;
 
   // find the ancestor type in the source
+  if AnUnitInfo.Source=nil then begin
+    Result:=LoadCodeBuffer(CodeBuf,AnUnitInfo.Filename,
+                           [lbfUpdateFromDisk,lbfCheckIfText]);
+    if Result<>mrOk then exit;
+    AnUnitInfo.Source:=CodeBuf;
+  end;
   if not CodeToolBoss.FindFormAncestor(AnUnitInfo.Source,DescendantClassName,
                                        AncestorClassName,true)
   then begin
