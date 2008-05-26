@@ -4648,8 +4648,6 @@ var
   CompResourceCode, LFMFilename, TestFilename, ResTestFilename: string;
   UnitSaveFilename: String;
   ADesigner: TDesigner;
-  AncestorUnit: TUnitInfo;
-  AncestorInstance: TComponent;
   Grubber: TLRTGrubber;
   LRTFilename: String;
 begin
@@ -4699,13 +4697,9 @@ begin
           {$IFNDEF DisableFakeMethods}
           Writer.OnWriteMethodProperty:=@FormEditor1.WriteMethodPropertyEvent;
           {$ENDIF}
-          AncestorUnit:=GetAncestorUnit(AnUnitInfo);
-          if AncestorUnit<>nil then
-            AncestorInstance:=AncestorUnit.Component
-          else
-            AncestorInstance:=nil;
           //DebugLn(['TMainIDE.DoSaveUnitComponent AncestorInstance=',dbgsName(AncestorInstance)]);
-          Writer.WriteDescendent(AnUnitInfo.Component,AncestorInstance);
+          Writer.OnFindAncestor:=@FormEditor1.WriterFindAncestor;
+          Writer.WriteDescendent(AnUnitInfo.Component,nil);
           if DestroyDriver then Writer.Driver.Free;
           FreeAndNil(Writer);
           AnUnitInfo.ComponentLastBinStreamSize:=BinCompStream.Size;

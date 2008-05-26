@@ -246,10 +246,13 @@ each control that's dropped onto the form
     function CreateChildComponentFromStream(BinStream: TStream;
                        ComponentClass: TComponentClass; Root: TComponent;
                        ParentControl: TWinControl): TIComponentInterface; override;
+    procedure WriterFindAncestor(Writer: TWriter; Component: TComponent;
+                                 const Name: string;
+                                 var Ancestor, RootAncestor: TComponent);
     procedure SetComponentNameAndClass(CI: TIComponentInterface;
-      const NewName, NewClassName: shortstring);
+                                       const NewName, NewClassName: shortstring);
     function GetDescendantTypeClass(TypeClass: TComponentClass): TComponentClass;
-      
+
     // ancestors
     function GetAncestorLookupRoot(AComponent: TComponent): TComponent; override;
     function GetAncestorInstance(AComponent: TComponent): TComponent; override;
@@ -1355,11 +1358,8 @@ begin
     try
       BinCompStream.Position:=0;
       Writer:=CreateLRSWriter(BinCompStream,DestroyDriver);
-      AncestorUnitInfo:=AnUnitInfo.FindAncestorUnit;
-      Ancestor:=nil;
-      if AncestorUnitInfo<>nil then
-        Ancestor:=AncestorUnitInfo.Component;
-      Writer.WriteDescendent(AnUnitInfo.Component,Ancestor);
+      Writer.OnFindAncestor:=@WriterFindAncestor;
+      Writer.WriteDescendent(AnUnitInfo.Component,nil);
       if DestroyDriver then Writer.Driver.Free;
       FreeAndNil(Writer);
       AnUnitInfo.ComponentLastBinStreamSize:=BinCompStream.Size;
@@ -1726,6 +1726,30 @@ begin
                                                  
   // create component interface(s) for the new child component(s)
   Result:=CreateComponentInterface(NewComponent,true);
+end;
+
+procedure TCustomFormEditor.WriterFindAncestor(Writer: TWriter;
+  Component: TComponent; const Name: string; var Ancestor,
+  RootAncestor: TComponent);
+// Note: TWriter wants the stream ancestor, which is not always the class ancestor
+var
+  AnUnitInfo: TUnitInfo;
+begin
+  //DebugLn(['TCustomFormEditor.WriterFindAncestor START ',DbgSName(Component)]);
+  AnUnitInfo:=Project1.UnitWithComponentClass(TComponentClass(Component.ClassType));
+  if (AnUnitInfo<>nil) then begin
+    if (AnUnitInfo.Component=Component) then begin
+      // Component is a root component (e.g. not nested, inline)
+      // the stream ancestor is the component of the ClassParent
+      AnUnitInfo:=AnUnitInfo.FindAncestorUnit;
+    end else begin
+      // Component is a nested, inline component
+      // the stream ancestor is the component of the class
+    end;
+    if (AnUnitInfo<>nil) and (AnUnitInfo.Component<>nil) then
+      Ancestor:=AnUnitInfo.Component;
+    DebugLn(['TCustomFormEditor.WriterFindAncestor Component=',DbgSName(Component),' Ancestor=',DbgSName(Ancestor)]);
+  end;
 end;
 
 procedure TCustomFormEditor.SetComponentNameAndClass(CI: TIComponentInterface;
