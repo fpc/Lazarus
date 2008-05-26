@@ -99,7 +99,7 @@ type
     procedure NullProc;
     procedure NumberProc;
     procedure ObjectProc;
-    procedure InheritedProc;
+    procedure InheritedInlineProc;
     procedure SpaceProc;
     procedure StringProc;
     procedure SymbolProc;
@@ -236,7 +236,7 @@ begin
         else if I in ['o', 'O'] then
           fProcTable[I] := {$IFDEF FPC}@{$ENDIF}ObjectProc
         else if I in ['i', 'I'] then
-          fProcTable[I] := {$IFDEF FPC}@{$ENDIF}InheritedProc
+          fProcTable[I] := {$IFDEF FPC}@{$ENDIF}InheritedInlineProc
         else
           fProcTable[I] := {$IFDEF FPC}@{$ENDIF}AltProc;
       '$': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}IntegerProc;
@@ -394,9 +394,9 @@ begin
     AltProc;
 end;
 
-procedure TSynLFMSyn.InheritedProc;
+procedure TSynLFMSyn.InheritedInlineProc;
 begin
-  if (fLine[Run + 1] in ['n', 'N']) and
+  if ((fLine[Run + 1] in ['n', 'N']) and
      (fLine[Run + 2] in ['h', 'H']) and
      (fLine[Run + 3] in ['e', 'E']) and
      (fLine[Run + 4] in ['r', 'R']) and
@@ -404,11 +404,22 @@ begin
      (fLine[Run + 6] in ['t', 'T']) and
      (fLine[Run + 7] in ['e', 'E']) and
      (fLine[Run + 8] in ['d', 'D']) and
-     not (fLine[Run + 9] in ['_', '0'..'9', 'a'..'z', 'A'..'Z'])
+     not (fLine[Run + 9] in ['_', '0'..'9', 'a'..'z', 'A'..'Z']))
   then
   begin
     fTokenID := tkKey;
     Inc(Run, 9);
+  end
+  else if ((fLine[Run + 1] in ['n', 'N']) and
+           (fLine[Run + 2] in ['l', 'L']) and
+           (fLine[Run + 3] in ['i', 'I']) and
+           (fLine[Run + 4] in ['n', 'N']) and
+           (fLine[Run + 5] in ['e', 'E']) and
+           not (fLine[Run + 6] in ['_', '0'..'9', 'a'..'z', 'A'..'Z']))
+  then
+  begin
+    fTokenID := tkKey;
+    Inc(Run, 6);
   end
   else
     AltProc;

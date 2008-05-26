@@ -1649,6 +1649,8 @@ begin
           DestroyDriver:=false;
           try
             CreateReader(BinStream,SubReader,DestroyDriver);
+            // The stream contains only the diff to the Ancestor instance,
+            // => give it the Ancestor instance
             SubReader.Ancestor:=Ancestor;
             SubReader.ReadRootComponent(Component);
           finally
