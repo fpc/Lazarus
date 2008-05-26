@@ -4,10 +4,10 @@ object MainForm: TMainForm
   Top = 141
   Width = 487
   HorzScrollBar.Page = 486
-  VertScrollBar.Page = 347
+  VertScrollBar.Page = 354
   ActiveControl = LVConnections
   Caption = 'Lazarus Data Dictionary'
-  ClientHeight = 348
+  ClientHeight = 355
   ClientWidth = 487
   Menu = MainMenu1
   OnClose = FormClose
@@ -17,6 +17,7 @@ object MainForm: TMainForm
   OnShow = FormShow
   Position = poScreenCenter
   SessionProperties = 'Height;Left;Top;Width;WindowState'
+  LCLVersion = '0.9.25'
   object TBMain: TToolBar
     Height = 26
     Width = 487
@@ -99,7 +100,7 @@ object MainForm: TMainForm
     end
   end
   object PCDD: TPageControl
-    Height = 302
+    Height = 309
     Top = 26
     Width = 487
     ActivePage = TSConnections
@@ -132,16 +133,16 @@ object MainForm: TMainForm
         TabOrder = 0
         ViewStyle = vsReport
         OnDblClick = LVDictsDblClick
-        OnKeyDown = LVDictsKeyDown
+        OnKeyUp = LVDictsKeyUp
       end
     end
     object TSConnections: TTabSheet
       Caption = 'Connections'
-      ClientHeight = 272
-      ClientWidth = 483
+      ClientHeight = 283
+      ClientWidth = 479
       object LVConnections: TListView
-        Height = 272
-        Width = 483
+        Height = 283
+        Width = 479
         Align = alClient
         Columns = <        
           item
@@ -165,12 +166,13 @@ object MainForm: TMainForm
         TabOrder = 0
         ViewStyle = vsReport
         OnDblClick = LVConnectionsDblClick
+        OnKeyUp = LVConnectionsKeyUp
       end
     end
   end
   object PStatus: TPanel
     Height = 20
-    Top = 328
+    Top = 335
     Width = 487
     Align = alBottom
     BevelOuter = bvNone
@@ -183,6 +185,7 @@ object MainForm: TMainForm
       Width = 128
       Align = alLeft
       Max = 100
+      TabOrder = 1
     end
     object PStatusText: TPanel
       Left = 128
@@ -357,6 +360,7 @@ object MainForm: TMainForm
     end
     object MIDataDict: TMenuItem
       Caption = '&Dictionary'
+      OnClick = MIDataDictClick
       object MIImport: TMenuItem
         Caption = '&Import'
       end
@@ -976,7 +980,6 @@ object MainForm: TMainForm
     top = 192
   end
   object SDDD: TSaveDialog
-    Title = 'Save file as'
     DefaultExt = '.fpd'
     Filter = 'Data dictionary files|*.fpd|Ini files|*.ini|All files|*.*'
     FilterIndex = 0
