@@ -6462,6 +6462,7 @@ var
   NewBuf: TCodeBuffer;
   OldProjectPath: string;
   TitleWasDefault: Boolean;
+  OldSource: String;
 begin
   OldProjectPath:=Project1.ProjectDirectory;
 
@@ -6601,7 +6602,11 @@ begin
   // change main source
   if (Project1.MainUnitID>=0) then begin
     GetMainUnit(MainUnitInfo,MainUnitSrcEdit,true);
-
+    
+    // Save old source code, to prevent overwriting it,
+    // if the file name didn't actually change.
+    OldSource:=MainUnitInfo.Source.Source;
+    
     // switch MainUnitInfo.Source to new code
     NewBuf:=CodeToolBoss.CreateFile(NewProgramFilename);
     if NewBuf=nil then begin
@@ -6611,7 +6616,7 @@ begin
     end;
 
     // copy the source to the new buffer
-    NewBuf.Source:=MainUnitInfo.Source.Source;
+    NewBuf.Source:=OldSource;
 
     // assign the new buffer to the MainUnit
     MainUnitInfo.Source:=NewBuf;
