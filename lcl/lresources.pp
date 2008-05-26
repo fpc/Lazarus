@@ -2214,6 +2214,7 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
 
     OutStr(Indent);
     if (b and 1) <> 0 then OutStr('inherited')
+    else if (b and 4) <> 0 then OutStr('inline')
     else OutStr('object');
     OutStr(' ');
     if ObjName <> '' then
