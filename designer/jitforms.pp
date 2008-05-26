@@ -938,6 +938,7 @@ begin
     try
       // set into design mode
       SetComponentDesignMode(Instance, True);
+      // set csDesignInstance: it is a root design component
       SetComponentDesignInstanceMode(Instance, True);
       if (not Visible) and (Instance is TControl) then
         TControl(Instance).ControlStyle:=
