@@ -584,11 +584,12 @@ var
 begin
   ConfigFilename:=GetUserLinkFile;
   
-  // check if file need saving
+  // check if file needs saving
   if (not Modified)
   and UserLinkLoadTimeValid and FileExists(ConfigFilename)
   and (FileAge(ConfigFilename)=UserLinkLoadTime) then
     exit;
+  //DebugLn(['TPackageLinks.SaveUserLinks saving ... ',ConfigFilename]);
 
   XMLConfig:=nil;
   try

@@ -6686,6 +6686,7 @@ begin
   Project1.DefineTemplates.AllChanged;
   //DebugLn('TMainIDE.DoCompleteLoadingProjectInfo ',Project1.IDAsString);
   Project1.DefineTemplates.Active:=true;
+
   Result:=mrOk;
 end;
 
@@ -9323,7 +9324,6 @@ function TMainIDE.DoSaveAll(Flags: TSaveFlags): TModalResult;
 var
   CurResult: TModalResult;
 begin
-  DebugLn('TMainIDE.DoSaveAll');
   Result:=mrOk;
   CurResult:=DoCallModalFunctionHandler(lihtOnSavingAll);
   if CurResult=mrAbort then exit(mrAbort);
@@ -9331,6 +9331,7 @@ begin
   CurResult:=DoSaveProject(Flags);
   SaveEnvironment;
   SaveIncludeLinks;
+  PkgBoss.SaveSettings;
   InputHistories.Save;
   if CurResult=mrAbort then exit(mrAbort);
   if CurResult<>mrOk then Result:=mrCancel;

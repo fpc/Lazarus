@@ -2148,6 +2148,7 @@ begin
   end;
 
   // save package file links
+  DebugLn(['TPkgManager.AddPackageToGraph ',APackage.Name]);
   PkgLinks.SaveUserLinks;
 
   Result:=mrOk;
@@ -2168,6 +2169,7 @@ begin
     end;
   end else
     Result:=mrOk;
+  PkgLinks.SaveUserLinks;
 end;
 
 procedure TPkgManager.AddDefaultDependencies(AProject: TProject);
@@ -2479,6 +2481,8 @@ begin
     Result:=DoOpenPackage(APackage,[])
   else
     Result:=mrOk;
+
+  PkgLinks.SaveUserLinks;
 end;
 
 function TPkgManager.DoSavePackage(APackage: TLazPackage;
