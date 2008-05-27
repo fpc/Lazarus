@@ -1839,7 +1839,7 @@ procedure TThemeServices.DrawElement(DC: HDC; Details: TThemedElementDetails; co
     FillRect(DC, ARect, Brush);
     DeleteObject(Brush);
   end;
-
+  
 var
   ADrawFlags: DWord;
   Bevel: TGraphicsBevelCut;
@@ -1902,6 +1902,12 @@ begin
                 Bevel := bvNone;
 
               Frame3D(DC, ARect, 1, Bevel);
+
+              if IsChecked(Details) and not IsHot(Details) then
+              begin
+                InflateRect(ARect, -1, -1);
+                FillWithColor(ARect, clBtnHighlight);
+              end;
             end;
           TP_SPLITBUTTONDROPDOWN:
             begin
