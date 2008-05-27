@@ -28,7 +28,7 @@ uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Menus,
   ActnList, StdActns, ComCtrls, dicteditor, fpdatadict, IniPropStorage,
   conneditor, LCLType,
-  inifiles, inicol, RTTICtrls, ExtCtrls, StdCtrls, propertystorage, ddfiles;
+  RTTICtrls, ExtCtrls, StdCtrls, ddfiles;
 
 type
   TEngineMenuItem = Class(TMenuItem)
@@ -158,14 +158,14 @@ type
     procedure CheckParams;
     function CloseCurrentConnection: TModalResult;
     function CloseCurrentTab(AddCancelClose: Boolean = False): TModalResult;
-    function GetConnectionName(var AName: String): Boolean;
+    function GetConnectionName(out AName: String): Boolean;
     function GetCurrentConnection: TConnectionEditor;
     function GetCurrentEditor: TDataDictEditor;
     procedure NewConnection(EngineName : String);
     procedure NewConnection;
     procedure OpenConnection(RC: TRecentConnection);
     procedure RegisterDDEngines;
-    Function SelectEngineType(Var EngineName : String) : Boolean;
+    Function SelectEngineType(out EngineName : String) : Boolean;
     procedure ShowImportRecentconnections;
     procedure ShowNewConnectionTypes;
     procedure ShowRecentConnections;
@@ -1024,6 +1024,7 @@ begin
     TD:=CurrentEditor.CurrentTable;
     If Assigned(TD) then
       begin
+      AFieldName:='';
       If InputQuery(Format(SNewField,[TD.TableName]),SNEwFieldName,AFieldName) then
         If (AFieldName<>'') then
           CurrentEditor.NewField(AFieldName,TD);
@@ -1038,9 +1039,12 @@ Var
 
 begin
   If Assigned(CurrentEditor) then
+    begin
+    ATableName:='';
     If InputQuery(SNewTable,SNEwTableName,ATableName) then
       If (ATableName<>'') then
         CurrentEditor.NewTable(ATableName);
+    end;
 end;
 
 
@@ -1212,7 +1216,7 @@ begin
   LI.Data:=RC;
 end;
 
-Function TMainForm.GetConnectionName(Var AName : String) : Boolean;
+Function TMainForm.GetConnectionName(out AName : String) : Boolean;
 
 Var
   OK : Boolean;
@@ -1301,10 +1305,11 @@ begin
     NewConnection(ET);
 end;
 
-Function TMainForm.SelectEngineType(Var EngineName : String) : Boolean;
+Function TMainForm.SelectEngineType(out EngineName : String) : Boolean;
 
 begin
   EngineName:='SQLDB';
+  Result := True;
 end;
 
 

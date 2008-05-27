@@ -69,7 +69,6 @@ type
     procedure LBKeyFieldsClick(Sender: TObject);
     procedure TSResize(Sender: TObject);
   private
-    FGetTableDef: TDDTableDef;
     FTableDefs : TDDTableDefs;
     FGenerator : TFPDDSQLEngine;
     FSQLGenerated : Boolean;
@@ -196,7 +195,6 @@ procedure TGenerateSQLForm.GenerateSQL;
   end;
 
 Var
-  I : integer;
   KL,FL : TFPDDFieldList;
   
 begin

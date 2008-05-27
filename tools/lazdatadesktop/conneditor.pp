@@ -143,9 +143,6 @@ end;
 
 constructor TConnectionEditor.Create(AOwner: TComponent);
 
-Var
-  C : TWinControl;
-
 begin
   inherited Create(AOwner);
   FTV:=TTreeView.Create(Self);
@@ -465,7 +462,7 @@ Var
   L : TStringList;
   ID : TDDIndexDefs;
   D : TDDIndexDef;
-  NI,NN : TTreeNode;
+  NI : TTreeNode;
   I : Integer;
 
 begin
@@ -481,8 +478,8 @@ begin
         begin
         D:=L.Objects[I] as TDDIndexDef;
         NI:=NewNode(ATV,ParentNode,D.IndexName,iiIndex);
-        NN:=NewNode(ATV,NI,SNodeIndexFields+D.Fields,iiIndexFields);
-        NN:=NewNode(ATV,NI,SNodeIndexOptions+IndexOptionsToString(D.Options),iiIndexOptions)
+        NewNode(ATV,NI,SNodeIndexFields+D.Fields,iiIndexFields);
+        NewNode(ATV,NI,SNodeIndexOptions+IndexOptionsToString(D.Options),iiIndexOptions)
         end;
     finally
       ID.Free;
@@ -531,7 +528,6 @@ procedure TConnectionEditor.ShowFields(ATableName : String; ATV : TTreeView;Pare
 Var
   L : TStringList;
   I : Integer;
-  N : TTreeNode;
   TD : TDDTableDef;
 begin
   L:=TStringList.Create;
@@ -547,7 +543,7 @@ begin
     end;
     L.Sorted:=True;
     For I:=0 to L.Count-1 do
-      N:=NewNode(ATV,ParentNode,L[I],iiField);
+      NewNode(ATV,ParentNode,L[I],iiField);
   Finally
     L.Free;
   end;
@@ -558,7 +554,6 @@ procedure TConnectionEditor.ShowFields(ATableName : String; ALV : TListView);
 Var
   L : TStringList;
   I : Integer;
-  N : TTreeNode;
   TD : TDDTableDef;
   FD : TDDFieldDef;
   LI : TListItem;
@@ -593,7 +588,6 @@ procedure TConnectionEditor.SelectFields(TableName : String);
 
 Var
   LV : TListView;
-  FN,IDN : TTreeNode;
   LC : TListColumn;
 
 begin

@@ -57,6 +57,7 @@
         <Filename Value="frmmain.pp"/>
         <ComponentName Value="MainForm"/>
         <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <ResourceFilename Value="frmmain.lrs"/>
         <UnitName Value="frmmain"/>
       </Unit1>

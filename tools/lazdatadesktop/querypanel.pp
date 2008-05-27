@@ -207,9 +207,6 @@ end;
 
 procedure TQueryPanel.CreateImageList;
 
-Var
-  i : Integer;
-
 begin
   FIL:=TImageList.Create(Self);
   FIL.AddLazarusResource('qrybtn_execute');
@@ -263,32 +260,32 @@ procedure TQueryPanel.CreateButtons;
     L:=L+FToolBar.ButtonWidth+1;
   end;
   
-  Function NewSeparator(Var L : Integer) : TToolButton;
-  
+  procedure NewSeparator(Var L : Integer);
+  var
+    B : TToolButton;
   begin
-    Result:=NewButton(Nil,L);
-    Result.Style:=tbsSeparator;
-    Result.Width:=8;
+    B:=NewButton(Nil,L);
+    B.Style:=tbsSeparator;
+    B.Width:=8;
     Dec(L,FToolBar.ButtonWidth-8);
   end;
 
 Var
-  B : TToolButton;
   L : integer;
 
 begin
   L:=0;
-  B:=NewButton(AExecute,L);
-  B:=NewButton(ACloseQuery,L);
+  NewButton(AExecute,L);
+  NewButton(ACloseQuery,L);
   NewSeparator(L);
-  B:=NewButton(APreviousQuery,L);
-  B:=NewButton(ANextQuery,L);
+  NewButton(APreviousQuery,L);
+  NewButton(ANextQuery,L);
   NewSeparator(L);
-  B:=NewButton(ALoadSQL,L);
-  B:=NewButton(ASaveSQL,L);
+  NewButton(ALoadSQL,L);
+  NewButton(ASaveSQL,L);
   NewSeparator(L);
-  B:=NewButton(AExport,L);
-  B:=NewButton(ACreateCode,L);
+  NewButton(AExport,L);
+  NewButton(ACreateCode,L);
 end;
 
 { ---------------------------------------------------------------------
