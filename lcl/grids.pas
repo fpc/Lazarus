@@ -4884,7 +4884,7 @@ procedure TCustomGrid.DefineProperties(Filer: TFiler);
   end;
   function NeedWidths: boolean;
   begin
-    if Filer.Ancestor <> nil then
+    if Filer.Ancestor is TCustomGrid then
       Result := not SonColsIguales(TCustomGrid(Filer.Ancestor))
     else
       Result := not SonDefault(True, FCols);
@@ -4892,7 +4892,7 @@ procedure TCustomGrid.DefineProperties(Filer: TFiler);
   end;
   function NeedHeights: boolean;
   begin
-    if Filer.Ancestor <> nil then
+    if Filer.Ancestor is TCustomGrid then
       Result := not SonRowsIguales(TCustomGrid(Filer.Ancestor))
     else
       Result := not SonDefault(false, FRows);
@@ -4901,7 +4901,7 @@ procedure TCustomGrid.DefineProperties(Filer: TFiler);
   var
     C: TGridColumns;
   begin
-    if Filer.Ancestor <> nil then
+    if Filer.Ancestor is TCustomGrid then
       C := TCustomGrid(Filer.Ancestor).Columns
     else
       C := Columns;
@@ -7850,8 +7850,8 @@ procedure TCustomStringGrid.DefineProperties(Filer: TFiler);
     AntGrid: TCustomStringGrid;
   begin
     result := false;
-    AntGrid := TCustomStringGrid(Filer.Ancestor);
-    if (AntGrid<>nil) then begin
+    if Filer.Ancestor is TCustomStringGrid then begin
+      AntGrid := TCustomStringGrid(Filer.Ancestor);
       result := (AntGrid.ColCount<>ColCount) or (AntGrid.RowCount<>RowCount);
       if not result then
         for i:=0 to AntGrid.ColCount-1 do
