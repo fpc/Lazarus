@@ -55,6 +55,7 @@ type
     procedure FormResize(Sender: TObject);
     procedure MoveDownButtonClick(Sender: TObject);
     procedure MoveUpButtonClick(Sender: TObject);
+    procedure TemplatesListBoxDblClick(Sender: TObject);
   private
     function GetPath: string;
     function GetTemplates: string;
@@ -184,6 +185,17 @@ begin
   if (y>0) and (y<PathEdit.Lines.Count) then begin
     PathEdit.Lines.Move(y,y-1);
     PathEdit.CaretY:=y;
+    SelectCurrentPath;
+  end;
+end;
+
+procedure TPathEditorDialog.TemplatesListBoxDblClick(Sender: TObject);
+var i: integer;
+begin
+  i := TemplatesListBox.ItemIndex;
+  if i>=0 then begin
+    PathEdit.Lines.Add(TemplatesListBox.Items[i]);
+    PathEdit.CaretY:=PathEdit.Lines.Count;
     SelectCurrentPath;
   end;
 end;

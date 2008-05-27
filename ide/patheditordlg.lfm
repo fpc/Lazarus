@@ -5,6 +5,7 @@ object PathEditorDialog: TPathEditorDialog
   Width = 500
   HorzScrollBar.Page = 499
   VertScrollBar.Page = 399
+  ActiveControl = TemplatesListBox
   Caption = 'PathEditorDialog'
   ClientHeight = 400
   ClientWidth = 500
@@ -13,6 +14,7 @@ object PathEditorDialog: TPathEditorDialog
   OnCreate = FormCreate
   OnResize = FormResize
   Position = poScreenCenter
+  LCLVersion = '0.9.25'
   object PathGroupBox: TGroupBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -47,7 +49,9 @@ object PathEditorDialog: TPathEditorDialog
       ParentColor = False
       TabOrder = 0
       BookMarkOptions.Xoffset = -18
+      BookMarkOptions.OnChange = nil
       Gutter.Visible = False
+      Gutter.OnChange = nil
       Gutter.CodeFoldingWidth = 14
       Keystrokes = <      
         item
@@ -374,6 +378,7 @@ object PathEditorDialog: TPathEditorDialog
         'PathEdit'
       )
       Options = [eoDragDropEditing, eoHalfPageScroll, eoScrollByOneLess, eoScrollPastEol, eoSmartTabs, eoTabsToSpaces, eoTrimTrailingSpaces, eoBracketHighlight, eoHideRightMargin]
+      SelectedColor.OnChange = nil
     end
     object MoveUpButton: TButton
       AnchorSideLeft.Control = PathGroupBox
@@ -469,6 +474,7 @@ object PathEditorDialog: TPathEditorDialog
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
       MultiSelect = True
+      OnDblClick = TemplatesListBoxDblClick
       TabOrder = 0
     end
     object AddTemplateButton: TButton

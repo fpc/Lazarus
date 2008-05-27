@@ -287,7 +287,7 @@ function TExternalToolList.Run(Index: integer;
 begin
   Result:=mrCancel;
   if (Index<0) or (Index>=Count) then exit;
-  Run(Items[Index],Macros);
+  Result:=Run(Items[Index],Macros);
 end;
 
 function TExternalToolList.Run(ExtTool: TIDEExternalToolOptions;
