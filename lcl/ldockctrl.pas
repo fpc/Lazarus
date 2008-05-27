@@ -667,6 +667,11 @@ begin
     Dlg.EnlargeBottomSpeedButton.Visible:=
                           Manager.Manager.EnlargeControl(Control,akBottom,true);
 
+    Dlg.EnlargeGroupBox.Visible := Dlg.EnlargeLeftSpeedButton.Visible or 
+                                   Dlg.EnlargeTopSpeedButton.Visible or
+                                   Dlg.EnlargeRightSpeedButton.Visible or
+                                   Dlg.EnlargeBottomSpeedButton.Visible;
+
     if Dlg.ShowModal=mrOk then begin
       // dock or undock
       case Dlg.DlgResult of
