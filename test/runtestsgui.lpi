@@ -21,18 +21,21 @@
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="3">
+    <RequiredPackages Count="4">
       <Item1>
-        <PackageName Value="FCL"/>
+        <PackageName Value="CodeTools"/>
       </Item1>
       <Item2>
-        <PackageName Value="FPCUnitTestRunner"/>
+        <PackageName Value="FCL"/>
       </Item2>
       <Item3>
-        <PackageName Value="LCL"/>
+        <PackageName Value="FPCUnitTestRunner"/>
       </Item3>
+      <Item4>
+        <PackageName Value="LCL"/>
+      </Item4>
     </RequiredPackages>
-    <Units Count="6">
+    <Units Count="7">
       <Unit0>
         <Filename Value="runtestsgui.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -63,6 +66,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="testunits"/>
       </Unit5>
+      <Unit6>
+        <Filename Value="bugs\testfileproc.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="testfileproc"/>
+      </Unit6>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
