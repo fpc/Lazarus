@@ -198,6 +198,8 @@ function SystemParametersInfo(uiAction: DWord; uiParam: DWord; pvParam: Pointer;
 
 function TextOut(DC: HDC; X, Y: Integer; Str: PChar; Count: Integer): Boolean; override;
 
+function UpdateWindow(Handle: HWND): Boolean; override;
+
 function WindowFromPoint(Point: TPoint): HWND; override;
 
 procedure InitializeCriticalSection(var CritSection: TCriticalSection); override;

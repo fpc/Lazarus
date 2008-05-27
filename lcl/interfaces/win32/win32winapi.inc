@@ -3252,6 +3252,11 @@ begin
 {$endif}
 end;
 
+function TWin32WidgetSet.UpdateWindow(Handle: HWND): Boolean;
+begin
+  Result:=Windows.UpdateWindow(Handle);
+end;
+
 {------------------------------------------------------------------------------
   Method:  WindowFromPoint
   Params: Point: Specifies the x and y Coords
