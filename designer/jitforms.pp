@@ -779,6 +779,7 @@ function TJITComponentList.AddJITComponentFromStream(BinStream: TStream;
       if DestroyDriver then Reader.Driver.Free;
       Reader.Free;
     end;
+    FCurReadStreamClass:=nil;
   end;
   
   function ReadAncestorStreams: boolean;
@@ -862,6 +863,7 @@ begin
       end;
     end;
   end;
+  FCurReadStreamClass:=nil;
   FCurReadJITComponent:=nil;
 end;
 
@@ -971,7 +973,6 @@ begin
       try
         if FCurReadClass<>nil then
           FreeJITClass(FCurReadClass);
-        FCurReadStreamClass:=nil;
         Instance.Free;
       except
         on E: Exception do begin
@@ -1131,6 +1132,7 @@ begin
          +' of Class ''',ComponentClass.ClassName,''' Error: ',E.Message);
     end;
   end;
+  FCurReadStreamClass:=nil;
   Result:=NewComponent;
 end;
 
@@ -1615,6 +1617,7 @@ var
   Ancestors: TFPList;
   AncestorStreams: TFPList;
   i: Integer;
+  OldStreamClass: TClass;
 {$ENDIF}
 begin
   fCurReadChild:=Component;
@@ -1624,6 +1627,7 @@ begin
   if Assigned(OnFindAncestors) then begin
     Ancestors:=nil;
     AncestorStreams:=nil;
+    OldStreamClass:=FCurReadStreamClass;
     try
       Abort:=false;
       OnFindAncestors(Self,ComponentClass,Ancestors,AncestorStreams,Abort);
@@ -1637,7 +1641,7 @@ begin
         for i:=Ancestors.Count-1 downto 0 do begin
           BinStream:=TExtMemoryStream(AncestorStreams[i]);
           FCurReadStreamClass:=TComponent(Ancestors[i]).ClassType;
-          
+
           DebugLn(['TJITComponentList.ReaderCreateComponent Has Stream: ',DbgSName(FCurReadStreamClass)]);
           // create component
           if Component=nil then begin
@@ -1663,9 +1667,12 @@ begin
             SubReader.Ancestor:=Ancestor;
             SubReader.ReadRootComponent(Component);
           finally
-            if DestroyDriver then SubReader.Driver.Free;
-            SubReader.Free;
+            if SubReader<>nil then begin
+              if DestroyDriver then SubReader.Driver.Free;
+              SubReader.Free;
+            end;
           end;
+          FCurReadStreamClass:=nil;
 
           // next
           Ancestor:=TComponent(Ancestors[i]);
@@ -1678,6 +1685,7 @@ begin
           TObject(AncestorStreams[i]).Free;
       AncestorStreams.Free;
     end;
+    FCurReadStreamClass:=OldStreamClass;
     fCurReadChild:=Component;
     fCurReadChildClass:=ComponentClass;
   end;
