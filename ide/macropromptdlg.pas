@@ -129,7 +129,7 @@ begin
     
   end;
   MacroPrompDialogResize(nil);
-  DataEdit.SetFocus;
+  ActiveControl := DataEdit;
 end;
 
 procedure TMacroPrompDialog.MacroPrompDialogResize(Sender: TObject);
