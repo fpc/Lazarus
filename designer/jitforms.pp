@@ -843,8 +843,17 @@ begin
     end;
   except
     on E: Exception do begin
+      // first write error to debug
+      FCurReadErrorMsg:=E.Message;
       DebugLn('[TJITComponentList.AddJITChildComponentFromStream] ERROR reading form stream'
-         +' of Class ''',NewClassName,''' Error: ',E.Message);
+         +' of Class ''',NewClassName,''' Error: ',FCurReadErrorMsg);
+      // then try to give a backtrace
+      DumpExceptionBackTrace;
+      // then try to give a visible warning
+      MessageDlg('Read error',
+        '[TJITComponentList.AddJITChildComponentFromStream] ERROR reading form stream'
+         +' of class "'+NewClassName+'"'#13
+         +'Error: '+FCurReadErrorMsg,mtError,[mbCancel],0);
       if Result>=0 then begin
         // try freeing the unfinished thing
         FCurReadJITComponent:=nil;
