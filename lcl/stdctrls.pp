@@ -863,7 +863,6 @@ type
     property Font;
     property Lines;
     property MaxLength;
-    property ParentBidiMode;
     property OnChange;
     property OnClick;
     property OnDblClick;
@@ -882,10 +881,14 @@ type
     property OnMouseEnter;
     property OnMouseLeave;
     property OnStartDrag;
+    property ParentBiDiMode;
+    property ParentColor;
     property ParentFont;
+    property ParentShowHint;
     property PopupMenu;
     property ReadOnly;
     property ScrollBars;
+    property ShowHint;
     property TabOrder;
     property TabStop;
     property Visible;
@@ -1158,7 +1161,6 @@ type
     property DragMode;
     property Enabled;
     property Font;
-    property Hint;
     property OnChange;
     property OnChangeBounds;
     property OnClick;
@@ -1248,7 +1250,6 @@ type
 
     property Anchors;
     property Constraints;
-    property Hint;
     property Font;
     property OnClick;
     property OnDblClick;
@@ -1288,7 +1289,6 @@ type
     property DragKind;
     property DragMode;
     property Enabled;
-    property Hint;
     property OnChange;
     property OnClick;
     property OnDragDrop;
@@ -1335,7 +1335,6 @@ type
     property DragMode;
     property Enabled;
     property Font;
-    property Hint;
     property OnChange;
     property OnChangeBounds;
     property OnClick;
