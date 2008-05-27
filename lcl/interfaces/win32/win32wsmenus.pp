@@ -38,7 +38,7 @@ uses
 ////////////////////////////////////////////////////
   WSMenus, WSLCLClasses, WSProc,
   Windows, Controls, Classes, SysUtils, Win32Int, Win32Proc, Win32WSImgList,
-  InterfaceBase, LCLProc;
+  InterfaceBase, LCLProc, Themes;
 
 type
 
@@ -338,7 +338,7 @@ begin
   end;
 end;
 
-function BackgroundColorMenu(const aSelected: boolean; const aInMainMenu: boolean): COLORREF;
+function BackgroundColorMenu(const aSelected: boolean; const aIsInMenuBar: boolean): COLORREF;
 var
   IsFlatMenu: Windows.BOOL;
 begin
@@ -347,8 +347,11 @@ begin
   else
   // COLOR_MENUBAR is not supported on Windows version < XP
   // SPI_GETFLATMENU is not supported on Windows 2000/NT and Windows Me/98/95
-  if aInMainMenu and not (WindowsVersion in [wvNT4, wv2000, wv95, wv98, wvMe]) and
-     (SystemParametersInfo(SPI_GETFLATMENU, 0, @IsFlatMenu, 0)) and IsFlatMenu then
+  if (aIsInMenuBar and not (WindowsVersion in [wvNT4, wv2000, wv95, wv98, wvMe])) and
+     (
+       ((SystemParametersInfo(SPI_GETFLATMENU, 0, @IsFlatMenu, 0)) and IsFlatMenu) or
+       ThemeServices.ThemesEnabled
+     ) then
     Result := GetSysColor(COLOR_MENUBAR)
   else
     Result := GetSysColor(COLOR_MENU);
