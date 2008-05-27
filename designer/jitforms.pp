@@ -61,6 +61,8 @@ type
   TJITReaderErrorEvent = procedure(Sender: TObject; Reader: TReader;
                                    ErrorType: TJITFormError;
                                    var Action: TModalResult) of object;
+  TJITExceptionEvent = procedure(Sender: TObject; E: Exception;
+                                 var Action: TModalResult) of object;
   TJITPropertyNotFoundEvent = procedure(Sender: TObject; Reader: TReader;
                    Instance: TPersistent; var PropName: string; IsPath: boolean;
                    var Handled, Skip: Boolean) of object;
@@ -82,9 +84,11 @@ type
 
   TJITComponentList = class(TPersistentWithTemplates)
   private
+    FContextObject: TObject;
     FCurUnknownClass: string;
     FCurUnknownProperty: string;
     FErrors: TLRPositionLinks;
+    FOnException: TJITExceptionEvent;
     FOnFindAncestors: TJITFindAncestors;
     FOnFindClass: TJITFindClass;
     FOnPropertyNotFound: TJITPropertyNotFoundEvent;
@@ -142,6 +146,8 @@ type
                          NewUnitName: shortstring; AncestorClass: TClass;
                          Visible: boolean):integer;
     procedure DoFinishReading; virtual;
+    procedure HandleException(E: Exception; const Context: string;
+                              out Action: TModalResult);
   public
     constructor Create;
     destructor Destroy; override;
@@ -153,7 +159,8 @@ type
                                 Ancestor: TComponent;// can be nil
                                 AncestorClass: TClass;
                                 const NewUnitName: ShortString;
-                                Interactive, Visible: Boolean):integer;
+                                Interactive, Visible: Boolean;
+                                ContextObj: TObject): integer;
     procedure DestroyJITComponent(JITComponent: TComponent);
     procedure DestroyJITComponent(Index: integer);
     function IndexOf(JITComponent: TComponent): integer;
@@ -180,6 +187,7 @@ type
                                        read FOnReaderError write FOnReaderError;
     property OnPropertyNotFound: TJITPropertyNotFoundEvent
                              read FOnPropertyNotFound write FOnPropertyNotFound;
+    property OnException: TJITExceptionEvent read FOnException write FOnException;
     property OnFindAncestors: TJITFindAncestors read FOnFindAncestors
                                                 write FOnFindAncestors;
     property OnFindClass: TJITFindClass read FOnFindClass write FOnFindClass;
@@ -191,6 +199,7 @@ type
     property CurReadErrorMsg: string read FCurReadErrorMsg;
     property CurUnknownProperty: string read FCurUnknownProperty;
     property CurUnknownClass: string read FCurUnknownClass;
+    property ContextObject: TObject read FContextObject;
     property Errors: TLRPositionLinks read FErrors;
   end;
 
@@ -667,13 +676,14 @@ end;
 procedure TJITComponentList.DestroyJITComponent(Index:integer);
 var
   OldClass: TClass;
+  Action: TModalResult;
 begin
   OldClass:=Items[Index].ClassType;
   try
     Items[Index].Free;
   except
     on E: Exception do begin
-      DebugLn('[TJITComponentList.DestroyJITComponent] ERROR destroying component ',E.Message);
+      HandleException(E,'[TJITComponentList.DestroyJITComponent] ERROR destroying component',Action);
     end;
   end;
   FreeJITClass(OldClass);
@@ -746,7 +756,8 @@ function TJITComponentList.AddJITComponentFromStream(BinStream: TStream;
   Ancestor: TComponent;// can be nil
   AncestorClass: TClass;
   const NewUnitName: ShortString;
-  Interactive, Visible: Boolean): integer;
+  Interactive, Visible: Boolean;
+  ContextObj: TObject): integer;
 //  returns new index
 // -1 = invalid stream
 
@@ -818,12 +829,15 @@ var
   NewClassName: shortstring;
   NewName: string;
   IsInherited: Boolean;
+  Action: TModalResult;
 begin
   Result:=-1;
+  FContextObject:=ContextObj;
   NewClassName:=GetClassNameFromLRSStream(BinStream, IsInherited);
   if IsInherited then ;
   if NewClassName='' then begin
     MessageDlg('No classname in stream found.',mtError,[mbOK],0);
+    FContextObject:=nil;
     exit;
   end;
 
@@ -844,17 +858,8 @@ begin
     end;
   except
     on E: Exception do begin
-      // first write error to debug
-      FCurReadErrorMsg:=E.Message;
-      DebugLn('[TJITComponentList.AddJITChildComponentFromStream] ERROR reading form stream'
-         +' of Class ''',NewClassName,''' Error: ',FCurReadErrorMsg);
-      // then try to give a backtrace
-      DumpExceptionBackTrace;
-      // then try to give a visible warning
-      MessageDlg('Read error',
-        '[TJITComponentList.AddJITChildComponentFromStream] ERROR reading form stream'
-         +' of class "'+NewClassName+'"'#13
-         +'Error: '+FCurReadErrorMsg,mtError,[mbCancel],0);
+      HandleException(E,'[TJITComponentList.AddJITChildComponentFromStream] ERROR reading form stream'
+         +' of Class "'+NewClassName+'"',Action);
       if Result>=0 then begin
         // try freeing the unfinished thing
         FCurReadJITComponent:=nil;
@@ -865,6 +870,7 @@ begin
   end;
   FCurReadStreamClass:=nil;
   FCurReadJITComponent:=nil;
+  FContextObject:=nil;
 end;
 
 function TJITComponentList.OnFindGlobalComponent(
@@ -929,6 +935,7 @@ function TJITComponentList.DoCreateJITComponent(
 var
   Instance:TComponent;
   ok: boolean;
+  Action: TModalResult;
 begin
   Result:=-1;
   Instance:=nil;
@@ -969,14 +976,14 @@ begin
     end;
   except
     on E: Exception do begin
-      DebugLn('[TJITForms.DoCreateJITComponent] Error ',E.Message);
+      HandleException(E,'[TJITForms.DoCreateJITComponent] Error',Action);
       try
         if FCurReadClass<>nil then
           FreeJITClass(FCurReadClass);
         Instance.Free;
       except
         on E: Exception do begin
-          DebugLn('[TJITForms.DoCreateJITComponent] Error while destroying instance: NewComponentName="',NewComponentName,'" NewClassName="',NewClassName,'" NewUnitName="',NewUnitName,'" ',E.Message);
+          HandleException(E,'[TJITForms.DoCreateJITComponent] Error while destroying instance: NewComponentName="'+NewComponentName+'" NewClassName="'+NewClassName+'" NewUnitName="'+NewUnitName+'"',Action);
         end;
       end;
     end;
@@ -988,6 +995,25 @@ end;
 procedure TJITComponentList.DoFinishReading;
 begin
 
+end;
+
+procedure TJITComponentList.HandleException(E: Exception;
+  const Context: string; out Action: TModalResult);
+begin
+  Action:=mrAbort;
+  FCurReadErrorMsg:=E.Message;
+  // first write error to debug
+  DebugLn(Context+' Error: '+FCurReadErrorMsg);
+  // then try to give a backtrace
+  DumpExceptionBackTrace;
+  if Assigned(OnException) then
+    OnException(Self,E,Action)
+  else begin
+    // then try to give a visible warning
+    MessageDlg('Read error',
+      Context+#13
+       +'Error: '+FCurReadErrorMsg,mtError,[mbCancel],0);
+  end;
 end;
 
 procedure TJITComponentList.RemoveMethod(JITComponent:TComponent;
@@ -1080,6 +1106,7 @@ var
   Reader: TReader;
   NewComponent: TComponent;
   DestroyDriver: Boolean;
+  Action: TModalResult;
 begin
   Result:=nil;
   NewComponent:=nil;
@@ -1088,6 +1115,9 @@ begin
   {$IFDEF VerboseJITForms}
   debugln('[TJITComponentList.AddJITChildComponentFromStream] A');
   {$ENDIF}
+  FCurReadJITComponent:=nil;
+  FCurReadClass:=nil;
+  FCurReadStreamClass:=nil;
   try
     DestroyDriver:=false;
     InitReading(BinStream,Reader,DestroyDriver);
@@ -1128,8 +1158,7 @@ begin
     end;
   except
     on E: Exception do begin
-      DebugLn('[TJITComponentList.AddJITChildComponentFromStream] ERROR reading form stream'
-         +' of Class ''',ComponentClass.ClassName,''' Error: ',E.Message);
+      HandleException(E,'[TJITComponentList.AddJITChildComponentFromStream] ERROR reading form stream of Class "'+ComponentClass.ClassName+'"',Action);
     end;
   end;
   FCurReadStreamClass:=nil;
@@ -1672,7 +1701,7 @@ begin
               SubReader.Free;
             end;
           end;
-          FCurReadStreamClass:=nil;
+          FCurReadStreamClass:=OldStreamClass;
 
           // next
           Ancestor:=TComponent(Ancestors[i]);

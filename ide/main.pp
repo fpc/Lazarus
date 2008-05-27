@@ -5504,7 +5504,8 @@ begin
           NewUnitName:=ExtractFileNameOnly(AnUnitInfo.Filename);
         // ToDo: create AncestorBinStream(s) via hook, not via parameters
         NewComponent:=FormEditor1.CreateRawComponentFromStream(BinStream,
-                   AncestorType,copy(NewUnitName,1,255),true,true,Ancestor);
+                   AncestorType,copy(NewUnitName,1,255),true,true,Ancestor,
+                   AnUnitInfo);
         Project1.InvalidateUnitComponentDesignerDependencies;
         AnUnitInfo.Component:=NewComponent;
         if (AncestorUnitInfo<>nil) then

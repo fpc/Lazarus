@@ -135,6 +135,8 @@ each control that's dropped onto the form
     procedure SetObj_Inspector(AnObjectInspector: TObjectInspectorDlg); virtual;
     procedure JITListReaderError(Sender: TObject; Reader: TReader;
           ErrorType: TJITFormError; var Action: TModalResult); virtual;
+    procedure JITListException(Sender: TObject; E: Exception;
+                               var Action: TModalResult);
     procedure JITListPropertyNotFound(Sender: TObject; Reader: TReader;
       Instance: TPersistent; var PropName: string; IsPath: boolean;
       var Handled, Skip: Boolean);
@@ -236,13 +238,15 @@ each control that's dropped onto the form
                       const NewUnitName: ShortString;
                       Interactive: boolean;
                       Visible: boolean = true;
-                      Ancestor: TComponent = nil): TIComponentInterface; override;
+                      Ancestor: TComponent = nil;
+                      ContextObj: TObject = nil): TIComponentInterface; override;
     function CreateRawComponentFromStream(BinStream: TStream;
                       AncestorType: TComponentClass;
                       const NewUnitName: ShortString;
                       Interactive: boolean;
                       Visible: boolean = true;
-                      Ancestor: TComponent = nil): TComponent;
+                      Ancestor: TComponent = nil;
+                      ContextObj: TObject = nil): TComponent;
     function CreateChildComponentFromStream(BinStream: TStream;
                        ComponentClass: TComponentClass; Root: TComponent;
                        ParentControl: TWinControl): TIComponentInterface; override;
@@ -832,6 +836,7 @@ constructor TCustomFormEditor.Create;
   procedure InitJITList(List: TJITComponentList);
   begin
     List.OnReaderError:=@JITListReaderError;
+    List.OnException:=@JITListException;
     List.OnPropertyNotFound:=@JITListPropertyNotFound;
     List.OnFindAncestors:=@JITListFindAncestors;
     List.OnFindClass:=@JITListFindClass;
@@ -1386,6 +1391,7 @@ begin
       {$ENDIF}
     except
       on E: Exception do begin
+        DebugLn(['TCustomFormEditor.SaveUnitComponentToBinStream ',E.Message]);
         DumpExceptionBackTrace;
         Result:=MessageDlg(lisStreamingError,
             Format(lisUnableToStreamT, [AnUnitInfo.ComponentName,
@@ -1694,13 +1700,13 @@ function TCustomFormEditor.CreateComponentFromStream(
   AncestorType: TComponentClass;
   const NewUnitName: ShortString;
   Interactive: boolean; Visible: boolean;
-  Ancestor: TComponent
-  ): TIComponentInterface;
+  Ancestor: TComponent;
+  ContextObj: TObject): TIComponentInterface;
 var
   NewComponent: TComponent;
 begin
   NewComponent:=CreateRawComponentFromStream(BinStream,
-                AncestorType,NewUnitName,Interactive,Visible,Ancestor);
+              AncestorType,NewUnitName,Interactive,Visible,Ancestor,ContextObj);
   Result:=CreateComponentInterface(NewComponent,true);
 end;
 
@@ -1708,8 +1714,8 @@ function TCustomFormEditor.CreateRawComponentFromStream(BinStream: TStream;
   AncestorType: TComponentClass;
   const NewUnitName: ShortString;
   Interactive: boolean; Visible: boolean;
-  Ancestor: TComponent
-  ): TComponent;
+  Ancestor: TComponent;
+  ContextObj: TObject): TComponent;
 var
   NewJITIndex: integer;
   JITList: TJITComponentList;
@@ -1720,7 +1726,7 @@ begin
     RaiseException('TCustomFormEditor.CreateComponentFromStream ClassName='+
                    AncestorType.ClassName);
   NewJITIndex := JITList.AddJITComponentFromStream(BinStream,
-                         Ancestor,AncestorType,NewUnitName,Interactive,Visible);
+              Ancestor,AncestorType,NewUnitName,Interactive,Visible,ContextObj);
   if NewJITIndex < 0 then begin
     Result:=nil;
     exit;
@@ -2138,6 +2144,37 @@ begin
       [mrCancel,'Cancel loading this resource',
        mrAbort,'Stop all loading'],HelpCtx);
   end;
+end;
+
+procedure TCustomFormEditor.JITListException(Sender: TObject; E: Exception;
+  var Action: TModalResult);
+var
+  List: TJITComponentList;
+  AnUnitInfo: TUnitInfo;
+  LFMFilename: String;
+  Msg: String;
+begin
+  List:=TJITComponentList(Sender);
+  LFMFilename:='';
+  Msg:='';
+  DebugLn(['TCustomFormEditor.JITListException List.CurReadStreamClass=',DbgSName(List.CurReadStreamClass),' ',DbgSName(List.ContextObject)]);
+  if (List.CurReadStreamClass<>nil) and (Project1<>nil)
+  and (List.CurReadStreamClass.InheritsFrom(TComponent)) then begin
+    AnUnitInfo:=Project1.UnitWithComponentClass(TComponentClass(List.CurReadStreamClass));
+    if AnUnitInfo<>nil then begin
+      LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lfm');
+    end;
+  end;
+  if (LFMFilename='') and (List.ContextObject is TUnitInfo) then begin
+    LFMFilename:=ChangeFileExt(TUnitInfo(List.ContextObject).Filename,'.lfm');
+  end;
+  if LFMFilename<>'' then
+    Msg:=Msg+'In file '+LFMFilename+#13;
+
+  if List.CurReadErrorMsg<>'' then
+    Msg:=Msg+List.CurReadErrorMsg+#13;
+  if E is EReadError then;
+  MessageDlg('Read error',Msg,mtError,[mbCancel],0);
 end;
 
 procedure TCustomFormEditor.OnDesignerMenuItemClick(Sender: TObject);
