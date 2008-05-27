@@ -509,11 +509,17 @@ begin
 end;
 
 function FileIsExecutable(const AFilename: string): boolean;
+{$IFNDEF WINDOWS}
+var
+  Info : Stat;
+{$ENDIF}
 begin
-  {$IFDEF MSWindows}
-  Result:=true;
+  {$IFDEF WINDOWS}
+  Result:=FileExists(AFilename);
   {$ELSE}
-  Result:= BaseUnix.FpAccess(AFilename,BaseUnix.X_OK)=0;
+  // first check AFilename is not a directory and then check if executable
+  Result:= (FpStat(AFilename,info)<>-1) and FPS_ISREG(info.st_mode) and
+           (BaseUnix.FpAccess(AFilename,BaseUnix.X_OK)=0);
   {$ENDIF}
 end;
 
