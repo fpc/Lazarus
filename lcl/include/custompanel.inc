@@ -48,42 +48,53 @@ end;
 
 procedure TCustomPanel.SetAlignment(const Value: TAlignment);
 begin
-  if FAlignment <> Value then begin
+  if FAlignment <> Value then
+  begin
     FAlignment := Value;
     Invalidate;
   end;
 end;
 
+procedure TCustomPanel.UpdateBordersAndBevels;
+begin
+  InvalidateClientRectCache(True);
+  DoAdjustClientRectChange;
+  Invalidate;
+end;
+
 procedure TCustomPanel.SetBevelWidth(const Value: TBevelWidth);
 begin
-  if FBevelWidth <> Value then begin
+  if FBevelWidth <> Value then
+  begin
     FBevelWidth := Value;
-    Invalidate;
+    UpdateBordersAndBevels;
   end;
 end;
 
 procedure TCustomPanel.SetBevelInner(const Value: TPanelBevel);
 begin
-  if BevelInner <> Value then begin
+  if BevelInner <> Value then
+  begin
     FBevelInner := Value;
-    Invalidate;
+    UpdateBordersAndBevels;
   end;
 end;
 
 procedure TCustomPanel.SetBevelOuter(const Value: TPanelBevel);
 begin
-  if BevelOuter <> Value then begin
+  if BevelOuter <> Value then
+  begin
     FBevelOuter := Value;
-    Invalidate;
+    UpdateBordersAndBevels;
   end;
 end;
 
 procedure TCustomPanel.SetBorderWidth(const Value: TBorderWidth);
 begin
-  if FBorderWidth <> Value then begin
+  if FBorderWidth <> Value then
+  begin
     FBorderWidth := Value;
-    Realign;
-    Invalidate;
+    UpdateBordersAndBevels;
   end;
 end;
 
@@ -105,21 +116,24 @@ begin
     Canvas.Frame3d(ARect, BevelWidth, BevelInner);
     InflateRect(ARect, -1, -1);
   end;
-  if Caption <> '' then begin
+  if Caption <> '' then
+  begin
     TS := Canvas.TextStyle;
     TS.Alignment:= Alignment;
     TS.Layout:= tlCenter;
     TS.Opaque:= false;
     TS.Clipping:= false;
     TS.SystemFont:=Canvas.Font.IsDefault;
-    If not Enabled then begin
+    if not Enabled then
+    begin
       Canvas.Font.Color := clBtnHighlight;
       OffsetRect(ARect, 1, 1);
       Canvas.TextRect(ARect, ARect.Left, ARect.Top, Caption, TS);
       Canvas.Font.Color := clBtnShadow;
       OffsetRect(ARect, -1, -1);
     end
-    else Canvas.Font.Color := Font.Color;
+    else
+      Canvas.Font.Color := Font.Color;
 
     Canvas.TextRect(ARect,ARect.Left,ARect.Top, Caption, TS);
   end;
@@ -133,9 +147,10 @@ var
 begin
   inherited AdjustClientRect(Rect);
   BevelSize := BorderWidth;
-  if BevelOuter <> bvNone then Inc(BevelSize, BevelWidth);
-  if BevelInner <> bvNone then Inc(BevelSize, BevelWidth);
-  //debugln('TCustomPanel.AdjustClientRect ',DbgSName(Self),' BorderWidth=',dbgs(BorderWidth),' BevelWidth=',dbgs(BevelWidth),' BevelSize=',dbgs(BevelSize));
+  if BevelOuter <> bvNone then
+    Inc(BevelSize, BevelWidth);
+  if BevelInner <> bvNone then
+    Inc(BevelSize, BevelWidth);
   InflateRect(Rect, -BevelSize, -BevelSize);
 end;
 

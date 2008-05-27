@@ -1005,6 +1005,7 @@ type
     procedure SetBevelOuter(const Value: TPanelBevel);
     procedure SetBevelWidth(const Value: TBevelWidth);
     procedure SetBorderWidth(const Value: TBorderWidth);
+    procedure UpdateBordersAndBevels;
   protected
     procedure AdjustClientRect(var Rect: TRect); override;
     class function GetControlClassDefaultSize: TPoint; override;
