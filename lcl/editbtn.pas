@@ -327,31 +327,31 @@ type
     FOnCustomDate: TCustomDateEvent;
     FOKCaption: TCaption;
     FCancelCaption: TCaption;
-    FDateFormat:string;
+    FDateFormat: string;
     function GetDate: TDateTime;
     function IsStoreTitle: boolean;
     procedure SetDate(Value: TDateTime);
-    procedure CalendarPopupReturnDate(Sender: TObject; Const ADate: TDateTime);
+    procedure CalendarPopupReturnDate(Sender: TObject; const ADate: TDateTime);
   protected
     function GetDefaultGlyph: TBitmap; override;
     function GetDefaultGlyphName: String; override;
-    procedure DoButtonClick (Sender: TObject); override;
+    procedure DoButtonClick(Sender: TObject); override;
     procedure DblClick; override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure DateFormatChanged; virtual;
     function GetDateFormat: string;
-    property Date: TDateTime Read GetDate Write SetDate;
+    property Date: TDateTime read GetDate write SetDate;
     property Button;
   published
-    property DialogTitle:TCaption read FDialogTitle write FDialogTitle Stored IsStoreTitle;
-    property CalendarDisplaySettings : TDisplaySettings read FDisplaySettings write FDisplaySettings;
-    property OnAcceptDate : TAcceptDateEvent read FOnAcceptDAte write FOnAcceptDate;
-    property OnCustomDate : TCustomDateEvent read FOnCustomDate write FOnCustomDate;
-    property OKCaption:TCaption read FOKCaption write FOKCaption;
-    property CancelCaption:TCaption read FCancelCaption write FCancelCaption;
+    property DialogTitle: TCaption read FDialogTitle write FDialogTitle stored IsStoreTitle;
+    property CalendarDisplaySettings: TDisplaySettings read FDisplaySettings write FDisplaySettings;
+    property OnAcceptDate: TAcceptDateEvent read FOnAcceptDAte write FOnAcceptDate;
+    property OnCustomDate: TCustomDateEvent read FOnCustomDate write FOnCustomDate;
+    property OKCaption: TCaption read FOKCaption write FOKCaption;
+    property CancelCaption: TCaption read FCancelCaption write FCancelCaption;
     property ReadOnly;
-    property DefaultToday: Boolean read FDefaultToday write FDefaultToday;
+    property DefaultToday: Boolean read FDefaultToday write FDefaultToday default False;
     property ButtonOnlyWhenFocused;
     property ButtonWidth;
     property Action;
@@ -893,10 +893,11 @@ end;
 constructor TDateEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FDisplaySettings:=[dsShowHeadings, dsShowDayNames];
-  DialogTitle:=rsPickDate;
-  OKCaption:='OK';
-  CancelCaption:='Cancel';
+  FDefaultToday := False;
+  FDisplaySettings := [dsShowHeadings, dsShowDayNames];
+  DialogTitle := rsPickDate;
+  OKCaption := 'OK';
+  CancelCaption := 'Cancel';
   DateFormatChanged;
 end;
 
@@ -940,10 +941,12 @@ function TDateEdit.GetDate: TDateTime;
 var
   ADate: string;
 begin
-  if FDefaultToday then Result := SysUtils.Date
-  else Result := NullDate;
+  if FDefaultToday then
+    Result := SysUtils.Date
+  else
+    Result := NullDate;
   ADate := Trim(Text);
-  if ADate<>'' then
+  if ADate <> '' then
   begin
     if Assigned(FOnCustomDate) then
       FOnCustomDate(Self, ADate);
@@ -956,14 +959,16 @@ begin
   Result:=DialogTitle<>rsPickDate;
 end;
 
-procedure TDateEdit.SetDate(Value:TDateTime);
+procedure TDateEdit.SetDate(Value: TDateTime);
 var
   D: TDateTime;
 begin
   if {not IsValidDate(Value) or }(Value = NullDate) then
   begin
-    if DefaultToday then Value := SysUtils.Date
-    else Value := NullDate;
+    if DefaultToday then
+      Value := SysUtils.Date
+    else
+      Value := NullDate;
   end;
   D := Self.Date;
   if Value = NullDate then
