@@ -187,11 +187,12 @@ end;
 
 
 // Based on MS Article Q167345
-procedure TWinPrinter.UpdateDevMode(APrinterIndex:Integer);
+function TWinPrinter.UpdateDevMode(APrinterIndex:Integer): boolean;
 var
   PDev: TPrinterDevice;
   dwRet: Integer;
 begin
+  result := false;
   // now we have a right FPrinterHandle, get current printer settings
   PDev := TPrinterDevice(Printers.Objects[APrinterIndex]);
 
@@ -212,10 +213,12 @@ begin
     //    the default settings.
     dwRet := DocumentProperties(0, FPrinterHandle, pchar(Pdev.Name),
                   PDev.DevMode, nil, DM_OUT_BUFFER);
-    if (dwRet<>IDOK) then begin
+    result := (dwRet=IDOK);
+    if not result then begin
       FreeMem(PDev.DevMode);
       PDev.DevMode:=nil;
     end;
+    
   end;
   
 end;
@@ -595,8 +598,11 @@ begin
     if not OpenPrinter(PChar(PDev.Name),fPrinterHandle, nil) then
       raise EPrinter.CreateFmt('OpenPrinter exception : %s',
                                    [SysErrorMessage(GetlastError)]);
-    UpdateDevMode(i);
-    Result:=i;
+    if UpdateDevMode(i) then begin
+      SetDC;
+      Result:=i;
+    end else
+      Result:=-1;
   end;
 end;
 
