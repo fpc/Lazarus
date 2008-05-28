@@ -112,7 +112,6 @@ type
                       const NewUnitName: ShortString;
                       Interactive: boolean;
                       Visible: boolean = true;
-                      Ancestor: TComponent = nil;
                       ContextObj: TObject = nil): TIComponentInterface; virtual; abstract;
     function CreateChildComponentFromStream(BinStream: TStream;
                                      ComponentClass: TComponentClass;

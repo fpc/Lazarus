@@ -238,14 +238,12 @@ each control that's dropped onto the form
                       const NewUnitName: ShortString;
                       Interactive: boolean;
                       Visible: boolean = true;
-                      Ancestor: TComponent = nil;
                       ContextObj: TObject = nil): TIComponentInterface; override;
     function CreateRawComponentFromStream(BinStream: TStream;
                       AncestorType: TComponentClass;
                       const NewUnitName: ShortString;
                       Interactive: boolean;
                       Visible: boolean = true;
-                      Ancestor: TComponent = nil;
                       ContextObj: TObject = nil): TComponent;
     function CreateChildComponentFromStream(BinStream: TStream;
                        ComponentClass: TComponentClass; Root: TComponent;
@@ -1700,13 +1698,12 @@ function TCustomFormEditor.CreateComponentFromStream(
   AncestorType: TComponentClass;
   const NewUnitName: ShortString;
   Interactive: boolean; Visible: boolean;
-  Ancestor: TComponent;
   ContextObj: TObject): TIComponentInterface;
 var
   NewComponent: TComponent;
 begin
   NewComponent:=CreateRawComponentFromStream(BinStream,
-              AncestorType,NewUnitName,Interactive,Visible,Ancestor,ContextObj);
+              AncestorType,NewUnitName,Interactive,Visible,ContextObj);
   Result:=CreateComponentInterface(NewComponent,true);
 end;
 
@@ -1714,7 +1711,6 @@ function TCustomFormEditor.CreateRawComponentFromStream(BinStream: TStream;
   AncestorType: TComponentClass;
   const NewUnitName: ShortString;
   Interactive: boolean; Visible: boolean;
-  Ancestor: TComponent;
   ContextObj: TObject): TComponent;
 var
   NewJITIndex: integer;
@@ -1726,7 +1722,7 @@ begin
     RaiseException('TCustomFormEditor.CreateComponentFromStream ClassName='+
                    AncestorType.ClassName);
   NewJITIndex := JITList.AddJITComponentFromStream(BinStream,
-              Ancestor,AncestorType,NewUnitName,Interactive,Visible,ContextObj);
+              AncestorType,NewUnitName,Interactive,Visible,ContextObj);
   if NewJITIndex < 0 then begin
     Result:=nil;
     exit;

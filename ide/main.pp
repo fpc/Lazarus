@@ -5373,7 +5373,6 @@ var
   NestedClassName: string;
   NestedClass: TComponentClass;
   NestedUnitInfo: TUnitInfo;
-  Ancestor: TComponent;
 begin
   debugln('TMainIDE.DoLoadLFM A ',AnUnitInfo.Filename,' IsPartOfProject=',dbgs(AnUnitInfo.IsPartOfProject),' ');
 
@@ -5437,9 +5436,6 @@ begin
         DebugLn(['TMainIDE.DoLoadLFM DoLoadAncestorDependencyHidden failed for ',AnUnitInfo.Filename]);
         exit;
       end;
-      Ancestor:=nil;
-      if AncestorUnitInfo<>nil then
-        Ancestor:=AncestorUnitInfo.Component;
 
       if MissingClasses<>nil then begin
         for i:=MissingClasses.Count-1 downto 0 do begin
@@ -5504,8 +5500,7 @@ begin
           NewUnitName:=ExtractFileNameOnly(AnUnitInfo.Filename);
         // ToDo: create AncestorBinStream(s) via hook, not via parameters
         NewComponent:=FormEditor1.CreateRawComponentFromStream(BinStream,
-                   AncestorType,copy(NewUnitName,1,255),true,true,Ancestor,
-                   AnUnitInfo);
+                   AncestorType,copy(NewUnitName,1,255),true,true,AnUnitInfo);
         Project1.InvalidateUnitComponentDesignerDependencies;
         AnUnitInfo.Component:=NewComponent;
         if (AncestorUnitInfo<>nil) then

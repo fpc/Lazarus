@@ -156,7 +156,6 @@ type
     function AddNewJITComponent(const NewUnitName: shortstring;
                                 AncestorClass: TClass): integer;
     function AddJITComponentFromStream(BinStream: TStream;
-                                Ancestor: TComponent;// can be nil
                                 AncestorClass: TClass;
                                 const NewUnitName: ShortString;
                                 Interactive, Visible: Boolean;
@@ -753,7 +752,6 @@ begin
 end;
 
 function TJITComponentList.AddJITComponentFromStream(BinStream: TStream;
-  Ancestor: TComponent;// can be nil
   AncestorClass: TClass;
   const NewUnitName: ShortString;
   Interactive, Visible: Boolean;
@@ -761,8 +759,7 @@ function TJITComponentList.AddJITComponentFromStream(BinStream: TStream;
 //  returns new index
 // -1 = invalid stream
 
-  procedure ReadStream(AStream: TStream; StreamClass: TClass;
-    AnAncestor: TComponent);
+  procedure ReadStream(AStream: TStream; StreamClass: TClass);
   var
     Reader: TReader;
     DestroyDriver: Boolean;
@@ -775,10 +772,9 @@ function TJITComponentList.AddJITComponentFromStream(BinStream: TStream;
     DestroyDriver:=false;
     InitReading(AStream,Reader,DestroyDriver);
     { $IFDEF VerboseJITForms}
-    DebugLn(['TJITComponentList.AddJITComponentFromStream.ReadStream Reading: FCurReadJITComponent=',DbgSName(FCurReadJITComponent),' StreamClass=',DbgSName(StreamClass),' Ancestor=',DbgSName(Ancestor)]);
+    DebugLn(['TJITComponentList.AddJITComponentFromStream.ReadStream Reading: FCurReadJITComponent=',DbgSName(FCurReadJITComponent),' StreamClass=',DbgSName(StreamClass)]);
     { $ENDIF}
     try
-      Reader.Ancestor:=AnAncestor;
       Reader.ReadRootComponent(FCurReadJITComponent);
       {$IFDEF VerboseJITForms}
       debugln('[TJITComponentList.AddJITComponentFromStream] Finish Reading ...');
@@ -808,12 +804,9 @@ function TJITComponentList.AddJITComponentFromStream(BinStream: TStream;
       OnFindAncestors(Self,AncestorClass,Ancestors,AncestorStreams,Abort);
       if Abort then exit(false);
       if Ancestors<>nil then begin
-        Ancestor:=nil;
         for i:=Ancestors.Count-1 downto 0 do begin
           ReadStream(TExtMemoryStream(AncestorStreams[i]),
-                     TComponent(Ancestors[i]).ClassType,
-                     Ancestor);
-          Ancestor:=TComponent(Ancestors[i]);
+                     TComponent(Ancestors[i]).ClassType);
         end;
       end;
     finally
@@ -848,7 +841,7 @@ begin
     Result:=DoCreateJITComponent('',NewClassName,NewUnitName,AncestorClass,Visible);
     if Result<0 then exit;
     ReadAncestorStreams;
-    ReadStream(BinStream,FCurReadJITComponent.ClassType,Ancestor);
+    ReadStream(BinStream,FCurReadJITComponent.ClassType);
 
     if FCurReadJITComponent.Name='' then begin
       NewName:=FCurReadJITComponent.ClassName;
