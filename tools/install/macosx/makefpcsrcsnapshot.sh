@@ -89,5 +89,5 @@ $HDIUTIL create -anyowners -volname fpcsrc-$FPCVERSION -imagekey zlib-level=9 -f
 
 if [ -e $DMGFILE ]; then
 #update lazarus snapshot web page
-  echo "$DMGFILE fpcsrc-*-*-$FPCARCH-macosx.dmg" >> $UPDATELIST
+  echo "$DMGFILE fpcsrc-$FPCVERSION-*-$FPCARCH-macosx.dmg" >> $UPDATELIST
 fi
