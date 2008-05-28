@@ -4366,9 +4366,10 @@ begin
     MoveCursorToCleanPos(WithVarNode.StartPos);
     RaiseException(ctsExprTypeMustBeClassOrRecord);
   end;
-  // search identifier in with context
+  // search identifier in 'with' context
+  // Note: do not search in parent nodes (e.g. with ListBox1 do Items)
   Params.Load(OldInput,false);
-  Exclude(Params.Flags,fdfExceptionOnNotFound);
+  Params.Flags:=Params.Flags-[fdfExceptionOnNotFound,fdfSearchInParentNodes];
   Params.ContextNode:=WithVarExpr.Context.Node;
   Result:=WithVarExpr.Context.Tool.FindIdentifierInContext(Params);
   Params.Load(OldInput,true);
