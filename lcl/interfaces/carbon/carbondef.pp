@@ -85,6 +85,7 @@ type
     procedure FocusKilled; dynamic;
     procedure BoundsChanged; virtual;
     procedure ControlAdded; dynamic;
+    function FilterKeyPress(SysKey: Boolean; const Char: TUTF8Char): Boolean; dynamic;
   public
     constructor Create(const AObject: TWinControl; const AParams: TCreateParams);
     destructor Destroy; override;
@@ -579,6 +580,16 @@ end;
 procedure TCarbonWidget.ControlAdded;
 begin
   //
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidget.FilterKeyPress
+
+  Filters key presses from being send to Carbon control
+ ------------------------------------------------------------------------------}
+function TCarbonWidget.FilterKeyPress(SysKey: Boolean; const Char: TUTF8Char): Boolean;
+begin
+  Result := False;
 end;
 
 {------------------------------------------------------------------------------

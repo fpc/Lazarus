@@ -105,6 +105,7 @@ type
   TCarbonCustomEdit = class(TCarbonControlWithEdit)
   public
     procedure SetPasswordChar(AChar: Char); virtual; abstract;
+    function FilterKeyPress(SysKey: Boolean; const Char: TUTF8Char): Boolean; override;
   end;
   
   { TCarbonSpinEdit }
@@ -166,6 +167,7 @@ type
     procedure DestroyWidget; override;
   public
     procedure TextDidChange; override;
+    function FilterKeyPress(SysKey: Boolean; const Char: TUTF8Char): Boolean; override;
     
     function SetTXNControl(Tag: TXNControlTag; const Data: TXNControlData): Boolean;
   public
@@ -839,6 +841,18 @@ begin
   Result := True;
 end;
 
+{ TCarbonCustomEdit }
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonCustomEdit.FilterKeyPress
+
+  Filters key presses from being send to Carbon control
+ ------------------------------------------------------------------------------}
+function TCarbonCustomEdit.FilterKeyPress(SysKey: Boolean; const Char: TUTF8Char): Boolean;
+begin
+  Result := (Char = #13);
+end;
+
 { TCarbonSpinEdit }
 
 {------------------------------------------------------------------------------
@@ -1469,6 +1483,17 @@ begin
 
   Invalidate;
 end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonMemo.FilterKeyPress
+
+  Filters key presses from being send to Carbon control
+ ------------------------------------------------------------------------------}
+function TCarbonMemo.FilterKeyPress(SysKey: Boolean; const Char: TUTF8Char): Boolean;
+begin
+  Result := False;
+end;
+
 
 
 end.

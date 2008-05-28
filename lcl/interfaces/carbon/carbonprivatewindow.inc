@@ -591,6 +591,9 @@ const
       Application.ShowHelpForObject(Widget.LCLObject);
     end;
     
+    // widget can filter some keys from being send to Carbon control
+    if Widget.FilterKeyPress(IsSysKey, UTF8Character) then Result := noErr;
+    
     //Send message to LCL
     if VKKeyCode<>VK_UNKNOWN then
     begin
@@ -608,7 +611,8 @@ const
 
       //Here is where we (interface) can do something with the key
       //Call the standard handler.
-      Result := CallNextEventHandler(ANextHandler, AEvent);
+      if Result = EventNotHandledErr then
+        Result := CallNextEventHandler(ANextHandler, AEvent);
 
       //Send a LM_(SYS)KEYDOWN
       if IsSysKey then KeyMsg.Msg := LM_SYSKEYDOWN
@@ -664,7 +668,7 @@ const
 
       //Here is where we (interface) can do something with the key
       //Call the standard handler if not called already
-      if Result=EventNotHandledErr then
+      if Result = EventNotHandledErr then
         Result := CallNextEventHandler(ANextHandler, AEvent);
 
       //Send a LM_(SYS)CHAR
