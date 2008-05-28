@@ -206,7 +206,7 @@ type
         out Caret:TCodeXYPosition): boolean; // true=ok, false=invalid CleanPos
     function CleanPosToCaretAndTopLine(CleanPos: integer;
         out Caret:TCodeXYPosition; out NewTopLine: integer): boolean; // true=ok, false=invalid CleanPos
-    function CleanPosToStr(CleanPos: integer): string;
+    function CleanPosToStr(CleanPos: integer; WithFilename: boolean = false): string;
     procedure GetCleanPosInfo(CodePosInFront, CleanPos: integer;
         ResolveComments: boolean; out SameArea: TAtomPosition);
     procedure GetLineInfo(ACleanPos: integer;
@@ -2219,13 +2219,17 @@ begin
   end;
 end;
 
-function TCustomCodeTool.CleanPosToStr(CleanPos: integer): string;
+function TCustomCodeTool.CleanPosToStr(CleanPos: integer;
+  WithFilename: boolean): string;
 var
   CodePos: TCodeXYPosition;
 begin
-  if CleanPosToCaret(CleanPos,CodePos) then
-    Result:='y='+IntToStr(CodePos.Y)+',x='+IntToStr(CodePos.X)
-  else
+  if CleanPosToCaret(CleanPos,CodePos) then begin
+    if WithFilename then
+      Result:=CodePos.Code.Filename+',y='+IntToStr(CodePos.Y)+',x='+IntToStr(CodePos.X)
+    else
+      Result:='y='+IntToStr(CodePos.Y)+',x='+IntToStr(CodePos.X);
+  end else
     Result:='y=?,x=?';
 end;
 

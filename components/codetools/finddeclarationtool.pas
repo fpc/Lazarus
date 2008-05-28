@@ -497,6 +497,7 @@ type
     procedure ChangeFoundProc(const ProcContext: TFindContext;
                               ProcCompatibility: TTypeCompatibility;
                               ParamCompatibilityList: TTypeCompatibilityList);
+    function IsFinal: boolean;
     procedure PrettifyResult;
     procedure ConvertResultCleanPosToCaretPos;
     procedure ClearResult(CopyCacheFlags: boolean);
@@ -2274,7 +2275,7 @@ var
     FindIdentifierInContext:=NewResult;
     {$IFDEF ShowCollect}
     if fdfCollect in Params.Flags then begin
-      DebugLn('[TFindDeclarationTool.FindIdentifierInContext] COLLECT CheckResult Ident=',
+      DebugLn('[TFindDeclarationTool.FindIdentifierInContext.CheckResult] COLLECT CheckResult Ident=',
       '"',GetIdentifier(Params.Identifier),'"',
       ' File="',ExtractFilename(MainFilename)+'"',
       ' Flags=[',FindDeclarationFlagsAsString(Params.Flags)+']',
@@ -2286,7 +2287,7 @@ var
       // identifier found
       if CallOnIdentifierFound then begin
         {
-        debugln('[TFindDeclarationTool.FindIdentifierInContext] CallOnIdentifierFound Ident=',
+        debugln('[TFindDeclarationTool.FindIdentifierInContext.CheckResult] CallOnIdentifierFound Ident=',
         '"',GetIdentifier(Params.Identifier),'"',
         ' StartContext="',StartContextNode.DescAsString,'" "',copy(Src,StartContextNode.StartPos,20),'"',
         ' File="',ExtractFilename(MainFilename)+'"',
@@ -2295,6 +2296,9 @@ var
         }
         IdentFoundResult:=Params.NewCodeTool.DoOnIdentifierFound(Params,
                                                                 Params.NewNode);
+        {$IFDEF ShowProcSearch}
+        DebugLn(['[TFindDeclarationTool.FindIdentifierInContext.CheckResult] DoOnIdentifierFound=',IdentifierFoundResultNames[IdentFoundResult]]);
+        {$ENDIF}
         if (IdentFoundResult=ifrSuccess) then
           CacheResult(true,ContextNode);
         Result:=IdentFoundResult<>ifrProceedSearch;
@@ -2307,14 +2311,20 @@ var
       end;
     end;
     if Params.FoundProc<>nil then begin
-      // there was a proc, only the search for the overloaded proc was
-      // unsuccessful
+      // there was a proc,
+      // either the search for the overloaded proc was unsuccessful
+      // or the searched proc was found in a recursive sub search
       // -> return the found proc
+      if Params.FoundProc^.CacheValid
+      and (Params.FoundProc^.ProcCompatibility=tcExact) then begin
+        // stop the search
+        Result:=true;
+      end;
+      FindIdentifierInContext:=true;
       Params.SetResult(Params.FoundProc^.Context.Tool,
                        Params.FoundProc^.Context.Node);
-      FindIdentifierInContext:=true;
       {$IFDEF ShowProcSearch}
-      DebugLn('[TFindDeclarationTool.FindIdentifierInContext] PROC Search ended with only one proc:');
+      DebugLn('[TFindDeclarationTool.FindIdentifierInContext] PROC Search ended with only one proc (normal when searching every used unit):');
       Params.WriteDebugReport;
       {$ENDIF}
       exit;
@@ -2733,8 +2743,15 @@ begin
             IdentifierFoundResult:=
               FindIdentifierInProcContext(ContextNode,Params);
             if IdentifierFoundResult in [ifrAbortSearch,ifrSuccess] then begin
-              if CheckResult(IdentifierFoundResult=ifrSuccess,true) then
+              if CheckResult(IdentifierFoundResult=ifrSuccess,true) then begin
+                {$IFDEF ShowProcSearch}
+                DebugLn(['TFindDeclarationTool.FindIdentifierInContext ctnProcedure FOUND, stopping']);
+                {$ENDIF}
                 exit;
+              end;
+              {$IFDEF ShowProcSearch}
+              DebugLn(['TFindDeclarationTool.FindIdentifierInContext ctnProcedure FOUND, continue']);
+              {$ENDIF}
             end;
           end;
 
@@ -4054,6 +4071,7 @@ begin
     if ((fdfCollect in Params.Flags)
     or CompareSrcIdentifiers(NameAtom.StartPos,Params.Identifier)) then begin
       // proc identifier found
+      // the parameters will be checked by the caller
       {$IFDEF ShowTriedContexts}
       DebugLn('[TFindDeclarationTool.FindIdentifierInProcContext]  Proc-Identifier found="',GetIdentifier(Params.Identifier),'"');
       {$ENDIF}
@@ -4124,8 +4142,7 @@ begin
       {$ENDIF}
       Result:=ClassContext.Tool.FindIdentifierInContext(Params);
       Params.Load(OldInput,true);
-      if Result then
-        exit;
+      if Result and Params.IsFinal then exit;
     end;
   end else begin
     // proc is not a method
@@ -4649,7 +4666,7 @@ begin
                    -[fdfExceptionOnNotFound];
       Result:=NewCodeTool.FindIdentifierInInterface(Self,Params);
       Params.Flags:=OldFlags;
-      if Result then exit;
+      if Result and Params.IsFinal then exit;
       // restore the cursor
       MoveCursorToCleanPos(UnitNameAtom.StartPos);
     end;
@@ -4788,13 +4805,11 @@ begin
   Result:=FindIdentifierInContext(Params);
   Params.Load(OldInput,true);
 
-  if (Params.NewCodeTool<>Self) then Result:=false;
-
   // save result in cache
   if Params.Flags*[fdfCollect,fdfDoNotCache]=[] then begin
     if FInterfaceIdentifierCache=nil then
       FInterfaceIdentifierCache:=TInterfaceIdentifierCache.Create(Self);
-    if Result then begin
+    if Result and (Params.NewCodeTool=Self) then begin
       // identifier exists in interface
       if (Params.NewNode<>nil) and (Params.NewNode.Desc=ctnProcedure) then begin
         //DebugLn('NOTE: TFindDeclarationTool.FindIdentifierInInterface Node is proc');
@@ -4804,7 +4819,7 @@ begin
         FInterfaceIdentifierCache.Add(OldInput.Identifier,Params.NewNode,
           Params.NewCleanPos);
       end;
-    end else begin
+    end else if not Result then begin
       // identifier does not exist in this interface
       FInterfaceIdentifierCache.Add(OldInput.Identifier,nil,-1);
     end;
@@ -5010,35 +5025,35 @@ begin
     then begin
       // try hidden used unit 'systhrds'
       Result:=FindIdentifierInUsedUnit('SysThrds',Params);
-      if Result then exit;
+      if Result and Params.IsFinal then exit;
     end;
     if (CurUnitType>sutHeapTrc)
     and Scanner.InitialValues.IsDefined(ExternalMacroStart+'UseHeapTrcUnit')
     then begin
       // try hidden used unit 'heaptrc'
       Result:=FindIdentifierInUsedUnit('HeapTrc',Params);
-      if Result then exit;
+      if Result and Params.IsFinal then exit;
     end;
     if (CurUnitType>sutLineInfo)
     and Scanner.InitialValues.IsDefined(ExternalMacroStart+'UseLineInfo')
     then begin
       // try hidden used unit 'lineinfo'
       Result:=FindIdentifierInUsedUnit('LineInfo',Params);
-      if Result then exit;
+      if Result and Params.IsFinal then exit;
     end;
     if (CurUnitType>sutObjPas)
     and (Scanner.CompilerMode in [cmDELPHI,cmOBJFPC])
     and (Scanner.PascalCompiler=pcFPC) then begin
       // try hidden used fpc unit 'objpas'
       Result:=FindIdentifierInUsedUnit('ObjPas',Params);
-      if Result then exit;
+      if Result and Params.IsFinal then exit;
     end;
     if (CurUnitType>sutMacPas)
     and (Scanner.CompilerMode=cmMacPas)
     and (Scanner.PascalCompiler=pcFPC) then begin
       // try hidden used fpc unit 'macpas'
       Result:=FindIdentifierInUsedUnit('MacPas',Params);
-      if Result then exit;
+      if Result and Params.IsFinal then exit;
     end;
     if (CurUnitType>sutSystem) then begin
       // try hidden used unit 'system'
@@ -5053,7 +5068,7 @@ begin
         Params.Load(OldInput,true);
       end;
     end;
-    if Result then exit;
+    if Result and Params.IsFinal then exit;
   end;
 end;
 
@@ -6579,9 +6594,10 @@ begin
     if (Params.FoundProc=nil) then begin
       // this is the first proc found
       // -> save it and proceed the search to find all overloadeded procs
-      {$IFDEF ShowFoundIdentifier}
+      {$IF defined(ShowFoundIdentifier) or defined(ShowProcSearch)}
       DebugLn('[TFindDeclarationTool.CheckSrcIdentifier]',
       ' Ident=',GetIdentifier(Params.Identifier),
+      ' ',FoundContext.Tool.CleanPosToStr(FoundContext.Node.StartPos),
       ' FIRST PROC'
       );
       {$ENDIF}
@@ -6593,7 +6609,7 @@ begin
     // create the input expression list
     // (the expressions in the brackets are parsed and converted to types)
     if Params.FoundProc^.ExprInputList=nil then begin
-      {$IFDEF ShowFoundIdentifier}
+      {$IF defined(ShowFoundIdentifier) or defined(ShowProcSearch)}
       DebugLn('[TFindDeclarationTool.CheckSrcIdentifier]',
       ' Ident=',GetIdentifier(Params.Identifier),
       ' Creating Input Expression List ...'
@@ -6661,7 +6677,7 @@ begin
     // check the first found proc for compatibility
     // (compare the expression list with the proc param list)
     if not Params.FoundProc^.CacheValid then begin
-      {$IFDEF ShowFoundIdentifier}
+      {$IF defined(ShowFoundIdentifier) or defined(ShowProcSearch)}
       DebugLn('[TFindDeclarationTool.CheckSrcIdentifier]',
       ' Ident=',GetIdentifier(Params.Identifier),
       ' Check the first found proc for compatibility ...'
@@ -6677,24 +6693,27 @@ begin
           Params,Params.FoundProc^.ParamCompatibilityList);
       Params.FoundProc^.ProcCompatibility:=ParamCompatibility;
       Params.FoundProc^.CacheValid:=true;
-      {$IFDEF ShowFoundIdentifier}
-      DebugLn('[TFindDeclarationTool.CheckSrcIdentifier]',
-      ' Ident=',GetIdentifier(Params.Identifier),
-      ' First Proc ParamCompatibility=',TypeCompatibilityNames[ParamCompatibility]
-      );
-      {$ENDIF}
       if ParamCompatibility=tcExact then begin
-        // the first proc fits exactly -> stop the search
         Params.SetResult(Params.FoundProc^.Context.Tool,
                          Params.FoundProc^.Context.Node.FirstChild);
-        Result:=ifrSuccess;
-        exit;
       end;
     end;
-      
+    
+    if Params.FoundProc^.ProcCompatibility=tcExact then begin
+      {$IF defined(ShowFoundIdentifier) or defined(ShowProcSearch)}
+      DebugLn('[TFindDeclarationTool.CheckSrcIdentifier]',
+      ' Ident=',GetIdentifier(Params.Identifier),
+      ' First Proc ParamCompatibility=',TypeCompatibilityNames[Params.FoundProc^.ProcCompatibility]
+      );
+      {$ENDIF}
+      // the first proc fits exactly -> stop the search
+      Result:=ifrSuccess;
+      exit;
+    end;
+
     // check the current proc for compatibility
     // (compare the expression list with the proc param list)
-    {$IFDEF ShowFoundIdentifier}
+    {$IF defined(ShowFoundIdentifier) or defined(ShowProcSearch)}
     DebugLn('[TFindDeclarationTool.CheckSrcIdentifier]',
     ' Ident=',GetIdentifier(Params.Identifier),
     ' Check the current found proc for compatibility ...'
@@ -6715,7 +6734,7 @@ begin
           Params.FoundProc^.ExprInputList,
           fdfIgnoreMissingParams in Params.Flags,
           Params,CurCompatibilityList);
-      {$IFDEF ShowFoundIdentifier}
+      {$IF defined(ShowFoundIdentifier) or defined(ShowProcSearch)}
       DebugLn('[TFindDeclarationTool.CheckSrcIdentifier]',
       ' Ident=',GetIdentifier(Params.Identifier),
       ' Current Proc ParamCompatibility=',TypeCompatibilityNames[ParamCompatibility]
@@ -8210,7 +8229,10 @@ begin
   else
     DebugLn(' IdentifierTool=nil');
   if FoundProc<>nil then begin
-    DebugLn(' FoundProc<>nil');
+    if FoundProc^.Context.Node<>nil then
+      DebugLn(' FoundProc=',FoundProc^.Context.Tool.CleanPosToStr(FoundProc^.Context.Node.StartPos,true))
+    else
+      DebugLn(' FoundProc<>nil');
   end;
 
   // global params
@@ -8271,6 +8293,12 @@ begin
     FoundProc^.ParamCompatibilityList:=ParamCompatibilityList;
     //DebugLn(['TFindDeclarationParams.ChangeFoundProc New ParamCompatibilityList=',dbgs(FoundProc^.ParamCompatibilityList)]);
   end;
+end;
+
+function TFindDeclarationParams.IsFinal: boolean;
+begin
+  Result:=(FoundProc=nil)
+       or (FoundProc^.CacheValid and (FoundProc^.ProcCompatibility=tcExact));
 end;
 
 procedure TFindDeclarationParams.PrettifyResult;
