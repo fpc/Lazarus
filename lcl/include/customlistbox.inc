@@ -594,6 +594,22 @@ begin
     OnMeasureItem(Self, Index, TheHeight);
 end;
 
+procedure TCustomListBox.SelectAll;
+var
+  i: Integer;
+begin
+  if MultiSelect then
+  begin
+    for i := 0 to Items.Count - 1 do
+      Selected[i] := true;
+  end else
+  begin
+    i := ItemIndex;
+    if (i>=0) and (i<Count) then
+      Selected[i] := true;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   function TCustomListBox.GetIndexAtY(Y: integer): integer;
 

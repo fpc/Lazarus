@@ -514,19 +514,20 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Click; override; // make it public
+    procedure Clear; virtual;
+    procedure ClearSelection;
     function GetIndexAtY(Y: integer): integer;
     function GetSelectedText: string;
     function ItemAtPos(const Pos: TPoint; Existing: Boolean): Integer;
     function ItemRect(Index: Integer): TRect;
     function ItemVisible(Index: Integer): boolean;
     function ItemFullyVisible(Index: Integer): boolean;
+    procedure LockSelectionChange;
     procedure MakeCurrentVisible;
     procedure MeasureItem(Index: Integer; var TheHeight: Integer); virtual;
-    procedure Clear; virtual;
-    procedure ClearSelection;
-    procedure LockSelectionChange;
+    procedure SelectAll; virtual;
     procedure UnlockSelectionChange;
-    procedure Click; override; // make it public
   public
     property Align;
     property Anchors;
@@ -863,6 +864,7 @@ type
     property Font;
     property Lines;
     property MaxLength;
+    property ParentBidiMode;
     property OnChange;
     property OnClick;
     property OnDblClick;
@@ -881,14 +883,10 @@ type
     property OnMouseEnter;
     property OnMouseLeave;
     property OnStartDrag;
-    property ParentBiDiMode;
-    property ParentColor;
     property ParentFont;
-    property ParentShowHint;
     property PopupMenu;
     property ReadOnly;
     property ScrollBars;
-    property ShowHint;
     property TabOrder;
     property TabStop;
     property Visible;
@@ -1161,6 +1159,7 @@ type
     property DragMode;
     property Enabled;
     property Font;
+    property Hint;
     property OnChange;
     property OnChangeBounds;
     property OnClick;
@@ -1250,6 +1249,7 @@ type
 
     property Anchors;
     property Constraints;
+    property Hint;
     property Font;
     property OnClick;
     property OnDblClick;
@@ -1289,6 +1289,7 @@ type
     property DragKind;
     property DragMode;
     property Enabled;
+    property Hint;
     property OnChange;
     property OnClick;
     property OnDragDrop;
@@ -1335,6 +1336,7 @@ type
     property DragMode;
     property Enabled;
     property Font;
+    property Hint;
     property OnChange;
     property OnChangeBounds;
     property OnClick;
@@ -1535,13 +1537,4 @@ initialization
   DefaultButtonControlUseOnChange:=false;
 
 end.
-
-
-
-
-
-
-
-
-
 
