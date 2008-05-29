@@ -71,48 +71,58 @@
       </element>
       <!-- function Visibility: default -->
       <element name="FilenameIsAbsolute">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Checks whether an absolute file name is given in <var>TheFileName</var>
+        </short>
+        <descr>
+          <p>Checks whether an absolute file name is given in <var>TheFileName</var>
+          </p>
+          <p>Makes use of <var>FilenameIsWinAbsolute</var> on Windows systems, otherwise uses <var>FilenameIsUnixAbsolute</var>
+          </p>
+        </descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="FilenameIsAbsolute.Result">
-        <short/>
+        <short>Returns True if an absolute filename has been supplied</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="FilenameIsAbsolute.TheFilename">
-        <short/>
+        <short>The name of the file to be checked</short>
       </element>
       <!-- function Visibility: default -->
       <element name="FilenameIsWinAbsolute">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          <var>FilenameIsWinAbsolute</var> - checks that the supplied name is an absolute file name for the Windows system</short>
+        <descr>
+          <p>
+            <var>FilenameIsWinAbsolute</var> - checks that the supplied name is an absolute file name for the Windows system</p>
+          <p>Looks, for instance, for Drive Letters and colon at the beginning of the string</p>
+        </descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="FilenameIsWinAbsolute.Result">
-        <short/>
+        <short>Returns True if this is a true absolite Windows filename</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="FilenameIsWinAbsolute.TheFilename">
-        <short/>
+        <short>The name of the file for checking</short>
       </element>
       <!-- function Visibility: default -->
       <element name="FilenameIsUnixAbsolute">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          <var>FilenameIsUnixAbsolute</var> - checks that the supplied name is an absolute filename in Unix systems</short>
+        <descr>
+          <p>
+            <var>FilenameIsUnixAbsolute</var> - checks that the supplied name is an absolute filename in Unix systems</p>
+          <p>Checks that the name is non-empty and starts with a slash</p>
+        </descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="FilenameIsUnixAbsolute.Result">
-        <short/>
+        <short>Returns True if the supplied name is a correct Absolute file name for a Unix system</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="FilenameIsUnixAbsolute.TheFilename">
-        <short/>
+        <short>The name of the file for checking</short>
       </element>
       <!-- procedure Visibility: default -->
       <element name="CheckIfFileIsExecutable">
@@ -148,52 +158,62 @@
       </element>
       <!-- function Visibility: default -->
       <element name="FileIsReadable">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          <var>FileIsReadable</var> - checks whether supplied file name refers to a readable file</short>
+        <descr>
+          <p>
+            <var>FileIsReadable</var> - checks whether supplied file name refers to a readable file</p>
+          <p>Always true on Windows systems.</p>
+          <p>On Unix systems, checks permissions of file</p>
+        </descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="FileIsReadable.Result">
-        <short/>
+        <short>Always true in Windows; in Unix systems, returns true if read permission exists for the file</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="FileIsReadable.AFilename">
-        <short/>
+        <short>Name of the file for checking</short>
       </element>
       <!-- function Visibility: default -->
       <element name="FileIsWritable">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          <var>FileIsWritable</var> - checks if the supplied file name refers to a file that is writable</short>
+        <descr>
+          <p>
+            <var>FileIsWritable</var> - checks if the supplied file name refers to a file that is writable</p>
+          <p>Checks file permissions in both Unix and Windows systems</p>
+        </descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="FileIsWritable.Result">
-        <short/>
+        <short>Returns True if Write permission exists</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="FileIsWritable.AFilename">
-        <short/>
+        <short>The name of the file for checking</short>
       </element>
       <!-- function Visibility: default -->
       <element name="FileIsText">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          <var>FileIsText</var> - checks whether the supplied file name refers to a readale text file</short>
+        <descr>
+          <p>
+            <var>FileIsText</var> - checks whether the supplied file name refers to a readale text file</p>
+          <p>Searches the opening section of the file for non-text characters such as ASCII 0 to 31 (except CR and LF, the new line characters)</p>
+        </descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="FileIsText.Result">
-        <short/>
+        <short>Returns True if the file is a text file</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="FileIsText.AFilename">
-        <short/>
+        <short>The name of the file for checking</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="FileIsText.FileReadable">
-        <short/>
+        <short>Returns false if non-text characters are detected</short>
       </element>
       <!-- function Visibility: default -->
       <element name="FileIsExecutable">
@@ -212,33 +232,34 @@
       </element>
       <!-- function Visibility: default -->
       <element name="FileIsSymlink">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          <var>FileIsSymLink</var> - check if file name is a symbolic link</short>
+        <descr>
+          <p>
+            <var>FileIsSymLink</var> - check if file name is a symbolic link</p>
+          <p>On Windows systems, always returns false. On others, returns true if it is a symbolic link</p>
+        </descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="FileIsSymlink.Result">
-        <short/>
+        <short>Returns True if file name is a symbolic link (always false in Windows systems)</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="FileIsSymlink.AFilename">
-        <short/>
+        <short>Name of the file for checking</short>
       </element>
       <!-- function Visibility: default -->
       <element name="FileSize">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          <var>FileSize</var> - finds the size of the named file</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="FileSize.Result">
-        <short/>
+        <short>Returns the size of the file, or -1 if not there</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="FileSize.Filename">
-        <short/>
+        <short>The name of the file for checking</short>
       </element>
       <!-- function Visibility: default -->
       <element name="GetFileDescription">
@@ -276,18 +297,15 @@
       </element>
       <!-- function Visibility: default -->
       <element name="DirPathExists">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Checks if the given directory path exists</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="DirPathExists.Result">
-        <short/>
+        <short>Returns True if the given directory path exists</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="DirPathExists.FileName">
-        <short/>
+        <short>Name of the directory path to be checked</short>
       </element>
       <!-- function Visibility: default -->
       <element name="ForceDirectory">
@@ -372,18 +390,16 @@
       </element>
       <!-- function Visibility: default -->
       <element name="ExtractFileNameWithoutExt">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          <var>ExtractFileNameWithoutExt</var> - returns just the name of the file without an extension</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="ExtractFileNameWithoutExt.Result">
-        <short/>
+        <short>Returns the original file name if it had no extension, otherwise returns the file name with its extension removed</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="ExtractFileNameWithoutExt.AFilename">
-        <short/>
+        <short>The name of the file for checking</short>
       </element>
       <!-- function Visibility: default -->
       <element name="CompareFileExt">
@@ -408,25 +424,30 @@
         <short>
           <var>CaseSensitive</var> - if True, case of 
           
+          
           <var>Ext</var> must match case in 
+          
           
           <var>FileName</var>
         </short>
       </element>
       <!-- function Visibility: default -->
       <element name="FilenameIsPascalUnit">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          <var>FilenameIsPascalUnit</var> - checks that the supplied name is a correct Pascal unit name</short>
+        <descr>
+          <p>
+            <var>FilenameIsPascalUnit</var> - checks that the supplied name is a correct Pascal unit name</p>
+          <p>Looks at the file extension to see if it matches one of the standard Pascal extensions (currently .p, .pp, .pas)</p>
+        </descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="FilenameIsPascalUnit.Result">
-        <short/>
+        <short>Returns True if the supplied name is a correct Pascal Unit filename</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="FilenameIsPascalUnit.Filename">
-        <short/>
+        <short>The name of the file for checking</short>
       </element>
       <!-- function Visibility: default -->
       <element name="AppendPathDelim">
@@ -461,18 +482,16 @@
       </element>
       <!-- function Visibility: default -->
       <element name="TrimFilename">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          <var>TrimFilename</var> - trim double path delimiters, heading and trailing spaces and special dirs . and ..</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TrimFilename.Result">
-        <short/>
+        <short>Returns the original file name if no trimming was needed, otherwise returns the trimmed file name</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TrimFilename.AFilename">
-        <short/>
+        <short>The name of the file for trimming</short>
       </element>
       <!-- function Visibility: default -->
       <element name="CleanAndExpandFilename">
@@ -508,14 +527,18 @@
       <element name="CreateAbsoluteSearchPath">
         <short>
           <var>CreateAbsoluteSearchPath</var> - concatenates  
+          
           <var>BaseDirectory </var>and  
+          
           <var>SearchPath</var> to form an absolute path to search for files</short>
         <descr>
           <p>
             <var>CreateAbsoluteSearchPath</var> - concatenates 
   
+            
             <var>BaseDirectory </var>and 
   
+            
             <var>SearchPath</var> to form an absolute path to search for files</p>
           <p>Adds appropriate path delimiters to the BaseDirectory string, then adds the search path, checking that each directory in the path is in fact an absolutely specified directory, then returns the fully formed absolute search path.</p>
         </descr>
@@ -544,10 +567,12 @@
       <element name="CreateRelativePath">
         <short>
           <var>CreateRelativePath</var> - given an absolute path and a 
+          
           <var>BaseDirectory,</var> create a search path relative to the current directory</short>
         <descr>
           <p>
             <var>CreateRelativePath</var> - given an absolute path and a 
+            
             <var>BaseDirectory,</var> create a search path relative to the current directory</p>
           <p>The returned string includes the correct number of dots and double dots to signify relativity to the current directory (eg ../../or ..\..\ etc)</p>
         </descr>
