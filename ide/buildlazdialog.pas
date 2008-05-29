@@ -546,7 +546,7 @@ begin
       MakeIDECfgFilename:=GetMakeIDEConfigFilename;
       if (FileExists(MakeIDECfgFilename)) then begin
         if pos(' ', MakeIDECfgFilename)>0 then
-          ExtraOptions:='@'''+MakeIDECfgFilename+''''
+          ExtraOptions:='@"'+MakeIDECfgFilename+'"'
         else
           ExtraOptions:='@'+MakeIDECfgFilename;
         exit;
