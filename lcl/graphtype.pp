@@ -1398,8 +1398,10 @@ procedure TRawImage.PerformEffect(const ADrawEffect: TGraphicsDrawEffect;
   end;
   
 const
-  GlowShadow = 48;
-  ColorMultiplier = (256 - GlowShadow) / 256;
+  Glow = 68;
+  Shadow = 48;
+  GlowColorMultiplier = (256 - Glow) / 256;
+  ShadowColorMultiplier = (256 - Shadow) / 256;
 // 1 Bit color weights. Total weight = 1000
    R_Weight: Word = $00DE;
    G_Weight: Word = $02C3;
@@ -1451,9 +1453,9 @@ begin
           begin
             with AData^ do
             begin
-              Red := Round(GlowShadow + Red * ColorMultiplier);
-              Green := Round(GlowShadow + Green * ColorMultiplier);
-              Blue := Round(GlowShadow + Blue * ColorMultiplier);
+              Red := Round(Glow + Red * GlowColorMultiplier);
+              Green := Round(Glow + Green * GlowColorMultiplier);
+              Blue := Round(Glow + Blue * GlowColorMultiplier);
             end;
             inc(AData);
           end;
@@ -1465,9 +1467,9 @@ begin
           begin
             with AData^ do
             begin
-              Red := Round(Red * ColorMultiplier);
-              Green := Round(Green * ColorMultiplier);
-              Blue := Round(Blue * ColorMultiplier);
+              Red := Round(Red * ShadowColorMultiplier);
+              Green := Round(Green * ShadowColorMultiplier);
+              Blue := Round(Blue * ShadowColorMultiplier);
             end;
             inc(AData);
           end;
