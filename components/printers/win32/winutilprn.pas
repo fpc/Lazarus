@@ -344,10 +344,7 @@ implementation
 
 destructor TPrinterDevice.destroy;
 begin
-  if DevMode<>nil then begin
-    FreeMem(DevMode);
-    DevMode:=nil;
-  end;
+  ReallocMem(DevMode, 0);
   inherited destroy;
 end;
 

@@ -192,33 +192,32 @@ var
   PDev: TPrinterDevice;
   dwRet: Integer;
 begin
-  result := false;
+  if FPrinterHandle=0 then begin
+    result := false;
+    exit;
+  end;
+
   // now we have a right FPrinterHandle, get current printer settings
   PDev := TPrinterDevice(Printers.Objects[APrinterIndex]);
 
-  // allocate a new Devmode
-  if (Pdev.DevMode=nil) then begin
+  // 1.	Determine the required size of the buffer from the device,
+  //    and then allocate enough memory for it.
+  PDev.DevModeSize := DocumentProperties(0, FPrinterHandle, pchar(PDev.Name),
+                      nil, nil, 0);
+  ReallocMem(Pdev.DevMode, PDev.DevModeSize);
+  if PDev.DevModeSize=0 then begin
+    result := false;
+    exit;
+  end;
   
-    // 1.	Determine the required size of the buffer from the device,
-    //    and then allocate enough memory for it.
-    PDev.DevModeSize:=DocumentProperties(0, FPrinterHandle, pchar(PDev.Name),
-                  nil, nil, 0);
-    if PDev.DevModeSize<=0 then begin
-      // error
-      exit;
-    end;
-    GetMem(PDev.DevMode, PDev.DevModeSize);
-    
-    // 2.	Ask the device driver to initialize the DEVMODE buffer with
-    //    the default settings.
-    dwRet := DocumentProperties(0, FPrinterHandle, pchar(Pdev.Name),
-                  PDev.DevMode, nil, DM_OUT_BUFFER);
-    result := (dwRet=IDOK);
-    if not result then begin
-      FreeMem(PDev.DevMode);
-      PDev.DevMode:=nil;
-    end;
-    
+  // 2.	Ask the device driver to initialize the DEVMODE buffer with
+  //    the default settings.
+  dwRet := DocumentProperties(0, FPrinterHandle, pchar(Pdev.Name),
+           PDev.DevMode, nil, DM_OUT_BUFFER);
+  result := (dwRet=IDOK);
+  if not result then begin
+    ReallocMem(PDev.Devmode, 0);
+    exit;
   end;
   
 end;
@@ -596,8 +595,12 @@ begin
 
     PDev:=TPrinterDevice(Printers.Objects[i]);
     if not OpenPrinter(PChar(PDev.Name),fPrinterHandle, nil) then
+    begin
+      FprinterHandle := 0;
       raise EPrinter.CreateFmt('OpenPrinter exception : %s',
                                    [SysErrorMessage(GetlastError)]);
+    end;
+    
     if UpdateDevMode(i) then begin
       SetDC;
       Result:=i;
