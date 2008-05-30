@@ -545,10 +545,7 @@ begin
     if (blfUseMakeIDECfg in Flags) then begin
       MakeIDECfgFilename:=GetMakeIDEConfigFilename;
       if (FileExists(MakeIDECfgFilename)) then begin
-        if pos(' ', MakeIDECfgFilename)>0 then
-          ExtraOptions:='@"'+MakeIDECfgFilename+'"'
-        else
-          ExtraOptions:='@'+MakeIDECfgFilename;
+        ExtraOptions:='@'+MakeIDECfgFilename;
         exit;
       end;
     end;
@@ -770,6 +767,18 @@ end;
 function GetMakeIDEConfigFilename: string;
 begin
   Result:=AppendPathDelim(GetPrimaryConfigPath)+DefaultIDEMakeOptionFilename;
+{$ifdef windows}
+  // If a file name contains spaces, a file name whould need to be quoted.
+  // Using a single quote is not possible, it is used already in the
+  // makefile to group all options in OPT='bla bla'.
+  // using " implicates that make uses a shell to execute the command of that
+  // line. But shells (i.e. command.com, cmd.exe, etc) are so fragile
+  // that is better to avoid this.
+  // Therefore we use a short 8.3 file and path name, so we don't need to use
+  // quotes at all
+  if pos(' ',Result)>0 then
+    Result:=ExtractShortPathName(Result);
+{$endif}
 end;
 
 { TConfigureBuildLazarusDlg }
