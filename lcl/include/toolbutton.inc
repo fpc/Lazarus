@@ -237,10 +237,8 @@ var
   IconPos: TPoint;
   ImgList: TCustomImageList;
   ImgIndex: integer;
-  TS: TTextStyle;
-  Details: TThemedElementDetails;
+  Details, TempDetails: TThemedElementDetails;
 begin
-  //DebugLn(['TToolButton.Paint A ',DbgSName(Self),' FToolBar=',DbgSName(FToolBar),' ',ClientWidth,',',ClientHeight,' ',ord(Style)]);
   if (FToolBar<>nil) and (ClientWidth>0) and (ClientHeight>0) then
   begin
     PaintRect := ClientRect; // the whole paint area
@@ -314,9 +312,14 @@ begin
     // draw button
     if (Style in [tbsButton, tbsDropDown, tbsCheck]) then
     begin
+      // if toolbar is not flat then normal and disabled state is drawn as hot
+      TempDetails := Details;
+      if ((FToolBar <> nil) and not FToolBar.Flat) and (TempDetails.State in [1, 4]) then
+        TempDetails.State := 2;
+
       ThemeServices.DrawElement(Canvas.GetUpdatedHandle([csBrushValid, csPenValid]),
-         Details, ButtonRect);
-      ButtonRect := ThemeServices.ContentRect(Canvas.Handle, Details, ButtonRect);
+         TempDetails, ButtonRect);
+      ButtonRect := ThemeServices.ContentRect(Canvas.Handle, TempDetails, ButtonRect);
     end
     else
     if Style = tbsDivider then
@@ -328,7 +331,7 @@ begin
     if Style = tbsSeparator then
     begin
       DrawSeparator(Details, ButtonRect);
-      ButtonRect := Rect(0, 0, 0, 0); // nothing can be drawn on divider
+      ButtonRect := Rect(0, 0, 0, 0); // nothing can be drawn on separator
     end;
 
     // draw dropdown button
@@ -348,18 +351,19 @@ begin
     end;
 
     // draw text
-    if (TextSize.cx>0) then
+    if (TextSize.cx > 0) then
     begin
-      TS := Canvas.TextStyle;
-      TS.Alignment:= taLeftJustify;
-      TS.Layout:= tlTop;
-      TS.Opaque:= false;
-      TS.Clipping:= false;
-      TS.SystemFont:=Canvas.Font.IsDefault;
-      TS.ShowPrefix:=true;
-      TS.Wordbreak:=false;
-      //DebugLn(['TToolButton.Paint Caption="',DbgStr(Caption),'" TextPos=',dbgs(TextPos),' PaintRect=',dbgs(PaintRect)]);
-      Canvas.TextRect(ButtonRect, TextPos.X, TextPos.Y, Caption, TS);
+      ButtonRect.Left := TextPos.X;
+      ButtonRect.Top := TextPos.Y;
+      // if State is disabled then change to PushButtonDisabled since
+      // ToolButtonDisabled text looks not disabled though windows native toolbutton
+      // text drawn with disabled look. For other widgetsets there is no difference which
+      // disabled detail to use
+      TempDetails := Details;
+      if TempDetails.State = 4 then
+        TempDetails := ThemeServices.GetElementDetails(tbPushButtonDisabled);
+      ThemeServices.DrawText(Canvas, TempDetails, Caption, ButtonRect,
+        DT_LEFT or DT_TOP, 0);
     end;
 
     // draw separator (at runtime: just space, at designtime: a rectangle)
@@ -757,11 +761,8 @@ end;
 
 function TToolButton.GetButtonDrawDetail: TThemedElementDetails;
 var
-  IsFlat: Boolean;
   ToolDetail: TThemedToolBar;
 begin
-  IsFlat := (FToolBar <> nil) and (FToolBar.Flat);
-  
   if Style = tbsDropDown then
     ToolDetail := ttbSplitButtonNormal
   else
@@ -788,7 +789,7 @@ begin
     begin
       if (tbfPressed in FToolButtonFlags) and FMouseInControl then
         inc(ToolDetail, 2) else // ttbButtonPressed
-      if FMouseInControl or not IsFlat then
+      if FMouseInControl then
         inc(ToolDetail, 1); // ttbButtonHot
     end;
   end;
