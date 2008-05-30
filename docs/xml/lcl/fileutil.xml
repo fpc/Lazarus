@@ -217,18 +217,24 @@
       </element>
       <!-- function Visibility: default -->
       <element name="FileIsExecutable">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          <var>FileIsExecutable</var> - checks if 
+          <var>AFileName</var> refers to an executable file</short>
+        <descr>
+          <p>
+            <var>FileIsExecutable</var> - checks if 
+            <var>AFileName</var> refers to an executable file</p>
+          <p>On Windows systems, if the file exists it is regarded as executable.</p>
+          <p>On other systems (eg Unix etc), looks at file permissions to see whether execute flag is set</p>
+        </descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="FileIsExecutable.Result">
-        <short/>
+        <short>Returns True if file is executable (always true in Windows if file exists)</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="FileIsExecutable.AFilename">
-        <short/>
+        <short>Name of the file for checking</short>
       </element>
       <!-- function Visibility: default -->
       <element name="FileIsSymlink">
@@ -263,18 +269,21 @@
       </element>
       <!-- function Visibility: default -->
       <element name="GetFileDescription">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          <var>GetFileDescription</var> - finds the Unix-type file description for the given file</short>
+        <descr>
+          <p>
+            <var>GetFileDescription</var> - finds the Unix-type file description for the given file</p>
+          <p>No action in Windows systems (returns empty string)</p>
+        </descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="GetFileDescription.Result">
-        <short/>
+        <short>Returns empty string (Windows) or Unix-type file description string in other systems</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="GetFileDescription.AFilename">
-        <short/>
+        <short>The name of the file whose description is sought</short>
       </element>
       <!-- function Visibility: default -->
       <element name="ReadAllLinks">
@@ -309,37 +318,35 @@
       </element>
       <!-- function Visibility: default -->
       <element name="ForceDirectory">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          <var>ForceDirectory </var>- creates a directory if none exists</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="ForceDirectory.Result">
-        <short/>
+        <short>Returns True if successfully created directory</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="ForceDirectory.DirectoryName">
-        <short/>
+        <short>The name of the directory required</short>
       </element>
       <!-- function Visibility: default -->
       <element name="DeleteDirectory">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          <var>DeleteDirectory</var> - Delete the named directory (or only its contents if  
+          <var>OnlyChilds</var> is True)</short>
+        <errors>If there was an error, such as trying to removing . or .., or there were insufficient permissions, or the file did not exist, False is returned</errors>
       </element>
       <!-- function result Visibility: default -->
       <element name="DeleteDirectory.Result">
-        <short/>
+        <short>Returns True if the directory or its contents were correctly removed</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="DeleteDirectory.DirectoryName">
-        <short/>
+        <short>The name of the directory for processing</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="DeleteDirectory.OnlyChilds">
-        <short/>
+        <short>If True, only the contents ('children') of the directory are removed</short>
       </element>
       <!-- function Visibility: default -->
       <element name="ProgramDirectory">
@@ -354,18 +361,22 @@
       </element>
       <!-- function Visibility: default -->
       <element name="DirectoryIsWritable">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          <var>DirectoryIsWritable</var> - checks if it is possible to write a file to the named directory</short>
+        <descr>
+          <p>
+            <var>DirectoryIsWritable</var> - checks if it is possible to write a file to the named directory</p>
+          <p>Tries to create a text file within the named directory, and write to it. Returns True if it works, and False if it doesn't. Also raises an Exception on failure</p>
+        </descr>
+        <errors>An Exception is raised on failure to create or write to the temporary file</errors>
       </element>
       <!-- function result Visibility: default -->
       <element name="DirectoryIsWritable.Result">
-        <short/>
+        <short>Returns True if successful in writing a temporary file to the named directory</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="DirectoryIsWritable.DirectoryName">
-        <short/>
+        <short>Name of the Directory for checking</short>
       </element>
       <!-- constant Visibility: default -->
       <element name="PascalFileExt">
@@ -375,18 +386,16 @@
       </element>
       <!-- function Visibility: default -->
       <element name="ExtractFileNameOnly">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          <var>ExtractFileNameOnly</var> - removes all path delimiters and file extensions, leaving just the file name</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="ExtractFileNameOnly.Result">
-        <short/>
+        <short>Returns the original file name with path delimiters and the extension removed</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="ExtractFileNameOnly.AFilename">
-        <short/>
+        <short>The name of the file for processing</short>
       </element>
       <!-- function Visibility: default -->
       <element name="ExtractFileNameWithoutExt">
@@ -425,7 +434,9 @@
           <var>CaseSensitive</var> - if True, case of 
           
           
+          
           <var>Ext</var> must match case in 
+          
           
           
           <var>FileName</var>
@@ -495,40 +506,39 @@
       </element>
       <!-- function Visibility: default -->
       <element name="CleanAndExpandFilename">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          <var>CleanAndExpandFilename</var> - trims irrelevant characters such as path delimiters from the name  of the file</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="CleanAndExpandFilename.Result">
-        <short/>
+        <short>Returns the original file name without redundant leading or trailing spaces, path delimiters etc</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="CleanAndExpandFilename.Filename">
-        <short/>
+        <short>The name of the file for processing</short>
       </element>
       <!-- function Visibility: default -->
       <element name="CleanAndExpandDirectory">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          <var>CleanAndExpandDirectory</var> - trims and cleans 
+          <var>FileName</var> and appends a directory delimiter to it</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="CleanAndExpandDirectory.Result">
-        <short/>
+        <short>Returns the cleaned file name with appended directory delimiter</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="CleanAndExpandDirectory.Filename">
-        <short/>
+        <short>The name of the file for operation</short>
       </element>
       <!-- function Visibility: default -->
       <element name="CreateAbsoluteSearchPath">
         <short>
           <var>CreateAbsoluteSearchPath</var> - concatenates  
           
+          
           <var>BaseDirectory </var>and  
+          
           
           <var>SearchPath</var> to form an absolute path to search for files</short>
         <descr>
@@ -536,8 +546,10 @@
             <var>CreateAbsoluteSearchPath</var> - concatenates 
   
             
+            
             <var>BaseDirectory </var>and 
   
+            
             
             <var>SearchPath</var> to form an absolute path to search for files</p>
           <p>Adds appropriate path delimiters to the BaseDirectory string, then adds the search path, checking that each directory in the path is in fact an absolutely specified directory, then returns the fully formed absolute search path.</p>
@@ -568,10 +580,12 @@
         <short>
           <var>CreateRelativePath</var> - given an absolute path and a 
           
+          
           <var>BaseDirectory,</var> create a search path relative to the current directory</short>
         <descr>
           <p>
             <var>CreateRelativePath</var> - given an absolute path and a 
+            
             
             <var>BaseDirectory,</var> create a search path relative to the current directory</p>
           <p>The returned string includes the correct number of dots and double dots to signify relativity to the current directory (eg ../../or ..\..\ etc)</p>
@@ -594,41 +608,51 @@
       </element>
       <!-- function Visibility: default -->
       <element name="FileIsInPath">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          <var>FileIsInPath</var> - checks that 
+          <var>FileName</var> refers to a file that exists within the given 
+          <var>Path</var>
+        </short>
       </element>
       <!-- function result Visibility: default -->
       <element name="FileIsInPath.Result">
-        <short/>
+        <short>Returns True if a file named <var>Filename</var> exists within the given <var>Path</var>
+        </short>
       </element>
       <!-- argument Visibility: default -->
       <element name="FileIsInPath.Filename">
-        <short/>
+        <short>The name of the file for checking</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="FileIsInPath.Path">
-        <short/>
+        <short>The <var>Path</var> to be searched</short>
       </element>
       <!-- function Visibility: default -->
       <element name="FileIsInDirectory">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          <var>FileIsInDirectory</var> - checks whether a file with 
+          <var>FileName</var> exists within the given 
+          <var>Directory</var>
+        </short>
+        <descr>
+          <p>
+            <var>FileIsInDirectory</var> - checks whether a file with 
+            <var>FileName</var> exists within the given 
+            <var>Directory</var>
+          </p>
+        </descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="FileIsInDirectory.Result">
-        <short/>
+        <short>Returns True if the file is in the directory</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="FileIsInDirectory.Filename">
-        <short/>
+        <short>The name of the file to be checked</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="FileIsInDirectory.Directory">
-        <short/>
+        <short>The name of the directory to be searched for the file</short>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TSearchFileInPathFlag">
@@ -672,14 +696,12 @@
       </element>
       <!-- function Visibility: default -->
       <element name="GetExeExt">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          <var>GetExeExt</var> - find the correct extension for an executable file</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="GetExeExt.Result">
-        <short/>
+        <short>Returns '.exe' in Windows, nothing in other systems</short>
       </element>
       <!-- function Visibility: default -->
       <element name="SearchFileInPath">
@@ -745,48 +767,55 @@
       </element>
       <!-- function Visibility: default -->
       <element name="FindDiskFilename">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          <var>FindDiskFilename</var> - finds the file that best fits the supplied filename</short>
+        <descr>
+          <p>
+            <var>FindDiskFilename</var> - finds the file that best fits the supplied filename</p>
+          <p>Searches for the filename case on disk. The file must exist.</p>
+          <p>For example: If Filename='file' and there is only a 'File' then 'File' will be returned.</p>
+        </descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="FindDiskFilename.Result">
-        <short/>
+        <short>Returns the best fitting filename from the disk (taking case into consideration)</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="FindDiskFilename.Filename">
-        <short/>
+        <short>The name of the file for checking</short>
       </element>
       <!-- function Visibility: default -->
       <element name="FindDiskFileCaseInsensitive">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          <var>FindDiskFileCaseInsensitive</var> - searches for the given 
+          <var>FileName</var> in a case insensitive manner</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="FindDiskFileCaseInsensitive.Result">
-        <short/>
+        <short>If it exists, returns the file name with path information otherwise returns an empty string</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="FindDiskFileCaseInsensitive.Filename">
-        <short/>
+        <short>The name of the file for processing</short>
       </element>
       <!-- function Visibility: default -->
       <element name="FindDefaultExecutablePath">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          <var>FindDefaultExecutablePath</var> - finds the default path to the named Executable file</short>
+        <descr>
+          <p>
+            <var>FindDefaultExecutablePath</var> - finds the default path to the named Executable file</p>
+          <p>On Windows systems, looks for the '.EXE' extension</p>
+          <p>In all systems, searches the 'PATH' environment variable to see if the file is in one of the default paths</p>
+        </descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="FindDefaultExecutablePath.Result">
-        <short/>
+        <short>Returns the filename of the Executable file with path information attached</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="FindDefaultExecutablePath.Executable">
-        <short/>
+        <short>The name of the <var>Executable</var> file</short>
       </element>
       <!-- object Visibility: default -->
       <element name="TFileIterator">
@@ -1053,22 +1082,25 @@
       </element>
       <!-- function Visibility: default -->
       <element name="GetTempFilename">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          <var>GetTempFilename</var> - finds a suitable name for a temporary file</short>
+        <descr>
+          <p>
+            <var>GetTempFilename</var> - finds a suitable name for a temporary file</p>
+          <var>Uses <var>Prefix</var> plus an integer to generate a file with extension '.tmp' in the specified <var>Directory</var>; if it already exists, increments the integer until it finds a name that is not already used</var>
+        </descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="GetTempFilename.Result">
-        <short/>
+        <short>Returns the temporary file name that has been created</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="GetTempFilename.Directory">
-        <short/>
+        <short>The <var>Directory</var> in which the temprary file is to be placed</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="GetTempFilename.Prefix">
-        <short/>
+        <short>The <var>Prefix</var> to which an integer will be attached to generate a temporary filename</short>
       </element>
     </module>
     <!-- FileUtil -->
