@@ -1782,7 +1782,7 @@ begin
     Bigger := AValue>integer(PtrUInt(FCols[ACol]));
     SetRawColWidths(ACol, Avalue);
 
-    if not (csLoading in ComponentState) then begin
+    if not (csLoading in ComponentState) and HandleAllocated then begin
 
       if FUpdateCount=0 then begin
         UpdateSizes;
@@ -2065,7 +2065,7 @@ begin
 
     FRows[ARow]:=Pointer(PtrInt(AValue));
     
-    if not (csLoading in ComponentState) then begin
+    if not (csLoading in ComponentState) and HandleAllocated then begin
       if FUpdateCount=0 then begin
         UpdateSizes;
 
