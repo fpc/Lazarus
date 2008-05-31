@@ -47,7 +47,7 @@ Type
     function UpdateDevMode(APrinterIndex:Integer): boolean;
 
   protected
-    //function GetDefaultPrinter : String;
+    function GetDefaultPrinter: string;
     procedure DoBeginDoc; override;
     procedure DoNewPage; override;
     procedure DoEndDoc(aAborded : Boolean); override;

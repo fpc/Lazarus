@@ -7,7 +7,7 @@ Uses InterfaceBase, LCLIntf, WinVer, WinUtilPrn;
 // todo: this ^ is a mess: mixed WinUtilPrn/Windows units clean...
 
 // todo: this should be a method, cant be atm because mixed units ^
-function GetCurrentDevMode(var DM:PDeviceMode): boolean;
+function GetCurrentDevMode(out DM:PDeviceMode): boolean;
 var
   PDev: TPrinterDevice;
 begin
@@ -308,6 +308,89 @@ begin
     AbortDoc(fDC);
 end;
 
+function TWinPrinter.GetDefaultPrinter: string;
+
+const
+  MAXBUFSIZE = 512;
+
+var
+  Needed, PrtCount: DWORD;
+  BoolRes: BOOL;
+  IntRes: Integer;
+  PrintInfo2Buf: pchar;
+  GetDefPrnFunc: function(buffer: pchar; var bufSize:DWORD):BOOL; stdcall;
+  SpoolerHandle: HINST;
+begin
+  // retrieve default printer using ms blessed method, see
+  // see: http://support.microsoft.com/default.aspx?scid=kb;en-us;246772
+  result := '';
+  if Win32Platform=VER_PLATFORM_WIN32_WINDOWS then
+  begin
+
+    // Get PRINT_INFO_2 record size
+    SetLastError(0);
+    BoolRes := EnumPrinters(PRINTER_ENUM_DEFAULT, nil, 2, nil, 0,
+                              Needed, PrtCount);
+    if not BoolRes and
+      ((GetLastError<>ERROR_INSUFFICIENT_BUFFER) or (Needed=0)) then
+      exit;
+
+    // Get PRINT_INFO_2 record
+    GetMem(PrintInfo2Buf, Needed);
+    BoolRes := EnumPrinters(PRINTER_ENUM_DEFAULT, nil, 2, PrintInfo2Buf,
+                              Needed, Needed, PrtCount);
+    if not BoolRes then
+    begin
+      FreeMem(PrintInfo2Buf);
+      exit;
+    end;
+
+    Result := PPRINTER_INFO_2(PrintInfo2Buf)^.pPrinterName;
+    FreeMem(PrintInfo2Buf);
+
+  end else
+  if Win32Platform=VER_PLATFORM_WIN32_NT then
+  begin
+
+    if Win32MajorVersion >=5 then
+    begin
+
+      // for Windows 2000 or later, use api GetDefaultPrinter
+      // TODO: needs to check WindowsUnicodeSupport
+      SpoolerHandle := LoadLibrary(LibWinSpool);
+      if SpoolerHandle = 0 then
+        exit;
+      Pointer(GetDefPrnFunc) := GetProcAddress(SpoolerHandle,'GetDefaultPrinterA');
+      if GetDefPrnFunc=nil then
+      begin
+        FreeLibrary(SpoolerHandle);
+        exit;
+      end;
+
+      PrtCount := MAXBUFSIZE;
+      SetLength(Result, PrtCount); // make room for printer name
+      BoolRes := GetDefPrnFunc(pchar(Result), prtCount);
+      FreeLibrary(SpoolerHandle);
+      PrtCount := strlen(pchar(result));
+      SetLength(Result, PrtCount);
+
+    end else
+    begin
+
+      // for NT, use GetProfileString
+      SetLength(result, MAXBUFSIZE);
+      IntRes := GetProfileString('windows', 'device', ',,,', pchar(result),
+                                                                  MAXBUFSIZE);
+      if (IntRes>0) and (pos(',',Result)<>0) then
+        Result := copy(Result, 1, pos(',', Result)-1)
+      else
+        Result := '';
+
+    end;
+  end;
+end;
+
+
 //Enum all defined printers. First printer it's default
 procedure TWinPrinter.DoEnumPrinters(Lst: TStrings);
 Var Flags          : DWORD;
@@ -317,37 +400,12 @@ Var Flags          : DWORD;
     Buffer         : PChar;
     InfoPrt        : PChar;
     i              : Integer;
-    DefaultPrinter : array[0..79] of Char;
+    DefaultPrinter : string;
     PDev           : TPrinterDevice;
     TmpDevMode     : PDeviceMode;
 begin
-  Level:=5; //Compatible with all Win32 versions
-  DefaultPrinter:='';
 
-  //Retrieve Default printer
-  Flags:=PRINTER_ENUM_DEFAULT;
-  //Evaluate buffer size
-  Needed:=0;
-  EnumPrinters(Flags,nil,Level,nil,0,Needed,PrtCount);
-  if Needed>0 then
-  begin
-    GetMem(Buffer,Needed);
-    try
-      //Get default printer
-      if EnumPrinters(Flags,nil,Level,Buffer,Needed,Needed,PrtCount) then
-        DefaultPrinter:=PPRINTER_INFO_5(Buffer)^.pPrinterName;
-    finally
-      FreeMem(Buffer);
-    end;
-  end
-  else
-  begin
-    GetProfileString(PChar('windows'),PChar('device'),PChar(''),
-                     DefaultPrinter,SizeOf(DefaultPrinter));
-    if pos(',',DefaultPrinter)<>0 then
-       DefaultPrinter:=Copy(DefaultPrinter,1,Pos(',',DefaultPrinter)-1);
-  end;
-
+  DefaultPrinter := GetDefaultPrinter;
 
   Flags:=PRINTER_ENUM_CONNECTIONS or PRINTER_ENUM_LOCAL;
   Level:=2;
