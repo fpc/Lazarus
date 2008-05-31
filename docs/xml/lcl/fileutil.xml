@@ -196,12 +196,13 @@
       <!-- function Visibility: default -->
       <element name="FileIsText">
         <short>
-          <var>FileIsText</var> - checks whether the supplied file name refers to a readale text file</short>
+          <var>FileIsText</var> - checks whether the supplied file name refers to a readable text file</short>
         <descr>
           <p>
-            <var>FileIsText</var> - checks whether the supplied file name refers to a readale text file</p>
-          <p>Searches the opening section of the file for non-text characters such as ASCII 0 to 31 (except CR and LF, the new line characters)</p>
+            <var>FileIsText</var> - checks whether the supplied file name refers to a readable text file</p>
+          <p>Searches the opening section of the file (first 1024 characters) for non-text characters such as ASCII 0 to 31 (except CR and LF, the new line characters)</p>
         </descr>
+        <errors>If there is a file reading error, an Exception is raised and <var>FileReadable</var> returns False</errors>
       </element>
       <!-- function result Visibility: default -->
       <element name="FileIsText.Result">
@@ -213,16 +214,18 @@
       </element>
       <!-- argument Visibility: default -->
       <element name="FileIsText.FileReadable">
-        <short>Returns false if non-text characters are detected</short>
+        <short>Returns false if a file reading Exception is encountered</short>
       </element>
       <!-- function Visibility: default -->
       <element name="FileIsExecutable">
         <short>
           <var>FileIsExecutable</var> - checks if 
+          
           <var>AFileName</var> refers to an executable file</short>
         <descr>
           <p>
             <var>FileIsExecutable</var> - checks if 
+            
             <var>AFileName</var> refers to an executable file</p>
           <p>On Windows systems, if the file exists it is regarded as executable.</p>
           <p>On other systems (eg Unix etc), looks at file permissions to see whether execute flag is set</p>
@@ -287,22 +290,32 @@
       </element>
       <!-- function Visibility: default -->
       <element name="ReadAllLinks">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          <var>ReadAllLinks</var> - tries to find the file that is referred to by the symbolic link in  
+          <var>FileName</var>
+        </short>
+        <descr>
+          <p>
+            <var>ReadAllLinks</var> - tries to find the file that is referred to by the symbolic link in 
+  
+            <var>FileName</var>
+          </p>
+          <var>No function in Windows systems</var>
+          <var>On Unix-like systems, finds the linked file and returns its full path and filename, or (if <var>ExceptionOnError</var> has been set True) an Exception is raised with appropriate error message</var>
+        </descr>
+        <errors>If an error is encountered on trying to read the link, provided <var>ExceptionOnError</var> has been set True an Exception is raised with appropriate error message. Otherwise an error results in the return of an empty string.</errors>
       </element>
       <!-- function result Visibility: default -->
       <element name="ReadAllLinks.Result">
-        <short/>
+        <short>Returns the full path and filename of the target file; empty if the file is not found, or the original <var>FileName</var> on Windows systems</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="ReadAllLinks.Filename">
-        <short/>
+        <short>The string containing the symbolic link</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="ReadAllLinks.ExceptionOnError">
-        <short/>
+        <short>If True, an Exception is raised on encountering a file error</short>
       </element>
       <!-- function Visibility: default -->
       <element name="DirPathExists">
@@ -333,6 +346,7 @@
       <element name="DeleteDirectory">
         <short>
           <var>DeleteDirectory</var> - Delete the named directory (or only its contents if  
+          
           <var>OnlyChilds</var> is True)</short>
         <errors>If there was an error, such as trying to removing . or .., or there were insufficient permissions, or the file did not exist, False is returned</errors>
       </element>
@@ -350,14 +364,12 @@
       </element>
       <!-- function Visibility: default -->
       <element name="ProgramDirectory">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          <var>ProgramDirectory</var> - returns the directory in which the currently running program resides</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="ProgramDirectory.Result">
-        <short/>
+        <short>Returns the name of the directory in which the current program is found</short>
       </element>
       <!-- function Visibility: default -->
       <element name="DirectoryIsWritable">
@@ -435,7 +447,9 @@
           
           
           
+          
           <var>Ext</var> must match case in 
+          
           
           
           
@@ -521,6 +535,7 @@
       <element name="CleanAndExpandDirectory">
         <short>
           <var>CleanAndExpandDirectory</var> - trims and cleans 
+          
           <var>FileName</var> and appends a directory delimiter to it</short>
       </element>
       <!-- function result Visibility: default -->
@@ -537,7 +552,9 @@
           <var>CreateAbsoluteSearchPath</var> - concatenates  
           
           
+          
           <var>BaseDirectory </var>and  
+          
           
           
           <var>SearchPath</var> to form an absolute path to search for files</short>
@@ -547,8 +564,10 @@
   
             
             
+            
             <var>BaseDirectory </var>and 
   
+            
             
             
             <var>SearchPath</var> to form an absolute path to search for files</p>
@@ -581,10 +600,12 @@
           <var>CreateRelativePath</var> - given an absolute path and a 
           
           
+          
           <var>BaseDirectory,</var> create a search path relative to the current directory</short>
         <descr>
           <p>
             <var>CreateRelativePath</var> - given an absolute path and a 
+            
             
             
             <var>BaseDirectory,</var> create a search path relative to the current directory</p>
@@ -610,7 +631,9 @@
       <element name="FileIsInPath">
         <short>
           <var>FileIsInPath</var> - checks that 
+          
           <var>FileName</var> refers to a file that exists within the given 
+          
           <var>Path</var>
         </short>
       </element>
@@ -631,13 +654,17 @@
       <element name="FileIsInDirectory">
         <short>
           <var>FileIsInDirectory</var> - checks whether a file with 
+          
           <var>FileName</var> exists within the given 
+          
           <var>Directory</var>
         </short>
         <descr>
           <p>
             <var>FileIsInDirectory</var> - checks whether a file with 
+            
             <var>FileName</var> exists within the given 
+            
             <var>Directory</var>
           </p>
         </descr>
@@ -788,6 +815,7 @@
       <element name="FindDiskFileCaseInsensitive">
         <short>
           <var>FindDiskFileCaseInsensitive</var> - searches for the given 
+          
           <var>FileName</var> in a case insensitive manner</short>
       </element>
       <!-- function result Visibility: default -->
@@ -1045,18 +1073,24 @@
       </element>
       <!-- function Visibility: default -->
       <element name="ReadFileToString">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          <var>ReadFileToString</var> - returns a string with the contents of the named file</short>
+        <descr>
+          <p>
+            <printshort id="ReadFileToString"/>
+          </p>
+          <p>Opens the file and reads its contents into a Stream, then reads the stream to construct the 
+          <var>Result</var> string</p>
+        </descr>
+        <errors>If there is an error in reading the file, an exception is raised and an empty string is returned</errors>
       </element>
       <!-- function result Visibility: default -->
       <element name="ReadFileToString.Result">
-        <short/>
+        <short>The contents of the file as a string, or an empty string if there is an error or the file is empty</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="ReadFileToString.Filename">
-        <short/>
+        <short>The name of the file for processing</short>
       </element>
       <!-- function Visibility: default -->
       <element name="CopyFile">
