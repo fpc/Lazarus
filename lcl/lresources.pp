@@ -3668,6 +3668,8 @@ begin
 end;
 
 function TLRSObjectReader.ReadSet(EnumType: Pointer): Integer;
+type
+  tset = set of 0..31;
 var
   Name: String;
   Value: Integer;
@@ -3682,7 +3684,11 @@ begin
       Value := GetEnumValue(PTypeInfo(EnumType), Name);
       if Value = -1 then
         PropValueError;
+      {$IFNDEF VER2_2_0}
+      include(tset(result),Value);
+      {$ELSE}
       Result := Result or (1 shl Value);
+      {$ENDIF}
     end;
   except
     SkipSetBody;
@@ -4199,17 +4205,28 @@ begin
 end;
 
 procedure TLRSObjectWriter.WriteSet(Value: LongInt; SetType: Pointer);
+type
+  tset = set of 0..31;
 var
   i: Integer;
+  {$IFDEF VER2_2_0}
   Mask: LongInt;
+  {$ENDIF}
 begin
   WriteValue(vaSet);
+  {$IFDEF VER2_2_0}
   Mask := 1;
+  {$ENDIF}
   for i := 0 to 31 do
   begin
+    {$IFNDEF VER2_2_0}
+    if (i in tset(Value)) then
+      WriteStr(GetEnumName(PTypeInfo(SetType), i));
+    {$ELSE}
     if (Value and Mask) <> 0 then
       WriteStr(GetEnumName(PTypeInfo(SetType), i));
     Mask := Mask shl 1;
+    {$ENDIF}
   end;
   WriteStr('');
 end;
