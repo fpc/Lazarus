@@ -221,10 +221,12 @@
         <short>
           <var>FileIsExecutable</var> - checks if 
           
+          
           <var>AFileName</var> refers to an executable file</short>
         <descr>
           <p>
             <var>FileIsExecutable</var> - checks if 
+            
             
             <var>AFileName</var> refers to an executable file</p>
           <p>On Windows systems, if the file exists it is regarded as executable.</p>
@@ -292,12 +294,14 @@
       <element name="ReadAllLinks">
         <short>
           <var>ReadAllLinks</var> - tries to find the file that is referred to by the symbolic link in  
+          
           <var>FileName</var>
         </short>
         <descr>
           <p>
             <var>ReadAllLinks</var> - tries to find the file that is referred to by the symbolic link in 
   
+            
             <var>FileName</var>
           </p>
           <var>No function in Windows systems</var>
@@ -347,6 +351,7 @@
         <short>
           <var>DeleteDirectory</var> - Delete the named directory (or only its contents if  
           
+          
           <var>OnlyChilds</var> is True)</short>
         <errors>If there was an error, such as trying to removing . or .., or there were insufficient permissions, or the file did not exist, False is returned</errors>
       </element>
@@ -392,9 +397,8 @@
       </element>
       <!-- constant Visibility: default -->
       <element name="PascalFileExt">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+          <var>PascalFileExt</var> - typically '.pas', '.pp' or '.p'</short>
       </element>
       <!-- function Visibility: default -->
       <element name="ExtractFileNameOnly">
@@ -448,7 +452,9 @@
           
           
           
+          
           <var>Ext</var> must match case in 
+          
           
           
           
@@ -536,6 +542,7 @@
         <short>
           <var>CleanAndExpandDirectory</var> - trims and cleans 
           
+          
           <var>FileName</var> and appends a directory delimiter to it</short>
       </element>
       <!-- function result Visibility: default -->
@@ -553,7 +560,9 @@
           
           
           
+          
           <var>BaseDirectory </var>and  
+          
           
           
           
@@ -565,8 +574,10 @@
             
             
             
+            
             <var>BaseDirectory </var>and 
   
+            
             
             
             
@@ -601,10 +612,12 @@
           
           
           
+          
           <var>BaseDirectory,</var> create a search path relative to the current directory</short>
         <descr>
           <p>
             <var>CreateRelativePath</var> - given an absolute path and a 
+            
             
             
             
@@ -632,7 +645,9 @@
         <short>
           <var>FileIsInPath</var> - checks that 
           
+          
           <var>FileName</var> refers to a file that exists within the given 
+          
           
           <var>Path</var>
         </short>
@@ -655,7 +670,9 @@
         <short>
           <var>FileIsInDirectory</var> - checks whether a file with 
           
+          
           <var>FileName</var> exists within the given 
+          
           
           <var>Directory</var>
         </short>
@@ -663,7 +680,9 @@
           <p>
             <var>FileIsInDirectory</var> - checks whether a file with 
             
+            
             <var>FileName</var> exists within the given 
+            
             
             <var>Directory</var>
           </p>
@@ -703,9 +722,8 @@
       </element>
       <!-- constant Visibility: default -->
       <element name="AllDirectoryEntriesMask">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+          <var>AllDirectoryEntriesMask</var> - typically '*' on most systems</short>
       </element>
       <!-- function Visibility: default -->
       <element name="GetAllFilesMask">
@@ -732,65 +750,90 @@
       </element>
       <!-- function Visibility: default -->
       <element name="SearchFileInPath">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          <var>SearchFileInPath</var> - searches for  
+          <var>Filename</var> in the given  
+          <var>SearchPath</var> using the supplied  
+          <var>BasePath</var> with the specified  
+          <var>Delimiter</var> and the options listed in  
+          <var>Flags</var>
+        </short>
+        <descr>
+          <p>
+            <printshort id="SearchFileInPath"/>
+          </p>
+          <p>Searches the whole path unless the <var>sffDontSearchInBasePath</var> flag is present</p>
+          <p>Returns the first file that matches the supplied criteria</p>
+        </descr>
+        <errors>If the file does not exist, an empty string is returned</errors>
       </element>
       <!-- function result Visibility: default -->
       <element name="SearchFileInPath.Result">
-        <short/>
+        <short>Returns fully specified file name of the first file that matches the supplied criteria, or empty string if file not found</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="SearchFileInPath.Filename">
-        <short/>
+        <short>The name of the file for searching</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="SearchFileInPath.BasePath">
-        <short/>
+        <short>The <var>BasePath </var>to be used for the search</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="SearchFileInPath.SearchPath">
-        <short/>
+        <short>The path for searching</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="SearchFileInPath.Delimiter">
-        <short/>
+        <short>The directory <var>Delimiter</var> to be used in the search</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="SearchFileInPath.Flags">
-        <short/>
+        <short>
+          <var>Flags </var>specifying how to search: e.g. don't search in base path, case independent search</short>
       </element>
       <!-- function Visibility: default -->
       <element name="SearchAllFilesInPath">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          <var>SearchAllFilesInPath</var> - searches for  all files named  
+          <var>Filename</var> in the given    
+          <var>SearchPath</var> using the supplied    
+          <var>BasePath</var> with the specified    
+          <var>Delimiter</var> and the options listed in    
+          <var>Flags</var>
+        </short>
+        <descr>
+          <p>
+            <printshort id="SearchAllFilesInPath"/>
+          </p>
+          <p>Searches the whole path unless the <var>sffDontSearchInBasePath</var> flag is present</p>
+          <p>Returns all files that match the supplied criteria</p>
+        </descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="SearchAllFilesInPath.Result">
-        <short/>
+        <short>Returns fully specified file names of all files that match the supplied criteria, or empty string if file not found</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="SearchAllFilesInPath.Filename">
-        <short/>
+        <short>The name of the file for searching</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="SearchAllFilesInPath.BasePath">
-        <short/>
+        <short>The  <var>BasePath </var>to be used for the search</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="SearchAllFilesInPath.SearchPath">
-        <short/>
+        <short>The path for searching</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="SearchAllFilesInPath.Delimiter">
-        <short/>
+        <short>The directory  <var>Delimiter</var> to be used in the search</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="SearchAllFilesInPath.Flags">
-        <short/>
+        <short>
+          <var>Flags </var>specifying how to search: e.g. don't search in base path, case independent search</short>
       </element>
       <!-- function Visibility: default -->
       <element name="FindDiskFilename">
@@ -815,6 +858,7 @@
       <element name="FindDiskFileCaseInsensitive">
         <short>
           <var>FindDiskFileCaseInsensitive</var> - searches for the given 
+          
           
           <var>FileName</var> in a case insensitive manner</short>
       </element>
