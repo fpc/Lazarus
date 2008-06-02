@@ -1387,7 +1387,7 @@ end;
 
 procedure TChart.DrawLegend(ACanvas : TCanvas; ARect : TRect);
 var
-   w,h,x1,y1,x2,y2,i,TH:Integer;
+   w,h,x1,y1,x2,y2,i,j,TH:Integer;
    MySerie:TChartSeries;
 begin
    TmpBrush.Assign(ACanvas.Brush);
@@ -1426,24 +1426,26 @@ begin
          ACanvas.Rectangle(x1+5,y1+i*(TH+5)+TH div 2, x1+22,y1+10+i*(TH+5)+TH div 2);
       end;
    end else begin
+      j := 0;
       for i:=0 to SeriesCount-1 do begin
          MySerie:=Series[i];
-         if MySerie.ShowInLegend then begin
+         if MySerie.Active and MySerie.ShowInLegend then begin
             ACanvas.Brush.Assign(FGraphBrush);
-            ACanvas.TextOut(x1+25,y1+5+i*(TH+5),MySerie.Title);
+            ACanvas.TextOut(x1+25,y1+5+j*(TH+5),MySerie.Title);
             ACanvas.Pen.Color := MySerie.SeriesColor;
             if MySerie is TBarSeries then begin
               ACanvas.Pen.Color := clBlack;
               ACanvas.Brush.Assign( (MySerie as TBarSeries).BarBrush);
-              ACanvas.Rectangle(x1+5,y1+i*(TH+5)+TH div 2, x1+22,y1+10+i*(TH+5)+TH div 2);
+              ACanvas.Rectangle(x1+5,y1+j*(TH+5)+TH div 2, x1+22,y1+10+j*(TH+5)+TH div 2);
             end else if MySerie is TAreaSeries then begin
               ACanvas.Pen.Color := clBlack;
               ACanvas.Brush.Color := MySerie.SeriesColor;;
-              ACanvas.Rectangle(x1+5,y1+i*(TH+5)+TH div 2, x1+22,y1+10+i*(TH+5)+TH div 2);
+              ACanvas.Rectangle(x1+5,y1+j*(TH+5)+TH div 2, x1+22,y1+10+j*(TH+5)+TH div 2);
             end else if (MySerie is TLine) or (MySerie is TSerie)  then begin
-              ACanvas.MoveTo(x1+5,y1+5+i*(TH+5)+TH div 2);
-              ACanvas.LineTo(x1+22,y1+5+i*(TH+5)+TH div 2);
-            end else  if MySerie is TPieSeries then begin end; //down't draw
+              ACanvas.MoveTo(x1+5,y1+5+j*(TH+5)+TH div 2);
+              ACanvas.LineTo(x1+22,y1+5+j*(TH+5)+TH div 2);
+	    end else  if MySerie is TPieSeries then begin end; //don't draw
+	    j += 1;
          end;
       end;
    end;
@@ -1534,7 +1536,7 @@ var
    i,j,k:Integer;
    MySerie:TSerie;
 begin
-if (not FLegend.Visible) or (SeriesInLegendCount = 0) then begin Result:=0; Exit; end;
+   if (not FLegend.Visible) or (SeriesInLegendCount = 0) then begin Result:=0; Exit; end;
 
    if only_pie then begin//if only one pie show diferent legend
       MySerie := get_pie;
@@ -1549,7 +1551,7 @@ if (not FLegend.Visible) or (SeriesInLegendCount = 0) then begin Result:=0; Exit
       j:=0;
       for i:=0 to SeriesCount-1 do begin
          MySerie:=Series[i];
-         if MySerie.ShowInLegend then begin
+         if MySerie.Active and MySerie.ShowInLegend then begin
             k:=ACanvas.TextWidth(MySerie.Title);
             if k>j then j:=k;
          end;
@@ -2257,20 +2259,26 @@ begin
 end;
 
 
-////////////////////////UTILS.... clean a bit
+//UTIL: should clean a bit eventually
 //checks if only a pie chart is enabled
 function TChart.only_pie: boolean;
-var i: integer;
+var i, cpie, cother: integer;
 begin
-     if FSeries.count > 0 then result := true
-     else result := false;
+     cpie := 0; cother := 0;
      for i := 0 to FSeries.count -1  do begin
+         if ( (TChartSeries(Series.Items[i])  is TPieSeries)) and
+            TChartSeries(FSeries.Items[i]).Active then begin
+            Inc( cpie );
+         end;
          if ( not (TChartSeries(Series.Items[i])  is TPieSeries)) and
             TChartSeries(FSeries.Items[i]).Active then begin
-               result := false;
-               break;
+            Inc( cother );
          end;
+         //more than one so not only a pie, can exit loop
+         if (cpie > 1) or (cother >= 1) then break;
      end;
+     if (cpie = 1) and (cother = 0) then Result := True
+     else Result := False;
 end;
 
 //get enabled pie chart
@@ -2292,7 +2300,8 @@ var i: integer;
 begin
    Result := 0;
    for i:=0 to SeriesCount-1 do
-      if TChartSeries(Series[i]).ShowInLegend then
+      if TChartSeries(Series[i]).Active and
+         TChartSeries(Series[i]).ShowInLegend then
 	 Inc(Result);
 end;
 
