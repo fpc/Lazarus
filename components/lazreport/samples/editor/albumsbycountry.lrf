@@ -14,15 +14,15 @@
     <Pages>
       <PrintToDefault Value="False"/>
       <DoublePass Value="False"/>
-      <SelectedPrinter Value="HP1100"/>
+      <SelectedPrinter Value="hp psc 1310 series"/>
       <PageCount Value="1"/>
       <Page1>
         <Name Value="Page1"/>
         <ClassName Value="TfrPageReport"/>
         <Visible Value="1"/>
-        <Width Value="564"/>
-        <Height Value="720" PageType="0"/>
-        <PgSize Value="1"/>
+        <Width Value="4800"/>
+        <Height Value="6258" PageType="0"/>
+        <PgSize Value="119"/>
         <Margins>
           <left Value="0"/>
           <Top Value="0"/>
@@ -138,7 +138,7 @@
           <Data>
             <Format Value="558"/>
             <FormatStr Value=""/>
-            <Memo Value="[Dbf1.&quot;COUNTRY&quot;]&#xA;"/>
+            <Memo Value="[Dbf1.&quot;COUNTRY&quot;]&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -181,7 +181,7 @@
           <Data>
             <Format Value="558"/>
             <FormatStr Value=""/>
-            <Memo Value="[Dbf1.&quot;AUTHOR&quot;]&#xA;"/>
+            <Memo Value="[Dbf1.&quot;AUTHOR&quot;]&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -224,7 +224,7 @@
           <Data>
             <Format Value="558"/>
             <FormatStr Value=""/>
-            <Memo Value="[Dbf1.&quot;TITLE&quot;]&#xA;"/>
+            <Memo Value="[Dbf1.&quot;TITLE&quot;]&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -267,7 +267,7 @@
           <Data>
             <Format Value="558"/>
             <FormatStr Value=""/>
-            <Memo Value="[Dbf1.&quot;COMPANY&quot;]&#xA;"/>
+            <Memo Value="[Dbf1.&quot;COMPANY&quot;]&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -310,7 +310,7 @@
           <Data>
             <Format Value="558"/>
             <FormatStr Value=""/>
-            <Memo Value="[Dbf1.&quot;YEAR&quot;]&#xA;"/>
+            <Memo Value="[Dbf1.&quot;YEAR&quot;]&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -353,7 +353,7 @@
           <Data>
             <Format Value="558"/>
             <FormatStr Value=""/>
-            <Memo Value="[COUNT(MasterData1)] Albums for this country&#xA;&#x9;&#xA;"/>
+            <Memo Value="[COUNT(MasterData1)] Albums for this country&#xD;&#xA;&#x9;&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -396,7 +396,7 @@
           <Data>
             <Format Value="558"/>
             <FormatStr Value=""/>
-            <Memo Value="[Dbf1.&quot;QTY&quot;]&#xA;"/>
+            <Memo Value="[Dbf1.&quot;QTY&quot;]&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -439,7 +439,7 @@
           <Data>
             <Format Value="17039918"/>
             <FormatStr Value="$#,###.00"/>
-            <Memo Value="[Dbf1.&quot;PRICE&quot;]&#xA;"/>
+            <Memo Value="[Dbf1.&quot;PRICE&quot;]&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -496,7 +496,7 @@
           <Data>
             <Format Value="17039918"/>
             <FormatStr Value="$#,###.00"/>
-            <Memo Value="[[Dbf1.&quot;QTY&quot;]*[Dbf1.&quot;PRICE&quot;]]&#xA;"/>
+            <Memo Value="[[Dbf1.&quot;QTY&quot;]*[Dbf1.&quot;PRICE&quot;]]&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -539,7 +539,7 @@
           <Data>
             <Format Value="558"/>
             <FormatStr Value=""/>
-            <Memo Value="Year&#xA;"/>
+            <Memo Value="Year&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -582,7 +582,7 @@
           <Data>
             <Format Value="558"/>
             <FormatStr Value=""/>
-            <Memo Value="Author&#xA;"/>
+            <Memo Value="Author&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -625,7 +625,7 @@
           <Data>
             <Format Value="558"/>
             <FormatStr Value=""/>
-            <Memo Value="Title&#xA;"/>
+            <Memo Value="Title&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -668,7 +668,7 @@
           <Data>
             <Format Value="558"/>
             <FormatStr Value=""/>
-            <Memo Value="Company&#xA;"/>
+            <Memo Value="Company&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -711,7 +711,7 @@
           <Data>
             <Format Value="558"/>
             <FormatStr Value=""/>
-            <Memo Value="Qty&#xA;"/>
+            <Memo Value="Qty&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -754,7 +754,7 @@
           <Data>
             <Format Value="558"/>
             <FormatStr Value=""/>
-            <Memo Value="Price&#xA;"/>
+            <Memo Value="Price&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -797,7 +797,7 @@
           <Data>
             <Format Value="558"/>
             <FormatStr Value=""/>
-            <Memo Value="Subtotal&#xA;"/>
+            <Memo Value="Subtotal&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>

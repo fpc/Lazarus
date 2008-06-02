@@ -1,0 +1,143 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2008-04-22 03:05-0600\n"
+"Last-Translator: Jesus Reyes A. <jesusrmx@yahoo.com.mx>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: TFRMMAIN.CAPTION
+msgid "Testing LazReport Editor"
+msgstr "Banco de pruebas de LazReport"
+
+#: TFRMMAIN.MENUITEM1.CAPTION
+msgid "Files"
+msgstr ""
+
+#: TFRMMAIN.MENUITEM3.CAPTION
+msgid "Tests"
+msgstr ""
+
+#: TFRMMAIN.MENUITEM9.CAPTION
+msgid "Export"
+msgstr ""
+
+#: TFRMMAIN.ACCNEWREPORT.CAPTION
+msgid "New Report"
+msgstr ""
+
+#: TFRMMAIN.ACCEDITREPORT.CAPTION
+msgid "Edit Report"
+msgstr ""
+
+#: TFRMMAIN.ACCPREVIEWREPORT.CAPTION
+msgid "Preview Report"
+msgstr ""
+
+#: TFRMMAIN.ACCPRINTGRID.CAPTION
+msgid "Print Grid"
+msgstr ""
+
+#: TFRMMAIN.ACCPRINTREPORT.CAPTION
+msgid "Print Report"
+msgstr ""
+
+#: TFRMMAIN.ACCCLOSE.CAPTION
+msgid "Close"
+msgstr ""
+
+#: TFRMMAIN.ACCEXPORTTOTEXT.CAPTION
+msgid "Export to text"
+msgstr ""
+
+#: TFRMMAIN.ACCEXPORTTOHTML.CAPTION
+msgid "Export to html"
+msgstr ""
+
+#: TFRMMAIN.ACCOPENREPORT.CAPTION
+msgid "Open Report"
+msgstr "Open Report"
+
+#: TFRMMAIN.ACCEXPORTTOCSV.CAPTION
+msgid "Export to CSV"
+msgstr ""
+
+#: maincalleditor.ceropenreport
+msgid "Open report"
+msgstr "Abrir Informe"
+
+#: maincalleditor.cernewreport
+msgid "New report"
+msgstr "Nuevo informe"
+
+#: maincalleditor.cerpreviewreport
+msgid "Preview report"
+msgstr "Vista Previa"
+
+#: maincalleditor.cerprintreport
+msgid "Print report"
+msgstr "Imprimir Informe"
+
+#: maincalleditor.cerprintgrid
+msgid "Print grid"
+msgstr "Imprimir Rejilla"
+
+#: maincalleditor.cernotimplemented
+msgid "This feature is not yet implemented!"
+msgstr "¡Esta función aún no se ha implementado!"
+
+#: maincalleditor.cerpreparefailed
+msgid "PrepareReport Failed!"
+msgstr "¡PrepareReport ha fallado!"
+
+#: maincalleditor.cerindex
+msgid "Index"
+msgstr "Indice"
+
+#: maincalleditor.cernone
+msgid "none"
+msgstr "Ninguno"
+
+#: maincalleditor.cerindexfields
+msgid "Index Fields: \%s"
+msgstr "Campos del índice: \%s"
+
+#: maincalleditor.ceropenreportfirst
+msgid "Open report first"
+msgstr "Primero necesita abrir un informe"
+
+#: maincalleditor.ceractivereport
+msgid "Active report: \%s"
+msgstr "Informe Activo: \%s"
+
+#: maincalleditor.cerhintnewreport
+msgid "Create and edit a empty report"
+msgstr "Crear y editar un informe vacio"
+
+#: maincalleditor.cerhintopenreport
+msgid "Open an existing report"
+msgstr "Abrir un informe existente"
+
+#: maincalleditor.cerhinteditreport
+msgid "Edit active report"
+msgstr "Editar el informe active"
+
+#: maincalleditor.cerhintprevreport
+msgid "Preview active report"
+msgstr "Vista previa del informe activo"
+
+#: maincalleditor.cerhintprevgrid
+msgid "Print preview current DbGrid content"
+msgstr "Vista previa del contenido actual del DBGrid"
+
+#: maincalleditor.cerhintprnreport
+msgid "Print directly the active report (i.e. without preview)"
+msgstr "Imprimir directamente el informe activo (o sea, sin vista previa)"
+
+#: maincalleditor.cerhintcloseapp
+msgid "Close application"
+msgstr "Cerrar Aplicación"
+

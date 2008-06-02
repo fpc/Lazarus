@@ -1,22 +1,35 @@
 object frmMain: TfrmMain
-  Left = 200
+  Left = 277
   Height = 405
-  Top = 144
+  Top = 127
   Width = 573
   HorzScrollBar.Page = 572
-  VertScrollBar.Page = 380
+  VertScrollBar.Page = 384
   ActiveControl = btnCallEditor
-  Caption = 'Testing LazReport Editor'
-  ClientHeight = 381
+  Caption = 'LazReport Test Suite'
+  ClientHeight = 385
   ClientWidth = 573
   Menu = MainMenu1
   OnCreate = frmMainCreate
   ShowHint = True
   LCLVersion = '0.9.25'
+  object lblIndex: TLabel
+    Left = 12
+    Height = 14
+    Top = 44
+    Width = 1
+    ParentColor = False
+  end
+  object lblExpr: TLabel
+    Left = 235
+    Height = 14
+    Top = 44
+    Width = 1
+    ParentColor = False
+  end
   object btnCallEditor: TButton
-    Left = 112
+    Left = 24
     Height = 25
-    Hint = 'Create and edit a empty report'
     Top = 8
     Width = 80
     Action = accNewReport
@@ -24,8 +37,8 @@ object frmMain: TfrmMain
     TabOrder = 0
   end
   object dbGrid1: TDBGrid
-    Height = 321
-    Top = 40
+    Height = 294
+    Top = 68
     Width = 573
     Align = alBottom
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -40,9 +53,8 @@ object frmMain: TfrmMain
     OnTitleClick = dbGrid1TitleClick
   end
   object Button1: TButton
-    Left = 488
+    Left = 479
     Height = 25
-    Hint = 'Print preview current DbGrid content'
     Top = 8
     Width = 75
     Action = accPrintGrid
@@ -50,25 +62,27 @@ object frmMain: TfrmMain
     TabOrder = 1
   end
   object Button2: TButton
-    Left = 280
+    Left = 290
     Height = 25
-    Hint = 'Preview an existing report'
     Top = 8
     Width = 96
     Action = accPreviewReport
     BorderSpacing.InnerBorder = 4
     TabOrder = 2
   end
-  object StatusBar1: TStatusBar
-    Height = 20
-    Top = 361
+  object sbar: TStatusBar
+    Height = 23
+    Top = 362
     Width = 573
-    Panels = <>
+    Panels = <    
+      item
+        Width = 250
+      end>
+    SimplePanel = False
   end
   object Button3: TButton
-    Left = 200
+    Left = 210
     Height = 25
-    Hint = 'Edit an existing report'
     Top = 8
     Width = 75
     Action = accEditReport
@@ -76,9 +90,8 @@ object frmMain: TfrmMain
     TabOrder = 3
   end
   object Button4: TButton
-    Left = 384
+    Left = 391
     Height = 25
-    Hint = 'Print directly an existing report (i.e. without preview)'
     Top = 8
     Width = 83
     Action = accPrintReport
@@ -86,13 +99,23 @@ object frmMain: TfrmMain
     TabOrder = 4
   end
   object btnOpenReport: TButton
-    Left = 8
+    Left = 109
     Height = 25
     Top = 8
     Width = 96
     Action = accOpenReport
     BorderSpacing.InnerBorder = 4
     TabOrder = 6
+  end
+  object comboIndex: TComboBox
+    Left = 76
+    Height = 21
+    Top = 40
+    Width = 148
+    AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+    ItemHeight = 13
+    OnSelect = comboIndexSelect
+    TabOrder = 8
   end
   object TheReport: TfrReport
     Dataset = frDBDataSet1
@@ -106,8 +129,8 @@ object frmMain: TfrmMain
   object Dbf1: TDbf
     IndexDefs = <>
     TableLevel = 3
-    left = 96
-    top = 40
+    left = 128
+    top = 72
   end
   object Datasource1: TDatasource
     DataSet = Dbf1
@@ -194,42 +217,36 @@ object frmMain: TfrmMain
       Category = 'Tests'
       Caption = 'New Report'
       DisableIfNoHandler = True
-      Hint = 'Create and edit a empty report'
       OnExecute = accNewReportExecute
     end
     object accEditReport: TAction
       Category = 'Tests'
       Caption = 'Edit Report'
       DisableIfNoHandler = True
-      Hint = 'Edit an existing report'
       OnExecute = accEditReportExecute
     end
     object accPreviewReport: TAction
       Category = 'Tests'
       Caption = 'Preview Report'
       DisableIfNoHandler = True
-      Hint = 'Preview an existing report'
       OnExecute = accPreviewReportExecute
     end
     object accPrintGrid: TAction
       Category = 'Tests'
       Caption = 'Print Grid'
       DisableIfNoHandler = True
-      Hint = 'Print preview current DbGrid content'
       OnExecute = accPrintGridExecute
     end
     object accPrintReport: TAction
       Category = 'Tests'
       Caption = 'Print Report'
       DisableIfNoHandler = True
-      Hint = 'Print directly an existing report (i.e. without preview)'
       OnExecute = accPrintReportExecute
     end
     object accClose: TAction
       Category = 'Files'
       Caption = 'Close'
       DisableIfNoHandler = True
-      Hint = 'Close application'
       OnExecute = accCloseExecute
     end
     object accExportToText: TAction
@@ -264,7 +281,7 @@ object frmMain: TfrmMain
     top = 272
   end
   object frCSVExport1: TfrCSVExport
-    left = 140
-    top = 40
+    left = 188
+    top = 72
   end
 end

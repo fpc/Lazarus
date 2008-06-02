@@ -53,11 +53,14 @@ type
     Button3: TButton;
     Button4: TButton;
     btnOpenReport: TButton;
+    comboIndex: TComboBox;
     Datasource1: TDatasource;
     Dbf1: TDbf;
     dbGrid1: TdbGrid;
     frCSVExport1: TfrCSVExport;
     frDBDataSet1: TfrDBDataSet;
+    lblExpr: TLabel;
+    lblIndex: TLabel;
     MainMenu1: TMainMenu;
     MenuItem1: TMenuItem;
     MenuItem10: TMenuItem;
@@ -73,7 +76,7 @@ type
     MenuItem9: TMenuItem;
     OpenDialog1: TOpenDialog;
     PG: TfrPrintGrid;
-    StatusBar1: TStatusBar;
+    sbar: TStatusBar;
     TheReport: TfrReport;
     procedure accExportToCSVExecute(Sender: TObject);
     procedure accExportToHtmlExecute(Sender: TObject);
@@ -87,11 +90,15 @@ type
     procedure accPreviewReportExecute(Sender: TObject);
     procedure accPrintGridExecute(Sender: TObject);
     procedure accPrintReportExecute(Sender: TObject);
+    procedure comboIndexSelect(Sender: TObject);
     procedure dbGrid1TitleClick(Column: TColumn);
     procedure frmMainCreate(Sender: TObject);
   private
     { private declarations }
     procedure UpdateAppTranslation;
+    procedure SetIndex(const aIndexName: string);
+    procedure OpenReport(const aFileName:string);
+    procedure UpdateActiveReport;
   public
     { public declarations }
   end; 
@@ -112,14 +119,50 @@ resourcestring
   cerPrintGrid      = 'Print grid';
   cerNotImplemented = 'This feature is not yet implemented!';
   cerPrepareFailed  = 'PrepareReport Failed!';
+  cerIndex          = 'Index';
+  cerNone           = 'none';
+  cerIndexFields    = 'Index Fields: %s';
+  cerOpenReportFirst= 'Open report first';
+  cerActiveReport   = 'Active report: %s';
+  cerHintNewReport  = 'Create and edit a empty report';
+  cerHintOpenReport = 'Open an existing report';
+  cerHintEditReport = 'Edit active report';
+  cerHintPrevReport = 'Preview active report';
+  cerHintPrevGrid   = 'Print preview current DbGrid content';
+  cerHintPrnReport  = 'Print directly the active report (i.e. without preview)';
+  cerHintCloseApp   = 'Close application';
+  cerAppCaption     = 'LazReport Test Suite';
+  
 
 { TfrmMain }
+
+procedure TfrmMain.UpdateAppTranslation;
+begin
+  accOpenReport.Caption := cerOpenReport;
+  accNewReport.Caption := cerNewReport;
+  accEditReport.Caption := cerEditReport;
+  accPreviewReport.Caption := cerPreviewReport;
+  accPrintReport.Caption := cerPrintReport;
+  accPrintGrid.Caption := cerPrintGrid;
+  lblIndex.Caption:=cerIndex;
+
+  accNewReport.Hint := cerHintNewReport;
+  accOpenReport.Hint := cerHintOpenReport;
+  accEditReport.Hint := cerHintEditReport;
+  accPreviewReport.Hint := cerHintPrevReport;
+  accPrintGrid.Hint := cerHintPrevGrid;
+  accPrintReport.Hint := cerHintPrnReport;
+  accClose.Hint := cerHintCloseApp;
+
+  caption := cerAppCaption;
+end;
 
 procedure TfrmMain.ApplicationProperties1ShowHint(var HintStr: string;
   var CanShow: Boolean; var HintInfo: THintInfo);
 begin
-  StatusBar1.SimpleText := HintStr;
+  sbar.SimpleText := HintStr;
   CanShow := False;
+  sbar.SimplePanel := HintStr<>'';
 end;
 
 procedure TfrmMain.accExportToTextExecute(Sender: TObject);
@@ -158,7 +201,8 @@ end;
 
 procedure TfrmMain.accEditReportExecute(Sender: TObject);
 begin
-  TheReport.LoadFromFile(ExtractFilePath(ParamStr(0))+'salida.lrf');
+  if TheReport.FileName='' then
+    raise Exception.Create(cerOpenReportFirst);
   TheReport.DesignReport;
 end;
 
@@ -166,19 +210,18 @@ procedure TfrmMain.accNewReportExecute(Sender: TObject);
 begin
   TheReport.Pages.Clear;
   TheReport.DesignReport;
+  UpdateActiveReport;
 end;
 
 procedure TfrmMain.accOpenReportExecute(Sender: TObject);
 begin
   if OpenDialog1.Execute then begin
-    TheReport.LoadFromFile(OpenDialog1.FileName);
-    TheReport.DesignReport;
+    OpenReport(OpenDialog1.FileName);
   end;
 end;
 
 procedure TfrmMain.accPreviewReportExecute(Sender: TObject);
 begin
-  TheReport.LoadFromFile(ExtractFilePath(ParamStr(0))+'salida.lrf');
   TheReport.ShowReport;
 end;
 
@@ -189,28 +232,41 @@ end;
 
 procedure TfrmMain.accPrintReportExecute(Sender: TObject);
 begin
-  TheReport.LoadFromFile(ExtractFilePath(ParamStr(0))+'salida.lrf');
   if TheReport.PrepareReport then
     TheReport.PrintPreparedReport('1',1)
   else
     ShowMessage(cerPrepareFailed);
 end;
 
+procedure TfrmMain.comboIndexSelect(Sender: TObject);
+var
+  i: Integer;
+begin
+  i := comboIndex.ItemIndex;
+  if i<=0 then begin
+    SetIndex('');
+  end else begin
+    SetIndex(comboIndex.Items[i]);
+  end;
+end;
+
 procedure TfrmMain.dbGrid1TitleClick(Column: TColumn);
 begin
   if CompareText(Column.FieldName,'year')=0 then
-    dbf1.IndexName := 'ByYear'
+    SetIndex('ByYear')
   else
   if CompareText(Column.FieldName,'company')=0 then
-    dbf1.IndexName := 'ByCompany'
+    SetIndex('ByCompany')
   else
   if CompareText(Column.FieldName,'country')=0 then
-    dbf1.IndexName := 'ByCountry'
+    SetIndex('ByCountry')
   else
-    dbf1.IndexName := '';
+    SetIndex('');
 end;
 
 procedure TfrmMain.frmMainCreate(Sender: TObject);
+var
+  i: integer;
 begin
 
   UpdateAppTranslation;
@@ -219,16 +275,32 @@ begin
   dbf1.FilePath := 'db/';
   dbf1.TableName := 'disco.dbf';
   dbf1.open;
+  
+  comboIndex.Clear;
+  comboIndex.Items.Add(cerNone);
+  for i:=0 to Dbf1.Indexes.Count-1 do
+    comboIndex.Items.Add(Dbf1.Indexes[i].Name);
+  SetIndex('');
+  
+  if fileexists(ExtractFilePath(ParamStr(0))+'salida.lrf') then
+    OpenReport(ExtractFilePath(ParamStr(0))+'salida.lrf');
 end;
 
-procedure TfrmMain.UpdateAppTranslation;
+procedure TfrmMain.SetIndex(const aIndexName: string);
 begin
-  accOpenReport.Caption := cerOpenReport;
-  accNewReport.Caption := cerNewReport;
-  accEditReport.Caption := cerEditReport;
-  accPreviewReport.Caption := cerPreviewReport;
-  accPrintReport.Caption := cerPrintReport;
-  accPrintGrid.Caption := cerPrintGrid;
+  dbf1.IndexName := aIndexName;
+  lblExpr.Caption:= format(cerIndexFields, [dbf1.IndexFieldNames]);
+end;
+
+procedure TfrmMain.OpenReport(const aFileName: string);
+begin
+  TheReport.LoadFromFile(aFileName);
+  UpdateActiveReport;
+end;
+
+procedure TfrmMain.UpdateActiveReport;
+begin
+  SBar.Panels[0].Text:= format(cerActiveReport, [TheReport.FileName]);
 end;
 
 procedure TranslateResStrings;
@@ -237,7 +309,7 @@ var
 begin
   GetLanguageIDs(Lang,FallbackLang); // in unit gettext
   TranslateUnitResourceStrings('LCLStrConsts','../../../../lcl/languages/lclstrconsts.%s.po', Lang,FallbackLang);
-  TranslateUnitResourceStrings('MaincallEditor','languages/maincalleditor.%s.po', Lang,FallbackLang);
+  TranslateUnitResourceStrings('MainCallEditor','languages/calleditorwithpkg.%s.po', Lang,FallbackLang);
   TranslateUnitResourceStrings('Lr_const','../../languages/lr_const.%s.po', Lang,FallbackLang);
 end;
 
