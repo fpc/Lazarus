@@ -427,6 +427,8 @@ begin
   fPageIndex := AValue;
   UpdateAllDesignerFlags;
   DoSendPageIndex;
+  if ([csDesigning, csDestroying] * ComponentState = []) and Assigned(OnPageChanged) then
+     OnPageChanged(Self);
 end;
 
 {------------------------------------------------------------------------------
