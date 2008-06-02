@@ -1036,6 +1036,8 @@ begin
       Result:=Project1.CompilerOptions.GetIncludePath(false)
     else if SysUtils.CompareText(Param,'UnitPath')=0 then
       Result:=Project1.CompilerOptions.GetUnitPath(false)
+    else if SysUtils.CompareText(Param,'InfoFile')=0 then
+      Result:=Project1.ProjectInfoFile
     else begin
       Result:='<Invalid parameter for macro Project:'+Param+'>';
       debugln('WARNING: TMainIDE.MacroFuncProject: ',Result);
