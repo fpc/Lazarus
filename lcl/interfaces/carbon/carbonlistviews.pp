@@ -114,6 +114,7 @@ type
     function GetItemsHeight: UInt16;
     function GetBorderSize: Integer;
     function GetInsertIndex(AColumn: TCarbonListColumn): Integer;
+    procedure RegisterOwnerDrawEvent;
   protected
     procedure CreateWidget(const AParams: TCreateParams); override;
     procedure DestroyWidget; override;
@@ -644,6 +645,27 @@ begin
   end;
 end;
 
+procedure TCarbonDataBrowser.RegisterOwnerDrawEvent;
+var
+  CustomCallbacks: DataBrowserCustomCallbacks;
+const
+  SName = 'RegisterOwnerDrawEvent';
+begin
+  CustomCallbacks.version := kDataBrowserLatestCustomCallbacks;
+  // Init data browser custom callbacks
+  OSError(
+    InitDataBrowserCustomCallbacks(CustomCallbacks),
+    Self, SName, 'InitDataBrowserCustomCallbacks');
+
+  if IsOwnerDrawn then
+    CustomCallbacks.drawItemCallback := CarbonDrawItemCallBackUPP;
+
+  // Set data browser custom callbacks
+  OSError(
+    SetDataBrowserCustomCallbacks(Widget, CustomCallbacks),
+    Self, SName, 'SetDataBrowserCustomCallbacks');
+end;
+
 procedure TCarbonDataBrowser.CreateWidget(const AParams: TCreateParams);
 begin
   if OSError(CreateDataBrowserControl(
@@ -686,7 +708,6 @@ end;
 procedure TCarbonDataBrowser.RegisterEvents;
 var
   Callbacks: DataBrowserCallbacks;
-  CustomCallbacks: DataBrowserCustomCallbacks;
 const
   SName = 'RegisterEvents';
 begin
@@ -705,20 +726,7 @@ begin
     SetDataBrowserCallbacks(Widget, Callbacks),
     Self, SName, 'SetDataBrowserCallbacks');
 
-
-  CustomCallbacks.version := kDataBrowserLatestCustomCallbacks;
-  // Init data browser custom callbacks
-  OSError(
-    InitDataBrowserCustomCallbacks(CustomCallbacks),
-    Self, SName, 'InitDataBrowserCustomCallbacks');
-
-  if IsOwnerDrawn then
-    CustomCallbacks.drawItemCallback := CarbonDrawItemCallBackUPP;
-
-  // Set data browser custom callbacks
-  OSError(
-    SetDataBrowserCustomCallbacks(Widget, CustomCallbacks),
-    Self, SName, 'SetDataBrowserCustomCallbacks');
+  RegisterOwnerDrawEvent;
 end;
 
 procedure TCarbonDataBrowser.BoundsChanged;
@@ -1009,14 +1017,16 @@ procedure TCarbonDataBrowser.SetOwnerDraw(AOwnerDraw: Boolean);
 var
   I: Integer;
 begin
-  FCheckListColumn.Recreate;
-  FCaptionListColumn.Recreate;
+  if FCheckListColumn <> nil then FCheckListColumn.Recreate;
+  if FCaptionListColumn <> nil then FCaptionListColumn.Recreate;
   
   for I := 0 to FColumns.Count - 1 do
   begin
     if FColumns[I] = nil then Continue;
     TCarbonListColumn(FColumns[I]).Recreate;
   end;
+  
+  RegisterOwnerDrawEvent;
 end;
 
 procedure TCarbonDataBrowser.SetRowSelect(ARowSelect: Boolean);
