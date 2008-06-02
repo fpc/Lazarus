@@ -368,10 +368,10 @@ begin
   begin
     if BarShowText then
     begin
-       wText := Format('%d from [%d-%d] (%%p%%%%)', [AProgressBar.Position, Min, Max]);
-       gtk_progress_set_format_string (GTK_PROGRESS(Pointer(Handle)), PChar(wText));
+       wText := Format('%d from [%d-%d] (%%p%%%%)', [Position, Min, Max]);
+       gtk_progress_set_format_string(PGtkProgress(Handle), PChar(wText));
     end;
-    gtk_progress_set_show_text (GTK_PROGRESS(Pointer(Handle)), BarShowText);
+    gtk_progress_set_show_text(PGtkProgress(Handle), BarShowText);
   end;
 end;
 
@@ -380,41 +380,42 @@ class function TGtk2WSProgressBar.CreateHandle(const AWinControl: TWinControl;
 var
   Widget: PGtkWidget;
   WidgetInfo: PWidgetInfo;
-  AProgressBar: TCustomProgressBar;
 begin
-  AProgressBar := TCustomProgressBar(AWinControl);
   Widget := gtk_progress_bar_new;
   Result := TLCLIntfHandle(PtrUInt(Widget));
   WidgetInfo := CreateWidgetInfo(Pointer(Result), AWinControl, AParams);
   Set_RC_Name(AWinControl, Widget);
 
-  SetPosition(AProgressBar, AProgressBar.Position);
-
   TGtkWSWinControl.SetCallbacks(PGtkObject(Widget), TComponent(WidgetInfo^.LCLObject));
 end;
 
-class procedure TGtk2WSProgressBar.ApplyChanges(
-  const AProgressBar: TCustomProgressBar);
+class procedure TGtk2WSProgressBar.ApplyChanges(const AProgressBar: TCustomProgressBar);
+const
+  OrientationMap: array[TProgressBarOrientation] of TGtkProgressBarOrientation =
+  (
+{ pbHorizontal  } GTK_PROGRESS_LEFT_TO_RIGHT,
+{ pbVertical,   } GTK_PROGRESS_BOTTOM_TO_TOP,
+{ pbRightToLeft } GTK_PROGRESS_RIGHT_TO_LEFT,
+{ pbTopDown     } GTK_PROGRESS_TOP_TO_BOTTOM
+  );
+
+  SmoothMap: array[Boolean] of TGtkProgressBarStyle =
+  (
+{ False } GTK_PROGRESS_DISCRETE,
+{ True  } GTK_PROGRESS_CONTINUOUS
+  );
+
 var
-  wHandle: Pointer;
-  wOrientation: TGtkProgressBarOrientation;
+  Progress: PGtkProgressBar;
 begin
-  wHandle := Pointer(AProgressBar.Handle);
+  if not WSCheckHandleAllocated(AProgressBar, 'TGtk2WSProgressBar.ApplyChanges') then
+    Exit;
+  Progress := PGtkProgressBar(AProgressBar.Handle);
+
   with AProgressBar do
   begin
-    gtk_progress_bar_set_bar_style (GTK_PROGRESS_BAR(wHandle),
-                                     TGtkProgressBarStyle(Ord(Smooth = False)));
-                                     // 0 = Smooth
-                                     // 1 = not Smooth :) (AH)
-    case Orientation of
-      pbHorizontal : wOrientation := GTK_PROGRESS_LEFT_TO_RIGHT;
-      pbVertical   : wOrientation := GTK_PROGRESS_BOTTOM_TO_TOP;
-      pbRightToLeft: wOrientation := GTK_PROGRESS_RIGHT_TO_LEFT;
-      pbTopDown    : wOrientation := GTK_PROGRESS_TOP_TO_BOTTOM;
-    end;
-    gtk_progress_bar_set_orientation(GTK_PROGRESS_BAR(wHandle), wOrientation);
-
-    UpdateProgressBarText(AProgressBar);
+    gtk_progress_bar_set_bar_style(Progress, SmoothMap[Smooth]);
+    gtk_progress_bar_set_orientation(Progress, OrientationMap[Orientation]);
   end;
 
   // The posision also needs to be updated at ApplyChanges
@@ -424,17 +425,18 @@ end;
 class procedure TGtk2WSProgressBar.SetPosition(
   const AProgressBar: TCustomProgressBar; const NewPosition: integer);
 begin
+  if not WSCheckHandleAllocated(AProgressBar, 'TGtk2WSProgressBar.SetPosition') then
+    Exit;
+    
   // Gtk2 wishes the position in a floating-point value between
   // 0.0 and 1.0, and we calculate that with:
   // (Pos - Min) / (Max - Min)
   // regardless if any of them is negative the result is correct
-  gtk_progress_bar_set_fraction(
-    GTK_PROGRESS_BAR(Pointer(AProgressBar.Handle)),
+  gtk_progress_bar_set_fraction(PGtkProgressBar(AProgressBar.Handle),
     (NewPosition - AProgressBar.Min) /
     (AProgressBar.Max - AProgressBar.Min));
 
-  if AProgressBar.BarShowText then
-      UpdateProgressBarText(AProgressBar);
+  UpdateProgressBarText(AProgressBar);
 end;
 
 { TGtk2WSStatusBar }
