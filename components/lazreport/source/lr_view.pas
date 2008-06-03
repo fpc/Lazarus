@@ -130,6 +130,10 @@ type
     ExitBtn: TBitBtn;
     procedure Bevel1ChangeBounds(Sender: TObject);
     procedure FormResize(Sender: TObject);
+    procedure ScrollBox1MouseWheelDown(Sender: TObject; Shift: TShiftState;
+      MousePos: TPoint; var Handled: Boolean);
+    procedure ScrollBox1MouseWheelUp(Sender: TObject; Shift: TShiftState;
+      MousePos: TPoint; var Handled: Boolean);
     procedure VScrollBarChange(Sender: TObject);
     procedure HScrollBarChange(Sender: TObject);
     procedure PgUpClick(Sender: TObject);
@@ -182,6 +186,7 @@ type
     procedure SetGrayedButtons(Value: Boolean);
     procedure Connect(ADoc: Pointer);
     procedure ConnectBack;
+    procedure ScrollbarDelta(const VertDelta,HorzDelta: Integer);
   public
     { Public declarations }
     procedure Show_Modal(ADoc: Pointer);
@@ -617,6 +622,14 @@ begin
   EMFPages := nil;
 end;
 
+procedure TfrPreviewForm.ScrollbarDelta(const VertDelta, HorzDelta: Integer);
+begin
+  if VertDelta<>0 then
+    VScrollBar.Position:=VScrollBar.Position + VertDelta;
+  if HorzDelta<>0 then
+    HScrollBar.Position:=HScrollBar.Position + HorzDelta;
+end;
+
 {procedure TfrPreviewForm.WMGetMinMaxInfo(var Msg: TWMGetMinMaxInfo);
 begin
   with Msg.MinMaxInfo^ do
@@ -761,6 +774,26 @@ begin
   PaintAllowed := True;
 end;
 
+procedure TfrPreviewForm.ScrollBox1MouseWheelDown(Sender: TObject;
+  Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+begin
+  if ssShift in Shift then
+    ScrollbarDelta(VScrollbar.SmallChange, 0)
+  else
+    ScrollBarDelta(VScrollbar.LargeChange, 0);
+  Handled := True;
+end;
+
+procedure TfrPreviewForm.ScrollBox1MouseWheelUp(Sender: TObject;
+  Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+begin
+  if ssShift in Shift then
+    ScrollbarDelta(-VScrollbar.SmallChange, 0)
+  else
+    ScrollBarDelta(-VScrollbar.LargeChange, 0);
+  Handled := True;
+end;
+
 procedure TfrPreviewForm.Bevel1ChangeBounds(Sender: TObject);
 begin
 end;
@@ -833,21 +866,21 @@ begin
   if Key in [vk_Left, vk_Right] then
     if HScrollBar.Enabled then HScrollBar.SetFocus;
   if Key = vk_Up then
-    VScrollBar.Position := VScrollBar.Position - VScrollBar.SmallChange
+    ScrollBarDelta(-VScrollBar.SmallChange, 0)
   else if Key = vk_Down then
-    VScrollBar.Position := VScrollBar.Position + VScrollBar.SmallChange
+    ScrollBarDelta(VScrollBar.SmallChange, 0)
   else if Key = vk_Left then
-    HScrollBar.Position := HScrollBar.Position - HScrollBar.SmallChange
+    ScrollBarDelta(0, -HScrollBar.SmallChange)
   else if Key = vk_Right then
-    HScrollBar.Position := HScrollBar.Position + HScrollBar.SmallChange
+    ScrollBarDelta(0, HScrollBar.SmallChange)
   else if Key = vk_Prior then
     if ssCtrl in Shift then
       PgUpClick(nil) else
-      VScrollBar.Position := VScrollBar.Position - VScrollBar.LargeChange
+      ScrollBarDelta(-VScrollBar.LargeChange, 0)
   else if Key = vk_Next then
     if ssCtrl in Shift then
       PgDownClick(nil) else
-      VScrollBar.Position := VScrollBar.Position + VScrollBar.LargeChange
+      ScrollBarDelta(VScrollBar.LargeChange, 0)
   else if Key = vk_Space then
     ZoomBtnClick(nil)
   else if Key = vk_Escape then
