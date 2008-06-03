@@ -2109,6 +2109,7 @@ begin
   TXTStyle := Canvas.TextStyle;
   TXTStyle.Opaque := False;
   TXTStyle.Clipping := True;
+  TXTStyle.ShowPrefix := (Flags and DT_NOPREFIX) = 0;
 
   if (Flags and DT_CENTER) <> 0 then
     TXTStyle.Alignment := taCenter
