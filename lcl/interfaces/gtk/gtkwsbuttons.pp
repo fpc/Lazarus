@@ -422,8 +422,12 @@ begin
     if (AInfo^.SpaceWidget = nil)
     and (ALayout in [blGlyphRight, blGlyphBottom])
     then begin
+      {$IFDEF gtk1}
+      AInfo^.SpaceWidget := gtk_invisible_new;
+      {$ELSE}
       // dont use gtk_invisible_new - it cannot have parent
       AInfo^.SpaceWidget := gtk_image_new;
+      {$ENDIF}
       UpdateLayout(AInfo, ALayout, AMargin);
     end
     else begin
