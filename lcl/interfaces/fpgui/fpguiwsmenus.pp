@@ -22,7 +22,7 @@
 }
 unit FpGuiWSMenus;
 
-{$mode objfpc}{$H+}
+{$mode delphi}{$H+}
 
 interface
 
@@ -146,7 +146,7 @@ begin
     Menu := TFPGUIPrivateMenuItem.Create;
     Menu.LCLMenuItem := AMenuItem;
     ParentMenuBar := TfpgMenuBar(AMenuItem.GetParentMenu.Handle);
-    Menu.MenuItem := ParentMenuBar.AddMenuItem(AMenuName, nil);
+    Menu.MenuItem := ParentMenuBar.AddMenuItem(AMenuName, Menu.HandleOnClick);
     Result := HMENU(Menu);
   end
 {      ParentPrivatePopUp := TFPGUIPrivatePopUpMenu(LCLMenuItem.Parent.Handle);
@@ -159,7 +159,7 @@ begin
     Menu := TFPGUIPrivateMenuItem.Create;
     Menu.LCLMenuItem := AMenuItem;
     ParentPrivateItem := TFPGUIPrivateMenuItem(AMenuItem.Parent.Handle);
-    Menu.MenuItem := ParentPrivateItem.MenuItem.SubMenu.AddMenuItem(AMenuName, '', nil);
+    Menu.MenuItem := ParentPrivateItem.MenuItem.SubMenu.AddMenuItem(AMenuName, '', Menu.HandleOnClick);
     Result := HMENU(Menu);
   end;
 

@@ -53,6 +53,7 @@ type
   public
     MenuItem: TfpgMenuItem;
     LCLMenuItem: TMenuItem;
+    procedure HandleOnClick(ASender: TObject);
   end;
 
 implementation
@@ -62,6 +63,14 @@ implementation
 constructor TFpGuiDeviceContext.Create(AfpgCanvas: TfpgCanvas);
 begin
   fpgCanvas := AfpgCanvas;
+end;
+
+{ TFPGUIPrivateMenuItem }
+
+procedure TFPGUIPrivateMenuItem.HandleOnClick(ASender: TObject);
+begin
+  if Assigned(LCLMenuItem) and Assigned(LCLMenuItem.OnClick) then
+   LCLMenuItem.OnClick(LCLMenuItem);
 end;
 
 end.
