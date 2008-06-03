@@ -564,10 +564,13 @@ var
         // item clicked: toggle
         if I < TCheckListBox(lWinControl).Items.Count then
         begin
-          TCheckListBox(lWinControl).Toggle(I);
-          Message.Msg := LM_CHANGED;
-          Message.WParam := I;
-          DeliverMessage(lWinControl, Message);
+          if TCheckListBox(lWinControl).ItemEnabled[I] then
+          begin
+            TCheckListBox(lWinControl).Toggle(I);
+            Message.Msg := LM_CHANGED;
+            Message.WParam := I;
+            DeliverMessage(lWinControl, Message);
+          end;
         end;
         // can only click one item
         exit;

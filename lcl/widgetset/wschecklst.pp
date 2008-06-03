@@ -54,8 +54,12 @@ type
   { TWSCustomCheckListBox }
 
   TWSCustomCheckListBox = class(TWSCustomListBox)
-    class function  GetState(const ACheckListBox: TCustomCheckListBox;
+    class function GetItemEnabled(const ACheckListBox: TCustomCheckListBox;
+      const AIndex: integer): Boolean; virtual;
+    class function GetState(const ACheckListBox: TCustomCheckListBox;
       const AIndex: integer): TCheckBoxState; virtual;
+    class procedure SetItemEnabled(const ACheckListBox: TCustomCheckListBox;
+      const AIndex: integer; const AEnabled: Boolean); virtual;
     class procedure SetState(const ACheckListBox: TCustomCheckListBox;
       const AIndex: integer; const AState: TCheckBoxState); virtual;
   end;
@@ -64,11 +68,23 @@ type
 
 implementation
 
+class function TWSCustomCheckListBox.GetItemEnabled(
+  const ACheckListBox: TCustomCheckListBox; const AIndex: integer): Boolean;
+begin
+  Result := True;
+end;
+
 class function TWSCustomCheckListBox.GetState(
   const ACheckListBox: TCustomCheckListBox; const AIndex: integer
   ): TCheckBoxState;
 begin
   Result := cbUnchecked;
+end;
+
+class procedure TWSCustomCheckListBox.SetItemEnabled(
+  const ACheckListBox: TCustomCheckListBox; const AIndex: integer;
+  const AEnabled: Boolean);
+begin
 end;
 
 class procedure TWSCustomCheckListBox.SetState(

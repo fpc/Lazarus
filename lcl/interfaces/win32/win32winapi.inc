@@ -219,7 +219,7 @@ var
 {$endif}
   begin
     Selected := (Data^.itemState AND ODS_SELECTED)>0;
-    Enabled := CheckListBox.Enabled;
+    Enabled := CheckListBox.Enabled and CheckListBox.ItemEnabled[Data^.itemID];
 
     // fill the background
     if Enabled and Selected then

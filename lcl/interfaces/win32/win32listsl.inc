@@ -433,6 +433,7 @@ begin
   with FDefaultItem do
   begin
     State := cbUnchecked;
+    Enabled := True;
     TheObject := nil;
   end;
 end;
@@ -443,6 +444,14 @@ var
 begin
   Data := GetItemRecord(Index, false);
   Result := Data^.State;
+end;
+
+function TWin32CheckListBoxStrings.GetEnabled(Index: Integer): Boolean;
+var
+  Data: PWin32CheckListBoxItemRecord;
+begin
+  Data := GetItemRecord(Index, false);
+  Result := Data^.Enabled;
 end;
 
 function TWin32CheckListBoxStrings.GetItemRecord(const Index: Integer;
@@ -458,6 +467,16 @@ begin
     end
     else Result := @FDefaultItem;
   end;
+end;
+
+procedure TWin32CheckListBoxStrings.SetEnabled(Index: Integer;
+  const AValue: Boolean);
+var
+  ItemRecord: PWin32CheckListBoxItemRecord;
+begin
+  ItemRecord := GetItemRecord(Index, true);
+  ItemRecord^.Enabled := AValue;
+  SetItemRecord(Index, ItemRecord);
 end;
 
 procedure TWin32CheckListBoxStrings.SetItemRecord(const Index: Integer;

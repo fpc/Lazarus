@@ -39,8 +39,6 @@ uses
 
 type
 
-  { TWin32WSCheckListBox }
-
   { TWin32WSCustomCheckListBox }
 
   TWin32WSCustomCheckListBox = class(TWSCustomCheckListBox)
@@ -49,8 +47,12 @@ type
   public
     class function  GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
 
-    class function  GetState(const ACheckListBox: TCustomCheckListBox;
+    class function GetItemEnabled(const ACheckListBox: TCustomCheckListBox;
+      const AIndex: integer): Boolean; override;
+    class function GetState(const ACheckListBox: TCustomCheckListBox;
       const AIndex: integer): TCheckBoxState; override;
+    class procedure SetItemEnabled(const ACheckListBox: TCustomCheckListBox;
+      const AIndex: integer; const AEnabled: Boolean); override;
     class procedure SetState(const ACheckListBox: TCustomCheckListBox;
       const AIndex: integer; const AState: TCheckBoxState); override;
   end;
@@ -67,11 +69,32 @@ begin
   GetWindowInfo(Handle)^.List := Result;
 end;
 
+class function TWin32WSCustomCheckListBox.GetItemEnabled(
+  const ACheckListBox: TCustomCheckListBox; const AIndex: integer): Boolean;
+begin
+  Result := TWin32CheckListBoxStrings(ACheckListBox.Items).Enabled[AIndex];
+end;
+
 class function TWin32WSCustomCheckListBox.GetState(
   const ACheckListBox: TCustomCheckListBox; const AIndex: integer
   ): TCheckBoxState;
 begin
   Result := TWin32CheckListBoxStrings(ACheckListBox.Items).State[AIndex];
+end;
+
+class procedure TWin32WSCustomCheckListBox.SetItemEnabled(
+  const ACheckListBox: TCustomCheckListBox; const AIndex: integer;
+  const AEnabled: Boolean);
+var
+  SizeRect: Windows.RECT;
+  Handle: HWND;
+begin
+  TWin32CheckListBoxStrings(ACheckListBox.Items).Enabled[AIndex] := AEnabled;
+
+  // redraw control
+  Handle := ACheckListBox.Handle;
+  Windows.SendMessage(Handle, LB_GETITEMRECT, AIndex, LPARAM(@SizeRect));
+  Windows.InvalidateRect(Handle, @SizeRect, False);
 end;
 
 class procedure TWin32WSCustomCheckListBox.SetState(

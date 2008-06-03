@@ -101,6 +101,7 @@ Type
   TWin32CheckListBoxItemRecord = record
     TheObject: TObject;
     State: TCheckBoxState;
+    Enabled: Boolean;
   end;
 
   { TWin32CheckListBoxStrings }
@@ -108,8 +109,10 @@ Type
   TWin32CheckListBoxStrings = class(TWin32ListStringList)
   private
     FDefaultItem: TWin32CheckListBoxItemRecord;
+    function GetEnabled(Index: Integer): Boolean;
     function GetState(Index: Integer): TCheckBoxState;
     function GetItemRecord(const Index: Integer; const CreateNew: boolean): PWin32CheckListBoxItemRecord;
+    procedure SetEnabled(Index: Integer; const AValue: Boolean);
     procedure SetItemRecord(const Index: Integer; ItemRecord: PWin32CheckListBoxItemRecord);
     procedure SetState(Index: Integer; const AValue: TCheckBoxState);
   protected
@@ -121,6 +124,7 @@ Type
     class procedure DeleteItemRecord(const List: HWND; const Index: integer);
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
+    property Enabled[Index: Integer]: Boolean read GetEnabled write SetEnabled;
     property State[Index: Integer]: TCheckBoxState read GetState write SetState;
   end;
 
