@@ -575,6 +575,20 @@ begin
   Gtk2WidgetSet.SetWidgetFont(Widget, AFont);
 end;
 
+function gtk2ListBoxSelectionChangedAfter(Widget: PGtkWidget;
+  AWinControl: TWinControl): gboolean; cdecl;
+var
+  Mess: TLMessage;
+begin
+  Result := CallBackDefaultReturn;
+  {$IFDEF EventTrace}
+  EventTrace('gtk2ListSelectionChangedAfter', dbgsName(AWinControl));
+  {$ENDIF}
+  FillChar(Mess,SizeOf(Mess),0);
+  Mess.msg := LM_SelChange;
+  DeliverMessage(AWinControl, Mess);
+end;
+
 class function TGtk2WSCustomListBox.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
@@ -630,6 +644,9 @@ begin
     True : gtk_tree_selection_set_mode(Selection, GTK_SELECTION_MULTIPLE);
     False: gtk_tree_selection_set_mode(Selection, GTK_SELECTION_SINGLE);
   end;
+  
+  g_signal_connect_after(Selection, 'changed',
+    G_CALLBACK(@gtk2ListBoxSelectionChangedAfter), AWinControl);
 
   // Sets the callbacks
   SetCallbacks(p, WidgetInfo);

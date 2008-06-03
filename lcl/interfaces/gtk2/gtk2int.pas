@@ -626,6 +626,7 @@ begin
       gtk_list_store_insert(FGtkListStore, @li, Index);
     gtk_list_store_set(FGtkListStore, @li, [FColumnIndex, PChar(S), -1]);
     IncreaseChangeStamp;
+    // ToDo: connect callbacks
 
     if not (glsCountNeedsUpdate in FStates) then
       inc(FCachedCount);
