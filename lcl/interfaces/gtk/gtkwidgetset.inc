@@ -3010,8 +3010,9 @@ begin
     // gObject
     if AGTKObject = nil then gObject := ObjectToGTKObject(ALCLObject)
     else gObject := AGTKObject;
-    
     if gObject = nil then Exit;
+
+    Info:=GetWidgetInfo(gObject, True);
 
     // gFixed is the widget with the client area (e.g. TGroupBox, TCustomForm have this)
     gFixed := PGTKObject(GetFixedWidget(gObject));
@@ -3019,7 +3020,6 @@ begin
       gFixed := gObject;
 
     // gCore is the working widget (e.g. TListBox has a scrolling widget (=main widget) and a tree widget (=core widget))
-    Info:=GetWidgetInfo(gObject, True);
     gCore:=PGtkObject(Info^.CoreWidget);
     gMain:=GetMainWidget(gObject);
     if (gMain=nil) then

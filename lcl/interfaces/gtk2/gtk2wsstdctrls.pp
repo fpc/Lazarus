@@ -621,7 +621,8 @@ begin
   gtk_widget_show(TVWidget);
 
   SetMainWidget(p, TVWidget);
-  GetWidgetInfo(p, True)^.CoreWidget := TVWidget;
+  WidgetInfo := GetWidgetInfo(p, false);
+  WidgetInfo^.CoreWidget := TVWidget;
 
   Selection := gtk_tree_view_get_selection(PGtkTreeView(TVWidget));
 
@@ -630,10 +631,8 @@ begin
     False: gtk_tree_selection_set_mode(Selection, GTK_SELECTION_SINGLE);
   end;
 
-  WidgetInfo := GetWidgetInfo(p, False);
-  
   // Sets the callbacks
-  SetCallbacks(TVWidget, WidgetInfo);
+  SetCallbacks(p, WidgetInfo);
 end;
 
 class procedure TGtk2WSCustomListBox.SetCallbacks(const AGtkWidget: PGtkWidget;
