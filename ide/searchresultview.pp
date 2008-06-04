@@ -152,7 +152,8 @@ type
     procedure bnFilterClick (Sender: TObject );
   private
     FMaxItems: integer;
-    FOnSelectionChanged: TNotifyEvent; fListBoxFont: TFont;
+    FOnSelectionChanged: TNotifyEvent;
+    FListBoxFont: TFont;
     FMouseOverIndex: integer;
     function BeautifyPageName(const APageName: string): string;
     function PageExists(const APageName: string): boolean;
@@ -679,9 +680,15 @@ end;//PageExists
 procedure TSearchResultsView.ListBoxKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_ESCAPE then begin
+  if Key = VK_ESCAPE then
+  begin
     Key:=VK_UNKNOWN;
     Close;
+  end
+  else if (Key = VK_RETURN) and (Shift = []) then
+  begin
+    Key:=VK_UNKNOWN;
+    FOnSelectionChanged(Self);
   end;
 end;
 
