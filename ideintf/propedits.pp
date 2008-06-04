@@ -119,7 +119,7 @@ type
                         change made to the editor instead of after the change
                         has been approved (e.g. the Caption property).
         paReadOnly:     Value is not allowed to change. But if paDialog is set
-                        a Dialog can change the value. This disbales only the
+                        a Dialog can change the value. This disables only the
                         edit and combobox in the object inspector.
         paRevertable:   Allows the property to be reverted to the original
                         value.  Things that shouldn't be reverted are nested
