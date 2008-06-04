@@ -48,6 +48,18 @@ procedure DrawVerticalGradient(Canvas: TCanvas; ARect: TRect; TopColor, BottomCo
 procedure DrawGradientWindow(Canvas: TCanvas; WindowRect: TRect; TitleHeight: Integer; BaseColor: TColor);
 
 
+{
+ Draw arrows
+}
+type TScrollDirection=(sdLeft,sdRight,sdUp,sdDown);
+     TArrowType = (atSolid, atArrows);
+const NiceArrowAngle=45*pi/180;
+
+procedure DrawArrow(Canvas:TCanvas;Direction:TScrollDirection; Location: TPoint; Size: Longint; ArrowType: TArrowType=atSolid);
+procedure DrawArrow(Canvas:TCanvas;p1,p2: TPoint; ArrowType: TArrowType=atSolid);
+procedure DrawArrow(Canvas:TCanvas;p1,p2: TPoint; ArrowLen: longint; ArrowAngleRad: float=NiceArrowAngle; ArrowType: TArrowType=atSolid);
+
+
 // delphi compatibility
 procedure ColorRGBToHLS(clrRGB: COLORREF; var Hue, Luminance, Saturation: Word);
 function ColorHLSToRGB(Hue, Luminance, Saturation: Word): TColorRef;
@@ -190,6 +202,49 @@ begin
     R := HueToRGB(n1, n2, H + HUE_120);
     G := HueToRGB(n1, n2, H);
     B := HueToRGB(n1, n2, H - HUE_120);
+  end;
+end;
+
+
+
+
+procedure DrawArrow(Canvas: TCanvas; Direction: TScrollDirection;
+  Location: TPoint; Size: Longint; ArrowType: TArrowType);
+const ScrollDirectionX:array[TScrollDirection]of longint=(-1,+1,0,0);
+      ScrollDirectionY:array[TScrollDirection]of longint=(0,0,-1,+1);
+begin
+  DrawArrow(Canvas,Location,
+            point(ScrollDirectionX[Direction]*size+Location.x,ScrollDirectionY[Direction]*size+Location.y),
+            max(5,size div 10),
+            NiceArrowAngle,ArrowType);
+end;
+
+procedure DrawArrow(Canvas: TCanvas; p1, p2: TPoint; ArrowType: TArrowType);
+begin
+  DrawArrow(Canvas,p1,p2,round(sqrt(sqr(p1.x-p2.x)+sqr(p1.y-p2.y))/10),NiceArrowAngle,ArrowType);
+end;
+
+procedure DrawArrow(Canvas: TCanvas; p1, p2: TPoint; ArrowLen: longint;
+  ArrowAngleRad: float; ArrowType: TArrowType);
+var {NormalizedLineX, NormalizedLineY, LineLen,} LineAngle: float;
+    ArrowPoint1, ArrowPoint2: TPoint;
+begin
+  LineAngle:=arctan2(p2.y-p1.y,p2.x-p1.x);
+  ArrowPoint1.x:=round(ArrowLen*cos(pi+LineAngle-ArrowAngleRad))+p2.x;
+  ArrowPoint1.y:=round(ArrowLen*sin(pi+LineAngle-ArrowAngleRad))+p2.y;
+  ArrowPoint2.x:=round(ArrowLen*cos(pi+LineAngle+ArrowAngleRad))+p2.x;
+  ArrowPoint2.y:=round(ArrowLen*sin(pi+LineAngle+ArrowAngleRad))+p2.y;
+
+  Canvas.Line(p1,p2);
+
+  case ArrowType of
+    atSolid: begin
+      canvas.Polygon([ArrowPoint1,p2,ArrowPoint2]);
+    end;
+    atArrows: begin
+      Canvas.LineTo(ArrowPoint1.x,ArrowPoint1.y);
+      Canvas.Line(p2.x,p2.y,ArrowPoint2.x,ArrowPoint2.y);
+    end;
   end;
 end;
 

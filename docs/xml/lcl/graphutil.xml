@@ -309,6 +309,18 @@
       <element name="GetShadowColor.Luminance">
         <short/>
       </element>
+      <element name="TScrollDirection">
+        <short/>
+      </element>
+      <element name="TArrowType">
+        <short/>
+      </element>
+      <element name="NiceArrowAngle">
+        <short/>
+      </element>
+      <element name="DrawArrow">
+        <short/>
+      </element>
     </module>
     <!-- GraphUtil -->
   </package>
