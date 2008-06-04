@@ -342,19 +342,26 @@ function BackgroundColorMenu(const aSelected: boolean; const aIsInMenuBar: boole
 var
   IsFlatMenu: Windows.BOOL;
 begin
-  if aSelected then
-    Result := GetSysColor(COLOR_HIGHLIGHT)
+  if (WindowsVersion >= wvXP) and ((SystemParametersInfo(SPI_GETFLATMENU, 0, @IsFlatMenu, 0)) and IsFlatMenu) then
+  begin
+    if aSelected then
+      Result := GetSysColor(COLOR_MENUHILIGHT)
+    else
+    if aIsInMenuBar then
+      Result := GetSysColor(COLOR_MENUBAR)
+    else
+      Result := GetSysColor(COLOR_MENU);
+  end
   else
-  // COLOR_MENUBAR is not supported on Windows version < XP
-  // SPI_GETFLATMENU is not supported on Windows 2000/NT and Windows Me/98/95
-  if (aIsInMenuBar and not (WindowsVersion in [wvNT4, wv2000, wv95, wv98, wvMe])) and
-     (
-       ((SystemParametersInfo(SPI_GETFLATMENU, 0, @IsFlatMenu, 0)) and IsFlatMenu) or
-       ThemeServices.ThemesEnabled
-     ) then
-    Result := GetSysColor(COLOR_MENUBAR)
-  else
-    Result := GetSysColor(COLOR_MENU);
+  begin
+    if aSelected then
+      Result := GetSysColor(COLOR_HIGHLIGHT)
+    else
+    if aIsInMenuBar then
+      Result := GetSysColor(COLOR_3DFACE)
+    else
+      Result := GetSysColor(COLOR_MENU);
+  end;
 end;
 
 function TextColorMenu(const aSelected: boolean; const anEnabled: boolean): COLORREF;
@@ -365,7 +372,8 @@ begin
       Result := GetSysColor(COLOR_HIGHLIGHTTEXT)
     else
       Result := GetSysColor(COLOR_MENUTEXT);
-  end else
+  end
+  else
     Result := GetSysColor(COLOR_GRAYTEXT);
 end;
 
