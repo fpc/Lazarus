@@ -29,7 +29,12 @@ uses
   // rtl+ftl
   Types, Classes, SysUtils,
   // Libs
-  FPCMacOSAll, objc, foundation, appkit,
+{$ifdef ver2_2_0}
+  FPCMacOSAll,
+{$else}
+  MacOSAll,
+{$endif}
+  objc, foundation, appkit,
   // LCL
   LMessages, LCLMessageGlue, LCLProc, LCLType, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Buttons, ComCtrls, ExtCtrls, Menus;

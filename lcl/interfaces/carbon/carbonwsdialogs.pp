@@ -31,7 +31,11 @@ interface
 
 uses
   // libs
+  {$ifdef ver2_2_0}
   FPCMacOSAll,
+  {$else}
+  MacOSAll,
+  {$endif}
   {$IFDEF VER2_0}
   FontPanel, // will be removed
   {$ENDIF}

@@ -34,7 +34,11 @@ interface
 {$I carbondebug.inc}
 
 uses
+{$ifdef ver2_2_0}
   FPCMacOSAll,
+{$else}
+  MacOSAll,
+{$endif}
   Classes, Types, LCLType, LCLProc, LCLClasses, LMessages,
   Controls, SysUtils, Graphics, Math, GraphType;
 

@@ -29,7 +29,11 @@ uses
  // rtl+ftl
   Types, Classes, SysUtils, Math,
  // carbon bindings
+{$ifdef ver2_2_0}
   FPCMacOSAll,
+{$else}
+  MacOSAll,
+{$endif}
  // LCL
   LCLProc, LCLType, Graphics, Controls, Forms,
  // LCL Carbon

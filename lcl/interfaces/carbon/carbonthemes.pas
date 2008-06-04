@@ -15,7 +15,11 @@ uses
   // rtl
   Types, Classes, SysUtils,
   // carbon bindings
+{$ifdef ver2_2_0}
   FPCMacOSAll,
+{$else}
+  MacOSAll,
+{$endif}
   // lcl
   LCLType, LCLProc, LCLIntf, Graphics, Themes, TmSchema,
   // widgetset

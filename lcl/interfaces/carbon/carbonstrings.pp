@@ -27,7 +27,11 @@ interface
 
 uses
  // carbon bindings
+{$ifdef ver2_2_0}
   FPCMacOSAll,
+{$else}
+  MacOSAll,
+{$endif}
  // rtl+ftl
   Types, Classes, SysUtils, Math,
  // LCL

@@ -35,7 +35,11 @@ interface
 
 uses
   // libs
+{$ifdef ver2_2_0}
   FPCMacOSAll,
+{$else}
+  MacOSAll,
+{$endif}
   // wdgetset
   WSLCLClasses, LCLClasses,
   // LCL + RTL

@@ -35,7 +35,11 @@ interface
 {$I carbondebug.inc}
 
 uses
+{$ifdef ver2_2_0}
   FPCMacOSAll;
+{$else}
+  MacOSAll;
+{$endif}
 
 type
   TFourCC = packed array[0..3] of Char;

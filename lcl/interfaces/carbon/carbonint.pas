@@ -39,7 +39,11 @@ uses
   // rtl+ftl
   Types, Classes, SysUtils, Math, FPCAdds,
   // carbon bindings
+{$ifdef ver2_2_0}
   FPCMacOSAll,
+{$else}
+  MacOSAll,
+{$endif}
   // Cocoa bindings
   {$ifdef CarbonUseCocoa}
     foundation,

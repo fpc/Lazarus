@@ -31,7 +31,11 @@ interface
 
 uses
   // libs
+  {$ifdef ver2_2_0}
   FPCMacOSAll,
+  {$else}
+  MacOSAll,
+  {$endif}
   // Cocoa
   {$ifdef CarbonUseCocoa}
   appkit, foundation,

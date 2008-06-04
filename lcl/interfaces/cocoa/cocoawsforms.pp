@@ -28,7 +28,12 @@ interface
 
 uses
   // Libs
-  FPCMacOSAll, foundation, appkit,
+{$ifdef ver2_2_0}
+  FPCMacOSAll,
+{$else}
+  MacOSAll,
+{$endif}
+  foundation, appkit,
   // LCL
   Controls, Forms, Graphics, LCLType, LMessages, LCLProc, Classes,
   // Widgetset

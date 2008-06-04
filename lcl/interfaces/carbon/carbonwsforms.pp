@@ -31,7 +31,12 @@ interface
 
 uses
   // Libs
-  FPCMacOSAll, CarbonUtils,
+{$ifdef ver2_2_0}
+  FPCMacOSAll,
+{$else}
+  MacOSAll,
+{$endif}
+  CarbonUtils,
   // LCL
   Controls, Forms, Graphics, LCLType, LMessages, LCLProc, Classes,
   // Widgetset
