@@ -1,6 +1,11 @@
 {%MainUnit ../osprinters.pas}
 uses
-  FPCMacOSAll, Classes, SysUtils, Printers, LCLType, CarbonCanvas, CarbonPrinting;
+{$ifdef ver2_2_0}
+  FPCMacOSAll,
+{$else}
+  MacOSAll,
+{$endif}
+  Classes, SysUtils, Printers, LCLType, CarbonCanvas, CarbonPrinting;
 
 type
   { TCarbonPrinterContext }

@@ -228,7 +228,7 @@ function CarbonCommon_CursorChange(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
   AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
-  ALocation: FPCMacOSAll.Point;
+  ALocation: {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.Point;
   AModifiers: UInt32;
   ACursorWasSet: Boolean;
   

@@ -21,7 +21,12 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LCLType, gl, Forms,
-  FPCMacOSAll, CarbonInt, AGL, CarbonProc, CarbonDef, CarbonPrivate,
+{$ifdef ver2_2_0}
+  FPCMacOSAll,
+{$else}
+  MacOSAll,
+{$endif}
+  CarbonInt, AGL, CarbonProc, CarbonDef, CarbonPrivate,
   WSLCLClasses, CarbonWSControls, CarbonUtils,
   Controls;
 

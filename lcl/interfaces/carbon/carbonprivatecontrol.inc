@@ -364,12 +364,12 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonControl.GetControlContentRect(var ARect: TRect): Boolean;
 var
-  AClientRect: FPCMacOSAll.Rect;
-  ClientRegion: FPCMacOSAll.RgnHandle;
+  AClientRect: {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.Rect;
+  ClientRegion: {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.RgnHandle;
 begin
   Result := False;
 
-  ClientRegion := FPCMacOSAll.NewRgn();
+  ClientRegion := {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.NewRgn();
   try
     if OSError(GetControlRegion(ControlRef(Widget), kControlContentMetaPart, ClientRegion),
       Self, 'GetControlContentRect', 'GetControlRegion') then Exit;
@@ -377,7 +377,7 @@ begin
      Result := GetRegionBounds(ClientRegion, AClientRect) <> nil;
      if Result then ARect := CarbonRectToRect(AClientRect);
   finally
-    FPCMacOSAll.DisposeRgn(ClientRegion);
+    {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.DisposeRgn(ClientRegion);
   end;
   
   {$IFDEF VerboseBounds}
@@ -471,7 +471,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonControl.EmbedInScrollView(AScrollBars: TScrollStyle): HIViewRef;
 var
-  ScrollOptions: FPCMacOSAll.OptionBits;
+  ScrollOptions: {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.OptionBits;
   Bounds: HIRect;
 const
   SName = 'EmbedInScrollView';
@@ -642,7 +642,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonControl.IsVisible: Boolean;
 begin
-  Result := FPCMacOSAll.IsControlVisible(Frames[0]);
+  Result := {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.IsControlVisible(Frames[0]);
 end;
 
 {------------------------------------------------------------------------------
@@ -656,16 +656,16 @@ function TCarbonControl.Enable(AEnable: Boolean): Boolean;
 var
   I: Integer;
 begin
-  Result := not FPCMacOSAll.IsControlEnabled(Frames[0]);
+  Result := not {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.IsControlEnabled(Frames[0]);
 
   if AEnable then
   begin
     for I := 0 to GetFrameCount - 1 do
-      OSError(FPCMacOSAll.EnableControl(Frames[I]), Self, SEnable, SEnableControl);
+      OSError({$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.EnableControl(Frames[I]), Self, SEnable, SEnableControl);
   end
   else
     for I := 0 to GetFrameCount - 1 do
-      OSError(FPCMacOSAll.DisableControl(Frames[I]), Self, SEnable, SDisableControl);
+      OSError({$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.DisableControl(Frames[I]), Self, SEnable, SDisableControl);
 end;
 
 {------------------------------------------------------------------------------
@@ -678,7 +678,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonControl.GetFrameBounds(var ARect: TRect): Boolean;
 var
-  BoundsRect: FPCMacOSAll.Rect;
+  BoundsRect: {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.Rect;
 begin
   Result := False;
 
@@ -715,7 +715,7 @@ end;
 function TCarbonControl.GetScreenBounds(var ARect: TRect): Boolean;
 var
   BoundsRect: HIRect;
-  WindowRect: FPCMacOSAll.Rect;
+  WindowRect: {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.Rect;
 const
   SName = 'GetScreenBounds';
 begin
@@ -992,9 +992,9 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonControl.GetMousePos: TPoint;
 var
-  P: FPCMacOSAll.Point;
+  P: {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.Point;
   MousePoint: HIPoint;
-  R: FPCMacOSAll.Rect;
+  R: {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.Rect;
 const
   SName = 'GetMousePos';
 begin
@@ -1043,7 +1043,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonControl.GetPreferredSize: TPoint;
 var
-  R: FPCMacOSAll.Rect;
+  R: {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.Rect;
   S: SmallInt;
 begin
   Result.X := 0;

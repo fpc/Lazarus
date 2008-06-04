@@ -555,7 +555,7 @@ begin
     if OSError(
       CreatePopupButtonControl(GetTopParentWindow,
         ParamsToCarbonRect(AParams), nil, -12345, False, 0, popupTitleLeftJust,
-        FPCMacOSAll.Normal, Widget),
+        {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.Normal, Widget),
       Self, SCreateWidget, 'CreatePopupButtonControl')then RaiseCreateWidgetError(LCLObject);
       
     OSError(CreateNewMenu(0, kMenuAttrAutoDisable, FPopupMenu),
@@ -1273,7 +1273,7 @@ end;
 procedure TCarbonMemo.CreateWidget(const AParams: TCreateParams);
 var
   Control: ControlRef;
-  Options: FPCMacOSAll.OptionBits;
+  Options: {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.OptionBits;
   R: HIRect;
 begin
   Options := kTXNMonostyledTextMask or kOutputTextInUnicodeEncodingMask;

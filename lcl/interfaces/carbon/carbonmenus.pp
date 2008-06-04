@@ -572,7 +572,7 @@ end;
 procedure TCarbonMenu.SetBitmap(const ABitmap: TBitmap);
 var
   IconType: Byte;
-  AHandle: FPCMacOSAll.Handle;
+  AHandle: {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.Handle;
   CGImage: CGImageRef;
 const
   SName = 'SetBitmap';
@@ -714,9 +714,9 @@ begin
   if FParentMenu = nil then Exit;
   
   if LCLMenuItem.Default then
-    Style := FPCMAcOSAll.bold
+    Style := {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.bold
   else
-    Style := FPCMAcOSAll.normal;
+    Style := {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.normal;
 
   SetItemStyle(FParentMenu.Menu, GetIndex + 1, Style);
 end;

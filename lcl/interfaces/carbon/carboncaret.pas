@@ -147,7 +147,7 @@ end;
 
 function GetCaretBlinkTime: Cardinal;
 begin
-  // TODO: use FPCMacOSAll.GetCaretTime
+  // TODO: use MacOSAll.GetCaretTime
   Result := 600; // our default value
 end;
 

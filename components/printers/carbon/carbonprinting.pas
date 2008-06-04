@@ -10,9 +10,14 @@ unit CarbonPrinting;
 interface
 
 uses
-  Classes, SysUtils, FPCMacOSAll;
-  
-// functions missing in FPCMacOSAll
+  Classes, SysUtils,
+{$ifdef ver2_2_0}
+  FPCMacOSAll;
+{$else}
+  MacOSAll;
+{$endif}
+
+// functions missing in MacOSAll
 type
   PMPaper    = ^SInt32; { an opaque 32-bit type }
   PMPaperPtr = ^PMPaper;  { when a var xx:PMPaper parameter can be nil, it is changed to xx: PMPaperPtr }

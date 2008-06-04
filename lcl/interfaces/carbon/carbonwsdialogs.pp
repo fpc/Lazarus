@@ -516,11 +516,11 @@ begin
   begin
     //DebugLn('Style: ' + DbgS(Style));
     FontDialog.Font.Style := [];
-    if (Style and FPCMacOSAll.bold) > 0 then
+    if (Style and {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.bold) > 0 then
       FontDialog.Font.Style := FontDialog.Font.Style + [fsBold];
-    if (Style and FPCMacOSAll.italic) > 0 then
+    if (Style and {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.italic) > 0 then
       FontDialog.Font.Style := FontDialog.Font.Style + [fsItalic];
-    if (Style and FPCMacOSAll.underline) > 0 then
+    if (Style and {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.underline) > 0 then
       FontDialog.Font.Style := FontDialog.Font.Style + [fsUnderline];
   end;
   
@@ -629,7 +629,7 @@ begin
     CarbonWidgetSet.SetMainMenuEnabled(False);
 
     FontDialog := AFontDialog;
-    FPCMacOSAll.ShowWindow(Dialog);
+    {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.ShowWindow(Dialog);
 
     // show font panel
     if not FPIsFontPanelVisible then

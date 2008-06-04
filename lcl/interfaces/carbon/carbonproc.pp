@@ -75,7 +75,7 @@ function ShiftStateToModifiers(const Shift: TShiftState): Byte;
 function FindCarbonFontID(const FontName: String): ATSUFontID;
 function CarbonFontIDToFontName(ID: ATSUFontID): String;
 
-function FontStyleToQDStyle(const AStyle: TFontStyles): FPCMacOSAll.Style;
+function FontStyleToQDStyle(const AStyle: TFontStyles): {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.Style;
 
 procedure FillStandardDescription(out Desc: TRawImageDescription);
 
@@ -96,9 +96,9 @@ function StringsToCFArray(S: TStrings): CFArrayRef;
 
 function RoundFixed(const F: Fixed): Integer;
 
-function GetCarbonRect(Left, Top, Width, Height: Integer): FPCMacOSAll.Rect;
-function GetCarbonRect(const ARect: TRect): FPCMacOSAll.Rect;
-function ParamsToCarbonRect(const AParams: TCreateParams): FPCMacOSAll.Rect;
+function GetCarbonRect(Left, Top, Width, Height: Integer): {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.Rect;
+function GetCarbonRect(const ARect: TRect): {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.Rect;
+function ParamsToCarbonRect(const AParams: TCreateParams): {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.Rect;
 function ParamsToRect(const AParams: TCreateParams): TRect;
 
 type
@@ -112,8 +112,8 @@ function RectToCGRect(const ARect: TRect): CGRect;
 function CGRectToRect(const ARect: CGRect): TRect;
 
 function ParamsToHIRect(const AParams: TCreateParams): HIRect;
-function CarbonRectToRect(const ARect: FPCMacOSAll.Rect): TRect;
-function HIRectToCarbonRect(const ARect: HIRect): FPCMacOSAll.Rect;
+function CarbonRectToRect(const ARect: {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.Rect): TRect;
+function HIRectToCarbonRect(const ARect: HIRect): {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.Rect;
 
 function PointToHIPoint(const APoint: TPoint): HIPoint;
 function PointToHISize(const APoint: TPoint): HISize;
@@ -125,8 +125,8 @@ function ColorToRGBColor(const AColor: TColor): RGBColor;
 function RGBColorToColor(const AColor: RGBColor): TColor;
 function CreateCGColor(const AColor: TColor): CGColorRef;
 
-function DbgS(const ARect: FPCMacOSAll.Rect): string; overload;
-function DbgS(const AColor: FPCMacOSAll.RGBColor): string; overload;
+function DbgS(const ARect: {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.Rect): string; overload;
+function DbgS(const AColor: {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.RGBColor): string; overload;
 function DbgS(const APoint: HIPoint): string; overload;
 function DbgS(const ASize: HISize): string; overload;
 
@@ -496,13 +496,13 @@ end;
   Params:  AStyle - Font style
   Returns: QuickDraw Style
  ------------------------------------------------------------------------------}
-function FontStyleToQDStyle(const AStyle: TFontStyles): FPCMacOSAll.Style;
+function FontStyleToQDStyle(const AStyle: TFontStyles): {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.Style;
 begin
-  Result := FPCMacOSAll.normal;
+  Result := {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.normal;
   
-  if fsBold      in AStyle then Result := Result or FPCMacOSAll.bold;
-  if fsItalic    in AStyle then Result := Result or FPCMacOSAll.italic;
-  if fsUnderline in AStyle then Result := Result or FPCMacOSAll.underline;
+  if fsBold      in AStyle then Result := Result or {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.bold;
+  if fsItalic    in AStyle then Result := Result or {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.italic;
+  if fsUnderline in AStyle then Result := Result or {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.underline;
   // fsStrikeOut has no counterpart?
 end;
 
@@ -714,7 +714,7 @@ end;
   Params:  Left, Top, Width, Height - Coordinates
   Returns: Carbon Rect
  ------------------------------------------------------------------------------}
-function GetCarbonRect(Left, Top, Width, Height: Integer): FPCMacOSAll.Rect;
+function GetCarbonRect(Left, Top, Width, Height: Integer): {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.Rect;
 begin
   Result.Left := Left;
   Result.Top := Top;
@@ -727,7 +727,7 @@ end;
   Params:  ARect - Rectangle
   Returns: Carbon Rect
  ------------------------------------------------------------------------------}
-function GetCarbonRect(const ARect: TRect): FPCMacOSAll.Rect;
+function GetCarbonRect(const ARect: TRect): {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.Rect;
 begin
   Result.Left := ARect.Left;
   Result.Top := ARect.Top;
@@ -740,7 +740,7 @@ end;
   Params:  AParams - Creation parameters
   Returns: Carbon Rect from creation parameters
  ------------------------------------------------------------------------------}
-function ParamsToCarbonRect(const AParams: TCreateParams): FPCMacOSAll.Rect;
+function ParamsToCarbonRect(const AParams: TCreateParams): {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.Rect;
 begin
   Result.Left := AParams.X;
   Result.Top := AParams.Y;
@@ -907,7 +907,7 @@ end;
   Params:  ARect - Carbon Rect
   Returns: Rectangle
  ------------------------------------------------------------------------------}
-function CarbonRectToRect(const ARect: FPCMacOSAll.Rect): TRect;
+function CarbonRectToRect(const ARect: {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.Rect): TRect;
 begin
   Result.Left := ARect.Left;
   Result.Top := ARect.Top;
@@ -920,7 +920,7 @@ end;
   Params:  ARect - HIRect
   Returns: Carbon Rect
  ------------------------------------------------------------------------------}
-function HIRectToCarbonRect(const ARect: HIRect): FPCMacOSAll.Rect;
+function HIRectToCarbonRect(const ARect: HIRect): {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.Rect;
 begin
   if CGRectIsNull(ARect) <> 0 then
   begin // CGRect passed is invalid!
@@ -1044,13 +1044,13 @@ begin
   Result := CGColorCreate(RGBColorSpace, @F[0]);
 end;
 
-function DbgS(const ARect: FPCMacOSAll.Rect): String;
+function DbgS(const ARect: {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.Rect): String;
 begin
   Result := DbgS(ARect.left) + ', ' + DbgS(ARect.top)
           + ', ' + DbgS(ARect.right) + ', ' + DbgS(ARect.bottom);
 end;
 
-function DbgS(const AColor: FPCMacOSAll.RGBColor): String;
+function DbgS(const AColor: {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.RGBColor): String;
 begin
   Result :=
     'R: ' + IntToHex(AColor.Red, 4) +

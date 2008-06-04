@@ -127,7 +127,7 @@ begin
       // Run our event loop until quitNow is set.
       Loop;
     finally
-      FPCMacOSAll.RemoveEventHandler(QuitHandler);
+      {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.RemoveEventHandler(QuitHandler);
     end;
   finally
     DisposeEventHandlerUPP(QuitUPP);
@@ -438,7 +438,7 @@ begin
         ReleaseEvent(DummyEvent);
       end;
     finally
-      FPCMacOSAll.RemoveEventHandler(EventLoopHandler);
+      {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.RemoveEventHandler(EventLoopHandler);
     end;
   finally
     DisposeEventHandlerUPP(EventLoopUPP);

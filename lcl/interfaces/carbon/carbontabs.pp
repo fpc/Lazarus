@@ -713,14 +713,14 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonTabsControl.GetClientRect(var ARect: TRect): Boolean;
 var
-  AClientRect: FPCMacOSAll.Rect;
+  AClientRect: {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.Rect;
 begin
   Result := False;
   
   //DebugLn('TCarbonTabsControl.GetClientRect');
 
   if OSError(GetControlData(ControlRef(Widget), kControlEntireControl,
-      kControlTabContentRectTag, SizeOf(FPCMacOSAll.Rect), @AClientRect, nil),
+      kControlTabContentRectTag, SizeOf({$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.Rect), @AClientRect, nil),
     Self, 'GetClientRect', 'GetControlData') then Exit;
 
   ARect := CarbonRectToRect(AClientRect);

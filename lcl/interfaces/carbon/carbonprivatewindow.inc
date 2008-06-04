@@ -1103,8 +1103,8 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWindow.GetMousePos: TPoint;
 var
-  P: FPCMacOSAll.Point;
-  R: FPCMacOSAll.Rect;
+  P: {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.Point;
+  R: {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.Rect;
 begin
   GetGlobalMouse(P);
 
@@ -1132,7 +1132,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWindow.GetClientRect(var ARect: TRect): Boolean;
 var
-  AWndRect, AClientRect: FPCMacOSAll.Rect;
+  AWndRect, AClientRect: {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.Rect;
 const
   SName = 'GetClientRect';
 begin
@@ -1191,7 +1191,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWindow.IsVisible: Boolean;
 begin
-  Result := FPCMacOSAll.IsWindowVisible(WindowRef(Widget));
+  Result := {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.IsWindowVisible(WindowRef(Widget));
 end;
 
 {------------------------------------------------------------------------------
@@ -1203,20 +1203,20 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWindow.Enable(AEnable: Boolean): boolean;
 begin
-  Result := not FPCMacOSAll.IsControlEnabled(Content);
+  Result := not {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.IsControlEnabled(Content);
 
   // enable/disable window content
   // add/remove standard handler
   if AEnable then
   begin
-    OSError(FPCMacOSAll.EnableControl(Content), Self, SEnable, SEnableControl);
+    OSError({$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.EnableControl(Content), Self, SEnable, SEnableControl);
     OSError(
       ChangeWindowAttributes(WindowRef(Widget), kWindowStandardHandlerAttribute,
         kWindowNoAttributes), Self, SEnable, SChangeWindowAttrs);
   end
   else
   begin
-    OSError(FPCMacOSAll.DisableControl(Content), Self, SEnable, SDisableControl);
+    OSError({$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.DisableControl(Content), Self, SEnable, SDisableControl);
     OSError(
       ChangeWindowAttributes(WindowRef(Widget), kWindowNoAttributes,
         kWindowStandardHandlerAttribute), Self, SEnable, SChangeWindowAttrs);
@@ -1234,17 +1234,17 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWindow.GetBounds(var ARect: TRect): Boolean;
 var
-  AWndRect, AClientRect: FPCMacOSAll.Rect;
+  AWndRect, AClientRect: {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.Rect;
 const
   SName = 'GetBounds';
 begin
   Result := False;
 
   if OSError(
-    FPCMacOSAll.GetWindowBounds(WindowRef(Widget), kWindowStructureRgn, AWndRect),
+    {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.GetWindowBounds(WindowRef(Widget), kWindowStructureRgn, AWndRect),
     Self, SName, SGetWindowBounds, 'kWindowStructureRgn') then Exit;
   if OSError(
-    FPCMacOSAll.GetWindowBounds(WindowRef(Widget), kWindowContentRgn, AClientRect),
+    {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.GetWindowBounds(WindowRef(Widget), kWindowContentRgn, AClientRect),
     Self, SName, SGetWindowBounds, 'kWindowContentRgn') then Exit;
 
   ARect.Left := AWndRect.Left;
@@ -1313,7 +1313,7 @@ begin
   Resizing := True;
   try
     // set window width, height
-    if OSError(FPCMacOSAll.SetWindowBounds(WindowRef(Widget), kWindowContentRgn,
+    if OSError({$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.SetWindowBounds(WindowRef(Widget), kWindowContentRgn,
       GetCarbonRect(ARect)), Self, SName, 'SetWindowBounds') then Exit;
     // set window left, top
     if OSError(MoveWindowStructure(WindowRef(Widget), ARect.Left, ARect.Top),
@@ -1385,10 +1385,10 @@ begin
 
   if AVisible or (csDesigning in LCLobject.ComponentState) then
   begin
-    FPCMacOSAll.ShowWindow(WindowRef(Widget));
+    {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.ShowWindow(WindowRef(Widget));
   end
   else
-    FPCMacOSAll.HideWindow(WindowRef(Widget));
+    {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.HideWindow(WindowRef(Widget));
 end;
 
 {------------------------------------------------------------------------------
@@ -1516,7 +1516,7 @@ end;
 ------------------------------------------------------------------------------}
 function TCarbonWindow.Show(AShow: Integer): Boolean;
 var
-  P: FPCMacOSAll.Point;
+  P: {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.Point;
   Maximized: Boolean;
 const
   SName = 'Show';
