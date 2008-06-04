@@ -7524,7 +7524,8 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- function Visibility: default -->
       <element name="ColorToString">
-        <short/>
+        <short>
+          <var>ColorToString</var> - given a colour value, returns a corresponding colour name like 'Green'</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7539,7 +7540,8 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- function Visibility: default -->
       <element name="StringToColor">
-        <short/>
+        <short>
+          <var>StringToColor</var> - given a colour name like 'Blue', returns the corresponding colour value</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7565,7 +7567,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- function Visibility: default -->
       <element name="Blue">
-        <short/>
+        <short>Finds the <var>Blue</var> component of the supplied colour</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7580,7 +7582,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- function Visibility: default -->
       <element name="Green">
-        <short/>
+        <short>Finds the <var>Green</var> component of the supplied colour</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7595,7 +7597,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- function Visibility: default -->
       <element name="Red">
-        <short/>
+        <short>Finds the <var>Red</var> component of the supplied colour</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7610,7 +7612,8 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- procedure Visibility: default -->
       <element name="RedGreenBlue">
-        <short/>
+        <short>
+          <var>RedGreenBlue</var> - decomposes a composite colour into its component Red, Green and Blue values</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7633,7 +7636,9 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- function Visibility: default -->
       <element name="FPColorToTColor">
-        <short/>
+        <short>
+          <var>FPColorToTColor</var> - converts a colour specified as a <var>FPColor </var>to a colour of type<var>TColor</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7648,7 +7653,9 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- function Visibility: default -->
       <element name="TColorToFPColor">
-        <short/>
+        <short>
+          <var>TColorToFPColor</var> - converts a colour of type <var>TColor </var>to one specified as a <var>FPColor</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8236,6 +8243,26 @@ Checks for the presence of a valid Lazarus Resource, then uses
           </table>
         </descr>
       </topic>
+      <element name="RGBToColor">
+        <short>
+          <var>RGBToColor</var> - assembles the supplied values for Red, Green and Blue into a composite colour</short>
+      </element>
+      <element name="LoadCursorFromLazarusResource">
+        <short>
+          <var>LoadCursorFromLazarusResource</var> - loads a  named cursor handle from the Lazarus Resource (.LRS)</short>
+      </element>
+      <element name="CreateBitmapFromLazarusResource">
+        <short>
+          <var>CreateBitmapFromLazarusResource</var> - creates a bitmap image using data read into a stream from a Lazarus Resource (.LRS)</short>
+      </element>
+      <element name="InvertColor">
+        <short>
+          <var>InvertColor</var> - returns the complementary colour to the supplied value - helps to produce a 'negative' image</short>
+      </element>
+      <element name="DecColor">
+        <short>
+          <var>DecColor</var> - decrease the component RGBs of a colour by the quantity specified (usually results in a darker colour overall)</short>
+      </element>
     </module>
     <!-- Graphics -->
   </package>
