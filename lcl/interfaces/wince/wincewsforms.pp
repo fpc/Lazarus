@@ -422,6 +422,7 @@ class procedure TWinCEWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
 begin
   DisableApplicationWindows(ACustomForm.Handle);
   ShowWindow(ACustomForm.Handle, SW_SHOW);
+//  BringWindowToTop(ACustomForm.Handle);
 end;
 
 

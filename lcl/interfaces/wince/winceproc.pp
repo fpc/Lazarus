@@ -1185,14 +1185,14 @@ end;
   Function: DisableWindowsProc
   Params: Window - handle of toplevel windows to be disabled
           Data   - handle of current window form
-  Returns: Whether the enumeration should continue
+  Returns: True if the enumeration should continue, False otherwise
 
   Used in LM_SHOWMODAL to disable the windows of application thread
   except the current form.
  -----------------------------------------------------------------------------}
 function DisableWindowsProc(Window: HWND; Data: LParam): LongBool; {$ifdef Win32}stdcall;{$else}cdecl;{$endif}
 var
-  Buffer: array[0..15] of Char;
+  Buffer: array[0..15] of WideChar;
   DisableWindowsInfo: PDisableWindowsInfo absolute Data;
 begin
   Result:=true;
@@ -1205,8 +1205,8 @@ begin
   if Window = DisableWindowsInfo^.NewModalWindow then exit;
 
   // Don't disable any ComboBox listboxes
-  if (GetClassName(Window, @Buffer, sizeof(Buffer))<sizeof(Buffer))
-    and (StrIComp(Buffer, 'ComboLBox')=0) then exit;
+  if (GetClassNameW(Window, @Buffer, sizeof(Buffer))<sizeof(Buffer))
+    and (WideCompareText(widestring(@Buffer), 'ComboLBox')=0) then exit;
 
   if not IsWindowVisible(Window) or not IsWindowEnabled(Window) then exit;
 
@@ -1224,8 +1224,8 @@ var
 begin
   // prevent recursive calling when the AppHandle window is disabled
   If InDisableApplicationWindows then exit;
+  InDisableApplicationWindows := True;
   
-  InDisableApplicationWindows:=true;
   New(DisableWindowsInfo);
   DisableWindowsInfo^.NewModalWindow := Window;
   DisableWindowsInfo^.DisabledWindowList := TList.Create;

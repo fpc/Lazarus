@@ -82,10 +82,8 @@ type
     class procedure Popup(const APopupMenu: TPopupMenu; const X, Y: integer); override;
   end;
 
-  function FindMenuItemAccelerator(const ACharCode: char; const AMenuHandle: HMENU): integer;
-
 const
-//having left or right submenus [true,false] means right have submenu,left doesnt have
+  //having left or right submenus [true,false] means right have submenu,left doesnt have
   MenuBarIDS : array[Boolean, Boolean] of integer =
   (
     (101,105),
@@ -96,13 +94,15 @@ const
 
 var
   MenuItemsList : TStringList;
-  procedure CeSetMenu(Wnd: HWND; Menu: HMENU);
+
+function FindMenuItemAccelerator(const ACharCode: char; const AMenuHandle: HMENU): integer;
+procedure CeSetMenu(Wnd: HWND; Menu: HMENU);
 
 implementation
 
 uses strutils;
 
-{$R wincemenures.res}
+{$R wincemenures.rc}
 
 { helper routines }
 
