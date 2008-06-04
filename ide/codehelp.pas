@@ -181,6 +181,7 @@ type
                          const AMethod: TMethod; AsLast: boolean = false);
     procedure RemoveHandler(HandlerType: TCodeHelpManagerHandler;
                             const AMethod: TMethod);
+    procedure FreeHandlers;
     procedure CallDocChangeEvents(HandlerType: TCodeHelpManagerHandler;
                                   Doc: TLazFPDocFile);
     function DoCreateFPDocFileForSource(const SrcFilename: string;
@@ -707,6 +708,14 @@ begin
   FHandlers[HandlerType].Remove(AMethod);
 end;
 
+procedure TCodeHelpManager.FreeHandlers;
+var
+  HandlerType: TCodeHelpManagerHandler;
+begin
+  for HandlerType:=Low(TCodeHelpManagerHandler) to High(TCodeHelpManagerHandler) do
+    FreeThenNil(FHandlers[HandlerType]);
+end;
+
 procedure TCodeHelpManager.CallDocChangeEvents(HandlerType: TCodeHelpManagerHandler;
   Doc: TLazFPDocFile);
 var
@@ -922,6 +931,7 @@ begin
   FreeAndNil(FDocs);
   FreeAndNil(FSrcToDocMap);
   FreeAndNil(FDeclarationCache);
+  FreeHandlers;
   inherited Destroy;
 end;
 

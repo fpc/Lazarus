@@ -292,7 +292,8 @@ procedure TFPDocEditor.FormDestroy(Sender: TObject);
 begin
   Reset;
   FreeAndNil(fChain);
-  CodeHelpBoss.RemoveAllHandlersOfObject(Self);
+  if assigned(CodeHelpBoss) then
+    CodeHelpBoss.RemoveAllHandlersOfObject(Self);
   Application.RemoveAllHandlersOfObject(Self);
 end;
 
