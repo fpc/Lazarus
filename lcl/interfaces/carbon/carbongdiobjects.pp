@@ -1587,15 +1587,18 @@ function TCarbonBitmap.CreateMaskedImage(AMask: TCarbonBitmap;
   const ARect: TRect): CGImageRef;
 var
   CGSubImage: CGImageRef;
+  CGSubMaskImage: CGImageRef;
 begin
   Result := nil;
   if CGImage = nil then Exit;
   if (AMask <> nil) and (AMask.CGImage <> nil) then
   begin
     CGSubImage := CreateSubImage(ARect);
+    CGSubMaskImage := AMask.CreateSubImage(ARect);
     try
-      Result := CGImageCreateWithMask(CGSubImage, AMask.CGImage);
+      Result := CGImageCreateWithMask(CGSubImage, CGSubMaskImage);
     finally
+      CGImageRelease(CGSubMaskImage);
       CGImageRelease(CGSubImage);
     end;
   end
