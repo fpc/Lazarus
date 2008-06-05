@@ -864,7 +864,6 @@ type
     property Font;
     property Lines;
     property MaxLength;
-    property ParentBidiMode;
     property OnChange;
     property OnClick;
     property OnDblClick;
@@ -878,11 +877,15 @@ type
     property OnKeyPress;
     property OnKeyUp;
     property OnMouseDown;
-    property OnMouseUp;
-    property OnMouseMove;
     property OnMouseEnter;
     property OnMouseLeave;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnMouseWheel;
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
     property OnStartDrag;
+    property ParentBidiMode;
     property ParentFont;
     property PopupMenu;
     property ReadOnly;
