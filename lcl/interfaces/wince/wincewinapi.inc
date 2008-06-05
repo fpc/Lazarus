@@ -173,9 +173,9 @@ var
       Brush := Windows.GetSysColorBrush(COLOR_HIGHLIGHT or SYS_COLOR_INDEX_FLAG)
     else
       Brush := Windows.GetSysColorBrush(COLOR_WINDOW or SYS_COLOR_INDEX_FLAG);
-    Windows.FillRect(Data^._HDC, Windows.Rect(Data^.rcItem), Brush);
-
     Rect := Data^.rcItem;
+    Windows.FillRect(Data^._HDC, Rect, Brush);
+
     InflateRect(Rect, -1, -1);
     Rect.Right := Rect.Left + Rect.Bottom - Rect.Top;
 
@@ -185,8 +185,7 @@ var
 
     // draw text
     Rect := Windows.Rect(Data^.rcItem);
-    Rect.Right := Data^.rcItem.Right;
-    Rect.Left := Rect.Bottom-Rect.Top + 5;
+    Rect.Left := Rect.Left + Rect.Bottom - Rect.Top + 5;
 
     { Don't suppose anything about the current background color
       or text color. Always set them.

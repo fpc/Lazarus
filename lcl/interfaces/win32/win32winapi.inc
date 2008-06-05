@@ -218,7 +218,7 @@ var
     WideBuffer: widestring;
 {$endif}
   begin
-    Selected := (Data^.itemState AND ODS_SELECTED)>0;
+    Selected := (Data^.itemState and ODS_SELECTED)>0;
     Enabled := CheckListBox.Enabled and CheckListBox.ItemEnabled[Data^.itemID];
 
     // fill the background
@@ -228,11 +228,11 @@ var
       lgBrush.lbColor := Windows.GetSysColor(COLOR_WINDOW);
     lgBrush.lbStyle := BS_SOLID;
     Brush := CreateBrushIndirect(lgBrush);
-    Windows.FillRect(Data^._HDC, Windows.Rect(Data^.rcItem), Brush);
+    Rect := Data^.rcItem;
+    Windows.FillRect(Data^._HDC, Rect, Brush);
     DeleteObject(Brush);
 
     // draw checkbox
-    Rect := Data^.rcItem;
     InflateRect(Rect, -1, -1);
     Rect.Right := Rect.Left + Rect.Bottom - Rect.Top;
 
@@ -242,8 +242,7 @@ var
 
     // draw text
     Rect := Windows.Rect(Data^.rcItem);
-    Rect.Right := Data^.rcItem.Right;
-    Rect.Left := Rect.Bottom-Rect.Top + 5;
+    Rect.Left := Rect.Left + Rect.Bottom - Rect.Top + 5;
     if not Enabled then
       OldColor := Windows.SetTextColor(Data^._HDC, Windows.GetSysColor(COLOR_GRAYTEXT))
     else

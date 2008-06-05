@@ -88,6 +88,7 @@ type
     property BorderSpacing;
     property BorderStyle;
     property Color;
+    property Columns;
     property Constraints;
     property DragCursor;
     property DragMode;
