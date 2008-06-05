@@ -5389,45 +5389,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TWinControl DoMouseWheel  "Event Handler"
- ------------------------------------------------------------------------------}
-function TWinControl.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
-  MousePos: TPoint): Boolean;
-begin
-  Result := False;
-
-  if Assigned(FOnMouseWheel)
-  then FOnMouseWheel(Self, Shift, WheelDelta, MousePos, Result);
-
-  if not Result
-  then begin
-    if WheelDelta < 0
-    then Result := DoMouseWheelDown(Shift, MousePos)
-    else Result := DoMouseWheelUp(Shift, MousePos);
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  TWinControl DoMouseWheelDown  "Event Handler"
-------------------------------------------------------------------------------}
-function TWinControl.DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean;
-begin
-  Result := False;
-  if Assigned(FOnMouseWheelDown) then
-    FOnMouseWheelDown(Self, Shift, MousePos, Result);
-end;
-
-{------------------------------------------------------------------------------
-  TWinControl DoMouseWheelUp  "Event Handler"
-------------------------------------------------------------------------------}
-function TWinControl.DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean;
-begin
-  Result := False;
-  if Assigned(FOnMouseWheelUp) then
-    FOnMouseWheelUp(Self, Shift, MousePos, Result);
-end;
-
-{------------------------------------------------------------------------------
   TWinControl Insert
 ------------------------------------------------------------------------------}
 procedure TWinControl.Insert(AControl : TControl);
@@ -6358,28 +6319,6 @@ end;
 procedure TWinControl.WMExit(var Message: TLMExit);
 begin
   Assert(False, Format('Trace: TODO: [TWinControl.LMExit] %s', [ClassName]));
-end;
-
-{------------------------------------------------------------------------------
-  Method: TWinControl.WMMouseWheel
-  Params:   Msg: The message
-  Returns:  nothing
-
-  event handler.
- ------------------------------------------------------------------------------}
-procedure TWinControl.WMMouseWheel(var Message: TLMMouseEvent);
-var
-  MousePos : TPoint;
-begin
-  Assert(False, Format('Trace: [TWinControl.LMMouseWheel] %s', [ClassName]));
-
-  MousePos.X := Message.X;
-  MousePos.Y := Message.Y;
-
-  if DoMouseWheel(Message.State, Message.WheelDelta, MousePos) then
-    Message.Result := 1
-  else
-    inherited;
 end;
 
 {------------------------------------------------------------------------------

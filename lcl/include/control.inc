@@ -1630,6 +1630,45 @@ begin
     MouseUp(Button, KeysToShiftState(Keys), XPos, YPos);
 end;
 
+{------------------------------------------------------------------------------
+       TControl DoMouseWheel  "Event Handler"
+ ------------------------------------------------------------------------------}
+function TControl.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
+  MousePos: TPoint): Boolean;
+begin
+  Result := False;
+
+  if Assigned(FOnMouseWheel)
+  then FOnMouseWheel(Self, Shift, WheelDelta, MousePos, Result);
+
+  if not Result
+  then begin
+    if WheelDelta < 0
+    then Result := DoMouseWheelDown(Shift, MousePos)
+    else Result := DoMouseWheelUp(Shift, MousePos);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+       TControl DoMouseWheelDown  "Event Handler"
+------------------------------------------------------------------------------}
+function TControl.DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean;
+begin
+  Result := False;
+  if Assigned(FOnMouseWheelDown) then
+    FOnMouseWheelDown(Self, Shift, MousePos, Result);
+end;
+
+{------------------------------------------------------------------------------
+       TControl DoMouseWheelUp  "Event Handler"
+------------------------------------------------------------------------------}
+function TControl.DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean;
+begin
+  Result := False;
+  if Assigned(FOnMouseWheelUp) then
+    FOnMouseWheelUp(Self, Shift, MousePos, Result);
+end;
+
 procedure TControl.SetAnchorSideIndex(Index: integer; const AValue: TAnchorSide
   );
 begin
@@ -2016,6 +2055,31 @@ begin
   
   DoMouseUp(Message, mbMiddle);
 end;
+
+{------------------------------------------------------------------------------
+  Method: TControl.WMMouseWheel
+  Params:   Msg: The message
+  Returns:  nothing
+
+  event handler.
+ ------------------------------------------------------------------------------}
+procedure TControl.WMMouseWheel(var Message: TLMMouseEvent);
+var
+  MousePos: TPoint;
+  RealControl: TControl;
+begin
+  Assert(False, Format('Trace: [TControl.LMMouseWheel] %s', [ClassName]));
+  DoBeforeMouseMessage;
+
+  MousePos.X := Message.X;
+  MousePos.Y := Message.Y;
+
+  if DoMouseWheel(Message.State, Message.WheelDelta, MousePos) then
+    Message.Result := 1
+  else
+    inherited;
+end;
+
 
 {------------------------------------------------------------------------------
        TControl Click

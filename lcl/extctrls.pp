@@ -537,6 +537,9 @@ type
     property OnMouseUp;
     property OnMouseEnter;
     property OnMouseLeave;
+    property OnMouseWheel;
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
     property OnPaint;
     property OnResize;
 //    property OnStartDock;

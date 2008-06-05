@@ -826,6 +826,9 @@ type
     FOnMouseLeave: TNotifyEvent;
     FOnMouseMove: TMouseMoveEvent;
     FOnMouseUp: TMouseEvent;
+    FOnMouseWheel: TMouseWheelEvent;
+    FOnMouseWheelDown: TMouseWheelUpDownEvent;
+    FOnMouseWheelUp: TMouseWheelUpDownEvent;
     FOnQuadClick: TNotifyEvent;
     FOnResize: TNotifyEvent;
     FOnShowHint: TControlShowHintEvent;
@@ -983,6 +986,7 @@ type
     procedure WMLButtonUp(var Message: TLMLButtonUp); message LM_LBUTTONUP;
     procedure WMRButtonUp(var Message: TLMRButtonUp); message LM_RBUTTONUP;
     procedure WMMButtonUp(var Message: TLMMButtonUp); message LM_MBUTTONUP;
+    procedure WMMouseWheel(var Message: TLMMouseEvent); message LM_MOUSEWHEEL;
     procedure WMMove(var Message: TLMMove); message LM_MOVE;
     procedure WMSize(var Message: TLMSize); message LM_SIZE;
     procedure WMWindowPosChanged(var Message: TLMWindowPosChanged); message LM_WINDOWPOSCHANGED;
@@ -1107,6 +1111,9 @@ type
     property OnMouseUp: TMouseEvent read FOnMouseUp write FOnMouseUp;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnMouseWheel: TMouseWheelEvent read FOnMouseWheel write FOnMouseWheel;
+    property OnMouseWheelDown: TMouseWheelUpDownEvent read FOnMouseWheelDown write FOnMouseWheelDown;
+    property OnMouseWheelUp: TMouseWheelUpDownEvent read FOnMouseWheelUp write FOnMouseWheelUp;
     property OnStartDock: TStartDockEvent read FOnStartDock write FOnStartDock;
     property OnStartDrag: TStartDragEvent read FOnStartDrag write FOnStartDrag;
     property OnEditingDone: TNotifyEvent read FOnEditingDone write FOnEditingDone;
@@ -1258,6 +1265,9 @@ type
     property OnClick: TNotifyEvent read FOnClick write FOnClick stored IsOnClickStored;
     property OnResize: TNotifyEvent read FOnResize write FOnResize;
     property OnShowHint: TControlShowHintEvent read FOnShowHint write FOnShowHint;
+    function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; dynamic;
+    function DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; dynamic;
+    function DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; dynamic;
     property Parent: TWinControl read FParent write SetParent;
     property PopupMenu: TPopupmenu read GetPopupmenu write SetPopupMenu;
     property ShowHint: Boolean read FShowHint write SetShowHint stored IsShowHintStored default False;
@@ -1509,9 +1519,6 @@ type
     FOnKeyDown: TKeyEvent;
     FOnKeyPress: TKeyPressEvent;
     FOnKeyUp: TKeyEvent;
-    FOnMouseWheel: TMouseWheelEvent;
-    FOnMouseWheelDown: TMouseWheelUpDownEvent;
-    FOnMouseWheelUp: TMouseWheelUpDownEvent;
     FOnEnter: TNotifyEvent;
     FOnExit: TNotifyEvent;
     FOnUnDock: TUnDockEvent;
@@ -1599,7 +1606,6 @@ type
     procedure WMShowWindow(var Message: TLMShowWindow); message LM_SHOWWINDOW;
     procedure WMEnter(var Message: TLMEnter); message LM_ENTER;
     procedure WMExit(var Message: TLMExit); message LM_EXIT;
-    procedure WMMouseWheel(var Message: TLMMouseEvent); message LM_MOUSEWHEEL;
     procedure WMKeyDown(var Message: TLMKeyDown); message LM_KEYDOWN;
     procedure WMSysKeyDown(var Message: TLMKeyDown); message LM_SYSKEYDOWN;
     procedure WMKeyUp(var Message: TLMKeyUp); message LM_KEYUP;
@@ -1641,10 +1647,6 @@ type
     // mouse and keyboard
     procedure DoEnter; dynamic;
     procedure DoExit; dynamic;
-    function  DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
-                           MousePos: TPoint): Boolean; dynamic;
-    function  DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; dynamic;
-    function  DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; dynamic;
     function  DoKeyDownBeforeInterface(var Message: TLMKey): Boolean;
     function  DoRemainingKeyDown(var Message: TLMKeyDown): Boolean;
     function  DoRemainingKeyUp(var Message: TLMKeyDown): Boolean;
@@ -1733,9 +1735,6 @@ type
     property OnKeyDown: TKeyEvent read FOnKeyDown write FOnKeyDown;
     property OnKeyPress: TKeyPressEvent read FOnKeyPress write FOnKeyPress;
     property OnKeyUp: TKeyEvent read FOnKeyUp write FOnKeyUp;
-    property OnMouseWheel: TMouseWheelEvent read FOnMouseWheel write FOnMouseWheel;
-    property OnMouseWheelDown: TMouseWheelUpDownEvent read FOnMouseWheelDown write FOnMouseWheelDown;
-    property OnMouseWheelUp: TMouseWheelUpDownEvent read FOnMouseWheelUp write FOnMouseWheelUp;
     property OnUnDock: TUnDockEvent read FOnUnDock write FOnUnDock;
     property OnUTF8KeyPress: TUTF8KeyPressEvent read FOnUTF8KeyPress write FOnUTF8KeyPress;
     property ParentCtl3D: Boolean read FParentCtl3D write SetParentCtl3d default True;
