@@ -1,15 +1,15 @@
 object FormMessagesComposer: TFormMessagesComposer
-  Left = 356
-  Height = 553
-  Top = 202
+  Left = 650
+  Height = 552
+  Top = 195
   Width = 822
   HorzScrollBar.Page = 821
-  VertScrollBar.Page = 552
+  VertScrollBar.Page = 551
   ActiveControl = CaptionEdit
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Messages Composer'
-  ClientHeight = 553
+  ClientHeight = 552
   ClientWidth = 822
   OnCreate = MessagesInitExecute
   Position = poScreenCenter
@@ -390,7 +390,7 @@ object FormMessagesComposer: TFormMessagesComposer
     TabOrder = 12
     Text = 'DefaultEdit'
   end
-  object Button1: TButton
+  object TestButton: TButton
     Left = 307
     Height = 37
     Top = 501
@@ -399,7 +399,7 @@ object FormMessagesComposer: TFormMessagesComposer
     BorderSpacing.InnerBorder = 4
     TabOrder = 13
   end
-  object Button2: TBitBtn
+  object OkButton: TBitBtn
     Left = 605
     Height = 37
     Top = 501
@@ -414,8 +414,8 @@ object FormMessagesComposer: TFormMessagesComposer
     NumGlyphs = 0
     TabOrder = 14
   end
-  object Button3: TBitBtn
-    AnchorSideLeft.Control = Button2
+  object CancelButton: TBitBtn
+    AnchorSideLeft.Control = OkButton
     AnchorSideLeft.Side = asrBottom
     Left = 709
     Height = 37

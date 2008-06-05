@@ -25,8 +25,9 @@ unit MessageComposer;
 interface
 
 uses
-  Classes, SysUtils, LResources, LCLType, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, Spin, Grids, ActnList, ComCtrls, Buttons, EditBtn;
+  Classes, SysUtils, LResources, LCLType, Forms, Controls, Graphics, Dialogs,
+  StdCtrls, ExtCtrls, Spin, Grids, ActnList, ComCtrls, Buttons, EditBtn,
+  IDECommands, MenuIntf, LazIDEIntf, SrcEditorIntf;
 
 type
 
@@ -46,8 +47,8 @@ type
     IfResultComboBox: TComboBox;
     StringResultEdit: TEdit;
     GetParamsFmt: TAction;
-    Button2: TBitBtn;
-    Button3: TBitBtn;
+    OkButton: TBitBtn;
+    CancelButton: TBitBtn;
     GetMessageForSource: TAction;
     Label1: TLabel;
     StringResultLabel: TLabel;
@@ -57,7 +58,7 @@ type
     CaseOfEndElseRadioButton: TRadioButton;
     SourceWrapperGroupBox: TGroupBox;
     Test: TAction;
-    Button1: TButton;
+    TestButton: TButton;
     MaskInputCheckBox: TCheckBox;
     PromptEdit: TEdit;
     ValueEdit: TEdit;
@@ -116,11 +117,9 @@ var
 
 implementation
 
-uses IDECommands, MenuIntf, LazIDEIntf, SrcEditorIntf;
-
 const
-   cMessageComposer = 'Message Composer';
-   DoubleSpace = '  ';
+  cMessageComposer = 'Message Composer';
+  DoubleSpace = '  ';
 
 resourcestring
   SMessageComposerCaption = 'Message Composer ...';
@@ -130,6 +129,9 @@ resourcestring
   SSourceWrapper = 'SOURCE WRAPPER';
   SKindofMessage = 'KIND OF MESSAGE';
   SNotImplementedYet = 'Not Implemented Yet';
+  rsTest = 'Test';
+  rsOk = 'Ok';
+  rsCancel = 'Cancel';
 
 var
   CmdMessageComposer: TIDECommand;
@@ -140,29 +142,29 @@ var
 procedure ExecuteMessagesComposer(Sender: TObject);
 var FormMessagesComposer: TFormMessagesComposer;
 
-procedure FormatSrcMessage;
-var ListSrcMessages: TStringList;
-    indx: integer;
-    BaseStart: string;
-begin
-  BaseStart := EmptyStr;
-  for indx := 1 to SourceEditorWindow.ActiveEditor.CursorTextXY.x-
-                   Length(SourceEditorWindow.ActiveEditor.Selection)-1 do
-    BaseStart := BaseStart+#32;
+  procedure FormatSrcMessage;
+  var ListSrcMessages: TStringList;
+      indx: integer;
+      BaseStart: string;
+  begin
+    BaseStart := EmptyStr;
+    for indx := 1 to SourceEditorWindow.ActiveEditor.CursorTextXY.x-
+                     Length(SourceEditorWindow.ActiveEditor.Selection)-1 do
+      BaseStart := BaseStart+#32;
 
-  ListSrcMessages := TStringList.Create;
-  ListSrcMessages.Text := srcMessage;
-  if (Pos('if ',srcMessage) = 1)or(Pos('case ',srcMessage) = 1) then
-    for indx := 1 to ListSrcMessages.Count-1 do
-      ListSrcMessages.Strings[indx] := BaseStart+ListSrcMessages.Strings[indx];
+    ListSrcMessages := TStringList.Create;
+    ListSrcMessages.Text := srcMessage;
+    if (Pos('if ',srcMessage) = 1)or(Pos('case ',srcMessage) = 1) then
+      for indx := 1 to ListSrcMessages.Count-1 do
+        ListSrcMessages.Strings[indx] := BaseStart+ListSrcMessages.Strings[indx];
 
-  if Pos('case ',srcMessage) = 1 then
-    for indx := 1 to ListSrcMessages.Count-2 do
-      ListSrcMessages.Strings[indx] := DoubleSpace+ListSrcMessages.Strings[indx];
+    if Pos('case ',srcMessage) = 1 then
+      for indx := 1 to ListSrcMessages.Count-2 do
+        ListSrcMessages.Strings[indx] := DoubleSpace+ListSrcMessages.Strings[indx];
 
-  srcMessage := ListSrcMessages.Text;
-  ListSrcMessages.Free;
-end;
+    srcMessage := ListSrcMessages.Text;
+    ListSrcMessages.Free;
+  end;
 
 begin
   Assert(Sender <> nil);  // removes compiler warning
@@ -732,6 +734,9 @@ begin
   MaskInputCheckBox.Caption := SMaskInput;
   SourceWrapperGroupBox.Caption := SSourceWrapper;
   KindMessageLabel.Caption := SKindofMessage;
+  TestButton.Caption:=rsTest;
+  OkButton.Caption:=rsOk;
+  CancelButton.Caption:=rsCancel;
 
   MessageSetup.Execute;
 end;
