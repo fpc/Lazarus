@@ -724,6 +724,7 @@ resourcestring
   lisVerToClipboard = 'Copy version information to clipboard';
   lisLogo = 'Logo';
   lisDate = 'Date';
+  lisFPCVersion = 'FPC Version: ';
   lisSVNRevision = 'SVN Revision: ';
   lisClose = '&Close';
   lisAboutLazarusMsg =

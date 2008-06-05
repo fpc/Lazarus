@@ -38,6 +38,7 @@ type
     BuildDateLabel: TLABEL;
     AboutMemo: TMEMO;
     Image1: TImage;
+    FPCVersionLabel: TLabel;
     LogoImage: TImage;
     LogoPage: TPage;
     miVerToClipboard: TMenuItem;
@@ -125,6 +126,7 @@ begin
   VersionLabel.Caption := lisVersion+' #: '+ GetLazarusVersionString;
   RevisionLabel.Caption := lisSVNRevision+LazarusRevisionStr;
   BuildDateLabel.Caption := lisDate+': '+GetLocalizedBuildDate;
+  FPCVersionLabel.Caption:= lisFPCVersion+{$I %FPCVERSION%};
   PlatformLabel.Caption:=GetDefaultTargetCPU+'-'+GetDefaultTargetOS
                          +'-'+LCLPlatformDisplayNames[GetDefaultLCLWidgetType];
 
