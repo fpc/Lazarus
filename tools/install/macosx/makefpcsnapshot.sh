@@ -102,7 +102,7 @@ mkdir -p $INSTALLDIR
 make install PP=$COMPILER INSTALL_PREFIX=$INSTALLDIR
 
 if [ $CREATECROSSPPC == 1 ]; then
-  make all PP=$COMPILER CPU_TARGET=powerpc
+  make all PP=$PPC_RELEASE CPU_TARGET=powerpc
   cp fpcsrc/compiler/ppcrossppc fpcsrc/compiler/ppcppc
   CROSSCOMPILER=$FPCBUILDDIR/fpcsrc/compiler/ppcppc
   make -C fpcsrc compiler_install rtl_install packages_install CPU_TARGET=powerpc FPC=$CROSSCOMPILER CROSSINSTALL=0 \
