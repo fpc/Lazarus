@@ -138,7 +138,7 @@ begin
     // saturation
     if L <= 128
     then S := (diff * 255) div (cMax + cMin)
-    else S := (diff * 255) div (510 - cMax - cMin);
+    else S := integer(diff * 255) div (510 - cMax - cMin);
 
     // hue
     Rdelta := (cMax - R);
