@@ -4100,7 +4100,7 @@ begin
     end;
   end;
 
-  //DebugLn('TWinControl.IsControlMouseMsg B ',DbgSName(Self),' Control=',DbgSName(Control));
+  //DebugLn(['TWinControl.IsControlMouseMsg B ',DbgSName(Self),' Control=',DbgSName(Control),' Msg=',TheMessage.Msg]);
   Result := False;
   if Control <> nil then
   begin

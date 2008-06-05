@@ -2066,7 +2066,6 @@ end;
 procedure TControl.WMMouseWheel(var Message: TLMMouseEvent);
 var
   MousePos: TPoint;
-  RealControl: TControl;
 begin
   Assert(False, Format('Trace: [TControl.LMMouseWheel] %s', [ClassName]));
   DoBeforeMouseMessage;
