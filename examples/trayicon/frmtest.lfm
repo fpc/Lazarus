@@ -10,6 +10,8 @@ object frmTrayTest: TfrmTrayTest
   ClientHeight = 249
   ClientWidth = 393
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnPaint = FormPaint
   LCLVersion = '0.9.25'
   object btnShow: TButton
     Left = 32
@@ -37,7 +39,7 @@ object frmTrayTest: TfrmTrayTest
     Top = 32
     Width = 136
     BorderSpacing.InnerBorder = 4
-    Caption = 'Paint Test'
+    Caption = 'Raw Paint Test'
     OnClick = btnPaintTestClick
     TabOrder = 2
   end
@@ -47,7 +49,17 @@ object frmTrayTest: TfrmTrayTest
     Top = 88
     Width = 136
     Caption = 'Display Message'
+    OnClick = HandleClick
     TabOrder = 3
+  end
+  object chkOnPaintDrawing: TCheckBox
+    Left = 32
+    Height = 18
+    Top = 152
+    Width = 335
+    Caption = 'Test drawing the icon in the Form''s OnPaint event'
+    OnChange = chkOnPaintDrawingChange
+    TabOrder = 4
   end
   object PopupMenu: TPopupMenu
     left = 136

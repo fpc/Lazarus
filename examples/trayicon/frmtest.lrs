@@ -5,18 +5,45 @@ LazarusResources.Add('TfrmTrayTest','FORMDATA',[
   +'p'#3#175#0#5'Width'#3#137#1#18'HorzScrollBar.Page'#3#136#1#18'VertScrollBar'
   +'.Page'#3#248#0#13'ActiveControl'#7#7'btnShow'#7'Caption'#6#26'TTrayIcon tes'
   +'t application'#12'ClientHeight'#3#249#0#11'ClientWidth'#3#137#1#8'OnCreate'
-  +#7#10'FormCreate'#10'LCLVersion'#6#6'0.9.25'#0#7'TButton'#7'btnShow'#4'Left'
-  +#2' '#6'Height'#2'!'#3'Top'#2' '#5'Width'#3#136#0#25'BorderSpacing.InnerBord'
-  +'er'#2#4#7'Caption'#6#4'Show'#7'OnClick'#7#12'btnShowClick'#8'TabOrder'#2#0#0
-  +#0#7'TButton'#7'btnHide'#4'Left'#2' '#6'Height'#2'!'#3'Top'#2'X'#5'Width'#3
-  +#136#0#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#4'Hide'#7'OnClick'#7#12
-  +'btnHideClick'#8'TabOrder'#2#1#0#0#7'TButton'#12'btnPaintTest'#4'Left'#3#216
-  +#0#6'Height'#2'!'#3'Top'#2' '#5'Width'#3#136#0#25'BorderSpacing.InnerBorder'
-  +#2#4#7'Caption'#6#10'Paint Test'#7'OnClick'#7#17'btnPaintTestClick'#8'TabOrd'
-  +'er'#2#2#0#0#7'TButton'#17'btnDisplayMessage'#4'Left'#3#216#0#6'Height'#2'!'
-  +#3'Top'#2'X'#5'Width'#3#136#0#7'Caption'#6#15'Display Message'#8'TabOrder'#2
-  +#3#0#0#10'TPopupMenu'#9'PopupMenu'#4'left'#3#136#0#3'top'#3#184#0#0#9'TMenuI'
-  +'tem'#9'MenuItem1'#7'Caption'#6#9'New Item1'#0#0#9'TMenuItem'#9'MenuItem3'#7
-  +'Caption'#6#9'New Item3'#0#0#9'TMenuItem'#9'MenuItem2'#7'Caption'#6#9'New It'
-  +'em2'#0#0#0#9'TTrayIcon'#11'SystrayIcon'#4'left'#3#181#0#3'top'#3#184#0#0#0#0
+  +#7#10'FormCreate'#9'OnDestroy'#7#11'FormDestroy'#7'OnPaint'#7#9'FormPaint'#10
+  +'LCLVersion'#6#6'0.9.25'#0#7'TButton'#7'btnShow'#4'Left'#2' '#6'Height'#2'!'
+  +#3'Top'#2' '#5'Width'#3#136#0#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6
+  +#4'Show'#7'OnClick'#7#12'btnShowClick'#8'TabOrder'#2#0#0#0#7'TButton'#7'btnH'
+  +'ide'#4'Left'#2' '#6'Height'#2'!'#3'Top'#2'X'#5'Width'#3#136#0#25'BorderSpac'
+  +'ing.InnerBorder'#2#4#7'Caption'#6#4'Hide'#7'OnClick'#7#12'btnHideClick'#8'T'
+  +'abOrder'#2#1#0#0#7'TButton'#12'btnPaintTest'#4'Left'#3#216#0#6'Height'#2'!'
+  +#3'Top'#2' '#5'Width'#3#136#0#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6
+  +#14'Raw Paint Test'#7'OnClick'#7#17'btnPaintTestClick'#8'TabOrder'#2#2#0#0#7
+  +'TButton'#17'btnDisplayMessage'#4'Left'#3#216#0#6'Height'#2'!'#3'Top'#2'X'#5
+  +'Width'#3#136#0#7'Caption'#6#15'Display Message'#7'OnClick'#7#11'HandleClick'
+  +#8'TabOrder'#2#3#0#0#9'TCheckBox'#17'chkOnPaintDrawing'#4'Left'#2' '#6'Heigh'
+  +'t'#2#18#3'Top'#3#152#0#5'Width'#3'O'#1#7'Caption'#6'1Test drawing the icon '
+  +'in the Form''s OnPaint event'#8'OnChange'#7#23'chkOnPaintDrawingChange'#8'T'
+  +'abOrder'#2#4#0#0#10'TPopupMenu'#9'PopupMenu'#4'left'#3#136#0#3'top'#3#184#0
+  +#0#9'TMenuItem'#9'MenuItem1'#7'Caption'#6#9'New Item1'#0#0#9'TMenuItem'#9'Me'
+  +'nuItem3'#7'Caption'#6#9'New Item3'#0#0#9'TMenuItem'#9'MenuItem2'#7'Caption'
+  +#6#9'New Item2'#0#0#0#9'TTrayIcon'#11'SystrayIcon'#4'left'#3#181#0#3'top'#3
+  +#184#0#0#0#0#12'TfrmTrayTest'#11'frmTrayTest'#4'Left'#3'"'#1#6'Height'#3#249
+  +#0#3'Top'#3#175#0#5'Width'#3#137#1#18'HorzScrollBar.Page'#3#136#1#18'VertScr'
+  +'ollBar.Page'#3#248#0#13'ActiveControl'#7#7'btnShow'#7'Caption'#6#26'TTrayIc'
+  +'on test application'#12'ClientHeight'#3#249#0#11'ClientWidth'#3#137#1#8'OnC'
+  +'reate'#7#10'FormCreate'#9'OnDestroy'#7#11'FormDestroy'#7'OnPaint'#7#9'FormP'
+  +'aint'#10'LCLVersion'#6#6'0.9.25'#0#7'TButton'#7'btnShow'#4'Left'#2' '#6'Hei'
+  +'ght'#2'!'#3'Top'#2' '#5'Width'#3#136#0#25'BorderSpacing.InnerBorder'#2#4#7
+  +'Caption'#6#4'Show'#7'OnClick'#7#12'btnShowClick'#8'TabOrder'#2#0#0#0#7'TBut'
+  +'ton'#7'btnHide'#4'Left'#2' '#6'Height'#2'!'#3'Top'#2'X'#5'Width'#3#136#0#25
+  +'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#4'Hide'#7'OnClick'#7#12'btnHide'
+  +'Click'#8'TabOrder'#2#1#0#0#7'TButton'#12'btnPaintTest'#4'Left'#3#216#0#6'He'
+  +'ight'#2'!'#3'Top'#2' '#5'Width'#3#136#0#25'BorderSpacing.InnerBorder'#2#4#7
+  +'Caption'#6#14'Raw Paint Test'#7'OnClick'#7#17'btnPaintTestClick'#8'TabOrder'
+  +#2#2#0#0#7'TButton'#17'btnDisplayMessage'#4'Left'#3#216#0#6'Height'#2'!'#3'T'
+  +'op'#2'X'#5'Width'#3#136#0#7'Caption'#6#15'Display Message'#7'OnClick'#7#11
+  +'HandleClick'#8'TabOrder'#2#3#0#0#9'TCheckBox'#17'chkOnPaintDrawing'#4'Left'
+  +#2' '#6'Height'#2#18#3'Top'#3#152#0#5'Width'#3'O'#1#7'Caption'#6'1Test drawi'
+  +'ng the icon in the Form''s OnPaint event'#8'OnChange'#7#23'chkOnPaintDrawin'
+  +'gChange'#8'TabOrder'#2#4#0#0#10'TPopupMenu'#9'PopupMenu'#4'left'#3#136#0#3
+  +'top'#3#184#0#0#9'TMenuItem'#9'MenuItem1'#7'Caption'#6#9'New Item1'#0#0#9'TM'
+  +'enuItem'#9'MenuItem3'#7'Caption'#6#9'New Item3'#0#0#9'TMenuItem'#9'MenuItem'
+  +'2'#7'Caption'#6#9'New Item2'#0#0#0#9'TTrayIcon'#11'SystrayIcon'#4'left'#3
+  +#181#0#3'top'#3#184#0#0#0#0
 ]);

@@ -39,6 +39,7 @@ type
     btnHide: TButton;
     btnPaintTest: TButton;
     btnDisplayMessage: TButton;
+    chkOnPaintDrawing: TCheckBox;
     MenuItem1: TMenuItem;
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
@@ -47,11 +48,15 @@ type
     procedure btnShowClick(Sender: TObject);
     procedure btnHideClick(Sender: TObject);
     procedure btnPaintTestClick(Sender: TObject);
+    procedure chkOnPaintDrawingChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure FormPaint(Sender: TObject);
     procedure HandleClick(Sender: TObject);
   private
     { private declarations }
     pathMedia: string;
+    MyImage: TIcon;
     procedure DoPaint(Sender: TObject);
   public
     { public declarations }
@@ -92,13 +97,11 @@ end;
 
 procedure TfrmTrayTest.btnPaintTestClick(Sender: TObject);
 var
-  MyImage, SecondImage: TIcon;
+  SecondImage: TIcon;
 begin
-  MyImage := TIcon.Create;
   SecondImage := TIcon.Create;
 
   try
-    MyImage.LoadFromFile(pathMedia + 'icon.ico');
     SecondImage.Height := 22;
     SecondImage.Width := 22;
     {$IFDEF FPC}
@@ -107,8 +110,12 @@ begin
     Canvas.Draw(0, 0, SecondImage);
   finally
     SecondImage.Free;
-    MyImage.Free;
   end;
+end;
+
+procedure TfrmTrayTest.chkOnPaintDrawingChange(Sender: TObject);
+begin
+  Invalidate;
 end;
 
 procedure TfrmTrayTest.FormCreate(Sender: TObject);
@@ -152,6 +159,22 @@ begin
 //  SystrayIcon.OnPaint := DoPaint;
 
   SystrayIcon.PopUpMenu := PopupMenu;
+
+  // Loads the icon
+
+  MyImage := TIcon.Create;
+
+  MyImage.LoadFromFile(pathMedia + 'icon.ico');
+end;
+
+procedure TfrmTrayTest.FormDestroy(Sender: TObject);
+begin
+    MyImage.Free;
+end;
+
+procedure TfrmTrayTest.FormPaint(Sender: TObject);
+begin
+  if chkOnPaintDrawing.Checked then btnPaintTestClick(Sender);
 end;
 
 procedure TfrmTrayTest.HandleClick(Sender: TObject);
@@ -160,18 +183,10 @@ begin
 end;
 
 procedure TfrmTrayTest.DoPaint(Sender: TObject);
-var
-  MyImage: TIcon;
 begin
-  MyImage := TIcon.Create;
-  try
-    MyImage.LoadFromFile(pathMedia + 'icon.ico');
-    {$IFDEF FPC}
-    SystrayIcon.Canvas.Draw(0, 0, MyImage);
-    {$ENDIF}
-  finally
-    MyImage.Free;
-  end;
+  {$IFDEF FPC}
+  SystrayIcon.Canvas.Draw(0, 0, MyImage);
+  {$ENDIF}
   WriteLn('Paint');
 end;
 
