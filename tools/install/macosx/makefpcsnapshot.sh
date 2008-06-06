@@ -101,6 +101,12 @@ fi
 mkdir -p $INSTALLDIR
 make install PP=$COMPILER INSTALL_PREFIX=$INSTALLDIR
 
+# install for use by lazarus
+make -C fpcsrc compiler_install rtl_install packages_install utils_install \
+  INSTALL_PREFIX=$INSTALLFPCDIR PP=$COMPILER FPCMAKE=$FPCBUILDDIR/fpcsrc/utils/fpcm/fpcmake
+
+make -C fpcsrc\compiler installsymlink PP=$COMPILER INSTALL_PREFIX=$INSTALLFPCDIR
+
 if [ $CREATECROSSPPC == 1 ]; then
   make all PP=$PPC_RELEASE CPU_TARGET=powerpc
   cp fpcsrc/compiler/ppcrossppc fpcsrc/compiler/ppcppc
@@ -118,16 +124,6 @@ fi
 # which then ends up as link to the temporary build path
 # on the user's machine after installation
 ln -sf ../lib/fpc/$FPCVERSION/$PPCARCH $INSTALLDIR/bin/$PPCARCH
-
-# install for use by lazarus
-cd fpcsrc
-make compiler_install rtl_install packages_install utils_install \
-  INSTALL_PREFIX=$INSTALLFPCDIR PP=$COMPILER FPCMAKE=$FPCBUILDDIR/fpcsrc/utils/fpcm/fpcmake
-if [ -d $FPCBUILDDIR/fpcsrc/fcl ]; then
-  make fcl_install INSTALL_PREFIX=$INSTALLFPCDIR PP=$COMPILER FPCMAKE=$FPCBUILDDIR/fpcsrc/utils/fpcm/fpcmake
-fi
-make -C compiler installsymlink PP=$COMPILER INSTALL_PREFIX=$INSTALLFPCDIR
-
 
 # fill in packproj template.
 OLDIFS=$IFS
