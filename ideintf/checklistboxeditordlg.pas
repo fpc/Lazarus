@@ -92,7 +92,7 @@ end;
 procedure TCheckListBoxEditorDlg.DeleteItem(Sender:TObject);
 begin
   if FCheck.ItemIndex = -1 then exit;
-  if MessageDlg(clbCheckListBoxEditor,Format(clbDelete,[FCheck.ItemIndex,FCheck.Items[FCheck.ItemIndex]]),
+  if MessageDlg(clbCheckListBoxEditor,Format(clbDeleteQuest,[FCheck.ItemIndex,FCheck.Items[FCheck.ItemIndex]]),
     mtConfirmation, mbYesNo, 0) = mrYes then
     FCheck.Items.Delete(FCheck.ItemIndex);
 end;
@@ -116,8 +116,8 @@ begin
   BtnCancel.Caption := oisCancel;
   BtnHelp.Caption := cActionListEditorHelpCategory;
   
-  tbAdd.Hint := oiscAdd;
-  tbDelete.Hint := oiscDelete;
+  tbAdd.Hint := clbAdd;
+  tbDelete.Hint := clbDeleteHint;
   tbUp.Hint := clbUp;
   tbDown.Hint := clbDown;
   tbEdit.Hint := clbModify;

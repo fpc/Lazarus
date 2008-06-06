@@ -891,33 +891,21 @@ end;
 { TCheckGroupEditorDlg }
 
 procedure TCheckGroupComponentEditor.DoShowEditor;
-var Dlg : TCheckGroupEditorDlg;
+var 
+  Dlg: TCheckGroupEditorDlg;
 begin
-  Dlg:=TCheckGroupEditorDlg.Create(nil);
-  with Dlg do begin
-    Caption:=clbCheckGroupEditor;
-    ItemIndex:=-1;
-    BtnAdd.Caption:=oiscAdd;
-    BtnDelete.Caption:=oiscDelete;
-    BtnUp.Caption:=clbUp;
-    BtnDown.Caption:=clbDown;
-    BtnModify.ShowHint:=true;
-    BtnModify.Hint:=clbModify;
-    BtnModify.Caption:='...';
-    ColumnsLabel.Caption:=clbColumns;
-    DuplicateCheckBox.Caption:=clbCheckDuplicate;
-    LabelDisable.Caption:=clbDisable
-  end;
-
+  Dlg := TCheckGroupEditorDlg.Create(nil);
   try
-    if GetComponent is TCheckGroup then begin
-      Dlg.aCheck:=TCheckGroup(GetComponent);
+    if GetComponent is TCheckGroup then 
+    begin
+      Dlg.aCheck := TCheckGroup(GetComponent);
       if not HasHook then exit;
 
       AssignCheckGroup(Dlg.FCheck, Dlg.aCheck);
-      Dlg.ColumnsUpDown.Position:=Dlg.aCheck.Columns;
+      Dlg.ColumnsUpDown.Position := Dlg.aCheck.Columns;
       //ShowEditor
-      if Dlg.ShowModal=mrOK then begin
+      if Dlg.ShowModal = mrOK then 
+      begin
         AssignCheckGroup(Dlg.aCheck, Dlg.FCheck);
         Modified;
       end;
@@ -936,7 +924,7 @@ end;
 
 function TCheckGroupComponentEditor.GetVerb(Index: Integer): string;
 begin
-  Result:=clbCheckGroupEditor+'...';
+  Result:=cgCheckGroupEditor+'...';
 end;
 
 function TCheckGroupComponentEditor.GetVerbCount: Integer;

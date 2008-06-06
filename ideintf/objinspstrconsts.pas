@@ -170,18 +170,19 @@ resourcestring
 
   //checklistbox editor
   clbCheckListBoxEditor = 'CheckListBox Editor';
-  clbUp = '&Up';
-  clbDown = 'Do&wn';
+  clbUp = 'Up';
+  clbDown = 'Down';
   clbModify = 'Modify the Item';
   clbAdd = 'Add new Item';
-  clbDelete = 'Delete the Item %d "%s"?';
+  clbDeleteHint = 'Delete the Item';
+  clbDeleteQuest = 'Delete the Item %d "%s"?';
 
   //checkgroup editor
-  clbCheckGroupEditor = 'CheckGroup Editor';
-  clbDisable = 'Popup to disable/enable items';
-  clbColumns = 'n. columns';
-  clbCheckDuplicate = 'On Add, Check for Duplicate in Items';
-  clbCheckDuplicateMsg = 'The "%s" Item is already listed. Add it anyway?';
+  cgCheckGroupEditor = 'CheckGroup Editor';
+  cgDisable = 'Popup to disable/enable items';
+  cgColumns = 'Columns:';
+  cgCheckDuplicate = 'On Add, Check for Duplicate in Items';
+  cgCheckDuplicateMsg = 'The "%s" Item is already listed. Add it anyway?';
 
   // Collection Editor
 
