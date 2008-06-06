@@ -4033,7 +4033,7 @@ var
 begin
   Result:=nil;
   if not (CurRoot is TComponent) then exit;
-  {$IFNDEF EnableMultiFormProperties}
+  {$IFDEF DisableMultiFormProperties}
   exit;
   {$ENDIF}
   FMainOwner:=nil;
@@ -4081,7 +4081,7 @@ var
 begin
   if not (CurRoot is TComponent) then exit;
   CheckComponent(TComponent(CurRoot));
-  {$IFNDEF EnableMultiFormProperties}
+  {$IFDEF DisableMultiFormProperties}
   exit;
   {$ENDIF}
   UnitList:=GetUsableComponentUnits(CurRoot);
@@ -4159,7 +4159,7 @@ begin
   if (RootName='') or (SysUtils.CompareText(RootName,TComponent(CurRoot).Name)=0)
   then
     CheckComponent(TComponent(CurRoot).Name,SubPath,TComponent(CurRoot));
-  {$IFNDEF EnableMultiFormProperties}
+  {$IFDEF DisableMultiFormProperties}
   exit;
   {$ENDIF}
   if p<1 then exit;

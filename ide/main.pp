@@ -5773,7 +5773,7 @@ begin
       ReferenceInstanceNames.Clear;
       GetFixupInstanceNames(CurRoot,RefRootName,ReferenceInstanceNames);
 
-      {$IFDEF EnableMultiFormProperties}
+      {$IFNDEF DisableMultiFormProperties}
       DebugLn(['TMainIDE.DoFixupComponentReferences BEFORE loading ',i,' ',dbgsName(CurRoot),' RefRoot=',RefRootName,' Refs="',Trim(ReferenceInstanceNames.Text),'"']);
 
       // load the referenced component
