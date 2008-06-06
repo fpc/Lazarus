@@ -302,6 +302,13 @@ ResourceString
   hhsHelpBrowserNotExecutable = 'Browser %s%s%s not executable.';
   hhsHelpErrorWhileExecuting = 'Error while executing %s%s%s:%s%s';
 
+  // parser
+  SParExpected                  = 'Wrong token type: %s expected';
+  SParInvalidInteger            = 'Invalid integer number: %s';
+  SParWrongTokenType            = 'Wrong token type: %s expected but %s found';
+  SParInvalidFloat              = 'Invalid floating point number: %s';
+  SParWrongTokenSymbol          = 'Wrong token symbol: %s expected but %s found';
+
 implementation
 
 end.
