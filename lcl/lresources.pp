@@ -2407,12 +2407,14 @@ var
       Output.Write(s[1], Length(s));
   end;
 
+  {$IFDEF DisableWindowsUnicodeSupport}
   procedure WriteWideString(const s: WideString);
   begin
     WriteLRSInteger(Output,Length(s));
     if Length(s) > 0 then
       Output.Write(s[1], Length(s)*2);
   end;
+  {$ENDIF}
 
   procedure WriteInteger(value: LongInt);
   begin
@@ -2446,6 +2448,7 @@ var
       WriteInteger(StrToInt(s));
   end;
 
+  {$IFDEF DisableWindowsUnicodeSupport}
   function WideStringNeeded(const s: widestring): Boolean;
   var
     i: Integer;
@@ -2472,6 +2475,7 @@ var
     for i:=1 to length(Result) do
       Result[i]:=chr(ord(s[i]));
   end;
+  {$ENDIF}
 
   function ParserNextToken: Char;
   begin
@@ -2522,7 +2526,7 @@ var
       toString:
         begin
           toStringBuf := parser.TokenString;
-          DebugLn(['ProcessValue toStringBuf="',toStringBuf,'" ',dbgstr(toStringBuf)]);
+          //DebugLn(['ProcessValue toStringBuf="',toStringBuf,'" ',dbgstr(toStringBuf)]);
           while ParserNextToken = '+' do
           begin
             ParserNextToken;   // Get next string fragment
@@ -2531,11 +2535,11 @@ var
             toStringBuf := toStringBuf + parser.TokenString;
           end;
           if length(toStringBuf)<256 then begin
-            debugln('LRSObjectTextToBinary.ProcessValue WriteShortString');
+            //debugln('LRSObjectTextToBinary.ProcessValue WriteShortString');
             Output.WriteByte(Ord(vaString));
             WriteShortString(toStringBuf);
           end else begin
-            debugln('LRSObjectTextToBinary.ProcessValue WriteLongString');
+            //debugln('LRSObjectTextToBinary.ProcessValue WriteLongString');
             Output.WriteByte(Ord(vaLString));
             WriteLongString(toStringBuf);
           end;
@@ -2544,7 +2548,7 @@ var
       toWString:
         begin
           toWideStringBuf := parser.TokenWideString;
-          DebugLn(['ProcessValue toWideStringBuf="',toWideStringBuf,'" ',dbgstr(toWideStringBuf)]);
+          //DebugLn(['ProcessValue toWideStringBuf="',toWideStringBuf,'" ',dbgstr(toWideStringBuf)]);
           while ParserNextToken = '+' do
           begin
             ParserNextToken;   // Get next string fragment
@@ -2553,17 +2557,17 @@ var
             toWideStringBuf := toWideStringBuf + parser.TokenWideString;
           end;
           if WideStringNeeded(toWideStringBuf) then begin
-            debugln('LRSObjectTextToBinary.ProcessValue WriteWideString');
+            //debugln('LRSObjectTextToBinary.ProcessValue WriteWideString');
             Output.WriteByte(Ord(vaWString));
             WriteWideString(toWideStringBuf);
           end
           else
           if length(toStringBuf)<256 then begin
-            debugln('LRSObjectTextToBinary.ProcessValue WriteShortString');
+            //debugln('LRSObjectTextToBinary.ProcessValue WriteShortString');
             Output.WriteByte(Ord(vaString));
             WriteShortString(WideStrToShortStrWithoutConversion(toWideStringBuf));
           end else begin
-            debugln('LRSObjectTextToBinary.ProcessValue WriteLongString');
+            //debugln('LRSObjectTextToBinary.ProcessValue WriteLongString');
             Output.WriteByte(Ord(vaLString));
             WriteLongString(WideStrToAnsiStrWithoutConversion(toWideStringBuf));
           end;

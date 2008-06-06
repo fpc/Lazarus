@@ -5466,11 +5466,11 @@ begin
         BinStream:=TExtMemoryStream.Create;
         TxtLFMStream:=TExtMemoryStream.Create;
         try
-          { $IFDEF VerboseIDELFMConversion}
+          {$IFDEF VerboseIDELFMConversion}
           DebugLn(['TMainIDE.DoLoadLFM LFMBuf START =======================================']);
           DebugLn(LFMBuf.Source);
           DebugLn(['TMainIDE.DoLoadLFM LFMBuf END   =======================================']);
-          { $ENDIF}
+          {$ENDIF}
           LFMBuf.SaveToStream(TxtLFMStream);
           AnUnitInfo.ComponentLastLFMStreamSize:=TxtLFMStream.Size;
           TxtLFMStream.Position:=0;
@@ -5482,12 +5482,12 @@ begin
             AnUnitInfo.ComponentLastBinStreamSize:=BinStream.Size;
             BinStream.Position:=0;
             
-            { $IFDEF VerboseIDELFMConversion}
+            {$IFDEF VerboseIDELFMConversion}
             DebugLn(['TMainIDE.DoLoadLFM Binary START =======================================']);
             debugln(dbgMemStream(BinStream,BinStream.Size));
             DebugLn(['TMainIDE.DoLoadLFM Binary END   =======================================']);
             BinStream.Position:=0;
-            { $ENDIF}
+            {$ENDIF}
 
             Result:=mrOk;
           except
