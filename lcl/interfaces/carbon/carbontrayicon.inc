@@ -28,6 +28,11 @@ begin
   Result := True;
 end;
 
+{
+  Documentation for converting a CGImageRef to a NSImage can be found here:
+  
+  http://www.cocoadev.com/index.pl?CGImageRef
+}
 class function TCarbonWSCustomTrayIcon.Show(const ATrayIcon: TCustomTrayIcon): Boolean;
 var
   APrivateTrayIcon: TPrivateCocoaCarbonTrayIcon;
@@ -51,12 +56,6 @@ begin
   
   { Convert our CFImageRef to a NSImage }
 
-{  NSImage* image = [[NSImage alloc] initWithSize:rect.size];
-   [image lockFocus];
-   CGContextDrawImage([[NSGraphicsContext currentContext]
- graphicsPort], *(CGRect*)&rect, imageRef);
-   [image unlockFocus];}
-   
   ASize.width := TCarbonBitmap(ATrayIcon.Icon.Handle).Width;
   ASize.height := TCarbonBitmap(ATrayIcon.Icon.Handle).Height;
   ACGRect.size.width := ASize.width;
@@ -79,11 +78,18 @@ begin
   {$endif VerboseCarbonTrayIcon}
   APrivateTrayIcon.image.unlockFocus;
 
+  { Inserts the menu }
+
+  if ATrayIcon.PopUpMenu <> nil then
+  begin
+  
+  end;
+
   { Shows the icon }
 
   if APrivateTrayIcon.item <> nil then Exit(True);
 
-  APrivateTrayIcon.item := APrivateTrayIcon.bar.statusItemWithLength(NSSquareStatusItemLength);
+  APrivateTrayIcon.item := NSStatusItem.CreateWithHandle(APrivateTrayIcon.bar.statusItemWithLength(NSSquareStatusItemLength));
   APrivateTrayIcon.item.retain();
   APrivateTrayIcon.item.setImage(APrivateTrayIcon.image);
 

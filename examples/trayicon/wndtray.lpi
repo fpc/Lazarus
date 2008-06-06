@@ -29,7 +29,7 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="3">
+    <Units Count="2">
       <Unit0>
         <Filename Value="wndtray.dpr"/>
         <IsPartOfProject Value="True"/>
@@ -44,11 +44,6 @@
         <ResourceFilename Value="frmtest.lrs"/>
         <UnitName Value="frmtest"/>
       </Unit1>
-      <Unit2>
-        <Filename Value="wscommontrayicon.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="wscommontrayicon"/>
-      </Unit2>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
