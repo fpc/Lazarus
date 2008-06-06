@@ -310,6 +310,7 @@ ResourceString
   SParWrongTokenSymbol          = 'Wrong token symbol: %s expected but %s found';
   SParUnterminatedString        = 'Unterminated string';
   SParLocInfo                   = ' (at %d,%d, stream offset %.8x)';
+  SParUnterminatedBinValue      = 'Unterminated byte value';
 
 implementation
 
