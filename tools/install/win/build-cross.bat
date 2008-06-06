@@ -56,6 +56,8 @@ FOR /F %%L IN ('%FPCSVNDIR%\fpcsrc\compiler\utils\fpc.exe -PB') DO SET COMPILER=
 FOR /F %%L IN ('%COMPILER% -iSO') DO SET FPCSourceOS=%%L
 FOR /F %%L IN ('%FPCSVNDIR%\fpcsrc\compiler\utils\fpc.exe -P%TARGETCPU% -PB') DO SET PPCNAME=%%L
 
+%MAKEEXE% -C utils/fpcm all FPC=%COMPILER% 
+
 %MAKEEXE% compiler FPC=%COMPILER% PPC_TARGET=%TARGETCPU% EXENAME=%PPCNAME%
 SET COMPILER=%FPCSVNDIR%\fpcsrc\compiler\%PPCNAME%
 SET CPU_TARGET=%TARGETCPU%
@@ -76,7 +78,7 @@ rmdir /s /q %BUILDDIR%
 gmkdir -p %INSTALL_BINDIR%
 cp %CROSSBINDIR%\* %INSTALL_BINDIR%
 
-%MAKEEXE% rtl_install packages_install FPCMAKE=c:\fpc\%fpcversion%\bin\i386-win32\fpcmake.exe INSTALL_PREFIX=%INSTALL_BASE% FPC=%COMPILER%
+%MAKEEXE% rtl_install packages_install FPCMAKE=%FPCSVNDIR%\fpcsrc\utils\fpcm\fpcmake.exe INSTALL_PREFIX=%INSTALL_BASE% FPC=%COMPILER%
 
 copy %COMPILER% %INSTALL_BINDIR%
 %FPCSVNDIR%\fpcsrc\compiler\utils\fpcmkcfg.exe -d "basepath=%INSTALL_BASE%" -o %INSTALL_BINDIR%\fpc.cfg
