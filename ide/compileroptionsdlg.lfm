@@ -5,7 +5,7 @@ object frmCompilerOptions: TfrmCompilerOptions
   Width = 669
   HorzScrollBar.Page = 668
   VertScrollBar.Page = 527
-  ActiveControl = edtOtherUnits
+  ActiveControl = MainNotebook
   BorderIcons = [biSystemMenu]
   Caption = 'frmCompilerOptions'
   ClientHeight = 528
@@ -15,13 +15,14 @@ object frmCompilerOptions: TfrmCompilerOptions
   OnClose = frmCompilerOptionsClose
   OnResize = FormResize
   Position = poScreenCenter
+  LCLVersion = '0.9.25'
   object MainNotebook: TNotebook
     AnchorSideBottom.Control = BtnPanel
     Height = 480
     Width = 669
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    PageIndex = 7
+    PageIndex = 2
     TabOrder = 0
     object PathPage: TPage
       Caption = 'PathPage'
@@ -410,7 +411,7 @@ object frmCompilerOptions: TfrmCompilerOptions
         AnchorSideBottom.Control = grpTargetPlatform
         AnchorSideBottom.Side = asrBottom
         Left = 6
-        Height = 118
+        Height = 130
         Top = 149
         Width = 136
         Anchors = [akTop, akLeft, akBottom]
@@ -419,7 +420,7 @@ object frmCompilerOptions: TfrmCompilerOptions
         BorderSpacing.Top = 6
         BorderSpacing.Right = 6
         Caption = 'grpGenerate'
-        ClientHeight = 99
+        ClientHeight = 111
         ClientWidth = 132
         TabOrder = 3
         object radGenNormal: TRadioButton
@@ -463,14 +464,14 @@ object frmCompilerOptions: TfrmCompilerOptions
         AnchorSideRight.Control = CodeGenPage
         AnchorSideRight.Side = asrBottom
         Left = 148
-        Height = 118
+        Height = 130
         Top = 149
         Width = 511
         Anchors = [akTop, akLeft, akRight]
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'grpTargetPlatform'
-        ClientHeight = 99
+        ClientHeight = 111
         ClientWidth = 507
         TabOrder = 4
         object lblTargetOS: TLabel
@@ -490,7 +491,7 @@ object frmCompilerOptions: TfrmCompilerOptions
           AnchorSideTop.Side = asrBottom
           Left = 6
           Height = 20
-          Top = 37
+          Top = 41
           Width = 81
           BorderSpacing.Around = 6
           Caption = 'lblTargetCPU'
@@ -502,8 +503,8 @@ object frmCompilerOptions: TfrmCompilerOptions
           AnchorSideTop.Side = asrBottom
           Left = 6
           Height = 20
-          Top = 68
-          Width = 108
+          Top = 76
+          Width = 109
           BorderSpacing.Around = 6
           Caption = 'lblTargeti386Proc'
           ParentColor = False
@@ -515,7 +516,7 @@ object frmCompilerOptions: TfrmCompilerOptions
           AnchorSideRight.Control = grpTargetPlatform
           AnchorSideRight.Side = asrBottom
           Left = 91
-          Height = 25
+          Height = 29
           Top = 6
           Width = 410
           Anchors = [akTop, akLeft, akRight]
@@ -534,14 +535,15 @@ object frmCompilerOptions: TfrmCompilerOptions
           AnchorSideRight.Control = grpTargetPlatform
           AnchorSideRight.Side = asrBottom
           Left = 99
-          Height = 25
-          Top = 37
+          Height = 29
+          Top = 41
           Width = 402
           Anchors = [akTop, akLeft, akRight]
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           BorderSpacing.Left = 6
           BorderSpacing.Around = 6
           MaxLength = 0
+          OnChange = TargetCPUComboBoxChange
           TabOrder = 1
           Text = 'TargetCPUComboBox'
         end
@@ -552,10 +554,10 @@ object frmCompilerOptions: TfrmCompilerOptions
           AnchorSideTop.Side = asrBottom
           AnchorSideRight.Control = grpTargetPlatform
           AnchorSideRight.Side = asrBottom
-          Left = 126
-          Height = 25
-          Top = 68
-          Width = 375
+          Left = 127
+          Height = 29
+          Top = 76
+          Width = 374
           Anchors = [akTop, akLeft, akRight]
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           BorderSpacing.Left = 6
@@ -574,13 +576,13 @@ object frmCompilerOptions: TfrmCompilerOptions
         AnchorSideBottom.Control = CodeGenPage
         AnchorSideBottom.Side = asrBottom
         Left = 6
-        Height = 170
-        Top = 273
+        Height = 158
+        Top = 285
         Width = 653
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Around = 6
         Caption = 'grpOptimizations'
-        ClientHeight = 151
+        ClientHeight = 139
         ClientWidth = 649
         TabOrder = 5
         OnResize = grpOptimizationsResize

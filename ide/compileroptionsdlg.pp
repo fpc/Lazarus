@@ -232,6 +232,7 @@ type
     procedure PathEditBtnExecuted(Sender: TObject);
     procedure frmCompilerOptionsClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure grpOptimizationsResize(Sender: TObject);
+    procedure TargetCPUComboBoxChange(Sender: TObject);
   private
     procedure SetupSearchPathsTab(Page: integer);
     procedure SetupParsingTab(Page: integer);
@@ -255,6 +256,7 @@ type
     procedure SetReadOnly(const AValue: boolean);
     procedure UpdateInheritedTab;
     procedure ClearInheritedTree;
+    procedure UpdateI386Settings;
   public
     CompilerOpts: TBaseCompilerOptions;
 
@@ -545,6 +547,7 @@ begin
     else
       Targeti386ProcComboBox.ItemIndex := 0;
     end;
+    UpdateI386Settings;
 
     chkOptVarsInReg.Checked := Options.VariablesInRegisters;
     chkOptUncertain.Checked := Options.UncertainOptimizations;
@@ -1098,6 +1101,16 @@ begin
   end;
   InhTreeView.Items.Clear;
   InhTreeView.EndUpdate;
+end;
+
+procedure TfrmCompilerOptions.UpdateI386Settings;
+var
+  EnableI386: Boolean;
+begin
+  EnableI386:=(CompareText(TargetCPUComboBox.Text,'i386')=0)
+         or ((TargetCPUComboBox.ItemIndex<=0) and (GetDefaultTargetCPU='i386'));
+  Targeti386ProcComboBox.Enabled:=EnableI386;
+  lblTargeti386Proc.Enabled:=EnableI386;
 end;
 
 {------------------------------------------------------------------------------
@@ -1701,6 +1714,11 @@ begin
   x:=radOptLevel1.Left+Max(radOptLevel1.Width,radOptLevel2.Width)+6;
   chkOptVarsInReg.Left:=x;
   chkOptUncertain.Left:=x;
+end;
+
+procedure TfrmCompilerOptions.TargetCPUComboBoxChange(Sender: TObject);
+begin
+  UpdateI386Settings;
 end;
 
 procedure TfrmCompilerOptions.SetReadOnly(const AValue: boolean);
