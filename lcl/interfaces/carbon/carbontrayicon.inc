@@ -32,9 +32,13 @@ class function TCarbonWSCustomTrayIcon.Show(const ATrayIcon: TCustomTrayIcon): B
 var
   APrivateTrayIcon: TPrivateCocoaCarbonTrayIcon;
   ASize: NSSize;
-  ACGSize: CGRect absolute ASize;
+  ACGRect: CGRect;
   AcurrentContext: NSGraphicsContext;
 begin
+  {$ifdef VerboseCarbonTrayIcon}
+    WriteLn(':>[TCarbonWSCustomTrayIcon.Show]');
+  {$endif VerboseCarbonTrayIcon}
+
   Result := False;
 
   { Creates the handle }
@@ -55,11 +59,24 @@ begin
    
   ASize.width := TCarbonBitmap(ATrayIcon.Icon.Handle).Width;
   ASize.height := TCarbonBitmap(ATrayIcon.Icon.Handle).Height;
-
+  ACGRect.size.width := ASize.width;
+  ACGRect.size.height := ASize.height;
+  ACGRect.origin.x := 0;
+  ACGRect.origin.y := 0;
+  
   APrivateTrayIcon.image := NSImage.initWithSize(ASize);
+  APrivateTrayIcon.image.setCacheMode(NSImageCacheNever);
   APrivateTrayIcon.image.lockFocus;
   AcurrentContext := NSGraphicsContext.currentContext();
-  CGContextDrawImage(AcurrentContext.graphicsPort, ACGSize, TCarbonBitmap(ATrayIcon.Icon.Handle).CGImage);
+  CGContextDrawImage(AcurrentContext.graphicsPort, ACGRect, TCarbonBitmap(ATrayIcon.Icon.Handle).CGImage);
+  {$ifdef VerboseCarbonTrayIcon}
+    WriteLn('::[TCarbonWSCustomTrayIcon.Show]',
+     ' AcurrentContext ', IntToHex(PtrUInt(Pointer(AcurrentContext)), 8),
+     ' AcurrentContext.ClassID ', IntToHex(Int64(AcurrentContext.ClassID), 8),
+     ' AcurrentContext.Handle ', IntToHex(Int64(AcurrentContext.Handle), 8),
+     ' AcurrentContext.graphicsPort ', IntToHex(Int64(AcurrentContext.graphicsPort), 8)
+     );
+  {$endif VerboseCarbonTrayIcon}
   APrivateTrayIcon.image.unlockFocus;
 
   { Shows the icon }
@@ -71,6 +88,17 @@ begin
   APrivateTrayIcon.item.setImage(APrivateTrayIcon.image);
 
   Result := True;
+  
+  {$ifdef VerboseCarbonTrayIcon}
+    WriteLn(':<[TCarbonWSCustomTrayIcon.Show]',
+     ' Handle: ', IntToHex(ATrayIcon.Handle, 8),
+     ' ACGRect.size.width: ', ACGRect.size.width,
+     ' ACGRect.size.height: ', ACGRect.size.height,
+     ' ACGRect.origin.x: ', ACGRect.origin.x,
+     ' ACGRect.origin.y: ', ACGRect.origin.y,
+     ' TCarbonBitmap(ATrayIcon.Icon.Handle).CGImage ', IntToHex(Int64(TCarbonBitmap(ATrayIcon.Icon.Handle).CGImage), 8)
+     );
+  {$endif VerboseCarbonTrayIcon}
 end;
 
 class procedure TCarbonWSCustomTrayIcon.InternalUpdate(const ATrayIcon: TCustomTrayIcon);

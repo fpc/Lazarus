@@ -38,10 +38,10 @@ uses
   {$endif}
   // Cocoa
   {$ifdef CarbonUseCocoa}
-  appkit, foundation,
+  appkit, foundation, objc,
   {$endif CarbonUseCocoa}
   // LCL
-  Classes, Controls, ExtCtrls, LCLType, LCLProc, Graphics, Math,
+  Classes, Controls, ExtCtrls, LCLType, LCLProc, Graphics, Math, SysUtils,
   // widgetset
   WSExtCtrls, WSLCLClasses, WSControls, WSProc,
   // LCL Carbon

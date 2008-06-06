@@ -539,9 +539,12 @@ begin
   
   RegisterEvents;
 
-  // if using Cocoa, we need an autorelease pool
+  { if using Cocoa, we need an autorelease pool
+    and we also need to initialize NSApplication }
   {$ifdef CarbonUseCocoa}
     pool := NSAutoreleasePool.Create;
+    
+    NSApplicationLoad();
   {$endif}
 end;
 

@@ -46,7 +46,7 @@ uses
 {$endif}
   // Cocoa bindings
   {$ifdef CarbonUseCocoa}
-    foundation,
+    foundation, appkit,
   {$endif}
   // interfacebase
   InterfaceBase,
