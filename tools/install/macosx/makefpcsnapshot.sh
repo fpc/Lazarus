@@ -105,7 +105,7 @@ make install PP=$COMPILER INSTALL_PREFIX=$INSTALLDIR
 make -C fpcsrc compiler_install rtl_install packages_install utils_install \
   INSTALL_PREFIX=$INSTALLFPCDIR PP=$COMPILER FPCMAKE=$FPCBUILDDIR/fpcsrc/utils/fpcm/fpcmake
 
-make -C fpcsrc\compiler installsymlink PP=$COMPILER INSTALL_PREFIX=$INSTALLFPCDIR
+make -C fpcsrc/compiler installsymlink PP=$COMPILER INSTALL_PREFIX=$INSTALLFPCDIR
 
 if [ $CREATECROSSPPC == 1 ]; then
   make all PP=$PPC_RELEASE CPU_TARGET=powerpc
