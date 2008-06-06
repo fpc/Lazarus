@@ -1467,9 +1467,7 @@ begin
       and (not NewRow.IsReadOnly)
       and CanFocus then begin
         if (Column=oipgcValue) then
-          FCurrentEdit.SetFocus
-        else
-          Self.SetFocus;
+          FCurrentEdit.SetFocus;
       end;
     end;
     if FCurrentButton<>nil then
