@@ -171,6 +171,7 @@ type
     FReferencesColor: TColor;
     FGridBackgroundColor: TColor;
     FShowHints: boolean;
+    FAutoShow: Boolean;
     function FPropertyGridSplitterX(Page: TObjectInspectorPage): integer;
     procedure FPropertyGridSplitterX(Page: TObjectInspectorPage;
       const AValue: integer);
@@ -211,6 +212,7 @@ type
                                          write FPropertyNameColor;
     property ShowHints: boolean read FShowHints
                                 write FShowHints;
+    property AutoShow: boolean read FAutoShow write FAutoShow;
   end;
 
   TOICustomPropertyGrid = class;
@@ -623,6 +625,7 @@ type
     procedure DoUpdateRestricted;
     procedure DoViewRestricted;
   private
+    FAutoShow: Boolean;
     FFavourites: TOIFavouriteProperties;
     FRestricted: TOIRestrictedProperties;
     FOnAddToFavourites: TNotifyEvent;
@@ -686,6 +689,7 @@ type
     function GetCurRowDefaultValue(var DefaultStr: string): boolean;
     procedure HookRefreshPropertyValues;
   public
+    property AutoShow: Boolean read FAutoShow write FAutoShow;
     property DefaultItemHeight: integer read FDefaultItemHeight
                                         write SetDefaultItemHeight;
     property Selection: TPersistentSelectionList
@@ -3185,6 +3189,8 @@ begin
 
     FShowHints:=ConfigStore.GetValue(
          Path+'ShowHints',false);
+    FAutoShow := ConfigStore.GetValue(
+         Path+'AutoShow',true);
   except
     on E: Exception do begin
       DebugLn('ERROR: TOIOptions.Load: ',E.Message);
@@ -3242,6 +3248,7 @@ begin
 
     ConfigStore.SetDeleteValue(Path+'ShowHints',FShowHints,
                              false);
+    ConfigStore.SetDeleteValue(Path+'AutoShow',FAutoShow, True);
   except
     on E: Exception do begin
       DebugLn('ERROR: TOIOptions.Save: ',E.Message);
@@ -3274,6 +3281,7 @@ begin
   FPropertyNameColor:=AnObjInspector.PropertyGrid.NameFont.Color;
 
   FShowHints:=AnObjInspector.PropertyGrid.ShowHint;
+  FAutoShow:=AnObjInspector.AutoShow;
 end;
 
 procedure TOIOptions.AssignTo(AnObjInspector: TObjectInspectorDlg);
@@ -3300,6 +3308,7 @@ begin
   AnObjInspector.DefaultItemHeight:=FDefaultItemHeight;
   AnObjInspector.ShowComponentTree:=FShowComponentTree;
   AnObjInspector.ComponentTreeHeight:=FComponentTreeHeight;
+  AnObjInspector.AutoShow:=AutoShow;
 end;
 
 
@@ -3354,6 +3363,7 @@ begin
   inherited Create(AnOwner);
   FPropertyEditorHook:=nil;
   FSelection:=TPersistentSelectionList.Create;
+  FAutoShow := True;
   FUpdatingAvailComboBox:=false;
   FDefaultItemHeight := 22;
   FComponentTreeHeight:=100;
@@ -3679,7 +3689,7 @@ begin
       GridControl[Page].Selection := FSelection;
   ComponentTree.Selection := FSelection;
   ComponentTree.MakeSelectionVisible;
-  if (not Visible) and (FSelection.Count>0) then
+  if (not Visible) and AutoShow and (FSelection.Count > 0) then
     Visible:=true;
 end;
 

@@ -446,6 +446,7 @@ type
   { TEnvironmentOptionsDialog }
 
   TEnvironmentOptionsDialog = class(TForm)
+    OIAutoShowCheckBox: TCheckBox;
     NoteBook: TNoteBook;
     FilesPage: TPage;
     DesktopPage: TPage;
@@ -2311,6 +2312,7 @@ begin
 
     OIDefaultItemHeightSpinEdit.Value:=ObjectInspectorOptions.DefaultItemHeight;
     OIShowHintCheckBox.Checked := ObjectInspectorOptions.ShowHints;
+    OIAutoShowCheckBox.Checked := ObjectInspectorOptions.AutoShow;
        
     // window minimizing and hiding
     MinimizeAllOnMinimizeMainCheckBox.Checked:=MinimizeAllOnMinimizeMain;
@@ -2462,6 +2464,7 @@ begin
     ObjectInspectorOptions.DefaultItemHeight:=
        RoundToInt(OIDefaultItemHeightSpinEdit.Value);
     ObjectInspectorOptions.ShowHints := OIShowHintCheckBox.Checked;
+    ObjectInspectorOptions.AutoShow := OIAutoShowCheckBox.Checked;
 
     // window minimizing
     MinimizeAllOnMinimizeMain:=MinimizeAllOnMinimizeMainCheckBox.Checked;
@@ -2585,6 +2588,7 @@ begin
   OIMiscGroupBox.Caption:=dlgOIMiscellaneous;
   OIDefaultItemHeightLabel.Caption:=dlgOIItemHeight;
   OIShowHintCheckBox.Caption := lisShowHintsInObjectInspector;
+  OIAutoShowCheckBox.Caption := lisAutoShowObjectInspector;
 end;
 
 procedure TEnvironmentOptionsDialog.WindowPositionsListBoxMouseUp(
