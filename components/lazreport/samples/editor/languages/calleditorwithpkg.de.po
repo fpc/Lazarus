@@ -2,28 +2,31 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-05-31 14:24-0600\n"
+"PO-Revision-Date: 2008-06-05 21:51+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
-"Language-Team: \n"
+"Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: German\n"
+"X-Poedit-Country: GERMANY\n"
+"X-Poedit-SourceCharset: utf-8\n"
 
 #: TFRMMAIN.CAPTION
 msgid "Testing LazReport Editor"
-msgstr ""
+msgstr "Testen des LazReport-Editors"
 
 #: TFRMMAIN.MENUITEM1.CAPTION
 msgid "Files"
-msgstr ""
+msgstr "Dateien"
 
 #: TFRMMAIN.MENUITEM3.CAPTION
 msgid "Tests"
-msgstr ""
+msgstr "Tests"
 
 #: TFRMMAIN.MENUITEM9.CAPTION
 msgid "Export"
-msgstr ""
+msgstr "Export"
 
 #: TFRMMAIN.ACCNEWREPORT.CAPTION
 msgid "New Report"
@@ -35,27 +38,27 @@ msgstr "Report bearbeiten"
 
 #: TFRMMAIN.ACCPREVIEWREPORT.CAPTION
 msgid "Preview Report"
-msgstr ""
+msgstr "Reportvorschau"
 
 #: TFRMMAIN.ACCPRINTGRID.CAPTION
 msgid "Print Grid"
-msgstr ""
+msgstr "Gitter drucken"
 
 #: TFRMMAIN.ACCPRINTREPORT.CAPTION
 msgid "Print Report"
-msgstr ""
+msgstr "Report drucken"
 
 #: TFRMMAIN.ACCCLOSE.CAPTION
 msgid "Close"
-msgstr ""
+msgstr "Schließen"
 
 #: TFRMMAIN.ACCEXPORTTOTEXT.CAPTION
 msgid "Export to text"
-msgstr ""
+msgstr "Nach Text exportieren"
 
 #: TFRMMAIN.ACCEXPORTTOHTML.CAPTION
 msgid "Export to html"
-msgstr ""
+msgstr "Nach HTML exportieren"
 
 #: TFRMMAIN.ACCOPENREPORT.CAPTION
 msgid "Open Report"
@@ -63,7 +66,7 @@ msgstr "Report öffnen"
 
 #: TFRMMAIN.ACCEXPORTTOCSV.CAPTION
 msgid "Export to CSV"
-msgstr ""
+msgstr "Nach CSV exportieren"
 
 #: maincalleditor.ceropenreport
 msgid "Open report"
@@ -71,7 +74,7 @@ msgstr "Report öffnen"
 
 #: maincalleditor.cernewreport
 msgid "New report"
-msgstr ""
+msgstr "Neuer Report"
 
 #: maincalleditor.cerpreviewreport
 msgid "Preview report"
@@ -95,53 +98,53 @@ msgstr "PrepareReport fehlgeschlagen!"
 
 #: maincalleditor.cerindex
 msgid "Index"
-msgstr ""
+msgstr "Index"
 
 #: maincalleditor.cernone
 msgid "none"
-msgstr ""
+msgstr "keiner"
 
 #: maincalleditor.cerindexfields
 msgid "Index Fields: \%s"
-msgstr ""
+msgstr "Index Felder: \%s"
 
 #: maincalleditor.ceropenreportfirst
 msgid "Open report first"
-msgstr ""
+msgstr "Zuerst Report öffnen"
 
 #: maincalleditor.ceractivereport
 msgid "Active report: \%s"
-msgstr ""
+msgstr "Aktiver Report :\%s"
 
 #: maincalleditor.cerhintnewreport
 msgid "Create and edit a empty report"
-msgstr ""
+msgstr "Anlegen und bearbeiten eines leeren Reports"
 
 #: maincalleditor.cerhintopenreport
 msgid "Open an existing report"
-msgstr ""
+msgstr "Vorhandenen Report öffnen"
 
 #: maincalleditor.cerhinteditreport
 msgid "Edit active report"
-msgstr ""
+msgstr "Aktiven Report bearbeiten"
 
 #: maincalleditor.cerhintprevreport
 msgid "Preview active report"
-msgstr ""
+msgstr "Vorschau des aktiven Reports"
 
 #: maincalleditor.cerhintprevgrid
 msgid "Print preview current DbGrid content"
-msgstr ""
+msgstr "Vorschau des aktuellen DBGrid-Inhalts drucken"
 
 #: maincalleditor.cerhintprnreport
 msgid "Print directly the active report (i.e. without preview)"
-msgstr ""
+msgstr "Aktiven Report sofort drucken (ohne Vorschau)"
 
 #: maincalleditor.cerhintcloseapp
 msgid "Close application"
-msgstr ""
+msgstr "Anwendung schließen"
 
 #: TFRMMAIN.CAPTION
 msgid "LazReport Test Suite"
-msgstr ""
+msgstr "RezReport-Testsuite"
 

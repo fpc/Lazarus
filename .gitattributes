@@ -649,6 +649,7 @@ components/memds/memdsicons.lrs svneol=native#text/pascal
 components/memds/memdslaz.lpk svneol=native#text/pascal
 components/memds/memdslaz.pas svneol=native#text/pascal
 components/memds/tmemdataset.png -text svneol=unset#image/png
+components/messagecomposer/languages/messagecomposer.de.po svneol=native#text/plain
 components/messagecomposer/languages/messagecomposer.po svneol=native#text/plain
 components/messagecomposer/languages/messagecomposer.ru.po svneol=native#text/plain
 components/messagecomposer/messagecomposer.lfm svneol=native#text/plain
