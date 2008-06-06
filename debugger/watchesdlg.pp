@@ -237,8 +237,14 @@ begin
 end;
 
 procedure TWatchesDlg.popDeleteClick(Sender: TObject);
+var
+  Item: TIDEWatch;
 begin
-  GetSelected.Free;
+  repeat
+    Item := GetSelected;
+    Item.Free;
+  until Item = nil;
+  //GetSelected.Free;
 end;
 
 procedure TWatchesDlg.popDisableAllClick(Sender: TObject);

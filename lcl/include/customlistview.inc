@@ -691,7 +691,7 @@ begin
     for i:=0 to Items.Count-1 do begin
       if Items[i].Selected then begin
         FSelected:=Items[i];
-        DebugLn('TCustomListView.GetSelection ',dbgs(FSelected));
+        //DebugLn('TCustomListView.GetSelection ',dbgs(FSelected));
         break;
       end;
     end;
