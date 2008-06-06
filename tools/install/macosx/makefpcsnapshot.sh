@@ -108,8 +108,8 @@ make -C fpcsrc compiler_install rtl_install packages_install utils_install \
 make -C fpcsrc/compiler installsymlink PP=$COMPILER INSTALL_PREFIX=$INSTALLFPCDIR
 
 if [ $CREATECROSSPPC == 1 ]; then
+  make -C fpcsrc/compiler PPC_TARGET=powerpc PP=$COMPILER EXENAME=ppcppc
   make all PP=$PPC_RELEASE CPU_TARGET=powerpc
-  cp fpcsrc/compiler/ppcrossppc fpcsrc/compiler/ppcppc
   CROSSCOMPILER=$FPCBUILDDIR/fpcsrc/compiler/ppcppc
   make -C fpcsrc compiler_install rtl_install packages_install CPU_TARGET=powerpc FPC=$CROSSCOMPILER CROSSINSTALL=0 \
      INSTALL_PREFIX=$INSTALLDIR FPCMAKE=$FPCBUILDDIR/fpcsrc/utils/fpcm/fpcmake
