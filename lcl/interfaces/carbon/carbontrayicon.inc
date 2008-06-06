@@ -91,7 +91,7 @@ begin
 
   APrivateTrayIcon.item := NSStatusItem.CreateWithHandle(APrivateTrayIcon.bar.statusItemWithLength(NSSquareStatusItemLength));
   APrivateTrayIcon.item.retain();
-  APrivateTrayIcon.item.setImage(APrivateTrayIcon.image);
+  APrivateTrayIcon.item.setImage(APrivateTrayIcon.image.Handle);
 
   Result := True;
   
