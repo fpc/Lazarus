@@ -308,6 +308,8 @@ ResourceString
   SParWrongTokenType            = 'Wrong token type: %s expected but %s found';
   SParInvalidFloat              = 'Invalid floating point number: %s';
   SParWrongTokenSymbol          = 'Wrong token symbol: %s expected but %s found';
+  SParUnterminatedString        = 'Unterminated string';
+  SParLocInfo                   = ' (at %d,%d, stream offset %.8x)';
 
 implementation
 

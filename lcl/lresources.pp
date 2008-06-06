@@ -36,8 +36,8 @@ unit LResources;
 interface
 
 uses
-  Classes, SysUtils, Types, FPCAdds, TypInfo, DynQueue, LCLType, LCLProc,
-  LCLStrConsts, LazConfigStorage, RtlConsts;
+  Classes, SysUtils, Types, RtlConsts,
+  FPCAdds, TypInfo, DynQueue, LCLType, LCLProc, LCLStrConsts, LazConfigStorage;
 
 {$DEFINE UseLRS}
 {$IFDEF FPC_HAS_WINLIKERESOURCES}
