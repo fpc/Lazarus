@@ -253,7 +253,61 @@ type
     property Count: integer read FCount write SetCount;
   end;
   
-  
+  TUTF8Parser = class(TObject)
+  private
+    fStream : TStream;
+    fBuf : pchar;
+    fBufLen : integer;
+    fPos : integer;
+    fDeltaPos : integer;
+    fFloatType : char;
+    fSourceLine : integer;
+    fToken : char;
+    fEofReached : boolean;
+    fLastTokenStr : string;
+    function GetTokenName(aTok : char) : string;
+    procedure LoadBuffer;
+    procedure CheckLoadBuffer; {$ifdef CLASSESINLINE} inline; {$endif CLASSESINLINE}
+    procedure ProcessChar; {$ifdef CLASSESINLINE} inline; {$endif CLASSESINLINE}
+    function IsNumber : boolean; {$ifdef CLASSESINLINE} inline; {$endif CLASSESINLINE}
+    function IsHexNum : boolean; {$ifdef CLASSESINLINE} inline; {$endif CLASSESINLINE}
+    function IsAlpha : boolean; {$ifdef CLASSESINLINE} inline; {$endif CLASSESINLINE}
+    function IsAlphaNum : boolean; {$ifdef CLASSESINLINE} inline; {$endif CLASSESINLINE}
+    function GetHexValue(c : char) : byte; {$ifdef CLASSESINLINE} inline; {$endif CLASSESINLINE}
+    function GetAlphaNum : string;
+    procedure HandleNewLine;
+    procedure SkipSpaces;
+    procedure SkipWhitespace;
+    procedure HandleEof;
+    procedure HandleAlphaNum;
+    procedure HandleNumber;
+    procedure HandleHexNumber;
+    function HandleQuotedString : string;
+    function HandleDecimalString: string;
+    procedure HandleString;
+    procedure HandleMinus;
+    procedure HandleUnknown;
+  public
+    constructor Create(Stream: TStream);
+    destructor Destroy; override;
+    procedure CheckToken(T: Char);
+    procedure CheckTokenSymbol(const S: string);
+    procedure Error(const Ident: string);
+    procedure ErrorFmt(const Ident: string; const Args: array of const);
+    procedure ErrorStr(const Message: string);
+    procedure HexToBinary(Stream: TStream);
+    function NextToken: Char;
+    function SourcePos: Longint;
+    function TokenComponentIdent: string;
+    function TokenFloat: Extended;
+    function TokenInt: Int64;
+    function TokenString: string;
+    function TokenSymbolIs(const S: string): Boolean;
+    property FloatType: Char read fFloatType;
+    property SourceLine: Integer read fSourceLine;
+    property Token: Char read fToken;
+  end;
+
   { TCustomLazComponentQueue
     A queue to stream components, used for multithreading or network.
     The function ConvertComponentAsString converts a component to binary format
@@ -348,13 +402,13 @@ function CreateLFMFile(AComponent: TComponent; LFMStream: TStream): integer;
 type
   TLRSStreamOriginalFormat = (sofUnknown, sofBinary, sofText);
   
-procedure LRSObjectBinaryToText(Input, Output: TStream);
-procedure LRSObjectTextToBinary(Input, Output: TStream;
+procedure LRSObjectBinaryToText(Input, Output: TStream); // binary to lfm
+procedure LRSObjectTextToBinary(Input, Output: TStream;  // lfm to binary
                                 Links: TLRPositionLinks = nil);
 procedure LRSObjectToText(Input, Output: TStream;
   var OriginalFormat: TLRSStreamOriginalFormat);
 
-procedure LRSObjectResourceToText(Input, Output: TStream);
+procedure LRSObjectResourceToText(Input, Output: TStream); // lrs to lfm
 procedure LRSObjectResToText(Input, Output: TStream;
   var OriginalFormat: TLRSStreamOriginalFormat);
   
@@ -2330,9 +2384,10 @@ end;
 procedure LRSObjectTextToBinary(Input, Output: TStream;
   Links: TLRPositionLinks);
 var
-  parser: TParser;
+  parser: {$IFDEF DisableWindowsUnicodeSupport}TParser{$ELSE}TUTF8Parser{$ENDIF};
   OldDecimalSeparator: Char;
   OldThousandSeparator: Char;
+  TokenStartPos: LongInt;
 
   procedure WriteShortString(const s: String);
   var
@@ -2417,17 +2472,15 @@ var
     for i:=1 to length(Result) do
       Result[i]:=chr(ord(s[i]));
   end;
-  
-  procedure ParserNextToken;
-  var
-    OldSourcePos: LongInt;
-  begin
-    OldSourcePos:=Parser.SourcePos;
-    Parser.NextToken;
-    if Links<>nil then
-      Links.SetPosition(OldSourcePos,Parser.SourcePos,Output.Position,true);
-  end;
 
+  function ParserNextToken: Char;
+  begin
+    TokenStartPos:=Parser.SourcePos;
+    Result:=Parser.NextToken;
+    if Links<>nil then
+      Links.SetPosition(TokenStartPos,Parser.SourcePos,Output.Position,true);
+  end;
+  
   procedure ProcessProperty; forward;
 
   {$if not declared(toWString)}
@@ -2443,9 +2496,12 @@ var
   
   var
     flt: Extended;
-    toStringBuf: WideString;
     stream: TMemoryStream;
     BinDataSize: LongInt;
+    {$IFDEF DisableWindowsUnicodeSupport}
+    toWideStringBuf: WideString;
+    {$ENDIF}
+    toStringBuf: String;
   begin
     if parser.TokenSymbolIs('END') then exit;
     if parser.TokenSymbolIs('OBJECT') then
@@ -2454,41 +2510,65 @@ var
       toInteger:
         begin
           WriteIntegerStr(parser.TokenString);
-          parser.NextToken;
+          ParserNextToken;
         end;
       toFloat:
         begin
           Output.WriteByte(Ord(vaExtended));
           flt := Parser.TokenFloat;
           WriteLRSExtended(Output,flt);
-          parser.NextToken;
+          ParserNextToken;
         end;
-      toString, toWString:
+      toString:
         begin
-          toStringBuf := parser.TokenWideString;
-          while parser.NextToken = '+' do
+          toStringBuf := parser.TokenString;
+          DebugLn(['ProcessValue toStringBuf="',toStringBuf,'" ',dbgstr(toStringBuf)]);
+          while ParserNextToken = '+' do
           begin
-            parser.NextToken;   // Get next string fragment
+            ParserNextToken;   // Get next string fragment
             if not (parser.Token in [toString,toWString]) then
               parser.CheckToken(toString);
-            toStringBuf := toStringBuf + parser.TokenWideString;
+            toStringBuf := toStringBuf + parser.TokenString;
           end;
-          if WideStringNeeded(toStringBuf) then begin
-            //debugln('LRSObjectTextToBinary.ProcessValue WriteWideString');
+          if length(toStringBuf)<256 then begin
+            debugln('LRSObjectTextToBinary.ProcessValue WriteShortString');
+            Output.WriteByte(Ord(vaString));
+            WriteShortString(toStringBuf);
+          end else begin
+            debugln('LRSObjectTextToBinary.ProcessValue WriteLongString');
+            Output.WriteByte(Ord(vaLString));
+            WriteLongString(toStringBuf);
+          end;
+        end;
+      {$IFDEF DisableWindowsUnicodeSupport}
+      toWString:
+        begin
+          toWideStringBuf := parser.TokenWideString;
+          DebugLn(['ProcessValue toWideStringBuf="',toWideStringBuf,'" ',dbgstr(toWideStringBuf)]);
+          while ParserNextToken = '+' do
+          begin
+            ParserNextToken;   // Get next string fragment
+            if not (parser.Token in [toString,toWString]) then
+              parser.CheckToken(toString);
+            toWideStringBuf := toWideStringBuf + parser.TokenWideString;
+          end;
+          if WideStringNeeded(toWideStringBuf) then begin
+            debugln('LRSObjectTextToBinary.ProcessValue WriteWideString');
             Output.WriteByte(Ord(vaWString));
-            WriteWideString(toStringBuf);
+            WriteWideString(toWideStringBuf);
           end
           else
           if length(toStringBuf)<256 then begin
-            //debugln('LRSObjectTextToBinary.ProcessValue WriteShortString');
+            debugln('LRSObjectTextToBinary.ProcessValue WriteShortString');
             Output.WriteByte(Ord(vaString));
-            WriteShortString(WideStrToShortStrWithoutConversion(toStringBuf));
+            WriteShortString(WideStrToShortStrWithoutConversion(toWideStringBuf));
           end else begin
-            //debugln('LRSObjectTextToBinary.ProcessValue WriteLongString');
+            debugln('LRSObjectTextToBinary.ProcessValue WriteLongString');
             Output.WriteByte(Ord(vaLString));
-            WriteLongString(WideStrToAnsiStrWithoutConversion(toStringBuf));
+            WriteLongString(WideStrToAnsiStrWithoutConversion(toWideStringBuf));
           end;
         end;
+      {$ENDIF}
       toSymbol:
         begin
           if CompareText(parser.TokenString, 'True') = 0 then
@@ -2502,55 +2582,55 @@ var
             Output.WriteByte(Ord(vaIdent));
             WriteShortString(parser.TokenComponentIdent);
           end;
-          Parser.NextToken;
+          ParserNextToken;
         end;
       // Set
       '[':
         begin
-          parser.NextToken;
+          ParserNextToken;
           Output.WriteByte(Ord(vaSet));
           if parser.Token <> ']' then
             while True do
             begin
               parser.CheckToken(toSymbol);
               WriteShortString(parser.TokenString);
-              parser.NextToken;
+              ParserNextToken;
               if parser.Token = ']' then
                 break;
               parser.CheckToken(',');
-              parser.NextToken;
+              ParserNextToken;
             end;
           Output.WriteByte(0);
-          parser.NextToken;
+          ParserNextToken;
         end;
       // List
       '(':
         begin
-          parser.NextToken;
           Output.WriteByte(Ord(vaList));
+          ParserNextToken;
           while parser.Token <> ')' do
             ProcessValue;
           Output.WriteByte(0);
-          parser.NextToken;
+          ParserNextToken;
         end;
       // Collection
       '<':
         begin
-          parser.NextToken;
+          ParserNextToken;
           Output.WriteByte(Ord(vaCollection));
           while parser.Token <> '>' do
           begin
             parser.CheckTokenSymbol('item');
-            parser.NextToken;
+            ParserNextToken;
             // ConvertOrder
             Output.WriteByte(Ord(vaList));
             while not parser.TokenSymbolIs('end') do
               ProcessProperty;
-            parser.NextToken;   // Skip 'end'
+            ParserNextToken;   // Skip 'end'
             Output.WriteByte(0);
           end;
           Output.WriteByte(0);
-          parser.NextToken;
+          ParserNextToken;
         end;
       // Binary data
       '{':
@@ -2567,7 +2647,7 @@ var
           finally
             stream.Free;
           end;
-          parser.NextToken;
+          ParserNextToken;
         end;
       else
         parser.Error('Invalid Property');
@@ -2582,15 +2662,15 @@ var
     parser.CheckToken(toSymbol);
     name := parser.TokenString;
     while True do begin
-      parser.NextToken;
+      ParserNextToken;
       if parser.Token <> '.' then break;
-      parser.NextToken;
+      ParserNextToken;
       parser.CheckToken(toSymbol);
       name := name + '.' + parser.TokenString;
     end;
     WriteShortString(name);
     parser.CheckToken('=');
-    parser.NextToken;
+    ParserNextToken;
     ProcessValue;
   end;
 
@@ -2610,7 +2690,7 @@ var
         Flags := 4;
       end;
     end;
-    parser.NextToken;
+    ParserNextToken;
     parser.CheckToken(toSymbol);
     if parser.TokenSymbolIs('END') then begin
       // 'object end': no name, no content
@@ -2619,19 +2699,19 @@ var
     end;
     ObjectName := '';
     ObjectType := parser.TokenString;
-    parser.NextToken;
+    ParserNextToken;
     if parser.Token = ':' then begin
-      parser.NextToken;
+      ParserNextToken;
       parser.CheckToken(toSymbol);
       ObjectName := ObjectType;
       ObjectType := parser.TokenString;
-      parser.NextToken;
+      ParserNextToken;
       if parser.Token = '[' then begin
-        parser.NextToken;
+        ParserNextToken;
         ChildPos := parser.TokenInt;
-        parser.NextToken;
+        ParserNextToken;
         parser.CheckToken(']');
-        parser.NextToken;
+        ParserNextToken;
         Flags := Flags or 2;
       end;
     end;
@@ -2654,7 +2734,7 @@ var
 
     // Convert child objects
     while not parser.TokenSymbolIs('END') do ProcessObject;
-    parser.NextToken;           // Skip end token
+    ParserNextToken;            // Skip end token
     Output.WriteByte(0);        // Terminate property list
   end;
 
@@ -2663,7 +2743,7 @@ begin
     // sort links for LFM positions
     Links.Sort(true);
   end;
-  parser := TParser.Create(Input);
+  parser := {$IFDEF DisableWindowsUnicodeSupport}TParser{$ELSE}TUTF8Parser{$ENDIF}.Create(Input);
   OldDecimalSeparator:=DecimalSeparator;
   DecimalSeparator:='.';
   OldThousandSeparator:=ThousandSeparator;
@@ -4642,6 +4722,423 @@ function TLazarusResourceStream.Write(const Buffer; Count: Longint): Longint;
 begin
   Result := 0;
   raise EStreamError.Create(SCantWriteResourceStreamError);
+end;
+
+const
+  ParseBufSize     = 4096;
+  LastSpecialToken = 5;
+
+  TokNames : array[0..LastSpecialToken] of string =
+  (
+    'EOF',
+    'Symbol',
+    'String',
+    'Integer',
+    'Float',
+    'WideString'
+  );
+
+function TUTF8Parser.GetTokenName(aTok: char): string;
+begin
+  if ord(aTok) <= LastSpecialToken then
+    Result:=TokNames[ord(aTok)]
+  else Result:=aTok;
+end;
+
+procedure TUTF8Parser.LoadBuffer;
+var toread : integer;
+begin
+  toread:=fStream.Size-fStream.Position;
+  if toread>ParseBufSize then toread:=ParseBufSize;
+  if toread=0 then
+  begin
+    fEofReached:=true;
+    exit;
+  end;
+  fStream.ReadBuffer(fBuf[0],toread);
+  fBuf[toread]:=#0;
+  inc(fDeltaPos,fPos);
+  fPos:=0;
+  fBufLen:=toread;
+end;
+
+procedure TUTF8Parser.CheckLoadBuffer; {$ifdef CLASSESINLINE} inline; {$endif CLASSESINLINE}
+begin
+  if fBuf[fPos]=#0 then LoadBuffer;
+end;
+
+procedure TUTF8Parser.ProcessChar; {$ifdef CLASSESINLINE} inline; {$endif CLASSESINLINE}
+begin
+  fLastTokenStr:=fLastTokenStr+fBuf[fPos];
+  inc(fPos);
+  CheckLoadBuffer;
+end;
+
+function TUTF8Parser.IsNumber: boolean; {$ifdef CLASSESINLINE} inline; {$endif CLASSESINLINE}
+begin
+  Result:=fBuf[fPos] in ['0'..'9'];
+end;
+
+function TUTF8Parser.IsHexNum: boolean; {$ifdef CLASSESINLINE} inline; {$endif CLASSESINLINE}
+begin
+  Result:=fBuf[fPos] in ['0'..'9','A'..'F','a'..'f'];
+end;
+
+function TUTF8Parser.IsAlpha: boolean; {$ifdef CLASSESINLINE} inline; {$endif CLASSESINLINE}
+begin
+  Result:=fBuf[fPos] in ['_','A'..'Z','a'..'z'];
+end;
+
+function TUTF8Parser.IsAlphaNum: boolean; {$ifdef CLASSESINLINE} inline; {$endif CLASSESINLINE}
+begin
+  Result:=IsAlpha or IsNumber;
+end;
+
+function TUTF8Parser.GetHexValue(c: char): byte; {$ifdef CLASSESINLINE} inline; {$endif CLASSESINLINE}
+begin
+  case c of
+    '0'..'9' : Result:=ord(c)-$30;
+    'A'..'F' : Result:=ord(c)-$37; //-$41+$0A
+    'a'..'f' : Result:=ord(c)-$57; //-$61+$0A
+  end;
+end;
+
+function TUTF8Parser.GetAlphaNum: string;
+begin
+  if not IsAlpha then
+    ErrorFmt(SParExpected,[GetTokenName(toSymbol)]);
+  Result:='';
+  while IsAlphaNum do
+  begin
+    Result:=Result+fBuf[fPos];
+    inc(fPos);
+    CheckLoadBuffer;
+  end;
+end;
+
+procedure TUTF8Parser.HandleNewLine;
+begin
+  if fBuf[fPos]=#13 then //CR
+  begin
+    inc(fPos);
+    CheckLoadBuffer;
+    if fBuf[fPos]=#10 then inc(fPos); //CR LF
+  end
+  else inc(fPos); //LF
+  inc(fSourceLine);
+  fDeltaPos:=-(fPos-1);
+end;
+
+procedure TUTF8Parser.SkipSpaces;
+begin
+  while fBuf[fPos] in [' ',#9] do
+    inc(fPos);
+end;
+
+procedure TUTF8Parser.SkipWhitespace;
+begin
+  while true do
+  begin
+    CheckLoadBuffer;
+    case fBuf[fPos] of
+      ' ',#9  : SkipSpaces;
+      #10,#13 : HandleNewLine
+      else break;
+    end;
+  end;
+end;
+
+procedure TUTF8Parser.HandleEof;
+begin
+  fToken:=toEOF;
+  fLastTokenStr:='';
+end;
+
+procedure TUTF8Parser.HandleAlphaNum;
+begin
+  fLastTokenStr:=GetAlphaNum;
+  fToken:=toSymbol;
+end;
+
+procedure TUTF8Parser.HandleNumber;
+type
+  floatPunct = (fpDot,fpE);
+  floatPuncts = set of floatPunct;
+var
+  allowed : floatPuncts;
+begin
+  fLastTokenStr:='';
+  while IsNumber do
+    ProcessChar;
+  fToken:=toInteger;
+  if (fBuf[fPos] in ['.','e','E']) then
+  begin
+    fToken:=toFloat;
+    allowed:=[fpDot,fpE];
+    while (fBuf[fPos] in ['.','e','E','0'..'9']) do
+    begin
+      case fBuf[fPos] of
+        '.'     : if fpDot in allowed then Exclude(allowed,fpDot) else break;
+        'E','e' : if fpE in allowed then
+                  begin
+                    allowed:=[];
+                    ProcessChar;
+                    if (fBuf[fPos] in ['+','-']) then ProcessChar;
+                    if not (fBuf[fPos] in ['0'..'9']) then
+                      ErrorFmt(SParInvalidFloat,[fLastTokenStr+fBuf[fPos]]);
+                  end
+                  else break;
+      end;
+      ProcessChar;
+    end;
+  end;
+  if (fBuf[fPos] in ['s','S','d','D','c','C']) then //single, date, currency
+  begin
+    fFloatType:=fBuf[fPos];
+    inc(fPos);
+    fToken:=toFloat;
+  end
+  else fFloatType:=#0;
+end;
+
+procedure TUTF8Parser.HandleHexNumber;
+var valid : boolean;
+begin
+  fLastTokenStr:='$';
+  inc(fPos);
+  CheckLoadBuffer;
+  valid:=false;
+  while IsHexNum do
+  begin
+    valid:=true;
+    ProcessChar;
+  end;
+  if not valid then
+    ErrorFmt(SParInvalidInteger,[fLastTokenStr]);
+  fToken:=toInteger;
+end;
+
+function TUTF8Parser.HandleQuotedString: string;
+begin
+  Result:='';
+  inc(fPos);
+  CheckLoadBuffer;
+  while true do
+  begin
+    case fBuf[fPos] of
+      #0     : ErrorStr(SParUnterminatedString);
+      #13,#10 : ErrorStr(SParUnterminatedString);
+      ''''   : begin
+                 inc(fPos);
+                 CheckLoadBuffer;
+                 if fBuf[fPos]<>'''' then exit;
+               end;
+    end;
+    Result:=Result+fBuf[fPos];
+    inc(fPos);
+    CheckLoadBuffer;
+  end;
+end;
+
+function TUTF8Parser.HandleDecimalString: string;
+var i : integer;
+begin
+  Result:='';
+  inc(fPos);
+  CheckLoadBuffer;
+  while IsNumber do
+  begin
+    Result:=Result+fBuf[fPos];
+    inc(fPos);
+    CheckLoadBuffer;
+  end;
+  if not TryStrToInt(Result,i) then
+    i:=0;
+  Result:=UnicodeToUTF8(i);
+end;
+
+procedure TUTF8Parser.HandleString;
+begin
+  fLastTokenStr:='';
+  while true do
+    case fBuf[fPos] of
+      '''' : fLastTokenStr:=fLastTokenStr+HandleQuotedString;
+      '#'  : fLastTokenStr:=fLastTokenStr+HandleDecimalString
+      else break;
+    end;
+  fToken:=toString;
+end;
+
+procedure TUTF8Parser.HandleMinus;
+begin
+  inc(fPos);
+  CheckLoadBuffer;
+  if IsNumber then
+  begin
+    HandleNumber;
+    fLastTokenStr:='-'+fLastTokenStr;
+  end
+  else
+  begin
+    fToken:='-';
+    fLastTokenStr:=fToken;
+  end;
+end;
+
+procedure TUTF8Parser.HandleUnknown;
+begin
+  fToken:=fBuf[fPos];
+  fLastTokenStr:=fToken;
+  inc(fPos);
+end;
+
+constructor TUTF8Parser.Create(Stream: TStream);
+begin
+  fStream:=Stream;
+  fBuf:=GetMem(ParseBufSize+1);
+  fBufLen:=0;
+  fPos:=0;
+  fDeltaPos:=1;
+  fSourceLine:=1;
+  fEofReached:=false;
+  fLastTokenStr:='';
+  fFloatType:=#0;
+  fToken:=#0;
+  LoadBuffer;
+  NextToken;
+end;
+
+destructor TUTF8Parser.Destroy;
+begin
+  fStream.Position:=SourcePos;
+  FreeMem(fBuf);
+end;
+
+procedure TUTF8Parser.CheckToken(T: Char);
+begin
+  if fToken<>T then
+    ErrorFmt(SParWrongTokenType,[GetTokenName(T),GetTokenName(fToken)]);
+end;
+
+procedure TUTF8Parser.CheckTokenSymbol(const S: string);
+begin
+  CheckToken(toSymbol);
+  if CompareText(fLastTokenStr,S)<>0 then
+    ErrorFmt(SParWrongTokenSymbol,[s,fLastTokenStr]);
+end;
+
+procedure TUTF8Parser.Error(const Ident: string);
+begin
+  ErrorStr(Ident);
+end;
+
+procedure TUTF8Parser.ErrorFmt(const Ident: string; const Args: array of const);
+begin
+  ErrorStr(Format(Ident,Args));
+end;
+
+procedure TUTF8Parser.ErrorStr(const Message: string);
+begin
+  raise EParserError.CreateFmt(Message+SParLocInfo,[SourceLine,fPos+fDeltaPos,SourcePos]);
+end;
+
+procedure TUTF8Parser.HexToBinary(Stream: TStream);
+var outbuf : array[0..ParseBufSize-1] of byte;
+    b : byte;
+    i : integer;
+begin
+  i:=0;
+  SkipWhitespace;
+  while IsHexNum do
+  begin
+    b:=(GetHexValue(fBuf[fPos]) shl 4);
+    inc(fPos);
+    CheckLoadBuffer;
+    if not IsHexNum then
+      Error(SParUnterminatedBinValue);
+    b:=b or GetHexValue(fBuf[fPos]);
+    inc(fPos);
+    outbuf[i]:=b;
+    inc(i);
+    if i>=ParseBufSize then
+    begin
+      Stream.WriteBuffer(outbuf[0],i);
+      i:=0;
+    end;
+    SkipWhitespace;
+  end;
+  if i>0 then
+    Stream.WriteBuffer(outbuf[0],i);
+  NextToken;
+end;
+
+function TUTF8Parser.NextToken: Char;
+
+begin
+  SkipWhiteSpace;
+  if fEofReached then
+    HandleEof
+  else
+    case fBuf[fPos] of
+      '_','A'..'Z','a'..'z' : HandleAlphaNum;
+      '$'                   : HandleHexNumber;
+      '-'                   : HandleMinus;
+      '0'..'9'              : HandleNumber;
+      '''','#'              : HandleString
+      else
+        HandleUnknown;
+    end;
+  Result:=fToken;
+end;
+
+function TUTF8Parser.SourcePos: Longint;
+begin
+  Result:=fStream.Position-fBufLen+fPos;
+end;
+
+function TUTF8Parser.TokenComponentIdent: string;
+begin
+  if fToken<>toSymbol then
+    ErrorFmt(SParExpected,[GetTokenName(toSymbol)]);
+  CheckLoadBuffer;
+  while fBuf[fPos]='.' do
+  begin
+    ProcessChar;
+    fLastTokenStr:=fLastTokenStr+GetAlphaNum;
+  end;
+  Result:=fLastTokenStr;
+end;
+
+Function TUTF8Parser.TokenFloat: Extended;
+
+var errcode : word;
+
+begin
+  Val(fLastTokenStr,Result,errcode);
+  if errcode<>0 then
+    ErrorFmt(SParInvalidFloat,[fLastTokenStr]);
+end;
+
+Function TUTF8Parser.TokenInt: Int64;
+begin
+  if not TryStrToInt64(fLastTokenStr,Result) then
+    Result:=Int64(StrToQWord(fLastTokenStr)); //second chance for malformed files
+end;
+
+function TUTF8Parser.TokenString: string;
+begin
+  case fToken of
+    toFloat : if fFloatType<>#0 then
+                Result:=fLastTokenStr+fFloatType
+              else Result:=fLastTokenStr
+    else
+      Result:=fLastTokenStr;
+  end;
+end;
+
+function TUTF8Parser.TokenSymbolIs(const S: string): Boolean;
+begin
+  Result:=(fToken=toSymbol) and (CompareText(fLastTokenStr,S)=0);
 end;
 
 //------------------------------------------------------------------------------
