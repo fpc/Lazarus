@@ -201,6 +201,8 @@ begin
   TheOutputFilter.OnAddFilteredLine:=@MessagesView.AddMsg;
   TheOutputFilter.OnReadLine:=@MessagesView.AddProgress;
   TheOutputFilter.OnEndReading:=@MessagesView.CollectLineParts;
+  TheOutputFilter.OnBeginUpdate:=@MessagesView.BeginUpdateNotification;
+  TheOutputFilter.OnEndUpdate:=@MessagesView.EndUpdateNotification;
 end;
 
 procedure TMainIDEBase.SetToolStatus(const AValue: TIDEToolStatus);

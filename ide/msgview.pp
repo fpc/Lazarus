@@ -114,6 +114,8 @@ type
     ControlDocker: TLazControlDocker;
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    procedure BeginUpdateNotification(Sender: TObject);
+    procedure EndUpdateNotification(Sender: TObject);
     procedure DeleteLine(Index: integer);
     procedure Add(const Msg, CurDir: string;
                   ProgressLine, VisibleLine: boolean; OriginalIndex: integer);
@@ -332,6 +334,16 @@ begin
     IDEMessagesWindow:=nil;
   if MessagesView=Self then
     MessagesView:=nil;
+end;
+
+procedure TMessagesView.BeginUpdateNotification(Sender: TObject);
+begin
+  if MessageTreeView<>nil then MessageTreeView.BeginUpdate;
+end;
+
+procedure TMessagesView.EndUpdateNotification(Sender: TObject);
+begin
+  if MessageTreeView<>nil then MessageTreeView.EndUpdate;
 end;
 
 procedure TMessagesView.DeleteLine(Index: integer);

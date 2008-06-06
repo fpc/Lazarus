@@ -109,7 +109,9 @@ type
     FBufferingOutputLock: integer;
     fCurrentDirectory: string;
     fFilteredOutput: TFilteredOutputLines;
+    FOnBeginUpdate: TNotifyEvent;
     FOnEndReading: TOFOnEndReading;
+    FOnEndUpdate: TNotifyEvent;
     fOnReadLine: TOnOutputString;
     fOutput: TIDEMessageLineList;
     fLastErrorType: TErrorType;
@@ -163,6 +165,8 @@ type
     procedure WriteOutput(Flush: boolean);
     procedure BeginBufferingOutput;
     procedure EndBufferingOutput;
+    procedure BeginUpdate;
+    procedure EndUpdate;
   public
     property CurrentDirectory: string read fCurrentDirectory
                                       write fCurrentDirectory;
@@ -182,6 +186,8 @@ type
     property CurrentMessageParts: TStrings read GetCurrentMessageParts;
     property AsyncProcessTerminated: boolean read FAsyncProcessTerminated;
     property OnEndReading: TOFOnEndReading read FOnEndReading write FOnEndReading;
+    property OnBeginUpdate: TNotifyEvent read FOnBeginUpdate write FOnBeginUpdate;
+    property OnEndUpdate: TNotifyEvent read FOnEndUpdate write FOnEndUpdate;
     property Caller: TObject read FCaller;
     property ScanLine: TOFScanLine read FScanLine;
     property Tool: TIDEExternalToolOptions read FTool;
@@ -252,6 +258,7 @@ var
   OutputLine, Buf : String;
   TheAsyncProcess: TAsyncProcess;
   LastProcessMessages: TDateTime;
+  EndUpdateNeeded: Boolean;
 begin
   Result:=true;
   Clear;
@@ -270,6 +277,7 @@ begin
   ErrorExists:=true;
   Aborted:=false;
   TheAsyncProcess:=nil;
+  EndUpdateNeeded:=false;
   try
     BeginBufferingOutput;
 
@@ -292,7 +300,13 @@ begin
       if (Application<>nil) and (abs(LastProcessMessages-Now)>((1/86400)/3))
       then begin
         LastProcessMessages:=Now;
+        if EndUpdateNeeded then begin
+          EndUpdateNeeded:=false;
+          EndUpdate;
+        end;
         Application.ProcessMessages;
+        BeginUpdate;
+        EndUpdateNeeded:=true;
       end;
       if StopExecute then begin
         fProcess.Terminate(0);
@@ -358,6 +372,8 @@ begin
     if ErrorExists and (ofoExceptionOnError in Options) then
       raise EOutputFilterError.Create('there was an error');
   finally
+    if EndUpdateNeeded then
+      EndUpdate;
     EndBufferingOutput;
     fProcess:=nil;
     FreeAndNil(FAsyncOutput);
@@ -1339,7 +1355,7 @@ var
   LineEnd: string = LineEnding;
   CurLine: String;
 const
-  HalfASecond =0.5/(24*60*60); // 0.5 divided by the number of seconds per day
+  HalfASecond = 0.5/(24*60*60); // 0.5 divided by the number of seconds per day
 begin
   CurTime:=Now;
   if ((CurTime-fLastOutputTime)>HalfASecond)
@@ -1381,6 +1397,16 @@ begin
   if FBufferingOutputLock<0 then RaiseException('');
   if FBufferingOutputLock=0 then
     WriteOutput(true);
+end;
+
+procedure TOutputFilter.BeginUpdate;
+begin
+  if Assigned(OnBeginUpdate) then OnBeginUpdate(Self);
+end;
+
+procedure TOutputFilter.EndUpdate;
+begin
+  if Assigned(OnEndUpdate) then OnEndUpdate(Self);
 end;
 
 { TFilteredOutputLines }
