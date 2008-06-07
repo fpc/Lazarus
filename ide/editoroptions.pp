@@ -1772,6 +1772,8 @@ begin
       Result := 'ScrollPastEol';
     eoShowScrollHint:
       Result := 'ShowScrollHint';
+    eoShowSpecialChars:
+      Result := 'ShowSpecialChars';
     eoSmartTabs:
       Result := 'SmartTabs';
     eoTabsToSpaces:
@@ -2430,6 +2432,7 @@ begin
   SetOption(dlgScrollByOneLess, eoScrollByOneLess);
   SetOption(dlgScrollPastEndFile, eoScrollPastEoF);
   SetOption(dlgScrollPastEndLine, eoScrollPastEoL);
+  SetOption(lisShowSpecialCharacters, eoShowSpecialChars);
   SetOption(dlgShowScrollHint, eoShowScrollHint);
   SetOption(dlgSmartTabs, eoSmartTabs);
   SetOption(dlgTabsToSpaces, eoTabsToSpaces);
@@ -3392,6 +3395,7 @@ begin
     Items.Add(dlgBracHighlight);
     Items.Add(dlgShowGutterHints);
     Items.Add(dlgShowScrollHint);
+    Items.Add(lisShowSpecialCharacters);
     Items.Add(dlgUseSyntaxHighlight);
     // drag&drop
     Items.Add(dlgDragDropEd);
@@ -3436,7 +3440,7 @@ begin
     Checked[Items.IndexOf(dlgGroupUndo)] := eoGroupUndo in EditorOpts.SynEditOptions;
     Checked[Items.IndexOf(dlgHalfPageScroll)] :=
                                   eoHalfPageScroll in EditorOpts.SynEditOptions;
-    Checked[Items.IndexOf(dlgKeepCaretX)]   := eoKeepCaretX in EditorOpts.SynEditOptions;
+    Checked[Items.IndexOf(dlgKeepCaretX)] := eoKeepCaretX in EditorOpts.SynEditOptions;
     Checked[Items.IndexOf(dlgPersistentCaret)] :=
                                  eoPersistentCaret in EditorOpts.SynEditOptions;
     Checked[Items.IndexOf(dlgRightMouseMovesCursor)] :=
@@ -3452,6 +3456,8 @@ begin
     Checked[Items.IndexOf(dlgCloseButtonsNotebook)] := EditorOpts.ShowTabCloseButtons;
     Checked[Items.IndexOf(dlgShowScrollHint)] :=
                                   eoShowScrollHint in EditorOpts.SynEditOptions;
+    Checked[Items.IndexOf(lisShowSpecialCharacters)] :=
+                                eoShowSpecialChars in EditorOpts.SynEditOptions;
     Checked[Items.IndexOf(dlgSmartTabs)] := eoSmartTabs in EditorOpts.SynEditOptions;
     //DebugLn(['TEditorOptionsForm.SetupGeneralPage ',Checked[Items.IndexOf(dlgSmartTabs)],' ',Items.IndexOf(dlgSmartTabs),' ',eoSmartTabs in EditorOpts.SynEditOptions]);
     Checked[Items.IndexOf(dlgTabsToSpaces)] :=
