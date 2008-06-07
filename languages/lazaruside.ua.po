@@ -916,6 +916,10 @@ msgstr "Автоперейменування в нижній регістр"
 msgid "Auto save"
 msgstr "Автозбереження"
 
+#: lazarusidestrconsts:lisautoshowobjectinspector
+msgid "Auto show Object Inspector"
+msgstr ""
+
 #: lazarusidestrconsts:dlgautocreateforms
 msgid "Auto-create forms:"
 msgstr "Автостворювані форми:"
@@ -3271,6 +3275,10 @@ msgstr "Тека програм FPC SVN"
 #: lazarusidestrconsts:lisfpcsourcedirectoryerror
 msgid "FPC Source Directory error"
 msgstr "Помилка теки кодів FPC"
+
+#: lazarusidestrconsts:lisfpcversion
+msgid "FPC Version: "
+msgstr ""
 
 #: lazarusidestrconsts:dlgfpcsrcpath
 msgid "FPC source directory"
@@ -8208,6 +8216,10 @@ msgstr "Показувати пакунки"
 msgid "Show scroll hint"
 msgstr "Показувати пораду з прокрут."
 
+#: lazarusidestrconsts:lisshowspecialcharacters
+msgid "Show special characters"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowsummary
 msgid "Show summary"
 msgstr "Показувати підсумкове"
@@ -10239,6 +10251,10 @@ msgstr "Розширення користувача (.pp.xxx)"
 #: lazarusidestrconsts:dlgrunouseroverrides
 msgid "User overrides"
 msgstr "Overrides користувача"
+
+#: lazarusidestrconsts:lisusershomedirectory
+msgid "User's home directory"
+msgstr ""
 
 #: lazarusidestrconsts:lisceuses
 msgid "Uses"

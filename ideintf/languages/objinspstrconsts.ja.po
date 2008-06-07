@@ -100,10 +100,6 @@ msgstr ""
 msgid "&Undo"
 msgstr ""
 
-#: objinspstrconsts:clbup
-msgid "&Up"
-msgstr ""
-
 #: objinspstrconsts:cactionlisteditorallcategory
 msgid "(All)"
 msgstr ""
@@ -236,7 +232,7 @@ msgstr ""
 msgid "Check dataset settings"
 msgstr ""
 
-#: objinspstrconsts:clbcheckgroupeditor
+#: objinspstrconsts:cgcheckgroupeditor
 msgid "CheckGroup Editor"
 msgstr ""
 
@@ -266,6 +262,10 @@ msgstr ""
 
 #: objinspstrconsts:rscdcolumneditor
 msgid "Column Editor"
+msgstr ""
+
+#: objinspstrconsts:cgcolumns
+msgid "Columns:"
 msgstr ""
 
 #: objinspstrconsts:oiscomponentnameisnotavalididentifier
@@ -376,7 +376,11 @@ msgstr ""
 msgid "Delete tab"
 msgstr ""
 
-#: objinspstrconsts:clbdelete
+#: objinspstrconsts:clbdeletehint
+msgid "Delete the Item"
+msgstr ""
+
+#: objinspstrconsts:clbdeletequest
 msgid "Delete the Item %d \"%s\"?"
 msgstr ""
 
@@ -389,10 +393,6 @@ msgid "Do you want to split the image?"
 msgstr ""
 
 #: objinspstrconsts:clbdown
-msgid "Do&wn"
-msgstr ""
-
-#: objinspstrconsts:oicoleditdown
 msgid "Down"
 msgstr ""
 
@@ -708,7 +708,7 @@ msgstr "オブジェクトインスペクター"
 msgid "Ok"
 msgstr ""
 
-#: objinspstrconsts:clbcheckduplicate
+#: objinspstrconsts:cgcheckduplicate
 msgid "On Add, Check for Duplicate in Items"
 msgstr ""
 
@@ -760,7 +760,7 @@ msgstr ""
 msgid "Picture"
 msgstr ""
 
-#: objinspstrconsts:clbdisable
+#: objinspstrconsts:cgdisable
 msgid "Popup to disable/enable items"
 msgstr ""
 
@@ -948,7 +948,7 @@ msgstr ""
 msgid "Text:"
 msgstr ""
 
-#: objinspstrconsts:clbcheckduplicatemsg
+#: objinspstrconsts:cgcheckduplicatemsg
 msgid "The \"%s\" Item is already listed. Add it anyway?"
 msgstr ""
 
@@ -976,7 +976,7 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
-#: objinspstrconsts:oicoleditup
+#: objinspstrconsts:clbup
 msgid "Up"
 msgstr ""
 
@@ -1002,9 +1002,5 @@ msgstr ""
 
 #: objinspstrconsts:oisword
 msgid "Word"
-msgstr ""
-
-#: objinspstrconsts:clbcolumns
-msgid "n. columns"
 msgstr ""
 

@@ -100,10 +100,6 @@ msgstr "&Pesquisar Topico"
 msgid "&Undo"
 msgstr "Des&fazer"
 
-#: objinspstrconsts:clbup
-msgid "&Up"
-msgstr "&Acima"
-
 #: objinspstrconsts:cactionlisteditorallcategory
 msgid "(All)"
 msgstr "(Tudo)"
@@ -236,7 +232,7 @@ msgstr "Caracteres em Brancos"
 msgid "Check dataset settings"
 msgstr ""
 
-#: objinspstrconsts:clbcheckgroupeditor
+#: objinspstrconsts:cgcheckgroupeditor
 msgid "CheckGroup Editor"
 msgstr "Editor CheckGroup"
 
@@ -266,6 +262,10 @@ msgstr "Selecionar Cor"
 
 #: objinspstrconsts:rscdcolumneditor
 msgid "Column Editor"
+msgstr ""
+
+#: objinspstrconsts:cgcolumns
+msgid "Columns:"
 msgstr ""
 
 #: objinspstrconsts:oiscomponentnameisnotavalididentifier
@@ -376,7 +376,11 @@ msgstr "Eliminar pagina"
 msgid "Delete tab"
 msgstr "Eliminar tab"
 
-#: objinspstrconsts:clbdelete
+#: objinspstrconsts:clbdeletehint
+msgid "Delete the Item"
+msgstr ""
+
+#: objinspstrconsts:clbdeletequest
 msgid "Delete the Item %d \"%s\"?"
 msgstr "Eliminar o Item %d \"%s\"?"
 
@@ -389,10 +393,6 @@ msgid "Do you want to split the image?"
 msgstr "Voce quer separar a imagem?"
 
 #: objinspstrconsts:clbdown
-msgid "Do&wn"
-msgstr "A&baixo"
-
-#: objinspstrconsts:oicoleditdown
 msgid "Down"
 msgstr "Abaixo"
 
@@ -708,7 +708,7 @@ msgstr "Inspetor de Objetos"
 msgid "Ok"
 msgstr "Ok"
 
-#: objinspstrconsts:clbcheckduplicate
+#: objinspstrconsts:cgcheckduplicate
 msgid "On Add, Check for Duplicate in Items"
 msgstr ""
 
@@ -760,7 +760,7 @@ msgstr "Colar componentes"
 msgid "Picture"
 msgstr "Imagem"
 
-#: objinspstrconsts:clbdisable
+#: objinspstrconsts:cgdisable
 msgid "Popup to disable/enable items"
 msgstr "Popup para ativar/desativar items"
 
@@ -948,7 +948,7 @@ msgstr "Testar caixa de dialogo..."
 msgid "Text:"
 msgstr "Texto:"
 
-#: objinspstrconsts:clbcheckduplicatemsg
+#: objinspstrconsts:cgcheckduplicatemsg
 msgid "The \"%s\" Item is already listed. Add it anyway?"
 msgstr "O item \"%s\" já está listado. Adicionar assim mesmo?"
 
@@ -976,7 +976,7 @@ msgstr "Desfazer"
 msgid "Unknown"
 msgstr "Desconhecido"
 
-#: objinspstrconsts:oicoleditup
+#: objinspstrconsts:clbup
 msgid "Up"
 msgstr "Acima"
 
@@ -1003,8 +1003,4 @@ msgstr "Largura"
 #: objinspstrconsts:oisword
 msgid "Word"
 msgstr "Palavra"
-
-#: objinspstrconsts:clbcolumns
-msgid "n. columns"
-msgstr "Numero de colunas"
 

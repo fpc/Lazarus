@@ -18,6 +18,10 @@ msgstr "  pakeista "
 msgid "  size "
 msgstr "  dydis "
 
+#: lclstrconsts:sparlocinfo
+msgid " (at %d,%d, stream offset %.8x)"
+msgstr ""
+
 #: lclstrconsts:rswarningunreleasedtimerinfos
 msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
 msgstr " Perspėjimas: dar liko %d \"TimerInfo\" struktūrų, jos bus sunaikintos."
@@ -494,9 +498,17 @@ msgstr "Klaidingas veiksmo registravimas"
 msgid "Invalid action unregistration"
 msgstr "Klaidingas veiksmo išregravimas"
 
+#: lclstrconsts:sparinvalidfloat
+msgid "Invalid floating point number: %s"
+msgstr ""
+
 #: lclstrconsts:sinvalidimagesize
 msgid "Invalid image size"
 msgstr "Klaidingas paveikslo dydis"
+
+#: lclstrconsts:sparinvalidinteger
+msgid "Invalid integer number: %s"
+msgstr ""
 
 #: lclstrconsts:rsinvalidpropertyvalue
 msgid "Invalid property value"
@@ -794,6 +806,14 @@ msgstr "Nepalaikomas rastrinio paveikslo formatas."
 msgid "Unsupported clipboard format: %s"
 msgstr "Nepalaikomas iškarpinės formatas: %s"
 
+#: lclstrconsts:sparunterminatedbinvalue
+msgid "Unterminated byte value"
+msgstr ""
+
+#: lclstrconsts:sparunterminatedstring
+msgid "Unterminated string"
+msgstr ""
+
 #: lclstrconsts:ifsvk_up
 msgid "Up"
 msgstr "Up"
@@ -809,6 +829,18 @@ msgstr "Perspėjimas:"
 #: lclstrconsts:rswholewordsonly
 msgid "Whole words only"
 msgstr "Tik visų žodžių"
+
+#: lclstrconsts:sparwrongtokensymbol
+msgid "Wrong token symbol: %s expected but %s found"
+msgstr ""
+
+#: lclstrconsts:sparexpected
+msgid "Wrong token type: %s expected"
+msgstr ""
+
+#: lclstrconsts:sparwrongtokentype
+msgid "Wrong token type: %s expected but %s found"
+msgstr ""
 
 #: lclstrconsts:rsmbyestoall
 msgid "Yes to &All"

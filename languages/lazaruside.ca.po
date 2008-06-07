@@ -921,6 +921,10 @@ msgstr "Canvia el nom del fitxer a minúscules automàticament"
 msgid "Auto save"
 msgstr "Desa automàticament"
 
+#: lazarusidestrconsts:lisautoshowobjectinspector
+msgid "Auto show Object Inspector"
+msgstr ""
+
 #: lazarusidestrconsts:dlgautocreateforms
 msgid "Auto-create forms:"
 msgstr "Crea les formes automàticament"
@@ -3276,6 +3280,10 @@ msgstr ""
 #: lazarusidestrconsts:lisfpcsourcedirectoryerror
 msgid "FPC Source Directory error"
 msgstr "S'ha produït un error en el directori del codi font del FPC"
+
+#: lazarusidestrconsts:lisfpcversion
+msgid "FPC Version: "
+msgstr ""
 
 #: lazarusidestrconsts:dlgfpcsrcpath
 msgid "FPC source directory"
@@ -8213,6 +8221,10 @@ msgstr ""
 msgid "Show scroll hint"
 msgstr "Mostra el suggeriment deplaçat"
 
+#: lazarusidestrconsts:lisshowspecialcharacters
+msgid "Show special characters"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowsummary
 msgid "Show summary"
 msgstr "Mostra el reportatge"
@@ -10244,6 +10256,10 @@ msgstr "Extensions definides per l'usuari (.pp.xxx)"
 #: lazarusidestrconsts:dlgrunouseroverrides
 msgid "User overrides"
 msgstr "L'usuari substitueix"
+
+#: lazarusidestrconsts:lisusershomedirectory
+msgid "User's home directory"
+msgstr ""
 
 #: lazarusidestrconsts:lisceuses
 msgid "Uses"

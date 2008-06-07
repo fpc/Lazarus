@@ -100,10 +100,6 @@ msgstr "搜索主题"
 msgid "&Undo"
 msgstr "撤销(&U)"
 
-#: objinspstrconsts:clbup
-msgid "&Up"
-msgstr "上移(&U)"
-
 #: objinspstrconsts:cactionlisteditorallcategory
 msgid "(All)"
 msgstr "(所有)"
@@ -236,7 +232,7 @@ msgstr "空白字符类型"
 msgid "Check dataset settings"
 msgstr ""
 
-#: objinspstrconsts:clbcheckgroupeditor
+#: objinspstrconsts:cgcheckgroupeditor
 msgid "CheckGroup Editor"
 msgstr "CheckGroup 编辑器"
 
@@ -267,6 +263,10 @@ msgstr "选择颜色"
 #: objinspstrconsts:rscdcolumneditor
 msgid "Column Editor"
 msgstr "列编辑器"
+
+#: objinspstrconsts:cgcolumns
+msgid "Columns:"
+msgstr ""
 
 #: objinspstrconsts:oiscomponentnameisnotavalididentifier
 msgid "Component name %s%s%s is not a valid identifier"
@@ -376,7 +376,11 @@ msgstr "删除页面"
 msgid "Delete tab"
 msgstr "删除页面"
 
-#: objinspstrconsts:clbdelete
+#: objinspstrconsts:clbdeletehint
+msgid "Delete the Item"
+msgstr ""
+
+#: objinspstrconsts:clbdeletequest
 msgid "Delete the Item %d \"%s\"?"
 msgstr "删除项目 %d \"%s\"?"
 
@@ -389,10 +393,6 @@ msgid "Do you want to split the image?"
 msgstr ""
 
 #: objinspstrconsts:clbdown
-msgid "Do&wn"
-msgstr "下移(&W)"
-
-#: objinspstrconsts:oicoleditdown
 msgid "Down"
 msgstr "Down"
 
@@ -708,7 +708,7 @@ msgstr "对象观察器"
 msgid "Ok"
 msgstr "确定"
 
-#: objinspstrconsts:clbcheckduplicate
+#: objinspstrconsts:cgcheckduplicate
 msgid "On Add, Check for Duplicate in Items"
 msgstr ""
 
@@ -760,7 +760,7 @@ msgstr ""
 msgid "Picture"
 msgstr ""
 
-#: objinspstrconsts:clbdisable
+#: objinspstrconsts:cgdisable
 msgid "Popup to disable/enable items"
 msgstr "允许/禁止弹出菜单"
 
@@ -948,7 +948,7 @@ msgstr "测试对话框..."
 msgid "Text:"
 msgstr "文本:"
 
-#: objinspstrconsts:clbcheckduplicatemsg
+#: objinspstrconsts:cgcheckduplicatemsg
 msgid "The \"%s\" Item is already listed. Add it anyway?"
 msgstr ""
 
@@ -976,7 +976,7 @@ msgstr "撤销"
 msgid "Unknown"
 msgstr "未知"
 
-#: objinspstrconsts:oicoleditup
+#: objinspstrconsts:clbup
 msgid "Up"
 msgstr "Up"
 
@@ -1003,8 +1003,4 @@ msgstr "宽度:"
 #: objinspstrconsts:oisword
 msgid "Word"
 msgstr "Word"
-
-#: objinspstrconsts:clbcolumns
-msgid "n. columns"
-msgstr ""
 

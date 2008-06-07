@@ -509,11 +509,11 @@ msgid "CheckListBox Editor"
 msgstr ""
 
 #: objinspstrconsts:clbup
-msgid "&Up"
+msgid "Up"
 msgstr ""
 
 #: objinspstrconsts:clbdown
-msgid "Do&wn"
+msgid "Down"
 msgstr ""
 
 #: objinspstrconsts:clbmodify
@@ -524,27 +524,31 @@ msgstr ""
 msgid "Add new Item"
 msgstr ""
 
-#: objinspstrconsts:clbdelete
+#: objinspstrconsts:clbdeletehint
+msgid "Delete the Item"
+msgstr ""
+
+#: objinspstrconsts:clbdeletequest
 msgid "Delete the Item %d \"%s\"?"
 msgstr ""
 
-#: objinspstrconsts:clbcheckgroupeditor
+#: objinspstrconsts:cgcheckgroupeditor
 msgid "CheckGroup Editor"
 msgstr ""
 
-#: objinspstrconsts:clbdisable
+#: objinspstrconsts:cgdisable
 msgid "Popup to disable/enable items"
 msgstr ""
 
-#: objinspstrconsts:clbcolumns
-msgid "n. columns"
+#: objinspstrconsts:cgcolumns
+msgid "Columns:"
 msgstr ""
 
-#: objinspstrconsts:clbcheckduplicate
+#: objinspstrconsts:cgcheckduplicate
 msgid "On Add, Check for Duplicate in Items"
 msgstr ""
 
-#: objinspstrconsts:clbcheckduplicatemsg
+#: objinspstrconsts:cgcheckduplicatemsg
 msgid "The \"%s\" Item is already listed. Add it anyway?"
 msgstr ""
 

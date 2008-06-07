@@ -840,3 +840,35 @@ msgstr ""
 msgid "Error while executing %s%s%s:%s%s"
 msgstr ""
 
+#: lclstrconsts:sparexpected
+msgid "Wrong token type: %s expected"
+msgstr ""
+
+#: lclstrconsts:sparinvalidinteger
+msgid "Invalid integer number: %s"
+msgstr ""
+
+#: lclstrconsts:sparwrongtokentype
+msgid "Wrong token type: %s expected but %s found"
+msgstr ""
+
+#: lclstrconsts:sparinvalidfloat
+msgid "Invalid floating point number: %s"
+msgstr ""
+
+#: lclstrconsts:sparwrongtokensymbol
+msgid "Wrong token symbol: %s expected but %s found"
+msgstr ""
+
+#: lclstrconsts:sparunterminatedstring
+msgid "Unterminated string"
+msgstr ""
+
+#: lclstrconsts:sparlocinfo
+msgid " (at %d,%d, stream offset %.8x)"
+msgstr ""
+
+#: lclstrconsts:sparunterminatedbinvalue
+msgid "Unterminated byte value"
+msgstr ""
+

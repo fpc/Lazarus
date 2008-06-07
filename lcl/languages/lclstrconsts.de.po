@@ -20,6 +20,10 @@ msgstr " geändert "
 msgid "  size "
 msgstr "  Größe "
 
+#: lclstrconsts:sparlocinfo
+msgid " (at %d,%d, stream offset %.8x)"
+msgstr ""
+
 #: lclstrconsts:rswarningunreleasedtimerinfos
 msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
 msgstr "WARNUNG: Es sind %d Timerinfo-Strukturen übrig, sie werden freigegeben"
@@ -496,9 +500,17 @@ msgstr "Ungültige Action-Registrierung"
 msgid "Invalid action unregistration"
 msgstr "Ungültige Action-Registierungsaufhebung"
 
+#: lclstrconsts:sparinvalidfloat
+msgid "Invalid floating point number: %s"
+msgstr ""
+
 #: lclstrconsts:sinvalidimagesize
 msgid "Invalid image size"
 msgstr "Ungültige Bildgröße"
+
+#: lclstrconsts:sparinvalidinteger
+msgid "Invalid integer number: %s"
+msgstr ""
 
 #: lclstrconsts:rsinvalidpropertyvalue
 msgid "Invalid property value"
@@ -796,6 +808,14 @@ msgstr "Nicht unterstütztes Bitmap-Format"
 msgid "Unsupported clipboard format: %s"
 msgstr "Nicht unterstütztes Clipboard-Format: %s"
 
+#: lclstrconsts:sparunterminatedbinvalue
+msgid "Unterminated byte value"
+msgstr ""
+
+#: lclstrconsts:sparunterminatedstring
+msgid "Unterminated string"
+msgstr ""
+
 #: lclstrconsts:ifsvk_up
 msgid "Up"
 msgstr "Hoch"
@@ -811,6 +831,18 @@ msgstr "Warnung:"
 #: lclstrconsts:rswholewordsonly
 msgid "Whole words only"
 msgstr "Nur ganze Worte"
+
+#: lclstrconsts:sparwrongtokensymbol
+msgid "Wrong token symbol: %s expected but %s found"
+msgstr ""
+
+#: lclstrconsts:sparexpected
+msgid "Wrong token type: %s expected"
+msgstr ""
+
+#: lclstrconsts:sparwrongtokentype
+msgid "Wrong token type: %s expected but %s found"
+msgstr ""
 
 #: lclstrconsts:rsmbyestoall
 msgid "Yes to &All"

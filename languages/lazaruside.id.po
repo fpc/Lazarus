@@ -921,6 +921,10 @@ msgstr "Otomatis mengganti nama file ke huruf kecil"
 msgid "Auto save"
 msgstr "Otomatis menyimpan"
 
+#: lazarusidestrconsts:lisautoshowobjectinspector
+msgid "Auto show Object Inspector"
+msgstr ""
+
 #: lazarusidestrconsts:dlgautocreateforms
 msgid "Auto-create forms:"
 msgstr "Otomatis-buat form:"
@@ -3276,6 +3280,10 @@ msgstr "Direktori sumber FPC SVN"
 #: lazarusidestrconsts:lisfpcsourcedirectoryerror
 msgid "FPC Source Directory error"
 msgstr "Direktori Sumber FPC salah"
+
+#: lazarusidestrconsts:lisfpcversion
+msgid "FPC Version: "
+msgstr ""
 
 #: lazarusidestrconsts:dlgfpcsrcpath
 msgid "FPC source directory"
@@ -8213,6 +8221,10 @@ msgstr "Tampilkan paket"
 msgid "Show scroll hint"
 msgstr "Tampilkan petunjuk menggulung"
 
+#: lazarusidestrconsts:lisshowspecialcharacters
+msgid "Show special characters"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowsummary
 msgid "Show summary"
 msgstr "Tampilkan ringkasan"
@@ -10244,6 +10256,10 @@ msgstr "Ekstensi ditetapkan pemakai (.pp.xxx)"
 #: lazarusidestrconsts:dlgrunouseroverrides
 msgid "User overrides"
 msgstr "Penolakan pemakai"
+
+#: lazarusidestrconsts:lisusershomedirectory
+msgid "User's home directory"
+msgstr ""
 
 #: lazarusidestrconsts:lisceuses
 msgid "Uses"

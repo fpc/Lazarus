@@ -924,6 +924,10 @@ msgstr "Dateinamen klein umbenennen"
 msgid "Auto save"
 msgstr "Automatisches Speichern"
 
+#: lazarusidestrconsts:lisautoshowobjectinspector
+msgid "Auto show Object Inspector"
+msgstr ""
+
 #: lazarusidestrconsts:dlgautocreateforms
 msgid "Auto-create forms:"
 msgstr "Automatisch erzeugte Formulare:"
@@ -3279,6 +3283,10 @@ msgstr "FPC-SVN-Quelltextverzeichnis"
 #: lazarusidestrconsts:lisfpcsourcedirectoryerror
 msgid "FPC Source Directory error"
 msgstr "FPC-Quelltextverzeichnis-Fehler"
+
+#: lazarusidestrconsts:lisfpcversion
+msgid "FPC Version: "
+msgstr ""
 
 #: lazarusidestrconsts:dlgfpcsrcpath
 msgid "FPC source directory"
@@ -8216,6 +8224,10 @@ msgstr "Packages anzeigen"
 msgid "Show scroll hint"
 msgstr "Scroll-Hinweise anzeigen"
 
+#: lazarusidestrconsts:lisshowspecialcharacters
+msgid "Show special characters"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowsummary
 msgid "Show summary"
 msgstr "Zusammenfassung anzeigen"
@@ -10247,6 +10259,10 @@ msgstr "Benutzerdefinierte Erweiterung (.pp.xxx)"
 #: lazarusidestrconsts:dlgrunouseroverrides
 msgid "User overrides"
 msgstr "Benutzervorgaben"
+
+#: lazarusidestrconsts:lisusershomedirectory
+msgid "User's home directory"
+msgstr ""
 
 #: lazarusidestrconsts:lisceuses
 msgid "Uses"

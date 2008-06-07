@@ -9,6 +9,10 @@ msgstr ""
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
+#: messagecomposer:rscancel
+msgid "Cancel"
+msgstr ""
+
 #: messagecomposer:skindofmessage
 msgid "KIND OF MESSAGE"
 msgstr "Тип сообщения"
@@ -25,9 +29,17 @@ msgstr "Составитель сообщений ..."
 msgid "Not Implemented Yet"
 msgstr "Еще не реализовано"
 
+#: messagecomposer:rsok
+msgid "Ok"
+msgstr ""
+
 #: messagecomposer:ssourcewrapper
 msgid "SOURCE WRAPPER"
 msgstr "Вызывающий исходный код"
+
+#: messagecomposer:rstest
+msgid "Test"
+msgstr ""
 
 #: messagecomposer:spromptcaption
 msgid "Text asking the user for input"

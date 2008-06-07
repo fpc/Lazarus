@@ -19,6 +19,10 @@ msgstr "  diubah "
 msgid "  size "
 msgstr "  ukuran "
 
+#: lclstrconsts:sparlocinfo
+msgid " (at %d,%d, stream offset %.8x)"
+msgstr ""
+
 #: lclstrconsts:rswarningunreleasedtimerinfos
 msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
 msgstr " PERINGATAN: Ada %d struktur TimerInfo tersisa, Saya akan membebaskannya"
@@ -495,9 +499,17 @@ msgstr "Registrasi action tidak benar"
 msgid "Invalid action unregistration"
 msgstr "Pembatalan registrasi action tidak benar"
 
+#: lclstrconsts:sparinvalidfloat
+msgid "Invalid floating point number: %s"
+msgstr ""
+
 #: lclstrconsts:sinvalidimagesize
 msgid "Invalid image size"
 msgstr "Ukuran gambar tidak benar"
+
+#: lclstrconsts:sparinvalidinteger
+msgid "Invalid integer number: %s"
+msgstr ""
 
 #: lclstrconsts:rsinvalidpropertyvalue
 msgid "Invalid property value"
@@ -795,6 +807,14 @@ msgstr "Format bitmap tidak didukung."
 msgid "Unsupported clipboard format: %s"
 msgstr "Format clipboard tidak didukung: %s"
 
+#: lclstrconsts:sparunterminatedbinvalue
+msgid "Unterminated byte value"
+msgstr ""
+
+#: lclstrconsts:sparunterminatedstring
+msgid "Unterminated string"
+msgstr ""
+
 #: lclstrconsts:ifsvk_up
 msgid "Up"
 msgstr "Up"
@@ -810,6 +830,18 @@ msgstr "Peringatan:"
 #: lclstrconsts:rswholewordsonly
 msgid "Whole words only"
 msgstr "Hanya seluruh kata"
+
+#: lclstrconsts:sparwrongtokensymbol
+msgid "Wrong token symbol: %s expected but %s found"
+msgstr ""
+
+#: lclstrconsts:sparexpected
+msgid "Wrong token type: %s expected"
+msgstr ""
+
+#: lclstrconsts:sparwrongtokentype
+msgid "Wrong token type: %s expected but %s found"
+msgstr ""
 
 #: lclstrconsts:rsmbyestoall
 msgid "Yes to &All"

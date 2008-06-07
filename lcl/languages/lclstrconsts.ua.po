@@ -12,6 +12,10 @@ msgstr "змінений"
 msgid "  size "
 msgstr "розмір"
 
+#: lclstrconsts:sparlocinfo
+msgid " (at %d,%d, stream offset %.8x)"
+msgstr ""
+
 #: lclstrconsts:rswarningunreleasedtimerinfos
 msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
 msgstr " УВАГА: Залишилось %d структур TimerInfo, я їх звільняю"
@@ -488,9 +492,17 @@ msgstr "Неправильна реєстрація дії"
 msgid "Invalid action unregistration"
 msgstr "Неправильна дія зняття реєстрації"
 
+#: lclstrconsts:sparinvalidfloat
+msgid "Invalid floating point number: %s"
+msgstr ""
+
 #: lclstrconsts:sinvalidimagesize
 msgid "Invalid image size"
 msgstr "Неправильний розмір малюнка"
+
+#: lclstrconsts:sparinvalidinteger
+msgid "Invalid integer number: %s"
+msgstr ""
 
 #: lclstrconsts:rsinvalidpropertyvalue
 msgid "Invalid property value"
@@ -788,6 +800,14 @@ msgstr "Не підтримуваний тип точкового малюнка
 msgid "Unsupported clipboard format: %s"
 msgstr "Формат не підтримує буфер обміну: %s"
 
+#: lclstrconsts:sparunterminatedbinvalue
+msgid "Unterminated byte value"
+msgstr ""
+
+#: lclstrconsts:sparunterminatedstring
+msgid "Unterminated string"
+msgstr ""
+
 #: lclstrconsts:ifsvk_up
 msgid "Up"
 msgstr "Вверх"
@@ -802,6 +822,18 @@ msgstr "Попередження:"
 
 #: lclstrconsts:rswholewordsonly
 msgid "Whole words only"
+msgstr ""
+
+#: lclstrconsts:sparwrongtokensymbol
+msgid "Wrong token symbol: %s expected but %s found"
+msgstr ""
+
+#: lclstrconsts:sparexpected
+msgid "Wrong token type: %s expected"
+msgstr ""
+
+#: lclstrconsts:sparwrongtokentype
+msgid "Wrong token type: %s expected but %s found"
 msgstr ""
 
 #: lclstrconsts:rsmbyestoall

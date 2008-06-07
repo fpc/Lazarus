@@ -17,6 +17,10 @@ msgstr " modificat "
 msgid "  size "
 msgstr " tamany "
 
+#: lclstrconsts:sparlocinfo
+msgid " (at %d,%d, stream offset %.8x)"
+msgstr ""
+
 #: lclstrconsts:rswarningunreleasedtimerinfos
 msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
 msgstr " Avís: s'han perdut %d estructures TimerInfo, les allibero"
@@ -493,8 +497,16 @@ msgstr ""
 msgid "Invalid action unregistration"
 msgstr ""
 
+#: lclstrconsts:sparinvalidfloat
+msgid "Invalid floating point number: %s"
+msgstr ""
+
 #: lclstrconsts:sinvalidimagesize
 msgid "Invalid image size"
+msgstr ""
+
+#: lclstrconsts:sparinvalidinteger
+msgid "Invalid integer number: %s"
 msgstr ""
 
 #: lclstrconsts:rsinvalidpropertyvalue
@@ -793,6 +805,14 @@ msgstr ""
 msgid "Unsupported clipboard format: %s"
 msgstr ""
 
+#: lclstrconsts:sparunterminatedbinvalue
+msgid "Unterminated byte value"
+msgstr ""
+
+#: lclstrconsts:sparunterminatedstring
+msgid "Unterminated string"
+msgstr ""
+
 #: lclstrconsts:ifsvk_up
 msgid "Up"
 msgstr ""
@@ -807,6 +827,18 @@ msgstr ""
 
 #: lclstrconsts:rswholewordsonly
 msgid "Whole words only"
+msgstr ""
+
+#: lclstrconsts:sparwrongtokensymbol
+msgid "Wrong token symbol: %s expected but %s found"
+msgstr ""
+
+#: lclstrconsts:sparexpected
+msgid "Wrong token type: %s expected"
+msgstr ""
+
+#: lclstrconsts:sparwrongtokentype
+msgid "Wrong token type: %s expected but %s found"
 msgstr ""
 
 #: lclstrconsts:rsmbyestoall

@@ -105,10 +105,6 @@ msgstr "&Ricerca argomento"
 msgid "&Undo"
 msgstr "&Annulla"
 
-#: objinspstrconsts:clbup
-msgid "&Up"
-msgstr "Su"
-
 #: objinspstrconsts:cactionlisteditorallcategory
 msgid "(All)"
 msgstr "(tutto)"
@@ -241,7 +237,7 @@ msgstr "Caratteri per Blanks"
 msgid "Check dataset settings"
 msgstr ""
 
-#: objinspstrconsts:clbcheckgroupeditor
+#: objinspstrconsts:cgcheckgroupeditor
 msgid "CheckGroup Editor"
 msgstr "Editor per il CheckGroup"
 
@@ -272,6 +268,10 @@ msgstr "Seleziona colore"
 #: objinspstrconsts:rscdcolumneditor
 msgid "Column Editor"
 msgstr "Editor di colonna"
+
+#: objinspstrconsts:cgcolumns
+msgid "Columns:"
+msgstr ""
 
 #: objinspstrconsts:oiscomponentnameisnotavalididentifier
 msgid "Component name %s%s%s is not a valid identifier"
@@ -381,7 +381,11 @@ msgstr "Cancella pagina"
 msgid "Delete tab"
 msgstr "Cancella scheda"
 
-#: objinspstrconsts:clbdelete
+#: objinspstrconsts:clbdeletehint
+msgid "Delete the Item"
+msgstr ""
+
+#: objinspstrconsts:clbdeletequest
 msgid "Delete the Item %d \"%s\"?"
 msgstr "Cancella la voce %d \"%s\"?"
 
@@ -394,10 +398,6 @@ msgid "Do you want to split the image?"
 msgstr "Vuoi tagliare l'immagine?"
 
 #: objinspstrconsts:clbdown
-msgid "Do&wn"
-msgstr "&Gi√π"
-
-#: objinspstrconsts:oicoleditdown
 msgid "Down"
 msgstr "Gi√π"
 
@@ -713,7 +713,7 @@ msgstr "Ispettore oggetti"
 msgid "Ok"
 msgstr "Ok"
 
-#: objinspstrconsts:clbcheckduplicate
+#: objinspstrconsts:cgcheckduplicate
 msgid "On Add, Check for Duplicate in Items"
 msgstr "Quando aggiungi, verifica se ci sono elementi duplicati"
 
@@ -765,7 +765,7 @@ msgstr "Incolla i componenti"
 msgid "Picture"
 msgstr "Disegno"
 
-#: objinspstrconsts:clbdisable
+#: objinspstrconsts:cgdisable
 msgid "Popup to disable/enable items"
 msgstr "Popup per abilitare/disabilitare le voci"
 
@@ -953,7 +953,7 @@ msgstr "Prova finestra di dialogo..."
 msgid "Text:"
 msgstr "Testo:"
 
-#: objinspstrconsts:clbcheckduplicatemsg
+#: objinspstrconsts:cgcheckduplicatemsg
 msgid "The \"%s\" Item is already listed. Add it anyway?"
 msgstr "L'elemento \"%s\" Ë gi‡ in lista. Aggiungerlo comunque?"
 
@@ -981,7 +981,7 @@ msgstr "Annulla"
 msgid "Unknown"
 msgstr "Sconosciuto"
 
-#: objinspstrconsts:oicoleditup
+#: objinspstrconsts:clbup
 msgid "Up"
 msgstr "Su"
 
@@ -1008,8 +1008,4 @@ msgstr "Larghezza"
 #: objinspstrconsts:oisword
 msgid "Word"
 msgstr "Parola"
-
-#: objinspstrconsts:clbcolumns
-msgid "n. columns"
-msgstr "num. colonne"
 

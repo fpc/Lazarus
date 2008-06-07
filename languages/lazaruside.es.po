@@ -919,6 +919,10 @@ msgstr "Renombrar automáticamente el archivo en minúsculas"
 msgid "Auto save"
 msgstr "Guardar automáticamente"
 
+#: lazarusidestrconsts:lisautoshowobjectinspector
+msgid "Auto show Object Inspector"
+msgstr ""
+
 #: lazarusidestrconsts:dlgautocreateforms
 msgid "Auto-create forms:"
 msgstr "Crear formularios automáticamente:"
@@ -3274,6 +3278,10 @@ msgstr "Directorios de las fuentes SVN de FPC"
 #: lazarusidestrconsts:lisfpcsourcedirectoryerror
 msgid "FPC Source Directory error"
 msgstr "Error del directorio de las fuentes de FPC"
+
+#: lazarusidestrconsts:lisfpcversion
+msgid "FPC Version: "
+msgstr ""
 
 #: lazarusidestrconsts:dlgfpcsrcpath
 msgid "FPC source directory"
@@ -8211,6 +8219,10 @@ msgstr "Mostrar paquetes"
 msgid "Show scroll hint"
 msgstr "Mostrar Consejo de desplazamiento"
 
+#: lazarusidestrconsts:lisshowspecialcharacters
+msgid "Show special characters"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowsummary
 msgid "Show summary"
 msgstr "Mostrar resumen"
@@ -10242,6 +10254,10 @@ msgstr "Extensión definida por usuario (.pp.xxx)"
 #: lazarusidestrconsts:dlgrunouseroverrides
 msgid "User overrides"
 msgstr "Usar reemplazos"
+
+#: lazarusidestrconsts:lisusershomedirectory
+msgid "User's home directory"
+msgstr ""
 
 #: lazarusidestrconsts:lisceuses
 msgid "Uses"

@@ -921,6 +921,10 @@ msgstr ""
 msgid "Auto save"
 msgstr ""
 
+#: lazarusidestrconsts:lisautoshowobjectinspector
+msgid "Auto show Object Inspector"
+msgstr ""
+
 #: lazarusidestrconsts:dlgautocreateforms
 msgid "Auto-create forms:"
 msgstr ""
@@ -3275,6 +3279,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisfpcsourcedirectoryerror
 msgid "FPC Source Directory error"
+msgstr ""
+
+#: lazarusidestrconsts:lisfpcversion
+msgid "FPC Version: "
 msgstr ""
 
 #: lazarusidestrconsts:dlgfpcsrcpath
@@ -8213,6 +8221,10 @@ msgstr ""
 msgid "Show scroll hint"
 msgstr ""
 
+#: lazarusidestrconsts:lisshowspecialcharacters
+msgid "Show special characters"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowsummary
 msgid "Show summary"
 msgstr ""
@@ -10243,6 +10255,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgrunouseroverrides
 msgid "User overrides"
+msgstr ""
+
+#: lazarusidestrconsts:lisusershomedirectory
+msgid "User's home directory"
 msgstr ""
 
 #: lazarusidestrconsts:lisceuses

@@ -188,6 +188,10 @@ msgstr ""
 msgid "Project Src Path"
 msgstr ""
 
+#: lazarusidestrconsts:lisusershomedirectory
+msgid "User's home directory"
+msgstr ""
+
 #: lazarusidestrconsts:lismakeexe
 msgid "Make Executable"
 msgstr ""
@@ -2164,6 +2168,10 @@ msgstr ""
 msgid "Date"
 msgstr ""
 
+#: lazarusidestrconsts:lisfpcversion
+msgid "FPC Version: "
+msgstr ""
+
 #: lazarusidestrconsts:lissvnrevision
 msgid "SVN Revision: "
 msgstr ""
@@ -2828,6 +2836,10 @@ msgstr ""
 msgid "Show hints in Object Inspector"
 msgstr ""
 
+#: lazarusidestrconsts:lisautoshowobjectinspector
+msgid "Auto show Object Inspector"
+msgstr ""
+
 #: lazarusidestrconsts:dlgenvcolors
 msgid "Colors"
 msgstr ""
@@ -3046,6 +3058,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgscrollpastendline
 msgid "Scroll past end of line"
+msgstr ""
+
+#: lazarusidestrconsts:lisshowspecialcharacters
+msgid "Show special characters"
 msgstr ""
 
 #: lazarusidestrconsts:dlgclosebuttonsnotebook

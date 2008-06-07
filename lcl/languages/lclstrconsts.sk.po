@@ -19,6 +19,10 @@ msgstr ".. zmenené"
 msgid "  size "
 msgstr "..veľkosť "
 
+#: lclstrconsts:sparlocinfo
+msgid " (at %d,%d, stream offset %.8x)"
+msgstr ""
+
 #: lclstrconsts:rswarningunreleasedtimerinfos
 msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
 msgstr ""
@@ -495,9 +499,17 @@ msgstr "Neplatné·akcia registrácie"
 msgid "Invalid action unregistration"
 msgstr "Neplatné·akcia odregistrovania"
 
+#: lclstrconsts:sparinvalidfloat
+msgid "Invalid floating point number: %s"
+msgstr ""
+
 #: lclstrconsts:sinvalidimagesize
 msgid "Invalid image size"
 msgstr "Neplatná veľkosť obrázku"
+
+#: lclstrconsts:sparinvalidinteger
+msgid "Invalid integer number: %s"
+msgstr ""
 
 #: lclstrconsts:rsinvalidpropertyvalue
 msgid "Invalid property value"
@@ -795,6 +807,14 @@ msgstr "Nepodporovaný formát bitmapy"
 msgid "Unsupported clipboard format: %s"
 msgstr "Nepodporovaný formát schránky: %s"
 
+#: lclstrconsts:sparunterminatedbinvalue
+msgid "Unterminated byte value"
+msgstr ""
+
+#: lclstrconsts:sparunterminatedstring
+msgid "Unterminated string"
+msgstr ""
+
 #: lclstrconsts:ifsvk_up
 msgid "Up"
 msgstr ""
@@ -810,6 +830,18 @@ msgstr "Upozornenie:"
 #: lclstrconsts:rswholewordsonly
 msgid "Whole words only"
 msgstr "Len celé slová"
+
+#: lclstrconsts:sparwrongtokensymbol
+msgid "Wrong token symbol: %s expected but %s found"
+msgstr ""
+
+#: lclstrconsts:sparexpected
+msgid "Wrong token type: %s expected"
+msgstr ""
+
+#: lclstrconsts:sparwrongtokentype
+msgid "Wrong token type: %s expected but %s found"
+msgstr ""
 
 #: lclstrconsts:rsmbyestoall
 msgid "Yes to &All"

@@ -922,6 +922,10 @@ msgstr "Failą automatiškai pervardyti mažosiomis raidėmis"
 msgid "Auto save"
 msgstr "Automatinis išsaugojimas"
 
+#: lazarusidestrconsts:lisautoshowobjectinspector
+msgid "Auto show Object Inspector"
+msgstr ""
+
 #: lazarusidestrconsts:dlgautocreateforms
 msgid "Auto-create forms:"
 msgstr "Automatiškai kuriamos formos:"
@@ -3281,6 +3285,10 @@ msgstr "FPC SVN pirminio kodo katalogas"
 #: lazarusidestrconsts:lisfpcsourcedirectoryerror
 msgid "FPC Source Directory error"
 msgstr "FPC pirminio kodo katalogo klaida"
+
+#: lazarusidestrconsts:lisfpcversion
+msgid "FPC Version: "
+msgstr ""
 
 #: lazarusidestrconsts:dlgfpcsrcpath
 msgid "FPC source directory"
@@ -8222,6 +8230,10 @@ msgstr "Rodyti paketus"
 msgid "Show scroll hint"
 msgstr "Slenkant rodyti informacinį langelį"
 
+#: lazarusidestrconsts:lisshowspecialcharacters
+msgid "Show special characters"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowsummary
 msgid "Show summary"
 msgstr "Rodyti apibendrinimą"
@@ -10265,6 +10277,10 @@ msgstr "Naudotojo nurodytas prievardis (.pp.xxx)"
 #: lazarusidestrconsts:dlgrunouseroverrides
 msgid "User overrides"
 msgstr "Naudotojo pakeitimai"
+
+#: lazarusidestrconsts:lisusershomedirectory
+msgid "User's home directory"
+msgstr ""
 
 #: lazarusidestrconsts:lisceuses
 msgid "Uses"

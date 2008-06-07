@@ -921,6 +921,10 @@ msgstr "Automatisch hernoemen bestand naar kleine letters"
 msgid "Auto save"
 msgstr "Automatisch saven"
 
+#: lazarusidestrconsts:lisautoshowobjectinspector
+msgid "Auto show Object Inspector"
+msgstr ""
+
 #: lazarusidestrconsts:dlgautocreateforms
 msgid "Auto-create forms:"
 msgstr "Automatisch maken van formulieren"
@@ -3276,6 +3280,10 @@ msgstr "FPC SVN broncode directory"
 #: lazarusidestrconsts:lisfpcsourcedirectoryerror
 msgid "FPC Source Directory error"
 msgstr "FPC directory fout"
+
+#: lazarusidestrconsts:lisfpcversion
+msgid "FPC Version: "
+msgstr ""
 
 #: lazarusidestrconsts:dlgfpcsrcpath
 msgid "FPC source directory"
@@ -8213,6 +8221,10 @@ msgstr "Toon paketten"
 msgid "Show scroll hint"
 msgstr "Toon scroll hint"
 
+#: lazarusidestrconsts:lisshowspecialcharacters
+msgid "Show special characters"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowsummary
 msgid "Show summary"
 msgstr "Toon samenvatting"
@@ -10244,6 +10256,10 @@ msgstr "Door gebruiker gedefinieerde extensie (.pp.xxx)"
 #: lazarusidestrconsts:dlgrunouseroverrides
 msgid "User overrides"
 msgstr "Gebruiker voorkeuren"
+
+#: lazarusidestrconsts:lisusershomedirectory
+msgid "User's home directory"
+msgstr ""
 
 #: lazarusidestrconsts:lisceuses
 msgid "Uses"

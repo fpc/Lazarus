@@ -107,10 +107,6 @@ msgstr "S&tichwortsuche"
 msgid "&Undo"
 msgstr "&Zurücknehmen"
 
-#: objinspstrconsts:clbup
-msgid "&Up"
-msgstr "&Hoch"
-
 #: objinspstrconsts:cactionlisteditorallcategory
 msgid "(All)"
 msgstr "(Alle)"
@@ -243,7 +239,7 @@ msgstr "Zeichen für Leerstellen"
 msgid "Check dataset settings"
 msgstr "Prüfe Dataset-Einstellungen"
 
-#: objinspstrconsts:clbcheckgroupeditor
+#: objinspstrconsts:cgcheckgroupeditor
 msgid "CheckGroup Editor"
 msgstr "Editor für CheckGroups"
 
@@ -274,6 +270,10 @@ msgstr "Farbauswahl"
 #: objinspstrconsts:rscdcolumneditor
 msgid "Column Editor"
 msgstr "Spalteneditor"
+
+#: objinspstrconsts:cgcolumns
+msgid "Columns:"
+msgstr ""
 
 #: objinspstrconsts:oiscomponentnameisnotavalididentifier
 msgid "Component name %s%s%s is not a valid identifier"
@@ -383,7 +383,11 @@ msgstr "Seite löschen"
 msgid "Delete tab"
 msgstr "Tab löschen"
 
-#: objinspstrconsts:clbdelete
+#: objinspstrconsts:clbdeletehint
+msgid "Delete the Item"
+msgstr ""
+
+#: objinspstrconsts:clbdeletequest
 msgid "Delete the Item %d \"%s\"?"
 msgstr "Den Eintrag %s \"%s\" löschen?"
 
@@ -396,10 +400,6 @@ msgid "Do you want to split the image?"
 msgstr "Soll das Bild geteilt werden?"
 
 #: objinspstrconsts:clbdown
-msgid "Do&wn"
-msgstr "Nach &unten"
-
-#: objinspstrconsts:oicoleditdown
 msgid "Down"
 msgstr "Nach unten"
 
@@ -715,7 +715,7 @@ msgstr "Objektinspektor"
 msgid "Ok"
 msgstr "Ok"
 
-#: objinspstrconsts:clbcheckduplicate
+#: objinspstrconsts:cgcheckduplicate
 msgid "On Add, Check for Duplicate in Items"
 msgstr "Prüfen Sie beim Einfügen auf doppelte Einträge"
 
@@ -767,7 +767,7 @@ msgstr "Komponenten einfügen"
 msgid "Picture"
 msgstr "Bild"
 
-#: objinspstrconsts:clbdisable
+#: objinspstrconsts:cgdisable
 msgid "Popup to disable/enable items"
 msgstr "Popup für das Ein-/Ausschalten der Einträge"
 
@@ -955,7 +955,7 @@ msgstr "Prüfdialog..."
 msgid "Text:"
 msgstr "Text:"
 
-#: objinspstrconsts:clbcheckduplicatemsg
+#: objinspstrconsts:cgcheckduplicatemsg
 msgid "The \"%s\" Item is already listed. Add it anyway?"
 msgstr "Der Eintrag \"%s\" ist bereits enthalten, trotzdem hinzufügen?"
 
@@ -983,7 +983,7 @@ msgstr "Zurücknehmen"
 msgid "Unknown"
 msgstr "Unbekannt"
 
-#: objinspstrconsts:oicoleditup
+#: objinspstrconsts:clbup
 msgid "Up"
 msgstr "Hoch"
 
@@ -1010,8 +1010,4 @@ msgstr "Breite"
 #: objinspstrconsts:oisword
 msgid "Word"
 msgstr "Word"
-
-#: objinspstrconsts:clbcolumns
-msgid "n. columns"
-msgstr "n. Spalten"
 

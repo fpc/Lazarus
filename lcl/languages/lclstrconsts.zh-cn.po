@@ -19,6 +19,10 @@ msgstr "已更改"
 msgid "  size "
 msgstr "大小"
 
+#: lclstrconsts:sparlocinfo
+msgid " (at %d,%d, stream offset %.8x)"
+msgstr ""
+
 #: lclstrconsts:rswarningunreleasedtimerinfos
 msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
 msgstr " WARNING: There are %d TimerInfo structures left, I'll free them"
@@ -495,9 +499,17 @@ msgstr "无效的注册行为"
 msgid "Invalid action unregistration"
 msgstr "无效的取消注册行为"
 
+#: lclstrconsts:sparinvalidfloat
+msgid "Invalid floating point number: %s"
+msgstr ""
+
 #: lclstrconsts:sinvalidimagesize
 msgid "Invalid image size"
 msgstr "无效图像大小"
+
+#: lclstrconsts:sparinvalidinteger
+msgid "Invalid integer number: %s"
+msgstr ""
 
 #: lclstrconsts:rsinvalidpropertyvalue
 msgid "Invalid property value"
@@ -795,6 +807,14 @@ msgstr "未支持的位图格式"
 msgid "Unsupported clipboard format: %s"
 msgstr "未支持的剪切版格式: %s"
 
+#: lclstrconsts:sparunterminatedbinvalue
+msgid "Unterminated byte value"
+msgstr ""
+
+#: lclstrconsts:sparunterminatedstring
+msgid "Unterminated string"
+msgstr ""
+
 #: lclstrconsts:ifsvk_up
 msgid "Up"
 msgstr "Up"
@@ -810,6 +830,18 @@ msgstr "警告:"
 #: lclstrconsts:rswholewordsonly
 msgid "Whole words only"
 msgstr "仅整个单词"
+
+#: lclstrconsts:sparwrongtokensymbol
+msgid "Wrong token symbol: %s expected but %s found"
+msgstr ""
+
+#: lclstrconsts:sparexpected
+msgid "Wrong token type: %s expected"
+msgstr ""
+
+#: lclstrconsts:sparwrongtokentype
+msgid "Wrong token type: %s expected but %s found"
+msgstr ""
 
 #: lclstrconsts:rsmbyestoall
 msgid "Yes to &All"

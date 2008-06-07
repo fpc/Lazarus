@@ -924,6 +924,10 @@ msgstr "Automaticky na malé písmená"
 msgid "Auto save"
 msgstr "Auto ukladať"
 
+#: lazarusidestrconsts:lisautoshowobjectinspector
+msgid "Auto show Object Inspector"
+msgstr ""
+
 #: lazarusidestrconsts:dlgautocreateforms
 msgid "Auto-create forms:"
 msgstr "Automaticky vytvárané formuláre:"
@@ -3279,6 +3283,10 @@ msgstr "SVN Adresár zdrojových kódov FPC"
 #: lazarusidestrconsts:lisfpcsourcedirectoryerror
 msgid "FPC Source Directory error"
 msgstr "Chyba adresára zdrojových kódov FPC"
+
+#: lazarusidestrconsts:lisfpcversion
+msgid "FPC Version: "
+msgstr ""
 
 #: lazarusidestrconsts:dlgfpcsrcpath
 msgid "FPC source directory"
@@ -8216,6 +8224,10 @@ msgstr "Zobraziť balíčky"
 msgid "Show scroll hint"
 msgstr "Zobraziť rady posunu"
 
+#: lazarusidestrconsts:lisshowspecialcharacters
+msgid "Show special characters"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowsummary
 msgid "Show summary"
 msgstr "Zobraziť súhrn"
@@ -10247,6 +10259,10 @@ msgstr "Používateľská prípona (.pp.xxx)"
 #: lazarusidestrconsts:dlgrunouseroverrides
 msgid "User overrides"
 msgstr "Používateľské prepisuje"
+
+#: lazarusidestrconsts:lisusershomedirectory
+msgid "User's home directory"
+msgstr ""
 
 #: lazarusidestrconsts:lisceuses
 msgid "Uses"
