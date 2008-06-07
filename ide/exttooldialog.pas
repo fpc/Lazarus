@@ -315,7 +315,8 @@ begin
         Format(lisExtToolUnableToRunTheTool, ['"', Title, '"', #13,
           'Program '+Filename+' not found']
           ),
-        mtError,[mbCancel,mbAbort],0);
+        mtError,[mbIgnore,mbAbort],0);
+      if Result=mrIgnore then Result:=mrCancel;
       exit;
     end;
     Filename:=NewFilename;
@@ -406,7 +407,8 @@ begin
       Result:=MessageDlg(lisExtToolFailedToRunTool,
         Format(lisExtToolUnableToRunTheTool, ['"', Title, '"', #13, e.Message]
           ),
-        mtError,[mbCancel,mbAbort],0);
+        mtError,[mbIgnore,mbAbort],0);
+      if Result=mrIgnore then Result:=mrCancel;
       exit;
     end;
   end;
