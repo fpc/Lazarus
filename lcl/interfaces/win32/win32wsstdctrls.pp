@@ -582,7 +582,7 @@ begin
         FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
     end;
     pClassName := 'LISTBOX';
-    Flags := Flags or (WS_VSCROLL or LBS_NOINTEGRALHEIGHT or LBS_HASSTRINGS or
+    Flags := Flags or (WS_HSCROLL or WS_VSCROLL or LBS_NOINTEGRALHEIGHT or LBS_HASSTRINGS or
                        LBS_NOTIFY);
   end;
   // create window
