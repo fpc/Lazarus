@@ -3267,9 +3267,9 @@ var
 
   procedure ExpandSpecialChars(var p: PChar; var Count: integer;
     PhysicalStartPos: integer);
-  // if there are no tabs: keep p and Count untouched
-  // if there are tabs: copy p into ExpandedPaintToken buffer,
-  //                    convert tabs to spaces, and return the buffer
+  // if there are no tabs or special chars: keep p and Count untouched
+  // if there are special chars: copy p into ExpandedPaintToken buffer,
+  //                             convert tabs to spaces, and return the buffer
   var
     i: integer;
     TabCount, LengthNeeded: Integer;
@@ -3284,8 +3284,10 @@ var
     TabCount:=0;
     for i:=0 to Count-1 do
       if p[i]=#9 then inc(TabCount);
-    if TabCount=0 then exit;
-    LengthNeeded:=Count+TabCount*8;
+    if (TabCount=0)
+    and (FindInvalidUTF8Character(p,Count)<0) then
+      exit;
+    LengthNeeded:=Count+TabCount*TabWidth;
     if length(ExpandedPaintToken)<LengthNeeded then
       SetLength(ExpandedPaintToken,LengthNeeded+CharsInWindow);
     SrcPos:=0;
@@ -3295,13 +3297,28 @@ var
     while SrcPos<Count do begin
       c:=p[SrcPos];
       case c of
+      #128..#195:
+        begin
+          if UseUTF8 then
+            Dest[DestPos]:='?' // non UTF-8 character
+          else
+            Dest[DestPos]:=p[SrcPos]; // normal char
+          inc(DestPos);
+          inc(SrcPos);
+          inc(ScreenPos);
+        end;
 
       #196..#255:
         begin
           // could be UTF8 char
-          if UseUTF8 then
-            CharLen:=UTF8CharacterLength(@p[SrcPos])
-          else
+          if UseUTF8 then begin
+            CharLen:=UTF8CharacterStrictLength(@p[SrcPos]);
+            if CharLen=0 then begin
+              Dest[DestPos]:='?';
+              inc(DestPos);
+              inc(SrcPos);
+            end;
+          end else
             CharLen:=1;
           for i:=1 to CharLen do begin
             Dest[DestPos]:=p[SrcPos];
