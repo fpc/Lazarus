@@ -2,11 +2,11 @@
  *****************************************************************************
  *                                                                           *
  *  See the file COPYING.modifiedLGPL, included in this distribution,        *
- *  for details about the copyright.                                         *
+ *  for details about the copyright.                                        *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                    *
  *                                                                           *
  *****************************************************************************
 
@@ -50,12 +50,12 @@ type
 
 { TPropertyEditor
   Edits a property of a component, or list of components, selected into the
-  Object Inspector.  The property editor is created based on the type of the
+  Object Inspector. The property editor is created based on the type of the
   property being edited as determined by the types registered by
-  RegisterPropertyEditor.  The Object Inspector uses a TPropertyEditor
+  RegisterPropertyEditor. The Object Inspector uses a TPropertyEditor
   for all modification to a property. GetName and GetValue are called to
   display the name and value of the property. SetValue is called whenever the
-  user requests to change the value.  Edit is called when the user
+  user requests to change the value. Edit is called when the user
   double-clicks the property in the Object Inspector. GetValues is called when
   the drop-down list of a property is displayed. GetProperties is called when
   the property is expanded to show sub-properties. AllEqual is called to decide
@@ -74,13 +74,13 @@ type
     Deactivate
       Called whenevr the property becomes unselected in the object inspector.
     AllEqual
-      Called whenever there is more than one component selected.  If this
+      Called whenever there is more than one component selected. If this
       method returns true,GetValue is called,otherwise blank is displayed
-      in the Object Inspector.  This is called only when GetAttributes
+      in the Object Inspector. This is called only when GetAttributes
       returns paMultiSelect.
     AutoFill
       Called to determine whether the values returned by GetValues can be
-      selected incrementally in the Object Inspector.  This is called only when
+      selected incrementally in the Object Inspector. This is called only when
       GetAttributes returns paValueList.
     Edit
       Called when the '...' button is pressed or the property is double-clicked.
@@ -89,15 +89,18 @@ type
       property).
     GetAttributes
       Returns the information for use in the Object Inspector to be able to
-      show the appropriate tools.  GetAttributes returns a set of type
+      show the appropriate tools. GetAttributes returns a set of type
       TPropertyAttributes:
         paValueList:    The property editor can return an enumerated list of
-                        values for the property.  If GetValues calls Proc
-                        with values then this attribute should be set.  This
+                        values for the property. If GetValues calls Proc
+                        with values then this attribute should be set. This
                         will cause the drop-down button to appear to the right
                         of the property in the Object Inspector.
         paSortList:     Object Inspector to sort the list returned by
-                         GetValues.
+                        GetValues.
+        paPickList:     Usable together with paValueList. The text field is
+                        readonly. The user can still select values from drop
+                        list. Unless paReadOnly.
         paSubProperties:The property editor has sub-properties that will be
                         displayed indented and below the current property in
                         standard outline format. If GetProperties will
@@ -108,11 +111,11 @@ type
                         the list should call UpdateListPropertyEditors, so that
                         the object inspector will reread the subproperties.
         paDialog:       Indicates that the Edit method will bring up a
-                        dialog.  This will cause the '...' button to be
+                        dialog. This will cause the '...' button to be
                         displayed to the right of the property in the Object
                         Inspector.
         paMultiSelect:  Allows the property to be displayed when more than
-                        one component is selected.  Some properties are not
+                        one component is selected. Some properties are not
                         appropriate for multi-selection (e.g. the Name
                         property).
         paAutoUpdate:   Causes the SetValue method to be called on each
@@ -122,7 +125,7 @@ type
                         a Dialog can change the value. This disables only the
                         edit and combobox in the object inspector.
         paRevertable:   Allows the property to be reverted to the original
-                        value.  Things that shouldn't be reverted are nested
+                        value. Things that shouldn't be reverted are nested
                         properties (e.g. Fonts) and elements of a composite
                         property such as set element values.
         paFullWidthName:Tells the object inspector that the value does not
@@ -132,7 +135,7 @@ type
                         subproperties to be recollected.
         paDisableSubProperties: All subproperties are readonly
                         (not even via Dialog).
-        paReference:    property contains a reference to something else.  When
+        paReference:    property contains a reference to something else. When
                         used in conjunction with paSubProperties the referenced
                         object should be displayed as sub properties to this
                         property.
@@ -140,16 +143,16 @@ type
                         showing the properties of an expanded reference.
 
     GetComponent
-      Returns the Index'th component being edited by this property editor.  This
+      Returns the Index'th component being edited by this property editor. This
       is used to retrieve the components. A property editor can only refer to
       multiple components when paMultiSelect is returned from GetAttributes.
     GetEditLimit
       Returns the number of character the user is allowed to enter for the
       value. The inplace editor of the object inspector will be have its
-      text limited set to the return value.  By default this limit is 255.
+      text limited set to the return value. By default this limit is 255.
     GetName
-      Returns the name of the property.  By default the value is retrieved
-      from the type information with all underbars replaced by spaces.  This
+      Returns the name of the property. By default the value is retrieved
+      from the type information with all underbars replaced by spaces. This
       should only be overridden if the name of the property is not the name
       that should appear in the Object Inspector.
     GetProperties
@@ -163,19 +166,19 @@ type
       Returns the type information pointer for the property(s) being edited.
     GetValue
       Returns the string value of the property. By default this returns
-      '(unknown)'.  This should be overridden to return the appropriate value.
+      '(unknown)'. This should be overridden to return the appropriate value.
     GetValues
-      Called when paValueList is returned in GetAttributes.  Should call Proc
-      for every value that is acceptable for this property.  TEnumPropertyEditor
+      Called when paValueList is returned in GetAttributes. Should call Proc
+      for every value that is acceptable for this property. TEnumPropertyEditor
       will pass every element in the enumeration.
     Initialize
       Called after the property editor has been created but before it is used.
       Many times property editors are created and because they are not a common
-      property across the entire selection they are thrown away.  Initialize is
+      property across the entire selection they are thrown away. Initialize is
       called after it is determined the property editor is going to be used by
       the object inspector and not just thrown away.
     SetValue(Value)
-      Called to set the value of the property.  The property editor should be
+      Called to set the value of the property. The property editor should be
       able to translate the string and call one of the SetXxxValue methods. If
       the string is not in the correct format or not an allowed value,the
       property editor should generate an exception describing the problem. Set
@@ -186,23 +189,23 @@ type
       preparation.
     ListMeasureHeight(Value,Canvas,AHeight)
       This is called during the item/value height calculation phase of the drop
-      down list's render.  This is very similar to TListBox's OnMeasureItem,
+      down list's render. This is very similar to TListBox's OnMeasureItem,
       just slightly different parameters.
     ListDrawValue(Value,Canvas,Rect,Selected)
       This is called during the item/value render phase of the drop down list's
-      render.  This is very similar to TListBox's OnDrawItem, just slightly
+      render. This is very similar to TListBox's OnDrawItem, just slightly
       different parameters.
     PropMeasureHeight(Value,Canvas,AHeight)
       This is called during the item/property height calculation phase of the
       object inspectors rows render. This is very similar to TListBox's
       OnMeasureItem, just slightly different parameters.
     PropDrawName(Canvas,Rect,Selected)
-      Called during the render of the name column of the property list.  Its
+      Called during the render of the name column of the property list. Its
       functionality is very similar to TListBox's OnDrawItem,but once again
       it has slightly different parameters.
     PropDrawValue(Canvas,Rect,Selected)
-      Called during the render of the value column of the property list.  Its
-      functionality is similar to PropDrawName.  If multiple items are selected
+      Called during the render of the value column of the property list. Its
+      functionality is similar to PropDrawName. If multiple items are selected
       and their values don't match this procedure will be passed an empty
       value.
 
@@ -217,23 +220,24 @@ type
     Value property
       The current value,as a string,of the property as returned by GetValue.
     Modified
-      Called to indicate the value of the property has been modified.  Called
-      automatically by the SetXxxValue methods.  If you call a TProperty
+      Called to indicate the value of the property has been modified. Called
+      automatically by the SetXxxValue methods. If you call a TProperty
       SetXxxValue method directly,you *must* call Modified as well.
     GetXxxValue
-      Gets the value of the first property in the Properties property.  Calls
+      Gets the value of the first property in the Properties property. Calls
       the appropriate TProperty GetXxxValue method to retrieve the value.
     SetXxxValue
-      Sets the value of all the properties in the Properties property.  Calls
+      Sets the value of all the properties in the Properties property. Calls
       the approprate TProperty SetXxxxValue methods to set the value.
     GetVisualValue
-      This function will return the displayable value of the property.  If
+      This function will return the displayable value of the property. If
       only one item is selected or all the multi-selected items have the same
       property value then this function will return the actual property value.
       Otherwise this function will return an empty string.}
 
   TPropertyAttribute=(
     paValueList,
+    paPickList,
     paSubProperties,
     paDynamicSubProps,
     paDialog,
@@ -380,7 +384,7 @@ type
   end;
 
 { TOrdinalPropertyEditor
-  The base class of all ordinal property editors.  It establishes that ordinal
+  The base class of all ordinal property editors. It establishes that ordinal
   properties are all equal if the GetOrdValue all return the same value and
   provide methods to retrieve the default value. }
 
@@ -396,7 +400,7 @@ type
 
 { TIntegerPropertyEditor
   Default editor for all Longint properties and all subtypes of the Longint
-  type (i.e. Integer, Word, 1..10, etc.).  Restricts the value entered into
+  type (i.e. Integer, Word, 1..10, etc.). Restricts the value entered into
   the property to the range of the sub-type. }
 
   TIntegerPropertyEditor = class(TOrdinalPropertyEditor)
@@ -440,7 +444,7 @@ type
   end;
 
 { TInt64PropertyEditor
-  Default editor for all Int64 properties and all subtypes of Int64.  }
+  Default editor for all Int64 properties and all subtypes of Int64. }
 
   TInt64PropertyEditor = class(TPropertyEditor)
   public
@@ -495,7 +499,7 @@ type
 { TNestedPropertyEditor
   A property editor that uses the PropertyHook, PropList and PropCount.
   The constructor and destructor do not call inherited, but all derived classes
-  should.  This is useful for properties like the TSetElementPropertyEditor. }
+  should. This is useful for properties like the TSetElementPropertyEditor. }
 
   TNestedPropertyEditor = class(TPropertyEditor)
   private
@@ -507,9 +511,9 @@ type
   end;
 
 { TSetElementPropertyEditor
-  A property editor that edits an individual set element.  GetName is
+  A property editor that edits an individual set element. GetName is
   changed to display the set element name instead of the property name and
-  Get/SetValue is changed to reflect the individual element state.  This
+  Get/SetValue is changed to reflect the individual element state. This
   editor is created by the TSetPropertyEditor editor. }
 
   TSetElementPropertyEditor = class(TNestedPropertyEditor)
@@ -538,7 +542,7 @@ type
   end;
 
 { TClassPropertyEditor
-  Default property editor for all objects.  Does not allow modifying the
+  Default property editor for all objects. Does not allow modifying the
   property but does display the class name of the object and will allow the
   editing of the object's properties as sub-properties of the property. }
 
@@ -568,7 +572,7 @@ type
   end;
   
 { TPersistentPropertyEditor
-  A base editor for TPersistent.  It does allow editing of the properties.
+  A base editor for TPersistent. It does allow editing of the properties.
   It allows the user to set the value of this property to point to a component
   in the same form that is type compatible with the property being edited
   (e.g. the ActiveControl property). }
@@ -590,8 +594,8 @@ type
   end;
 
 { TComponentPropertyEditor
-  The default editor for TComponents.  It does allow editing of the
-  properties of the component.  It allows the user to set the value of this
+  The default editor for TComponents. It does allow editing of the
+  properties of the component. It allows the user to set the value of this
   property to point to a component in the same form that is type compatible
   with the property being edited (e.g. the ActiveControl property). }
 
@@ -603,7 +607,7 @@ type
   end;
 
 { TInterfaceProperty
-  The default editor for interface references.  It allows the user to set
+  The default editor for interface references. It allows the user to set
   the value of this property to refer to an interface implemented by
   a component on the form (or via form linking) that is type compatible
   with the property being edited. }
@@ -623,7 +627,7 @@ type
   end;
 
 { TComponentNamePropertyEditor
-  Property editor for the Name property.  It restricts the name property
+  Property editor for the Name property. It restricts the name property
   from being displayed when more than one component is selected. }
 
   TComponentNamePropertyEditor = class(TStringPropertyEditor)
@@ -681,7 +685,7 @@ type
   end;
 
 { TShortCutPropertyEditor
-  Property editor the ShortCut property.  Allows both typing in a short
+  Property editor the ShortCut property. Allows both typing in a short
   cut value or picking a short-cut value from a list. }
 
   TShortCutPropertyEditor = class(TOrdinalPropertyEditor)
@@ -973,11 +977,11 @@ type
   For example, if the property is an ordinal type the default property editor
   will restrict the range to the ordinal subtype range (e.g. a property of type
   TMyRange=1..10 will only allow values between 1 and 10 to be entered into the
-  property).  Enumerated types will display a drop-down list of all the
+  property). Enumerated types will display a drop-down list of all the
   enumerated values (e.g. TShapes = (sCircle,sSquare,sTriangle) will be edited
   by a drop-down list containing only sCircle,sSquare and sTriangle).
   A property editor needs only be created if default property editor or none of
-  the existing property editors are sufficient to edit the property.  This is
+  the existing property editors are sufficient to edit the property. This is
   typically because the property is an object.
   The registered types are looked up newest to oldest.
   This allows an existing property editor replaced by a custom property editor.
@@ -992,8 +996,8 @@ type
       properties of PropertyEditorType.
 
     PropertyEditorName
-      The name of the property to which to restrict this type editor.  This
-      parameter is ignored if PersistentClass is nil.  This parameter can be
+      The name of the property to which to restrict this type editor. This
+      parameter is ignored if PersistentClass is nil. This parameter can be
       an empty string ('') which will mean that this editor applies to all
       properties of PropertyEditorType in PersistentClass.
 
@@ -1007,8 +1011,8 @@ procedure RegisterPropertyEditor(PropertyType: PTypeInfo;
   EditorClass: TPropertyEditorClass);
 
 type
-  TPropertyEditorMapperFunc=function(Obj:TPersistent;
-    PropInfo:PPropInfo):TPropertyEditorClass;
+  TPropertyEditorMapperFunc=function(Obj: TPersistent;
+    PropInfo: PPropInfo): TPropertyEditorClass;
 const
   AllTypeKinds = [tkInteger..High(TTypeKind)];
 
