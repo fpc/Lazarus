@@ -115,6 +115,7 @@ resourcestring
   lisProjectUnitPath = 'Project Unit Path';
   lisProjectIncPath = 'Project Include Path';
   lisProjectSrcPath = 'Project Src Path';
+  lisUserSHomeDirectory = 'User''s home directory';
   lisMakeExe = 'Make Executable';
   lisProjectMacroProperties = 'Project macro properties';
   lisOpenProject2 = 'Open project';
