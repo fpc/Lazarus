@@ -225,7 +225,7 @@ var
     if Enabled and Selected then
       lgBrush.lbColor := Windows.GetSysColor(COLOR_HIGHLIGHT)
     else
-      lgBrush.lbColor := Windows.GetSysColor(COLOR_WINDOW);
+      lgBrush.lbColor := ColorToRGB(CheckListBox.Color);
     lgBrush.lbStyle := BS_SOLID;
     Brush := CreateBrushIndirect(lgBrush);
     Rect := Data^.rcItem;
