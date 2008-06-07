@@ -755,15 +755,14 @@ var
     fRegExprReplace:=RegExprEngine.Substitute(Replacement);
   end;
   
-  function CheckFound(var FoundInRange: boolean): boolean;
+  function CheckFound: boolean;
   begin
     if ((not IsMultiLinePattern) and WholeWordAtEndFits)
     or MultiLinePatternFits then begin
       // the whole pattern fits
-      Result:=true;
-      //DebugLn(['CheckFound Found=',dbgs(FoundStartPos),'..',dbgs(FoundEndPos),' Range=',dbgs(StartPos),'..',dbgs(EndPos)]);
-      FoundInRange:=(CompareCarets(FoundEndPos,EndPos)>=0)
+      Result:=(CompareCarets(FoundEndPos,EndPos)>=0)
              and (CompareCarets(FoundStartPos,StartPos)<=0);
+      //DebugLn(['CheckFound Found=',dbgs(FoundStartPos),'..',dbgs(FoundEndPos),' Range=',dbgs(StartPos),'..',dbgs(EndPos)]);
     end else
       Result:=false;
   end;
@@ -796,9 +795,9 @@ begin
     IsFirstLine:=(MinY=StartPos.Y-1);
     xStep:=1;
   end;
-  
-  SearchLineEndPos:=FindNextPatternLineEnd(Pat,1);
+
   IsMultiLinePattern:=fRegExpr and fRegExprMultiLine;
+  SearchLineEndPos:=FindNextPatternLineEnd(Pat,1);
   if SearchLineEndPos>length(Pat) then begin
     // normal pattern
     if Pat='' then exit;
@@ -882,7 +881,7 @@ begin
         FoundStartPos:=Point(1,y+1);
         FoundEndPos:=FoundStartPos;
         x:=MaxPos;
-        if CheckFound(Result) then exit;
+        if CheckFound then exit(true);
       end else begin
         //DebugLn(['TSynEditSearch.FindNextOne x=',x,' MaxPos=',MaxPos,' Line="',Line,'"']);
         while (x>=0) and (x<=MaxPos) do begin
@@ -900,9 +899,9 @@ begin
                 // the pattern fits to this position
                 FoundStartPos:=Point(x+1,y+1);
                 FoundEndPos:=Point(x+i+1,y+1);
-                if CheckFound(Result) then begin
-                  //DebugLn(['TSynEditSearch.FindNextOne CheckFound success Result=',Result]);
-                  exit;
+                if CheckFound then begin
+                  //DebugLn(['TSynEditSearch.FindNextOne CheckFound success']);
+                  exit(true);
                 end else begin
                   //DebugLn(['TSynEditSearch.FindNextOne CheckFound failed']);
                 end;
