@@ -3280,74 +3280,135 @@ var
     ScreenPos: Integer;
     SpaceCount: Integer;
     CharLen: Integer;
+    Special: boolean;
   begin
     TabCount:=0;
     for i:=0 to Count-1 do
       if p[i]=#9 then inc(TabCount);
-    if (TabCount=0)
+    Special:=eoShowSpecialChars in Options;
+    if (not Special) and (TabCount=0)
     and (FindInvalidUTF8Character(p,Count)<0) then
       exit;
-    LengthNeeded:=Count+TabCount*TabWidth;
+    LengthNeeded:=(Count+TabCount*TabWidth);
+    if Special then LengthNeeded:=LengthNeeded*2;
     if length(ExpandedPaintToken)<LengthNeeded then
       SetLength(ExpandedPaintToken,LengthNeeded+CharsInWindow);
+    //DebugLn(['ExpandSpecialChars Count=',Count,' TabCount=',TabCount,' Special=',Special,' LengthNeeded=',LengthNeeded]);
     SrcPos:=0;
     DestPos:=0;
     ScreenPos:=PhysicalStartPos;
     Dest:=PChar(Pointer(ExpandedPaintToken));
-    while SrcPos<Count do begin
-      c:=p[SrcPos];
-      case c of
-      #128..#195:
-        begin
-          if UseUTF8 then
-            Dest[DestPos]:='?' // non UTF-8 character
-          else
-            Dest[DestPos]:=p[SrcPos]; // normal char
-          inc(DestPos);
-          inc(SrcPos);
-          inc(ScreenPos);
-        end;
+    if UseUTF8 then begin
+      while SrcPos<Count do begin
+        c:=p[SrcPos];
+        case c of
+        #128..#195:
+          begin
+            // non UTF-8 character
+            Dest[DestPos]:='?';
+            inc(DestPos);
+            inc(SrcPos);
+            inc(ScreenPos);
+          end;
 
-      #196..#255:
-        begin
-          // could be UTF8 char
-          if UseUTF8 then begin
+        #196..#255:
+          begin
+            // could be UTF8 char
             CharLen:=UTF8CharacterStrictLength(@p[SrcPos]);
             if CharLen=0 then begin
+              // invalid character
               Dest[DestPos]:='?';
               inc(DestPos);
               inc(SrcPos);
+            end else begin
+              // normal UTF-8 character
+              for i:=1 to CharLen do begin
+                Dest[DestPos]:=p[SrcPos];
+                inc(DestPos);
+                inc(SrcPos);
+              end;
             end;
-          end else
-            CharLen:=1;
-          for i:=1 to CharLen do begin
+            inc(ScreenPos);
+          end;
+
+        #9:
+          begin
+            // tab char
+            SpaceCount:=TabWidth - ((ScreenPos-1) mod TabWidth);
+            //debugln('ExpandSpecialChars SpaceCount=',dbgs(SpaceCount),' TabWidth=',dbgs(TabWidth),' ScreenPos=',dbgs(ScreenPos));
+            if not Special then begin
+              for i:=1 to SpaceCount do begin
+                Dest[DestPos]:=FTabChar;
+                inc(DestPos);
+                inc(ScreenPos);
+              end;
+            end else begin
+              for i:=1 to SpaceCount do begin
+                // #194#187 looks like >>
+                Dest[DestPos]:=#194;
+                inc(DestPos);
+                Dest[DestPos]:=#187;
+                inc(DestPos);
+                inc(ScreenPos);
+              end;
+            end;
+            inc(SrcPos);
+          end;
+          
+        #32:
+          // space
+          if not Special then begin
+            // normal space
             Dest[DestPos]:=p[SrcPos];
             inc(DestPos);
             inc(SrcPos);
-          end;
-          inc(ScreenPos);
-        end;
-
-      #9:
-        begin
-          // tab char
-          SpaceCount:=TabWidth - ((ScreenPos-1) mod TabWidth);
-          //debugln('ExpandSpecialChars SpaceCount=',dbgs(SpaceCount),' TabWidth=',dbgs(TabWidth),' ScreenPos=',dbgs(ScreenPos));
-          for i:=1 to SpaceCount do begin
-            Dest[DestPos]:=FTabChar;
+            inc(ScreenPos);
+          end else begin
+            // #194#183 looks like .
+            Dest[DestPos]:=#194;
             inc(DestPos);
+            Dest[DestPos]:=#183;
+            inc(DestPos);
+            inc(SrcPos);
             inc(ScreenPos);
           end;
-          inc(SrcPos);
-        end;
 
-      else
-        begin
-          // normal char
-          Dest[DestPos]:=p[SrcPos];
-          inc(DestPos);
-          inc(SrcPos);
-          inc(ScreenPos);
+        else
+          begin
+            // normal char
+            Dest[DestPos]:=p[SrcPos];
+            inc(DestPos);
+            inc(SrcPos);
+            inc(ScreenPos);
+          end;
+        end;
+      end;
+    end else begin
+      // non UTF-8
+      while SrcPos<Count do begin
+        c:=p[SrcPos];
+        case c of
+        #9:
+          begin
+            // tab char
+            SpaceCount:=TabWidth - ((ScreenPos-1) mod TabWidth);
+            //debugln('ExpandSpecialChars SpaceCount=',dbgs(SpaceCount),' TabWidth=',dbgs(TabWidth),' ScreenPos=',dbgs(ScreenPos));
+            for i:=1 to SpaceCount do begin
+              Dest[DestPos]:=FTabChar;
+              inc(DestPos);
+              inc(ScreenPos);
+            end;
+            inc(SrcPos);
+          end;
+
+        else
+          begin
+            // normal char
+            Dest[DestPos]:=p[SrcPos];
+            inc(DestPos);
+            inc(SrcPos);
+            inc(ScreenPos);
+          end;
         end;
       end;
     end;
@@ -9567,11 +9628,13 @@ procedure TCustomSynEdit.SetOptions(Value: TSynEditorOptions);
 var
   bSetDrag: boolean;
   {$IFDEF SYN_LAZARUS}
-  OldOptions: TSynEditorOptions;
+  ChangedOptions: TSynEditorOptions;
   {$ENDIF}
 begin
   if (Value <> fOptions) then begin
-    OldOptions := fOptions;
+    {$IFDEF SYN_LAZARUS}
+    ChangedOptions:=(fOptions-Value)+(Value-fOptions);
+    {$ENDIF}
     bSetDrag := (eoDropFiles in fOptions) <> (eoDropFiles in Value);
     fOptions := Value;
     // Reset column position in case Cursor is past EOL.
@@ -9586,15 +9649,14 @@ begin
       DragAcceptFiles(Handle, (eoDropFiles in fOptions));
       {$ENDIF}
     {$IFDEF SYN_LAZARUS}
-    if ((eoPersistentCaret in fOptions) xor (eoPersistentCaret in OldOptions))
-    and HandleAllocated then begin
+    if (eoPersistentCaret in ChangedOptions) and HandleAllocated then begin
       SetCaretRespondToFocus(Handle,not (eoPersistentCaret in fOptions));
       UpdateCaret;
     end;
-    if ((eoShowCtrlMouseLinks in fOptions)
-    xor (eoShowCtrlMouseLinks in OldOptions))
-    and HandleAllocated then
+    if (eoShowCtrlMouseLinks in ChangedOptions) and HandleAllocated then
       UpdateCtrlMouse;
+    if (eoShowSpecialChars in ChangedOptions) and HandleAllocated then
+      Invalidate;
     {$ENDIF}
   end;
 end;
