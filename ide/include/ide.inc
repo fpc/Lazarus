@@ -26,9 +26,7 @@
 
 { $DEFINE IDE_DEBUG}
 
-{$ifndef DisableNewDialogs}
-{$define EnableNewDialogs}
-{$endif}
+{off $define EnableNewDialogs}
 
 {$IFDEF VER2_0}
 {$DEFINE DisableFakeMethods}
