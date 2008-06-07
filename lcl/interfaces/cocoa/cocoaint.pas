@@ -140,14 +140,14 @@ uses
 //  CocoaWSExtCtrls,
 // CocoaWSExtDlgs,
 // CocoaWSFileCtrl,
-  CocoaWSForms;
+  CocoaWSForms,
 // CocoaWSGrids,
 // CocoaWSImgList,
 // CocoaWSMaskEdit,
 //  CocoaWSMenus,
 //  CocoaWSPairSplitter,
 //  CocoaWSSpin,
-//  CocoaWSStdCtrls,
+  CocoaWSStdCtrls;
 // CocoaWSToolwin,
 ////////////////////////////////////////////////////
 

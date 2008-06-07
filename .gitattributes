@@ -3088,6 +3088,7 @@ lcl/interfaces/cocoa/cocoaint.pas svneol=native#text/plain
 lcl/interfaces/cocoa/cocoaobject.inc svneol=native#text/plain
 lcl/interfaces/cocoa/cocoaprivate.pp svneol=native#text/plain
 lcl/interfaces/cocoa/cocoawsforms.pp svneol=native#text/plain
+lcl/interfaces/cocoa/cocoawsstdctrls.pp svneol=native#text/plain
 lcl/interfaces/cocoa/interfaces.pas svneol=native#text/plain
 lcl/interfaces/fpgui/Makefile.fpc svneol=native#text/plain
 lcl/interfaces/fpgui/README.txt svneol=native#text/plain
