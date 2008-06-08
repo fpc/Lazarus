@@ -3,7 +3,6 @@ EnableISX=true
 [Defines]
 #define AppVersion GetEnv('LazVersion')
 #define FPCVersion GetEnv('FPCVersion')
-#define FPCLongVersion GetEnv('FPCLongVersion')
 #define FPCTargetOS GetEnv('FPCTargetOS')
 #define FPCFullTarget GetEnv('FPCFullTarget')
 #define AppName "Lazarus"

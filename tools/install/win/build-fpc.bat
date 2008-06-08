@@ -29,7 +29,7 @@ cp -pr %SOURCE_DIR%\packages %BUILDDIR%\fpc\source\packages >> %LOGFILE%
 
 FOR /F %%L IN ('%SOURCE_DIR%\compiler\utils\fpc.exe -PB') DO SET COMPILER=%SOURCE_DIR%\compiler\%%L
 FOR /F %%L IN ('%COMPILER% -iV') DO SET FPCVERSION=%%L
-FOR /F %%L IN ('%COMPILER% -iW') DO SET FPCLONGVERSION=%%L
+FOR /F %%L IN ('%COMPILER% -iW') DO SET FPCFULLVERSION=%%L
 IF "%FPCVERSION:~,3%"=="2.0" SET HASFCL=1
 
 %MAKEEXE% -C rtl clean PP=%COMPILER% >> %LOGFILE% 

@@ -98,8 +98,8 @@ if not exist %BUILDDIR%\startlazarus.exe goto END
 if exist %GDBDIR% %SVN% export %GDBDIR% %BUILDDIR%\mingw
 
 :: create the installer
-SET OutputFileName=lazarus-%LAZVERSION%-fpc-%FPCVERSION%-%DATESTAMP%-%FPCTARGETOS%
-if not [%IDE_WIDGETSET%]==[win32] SET OutputFileName=lazarus-%IDE_WIDGETSET%-%LAZVERSION%-fpc-%FPCVERSION%-%DATESTAMP%-%FPCTARGETOS%
+SET OutputFileName=lazarus-%LAZVERSION%-fpc-%FPCFULLVERSION%-%DATESTAMP%-%FPCTARGETOS%
+if not [%IDE_WIDGETSET%]==[win32] SET OutputFileName=lazarus-%IDE_WIDGETSET%-%LAZVERSION%-fpc-%FPCFULLVERSION%-%DATESTAMP%-%FPCTARGETOS%
 %ISCC% lazarus.iss >> installer.log
 
 :: do not delete build dir, if installer failed.
