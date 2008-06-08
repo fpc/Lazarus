@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-03-01 00:53+0300\n"
+"PO-Revision-Date: 2008-06-08 03:22+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -79,7 +79,7 @@ msgstr "Не найден конец комментария"
 
 #: codetoolsstrconsts:ctscompiledsrcpath
 msgid "Compiled SrcPath"
-msgstr "Путь исх.компилятора"
+msgstr "Путь к откомпилированному коду"
 
 #: codetoolsstrconsts:ctscompiler
 msgid "Compiler"
@@ -159,11 +159,11 @@ msgstr "Определения для исходного кода Lazarus"
 
 #: codetoolsstrconsts:ctsdesignerdirectory
 msgid "Designer Directory"
-msgstr "Каталог 'дизайнера'"
+msgstr "Каталог дизайнера"
 
 #: codetoolsstrconsts:ctsdesignerunitsdirectory
 msgid "Designer Units"
-msgstr "Модули 'дизайнера'"
+msgstr "Модули дизайнера"
 
 #: codetoolsstrconsts:ctsdoceditordirectory
 msgid "Doc Editor Directory"
@@ -355,11 +355,11 @@ msgstr "не найдено \"end\" для класса/объекта"
 
 #: codetoolsstrconsts:ctsdircomponentdoesnotexistsorisdanglingsymlink
 msgid "a directory component in %s does not exist or is a dangling symlink"
-msgstr "компонент каталога в %s не существует, или он - повреждённая ссылка"
+msgstr "компонент каталога в %s не существует или является повреждённой ссылкой"
 
 #: codetoolsstrconsts:ctsdircomponentisnotdir
 msgid "a directory component in %s is not a directory"
-msgstr "компонент каталога в %s - не каталог"
+msgstr "компонент каталога в %s не является каталогом"
 
 #: codetoolsstrconsts:ctsaddsdirtoincludepath
 msgid "adds %s to IncPath"
@@ -651,7 +651,7 @@ msgstr "тело новой процедуры не найдено"
 
 #: codetoolsstrconsts:ctsnocontextnodefoundatcursor
 msgid "no context node found at cursor"
-msgstr "не найдено контекстного элемента у курсора"
+msgstr "не найдено контекстного узла у курсора"
 
 #: codetoolsstrconsts:ctsnopascalcodefound
 msgid "no pascal code found (first token is %s)"
@@ -679,7 +679,7 @@ msgstr "специфичный для процессора"
 
 #: codetoolsstrconsts:ctspropertyspecifieralreadydefined
 msgid "property specifier already defined: %s"
-msgstr "модификатор свойства уже определено: %s"
+msgstr "спецификатор свойства уже задан: %s"
 
 #: codetoolsstrconsts:ctsproperttypeexpectedbutatomfound
 msgid "property type expected, but %s found"

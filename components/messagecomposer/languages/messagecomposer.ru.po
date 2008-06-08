@@ -11,7 +11,7 @@ msgstr ""
 
 #: messagecomposer:rscancel
 msgid "Cancel"
-msgstr ""
+msgstr "Отмена"
 
 #: messagecomposer:skindofmessage
 msgid "KIND OF MESSAGE"
@@ -31,7 +31,7 @@ msgstr "Еще не реализовано"
 
 #: messagecomposer:rsok
 msgid "Ok"
-msgstr ""
+msgstr "ОК"
 
 #: messagecomposer:ssourcewrapper
 msgid "SOURCE WRAPPER"
@@ -39,7 +39,7 @@ msgstr "Вызывающий исходный код"
 
 #: messagecomposer:rstest
 msgid "Test"
-msgstr ""
+msgstr "Тест"
 
 #: messagecomposer:spromptcaption
 msgid "Text asking the user for input"

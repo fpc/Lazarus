@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-03-01 00:52+0300\n"
+"PO-Revision-Date: 2008-06-08 02:46+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -19,7 +19,7 @@ msgstr "  размер "
 
 #: lclstrconsts:sparlocinfo
 msgid " (at %d,%d, stream offset %.8x)"
-msgstr ""
+msgstr " (на %d,%d, смещение потока %.8x)"
 
 #: lclstrconsts:rswarningunreleasedtimerinfos
 msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
@@ -499,7 +499,7 @@ msgstr "Неправильная разрегистрация действия"
 
 #: lclstrconsts:sparinvalidfloat
 msgid "Invalid floating point number: %s"
-msgstr ""
+msgstr "Неверное число с плавающей точкой: %s"
 
 #: lclstrconsts:sinvalidimagesize
 msgid "Invalid image size"
@@ -507,7 +507,7 @@ msgstr "Неправильный размер рисунка"
 
 #: lclstrconsts:sparinvalidinteger
 msgid "Invalid integer number: %s"
-msgstr ""
+msgstr "Неверное целое число: %s"
 
 #: lclstrconsts:rsinvalidpropertyvalue
 msgid "Invalid property value"
@@ -807,11 +807,11 @@ msgstr "Неподдерживаемый формат буфера обмена:
 
 #: lclstrconsts:sparunterminatedbinvalue
 msgid "Unterminated byte value"
-msgstr ""
+msgstr "Незавершённое значение байта"
 
 #: lclstrconsts:sparunterminatedstring
 msgid "Unterminated string"
-msgstr ""
+msgstr "Незавершённая строка"
 
 #: lclstrconsts:ifsvk_up
 msgid "Up"
@@ -831,15 +831,15 @@ msgstr "Только целые слова"
 
 #: lclstrconsts:sparwrongtokensymbol
 msgid "Wrong token symbol: %s expected but %s found"
-msgstr ""
+msgstr "Неверный символ лексемы: ожидался %s, но найден %s"
 
 #: lclstrconsts:sparexpected
 msgid "Wrong token type: %s expected"
-msgstr ""
+msgstr "Неверный тип лексемы: ожидался %s"
 
 #: lclstrconsts:sparwrongtokentype
 msgid "Wrong token type: %s expected but %s found"
-msgstr ""
+msgstr "Неверный тип лекемы: ожидался %s, но найден %s"
 
 #: lclstrconsts:rsmbyestoall
 msgid "Yes to &All"

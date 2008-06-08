@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-05-18 02:20+0300\n"
+"PO-Revision-Date: 2008-06-08 02:15+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -923,7 +923,7 @@ msgstr "Автосохранение"
 
 #: lazarusidestrconsts:lisautoshowobjectinspector
 msgid "Auto show Object Inspector"
-msgstr ""
+msgstr "Показывать инспектор объектов автоматически"
 
 #: lazarusidestrconsts:dlgautocreateforms
 msgid "Auto-create forms:"
@@ -3283,7 +3283,7 @@ msgstr "Ошибка каталога исходного кода FPC"
 
 #: lazarusidestrconsts:lisfpcversion
 msgid "FPC Version: "
-msgstr ""
+msgstr "Версия FPC: "
 
 #: lazarusidestrconsts:dlgfpcsrcpath
 msgid "FPC source directory"
@@ -8223,7 +8223,7 @@ msgstr "Показывать подсказку при прокрутке"
 
 #: lazarusidestrconsts:lisshowspecialcharacters
 msgid "Show special characters"
-msgstr "Ïîêàçûâàòü ñïåö.ñèìâîëû"
+msgstr "Показывать специальные символы"
 
 #: lazarusidestrconsts:dlgshowsummary
 msgid "Show summary"
@@ -8899,7 +8899,7 @@ msgstr "Файл компилятора для пакета %s - недопус�
 
 #: lazarusidestrconsts:listhecomponentisinheritedfromtodeleteaninheritedcomp
 msgid "The component %s is inherited from %s.%sTo delete an inherited component open the ancestor and delete it there."
-msgstr ""
+msgstr "Компонент %s унаследован от %s.%sДля удаления унаследованного компонента следует открыть объект-предок и удалить его там."
 
 #: lazarusidestrconsts:listhecomponenteditorofclasshascreatedtheerror
 msgid "The component editor of class %s%s%s has created the error:%s%s%s%s"
@@ -10259,7 +10259,7 @@ msgstr "Пользовательские замены"
 
 #: lazarusidestrconsts:lisusershomedirectory
 msgid "User's home directory"
-msgstr ""
+msgstr "Домашний каталог пользователя"
 
 #: lazarusidestrconsts:lisceuses
 msgid "Uses"

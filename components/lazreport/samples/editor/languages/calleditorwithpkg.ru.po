@@ -2,146 +2,94 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-05-31 14:19-0600\n"
+"PO-Revision-Date: 2008-06-08 02:05+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: TFRMMAIN.CAPTION
-msgid "Testing LazReport Editor"
-msgstr ""
+#: maincalleditor:ceractivereport
+msgid "Active report: %s"
+msgstr "Активный отчёт: %s"
 
-#: TFRMMAIN.MENUITEM1.CAPTION
-msgid "Files"
-msgstr ""
+#: maincalleditor:cerhintcloseapp
+msgid "Close application"
+msgstr "Закрыть приложение"
 
-#: TFRMMAIN.MENUITEM3.CAPTION
-msgid "Tests"
-msgstr ""
+#: maincalleditor:cerhintnewreport
+msgid "Create and edit a empty report"
+msgstr "Создать и редактировать пустой отчёт"
 
-#: TFRMMAIN.MENUITEM9.CAPTION
-msgid "Export"
-msgstr ""
-
-#: TFRMMAIN.ACCNEWREPORT.CAPTION
-msgid "New Report"
-msgstr "Новый отчёт"
-
-#: TFRMMAIN.ACCEDITREPORT.CAPTION
+#: maincalleditor:cereditreport
 msgid "Edit Report"
 msgstr "Редактировать отчёт"
 
-#: TFRMMAIN.ACCPREVIEWREPORT.CAPTION
-msgid "Preview Report"
-msgstr ""
+#: maincalleditor:cerhinteditreport
+msgid "Edit active report"
+msgstr "Редактировать активный отчёт"
 
-#: TFRMMAIN.ACCPRINTGRID.CAPTION
-msgid "Print Grid"
-msgstr ""
+#: maincalleditor:cerindex
+msgid "Index"
+msgstr "Индекс"
 
-#: TFRMMAIN.ACCPRINTREPORT.CAPTION
-msgid "Print Report"
-msgstr ""
+#: maincalleditor:cerindexfields
+msgid "Index Fields: %s"
+msgstr "Индексные поля: %s"
 
-#: TFRMMAIN.ACCCLOSE.CAPTION
-msgid "Close"
-msgstr ""
+#: maincalleditor:cerappcaption
+msgid "LazReport Test Suite"
+msgstr "Тестовая программа для LazReport"
 
-#: TFRMMAIN.ACCEXPORTTOTEXT.CAPTION
-msgid "Export to text"
-msgstr ""
+#: maincalleditor:cernewreport
+msgid "New report"
+msgstr "Новый отчёт"
 
-#: TFRMMAIN.ACCEXPORTTOHTML.CAPTION
-msgid "Export to html"
-msgstr ""
+#: maincalleditor:cerhintopenreport
+msgid "Open an existing report"
+msgstr "Открыть существующий отчёт"
 
-#: TFRMMAIN.ACCOPENREPORT.CAPTION
-msgid "Open Report"
-msgstr "Открыть отчёт"
-
-#: TFRMMAIN.ACCEXPORTTOCSV.CAPTION
-msgid "Export to CSV"
-msgstr ""
-
-#: maincalleditor.ceropenreport
+#: maincalleditor:ceropenreport
 msgid "Open report"
 msgstr "Открыть отчёт"
 
-#: maincalleditor.cernewreport
-msgid "New report"
-msgstr ""
+#: maincalleditor:ceropenreportfirst
+msgid "Open report first"
+msgstr "Сначала откройте отчёт"
 
-#: maincalleditor.cerpreviewreport
-msgid "Preview report"
-msgstr "Предварительный просмотр отчёта"
-
-#: maincalleditor.cerprintreport
-msgid "Print report"
-msgstr "Печать отчёта"
-
-#: maincalleditor.cerprintgrid
-msgid "Print grid"
-msgstr "Печать сетки"
-
-#: maincalleditor.cernotimplemented
-msgid "This feature is not yet implemented!"
-msgstr "Эта функция ещё не реализована!"
-
-#: maincalleditor.cerpreparefailed
+#: maincalleditor:cerpreparefailed
 msgid "PrepareReport Failed!"
 msgstr "Ошибка PrepareReport!"
 
-#: maincalleditor.cerindex
-msgid "Index"
-msgstr ""
-
-#: maincalleditor.cernone
-msgid "none"
-msgstr ""
-
-#: maincalleditor.cerindexfields
-msgid "Index Fields: \%s"
-msgstr ""
-
-#: maincalleditor.ceropenreportfirst
-msgid "Open report first"
-msgstr ""
-
-#: maincalleditor.ceractivereport
-msgid "Active report: \%s"
-msgstr ""
-
-#: maincalleditor.cerhintnewreport
-msgid "Create and edit a empty report"
-msgstr ""
-
-#: maincalleditor.cerhintopenreport
-msgid "Open an existing report"
-msgstr ""
-
-#: maincalleditor.cerhinteditreport
-msgid "Edit active report"
-msgstr ""
-
-#: maincalleditor.cerhintprevreport
+#: maincalleditor:cerhintprevreport
 msgid "Preview active report"
-msgstr ""
+msgstr "Предварительный просмотр активного отчёта"
 
-#: maincalleditor.cerhintprevgrid
-msgid "Print preview current DbGrid content"
-msgstr ""
+#: maincalleditor:cerpreviewreport
+msgid "Preview report"
+msgstr "Предварительный просмотр отчёта"
 
-#: maincalleditor.cerhintprnreport
+#: maincalleditor:cerhintprnreport
 msgid "Print directly the active report (i.e. without preview)"
-msgstr ""
+msgstr "Прямая печать активного отчёта (без предварительного просмотра)"
 
-#: maincalleditor.cerhintcloseapp
-msgid "Close application"
-msgstr ""
+#: maincalleditor:cerprintgrid
+msgid "Print grid"
+msgstr "Печать таблицы"
 
-#: TFRMMAIN.CAPTION
-msgid "LazReport Test Suite"
-msgstr ""
+#: maincalleditor:cerhintprevgrid
+msgid "Print preview current DbGrid content"
+msgstr "Предварительный просмотр текущего содержимого DbGrid"
+
+#: maincalleditor:cerprintreport
+msgid "Print report"
+msgstr "Печать отчёта"
+
+#: maincalleditor:cernotimplemented
+msgid "This feature is not yet implemented!"
+msgstr "Эта функция ещё не реализована!"
+
+#: maincalleditor:cernone
+msgid "none"
+msgstr "нет"
 

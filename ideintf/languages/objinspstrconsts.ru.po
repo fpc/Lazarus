@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-05-18 02:49+0300\n"
+"PO-Revision-Date: 2008-06-08 02:48+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -271,7 +271,7 @@ msgstr "Редактор столбцов"
 
 #: objinspstrconsts:cgcolumns
 msgid "Columns:"
-msgstr ""
+msgstr "Столбцы:"
 
 #: objinspstrconsts:oiscomponentnameisnotavalididentifier
 msgid "Component name %s%s%s is not a valid identifier"
@@ -383,7 +383,7 @@ msgstr "Удалить вкладку"
 
 #: objinspstrconsts:clbdeletehint
 msgid "Delete the Item"
-msgstr ""
+msgstr "Удалить элемент"
 
 #: objinspstrconsts:clbdeletequest
 msgid "Delete the Item %d \"%s\"?"
