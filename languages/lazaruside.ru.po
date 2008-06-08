@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-06-08 02:15+0300\n"
+"PO-Revision-Date: 2008-06-09 03:13+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -429,6 +429,10 @@ msgstr "Файл простой программы на Паскале.%sМож�
 msgid "A valid tool needs at least a title and a filename."
 msgstr "Корректное средство обязательно должно иметь заголовок и имя файла."
 
+#: lazarusidestrconsts:lisabandonchanges
+msgid "Abandon changes?"
+msgstr "Отбросить изменения?"
+
 #: lazarusidestrconsts:lispdabort
 msgid "Abort"
 msgstr "Прервать"
@@ -708,6 +712,10 @@ msgstr "Все проекты"
 #: lazarusidestrconsts:lisccotestssuccess
 msgid "All tests succeeded."
 msgstr "Все тесты прошли успешно."
+
+#: lazarusidestrconsts:lisallyourmodificationstowillbelostandthefilereopened
+msgid "All your modifications to %s%s%s%swill be lost and the file reopened."
+msgstr "Все ваши изменения в %s%s%s%sбудут утеряны и файл откроется повторно."
 
 #: lazarusidestrconsts:lisallowfunctio
 msgid "Allow Function Calls"
@@ -1305,9 +1313,17 @@ msgstr "Изменить класс"
 msgid "Change Class of %s"
 msgstr "Изменить класс %s"
 
+#: lazarusidestrconsts:lischangeencoding
+msgid "Change Encoding"
+msgstr "Смена кодировки"
+
 #: lazarusidestrconsts:lisplistchangefont
 msgid "Change Font"
-msgstr "Изменить шрифт"
+msgstr "Сменить шрифт"
+
+#: lazarusidestrconsts:lischangefile
+msgid "Change file"
+msgstr "Изменить файл"
 
 #: lazarusidestrconsts:lischangeparent
 msgid "Change parent ..."
@@ -2944,6 +2960,10 @@ msgstr "Заключить выделенное"
 #: lazarusidestrconsts:lismenuencloseselection
 msgid "Enclose selection ..."
 msgstr "Заключить выделение в ..."
+
+#: lazarusidestrconsts:lisencodingoffileondiskisnewencodingis2
+msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
+msgstr "Кодировка файла %s%s%s%sна диске - %s. Новой кодировкой будет %s."
 
 #: lazarusidestrconsts:srvk_end
 msgid "End"
@@ -7221,6 +7241,10 @@ msgstr "Переименовать в"
 msgid "Rename to lowercase"
 msgstr "Преобразовать в нижний регистр"
 
+#: lazarusidestrconsts:lisreopenwithanotherencoding
+msgid "Reopen with another encoding"
+msgstr "Открыть с другой кодировкой"
+
 #: lazarusidestrconsts:lisrepeatcount
 msgid "Repeat Count:"
 msgstr "Число повторов:"
@@ -9820,6 +9844,10 @@ msgstr "Невозможно открыть дизайнер. %sКласс %s н
 #: lazarusidestrconsts:lispkgmangunabletoopenthepackage
 msgid "Unable to open the package %s%s%s.%sThis package was marked for installation."
 msgstr "Невозможно открыть пакет %s%s%s.%sЭтот пакет был отмечен для установки."
+
+#: lazarusidestrconsts:lisunabletoread
+msgid "Unable to read %s"
+msgstr "Невозможно прочитать %s"
 
 #: lazarusidestrconsts:lisunabletoreadfile
 msgid "Unable to read file"
