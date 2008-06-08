@@ -8617,7 +8617,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <element name="TCustomBitmap">
         <short>
           <var>TCustomBitMap </var>- the base class for 
-          <p>TBitmap</p>
+          <var>TBitmap</var>
         </short>
       </element>
       <!-- "class of" type Visibility: default -->
