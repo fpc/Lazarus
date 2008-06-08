@@ -4223,6 +4223,7 @@ var
   CurName: String;
   CurCaption: String;
   IDEMenuItem: TIDEMenuItem;
+  SysEncoding: String;
 begin
   SrcEditSubMenuEncoding.ChildsAsSubMenu:=true;
   SrcEdit:=GetActiveSE;
@@ -4239,6 +4240,12 @@ begin
   for i:=0 to List.Count-1 do begin
     CurName:='Encoding'+IntToStr(i);
     CurEncoding:=List[i];
+    if SysUtils.CompareText(CurEncoding,EncodingAnsi)=0 then begin
+      SysEncoding:=GetSystemEncoding;
+      if (SysEncoding<>'') and (SysUtils.CompareText(SysEncoding,EncodingAnsi)<>0)
+      then
+        CurEncoding:=CurEncoding+' ('+GetSystemEncoding+')';
+    end;
     CurCaption:=CurEncoding;
     if SrcEditSubMenuEncoding.Count=i then begin
       // add new item
