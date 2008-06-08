@@ -35,8 +35,12 @@ unit InputHistory;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, DiffPatch, IDEProcs,
+  Classes, SysUtils, FileUtil, DiffPatch, IDEProcs, AvgLvlTree,
   Laz_XMLCfg, LazConf, Dialogs, LCLProc;
+
+{$ifdef Windows}
+{$define CaseInsensitiveFilenames}
+{$endif}
 
 const
   // these are the names of the various history lists in the IDE:
@@ -194,6 +198,9 @@ type
     // various history lists
     FHistoryLists: THistoryLists;
     
+    // file encodings
+    fFileEncodings: TStringToStringTree;
+    
     procedure SetFilename(const AValue: string);
   public
     constructor Create;
@@ -269,6 +276,9 @@ type
                                               write FLastConvertDelphiPackage;
     property LastConvertDelphiUnit: string read FLastConvertDelphiUnit
                                            write FLastConvertDelphiUnit;
+                                           
+    // file encodings
+    property FileEncodings: TStringToStringTree read fFileEncodings write fFileEncodings;
   end;
 
 const
@@ -332,19 +342,22 @@ begin
   
   FFPCConfigCache:=TFPCConfigCache.Create;
   
+  fFileEncodings:=TStringToStringTree.Create({$IFDEF CaseInsensitiveFilenames}false{$ELSE}true{$ENDIF});
+  
   Clear;
 end;
 
 destructor TInputHistories.Destroy;
 begin
-  FHistoryLists.Free;
-  FFileDialogSettings.HistoryList.Free;
-  FUnitDependenciesHistory.Free;
-  FFindHistory.Free;
-  FReplaceHistory.Free;
-  FFindInFilesPathHistory.Free;
-  FFindInFilesMaskHistory.Free;
-  FFPCConfigCache.Free;
+  FreeAndNil(FHistoryLists);
+  FreeAndNil(FFileDialogSettings.HistoryList);
+  FreeAndNil(FUnitDependenciesHistory);
+  FreeAndNil(FFindHistory);
+  FreeAndNil(FReplaceHistory);
+  FreeAndNil(FFindInFilesPathHistory);
+  FreeAndNil(FFindInFilesMaskHistory);
+  FreeAndNil(FFPCConfigCache);
+  FreeAndNil(fFileEncodings);
   inherited Destroy;
 end;
 
@@ -367,6 +380,7 @@ begin
   FFPCConfigCache.Clear;
   FLastConvertDelphiProject:='';
   FLastConvertDelphiUnit:='';
+  fFileEncodings.Clear;
 end;
 
 procedure TInputHistories.LoadFromXMLConfig(XMLConfig: TXMLConfig;

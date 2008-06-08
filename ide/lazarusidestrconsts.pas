@@ -1566,6 +1566,16 @@ resourcestring
   uemNextBookmark = 'Goto next Bookmark';
   uemPrevBookmark = 'Goto previous Bookmark';
   uemBookmarkN = 'Bookmark';
+  lisChangeEncoding = 'Change Encoding';
+  lisEncodingOfFileOnDiskIsNewEncodingIs2 = 'Encoding of file %s%s%s%son disk '
+    +'is %s. New encoding is %s.';
+  lisChangeFile = 'Change file';
+  lisEncodingOfFileOnDiskIsNewEncodingIs = 'Encoding of file %s%s%s%son disk '
+    +'is %s. New encoding is %s.';
+  lisReopenWithAnotherEncoding = 'Reopen with another encoding';
+  lisAbandonChanges = 'Abandon changes?';
+  lisAllYourModificationsToWillBeLostAndTheFileReopened = 'All your modificatio'
+    +'ns to %s%s%s%swill be lost and the file reopened.';
   lisOpenLfm = 'Open %s';
   uemSetBookmark = '&Set Bookmark';
   uemReadOnly = 'Read Only';
@@ -2153,6 +2163,7 @@ resourcestring
   lisCodeToolsDefsErrorWhileWritingProjectInfoFile = 'Error while writing '
     +'project info file %s%s%s%s%s';
   lisCodeToolsDefsReadError = 'Read error';
+  lisUnableToRead = 'Unable to read %s';
   lisErrorReadingPackageListFromFile = 'Error reading package list from file%'
     +'s%s%s%s';
   lisTheCurrentUnitPathForTheFileIsThePathToTheLCLUnits = 'The current unit '

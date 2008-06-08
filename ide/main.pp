@@ -684,7 +684,7 @@ type
         NewFlags: TNewFlags; NewOwner: TObject): TModalResult; override;
     function DoNewOther: TModalResult;
     function DoSaveEditorFile(PageIndex:integer;
-        Flags: TSaveFlags): TModalResult;
+        Flags: TSaveFlags): TModalResult; override;
     function DoCloseEditorFile(PageIndex:integer;
         Flags: TCloseFlags):TModalResult; override;
     function DoCloseEditorFile(const Filename: string;
@@ -11742,7 +11742,11 @@ procedure TMainIDE.OnCodeBufferDecodeLoaded(Code: TCodeBuffer;
   const Filename: string; var Source, DiskEncoding, MemEncoding: string);
 begin
   //DebugLn(['TMainIDE.OnCodeBufferDecodeLoaded Filename=',Filename,' Encoding=',GuessEncoding(Source)]);
-  DiskEncoding:=GuessEncoding(Source);
+  DiskEncoding:='';
+  if InputHistories<>nil then
+    DiskEncoding:=InputHistories.FileEncodings[Filename];
+  if DiskEncoding='' then
+    DiskEncoding:=GuessEncoding(Source);
   MemEncoding:=EncodingUTF8;
   if (DiskEncoding<>MemEncoding) then begin
     {$IFDEF VerboseIDEEncoding}

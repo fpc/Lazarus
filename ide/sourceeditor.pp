@@ -52,7 +52,7 @@ uses
   SynEditAutoComplete, SynEditKeyCmds, SynCompletion,
   // IDE interface
   MacroIntf, ProjectIntf, SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf,
-  IDEHelpIntf, IDEWindowIntf, IDEImagesIntf,
+  IDEDialogs, IDEHelpIntf, IDEWindowIntf, IDEImagesIntf,
   // IDE units
   LazarusIDEStrConsts, LazConf, IDECommands, EditorOptions, KeyMapping, Project,
   WordCompletion, FindReplaceDialog, FindInFilesDlg, IDEProcs, IDEOptionDefs,
@@ -3871,20 +3871,67 @@ var
   SrcEdit: TSourceEditor;
   NewEncoding: String;
   OldEncoding: String;
+  CurResult: TModalResult;
 begin
   SrcEdit:=GetActiveSE;
   if SrcEdit=nil then exit;
   if Sender is TIDEMenuItem then begin
     IDEMenuItem:=TIDEMenuItem(Sender);
     NewEncoding:=IDEMenuItem.Caption;
+    if SysUtils.CompareText(copy(NewEncoding,1,length(EncodingAnsi)+2),EncodingAnsi+' (')=0
+    then begin
+      // the ansi encoding is shown as 'ansi (system encoding)' -> cut
+      NewEncoding:=EncodingAnsi;
+    end;
     DebugLn(['TSourceNotebook.EncodingClicked ',NewEncoding]);
     if SrcEdit.CodeBuffer<>nil then begin
       OldEncoding:=NormalizeEncoding(SrcEdit.CodeBuffer.DiskEncoding);
       if OldEncoding='' then
         OldEncoding:=GetSystemEncoding;
       if NewEncoding<>SrcEdit.CodeBuffer.DiskEncoding then begin
-        DebugLn(['TSourceNotebook.EncodingClicked ToDo: change encoding']);
-        ShowMessage('Changing the encoding is not yet implemented. Please use tools like iconv or recode.');
+        DebugLn(['TSourceNotebook.EncodingClicked Old=',OldEncoding,' New=',NewEncoding]);
+        if SrcEdit.ReadOnly then begin
+          CurResult:=IDEQuestionDialog(lisChangeEncoding,
+            Format(lisEncodingOfFileOnDiskIsNewEncodingIs, ['"',
+              SrcEdit.CodeBuffer.Filename, '"', #13, OldEncoding, NewEncoding]),
+            mtConfirmation, [mrOk, lisReopenWithAnotherEncoding, mrCancel], '');
+        end else begin
+          CurResult:=IDEQuestionDialog(lisChangeEncoding,
+            Format(lisEncodingOfFileOnDiskIsNewEncodingIs2, ['"',
+              SrcEdit.CodeBuffer.Filename, '"', #13, OldEncoding, NewEncoding]),
+            mtConfirmation, [mrYes, lisChangeFile, mrOk,
+              lisReopenWithAnotherEncoding, mrCancel], '');
+        end;
+        if CurResult=mrYes then begin
+          // change file
+          SrcEdit.CodeBuffer.DiskEncoding:=NewEncoding;
+          SrcEdit.Modified:=true;
+          DebugLn(['TSourceNotebook.EncodingClicked ',SrcEdit.CodeBuffer.DiskEncoding]);
+          if LazarusIDE.DoSaveEditorFile(SrcEdit.PageIndex,[])<>mrOk then begin
+            DebugLn(['TSourceNotebook.EncodingClicked LazarusIDE.DoSaveEditorFile failed']);
+          end;
+        end else if CurResult=mrOK then begin
+          if SrcEdit.Modified then begin
+            if IDEQuestionDialog(lisAbandonChanges,
+              Format(lisAllYourModificationsToWillBeLostAndTheFileReopened, [
+                '"', SrcEdit.CodeBuffer.Filename, '"', #13]),
+              mtConfirmation,[mbOk,mbAbort],'')<>mrOk
+            then begin
+              exit;
+            end;
+          end;
+          // set override
+          InputHistories.FileEncodings[SrcEdit.CodeBuffer.Filename]:=NewEncoding;
+          if not SrcEdit.CodeBuffer.Revert then begin
+            IDEMessageDialog(lisCodeToolsDefsReadError,
+              Format(lisUnableToRead, [SrcEdit.CodeBuffer.Filename]),
+              mtError,[mbCancel],'');
+            exit;
+          end;
+          SrcEdit.EditorComponent.BeginUpdate;
+          SrcEdit.CodeBuffer.AssignTo(SrcEdit.EditorComponent.Lines,true);
+          SrcEdit.EditorComponent.EndUpdate;
+        end;
       end;
     end;
   end;

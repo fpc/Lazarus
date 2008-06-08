@@ -169,6 +169,8 @@ type
     function DoNewFile(NewFileDescriptor: TProjectFileDescriptor;
         var NewFilename: string; const NewSource: string;
         NewFlags: TNewFlags; NewOwner: TObject): TModalResult; virtual; abstract;
+    function DoSaveEditorFile(PageIndex:integer;
+        Flags: TSaveFlags): TModalResult; virtual; abstract;
     function DoCloseEditorFile(PageIndex:integer;
         Flags: TCloseFlags):TModalResult; virtual; abstract;
     function DoCloseEditorFile(const Filename: string;
