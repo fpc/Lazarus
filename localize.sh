@@ -38,6 +38,7 @@ RSTFILES=(
   "components/turbopower_ipro ipconst"
   "components/turbopower_ipro iputils"
   "components/cgi cgimodules"
+  "components/lazreport/samples/editor maincalleditor calleditorwithpkg"
   "components/memds frmselectdataset"
   "components/messagecomposer messagecomposer"  
   "components/printers/design ideprinting"

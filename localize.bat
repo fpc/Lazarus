@@ -122,9 +122,17 @@ tools\updatepofiles components\turbopower_ipro\languages\ipconst.po
 rstconv -c UTF-8 -i %TP_IPro_RST% -o components\turbopower_ipro\languages\iputils.po
 tools\updatepofiles components\turbopower_ipro\languages\iputils.po
 
+@REM MessageComposer
 @set MessageComposer_RST=components\messagecomposer\lib\%ArchOS%\messagecomposer.rst
 rstconv -c UTF-8 -i %MessageComposer_RST% -o components\messagecomposer\languages\messagecomposer.po
 tools\updatepofiles components\messagecomposer\languages\messagecomposer.po
+
+@REM LazReport editor sample
+@set LREditor_RST=components\lazreport\samples\editor\maincalleditor.rst
+if not exist %LREditor_RST% goto SkipLREditor
+rstconv -c UTF-8 -i %LREditor_RST% -o components\lazreport\samples\editor\languages\calleditorwithpkg.po
+tools\updatepofiles components\lazreport\samples\editor\languages\calleditorwithpkg.po
+:SkipLREditor
 
 @goto Exit
 
