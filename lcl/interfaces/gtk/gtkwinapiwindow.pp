@@ -437,7 +437,7 @@ begin
 //@  gtk_widget_set_flags(AWidget, GTK_REALIZED);
   
   {$Ifdef GTK2}
-  gtk_widget_set_double_buffered(AWidget, False);
+  //  gtk_widget_set_double_buffered(AWidget, False);
   gtk_widget_set_redraw_on_allocate(AWidget, False);
   {$EndIf}
 

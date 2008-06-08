@@ -207,7 +207,8 @@ begin
   gtk_container_add(PGtkContainer(P), Box);
 
   //so we can double buffer ourselves, eg, the Form Designer
-  gtk_widget_set_double_buffered(Box, False);
+  if csDesigning in AWinControl.ComponentState then
+    gtk_widget_set_double_buffered(Box, False);
 
   gtk_widget_show(Box);
 
