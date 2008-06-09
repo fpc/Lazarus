@@ -1056,7 +1056,10 @@ begin
       { Handles the "OK" button in the title bar of dialogs }
       if Lo(wParam) = IDOK then
       begin
-        SendMessage(Window, WM_CLOSE, 0, 0);
+        if (lWinControl is TCustomForm) and (fsModal in TCustomForm(lWinControl).FormState) then
+          TCustomForm(lWinControl).ModalResult := mrOK
+        else
+          SendMessage(Window, WM_CLOSE, 0, 0);
       end
       else
       begin
