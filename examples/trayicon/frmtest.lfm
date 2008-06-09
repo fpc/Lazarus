@@ -1,7 +1,7 @@
 object frmTrayTest: TfrmTrayTest
-  Left = 290
+  Left = 183
   Height = 249
-  Top = 175
+  Top = 176
   Width = 393
   HorzScrollBar.Page = 392
   VertScrollBar.Page = 248
@@ -54,9 +54,9 @@ object frmTrayTest: TfrmTrayTest
   end
   object chkOnPaintDrawing: TCheckBox
     Left = 32
-    Height = 18
+    Height = 19
     Top = 152
-    Width = 335
+    Width = 261
     Caption = 'Test drawing the icon in the Form''s OnPaint event'
     OnChange = chkOnPaintDrawingChange
     TabOrder = 4

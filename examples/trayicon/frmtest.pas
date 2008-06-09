@@ -123,8 +123,8 @@ const
   IDI_ICON1         = 101;
   IDI_ICON2         = 115;
   BundleResourceFolder = '/Contents/Resources/';
-var
 {$IFDEF Darwin}
+var
   pathRef: CFURLRef;
   pathCFStr: CFStringRef;
   pathStr: shortstring;
