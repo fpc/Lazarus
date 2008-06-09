@@ -1,5 +1,5 @@
 Name:           fpc
-Version:        2.0.0
+Version:        2.2.0
 Release:        1
 Summary:        Free Pascal Compiler
 
@@ -61,9 +61,6 @@ automatical-code generation purposes.
 # The source-files:
 mkdir -p fpcsrc
 cp -a rtl fpcsrc/
-if [ -d fcl ]; then
-  cp -a fcl fpcsrc/
-fi
 cp -a packages fpcsrc/
 rm -rf packages/extra/amunits
 rm -rf packages/extra/winunits
@@ -75,14 +72,6 @@ NEWPP=`pwd`/compiler/%{ppcname}
 NEWFPDOC=`pwd`/utils/fpdoc/fpdoc
 DATA2INC=`pwd`/utils/data2inc
 make clean all FPC=${STARTPP}
-#make compiler_cycle FPC=${STARTPP}
-#make rtl_clean rtl_smart FPC=${NEWPP}
-#make packages_base_smart FPC=${NEWPP}
-#make fcl_smart FPC=${NEWPP}
-#make fv_smart FPC=${NEWPP}
-#make packages_extra_smart FPC=${NEWPP}
-#make ide_all FPC=${NEWPP}
-#make utils_all FPC=${NEWPP} DATA2INC=${DATA2INC}
 
 # disable the debuginfo package
 %define debug_package %{nil}
@@ -92,20 +81,19 @@ make clean all FPC=${STARTPP}
 rm -rf %{buildroot}
 FPCMAKE=`pwd`/utils/fpcm/fpcmake
 NEWPP=`pwd`/compiler/%{ppcname}
+FPCVERSION=`${NEWPP} -iV`
+FPCFULLVERSION=`${NEWPP} -iW`
 INSTALLOPTS="FPC=${NEWPP} FPCMAKE=${FPCMAKE} \
                 INSTALL_PREFIX=%{buildroot}%{_prefix} \
                 INSTALL_LIBDIR=%{buildroot}%{_libdir} \
-                INSTALL_BASEDIR=%{buildroot}%{_libdir}/%{name}/%{version} \
+                INSTALL_BASEDIR=%{buildroot}%{_libdir}/%{name}/${FPCVERSION} \
                 CODPATH=%{buildroot}%{_libdir}/%{name}/lexyacc \
-                INSTALL_DOCDIR=%{buildroot}%{_defaultdocdir}/%{name}-%{version} \
+                INSTALL_DOCDIR=%{buildroot}%{_defaultdocdir}/%{name}-${FPCVERSION} \
                 INSTALL_BINDIR=%{buildroot}%{_bindir}
-                INSTALL_EXAMPLEDIR=%{buildroot}%{_defaultdocdir}/%{name}-%{version}/examples"
+                INSTALL_EXAMPLEDIR=%{buildroot}%{_defaultdocdir}/%{name}-${FPCVERSION}/examples"
 make compiler_install ${INSTALLOPTS}
 make rtl_install ${INSTALLOPTS}
 make packages_install ${INSTALLOPTS}
-if [ -d fcl ]; then
-  make fcl_install ${INSTALLOPTS}
-fi
 #make fv_install ${INSTALLOPTS}
 #make ide_install ${INSTALLOPTS}
 make utils_install ${INSTALLOPTS}
@@ -115,14 +103,14 @@ make utils_install ${INSTALLOPTS}
 #make man_install ${INSTALLOPTS} INSTALL_MANDIR=%{buildroot}%{_mandir}
 
 # create link
-ln -sf ../%{_lib}/%{name}/%{version}/%{ppcname} %{buildroot}%{_bindir}/%{ppcname}
+ln -sf ../%{_lib}/%{name}/${FPCVERSION}/%{ppcname} %{buildroot}%{_bindir}/%{ppcname}
 
 # Include the COPYING-information in the documentation
 #cd fpcsrc
-#cp -a compiler/COPYING %{buildroot}%{_defaultdocdir}/%{name}-%{version}/COPYING
-#cp -a rtl/COPYING %{buildroot}%{_defaultdocdir}/%{name}-%{version}/COPYING.rtl
-#cp -a fcl/COPYING %{buildroot}%{_defaultdocdir}/%{name}-%{version}/COPYING.fcl
-#cp -a rtl/COPYING.FPC %{buildroot}%{_defaultdocdir}/%{name}-%{version}/COPYING.FPC
+#cp -a compiler/COPYING %{buildroot}%{_defaultdocdir}/%{name}-${FPCVERSION}/COPYING
+#cp -a rtl/COPYING %{buildroot}%{_defaultdocdir}/%{name}-${FPCVERSION}/COPYING.rtl
+#cp -a fcl/COPYING %{buildroot}%{_defaultdocdir}/%{name}-${FPCVERSION}/COPYING.fcl
+#cp -a rtl/COPYING.FPC %{buildroot}%{_defaultdocdir}/%{name}-${FPCVERSION}/COPYING.FPC
 #cd -
 
 # The source-files:
@@ -139,23 +127,23 @@ rm -rf %{buildroot}
 
 %post
 # Create a version independent config
-%{_libdir}/%{name}/%{version}/samplecfg %{_libdir}/%{name}/%{version} > /dev/null
+%{_libdir}/%{name}/${FPCVERSION}/samplecfg %{_libdir}/%{name}/${FPCVERSION} > /dev/null
 
 %files
 %defattr(-,root,root,-)
 %{_bindir}/*
 %{_libdir}/%{name}
-#%doc %{_defaultdocdir}/%{name}-%{version}/NEWS
-#%doc %{_defaultdocdir}/%{name}-%{version}/README
-#%doc %{_defaultdocdir}/%{name}-%{version}/readme.ide
-#%doc %{_defaultdocdir}/%{name}-%{version}/faq*
-#%doc %{_defaultdocdir}/%{name}-%{version}/COPYING*
+#%doc %{_defaultdocdir}/%{name}-${FPCVERSION}/NEWS
+#%doc %{_defaultdocdir}/%{name}-${FPCVERSION}/README
+#%doc %{_defaultdocdir}/%{name}-${FPCVERSION}/readme.ide
+#%doc %{_defaultdocdir}/%{name}-${FPCVERSION}/faq*
+#%doc %{_defaultdocdir}/%{name}-${FPCVERSION}/COPYING*
 #%{_mandir}/*/*
 
 #%files doc
 #%defattr(-,root,root,-)
-#%doc %{_defaultdocdir}/%{name}-%{version}/*.pdf
-#%doc %{_defaultdocdir}/%{name}-%{version}/examples
+#%doc %{_defaultdocdir}/%{name}-${FPCVERSION}/*.pdf
+#%doc %{_defaultdocdir}/%{name}-${FPCVERSION}/examples
 
 %files src
 %defattr(-,root,root,-)

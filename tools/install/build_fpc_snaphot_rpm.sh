@@ -63,15 +63,16 @@ VersionFile="$TmpDir/compiler/version.pas"
 CompilerVersion=`cat $VersionFile | grep ' *version_nr *=.*;' | sed -e 's/[^0-9]//g'`
 CompilerRelease=`cat $VersionFile | grep ' *release_nr *=.*;' | sed -e 's/[^0-9]//g'`
 CompilerPatch=`cat $VersionFile | grep ' *patch_nr *=.*;' | sed -e 's/[^0-9]//g'`
+CompilerMinorPatch=`cat $VersionFile | grep ' *minorpatch *=.*;' | sed -e 's/.*minorpatch.*= *//g' -e "s/'//g" -e 's/;//g'`
 CompilerVersionStr="$CompilerVersion.$CompilerRelease.$CompilerPatch"
-LazVersion="$CompilerVersion.$CompilerRelease.$CompilerPatch"
+LazVersion="$CompilerVersion.$CompilerRelease.$CompilerPatch$CompilerMinorPatch"
 
 # set version numbers in all Makefiles
-perl replace_in_files.pl -sR -f '=\d.\d.\d' -r =$CompilerVersionStr -m 'Makefile(.fpc)?' $TmpDir/*
+perl replace_in_files.pl -sR -f '=\d.\d.\d' -r =$LazVersion -m 'Makefile(.fpc)?' $TmpDir/*
 
 # create a source tar.gz
 cd $TmpDir/..
-tar -czf $RPMDIR/SOURCES/fpc-$CompilerVersionStr-$LazRelease.source.tar.gz fpc
+tar -czf $RPMDIR/SOURCES/fpc-$LazVersion-$LazRelease.source.tar.gz fpc
 
 # remove the tempdir
 cd -
