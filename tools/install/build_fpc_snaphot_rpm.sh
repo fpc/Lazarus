@@ -91,3 +91,4 @@ cat $SpecFileTemplate | \
 
 rpmbuild --target $ARCH -ba $SpecFile --nodeps
 
+export FpcFullVersion=$LazVersion

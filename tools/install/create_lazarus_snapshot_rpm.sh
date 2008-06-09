@@ -6,7 +6,7 @@ set -e
 #------------------------------------------------------------------------------
 # parse parameters
 #------------------------------------------------------------------------------
-Usage="Usage: $0 <LazarusSrcDir>"
+Usage="Usage: $0 <LazarusSrcDir> <FPCFullVersion>"
 
 LazSrcDir=$1
 shift
@@ -25,12 +25,21 @@ if [ ! -d $LazSrcDir/.svn ]; then
   exit -1
 fi
 
+FpcFullVersion=$1
+shift
+if [ "x$FpcFullVersion" = "x" ]; then
+  echo $Usage
+  exit -1
+fi
+
+
+
 Date=`date +%Y%m%d`
 # get fpc snapshot rpm
 RPMDIR=$(rpm/get_rpm_source_dir.sh)
 ARCH=`rpm --eval "%{_arch}"`
 LIB=`rpm --eval "%{_lib}"`
-FPCRPM=$RPMDIR/RPMS/$ARCH/fpc-2.2.0-$Date.$ARCH.rpm
+FPCRPM=$RPMDIR/RPMS/$ARCH/fpc-$FpcFullVersion-$Date.$ARCH.rpm
 if [ ! -f $FPCRPM ]; then
   echo ERROR: fpc rpm $FPCRPM not available
   exit
@@ -45,6 +54,7 @@ mkdir -p $TmpFPCDir
 cd $TmpFPCDir
 rpm2cpio $FPCRPM | cpio -id 
 FPCVersion=`usr/bin/fpc -iV`
+FPCFullVersion=`usr/bin/fpc -iW`
 usr/$LIB/fpc/$FPCVersion/samplecfg $TmpFPCDir/usr/$LIB/fpc/$FPCVersion .
 FPCCfg=$TmpFPCDir/fpc.cfg
 export FPCCfg
@@ -80,8 +90,8 @@ SpecFile=$RPMDIR/SPECS/lazarus-$LazVersion-$Date.spec
 cat rpm/lazarus.spec.template | \
   sed -e "s/LAZVERSION/$LazVersion/g" \
       -e "s/LAZRELEASE/$Date/g" \
-      -e "s/FPCVERSION/$FPCVersion/g" \
-      -e "s/FPCSRCVERSION/$FPCVersion/g" \
+      -e "s/FPCVERSION/$FPCFullVersion/g" \
+      -e "s/FPCSRCVERSION/$FPCFullVersion/g" \
   > $SpecFile
 
 # build rpm

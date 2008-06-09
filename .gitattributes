@@ -3708,6 +3708,7 @@ tools/install/freebsd_ports/distinfo svneol=native#text/plain
 tools/install/freebsd_ports/files/patch-Makefile svneol=native#text/plain
 tools/install/freebsd_ports/files/patch-components-printers-unix_udlgselectprinter.pp svneol=native#text/plain
 tools/install/freebsd_ports/pkg-descr svneol=native#text/plain
+tools/install/get_fpc_full_version.sh svneol=native#text/plain
 tools/install/get_lazarus_version.sh svneol=native#text/plain
 tools/install/get_svn_revision_number.sh svneol=native#text/plain
 tools/install/linux/editoroptions.xml svneol=native#text/plain
