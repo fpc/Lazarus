@@ -1192,7 +1192,7 @@ end;
  -----------------------------------------------------------------------------}
 function DisableWindowsProc(Window: HWND; Data: LParam): LongBool; {$ifdef Win32}stdcall;{$else}cdecl;{$endif}
 var
-  Buffer: array[0..15] of WideChar;
+//  Buffer: array[0..15] of WideChar;
   DisableWindowsInfo: PDisableWindowsInfo absolute Data;
 begin
   Result:=true;
@@ -1205,8 +1205,13 @@ begin
   if Window = DisableWindowsInfo^.NewModalWindow then exit;
 
   // Don't disable any ComboBox listboxes
+{
+   This causes a crash when exiting the dialog under arm-wince
+   All disabled windows will be enabled again, so it shouldn't be
+   a big problem to disable the ComboBox listboxes.
+   
   if (GetClassNameW(Window, @Buffer, sizeof(Buffer))<sizeof(Buffer))
-    and (WideCompareText(widestring(@Buffer), 'ComboLBox')=0) then exit;
+    and (WideCompareText(widestring(@Buffer), 'ComboLBox')=0) then exit;}
 
   if not IsWindowVisible(Window) or not IsWindowEnabled(Window) then exit;
 

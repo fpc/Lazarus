@@ -2023,7 +2023,8 @@ begin
         end;
         if Application.Terminated then
           ModalResult := mrCancel;
-        if ModalResult <> 0 then begin
+        if ModalResult <> 0 then
+        begin
           CloseModal;
           if ModalResult<>0 then break;
         end;
