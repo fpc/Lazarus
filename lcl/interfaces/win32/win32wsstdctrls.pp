@@ -572,13 +572,16 @@ begin
           Flags := Flags or LBS_MULTIPLESEL;
       if Columns > 1 then
         Flags := Flags or LBS_MULTICOLUMN;
-      if AWinControl.FCompStyle = csCheckListBox then
+
+      if (AWinControl.FCompStyle = csCheckListBox) and (Style = lbStandard) then
         Flags := Flags or LBS_OWNERDRAWFIXED
-      else case Style of
-        lbOwnerDrawFixed: Flags := Flags or LBS_OWNERDRAWFIXED;
-        lbOwnerDrawVariable: Flags := Flags or LBS_OWNERDRAWVARIABLE;
-      end;
-      if BorderStyle=bsSingle then
+      else
+        case Style of
+          lbOwnerDrawFixed: Flags := Flags or LBS_OWNERDRAWFIXED;
+          lbOwnerDrawVariable: Flags := Flags or LBS_OWNERDRAWVARIABLE;
+        end;
+      
+      if BorderStyle = bsSingle then
         FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
     end;
     pClassName := 'LISTBOX';

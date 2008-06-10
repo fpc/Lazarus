@@ -289,7 +289,7 @@ begin
     begin
       with TLMDrawItems(Message) do
       begin
-        if Sender is TCheckListBox then
+        if Sender is TCustomCheckListBox then
         begin
           // ItemID not UINT(-1)
           if DrawItemStruct^.ItemID <> DWORD($FFFFFFFF) then
