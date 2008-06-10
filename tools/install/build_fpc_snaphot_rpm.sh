@@ -85,6 +85,7 @@ SpecFile=$RPMDIR/SPECS/fpc.spec
 cat $SpecFileTemplate | \
   sed -e 's/^Version: .*/Version: '"$LazVersion/" \
       -e 's/^Release: .*/Release: '"$LazRelease/" \
+      -e 's/^%define fpcversion .*/%define fpcversion '"$CompilerVersionStr/" \
   > $SpecFile
 #      -e 's/\(%define builddocdir.*\)/%define __strip smart_strip.sh\n\n\1/' \
 #      -e 's/^\%{fpcdir}\/samplecfg .*/%{fpcdir}\/samplecfg %{_libdir}\/fpc\/\\\$version/' \

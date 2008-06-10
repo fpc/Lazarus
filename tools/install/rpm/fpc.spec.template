@@ -80,10 +80,11 @@ make clean all FPC=${STARTPP}
 %install 
 rm -rf %{buildroot}
 FPCMAKE=`pwd`/utils/fpcm/fpcmake
+DATA2INC=`pwd`/utils/data2inc
 NEWPP=`pwd`/compiler/%{ppcname}
 FPCVERSION=`${NEWPP} -iV`
 FPCFULLVERSION=`${NEWPP} -iW`
-INSTALLOPTS="FPC=${NEWPP} FPCMAKE=${FPCMAKE} \
+INSTALLOPTS="FPC=${NEWPP} FPCMAKE=${FPCMAKE} DATA2INC=${DATA2INC} \
                 INSTALL_PREFIX=%{buildroot}%{_prefix} \
                 INSTALL_LIBDIR=%{buildroot}%{_libdir} \
                 INSTALL_BASEDIR=%{buildroot}%{_libdir}/%{name}/${FPCVERSION} \
@@ -127,7 +128,8 @@ rm -rf %{buildroot}
 
 %post
 # Create a version independent config
-%{_libdir}/%{name}/${FPCVERSION}/samplecfg %{_libdir}/%{name}/${FPCVERSION} > /dev/null
+%define fpcversion 2.2.0
+%{_libdir}/%{name}/%{fpcversion}/samplecfg %{_libdir}/%{name}/%{fpcversion} > /dev/null
 
 %files
 %defattr(-,root,root,-)

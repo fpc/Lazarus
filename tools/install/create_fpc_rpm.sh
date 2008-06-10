@@ -148,6 +148,7 @@ else
   cat $SpecFileTemplate | \
     sed -e 's/^Version: .*/Version: '"$FPCVersion/" \
         -e 's/^Release: .*/Release: '"$FPCRelease/" \
+        -e 's/^%define fpcversion .*/%define fpcversion '"$FPCVersion/" \
     > $SpecFile
   #      -e 's/\(%define builddocdir.*\)/%define __strip smart_strip.sh\n\n\1/' \
   #      -e 's/^\%{fpcdir}\/samplecfg .*/%{fpcdir}\/samplecfg %{_libdir}\/fpc\/\\\$version/' \
