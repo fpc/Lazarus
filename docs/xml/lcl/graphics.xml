@@ -257,6 +257,7 @@
         <short>
           <var>Default Data</var>  for any new 
           
+          
           <var>Font</var>
         </short>
         <descr>
@@ -2082,7 +2083,9 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.</descr>
         <short>
           <var>Assign</var>   - copies the 
           
+          
           <var>LogFont</var> or 
+          
           
           <var>Source</var> settings to itself</short>
         <descr>
@@ -2176,6 +2179,7 @@ Copies the logfont or source settings to itself
         <short>
           <var>Colour</var> of the current 
           
+          
           <var>Font</var>
         </short>
         <descr>Default is the same as the text used for the rest of the Window
@@ -2190,6 +2194,7 @@ Copies the logfont or source settings to itself
         <short>
           <var>Name</var> of the 
           
+          
           <var>Font</var>
         </short>
       </element>
@@ -2197,6 +2202,7 @@ Copies the logfont or source settings to itself
       <element name="TFont.Pitch">
         <short>
           <var>Pitch</var> type of the 
+          
           
           
           
@@ -2220,6 +2226,7 @@ Reads or writes a flag to determine pitch type</descr>
       <element name="TFont.Style">
         <short>
           <var>Style</var> of the 
+          
           
           
           
@@ -2614,6 +2621,7 @@ Default is psSolid</descr>
           
           
           
+          
           <var>Source</var>
           <var>Brush</var> to itself</short>
         <descr>Method: TBrush.Assign<br/>
@@ -2626,6 +2634,7 @@ Default is psSolid</descr>
       <element name="TBrush.Assign.Source">
         <short>
           <var>Source</var> - another 
+          
           
           
           
@@ -2652,7 +2661,9 @@ Default is psSolid</descr>
           
           
           
+          
           <var>Brush</var> and frees 
+          
           
           
           
@@ -2685,6 +2696,7 @@ Default is psSolid</descr>
       <element name="TBrush.Style">
         <short>
           <var>Style</var> of the  
+          
           
           <var>Brush</var>
         </short>
@@ -2808,6 +2820,7 @@ Default is psSolid</descr>
       <element name="TRegion.Assign">
         <short>
           <var>Assign</var> - copies 
+          
           
           
           
@@ -3103,6 +3116,7 @@ Default is psSolid</descr>
           
           
           
+          
           <b>override</b> this method in descendant classes</descr>
       </element>
       <!-- procedure Visibility: public -->
@@ -3134,6 +3148,7 @@ If the file is not of the right format, an exception will be generated.</descr>
         <short>
           <var>LoadFromStream</var>  - reads graphic data from a stream (e.g. 
           
+          
           <var>TBlobStream</var> )</short>
         <descr>
           <var>LoadFromStream</var>
@@ -3143,8 +3158,10 @@ If the file is not of the right format, an exception will be generated.</descr>
           
           
           
+          
           <var>LoadFromFile</var>
  except source is a stream (e.g. 
+          
           
           
           
@@ -3401,18 +3418,24 @@ If the file is not of the right format, an exception will be generated.</descr>
         <short>
           <var>TPicture</var> is a  
           
+          
           <var>TGraphic</var>  container, used in place of a  
           
+          
           <var>TGraphic</var> if the graphic can be of any 
+          
           
           <var>TGraphic</var> class.</short>
         <descr>
           <p>
             <var>TPicture</var> is a 
             
+            
             <var>TGraphic</var> container.  It is used in place of a 
             
+            
             <var>TGraphic</var> if the graphic can be of any 
+            
             
             <var>TGraphic</var> class. </p>
           <p>It is not a direct descendant of <var>TGraphic</var>, so you will not see <var>TGraphic</var> listed in the <var>Inheritance</var> chart, but it contains a property <var>Graphic</var>, of type <var>TGraphic</var>, so can contain all the properties of a <var>TGraphic</var>
@@ -3422,18 +3445,24 @@ If the file is not of the right format, an exception will be generated.</descr>
           <p>
             <var>LoadFromFile</var> and 
             
+            
             <var>SaveToFile</var> are polymorphic. For example, if the 
+            
             
             <var>TPicture</var> is holding an 
             
+            
             <var>Icon</var>, you can 
             
+            
             <var>LoadFromFile</var> a bitmap file, whereas if the class is 
+            
             
             <var>TIcon</var> you could only read  .ICO files.</p>
           <ul>
             <li>
               <var>LoadFromFile</var> - Reads a picture from disk. The 
+              
               
               <var>TGraphic</var> class created is determined by the file extension of the file. If the file extension is  not recognized an exception is generated.</li>
             <li>
@@ -3445,26 +3474,33 @@ If the file is not of the right format, an exception will be generated.</descr>
             <li>
               <var>SupportsClipboardFormat</var> - Returns true if the given clipboard format  is supported by 
               
+              
               <var>LoadFromClipboardFormat</var>
             </li>
             <li>
               <var>Assign</var> - Copies the contents of the given 
               
+              
               <var>TPicture</var>.  Used most often in  the implementation of TPicture properties.</li>
             <li>
               <var>RegisterFileFormat</var> - Register a new 
               
+              
               <var>TGraphic</var> class for use in 
+              
               
               <var>LoadFromFile</var>.</li>
             <li>
               <var>RegisterClipboardFormat</var> - Registers a new 
               
+              
               <var>TGraphic</var> class for use in 
+              
               
               <var>LoadFromClipboardFormat</var>.</li>
             <li>
               <var>UnRegisterGraphicClass</var> - Removes all references to the specified 
+              
               
               <var>TGraphic</var> class and all its descendants from the file format and clipboard format internal lists.</li>
             <li>
@@ -3474,7 +3510,9 @@ If the file is not of the right format, an exception will be generated.</descr>
             <li>
               <var>Graphic</var> - The 
               
+              
               <var>TGraphic</var> object contained by the 
+              
               
               <var>TPicture</var>
             </li>
@@ -3485,13 +3523,16 @@ If the file is not of the right format, an exception will be generated.</descr>
             <li>
               <var>PNG</var> - Returns a png.  If the contents is not already a png, the  contents are thrown away and a blank png (
               
+              
               <var>TPortableNetworkGraphic</var>) is returned.</li>
             <li>
               <var>PNM</var> - Returns a pnm.  If the contents is not already a pnm, the contents are thrown away and a blank pnm (
               
+              
               <var>TPortableAnyMapGraphic</var>) is returned.</li>
             <li>
               <var>Jpeg</var> - Returns a jpeg. If the contents is not already a jpeg, the contents are thrown away and a blank jpeg (
+              
               
               <var>TJPegImage</var>) is returned.</li>
           </ul>
@@ -3759,6 +3800,7 @@ If the file is not of the right format, an exception will be generated.</descr>
           
           
           
+          
           <var>TGraphic</var> class created is determined by the file extension of the file.</descr>
         <errors>If the file extension is  not recognized an exception is generated</errors>
       </element>
@@ -3825,6 +3867,7 @@ If the file is not of the right format, an exception will be generated.</descr>
           
           
           
+          
           <var>LoadFromClipboardFormat</var>
         </short>
       </element>
@@ -3841,10 +3884,12 @@ If the file is not of the right format, an exception will be generated.</descr>
         <short>
           <var>Assign</var> - Copies the contents of the given 
           
+          
           <var>TPicture</var>
         </short>
         <descr>
           <var>Assign</var> - Copies the contents of the given 
+          
           
           
           
@@ -3862,7 +3907,9 @@ If the file is not of the right format, an exception will be generated.</descr>
         <short>
           <var>RegisterFileFormat</var> - Register a new 
           
+          
           <var>TGraphic</var> class for use in 
+          
           
           <var>LoadFromFile</var>
         </short>
@@ -3884,7 +3931,9 @@ If the file is not of the right format, an exception will be generated.</descr>
         <short>
           <var>RegisterClipboardFormat</var> - Registers a new 
           
+          
           <var>TGraphic</var> class for use in  
+          
           
           <var>LoadFromClipboardFormat</var>
         </short>
@@ -3902,11 +3951,13 @@ If the file is not of the right format, an exception will be generated.</descr>
         <short>
           <var>UnRegisterGraphicClass</var>  - Removes all references to the specified 
           
+          
           <var>TGraphic</var>
         </short>
         <descr>
           <var>UnRegisterGraphicClass</var>
  - Removes all references to the specified 
+          
           
           
           
@@ -3946,6 +3997,7 @@ If the file is not of the right format, an exception will be generated.</descr>
         <descr>
           <var>PNG</var> - Returns a png.  If the contents is not already a png, the  contents are thrown away and a blank png (
           
+          
           <var>TPortableNetworkGraphic</var>) is returned
 </descr>
       </element>
@@ -3959,7 +4011,9 @@ If the file is not of the right format, an exception will be generated.</descr>
         <short>
           <var>Graphic</var> - The 
           
+          
           <var>TGraphic</var> object contained by the 
+          
           
           <var>TPicture</var>
         </short>
@@ -4424,6 +4478,7 @@ If the file is not of the right format, an exception will be generated.</descr>
           
           
           
+          
           <var>TCanvas</var>
         </descr>
       </element>
@@ -4433,6 +4488,7 @@ If the file is not of the right format, an exception will be generated.</descr>
           <var>Canvas</var> destructor</short>
         <descr>
           <var>Canvas</var> destructor: removes this instance of 
+          
           
           
           
@@ -4960,6 +5016,7 @@ Use <var>Ellipse</var>
           
           
           
+          
           <var>X1, Y1</var>
         </short>
       </element>
@@ -5025,6 +5082,7 @@ Use <var>Ellipse</var>
       <element name="TCanvas.RadialPie">
         <short>
           <var>RadialPie</var> uses 
+          
           
           
           
@@ -6628,6 +6686,7 @@ The boundaries of the rectangle are specified in <var>ARect</var><br/><var>X, Y<
           
           
           
+          
           <b>override</b> the definition from ancestor classes</descr>
       </element>
       <!-- destructor Visibility: public -->
@@ -6636,6 +6695,7 @@ The boundaries of the rectangle are specified in <var>ARect</var><br/><var>X, Y<
           <var>BitMap</var> destructor</short>
         <descr>
           <var>BitMap</var> destructor. The supplied code can 
+          
           
           
           
@@ -6654,7 +6714,9 @@ The boundaries of the rectangle are specified in <var>ARect</var><br/><var>X, Y<
           
           
           
+          
           <var>BitMap</var> data are already in use, the data are shared; if not, a new 
+          
           
           
           
@@ -6734,7 +6796,9 @@ The boundaries of the rectangle are specified in <var>ARect</var><br/><var>X, Y<
           
           
           
+          
           <var>BitMap</var> data from a device with Handle 
+          
           
           
           
@@ -6768,7 +6832,9 @@ The boundaries of the rectangle are specified in <var>ARect</var><br/><var>X, Y<
           
           
           
+          
           <var>BitMap</var> data from a 
+          
           
           
           
@@ -6792,8 +6858,10 @@ The boundaries of the rectangle are specified in <var>ARect</var><br/><var>X, Y<
           
           
           
+          
           <br/>
 Checks for the presence of a valid Lazarus Resource, then uses 
+          
           
           
           
@@ -6840,6 +6908,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <element name="TBitmap.LoadFromMimeStream">
         <short>
           <var>LoadFromMimeStream</var> - get 
+          
           
           
           
@@ -6895,6 +6964,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <element name="TBitmap.LoadFromXPMFile">
         <short>
           <var>LoadFromXPMFile</var>: obtain data from file in native 
+          
           
           
           
@@ -7144,6 +7214,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <element name="TPixmap">
         <short>
           <var>PixMap</var>  - a class derived from  
+          
           
           <var>TBitMap</var> , with wrapper to deal specifically with PixMaps (ie using 'XPM' format)</short>
         <descr>
@@ -7448,6 +7519,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
           
           
           
+          
           <b>override</b> the destructor defined in ancestor classes</descr>
       </element>
       <!-- procedure Visibility: public -->
@@ -7577,7 +7649,9 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <element name="ColorToIdent.Ident">
         <short>
           <var>Ident </var>- the name of the supplied 
+          
           <var>Color</var> as found in the look-up table of 
+          
           <var>Colors</var>
         </short>
       </element>
@@ -7595,6 +7669,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <element name="IdentToColor.Ident">
         <short>
           <var>Ident</var> - the suppied name for the required 
+          
           <var>Color</var>
         </short>
       </element>
@@ -7605,24 +7680,27 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- function Visibility: default -->
       <element name="SysColorToSysColorIndex">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          <var>SysColorToSysColorIndex</var> - if 
+          <var>Color</var> is one of the system colours, returns the 
+          <var>Index</var> of the system colour</short>
+        <errors>If <var>Color</var> is not a system color, returns -1</errors>
       </element>
       <!-- function result Visibility: default -->
       <element name="SysColorToSysColorIndex.Result">
-        <short/>
+        <short>Returns the Index value of the Color if it is a system colour, otherwise returns -1</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="SysColorToSysColorIndex.Color">
-        <short/>
+        <short>The <var>Color</var> for processing</short>
       </element>
       <!-- function Visibility: default -->
       <element name="ColorToRGB">
         <short>
           <var>ColorToRGB</var> - given a 
+          
           <var>Color</var> value, converts into 
+          
           <var>RGB</var>
         </short>
       </element>
@@ -7758,7 +7836,9 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short>
           <var>FPColorToTColor</var> - converts a colour specified as a 
           
+          
           <var>FPColor </var>to a colour of type
+          
           
           <var>TColor</var>
         </short>
@@ -7781,7 +7861,9 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short>
           <var>TColorToFPColor</var> - converts a colour of type 
           
+          
           <var>TColor </var>to one specified as a 
+          
           
           <var>FPColor</var>
         </short>
@@ -7797,6 +7879,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <element name="TColorToFPColor.c">
         <short>
           <var>c</var> - the supplied colour specified as type 
+          
           <var>TColor</var>
         </short>
       </element>
@@ -8256,10 +8339,12 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short>
           <var>PNM </var>- a 
           
+          
           <b>PortableAnyMapGraphic </b>image</short>
         <descr>
           <p>
             <var>PNM </var>- a 
+            
             
             <b>PortableAnyMapGraphic </b>image</p>
           <p>Reads a PNM image. If it is not a valid PNM image, the contents are thrown away and a blank PNM is generated</p>
@@ -8308,6 +8393,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
           
           
           
+          
           <var>Bitmap</var> data from an interface image</short>
       </element>
       <element name="TBitmap.GetResourceType">
@@ -8346,6 +8432,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <descr>
           <p>
             <var>TProgressEvent</var> is a generic progress notification event which may be used by 
+            
             
             
             
@@ -8617,6 +8704,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <element name="TCustomBitmap">
         <short>
           <var>TCustomBitMap </var>- the base class for 
+          
           <var>TBitmap</var>
         </short>
       </element>
@@ -9773,6 +9861,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <element name="TCustomBitmapImage">
         <short>
           <var>TCustomBitmapImage</var> - the base type for 
+          
           <var>TBitmapImage</var>
         </short>
       </element>
@@ -10126,18 +10215,15 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomBitmap.Draw">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Draw the bitmap on the specified Canvas at the specified coordinates</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomBitmap.Draw.DestCanvas">
-        <short/>
+        <short>The canvas on which the bitmap is to be drawn</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomBitmap.Draw.DestRect">
-        <short/>
+        <short>The rectangular coordinates where the canvas containing the bitmap is located</short>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomBitmap.GetEmpty">
@@ -10439,6 +10525,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
           <var>BitMap</var> constructor</short>
         <descr>
           <var>BitMap</var> constructor. The supplied code can 
+          
           <b>override</b> the definition from ancestor classes</descr>
       </element>
       <!-- destructor Visibility: public -->
@@ -10448,16 +10535,19 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <descr>
           <var>BitMap</var> destructor. The supplied code can
 
+          
           <b>override</b> the method defined for ancestor classes</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomBitmap.Assign">
         <short>
           <var>Assign</var>: find out about the 
+          
           <var>Source</var> of the call.</short>
         <descr>
           <p>
             <var>Assign</var>: find out about the 
+            
             <var>Source</var> of the call.</p>
           <p>If the   <var>BitMap</var> data are already in use, the data are shared; if not, a new  <var>BitMap</var> is produced
 </p>
@@ -10469,10 +10559,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomBitmap.FreeImage">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Releases all the resources used for the image that is being discarded</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomBitmap.HandleAllocated">
@@ -10527,58 +10614,48 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short>The target resource type specified as a string</short>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomBitmap.LoadFromDevice"/>
+      <element name="TCustomBitmap.LoadFromDevice">
+        <short>Load a bitmap from the nominated Device</short>
+      </element>
       <!-- argument Visibility: default -->
       <element name="TCustomBitmap.LoadFromDevice.DC">
-        <short/>
+        <short>The handle for the device from which the bitmap is to be loaded</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomBitmap.LoadFromStream">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Load a bitmap from a stream</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomBitmap.LoadFromStream.Stream">
-        <short/>
+        <short>The stream from which the bitmap is to be loaded</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomBitmap.LoadFromMimeStream">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Load a bitmap from a MIME type stream</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomBitmap.LoadFromMimeStream.Stream">
-        <short/>
+        <short>The stream from which the bitmap is to be loaded</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomBitmap.LoadFromMimeStream.MimeType">
-        <short/>
+        <short>The MIME type of the stream from which the bitmap is to be loaded</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomBitmap.LoadFromIntfImage">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Load a bitmap from a Lazarus interface image</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomBitmap.LoadFromIntfImage.IntfImage">
-        <short/>
+        <short>The Lazarus interface image from which the bitmap is to be loaded</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomBitmap.LoadFromXPMFile">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Load a bitmap from a XPM file (pixmap)</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomBitmap.LoadFromXPMFile.Filename">
-        <short/>
+        <short>The name of the file from which the bitmap is to be loaded</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomBitmap.SaveToStream">
@@ -11126,11 +11203,16 @@ Checks for the presence of a valid Lazarus Resource, then uses
           </p>
           <p>A list of system <var>Colors</var> is specified as a look-up table of indices (Entry) and names (MapEntry)</p>
 This function checks that the value in 
+          
           <var>Entry</var> is within the permitted range, and returns the data pair 
+          
           <var>Value</var>, 
+          
           <var>Name</var> of the corresponding colour in 
+          
           <var>MapEntry</var>.
 
+          
           <p>If <var>Entry</var> is out of range the Result is False</p>
         </descr>
         <errors>If <var>Entry</var> is out of the range [0..High(Colours)] the Result is returned as False</errors>
@@ -11148,8 +11230,11 @@ This function checks that the value in
       <element name="IdentEntry.MapEntry">
         <short>
           <var>MapEntry</var> - the record of 
+          
           <var>Value</var>, 
+          
           <var>Name</var> returned from the look-up table of 
+          
           <var>Colors</var>
         </short>
       </element>
@@ -11309,6 +11394,15 @@ This function checks that the value in
         <descr/>
         <errors/>
         <seealso/>
+      </element>
+      <element name="TCustomBitmap.CanReadGraphicStreams">
+        <short>Determine whether this instance of the class can read graphic streams</short>
+      </element>
+      <element name="TCustomBitmap.CanReadGraphicStreams.AClass">
+        <short>Class of image processor to be used for reading the bitmap</short>
+      </element>
+      <element name="TCustomBitmap.CanReadGraphicStreams.Result">
+        <short>Returns True if the supplied class is capable of reading graphic streams</short>
       </element>
     </module>
     <!-- Graphics -->
