@@ -371,6 +371,7 @@ class procedure TWinCEWSCustomForm.SetBounds(const AWinControl: TWinControl;
 var
   SizeRect: Windows.RECT;
   BorderStyle: TFormBorderStyle;
+  WR: Windows.RECT;
 begin
   // the LCL defines the size of a form without border, win32 with.
   // -> adjust size according to BorderStyle
@@ -384,10 +385,26 @@ begin
   BorderStyle := TCustomForm(AWinControl).BorderStyle;
   Windows.AdjustWindowRectEx(@SizeRect, BorderStyleToWin32Flags(
       BorderStyle), false, BorderStyleToWin32FlagsEx(BorderStyle));
-      
+
+  if (Application.ApplicationType in [atPDA, atSmartphone, atDefault]) then
+  begin
+    { We should never move forms which are in full-screen mode }
+    if (BorderStyle <> bsDialog) and (BorderStyle <> bsNone) then Exit;
+
+    { On normal dialogs we need to take into consideration the size of
+      the window decoration. }
+    if (BorderStyle = bsDialog) then
+    begin
+      Windows.SystemParametersInfo(SPI_GETWORKAREA, 0, @WR, 0);
+      SizeRect.Top := WR.Top;
+      SizeRect.Left := WR.Left;
+    end;
+    { On borderless Windows we allow the user full control of the window position }
+  end;
+
   // rect adjusted, pass to inherited to do real work
-  TWinCEWSWinControl.SetBounds(AWinControl, ALeft, ATop, SizeRect.Right - SizeRect.Left,
-    SizeRect.Bottom - SizeRect.Top);
+  TWinCEWSWinControl.SetBounds(AWinControl, SizeRect.Left, SizeRect.Top,
+    SizeRect.Right - SizeRect.Left, SizeRect.Bottom - SizeRect.Top);
 end;
 
 class procedure TWinCEWSCustomForm.SetIcon(const AForm: TCustomForm; const AIcon: HICON);

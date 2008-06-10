@@ -415,9 +415,12 @@ begin
   {$ENDIF}
   suppressMove := false;
   AdaptBounds(AWinControl, IntfLeft, IntfTop, IntfWidth, IntfHeight, suppressMove);
-  // Don't move forms, it doesn't work (yet), I don't know why
-  if not suppressMove and not (AWinControl is TCustomForm) then
-    MoveWindow(AWinControl.Handle, IntfLeft, IntfTop, IntfWidth, IntfHeight, true);
+
+  // Why would we want to supress the move?
+  // Form moving is indispensable to have message dialogs
+
+  MoveWindow(AWinControl.Handle, IntfLeft, IntfTop, IntfWidth, IntfHeight, true);
+
   LCLControlSizeNeedsUpdate(AWinControl, false);
 end;
 
