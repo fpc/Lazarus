@@ -153,6 +153,7 @@ type
     procedure SetVertScrollBar(Value: TControlScrollBar);
     function StoreScrollBars : Boolean;
   protected
+    property AutoScroll: Boolean read FAutoScroll write SetAutoScroll default true;
     procedure AlignControls(AControl: TControl; var ARect: TRect); override;
     procedure CreateWnd; override;
     function  GetClientScrollOffset: TPoint; override;
@@ -172,7 +173,6 @@ type
     procedure UpdateScrollbars;
     function HasVisibleScrollbars: boolean; virtual;
   published
-    property AutoScroll: Boolean read FAutoScroll write SetAutoScroll;
     property HorzScrollBar: TControlScrollBar
               read FHorzScrollBar write SetHorzScrollBar stored StoreScrollBars;
     property VertScrollBar: TControlScrollBar
@@ -189,7 +189,7 @@ type
     property Align;
     property Anchors;
     property AutoSize;
-    //property AutoScroll;
+    property AutoScroll;
     property BorderSpacing;
     property BiDiMode;
     property BorderStyle;
@@ -608,6 +608,7 @@ type
     property ActiveControl;
     property Align;
     property AllowDropFiles;
+    property AutoScroll;
     property AutoSize;
     property BiDiMode;
     property BorderIcons;
