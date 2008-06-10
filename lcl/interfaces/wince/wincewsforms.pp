@@ -373,19 +373,13 @@ var
   BorderStyle: TFormBorderStyle;
   WR: Windows.RECT;
 begin
-  // the LCL defines the size of a form without border, win32 with.
-  // -> adjust size according to BorderStyle
-  with SizeRect do
-  begin
-    Left := ALeft;
-    Top := ATop;
-    Right := ALeft + AWidth;
-    Bottom := ATop + AHeight;
-  end;
-  BorderStyle := TCustomForm(AWinControl).BorderStyle;
-  Windows.AdjustWindowRectEx(@SizeRect, BorderStyleToWin32Flags(
-      BorderStyle), false, BorderStyleToWin32FlagsEx(BorderStyle));
+  { User selected LCL window size }
+  SizeRect.Top := ATop;
+  SizeRect.Left := ALeft;
+  SizeRect.Bottom := ATop + AHeight;
+  SizeRect.Right := ALeft + AWidth;
 
+  { Verifies if the size should be overriden, acording to the ApplicationType }
   if (Application.ApplicationType in [atPDA, atSmartphone, atDefault]) then
   begin
     { We should never move forms which are in full-screen mode }
@@ -398,9 +392,18 @@ begin
       Windows.SystemParametersInfo(SPI_GETWORKAREA, 0, @WR, 0);
       SizeRect.Top := WR.Top;
       SizeRect.Left := WR.Left;
+      SizeRect.Bottom := SizeRect.Top + AHeight;
+      SizeRect.Right := SizeRect.Left + AWidth;
     end;
     { On borderless Windows we allow the user full control of the window position }
   end;
+
+  { the LCL defines the size of a form without border, winceapi with.
+    -> adjust size according to BorderStyle
+    Must be done after setting sizeRect }
+  BorderStyle := TCustomForm(AWinControl).BorderStyle;
+  Windows.AdjustWindowRectEx(@SizeRect, BorderStyleToWin32Flags(
+      BorderStyle), false, BorderStyleToWin32FlagsEx(BorderStyle));
 
   // rect adjusted, pass to inherited to do real work
   TWinCEWSWinControl.SetBounds(AWinControl, SizeRect.Left, SizeRect.Top,
