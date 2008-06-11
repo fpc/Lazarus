@@ -105,10 +105,10 @@ type
     procedure UpdateAll;
     
     procedure DeleteSelectedBreakpoints;
+    procedure JumpToCurrentBreakPoint;
     procedure ShowProperties;
   protected
     procedure DoEndUpdate; override;
-    procedure JumpToCurrentBreakPoint; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -255,17 +255,6 @@ begin
   inherited;
 end;
 
-procedure TBreakPointsDlg.JumpToCurrentBreakPoint;
-var
-  CurItem: TListItem;
-  CurBreakPoint: TIDEBreakPoint;
-begin
-  CurItem:=lvBreakPoints.Selected;
-  if CurItem=nil then exit;
-  CurBreakPoint:=TIDEBreakPoint(CurItem.Data);
-  DoJumpToCodePos(CurBreakPoint.Source,CurBreakPoint.Line,0);
-end;
-
 procedure TBreakPointsDlg.lvBreakPointsColumnClick(Sender: TObject;
   Column: TListColumn);
 begin
@@ -329,6 +318,8 @@ begin
     case key of
       VK_RETURN:
         ShowProperties;
+      VK_D:
+        DeleteSelectedBreakpoints;
     else
       Handled := false;
     end;
@@ -617,7 +608,7 @@ begin
   begin
     Item := lvBreakPoints.Items[n];
     if Item.Selected
-    then List.Add(Item);
+    then List.Add(Item.Data);
   end;
 
   lvBreakPoints.BeginUpdate;
@@ -628,6 +619,17 @@ begin
     lvBreakPoints.EndUpdate;
   end;
   List.Free;
+end;
+
+procedure TBreakPointsDlg.JumpToCurrentBreakPoint;
+var
+  CurItem: TListItem;
+  CurBreakPoint: TIDEBreakPoint;
+begin
+  CurItem:=lvBreakPoints.Selected;
+  if CurItem=nil then exit;
+  CurBreakPoint:=TIDEBreakPoint(CurItem.Data);
+  DoJumpToCodePos(CurBreakPoint.Source,CurBreakPoint.Line,0);
 end;
 
 procedure TBreakPointsDlg.ShowProperties;
