@@ -5,10 +5,11 @@ unit custforms;
 interface
 
 uses
-  Classes, SysUtils, forms;
+  Classes, SysUtils, Forms;
 
 Type
-  TCustomFormClass = Class of TCustomForm;
+  TCustomFormClass = Class of TForm;
+  
   { TCustomFormDescr }
 
   TCustomFormDescr = Class
@@ -18,27 +19,29 @@ Type
     FCategory: String;
     FDescription: String;
     FFormClass: TCustomFormClass;
+    FLazPackage: String;
     FUnitName: String;
   public
-    Constructor Create(AFormClass : TCustomFormClass);
-    Constructor Create(AFormClass : TCustomFormClass; Const ACaption,ADescription,AUnit : String);
+    Constructor Create(AFormClass : TCustomFormClass; const APackage: string);
+    Constructor Create(AFormClass : TCustomFormClass; Const ACaption,ADescription,AUnit,APackage : String);
     Property FormClass : TCustomFormClass Read FFormClass Write FFormClass;
     Property Caption : String Read FCaption Write FCaption;
     Property Description : String Read FDescription Write FDescription;
     Property UnitName : String Read FUnitName Write FUnitName;
     Property Category : String Read FCategory Write FCategory;
     Property Author : String Read FAuthor Write FAuthor;
+    Property LazPackage : String Read FLazPackage Write FLazPackage;
   end;
 
 Procedure RegisterCustomForm(Descr : TCustomFormDescr);
-Procedure RegisterCustomForm(AFormClass : TCustomFormClass);
-Procedure RegisterCustomForm(AFormClass : TCustomFormClass; Const AUnitName : String);
+Procedure RegisterCustomForm(AFormClass : TCustomFormClass; const APackage: string);
+Procedure RegisterCustomForm(AFormClass : TCustomFormClass; Const AUnitName, APackage : String);
 
 Procedure Register;
 
 implementation
 
-uses projectintf,newitemintf,contnrs;
+uses ProjectIntf,NewItemIntf,contnrs;
 
 Const
   SAppFrameWork = 'Custom forms';
@@ -46,7 +49,8 @@ Const
 
 { TCustomFormDescr }
 
-constructor TCustomFormDescr.Create(AFormClass: TCustomFormClass);
+constructor TCustomFormDescr.Create(AFormClass: TCustomFormClass;
+  const APackage: string);
 
 Var
   N,U : String;
@@ -56,17 +60,18 @@ begin
   U:=N;
   If (Upcase(U[1])='T') then
     Delete(U,1,1);
-  Create(AFormClass,N,Format(SInstanceOf,[N]),U);
+  Create(AFormClass,N,Format(SInstanceOf,[N]),U,APackage);
 end;
 
 constructor TCustomFormDescr.Create(AFormClass: TCustomFormClass;
-  const ACaption, ADescription, AUnit: String);
+  const ACaption, ADescription, AUnit, APackage: String);
 begin
   FFormClass:=AFormClass;
   FCaption:=ACaption;
   FDescription:=ADescription;
   FUnitName:=AUnit;
   FCategory:=SAppFrameWork;
+  FLazPackage:=APackage;
 end;
 
 // Registration code.
@@ -92,6 +97,7 @@ begin
   FFormDescr:=ADescr;
   ResourceClass:=FFormDescr.FFormClass;
   Name:=FFormDescr.Caption;
+  RequiredPackages:=ADescr.LazPackage;
 end;
 
 function TCustomFormFileDescriptor.GetLocalizedName: String;
@@ -109,7 +115,7 @@ end;
 function TCustomFormFileDescriptor.GetInterfaceUsesSection: String;
 begin
   Result:=inherited GetInterfaceUsesSection;
-  Result:=Result+',forms,'+FFormDescr.UnitName;
+  Result:=Result+',Forms,'+FFormDescr.UnitName;
 end;
 
 Var
@@ -121,19 +127,19 @@ begin
   CustomFormList.Add(Descr);
 end;
 
-Procedure RegisterCustomForm(AFormClass : TCustomFormClass);
+Procedure RegisterCustomForm(AFormClass : TCustomFormClass; const APackage: string);
 
 begin
-  RegisterCustomForm(TCustomFormDescr.Create(AFormClass));
+  RegisterCustomForm(TCustomFormDescr.Create(AFormClass,APackage));
 end;
 
-Procedure RegisterCustomForm(AFormClass : TCustomFormClass; Const AUnitName : String);
+Procedure RegisterCustomForm(AFormClass : TCustomFormClass; Const AUnitName, APackage : String);
 
 Var
   D : TCustomFormDescr;
 
 begin
-  D:=TCustomFormDescr.Create(AFormClass);
+  D:=TCustomFormDescr.Create(AFormClass,APackage);
   D.UnitName:=AUnitName;
   RegisterCustomForm(D);
 end;

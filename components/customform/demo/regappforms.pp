@@ -16,8 +16,8 @@ uses custforms;
 procedure RegisterAppForms;
 
 begin
-  RegisterCustomForm(TCustomFormDescr.Create(TAppForm));
-  RegisterCustomForm(TCustomFormDescr.Create(TDBAppForm));
+  RegisterCustomForm(TAppForm,'AppForms');
+  RegisterCustomForm(TDBAppForm,'AppForms');
 end;
 
 initialization

@@ -5,14 +5,14 @@ unit AppForm;
 interface
 
 uses
-  Classes, SysUtils, forms;
+  Classes, SysUtils, Forms;
   
 Type
   TInitFormAt = (ifaShow,ifaCreate,ifaActivate);
   
   { TAppForm }
 
-  TAppForm = Class(TCustomForm)
+  TAppForm = Class(TForm)
   private
     FAfterInit: TNotifyEvent;
     FBeforeInit: TNotifyEvent;
