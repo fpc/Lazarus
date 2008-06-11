@@ -1,0 +1,24 @@
+object JumpHistoryViewWin: TJumpHistoryViewWin
+  Left = 336
+  Height = 426
+  Top = 228
+  Width = 400
+  ActiveControl = listHistory
+  Caption = 'JumpHistoryViewWin'
+  ClientHeight = 426
+  ClientWidth = 400
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  ShowHint = True
+  LCLVersion = '0.9.25'
+  object listHistory: TListBox
+    Height = 426
+    Width = 400
+    Align = alClient
+    ClickOnSelChange = False
+    OnClick = listHistoryClick
+    OnDblClick = listHistoryDblClick
+    TabOrder = 0
+    TopIndex = -1
+  end
+end

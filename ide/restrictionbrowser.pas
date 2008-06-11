@@ -72,7 +72,7 @@ var
 begin
   FIssueList := GetRestrictedList;
   
-  Name := NonModalIDEWindowNames[mniwIssueBrowser];
+  Name := NonModalIDEWindowNames[nmiwIssueBrowser];
   Caption := lisMenuViewRestrictionBrowser;
   EnvironmentOptions.IDEWindowLayoutList.Apply(Self, Name);
   

@@ -93,7 +93,8 @@ type
     nmiwSearchResultsViewName,
     nmiwAnchorEditor,
     nmiwCodeBrowser,
-    mniwIssueBrowser
+    nmiwIssueBrowser,
+    nmiwJumpHistory
     );
 
 const
@@ -132,7 +133,8 @@ const
     'SearchResults',
     'AnchorEditor',
     'CodeBrowser',
-    'IssueBrowser'
+    'IssueBrowser',
+    'JumpHistory'
    );
    
 type

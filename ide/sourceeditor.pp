@@ -378,7 +378,7 @@ type
 
   { TSourceNotebook }
 
-  TJumpHistoryAction = (jhaBack, jhaForward);
+  TJumpHistoryAction = (jhaBack, jhaForward, jhaViewWindow);
 
   TOnJumpToHistoryPoint = procedure(var NewCaretXY: TPoint;
                                     var NewTopLine, NewPageIndex: integer;

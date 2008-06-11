@@ -227,15 +227,20 @@ type
   TCheckPositionEvent = 
     function(APosition:TProjectJumpHistoryPosition): boolean of object;
 
+  { TProjectJumpHistory }
+
   TProjectJumpHistory = class
   private
+    FChangeStamp: integer;
     FHistoryIndex: integer;
     FOnCheckPosition: TCheckPositionEvent;
     FPositions:TList;  // list of TProjectJumpHistoryPosition
     FMaxCount: integer;
     fOnLoadSaveFilename: TOnLoadSaveFilename;
     function GetPositions(Index:integer):TProjectJumpHistoryPosition;
+    procedure SetHistoryIndex(const AIndex : integer);
     procedure SetPositions(Index:integer; APosition: TProjectJumpHistoryPosition);
+    procedure IncreaseChangeStamp;
   public
     function Add(APosition: TProjectJumpHistoryPosition):integer;
     function AddSmart(APosition: TProjectJumpHistoryPosition):integer;
@@ -256,7 +261,7 @@ type
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure WriteDebugReport;
-    property HistoryIndex: integer read FHistoryIndex write FHistoryIndex;
+    property HistoryIndex: integer read FHistoryIndex write SetHistoryIndex;
     property Items[Index:integer]:TProjectJumpHistoryPosition 
        read GetPositions write SetPositions; default;
     property MaxCount: integer read FMaxCount write FMaxCount;
@@ -264,6 +269,7 @@ type
        read FOnCheckPosition write FOnCheckPosition;
     property OnLoadSaveFilename: TOnLoadSaveFilename
         read fOnLoadSaveFilename write fOnLoadSaveFilename;
+    property ChangeStamp: integer read FChangeStamp;
   end;
 
   //---------------------------------------------------------------------------
@@ -526,6 +532,13 @@ begin
   Result:=TProjectJumpHistoryPosition(FPositions[Index]);
 end;
 
+procedure TProjectJumpHistory.SetHistoryIndex(const AIndex : integer);
+begin
+  if FHistoryIndex=AIndex then exit;
+  FHistoryIndex := AIndex;
+  IncreaseChangeStamp;
+end;
+
 procedure TProjectJumpHistory.SetPositions(Index:integer;
   APosition: TProjectJumpHistoryPosition);
 begin
@@ -533,6 +546,15 @@ begin
     raise Exception.Create('TProjectJumpHistory.SetPositions: Index '
       +IntToStr(Index)+' out of bounds. Count='+IntToStr(Count));
   Items[Index].Assign(APosition);
+  IncreaseChangeStamp;
+end;
+
+procedure TProjectJumpHistory.IncreaseChangeStamp;
+begin
+  if FChangeStamp<High(FChangeStamp) then
+    inc(FChangeStamp)
+  else
+    FChangeStamp:=Low(FChangeStamp);
 end;
 
 function TProjectJumpHistory.Add(
@@ -540,7 +562,8 @@ function TProjectJumpHistory.Add(
 begin
   Result:=FPositions.Add(APosition);
   APosition.OnLoadSaveFilename:=OnLoadSaveFilename;
-  FHistoryIndex:=Count-1;
+  IncreaseChangeStamp;
+  HistoryIndex:=Count-1;
   if Count>MaxCount then DeleteFirst;
 end;
 
@@ -560,7 +583,7 @@ constructor TProjectJumpHistory.Create;
 begin
   inherited Create;
   FPositions:=TList.Create;
-  FHistoryIndex:=-1;
+  HistoryIndex:=-1;
   FMaxCount:=30;
 end;
 
@@ -570,7 +593,8 @@ begin
   for i:=0 to Count-1 do
     Items[i].Free;
   FPositions.Clear;
-  FHistoryIndex:=-1;
+  HistoryIndex:=-1;
+  IncreaseChangeStamp;
 end;
 
 function TProjectJumpHistory.Count:integer;
@@ -582,7 +606,8 @@ procedure TProjectJumpHistory.Delete(Index:integer);
 begin
   Items[Index].Free;
   FPositions.Delete(Index);
-  if FHistoryIndex>=Index then dec(FHistoryIndex);
+  IncreaseChangeStamp;
+  if FHistoryIndex>=Index then HistoryIndex := FHistoryIndex - 1;
 end;
 
 destructor TProjectJumpHistory.Destroy;
@@ -625,7 +650,7 @@ begin
   if NewPosition<>nil then NewPosition.Free;
   if (NewHistoryIndex<0) or (NewHistoryIndex>=Count) then 
     NewHistoryIndex:=Count-1;
-  FHistoryIndex:=NewHistoryIndex;
+  HistoryIndex:=NewHistoryIndex;
 end;
 
 procedure TProjectJumpHistory.SaveToXMLConfig(XMLConfig: TXMLConfig;
@@ -692,10 +717,11 @@ begin
   if Index<0 then Index:=0;
   if Index>Count then Index:=Count;
   FPositions.Insert(Index,APosition);
+  IncreaseChangeStamp;
   if (FHistoryIndex<0) and (Count=1) then
-    FHistoryIndex:=0
+    HistoryIndex:=0
   else if FHistoryIndex>=Index then
-    inc(FHistoryIndex);
+    HistoryIndex := FHistoryIndex + 1;
 end;
 
 procedure TProjectJumpHistory.InsertSmart(Index: integer;
@@ -713,6 +739,7 @@ begin
       //  ' New=',APosition.CaretXY.X,',',APosition.CaretXY.Y,' ',APosition.Filename,
       //  ' ');
       Items[Index-1]:=APosition;
+      IncreaseChangeStamp;
       NewIndex:=Index-1;
       APosition.Free;
     end else if (Index<Count) and Items[Index].IsSimilar(APosition) then begin
@@ -721,6 +748,7 @@ begin
       //  ' New=',APosition.CaretXY.X,',',APosition.CaretXY.Y,' ',APosition.Filename,
       //  ' ');
       Items[Index]:=APosition;
+      IncreaseChangeStamp;
       NewIndex:=Index;
       APosition.Free;
     end else begin

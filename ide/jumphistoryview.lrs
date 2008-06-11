@@ -1,0 +1,10 @@
+LazarusResources.Add('TJumpHistoryViewWin','FORMDATA',[
+  'TPF0'#19'TJumpHistoryViewWin'#18'JumpHistoryViewWin'#4'Left'#3'P'#1#6'Height'
+  +#3#170#1#3'Top'#3#228#0#5'Width'#3#144#1#13'ActiveControl'#7#11'listHistory'
+  +#7'Caption'#6#18'JumpHistoryViewWin'#12'ClientHeight'#3#170#1#11'ClientWidth'
+  +#3#144#1#8'OnCreate'#7#10'FormCreate'#9'OnDestroy'#7#11'FormDestroy'#8'ShowH'
+  +'int'#9#10'LCLVersion'#6#6'0.9.25'#0#8'TListBox'#11'listHistory'#6'Height'#3
+  +#170#1#5'Width'#3#144#1#5'Align'#7#8'alClient'#16'ClickOnSelChange'#8#7'OnCl'
+  +'ick'#7#16'listHistoryClick'#10'OnDblClick'#7#19'listHistoryDblClick'#8'TabO'
+  +'rder'#2#0#8'TopIndex'#2#255#0#0#0
+]);

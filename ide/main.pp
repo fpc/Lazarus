@@ -514,6 +514,9 @@ type
     // SearchResultsView events
     procedure SearchResultsViewSelectionChanged(sender: TObject);
 
+    // JumpHistoryView events
+    procedure JumpHistoryViewSelectionChanged(sender: TObject);
+
     // External Tools events
     procedure OnExtToolNeedsOutputFilter(var OutputFilter: TOutputFilter;
                                          var Abort: boolean);
@@ -932,7 +935,7 @@ var
 implementation
 
 uses
-  Math;
+  Math, JumpHistoryView;
 
 var
   SkipAutoLoadingLastProject: boolean = false;
@@ -1236,6 +1239,7 @@ begin
     TheControlSelection.OnSelectionFormChanged:=nil;
   end;
 
+  FreeAndNil(JumpHistoryViewWin);
   FreeAndNil(ComponentListForm);
   FreeThenNil(ProjInspector);
   FreeThenNil(CodeExplorerView);
@@ -12721,6 +12725,13 @@ begin
   DoJumpToSearchResult(True);
 end;
 
+procedure TMainIDE.JumpHistoryViewSelectionChanged(sender : TObject);
+begin
+  SourceNotebook.HistoryJump(self, jhaViewWindow);
+  SourceNoteBook.ShowOnTop;
+  SourceNotebook.FocusEditor;
+end;
+
 Procedure TMainIDE.OnSrcNotebookEditorVisibleChanged(Sender: TObject);
 var
   ActiveUnitInfo: TUnitInfo;
@@ -13288,41 +13299,40 @@ var DestIndex, UnitIndex: integer;
   AnUnitInfo: TUnitInfo;
   DestJumpPoint: TProjectJumpHistoryPosition;
   CursorPoint, NewJumpPoint: TProjectJumpHistoryPosition;
+  JumpHistory : TProjectJumpHistory;
 begin
   NewPageIndex:=-1;
   NewCaretXY.Y:=-1;
+  JumpHistory:=Project1.JumpHistory;
 
   {$IFDEF VerboseJumpHistory}
   writeln('');
   writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] A Back=',JumpAction=jhaBack);
-  Project1.JumpHistory.WriteDebugReport;
+  JumpHistory.WriteDebugReport;
   {$ENDIF}
 
   // update jump history (e.g. delete jumps to closed editors)
-  Project1.JumpHistory.DeleteInvalidPositions;
+  JumpHistory.DeleteInvalidPositions;
 
   // get destination jump point
-  DestIndex:=Project1.JumpHistory.HistoryIndex;
-  if JumpAction=jhaForward then
-    inc(DestIndex);
-  if (DestIndex<0) or (DestIndex>=Project1.JumpHistory.Count) then exit;
+  DestIndex:=JumpHistory.HistoryIndex;
 
   CursorPoint:=nil;
-  if (SourceNoteBook<>nil) then begin
-    // get current cursor position
-    GetCurrentUnit(ASrcEdit,AnUnitInfo);
-    if (ASrcEdit<>nil) and (AnUnitInfo<>nil) then begin
-      CursorPoint:=TProjectJumpHistoryPosition.Create(AnUnitInfo.Filename,
-        ASrcEdit.EditorComponent.LogicalCaretXY,
-        ASrcEdit.EditorComponent.TopLine);
-      {$IFDEF VerboseJumpHistory}
-      writeln('  Current Position: ',CursorPoint.Filename,
-              ' ',CursorPoint.CaretXY.X,',',CursorPoint.CaretXY.Y);
-      {$ENDIF}
-    end;
+  // get current cursor position
+  GetCurrentUnit(ASrcEdit,AnUnitInfo);
+  if (ASrcEdit<>nil) and (AnUnitInfo<>nil) then begin
+    CursorPoint:=TProjectJumpHistoryPosition.Create
+        (AnUnitInfo.Filename,
+         ASrcEdit.EditorComponent.LogicalCaretXY,
+         ASrcEdit.EditorComponent.TopLine
+        );
+    {$IFDEF VerboseJumpHistory}
+    writeln('  Current Position: ',CursorPoint.Filename,
+            ' ',CursorPoint.CaretXY.X,',',CursorPoint.CaretXY.Y-1);
+    {$ENDIF}
   end;
 
-  if (JumpAction=jhaBack) and (Project1.JumpHistory.Count=DestIndex+1)
+  if (JumpAction=jhaBack) and (JumpHistory.Count=DestIndex+1)
   and (CursorPoint<>nil) then begin
     // this is the first back jump
     // -> insert current source position into history
@@ -13330,16 +13340,19 @@ begin
     writeln('  First back jump -> add current cursor position');
     {$ENDIF}
     NewJumpPoint:=TProjectJumpHistoryPosition.Create(CursorPoint);
-    Project1.JumpHistory.InsertSmart(Project1.JumpHistory.HistoryIndex+1,
-                                     NewJumpPoint);
+    JumpHistory.InsertSmart(JumpHistory.HistoryIndex+1, NewJumpPoint);
   end;
 
   // find the next jump point that is not where the cursor is
-  DestIndex:=Project1.JumpHistory.HistoryIndex;
-  if JumpAction=jhaForward then
-    inc(DestIndex);
-  while (DestIndex>=0) and (DestIndex<Project1.JumpHistory.Count) do begin
-    DestJumpPoint:=Project1.JumpHistory[DestIndex];
+  case JumpAction of
+    jhaForward : inc(DestIndex);
+//    jhaBack : if (CursorPoint<>nil) and (JumpHistory[DestIndex].IsSimilar(CursorPoint))
+//        then dec(DestIndex);
+    jhaViewWindow : DestIndex := JumpHistoryViewWin.SelectedIndex;
+  end;
+
+  while (DestIndex>=0) and (DestIndex<JumpHistory.Count) do begin
+    DestJumpPoint:=JumpHistory[DestIndex];
     UnitIndex:=Project1.IndexOfFilename(DestJumpPoint.Filename);
     {$IFDEF VerboseJumpHistory}
     writeln(' DestIndex=',DestIndex,' UnitIndex=',UnitIndex);
@@ -13347,9 +13360,7 @@ begin
     if (UnitIndex>=0) and (Project1.Units[UnitIndex].EditorIndex>=0)
     and ((CursorPoint=nil) or not DestJumpPoint.IsSimilar(CursorPoint)) then
     begin
-      if JumpAction=jhaBack then
-        dec(DestIndex);
-      Project1.JumpHistory.HistoryIndex:=DestIndex;
+      JumpHistory.HistoryIndex:=DestIndex;
       NewCaretXY:=DestJumpPoint.CaretXY;
       NewTopLine:=DestJumpPoint.TopLine;
       NewPageIndex:=Project1.Units[UnitIndex].EditorIndex;
@@ -13358,17 +13369,18 @@ begin
       {$ENDIF}
       break;
     end;
-    if JumpAction=jhaBack then
-      dec(DestIndex)
-    else
-      inc(DestIndex);
+    case JumpAction of
+      jhaForward : inc(DestIndex);
+      jhaBack : dec(DestIndex);
+      jhaViewWindow : break;
+    end;
   end;
 
   CursorPoint.Free;
 
   {$IFDEF VerboseJumpHistory}
-  writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] END Count=',Project1.JumpHistory.Count,',HistoryIndex=',Project1.JumpHistory.HistoryIndex);
-  Project1.JumpHistory.WriteDebugReport;
+  writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] END Count=',JumpHistory.Count,',HistoryIndex=',JumpHistory.HistoryIndex);
+  JumpHistory.WriteDebugReport;
   writeln('');
   {$ENDIF}
 end;
@@ -13390,9 +13402,13 @@ end;
 
 Procedure TMainIDE.OnSrcNotebookViewJumpHistory(Sender: TObject);
 begin
-  // ToDo
-  MessageDlg(ueNotImplCap, lisSorryNotImplementedYet, mtInformation,
-     [mbOk],0);
+  if JumpHistoryViewWin=nil then begin
+    JumpHistoryViewWin:=TJumpHistoryViewWin.Create(OwningComponent);
+    with JumpHistoryViewWin do begin
+      OnSelectionChanged := @JumpHistoryViewSelectionChanged;
+    end;
+  end;
+  JumpHistoryViewWin.ShowOnTop;
 end;
 
 procedure TMainIDE.OnSrcNotebookShowSearchResultsView(Sender: TObject);
