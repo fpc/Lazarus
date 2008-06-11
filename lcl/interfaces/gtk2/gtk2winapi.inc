@@ -74,12 +74,20 @@ var
   Width, Height: integer;
   MaxWidth, MaxHeight: guint;
   pixbuf, masked_pixbuf: PGdkPixbuf;
+  Old80807CW: Word;
+  
+  procedure SetCW; inline;
+  begin
+    Old80807CW := Get8087CW;
+    Set8087CW($133F);
+  end;
+  
+  procedure ResetCW; inline;
+  begin
+    Set8087CW(Old80807CW);
+  end;
+  
 begin
-  {$IFDEF windows}
-  // read comments at bottom
-  Result := inherited CreateCursor(ACursorInfo);
-  exit;
-  {$endif}
   Result := 0;
   if not IsValidGDIObject(ACursorInfo^.hbmColor) then Exit;
 
@@ -114,9 +122,18 @@ begin
   end;
 
   // create cursor from pixbuf
-  // windows gtk2 crahes here, so it can load cursors at moment through gtk1 code
-  Result := HCursor(PtrUInt(gdk_cursor_new_from_pixbuf(gdk_display_get_default, pixbuf,
-    ACursorInfo^.xHotSpot, ACursorInfo^.yHotSpot)));
+  try
+    {$IFDEF Windows}
+    // we'll get 'division by zero' error in CMCheckColorsInGamut in other case
+    SetCW;
+    {$ENDIF}
+    Result := HCursor(PtrUInt(gdk_cursor_new_from_pixbuf(gdk_display_get_default, pixbuf,
+      ACursorInfo^.xHotSpot, ACursorInfo^.yHotSpot)));
+  finally
+    {$IFDEF Windows}
+    ResetCW;
+    {$ENDIF}
+  end;
 end;
 
 function TGtk2WidgetSet.CreateFontIndirectEx(const LogFont: TLogFont;
