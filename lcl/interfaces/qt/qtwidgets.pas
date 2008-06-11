@@ -2131,7 +2131,7 @@ var
 begin
   FillChar(Msg, SizeOf(Msg), #0);
 
-  MousePos := QWheelEvent_pos(QWheelEventH(Event))^;
+  MousePos := QWheelEvent_globalPos(QWheelEventH(Event))^;
   OffsetMousePos(@MousePos);
 
   LastMouse.Widget := Sender;
