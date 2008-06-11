@@ -145,7 +145,7 @@ begin
       SrcLine:='';
       CodeBuf:=CodeToolBoss.FindFile(jh_item.Filename);
       if CodeBuf<>nil then
-        SrcLine:=CodeBuf.GetLine(jh_item.CaretXY.Y);
+        SrcLine:=CodeBuf.GetLine(jh_item.CaretXY.Y-1);
       Filename:=jh_item.Filename;
       if Project1<>nil then
         Project1.ShortenFilename(Filename);
