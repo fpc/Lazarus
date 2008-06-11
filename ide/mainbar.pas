@@ -159,7 +159,6 @@ type
         itmJumpBack: TIDEMenuCommand;
         itmJumpForward: TIDEMenuCommand;
         itmAddJumpPoint: TIDEMenuCommand;
-        itmJumpHistory: TIDEMenuCommand;
         itmJumpToNextError: TIDEMenuCommand;
         itmJumpToPrevError: TIDEMenuCommand;
       //itmBookmarks: TIDEMenuSection;
@@ -187,6 +186,7 @@ type
         itmViewRestrictionBrowser: TIDEMenuCommand;
         itmViewComponents: TIDEMenuCommand;
         itmViewToDoList: TIDEMenuCommand;
+        itmJumpHistory: TIDEMenuCommand;
       //itmViewUnitWindows: TIDEMenuSection;
         itmViewUnits: TIDEMenuCommand;
         itmViewForms: TIDEMenuCommand;

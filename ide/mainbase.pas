@@ -474,7 +474,6 @@ begin
     CreateMenuItem(ParentMI,itmJumpBack,'itmJumpBack',lisMenuJumpBack, 'menu_search_jumpback');
     CreateMenuItem(ParentMI,itmJumpForward,'itmJumpForward',lisMenuJumpForward, 'menu_search_jumpforward');
     CreateMenuItem(ParentMI,itmAddJumpPoint,'itmAddJumpPoint',lisMenuAddJumpPointToHistory);
-    CreateMenuItem(ParentMI,itmJumpHistory,'itmJumpHistory',lisMenuViewJumpHistory);
     CreateMenuItem(ParentMI,itmJumpToNextError,'itmJumpToNextError',lisMenuJumpToNextError);
     CreateMenuItem(ParentMI,itmJumpToPrevError,'itmJumpToPrevError',lisMenuJumpToPrevError);
 
@@ -516,6 +515,7 @@ begin
     CreateMenuItem(ParentMI,itmViewRestrictionBrowser,'itmViewRestrictionBrowser',lisMenuViewRestrictionBrowser, 'menu_view_rectriction_browser');
     CreateMenuItem(ParentMI,itmViewComponents,'itmViewComponents',lisMenuViewComponents);
     CreateMenuItem(ParentMI,itmViewToDoList,'itmViewToDoList',lisMenuViewTodoList, 'menu_view_todo');
+    CreateMenuItem(ParentMI,itmJumpHistory,'itmJumpHistory',lisMenuViewJumpHistory);
 
     CreateMenuSeparatorSection(mnuView,itmViewUnitWindows,'itmViewUnitWindows');
     ParentMI:=itmViewUnitWindows;
@@ -859,7 +859,6 @@ begin
     itmJumpBack.Command:=GetCommand(ecJumpBack);
     itmJumpForward.Command:=GetCommand(ecJumpForward);
     itmAddJumpPoint.Command:=GetCommand(ecAddJumpPoint);
-    itmJumpHistory.Command:=GetCommand(ecViewJumpHistory);
     itmJumpToNextError.Command:=GetCommand(ecJumpToNextError);
     itmJumpToPrevError.Command:=GetCommand(ecJumpToPrevError);
     itmSetFreeBookmark.Command:=GetCommand(ecSetFreeBookmark);
@@ -890,6 +889,7 @@ begin
     itmViewAnchorEditor.Command:=GetCommand(ecViewAnchorEditor);
     itmViewComponentPalette.Command:=GetCommand(ecToggleCompPalette);
     itmViewIDESpeedButtons.Command:=GetCommand(ecToggleIDESpeedBtns);
+    itmJumpHistory.Command:=GetCommand(ecViewJumpHistory);
     //itmViewPackageLinks.Command:=GetCommand(ec?);
 
     // project menu
