@@ -432,6 +432,10 @@ msgstr "一个简单的 Pascal 程序文件.%s用来快速简洁的测试.%s最�
 msgid "A valid tool needs at least a title and a filename."
 msgstr "一个有效的工具需要标题和文件名."
 
+#: lazarusidestrconsts:lisabandonchanges
+msgid "Abandon changes?"
+msgstr ""
+
 #: lazarusidestrconsts:lispdabort
 msgid "Abort"
 msgstr "(中止)"
@@ -711,6 +715,10 @@ msgstr "所有工程"
 #: lazarusidestrconsts:lisccotestssuccess
 msgid "All tests succeeded."
 msgstr "所有测试成功."
+
+#: lazarusidestrconsts:lisallyourmodificationstowillbelostandthefilereopened
+msgid "All your modifications to %s%s%s%swill be lost and the file reopened."
+msgstr ""
 
 #: lazarusidestrconsts:lisallowfunctio
 msgid "Allow Function Calls"
@@ -1308,9 +1316,17 @@ msgstr "更改类"
 msgid "Change Class of %s"
 msgstr "改变类 %s"
 
+#: lazarusidestrconsts:lischangeencoding
+msgid "Change Encoding"
+msgstr ""
+
 #: lazarusidestrconsts:lisplistchangefont
 msgid "Change Font"
 msgstr "改变字体"
+
+#: lazarusidestrconsts:lischangefile
+msgid "Change file"
+msgstr ""
 
 #: lazarusidestrconsts:lischangeparent
 msgid "Change parent ..."
@@ -2947,6 +2963,10 @@ msgstr "装入选择区"
 #: lazarusidestrconsts:lismenuencloseselection
 msgid "Enclose selection ..."
 msgstr "封装所选 ..."
+
+#: lazarusidestrconsts:lisencodingoffileondiskisnewencodingis2
+msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
+msgstr ""
 
 #: lazarusidestrconsts:srvk_end
 msgid "End"
@@ -7224,6 +7244,10 @@ msgstr "重命名为"
 msgid "Rename to lowercase"
 msgstr "重命名为小写"
 
+#: lazarusidestrconsts:lisreopenwithanotherencoding
+msgid "Reopen with another encoding"
+msgstr ""
+
 #: lazarusidestrconsts:lisrepeatcount
 msgid "Repeat Count:"
 msgstr "重复计数:"
@@ -9823,6 +9847,10 @@ msgstr ""
 #: lazarusidestrconsts:lispkgmangunabletoopenthepackage
 msgid "Unable to open the package %s%s%s.%sThis package was marked for installation."
 msgstr "无法打开包 %s%s%s.%s这个包已经标记为安装咯."
+
+#: lazarusidestrconsts:lisunabletoread
+msgid "Unable to read %s"
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletoreadfile
 msgid "Unable to read file"

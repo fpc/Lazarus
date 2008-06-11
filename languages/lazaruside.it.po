@@ -429,6 +429,10 @@ msgstr "Un semplice file di programma Pascal.%sPuò essere utilizzato per sempli
 msgid "A valid tool needs at least a title and a filename."
 msgstr "Per uno strumento valido è necessario almeno un titolo e un nome file."
 
+#: lazarusidestrconsts:lisabandonchanges
+msgid "Abandon changes?"
+msgstr ""
+
 #: lazarusidestrconsts:lispdabort
 msgid "Abort"
 msgstr "Interrompi"
@@ -707,6 +711,10 @@ msgstr "Tutti i progetti"
 
 #: lazarusidestrconsts:lisccotestssuccess
 msgid "All tests succeeded."
+msgstr ""
+
+#: lazarusidestrconsts:lisallyourmodificationstowillbelostandthefilereopened
+msgid "All your modifications to %s%s%s%swill be lost and the file reopened."
 msgstr ""
 
 #: lazarusidestrconsts:lisallowfunctio
@@ -1305,9 +1313,17 @@ msgstr "Cambia classe"
 msgid "Change Class of %s"
 msgstr ""
 
+#: lazarusidestrconsts:lischangeencoding
+msgid "Change Encoding"
+msgstr ""
+
 #: lazarusidestrconsts:lisplistchangefont
 msgid "Change Font"
 msgstr "Cambia Carattere"
+
+#: lazarusidestrconsts:lischangefile
+msgid "Change file"
+msgstr ""
 
 #: lazarusidestrconsts:lischangeparent
 msgid "Change parent ..."
@@ -2944,6 +2960,10 @@ msgstr "Includi la selezione"
 #: lazarusidestrconsts:lismenuencloseselection
 msgid "Enclose selection ..."
 msgstr "Chiusura selezione ..."
+
+#: lazarusidestrconsts:lisencodingoffileondiskisnewencodingis2
+msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
+msgstr ""
 
 #: lazarusidestrconsts:srvk_end
 msgid "End"
@@ -7221,6 +7241,10 @@ msgstr "Rinomina a"
 msgid "Rename to lowercase"
 msgstr "Rinomina in minuscolo"
 
+#: lazarusidestrconsts:lisreopenwithanotherencoding
+msgid "Reopen with another encoding"
+msgstr ""
+
 #: lazarusidestrconsts:lisrepeatcount
 msgid "Repeat Count:"
 msgstr ""
@@ -9820,6 +9844,10 @@ msgstr ""
 #: lazarusidestrconsts:lispkgmangunabletoopenthepackage
 msgid "Unable to open the package %s%s%s.%sThis package was marked for installation."
 msgstr "Non riesco ad aprire il pacchetto %s%s%s.%sIl pacchetto è stato marcato per l'installazione."
+
+#: lazarusidestrconsts:lisunabletoread
+msgid "Unable to read %s"
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletoreadfile
 msgid "Unable to read file"

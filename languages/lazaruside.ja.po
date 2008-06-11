@@ -428,6 +428,10 @@ msgstr "簡単なPascalプログラムファイルです。%s これは迅速荒
 msgid "A valid tool needs at least a title and a filename."
 msgstr "有効なツールは少なくともタイトルかファイル名が必要です"
 
+#: lazarusidestrconsts:lisabandonchanges
+msgid "Abandon changes?"
+msgstr ""
+
 #: lazarusidestrconsts:lispdabort
 msgid "Abort"
 msgstr "中止"
@@ -706,6 +710,10 @@ msgstr "すべてのプロジェクト"
 
 #: lazarusidestrconsts:lisccotestssuccess
 msgid "All tests succeeded."
+msgstr ""
+
+#: lazarusidestrconsts:lisallyourmodificationstowillbelostandthefilereopened
+msgid "All your modifications to %s%s%s%swill be lost and the file reopened."
 msgstr ""
 
 #: lazarusidestrconsts:lisallowfunctio
@@ -1304,9 +1312,17 @@ msgstr "クラスを変更"
 msgid "Change Class of %s"
 msgstr ""
 
+#: lazarusidestrconsts:lischangeencoding
+msgid "Change Encoding"
+msgstr ""
+
 #: lazarusidestrconsts:lisplistchangefont
 msgid "Change Font"
 msgstr "フォントを変更"
+
+#: lazarusidestrconsts:lischangefile
+msgid "Change file"
+msgstr ""
 
 #: lazarusidestrconsts:lischangeparent
 msgid "Change parent ..."
@@ -2943,6 +2959,10 @@ msgstr "選択部分を囲む"
 #: lazarusidestrconsts:lismenuencloseselection
 msgid "Enclose selection ..."
 msgstr "選択部分を囲む ..."
+
+#: lazarusidestrconsts:lisencodingoffileondiskisnewencodingis2
+msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
+msgstr ""
 
 #: lazarusidestrconsts:srvk_end
 msgid "End"
@@ -7220,6 +7240,10 @@ msgstr "次の名前に変更"
 msgid "Rename to lowercase"
 msgstr "小文字へ変更"
 
+#: lazarusidestrconsts:lisreopenwithanotherencoding
+msgid "Reopen with another encoding"
+msgstr ""
+
 #: lazarusidestrconsts:lisrepeatcount
 msgid "Repeat Count:"
 msgstr ""
@@ -9819,6 +9843,10 @@ msgstr "デザイナを開くことができません。%sクラス%sはTFormや
 #: lazarusidestrconsts:lispkgmangunabletoopenthepackage
 msgid "Unable to open the package %s%s%s.%sThis package was marked for installation."
 msgstr "パッケージ%s%s%sを開けません。%sこのパッケージをインストールするようマークされています。"
+
+#: lazarusidestrconsts:lisunabletoread
+msgid "Unable to read %s"
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletoreadfile
 msgid "Unable to read file"

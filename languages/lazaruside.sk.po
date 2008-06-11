@@ -432,6 +432,10 @@ msgstr "Súbor s jednoduchým programom Pascalu.%sMôže byť použitý na rých
 msgid "A valid tool needs at least a title and a filename."
 msgstr "Platný nástroj musí mať aspoň titulok a meno súboru"
 
+#: lazarusidestrconsts:lisabandonchanges
+msgid "Abandon changes?"
+msgstr ""
+
 #: lazarusidestrconsts:lispdabort
 msgid "Abort"
 msgstr "Zrušiť"
@@ -711,6 +715,10 @@ msgstr "Všetky projekty"
 #: lazarusidestrconsts:lisccotestssuccess
 msgid "All tests succeeded."
 msgstr "Všetky testy úspešné."
+
+#: lazarusidestrconsts:lisallyourmodificationstowillbelostandthefilereopened
+msgid "All your modifications to %s%s%s%swill be lost and the file reopened."
+msgstr ""
 
 #: lazarusidestrconsts:lisallowfunctio
 msgid "Allow Function Calls"
@@ -1308,9 +1316,17 @@ msgstr "Zmeniť triedu"
 msgid "Change Class of %s"
 msgstr "Zmeniť triedu %s"
 
+#: lazarusidestrconsts:lischangeencoding
+msgid "Change Encoding"
+msgstr ""
+
 #: lazarusidestrconsts:lisplistchangefont
 msgid "Change Font"
 msgstr "Zmeniť font"
+
+#: lazarusidestrconsts:lischangefile
+msgid "Change file"
+msgstr ""
 
 #: lazarusidestrconsts:lischangeparent
 msgid "Change parent ..."
@@ -2947,6 +2963,10 @@ msgstr "Uzavrieť výber"
 #: lazarusidestrconsts:lismenuencloseselection
 msgid "Enclose selection ..."
 msgstr "Uzavrieť výber ..."
+
+#: lazarusidestrconsts:lisencodingoffileondiskisnewencodingis2
+msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
+msgstr ""
 
 #: lazarusidestrconsts:srvk_end
 msgid "End"
@@ -7224,6 +7244,10 @@ msgstr "Premenovať na"
 msgid "Rename to lowercase"
 msgstr "Premenovať na malé písmená"
 
+#: lazarusidestrconsts:lisreopenwithanotherencoding
+msgid "Reopen with another encoding"
+msgstr ""
+
 #: lazarusidestrconsts:lisrepeatcount
 msgid "Repeat Count:"
 msgstr ""
@@ -9823,6 +9847,10 @@ msgstr "Nemožno otvoriť návrhára.%sTrieda %s nie je potomkom triedy ako TFor
 #: lazarusidestrconsts:lispkgmangunabletoopenthepackage
 msgid "Unable to open the package %s%s%s.%sThis package was marked for installation."
 msgstr "Nemožno otvoriť balíček %s%s%s.%sTento balíček bol označený na inštaláciu."
+
+#: lazarusidestrconsts:lisunabletoread
+msgid "Unable to read %s"
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletoreadfile
 msgid "Unable to read file"

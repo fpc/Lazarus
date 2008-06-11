@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-06-05 21:50+0100\n"
+"PO-Revision-Date: 2008-06-11 21:48+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -432,6 +432,10 @@ msgstr "Eine einfache Pascal-Programmdatei.%sSie dient dem schnellen Testen.%sBe
 msgid "A valid tool needs at least a title and a filename."
 msgstr "Ein gültiges Werkzeug benötigt wenigstens einen Titel und eine auszuführende Datei."
 
+#: lazarusidestrconsts:lisabandonchanges
+msgid "Abandon changes?"
+msgstr ""
+
 #: lazarusidestrconsts:lispdabort
 msgid "Abort"
 msgstr "Alles abbrechen"
@@ -712,6 +716,10 @@ msgstr "Alle Projekte"
 msgid "All tests succeeded."
 msgstr "Alle Tests erfolgreich verlaufen."
 
+#: lazarusidestrconsts:lisallyourmodificationstowillbelostandthefilereopened
+msgid "All your modifications to %s%s%s%swill be lost and the file reopened."
+msgstr ""
+
 #: lazarusidestrconsts:lisallowfunctio
 msgid "Allow Function Calls"
 msgstr "Funktionsaufrufe zulassen"
@@ -926,7 +934,7 @@ msgstr "Automatisches Speichern"
 
 #: lazarusidestrconsts:lisautoshowobjectinspector
 msgid "Auto show Object Inspector"
-msgstr ""
+msgstr "Objektinspektor automatisch anzeigen"
 
 #: lazarusidestrconsts:dlgautocreateforms
 msgid "Auto-create forms:"
@@ -1308,9 +1316,17 @@ msgstr "Klasse ändern"
 msgid "Change Class of %s"
 msgstr "Klasse von %s ändern"
 
+#: lazarusidestrconsts:lischangeencoding
+msgid "Change Encoding"
+msgstr ""
+
 #: lazarusidestrconsts:lisplistchangefont
 msgid "Change Font"
 msgstr "Schriftart ändern"
+
+#: lazarusidestrconsts:lischangefile
+msgid "Change file"
+msgstr ""
 
 #: lazarusidestrconsts:lischangeparent
 msgid "Change parent ..."
@@ -2948,6 +2964,10 @@ msgstr "Bereich einschließen"
 msgid "Enclose selection ..."
 msgstr "Auswahl einschließen ..."
 
+#: lazarusidestrconsts:lisencodingoffileondiskisnewencodingis2
+msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
+msgstr ""
+
 #: lazarusidestrconsts:srvk_end
 msgid "End"
 msgstr "Ende"
@@ -3286,7 +3306,7 @@ msgstr "FPC-Quelltextverzeichnis-Fehler"
 
 #: lazarusidestrconsts:lisfpcversion
 msgid "FPC Version: "
-msgstr ""
+msgstr "FPC-Version"
 
 #: lazarusidestrconsts:dlgfpcsrcpath
 msgid "FPC source directory"
@@ -5206,7 +5226,7 @@ msgstr "Stufe 2 (Stufe 1 + schnelle Optimierungen)"
 
 #: lazarusidestrconsts:dlglevel3opt
 msgid "Level 3 (Level 2 + slow optimizations)"
-msgstr "Stufe 2 (Stufe 2 + langsame Optimierungen)"
+msgstr "Stufe 3 (Stufe 2 + langsame Optimierungen)"
 
 #: lazarusidestrconsts:lislevels
 msgid "Levels"
@@ -7224,6 +7244,10 @@ msgstr "Umbenennen in"
 msgid "Rename to lowercase"
 msgstr "In Kleinbuchstaben umbenennen"
 
+#: lazarusidestrconsts:lisreopenwithanotherencoding
+msgid "Reopen with another encoding"
+msgstr ""
+
 #: lazarusidestrconsts:lisrepeatcount
 msgid "Repeat Count:"
 msgstr "Zähler wiederholen:"
@@ -8226,7 +8250,7 @@ msgstr "Scroll-Hinweise anzeigen"
 
 #: lazarusidestrconsts:lisshowspecialcharacters
 msgid "Show special characters"
-msgstr ""
+msgstr "Sonderzeichen anzeigen"
 
 #: lazarusidestrconsts:dlgshowsummary
 msgid "Show summary"
@@ -9824,6 +9848,10 @@ msgstr "Designer kann nicht geöffnet werden.%sDie Klasse %s stammt nicht von ei
 msgid "Unable to open the package %s%s%s.%sThis package was marked for installation."
 msgstr "Das Package %s%s%s.%s kann nicht geöffnet werden. Es war zur Installation vermerkt."
 
+#: lazarusidestrconsts:lisunabletoread
+msgid "Unable to read %s"
+msgstr ""
+
 #: lazarusidestrconsts:lisunabletoreadfile
 msgid "Unable to read file"
 msgstr "Die Datei kann nicht gelesen werden"
@@ -10262,7 +10290,7 @@ msgstr "Benutzervorgaben"
 
 #: lazarusidestrconsts:lisusershomedirectory
 msgid "User's home directory"
-msgstr ""
+msgstr "Heimatverzeichnis des Users"
 
 #: lazarusidestrconsts:lisceuses
 msgid "Uses"

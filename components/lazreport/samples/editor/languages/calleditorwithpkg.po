@@ -1,136 +1,38 @@
-#: TFRMMAIN.CAPTION
-msgid "Testing LazReport Editor"
+msgid ""
 msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 
-#: TFRMMAIN.MENUITEM1.CAPTION
-msgid "Files"
-msgstr ""
-
-#: TFRMMAIN.MENUITEM3.CAPTION
-msgid "Tests"
-msgstr ""
-
-#: TFRMMAIN.MENUITEM9.CAPTION
-msgid "Export"
-msgstr ""
-
-#: TFRMMAIN.ACCNEWREPORT.CAPTION
-msgid "New Report"
-msgstr ""
-
-#: TFRMMAIN.ACCEDITREPORT.CAPTION
-msgid "Edit Report"
-msgstr ""
-
-#: TFRMMAIN.ACCPREVIEWREPORT.CAPTION
-msgid "Preview Report"
-msgstr ""
-
-#: TFRMMAIN.ACCPRINTGRID.CAPTION
-msgid "Print Grid"
-msgstr ""
-
-#: TFRMMAIN.ACCPRINTREPORT.CAPTION
-msgid "Print Report"
-msgstr ""
-
-#: TFRMMAIN.ACCCLOSE.CAPTION
-msgid "Close"
-msgstr ""
-
-#: TFRMMAIN.ACCEXPORTTOTEXT.CAPTION
-msgid "Export to text"
-msgstr ""
-
-#: TFRMMAIN.ACCEXPORTTOHTML.CAPTION
-msgid "Export to html"
-msgstr ""
-
-#: TFRMMAIN.ACCOPENREPORT.CAPTION
-msgid "Open Report"
-msgstr ""
-
-#: TFRMMAIN.ACCEXPORTTOCSV.CAPTION
-msgid "Export to CSV"
-msgstr ""
-
-#: maincalleditor.ceropenreport
+#: maincalleditor:ceropenreport
 msgid "Open report"
 msgstr ""
 
-#: maincalleditor.cernewreport
+#: maincalleditor:cernewreport
 msgid "New report"
 msgstr ""
 
-#: maincalleditor.cerpreviewreport
+#: maincalleditor:cereditreport
+msgid "Edit Report"
+msgstr ""
+
+#: maincalleditor:cerpreviewreport
 msgid "Preview report"
 msgstr ""
 
-#: maincalleditor.cerprintreport
+#: maincalleditor:cerprintreport
 msgid "Print report"
 msgstr ""
 
-#: maincalleditor.cerprintgrid
+#: maincalleditor:cerprintgrid
 msgid "Print grid"
 msgstr ""
 
-#: maincalleditor.cernotimplemented
+#: maincalleditor:cernotimplemented
 msgid "This feature is not yet implemented!"
 msgstr ""
 
-#: maincalleditor.cerpreparefailed
+#: maincalleditor:cerpreparefailed
 msgid "PrepareReport Failed!"
-msgstr ""
-
-#: maincalleditor.cerindex
-msgid "Index"
-msgstr ""
-
-#: maincalleditor.cernone
-msgid "none"
-msgstr ""
-
-#: maincalleditor.cerindexfields
-msgid "Index Fields: \%s"
-msgstr ""
-
-#: maincalleditor.ceropenreportfirst
-msgid "Open report first"
-msgstr ""
-
-#: maincalleditor.ceractivereport
-msgid "Active report: \%s"
-msgstr ""
-
-#: maincalleditor.cerhintnewreport
-msgid "Create and edit a empty report"
-msgstr ""
-
-#: maincalleditor.cerhintopenreport
-msgid "Open an existing report"
-msgstr ""
-
-#: maincalleditor.cerhinteditreport
-msgid "Edit active report"
-msgstr ""
-
-#: maincalleditor.cerhintprevreport
-msgid "Preview active report"
-msgstr ""
-
-#: maincalleditor.cerhintprevgrid
-msgid "Print preview current DbGrid content"
-msgstr ""
-
-#: maincalleditor.cerhintprnreport
-msgid "Print directly the active report (i.e. without preview)"
-msgstr ""
-
-#: maincalleditor.cerhintcloseapp
-msgid "Close application"
-msgstr ""
-
-#: TFRMMAIN.CAPTION
-msgid "LazReport Test Suite"
 msgstr ""
 

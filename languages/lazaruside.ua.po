@@ -424,6 +424,10 @@ msgstr "Простий програманий файл на Паскалі.%sМ�
 msgid "A valid tool needs at least a title and a filename."
 msgstr "Нормальний інструмент обов'язково має мати заголовок і назву файлу."
 
+#: lazarusidestrconsts:lisabandonchanges
+msgid "Abandon changes?"
+msgstr ""
+
 #: lazarusidestrconsts:lispdabort
 msgid "Abort"
 msgstr "Перервати"
@@ -702,6 +706,10 @@ msgstr "Всі проекти"
 
 #: lazarusidestrconsts:lisccotestssuccess
 msgid "All tests succeeded."
+msgstr ""
+
+#: lazarusidestrconsts:lisallyourmodificationstowillbelostandthefilereopened
+msgid "All your modifications to %s%s%s%swill be lost and the file reopened."
 msgstr ""
 
 #: lazarusidestrconsts:lisallowfunctio
@@ -1300,9 +1308,17 @@ msgstr "Змінити клас"
 msgid "Change Class of %s"
 msgstr ""
 
+#: lazarusidestrconsts:lischangeencoding
+msgid "Change Encoding"
+msgstr ""
+
 #: lazarusidestrconsts:lisplistchangefont
 msgid "Change Font"
 msgstr "Змінити Шрифт"
+
+#: lazarusidestrconsts:lischangefile
+msgid "Change file"
+msgstr ""
 
 #: lazarusidestrconsts:lischangeparent
 msgid "Change parent ..."
@@ -2939,6 +2955,10 @@ msgstr "Задужкувати віділене"
 #: lazarusidestrconsts:lismenuencloseselection
 msgid "Enclose selection ..."
 msgstr "Задужкувати виділення в ..."
+
+#: lazarusidestrconsts:lisencodingoffileondiskisnewencodingis2
+msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
+msgstr ""
 
 #: lazarusidestrconsts:srvk_end
 msgid "End"
@@ -7216,6 +7236,10 @@ msgstr "Перейменувати в"
 msgid "Rename to lowercase"
 msgstr "Превести в нижній регістр"
 
+#: lazarusidestrconsts:lisreopenwithanotherencoding
+msgid "Reopen with another encoding"
+msgstr ""
+
 #: lazarusidestrconsts:lisrepeatcount
 msgid "Repeat Count:"
 msgstr ""
@@ -9815,6 +9839,10 @@ msgstr "Не можу відкрити дизайнер.%sКлас %s не по�
 #: lazarusidestrconsts:lispkgmangunabletoopenthepackage
 msgid "Unable to open the package %s%s%s.%sThis package was marked for installation."
 msgstr "Не можу відкрити пакунок%s%s%s.%sЦей пакунок було позначено для встановлення."
+
+#: lazarusidestrconsts:lisunabletoread
+msgid "Unable to read %s"
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletoreadfile
 msgid "Unable to read file"

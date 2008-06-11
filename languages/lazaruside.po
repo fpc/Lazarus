@@ -4860,6 +4860,34 @@ msgstr ""
 msgid "Bookmark"
 msgstr ""
 
+#: lazarusidestrconsts:lischangeencoding
+msgid "Change Encoding"
+msgstr ""
+
+#: lazarusidestrconsts:lisencodingoffileondiskisnewencodingis2
+msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
+msgstr ""
+
+#: lazarusidestrconsts:lischangefile
+msgid "Change file"
+msgstr ""
+
+#: lazarusidestrconsts:lisencodingoffileondiskisnewencodingis
+msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
+msgstr ""
+
+#: lazarusidestrconsts:lisreopenwithanotherencoding
+msgid "Reopen with another encoding"
+msgstr ""
+
+#: lazarusidestrconsts:lisabandonchanges
+msgid "Abandon changes?"
+msgstr ""
+
+#: lazarusidestrconsts:lisallyourmodificationstowillbelostandthefilereopened
+msgid "All your modifications to %s%s%s%swill be lost and the file reopened."
+msgstr ""
+
 #: lazarusidestrconsts:lisopenlfm
 msgid "Open %s"
 msgstr ""
@@ -6906,6 +6934,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsreaderror
 msgid "Read error"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletoread
+msgid "Unable to read %s"
 msgstr ""
 
 #: lazarusidestrconsts:liserrorreadingpackagelistfromfile

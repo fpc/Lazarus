@@ -427,6 +427,10 @@ msgstr "Un simple archivo de programa en Pascal.%sPuede usarse para pruebas ráp
 msgid "A valid tool needs at least a title and a filename."
 msgstr "Una herramienta válida necesita como mínimo un título y un nombre de archivo."
 
+#: lazarusidestrconsts:lisabandonchanges
+msgid "Abandon changes?"
+msgstr ""
+
 #: lazarusidestrconsts:lispdabort
 msgid "Abort"
 msgstr "Abortar"
@@ -706,6 +710,10 @@ msgstr "Todos los proyectos"
 #: lazarusidestrconsts:lisccotestssuccess
 msgid "All tests succeeded."
 msgstr "Todos los test correctos."
+
+#: lazarusidestrconsts:lisallyourmodificationstowillbelostandthefilereopened
+msgid "All your modifications to %s%s%s%swill be lost and the file reopened."
+msgstr ""
 
 #: lazarusidestrconsts:lisallowfunctio
 msgid "Allow Function Calls"
@@ -1303,9 +1311,17 @@ msgstr "Cambiar Clase"
 msgid "Change Class of %s"
 msgstr "Cambiar Clase de %s"
 
+#: lazarusidestrconsts:lischangeencoding
+msgid "Change Encoding"
+msgstr ""
+
 #: lazarusidestrconsts:lisplistchangefont
 msgid "Change Font"
 msgstr "Cambiar Fuente"
+
+#: lazarusidestrconsts:lischangefile
+msgid "Change file"
+msgstr ""
 
 #: lazarusidestrconsts:lischangeparent
 msgid "Change parent ..."
@@ -2942,6 +2958,10 @@ msgstr "Encerrar selección"
 #: lazarusidestrconsts:lismenuencloseselection
 msgid "Enclose selection ..."
 msgstr "Encerrar selección ..."
+
+#: lazarusidestrconsts:lisencodingoffileondiskisnewencodingis2
+msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
+msgstr ""
 
 #: lazarusidestrconsts:srvk_end
 msgid "End"
@@ -7219,6 +7239,10 @@ msgstr "Renombrar a"
 msgid "Rename to lowercase"
 msgstr "Renombrar en minúsculas"
 
+#: lazarusidestrconsts:lisreopenwithanotherencoding
+msgid "Reopen with another encoding"
+msgstr ""
+
 #: lazarusidestrconsts:lisrepeatcount
 msgid "Repeat Count:"
 msgstr ""
@@ -9818,6 +9842,10 @@ msgstr "No se podido abrir el diseñador.%sLa clase %s no desciende de una clase
 #: lazarusidestrconsts:lispkgmangunabletoopenthepackage
 msgid "Unable to open the package %s%s%s.%sThis package was marked for installation."
 msgstr "No se ha podido abrir el paquete %s%s%s.%sEste paquete está marcado para instalación."
+
+#: lazarusidestrconsts:lisunabletoread
+msgid "Unable to read %s"
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletoreadfile
 msgid "Unable to read file"
