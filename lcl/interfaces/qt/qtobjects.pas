@@ -368,6 +368,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    procedure addPixmap(pixmap: QPixmapH; mode: QIconMode = QIconNormal; state: QIconState = QIconOff);
   public
     property Handle: QIconH read FHandle;
   end;
@@ -3197,6 +3198,11 @@ begin
     QIcon_destroy(FHandle);
     
   inherited Destroy;
+end;
+
+procedure TQtIcon.addPixmap(pixmap: QPixmapH; mode: QIconMode = QIconNormal; state: QIconState = QIconOff);
+begin
+  QIcon_addPixmap(Handle, pixmap, mode, state);
 end;
 
 { TQtStringList }
