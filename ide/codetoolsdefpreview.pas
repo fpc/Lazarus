@@ -29,6 +29,7 @@ type
     DirectoryBrowseButton: TButton;
     DirectoryCombobox: TComboBox;
     DirectoryGroupbox: TGroupBox;
+    CloseButtonPanel: TPanel;
     TemplatesMemo: TMemo;
     TemplatesSplitter: TSplitter;
     TemplatesGroupBox: TGroupBox;

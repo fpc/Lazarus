@@ -12,22 +12,24 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
   OnClose = CodeToolsDefinesDialogCLOSE
   OnCreate = CodeToolsDefinesDialogCREATE
   OnDestroy = FormDestroy
+  LCLVersion = '0.9.25'
   object DirectoryGroupbox: TGroupBox
     Height = 48
     Width = 502
     Align = alTop
     Caption = 'DirectoryGroupbox'
-    ClientHeight = 29
+    ClientHeight = 30
     ClientWidth = 498
     ParentCtl3D = False
     TabOrder = 0
     OnResize = DirectoryGroupboxRESIZE
     object DirectoryCombobox: TComboBox
       Left = 6
-      Height = 25
+      Height = 21
       Top = 1
       Width = 360
       AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+      ItemHeight = 13
       MaxLength = 0
       OnChange = DirectoryComboboxCHANGE
       ParentCtl3D = False
@@ -45,7 +47,7 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
     end
   end
   object ValuesListview: TListView
-    Height = 271
+    Height = 255
     Top = 48
     Width = 296
     Align = alLeft
@@ -56,17 +58,17 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
   end
   object ValueGroupbox: TGroupBox
     Height = 102
-    Top = 319
+    Top = 303
     Width = 502
     Align = alBottom
     Anchors = [akLeft, akBottom]
     Caption = 'Value'
-    ClientHeight = 83
+    ClientHeight = 84
     ClientWidth = 498
     ParentCtl3D = False
     TabOrder = 2
     object ValueSynedit: TSynEdit
-      Height = 83
+      Height = 84
       Width = 498
       Align = alClient
       Font.Height = -15
@@ -408,37 +410,27 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
       SelectedColor.OnChange = nil
     end
   end
-  object CloseButton: TButton
-    Height = 29
-    Top = 421
-    Width = 502
-    Align = alBottom
-    Anchors = [akLeft, akBottom]
-    Caption = 'CloseButton'
-    ModalResult = 2
-    TabOrder = 3
-  end
   object MainSplitter: TSplitter
     Left = 296
-    Height = 271
+    Height = 255
     Top = 48
     Width = 4
   end
   object TemplatesGroupBox: TGroupBox
     Left = 300
-    Height = 271
+    Height = 255
     Top = 48
     Width = 202
     Align = alClient
     Caption = 'TemplatesGroupBox'
-    ClientHeight = 252
+    ClientHeight = 237
     ClientWidth = 198
-    TabOrder = 4
+    TabOrder = 3
     object ParsedTemplatesTreeView: TTreeView
       Height = 122
       Width = 198
       Align = alTop
-      DefaultItemHeight = 19
+      DefaultItemHeight = 15
       TabOrder = 0
       OnSelectionChanged = ParsedTemplatesTreeViewSelectionChanged
     end
@@ -451,7 +443,7 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
       ResizeAnchor = akTop
     end
     object TemplatesMemo: TMemo
-      Height = 125
+      Height = 110
       Top = 127
       Width = 198
       Align = alClient
@@ -459,6 +451,31 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
         'Memo1'
       )
       TabOrder = 1
+    end
+  end
+  object CloseButtonPanel: TPanel
+    Height = 45
+    Top = 405
+    Width = 502
+    Align = alBottom
+    BevelOuter = bvSpace
+    ClientHeight = 45
+    ClientWidth = 502
+    TabOrder = 5
+    object CloseButton: TButton
+      AnchorSideRight.Control = CloseButtonPanel
+      AnchorSideRight.Side = asrBottom
+      Left = 413
+      Height = 23
+      Top = 15
+      Width = 83
+      Anchors = [akRight, akBottom]
+      AutoSize = True
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 4
+      Caption = 'CloseButton'
+      ModalResult = 2
+      TabOrder = 0
     end
   end
 end
