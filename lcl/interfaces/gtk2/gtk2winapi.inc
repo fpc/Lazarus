@@ -74,6 +74,8 @@ var
   Width, Height: integer;
   MaxWidth, MaxHeight: guint;
   pixbuf, masked_pixbuf: PGdkPixbuf;
+
+{$ifdef Windows}
   Old80807CW: Word;
   
   procedure SetCW; inline;
@@ -86,7 +88,8 @@ var
   begin
     Set8087CW(Old80807CW);
   end;
-  
+{$endif}
+
 begin
   Result := 0;
   if not IsValidGDIObject(ACursorInfo^.hbmColor) then Exit;
