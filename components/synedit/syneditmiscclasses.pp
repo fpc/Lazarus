@@ -111,6 +111,9 @@ type
     procedure AutoSizeDigitCount(LinesCount: integer);
     function FormatLineNumber(Line: integer): string;
     function RealGutterWidth(CharWidth: integer): integer;
+    {$IFDEF SYN_LAZARUS}
+    property OnChange: TNotifyEvent read fOnChange write fOnChange;
+    {$ENDIF}
   published
     property AutoSize: boolean read fAutoSize write SetAutoSize default FALSE;
     property Color: TColor read fColor write SetColor default clBtnFace;
@@ -132,7 +135,9 @@ type
     property Visible: boolean read fVisible write SetVisible default TRUE;
     property Width: integer read fWidth write SetWidth default 30;
     property ZeroStart: boolean read fZeroStart write SetZeroStart default FALSE;
+    {$IFNDEF SYN_LAZARUS}
     property OnChange: TNotifyEvent read fOnChange write fOnChange;
+    {$ENDIF}
     {$IFDEF SYN_LAZARUS}
     property CodeFoldingWidth: integer read FCodeFoldingWidth write SetCodeFoldingWidth;
     {$ENDIF}
