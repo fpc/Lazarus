@@ -7,7 +7,7 @@
 main=lcl
 
 [require]
-packages=rtl gtk
+packages=rtl
 
 [target]
 units=interfaces

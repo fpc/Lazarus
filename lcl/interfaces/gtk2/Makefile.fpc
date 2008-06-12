@@ -7,7 +7,7 @@
 main=lazarus/lcl
 
 [require]
-packages=rtl gtk
+packages=rtl
 
 [target]
 units=interfaces2
