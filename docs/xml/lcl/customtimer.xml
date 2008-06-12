@@ -7,7 +7,8 @@
   ====================================================================
 -->
     <module name="CustomTimer">
-      <short/>
+      <short>Contains definition of base class for <var>TTimer</var>
+      </short>
       <descr/>
       <!-- unresolved type reference Visibility: default -->
       <element name="Classes">
@@ -42,7 +43,8 @@
       <!-- object Visibility: default -->
       <element name="TCustomTimer">
         <short>
-          <var>TCustomTimer</var> - base class for <var>TTimer</var>
+          <var>TCustomTimer</var> - base class for 
+          <var>TTimer</var>
         </short>
         <descr/>
         <errors/>
@@ -87,73 +89,57 @@
       <!-- procedure Visibility: private -->
       <element name="TCustomTimer.Timer">
         <short>
-          <var>Timer</var> - procedure that is called when the timer has expired; calls user's <var>OnTimer </var>function.</short>
+          <var>Timer</var> - procedure that is called when the timer has expired; calls user's 
+          <var>OnTimer </var>function.</short>
         <descr>Is called when the timer has expired and calls users OnTimer function.</descr>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomTimer.SetEnabled">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Sets the <var>Enabled</var> property to True or False</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomTimer.SetEnabled.Value">
-        <short/>
+        <short>Whether or not enabled</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomTimer.SetInterval">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Sets the <var>Interval</var> property</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomTimer.SetInterval.Value">
-        <short/>
+        <short>The <var>Value</var> of the <var>Interval</var> to be set for the timer</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomTimer.SetOnTimer">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Sets the <var>OnTimer</var> property</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomTimer.SetOnTimer.Value">
-        <short/>
+        <short>The <var>Value</var> of the <var>TNotifyEvent</var>
+        </short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomTimer.DoOnTimer">
         <short>
-          <var>DoOnTimer</var> - calls <var>OnTimer</var> event handler</short>
+          <var>DoOnTimer</var> - calls 
+          <var>OnTimer</var> event handler</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomTimer.UpdateTimer">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Updates the Timer to refleect the current properties</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomTimer.KillTimer">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          <var>KillTimer</var> - kills the current timer object</short>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomTimer.Loaded">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TCustomTimer.Loaded"/>
       <!-- constructor Visibility: public -->
       <element name="TCustomTimer.Create">
         <short/>
