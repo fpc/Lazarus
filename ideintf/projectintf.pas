@@ -344,8 +344,8 @@ type
     procedure SetDefaultSourceName(const AValue: string); virtual;
     procedure SetDefaultResFileExt(const AValue: string); virtual;
     procedure SetName(const AValue: string); virtual;
-    procedure SetRequiredPackages(const AValue: string); virtual;
     procedure SetResourceClass(const AValue: TPersistentClass); virtual;
+    procedure SetRequiredPackages(const AValue: string); virtual;
   public
     constructor Create; virtual;
     function GetLocalizedName: string; virtual;
@@ -363,8 +363,8 @@ type
     property DefaultSourceName: string read FDefaultSourceName write SetDefaultSourceName;
     property DefaultResFileExt: string read FDefaultResFileExt write SetDefaultResFileExt;
     property DefaultResourceName: string read FDefaultResourceName write FDefaultResourceName;
-    property RequiredPackages: string read FRequiredPackages write SetRequiredPackages; // package names separated by semicolon
     property ResourceClass: TPersistentClass read FResourceClass write SetResourceClass;
+    property RequiredPackages: string read FRequiredPackages write SetRequiredPackages; // package names separated by semicolon
     property IsComponent: boolean read FIsComponent;
     property UseCreateFormStatements: boolean read FUseCreateFormStatements write FUseCreateFormStatements;
     property VisibleInNewDialog: boolean read FVisibleInNewDialog write FVisibleInNewDialog;
@@ -838,6 +838,12 @@ begin
   FDefaultSourceName:=AValue;
 end;
 
+procedure TProjectFileDescriptor.SetRequiredPackages(const AValue: string);
+begin
+  if FRequiredPackages=AValue then exit;
+  FRequiredPackages:=AValue;
+end;
+
 procedure TProjectFileDescriptor.SetDefaultFilename(const AValue: string);
 begin
   if FDefaultFilename=AValue then exit;
@@ -850,12 +856,6 @@ procedure TProjectFileDescriptor.SetName(const AValue: string);
 begin
   if FName=AValue then exit;
   FName:=AValue;
-end;
-
-procedure TProjectFileDescriptor.SetRequiredPackages(const AValue: string);
-begin
-  if FRequiredPackages=AValue then exit;
-  FRequiredPackages:=AValue;
 end;
 
 constructor TProjectFileDescriptor.Create;

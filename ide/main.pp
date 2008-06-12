@@ -6913,6 +6913,13 @@ begin
   // syntax highlighter type
   NewUnitInfo.SyntaxHighlighter:=
     ExtensionToLazSyntaxHighlighter(ExtractFileExt(NewFilename));
+    
+  // required packages
+  if NewUnitInfo.IsPartOfProject and (NewFileDescriptor.RequiredPackages<>'')
+  then begin
+    if PkgBoss.AddProjectDependencies(Project1,NewFileDescriptor.RequiredPackages
+      )<>mrOk then exit;
+  end;
 
   if nfOpenInEditor in NewFlags then begin
     // open a new sourceeditor

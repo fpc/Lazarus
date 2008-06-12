@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, Forms;
 
 Type
-  TCustomFormClass = Class of TForm;
+  TFormClass = Class of TForm;
   
   { TCustomFormDescr }
 
@@ -18,13 +18,13 @@ Type
     FCaption: String;
     FCategory: String;
     FDescription: String;
-    FFormClass: TCustomFormClass;
+    FFormClass: TFormClass;
     FLazPackage: String;
     FUnitName: String;
   public
-    Constructor Create(AFormClass : TCustomFormClass; const APackage: string);
-    Constructor Create(AFormClass : TCustomFormClass; Const ACaption,ADescription,AUnit,APackage : String);
-    Property FormClass : TCustomFormClass Read FFormClass Write FFormClass;
+    Constructor Create(AFormClass : TFormClass; const APackage: string);
+    Constructor Create(AFormClass : TFormClass; Const ACaption,ADescription,AUnit,APackage : String);
+    Property FormClass : TFormClass Read FFormClass Write FFormClass;
     Property Caption : String Read FCaption Write FCaption;
     Property Description : String Read FDescription Write FDescription;
     Property UnitName : String Read FUnitName Write FUnitName;
@@ -34,8 +34,8 @@ Type
   end;
 
 Procedure RegisterCustomForm(Descr : TCustomFormDescr);
-Procedure RegisterCustomForm(AFormClass : TCustomFormClass; const APackage: string);
-Procedure RegisterCustomForm(AFormClass : TCustomFormClass; Const AUnitName, APackage : String);
+Procedure RegisterCustomForm(AFormClass : TFormClass; const APackage: string);
+Procedure RegisterCustomForm(AFormClass : TFormClass; Const AUnitName, APackage : String);
 
 Procedure Register;
 
@@ -49,7 +49,7 @@ Const
 
 { TCustomFormDescr }
 
-constructor TCustomFormDescr.Create(AFormClass: TCustomFormClass;
+constructor TCustomFormDescr.Create(AFormClass: TFormClass;
   const APackage: string);
 
 Var
@@ -63,7 +63,7 @@ begin
   Create(AFormClass,N,Format(SInstanceOf,[N]),U,APackage);
 end;
 
-constructor TCustomFormDescr.Create(AFormClass: TCustomFormClass;
+constructor TCustomFormDescr.Create(AFormClass: TFormClass;
   const ACaption, ADescription, AUnit, APackage: String);
 begin
   FFormClass:=AFormClass;
@@ -98,6 +98,7 @@ begin
   ResourceClass:=FFormDescr.FFormClass;
   Name:=FFormDescr.Caption;
   RequiredPackages:=ADescr.LazPackage;
+  //Writeln('TCustomFormFileDescriptor.Create RequiredPackages=',RequiredPackages);
 end;
 
 function TCustomFormFileDescriptor.GetLocalizedName: String;
@@ -127,13 +128,13 @@ begin
   CustomFormList.Add(Descr);
 end;
 
-Procedure RegisterCustomForm(AFormClass : TCustomFormClass; const APackage: string);
+Procedure RegisterCustomForm(AFormClass : TFormClass; const APackage: string);
 
 begin
   RegisterCustomForm(TCustomFormDescr.Create(AFormClass,APackage));
 end;
 
-Procedure RegisterCustomForm(AFormClass : TCustomFormClass; Const AUnitName, APackage : String);
+Procedure RegisterCustomForm(AFormClass : TFormClass; Const AUnitName, APackage : String);
 
 Var
   D : TCustomFormDescr;

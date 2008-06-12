@@ -250,6 +250,8 @@ type
     procedure AddProjectRegCompDependency(AProject: TProject;
                           ARegisteredComponent: TRegisteredComponent); override;
     procedure AddProjectLCLDependency(AProject: TProject); override;
+    function AddProjectDependencies(AProject: TProject; const Packages: string;
+                                  OnlyTestIfPossible: boolean = false): TModalResult; override;
     function OnProjectInspectorOpen(Sender: TObject): boolean; override;
     function OnProjectInspectorAddDependency(Sender: TObject;
                            ADependency: TPkgDependency): TModalResult; override;
@@ -2247,6 +2249,29 @@ end;
 procedure TPkgManager.AddProjectLCLDependency(AProject: TProject);
 begin
   AddProjectDependency(AProject,PackageGraph.LCLPackage);
+end;
+
+function TPkgManager.AddProjectDependencies(AProject: TProject;
+  const Packages: string; OnlyTestIfPossible: boolean): TModalResult;
+var
+  RequiredPackages: TStrings;
+  i: Integer;
+  PkgName: string;
+  APackage: TLazPackage;
+begin
+  RequiredPackages:=SplitString(Packages,';');
+  for i:=0 to RequiredPackages.Count-1 do begin
+    PkgName:=Trim(RequiredPackages[i]);
+    if (PkgName='') or (not IsValidIdent(PkgName)) then continue;
+    APackage:=PackageGraph.FindAPackageWithName(PkgName,nil);
+    if APackage=nil then begin
+      DebugLn(['TPkgManager.AddProjectDependencies package not found: ',PkgName]);
+      continue;
+    end;
+    AddProjectDependency(AProject,APackage);
+  end;
+  RequiredPackages.Free;
+  Result:=mrOk;
 end;
 
 function TPkgManager.CheckProjectHasInstalledPackages(AProject: TProject; 
