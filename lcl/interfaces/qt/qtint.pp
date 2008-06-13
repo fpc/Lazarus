@@ -265,7 +265,6 @@ end;
 {$I qtobject.inc}
 {$I qtwinapi.inc}
 {$I qtlclintf.inc}
-{.$I qtcallback.inc}
 
 
 initialization

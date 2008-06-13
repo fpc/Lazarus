@@ -1221,7 +1221,7 @@ end;
 procedure DeliverMouseDownMessage(widget: PGtkWidget; event : pgdkEventButton;
   AWinControl: TWinControl);
 const
-  WHEEL_DELTA : array[Boolean] of Integer = (-1, 1);
+  WHEEL_DELTA : array[Boolean] of Integer = (-120, 120);
 var
   MessI : TLMMouse;
   MessE : TLMMouseEvent;

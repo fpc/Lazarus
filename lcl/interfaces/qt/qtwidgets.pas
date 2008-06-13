@@ -2129,7 +2129,6 @@ var
   Msg: TLMMouseEvent;
   MousePos: TQtPoint;
 begin
-  WriteLn(LCLObject.ClassName);
   FillChar(Msg, SizeOf(Msg), #0);
 
   MousePos := QWheelEvent_Pos(QWheelEventH(Event))^;
@@ -2143,7 +2142,7 @@ begin
   Msg.X := SmallInt(MousePos.X);
   Msg.Y := SmallInt(MousePos.Y);
 
-  Msg.WheelDelta := QWheelEvent_delta(QWheelEventH(Event)) div 120;
+  Msg.WheelDelta := QWheelEvent_delta(QWheelEventH(Event));
   
   NotifyApplicationUserInput(Msg.Msg);
   DeliverMessage(Msg);
