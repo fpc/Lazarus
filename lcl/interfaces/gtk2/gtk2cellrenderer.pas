@@ -39,7 +39,7 @@ type
   TLCLIntfCellRenderer = record
     // ! the TextRenderer must be the first attribute of this record !
     TextRenderer: TGtkCellRendererText;
-    iter: PGtkTreeIter;
+    Index: integer;
   end;
 
   PLCLIntfCellRendererClass = ^TLCLIntfCellRendererClass;
@@ -92,18 +92,8 @@ begin
 end;
 
 function GetItemIndex(cell: PLCLIntfCellRenderer; widget: PGtkWidget): Integer;
-var
-  APath: PGtkTreePath;
 begin
-  if GTK_IS_TREE_VIEW(Widget) then
-  begin
-    APath := gtk_tree_model_get_path(gtk_tree_view_get_model(GTK_TREE_VIEW(Widget)),
-      cell^.iter);
-    Result := StrToInt(gtk_tree_path_to_string(APath));
-    gtk_tree_path_free(APath);
-  end
-  else
-    Result := -1;
+  Result:=cell^.Index;
 end;
 
 procedure LCLIntfCellRenderer_GetSize(cell: PGtkCellRenderer; widget: PGtkWidget;
@@ -118,6 +108,7 @@ begin
   CellClass:=PLCLIntfCellRendererClass(gtk_object_get_class(cell));
   CellClass^.DefaultGtkGetSize(cell, Widget, cell_area, x_offset, y_offset,
                                width, height);
+  //DebugLn(['LCLIntfCellRenderer_GetSize ',GetWidgetDebugReport(Widget)]);
   AWinControl := GetControl(cell, widget);
   if [csDestroying,csLoading]*AWinControl.ComponentState<>[] then exit;
 
@@ -220,6 +211,7 @@ begin
         // the Widget is a sub widget of a menu item
         // -> allow the LCL to paint over the whole menu item
         DCWidget:=DCWidget^.parent;
+        Area:=Rect(0,0,DCWidget^.allocation.width,DCWidget^.allocation.height);
       end;
       DC:=GTK2WidgetSet.CreateDCForWidget(DCWidget,Window,false);
       ItemState:=State;
@@ -290,12 +282,16 @@ procedure LCLIntfCellRenderer_CellDataFunc(cell_layout:PGtkCellLayout;
   data: gpointer); cdecl;
 var
   LCLCellRenderer: PLCLIntfCellRenderer absolute cell;
+  APath: PGtkTreePath;
+  Str: Pgchar;
 begin
-  // maybe copy iter?
-  // maybe copy something else?
-  LCLCellRenderer^.iter := iter;
+  //DebugLn(['LCLIntfCellRenderer_CellDataFunc stamp=',iter^.stamp,' tree_model=',dbgs(tree_model),' cell=',dbgs(cell)]);
+  APath := gtk_tree_model_get_path(tree_model,iter);
+  Str:=gtk_tree_path_to_string(APath);
+  LCLCellRenderer^.Index := StrToInt(Str);
+  g_free(Str);
+  gtk_tree_path_free(APath);
+  //DebugLn(['LCLIntfCellRenderer_CellDataFunc ItemIndex=',LCLCellRenderer^.Index]);
 end;
 
 end.
-
-

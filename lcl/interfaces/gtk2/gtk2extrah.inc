@@ -121,7 +121,28 @@ procedure gtk_event_box_set_visible_window(event_box: PGtkEventBox; visible_wind
 procedure gtk_event_box_set_above_child(event_box: PGtkEventBox; visible_window: gboolean); cdecl; external gtklib name 'gtk_event_box_set_above_child';
 
 // gtk 2.6
-function gtk_cell_view_get_displayed_row(cell_view: Pointer): PGtkTreePath; cdecl; external gtklib name 'gtk_cell_view_get_displayed_row';
+type
+  PGtkCellView = ^TGtkCellView;
+  TGtkCellView = record
+    parent_instance: TGtkWidget;
+
+    // private
+    model: PGtkTreeModel;
+    displayed_row: PGtkTreeRowReference;
+    cell_list: PGList;
+    spacing: gint;
+    background: TGdkColor;
+    background_set: gboolean;
+  end;
+function GTK_TYPE_CELL_VIEW : GType;
+function GTK_CELL_VIEW(obj: pointer) : PGtkCellView;
+//function GTK_CELL_VIEW_CLASS(klass: pointer) : PGtkCellViewClass;
+function GTK_IS_CELL_VIEW(obj: pointer) : boolean;
+function GTK_IS_CELL_VIEW_CLASS(klass: pointer) : boolean;
+//function GTK_CELL_VIEW_GET_CLASS(obj: pointer) : PGtkCellViewClass;
+function gtk_cell_view_get_type:TGtkType; cdecl; external gtklib;
+function gtk_cell_view_get_model(cell_view: PGtkCellView): PGtkTreeModel;
+function gtk_cell_view_get_displayed_row(cell_view: PGtkCellView): PGtkTreePath; cdecl; external gtklib name 'gtk_cell_view_get_displayed_row';
 procedure gtk_file_chooser_set_show_hidden(chooser: PGtkFileChooser; show_hidden: gboolean); cdecl; external gtklib name 'gtk_file_chooser_set_show_hidden';
 
 // - - - - - - - - - gdk extras - - - - - - - - -
