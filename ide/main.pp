@@ -9109,7 +9109,10 @@ begin
   if Result<>mrOk then exit;
 
   // show messages
-  MessagesView.EnsureVisible;
+  if EnvironmentOptions.MsgViewFocus then
+    MessagesView.EnsureVisible
+  else
+    MessagesView.Visible:=true;
   MessagesView.BeginBlock;
 
   try
@@ -9258,7 +9261,10 @@ begin
 
     MessagesView.EndBlock;
   end;
-  MessagesView.EnsureVisible;
+  if EnvironmentOptions.MsgViewFocus then
+    MessagesView.EnsureVisible
+  else
+    MessagesView.Visible:=true;
   Result:=mrOk;
 end;
 
@@ -10971,7 +10977,8 @@ begin
 
   if (iwpDefault = EnvironmentOptions.IDEWindowLayoutList.ItemByEnum(
                                         nmiwSourceNoteBookName).WindowPlacement)
-  and ((SourceNotebook.Top + SourceNotebook.Height) > MessagesView.Top) and (MessagesView.Parent = nil) then
+  and ((SourceNotebook.Top + SourceNotebook.Height) > MessagesView.Top)
+  and (MessagesView.Parent = nil) then
     SourceNotebook.Height := Max(50,Min(SourceNotebook.Height,
        MessagesView.Top-SourceNotebook.Top));
   if PutOnTop then 

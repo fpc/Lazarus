@@ -184,6 +184,7 @@ type
     
     // messages
     fMsgViewDblClickJumps: boolean;
+    fMsgViewFocus: boolean;
 
     // compiler + debugger + lazarus files
     FLazarusDirectory: string;
@@ -428,6 +429,7 @@ type
     // messages view
     property MsgViewDblClickJumps: boolean read fMsgViewDblClickJumps
                                            write fMsgViewDblClickJumps;
+    property MsgViewFocus: boolean read fMsgViewFocus write fMsgViewFocus;
   end;
 
   //----------------------------------------------------------------------------
@@ -488,6 +490,7 @@ type
     
     // messages view
     MsgViewDblClickJumpsCheckBox: TCheckBox;
+    MsgViewFocusCheckBox: TCheckBox;
 
     // window layout
     WindowPositionsGroupBox: TGroupBox;
@@ -676,6 +679,7 @@ procedure SetComboBoxText(AComboBox:TComboBox; const AText:AnsiString;
 
 const
   DefaultLazDocPath = '$(LazarusDir)/docs/xml/lcl';
+  DefaultMsgViewFocus = {$IFDEF Windows}true{$ELSE}false{$ENDIF};
   
 implementation
 
@@ -866,6 +870,7 @@ begin
   
   // messages view
   fMsgViewDblClickJumps:=true;
+  fMsgViewFocus:=DefaultMsgViewFocus;
 
   // files
   LazarusDirectory:=IDEProcs.ProgramDirectory;
@@ -1172,6 +1177,8 @@ begin
     // messages view
     fMsgViewDblClickJumps:=XMLConfig.GetValue(
       Path+'MsgViewDblClickJumps/Value',false);
+    fMsgViewFocus:=XMLConfig.GetValue(
+      Path+'MsgViewFocus/Value',DefaultMsgViewFocus);
 
     // recent files and directories
     FMaxRecentOpenFiles:=XMLConfig.GetValue(
@@ -1387,6 +1394,8 @@ begin
     // messages view
     XMLConfig.SetDeleteValue(Path+'MsgViewDblClickJumps/Value',
       fMsgViewDblClickJumps,false);
+    XMLConfig.SetDeleteValue(Path+'MsgViewFocus/Value',
+      fMsgViewFocus,DefaultMsgViewFocus);
 
     // recent files and directories
     XMLConfig.SetValue(
@@ -1738,6 +1747,7 @@ begin
 
   // messages view
   MsgViewDblClickJumpsCheckBox.Caption:=lisEnvDoubleClickOnMessagesJumpsOtherwiseSingleClick;
+  MsgViewFocusCheckBox.Caption:='Focus messages after compilation';
 end;
 
 procedure TEnvironmentOptionsDialog.SetupWindowsPage(Page: integer);
@@ -2332,6 +2342,7 @@ begin
       
     // messages view
     MsgViewDblClickJumpsCheckBox.Checked:=MsgViewDblClickJumps;
+    MsgViewFocusCheckBox.Checked:=MsgViewFocus;
 
     // EnvironmentOptionsDialog editor
     ShowBorderSpaceCheckBox.Checked:=ShowBorderSpacing;
@@ -2481,6 +2492,7 @@ begin
     
     // messages view
     MsgViewDblClickJumps:=MsgViewDblClickJumpsCheckBox.Checked;
+    MsgViewFocus:=MsgViewFocusCheckBox.Checked;
 
     // EnvironmentOptionsDialog editor
     ShowBorderSpacing:=ShowBorderSpaceCheckBox.Checked;
