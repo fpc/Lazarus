@@ -3,8 +3,6 @@ object frmCompilerOptions: TfrmCompilerOptions
   Height = 528
   Top = 186
   Width = 669
-  HorzScrollBar.Page = 668
-  VertScrollBar.Page = 527
   ActiveControl = MainNotebook
   BorderIcons = [biSystemMenu]
   Caption = 'frmCompilerOptions'
