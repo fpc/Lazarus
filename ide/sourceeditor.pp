@@ -399,7 +399,6 @@ type
 
   TSourceNotebookState = (
     snIncrementalFind,
-    snIncrementalSearching,
     snWarnedFont
     );
   TSourceNotebookStates = set of TSourceNotebookState;
@@ -6315,7 +6314,6 @@ begin
   end;
   if FIncrementalSearchEditor = nil then Exit;
   
-  Include(States,snIncrementalSearching);
   // search string
   CurEdit := FIncrementalSearchEditor.EditorComponent;
   CurEdit.BeginUpdate;
@@ -6335,9 +6333,6 @@ begin
       FIncrementalSearchStartPos := CurEdit.BlockBegin;
       FIncrementalSearchCancelPos := FIncrementalSearchStartPos;
     end;
-
-    // MWE:??? is it needed to set the SearchStr again. In theory we just searched it
-    FIncrementalSearchStr:=CurEdit.SelText;
   end
   else begin
     // go to start
@@ -6347,7 +6342,6 @@ begin
   end;
   FIncrementalSearchPos:=CurEdit.LogicalCaretXY;
   CurEdit.EndUpdate;
-  Exclude(States,snIncrementalSearching);
 
   UpdateStatusBar;
 end;
