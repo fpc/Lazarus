@@ -223,6 +223,8 @@ constructor TPromptDialog.CreateMessageDialog(const ACaption, aMsg: string;
 begin
   inherited Create(nil);
 
+  IsSmallDevice := (Screen.Width <= 300);
+
   OnKeyDown :=@PromptDialogKeyDown;
   //debugln('TPromptDialog.CreateMessageDialog A ButtonCount=',dbgs(ButtonCount));
 
@@ -280,11 +282,7 @@ begin
     ShowPrefix := True;
   end;
 
-  if Screen.Width <= 300 then
-  begin
-    IsSmallDevice := True;
-    LayoutDialogSmallDevice();
-  end
+  if IsSmallDevice then LayoutDialogSmallDevice()
   else LayoutDialog();
 end;
 
