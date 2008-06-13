@@ -33,10 +33,18 @@ const
   );
 
 type
+
+  { TPromptDialog }
+
   TPromptDialog = class(TForm)
     procedure PromptDialogKeyDown(Sender: TObject; var Key: Word;
           Shift: TShiftState);
+  private
+    function CreateButtons(AVerticalLayout: Boolean; ASpacing: Integer
+      ): Integer;
   public
+    IsSmallDevice: Boolean;
+  
     TheDefaultIndex : Longint;
 
     FBitmap: TCustomBitmap;
@@ -48,6 +56,7 @@ type
     TextStyle : TTextStyle;
 
     procedure LayoutDialog;
+    procedure LayoutDialogSmallDevice;
     procedure Paint; override;
     constructor CreateMessageDialog(const ACaption, aMsg: string;
       DialogType : longint; TheButtons: PLongint; ButtonCount, DefaultIndex : Longint);
@@ -141,14 +150,65 @@ begin
   end;
 end;
 
+function TPromptDialog.CreateButtons(AVerticalLayout: Boolean;
+ ASpacing: Integer): Integer;
+var
+  curBtn      : Longint; // variable to loop through TMsgDlgButtons
+  ButtonIndex : integer;
+  CurButton: TBitBtn;
+  CurBtnSize: TPoint;
+begin
+  Result := 0;
+
+  ButtonIndex := -1;
+  for curBtn := 0 to NumButtons - 1 do
+  begin
+    If (Buttons[curBtn] >= Low(DialogButtonKind)) and
+      (Buttons[curBtn] <= High(DialogButtonKind))
+    then
+    begin
+      inc(ButtonIndex);
+
+      CurButton := TBitBtn.Create(Self);
+      with CurButton do
+      begin
+        Parent:= Self;
+        Layout  := blGlyphLeft;
+        OnKeyDown := @PromptDialogKeyDown;
+
+        Kind := DialogButtonKind[Buttons[curBtn]];
+
+        if Height < Glyph.Height + 5 then
+          Height := Glyph.Height + 5;
+
+        if ButtonIndex = TheDefaultIndex then
+          Default := true;
+
+        Inc(Result, ASpacing);
+
+        if AVerticalLayout then Inc(Result, Height)
+        else
+        begin
+{          CurBtnSize:=GetButtonSize(CurButton);
+          Inc(Result, CurBtnSize.X);}
+        end;
+      end;
+    end;
+  end;
+end;
+
 procedure TPromptDialog.Paint;
 var
   UseMaskHandle: HBitmap;
 begin
   inherited Paint;
+  
+  // Draws the text
   Canvas.Brush := Brush;
   Canvas.TextRect(TextBox, TextBox.Left, TextBox.Top, MSG, TextStyle);
-  if Assigned (FBitmap) then
+
+  // Draws the icon
+  if Assigned (FBitmap) and not IsSmallDevice then
   begin
     UseMaskHandle := FBitmap.MaskHandle;
     MaskBlt(Canvas.GetUpdatedHandle([csHandleValid]),
@@ -205,7 +265,27 @@ begin
   else
     theDefaultIndex := DefaultIndex;
 
-  LayoutDialog;
+  // Assures a minimum text size
+  If MSG = '' then MSG := '   ';
+
+  // Initialize TextStyle
+  FillChar(TextStyle, SizeOf(TTextStyle), 0);
+
+  With TextStyle do
+  begin
+    Clipping   := True;
+    Wordbreak  := True;
+    SystemFont := True;
+    Opaque     := False;
+    ShowPrefix := True;
+  end;
+
+  if Screen.Width <= 300 then
+  begin
+    IsSmallDevice := True;
+    LayoutDialogSmallDevice();
+  end
+  else LayoutDialog();
 end;
 
 destructor TPromptDialog.Destroy;
@@ -261,20 +341,7 @@ var
   end;
   
 begin
-  FillChar(TextStyle, SizeOf(TTextStyle), 0);
-
-  With TextStyle do
-  begin
-    Clipping   := True;
-    Wordbreak  := True;
-    SystemFont := True;
-    Opaque     := False;
-    ShowPrefix := True;
-  end;
-
   // calculate the width & height we need to display the Message
-  If MSG = '' then
-    MSG := '   ';
 
   // calculate the needed size for the text
   TextBox := Rect(0,0, Screen.Width div 2,Screen.Height - 100);
@@ -360,6 +427,92 @@ begin
       inc(ButtonLeft,CurButton.Width+cBtnDist);
       
       if (CurButton.Default) then begin
+        ActiveControl:=CurButton;
+        DefaultControl:=CurButton;
+      end;
+    end;
+  end;
+end;
+
+{
+  Executed the layout of TPromptDialog for small devices
+
+  ====================
+  Caption
+  ====================
+   Icon      Button 1
+   Some text Button 2
+   ...       ...
+   ...       ...
+  ====================
+
+   <       >           cTextWidth
+             <      >  cButtonWidth
+            <>         cSpacing
+}
+procedure TPromptDialog.LayoutDialogSmallDevice;
+Const
+  cTextWidth = 100;
+  cHorizontalSpacing = 5;
+  cVerticalSpacing = 5;
+  cButtonWidth = 200 - cTextWidth - 3 * cHorizontalSpacing;
+var
+  curBtn      : Longint; // variable to loop through TMsgDlgButtons
+  reqBtnWidth : integer;    // width neccessary to display buttons
+  i        : integer;
+  ButtonIndex : integer;
+  CurButton: TBitBtn;
+
+  ButtonLeft, ButtonTop: Integer;
+
+  MinHeightForText,
+   MinHeightForButtons,
+   reqHeight: Integer;
+begin
+  // calculate the width & height we need to display the Message
+
+  // calculate the needed size for the text
+  TextBox := Rect(0, 0, cTextWidth, Screen.Height - 100);
+  SelectObject(Canvas.Handle, GetStockObject(DEFAULT_GUI_FONT));
+  DrawText(Canvas.Handle, PChar(MSG), Length(MSG),
+    TextBox, DT_WORDBREAK or DT_INTERNAL or DT_CALCRECT);
+
+  // Create buttons without positioning and
+  // Calculate the minimum size for the buttons
+  MinHeightForButtons := CreateButtons(True, cVerticalSpacing);
+
+  // calculate the height of the text+icon
+  MinHeightForText := TextBox.Bottom;
+
+  TextBox.Top := cVerticalSpacing;
+  Inc(TextBox.Bottom, cVerticalSpacing);
+  TextBox.Left := cHorizontalSpacing;
+  TextBox.Right := cTextWidth + cHorizontalSpacing;
+
+  reqHeight := Max(MinHeightForText, MinHeightForButtons);
+
+  // set size of form
+  Height := reqHeight + cVerticalSpacing;
+  Width := 200;
+
+  // calculate the left of the buttons
+  ButtonLeft := cTextWidth + 2 * cHorizontalSpacing;
+  ButtonTop := cVerticalSpacing;
+
+  // position buttons and activate default
+  for i:=0 to ComponentCount-1 do
+  begin
+    if (Components[i] is TBitBtn) then
+    begin
+      CurButton:=TBitBtn(Components[i]);
+      CurButton.Left := ButtonLeft;
+      CurButton.Top := ButtonTop;
+      CurButton.Width := cButtonWidth;
+
+      inc(ButtonTop, CurButton.Height + cVerticalSpacing);
+
+      if (CurButton.Default) then
+      begin
         ActiveControl:=CurButton;
         DefaultControl:=CurButton;
       end;
