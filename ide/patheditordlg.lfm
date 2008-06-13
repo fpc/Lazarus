@@ -1,10 +1,8 @@
 object PathEditorDialog: TPathEditorDialog
-  Left = 290
+  Left = 295
   Height = 400
-  Top = 155
+  Top = 158
   Width = 500
-  HorzScrollBar.Page = 499
-  VertScrollBar.Page = 399
   ActiveControl = TemplatesListBox
   Caption = 'PathEditorDialog'
   ClientHeight = 400
@@ -29,7 +27,7 @@ object PathEditorDialog: TPathEditorDialog
     BorderSpacing.Top = 6
     BorderSpacing.Right = 6
     Caption = 'PathGroupBox'
-    ClientHeight = 176
+    ClientHeight = 175
     ClientWidth = 484
     TabOrder = 0
     object PathEdit: TSynEdit
@@ -39,7 +37,7 @@ object PathEditorDialog: TPathEditorDialog
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = MoveUpButton
       Left = 6
-      Height = 135
+      Height = 128
       Top = 6
       Width = 472
       BorderSpacing.Around = 6
@@ -49,9 +47,7 @@ object PathEditorDialog: TPathEditorDialog
       ParentColor = False
       TabOrder = 0
       BookMarkOptions.Xoffset = -18
-      BookMarkOptions.OnChange = nil
       Gutter.Visible = False
-      Gutter.OnChange = nil
       Gutter.CodeFoldingWidth = 14
       Keystrokes = <      
         item
@@ -378,16 +374,15 @@ object PathEditorDialog: TPathEditorDialog
         'PathEdit'
       )
       Options = [eoDragDropEditing, eoHalfPageScroll, eoScrollByOneLess, eoScrollPastEol, eoSmartTabs, eoTabsToSpaces, eoTrimTrailingSpaces, eoBracketHighlight, eoHideRightMargin]
-      SelectedColor.OnChange = nil
     end
     object MoveUpButton: TButton
       AnchorSideLeft.Control = PathGroupBox
       AnchorSideBottom.Control = PathGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 23
-      Top = 147
-      Width = 98
+      Height = 29
+      Top = 140
+      Width = 107
       Anchors = [akLeft, akBottom]
       AutoSize = True
       BorderSpacing.Around = 6
@@ -400,10 +395,10 @@ object PathEditorDialog: TPathEditorDialog
       AnchorSideLeft.Side = asrBottom
       AnchorSideBottom.Control = PathGroupBox
       AnchorSideBottom.Side = asrBottom
-      Left = 110
-      Height = 23
-      Top = 147
-      Width = 112
+      Left = 119
+      Height = 29
+      Top = 140
+      Width = 124
       Anchors = [akLeft, akBottom]
       AutoSize = True
       BorderSpacing.Around = 6
@@ -416,10 +411,10 @@ object PathEditorDialog: TPathEditorDialog
       AnchorSideLeft.Side = asrBottom
       AnchorSideBottom.Control = PathGroupBox
       AnchorSideBottom.Side = asrBottom
-      Left = 228
-      Height = 23
-      Top = 147
-      Width = 92
+      Left = 249
+      Height = 29
+      Top = 140
+      Width = 101
       Anchors = [akLeft, akBottom]
       AutoSize = True
       BorderSpacing.Around = 6
@@ -432,10 +427,10 @@ object PathEditorDialog: TPathEditorDialog
       AnchorSideLeft.Side = asrBottom
       AnchorSideBottom.Control = PathGroupBox
       AnchorSideBottom.Side = asrBottom
-      Left = 326
-      Height = 23
-      Top = 147
-      Width = 88
+      Left = 356
+      Height = 29
+      Top = 140
+      Width = 97
       Anchors = [akLeft, akBottom]
       AutoSize = True
       BorderSpacing.Around = 6
@@ -458,7 +453,7 @@ object PathEditorDialog: TPathEditorDialog
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'TemplateGroupBox'
-    ClientHeight = 134
+    ClientHeight = 133
     ClientWidth = 484
     TabOrder = 1
     object TemplatesListBox: TListBox
@@ -468,7 +463,7 @@ object PathEditorDialog: TPathEditorDialog
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = AddTemplateButton
       Left = 6
-      Height = 93
+      Height = 86
       Top = 6
       Width = 472
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -476,15 +471,16 @@ object PathEditorDialog: TPathEditorDialog
       MultiSelect = True
       OnDblClick = TemplatesListBoxDblClick
       TabOrder = 0
+      TopIndex = -1
     end
     object AddTemplateButton: TButton
       AnchorSideLeft.Control = TemplateGroupBox
       AnchorSideBottom.Control = TemplateGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 23
-      Top = 105
-      Width = 120
+      Height = 29
+      Top = 98
+      Width = 138
       Anchors = [akLeft, akBottom]
       AutoSize = True
       BorderSpacing.Around = 6

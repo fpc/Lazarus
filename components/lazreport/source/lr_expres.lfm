@@ -1,21 +1,18 @@
 object lrExpresionEditorForm: TlrExpresionEditorForm
-  Left = 195
+  Left = 205
   Height = 300
-  Top = 104
+  Top = 108
   Width = 417
-  HorzScrollBar.Page = 416
-  VertScrollBar.Page = 299
   ActiveControl = Memo1
   Caption = 'Insert Expression'
   ClientHeight = 300
   ClientWidth = 417
-  PixelsPerInch = 96
+  LCLVersion = '0.9.25'
   object Label1: TLabel
-    Height = 14
+    Height = 20
     Width = 417
     Align = alTop
     Caption = 'Expression'
-    Color = clNone
     ParentColor = False
   end
   object GroupBox1: TGroupBox
@@ -24,7 +21,7 @@ object lrExpresionEditorForm: TlrExpresionEditorForm
     Width = 417
     Align = alBottom
     Caption = 'Insert'
-    ClientHeight = 62
+    ClientHeight = 61
     ClientWidth = 413
     TabOrder = 0
     object Panel1: TPanel
@@ -73,7 +70,7 @@ object lrExpresionEditorForm: TlrExpresionEditorForm
       end
     end
     object Button1: TButton
-      Height = 28
+      Height = 27
       Top = 34
       Width = 30
       Align = alLeft
@@ -85,7 +82,7 @@ object lrExpresionEditorForm: TlrExpresionEditorForm
     end
     object Button2: TButton
       Left = 30
-      Height = 28
+      Height = 27
       Top = 34
       Width = 30
       Align = alLeft
@@ -97,7 +94,7 @@ object lrExpresionEditorForm: TlrExpresionEditorForm
     end
     object Button3: TButton
       Left = 60
-      Height = 28
+      Height = 27
       Top = 34
       Width = 30
       Align = alLeft
@@ -109,7 +106,7 @@ object lrExpresionEditorForm: TlrExpresionEditorForm
     end
     object Button4: TButton
       Left = 90
-      Height = 28
+      Height = 27
       Top = 34
       Width = 30
       Align = alLeft
@@ -121,7 +118,7 @@ object lrExpresionEditorForm: TlrExpresionEditorForm
     end
     object Button5: TButton
       Left = 120
-      Height = 28
+      Height = 27
       Top = 34
       Width = 30
       Align = alLeft
@@ -133,7 +130,7 @@ object lrExpresionEditorForm: TlrExpresionEditorForm
     end
     object Button6: TButton
       Left = 150
-      Height = 28
+      Height = 27
       Top = 34
       Width = 30
       Align = alLeft
@@ -145,7 +142,7 @@ object lrExpresionEditorForm: TlrExpresionEditorForm
     end
     object Button7: TButton
       Left = 180
-      Height = 28
+      Height = 27
       Top = 34
       Width = 30
       Align = alLeft
@@ -157,7 +154,7 @@ object lrExpresionEditorForm: TlrExpresionEditorForm
     end
     object Button8: TButton
       Left = 210
-      Height = 28
+      Height = 27
       Top = 34
       Width = 30
       Align = alLeft
@@ -169,7 +166,7 @@ object lrExpresionEditorForm: TlrExpresionEditorForm
     end
     object Button9: TButton
       Left = 240
-      Height = 28
+      Height = 27
       Top = 34
       Width = 30
       Align = alLeft
@@ -181,7 +178,7 @@ object lrExpresionEditorForm: TlrExpresionEditorForm
     end
     object Button10: TButton
       Left = 270
-      Height = 28
+      Height = 27
       Top = 34
       Width = 30
       Align = alLeft
@@ -193,7 +190,7 @@ object lrExpresionEditorForm: TlrExpresionEditorForm
     end
     object Button11: TButton
       Left = 360
-      Height = 28
+      Height = 27
       Top = 34
       Width = 53
       Align = alClient
@@ -205,7 +202,7 @@ object lrExpresionEditorForm: TlrExpresionEditorForm
     end
     object Button12: TButton
       Left = 330
-      Height = 28
+      Height = 27
       Top = 34
       Width = 30
       Align = alLeft
@@ -217,7 +214,7 @@ object lrExpresionEditorForm: TlrExpresionEditorForm
     end
     object Button13: TButton
       Left = 300
-      Height = 28
+      Height = 27
       Top = 34
       Width = 30
       Align = alLeft
@@ -229,17 +226,14 @@ object lrExpresionEditorForm: TlrExpresionEditorForm
     end
   end
   object Memo1: TSynEdit
-    Name = 'Memo1'
-    Height = 166
-    Top = 14
+    Height = 160
+    Top = 20
     Width = 417
     Align = alClient
     Font.Height = -16
     Font.Name = 'courier'
     ParentColor = False
     TabOrder = 1
-    BookMarkOptions.OnChange = nil
-    Gutter.OnChange = nil
     Gutter.CodeFoldingWidth = 14
     Keystrokes = <    
       item
@@ -562,7 +556,6 @@ object lrExpresionEditorForm: TlrExpresionEditorForm
         Command = 250
         ShortCut = 24642
       end>
-    SelectedColor.OnChange = nil
   end
   object Panel2: TPanel
     Height = 40

@@ -1,15 +1,14 @@
 object Form1: TForm1
-  Left = 290
+  Left = 289
   Height = 596
-  Top = 175
+  Top = 167
   Width = 767
-  HorzScrollBar.Page = 766
-  VertScrollBar.Page = 595
   ActiveControl = SynEdit1
   Caption = 'Form1'
   ClientHeight = 596
   ClientWidth = 767
   OnCreate = FormCreate
+  LCLVersion = '0.9.25'
   object SynEdit1: TSynEdit
     AnchorSideTop.Control = Button1
     AnchorSideTop.Side = asrBottom
@@ -22,10 +21,8 @@ object Form1: TForm1
     Font.Name = 'courier'
     ParentColor = False
     TabOrder = 0
-    BookMarkOptions.Xoffset = 38
-    BookMarkOptions.OnChange = nil
+    BookMarkOptions.Xoffset = 46
     Gutter.ShowLineNumbers = True
-    Gutter.OnChange = nil
     Gutter.CodeFoldingWidth = 14
     Keystrokes = <    
       item
@@ -351,7 +348,6 @@ object Form1: TForm1
     Lines.Strings = (
       'SynEdit1'
     )
-    SelectedColor.OnChange = nil
   end
   object Button1: TButton
     AnchorSideLeft.Control = Owner

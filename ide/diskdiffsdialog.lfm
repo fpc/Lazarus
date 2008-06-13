@@ -1,73 +1,68 @@
 object DiskDiffsDlg: TDiskDiffsDlg
-  ActiveControl = RevertAllButton
+  Left = 314
+  Height = 300
+  Top = 379
+  Width = 600
+  ActiveControl = FilesListBox
   Caption = 'DiskDiffsDlg'
   ClientHeight = 300
   ClientWidth = 600
   OnClose = FormClose
   OnKeyDown = DiskDiffsDlgKeyDown
-  PixelsPerInch = 112
   Position = poScreenCenter
-  HorzScrollBar.Page = 599
-  VertScrollBar.Page = 299
-  Left = 340
-  Height = 300
-  Top = 635
-  Width = 600
+  LCLVersion = '0.9.25'
   object IgnoreDiskChangesButton: TButton
+    AnchorSideRight.Control = RevertAllButton
+    Left = 300
+    Height = 29
+    Top = 264
+    Width = 178
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Right = 6
-    
     Caption = 'IgnoreDiskChangesButton'
     ModalResult = 5
     TabOrder = 0
-    AnchorSideRight.Control = RevertAllButton
-    Left = 338
-    Height = 26
-    Top = 267
-    Width = 154
   end
   object RevertAllButton: TButton
+    Left = 484
+    Height = 29
+    Top = 264
+    Width = 110
     Anchors = [akRight, akBottom]
     AutoSize = True
-    
     Caption = 'RevertAllButton'
     Default = True
     ModalResult = 10
     TabOrder = 1
-    Left = 498
-    Height = 26
-    Top = 267
-    Width = 96
   end
   object FilesListBox: TListBox
+    Left = 6
+    Height = 86
+    Top = 6
+    Width = 594
     Align = alTop
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     OnMouseUp = FilesListBoxMouseUp
     TabOrder = 2
     TopIndex = -1
-    Left = 6
-    Height = 86
-    Top = 6
-    Width = 594
   end
   object DiffSynEdit: TSynEdit
+    Left = 6
+    Height = 159
+    Top = 97
+    Width = 588
     Align = alTop
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
     Anchors = [akTop, akLeft, akRight, akBottom]
     Font.Height = -12
     Font.Name = 'courier'
-    Height = 159
-    Name = 'DiffSynEdit'
     ParentColor = False
     TabOrder = 3
-    Width = 588
     BookMarkOptions.Xoffset = -18
-    BookMarkOptions.OnChange = nil
     Gutter.Visible = False
-    Gutter.OnChange = nil
     Gutter.CodeFoldingWidth = 14
     Keystrokes = <    
       item
@@ -394,31 +389,22 @@ object DiskDiffsDlg: TDiskDiffsDlg
       'DiffSynEdit'
     )
     ReadOnly = True
-    SelectedColor.OnChange = nil
-    Cursor = crIBeam
-    Left = 6
-    Height = 159
-    Top = 97
-    Width = 588
   end
   object Splitter: TSplitter
-    Align = alTop
-    Cursor = crVSplit
-    Height = 5
-    Width = 600
-    ResizeAnchor = akTop
     Cursor = crVSplit
     Height = 5
     Top = 92
     Width = 600
+    Align = alTop
+    ResizeAnchor = akTop
   end
   object CheckDiskChangesWithLoadingCheckBox: TCheckBox
+    Left = 10
+    Height = 22
+    Top = 269
+    Width = 286
     Anchors = [akLeft, akBottom]
     Caption = 'CheckDiskChangesWithLoadingCheckBox'
     TabOrder = 4
-    Left = 10
-    Height = 24
-    Top = 267
-    Width = 263
   end
 end

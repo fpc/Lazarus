@@ -1,59 +1,64 @@
 object CheckLFMDialog: TCheckLFMDialog
+  Left = 367
+  Height = 516
+  Top = 196
+  Width = 458
+  ActiveControl = LFMSynEdit
   Caption = 'Repair LFM file'
   ClientHeight = 516
   ClientWidth = 458
   OnCreate = CheckLFMDialogCreate
-  HorzScrollBar.Page = 459
-  VertScrollBar.Page = 517
-  Left = 368
-  Height = 516
-  Top = 200
-  Width = 458
+  LCLVersion = '0.9.25'
+  object NoteLabel: TLabel
+    Left = 8
+    Height = 20
+    Top = 8
+    Width = 66
+    Caption = 'NoteLabel'
+    ParentColor = False
+    WordWrap = True
+  end
   object CancelButton: TButton
-    Anchors = [akleft, akbottom]
-    ModalResult = 2
-    Caption = 'Cancel'
-    TabStop = True
-    TabOrder = 0
     Left = 359
     Height = 25
     Top = 483
     Width = 75
+    Anchors = [akLeft, akBottom]
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 0
   end
   object RemoveAllButton: TButton
-    Anchors = [akleft, akbottom]
-    Caption = 'Remove all invalid properties'
-    TabStop = True
-    TabOrder = 1
-    OnClick = RemoveAllButtonClick
     Left = 24
     Height = 25
     Top = 483
     Width = 311
+    Anchors = [akLeft, akBottom]
+    Caption = 'Remove all invalid properties'
+    OnClick = RemoveAllButtonClick
+    TabOrder = 1
   end
   object LFMGroupBox: TGroupBox
-    Anchors = [aktop, akleft, akright, akbottom]
-    Caption = 'LFM file'
-    ClientHeight = 266
-    ClientWidth = 442
-    ParentColor = True
-    ParentCtl3D = False
-    TabOrder = 2
     Left = 8
     Height = 283
     Top = 80
     Width = 446
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    Caption = 'LFM file'
+    ClientHeight = 264
+    ClientWidth = 442
+    ParentCtl3D = False
+    TabOrder = 2
     object LFMSynEdit: TSynEdit
-      Align = alclient
+      Height = 264
+      Width = 442
+      Align = alClient
       Font.Height = -15
       Font.Name = 'courier'
-      Height = 266
-      Name = 'LFMSynEdit'
+      ParentColor = False
       ParentCtl3D = False
       TabOrder = 0
-      Width = 442
-      BookMarkOptions.OnChange = nil
-      Gutter.OnChange = nil
+      Gutter.CodeFoldingWidth = 14
       Highlighter = SynLFMSyn1
       Keystrokes = <      
         item
@@ -379,43 +384,28 @@ object CheckLFMDialog: TCheckLFMDialog
       Lines.Strings = (
         'LFMSynEdit'
       )
-      SelectedColor.OnChange = nil
       OnSpecialLineColors = LFMSynEditSpecialLineColors
-      Cursor = 65532
-      Height = 266
-      Width = 442
     end
   end
   object ErrorsGroupBox: TGroupBox
-    Anchors = [akleft, akright, akbottom]
-    Caption = 'Errors'
-    ClientHeight = 87
-    ClientWidth = 442
-    ParentColor = True
-    ParentCtl3D = False
-    TabOrder = 3
     Left = 8
     Height = 104
     Top = 371
     Width = 446
+    Anchors = [akLeft, akRight, akBottom]
+    Caption = 'Errors'
+    ClientHeight = 85
+    ClientWidth = 442
+    ParentCtl3D = False
+    TabOrder = 3
     object ErrorsListBox: TListBox
-      Align = alclient
+      Height = 85
+      Width = 442
+      Align = alClient
       OnClick = ErrorsListBoxClick
       TabOrder = 0
-      TabStop = True
       TopIndex = -1
-      Height = 87
-      Width = 442
     end
-  end
-  object NoteLabel: TLabel
-    Caption = 'NoteLabel'
-    Layout = tltop
-    WordWrap = True
-    Left = 8
-    Height = 65
-    Top = 8
-    Width = 441
   end
   object SynLFMSyn1: TSynLFMSyn
     DefaultFilter = 'Lazarus Form Files (*.lfm)|*.lfm'

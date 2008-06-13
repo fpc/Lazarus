@@ -1,23 +1,25 @@
 object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
+  Left = 382
+  Height = 500
+  Top = 228
+  Width = 544
   ActiveControl = DefineTreeView
   BorderStyle = bsSizeToolWin
   Caption = 'CodeToolsDefinesEditor'
-  ClientHeight = 476
+  ClientHeight = 475
   ClientWidth = 544
   KeyPreview = True
   Menu = MainMenu
   OnClose = FormClose
   OnKeyDown = CodeToolsDefinesEditorKeyDown
   OnKeyUp = CodeToolsDefinesEditorKeyUp
-  PixelsPerInch = 112
   Position = poScreenCenter
-  HorzScrollBar.Page = 543
-  VertScrollBar.Page = 475
-  Left = 381
-  Height = 500
-  Top = 235
-  Width = 544
+  LCLVersion = '0.9.25'
   object DefineTreeView: TTreeView
+    Left = 6
+    Height = 123
+    Top = 6
+    Width = 532
     Align = alTop
     BorderSpacing.Around = 6
     DefaultItemHeight = 22
@@ -25,446 +27,81 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
     StateImages = TheImageList
     TabOrder = 0
     OnSelectionChanged = DefineTreeViewSelectionChanged
-    Left = 6
-    Height = 123
-    Top = 6
-    Width = 532
   end
   object SelectedItemGroupBox: TGroupBox
+    Left = 6
+    Height = 325
+    Top = 144
+    Width = 532
     Align = alClient
     BorderSpacing.Around = 6
     Caption = 'SelectedItemGroupBox'
-    ClientHeight = 309
+    ClientHeight = 306
     ClientWidth = 528
     TabOrder = 1
-    Left = 6
-    Height = 326
-    Top = 144
-    Width = 532
     object NameLabel: TLabel
+      Left = 10
+      Height = 20
+      Top = 26
+      Width = 74
       BorderSpacing.Right = 6
       Caption = 'NameLabel'
-      Color = clNone
       ParentColor = False
-      Left = 10
-      Height = 14
-      Top = 26
-      Width = 53
     end
     object DescriptionLabel: TLabel
+      Left = 10
+      Height = 20
+      Top = 53
+      Width = 107
       BorderSpacing.Right = 6
       Caption = 'DescriptionLabel'
-      Color = clNone
       ParentColor = False
-      Left = 10
-      Height = 14
-      Top = 53
-      Width = 79
     end
     object TypeLabel: TLabel
+      Left = 6
+      Height = 20
+      Top = 6
+      Width = 516
       Align = alTop
       BorderSpacing.Around = 6
       Caption = 'TypeLabel'
-      Color = clNone
       ParentColor = False
-      Left = 6
-      Height = 14
-      Top = 6
-      Width = 516
     end
     object VariableLabel: TLabel
+      Left = 10
+      Height = 20
+      Top = 78
+      Width = 86
       BorderSpacing.Right = 6
       Caption = 'VariableLabel'
-      Color = clNone
       ParentColor = False
-      Left = 10
-      Height = 14
-      Top = 78
-      Width = 64
     end
     object ValueNoteBook: TNotebook
+      Left = 6
+      Height = 194
+      Top = 106
+      Width = 516
       Align = alBottom
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
       OnPageChanged = ValueNoteBookPageChanged
       PageIndex = 0
-      Left = 6
-      Height = 197
-      Top = 106
-      Width = 516
+      TabOrder = 0
       object ValueAsTextPage: TPage
         Caption = 'ValueAsTextPage'
         ClientWidth = 512
-        ClientHeight = 167
-        Left = 2
-        Height = 167
-        Top = 28
-        Width = 512
+        ClientHeight = 163
         object ValueAsTextSynEdit: TSynEdit
+          Height = 163
+          Width = 512
           Align = alClient
           Font.Height = -16
           Font.Name = 'courier'
-          Height = 167
-          Name = 'ValueAsTextSynEdit'
           ParentColor = False
           TabOrder = 0
-          Width = 512
-          BookMarkOptions.Xoffset = -18
-          Gutter.Visible = False
-          Gutter.CodeFoldingWidth = 14
-          Keystrokes = <          
-            item
-              Command = 3
-              ShortCut = 38
-            end          
-            item
-              Command = 103
-              ShortCut = 8230
-            end          
-            item
-              Command = 211
-              ShortCut = 16422
-            end          
-            item
-              Command = 4
-              ShortCut = 40
-            end          
-            item
-              Command = 104
-              ShortCut = 8232
-            end          
-            item
-              Command = 212
-              ShortCut = 16424
-            end          
-            item
-              Command = 1
-              ShortCut = 37
-            end          
-            item
-              Command = 101
-              ShortCut = 8229
-            end          
-            item
-              Command = 5
-              ShortCut = 16421
-            end          
-            item
-              Command = 105
-              ShortCut = 24613
-            end          
-            item
-              Command = 2
-              ShortCut = 39
-            end          
-            item
-              Command = 102
-              ShortCut = 8231
-            end          
-            item
-              Command = 6
-              ShortCut = 16423
-            end          
-            item
-              Command = 106
-              ShortCut = 24615
-            end          
-            item
-              Command = 10
-              ShortCut = 34
-            end          
-            item
-              Command = 110
-              ShortCut = 8226
-            end          
-            item
-              Command = 14
-              ShortCut = 16418
-            end          
-            item
-              Command = 114
-              ShortCut = 24610
-            end          
-            item
-              Command = 9
-              ShortCut = 33
-            end          
-            item
-              Command = 109
-              ShortCut = 8225
-            end          
-            item
-              Command = 13
-              ShortCut = 16417
-            end          
-            item
-              Command = 113
-              ShortCut = 24609
-            end          
-            item
-              Command = 7
-              ShortCut = 36
-            end          
-            item
-              Command = 107
-              ShortCut = 8228
-            end          
-            item
-              Command = 15
-              ShortCut = 16420
-            end          
-            item
-              Command = 115
-              ShortCut = 24612
-            end          
-            item
-              Command = 8
-              ShortCut = 35
-            end          
-            item
-              Command = 108
-              ShortCut = 8227
-            end          
-            item
-              Command = 16
-              ShortCut = 16419
-            end          
-            item
-              Command = 116
-              ShortCut = 24611
-            end          
-            item
-              Command = 223
-              ShortCut = 45
-            end          
-            item
-              Command = 201
-              ShortCut = 16429
-            end          
-            item
-              Command = 604
-              ShortCut = 8237
-            end          
-            item
-              Command = 502
-              ShortCut = 46
-            end          
-            item
-              Command = 603
-              ShortCut = 8238
-            end          
-            item
-              Command = 501
-              ShortCut = 8
-            end          
-            item
-              Command = 501
-              ShortCut = 8200
-            end          
-            item
-              Command = 504
-              ShortCut = 16392
-            end          
-            item
-              Command = 601
-              ShortCut = 32776
-            end          
-            item
-              Command = 602
-              ShortCut = 40968
-            end          
-            item
-              Command = 509
-              ShortCut = 13
-            end          
-            item
-              Command = 199
-              ShortCut = 16449
-            end          
-            item
-              Command = 201
-              ShortCut = 16451
-            end          
-            item
-              Command = 610
-              ShortCut = 24649
-            end          
-            item
-              Command = 509
-              ShortCut = 16461
-            end          
-            item
-              Command = 510
-              ShortCut = 16462
-            end          
-            item
-              Command = 503
-              ShortCut = 16468
-            end          
-            item
-              Command = 611
-              ShortCut = 24661
-            end          
-            item
-              Command = 604
-              ShortCut = 16470
-            end          
-            item
-              Command = 603
-              ShortCut = 16472
-            end          
-            item
-              Command = 507
-              ShortCut = 16473
-            end          
-            item
-              Command = 506
-              ShortCut = 24665
-            end          
-            item
-              Command = 601
-              ShortCut = 16474
-            end          
-            item
-              Command = 602
-              ShortCut = 24666
-            end          
-            item
-              Command = 301
-              ShortCut = 16432
-            end          
-            item
-              Command = 302
-              ShortCut = 16433
-            end          
-            item
-              Command = 303
-              ShortCut = 16434
-            end          
-            item
-              Command = 304
-              ShortCut = 16435
-            end          
-            item
-              Command = 305
-              ShortCut = 16436
-            end          
-            item
-              Command = 306
-              ShortCut = 16437
-            end          
-            item
-              Command = 307
-              ShortCut = 16438
-            end          
-            item
-              Command = 308
-              ShortCut = 16439
-            end          
-            item
-              Command = 309
-              ShortCut = 16440
-            end          
-            item
-              Command = 310
-              ShortCut = 16441
-            end          
-            item
-              Command = 351
-              ShortCut = 24624
-            end          
-            item
-              Command = 352
-              ShortCut = 24625
-            end          
-            item
-              Command = 353
-              ShortCut = 24626
-            end          
-            item
-              Command = 354
-              ShortCut = 24627
-            end          
-            item
-              Command = 355
-              ShortCut = 24628
-            end          
-            item
-              Command = 356
-              ShortCut = 24629
-            end          
-            item
-              Command = 357
-              ShortCut = 24630
-            end          
-            item
-              Command = 358
-              ShortCut = 24631
-            end          
-            item
-              Command = 359
-              ShortCut = 24632
-            end          
-            item
-              Command = 360
-              ShortCut = 24633
-            end          
-            item
-              Command = 231
-              ShortCut = 24654
-            end          
-            item
-              Command = 232
-              ShortCut = 24643
-            end          
-            item
-              Command = 233
-              ShortCut = 24652
-            end          
-            item
-              Command = 612
-              ShortCut = 9
-            end          
-            item
-              Command = 613
-              ShortCut = 8201
-            end          
-            item
-              Command = 250
-              ShortCut = 24642
-            end>
-          Lines.Strings = (
-            'ValueAsTextSynEdit'
-          )
-          Options = [eoDragDropEditing, eoHalfPageScroll, eoScrollByOneLess, eoScrollPastEol, eoSmartTabs, eoTabsToSpaces, eoTrimTrailingSpaces, eoBracketHighlight, eoHideRightMargin]
-          Cursor = crIBeam
-          Height = 167
-          Width = 512
-        end
-      end
-      object ValueAsPathsPage: TPage
-        Caption = 'ValueAsPathsPage'
-        ClientWidth = 512
-        ClientHeight = 167
-        Left = 2
-        Height = 167
-        Top = 28
-        Width = 512
-        object ValueAsFilePathsSynEdit: TSynEdit
-          Align = alLeft
-          BorderSpacing.Right = 6
-          Anchors = [akTop, akLeft, akRight, akBottom]
-          Font.Height = -16
-          Font.Name = 'courier'
-          Height = 167
-          Name = 'ValueAsFilePathsSynEdit'
-          ParentColor = False
-          TabOrder = 0
-          Width = 424
           BookMarkOptions.Xoffset = -18
           BookMarkOptions.OnChange = nil
           Gutter.Visible = False
-          Gutter.OnChange = nil
           Gutter.CodeFoldingWidth = 14
           Keystrokes = <          
             item
@@ -792,101 +429,435 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
           )
           Options = [eoDragDropEditing, eoHalfPageScroll, eoScrollByOneLess, eoScrollPastEol, eoSmartTabs, eoTabsToSpaces, eoTrimTrailingSpaces, eoBracketHighlight, eoHideRightMargin]
           SelectedColor.OnChange = nil
+        end
+      end
+      object ValueAsPathsPage: TPage
+        Caption = 'ValueAsPathsPage'
+        ClientWidth = 512
+        ClientHeight = 166
+        object ValueAsFilePathsSynEdit: TSynEdit
           AnchorSideRight.Control = DeleteFilePathBitBtn
-          Cursor = crIBeam
-          Height = 167
+          Height = 166
           Width = 424
+          Align = alLeft
+          BorderSpacing.Right = 6
+          Anchors = [akTop, akLeft, akRight, akBottom]
+          Font.Height = -16
+          Font.Name = 'courier'
+          ParentColor = False
+          TabOrder = 0
+          BookMarkOptions.Xoffset = -18
+          Gutter.Visible = False
+          Gutter.CodeFoldingWidth = 14
+          Keystrokes = <          
+            item
+              Command = 3
+              ShortCut = 38
+            end          
+            item
+              Command = 103
+              ShortCut = 8230
+            end          
+            item
+              Command = 211
+              ShortCut = 16422
+            end          
+            item
+              Command = 4
+              ShortCut = 40
+            end          
+            item
+              Command = 104
+              ShortCut = 8232
+            end          
+            item
+              Command = 212
+              ShortCut = 16424
+            end          
+            item
+              Command = 1
+              ShortCut = 37
+            end          
+            item
+              Command = 101
+              ShortCut = 8229
+            end          
+            item
+              Command = 5
+              ShortCut = 16421
+            end          
+            item
+              Command = 105
+              ShortCut = 24613
+            end          
+            item
+              Command = 2
+              ShortCut = 39
+            end          
+            item
+              Command = 102
+              ShortCut = 8231
+            end          
+            item
+              Command = 6
+              ShortCut = 16423
+            end          
+            item
+              Command = 106
+              ShortCut = 24615
+            end          
+            item
+              Command = 10
+              ShortCut = 34
+            end          
+            item
+              Command = 110
+              ShortCut = 8226
+            end          
+            item
+              Command = 14
+              ShortCut = 16418
+            end          
+            item
+              Command = 114
+              ShortCut = 24610
+            end          
+            item
+              Command = 9
+              ShortCut = 33
+            end          
+            item
+              Command = 109
+              ShortCut = 8225
+            end          
+            item
+              Command = 13
+              ShortCut = 16417
+            end          
+            item
+              Command = 113
+              ShortCut = 24609
+            end          
+            item
+              Command = 7
+              ShortCut = 36
+            end          
+            item
+              Command = 107
+              ShortCut = 8228
+            end          
+            item
+              Command = 15
+              ShortCut = 16420
+            end          
+            item
+              Command = 115
+              ShortCut = 24612
+            end          
+            item
+              Command = 8
+              ShortCut = 35
+            end          
+            item
+              Command = 108
+              ShortCut = 8227
+            end          
+            item
+              Command = 16
+              ShortCut = 16419
+            end          
+            item
+              Command = 116
+              ShortCut = 24611
+            end          
+            item
+              Command = 223
+              ShortCut = 45
+            end          
+            item
+              Command = 201
+              ShortCut = 16429
+            end          
+            item
+              Command = 604
+              ShortCut = 8237
+            end          
+            item
+              Command = 502
+              ShortCut = 46
+            end          
+            item
+              Command = 603
+              ShortCut = 8238
+            end          
+            item
+              Command = 501
+              ShortCut = 8
+            end          
+            item
+              Command = 501
+              ShortCut = 8200
+            end          
+            item
+              Command = 504
+              ShortCut = 16392
+            end          
+            item
+              Command = 601
+              ShortCut = 32776
+            end          
+            item
+              Command = 602
+              ShortCut = 40968
+            end          
+            item
+              Command = 509
+              ShortCut = 13
+            end          
+            item
+              Command = 199
+              ShortCut = 16449
+            end          
+            item
+              Command = 201
+              ShortCut = 16451
+            end          
+            item
+              Command = 610
+              ShortCut = 24649
+            end          
+            item
+              Command = 509
+              ShortCut = 16461
+            end          
+            item
+              Command = 510
+              ShortCut = 16462
+            end          
+            item
+              Command = 503
+              ShortCut = 16468
+            end          
+            item
+              Command = 611
+              ShortCut = 24661
+            end          
+            item
+              Command = 604
+              ShortCut = 16470
+            end          
+            item
+              Command = 603
+              ShortCut = 16472
+            end          
+            item
+              Command = 507
+              ShortCut = 16473
+            end          
+            item
+              Command = 506
+              ShortCut = 24665
+            end          
+            item
+              Command = 601
+              ShortCut = 16474
+            end          
+            item
+              Command = 602
+              ShortCut = 24666
+            end          
+            item
+              Command = 301
+              ShortCut = 16432
+            end          
+            item
+              Command = 302
+              ShortCut = 16433
+            end          
+            item
+              Command = 303
+              ShortCut = 16434
+            end          
+            item
+              Command = 304
+              ShortCut = 16435
+            end          
+            item
+              Command = 305
+              ShortCut = 16436
+            end          
+            item
+              Command = 306
+              ShortCut = 16437
+            end          
+            item
+              Command = 307
+              ShortCut = 16438
+            end          
+            item
+              Command = 308
+              ShortCut = 16439
+            end          
+            item
+              Command = 309
+              ShortCut = 16440
+            end          
+            item
+              Command = 310
+              ShortCut = 16441
+            end          
+            item
+              Command = 351
+              ShortCut = 24624
+            end          
+            item
+              Command = 352
+              ShortCut = 24625
+            end          
+            item
+              Command = 353
+              ShortCut = 24626
+            end          
+            item
+              Command = 354
+              ShortCut = 24627
+            end          
+            item
+              Command = 355
+              ShortCut = 24628
+            end          
+            item
+              Command = 356
+              ShortCut = 24629
+            end          
+            item
+              Command = 357
+              ShortCut = 24630
+            end          
+            item
+              Command = 358
+              ShortCut = 24631
+            end          
+            item
+              Command = 359
+              ShortCut = 24632
+            end          
+            item
+              Command = 360
+              ShortCut = 24633
+            end          
+            item
+              Command = 231
+              ShortCut = 24654
+            end          
+            item
+              Command = 232
+              ShortCut = 24643
+            end          
+            item
+              Command = 233
+              ShortCut = 24652
+            end          
+            item
+              Command = 612
+              ShortCut = 9
+            end          
+            item
+              Command = 613
+              ShortCut = 8201
+            end          
+            item
+              Command = 250
+              ShortCut = 24642
+            end>
+          Lines.Strings = (
+            'ValueAsTextSynEdit'
+          )
+          Options = [eoDragDropEditing, eoHalfPageScroll, eoScrollByOneLess, eoScrollPastEol, eoSmartTabs, eoTabsToSpaces, eoTrimTrailingSpaces, eoBracketHighlight, eoHideRightMargin]
         end
         object MoveFilePathUpBitBtn: TBitBtn
-          Anchors = [akTop, akRight]
-          
-          Caption = 'MoveFilePathUpBitBtn'
-          NumGlyphs = 0
-          OnClick = MoveFilePathUpBitBtnClick
-          TabOrder = 1
           Left = 430
           Height = 30
           Top = 2
           Width = 75
+          Anchors = [akTop, akRight]
+          Caption = 'MoveFilePathUpBitBtn'
+          NumGlyphs = 0
+          OnClick = MoveFilePathUpBitBtnClick
+          TabOrder = 1
         end
         object MoveFilePathDownBitBtn: TBitBtn
-          Anchors = [akTop, akRight]
-          
-          Caption = 'MoveFilePathDownBitBtn'
-          NumGlyphs = 0
-          OnClick = MoveNodeDownMenuItemClick
-          TabOrder = 2
           Left = 430
           Height = 30
           Top = 34
           Width = 75
+          Anchors = [akTop, akRight]
+          Caption = 'MoveFilePathDownBitBtn'
+          NumGlyphs = 0
+          OnClick = MoveNodeDownMenuItemClick
+          TabOrder = 2
         end
         object DeleteFilePathBitBtn: TBitBtn
-          Anchors = [akTop, akRight]
-          
-          Caption = 'DeleteFilePathBitBtn'
-          NumGlyphs = 0
-          OnClick = DeleteFilePathBitBtnClick
-          TabOrder = 3
           Left = 430
           Height = 30
           Top = 66
           Width = 75
+          Anchors = [akTop, akRight]
+          Caption = 'DeleteFilePathBitBtn'
+          NumGlyphs = 0
+          OnClick = DeleteFilePathBitBtnClick
+          TabOrder = 3
         end
         object InsertFilePathBitBtn: TBitBtn
-          Anchors = [akTop, akRight]
-          
-          Caption = 'InsertFilePathBitBtn'
-          NumGlyphs = 0
-          OnClick = InsertFilePathBitBtnClick
-          TabOrder = 4
           Left = 430
           Height = 30
           Top = 98
           Width = 75
+          Anchors = [akTop, akRight]
+          Caption = 'InsertFilePathBitBtn'
+          NumGlyphs = 0
+          OnClick = InsertFilePathBitBtnClick
+          TabOrder = 4
         end
       end
     end
     object NameEdit: TEdit
-      Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Around = 6
-      TabOrder = 1
-      Text = 'NameEdit'
       Left = 128
       Height = 20
       Top = 23
       Width = 394
-    end
-    object DescriptionEdit: TEdit
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
-      TabOrder = 2
-      Text = 'DescriptionEdit'
+      TabOrder = 1
+      Text = 'NameEdit'
+    end
+    object DescriptionEdit: TEdit
       Left = 128
       Height = 21
       Top = 50
       Width = 394
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 6
+      TabOrder = 2
+      Text = 'DescriptionEdit'
     end
     object VariableEdit: TEdit
-      Anchors = [akTop, akLeft, akRight]
-      TabOrder = 3
-      Text = 'VariableEdit'
       Left = 128
       Height = 21
       Top = 76
       Width = 394
+      Anchors = [akTop, akLeft, akRight]
+      TabOrder = 3
+      Text = 'VariableEdit'
     end
   end
   object MainSplitter: TSplitter
-    Align = alTop
-    Cursor = crVSplit
-    Height = 3
-    Width = 544
-    ResizeAnchor = akTop
     Cursor = crVSplit
     Height = 3
     Top = 135
     Width = 544
+    Align = alTop
+    ResizeAnchor = akTop
   end
   object TheImageList: TImageList
     Height = 22
@@ -894,1307 +865,975 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
     left = 46
     top = 33
     Bitmap = {
-      6C691000000016000000160000004C0D00002F2A2058504D202A2F0A73746174
-      69632063686172202A20646566696E655F32327832325F78706D5B5D203D207B
-      0A223232203232203134332032222C0A2220200963204E6F6E65222C0A222E20
-      09632023464646464646222C0A222B2009632023464646394639222C0A224020
-      09632023464644394439222C0A22232009632023463546354635222C0A222420
-      09632023433743374337222C0A22252009632023463643444344222C0A222620
-      09632023464635363536222C0A222A2009632023464634393439222C0A223D20
-      09632023464639423942222C0A222D2009632023464643354335222C0A223B20
-      09632023464645444544222C0A223E2009632023464646444644222C0A222C20
-      09632023433943394339222C0A22272009632023334333433343222C0A222920
-      09632023333733373337222C0A22212009632023443439353935222C0A227E20
-      09632023464632383238222C0A227B2009632023464630453045222C0A225D20
-      09632023464631443144222C0A225E2009632023464633323332222C0A222F20
-      09632023464636373637222C0A22282009632023464638343834222C0A225F20
-      09632023464641364136222C0A223A2009632023464644304430222C0A223C20
-      09632023464646384638222C0A225B2009632023434543454345222C0A227D20
-      09632023334533453345222C0A227C2009632023314431443144222C0A223120
-      09632023433337453745222C0A22322009632023464632343234222C0A223320
-      09632023464631303130222C0A22342009632023464630443044222C0A223520
-      09632023464630463046222C0A22362009632023464630373037222C0A223720
-      09632023464630303030222C0A22382009632023464631353135222C0A223920
-      09632023464633333333222C0A22302009632023464638393839222C0A226120
-      09632023464641454145222C0A22622009632023464645354535222C0A226320
-      09632023464646434643222C0A22642009632023454645464546222C0A226520
-      09632023364336433643222C0A22662009632023303830383038222C0A226720
-      09632023423036363636222C0A22682009632023464631423142222C0A226920
-      09632023464630383038222C0A226A2009632023464633443344222C0A226B20
-      09632023464632353235222C0A226C2009632023464630343034222C0A226D20
-      09632023464631343134222C0A226E2009632023464631413141222C0A226F20
-      09632023464635423542222C0A22702009632023464646314631222C0A227120
-      09632023464446444644222C0A22722009632023374537453745222C0A227320
-      09632023303030303030222C0A22742009632023413735433543222C0A227520
-      09632023464633303330222C0A22762009632023464631333133222C0A227720
-      09632023464631323132222C0A22782009632023464631463146222C0A227920
-      09632023464632413241222C0A227A2009632023464633463346222C0A224120
-      09632023464631363136222C0A22422009632023464631453145222C0A224320
-      09632023464642334233222C0A22442009632023383638363836222C0A224520
-      09632023303630363036222C0A22462009632023413436343634222C0A224720
-      09632023464632323232222C0A22482009632023464630333033222C0A224920
-      09632023464633373337222C0A224A2009632023464632443244222C0A224B20
-      09632023464631393139222C0A224C2009632023464631313131222C0A224D20
-      09632023464632453245222C0A224E2009632023464642464246222C0A224F20
-      09632023394436433643222C0A22502009632023464632393239222C0A225120
-      09632023464630313031222C0A22522009632023464630323032222C0A225320
-      09632023464634323432222C0A22542009632023464634343434222C0A225520
-      09632023464630393039222C0A22562009632023464633453345222C0A225720
-      09632023464644324432222C0A22582009632023383138313831222C0A225920
-      09632023383637433743222C0A225A2009632023464639363936222C0A226020
-      09632023464632303230222C0A22202E09632023464632363236222C0A222E2E
-      09632023464635453545222C0A222B2E09632023464644424442222C0A22402E
-      09632023464646344634222C0A22232E09632023464643304330222C0A22242E
-      09632023464638423842222C0A22252E09632023464637393739222C0A22262E
-      09632023464630353035222C0A222A2E09632023464630413041222C0A223D2E
-      09632023464643414341222C0A222D2E09632023383538353835222C0A223B2E
-      09632023464646374637222C0A223E2E09632023464643434343222C0A222C2E
-      09632023464641394139222C0A22272E09632023464638333833222C0A22292E
-      09632023464634373437222C0A22212E09632023464630363036222C0A227E2E
-      09632023464632333233222C0A227B2E09632023464642434243222C0A225D2E
-      09632023463846384638222C0A225E2E09632023373637363736222C0A222F2E
-      09632023464646414641222C0A22282E09632023464644444444222C0A225F2E
-      09632023464641424142222C0A223A2E09632023464636423642222C0A223C2E
-      09632023464634333433222C0A225B2E09632023464636453645222C0A227D2E
-      09632023464645304530222C0A227C2E09632023453645364536222C0A22312E
-      09632023354635463546222C0A22322E09632023304630463046222C0A22332E
-      09632023393839383938222C0A22342E09632023464646364636222C0A22352E
-      09632023464645344534222C0A22362E09632023464646424642222C0A22372E
-      09632023453345334533222C0A22382E09632023353835383538222C0A22392E
-      09632023313031303130222C0A22302E09632023394139413941222C0A22612E
-      09632023453145314531222C0A22622E09632023304130413041222C0A22632E
-      09632023393739373937222C0A22642E09632023353935393539222C0A22652E
-      09632023354435443544222C0A22662E09632023304330433043222C0A22672E
-      09632023394239423942222C0A22682E09632023383838383838222C0A22692E
-      09632023324632463246222C0A226A2E09632023424342434243222C0A226B2E
-      09632023464346434643222C0A226C2E09632023453845384538222C0A222E20
-      2E202E202E202E202B20402040202B202E202E202E202E202E202E202E202E20
-      2E202E202E202E202E20222C0A222E202E20232024202420252026202A203D20
-      2D203B203E202E202E202E202E202E202E202E202E202E202E20222C0A222E20
-      2E202C202720292021207E207B205D205E202F2028205F203A203C202E202E20
-      2E202E202E202E202E20222C0A222E202E205B207D207C203120322033203420
-      3520362037203820392030206120622063202E202E202E202E20222C0A222E20
-      2E2064206520662067206820692037207B2032206A206B206C206D206E206F20
-      5F2070202E202E202E20222C0A222E202E2071207220732074205D2038207E20
-      752076207720782079207A2041207720422043202E202E202E20222C0A222E20
-      2E202E20442045204620472048206C207E2049204A204B20342038204C204D20
-      75204E202E202E202E20222C0A222E202E202E20442045204F20502051205220
-      36203720412050205320542034205520562057202E202E202E20222C0A222E20
-      2E202E205820732059205A206E206C2069206920692036206C206E206020202E
-      2E2E2B2E2E202E202E20222C0A222E202E202E20442045204420402E232E242E
-      252E5E207620262E6C202A2E6C202A2E39203D2E2E202E202E20222C0A222E20
-      2E202E202D2E452044202E202E202E203B2E3E2E2C2E272E292E41203720212E
-      7E2E7B2E2E202E202E20222C0A222E202E205D2E5E2E73202D2E2E202E202E20
-      2E202E202E202F2E282E5F2E3A2E3C2E5B2E7D2E2E202E202E20222C0A222E20
-      2E207C2E312E322E332E2E202E202E202E202E202E202E202E202E20342E2B2E
-      352E362E2E202E202E20222C0A222E202E20372E382E392E302E2E202E202E20
-      2E202E202E202E202E202E202E202E202E202E202E202E202E20222C0A222E20
-      2E20612E382E622E632E2E202E202E202E202E202E202E202E202E202E202E20
-      2E202E202E202E202E20222C0A222E202E20372E642E392E302E2E202E202E20
-      2E202E202E202E202E202E202E202E202E202E202E202E202E20222C0A222E20
-      2E20372E382E392E302E2E202E202E202E202E202E202E202E202E202E202E20
-      2E202E202E202E202E20222C0A222E202E20372E652E662E672E2E202E202E20
-      2E202E202E202E202E202E202E202E202E202E202E202E202E20222C0A222E20
-      2E206420682E692E6A2E2E202E202E202E202E202E202E202E202E202E202E20
-      2E202E202E202E202E20222C0A222E202E206B2E6C2E2C2023202E202E202E20
-      2E202E202E202E202E202E202E202E202E202E202E202E202E20222C0A222E20
-      2E202E202E202E202E202E202E202E202E202E202E202E202E202E202E202E20
-      2E202E202E202E202E20222C0A222E202E202E202E202E202E202E202E202E20
-      2E202E202E202E202E202E202E202E202E202E202E202E202E20227D3B0A5F0D
-      00002F2A2058504D202A2F0A7374617469632063686172202A20646566696E65
-      616C6C5F32327832325F78706D5B5D203D207B0A223232203232203134342032
-      222C0A2220200963204E6F6E65222C0A222E2009632023464646464646222C0A
-      222B2009632023464646394639222C0A22402009632023464644394439222C0A
-      22232009632023463546354635222C0A22242009632023433743374337222C0A
-      22252009632023463643444344222C0A22262009632023464635363536222C0A
-      222A2009632023464634393439222C0A223D2009632023464639423942222C0A
-      222D2009632023464643354335222C0A223B2009632023464645444544222C0A
-      223E2009632023464646444644222C0A222C2009632023433943394339222C0A
-      22272009632023334333433343222C0A22292009632023333733373337222C0A
-      22212009632023443439353935222C0A227E2009632023464632383238222C0A
-      227B2009632023464630453045222C0A225D2009632023464631443144222C0A
-      225E2009632023464633323332222C0A222F2009632023464636373637222C0A
-      22282009632023464638343834222C0A225F2009632023464641364136222C0A
-      223A2009632023464644304430222C0A223C2009632023464646384638222C0A
-      225B2009632023434543454345222C0A227D2009632023334533453345222C0A
-      227C2009632023314431443144222C0A22312009632023433337453745222C0A
-      22322009632023464632343234222C0A22332009632023464631303130222C0A
-      22342009632023464630443044222C0A22352009632023464630463046222C0A
-      22362009632023464630373037222C0A22372009632023464630303030222C0A
-      22382009632023464631353135222C0A22392009632023464633333333222C0A
-      22302009632023464638393839222C0A22612009632023464641454145222C0A
-      22622009632023464645354535222C0A22632009632023464646434643222C0A
-      22642009632023454645464546222C0A22652009632023364336433643222C0A
-      22662009632023303830383038222C0A22672009632023423036363636222C0A
-      22682009632023464631423142222C0A22692009632023464630383038222C0A
-      226A2009632023464633443344222C0A226B2009632023464632353235222C0A
-      226C2009632023464630343034222C0A226D2009632023464631343134222C0A
-      226E2009632023464631413141222C0A226F2009632023464635423542222C0A
-      22702009632023464646314631222C0A22712009632023464446444644222C0A
-      22722009632023374537453745222C0A22732009632023303030303030222C0A
-      22742009632023413735433543222C0A22752009632023464633303330222C0A
-      22762009632023464631333133222C0A22772009632023464631323132222C0A
-      22782009632023464631463146222C0A22792009632023464632413241222C0A
-      227A2009632023464633463346222C0A22412009632023464631363136222C0A
-      22422009632023464631453145222C0A22432009632023464642334233222C0A
-      22442009632023383638363836222C0A22452009632023303630363036222C0A
-      22462009632023413436343634222C0A22472009632023464632323232222C0A
-      22482009632023464630333033222C0A22492009632023464633373337222C0A
-      224A2009632023464632443244222C0A224B2009632023464631393139222C0A
-      224C2009632023464631313131222C0A224D2009632023464632453245222C0A
-      224E2009632023464642464246222C0A224F2009632023394436433643222C0A
-      22502009632023464632393239222C0A22512009632023464630313031222C0A
-      22522009632023464630323032222C0A22532009632023464634323432222C0A
-      22542009632023464634343434222C0A22552009632023464630393039222C0A
-      22562009632023464633453345222C0A22572009632023464644324432222C0A
-      22582009632023383138313831222C0A22592009632023383637433743222C0A
-      225A2009632023464639363936222C0A22602009632023464632303230222C0A
-      22202E09632023464632363236222C0A222E2E09632023464635453545222C0A
-      222B2E09632023464644424442222C0A22402E09632023464646344634222C0A
-      22232E09632023464643304330222C0A22242E09632023464638423842222C0A
-      22252E09632023464637393739222C0A22262E09632023464630353035222C0A
-      222A2E09632023464630413041222C0A223D2E09632023464643414341222C0A
-      222D2E09632023383538353835222C0A223B2E09632023464646374637222C0A
-      223E2E09632023464643434343222C0A222C2E09632023464641394139222C0A
-      22272E09632023464638333833222C0A22292E09632023464634373437222C0A
-      22212E09632023464630363036222C0A227E2E09632023464632333233222C0A
-      227B2E09632023464642434243222C0A225D2E09632023463846384638222C0A
-      225E2E09632023373637363736222C0A222F2E09632023464646414641222C0A
-      22282E09632023464644444444222C0A225F2E09632023464641424142222C0A
-      223A2E09632023464636423642222C0A223C2E09632023464634333433222C0A
-      225B2E09632023464636453645222C0A227D2E09632023464645304530222C0A
-      227C2E09632023453645364536222C0A22312E09632023354635463546222C0A
-      22322E09632023304630463046222C0A22332E09632023393839383938222C0A
-      22342E09632023464646364636222C0A22352E09632023464645344534222C0A
-      22362E09632023464646424642222C0A22372E09632023453345334533222C0A
-      22382E09632023353835383538222C0A22392E09632023313031303130222C0A
-      22302E09632023394139413941222C0A22612E09632023453145314531222C0A
-      22622E09632023304130413041222C0A22632E09632023393739373937222C0A
-      22642E09632023464643463046222C0A22652E09632023353935393539222C0A
-      22662E09632023354435443544222C0A22672E09632023304330433043222C0A
-      22682E09632023394239423942222C0A22692E09632023383838383838222C0A
-      226A2E09632023324632463246222C0A226B2E09632023424342434243222C0A
-      226C2E09632023464346434643222C0A226D2E09632023453845384538222C0A
-      222E202E202E202E202E202B20402040202B202E202E202E202E202E202E202E
-      202E202E202E202E202E202E20222C0A222E202E20232024202420252026202A
-      203D202D203B203E202E202E202E202E202E202E202E202E202E202E20222C0A
-      222E202E202C202720292021207E207B205D205E202F2028205F203A203C202E
-      202E202E202E202E202E202E20222C0A222E202E205B207D207C203120322033
-      2034203520362037203820392030206120622063202E202E202E202E20222C0A
-      222E202E2064206520662067206820692037207B2032206A206B206C206D206E
-      206F205F2070202E202E202E20222C0A222E202E2071207220732074205D2038
-      207E20752076207720782079207A2041207720422043202E202E202E20222C0A
-      222E202E202E20442045204620472048206C207E2049204A204B20342038204C
-      204D2075204E202E202E202E20222C0A222E202E202E20442045204F20502051
-      20522036203720412050205320542034205520562057202E202E202E20222C0A
-      222E202E202E205820732059205A206E206C2069206920692036206C206E2060
-      20202E2E2E2B2E2E202E202E20222C0A222E202E202E20442045204420402E23
-      2E242E252E5E207620262E6C202A2E6C202A2E39203D2E2E202E202E20222C0A
-      222E202E202E202D2E452044202E202E202E203B2E3E2E2C2E272E292E412037
-      20212E7E2E7B2E2E202E202E20222C0A222E202E205D2E5E2E73202D2E2E202E
-      202E202E202E202E202F2E282E5F2E3A2E3C2E5B2E7D2E2E202E202E20222C0A
-      222E202E207C2E312E322E332E2E202E202E202E202E202E202E202E202E2034
-      2E2B2E352E362E2E202E202E20222C0A222E202E20372E382E392E302E2E202E
-      202E202E202E202E2073202E202E202E202E202E202E202E202E202E20222C0A
-      222E202E20612E382E622E632E2E202E202E202E202E202E2073202E202E2064
-      2E642E642E642E2E202E202E20222C0A222E202E20372E652E392E302E2E202E
-      202E202E202E202E20732073207320642E642E642E642E2E202E202E20222C0A
-      222E202E20372E382E392E302E2E202E202E202E202E202E2073202E202E2064
-      2E642E642E642E2E202E202E20222C0A222E202E20372E662E672E682E2E202E
-      202E202E202E202E2073202E202E202E202E202E202E202E202E202E20222C0A
-      222E202E206420692E6A2E6B2E2E202E202E202E202E202E2073202E202E202E
-      202E202E202E202E202E202E20222C0A222E202E206C2E6D2E2C2023202E202E
-      202E202E202E202E2073202E202E20642E642E642E642E2E202E202E20222C0A
-      222E202E202E202E202E202E202E202E202E202E202E202E2073207320732064
-      2E642E642E642E2E202E202E20222C0A222E202E202E202E202E202E202E202E
-      202E202E202E202E202E202E202E20642E642E642E642E2E202E202E20227D3B
-      0ACE0F00002F2A2058504D202A2F0A7374617469632063686172202A20756E64
-      6566696E655F32327832325F78706D5B5D203D207B0A22323220323220313833
-      2032222C0A2220200963204E6F6E65222C0A222E200963202346464646464622
-      2C0A222B2009632023464646394639222C0A2240200963202346464439443922
-      2C0A22232009632023463546354635222C0A2224200963202343374337433722
-      2C0A22252009632023463643444344222C0A2226200963202346463536353622
-      2C0A222A2009632023464634393439222C0A223D200963202346463942394222
-      2C0A222D2009632023464643354335222C0A223B200963202346464544454422
-      2C0A223E2009632023464646444644222C0A222C200963202336443746463222
-      2C0A22272009632023303432334541222C0A2229200963202341304136434622
-      2C0A22212009632023323233303842222C0A227E200963202333373337333722
-      2C0A227B2009632023443439353935222C0A225D200963202346463238323822
-      2C0A225E2009632023464630453045222C0A222F200963202346463144314422
-      2C0A22282009632023464633323332222C0A225F200963202346463637363722
-      2C0A223A2009632023464638343834222C0A223C200963202346464136413622
-      2C0A225B2009632023373637314445222C0A227D200963202333433534454522
-      2C0A227C2009632023443444394642222C0A2231200963202330393235453722
-      2C0A22322009632023333332334334222C0A2233200963202345313132323922
-      2C0A22342009632023464630443044222C0A2235200963202346463046304622
-      2C0A22362009632023464630373037222C0A2237200963202346463030303022
-      2C0A22382009632023424331383444222C0A2239200963202330343233453922
-      2C0A22302009632023323433304444222C0A2261200963202346464145414522
-      2C0A22622009632023464645354535222C0A2263200963202346464643464322
-      2C0A22642009632023463946394645222C0A2265200963202345464546454622
-      2C0A22662009632023364336433643222C0A2267200963202330363046343422
-      2C0A22682009632023313832424439222C0A2269200963202330393232453522
-      2C0A226A2009632023303432324539222C0A226B200963202331433146443322
-      2C0A226C2009632023434631313337222C0A226D200963202346463234323422
-      2C0A226E2009632023463933433431222C0A226F200963202330393233453522
-      2C0A22702009632023313332314442222C0A2271200963202346463134313422
-      2C0A22722009632023464631413141222C0A2273200963202346463542354222
-      2C0A22742009632023464646314631222C0A2275200963202346444644464422
-      2C0A22762009632023374537453745222C0A2277200963202330303030303022
-      2C0A22782009632023413735433543222C0A2279200963202337353143383922
-      2C0A227A2009632023304232334533222C0A2241200963202335383144413122
-      2C0A22422009632023334331464239222C0A2243200963202345313239343022
-      2C0A22442009632023464633463346222C0A2245200963202346463136313622
-      2C0A22462009632023464631323132222C0A2247200963202346463145314522
-      2C0A22482009632023464642334233222C0A2249200963202338363836383622
-      2C0A224A2009632023303630363036222C0A224B200963202341343634363422
-      2C0A224C2009632023464632323232222C0A224D200963202346463033303322
-      2C0A224E2009632023464630343034222C0A224F200963202333433234424522
-      2C0A22502009632023353831464133222C0A2251200963202346463135313522
-      2C0A22522009632023464631313131222C0A2253200963202346463245324522
-      2C0A22542009632023464633303330222C0A2255200963202346464246424622
-      2C0A22562009632023394436433643222C0A2257200963202346463239323922
-      2C0A22582009632023464630313031222C0A2259200963202346463032303222
-      2C0A225A2009632023313132304444222C0A2260200963202331393233443922
-      2C0A22202E09632023463934313435222C0A222E2E0963202346463434343422
-      2C0A222B2E09632023464630393039222C0A22402E0963202346463345334522
-      2C0A22232E09632023464644324432222C0A22242E0963202338313831383122
-      2C0A22252E09632023383637433743222C0A22262E0963202346463936393622
-      2C0A222A2E09632023383231353737222C0A223D2E0963202334333142423022
-      2C0A222D2E09632023303732324536222C0A223B2E0963202331413230443522
-      2C0A223E2E09632023464632303230222C0A222C2E0963202346463236323622
-      2C0A22272E09632023464635453545222C0A22292E0963202346464442444222
-      2C0A22212E09632023464646344634222C0A227E2E0963202346464330433022
-      2C0A227B2E09632023463938383844222C0A225D2E0963202330413235453622
-      2C0A225E2E09632023314632344435222C0A222F2E0963202346463133313322
-      2C0A22282E09632023394331303545222C0A225F2E0963202332343146434422
-      2C0A223A2E09632023464630413041222C0A223C2E0963202346463333333322
-      2C0A225B2E09632023464643414341222C0A227D2E0963202338353835383522
-      2C0A227C2E09632023314133364542222C0A22312E0963202345314238434622
-      2C0A22322E09632023464641394139222C0A22332E0963202346463833383322
-      2C0A22342E09632023373633333946222C0A22352E0963202333433142423522
-      2C0A22362E09632023464630363036222C0A22372E0963202346463233323322
-      2C0A22382E09632023464642434243222C0A22392E0963202346384638463822
-      2C0A22302E09632023373637363736222C0A22612E0963202331393335454222
-      2C0A22622E09632023394341384636222C0A22632E0963202346464641464122
-      2C0A22642E09632023464644444444222C0A22652E0963202336443543434622
-      2C0A22662E09632023383233333935222C0A22672E0963202346463645364522
-      2C0A22682E09632023464645304530222C0A22692E0963202345364536453622
-      2C0A226A2E09632023354635463546222C0A226B2E0963202330463046304622
-      2C0A226C2E09632023393439353939222C0A226D2E0963202330433241454122
-      2C0A226E2E09632023303632354541222C0A226F2E0963202332393432454222
-      2C0A22702E09632023303532344539222C0A22712E0963202345314344453422
-      2C0A22722E09632023464646424642222C0A22732E0963202345334533453322
-      2C0A22742E09632023353835383538222C0A22752E0963202330433135344122
-      2C0A22762E09632023303632354538222C0A22772E0963202330393238454122
-      2C0A22782E09632023424343344639222C0A22792E0963202330383237454122
-      2C0A227A2E09632023453145314531222C0A22412E0963202332413342413722
-      2C0A22422E09632023304432414534222C0A22432E0963202345314535464322
-      2C0A22442E09632023383239324634222C0A22452E0963202331393335453922
-      2C0A22462E09632023303532304344222C0A22472E0963202339413941394122
-      2C0A22482E09632023313232464542222C0A22492E0963202331353332454222
-      2C0A224A2E09632023304532434541222C0A224B2E0963202330363235453922
-      2C0A224C2E09632023324433434132222C0A224D2E0963202331303130313022
-      2C0A224E2E09632023434644354642222C0A224F2E0963202338423941463522
-      2C0A22502E09632023343735454546222C0A22512E0963202342394245453422
-      2C0A22522E09632023354435443544222C0A22532E0963202330433043304322
-      2C0A22542E09632023394239423942222C0A22552E0963202338383838383822
-      2C0A22562E09632023324632463246222C0A22572E0963202342434243424322
-      2C0A22582E09632023464346434643222C0A22592E0963202345384538453822
-      2C0A225A2E09632023433943394339222C0A222E202E202E202E202E202B2040
-      2040202B202E202E202E202E202E202E202E202E202E202E202E202E202E2022
-      2C0A222E202E20232024202420252026202A203D202D203B203E202E202E202C
-      2027202E202E202E202E202E202E20222C0A222E202E20292021207E207B205D
-      205E202F2028205F203A203C205B2027207D202E202E202E202E202E202E2022
-      2C0A227C20272027202720272031203220332034203520362037203820392030
-      206120622063202E202E202E202E20222C0A2264207C20652066206720682069
-      206A206B206C206D206E206F2070207120722073203C2074202E202E202E2022
-      2C0A222E202E2075207620772078202F2079207A203920412042206A20432044
-      2045204620472048202E202E202E20222C0A222E202E202E2049204A204B204C
-      204D204E204F203920392050203420512052205320542055202E202E202E2022
-      2C0A222E202E202E2049204A20562057205820592036205A206A206020202E2E
-      2E34202B2E402E232E2E202E202E20222C0A222E202E202E20242E7720252E26
-      2E72204E202A2E27203D2E2D2E3B2E72203E2E2C2E272E292E2E202E202E2022
-      2C0A222E202E202E2049204A204920212E7E2E7B2E5D2E5E2E2F2E282E6A205F
-      2E4E203A2E3C2E5B2E2E202E202E20222C0A222E202E202E207D2E4A2049202E
-      202E207C2E2720312E322E332E342E6A20352E362E372E382E2E202E202E2022
-      2C0A222E202E20392E302E77207D2E6420612E2720622E2E202E20632E642E65
-      2E2720662E672E682E2E202E202E20222C0A222E202E20692E6A2E6B2E6C2E6D
-      2E6E2E622E2E202E202E202E202E202E206F2E702E712E722E2E202E202E2022
-      2C0A222E202E20732E742E752E762E772E782E2E202E202E202E202E202E202E
-      206420792E612E2E202E202E202E20222C0A222E202E207A2E412E6A20422E43
-      2E2E202E202E202E202E202E202E202E202E20442E2720442E2E202E202E2022
-      2C0A222E20432E452E3920462E472E2E202E202E202E202E202E202E202E202E
-      202E202E20482E492E2E202E202E20222C0A222E204A2E4B2E4C2E4D2E472E2E
-      202E202E202E202E202E202E202E202E202E202E204E2E4F2E2E202E202E2022
-      2C0A222E20502E512E522E532E542E2E202E202E202E202E202E202E202E202E
-      202E202E202E202E202E202E202E20222C0A222E202E206520552E562E572E2E
-      202E202E202E202E202E202E202E202E202E202E202E202E202E202E202E2022
-      2C0A222E202E20582E592E5A2E23202E202E202E202E202E202E202E202E202E
-      202E202E202E202E202E202E202E20222C0A222E202E202E202E202E202E202E
-      202E202E202E202E202E202E202E202E202E202E202E202E202E202E202E2022
-      2C0A222E202E202E202E202E202E202E202E202E202E202E202E202E202E202E
-      202E202E202E202E202E202E202E20227D3B0AE50F00002F2A2058504D202A2F
-      0A7374617469632063686172202A20756E646566696E65726563757273655F32
-      327832325F78706D5B5D203D207B0A223232203232203138342032222C0A2220
-      200963204E6F6E65222C0A222E2009632023464646464646222C0A222B200963
-      2023464646394639222C0A22402009632023464644394439222C0A2223200963
-      2023463546354635222C0A22242009632023433743374337222C0A2225200963
-      2023463643444344222C0A22262009632023464635363536222C0A222A200963
-      2023464634393439222C0A223D2009632023464639423942222C0A222D200963
-      2023464643354335222C0A223B2009632023464645444544222C0A223E200963
-      2023464646444644222C0A222C2009632023364437464632222C0A2227200963
-      2023303432334541222C0A22292009632023413041364346222C0A2221200963
-      2023323233303842222C0A227E2009632023333733373337222C0A227B200963
-      2023443439353935222C0A225D2009632023464632383238222C0A225E200963
-      2023464630453045222C0A222F2009632023464631443144222C0A2228200963
-      2023464633323332222C0A225F2009632023464636373637222C0A223A200963
-      2023464638343834222C0A223C2009632023464641364136222C0A225B200963
-      2023373637314445222C0A227D2009632023334335344545222C0A227C200963
-      2023443444394642222C0A22312009632023303932354537222C0A2232200963
-      2023333332334334222C0A22332009632023453131323239222C0A2234200963
-      2023464630443044222C0A22352009632023464630463046222C0A2236200963
-      2023464630373037222C0A22372009632023464630303030222C0A2238200963
-      2023424331383444222C0A22392009632023303432334539222C0A2230200963
-      2023323433304444222C0A22612009632023464641454145222C0A2262200963
-      2023464645354535222C0A22632009632023464646434643222C0A2264200963
-      2023463946394645222C0A22652009632023454645464546222C0A2266200963
-      2023364336433643222C0A22672009632023303630463434222C0A2268200963
-      2023313832424439222C0A22692009632023303932324535222C0A226A200963
-      2023303432324539222C0A226B2009632023314331464433222C0A226C200963
-      2023434631313337222C0A226D2009632023464632343234222C0A226E200963
-      2023463933433431222C0A226F2009632023303932334535222C0A2270200963
-      2023313332314442222C0A22712009632023464631343134222C0A2272200963
-      2023464631413141222C0A22732009632023464635423542222C0A2274200963
-      2023464646314631222C0A22752009632023464446444644222C0A2276200963
-      2023374537453745222C0A22772009632023303030303030222C0A2278200963
-      2023413735433543222C0A22792009632023373531433839222C0A227A200963
-      2023304232334533222C0A22412009632023353831444131222C0A2242200963
-      2023334331464239222C0A22432009632023453132393430222C0A2244200963
-      2023464633463346222C0A22452009632023464631363136222C0A2246200963
-      2023464631323132222C0A22472009632023464631453145222C0A2248200963
-      2023464642334233222C0A22492009632023383638363836222C0A224A200963
-      2023303630363036222C0A224B2009632023413436343634222C0A224C200963
-      2023464632323232222C0A224D2009632023464630333033222C0A224E200963
-      2023464630343034222C0A224F2009632023334332344245222C0A2250200963
-      2023353831464133222C0A22512009632023464631353135222C0A2252200963
-      2023464631313131222C0A22532009632023464632453245222C0A2254200963
-      2023464633303330222C0A22552009632023464642464246222C0A2256200963
-      2023394436433643222C0A22572009632023464632393239222C0A2258200963
-      2023464630313031222C0A22592009632023464630323032222C0A225A200963
-      2023313132304444222C0A22602009632023313932334439222C0A22202E0963
-      2023463934313435222C0A222E2E09632023464634343434222C0A222B2E0963
-      2023464630393039222C0A22402E09632023464633453345222C0A22232E0963
-      2023464644324432222C0A22242E09632023383138313831222C0A22252E0963
-      2023383637433743222C0A22262E09632023464639363936222C0A222A2E0963
-      2023383231353737222C0A223D2E09632023343331424230222C0A222D2E0963
-      2023303732324536222C0A223B2E09632023314132304435222C0A223E2E0963
-      2023464632303230222C0A222C2E09632023464632363236222C0A22272E0963
-      2023464635453545222C0A22292E09632023464644424442222C0A22212E0963
-      2023464646344634222C0A227E2E09632023464643304330222C0A227B2E0963
-      2023463938383844222C0A225D2E09632023304132354536222C0A225E2E0963
-      2023314632344435222C0A222F2E09632023464631333133222C0A22282E0963
-      2023394331303545222C0A225F2E09632023323431464344222C0A223A2E0963
-      2023464630413041222C0A223C2E09632023464633333333222C0A225B2E0963
-      2023464643414341222C0A227D2E09632023383538353835222C0A227C2E0963
-      2023314133364542222C0A22312E09632023453142384346222C0A22322E0963
-      2023464641394139222C0A22332E09632023464638333833222C0A22342E0963
-      2023373633333946222C0A22352E09632023334331424235222C0A22362E0963
-      2023464630363036222C0A22372E09632023464632333233222C0A22382E0963
-      2023464642434243222C0A22392E09632023463846384638222C0A22302E0963
-      2023373637363736222C0A22612E09632023313933354542222C0A22622E0963
-      2023394341384636222C0A22632E09632023464646414641222C0A22642E0963
-      2023464644444444222C0A22652E09632023364435434346222C0A22662E0963
-      2023383233333935222C0A22672E09632023464636453645222C0A22682E0963
-      2023464645304530222C0A22692E09632023453645364536222C0A226A2E0963
-      2023354635463546222C0A226B2E09632023304630463046222C0A226C2E0963
-      2023393439353939222C0A226D2E09632023304332414541222C0A226E2E0963
-      2023303632354541222C0A226F2E09632023323934324542222C0A22702E0963
-      2023303532344539222C0A22712E09632023453143444534222C0A22722E0963
-      2023464646424642222C0A22732E09632023453345334533222C0A22742E0963
-      2023353835383538222C0A22752E09632023304331353441222C0A22762E0963
-      2023303632354538222C0A22772E09632023303932384541222C0A22782E0963
-      2023424343344639222C0A22792E09632023303832374541222C0A227A2E0963
-      2023453145314531222C0A22412E09632023324133424137222C0A22422E0963
-      2023304432414534222C0A22432E09632023453145354643222C0A22442E0963
-      2023464643463046222C0A22452E09632023383239324634222C0A22462E0963
-      2023313933354539222C0A22472E09632023303532304344222C0A22482E0963
-      2023394139413941222C0A22492E09632023313232464542222C0A224A2E0963
-      2023313533324542222C0A224B2E09632023304532434541222C0A224C2E0963
-      2023303632354539222C0A224D2E09632023324433434132222C0A224E2E0963
-      2023313031303130222C0A224F2E09632023434644354642222C0A22502E0963
-      2023384239414635222C0A22512E09632023343735454546222C0A22522E0963
-      2023423942454534222C0A22532E09632023354435443544222C0A22542E0963
-      2023304330433043222C0A22552E09632023394239423942222C0A22562E0963
-      2023383838383838222C0A22572E09632023324632463246222C0A22582E0963
-      2023424342434243222C0A22592E09632023464346434643222C0A225A2E0963
-      2023453845384538222C0A22602E09632023433943394339222C0A222E202E20
-      2E202E202E202B20402040202B202E202E202E202E202E202E202E202E202E20
-      2E202E202E202E20222C0A222E202E20232024202420252026202A203D202D20
-      3B203E202E202E202C2027202E202E202E202E202E202E20222C0A222E202E20
-      292021207E207B205D205E202F2028205F203A203C205B2027207D202E202E20
-      2E202E202E202E20222C0A227C20272027202720272031203220332034203520
-      362037203820392030206120622063202E202E202E202E20222C0A2264207C20
-      652066206720682069206A206B206C206D206E206F2070207120722073203C20
-      74202E202E202E20222C0A222E202E2075207620772078202F2079207A203920
-      412042206A204320442045204620472048202E202E202E20222C0A222E202E20
-      2E2049204A204B204C204D204E204F2039203920502034205120522053205420
-      55202E202E202E20222C0A222E202E202E2049204A2056205720582059203620
-      5A206A206020202E2E2E34202B2E402E232E2E202E202E20222C0A222E202E20
-      2E20242E7720252E262E72204E202A2E27203D2E2D2E3B2E72203E2E2C2E272E
-      292E2E202E202E20222C0A222E202E202E2049204A204920212E7E2E7B2E5D2E
-      5E2E2F2E282E6A205F2E4E203A2E3C2E5B2E2E202E202E20222C0A222E202E20
-      2E207D2E4A2049202E202E207C2E2720312E322E332E342E6A20352E362E372E
-      382E2E202E202E20222C0A222E202E20392E302E77207D2E6420612E2720622E
-      2E202E20632E642E652E2720662E672E682E2E202E202E20222C0A222E202E20
-      692E6A2E6B2E6C2E6D2E6E2E622E2E202E202E202E202E202E206F2E702E712E
-      722E2E202E202E20222C0A222E202E20732E742E752E762E772E782E2E202E20
-      2E202E2077202E202E202E20792E612E2E202E202E202E20222C0A222E202E20
-      7A2E412E6A20422E432E2E202E202E202E202E2077202E202E20442E452E2720
-      452E2E202E202E20222C0A222E20432E462E3920472E482E2E202E202E202E20
-      2E202E20772077207720442E442E492E4A2E2E202E202E20222C0A222E204B2E
-      4C2E4D2E4E2E482E2E202E202E202E202E202E2077202E202E20442E442E4F2E
-      502E2E202E202E20222C0A222E20512E522E532E542E552E2E202E202E202E20
-      2E202E2077202E202E202E202E202E202E202E202E202E20222C0A222E202E20
-      6520562E572E582E2E202E202E202E202E202E2077202E202E202E202E202E20
-      2E202E202E202E20222C0A222E202E20592E5A2E602E23202E202E202E202E20
-      2E202E2077202E202E20442E442E442E442E2E202E202E20222C0A222E202E20
-      2E202E202E202E202E202E202E202E202E202E20772077207720442E442E442E
-      442E2E202E202E20222C0A222E202E202E202E202E202E202E202E202E202E20
-      2E202E202E202E202E20442E442E442E442E2E202E202E20227D3B0AA10C0000
-      2F2A2058504D202A2F0A7374617469632063686172202A20756E646566696E65
-      616C6C5F32327832325F78706D5B5D203D207B0A223232203232203133322032
-      222C0A2220200963204E6F6E65222C0A222E2009632023464646464646222C0A
-      222B2009632023454245354535222C0A22402009632023464542304230222C0A
-      22232009632023464642434243222C0A22242009632023464646444644222C0A
-      22252009632023413341334133222C0A22262009632023363635353535222C0A
-      222A2009632023463234333433222C0A223D2009632023464631463146222C0A
-      222D2009632023464634333433222C0A223B2009632023464636423642222C0A
-      223E2009632023464641424142222C0A222C2009632023464645344534222C0A
-      22272009632023453245374645222C0A22292009632023313533424637222C0A
-      22212009632023424542454245222C0A227E2009632023343933353335222C0A
-      227B2009632023373633303936222C0A225D2009632023424431373443222C0A
-      225E2009632023464631393139222C0A222F2009632023464632343234222C0A
-      22282009632023464632333233222C0A225F2009632023464634303430222C0A
-      223A2009632023464639323932222C0A223C2009632023343536334639222C0A
-      225B2009632023304133324637222C0A227D2009632023443244324432222C0A
-      227C2009632023343733353335222C0A22312009632023324633314434222C0A
-      22322009632023304133314636222C0A22332009632023313833304541222C0A
-      22342009632023453232323339222C0A22352009632023464632323232222C0A
-      22362009632023464631413141222C0A22372009632023464634343434222C0A
-      22382009632023464645384538222C0A22392009632023313233334632222C0A
-      22302009632023323133444630222C0A22612009632023343033413341222C0A
-      22622009632023453036373637222C0A22632009632023424431443532222C0A
-      22642009632023304633304631222C0A22652009632023373032393943222C0A
-      22662009632023464635393539222C0A22672009632023454132463246222C0A
-      22682009632023464630453045222C0A22692009632023393332343742222C0A
-      226A2009632023303933314637222C0A226B2009632023424432373543222C0A
-      226C2009632023443344334433222C0A226D2009632023343034303430222C0A
-      226E2009632023444544364436222C0A226F2009632023464644324432222C0A
-      22702009632023463939434131222C0A22712009632023333633384441222C0A
-      22722009632023314632444531222C0A22732009632023463933443431222C0A
-      22742009632023464645414541222C0A22752009632023453632463246222C0A
-      22762009632023463930453133222C0A22772009632023304533314633222C0A
-      22782009632023324232464439222C0A22792009632023433143314331222C0A
-      227A2009632023334533453345222C0A22412009632023453045304530222C0A
-      22422009632023383538434544222C0A22432009632023304533334635222C0A
-      22442009632023313333364634222C0A22452009632023443144384644222C0A
-      22462009632023324432444436222C0A22472009632023304233314635222C0A
-      22482009632023453231343242222C0A22492009632023423342334233222C0A
-      224A2009632023343134313431222C0A224B2009632023453345334533222C0A
-      224C2009632023304633364637222C0A224D2009632023414442354441222C0A
-      224E2009632023363237364539222C0A224F2009632023394637344332222C0A
-      22502009632023464630363036222C0A22512009632023464633443344222C0A
-      22522009632023343234323432222C0A22532009632023464646424642222C0A
-      22542009632023313333394637222C0A22552009632023313633344338222C0A
-      22562009632023343035464639222C0A22572009632023464641384138222C0A
-      22582009632023464641394139222C0A22592009632023423842384238222C0A
-      225A2009632023343934393439222C0A22602009632023453545354535222C0A
-      22202E09632023463941384144222C0A222E2E09632023323634364635222C0A
-      222B2E09632023313933454635222C0A22402E09632023453745374537222C0A
-      22232E09632023304333324636222C0A22242E09632023373038374641222C0A
-      22252E09632023464630443044222C0A22262E09632023443132333438222C0A
-      222A2E09632023304433314634222C0A223D2E09632023313233304546222C0A
-      222D2E09632023463934343438222C0A223B2E09632023343035414634222C0A
-      223E2E09632023464631363136222C0A222C2E09632023313833304539222C0A
-      22272E09632023463931423146222C0A22292E09632023353837334641222C0A
-      22212E09632023394639334531222C0A227E2E09632023304433334636222C0A
-      227B2E09632023304633324633222C0A225D2E09632023463932333238222C0A
-      225E2E09632023464645394539222C0A222F2E09632023363938314641222C0A
-      22282E09632023423842464534222C0A225F2E09632023304533354637222C0A
-      223A2E09632023463946414646222C0A223C2E09632023333635374638222C0A
-      225B2E09632023333633453633222C0A227D2E09632023304333344637222C0A
-      227C2E09632023313233384637222C0A22312E09632023354337364641222C0A
-      22322E09632023383639304335222C0A22332E09632023304133314634222C0A
-      22342E09632023313033374636222C0A22352E09632023344436414639222C0A
-      22362E09632023354137354641222C0A22372E09632023313333394633222C0A
-      22382E09632023304233324632222C0A22392E09632023434244304537222C0A
-      22302E09632023433243384541222C0A22612E09632023414642304235222C0A
-      222E202E202E202E202E202E202E202E202E202E202E202E202E202E202E202E
-      202E202E202E202E202E202E20222C0A222E202E202B204020232024202E202E
-      202E202E202E202E202E202E202E202E202E202E202E202E202E202E20222C0A
-      222E20252026202A203D202D203B203E202C202E202E202E202E202E202E202E
-      20272029202E202E202E202E20222C0A222E2021207E207B205D205E202F2028
-      205F203A202E202E202B204020232024203C205B202E202E202E202E20222C0A
-      222E207D207C2031203220332034203520362037203820252026202A203D202D
-      20392030202C202E202E202E20222C0A222E207D206120622063206420322065
-      20362066202E2021207E206720682069206A206B205F203A202E202E20222C0A
-      222E206C206D206E206F20702071206A207220732074207D207C207520762077
-      20782035203620372038202E20222C0A222E2079207A2041202E202E202E2042
-      204320442045207D20612062204620472048203D20362066202E202E20222C0A
-      222E2049204A204B202E202E202E202E2045204C204C204D206D204E206A204F
-      20662028205020512074202E20222C0A222E20492052204B202E202B20402023
-      205320452054205B2055205B2056202E202E202C20572058202E202E20222C0A
-      222E2059205A206020252026202A203D202D203B20202E2E2E6A202B2E2E202E
-      202E202E202E202E202E202E20222C0A222E20402E49202E2021207E20672068
-      205E202F206B207720232E5B20242E2E202E202E202E202E202E202E20222C0A
-      222E202E202E202E207D207C207520252E2F20262E2A2E3D2E2D2E3B2E6A2024
-      2E2E202E202E202E202E202E20222C0A222E202E202E202E207D20612062203E
-      2E762047202C2E272E66202E2056206A20292E2E202E202E202E202E20222C0A
-      222E202E202E202E206C206D206E20212E7E2E7B2E5D2E502051205E2E2E2029
-      2E6A202F2E2E202E202E202E20222C0A222E202E202E202E2079207A20282E5F
-      2E29203A2E2C20572058202E202E202E202F2E6A203C2E2E202E202E20222C0A
-      222E202E202E202E2049205B2E7D2E7C2E3A2E2E202E202E202E202E202E202E
-      202E20242E6A20312E2E202E20222C0A222E202E202E202E20322E332E342E27
-      202E202E202E202E202E202E202E202E202E202E20352E362E2E202E20222C0A
-      222E202E202E202E20372E382E392E2E202E202E202E202E202E202E202E202E
-      202E202E202E202E202E202E20222C0A222E202E202E202E20302E612E2E202E
-      202E202E202E202E202E202E202E202E202E202E202E202E202E202E20222C0A
-      222E202E202E202E202E202E202E202E202E202E202E202E202E202E202E202E
-      202E202E202E202E202E202E20222C0A222E202E202E202E202E202E202E202E
-      202E202E202E202E202E202E202E202E202E202E202E202E202E202E20227D3B
-      0A1B0B00002F2A2058504D202A2F0A7374617469632063686172202A20626C6F
-      636B5F32327832325F78706D5B5D203D207B0A22323220323220313038203222
-      2C0A2220200963204E6F6E65222C0A222E2009632023464646464646222C0A22
-      2B2009632023463746374637222C0A22402009632023444244424442222C0A22
-      232009632023443444344434222C0A22242009632023464546454645222C0A22
-      252009632023424642454242222C0A22262009632023363936363537222C0A22
-      2A2009632023353435303345222C0A223D2009632023363936353536222C0A22
-      2D2009632023424542444241222C0A223B2009632023444144414441222C0A22
-      3E2009632023363936323434222C0A222C2009632023424541413542222C0A22
-      272009632023443342433631222C0A22292009632023424541423543222C0A22
-      212009632023363936363536222C0A227E2009632023444143323634222C0A22
-      7B2009632023463644423730222C0A225D2009632023464445313733222C0A22
-      5E2009632023463744423731222C0A222F2009632023444243333635222C0A22
-      282009632023424641423543222C0A225F2009632023464545323734222C0A22
-      3A2009632023433543344331222C0A223C2009632023433643354332222C0A22
-      5B2009632023464645333735222C0A227D2009632023463044353644222C0A22
-      7C2009632023423841343534222C0A22312009632023393538363438222C0A22
-      322009632023363235463533222C0A22332009632023423741333534222C0A22
-      342009632023454644353644222C0A22352009632023464445313734222C0A22
-      362009632023463744433731222C0A22372009632023444243333634222C0A22
-      382009632023424641393534222C0A22392009632023363935413230222C0A22
-      302009632023343633423130222C0A22612009632023333833353244222C0A22
-      622009632023333733353245222C0A22632009632023343233383131222C0A22
-      642009632023363435363230222C0A22652009632023424441383534222C0A22
-      662009632023363935373130222C0A22672009632023424539393033222C0A22
-      682009632023423038443030222C0A22692009632023344434363241222C0A22
-      6A2009632023344134333242222C0A226B2009632023394638303034222C0A22
-      6C2009632023414338413037222C0A226D2009632023363235323131222C0A22
-      6E2009632023363635383230222C0A226F2009632023444141463030222C0A22
-      702009632023463643353030222C0A22712009632023443441393030222C0A22
-      722009632023353434433241222C0A22732009632023353034383242222C0A22
-      742009632023424539393034222C0A22752009632023444442313034222C0A22
-      762009632023433539453035222C0A22772009632023414338423037222C0A22
-      782009632023443342433630222C0A22792009632023424541393534222C0A22
-      7A2009632023464543423030222C0A22412009632023443441413030222C0A22
-      422009632023353034393242222C0A22432009632023424639393035222C0A22
-      442009632023453442373035222C0A22452009632023444442323035222C0A22
-      462009632023354334443131222C0A22472009632023333733303133222C0A22
-      482009632023363235313046222C0A22492009632023464643433030222C0A22
-      4A2009632023453542383036222C0A224B2009632023413538343034222C0A22
-      4C2009632023343333353030222C0A224D2009632023423739333030222C0A22
-      4E2009632023424539383034222C0A224F2009632023353034303030222C0A22
-      502009632023353034303031222C0A22512009632023463743363030222C0A22
-      522009632023444241463030222C0A22532009632023423839343036222C0A22
-      542009632023363936323436222C0A22552009632023363635463437222C0A22
-      562009632023413638363042222C0A22572009632023433439443035222C0A22
-      582009632023444542323035222C0A22592009632023424639413036222C0A22
-      5A2009632023363935423232222C0A22602009632023363936323435222C0A22
-      202E09632023433543344245222C0A222E2E09632023433543344246222C0A22
-      2B2E09632023363235353235222C0A22402E09632023414338423042222C0A22
-      232E09632023424542444237222C0A22242E09632023424542444238222C0A22
-      252E09632023423839343034222C0A22262E09632023434441343030222C0A22
-      2A2E09632023463646364636222C0A223D2E09632023384337323041222C0A22
-      2D2E09632023343233353030222C0A223B2E09632023394237453036222C0A22
-      3E2E09632023363835423232222C0A222C2E09632023354635413437222C0A22
-      272E09632023333733353241222C0A22292E09632023363235433436222C0A22
-      2E202E202E202E202E202E202E202E202E202E202E202E202E202E202E202E20
-      2E202E202E202E202E202E20222C0A222E202E202E202E202E202E202E202E20
-      2E202E202B204020232040202B2024202E202E202E202E202E202E20222C0A22
-      2E202E202E202E202E202E202E202E202B204020252026202A203D202D203B20
-      2B2024202E202E202E202E20222C0A222E202E202E202E202E202E202B204020
-      252026203E202C20272029203E2021202D203B202B2024202E202E20222C0A22
-      2E202E202E202E202B204020252026203E202C207E207B205D205E202F202820
-      3E2021202D203B202B202420222C0A222E202E202B204020252026203E202C20
-      7E207B205F205F205F205F205F205E202F2028203E2021203A202B20222C0A22
-      2E202B203C2026203E202C207E207B205F205F205F205B205B205B205B205F20
-      5F207D207C20312032204020222C0A222E204020322031203320342035205F20
-      5F205B205B205B205B205B205B203620372038203920302061202320222C0A22
-      2E20232062206320642065207E2036205F205B205B205B205B20362037203820
-      392066206720682069202320222C0A222E2023206A206B206C206D206E206520
-      7E2036205F203620372038203920662067206F207020712072202320222C0A22
-      2E202320732074207520762077206D206E206520782079203920662067206F20
-      70207A207A20412072202320222C0A222E202320422043204420442045207620
-      772046204720482067206F2070207A207A207A204920412072202320222C0A22
-      2E2023204220432044204A204420442045204B204C204D2070207A207A207A20
-      492049204920412072202320222C0A222E2023204220432044204A204A204A20
-      44204E204F2071207A207A2049204920492049204920412072202320222C0A22
-      2E2023204220432044204A204A204A204A204320502041207A20492049204920
-      492051205220532054204020222C0A222E204020552056205720582044204A20
-      4A204320502041207A20492049205120522059205A206020202E2B20222C0A22
-      2E202B202E2E55202B2E402E5720582044204320502041207A20512052205920
-      5A206020232E3B202B202420222C0A222E2024202B204020242E55202B2E402E
-      5720252E5020262E6F2059205A206020232E3B202A2E242024202420222C0A22
-      2E202E20242024202B204020242E55202B2E3D2E2D2E3B2E3E2E6020232E3B20
-      2A2E2420242024202E202E20222C0A222E202E202E202E20242024202B204020
-      242E2C2E272E292E232E3B202A2E2420242024202E202E202E202E20222C0A22
-      2E202E202E202E202E202E20242024202B20402023203B202A2E242024202420
-      2E202E202E202E202E202E20222C0A222E202E202E202E202E202E202E202E20
-      2420242024202420242024202E202E202E202E202E202E202E202E20227D3B0A
-      CF1000002F2A2058504D202A2F0A7374617469632063686172202A2064697265
-      63746F72795F32327832325F78706D5B5D203D207B0A22323220323220313939
-      2032222C0A2220200963204E6F6E65222C0A222E200963202346464646464622
-      2C0A222B2009632023343834413437222C0A2240200963202335343535353422
-      2C0A22232009632023373737383639222C0A2224200963202343324338424422
-      2C0A22252009632023423042304142222C0A2226200963202333443344334422
-      2C0A222A2009632023313731383137222C0A223D200963202334423442344222
-      2C0A222D2009632023384538453845222C0A223B200963202336393645363522
-      2C0A223E2009632023424443324135222C0A222C200963202343384343423322
-      2C0A22272009632023443044304335222C0A2229200963202336413643363922
-      2C0A22212009632023353735413535222C0A227E200963202343384341433722
-      2C0A227B2009632023323032303230222C0A225D200963202336373637363722
-      2C0A225E2009632023463246324632222C0A222F200963202341374137413722
-      2C0A22282009632023354335443530222C0A225F200963202341314135384422
-      2C0A223A2009632023423942444134222C0A223C200963202336353639344522
-      2C0A225B2009632023313631383135222C0A227D200963202335373539344122
-      2C0A227C2009632023433143354145222C0A2231200963202344354436434222
-      2C0A22322009632023344234363441222C0A2233200963202333433343334322
-      2C0A22342009632023444644464446222C0A2235200963202346344634463422
-      2C0A22362009632023433743384337222C0A2237200963202336373637363022
-      2C0A22382009632023364537303546222C0A2239200963202341464231393822
-      2C0A22302009632023414141433933222C0A2261200963202339373937393022
-      2C0A22622009632023314431443144222C0A2263200963202333413341333122
-      2C0A22642009632023413941433935222C0A2265200963202343324336414222
-      2C0A22662009632023443744384342222C0A2267200963202341464146414622
-      2C0A22682009632023383738383837222C0A2269200963202343314331433122
-      2C0A226A2009632023444344434443222C0A226B200963202338413843383922
-      2C0A226C2009632023354535463532222C0A226D200963202339383943383522
-      2C0A226E2009632023433543384233222C0A226F200963202343384338424622
-      2C0A22702009632023353035303530222C0A2271200963202330423042304222
-      2C0A22722009632023393639413833222C0A2273200963202343434430423922
-      2C0A22742009632023444244444441222C0A2275200963202341313946413222
-      2C0A22762009632023393339333933222C0A2277200963202345354535453522
-      2C0A22782009632023463146314631222C0A2279200963202343334334433322
-      2C0A227A2009632023364236413632222C0A2241200963202337313734363122
-      2C0A22422009632023423642414131222C0A2243200963202344364438433922
-      2C0A22442009632023394439453944222C0A2245200963202332333233323322
-      2C0A22462009632023353735433533222C0A2247200963202343304333414122
-      2C0A22482009632023443644384337222C0A2249200963202343344335433422
-      2C0A224A2009632023373137323731222C0A224B200963202345394539453922
-      2C0A224C2009632023384539303844222C0A224D200963202334453446343422
-      2C0A224E2009632023394541303839222C0A224F200963202343334337414522
-      2C0A22502009632023434343454246222C0A2251200963202335383538353322
-      2C0A22522009632023303530363035222C0A2253200963202334343437343222
-      2C0A22542009632023434143454237222C0A2255200963202344334433434122
-      2C0A22562009632023393839393938222C0A2257200963202339464130394622
-      2C0A22582009632023453745384537222C0A2259200963202345454545454522
-      2C0A225A2009632023434243444341222C0A2260200963202336353636354222
-      2C0A22202E09632023383738393736222C0A222E2E0963202342374242413022
-      2C0A222B2E09632023433943434237222C0A22402E0963202338393839374522
-      2C0A22232E09632023313131333130222C0A22242E0963202333453431334322
-      2C0A22252E09632023433243364144222C0A22262E0963202343414346433622
-      2C0A222A2E09632023414541464145222C0A223D2E0963202342414241424122
-      2C0A222D2E09632023454445444544222C0A223B2E0963202345314530444522
-      2C0A223E2E09632023343834423436222C0A222C2E0963202338463930373922
-      2C0A22272E09632023423142333938222C0A22292E0963202338413845373522
-      2C0A22212E09632023333233333237222C0A227E2E0963202332373241323522
-      2C0A227B2E09632023413441383846222C0A225D2E0963202343444430424222
-      2C0A225E2E09632023433543384333222C0A222F2E0963202336343637363222
-      2C0A22282E09632023394539463945222C0A225F2E0963202343364336433622
-      2C0A223A2E09632023343034323346222C0A223C2E0963202337373739363822
-      2C0A225B2E09632023393339363831222C0A227D2E0963202336373639344322
-      2C0A227C2E09632023304430463043222C0A22312E0963202338323834373122
-      2C0A22322E09632023424643334138222C0A22332E0963202337323736353922
-      2C0A22342E09632023354235433542222C0A22352E0963202339423943394222
-      2C0A22362E09632023333033323246222C0A22372E0963202339353938383322
-      2C0A22382E09632023344234433331222C0A22392E0963202333373342333422
-      2C0A22302E09632023394139443836222C0A22612E0963202342434331413422
-      2C0A22622E09632023383138343635222C0A22632E0963202334363437343622
-      2C0A22642E09632023333333353332222C0A22652E0963202337413744364122
-      2C0A22662E09632023393139343737222C0A22672E0963202333363338323522
-      2C0A22682E09632023334134303335222C0A22692E0963202339413943383122
-      2C0A226A2E09632023424142464132222C0A226B2E0963202338433846373022
-      2C0A226C2E09632023324633323244222C0A226D2E0963202337423743374222
-      2C0A226E2E09632023343734373343222C0A226F2E0963202338323833364522
-      2C0A22702E09632023374638323633222C0A22712E0963202332393239314322
-      2C0A22722E09632023333833393241222C0A22732E0963202338353838364222
-      2C0A22742E09632023393039333734222C0A22752E0963202333443344333022
-      2C0A22762E09632023353335333533222C0A22772E0963202335433544344522
-      2C0A22782E09632023383638393734222C0A22792E0963202335363541334622
-      2C0A227A2E09632023324132413144222C0A22412E0963202336383643353322
-      2C0A22422E09632023414642343939222C0A22432E0963202342454331413422
-      2C0A22442E09632023393639393743222C0A22452E0963202333463431333022
-      2C0A22462E09632023333933413339222C0A22472E0963202336353636353922
-      2C0A22482E09632023374237463634222C0A22492E0963202332423243313922
-      2C0A224A2E09632023354636313436222C0A224B2E0963202339393945383122
-      2C0A224C2E09632023423842453946222C0A224D2E0963202339454131383422
-      2C0A224E2E09632023344434463336222C0A224F2E0963202331303131313022
-      2C0A22502E09632023363836423538222C0A22512E0963202335353539343022
-      2C0A22522E09632023303130323031222C0A22532E0963202330303030303022
-      2C0A22542E09632023344635333341222C0A22552E0963202338303836363322
-      2C0A22562E09632023414141463932222C0A22572E0963202342414246413422
-      2C0A22582E09632023413441393843222C0A22592E0963202335383542334322
-      2C0A225A2E09632023313331353132222C0A22602E0963202335413543344222
-      2C0A22202B09632023323332333136222C0A222E2B0963202334343437333222
-      2C0A222B2B09632023363636413437222C0A22402B0963202339333937373622
-      2C0A22232B09632023394641333834222C0A22242B0963202336363638344222
-      2C0A22252B09632023333833393238222C0A22262B0963202335353541334422
-      2C0A222A2B09632023373137343444222C0A223D2B0963202336313635344122
-      2C0A222D2B09632023323232353230222C0A223B2B0963202330393042303822
-      2C0A223E2B09632023344334463338222C0A222C2B0963202331343137313222
-      2C0A22272B09632023303730383037222C0A222E202E202E202E202E202E202E
-      202E202B2040202E202E202E202E202E202E202E202E202E202E202E202E2022
-      2C0A222E202E202E202E202E202E202E202E2023202420252026202E202E202E
-      202E202E202E202E202E202E202E20222C0A222E202A202E202E202E203D202D
-      202E203B203E202C20272029202E202E202E202E202E202E202E202E202E2022
-      2C0A222E2021207E207B202E205D205E202F2028205F203A203E203C205B202E
-      202E202E202E202E202E202E202E20222C0A222E207D207C2031203220332034
-      20352036203720382039203020612062202E202E202E202E202E202E202E2022
-      2C0A222E2063206420652066206720682069205E206A206B206C206D206E206F
-      20702071202E202E202E202E202E20222C0A222E202E2072203E203E20732074
-      20752076207720782079207A20412042204320442045202E202E202E202E2022
-      2C0A222E202E2046203E203E203E204720482049204A20492035204B204C204D
-      204E204F205020512052202E202E20222C0A222E202E2053203E203E203E203E
-      203E205420552056205720582059205A206020202E2E2E2B2E402E232E2E2022
-      2C0A222E202E20242E3A203E203E203E203E203E20252E262E2A2E68203D2E2D
-      2E3B2E3E2E2C2E272E292E212E2E20222C0A222E202E207E2E7B2E3E203E203E
-      203E203E203E2047205D2E5E2E2F2E282E5F2E3A2E3C2E5B2E7D2E7C2E2E2022
-      2C0A222E202E202E20312E3E203E203E203E203E203E203E203E20322E332E34
-      2E352E362E3C2E372E382E2E202E20222C0A222E202E202E20392E302E612E3E
-      203E203E203E203E203E203E20622E632E2D20642E652E662E672E2E202E2022
-      2C0A222E202E202E202E20682E692E6A2E3E203E203E203E203E203E206B2E6C
-      2E6D2E6E2E6F2E702E712E2E202E20222C0A222E202E202E202E202E20722E73
-      2E6A2E3E203E203E203E203E20742E752E762E772E782E792E2E202E202E2022
-      2C0A222E202E202E202E202E202E207A2E412E422E432E3E203E203E20442E45
-      2E462E472E482E492E2E202E202E20222C0A222E202E202E202E202E202E202E
-      202E204A2E4B2E4C2E3E203E204D2E4E2E4F2E502E512E522E532E532E2E2022
-      2C0A222E202E202E202E202E202E202E202E202E20542E552E562E572E582E59
-      2E5A2E602E202B532E532E532E532E222C0A222E202E202E202E202E202E202E
-      202E202E202E202E2B2B2B402B232B242B7E2E252B532E532E532E532E2E2022
-      2C0A222E202E202E202E202E202E202E202E202E202E202E20392E262B2A2B3D
-      2B2D2B3B2B532E532E532E2E202E20222C0A222E202E202E202E202E202E202E
-      202E202E202E202E202E202E203E2B2C2B272B532E532E2E202E202E202E2022
-      2C0A222E202E202E202E202E202E202E202E202E202E202E202E202E202E202E
-      20532E2E202E202E202E202E202E20227D3B0A180300002F2A2058504D202A2F
-      0A7374617469632063686172202A2069665F32327832325F78706D5B5D203D20
-      7B0A2232322032322031312031222C0A22200963204E6F6E65222C0A222E0963
-      2023464646464646222C0A222B09632023453345334533222C0A224009632023
-      373237323732222C0A222309632023353535353535222C0A2224096320233339
-      33393339222C0A222509632023384538453845222C0A22260963202331443144
-      3144222C0A222A09632023414141414141222C0A223D09632023433743374337
-      222C0A222D09632023303030303030222C0A222E2E2E2E2E2E2E2E2E2E2E2E2E
-      2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E
-      2E2E2E222C0A222E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E222C0A
-      222E2E2E2E2E2E2E2B4023232424252B2E2E2E2E2E2E2E222C0A222E2E2E2E2E
-      2E2B262A2E2E2E3D26262A2E2E2E2E2E2E222C0A222E2E2E2E2E2E26242E2E2E
-      2E2E252D262E2E2E2E2E2E222C0A222E2E2E2E2E2A2D262E2E2E2E2E2E2D2D2A
-      2E2E2E2E2E222C0A222E2E2E2E2E3D2D2D2E2E2E2E2E2E2D2D2A2E2E2E2E2E22
-      2C0A222E2E2E2E2E2E3D3D2E2E2E2E2E252D2D2B2E2E2E2E2E222C0A222E2E2E
-      2E2E2E2E2E2E2E2E2E3D262D402E2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2E
-      2E2E402D26252E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2E2E26243D2E2E
-      2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2E2A262E2E2E2E2E2E2E2E2E2E
-      2E222C0A222E2E2E2E2E2E2E2E2E2A402E2E2E2E2E2E2E2E2E2E2E222C0A222E
-      2E2E2E2E2E2E2E2E3D3D2E2E2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E
-      2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2B26262B2E
-      2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2A2D2D2A2E2E2E2E2E2E2E
-      2E2E2E222C0A222E2E2E2E2E2E2E2E2E40402E2E2E2E2E2E2E2E2E2E2E222C0A
-      222E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E
-      2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2E2E2E
-      2E2E2E2E2E2E2E2E2E2E2E227D3B0ACB0D00002F2A2058504D202A2F0A737461
-      7469632063686172202A2069666465665F32327832325F78706D5B5D203D207B
-      0A223232203232203135312032222C0A2220200963204E6F6E65222C0A222E20
-      09632023464646464646222C0A222B2009632023464646394639222C0A224020
-      09632023464644394439222C0A22232009632023463546354635222C0A222420
-      09632023433743374337222C0A22252009632023463643444344222C0A222620
-      09632023464635363536222C0A222A2009632023464634393439222C0A223D20
-      09632023464639423942222C0A222D2009632023464643354335222C0A223B20
-      09632023464645444544222C0A223E2009632023464646444644222C0A222C20
-      09632023433943394339222C0A22272009632023334333433343222C0A222920
-      09632023333733373337222C0A22212009632023443439353935222C0A227E20
-      09632023464632383238222C0A227B2009632023464630453045222C0A225D20
-      09632023464631443144222C0A225E2009632023464633323332222C0A222F20
-      09632023464636373637222C0A22282009632023464638343834222C0A225F20
-      09632023464641364136222C0A223A2009632023464644304430222C0A223C20
-      09632023464646384638222C0A225B2009632023434543454345222C0A227D20
-      09632023334533453345222C0A227C2009632023314431443144222C0A223120
-      09632023433337453745222C0A22322009632023464632343234222C0A223320
-      09632023464631303130222C0A22342009632023464630443044222C0A223520
-      09632023464630463046222C0A22362009632023464630373037222C0A223720
-      09632023464630303030222C0A22382009632023464631353135222C0A223920
-      09632023464633333333222C0A22302009632023464638393839222C0A226120
-      09632023464641454145222C0A22622009632023464645354535222C0A226320
-      09632023464646434643222C0A22642009632023454645464546222C0A226520
-      09632023364336433643222C0A22662009632023303830383038222C0A226720
-      09632023423036363636222C0A22682009632023464631423142222C0A226920
-      09632023464630383038222C0A226A2009632023453330303030222C0A226B20
-      09632023373230363036222C0A226C2009632023353530433043222C0A226D20
-      09632023353531343134222C0A226E2009632023333930383038222C0A226F20
-      09632023333930313031222C0A22702009632023384530423042222C0A227120
-      09632023453331373137222C0A22722009632023464635423542222C0A227320
-      09632023464646314631222C0A22742009632023464446444644222C0A227520
-      09632023374537453745222C0A22762009632023303030303030222C0A227720
-      09632023413735433543222C0A22782009632023453331333133222C0A227920
-      09632023314430353035222C0A227A2009632023414132303230222C0A224120
-      09632023464631333133222C0A22422009632023464631323132222C0A224320
-      09632023464631463146222C0A22442009632023433732313231222C0A224520
-      09632023314430373037222C0A22462009632023314430333033222C0A224720
-      09632023414130433043222C0A22482009632023464631453145222C0A224920
-      09632023464642334233222C0A224A2009632023383638363836222C0A224B20
-      09632023303630363036222C0A224C2009632023413436343634222C0A224D20
-      09632023464632323232222C0A224E2009632023314430303030222C0A224F20
-      09632023464633373337222C0A22502009632023464632443244222C0A225120
-      09632023464631393139222C0A22522009632023384530433043222C0A225320
-      09632023464633303330222C0A22542009632023464642464246222C0A225520
-      09632023394436433643222C0A22562009632023414131423142222C0A225720
-      09632023464631363136222C0A22582009632023464632393239222C0A225920
-      09632023464634323432222C0A225A2009632023464634343434222C0A226020
-      09632023414132393239222C0A22202E09632023464644324432222C0A222E2E
-      09632023383138313831222C0A222B2E09632023383637433743222C0A22402E
-      09632023433737353735222C0A22232E09632023464630343034222C0A22242E
-      09632023464631413141222C0A22252E09632023414133463346222C0A22262E
-      09632023464644424442222C0A222A2E09632023464646344634222C0A223D2E
-      09632023433739363936222C0A222D2E09632023433736433643222C0A223B2E
-      09632023464637393739222C0A223E2E09632023464630353035222C0A222C2E
-      09632023384530363036222C0A22272E09632023453332443244222C0A22292E
-      09632023464643414341222C0A22212E09632023383538353835222C0A227E2E
-      09632023464646374637222C0A227B2E09632023464643434343222C0A225D2E
-      09632023464641394139222C0A225E2E09632023464638333833222C0A222F2E
-      09632023433733373337222C0A22282E09632023373230333033222C0A225F2E
-      09632023464632333233222C0A223A2E09632023464642434243222C0A223C2E
-      09632023463846384638222C0A225B2E09632023373637363736222C0A227D2E
-      09632023373237303730222C0A227C2E09632023314431333133222C0A22312E
-      09632023384533433343222C0A22322E09632023464634333433222C0A22332E
-      09632023464636453645222C0A22342E09632023464645304530222C0A22352E
-      09632023453645364536222C0A22362E09632023354635463546222C0A22372E
-      09632023304630463046222C0A22382E09632023393839383938222C0A22392E
-      09632023333933393339222C0A22302E09632023464646364636222C0A22612E
-      09632023464645344534222C0A22622E09632023464646424642222C0A22632E
-      09632023453345334533222C0A22642E09632023353835383538222C0A22652E
-      09632023313031303130222C0A22662E09632023394139413941222C0A22672E
-      09632023414141414141222C0A22682E09632023453145314531222C0A22692E
-      09632023304130413041222C0A226A2E09632023393739373937222C0A226B2E
-      09632023373237323732222C0A226C2E09632023353935393539222C0A226D2E
-      09632023354435443544222C0A226E2E09632023304330433043222C0A226F2E
-      09632023394239423942222C0A22702E09632023383838383838222C0A22712E
-      09632023324632463246222C0A22722E09632023424342434243222C0A22732E
-      09632023464346434643222C0A22742E09632023453845384538222C0A222E20
-      2E202E202E202E202B20402040202B202E202E202E202E202E202E202E202E20
-      2E202E202E202E202E20222C0A222E202E20232024202420252026202A203D20
-      2D203B203E202E202E202E202E202E202E202E202E202E202E20222C0A222E20
-      2E202C202720292021207E207B205D205E202F2028205F203A203C202E202E20
-      2E202E202E202E202E20222C0A222E202E205B207D207C203120322033203420
-      3520362037203820392030206120622063202E202E202E202E20222C0A222E20
-      2E206420652066206720682069206A206B206C206D206E206F20702071207220
-      5F2073202E202E202E20222C0A222E202E2074207520762077205D2078207920
-      7A204120422043204420452046204720482049202E202E202E20222C0A222E20
-      2E202E204A204B204C204D204E206F207E204F20502051203420522076207920
-      532054202E202E202E20222C0A222E202E202E204A204B205520562076204E20
-      362037205720582059205A20762076206020202E2E202E202E20222C0A222E20
-      2E202E202E2E76202B2E402E762076206920692069203620232E242E76207620
-      252E262E2E202E202E20222C0A222E202E202E204A204B204A202A2E3D2E2D2E
-      3B2E5E2041203E2E232E2C2E76207620272E292E2E202E202E20222C0A222E20
-      2E202E20212E4B204A202E202E202E207E2E7B2E5D2E5E2E2F2E46207620282E
-      5F2E3A2E2E202E202E20222C0A222E202E203C2E5B2E7620212E2E202E202E20
-      2E202E202E207D2E76207C2E312E322E332E342E2E202E202E20222C0A222E20
-      2E20352E362E372E382E2E202E202E202E202E207C20392E24202E20302E262E
-      612E622E2E202E202E20222C0A222E202E20632E642E652E662E2E202E202E20
-      2E20672E7C202E202E202E202E202E202E202E202E202E202E20222C0A222E20
-      2E20682E642E692E6A2E2E202E202E202E20672E6B2E2E202E202E202E202E20
-      2E202E202E202E202E20222C0A222E202E20632E6C2E652E662E2E202E202E20
-      2E20242024202E202E202E202E202E202E202E202E202E202E20222C0A222E20
-      2E20632E642E652E662E2E202E202E202E202E202E202E202E202E202E202E20
-      2E202E202E202E202E20222C0A222E202E20632E6D2E6E2E6F2E2E202E202E20
-      632E7C207C20632E2E202E202E202E202E202E202E202E202E20222C0A222E20
-      2E206420702E712E722E2E202E202E20672E76207620672E2E202E202E202E20
-      2E202E202E202E202E20222C0A222E202E20732E742E2C2023202E202E202E20
-      2E206B2E6B2E2E202E202E202E202E202E202E202E202E202E20222C0A222E20
-      2E202E202E202E202E202E202E202E202E202E202E202E202E202E202E202E20
-      2E202E202E202E202E20222C0A222E202E202E202E202E202E202E202E202E20
-      2E202E202E202E202E202E202E202E202E202E202E202E202E20227D3B0A3C0E
-      00002F2A2058504D202A2F0A7374617469632063686172202A2069666E646566
-      5F32327832325F78706D5B5D203D207B0A223232203232203135382032222C0A
-      2220200963204E6F6E65222C0A222E2009632023464646464646222C0A222B20
-      09632023464646394639222C0A22402009632023464644394439222C0A222320
-      09632023463546354635222C0A22242009632023433743374337222C0A222520
-      09632023463643444344222C0A22262009632023464635363536222C0A222A20
-      09632023464634393439222C0A223D2009632023464639423942222C0A222D20
-      09632023464643354335222C0A223B2009632023464645444544222C0A223E20
-      09632023464646444644222C0A222C2009632023433943394339222C0A222720
-      09632023334333433343222C0A22292009632023333733373337222C0A222120
-      09632023443439353935222C0A227E2009632023464632383238222C0A227B20
-      09632023464630453045222C0A225D2009632023464631443144222C0A225E20
-      09632023464633323332222C0A222F2009632023464636373637222C0A222820
-      09632023464638343834222C0A225F2009632023464641364136222C0A223A20
-      09632023464644304430222C0A223C2009632023464646384638222C0A225B20
-      09632023434543454345222C0A227D2009632023334533453345222C0A227C20
-      09632023314431443144222C0A22312009632023433337453745222C0A223220
-      09632023464632343234222C0A22332009632023464631303130222C0A223420
-      09632023464630443044222C0A22352009632023373230373037222C0A223620
-      09632023373230333033222C0A22372009632023464630303030222C0A223820
-      09632023464631353135222C0A22392009632023464633333333222C0A223020
-      09632023464638393839222C0A22612009632023464641454145222C0A226220
-      09632023464645354535222C0A22632009632023464646434643222C0A226420
-      09632023454645464546222C0A22652009632023364336433643222C0A226620
-      09632023303830383038222C0A22672009632023423036363636222C0A226820
-      09632023464631423142222C0A22692009632023464630383038222C0A226A20
-      09632023414130303030222C0A226B2009632023303030303030222C0A226C20
-      09632023414132393239222C0A226D2009632023464632353235222C0A226E20
-      09632023464630343034222C0A226F2009632023464631343134222C0A227020
-      09632023464631413141222C0A22712009632023464635423542222C0A227220
-      09632023464646314631222C0A22732009632023464446444644222C0A227420
-      09632023374537453745222C0A22752009632023413735433543222C0A227620
-      09632023453332343234222C0A22772009632023314430353035222C0A227820
-      09632023314430323032222C0A22792009632023453331303130222C0A227A20
-      09632023464631463146222C0A22412009632023464632413241222C0A224220
-      09632023464633463346222C0A22432009632023464631363136222C0A224420
-      09632023464631323132222C0A22452009632023464631453145222C0A224620
-      09632023464642334233222C0A22472009632023383638363836222C0A224820
-      09632023303630363036222C0A22492009632023413436343634222C0A224A20
-      09632023464632323232222C0A224B2009632023464630333033222C0A224C20
-      09632023464633373337222C0A224D2009632023464632443244222C0A224E20
-      09632023464631393139222C0A224F2009632023464631313131222C0A225020
-      09632023464632453245222C0A22512009632023464633303330222C0A225220
-      09632023464642464246222C0A22532009632023394436433643222C0A225420
-      09632023464632393239222C0A22552009632023464630313031222C0A225620
-      09632023464630323032222C0A22572009632023433730353035222C0A225820
-      09632023433730303030222C0A22592009632023464634323432222C0A225A20
-      09632023464634343434222C0A22602009632023464630393039222C0A22202E
-      09632023464633453345222C0A222E2E09632023464644324432222C0A222B2E
-      09632023383138313831222C0A22402E09632023383637433743222C0A22232E
-      09632023464639363936222C0A22242E09632023414130353035222C0A22252E
-      09632023373230343034222C0A22262E09632023464630373037222C0A222A2E
-      09632023464632303230222C0A223D2E09632023464632363236222C0A222D2E
-      09632023464635453545222C0A223B2E09632023464644424442222C0A223E2E
-      09632023464646344634222C0A222C2E09632023464643304330222C0A22272E
-      09632023464638423842222C0A22292E09632023414135313531222C0A22212E
-      09632023314430363036222C0A227E2E09632023464631333133222C0A227B2E
-      09632023464630353035222C0A225D2E09632023464630413041222C0A225E2E
-      09632023464643414341222C0A222F2E09632023383538353835222C0A22282E
-      09632023464646374637222C0A225F2E09632023314431373137222C0A223A2E
-      09632023333932363236222C0A223C2E09632023433736363636222C0A225B2E
-      09632023464634373437222C0A227D2E09632023464630363036222C0A227C2E
-      09632023464632333233222C0A22312E09632023464642434243222C0A22322E
-      09632023463846384638222C0A22332E09632023373637363736222C0A22342E
-      09632023373237323732222C0A22352E09632023314431393139222C0A22362E
-      09632023384535463546222C0A22372E09632023464636423642222C0A22382E
-      09632023464634333433222C0A22392E09632023464636453645222C0A22302E
-      09632023464645304530222C0A22612E09632023453645364536222C0A22622E
-      09632023354635463546222C0A22632E09632023304630463046222C0A22642E
-      09632023393839383938222C0A22652E09632023373236453645222C0A22662E
-      09632023464645344534222C0A22672E09632023464646424642222C0A22682E
-      09632023453345334533222C0A22692E09632023353835383538222C0A226A2E
-      09632023313031303130222C0A226B2E09632023394139413941222C0A226C2E
-      09632023384538453845222C0A226D2E09632023453145314531222C0A226E2E
-      09632023304130413041222C0A226F2E09632023414141414141222C0A22702E
-      09632023353935393539222C0A22712E09632023363736373637222C0A22722E
-      09632023333933393339222C0A22732E09632023354435443544222C0A22742E
-      09632023304330433043222C0A22752E09632023394239423942222C0A22762E
-      09632023383838383838222C0A22772E09632023324632463246222C0A22782E
-      09632023424342434243222C0A22792E09632023353535353535222C0A227A2E
-      09632023464346434643222C0A22412E09632023453845384538222C0A222E20
-      2E202E202E202E202B20402040202B202E202E202E202E202E202E202E202E20
-      2E202E202E202E202E20222C0A222E202E20232024202420252026202A203D20
-      2D203B203E202E202E202E202E202E202E202E202E202E202E20222C0A222E20
-      2E202C202720292021207E207B205D205E202F2028205F203A203C202E202E20
-      2E202E202E202E202E20222C0A222E202E205B207D207C203120322033203420
-      3520362037203820392030206120622063202E202E202E202E20222C0A222E20
-      2E206420652066206720682069206A206B206B206C206D206E206F2070207120
-      5F2072202E202E202E20222C0A222E202E20732074206B2075205D2038207620
-      7720782079207A204120422043204420452046202E202E202E20222C0A222E20
-      2E202E204720482049204A204B206E207E204C204D204E20342038204F205020
-      512052202E202E202E20222C0A222E202E202E20472048205320542055205620
-      572058204320542059205A2034206020202E2E2E2E202E202E20222C0A222E20
-      2E202E202B2E6B20402E232E70206E20242E252E6920262E6E2070202A2E3D2E
-      2D2E3B2E2E202E202E20222C0A222E202E202E204720482047203E2E2C2E272E
-      292E212E7E2E7B2E6E205D2E6E205D2E39205E2E2E202E202E20222C0A222E20
-      2E202E202F2E482047202E202E202E20282E5F2E3A2E3C2E5B2E432037207D2E
-      7C2E312E2E202E202E20222C0A222E202E20322E332E6B202F2E2E202E202E20
-      2E202E20342E6B20352E362E372E382E392E302E2E202E202E20222C0A222E20
-      2E20612E622E632E642E2E202E202E202E202E202E2024207C206B20652E3B2E
-      662E672E2E202E202E20222C0A222E202E20682E692E6A2E6B2E242024202E20
-      2E202E202E202E206C2E6B206B20682E2E202E202E202E202E20222C0A222E20
-      2E206D2E692E6E2E332E6B206B202E202E202E202E202E202E206B206B206F2E
-      2E202E202E202E202E20222C0A222E202E20682E702E6A2E712E6B207C202E20
-      2E202E202E202E202E206B206B206F2E2E202E202E202E202E20222C0A222E20
-      2E20682E692E6A2E6B2E7C20722E2E202E202E202E202E206C2E6B207C202E20
-      2E202E202E202E202E20222C0A222E202E20682E732E742E752E682E7C206F2E
-      2E202E202E2024207C207C206F2E2E202E202E202E202E202E20222C0A222E20
-      2E206420762E772E782E2E20682E342E792E792E722E722E6C2E682E2E202E20
-      2E202E202E202E202E20222C0A222E202E207A2E412E2C2023202E202E202E20
-      2E202E202E202E202E202E202E202E202E202E202E202E202E20222C0A222E20
-      2E202E202E202E202E202E202E202E202E202E202E202E202E202E202E202E20
-      2E202E202E202E202E20222C0A222E202E202E202E202E202E202E202E202E20
-      2E202E202E202E202E202E202E202E202E202E202E202E202E20227D3B0A1C03
-      00002F2A2058504D202A2F0A7374617469632063686172202A20656C73656966
-      5F32327832325F78706D5B5D203D207B0A2232322032322031312031222C0A22
-      200963204E6F6E65222C0A222E09632023464646464646222C0A222B09632023
-      353535353535222C0A224009632023303030303030222C0A2223096320234141
-      41414141222C0A222409632023433743374337222C0A22250963202331443144
-      3144222C0A222609632023453345334533222C0A222A09632023384538453845
-      222C0A223D09632023333933393339222C0A222D09632023373237323732222C
-      0A222E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E
-      2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2E2E
-      2E2E2E2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2B40232E2E2E2E242B2B2B25
-      2B232E2E2E2E222C0A222E2E2E2340402B2E2E2E2325262E2E2E2A403D262E2E
-      222C0A222E2E2E2340402B2E2E24402A2E2E2E2E2E3D402D2E2E222C0A222E2E
-      2E2340402B2E2E2B402D2E2E2E2E2E2340402E2E222C0A222E2E2E2E40402A2E
-      2E2D402B2E2E2E2E2E2340402E2E222C0A222E2E2E2E2540232E2E2E23262E2E
-      2E2E2E3D403D2E2E222C0A222E2E2E2E2B402E2E2E2E2E2E2E2E2E2E2A404024
-      2E2E222C0A222E2E2E2E2B252E2E2E2E2E2E2E2E263D403D242E2E2E222C0A22
-      2E2E2E2E232B2E2E2E2E2E2E2E24402D262E2E2E2E2E222C0A222E2E2E2E232B
-      2E2E2E2E2E2E2E2B2D2E2E2E2E2E2E2E222C0A222E2E2E2E232B2E2E2E2E2E2E
-      2E2B242E2E2E2E2E2E2E222C0A222E2E2E2E242A2E2E2E2E2E2E2E2A2E2E2E2E
-      2E2E2E2E222C0A222E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E222C
-      0A222E2E2E262525262E2E2E2E2E23402B2E2E2E2E2E2E2E222C0A222E2E2E23
-      4040232E2E2E2E2E2B40402E2E2E2E2E2E2E222C0A222E2E2E2E2D2D2E2E2E2E
-      2E2E262B232E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E
-      2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E
-      222C0A222E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E227D3B0A0B03
-      00002F2A2058504D202A2F0A7374617469632063686172202A20656C73655F32
-      327832325F78706D5B5D203D207B0A2232322032322031302031222C0A222009
-      63204E6F6E65222C0A222E09632023464646464646222C0A222B096320233535
-      35353535222C0A224009632023303030303030222C0A22230963202341414141
-      4141222C0A222409632023384538453845222C0A222509632023314431443144
-      222C0A222609632023433743374337222C0A222A09632023453345334533222C
-      0A223D09632023373237323732222C0A222E2E2E2E2E2E2E2E2E2E2E2E2E2E2E
-      2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E
-      2E222C0A222E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E222C0A222E
-      2E2E2E2E2E2E2E2E2B40232E2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E
-      2E2340402B2E2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2340402B2E
-      2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2340402B2E2E2E2E2E2E2E
-      2E2E2E222C0A222E2E2E2E2E2E2E2E2E4040242E2E2E2E2E2E2E2E2E2E222C0A
-      222E2E2E2E2E2E2E2E2E2540232E2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E
-      2E2E2E2E2B402E2E2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2E2B25
-      2E2E2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2E232B2E2E2E2E2E2E
-      2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2E232B2E2E2E2E2E2E2E2E2E2E2E22
-      2C0A222E2E2E2E2E2E2E2E2E232B2E2E2E2E2E2E2E2E2E2E2E222C0A222E2E2E
-      2E2E2E2E2E2E26242E2E2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2E
-      2E2E2E2E2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2A25252A2E2E2E
-      2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E234040232E2E2E2E2E2E2E2E2E
-      2E222C0A222E2E2E2E2E2E2E2E2E3D3D2E2E2E2E2E2E2E2E2E2E2E222C0A222E
-      2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E
-      2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2E2E2E2E2E
-      2E2E2E2E2E2E2E2E2E227D3B0AA00200002F2A2058504D202A2F0A7374617469
-      632063686172202A206374646566696E6573746174655F6E6F6E655F32327832
-      325F78706D5B5D203D207B0A22323220323220322031222C0A22200963204E6F
-      6E65222C0A222E09632023464646464646222C0A222E2E2E2E2E2E2E2E2E2E2E
-      2E2E2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E
-      2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E22
-      2C0A222E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E222C0A222E2E2E
-      2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2E
-      2E2E2E2E2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2E2E2E2E2E2E2E
-      2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E
-      2E222C0A222E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E222C0A222E
-      2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E
-      2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2E2E2E2E2E
-      2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E
-      2E2E2E222C0A222E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E222C0A
-      222E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E
-      2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2E2E2E
-      2E2E2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E
-      2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E22
-      2C0A222E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E222C0A222E2E2E
-      2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2E
-      2E2E2E2E2E2E2E2E2E2E2E2E2E227D3B0A600700002F2A2058504D202A2F0A73
-      74617469632063686172202A206374646566696E6573746174655F6175746F5F
-      32327832325F78706D5B5D203D207B0A2232322032322038332031222C0A2220
-      0963204E6F6E65222C0A222E09632023464646464646222C0A222B0963202332
-      3932433239222C0A224009632023463646324636222C0A222309632023444544
-      414445222C0A222409632023443544364435222C0A2225096320234344434543
-      44222C0A222609632023434443414344222C0A222A0963202343354332433522
-      2C0A223D09632023424442454244222C0A222D09632023423442364234222C0A
-      223B09632023414341454143222C0A223E09632023413441354134222C0A222C
-      09632023413441314134222C0A222709632023363236313632222C0A22290963
-      2023303030303030222C0A222109632023464646414646222C0A227E09632023
-      463646364636222C0A227B09632023454545454545222C0A225D096320234545
-      45414545222C0A225E09632023373337313733222C0A222F0963202345364536
-      4536222C0A222809632023444544454445222C0A225F09632023434443364344
-      222C0A223A09632023353237313733222C0A223C09632023363237353733222C
-      0A225B09632023364137353733222C0A227D09632023343137313733222C0A22
-      7C09632023333136443733222C0A223109632023323036393733222C0A223209
-      632023313036353641222C0A223309632023303036353641222C0A2234096320
-      23433543364335222C0A223509632023354137313733222C0A22360963202344
-      4545414545222C0A223709632023424444414445222C0A223809632023393443
-      364344222C0A223909632023373342324244222C0A2230096320233532394441
-      34222C0A226109632023323938443934222C0A22620963202330383731374222
-      2C0A226309632023434445324536222C0A226409632023423444364435222C0A
-      226509632023393443324335222C0A226609632023373342324234222C0A2267
-      09632023344139444134222C0A226809632023323938393934222C0A22690963
-      2023303836443733222C0A226A09632023344137313733222C0A226B09632023
-      394343414344222C0A226C09632023383342414244222C0A226D096320233632
-      41414143222C0A226E09632023343139393943222C0A226F0963202332303835
-      3842222C0A227009632023303036393733222C0A227109632023333936443733
-      222C0A227209632023364141454234222C0A227309632023333138443934222C
-      0A227409632023313037443833222C0A227509632023333939313943222C0A22
-      7609632023323038313842222C0A227709632023303037313742222C0A227809
-      632023303035393632222C0A227909632023453645324536222C0A227A096320
-      23344139313934222C0A224109632023344139313943222C0A22420963202334
-      3138443934222C0A224309632023333138353842222C0A224409632023313837
-      393833222C0A224509632023303836393733222C0A2246096320233030354436
-      32222C0A224709632023303034433532222C0A22480963202338333835383322
-      2C0A224909632023443544324435222C0A224A09632023383338313833222C0A
-      224B09632023344134433441222C0A224C09632023354135443541222C0A224D
-      09632023364136393641222C0A224E09632023364136443641222C0A224F0963
-      2023353235303532222C0A225009632023414341414143222C0A225109632023
-      393439353934222C0A225209632023384238443842222C0A222E2E2E2E2E2E2E
-      2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2E2E2E2E2E
-      2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2B2B2B2B2B2B2B2B2B2B2B2B2B2B2B
-      2E2E2E222C0A222E2E2E2B40232425262A3D2D3B3E2C2C2C2327292E2E222C0A
-      222E2E2B2E2E2E2E2E2E21217E7E407B7B5D5E27292E2E222C0A222E2E2B2E2E
-      2E2E217E407B5D2F2824255F5E27292E2E222C0A222E2E2B2E2E3A3C5B3C3A7D
-      7C3132335D345E27292E2E222C0A222E2E2B2E2E35362E363738393061625D34
-      5E27292E2E222C0A222E2E2B2E7E3A6336636465666768695D2A5E27292E2E22
-      2C0A222E2E2B21406A6437646B6C6D6E6F705D2A5E27292E2E222C0A222E2E2B
-      217B716538656C72307374332F2A5E27292E2E222C0A222E2E2B7E2F7C663966
-      6D30757677782F2A5E27292E2E222C0A222E2E2B4079317A417A424344454647
-      2F2A5E27292E2E222C0A222E2E2B40237B7B7B5D5D5D5D2F2F2F2A2A5E48232B
-      2E222C0A222E2E2B7B492525262634342A2A2A2A2A2A4A5D4B292E222C0A222E
-      2B7E4A4A4B4C4D4E4E4E4E4D4C4F4B4B7E5E4B292E222C0A222E2B7B2F2F2F2F
-      2F2F2F2F2F2F2F2F2F2F505E4B292E222C0A222E2B2F3D3D3D3D3D3D3D3D3D4B
-      4B4B4B3D515E4B292E222C0A222E2B232C2C2C2C2C2C2C2C2C232323232C4A5E
-      292E2E222C0A222E2B4952525252525252525252525252525E292E2E2E222C0A
-      222E2E2B2B2B2B2B2B2B2B2B2B2B2B2B2B2B2B2E2E2E2E222C0A222E2E2E2E2E
-      2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E227D3B0AEF0200002F2A2058504D20
-      2A2F0A7374617469632063686172202A206374646566696E6573746174655F70
-      726F6A737065635F32327832325F78706D5B5D203D207B0A2232322032322037
-      2031222C0A22200963204E6F6E65222C0A222E09632023464646464646222C0A
-      222B09632023303030303030222C0A224009632023464645323037222C0A2223
-      09632023424339363030222C0A222409632023363835303030222C0A22250963
-      2023454443353030222C0A222E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E
-      2E2E222C0A222E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E222C0A22
-      2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E
-      2E2E2B2B2B2B2B2B2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2B404040
-      40402B2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2B40404040402B2E2E2E
-      2E2E2E2E222C0A222E2E2E2E2E2E2E2E2E2B40404040402B2E2E2E2E2E2E222C
-      0A222E2E2E2E2E2E2E2E2E2B40404040402B2E2E2E2E2E2E222C0A222E2E2E2E
-      2E2E2E2E2E2E2B40404040402B2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2E2E
-      2B2B2B2B2B2B2B2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2E2B2B232323232B
-      2B2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2B242B2323232B252B2E2E2E2E2E
-      222C0A222E2E2E2E2E2E2E2B24242B23232B25252B2E2E2E2E2E222C0A222E2E
-      2E2E2E2E2B2B2B2B2B2B2B2525252B2E2E2E2E2E222C0A222E2E2E2E2E2E2B40
-      404040402B2525252B2E2E2E2E2E222C0A222E2E2E2E2E2E2B40404040402B25
-      25252B2E2E2E2E2E222C0A222E2E2E2E2E2E2B40404040402B25252B2E2E2E2E
-      2E2E222C0A222E2E2E2E2E2E2B40404040402B252B2E2E2E2E2E2E2E222C0A22
-      2E2E2E2E2E2E2B40404040402B2B2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E
-      2B2B2B2B2B2B2B2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2E2E2E2E
-      2E2E2E2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E
-      2E2E2E2E227D3B0A2C0D00002F2A2058504D202A2F0A73746174696320636861
-      72202A206374646566696E6573746174655F6175746F70726F6A5F3232783232
-      5F78706D5B5D203D207B0A223232203232203134302032222C0A222020096320
-      4E6F6E65222C0A222E2009632023464646464646222C0A222B20096320234533
-      45334533222C0A22402009632023373937413739222C0A222320096320233538
-      35413538222C0A22242009632023353535383535222C0A222520096320233534
-      35363534222C0A22262009632023353235333532222C0A222A20096320233446
-      35313446222C0A223D2009632023344334463443222C0A222D20096320233439
-      34433439222C0A223B2009632023343934423439222C0A223E20096320233530
-      35323530222C0A222C2009632023374137423741222C0A222720096320234545
-      45454545222C0A22292009632023393439363934222C0A222120096320234532
-      45314532222C0A227E2009632023454545444545222C0A227B20096320234539
-      45414539222C0A225D2009632023453745364537222C0A225E20096320234533
-      44464533222C0A222F2009632023444244424442222C0A222820096320234434
-      44354434222C0A225F2009632023434543444345222C0A223A20096320234342
-      43414342222C0A223C2009632023434243384342222C0A225B20096320233935
-      39323935222C0A227D2009632023333133303331222C0A227C20096320234246
-      42464246222C0A22312009632023434143414341222C0A223220096320234636
-      46384638222C0A22332009632023463746364638222C0A223420096320234632
-      46324633222C0A22352009632023454545434630222C0A223620096320234537
-      45384541222C0A22372009632023453145344535222C0A223820096320234436
-      44414442222C0A22392009632023443244364435222C0A223020096320234434
-      44304434222C0A22612009632023364636443646222C0A226220096320233632
-      37423744222C0A22632009632023393139443944222C0A226420096320233844
-      39433942222C0A22652009632023364539313933222C0A226620096320233531
-      38373844222C0A22672009632023333537433834222C0A226820096320233133
-      36463735222C0A22692009632023373841394146222C0A226A20096320233030
-      30303030222C0A226B2009632023464246424642222C0A226C20096320233735
-      38453931222C0A226D2009632023453045434546222C0A226E20096320234441
-      45394543222C0A226F2009632023414644334435222C0A227020096320233834
-      42424330222C0A22712009632023353741324139222C0A227220096320233231
-      38343844222C0A22732009632023374241434232222C0A227420096320234646
-      45323037222C0A22752009632023393439333934222C0A227620096320234638
-      46344638222C0A22772009632023363438413843222C0A227820096320234239
-      44384441222C0A22792009632023423744374438222C0A227A20096320233937
-      43364339222C0A22412009632023373342324235222C0A224220096320233439
-      39444130222C0A22432009632023313837453835222C0A224420096320233737
-      41394230222C0A22452009632023393239323932222C0A224620096320234546
-      45454546222C0A22472009632023344138313836222C0A224820096320233838
-      42444333222C0A22492009632023383842444331222C0A224A20096320233731
-      42314235222C0A224B2009632023353541304138222C0A224C20096320233332
-      38443935222C0A224D2009632023303837333741222C0A224E20096320233733
-      41334137222C0A224F2009632023434443424344222C0A225020096320233930
-      39303930222C0A22512009632023454145374541222C0A225220096320233333
-      37373745222C0A22532009632023353939444134222C0A225420096320233539
-      39444132222C0A22552009632023343939353942222C0A225620096320233331
-      38383930222C0A22572009632023313637363830222C0A225820096320233030
-      35463636222C0A22592009632023373339423946222C0A225A20096320234339
-      43414339222C0A22602009632023384638463846222C0A22202E096320234533
-      45304533222C0A222E2E09632023443444434444222C0A222B2E096320234438
-      44464530222C0A22402E09632023443844434530222C0A22232E096320234435
-      44414445222C0A22242E09632023443244394444222C0A22252E096320234342
-      44344437222C0A22262E09632023433944314432222C0A222A2E096320234339
-      43424344222C0A223D2E09632023433643334336222C0A222D2E096320233743
-      37423743222C0A223B2E09632023394239443942222C0A223E2E096320234130
-      41314130222C0A222C2E09632023423642344236222C0A22272E096320233938
-      39393938222C0A22292E09632023413041304130222C0A22212E096320234133
-      41324133222C0A227E2E09632023394641313946222C0A227B2E096320233946
-      39463946222C0A225D2E09632023394639443946222C0A225E2E096320233937
-      39363937222C0A222F2E09632023393339313933222C0A22282E096320233931
-      39303931222C0A225F2E09632023423542334235222C0A223A2E096320233542
-      35443542222C0A223C2E09632023444344424443222C0A225B2E096320234337
-      43364337222C0A227D2E09632023423642374236222C0A227C2E096320234243
-      42444243222C0A22312E09632023424643304246222C0A22322E096320234239
-      42414239222C0A22332E09632023423642364236222C0A22342E096320234235
-      42354235222C0A22352E09632023424339363030222C0A22362E096320234346
-      43464346222C0A22372E09632023424142414241222C0A22382E096320233834
-      38343834222C0A22392E09632023373137323731222C0A22302E096320233638
-      35303030222C0A22612E09632023454443353030222C0A22622E096320233535
-      35373535222C0A22632E09632023423942374239222C0A22642E096320233938
-      39383938222C0A22652E09632023414641454146222C0A22662E096320234237
-      42364237222C0A22672E09632023414241434142222C0A22682E096320233444
-      34463444222C0A22692E09632023343334363433222C0A222E202E202E202E20
-      2E202E202E202E202E202E202E202E202E202E202E202E202E202E202E202E20
-      2E202E20222C0A222E202E202B20402023202420252026202A203D202D203B20
-      3B203E202C2027202E202E202E202E202E202E20222C0A222E202B2029202120
-      7E207B205D205E202F2028205F203A203C205B207D207C202E202E202E202E20
-      2E202E20222C0A222E20312029202E2032203320342035203620372038203920
-      302061207D207C202E202E202E202E202E202E20222C0A222E20312029202E20
-      622063206420652066206720682069206A206A206A206A206A206A202E202E20
-      2E202E20222C0A222E20312029206B206C206D206E206F207020712072207320
-      6A20742074207420742074206A202E202E202E20222C0A222E20312075207620
-      7720782079207A2041204220432044206A20742074207420742074206A202E20
-      2E202E20222C0A222E203120452046204720482049204A204B204C204D204E20
-      4F206A20742074207420742074206A202E202E20222C0A222E20312050205120
-      522053205420552056205720582059204F206A20742074207420742074206A20
-      2E202E20222C0A222E205A206020202E2E2E2B2E402E232E242E252E262E2A2E
-      3D2E2D2E6A20742074207420742074206A202E20222C0A222E203B2E3E2E2C2E
-      272E292E212E7E2E7B2E5D2E5E2E2F2E282E5F2E6A206A206A206A206A206A20
-      6A202E20222C0A222E203A2E3C2E5B2E7D2E7C2E7C20312E312E7C20322E332E
-      342E6A206A20352E352E352E352E6A206A202E20222C0A222E202320362E372E
-      372E372E372E372E372E382E392E392E6A20302E6A20352E352E352E6A20612E
-      6A202E20222C0A222E20622E632E642E642E642E642E642E642E652E662E6A20
-      302E302E6A20352E352E6A20612E612E6A202E20222C0A222E20672E682E692E
-      692E692E692E692E692E692E6A206A206A206A206A206A206A20612E612E612E
-      6A202E20222C0A222E202E202E202E202E202E202E202E202E202E206A207420
-      74207420742074206A20612E612E612E6A202E20222C0A222E202E202E202E20
-      2E202E202E202E202E202E206A20742074207420742074206A20612E612E612E
-      6A202E20222C0A222E202E202E202E202E202E202E202E202E202E206A207420
-      74207420742074206A20612E612E6A202E202E20222C0A222E202E202E202E20
-      2E202E202E202E202E202E206A20742074207420742074206A20612E6A202E20
-      2E202E20222C0A222E202E202E202E202E202E202E202E202E202E206A207420
-      74207420742074206A206A202E202E202E202E20222C0A222E202E202E202E20
-      2E202E202E202E202E202E206A206A206A206A206A206A206A202E202E202E20
-      2E202E20222C0A222E202E202E202E202E202E202E202E202E202E202E202E20
-      2E202E202E202E202E202E202E202E202E202E20227D3B0A
+      4C69100000001600000016000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFF9F9FFFFD9D9FFFFD9D9FFFFF9F9FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFF5F5F5FFC7C7C7FFC7C7C7FFCDCDF6FF5656
+      FFFF4949FFFF9B9BFFFFC5C5FFFFEDEDFFFFFDFDFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFC9C9C9FF3C3C3CFF373737FF9595D4FF2828FFFF0E0EFFFF1D1D
+      FFFF3232FFFF6767FFFF8484FFFFA6A6FFFFD0D0FFFFF8F8FFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFCECE
+      CEFF3E3E3EFF1D1D1DFF7E7EC3FF2424FFFF1010FFFF0D0DFFFF0F0FFFFF0707
+      FFFF0000FFFF1515FFFF3333FFFF8989FFFFAEAEFFFFE5E5FFFFFCFCFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFEFEFFF6C6C6CFF0808
+      08FF6666B0FF1B1BFFFF0808FFFF0000FFFF0E0EFFFF2424FFFF3D3DFFFF2525
+      FFFF0404FFFF1414FFFF1A1AFFFF5B5BFFFFA6A6FFFFF1F1FFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFDFDFDFF7E7E7EFF000000FF5C5CA7FF1D1D
+      FFFF1515FFFF2828FFFF3030FFFF1313FFFF1212FFFF1F1FFFFF2A2AFFFF3F3F
+      FFFF1616FFFF1212FFFF1E1EFFFFB3B3FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFF868686FF060606FF6464A4FF2222FFFF0303FFFF0404
+      FFFF2828FFFF3737FFFF2D2DFFFF1919FFFF0D0DFFFF1515FFFF1111FFFF2E2E
+      FFFF3030FFFFBFBFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFF868686FF060606FF6C6C9DFF2929FFFF0101FFFF0202FFFF0707FFFF0000
+      FFFF1616FFFF2929FFFF4242FFFF4444FFFF0D0DFFFF0909FFFF3E3EFFFFD2D2
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF818181FF0000
+      00FF7C7C86FF9696FFFF1A1AFFFF0404FFFF0808FFFF0808FFFF0808FFFF0707
+      FFFF0404FFFF1A1AFFFF2020FFFF2626FFFF5E5EFFFFDBDBFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF868686FF060606FF868686FFF4F4
+      FFFFC0C0FFFF8B8BFFFF7979FFFF3232FFFF1313FFFF0505FFFF0404FFFF0A0A
+      FFFF0404FFFF0A0AFFFF3333FFFFCACAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFF858585FF060606FF868686FFFFFFFFFFFFFFFFFFFFFF
+      FFFFF7F7FFFFCCCCFFFFA9A9FFFF8383FFFF4747FFFF1616FFFF0000FFFF0606
+      FFFF2323FFFFBCBCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8F8
+      F8FF767676FF000000FF858585FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFAFAFFFFDDDDFFFFABABFFFF6B6BFFFF4343FFFF6E6EFFFFE0E0
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE6E6E6FF5F5F5FFF0F0F
+      0FFF989898FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFF6F6FFFFDBDBFFFFE4E4FFFFFBFBFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3E3FF585858FF101010FF9A9A9AFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFE1E1E1FF585858FF0A0A0AFF979797FFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3
+      E3FF595959FF101010FF9A9A9AFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3E3FF585858FF1010
+      10FF9A9A9AFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3E3FF5D5D5DFF0C0C0CFF9B9B9BFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFEFEFEFFF888888FF2F2F2FFFBCBCBCFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFCFC
+      FCFFE8E8E8FFC9C9C9FFF5F5F5FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF9F9FFFFD9D9FFFFD9D9FFFFF9F9
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5F5
+      F5FFC7C7C7FFC7C7C7FFCDCDF6FF5656FFFF4949FFFF9B9BFFFFC5C5FFFFEDED
+      FFFFFDFDFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFC9C9C9FF3C3C3CFF3737
+      37FF9595D4FF2828FFFF0E0EFFFF1D1DFFFF3232FFFF6767FFFF8484FFFFA6A6
+      FFFFD0D0FFFFF8F8FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFCECECEFF3E3E3EFF1D1D1DFF7E7EC3FF2424
+      FFFF1010FFFF0D0DFFFF0F0FFFFF0707FFFF0000FFFF1515FFFF3333FFFF8989
+      FFFFAEAEFFFFE5E5FFFFFCFCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFEFEFEFFF6C6C6CFF080808FF6666B0FF1B1BFFFF0808FFFF0000
+      FFFF0E0EFFFF2424FFFF3D3DFFFF2525FFFF0404FFFF1414FFFF1A1AFFFF5B5B
+      FFFFA6A6FFFFF1F1FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFDFD
+      FDFF7E7E7EFF000000FF5C5CA7FF1D1DFFFF1515FFFF2828FFFF3030FFFF1313
+      FFFF1212FFFF1F1FFFFF2A2AFFFF3F3FFFFF1616FFFF1212FFFF1E1EFFFFB3B3
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF868686FF0606
+      06FF6464A4FF2222FFFF0303FFFF0404FFFF2828FFFF3737FFFF2D2DFFFF1919
+      FFFF0D0DFFFF1515FFFF1111FFFF2E2EFFFF3030FFFFBFBFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF868686FF060606FF6C6C9DFF2929
+      FFFF0101FFFF0202FFFF0707FFFF0000FFFF1616FFFF2929FFFF4242FFFF4444
+      FFFF0D0DFFFF0909FFFF3E3EFFFFD2D2FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFF818181FF000000FF7C7C86FF9696FFFF1A1AFFFF0404
+      FFFF0808FFFF0808FFFF0808FFFF0707FFFF0404FFFF1A1AFFFF2020FFFF2626
+      FFFF5E5EFFFFDBDBFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFF868686FF060606FF868686FFF4F4FFFFC0C0FFFF8B8BFFFF7979FFFF3232
+      FFFF1313FFFF0505FFFF0404FFFF0A0AFFFF0404FFFF0A0AFFFF3333FFFFCACA
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF858585FF0606
+      06FF868686FFFFFFFFFFFFFFFFFFFFFFFFFFF7F7FFFFCCCCFFFFA9A9FFFF8383
+      FFFF4747FFFF1616FFFF0000FFFF0606FFFF2323FFFFBCBCFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFF8F8F8FF767676FF000000FF858585FFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFAFAFFFFDDDDFFFFABAB
+      FFFF6B6BFFFF4343FFFF6E6EFFFFE0E0FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFE6E6E6FF5F5F5FFF0F0F0FFF989898FFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF6F6FFFFDBDB
+      FFFFE4E4FFFFFBFBFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3
+      E3FF585858FF101010FF9A9A9AFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE1E1E1FF585858FF0A0A
+      0AFF979797FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000
+      00FFFFFFFFFFFFFFFFFF0FCFFFFF0FCFFFFF0FCFFFFF0FCFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3E3FF595959FF101010FF9A9A9AFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FF000000FF0000
+      00FF0FCFFFFF0FCFFFFF0FCFFFFF0FCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFE3E3E3FF585858FF101010FF9A9A9AFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FFFFFFFFFFFFFFFFFF0FCFFFFF0FCF
+      FFFF0FCFFFFF0FCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3
+      E3FF5D5D5DFF0C0C0CFF9B9B9BFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFEFEFFF888888FF2F2F
+      2FFFBCBCBCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000
+      00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFCFCFCFFE8E8E8FFC9C9C9FFF5F5F5FFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FFFFFFFFFFFFFF
+      FFFF0FCFFFFF0FCFFFFF0FCFFFFF0FCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FF000000FF000000FF0FCFFFFF0FCF
+      FFFF0FCFFFFF0FCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0FCFFFFF0FCFFFFF0FCFFFFF0FCF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFF9F9FFFFD9D9FFFFD9D9FFFFF9F9FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFF5F5F5FFC7C7C7FFC7C7C7FFCDCDF6FF5656
+      FFFF4949FFFF9B9BFFFFC5C5FFFFEDEDFFFFFDFDFFFFFFFFFFFFFFFFFFFFF27F
+      6DFFEA2304FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFCFA6A0FF8B3022FF373737FF9595D4FF2828FFFF0E0EFFFF1D1D
+      FFFF3232FFFF6767FFFF8484FFFFA6A6FFFFDE7176FFEA2304FFEE543CFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFBD9D4FFEA2304FFEA23
+      04FFEA2304FFEA2304FFE72509FFC42333FF2912E1FF0D0DFFFF0F0FFFFF0707
+      FFFF0000FFFF4D18BCFFE92304FFDD3024FFAEAEFFFFE5E5FFFFFCFCFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFEF9F9FFFBD9D4FFEFEFEFFF6C6C6CFF440F
+      06FFD92B18FFE52209FFE92204FFD31F1CFF3711CFFF2424FFFF413CF9FFE523
+      09FFDB2113FF1414FFFF1A1AFFFF5B5BFFFFA6A6FFFFF1F1FFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFDFDFDFF7E7E7EFF000000FF5C5CA7FF1D1D
+      FFFF891C75FFE3230BFFE92304FFA11D58FFB91F3CFFE92204FF4029E1FF3F3F
+      FFFF1616FFFF1212FFFF1E1EFFFFB3B3FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFF868686FF060606FF6464A4FF2222FFFF0303FFFF0404
+      FFFFBE243CFFE92304FFE92304FFA31F58FF0D0DFFFF1515FFFF1111FFFF2E2E
+      FFFF3030FFFFBFBFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFF868686FF060606FF6C6C9DFF2929FFFF0101FFFF0202FFFF0707FFFFDD20
+      11FFE92204FFD92319FF4541F9FF4444FFFF0D0DFFFF0909FFFF3E3EFFFFD2D2
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF818181FF0000
+      00FF7C7C86FF9696FFFF1A1AFFFF0404FFFF771582FFEA2304FFB01B43FFE622
+      07FFD5201AFF1A1AFFFF2020FFFF2626FFFF5E5EFFFFDBDBFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF868686FF060606FF868686FFF4F4
+      FFFFC0C0FFFF8D88F9FFE6250AFFD5241FFF1313FFFF5E109CFFE92204FFCD1F
+      24FF0404FFFF0A0AFFFF3333FFFFCACAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFF858585FF060606FF868686FFFFFFFFFFFFFFFFFFEB36
+      1AFFEA2304FFCFB8E1FFA9A9FFFF8383FFFF9F3376FFE92204FFB51B3CFF0606
+      FFFF2323FFFFBCBCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8F8
+      F8FF767676FF000000FF858585FFFEF9F9FFEB3519FFEA2304FFF6A89CFFFFFF
+      FFFFFFFFFFFFFAFAFFFFDDDDFFFFCF5C6DFFEA2304FF953382FF6E6EFFFFE0E0
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE6E6E6FF5F5F5FFF0F0F
+      0FFF999594FFEA2A0CFFEA2506FFF6A89CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFEB4229FFE92405FFE4CDE1FFFBFBFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3E3FF585858FF4A150CFFE82506FFEA28
+      09FFF9C4BCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFEF9F9FFEA2708FFEB3519FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFE1E1E1FFA73B2AFFE92204FFE42A0DFFFCE5E1FFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF492
+      82FFEA2304FFF49282FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFCE5E1FFE935
+      19FFE92304FFCD2005FF9A9A9AFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEB2F12FFEB32
+      15FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEA2C0EFFE92506FFA23C2DFF1010
+      10FF9A9A9AFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFBD5CFFFF59A8BFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFEF5E47FFE4BEB9FF5D5D5DFF0C0C0CFF9B9B9BFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFEFEFEFFF888888FF2F2F2FFFBCBCBCFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFCFC
+      FCFFE8E8E8FFC9C9C9FFF5F5F5FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF9F9FFFFD9D9FFFFD9D9FFFFF9F9
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5F5
+      F5FFC7C7C7FFC7C7C7FFCDCDF6FF5656FFFF4949FFFF9B9BFFFFC5C5FFFFEDED
+      FFFFFDFDFFFFFFFFFFFFFFFFFFFFF27F6DFFEA2304FFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFCFA6A0FF8B3022FF3737
+      37FF9595D4FF2828FFFF0E0EFFFF1D1DFFFF3232FFFF6767FFFF8484FFFFA6A6
+      FFFFDE7176FFEA2304FFEE543CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFBD9D4FFEA2304FFEA2304FFEA2304FFEA2304FFE72509FFC423
+      33FF2912E1FF0D0DFFFF0F0FFFFF0707FFFF0000FFFF4D18BCFFE92304FFDD30
+      24FFAEAEFFFFE5E5FFFFFCFCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEF9
+      F9FFFBD9D4FFEFEFEFFF6C6C6CFF440F06FFD92B18FFE52209FFE92204FFD31F
+      1CFF3711CFFF2424FFFF413CF9FFE52309FFDB2113FF1414FFFF1A1AFFFF5B5B
+      FFFFA6A6FFFFF1F1FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFDFD
+      FDFF7E7E7EFF000000FF5C5CA7FF1D1DFFFF891C75FFE3230BFFE92304FFA11D
+      58FFB91F3CFFE92204FF4029E1FF3F3FFFFF1616FFFF1212FFFF1E1EFFFFB3B3
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF868686FF0606
+      06FF6464A4FF2222FFFF0303FFFF0404FFFFBE243CFFE92304FFE92304FFA31F
+      58FF0D0DFFFF1515FFFF1111FFFF2E2EFFFF3030FFFFBFBFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF868686FF060606FF6C6C9DFF2929
+      FFFF0101FFFF0202FFFF0707FFFFDD2011FFE92204FFD92319FF4541F9FF4444
+      FFFF0D0DFFFF0909FFFF3E3EFFFFD2D2FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFF818181FF000000FF7C7C86FF9696FFFF1A1AFFFF0404
+      FFFF771582FFEA2304FFB01B43FFE62207FFD5201AFF1A1AFFFF2020FFFF2626
+      FFFF5E5EFFFFDBDBFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFF868686FF060606FF868686FFF4F4FFFFC0C0FFFF8D88F9FFE6250AFFD524
+      1FFF1313FFFF5E109CFFE92204FFCD1F24FF0404FFFF0A0AFFFF3333FFFFCACA
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF858585FF0606
+      06FF868686FFFFFFFFFFFFFFFFFFEB361AFFEA2304FFCFB8E1FFA9A9FFFF8383
+      FFFF9F3376FFE92204FFB51B3CFF0606FFFF2323FFFFBCBCFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFF8F8F8FF767676FF000000FF858585FFFEF9
+      F9FFEB3519FFEA2304FFF6A89CFFFFFFFFFFFFFFFFFFFAFAFFFFDDDDFFFFCF5C
+      6DFFEA2304FF953382FF6E6EFFFFE0E0FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFE6E6E6FF5F5F5FFF0F0F0FFF999594FFEA2A0CFFEA2506FFF6A8
+      9CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEB4229FFE924
+      05FFE4CDE1FFFBFBFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3
+      E3FF585858FF4A150CFFE82506FFEA2809FFF9C4BCFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFF000000FFFFFFFFFFFFFFFFFFFFFFFFFFEA2708FFEB3519FFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE1E1E1FFA73B2AFFE922
+      04FFE42A0DFFFCE5E1FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000
+      00FFFFFFFFFFFFFFFFFF0FCFFFFFF49282FFEA2304FFF49282FFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFCE5E1FFE93519FFE92304FFCD2005FF9A9A9AFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FF000000FF0000
+      00FF0FCFFFFF0FCFFFFFEB2F12FFEB3215FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFEA2C0EFFE92506FFA23C2DFF101010FF9A9A9AFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FFFFFFFFFFFFFFFFFF0FCFFFFF0FCF
+      FFFFFBD5CFFFF59A8BFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEF5E47FFE4BE
+      B9FF5D5D5DFF0C0C0CFF9B9B9BFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFEFEFFF888888FF2F2F
+      2FFFBCBCBCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000
+      00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFCFCFCFFE8E8E8FFC9C9C9FFF5F5F5FFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FFFFFFFFFFFFFF
+      FFFF0FCFFFFF0FCFFFFF0FCFFFFF0FCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FF000000FF000000FF0FCFFFFF0FCF
+      FFFF0FCFFFFF0FCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0FCFFFFF0FCFFFFF0FCFFFFF0FCF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFE5E5EBFFB0B0FEFFBCBCFFFFFDFDFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFA3A3A3FF555566FF4343F2FF1F1FFFFF4343FFFF6B6BFFFFABABFFFFE4E4
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEE7
+      E2FFF73B15FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFBEBEBEFF3535
+      49FF963076FF4C17BDFF1919FFFF2424FFFF2323FFFF4040FFFF9292FFFFFFFF
+      FFFFFFFFFFFFE5E5EBFFB0B0FEFFBCBCFFFFFDFDFFFFF96345FFF7320AFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFD2D2D2FF353547FFD4312FFFF631
+      0AFFEA3018FF3922E2FF2222FFFF1A1AFFFF4444FFFFE8E8FFFFA3A3A3FF5555
+      66FF4343F2FF1F1FFFFF4343FFFFF23312FFF03D21FFE4E4FFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFD2D2D2FF3A3A40FF6767E0FF521DBDFFF1300FFFF631
+      0AFF9C2970FF1A1AFFFF5959FFFFFFFFFFFFBEBEBEFF353549FF2F2FEAFF0E0E
+      FFFF7B2493FFF73109FF5C27BDFF4040FFFF9292FFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFD3D3D3FF404040FFD6D6DEFFD2D2FFFFA19CF9FFDA3836FFF73109FFE12D
+      1FFF413DF9FFEAEAFFFFD2D2D2FF353547FF2F2FE6FF130EF9FFF3310EFFD92F
+      2BFF2222FFFF1A1AFFFF4444FFFFE8E8FFFFFFFFFFFFFFFFFFFFC1C1C1FF3E3E
+      3EFFE0E0E0FFFFFFFFFFFFFFFFFFFFFFFFFFED8C85FFF5330EFFF43613FFFDD8
+      D1FFD2D2D2FF3A3A40FF6767E0FFD62D2DFFF5310BFF2B14E2FF1F1FFFFF1A1A
+      FFFF5959FFFFFFFFFFFFFFFFFFFFFFFFFFFFB3B3B3FF414141FFE3E3E3FFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFDD8D1FFF7360FFFF7360FFFDAB5ADFF4040
+      40FFE97662FFF73109FFC2749FFF5959FFFF2323FFFF0606FFFF3D3DFFFFEAEA
+      FFFFFFFFFFFFFFFFFFFFB3B3B3FF424242FFE3E3E3FFFFFFFFFFE5E5EBFFB0B0
+      FEFFBCBCFFFFFBFBFFFFFDD8D1FFF73913FFF7320AFFC83416FFF7320AFFF95F
+      40FFFFFFFFFFFFFFFFFFE4E4FFFFA8A8FFFFA9A9FFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFB8B8B8FF494949FFE5E5E5FFA3A3A3FF555566FF4343F2FF1F1FFFFF4343
+      FFFF6B6BFFFFADA8F9FFF54626FFF73109FFF53E19FFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE7E7E7FFB3B3
+      B3FFFFFFFFFFBEBEBEFF353549FF2F2FEAFF0E0EFFFF1919FFFF2424FFFF5C27
+      BDFFF3310EFFF6320CFFF7320AFFFA8770FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFD2D2
+      D2FF353547FF2F2FE6FF0D0DFFFF2424FFFF4823D1FFF4310DFFEF3012FF4844
+      F9FFF45A40FFF73109FFFA8770FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFD2D2D2FF3A3A40FF6767
+      E0FF1616FFFF130EF9FFF5310BFFE93018FF1F1BF9FF5959FFFFFFFFFFFFF95F
+      40FFF73109FFFA7358FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFD3D3D3FF404040FFD6D6DEFFE1939FFFF633
+      0DFFF3320FFF2823F9FF0606FFFF3D3DFFFFE9E9FFFFFFFFFFFFFA7358FFF731
+      09FFFA8169FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFC1C1C1FF3E3E3EFFE4BFB8FFF7350EFFF73B15FFFFFAF9FFE4E4
+      FFFFA8A8FFFFA9A9FFFFFFFFFFFFFFFFFFFFFFFFFFFFFA8169FFF73109FFF857
+      36FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFB3B3
+      B3FF633E36FFF7340CFFF73812FFFFFAF9FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFA8770FFF73109FFFA765CFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFC59086FFF4310AFFF637
+      10FFFEE7E2FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFF96A4DFFFA755AFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFF33913FFF2320BFFE7D0CBFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFEAC8C2FFB5B0AFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF7F7
+      F7FFDBDBDBFFD4D4D4FFDBDBDBFFF7F7F7FFFEFEFEFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFF7F7F7FFDBDBDBFFBBBEBFFF576669FF3E50
+      54FF566569FFBABDBEFFDADADAFFF7F7F7FFFEFEFEFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF7F7
+      F7FFDBDBDBFFBBBEBFFF576669FF446269FF5BAABEFF61BCD3FF5CABBEFF4462
+      69FF566669FFBABDBEFFDADADAFFF7F7F7FFFEFEFEFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFF7F7F7FFDBDBDBFFBBBEBFFF576669FF4462
+      69FF5BAABEFF64C2DAFF70DBF6FF73E1FDFF71DBF7FF65C3DBFF5CABBFFF4462
+      69FF566669FFBABDBEFFDADADAFFF7F7F7FFFEFEFEFFFFFFFFFFFFFFFFFFF7F7
+      F7FFDBDBDBFFBBBEBFFF576669FF446269FF5BAABEFF64C2DAFF70DBF6FF74E2
+      FEFF74E2FEFF74E2FEFF74E2FEFF74E2FEFF71DBF7FF65C3DBFF5CABBFFF4462
+      69FF566669FFC1C4C5FFF7F7F7FFFFFFFFFFF7F7F7FFC2C5C6FF576669FF4462
+      69FF5BAABEFF64C2DAFF70DBF6FF74E2FEFF74E2FEFF74E2FEFF75E3FFFF75E3
+      FFFF75E3FFFF75E3FFFF74E2FEFF74E2FEFF6DD5F0FF54A4B8FF488695FF535F
+      62FFDBDBDBFFFFFFFFFFDBDBDBFF535F62FF488695FF54A3B7FF6DD5EFFF74E1
+      FDFF74E2FEFF74E2FEFF75E3FFFF75E3FFFF75E3FFFF75E3FFFF75E3FFFF75E3
+      FFFF71DCF7FF64C3DBFF54A9BFFF205A69FF103B46FF2D3538FFD4D4D4FFFFFF
+      FFFFD4D4D4FF2E3537FF113842FF205664FF54A8BDFF64C2DAFF71DCF7FF74E2
+      FEFF75E3FFFF75E3FFFF75E3FFFF75E3FFFF71DCF7FF64C3DBFF54A9BFFF205A
+      69FF105769FF0399BEFF008DB0FF2A464DFFD4D4D4FFFFFFFFFFD4D4D4FF2B43
+      4AFF04809FFF078AACFF115262FF205866FF54A8BDFF64C2DAFF71DCF7FF74E2
+      FEFF71DCF7FF64C3DBFF54A9BFFF205A69FF105769FF0399BEFF00AFDAFF00C5
+      F6FF00A9D4FF2A4C54FFD4D4D4FFFFFFFFFFD4D4D4FF2B4850FF0499BEFF04B1
+      DDFF059EC5FF078BACFF115262FF205866FF54A8BDFF60BCD3FF54A9BEFF205A
+      69FF105769FF0399BEFF00AFDAFF00C5F6FF00CBFEFF00CBFEFF00AAD4FF2A4C
+      54FFD4D4D4FFFFFFFFFFD4D4D4FF2B4950FF0599BFFF05B7E4FF05B7E4FF05B2
+      DDFF059EC5FF078BACFF114D5CFF133037FF0F5162FF0399BEFF00AFDAFF00C5
+      F6FF00CBFEFF00CBFEFF00CBFEFF00CCFFFF00AAD4FF2A4C54FFD4D4D4FFFFFF
+      FFFFD4D4D4FF2B4950FF0599BFFF05B7E4FF06B8E5FF05B7E4FF05B7E4FF05B2
+      DDFF0484A5FF003543FF0093B7FF00C5F6FF00CBFEFF00CBFEFF00CBFEFF00CC
+      FFFF00CCFFFF00CCFFFF00AAD4FF2A4C54FFD4D4D4FFFFFFFFFFD4D4D4FF2B49
+      50FF0599BFFF05B7E4FF06B8E5FF06B8E5FF06B8E5FF05B7E4FF0498BEFF0040
+      50FF00A9D4FF00CBFEFF00CBFEFF00CCFFFF00CCFFFF00CCFFFF00CCFFFF00CC
+      FFFF00AAD4FF2A4C54FFD4D4D4FFFFFFFFFFD4D4D4FF2B4950FF0599BFFF05B7
+      E4FF06B8E5FF06B8E5FF06B8E5FF06B8E5FF0599BFFF014050FF00AAD4FF00CB
+      FEFF00CCFFFF00CCFFFF00CCFFFF00CCFFFF00C6F7FF00AFDBFF0694B8FF4662
+      69FFDBDBDBFFFFFFFFFFDBDBDBFF475F66FF0B86A6FF059DC4FF05B2DEFF05B7
+      E4FF06B8E5FF06B8E5FF0599BFFF014050FF00AAD4FF00CBFEFF00CCFFFF00CC
+      FFFF00C6F7FF00AFDBFF069ABFFF225B69FF456269FFBEC4C5FFF7F7F7FFFFFF
+      FFFFF7F7F7FFBFC4C5FF475F66FF255562FF0B8BACFF059DC4FF05B2DEFF05B7
+      E4FF0599BFFF014050FF00AAD4FF00CBFEFF00C6F7FF00AFDBFF069ABFFF225B
+      69FF456269FFB7BDBEFFDADADAFFF7F7F7FFFEFEFEFFFFFFFFFFFEFEFEFFF7F7
+      F7FFDBDBDBFFB8BDBEFF475F66FF255562FF0B8BACFF059DC4FF0494B8FF0140
+      50FF00A4CDFF00AFDAFF069ABFFF225B69FF456269FFB7BDBEFFDADADAFFF6F6
+      F6FFFEFEFEFFFEFEFEFFFEFEFEFFFFFFFFFFFFFFFFFFFEFEFEFFFEFEFEFFF7F7
+      F7FFDBDBDBFFB8BDBEFF475F66FF255562FF0A728CFF003542FF067E9BFF225B
+      68FF456269FFB7BDBEFFDADADAFFF6F6F6FFFEFEFEFFFEFEFEFFFEFEFEFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFEFEFFFEFEFEFFF7F7
+      F7FFDBDBDBFFB8BDBEFF475A5FFF2A3537FF465C62FFB7BDBEFFDADADAFFF6F6
+      F6FFFEFEFEFFFEFEFEFFFEFEFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFEFEFFFEFEFEFFF7F7
+      F7FFDBDBDBFFD4D4D4FFDADADAFFF6F6F6FFFEFEFEFFFEFEFEFFFEFEFEFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFEFEFFFEFEFEFFFEFE
+      FEFFFEFEFEFFFEFEFEFFFEFEFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFF474A48FF545554FFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFF697877FFBDC8C2FFABB0B0FF3D3D3DFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFF171817FFFFFFFFFFFFFFFFFFFFFFFFFF4B4B4BFF8E8E8EFFFFFFFFFF656E
+      69FFA5C2BDFFB3CCC8FFC5D0D0FF696C6AFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF555A57FFC7CA
+      C8FF202020FFFFFFFFFF676767FFF2F2F2FFA7A7A7FF505D5CFF8DA5A1FFA4BD
+      B9FFA5C2BDFF4E6965FF151816FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF4A5957FFAEC5C1FFCBD6D5FF4A46
+      4BFF3C3C3CFFDFDFDFFFF4F4F4FFC7C8C7FF606767FF5F706EFF98B1AFFF93AC
+      AAFF909797FF1D1D1DFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFF313A3AFF95ACA9FFABC6C2FFCBD8D7FFAFAFAFFF8788
+      87FFC1C1C1FFF2F2F2FFDCDCDCFF898C8AFF525F5EFF859C98FFB3C8C5FFBFC8
+      C8FF505050FF0B0B0BFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFF839A96FFA5C2BDFFA5C2BDFFB9D0CCFFDADDDBFFA29FA1FF9393
+      93FFE5E5E5FFF1F1F1FFC3C4C3FF626A6BFF617471FFA1BAB6FFC9D8D6FF9D9E
+      9DFF232323FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF535C
+      57FFA5C2BDFFA5C2BDFFA5C2BDFFAAC3C0FFC7D8D6FFC4C5C4FF717271FFC4C5
+      C4FFF4F4F4FFE9E9E9FF8D908EFF444F4EFF89A09EFFAEC7C3FFBFCECCFF5358
+      58FF050605FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF424744FFA5C2BDFFA5C2
+      BDFFA5C2BDFFA5C2BDFFA5C2BDFFB7CECAFFCAD3D3FF989998FF9FA09FFFE7E8
+      E7FFEEEEEEFFCACDCBFF5B6665FF768987FFA0BBB7FFB7CCC9FF7E8989FF1013
+      11FFFFFFFFFFFFFFFFFFFFFFFFFF3C413EFFA4BDB9FFA5C2BDFFA5C2BDFFA5C2
+      BDFFA5C2BDFFA5C2BDFFADC6C2FFC6CFCAFFAEAFAEFF878887FFBABABAFFEDED
+      EDFFDEE0E1FF464B48FF79908FFF98B3B1FF758E8AFF273332FFFFFFFFFFFFFF
+      FFFFFFFFFFFF252A27FF8FA8A4FFA5C2BDFFA5C2BDFFA5C2BDFFA5C2BDFFA5C2
+      BDFFA5C2BDFFAAC3C0FFBBD0CDFFC3C8C5FF626764FF9E9F9EFFC6C6C6FF3F42
+      40FF687977FF819693FF4C6967FF0C0F0DFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFF718482FFA5C2BDFFA5C2BDFFA5C2BDFFA5C2BDFFA5C2BDFFA5C2BDFFA5C2
+      BDFFA5C2BDFFA8C3BFFF597672FF5B5C5BFF9B9C9BFF2F3230FF687977FF8398
+      95FF314C4BFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF343B37FF869D
+      9AFFA4C1BCFFA5C2BDFFA5C2BDFFA5C2BDFFA5C2BDFFA5C2BDFFA5C2BDFFA5C2
+      BDFF658481FF464746FF8E8E8EFF323533FF6A7D7AFF779491FF253836FFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF35403AFF819C9AFFA2BF
+      BAFFA5C2BDFFA5C2BDFFA5C2BDFFA5C2BDFFA5C2BDFFA5C2BDFF708F8CFF2D32
+      2FFF7B7C7BFF3C4747FF6E8382FF63827FFF1C2929FFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF2A3938FF6B8885FFA2BFBAFFA5C2
+      BDFFA5C2BDFFA5C2BDFFA5C2BDFFA5C2BDFF749390FF303D3DFF535353FF4E5D
+      5CFF748986FF3F5A56FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFF1D2A2AFF536C68FF99B4AFFFA4C1BEFFA5C2
+      BDFFA5C2BDFFA5C2BDFF7C9996FF30413FFF393A39FF596665FF647F7BFF192C
+      2BFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFF46615FFF819E99FF9FBEB8FFA5C2BDFFA5C2
+      BDFF84A19EFF364F4DFF101110FF586B68FF405955FF010201FF000000FF0000
+      00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFF3A534FFF638680FF92AFAAFFA4BFBAFF8CA9A4FF3C5B
+      58FF121513FF4B5C5AFF162323FF000000FF000000FF000000FF000000FFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFF324744FF476A66FF769793FF84A39FFF4B6866FF252A27FF2839
+      38FF000000FF000000FF000000FF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFF343B37FF3D5A55FF4D7471FF4A6561FF202522FF080B09FF000000FF0000
+      00FF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFF384F4CFF121714FF070807FF000000FF000000FFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFE3E3E3FF727272FF555555FF555555FF393939FF393939FF8E8E8EFFE3E3
+      E3FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3E3FF1D1D1DFFAAAA
+      AAFFFFFFFFFFFFFFFFFFFFFFFFFFC7C7C7FF1D1D1DFF1D1D1DFFAAAAAAFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFF1D1D1DFF393939FFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFF8E8E8EFF000000FF1D1D1DFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFAAAAAAFF000000FF1D1D1DFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFF000000FF000000FFAAAAAAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFC7C7C7FF0000
+      00FF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000
+      00FF000000FFAAAAAAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFC7C7C7FFC7C7C7FFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8E8E8EFF000000FF000000FFE3E3
+      E3FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFC7C7C7FF1D1D1DFF000000FF727272FFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF727272FF0000
+      00FF1D1D1DFF8E8E8EFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFF1D1D1DFF393939FFC7C7C7FFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFAAAAAAFF1D1D1DFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFAAAAAAFF7272
+      72FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFC7C7C7FFC7C7C7FFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3
+      E3FF1D1D1DFF1D1D1DFFE3E3E3FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFAAAAAAFF000000FF0000
+      00FFAAAAAAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF727272FF727272FFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFF9F9FFFFD9D9FFFFD9D9FFFFF9F9FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFF5F5F5FFC7C7C7FFC7C7C7FFCDCDF6FF5656
+      FFFF4949FFFF9B9BFFFFC5C5FFFFEDEDFFFFFDFDFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFC9C9C9FF3C3C3CFF373737FF9595D4FF2828FFFF0E0EFFFF1D1D
+      FFFF3232FFFF6767FFFF8484FFFFA6A6FFFFD0D0FFFFF8F8FFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFCECE
+      CEFF3E3E3EFF1D1D1DFF7E7EC3FF2424FFFF1010FFFF0D0DFFFF0F0FFFFF0707
+      FFFF0000FFFF1515FFFF3333FFFF8989FFFFAEAEFFFFE5E5FFFFFCFCFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFEFEFFF6C6C6CFF0808
+      08FF6666B0FF1B1BFFFF0808FFFF0000E3FF060672FF0C0C55FF141455FF0808
+      39FF010139FF0B0B8EFF1717E3FF5B5BFFFFA6A6FFFFF1F1FFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFDFDFDFF7E7E7EFF000000FF5C5CA7FF1D1D
+      FFFF1313E3FF05051DFF2020AAFF1313FFFF1212FFFF1F1FFFFF2121C7FF0707
+      1DFF03031DFF0C0CAAFF1E1EFFFFB3B3FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFF868686FF060606FF6464A4FF2222FFFF00001DFF0101
+      39FF2828FFFF3737FFFF2D2DFFFF1919FFFF0D0DFFFF0C0C8EFF000000FF0505
+      1DFF3030FFFFBFBFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFF868686FF060606FF6C6C9DFF1B1BAAFF000000FF00001DFF0707FFFF0000
+      FFFF1616FFFF2929FFFF4242FFFF4444FFFF000000FF000000FF2929AAFFD2D2
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF818181FF0000
+      00FF7C7C86FF7575C7FF000000FF000000FF0808FFFF0808FFFF0808FFFF0707
+      FFFF0404FFFF1A1AFFFF000000FF000000FF3F3FAAFFDBDBFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF868686FF060606FF868686FFF4F4
+      FFFF9696C7FF6C6CC7FF7979FFFF3232FFFF1313FFFF0505FFFF0404FFFF0606
+      8EFF000000FF000000FF2D2DE3FFCACAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFF858585FF060606FF868686FFFFFFFFFFFFFFFFFFFFFF
+      FFFFF7F7FFFFCCCCFFFFA9A9FFFF8383FFFF3737C7FF03031DFF000000FF0303
+      72FF2323FFFFBCBCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8F8
+      F8FF767676FF000000FF858585FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFF707072FF000000FF13131DFF3C3C8EFF4343FFFF6E6EFFFFE0E0
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE6E6E6FF5F5F5FFF0F0F
+      0FFF989898FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF1D1D1DFF3939
+      39FFC7C7C7FFFFFFFFFFF6F6FFFFDBDBFFFFE4E4FFFFFBFBFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3E3FF585858FF101010FF9A9A9AFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFAAAAAAFF1D1D1DFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFE1E1E1FF585858FF0A0A0AFF979797FFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFAAAAAAFF727272FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3
+      E3FF595959FF101010FF9A9A9AFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFC7C7
+      C7FFC7C7C7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3E3FF585858FF1010
+      10FF9A9A9AFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3E3FF5D5D5DFF0C0C0CFF9B9B9BFFFFFF
+      FFFFFFFFFFFFFFFFFFFFE3E3E3FF1D1D1DFF1D1D1DFFE3E3E3FFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFEFEFEFFF888888FF2F2F2FFFBCBCBCFFFFFFFFFFFFFFFFFFFFFF
+      FFFFAAAAAAFF000000FF000000FFAAAAAAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFCFC
+      FCFFE8E8E8FFC9C9C9FFF5F5F5FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF7272
+      72FF727272FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF9F9FFFFD9D9FFFFD9D9FFFFF9F9
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5F5
+      F5FFC7C7C7FFC7C7C7FFCDCDF6FF5656FFFF4949FFFF9B9BFFFFC5C5FFFFEDED
+      FFFFFDFDFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFC9C9C9FF3C3C3CFF3737
+      37FF9595D4FF2828FFFF0E0EFFFF1D1DFFFF3232FFFF6767FFFF8484FFFFA6A6
+      FFFFD0D0FFFFF8F8FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFCECECEFF3E3E3EFF1D1D1DFF7E7EC3FF2424
+      FFFF1010FFFF0D0DFFFF070772FF030372FF0000FFFF1515FFFF3333FFFF8989
+      FFFFAEAEFFFFE5E5FFFFFCFCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFEFEFEFFF6C6C6CFF080808FF6666B0FF1B1BFFFF0808FFFF0000
+      AAFF000000FF000000FF2929AAFF2525FFFF0404FFFF1414FFFF1A1AFFFF5B5B
+      FFFFA6A6FFFFF1F1FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFDFD
+      FDFF7E7E7EFF000000FF5C5CA7FF1D1DFFFF1515FFFF2424E3FF05051DFF0202
+      1DFF1010E3FF1F1FFFFF2A2AFFFF3F3FFFFF1616FFFF1212FFFF1E1EFFFFB3B3
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF868686FF0606
+      06FF6464A4FF2222FFFF0303FFFF0404FFFF2828FFFF3737FFFF2D2DFFFF1919
+      FFFF0D0DFFFF1515FFFF1111FFFF2E2EFFFF3030FFFFBFBFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF868686FF060606FF6C6C9DFF2929
+      FFFF0101FFFF0202FFFF0505C7FF0000C7FF1616FFFF2929FFFF4242FFFF4444
+      FFFF0D0DFFFF0909FFFF3E3EFFFFD2D2FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFF818181FF000000FF7C7C86FF9696FFFF1A1AFFFF0404
+      FFFF0505AAFF040472FF0808FFFF0707FFFF0404FFFF1A1AFFFF2020FFFF2626
+      FFFF5E5EFFFFDBDBFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFF868686FF060606FF868686FFF4F4FFFFC0C0FFFF8B8BFFFF5151AAFF0606
+      1DFF1313FFFF0505FFFF0404FFFF0A0AFFFF0404FFFF0A0AFFFF3333FFFFCACA
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF858585FF0606
+      06FF868686FFFFFFFFFFFFFFFFFFFFFFFFFFF7F7FFFF17171DFF262639FF6666
+      C7FF4747FFFF1616FFFF0000FFFF0606FFFF2323FFFFBCBCFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFF8F8F8FF767676FF000000FF858585FFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF727272FF000000FF19191DFF5F5F
+      8EFF6B6BFFFF4343FFFF6E6EFFFFE0E0FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFE6E6E6FF5F5F5FFF0F0F0FFF989898FFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFC7C7C7FF1D1D1DFF000000FF6E6E72FFDBDB
+      FFFFE4E4FFFFFBFBFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3
+      E3FF585858FF101010FF9A9A9AFFC7C7C7FFC7C7C7FFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFF8E8E8EFF000000FF000000FFE3E3E3FFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE1E1E1FF585858FF0A0A
+      0AFF767676FF000000FF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFF000000FF000000FFAAAAAAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3E3FF595959FF101010FF676767FF0000
+      00FF1D1D1DFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000
+      00FF000000FFAAAAAAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFE3E3E3FF585858FF101010FF9A9A9AFF1D1D1DFF393939FFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8E8E8EFF000000FF1D1D1DFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3
+      E3FF5D5D5DFF0C0C0CFF9B9B9BFFE3E3E3FF1D1D1DFFAAAAAAFFFFFFFFFFFFFF
+      FFFFFFFFFFFFC7C7C7FF1D1D1DFF1D1D1DFFAAAAAAFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFEFEFFF888888FF2F2F
+      2FFFBCBCBCFFFFFFFFFFE3E3E3FF727272FF555555FF555555FF393939FF3939
+      39FF8E8E8EFFE3E3E3FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFCFCFCFFE8E8E8FFC9C9C9FFF5F5F5FFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFF555555FF000000FFAAAAAAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFC7C7C7FF555555FF555555FF555555FF1D1D1DFF555555FFAAAAAAFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFAAAAAAFF0000
+      00FF000000FF555555FFFFFFFFFFFFFFFFFFFFFFFFFFAAAAAAFF1D1D1DFFE3E3
+      E3FFFFFFFFFFFFFFFFFFFFFFFFFF8E8E8EFF000000FF393939FFE3E3E3FFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFAAAAAAFF000000FF000000FF5555
+      55FFFFFFFFFFFFFFFFFFC7C7C7FF000000FF8E8E8EFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFF393939FF000000FF727272FFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFAAAAAAFF000000FF000000FF555555FFFFFFFFFFFFFF
+      FFFF555555FF000000FF727272FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFAAAAAAFF000000FF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFF000000FF000000FF8E8E8EFFFFFFFFFFFFFFFFFF727272FF0000
+      00FF555555FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFAAAAAAFF0000
+      00FF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF1D1D
+      1DFF000000FFAAAAAAFFFFFFFFFFFFFFFFFFFFFFFFFFAAAAAAFFE3E3E3FFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF393939FF000000FF393939FFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF555555FF000000FFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFF8E8E8EFF000000FF000000FFC7C7C7FFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFF555555FF1D1D1DFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3E3FF393939FF0000
+      00FF393939FFC7C7C7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFAAAAAAFF555555FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFC7C7C7FF000000FF727272FFE3E3E3FFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFAAAA
+      AAFF555555FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFF555555FF727272FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFAAAAAAFF555555FFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF555555FFC7C7
+      C7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFC7C7C7FF8E8E8EFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8E8E8EFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3E3FF1D1D
+      1DFF1D1D1DFFE3E3E3FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFAAAA
+      AAFF000000FF555555FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFAAAAAAFF000000FF000000FFAAAA
+      AAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF555555FF000000FF0000
+      00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFF727272FF727272FFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3E3FF555555FFAAAAAAFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFF555555FF000000FFAAAAAAFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFAAAA
+      AAFF000000FF000000FF555555FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFAAAAAAFF000000FF0000
+      00FF555555FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFAAAAAAFF000000FF000000FF555555FFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFF000000FF000000FF8E8E8EFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFF1D1D1DFF000000FFAAAAAAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF555555FF0000
+      00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF555555FF1D1D1DFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFAAAAAAFF555555FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFAAAAAAFF555555FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFAAAAAAFF5555
+      55FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFC7C7C7FF8E8E8EFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3
+      E3FF1D1D1DFF1D1D1DFFE3E3E3FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFAAAAAAFF000000FF0000
+      00FFAAAAAAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF727272FF727272FFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF292C
+      29FF292C29FF292C29FF292C29FF292C29FF292C29FF292C29FF292C29FF292C
+      29FF292C29FF292C29FF292C29FF292C29FF292C29FF292C29FFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF292C29FFF6F2F6FFDEDADEFFD5D6
+      D5FFCDCECDFFCDCACDFFC5C2C5FFBDBEBDFFB4B6B4FFACAEACFFA4A5A4FFA4A1
+      A4FFA4A1A4FFA4A1A4FFDEDADEFF626162FF000000FFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFF292C29FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFAFFFFFFFAFFFFF6F6F6FFF6F6F6FFF6F2F6FFEEEEEEFFEEEEEEFFEEEA
+      EEFF737173FF626162FF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF292C
+      29FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFAFFFFF6F6F6FFF6F2F6FFEEEE
+      EEFFEEEAEEFFE6E6E6FFDEDEDEFFD5D6D5FFCDCECDFFCDC6CDFF737173FF6261
+      62FF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF292C29FFFFFFFFFFFFFF
+      FFFF737152FF737562FF73756AFF737562FF737152FF737141FF736D31FF7369
+      20FF6A6510FF6A6500FFEEEAEEFFC5C6C5FF737173FF626162FF000000FFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFF292C29FFFFFFFFFFFFFFFFFF73715AFFEEEA
+      DEFFFFFFFFFFEEEADEFFDEDABDFFCDC694FFBDB273FFA49D52FF948D29FF7B71
+      08FFEEEAEEFFC5C6C5FF737173FF626162FF000000FFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFF292C29FFFFFFFFFFF6F6F6FF737152FFE6E2CDFFEEEADEFFE6E2
+      CDFFD5D6B4FFC5C294FFB4B273FFA49D4AFF948929FF736D08FFEEEAEEFFC5C2
+      C5FF737173FF626162FF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF292C
+      29FFFFFAFFFFF6F2F6FF73714AFFD5D6B4FFDEDABDFFD5D6B4FFCDCA9CFFBDBA
+      83FFACAA62FF9C9941FF8B8520FF736900FFEEEAEEFFC5C2C5FF737173FF6261
+      62FF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF292C29FFFFFAFFFFEEEE
+      EEFF736D39FFC5C294FFCDC694FFC5C294FFBDBA83FFB4AE6AFFA49D52FF948D
+      31FF837D10FF6A6500FFE6E6E6FFC5C2C5FF737173FF626162FF000000FFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFF292C29FFF6F6F6FFE6E6E6FF736D31FFB4B2
+      73FFBDB273FFB4B273FFACAA62FFA49D52FF9C9139FF8B8120FF7B7100FF6259
+      00FFE6E6E6FFC5C2C5FF737173FF626162FF000000FFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFF292C29FFF6F2F6FFE6E2E6FF736920FF94914AFF9C914AFF9491
+      4AFF948D41FF8B8531FF837918FF736908FF625D00FF524C00FFE6E6E6FFC5C2
+      C5FF737173FF626162FF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF292C
+      29FFF6F2F6FFDEDADEFFEEEEEEFFEEEEEEFFEEEEEEFFEEEAEEFFEEEAEEFFEEEA
+      EEFFEEEAEEFFE6E6E6FFE6E6E6FFE6E6E6FFC5C2C5FFC5C2C5FF737173FF8385
+      83FFDEDADEFF292C29FFFFFFFFFFFFFFFFFFFFFFFFFF292C29FFEEEEEEFFD5D2
+      D5FFCDCECDFFCDCECDFFCDCACDFFCDCACDFFC5C6C5FFC5C6C5FFC5C2C5FFC5C2
+      C5FFC5C2C5FFC5C2C5FFC5C2C5FFC5C2C5FF838183FFEEEAEEFF4A4C4AFF0000
+      00FFFFFFFFFFFFFFFFFF292C29FFF6F6F6FF838183FF838183FF4A4C4AFF5A5D
+      5AFF6A696AFF6A6D6AFF6A6D6AFF6A6D6AFF6A6D6AFF6A696AFF5A5D5AFF5250
+      52FF4A4C4AFF4A4C4AFFF6F6F6FF737173FF4A4C4AFF000000FFFFFFFFFFFFFF
+      FFFF292C29FFEEEEEEFFE6E6E6FFE6E6E6FFE6E6E6FFE6E6E6FFE6E6E6FFE6E6
+      E6FFE6E6E6FFE6E6E6FFE6E6E6FFE6E6E6FFE6E6E6FFE6E6E6FFE6E6E6FFE6E6
+      E6FFACAAACFF737173FF4A4C4AFF000000FFFFFFFFFFFFFFFFFF292C29FFE6E6
+      E6FFBDBEBDFFBDBEBDFFBDBEBDFFBDBEBDFFBDBEBDFFBDBEBDFFBDBEBDFFBDBE
+      BDFFBDBEBDFF4A4C4AFF4A4C4AFF4A4C4AFF4A4C4AFFBDBEBDFF949594FF7371
+      73FF4A4C4AFF000000FFFFFFFFFFFFFFFFFF292C29FFDEDADEFFA4A1A4FFA4A1
+      A4FFA4A1A4FFA4A1A4FFA4A1A4FFA4A1A4FFA4A1A4FFA4A1A4FFA4A1A4FFDEDA
+      DEFFDEDADEFFDEDADEFFDEDADEFFA4A1A4FF838183FF737173FF000000FFFFFF
+      FFFFFFFFFFFFFFFFFFFF292C29FFD5D2D5FF8B8D8BFF8B8D8BFF8B8D8BFF8B8D
+      8BFF8B8D8BFF8B8D8BFF8B8D8BFF8B8D8BFF8B8D8BFF8B8D8BFF8B8D8BFF8B8D
+      8BFF8B8D8BFF8B8D8BFF737173FF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFF292C29FF292C29FF292C29FF292C29FF292C29FF292C29FF292C
+      29FF292C29FF292C29FF292C29FF292C29FF292C29FF292C29FF292C29FF292C
+      29FF292C29FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FF000000FF0000
+      00FF000000FF000000FF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FF07E2FFFF07E2FFFF07E2FFFF07E2
+      FFFF07E2FFFF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFF000000FF07E2FFFF07E2FFFF07E2FFFF07E2FFFF07E2FFFF0000
+      00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFF000000FF07E2FFFF07E2FFFF07E2FFFF07E2FFFF07E2FFFF000000FFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FF07E2
+      FFFF07E2FFFF07E2FFFF07E2FFFF07E2FFFF000000FFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FF07E2FFFF07E2
+      FFFF07E2FFFF07E2FFFF07E2FFFF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FF000000FF000000FF000000FF0000
+      00FF000000FF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFF000000FF000000FF0096BCFF0096BCFF0096BCFF0096BCFF000000FF0000
+      00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FF005068FF0000
+      00FF0096BCFF0096BCFF0096BCFF000000FF00C5EDFF000000FFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFF000000FF005068FF005068FF000000FF0096BCFF0096
+      BCFF000000FF00C5EDFF00C5EDFF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000
+      00FF000000FF000000FF000000FF000000FF000000FF000000FF00C5EDFF00C5
+      EDFF00C5EDFF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FF07E2FFFF07E2
+      FFFF07E2FFFF07E2FFFF07E2FFFF000000FF00C5EDFF00C5EDFF00C5EDFF0000
+      00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FF07E2FFFF07E2FFFF07E2FFFF07E2
+      FFFF07E2FFFF000000FF00C5EDFF00C5EDFF00C5EDFF000000FFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFF000000FF07E2FFFF07E2FFFF07E2FFFF07E2FFFF07E2FFFF0000
+      00FF00C5EDFF00C5EDFF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000
+      00FF07E2FFFF07E2FFFF07E2FFFF07E2FFFF07E2FFFF000000FF00C5EDFF0000
+      00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FF07E2FFFF07E2
+      FFFF07E2FFFF07E2FFFF07E2FFFF000000FF000000FFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FF000000FF000000FF000000FF0000
+      00FF000000FF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3
+      E3FF797A79FF585A58FF555855FF545654FF525352FF4F514FFF4C4F4CFF494C
+      49FF494B49FF494B49FF505250FF7A7B7AFFEEEEEEFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3E3FF949694FFE2E1E2FFEEED
+      EEFFE9EAE9FFE7E6E7FFE3DFE3FFDBDBDBFFD4D5D4FFCECDCEFFCBCACBFFCBC8
+      CBFF959295FF313031FFBFBFBFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFCACACAFF949694FFFFFFFFFFF8F8F6FFF8F6F7FFF3F2
+      F2FFF0ECEEFFEAE8E7FFE5E4E1FFDBDAD6FFD5D6D2FFD4D0D4FF6F6D6FFF3130
+      31FFBFBFBFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFCACACAFF949694FFFFFFFFFF7D7B62FF9D9D91FF9B9C8DFF93916EFF8D87
+      51FF847C35FF756F13FFAFA978FF000000FF000000FF000000FF000000FF0000
+      00FF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFCACACAFF9496
+      94FFFBFBFBFF918E75FFEFECE0FFECE9DAFFD5D3AFFFC0BB84FFA9A257FF8D84
+      21FFB2AC7BFF000000FF07E2FFFF07E2FFFF07E2FFFF07E2FFFF07E2FFFF0000
+      00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFCACACAFF949394FFF8F4F8FF8C8A
+      64FFDAD8B9FFD8D7B7FFC9C697FFB5B273FFA09D49FF857E18FFB0A977FF0000
+      00FF07E2FFFF07E2FFFF07E2FFFF07E2FFFF07E2FFFF000000FFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFCACACAFF929292FFEFEEEFFF86814AFFC3BD88FFC1BD
+      88FFB5B171FFA8A055FF958D32FF7A7308FFA7A373FFCDCBCDFF000000FF07E2
+      FFFF07E2FFFF07E2FFFF07E2FFFF07E2FFFF000000FFFFFFFFFFFFFFFFFFFFFF
+      FFFFCACACAFF909090FFEAE7EAFF7E7733FFA49D59FFA29D59FF9B9549FF9088
+      31FF807616FF665F00FF9F9B73FFCDCBCDFF000000FF07E2FFFF07E2FFFF07E2
+      FFFF07E2FFFF07E2FFFF000000FFFFFFFFFFFFFFFFFFFFFFFFFFC9CAC9FF8F8F
+      8FFFE3E0E3FFDDDCD4FFE0DFD8FFE0DCD8FFDEDAD5FFDDD9D2FFD7D4CBFFD2D1
+      C9FFCDCBC9FFC6C3C6FF7C7B7CFF000000FF07E2FFFF07E2FFFF07E2FFFF07E2
+      FFFF07E2FFFF000000FFFFFFFFFFFFFFFFFF9B9D9BFFA0A1A0FFB6B4B6FF9899
+      98FFA0A0A0FFA3A2A3FF9FA19FFF9F9F9FFF9F9D9FFF979697FF939193FF9190
+      91FFB5B3B5FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+      00FFFFFFFFFFFFFFFFFF5B5D5BFFDCDBDCFFC7C6C7FFB6B7B6FFBCBDBCFFBFBF
+      BFFFBFC0BFFFBFC0BFFFBFBFBFFFB9BAB9FFB6B6B6FFB5B5B5FF000000FF0000
+      00FF0096BCFF0096BCFF0096BCFF0096BCFF000000FF000000FFFFFFFFFFFFFF
+      FFFF585A58FFCFCFCFFFBABABAFFBABABAFFBABABAFFBABABAFFBABABAFFBABA
+      BAFF848484FF717271FF717271FF000000FF005068FF000000FF0096BCFF0096
+      BCFF0096BCFF000000FF00C5EDFF000000FFFFFFFFFFFFFFFFFF555755FFB9B7
+      B9FF989898FF989898FF989898FF989898FF989898FF989898FFAFAEAFFFB7B6
+      B7FF000000FF005068FF005068FF000000FF0096BCFF0096BCFF000000FF00C5
+      EDFF00C5EDFF000000FFFFFFFFFFFFFFFFFFABACABFF4D4F4DFF434643FF4346
+      43FF434643FF434643FF434643FF434643FF434643FF000000FF000000FF0000
+      00FF000000FF000000FF000000FF000000FF00C5EDFF00C5EDFF00C5EDFF0000
+      00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FF07E2FFFF07E2FFFF07E2FFFF07E2
+      FFFF07E2FFFF000000FF00C5EDFF00C5EDFF00C5EDFF000000FFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFF000000FF07E2FFFF07E2FFFF07E2FFFF07E2FFFF07E2FFFF0000
+      00FF00C5EDFF00C5EDFF00C5EDFF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000
+      00FF07E2FFFF07E2FFFF07E2FFFF07E2FFFF07E2FFFF000000FF00C5EDFF00C5
+      EDFF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FF07E2FFFF07E2
+      FFFF07E2FFFF07E2FFFF07E2FFFF000000FF00C5EDFF000000FFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FF07E2FFFF07E2FFFF07E2FFFF07E2
+      FFFF07E2FFFF000000FF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFF000000FF000000FF000000FF000000FF000000FF000000FF0000
+      00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFF
     }
   end
   object MainMenu: TMainMenu

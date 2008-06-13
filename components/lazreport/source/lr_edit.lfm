@@ -152,7 +152,6 @@ object frEditorForm: TfrEditorForm
       Gutter.Color = 13605511
       Gutter.LeftOffset = 10
       Gutter.Width = 20
-      Gutter.OnChange = nil
       Gutter.CodeFoldingWidth = 14
       Highlighter = SynPasSyn1
       Keystrokes = <      
