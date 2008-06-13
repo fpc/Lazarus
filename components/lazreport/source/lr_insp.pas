@@ -21,19 +21,12 @@ uses
   
   LCLIntf,LCLType,LCLProc,
   
-  LR_Class, LR_Const;
+  LR_Class, LR_Const, lr_propedit;
 
 type
   TInspModifyEvent = procedure(Item: Integer; var EditText: String) of object;
 
   TCtrlStyle = (csEdit, csDefEditor);
-
-  TPropEditor = class(TForm)
-  public
-    View: TfrView;
-    
-    function ShowEditor: TModalResult; virtual;
-  end;
 
   TProp = class
     Addr    : PChar;
@@ -107,11 +100,6 @@ begin
   Style := st;
   Editor := de;
   Enabled := True;
-end;
-
-function TPropEditor.ShowEditor:TModalResult;
-begin
-  Result := ShowModal;
 end;
 
 function TfrInspForm.CurItem: TProp;
