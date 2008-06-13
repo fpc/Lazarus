@@ -12014,15 +12014,16 @@ var ActiveSrcEdit: TSourceEditor;
   NewSource: TCodeBuffer;
   NewX, NewY, NewTopLine: integer;
   RevertableJump: boolean;
+  LogCaret: TPoint;
 begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   {$IFDEF IDE_DEBUG}
   writeln('');
   writeln('[TMainIDE.DoJumpToProcedureSection] ************');
   {$ENDIF}
+  LogCaret:=ActiveSrcEdit.EditorComponent.LogicalCaretXY;
   if CodeToolBoss.JumpToMethod(ActiveUnitInfo.Source,
-    ActiveSrcEdit.EditorComponent.CaretX,
-    ActiveSrcEdit.EditorComponent.CaretY,
+    LogCaret.X,LogCaret.Y,
     NewSource,NewX,NewY,NewTopLine,RevertableJump) then
   begin
     DoJumpToCodePos(ActiveSrcEdit, ActiveUnitInfo,
