@@ -2129,9 +2129,11 @@ var
   Msg: TLMMouseEvent;
   MousePos: TQtPoint;
 begin
+  WriteLn(LCLObject.ClassName);
   FillChar(Msg, SizeOf(Msg), #0);
 
-  MousePos := QWheelEvent_globalPos(QWheelEventH(Event))^;
+  MousePos := QWheelEvent_Pos(QWheelEventH(Event))^;
+  OffsetMousePos(@MousePos);
 
   LastMouse.Widget := Sender;
   LastMouse.MousePos := MousePos;
@@ -7257,16 +7259,18 @@ end;
 
 function TQtAbstractScrollArea.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
-  case QEvent_type(Event) of
-    QEventPaint,
-    QEventMouseButtonPress,
-    QEventMouseButtonRelease,
-    QEventMouseButtonDblClick,
-    QEventWheel,
-    QEventContextMenu: Result := False;
-    else
-      Result := inherited EventFilter(Sender, Event);
-  end;
+  if (QEvent_type(Event) in [
+                            QEventPaint,
+                            QEventMouseButtonPress,
+                            QEventMouseButtonRelease,
+                            QEventMouseButtonDblClick,
+                            QEventWheel,
+                            QEventContextMenu
+                           ]) and
+     (ClassType = TQtAbstractScrollArea) then
+    Result := False
+  else
+    Result := inherited EventFilter(Sender, Event);
 end;
 
 procedure TQtAbstractScrollArea.ViewPortEventFilter(event: QEventH; retval: PBoolean); cdecl;

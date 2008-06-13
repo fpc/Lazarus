@@ -1811,6 +1811,9 @@ begin
 
         // the mousewheel message is for us
         Msg := LM_MOUSEWHEEL;
+        Windows.ScreenToClient(TargetWindow, P);
+        X := P.X;
+        Y := P.Y;
         Button := LOWORD(WParam);
         WheelDelta := SmallInt(HIWORD(WParam));
         State := GetShiftState;
