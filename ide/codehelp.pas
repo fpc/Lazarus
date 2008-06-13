@@ -1678,6 +1678,7 @@ begin
           end;
 
           // Add comments
+          FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
           if CodeToolBoss.GetPasDocComments(Item.CodeXYPos.Code,
             Item.CodeXYPos.X,Item.CodeXYPos.Y,ListOfPCodeXYPosition)
           and (ListOfPCodeXYPosition<>nil) then
