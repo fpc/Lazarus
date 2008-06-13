@@ -369,7 +369,6 @@ type
     fBlockIndent: integer;
     fCaretX: Integer;      // physical position (screen)
     {$IFDEF SYN_LAZARUS}
-    fBracketHighlightCaret: TPoint;
     fBracketHighlightPos: TPoint;
     fBracketHighlightAntiPos: TPoint;
     fCtrlMouseActive: boolean;
@@ -622,7 +621,7 @@ type
     procedure InvalidateGutterLines(FirstLine, LastLine: integer);
     procedure InvalidateLines(FirstLine, LastLine: integer);
     {$IFDEF SYN_LAZARUS}
-    procedure InvalidateBracketHighlight(OnlyIfCaretMoved: boolean);
+    procedure InvalidateBracketHighlight;
     {$ENDIF}
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     {$IFDEF SYN_LAZARUS}
@@ -1542,7 +1541,9 @@ begin
     if sfScrollbarChanged in fStateFlags then
       UpdateScrollbars;
     if sfCaretChanged in fStateFlags then
-      UpdateCaret;
+      UpdateCaret
+    else if not(sfPainting in fStateFlags) then
+      InvalidateBracketHighlight; // This can change, without moving the Cursor
     if fStatusChanges <> [] then
       DoOnStatusChange(fStatusChanges);
   end;
@@ -2087,38 +2088,55 @@ begin
 end;
 
 {$IFDEF SYN_LAZARUS}
-procedure TCustomSynEdit.InvalidateBracketHighlight(OnlyIfCaretMoved: boolean);
+procedure TCustomSynEdit.InvalidateBracketHighlight;
+var
+  NewPos, NewAntiPos, SwapPos : TPoint;
 begin
-  if OnlyIfCaretMoved
-  and (CaretX=fBracketHighlightCaret.X)
-  and (CaretY=fBracketHighlightCaret.Y) then
-    exit;
-  fBracketHighlightCaret:=CaretXY;
-  // invalidate old bracket highlighting
-  if fBracketHighlightPos.Y>0 then begin
+  NewPos.Y:=-1;
+  NewAntiPos.Y:=-1;
+  if eoBracketHighlight in Options
+  then FindMatchingBracketPair(CaretXY, NewPos, NewAntiPos, false);
+
+  // Always keep ordered
+  if (NewAntiPos.Y > 0)
+  and ((NewAntiPos.Y < NewPos.Y) or ((NewAntiPos.Y = NewPos.Y) and (NewAntiPos.X < NewPos.X)))
+  then begin
+    SwapPos    := NewAntiPos;
+    NewAntiPos := NewPos;
+    NewPos     := SwapPos;
+  end;
+
+  // invalidate old bracket highlighting, if changed
+  if (fBracketHighlightPos.Y > 0)
+  and ((fBracketHighlightPos.Y <> NewPos.Y) or (fBracketHighlightPos.X <> NewPos.X))
+  then begin
     //DebugLn('TCustomSynEdit.InvalidateBracketHighlight A Y=',fBracketHighlightPos.Y,' X=',fBracketHighlightPos.X);
     InvalidateLines(fBracketHighlightPos.Y,fBracketHighlightPos.Y);
   end;
-  if (fBracketHighlightAntiPos.Y>0)
-  and (fBracketHighlightPos.Y<>fBracketHighlightAntiPos.Y) then
-    InvalidateLines(fBracketHighlightAntiPos.Y,fBracketHighlightAntiPos.Y);
-  fBracketHighlightPos.Y:=0;
-  fBracketHighlightAntiPos.Y:=0;
-  if eoBracketHighlight in Options then begin
-    FindMatchingBracketPair(CaretXY,
-                            fBracketHighlightPos,fBracketHighlightAntiPos,true);
 
-    // invalidate new bracket highlighting
-    if fBracketHighlightPos.Y>0 then begin
-      //DebugLn('TCustomSynEdit.InvalidateBracketHighlight C ',
-      //  ' Y=',fBracketHighlightPos.Y,' X=',fBracketHighlightPos.X,
-      //  ' Y=',fBracketHighlightAntiPos.Y,' X=',fBracketHighlightAntiPos.X,
-      //  '');
-      InvalidateLines(fBracketHighlightPos.Y,fBracketHighlightPos.Y);
-      if fBracketHighlightPos.Y<>fBracketHighlightAntiPos.Y then
-        InvalidateLines(fBracketHighlightAntiPos.Y,fBracketHighlightAntiPos.Y);
-    end;
+  if (fBracketHighlightAntiPos.Y > 0)
+  and (fBracketHighlightPos.Y <> fBracketHighlightAntiPos.Y)
+  and ((fBracketHighlightAntiPos.Y <> NewAntiPos.Y) OR (fBracketHighlightAntiPos.X <> NewAntiPos.X))
+  then
+    InvalidateLines(fBracketHighlightAntiPos.Y,fBracketHighlightAntiPos.Y);
+
+  // invalidate new bracket highlighting, if changed
+  if NewPos.Y>0 then begin
+    //DebugLn('TCustomSynEdit.InvalidateBracketHighlight C ',
+    //  ' Y=',NewPos.Y,' X=',NewPos.X,
+    //  ' Y=',NewAntiPos.Y,' X=',NewAntiPos.X,
+    //  '');
+    if ((fBracketHighlightPos.Y <> NewPos.Y) or (fBracketHighlightPos.X <> NewPos.X))
+    then InvalidateLines(NewPos.Y, NewPos.Y);
+
+    if ((NewPos.Y <> NewAntiPos.Y)
+        or ((fBracketHighlightPos.Y = NewPos.Y) and (fBracketHighlightPos.X = NewPos.X))
+       )
+    and ((fBracketHighlightAntiPos.Y <> NewAntiPos.Y) OR (fBracketHighlightAntiPos.X <> NewAntiPos.X))
+    then InvalidateLines(NewAntiPos.Y, NewAntiPos.Y);
   end;
+  fBracketHighlightPos     := NewPos;
+  fBracketHighlightAntiPos := NewAntiPos;
 end;
 
 procedure TCustomSynEdit.FindMatchingBracketPair(const PhysCaret: TPoint;
@@ -3178,12 +3196,6 @@ var
 
   ExpandedPaintToken: string; // used to create the string sent to TextDrawer
 
-  // logical (byte) positions of highlight brackets, the X are zero based
-  nBracketX: integer; // zero based (logical)
-  nBracketY: integer; // one based
-  nAntiBracketX: integer; // zero based (logical)
-  nAntiBracketY: integer; // one based
-
   LinkFGCol: TColor;
 
 { local procedures }
@@ -3708,14 +3720,14 @@ var
     LeftBracketX, RightBracketX, Dummy: integer;
   begin
     // get bracket positions
-    if (nLine=nBracketY)
-    and (nBracketX>=nTokenPos) and (nBracketX<nTokenPos+nTokenLen) then
-      LeftBracketX:=nBracketX
+    if (nLine=fBracketHighlightPos.Y)
+    and (fBracketHighlightPos.X-1>=nTokenPos) and (fBracketHighlightPos.X-1<nTokenPos+nTokenLen) then
+      LeftBracketX:=fBracketHighlightPos.X-1
     else
       LeftBracketX:=-1;
-    if (nLine=nAntiBracketY)
-    and (nAntiBracketX>=nTokenPos) and (nAntiBracketX<nTokenPos+nTokenLen) then
-      RightBracketX:=nAntiBracketX
+    if (nLine=fBracketHighlightAntiPos.Y)
+    and (fBracketHighlightAntiPos.X-1>=nTokenPos) and (fBracketHighlightAntiPos.X-1<nTokenPos+nTokenLen) then
+      RightBracketX:=fBracketHighlightAntiPos.X-1
     else
       RightBracketX:=-1;
     if (LeftBracketX<0) and (RightBracketX>=0) then begin
@@ -3968,10 +3980,10 @@ var
             if (fLastCtrlMouseLinkY<>CurLine)
             or (nTokenPos+1<>fLastCtrlMouseLinkX1)
             then begin
-              if ((nBracketY<>CurLine) or (nTokenPos+nTokenLen<=nBracketX)
-                or (nTokenPos>nBracketX))
-              and ((nAntiBracketY<>CurLine) or (nTokenPos+nTokenLen<=nAntiBracketX)
-                or (nTokenPos>nAntiBracketX)) then
+              if ((fBracketHighlightPos.Y<>CurLine) or (nTokenPos+nTokenLen<=fBracketHighlightPos.X-1)
+                or (nTokenPos>fBracketHighlightPos.X-1))
+              and ((fBracketHighlightAntiPos.Y<>CurLine) or (nTokenPos+nTokenLen<=fBracketHighlightAntiPos.X-1)
+                or (nTokenPos>fBracketHighlightAntiPos.X-1)) then
               begin
                 // normal token
                 if Assigned(attr) then
@@ -4012,95 +4024,6 @@ var
       end;
     end;
     CurLine:=-1;
-  end;
-
-  procedure InitializeHighlightBrackets;
-  // test if caret over bracket and search anti bracket
-  const
-    Brackets: array[0..5] of char = ('(', ')', '[', ']', '{', '}');
-  var
-    sLine: string;
-    i, PosX, PosY, Len: integer;
-    CurChar, BracketInc, BracketDec: char;
-    NumBrackets: integer;
-    LogCaret: TPoint;
-  begin
-    // check for bracket under the cursor
-    nBracketY:=0;
-    nAntiBracketY:=0;
-    if not (eoBracketHighlight in fOptions) then exit;
-    if (fCaretY < FirstLine) or (fCaretY > LastLine) then exit;
-    sLine := Lines[fCaretY - 1];
-    Len := Length(sLine);
-    LogCaret:=PhysicalToLogicalPos(CaretXY);
-    if (LogCaret.X < 1) or (LogCaret.X > Len) then exit;
-    BracketInc := sLine[LogCaret.X];
-    if not (BracketInc in ['(',')','[',']','{','}']) then exit;
-    nBracketY:=LogCaret.Y;
-    nBracketX:=LogCaret.X-1; // zero based
-    // find antibracket
-    NumBrackets := 1;
-    PosX:=LogCaret.X;
-    PosY:=LogCaret.Y;
-    i:=0;
-    while Brackets[i]<>BracketInc do inc(i);
-    BracketDec := Brackets[i xor 1]; // 0 -> 1, 1 -> 0, ...
-    if Odd(i) then begin
-      // closing bracket -> search opening bracket
-      repeat
-        // search until start of line
-        while PosX > 1 do begin
-          Dec(PosX);
-          CurChar := sLine[PosX];
-          if CurChar=BracketInc then
-            Inc(NumBrackets)
-          else if CurChar=BracketDec then begin
-            Dec(NumBrackets);
-            if NumBrackets = 0 then begin
-              // matching bracket found, set caret and bail out
-              nAntiBracketX:=PosX-1; // zero based
-              nAntiBracketY:=PosY;
-              break;
-            end;
-          end;
-        end;
-        // get previous line if possible
-        if (nAntiBracketY>0) or (PosY <=FirstLine) then break;
-        Dec(PosY);
-        sLine := Lines[PosY - 1];
-        PosX := Length(sLine) + 1;
-      until FALSE;
-    end else begin
-      // opening bracket -> search closing bracket
-      repeat
-        // search until end of line
-        Len := Length(sLine);
-        while PosX < Len do begin
-          Inc(PosX);
-          CurChar := sLine[PosX];
-          if CurChar=BracketInc then
-            Inc(NumBrackets)
-          else if CurChar=BracketDec then begin
-            Dec(NumBrackets);
-            if NumBrackets = 0 then begin
-              // matching bracket found, set caret and bail out
-              nAntiBracketX:=PosX-1; // zero based
-              nAntiBracketY:=PosY;
-              break;
-            end;
-          end;
-        end;
-        // get next line if possible
-        if (nAntiBracketY>0) or (PosY >= LastLine) then break;
-        Inc(PosY);
-        sLine := Lines[PosY - 1];
-        PosX := 0;
-      until FALSE;
-    end;
-    {debugln('InitializeHighlightBrackets END nBracketY=',dbgs(nBracketY),
-      ' nBracketX=',dbgs(nBracketX),
-      ' nAntiBracketY=',dbgs(nAntiBracketY),
-      ' nAntiBracketX=',dbgs(nAntiBracketX));}
   end;
 
   procedure CalculateCtrlMouseLink;
@@ -4178,7 +4101,6 @@ begin
     AClip.Left := rcToken.Right;
   end;
   if (LastLine >= FirstLine) then begin
-    InitializeHighlightBrackets;
     CalculateCtrlMouseLink;
     // Paint the visible text lines. To make this easier, compute first the
     // necessary information about the selected area: is there any visible
@@ -5834,7 +5756,7 @@ begin
       {$ENDIF}
     end;
     {$IFDEF SYN_LAZARUS}
-    InvalidateBracketHighlight(true);
+    InvalidateBracketHighlight();
     {$ENDIF}
 {$IFDEF SYN_MBCSSUPPORT}
     if HandleAllocated then begin
