@@ -703,10 +703,10 @@ begin
   if newTop < 0 then
     newTop := 0;
   SetBounds(newLeft, newTop, Width, Height);
-  if AMoveToTop then 
+  if AMoveToTop then
     ShowOnTop
   else
-    Show;
+    Visible:=true;
 end;
 
 {------------------------------------------------------------------------------

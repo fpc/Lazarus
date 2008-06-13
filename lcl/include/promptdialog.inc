@@ -156,7 +156,6 @@ var
   curBtn      : Longint; // variable to loop through TMsgDlgButtons
   ButtonIndex : integer;
   CurButton: TBitBtn;
-  CurBtnSize: TPoint;
 begin
   Result := 0;
 
@@ -455,10 +454,7 @@ Const
   cVerticalSpacing = 5;
   cButtonWidth = 200 - cTextWidth - 3 * cHorizontalSpacing;
 var
-  curBtn      : Longint; // variable to loop through TMsgDlgButtons
-  reqBtnWidth : integer;    // width neccessary to display buttons
   i        : integer;
-  ButtonIndex : integer;
   CurButton: TBitBtn;
 
   ButtonLeft, ButtonTop: Integer;
