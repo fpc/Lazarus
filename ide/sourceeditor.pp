@@ -6333,6 +6333,9 @@ begin
       FIncrementalSearchStartPos := CurEdit.BlockBegin;
       FIncrementalSearchCancelPos := FIncrementalSearchStartPos;
     end;
+    
+    // cut the not found
+    FIncrementalSearchStr := CurEdit.SelText;
   end
   else begin
     // go to start
