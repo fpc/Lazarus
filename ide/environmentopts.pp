@@ -1042,7 +1042,7 @@ begin
     FOpenLastProjectAtStart:=XMLConfig.GetValue(
        Path+'AutoSave/OpenLastProjectAtStart',true);
     FShowCompileDialog:=XMLConfig.GetValue(
-       Path+'ShowCompileDialog/Value',true);
+       Path+'ShowCompileDialog/Value',false);
 
     // windows
     FIDEWindowLayoutList.LoadFromXMLConfig(XMLConfig,
@@ -1347,7 +1347,7 @@ begin
        Path+'FormEditor/DesignerPaint/Lazy/Value',FDesignerPaintLazy,true);
 
     XMLConfig.SetDeleteValue(
-       Path+'ShowCompileDialog/Value',FShowCompileDialog,True);
+       Path+'ShowCompileDialog/Value',FShowCompileDialog,False);
        
     if not OnlyDesktop then begin
       // files
