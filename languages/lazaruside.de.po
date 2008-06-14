@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-06-11 21:48+0100\n"
+"PO-Revision-Date: 2008-06-14 09:42+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -434,7 +434,7 @@ msgstr "Ein gültiges Werkzeug benötigt wenigstens einen Titel und eine auszuf�
 
 #: lazarusidestrconsts:lisabandonchanges
 msgid "Abandon changes?"
-msgstr ""
+msgstr "Änderungen verwerfen?"
 
 #: lazarusidestrconsts:lispdabort
 msgid "Abort"
@@ -718,7 +718,7 @@ msgstr "Alle Tests erfolgreich verlaufen."
 
 #: lazarusidestrconsts:lisallyourmodificationstowillbelostandthefilereopened
 msgid "All your modifications to %s%s%s%swill be lost and the file reopened."
-msgstr ""
+msgstr "Die Datei wird neu geöffnet, alle Änderungen an %s%s%s%ssind verloren."
 
 #: lazarusidestrconsts:lisallowfunctio
 msgid "Allow Function Calls"
@@ -1318,7 +1318,7 @@ msgstr "Klasse von %s ändern"
 
 #: lazarusidestrconsts:lischangeencoding
 msgid "Change Encoding"
-msgstr ""
+msgstr "Kodierung ändern"
 
 #: lazarusidestrconsts:lisplistchangefont
 msgid "Change Font"
@@ -1326,7 +1326,7 @@ msgstr "Schriftart ändern"
 
 #: lazarusidestrconsts:lischangefile
 msgid "Change file"
-msgstr ""
+msgstr "Datei ändern"
 
 #: lazarusidestrconsts:lischangeparent
 msgid "Change parent ..."
@@ -2010,19 +2010,19 @@ msgstr "Konvertierungseinstellungen"
 
 #: lazarusidestrconsts:lisconversionerror
 msgid "Conversion error"
-msgstr "Umwandlungsfehler"
+msgstr "Konvertierungsfehler"
 
 #: lazarusidestrconsts:srvk_convert
 msgid "Convert"
-msgstr "Konvertierung"
+msgstr "Konvertieren"
 
 #: lazarusidestrconsts:liskmconvertdfmfiletolfm
 msgid "Convert DFM file to LFM"
-msgstr "DFM- in LFM-Datei konvertieren"
+msgstr "DFM- in LFM-Datei umwandeln"
 
 #: lazarusidestrconsts:lismenuconvertdfmtolfm
 msgid "Convert DFM file to LFM ..."
-msgstr "DFM- in LFM-Datei konvertieren ..."
+msgstr "DFM- in LFM-Datei umwandeln ..."
 
 #: lazarusidestrconsts:lispwconvertproject
 msgid "Convert Delphi Project"
@@ -2030,31 +2030,31 @@ msgstr "Delphi-Projekt umwandeln"
 
 #: lazarusidestrconsts:liskmconvertdelphipackagetolazaruspackage
 msgid "Convert Delphi package to Lazarus package"
-msgstr "Delphi- in Lazarus-Package konvertieren"
+msgstr "Delphi- in Lazarus-Package umwandeln"
 
 #: lazarusidestrconsts:lismenuconvertdelphipackage
 msgid "Convert Delphi package to Lazarus package ..."
-msgstr "Delphi- in Lazarus-Package konvertieren ..."
+msgstr "Delphi- in Lazarus-Package umwandeln ..."
 
 #: lazarusidestrconsts:liskmconvertdelphiprojecttolazarusproject
 msgid "Convert Delphi project to Lazarus project"
-msgstr "Delphi- in Lazarus-Projekt konvertieren"
+msgstr "Delphi- in Lazarus-Projekt umwandeln"
 
 #: lazarusidestrconsts:lismenuconvertdelphiproject
 msgid "Convert Delphi project to Lazarus project ..."
-msgstr "Delphi- in Lazarus-Projekt konvertieren ..."
+msgstr "Delphi- in Lazarus-Projekt umwandeln ..."
 
 #: lazarusidestrconsts:liskmconvertdelphiunittolazarusunit
 msgid "Convert Delphi unit to Lazarus unit"
-msgstr "Delphi- in Lazarus-Unit konvertieren"
+msgstr "Delphi- in Lazarus-Unit umwandeln"
 
 #: lazarusidestrconsts:lismenuconvertdelphiunit
 msgid "Convert Delphi unit to Lazarus unit ..."
-msgstr "Delphi- in Lazarus-Unit konvertieren ..."
+msgstr "Delphi- in Lazarus-Unit umwandeln ..."
 
 #: lazarusidestrconsts:liscodetoolsdefsconvertnode
 msgid "Convert node"
-msgstr "Konvertiere Knoten"
+msgstr "Wandle Knoten um"
 
 #: lazarusidestrconsts:srkmecselectiontabs2spaces
 msgid "Convert tabs to spaces in selection"
@@ -2966,7 +2966,7 @@ msgstr "Auswahl einschließen ..."
 
 #: lazarusidestrconsts:lisencodingoffileondiskisnewencodingis2
 msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
-msgstr ""
+msgstr "Kodierung der Datei %s%s%s%saus der Platte ist %s. Die neue Kodierung ist %s."
 
 #: lazarusidestrconsts:srvk_end
 msgid "End"
@@ -5846,11 +5846,11 @@ msgstr "Neuer Klassenname"
 
 #: lazarusidestrconsts:liskmnewpackage
 msgid "New package"
-msgstr "Neues Packet"
+msgstr "Neues Package"
 
 #: lazarusidestrconsts:lismenunewpackage
 msgid "New package ..."
-msgstr "Neues Packet..."
+msgstr "Neues Package..."
 
 #: lazarusidestrconsts:liskmnewproject
 msgid "New project"
@@ -6458,7 +6458,7 @@ msgstr "Package-Graph"
 
 #: lazarusidestrconsts:dlgpldpackagegroup
 msgid "Package group"
-msgstr "Packet Gruppe"
+msgstr "Package-Gruppe"
 
 #: lazarusidestrconsts:lispkgmangpackageisnodesigntimepackage
 msgid "Package is no designtime package"
@@ -7246,7 +7246,7 @@ msgstr "In Kleinbuchstaben umbenennen"
 
 #: lazarusidestrconsts:lisreopenwithanotherencoding
 msgid "Reopen with another encoding"
-msgstr ""
+msgstr "Mit anderer Kodierung erneut lesen"
 
 #: lazarusidestrconsts:lisrepeatcount
 msgid "Repeat Count:"
@@ -9178,7 +9178,7 @@ msgstr "Das Package %s%s%s war markiert.%sDerzeit unterstützt Lazarus nur stati
 
 #: lazarusidestrconsts:listhepackagealreadycontainsaunitwiththisname
 msgid "The package already contains a unit with this name."
-msgstr "Dieses Packet enthält bereits eine Unit mit diesem Namen."
+msgstr "Dieses Package enthält bereits eine Unit mit diesem Namen."
 
 #: lazarusidestrconsts:lispkgmangthepackagefilenameinisnotavalidlazaruspackagename
 msgid "The package file name %s%s%s in%s%s%s%s is not a valid lazarus package name."
@@ -9850,7 +9850,7 @@ msgstr "Das Package %s%s%s.%s kann nicht geöffnet werden. Es war zur Installati
 
 #: lazarusidestrconsts:lisunabletoread
 msgid "Unable to read %s"
-msgstr ""
+msgstr "Kann %s nicht lesen"
 
 #: lazarusidestrconsts:lisunabletoreadfile
 msgid "Unable to read file"
