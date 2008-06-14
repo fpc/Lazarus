@@ -1134,6 +1134,7 @@ function gtkMotionNotify(Widget:PGTKWidget; Event: PGDKEventMotion;
   Data: gPointer): GBoolean; cdecl;
 var
   DesignOnlySignal: boolean;
+  ShiftState: TShiftState;
 begin
   Result := CallBackDefaultReturn;
   MousePositionValid:=false;
@@ -1149,6 +1150,28 @@ begin
   {$ENDIF}
 
   UpdateMouseCaptureControl;
+  
+  ShiftState := GTKEventStateToShiftState(Event^.State);
+  if (MouseCaptureWidget=Widget)
+  and (MouseCaptureType=mctGTK)
+  and ([ssLeft,ssRight,ssMiddle]*ShiftState=[]) then begin
+    {$IFDEF VerboseMouseCapture}
+    DebugLn(['gtkMotionNotify gtk capture without mouse down: ',GetWidgetDebugReport(Widget)]);
+    {$ENDIF}
+    {$IFDEF Gtk1}
+    // workaround for buggy gtk1: release capture and clean up editable
+    // (happens when popupmenu of TEdit/TComboBox closes)
+    gtk_grab_remove(MouseCaptureWidget);
+    if GtkWidgetIsA(MouseCaptureWidget,GTK_TYPE_ENTRY) then begin
+      PGtkEntry(MouseCaptureWidget)^.button:=0;
+    end;
+    if GtkWidgetIsA(MouseCaptureWidget,gtk_editable_get_type) then begin
+      PGtkEditable(MouseCaptureWidget)^.flag0:=
+        PGtkEditable(MouseCaptureWidget)^.flag0 and not bm_TGtkEditable_has_selection;
+    end;
+    UpdateMouseCaptureControl;
+    {$ENDIF}
+  end;
 
   if not (csDesigning in TComponent(Data).ComponentState) then begin
     DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseMotion);

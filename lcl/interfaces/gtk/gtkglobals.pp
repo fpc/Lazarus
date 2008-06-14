@@ -45,6 +45,11 @@ type
     mctGTKIntf, // gtk interface has captured the mouse
     mctLCL      // a LCL control has captured the mouse
     );
+    
+const
+  MouseCaptureTypeNames: array[TMouseCaptureType] of string = (
+    'GTK','GTKintf','LCL'
+    );
   
 var
   //drag icons

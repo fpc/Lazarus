@@ -4616,7 +4616,7 @@ end;
   Params: none
   Returns:  none
 
-  Sets MCaptureControl to the current capturing widget.
+  Sets MouseCaptureWidget to the current capturing widget.
  ------------------------------------------------------------------------------}
 procedure UpdateMouseCaptureControl;
 var
@@ -4631,11 +4631,10 @@ begin
     // -> this means the gtk itself has changed the mouse grab
     {$IFDEF VerboseMouseCapture}
     DebugLn('UpdateMouseCaptureControl Capture changed from ',
-      '[',GetWidgetDebugReport(OldMouseCaptureWidget),']',
-      ' to [',GetWidgetDebugReport(CurMouseCaptureWidget),']');
+      '[',GetWidgetDebugReport(OldMouseCaptureWidget),' type=',MouseCaptureTypeNames[MouseCaptureType],']',
+      ' to [',GetWidgetDebugReport(CurMouseCaptureWidget),' type=GTK]');
     if CurMouseCaptureWidget<>nil then
     DebugLn('parent ',    GetWidgetDebugReport(CurMouseCaptureWidget^.Parent));
-
     {$ENDIF}
 
     // notify the new capture control
