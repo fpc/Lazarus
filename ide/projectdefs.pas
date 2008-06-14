@@ -635,8 +635,10 @@ begin
   NewHistoryIndex:=XMLConfig.GetValue(Path+'JumpHistory/HistoryIndex',-1);
   NewPosition:=nil;
   for i:=0 to NewCount-1 do begin
-    if NewPosition=nil then
+    if NewPosition=nil then begin
       NewPosition:=TProjectJumpHistoryPosition.Create('',Point(0,0),0);
+      NewPosition.OnLoadSaveFilename:=OnLoadSaveFilename;
+    end;
     NewPosition.LoadFromXMLConfig(XMLConfig,
                                  Path+'JumpHistory/Position'+IntToStr(i+1)+'/');
     if (NewPosition.Filename<>'') and (NewPosition.CaretXY.Y>0)
