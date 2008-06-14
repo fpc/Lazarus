@@ -40,11 +40,12 @@ interface
 
 uses
   Classes, SysUtils, AVL_Tree,
-  LCLProc, LResources, ClipBrd, Controls, Dialogs, FileUtil, Forms, Menus,
-  StdCtrls, ComCtrls, LDockCtrl,
+  LCLProc, LResources, LCLType, ClipBrd, Controls, Dialogs, FileUtil, Forms,
+  Menus, StdCtrls, ComCtrls, LDockCtrl, Graphics,
   IDEExternToolIntf, IDECommands, MenuIntf, IDEMsgIntf, LazIDEIntf,
   DialogProcs, EnvironmentOpts,
-  LazarusIDEStrConsts, IDEOptionDefs, IDEProcs, InputHistory, KeyMapping;
+  LazarusIDEStrConsts, IDEOptionDefs, IDEProcs, InputHistory, infobuild,
+  KeyMapping;
 
 type
 
@@ -175,10 +176,6 @@ procedure RegisterStandardMessagesViewMenuItems;
 function MessageLinesAsText(ListOfTLazMessageLine: TFPList): string;
 
 implementation
-
-uses
-  Graphics,     // used for TColor
-  LCLType;      // used for TOwnerDrawState
 
 const
   SeparatorLine = '---------------------------------------------';
@@ -390,7 +387,9 @@ var
   NewMsg: TLazMessageLine;
   i:      integer;
   LastItem: TLazMessageLine;
+  ToStoreMessage : Boolean;
 begin
+  ToStoreMessage := VisibleLine;
   //ConsistencyCheck;
   //DebugLn('TMessagesView.Add START ItemCount=',dbgs(ItemCount),' VisibleCount=',dbgs(VisibleItemCount),' ListBoxCount=',dbgs(MessageTreeView.Items.Count),' ProgressLine=',dbgs(ProgressLine),' VisibleLine=',dbgs(VisibleLine),' OriginalIndex=',dbgs(OriginalIndex),' Msg="',Msg,'"');
   NewMsg:=nil;
@@ -399,8 +398,12 @@ begin
     if (OriginalIndex>=0) and (LastItem.OriginalIndex=OriginalIndex) then begin
       // already added
       NewMsg:=LastItem;
+      ToStoreMessage := False;
     end;
   end;
+
+  if ToStoreMessage then PutInfoBuilderStatus(Msg);
+  
   if NewMsg=nil then begin
     NewMsg := TLazMessageLine.Create;
     FItems.Add(NewMsg);

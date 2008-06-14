@@ -40,11 +40,11 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, Process, LCLType, LCLProc, Controls, Forms, Buttons,
-  StdCtrls, ComCtrls, Dialogs, LResources,
+  StdCtrls, ComCtrls, Dialogs, LResources, ExtCtrls,
   LazConfigStorage, FileUtil,
   IDEExternToolIntf, IDEImagesIntf,
   ExtToolEditDlg, IDECommands, KeyMapping, TransferMacros, IDEProcs,
-  CompilerOptions, OutputFilter, LazarusIDEStrConsts, ExtCtrls;
+  InfoBuild, CompilerOptions, OutputFilter, LazarusIDEStrConsts;
 
 const
   MaxExtTools = ecExtToolLast-ecExtToolFirst+1;
@@ -317,6 +317,8 @@ begin
           ),
         mtError,[mbIgnore,mbAbort],0);
       if Result=mrIgnore then Result:=mrCancel;
+      PutExitInfoBuilder(Format(lisExtToolUnableToRunTheTool, ['"', Title, '"', #13,
+          'Program '+Filename+' not found']));
       exit;
     end;
     Filename:=NewFilename;
@@ -343,6 +345,7 @@ begin
         Abort:=false;
         OnNeedsOutputFilter(TheOutputFilter,Abort);
         if Abort then begin
+          PutExitInfoBuilder(lisInfoBuildAbort);
           Result:=mrAbort;
           exit;
         end;
@@ -409,6 +412,8 @@ begin
           ),
         mtError,[mbIgnore,mbAbort],0);
       if Result=mrIgnore then Result:=mrCancel;
+      PutExitInfoBuilder(Format(lisExtToolUnableToRunTheTool,
+                                ['"', Title, '"', #13, e.Message]));
       exit;
     end;
   end;

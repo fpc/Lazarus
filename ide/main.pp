@@ -71,7 +71,7 @@ uses
   MemCheck,
 {$ENDIF}
   // fpc packages
-  Classes, SysUtils, Process, AsyncProcess, TypInfo,
+  Math, Classes, SysUtils, Process, AsyncProcess, TypInfo,
   // lcl
   LCLProc, LCLMemManager, LCLType, LCLIntf, LConvEncoding, LMessages,
   LResources, StdCtrls, Forms, Buttons, Menus, FileUtil, Controls, GraphType,
@@ -95,7 +95,7 @@ uses
   IDEProtocol,
   // compile
   Compiler, CompilerOptions, CompilerOptionsDlg, CheckCompilerOpts,
-  W32VersionInfo, ImExportCompilerOpts,
+  W32VersionInfo, ImExportCompilerOpts, infobuild,
   // projects
   Project, ProjectDefs, NewProjectDlg, ProjectOpts,
   PublishProjectDlg, ProjectInspector, PackageDefs,
@@ -122,7 +122,7 @@ uses
   Splash, IDEDefs, LazarusIDEStrConsts, LazConf, MsgView, SearchResultView,
   CodeTemplatesDlg, CodeBrowser,
   PublishModule, EnvironmentOpts, TransferMacros, KeyMapping, IDETranslations,
-  IDEProcs, ExtToolDialog, ExtToolEditDlg, OutputFilter,
+  IDEProcs, ExtToolDialog, ExtToolEditDlg, OutputFilter, JumpHistoryView,
   BuildLazDialog, MiscOptions, InputHistory, UnitDependencies, ClipBoardHistory,
   ProcessList, InitialSetupDlgs, NewDialog, MakeResStrDlg, ToDoList,
   DialogProcs, FindReplaceDialog, FindInFilesDlg, CodeExplorer, BuildFileDlg,
@@ -825,6 +825,7 @@ type
     function DoPublishModule(Options: TPublishModuleOptions;
                              const SrcDirectory, DestDirectory: string
                              ): TModalResult; override;
+    procedure AbortBuild; override;
 
     // useful frontend methods
     procedure DoSwitchToFormSrc(var ActiveSourceEditor:TSourceEditor;
@@ -933,9 +934,6 @@ var
   ShowSplashScreen: boolean = false;
 
 implementation
-
-uses
-  Math, JumpHistoryView;
 
 var
   SkipAutoLoadingLastProject: boolean = false;
@@ -1917,7 +1915,7 @@ begin
   if FileExists(Filename) then
     DeleteFile(Filename);
   // start timer
-  FRemoteControlTimer:=TTimer.Create(Self);
+  FRemoteControlTimer:=TTimer.Create(OwningComponent);
   FRemoteControlTimer.Interval:=500;
   FRemoteControlTimer.OnTimer:=@OnRemoteControlTimer;
   FRemoteControlTimer.Enabled:=true;
@@ -4099,6 +4097,8 @@ Begin
       ReadSettings(EnvironmentOptions);
     end;
     if EnvironmentOptionsDialog.ShowModal=mrOk then begin
+      ShowCompileDialog:=EnvironmentOptions.ShowCompileDialog;
+    
       // invalidate cached substituted macros
       IncreaseCompilerParseStamp;
 
@@ -7805,7 +7805,7 @@ end;
 procedure TMainIDE.DoShowComponentList;
 begin
   if not Assigned(ComponentListForm)
-  then ComponentListForm := TComponentListForm.Create(Self);
+  then ComponentListForm := TComponentListForm.Create(OwningComponent);
   ComponentListForm.Show;
 end;
 
@@ -9119,6 +9119,10 @@ begin
     Result:=DoSaveForBuild;
     if Result<>mrOk then exit;
 
+    CreateInfoBuilder(OwningComponent);
+    PutInfoBuilderProject(Project1.MainFilename);
+    PutInfoBuilderStatus(lisInfoBuildComplile);
+
     // handle versioninfo
     if not (pbfSkipLinking in Flags) then begin
       VersionInfo := Project1.VersionInfo;
@@ -9128,7 +9132,11 @@ begin
       for i := 1 to VersionInfo.VersionInfoMessages.Count do
         MessagesView.AddMsg(Format(VersionInfo.VersionInfoMessages[i - 1],
                                     ['"', Project1.ShortDescription, '"']), '' ,-1);
-      if Result <> mrOk then exit;
+      if Result <> mrOk then
+      begin
+        PutExitInfoBuilder(lisInfoBuildError);
+        exit;
+      end;
     end else
       VersionInfo:=nil;
 
@@ -9139,7 +9147,11 @@ begin
       for i := 1 to Project1.XPManifest.Messages.Count do
         MessagesView.AddMsg(Format(Project1.XPManifest.Messages[i - 1],
                                     ['"', Project1.ShortDescription, '"']), '' ,-1);
-      if Result <> mrOk then exit;
+      if Result <> mrOk then
+      begin
+        PutExitInfoBuilder(lisInfoBuildError);
+        exit;
+      end;
     end;
 
     // compile required packages
@@ -9148,7 +9160,11 @@ begin
       if pbfCompileDependenciesClean in Flags then
         Include(PkgFlags,pcfCompileDependenciesClean);
       Result:=PkgBoss.DoCompileProjectDependencies(Project1,PkgFlags);
-      if Result<>mrOk then exit;
+      if Result <> mrOk then
+      begin
+        PutExitInfoBuilder(lisInfoBuildError);
+        exit;
+      end;
     end;
 
     // clear old error lines
@@ -9174,7 +9190,11 @@ begin
 
     // warn for ambiguous files
     Result:=DoWarnAmbiguousFiles;
-    if Result<>mrOk then exit;
+    if Result<>mrOk then
+    begin
+      PutExitInfoBuilder(lisInfoBuildError);
+      exit;
+    end;
 
     // check if build is needed (only if we will call the compiler)
     // and check if a 'build all' is needed
@@ -9186,10 +9206,15 @@ begin
       if  (pbfOnlyIfNeeded in Flags)
       and (not (pfAlwaysBuild in Project1.Flags)) then begin
         if Result=mrNo then begin
+          PutExitInfoBuilder(lisInfoBuildError);
           Result:=mrOk;
           exit;
         end;
-        if Result<>mrYes then exit;
+        if Result<>mrYes then
+        begin
+          PutExitInfoBuilder(lisInfoBuildError);
+          exit;
+        end;
       end;
     end;
 
@@ -9200,7 +9225,11 @@ begin
       if (AReason in ToolBefore.CompileReasons) then begin
         Result:=Project1.CompilerOptions.ExecuteBefore.Execute(
                            Project1.ProjectDirectory,lisExecutingCommandBefore);
-        if Result<>mrOk then exit;
+        if Result<>mrOk then
+        begin
+          PutExitInfoBuilder(lisInfoBuildError);
+          exit;
+        end;
       end;
     end;
 
@@ -9224,15 +9253,22 @@ begin
           Project1.LastCompilerParams:=CompilerParams;
           Project1.LastCompilerFileDate:=FileAge(CompilerFilename);
           DoJumpToCompilerMessage(-1,true);
+          PutExitInfoBuilder(lisInfoBuildError);
           exit;
         end;
         // compilation succeded -> write state file
         Result:=Project1.SaveStateFile(CompilerFilename,CompilerParams);
-        if Result<>mrOk then exit;
+        if Result<>mrOk then begin
+          PutExitInfoBuilder(lisInfoBuildError);
+          exit;
+        end;
 
         // update project .po file
         Result:=UpdateProjectPOFile(Project1);
-        if Result<>mrOk then exit;
+        if Result<>mrOk then begin
+          PutExitInfoBuilder(lisInfoBuildError);
+          exit;
+        end;
 
       finally
         ToolStatus:=itNone;
@@ -9247,13 +9283,18 @@ begin
       if (AReason in ToolAfter.CompileReasons) then begin
         Result:=Project1.CompilerOptions.ExecuteAfter.Execute(
                             Project1.ProjectDirectory,lisExecutingCommandAfter);
-        if Result<>mrOk then exit;
+        if Result<>mrOk then
+        begin
+          PutExitInfoBuilder(lisInfoBuildError);
+          exit;
+        end;
       end;
     end;
 
     // add success message
     MessagesView.AddMsg(Format(lisProjectSuccessfullyBuilt, ['"',
                                         Project1.ShortDescription, '"']),'',-1);
+    PutExitInfoBuilder(lisInfoBuildSuccess);
 
   finally
     // check sources
@@ -9582,6 +9623,8 @@ begin
     // first compile all lazarus components (LCL, SynEdit, CodeTools, ...)
     // but not the IDE
     SourceNotebook.ClearErrorLines;
+    CreateInfoBuilder(OwningComponent);
+    PutInfoBuilderProject('Lazarus...');
     Result:=BuildLazarus(MiscellaneousOptions.BuildLazOpts,
                          EnvironmentOptions.ExternalTools,GlobalMacroList,
                          '',EnvironmentOptions.CompilerFilename,
@@ -9594,7 +9637,10 @@ begin
 
     // then compile the 'installed' packages
     if ([blfWithStaticPackages,blfOnlyIDE]*Flags=[])
-    and (MiscellaneousOptions.BuildLazOpts.ItemIDE.MakeMode=mmNone) then exit;
+    and (MiscellaneousOptions.BuildLazOpts.ItemIDE.MakeMode=mmNone) then begin
+      AbleInfoBuilderExit;
+      exit;
+    end;
 
     // prepare static auto install packages
     PkgOptions:='';
@@ -9658,9 +9704,17 @@ begin
 
     DoCheckFilesOnDisk;
     MessagesView.EndBlock;
+
+    if Result = mrOK then
+      PutExitInfoBuilder(lisinfoBuildSuccess)
+    else
+      PutExitInfoBuilder(lisInfoBuildError);
   end;
   if (Result=mrOK) and MiscellaneousOptions.BuildLazOpts.RestartAfterBuild then
+  begin
+    DestroyInfoBuilder;
     mnuRestartClicked(nil);
+  end;
 end;
 
 function TMainIDE.DoBuildFile: TModalResult;
@@ -9740,6 +9794,11 @@ begin
     DirectiveList.Free;
   end;
   Result:=mrOk;
+
+  {if AReason <> crRun then
+    AbleInfoBuilderExit
+  else}
+    DestroyInfoBuilder;
 end;
 
 function TMainIDE.DoRunFile: TModalResult;
@@ -10505,6 +10564,12 @@ begin
       exit;
     end;
   end;
+end;
+
+procedure TMainIDE.AbortBuild;
+begin
+  if TheOutputFilter<>nil then
+    TheOutputFilter.StopExecute:=true;
 end;
 
 procedure TMainIDE.UpdateCaption;

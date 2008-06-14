@@ -201,6 +201,7 @@ type
     FDebuggerFilename: string;         // per debugger class
     FDebuggerFileHistory: TStringList; // per debugger class
     FDebuggerShowStopMessage: Boolean;
+    FShowCompileDialog: Boolean;       // show dialog during compile
     FTestBuildDirectory: string;
     FTestBuildDirHistory: TStringList;
 
@@ -375,6 +376,8 @@ type
                                       write SetDebuggerSearchPath;
     property DebuggerShowStopMessage: boolean read FDebuggerShowStopMessage
                                               write FDebuggerShowStopMessage;
+    property ShowCompileDialog: boolean read  FShowCompileDialog
+                                        write FShowCompileDialog;
     property TestBuildDirectory: string read FTestBuildDirectory
                                         write SetTestBuildDirectory;
     property TestBuildDirHistory: TStringList read FTestBuildDirHistory
@@ -448,7 +451,6 @@ type
   { TEnvironmentOptionsDialog }
 
   TEnvironmentOptionsDialog = class(TForm)
-    OIAutoShowCheckBox: TCheckBox;
     NoteBook: TNoteBook;
     FilesPage: TPage;
     DesktopPage: TPage;
@@ -491,6 +493,7 @@ type
     // messages view
     MsgViewDblClickJumpsCheckBox: TCheckBox;
     MsgViewFocusCheckBox: TCheckBox;
+    ShowCompileDialogCheckBox: TCheckBox;
 
     // window layout
     WindowPositionsGroupBox: TGroupBox;
@@ -535,10 +538,10 @@ type
     DesignerPaintLazyCheckBox: TCheckBox;
 
     // object inspector
+    OIAutoShowCheckBox: TCheckBox;
     ObjectInspectorColorsGroupBox: TGroupBox;
     OIBackgroundColorLabel: TLabel;
     OIBackgroundColorButton: TColorButton;
-
     OISubPropsColorLabel: TLabel;
     OISubPropsColorButton: TColorButton;
     OIReferencesColorLabel: TLabel;
@@ -1038,6 +1041,8 @@ begin
        Path+'AutoSave/LastSavedProjectFile','');
     FOpenLastProjectAtStart:=XMLConfig.GetValue(
        Path+'AutoSave/OpenLastProjectAtStart',true);
+    FShowCompileDialog:=XMLConfig.GetValue(
+       Path+'ShowCompileDialog/Value',true);
 
     // windows
     FIDEWindowLayoutList.LoadFromXMLConfig(XMLConfig,
@@ -1341,6 +1346,9 @@ begin
     XMLConfig.SetDeleteValue(
        Path+'FormEditor/DesignerPaint/Lazy/Value',FDesignerPaintLazy,true);
 
+    XMLConfig.SetDeleteValue(
+       Path+'ShowCompileDialog/Value',FShowCompileDialog,True);
+       
     if not OnlyDesktop then begin
       // files
       XMLConfig.SetDeleteValue(
@@ -1900,6 +1908,8 @@ begin
 
   OpenLastProjectAtStartCheckBox.Caption:=dlgQOpenLastPrj;
 
+  ShowCompileDialogCheckBox.Caption:=dlgQShowCompileDialog;
+
   LazarusDirGroupBox.Caption:=dlgLazarusDir;
 
   with LazarusDirComboBox.Items do begin
@@ -2387,6 +2397,7 @@ begin
     SetComboBoxText(MaxRecentOpenFilesComboBox,IntToStr(MaxRecentOpenFiles));
     SetComboBoxText(MaxRecentProjectFilesComboBox,IntToStr(MaxRecentProjectFiles));
     OpenLastProjectAtStartCheckBox.Checked:=OpenLastProjectAtStart;
+    ShowCompileDialogCheckBox.Checked:=ShowCompileDialog;
 
     // backup
     with BackupInfoProjectFiles do begin

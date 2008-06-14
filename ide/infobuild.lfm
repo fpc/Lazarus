@@ -1,0 +1,185 @@
+object FInfoCompile: TFInfoCompile
+  Left = 242
+  Height = 199
+  Top = 231
+  Width = 397
+  HorzScrollBar.Page = 396
+  VertScrollBar.Page = 198
+  ActiveControl = BClose
+  BorderIcons = []
+  BorderStyle = bsDialog
+  Caption = 'Compile project'
+  ClientHeight = 199
+  ClientWidth = 397
+  FormStyle = fsStayOnTop
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.25'
+  object PInfo: TPanel
+    Left = 6
+    Height = 24
+    Top = 6
+    Width = 386
+    BevelInner = bvLowered
+    BevelOuter = bvLowered
+    BorderStyle = bsSingle
+    Caption = 'PInfo'
+    Font.Style = [fsBold]
+    TabOrder = 0
+  end
+  object BClose: TBitBtn
+    Left = 138
+    Height = 34
+    Top = 154
+    Width = 107
+    Caption = '&OK'
+    Default = True
+    Kind = bkOK
+    ModalResult = 1
+    NumGlyphs = 0
+    OnClick = BCloseClick
+    TabOrder = 1
+  end
+  object Panel1: TPanel
+    Left = 6
+    Height = 50
+    Top = 34
+    Width = 386
+    BevelInner = bvLowered
+    BevelOuter = bvLowered
+    BorderWidth = 1
+    ClientHeight = 50
+    ClientWidth = 386
+    TabOrder = 2
+    object PCurrentStatus: TLabel
+      Left = 3
+      Height = 44
+      Top = 3
+      Width = 380
+      Align = alClient
+      Alignment = taCenter
+      AutoSize = False
+      Caption = 'PCurrentStatus'
+      ParentColor = False
+      WordWrap = True
+    end
+  end
+  object Panel4: TPanel
+    Left = 176
+    Height = 48
+    Top = 94
+    Width = 210
+    BevelInner = bvLowered
+    BevelOuter = bvLowered
+    BorderStyle = bsSingle
+    ClientHeight = 44
+    ClientWidth = 206
+    TabOrder = 3
+    object LNHint: TLabel
+      Left = 68
+      Height = 14
+      Top = 5
+      Width = 31
+      Alignment = taRightJustify
+      AutoSize = False
+      Caption = '0'
+      Font.Color = clBlue
+      ParentColor = False
+    end
+    object LInfoHint: TLabel
+      Left = 6
+      Height = 14
+      Top = 5
+      Width = 29
+      Caption = 'Hints:'
+      ParentColor = False
+    end
+    object LInfoWarning: TLabel
+      Left = 6
+      Height = 14
+      Top = 26
+      Width = 50
+      Caption = 'Warnings:'
+      ParentColor = False
+    end
+    object LNWarning: TLabel
+      Left = 68
+      Height = 14
+      Top = 26
+      Width = 31
+      Alignment = taRightJustify
+      AutoSize = False
+      Caption = '0'
+      Font.Color = clGreen
+      ParentColor = False
+    end
+    object LInfoError: TLabel
+      Left = 112
+      Height = 14
+      Top = 26
+      Width = 34
+      Caption = 'Errors:'
+      ParentColor = False
+    end
+    object LNError: TLabel
+      Left = 172
+      Height = 14
+      Top = 26
+      Width = 31
+      Alignment = taRightJustify
+      AutoSize = False
+      Caption = '0'
+      Font.Color = clRed
+      ParentColor = False
+    end
+    object LInfoNote: TLabel
+      Left = 112
+      Height = 14
+      Top = 5
+      Width = 33
+      Caption = 'Notes:'
+      ParentColor = False
+    end
+    object LNNote: TLabel
+      Left = 172
+      Height = 14
+      Top = 5
+      Width = 31
+      Alignment = taRightJustify
+      AutoSize = False
+      Caption = '0'
+      Font.Color = clBlack
+      ParentColor = False
+    end
+  end
+  object Panel2: TPanel
+    Left = 8
+    Height = 28
+    Top = 104
+    Width = 144
+    BevelInner = bvLowered
+    BevelOuter = bvLowered
+    BorderStyle = bsSingle
+    ClientHeight = 28
+    ClientWidth = 144
+    TabOrder = 4
+    object LNLines: TLabel
+      Left = 88
+      Height = 14
+      Top = 6
+      Width = 49
+      Alignment = taRightJustify
+      AutoSize = False
+      Caption = '0'
+      ParentColor = False
+    end
+    object LInfoLines: TLabel
+      Left = 6
+      Height = 14
+      Top = 6
+      Width = 29
+      Caption = 'Lines:'
+      ParentColor = False
+    end
+  end
+end

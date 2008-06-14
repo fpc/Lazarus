@@ -660,6 +660,18 @@ resourcestring
   lisStopDebugging = 'Stop Debugging?';
   lisStopTheDebugging = 'Stop the debugging?';
   lisCannotFindLazarusStarter = 'Cannot find lazarus starter:%s%s';
+  lisInfoBuildLines  = 'Lines:';
+  lisInfoBuildErrors = 'Errors:';
+  lisInfoBuildHint = 'Hints:';
+  lisInfoBuildWarning = 'Warnings:';
+  lisInfoBuildBuild   = 'Build';
+  lisInfoBuildComplile = 'Compiling...';
+  lisInfoBuildError = 'Error...';
+  lisInfoBuildSuccess = 'Success...';
+  lisInfoBuildAbort = 'Aborted...';
+  lisInfoBuildCaption = 'Compile Project';
+  lisInfoBuildMakeAbort = 'Abort';
+  lisInfoBuildNote = 'Notes:';
 
   // resource files
   lisResourceFileComment =
@@ -936,6 +948,7 @@ resourcestring
   dlgMaxRecentFiles = 'Max recent files';
   dlgMaxRecentProjs = 'Max recent project files';
   dlgQOpenLastPrj = 'Open last project at start';
+  dlgQShowCompileDialog = 'Show compile dialog';
   dlgLazarusDir = 'Lazarus directory (default for all projects)';
   dlgFpcPath = 'Compiler path (e.g. %s)';
   dlgFpcSrcPath = 'FPC source directory';

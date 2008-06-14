@@ -49,6 +49,9 @@ uses
 
   { TEnvironmentOptionsDialog }
 type
+
+  { TEnvironmentOptionsDialogNew }
+
   TEnvironmentOptionsDialogNew = class(TOptionsEditorForm)
     NoteBook: TNoteBook;
     FilesPage: TPage;
@@ -160,6 +163,7 @@ type
     MaxRecentProjectFilesLabel: TLabel;
     MaxRecentProjectFilesComboBox: TComboBox;
     OpenLastProjectAtStartCheckBox: TCheckBox;
+    ShowCompileDialogCheckBox : TCheckBox;
     LazarusDirGroupBox: TGroupBox;
     LazarusDirComboBox: TComboBox;
     LazarusDirButton: TButton;
@@ -633,6 +637,8 @@ begin
   MaxRecentProjectFilesLabel.Caption:=dlgMaxRecentProjs;
 
   OpenLastProjectAtStartCheckBox.Caption:=dlgQOpenLastPrj;
+
+  ShowCompileDialogCheckBox.Caption:=dlgQShowCompileDialog;
 
   LazarusDirGroupBox.Caption:=dlgLazarusDir;
 
@@ -1119,6 +1125,7 @@ begin
     SetComboBoxText(MaxRecentOpenFilesComboBox,IntToStr(MaxRecentOpenFiles));
     SetComboBoxText(MaxRecentProjectFilesComboBox,IntToStr(MaxRecentProjectFiles));
     OpenLastProjectAtStartCheckBox.Checked:=OpenLastProjectAtStart;
+    ShowCompileDialogCheckBox.Checked:=ShowCompileDialog;
 
     // backup
     with BackupInfoProjectFiles do begin
@@ -1264,6 +1271,7 @@ begin
     MaxRecentProjectFiles:=StrToIntDef(
         MaxRecentProjectFilesComboBox.Text,MaxRecentProjectFiles);
     OpenLastProjectAtStart:=OpenLastProjectAtStartCheckBox.Checked;
+    ShowCompileDialog:=ShowCompileDialogCheckBox.Checked;
 
     // backup
     with BackupInfoProjectFiles do begin

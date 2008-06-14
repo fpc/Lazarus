@@ -226,6 +226,7 @@ type
     procedure DoJumpToNextError(DirectionDown: boolean); virtual; abstract;
     procedure DoShowMessagesView; virtual; abstract;
     function DoCheckFilesOnDisk(Instantaneous: boolean = false): TModalResult; virtual; abstract;
+    procedure AbortBuild; virtual; abstract;
 
     // designer
     function GetDesignerWithProjectFile(AFile: TLazProjectFile;

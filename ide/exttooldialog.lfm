@@ -24,28 +24,28 @@ object ExternalToolDialog: TExternalToolDialog
     ShowHint = True
     TabOrder = 0
     object MoveDownButton: TToolButton
-      Left = 1
-      Top = 48
+      Left = 283
+      Top = 2
       Caption = 'MoveDownButton'
       ImageIndex = 4
       OnClick = MoveDownButtonClick
     end
     object MoveUpButton: TToolButton
-      Left = 261
+      Left = 204
       Top = 2
       Caption = 'MoveUpButton'
       ImageIndex = 3
       OnClick = MoveUpButtonClick
     end
     object EditButton: TToolButton
-      Left = 179
+      Left = 139
       Top = 2
       Caption = 'EditButton'
       ImageIndex = 2
       OnClick = EditButtonClick
     end
     object RemoveButton: TToolButton
-      Left = 77
+      Left = 60
       Top = 2
       Caption = 'RemoveButton'
       ImageIndex = 1
@@ -59,7 +59,7 @@ object ExternalToolDialog: TExternalToolDialog
       OnClick = AddButtonClick
     end
     object tbSeparator: TToolButton
-      Left = 254
+      Left = 197
       Top = 2
       Width = 7
       Caption = 'tbSeparator'
@@ -68,7 +68,7 @@ object ExternalToolDialog: TExternalToolDialog
   end
   object ListBox: TListBox
     AnchorSideBottom.Control = BtnPanel
-    Height = 322
+    Height = 332
     Top = 48
     Width = 410
     Align = alTop
@@ -76,22 +76,21 @@ object ExternalToolDialog: TExternalToolDialog
     BorderSpacing.Bottom = 6
     OnClick = ListboxClick
     TabOrder = 1
-    TopIndex = -1
   end
   object BtnPanel: TPanel
-    Height = 48
-    Top = 376
+    Height = 38
+    Top = 386
     Width = 410
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 48
+    ClientHeight = 38
     ClientWidth = 410
     TabOrder = 2
     object OKButton: TBitBtn
       AnchorSideBottom.Side = asrBottom
       Left = 329
-      Height = 36
+      Height = 26
       Top = 6
       Width = 75
       Align = alRight
@@ -110,7 +109,7 @@ object ExternalToolDialog: TExternalToolDialog
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
       Left = 245
-      Height = 36
+      Height = 26
       Top = 6
       Width = 78
       Align = alRight
