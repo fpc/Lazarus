@@ -143,6 +143,7 @@ type
     property TabStop;
     property Visible;
     property OnChange;
+    property OnContextPopup;
     property OnDragDrop;
     property OnDragOver;
     property OnEndDrag;
@@ -200,6 +201,7 @@ type
     property Visible;
     property OnChangeBounds;
     property OnClick;
+    property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
     property OnDockDrop;
@@ -410,6 +412,7 @@ type
     property OnChangeBounds;
     property OnClick;
     property OnCloseUp;
+    property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
@@ -820,6 +823,7 @@ type
     property OnChange;
     property OnChangeBounds;
     property OnClick;
+    property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
@@ -867,6 +871,7 @@ type
     property MaxLength;
     property OnChange;
     property OnClick;
+    property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
@@ -950,6 +955,7 @@ type
     property Font;
     property OnChangeBounds;
     property OnClick;
+    property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
@@ -1080,6 +1086,7 @@ type
     property ModalResult;
     property OnChangeBounds;
     property OnClick;
+    property OnContextPopup;
     property OnDragDrop;
     property OnDragOver;
     property OnEndDrag;
@@ -1167,6 +1174,7 @@ type
     property OnChange;
     property OnChangeBounds;
     property OnClick;
+    property OnContextPopup;
     property OnDragDrop;
     property OnDragOver;
     property OnEditingDone;
@@ -1344,6 +1352,7 @@ type
     property OnChange;
     property OnChangeBounds;
     property OnClick;
+    property OnContextPopup;
     property OnDragDrop;
     property OnDragOver;
     property OnEndDrag;
@@ -1471,6 +1480,7 @@ type
     property OnMouseEnter;
     property OnMouseLeave;
     property OnChangeBounds;
+    property OnContextPopup;
     property OnResize;
     property OnStartDrag;
     property OptimalFill;
