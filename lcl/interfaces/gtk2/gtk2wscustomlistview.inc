@@ -892,7 +892,7 @@ begin
     TLVHack(ALV).SmallImages.GetBitmap(AItem.ImageIndex, BitImage);
     case PGDIObject(BitImage.handle)^.GDIBitmapType of
       gbBitmap: Drawable := PGDIObject(BitImage.handle)^.GDIBitmapObject;
-      gbPixmap: Drawable := PGDIObject(BitImage.handle)^.GDIPixmapObject.Image; {$note TODO add alpha mask}
+      gbPixmap: Drawable := PGDIObject(BitImage.handle)^.GDIPixmapObject.Image; {$IFDEF VerboseGtkToDos}{$note TODO add alpha mask}{$ENDIF}
     else
       Drawable := nil;
     end;

@@ -496,10 +496,11 @@ end;
 
 class procedure TGtkWSCustomListView.ItemChangeInternal(const ACListWidget: PGtkCList; const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem);
 var
-  ImageBitmap, MaskBitmap: TBitmap;
-  ImageRect: TRect;
-  Pixmap: PGdkPixmap;
-  Mask: PGdkBitmap;
+  //ImageBitmap: TBitmap;
+  //MaskBitmap: TBitmap;
+  //ImageRect: TRect;
+  //Pixmap: PGdkPixmap;
+  //Mask: PGdkBitmap;
   n, Count: integer;
 begin
   if  (TLVHack(ALV).SmallImages <> nil)
@@ -524,7 +525,7 @@ begin
     if Mask <> nil
     then gdk_bitmap_unref(Mask);
     {$else}
-    {$note implement}
+    {$IFDEF VerboseGtkToDos}{$note implement}{$ENDIF}
     {$endif}
   end
   else begin
@@ -637,8 +638,9 @@ class procedure TGtkWSCustomListView.ItemSetImage(const ALV: TCustomListView; co
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
-  ImageBitmap, MaskBitmap: TBitmap;
-  ImageRect: TRect;
+  //ImageBitmap: TBitmap;
+  //MaskBitmap: TBitmap;
+  //ImageRect: TRect;
   Pixmap: PGdkPixmap;
   Mask: PGdkBitmap;
   Spacing: guint8;
@@ -676,7 +678,7 @@ begin
     Mask := nil;
   end;
   {$else}
-  {$note implement}
+  {$IFDEF VerboseGtkToDos}{$note implement}{$ENDIF}
     Pixmap := nil;
     Mask := nil;
   {$endif}

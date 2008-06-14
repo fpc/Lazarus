@@ -863,7 +863,7 @@ begin
   AHandler := nil;
 end;
 {$else}
-{$warning TGtkWidgetSet.RemoveProcessEventHandler and TGtkWidgetSet.AddProcessEventHandler not implemented on this OS}
+{$IFDEF VerboseGtkToDos}{$warning TGtkWidgetSet.RemoveProcessEventHandler and TGtkWidgetSet.AddProcessEventHandler not implemented on this OS}{$ENDIF}
 //PChildSignalEventHandler is only defined on unix
 function TGtkWidgetSet.AddProcessEventHandler(AHandle: THandle;
   AEventHandler: TChildExitEvent; AData: PtrInt): PProcessEventHandler;

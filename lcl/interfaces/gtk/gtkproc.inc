@@ -280,7 +280,7 @@ begin
 
   GdkTrapIsSet:=false;
 
-  {$note TODO: enable standard error_log handling}
+  {$IFDEF VerboseGtkToDos}{$note TODO: enable standard error_log handling}{$ENDIF}
   {$IfDef REPORT_GDK_ERRORS}
   If (Xerror<>0) then
     RaiseGDBException('A GDK/X Error occured, this is normally fatal. The error code was : ' + IntToStr(Xerror));
@@ -1226,7 +1226,7 @@ begin
   Result := True;
 end;
 
-{$note remove when gtk native imagelist will be ready}
+{$IFDEF VerboseGtkToDos}{$note remove when gtk native imagelist will be ready}{$ENDIF}
 procedure DrawImageListIconOnWidget(ImgList: TCustomImageList;
   Index: integer; AEffect: TGraphicsDrawEffect; DestWidget: PGTKWidget;
   CenterHorizontally, CenterVertically: boolean;
@@ -3430,7 +3430,7 @@ var
   FileSelWidget: PGtkFileSelection;
   LCLHistoryMenu: PGTKWidget;
   {$IFDEF Gtk1}
-  AFilterEntry: TFileSelFilterEntry;
+  //AFilterEntry: TFileSelFilterEntry;
   FilterList: TFPList; // list of TFileSelFilterListEntry
   LCLFilterMenu: PGTKWidget;
   {$ENDIF}
@@ -5901,7 +5901,7 @@ begin
     AEffect := gdeNormal;
 
   if AImageIndex < AImageList.Count then
-    {$note reimplement}
+    {$IFDEF VerboseGtkToDos}{$note reimplement}{$ENDIF}
     DrawImageListIconOnWidget(AImageList, AImageIndex, AEffect,
       Widget, false, false, ALeft, ATop);
 
@@ -8249,7 +8249,7 @@ var
 begin
   Result := nil;
   
-  {$WARNING ToDo LoadDefaultFontDesc: get a working default pango font description}
+  {$IFDEF VerboseGtkToDos}{$WARNING ToDo LoadDefaultFontDesc: get a working default pango font description}{$ENDIF}
   Result := pango_font_description_from_string('sans 12');
 
   exit;

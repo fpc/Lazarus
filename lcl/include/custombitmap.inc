@@ -473,7 +473,7 @@ end;
 
 function TCustomBitmap.GetTransparent: Boolean;
 begin
-  {$note add better check for transparency }
+  {$IFDEF VerboseLCLTodos}{$note add better check for transparency }{$ENDIF}
   // MWE: now tharansparency is set when a maskhandle is assigned, the user can
   // override this by setting it to false, so no mask is used,
   // however this meganism ignores the possible alpha channel, so for now 32bit
@@ -822,7 +822,7 @@ begin
   try
     // read image
     IntfImg := TLazIntfImage.Create(0,0);
-    {$note set pixelformat based on image, not device}
+    {$IFDEF VerboseLCLTodos}{$note set pixelformat based on image, not device}{$ENDIF}
     // add an extention to the reader, so that we h get called after the header is read
     // the next will cause that all images are loaded in pfDevice format.
     // This is incompatible with delphi
@@ -924,7 +924,7 @@ begin
     
     if WriterClass=nil
     then begin
-      {$note todo choose the correct writer}
+      {$IFDEF VerboseLCLTodos}{$note todo choose the correct writer}{$ENDIF}
       // Bitmaps support alpha. TCustomBitmaps supports more than these 2 formats anyway.
       // So setting the writer based on a mask is nonsense imo (MWE)
 
@@ -1181,7 +1181,7 @@ begin
     Exit;
   end;
   
-  {$note todo: move to IntfImage}
+  {$IFDEF VerboseLCLTodos}{$note todo: move to IntfImage}{$ENDIF}
   IntfImage := TLazIntfImage.Create(0, 0);
   try
     // load from bitmap needs a mask handle otherwise no mask description is

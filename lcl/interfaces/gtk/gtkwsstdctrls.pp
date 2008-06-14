@@ -615,7 +615,7 @@ class function TGtkWSCustomListBox.GetSelected(const ACustomListBox: TCustomList
 var
   Handle: HWND;
   Widget      : PGtkWidget; // pointer to gtk-widget (local use when neccessary)
-  GList       : pGList;     // Only used for listboxes, replace with widget!!!!!
+  //GList       : pGList;     // Only used for listboxes, replace with widget!!!!!
   ListItem    : PGtkListItem;// currently only used for listboxes
 begin
   Result := false;      { assume: nothing found }

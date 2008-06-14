@@ -1508,7 +1508,7 @@ var
           {$ifdef VerboseGdkPixbuf} debugln('DataSourceInitialize B1');{$endif}
           
           Source := CreatePixbufFromDrawable(Bitmap^.GDIPixmapObject.Image, Bitmap^.Colormap, False, 0, StartScan, 0, 0, Width, StartScan + NumScans);
-          {$note TODO: Apply alpha based on mask when 32bit mode is added}
+          {$IFDEF VerboseGtkToDos}{$note TODO: Apply alpha based on mask when 32bit mode is added}{$ENDIF}
             
           rowstride := gdk_pixbuf_get_rowstride(Source);
           Pixels := PByte(gdk_pixbuf_get_pixels(Source));
@@ -2343,7 +2343,7 @@ var
       {$ENDIF}
 
       // calculate ScaleMethod
-      {$note use SetStretchBltMode(dc, mode) here}
+      {$IFDEF VerboseGtkToDos}{$note use SetStretchBltMode(dc, mode) here}{$ENDIF}
       //GDKPixbuf Scaling is not done in the same way as Windows
       //but by rights ScaleMethod should really be chosen based
       //on the destination device's internal flag
@@ -2661,7 +2661,7 @@ begin
     ' SrcWhole='+dbgs(SrcWholeWidth)+','+dbgs(SrcWholeHeight),
     '');
   {$ENDIF}
-  {$note use intersectrect here}
+  {$IFDEF VerboseGtkToDos}{$note use intersectrect here}{$ENDIF}
   if X >= DstWholeWidth then Exit;
   if Y >= DstWholeHeight then exit;
   if X + Width <= 0 then exit;
@@ -2765,7 +2765,7 @@ begin
   end;
   {$ENDIF}
 
-  {$note tode remove, earlier checks require drawable <> nil}
+  {$IFDEF VerboseGtkToDos}{$note tode remove, earlier checks require drawable <> nil}{$ENDIF}
   if SrcDevContext.Drawable = nil
   then begin
     if DstDevContext.Drawable = nil
@@ -2979,7 +2979,7 @@ procedure TGtkWidgetSet.SetCallbackEx(const AMsg: LongInt;
       end
       else if GtkWidgetIsA(PGtkWidget(gObject),gtk_scrolled_window_get_type) then
       begin
-        DebugLn(['GetAdjustment ',GetWidgetDebugReport(PGtkWidget(gObject))]);
+        //DebugLn(['GetAdjustment ',GetWidgetDebugReport(PGtkWidget(gObject))]);
         Result := PgtkObject(gtk_scrolled_window_get_hadjustment(
           PGTKScrolledWindow(gObject)));
       end else
@@ -3918,7 +3918,7 @@ end;
        TGtkWidgetSet ShowHide
        *Note: Show or hide a widget
 ------------------------------------------------------------------------------}
-{$note TODO: move to wsclass }
+{$IFDEF VerboseGtkToDos}{$note TODO: move to wsclass }{$ENDIF}
 procedure TGtkWidgetSet.ShowHide(Sender : TObject);
 
   procedure RaiseWrongClass;

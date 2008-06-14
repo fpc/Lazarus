@@ -4852,7 +4852,7 @@ begin
   // force alpha description
   CheckAlphaDescription(TheImage);
 
-  {$note check if height is also doubled without mask}
+  {$IFDEF VerboseLCLTodos}{$note check if height is also doubled without mask}{$ENDIF}
   FBFI.biHeight := FBFI.biHeight div 2; { Height field is doubled, to (sort of) accomodate mask }
   InternalReadBody; { Now read standard bitmap }
 

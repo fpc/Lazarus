@@ -64,8 +64,8 @@
         {$info Compiling with gtk2 for X}
         {$define HasX}
       {$else}
-        {$note On darwin the native gtk2 widgetset is used. }
-        {$note If you want to use gtk2 for X, define UseX }
+        {$IFDEF VerboseGtkToDos}{$note On darwin the native gtk2 widgetset is used. }{$ENDIF}
+        {$IFDEF VerboseGtkToDos}{$note If you want to use gtk2 for X, define UseX }{$ENDIF}
       {$endif}
     {$else}
       {$define HasX}

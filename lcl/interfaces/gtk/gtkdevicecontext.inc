@@ -285,7 +285,7 @@ begin
       FDrawable := AWindow;
 
       {$IFDEF Gtk1}
-      {$note todo: check if this is still needed} // now gc is a property
+      {$IFDEF VerboseGtkToDos}{$note todo: check if this is still needed}{$ENDIF} // now gc is a property
       GetGC;
       {$ELSE}
       // GC is created on demand

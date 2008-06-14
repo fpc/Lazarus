@@ -37,7 +37,7 @@ begin
   TabWidget := gtk_notebook_get_tab_label(PGtkNoteBook(NotebookWidget),
                                         PageWidget);
   if TabWidget = nil then exit;
-  {$note reimplement}
+  {$IFDEF VerboseGtkToDos}{$note reimplement}{$ENDIF}
   DrawImageListIconOnWidget(NoteBook.Images, ImageIndex, Widget);
 end;
 

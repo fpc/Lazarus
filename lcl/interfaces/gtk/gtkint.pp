@@ -112,7 +112,7 @@ type
     {$ifdef unix}
     FChildSignalHandlers: PChildSignalEventHandler;
     {$else}
-    {$warning no declaration of FChildSignalHandlers for this OS}
+    {$IFDEF VerboseGtkToDos}{$warning no declaration of FChildSignalHandlers for this OS}{$ENDIF}
     {$endif}
 
     {$Ifdef GTK2}

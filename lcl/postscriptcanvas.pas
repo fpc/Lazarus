@@ -1943,7 +1943,7 @@ end;
 procedure TPostScriptPrinterCanvas.TextRect(ARect: TRect; X, Y: integer;
   const Text: string; const Style: TTextStyle);
 begin
-  {$WARNING TPostScriptPrinterCanvas.TextRect is not yet fully implemented!}
+  {$IFDEF VerboseLCLTodos}{$WARNING TPostScriptPrinterCanvas.TextRect is not yet fully implemented!}{$ENDIF}
   //TODO: clipping, layout, etc.
   TextOut(X,Y, Text);
 end;

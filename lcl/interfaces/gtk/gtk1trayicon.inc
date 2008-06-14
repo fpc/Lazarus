@@ -35,9 +35,9 @@ type
     fWindow: TWindow;
     fScreenID: longint;
     fTrayParent: TWindow;
-    fOwner: TComponent;
+    //fOwner: TComponent;
     fEmbedded: Boolean;
-    fMsgCount: Integer;
+    //fMsgCount: Integer;
     fTrayIcon: TCustomTrayIcon;
     function GetCanvas: TCanvas;
     function NotifyExpose(Event: PGdkEventExpose; Widget: PGtkWidget): Boolean; cdecl;

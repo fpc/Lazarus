@@ -483,11 +483,11 @@ begin
         ABits := (PB^ shr AShift) and PrecMask;
       end;
   16: begin
-        {$note check endian and/or source byte order}
+        {$IFDEF VerboseLCLTodos}{$note check endian and/or source byte order}{$ENDIF}
         ABits := (PW^ shr AShift) and PrecMask;
       end;
   32: begin
-        {$note check endian and/or source byte order}
+        {$IFDEF VerboseLCLTodos}{$note check endian and/or source byte order}{$ENDIF}
         ABits := (PC^ shr AShift) and PrecMask;
       end;
   else
@@ -535,12 +535,12 @@ begin
         PB^ := (PB^ and PrecMask) or (ABits shl AShift);
       end;
   16: begin
-        {$note check endian and/or source byte order}
+        {$IFDEF VerboseLCLTodos}{$note check endian and/or source byte order}{$ENDIF}
         PrecMask := not(PrecMask shl AShift);
         PW^ := (PW^ and PrecMask) or (ABits shl AShift);
       end;
   32: begin
-        {$note check endian and/or source byte order}
+        {$IFDEF VerboseLCLTodos}{$note check endian and/or source byte order}{$ENDIF}
         PrecMask := not(PrecMask shl AShift);
         PC^ := (PC^ and PrecMask) or (ABits shl AShift);
       end;
@@ -1035,7 +1035,7 @@ end;
 function TRawImage.IsTransparent(ATestPixels: Boolean): Boolean;
   function CheckAlpha: Boolean;
   begin
-    {$note TODO: implement CheckAlpha}
+    {$IFDEF VerboseLCLTodos}{$note TODO: implement CheckAlpha}{$ENDIF}
     Result := True;
   end;
 begin

@@ -1308,7 +1308,7 @@ begin
   Result := 0;
   if not IsValidGDIObject(ACursorInfo^.hbmColor) then Exit;
   
-  {$note TODO: add support for mono cursors}
+  {$IFDEF VerboseGtkToDos}{$note TODO: add support for mono cursors}{$ENDIF}
   Img := PGDIObject(ACursorInfo^.hbmColor)^.GDIBitmapObject;
   if (PGDIObject(ACursorInfo^.hbmColor)^.GDIBitmapType = gbPixmap) and
      (PGDIObject(ACursorInfo^.hbmColor)^.GDIPixmapObject.Mask <> nil) then
@@ -3330,7 +3330,7 @@ begin
 end;
 
 {.$define VerboseEnumFonts}  
-{$note: compare TGtkWidgetSet.EnumFontFamilies with gtkproc.FillScreenFonts}
+{$IFDEF VerboseGtkToDos}{$note: compare TGtkWidgetSet.EnumFontFamilies with gtkproc.FillScreenFonts}{$ENDIF}
 function TGtkWidgetSet.EnumFontFamilies(DC: HDC; Family: Pchar;
   EnumFontFamProc: FontEnumProc; LParam:Lparam):longint;
 var
@@ -3363,7 +3363,7 @@ begin
     {$ifdef HasX}
     XFonts := XListFonts(gdk_display, pchar(Tmp), 10000, @N);
     {$else}
-    {$warning implement getting XFonts for this OS}
+    {$IFDEF VerboseGtkToDos}{$warning implement getting XFonts for this OS}{$ENDIF}
     N:=0;
     {$endif}
     try
@@ -3748,7 +3748,7 @@ begin
         {$ifdef HasX}
         XFonts := XListFonts(gdk_display, pchar(Tmp), 10000, @N);
         {$else}
-        {$warning implement getting XFonts for this OS}
+        {$IFDEF VerboseGtkToDos}{$warning implement getting XFonts for this OS}{$ENDIF}
         N:=0;
         {$endif}
         try
