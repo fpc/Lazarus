@@ -1869,7 +1869,10 @@ begin
       finally
         QRegion_destroy(ARegion);
       end;
-    end;
+    end
+    else
+      if vImage <> nil then
+        lpRect^ := Rect(0, 0, vImage.width, vImage.height);
     {$ifdef VerboseQtWinAPI}
     WriteLn(' Rect=', dbgs(lprect^));
     {$endif}
