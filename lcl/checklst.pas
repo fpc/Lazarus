@@ -103,6 +103,7 @@ type
     property OnChangeBounds;
     property OnClick;
     property OnClickCheck;
+    property OnContextPopup;
     property OnDblClick;
     property OnDrawItem;
     property OnDragDrop;

@@ -607,6 +607,7 @@ type
     property MultiSelect;
     property OnChangeBounds;
     property OnClick;
+    property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
