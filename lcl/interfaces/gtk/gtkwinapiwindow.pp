@@ -90,7 +90,7 @@ type
     X: Integer;
     Y: Integer;
     Width: Integer;
-    Height: Integer; 	    
+    Height: Integer;
     Visible: Boolean;  // Caret is on
     IsDrawn: Boolean;  // Caret is visible at the moment
     Blinking: Boolean; // Caret should blink
@@ -168,6 +168,8 @@ function GTKAPIWidgetClient_FocusIn(AWidget: PGTKWidget;
   Event: PGdkEventFocus): GTKEventResult; cdecl; forward;
 function GTKAPIWidgetClient_FocusOut(AWidget: PGTKWidget;
   Event: PGdkEventFocus): GTKEventResult; cdecl; forward;
+function GTKAPIWidgetClient_Expose(widget: PGtkWidget;
+  event: PGdkEventExpose): gboolean; cdecl; forward;
 
 procedure GTKAPIWidgetClient_ClassInit(theClass: Pointer);cdecl; forward;
 {$ifdef gtk2}
@@ -284,6 +286,7 @@ begin
     key_press_event := @GTKAPIWidgetClient_KeyPress;
     focus_in_event := @GTKAPIWidgetClient_FocusIn;
     focus_out_event := @GTKAPIWidgetClient_FocusOut;
+    expose_event := @GTKAPIWidgetClient_Expose;
   end;
 end;
 
@@ -592,6 +595,17 @@ begin
   Result := gtk_False;
 end;
 
+function GTKAPIWidgetClient_Expose(widget: PGtkWidget; event: PGdkEventExpose): gboolean; cdecl;
+//var
+  //Client: PGTKAPIWidgetClient;
+begin
+  //DebugLn(['GTKAPIWidgetClient_Expose ',GTK_WIDGET_DOUBLE_BUFFERED(Widget)]);
+  {Client:=PGTKAPIWidgetClient(Widget);
+  if GTK_WIDGET_DOUBLE_BUFFERED(Widget) then
+    Client^.Caret.IsDrawn:=false;}
+  Result := gtk_False;
+end;
+
 procedure GTKAPIWidgetClient_HideCaret(Client: PGTKAPIWidgetClient;
   var OldVisible: boolean);
 begin
@@ -658,13 +672,18 @@ begin
       if (BackPixmap <> nil)
       and (Widget<>nil)
       and (WidgetStyle<>nil)
-      then gdk_draw_pixmap(
-        Widget^.Window,
-        WidgetStyle^.bg_gc[GTK_STATE_NORMAL],
-        BackPixmap, 0, 0,
-        X, Y-1, // Y-1 for Delphi compatibility
-        Width, Height
-      );
+      then begin
+        gdk_draw_pixmap(
+          Widget^.Window,
+          WidgetStyle^.bg_gc[GTK_STATE_NORMAL],
+          BackPixmap, 0, 0,
+          X, Y-1, // Y-1 for Delphi compatibility
+          Width, Height
+        );
+        {$IFDEF VerboseCaret}
+        DebugLn(['GTKAPIWidgetClient_DrawCaret Hide ',X,',',Y]);
+        {$ENDIF}
+      end;
       IsDrawn := False;
     end
     else
@@ -690,14 +709,19 @@ begin
       and (Widget<>nil) 
       and (WidgetStyle<>nil)
       and (Width>0) and (Height>0)
-      then gdk_draw_pixmap(
-        BackPixmap, 
-        WidgetStyle^.bg_gc[GTK_STATE_NORMAL], 
-        Widget^.Window,
-          X, Y-1, // Y-1 for Delphi compatibility
-          0, 0,
-          Width, Height
-      );
+      then begin
+        {$IFDEF VerboseCaret}
+        DebugLn(['GTKAPIWidgetClient_DrawCaret Store ',X,',',Y]);
+        {$ENDIF}
+        gdk_draw_pixmap(
+          BackPixmap,
+          WidgetStyle^.bg_gc[GTK_STATE_NORMAL],
+          Widget^.Window,
+            X, Y-1, // Y-1 for Delphi compatibility
+            0, 0,
+            Width, Height
+        );
+      end;
 
       // draw caret
       {$IFDEF VerboseCaret}
@@ -718,7 +742,7 @@ begin
         //gdk_gc_get_values(ForeGroundGC,@ForeGroundGCValues);
         //OldGdkFunction:=ForeGroundGCValues.thefunction;
         {$IFDEF VerboseCaret}
-        DebugLn('GTKAPIWidgetClient_DrawCaret ',DbgS(Client),' Real Drawing Caret ');
+        DebugLn('GTKAPIWidgetClient_DrawCaret ',DbgS(Client),' Real Drawing Caret ',X,',',Y);
         {$ENDIF}
         gdk_gc_set_function(ForeGroundGC,GDK_invert);
         try
