@@ -291,7 +291,6 @@ type
     FReadOnly: Boolean;
     FColEnterPending: Boolean;
     FLayoutChangedCount: integer;
-    FSelectionLock: Boolean;
     FTempText : string;
     FDrawingActiveRecord: Boolean;
     FDrawingMultiSelRecord: Boolean;
@@ -356,7 +355,6 @@ type
     procedure GetScrollbarParams(out aRange, aPage, aPos: Integer);
     procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
-    procedure AdjustDefaultRowHeight; override;
     procedure AddAutomaticColumns;
     procedure BeforeMoveSelection(const DCol,DRow: Integer); override;
     procedure BeginLayout;
@@ -1131,6 +1129,9 @@ begin
 
   ScrollBarPosition(SB_VERT, aPos);
   FOldPosition:=aPos;
+  
+  if EditorMode then
+    RestoreEditor;
   {$ifdef dbgDBGrid}
   DebugLn('---- Diff=',dbgs(DeltaRec), ' FinalPos=',dbgs(aPos));
   {$endif}
@@ -1314,7 +1315,6 @@ begin
     EmptyGrid;
   EndUpdate;
   UpdateScrollbarRange;
-  RestoreEditor;
   {$ifdef dbgDBGrid} DebugLn('doLayoutChanged FIN'); {$endif}
 end;
 {
@@ -1506,17 +1506,6 @@ begin
         TProtFields(FDatalink.DataSet.Fields).SetFieldIndex( F, ToIndex - FixedCols );
       end;
     end;
-    ColIndex := GetGridColumnFromField(CurField);
-    if (ColIndex>FixedCols) and (ColIndex<>Col) then begin
-      // todo: buscar alguna otra forma de hacer esto
-      FSelectionLock := true;
-      try
-        Col := ColIndex;
-      finally
-        FSelectionLock := False;
-      end;
-    end;
-
     if Assigned(OnColumnMoved) then
       OnColumnMoved(Self, FromIndex, ToIndex);
   end;
@@ -1638,8 +1627,6 @@ end;
 
 procedure TCustomDBGrid.BeforeMoveSelection(const DCol,DRow: Integer);
 begin
-  if FSelectionLock then
-    exit;
   {$ifdef dbgDBGrid}DebugLn('DBGrid.BefMovSel INIT');{$endif}
   inherited BeforeMoveSelection(DCol, DRow);
   if DCol<>Col then begin
@@ -2005,7 +1992,7 @@ procedure TCustomDBGrid.SelectEditor;
 var
   aEditor: TWinControl;
 begin
-  if FDatalink.Active then begin
+  if (FDatalink<>nil) and FDatalink.Active then begin
     inherited SelectEditor;
     if Assigned(OnSelectEditor) then begin
       aEditor:=Editor;
@@ -2018,7 +2005,6 @@ end;
 
 procedure TCustomDBGrid.SetEditText(ACol, ARow: Longint; const Value: string);
 begin
-  //SelectedField.AsString := AValue; // Delayed to avoid frequent updates
   FTempText := Value;
 end;
 
@@ -2128,7 +2114,8 @@ end;
 
 function TCustomDBGrid.GetDefaultRowHeight: integer;
 begin
-  Result:= 18;
+  result := inherited GetDefaultRowHeight;
+  Dec(Result, 2); // a litle smaller for dbgrid
 end;
 
 procedure TCustomDBGrid.DoExit;
@@ -2254,8 +2241,6 @@ end;
 
 procedure TCustomDBGrid.MoveSelection;
 begin
-  if FSelectionLock then
-    exit;
   {$ifdef dbgDBGrid}DebugLn('DBGrid.MoveSelection INIT');{$Endif}
   inherited MoveSelection;
   if FColEnterPending and Assigned(OnColEnter) then begin
@@ -2488,7 +2473,8 @@ procedure TCustomDBGrid.UpdateActive;
 var
   PrevRow: Integer;
 begin
-  if (csDestroying in ComponentState) or not FDatalink.Active or
+  if (csDestroying in ComponentState) or
+    (FDatalink=nil) or (not FDatalink.Active) or
     (FDatalink.ActiveRecord<0) then
     exit;
   {$IfDef dbgDBGrid}
@@ -2699,14 +2685,6 @@ end;
 procedure TCustomDBGrid.CMGetDataLink(var Message: TLMessage);
 begin
   Message.Result := PtrUInt(FDataLink);
-end;
-
-procedure TCustomDBGrid.AdjustDefaultRowHeight;
-begin
-  if not (gfDefRowHeightChanged in GridFlags) then begin
-    DefaultRowHeight := Canvas.TextHeight('Fj')+5;
-    GridFlags := GridFlags - [gfDefRowHeightChanged];
-  end;
 end;
 
 destructor TCustomDBGrid.Destroy;
