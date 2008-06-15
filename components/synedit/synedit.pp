@@ -337,6 +337,17 @@ type
   public
     property Editor: TCustomSynEdit read FEditor write SetEditor;
   end;
+
+  { TSynCustomBeautifier }
+
+  TSynCustomBeautifier = class(TComponent)
+  public
+    function LeftSpaces(Editor: TCustomSynEdit; const Line: string;
+                        Physical: boolean): Integer;
+    // InsertPos is 1 based. e.g. left,top is 1,1
+    function GetIndentForLineBreak(Editor: TCustomSynEdit;
+                     InsertPos: TPoint; var NextText: string): integer; virtual;
+  end;
   {$ENDIF}
 
   { TCustomSynEdit }
@@ -393,6 +404,7 @@ type
     fLastCtrlMouseLinkX2: integer; // logical (byte)
     fHighlighterNeedsUpdateStartLine: integer; // 1 based, 0 means invalid
     fHighlighterNeedsUpdateEndLine: integer; // 1 based, 0 means invalid
+    fBeautifier: TSynCustomBeautifier;
     {$ENDIF}
     fLines: TStrings;
     fLinesInWindow: Integer;// MG: fully visible lines in window
@@ -491,6 +503,7 @@ type
     procedure SetCFDividerDrawLevel(const AValue: Integer);
     procedure SetLineIndenter(const AValue: TSynCustomLineIndenter);
     procedure SetLogicalCaretXY(const NewLogCaretXY: TPoint);
+    procedure SetBeautifier(NewBeautifier: TSynCustomBeautifier);
     {$ENDIF}
     function GetMaxUndo: Integer;
     function GetSelAvail: Boolean;
@@ -828,6 +841,7 @@ type
     property CharWidth: integer read fCharWidth;
     property Color default clWhite;
     {$IFDEF SYN_LAZARUS}
+    property Beautifier: TSynCustomBeautifier read fBeautifier write SetBeautifier;
     property CtrlMouseActive: boolean read fCtrlMouseActive;
     property LogicalCaretXY: TPoint read GetLogicalCaretXY write SetLogicalCaretXY;
     property LineIndenter: TSynCustomLineIndenter read fLineIndenter
@@ -934,6 +948,7 @@ type
     // inherited properties
     property Align;
 {$IFDEF SYN_LAZARUS}
+    property Beautifier;
     property BlockIndent;
     property BorderSpacing;
 {$ENDIF}
@@ -1732,6 +1747,13 @@ procedure TCustomSynEdit.SetLogicalCaretXY(const NewLogCaretXY: TPoint);
 begin
   CaretXY:=LogicalToPhysicalPos(NewLogCaretXY);
 end;
+
+procedure TCustomSynEdit.SetBeautifier(NewBeautifier: TSynCustomBeautifier);
+begin
+  if fBeautifier=NewBeautifier then exit;
+  fBeautifier:=NewBeautifier;
+end;
+
 {$ENDIF}
 
 function TCustomSynEdit.GetSelAvail: Boolean;
@@ -8274,70 +8296,84 @@ begin
           InsDelta := Ord(CaretX = 1);
           {$IFDEF SYN_LAZARUS}
           LogCaretXY:=PhysicalToLogicalPos(CaretXY);
-          {$ENDIF}
+          Len := Length(Temp);
+          if Len >= LogCaretXY.X then begin
+            if LogCaretXY.X > 1 then begin
+              // break line in two
+              SpaceCount1 := LeftSpaces(Temp);
+              Temp := Copy(LineText, 1, LogCaretXY.X - 1);
+              TrimmedSetLine(CaretY - 1, Temp);
+              Delete(Temp2, 1, LogCaretXY.X - 1);
+              if Assigned(Beautifier) then
+                SpaceCount1:=Beautifier.GetIndentForLineBreak(Self,LogCaretXY,Temp2);
+              fUndoList.AddChange(crLineBreak,
+                LogCaretXY, LogCaretXY,
+                Temp2, smNormal);
+              Lines.Insert(CaretY, StringOfChar(' ', SpaceCount1) + Temp2);
+              if Command = ecLineBreak then
+                CaretXY := Point(SpaceCount1 + 1, CaretY + 1);
+            end else begin
+              // move the whole line
+              Lines.Insert(CaretY - 1, '');
+              fUndoList.AddChange(crLineBreak,
+                LogCaretXY, LogCaretXY,
+                Temp2, smNormal);
+              if Command = ecLineBreak then
+                CaretY := CaretY + 1;
+            end;
+          end else begin
+            // linebreak after end of line
+            fUndoList.AddChange(crLineBreak,
+              LogCaretXY, LogCaretXY,
+              '', smNormal);
+            SpaceCount2 := 0;
+            if Assigned(Beautifier) then begin
+              Temp:='';
+              SpaceCount2:=Beautifier.GetIndentForLineBreak(Self,LogCaretXY,Temp);
+            end else if eoAutoIndent in Options then begin
+              BackCounter := CaretY;
+              repeat
+                Dec(BackCounter);
+                Temp := Lines[BackCounter];
+                SpaceCount2 := LeftSpaces(Temp);
+              until (BackCounter = 0) or (Temp <> '');
+            end;
+            Lines.Insert(CaretY, '');
+            if Command = ecLineBreak then begin
+              if SpaceCount2 > 0 then
+                Lines[CaretY] := StringOfChar(' ', SpaceCount2);
+              CaretXY := Point(SpaceCount2 + 1, CaretY + 1);
+            end;
+          end;
+          {$ELSE}
           Len := Length(Temp);
           if Len > 0 then begin
             if Len >= LogCaretXY.X then begin
               if LogCaretXY.X > 1 then begin
+                // break line in two
                 SpaceCount1 := LeftSpaces(Temp);
-{begin}                                                                         //JGF 2000-09-23
                 Temp := Copy(LineText, 1, LogCaretXY.X - 1);
                 TrimmedSetLine(CaretY - 1, Temp);
                 Delete(Temp2, 1, LogCaretXY.X - 1);
                 fUndoList.AddChange(crLineBreak,
-                  {$IFDEF SYN_LAZARUS}
-                  LogCaretXY, LogCaretXY,
-                  {$ELSE}
                   CaretXY, CaretXY,
-                  {$ENDIF}
                   Temp2, smNormal);
                 Lines.Insert(CaretY, StringOfChar(' ', SpaceCount1) + Temp2);
                 if Command = ecLineBreak then
                   CaretXY := Point(SpaceCount1 + 1, CaretY + 1);
-{end}                                                                           //JGF 2000-09-23
               end else begin
+                // move the whole line
                 Lines.Insert(CaretY - 1, '');
                 fUndoList.AddChange(crLineBreak,
-                  {$IFDEF SYN_LAZARUS}
-                  LogCaretXY, LogCaretXY,
-                  {$ELSE}
                   CaretXY, CaretXY,
-                  {$ENDIF}
                   Temp2, smNormal);
                 if Command = ecLineBreak then
                   CaretY := CaretY + 1;
               end;
             end else begin
-{begin}                                                                         //mh 2000-10-06
-(*
-              BackCounter := CaretY - 1;
-              while BackCounter >= 0 do begin
-                SpaceCount2 := LeftSpaces(Lines[BackCounter]);
-                if Length(Lines[BackCounter]) > 0 then break;
-                dec(BackCounter);
-              end;
-              fUndoList.AddChange(crLineBreak, CaretXY, CaretXY, '', smNormal);
-              if Command = ecLineBreak then
-                CaretX := SpaceCount2 + 1;
-              if (Command = ecInsertLine) or (eoScrollPastEol in fOptions) then
-                Lines.Insert(CaretY, '');
-              if Command = ecLineBreak then begin
-                Inc(fCaretY);
-                StatusChanged([scCaretY]);
-              end;
-              if (Command = ecLineBreak) and
-                (fOptions * [eoAutoIndent, eoScrollPastEol] = [eoAutoIndent])
-              then begin
-                Lines.Insert(CaretY - 1, StringOfChar(' ', SpaceCount2));
-                CaretX := SpaceCount2 + 1;
-              end;
-*)
+              // linebreak after end of line
               fUndoList.AddChange(crLineBreak,
-                {$IFDEF SYN_LAZARUS}
-                LogCaretXY, LogCaretXY,
-                {$ELSE}
                 CaretXY, CaretXY,
-                {$ENDIF}
                 '', smNormal);
               SpaceCount2 := 0;
               if eoAutoIndent in Options then begin
@@ -8354,9 +8390,9 @@ begin
                   Lines[CaretY] := StringOfChar(' ', SpaceCount2);
                 CaretXY := Point(SpaceCount2 + 1, CaretY + 1);
               end;
-{end}                                                                           //mh 2000-10-06
             end;
           end else begin
+            // current line is empty
             if fLines.Count = 0 then
               fLines.Add('');
             BackCounter := CaretY - 1;
@@ -8366,11 +8402,7 @@ begin
               dec(BackCounter);
             end;
             fUndoList.AddChange(crLineBreak,
-              {$IFDEF SYN_LAZARUS}
-              LogCaretXY, LogCaretXY,
-              {$ELSE}
               CaretXY, CaretXY,
-              {$ENDIF}
               '', smNormal);
             if Command = ecLineBreak then
               CaretX := SpaceCount2 + 1;
@@ -8378,6 +8410,7 @@ begin
             if Command = ecLineBreak then
               CaretY := CaretY + 1;
           end;
+          {$ENDIF}
           DoLinesInserted(CaretY - InsDelta, 1);
           EnsureCursorPosVisible;                                               //JGF 2000-09-23
           fLastCaretX := fCaretX;                                               //mh 2000-10-19
@@ -11428,6 +11461,52 @@ begin
   Result:=0;
 end;
 {$ENDIF}
+
+{ TSynCustomBeautifier }
+
+function TSynCustomBeautifier.LeftSpaces(Editor: TCustomSynEdit;
+  const Line: string; Physical: boolean): Integer;
+var
+  p: PChar;
+begin
+  p := pointer(Line);
+  if Assigned(p) then begin
+    Result := 0;
+    while p^ in [#1..#32] do begin
+      Inc(p);
+      Inc(Result);
+    end;
+    if Physical and (Result>0) then
+      Result:=Editor.LogicalToPhysicalCol(Line,Result+1)-1;
+  end else
+    Result := 0;
+end;
+
+function TSynCustomBeautifier.GetIndentForLineBreak(Editor: TCustomSynEdit;
+  InsertPos: TPoint; var NextText: string): integer;
+var
+  LastTextY: LongInt;
+  Line: string;
+  Lines: TStrings;
+begin
+  Result:=0;
+  DebugLn(['TSynCustomBeautifier.GetIndentForLineBreak ',dbgs(InsertPos)]);
+  if InsertPos.Y<1 then exit;
+  LastTextY:=InsertPos.Y;
+  Lines:=Editor.Lines;
+  if LastTextY>Lines.Count then
+    LastTextY:=Lines.Count;
+  while (LastTextY>0) do begin
+    Line:=Lines[LastTextY-1];
+    if LastTextY=InsertPos.Y then
+      Line:=copy(Line,1,InsertPos.X-1);
+    if Line<>'' then begin
+      Result:=LeftSpaces(Editor,Line,false);
+      exit;
+    end;
+    dec(LastTextY);
+  end;
+end;
 
 initialization
   {$IFNDEF SYN_LAZARUS}
