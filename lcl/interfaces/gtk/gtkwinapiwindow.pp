@@ -168,8 +168,10 @@ function GTKAPIWidgetClient_FocusIn(AWidget: PGTKWidget;
   Event: PGdkEventFocus): GTKEventResult; cdecl; forward;
 function GTKAPIWidgetClient_FocusOut(AWidget: PGTKWidget;
   Event: PGdkEventFocus): GTKEventResult; cdecl; forward;
+{$ifdef gtk2}
 function GTKAPIWidgetClient_Expose(widget: PGtkWidget;
   event: PGdkEventExpose): gboolean; cdecl; forward;
+{$ENDIF}
 
 procedure GTKAPIWidgetClient_ClassInit(theClass: Pointer);cdecl; forward;
 {$ifdef gtk2}
@@ -286,7 +288,9 @@ begin
     key_press_event := @GTKAPIWidgetClient_KeyPress;
     focus_in_event := @GTKAPIWidgetClient_FocusIn;
     focus_out_event := @GTKAPIWidgetClient_FocusOut;
+    {$IFDEF gtk2}
     expose_event := @GTKAPIWidgetClient_Expose;
+    {$ENDIF}
   end;
 end;
 
@@ -595,6 +599,7 @@ begin
   Result := gtk_False;
 end;
 
+{$ifdef gtk2}
 function GTKAPIWidgetClient_Expose(widget: PGtkWidget; event: PGdkEventExpose): gboolean; cdecl;
 //var
   //Client: PGTKAPIWidgetClient;
@@ -605,6 +610,7 @@ begin
     Client^.Caret.IsDrawn:=false;}
   Result := gtk_False;
 end;
+{$ENDIF}
 
 procedure GTKAPIWidgetClient_HideCaret(Client: PGTKAPIWidgetClient;
   var OldVisible: boolean);

@@ -34,6 +34,7 @@ function TSynBeautifierPas.GetIndentForLineBreak(Editor: TCustomSynEdit;
   InsertPos: TPoint; var NextText: string): integer;
 begin
   Result:=inherited GetIndentForLineBreak(Editor, InsertPos, NextText);
+  
 end;
 
 end.
