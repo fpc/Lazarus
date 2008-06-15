@@ -997,6 +997,7 @@ components/synedit/languages/synmacrorecorder.po svneol=native#text/plain
 components/synedit/languages/synmacrorecorder.ru.po svneol=native#text/plain
 components/synedit/languages/synmacrorecorder.ua.po svneol=native#text/plain
 components/synedit/languages/synmacrorecorder.zh-cn.po svneol=native#text/utf8
+components/synedit/synbeautifierpas.pas svneol=native#text/plain
 components/synedit/syncompletion.pas svneol=native#text/pascal
 components/synedit/synedit.inc svneol=native#text/pascal
 components/synedit/synedit.pp svneol=native#text/pascal

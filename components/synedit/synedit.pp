@@ -318,26 +318,6 @@ type
   end;
 
   {$IFDEF SYN_LAZARUS}
-  // aIndex parameters of Line notifications are 0-based.
-  TSynCustomLineIndenter = class(TComponent)
-  private
-    FEditor: TCustomSynEdit;
-    procedure SetEditor(const AValue: TCustomSynEdit);
-  public
-    destructor Destroy; override;
-    // plugin notifications
-    procedure LinesInserted(aIndex: integer; aCount: integer);
-    procedure LinesDeleted(aIndex: integer; aCount: integer);
-    procedure LinesPutted(aIndex: integer; aCount: integer);
-    // pretty clear, heh?
-    procedure Reset;
-    // indentation
-    function GetLineIndentProposal(aIndex: integer;
-                                   IgnoreCurrentLineText: boolean): integer;
-  public
-    property Editor: TCustomSynEdit read FEditor write SetEditor;
-  end;
-
   { TSynCustomBeautifier }
 
   TSynCustomBeautifier = class(TComponent)
@@ -383,7 +363,6 @@ type
     fBracketHighlightPos: TPoint;
     fBracketHighlightAntiPos: TPoint;
     fCtrlMouseActive: boolean;
-    fLineIndenter: TSynCustomLineIndenter;
     FCFDividerDrawLevel: Integer;
     {$ENDIF}
     fLastCaretX: integer;  // physical position (screen)                        //mh 2000-10-19
@@ -501,7 +480,6 @@ type
     function AdjustPhysPosToCharacterStart(Line: integer; PhysPos: integer): integer;
     function GetLogicalCaretXY: TPoint;
     procedure SetCFDividerDrawLevel(const AValue: Integer);
-    procedure SetLineIndenter(const AValue: TSynCustomLineIndenter);
     procedure SetLogicalCaretXY(const NewLogCaretXY: TPoint);
     procedure SetBeautifier(NewBeautifier: TSynCustomBeautifier);
     {$ENDIF}
@@ -844,8 +822,6 @@ type
     property Beautifier: TSynCustomBeautifier read fBeautifier write SetBeautifier;
     property CtrlMouseActive: boolean read fCtrlMouseActive;
     property LogicalCaretXY: TPoint read GetLogicalCaretXY write SetLogicalCaretXY;
-    property LineIndenter: TSynCustomLineIndenter read fLineIndenter
-                                                  write SetLineIndenter;
     property SelStart: Integer read GetSelStart write SetSelStart;
     property SelEnd: Integer read GetSelEnd write SetSelEnd;
     {$ENDIF}
@@ -1570,7 +1546,7 @@ var
 begin
   {$IFDEF SYN_LAZARUS}
   if HandleAllocated then LCLIntf.DestroyCaret(Handle);
-  LineIndenter:=nil;
+  Beautifier:=nil;
   {$ENDIF}
   Highlighter := nil;
   // free listeners while other fields are still valid
@@ -1726,21 +1702,6 @@ begin
   if FCFDividerDrawLevel = AValue then
     Exit; //==>
   FCFDividerDrawLevel := AValue;
-end;
-
-procedure TCustomSynEdit.SetLineIndenter(const AValue: TSynCustomLineIndenter);
-var
-  OldLineIndenter: TSynCustomLineIndenter;
-begin
-  if Assigned(fLineIndenter) then begin
-    OldLineIndenter:=fLineIndenter;
-    fLineIndenter:=nil;
-    OldLineIndenter.Editor:=nil;
-  end;
-  fLineIndenter:=AValue;
-  if Assigned(fLineIndenter) then begin
-    fLineIndenter.Editor:=Self;
-  end;
 end;
 
 procedure TCustomSynEdit.SetLogicalCaretXY(const NewLogCaretXY: TPoint);
@@ -10823,9 +10784,13 @@ var
   s: string;
   FirstNonBlank: Integer;
 begin
-  if fLineIndenter<>nil then
-    Result:=fLineIndenter.GetLineIndentProposal(Line-1,IgnoreCurrentLineText)
-  else begin
+  if fBeautifier<>nil then begin
+    if IgnoreCurrentLineText then
+      s:=''
+    else
+      s:=LineText;
+    Result:=fBeautifier.GetIndentForLineBreak(Self,Point(1,Line),s);
+  end else begin
     // default: use last non empty line indent, ignore always current line
     y:=Line-1;
     if y>Lines.Count then y:=Lines.Count;
@@ -11417,51 +11382,6 @@ begin
 end;
 
 {$IFDEF SYN_LAZARUS}
-{ TSynCustomLineIndenter }
-
-procedure TSynCustomLineIndenter.SetEditor(const AValue: TCustomSynEdit);
-begin
-  if FEditor=AValue then exit;
-  FEditor:=AValue;
-  if fEditor<>nil then fEditor.LineIndenter:=Self;
-end;
-
-destructor TSynCustomLineIndenter.Destroy;
-begin
-  Editor:=nil;
-  inherited Destroy;
-end;
-
-procedure TSynCustomLineIndenter.LinesInserted(aIndex: integer;
-  aCount: integer);
-begin
-  // for descendants to override
-end;
-
-procedure TSynCustomLineIndenter.LinesDeleted(aIndex: integer; aCount: integer);
-begin
-  // for descendants to override
-end;
-
-procedure TSynCustomLineIndenter.LinesPutted(aIndex: integer; aCount: integer);
-begin
-  // for descendants to override
-end;
-
-procedure TSynCustomLineIndenter.Reset;
-begin
-  // for descendants to override
-end;
-
-function TSynCustomLineIndenter.GetLineIndentProposal(aIndex: integer;
-  IgnoreCurrentLineText: boolean): integer;
-begin
-  // for descendants to override
-  RaiseGDBException('TSynEditLineIndentPlugin.GetLineIndentProposal '+ClassName);
-  Result:=0;
-end;
-{$ENDIF}
-
 { TSynCustomBeautifier }
 
 function TSynCustomBeautifier.LeftSpaces(Editor: TCustomSynEdit;
@@ -11507,6 +11427,7 @@ begin
     dec(LastTextY);
   end;
 end;
+{$ENDIF}
 
 initialization
   {$IFNDEF SYN_LAZARUS}
