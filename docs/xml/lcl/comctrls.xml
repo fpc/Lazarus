@@ -758,19 +758,24 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TTabSheet">
-        <short><var>TTabSheet</var> - individual page of a <var>TPageControl</var>; a more elaborate version of <var>TPage</var></short>
-	<descr>
-		<p><var>TTabSheet</var> - individual page of a <var>TPageControl</var>; a more elaborate version of <var>TPage</var></p>
-		<p>Contains the following features lacked by <var>TPage</var>:</p>
-		<ul><li>Drag/Drop properties</li>
-			<li>Ability to Enable/Disable the page</li>
-			<li>Ability to make the Tab visible or not</li>
-		</ul>
-	</descr>
+        <short>
+          <var>TTabSheet</var> - individual page of a <var>TPageControl</var>; a more elaborate version of <var>TPage</var>
+        </short>
+        <descr>
+          <p>
+            <var>TTabSheet</var> - individual page of a <var>TPageControl</var>; a more elaborate version of <var>TPage</var>
+          </p>
+          <p>Contains the following features lacked by <var>TPage</var>:</p>
+          <ul>
+            <li>Drag/Drop properties</li>
+            <li>Ability to Enable/Disable the page</li>
+            <li>Ability to make the Tab visible or not</li>
+          </ul>
+        </descr>
         <errors/>
         <seealso>
           <link id="#lcl.ExtCtrls.Multi-PageControls">Multi-PageControls</link>
-	  <link id="#lcl.stdctrls.HowToUseStdCtrls">HowToUseStdCtrls</link>
+          <link id="#lcl.stdctrls.HowToUseStdCtrls">HowToUseStdCtrls</link>
         </seealso>
       </element>
       <!-- variable Visibility: private -->
@@ -3988,13 +3993,14 @@ cdsIndeterminate</descr>
       </element>
       <!-- range type Visibility: default -->
       <element name="TWidth">
-        <short/>
+        <short>ImageIndex</short>
         <descr/>
         <seealso/>
       </element>
       <!-- object Visibility: default -->
       <element name="TListColumn">
-        <short/>
+        <short>
+          <var>TListColumn</var> - an individual column in a multi-column List control</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4223,25 +4229,27 @@ cdsIndeterminate</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TListColumn.Alignment">
-        <short/>
+        <short>
+          <var>Alignment</var> - whether text is to be left or right justified or centered</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TListColumn.AutoSize">
-        <short/>
+        <short> Whether <var>AutoSize</var> is to be operational</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TListColumn.Caption">
-        <short/>
+        <short> A text string or <var>Caption</var> (which may be translated) to be used at the top of the column</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TListColumn.ImageIndex">
-        <short/>
+        <short>
+          <var>MaxWidth</var> - the maximum permissable width for the column</short>
         <descr/>
         <seealso/>
       </element>
@@ -4253,31 +4261,35 @@ cdsIndeterminate</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TListColumn.MinWidth">
-        <short/>
+        <short>
+          <var>MinWidth</var> - the minimum permissable with for the column</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TListColumn.Tag">
-        <short/>
+        <short>
+          <var>Tag</var> - a general purpose integer variable to be used in association with this column</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TListColumn.Visible">
-        <short/>
+        <short>
+          <var>Visible</var> - whether this column can be seen</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TListColumn.Width">
-        <short/>
+        <short>The <var>Width</var> of this column</short>
         <descr/>
         <seealso/>
       </element>
       <!-- object Visibility: default -->
       <element name="TListColumns">
-        <short/>
+        <short>
+          <var>TListColumns</var> - a collection of Items of type <var>TListColumn</var> (the columns appearing in a multi-column list)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6537,8 +6549,16 @@ cdsIndeterminate</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomUpDown">
-        <short/>
-        <descr/>
+        <short>
+          <var>TCustomUpDown</var> - base class for <var>TUpDown</var> - a pair of arrow-like buttons which are used to increment or decrement some controlled variable; often attached to a scroll-bar, but can also control a digital numeric display</short>
+        <descr>
+          <p>
+            <printshort id="TCustomUpdown"/>
+          </p>
+          <p>The control definition itself does not specify the variable upon which the buttons operate. The application programmer is responsible for supplying an event handler for <var>OnClick</var> to determine which button has been selected (designated <var>btNext</var> or <var>btPrev</var>) and incrementing or decrementing the variable in the control with which the UpDown is associated. </p>
+          <p>The amount by which the variable is changed is set by the integer property <var>Increment</var> with the optional multiplier <var>Thousands</var> (a boolean property).</p>
+          <p>For example the UpDown control may be used to move a slider up and down a scale by a specified amount for each click; alternatively, a number may be displayed in a text box, and clicking the buttons of the UpDown control may increment or decrement the number displayed by a specified amount.</p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -6799,7 +6819,8 @@ cdsIndeterminate</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomUpDown.AssociateKeyDown">
-        <short/>
+        <short>
+          <var>AssociateKeyDown</var> - protected procedure for dealing with action to be taken if an associate key (Shift, Ctrl or Alt) is pressed while the control is active</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6903,31 +6924,31 @@ cdsIndeterminate</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomUpDown.Increment">
-        <short/>
+        <short>The amount by which the controlled variable is to be increased or decreased on each click</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomUpDown.Orientation">
-        <short/>
+        <short>Whether horizontal or vertical</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomUpDown.Position">
-        <short/>
+        <short>The <var>Position</var> of the UpDown control</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomUpDown.Thousands">
-        <short/>
+        <short>If True, multiply all displayed values and the Increment by 1000</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomUpDown.Wrap">
-        <short/>
+        <short>If True, displayed control or value starts again from minimum or maximum value if  clicking a button would cause incrementing or decrmenting beyond the extreme value</short>
         <descr/>
         <seealso/>
       </element>
@@ -6963,8 +6984,16 @@ cdsIndeterminate</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TUpDown">
-        <short/>
-        <descr/>
+        <short>
+          <var>TUpDown</var> - a pair of arrow-like buttons which are used to increment or decrement some controlled variable; often attached to a scroll-bar, but can also control a digital numeric display</short>
+        <descr>
+          <p>
+            <printshort id="TUpDown"/>
+          </p>
+          <p>The control definition itself does not specify the variable upon which the buttons operate. The application programmer is responsible for supplying an event handler for <var>OnClick</var> to determine which button has been selected (designated <var>btNext</var> or <var>btPrev</var>) and incrementing or decrementing the variable in the control with which the UpDown is associated. </p>
+          <p>The amount by which the variable is changed is set by the integer property <var>Increment</var> with the optional multiplier <var>Thousands</var> (a boolean property).</p>
+          <p>For example the UpDown control may be used to move a slider up and down a scale by a specified amount for each click; alternatively, a number may be displayed in a text box, and clicking the buttons of the UpDown control may increment or decrement the number displayed by a specified amount.</p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -15788,6 +15817,65 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <short>
           <var>IndexOfTabWithCaption</var> - returns the index value of the tab that has the specified Caption</short>
       </element>
+      <element name="THeaderSections">
+        <short>
+          <var>THeaderSections</var> - a collection of <var>Items </var>ot type <var>THeaderSection</var>, the individual parts of a <var>THeaderControl</var>
+        </short>
+      </element>
+      <element name="THeaderSections.AddItem">
+        <short>
+          <var>AddItem</var> - adds a HeaderSection to the Header at the position specified by <var>Index</var>
+        </short>
+      </element>
+      <element name="THeaderSections.Insert"/>
+      <element name="THeaderSections.Delete"/>
+      <element name="THeaderSections.Create"/>
+      <element name="THeaderSections.Add"/>
+      <element name="THeaderSections.Items">
+        <short>
+          <var>Items</var> - the series of individual HeaderSections in the collection</short>
+      </element>
+      <element name="THeaderSection">
+        <short>
+          <var>THeaderSection</var> - the individual sections of a THeaderControl, each of which can be used to control its own option, selection etc</short>
+      </element>
+      <element name="THeaderSection.Create"/>
+      <element name="THeaderSection.Assign"/>
+      <element name="THeaderSection.Left">
+        <short>The position of the left boundary of the section</short>
+      </element>
+      <element name="THeaderSection.Right">
+        <short>The position of the right boundary of the section</short>
+      </element>
+      <element name="THeaderSection.State">
+        <short>
+          <var>State</var> - whether normal, hot (ie mouse hovers over it, ready to be selected) or pressed (selected)</short>
+      </element>
+      <element name="THeaderSection.Alignment">
+        <short>
+          <var>Alignment</var> - whether text is to be left or right justified or centered</short>
+      </element>
+      <element name="THeaderSection.ImageIndex">
+        <short>Index of the image in the imagelist</short>
+      </element>
+      <element name="THeaderSection.MaxWidth">
+        <short>Maximum permissable width of a section</short>
+      </element>
+      <element name="THeaderSection.MinWidth">
+        <short>Minimum permissable width of a section (default = 0)</short>
+      </element>
+      <element name="THeaderSection.Text">
+        <short>The text string that is to appear in the section</short>
+      </element>
+      <element name="THeaderSection.Width">
+        <short>The <var>Width </var>of the section that appears on the <var>THeaderControl</var>
+        </short>
+      </element>
+      <element name="THeaderSection.OriginalIndex">
+        <short>
+          <var>OriginalIndex</var> - index which doesn't change when the user reorders the sections</short>
+      </element>
+      <element name="TListColumns.Update"/>
     </module>
     <!-- ComCtrls -->
   </package>
