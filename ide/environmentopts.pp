@@ -2545,6 +2545,7 @@ begin
     MaxRecentProjectFiles:=StrToIntDef(
         MaxRecentProjectFilesComboBox.Text,MaxRecentProjectFiles);
     OpenLastProjectAtStart:=OpenLastProjectAtStartCheckBox.Checked;
+    ShowCompileDialog := ShowCompileDialogCheckBox.Checked;
 
     // backup
     with BackupInfoProjectFiles do begin
