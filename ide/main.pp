@@ -1101,6 +1101,7 @@ begin
   end;
 
   MainBuildBoss.SetupInputHistories;
+  ShowCompileDialog:=EnvironmentOptions.ShowCompileDialog;
 
   CreateDir(GetProjectSessionsConfigPath);
 end;
@@ -2900,7 +2901,7 @@ end;
 
 {------------------------------------------------------------------------------}
 
-Procedure TMainIDE.OpenFileDownArrowClicked(Sender: TObject);
+procedure TMainIDE.OpenFileDownArrowClicked(Sender: TObject);
 var
   CurIndex: integer;
   PopupPos: TPoint;
@@ -2932,7 +2933,7 @@ var
     end;
   end;
 
-Begin
+begin
   // fill the PopupMenu:
   CurIndex:=0;
   // first add 8 recent projects
