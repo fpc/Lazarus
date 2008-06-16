@@ -63,6 +63,8 @@ type
     procedure WriteData(Stream: TStream);
     procedure ClickCheck; dynamic;
     procedure ItemClick(const AIndex: Integer); dynamic;
+    procedure FontChanged(Sender: TObject); override;
+    procedure ParentFontChanged; override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure MeasureItem(Index: Integer; var TheHeight: Integer); override;
@@ -184,22 +186,9 @@ begin
 end;
 
 procedure TCustomCheckListBox.MeasureItem(Index: Integer; var TheHeight: Integer);
-var
-  B: TBitmap;
 begin
   if (Style = lbStandard) then
-  begin
-    // Paul: This will happen only once if Style = lbStandard then CheckListBox is
-    // OwnerDrawFixed in real (under windows). Handle is not allocated and we
-    // cant use Canvas since it will cause recursion but we need correct font height
-    B := TBitmap.Create;
-    try
-      B.Canvas.Font := Font;
-      TheHeight := B.Canvas.TextHeight('Fj');
-    finally
-      B.Free;
-    end;
-  end
+    TheHeight := CalculateStandardItemHeight
   else
     inherited MeasureItem(Index, TheHeight);
 end;
@@ -325,6 +314,20 @@ end;
 procedure TCustomCheckListBox.ItemClick(const AIndex: Integer);
 begin
   if Assigned(OnItemClick) then OnItemClick(Self, AIndex);
+end;
+
+procedure TCustomCheckListBox.FontChanged(Sender: TObject);
+begin
+  inherited FontChanged(Sender);
+  if ([csLoading, csDestroying] * ComponentState = []) and (Style = lbStandard) then
+    ItemHeight := CalculateStandardItemHeight;
+end;
+
+procedure TCustomCheckListBox.ParentFontChanged;
+begin
+  inherited ParentFontChanged;
+  if ([csLoading, csDestroying] * ComponentState = []) and (Style = lbStandard) then
+    ItemHeight := CalculateStandardItemHeight;
 end;
 
 procedure TCustomCheckListBox.DefineProperties(Filer: TFiler);

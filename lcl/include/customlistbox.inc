@@ -45,6 +45,22 @@ begin
   BeginDrag(False);
 end;
 
+function TCustomListBox.CalculateStandardItemHeight: Integer;
+var
+  B: TBitmap;
+begin
+  // Paul: This will happen only once if Style = lbStandard then CheckListBox is
+  // OwnerDrawFixed in real (under windows). Handle is not allocated and we
+  // cant use Canvas since it will cause recursion but we need correct font height
+  B := TBitmap.Create;
+  try
+    B.Canvas.Font := Font;
+    Result := B.Canvas.TextHeight('Fj');
+  finally
+    B.Free;
+  end;
+end;
+
 procedure TCustomListBox.Loaded;
 begin
   inherited Loaded;
