@@ -809,7 +809,8 @@ begin
   if FToolBar<>nil then
     FToolBar.RemoveButton(Self);
   FToolBar:=nil;
-  if AParent is TToolBar then begin
+  if AParent is TToolBar then
+  begin
     if Style in [tbsButton,tbsDropDown,tbsCheck] then
       NewWidth:=TToolBar(AParent).ButtonWidth
     else
@@ -822,10 +823,11 @@ begin
   inherited SetParent(AParent);
   
   // add to new button list
-  if Parent is TToolBar then begin
+  if Parent is TToolBar then
+  begin
     FToolBar:=TToolBar(Parent);
-    i:=Index;
-    if i<0 then
+    i := Index;
+    if i < 0 then
       FToolBar.AddButton(Self);
     UpdateVisibleToolbar;
   end;

@@ -36,14 +36,28 @@ begin
 
   Row1 := (Control1.Top + HalfBtnHeight) div BtnHeight;
   Row2 := (Control2.Top + HalfBtnHeight) div BtnHeight;
-  if Row1<Row2 then
-    Result:=-1
-  else if Row1>Row2 then
-    Result:=1
-  else if Control1.Left<Control2.Left then
-    Result:=-1
-  else if Control1.Left>Control2.Left then
-    Result:=1;
+  if Row1 < Row2 then
+    Result := -1
+  else
+  if Row1 > Row2 then
+    Result :=1
+  else
+  if Control1.Left < Control2.Left then
+    Result := -1
+  else
+  if Control1.Left > Control2.Left then
+    Result := 1
+  else
+  begin
+    Row1 := ToolBar.GetControlIndex(Control1);
+    Row2 := ToolBar.GetControlIndex(Control2);
+    // buttons order is reversed, iow last addeted button will be first
+    if Row1 < Row2 then
+      Result := 1
+    else
+    if Row1 > Row2 then
+      Result := -1
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -537,9 +551,10 @@ begin
         AlignedControls.Add(CurControl)
     end;
     // sort OrderedControls
-    if FRealizedButtonHeight=0 then FRealizedButtonHeight:=FButtonHeight;
+    if FRealizedButtonHeight = 0 then
+      FRealizedButtonHeight := FButtonHeight;
     OrderedControls.Sort(TListSortCompare(@CompareToolBarControl));
-    
+
     // position OrderedControls
     CurClientRect:=ClientRect;
     ARect:=CurClientRect;
