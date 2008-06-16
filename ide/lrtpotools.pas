@@ -40,7 +40,7 @@ var
 begin
   NewLength:=length(s);
   for SrcPos:=1 to length(s) do
-    if s[SrcPos] in ['"','%','\','#'] then inc(NewLength);
+    if s[SrcPos] in ['"','\'] then inc(NewLength);
   if NewLength=length(s) then begin
     Result:=s;
   end else begin
@@ -48,7 +48,7 @@ begin
     DestPos:=1;
     for SrcPos:=1 to length(s) do begin
       case s[SrcPos] of
-      '"','%','\','#':
+      '"','\':
         begin
           Result[DestPos]:='\';
           inc(DestPos);
@@ -70,41 +70,101 @@ var
   POValuesHash: TStringHashList;
   POFileChanged: boolean;
   POLines: TStrings;
+  Value,Identifier: string;
+
+  procedure AddPoHashEntry;
+  begin
+    if POValuesHash.Find(Value) = -1 then begin
+      DebugLn(['AddFile2PoAux Add ',Identifier,'="',Value,'"']);
+      POFileChanged := true;
+      POLines.Add('#: '+Identifier);
+      POLines.Add('msgid "'+Value+'"');
+      POLines.Add('msgstr ""');
+      POLines.Add('');
+      POValuesHash.Add(Value);
+    end;
+  end;
 
   procedure AddFile2PoAux(InputLines: TStringList; FileType: TFileType);
   var
-    i: integer;
+    i,j,n: integer;
     p: LongInt;
-    Value,Identifier: string;
-    Line: string;
+    Line,UStr: string;
+    Multi: boolean;
   begin
     //for each string in lrt/rst list check if in PO, if not add
     for i:=0 to InputLines.Count-1 do begin
       Line:=InputLines[i];
-      if Line='' then continue;
+      n := Length(Line);
+      if n=0 then
+        continue;
       case FileType of
         ftLrt: begin
           p:=Pos('=',Line);
-          Value:=StrToPoStr( copy(Line,p+1,Length(Line)-p) );//if p=0, that's OK, all the string
+          Value:=StrToPoStr( copy(Line,p+1,n-p) );//if p=0, that's OK, all the string
           Identifier:=copy(Line,1,p-1);
+          AddPoHashEntry;
         end;
-        ftRst: begin
-          if (Line[1]='#') then continue;
-          p:=Pos('=',Line);
-          Value:=StrToPoStr( copy(Line,p+2,Length(Line)-p-2) ); //copy ignoring ''
-          if Length(Value) = 0 then continue;
-          Identifier := copy(Line,1,p-1);
-        end;
-      end;
 
-      if POValuesHash.Find(Value) = -1 then begin
-        DebugLn(['AddFile2PoAux Add ',Identifier,'="',Value,'"']);
-        POFileChanged := true;
-        POLines.Add('#: '+Identifier);
-        POLines.Add('msgid "'+Value+'"');
-        POLines.Add('msgstr ""');
-        POLines.Add('');
-        POValuesHash.Add(Value);
+        ftRst: begin
+          if (Line[1]='#') then begin
+            Value := '';
+            Identifier := '';
+            continue;
+          end;
+
+          if Identifier='' then begin
+            p:=Pos('=',Line);
+            if P=0 then
+              continue;
+            Identifier := copy(Line,1,p-1);
+            inc(p); // points to ' after =
+          end else
+            p:=1;   // first char in line
+
+          // this will assume rst file is well formed and
+          // do similar to rstconv but recognize utf-8 strings
+          Multi := Line[n]='+';
+          while p<=n do begin
+            if Line[p]='''' then begin
+              inc(p);
+              j:=p;
+              while (p<=n)and(Line[p]<>'''') do
+                inc(p);
+              Value := Value + copy(Line, j, P-j);
+              inc(p);
+              continue;
+            end else
+            if Line[p] = '#' then begin
+              // collect a string with special chars
+              UStr:='';
+              repeat
+                inc(p);
+                j:=p;
+                while (p<=n)and(Line[p] in ['0'..'9']) do
+                  inc(p);
+                UStr := UStr + Chr(StrToInt(copy(Line, j, p-j)));
+              until (Line[p]<>'#') or (p>=n);
+              // transfer valid UTF-8 segments to result string
+              // and re-encode back the rest
+              while Ustr<>'' do begin
+                j := UTF8CharacterLength(pchar(Ustr));
+                if j=1 then
+                  Value := Value + '#'+IntToStr(ord(Ustr[1]))
+                else
+                  Value := Value + copy(Ustr, 1, j);
+                Delete(UStr, 1, j);
+              end;
+            end else
+            if Line[p]='+' then
+              break;
+          end;
+          if not Multi then begin
+            Value := StrToPoStr(Value);
+            if Value<>'' then
+              AddPoHashEntry;
+          end;
+        end;
       end;
     end;
   end;
@@ -136,6 +196,14 @@ begin
           POValuesHash.Add(s);
         end;
       end;
+    end else begin
+      // To allow poedit to recognize the resulting
+      // PO file as valid UTF-8 file, it needs a
+      // minimal header (found by trial and error)
+      POLines.Add('msgid ""');
+      POLines.Add('msgstr ""');
+      POLines.Add('"Content-Type: text/plain; charset=UTF-8\n"');
+      POLines.Add('');
     end;
 
     //merge changes of every input file
