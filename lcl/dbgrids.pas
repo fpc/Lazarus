@@ -1493,11 +1493,9 @@ type
 procedure TCustomDBGrid.ColRowMoved(IsColumn: Boolean; FromIndex,
   ToIndex: Integer);
 var
-  F,CurField: TField;
-  ColIndex: Integer;
+  F: TField;
 begin
   if IsColumn then begin
-    CurField := SelectedField;
     if Columns.Enabled then
       inherited ColRowMoved(IsColumn, FromIndex, ToIndex)
     else if FDatalink.Active and (FDataLink.DataSet<>nil) then begin
