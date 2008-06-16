@@ -3,28 +3,36 @@
 
 DEB_DH_BUILDDEB_ARGS := -- -Z bzip2
 
-# Define FPCDIR if it was not set
-ifndef FPCDIR
-export FPCDIR=/usr/share/fpcsrc
-endif
 # Get directories
 CURDIR:=$(shell pwd)
 BUILD_DIR=$(CURDIR)/debian/build
 INSTALL_DIR=$(CURDIR)/debian/tmp
 DOC_DIR=$(INSTALL_DIR)/usr/share/doc
 # Get utils
-FPC=/usr/bin/fpc
-# Create default options
+ifndef FPC
+export FPC=fpc
+endif
+ifndef LAZBUILD
+LAZBUILD=lazbuild
+endif
 BUILDOPTS=PP=$(FPC)
 INSTALLOPTS=INSTALL_PREFIX=$(INSTALL_DIR)/usr
+# Get fpcmake from path if none is specified.
+ifndef FPCMAKE
+FPCMAKE=fpcmake
+endif
+# Define FPCDIR if it was not set
+ifndef FPCDIR
+export FPCDIR=/usr/share/fpcsrc/$(shell ${FPC} -iV)
+endif
 
-# export DH_VERBOSE=1
+#export DH_VERBOSE=1
 
 ###################
 # Clean
 #
 
-clean: clean-patched unpatch
+clean: configure clean-patched unpatch
 clean-patched:
 	@echo "--- Cleaning"
 	dh_testdir
@@ -69,7 +77,7 @@ configure-stamp:
 	# Remove auto-generated make files.
 	find -name Makefile.fpc -execdir 'sh' '-c' '${RM} $$(basename {} .fpc)' ';'
 	# Regenrate make files using fpcmake.
-	fpcmake -r -Tall
+	${FPCMAKE} -r -Tall
 	touch configure-stamp
 
 build-arch: build-arch-stamp
