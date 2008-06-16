@@ -149,7 +149,7 @@ var
               // and re-encode back the rest
               while Ustr<>'' do begin
                 j := UTF8CharacterLength(pchar(Ustr));
-                if j=1 then
+                if (j=1) and (Ustr[1] in [#0..#31,#128..#255]) then
                   Value := Value + '#'+IntToStr(ord(Ustr[1]))
                 else
                   Value := Value + copy(Ustr, 1, j);
