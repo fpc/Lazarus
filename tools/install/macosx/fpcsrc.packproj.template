@@ -466,19 +466,19 @@
 							<key>IFPkgDescriptionTitle</key>
 							<string>Free Pascal Sources</string>
 							<key>IFPkgDescriptionVersion</key>
-							<string>_FPCVERSION_</string>
+							<string>_FPCFULLVERSION_</string>
 						</dict>
 					</dict>
 					<key>Display Information</key>
 					<dict>
 						<key>CFBundleGetInfoString</key>
-						<string>Free Pascal Sources _FPCVERSION_</string>
+						<string>Free Pascal Sources _FPCFULLVERSION_</string>
 						<key>CFBundleIdentifier</key>
 						<string>org.freepascal.fpc.source</string>
 						<key>CFBundleName</key>
 						<string>Free Pascal Sources</string>
 						<key>CFBundleShortVersionString</key>
-						<string>_FPCVERSION_</string>
+						<string>_FPCFULLVERSION_</string>
 					</dict>
 					<key>Options</key>
 					<dict>
@@ -515,7 +515,7 @@
 			<key>IFPkgFlagPackageSelection</key>
 			<integer>0</integer>
 			<key>Name</key>
-			<string>fpcsrc-_FPCVERSION_-_DATESTAMP_</string>
+			<string>fpcsrc-_FPCFULLVERSION_-_DATESTAMP_</string>
 			<key>Status</key>
 			<integer>1</integer>
 			<key>Type</key>

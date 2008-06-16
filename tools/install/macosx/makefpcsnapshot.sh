@@ -83,6 +83,7 @@ make build PP=$PPC_RELEASE DATA2INC=$FPCBUILDDIR/fpcsrc/utils/data2inc
 
 COMPILER=$FPCBUILDDIR/fpcsrc/compiler/$PPCARCH
 FPCVERSION=`$COMPILER -iV`
+FPCFULLVERSION=`$COMPILER -iW`
 FPCARCH=`$COMPILER -iSP`
 
 # clean installdir: since I am not root and the install dir can contain files owned by root 
@@ -131,7 +132,8 @@ IFS=.
 FPCMAJORVERSION=`set $FPCVERSION;  echo $1`
 FPCMINORVERSION=`set $FPCVERSION;  echo $2$3`
 IFS=$OLDIFS
-sed -e "s|_PPCARCH_|$PPCARCH|g" -e "s|_FPCSRCDIR_|$FPCSVNDIR|g" -e "s|_FPCVERSION_|$FPCVERSION|g" \
+sed -e "s|_PPCARCH_|$PPCARCH|g" -e "s|_FPCSRCDIR_|$FPCSVNDIR|g" \
+  -e "s|_FPCVERSION_|$FPCVERSION|g" -e "s|_FPCFULLVERSION_|$FPCFULLVERSION|g" \
   -e "s|_DATESTAMP_|$DATESTAMP|g" -e s/_FPCMAJORVERSION_/$FPCMAJORVERSION/g \
   -e "s/_FPCMINORVERSION_/$FPCMINORVERSION/g" -e "s/_FPCARCH_/$FPCARCH/g" \
   $TEMPLATEDIR/$FPCPACKPROJ.template  > $INSTALLDIR/$FPCPACKPROJ
@@ -139,12 +141,12 @@ sed -e "s|_PPCARCH_|$PPCARCH|g" -e "s|_FPCSRCDIR_|$FPCSVNDIR|g" -e "s|_FPCVERSIO
 # build package
 $FREEZE -v $INSTALLDIR/$FPCPACKPROJ
 
-DMGFILE=~/pkg/fpc-$FPCVERSION-$DATESTAMP-$FPCARCH-macosx.dmg
+DMGFILE=~/pkg/fpc-$FPCFULLVERSION-$DATESTAMP-$FPCARCH-macosx.dmg
 rm -rf $DMGFILE
 
 $HDIUTIL create -anyowners -volname fpc-$FPCVERSION -imagekey zlib-level=9 -format UDZO -srcfolder $INSTALLDIR/build $DMGFILE
 
 if [ -e $DMGFILE ]; then
 #update lazarus snapshot web page
-  echo "$DMGFILE fpc-$FPCVERSION-*-$FPCARCH-macosx.dmg" >> $UPDATELIST
+  echo "$DMGFILE fpc-$FPCFULLVERSION-*-$FPCARCH-macosx.dmg" >> $UPDATELIST
 fi

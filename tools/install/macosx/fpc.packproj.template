@@ -989,19 +989,19 @@ For more information, see the readme.txt file or visit http://www.freepascal.org
 							<key>IFPkgDescriptionTitle</key>
 							<string>Free Pascal Compiler</string>
 							<key>IFPkgDescriptionVersion</key>
-							<string>_FPCVERSION_</string>
+							<string>_FPCFULLVERSION_</string>
 						</dict>
 					</dict>
 					<key>Display Information</key>
 					<dict>
 						<key>CFBundleGetInfoString</key>
-						<string>Free Pascal Compiler _FPCVERSION_</string>
+						<string>Free Pascal Compiler _FPCFULLVERSION_</string>
 						<key>CFBundleIdentifier</key>
 						<string>org.freepascal.fpc</string>
 						<key>CFBundleName</key>
 						<string>Free Pascal Compiler</string>
 						<key>CFBundleShortVersionString</key>
-						<string>_FPCVERSION_</string>
+						<string>_FPCFULLVERSION_</string>
 					</dict>
 					<key>Options</key>
 					<dict>
@@ -1038,7 +1038,7 @@ For more information, see the readme.txt file or visit http://www.freepascal.org
 			<key>IFPkgFlagPackageSelection</key>
 			<integer>0</integer>
 			<key>Name</key>
-			<string>fpc-_FPCVERSION_-_DATESTAMP_-_FPCARCH_</string>
+			<string>fpc-_FPCFULLVERSION_-_DATESTAMP_-_FPCARCH_</string>
 			<key>Status</key>
 			<integer>1</integer>
 			<key>Type</key>
