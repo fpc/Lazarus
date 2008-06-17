@@ -65,6 +65,7 @@ function CreateEllipticRgn(p1, p2, p3, p4: Integer): HRGN; {$IFDEF IF_BASE_MEMBE
 //function CreateFont --> independent
 function CreateFontIndirect(const LogFont: TLogFont): HFONT; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: string): HFONT; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function CreateIconIndirect(IconInfo: PIconInfo): HICON; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreatePalette(const LogPalette: TLogPalette): HPalette; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreatePatternBrush(ABitmap: HBITMAP): HBRUSH; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //function CreatePen --> independent
@@ -78,6 +79,7 @@ function DeleteDC(hDC: HDC): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function DeleteObject(GDIObject: HGDIOBJ): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function DestroyCaret(Handle : HWND): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function DestroyCursor(Handle: hCursor): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function DestroyIcon(Handle: HICON): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 function DPtoLP(DC: HDC; var Points; Count: Integer): BOOL; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function DrawFrameControl(DC: HDC; const Rect : TRect; uType, uState : Cardinal) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}

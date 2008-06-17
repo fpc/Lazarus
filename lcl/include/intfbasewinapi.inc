@@ -161,6 +161,11 @@ begin
   Result := CreateFontIndirect(LogFont);
 end;
 
+function TWidgetSet.CreateIconIndirect(IconInfo: PIconInfo): HICON;
+begin
+  Result := 0;
+end;
+
 function TWidgetSet.CreatePalette(const LogPalette: TLogPalette): HPalette;
 begin
   Result := 0;
@@ -208,6 +213,11 @@ begin
 end;
 
 function TWidgetSet.DestroyCursor(Handle: hCursor): Boolean;
+begin
+  Result := False;
+end;
+
+function TWidgetSet.DestroyIcon(Handle: HICON): Boolean;
 begin
   Result := False;
 end;

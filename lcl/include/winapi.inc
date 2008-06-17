@@ -131,6 +131,11 @@ begin
   Result := WidgetSet.CreateFontIndirectEx(LogFont,LongFontName);
 end;
 
+function CreateIconIndirect(IconInfo: PIconInfo): HICON;
+begin
+  Result := WidgetSet.CreateIconIndirect(IconInfo);
+end;
+
 function CreatePalette(const LogPalette: TLogPalette): HPalette;
 begin
   Result := WidgetSet.CreatePalette(LogPalette);
@@ -184,6 +189,11 @@ end;
 function DestroyCursor(Handle: hCursor): Boolean;
 begin
   Result := WidgetSet.DestroyCursor(Handle);
+end;
+
+function DestroyIcon(Handle: HICON): Boolean;
+begin
+  Result := WidgetSet.DestroyIcon(Handle);
 end;
 
 function DrawFrameControl(DC: HDC; const Rect : TRect; uType, uState : Cardinal) : Boolean;
