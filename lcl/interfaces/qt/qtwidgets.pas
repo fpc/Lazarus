@@ -525,7 +525,7 @@ type
     procedure SlotRangeChanged(minimum: Integer; maximum: Integer); cdecl; override;
     procedure BeginUpdate;
     procedure EndUpdate;
-    function InUpdate: Boolean; inline;
+    function InUpdate: Boolean;
   end;
 
   { TQtLineEdit }

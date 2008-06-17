@@ -255,7 +255,6 @@ begin
       R1.Right := R.Right;
       QtMenuBar.setGeometry(R1);
       QtMainWindow.setMenuBar(QMenuBarH(QtMenuBar.Widget));
-      QtMainWindow.setVisible(True);
     end;
   end;
 end;
