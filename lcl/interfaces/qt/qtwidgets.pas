@@ -522,7 +522,6 @@ type
     
     procedure SlotSliderMoved(p1: Integer); cdecl; override;
     procedure SlotValueChanged(p1: Integer); cdecl; override;
-    procedure SlotRangeChanged(minimum: Integer; maximum: Integer); cdecl; override;
     procedure BeginUpdate;
     procedure EndUpdate;
     function InUpdate: Boolean;
@@ -4599,9 +4598,6 @@ var
 begin
   inherited AttachEvents;
   
-  QAbstractSlider_rangeChanged_Event(Method) := @SlotRangeChanged;
-  QAbstractSlider_hook_hook_rangeChanged(FRangeChangedHook, Method);
-
   QAbstractSlider_sliderMoved_Event(Method) := @SlotSliderMoved;
   QAbstractSlider_hook_hook_sliderMoved(FSliderMovedHook, Method);
 
@@ -4641,22 +4637,6 @@ begin
   if not SliderPressed and (TTrackBar(LCLObject).Position <> p1) and not InUpdate then
   begin
     FillChar(Msg, SizeOf(Msg), #0);
-    Msg.Msg := LM_CHANGED;
-    DeliverMessage(Msg);
-  end;
-end;
-
-procedure TQtTrackBar.SlotRangeChanged(minimum: Integer; maximum: Integer); cdecl;
-var
-  Msg: TLMessage;
-begin
- {$ifdef VerboseQt}
-  writeln('TQtTrackBar.SlotRangeChanged()');
- {$endif}
-  if not InUpdate then
-  begin
-    FillChar(Msg, SizeOf(Msg), #0);
-
     Msg.Msg := LM_CHANGED;
     DeliverMessage(Msg);
   end;
