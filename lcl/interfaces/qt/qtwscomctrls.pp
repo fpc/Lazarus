@@ -246,9 +246,9 @@ implementation
 const
   TickMarkToQtSliderTickPositionMap: array[TTickMark] of QSliderTickPosition =
   (
-{tmBoth       } QSliderTicksBothSides,
+{tmBottomRight} QSliderTicksBelow,
 {tmTopLeft    } QSliderTicksAbove,
-{tmBottomRight} QSliderTicksBelow
+{tmBoth       } QSliderTicksBothSides
   );
 
   TrackBarOrientationToQtOrientationMap: array[TTrackBarOrientation] of QtOrientation =
@@ -358,10 +358,14 @@ var
   QtTrackBar: TQtTrackBar;
 begin
   QtTrackBar := TQtTrackBar(ATrackBar.Handle);
+  QtTrackBar.BeginUpdate;
 
   QtTrackBar.setRange(ATrackBar.Min, ATrackBar.Max);
 
-  QtTrackBar.SetTickPosition(TickMarkToQtSliderTickPositionMap[ATrackBar.TickMarks]);
+  if ATrackBar.TickStyle = tsNone then
+    QtTrackBar.SetTickPosition(QSliderNoTicks)
+  else
+    QtTrackBar.SetTickPosition(TickMarkToQtSliderTickPositionMap[ATrackBar.TickMarks]);
 
   if QtTrackBar.getPageStep <> ATrackBar.PageSize then
     QtTrackBar.setPageStep(ATrackBar.PageSize);
@@ -378,6 +382,7 @@ begin
     QtTrackBar.setInvertedControls(False);
     QtTrackBar.Show;
   end;
+  QtTrackBar.EndUpdate;
 end;
 
 class function  TQtWSTrackBar.GetPosition(const ATrackBar: TCustomTrackBar): integer;

@@ -57,7 +57,7 @@ constructor TCustomTrackBar.Create (AOwner : TComponent);
 begin
   inherited Create (aOwner);
   fCompStyle := csTrackbar;
-  Caption    := 'TrackBar';
+  ControlStyle := ControlStyle - [csCaptureMouse];
   FLineSize  := 1;
   FMax       := 10;
   FMin       := 0;
@@ -67,9 +67,9 @@ begin
   FOrientation := trHorizontal;
   FScalePos  := trTop;
   FScaleDigits := 0;
-  FTickMarks:=tmBottomRight;
-  FTickStyle:=tsAuto;
-  TabStop := true;
+  FTickMarks := tmBottomRight;
+  FTickStyle := tsAuto;
+  TabStop := True;
   SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
 end;
 
@@ -193,7 +193,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomTrackBar.SetMax(Value: Integer);
 begin
-  if FMax<>Value then SetParams(FPosition,FMin,Value);
+  if FMax <> Value then SetParams(FPosition,FMin,Value);
 end;
 
 {------------------------------------------------------------------------------
@@ -293,8 +293,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomTrackBar.ApplyChanges;
 begin
-  if HandleAllocated and (not (csLoading in ComponentState))
-  then TWSTrackBarClass(WidgetSetClass).ApplyChanges(Self);
+  if HandleAllocated and (not (csLoading in ComponentState)) then
+    TWSTrackBarClass(WidgetSetClass).ApplyChanges(Self);
 end;
 
 {------------------------------------------------------------------------------

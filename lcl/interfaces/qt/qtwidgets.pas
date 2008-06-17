@@ -510,6 +510,7 @@ type
   
   TQtTrackBar = class(TQtAbstractSlider)
   private
+    FInUpdate: Boolean;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
@@ -522,6 +523,9 @@ type
     procedure SlotSliderMoved(p1: Integer); cdecl; override;
     procedure SlotValueChanged(p1: Integer); cdecl; override;
     procedure SlotRangeChanged(minimum: Integer; maximum: Integer); cdecl; override;
+    procedure BeginUpdate;
+    procedure EndUpdate;
+    function InUpdate: Boolean; inline;
   end;
 
   { TQtLineEdit }
@@ -4560,6 +4564,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtTrackBar.Create');
   {$endif}
+  FInUpdate := False;
   Result := QSlider_create();
 end;
 
@@ -4617,14 +4622,11 @@ begin
  {$ifdef VerboseQt}
   writeln('TQtTrackBar.SlotSliderMoved()');
  {$endif}
-  FillChar(Msg, SizeOf(Msg), #0);
-
-  Msg.Msg := LM_CHANGED;
-  try
-    if (TTrackBar(LCLObject).Position<>p1) then
-      LCLObject.WindowProc(Msg);
-  except
-    Application.HandleException(nil);
+  if (TTrackBar(LCLObject).Position <> p1) and not InUpdate then
+  begin
+    FillChar(Msg, SizeOf(Msg), #0);
+    Msg.Msg := LM_CHANGED;
+    DeliverMessage(Msg);
   end;
 end;
 
@@ -4636,14 +4638,11 @@ begin
   writeln('TQtTrackBar.SlotValueChanged()');
  {$endif}
 
-  FillChar(Msg, SizeOf(Msg), #0);
-
-  Msg.Msg := LM_CHANGED;
-  try
-    if not SliderPressed and (TTrackBar(LCLObject).Position<>p1) then
-      LCLObject.WindowProc(Msg);
-  except
-    Application.HandleException(nil);
+  if not SliderPressed and (TTrackBar(LCLObject).Position <> p1) and not InUpdate then
+  begin
+    FillChar(Msg, SizeOf(Msg), #0);
+    Msg.Msg := LM_CHANGED;
+    DeliverMessage(Msg);
   end;
 end;
 
@@ -4654,10 +4653,28 @@ begin
  {$ifdef VerboseQt}
   writeln('TQtTrackBar.SlotRangeChanged()');
  {$endif}
-  FillChar(Msg, SizeOf(Msg), #0);
+  if not InUpdate then
+  begin
+    FillChar(Msg, SizeOf(Msg), #0);
 
-  Msg.Msg := LM_CHANGED;
-  DeliverMessage(Msg);
+    Msg.Msg := LM_CHANGED;
+    DeliverMessage(Msg);
+  end;
+end;
+
+procedure TQtTrackBar.BeginUpdate;
+begin
+  FInUpdate := True;
+end;
+
+procedure TQtTrackBar.EndUpdate;
+begin
+  FInUpdate := False;
+end;
+
+function TQtTrackBar.InUpdate: Boolean;
+begin
+  Result := FInUpdate;
 end;
 
 
