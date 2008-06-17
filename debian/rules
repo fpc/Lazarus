@@ -44,6 +44,7 @@ clean-patched:
 	rm -f debian/*.files debian/*.docs debian/*.examples debian/*.postinst debian/*.postrm
 	rm -f lazarus startlazarus lazbuild
 	$(MAKE) distclean
+	$(MAKE) distclean LCL_PLATFORM=gtk2
 	-(find -name '*.a' -or -name '*.o' -or -name '*.ppu' | xargs rm)
 	dh_clean 
 
@@ -151,25 +152,29 @@ install-doc-stamp: build-doc-stamp debian-files-stamp
 #
 
 install-source: install-source-stamp
-install-source-stamp: 
+install-source-stamp:
 	@echo "--- Cleaning the tree and copying the source code"
 	dh_testdir
 	dh_testroot
-	$(MAKE) distclean
 	install -d $(INSTALL_DIR)/usr/lib/lazarus/
-	cp -r $(CURDIR)/components $(INSTALL_DIR)/usr/lib/lazarus/
-	cp -r $(CURDIR)/debugger $(INSTALL_DIR)/usr/lib/lazarus/
-	cp -r $(CURDIR)/examples $(INSTALL_DIR)/usr/lib/lazarus/
-	cp -r $(CURDIR)/ide $(INSTALL_DIR)/usr/lib/lazarus/
-	cp -r $(CURDIR)/ide $(INSTALL_DIR)/usr/lib/lazarus/
-	cp -r $(CURDIR)/lcl $(INSTALL_DIR)/usr/lib/lazarus/
-	cp -r $(CURDIR)/designer $(INSTALL_DIR)/usr/lib/lazarus/
-	cp -r $(CURDIR)/packager $(INSTALL_DIR)/usr/lib/lazarus/
-	cp -r $(CURDIR)/test $(INSTALL_DIR)/usr/lib/lazarus/
-	cp -r $(CURDIR)/doceditor $(INSTALL_DIR)/usr/lib/lazarus/
-	cp -r $(CURDIR)/ideintf $(INSTALL_DIR)/usr/lib/lazarus/
-	cp -r $(CURDIR)/tools $(INSTALL_DIR)/usr/lib/lazarus/
-	cp -r $(CURDIR)/converter $(INSTALL_DIR)/usr/lib/lazarus/
+	cp -Rfpl -t $(INSTALL_DIR)/usr/lib/lazarus \
+		$(CURDIR)/COPYING* \
+		$(CURDIR)/Makefile* \
+		$(CURDIR)/README* \
+		$(CURDIR)/components \
+		$(CURDIR)/converter \
+		$(CURDIR)/debugger \
+		$(CURDIR)/designer \
+		$(CURDIR)/doceditor \
+		$(CURDIR)/examples \
+		$(CURDIR)/ide \
+		$(CURDIR)/ideintf \
+		$(CURDIR)/images \
+		$(CURDIR)/languages \
+		$(CURDIR)/lcl \
+		$(CURDIR)/packager \
+		$(CURDIR)/test \
+		$(CURDIR)/tools
 	find $(INSTALL_DIR) -name '*.bmp' -exec chmod 644 '{}' ';'
 	$(RM) $(INSTALL_DIR)/usr/lib/lazarus/components/lazreport/license*.txt
 	touch install-source-stamp
@@ -187,7 +192,7 @@ binary: binary-arch binary-indep
 # Deb building
 #
 
-binary-indep: build-doc install-doc install-source debian-files
+binary-indep: clean-patched build-doc install-doc install-source debian-files
 	@echo "--- Building: arch-indep packages"
 	dh_testdir
 	dh_testroot

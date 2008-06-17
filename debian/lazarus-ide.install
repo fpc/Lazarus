@@ -43,7 +43,7 @@
 /usr/lib/lazarus/examples
 #/usr/lib/lazarus/ide
 /usr/lib/lazarus/ideintf
-#/usr/lib/lazarus/languages
+/usr/lib/lazarus/languages
 /usr/lib/lazarus/lcl
 /usr/lib/lazarus/packager
 /usr/lib/lazarus/tools
