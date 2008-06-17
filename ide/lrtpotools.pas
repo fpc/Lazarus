@@ -70,18 +70,36 @@ var
   POValuesHash: TStringHashList;
   POFileChanged: boolean;
   POLines: TStrings;
-  Value,Identifier: string;
+  Identifier: string;
+  List: TStringList;
 
-  procedure AddPoHashEntry;
+  procedure AddListPoHashEntry;
+  var
+    i: Integer;
+    Str: String;
   begin
-    if POValuesHash.Find(Value) = -1 then begin
-      DebugLn(['AddFile2PoAux Add ',Identifier,'="',Value,'"']);
+
+    if List.Count=1 then
+      Str := List[0]
+    else
+      Str := List.Text;
+
+    if POValuesHash.Find(Str) = -1 then begin
+
       POFileChanged := true;
       POLines.Add('#: '+Identifier);
-      POLines.Add('msgid "'+Value+'"');
+
+      if List.Count=1 then
+        POLines.Add('msgid "'+Str+'"')
+      else begin
+        POLines.Add('msgid ""');
+        for i:= 0 to List.Count-1 do
+          POLines.Add('"'+List[i]+'\n"');
+      end;
+
       POLines.Add('msgstr ""');
       POLines.Add('');
-      POValuesHash.Add(Value);
+      POValuesHash.Add(Str);
     end;
   end;
 
@@ -89,7 +107,7 @@ var
   var
     i,j,n: integer;
     p: LongInt;
-    Line,UStr: string;
+    Value,Line,UStr: string;
     Multi: boolean;
   begin
     //for each string in lrt/rst list check if in PO, if not add
@@ -101,15 +119,17 @@ var
       case FileType of
         ftLrt: begin
           p:=Pos('=',Line);
-          Value:=StrToPoStr( copy(Line,p+1,n-p) );//if p=0, that's OK, all the string
+          List.Clear;
+          List.add(StrToPoStr( copy(Line,p+1,n-p) ));//if p=0, that's OK, all the string
           Identifier:=copy(Line,1,p-1);
-          AddPoHashEntry;
+          AddListPoHashEntry;
         end;
 
         ftRst: begin
           if (Line[1]='#') then begin
             Value := '';
             Identifier := '';
+            List.Clear;
             continue;
           end;
 
@@ -149,7 +169,7 @@ var
               // and re-encode back the rest
               while Ustr<>'' do begin
                 j := UTF8CharacterLength(pchar(Ustr));
-                if (j=1) and (Ustr[1] in [#0..#31,#128..#255]) then
+                if (j=1) and (Ustr[1] in [#0..#9,#11,#12,#14..#31,#128..#255]) then
                   Value := Value + '#'+IntToStr(ord(Ustr[1]))
                 else
                   Value := Value + copy(Ustr, 1, j);
@@ -160,9 +180,9 @@ var
               break;
           end;
           if not Multi then begin
-            Value := StrToPoStr(Value);
-            if Value<>'' then
-              AddPoHashEntry;
+            List.Text := StrToPoStr(Value);
+            if List.Count>0 then
+              AddListPoHashEntry;
           end;
         end;
       end;
@@ -181,6 +201,7 @@ begin
   POLines:=TStringList.Create;
   InputLines:=TStringList.Create;
   POValuesHash := TStringHashList.Create(true);
+  List := TStringList.Create;
   try
 
     //load old po file into a StringList and HashList
@@ -231,6 +252,7 @@ begin
     else
       Result:=mrOk;
   finally
+    List.Free;
     POLines.Free;
     InputLines.Free;
     POValuesHash.Free;

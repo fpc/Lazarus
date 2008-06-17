@@ -263,21 +263,36 @@ var
   LineEnd: PChar;
   Identifier: String;
   MsgID: String;
-  MsgStr: String;
+  Line: String;
   TextEnd: PChar;
   i: Integer;
+  
+  procedure AddEntry;
+  begin
+    if Identifier<>'' then begin
+      Add(Identifier,MsgID,Line);
+      MsgId  := '';
+      Line := '';
+      Identifier := '';
+    end;
+  end;
+
 begin
   if s='' then exit;
   l:=length(s);
   p:=PChar(s);
   LineStart:=p;
   TextEnd:=p+l;
+  Identifier:='';
   while LineStart<TextEnd do begin
     LineEnd:=LineStart;
     while (not (LineEnd^ in [#0,#10,#13])) do inc(LineEnd);
     LineLen:=LineEnd-LineStart;
     if LineLen>0 then begin
       if CompareMem(LineStart,sCommentIdentifier,3) then begin
+
+        AddEntry; // add peding entry (if exists)
+        
         Identifier:=copy(s,LineStart-p+4,LineLen-3);
         // the RTL creates identifier paths with point instead of colons
         // fix it:
@@ -285,18 +300,25 @@ begin
           if Identifier[i]=':' then
             Identifier[i]:='.';
       end else if CompareMem(LineStart,sMsgID,7) then begin
-        MsgID:=UTF8CStringToUTF8String(LineStart+7,LineLen-8);
+        // start collecting MsgId lines
+        Line:=UTF8CStringToUTF8String(LineStart+7,LineLen-8);
       end else if CompareMem(LineStart,sMsgStr,8) then begin
-        //MsgStr:=copy(s,LineStart-p+9,LineLen-9);
-        MsgStr:=UTF8CStringToUTF8String(LineStart+8,LineLen-9);
-        Add(Identifier,MsgID,MsgStr);
+        // store collected strings in MsgId
+        MsgId := Line;
+        // start collecting MsgStr lines
+        Line:=UTF8CStringToUTF8String(LineStart+8,LineLen-9);
       end else if CompareMem(LineStart,sCharSetIdentifier,35) then begin
         FCharSet:=copy(LineStart, 35,LineLen-37);
-      end;
+      end else if LineStart^='"' then begin
+        if Identifier<>'' then
+          Line := Line + UTF8CStringToUTF8String(LineStart+1,LineLen-2);
+      end else
+        AddEntry;
     end;
     LineStart:=LineEnd+1;
     while (LineStart<TextEnd) and (LineStart^ in [#10,#13]) do inc(LineStart);
   end;
+  AddEntry;
 end;
 
 procedure TPOFile.Add(const Identifier, OriginalValue, TranslatedValue: string

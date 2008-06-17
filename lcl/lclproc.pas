@@ -2571,7 +2571,7 @@ begin
 {$IFDEF WINDOWS}
                begin
                  move(lineending[1], dest^, length(LineEnding));
-                 inc(dest^, length(LineEnding)-1);
+                 inc(dest, length(LineEnding)-1);
                end;
 {$ELSE}
                Dest^ := LineEnding;
