@@ -1715,9 +1715,9 @@ begin
       if not TempPopupMenu.AutoPopup then Exit;
 //      SendCancelMode(nil);
       TempPopupMenu.PopupComponent := Control;
-      DebugLn(['TControl.WMContextMenu ',DbgSName(Self),' Message.pos=',dbgs(P2)]);
+      //DebugLn(['TControl.WMContextMenu ',DbgSName(Self),' Message.pos=',dbgs(P2)]);
       P2 := ClientToScreen(P2);
-      DebugLn(['TControl.WMContextMenu ',DbgSName(Self),' P2=',dbgs(P2)]);
+      //DebugLn(['TControl.WMContextMenu ',DbgSName(Self),' P2=',dbgs(P2)]);
       TempPopupMenu.Popup(P2.X, P2.Y);
       Message.Result:= 1;
       Exit;
