@@ -3,6 +3,7 @@ EnableISX=true
 [Defines]
 #define AppVersion GetEnv('LazVersion')
 #define FPCVersion GetEnv('FPCVersion')
+#define FPCFullVersion GetEnv('FPCFullVersion')
 #define FPCSourceOS GetEnv('FPCSourceOS')
 #define FPCFullSource GetEnv('FPCFullSource')
 #define FPCFullTarget GetEnv('FPCFullTarget')
@@ -20,7 +21,7 @@ ArchitecturesInstallIn64BitMode=x64
 DefaultDirName={code:GetDefDir|c:\lazarus}
 DefaultGroupName={#AppName}
 InternalCompressLevel=ultra
-OutputBaseFilename={#AppName}-{#AppVersion}-fpc-{#FPCVersion}-{#SetupDate}-cross-{#FPCFullTarget}-{#FPCSourceOS}
+OutputBaseFilename={#AppName}-{#AppVersion}-fpc-{#FPCFullVersion}-{#SetupDate}-cross-{#FPCFullTarget}-{#FPCSourceOS}
 SolidCompression=true
 VersionInfoVersion={#AppVersion}
 VersionInfoTextVersion={#AppVersion}-{#SetupDate}
