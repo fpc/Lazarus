@@ -3343,11 +3343,11 @@ begin
     Result := False;
 
     //Sanity Checks For Vertices Size vs. Count
-    if MemSize(Vertices) < PtrInt(SizeOf(tagTRIVERTEX)*NumVertices) then
+    if MemSize(Vertices) < PtrUInt(SizeOf(tagTRIVERTEX)*NumVertices) then
       exit;
 
     //Sanity Checks For Meshes Size vs. Count
-    if MemSize(Meshes) < PtrInt(MeshSize[DoFillTriangle]*NumMeshes) then
+    if MemSize(Meshes) < PtrUInt(MeshSize[DoFillTriangle]*NumMeshes) then
       exit;
 
     for I := 0 to NumMeshes - 1 do

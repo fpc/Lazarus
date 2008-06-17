@@ -332,7 +332,6 @@ begin
   NewData := GetMem(ARawImage.DataSize);
   Move(ARawImage.Data^, NewData^, ARawImage.DataSize);
 
-  {$note TODO: use format given in rawimage}
   // this is only a rough implementation, there is no check against bitsperpixel
   case Desc.Depth of
     1: ImageFormat := QImageFormat_Mono;
