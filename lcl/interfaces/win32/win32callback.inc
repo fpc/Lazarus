@@ -167,11 +167,43 @@ begin
   EraseBkgndStack := (EraseBkgndStack shl EraseBkgndStackShift) or dword(Ord(Command));
 end;
 
+type
+  TDoubleBuffer = record
+    DC: HDC;
+    Bitmap: HBITMAP;
+    BitmapWidth: integer;
+    BitmapHeight: integer;
+  end;
+  PDoubleBuffer = ^TDoubleBuffer;
+  
 var
-  DoubleBufferDC: HDC = 0;
-  DoubleBufferBitmap: HBITMAP = 0;
-  DoubleBufferBitmapWidth: integer = 0;
-  DoubleBufferBitmapHeight: integer = 0;
+  CurDoubleBuffer: TDoubleBuffer = (DC: 0; Bitmap: 0; BitmapWidth: 0; BitmapHeight: 0);
+  SavedBuffers: TList = nil;
+
+function SaveDoubleBuffer: Boolean;
+var
+  Item: PDoubleBuffer;
+begin
+  if SavedBuffers = nil then
+    SavedBuffers := TList.Create;
+  New(Item);
+  Item^ := CurDoubleBuffer;
+  SavedBuffers.Add(Item);
+  FillChar(CurDoubleBuffer, SizeOf(CurDoubleBuffer), 0);
+  Result := True;
+end;
+
+procedure RestoreDoubleBuffer;
+var
+  Item: PDoubleBuffer;
+begin
+  Item := SavedBuffers[SavedBuffers.Count - 1];
+  SavedBuffers.Delete(SavedBuffers.Count - 1);
+  CurDoubleBuffer := Item^;
+  Dispose(Item);
+  if SavedBuffers.Count = 0 then
+    FreeAndNil(SavedBuffers);
+end;
 
 function CheckMouseMovement: boolean;
   // returns true if mouse did not move between lmousebutton down
@@ -354,6 +386,7 @@ var
     isNativeControl: boolean;
     needParentPaint: boolean;
     lNotebookFound: boolean;
+    BufferWasSaved: Boolean;
   begin
     // note: ignores the received DC
     // do not use default deliver message
@@ -402,20 +435,26 @@ var
 {$endif}
     if useDoubleBuffer then
     begin
-      DoubleBufferDC := Windows.CreateCompatibleDC(0);
+      if CurDoubleBuffer.DC <> 0 then
+        // we've been called from another paint handler. To prevent killing of
+        // not own DC and HBITMAP lets save then and restore on exit
+        BufferWasSaved := SaveDoubleBuffer
+      else
+        BufferWasSaved := False;
+      CurDoubleBuffer.DC := Windows.CreateCompatibleDC(0);
       GetWindowSize(Window, WindowWidth, WindowHeight);
-      if (DoubleBufferBitmapWidth < WindowWidth) or (DoubleBufferBitmapHeight < WindowHeight) then
+      if (CurDoubleBuffer.BitmapWidth < WindowWidth) or (CurDoubleBuffer.BitmapHeight < WindowHeight) then
       begin
         DC := Windows.GetDC(0);
-        if DoubleBufferBitmap <> 0 then
-          Windows.DeleteObject(DoubleBufferBitmap);
-        DoubleBufferBitmapWidth := WindowWidth;
-        DoubleBufferBitmapHeight := WindowHeight;
-        DoubleBufferBitmap := Windows.CreateCompatibleBitmap(DC, WindowWidth, WindowHeight);
+        if CurDoubleBuffer.Bitmap <> 0 then
+          Windows.DeleteObject(CurDoubleBuffer.Bitmap);
+        CurDoubleBuffer.BitmapWidth := WindowWidth;
+        CurDoubleBuffer.BitmapHeight := WindowHeight;
+        CurDoubleBuffer.Bitmap := Windows.CreateCompatibleBitmap(DC, WindowWidth, WindowHeight);
         Windows.ReleaseDC(0, DC);
       end;
-      DoubleBufferBitmapOld := Windows.SelectObject(DoubleBufferDC, DoubleBufferBitmap);
-      PaintMsg.DC := DoubleBufferDC;
+      DoubleBufferBitmapOld := Windows.SelectObject(CurDoubleBuffer.DC, CurDoubleBuffer.Bitmap);
+      PaintMsg.DC := CurDoubleBuffer.DC;
     end;
 
 {$ifdef MSG_DEBUG}
@@ -456,7 +495,7 @@ var
               Windows.ClientToScreen(Window, WindowOrg);
               Windows.OffsetRgn(PaintRegion, -WindowOrg.X, -WindowOrg.Y);
             end;
-            Windows.SelectClipRgn(DoubleBufferDC, PaintRegion);
+            Windows.SelectClipRgn(CurDoubleBuffer.DC, PaintRegion);
           end;
 {$ifdef DEBUG_DOUBLEBUFFER}
           Windows.GetClipBox(DoubleBufferDC, ClipBox);
@@ -516,15 +555,17 @@ var
         Windows.RestoreDC(PaintMsg.DC, DCIndex);
       end;
       if useDoubleBuffer then
-        Windows.BitBlt(DC, 0, 0, WindowWidth, WindowHeight, DoubleBufferDC, 0, 0, SRCCOPY);
+        Windows.BitBlt(DC, 0, 0, WindowWidth, WindowHeight, CurDoubleBuffer.DC, 0, 0, SRCCOPY);
       if ControlDC = 0 then
         Windows.EndPaint(Window, @PS);
     finally
       if useDoubleBuffer then
       begin
-        SelectObject(DoubleBufferDC, DoubleBufferBitmapOld);
-        DeleteDC(DoubleBufferDC);
-        DoubleBufferDC := 0;
+        SelectObject(CurDoubleBuffer.DC, DoubleBufferBitmapOld);
+        DeleteDC(CurDoubleBuffer.DC);
+        CurDoubleBuffer.DC := 0;
+        if BufferWasSaved then
+          RestoreDoubleBuffer;
 {$ifdef DEBUG_DOUBLEBUFFER}
         if CopyBitmapToClipboard then
         begin
@@ -1550,8 +1591,8 @@ begin
 {$endif}
       if eraseBkgndCommand = ecDoubleBufferNoRemove then
       begin
-        if DoubleBufferDC <> 0 then
-          WParam := Windows.WParam(DoubleBufferDC);
+        if CurDoubleBuffer.DC <> 0 then
+          WParam := Windows.WParam(CurDoubleBuffer.DC);
         if WindowInfo^.isTabPage then
           EraseBkgndStack := (EraseBkgndStack and not ((1 shl EraseBkgndStackShift)-1))
             or dword(ecDiscardNoRemove);
