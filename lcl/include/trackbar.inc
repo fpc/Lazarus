@@ -308,9 +308,11 @@ procedure TCustomTrackBar.DoChange(var msg);
 begin
   FPosition := TWSTrackBarClass(WidgetSetClass).GetPosition(Self);
   Assert(True, 'Trace:Trackbar received a message -CHANGE');
-  if [csLoading,csDestroying,csDesigning]*ComponentState<>[] then exit;
+  if [csLoading,csDestroying,csDesigning]*ComponentState<>[] then
+    Exit;
   EditingDone;
-  if Assigned (FOnChange) then FOnChange(Self);
+  if Assigned (FOnChange) then
+    FOnChange(Self);
 end;
 
 class function TCustomTrackBar.GetControlClassDefaultSize: TPoint;

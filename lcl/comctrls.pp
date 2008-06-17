@@ -1109,6 +1109,7 @@ type
     property OnClick;
     property OnColumnClick;
     property OnCompare;
+    property OnContextPopup;
     property OnCustomDraw;
     property OnCustomDrawItem;
     property OnCustomDrawSubItem;
@@ -1193,6 +1194,7 @@ type
     property Hint;
     property Max;
     property Min;
+    property OnContextPopup;
     property OnDragDrop;
     property OnDragOver;
     property OnEndDrag;
@@ -1312,6 +1314,7 @@ type
     property Wrap;
     property OnChanging;
     property OnClick;
+    property OnContextPopup;
     property OnEnter;
     property OnExit;
     property OnMouseDown;
@@ -1457,12 +1460,12 @@ type
     property OnContextPopup;
     property OnDragDrop;
     property OnDragOver;
-    //property OnEndDock;
+    property OnEndDock;
     property OnEndDrag;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    //property OnStartDock;
+    property OnStartDock;
     property OnStartDrag;
   end;
 
@@ -1699,6 +1702,7 @@ type
     property OnChange;
     property OnChangeBounds;
     property OnClick;
+    property OnContextPopup;
     property OnDragDrop;
     property OnDragOver;
     property OnEndDrag;
