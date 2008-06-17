@@ -22,6 +22,7 @@
 
 type
   TWinControlAccess = class(TWinControl);
+  TCustomListViewAccess = class(TCustomListView);
 {*************************************************************}
 {            callback routines                                }
 {*************************************************************}
@@ -126,7 +127,13 @@ begin
 end;
 
 type
-  TEraseBkgndCommand = (ecDefault, ecDiscard, ecDiscardNoRemove, ecDoubleBufferNoRemove);
+  TEraseBkgndCommand =
+  (
+    ecDefault,             // todo: add comments
+    ecDiscard,             //
+    ecDiscardNoRemove,     //
+    ecDoubleBufferNoRemove //
+  );
 const
   EraseBkgndStackMask = $3;
   EraseBkgndStackShift = 2;
@@ -183,12 +190,6 @@ begin
   Result := AWindowInfo^.needParentPaint
     and ((AWinControl = nil) or not (csOpaque in AWinControl.ControlStyle));
 end;
-
-type
-  TCustomListViewAccess = class(TCustomListView)
-  end;
-
-
 
 {------------------------------------------------------------------------------
  Function: WindowProc

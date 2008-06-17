@@ -279,6 +279,13 @@ end;
   Everything is updated except the panel width
  ------------------------------------------------------------------------------}
 procedure UpdateStatusBarPanel(const StatusPanel: TStatusPanel);
+const
+  StatusBevelMap: array[TStatusPanelBevel] of Integer =
+  (
+{ pbNone    } Windows.SBT_NOBORDERS,
+{ pbLowered } 0,
+{ pbRaised  } Windows.SBT_POPOUT
+  );
 var
   BevelType: integer;
   Text: string;
@@ -288,11 +295,7 @@ begin
     taCenter: Text := #9 + Text;
     taRightJustify: Text := #9#9 + Text;
   end;
-  case StatusPanel.Bevel of
-    pbNone: BevelType := Windows.SBT_NOBORDERS;
-    pbLowered: BevelType := 0;
-    pbRaised: BevelType := Windows.SBT_POPOUT;
-  end;
+  BevelType := StatusBevelMap[StatusPanel.Bevel];
 
   {$ifdef WindowsUnicodeSupport}
     if UnicodeEnabledOS then
@@ -453,9 +456,10 @@ begin
   Windows.SendMessage(AStatusBar.Handle, SB_SIMPLE, WPARAM(AStatusBar.SimplePanel), 0);
   if AStatusBar.SimplePanel then
     SetPanelText(AStatusBar, 0)
-  else begin
+  else
+  begin
     UpdateStatusBarPanelWidths(AStatusBar);
-    for PanelIndex := 0 to AStatusBar.Panels.Count-1 do
+    for PanelIndex := 0 to AStatusBar.Panels.Count - 1 do
       UpdateStatusBarPanel(AStatusBar.Panels[PanelIndex]);
   end;
 end;

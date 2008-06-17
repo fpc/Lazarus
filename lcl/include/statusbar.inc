@@ -131,31 +131,34 @@ end;
 
 procedure TStatusBar.UpdateHandleObject(PanelIndex: integer);
 begin
-  if (not HandleAllocated) or (csDestroying in ComponentState)
-  or ((PanelIndex>0) and SimplePanel) then exit;
+  if (not HandleAllocated) or (csDestroying in ComponentState) or
+     ((PanelIndex>0) and SimplePanel) then
+    Exit;
 
-  if (csLoading in ComponentState) or (FUpdateLock>0) then begin
+  if (csLoading in ComponentState) or (FUpdateLock > 0) then
+  begin
     //DebugLn('TStatusBar.UpdateHandleObject Caching FHandleObjectNeedsUpdate=',dbgs(FHandleObjectNeedsUpdate),' FHandleUpdatePanelIndex=',dbgs(FHandleUpdatePanelIndex),' PanelIndex=',dbgs(PanelIndex));
-    if FHandleObjectNeedsUpdate then begin
+    if FHandleObjectNeedsUpdate then
+    begin
       // combine multiple updates
-      if (FHandleUpdatePanelIndex>=0)
-      and (FHandleUpdatePanelIndex<>PanelIndex) then begin
-        // at least 2 different panels need update => update all
-        FHandleUpdatePanelIndex:=-1; // update all
-      end;
-    end else begin
+      if (FHandleUpdatePanelIndex>=0) and (FHandleUpdatePanelIndex <> PanelIndex) then
+        FHandleUpdatePanelIndex:=-1; // at least 2 different panels need update => update all
+    end else
+    begin
       // start an update sequence
-      FHandleObjectNeedsUpdate:=true;
-      FHandleUpdatePanelIndex:=PanelIndex;
+      FHandleObjectNeedsUpdate := True;
+      FHandleUpdatePanelIndex := PanelIndex;
     end;
-    exit;
+    Exit;
   end;
 
   //DebugLn('TStatusBar.UpdateHandleObject A FHandlePanelCount=',dbgs(FHandlePanelCount),' PanelIndex=',dbgs(PanelIndex),' Panels.Count=',dbgs(Panels.Count),' SimplePanel=',dbgs(SimplePanel));
-  if (FHandlePanelCount>PanelIndex) and (PanelIndex>=0) then begin
+  if (FHandlePanelCount > PanelIndex) and (PanelIndex >= 0) then
+  begin
     // update one panel
-    TWSStatusBarClass(WidgetSetClass).PanelUpdate(Self,PanelIndex);
-  end else begin
+    TWSStatusBarClass(WidgetSetClass).PanelUpdate(Self, PanelIndex);
+  end else
+  begin
     // update all panels
     //DebugLn('TStatusBar.UpdateHandleObject C update all panels');
     TWSStatusBarClass(WidgetSetClass).Update(Self);
