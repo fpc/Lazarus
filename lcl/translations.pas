@@ -56,10 +56,15 @@ uses
   {$IFDEF UNIX}{$IFNDEF DisableCWString}, cwstring{$ENDIF}{$ENDIF};
 
 type
+  TStringsType = (stLrt, stRst);
+
+type
   { TPOFileItem }
 
   TPOFileItem = class
   public
+    Tag: Integer;
+    Comments: string;
     Identifier: string;
     Original: string;
     Translation: string;
@@ -72,16 +77,40 @@ type
   protected
     FItems: TFPList;// list of TPOFileItem
     FIdentifierToItem: TStringHashList;
+    FIdentVarToItem: TStringHashList;
     FOriginalToItem: TStringHashList;
     FCharSet: String;
+    FHeader: TPOFileItem;
+    FAllEntries: boolean;
+    FTag: Integer;
+    FModified: boolean;
+    FHelperList: TStringList;
+    FModuleList: TStringList;
+    procedure RemoveTaggedItems(aTag: Integer);
+    procedure RemoveUntaggedModules;
   public
-    constructor Create(const AFilename: String);
-    constructor Create(AStream: TStream);
+    constructor Create;
+    constructor Create(const AFilename: String; Full:boolean=false);
+    constructor Create(AStream: TStream; Full:boolean=false);
     destructor Destroy; override;
     procedure ReadPOText(const s: string);
-    procedure Add(const Identifier, OriginalValue, TranslatedValue: string);
+    procedure Add(const Identifier, OriginalValue, TranslatedValue, Comments: string);
     function Translate(const Identifier, OriginalValue: String): String;
     Property CharSet: String read FCharSet;
+    procedure Report;
+    procedure CreateHeader;
+    procedure UpdateStrings(InputLines:TStrings; SType: TStringsType);
+    procedure SaveToFile(const AFilename: string);
+    procedure UpdateItem(const Identifier: string; Original: string);
+    procedure UpdateTranslation(BasePOFile: TPOFile);
+    procedure ClearModuleList;
+    procedure AddToModuleList(Identifier: string);
+    procedure UntagAll;
+    
+    property Tag: integer read FTag write FTag;
+    property Modified: boolean read FModified;
+    property Items: TFPList read FItems;
+    
   end;
 
   EPOFileError = class(Exception);
@@ -199,29 +228,70 @@ end;
 
 { TPOFile }
 
-constructor TPOFile.Create(const AFilename: String);
+procedure TPOFile.RemoveUntaggedModules;
+var
+  Module: string;
+  Item: TPOFileItem;
+  i, p: Integer;
+begin
+  if FModuleList=nil then
+    exit;
+    
+  // remove all module references that were not tagged
+  for i:=FItems.Count-1 downto 0 do begin
+    Item := TPOFileItem(FItems[i]);
+    p := pos('.',Item.Identifier);
+    if P=0 then
+      continue; // module not found (?)
+      
+    Module :=LeftStr(Item.Identifier, p-1);
+    if (FModuleList.IndexOf(Module)<0) then
+      continue; // module was not modified this time
+
+    if Item.Tag=FTag then
+      continue; // PO item was updated
+      
+    // this item is not more in updated modules, delete it
+    FIdentifierToItem.Remove(Item.Identifier);
+    //FOriginalToItem.Remove(Item.Original); // isn't this tricky?
+    FItems.Delete(i);
+    Item.Free;
+  end;
+end;
+
+constructor TPOFile.Create;
+begin
+  inherited Create;
+  FAllEntries:=true;
+  FItems:=TFPList.Create;
+  FIdentifierToItem:=TStringHashList.Create(false);
+  FIdentVarToItem:=TStringHashList.Create(false);
+  FOriginalToItem:=TStringHashList.Create(true);
+end;
+
+constructor TPOFile.Create(const AFilename: String; Full:boolean=False);
 var
   f: TStream;
 begin
   f := TFileStream.Create(AFilename, fmOpenRead);
   try
-    Self.Create(f);
+    Self.Create(f, Full);
+    if FHeader=nil then
+      CreateHeader;
   finally
     f.Free;
   end;
 end;
 
-constructor TPOFile.Create(AStream: TStream);
+constructor TPOFile.Create(AStream: TStream; Full:boolean=false);
 var
   Size: Integer;
   s: string;
 begin
-  inherited Create;
-
-  FItems:=TFPList.Create;
-  FIdentifierToItem:=TStringHashList.Create(false);
-  FOriginalToItem:=TStringHashList.Create(true);
-
+  Self.Create;
+  
+  FAllEntries := Full;
+  
   Size:=AStream.Size-AStream.Position;
   if Size<=0 then exit;
   SetLength(s,Size);
@@ -233,9 +303,16 @@ destructor TPOFile.Destroy;
 var
   i: Integer;
 begin
+  if FModuleList<>nil then
+    FModuleList.Free;
+  if FHelperList<>nil then
+    FHelperList.Free;
+  if FHeader<>nil then
+    FHeader.Free;
   for i:=0 to FItems.Count-1 do
     TObject(FItems[i]).Free;
   FItems.Free;
+  FIdentVarToItem.Free;
   FIdentifierToItem.Free;
   FOriginalToItem.Free;
   inherited Destroy;
@@ -264,17 +341,27 @@ var
   Identifier: String;
   MsgID: String;
   Line: String;
+  Comments: String;
   TextEnd: PChar;
   i: Integer;
   
   procedure AddEntry;
   begin
     if Identifier<>'' then begin
-      Add(Identifier,MsgID,Line);
+      Add(Identifier,MsgID,Line,Comments);
       MsgId  := '';
       Line := '';
       Identifier := '';
-    end;
+      Comments := '';
+    end else
+    if (Line<>'') and (FHeader=nil) then begin
+      FHeader := TPOFileItem.Create('',MsgID,Line);
+      FHeader.Comments:=Comments;
+      MsgId  := '';
+      Line := '';
+      Identifier := '';
+      Comments := '';
+    end
   end;
 
 begin
@@ -284,15 +371,15 @@ begin
   LineStart:=p;
   TextEnd:=p+l;
   Identifier:='';
+  Comments:='';
+  Line:='';
   while LineStart<TextEnd do begin
     LineEnd:=LineStart;
     while (not (LineEnd^ in [#0,#10,#13])) do inc(LineEnd);
     LineLen:=LineEnd-LineStart;
     if LineLen>0 then begin
       if CompareMem(LineStart,sCommentIdentifier,3) then begin
-
-        AddEntry; // add peding entry (if exists)
-        
+        AddEntry;
         Identifier:=copy(s,LineStart-p+4,LineLen-3);
         // the RTL creates identifier paths with point instead of colons
         // fix it:
@@ -307,11 +394,14 @@ begin
         MsgId := Line;
         // start collecting MsgStr lines
         Line:=UTF8CStringToUTF8String(LineStart+8,LineLen-9);
-      end else if CompareMem(LineStart,sCharSetIdentifier,35) then begin
-        FCharSet:=copy(LineStart, 35,LineLen-37);
       end else if LineStart^='"' then begin
-        if Identifier<>'' then
-          Line := Line + UTF8CStringToUTF8String(LineStart+1,LineLen-2);
+        if CompareMem(LineStart,sCharSetIdentifier,35) then
+          FCharSet:=copy(LineStart, 35,LineLen-37);
+        Line := Line + UTF8CStringToUTF8String(LineStart+1,LineLen-2);
+      end else if LineStart^='#' then begin
+        if Comments<>'' then
+          Comments := Comments + LineEnding;
+        Comments := Comments + Copy(LineStart, 1, LineLen);
       end else
         AddEntry;
     end;
@@ -321,16 +411,24 @@ begin
   AddEntry;
 end;
 
-procedure TPOFile.Add(const Identifier, OriginalValue, TranslatedValue: string
-  );
+procedure TPOFile.Add(const Identifier, OriginalValue, TranslatedValue,
+  Comments: string);
 var
   Item: TPOFileItem;
+  p: Integer;
 begin
-  if (TranslatedValue='') then exit;
+  if (not FAllEntries) and (TranslatedValue='') then exit;
   //debugln('TPOFile.Add Identifier="',Identifier,'" OriginalValue="',OriginalValue,'" TranslatedValue="',TranslatedValue,'"');
   Item:=TPOFileItem.Create(Identifier,OriginalValue,TranslatedValue);
+  Item.Comments:=Comments;
+  Item.Tag:=FTag;
   FItems.Add(Item);
+  
   FIdentifierToItem.Add(Identifier,Item);
+  P := Pos('.', Identifier);
+  if P>0 then
+    FIdentVarToItem.Add(copy(Identifier, P+1, Length(IDentifier)), Item);
+  
   //if FIdentifierToItem.Data[UpperCase(Identifier)]=nil then raise Exception.Create('');
   FOriginalToItem.Add(OriginalValue,Item);
   //if FOriginalToItem.Data[OriginalValue]=nil then raise Exception.Create('');
@@ -348,6 +446,357 @@ begin
     if Result='' then RaiseGDBException('TPOFile.Translate Inconsistency');
   end else
     Result:=OriginalValue;
+end;
+
+procedure TPOFile.Report;
+var
+  Item: TPOFileItem;
+  i: Integer;
+begin
+  DebugLn('Header:');
+  DebugLn('---------------------------------------------');
+
+  if FHeader=nil then
+    DebugLn('No header found in po file')
+  else begin
+    DebugLn('Comments=',FHeader.Comments);
+    DebugLn('Identifier=',FHeader.Identifier);
+    DebugLn('msgid=',FHeader.Original);
+    DebugLn('msgstr=', FHeader.Translation);
+  end;
+  DebugLn;
+  
+  DebugLn('Entries:');
+  DebugLn('---------------------------------------------');
+  for i:=0 to FItems.Count-1 do begin
+    DebugLn('#',dbgs(i),': ');
+    Item := TPOFileItem(FItems[i]);
+    DebugLn('Comments=',Item.Comments);
+    DebugLn('Identifier=',Item.Identifier);
+    DebugLn('msgid=',Item.Original);
+    DebugLn('msgstr=', Item.Translation);
+    DebugLn;
+  end;
+
+end;
+
+procedure TPOFile.CreateHeader;
+begin
+  if FHeader=nil then
+    FHeader := TPOFileItem.Create('','','');
+  FHeader.Translation:='Content-Type: text/plain; charset=UTF-8\n';
+  FHeader.Comments:='';
+end;
+
+function StrToPoStr(const s:string):string;
+var
+  SrcPos, DestPos: Integer;
+  NewLength: Integer;
+begin
+  NewLength:=length(s);
+  for SrcPos:=1 to length(s) do
+    if s[SrcPos] in ['"','\'] then inc(NewLength);
+  if NewLength=length(s) then begin
+    Result:=s;
+  end else begin
+    SetLength(Result,NewLength);
+    DestPos:=1;
+    for SrcPos:=1 to length(s) do begin
+      case s[SrcPos] of
+      '"','\':
+        begin
+          Result[DestPos]:='\';
+          inc(DestPos);
+          Result[DestPos]:=s[SrcPos];
+          inc(DestPos);
+        end;
+      else
+        Result[DestPos]:=s[SrcPos];
+        inc(DestPos);
+      end;
+    end;
+  end;
+end;
+
+procedure TPOFile.UpdateStrings(InputLines: TStrings; SType: TStringsType);
+var
+  i,j,n: integer;
+  p: LongInt;
+  Identifier, Value,Line,UStr: string;
+  Multi: boolean;
+  
+begin
+  ClearModuleList;
+  UntagAll;
+  // for each string in lrt/rst list check if it's already
+  // in PO if not add it
+  for i:=0 to InputLines.Count-1 do begin
+    Line:=InputLines[i];
+    n := Length(Line);
+    if n=0 then
+      continue;
+
+    if SType=stLrt then begin
+      p:=Pos('=',Line);
+      Value := StrToPoStr( copy(Line,p+1,n-p) );//if p=0, that's OK, all the string
+      Identifier:=copy(Line,1,p-1);
+      UpdateItem(Identifier, Value);
+      continue;
+    end;
+
+    if (Line[1]='#') then begin
+      Value := '';
+      Identifier := '';
+      continue;
+    end;
+
+    if Identifier='' then begin
+      p:=Pos('=',Line);
+      if P=0 then
+        continue;
+      Identifier := copy(Line,1,p-1);
+      inc(p); // points to ' after =
+    end else
+      p:=1;   // first char in line
+
+    // this will assume rst file is well formed and
+    // do similar to rstconv but recognize utf-8 strings
+    Multi := Line[n]='+';
+    while p<=n do begin
+      if Line[p]='''' then begin
+        inc(p);
+        j:=p;
+        while (p<=n)and(Line[p]<>'''') do
+          inc(p);
+        Value := Value + copy(Line, j, P-j);
+        inc(p);
+        continue;
+      end else
+      if Line[p] = '#' then begin
+        // collect a string with special chars
+        UStr:='';
+        repeat
+          inc(p);
+          j:=p;
+          while (p<=n)and(Line[p] in ['0'..'9']) do
+            inc(p);
+          UStr := UStr + Chr(StrToInt(copy(Line, j, p-j)));
+        until (Line[p]<>'#') or (p>=n);
+        // transfer valid UTF-8 segments to result string
+        // and re-encode back the rest
+        while Ustr<>'' do begin
+          j := UTF8CharacterLength(pchar(Ustr));
+          if (j=1) and (Ustr[1] in [#0..#9,#11,#12,#14..#31,#128..#255]) then
+            Value := Value + '#'+IntToStr(ord(Ustr[1]))
+          else
+            Value := Value + copy(Ustr, 1, j);
+          Delete(UStr, 1, j);
+        end;
+      end else
+      if Line[p]='+' then
+        break
+      else
+        inc(p); // this is an unexpected string
+        
+    end;
+    if not Multi then begin
+      Value := StrToPoStr(Value);
+      if Value<>'' then
+        UpdateItem(Identifier, Value);
+    end;
+  end;
+  
+  RemoveUntaggedModules;
+end;
+
+procedure TPOFile.RemoveTaggedItems(aTag: Integer);
+var
+  Item: TPOFileItem;
+  i: Integer;
+begin
+  // get rid of all entries that have Tag=aTag
+  for i:=FItems.Count-1 downto 0 do begin
+    Item := TPOFileItem(FItems[i]);
+    if Item.Tag<>aTag then
+      Continue;
+    FIdentifierToItem.Remove(Item.Identifier);
+    //FOriginalToItem.Remove(Item.Original); // isn't this tricky?
+    FItems.Delete(i);
+    Item.Free;
+  end;
+end;
+
+function ComparePOItems(Item1, Item2: Pointer): Integer;
+begin
+  result := CompareText(TPOFileItem(Item1).Identifier,
+                        TPOFileItem(Item2).Identifier);
+end;
+
+procedure TPOFile.SaveToFile(const AFilename: string);
+var
+  OutLst: TStringList;
+  j: Integer;
+
+  procedure WriteLst(const AProp, AValue: string );
+  var
+    i: Integer;
+  begin
+    if (AValue='') and (AProp='') then
+      exit;
+      
+    FHelperList.Text:=AValue;
+    if FHelperList.Count=1 then begin
+      if AProp='' then OutLst.Add(FHelperList[0])
+      else             OutLst.Add(AProp+' "'+FHelperList[0]+'"');
+    end else begin
+      if AProp<>'' then
+        OutLst.Add(AProp+' ""');
+      for i:=0 to FHelperList.Count-1 do
+        if AProp='' then OutLst.Add(FHelperList[i])
+        else             OutLst.Add('"'+FHelperList[i]+'\n"');
+    end;
+  end;
+  
+  procedure WriteItem(Item: TPOFileItem);
+  begin
+    WriteLst('',Item.Comments);
+    if Item.Identifier<>'' then
+      OutLst.Add('#: '+Item.Identifier);
+    WriteLst('msgid', Item.Original);
+    WriteLst('msgstr', Item.Translation);
+    OutLst.Add('');
+  end;
+  
+begin
+  if FHeader=nil then
+    CreateHeader;
+    
+  if FHelperList=nil then
+    FHelperList:=TStringList.Create;
+    
+  OutLst := TStringList.Create;
+  try
+    // write header
+    WriteItem(FHeader);
+    
+    // Sort list of items by identifier
+    FItems.Sort(@ComparePOItems);
+    
+    for j:=0 to Fitems.Count-1 do
+      WriteItem(TPOFileItem(FItems[j]));
+      
+    OutLst.SaveToFile(AFilename);
+    
+  finally
+    OutLst.Free;
+  end;
+  
+end;
+
+procedure TPOFile.UpdateItem(const Identifier: string; Original: string);
+var
+  Item: TPOFileItem;
+  p: Integer;
+begin
+  if FHelperList=nil then
+    FHelperList := TStringList.Create;
+
+  FHelperList.Text:=Original;
+  Original := FHelperList.Text; // this should unify line endings
+
+  // try to find PO entry by identifier
+  Item:=TPOFileItem(FIdentifierToItem.Data[Identifier]);
+  if Item<>nil then begin
+    // found, update item value
+    AddToModuleList(IDentifier);
+    FModified := FModified or (Item.Original<>Original);
+    Item.Original:=Original;
+    Item.Tag:=FTag;
+    exit;
+  end;
+
+  // try to find PO entry using only variable part identifier
+  p := pos('.', Identifier);
+  if p>0 then begin
+    Item := TPOFileItem(FIdentVarToItem.Data[RightStr(Identifier, Length(Identifier)-P)]);
+    if Item<>nil then begin
+      // found!, this means module name has changed
+      AddToModuleList(Item.Identifier);
+      // update identifier list
+      FIdentifierToItem.Remove(Item.Identifier);
+      FIdentifierToItem.Add(Identifier, Item);
+      // update item
+      FModified := true;
+      Item.Identifier:=Identifier;
+      Item.Original:=Original;
+      Item.Tag := FTag;
+      exit;
+    end;
+  end;
+  
+  // try to find po entry based only on it's value
+  Item := TPOFileItem(FOriginalToItem.Data[Original]);
+  if Item<>nil then begin
+    // found!, this would mean that both module name and variable part
+    // have been changed (NOTE: this might also give false positives)
+    AddToModuleList(Item.Identifier);
+    
+    // update identifier list
+    FIdentifierToItem.Remove(Item.Identifier);
+    FIdentifierToItem.Add(Identifier, Item);
+    FModified := true;
+    Item.Identifier:=Identifier;
+    Item.Tag := FTag;
+    exit;
+  end;
+
+  // this appear to be a new item
+  FModified := true;
+  Add(Identifier, Original, '', '');
+end;
+
+procedure TPOFile.UpdateTranslation(BasePOFile: TPOFile);
+var
+  Item: TPOFileItem;
+  i: Integer;
+begin
+  UntagAll;
+  ClearModuleList;
+  for i:=0 to BasePOFile.Items.Count-1 do begin
+    Item := TPOFileItem(BasePOFile.Items[i]);
+    UpdateItem(Item.Identifier, Item.Original);
+  end;
+  RemoveTaggedItems(0); // get rid of any item not existing in BasePOFile
+end;
+
+procedure TPOFile.ClearModuleList;
+begin
+  if FModuleList<>nil then
+    FModuleList.Clear;
+end;
+
+procedure TPOFile.AddToModuleList(Identifier: string);
+var
+  p: Integer;
+begin
+  if FModuleList=nil then begin
+    FModuleList := TStringList.Create;
+    FModuleList.Duplicates:=dupIgnore;
+  end;
+  p := pos('.', Identifier);
+  if p>0 then
+    FModuleList.Add(LeftStr(Identifier, P-1));
+end;
+
+procedure TPOFile.UntagAll;
+var
+  Item: TPOFileItem;
+  i: Integer;
+begin
+  for i:=0 to Items.Count-1 do begin
+    Item := TPOFileItem(Items[i]);
+    Item.Tag:=0;
+  end;
 end;
 
 { TPOFileItem }

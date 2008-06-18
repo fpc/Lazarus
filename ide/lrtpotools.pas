@@ -33,203 +33,56 @@ function AddFiles2Po(Files: TStrings; const POFilename: string): TModalResult;
 
 implementation
 
-function StrToPoStr(const s:string):string;
+uses Translations;
+
+function FindAllTranslatedPoFiles(const Filename: string): TStringList;
 var
-  SrcPos, DestPos: Integer;
-  NewLength: Integer;
+  Path: String;
+  Name: String;
+  NameOnly: String;
+  Ext: String;
+  FileInfo: TSearchRec;
+  CurExt: String;
 begin
-  NewLength:=length(s);
-  for SrcPos:=1 to length(s) do
-    if s[SrcPos] in ['"','\'] then inc(NewLength);
-  if NewLength=length(s) then begin
-    Result:=s;
-  end else begin
-    SetLength(Result,NewLength);
-    DestPos:=1;
-    for SrcPos:=1 to length(s) do begin
-      case s[SrcPos] of
-      '"','\':
-        begin
-          Result[DestPos]:='\';
-          inc(DestPos);
-          Result[DestPos]:=s[SrcPos];
-          inc(DestPos);
-        end;
-      else
-        Result[DestPos]:=s[SrcPos];
-        inc(DestPos);
-      end;
-    end;
+  Result:=TStringList.Create;
+  Path:=ExtractFilePath(Filename);
+  Name:=ExtractFilename(Filename);
+  Ext:=ExtractFileExt(Filename);
+  NameOnly:=LeftStr(Name,length(Name)-length(Ext));
+  if SysUtils.FindFirst(Path+GetAllFilesMask,faAnyFile,FileInfo)=0 then begin
+    repeat
+      if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
+      or (CompareFilenames(FileInfo.Name,Name)=0) then continue;
+      CurExt:=ExtractFileExt(FileInfo.Name);
+      if (CompareFilenames(CurExt,'.po')<>0)
+      or (CompareFilenames(LeftStr(FileInfo.Name,length(NameOnly)),NameOnly)<>0)
+      then
+        continue;
+      Result.Add(Path+FileInfo.Name);
+    until SysUtils.FindNext(FileInfo)<>0;
   end;
+  SysUtils.FindClose(FileInfo);
 end;
 
 function AddFiles2Po(Files: TStrings; const POFilename: string): TModalResult;
-type
-  TFileType = (ftLrt, ftRst);
-var
-  POValuesHash: TStringHashList;
-  POFileChanged: boolean;
-  POLines: TStrings;
-  Identifier: string;
-  List: TStringList;
-
-  procedure AddListPoHashEntry;
-  var
-    i: Integer;
-    Str: String;
-  begin
-
-    if List.Count=1 then
-      Str := List[0]
-    else
-      Str := List.Text;
-
-    if POValuesHash.Find(Str) = -1 then begin
-
-      POFileChanged := true;
-      POLines.Add('#: '+Identifier);
-
-      if List.Count=1 then
-        POLines.Add('msgid "'+Str+'"')
-      else begin
-        POLines.Add('msgid ""');
-        for i:= 0 to List.Count-1 do
-          POLines.Add('"'+List[i]+'\n"');
-      end;
-
-      POLines.Add('msgstr ""');
-      POLines.Add('');
-      POValuesHash.Add(Str);
-    end;
-  end;
-
-  procedure AddFile2PoAux(InputLines: TStringList; FileType: TFileType);
-  var
-    i,j,n: integer;
-    p: LongInt;
-    Value,Line,UStr: string;
-    Multi: boolean;
-  begin
-    //for each string in lrt/rst list check if in PO, if not add
-    for i:=0 to InputLines.Count-1 do begin
-      Line:=InputLines[i];
-      n := Length(Line);
-      if n=0 then
-        continue;
-      case FileType of
-        ftLrt: begin
-          p:=Pos('=',Line);
-          List.Clear;
-          List.add(StrToPoStr( copy(Line,p+1,n-p) ));//if p=0, that's OK, all the string
-          Identifier:=copy(Line,1,p-1);
-          AddListPoHashEntry;
-        end;
-
-        ftRst: begin
-          if (Line[1]='#') then begin
-            Value := '';
-            Identifier := '';
-            List.Clear;
-            continue;
-          end;
-
-          if Identifier='' then begin
-            p:=Pos('=',Line);
-            if P=0 then
-              continue;
-            Identifier := copy(Line,1,p-1);
-            inc(p); // points to ' after =
-          end else
-            p:=1;   // first char in line
-
-          // this will assume rst file is well formed and
-          // do similar to rstconv but recognize utf-8 strings
-          Multi := Line[n]='+';
-          while p<=n do begin
-            if Line[p]='''' then begin
-              inc(p);
-              j:=p;
-              while (p<=n)and(Line[p]<>'''') do
-                inc(p);
-              Value := Value + copy(Line, j, P-j);
-              inc(p);
-              continue;
-            end else
-            if Line[p] = '#' then begin
-              // collect a string with special chars
-              UStr:='';
-              repeat
-                inc(p);
-                j:=p;
-                while (p<=n)and(Line[p] in ['0'..'9']) do
-                  inc(p);
-                UStr := UStr + Chr(StrToInt(copy(Line, j, p-j)));
-              until (Line[p]<>'#') or (p>=n);
-              // transfer valid UTF-8 segments to result string
-              // and re-encode back the rest
-              while Ustr<>'' do begin
-                j := UTF8CharacterLength(pchar(Ustr));
-                if (j=1) and (Ustr[1] in [#0..#9,#11,#12,#14..#31,#128..#255]) then
-                  Value := Value + '#'+IntToStr(ord(Ustr[1]))
-                else
-                  Value := Value + copy(Ustr, 1, j);
-                Delete(UStr, 1, j);
-              end;
-            end else
-            if Line[p]='+' then
-              break;
-          end;
-          if not Multi then begin
-            List.Text := StrToPoStr(Value);
-            if List.Count>0 then
-              AddListPoHashEntry;
-          end;
-        end;
-      end;
-    end;
-  end;
-
 var
   InputLines: TStringList;
-  i: Integer;
-  s: String;
   Filename: string;
+  BasePoFile, POFile: TPoFile;
+  i: Integer;
 begin
   if (Files=nil) or (Files.Count=0) then exit(mrOk);
-
-  POFileChanged := false;
-  POLines:=TStringList.Create;
-  InputLines:=TStringList.Create;
-  POValuesHash := TStringHashList.Create(true);
-  List := TStringList.Create;
+  
+  InputLines := TStringList.Create;
   try
+    // Read base po items
+    if FileExists(POFilename) then
+      BasePOFile := TPOFile.Create(POFilename, true)
+    else
+      BasePOFile := TPOFile.Create;
+    BasePOFile.Tag:=1;
 
-    //load old po file into a StringList and HashList
-    POLines.Clear;
-    if FileExists(POFilename) then begin
-      Result:=LoadStringListFromFile(POFilename, 'PO File', POLines);
-      if Result <> mrOK then Exit;
-
-      for i := 0 to POLines.Count-1 do begin
-        s:=POLines[i];
-        if LeftStr(s, 7) = 'msgid "' then begin
-          s := copy(s, 8,length(s)-8);
-          POValuesHash.Add(s);
-        end;
-      end;
-    end else begin
-      // To allow poedit to recognize the resulting
-      // PO file as valid UTF-8 file, it needs a
-      // minimal header (found by trial and error)
-      POLines.Add('msgid ""');
-      POLines.Add('msgstr ""');
-      POLines.Add('"Content-Type: text/plain; charset=UTF-8\n"');
-      POLines.Add('');
-    end;
-
-    //merge changes of every input file
-    // At the moment it only adds new strings and replaces values,
-    // but does not delete unused -> ToDo
+    // Update po file with lrt or/and rst files
     for i:=0 to Files.Count-1 do begin
       Filename:=Files[i];
       if (CompareFileExt(Filename,'.lrt')=0)
@@ -240,22 +93,30 @@ begin
                                        InputLines);
         if Result <> mrOK then Exit;
         if CompareFileExt(Filename,'.lrt')=0 then
-          AddFile2PoAux(InputLines, ftLrt)
+          BasePOFile.UpdateStrings(InputLines, stLrt)
         else
-          AddFile2PoAux(InputLines, ftRst);
-      end
+          BasePOFile.UpdateStrings(InputLines, stRst);
+      end;
     end;
-
-    //if PO file changed save it
-    if POFileChanged then
-      Result:=SaveStringListToFile(POFilename, 'PO File', POLines)
-    else
-      Result:=mrOk;
-  finally
-    List.Free;
-    POLines.Free;
+    BasePOFile.SaveToFile(POFilename);
+  
+    // Update translated PO files
     InputLines.Free;
-    POValuesHash.Free;
+    InputLines := FindAllTranslatedPoFiles(POFilename);
+    for i:=0 to InputLines.Count-1 do begin
+      POFile := TPOFile.Create(InputLines[i], true);
+      try
+        POFile.Tag:=1;
+        POFile.UpdateTranslation(BasePOFile);
+        POFile.SaveToFile(InputLines[i]);
+      finally
+        POFile.Free;
+      end;
+    end;
+      
+  finally
+    InputLines.Free;
+    BasePOFile.Free;
   end;
 end;
 
