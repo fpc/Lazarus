@@ -4,16 +4,17 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
-"PO-Revision-Date: 2007-08-27 21:27+0300\n"
+"PO-Revision-Date: 2008-06-12 21:20+0300\n"
 "Project-Id-Version: cgimodules\n"
 "Language-Team: Lithuanian\n"
 "X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: cgimodules:serrnorequesthandler
 msgid "%s: No CGI request handler set."
-msgstr "%s: nenurodyta CGI užklausų tvarkyklė"
+msgstr "%s: nenurodyta CGI užklausų tvarkyklė."
 
 #: cgimodules:serrnomainmodule
 msgid "No CGI datamodule to handle CGI request."
-msgstr "Nėra CGI \"DataModule\" kad būtų galima apdoroti CGI užklausą."
+msgstr "Nėra CGI „DataModule“ kad būtų galima apdoroti CGI užklausą."
 

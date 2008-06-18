@@ -4,10 +4,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
-"PO-Revision-Date: 2008-01-21 23:24+0200\n"
+"PO-Revision-Date: 2008-06-13 00:30+0300\n"
 "Project-Id-Version: ipconst\n"
 "Language-Team: Lithuanian\n"
 "X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: ipconst:slognsarticle
 msgid " (nsArticle)"
@@ -323,7 +324,7 @@ msgstr " (stSendMail)"
 
 #: ipconst:sfilename
 msgid " Filename: "
-msgstr " Failo vardas: "
+msgstr " Failo pavadinimas: "
 
 #: ipconst:sftpbytestransferred
 msgid " bytes Transferred"
@@ -411,7 +412,7 @@ msgstr "**** PERSPĖJIMAS ****"
 
 #: ipconst:swriteafterrename
 msgid "***Write after rename"
-msgstr "***Rašymas po pervardyjimo"
+msgstr "***Rašymas po pervardijimo"
 
 #: ipconst:spop3okresp
 msgid "+OK"
@@ -467,11 +468,11 @@ msgstr "Vykdant paskutinę užduotį įvyko klaida."
 
 #: ipconst:swsa_qos_senders
 msgid "At least one Path has arrived"
-msgstr "Atėjo bent vienas \"Path\""
+msgstr "Atėjo bent vienas „Path“"
 
 #: ipconst:swsa_qos_receivers
 msgid "At least one Reserve has arrived"
-msgstr "Atėjo bent vienas \"Reserve\""
+msgstr "Atėjo bent vienas „Reserve“"
 
 #: ipconst:sftprestart
 msgid "Attempting to re-start transfer of "
@@ -943,7 +944,7 @@ msgstr "PNG gale nerasta IEND dalis"
 
 #: ipconst:shtmllineerror
 msgid "Error \"%s\" at line %d, position %d"
-msgstr "Klaida \"%s\" eilutėje %d, pozicijoje %d"
+msgstr "Klaida „%s“ eilutėje %d, pozicijoje %d"
 
 #: ipconst:swsa_qos_admission_failure
 msgid "Error due to lack of resources"
@@ -959,7 +960,7 @@ msgstr "Sertifikatas nebegalioja."
 
 #: ipconst:swsaenametoolong
 msgid "File name too long"
-msgstr "Failo vardas perilgas"
+msgstr "Failo pavadinimas perilgas"
 
 #: ipconst:spngfiltermethod
 msgid "Filter Method: %d"
@@ -1095,7 +1096,7 @@ msgstr "Paveikslo dydis pikseliais yra %dx%d"
 
 #: ipconst:sbadimagelibstream
 msgid "ImageLib must use TMemoryStreams"
-msgstr "\"ImageLib\" turi naudoti \"TMemoryStreams\""
+msgstr "„ImageLib“ turi naudoti „TMemoryStreams“"
 
 #: ipconst:sindexerr
 msgid "Index out of range"
@@ -1483,7 +1484,7 @@ msgstr "Nėra operacijos"
 
 #: ipconst:sslnopremastersecret
 msgid "No pre-master secret."
-msgstr "Nėra \"pre-master secret\"."
+msgstr "Nėra „pre-master secret“."
 
 #: ipconst:snorecipients
 msgid "No recipients specified"
@@ -1695,11 +1696,11 @@ msgstr "Ruošiamasi siųsti straipstį"
 
 #: ipconst:swsa_qos_bad_object
 msgid "Problem filterspec or providerspecific buffer"
-msgstr "\"filterspec\" arba specifinio tiekėjo buferio problema"
+msgstr "„filterspec“ arba specifinio tiekėjo buferio problema"
 
 #: ipconst:swsa_qos_traffic_ctrl_error
 msgid "Problem with some part of the flowspec"
-msgstr "Kažkurios \"flowspec\" dalies problema"
+msgstr "Kažkurios „flowspec“ dalies problema"
 
 #: ipconst:httpprogress
 msgid "Progress Made: (%s), %s bytes received"
@@ -1739,7 +1740,7 @@ msgstr "RSET"
 
 #: ipconst:sraserr
 msgid "Ras Error (%d): on API '%s'"
-msgstr "\"Ras\" klaida (%d): iššaukė API '%s'"
+msgstr "„Ras“ klaida (%d): iššaukė API „%s“"
 
 #: ipconst:srasreauthenticate
 msgid "Re-authenticate"
@@ -1771,7 +1772,7 @@ msgstr "Diske failas pervardytas į "
 
 #: ipconst:sftprename
 msgid "Renaming "
-msgstr "Pervardyjama "
+msgstr "Pervardijama "
 
 #: ipconst:sipicmp_req_timed_out
 msgid "Request timed out"
@@ -1783,7 +1784,7 @@ msgstr "Reikalaujama nustatyti tapatumą"
 
 #: ipconst:swsa_qos_request_confirmed
 msgid "Reserve has been confirmed"
-msgstr "\"Reserve\" patvirtintas"
+msgstr "„Reserve“ patvirtintas"
 
 #: ipconst:shtmldefresetcaption
 msgid "Reset"
@@ -2003,11 +2004,11 @@ msgstr "Siunčiama speciali komanda"
 
 #: ipconst:ssslservernohandshake
 msgid "Server cid not return a handshake message."
-msgstr "Serverio \"cid\" negrąžino ryšio užmezgimo pranešimo."
+msgstr "Serverio „cid“ negrąžino ryšio užmezgimo pranešimo."
 
 #: ipconst:ssslservernoserverhello
 msgid "Server cid not return a server hello message."
-msgstr "serverio \"cid\" negrąžino serverio hello pranešimo."
+msgstr "serverio „cid“ negrąžino serverio hello pranešimo."
 
 #: ipconst:ssslbadrecordmac
 msgid "Server received a bad record MAC."
@@ -2283,7 +2284,7 @@ msgstr "Nežinomas arba konfliktinis stilius"
 
 #: ipconst:providerunknownrequest
 msgid "Unknown request type \"%s\""
-msgstr "Nežinomas užklausos tipas \"%s\""
+msgstr "Nežinomas užklausos tipas „%s“"
 
 #: ipconst:ssmtpresponseunknown
 msgid "Unknown response code"
@@ -2355,7 +2356,7 @@ msgstr "Nepalaikoma vieša koduotė."
 
 #: ipconst:swsano_data
 msgid "Valid name, no data record of requested type"
-msgstr "Teisingas vardas, užklausto tipo duomenų įrašo nėra"
+msgstr "Teisingas pavadinimas, užklaustojo tipo duomenų įrašo nėra"
 
 #: ipconst:sssverify
 msgid "Verifying"
@@ -2379,7 +2380,7 @@ msgstr "Kai pradžia yra soFromEnd, Offset turi būti <= 0"
 
 #: ipconst:saccessprocerr
 msgid "Win32 error loading '%s' pointer: %s"
-msgstr "Įkeliant '%s' įvyko Win32 klaida: %s"
+msgstr "Įkeliant „%s“ įvyko Win32 klaida: %s"
 
 #: ipconst:swsavernotsupported
 msgid "WinSock DLL version not supported"
@@ -2387,7 +2388,7 @@ msgstr "Nepalaikoma WinSock DLL versija"
 
 #: ipconst:swinsockerr
 msgid "WinSock Error (%d): %s, on API '%s'"
-msgstr "WinSock klaida (%d): %s, iššaukta API '%s'"
+msgstr "WinSock klaida (%d): %s, iššaukta API „%s“"
 
 #: ipconst:ssmtpresponse55
 msgid "Wrong protocol version"
@@ -2399,7 +2400,7 @@ msgstr "XOVER"
 
 #: ipconst:smemmapfilenamerequired
 msgid "You must specify a file name for TIpMemMapStream"
-msgstr "\"TIpMemMapStream\" reikalauja kad nurodytumėt failo vardą"
+msgstr "„TIpMemMapStream“ reikalauja kad nurodytumėt failo pavadinimą"
 
 #: ipconst:slogicmpclass
 msgid "[ICMP] "
@@ -2419,7 +2420,7 @@ msgstr "[SMTP] "
 
 #: ipconst:sbinhexcolonexpected
 msgid "\":\" expected"
-msgstr "\":\" tikėtasi"
+msgstr "„:“ tikėtasi"
 
 #: ipconst:spnggamatoolong
 msgid "gAMA chunk is long"

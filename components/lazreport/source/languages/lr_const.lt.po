@@ -1,29 +1,30 @@
 msgid ""
 msgstr ""
-"Last-Translator: Valdas Jankunas <skroblas@erdves.lt>\n"
-"PO-Revision-Date: 2008-04-10 00:07+0300\n"
+"Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
+"PO-Revision-Date: 2008-06-13 00:32+0300\n"
 "Project-Id-Version: lr_const\n"
 "Language-Team: Lithuanian\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: lr_const:spaper20
 msgid "#10 Envelope, 4 1/8  x 9 1/2\""
-msgstr "#10 vokas, 4 1/8  x 9 1/2\""
+msgstr "#10 vokas, 4 1/8  x 9 1/2″"
 
 #: lr_const:spaper21
 msgid "#11 Envelope, 4 1/2 x 10 3/8\""
-msgstr "#11 vokas, 4 1/2 x 10 3/8\""
+msgstr "#11 vokas, 4 1/2 x 10 3/8″"
 
 #: lr_const:spaper22
 msgid "#12 Envelope, 4 3/4 x 11\""
-msgstr "#12 vokas, 4 3/4 x 11\""
+msgstr "#12 vokas, 4 3/4 x 11″"
 
 #: lr_const:spaper23
 msgid "#14 Envelope, 5 x 11 1/2\""
-msgstr "#14 vokas, 5 x 11 1/2\""
+msgstr "#14 vokas, 5 x 11 1/2″"
 
 #: lr_const:sdesoptionsform18pix
 msgid "&18 pixels (5mm)"
@@ -383,15 +384,15 @@ msgstr "1 234,50"
 
 #: lr_const:spaper45
 msgid "10 x 11\""
-msgstr "10 x 11\""
+msgstr "10 x 11″"
 
 #: lr_const:spaper16
 msgid "10 x 14\""
-msgstr "10 x 14\""
+msgstr "10 x 14″"
 
 #: lr_const:spaper17
 msgid "11 x 17\""
-msgstr "11 x 17\""
+msgstr "11 x 17″"
 
 #: lr_const:sformat32
 msgid "11.15.1998"
@@ -419,7 +420,7 @@ msgstr "15 lapkritis 2010"
 
 #: lr_const:spaper46
 msgid "15 x 11\""
-msgstr "15 x 11\""
+msgstr "15 x 11″"
 
 #: lr_const:sformat44
 msgid "2:43"
@@ -431,15 +432,15 @@ msgstr "2:43:35"
 
 #: lr_const:spaper38
 msgid "6 3/4 Envelope, 3 5/8 x 6 1/2\""
-msgstr "6 3/4 vokas, 3 5/8 x 6 1/2\""
+msgstr "6 3/4 vokas, 3 5/8 x 6 1/2″"
 
 #: lr_const:spaper19
 msgid "9 Envelope, 3 7/8 x 8 7/8\""
-msgstr "9 vokas, 3 7/8 x 8 7/8\""
+msgstr "9 vokas, 3 7/8 x 8 7/8″"
 
 #: lr_const:spaper44
 msgid "9 x 11\""
-msgstr "9 x 11\""
+msgstr "9 x 11″"
 
 #: lr_const:spaper66
 msgid "A2 420 x 594 mm"
@@ -467,7 +468,7 @@ msgstr "A4 210 x 297 mm"
 
 #: lr_const:spaper53
 msgid "A4 Extra 9.27 x 12.69\""
-msgstr "A4 ekstra 9.27 x 12.69\""
+msgstr "A4 ekstra 9.27 x 12.69″"
 
 #: lr_const:spaper60
 msgid "A4 Plus 210 x 330 mm"
@@ -503,7 +504,7 @@ msgstr "ASCII teksto failas"
 
 #: lr_const:sdescriptionavg
 msgid "AVG(<Expression> [,BandName [,1]])/Calculates the average of <Expression> for [BandName] row given. If [1] parameter is used, calculates average for non-visible rows too."
-msgstr "AVG(<Reiškinys> [,JuostosVardas [,1]])/Duotai [JuostosVardas] eilutei apskaičiuoja <Reiškinys> vidurkį. Jei nurodytas [1] parametras, tai vidurkis skaičiuojamas ir nematomoms eilutėms."
+msgstr "AVG(<Reiškinys> [,JuostosPavadinimas [,1]])/Duotai [JuostosPavadinimas] eilutei apskaičiuoja <Reiškinys> vidurkį. Jei nurodytas [1] parametras, tai vidurkis skaičiuojamas ir nematomoms eilutėms."
 
 #: lr_const:saboutformcapt
 msgid "About FastReport"
@@ -635,7 +636,7 @@ msgstr "Juostos"
 
 #: lr_const:sbarcodeformtitle
 msgid "Barcode editor"
-msgstr "Brūkšninio kodo redaktorius"
+msgstr "Brūkšninio kodo rengyklė"
 
 #: lr_const:sroundrectformbegincolor
 msgid "Begin color"
@@ -679,7 +680,7 @@ msgstr "Sąranka"
 
 #: lr_const:spaper24
 msgid "C Sheet, 17 x 22\""
-msgstr "C lakštas, 17 x 22\""
+msgstr "C lakštas, 17 x 22″"
 
 #: lr_const:shilightformcolor
 msgid "C&olor..."
@@ -711,7 +712,7 @@ msgstr "C65 vokas, 114 x 229 mm"
 
 #: lr_const:sdescriptioncount
 msgid "COUNT(<BandName>)/Returns count of data-rows given in the <BandName>. "
-msgstr "COUNT(<JuostosVardas>)/Grąžina duotame <JuostosVardas> esančių duomenų eilučių kiekį."
+msgstr "COUNT(<JuostosPavadinimas>)/Grąžina duotame <JuostosPavadinimas> esančių duomenų eilučių kiekį."
 
 #: lr_const:scsvfile
 msgid "CSV File"
@@ -743,7 +744,7 @@ msgstr "Kontrolinė &suma"
 
 #: lr_const:sclassobjectnotfound
 msgid "Class Object \"%s\" not found"
-msgstr "Nerastas klasės objektas \"%s\""
+msgstr "Nerastas klasės objektas „%s“"
 
 #: lr_const:sroundrectformhint
 msgid "Click here to define the shadow color or gradian colors"
@@ -843,7 +844,7 @@ msgstr "Iškirpti"
 
 #: lr_const:spaper25
 msgid "D Sheet, 22 x 34\""
-msgstr "D lakštas, 22 x 34\""
+msgstr "D lakštas, 22 x 34″"
 
 #: lr_const:sdescriptiondayof
 msgid "DAYOF(<Date>)/Returns day number (1..31) of given <Date>."
@@ -1111,7 +1112,7 @@ msgstr "Piešti linijas"
 
 #: lr_const:spaper26
 msgid "E Sheet, 34 x 44\""
-msgstr "E lakštas, 34 x 44\""
+msgstr "E lakštas, 34 x 44″"
 
 #: lr_const:sfrdesignerform_exit
 msgid "E&xit"
@@ -1147,7 +1148,7 @@ msgstr "Klaidingas brūkšninis kodas"
 
 #: lr_const:spaper7
 msgid "Executive, 7 1/4 x 10 1/2\""
-msgstr "Vykdomasis, 7 1/4 x 10 1/2\""
+msgstr "Vykdomasis, 7 1/4 x 10 1/2″"
 
 #: lr_const:svar2
 msgid "Expression"
@@ -1195,7 +1196,7 @@ msgstr "Derinti prie tinklelio"
 
 #: lr_const:spaper14
 msgid "Folio, 8 1/2 x 13\""
-msgstr "Foliantas, 8 1/2 x 13\""
+msgstr "Foliantas, 8 1/2 x 13″"
 
 #: lr_const:shilightformfont
 msgid "Font"
@@ -1207,7 +1208,7 @@ msgstr "Šrifto spalva"
 
 #: lr_const:sfrdesignerformfontname
 msgid "Font name"
-msgstr "Šrifto vardas"
+msgstr "Šrifto pavadinimas"
 
 #: lr_const:sfrdesignerformfontsize
 msgid "Font size"
@@ -1239,11 +1240,11 @@ msgstr "Įrėminta zona"
 
 #: lr_const:spaper41
 msgid "German Legal Fanfold, 8 1/2 x 13\""
-msgstr "Vokiškasis legalus Fanfold, 8 1/2 x 13\""
+msgstr "Vokiškasis legalus Fanfold, 8 1/2 x 13″"
 
 #: lr_const:spaper40
 msgid "German Std Fanfold, 8 1/2 x 12\""
-msgstr "Vokiškasis standartinis Fanfold, 8 1/2 x 12\""
+msgstr "Vokiškasis standartinis Fanfold, 8 1/2 x 12″"
 
 #: lr_const:sroundrectformgradian
 msgid "Gradian"
@@ -1287,7 +1288,7 @@ msgstr "Paryškinimo požymiai"
 
 #: lr_const:sdescriptioninput
 msgid "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
-msgstr "INPUT(<Antraštė> [,Numatyta])/Rodo dialogo langą, kuriame būna <Antraštė> tekstas bei įvesties langelis. Jei nurodytas [,Numatyta] parametras, tai šio parametro tekstas įrašomas į įvesties langelį. Naudotojui paspaudus \"Tinka\", grąžina įvesties langelyje esantį tekstą."
+msgstr "INPUT(<Antraštė> [,Numatyta])/Rodo dialogo langą, kuriame būna <Antraštė> tekstas bei įvesties langelis. Jei nurodytas [,Numatyta] parametras, tai šio parametro tekstas įrašomas į įvesties langelį. Naudotojui paspaudus „Tinka“, grąžina įvesties langelyje esantį tekstą."
 
 #: lr_const:sinches
 msgid "Inches"
@@ -1387,7 +1388,7 @@ msgstr "LazReport forma"
 
 #: lr_const:spaper4
 msgid "Ledger, 17 x 11\""
-msgstr "Buhalterijos knygos, 17 x 11\""
+msgstr "Buhalterijos knygos, 17 x 11″"
 
 #: lr_const:sfrdesignerformleftalign
 msgid "Left align"
@@ -1399,35 +1400,35 @@ msgstr "Kairioji kadro linija"
 
 #: lr_const:spaper51
 msgid "Legal Extra 9/275 x 15\""
-msgstr "Legalus ekstra 9/275 x 15\""
+msgstr "Legalus ekstra 9/275 x 15″"
 
 #: lr_const:spaper5
 msgid "Legal, 8 1/2 x 14\""
-msgstr "Legalus, 8 1/2 x 14\""
+msgstr "Legalus, 8 1/2 x 14″"
 
 #: lr_const:spaper50
 msgid "Letter Extra 9/275 x 12\""
-msgstr "Laiško ekstra 9/275 x 12\""
+msgstr "Laiško ekstra 9/275 x 12″"
 
 #: lr_const:spaper56
 msgid "Letter Extra Transverse 9/275 x 12\""
-msgstr "Laiško ekstra skersinis 9/275 x 12\""
+msgstr "Laiško ekstra skersinis 9/275 x 12″"
 
 #: lr_const:spaper59
 msgid "Letter Plus 8.5 x 12.69\""
-msgstr "Laiško plius 8.5 x 12.69\""
+msgstr "Laiško plius 8.5 x 12.69″"
 
 #: lr_const:spaper54
 msgid "Letter Transverse 8/275 x 11\""
-msgstr "Laiško skersinis 8/275 x 11\""
+msgstr "Laiško skersinis 8/275 x 11″"
 
 #: lr_const:spaper2
 msgid "Letter small, 8 1/2 x 11\""
-msgstr "Laiško mažas, 8 1/2 x 11\""
+msgstr "Laiško mažas, 8 1/2 x 11″"
 
 #: lr_const:spaper1
 msgid "Letter, 8 1/2 x 11\""
-msgstr "Laiško, 8 1/2 x 11\""
+msgstr "Laiško, 8 1/2 x 11″"
 
 #: lr_const:sfrdesignerform_line
 msgid "Line style"
@@ -1443,7 +1444,7 @@ msgstr "Linija#"
 
 #: lr_const:sdescriptionmax
 msgid "MAX(<Expression> [,BandName [,1]])/Calculates the maximum of <Expression> for [BandName] row given. If [1] parameter is used, calculates maximum for non-visible rows too."
-msgstr "MAX(<Reiškinys> [,JuostosVardas [,1]])/Duotai [JuostosVardas] eilutei apskaičiuoja <Reiškinys> maksimumą. Jei nurodytas parametras [1], tai maksimumas skaičiuojamas ir nematomoms eilutėms."
+msgstr "MAX(<Reiškinys> [,JuostosPavadinimas [,1]])/Duotai [JuostosPavadinimas] eilutei apskaičiuoja <Reiškinys> maksimumą. Jei nurodytas parametras [1], tai maksimumas skaičiuojamas ir nematomoms eilutėms."
 
 #: lr_const:sdescriptionmaxnum
 msgid "MAXNUM(<Value1>, <Value2>)/Returns max of given values."
@@ -1455,7 +1456,7 @@ msgstr "MESSAGEBOX(<Tekstas>, <Pavadinimas>, <Mygtukai>)/Rodo standartinį dialo
 
 #: lr_const:sdescriptionmin
 msgid "MIN(<Expression> [,BandName [,1]])/Calculates the minimum of <Expression> for [BandName] row given. If [1] parameter is used, calculates minimum for non-visible rows too."
-msgstr "MIN(<Reiškinys> [,JuostosVardas [,1]])/Duotai [JuostosVardas] eilutei apskaičiuoja <Reiškinys> minimumą. Jei nurodytas parametras [1], tai minimumas skaičiuojamas ir nematomoms eilutėms."
+msgstr "MIN(<Reiškinys> [,JuostosPavadinimas [,1]])/Duotai [JuostosPavadinimas] eilutei apskaičiuoja <Reiškinys> minimumą. Jei nurodytas parametras [1], tai minimumas skaičiuojamas ir nematomoms eilutėms."
 
 #: lr_const:sdescriptionminnum
 msgid "MINNUM(<Value1>, <Value2>)/Returns min of given values."
@@ -1499,7 +1500,7 @@ msgstr "Mažasis"
 
 #: lr_const:spaper37
 msgid "Monarch Envelope, 3 7/8 x 7 1/2\""
-msgstr "Monarchų vokas, 3 7/8 x 7 1/2\""
+msgstr "Monarchų vokas, 3 7/8 x 7 1/2″"
 
 #: lr_const:sdescriptionnamecase
 msgid "NAMECASE(<String>)/Converts <String> symbols to lower case, and first symbol is in upper case."
@@ -1531,7 +1532,7 @@ msgstr "Normalus tekstas / 90 laipsnių"
 
 #: lr_const:spaper18
 msgid "Note, 8 1/2 x 11\""
-msgstr "Pastaba, 8 1/2 x 11\""
+msgstr "Pastaba, 8 1/2 x 1″"
 
 #: lr_const:scateg2
 msgid "Number"
@@ -1707,7 +1708,7 @@ msgstr "Parinktys"
 
 #: lr_const:sroundrectformcaption
 msgid "Property editor"
-msgstr "Parinkties redaktorius"
+msgstr "Parinkties rengyklė"
 
 #: lr_const:spaper15
 msgid "Quarto Sheet, 215 x 275 mm"
@@ -1799,7 +1800,7 @@ msgstr "STRTOTIME(<Tekstas>)/Duotą <Tekstas> verčia į laiką."
 
 #: lr_const:sdescriptionsum
 msgid "SUM(<Expression> [,BandName [,1]])/Calculates the sum of <Expression> for [BandName] row given. If [1] parameter is used, calculates sum for non-visible rows too."
-msgstr "SUM(<Reiškinys> [,JuostosVardas [,1]])/Duotai [JuostosVardas] eilutei apskaičiuoja <Reiškinys> sumą. Jei nurodytas parametras [1], tai suma skaičiuojama ir nematomoms eilutėms."
+msgstr "SUM(<Reiškinys> [,JuostosPavadinimas [,1]])/Duotai [JuostosPavadinimas] eilutei apskaičiuoja <Reiškinys> sumą. Jei nurodytas parametras [1], tai suma skaičiuojama ir nematomoms eilutėms."
 
 #: lr_const:sroundrectformsample
 msgid "Sample :"
@@ -1883,7 +1884,7 @@ msgstr "Standartinis"
 
 #: lr_const:spaper6
 msgid "Statement, 5 1/2 x 8 1/2\""
-msgstr "Ataskaita, 5 1/2 x 8 1/2\""
+msgstr "Ataskaita, 5 1/2 x 8 1/2″"
 
 #: lr_const:sstretched
 msgid "Stretched"
@@ -1931,11 +1932,11 @@ msgstr "TRIM(<Tekstas>)/Grąžina <Tekstas> tekstą be pražioje ir gale buvusi�
 
 #: lr_const:spaper52
 msgid "Tabloid Extra 11.69 x 18\""
-msgstr "Nedidelio formato laikraštis ekstra 11.69 x 18\""
+msgstr "Nedidelio formato laikraštis ekstra 11.69 x 18″"
 
 #: lr_const:spaper3
 msgid "Tabloid, 11 x 17\""
-msgstr "Nedidelio formato laikraštis, 11 x 17\""
+msgstr "Nedidelio formato laikraštis, 11 x 17″"
 
 #: lr_const:sfrdesignerformtext
 msgid "Text"
@@ -1943,7 +1944,7 @@ msgstr "Tekstas"
 
 #: lr_const:seditorformcapt
 msgid "Text editor"
-msgstr "Teksto redaktorius"
+msgstr "Teksto rengyklė"
 
 #: lr_const:sfindtexttext
 msgid "Text to &find"
@@ -1991,7 +1992,7 @@ msgstr "UPPERCASE(<Tekstas>)/Visas <Tekstas> raides verčia didžiosiomis."
 
 #: lr_const:spaper39
 msgid "US Std Fanfold, 14 7/8 x 11\""
-msgstr "JAV standartinis Fanfold, 14 7/8 x 11\""
+msgstr "JAV standartinis Fanfold, 14 7/8 x 11″"
 
 #: lr_const:sfrdesignerformunderline
 msgid "Underline"
@@ -2007,7 +2008,7 @@ msgstr "Nepalaikomas FRF formatas"
 
 #: lr_const:suntitled
 msgid "Untitled"
-msgstr "Bevardis"
+msgstr "Be pavadinimo"
 
 #: lr_const:sevformvalue
 msgid "Va&lue"
@@ -2043,7 +2044,7 @@ msgstr "Kintamieji..."
 
 #: lr_const:sevformcapt
 msgid "Variables editor"
-msgstr "Kintamųjų redaktorius"
+msgstr "Kintamųjų rengyklė"
 
 #: lr_const:svaredformcapt
 msgid "Variables list"

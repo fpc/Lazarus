@@ -2,13 +2,13 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Mime-Version: 1.0Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
-"PO-Revision-Date: 2008-04-10 00:05+0300\n"
+"PO-Revision-Date: 2008-06-12 22:28+0300\n"
 "Project-Id-Version: objinspstrconsts\n"
 "Language-Team: Lithuanian\n"
 "X-Generator: KBabel 1.11.4\n"
 "MIME-Version: 1.0\n"
-"Last-Translator: Valdas Jankunas <skroblas@erdves.lt>\n"
+"Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: objinspstrconsts:oisdlinesdchars
 msgid "%d lines, %d chars"
@@ -44,7 +44,7 @@ msgstr "&Taisa"
 
 #: objinspstrconsts:oistdactsearchfindheadline
 msgid "&Find..."
-msgstr ""
+msgstr "&Ieškoti..."
 
 #: objinspstrconsts:oistdactdatasetfirstheadline
 msgid "&First"
@@ -92,7 +92,7 @@ msgstr "Atnau&jinti"
 
 #: objinspstrconsts:oistdactsearchreplaceheadline
 msgid "&Replace"
-msgstr ""
+msgstr "&Pakeisti"
 
 #: objinspstrconsts:oissave
 msgid "&Save"
@@ -132,7 +132,7 @@ msgstr "Veiksmas"
 
 #: objinspstrconsts:oisactionlisteditor
 msgid "Action List Editor"
-msgstr "ActionList redaktorius"
+msgstr "ActionList rengyklė"
 
 #: objinspstrconsts:oicoleditadd
 msgid "Add"
@@ -240,11 +240,11 @@ msgstr "Patikrinkite duomenų aibės nustatymus"
 
 #: objinspstrconsts:cgcheckgroupeditor
 msgid "CheckGroup Editor"
-msgstr "CheckGroup redaktorius"
+msgstr "CheckGroup rengyklė"
 
 #: objinspstrconsts:clbchecklistboxeditor
 msgid "CheckListBox Editor"
-msgstr "CheckListBox redaktorius"
+msgstr "CheckListBox rengyklė"
 
 #: objinspstrconsts:oisclass
 msgid "Class"
@@ -268,11 +268,11 @@ msgstr "Išrinkti spalvą"
 
 #: objinspstrconsts:rscdcolumneditor
 msgid "Column Editor"
-msgstr "Stulpelių redaktorius"
+msgstr "Stulpelių rengyklė"
 
 #: objinspstrconsts:cgcolumns
 msgid "Columns:"
-msgstr ""
+msgstr "Stulpelių:"
 
 #: objinspstrconsts:oiscomponentnameisnotavalididentifier
 msgid "Component name %s%s%s is not a valid identifier"
@@ -320,7 +320,7 @@ msgstr "Ctrl+C"
 
 #: objinspstrconsts:oistdactsearchfindshortcut
 msgid "Ctrl+F"
-msgstr ""
+msgstr "Ctrl+F"
 
 #: objinspstrconsts:oistdactfileopenshortcut
 msgid "Ctrl+O"
@@ -384,11 +384,11 @@ msgstr "Pašalinti kortelę"
 
 #: objinspstrconsts:clbdeletehint
 msgid "Delete the Item"
-msgstr ""
+msgstr "Pašalinti elementą"
 
 #: objinspstrconsts:clbdeletequest
 msgid "Delete the Item %d \"%s\"?"
-msgstr "Pašalinti elementą  %d \"%s\"?"
+msgstr "Pašalinti elementą  %d „%s“?"
 
 #: objinspstrconsts:cactionlisteditordialogcategory
 msgid "Dialog"
@@ -412,7 +412,7 @@ msgstr "Keitimas"
 
 #: objinspstrconsts:sccslvcoledt
 msgid "Edit Columns ..."
-msgstr ""
+msgstr "Keisti stulpelis..."
 
 #: objinspstrconsts:fesfetitle
 msgid "Edit Fields"
@@ -464,11 +464,11 @@ msgstr "Baigti darbą"
 
 #: objinspstrconsts:oistdactsearchfindfirstheadline
 msgid "F&ind First"
-msgstr ""
+msgstr "Ieškoti &pirmojo"
 
 #: objinspstrconsts:oistdactsearchfindnextshortcut
 msgid "F3"
-msgstr ""
+msgstr "F3"
 
 #: objinspstrconsts:oisfavorites
 msgid "Favorites"
@@ -488,19 +488,19 @@ msgstr "Failas"
 
 #: objinspstrconsts:oistdactsearchfindhint
 msgid "Find"
-msgstr ""
+msgstr "Paieška"
 
 #: objinspstrconsts:oistdactsearchfindnextheadline
 msgid "Find &Next"
-msgstr ""
+msgstr "Ieškoti t&oliau"
 
 #: objinspstrconsts:oistdactsearchfindfirsthint
 msgid "Find first"
-msgstr ""
+msgstr "Ieškoti pirmojo"
 
 #: objinspstrconsts:oistdactsearchfindnexthint
 msgid "Find next"
-msgstr ""
+msgstr "Ieškoti toliau"
 
 #: objinspstrconsts:oistdactdatasetfirsthint
 msgid "First"
@@ -536,7 +536,7 @@ msgstr "Įprastas pav.:"
 
 #: objinspstrconsts:sccsiledtcaption
 msgid "ImageList Editor"
-msgstr "ImageList redaktorius"
+msgstr "ImageList rengyklė"
 
 #: objinspstrconsts:sccsiledtgrplcaption
 msgid "Images"
@@ -608,7 +608,7 @@ msgstr "Kairė"
 
 #: objinspstrconsts:sccslvedtcaption
 msgid "ListView Items Editor"
-msgstr "ListView elementų redaktorius"
+msgstr "ListView elementų rengyklė"
 
 #: objinspstrconsts:sccstredtload
 msgid "Load"
@@ -644,10 +644,7 @@ msgstr "Perkelti žemyn"
 
 #: objinspstrconsts:sccssgedtmoverowscols
 msgid "Move Rows/Cols"
-msgstr ""
-"Perkelti\n"
-"eilutes/\n"
-"stulpelius"
+msgstr "Perkelti eilutes/stulpelius"
 
 #: objinspstrconsts:sccsiledtmoveup
 msgid "Move Up"
@@ -735,11 +732,11 @@ msgstr "Įkelti kaukes iš failo (*.dem)"
 
 #: objinspstrconsts:oistdactfileopenwithhint
 msgid "Open with"
-msgstr ""
+msgstr "Atverti su"
 
 #: objinspstrconsts:oistdactfileopenwithheadline
 msgid "Open with..."
-msgstr ""
+msgstr "Atverti su..."
 
 #: objinspstrconsts:oisoptions
 msgid "Options"
@@ -755,7 +752,7 @@ msgstr "Panelės aprašymai"
 
 #: objinspstrconsts:sccssbeditpanels
 msgid "Panels Editor ..."
-msgstr "Panelių redaktorius..."
+msgstr "Panelių rengyklė..."
 
 #: objinspstrconsts:oistdacteditpasteshorthint
 msgid "Paste"
@@ -803,7 +800,7 @@ msgstr "Išmesti iš mėgstamiausiųjų sąrašo"
 
 #: objinspstrconsts:oistdactsearchreplacehint
 msgid "Replace"
-msgstr ""
+msgstr "Pakeisti"
 
 #: objinspstrconsts:oisrestricted
 msgid "Restricted"
@@ -851,11 +848,11 @@ msgstr "Įrašyti..."
 
 #: objinspstrconsts:cactionlisteditorsearchcategory
 msgid "Search"
-msgstr ""
+msgstr "Ieškoti"
 
 #: objinspstrconsts:sccshceditsections
 msgid "Sections Editor ..."
-msgstr "Antraščių redaktorius..."
+msgstr "Antraščių rengyklė..."
 
 #: objinspstrconsts:oistdacteditselectallheadline
 msgid "Select &All"
@@ -939,11 +936,11 @@ msgstr "Teksto lentelė"
 
 #: objinspstrconsts:sccssgedtcaption
 msgid "StringGrid Editor"
-msgstr "StringGrid redaktorius"
+msgstr "StringGrid rengyklė"
 
 #: objinspstrconsts:oisstringseditordialog
 msgid "Strings Editor Dialog"
-msgstr "Teksto redaktorius"
+msgstr "Teksto rengyklė"
 
 #: objinspstrconsts:oistestinput
 msgid "Test Input"
@@ -959,7 +956,7 @@ msgstr "Tekstas:"
 
 #: objinspstrconsts:cgcheckduplicatemsg
 msgid "The \"%s\" Item is already listed. Add it anyway?"
-msgstr "Jau yra toks elementas \"%s\". Šį pridėti vistiek?"
+msgstr "Jau yra toks elementas „%s“. Šį pridėti vistiek?"
 
 #: objinspstrconsts:cactionlisteditorpaneltoolbar
 msgid "Toolbar"
@@ -975,7 +972,7 @@ msgstr "Permatoma spalva:"
 
 #: objinspstrconsts:sccstredtcaption
 msgid "TreeView Items Editor"
-msgstr "TreeView elementų redaktorius"
+msgstr "TreeView elementų rengyklė"
 
 #: objinspstrconsts:oisundo
 msgid "Undo"

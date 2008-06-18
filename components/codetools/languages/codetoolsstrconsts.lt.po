@@ -2,13 +2,13 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Mime-Version: 1.0Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
-"PO-Revision-Date: 2008-04-10 00:09+0300\n"
+"PO-Revision-Date: 2008-06-13 00:34+0300\n"
 "Project-Id-Version: codetoolsstrconsts\n"
 "Language-Team: Lithuanian\n"
 "X-Generator: KBabel 1.11.4\n"
+"Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
 "MIME-Version: 1.0\n"
-"Last-Translator: Valdas Jankunas <skroblas@erdves.lt>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: codetoolsstrconsts:ctsothercompilerdefines
 msgid "%s Compiler Defines"
@@ -40,7 +40,7 @@ msgstr "%s be %s"
 
 #: codetoolsstrconsts:ctsunknownmainfilename
 msgid "(unknown mainfilename)"
-msgstr "(nežinomas pagrindinio failo vardas)"
+msgstr "(nežinomas pagrindinio failo pavadinimas)"
 
 #: codetoolsstrconsts:ctsunknownsubdescriptor
 msgid "(unknown subdescriptor %s)"
@@ -56,7 +56,7 @@ msgstr ". pradžia ties "
 
 #: codetoolsstrconsts:ctssemicolonafterpropspecmissing
 msgid "; expected after \"%s\" property specifier, but %s found"
-msgstr "; tikėtasi po \"%s\" savybės specifikatoriaus, tačiau rasta %s"
+msgstr "; tikėtasi po „%s“ savybės specifikatoriaus, tačiau rasta %s"
 
 #: codetoolsstrconsts:ctsanonymdefinitionsarenotallowed
 msgid "Anonymous %s definitions are not allowed"
@@ -80,7 +80,7 @@ msgstr "Nerastas komentaro galas"
 
 #: codetoolsstrconsts:ctscompiledsrcpath
 msgid "Compiled SrcPath"
-msgstr "Kompiliuotas \"SrcPath\""
+msgstr "Kompiliuotas „SrcPath“"
 
 #: codetoolsstrconsts:ctscompiler
 msgid "Compiler"
@@ -168,7 +168,7 @@ msgstr "Konstruktoriaus moduliai"
 
 #: codetoolsstrconsts:ctsdoceditordirectory
 msgid "Doc Editor Directory"
-msgstr "Dokumentacijos redaktoriaus katalogas"
+msgstr "Dokumentacijos rengyklės katalogas"
 
 #: codetoolsstrconsts:ctsendofsourcenotfound
 msgid "End of source not found"
@@ -268,7 +268,7 @@ msgstr "Nėra žvalgytuvo"
 
 #: codetoolsstrconsts:ctsnoscannerfound
 msgid "No scanner found for \"%s\". If this is an include file, please open the main source first."
-msgstr "\"%s\" skirtas žvalgytuvas nerastas. Jei tai įdedamasis failas, pirma atverkite pagrindinį pirminį kodą."
+msgstr "„%s“ skirtas žvalgytuvas nerastas. Jei tai įdedamasis failas, pirma atverkite pagrindinį pirminį kodą."
 
 #: codetoolsstrconsts:ctspackagedirectories
 msgid "Package directories"
@@ -300,7 +300,7 @@ msgstr "Veikos meto biblioteka"
 
 #: codetoolsstrconsts:ctssourcefilenamesforstandardfpcunits
 msgid "Source filenames for the standard fpc units"
-msgstr "Pirminiai failų vardai standartiniams FPC moduliams"
+msgstr "Pirminiai failų pavadinimai standartiniams FPC moduliams"
 
 #: codetoolsstrconsts:ctssrcpathinitialization
 msgid "SrcPath Initialization"
@@ -308,7 +308,7 @@ msgstr "Pirminio kodo kelio inicializacija"
 
 #: codetoolsstrconsts:ctssyntaxerrorinexpr
 msgid "Syntax Error in expression \"%s\""
-msgstr "Išraiškoje \"%s\" yra sintaksės klaida"
+msgstr "Išraiškoje „%s“ yra sintaksės klaida"
 
 #: codetoolsstrconsts:ctstcodetoolmanagerconsistencycheck
 msgid "TCodeToolManager.ConsistencyCheck=%d"
@@ -344,15 +344,15 @@ msgstr "Valdiklių katalogas"
 
 #: codetoolsstrconsts:ctswordnotfound
 msgid "\"%s\" not found"
-msgstr "\"%s\" nerastas"
+msgstr "„%s“ nerastas"
 
 #: codetoolsstrconsts:ctsclassofdefinitionnotresolved
 msgid "\"class of\" definition not resolved: %s"
-msgstr "\"class of\" apibrėžtis nenustatyta: %s"
+msgstr "„class of“ apibrėžtis nenustatyta: %s"
 
 #: codetoolsstrconsts:ctsendforclassnotfound
 msgid "\"end\" for class/object not found"
-msgstr "Nerastas klasės/objekto \"end\""
+msgstr "Nerastas klasės/objekto „end“"
 
 #: codetoolsstrconsts:ctsdircomponentdoesnotexistsorisdanglingsymlink
 msgid "a directory component in %s does not exist or is a dangling symlink"
@@ -380,7 +380,7 @@ msgstr "savybės be tipo protėvis nėra savybė"
 
 #: codetoolsstrconsts:ctsbasetypeofnotfound
 msgid "base type of \"%s\" not found"
-msgstr "nerastas \"%s\" bazinis tipas"
+msgstr "nerastas „%s“ bazinis tipas"
 
 #: codetoolsstrconsts:ctsbinaryoperator
 msgid "binary operator"
@@ -416,7 +416,7 @@ msgstr "klasės mazgas neturi tėvinio mazgo"
 
 #: codetoolsstrconsts:ctsclasswithoutname
 msgid "class without name"
-msgstr "klasė be vardo"
+msgstr "klasė be pavadinimo"
 
 #: codetoolsstrconsts:ctsconstant
 msgid "constant"
@@ -488,7 +488,7 @@ msgstr "%s apibrėžtas leidimas startuoti"
 
 #: codetoolsstrconsts:ctsendofsourceexpectedbutatomfound
 msgid "expected end., but %s found"
-msgstr "tikėtasi \"end.\", tačiau aptikta %s"
+msgstr "tikėtasi „end.“, tačiau aptikta %s"
 
 #: codetoolsstrconsts:ctsexportsclauseonlyallowedinlibraries
 msgid "exports clause only allowed in libraries"
@@ -500,7 +500,7 @@ msgstr "išraiškos tipas turi būti klasė arba įrašas"
 
 #: codetoolsstrconsts:ctsfiledoesnotexists
 msgid "file \"%s\" does not exist"
-msgstr "failas \"%s\" neegzistuoja"
+msgstr "failas „%s“ neegzistuoja"
 
 #: codetoolsstrconsts:ctsfileisreadonly
 msgid "file is read only"
@@ -548,11 +548,11 @@ msgstr "įdėjimo katalogai: %s"
 
 #: codetoolsstrconsts:ctsincludefilenotfound
 msgid "include file not found \"%s\""
-msgstr "įdedamasis failas \"%s\" nerastas"
+msgstr "įdedamasis failas „%s“ nerastas"
 
 #: codetoolsstrconsts:ctsincompatibletypesgotexpected
 msgid "incompatibles types: expected \"%s\" but got \"%s\""
-msgstr "nesuderinami tipai: tikėtasi \"%s\", tačiau gauta \"%s\""
+msgstr "nesuderinami tipai: tikėtasi „%s“, tačiau gauta „%s“"
 
 #: codetoolsstrconsts:ctsindexparameterexpectedbutatomfound
 msgid "index parameter expected, but %s found"
@@ -580,19 +580,19 @@ msgstr "nerasta interfeiso sekcija"
 
 #: codetoolsstrconsts:ctsinvalidclassname2
 msgid "invalid class name %s%s%s"
-msgstr "klaidingas klasės vardas %s%s%s"
+msgstr "klaidingas klasės pavadinimas %s%s%s"
 
 #: codetoolsstrconsts:ctsinvalidclassname
 msgid "invalid class name=%s%s%s"
-msgstr "klaidingas klasės vardas=%s%s%s"
+msgstr "klaidingas klasės pavadinimas=%s%s%s"
 
 #: codetoolsstrconsts:ctsinvalidflagvaluefordirective
 msgid "invalid flag value \"%s\" for directive %s"
-msgstr "klaidinga vėliavėlės reikšmė \"%s\" direktyvai %s"
+msgstr "klaidinga vėliavėlės reikšmė „%s“ direktyvai %s"
 
 #: codetoolsstrconsts:ctsinvalidmode
 msgid "invalid mode \"%s\""
-msgstr "klaidinga veiksena \"%s\""
+msgstr "klaidinga veiksena „%s“"
 
 #: codetoolsstrconsts:ctsinvalidsubrange
 msgid "invalid subrange"
@@ -604,7 +604,7 @@ msgstr "klaidingas tipas"
 
 #: codetoolsstrconsts:ctsinvalidvariablename
 msgid "invalid variable name %s%s%s"
-msgstr "klaidingas kintamojo vardas %s%s%s"
+msgstr "klaidingas kintamojo pavadinimas %s%s%s"
 
 #: codetoolsstrconsts:ctsinvalidvariabletype
 msgid "invalid variable type %s%s%s"
@@ -620,7 +620,7 @@ msgstr "tikėtasi raktažodžio (pvz.: %s), tačiau aptikta %s"
 
 #: codetoolsstrconsts:ctskeywordin
 msgid "keyword \"in\""
-msgstr "raktažodis \"in\""
+msgstr "raktažodis „in“"
 
 #: codetoolsstrconsts:ctslazarusmaindirectory
 msgid "lazarus main directory"
@@ -628,7 +628,7 @@ msgstr "Lazarus pagrindinis katalogas"
 
 #: codetoolsstrconsts:ctsmethodname
 msgid "method name"
-msgstr "metodo vardas"
+msgstr "metodo pavadinimas"
 
 #: codetoolsstrconsts:ctsmethodtypedefinitionnotfound
 msgid "method type definition not found"
@@ -636,7 +636,7 @@ msgstr "nerasta metodo tipo apibrėžtis"
 
 #: codetoolsstrconsts:ctsmissingpointafterend
 msgid "missing . after end"
-msgstr "po \"end\" trūksta \".\""
+msgstr "po „end“ trūksta „.“"
 
 #: codetoolsstrconsts:ctsmissingenumlist
 msgid "missing enum list"
@@ -744,23 +744,23 @@ msgstr "netikėta pirminio kodo pabaiga"
 
 #: codetoolsstrconsts:ctsunexpectedkeyword
 msgid "unexpected keyword \"%s\""
-msgstr "netikėtas raktažodis \"%s\""
+msgstr "netikėtas raktažodis „%s“"
 
 #: codetoolsstrconsts:ctsunexpectedkeywordwhilereadingbackwards
 msgid "unexpected keyword \"%s\" found while reading blocks backwards"
-msgstr "skaitant blokus atygaline tvarka aptiktas netikėtas raktažodis \"%s\""
+msgstr "skaitant blokus atygaline tvarka aptiktas netikėtas raktažodis „%s“"
 
 #: codetoolsstrconsts:ctsunexpectedkeywordinasmblock
 msgid "unexpected keyword \"%s\" in asm block found"
-msgstr "asemblerio bloke aptiktas netikėtas raktažodis \"%s\""
+msgstr "asemblerio bloke aptiktas netikėtas raktažodis „%s“"
 
 #: codetoolsstrconsts:ctsunexpectedkeywordinbeginendblock
 msgid "unexpected keyword \"%s\" in begin..end found"
-msgstr "tarp \"begin\" ir \"end\" aptiktas netikėtas raktažodis \"%s\""
+msgstr "tarp „begin“ ir „end“ aptiktas netikėtas raktažodis „%s“"
 
 #: codetoolsstrconsts:ctsunexpectedsubrangeoperatorfound
 msgid "unexpected subrange operator '..' found"
-msgstr "aptiktas netikėtas poaibio operatorius \"..\""
+msgstr "aptiktas netikėtas poaibio operatorius „..“"
 
 #: codetoolsstrconsts:ctsunitnotfound
 msgid "unit not found: %s"
