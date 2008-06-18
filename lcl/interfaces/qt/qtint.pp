@@ -53,6 +53,7 @@ type
   TQtWidgetSet = Class(TWidgetSet)
   private
     App: QApplicationH;
+    FOverrideCursor: TObject;
     SavedDCList: TList;
     // global hooks
     FAppEvenFilterHook: QObject_hookH;
@@ -62,6 +63,7 @@ type
     FDockImage: QRubberBandH;
     FDragImageList: QWidgetH;
     FDragHotSpot: TPoint;
+    procedure SetOverrideCursor(const AValue: TObject);
   protected
     FStockNullBrush: HBRUSH;
     FStockBlackBrush: HBRUSH;
@@ -124,6 +126,8 @@ type
     procedure SetQtDefaultDC(Handle: HDC); virtual;
     procedure InitStockItems; virtual;
     procedure FreeStockItems; virtual;
+    
+    property OverrideCursor: TObject read FOverrideCursor write SetOverrideCursor;
 
     {$I qtwinapih.inc}
     {$I qtlclintfh.inc}

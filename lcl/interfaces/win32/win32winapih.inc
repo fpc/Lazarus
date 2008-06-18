@@ -42,7 +42,7 @@ function ClipboardGetFormats(ClipboardType: TClipboardType; Var Count: Integer; 
 { Sets the supported formats and requests ownership for the clipboard }
 function ClipboardGetOwnerShip(ClipboardType: TClipboardType; OnRequestProc: TClipboardRequestEvent; FormatCount: Integer; Formats: PClipboardFormat): Boolean; override;
 { Registers a clip board format }
-function ClipboardRegisterFormat(Const AMimeType: String): TClipboardFormat; override;
+function ClipboardRegisterFormat(const AMimeType: String): TClipboardFormat; override;
 
 function CombineRgn(Dest, Src1, Src2 : HRGN; fnCombineMode : Longint) : Longint;  override;
 function ComboBoxDropDown(Handle: HWND; DropDown: boolean): boolean; override;
@@ -51,22 +51,23 @@ function CreateBrushIndirect(Const LogBrush: TLogBrush): HBRUSH; override;
 function CreateCaret(Handle: HWND; Bitmap: HBITMAP; Width, Height: Integer): Boolean; override;
 function CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP; override;
 function CreateCompatibleDC(DC: HDC): HDC; override;
-function CreateCursor(ACursorInfo: PIconInfo): hCursor; override;
 function CreateDIBSection(DC: HDC; const p2: tagBitmapInfo; p3: UINT;
   var p4: Pointer; p5: THandle; p6: DWORD): HBITMAP; override;
-function CreateFontIndirect(Const LogFont: TLogFont): HFONT; override;
+function CreateFontIndirect(const LogFont: TLogFont): HFONT; override;
+function CreateIconIndirect(IconInfo: PIconInfo): HICON; override;
 function CreatePatternBrush(ABitmap: HBITMAP): HBRUSH; override;
-function CreatePenIndirect(Const LogPen: TLogPen): HPEN; override;
+function CreatePenIndirect(const LogPen: TLogPen): HPEN; override;
 function CreatePolygonRgn(Points: PPoint; NumPts: Integer; FillMode: integer): HRGN; override;
 function CreateRectRgn(X1, Y1, X2, Y2: Integer): HRGN; override;
 
 function DeleteDC(HDC: HDC): Boolean; override;
 function DeleteObject(GDIObject: HGDIOBJ): Boolean; override;
 function DestroyCaret(Handle: HWND): Boolean; override;
-function DestroyCursor(Handle: hCursor): Boolean; override;
+function DestroyCursor(Handle: HCURSOR): Boolean; override;
+function DestroyIcon(Handle: HICON): Boolean; override;
 function DrawFrameControl(DC: HDC; const Rect: TRect; UType, UState: Cardinal): Boolean; override;
 function DrawFocusRect(DC: HDC; const Rect: TRect): boolean; override;
-function DrawEdge(DC: HDC; Var Rect: TRect; Edge: Cardinal; GrfFlags: Cardinal): Boolean; override;
+function DrawEdge(DC: HDC; var Rect: TRect; Edge: Cardinal; GrfFlags: Cardinal): Boolean; override;
 function DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer; override;
 
 function Ellipse(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean; override;

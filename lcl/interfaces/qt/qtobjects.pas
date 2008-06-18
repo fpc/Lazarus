@@ -369,8 +369,20 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure addPixmap(pixmap: QPixmapH; mode: QIconMode = QIconNormal; state: QIconState = QIconOff);
-  public
     property Handle: QIconH read FHandle;
+  end;
+  
+  { TQtCursor }
+
+  TQtCursor = class(TObject)
+  protected
+    FHandle: QCursorH;
+  public
+    constructor Create;
+    constructor Create(pixmap: QPixmapH; hotX: Integer  = -1; hotY: Integer = -1);
+    constructor Create(shape: QtCursorShape);
+    destructor Destroy; override;
+    property Handle: QCursorH read FHandle;
   end;
   
   { TQtSystemTrayIcon }
@@ -575,7 +587,6 @@ procedure DebugRegion(const msg: string; Rgn: QRegionH);
 
 function CheckGDIObject(const AGDIObject: HGDIOBJ; const AMethodName: String; AParamName: String = ''): Boolean;
 function CheckBitmap(const ABitmap: HBITMAP; const AMethodName: String; AParamName: String = ''): Boolean;
-//function CheckCursor(const ACursor: HCURSOR; const AMethodName: String; AParamName: String = ''): Boolean;
 
 function QtDefaultPrinter: TQtPrinter;
 function Clipboard: TQtClipboard;
@@ -649,29 +660,6 @@ begin
     DebugLn(AMethodName + ' Error - invalid bitmap ' + AParamName + ' = ' +
       DbgS(ABitmap) + '!');
 end;
-
-{------------------------------------------------------------------------------
-  Name:    CheckCursor
-  Params:  Cursor      - Handle to a cursor (TCarbonCursor)
-           AMethodName - Method name
-           AParamName  - Param name
-  Returns: If the cursor is valid
- ------------------------------------------------------------------------------}
-(*
-function CheckCursor(const ACursor: HCURSOR; const AMethodName: String;
-  AParamName: String): Boolean;
-begin
-  Result := TObject(ACursor) is TQTCursor;
-  if Result then Exit;
-  
-  if Pos('.', AMethodName) = 0 then
-    DebugLn(SQTWSPrefix + AMethodName + ' Error - invalid cursor ' +
-      AParamName + ' = ' + DbgS(Cursor) + '!')
-  else
-    DebugLn(AMethodName + ' Error - invalid cursor ' + AParamName + ' = ' +
-      DbgS(ACursor) + '!');
-end;
-*)
 
 function QtDefaultContext: TQtDeviceContext;
 begin
@@ -3257,7 +3245,33 @@ begin
   QStringList_insert(FHandle, Index, @W);
 end;
 
+{ TQtCursor }
+
+constructor TQtCursor.Create;
+begin
+  FHandle := QCursor_create();
+end;
+
+constructor TQtCursor.Create(pixmap: QPixmapH; hotX: Integer  = -1; hotY: Integer = -1);
+begin
+  FHandle := QCursor_create(pixmap, hotX, hotY);
+end;
+
+constructor TQtCursor.Create(shape: QtCursorShape);
+begin
+  FHandle := QCursor_create(shape);
+end;
+
+destructor TQtCursor.Destroy;
+begin
+  if FHandle <> nil then
+    QCursor_destroy(FHandle);
+    
+  inherited Destroy;
+end;
+
 end.
+
 
 
 

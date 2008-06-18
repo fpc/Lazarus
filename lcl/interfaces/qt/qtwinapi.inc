@@ -486,29 +486,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: CreateCursor
-  Params:  ACursorInfo - PIconInfo
-  Returns: hCursor (QCursorH)
-
-  Creates a cursor from bitmap and mask.
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.CreateCursor(ACursorInfo: PIconInfo): hCursor;
-var
-  Image: TQtImage;
-  Pixmap: QPixmapH;
-begin
-  Result := 0;
-  if IsValidGDIObject(ACursorInfo^.hbmColor) then
-  begin
-    Image := TQtImage(ACursorInfo^.hbmColor);
-    Pixmap := QPixmap_create();
-    QPixmap_fromImage(Pixmap, Image.Handle);
-    Result := hCursor(QCursor_create(Pixmap, ACursorInfo^.xHotspot, ACursorInfo^.yHotspot));
-    QPixmap_destroy(Pixmap);
-  end;
-end;
-
-{------------------------------------------------------------------------------
   Function: CreateEllipticRgn
   Params:  p1, p2, p3, p4: Integer
   Returns: HRGN
@@ -592,6 +569,30 @@ begin
 
   finally
     Result := HFONT(QtFont);
+  end;
+end;
+
+function TQtWidgetSet.CreateIconIndirect(IconInfo: PIconInfo): HICON;
+var
+  AIcon: TQtIcon;
+  APixmap: QPixmapH;
+begin
+  Result := 0;
+  if IsValidGDIObject(IconInfo^.hbmColor) then
+  begin
+    APixmap := QPixmap_create();
+    QPixmap_fromImage(APixmap, TQtImage(IconInfo^.hbmColor).Handle);
+    if IconInfo^.fIcon then
+    begin
+      AIcon := TQtIcon.Create;
+      AIcon.addPixmap(APixmap);
+      Result := HICON(AIcon);
+    end
+    else
+    begin
+      Result := HCURSOR(TQtCursor.Create(APixmap, IconInfo^.xHotspot, IconInfo^.yHotspot));
+    end;
+    QPixmap_destroy(APixmap);
   end;
 end;
 
@@ -860,14 +861,20 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  DestroyCursor
+  Method:  DestroyIcon
   Params:  Handle
   Returns: Result of destroying
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.DestroyCursor(Handle: hCursor): Boolean;
+
+function TQtWidgetSet.DestroyIcon(Handle: HICON): Boolean;
 begin
-  QCursor_destroy(QCursorH(Handle));
-  Result := True;
+  Result := (Handle <> 0) and
+            (
+              (TObject(Handle) is TQtIcon) or
+              (TObject(Handle) is TQtCursor)
+            );
+  if Result then
+    TObject(Handle).Free;
 end;
 
 {------------------------------------------------------------------------------
@@ -4100,23 +4107,21 @@ end;
 
 {------------------------------------------------------------------------------
   Function: SetCursor
-  Params: ACursor - HCursor (QCursorH)
+  Params: ACursor - HCursor (TQtCursor)
   Returns:
        previous global cursor
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.SetCursor(ACursor: HCURSOR): HCURSOR;
 begin
-  Result := hCursor(QApplication_overrideCursor());
-  if Result = ACursor then exit;
+  Result := HCURSOR(OverrideCursor);
+
+  if Result = ACursor then
+    Exit;
+  
   if Screen.Cursors[crDefault] = ACursor then
-  begin
-    QApplication_restoreOverrideCursor();
-  end else
-  begin
-    if Result = 0 then
-      QApplication_setOverrideCursor(QCursorH(ACursor)) else
-      QApplication_changeOverrideCursor(QCursorH(ACursor));
-  end;
+    OverrideCursor := nil
+  else
+    OverrideCursor := TQtCursor(ACursor);
 end;
 
 {------------------------------------------------------------------------------

@@ -860,18 +860,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  CreateCursor
-  Params:  AInstance - handle to instance; ACursorInfo - pointer to Cursor Information record
-  Returns: handle to a created cursor
-
-  Creates a cursor by color and mask bitmaps and other indo.
- ------------------------------------------------------------------------------}
-function TWin32WidgetSet.CreateCursor(ACursorInfo: PIconInfo): hCursor;
-begin
-  Result := Windows.CreateIconIndirect(ACursorInfo);
-end;
-
-{------------------------------------------------------------------------------
   Method:  CreateFontIndirect
   Params:  LogFont - logical font record
   Returns: a handle to a logical font
@@ -891,6 +879,18 @@ begin
       TempLogFont.lfHeight := FMetrics.lfMessageFont.lfHeight;
   end;
   Result := Windows.CreateFontIndirect(@TempLogFont);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  CreateIconIndirect
+  Params:  IconInfo - pointer to Icon/Cursor Information record
+  Returns: handle to a created icon/cursor
+
+  Creates an icon or cursor by color and mask bitmaps and other indo.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.CreateIconIndirect(IconInfo: PIconInfo): HICON;
+begin
+  Result := Windows.CreateIconIndirect(IconInfo);
 end;
 
 function TWin32WidgetSet.CreatePatternBrush(ABitmap: HBITMAP): HBRUSH;
@@ -1003,6 +1003,11 @@ end;
 function TWin32WidgetSet.DestroyCursor(Handle: hCursor): Boolean;
 begin
   Result := Boolean(Windows.DestroyCursor(Handle));
+end;
+
+function TWin32WidgetSet.DestroyIcon(Handle: HICON): Boolean;
+begin
+  Result := Windows.DestroyIcon(Handle);
 end;
 
 {------------------------------------------------------------------------------

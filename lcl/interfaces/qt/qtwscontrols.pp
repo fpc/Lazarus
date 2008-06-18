@@ -86,7 +86,7 @@ type
     class procedure SetSize(const AWinControl: TWinControl; const AWidth, AHeight: Integer); override;
     class procedure ShowHide(const AWinControl: TWinControl); override; //TODO: rename to SetVisible(control, visible)
     class procedure SetColor(const AWinControl: TWinControl); override;
-    class procedure SetCursor(const AWinControl: TWinControl; const ACursor: HCursor); override;
+    class procedure SetCursor(const AWinControl: TWinControl; const ACursor: HCURSOR); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
     class procedure SetShape(const AWinControl: TWinControl; const AShape: HBITMAP); override;
 
@@ -549,11 +549,14 @@ end;
 
   Sets the cursor of the widget.
  ------------------------------------------------------------------------------}
-class procedure TQtWSWinControl.SetCursor(const AWinControl: TWinControl; const ACursor: HCursor);
+class procedure TQtWSWinControl.SetCursor(const AWinControl: TWinControl; const ACursor: HCURSOR);
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetCursor') then
     Exit;
-  TQtWidget(AWinControl.Handle).SetCursor(QCursorH(ACursor));
+  if ACursor <> 0 then
+    TQtWidget(AWinControl.Handle).SetCursor(TQtCursor(ACursor).Handle)
+  else
+    TQtWidget(AWinControl.Handle).SetCursor(nil);
 end;
 
 {------------------------------------------------------------------------------

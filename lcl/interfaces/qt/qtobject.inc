@@ -259,6 +259,18 @@ begin
   end;
 end;
 
+procedure TQtWidgetSet.SetOverrideCursor(const AValue: TObject);
+begin
+  if AValue = nil then
+    QApplication_restoreOverrideCursor()
+  else
+  if FOverrideCursor = nil then
+    QApplication_setOverrideCursor(TQtCursor(AValue).Handle)
+  else
+    QApplication_changeOverrideCursor(TQtCursor(AValue).Handle);
+  FOverrideCursor := AValue;
+end;
+
 function TQtWidgetSet.CreateThemeServices: TThemeServices;
 begin
   Result := TQtThemeServices.Create;

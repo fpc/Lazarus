@@ -37,7 +37,7 @@ function AddPipeEventHandler(AHandle: THandle;
 function AddProcessEventHandler(AHandle: THandle;
   AEventHandler: TChildExitEvent; AData: PtrInt): PProcessEventHandler; override;
   
-function CreateStandardCursor(ACursor: SmallInt): hCursor; override;
+function CreateStandardCursor(ACursor: SmallInt): HCURSOR; override;
 procedure DrawArrow(Arrow: TComponent; Canvas: TPersistent); override;
 procedure DrawDefaultDockImage(AOldRect, ANewRect: TRect; AOperation: TDockImageOperation); override;
 

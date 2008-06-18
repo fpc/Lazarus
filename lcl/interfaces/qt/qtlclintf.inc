@@ -56,7 +56,7 @@ end;
   Params:
   Returns:
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.CreateStandardCursor(ACursor: SmallInt): hCursor;
+function TQtWidgetSet.CreateStandardCursor(ACursor: SmallInt): HCURSOR;
 var
   CursorShape: QtCursorShape;
 begin
@@ -95,7 +95,7 @@ begin
     CursorShape := QtCursorShape(-1);
   end;
   if CursorShape <> QtCursorShape(-1) then
-    Result := hCursor(QCursor_create(CursorShape));
+    Result := HCURSOR(TQtCursor.Create(CursorShape));
 end;
 
 {------------------------------------------------------------------------------

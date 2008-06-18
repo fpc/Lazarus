@@ -129,9 +129,9 @@ begin
   Result := 0;
 end;
 
-function TWidgetSet.CreateCursor(ACursorInfo: PIconInfo): hCursor;
+function TWidgetSet.CreateCursor(ACursorInfo: PIconInfo): HCURSOR;
 begin
-  Result := 0;
+  Result := CreateIconIndirect(ACursorInfo);
 end;
 
 function TWidgetSet.CreateDIBSection(DC: HDC;
@@ -212,9 +212,9 @@ begin
   Result := False;
 end;
 
-function TWidgetSet.DestroyCursor(Handle: hCursor): Boolean;
+function TWidgetSet.DestroyCursor(Handle: HCURSOR): Boolean;
 begin
-  Result := False;
+  Result := DestroyIcon(Handle);
 end;
 
 function TWidgetSet.DestroyIcon(Handle: HICON): Boolean;
