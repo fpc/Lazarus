@@ -35,8 +35,9 @@
 
 function BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc; override;
 
-function CreateCursor(ACursorInfo: PIconInfo): hCursor; override;
 function CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: string): HFONT; override;
+function CreateIconIndirect(IconInfo: PIconInfo): HICON; override;
+function DestroyIcon(Handle: HICON): Boolean; override;
 
 function EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer; override;
 function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean; override;

@@ -630,6 +630,8 @@ procedure MergeClipping(DestinationDC: TGtkDeviceContext; DestinationGC: PGDKGC;
   X,Y,Width,Height: integer; ClipMergeMask: PGdkBitmap;
   ClipMergeMaskX, ClipMergeMaskY: integer;
   var NewClipMask: PGdkBitmap);
+function CreatePixbufFromImageAndMask(ASrc: PGdkPixmap; ASrcX, ASrcY, ASrcWidth,
+  ASrcHeight: integer; ASrcColorMap: PGdkColormap; ASrcMask: PGdkBitmap): PGdkPixbuf;
 function ScalePixmapAndMask(AScaleGC: PGDKGC; AScaleMethod: TGdkInterpType;
   ASrc: PGdkPixmap; ASrcX, ASrcY, ASrcWidth, ASrcHeight: integer;
   ASrcColorMap: PGdkColormap; ASrcMask: PGdkBitmap;

@@ -1139,16 +1139,14 @@ begin
   EndGDKErrorTrap;
 end;
 
-function ScalePixmapAndMask(AScaleGC: PGDKGC; AScaleMethod: TGdkInterpType;
-  ASrc: PGdkPixmap; ASrcX, ASrcY, ASrcWidth, ASrcHeight: integer;
-  ASrcColorMap: PGdkColormap; ASrcMask: PGdkBitmap;
-  ADstWidth, ADstHeight: Integer; out ADst, ADstMask: PGdkPixmap) : Boolean;
+function CreatePixbufFromImageAndMask(ASrc: PGdkPixmap; ASrcX, ASrcY, ASrcWidth,
+  ASrcHeight: integer; ASrcColorMap: PGdkColormap; ASrcMask: PGdkBitmap): PGdkPixbuf;
 
   procedure Warn(const AText: String);
   begin
     DebugLn('[WARNING] ScalePixmapAndMask: ' + AText);
   end;
-  
+
   procedure ApplyMask(APixels, AMask: pguchar);
   type
     TPixbufPixel = record
@@ -1169,10 +1167,10 @@ function ScalePixmapAndMask(AScaleGC: PGDKGC; AScaleMethod: TGdkInterpType;
   end;
   
 var
-  ScaleSrc, ScaleDst, ScaleMsk: PGdkPixbuf;
+  Msk: PGdkPixbuf;
   FullSrcWidth, FullSrcHeight: integer;
 begin
-  Result := False;
+  Result := nil;
   if ASrc = nil then Exit;
 
   gdk_window_get_size(PGDKWindow(ASrc), @FullSrcWidth, @FullSrcHeight);
@@ -1186,27 +1184,48 @@ begin
   end;
 
   // Creating PixBuf from pixmap
-  ScaleSrc := CreatePixbufFromDrawable(ASrc, ASrcColorMap, ASrcMask <> nil, ASrcX, ASrcY, 0, 0, ASrcWidth, ASrcHeight);
-  if ScaleSrc = nil
+  Result := CreatePixbufFromDrawable(ASrc, ASrcColorMap, ASrcMask <> nil, ASrcX, ASrcY, 0, 0, ASrcWidth, ASrcHeight);
+  if Result = nil
   then begin
-    Warn('ScaleSrc=nil');
+    Warn('Result=nil');
     Exit;
   end;
 
   // Apply mask if present
   if ASrcMask <> nil
   then begin
-    if gdk_pixbuf_get_rowstride(ScaleSrc) <> ASrcWidth shl 2
+    if gdk_pixbuf_get_rowstride(Result) <> ASrcWidth shl 2
     then begin
       Warn('rowstride <> 4*width');
-      gdk_pixbuf_unref(ScaleSrc);
+      gdk_pixbuf_unref(Result);
+      Result := nil;
       Exit;
     end;
-    
-    ScaleMsk := CreatePixbufFromDrawable(ASrcMask, nil, True, ASrcX, ASrcY, 0, 0, ASrcWidth, ASrcHeight);
-    ApplyMask(gdk_pixbuf_get_pixels(ScaleSrc), gdk_pixbuf_get_pixels(ScaleMsk));
-    gdk_pixbuf_unref(ScaleMsk);
+
+    Msk := CreatePixbufFromDrawable(ASrcMask, nil, True, ASrcX, ASrcY, 0, 0, ASrcWidth, ASrcHeight);
+    ApplyMask(gdk_pixbuf_get_pixels(Result), gdk_pixbuf_get_pixels(Msk));
+    gdk_pixbuf_unref(Msk);
   end;
+end;
+
+function ScalePixmapAndMask(AScaleGC: PGDKGC; AScaleMethod: TGdkInterpType;
+  ASrc: PGdkPixmap; ASrcX, ASrcY, ASrcWidth, ASrcHeight: integer;
+  ASrcColorMap: PGdkColormap; ASrcMask: PGdkBitmap;
+  ADstWidth, ADstHeight: Integer; out ADst, ADstMask: PGdkPixmap) : Boolean;
+
+  procedure Warn(const AText: String);
+  begin
+    DebugLn('[WARNING] ScalePixmapAndMask: ' + AText);
+  end;
+  
+var
+  ScaleSrc, ScaleDst: PGdkPixbuf;
+begin
+  Result := False;
+
+  // Creating PixBuf from pixmap
+  ScaleSrc := CreatePixbufFromImageAndMask(ASrc, ASrcX, ASrcY, ASrcWidth, ASrcHeight,
+    ASrcColorMap, ASrcMask);
 
   // Scaling PixBuf
   ScaleDst := gdk_pixbuf_scale_simple(ScaleSrc, ADstWidth, ADstHeight, AScaleMethod);

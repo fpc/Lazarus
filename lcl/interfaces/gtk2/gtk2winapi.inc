@@ -67,78 +67,6 @@ begin
   end;
 end;
 
-function TGtk2WidgetSet.CreateCursor(ACursorInfo: PIconInfo): hCursor;
-var
-  pixmap: PGdkPixmap;
-  bitmap: PGdkBitmap;
-  Width, Height: integer;
-  MaxWidth, MaxHeight: guint;
-  pixbuf, masked_pixbuf: PGdkPixbuf;
-
-{$ifdef Windows}
-  Old80807CW: Word;
-  
-  procedure SetCW; inline;
-  begin
-    Old80807CW := Get8087CW;
-    Set8087CW($133F);
-  end;
-  
-  procedure ResetCW; inline;
-  begin
-    Set8087CW(Old80807CW);
-  end;
-{$endif}
-
-begin
-  Result := 0;
-  if not IsValidGDIObject(ACursorInfo^.hbmColor) then Exit;
-
-  pixmap := PGDIObject(ACursorInfo^.hbmColor)^.GDIPixmapObject.Image;
-  bitmap := PGDIObject(ACursorInfo^.hbmColor)^.GDIPixmapObject.Mask;
-
-  gdk_drawable_get_size(pixmap, @Width, @Height);
-  gdk_display_get_maximal_cursor_size(gdk_display_get_default,
-                                      @MaxWidth, @MaxHeight);
-  
-  if (Width > integer(MaxWidth)) or (Height > integer(MaxHeight)) then
-    exit;
-
-{
-  MaxWidth := gdk_display_get_default_cursor_size(gdk_display_get_default);
-  if (Width > MaxWidth) or (Height > MaxWidth) then
-    DebugLn(['CreateCursor cursor size:',Width,'x',Height,' > default size:', MaxWidth]);
-}
-
-  // create alpha pixbuf
-  pixbuf := gdk_pixbuf_new(GDK_COLORSPACE_RGB, True, 8, Width, Height);
-
-  // fill pixbuf from pixmap
-  gdk_pixbuf_get_from_drawable(pixbuf, pixmap, nil, 0, 0, 0, 0, -1, -1);
-
-  masked_pixbuf := GdkPixbufAddBitmapMask(pixbuf, bitmap, 0);
-  if masked_pixbuf <> nil then
-  begin
-    // masked_pixuf is a new pixbuf created from pixbuf with applying mask
-    gdk_pixbuf_unref(pixbuf);
-    pixbuf := masked_pixbuf;
-  end;
-
-  // create cursor from pixbuf
-  try
-    {$IFDEF Windows}
-    // we'll get 'division by zero' error in CMCheckColorsInGamut in other case
-    SetCW;
-    {$ENDIF}
-    Result := HCursor(PtrUInt(gdk_cursor_new_from_pixbuf(gdk_display_get_default, pixbuf,
-      ACursorInfo^.xHotSpot, ACursorInfo^.yHotSpot)));
-  finally
-    {$IFDEF Windows}
-    ResetCW;
-    {$ENDIF}
-  end;
-end;
-
 function TGtk2WidgetSet.CreateFontIndirectEx(const LogFont: TLogFont;
   const LongFontName: string): HFONT;
 {off $DEFINE VerboseFonts}
@@ -318,6 +246,90 @@ begin
     DebugLn(['TGtk2WidgetSet.CreateFontIndirectEx END Result=',dbgs(Pointer(PtrInt(Result)))]);
     {$ENDIF}
   end;
+end;
+
+function TGtk2WidgetSet.CreateIconIndirect(IconInfo: PIconInfo): HICON;
+var
+  pixmap: PGdkPixmap;
+  bitmap: PGdkBitmap;
+  Width, Height: integer;
+  MaxWidth, MaxHeight: guint;
+  pixbuf, masked_pixbuf: PGdkPixbuf;
+{$ifdef Windows}
+  Old80807CW: Word;
+
+  procedure SetCW; inline;
+  begin
+    Old80807CW := Get8087CW;
+    Set8087CW($133F);
+  end;
+
+  procedure ResetCW; inline;
+  begin
+    Set8087CW(Old80807CW);
+  end;
+{$endif}
+begin
+  Result := 0;
+  if not IsValidGDIObject(IconInfo^.hbmColor) then Exit;
+
+  pixmap := PGDIObject(IconInfo^.hbmColor)^.GDIPixmapObject.Image;
+  bitmap := PGDIObject(IconInfo^.hbmColor)^.GDIPixmapObject.Mask;
+
+  gdk_drawable_get_size(pixmap, @Width, @Height);
+  gdk_display_get_maximal_cursor_size(gdk_display_get_default,
+                                      @MaxWidth, @MaxHeight);
+
+  if (Width > integer(MaxWidth)) or (Height > integer(MaxHeight)) then
+    exit;
+
+  // create alpha pixbuf
+  pixbuf := gdk_pixbuf_new(GDK_COLORSPACE_RGB, True, 8, Width, Height);
+
+  // fill pixbuf from pixmap
+  gdk_pixbuf_get_from_drawable(pixbuf, pixmap, nil, 0, 0, 0, 0, -1, -1);
+
+  masked_pixbuf := GdkPixbufAddBitmapMask(pixbuf, bitmap, 0);
+  if masked_pixbuf <> nil then
+  begin
+    // masked_pixuf is a new pixbuf created from pixbuf with applying mask
+    gdk_pixbuf_unref(pixbuf);
+    pixbuf := masked_pixbuf;
+  end;
+
+  if IconInfo^.fIcon then
+    Result := HICON(PtrUInt(pixbuf))
+  else
+  begin
+    // create cursor from pixbuf
+    try
+      {$IFDEF Windows}
+      // we'll get 'division by zero' error in CMCheckColorsInGamut in other case
+      SetCW;
+      {$ENDIF}
+      Result := HCURSOR(PtrUInt(gdk_cursor_new_from_pixbuf(gdk_display_get_default, pixbuf,
+        IconInfo^.xHotSpot, IconInfo^.yHotSpot)));
+    finally
+      {$IFDEF Windows}
+      ResetCW;
+      {$ENDIF}
+    end;
+  end;
+end;
+
+function TGtk2WidgetSet.DestroyIcon(Handle: HICON): Boolean;
+begin
+  Result := (Handle <> 0) and
+            (
+              GDK_IS_PIXBUF(Pointer(Handle)) or
+              // todo: replace with GDK_IS_CURSOR when fpc will have it
+              G_TYPE_CHECK_INSTANCE_TYPE(Pointer(Handle),GDK_TYPE_CURSOR)
+            );
+  if Result then
+    if GDK_IS_PIXBUF(Pointer(Handle)) then
+      gdk_pixbuf_unref(PGdkPixbuf(Handle))
+    else
+      gdk_cursor_unref(PGdkCursor(Handle));
 end;
 
 

@@ -1226,136 +1226,19 @@ begin
   Assert(False,Format('trace:  [TGtkWidgetSet.CreateCompatibleDC] DC: 0x%x --> 0x%x', [Integer(DC), Integer(Result)]));
 end;
 
-
-function TGtkWidgetSet.CreateCursor(ACursorInfo: PIconInfo): hCursor;
-
-  procedure GetColorMask(AImage, AMask: PGDKPixmap; AImgBits, AMskBits: PByte; AWidth, AHeight: integer);
-  var
-    i, j: integer;
-    colormap: PGDKColormap;
-    Image, MaskImage: PGDKImage;
-    GDKColor: TGDKColor;
-    Pixel, MaskPixel: LongWord;
-    offset: byte;
-
-    procedure SetColorAndMask(c: TGDKColor; MaskPixel: LongWord);
-    var
-      c_bit, m_bit: byte;
-    begin
-      // c_bit := Ord(0.222 * c.red + 0.707 * c.green + 0.071 * c.blue >= $8000);
-      // do some int math
-      c_bit := Ord(cardinal(222) * c.red
-                 + cardinal(707) * c.green
-                 + cardinal(071) * c.blue
-                 >= $8000 * 1000);
-      m_bit := ord(MaskPixel = 1);
-
-      AImgBits^ := AImgBits^ or (c_bit shl offset);
-      AMskBits^ := AMskBits^ or (m_bit shl offset);
-
-      inc(offset);
-      if offset > 7 then
-      begin
-        inc(AImgBits);
-        inc(AMskBits);
-        offset := 0;
-      end;
-    end;
-
-  begin
-    // most of this code was taken from TGtkWidgetSet.DCGetPixel
-
-    Image := gdk_drawable_get_image(AImage, 0, 0, AWidth, AHeight);
-    MaskImage := gdk_drawable_get_image(AMask, 0, 0, AWidth, AHeight);
-
-    {$ifdef Gtk1}
-    // previously gdk_image_get_colormap(image) was used, implementation
-    // was casting GdkImage to GdkWindow which is not valid and cause AVs
-    if gdk_window_get_type(PGdkWindow(AImage))= GDK_WINDOW_PIXMAP then
-      colormap := nil // pixmaps are created with null colormap, get system one instead
-    else
-      colormap := gdk_window_get_colormap(PGdkWindow(AImage));
-    {$else}
-    colormap := gdk_image_get_colormap(image);
-    {$endif}
-
-    if colormap = nil then
-      colormap := gdk_colormap_get_system;
-
-    offset := 0;
-
-    for j := 0 to AHeight - 1 do
-      for i := 0 to AWidth - 1 do
-      begin
-        Pixel := gdk_image_get_pixel(Image, i, j);
-        MaskPixel := gdk_image_get_pixel(MaskImage, i, j);
-        FillChar(GDKColor,SizeOf(GDKColor), 0);
-        // does not work with TBitmap.Canvas
-        gdk_colormap_query_color(colormap, Pixel, @GDKColor);
-        SetColorAndMask(GDKColor, MaskPixel);
-      end;
-    gdk_image_unref(Image);
-    gdk_image_unref(MaskImage);
-  end;
-
-var
-  FG, BG: TGDKColor;
-  Img, Msk: PGdkPixmap;
-  srcbitmap, mskbitmap: PGdkPixmap;
-  W, H, bitlen: integer;
-  ImgBits, MskBits: array of byte;
-begin
-  Result := 0;
-  if not IsValidGDIObject(ACursorInfo^.hbmColor) then Exit;
-  
-  {$IFDEF VerboseGtkToDos}{$note TODO: add support for mono cursors}{$ENDIF}
-  Img := PGDIObject(ACursorInfo^.hbmColor)^.GDIBitmapObject;
-  if (PGDIObject(ACursorInfo^.hbmColor)^.GDIBitmapType = gbPixmap) and
-     (PGDIObject(ACursorInfo^.hbmColor)^.GDIPixmapObject.Mask <> nil) then
-    Msk := PGDIObject(ACursorInfo^.hbmColor)^.GDIPixmapObject.Mask
-  else
-    Msk := PGDIObject(ACursorInfo^.hbmMask)^.GDIBitmapObject;
-
-  gdk_drawable_get_size(Img, @W, @H);
-
-  bitlen := (W * H) shr 3;
-  SetLength(ImgBits, bitlen);
-  SetLength(MskBits, bitlen);
-  FillChar(ImgBits[0], bitlen, 0);
-  FillChar(MskBits[0], bitlen, 0);
-
-  GetColorMask(Img, Msk, @ImgBits[0], @MskBits[0], W, H);
-
-  srcbitmap := gdk_bitmap_create_from_data(nil, @ImgBits[0], W, H);
-  mskbitmap := gdk_bitmap_create_from_data(nil, @MskBits[0], W, H);
-
-
-  // white
-  fg.red := $FFFF;
-  fg.green := $FFFF;
-  fg.blue := $FFFF;
-  fg.pixel := 0;
-
-  // black
-  bg.red := 0;
-  bg.green := 0;
-  bg.blue := 0;
-  bg.pixel := 0;
-
-  Result := HCursor(PtrUInt(gdk_cursor_new_from_pixmap(srcbitmap, mskbitmap,
-      @fg, @bg, ACursorInfo^.xHotspot, ACursorInfo^.yHotspot)));
-    
-  gdk_pixmap_unref(srcbitmap);
-  gdk_pixmap_unref(mskbitmap);
-  if Msk <> nil then
-    gdk_pixmap_unref(msk);
-end;
-
 function TGtkWidgetSet.DestroyCursor(Handle: hCursor): Boolean;
 begin
-  if Handle <> 0 then
+  Result := Handle <> 0;
+  if Result then
     gdk_cursor_destroy(PGdkCursor(Handle));
-  Result:=true;
+end;
+
+function TGTKWidgetSet.DestroyIcon(Handle: HICON): Boolean;
+begin
+  // todo: handle cursors here, but how to check whether it is a cursor or an icon?
+  Result := Handle <> 0;
+  if Result then
+    gdk_pixbuf_unref(PGdkPixbuf(Handle));
 end;
 
 {------------------------------------------------------------------------------
@@ -1907,6 +1790,135 @@ begin
   end;
 end;
 {$EndIf}
+
+function TGTKWidgetSet.CreateIconIndirect(IconInfo: PIconInfo): HICON;
+  procedure GetColorMask(AImage, AMask: PGDKPixmap; AImgBits, AMskBits: PByte; AWidth, AHeight: integer);
+  var
+    i, j: integer;
+    colormap: PGDKColormap;
+    Image, MaskImage: PGDKImage;
+    GDKColor: TGDKColor;
+    Pixel, MaskPixel: LongWord;
+    offset: byte;
+
+    procedure SetColorAndMask(c: TGDKColor; MaskPixel: LongWord);
+    var
+      c_bit, m_bit: byte;
+    begin
+      // c_bit := Ord(0.222 * c.red + 0.707 * c.green + 0.071 * c.blue >= $8000);
+      // do some int math
+      c_bit := Ord(cardinal(222) * c.red
+                 + cardinal(707) * c.green
+                 + cardinal(071) * c.blue
+                 >= $8000 * 1000);
+      m_bit := ord(MaskPixel = 1);
+
+      AImgBits^ := AImgBits^ or (c_bit shl offset);
+      AMskBits^ := AMskBits^ or (m_bit shl offset);
+
+      inc(offset);
+      if offset > 7 then
+      begin
+        inc(AImgBits);
+        inc(AMskBits);
+        offset := 0;
+      end;
+    end;
+
+  begin
+    // most of this code was taken from TGtkWidgetSet.DCGetPixel
+
+    Image := gdk_drawable_get_image(AImage, 0, 0, AWidth, AHeight);
+    MaskImage := gdk_drawable_get_image(AMask, 0, 0, AWidth, AHeight);
+
+    {$ifdef Gtk1}
+    // previously gdk_image_get_colormap(image) was used, implementation
+    // was casting GdkImage to GdkWindow which is not valid and cause AVs
+    if gdk_window_get_type(PGdkWindow(AImage))= GDK_WINDOW_PIXMAP then
+      colormap := nil // pixmaps are created with null colormap, get system one instead
+    else
+      colormap := gdk_window_get_colormap(PGdkWindow(AImage));
+    {$else}
+    colormap := gdk_image_get_colormap(image);
+    {$endif}
+
+    if colormap = nil then
+      colormap := gdk_colormap_get_system;
+
+    offset := 0;
+
+    for j := 0 to AHeight - 1 do
+      for i := 0 to AWidth - 1 do
+      begin
+        Pixel := gdk_image_get_pixel(Image, i, j);
+        MaskPixel := gdk_image_get_pixel(MaskImage, i, j);
+        FillChar(GDKColor,SizeOf(GDKColor), 0);
+        // does not work with TBitmap.Canvas
+        gdk_colormap_query_color(colormap, Pixel, @GDKColor);
+        SetColorAndMask(GDKColor, MaskPixel);
+      end;
+    gdk_image_unref(Image);
+    gdk_image_unref(MaskImage);
+  end;
+
+var
+  FG, BG: TGDKColor;
+  Img, Msk: PGdkPixmap;
+  srcbitmap, mskbitmap: PGdkBitmap;
+  W, H, bitlen: integer;
+  ImgBits, MskBits: array of byte;
+  APixbuf: PGdkPixbuf;
+begin
+  Result := 0;
+  if not IsValidGDIObject(IconInfo^.hbmColor) then Exit;
+
+  {$IFDEF VerboseGtkToDos}{$note TODO: add support for mono cursors}{$ENDIF}
+  Img := PGDIObject(IconInfo^.hbmColor)^.GDIBitmapObject;
+  if (PGDIObject(IconInfo^.hbmColor)^.GDIBitmapType = gbPixmap) and
+     (PGDIObject(IconInfo^.hbmColor)^.GDIPixmapObject.Mask <> nil) then
+    Msk := PGDIObject(IconInfo^.hbmColor)^.GDIPixmapObject.Mask
+  else
+    Msk := PGDIObject(IconInfo^.hbmMask)^.GDIBitmapObject;
+
+  gdk_drawable_get_size(Img, @W, @H);
+  
+  if IconInfo^.fIcon then
+  begin
+    // Creating PixBuf from pixmap and mask
+    Result := HICON(PtrUInt(CreatePixbufFromImageAndMask(Img, 0, 0, W, H, nil, Msk)));
+  end
+  else
+  begin
+    bitlen := (W * H) shr 3;
+    SetLength(ImgBits, bitlen);
+    SetLength(MskBits, bitlen);
+    FillChar(ImgBits[0], bitlen, 0);
+    FillChar(MskBits[0], bitlen, 0);
+
+    GetColorMask(Img, Msk, @ImgBits[0], @MskBits[0], W, H);
+
+    srcbitmap := gdk_bitmap_create_from_data(nil, @ImgBits[0], W, H);
+    mskbitmap := gdk_bitmap_create_from_data(nil, @MskBits[0], W, H);
+
+    // white
+    fg.red := $FFFF;
+    fg.green := $FFFF;
+    fg.blue := $FFFF;
+    fg.pixel := 0;
+
+    // black
+    bg.red := 0;
+    bg.green := 0;
+    bg.blue := 0;
+    bg.pixel := 0;
+
+    Result := HCURSOR(PtrUInt(gdk_cursor_new_from_pixmap(srcbitmap, mskbitmap,
+      @fg, @bg, IconInfo^.xHotspot, IconInfo^.yHotspot)));
+
+    gdk_pixmap_unref(srcbitmap);
+    gdk_pixmap_unref(mskbitmap);
+  end;
+end;
 
 {------------------------------------------------------------------------------
   Function: CreatePalette
