@@ -5144,7 +5144,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- object Visibility: default -->
       <element name="TDBNavButton">
-        <short/>
+        <short>
+          <var>TDBNavButton</var> - one of the <var>SpeedButtons</var> on a <var>TDBNavigator</var> tool</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5176,8 +5177,15 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- property Visibility: public -->
       <element name="TDBNavButton.Index">
-        <short/>
-        <descr/>
+        <short>
+          <var>Index</var> - the value from the enumerated type that specifies which button is being selected</short>
+        <descr>
+          <p>
+            <printshort id="TDBNavButton.Index"/>
+          </p>
+          <p>Button may be</p>
+          <p>nbFirst, nbPrior, nbNext, nbLast, nbInsert, nbDelete, nbEdit, nbPost, nbCancel, nbRefresh</p>
+        </descr>
         <seealso/>
       </element>
       <!-- object Visibility: default -->

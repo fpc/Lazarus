@@ -101,7 +101,7 @@
       <!-- object Visibility: default -->
       <element name="TColumn">
         <short>
-          <var>TColumn </var>- one of the physical columns of the display in a DataBase Grid</short>
+          <var>TColumn </var>- one of the physical columns of the display in a DataBase Grid (not necessarily the same as a Column in a SQL database)</short>
         <descr>
           <p>
             <var>TColumn </var>- one of the physical columns of the display in a DataBase Grid</p>
@@ -1261,8 +1261,13 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TColumn">
-        <short/>
-        <descr/>
+	<short>
+	  <var>TColumn </var>- one of the physical columns of the display in a DataBase Grid (not necessarily the same as a Column in a SQL database)</short>
+	 <descr>
+		<p>
+		  <var>TColumn </var>- one of the physical columns of the display in a DataBase Grid</p>
+		<p>Each column may display the information held in a Field of the DataSet to which the DBGrid is attached, but the order of appearance of the columns need not correspond to the order in which the Fields exist in the DataSet, nor need all Fields be represented by a Column.</p>
+	</descr>
         <errors/>
         <seealso/>
       </element>
