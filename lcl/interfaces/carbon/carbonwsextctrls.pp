@@ -22,7 +22,7 @@
 }
 unit CarbonWSExtCtrls;
 
-{$mode objfpc}{$H+}
+{$mode delphi}
 
 interface
 
@@ -42,6 +42,7 @@ uses
   {$endif CarbonUseCocoa}
   // LCL
   Classes, Controls, ExtCtrls, LCLType, LCLProc, Graphics, Math, SysUtils,
+  Menus,
   // widgetset
   WSExtCtrls, WSLCLClasses, WSControls, WSProc,
   // LCL Carbon

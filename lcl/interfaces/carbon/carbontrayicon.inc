@@ -2,16 +2,107 @@
 
 {$ifdef CarbonUseCocoa}
 
-{ TCarbonWSCustomTrayIcon }
+{$STATIC ON}
 
 type
-  TPrivateCocoaCarbonTrayIcon = class(TObject)
+
+  { TPrivateCocoaCarbonTrayIcon }
+
+  TPrivateCocoaCarbonTrayIcon = class(NSObject)
   public
     { Fields }
     bar: NSStatusBar;
     item: NSStatusItem;
     image: NSImage;
+    menu: NSMenu;
+    MenuItems: array of NSMenuItem;
+    { Structural Methods }
+    constructor Create; override;
+    class function getClass: objc.id; override;
+    procedure AddMethods; override;
+    { Pascal Methods }
+    function CreateMenu(APopUpMenu: TPopUpMenu): NSMenu;
+    function CreateMenuItem(ATitle: shortstring;
+      ACallbackName: string; ACallbackClass: NSObject): NSMenuItem;
+    { Objective-C compatible methods }
+    class procedure HandleMenuItemClick(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl; static;
   end;
+
+const
+  Str_TPrivateCocoaCarbonTrayIcon = 'TPrivateCocoaCarbonTrayIcon';
+
+  Str_HandleMenuItemClick = 'HandleMenuItemClick';
+
+{ TPrivateCocoaCarbonTrayIcon }
+
+{@@
+  Adds methods to the class
+
+  Details of the parameters string:
+
+  The first parameter is the result (v = void),
+  followed by self and _cmd (@ = id and : = SEL),
+  and on the end "sender" (@ = id)
+}
+procedure TPrivateCocoaCarbonTrayIcon.AddMethods;
+begin
+//  AddMethod(Str_HandleMenuItemClick, 'v@:@', Pointer(HandleMenuItemClick));
+end;
+
+constructor TPrivateCocoaCarbonTrayIcon.Create;
+var
+  fileName: CFStringRef;
+begin
+  { The class is registered on the Objective-C runtime before the NSObject constructor is called }
+  if not CreateClassDefinition(Str_TPrivateCocoaCarbonTrayIcon, Str_NSObject) then WriteLn('Failed to create objc class');
+
+  inherited Create;
+end;
+
+class function TPrivateCocoaCarbonTrayIcon.getClass: objc.id;
+begin
+  Result := objc_getClass(Str_NSObject);
+end;
+
+{ Creates a NSMenu structure representing a TPopUpMenu }
+function TPrivateCocoaCarbonTrayIcon.CreateMenu(APopUpMenu: TPopUpMenu): NSMenu;
+var
+  MenuTitle: CFStringRef;
+  i: Integer;
+begin
+  MenuTitle := CFStringCreateWithPascalString(nil, '', kCFStringEncodingUTF8);
+  Result := NSMenu.initWithTitle(MenuTitle);
+
+  for i := 0 to APopUpMenu.Items.Count - 1 do
+  begin
+    SetLength(MenuItems, i + 1);
+    MenuItems[i] := CreateMenuItem(APopUpMenu.Items[i].Caption, Str_HandleMenuItemClick, Self);
+    Result.addItem(MenuItems[i].Handle);
+  end;
+end;
+
+function TPrivateCocoaCarbonTrayIcon.CreateMenuItem(ATitle: shortstring;
+  ACallbackName: string; ACallbackClass: NSObject): NSMenuItem;
+var
+  ItemText: CFStringRef;
+  KeyText: CFStringRef;
+begin
+  KeyText := CFStringCreateWithPascalString(nil, '', kCFStringEncodingUTF8);
+  ItemText := CFStringCreateWithPascalString(nil, ATitle, kCFStringEncodingUTF8);
+  WriteLn(' ItemText: ', IntToHex(Int64(ItemText), 8), ' ATitle: ', ATitle);
+
+  Result := NSMenuItem.initWithTitle_action_keyEquivalent(ItemText, nil, KeyText);
+  Result.setTarget(ACallbackClass.Handle);
+  Result.setAction(sel_registerName(PChar(ACallbackName)));
+end;
+
+class procedure TPrivateCocoaCarbonTrayIcon.HandleMenuItemClick(_self: objc.id;
+  _cmd: SEL; sender: objc.id); cdecl;
+begin
+
+end;
+
+{ TCarbonWSCustomTrayIcon }
 
 class function TCarbonWSCustomTrayIcon.Hide(const ATrayIcon: TCustomTrayIcon): Boolean;
 var
@@ -78,13 +169,6 @@ begin
   {$endif VerboseCarbonTrayIcon}
   APrivateTrayIcon.image.unlockFocus;
 
-  { Inserts the menu }
-
-  if ATrayIcon.PopUpMenu <> nil then
-  begin
-  
-  end;
-
   { Shows the icon }
 
   if APrivateTrayIcon.item <> nil then Exit(True);
@@ -92,6 +176,14 @@ begin
   APrivateTrayIcon.item := NSStatusItem.CreateWithHandle(APrivateTrayIcon.bar.statusItemWithLength(NSSquareStatusItemLength));
   APrivateTrayIcon.item.retain();
   APrivateTrayIcon.item.setImage(APrivateTrayIcon.image.Handle);
+
+  { Inserts the menu }
+
+  if ATrayIcon.PopUpMenu <> nil then
+  begin
+    APrivateTrayIcon.menu := APrivateTrayIcon.CreateMenu(ATrayIcon.PopUpMenu);
+    APrivateTrayIcon.item.setMenu(APrivateTrayIcon.menu.Handle);
+  end;
 
   Result := True;
   
