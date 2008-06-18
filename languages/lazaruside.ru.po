@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-06-09 03:13+0300\n"
+"PO-Revision-Date: 2008-06-15 00:20+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -463,7 +463,7 @@ msgstr "Прервать всю загрузку"
 
 #: lazarusidestrconsts:lisinfobuildabort
 msgid "Aborted..."
-msgstr ""
+msgstr "Прервано..."
 
 #: lazarusidestrconsts:lismenutemplateabout
 msgid "About"
@@ -1791,7 +1791,7 @@ msgstr "Компиляция IDE (без сборки)"
 
 #: lazarusidestrconsts:lisinfobuildcaption
 msgid "Compile Project"
-msgstr ""
+msgstr "Компиляция проекта"
 
 #: lazarusidestrconsts:lispckeditcompileeverything
 msgid "Compile everything?"
@@ -1843,7 +1843,7 @@ msgstr "Путь компилятора (%s)"
 
 #: lazarusidestrconsts:lisinfobuildcomplile
 msgid "Compiling..."
-msgstr ""
+msgstr "Компиляция..."
 
 #: lazarusidestrconsts:lismenucompletecode
 msgid "Complete Code"
@@ -2975,7 +2975,7 @@ msgstr "Заключить выделение в ..."
 
 #: lazarusidestrconsts:uemencoding
 msgid "Encoding"
-msgstr ""
+msgstr "Кодировка"
 
 #: lazarusidestrconsts:lisencodingoffileondiskisnewencodingis2
 msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
@@ -3139,7 +3139,7 @@ msgstr "Ошибка записи списка пакетов в файл%s%s%s%
 
 #: lazarusidestrconsts:lisinfobuilderror
 msgid "Error..."
-msgstr ""
+msgstr "Ошибка..."
 
 #: lazarusidestrconsts:liserror
 msgid "Error: "
@@ -3155,7 +3155,7 @@ msgstr "Ошибки"
 
 #: lazarusidestrconsts:lisinfobuilderrors
 msgid "Errors:"
-msgstr ""
+msgstr "Ошибок:"
 
 #: lazarusidestrconsts:srvk_escape
 msgid "Escape"
@@ -3659,7 +3659,7 @@ msgstr "С плавающей точкой"
 
 #: lazarusidestrconsts:dlgeofocusmessagesaftercompilation
 msgid "Focus messages after compilation"
-msgstr ""
+msgstr "Перевести фокус в окно сообщений после компиляции"
 
 #: lazarusidestrconsts:srkmecjumptoeditor
 msgid "Focus to source editor"
@@ -3879,7 +3879,7 @@ msgstr "Переход к маркеру 9"
 
 #: lazarusidestrconsts:srkmecmatchbracket
 msgid "Go to matching bracket"
-msgstr "Переход к соотв. скобке"
+msgstr "Переход к парной скобке"
 
 #: lazarusidestrconsts:srkmecnexteditor
 msgid "Go to next editor"
@@ -4139,7 +4139,7 @@ msgstr "Подсказки командных кнопок (открыть, со
 
 #: lazarusidestrconsts:lisinfobuildhint
 msgid "Hints:"
-msgstr ""
+msgstr "Подсказок:"
 
 #: lazarusidestrconsts:srvk_home
 msgid "Home"
@@ -4995,7 +4995,7 @@ msgstr "Kana"
 
 #: lazarusidestrconsts:liscldirkeepalltextfiles
 msgid "Keep all text files"
-msgstr "Оставлять все текстовые файлы"
+msgstr "Оставить все текстовые файлы"
 
 #: lazarusidestrconsts:dlgkeepcaretx
 msgid "Keep caret X position"
@@ -5007,7 +5007,7 @@ msgstr "Хранить отдельные переменные в регистр
 
 #: lazarusidestrconsts:liscldirkeepfilesmatchingfilter
 msgid "Keep files matching filter"
-msgstr "Сохранять файлы, соотв. фильтру"
+msgstr "Сохранить файлы по фильтру"
 
 #: lazarusidestrconsts:liskeepname
 msgid "Keep name"
@@ -5191,7 +5191,7 @@ msgstr "Включаемый файл Lazarus"
 
 #: lazarusidestrconsts:lislazaruslanguageid
 msgid "Lazarus language ID (e.g. en, de, br, fi)"
-msgstr " ID языка Lazarus (напр.: en, de, br, fi)"
+msgstr "ID языка Lazarus (напр.: en, de, br, fi)"
 
 #: lazarusidestrconsts:lislazaruslanguagename
 msgid "Lazarus language name (e.g. english, deutsch)"
@@ -5307,7 +5307,7 @@ msgstr "Строки"
 
 #: lazarusidestrconsts:lisinfobuildlines
 msgid "Lines:"
-msgstr "Строки:"
+msgstr "Строк:"
 
 #: lazarusidestrconsts:dlglinksmart
 msgid "Link Smart"
@@ -6035,7 +6035,7 @@ msgstr "Примечание: Значения всех клавиш будут 
 
 #: lazarusidestrconsts:lisinfobuildnote
 msgid "Notes:"
-msgstr ""
+msgstr "Заметок:"
 
 #: lazarusidestrconsts:dlgenvbackuphelpnote
 msgid "Notes: Project files are all files in the project directory"
@@ -8147,7 +8147,7 @@ msgstr "Показывать номера строк"
 
 #: lazarusidestrconsts:dlgshownotes
 msgid "Show Notes"
-msgstr "Показать заметки"
+msgstr "Показывать заметки"
 
 #: lazarusidestrconsts:dlgcoshowoptions
 msgid "Show Options"
@@ -8179,7 +8179,7 @@ msgstr "Показать все сообщения"
 
 #: lazarusidestrconsts:dlgshowprocserror
 msgid "Show all procs on error"
-msgstr "Все проц-ры при ошибках"
+msgstr "Все процедуры при ошибках"
 
 #: lazarusidestrconsts:dlgqshowborderspacing
 msgid "Show border spacing"
@@ -8195,11 +8195,11 @@ msgstr "Показывать контекст кода"
 
 #: lazarusidestrconsts:dlgqshowcompiledialog
 msgid "Show compile dialog"
-msgstr ""
+msgstr "Показывать диалог компиляции"
 
 #: lazarusidestrconsts:dlgshowcompiledprocedures
 msgid "Show compiled procedures"
-msgstr "Показать компилируемые процедуры"
+msgstr "Показывать компилируемые процедуры"
 
 #: lazarusidestrconsts:dlgshowcompileroptions
 msgid "Show compiler options"
@@ -8211,15 +8211,15 @@ msgstr "Показать названия компонентов"
 
 #: lazarusidestrconsts:dlgshowconditionals
 msgid "Show conditionals"
-msgstr "Показать условия"
+msgstr "Показывать условия"
 
 #: lazarusidestrconsts:dlgshowdebuginfo
 msgid "Show debug info"
-msgstr "Показать отладочную инф-ю"
+msgstr "Показывать отладочную информацию"
 
 #: lazarusidestrconsts:dlgshowdefinedmacros
 msgid "Show defined macros"
-msgstr "Показать определённые макросы"
+msgstr "Показывать определённые макросы"
 
 #: lazarusidestrconsts:dlgshowedrhints
 msgid "Show editor hints"
@@ -8231,15 +8231,15 @@ msgstr "Показать пустые методы"
 
 #: lazarusidestrconsts:dlgshoweverything
 msgid "Show everything"
-msgstr "Показать всё"
+msgstr "Показывать всё"
 
 #: lazarusidestrconsts:dlgshowexecutableinfo
 msgid "Show executable info (Win32 only)"
-msgstr "Показать информацию об exe (только Win32)"
+msgstr "Показывать информацию об exe (только Win32)"
 
 #: lazarusidestrconsts:dlgshowgeneralinfo
 msgid "Show general info"
-msgstr "Показать общие сведения"
+msgstr "Показывать общие сведения"
 
 #: lazarusidestrconsts:lispldshowgloballinks
 msgid "Show global links"
@@ -8271,7 +8271,7 @@ msgstr "Показывать сообщение при остановке"
 
 #: lazarusidestrconsts:dlgshownothing
 msgid "Show nothing (only errors)"
-msgstr "Ничего не показывать(только ошибки)"
+msgstr "Ничего не показывать (только ошибки)"
 
 #: lazarusidestrconsts:lisshowoldtaborder
 msgid "Show old tab order"
@@ -8295,7 +8295,7 @@ msgstr "Показать сводку"
 
 #: lazarusidestrconsts:dlgshowtriedfiles
 msgid "Show tried files"
-msgstr "Показать опробованные файлы"
+msgstr "Показывать опробованные файлы"
 
 #: lazarusidestrconsts:lisshowunits
 msgid "Show units"
@@ -8303,7 +8303,7 @@ msgstr "Показывать модули"
 
 #: lazarusidestrconsts:dlgshowusedfiles
 msgid "Show used files"
-msgstr "Показать используемые файлы"
+msgstr "Показывать используемые файлы"
 
 #: lazarusidestrconsts:lispldshowuserlinks
 msgid "Show user links"
@@ -8323,11 +8323,11 @@ msgstr "Сигналы"
 
 #: lazarusidestrconsts:lissimplesyntax
 msgid "Simple Syntax"
-msgstr "Простой Синтаксис"
+msgstr "Простой синтаксис"
 
 #: lazarusidestrconsts:liscldirsimplesyntaxeginsteadof
 msgid "Simple Syntax (e.g. * instead of .*)"
-msgstr "Простой синтаксис (напр., * вместо .*)"
+msgstr "Простой синтаксис (например, * вместо .*)"
 
 #: lazarusidestrconsts:fdmsizeword
 msgid "Size"
@@ -8607,7 +8607,7 @@ msgstr "Успешно"
 
 #: lazarusidestrconsts:lisinfobuildsuccess
 msgid "Success..."
-msgstr ""
+msgstr "Успешно..."
 
 #: lazarusidestrconsts:lisa2pswitchpaths
 msgid "Switch Paths"
@@ -10615,7 +10615,7 @@ msgstr "Предупреждение: найден двусмысленный ф
 
 #: lazarusidestrconsts:lisinfobuildwarning
 msgid "Warnings:"
-msgstr ""
+msgstr "Предупреждений:"
 
 #: lazarusidestrconsts:liswatchpropert
 msgid "Watch Properties"
@@ -10795,11 +10795,11 @@ msgstr "собрать программу/проект"
 
 #: lazarusidestrconsts:dlglefttopclr
 msgid "color for left, top"
-msgstr "цвет слева сверху"
+msgstr "цвет левой и верхней"
 
 #: lazarusidestrconsts:dlgrightbottomclr
 msgid "color for right, bottom"
-msgstr "цвет справа снизу"
+msgstr "цвет правой и нижней"
 
 #: lazarusidestrconsts:lisccomsgppunotfound
 msgid "compiled FPC unit not found: %s.ppu"
