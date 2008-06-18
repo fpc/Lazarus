@@ -174,36 +174,9 @@ type
     BitmapWidth: integer;
     BitmapHeight: integer;
   end;
-  PDoubleBuffer = ^TDoubleBuffer;
-  
+
 var
   CurDoubleBuffer: TDoubleBuffer = (DC: 0; Bitmap: 0; BitmapWidth: 0; BitmapHeight: 0);
-  SavedBuffers: TList = nil;
-
-function SaveDoubleBuffer: Boolean;
-var
-  Item: PDoubleBuffer;
-begin
-  if SavedBuffers = nil then
-    SavedBuffers := TList.Create;
-  New(Item);
-  Item^ := CurDoubleBuffer;
-  SavedBuffers.Add(Item);
-  FillChar(CurDoubleBuffer, SizeOf(CurDoubleBuffer), 0);
-  Result := True;
-end;
-
-procedure RestoreDoubleBuffer;
-var
-  Item: PDoubleBuffer;
-begin
-  Item := SavedBuffers[SavedBuffers.Count - 1];
-  SavedBuffers.Delete(SavedBuffers.Count - 1);
-  CurDoubleBuffer := Item^;
-  Dispose(Item);
-  if SavedBuffers.Count = 0 then
-    FreeAndNil(SavedBuffers);
-end;
 
 function CheckMouseMovement: boolean;
   // returns true if mouse did not move between lmousebutton down
@@ -387,6 +360,7 @@ var
     needParentPaint: boolean;
     lNotebookFound: boolean;
     BufferWasSaved: Boolean;
+    BackupBuffer: TDoubleBuffer;
   begin
     // note: ignores the received DC
     // do not use default deliver message
@@ -436,9 +410,13 @@ var
     if useDoubleBuffer then
     begin
       if CurDoubleBuffer.DC <> 0 then
+      begin
         // we've been called from another paint handler. To prevent killing of
         // not own DC and HBITMAP lets save then and restore on exit
-        BufferWasSaved := SaveDoubleBuffer
+        BackupBuffer := CurDoubleBuffer;
+        FillChar(CurDoubleBuffer, SizeOf(CurDoubleBuffer), 0);
+        BufferWasSaved := True;
+      end
       else
         BufferWasSaved := False;
       CurDoubleBuffer.DC := Windows.CreateCompatibleDC(0);
@@ -565,7 +543,11 @@ var
         DeleteDC(CurDoubleBuffer.DC);
         CurDoubleBuffer.DC := 0;
         if BufferWasSaved then
-          RestoreDoubleBuffer;
+        begin
+          if CurDoubleBuffer.Bitmap <> 0 then
+            DeleteObject(CurDoubleBuffer.Bitmap);
+          CurDoubleBuffer := BackupBuffer;
+        end;
 {$ifdef DEBUG_DOUBLEBUFFER}
         if CopyBitmapToClipboard then
         begin
