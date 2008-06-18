@@ -433,7 +433,7 @@ msgstr "Een geldige Tool heeft tenminste een titel en een bestandsnaam nodig."
 msgid "Abandon changes?"
 msgstr ""
 
-#: lazarusidestrconsts:lispdabort
+#: lazarusidestrconsts:lisinfobuildmakeabort
 msgid "Abort"
 msgstr "Afbreken"
 
@@ -459,6 +459,10 @@ msgstr "Het laden van het project afbreken"
 
 #: lazarusidestrconsts:lisabortwholeloading
 msgid "Abort whole loading"
+msgstr ""
+
+#: lazarusidestrconsts:lisinfobuildabort
+msgid "Aborted..."
 msgstr ""
 
 #: lazarusidestrconsts:lismenutemplateabout
@@ -1785,6 +1789,10 @@ msgstr "Compileren"
 msgid "Compile IDE (without linking)"
 msgstr "Compileer IDE (zonder Linking)"
 
+#: lazarusidestrconsts:lisinfobuildcaption
+msgid "Compile Project"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditcompileeverything
 msgid "Compile everything?"
 msgstr "Alles compileeren?"
@@ -1832,6 +1840,10 @@ msgstr "Compiler opties"
 #: lazarusidestrconsts:dlgfpcpath
 msgid "Compiler path (e.g. %s)"
 msgstr "Compilerpad (%s)"
+
+#: lazarusidestrconsts:lisinfobuildcomplile
+msgid "Compiling..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenucompletecode
 msgid "Complete Code"
@@ -2961,6 +2973,10 @@ msgstr ""
 msgid "Enclose selection ..."
 msgstr "Omsluit Selectie ..."
 
+#: lazarusidestrconsts:uemencoding
+msgid "Encoding"
+msgstr ""
+
 #: lazarusidestrconsts:lisencodingoffileondiskisnewencodingis2
 msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
 msgstr ""
@@ -3121,6 +3137,10 @@ msgstr "Fout bij schrijven bestand"
 msgid "Error writing package list to file%s%s%s%s"
 msgstr "Error bij schrijven pakketlijst naar bestand%s%s%s%s"
 
+#: lazarusidestrconsts:lisinfobuilderror
+msgid "Error..."
+msgstr ""
+
 #: lazarusidestrconsts:liserror
 msgid "Error: "
 msgstr "Fout:"
@@ -3132,6 +3152,10 @@ msgstr "Error: ongeldige compiler: %s"
 #: lazarusidestrconsts:liserrors
 msgid "Errors"
 msgstr "Fouten"
+
+#: lazarusidestrconsts:lisinfobuilderrors
+msgid "Errors:"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_escape
 msgid "Escape"
@@ -3633,6 +3657,10 @@ msgstr "Repareer .lfm-bestand"
 msgid "Floating Point"
 msgstr ""
 
+#: lazarusidestrconsts:dlgeofocusmessagesaftercompilation
+msgid "Focus messages after compilation"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecjumptoeditor
 msgid "Focus to source editor"
 msgstr "Focus naar Broncode Editor"
@@ -4108,6 +4136,10 @@ msgstr "Hints voor componenten palet"
 #: lazarusidestrconsts:dlgspbhints
 msgid "Hints for main speed buttons (open, save, ...)"
 msgstr "Hints voor snelknoppen in hoofdbalk (openen, opslaan, ...)"
+
+#: lazarusidestrconsts:lisinfobuildhint
+msgid "Hints:"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_home
 msgid "Home"
@@ -5273,7 +5305,7 @@ msgstr ""
 msgid "Lines"
 msgstr "Regels"
 
-#: lazarusidestrconsts:lisuidlines
+#: lazarusidestrconsts:lisinfobuildlines
 msgid "Lines:"
 msgstr "Regels:"
 
@@ -5999,6 +6031,10 @@ msgstr "Niet nu"
 
 #: lazarusidestrconsts:liskmnoteallkeyswillbesettothevaluesofthechoosenscheme
 msgid "Note: All keys will be set to the values of the choosen scheme."
+msgstr ""
+
+#: lazarusidestrconsts:lisinfobuildnote
+msgid "Notes:"
 msgstr ""
 
 #: lazarusidestrconsts:dlgenvbackuphelpnote
@@ -8157,6 +8193,10 @@ msgstr "Toon sluitknoppen in notebook"
 msgid "Show code context"
 msgstr "Toon code samenhang"
 
+#: lazarusidestrconsts:dlgqshowcompiledialog
+msgid "Show compile dialog"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowcompiledprocedures
 msgid "Show compiled procedures"
 msgstr "Toon gecompileerde procedures"
@@ -8564,6 +8604,10 @@ msgstr "Subproperties"
 #: lazarusidestrconsts:lissuccess
 msgid "Success"
 msgstr "Succes!"
+
+#: lazarusidestrconsts:lisinfobuildsuccess
+msgid "Success..."
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pswitchpaths
 msgid "Switch Paths"
@@ -10568,6 +10612,10 @@ msgstr "Waarschuwing: Het bestand %s%s%s%sbehoort tot het huidige project."
 #: lazarusidestrconsts:liswarningambiguousfilefoundsourcefileis
 msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
 msgstr "Waarschuwing: dubbel bestand gevonden: %s%s%s. Broncode bestand is: %s%s%s"
+
+#: lazarusidestrconsts:lisinfobuildwarning
+msgid "Warnings:"
+msgstr ""
 
 #: lazarusidestrconsts:liswatchpropert
 msgid "Watch Properties"

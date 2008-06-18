@@ -151,7 +151,7 @@ begin
   PrivateCheckBox.Caption:=lisPrivate;
   ProtectedCheckBox.Caption:=lisProtected;
   PublicCheckBox.Caption:=lisEMDPublic;
-  PublishedButton.Caption:=lisEMDPublished;
+  PublishedCheckBox.Caption:=lisEMDPublished;
   AllButton.Caption:=lisEMDAll;
   PublishedButton.Caption:=lisEMDOnlyPublished;
   MethodsGroupBox.Caption:=lisEMDFoundEmptyMethods;

@@ -436,7 +436,7 @@ msgstr "一个有效的工具需要标题和文件名."
 msgid "Abandon changes?"
 msgstr ""
 
-#: lazarusidestrconsts:lispdabort
+#: lazarusidestrconsts:lisinfobuildmakeabort
 msgid "Abort"
 msgstr "(中止)"
 
@@ -463,6 +463,10 @@ msgstr "中断所有加载中的工程"
 #: lazarusidestrconsts:lisabortwholeloading
 msgid "Abort whole loading"
 msgstr "中断整个加载"
+
+#: lazarusidestrconsts:lisinfobuildabort
+msgid "Aborted..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenutemplateabout
 msgid "About"
@@ -1788,6 +1792,10 @@ msgstr "编译"
 msgid "Compile IDE (without linking)"
 msgstr "编译IDE(不连接)"
 
+#: lazarusidestrconsts:lisinfobuildcaption
+msgid "Compile Project"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditcompileeverything
 msgid "Compile everything?"
 msgstr "编译所有的?"
@@ -1835,6 +1843,10 @@ msgstr "编译选项"
 #: lazarusidestrconsts:dlgfpcpath
 msgid "Compiler path (e.g. %s)"
 msgstr "编译器路径 (%s)"
+
+#: lazarusidestrconsts:lisinfobuildcomplile
+msgid "Compiling..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenucompletecode
 msgid "Complete Code"
@@ -2964,6 +2976,10 @@ msgstr "装入选择区"
 msgid "Enclose selection ..."
 msgstr "封装所选 ..."
 
+#: lazarusidestrconsts:uemencoding
+msgid "Encoding"
+msgstr ""
+
 #: lazarusidestrconsts:lisencodingoffileondiskisnewencodingis2
 msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
 msgstr ""
@@ -3124,6 +3140,10 @@ msgstr "写文件错误"
 msgid "Error writing package list to file%s%s%s%s"
 msgstr "将包列表信息写入文件 %s%s%s%s 时错误"
 
+#: lazarusidestrconsts:lisinfobuilderror
+msgid "Error..."
+msgstr ""
+
 #: lazarusidestrconsts:liserror
 msgid "Error: "
 msgstr "错误: "
@@ -3135,6 +3155,10 @@ msgstr "错误: 无效编译器: %s"
 #: lazarusidestrconsts:liserrors
 msgid "Errors"
 msgstr "错误"
+
+#: lazarusidestrconsts:lisinfobuilderrors
+msgid "Errors:"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_escape
 msgid "Escape"
@@ -3636,6 +3660,10 @@ msgstr "修复 LFM 文件"
 msgid "Floating Point"
 msgstr "浮点"
 
+#: lazarusidestrconsts:dlgeofocusmessagesaftercompilation
+msgid "Focus messages after compilation"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecjumptoeditor
 msgid "Focus to source editor"
 msgstr "焦点转移到代码编辑器"
@@ -4111,6 +4139,10 @@ msgstr "组件面板提示"
 #: lazarusidestrconsts:dlgspbhints
 msgid "Hints for main speed buttons (open, save, ...)"
 msgstr "快速按钮提示 (打开, 保存, ...)"
+
+#: lazarusidestrconsts:lisinfobuildhint
+msgid "Hints:"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_home
 msgid "Home"
@@ -5276,7 +5308,7 @@ msgstr "行/长度"
 msgid "Lines"
 msgstr "行"
 
-#: lazarusidestrconsts:lisuidlines
+#: lazarusidestrconsts:lisinfobuildlines
 msgid "Lines:"
 msgstr "行:"
 
@@ -6003,6 +6035,10 @@ msgstr "不是现在"
 #: lazarusidestrconsts:liskmnoteallkeyswillbesettothevaluesofthechoosenscheme
 msgid "Note: All keys will be set to the values of the choosen scheme."
 msgstr "提示:所有的键将映射到所选的配置的值"
+
+#: lazarusidestrconsts:lisinfobuildnote
+msgid "Notes:"
+msgstr ""
 
 #: lazarusidestrconsts:dlgenvbackuphelpnote
 msgid "Notes: Project files are all files in the project directory"
@@ -8160,6 +8196,10 @@ msgstr "Notebook中显示关闭按钮"
 msgid "Show code context"
 msgstr "上下文"
 
+#: lazarusidestrconsts:dlgqshowcompiledialog
+msgid "Show compile dialog"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowcompiledprocedures
 msgid "Show compiled procedures"
 msgstr "显示编译过程"
@@ -8567,6 +8607,10 @@ msgstr "子属性"
 #: lazarusidestrconsts:lissuccess
 msgid "Success"
 msgstr "成功"
+
+#: lazarusidestrconsts:lisinfobuildsuccess
+msgid "Success..."
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pswitchpaths
 msgid "Switch Paths"
@@ -10571,6 +10615,10 @@ msgstr "警告: 文件 %s%s%s%s属于当前工程."
 #: lazarusidestrconsts:liswarningambiguousfilefoundsourcefileis
 msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
 msgstr "警告: 发现可疑文件: %s%s%s .源代码文件是:%s%s%s"
+
+#: lazarusidestrconsts:lisinfobuildwarning
+msgid "Warnings:"
+msgstr ""
 
 #: lazarusidestrconsts:liswatchpropert
 msgid "Watch Properties"

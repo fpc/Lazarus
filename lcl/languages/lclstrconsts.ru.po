@@ -273,6 +273,10 @@ msgstr "Стыковка"
 msgid "Down"
 msgstr "Стрелка вниз"
 
+#: lclstrconsts:rsduplicateiconformat
+msgid "Duplicate icon format."
+msgstr ""
+
 #: lclstrconsts:sduplicatemenus
 msgid "Duplicate menus"
 msgstr "Повторяющиеся меню"

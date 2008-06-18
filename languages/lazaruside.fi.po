@@ -428,7 +428,7 @@ msgstr ""
 msgid "Abandon changes?"
 msgstr ""
 
-#: lazarusidestrconsts:lispdabort
+#: lazarusidestrconsts:lisinfobuildmakeabort
 msgid "Abort"
 msgstr ""
 
@@ -454,6 +454,10 @@ msgstr "Keskeytä projektin lataaminen"
 
 #: lazarusidestrconsts:lisabortwholeloading
 msgid "Abort whole loading"
+msgstr ""
+
+#: lazarusidestrconsts:lisinfobuildabort
+msgid "Aborted..."
 msgstr ""
 
 #: lazarusidestrconsts:lismenutemplateabout
@@ -1780,6 +1784,10 @@ msgstr "Käännä"
 msgid "Compile IDE (without linking)"
 msgstr ""
 
+#: lazarusidestrconsts:lisinfobuildcaption
+msgid "Compile Project"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditcompileeverything
 msgid "Compile everything?"
 msgstr ""
@@ -1827,6 +1835,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgfpcpath
 msgid "Compiler path (e.g. %s)"
 msgstr "FreePascal kääntäjä (%s) löytyy tästä polusta/linkistä"
+
+#: lazarusidestrconsts:lisinfobuildcomplile
+msgid "Compiling..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenucompletecode
 msgid "Complete Code"
@@ -2956,6 +2968,10 @@ msgstr ""
 msgid "Enclose selection ..."
 msgstr "Lauserakenteen lisäys ..."
 
+#: lazarusidestrconsts:uemencoding
+msgid "Encoding"
+msgstr ""
+
 #: lazarusidestrconsts:lisencodingoffileondiskisnewencodingis2
 msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
 msgstr ""
@@ -3116,6 +3132,10 @@ msgstr ""
 msgid "Error writing package list to file%s%s%s%s"
 msgstr ""
 
+#: lazarusidestrconsts:lisinfobuilderror
+msgid "Error..."
+msgstr ""
+
 #: lazarusidestrconsts:liserror
 msgid "Error: "
 msgstr "Virhe: "
@@ -3127,6 +3147,10 @@ msgstr ""
 #: lazarusidestrconsts:liserrors
 msgid "Errors"
 msgstr "Virheet"
+
+#: lazarusidestrconsts:lisinfobuilderrors
+msgid "Errors:"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_escape
 msgid "Escape"
@@ -3628,6 +3652,10 @@ msgstr "LFM tiedoston korjaus"
 msgid "Floating Point"
 msgstr ""
 
+#: lazarusidestrconsts:dlgeofocusmessagesaftercompilation
+msgid "Focus messages after compilation"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecjumptoeditor
 msgid "Focus to source editor"
 msgstr ""
@@ -4103,6 +4131,10 @@ msgstr "Vihjetekstit komponenttipaletille"
 #: lazarusidestrconsts:dlgspbhints
 msgid "Hints for main speed buttons (open, save, ...)"
 msgstr "Vihjetekstit työkalupainikkeille"
+
+#: lazarusidestrconsts:lisinfobuildhint
+msgid "Hints:"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_home
 msgid "Home"
@@ -5268,7 +5300,7 @@ msgstr ""
 msgid "Lines"
 msgstr "Rivit"
 
-#: lazarusidestrconsts:lisuidlines
+#: lazarusidestrconsts:lisinfobuildlines
 msgid "Lines:"
 msgstr "Rivejä:"
 
@@ -5994,6 +6026,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liskmnoteallkeyswillbesettothevaluesofthechoosenscheme
 msgid "Note: All keys will be set to the values of the choosen scheme."
+msgstr ""
+
+#: lazarusidestrconsts:lisinfobuildnote
+msgid "Notes:"
 msgstr ""
 
 #: lazarusidestrconsts:dlgenvbackuphelpnote
@@ -8152,6 +8188,10 @@ msgstr "Näytä sulje-painike välilehdellä"
 msgid "Show code context"
 msgstr ""
 
+#: lazarusidestrconsts:dlgqshowcompiledialog
+msgid "Show compile dialog"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowcompiledprocedures
 msgid "Show compiled procedures"
 msgstr ""
@@ -8559,6 +8599,10 @@ msgstr "Aliominaisuudet"
 #: lazarusidestrconsts:lissuccess
 msgid "Success"
 msgstr "Onnistui"
+
+#: lazarusidestrconsts:lisinfobuildsuccess
+msgid "Success..."
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pswitchpaths
 msgid "Switch Paths"
@@ -10562,6 +10606,10 @@ msgstr "Varoitus: Tiedosto %s%s%s%skuuluu jo projektiin."
 
 #: lazarusidestrconsts:liswarningambiguousfilefoundsourcefileis
 msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:lisinfobuildwarning
+msgid "Warnings:"
 msgstr ""
 
 #: lazarusidestrconsts:liswatchpropert

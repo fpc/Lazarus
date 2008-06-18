@@ -1,5 +1,3 @@
-# translation of lazaruside.po to Slovenský
-# Slavko <slavino@slavino.sk>, 2008.
 msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
@@ -2978,6 +2976,10 @@ msgstr "Uzavrieť výber"
 msgid "Enclose selection ..."
 msgstr "Uzavrieť výber ..."
 
+#: lazarusidestrconsts:uemencoding
+msgid "Encoding"
+msgstr ""
+
 #: lazarusidestrconsts:lisencodingoffileondiskisnewencodingis2
 msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
 msgstr "Kódovanie súboru %s%s%s%sna disku je %s. Nové kódovanie je %s."
@@ -3656,6 +3658,10 @@ msgstr "Opraviť súbor LFM"
 
 #: lazarusidestrconsts:lisfloatingpoin
 msgid "Floating Point"
+msgstr ""
+
+#: lazarusidestrconsts:dlgeofocusmessagesaftercompilation
+msgid "Focus messages after compilation"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecjumptoeditor

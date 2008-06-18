@@ -433,7 +433,7 @@ msgstr "Per uno strumento valido è necessario almeno un titolo e un nome file."
 msgid "Abandon changes?"
 msgstr ""
 
-#: lazarusidestrconsts:lispdabort
+#: lazarusidestrconsts:lisinfobuildmakeabort
 msgid "Abort"
 msgstr "Interrompi"
 
@@ -460,6 +460,10 @@ msgstr "Interrompi il caricamento del progetto"
 #: lazarusidestrconsts:lisabortwholeloading
 msgid "Abort whole loading"
 msgstr "Interrompi l'intero caricamento"
+
+#: lazarusidestrconsts:lisinfobuildabort
+msgid "Aborted..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenutemplateabout
 msgid "About"
@@ -1785,6 +1789,10 @@ msgstr "Compila"
 msgid "Compile IDE (without linking)"
 msgstr "Compilare l'IDE (senza linking)"
 
+#: lazarusidestrconsts:lisinfobuildcaption
+msgid "Compile Project"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditcompileeverything
 msgid "Compile everything?"
 msgstr "Compilare tutto?"
@@ -1832,6 +1840,10 @@ msgstr "Opzioni del compolatore"
 #: lazarusidestrconsts:dlgfpcpath
 msgid "Compiler path (e.g. %s)"
 msgstr "Percorso del compilatore (%s)"
+
+#: lazarusidestrconsts:lisinfobuildcomplile
+msgid "Compiling..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenucompletecode
 msgid "Complete Code"
@@ -2961,6 +2973,10 @@ msgstr "Includi la selezione"
 msgid "Enclose selection ..."
 msgstr "Chiusura selezione ..."
 
+#: lazarusidestrconsts:uemencoding
+msgid "Encoding"
+msgstr ""
+
 #: lazarusidestrconsts:lisencodingoffileondiskisnewencodingis2
 msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
 msgstr ""
@@ -3121,6 +3137,10 @@ msgstr "Errore nella scrittura del file"
 msgid "Error writing package list to file%s%s%s%s"
 msgstr "Errore durante la scrittura dell'elenco pacchetti sul file%s%s%s%s"
 
+#: lazarusidestrconsts:lisinfobuilderror
+msgid "Error..."
+msgstr ""
+
 #: lazarusidestrconsts:liserror
 msgid "Error: "
 msgstr "Errore: "
@@ -3132,6 +3152,10 @@ msgstr "Errore: compilatore non valido: %s"
 #: lazarusidestrconsts:liserrors
 msgid "Errors"
 msgstr "Errori"
+
+#: lazarusidestrconsts:lisinfobuilderrors
+msgid "Errors:"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_escape
 msgid "Escape"
@@ -3633,6 +3657,10 @@ msgstr "Ripara file LFM"
 msgid "Floating Point"
 msgstr ""
 
+#: lazarusidestrconsts:dlgeofocusmessagesaftercompilation
+msgid "Focus messages after compilation"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecjumptoeditor
 msgid "Focus to source editor"
 msgstr "Imposta il focus sull'editor sorgente"
@@ -4108,6 +4136,10 @@ msgstr "Dritte per il componenti delle palette"
 #: lazarusidestrconsts:dlgspbhints
 msgid "Hints for main speed buttons (open, save, ...)"
 msgstr "Dritte per i principali bottoni veloci (apri, salva, ...)"
+
+#: lazarusidestrconsts:lisinfobuildhint
+msgid "Hints:"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_home
 msgid "Home"
@@ -5273,7 +5305,7 @@ msgstr ""
 msgid "Lines"
 msgstr "Righe"
 
-#: lazarusidestrconsts:lisuidlines
+#: lazarusidestrconsts:lisinfobuildlines
 msgid "Lines:"
 msgstr "Righe:"
 
@@ -6000,6 +6032,10 @@ msgstr "Non ora"
 #: lazarusidestrconsts:liskmnoteallkeyswillbesettothevaluesofthechoosenscheme
 msgid "Note: All keys will be set to the values of the choosen scheme."
 msgstr "Nota: Tutti i tasti saranno impostati con i valori dello schema scelto."
+
+#: lazarusidestrconsts:lisinfobuildnote
+msgid "Notes:"
+msgstr ""
 
 #: lazarusidestrconsts:dlgenvbackuphelpnote
 msgid "Notes: Project files are all files in the project directory"
@@ -8157,6 +8193,10 @@ msgstr "Mostra i tasti di chiusura negli appunti"
 msgid "Show code context"
 msgstr "Mostra il contesto del codice"
 
+#: lazarusidestrconsts:dlgqshowcompiledialog
+msgid "Show compile dialog"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowcompiledprocedures
 msgid "Show compiled procedures"
 msgstr "Mostra le procedure compilate"
@@ -8564,6 +8604,10 @@ msgstr "Sub proprietà"
 #: lazarusidestrconsts:lissuccess
 msgid "Success"
 msgstr "Successo"
+
+#: lazarusidestrconsts:lisinfobuildsuccess
+msgid "Success..."
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pswitchpaths
 msgid "Switch Paths"
@@ -10568,6 +10612,10 @@ msgstr "Attenzione: il file %s%s%s%sappartiene al progetto corrente."
 #: lazarusidestrconsts:liswarningambiguousfilefoundsourcefileis
 msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
 msgstr "Attenzione: trovato file ambiguo: %s%s%s. Il file sorgente è: %s%s%s"
+
+#: lazarusidestrconsts:lisinfobuildwarning
+msgid "Warnings:"
+msgstr ""
 
 #: lazarusidestrconsts:liswatchpropert
 msgid "Watch Properties"

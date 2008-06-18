@@ -274,6 +274,10 @@ msgstr "Pritvirtinimas"
 msgid "Down"
 msgstr "Down"
 
+#: lclstrconsts:rsduplicateiconformat
+msgid "Duplicate icon format."
+msgstr ""
+
 #: lclstrconsts:sduplicatemenus
 msgid "Duplicate menus"
 msgstr "Meniu dubliuojasi"

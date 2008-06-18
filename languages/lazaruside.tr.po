@@ -433,7 +433,7 @@ msgstr "Geçerli bir araç en az bir başlık ve dosya adı gerektirir."
 msgid "Abandon changes?"
 msgstr ""
 
-#: lazarusidestrconsts:lispdabort
+#: lazarusidestrconsts:lisinfobuildmakeabort
 msgid "Abort"
 msgstr "Durdur"
 
@@ -460,6 +460,10 @@ msgstr "Projenin yüklenmesini durdur"
 #: lazarusidestrconsts:lisabortwholeloading
 msgid "Abort whole loading"
 msgstr "Tüm yüklemeyi durdur"
+
+#: lazarusidestrconsts:lisinfobuildabort
+msgid "Aborted..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenutemplateabout
 msgid "About"
@@ -1785,6 +1789,10 @@ msgstr ""
 msgid "Compile IDE (without linking)"
 msgstr ""
 
+#: lazarusidestrconsts:lisinfobuildcaption
+msgid "Compile Project"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditcompileeverything
 msgid "Compile everything?"
 msgstr ""
@@ -1831,6 +1839,10 @@ msgstr "Derleyici seçenekleri"
 
 #: lazarusidestrconsts:dlgfpcpath
 msgid "Compiler path (e.g. %s)"
+msgstr ""
+
+#: lazarusidestrconsts:lisinfobuildcomplile
+msgid "Compiling..."
 msgstr ""
 
 #: lazarusidestrconsts:lismenucompletecode
@@ -2961,6 +2973,10 @@ msgstr ""
 msgid "Enclose selection ..."
 msgstr "Seçimi kuşat"
 
+#: lazarusidestrconsts:uemencoding
+msgid "Encoding"
+msgstr ""
+
 #: lazarusidestrconsts:lisencodingoffileondiskisnewencodingis2
 msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
 msgstr ""
@@ -3121,6 +3137,10 @@ msgstr ""
 msgid "Error writing package list to file%s%s%s%s"
 msgstr ""
 
+#: lazarusidestrconsts:lisinfobuilderror
+msgid "Error..."
+msgstr ""
+
 #: lazarusidestrconsts:liserror
 msgid "Error: "
 msgstr "Hata: "
@@ -3131,6 +3151,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liserrors
 msgid "Errors"
+msgstr ""
+
+#: lazarusidestrconsts:lisinfobuilderrors
+msgid "Errors:"
 msgstr ""
 
 #: lazarusidestrconsts:srvk_escape
@@ -3633,6 +3657,10 @@ msgstr ""
 msgid "Floating Point"
 msgstr ""
 
+#: lazarusidestrconsts:dlgeofocusmessagesaftercompilation
+msgid "Focus messages after compilation"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecjumptoeditor
 msgid "Focus to source editor"
 msgstr ""
@@ -4107,6 +4135,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgspbhints
 msgid "Hints for main speed buttons (open, save, ...)"
+msgstr ""
+
+#: lazarusidestrconsts:lisinfobuildhint
+msgid "Hints:"
 msgstr ""
 
 #: lazarusidestrconsts:srvk_home
@@ -5273,7 +5305,7 @@ msgstr ""
 msgid "Lines"
 msgstr ""
 
-#: lazarusidestrconsts:lisuidlines
+#: lazarusidestrconsts:lisinfobuildlines
 msgid "Lines:"
 msgstr ""
 
@@ -5999,6 +6031,10 @@ msgstr "Şimdi değil"
 
 #: lazarusidestrconsts:liskmnoteallkeyswillbesettothevaluesofthechoosenscheme
 msgid "Note: All keys will be set to the values of the choosen scheme."
+msgstr ""
+
+#: lazarusidestrconsts:lisinfobuildnote
+msgid "Notes:"
 msgstr ""
 
 #: lazarusidestrconsts:dlgenvbackuphelpnote
@@ -8157,6 +8193,10 @@ msgstr ""
 msgid "Show code context"
 msgstr ""
 
+#: lazarusidestrconsts:dlgqshowcompiledialog
+msgid "Show compile dialog"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowcompiledprocedures
 msgid "Show compiled procedures"
 msgstr ""
@@ -8563,6 +8603,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lissuccess
 msgid "Success"
+msgstr ""
+
+#: lazarusidestrconsts:lisinfobuildsuccess
+msgid "Success..."
 msgstr ""
 
 #: lazarusidestrconsts:lisa2pswitchpaths
@@ -10567,6 +10611,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liswarningambiguousfilefoundsourcefileis
 msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:lisinfobuildwarning
+msgid "Warnings:"
 msgstr ""
 
 #: lazarusidestrconsts:liswatchpropert

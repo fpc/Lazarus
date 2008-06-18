@@ -1948,6 +1948,54 @@ msgstr ""
 msgid "Cannot find lazarus starter:%s%s"
 msgstr ""
 
+#: lazarusidestrconsts:lisinfobuildlines
+msgid "Lines:"
+msgstr ""
+
+#: lazarusidestrconsts:lisinfobuilderrors
+msgid "Errors:"
+msgstr ""
+
+#: lazarusidestrconsts:lisinfobuildhint
+msgid "Hints:"
+msgstr ""
+
+#: lazarusidestrconsts:lisinfobuildwarning
+msgid "Warnings:"
+msgstr ""
+
+#: lazarusidestrconsts:lisinfobuildbuild
+msgid "Build"
+msgstr ""
+
+#: lazarusidestrconsts:lisinfobuildcomplile
+msgid "Compiling..."
+msgstr ""
+
+#: lazarusidestrconsts:lisinfobuilderror
+msgid "Error..."
+msgstr ""
+
+#: lazarusidestrconsts:lisinfobuildsuccess
+msgid "Success..."
+msgstr ""
+
+#: lazarusidestrconsts:lisinfobuildabort
+msgid "Aborted..."
+msgstr ""
+
+#: lazarusidestrconsts:lisinfobuildcaption
+msgid "Compile Project"
+msgstr ""
+
+#: lazarusidestrconsts:lisinfobuildmakeabort
+msgid "Abort"
+msgstr ""
+
+#: lazarusidestrconsts:lisinfobuildnote
+msgid "Notes:"
+msgstr ""
+
 #: lazarusidestrconsts:lisresourcefilecomment
 msgid "This is an automatically generated lazarus resource file"
 msgstr ""
@@ -2276,6 +2324,10 @@ msgstr ""
 msgid "(no subdirectory)"
 msgstr ""
 
+#: lazarusidestrconsts:dlgeofocusmessagesaftercompilation
+msgid "Focus messages after compilation"
+msgstr ""
+
 #: lazarusidestrconsts:dlgsearchcaption
 msgid "Searching..."
 msgstr ""
@@ -2602,6 +2654,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgqopenlastprj
 msgid "Open last project at start"
+msgstr ""
+
+#: lazarusidestrconsts:dlgqshowcompiledialog
+msgid "Show compile dialog"
 msgstr ""
 
 #: lazarusidestrconsts:dlglazarusdir
@@ -5038,6 +5094,10 @@ msgstr ""
 
 #: lazarusidestrconsts:uemhighlighter
 msgid "Highlighter"
+msgstr ""
+
+#: lazarusidestrconsts:uemencoding
+msgid "Encoding"
 msgstr ""
 
 #: lazarusidestrconsts:lisinvalidmultiselection

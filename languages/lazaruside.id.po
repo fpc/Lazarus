@@ -433,7 +433,7 @@ msgstr "Piranti yang benar membutuhkan setidaknya judul dan nama file."
 msgid "Abandon changes?"
 msgstr ""
 
-#: lazarusidestrconsts:lispdabort
+#: lazarusidestrconsts:lisinfobuildmakeabort
 msgid "Abort"
 msgstr "Batalkan"
 
@@ -460,6 +460,10 @@ msgstr "Batalkan pengambilan proyek"
 #: lazarusidestrconsts:lisabortwholeloading
 msgid "Abort whole loading"
 msgstr "Batalkan seluruh pengambilan"
+
+#: lazarusidestrconsts:lisinfobuildabort
+msgid "Aborted..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenutemplateabout
 msgid "About"
@@ -1785,6 +1789,10 @@ msgstr "Kompilasi"
 msgid "Compile IDE (without linking)"
 msgstr "Kompilasi IDE (tanpa penggabungan)"
 
+#: lazarusidestrconsts:lisinfobuildcaption
+msgid "Compile Project"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditcompileeverything
 msgid "Compile everything?"
 msgstr "Kompilasi semuanya?"
@@ -1832,6 +1840,10 @@ msgstr "Opsi Kompilator"
 #: lazarusidestrconsts:dlgfpcpath
 msgid "Compiler path (e.g. %s)"
 msgstr "Path kompilator (%s)"
+
+#: lazarusidestrconsts:lisinfobuildcomplile
+msgid "Compiling..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenucompletecode
 msgid "Complete Code"
@@ -2961,6 +2973,10 @@ msgstr "Tutupi pilihan"
 msgid "Enclose selection ..."
 msgstr "Tutupi pilihan ..."
 
+#: lazarusidestrconsts:uemencoding
+msgid "Encoding"
+msgstr ""
+
 #: lazarusidestrconsts:lisencodingoffileondiskisnewencodingis2
 msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
 msgstr ""
@@ -3121,6 +3137,10 @@ msgstr "Kesalahan penulisan file"
 msgid "Error writing package list to file%s%s%s%s"
 msgstr "Kesalahan penulisan daftar paket ke file%s%s%s%s"
 
+#: lazarusidestrconsts:lisinfobuilderror
+msgid "Error..."
+msgstr ""
+
 #: lazarusidestrconsts:liserror
 msgid "Error: "
 msgstr "Salah:"
@@ -3132,6 +3152,10 @@ msgstr "Salah: kompilator tidak benar: %s"
 #: lazarusidestrconsts:liserrors
 msgid "Errors"
 msgstr "Salah"
+
+#: lazarusidestrconsts:lisinfobuilderrors
+msgid "Errors:"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_escape
 msgid "Escape"
@@ -3633,6 +3657,10 @@ msgstr "Betulkan file LFM"
 msgid "Floating Point"
 msgstr ""
 
+#: lazarusidestrconsts:dlgeofocusmessagesaftercompilation
+msgid "Focus messages after compilation"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecjumptoeditor
 msgid "Focus to source editor"
 msgstr "Fokus ke editor sumber"
@@ -4108,6 +4136,10 @@ msgstr "Petunjuk untuk palet komponen"
 #: lazarusidestrconsts:dlgspbhints
 msgid "Hints for main speed buttons (open, save, ...)"
 msgstr "Petunjuk untuk tombol cepat utama (buka, simpan, ...)"
+
+#: lazarusidestrconsts:lisinfobuildhint
+msgid "Hints:"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_home
 msgid "Home"
@@ -5273,7 +5305,7 @@ msgstr ""
 msgid "Lines"
 msgstr "Baris"
 
-#: lazarusidestrconsts:lisuidlines
+#: lazarusidestrconsts:lisinfobuildlines
 msgid "Lines:"
 msgstr "Baris:"
 
@@ -6000,6 +6032,10 @@ msgstr "Tdak sekarang"
 #: lazarusidestrconsts:liskmnoteallkeyswillbesettothevaluesofthechoosenscheme
 msgid "Note: All keys will be set to the values of the choosen scheme."
 msgstr "Catatan: Semua tombol akan disetel ke nilai dari skema yang dipilih."
+
+#: lazarusidestrconsts:lisinfobuildnote
+msgid "Notes:"
+msgstr ""
 
 #: lazarusidestrconsts:dlgenvbackuphelpnote
 msgid "Notes: Project files are all files in the project directory"
@@ -8157,6 +8193,10 @@ msgstr "Tampilkan tombol tutup dalam notebook"
 msgid "Show code context"
 msgstr "Tampilkan konteks kode"
 
+#: lazarusidestrconsts:dlgqshowcompiledialog
+msgid "Show compile dialog"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowcompiledprocedures
 msgid "Show compiled procedures"
 msgstr "Tampilkan procedure yang dikompilasi"
@@ -8564,6 +8604,10 @@ msgstr "Sub properti"
 #: lazarusidestrconsts:lissuccess
 msgid "Success"
 msgstr "Sukses"
+
+#: lazarusidestrconsts:lisinfobuildsuccess
+msgid "Success..."
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pswitchpaths
 msgid "Switch Paths"
@@ -10568,6 +10612,10 @@ msgstr "Perhatian: File %s%s%s%smilik proyek saat ini."
 #: lazarusidestrconsts:liswarningambiguousfilefoundsourcefileis
 msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
 msgstr "Peringatan: file dwimakna ditemukan: %s%s%s. File Sumber adalah: %s%s%s"
+
+#: lazarusidestrconsts:lisinfobuildwarning
+msgid "Warnings:"
+msgstr ""
 
 #: lazarusidestrconsts:liswatchpropert
 msgid "Watch Properties"

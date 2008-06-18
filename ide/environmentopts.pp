@@ -1755,7 +1755,7 @@ begin
 
   // messages view
   MsgViewDblClickJumpsCheckBox.Caption:=lisEnvDoubleClickOnMessagesJumpsOtherwiseSingleClick;
-  MsgViewFocusCheckBox.Caption:='Focus messages after compilation';
+  MsgViewFocusCheckBox.Caption:=dlgEOFocusMessagesAfterCompilation;
 end;
 
 procedure TEnvironmentOptionsDialog.SetupWindowsPage(Page: integer);

@@ -432,7 +432,7 @@ msgstr "有効なツールは少なくともタイトルかファイル名が必
 msgid "Abandon changes?"
 msgstr ""
 
-#: lazarusidestrconsts:lispdabort
+#: lazarusidestrconsts:lisinfobuildmakeabort
 msgid "Abort"
 msgstr "中止"
 
@@ -459,6 +459,10 @@ msgstr "読み込みプロジェクトについて"
 #: lazarusidestrconsts:lisabortwholeloading
 msgid "Abort whole loading"
 msgstr "読み込みを中止"
+
+#: lazarusidestrconsts:lisinfobuildabort
+msgid "Aborted..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenutemplateabout
 msgid "About"
@@ -1784,6 +1788,10 @@ msgstr "コンパイル"
 msgid "Compile IDE (without linking)"
 msgstr "リンクしないでIDEをコンパイル"
 
+#: lazarusidestrconsts:lisinfobuildcaption
+msgid "Compile Project"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditcompileeverything
 msgid "Compile everything?"
 msgstr "全てコンパイルしますか？"
@@ -1831,6 +1839,10 @@ msgstr "コンパイラオプション"
 #: lazarusidestrconsts:dlgfpcpath
 msgid "Compiler path (e.g. %s)"
 msgstr "コンパイラパス (例: %s)"
+
+#: lazarusidestrconsts:lisinfobuildcomplile
+msgid "Compiling..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenucompletecode
 msgid "Complete Code"
@@ -2960,6 +2972,10 @@ msgstr "選択部分を囲む"
 msgid "Enclose selection ..."
 msgstr "選択部分を囲む ..."
 
+#: lazarusidestrconsts:uemencoding
+msgid "Encoding"
+msgstr ""
+
 #: lazarusidestrconsts:lisencodingoffileondiskisnewencodingis2
 msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
 msgstr ""
@@ -3120,6 +3136,10 @@ msgstr "ファイルへの書き込み中にエラー"
 msgid "Error writing package list to file%s%s%s%s"
 msgstr "パッケージリストをファイル %s%s%s%s に書き込み中にエラー"
 
+#: lazarusidestrconsts:lisinfobuilderror
+msgid "Error..."
+msgstr ""
+
 #: lazarusidestrconsts:liserror
 msgid "Error: "
 msgstr "エラー"
@@ -3131,6 +3151,10 @@ msgstr "エラー：無効なコンパイラ: %s"
 #: lazarusidestrconsts:liserrors
 msgid "Errors"
 msgstr "エラー"
+
+#: lazarusidestrconsts:lisinfobuilderrors
+msgid "Errors:"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_escape
 msgid "Escape"
@@ -3632,6 +3656,10 @@ msgstr "LFMファイルを修復"
 msgid "Floating Point"
 msgstr ""
 
+#: lazarusidestrconsts:dlgeofocusmessagesaftercompilation
+msgid "Focus messages after compilation"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecjumptoeditor
 msgid "Focus to source editor"
 msgstr "ソースエディターへフォーカスを移動"
@@ -4107,6 +4135,10 @@ msgstr "コンポーネントパレットのヒント"
 #: lazarusidestrconsts:dlgspbhints
 msgid "Hints for main speed buttons (open, save, ...)"
 msgstr "メインスピードボタン(開く, 保存, ...)のヒント"
+
+#: lazarusidestrconsts:lisinfobuildhint
+msgid "Hints:"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_home
 msgid "Home"
@@ -5272,7 +5304,7 @@ msgstr ""
 msgid "Lines"
 msgstr "行"
 
-#: lazarusidestrconsts:lisuidlines
+#: lazarusidestrconsts:lisinfobuildlines
 msgid "Lines:"
 msgstr "行:"
 
@@ -5999,6 +6031,10 @@ msgstr "今ではありません"
 #: lazarusidestrconsts:liskmnoteallkeyswillbesettothevaluesofthechoosenscheme
 msgid "Note: All keys will be set to the values of the choosen scheme."
 msgstr "注意：全てのキーは選択されたスキームの値にセットされます。"
+
+#: lazarusidestrconsts:lisinfobuildnote
+msgid "Notes:"
+msgstr ""
 
 #: lazarusidestrconsts:dlgenvbackuphelpnote
 msgid "Notes: Project files are all files in the project directory"
@@ -8156,6 +8192,10 @@ msgstr "ノートブックの[閉じる]ボタンを表示"
 msgid "Show code context"
 msgstr "コードの内容を表示"
 
+#: lazarusidestrconsts:dlgqshowcompiledialog
+msgid "Show compile dialog"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowcompiledprocedures
 msgid "Show compiled procedures"
 msgstr "コンパイルされた手続きを表示"
@@ -8563,6 +8603,10 @@ msgstr "サブプロパティ"
 #: lazarusidestrconsts:lissuccess
 msgid "Success"
 msgstr "成功"
+
+#: lazarusidestrconsts:lisinfobuildsuccess
+msgid "Success..."
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pswitchpaths
 msgid "Switch Paths"
@@ -10567,6 +10611,10 @@ msgstr "警告：ファイル%s%s%s%sは現在のプロジェクトに属して�
 #: lazarusidestrconsts:liswarningambiguousfilefoundsourcefileis
 msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
 msgstr "警告：紛らわしいファイルが見つかりました。ソースファイルは%s%s%sです。"
+
+#: lazarusidestrconsts:lisinfobuildwarning
+msgid "Warnings:"
+msgstr ""
 
 #: lazarusidestrconsts:liswatchpropert
 msgid "Watch Properties"

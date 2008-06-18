@@ -433,7 +433,7 @@ msgstr "Una eina vàlida necessita al menys, títol i nom de fitxer"
 msgid "Abandon changes?"
 msgstr ""
 
-#: lazarusidestrconsts:lispdabort
+#: lazarusidestrconsts:lisinfobuildmakeabort
 msgid "Abort"
 msgstr "Avortar"
 
@@ -459,6 +459,10 @@ msgstr "Avorta carrega del projecte"
 
 #: lazarusidestrconsts:lisabortwholeloading
 msgid "Abort whole loading"
+msgstr ""
+
+#: lazarusidestrconsts:lisinfobuildabort
+msgid "Aborted..."
 msgstr ""
 
 #: lazarusidestrconsts:lismenutemplateabout
@@ -1785,6 +1789,10 @@ msgstr "Compila"
 msgid "Compile IDE (without linking)"
 msgstr "Compila l'IDE (sense enllaçar)"
 
+#: lazarusidestrconsts:lisinfobuildcaption
+msgid "Compile Project"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditcompileeverything
 msgid "Compile everything?"
 msgstr "Voleu compilar-ho tot?"
@@ -1832,6 +1840,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgfpcpath
 msgid "Compiler path (e.g. %s)"
 msgstr "Trajectòria del compilador (%s)"
+
+#: lazarusidestrconsts:lisinfobuildcomplile
+msgid "Compiling..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenucompletecode
 msgid "Complete Code"
@@ -2961,6 +2973,10 @@ msgstr ""
 msgid "Enclose selection ..."
 msgstr "Tanca la selecció ..."
 
+#: lazarusidestrconsts:uemencoding
+msgid "Encoding"
+msgstr ""
+
 #: lazarusidestrconsts:lisencodingoffileondiskisnewencodingis2
 msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
 msgstr ""
@@ -3121,6 +3137,10 @@ msgstr "S'ha produït un error mentre s'escrivia el fitxer"
 msgid "Error writing package list to file%s%s%s%s"
 msgstr "S'ha produït un error mentre s'escrivia la llista de paquets al fitxer%s%s%s%s"
 
+#: lazarusidestrconsts:lisinfobuilderror
+msgid "Error..."
+msgstr ""
+
 #: lazarusidestrconsts:liserror
 msgid "Error: "
 msgstr "S'ha produït un error: "
@@ -3132,6 +3152,10 @@ msgstr "S'ha produït un error: el compilador %s no és vàlid."
 #: lazarusidestrconsts:liserrors
 msgid "Errors"
 msgstr "Errors"
+
+#: lazarusidestrconsts:lisinfobuilderrors
+msgid "Errors:"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_escape
 msgid "Escape"
@@ -3633,6 +3657,10 @@ msgstr "Fixa el fitxer LFM"
 msgid "Floating Point"
 msgstr ""
 
+#: lazarusidestrconsts:dlgeofocusmessagesaftercompilation
+msgid "Focus messages after compilation"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecjumptoeditor
 msgid "Focus to source editor"
 msgstr "Focalitza a editor del codi font"
@@ -4108,6 +4136,10 @@ msgstr "Suggeriments per a la paleta de components"
 #: lazarusidestrconsts:dlgspbhints
 msgid "Hints for main speed buttons (open, save, ...)"
 msgstr "Suggeriments pels botons ràpids principals (obre, guarda, ...)"
+
+#: lazarusidestrconsts:lisinfobuildhint
+msgid "Hints:"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_home
 msgid "Home"
@@ -5273,7 +5305,7 @@ msgstr ""
 msgid "Lines"
 msgstr "Línies"
 
-#: lazarusidestrconsts:lisuidlines
+#: lazarusidestrconsts:lisinfobuildlines
 msgid "Lines:"
 msgstr "Línies:"
 
@@ -5999,6 +6031,10 @@ msgstr "Ara no"
 
 #: lazarusidestrconsts:liskmnoteallkeyswillbesettothevaluesofthechoosenscheme
 msgid "Note: All keys will be set to the values of the choosen scheme."
+msgstr ""
+
+#: lazarusidestrconsts:lisinfobuildnote
+msgid "Notes:"
 msgstr ""
 
 #: lazarusidestrconsts:dlgenvbackuphelpnote
@@ -8157,6 +8193,10 @@ msgstr "Mostra els botons de tancar en el llibre de notes"
 msgid "Show code context"
 msgstr ""
 
+#: lazarusidestrconsts:dlgqshowcompiledialog
+msgid "Show compile dialog"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowcompiledprocedures
 msgid "Show compiled procedures"
 msgstr "Mostra els procediments compilats"
@@ -8564,6 +8604,10 @@ msgstr ""
 #: lazarusidestrconsts:lissuccess
 msgid "Success"
 msgstr "Correcte!"
+
+#: lazarusidestrconsts:lisinfobuildsuccess
+msgid "Success..."
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pswitchpaths
 msgid "Switch Paths"
@@ -10567,6 +10611,10 @@ msgstr "Avís: El fitxer %s%s%s%spertany al projecte actual."
 
 #: lazarusidestrconsts:liswarningambiguousfilefoundsourcefileis
 msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:lisinfobuildwarning
+msgid "Warnings:"
 msgstr ""
 
 #: lazarusidestrconsts:liswatchpropert

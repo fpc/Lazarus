@@ -1031,7 +1031,7 @@ begin
     SrcEditSubMenuHighlighter:=RegisterIDESubMenu(AParent,'Highlighter',
                                                     uemHighlighter);
     SrcEditSubMenuEncoding:=RegisterIDESubMenu(AParent,'Encoding',
-                                                    'Encoding');
+                                                    uemEncoding);
 
   SrcEditMenuEditorProperties:=RegisterIDEMenuCommand(SourceEditorMenuRoot,
            'EditorProperties',uemEditorProperties, nil, nil, nil, 'menu_editor_options');

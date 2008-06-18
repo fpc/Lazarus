@@ -273,6 +273,10 @@ msgstr "Gömme"
 msgid "Down"
 msgstr "Aşağı"
 
+#: lclstrconsts:rsduplicateiconformat
+msgid "Duplicate icon format."
+msgstr ""
+
 #: lclstrconsts:sduplicatemenus
 msgid "Duplicate menus"
 msgstr "Birbirinin aynı menüler"

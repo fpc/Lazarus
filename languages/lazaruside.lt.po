@@ -434,7 +434,7 @@ msgstr "Įrankiui mažų mažiausia reikia pavadinimo bei failo pavadinimo."
 msgid "Abandon changes?"
 msgstr "Pamiršti pakeitimus?"
 
-#: lazarusidestrconsts:lispdabort
+#: lazarusidestrconsts:lisinfobuildmakeabort
 msgid "Abort"
 msgstr "Nutraukti"
 
@@ -461,6 +461,10 @@ msgstr "Nutraukti projekto įkrovą"
 #: lazarusidestrconsts:lisabortwholeloading
 msgid "Abort whole loading"
 msgstr "Nutraukti įkėlimą"
+
+#: lazarusidestrconsts:lisinfobuildabort
+msgid "Aborted..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenutemplateabout
 msgid "About"
@@ -1786,6 +1790,10 @@ msgstr "Kompiliuojama"
 msgid "Compile IDE (without linking)"
 msgstr "Kompiliuoti IKA (nesaistant)"
 
+#: lazarusidestrconsts:lisinfobuildcaption
+msgid "Compile Project"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditcompileeverything
 msgid "Compile everything?"
 msgstr "Kompiliuoti viską?"
@@ -1833,6 +1841,10 @@ msgstr "Kompiliatoriaus parinktys"
 #: lazarusidestrconsts:dlgfpcpath
 msgid "Compiler path (e.g. %s)"
 msgstr "Kompiliatoriaus failas (pvz.: %s)"
+
+#: lazarusidestrconsts:lisinfobuildcomplile
+msgid "Compiling..."
+msgstr ""
 
 #: lazarusidestrconsts:lismenucompletecode
 msgid "Complete Code"
@@ -2962,6 +2974,10 @@ msgstr "Apgaubti pažymėtąjį"
 msgid "Enclose selection ..."
 msgstr "Apgaubti pažymėtąjį..."
 
+#: lazarusidestrconsts:uemencoding
+msgid "Encoding"
+msgstr ""
+
 #: lazarusidestrconsts:lisencodingoffileondiskisnewencodingis2
 msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
 msgstr "Failo diske %s%s%s%skoduotė yra %s. Naujoji koduotė yra %s."
@@ -3122,6 +3138,10 @@ msgstr "Klaida rašant į failą"
 msgid "Error writing package list to file%s%s%s%s"
 msgstr "Įvyko klaida rašant paketo sąrašą į failą%s%s%s%s"
 
+#: lazarusidestrconsts:lisinfobuilderror
+msgid "Error..."
+msgstr ""
+
 #: lazarusidestrconsts:liserror
 msgid "Error: "
 msgstr "Klaida: "
@@ -3133,6 +3153,10 @@ msgstr "Klaida: klaidingas kompiliatorius: %s"
 #: lazarusidestrconsts:liserrors
 msgid "Errors"
 msgstr "Klaidos"
+
+#: lazarusidestrconsts:lisinfobuilderrors
+msgid "Errors:"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_escape
 msgid "Escape"
@@ -3634,6 +3658,10 @@ msgstr "LFM failo taisa"
 msgid "Floating Point"
 msgstr "Slankaus kablelio"
 
+#: lazarusidestrconsts:dlgeofocusmessagesaftercompilation
+msgid "Focus messages after compilation"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecjumptoeditor
 msgid "Focus to source editor"
 msgstr "Aktyvuoti pirminio kodo rengyklę"
@@ -4109,6 +4137,10 @@ msgstr "Sufleriai komponenčių paletei"
 #: lazarusidestrconsts:dlgspbhints
 msgid "Hints for main speed buttons (open, save, ...)"
 msgstr "Sufleriai pagrindiniams spartos mygtukams („Atverti“, „Įrašyti“, ...)"
+
+#: lazarusidestrconsts:lisinfobuildhint
+msgid "Hints:"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_home
 msgid "Home"
@@ -5274,7 +5306,7 @@ msgstr "Eilutė/Ilgis"
 msgid "Lines"
 msgstr "Eilutės"
 
-#: lazarusidestrconsts:lisuidlines
+#: lazarusidestrconsts:lisinfobuildlines
 msgid "Lines:"
 msgstr "Eilučių:"
 
@@ -6001,6 +6033,10 @@ msgstr "Ne dabar"
 #: lazarusidestrconsts:liskmnoteallkeyswillbesettothevaluesofthechoosenscheme
 msgid "Note: All keys will be set to the values of the choosen scheme."
 msgstr "Pastaba: visi klavišai bus nustatyti pagal pasirinktą schemą."
+
+#: lazarusidestrconsts:lisinfobuildnote
+msgid "Notes:"
+msgstr ""
 
 #: lazarusidestrconsts:dlgenvbackuphelpnote
 msgid "Notes: Project files are all files in the project directory"
@@ -8158,6 +8194,10 @@ msgstr "Rengyklės kortelėse rodyti „Užverti“ mygtukus"
 msgid "Show code context"
 msgstr "Rodyti kodo turinį"
 
+#: lazarusidestrconsts:dlgqshowcompiledialog
+msgid "Show compile dialog"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowcompiledprocedures
 msgid "Show compiled procedures"
 msgstr "Rodyti kompiliuotas procedūras"
@@ -8565,6 +8605,10 @@ msgstr "Vidinės savybės"
 #: lazarusidestrconsts:lissuccess
 msgid "Success"
 msgstr "Tvarka"
+
+#: lazarusidestrconsts:lisinfobuildsuccess
+msgid "Success..."
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pswitchpaths
 msgid "Switch Paths"
@@ -10569,6 +10613,10 @@ msgstr "Dėmesio: failas %s%s%s%s jau priklauso šiam projektui."
 #: lazarusidestrconsts:liswarningambiguousfilefoundsourcefileis
 msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
 msgstr "Dėmesio: rastas neaiškus failas: %s%s%s. Pirminio kodo failas: %s%s%s"
+
+#: lazarusidestrconsts:lisinfobuildwarning
+msgid "Warnings:"
+msgstr ""
 
 #: lazarusidestrconsts:liswatchpropert
 msgid "Watch Properties"

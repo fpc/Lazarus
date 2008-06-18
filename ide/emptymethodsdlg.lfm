@@ -3,8 +3,6 @@ object EmptyMethodsDialog: TEmptyMethodsDialog
   Height = 421
   Top = 202
   Width = 387
-  HorzScrollBar.Page = 386
-  VertScrollBar.Page = 420
   ActiveControl = PrivateCheckBox
   Caption = 'EmptyMethodsDialog'
   ClientHeight = 421
@@ -13,32 +11,38 @@ object EmptyMethodsDialog: TEmptyMethodsDialog
   LCLVersion = '0.9.25'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 50
-    Top = 371
+    Height = 40
+    Top = 381
     Width = 375
     Align = alBottom
     AutoSize = True
     TabOrder = 0
     ShowButtons = [pbOK, pbCancel]
-    ShowGlyphs = [pbOK, pbCancel, pbClose, pbHelp]
   end
   object MethodsGroupBox: TGroupBox
-    Height = 238
-    Top = 133
-    Width = 387
+    Left = 6
+    Height = 249
+    Top = 126
+    Width = 375
     Align = alClient
+    BorderSpacing.Around = 6
     Caption = 'MethodsGroupBox'
-    ClientHeight = 219
-    ClientWidth = 383
+    ClientHeight = 231
+    ClientWidth = 371
     TabOrder = 1
     object MethodsSynEdit: TSynEdit
+      Left = 6
       Height = 219
-      Width = 383
+      Top = 6
+      Width = 359
       Align = alClient
+      BorderSpacing.Around = 6
       Font.Height = -14
       Font.Name = 'courier'
       ParentColor = False
       TabOrder = 0
+      BookMarkOptions.Xoffset = -18
+      Gutter.Visible = False
       Gutter.CodeFoldingWidth = 14
       Highlighter = SynPasSyn1
       Keystrokes = <      
@@ -365,72 +369,76 @@ object EmptyMethodsDialog: TEmptyMethodsDialog
       Lines.Strings = (
         'MethodsSynEdit'
       )
+      ReadOnly = True
     end
   end
   object SectionsGroupBox: TGroupBox
-    Height = 133
-    Width = 387
+    Left = 6
+    Height = 114
+    Top = 6
+    Width = 375
     Align = alTop
     AutoSize = True
+    BorderSpacing.Around = 6
     Caption = 'SectionsGroupBox'
     ChildSizing.LeftRightSpacing = 6
     ChildSizing.TopBottomSpacing = 6
     ChildSizing.HorizontalSpacing = 15
     ChildSizing.Layout = cclTopToBottomThenLeftToRight
     ChildSizing.ControlsPerLine = 4
-    ClientHeight = 114
-    ClientWidth = 383
+    ClientHeight = 96
+    ClientWidth = 371
     TabOrder = 2
     object PrivateCheckBox: TCheckBox
       Left = 6
-      Height = 29
+      Height = 23
       Top = 6
-      Width = 149
+      Width = 121
       Caption = 'PrivateCheckBox'
       OnChange = PrivateCheckBoxChange
       TabOrder = 0
     end
     object ProtectedCheckBox: TCheckBox
       Left = 6
-      Height = 29
-      Top = 35
-      Width = 149
+      Height = 23
+      Top = 29
+      Width = 121
       Caption = 'ProtectedCheckBox'
       OnChange = PrivateCheckBoxChange
       TabOrder = 1
     end
     object PublicCheckBox: TCheckBox
       Left = 6
-      Height = 22
-      Top = 64
-      Width = 149
+      Height = 19
+      Top = 52
+      Width = 121
       Caption = 'PublicCheckBox'
       OnChange = PrivateCheckBoxChange
       TabOrder = 2
     end
     object PublishedCheckBox: TCheckBox
       Left = 6
-      Height = 22
-      Top = 86
-      Width = 149
+      Height = 19
+      Top = 71
+      Width = 121
       Caption = 'PublishedCheckBox'
       OnChange = PrivateCheckBoxChange
       TabOrder = 3
     end
     object AllButton: TButton
-      Left = 170
-      Height = 29
+      Left = 142
+      Height = 23
       Top = 6
-      Width = 116
+      Width = 103
       Caption = 'AllButton'
       OnClick = AllButtonClick
       TabOrder = 4
     end
     object PublishedButton: TButton
-      Left = 170
-      Height = 29
-      Top = 35
-      Width = 116
+      Left = 142
+      Height = 23
+      Top = 29
+      Width = 103
       Caption = 'PublishedButton'
       OnClick = PublishedButtonClick
       TabOrder = 5

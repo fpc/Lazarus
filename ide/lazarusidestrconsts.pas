@@ -847,7 +847,8 @@ resourcestring
    +'Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.';
 
   // Environment dialog
-  dlgBakNoSubDirectory='(no subdirectory)';
+  dlgBakNoSubDirectory = '(no subdirectory)';
+  dlgEOFocusMessagesAfterCompilation = 'Focus messages after compilation';
   
   // Search dialog
   dlgSearchCaption = 'Searching...';
@@ -1630,6 +1631,7 @@ resourcestring
   uemInsertTodo = 'Insert Todo';
   lisCodeHelpShowEmptyMethods = 'Show empty methods';
   uemHighlighter = 'Highlighter';
+  uemEncoding = 'Encoding';
 
   // Form designer
   lisInvalidMultiselection = 'Invalid multiselection';
