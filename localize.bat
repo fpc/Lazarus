@@ -80,11 +80,6 @@ tools\updatepofiles lcl\languages\lclstrconsts.po
 rstconv -c UTF-8 -i %CGI_RST% -o components\cgi\languages\cgimodules.po
 tools\updatepofiles components\cgi\languages\cgimodules.po
 
-@REM LazReport
-@set LazReport_RST=components\lazreport\source\lib\%ArchOS%\lr_const.rst
-rstconv -c UTF-8 -i %LazReport_RST% -o components\lazreport\source\languages\lr_const.po
-tools\updatepofiles components\lazreport\source\languages\lr_const.po
-
 @REM MemDS
 @set MemDS_RST=components\memds\lib\%ArchOS%\frmselectdataset.rst
 rstconv -c UTF-8 -i %MemDS_RST% -o components\memds\languages\frmselectdataset.po
