@@ -91,6 +91,7 @@ type
     FVisible: Boolean;
     FOldScrollInfo: TScrollInfo;
     FOldScrollInfoValid: Boolean;
+    FOldHandleVisible: Boolean;
   protected
     FControl: TWinControl;
     function ControlAutoScroll: boolean; virtual;

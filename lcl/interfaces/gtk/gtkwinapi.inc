@@ -1867,7 +1867,6 @@ var
   srcbitmap, mskbitmap: PGdkBitmap;
   W, H, bitlen: integer;
   ImgBits, MskBits: array of byte;
-  APixbuf: PGdkPixbuf;
 begin
   Result := 0;
   if not IsValidGDIObject(IconInfo^.hbmColor) then Exit;
@@ -5600,7 +5599,7 @@ begin
       then begin
         //clist
         {TODO check is this is needed for listviews}
-        DebugLn('[SetScrollInfo] Possible obsolete get use of CList (Listview ?)');
+        DebugLn('[GetScrollInfo] Possible obsolete get use of CList (Listview ?)');
         Adjustment := gtk_clist_get_hadjustment(PgtkCList(Scroll));
       end
       // obsolete stuff
@@ -5621,7 +5620,7 @@ begin
       then begin
         //clist
         //TODO: check is this is needed for listviews
-        DebugLn('[SetScrollInfo] Possible obsolete get use of CList (Listview ?)');
+        DebugLn('[GetScrollInfo] Possible obsolete get use of CList (Listview ?)');
         Adjustment := gtk_clist_get_vadjustment(PgtkCList(Scroll));
       end
       // obsolete stuff
@@ -5643,7 +5642,7 @@ begin
         Adjustment := gtk_range_get_adjustment(PGTKRange(Scroll));
 
     SB_BOTH:
-       DebugLn('[SetScrollInfo] Got SB_BOTH ???');
+       DebugLn('[GetScrollInfo] Got SB_BOTH ???');
   end;
 
   if Adjustment = nil then Exit;
@@ -8715,7 +8714,6 @@ begin
   
   Result := DevCtx.ROP2;
   DevCtx.ROP2 := Mode;
-  
 end;
 
 {------------------------------------------------------------------------------
@@ -8733,9 +8731,9 @@ function TGtkWidgetSet.SetScrollInfo(Handle : HWND; SBStyle : Integer;
     UpdPolicy: TGTKUpdateType;
   begin
     case ScrollInfo.nTrackPos of
-      SB_POLICY_DISCONTINUOUS:	UpdPolicy := GTK_UPDATE_DISCONTINUOUS;
-      SB_POLICY_DELAYED:	UpdPolicy := GTK_UPDATE_DELAYED;
-      else 			UpdPolicy := GTK_UPDATE_CONTINUOUS;
+      SB_POLICY_DISCONTINUOUS: UpdPolicy := GTK_UPDATE_DISCONTINUOUS;
+      SB_POLICY_DELAYED:       UpdPolicy := GTK_UPDATE_DELAYED;
+      else                     UpdPolicy := GTK_UPDATE_CONTINUOUS;
     end;
     gtk_range_set_update_policy(Range, UpdPolicy);
   end;
@@ -9250,39 +9248,49 @@ end;
 function TGtkWidgetSet.ShowScrollBar(Handle: HWND; wBar: Integer;
   bShow: Boolean): Boolean;
 var
-  Widget: PGtkWidget;
   NewPolicy: Integer;
+  Scroll: PGtkWidget;
+  IsScrollWindow: Boolean;
 begin
   Assert(False, 'trace:[TGtkWidgetSet.ShowScrollBar]');
-  Result:=false;
   Result := (Handle <> 0);
-  if Result then begin
-    Widget:=PGtkWidget(Handle);
-    if GtkWidgetIsA(Widget,gtk_scrolled_window_get_type) then begin
-      if wBar in [SB_BOTH, SB_HORZ] then begin
-        //DebugLn(['TGtkWidgetSet.ShowScrollBar ',GetWidgetDebugReport(Widget),' bShow=',bShow]);
-        if bShow then
-          NewPolicy:=GTK_POLICY_ALWAYS
-        else
-          NewPolicy:=GTK_POLICY_NEVER;
-        gtk_object_set(PGTKObject(Widget), 'hscrollbar_policy', [NewPolicy,nil]);
-      end;
-      if wBar in [SB_BOTH, SB_VERT] then begin
-        if bShow then
-          NewPolicy:=GTK_POLICY_ALWAYS
-        else
-          NewPolicy:=GTK_POLICY_NEVER;
-        gtk_object_set(PGTKObject(Widget), 'vscrollbar_policy', [NewPolicy,nil]);
-      end;
-    end
-    else begin
-      if (wBar = SB_CTL)
-      and gtk_type_is_a(gtk_object_type(PGTKObject(Handle)),gtk_widget_get_type)
-      then begin
-        if bShow
-        then gtk_widget_show(Widget)
-        else gtk_widget_hide(Widget);
-      end;
+  if not Result then exit;
+  
+  Scroll := PGtkWidget(gtk_object_get_data(PGTKObject(Handle), odnScrollArea));
+  if GtkWidgetIsA(Scroll, gtk_scrolled_window_get_type)
+  then begin
+    IsScrollWindow := True;
+  end
+  else begin
+    Scroll := PGTKWidget(Handle);
+    IsScrollWindow := GtkWidgetIsA(Scroll, gtk_scrolled_window_get_type);
+  end;
+
+  //DebugLn(['TGtkWidgetSet.ShowScrollBar ',GetWidgetDebugReport(Scroll),' wBar=',wBar,' bShow=',bShow]);
+  if IsScrollWindow then begin
+    if wBar in [SB_BOTH, SB_HORZ] then begin
+      //DebugLn(['TGtkWidgetSet.ShowScrollBar ',GetWidgetDebugReport(Widget),' bShow=',bShow]);
+      if bShow then
+        NewPolicy:=GTK_POLICY_ALWAYS
+      else
+        NewPolicy:=GTK_POLICY_NEVER;
+      gtk_object_set(PGTKObject(Scroll), 'hscrollbar_policy', [NewPolicy,nil]);
+    end;
+    if wBar in [SB_BOTH, SB_VERT] then begin
+      if bShow then
+        NewPolicy:=GTK_POLICY_ALWAYS
+      else
+        NewPolicy:=GTK_POLICY_NEVER;
+      gtk_object_set(PGTKObject(Scroll), 'vscrollbar_policy', [NewPolicy,nil]);
+    end;
+  end
+  else begin
+    if (wBar = SB_CTL)
+    and gtk_type_is_a(gtk_object_type(PGTKObject(Handle)),gtk_widget_get_type)
+    then begin
+      if bShow
+      then gtk_widget_show(Scroll)
+      else gtk_widget_hide(Scroll);
     end;
   end;
 end;

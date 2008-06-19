@@ -301,6 +301,10 @@ begin
       FOldScrollInfoValid := true;
       SetScrollInfo(FControl.Handle, IntfBarKind[Kind], ScrollInfo, FVisible);
     end;
+    if FOldHandleVisible<>FVisible then begin
+      FOldHandleVisible:=FVisible;
+      ShowScrollBar(FControl.Handle,IntfBarKind[Kind],FVisible);
+    end;
     {$IFDEF VerboseScrollingWinControl}
     if DebugCondition then
       DebugLn(['TControlScrollBar.UpdateScrollBar ',DbgSName(FControl),' ',DbgSName(Self),' FVisible=',FVisible,' Range=',FRange,' FPosition=',FPosition,' FPage=',FPage,' FAutoRange=',FAutoRange]);

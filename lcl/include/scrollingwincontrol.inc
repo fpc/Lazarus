@@ -130,15 +130,16 @@ function TScrollingWinControl.ComputeScrollbars: Boolean;
   begin
     OldVisible:=p_Bar.FVisible;
     if p_Bar.Kind = sbVertical then
-      CurMax := Height
+      CurMax := ClientHeight
     else
-      CurMax := Width;
+      CurMax := ClientWidth;
     if (p_Bar.FVisible and not FAutoScroll)
       or (FAutoScroll and (p_Bar.FRange > 0) and (p_Bar.FRange > CurMax))
     then
       p_Bar.FVisible := True
     else
       p_Bar.FVisible := False;
+    //if p_Bar.Kind = sbVertical then DebugLn(['UpdateVisible ',dbgsName(Self),' p_Bar.FVisible=',p_Bar.FVisible,' FAutoScroll=',FAutoScroll,' p_Bar.FRange=',p_Bar.FRange,' CurMax=',CurMax]);
     if OldVisible <> p_Bar.FVisible then
       Result := true;
   end;
