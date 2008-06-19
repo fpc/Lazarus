@@ -522,67 +522,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  CreateCursor
-  Params:  AInstance - handle to instance; ACursorInfo - pointer to Cursor Information record
-  Returns: handle to a created cursor
-
-  Creates a cursor by color and mask bitmaps and other indo.
- ------------------------------------------------------------------------------}
-function TWinCEWidgetSet.CreateCursor(ACursorInfo: PIconInfo): hCursor;
-{var
-  ConvertedInfo: TIconInfo;
-  AData: PByte;
-  ADataSize: PtrUInt;
-  ABitmap : Windows.TBitmap;
-  ABitmapInfo: TBitmapInfo;
-  DC: HDC;
-  i: integer;
-}
-begin
-  Result := 0;
-  // TODO: GetDIBits, SetDIBits dependent
-{
-  // create a copy of info to prevent it changing
-  Move(ACursorInfo^, ConvertedInfo, SizeOf(TIconInfo));
-  if (GetObject(ACursorInfo^.hbmMask, SizeOf(ABitmap), @ABitmap) > 0) then
-  begin
-    // create new mask bitmap
-    ConvertedInfo.hbmMask := Windows.CreateBitmap(ABitmap.bmWidth,
-      ABitmap.bmHeight, 1, 1, nil);
-    if ConvertedInfo.hbmMask <> 0 then
-    begin
-      FillChar(ABitmapInfo, SizeOf(ABitmapInfo), 0);
-      ABitmapInfo.bmiHeader.biSize := SizeOf(ABitmapInfo.bmiHeader);
-      ABitmapInfo.bmiHeader.biWidth := ABitmap.bmWidth;
-      ABitmapInfo.bmiHeader.biHeight := -ABitmap.bmHeight;
-      ABitmapInfo.bmiHeader.biPlanes := 1;
-      ABitmapInfo.bmiHeader.biBitCount := ABitmap.bmBitsPixel;
-      ABitmapInfo.bmiHeader.biCompression := BI_RGB;
-      ADataSize := ((ABitmap.bmWidthBytes+3) and not 3) * ABitmap.bmHeight;
-      GetMem(AData, ADataSize);
-      DC := GetDC(0);
-      // get mask data
-      GetDIBits(DC, ACursorInfo^.hbmMask, 0, ABitmap.bmHeight, AData,
-        Windows.BitmapInfo(ABitmapInfo), DIB_RGB_COLORS);
-      // convert it
-      for i := 0 to ADataSize - 1 do
-        (AData + i)^ := (AData + i)^ xor $FF;
-      // set to new mask bitmap
-      SetDIBits(DC, ConvertedInfo.hbmMask, 0, ABitmap.bmHeight, AData,
-        Windows.BitmapInfo(ABitmapInfo), DIB_RGB_COLORS);
-      ReleaseDC(0, DC);
-      // create cursor
-      Result := Windows.CreateIconIndirect(@ConvertedInfo);
-      // no more need new bitmap
-      DeleteObject(ConvertedInfo.hbmMask);
-      // and data
-      FreeMem(AData);
-    end;
-  end;
-}
-end;
-
-{------------------------------------------------------------------------------
   Method:  CreateFontIndirect
   Params:  LogFont - logical font record
   Returns: a handle to a logical font
@@ -602,6 +541,18 @@ begin
       TempLogFont.lfHeight := FMetrics.lfMessageFont.lfHeight;
   end;
   Result := Windows.CreateFontIndirect(@TempLogFont);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  CreateIconIndirect
+  Params:  IconInfo - pointer to Icon Information record
+  Returns: handle to a created icon / cursor
+
+  Creates an icon / cursor by color and mask bitmaps and other indo.
+ ------------------------------------------------------------------------------}
+function TWinCEWidgetSet.CreateIconIndirect(IconInfo: PIconInfo): HICON;
+begin
+  Result := Windows.CreateIconIndirect(IconInfo);
 end;
 
 {function TWinCEWidgetSet.CreateFontIndirectEx(const LogFont: TLogFont;
@@ -718,6 +669,11 @@ function TWinCEWidgetSet.DestroyCursor(Handle: hCursor): Boolean;
 begin
   Result := False;
   //Result := Boolean(Windows.DestroyCursor(Handle));
+end;
+
+function TWinCEWidgetSet.DestroyIcon(Handle: HICON): Boolean;
+begin
+  Result := Windows.DestroyIcon(Handle);
 end;
 
 {------------------------------------------------------------------------------
