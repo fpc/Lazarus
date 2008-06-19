@@ -122,13 +122,6 @@ tools\updatepofiles components\turbopower_ipro\languages\iputils.po
 rstconv -c UTF-8 -i %MessageComposer_RST% -o components\messagecomposer\languages\messagecomposer.po
 tools\updatepofiles components\messagecomposer\languages\messagecomposer.po
 
-@REM LazReport editor sample
-@set LREditor_RST=components\lazreport\samples\editor\maincalleditor.rst
-if not exist %LREditor_RST% goto SkipLREditor
-rstconv -c UTF-8 -i %LREditor_RST% -o components\lazreport\samples\editor\languages\calleditorwithpkg.po
-tools\updatepofiles components\lazreport\samples\editor\languages\calleditorwithpkg.po
-:SkipLREditor
-
 @goto Exit
 
 :Exit_Error
