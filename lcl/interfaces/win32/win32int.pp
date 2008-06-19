@@ -335,7 +335,11 @@ initialization
   else MMenuItemInfoSize := sizeof(MENUITEMINFO);
 
 finalization
-
+  if CurDoubleBuffer.Bitmap <> 0 then
+  begin
+    Windows.DeleteObject(CurDoubleBuffer.Bitmap);
+    CurDoubleBuffer.Bitmap := 0;
+  end;
   Assert(False, 'Trace:win32int.pp - Finalization');
 
 end.
