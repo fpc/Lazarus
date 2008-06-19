@@ -11410,7 +11410,6 @@ var
   Lines: TStrings;
 begin
   Result:=0;
-  DebugLn(['TSynCustomBeautifier.GetIndentForLineBreak ',dbgs(InsertPos)]);
   if InsertPos.Y<1 then exit;
   LastTextY:=InsertPos.Y;
   Lines:=Editor.Lines;
