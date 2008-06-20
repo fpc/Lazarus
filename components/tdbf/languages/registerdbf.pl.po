@@ -11,7 +11,7 @@ msgstr ""
 "X-Poedit-Language: Polish\n"
 "X-Poedit-Country: POLAND\n"
 
-#: registerdbf:dbfsalldbasefiles
+#: registerdbf.dbfsalldbasefiles
 msgid "DBase Files"
 msgstr "Pliki DBase"
 

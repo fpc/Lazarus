@@ -11,19 +11,19 @@ msgstr ""
 "X-Poedit-Language: Polish\n"
 "X-Poedit-Country: POLAND\n"
 
-#: frmselectdataset:smenucopydataset
-msgid "Copy data from Dataset"
-msgstr ""
-
-#: frmselectdataset:smenucreatedataset
-msgid "Create dataset"
-msgstr ""
-
-#: frmselectdataset:serrcomponentnotfound
+#: frmselectdataset.serrcomponentnotfound
 msgid "Error: Component \"%s\" not found"
 msgstr ""
 
-#: frmselectdataset:serrselectdataset
+#: frmselectdataset.serrselectdataset
 msgid "Please select a dataset first"
+msgstr ""
+
+#: frmselectdataset.smenucopydataset
+msgid "Copy data from Dataset"
+msgstr ""
+
+#: frmselectdataset.smenucreatedataset
+msgid "Create dataset"
 msgstr ""
 

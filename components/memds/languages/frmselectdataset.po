@@ -4,19 +4,19 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: frmselectdataset:serrcomponentnotfound
+#: frmselectdataset.serrcomponentnotfound
 msgid "Error: Component \"%s\" not found"
 msgstr ""
 
-#: frmselectdataset:smenucreatedataset
-msgid "Create dataset"
+#: frmselectdataset.serrselectdataset
+msgid "Please select a dataset first"
 msgstr ""
 
-#: frmselectdataset:smenucopydataset
+#: frmselectdataset.smenucopydataset
 msgid "Copy data from Dataset"
 msgstr ""
 
-#: frmselectdataset:serrselectdataset
-msgid "Please select a dataset first"
+#: frmselectdataset.smenucreatedataset
+msgid "Create dataset"
 msgstr ""
 

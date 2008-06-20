@@ -11,19 +11,19 @@ msgstr ""
 "X-Poedit-Language: French\n"
 "X-Poedit-Country: FRANCE\n"
 
-#: frmselectdataset:smenucopydataset
+#: frmselectdataset.serrcomponentnotfound
+msgid "Error: Component \"%s\" not found"
+msgstr "Erreur : Composant  « %s  » non trouvé"
+
+#: frmselectdataset.serrselectdataset
+msgid "Please select a dataset first"
+msgstr "Veuillez choisir un ensemble de données d'abord"
+
+#: frmselectdataset.smenucopydataset
 msgid "Copy data from Dataset"
 msgstr "Copier les Données de l'ensemble de données"
 
-#: frmselectdataset:smenucreatedataset
+#: frmselectdataset.smenucreatedataset
 msgid "Create dataset"
 msgstr "Créer l'ensemble de données"
-
-#: frmselectdataset:serrcomponentnotfound
-msgid "Error: Component \"%s\" not found"
-msgstr "Erreur : Composant \ « %s \ » non trouvé"
-
-#: frmselectdataset:serrselectdataset
-msgid "Please select a dataset first"
-msgstr "Veuillez choisir un ensemble de données d'abord"
 

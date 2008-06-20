@@ -4,7 +4,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: registerdbf:dbfsalldbasefiles
+#: registerdbf.dbfsalldbasefiles
 msgid "DBase Files"
 msgstr "Arquivos DBase"
 
