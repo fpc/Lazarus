@@ -81,7 +81,7 @@ type
     {$endif}
     
     function RawImage_DescriptionFromCarbonBitmap(out ADesc: TRawImageDescription; ABitmap: TCarbonBitmap): Boolean;
-    function RawImage_FromCarbonBitmap(out ARawImage: TRawImage; ABitmap, AMask: TCarbonBitmap; const ARect: TRect): Boolean;
+    function RawImage_FromCarbonBitmap(out ARawImage: TRawImage; ABitmap, AMask: TCarbonBitmap; ARect: PRect = nil): Boolean;
     function GetImagePixelData(AImage: CGImageRef; var bitmapByteCount: PtrUInt): Pointer;
   protected
     function CreateThemeServices: TThemeServices; override;

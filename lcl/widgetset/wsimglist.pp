@@ -136,8 +136,7 @@ begin
 
   RawImage_CreateBitmaps(RawImg, hbmImage, hbmMask);
   Result := TBitmap.Create;
-  Result.Handle := hbmImage;
-  Result.MaskHandle := hbmMask;
+  Result.SetHandles(hbmImage, hbmMask);
 end;
 
 

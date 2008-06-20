@@ -249,7 +249,7 @@ type
     procedure LoadFromBitmap(ABitmap, AMaskBitmap: HBitmap; AWidth: integer = -1; AHeight: integer = -1); virtual;
     procedure CreateBitmaps(out ABitmap, AMask: HBitmap; ASkipMask: boolean = False); virtual;
     procedure SetRawImage(const ARawImage: TRawImage; ADataOwner: Boolean = True); virtual;
-    procedure GetRawImage(out ARawImage: TRawImage); virtual;
+    procedure GetRawImage(out ARawImage: TRawImage; ATransferOwnership: Boolean = False); virtual;
     procedure FillPixels(const Color: TFPColor); virtual;
     procedure CopyPixels(ASource: TFPCustomImage; XDst: Integer = 0; YDst: Integer = 0); virtual;
     procedure AlphaFromMask(AKeepAlpha: Boolean = True);
@@ -358,12 +358,25 @@ type
     destructor Destroy; override;
     procedure ConsistencyCheck;
   end;
+  
+  
+  { ILazImageReader }
+  { Extention to TFPCustomImageReader to initialize a TRawImgeDescription based
+    on the image to be read
+  }
+  
+  ILazImageReader = interface
+    ['{DD8B14DE-4E97-4816-8B40-DD6C4D8CCD1B}']
+    function GetUpdateDescription: Boolean;
+    procedure SetUpdateDescription(AValue: Boolean);
 
+    property UpdateDescription: Boolean read GetUpdateDescription write SetUpdateDescription;
+  end;
 
   { TLazReaderXPM }
   { This is a FPImage reader for xpm images. }
 
-  TLazReaderXPM = class(TFPCustomImageReader)
+  TLazReaderXPM = class(TFPCustomImageReader, ILazImageReader)
   private
     FWidth: Integer;
     FHeight: Integer;
@@ -372,6 +385,13 @@ type
     fXHot: Integer;
     fYHot: Integer;
     FPixelToColorTree: TArrayNodesTree;
+    FUpdateDescription: Boolean; // If set, update rawimagedescription
+    function  GetUpdateDescription: Boolean;
+    procedure SetUpdateDescription(AValue: Boolean);
+  protected
+    function QueryInterface(const iid: TGuid; out obj): LongInt; stdcall;
+    function _AddRef: LongInt; stdcall;
+    function _Release: LongInt; stdcall;
   protected
     procedure ClearPixelToColorTree;
     procedure InternalRead(Str: TStream; Img: TFPCustomImage); override;
@@ -379,6 +399,7 @@ type
   public
     constructor Create; override;
     destructor Destroy; override;
+    property UpdateDescription: Boolean read GetUpdateDescription write SetUpdateDescription;
   end;
 
 
@@ -400,7 +421,8 @@ type
   
   
   { TLazReaderBMP }
-  { This is an imroved FPImage writer for bmp images. }
+  { This is an imroved FPImage reader for bmp images. }
+  //TODO: improved or not, derive from TFPReaderBMP the get RLE support
   
   TLazReaderMaskMode = (
     lrmmNone,  // no mask is generated
@@ -411,7 +433,8 @@ type
   //           has no influence on the mask (unless the maskcolor is transparent)
 
 
-  TLazReaderBMP = class (TFPCustomImageReader)
+
+  TLazReaderDIB = class (TFPCustomImageReader, ILazImageReader)
   private
     FImage: TLazIntfImage;
   
@@ -425,8 +448,15 @@ type
     FBitsPerPixel: Integer;  // bits per pixel (1, 4, 8, 15, 16, 24, 32)
     FLineBuf: PByte;         // Buffer for 1 scanline. Can be Byte, Word, TColorRGB or TColorRGBA
     FIsRLE: Boolean;         // Is data RLE compressed?
+    FUpdateDescription: Boolean; // If set, update rawimagedescription
 
     procedure FreeBufs;      // Free (and nil) buffers.
+    function GetUpdateDescription: Boolean;
+    procedure SetUpdateDescription(AValue: Boolean);
+  protected
+    function QueryInterface(const iid: TGuid; out obj): LongInt; stdcall;
+    function _AddRef: LongInt; stdcall;
+    function _Release: LongInt; stdcall;
   protected
 
     // SetupRead will allocate the needed buffers, and read the colormap if needed.
@@ -448,64 +478,53 @@ type
     destructor Destroy; override;
     property MaskColor: TFPColor read FMaskColor write FMaskColor;
     property MaskMode: TLazReaderMaskMode read FMaskMode write FMaskMode;
+    property UpdateDescription: Boolean read GetUpdateDescription write SetUpdateDescription;
   end;
   
-  { TLazReaderDIB }
+  { TLazReaderBMP }
 
-  TLazReaderDIB = class(TLazReaderBMP)
+  TLazReaderBMP = class(TLazReaderDIB)
   protected
     function InternalCheck(Stream: TStream) : boolean; override;
   end;
 
-  { TLazReaderPartIcon }
-  { This is a FPImage writer for a single icon from an icon file }
-  TLazReaderPartIcon = class (TLazReaderBMP)
+  { TLazReaderIconDIB }
+  { This is a FPImage reader for a single DIB from an icon file }
+  TLazReaderIconDIB = class (TLazReaderDIB)
   protected
-    // required by TFPCustomImageReader
     procedure InternalRead(Stream: TStream; Img: TFPCustomImage); override;
-    function  InternalCheck(Stream: TStream) : boolean; override;
   end;
 
-  { TLazReaderIcon }
-  { This is a FPImage writer for icon images. }
-  TLazReaderIcon = class (TLazReaderPartIcon)
-  private
-    FIcon: TObject; { Actually TIcon, but this would give rise to a circular reference }
-    FnIcons: Integer;
-    FnStartPos: TStreamSeekType;
-    procedure SetIcon(const AValue: TObject);
-  protected
-    // required by TFPCustomImageReader
-    procedure InternalRead(Stream: TStream; Img: TFPCustomImage); override;
-    function  InternalCheck(Stream: TStream) : boolean; override;
-  public
-    property Icon: TObject read FIcon write SetIcon;
-  end;
-
-  TLazReaderCursor = class (TLazReaderIcon)
-  protected
-    function  InternalCheck(Stream: TStream) : boolean; override;
-  end;
-  
   { TLazReaderPNG }
 
-  TLazReaderPNG = class(TFPReaderPNG)
+  TLazReaderPNG = class(TFPReaderPNG, ILazImageReader)
   private
-    FImage: TLazIntfImage;
-    FReadingScanlines: Boolean;
+    FAlphaPalette: Boolean;
+    FUpdateDescription: Boolean;
+    function  GetUpdateDescription: Boolean;
+    procedure SetUpdateDescription(AValue: Boolean);
   protected
+    function QueryInterface(const iid: TGuid; out obj): LongInt; stdcall;
+    function _AddRef: LongInt; stdcall;
+    function _Release: LongInt; stdcall;
+  protected
+    procedure DoDecompress; override;
     procedure HandleAlpha; override;
-    procedure HandleScanLine (const y : integer; const ScanLine : PByteArray); override;
-    function InternalCheck(Stream: TStream) : boolean; override;
+    procedure InternalRead(Str:TStream; Img:TFPCustomImage); override;
   public
+    property UpdateDescription: Boolean read GetUpdateDescription write SetUpdateDescription;
   end;
 
 
 // extra Rawimage utility functions
+
+function QueryDescription(AFlags: TRawImageQueryFlags; AWidth: Integer = -1; AHeight: integer = -1): TRawImageDescription;
 function GetDescriptionFromDevice(ADC: HDC; AWidth: Integer = -1; AHeight: integer = -1): TRawImageDescription;
 function GetDescriptionFromBitmap(ABitmap: HBitmap; AWidth: Integer = -1; AHeight: integer = -1): TRawImageDescription;
 function AddAlphaToDescription(var ADesc: TRawImageDescription; APrec: Byte): Boolean;
 
+
+procedure DefaultReaderDescription(AWidth, AHeight: Integer; ADepth: Byte; out ADesc: TRawImageDescription);
 
 
 function ReadCompleteStreamToString(Str: TStream; StartSize: integer): string;
@@ -601,6 +620,15 @@ begin
         +',b='+hexStr(FPColor.blue,4)+',a='+hexStr(FPColor.alpha,4);
 end;
 
+function QueryDescription(AFlags: TRawImageQueryFlags; AWidth: Integer; AHeight: integer): TRawImageDescription;
+begin
+  if not (riqfUpdate in AFlags) then Result.Init;
+
+  if not RawImage_QueryDescription(AFlags, Result) then Exit;
+  if AWidth <> -1 then Result.Width := AWidth;
+  if AHeight <> -1 then Result.Height := AHeight;
+end;
+
 function GetDescriptionFromDevice(ADC: HDC; AWidth, AHeight: integer): TRawImageDescription;
 begin
   Result.Init;
@@ -676,7 +704,64 @@ begin
   TLazIntfImage(AImage).DataDescription := Desc;
 end;
 
+procedure DefaultReaderDescription(AWidth, AHeight: Integer; ADepth: Byte; out ADesc: TRawImageDescription);
+begin
+  // Default description, assume 24bit for palettebased
+  // Maybe when RawImage palette is supported, other descriptions need to be adjusted.
+  
+  ADesc.Init_BPP24_B8G8R8_M1_BIO_TTB(AWidth, AHeight);
 
+  case ADepth of
+    1: begin
+      ADesc.Depth := 1;
+      ADesc.BitsPerPixel := 1;
+      ADesc.Format := ricfGray;
+      ADesc.LineEnd := rileWordBoundary;
+      ADesc.RedPrec := 1;
+      ADesc.RedShift := 0;
+      ADesc.GreenPrec := 1;
+      ADesc.GreenShift := 0;
+      ADesc.BluePrec := 1;
+      ADesc.BlueShift := 0;
+    end;
+    2..4: begin
+//      ADesc.Depth := 4;
+//      ADesc.BitsPerPixel := 4;
+    end;
+    5..8: begin
+//      ADesc.Depth := 8;
+//      ADesc.BitsPerPixel := 8;
+    end;
+    9..15: begin
+      ADesc.Depth := 15;
+      ADesc.BitsPerPixel := 16;
+      ADesc.RedPrec := 5;
+      ADesc.RedShift := 10;
+      ADesc.GreenPrec := 5;
+      ADesc.GreenShift := 5;
+      ADesc.BluePrec := 5;
+      ADesc.BlueShift := 0;
+    end;
+    16: begin
+      ADesc.Depth := 16;
+      ADesc.BitsPerPixel := 16;
+      ADesc.RedPrec := 5;
+      ADesc.RedShift := 10;
+      ADesc.GreenPrec := 6;
+      ADesc.GreenShift := 5;
+      ADesc.BluePrec := 5;
+      ADesc.BlueShift := 0;
+    end;
+    17..24: begin
+      // already default
+    end;
+  else
+    ADesc.Depth := 32;
+    ADesc.BitsPerPixel := 32;
+    ADesc.AlphaPrec := 8;
+    ADesc.AlphaShift := 24;
+  end;
+end;
 
 
 procedure ReadRawImageBits_1_2_4_BIO(TheData: PByte;
@@ -2789,15 +2874,19 @@ end;
 
 procedure TLazIntfImage.FreeData;
 begin
-  if FDataOwner then
-    ReallocMem(FRawImage.Data, 0);
+  if FDataOwner
+  then ReallocMem(FRawImage.Data, 0)
+  else FRawImage.Data := nil;
   FRawImage.DataSize := 0;
+
   if FLineStarts <> nil then Dispose(FLineStarts);
   FLineStarts := nil;
   
-  if FDataOwner then
-    ReallocMem(FRawImage.Mask, 0);
+  if FDataOwner
+  then ReallocMem(FRawImage.Mask, 0)
+  else FRawImage.Mask := nil;
   FRawImage.MaskSize := 0;
+
   if FMaskLineStarts <> nil then Dispose(FMaskLineStarts);
   FMaskLineStarts := nil;
   FMaskSet := False;
@@ -3003,7 +3092,7 @@ begin
   if AWidth < 0 then AWidth := Desc.Width;
   if AHeight < 0 then AHeight := Desc.Height;
   R := Rect(0, 0, AWidth, AHeight);
-  if not RawImage_FromBitmap(RawImage, ABitmap, AMaskBitmap, R) then
+  if not RawImage_FromBitmap(RawImage, ABitmap, AMaskBitmap, @R) then
     raise FPImageException.Create('Failed to get raw image from bitmap');
 
   SetRawImage(RawImage);
@@ -3038,9 +3127,11 @@ begin
   end;
 end;
 
-procedure TLazIntfImage.GetRawImage(out ARawImage: TRawImage);
+procedure TLazIntfImage.GetRawImage(out ARawImage: TRawImage; ATransferOwnership: Boolean);
 begin
   ARawImage := FRawImage;
+  if ATransferOwnership
+  then FDataOwner := False;
 end;
 
 procedure TLazIntfImage.FillPixels(const Color: TFPColor);
@@ -3537,7 +3628,8 @@ var
   end;
   
 var
-  IntArray: PInteger;
+  IntArray: array of Integer;
+  Desc: TRawImageDescription;
 begin
   ClearPixelToColorTree;
   Src:=ReadCompleteStreamToString(Str,1024);
@@ -3546,17 +3638,50 @@ begin
   CurLineNumber:=1;
   LastLineStart:=1;
   ReadHeader;
-  GetMem(IntArray,SizeOf(Integer)*(FCharsPerPixel+1));
-  try
-    HasAlpha := False;
-    ReadPalette(IntArray);
+  
+  SetLength(IntArray, FCharsPerPixel+1);
+
+  HasAlpha := False;
+  ReadPalette(@IntArray[0]);
+
+  if FUpdateDescription and (theImage is TLazIntfImage)
+  then begin
+    if HasAlpha
+    then DefaultReaderDescription(FWidth, FHeight, 32, Desc)
+    else DefaultReaderDescription(FWidth, FHeight, 24, Desc);
+//  MWE: keep mask ?
+//    if FMaskMode = lrmmNone
+//    then Desc.MaskBitsPerPixel := 0;
+    TLazIntfImage(theImage).DataDescription := Desc;
+  end
+  else begin
     if HasAlpha
     then CheckAlphaDescription(TheImage);
-    //FPixelToColorTree.ConsistencyCheck;
-    ReadPixels(IntArray);
-  finally
-    FreeMem(IntArray);
   end;
+  //FPixelToColorTree.ConsistencyCheck;
+  ReadPixels(@IntArray[0]);
+end;
+
+function TLazReaderXPM.QueryInterface(const iid: TGuid; out obj): longint; stdcall;
+begin
+  if GetInterface(iid, obj)
+  then Result := S_OK
+  else Result := E_NOINTERFACE;
+end;
+
+procedure TLazReaderXPM.SetUpdateDescription(AValue: Boolean);
+begin
+  FUpdateDescription := AValue;
+end;
+
+function TLazReaderXPM._AddRef: LongInt; stdcall;
+begin
+  Result := -1;
+end;
+
+function TLazReaderXPM._Release: LongInt; stdcall;
+begin
+  Result := -1;
 end;
 
 function TLazReaderXPM.InternalCheck(Str: TStream): boolean;
@@ -3584,6 +3709,11 @@ destructor TLazReaderXPM.Destroy;
 begin
   ClearPixelToColorTree;
   inherited Destroy;
+end;
+
+function TLazReaderXPM.GetUpdateDescription: Boolean;
+begin
+  Result := FUpdateDescription;
 end;
 
 { TLazAVLPalette }
@@ -4304,7 +4434,18 @@ begin
     Root.ConsistencyCheck;
 end;
 
-{ TLazReaderBMP }
+{ TLazReaderDIB_ }
+
+function TLazReaderBMP.InternalCheck(Stream: TStream): boolean;
+var
+  BFH: TBitMapFileHeader;
+begin
+  stream.Read(BFH, SizeOf(BFH));
+  with BFH do
+    Result := (LEtoN(bfType) = BMmagic); // Just check magic number
+end;
+
+{ TLazReaderDIB }
 
 function BmpRGBAToFPColor(const RGBA: TColorRGBA): TFPcolor;
 begin
@@ -4409,7 +4550,7 @@ begin
   Result.Alpha:=alphaOpaque;
 end;
 
-procedure TLazReaderBMP.FreeBufs;
+procedure TLazReaderDIB.FreeBufs;
 begin
   FreeMem(FLineBuf);
   FLineBuf := nil;
@@ -4417,7 +4558,12 @@ begin
   FPalette := nil;
 end;
 
-procedure TLazReaderBMP.SetupRead(nPalette, nRowBits: Integer; ReadPalette, AIsRLE: Boolean);
+function TLazReaderDIB.GetUpdateDescription: Boolean;
+begin
+  Result := FUpdateDescription;
+end;
+
+procedure TLazReaderDIB.SetupRead(nPalette, nRowBits: Integer; ReadPalette, AIsRLE: Boolean);
 var
   ColInfo: array of TColorRGBA;
   i: Integer;
@@ -4446,7 +4592,7 @@ begin
   GetMem(FLineBuf, FReadSize);
 end;
 
-procedure TLazReaderBMP.ReadScanLine(Row: Integer);
+procedure TLazReaderDIB.ReadScanLine(Row: Integer);
 //{$IFDEF FPC_BIG_ENDIAN}
 //var
 //  n: Integer;
@@ -4505,7 +4651,12 @@ begin
 *)
 end;
 
-procedure TLazReaderBMP.WriteScanLine(Row: Cardinal);
+procedure TLazReaderDIB.SetUpdateDescription(AValue: Boolean);
+begin
+  FUpdateDescription := AValue;
+end;
+
+procedure TLazReaderDIB.WriteScanLine(Row: Cardinal);
 // using cardinals generates compacter code
 var
   Column: Cardinal;
@@ -4593,13 +4744,35 @@ begin
   end;
 end;
 
-procedure TLazReaderBMP.InternalRead(Stream: TStream; Img: TFPCustomImage);
+function TLazReaderDIB._AddRef: LongInt; stdcall;
 begin
+  Result := -1;
+end;
+
+function TLazReaderDIB._Release: LongInt; stdcall;
+begin
+  Result := -1;
+end;
+
+procedure TLazReaderDIB.InternalRead(Stream: TStream; Img: TFPCustomImage);
+var
+  Desc: TRawImageDescription;
+begin
+  FImage := TheImage as TLazIntfImage;
   InternalReadHead;
+  
+  if FUpdateDescription
+  then begin
+    DefaultReaderDescription(FBFI.biWidth, FBFI.biHeight, FBFI.biBitCount, Desc);
+//    if FMaskMode = lrmmNone
+//    then Desc.MaskBitsPerPixel := 0;
+    FImage.DataDescription := Desc;
+  end;
+  
   InternalReadBody;
 end;
 
-procedure TLazReaderBMP.InternalReadHead;
+procedure TLazReaderDIB.InternalReadHead;
 begin
   TheStream.Read(FBFI,SizeOf(FBFI));
   {$IFDEF FPC_BIG_ENDIAN}
@@ -4617,7 +4790,14 @@ begin
   {$ENDIF}
 end;
 
-procedure TLazReaderBMP.InternalReadBody;
+function TLazReaderDIB.QueryInterface(const iid: TGuid; out obj): LongInt; stdcall;
+begin
+  if GetInterface(iid, obj)
+  then Result := S_OK
+  else Result := E_NOINTERFACE;
+end;
+
+procedure TLazReaderDIB.InternalReadBody;
 type
   TPixelMasks = packed record
     R, G, B: LongWord;
@@ -4625,6 +4805,7 @@ type
 
 const
   SWrongCombination = 'Bitmap with wrong combination of bit count (%d) and compression (%d)';
+  SUnsupportedPixelMask = 'Bitmap with non-standard pixel masks not supported';
 
   procedure SaveTransparentColor;
   begin
@@ -4650,7 +4831,6 @@ var
   PixelMasks: TPixelMasks;
   Row : Cardinal;
 begin
-  FImage := TheImage as TLazIntfImage;
 
   { This will move past any junk after the BFI header }
   TheStream.Position := TheStream.Position + TStreamSeekType(BFI.biSize-SizeOf(BFI));
@@ -4701,7 +4881,7 @@ begin
              (PixelMasks.B = $001F) then    // 5 blue
             FBitsPerPixel := 16
           else
-            raise FPImageException.Create('Bitmap with non-standard pixel masks not supported');
+            raise FPImageException.Create(SUnsupportedPixelMask);
         end;
       else
         raise FPImageException.CreateFmt(SWrongCombination, [BFI.biBitCount, BFI.biCompression]);
@@ -4721,7 +4901,7 @@ begin
           if (PixelMasks.R <> $FF0000) or     // 8 red
              (PixelMasks.G <> $00FF00) or     // 8 green
              (PixelMasks.B <> $0000FF) then   // 8 blue
-            raise FPImageException.Create('Bitmap with non-standard pixel masks not supported');
+            raise FPImageException.Create(SUnsupportedPixelMask);
         end;
       else
         raise FPImageException.CreateFmt(SWrongCombination, [BFI.biBitCount, BFI.biCompression]);
@@ -4741,7 +4921,7 @@ begin
           if (PixelMasks.R <> $00FF0000) or     // 8 red
              (PixelMasks.G <> $0000FF00) or     // 8 green
              (PixelMasks.B <> $000000FF) then   // 8 blue
-            raise FPImageException.Create('Bitmap with non-standard pixel masks not supported');
+            raise FPImageException.Create(SUnsupportedPixelMask);
         end;
       else
         raise FPImageException.CreateFmt(SWrongCombination, [BFI.biBitCount, BFI.biCompression]);
@@ -4787,22 +4967,18 @@ begin
   end;
 end;
 
-function TLazReaderBMP.InternalCheck(Stream: TStream): boolean;
-var
-  BFH: TBitMapFileHeader;
+function TLazReaderDIB.InternalCheck(Stream: TStream): boolean;
 begin
-  stream.Read(BFH, SizeOf(BFH));
-  with BFH do
-    Result := (LEtoN(bfType) = BMmagic); // Just check magic number
+  Result := True;
 end;
 
-constructor TLazReaderBMP.Create;
+constructor TLazReaderDIB.Create;
 begin
   inherited Create;
   FMaskColor := colTransparent;
 end;
 
-destructor TLazReaderBMP.Destroy;
+destructor TLazReaderDIB.Destroy;
 begin
   FreeBufs;
   inherited Destroy;
@@ -4838,27 +5014,30 @@ begin
   inherited Create(FImage.Width,FImage.Height);
 end;
 
-{ TLazReaderPartIcon }
+{ TLazReaderIconDIB }
 
-procedure TLazReaderPartIcon.InternalRead(Stream: TStream; Img: TFPCustomImage);
+procedure TLazReaderIconDIB.InternalRead(Stream: TStream; Img: TFPCustomImage);
 var
   Row, Column: Integer;
   NewColor: TFPColor;
   BufPtr: PByte;
   MaskBit: Byte;
 begin
+  FImage := TheImage as TLazIntfImage;
   InternalReadHead;
   
   // force alpha description
   CheckAlphaDescription(TheImage);
 
-  {$IFDEF VerboseLCLTodos}{$note check if height is also doubled without mask}{$ENDIF}
-  FBFI.biHeight := FBFI.biHeight div 2; { Height field is doubled, to (sort of) accomodate mask }
+  // Height field is doubled, to (sort of) accomodate mask
+  // MWE: it shoud be safer to verify the division agains the dirinfo.height
+  //      anyway I haven't encountered an icon in the wild which doesn't have a mask
+  FBFI.biHeight := FBFI.biHeight div 2;
   InternalReadBody; { Now read standard bitmap }
 
-  { Mask immediately follows unless bitmap was 32 bit - monchrome bitmap with no header }
-  // MWE: is the height then stil devided by 2 ?
-  if BFI.biBitCount >= 32 then Exit;
+  // Mask immediately follows unless bitmap was 32 bit - monchrome bitmap with no header
+  // MWE: Correction, it seems that even 32bit icons can have a mask following
+  // if BFI.biBitCount >= 32 then Exit;
 
   FReadSize := ((Img.Width + 31) div 32) shl 2;
   SetupRead(2, Img.Width, False, False);
@@ -4901,158 +5080,100 @@ begin
   end;
 end;
 
-function TLazReaderPartIcon.InternalCheck(Stream: TStream): boolean;
-//var bfh: Array[0..21] of byte;
-begin
-  //Stream.Read(bfh,22); // dummy read of ico file header
-  Result:=True; { Assumes stream in the correct place }
-end;
-
-{ TLazReaderIcon }
-
-type
-  TIconHeader = packed record
-    idReserved: Word; {0}
-    idType: Word;     {1 - Icon, 2 - Cursor}
-    idCount: Word;    {number of icons in file}
-  end;
-
-  TIconDirEntry = packed record
-    bWidth: Byte;          {ie: 16 or 32}
-    bHeight: Byte;         {ie: 16 or 32}
-    bColorCount: Byte;     {number of entires in pallette table below}
-    bReserved: Byte;       { not used  = 0}
-    wXHotSpot: Word;       { used for Cursor otherwise = 0}
-    wYHotSpot: Word;       { used for Cursor otherwise = 0}
-    dwBytesInRes: Longint;  {total number bytes in images including pallette data
-                             XOR, AND     and bitmap info header}
-    dwImageOffset: Longint;  {pos of image as offset from the beginning of file}
-  end;
-
-  PIconDirEntry = ^TIconDirEntry;
-
-procedure TLazReaderIcon.SetIcon(const AValue: TObject);
-begin
-  if AValue is TIcon then
-    FIcon:=AValue;
-end;
-
-procedure TLazReaderIcon.InternalRead(Stream: TStream; Img: TFPCustomImage);
-var
-  CurrentDirEntry, BestDirEntry, IconDir: PIconDirEntry;
-  i: Integer;
-  Bitmap: TBitmap;
-begin
-  // Force Maskmode to none, icons have their own mask, no need to generate
-  FMaskMode := lrmmNone;
-
-  // force alpha description
-  CheckAlphaDescription(TheImage);
-
-  GetMem(IconDir, FnIcons*Sizeof(TIconDirEntry));
-  try
-    Stream.Read(IconDir^, FnIcons*Sizeof(TIconDirEntry));
-    BestDirEntry := IconDir;
-    CurrentDirEntry := IconDir+1;
-    IconDir^.dwBytesInRes := LEtoN(IconDir^.dwBytesInRes);
-    IconDir^.dwImageOffset := LEtoN(IconDir^.dwImageOffset);
-    { First locate largest and/or most colourful icon as the default image }
-    for i := 2 to FnIcons do begin
-      CurrentDirEntry^.dwBytesInRes := LEtoN(CurrentDirEntry^.dwBytesInRes);
-      CurrentDirEntry^.dwImageOffset := LEtoN(CurrentDirEntry^.dwImageOffset);
-      if ((CurrentDirEntry^.bWidth > BestDirEntry^.bWidth)
-           and (CurrentDirEntry^.bHeight > BestDirEntry^.bHeight))
-         or ((CurrentDirEntry^.bWidth = BestDirEntry^.bWidth)
-             and (CurrentDirEntry^.bHeight = BestDirEntry^.bHeight)
-             and (CurrentDirEntry^.dwBytesInRes > BestDirEntry^.dwBytesInRes)) then
-        BestDirEntry := CurrentDirEntry;
-      Inc(CurrentDirEntry);
-    end;
-    if Assigned(Icon) then
-    begin
-      CurrentDirEntry := IconDir;
-      if Icon is TCursorImage then
-        TCursorImage(Icon).HotSpot := Point(LEtoN(BestDirEntry^.wXHotSpot), LEtoN(BestDirEntry^.wYHotSpot));
-      for i := 1 to FnIcons do
-      begin
-        Stream.Position := FnStartPos + CurrentDirEntry^.dwImageOffset;
-        if CurrentDirEntry = BestDirEntry
-        then begin
-          inherited InternalRead(Stream, Img)
-        end
-        else begin
-          Bitmap := TBitmap.Create;
-          try
-            Bitmap.ReadStreamWithFPImage(Stream, False, 0, TLazReaderPartIcon);
-          except
-            Bitmap.Free;
-            raise;
-          end;
-          TIcon(Icon).AddBitmap(Bitmap);
-        end;
-        Inc(CurrentDirEntry);
-      end;
-    end
-    else begin
-      Stream.Position := FnStartPos + BestDirEntry^.dwImageOffset;
-      inherited InternalRead(Stream, Img);
-      { Finally skip remaining icons }
-      Stream.Position := FnStartPos + CurrentDirEntry^.dwImageOffset + CurrentDirEntry^.dwBytesInRes;
-    end;
-  finally
-    FreeMem(IconDir);
-  end;
-end;
-
-function TLazReaderIcon.InternalCheck(Stream: TStream): boolean;
-var
-  IconHeader: TIconHeader;
-begin
-  FnStartPos := Stream.Position;
-  Stream.Read(IconHeader,SizeOf(IconHeader));
-  with IconHeader do
-    Result := (idReserved=0) and (LEtoN(idType)=1);
-  FnIcons := LEtoN(IconHeader.idCount);
-end;
-
-{ TLazReaderCursor }
-function TLazReaderCursor.InternalCheck(Stream: TStream): boolean;
-var
-  IconHeader: TIconHeader;
-begin
-  FnStartPos := Stream.Position;
-  Stream.Read(IconHeader,SizeOf(IconHeader));
-  With IconHeader do
-    Result := (idReserved=0) and (LEtoN(idType)=2);
-  FnIcons := LEtoN(IconHeader.idCount);
-end;
 
 { TLazReaderPNG }
+
+procedure TLazReaderPNG.DoDecompress;
+var
+  Desc: TRawImageDescription;
+begin
+  if FUpdateDescription and (theImage is TLazIntfImage)
+  then begin
+    // init some default
+    Desc.Init_BPP32_B8G8R8A8_BIO_TTB(Header.Width, Header.height);
+
+    // check grayscale
+    if Header.ColorType and 3 = 0
+    then Desc.Format := ricfGray;
+    
+    // check alpha
+    if (Header.ColorType and 4 = 0) and not FAlphaPalette
+    then Desc.AlphaPrec := 0;
+    
+    // check palette
+    if (Header.ColorType and 1 <> 0)
+    then begin
+      // todo: palette
+    end
+    else begin
+      // no palette, adjust description
+      Desc.Depth := Header.BitDepth;
+      case Header.BitDepth of
+        1,2,4: begin
+          // only gray
+          Desc.BitsPerPixel := Header.BitDepth;
+          Desc.RedPrec := Header.BitDepth;
+          Desc.RedShift := 0;
+        end;
+        8: begin
+          // no change
+        end;
+        16: begin
+          Desc.RedPrec := 16;
+          Desc.RedShift := Desc.RedShift * 2;
+          Desc.GreenPrec := 16;
+          Desc.GreenShift := Desc.GreenShift * 2;
+          Desc.BluePrec := 16;
+          Desc.BlueShift := Desc.BlueShift * 2;
+          Desc.AlphaPrec := Desc.AlphaPrec * 2; // might be zero
+          Desc.AlphaShift := Desc.AlphaShift * 2;
+        end;
+      end;
+    end;
+
+    TLazIntfImage(theImage).DataDescription := Desc;
+  end;
+
+  inherited DoDecompress;
+end;
+
+function TLazReaderPNG.GetUpdateDescription: Boolean;
+begin
+  Result := FUpdateDescription;
+end;
 
 procedure TLazReaderPNG.HandleAlpha;
 begin
   inherited HandleAlpha;
-  if FReadingScanlines then Exit; // already read some data
-  if UseTransparent or (Header.ColorType = 3)
-  then CheckAlphaDescription(TheImage);
+  FAlphaPalette := Header.ColorType = 3;
 end;
 
-procedure TLazReaderPNG.HandleScanLine(const y: integer; const ScanLine: PByteArray);
+procedure TLazReaderPNG.InternalRead(Str: TStream; Img: TFPCustomImage);
 begin
-  FReadingScanlines := True;
-  inherited HandleScanLine(y, ScanLine);
+  FAlphaPalette := False;
+  inherited InternalRead(Str, Img);
 end;
 
-function TLazReaderPNG.InternalCheck(Stream: TStream): boolean;
+function TLazReaderPNG.QueryInterface(const iid: TGuid; out obj): LongInt; stdcall;
 begin
-  Result := inherited InternalCheck(Stream);
+  if GetInterface(iid, obj)
+  then Result := S_OK
+  else Result := E_NOINTERFACE;
+end;
 
-  if TheImage is TLazIntfImage
-  then FImage := TLazIntfImage(TheImage)
-  else FImage := nil;
+procedure TLazReaderPNG.SetUpdateDescription(AValue: Boolean);
+begin
+  FUpdateDescription := AValue;
+end;
 
-  if Header.ColorType in [4, 6]
-  then CheckAlphaDescription(TheImage)
+function TLazReaderPNG._AddRef: LongInt; stdcall;
+begin
+  Result := -1;
+end;
+
+function TLazReaderPNG._Release: LongInt; stdcall;
+begin
+  Result := -1;
 end;
 
 //------------------------------------------------------------------------------
@@ -5065,13 +5186,6 @@ begin
     IsNumberChar[c]:=c in ['0'..'9'];
     IsHexNumberChar[c]:=c in ['0'..'9','A'..'F','a'..'f'];
   end;
-end;
-
-{ TLazReaderDIB }
-
-function TLazReaderDIB.InternalCheck(Stream: TStream): boolean;
-begin
-  Result := True;
 end;
 
 initialization

@@ -698,7 +698,7 @@ var
   MimeType: String;
   FormatID: TClipboardFormat;
 begin
-  MimeType:=Source.GetDefaultMimeType;
+  MimeType := Source.MimeType;
   FormatID:=ClipboardRegisterFormat(MimeType);
   if FormatID<>0 then
     AssignGraphic(Source,FormatID);

@@ -24,10 +24,10 @@
 
   Constructor for the class.
  ------------------------------------------------------------------------------}
-constructor TBitmapCanvas.Create(ABitmap : TCustomBitmap);
+constructor TBitmapCanvas.Create(AImage: TRasterImage);
 begin
   inherited Create;
-  FBitmap := ABitmap;
+  FImage := AImage;
 end;
 
 {------------------------------------------------------------------------------
@@ -42,28 +42,32 @@ var
   DC: HDC;
 begin
   if HandleAllocated then exit;
-  if FBitmap = nil then exit;
-  FBitmap.HandleNeeded;
-  FBitmap.PaletteNeeded;
-  if FBitmap.FImage.BitmapCanvas <> nil then
-    (FBitmap.FImage.BitmapCanvas as TBitmapCanvas).FreeDC;
-  FBitmap.FImage.BitmapCanvas := Self;
+  if FImage = nil then exit;
+  
+  FImage.BitmapHandleNeeded;
+  FImage.PaletteNeeded;
+  if FImage.FSharedImage.BitmapCanvas <> nil then
+    (FImage.FSharedImage.BitmapCanvas as TBitmapCanvas).FreeDC;
+  FImage.FSharedImage.BitmapCanvas := Self;
   DC := CreateCompatibleDC(0);
 
-  FOldBitmap := 0;
-  FOldBitmapValid:=false;
-  if FBitmap.HandleAllocated then begin
-    FOldBitmap := SelectObject(DC, FBitmap.Handle);
-    FOldBitmapValid:=true;
-  end;
+  if FImage.BitmapHandleAllocated
+  then FOldBitmap := SelectObject(DC, FImage.BitmapHandle)
+  else FOldBitmap := 0;
 
-  FOldPalette:=0;
-  FOldPaletteValid:=false;
-  if FBitmap.PaletteAllocated then begin
-    FOldPalette := SelectPalette(DC, FBitmap.FImage.FPalette, True);
-    FOldPaletteValid:=true;
+  if FImage.PaletteAllocated
+  then begin
+    FOldPalette := SelectPalette(DC, FImage.Palette, True);
     RealizePalette(DC);
+  end
+  else begin
+    FOldPalette := 0;
   end;
+  
+  // since moveto doesn't force a unshare, it is possible that a moveto was
+  // done in the old DC.
+  with PenPos do
+    LCLIntf.MoveToEx(DC, X, Y, nil);
 
   Handle := DC;
   //DebugLn('TBitmapCanvas.CreateHandle END Self=',DbgS(Self),' DC=',DbgS(DC),
@@ -96,24 +100,29 @@ var
 begin
   if not HandleAllocated then exit;
   //DebugLn('TBitmapCanvas.FreeDC START Self=',DbgS(Self),' FBitmap=',DbgS(FBitmap));
-  if FBitmap<>nil then begin
-    OldHandle := FHandle;
+
+  if FImage = nil
+  then begin
     Handle := 0;
-    FBitmap.FImage.BitmapCanvas := nil;
-    if FOldBitmapValid then begin
-      SelectObject(OldHandle, FOldBitmap);
-      FOldBitmap:=0;
-      FOldBitmapValid:=false;
-    end;
-    if FOldPaletteValid then begin
-      SelectPalette(OldHandle, FOldPalette, True);
-      FOldPalette:=0;
-      FOldPaletteValid:=false;
-    end;
-    DeleteDC(OldHandle);
-  end else begin
-    Handle:=0;
+    Exit;
   end;
+  
+  OldHandle := FHandle;
+  Handle := 0;
+  FImage.FSharedImage.BitmapCanvas := nil;
+
+  if FOldBitmap <> 0
+  then begin
+    SelectObject(OldHandle, FOldBitmap);
+    FOldBitmap := 0;
+  end;
+
+  if FOldPalette <> 0
+  then begin
+    SelectPalette(OldHandle, FOldPalette, True);
+    FOldPalette := 0;
+  end;
+  DeleteDC(OldHandle);
 end;
 
 // included by graphics.pp

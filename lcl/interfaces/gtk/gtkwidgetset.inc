@@ -1703,6 +1703,7 @@ begin
   if ACustomAlpha
   then begin
     // always give pixbuf description for alpha images
+    ADesc.Format:=ricfRGBA;
     ADesc.Depth := 32;
     ADesc.BitsPerPixel := 32;
     ADesc.LineEnd := rileDWordBoundary;
@@ -1825,7 +1826,7 @@ begin
   Result := True;
 end;
 
-function TGtkWidgetSet.RawImage_FromDrawable(out ARawImage: TRawImage; ADrawable, AAlpha: PGdkDrawable; const ARect: TRect): boolean;
+function TGtkWidgetSet.RawImage_FromDrawable(out ARawImage: TRawImage; ADrawable, AAlpha: PGdkDrawable; ARect: PRect): boolean;
 var
   ADesc: TRawImageDescription absolute ARawImage.Description;
   
@@ -1851,7 +1852,7 @@ var
       gdk_pixbuf_unref(Pixbuf);
     end;
     
-    Result := RawImage_SetAlpha(ARawImage, AAlpha, ARect);;
+    Result := RawImage_SetAlpha(ARawImage, AAlpha, @ARect);
   end;
 
   function GetFromImage(const ARect: TRect): Boolean;
@@ -1923,18 +1924,15 @@ begin
     DebugLn('WARNING: TGtkWidgetSet.RawImage_FromDrawable: RawImage_DescriptionFromDrawable failed ');
     Exit;
   end;
-
-  // get intersection
-  {$IFDEF VerboseRawImage}
-  DebugLn('TGtkWidgetSet.RawImage_FromDrawable: Intersect ARect=',
-    dbgs(ARect.Left),',',dbgs(ARect.Top),',',dbgs(ARect.Right),',',dbgs(ARect.Bottom),
-    ' DevW=',dbgs(ADesc.Width),' DevH=',dbgs(ADesc.Height));
-  {$ENDIF}
-
-  R := ARect;
-  IntersectRect(R, ARect, Rect(0, 0, ADesc.Width, ADesc.Height));
-  ADesc.Width := R.Right - R.Left;
-  ADesc.Height := R.Bottom - R.Top;
+  
+  R := Rect(0, 0, ADesc.Width, ADesc.Height);
+  if ARect <> nil
+  then begin
+    // get intersection
+    IntersectRect(R, ARect^, R);
+    ADesc.Width := R.Right - R.Left;
+    ADesc.Height := R.Bottom - R.Top;
+  end;
   
   {$IFDEF VerboseRawImage}
   DebugLn('TGtkWidgetSet.RawImage_FromDrawable get image ',
@@ -1946,14 +1944,13 @@ begin
     //DebugLn('WARNING: TGtkWidgetSet.GetRawImageFromGdkWindow Intersection empty');
     exit;
   end;
-  
 
   if UseAlpha
   then Result := GetFromPixbuf(R)
   else Result := GetFromImage(R);
 end;
 
-function TGTKWidgetSet.RawImage_SetAlpha(var ARawImage: TRawImage; AAlpha: PGdkPixmap; const ARect: TRect): boolean;
+function TGTKWidgetSet.RawImage_SetAlpha(var ARawImage: TRawImage; AAlpha: PGdkPixmap; ARect: PRect): boolean;
 // ARect must have the same dimension as the rawimage
 var
   ADesc: TRawImageDescription absolute ARawImage.Description;
@@ -2054,6 +2051,7 @@ var
 var
   Width, Height, H, W, D: cardinal;
   Image: PGdkImage;
+  R: TRect;
 begin
   Result := False;
 
@@ -2095,14 +2093,18 @@ begin
     Exit;
   end;
   
-  if (longint(W) < ARect.Right) or (longint(H) < ARect.Bottom)
+  if ARect = nil
+  then R := Rect(0, 0, ADesc.Width, ADesc.Height)
+  else R := ARect^;
+
+  if (longint(W) < R.Right) or (longint(H) < R.Bottom)
   then begin
-    DebugLn('WARNING: TGTKWidgetSet.RawImage_SetAlpha: Rect(%d,%d %d,%d) outside alpha pixmap(0,0 %d,%d)', [ARect.Left, ARect.Top, ARect.Right, ARect.Bottom, W, H]);
+    DebugLn('WARNING: TGTKWidgetSet.RawImage_SetAlpha: Rect(%d,%d %d,%d) outside alpha pixmap(0,0 %d,%d)', [R.Left, R.Top, R.Right, R.Bottom, W, H]);
     Exit;
   end;
 
-  Width := ARect.Right - ARect.Left;
-  Height := ARect.Bottom - ARect.Top;
+  Width := R.Right - R.Left;
+  Height := R.Bottom - R.Top;
 
   if Width <> ADesc.Width
   then begin
@@ -2125,7 +2127,7 @@ begin
   end;
 
   // get gdk_image from gdkbitmap
-  Image := gdk_image_get(AAlpha, ARect.Left, ARect.Top, Width, Height);
+  Image := gdk_image_get(AAlpha, R.Left, R.Top, Width, Height);
   if Image = nil
   then begin
     DebugLn('WARNING: TGtkWidgetSet.RawImage_SetAlpha: gdk_image_get failed');
@@ -2151,16 +2153,15 @@ begin
   Result:=true;
 end;
 
-function TGTKWidgetSet.RawImage_AddMask(var ARawImage: TRawImage; AMask: PGdkBitmap; const ARect: TRect): boolean;
+function TGTKWidgetSet.RawImage_AddMask(var ARawImage: TRawImage; AMask: PGdkBitmap; ARect: PRect): boolean;
 // ARect must have the same dimension as the rawimage
 
 var
   ADesc: TRawImageDescription absolute ARawImage.Description;
-  Width, Height, H: longint;
+  Left, Top, Width, Height, H: longint;
   Image: PGdkImage;
   BytesPerLine: Integer;
   SrcPtr, DstPtr: PByte;
-  R: TRect;
 begin
   Result := False;
   
@@ -2180,11 +2181,19 @@ begin
     Exit;
   end;
 
-  R := ARect;
-  Width := Min(ADesc.Width,  ARect.Right - ARect.Left);
-  Height := Min(ADesc.Height, ARect.Bottom - ARect.Top);
-  R.Right := R.Left + Width;
-  R.Bottom := R.Top + Height;
+  if ARect = nil
+  then begin
+    Left := 0;
+    Top := 0;
+    Width := ADesc.Width;
+    Height := ADesc.Height;
+  end
+  else begin
+    Left := ARect^.Left;
+    Top := ARect^.Top;
+    Width := Min(ADesc.Width,  ARect^.Right - ARect^.Left);
+    Height := Min(ADesc.Height, ARect^.Bottom - ARect^.Top);
+  end;
 
   if cardinal(Width) <> ADesc.Width
   then begin
@@ -2207,7 +2216,7 @@ begin
   end;
 
   // get gdk_image from gdkbitmap
-  Image := gdk_image_get(AMask, ARect.Left, ARect.Top, Width, Height);
+  Image := gdk_image_get(AMask, Left, Top, Width, Height);
   if Image = nil
   then begin
     DebugLn('WARNING: TGtkWidgetSet.RawImage_AddMask: gdk_image_get failed');

@@ -18,11 +18,34 @@
  *****************************************************************************
 }
 
+
+{ TSharedCursorImage }
+
+procedure TSharedCursorImage.FreeHandle;
+begin
+  if FHandle = 0 then Exit;
+
+  DestroyCursor(FHandle);
+  FHandle := 0;
+end;
+
+class function TSharedCursorImage.GetImagesClass: TIconImageClass;
+begin
+  Result := TCursorImageImage;
+end;
+
+////////////////////////////////////////////////////////////////////////////////
+
 { TCursorImage }
 
 class function TCursorImage.GetFileExtensions: string;
 begin
   Result := 'cur';
+end;
+
+class function TCursorImage.GetSharedImageClass: TSharedRasterImageClass;
+begin
+  Result := TSharedCursorImage;
 end;
 
 function TCursorImage.LazarusResourceTypeValid(const ResourceType: string): boolean;
@@ -41,51 +64,43 @@ begin
   end;
 end;
 
-function TCursorImage.ReleaseCursorHandle: HCURSOR;
+function TCursorImage.ReleaseHandle: HCURSOR;
 begin
-  Result := CursorHandle;
-  FCursorHandle := 0;
+  HandleNeeded;
+  Result := FSharedImage.ReleaseHandle;
 end;
 
 function TCursorImage.GetCursorHandle: HCURSOR;
 begin
-  CursorHandleNeeded;
-  Result := FCursorHandle;
+  Result := GetHandle;
 end;
 
-procedure TCursorImage.CursorHandleNeeded;
+procedure TCursorImage.SetCursorHandle(AValue: HCURSOR);
+begin
+  SetHandle(AValue);
+end;
+
+function TCursorImage.GetHotSpot: TPoint;
+begin
+  if FCurrent = -1
+  then Result := Point(0, 0)
+  else Result := TCursorImageImage(TSharedCursorImage(FSharedImage).FImages[FCurrent]).HotSpot;
+end;
+
+procedure TCursorImage.HandleNeeded;
 var
   IconInfo: TIconInfo;
+  h: TPoint;
 begin
-  if FCursorHandle = 0 then
-  begin
-    IconInfo.fIcon := False;
-    IconInfo.xHotspot := HotSpot.X;
-    IconInfo.yHotSpot := HotSpot.Y;
-    IconInfo.hbmMask := MaskHandle;
-    IconInfo.hbmColor := Handle;
-    FCursorHandle := WidgetSet.CreateCursor(@IconInfo);
-  end;
-end;
+  if FSharedImage.FHandle <> 0 then Exit;
 
-constructor TCursorImage.Create;
-begin
-  inherited Create;
-  FHotSpot := Point(0, 0);
-  FCursorHandle := 0;
-  FOwnHandle := True;
-end;
-
-destructor TCursorImage.Destroy;
-begin
-  if (FCursorHandle <> 0) then
-    WidgetSet.DestroyCursor(FCursorHandle);
-  inherited Destroy;
-end;
-
-function TCursorImage.GetBitmapNativeType: TBitmapNativeType;
-begin
-  Result := bnCursor;
+  IconInfo.fIcon := False;
+  H := HotSpot;
+  IconInfo.xHotspot := H.X;
+  IconInfo.yHotSpot := H.Y;
+  IconInfo.hbmMask := MaskHandle;
+  IconInfo.hbmColor := BitmapHandle;
+  FSharedImage.FHandle := WidgetSet.CreateCursor(@IconInfo);
 end;
 
 

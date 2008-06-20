@@ -20,59 +20,6 @@
 
 { TJPEGImage }
 
-procedure TJPEGImage.InitFPImageReader(IntfImg: TLazIntfImage; ImgReader: TFPCustomImageReader);
-var
-  JPEGReader: TFPReaderJPEG;
-begin
-  if ImgReader is TFPReaderJPEG then
-  begin
-    JPEGReader := TFPReaderJPEG(ImgReader);
-    JPEGReader.Performance := Performance;
-    JPEGReader.OnProgress := @Progress;
-  end;
-  inherited InitFPImageReader(IntfImg, ImgReader);
-end;
-
-procedure TJPEGImage.FinalizeFPImageReader(ImgReader: TFPCustomImageReader);
-var
-  JPEGReader: TFPReaderJPEG;
-begin
-  if ImgReader is TFPReaderJPEG then
-  begin
-    JPEGReader := TFPReaderJPEG(ImgReader);
-    FProgressiveEncoding := JPEGReader.ProgressiveEncoding;
-    FGrayScale := JPEGReader.GrayScale;
-  end;
-  inherited FinalizeFPImageReader(ImgReader);
-end;
-
-procedure TJPEGImage.InitFPImageWriter(IntfImg: TLazIntfImage; ImgWriter: TFPCustomImageWriter);
-var
-  JPEGWriter: TFPWriterJPEG;
-begin
-  if ImgWriter is TFPWriterJPEG then
-  begin
-    JPEGWriter := TFPWriterJPEG(ImgWriter);
-    if JPEGWriter <> nil then
-    begin
-      JPEGWriter.ProgressiveEncoding := ProgressiveEncoding;
-      JPEGWriter.CompressionQuality := CompressionQuality;
-      JPEGWriter.OnProgress := @Progress;
-    end;
-  end;
-  inherited InitFPImageWriter(IntfImg, ImgWriter);
-end;
-
-class function TJPEGImage.GetDefaultFPReader: TFPCustomImageReaderClass;
-begin
-  Result := TFPReaderJPEG;
-end;
-
-class function TJPEGImage.GetDefaultFPWriter: TFPCustomImageWriterClass;
-begin
-  Result := TFPWriterJPEG;
-end;
-
 constructor TJPEGImage.Create;
 begin
   inherited Create;
@@ -82,9 +29,45 @@ begin
   FQuality := 75;
 end;
 
+procedure TJPEGImage.FinalizeReader(AReader: TFPCustomImageReader);
+begin
+  FProgressiveEncoding := TFPReaderJPEG(AReader).ProgressiveEncoding;
+  FGrayScale := TFPReaderJPEG(AReader).GrayScale;
+  inherited;
+end;
+
 class function TJPEGImage.GetFileExtensions: string;
 begin
   Result := 'jpg;jpeg';
 end;
 
+class function TJPEGImage.GetReaderClass: TFPCustomImageReaderClass;
+begin
+  Result := TFPReaderJPEG;
+end;
+
+class function TJPEGImage.GetSharedImageClass: TSharedRasterImageClass;
+begin
+  Result := TSharedJPEGImage;
+end;
+
+class function TJPEGImage.GetWriterClass: TFPCustomImageWriterClass;
+begin
+  Result := TFPWriterJPEG;
+end;
+
+procedure TJPEGImage.InitializeReader(AImage: TLazIntfImage; AReader: TFPCustomImageReader);
+begin
+  inherited;
+  TFPReaderJPEG(AReader).Performance := Performance;
+  TFPReaderJPEG(AReader).OnProgress := @Progress;
+end;
+
+procedure TJPEGImage.InitializeWriter(AImage: TLazIntfImage; AWriter: TFPCustomImageWriter);
+begin
+  inherited;
+  TFPWriterJPEG(AWriter).ProgressiveEncoding := ProgressiveEncoding;
+  TFPWriterJPEG(AWriter).CompressionQuality := CompressionQuality;
+  TFPWriterJPEG(AWriter).OnProgress := @Progress;
+end;
 

@@ -64,6 +64,7 @@ type
   { Colorformat: Higher values means higher intensity.
     For example: Red=0 means no red, Alpha=0 means transparent }
   TRawImageColorFormat = (
+    ricfNone,   // Uninitialized
     ricfRGBA,   // one pixel contains red, green, blue and alpha
                 // If AlphaPrec=0 then there is no alpha.
                 // Same for RedPrec, GreenPrec and BluePrec.
@@ -96,6 +97,17 @@ type
     riloBottomToTop  // The line 0 is the bottom line
     );
 
+  TRawImageQueryFlag = (
+    riqfMono,        // Include a description for a mono image
+    riqfGrey,        // Include a description for a greq image
+    riqfRGB,         // Include a description for a RGB image
+    riqfAlpha,       // Include a description for an Alpha channel
+    riqfMask,        // Include a description for a Mask
+    riqfPalette,     // Include a description for a Palette
+    riqfUpdate       // Update given description (instead of clearing it)
+  );
+  TRawImageQueryFlags = set of TRawImageQueryFlag;
+
   { TRawImageDescription }
 
   TRawImageDescription = object
@@ -108,10 +120,10 @@ type
     LineOrder: TRawImageLineOrder;
     LineEnd: TRawImageLineEnd;
     BitsPerPixel: Byte; // bits per pixel. can be greater than Depth.
-    RedPrec: Byte; // red precision. bits for red
-    RedShift: Byte;
+    RedPrec: Byte;      // red or gray precision. bits for red
+    RedShift: Byte;     // bitshift. Direction: from least to most significant
     GreenPrec: Byte;
-    GreenShift: Byte; // bitshift. Direction: from least to most significant
+    GreenShift: Byte;
     BluePrec: Byte;
     BlueShift: Byte;
     AlphaPrec: Byte;
@@ -155,7 +167,7 @@ type
     function MaskBitsPerLine: PtrUInt;
 
     function AsString: string;
-    function IsEqual(ADescription: TRawImageDescription): Boolean;
+    function IsEqual(ADesc: TRawImageDescription): Boolean;
   end;
   PRawImageDescription = ^TRawImageDescription;
   
@@ -222,6 +234,7 @@ type
 
 const
   RawImageColorFormatNames: array[TRawImageColorFormat] of string = (
+    'ricfNone',
     'ricfRGBA',
     'ricfGray'
     );
@@ -863,9 +876,52 @@ begin
     +'';
 end;
 
-function TRawImageDescription.IsEqual(ADescription: TRawImageDescription): Boolean;
+function TRawImageDescription.IsEqual(ADesc: TRawImageDescription): Boolean;
 begin
-  Result := CompareMem(@Self, @ADescription, SizeOf(Self));
+// We cannot use CompareMem since some fields are depending on other fields
+//  Result := CompareMem(@Self, @ADescription, SizeOf(Self));
+  Result := False;
+  
+  if Format       <> ADesc.Format       then Exit;
+  if Width        <> ADesc.Width        then Exit;
+  if Height       <> ADesc.Height       then Exit;
+  if Depth        <> ADesc.Depth        then Exit;
+  if BitOrder     <> ADesc.BitOrder     then Exit;
+  if ByteOrder    <> ADesc.ByteOrder    then Exit;
+  if LineOrder    <> ADesc.LineOrder    then Exit;
+  if LineEnd      <> ADesc.LineEnd      then Exit;
+  if BitsPerPixel <> ADesc.BitsPerPixel then Exit;
+  if RedPrec      <> ADesc.RedPrec      then Exit;
+  if GreenPrec    <> ADesc.GreenPrec    then Exit;
+  if BluePrec     <> ADesc.BluePrec     then Exit;
+  if AlphaPrec    <> ADesc.AlphaPrec    then Exit;
+
+  // The next values are only valid, if there is a precision
+  if (RedPrec   <> 0) and (RedShift   <> ADesc.RedShift  ) then Exit;
+  if (GreenPrec <> 0) and (GreenShift <> ADesc.GreenShift) then Exit;
+  if (BluePrec  <> 0) and (BlueShift  <> ADesc.BlueShift ) then Exit;
+  if (AlphaPrec <> 0) and (AlphaShift <> ADesc.AlphaShift) then Exit;
+
+  // The next values are only valid, if there is a mask (MaskBitsPerPixel > 0)
+  if MaskBitsPerPixel <> ADesc.MaskBitsPerPixel then Exit;
+  if MaskBitsPerPixel <> 0
+  then begin
+    if MaskShift    <> ADesc.MaskShift    then Exit;
+    if MaskLineEnd  <> ADesc.MaskLineEnd  then Exit;
+    if MaskBitOrder <> ADesc.MaskBitOrder then Exit;
+  end;
+
+  // The next values are only valid, if there is a palette (PaletteColorCount > 0)
+  if PaletteColorCount <> ADesc.PaletteColorCount   then Exit;
+  if PaletteColorCount <> 0
+  then begin
+    if PaletteBitsPerIndex <> ADesc.PaletteBitsPerIndex then Exit;
+    if PaletteShift        <> ADesc.PaletteShift        then Exit;
+    if PaletteLineEnd      <> ADesc.PaletteLineEnd      then Exit;
+    if PaletteBitOrder     <> ADesc.PaletteBitOrder     then Exit;
+    if PaletteByteOrder    <> ADesc.PaletteByteOrder    then Exit;
+  end;
+  Result := True;
 end;
 
 

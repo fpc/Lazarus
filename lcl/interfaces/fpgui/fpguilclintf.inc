@@ -41,5 +41,17 @@ begin
   Result := True;
 end;
 
+{------------------------------------------------------------------------------
+  Function: RawImage_QueryDescription
+  Params: AFlags:
+          ADesc:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+//function TFpguiWidgetSet.RawImage_QueryDescription(AFlags: TRawImageQueryFlags; out ADesc: TRawImageDescription): Boolean;
+//begin
+//  // override only when queried formats are different from screen description
+//end;
+
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 

@@ -98,7 +98,8 @@ end;
 {-----------------------------------------------}
 function TCanvas.GetPixel(X, Y: Integer): TColor;
 begin
-  Result := WidgetSet.DCGetPixel(Self.Handle, X, Y);
+  RequiredState([csHandleValid]);
+  Result := WidgetSet.DCGetPixel(FHandle, X, Y);
 end;
 
 {-----------------------------------------------}
@@ -106,7 +107,10 @@ end;
 {-----------------------------------------------}
 procedure TCanvas.SetPixel(X, Y: Integer; Value: TColor);
 begin
-  WidgetSet.DCSetPixel(Self.Handle, X, Y, Value);
+  Changing;
+  RequiredState([csHandleValid]);
+  WidgetSet.DCSetPixel(FHandle, X, Y, Value);
+  Changed;
 end;
 
 {------------------------------------------------------------------------------

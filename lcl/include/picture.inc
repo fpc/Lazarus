@@ -51,7 +51,7 @@ begin
   Add('pbm', rsPortableBitmap, TPortableAnyMapGraphic);
   Add('pgm', rsPortableGrayMap, TPortableAnyMapGraphic);
   Add('ppm', rsPortablePixmap, TPortableAnyMapGraphic);
-  Add('ico', rsIcon, TIcon);
+  Add('ico', rsIcon, TCustomIcon);
   Add('jpg', rsJpeg, TJpegImage);
 end;
 
@@ -205,7 +205,7 @@ begin
   Add(PredefinedClipboardFormat(pcfBitmap), TBitmap);
   Add(PredefinedClipboardFormat(pcfDelphiBitmap), TBitmap);
   Add(PredefinedClipboardFormat(pcfPixmap), TPixmap);
-  //Add(PredefinedClipboardFormat(pcfIcon), TIcon);
+  //Add(PredefinedClipboardFormat(pcfIcon), TCustomIcon);
   Add(ClipboardRegisterFormat(sMimeTypePng), TPortableNetworkGraphic);
   Add(ClipboardRegisterFormat(sMimeTypeJpg), TJPegImage);
 end;
@@ -320,30 +320,6 @@ end;
 function GetGraphicClassForFileExtension(const FileExt: string): TGraphicClass;
 begin
   Result:=GetPicFileFormats.FindExt(FileExt);
-end;
-
-function GetFPImageReaderForFileExtension(const FileExt: string
-  ): TFPCustomImageReaderClass;
-var
-  GraphicClass: TGraphicClass;
-begin
-  GraphicClass:=GetGraphicClassForFileExtension(FileExt);
-  if GraphicClass<>nil then
-    Result:=GraphicClass.GetFPReaderForFileExt(FileExt)
-  else
-    Result:=nil;
-end;
-
-function GetFPImageWriterForFileExtension(const FileExt: string
-  ): TFPCustomImageWriterClass;
-var
-  GraphicClass: TGraphicClass;
-begin
-  GraphicClass:=GetGraphicClassForFileExtension(FileExt);
-  if GraphicClass<>nil then
-    Result:=GraphicClass.GetFPWriterForFileExt(FileExt)
-  else
-    Result:=nil;
 end;
 
 //--TPicture--------------------------------------------------------------------

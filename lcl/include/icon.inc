@@ -1,7 +1,7 @@
 {%MainUnit ../graphics.pp}
 
 {******************************************************************************
-                                    TIcon
+                                    TCustomIcon
  ******************************************************************************
 
  *****************************************************************************
@@ -18,11 +18,41 @@
  *****************************************************************************
 }
 
-{ TIcon }
-
 const
   IconSignature: array [0..3] of char = #0#0#1#0;
   CursorSignature: array [0..3] of char = #0#0#2#0;
+  
+type
+  TIconHeader = {packed} record // packed it not needed
+    idReserved: Word; // 0
+    idType: Word;     // 1 - Icon, 2 - Cursor
+    idCount: Word;    // number of icons in file
+  end;
+
+  TIconDirEntry = {packed} record // packing not needed
+    bWidth: Byte;           // a value of 0 means 256
+    bHeight: Byte;          // a value of 0 means 256
+    bColorCount: Byte;      // number of entires in pallette table below
+    bReserved: Byte;        // not used  = 0
+    case Byte of
+      1: (
+        // icon
+        wPlanes: Word;      // number of planes, should be 0 or 1
+        wBpp: Word;         // bits per pixel
+        // common
+        dwBytesInRes: Longint;  // total number bytes in images including pallette
+                                // data: XOR, AND and bitmap info header
+        dwImageOffset: Longint; // pos of image as offset from the beginning of file
+      );
+      2:(
+        // cursor
+        wXHotSpot: Word;
+        wYHotSpot: Word;
+      );
+  end;
+  
+  PIconDirEntry = ^TIconDirEntry;
+
 
 function TestStreamIsIcon(const AStream: TStream): boolean;
 var
@@ -48,31 +78,302 @@ begin
   AStream.Position:=OldPosition;
 end;
 
-procedure TIcon.ReadData(Stream: TStream);
-var
-  Size: longint;
-  Position: TStreamSeekType;
+////////////////////////////////////////////////////////////////////////////////
+
+{ TSharedIcon }
+
+class function TSharedIcon.GetImagesClass: TIconImageClass;
 begin
-  Position := Stream.Position;
-  Stream.Read(Size, 4); // Beware BigEndian and LowEndian sytems
-  if CompareMem(@Size,@IconSignature,4) then begin
-    // Assume Icon - stream without explicit size
-    Stream.Position := Position;
-    ReadStream(Stream, false, Size);
-  end else begin
-    Size := LEtoN(Size);
-    ReadStream(Stream, true, Size);
+  Result := TIconImage;
+end;
+
+constructor TSharedIcon.Create;
+begin
+  inherited Create;
+  FImages := TFPList.Create;
+end;
+
+procedure TSharedIcon.Delete(Aindex: Integer);
+var
+  Image: TIconImage;
+begin
+  Image := TIconImage(FImages[Aindex]);
+  FImages.Delete(AIndex);
+  Image.Free;
+end;
+
+destructor TSharedIcon.Destroy;
+var
+  n: Integer;
+begin
+  for n := 0 to FImages.Count - 1 do
+    TObject(FImages[n]).Free;
+  FreeAndNil(FImages);
+  inherited Destroy;
+end;
+
+function TSharedIcon.GetIndex(AFormat: TPixelFormat; AHeight, AWidth: Word): Integer;
+var
+  List: TFPList;
+  Image: TIconImage;
+begin
+  for Result := 0 to FImages.Count -1 do
+  begin
+    Image := TIconImage(FImages[Result]);
+    if Image.PixelFormat <> AFormat then Continue;
+    if Image.Height <> AHeight then Continue;
+    if Image.Width <> AWidth then Continue;
+    // found
+    Exit;
+  end;
+  Result := -1;
+end;
+
+////////////////////////////////////////////////////////////////////////////////
+
+{ TIconImage }
+
+constructor TIconImage.Create(AFormat: TPixelFormat; AHeight, AWidth: Word);
+begin
+  inherited Create;
+  FHeight := AHeight;
+  FWidth := AWidth;
+  FPixelFormat := AFormat;
+end;
+
+constructor TIconImage.Create(const AImage: TRawImage);
+begin
+  inherited Create;
+  FImage := AImage;
+  FHeight := FImage.Description.Height;
+  FWidth := FImage.Description.Width;
+  
+  case FImage.Description.Depth of
+     1: FPixelFormat := pf1Bit;
+     4: FPixelFormat := pf4Bit;
+     8: FPixelFormat := pf8Bit;
+    15: FPixelFormat := pf15Bit;
+    16: FPixelFormat := pf16Bit;
+    24: FPixelFormat := pf24Bit;
+    32: FPixelFormat := pf32Bit;
+  else
+    FPixelFormat := pfCustom;
   end;
 end;
 
-procedure TIcon.InitFPImageReader(IntfImg: TLazIntfImage; ImgReader: TFPCustomImageReader);
+destructor TIconImage.Destroy;
 begin
-  inherited InitFPImageReader(IntfImg, ImgReader);
-  if ImgReader is TLazReaderIcon then
-    TLazReaderIcon(ImgReader).Icon := self;
+  if FHandle <> 0
+  then DeleteObject(FHandle);
+  FHandle := 0;
+  if FMaskHandle <> 0
+  then DeleteObject(FMaskHandle);
+  FMaskHandle := 0;
+  if FPalette <> 0
+  then DeleteObject(FPalette);
+  FPalette := 0;
+  FImage.FreeData;
+  inherited Destroy;
 end;
 
-function TIcon.LazarusResourceTypeValid(const ResourceType: string): boolean;
+function TIconImage.GetPalette: HPALETTE;
+begin
+  // TODO: implement
+  Result := FPalette
+end;
+
+function TIconImage.ReleaseHandle: HBITMAP;
+begin
+  Result := Handle;
+  FHandle := 0;
+end;
+
+function TIconImage.ReleaseMaskHandle: HBITMAP;
+begin
+  Result := MaskHandle;
+  FMaskHandle := 0;
+end;
+
+function TIconImage.ReleasePalette: HPALETTE;
+begin
+  Result := Palette;
+  FPalette := 0;
+end;
+
+function TIconImage.UpdateHandles(ABitmap, AMask: HBITMAP): Boolean;
+begin
+  Result := False;
+  
+  if FHandle <> ABitmap
+  then begin
+    if FHandle <> 0
+    then DeleteObject(FHandle);
+    FHandle := ABitmap;
+    Result := True;
+  end;
+
+  if FMaskHandle <> AMask
+  then begin
+    if FMaskHandle <> 0
+    then DeleteObject(FMaskHandle);
+    FMaskHandle := AMask;
+    Result := True;
+  end;
+end;
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+{ TCustomIcon }
+
+procedure TCustomIcon.Add(AFormat: TPixelFormat; AHeight, AWidth: Word);
+begin
+  if GetIndex(AFormat, AHeight, AWidth) <> -1
+  then raise EInvalidGraphicOperation.Create(rsDuplicateIconFormat);
+  
+  UnshareImage(True);
+  if TSharedIcon(FSharedImage).FImages.Add(TIconImage.Create(AFormat, AHeight, AWidth)) = 0
+  then begin
+    // First added
+    FCurrent := 0;
+    UpdateCurrentView;
+  end;
+end;
+
+function TCustomIcon.BitmapHandleAllocated: boolean;
+begin
+  Result := (FCurrent <> -1) and (TIconImage(TSharedIcon(FSharedImage).FImages[FCurrent]).FHandle <> 0);
+end;
+
+constructor TCustomIcon.Create;
+begin
+  inherited Create;
+  FCurrent := -1;
+end;
+
+procedure TCustomIcon.Delete(Aindex: Integer);
+begin
+  UnshareImage(True);
+  TSharedIcon(FSharedImage).Delete(AIndex);
+  if FCurrent = AIndex
+  then begin
+    FCurrent := -1;
+    UpdateCurrentView;
+  end
+  else if FCurrent > AIndex
+  then begin
+    Dec(FCurrent);
+  end;
+end;
+
+function TCustomIcon.GetCount: Integer;
+begin
+  Result := TSharedIcon(FSharedImage).FImages.Count;
+end;
+
+procedure TCustomIcon.GetDescription(Aindex: Integer; out AFormat: TPixelFormat; out AHeight, AWidth: Word);
+var
+  Image: TIconImage;
+begin
+  Image := TIconImage(TSharedIcon(FSharedImage).FImages[Aindex]);
+  AFormat := Image.PixelFormat;
+  AHeight := Image.Height;
+  AWidth := Image.Width;
+end;
+
+class function TCustomIcon.GetFileExtensions: string;
+begin
+  Result:='ico';
+end;
+
+function TCustomIcon.GetBitmapHandle: HBITMAP;
+begin
+  if FCurrent = -1
+  then Result := 0
+  else begin
+    BitmapHandleNeeded;
+    Result := TIconImage(TSharedIcon(FSharedImage).FImages[FCurrent]).Handle;
+  end;
+end;
+
+function TCustomIcon.GetIndex(AFormat: TPixelFormat; AHeight, AWidth: Word): Integer;
+begin
+  Result := TSharedIcon(FSharedImage).GetIndex(AFormat, AHeight, AWidth);
+end;
+
+function TCustomIcon.GetMaskHandle: HBITMAP;
+begin
+  if FCurrent = -1
+  then Result := 0
+  else begin
+    MaskHandleNeeded;
+    Result := TIconImage(TSharedIcon(FSharedImage).FImages[FCurrent]).MaskHandle;
+  end;
+end;
+
+function TCustomIcon.GetPalette: HPALETTE;
+begin
+  if FCurrent = -1
+  then Result := 0
+  else begin
+    PaletteNeeded;
+    Result := TIconImage(TSharedIcon(FSharedImage).FImages[FCurrent]).Palette;
+  end;
+end;
+
+function TCustomIcon.GetPixelFormat: TPixelFormat;
+begin
+  if FCurrent = -1
+  then Result := pfCustom
+  else Result := TIconImage(TSharedIcon(FSharedImage).FImages[FCurrent]).PixelFormat;
+end;
+
+function TCustomIcon.GetRawImage: PRawImage;
+begin
+  if FCurrent = -1
+  then Result := nil
+  else Result := @TIconImage(TSharedIcon(FSharedImage).FImages[FCurrent]).FImage;
+end;
+
+function TCustomIcon.GetRawImageDescription: PRawImageDescription;
+begin
+  if FCurrent = -1
+  then Result := nil
+  else Result := @TIconImage(TSharedIcon(FSharedImage).FImages[FCurrent]).FImage.Description;
+end;
+
+class function TCustomIcon.GetSharedImageClass: TSharedRasterImageClass;
+begin
+  Result := TSharedIcon;
+end;
+
+procedure TCustomIcon.HandleNeeded;
+begin
+  {$note TODO implement some WSclass call}
+end;
+
+function TCustomIcon.InternalReleaseBitmapHandle: HBITMAP;
+begin
+  if FCurrent = -1
+  then Result := 0
+  else Result := TIconImage(TSharedIcon(FSharedImage).FImages[FCurrent]).ReleaseHandle;
+end;
+
+function TCustomIcon.InternalReleaseMaskHandle: HBITMAP;
+begin
+  if FCurrent = -1
+  then Result := 0
+  else Result := TIconImage(TSharedIcon(FSharedImage).FImages[FCurrent]).ReleaseMaskHandle;
+end;
+
+function TCustomIcon.InternalReleasePalette: HPALETTE;
+begin
+  if FCurrent = -1
+  then Result := 0
+  else Result := TIconImage(TSharedIcon(FSharedImage).FImages[FCurrent]).ReleasePalette;
+end;
+
+function TCustomIcon.LazarusResourceTypeValid(const ResourceType: string): boolean;
 var
   ResType: String;
 begin
@@ -88,27 +389,344 @@ begin
   end;
 end;
 
-class function TIcon.GetFileExtensions: string;
+function TCustomIcon.MaskHandleAllocated: boolean;
 begin
-  Result:='ico';
+  Result := (FCurrent <> -1) and (TIconImage(TSharedIcon(FSharedImage).FImages[FCurrent]).FMaskHandle <> 0);
 end;
 
-destructor TIcon.Destroy;
+procedure TCustomIcon.MaskHandleNeeded;
 begin
-  inherited Destroy;
-  FreeAndNil(FBitmaps);
+  // Created by bitmaphandle
+  BitmapHandleNeeded;
 end;
 
-function TIcon.GetBitmapNativeType: TBitmapNativeType;
+function TCustomIcon.PaletteAllocated: boolean;
 begin
-  Result := bnIcon;
+  Result := (FCurrent <> -1) and (TIconImage(TSharedIcon(FSharedImage).FImages[FCurrent]).FPalette <> 0);
 end;
 
-procedure TIcon.AddBitmap(Bitmap: TBitmap);
+procedure TCustomIcon.PaletteNeeded;
 begin
-  if not Assigned(FBitmaps) then
-    FBitmaps := TObjectList.create(True);
-  FBitmaps.Add(Bitmap);
+  // nothing to do, handled by image itself
+end;
+
+procedure TCustomIcon.ReadData(Stream: TStream);
+var
+  Signature: array [0..3] of Char;
+  Size: longint absolute Signature;
+  Position: Int64;
+begin
+  // Check it the stream is prefixed with a size.
+  // Delphi doesn't, while we do.
+
+  Position := Stream.Position;
+  Stream.Read(Signature, SizeOf(Signature));
+  if Cardinal(Signature) = Cardinal(IconSignature)
+  then begin
+    // Assume Icon - stream without explicit size
+    Stream.Position := Position;
+    LoadFromStream(Stream);
+  end
+  else begin
+    LoadFromStream(Stream, LEtoN(Size));
+  end;
+end;
+
+procedure TCustomIcon.ReadStream(AStream: TMemoryStream; ASize: Longint);
+var
+  Header: TIconHeader;
+
+  procedure DumpDirEntry(Aindex: Integer; const AEntry: TIconDirEntry);
+  begin
+    with AEntry do
+      if Header.idType = 1
+      then
+        DebugLn('Icon direntry[%d] Width=%u Height=%u ColorCount=%u Reserved=%u ' +
+                'planes=%u bpp=%u BytesInRes=%d ImageOffset=%d',
+                [Aindex, bWidth,bHeight,bColorCount,bReserved,wPlanes,wBpp,
+                 dwBytesInRes,dwImageOffset])
+      else
+        DebugLn('Icon direntry[%d] Width=%u Height=%u ColorCount=%u Reserved=%u ' +
+                'XHotSpot=%u YHotSpot=%u BytesInRes=%d ImageOffset=%d',
+                [Aindex, bWidth,bHeight,bColorCount,bReserved,wXHotSpot,wYHotSpot,
+                 dwBytesInRes,dwImageOffset]);
+  end;
+  
+var
+  StreamStart: Int64;
+  IconDir: array of TIconDirEntry;
+  n: Integer;
+  MaxWidth, MaxHeight, MaxDepth: Word;
+  BestIndex: Word;
+  IconImage: TIconImage;
+  IntfImage: TLazIntfImage;
+  PNGSig: array[0..7] of Byte;
+  PNGReader: TLazReaderPNG;
+  DIBReader: TLazReaderDIB;
+  ImgReader: TFPCustomImageReader;
+  LazReader: ILazImageReader;
+  RawImage: TRawImage;
+  Depth: Byte;
+
+begin
+  StreamStart := AStream.Position;
+  AStream.Read(Header, SizeOf(Header));
+
+  {$ifdef FPC_BIG_ENDIAN}
+  // adjust header
+  Header.idType := LEtoN(Header.idType);
+  Header.idCount := LEtoN(Header.idCount);
+  {$endif}
+  
+  if (Header.idType <> 1) and (Header.idType <> 2)
+  then raise EInvalidGraphic.Create('Stream is not an Icon type');
+  
+  if Header.idCount = 0
+  then begin
+    AStream.Seek(StreamStart + ASize, soBeginning);
+    FCurrent := -1;
+    Exit;
+  end;
+
+  SetLength(IconDir, Header.idCount);
+  AStream.Read(IconDir[0], Header.idCount * SizeOf(IconDir[0]));
+  
+  // Adjust all entries and find best (atm the order: max width, max height, max depth)
+  MaxWidth := 0;
+  MaxHeight := 0;
+  MaxDepth := 0;
+  BestIndex := 0;
+  PNGReader := nil;
+  DIBReader := nil;
+  IntfImage := nil;
+  try
+    for n := 0 to Header.idCount - 1 do
+    begin
+      {$ifdef FPC_BIG_ENDIAN}
+      // adjust entry
+      IconDir[n].wXHotSpot := LEtoN(IconDir[n].wXHotSpot);
+      IconDir[n].wYHotSpot := LEtoN(IconDir[n].wYHotSpot);
+      IconDir[n].dwBytesInRes := LEtoN(IconDir[n].dwBytesInRes);
+      IconDir[n].dwImageOffset := LEtoN(IconDir[n].dwImageOffset);
+      {$endif}
+      
+      DumpDirEntry(n, IconDir[n]);
+      
+      AStream.Seek(StreamStart + IconDir[n].dwImageOffset, soBeginning);
+      
+      ImgReader := nil;
+      if (IconDir[n].bWidth = 0) or (IconDir[n].bHeight = 0)
+      then begin
+        // PNG or DIB image
+        // Vista icons are PNG in this case, but there exist also "old style" icons
+        // with DIB image
+        
+        // don't use PNGReader.CheckContents(AStream) since it uses internally
+        // an exception for checking, which is not "nice" when debugging.
+        AStream.Read(PNGSig, SizeOf(PNGSig));
+        AStream.Seek(StreamStart + IconDir[n].dwImageOffset, soBeginning);
+
+        if QWord(PNGComn.Signature) = QWord(PNGSig)
+        then begin
+          if PNGReader = nil
+          then PNGReader := TLazReaderPNG.Create;
+          ImgReader := PNGReader;
+        end;
+      end;
+      
+      if ImgReader = nil
+      then begin
+        // DIB image
+        if DIBReader = nil
+        then DIBReader := TLazReaderIconDIB.Create;
+        ImgReader := DIBReader;
+      end;
+      
+      // create or reset intfimage
+      if IntfImage = nil
+      then IntfImage := TLazIntfImage.Create(0,0)
+      else IntfImage.SetSize(0,0);
+
+      if Supports(ImgReader, ILazImageReader, LazReader) 
+      then LazReader.UpdateDescription := True
+      else IntfImage.DataDescription := QueryDescription([riqfRGB, riqfAlpha, riqfMask]); // fallback to default
+      ImgReader.ImageRead(AStream, IntfImage);
+
+      // update best image index
+      if IntfImage.Height > MaxHeight
+      then begin
+        MaxHeight := IntfImage.Height;
+        BestIndex := n;
+      end;
+
+      if (IntfImage.Height = MaxHeight)
+      and (IntfImage.Width > MaxWidth)
+      then begin
+        MaxWidth := IntfImage.Width;
+        BestIndex := n;
+      end;
+
+      if (IntfImage.Height = MaxHeight)
+      and (IntfImage.Width = MaxWidth)
+      then begin
+        // new icons have bpp in direntry, older not.
+        // So use it only for png (which itself is alway at bpp=32)
+        if (IconDir[n].bWidth = 0) or (IconDir[n].bHeight = 0)
+        then Depth := IconDir[n].wBpp
+        else Depth := IntfImage.DataDescription.Depth;
+
+        if Depth > MaxDepth
+        then begin
+          MaxDepth := Depth;
+          BestIndex := n;
+        end;
+      end;
+
+      // Add image
+      IntfImage.GetRawImage(RawImage, True);
+      if not IntfImage.HasMask
+      then RawImage.Description.MaskBitsPerPixel := 0;
+      with TSharedIcon(FSharedImage) do
+      begin
+        IconImage := GetImagesClass.Create(RawImage);
+        if IconImage is TCursorImageImage then
+          TCursorImageImage(IconImage).HotSpot := Point(IconDir[n].wXHotSpot, IconDir[n].wYHotSpot);
+        FImages.Add(IconImage);
+      end;
+    end;
+  finally
+    LazReader := nil;
+    DIBReader.Free;
+    PNGReader.Free;
+    IntfImage.Free;
+  end;
+  FCurrent := BestIndex;
+end;
+
+procedure TCustomIcon.Remove(AFormat: TPixelFormat; AHeight, AWidth: Word);
+var
+  idx: Integer;
+begin
+  idx := GetIndex(AFormat, AHeight, AWidth);
+  if idx <> -1 then Delete(idx);
+end;
+
+procedure TCustomIcon.SetCurrent(const AValue: Integer);
+begin
+  if FCurrent = AValue then exit;
+  FCurrent := AValue;
+  UpdateCurrentView;
+end;
+
+procedure TCustomIcon.SetHandles(ABitmap, AMask: HBITMAP);
+begin
+  {$note Implement me (or raise exception)}
+end;
+
+procedure TCustomIcon.SetPixelFormat(AValue: TPixelFormat);
+begin
+  raise EInvalidGraphicOperation.Create('Cannot change format of icon image');
+end;
+
+procedure TCustomIcon.SetSize(AWidth, AHeight: integer);
+begin
+  raise EInvalidGraphicOperation.Create('Cannot change size of icon image');
+end;
+
+procedure TCustomIcon.UnshareImage(CopyContent: boolean);
+var
+  NewIcon, OldIcon: TSharedIcon;
+  n: Integer;
+  OldImage, NewImage: TIconImage;
+begin
+  if FSharedImage.RefCount <= 1 then Exit;
+
+  NewIcon := GetSharedImageClass.Create as TSharedIcon;
+  try
+    NewIcon.Reference;
+    if CopyContent
+    then begin
+      for n := 0 to OldIcon.FImages.Count -1 do
+      begin
+        OldImage := TIconImage(OldIcon.FImages[n]);
+        NewImage := TIconImage.Create(OldImage.PixelFormat, OldImage.Height, OldImage.Width);
+        NewIcon.FImages.Add(NewImage);
+        NewImage.FImage.Description := OldImage.FImage.Description;
+        NewImage.FImage.DataSize := OldImage.FImage.DataSize;
+        if NewImage.FImage.DataSize > 0
+        then begin
+          NewImage.FImage.Data := GetMem(NewImage.FImage.DataSize);
+          Move(OldImage.FImage.Data^, NewImage.FImage.Data^, NewImage.FImage.DataSize);
+        end;
+        NewImage.FImage.MaskSize := OldImage.FImage.MaskSize;
+        if NewImage.FImage.MaskSize > 0
+        then begin
+          NewImage.FImage.Mask := GetMem(NewImage.FImage.MaskSize);
+          Move(OldImage.FImage.Mask^, NewImage.FImage.Mask^, NewImage.FImage.MaskSize);
+        end;
+        NewImage.FImage.PaletteSize := OldImage.FImage.PaletteSize;
+        if NewImage.FImage.PaletteSize > 0
+        then begin
+          NewImage.FImage.Palette := GetMem(NewImage.FImage.PaletteSize);
+          Move(OldImage.FImage.Palette^, NewImage.FImage.Palette^, NewImage.FImage.PaletteSize);
+        end;
+      end;
+
+    end;
+    FreeCanvasContext;
+    OldIcon := FSharedImage as TSharedIcon;
+    FSharedImage := NewIcon;
+
+    NewIcon := nil; // transaction sucessful
+    OldIcon.Release;
+  finally
+    // in case something goes wrong, keep old and free new
+    NewIcon.Free;
+  end;
+end;
+
+procedure TCustomIcon.UpdateCurrentView;
+begin
+  {$note implement me}
+end;
+
+function TCustomIcon.UpdateHandles(ABitmap, AMask: HBITMAP): Boolean;
+var
+  Image: TIconImage;
+begin
+  if FCurrent = -1
+  then begin
+    Result := False;
+    Exit;
+  end;
+  
+  Image := TIconImage(TSharedIcon(FSharedImage).FImages[FCurrent]);
+  Result := Image.UpdateHandles(ABitmap, AMask);
+end;
+
+procedure TCustomIcon.WriteStream(AStream: TMemoryStream);
+begin
+  {$note implement me}
+end;
+
+////////////////////////////////////////////////////////////////////////////////
+
+{ TIcon }
+
+function TIcon.GetIconHandle: HICON;
+begin
+  Result := GetHandle;
+end;
+
+function TIcon.ReleaseHandle: HICON;
+begin
+  HandleNeeded;
+  Result := FSharedImage.ReleaseHandle;
+end;
+
+procedure TIcon.SetIconHandle(const AValue: HICON);
+begin
+  SetHandle(AValue);
 end;
 
 

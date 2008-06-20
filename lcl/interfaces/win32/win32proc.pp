@@ -1662,11 +1662,11 @@ begin
   if Windows.GetObject(hBmp, sizeof(WinBmp), @WinBmp) = 0 then
     Exit;
     
-  AWidth := WinBmp.bmWidth;
-  AHeight := Abs(WinBmp.bmHeight);
-
-  if not RawImage_FromBitmap(ARawImage, hBmp, 0, Rect(0, 0, AWidth, AHeight)) then
+  if not RawImage_FromBitmap(ARawImage, hBmp, 0) then
     Exit;
+    
+  AWidth := ARawImage.Description.Width;
+  AHeight := ARawImage.Description.Height;
 
   SourceImage := TLazIntfImage.Create(ARawImage, True);
 

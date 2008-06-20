@@ -123,15 +123,15 @@ begin
   end;
 end;
 
-procedure TGraphic.LoadFromMimeStream(Stream: TStream; const MimeType: string);
+procedure TGraphic.LoadFromMimeStream(AStream: TStream; const AMimeType: string);
 var
   DefMimeType: String;
 begin
-  DefMimeType:=GetDefaultMimeType;
-  if (DefMimeType<>'') and (MimeType=GetDefaultMimeType) then
-    LoadFromStream(Stream)
+  DefMimeType := MimeType;
+  if (DefMimeType <> '') and (AMimeType = DefMimeType) then
+    LoadFromStream(AStream)
   else
-    raise EInvalidGraphic.Create(ClassName+': Unsupported MimeType: '+MimeType);
+    raise EInvalidGraphic.Create(ClassName+': Unsupported MimeType: ' + AMimeType);
 end;
 
 procedure TGraphic.LoadFromResourceID(Instance: THandle; ResID: Integer);
@@ -197,12 +197,12 @@ var
   DefMimeType: String;
 begin
   List.Clear;
-  DefMimeType:=GetDefaultMimeType;
-  if DefMimeType<>'' then
+  DefMimeType := MimeType;
+  if DefMimeType <> '' then
     List.Add(DefMimeType);
 end;
 
-function TGraphic.GetDefaultMimeType: string;
+function TGraphic.GetMimeType: string;
 begin
   Result:='';
 end;
@@ -266,28 +266,6 @@ begin
     Changed(Self)
   else
     FModified := False;
-end;
-
-class function TGraphic.GetFPReaderForFileExt(const FileExtension: string
-  ): TFPCustomImageReaderClass;
-begin
-  Result:=nil;
-end;
-
-class function TGraphic.GetFPWriterForFileExt(const FileExtension: string
-  ): TFPCustomImageWriterClass;
-begin
-  Result:=nil;
-end;
-
-class function TGraphic.GetDefaultFPReader: TFPCustomImageReaderClass;
-begin
-  Result:=nil;
-end;
-
-class function TGraphic.GetDefaultFPWriter: TFPCustomImageWriterClass;
-begin
-  Result:=nil;
 end;
 
 procedure TGraphic.SetTransparent(Value: Boolean);

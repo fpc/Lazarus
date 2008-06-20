@@ -685,7 +685,7 @@ end;
 
   Creates a rawimage description for a carbonbitmap
  ------------------------------------------------------------------------------}
-function TCarbonWidgetSet.RawImage_FromCarbonBitmap(out ARawImage: TRawImage; ABitmap, AMask: TCarbonBitmap; const ARect: TRect): Boolean;
+function TCarbonWidgetSet.RawImage_FromCarbonBitmap(out ARawImage: TRawImage; ABitmap, AMask: TCarbonBitmap; ARect: PRect = nil): Boolean;
 begin
   FillChar(ARawImage, SizeOf(ARawImage), 0);
   RawImage_DescriptionFromCarbonBitmap(ARawImage.Description, ABitmap);

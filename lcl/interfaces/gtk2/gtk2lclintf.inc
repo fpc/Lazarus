@@ -65,6 +65,18 @@ begin
   Result:=ExtTextOut(DC,X,Y,Options,Rect,Str,Count,Dx);
 end;
 
+{------------------------------------------------------------------------------
+  Function: RawImage_QueryDescription
+  Params: AFlags:
+          ADesc:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+//function TGtk2WidgetSet.RawImage_QueryDescription(AFlags: TRawImageQueryFlags; out ADesc: TRawImageDescription): Boolean;
+//begin
+//  // override only when queried formats are different from screen description
+//end;
+
 function TGtk2WidgetSet.TextUTF8Out(DC: HDC; X, Y: Integer; Str: PChar;
   Count: Longint): Boolean;
 begin

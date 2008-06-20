@@ -183,7 +183,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TWinceWidgetSet.RawImage_FromBitmap(out ARawImage: TRawImage; ABitmap, AMask: HBITMAP; const ARect: TRect): Boolean;
+function TWinceWidgetSet.RawImage_FromBitmap(out ARawImage: TRawImage; ABitmap, AMask: HBITMAP; ARect: PRect = nil): Boolean;
 var
   WinBmp: Windows.TBitmap;
   R: TRect;
@@ -193,15 +193,22 @@ begin
   if not Result then Exit;
 
   FillRawImageDescription(WinBmp, ARawImage.Description);
-  R := ARect;
-  if R.Top > WinBmp.bmHeight then
-    R.Top := WinBmp.bmHeight;
-  if R.Bottom > WinBmp.bmHeight then
-    R.Bottom := WinBmp.bmHeight;
-  if R.Left > WinBmp.bmWidth then
-    R.Left := WinBmp.bmWidth;
-  if R.Right > WinBmp.bmWidth then
-    R.Right := WinBmp.bmWidth;
+
+  if ARect = nil
+  then begin
+    R := Rect(0, 0, WinBmp.bmWidth, WinBmp.bmHeight);
+  end
+  else begin
+    R := ARect^;
+    if R.Top > WinBmp.bmHeight then
+      R.Top := WinBmp.bmHeight;
+    if R.Bottom > WinBmp.bmHeight then
+      R.Bottom := WinBmp.bmHeight;
+    if R.Left > WinBmp.bmWidth then
+      R.Left := WinBmp.bmWidth;
+    if R.Right > WinBmp.bmWidth then
+      R.Right := WinBmp.bmWidth;
+  end;
 
   ARawImage.Description.Width := R.Right - R.Left;
   ARawImage.Description.Height := R.Bottom - R.Top;
@@ -291,10 +298,22 @@ begin
 
   if bmp = 0 then Exit(False);
 
-  Result := RawImage_FromBitmap(ARawImage, bmp, 0, ARect);
+  Result := RawImage_FromBitmap(ARawImage, bmp, 0, @ARect);
   if copyBmp <> 0
   then Windows.DeleteObject(copyBmp);
 end;
+
+{------------------------------------------------------------------------------
+  Function: RawImage_QueryDescription
+  Params: AFlags:
+          ADesc:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+//function TWinceWidgetSet.RawImage_QueryDescription(AFlags: TRawImageQueryFlags; out ADesc: TRawImageDescription): Boolean;
+//begin
+//  // override only when queried formats are different from screen description
+//end;
 
 procedure TWinCEWidgetSet.RemoveEventHandler(var AHandler: PEventHandler);
 var

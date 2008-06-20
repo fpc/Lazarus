@@ -193,6 +193,7 @@ ResourceString
   rsCanvasDoesNotAllowDrawing = 'Canvas does not allow drawing';
   rsUnsupportedBitmapFormat = 'Unsupported bitmap format.';
   rsErrorWhileSavingBitmap = 'Error while saving bitmap.';
+  rsDuplicateIconFormat = 'Duplicate icon format.';
   rsNoWidgetSet = 'No widgetset object. '
     +'Please check if the unit "interfaces" was added to the programs uses clause.';
   rsPressOkToIgnoreAndRiskDataCorruptionPressCancelToK = '%s%sPress Ok to '

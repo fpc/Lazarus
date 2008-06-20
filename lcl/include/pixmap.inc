@@ -277,30 +277,28 @@ end;
 
 { TPixmap }
 
+class function TPixmap.GetFileExtensions: string;
+begin
+  Result := 'xpm';
+end;
+
+class function TPixmap.GetReaderClass: TFPCustomImageReaderClass;
+begin
+  Result := TLazReaderXPM;
+end;
+
+class function TPixmap.GetSharedImageClass: TSharedRasterImageClass;
+begin
+  Result := TSharedPixmap;
+end;
+
+class function TPixmap.GetWriterClass: TFPCustomImageWriterClass;
+begin
+  Result := TLazWriterXPM;
+end;
+
 function TPixmap.LazarusResourceTypeValid(const ResourceType: string): boolean;
 begin
   Result:=(ResourceType='XPM');
 end;
 
-procedure TPixmap.WriteStream(Stream: TStream; WriteSize: Boolean);
-begin
-  WriteStreamWithFPImage(Stream,WriteSize,TLazWriterXPM);
-end;
-
-function TPixmap.GetBitmapNativeType: TBitmapNativeType;
-begin
-  Result := bnXPixmap;
-end;
-
-class function TPixmap.GetDefaultFPReader: TFPCustomImageReaderClass;
-begin
-  Result:=TLazReaderXPM;
-end;
-
-class function TPixmap.GetDefaultFPWriter: TFPCustomImageWriterClass;
-begin
-  Result:=TLazWriterXPM;
-end;
-
-
-// included by graphics.pp

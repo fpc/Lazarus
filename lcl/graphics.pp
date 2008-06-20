@@ -25,8 +25,6 @@ unit Graphics;
 
 {$mode objfpc}{$H+}
 
-{.$define BITMAP_OLDSTYLE}
-
 interface
 
 {$ifdef Trace}
@@ -37,7 +35,7 @@ interface
 uses
   SysUtils, Math, Types, Classes, Contnrs, FPCAdds,
   FPImgCmn, FPImage, FPCanvas,
-  FPReadPNG, FPWritePNG,   // png support
+  FPReadPNG, FPWritePNG, PNGComn,  // png support
   FPReadBMP, FPWriteBMP,   // bmp support
   FPReadPNM, FPWritePNM,   // png support
   FPReadJpeg, FPWriteJpeg, // jpg support
@@ -45,6 +43,7 @@ uses
   AvgLvlTree,
   LCLStrConsts, LCLType, LCLProc, LMessages, LCLIntf, LResources, LCLResCache,
   GraphType, GraphMath, InterfaceBase, WSReferences;
+
 
 type
   PColor = ^TColor;
@@ -396,11 +395,7 @@ type
   // standard LCL graphic formats
   TCustomBitmap = class;            // base class
   TCustomBitmapClass = class of TCustomBitmap;
-  {$ifdef BITMAP_OLDSTYLE}
-  TBitmap = TCustomBitmap;
-  {$else}
   TBitmap = class;                  // bmp
-  {$endif}
   TPixmap = class;                  // xpm
   TIcon = class;                    // ico
   TPortableNetworkGraphic = class;  // png
@@ -686,6 +681,7 @@ type
     procedure Draw(ACanvas: TCanvas; const Rect: TRect); virtual; abstract;
     function GetEmpty: Boolean; virtual; abstract;
     function GetHeight: Integer; virtual; abstract;
+    function GetMimeType: string; virtual;
     function GetPalette: HPALETTE; virtual;
     function GetTransparent: Boolean; virtual;
     function GetWidth: Integer; virtual; abstract;
@@ -695,19 +691,19 @@ type
     procedure Progress(Sender: TObject; Stage: TProgressStage;
       PercentDone: Byte;  RedrawNow: Boolean; const R: TRect;
       const Msg: string); dynamic;
-    procedure ReadData(Stream: TStream); virtual;
+    procedure ReadData(Stream: TStream); virtual; // used by Filer
     procedure SetHeight(Value: Integer); virtual; abstract;
     procedure SetPalette(Value: HPALETTE); virtual;
     procedure SetTransparent(Value: Boolean); virtual;
     procedure SetWidth(Value: Integer); virtual; abstract;
     procedure SetModified(Value: Boolean);
-    procedure WriteData(Stream: TStream); virtual;
+    procedure WriteData(Stream: TStream); virtual; // used by filer
   public
     constructor Create; virtual;
     function LazarusResourceTypeValid(const AResourceType: string): boolean; virtual;
     procedure LoadFromFile(const Filename: string); virtual;
     procedure LoadFromStream(Stream: TStream); virtual; abstract;
-    procedure LoadFromMimeStream(Stream: TStream; const MimeType: string); virtual;
+    procedure LoadFromMimeStream(AStream: TStream; const AMimeType: string); virtual;
     procedure LoadFromLazarusResource(const ResName: String); virtual;
     procedure LoadFromResourceName(Instance: THandle; const ResName: String);
     procedure LoadFromResourceID(Instance: THandle; ResID: Integer);
@@ -721,18 +717,12 @@ type
       FormatID: TClipboardFormat); virtual;
     procedure GetSupportedSourceMimeTypes(List: TStrings); virtual;
     function GetResourceType: TResourceType; virtual;
-    function GetDefaultMimeType: string; virtual;
     class function GetFileExtensions: string; virtual;
-    class function GetFPReaderForFileExt(
-      const FileExtension: string): TFPCustomImageReaderClass; virtual;
-    class function GetFPWriterForFileExt(
-      const FileExtension: string): TFPCustomImageWriterClass; virtual;
-    class function GetDefaultFPReader: TFPCustomImageReaderClass; virtual;
-    class function GetDefaultFPWriter: TFPCustomImageWriterClass; virtual;
   public
     property Empty: Boolean read GetEmpty;
     property Height: Integer read GetHeight write SetHeight;
     property Modified: Boolean read FModified write SetModified;
+    property MimeType: string read GetMimeType;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnProgress: TProgressEvent read FOnProgress write FOnProgress;
     property Palette: HPALETTE read GetPalette write SetPalette;
@@ -862,8 +852,9 @@ type
   end;
 
 
-  EInvalidGraphic = class(Exception);
-  EInvalidGraphicOperation = class(Exception);
+  EGraphicException = class(Exception);
+  EInvalidGraphic = class(EGraphicException);
+  EInvalidGraphicOperation = class(EGraphicException);
 
 type
   TGradientDirection = (gdVertical,     // Fill vertical
@@ -1070,52 +1061,37 @@ type
     TCustomBitmap, only the reference count will be increased and both will share the
     same TCustomBitmapImage }
 
-  TBitmapNativeType = (
-    bnNone,      // not a TBitmap native type
-    bnWinBitmap, // windows bitmap
-    bnXPixmap,   // pixmap (xpm)
-    bnIcon,      // icon file (ico)
-    bnCursor,    // same as icon but from cursor file
-    bnDIB        // only dib
-    );
-  TBitmapNativeTypes = set of TBitmapNativeType;
-
   TBitmapHandleType = (bmDIB, bmDDB);
 
-  { TCustomBitmapImage }
+  { TSharedCustomBitmap }
 
-  TCustomBitmapImage = class(TSharedImage)
+  { TSharedCustomBitmap is base class used for sharing imagedata for derived
+    classes of TCustomBitmap. Data can only be shared between classes of the
+    same type. IE. TBitmap data can only be shared with (descendant of) TBitmap.
+    Therefore each graphic "end" class should define its own share class.
+  }
+
+  TSharedRasterImage = class(TSharedImage)
   private
-    FHandle: HBITMAP;   // output device dependent handle
-    FMaskHandle: HBITMAP;
-    FPalette: HPALETTE;
-    FDIBHandle: HBITMAP;// output device independent handle
+    FHandle: THandle; // generic type, can be HBITMAP or HICON or ....
     FBitmapCanvas: TCanvas; // current canvas selected into
     FSaveStream: TMemoryStream;
-    FSaveStreamClass: TFPCustomImageWriterClass;
-    FSaveStreamType: TBitmapNativeType;
   protected
     procedure FreeHandle; override;
-    procedure FreeMaskHandle;
-    procedure FreePalette;
-    function ReleaseHandle: HBITMAP;
-    function ReleaseMaskHandle: HBITMAP;
-    function ReleasePalette: HPALETTE;
+    function ReleaseHandle: THandle; virtual;
     function IsEmpty: boolean;
-    function GetPixelFormat: TPixelFormat;
   public
-    FDIB: TDIBSection;
+    constructor Create; virtual;
+    procedure CreateDefaultHandle(AWidth, AHeight: Integer; ABPP: Byte); virtual; abstract;
     destructor Destroy; override;
     function HandleAllocated: boolean; override;
-    function GetHandleType: TBitmapHandleType;
     property BitmapCanvas: TCanvas read FBitmapCanvas write FBitmapCanvas;
     property SaveStream: TMemoryStream read FSaveStream write FSaveStream;
-    property SaveStreamType: TBitmapNativeType read FSaveStreamType write FSaveStreamType;
-    property SaveStreamClass: TFPCustomImageWriterClass read FSaveStreamClass write FSaveStreamClass;
   end;
 
+  TSharedRasterImageClass = class of TSharedRasterImage;
 
-  { TCustomBitmap }
+  { TRasterImage }
 
   { TCustomBitmap is the data of an image. The image can be loaded from a file,
     stream or resource in .bmp (windows bitmap format) or .xpm (XPixMap format)
@@ -1131,109 +1107,89 @@ type
     );
   TBitmapInternalState = set of TBitmapInternalStateFlag;
 
-  { TCustomBitmap }
+  { TRasterImage }
 
-  TCustomBitmap = class(TGraphic)
+  TRasterImage = class(TGraphic)
   private
     FCanvas: TCanvas;
-    FImage: TCustomBitmapImage;
-    FPixelFormat: TPixelFormat;
+    FSharedImage: TSharedRasterImage;
     FTransparentColor: TColor;
     FTransparentMode: TTransparentMode;
     FInternalState: TBitmapInternalState;
-    procedure FreeCanvasContext;
-    function GetCanvas: TCanvas;
     procedure CreateCanvas;
     procedure CreateMask(AColor: TColor = clDefault);
-    function GetMonochrome: Boolean;
-    procedure SetHandle(Value: HBITMAP);
-    procedure SetMaskHandle(NewMaskHandle: HBITMAP);
-    function GetHandleType: TBitmapHandleType;
-    procedure SetHandleType(Value: TBitmapHandleType); virtual;
-    procedure SetMonochrome(const AValue: Boolean);
-    procedure SetPixelFormat(const AValue: TPixelFormat);
-    procedure SetTransparentColor(const AValue: TColor);
-    procedure UpdatePixelFormat;
+    procedure FreeCanvasContext;
+    function  GetCanvas: TCanvas;
+    procedure SetTransparentColor(AValue: TColor);
   protected
+    function  CanShareImage(AClass: TSharedRasterImageClass): Boolean; virtual;
     procedure Changed(Sender: TObject); override;
     procedure Changing(Sender: TObject); virtual;
-    procedure ChangingAll(Sender: TObject);
     procedure Draw(DestCanvas: TCanvas; const DestRect: TRect); override;
     function GetEmpty: Boolean; override;
-    function GetHeight: Integer; override;
-    function GetPalette: HPALETTE; override;
-    function GetWidth: Integer; override;
-    function GetHandle: HBITMAP; virtual;
-    function GetMaskHandle: HBITMAP; virtual;
+    function GetHandle: THandle;
+    function GetBitmapHandle: HBITMAP; virtual; abstract;
+    function GetMaskHandle: HBITMAP; virtual; abstract;
+    function GetMimeType: string; override;
+    function GetPixelFormat: TPixelFormat; virtual; abstract;
+    function GetRawImage: PRawImage; virtual; abstract;
+    function GetRawImageDescription: PRawImageDescription; virtual; abstract;
     function GetTransparent: Boolean; override;
-    function GetBitmapNativeType: TBitmapNativeType; virtual;
-    procedure HandleNeeded;
-    procedure MaskHandleNeeded;
-    procedure PaletteNeeded;
-    procedure UnshareImage(CopyContent: boolean);
+    class function GetSharedImageClass: TSharedRasterImageClass; virtual;
+    function GetHeight: Integer; override;
+    function GetWidth: Integer; override;
+    procedure BitmapHandleNeeded; virtual;
+    procedure HandleNeeded; virtual; abstract;
+    procedure MaskHandleNeeded; virtual; abstract;
+    procedure PaletteNeeded; virtual; abstract;
+    function  InternalReleaseBitmapHandle: HBITMAP; virtual; abstract;
+    function  InternalReleaseMaskHandle: HBITMAP; virtual; abstract;
+    function  InternalReleasePalette: HPALETTE; virtual; abstract;
+    procedure SetBitmapHandle(AValue: HBITMAP);
+    procedure SetMaskHandle(AValue: HBITMAP);
+    procedure UnshareImage(CopyContent: boolean); virtual; abstract;
+    function  UpdateHandles(ABitmap, AMask: HBITMAP): Boolean; virtual; abstract; // called when handles are created from rawimage (true whan handle changed)
+    procedure SaveStreamNeeded;
     procedure FreeSaveStream;
     procedure ReadData(Stream: TStream); override;
-    procedure SetWidthHeight(NewWidth, NewHeight: integer); virtual;
-    procedure SetHeight(NewHeight: Integer); override;
-    procedure SetPalette(Value: HPALETTE); override;
-    procedure SetTransparentMode(Value: TTransparentMode);
-    procedure SetWidth(NewWidth: Integer); override;
+    procedure ReadStream(AStream: TMemoryStream; ASize: Longint); virtual; abstract; // loads imagedata into rawimage, this method shouldn't call changed.
+    procedure SetSize(AWidth, AHeight: integer); virtual; abstract;
+    procedure SetHandle(AValue: THandle); virtual;
+    procedure SetHeight(AHeight: Integer); override;
+    procedure SetWidth(AWidth: Integer); override;
+    procedure SetTransparentMode(AValue: TTransparentMode);
+    procedure SetPixelFormat(AValue: TPixelFormat); virtual; abstract;
     procedure WriteData(Stream: TStream); override;
-    procedure StoreOriginalStream(Stream: TStream; Size: integer); virtual;
-    procedure WriteStreamWithFPImage(Stream: TStream; WriteSize: boolean;
-                               WriterClass: TFPCustomImageWriterClass); virtual;
-    procedure InitFPImageReader(IntfImg: TLazIntfImage; ImgReader: TFPCustomImageReader); virtual;
-    procedure InitFPImageWriter(IntfImg: TLazIntfImage; ImgWriter: TFPCustomImageWriter); virtual;
-    procedure FinalizeFPImageReader(ImgReader: TFPCustomImageReader); virtual;
-    procedure FinalizeFPImageWriter(ImgWriter: TFPCustomImageWriter); virtual;
+    procedure WriteStream(AStream: TMemoryStream); virtual; abstract;
   public
     constructor Create; override;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure FreeImage;
-    function HandleAllocated: boolean;
-    function MaskHandleAllocated: boolean;
-    function PaletteAllocated: boolean;
-    procedure CreateFromBitmapHandles(ABitmap, AMask: HBitmap; const ARect: TRect);
-    function LazarusResourceTypeValid(const ResourceType: string): boolean; override;
+    function BitmapHandleAllocated: boolean; virtual; abstract;
+    function MaskHandleAllocated: boolean; virtual; abstract;
+    function PaletteAllocated: boolean; virtual; abstract;
+    procedure LoadFromBitmapHandles(ABitmap, AMask: HBitmap; ARect: PRect = nil);
     procedure LoadFromDevice(DC: HDC); virtual;
-    procedure LoadFromStream(Stream: TStream); override;
-    procedure LoadFromMimeStream(Stream: TStream; const MimeType: string); override;
+    procedure LoadFromStream(AStream: TStream); override;
+    procedure LoadFromStream(AStream: TStream; ASize: Cardinal); virtual;
+    procedure LoadFromMimeStream(AStream: TStream; const AMimeType: string); override;
+    //todo LoadFromRawImage
     procedure LoadFromIntfImage(IntfImage: TLazIntfImage);
-    procedure LoadFromXPMFile(const Filename: String); deprecated;
-    procedure SaveToStream(Stream: TStream); override;
+    procedure SaveToStream(AStream: TStream); override;
     procedure GetSupportedSourceMimeTypes(List: TStrings); override;
-    function GetDefaultMimeType: string; override;
-    function GetResourceType: TResourceType; override;
-    class function GetFileExtensions: string; override;
     procedure Mask(ATransparentColor: TColor);
-    procedure SetHandles(ABitmap, AMask: HBITMAP);
-    procedure ReadStream(Stream: TStream; UseSize: boolean; Size: Longint); virtual;
-    procedure WriteStream(Stream: TStream; WriteSize: Boolean); virtual;
-    function ReleaseHandle: HBITMAP;
+    procedure SetHandles(ABitmap, AMask: HBITMAP); virtual; abstract; // called when handles are set by user
+    function ReleaseBitmapHandle: HBITMAP;
     function ReleaseMaskHandle: HBITMAP;
     function ReleasePalette: HPALETTE;
-    class function GetFPReaderForFileExt(
-      const FileExtension: string): TFPCustomImageReaderClass; override;
-    class function GetFPWriterForFileExt(
-      const FileExtension: string): TFPCustomImageWriterClass; override;
-    class function GetDefaultFPReader: TFPCustomImageReaderClass; override;
-    class function GetDefaultFPWriter: TFPCustomImageWriterClass; override;
-    procedure ReadStreamWithFPImage(Stream: TStream; UseSize: boolean;
-                               Size: Longint;
-                               ReaderClass: TFPCustomImageReaderClass); virtual;
-    procedure WriteNativeStream(Stream: TStream; WriteSize: Boolean;
-      SaveStreamType: TBitmapNativeType); virtual;
-    procedure CreateIntfImage(var IntfImage: TLazIntfImage);
     function CreateIntfImage: TLazIntfImage;
-    function CanReadGraphicStreams(AClass: TFPCustomImageWriterClass): boolean; virtual;
   public
     property Canvas: TCanvas read GetCanvas;
-    property Handle: HBITMAP read GetHandle write SetHandle;
-    property HandleType: TBitmapHandleType read GetHandleType write SetHandleType;
+    function HandleAllocated: boolean;
+    property BitmapHandle: HBITMAP read GetBitmapHandle write SetBitmapHandle;
     property MaskHandle: HBITMAP read GetMaskHandle write SetMaskHandle;
-    property Monochrome: Boolean read GetMonochrome write SetMonochrome;
-    property PixelFormat: TPixelFormat read FPixelFormat write SetPixelFormat default pfDevice;
+    property PixelFormat: TPixelFormat read GetPixelFormat write SetPixelFormat default pfDevice;
     // property ScanLine[Row: Integer]: Pointer; -> Use TLazIntfImage for such things
     property TransparentColor: TColor read FTransparentColor
                                       write SetTransparentColor default clDefault;
@@ -1244,71 +1200,227 @@ type
     {$ENDIF}
   end;
   
-  { TBitmap }
-  {$ifndef BITMAP_OLDSTYLE}
-  TBitmap = class(TCustomBitmap)
+  TSharedCustomBitmap = class(TSharedRasterImage)
   private
+    FHandleType: TBitmapHandleType;
+    FImage: TRawImage;
+    FHasMask: Boolean; // set if atleast one maskpixel is set
+    FPalette: HPALETTE;
+    function GetHeight: Integer;
+    function GetWidth: Integer;
   protected
+    procedure FreeHandle; override;
+    procedure FreePalette;
+    procedure FreeImage;
+    function ReleaseHandle: THandle; override;
+    function ReleasePalette: HPALETTE;
+    function GetPixelFormat: TPixelFormat;
+    procedure UpdateDIB;
   public
+    FDIB: TDIBSection;
+    constructor Create; override;
+    procedure CreateDefaultHandle(AWidth, AHeight: Integer; ABPP: Byte); override;
+    destructor Destroy; override;
+    function HandleAllocated: boolean; override;
+    function ImageAllocated: boolean;
+    property HandleType: TBitmapHandleType read FHandleType write FHandleType;
+    property Height: Integer read GetHeight;
+    property Width: Integer read GetWidth;
   end;
-  {$endif}
 
-
-  { TPixmap }
-
-  TPixmap = class(TCustomBitmap)
+  { TCustomBitmap }
+  
+  TCustomBitmap = class(TRasterImage)
+  private
+    FPixelFormat: TPixelFormat;
+    FMaskHandle: HBITMAP; // mask is not part of the image, so not shared
+    function GetHandleType: TBitmapHandleType;
+    function GetMonochrome: Boolean;
+    procedure SetHandleType(AValue: TBitmapHandleType);
+    procedure SetMonochrome(AValue: Boolean);
+    procedure UpdatePixelFormat;
   protected
-    function GetBitmapNativeType: TBitmapNativeType; override;
+    procedure MaskHandleNeeded; override;
+    procedure PaletteNeeded; override;
+    function  CanShareImage(AClass: TSharedRasterImageClass): Boolean; override;
+    procedure Changed(Sender: TObject); override;
+    procedure Changing(Sender: TObject); override;
+    function GetBitmapHandle: HBITMAP; override;
+    function GetMaskHandle: HBITMAP; override;
+    function GetPalette: HPALETTE; override;
+    function GetPixelFormat: TPixelFormat; override;
+    function GetRawImage: PRawImage; override;
+    function GetRawImageDescription: PRawImageDescription; override;
+    function GetTransparent: Boolean; override;
+    procedure HandleNeeded; override;
+    function InternalReleaseBitmapHandle: HBITMAP; override;
+    function InternalReleaseMaskHandle: HBITMAP; override;
+    function InternalReleasePalette: HPALETTE; override;
+    procedure RawimageNeeded(ADescOnly: Boolean);
+    procedure SetHandle(AValue: THandle); override;
+    procedure SetPixelFormat(AValue: TPixelFormat); override;
+    procedure UnshareImage(CopyContent: boolean); override;
+    function  UpdateHandles(ABitmap, AMask: HBITMAP): Boolean; override;
   public
-    function LazarusResourceTypeValid(const ResourceType: string): boolean; override;
-    procedure WriteStream(Stream: TStream; WriteSize: Boolean); override;
-    class function GetDefaultFPReader: TFPCustomImageReaderClass; override;
-    class function GetDefaultFPWriter: TFPCustomImageWriterClass; override;
+    constructor Create; override;
+
+    function GetResourceType: TResourceType; override;
+    function LazarusResourceTypeValid(const ResourceType: string): Boolean; override;
+    function BitmapHandleAllocated: boolean; override;
+    function MaskHandleAllocated: boolean; override;
+    function PaletteAllocated: boolean; override;
+    function ReleaseHandle: HBITMAP;
+
+    procedure SetHandles(ABitmap, AMask: HBITMAP); override;
+    procedure SetSize(AWidth, AHeight: integer); override;
+
+    property Handle: HBITMAP read GetBitmapHandle write SetBitmapHandle; // for custombitmap handle = bitmaphandle
+    property HandleType: TBitmapHandleType read GetHandleType write SetHandleType;
+    property Monochrome: Boolean read GetMonochrome write SetMonochrome;
   end;
-
-
+  
   { TFPImageBitmap }
   { Use this class to easily create a TCustomBitmap descendent for FPImage
     reader and writer }
 
   TFPImageBitmap = class(TCustomBitmap)
+  private
   protected
-    function GetBitmapNativeType: TBitmapNativeType; override;
+    function GetMimeType: string; override;
+    class function GetReaderClass: TFPCustomImageReaderClass; virtual; abstract;
+    class function GetWriterClass: TFPCustomImageWriterClass; virtual; abstract;
+    procedure InitializeReader(AImage: TLazIntfImage; AReader: TFPCustomImageReader); virtual;
+    procedure InitializeWriter(AImage: TLazIntfImage; AWriter: TFPCustomImageWriter); virtual;
+    procedure FinalizeReader(AReader: TFPCustomImageReader); virtual;
+    procedure FinalizeWriter(AWriter: TFPCustomImageWriter); virtual;
+    procedure ReadStream(AStream: TMemoryStream; ASize: Longint); override;
+    procedure WriteStream(AStream: TMemoryStream); override;
   public
     class function GetFileExtensions: string; override;
     class function IsFileExtensionSupported(const FileExtension: string): boolean;
-    class function GetFPReaderForFileExt(
-      const FileExtension: string): TFPCustomImageReaderClass; override;
-    class function GetFPWriterForFileExt(
-      const FileExtension: string): TFPCustomImageWriterClass; override;
-    class function GetDefaultFPReader: TFPCustomImageReaderClass; override;
-    class function GetDefaultFPWriter: TFPCustomImageWriterClass; override;
     function LazarusResourceTypeValid(const ResourceType: string): boolean; override;
-    procedure ReadStream(Stream: TStream; UseSize: boolean; Size: Longint); override;
-    procedure WriteStream(Stream: TStream; WriteSize: Boolean); override;
-    function GetDefaultMimeType: string; override;
   end;
 
+
+  { TSharedBitmap }
+  
+  TSharedBitmap = class(TSharedCustomBitmap)
+  end;
+
+  { TBitmap }
+
+  TBitmap = class(TFPImageBitmap)
+  private
+  protected
+    procedure InitializeReader(AImage: TLazIntfImage; AReader: TFPCustomImageReader); override;
+    procedure InitializeWriter(AImage: TLazIntfImage; AWriter: TFPCustomImageWriter); override;
+    procedure FinalizeReader(AReader: TFPCustomImageReader); override;
+    class function GetReaderClass: TFPCustomImageReaderClass; override;
+    class function GetWriterClass: TFPCustomImageWriterClass; override;
+    class function GetSharedImageClass: TSharedRasterImageClass; override;
+  public
+    class function GetFileExtensions: string; override;
+  end;
+
+
+  { TSharedPixmap }
+
+  TSharedPixmap = class(TSharedCustomBitmap)
+  end;
+
+  { TPixmap }
+
+  TPixmap = class(TFPImageBitmap)
+  protected
+    class function GetReaderClass: TFPCustomImageReaderClass; override;
+    class function GetWriterClass: TFPCustomImageWriterClass; override;
+    class function GetSharedImageClass: TSharedRasterImageClass; override;
+  public
+    function LazarusResourceTypeValid(const ResourceType: string): boolean; override;
+    class function GetFileExtensions: string; override;
+  end;
+
+  { TSharedPortableNetworkGraphic }
+
+  TSharedPortableNetworkGraphic = class(TSharedCustomBitmap)
+  end;
 
   { TPortableNetworkGraphic }
 
   TPortableNetworkGraphic = class(TFPImageBitmap)
   protected
-    procedure InitFPImageWriter(IntfImg: TLazIntfImage; ImgWriter: TFPCustomImageWriter); override;
+    class function GetReaderClass: TFPCustomImageReaderClass; override;
+    class function GetWriterClass: TFPCustomImageWriterClass; override;
+    procedure InitializeWriter(AImage: TLazIntfImage; AWriter: TFPCustomImageWriter); override;
+    class function GetSharedImageClass: TSharedRasterImageClass; override;
   public
     class function GetFileExtensions: string; override;
-    class function GetDefaultFPReader: TFPCustomImageReaderClass; override;
-    class function GetDefaultFPWriter: TFPCustomImageWriterClass; override;
   end;
 
 
+  { TSharedPortableAnyMapGraphic }
+
+  TSharedPortableAnyMapGraphic = class(TSharedCustomBitmap)
+  end;
+  
   { TPortableAnyMapGraphic }
 
   TPortableAnyMapGraphic = class(TFPImageBitmap)
+  protected
+    class function GetReaderClass: TFPCustomImageReaderClass; override;
+    class function GetWriterClass: TFPCustomImageWriterClass; override;
+    class function GetSharedImageClass: TSharedRasterImageClass; override;
   public
     class function GetFileExtensions: string; override;
-    class function GetDefaultFPReader: TFPCustomImageReaderClass; override;
-    class function GetDefaultFPWriter: TFPCustomImageWriterClass; override;
+  end;
+
+  TIconImage = class;
+  TIconImageClass = class of TIconImage;
+
+  { TSharedIcon }
+
+  TSharedIcon = class(TSharedRasterImage)
+  private
+    FImages: TFPList;
+  protected
+    class function GetImagesClass: TIconImageClass; virtual;
+  public
+    constructor Create; override;
+    destructor Destroy; override;
+    procedure Delete(Aindex: Integer);
+    function GetIndex(AFormat: TPixelFormat; AHeight, AWidth: Word): Integer;
+  end;
+
+  { TIconImage }
+
+  TIconImage = class
+  private
+    FOwner: TSharedIcon;
+    FHeight: Word;
+    FPixelFormat: TPixelFormat;
+    FWidth: Word;
+    FImage: TRawImage;
+    FHandle: HBITMAP;
+    FMaskHandle: HBITMAP;
+    FPalette: HPALETTE;
+    function GetPalette: HPALETTE;
+  protected
+  public
+    constructor Create(AFormat: TPixelFormat; AHeight, AWidth: Word);
+    constructor Create(const AImage: TRawImage);
+    destructor Destroy; override;
+
+    function ReleaseHandle: HBITMAP;
+    function ReleaseMaskHandle: HBITMAP;
+    function ReleasePalette: HPALETTE;
+    function UpdateHandles(ABitmap, AMask: HBITMAP): Boolean;
+
+    property Height: Word read FHeight;
+    property Width: Word read FWidth;
+    property PixelFormat: TPixelFormat read FPixelFormat;
+    property Handle: HBITMAP read FHandle;
+    property MaskHandle: HBITMAP read FMaskHandle;
+    property Palette: HPALETTE read GetPalette;
   end;
 
 
@@ -1322,42 +1434,101 @@ type
     Writing is not (yet) implemented.
   }
   
-  {.$define ICON_OLDSTYLE}     // Set to keep original functionality
- 
-  TIcon = class(TCustomBitmap)
+
+  TCustomIcon = class(TRasterImage)
   private
-    FBitmaps: TObjectList;
+    FCurrent: Integer;
+    function GetCount: Integer;
+    procedure SetCurrent(const AValue: Integer);
   protected
-    function GetBitmapNativeType: TBitmapNativeType; override;
+    procedure MaskHandleNeeded; override;
+    procedure PaletteNeeded; override;
+    function GetIndex(AFormat: TPixelFormat; AHeight, AWidth: Word): Integer;
+    function GetBitmapHandle: HBITMAP; override;
+    function GetMaskHandle: HBITMAP; override;
+    function GetPalette: HPALETTE; override;
+    function GetPixelFormat: TPixelFormat; override;
+    function GetRawImage: PRawImage; override;
+    function GetRawImageDescription: PRawImageDescription; override;
+    class function GetSharedImageClass: TSharedRasterImageClass; override;
+    procedure HandleNeeded; override;
+    function InternalReleaseBitmapHandle: HBITMAP; override;
+    function InternalReleaseMaskHandle: HBITMAP; override;
+    function InternalReleasePalette: HPALETTE; override;
     procedure ReadData(Stream: TStream); override;
-    procedure InitFPImageReader(IntfImg: TLazIntfImage; ImgReader: TFPCustomImageReader); override;
-  public
-    class function GetFileExtensions: string; override;
-    function LazarusResourceTypeValid(const ResourceType: string): boolean; override;
-    property Bitmaps: TObjectList read FBitmaps;
-    destructor Destroy; override;
-    procedure AddBitmap(Bitmap: TBitmap); { Note that Ownership passes to TIcon }
-  end;
-
-
-  { TCursorImage }
-  TCursorImage = class(TIcon)
-  private
-    FHotSpot: TPoint;
-    FCursorHandle: HCURSOR;
-    FOwnHandle: Boolean;
-  protected
-    function GetBitmapNativeType: TBitmapNativeType; override;
-    function GetCursorHandle: HCURSOR;
-    procedure CursorHandleNeeded;
+    procedure ReadStream(AStream: TMemoryStream; ASize: Longint); override;
+    procedure SetPixelFormat(AValue: TPixelFormat); override;
+    procedure UnshareImage(CopyContent: boolean); override;
+    procedure UpdateCurrentView;
+    function  UpdateHandles(ABitmap, AMask: HBITMAP): Boolean; override;
+    procedure WriteStream(AStream: TMemoryStream); override;
   public
     constructor Create; override;
-    destructor Destroy; override;
+
+    procedure Add(AFormat: TPixelFormat; AHeight, AWidth: Word);
+    procedure Delete(Aindex: Integer);
+    procedure Remove(AFormat: TPixelFormat; AHeight, AWidth: Word);
+    procedure GetDescription(Aindex: Integer; out AFormat: TPixelFormat; out AHeight, AWidth: Word);
+    procedure SetSize(AWidth, AHeight: integer); override;
     class function GetFileExtensions: string; override;
     function LazarusResourceTypeValid(const ResourceType: string): boolean; override;
-    function ReleaseCursorHandle: HCURSOR;
+    function BitmapHandleAllocated: boolean; override;
+    function MaskHandleAllocated: boolean; override;
+    function PaletteAllocated: boolean; override;
+    procedure SetHandles(ABitmap, AMask: HBITMAP); override;
+
+    property Current: Integer read FCurrent write SetCurrent;
+    property Count: Integer read GetCount;
+  end;
+  
+  TIcon = class(TCustomIcon)
+  private
+    function  GetIconHandle: HICON;
+    procedure SetIconHandle(const AValue: HICON);
+  protected
+  public
+    function ReleaseHandle: HICON;
+    property Handle: HICON read GetIconHandle write SetIconHandle;
+  end;
+
+  { TSharedCursorImage }
+
+  TSharedCursorImage = class(TSharedIcon)
+  protected
+    procedure FreeHandle; override;
+    class function GetImagesClass: TIconImageClass; override;
+  end;
+  
+  { TCursorImageImage }
+
+  TCursorImageImage = class(TIconImage)
+  private
+    FHotSpot: TPoint;
+  public
     property HotSpot: TPoint read FHotSpot write FHotSpot;
-    property CursorHandle: HCURSOR read GetCursorHandle;
+  end;
+
+  { TCursorImage }
+  TCursorImage = class(TCustomIcon)
+  private
+    function GetHotSpot: TPoint;
+    function GetCursorHandle: HCURSOR;
+    procedure SetCursorHandle(AValue: HCURSOR);
+  protected
+    procedure HandleNeeded; override;
+    class function GetSharedImageClass: TSharedRasterImageClass; override;
+  public
+    class function GetFileExtensions: string; override;
+    function LazarusResourceTypeValid(const ResourceType: string): boolean; override;
+    function ReleaseHandle: HCURSOR;
+    property HotSpot: TPoint read GetHotSpot;
+    property Handle: HCURSOR read GetCursorHandle write SetCursorHandle;
+  end;
+  
+
+  { TSharedJpegImage }
+
+  TSharedJpegImage = class(TSharedCustomBitmap)
   end;
   
   { TJpegImage }
@@ -1372,14 +1543,15 @@ type
     FProgressiveEncoding: boolean;
     FQuality: TJPEGQualityRange;
   protected
-    procedure InitFPImageReader(IntfImg: TLazIntfImage; ImgReader: TFPCustomImageReader); override;
-    procedure FinalizeFPImageReader(ImgReader: TFPCustomImageReader); override;
-    procedure InitFPImageWriter(IntfImg: TLazIntfImage; ImgWriter: TFPCustomImageWriter); override;
+    procedure InitializeReader(AImage: TLazIntfImage; AReader: TFPCustomImageReader); override;
+    procedure InitializeWriter(AImage: TLazIntfImage; AWriter: TFPCustomImageWriter); override;
+    procedure FinalizeReader(AReader: TFPCustomImageReader); override;
+    class function GetReaderClass: TFPCustomImageReaderClass; override;
+    class function GetWriterClass: TFPCustomImageWriterClass; override;
+    class function GetSharedImageClass: TSharedRasterImageClass; override;
   public
     constructor Create; override;
     class function GetFileExtensions: string; override;
-    class function GetDefaultFPReader: TFPCustomImageReaderClass; override;
-    class function GetDefaultFPWriter: TFPCustomImageWriterClass; override;
   public
     property CompressionQuality: TJPEGQualityRange read FQuality write FQuality;
     property GrayScale: Boolean read FGrayScale;
@@ -1391,10 +1563,6 @@ function GraphicFilter(GraphicClass: TGraphicClass): string;
 function GraphicExtension(GraphicClass: TGraphicClass): string;
 function GraphicFileMask(GraphicClass: TGraphicClass): string;
 function GetGraphicClassForFileExtension(const FileExt: string): TGraphicClass;
-function GetFPImageReaderForFileExtension(const FileExt: string
-  ): TFPCustomImageReaderClass;
-function GetFPImageWriterForFileExtension(const FileExt: string
-  ): TFPCustomImageWriterClass;
 
 type
   // Color / Identifier mapping
@@ -1451,7 +1619,6 @@ var
   OnLoadGraphicFromClipboardFormat: TOnLoadGraphicFromClipboardFormat=nil;
   OnSaveGraphicToClipboardFormat: TOnSaveGraphicToClipboardFormat=nil;
 
-function TestStreamBitmapNativeType(const AStream: TStream): TBitmapNativeType;
 function TestStreamIsBMP(const AStream: TStream): boolean;
 function TestStreamIsXPM(const AStream: TStream): boolean;
 function TestStreamIsIcon(const AStream: TStream): boolean;
@@ -1558,7 +1725,7 @@ var
 begin
   CursorImage := TCursorImage.Create;
   CursorImage.LoadFromLazarusResource(ACursorName);
-  Result := CursorImage.ReleaseCursorHandle;
+  Result := CursorImage.ReleaseHandle;
   CursorImage.Free;
 end;
 
@@ -1664,16 +1831,14 @@ const
 type
   TBitmapCanvas = class(TCanvas)
   private
-    FBitmap: TCustomBitmap;
-    FOldBitmapValid: boolean;
-    FOldBitmap: HBitmap;
-    FOldPaletteValid: boolean;
+    FImage: TRasterImage;
+    FOldBitmap: HBITMAP;
     FOldPalette: HPALETTE;
     procedure FreeDC; // called by TCustomBitmap.FreeCanvasContext
   protected
     procedure CreateHandle; override;
   public
-    constructor Create(ABitmap: TCustomBitmap);
+    constructor Create(AImage: TRasterImage);
     destructor Destroy; override;
   end;
 
@@ -1981,7 +2146,9 @@ end;
 {$I graphic.inc}
 {$I picture.inc}
 {$I sharedimage.inc}
-{$I custombitmapimage.inc}
+{$I sharedrasterimage.inc}
+{$I sharedcustombitmap.inc}
+{$I rasterimage.inc}
 {$I custombitmap.inc}
 {$I bitmapcanvas.inc}
 {$I pen.inc}
@@ -1996,6 +2163,7 @@ end;
 {$I cursorimage.inc}
 {$I icon.inc}
 {$I fpimagebitmap.inc}
+{$I bitmap.inc}
 
 
 procedure InterfaceInit;

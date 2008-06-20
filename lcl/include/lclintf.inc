@@ -180,7 +180,7 @@ begin
   Result := WidgetSet.RawImage_DescriptionFromDevice(ADC, ADesc);
 end;
 
-function RawImage_FromBitmap(out ARawImage: TRawImage; ABitmap, AMask: HBITMAP; const ARect: TRect): Boolean;
+function RawImage_FromBitmap(out ARawImage: TRawImage; ABitmap, AMask: HBITMAP; ARect: PRect): Boolean;
 begin
   Result := WidgetSet.RawImage_FromBitmap(ARawImage, ABitmap, AMask, ARect);
 end;
@@ -188,6 +188,11 @@ end;
 function RawImage_FromDevice(out ARawImage: TRawImage; ADC: HDC; const ARect: TRect): Boolean;
 begin
   Result := WidgetSet.RawImage_FromDevice(ARawImage, ADC, ARect);
+end;
+
+function RawImage_QueryDescription(AFlags: TRawImageQueryFlags; out ADesc: TRawImageDescription): Boolean;
+begin
+  Result := WidgetSet.RawImage_QueryDescription(AFlags, ADesc);
 end;
 
 

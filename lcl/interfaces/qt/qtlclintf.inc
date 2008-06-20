@@ -401,13 +401,14 @@ end;
 
   Creates a raw image from a bitmap
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.RawImage_FromBitmap(out ARawImage: TRawImage; ABitmap, AMask: HBITMAP; const ARect: TRect): Boolean;
+function TQtWidgetSet.RawImage_FromBitmap(out ARawImage: TRawImage; ABitmap, AMask: HBITMAP; ARect: PRect = nil): Boolean;
 var
   Desc: TRawImageDescription absolute ARawImage.Description;
   Image: TQtImage absolute ABitmap;
   Mask: TQtImage absolute AMask;
   
   WorkImage, WorkMask: TQtImage;
+  R: TRect;
   Width, Height: Integer;
 begin
   Result := False;
@@ -419,9 +420,19 @@ begin
   ARawImage.Init;
   FillStandardDescription(ARawImage.Description);
   
-  Width := ARect.Right - ARect.Left;
-  Height := ARect.Bottom - ARect.Top;
+  if ARect = nil
+  then begin
+    Width := Image.Width;
+    Height := Image.Height;
+    R := Rect(0, 0, Width, Height)
+  end
+  else begin
+    R := ARect^;
+    Width := R.Right - R.Left;
+    Height := R.Bottom - R.Top;
+  end;
   
+
   if (Width = Image.Width) and (Height = Image.Height)
   then begin
     WorkImage := Image;
@@ -429,11 +440,11 @@ begin
   end
   else begin
     WorkImage := TQtImage.Create;
-    WorkImage.CopyFrom(Image.Handle, ARect.Left, ARect.Top, Width, Height);
+    WorkImage.CopyFrom(Image.Handle, R.Left, R.Top, Width, Height);
     if Mask <> nil then
     begin
       WorkMask := TQtImage.Create;
-      WorkMask.CopyFrom(Mask.Handle, ARect.Left, ARect.Top, Width, Height);
+      WorkMask.CopyFrom(Mask.Handle, R.Left, R.Top, Width, Height);
     end
     else
       WorkMask := nil;
@@ -554,6 +565,18 @@ begin
     WriteLn('Trace:< [WinAPI GetRawImageFromDevice]');
   {$endif}
 end;
+
+{------------------------------------------------------------------------------
+  Function: RawImage_QueryDescription
+  Params: AFlags:
+          ADesc:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+//function TQtWidgetSet.RawImage_QueryDescription(AFlags: TRawImageQueryFlags; out ADesc: TRawImageDescription): Boolean;
+//begin
+//  // override only when queried formats are different from screen description
+//end;
 
 function TQtWidgetSet.ReleaseDesignerDC(Window: HWND; DC: HDC): Integer;
 begin

@@ -533,7 +533,7 @@ end;
 
   Creates a raw image from the specified bitmap
  ------------------------------------------------------------------------------}
-function TCarbonWidgetSet.RawImage_FromBitmap(out ARawImage: TRawImage; ABitmap, AMask: HBITMAP; const ARect: TRect): Boolean;
+function TCarbonWidgetSet.RawImage_FromBitmap(out ARawImage: TRawImage; ABitmap, AMask: HBITMAP; ARect: PRect = nil): Boolean;
 begin
   if CheckBitmap(ABitmap, 'RawImage_FromBitmap')
   and ((AMask = 0) or CheckBitmap(AMask, 'RawImage_FromBitmap (mask)'))
@@ -579,7 +579,7 @@ begin
   // desktop DC
   if CheckDC(ADC, 'RawImage_FromDevice') and (CBC is TCarbonBitmapContext) then
   begin
-    Result := RawImage_FromCarbonBitmap(ARawImage, CBC.Bitmap, nil, ARect);
+    Result := RawImage_FromCarbonBitmap(ARawImage, CBC.Bitmap, nil, @ARect);
     Exit;
   end;
 
@@ -606,6 +606,18 @@ begin
 
   Result := True;
 end;
+
+{------------------------------------------------------------------------------
+  Function: RawImage_QueryDescription
+  Params: AFlags:
+          ADesc:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+//function TCarbonWidgetSet.RawImage_QueryDescription(AFlags: TRawImageQueryFlags; out ADesc: TRawImageDescription): Boolean;
+//begin
+//  // override only when queried formats are different from screen description
+//end;
 
 {------------------------------------------------------------------------------
   Method:  ReleaseDesignerDC

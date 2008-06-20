@@ -1,8 +1,6 @@
 {%MainUnit ../graphics.pp}
 
-{******************************************************************************
-                         TPortableAnyMapGraphic
- ******************************************************************************
+{ TSharedRasterImage
 
  *****************************************************************************
  *                                                                           *
@@ -18,27 +16,42 @@
  *****************************************************************************
 }
 
-{ TPortableAnyMapGraphic }
-
-class function TPortableAnyMapGraphic.GetFileExtensions: string;
+constructor TSharedRasterImage.Create;
 begin
-  Result:='pbm;pgm;ppm';
+  inherited Create;
 end;
 
-class function TPortableAnyMapGraphic.GetReaderClass: TFPCustomImageReaderClass;
+destructor TSharedRasterImage.Destroy;
 begin
-  Result := TFPReaderPNM;
+  FreeAndNil(FSaveStream);
+  FreeHandle;
+  inherited Destroy;
 end;
 
-class function TPortableAnyMapGraphic.GetSharedImageClass: TSharedRasterImageClass;
+function TSharedRasterImage.HandleAllocated: boolean;
 begin
-  Result := TSharedPortableAnyMapGraphic;
+  Result := FHandle <> 0;
 end;
 
-class function TPortableAnyMapGraphic.GetWriterClass: TFPCustomImageWriterClass;
+procedure TSharedRasterImage.FreeHandle;
 begin
-  Result := TFPWriterPNM;
+  if FHandle = 0 then Exit;
+  
+  DeleteObject(FHandle);
+  FHandle := 0;
 end;
 
+function TSharedRasterImage.ReleaseHandle: THandle;
+// simply return the current handle and set to 0 without freeing handles
+begin
+  Result := FHandle;
+  FHandle := 0;
+end;
+
+
+function TSharedRasterImage.IsEmpty: boolean;
+begin
+  Result := (FHandle = 0) and (SaveStream = nil);
+end;
 
 // included by graphics.pp

@@ -25,6 +25,41 @@ begin
   Result:='';
 end;
 
+procedure TFPImageBitmap.FinalizeReader(AReader: TFPCustomImageReader);
+begin
+end;
+
+procedure TFPImageBitmap.FinalizeWriter(AWriter: TFPCustomImageWriter);
+begin
+end;
+
+function TFPImageBitmap.GetMimeType: string;
+begin
+
+{$note implement}
+(*
+var
+  DefaultFileExt: String;
+  i: Integer;
+begin
+  DefaultFileExt:=GetFileExtensions;
+  i:=1;
+  while (i<=length(DefaultFileExt)) and (DefaultFileExt[i]<>';') do
+    inc(i);
+  if i<=length(DefaultFileExt) then
+    DefaultFileExt:=copy(DefaultFileExt,1,i);
+  Result:='image/'+DefaultFileExt;
+*)
+end;
+
+procedure TFPImageBitmap.InitializeReader(AImage: TLazIntfImage; AReader: TFPCustomImageReader);
+begin
+end;
+
+procedure TFPImageBitmap.InitializeWriter(AImage: TLazIntfImage; AWriter: TFPCustomImageWriter);
+begin
+end;
+
 class function TFPImageBitmap.IsFileExtensionSupported(
   const FileExtension: string): boolean;
 var
@@ -65,68 +100,62 @@ begin
   end;
 end;
 
-class function TFPImageBitmap.GetFPReaderForFileExt(const FileExtension: string
-  ): TFPCustomImageReaderClass;
-begin
-  if IsFileExtensionSupported(FileExtension) then
-    Result:=GetDefaultFPReader
-  else
-    Result:=nil;
-end;
-
-class function TFPImageBitmap.GetFPWriterForFileExt(const FileExtension: string
-  ): TFPCustomImageWriterClass;
-begin
-  if IsFileExtensionSupported(FileExtension) then
-    Result:=GetDefaultFPWriter
-  else
-    Result:=nil;
-end;
-
-function TFPImageBitmap.GetBitmapNativeType: TBitmapNativeType;
-begin
-  Result := bnNone;
-end;
-
-class function TFPImageBitmap.GetDefaultFPReader: TFPCustomImageReaderClass;
-begin
-  Result:=nil;
-end;
-
-class function TFPImageBitmap.GetDefaultFPWriter: TFPCustomImageWriterClass;
-begin
-  Result:=nil;
-end;
-
-function TFPImageBitmap.LazarusResourceTypeValid(const ResourceType: string
-  ): boolean;
+function TFPImageBitmap.LazarusResourceTypeValid(const ResourceType: string): boolean;
 begin
   Result:=IsFileExtensionSupported(ResourceType);
 end;
 
-procedure TFPImageBitmap.ReadStream(Stream: TStream; UseSize: boolean;
-  Size: Longint);
-begin
-  ReadStreamWithFPImage(Stream,UseSize,Size,GetDefaultFPReader);
-end;
-
-procedure TFPImageBitmap.WriteStream(Stream: TStream; WriteSize: Boolean);
-begin
-  WriteStreamWithFPImage(Stream,WriteSize,GetDefaultFPWriter);
-end;
-
-function TFPImageBitmap.GetDefaultMimeType: string;
+procedure TFPImageBitmap.ReadStream(AStream: TMemoryStream; ASize: Longint);
 var
-  DefaultFileExt: String;
-  i: Integer;
+  SCB: TSharedCustomBitmap absolute FSharedImage;
+  IntfImg: TLazIntfImage;
+  ImgReader: TFPCustomImageReader;
+  LazReader: ILazImageReader;
 begin
-  DefaultFileExt:=GetFileExtensions;
-  i:=1;
-  while (i<=length(DefaultFileExt)) and (DefaultFileExt[i]<>';') do
-    inc(i);
-  if i<=length(DefaultFileExt) then
-    DefaultFileExt:=copy(DefaultFileExt,1,i);
-  Result:='image/'+DefaultFileExt;
+  IntfImg := nil;
+  ImgReader := nil;
+  try
+    // read image
+    ImgReader := GetReaderClass.Create;
+    IntfImg := TLazIntfImage.Create(0,0);
+    InitializeReader(IntfImg, ImgReader);
+    if Supports(ImgReader, ILazImageReader, LazReader)
+    then LazReader.UpdateDescription := True
+    else IntfImg.DataDescription := GetDescriptionFromDevice(0, 0, 0); // fallback to default
+    ImgReader.ImageRead(AStream, IntfImg);
+    FinalizeReader(ImgReader);
+
+    // no need to care about unsharing image, thats done by calling proc
+    SCB.FImage.FreeData;
+    IntfImg.GetRawImage(SCB.FImage, True);
+    SCB.FHasMask := IntfImg.HasMask;
+    if not IntfImg.HasMask
+    then SCB.FImage.Description.MaskBitsPerPixel := 0;
+  finally
+    LazReader := nil;
+    IntfImg.Free;
+    ImgReader.Free;
+  end;
 end;
 
+procedure TFPImageBitmap.WriteStream(AStream: TMemoryStream);
+var
+  IntfImg: TLazIntfImage;
+  ImgWriter: TFPCustomImageWriter;
+begin
+  // write image to temporary stream
+
+  ImgWriter := nil;
+  IntfImg := TLazIntfImage.Create(0,0);
+  try
+    ImgWriter := GetWriterClass.Create;
+    IntfImg.LoadFromBitmap(Handle, FMaskHandle);
+    InitializeWriter(IntfImg, ImgWriter);
+    IntfImg.SaveToStream(AStream, ImgWriter);
+    FinalizeWriter(ImgWriter);
+  finally
+    IntfImg.Free;
+    ImgWriter.Free;
+  end;
+end;
 

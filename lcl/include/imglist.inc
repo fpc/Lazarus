@@ -221,7 +221,7 @@ begin
   R := Rect(0, 0, FWidth, FHeight);
   for i := 0 to ACount - 1 do
   begin
-    RawImage_FromBitmap(RawImg, AImage, AMask, R);
+    RawImage_FromBitmap(RawImg, AImage, AMask, @R);
     ImgData := InternalSetImage(AIndex + i, RawImg);
     if HandleAllocated
     then TWSCustomImageListClass(WidgetSetClass).Insert(Self, AIndex + i, ImgData);
@@ -745,7 +745,7 @@ begin
   CheckIndex(AIndex);
 
   R := Rect(0, 0, FWidth, FHeight);
-  RawImage_FromBitmap(RawImage, AImage, AMask, R);
+  RawImage_FromBitmap(RawImage, AImage, AMask, @R);
   ImgData := InternalSetImage(AIndex, RawImage);
   if HandleAllocated
   then TWSCustomImageListClass(WidgetSetClass).Replace(Self, AIndex, ImgData);
@@ -922,7 +922,7 @@ var
     begin
       bmp := TBitMap.Create;
       Size:=ReadLRSInteger(AStream);
-      bmp.ReadStream(AStream, True, Size);
+      bmp.LoadFromStream(AStream, Size);
       bmp.Transparent := True;
       Add(bmp, nil);
       bmp.Free;
@@ -945,7 +945,7 @@ var
       //DebugLn('TCustomImageList.ReadData DoReadLaz2 i=',i,' ',AStream.Position);
       Size:=ReadLRSCardinal(AStream);
       //DebugLn('TCustomImageList.ReadData DoReadLaz2 Size=',Size,' ',AStream.Position);
-      bmp.ReadStream(AStream, True, Size);
+      bmp.LoadFromStream(AStream, Size);
       Add(bmp, nil);
       bmp.Free;
     end;

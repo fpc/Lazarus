@@ -144,7 +144,6 @@ function CF_MetaFilePict: TClipboardFormat;
 function CF_Object: TClipboardFormat;
 function CF_Component: TClipboardFormat;
 
-
 type
   TClipboardData = record
     FormatID: TClipboardFormat;
