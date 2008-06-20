@@ -354,6 +354,7 @@ type
     procedure SelectRecord(AValue: boolean);
     procedure GetScrollbarParams(out aRange, aPage, aPos: Integer);
     procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
+    function  LoadResBitmapImage(const ResName: string): TBitmap;
   protected
     procedure AddAutomaticColumns;
     procedure BeforeMoveSelection(const DCol,DRow: Integer); override;
@@ -2575,12 +2576,9 @@ begin
   ScrollBars:=ssBoth;
 
   // Default bitmaps for cbsCheckedColumn
-  FUnCheckedBitmap := TBitmap.Create;
-  FUnCheckedBitmap.LoadFromLazarusResource('dbgriduncheckedcb');
-  FCheckedBitmap := TBitmap.Create;
-  FCheckedBitmap.LoadFromLazarusResource('dbgridcheckedcb');
-  FGrayedBitmap := TBitmap.Create;
-  FGrayedBitmap.LoadFromLazarusResource('dbgridgrayedcb');
+  FUnCheckedBitmap := LoadResBitmapImage('dbgriduncheckedcb');
+  FCheckedBitmap := LoadResBitmapImage('dbgridcheckedcb');
+  FGrayedBitmap := LoadResBitmapImage('dbgridgrayedcb');
 end;
 
 procedure TCustomDBGrid.InitiateAction;
@@ -2683,6 +2681,19 @@ end;
 procedure TCustomDBGrid.CMGetDataLink(var Message: TLMessage);
 begin
   Message.Result := PtrUInt(FDataLink);
+end;
+
+function TCustomDBGrid.LoadResBitmapImage(const ResName: string): TBitmap;
+var
+  C: TCustomBitmap;
+begin
+  C := CreateBitmapFromLazarusResource(ResName);
+  if C<>nil then begin
+    Result := TBitmap.Create;
+    Result.Assign(C);
+    C.Free;
+  end else
+    Result:=nil;
 end;
 
 destructor TCustomDBGrid.Destroy;
