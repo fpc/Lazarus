@@ -573,10 +573,15 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-//function TQtWidgetSet.RawImage_QueryDescription(AFlags: TRawImageQueryFlags; out ADesc: TRawImageDescription): Boolean;
-//begin
-//  // override only when queried formats are different from screen description
-//end;
+function TQtWidgetSet.RawImage_QueryDescription(AFlags: TRawImageQueryFlags; out ADesc: TRawImageDescription): Boolean;
+begin
+  Result := inherited RawImage_QueryDescription(AFlags, ADesc);
+  if ADesc.BitsPerPixel > 8 then
+    ADesc.BitsPerPixel := 32
+  else
+  if ADesc.BitsPerPixel > 1 then
+    ADesc.BitsPerPixel := 8;
+end;
 
 function TQtWidgetSet.ReleaseDesignerDC(Window: HWND; DC: HDC): Integer;
 begin
