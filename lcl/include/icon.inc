@@ -510,7 +510,10 @@ begin
       IconDir[n].dwImageOffset := LEtoN(IconDir[n].dwImageOffset);
       {$endif}
       
+      {$IFDEF VerboseLCLTodos}
+      {$note remove this debugging code}
       DumpDirEntry(n, IconDir[n]);
+      {$ENDIF}
       
       AStream.Seek(StreamStart + IconDir[n].dwImageOffset, soBeginning);
       
