@@ -5094,11 +5094,11 @@ begin
     Desc.Init_BPP32_B8G8R8A8_BIO_TTB(Header.Width, Header.height);
 
     IsGray := Header.ColorType and 3 = 0;
-    IsAlpha := (Header.ColorType and 4 = 0) and not FAlphaPalette;
+    IsAlpha := (Header.ColorType and 4 <> 0) or FAlphaPalette;
 
     if IsGray
     then Desc.Format := ricfGray;
-    if IsAlpha
+    if not IsAlpha
     then Desc.AlphaPrec := 0;
 
     // check palette
