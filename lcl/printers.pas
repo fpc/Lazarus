@@ -182,6 +182,7 @@ type
      function GetYDPI: Integer; virtual;
      procedure CheckRawMode(const Value: boolean; Msg:string='');
      procedure RawModeChanging; virtual;
+     procedure PrinterSelected; virtual;
   public
      constructor Create; virtual;
      destructor Destroy; override;
@@ -399,7 +400,8 @@ begin
         fPrinterIndex:=i;
       end;
     end;
-  end
+  end;
+  PrinterSelected;
 end;
 
 function TPrinter.Write(const Buffer; Count:Integer; var Written: Integer): Boolean;
@@ -453,6 +455,10 @@ end;
 procedure TPrinter.RawModeChanging;
 begin
   //
+end;
+
+procedure TPrinter.PrinterSelected;
+begin
 end;
 
 //Get current copies number

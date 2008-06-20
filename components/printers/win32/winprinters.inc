@@ -75,6 +75,12 @@ begin
     FreeDC;
 end;
 
+procedure TWinPrinter.PrinterSelected;
+begin
+  if PrinterIndex>=0 then
+    SetDC;
+end;
+
 function TWinPrinter.GetXDPI: Integer;
 begin
   Result:=72;
@@ -659,10 +665,9 @@ begin
                                    [SysErrorMessage(GetlastError)]);
     end;
     
-    if UpdateDevMode(i) then begin
-      SetDC;
-      Result:=i;
-    end else
+    if UpdateDevMode(i) then
+      Result:=i
+    else
       Result:=-1;
   end;
 end;

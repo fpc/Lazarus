@@ -78,6 +78,7 @@ Type
     function GetHandlePrinter : HDC;
     procedure SetHandlePrinter(aValue : HDC);
     procedure RawModeChanging; override;
+    procedure PrinterSelected; override;
   public
     constructor Create; override;
     destructor Destroy; override;
