@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for SQLDBLaz 1.0
 #
-#   This file was generated on 5-4-2008
+#   This file was generated on 20-6-2008
 
 [package]
 name=sqldblaz
@@ -32,7 +32,11 @@ else
 ifeq ($(OS_TARGET),win64)
 LCL_PLATFORM=win32
 else
+ifeq ($(OS_TARGET),darwin)
+LCL_PLATFORM=carbon
+else
 LCL_PLATFORM=gtk
+endif
 endif
 endif
 endif

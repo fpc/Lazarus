@@ -60,7 +60,11 @@ ifndef LCL_PLATFORM
 ifneq ($(findstring $(OS_TARGET),win32 win64),)
 LCL_PLATFORM=win32
 else
+ifeq ($(OS_TARGET),darwin)
+LCL_PLATFORM=carbon
+else
 LCL_PLATFORM=gtk
+endif
 endif
 endif
 export LCL_PLATFORM

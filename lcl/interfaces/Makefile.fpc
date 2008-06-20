@@ -22,7 +22,11 @@ else
 ifeq ($(OS_TARGET),wince)
 LCL_PLATFORM=wince
 else
+ifeq ($(OS_TARGET),darwin)
+LCL_PLATFORM=carbon
+else
 LCL_PLATFORM=gtk
+endif
 endif
 endif
 endif

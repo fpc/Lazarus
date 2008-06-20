@@ -27,10 +27,18 @@ LAZDIR=..
 
 # LCL Platform
 ifndef LCL_PLATFORM
-ifeq ($(OS_TARGET),win32)
+ifneq ($(findstring $(OS_TARGET),win32 win64),)
 LCL_PLATFORM=win32
 else
+ifeq ($(OS_TARGET),wince)
+LCL_PLATFORM=wince
+else
+ifeq ($(OS_TARGET),darwin)
+LCL_PLATFORM=carbon
+else
 LCL_PLATFORM=gtk
+endif
+endif
 endif
 endif
 export LCL_PLATFORM
