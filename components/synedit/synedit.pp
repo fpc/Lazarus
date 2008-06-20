@@ -5608,7 +5608,7 @@ begin
     fTopLine := Value;
     UpdateScrollBars;
     Delta := OldTopLine - TopLine;
-    if Abs(Delta) < fLinesInWindow then
+    if (Abs(Delta) < fLinesInWindow) and not (sfPainting in fStateFlags) then
     begin
       // TODO: SW_SMOOTHSCROLL --> can't get it work
       if not ScrollWindowEx(Handle, 0, fTextHeight * Delta, nil, nil, 0, nil,
@@ -5664,7 +5664,7 @@ begin
   if NewCaretXY.Y < fTopLine then
     NewCaretXY.Y := fTopLine
   else begin
-    MaxY:=ScreenRowToRow(fTopLine + Max(0,fLinesInWindow-1));
+    MaxY:= ScreenRowToRow(Max(0,fLinesInWindow-1));
     if NewCaretXY.Y > MaxY then
       NewCaretXY.Y := MaxY;
   end;
@@ -11434,6 +11434,7 @@ initialization
   {$ENDIF}
 
 end.
+
 
 
 
