@@ -5720,7 +5720,7 @@ begin
     if (CX >= fGutterWidth)
       and (CX < ClientWidth{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF})
       and (CY >= 0)
-      and (CY < ClientHeight{$IFDEF SYN_LAZARUS}-ScrollBarWidth-fTextHeight{$ENDIF})
+      and (CY <= ClientHeight{$IFDEF SYN_LAZARUS}-ScrollBarWidth-fTextHeight{$ENDIF})
     then begin
       {$IFDEF SYN_LAZARUS}
       SetCaretPosEx(Handle,CX,CY);
