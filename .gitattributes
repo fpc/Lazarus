@@ -1371,7 +1371,6 @@ docs/html/sourceforgefooter.xml svneol=native#text/xml
 docs/images/laztitle.png -text
 docs/images/laztitle.svg -text svneol=native#image/svg%2Bxml
 docs/index.html svneol=native#text/html
-docs/lazbuild.1 svneol=native#text/plain
 docs/xml/README.txt svneol=native#text/plain
 docs/xml/find_cvs_fpdoc_files.pl -text svneol=native#application/x-perl
 docs/xml/lcl/actnlist.xml svneol=LF#text/xml eol=lf
