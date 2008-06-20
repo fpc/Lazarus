@@ -6947,11 +6947,13 @@ begin
         LFMCode:=CodeToolBoss.CreateFile(LFMFilename);
         LFMCode.Source:=LFMSourceText;
         //debugln('TMainIDE.DoNewEditorFile A ',LFMFilename);
-        Result:=DoLoadLFM(NewUnitInfo,LFMCode,[],[]);
+        //Result:=DoLoadLFM(NewUnitInfo,LFMCode,[],[]);
         //DebugLn(['TMainIDE.DoNewFile ',dbgsName(NewUnitInfo.Component),' ',dbgsName(NewUnitInfo.Component.ClassParent)]);
       end else begin
-        // create a default form/datamodule
-        Result := CreateNewForm(NewUnitInfo, AncestorType, nil, NewFileDescriptor.UseCreateFormStatements);
+        // create a designer form for a form/datamodule/frame
+        //DebugLn(['TMainIDE.DoNewFile Name=',NewFileDescriptor.Name,' Class=',NewFileDescriptor.ClassName]);
+        Result := CreateNewForm(NewUnitInfo, AncestorType, nil,
+                                NewFileDescriptor.UseCreateFormStatements);
       end;
       if Result<>mrOk then exit;
     end;

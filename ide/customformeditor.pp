@@ -1492,6 +1492,7 @@ var
   DesignForm: TCustomForm;
   NewUnitName: String;
   s: String;
+  NewDesignInfo: LongRec;
 begin
   Result:=nil;
   Temp:=nil;
@@ -1499,7 +1500,7 @@ begin
   AParent:=nil;
   NewComponent:=nil;
   try
-    DebugLn('[TCustomFormEditor.CreateComponent] Class='''+TypeClass.ClassName+'''');
+    //DebugLn(['[TCustomFormEditor.CreateComponent] Class="'+TypeClass.ClassName+'" ',X,',',Y,',',W,'x',H]);
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TCustomFormEditor.CreateComponent A');{$ENDIF}
 
     OwnerComponent:=nil;
@@ -1597,7 +1598,7 @@ begin
         if CompLeft<0 then begin
           if AParent<>nil then
             CompLeft:=(AParent.Width - CompWidth) div 2
-          else if AControl is TCustomForm then
+          else if (AControl is TCustomForm) then
             CompLeft:=Max(1,Min(250,Screen.Width-CompWidth-50))
           else
             CompLeft:=0;
@@ -1605,14 +1606,23 @@ begin
         if CompTop<0 then begin
           if AParent<>nil then
             CompTop:=(AParent.Height - CompHeight) div 2
-          else if AControl is TCustomForm then
+          else if (AControl is TCustomForm) then
             CompTop:=Max(1,Min(250,Screen.Height-CompHeight-50))
           else
             CompTop:=0;
         end;
-        // set parent after placing control to prevent display at (0,0)
-        AControl.SetBounds(CompLeft,CompTop,CompWidth,CompHeight);
-        TControl(Temp.Component).Parent := AParent;
+        if (AParent<>nil) or (AControl is TCustomForm) then begin
+          // set parent after placing control to prevent display at (0,0)
+          AControl.SetBounds(CompLeft,CompTop,CompWidth,CompHeight);
+          AControl.Parent := AParent;
+        end else begin
+          // no parent and not a form
+          AControl.SetBounds(0,0,CompWidth,CompHeight);
+          NewDesignInfo.Lo:=CompLeft;
+          NewDesignInfo.Hi:=CompTop;
+          LongRec(AControl.DesignInfo):=NewDesignInfo;
+          //DebugLn(['TCustomFormEditor.CreateComponent ',dbgsName(AControl),' ',LongRec(AControl.DesignInfo).Lo,',',LongRec(AControl.DesignInfo).Hi]);
+        end;
       end
       else if (Temp.Component is TDataModule) then begin
         // data module
