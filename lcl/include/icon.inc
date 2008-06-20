@@ -435,24 +435,6 @@ end;
 procedure TCustomIcon.ReadStream(AStream: TMemoryStream; ASize: Longint);
 var
   Header: TIconHeader;
-
-  procedure DumpDirEntry(Aindex: Integer; const AEntry: TIconDirEntry);
-  begin
-    with AEntry do
-      if Header.idType = 1
-      then
-        DebugLn('Icon direntry[%d] Width=%u Height=%u ColorCount=%u Reserved=%u ' +
-                'planes=%u bpp=%u BytesInRes=%d ImageOffset=%d',
-                [Aindex, bWidth,bHeight,bColorCount,bReserved,wPlanes,wBpp,
-                 dwBytesInRes,dwImageOffset])
-      else
-        DebugLn('Icon direntry[%d] Width=%u Height=%u ColorCount=%u Reserved=%u ' +
-                'XHotSpot=%u YHotSpot=%u BytesInRes=%d ImageOffset=%d',
-                [Aindex, bWidth,bHeight,bColorCount,bReserved,wXHotSpot,wYHotSpot,
-                 dwBytesInRes,dwImageOffset]);
-  end;
-  
-var
   StreamStart: Int64;
   IconDir: array of TIconDirEntry;
   n: Integer;
@@ -509,11 +491,6 @@ begin
       IconDir[n].dwBytesInRes := LEtoN(IconDir[n].dwBytesInRes);
       IconDir[n].dwImageOffset := LEtoN(IconDir[n].dwImageOffset);
       {$endif}
-      
-      {$IFDEF VerboseLCLTodos}
-      {$note remove this debugging code}
-      DumpDirEntry(n, IconDir[n]);
-      {$ENDIF}
       
       AStream.Seek(StreamStart + IconDir[n].dwImageOffset, soBeginning);
       
