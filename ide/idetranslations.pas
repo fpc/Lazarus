@@ -73,9 +73,7 @@ function GetLazarusLanguageLocalizedName(const ID: string): String;
 // collect all available translations
 procedure CollectTranslations(const LazarusDir: string);
 
-function ConvertRSTFiles(RSTDirectory, PODirectory: string): Boolean;
-function ConvertRSTFile(const RSTFilename, OutputFilename: string;
-             CheckContentChange: Boolean; var ContentChanged: Boolean): Boolean;
+function ConvertRSTFiles(RSTDirectory, PODirectory, POFilename: string): Boolean;
 
 var
   LazarusTranslations: TLazarusTranslations = nil;
@@ -172,261 +170,24 @@ begin
   SysUtils.FindClose(FileInfo);
 end;
 
-type
-  TConstItem = class
-  public
-    ModuleName, ConstName, Value: String;
-  end;
-  
-function CompareConstItems(Data1, Data2: Pointer): integer;
-begin
-  Result:=CompareText(TConstItem(Data1).Value,TConstItem(Data2).Value);
-end;
-
-function CompareValueWithConstItems(ValuePAnsiString, ConstItem: Pointer): integer;
-begin
-  Result:=CompareText(PAnsiString(ValuePAnsiString)^,
-                      TConstItem(ConstItem).Value);
-end;
-
-function ReadRSTFile(const InFilename: string;
-  TreeOfConstItems: TAVLTree): Boolean;
-var
-  s: string;
-  NextLineStartPos: integer;
-
-  procedure ReadLine(out Line: string);
-  var
-    p: LongInt;
-  begin
-    p:=NextLineStartPos;
-    while (p<=length(s)) and (not (s[p] in [#10,#13])) do inc(p);
-    Line:=copy(s,NextLineStartPos,p-NextLineStartPos);
-    inc(p);
-    if (p<=length(s)) and (s[p] in [#10,#13]) and (s[p]<>s[p-1]) then inc(p);
-    NextLineStartPos:=p;
-  end;
-
-var
-  Line: String;
-  item: TConstItem;
-  DotPos, EqPos, i, j: Integer;
-  ModuleName: String;
-  ConstName: String;
-  Value: String;
-  fs: TFileStream;
-  Node: TAVLTreeNode;
-begin
-  Result:=false;
-  try
-    fs:=TFileStream.Create(InFilename,fmOpenRead);
-    try
-      SetLength(s,fs.Size);
-      if s='' then exit;
-      fs.Read(s[1],length(s));
-    finally
-      fs.Free;
-    end;
-    NextLineStartPos:=1;
-
-    while NextLineStartPos<=length(s) do begin
-      ReadLine(Line);
-      If (Length(Line)=0) or (Line[1]='#') then
-        continue;
-
-      DotPos := Pos('.', Line);
-      EqPos := Pos('=', Line);
-      if DotPos > EqPos then // paranoia checking.
-        DotPos := 0;
-      ModuleName := Copy(Line, 1, DotPos - 1);
-      ConstName := Copy(Line, DotPos + 1, EqPos - DotPos - 1);
-
-      Value := '';
-      i := EqPos + 1;
-      while i <= Length(Line) do begin
-        if Line[i] = '''' then begin
-          Inc(i);
-          j := i;
-          while (i <= Length(Line)) and (Line[i] <> '''') do
-            Inc(i);
-          Value := Value + Copy(Line, j, i - j);
-          Inc(i);
-        end else if Line[i] = '#' then begin
-          Inc(i);
-          j := i;
-          while (i <= Length(Line)) and (Line[i] in ['0'..'9']) do
-            Inc(i);
-          Value := Value + Chr(StrToInt(Copy(Line, j, i - j)));
-        end else if Line[i] = '+' then begin
-          ReadLine(Line);
-          i := 1;
-        end else
-          Inc(i);
-      end;
-      Node:=TreeOfConstItems.FindKey(@Value,@CompareValueWithConstItems);
-      if Node=nil then begin
-        Item:=TConstItem.Create;
-        Item.ModuleName:=ModuleName;
-        Item.ConstName:=ConstName;
-        Item.Value:=Value;
-        TreeOfConstItems.Add(Item);
-      end else begin
-        //DebugLn(['ReadRSTFile Double ignored: ModuleName=',ModuleName,' ConstName=',ConstName,' Value="',DbgStr(Value),'"']);
-      end;
-    end;
-
-    Result:=true;
-  except
-    on E: Exception do begin
-      DebugLn(['ReadRSTFile InFilename="',InFilename,'" Error=',E.Message]);
-    end;
-  end;
-end;
-
-function ConvertToGettextPO(TreeOfConstItems: TAVLTree;
-  const OutFilename: string; CheckContentChange: Boolean;
-  var ContentChanged: Boolean): Boolean;
-var
-  j: Integer;
-  item: TConstItem;
-  s: String;
-  c: Char;
-  Node: TAVLTreeNode;
-  NewContent: TMemoryStream;
-  e: string;
-  OldContent: TMemoryStream;
-  
-  procedure WriteStr(const s: string);
-  begin
-    if s<>'' then NewContent.Write(s[1],length(s));
-  end;
-  
-  procedure WriteLine(const s: string);
-  begin
-    if s<>'' then NewContent.Write(s[1],length(s));
-    NewContent.Write(e[1],length(e));
-  end;
-  
-begin
-  Result:=false;
-  ContentChanged:=false;
-  NewContent:=nil;
-  OldContent:=nil;
-  try
-    try
-      e:=LineEnding;
-      NewContent:=TMemoryStream.Create;
-
-      // write header - needed by editors like poedit so they know what encoding
-      //                to create
-      WriteLine('msgid ""');
-      WriteLine('msgstr ""');
-      WriteLine('"MIME-Version: 1.0\n"');
-      WriteLine('"Content-Type: text/plain; charset=UTF-8\n"');
-      WriteLine('"Content-Transfer-Encoding: 8bit\n"');
-      WriteStr(e);
-
-      Node:=TreeOfConstItems.FindLowest;
-      while Node<>nil do begin
-        item := TConstItem(Node.Data);
-
-        // Convert string to C-style syntax
-        s := '';
-        for j := 1 to Length(item.Value) do begin
-          c := item.Value[j];
-          case c of
-            #9:  s := s + '\t';
-            #10: s := s + '\n';
-            #0..#8,#11..#31,#128..#255:
-              s := s + '\' +
-                Chr(Ord(c) shr 6 + 48) +
-                Chr((Ord(c) shr 3) and 7 + 48) +
-                Chr(Ord(c) and 7 + 48);
-            '\': s := s + '\\';
-            '"': s := s + '\"';
-          else s := s + c;
-          end;
-        end;
-
-        // Write msg entry
-        WriteStr('#: ');
-        WriteStr(item.ModuleName);
-        WriteStr(':');
-        WriteStr(item.ConstName);
-        WriteStr(e);
-        WriteStr('msgid "');
-        WriteStr(s);
-        WriteStr('"');
-        WriteStr(e);
-        WriteStr('msgstr ""');
-        WriteStr(e);
-        WriteStr(e);
-
-        Node:=TreeOfConstItems.FindSuccessor(Node);
-      end;
-
-      NewContent.Position:=0;
-      if CheckContentChange and FileExists(OutFilename) then begin
-        OldContent:=TMemoryStream.Create;
-        OldContent.LoadFromFile(OutFilename);
-        ContentChanged:=not CompareMemStreamText(NewContent,OldContent);
-        FreeAndNil(OldContent);
-      end else begin
-        ContentChanged:=true;
-      end;
-      if ContentChanged then begin
-        ForceDirectories(ExtractFileDir(OutFileName));
-        NewContent.SaveToFile(OutFilename);
-      end;
-      Result:=true;
-    finally
-      NewContent.Free;
-      OldContent.Free;
-    end;
-  except
-    on E: Exception do begin
-      DebugLn(['ConvertToGettextPO ',E.Message]);
-      DumpExceptionBackTrace;
-    end;
-  end;
-end;
-
-function ConvertRSTFile(const RSTFilename, OutputFilename: string;
-  CheckContentChange: Boolean; var ContentChanged: Boolean): Boolean;
-var
-  TreeOfConstItems: TAVLTree;
-begin
-  Result:=false;
-  //DebugLn(['ConvertRSTFile RSTFilename=',RSTFilename,' OutputFilename=',OutputFilename]);
-  TreeOfConstItems:=TAVLTree.Create(@CompareConstItems);
-  try
-    // read .rst file
-    if not ReadRSTFile(RSTFilename,TreeOfConstItems) then begin
-      DebugLn(['ConvertRSTFile reading failed: RSTFilename=',RSTFilename]);
-      exit;
-    end;
-    // write .po file
-    if not ConvertToGettextPO(TreeOfConstItems,OutputFilename,
-      CheckContentChange,ContentChanged)
-    then begin
-      DebugLn(['ConvertRSTFile writing failed: OutputFilename=',OutputFilename]);
-      exit;
-    end;
-  finally
-    if TreeOfConstItems<>nil then begin
-      TreeOfConstItems.FreeAndClear;
-      TreeOfConstItems.Free;
-    end;
-  end;
-  Result:=true;
-end;
-
-function ConvertRSTFiles(RSTDirectory, PODirectory: string): Boolean;
+{.$define SinglePOFile}
+function ConvertRSTFiles(RSTDirectory, PODirectory, POFilename: string): Boolean;
 var
   FileInfo: TSearchRec;
   RSTFilename: String;
   OutputFilename: String;
-  ContentChanged: Boolean;
+  FileList: TStringList;
+
+  procedure UpdateList;
+  begin
+    try
+      UpdatePoFile(FileList, OutputFilename);
+      Result := true;
+    except
+      Result := false;
+    end;
+  end;
+  
 begin
   Result:=true;
   if (RSTDirectory='') then exit;// nothing to do
@@ -438,33 +199,52 @@ begin
   end;
 
   // find all .rst files in package output directory
+  // TODO: lrt files...
+  FileList := nil;
   PODirectory:=AppendPathDelim(PODirectory);
-  //DebugLn(['ConvertPackageRSTFiles PODirectory=',PODirectory]);
+  {$ifdef SinglePOFile}
+  OutputFilename:=PODirectory+POFilename;
+  {$endif}
+  
   if SysUtils.FindFirst(RSTDirectory+'*.rst',faAnyFile,FileInfo)=0
-  then begin
+  then
+  try
+    FileList:=TStringList.Create;
     repeat
       // check if special file
       if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
         continue;
+
       RSTFilename:=RSTDirectory+FileInfo.Name;
+
+      {$ifndef SinglePOFile}
       OutputFilename:=PODirectory+ChangeFileExt(FileInfo.Name,'.po');
+      FileList.Clear;
+      {$endif}
+
       //DebugLn(['ConvertPackageRSTFiles RSTFilename=',RSTFilename,' OutputFilename=',OutputFilename]);
       if (not FileExists(OutputFilename))
-      or (FileAge(RSTFilename)>FileAge(OutputFilename)) then begin
-        ContentChanged:=false;
-        if not ConvertRSTFile(RSTFilename,OutputFilename,true,ContentChanged)
-        then begin
-          DebugLn(['ConvertPackageRSTFiles FAILED: RSTFilename=',RSTFilename,' OutputFilename=',OutputFilename]);
-          exit(false);
-        end;
-        if ContentChanged then begin
-          // ToDo: update translations
-        end;
+      or (FileAge(RSTFilename)>FileAge(OutputFilename)) then
+      begin
+        FileList.Add(RSTFilename);
+        {$ifndef SinglePOFile}
+        UpdateList;
+        if not result then
+          exit;
+        {$endif}
       end;
     until SysUtils.FindNext(FileInfo)<>0;
+    
+    {$ifdef SinglePOFile}
+    UpdateList;
+    {$endif}
+    
+  finally
+    if FileList<>nil then
+      FileList.Free;
+    SysUtils.FindClose(FileInfo);
   end;
-  SysUtils.FindClose(FileInfo);
-  Result:=true;
+
 end;
 
 {-------------------------------------------------------------------------------

@@ -2873,6 +2873,10 @@ begin
   if (APackage.POOutputDirectory='') then exit;// nothing to do
   RSTOutputDirectory:=AppendPathDelim(APackage.GetPOOutDirectory);
 
+  // create output directory if not exists
+  if not DirectoryExists(RSTOutputDirectory) then
+    ForceDirectory(RSTOutputDirectory);
+  
   // find all .rst files in package output directory
   if not DirectoryIsWritableCached(RSTOutputDirectory) then begin
     // this package is read only
@@ -2881,7 +2885,7 @@ begin
   end;
 
   PkgOutputDirectory:=AppendPathDelim(APackage.GetOutputDirectory);
-  if not ConvertRSTFiles(PkgOutputDirectory,RSTOutputDirectory) then begin
+  if not ConvertRSTFiles(PkgOutputDirectory,RSTOutputDirectory, APackage.Name+'.po') then begin
     DebugLn(['TLazPackageGraph.ConvertPackageRSTFiles FAILED: PkgOutputDirectory=',PkgOutputDirectory,' RSTOutputDirectory=',RSTOutputDirectory]);
     exit(mrCancel);
   end;

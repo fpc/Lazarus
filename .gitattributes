@@ -2114,7 +2114,6 @@ ide/lazbuild.lpi svneol=native#text/plain
 ide/lazbuild.lpr svneol=native#text/plain
 ide/lazbuild.rc svneol=native#text/plain
 ide/lazconf.pp svneol=native#text/pascal
-ide/lrtpotools.pas svneol=native#text/pascal
 ide/macropromptdlg.pas svneol=native#text/pascal
 ide/main.pp svneol=native#text/pascal
 ide/mainbar.pas svneol=native#text/pascal

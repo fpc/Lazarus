@@ -113,7 +113,11 @@ type
     
   end;
 
-  EPOFileError = class(Exception);
+  EPOFileError = class(Exception)
+  public
+    ResFileName: string;
+    POFileName: string;
+  end;
 
 var
   SystemCharSetIsUTF8: Boolean = true;// the LCL interfaces expect UTF-8 as default
@@ -128,6 +132,8 @@ function TranslateUnitResourceStrings(const ResUnitName, AFilename: string
   ): boolean;
 function UTF8ToSystemCharSet(const s: string): string; inline;
 
+function UpdatePoFile(Files: TStrings; const POFilename: string): boolean;
+
 
 implementation
 
@@ -140,6 +146,111 @@ begin
   {$ELSE}
   Result:=Utf8ToAnsi(s);
   {$ENDIF}
+end;
+
+function FindAllTranslatedPoFiles(const Filename: string): TStringList;
+var
+  Path: String;
+  Name: String;
+  NameOnly: String;
+  Ext: String;
+  FileInfo: TSearchRec;
+  CurExt: String;
+begin
+  Result:=TStringList.Create;
+  Path:=ExtractFilePath(Filename);
+  Name:=ExtractFilename(Filename);
+  Ext:=ExtractFileExt(Filename);
+  NameOnly:=LeftStr(Name,length(Name)-length(Ext));
+  if SysUtils.FindFirst(Path+GetAllFilesMask,faAnyFile,FileInfo)=0 then begin
+    repeat
+      if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
+      or (CompareFilenames(FileInfo.Name,Name)=0) then continue;
+      CurExt:=ExtractFileExt(FileInfo.Name);
+      if (CompareFilenames(CurExt,'.po')<>0)
+      or (CompareFilenames(LeftStr(FileInfo.Name,length(NameOnly)),NameOnly)<>0)
+      then
+        continue;
+      Result.Add(Path+FileInfo.Name);
+    until SysUtils.FindNext(FileInfo)<>0;
+  end;
+  SysUtils.FindClose(FileInfo);
+end;
+
+function UpdatePOFile(Files: TStrings; const POFilename: string): boolean;
+var
+  InputLines: TStringList;
+  Filename: string;
+  BasePoFile, POFile: TPoFile;
+  i: Integer;
+  E: EPOFileError;
+begin
+  Result := false;
+  
+  if (Files=nil) or (Files.Count=0) then
+    exit;
+
+  InputLines := TStringList.Create;
+  try
+    // Read base po items
+    if FileExists(POFilename) then
+      BasePOFile := TPOFile.Create(POFilename, true)
+    else
+      BasePOFile := TPOFile.Create;
+    BasePOFile.Tag:=1;
+
+    // Update po file with lrt or/and rst files
+    for i:=0 to Files.Count-1 do begin
+      Filename:=Files[i];
+      if (CompareFileExt(Filename,'.lrt')=0)
+      or (CompareFileExt(Filename,'.rst')=0) then
+        //DebugLn(['AddFiles2Po Filename="',Filename,'"']);
+        
+        try
+          InputLines.Clear;
+          InputLines.LoadFromFile(FileName);
+
+          if CompareFileExt(Filename,'.lrt')=0 then
+            BasePOFile.UpdateStrings(InputLines, stLrt)
+          else
+            BasePOFile.UpdateStrings(InputLines, stRst);
+
+        except
+          E := EPOFileError.Create('');
+          E.ResFileName:=FileName;
+          E.POFileName:=POFileName;
+          raise E;
+        end;
+        
+    end;
+    BasePOFile.SaveToFile(POFilename);
+    Result := BasePOFile.Modified;
+
+    // Update translated PO files
+    InputLines.Free;
+    InputLines := FindAllTranslatedPoFiles(POFilename);
+    for i:=0 to InputLines.Count-1 do begin
+      POFile := TPOFile.Create(InputLines[i], true);
+      try
+        POFile.Tag:=1;
+        POFile.UpdateTranslation(BasePOFile);
+        try
+          POFile.SaveToFile(InputLines[i]);
+        except
+          E := EPOFileError.Create('');
+          E.ResFileName:=InputLines[i];
+          E.POFileName:=POFileName;
+          raise E;
+        end;
+      finally
+        POFile.Free;
+      end;
+    end;
+    
+  finally
+    InputLines.Free;
+    BasePOFile.Free;
+  end;
 end;
 
 {$ifndef ver2_0}
@@ -684,6 +795,9 @@ begin
     
     for j:=0 to Fitems.Count-1 do
       WriteItem(TPOFileItem(FItems[j]));
+      
+    //if not DirectoryExists(ExtractFileDir(AFilename)) then
+    //  ForceDirectories(ExtractFileDir(AFilename));
       
     OutLst.SaveToFile(AFilename);
     

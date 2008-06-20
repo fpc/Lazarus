@@ -107,7 +107,7 @@ uses
   ControlSelection, AnchorEditor,
   MenuEditorForm,
   // LRT stuff
-  LrtPoTools,
+  Translations,
   // debugger
   RunParamsOpts, BaseDebugManager, DebugManager,
   // packager
@@ -3519,7 +3519,18 @@ begin
       end;
       AnUnitInfo:=AnUnitInfo.NextPartOfProject;
     end;
-    Result:=AddFiles2Po(Files, POFilename);
+    
+    try
+      UpdatePoFile(Files, POFilename);
+      Result := mrOk;
+    except
+      on E:EPOFileError do begin
+        IDEMessageDialog(lisCCOErrorCaption, Format(lisErrorLoadingFrom,
+          [ 'Update PO file '+E.POFileName, #13, E.ResFileName, #13#13,
+          E.Message]), mtError, [mbOk]);
+      end;
+    end;
+    
   finally
     Files.Destroy;
   end;
