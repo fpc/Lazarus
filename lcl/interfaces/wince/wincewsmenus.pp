@@ -382,7 +382,7 @@ begin
     MenuInfo.fType := MenuInfo.fType or Flag
   else
     MenuInfo.fType := MenuInfo.fType and (not Flag);
-  wCaption := AMenuItem.Caption;
+  wCaption := UTF8Decode(AMenuItem.Caption);
   {$ifdef win32}
   MenuInfo.dwTypeData := PChar(PWideChar(wCaption));
   {$else}
@@ -399,7 +399,7 @@ var
   MenuInfo: MENUITEMINFO;
   wCaption: WideString;
 begin
-  wCaption := ACaption;
+  wCaption := UTF8Decode(ACaption);
   with MenuInfo do
   begin
     cbsize := menuiteminfosize;
@@ -476,7 +476,7 @@ begin
       fState := (fState xor MF_STRING) or MF_SEPARATOR;
   end;
 
-  wCaption := AmenuItem.Caption;
+  wCaption := UTF8Decode(AmenuItem.Caption);
   Index := AMenuItem.Parent.VisibleIndexOf(AMenuItem);
 
   if not InsertMenuW(ParentMenuHandle, Index, fState, cmd, PWideChar(wCaption)) then
