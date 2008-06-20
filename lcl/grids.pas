@@ -1205,6 +1205,7 @@ type
     property DragKind;
     property DragMode;
     property Enabled;
+    property ExtendedSelect;
     property FixedColor;
     property FixedCols;
     property FixedRows;
@@ -1227,6 +1228,7 @@ type
     property TabStop;
     property TitleFont;
     property TitleStyle;
+    property UseXORFeatures;
     property Visible;
     property VisibleColCount;
     property VisibleRowCount;
@@ -1391,6 +1393,7 @@ type
     property DragKind;
     property DragMode;
     property Enabled;
+    property ExtendedSelect;
     property FixedColor;
     property FixedCols;
     property FixedRows;
@@ -1413,6 +1416,7 @@ type
     property TabStop;
     property TitleFont;
     property TitleStyle;
+    property UseXORFeatures;
     property Visible;
     property VisibleColCount;
     property VisibleRowCount;
@@ -4800,7 +4804,7 @@ begin
                   GridFlags := GridFlags + [gfNeedsSelectActive];
 
                 FPivot:=FSplitter;
-                
+
               end;
             end;
 
@@ -6119,7 +6123,11 @@ begin
     OnSelectEditor(Self, fCol, FRow, aEditor);
   end;
   if aEditor<>Editor then
+    begin
     Editor:=aEditor;
+    EditorPos;
+    EditorDoSetValue;
+    end;
 end;
 
 function TCustomGrid.EditorAlwaysShown: Boolean;
