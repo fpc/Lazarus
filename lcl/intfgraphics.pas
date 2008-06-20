@@ -5086,20 +5086,21 @@ end;
 procedure TLazReaderPNG.DoDecompress;
 var
   Desc: TRawImageDescription;
+  IsAlpha, IsGray: Boolean;
 begin
   if FUpdateDescription and (theImage is TLazIntfImage)
   then begin
     // init some default
     Desc.Init_BPP32_B8G8R8A8_BIO_TTB(Header.Width, Header.height);
 
-    // check grayscale
-    if Header.ColorType and 3 = 0
+    IsGray := Header.ColorType and 3 = 0;
+    IsAlpha := (Header.ColorType and 4 = 0) and not FAlphaPalette;
+
+    if IsGray
     then Desc.Format := ricfGray;
-    
-    // check alpha
-    if (Header.ColorType and 4 = 0) and not FAlphaPalette
+    if IsAlpha
     then Desc.AlphaPrec := 0;
-    
+
     // check palette
     if (Header.ColorType and 1 <> 0)
     then begin
@@ -5107,7 +5108,12 @@ begin
     end
     else begin
       // no palette, adjust description
-      Desc.Depth := Header.BitDepth;
+      if IsGray
+      then Desc.Depth := Header.BitDepth
+      else if IsAlpha
+      then Desc.Depth := 4 * Header.BitDepth
+      else Desc.Depth := 3 * Header.BitDepth;
+
       case Header.BitDepth of
         1,2,4: begin
           // only gray
@@ -5119,6 +5125,7 @@ begin
           // no change
         end;
         16: begin
+          Desc.BitsPerPixel := Desc.Depth;
           Desc.RedPrec := 16;
           Desc.RedShift := Desc.RedShift * 2;
           Desc.GreenPrec := 16;
