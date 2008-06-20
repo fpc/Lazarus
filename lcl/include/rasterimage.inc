@@ -167,8 +167,6 @@ begin
 end;
 
 function TRasterImage.CanShareImage(AClass: TSharedRasterImageClass): Boolean;
-var
-  SharedClass: TSharedRasterImageClass;
 begin
   // We only can share images of the same type.
   // And if we are some "end" graphic type
@@ -399,7 +397,7 @@ end;
 
 function TRasterImage.GetTransparent: Boolean;
 begin
-  {$note add better check for transparency }
+  {$IFDEF VerboseLCLTodos}{$note add better check for transparency}{$ENDIF}
   // MWE: now tharansparency is set when a maskhandle is assigned, the user can
   // override this by setting it to false, so no mask is used,
   // however this meganism ignores the possible alpha channel, so for now 32bit
@@ -427,7 +425,7 @@ end;
 
 function TRasterImage.GetMimeType: string;
 begin
-  {$note: implement}
+  {$IFDEF VerboseLCLTodos}{$note: implement}{$ENDIF}
 
   (*
   if (ClassType=TBitmap) or (ClassType=TPixmap) or (ClassType=TCustomIcon) then begin
@@ -463,7 +461,7 @@ end;
 
 procedure TRasterImage.LoadFromMimeStream(AStream: TStream; const AMimeType: string);
 begin
-{$note Make oo}
+  {$IFDEF VerboseLCLTodos}{$note Make oo}{$ENDIF}
   if (ClassType=TBitmap) or (ClassType=TPixmap) or (ClassType=TCustomIcon) then begin
     if (AnsiCompareText(AMimeType,PredefinedClipboardMimeTypes[pcfBitmap])=0)
     or (AnsiCompareText(AMimeType,PredefinedClipboardMimeTypes[pcfDelphiBitmap])=0)
@@ -547,7 +545,6 @@ end;
 procedure TRasterImage.SaveStreamNeeded;
 var
   WorkStream: TMemoryStream;
-  OldPos, NewSize: Int64;
 begin
   if FSharedImage.SaveStream <> nil then Exit;
   
@@ -565,7 +562,7 @@ end;
 
 function TRasterImage.CreateIntfImage: TLazIntfImage;
 begin
-  {$note todo: create based on rawimage}
+  {$IFDEF VerboseLCLTodos}{$note todo: create based on rawimage}{$ENDIF}
   Result := TLazIntfImage.Create(0,0);
   Result.LoadFromBitmap(BitmapHandle, MaskHandle);
 end;
@@ -590,7 +587,7 @@ begin
     Exit;
   end;
   
-  {$note todo: move to IntfImage}
+  {$IFDEF VerboseLCLTodos}{$note todo: move to IntfImage}{$ENDIF}
   IntfImage := TLazIntfImage.Create(0, 0);
   try
     // load from bitmap needs a mask handle otherwise no mask description is

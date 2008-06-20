@@ -1395,7 +1395,6 @@ type
 
   TIconImage = class
   private
-    FOwner: TSharedIcon;
     FHeight: Word;
     FPixelFormat: TPixelFormat;
     FWidth: Word;

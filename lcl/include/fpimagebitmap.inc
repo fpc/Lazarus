@@ -34,10 +34,7 @@ begin
 end;
 
 function TFPImageBitmap.GetMimeType: string;
-begin
-
-{$note implement}
-(*
+{$IFDEF VerboseLCLTodos}{$note implement}{$ENDIF}
 var
   DefaultFileExt: String;
   i: Integer;
@@ -49,7 +46,6 @@ begin
   if i<=length(DefaultFileExt) then
     DefaultFileExt:=copy(DefaultFileExt,1,i);
   Result:='image/'+DefaultFileExt;
-*)
 end;
 
 procedure TFPImageBitmap.InitializeReader(AImage: TLazIntfImage; AReader: TFPCustomImageReader);

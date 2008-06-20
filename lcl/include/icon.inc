@@ -114,7 +114,7 @@ end;
 
 function TSharedIcon.GetIndex(AFormat: TPixelFormat; AHeight, AWidth: Word): Integer;
 var
-  List: TFPList;
+  //List: TFPList;
   Image: TIconImage;
 begin
   for Result := 0 to FImages.Count -1 do
@@ -349,7 +349,7 @@ end;
 
 procedure TCustomIcon.HandleNeeded;
 begin
-  {$note TODO implement some WSclass call}
+  {$IFDEF VerboseLCLTodos}{$note TODO implement some WSclass call}{$ENDIF}
 end;
 
 function TCustomIcon.InternalReleaseBitmapHandle: HBITMAP;
@@ -620,7 +620,7 @@ end;
 
 procedure TCustomIcon.SetHandles(ABitmap, AMask: HBITMAP);
 begin
-  {$note Implement me (or raise exception)}
+  {$IFDEF VerboseLCLTodos}{$note Implement me (or raise exception)}{$ENDIF}
 end;
 
 procedure TCustomIcon.SetPixelFormat(AValue: TPixelFormat);
@@ -646,6 +646,7 @@ begin
     NewIcon.Reference;
     if CopyContent
     then begin
+      OldIcon := FSharedImage as TSharedIcon;
       for n := 0 to OldIcon.FImages.Count -1 do
       begin
         OldImage := TIconImage(OldIcon.FImages[n]);
@@ -671,7 +672,6 @@ begin
           Move(OldImage.FImage.Palette^, NewImage.FImage.Palette^, NewImage.FImage.PaletteSize);
         end;
       end;
-
     end;
     FreeCanvasContext;
     OldIcon := FSharedImage as TSharedIcon;
@@ -687,7 +687,7 @@ end;
 
 procedure TCustomIcon.UpdateCurrentView;
 begin
-  {$note implement me}
+  {$IFDEF VerboseLCLTodos}{$note implement me}{$ENDIF}
 end;
 
 function TCustomIcon.UpdateHandles(ABitmap, AMask: HBITMAP): Boolean;
@@ -706,7 +706,7 @@ end;
 
 procedure TCustomIcon.WriteStream(AStream: TMemoryStream);
 begin
-  {$note implement me}
+  {$IFDEF VerboseLCLTodos}{$note implement me}{$ENDIF}
 end;
 
 ////////////////////////////////////////////////////////////////////////////////
