@@ -67,7 +67,7 @@ cp -arf $SrcDir/* $BuildRoot/usr/lib/lazarus/
     ln -sf /usr/lib/lazarus/lazarus usr/bin/lazarus-ide
     ln -sf /usr/lib/lazarus/startlazarus usr/bin/startlazarus
     ln -sf /usr/lib/lazarus/lazbuild usr/bin/lazbuild
-    cat $SrcDir/docs/lazbuild.1 | gzip > $BuildRoot/usr/man/man1/lazbuild.1.gz
+    cat $SrcDir/install/man/man1/lazbuild.1 | gzip > $BuildRoot/usr/man/man1/lazbuild.1.gz
 
 /sbin/makepkg -l y -c y /tmp/lazarus-$LazVersion-i486-$LazRelease.tgz
 cd

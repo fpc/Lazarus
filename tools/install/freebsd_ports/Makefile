@@ -135,7 +135,7 @@ IGNORE=	requires fpc ${FPC_MINVER} or above. Please upgrade
 
 post-extract:
 	@${MKDIR} ${WRKDIR}/man1
-	@${MV} ${WRKSRC}/docs/lazbuild.1 ${WRKDIR}/man1
+	@${MV} ${WRKSRC}/install/man/man1/lazbuild.1 ${WRKDIR}/man1
 	@${MV} ${WRKSRC}/examples ${WRKDIR}/examples
 	@${MV} ${WRKSRC}/docs ${WRKDIR}/docs
 
