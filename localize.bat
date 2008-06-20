@@ -80,11 +80,6 @@ tools\updatepofiles lcl\languages\lclstrconsts.po
 rstconv -c UTF-8 -i %CGI_RST% -o components\cgi\languages\cgimodules.po
 tools\updatepofiles components\cgi\languages\cgimodules.po
 
-@REM MemDS
-@set MemDS_RST=components\memds\lib\%ArchOS%\frmselectdataset.rst
-rstconv -c UTF-8 -i %MemDS_RST% -o components\memds\languages\frmselectdataset.po
-tools\updatepofiles components\memds\languages\frmselectdataset.po
-
 @REM Printers
 @set Printers_RST=components\printers\design\lib\%ArchOS%\ideprinting.rst
 rstconv -c UTF-8 -i %Printers_RST% -o components\printers\design\languages\ideprinting.po
@@ -102,20 +97,6 @@ tools\updatepofiles components\projecttemplates\languages\idetemplateproject.po
 @set ProjectTemplates_RST=components\projecttemplates\lib\%ArchOS%\projecttemplates.rst
 rstconv -c UTF-8 -i %ProjectTemplates_RST% -o components\projecttemplates\languages\projecttemplates.po
 tools\updatepofiles components\projecttemplates\languages\projecttemplates.po
-
-@REM TDBF
-@set TDBF_RST=components\tdbf\lib\%ArchOS%\registerdbf.rst
-rstconv -c UTF-8 -i %TDBF_RST% -o components\tdbf\languages\registerdbf.po
-tools\updatepofiles components\tdbf\languages\registerdbf.po
-
-@REM TP_IPro
-@set TP_IPro_RST=components\turbopower_ipro\units\%ArchOS%\ipconst.rst
-rstconv -c UTF-8 -i %TP_IPro_RST% -o components\turbopower_ipro\languages\ipconst.po
-tools\updatepofiles components\turbopower_ipro\languages\ipconst.po
-
-@set TP_IPro_RST=components\turbopower_ipro\units\%ArchOS%\iputils.rst
-rstconv -c UTF-8 -i %TP_IPro_RST% -o components\turbopower_ipro\languages\iputils.po
-tools\updatepofiles components\turbopower_ipro\languages\iputils.po
 
 @REM MessageComposer
 @set MessageComposer_RST=components\messagecomposer\lib\%ArchOS%\messagecomposer.rst
