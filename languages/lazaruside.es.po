@@ -9647,6 +9647,10 @@ msgstr "Topes"
 msgid "Trim trailing spaces"
 msgstr "Quitar espacios sobrantes"
 
+#: lazarusidestrconsts:rslanguageturkish
+msgid "Turkish"
+msgstr ""
+
 #: lazarusidestrconsts:lismenutemplatetutorial
 msgid "Tutorial"
 msgstr "Tutorial"

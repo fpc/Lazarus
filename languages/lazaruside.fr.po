@@ -9650,6 +9650,10 @@ msgstr "Hauts"
 msgid "Trim trailing spaces"
 msgstr "Enlever les espaces à la fin"
 
+#: lazarusidestrconsts:rslanguageturkish
+msgid "Turkish"
+msgstr ""
+
 #: lazarusidestrconsts:lismenutemplatetutorial
 msgid "Tutorial"
 msgstr "Tutorial"

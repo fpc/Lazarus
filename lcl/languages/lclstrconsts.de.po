@@ -4,7 +4,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-12-13 18:11+0100\n"
+"PO-Revision-Date: 2008-06-19 16:21+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -22,7 +22,7 @@ msgstr "  Größe "
 
 #: lclstrconsts:sparlocinfo
 msgid " (at %d,%d, stream offset %.8x)"
-msgstr ""
+msgstr " (bei %d,%d, Stream-Offset %.8x)"
 
 #: lclstrconsts:rswarningunreleasedtimerinfos
 msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
@@ -506,7 +506,7 @@ msgstr "Ungültige Action-Registierungsaufhebung"
 
 #: lclstrconsts:sparinvalidfloat
 msgid "Invalid floating point number: %s"
-msgstr ""
+msgstr "Ungültige Gleitkommazahl: %s"
 
 #: lclstrconsts:sinvalidimagesize
 msgid "Invalid image size"
@@ -514,7 +514,7 @@ msgstr "Ungültige Bildgröße"
 
 #: lclstrconsts:sparinvalidinteger
 msgid "Invalid integer number: %s"
-msgstr ""
+msgstr "Ungültiger Integerzahl: %s"
 
 #: lclstrconsts:rsinvalidpropertyvalue
 msgid "Invalid property value"
@@ -814,11 +814,11 @@ msgstr "Nicht unterstütztes Clipboard-Format: %s"
 
 #: lclstrconsts:sparunterminatedbinvalue
 msgid "Unterminated byte value"
-msgstr ""
+msgstr "Nicht abgeschlossener Byte-Wert"
 
 #: lclstrconsts:sparunterminatedstring
 msgid "Unterminated string"
-msgstr ""
+msgstr "Nicht abgeschlossene Zeichenkette "
 
 #: lclstrconsts:ifsvk_up
 msgid "Up"
@@ -838,15 +838,15 @@ msgstr "Nur ganze Worte"
 
 #: lclstrconsts:sparwrongtokensymbol
 msgid "Wrong token symbol: %s expected but %s found"
-msgstr ""
+msgstr "Falscher Token: %s erwartet, %s gefunden"
 
 #: lclstrconsts:sparexpected
 msgid "Wrong token type: %s expected"
-msgstr ""
+msgstr "Falscher Token-Typ: %s erwartet"
 
 #: lclstrconsts:sparwrongtokentype
 msgid "Wrong token type: %s expected but %s found"
-msgstr ""
+msgstr "Falscher Token-Typ: %s erwartet, %s gefunden"
 
 #: lclstrconsts:rsmbyestoall
 msgid "Yes to &All"

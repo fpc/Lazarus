@@ -9652,6 +9652,10 @@ msgstr "上方"
 msgid "Trim trailing spaces"
 msgstr "修剪行尾空格"
 
+#: lazarusidestrconsts:rslanguageturkish
+msgid "Turkish"
+msgstr ""
+
 #: lazarusidestrconsts:lismenutemplatetutorial
 msgid "Tutorial"
 msgstr "指南"

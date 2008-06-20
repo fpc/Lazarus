@@ -9648,6 +9648,10 @@ msgstr "上端："
 msgid "Trim trailing spaces"
 msgstr "末尾の空白を削除"
 
+#: lazarusidestrconsts:rslanguageturkish
+msgid "Turkish"
+msgstr ""
+
 #: lazarusidestrconsts:lismenutemplatetutorial
 msgid "Tutorial"
 msgstr "チュートリアル"

@@ -6628,6 +6628,10 @@ msgstr ""
 msgid "Slovak"
 msgstr ""
 
+#: lazarusidestrconsts:rslanguageturkish
+msgid "Turkish"
+msgstr ""
+
 #: lazarusidestrconsts:dlgunitdepcaption
 msgid "Unit dependencies"
 msgstr ""

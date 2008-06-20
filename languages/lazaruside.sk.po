@@ -9652,6 +9652,10 @@ msgstr "Horné okraje"
 msgid "Trim trailing spaces"
 msgstr "Odstrániť zvyšné medzery"
 
+#: lazarusidestrconsts:rslanguageturkish
+msgid "Turkish"
+msgstr ""
+
 #: lazarusidestrconsts:lismenutemplatetutorial
 msgid "Tutorial"
 msgstr "Príručka"

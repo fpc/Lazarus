@@ -9650,6 +9650,10 @@ msgstr "Sutapdinti viršutinius kraštus"
 msgid "Trim trailing spaces"
 msgstr "Eilučių galuose pašalinti tarpo simbolius"
 
+#: lazarusidestrconsts:rslanguageturkish
+msgid "Turkish"
+msgstr ""
+
 #: lazarusidestrconsts:lismenutemplatetutorial
 msgid "Tutorial"
 msgstr "Pavyzdys"

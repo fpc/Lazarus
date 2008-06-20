@@ -10,43 +10,43 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: messagecomposer:smessagecomposercaption
-msgid "Message Composer ..."
-msgstr "Pranešimų rengyklė ..."
-
-#: messagecomposer:smsgcaption
-msgid "The message to be shown"
-msgstr "Rodomas pranešimas"
-
-#: messagecomposer:spromptcaption
-msgid "Text asking the user for input"
-msgstr "Tekstas, kviečiantis įvesti"
-
-#: messagecomposer:smaskinput
-msgid "Mask Input"
-msgstr "Įvestis pagal kaukę"
-
-#: messagecomposer:ssourcewrapper
-msgid "SOURCE WRAPPER"
-msgstr "Pirminio kodo formuotojas"
+#: messagecomposer:rscancel
+msgid "Cancel"
+msgstr "Atsisakyti"
 
 #: messagecomposer:skindofmessage
 msgid "KIND OF MESSAGE"
 msgstr "Pranešimo tipas"
 
+#: messagecomposer:smaskinput
+msgid "Mask Input"
+msgstr "Įvestis pagal kaukę"
+
+#: messagecomposer:smessagecomposercaption
+msgid "Message Composer ..."
+msgstr "Pranešimų rengyklė ..."
+
 #: messagecomposer:snotimplementedyet
 msgid "Not Implemented Yet"
 msgstr "Dar neįgyvendinta"
-
-#: messagecomposer:rstest
-msgid "Test"
-msgstr "Testas"
 
 #: messagecomposer:rsok
 msgid "Ok"
 msgstr "Tinka"
 
-#: messagecomposer:rscancel
-msgid "Cancel"
-msgstr "Atsisakyti"
+#: messagecomposer:ssourcewrapper
+msgid "SOURCE WRAPPER"
+msgstr "Pirminio kodo formuotojas"
+
+#: messagecomposer:rstest
+msgid "Test"
+msgstr "Testas"
+
+#: messagecomposer:spromptcaption
+msgid "Text asking the user for input"
+msgstr "Tekstas, kviečiantis įvesti"
+
+#: messagecomposer:smsgcaption
+msgid "The message to be shown"
+msgstr "Rodomas pranešimas"
 

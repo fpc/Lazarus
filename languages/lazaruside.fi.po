@@ -9644,6 +9644,10 @@ msgstr "Yläreunat"
 msgid "Trim trailing spaces"
 msgstr "Poista turhat välilyönnit rivinlopusta"
 
+#: lazarusidestrconsts:rslanguageturkish
+msgid "Turkish"
+msgstr ""
+
 #: lazarusidestrconsts:lismenutemplatetutorial
 msgid "Tutorial"
 msgstr ""

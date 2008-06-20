@@ -9649,6 +9649,10 @@ msgstr "Atas"
 msgid "Trim trailing spaces"
 msgstr "Hapus sisa spasi"
 
+#: lazarusidestrconsts:rslanguageturkish
+msgid "Turkish"
+msgstr ""
+
 #: lazarusidestrconsts:lismenutemplatetutorial
 msgid "Tutorial"
 msgstr "Tutorial"

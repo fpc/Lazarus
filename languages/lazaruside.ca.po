@@ -9649,6 +9649,10 @@ msgstr "Límits superiors"
 msgid "Trim trailing spaces"
 msgstr "Suprimeix els espais finals"
 
+#: lazarusidestrconsts:rslanguageturkish
+msgid "Turkish"
+msgstr ""
+
 #: lazarusidestrconsts:lismenutemplatetutorial
 msgid "Tutorial"
 msgstr "Programa d'aprenentatge"

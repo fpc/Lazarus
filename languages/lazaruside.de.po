@@ -9652,6 +9652,10 @@ msgstr "Obere Kanten"
 msgid "Trim trailing spaces"
 msgstr "Zurechtschneiden überflüssiger Leerzeichen"
 
+#: lazarusidestrconsts:rslanguageturkish
+msgid "Turkish"
+msgstr ""
+
 #: lazarusidestrconsts:lismenutemplatetutorial
 msgid "Tutorial"
 msgstr "Einführung"

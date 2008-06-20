@@ -9644,6 +9644,10 @@ msgstr "Вершини"
 msgid "Trim trailing spaces"
 msgstr "Обрізати кінцеві пробіли"
 
+#: lazarusidestrconsts:rslanguageturkish
+msgid "Turkish"
+msgstr ""
+
 #: lazarusidestrconsts:lismenutemplatetutorial
 msgid "Tutorial"
 msgstr "Посібник"

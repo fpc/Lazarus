@@ -22,11 +22,11 @@ msgstr ""
 
 #: messagecomposer:smaskinput
 msgid "Mask Input"
-msgstr ""
+msgstr "Maskeneingabe"
 
 #: messagecomposer:smessagecomposercaption
 msgid "Message Composer ..."
-msgstr ""
+msgstr "Message-Composer ..."
 
 #: messagecomposer:snotimplementedyet
 msgid "Not Implemented Yet"
@@ -46,7 +46,7 @@ msgstr "Test"
 
 #: messagecomposer:spromptcaption
 msgid "Text asking the user for input"
-msgstr "Text um nach einer Eingabe zu fragen+"
+msgstr "Text um nach einer Eingabe zu fragen"
 
 #: messagecomposer:smsgcaption
 msgid "The message to be shown"
