@@ -359,22 +359,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  CreateCursor
-  Params:  ACursorInfo - Cursor info as in win32
-  Returns: Handle to a cursor
-
-  Creates a cursor from bitmap and mask
- ------------------------------------------------------------------------------}
-function TCarbonWidgetSet.CreateCursor(ACursorInfo: PIconInfo): HCURSOR;
-begin
-  {$IFDEF VerboseWinAPI}
-    DebugLn('TCarbonWidgetSet.CreateCursor');
-  {$ENDIF}
-  
-  Result := HCURSOR(TCarbonCursor.CreateFromInfo(ACursorInfo));
-end;
-
-{------------------------------------------------------------------------------
   Method:  CreateFontIndirect
   Params:  LogFont - Font characteristics
   Returns: Handle to the font
@@ -406,6 +390,29 @@ begin
   {$ENDIF}
   
   Result := HFONT(TCarbonFont.Create(LogFont, LongFontName));
+end;
+
+{------------------------------------------------------------------------------
+  Method:  CreateIconIndirect
+  Params:  IconInfo - Icon/Cursor info as in win32
+  Returns: Handle to a icon/cursor
+
+  Creates an icon / cursor from bitmap and mask
+ ------------------------------------------------------------------------------}
+function TCarbonWidgetSet.CreateIconIndirect(IconInfo: PIconInfo): HICON;
+begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.CreateIconIndirect');
+  {$ENDIF}
+
+  Result := 0;
+  if IconInfo^.hbmColor = 0 then
+    Exit;
+  
+  if IconInfo^.fIcon then
+    Result := HICON(TCarbonBitmap.Create(TCarbonBitmap(IconInfo^.hbmColor)))
+  else
+    Result := HICON(TCarbonCursor.CreateFromInfo(IconInfo));
 end;
 
 function TCarbonWidgetSet.CreatePalette(const LogPalette: TLogPalette
@@ -568,22 +575,23 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  DestroyCursor
-  Params:  Handle - Handle to cursor
+  Method:  DestroyIcon
+  Params:  Handle - Handle to icon/cursor
   Returns: If the function succeeds
 
-  Destroy previously created cursor
+  Destroy previously created icon/cursor
  ------------------------------------------------------------------------------}
-function TCarbonWidgetSet.DestroyCursor(Handle: HCURSOR): Boolean;
+function TCarbonWidgetSet.DestroyIcon(Handle: HICON): Boolean;
 begin
   Result := False;
 
   {$IFDEF VerboseWinAPI}
-    DebugLn('TCarbonWidgetSet.DestroyCursor Handle: ' + DbgS(Handle));
+    DebugLn('TCarbonWidgetSet.DestroyIcon Handle: ' + DbgS(Handle));
   {$ENDIF}
   
-  if not CheckCursor(Handle, 'DestroyCursor') then Exit;
-  TCarbonCursor(Handle).Free;
+  if (TObject(Handle) is TCarbonBitmap) or
+     (TObject(Handle) is TCarbonCursor) then 
+    TObject(Handle).Free;
 end;
 
 {------------------------------------------------------------------------------
