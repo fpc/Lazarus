@@ -28,9 +28,9 @@ interface
 
 uses
   {$IFDEF GTK2}
-  Gtk2, Glib2, gdk2,
+  Gtk2, Glib2, Gdk2, Gdk2Pixbuf,
   {$ELSE}
-  Gtk, gdk, Glib, X, Xlib,
+  Gtk, Glib, Gdk, GdkPixbuf, X, Xlib,
   {$ENDIF}
   SysUtils, Classes, LCLProc, LCLType, Controls, LMessages, InterfaceBase,
   Graphics, Dialogs,Forms, Math,
@@ -408,20 +408,25 @@ end;
 
 class procedure TGtkWSCustomForm.SetIcon(const AForm: TCustomForm; const AIcon: HICON);
 var
-  GdiObject: PGdiObject;
+  APixbuf: PGdkPixbuf;
   Window: PGdkWindow;
+  Image: PGdkPixmap;
+  Mask: PGdkBitmap;
 begin
   if not WSCheckHandleAllocated(AForm, 'SetIcon')
   then Exit;
 
   if AForm.Parent <> nil then Exit;
-  if AIcon = 0 then Exit;
 
   Window := GetControlWindow(PGtkWidget(AForm.Handle));
   if Window = nil then Exit;
 
-  GdiObject := PGdiObject(AIcon);
-  gdk_window_set_icon(Window, nil, GdiObject^.GDIPixmapObject.Image, GdiObject^.GDIPixmapObject.Mask);
+  APixbuf := PGdkPixbuf(AIcon);
+  Image := nil;
+  Mask := nil;
+  if APixbuf <> nil then
+    gdk_pixbuf_render_pixmap_and_mask(APixbuf, Image, Mask, $80);
+  gdk_window_set_icon(Window, nil, Image, Mask);
 end;
 
 class procedure TGtkWSCustomForm.SetShowInTaskbar(const AForm: TCustomForm;

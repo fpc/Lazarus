@@ -28,7 +28,7 @@ interface
 
 uses
   // Bindings
-  Gtk2, Glib2, gdk2,
+  Gtk2, Glib2, Gdk2, Gdk2Pixbuf,
   // RTL, FCL, LCL
   SysUtils, Classes, LCLProc, LCLType, Controls, LMessages, InterfaceBase,
   Graphics, Dialogs,Forms, Math,
@@ -80,6 +80,7 @@ type
     class procedure SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); override;
   public
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure SetIcon(const AForm: TCustomForm; const AIcon: HICON); override;
 
 {    class function GetDefaultClientRect(const AWinControl: TWinControl;
              const aLeft, aTop, aWidth, aHeight: integer; var aClientRect: TRect
@@ -234,6 +235,39 @@ begin
   Result := TLCLIntfHandle(PtrUInt(P));
   Set_RC_Name(AWinControl, P);
   SetCallbacks(P, WidgetInfo);
+end;
+
+class procedure TGtk2WSCustomForm.SetIcon(const AForm: TCustomForm;
+  const AIcon: HICON);
+{$ifdef windows}
+var
+  Old8087CW: Word;
+
+procedure SetCW;
+begin
+  Old8087CW := Get8087CW;
+  Set8087CW($133F);
+end;
+
+procedure ResetCW;
+begin
+  Set8087CW(Old8087CW);
+end;
+{$endif}
+
+begin
+  if not WSCheckHandleAllocated(AForm, 'SetIcon')
+  then Exit;
+
+  if AForm.Parent <> nil then Exit;
+
+  {$ifdef windows}
+  SetCW;
+  {$endif}
+  gtk_window_set_icon(PGtkWindow(AForm.Handle), PGdkPixbuf(AIcon));
+  {$ifdef windows}
+  ResetCW;
+  {$endif}
 end;
 
 {class function TGtk2WSCustomForm.GetDefaultClientRect(

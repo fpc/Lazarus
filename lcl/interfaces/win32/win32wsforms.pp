@@ -335,8 +335,6 @@ begin
   SetStdBiDiModeParams(AWinControl, Params);
   // create window
   FinishCreateWindow(AWinControl, Params, false);
-  // TODO: proper icon, for now set default icon
-  SetIcon(TCustomForm(AWinControl), 0);
 
   Result := Params.Window;
 end;
@@ -417,29 +415,19 @@ begin
 end;
 
 class procedure TWin32WSCustomForm.SetIcon(const AForm: TCustomForm; const AIcon: HICON);
-var
-  winHandle: HWND;
-  iconHandle: HICON;
 begin
-  winHandle := AForm.Handle;
-  if GetDesigningBorderStyle(AForm) = bsDialog then
-    iconHandle := 0
-{ TODO: fix icon handling
-  else
-  if AIcon <> 0 then
-    iconHandle := AIcon
-}
-  else
-    iconHandle := Windows.LoadIcon(MainInstance, 'MAINICON');
-  SendMessage(winHandle, WM_SETICON, ICON_BIG, LPARAM(iconHandle));
+  if not WSCheckHandleAllocated(AForm, 'SetIcon') then
+    Exit;
+  SendMessage(AForm.Handle, WM_SETICON, ICON_BIG, LPARAM(AIcon));
 end;
 
 class procedure TWin32WSCustomForm.SetShowInTaskbar(const AForm: TCustomForm;
   const AValue: TShowInTaskbar);
 begin
-  if not AForm.HandleAllocated then exit;
+  if not WSCheckHandleAllocated(AForm, 'SetShowInTaskbar') then
+    Exit;
   if (Application <> nil) and (AForm = Application.MainForm) then
-    exit;
+    Exit;
 
   RecreateWnd(AForm);
 end;

@@ -32,7 +32,7 @@ uses
   SysUtils, Controls, LCLType, Forms, InterfaceBase,
   // Widgetset
   winceproc, wincewscontrols,
-  WSForms, WSLCLClasses;
+  WSForms, WSProc, WSLCLClasses;
 
 type
 
@@ -338,8 +338,6 @@ begin
   
   // create window
   FinishCreateWindow(AWinControl, Params, false);
-  // TODO: proper icon, for now set default icon
-  SetIcon(TCustomForm(AWinControl), 0);
   Result := Params.Window;
 
   {$ifdef VerboseWinCE}
@@ -411,29 +409,20 @@ begin
 end;
 
 class procedure TWinCEWSCustomForm.SetIcon(const AForm: TCustomForm; const AIcon: HICON);
-var
-  winHandle: HWND;
   iconHandle: HICON;
 begin
-  winHandle := AForm.Handle;
-  if AForm.BorderStyle = bsDialog then
-    iconHandle := 0
-{ TODO: fix icon handling
-  else
-  if AIcon <> 0 then
-    iconHandle := AIcon
-}
-  else
-    iconHandle := Windows.LoadIcon(MainInstance, 'MAINICON');
-  SendMessage(winHandle, WM_SETICON, ICON_BIG, iconHandle);
+  if not WSCheckHandleAllocated(AForm, 'SetIcon') then
+    Exit;
+  SendMessage(AForm.Handle, WM_SETICON, ICON_BIG, LPARAM(AIcon));
 end;
 
 class procedure TWinCEWSCustomForm.SetShowInTaskbar(const AForm: TCustomForm;
   const AValue: TShowInTaskbar);
 begin
-  if not AForm.HandleAllocated then exit;
+  if not WSCheckHandleAllocated(AForm, 'SetShowInTaskbar') then
+    Exit;
   if (Application <> nil) and (AForm = Application.MainForm) then
-    exit;
+    Exit;
 
   RecreateWnd(AForm);
 end;
