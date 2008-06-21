@@ -206,7 +206,7 @@ begin
           // Paul: can it be not TBitmap at all?
           if (ABitmap is TBitmap) then
           begin
-            if ((CompareText(Ext, '.xpm') = 0) or (CompareText(Ext, '.bmp') = 0)) then
+            if (CompareText(Ext, '.bmp') = 0) then
               ABitmap.LoadFromFile(TheDialog.FileName)
             else
               ABitmap.Assign(TheDialog.Preview.Picture.Graphic);
