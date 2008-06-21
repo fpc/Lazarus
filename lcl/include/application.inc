@@ -104,7 +104,8 @@ begin
   FShowMainForm := true;
   FFormList := nil;
   FOnIdle := nil;
-  FIcon := nil;
+  FIcon := TIcon.Create;
+  FIcon.OnChange := @IconChanged;
   FNavigation := [anoTabToSelectNext,anoReturnForDefaultControl,
                   anoEscapeForCancelControl,anoF1ForHelp];
   ApplicationActionComponent:=Self;
@@ -347,13 +348,8 @@ begin
   ScreenInfo.Initialized:=true;
   Screen.UpdateScreen;
   // application icon
-  if LazarusResources.Find('MAINICON')<>nil then begin
-    if FIcon=nil then begin
-      FIcon:=TIcon.Create;
-      FIcon.OnChange := @IconChanged;
-    end;
-    FIcon.LoadFromLazarusResource('MAINICON');
-  end;
+  if LazarusResources.Find('MAINICON') <> nil then
+    Icon.LoadFromLazarusResource('MAINICON');
 end;
 
 {------------------------------------------------------------------------------
@@ -503,10 +499,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TApplication.SetIcon(AValue: TIcon);
 begin
-  if FIcon=nil then begin
-    FIcon:=TIcon.Create;
-    FIcon.OnChange := @IconChanged;
-  end;
   FIcon.Assign(AValue);
 end;
 
@@ -874,10 +866,13 @@ end;
   Method: TApplication.IconChanged
  ------------------------------------------------------------------------------}
 procedure TApplication.IconChanged(Sender: TObject);
+var
+  i: integer;
 begin
-  DebugLn('TApplication.IconChanged - TODO: convert this message...no implementation in gtk or win32');
-  // CNSendMessage(LM_SETFORMICON, Self, Pointer(GetIconHandle));
-  // NotifyForms(CM_ICONCHANGED);
+  Widgetset.AppSetIcon(GetIconHandle);
+  if FFormList<>nil then
+    for i :=0 to FFormList.Count - 1 do
+      TForm(FFormList[i]).Perform(CM_ICONCHANGED, 0, 0);
 end;
 
 {------------------------------------------------------------------------------
@@ -886,8 +881,8 @@ end;
  ------------------------------------------------------------------------------}
 function TApplication.GetIconHandle: HICON;
 begin
-  if FIcon <> nil then
-    Result := FIcon.Handle
+  if not Icon.Empty then
+    Result := Icon.Handle
   else
     Result := 0;
 end;

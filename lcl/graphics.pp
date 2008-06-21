@@ -1383,6 +1383,7 @@ type
   private
     FImages: TFPList;
   protected
+    procedure FreeHandle; override;
     class function GetImagesClass: TIconImageClass; virtual;
   public
     constructor Create; override;
@@ -1434,6 +1435,8 @@ type
   }
   
 
+  { TCustomIcon }
+
   TCustomIcon = class(TRasterImage)
   private
     FCurrent: Integer;
@@ -1465,6 +1468,7 @@ type
     constructor Create; override;
 
     procedure Add(AFormat: TPixelFormat; AHeight, AWidth: Word);
+    procedure Assign(Source: TPersistent); override;
     procedure Delete(Aindex: Integer);
     procedure Remove(AFormat: TPixelFormat; AHeight, AWidth: Word);
     procedure GetDescription(Aindex: Integer; out AFormat: TPixelFormat; out AHeight, AWidth: Word);
@@ -1485,6 +1489,7 @@ type
     function  GetIconHandle: HICON;
     procedure SetIconHandle(const AValue: HICON);
   protected
+    procedure HandleNeeded; override;
   public
     function ReleaseHandle: HICON;
     property Handle: HICON read GetIconHandle write SetIconHandle;

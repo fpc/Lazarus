@@ -82,6 +82,14 @@ end;
 
 { TSharedIcon }
 
+procedure TSharedIcon.FreeHandle;
+begin
+  if FHandle = 0 then Exit;
+
+  DestroyIcon(FHandle);
+  FHandle := 0;
+end;
+
 class function TSharedIcon.GetImagesClass: TIconImageClass;
 begin
   Result := TIconImage;
@@ -238,6 +246,13 @@ begin
     FCurrent := 0;
     UpdateCurrentView;
   end;
+end;
+
+procedure TCustomIcon.Assign(Source: TPersistent);
+begin
+  if Source is TCustomIcon then
+    FCurrent := TCustomIcon(Source).Current;
+  inherited Assign(Source);
 end;
 
 function TCustomIcon.BitmapHandleAllocated: boolean;
@@ -707,6 +722,18 @@ end;
 procedure TIcon.SetIconHandle(const AValue: HICON);
 begin
   SetHandle(AValue);
+end;
+
+procedure TIcon.HandleNeeded;
+var
+  IconInfo: TIconInfo;
+begin
+  if FSharedImage.FHandle <> 0 then Exit;
+
+  IconInfo.fIcon := True;
+  IconInfo.hbmMask := MaskHandle;
+  IconInfo.hbmColor := BitmapHandle;
+  FSharedImage.FHandle := WidgetSet.CreateIconIndirect(@IconInfo);
 end;
 
 

@@ -221,10 +221,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomForm.SetIcon(AValue: TIcon);
 begin
-  if FIcon=nil then begin
-    FIcon:=TIcon.Create;
-    FIcon.OnChange := @IconChanged;
-  end;
   FIcon.Assign(AValue);
 end;
 
@@ -252,7 +248,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomForm.GetIconHandle: HICON;
 begin
-  if (FIcon <> nil) and (not FIcon.Empty) then
+  if not FIcon.Empty then
     Result := FIcon.Handle
   else
     Result := Application.GetIconHandle;
@@ -552,6 +548,11 @@ begin
 //    if Components[i] is TMenu then
 //      TMenu(Components[i]).ParentBiDiModeChanged;
   end;
+end;
+
+procedure TCustomForm.CMIconChanged(var Message: TLMessage);
+begin
+  IconChanged(Self);
 end;
 
 procedure TCustomForm.AddHandler(HandlerType: TFormHandlerType;
@@ -1432,6 +1433,7 @@ begin
   Ctl3D := True;
   FWindowState := wsNormal;
   FIcon := TIcon.Create;
+  FIcon.OnChange := @IconChanged;
   FKeyPreview :=  False;
   Color := clBtnFace;
   FloatingDockSiteClass := TWinControlClass(ClassType);
@@ -1827,6 +1829,8 @@ begin
   
   // set allow drop files
   TWSCustomFormClass(WidgetSetClass).SetAllowDropFiles(Self, FAllowDropFiles);
+  // update icon
+  Perform(CM_ICONCHANGED, 0, 0);
   //DebugLn('TCustomForm.CreateWnd END ',ClassName);
 end;
 

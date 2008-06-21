@@ -442,6 +442,7 @@ type
     procedure WMShowWindow(var message: TLMShowWindow); message LM_SHOWWINDOW;
     procedure WMSize(var message: TLMSize); message LM_Size;
     procedure CMBiDiModeChanged(var Message: TLMessage); message CM_BIDIMODECHANGED;
+    procedure CMIconChanged(var Message: TLMessage); message CM_ICONCHANGED;
     procedure AddHandler(HandlerType: TFormHandlerType;
                          const Handler: TMethod; AsLast: Boolean);
     procedure RemoveHandler(HandlerType: TFormHandlerType;
