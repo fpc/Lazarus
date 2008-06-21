@@ -886,10 +886,10 @@ end;
  ------------------------------------------------------------------------------}
 function TApplication.GetIconHandle: HICON;
 begin
-  if FIcon<>nil then
+  if FIcon <> nil then
     Result := FIcon.Handle
   else
-    Result:=0;
+    Result := 0;
 end;
 
 {------------------------------------------------------------------------------

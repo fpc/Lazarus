@@ -91,6 +91,7 @@ type
     procedure AppMinimize; virtual; abstract;
     procedure AppRestore; virtual; abstract;
     procedure AppBringToFront; virtual; abstract;
+    procedure AppSetIcon(const AIcon: HICON); virtual;
     procedure AppSetTitle(const ATitle: string); virtual;
     
     function  LCLPlatform: TLCLPlatform; virtual; abstract;

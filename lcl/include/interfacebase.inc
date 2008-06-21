@@ -49,9 +49,13 @@ begin
   if Assigned(ALoop) then ALoop;
 end;
 
+procedure TWidgetSet.AppSetIcon(const AIcon: HICON);
+begin
+end;
+
 procedure TWidgetSet.AppSetTitle(const ATitle: string);
 begin
-  Debugln('TWidgetSet.AppSetTitle not implemented by ', ClassName);
+  Debugln('TWidgetSet.AppSetTitle is not implemented by ', ClassName);
 end;
 
 function TWidgetSet.LCLCapability(ACapability: TLCLCapability): PtrUInt;

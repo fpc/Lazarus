@@ -974,6 +974,14 @@ begin
   OSError(SetFrontProcess(Proc), Self, SName, 'SetFrontProcess');
 end;
 
+procedure TCarbonWidgetSet.AppSetIcon(const AIcon: HICON);
+begin
+  if AIcon <> 0 then
+    SetApplicationDockTileImage(TCarbonBitmap(AIcon).CGImage)
+  else
+    RestoreApplicationDockTileImage;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCarbonWidgetSet.AppSetTitle
   Params:  ATitle - New application title

@@ -390,6 +390,11 @@ begin
   Assert(False, 'Trace:TWin32WidgetSet.AppTerminate - Start');
 end;
 
+procedure TWin32WidgetSet.AppSetIcon(const AIcon: HICON);
+begin
+  SendMessage(Win32Widgetset.AppHandle, WM_SETICON, ICON_BIG, AIcon);
+end;
+
 procedure TWin32WidgetSet.AppSetTitle(const ATitle: string);
 begin
   {$ifdef WindowsUnicodeSupport}

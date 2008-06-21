@@ -252,8 +252,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomForm.GetIconHandle: HICON;
 begin
-  //DebugLn('[TCustomForm.GetIconHandle] ',ClassName,' ',FIcon<>nil);
-  if (FIcon<>nil) and (not Icon.Empty) then
+  if (FIcon <> nil) and (not FIcon.Empty) then
     Result := FIcon.Handle
   else
     Result := Application.GetIconHandle;

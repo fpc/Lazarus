@@ -217,7 +217,7 @@ begin
     TQtMainWindow(Application.MainForm.Handle).BringToFront;
 end;
 
-{procedure TQtWidgetSet.AppSetIcon(const AIcon: HICON);
+procedure TQtWidgetSet.AppSetIcon(const AIcon: HICON);
 var
   Icon: TQtIcon;
 begin
@@ -227,7 +227,7 @@ begin
   else
     QApplication_setWindowIcon(nil);
 end;
-}
+
 
 procedure TQtWidgetSet.AppSetTitle(const ATitle: string);
 var
