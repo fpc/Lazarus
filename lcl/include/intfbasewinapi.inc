@@ -129,11 +129,6 @@ begin
   Result := 0;
 end;
 
-function TWidgetSet.CreateCursor(ACursorInfo: PIconInfo): HCURSOR;
-begin
-  Result := CreateIconIndirect(ACursorInfo);
-end;
-
 function TWidgetSet.CreateDIBSection(DC: HDC;
   const BitmapInfo: tagBitmapInfo; Usage: UINT;
   var Bits: Pointer; SectionHandle: THandle; Offset: DWORD): HBITMAP;

@@ -100,7 +100,7 @@ begin
   IconInfo.yHotSpot := H.Y;
   IconInfo.hbmMask := MaskHandle;
   IconInfo.hbmColor := BitmapHandle;
-  FSharedImage.FHandle := WidgetSet.CreateCursor(@IconInfo);
+  FSharedImage.FHandle := WidgetSet.CreateIconIndirect(@IconInfo);
 end;
 
 

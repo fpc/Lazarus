@@ -115,11 +115,6 @@ begin
   Result := WidgetSet.CreateCompatibleDC(DC);
 end;
 
-function CreateCursor(ACursorInfo: PIconInfo): hCursor;
-begin
-  Result := WidgetSet.CreateCursor(ACursorInfo);
-end;
-
 function CreateFontIndirect(const LogFont: TLogFont): HFONT;
 begin
   Result := WidgetSet.CreateFontIndirect(LogFont);

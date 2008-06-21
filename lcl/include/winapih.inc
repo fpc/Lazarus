@@ -54,7 +54,6 @@ function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH; {$IFDEF IF_BASE
 function CreateCaret(Handle: HWND; Bitmap: hBitmap; width, Height: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreateCompatibleDC(DC: HDC): HDC; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function CreateCursor(ACursorInfo: PIconInfo): HCURSOR; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreateDIBitmap(DC: HDC; var InfoHeader: TBitmapInfoHeader;
   dwUsage: DWORD; InitBits: PChar; var InitInfo: TBitmapInfo;
   wUsage: UINT): HBITMAP; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}

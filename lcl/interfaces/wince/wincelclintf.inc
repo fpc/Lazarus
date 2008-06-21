@@ -424,7 +424,7 @@ begin
     crSqlWait..crDrag,
     crHandPoint: 
       begin
-        // will be created later by CreateCursor
+        // will be created later by CreateIconIndirect
       end;
   else
     Result := Windows.LoadCursorW(0, LclCursorToWin32CursorMap[ACursor]);
