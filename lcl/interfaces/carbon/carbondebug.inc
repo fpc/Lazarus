@@ -34,14 +34,14 @@
 {off $DEFINE VerbosePaint}
 {off $DEFINE VerboseCanvas}
 {off $DEFINE VerboseMenu}      // Carbon menu
-{$DEFINE VerboseScroll}      // Carbon scrollable
+{off $DEFINE VerboseScroll}      // Carbon scrollable
 {off $DEFINE VerboseBounds}      // debug bounding and client rects of LCL vs. intf
 
-{$DEFINE VerboseWidget}    // Carbon widget
+{off $DEFINE VerboseWidget}    // Carbon widget
 {off $DEFINE VerboseAppEvent}  // Carbon application event handlers
 {off $DEFINE VerboseControlEvent}  // Carbon control event handlers
-{$DEFINE VerboseWindowEvent}   // Carbon window event handlers
-{$DEFINE VerboseCommonEvent}   // Carbon common event handlers
+{off $DEFINE VerboseWindowEvent}   // Carbon window event handlers
+{off $DEFINE VerboseCommonEvent}   // Carbon common event handlers
 
 {off $DEFINE VerboseWSClass}   // Carbon WS class
 
