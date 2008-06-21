@@ -219,13 +219,17 @@ end;
 
 procedure TQtWidgetSet.AppSetIcon(const AIcon: HICON);
 var
-  Icon: TQtIcon;
+  DoDestroyIcon: Boolean;
+  Icon: QIconH;
 begin
-  Icon := TQtIcon(AIcon);
-  if Icon <> nil then
-    QApplication_setWindowIcon(Icon.Handle)
+  DoDestroyIcon := AIcon = 0;
+  if DoDestroyIcon then
+    Icon := QIcon_create()
   else
-    QApplication_setWindowIcon(nil);
+    Icon := TQtIcon(AIcon).Handle;
+  QApplication_setWindowIcon(Icon);
+  if DoDestroyIcon then
+    QIcon_destroy(Icon);
 end;
 
 

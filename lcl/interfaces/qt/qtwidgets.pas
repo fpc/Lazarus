@@ -2751,8 +2751,15 @@ begin
 end;
 
 procedure TQtWidget.setWindowIcon(AIcon: QIconH);
+var
+  DestroyIcon: Boolean;
 begin
+  DestroyIcon := AIcon = nil;
+  if DestroyIcon then
+    AIcon := QIcon_create();
   QWidget_setWindowIcon(Widget, AIcon);
+  if DestroyIcon then
+    QIcon_destroy(AIcon);
 end;
 
 function TQtWidget.windowFlags: QtWindowFlags;
