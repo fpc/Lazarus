@@ -102,7 +102,9 @@ install-arch-stamp: build-arch-stamp debian-files-stamp
 	# copy lazarus to /usr/lib
 	install -d $(INSTALL_DIR)/usr/bin
 	install -d $(INSTALL_DIR)/usr/lib/lazarus
-	cp -Rfpl -t $(INSTALL_DIR)/usr/lib/lazarus lazarus lazbuild startlazarus
+	cp -Rfpl -t $(INSTALL_DIR)/usr/lib/lazarus \
+		lazarus lazbuild startlazarus \
+		$(CURDIR)/languages
 	find -name '*.ppu' -or -name '*.[oa]' -or -name '*.so*' | xargs cp -Rfpl --parents -t $(INSTALL_DIR)/usr/lib/lazarus
 	# copy icons and menu entries for the GNOME menu
 	install -d $(INSTALL_DIR)/usr/share/pixmaps
@@ -170,7 +172,6 @@ install-source-stamp:
 		$(CURDIR)/ide \
 		$(CURDIR)/ideintf \
 		$(CURDIR)/images \
-		$(CURDIR)/languages \
 		$(CURDIR)/lcl \
 		$(CURDIR)/packager \
 		$(CURDIR)/test \
