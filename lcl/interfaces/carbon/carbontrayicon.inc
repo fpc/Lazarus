@@ -23,6 +23,7 @@ type
     class function getClass: objc.id; override;
     procedure AddMethods; override;
     { Pascal Methods }
+    function TrimAllChar(const S: string; const ch: Char): string;
     function CreateMenu(APopUpMenu: TPopUpMenu): NSMenu;
     function CreateMenuItem(AMenuItem: TMenuItem;
       ACallbackName: string; ACallbackClass: NSObject): NSMenuItem;
@@ -52,8 +53,6 @@ begin
 end;
 
 constructor TPrivateCocoaCarbonTrayIcon.Create;
-var
-  fileName: CFStringRef;
 begin
   { The class is registered on the Objective-C runtime before the NSObject constructor is called }
   // The original plan was to create a descendent class, but causes wierd crashes
@@ -66,6 +65,24 @@ end;
 class function TPrivateCocoaCarbonTrayIcon.getClass: objc.id;
 begin
   Result := objc_getClass(Str_NSObject);
+end;
+
+{Removes/replaces all occurences of a character from a string}
+function TPrivateCocoaCarbonTrayIcon.TrimAllChar(const S: string; const ch: Char): string;
+var
+  buf: string;
+begin
+  buf := S;
+  Result := '';
+  {while Pos finds a blank}
+  while (Pos(ch, buf) > 0) do
+    begin
+      {copy the substrings before the blank in to Result}
+      Result := Result + Copy(buf, 1, Pos(ch, buf) - 1);
+      buf := Copy(buf, Pos(ch, buf) + 1, Length(buf) - Pos(ch, buf));
+    end;
+  {There will still be a remainder in buf, so copy remainder into Result}
+  Result := Result + buf;
 end;
 
 { Creates a NSMenu structure representing a TPopUpMenu }
@@ -119,11 +136,16 @@ begin
   { A normal menu item }
   else
   begin
+    { While creating the menus we ignore the & shortcut identifiers }
     KeyText := CFStringCreateWithPascalString(nil, '', kCFStringEncodingUTF8);
-    ItemText := CFStringCreateWithPascalString(nil, shortstring(AMenuItem.Caption), kCFStringEncodingUTF8);
+    ItemText := CFStringCreateWithPascalString(nil, TrimAllChar(AMenuItem.Caption, '&'), kCFStringEncodingUTF8);
+    {$ifdef VerboseCarbonTrayIcon}
     WriteLn(' ItemText: ', IntToHex(Int64(ItemText), 8), ' ATitle: ', AMenuItem.Caption);
+    {$endif}
 
     Result := NSMenuItem.initWithTitle_action_keyEquivalent(ItemText, nil, KeyText);
+    
+    { Assign the OnClick event handler }
     Result.setTarget(ACallbackClass.Handle);
     Result.setAction(sel_registerName(PChar(ACallbackName)));
 
