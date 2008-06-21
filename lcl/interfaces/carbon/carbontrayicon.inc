@@ -16,20 +16,22 @@ type
     image: NSImage;
     menu: NSMenu;
     MenuItems: array of NSMenuItem;
+    SubMenuOwners: array of NSMenu;
+    SubMenuItems: array of NSMenuItem;
     { Structural Methods }
     constructor Create; override;
     class function getClass: objc.id; override;
     procedure AddMethods; override;
     { Pascal Methods }
     function CreateMenu(APopUpMenu: TPopUpMenu): NSMenu;
-    function CreateMenuItem(ATitle: shortstring;
+    function CreateMenuItem(AMenuItem: TMenuItem;
       ACallbackName: string; ACallbackClass: NSObject): NSMenuItem;
     { Objective-C compatible methods }
     class procedure HandleMenuItemClick(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl; static;
   end;
 
 const
-  Str_TPrivateCocoaCarbonTrayIcon = 'TPrivateCocoaCarbonTrayIcon';
+  Str_TPrivateCocoaCarbonTrayIcon = 'TTrayIcon';
 
   Str_HandleMenuItemClick = 'HandleMenuItemClick';
 
@@ -46,7 +48,7 @@ const
 }
 procedure TPrivateCocoaCarbonTrayIcon.AddMethods;
 begin
-//  AddMethod(Str_HandleMenuItemClick, 'v@:@', Pointer(HandleMenuItemClick));
+  AddMethod(Str_HandleMenuItemClick, 'v@:@', Pointer(HandleMenuItemClick));
 end;
 
 constructor TPrivateCocoaCarbonTrayIcon.Create;
@@ -54,7 +56,9 @@ var
   fileName: CFStringRef;
 begin
   { The class is registered on the Objective-C runtime before the NSObject constructor is called }
-  if not CreateClassDefinition(Str_TPrivateCocoaCarbonTrayIcon, Str_NSObject) then WriteLn('Failed to create objc class');
+  // The original plan was to create a descendent class, but causes wierd crashes
+  // so now we just stuck our method into NSObject
+//  if not CreateClassDefinition(Str_TPrivateCocoaCarbonTrayIcon, Str_NSObject) then WriteLn('Failed to create objc class');
 
   inherited Create;
 end;
@@ -68,38 +72,79 @@ end;
 function TPrivateCocoaCarbonTrayIcon.CreateMenu(APopUpMenu: TPopUpMenu): NSMenu;
 var
   MenuTitle: CFStringRef;
-  i: Integer;
+  i, j, index, subindex, subitemindex: Integer;
 begin
   MenuTitle := CFStringCreateWithPascalString(nil, '', kCFStringEncodingUTF8);
   Result := NSMenu.initWithTitle(MenuTitle);
 
   for i := 0 to APopUpMenu.Items.Count - 1 do
   begin
-    SetLength(MenuItems, i + 1);
-    MenuItems[i] := CreateMenuItem(APopUpMenu.Items[i].Caption, Str_HandleMenuItemClick, Self);
-    Result.addItem(MenuItems[i].Handle);
+    index := Length(MenuItems);
+    SetLength(MenuItems, index + 1);
+    MenuItems[index] := CreateMenuItem(APopUpMenu.Items[i], Str_HandleMenuItemClick, Self);
+    Result.addItem(MenuItems[index].Handle);
+
+    { If the submenu has a submenu it needs special treatment }
+    if APopUpMenu.Items[i].Count > 0 then
+    begin
+      subindex := Length(SubMenuOwners);
+      SetLength(SubMenuOwners, subindex + 1);
+      SubMenuOwners[subindex] := NSMenu.initWithTitle(MenuTitle);
+
+      { Add all submenus in this submenu }
+      for j := 0 to APopUpMenu.Items[i].Count - 1 do
+      begin
+        subitemindex := Length(SubMenuItems);
+        SetLength(SubMenuItems, subitemindex + 1);
+        SubMenuItems[subitemindex] := CreateMenuItem(APopUpMenu.Items[i].Items[j], Str_HandleMenuItemClick, Self);
+        SubMenuOwners[subindex].addItem(SubMenuItems[subitemindex].Handle);
+      end;
+
+      MenuItems[index].setSubmenu(SubMenuOwners[subindex].Handle);
+    end;
   end;
 end;
 
-function TPrivateCocoaCarbonTrayIcon.CreateMenuItem(ATitle: shortstring;
+function TPrivateCocoaCarbonTrayIcon.CreateMenuItem(AMenuItem: TMenuItem;
   ACallbackName: string; ACallbackClass: NSObject): NSMenuItem;
 var
   ItemText: CFStringRef;
   KeyText: CFStringRef;
 begin
-  KeyText := CFStringCreateWithPascalString(nil, '', kCFStringEncodingUTF8);
-  ItemText := CFStringCreateWithPascalString(nil, ATitle, kCFStringEncodingUTF8);
-  WriteLn(' ItemText: ', IntToHex(Int64(ItemText), 8), ' ATitle: ', ATitle);
+  { The MenuItem is a separator }
+  if AMenuItem.Caption = '-' then
+  begin
+    Result := NSMenuItem.separatorItem();
+  end
+  { A normal menu item }
+  else
+  begin
+    KeyText := CFStringCreateWithPascalString(nil, '', kCFStringEncodingUTF8);
+    ItemText := CFStringCreateWithPascalString(nil, shortstring(AMenuItem.Caption), kCFStringEncodingUTF8);
+    WriteLn(' ItemText: ', IntToHex(Int64(ItemText), 8), ' ATitle: ', AMenuItem.Caption);
 
-  Result := NSMenuItem.initWithTitle_action_keyEquivalent(ItemText, nil, KeyText);
-  Result.setTarget(ACallbackClass.Handle);
-  Result.setAction(sel_registerName(PChar(ACallbackName)));
+    Result := NSMenuItem.initWithTitle_action_keyEquivalent(ItemText, nil, KeyText);
+    Result.setTarget(ACallbackClass.Handle);
+    Result.setAction(sel_registerName(PChar(ACallbackName)));
+
+    { We use the Tag to hold the LCL MenuItem
+      RepresentedObject was also tried, by it crashed.
+      Cocoa probably tryes to use it as a real Cocoa object }
+    Result.setTag(PtrInt(AMenuItem));
+  end;
 end;
 
+{ Here we try to get the LCL MenuItem from the Tag and then call
+  it's OnClick method }
 class procedure TPrivateCocoaCarbonTrayIcon.HandleMenuItemClick(_self: objc.id;
   _cmd: SEL; sender: objc.id); cdecl;
+var
+  AMenuItem: NSMenuItem;
+  LCLMenu: TMenuItem;
 begin
-
+  AMenuItem := NSMenuItem.CreateWithHandle(sender);
+  LCLMenu := TMenuItem(PtrInt(AMenuItem.Tag()));
+  if (LCLMenu <> nil) and Assigned(LCLMenu.OnClick) then LCLMenu.OnClick(nil);
 end;
 
 { TCarbonWSCustomTrayIcon }
