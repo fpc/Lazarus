@@ -171,8 +171,8 @@ DEBSRCDIR:=$(BUILDDIR)/lazarus-$(DEBFPCVERSION)
 
 debcheck:
 ifneq ($(DEBFPCVERSION),$(PACKAGE_VERSION))
-    @$(ECHO) "Debian version ($(DEBFPCVERSION)) is not correct, expect $(PACKAGE_VERSION)"
-    @exit 1
+	@$(ECHO) "Debian version ($(DEBFPCVERSION)) is not correct, expect $(PACKAGE_VERSION)"
+	@exit 1
 endif
 
 debcopy: distclean
@@ -192,11 +192,11 @@ debcopy: distclean
 ifndef NODOCS
 	$(LINKTREE) docs $(DEBSRCDIR)
 endif
+	$(LINKTREE) install $(DEBSRCDIR)
 	$(LINKTREE) examples $(DEBSRCDIR)
 	$(LINKTREE) ide $(DEBSRCDIR)
 	$(LINKTREE) ideintf $(DEBSRCDIR)
 	$(LINKTREE) images $(DEBSRCDIR)
-	$(LINKTREE) install $(DEBSRCDIR)
 	$(LINKTREE) languages $(DEBSRCDIR)
 	$(LINKTREE) lazarus.app $(DEBSRCDIR)
 	$(LINKTREE) lcl $(DEBSRCDIR)
@@ -205,22 +205,21 @@ endif
 	$(LINKTREE) tools $(DEBSRCDIR)
 	# add ide/revision.inc
 	echo "const RevisionStr = '${SVNVERSION}';" > $(DEBSRCDIR)/ide/revision.inc
-	find $(DEBSRCDIR) -name 'CVS*' | xargs rm -rf
-	find $(DEBSRCDIR) -name '.svn' | xargs rm -rf
-	find $(DEBSRCDIR) -name 'Makefile' | xargs rm -rf
+	find $(DEBSRCDIR) -name 'CVS*' | xargs -n1 rm -rf
+	find $(DEBSRCDIR) -name '.svn' | xargs -n1 rm -rf
 	chmod 755 $(DEBSRCDIR)/debian/rules
 
 debbuild:
 ifdef NODOCS
-	cd $(DEBSRCDIR) ; fakeroot debian/rules binary-arch
+	cd $(DEBSRCDIR) ; dpkg-buildpackage -us -uc -B
 else
-	cd $(DEBSRCDIR) ; fakeroot debian/rules binary
+	cd $(DEBSRCDIR) ; dpkg-buildpackage -us -uc
 endif
-	mv $(DEBSRCDIR)/../*.deb .
+	mv -v -t . $(DEBSRCDIR)/../*.{deb,dsc,changes,tar.gz}
 
 debclean:
 	rm -rf $(DEBSRCDIR)
-	-rmdir $(BUILDDIR)
+	rmdir $(BUILDDIR)
 
 deb: debcheck debcopy debbuild debclean
 
