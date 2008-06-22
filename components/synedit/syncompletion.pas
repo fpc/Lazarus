@@ -831,7 +831,6 @@ begin
   OldWidth:=Bitmap.Width+Scroll.Width;
   if (OldHeight<>Height) or (OldWidth<>Width) then begin
     FNbLinesInWindow := (Height-2+(fFontHeight-1)) div fFontHeight;
-    Bitmap.SetSize(Scroll.Left, Height - 2);
     Invalidate;
   end;
 end;
@@ -866,9 +865,10 @@ begin
   Scroll.Top := 1;
   Scroll.Left := ClientWidth - Scroll.Width - 1;
   Scroll.Height := Height - 2;
-  {$ENDIF}
+  {$ELSE}
   Bitmap.Width := Scroll.Left;
   Bitmap.Height := Height - 2;
+  {$ENDIF}
 end;
 
 procedure TSynBaseCompletionForm.SetPosition(const Value: Integer);
