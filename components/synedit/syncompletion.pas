@@ -648,8 +648,12 @@ begin
   {$ENDIF}
   Scroll.LargeChange := NbLinesInWindow;
 
+  {$IFDEF SYN_LAZARUS}
+  bitmap.SetSize(ClientWidth, ClientHeight);
+  {$ELSE}
   bitmap.Width:=ClientWidth;
   bitmap.Height:=ClientHeight;
+  {$ENDIF}
   with bitmap do begin
     {$IFNDEF SYN_LAZARUS}
     canvas.pen.color := fbcolor;
@@ -827,8 +831,7 @@ begin
   OldWidth:=Bitmap.Width+Scroll.Width;
   if (OldHeight<>Height) or (OldWidth<>Width) then begin
     FNbLinesInWindow := (Height-2+(fFontHeight-1)) div fFontHeight;
-    Bitmap.Width := Scroll.Left;
-    Bitmap.Height := Height - 2;
+    Bitmap.SetSize(Scroll.Left, Height - 2);
     Invalidate;
   end;
 end;
