@@ -23,22 +23,22 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <CommandLineParams Value="--no-splash-screen"/>
+        <CommandLineParams Value="--no-splash-screen --primary-config-path=&quot;c:\temp\lazarus config&quot;"/>
         <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
     <RequiredPackages Count="4">
       <Item1>
-        <PackageName Value="SynEdit"/>
+        <PackageName Value="CodeTools"/>
       </Item1>
       <Item2>
-        <PackageName Value="LCL"/>
+        <PackageName Value="IDEIntf"/>
       </Item2>
       <Item3>
-        <PackageName Value="IDEIntf"/>
+        <PackageName Value="LCL"/>
       </Item3>
       <Item4>
-        <PackageName Value="CodeTools"/>
+        <PackageName Value="SynEdit"/>
       </Item4>
     </RequiredPackages>
     <Units Count="2">
@@ -61,6 +61,7 @@
       <Filename Value="../lazarus"/>
     </Target>
     <SearchPaths>
+      <IncludeFiles Value="$(LazarusDir)\ide\include\"/>
       <UnitOutputDirectory Value="$(LazarusDir)\units\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <CodeGeneration>

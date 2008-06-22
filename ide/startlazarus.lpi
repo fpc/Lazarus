@@ -18,7 +18,7 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <CommandLineParams Value="--nsc"/>
+        <CommandLineParams Value="--nsc --primary-config-path=&quot;C:\Documents and Settings\Vincent Snijders\Local Settings\Application Data\lazarus&quot;"/>
         <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
@@ -57,7 +57,7 @@
     <Version Value="5"/>
     <PathDelim Value="\"/>
     <Target>
-      <Filename Value="D:\lazarus\source\lazarus\startlazarus.exe"/>
+      <Filename Value="C:\lazarus\source\lazarus\startlazarus.exe"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="include\;include\$(TargetOS)\"/>
