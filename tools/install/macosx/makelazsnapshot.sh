@@ -79,13 +79,13 @@ make bigide PP=$COMPILER USESVN2REVISIONINC=0
 make lazbuilder PP=$COMPILER
 
 # make non-default LCL platforms
-make lcl LCL_PLATFORM=carbon PP=$COMPILER
+make lcl LCL_PLATFORM=gtk PP=$COMPILER
 make lcl LCL_PLATFORM=gtk2 OPT="-dUseX" PP=$COMPILER
 
 # cross compilation units?
 if [ "$ARCH" == "i386" ]; then
   make lcl CPU_TARGET=powerpc PP=$CROSSCOMPILER
-  make lcl CPU_TARGET=powerpc LCL_PLATFORM=carbon PP=$CROSSCOMPILER
+  make lcl CPU_TARGET=powerpc LCL_PLATFORM=gtk PP=$CROSSCOMPILER
   make lcl CPU_TARGET=powerpc LCL_PLATFORM=gtk2 OPT="-dUseX" PP=$CROSSCOMPILER
   make -C components/synedit CPU_TARGET=powerpc PP=$CROSSCOMPILER
   make -C packager/registration CPU_TARGET=powerpc PP=$CROSSCOMPILER
