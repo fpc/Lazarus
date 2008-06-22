@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-06-15 00:20+0300\n"
+"PO-Revision-Date: 2008-06-21 03:17+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -1175,7 +1175,7 @@ msgstr "Собрать примеры"
 
 #: lazarusidestrconsts:srkmecbuildlazarus
 msgid "Build lazarus"
-msgstr "Собрать lazarus"
+msgstr "Собрать Lazarus"
 
 #: lazarusidestrconsts:lisbuildnewproject
 msgid "Build new project"
@@ -9651,7 +9651,7 @@ msgstr "Обрезать хвостовые пробелы"
 
 #: lazarusidestrconsts:rslanguageturkish
 msgid "Turkish"
-msgstr ""
+msgstr "Турецкий"
 
 #: lazarusidestrconsts:lismenutemplatetutorial
 msgid "Tutorial"

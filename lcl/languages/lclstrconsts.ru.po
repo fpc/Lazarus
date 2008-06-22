@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-06-08 02:46+0300\n"
+"PO-Revision-Date: 2008-06-21 03:09+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -275,7 +275,7 @@ msgstr "Стрелка вниз"
 
 #: lclstrconsts:rsduplicateiconformat
 msgid "Duplicate icon format."
-msgstr ""
+msgstr "Формат значков дублируется."
 
 #: lclstrconsts:sduplicatemenus
 msgid "Duplicate menus"

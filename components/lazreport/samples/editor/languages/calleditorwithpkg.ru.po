@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-06-18 21:57-0600\n"
+"PO-Revision-Date: 2008-06-20 03:42+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -95,7 +95,7 @@ msgstr "Печать отчёта"
 
 #: TFRMMAIN.ACCCLOSE.CAPTION
 msgid "Close"
-msgstr ""
+msgstr "Закрыть"
 
 #: TFRMMAIN.ACCEDITREPORT.CAPTION
 msgid "Edit Report"
@@ -103,15 +103,15 @@ msgstr "Редактировать отчёт"
 
 #: TFRMMAIN.ACCEXPORTTOCSV.CAPTION
 msgid "Export to CSV"
-msgstr ""
+msgstr "Экспорт в CSV"
 
 #: TFRMMAIN.ACCEXPORTTOHTML.CAPTION
 msgid "Export to html"
-msgstr ""
+msgstr "Экспорт в HTML"
 
 #: TFRMMAIN.ACCEXPORTTOTEXT.CAPTION
 msgid "Export to text"
-msgstr ""
+msgstr "Экспорт в текст"
 
 #: TFRMMAIN.ACCNEWREPORT.CAPTION
 msgid "New Report"
@@ -123,29 +123,29 @@ msgstr "Открыть отчёт"
 
 #: TFRMMAIN.ACCPREVIEWREPORT.CAPTION
 msgid "Preview Report"
-msgstr ""
+msgstr "Предварительный просмотр отчёта"
 
 #: TFRMMAIN.ACCPRINTGRID.CAPTION
 msgid "Print Grid"
-msgstr ""
+msgstr "Печать таблицы"
 
 #: TFRMMAIN.ACCPRINTREPORT.CAPTION
 msgid "Print Report"
-msgstr ""
+msgstr "Печать отчёта"
 
 #: TFRMMAIN.CAPTION
 msgid "LazReport Test Suite"
-msgstr ""
+msgstr "Тестовая программа для LazReport"
 
 #: TFRMMAIN.MENUITEM1.CAPTION
 msgid "Files"
-msgstr ""
+msgstr "Файлы"
 
 #: TFRMMAIN.MENUITEM3.CAPTION
 msgid "Tests"
-msgstr ""
+msgstr "Тесты"
 
 #: TFRMMAIN.MENUITEM9.CAPTION
 msgid "Export"
-msgstr ""
+msgstr "Экспорт"
 
