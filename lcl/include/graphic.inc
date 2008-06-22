@@ -21,6 +21,11 @@ begin
   Inherited Create;
 end;
 
+procedure TGraphic.Clear;
+begin
+  Assign(nil);
+end;
+
 procedure TGraphic.DefineProperties(Filer: TFiler);
 
   function DoWrite: Boolean;

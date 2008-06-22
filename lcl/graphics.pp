@@ -700,6 +700,7 @@ type
     procedure WriteData(Stream: TStream); virtual; // used by filer
   public
     constructor Create; virtual;
+    procedure Clear; virtual;
     function LazarusResourceTypeValid(const AResourceType: string): boolean; virtual;
     procedure LoadFromFile(const Filename: string); virtual;
     procedure LoadFromStream(Stream: TStream); virtual; abstract;
@@ -1165,6 +1166,7 @@ type
     constructor Create; override;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
+    procedure Clear; override;
     procedure FreeImage;
     function BitmapHandleAllocated: boolean; virtual; abstract;
     function MaskHandleAllocated: boolean; virtual; abstract;
@@ -1469,6 +1471,7 @@ type
 
     procedure Add(AFormat: TPixelFormat; AHeight, AWidth: Word);
     procedure Assign(Source: TPersistent); override;
+    procedure Clear; override;
     procedure Delete(Aindex: Integer);
     procedure Remove(AFormat: TPixelFormat; AHeight, AWidth: Word);
     procedure GetDescription(Aindex: Integer; out AFormat: TPixelFormat; out AHeight, AWidth: Word);

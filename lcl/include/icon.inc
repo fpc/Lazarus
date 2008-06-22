@@ -252,7 +252,14 @@ procedure TCustomIcon.Assign(Source: TPersistent);
 begin
   if Source is TCustomIcon then
     FCurrent := TCustomIcon(Source).Current;
+
   inherited Assign(Source);
+end;
+
+procedure TCustomIcon.Clear;
+begin
+  FreeSaveStream;
+  FCurrent := -1;
 end;
 
 function TCustomIcon.BitmapHandleAllocated: boolean;

@@ -88,13 +88,18 @@ begin
 
   if Source = nil
   then begin
-    FreeSaveStream;
-    SetSize(0, 0);
+    Clear;
     Exit;
   end;
   
   // fall back to default
   inherited Assign(Source);
+end;
+
+procedure TRasterImage.Clear;
+begin
+  FreeSaveStream;
+  SetSize(0, 0);
 end;
 
 procedure TRasterImage.BitmapHandleNeeded;
