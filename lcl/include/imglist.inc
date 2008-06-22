@@ -815,7 +815,7 @@ begin
     RawImg.Description.MaskBitOrder := riboReversedBits;
     RawImg.Description.MaskLineEnd := rileByteBoundary;
     RawImg.Description.MaskShift := 0;
-    RawImg.MaskSize := RawImg.Description.MaskBytesPerLine * FHeight;
+    RawImg.MaskSize := RawImg.Description.MaskBytesPerLine * PtrUInt(FHeight);
     RawImg.Mask := GetMem(RawImg.MaskSize);
   end;
 

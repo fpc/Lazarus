@@ -223,8 +223,8 @@ var
 begin
   RawImageNeeded(True);
 
-  if  (SCB.FImage.Description.Height = AHeight)
-  and (SCB.FImage.Description.Width = AWidth)
+  if  (SCB.FImage.Description.Height = cardinal(AHeight))
+  and (SCB.FImage.Description.Width = cardinal(AWidth))
   then Exit;
 
   UnshareImage(False);

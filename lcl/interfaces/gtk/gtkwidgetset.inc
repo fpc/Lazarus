@@ -3936,7 +3936,6 @@ procedure TGtkWidgetSet.ShowHide(Sender : TObject);
   end;
 
 var
-  FormIconGdiObject: PGDIObject;
   SenderWidget: PGTKWidget;
   LCLControl: TWinControl;
   Decor, Func : Longint;
