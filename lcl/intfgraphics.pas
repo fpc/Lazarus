@@ -1411,7 +1411,7 @@ var
               or ((Desc.BlueShift shr 3) and 3);
 
     if Desc.ByteOrder = riboMSBFirst
-    then Positions := not Positions and $00FFFFFF; // reverse positions
+    then Positions := not Positions and %00111111; // reverse positions
 
     // the locations of R,G,B are now coded in 2 bits each: xxRRBBGG
     // the 2-bit value (0..3) represents the location of the channel,
@@ -1498,12 +1498,16 @@ var
     if Desc.GreenShift and 7 <> 0 then Exit;
     if Desc.BlueShift and 7 <> 0 then Exit;
 
-    Positions := ((Desc.RedShift shr 3) and 3) shl 4
-              or ((Desc.GreenShift shr 3) and 3) shl 2
-              or ((Desc.BlueShift shr 3) and 3);
-
     if Desc.ByteOrder = riboMSBFirst
-    then Positions := not Positions and $00FFFFFF; // reverse positions
+    then
+      Positions := (2-((Desc.RedShift   shr 3) and 3)) shl 4
+                or (2-((Desc.GreenShift shr 3) and 3)) shl 2
+                or (2-((Desc.BlueShift  shr 3) and 3))
+    else
+      Positions := ((Desc.RedShift   shr 3) and 3) shl 4
+                or ((Desc.GreenShift shr 3) and 3) shl 2
+                or ((Desc.BlueShift  shr 3) and 3);
+
 
     // the locations of R,G,B are now coded in 2 bits each: xxRRBBGG
     // the 2-bit value (0..3) represents the location of the channel,
