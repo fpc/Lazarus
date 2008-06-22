@@ -111,13 +111,18 @@ begin
 end;
 
 destructor TSharedIcon.Destroy;
+begin
+  Clear;
+  FreeAndNil(FImages);
+  inherited Destroy;
+end;
+
+procedure TSharedIcon.Clear;
 var
   n: Integer;
 begin
   for n := 0 to FImages.Count - 1 do
     TObject(FImages[n]).Free;
-  FreeAndNil(FImages);
-  inherited Destroy;
 end;
 
 function TSharedIcon.GetIndex(AFormat: TPixelFormat; AHeight, AWidth: Word): Integer;
@@ -258,8 +263,15 @@ end;
 
 procedure TCustomIcon.Clear;
 begin
-  FreeSaveStream;
-  FCurrent := -1;
+  if not Empty then
+  begin
+    FreeSaveStream;
+    FSharedImage.Release;
+    FSharedImage := GetSharedImageClass.Create;
+    FSharedImage.Reference;
+    FCurrent := -1;
+    Changed(Self);
+  end;
 end;
 
 function TCustomIcon.BitmapHandleAllocated: boolean;

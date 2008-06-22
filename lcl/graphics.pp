@@ -1390,6 +1390,7 @@ type
   public
     constructor Create; override;
     destructor Destroy; override;
+    procedure Clear;
     procedure Delete(Aindex: Integer);
     function GetIndex(AFormat: TPixelFormat; AHeight, AWidth: Word): Integer;
   end;

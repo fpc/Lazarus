@@ -98,8 +98,12 @@ end;
 
 procedure TRasterImage.Clear;
 begin
-  FreeSaveStream;
-  SetSize(0, 0);
+  if not Empty then
+  begin
+    FreeSaveStream;
+    SetSize(0, 0);
+    Changed(Self);
+  end;
 end;
 
 procedure TRasterImage.BitmapHandleNeeded;
