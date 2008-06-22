@@ -699,6 +699,7 @@ type
     procedure SetModified(Value: Boolean);
     procedure WriteData(Stream: TStream); virtual; // used by filer
   public
+    procedure Assign(ASource: TPersistent); override;
     constructor Create; virtual;
     procedure Clear; virtual;
     function LazarusResourceTypeValid(const AResourceType: string): boolean; virtual;
@@ -1126,6 +1127,7 @@ type
     function  CanShareImage(AClass: TSharedRasterImageClass): Boolean; virtual;
     procedure Changed(Sender: TObject); override;
     procedure Changing(Sender: TObject); virtual;
+    function  CreateDefaultBitmapHandle(const ADesc: TRawImageDescription): HBITMAP; virtual; abstract;
     procedure Draw(DestCanvas: TCanvas; const DestRect: TRect); override;
     function GetEmpty: Boolean; override;
     function GetHandle: THandle;
@@ -1214,14 +1216,10 @@ type
     procedure FreeHandle; override;
     procedure FreePalette;
     procedure FreeImage;
-    function ReleaseHandle: THandle; override;
     function ReleasePalette: HPALETTE;
     function GetPixelFormat: TPixelFormat;
-    procedure UpdateDIB;
   public
-    FDIB: TDIBSection;
     constructor Create; override;
-    procedure CreateDefaultHandle(AWidth, AHeight: Integer; ABPP: Byte); override;
     destructor Destroy; override;
     function HandleAllocated: boolean; override;
     function ImageAllocated: boolean;
@@ -1238,6 +1236,7 @@ type
     FMaskHandle: HBITMAP; // mask is not part of the image, so not shared
     function GetHandleType: TBitmapHandleType;
     function GetMonochrome: Boolean;
+    procedure SetBitmapHandle(const AValue: HBITMAP);
     procedure SetHandleType(AValue: TBitmapHandleType);
     procedure SetMonochrome(AValue: Boolean);
     procedure UpdatePixelFormat;
@@ -1246,7 +1245,7 @@ type
     procedure PaletteNeeded; override;
     function  CanShareImage(AClass: TSharedRasterImageClass): Boolean; override;
     procedure Changed(Sender: TObject); override;
-    procedure Changing(Sender: TObject); override;
+    function  CreateDefaultBitmapHandle(const ADesc: TRawImageDescription): HBITMAP; override;
     function GetBitmapHandle: HBITMAP; override;
     function GetMaskHandle: HBITMAP; override;
     function GetPalette: HPALETTE; override;

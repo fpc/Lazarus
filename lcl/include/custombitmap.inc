@@ -45,6 +45,42 @@ begin
   FPixelFormat := pfDevice;
 end;
 
+function TCustomBitmap.CreateDefaultBitmapHandle(const ADesc: TRawImageDescription): HBITMAP;
+var
+  DC: HDC;
+  BI: TBitmapInfo;
+  P: Pointer;
+begin
+  if ADesc.Depth = 1
+  then begin
+    Result := CreateBitmap(ADesc.Width, ADesc.Height, 1, ADesc.Depth, nil);
+    //AType := bmDDB;
+  end
+  else begin
+    // on windows we need a DIB section
+    FillChar(BI.bmiHeader, SizeOf(BI.bmiHeader), 0);
+    BI.bmiHeader.biSize := SizeOf(BI.bmiHeader);
+    BI.bmiHeader.biWidth := ADesc.Width;
+    BI.bmiHeader.biHeight := -ADesc.Height; // request top down
+    BI.bmiHeader.biPlanes := 1;
+    BI.bmiHeader.biBitCount := ADesc.Depth;
+    BI.bmiHeader.biCompression := BI_RGB;
+    DC := GetDC(0);
+    p := nil;
+    Result := CreateDIBSection(DC, BI, DIB_RGB_COLORS, p, 0, 0);
+    //AType := bmDIB;
+    ReleaseDC(0, DC);
+
+    // fallback for other widgetsets not implementing CreateDIBSection
+    // we need the DIB section anyway someday if we want a scanline
+    if Result = 0
+    then begin
+      Result := CreateBitmap(ADesc.Width, ADesc.Height, 1, ADesc.Depth, nil);
+      //AType := bmDDB;
+    end;
+  end;
+end;
+
 procedure TCustomBitmap.HandleNeeded;
 begin
   BitmapHandleNeeded;
@@ -84,6 +120,8 @@ begin
     // description valid
     if ADescOnly then Exit;
     if (ImagePtr^.Data <> nil) and (ImagePtr^.DataSize > 0) then Exit;
+    if ImagePtr^.Description.Width = 0 then Exit;  // no data
+    if ImagePtr^.Description.Height = 0 then Exit; // no data
   end;
   
 
@@ -98,7 +136,8 @@ begin
       Exit;
     end;
   
-    ImagePtr^.Description := GetDescriptionFromDevice(0, 0, 0);
+    // keep size
+    ImagePtr^.Description := GetDescriptionFromDevice(0, ImagePtr^.Description.Width, ImagePtr^.Description.Height);
     Exit;
   end;
   
@@ -116,6 +155,12 @@ function TCustomBitmap.ReleaseHandle: HBITMAP;
 begin
   HandleNeeded;
   Result := FSharedImage.ReleaseHandle;
+end;
+
+procedure TCustomBitmap.SetBitmapHandle(const AValue: HBITMAP);
+begin
+  {$IFDEF VerboseLCLTodos}{$note remove when classcompletion checks intherited methods }{$ENDIF}
+  inherited SetBitmapHandle(AValue);
 end;
 
 function TCustomBitmap.LazarusResourceTypeValid(const ResourceType: string): boolean;
@@ -159,44 +204,39 @@ begin
   if Monochrome = AValue then exit;
   if not AValue then Exit;
   
-  UnshareImage(False);
-  TSharedCustomBitmap(FSharedImage).FDIB.dsbm.bmPlanes := 1;
-  TSharedCustomBitmap(FSharedImage).FDIB.dsbm.bmBitsPixel := 1;
-  FPixelFormat := pf1bit;
+  if AValue
+  then PixelFormat := pf1bit
+  else PixelFormat := pfDevice;
 end;
 
 procedure TCustomBitmap.SetPixelFormat(AValue: TPixelFormat);
 begin
   if AValue = FPixelFormat then Exit;
+  {$IFDEF VerboseLCLTodos}{$note todo copy image into new format }{$ENDIF}
   FreeImage;
   FPixelFormat := AValue;
 end;
 
 procedure TCustomBitmap.SetSize(AWidth, AHeight: integer);
+var
+  SCB: TSharedCustomBitmap absolute FSharedImage;
 begin
-  if  (TSharedCustomBitmap(FSharedImage).FDIB.dsbm.bmHeight = AHeight)
-  and (TSharedCustomBitmap(FSharedImage).FDIB.dsbm.bmWidth = AWidth)
+  RawImageNeeded(True);
+
+  if  (SCB.FImage.Description.Height = AHeight)
+  and (SCB.FImage.Description.Width = AWidth)
   then Exit;
 
   UnshareImage(False);
-  TSharedCustomBitmap(FSharedImage).FDIB.dsbm.bmWidth := AWidth;
-  TSharedCustomBitmap(FSharedImage).FDIB.dsbm.bmHeight := AHeight;
+  SCB.FImage.FreeData;
+  SCB.FImage.Description.Width := AWidth;
+  SCB.FImage.Description.Height := AHeight;
   Changed(Self);
 end;
 
 procedure TCustomBitmap.UpdatePixelFormat;
 begin
   FPixelFormat := TSharedCustomBitmap(FSharedImage).GetPixelFormat;
-end;
-
-procedure TCustomBitmap.Changing(Sender: TObject);
-// called before the bitmap is modified
-// -> make sure the handle is unshared (otherwise the modifications will also
-//    modify all copies)
-begin
-  inherited;
-  TSharedCustomBitmap(FSharedImage).FDIB.dsbmih.biClrUsed := 0;
-  TSharedCustomBitmap(FSharedImage).FDIB.dsbmih.biClrImportant := 0;
 end;
 
 function TCustomBitmap.GetTransparent: Boolean;
@@ -214,8 +254,8 @@ end;
 
 function TCustomBitmap.GetMonochrome: Boolean;
 begin
-  with TSharedCustomBitmap(FSharedImage).FDIB.dsbm do
-    Result := (bmPlanes = 1) and (bmBitsPixel = 1);
+  RawImageNeeded(False);
+  Result := TSharedCustomBitmap(FSharedImage).FImage.Description.Depth = 1;
 end;
 
 procedure TCustomBitmap.UnshareImage(CopyContent: boolean);
@@ -255,7 +295,6 @@ begin
     FSharedImage.FreeHandle;
     // get the properties from new bitmap
     FSharedImage.FHandle := ABitmap;
-    TSharedCustomBitmap(FSharedImage).UpdateDIB;
     Result := True;
   end;
 
@@ -293,7 +332,6 @@ end;
 procedure TCustomBitmap.SetHandle(AValue: THandle);
 begin
   // for TCustomBitmap BitmapHandle = Handle
-
   BitmapHandle := AValue;
 end;
 

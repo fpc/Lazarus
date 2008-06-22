@@ -23,7 +23,6 @@ end;
 
 procedure TGraphic.Clear;
 begin
-  Assign(nil);
 end;
 
 procedure TGraphic.DefineProperties(Filer: TFiler);
@@ -53,6 +52,13 @@ end;
 function TGraphic.GetResourceType: TResourceType;
 begin
   Result := nil;
+end;
+
+procedure TGraphic.Assign(ASource: TPersistent);
+begin
+  if ASource = nil
+  then Clear
+  else inherited Assign(ASource);
 end;
 
 procedure TGraphic.Changed(Sender: TObject);

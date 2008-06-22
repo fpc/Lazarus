@@ -86,12 +86,6 @@ begin
     Exit;
   end;
 
-  if Source = nil
-  then begin
-    Clear;
-    Exit;
-  end;
-  
   // fall back to default
   inherited Assign(Source);
 end;
@@ -107,15 +101,10 @@ begin
 end;
 
 procedure TRasterImage.BitmapHandleNeeded;
-const
-  BITCOUNT_MAP: array[TPixelFormat] of Byte = (
-//  pfDevice, pf1bit, pf4bit, pf8bit, pf15bit, pf16bit, pf24bit, pf32bit, pfCustom
-    0, 1, 4, 8, 15, 16, 24, 32, 0
-  );
 var
-  BitCount: Byte;
   ImgHandle, ImgMaskHandle: HBitmap;
   ImagePtr: PRawImage;
+  DevImage: TRawImage;
   DevDesc: TRawImageDescription;
   SrcImage, DstImage: TLazIntfImage;
   QueryFlags: TRawImageQueryFlags;
@@ -142,8 +131,7 @@ begin
   if DevDesc.IsEqual(ImagePtr^.Description)
   then begin
     // image is compatible, so use it
-    if not RawImage_CreateBitmaps(ImagePtr^, ImgHandle, ImgMaskHandle, DevDesc.MaskBitsPerPixel <> 0)
-    then raise EGraphicException.Create('Unable to create handles');
+    DstImage := nil;
   end
   else begin
     // create compatible copy
@@ -152,27 +140,21 @@ begin
     DstImage.DataDescription := DevDesc;
     DstImage.CopyPixels(SrcImage);
     SrcImage.Free;
-    try
-      DstImage.CreateBitmaps(ImgHandle, ImgMaskHandle, DevDesc.MaskBitsPerPixel <> 0);
-    finally
-      DstImage.Free;
+    DstImage.GetRawImage(DevImage);
+    ImagePtr := @DevImage;
+  end;
+
+  try
+    if not RawImage_CreateBitmaps(ImagePtr^, ImgHandle, ImgMaskHandle, DevDesc.MaskBitsPerPixel <> 0)
+    then begin
+      DebugLn('TRasterImage.BitmapHandleNeeded: Unable to create handles, using default');
+      // create a default handle
+      ImgHandle := CreateDefaultBitmapHandle(DevDesc);
     end;
+    UpdateHandles(ImgHandle, ImgMaskHandle);
+  finally
+    DstImage.Free;
   end;
-
-  UpdateHandles(ImgHandle, ImgMaskHandle);
-
-  if BitmapHandleAllocated then exit;
-  // otherwise create a default handle
-
-  BitCount := BITCOUNT_MAP[PixelFormat];
-  if BitCount = 0
-  then begin
-    if PixelFormat = pfDevice
-    then BitCount := Min(ScreenInfo.ColorDepth, 24) // prevent creation of default alpha channel
-    else raise EInvalidGraphicOperation.Create(rsUnsupportedBitmapFormat);
-  end;
-
-  FSharedImage.CreateDefaultHandle(W, H, BitCount);
 end;
 
 function TRasterImage.CanShareImage(AClass: TSharedRasterImageClass): Boolean;
