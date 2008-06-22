@@ -16,6 +16,10 @@ unit opengl;
   {$Packrecords C}
   {$packenum 4} // verifyed with sizeof in C
   {$calling cdecl}
+{$ifndef ver_2_2_0}
+// fpc 2.2.0 doesn't support $linkframework
+  {$linkframework OpenGL}
+{$endif}  
 {$endif}
 
 interface
