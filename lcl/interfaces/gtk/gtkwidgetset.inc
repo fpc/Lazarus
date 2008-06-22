@@ -4035,21 +4035,6 @@ begin
       end;
     end;
     {$ENDIF}
-
-    if (ACustomForm<>nil) and (ACustomForm.Parent=nil)
-    then begin
-      AWindow:=GetControlWindow(SenderWidget);
-      if (AWindow<>nil) and (ACustomForm.Icon<>nil)
-      then begin
-        FormIconGdiObject := PGDIObject(ACustomForm.GetIconHandle);
-        if FormIconGdiObject <> nil
-        then begin
-          gdk_window_set_icon(AWindow, nil,
-                  FormIconGdiObject^.GDIPixmapObject.Image,
-                  FormIconGdiObject^.GDIPixmapObject.Mask);
-        end;
-      end;
-    end;
   end
   else begin
     if (ACustomForm<>nil) then begin
