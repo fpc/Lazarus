@@ -23,7 +23,7 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <CommandLineParams Value="--no-splash-screen --primary-config-path=&quot;c:\temp\lazarus config&quot;"/>
+        <CommandLineParams Value="--no-splash-screen"/>
         <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
@@ -61,7 +61,6 @@
       <Filename Value="../lazarus"/>
     </Target>
     <SearchPaths>
-      <IncludeFiles Value="$(LazarusDir)\ide\include\"/>
       <UnitOutputDirectory Value="$(LazarusDir)\units\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <CodeGeneration>
