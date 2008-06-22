@@ -173,63 +173,34 @@ var
 procedure TGraphicPropertyEditor.Edit;
 var
   TheDialog: TGraphicPropertyEditorForm;
-  ABitmap: TBitmap;
-  Ext : String;
+  AGraphic: TGraphic;
 begin
-  ABitmap := TBitmap(GetObjectValue(TBitmap));
+  AGraphic := TGraphic(GetObjectValue(TGraphic));
   TheDialog := TGraphicPropertyEditorForm.Create(nil);
   try
-    If (ABitmap <> nil) then 
-    begin
-      with TheDialog.Preview.Picture.Bitmap do 
-      begin
-        Width := ABitmap.Width;
-        Height := ABitmap.Height;
-        Canvas.Brush.Color := clWhite;
-        Canvas.FillRect(Rect(0, 0, ABitmap.Width, ABitmap.Height));
-        Canvas.Draw(0, 0, ABitmap);
-      end;
-    end
+    if (AGraphic <> nil) then
+      TheDialog.Preview.Picture.Assign(AGraphic)
     else
-      ABitmap := nil;
-      
+      AGraphic := nil;
+
     if (TheDialog.ShowModal = mrOK) then
     begin
       if TheDialog.Preview.Picture.Graphic <> nil then
       begin
         if TheDialog.Modified and FileExists(TheDialog.FileName) then
         begin
-          Ext := ExtractFileExt(TheDialog.FileName);
-          if ABitmap = nil then
-            ABitmap := TBitmap.Create;
+          if AGraphic = nil then
+            AGraphic := TGraphic(GetTypeData(GetPropType)^.ClassType.Create).Create;
 
-          // Paul: can it be not TBitmap at all?
-          if (ABitmap is TBitmap) then
-          begin
-            if (CompareText(Ext, '.bmp') = 0) then
-              ABitmap.LoadFromFile(TheDialog.FileName)
-            else
-              ABitmap.Assign(TheDialog.Preview.Picture.Graphic);
-          end
-          else
-          begin
-            ABitmap.Width := TheDialog.Preview.Picture.Graphic.Width;
-            ABitmap.Height := TheDialog.Preview.Picture.Graphic.Height;
-            with ABitmap.Canvas do
-            begin
-              Brush.Color := clWhite;
-              FillRect(Rect(0, 0, ABitmap.Width, ABitmap.Height));
-              Draw(0, 0, TheDialog.Preview.Picture.Graphic);
-            end;
-          end;
-          SetPtrValue(ABitmap);
+          AGraphic.LoadFromFile(TheDialog.FileName);
+          SetPtrValue(AGraphic);
           Modified;
         end;
       end
       else
-      if ABitmap <> nil then
+      if AGraphic <> nil then
       begin
-        ABitmap.FreeImage;
+        AGraphic.Clear;
         Modified;
       end;
     end;
