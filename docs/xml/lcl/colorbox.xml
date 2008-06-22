@@ -7,7 +7,7 @@
   ====================================================================
 -->
     <module name="ColorBox">
-      <short/>
+      <short>Defines Classes for selecting colour from a list or ComboBox</short>
       <descr/>
       <!-- unresolved type reference Visibility: default -->
       <element name="LResources">
@@ -59,9 +59,8 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TColorPalette">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+          <var>TColorPalette</var> - enumerated type: whether default or full palette is to be used</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TColorPalette.cpDefault">
@@ -73,10 +72,8 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TColorBox">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          <var>TColorBox</var> - presents the user with a ComboBox with a drop-down list from which to select a colour</short>
       </element>
       <!-- variable Visibility: private -->
       <element name="TColorBox.FPalette">
@@ -104,6 +101,43 @@
       </element>
       <!-- argument Visibility: default -->
       <element name="TColorBox.SetSelection.Value">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TColorBox.GetColor">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TColorBox.GetColor.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TColorBox.GetColor.Index">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TColorBox.GetSelected">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TColorBox.GetSelected.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TColorBox.SetSelected">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TColorBox.SetSelected.Value">
         <short/>
       </element>
       <!-- procedure Visibility: private -->
@@ -152,7 +186,7 @@
       <element name="TColorBox.Create">
         <short>Constructor for colorbox</short>
         <descr>Use Create to create an instance of TColorBox and initialize all properties and variables.</descr>
-        <errors></errors>
+        <errors/>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
@@ -174,15 +208,69 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TColorBox.Palette">
+        <short>The <var>Palette</var> of colours to be used for the drop-down list</short>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TColorBox.Colors">
+        <short>
+          <var>Colors</var> - the indexed colour values available for the list</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TColorBox.Colors.Index">
+        <short/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorBox.Align">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorBox.Anchors">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorBox.ArrowKeysTraverseList">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorBox.AutoComplete">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorBox.AutoCompleteText">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorBox.AutoDropDown">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorBox.AutoSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorBox.BorderSpacing">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TColorBox.Color">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+          <var>Color</var> - this is the colour for the display of the actual control, not the colour selected from the list</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TColorBox.Ctl3D">
@@ -227,13 +315,31 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
+      <element name="TColorBox.ItemIndex">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
       <element name="TColorBox.Items">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
+      <element name="TColorBox.ItemWidth">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
       <element name="TColorBox.MaxLength">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorBox.Palette">
         <short/>
         <descr/>
         <seealso/>
@@ -267,6 +373,16 @@
         <short/>
         <descr/>
         <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorBox.ReadOnly">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorBox.Selected">
+        <short>The colour that has been <var>Selected</var> from the list</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TColorBox.ShowHint">
@@ -311,7 +427,19 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
+      <element name="TColorBox.OnChangeBounds">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
       <element name="TColorBox.OnClick">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorBox.OnCloseUp">
         <short/>
         <descr/>
         <seealso/>
@@ -342,6 +470,12 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TColorBox.OnDropDown">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorBox.OnEditingDone">
         <short/>
         <descr/>
         <seealso/>
@@ -389,7 +523,456 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
+      <element name="TColorBox.OnMouseDown">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorBox.OnMouseMove">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorBox.OnMouseUp">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
       <element name="TColorBox.OnStartDrag">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorBox.OnSelect">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TColorListBox">
+        <short>
+          <var>TColorListBox</var> - a box containing a simple list of colours from which to select</short>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TColorListBox.FPalette">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TColorListBox.GetColor">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TColorListBox.GetColor.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TColorListBox.GetColor.Index">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TColorListBox.GetSelected">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TColorListBox.GetSelected.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TColorListBox.SetSelected">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TColorListBox.SetSelected.Value">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TColorListBox.SetPalette">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TColorListBox.SetPalette.Value">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TColorListBox.SetStyle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TColorListBox.SetStyle.Value">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TColorListBox.DrawItem">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TColorListBox.DrawItem.Index">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TColorListBox.DrawItem.Rect">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TColorListBox.DrawItem.State">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TColorListBox.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TColorListBox.Create.AOwner">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TColorListBox.SetColorList">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TColorListBox.Colors">
+        <short>
+          <var>Colors</var> - the indexed colour values available for the list</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TColorListBox.Colors.Index">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TColorListBox.Selected">
+        <short>The colour that has been <var>Selected</var> from the list</short>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.Align">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.Anchors">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.BorderSpacing">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.BorderStyle">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.ClickOnSelChange">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.Color">
+        <short>
+          <var>Color</var> - this is the colour for the display of the actual control, not the colour selected from the list</short>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.Constraints">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.DragCursor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.DragMode">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.Enabled">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.ExtendedSelect">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.Font">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.IntegralHeight">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.ItemHeight">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.Items">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.MultiSelect">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.Palette">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.ParentColor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.ParentFont">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.ParentShowHint">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.PopupMenu">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.ShowHint">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.Sorted">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.TabOrder">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.TabStop">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.TopIndex">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.Visible">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.OnChangeBounds">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.OnClick">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.OnDblClick">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.OnDragDrop">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.OnDragOver">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.OnDrawItem">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.OnEndDrag">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.OnEnter">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.OnExit">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.OnKeyDown">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.OnKeyPress">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.OnKeyUp">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.OnMouseDown">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.OnMouseEnter">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.OnMouseLeave">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.OnMouseMove">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.OnMouseUp">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.OnMouseWheel">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.OnMouseWheelDown">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.OnMouseWheelUp">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.OnResize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.OnSelectionChange">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.OnShowHint">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.OnStartDrag">
         <short/>
         <descr/>
         <seealso/>
