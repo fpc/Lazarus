@@ -166,6 +166,7 @@ components/codetools/languages/codetoolsstrconsts.pliso.po svneol=native#text/pl
 components/codetools/languages/codetoolsstrconsts.plwin.po svneol=native#text/plain
 components/codetools/languages/codetoolsstrconsts.po svneol=native#text/plain
 components/codetools/languages/codetoolsstrconsts.ru.po svneol=native#text/plain
+components/codetools/languages/codetoolsstrconsts.sk.po svneol=native#text/plain
 components/codetools/languages/codetoolsstrconsts.ua.po svneol=native#text/plain
 components/codetools/languages/codetoolsstrconsts.zh-cn.po svneol=native#text/utf8
 components/codetools/laz_dom.pas svneol=native#text/pascal

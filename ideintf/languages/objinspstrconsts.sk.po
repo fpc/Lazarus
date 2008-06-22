@@ -1,13 +1,15 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: lazarus 0.9.22\n"
+"Project-Id-Version: objinspstrconsts\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-10-26 19:56+0100\n"
-"Last-Translator: Ivan Masár <helix84@centrum.sk>\n"
-"Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
+"PO-Revision-Date: 2008-06-19 20:10+0200\n"
+"Last-Translator: Slavko <slavino@slavino.sk>\n"
+"Language-Team: Slovenský <sk@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms:  nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 #: objinspstrconsts:oisdlinesdchars
 msgid "%d lines, %d chars"
@@ -43,7 +45,7 @@ msgstr "&Upravovať"
 
 #: objinspstrconsts:oistdactsearchfindheadline
 msgid "&Find..."
-msgstr ""
+msgstr "&Hľadať..."
 
 #: objinspstrconsts:oistdactdatasetfirstheadline
 msgid "&First"
@@ -91,7 +93,7 @@ msgstr "&Obnoviť"
 
 #: objinspstrconsts:oistdactsearchreplaceheadline
 msgid "&Replace"
-msgstr ""
+msgstr "&Nahradiť"
 
 #: objinspstrconsts:oissave
 msgid "&Save"
@@ -271,7 +273,7 @@ msgstr "Editor stĺpcov"
 
 #: objinspstrconsts:cgcolumns
 msgid "Columns:"
-msgstr ""
+msgstr "Stĺpce:"
 
 #: objinspstrconsts:oiscomponentnameisnotavalididentifier
 msgid "Component name %s%s%s is not a valid identifier"
@@ -279,7 +281,7 @@ msgstr "Názov komponentu %s%s%s nie je platný identifikátor"
 
 #: objinspstrconsts:oiscomponentrestrictions
 msgid "Component restrictions: "
-msgstr ""
+msgstr "Obmedzenia komponentu:"
 
 #: objinspstrconsts:oiscomponents
 msgid "Components"
@@ -319,7 +321,7 @@ msgstr "Ctrl+C"
 
 #: objinspstrconsts:oistdactsearchfindshortcut
 msgid "Ctrl+F"
-msgstr ""
+msgstr "Ctrl+F"
 
 #: objinspstrconsts:oistdactfileopenshortcut
 msgid "Ctrl+O"
@@ -383,7 +385,7 @@ msgstr "Zmazať záložku"
 
 #: objinspstrconsts:clbdeletehint
 msgid "Delete the Item"
-msgstr ""
+msgstr "Zmazať položku"
 
 #: objinspstrconsts:clbdeletequest
 msgid "Delete the Item %d \"%s\"?"
@@ -411,7 +413,7 @@ msgstr "Edit"
 
 #: objinspstrconsts:sccslvcoledt
 msgid "Edit Columns ..."
-msgstr ""
+msgstr "Upraviť stĺpce ..."
 
 #: objinspstrconsts:fesfetitle
 msgid "Edit Fields"
@@ -463,11 +465,11 @@ msgstr "Koniec"
 
 #: objinspstrconsts:oistdactsearchfindfirstheadline
 msgid "F&ind First"
-msgstr ""
+msgstr "Hľadať pr&vé"
 
 #: objinspstrconsts:oistdactsearchfindnextshortcut
 msgid "F3"
-msgstr ""
+msgstr "F3"
 
 #: objinspstrconsts:oisfavorites
 msgid "Favorites"
@@ -487,19 +489,19 @@ msgstr "Súbor"
 
 #: objinspstrconsts:oistdactsearchfindhint
 msgid "Find"
-msgstr ""
+msgstr "Hľadať"
 
 #: objinspstrconsts:oistdactsearchfindnextheadline
 msgid "Find &Next"
-msgstr ""
+msgstr "Hľadať ďa&lšie"
 
 #: objinspstrconsts:oistdactsearchfindfirsthint
 msgid "Find first"
-msgstr ""
+msgstr "Hľadať prvé"
 
 #: objinspstrconsts:oistdactsearchfindnexthint
 msgid "Find next"
-msgstr ""
+msgstr "Hľadať ďalšie"
 
 #: objinspstrconsts:oistdactdatasetfirsthint
 msgid "First"
@@ -515,7 +517,7 @@ msgstr "Výber fontu"
 
 #: objinspstrconsts:oiswidgetsetrestrictions
 msgid "General widget set restrictions: "
-msgstr ""
+msgstr "Všeobecné obmedzenia WidgetSetu"
 
 #: objinspstrconsts:cactionlisteditorhelpcategory
 msgid "Help"
@@ -731,11 +733,11 @@ msgstr "Orvoriť súbor s maskami (*.dem)"
 
 #: objinspstrconsts:oistdactfileopenwithhint
 msgid "Open with"
-msgstr ""
+msgstr "Otvoriť pomocou"
 
 #: objinspstrconsts:oistdactfileopenwithheadline
 msgid "Open with..."
-msgstr ""
+msgstr "Otvoriť pomocou ..."
 
 #: objinspstrconsts:oisoptions
 msgid "Options"
@@ -751,7 +753,7 @@ msgstr "Popist panelov"
 
 #: objinspstrconsts:sccssbeditpanels
 msgid "Panels Editor ..."
-msgstr ""
+msgstr "Editor panelov ..."
 
 #: objinspstrconsts:oistdacteditpasteshorthint
 msgid "Paste"
@@ -799,11 +801,11 @@ msgstr "Odstrániť z Obľúbených"
 
 #: objinspstrconsts:oistdactsearchreplacehint
 msgid "Replace"
-msgstr ""
+msgstr "Nahradiť"
 
 #: objinspstrconsts:oisrestricted
 msgid "Restricted"
-msgstr ""
+msgstr "Restricted"
 
 #: objinspstrconsts:rscdright
 msgid "Right"
@@ -847,11 +849,11 @@ msgstr "Uložiť..."
 
 #: objinspstrconsts:cactionlisteditorsearchcategory
 msgid "Search"
-msgstr ""
+msgstr "Hľadať"
 
 #: objinspstrconsts:sccshceditsections
 msgid "Sections Editor ..."
-msgstr ""
+msgstr "Editor sekcií .."
 
 #: objinspstrconsts:oistdacteditselectallheadline
 msgid "Select &All"
@@ -995,7 +997,7 @@ msgstr "Variant"
 
 #: objinspstrconsts:oisviewrestrictedproperties
 msgid "View restricted properties"
-msgstr ""
+msgstr "Zobraziť restricted vlastnosti"
 
 #: objinspstrconsts:rscdvisible
 msgid "Visible"
