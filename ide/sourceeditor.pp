@@ -5669,6 +5669,7 @@ begin
   TempEditor:=FindSourceEditorWithPageIndex(PageIndex);
   if TempEditor=nil then exit;
   Visible:=true;
+  EndIncrementalFind;
   TempEditor.Close;
   TempEditor.Free;
   if Notebook.PageCount>1 then
