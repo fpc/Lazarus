@@ -63,18 +63,37 @@ implementation
 { TFieldsListFrm }
 
 procedure TFieldsListFrm.BitBtnOkClick(Sender: TObject);
-var i: integer;
-    NewField: TField;
-    fModified: boolean;
-    PreActive: boolean;
+var
+  i: integer;
+  NewName:string;
+  NewField: TField;
+  fModified: boolean;
+  PreActive: boolean;
+
+function CreateFieldName(Owner:TComponent;const AName:string):string;
+var
+  j:integer;
+begin
+  for j:=0 to Owner.ComponentCount - 1 do
+  begin
+    if CompareText(Owner.Components[j].Name, AName)=0 then
+    begin
+      Result:=FDesigner.CreateUniqueComponentName(LinkDataset.Name + NewField.FieldName);
+      exit;
+    end;
+  end;
+  Result:=AName;
+end;
+
 begin
   PreActive := LinkDataset.Active;
   LinkDataSet.Active := False;
   fModified := False;
   for i := 0 to ListBox1.Items.Count - 1 do begin
-    if ListBox1.Selected[i] And (LinkDataset.FindField(ListBox1.Items[i]) = Nil) then begin
+    if ListBox1.Selected[i] And (LinkDataset.FindField(ListBox1.Items[i]) = Nil) then
+    begin
       NewField := TFieldDef(ListBox1.Items.Objects[i]).CreateField(LinkDataset.Owner);
-      NewField.Name := FDesigner.CreateUniqueComponentName(LinkDataset.Name + NewField.FieldName);
+      NewField.Name := CreateFieldName(LinkDataset.Owner, LinkDataset.Name + NewField.FieldName);
       FDesigner.PropertyEditorHook.PersistentAdded(NewField, True);
       fModified := True;
     end;

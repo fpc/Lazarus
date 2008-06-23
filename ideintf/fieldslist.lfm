@@ -3,12 +3,11 @@ object FieldsListFrm: TFieldsListFrm
   Height = 271
   Top = 99
   Width = 173
-  HorzScrollBar.Page = 172
-  VertScrollBar.Page = 270
   ActiveControl = BitBtnOk
   Caption = 'FieldsListFrm'
   ClientHeight = 271
   ClientWidth = 173
+  LCLVersion = '0.9.25'
   object BitBtnOk: TBitBtn
     Left = 9
     Height = 25
@@ -43,5 +42,6 @@ object FieldsListFrm: TFieldsListFrm
     Anchors = [akTop, akLeft, akRight, akBottom]
     MultiSelect = True
     TabOrder = 2
+    TopIndex = -1
   end
 end
