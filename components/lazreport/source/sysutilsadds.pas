@@ -39,34 +39,33 @@ unit SysUtilsAdds;
 
 interface
 
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 uses
   Classes, SysUtils
-  {$IFDEF UseLibC}
-  ,LibC
+  {$IF defined(VER2) and (FPC_RELEASE>=2)}
+  ,CLocale
   {$ENDIF}
   ;
 {$ENDIF}
 
 implementation
 
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 procedure InitInternationalFormats;
 Var i      : Integer;
     St     : string;
     Lg     : String;
     LstKde : TStringList;
-    U8S    : UTF8String;
+    DFMT   : string;
+    TFMT   : string;
+    TFMTAP : string;
 
    Function ConvertLinuxDateFormatToFp(Fmt,Dflt : String):string;
    begin
      try
-       {$IFDEF UseLibC}
-       Fmt:=StringReplace(Fmt,'%x',nl_langinfo(D_FMT),[rfReplaceAll]);
-       Fmt:=StringReplace(Fmt,'%X',nl_langinfo(T_FMT),[rfReplaceAll]);
-       Fmt:=StringReplace(Fmt,'%r',nl_langinfo(T_FMT_AMPM),[rfReplaceAll]);
-       {$ENDIF}
-
+       Fmt:=StringReplace(Fmt,'%x',DFMT,[rfReplaceAll]);
+       Fmt:=StringReplace(Fmt,'%X',TFMT,[rfReplaceAll]);
+       Fmt:=StringReplace(Fmt,'%r',TFMTAP,[rfReplaceAll]);
        Fmt:=StringReplace(Fmt,'%a','ddd',[rfReplaceAll]);
        Fmt:=StringReplace(Fmt,'%A','dddd',[rfReplaceAll]);
        Fmt:=StringReplace(Fmt,'%b','mmm',[rfReplaceAll]);
@@ -173,50 +172,9 @@ Var i      : Integer;
 
 begin
 
-  {$IFDEF UseLibC}
-  //Months
-  for i:=1 to 12 do
-  begin
-    ShortMonthNames[i]:=nl_langinfo((ABMON_1-1)+i);
-    LongMonthNames[i]:=nl_langinfo((MON_1-1)+i);
-  end;
-
-  //Days
-  for i:=1 to 7 do
-  begin
-    ShortDayNames[i]:=nl_langinfo((ABDAY_1-1)+i);
-    LongDayNames[i]:=nl_langinfo((DAY_1-1)+i);
-  end;
-
-  //PM/AM
-  TimeAMString:=nl_langinfo(AM_STR);
-  TimePMString:=nl_langinfo(PM_STR);
-
-  //Date and time format
-  ShortDateFormat:=ConvertLinuxDateFormatToFp(nl_langinfo(D_FMT),ShortDateFormat);
-  LongDateFormat :=ConvertLinuxDateFormatToFp(nl_langinfo(D_T_FMT),LongDateFormat);
-  ShortTimeFormat:=ConvertLinuxDateFormatToFp(nl_langinfo(T_FMT),ShortTimeFormat);
-  LongTimeFormat :=ConvertLinuxDateFormatToFp(nl_langinfo(T_FMT_AMPM),LongTimeFormat);
-
-  CurrencyString:=nl_langinfo(__CURRENCY_SYMBOL);
-  St:=nl_langinfo(THOUSEP);
-  if Length(St)>0 then
-    ThousandSeparator:=St[1];
-  St:=nl_langinfo(DECIMAL_POINT);
-  if Length(St)>0 then
-    DecimalSeparator:=St[1];
-
-  //Date séparator
-  for i:=1 to Length(ShortDateFormat) do
-  begin
-    if ShortDateFormat[i] in ['-','.','/'] then
-    begin
-      DateSeparator:=ShortDateFormat[i];
-      Break;
-    end;
-  end;
-  ShortDateFormat:=StringReplace(ShortDateFormat,DateSeparator,'/',[rfReplaceAll]);
-  {$ENDIF}
+  DFMT := ShortDateFormat; //nl_langinfo(D_FMT)
+  TFMT := ShortTimeFormat; //nl_langinfo(T_FMT)
+  TFMTAP := LongTimeFormat; //nl_langinfo(T_FMT_AMPM)
 
   //KDE config
   if DirectoryExists(ExpandFileName('~/.kde/share/config')) then
@@ -237,7 +195,7 @@ begin
       ShortDateFormat:=ReadKdeConfig('DateFormatShort',ShortDateFormat,True);
       ShortTimeFormat:=ReadKdeConfig('TimeFormatShort',ShortTimeFormat,True);
 
-      //Date séparator
+      //Date separator
       for i:=1 to Length(ShortDateFormat) do
       begin
         if ShortDateFormat[i] in ['-','.','/'] then
@@ -256,7 +214,9 @@ end;
 
 
 INITIALIZATION
+  {$IF defined(VER2) and (FPC_RELEASE>=2)}
   InitInternationalFormats;
+  {$ENDIF}
 {$ENDIF}
 end.
 
