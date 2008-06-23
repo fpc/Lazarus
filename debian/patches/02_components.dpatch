@@ -1,0 +1,21 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 06_unit_dbase.dpatch by  <Mazen Neifer <mazen.neifer@supaero.org>>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: This patch fixes compilation of printer support units on architectures
+## DP: which do not have libc unit (ie all except i386).
+
+@DPATCH@
+Index: components/Makefile.fpc
+===================================================================
+--- lazarus/components/Makefile.fpc	(révision 15506)
++++ lazarus/components/Makefile.fpc	(copie de travail)
+@@ -4,7 +4,7 @@
+ #
+ 
+ [target]
+-dirs=synedit codetools
++dirs=synedit codetools cgi cgi/ide printers printers/design fpcunit fpcunit/ide memds projecttemplates rtticontrols sdf sqldb tachart tdbf turbopower_ipro
+ 
+ [clean]
+ files=$(wildcard ./units/*$(OEXT)) \

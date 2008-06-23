@@ -32,7 +32,7 @@ endif
 # Clean
 #
 
-clean: configure clean-patched unpatch
+clean: patch configure clean-patched unpatch
 clean-patched:
 	@echo "--- Cleaning"
 	dh_testdir
@@ -51,11 +51,11 @@ clean-patched:
 patch: patch-stamp
 
 patch-stamp:
-	dpatch apply-all
+	dpatch apply-all -v
 	touch patch-stamp
 
 unpatch:
-	dpatch deapply-all
+	dpatch deapply-all -v
 	rm -rf patch-stamp debian/patched
 
 ###################

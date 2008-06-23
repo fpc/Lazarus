@@ -1,0 +1,52 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 06_unit_dbase.dpatch by  <Mazen Neifer <mazen.neifer@supaero.org>>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: This patch fixes dist_clean target used to remove generated
+## DP: files before packaging sources.
+
+@DPATCH@
+Index: Makefile.fpc
+===================================================================
+--- lazarus/Makefile.fpc	(révision 15506)
++++ lazarus/Makefile.fpc	(copie de travail)
+@@ -11,7 +11,7 @@
+ 
+ [target]
+ programs=lazarus startlazarus
+-dirs=lcl components packager/registration ideintf designer packager
++dirs=lcl components packager/registration ideintf designer packager ide tools
+ exampledirs=examples
+ 
+ [compiler]
+@@ -40,13 +40,9 @@
+ 
+ #-----------------------------------------------------------------------------
+ [rules]
+-.PHONY: lcl components packager/registration ideintf packager bigidecomponents ide idepkg idebig bigide starter lazbuilder tools all clean cleanide purge examples install
++.PHONY: lcl components packager/registration ideintf packager bigidecomponents idepkg idebig bigide starter lazbuilder all clean cleanide purge examples install
+ 
+ #-----------------------------------------------------------------------------
+-ide: 
+-	$(MAKE) -C ide ide
+-
+-#-----------------------------------------------------------------------------
+ idepkg:
+ 	$(MAKE) -C ide idepkg
+ 
+@@ -75,7 +71,6 @@
+ 
+ #-----------------------------------------------------------------------------
+ tools: lcl components
+-	$(MAKE) -C tools
+ 	
+ #-----------------------------------------------------------------------------
+ examples: lcl components
+@@ -127,7 +122,7 @@
+ 	ln -sf $(LAZARUS_INSTALL_DIR)/lazarus $(INSTALL_PREFIX)/bin/lazarus-ide
+ 	ln -sf $(LAZARUS_INSTALL_DIR)/startlazarus $(INSTALL_PREFIX)/bin/startlazarus
+ 	ln -sf $(LAZARUS_INSTALL_DIR)/lazbuild $(INSTALL_PREFIX)/bin/lazbuild
+-	cat $(LAZARUS_INSTALL_DIR)/docs/lazbuild.1 | gzip > $(INSTALL_MAN_DIR)/man1/lazbuild.1.gz
++	cat $(LAZARUS_INSTALL_DIR)/install/man/man1/lazbuild.1 | gzip > $(INSTALL_MAN_DIR)/man1/lazbuild.1.gz
+ endif
+ 
