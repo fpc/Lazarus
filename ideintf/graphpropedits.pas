@@ -170,6 +170,7 @@ var
   DummyClassForPropTypes: TDummyClassForGraphPropTypes;
 
 { TGraphicPropertyEditor }
+
 procedure TGraphicPropertyEditor.Edit;
 var
   TheDialog: TGraphicPropertyEditorForm;
@@ -189,8 +190,11 @@ begin
       begin
         if TheDialog.Modified and FileExists(TheDialog.FileName) then
         begin
+          {$Warnings off}
+          // TGraphic itself is an abstract class, so the compiler will warn
           if AGraphic = nil then
-            AGraphic := TGraphic(GetTypeData(GetPropType)^.ClassType.Create).Create;
+            AGraphic := TGraphic(GetTypeData(GetPropType)^.ClassType).Create;
+          {$Warnings on}
 
           AGraphic.LoadFromFile(TheDialog.FileName);
           SetPtrValue(AGraphic);
