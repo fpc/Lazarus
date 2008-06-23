@@ -98,7 +98,6 @@ procedure TJumpHandler.DoJump(Sender: TObject);
 var
   SrcEditor: TSourceEditorInterface;
   CodeBuffer: TCodeBuffer;
-  CurCodeTool: TCustomCodeTool;
   Node: TCodeTreeNode;
   Tool: TCodeTool;
   T: TJumpType;
