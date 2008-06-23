@@ -14,7 +14,8 @@
         <Generate Value="Faster"/>
       </CodeGeneration>
       <Other>
-        <CustomOptions Value="-dDebugLR"/>
+        <CustomOptions Value="
+"/>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
