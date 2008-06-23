@@ -309,6 +309,9 @@ begin
   VK_F15       : Result := MK_F15;
   VK_NUMLOCK   : Result := MK_NUMLOCK;
   VK_SCROLL    : Result := MK_SCRLOCK;
+  VK_SHIFT     : Result := MK_SHIFTKEY;
+  VK_CONTROL   : Result := MK_COMMAND;
+  VK_MENU      : Result := MK_ALT;
   else
     Result := 0;
   end;

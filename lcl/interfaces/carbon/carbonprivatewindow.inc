@@ -288,13 +288,10 @@ begin
   NotifyApplicationUserInput(Msg.Message.Msg);
   if DeliverMessage(Widget.LCLObject, Msg) = 0 then
   begin
-    Result := EventNotHandledErr //CallNextEventHandler(ANextHandler, AEvent);
+    Result := EventNotHandledErr;
   end
-  else
-  begin
-    // the LCL does not want the event propagated
+  else  // the LCL does not want the event propagated
     Result := noErr;
-  end;
   
   // interactive design
   if (Widget is TCarbonDesignWindow) and (GetCarbonMouseButton(AEvent) = 1) and

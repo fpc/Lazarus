@@ -212,7 +212,7 @@ type
     procedure CreateWidget(const AParams: TCreateParams); override;
     procedure DestroyWidget; override;
     function GetFrame(Index: Integer): ControlRef; override;
-    public
+  public
     class function GetValidEvents: TCarbonControlEvents; override;
     procedure Draw; override;
     procedure GetInfo(out AImageSize, AViewSize, ALineSize: HISize; out AOrigin: HIPoint); virtual;
@@ -771,7 +771,16 @@ begin
   AOrigin := GetHIPoint(FScrollOrigin.X * FMulX, FScrollOrigin.Y * FMulY);
   AImageSize := GetHISize(FScrollSize.X * FMulX, FScrollSize.Y * FMulY);
   AViewSize := GetHISize(C.Right - C.Left, C.Bottom - C.Top);
-  ALineSize := GetHISize(FScrollPageSize.X * FMulX / 40, FScrollPageSize.Y * FMulY / 40);
+  
+  if FMulX > 1 then
+    ALineSize.width := FMulX
+  else
+    ALineSize.width := 10;
+    
+  if FMulY > 1 then
+    ALineSize.height := FMulY
+  else
+    ALineSize.height := 10;
   
   {$IFDEF VerboseScroll}
     DebugLn('TCarbonCustomControl.GetInfo ' + LCLObject.Name + ' Origin: ' +

@@ -74,6 +74,7 @@ const
 
 //Modifiers codes - you'll never get these directly
 
+  MK_SHIFTKEY  = $38;
   MK_CTRL      = $3B;
   MK_ALT       = $3A; MK_OPTION = MK_ALT;
   MK_COMMAND   = $37; MK_APPLE  = MK_COMMAND;
