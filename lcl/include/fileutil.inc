@@ -1115,7 +1115,7 @@ begin
   i:=1;
   repeat
     Result:=CurPath+IntToStr(i)+'.tmp';
-    if not FileExists(Result) then exit;
+    if not (FileExists(Result) or DirectoryExists(Result)) then exit;
     inc(i);
   until false;
 end;
