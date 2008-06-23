@@ -237,7 +237,7 @@ var
   CurPath: String;
 begin
   Result:=mrOk;
-  p:=0;
+  p:=1;
   repeat
     CurPath:=GetNextDirectoryInSearchPath(ExpandedPath,p);
     if (CurPath<>'') and (not IDEMacros.StrHasMacros(CurPath))

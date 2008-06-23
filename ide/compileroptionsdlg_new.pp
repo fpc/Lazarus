@@ -728,7 +728,7 @@ function TfrmCompilerOptionsNew.PutCompilerOptions(
           +'Lazarus uses this as normal character and does not expand them as file mask.',
           mtWarning,[mbOk,mbCancel],0) <> mrOk then exit;
       end;
-      p:=0;
+      p:=1;
       repeat
         //DebugLn(['CheckSearchPath ',ExpandedPath,' ',p,' ',length(ExpandedPath)]);
         CurPath:=GetNextDirectoryInSearchPath(ExpandedPath,p);

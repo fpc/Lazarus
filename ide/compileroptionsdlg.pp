@@ -1570,7 +1570,7 @@ begin
 
   // check for non existing directories
   if ord(Level)<=ord(ccomlWarning) then begin
-    p:=0;
+    p:=1;
     repeat
       //DebugLn(['CheckSearchPath ',ExpandedPath,' ',p,' ',length(ExpandedPath)]);
       CurPath:=GetNextDirectoryInSearchPath(ExpandedPath,p);
