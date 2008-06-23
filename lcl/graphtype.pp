@@ -99,7 +99,7 @@ type
 
   TRawImageQueryFlag = (
     riqfMono,        // Include a description for a mono image
-    riqfGrey,        // Include a description for a greq image
+    riqfGrey,        // Include a description for a grey image
     riqfRGB,         // Include a description for a RGB image
     riqfAlpha,       // Include a description for an Alpha channel
     riqfMask,        // Include a description for a Mask
