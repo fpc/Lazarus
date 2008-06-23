@@ -1852,7 +1852,7 @@ begin
     else
       DebugLn('[WARNING] Debugger: Unknown record: ', S);
     end;
-    {$message warning condition should also check end-of-file reached for process output stream}
+    {$IFDEF VerboseIDEToDo}{$message warning condition should also check end-of-file reached for process output stream}{$ENDIF}
   until not DebugProcessRunning;
 end;
 

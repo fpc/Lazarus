@@ -361,7 +361,7 @@ begin
       end;
     end;
 *)
-    {$message warning condition should also check end-of-file reached for process output stream}
+  {$IFDEF VerboseIDEToDo}{$message warning condition should also check end-of-file reached for process output stream}{$ENDIF}
   until not DebugProcessRunning and (Length(FOutputBuf) = 0); 
 
   FReading := False;
