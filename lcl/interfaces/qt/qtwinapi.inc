@@ -575,13 +575,23 @@ end;
 function TQtWidgetSet.CreateIconIndirect(IconInfo: PIconInfo): HICON;
 var
   AIcon: TQtIcon;
-  APixmap: QPixmapH;
+  APixmap, ATemp: QPixmapH;
+  AMask: QBitmapH;
 begin
   Result := 0;
   if IsValidGDIObject(IconInfo^.hbmColor) then
   begin
     APixmap := QPixmap_create();
     QPixmap_fromImage(APixmap, TQtImage(IconInfo^.hbmColor).Handle);
+    if IconInfo^.hbmMask <> 0 then
+    begin
+      ATemp := QPixmap_create();
+      QPixmap_fromImage(ATemp, TQtImage(IconInfo^.hbmMask).Handle);
+      AMask := QBitmap_create(ATemp);
+      QPixmap_setMask(APixmap, AMask);
+      QPixmap_destroy(ATemp);
+      QBitmap_destroy(AMask);
+    end;
     if IconInfo^.fIcon then
     begin
       AIcon := TQtIcon.Create;
