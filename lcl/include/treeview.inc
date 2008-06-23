@@ -3944,14 +3944,13 @@ begin
   Node := GetNodeAt(X, Y);
   {$IFDEF VerboseDrag}
   DebugLn(['TCustomTreeView.DragOver ',Name,':',ClassName,' ',Node<>nil,' ',Node <> DropTarget,' ',Node = FLastDropTarget]);
+  DebugLn(['TCustomTreeView.DragOver Source ',Source,':',Source.ClassName]);
   {$ENDIF}
   if (Node <> nil)
   and ((Node <> DropTarget) or (Node = FLastDropTarget)) then
   begin
     FLastDropTarget := nil;
-    TDragObject(Source).HideDragImage;
     Node.DropTarget := True;
-    TDragObject(Source).ShowDragImage;
   end;
 end;
 
