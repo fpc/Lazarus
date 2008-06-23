@@ -2698,7 +2698,7 @@ begin
              {$ENDIF},
              TopLine);
   nL2 := Min({$IFDEF SYN_LAZARUS}
-             ScreenRowToRow((rcClip.Bottom-1) div fTextHeight+1),
+             ScreenRowToRow((rcClip.Bottom-1) div fTextHeight),
              {$ELSE}
              TopLine + (rcClip.Bottom + fTextHeight - 1) div fTextHeight,
              {$ENDIF}
