@@ -11,21 +11,6 @@ inherited frEditorForm: TfrEditorForm
   Font.Color = clBlack
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
-  Icon.Data = {
-    9C0100002F2A2058504D202A2F0A7374617469632063686172202A6772617068
-    69635B5D203D207B0A22313620313620332031222C0A222E2063204E6F6E6522
-    2C0A222C20632023464646464646222C0A222D20632023303046464646222C0A
-    222E2E2E2E2E2C2C2C2C2C2C2C2C2C2E2E222C0A222E2E2C2C2C2C2C2C2C2C2C
-    2C2C2E2E2E222C0A222E2E2C2C2C2E2E2E2C2E2E2E2E2E2E2E222C0A222E2E2C
-    2C2E2E2E2E2C2E2E2E2E2E2E2E222C0A222E2E2E2E2E2E2E2C2E2E2E2E2E2E2E
-    2E222C0A222E2E2E2E2E2E2C2D2D2D2D2D2D2D2D2E222C0A222E2E2C2C2C2C2C
-    2C2D2D2D2D2D2D2D2D222C0A222E2C2C2C2C2C2C2E2E2E2D2E2E2E2E2D222C0A
-    222E2E2E2E2C2E2E2D2E2D2E2E2E2E2D2D222C0A222E2E2E2C2E2E2E2E2D2E2E
-    2D2D2D2D2E222C0A222E2C2C2E2E2E2E2D2D2D2D2D2D2E2E2E222C0A222C2C2E
-    2E2E2E2D2D2E2E2E2E2E2E2E2E222C0A222C2E2E2E2E2E2D2D2D2D2D2E2E2E2E
-    2E222C0A222E2E2E2E2E2E2D2E2D2D2D2D2D2E2E2E222C0A222E2E2E2E2E2D2E
-    2E2E2E2E2D2D2D2E2E222C0A222E2E2E2E2D2E2E2E2E2E2E2E2E2D2E2E227D0A
-  }
   KeyPreview = True
   OnCreate = FormCreate
   OnHide = FormHide
@@ -147,6 +132,7 @@ inherited frEditorForm: TfrEditorForm
       ParentColor = False
       TabOrder = 0
       BookMarkOptions.Xoffset = 2
+      BookMarkOptions.OnChange = nil
       Gutter.Color = 13605511
       Gutter.LeftOffset = 10
       Gutter.Width = 20
@@ -481,6 +467,7 @@ inherited frEditorForm: TfrEditorForm
         '   c:=25;'
         'End'
       )
+      SelectedColor.OnChange = nil
     end
   end
   object MemoPanel: TPanel[2]
@@ -533,9 +520,9 @@ inherited frEditorForm: TfrEditorForm
         TabOrder = 0
         object CB1: TCheckBox
           Left = 4
-          Height = 22
+          Height = 19
           Top = 2
-          Width = 61
+          Width = 53
           HelpContext = 80
           AllowGrayed = True
           Caption = '&Script'
@@ -544,9 +531,9 @@ inherited frEditorForm: TfrEditorForm
         end
         object CB2: TCheckBox
           Left = 92
-          Height = 22
+          Height = 19
           Top = 2
-          Width = 73
+          Width = 62
           HelpContext = 90
           AllowGrayed = True
           Caption = '&Big font'
@@ -555,9 +542,9 @@ inherited frEditorForm: TfrEditorForm
         end
         object CB3: TCheckBox
           Left = 224
-          Height = 22
+          Height = 19
           Top = 2
-          Width = 89
+          Width = 78
           HelpContext = 100
           AllowGrayed = True
           Caption = '&Word wrap'
@@ -585,7 +572,7 @@ inherited frEditorForm: TfrEditorForm
     CommentAttri.Foreground = 13461314
     NumberAttri.Foreground = clRed
     StringAttri.Foreground = 15226932
-    left = 224
+    left = 228
     top = 192
   end
 end
