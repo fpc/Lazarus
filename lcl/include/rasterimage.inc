@@ -145,7 +145,7 @@ begin
   end;
 
   try
-    if not RawImage_CreateBitmaps(ImagePtr^, ImgHandle, ImgMaskHandle, DevDesc.MaskBitsPerPixel <> 0)
+    if not RawImage_CreateBitmaps(ImagePtr^, ImgHandle, ImgMaskHandle, DevDesc.MaskBitsPerPixel = 0)
     then begin
       DebugLn('TRasterImage.BitmapHandleNeeded: Unable to create handles, using default');
       // create a default handle
