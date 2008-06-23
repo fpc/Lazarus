@@ -21,8 +21,8 @@ var
   Widget: PGtkWidget;
   Window: PGdkWindow;
 begin
-  Widget := AInfo^.CoreWidget;
-  Window := PGTkButton(Widget)^.event_window;
+  Widget := AInfo^.ClientWidget;
+  Window := PGtkButton(Widget)^.event_window;
   if Window = nil then Exit;
   SetWindowCursor(Window, AInfo^.ControlCursor, False);
 end;
