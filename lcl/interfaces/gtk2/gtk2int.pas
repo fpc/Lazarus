@@ -167,7 +167,8 @@ uses
 // Gtk2WSToolwin,
  Gtk2Themes,
 ////////////////////////////////////////////////////
-  gtkProc;
+ GtkProc,
+ GtkDebug;
 
 {$include gtk2widgetset.inc}
 {$include gtk2winapi.inc}
