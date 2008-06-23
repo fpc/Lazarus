@@ -1539,6 +1539,9 @@ procedure TDebugManager.UpdateButtonsAndMenuItems;
 var
   DebuggerInvalid: boolean;
 begin
+  if (MainIDE=nil) or (MainIDE.ToolStatus = itExiting)
+  then exit;
+  
   DebuggerInvalid:=(FDebugger=nil) or (MainIDE.ToolStatus<>itDebugger);
   with MainIDEBar do begin
     // For 'run' and 'step' bypass 'idle', so we can set the filename later
