@@ -2691,8 +2691,11 @@ begin
   nC2 := nC1 +
     (rcClip.Right - fGutterWidth - 2 + CharWidth - 1) div CharWidth;
   // lines
-  nL1 := Max({$IFDEF SYN_LAZARUS}TopLine + rcClip.Top div fTextHeight
-             {$ELSE}ScreenRowToRow(rcClip.Top div fTextHeight){$ENDIF},
+  nL1 := Max({$IFDEF SYN_LAZARUS}
+             ScreenRowToRow(rcClip.Top div fTextHeight)
+             {$ELSE}
+             TopLine + rcClip.Top div fTextHeight
+             {$ENDIF},
              TopLine);
   nL2 := Min({$IFDEF SYN_LAZARUS}
              ScreenRowToRow((rcClip.Bottom-1) div fTextHeight+1),
@@ -3025,7 +3028,7 @@ begin
       rcLine := AClip;
       rcLine.Right := fGutterWidth - 2;
       //rcLine.Right := Max(rcLine.Right, fGutterWidth - 2);
-      rcLine.Bottom := (FirstLine - TopLine) * fTextHeight;
+      rcLine.Bottom := RowToScreenRow(FirstLine) * fTextHeight;
       for iLine := FirstLine to LastLine do begin
         // next line rect
         rcLine.Top := rcLine.Bottom;
@@ -3811,7 +3814,7 @@ var
     // Initialize rcLine for drawing. Note that Top and Bottom are updated
     // inside the loop. Get only the starting point for this.
     rcLine := AClip;
-    rcLine.Bottom := (FirstLine - TopLine) * fTextHeight;
+    rcLine.Bottom := RowToScreenRow(FirstLine) * fTextHeight;
     // Make sure the token accumulator string doesn't get reassigned to often.
     if Assigned(fHighlighter) then begin
       TokenAccu.MaxLen := Max(128, fCharsInWindow * 4);
@@ -7555,6 +7558,7 @@ var
   {$IFDEF SYN_LAZARUS}
   MinX: Integer;
   MaxX: Integer;
+  i, Y : integer;
   PhysBlockBeginXY: TPoint;
   PhysBlockEndXY: TPoint;
   {$ENDIF}
@@ -7610,12 +7614,19 @@ begin
     // Make sure Y is visible
     if CaretY < TopLine then
       TopLine := CaretY
+    {$IFDEF SYN_LAZARUS}
+    else if CaretY > ScreenRowToRow(Max(1, LinesInWindow) - 1) then begin                  //mh 2000-10-19
+      Y := CaretY;
+      for i:=1 to (Max(1, LinesInWindow) - 1) do begin
+        dec(Y);
+        Y:=FindNextUnfoldedLine(Y,false);
+      end;
+      TopLine:=Max(Y, 1);
+      end
+    {$ELSE}
     else if CaretY > TopLine + Max(1, LinesInWindow) - 1 then                   //mh 2000-10-19
-      {$IFDEF SYN_LAZARUS}
-      TopLine := CaretY - (Max(1,LinesInWindow) - 1)
-      {$ELSE}
       TopLine := CaretY - (LinesInWindow - 1)
-      {$ENDIF}
+    {$ENDIF}
     else
       TopLine := TopLine;                                                       //mh 2000-10-19
   finally
