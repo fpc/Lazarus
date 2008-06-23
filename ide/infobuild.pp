@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  ExtCtrls, StdCtrls, ExtDlgs,
+  LCLProc, ExtCtrls, StdCtrls, ExtDlgs,
   LazIDEIntf,
   LazarusIDEStrConsts;
 
@@ -40,24 +40,24 @@ type
   { TFInfoCompile }
 
   TFInfoCompile = class ( TForm )
-   BClose : TBitBtn;
-   LInfoError : TLabel;
-   LInfoNote : TLabel;
-   LInfoHint : TLabel;
-   LInfoWarning : TLabel;
-   LInfoLines : TLabel;
-   LNError : TLabel;
-   LNNote : TLabel;
-   LNLines : TLabel;
-   LNHint : TLabel;
-   LNWarning : TLabel;
-   Panel2 : TPanel;
-   Panel4 : TPanel;
-   PCurrentStatus : TLabel;
-   Panel1 : TPanel;
-   PInfo : TPanel;
-   procedure BCloseClick ( Sender : TObject ) ;
-   procedure FormCreate ( Sender : TObject ) ;
+    BClose : TBitBtn;
+    LInfoError : TLabel;
+    LInfoNote : TLabel;
+    LInfoHint : TLabel;
+    LInfoWarning : TLabel;
+    LInfoLines : TLabel;
+    LNError : TLabel;
+    LNNote : TLabel;
+    LNLines : TLabel;
+    LNHint : TLabel;
+    LNWarning : TLabel;
+    Panel2 : TPanel;
+    Panel4 : TPanel;
+    PCurrentStatus : TLabel;
+    Panel1 : TPanel;
+    PInfo : TPanel;
+    procedure BCloseClick ( Sender : TObject ) ;
+    procedure FormCreate ( Sender : TObject ) ;
   private
     NHints    : Integer;
     NWarnings : Integer;
@@ -219,6 +219,7 @@ end;
 
 Procedure CreateInfoBuilder(Owner: TComponent);
 begin
+  //DebugLn(['CreateInfoBuilder ',ShowCompileDialog]);
   DestroyInfoBuilder;
   if ShowCompileDialog then
   begin

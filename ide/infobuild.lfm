@@ -1,10 +1,8 @@
 object FInfoCompile: TFInfoCompile
-  Left = 242
+  Left = 270
   Height = 199
-  Top = 231
+  Top = 251
   Width = 397
-  HorzScrollBar.Page = 396
-  VertScrollBar.Page = 198
   ActiveControl = BClose
   BorderIcons = []
   BorderStyle = bsDialog
@@ -72,8 +70,8 @@ object FInfoCompile: TFInfoCompile
     BevelInner = bvLowered
     BevelOuter = bvLowered
     BorderStyle = bsSingle
-    ClientHeight = 44
-    ClientWidth = 206
+    ClientHeight = 48
+    ClientWidth = 210
     TabOrder = 3
     object LNHint: TLabel
       Left = 68
