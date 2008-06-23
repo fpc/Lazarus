@@ -175,9 +175,11 @@ procedure TGraphicPropertyEditor.Edit;
 var
   TheDialog: TGraphicPropertyEditorForm;
   AGraphic: TGraphic;
+  FreeGraphic: Boolean;
 begin
   AGraphic := TGraphic(GetObjectValue(TGraphic));
   TheDialog := TGraphicPropertyEditorForm.Create(nil);
+  FreeGraphic:=false;
   try
     if (AGraphic <> nil) then
       TheDialog.Preview.Picture.Assign(AGraphic)
@@ -192,11 +194,14 @@ begin
         begin
           {$Warnings off}
           // TGraphic itself is an abstract class, so the compiler will warn
-          if AGraphic = nil then
-            AGraphic := TGraphic(GetTypeData(GetPropType)^.ClassType).Create;
+          if AGraphic = nil then begin
+            AGraphic := TGraphic(GetTypeData(GetPropType)^.ClassType.Create).Create;
+            FreeGraphic:=true;
+          end;
           {$Warnings on}
 
           AGraphic.LoadFromFile(TheDialog.FileName);
+          FreeGraphic:=false;
           SetPtrValue(AGraphic);
           Modified;
         end;
@@ -209,6 +214,8 @@ begin
       end;
     end;
   finally
+    if FreeGraphic then
+      AGraphic.Free;
     TheDialog.Free;
   end;
 end;
