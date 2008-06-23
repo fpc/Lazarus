@@ -1648,6 +1648,9 @@ end;
 procedure TSynPasSyn.UnknownProc;
 begin
   inc(Run);
+  {$IFDEF SYN_LAZARUS}
+  while (fLine[Run]>=#128) do inc(Run);
+  {$ENDIF}
   fTokenID := tkUnknown;
 end;
 
