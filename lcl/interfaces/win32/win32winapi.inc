@@ -172,8 +172,8 @@ var
     FillChar(ScrollInfo, sizeof(ScrollInfo), #0);
     ScrollInfo.cbSize := sizeof(ScrollInfo);
     ScrollInfo.fMask := SIF_PAGE or SIF_POS or SIF_RANGE;
+    WParam := (TLMMouseEvent(Message).X and $FFFF) or (longint(TLMMouseEvent(Message).Y and $FFFF) shl 16);
     // if mouse is over horizontal scrollbar, scroll horizontally
-    WParam := (TLMMouseEvent(Message).X and $FFFF) or ((TLMMouseEvent(Message).Y and $FFFF) shl 16);
     if Windows.SendMessage(Handle, WM_NCHITTEST, 0, WParam) = HTHSCROLL then
     begin
       ScrollBar := SB_HORZ;
