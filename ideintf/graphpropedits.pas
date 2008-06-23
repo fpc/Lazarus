@@ -195,7 +195,7 @@ begin
           {$Warnings off}
           // TGraphic itself is an abstract class, so the compiler will warn
           if AGraphic = nil then begin
-            AGraphic := TGraphic(GetTypeData(GetPropType)^.ClassType.Create).Create;
+            AGraphic := TGraphic(GetTypeData(GetPropType)^.ClassType).Create;
             FreeGraphic:=true;
           end;
           {$Warnings on}
