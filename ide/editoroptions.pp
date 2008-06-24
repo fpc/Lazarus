@@ -362,6 +362,7 @@ type
     fRightMarginColor: TColor;
     fEditorFont:  String;
     fEditorFontHeight: Integer;
+    fExtraCharSpacing: Integer;
     fExtraLineSpacing: Integer;
     FDoNotWarnForFont: string;
 
@@ -460,8 +461,10 @@ type
     property EditorFont: String read fEditorFont write fEditorFont;
     property EditorFontHeight: Integer
       read fEditorFontHeight write FEditorFontHeight;
+    property ExtraCharSpacing: Integer
+      read fExtraCharSpacing write fExtraCharSpacing default 0;
     property ExtraLineSpacing: Integer
-      read fExtraLineSpacing write fExtraLineSpacing default 0;
+      read fExtraLineSpacing write fExtraLineSpacing default 1;
     property DoNotWarnForFont: string read FDoNotWarnForFont write FDoNotWarnForFont;
 
     // Key Mappings
@@ -540,6 +543,8 @@ type
     EditorFontHeightComboBox: TComboBox;
     ExtraLineSpacingLabel: TLabel;
     ExtraLineSpacingComboBox: TComboBox;
+    ExtraCharSpacingLabel: TLabel;
+    ExtraCharSpacingComboBox: TComboBox;
     DisplayPreview:    TPreviewEditor;
 
     // Key Mappings
@@ -1559,6 +1564,8 @@ begin
       XMLConfig.GetValue('EditorOptions/Display/EditorFont', 'courier');
     fEditorFontHeight :=
       XMLConfig.GetValue('EditorOptions/Display/EditorFontHeight', 12);
+    fExtraCharSpacing :=
+      XMLConfig.GetValue('EditorOptions/Display/ExtraCharSpacing', 0);
     fExtraLineSpacing :=
       XMLConfig.GetValue('EditorOptions/Display/ExtraLineSpacing', 1);
     FDoNotWarnForFont :=
@@ -1688,6 +1695,8 @@ begin
       fEditorFont, 'courier');
     XMLConfig.SetDeleteValue('EditorOptions/Display/EditorFontHeight'
       ,fEditorFontHeight, 12);
+    XMLConfig.SetDeleteValue('EditorOptions/Display/ExtraCharSpacing'
+      ,fExtraCharSpacing, 1);
     XMLConfig.SetDeleteValue('EditorOptions/Display/ExtraLineSpacing'
       ,fExtraLineSpacing, 1);
     XMLConfig.SetDeleteValue('EditorOptions/Display/DoNotWarnForFont'
@@ -2184,6 +2193,7 @@ begin
   ASynEdit.RightEdgeColor := fRightMarginColor;
   ASynEdit.Font.Height := fEditorFontHeight;// set height before name for XLFD !
   ASynEdit.Font.Name := fEditorFont;
+  ASynEdit.ExtraCharSpacing := fExtraCharSpacing;
   ASynEdit.ExtraLineSpacing := fExtraLineSpacing;
   ASynEdit.MaxUndo := fUndoLimit;
   GetLineColors(ASynEdit.Highlighter, ahaTextBlock, FG, BG);
@@ -2217,6 +2227,7 @@ begin
   fRightMarginColor := ASynEdit.RightEdgeColor;
   fEditorFont    := ASynEdit.Font.Name;
   fEditorFontHeight := ASynEdit.Font.Height;
+  fExtraCharSpacing := ASynEdit.ExtraCharSpacing;
   fExtraLineSpacing := ASynEdit.ExtraLineSpacing;
   fUndoLimit     := ASynEdit.MaxUndo;
 end;
@@ -2273,6 +2284,7 @@ begin
   ASynEdit.RightEdgeColor := fRightMarginColor;
   ASynEdit.Font.Height := fEditorFontHeight; // set height before Name for XLFD !
   ASynEdit.Font.Name := fEditorFont;
+  ASynEdit.ExtraCharSpacing := fExtraCharSpacing;
   ASynEdit.ExtraLineSpacing := fExtraLineSpacing;
   ASynEdit.ReadOnly := True;
 
@@ -2717,6 +2729,16 @@ begin
       for a := Low(PreviewEdits) to High(PreviewEdits) do
         if PreviewEdits[a] <> Nil then
           PreviewEdits[a].Font.Height := NewVal;
+    end
+    else
+    if Sender = ExtraCharSpacingComboBox then
+    begin
+      NewVal := StrToIntDef(ExtraCharSpacingComboBox.Text,
+        PreviewEdits[1].ExtraCharSpacing);
+      SetComboBoxText(ExtraCharSpacingComboBox, IntToStr(NewVal));
+      for a := Low(PreviewEdits) to High(PreviewEdits) do
+        if PreviewEdits[a] <> Nil then
+          PreviewEdits[a].ExtraCharSpacing := NewVal;
     end
     else
     if Sender = ExtraLineSpacingComboBox then
@@ -3547,10 +3569,9 @@ begin
 
   EditorFontHeightLabel.Caption := dlgEditorFontHeight;
 
-  with ExtraLineSpacingComboBox do
-    SetComboBoxText(ExtraLineSpacingComboBox
-      , IntToStr(EditorOpts.ExtraLineSpacing));
-
+  SetComboBoxText(ExtraCharSpacingComboBox,IntToStr(EditorOpts.ExtraCharSpacing));
+  ExtraCharSpacingLabel.Caption := dlgExtraCharSpacing;
+  SetComboBoxText(ExtraLineSpacingComboBox,IntToStr(EditorOpts.ExtraLineSpacing));
   ExtraLineSpacingLabel.Caption := dlgExtraLineSpacing;
 end;
 

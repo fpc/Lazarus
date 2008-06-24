@@ -1107,6 +1107,7 @@ resourcestring
   dlgEditorFont = 'Editor font';
   dlgDefaultEditorFont='Default editor font';
   dlgEditorFontHeight = 'Editor font height';
+  dlgExtraCharSpacing = 'Extra char spacing';
   dlgExtraLineSpacing = 'Extra line spacing';
   dlgKeyMappingScheme = 'Key Mapping Scheme';
   dlgCheckConsistency = 'Check consistency';

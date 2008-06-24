@@ -384,6 +384,7 @@ type
     fHighlighterNeedsUpdateStartLine: integer; // 1 based, 0 means invalid
     fHighlighterNeedsUpdateEndLine: integer; // 1 based, 0 means invalid
     fBeautifier: TSynCustomBeautifier;
+    fExtraCharSpacing: integer;
     {$ENDIF}
     fLines: TStrings;
     fLinesInWindow: Integer;// MG: fully visible lines in window
@@ -542,6 +543,7 @@ type
     procedure SetInsertMode(const Value: boolean);
     procedure SetKeystrokes(const Value: TSynEditKeyStrokes);
     {$ifdef SYN_LAZARUS}
+    procedure SetExtraCharSpacing(const Value: integer);
     procedure SetLastMouseCaret(const AValue: TPoint);
     {$ENDIF}
     procedure SetLeftChar(Value: Integer);
@@ -861,6 +863,8 @@ type
       default bsSingle;
     {$IFDEF SYN_LAZARUS}
     property BlockIndent: integer read fBlockIndent write SetBlockIndent default 2;
+    property ExtraCharSpacing: integer
+      read fExtraCharSpacing write SetExtraCharSpacing default 0;
     {$ENDIF}
     property ExtraLineSpacing: integer
       read fExtraLineSpacing write SetExtraLineSpacing default 0;
@@ -987,6 +991,9 @@ type
     // TCustomSynEdit properties
     property BookMarkOptions;
     property BorderStyle;
+    {$IFDEF SYN_LAZARUS}
+    property ExtraCharSpacing;
+    {$ENDIF}
     property ExtraLineSpacing;
     property Gutter;
     property HideSelection;
@@ -7643,6 +7650,13 @@ begin
 end;
 
 {$IFDEF SYN_LAZARUS}
+procedure TCustomSynEdit.SetExtraCharSpacing(const Value: integer);
+begin
+  if fExtraCharSpacing=Value then exit;
+  fExtraCharSpacing := Value;
+  FontChanged(self);
+end;
+
 procedure TCustomSynEdit.SetLastMouseCaret(const AValue: TPoint);
 begin
   if (FLastMouseCaret.X=AValue.X) and (FLastMouseCaret.Y=AValue.Y) then exit;
@@ -9091,6 +9105,9 @@ end;
 
 procedure TCustomSynEdit.SetExtraLineSpacing(const Value: integer);
 begin
+  {$IFDEF SYN_LAZARUS}
+  if fExtraLineSpacing=Value then exit;
+  {$ENDIF}
   fExtraLineSpacing := Value;
   FontChanged(self);
 end;
@@ -9934,7 +9951,7 @@ begin
     //debugln('TCustomSynEdit.RecalcCharExtent B CharHeight=',dbgs(CharHeight));
     fTextHeight := CharHeight + fExtraLineSpacing;
     BaseStyle := BoldStyles[UsesFontStyle(fsBold)];
-    fCharWidth := CharWidth;
+    fCharWidth := CharWidth {$IFDEF SYN_LAZARUS}+fExtraCharSpacing{$ENDIF};
   end;
   {$IFDEF SYN_LAZARUS}
   FUseUTF8:=fTextDrawer.UseUTF8;
