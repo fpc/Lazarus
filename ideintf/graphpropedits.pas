@@ -192,6 +192,7 @@ begin
       begin
         if TheDialog.Modified and FileExists(TheDialog.FileName) then
         begin
+          DebugLn(['TGraphicPropertyEditor.Edit ',dbgsname(GetTypeData(GetPropType)^.ClassType)]);
           {$Warnings off}
           // TGraphic itself is an abstract class, so the compiler will warn
           if AGraphic = nil then begin

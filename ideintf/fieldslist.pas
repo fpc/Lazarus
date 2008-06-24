@@ -65,7 +65,6 @@ implementation
 procedure TFieldsListFrm.BitBtnOkClick(Sender: TObject);
 var
   i: integer;
-  NewName:string;
   NewField: TField;
   fModified: boolean;
   PreActive: boolean;
