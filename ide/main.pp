@@ -1197,7 +1197,9 @@ begin
 
   // load installed packages
   PkgBoss.LoadInstalledPackages;
+  {$IFDEF EnableTFrame}
   FormEditor1.RegisterFrame;
+  {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create INSTALLED COMPONENTS');{$ENDIF}
 
   // load package configs
