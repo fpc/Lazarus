@@ -6600,6 +6600,9 @@ begin
   // make sure our text is saved
   if TWSWinControlClass(WidgetSetClass).GetText(Self, S)
   then FCaption := S;
+  // if color has changed make sure it will be restored
+  if FColor<>clWindow then
+    Include(FWinControlFlags,wcfColorChanged);
   RemoveProp(Handle,'WinControl');
 end;
 
