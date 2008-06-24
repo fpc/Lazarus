@@ -3793,6 +3793,9 @@ resourcestring
   lisPWNewProject = 'New Project';
   lisPWOpenProject = 'Open Project';
   lisPWConvertProject = 'Convert Delphi Project';
+  lisInvalidCircle = 'Invalid circle';
+  lisIsAThisCircleDependencyIsNotAllowed = '%s is a %s.%sThis circle '
+    +'dependency is not allowed.';
   
 implementation
 

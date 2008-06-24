@@ -40,12 +40,15 @@ interface
 {$ENDIF}
 
 uses
+  // FCL + LCL
   Classes, SysUtils, Math, LCLProc, LCLType, LResources, LCLIntf, LMessages,
   Forms, Controls, GraphType, Graphics, Dialogs, ExtCtrls, Menus, ClipBrd,
-  PropEdits, ComponentEditors, MenuIntf, IDEImagesIntf,
+  // IDEIntf
+  IDEDialogs, PropEdits, ComponentEditors, MenuIntf, IDEImagesIntf,
+  // IDE
   LazarusIDEStrConsts, EnvironmentOpts, IDECommands, ComponentReg,
-  NonControlDesigner, FrameDesigner, AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg, TabOrderDlg,
-  DesignerProcs, CustomFormEditor,
+  NonControlDesigner, FrameDesigner, AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg,
+  TabOrderDlg, DesignerProcs, CustomFormEditor,
   ControlSelection, ChangeClassDialog, EditorOptions;
 
 type
@@ -1489,6 +1492,13 @@ var
     NewComponentClass:=SelectedCompClass.GetCreationClass;
     //DebugLn(['AddComponent ',dbgsName(NewComponentClass)]);
     if NewComponentClass=nil then exit;
+    if LookupRoot.InheritsFrom(NewComponentClass) then begin
+      IDEMessageDialog(lisInvalidCircle,
+        Format(lisIsAThisCircleDependencyIsNotAllowed, [dbgsName(LookupRoot),
+          dbgsName(NewComponentClass), #13]),
+        mtError,[mbCancel],'');
+      exit;
+    end;
     
     // create component and component interface
     NewCI := TComponentInterface(TheFormEditor.CreateComponent(
