@@ -91,7 +91,7 @@ msgstr "Неверный формат изображения"
 
 #: ipconst.providerunknownrequest
 msgid "Unknown request type \"%s\""
-msgstr "Неизвестный тип запроса  "%s""
+msgstr "Неизвестный тип запроса  \"%s\""
 
 #: ipconst.saccessprocerr
 msgid "Win32 error loading '%s' pointer: %s"
@@ -150,6 +150,7 @@ msgid "Invalid BinHex character"
 msgstr "Неверный символ BinHex"
 
 #: ipconst.sbinhexbaddatacrc
+msgctxt "ipconst.sbinhexbaddatacrc"
 msgid "Bad header CRC"
 msgstr ""
 
@@ -158,12 +159,13 @@ msgid "Invalid BinHex format"
 msgstr "Неверный формат BinHex"
 
 #: ipconst.sbinhexbadheadercrc
+msgctxt "ipconst.sbinhexbadheadercrc"
 msgid "Bad header CRC"
 msgstr "Не сходится CRC заголовка"
 
 #: ipconst.sbinhexcolonexpected
 msgid "\":\" expected"
-msgstr "ожидается ":""
+msgstr "ожидается \":\""
 
 #: ipconst.sbinhexlengtherr
 msgid "Invalid data length"
@@ -230,6 +232,7 @@ msgid " bytes Transferred"
 msgstr " байт передано"
 
 #: ipconst.sftpclose
+msgctxt "ipconst.sftpclose"
 msgid "Disconnected"
 msgstr ""
 
@@ -367,7 +370,7 @@ msgstr "Указан неверный тип значения"
 
 #: ipconst.shtmllineerror
 msgid "Error \"%s\" at line %d, position %d"
-msgstr "Ошибка "%s" на строке %d, позиция %d"
+msgstr "Ошибка \"%s\" на строке %d, позиция %d"
 
 #: ipconst.shtmlnodataprovider
 msgid "No data provider assigned"
@@ -972,6 +975,7 @@ msgid "LAST"
 msgstr "LAST"
 
 #: ipconst.snntpcmdlist
+msgctxt "ipconst.snntpcmdlist"
 msgid "LIST"
 msgstr ""
 
@@ -1024,10 +1028,12 @@ msgid "POST"
 msgstr "POST"
 
 #: ipconst.snntpcmdquit
+msgctxt "ipconst.snntpcmdquit"
 msgid "QUIT"
 msgstr ""
 
 #: ipconst.snntpcmdstat
+msgctxt "ipconst.snntpcmdstat"
 msgid "STAT"
 msgstr ""
 
@@ -1092,6 +1098,7 @@ msgid "Retrieving body"
 msgstr "Загрузка тела"
 
 #: ipconst.snsconnect
+msgctxt "ipconst.snsconnect"
 msgid "Connecting"
 msgstr ""
 
@@ -1159,6 +1166,10 @@ msgstr "Получение новых статей"
 msgid "Selecting next article"
 msgstr "Выбор следующей статьи"
 
+#: ipconst.snsnoop
+msgid "No operation"
+msgstr ""
+
 #: ipconst.snsover
 msgid "Retrieving overview"
 msgstr "Извлечение обзора"
@@ -1168,6 +1179,7 @@ msgid "Retrieving patterns"
 msgstr "Извлечение схем"
 
 #: ipconst.snspost
+msgctxt "ipconst.snspost"
 msgid "Posting article"
 msgstr "Отправка статьи"
 
@@ -1176,10 +1188,12 @@ msgid "Preparing to post article"
 msgstr "Подготовка к отправке статьи"
 
 #: ipconst.snsquit
+msgctxt "ipconst.snsquit"
 msgid "Disconnecting"
 msgstr ""
 
 #: ipconst.snsspecial
+msgctxt "ipconst.snsspecial"
 msgid "Sending special command"
 msgstr ""
 
@@ -1196,12 +1210,14 @@ msgid "Retrieving new news"
 msgstr "Извлечение свежих новостей"
 
 #: ipconst.sntnotask
+msgctxt "ipconst.sntnotask"
 msgid "No task"
 msgstr ""
 
 #: ipconst.sntpostto
+msgctxt "ipconst.sntpostto"
 msgid "Posting article"
-msgstr ""
+msgstr "Отправка статьи"
 
 #: ipconst.sntselectgroup
 msgid "Selecting Group"
@@ -1388,6 +1404,7 @@ msgid "DELE"
 msgstr "DELE"
 
 #: ipconst.spop3cmdlist
+msgctxt "ipconst.spop3cmdlist"
 msgid "LIST"
 msgstr "LIST"
 
@@ -1400,6 +1417,7 @@ msgid "PASS"
 msgstr "PASS"
 
 #: ipconst.spop3cmdquit
+msgctxt "ipconst.spop3cmdquit"
 msgid "QUIT"
 msgstr "QUIT"
 
@@ -1412,6 +1430,7 @@ msgid "RSET"
 msgstr "RSET"
 
 #: ipconst.spop3cmdstat
+msgctxt "ipconst.spop3cmdstat"
 msgid "STAT"
 msgstr "STAT"
 
@@ -1452,10 +1471,12 @@ msgid "Marking message for deletion"
 msgstr "Помечание сообщения на удаление"
 
 #: ipconst.spslist
+msgctxt "ipconst.spslist"
 msgid "Retrieving mailbox list"
 msgstr "Извлечение списка почтовых ящиков"
 
 #: ipconst.spsnoop
+msgctxt "ipconst.spsnoop"
 msgid "No operation"
 msgstr ""
 
@@ -1464,6 +1485,7 @@ msgid "Logging on with Password"
 msgstr "Вход с паролем"
 
 #: ipconst.spsquit
+msgctxt "ipconst.spsquit"
 msgid "Disconnecting"
 msgstr "Разъединение"
 
@@ -1488,6 +1510,7 @@ msgid "Retrieving top of message"
 msgstr "Извлечение заголовков сообщения"
 
 #: ipconst.spsuidl
+msgctxt "ipconst.spsuidl"
 msgid "Retrieving mailbox UID list"
 msgstr "Извлечение списка UID почтовых ящиков"
 
@@ -1504,20 +1527,24 @@ msgid "An error occured with the last task."
 msgstr "Во время выполнения последней задачи произошла ошибка."
 
 #: ipconst.sptlist
+msgctxt "ipconst.sptlist"
 msgid "Retrieving mailbox list"
-msgstr ""
+msgstr "Извлечение списка почтовых ящиков"
 
 #: ipconst.sptlogon
+msgctxt "ipconst.sptlogon"
 msgid "Logging on"
 msgstr ""
 
 #: ipconst.sptnone
+msgctxt "ipconst.sptnone"
 msgid "No task"
 msgstr "Нет задачи"
 
 #: ipconst.sptuidl
+msgctxt "ipconst.sptuidl"
 msgid "Retrieving mailbox UID list"
-msgstr ""
+msgstr "Извлечение списка UID почтовых ящиков"
 
 #: ipconst.sptunknown
 msgid "Unknown task"
@@ -1584,6 +1611,7 @@ msgid "Device connected"
 msgstr "Устройство подсоединено"
 
 #: ipconst.srasdisconnected
+msgctxt "ipconst.srasdisconnected"
 msgid "Disconnected"
 msgstr "Разъединено"
 
@@ -1904,6 +1932,7 @@ msgid "Authenticating username"
 msgstr "Проверка подлинности имени пользователя"
 
 #: ipconst.sssconnect
+msgctxt "ipconst.sssconnect"
 msgid "Connecting"
 msgstr "Подсоединение"
 
@@ -2100,6 +2129,7 @@ msgid "Sending sender's info"
 msgstr "Отправка информации об отправителе"
 
 #: ipconst.sssnoop
+msgctxt "ipconst.sssnoop"
 msgid "No operation"
 msgstr "Нет текущих операций"
 
@@ -2144,6 +2174,7 @@ msgid "ssSoml"
 msgstr "ssSoml"
 
 #: ipconst.sssspecial
+msgctxt "ipconst.sssspecial"
 msgid "Sending special command"
 msgstr "Отправка специальной команды"
 
@@ -2160,6 +2191,7 @@ msgid "An error has occured during this task."
 msgstr "Во время выполнения этой задачи произошла ошибка."
 
 #: ipconst.sstlogon
+msgctxt "ipconst.sstlogon"
 msgid "Logging on"
 msgstr "Вход"
 
@@ -2328,6 +2360,7 @@ msgid "No buffer space available"
 msgstr "Нет места в буфере"
 
 #: ipconst.swsaenomore
+msgctxt "ipconst.swsaenomore"
 msgid "No more data available"
 msgstr "Больше нет данных"
 
@@ -2452,8 +2485,9 @@ msgid "Lookup cancelled"
 msgstr "Просмотр отменен"
 
 #: ipconst.swsa_e_no_more
+msgctxt "ipconst.swsa_e_no_more"
 msgid "No more data available"
-msgstr ""
+msgstr "Больше нет данных"
 
 #: ipconst.swsa_qos_admission_failure
 msgid "Error due to lack of resources"

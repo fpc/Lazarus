@@ -122,10 +122,12 @@ msgid "Band data source"
 msgstr "Fuente de datos de la banda"
 
 #: lr_const.sbandeditorformdatasrc
+msgctxt "lr_const.sbandeditorformdatasrc"
 msgid "Data source"
 msgstr "Fuente de datos"
 
 #: lr_const.sbandeditorformreccount
+msgctxt "lr_const.sbandeditorformreccount"
 msgid "&Record count"
 msgstr "Cuenta de &Registros"
 
@@ -150,10 +152,12 @@ msgid "&Code"
 msgstr "&Código"
 
 #: lr_const.sbarcodeformdbfld
+msgctxt "lr_const.sbarcodeformdbfld"
 msgid "Insert DB field"
 msgstr ""
 
 #: lr_const.sbarcodeformopts
+msgctxt "lr_const.sbarcodeformopts"
 msgid "Options"
 msgstr ""
 
@@ -194,6 +198,7 @@ msgid "Cancel"
 msgstr "Cancelar"
 
 #: lr_const.scateg1
+msgctxt "lr_const.scateg1"
 msgid "Text"
 msgstr ""
 
@@ -202,10 +207,12 @@ msgid "Number"
 msgstr "Número"
 
 #: lr_const.scateg3
+msgctxt "lr_const.scateg3"
 msgid "Date"
 msgstr ""
 
 #: lr_const.scateg4
+msgctxt "lr_const.scateg4"
 msgid "Time"
 msgstr ""
 
@@ -219,7 +226,7 @@ msgstr ""
 
 #: lr_const.sclassobjectnotfound
 msgid "Class Object \"%s\" not found"
-msgstr "Objeto de clase "%s" not found"
+msgstr "Objeto de clase \"%s\" not found"
 
 #: lr_const.sconfirm
 msgid "Confirm"
@@ -366,6 +373,7 @@ msgid "&Contents"
 msgstr "&Contenido"
 
 #: lr_const.sdesoptionsformdes
+msgctxt "lr_const.sdesoptionsformdes"
 msgid "Designer"
 msgstr "Diseñador"
 
@@ -378,6 +386,7 @@ msgid "Grid size"
 msgstr "Tamaño de rejilla"
 
 #: lr_const.sdesoptionsformgrid
+msgctxt "lr_const.sdesoptionsformgrid"
 msgid "Grid"
 msgstr "Rejilla"
 
@@ -393,7 +402,13 @@ msgstr ""
 msgid "Object moving"
 msgstr "Moviendo objeto"
 
+#: lr_const.sdesoptionsformopt
+msgctxt "lr_const.sdesoptionsformopt"
+msgid "Options"
+msgstr ""
+
 #: lr_const.sdesoptionsformother
+msgctxt "lr_const.sdesoptionsformother"
 msgid "Other"
 msgstr "Otro"
 
@@ -453,7 +468,13 @@ msgstr "Palabras clave"
 msgid "Report options"
 msgstr "Opciones del reporte"
 
+#: lr_const.sdocoptformother
+msgctxt "lr_const.sdocoptformother"
+msgid "Other"
+msgstr ""
+
 #: lr_const.sdocoptformprinter
+msgctxt "lr_const.sdocoptformprinter"
 msgid "Printer"
 msgstr "Impresora"
 
@@ -490,10 +511,12 @@ msgid "&DB field"
 msgstr "Campo de& DB"
 
 #: lr_const.seditorformformat
+msgctxt "lr_const.seditorformformat"
 msgid "&Format"
 msgstr "&Formato"
 
 #: lr_const.seditorformmemo
+msgctxt "lr_const.seditorformmemo"
 msgid "&Memo"
 msgstr "&Texto"
 
@@ -506,6 +529,7 @@ msgid "&Script"
 msgstr "&Código"
 
 #: lr_const.seditorformvar
+msgctxt "lr_const.seditorformvar"
 msgid "&Variable"
 msgstr ""
 
@@ -542,6 +566,7 @@ msgid "Va&lue"
 msgstr "Va&lor"
 
 #: lr_const.sevformvar
+msgctxt "lr_const.sevformvar"
 msgid "&Variable"
 msgstr ""
 
@@ -554,6 +579,7 @@ msgid "&Available DB's"
 msgstr "BDs &Disponibles"
 
 #: lr_const.sfieldsforminsert
+msgctxt "lr_const.sfieldsforminsert"
 msgid "Insert DB field"
 msgstr "Insertar campo DB"
 
@@ -566,6 +592,7 @@ msgid "Average font height:"
 msgstr "Altura promedio de fuente:"
 
 #: lr_const.sfindtextcaption
+msgctxt "lr_const.sfindtextcaption"
 msgid "Find text"
 msgstr "Bucar texto"
 
@@ -574,12 +601,18 @@ msgid "&Case sensitive"
 msgstr "&Mayúsculas/Minúsculas"
 
 #: lr_const.sfindtextcurrentpg
+msgctxt "lr_const.sfindtextcurrentpg"
 msgid "Current &page"
 msgstr ""
 
 #: lr_const.sfindtextfirstpg
 msgid "&1st page"
 msgstr "&1ra página"
+
+#: lr_const.sfindtextoptions
+msgctxt "lr_const.sfindtextoptions"
+msgid "Options"
+msgstr ""
 
 #: lr_const.sfindtextorg
 msgid "Origin"
@@ -602,8 +635,9 @@ msgid "Fraction &symbol"
 msgstr "&Símbolo de la fracción"
 
 #: lr_const.sfmtformfrmt
+msgctxt "lr_const.sfmtformfrmt"
 msgid "&Format"
-msgstr ""
+msgstr "&Formato"
 
 #: lr_const.sfmtformfrmtvar
 msgid "Variable formatting"
@@ -618,6 +652,7 @@ msgid "Font..."
 msgstr "Fuente..."
 
 #: lr_const.sformat11
+msgctxt "lr_const.sformat11"
 msgid "[None]"
 msgstr ""
 
@@ -637,6 +672,11 @@ msgstr ""
 msgid "1 234,50"
 msgstr ""
 
+#: lr_const.sformat25
+msgctxt "lr_const.sformat25"
+msgid "Custom"
+msgstr ""
+
 #: lr_const.sformat31
 msgid "11.15.98"
 msgstr ""
@@ -653,6 +693,11 @@ msgstr ""
 msgid "15 november 1998"
 msgstr "15 noviembre 1998"
 
+#: lr_const.sformat35
+msgctxt "lr_const.sformat35"
+msgid "Custom"
+msgstr ""
+
 #: lr_const.sformat41
 msgid "02:43:35"
 msgstr ""
@@ -667,6 +712,11 @@ msgstr ""
 
 #: lr_const.sformat44
 msgid "2:43"
+msgstr ""
+
+#: lr_const.sformat45
+msgctxt "lr_const.sformat45"
+msgid "Custom"
 msgstr ""
 
 #: lr_const.sformat51
@@ -686,6 +736,7 @@ msgid "False;True"
 msgstr "Falso;Cierto"
 
 #: lr_const.sformat55
+msgctxt "lr_const.sformat55"
 msgid "Custom"
 msgstr ""
 
@@ -698,6 +749,7 @@ msgid "Force new page"
 msgstr "Forzar página nueva"
 
 #: lr_const.sfrdesignerformaddpg
+msgctxt "lr_const.sfrdesignerformaddpg"
 msgid "Add page"
 msgstr "Agregar página"
 
@@ -758,8 +810,9 @@ msgid "Bring to front"
 msgstr "Traer al frente"
 
 #: lr_const.sfrdesignerformcapt
+msgctxt "lr_const.sfrdesignerformcapt"
 msgid "Designer"
-msgstr ""
+msgstr "Diseñador"
 
 #: lr_const.sfrdesignerformceneralign
 msgid "Center align"
@@ -818,14 +871,16 @@ msgid "Frame width"
 msgstr "Ancho del marco"
 
 #: lr_const.sfrdesignerformgrid
+msgctxt "lr_const.sfrdesignerformgrid"
 msgid "Grid"
-msgstr ""
+msgstr "Rejilla"
 
 #: lr_const.sfrdesignerformgridalign
 msgid "Grid align"
 msgstr "Alineacion a la rejilla"
 
 #: lr_const.sfrdesignerformhightlight
+msgctxt "lr_const.sfrdesignerformhightlight"
 msgid "Highlight attributes"
 msgstr ""
 
@@ -858,6 +913,7 @@ msgid "Left frame line"
 msgstr "Línea de marco izquierda"
 
 #: lr_const.sfrdesignerformnewrp
+msgctxt "lr_const.sfrdesignerformnewrp"
 msgid "New report"
 msgstr ""
 
@@ -874,6 +930,7 @@ msgid "Objects"
 msgstr "Objetos"
 
 #: lr_const.sfrdesignerformopenrp
+msgctxt "lr_const.sfrdesignerformopenrp"
 msgid "Open report"
 msgstr "Abrir reporte"
 
@@ -882,6 +939,7 @@ msgid "Paste"
 msgstr "Pegar"
 
 #: lr_const.sfrdesignerformpgoption
+msgctxt "lr_const.sfrdesignerformpgoption"
 msgid "Page options"
 msgstr ""
 
@@ -890,6 +948,7 @@ msgid "Preview report"
 msgstr "Vista previa del reporte"
 
 #: lr_const.sfrdesignerformrect
+msgctxt "lr_const.sfrdesignerformrect"
 msgid "Rectangle"
 msgstr ""
 
@@ -910,6 +969,7 @@ msgid "Right frame line"
 msgstr "Línea de marco derecha"
 
 #: lr_const.sfrdesignerformsaverp
+msgctxt "lr_const.sfrdesignerformsaverp"
 msgid "Save report"
 msgstr "Guardar reporte"
 
@@ -934,6 +994,7 @@ msgid "Standard"
 msgstr "Normal"
 
 #: lr_const.sfrdesignerformtext
+msgctxt "lr_const.sfrdesignerformtext"
 msgid "Text"
 msgstr "Texto"
 
@@ -998,6 +1059,7 @@ msgid "&Delete"
 msgstr "&Eliminar"
 
 #: lr_const.sfrdesignerform_edit
+msgctxt "lr_const.sfrdesignerform_edit"
 msgid "&Edit..."
 msgstr "&Edicion..."
 
@@ -1006,8 +1068,9 @@ msgid "&Edit"
 msgstr "&Editar"
 
 #: lr_const.sfrdesignerform_editp
+msgctxt "lr_const.sfrdesignerform_editp"
 msgid "&Edit..."
-msgstr ""
+msgstr "&Edicion..."
 
 #: lr_const.sfrdesignerform_exit
 msgid "E&xit"
@@ -1106,12 +1169,14 @@ msgid "&Tools"
 msgstr "&Herramientas"
 
 #: lr_const.sfrdesignerform_tools2
+msgctxt "lr_const.sfrdesignerform_tools2"
 msgid "Too&ls"
 msgstr "Herramien&tas"
 
 #: lr_const.sfrdesignerform_tools3
+msgctxt "lr_const.sfrdesignerform_tools3"
 msgid "Too&ls"
-msgstr ""
+msgstr "Herramien&tas"
 
 #: lr_const.sfrdesignerform_undo
 msgid "&Undo"
@@ -1146,18 +1211,24 @@ msgid "&Load..."
 msgstr "&Cargar..."
 
 #: lr_const.sgeditorformmemo
+msgctxt "lr_const.sgeditorformmemo"
 msgid "&Memo"
-msgstr ""
+msgstr "&Texto"
 
 #: lr_const.sgeditorformstretch
 msgid "&Stretch"
 msgstr "&Ajustar"
+
+#: lr_const.sgroupeditorformadddbfield
+msgid "Insert DB field"
+msgstr ""
 
 #: lr_const.sgroupeditorformcapt
 msgid "Group"
 msgstr "Grupo"
 
 #: lr_const.sgroupeditorformcond
+msgctxt "lr_const.sgroupeditorformcond"
 msgid "Condition"
 msgstr ""
 
@@ -1178,6 +1249,7 @@ msgid "Co&lor..."
 msgstr ""
 
 #: lr_const.shilightformcond
+msgctxt "lr_const.shilightformcond"
 msgid "Condition"
 msgstr "Condición"
 
@@ -1186,6 +1258,7 @@ msgid "Font"
 msgstr "Fuente"
 
 #: lr_const.shilightformhilitattr
+msgctxt "lr_const.shilightformhilitattr"
 msgid "Highlight attributes"
 msgstr "Atrubutos de resaltado"
 
@@ -1286,6 +1359,7 @@ msgid "No"
 msgstr ""
 
 #: lr_const.snotassigned
+msgctxt "lr_const.snotassigned"
 msgid "[None]"
 msgstr "[Nada]"
 
@@ -1310,8 +1384,9 @@ msgid "Other..."
 msgstr "Otro..."
 
 #: lr_const.sothercategory
+msgctxt "lr_const.sothercategory"
 msgid "Other"
-msgstr ""
+msgstr "Otro"
 
 #: lr_const.spagepreparing
 msgid "Processing page:"
@@ -1435,11 +1510,11 @@ msgstr ""
 
 #: lr_const.spaper18
 msgid "Note, 8 1/2 x 11\""
-msgstr "Nota, 8 1/2 x 11""
+msgstr "Nota, 8 1/2 x 11\""
 
 #: lr_const.spaper19
 msgid "9 Envelope, 3 7/8 x 8 7/8\""
-msgstr "Sobre 9, 3 7/8 x 8 7/8""
+msgstr "Sobre 9, 3 7/8 x 8 7/8\""
 
 #: lr_const.spaper2
 msgid "Letter small, 8 1/2 x 11\""
@@ -1447,35 +1522,36 @@ msgstr ""
 
 #: lr_const.spaper20
 msgid "#10 Envelope, 4 1/8  x 9 1/2\""
-msgstr "Sobre #10, 4 1/8  x 9 1/2""
+msgstr "Sobre #10, 4 1/8  x 9 1/2\""
 
 #: lr_const.spaper21
 msgid "#11 Envelope, 4 1/2 x 10 3/8\""
-msgstr "Sobre #11, 4 1/2 x 10 3/8""
+msgstr "Sobre #11, 4 1/2 x 10 3/8\""
 
 #: lr_const.spaper22
 msgid "#12 Envelope, 4 3/4 x 11\""
-msgstr "Sobre #12, 4 3/4 x 11""
+msgstr "Sobre #12, 4 3/4 x 11\""
 
 #: lr_const.spaper23
 msgid "#14 Envelope, 5 x 11 1/2\""
-msgstr "Sobre #14, 5 x 11 1/2""
+msgstr "Sobre #14, 5 x 11 1/2\""
 
 #: lr_const.spaper24
 msgid "C Sheet, 17 x 22\""
-msgstr "Hoja C, 17 x 22""
+msgstr "Hoja C, 17 x 22\""
 
 #: lr_const.spaper25
 msgid "D Sheet, 22 x 34\""
-msgstr "Hoja D, 22 x 34""
+msgstr "Hoja D, 22 x 34\""
 
 #: lr_const.spaper256
+msgctxt "lr_const.spaper256"
 msgid "Custom"
 msgstr "Personalizado"
 
 #: lr_const.spaper26
 msgid "E Sheet, 34 x 44\""
-msgstr "Hola E, 34 x 44""
+msgstr "Hola E, 34 x 44\""
 
 #: lr_const.spaper27
 msgid "DL Envelope, 110 x 220 mm"
@@ -1523,11 +1599,11 @@ msgstr "Sobre italiano, 110 x 230 mm"
 
 #: lr_const.spaper37
 msgid "Monarch Envelope, 3 7/8 x 7 1/2\""
-msgstr "Sobre monarch, 3 7/8 x 7 1/2""
+msgstr "Sobre monarch, 3 7/8 x 7 1/2\""
 
 #: lr_const.spaper38
 msgid "6 3/4 Envelope, 3 5/8 x 6 1/2\""
-msgstr "Sobre 6 3/4, 3 5/8 x 6 1/2""
+msgstr "Sobre 6 3/4, 3 5/8 x 6 1/2\""
 
 #: lr_const.spaper39
 msgid "US Std Fanfold, 14 7/8 x 11\""
@@ -1535,15 +1611,15 @@ msgstr ""
 
 #: lr_const.spaper4
 msgid "Ledger, 17 x 11\""
-msgstr "Ledger, 17 x 11""
+msgstr "Ledger, 17 x 11\""
 
 #: lr_const.spaper40
 msgid "German Std Fanfold, 8 1/2 x 12\""
-msgstr "Hoja Std pleagable , 8 1/2 x 12""
+msgstr "Hoja Std pleagable , 8 1/2 x 12\""
 
 #: lr_const.spaper41
 msgid "German Legal Fanfold, 8 1/2 x 13\""
-msgstr "Hoja oficio plegable alemana, 8 1/2 x 13""
+msgstr "Hoja oficio plegable alemana, 8 1/2 x 13\""
 
 #: lr_const.spaper42
 msgid "B4 (ISO) 250 x 353 mm"
@@ -1659,7 +1735,7 @@ msgstr "Tarjeta postal doble japonesa 200 x 148 mm"
 
 #: lr_const.spaper7
 msgid "Executive, 7 1/4 x 10 1/2\""
-msgstr "Ejecutivo, 7 1/4 x 10 1/2""
+msgstr "Ejecutivo, 7 1/4 x 10 1/2\""
 
 #: lr_const.spaper70
 msgid "A6 105x148 mm"
@@ -1798,6 +1874,7 @@ msgid "&Bottom, mm"
 msgstr "A&bajo, mm"
 
 #: lr_const.spgoptformcapt
+msgctxt "lr_const.spgoptformcapt"
 msgid "Page options"
 msgstr "Opciones de página"
 
@@ -1834,6 +1911,7 @@ msgid "&Number"
 msgstr "&Número"
 
 #: lr_const.spgoptformoptions
+msgctxt "lr_const.spgoptformoptions"
 msgid "Options"
 msgstr "Opciones"
 
@@ -1898,8 +1976,9 @@ msgid "&Two pages"
 msgstr "&Dos páginas"
 
 #: lr_const.spreviewformadd
+msgctxt "lr_const.spreviewformadd"
 msgid "Add page"
-msgstr ""
+msgstr "Agregar página"
 
 #: lr_const.spreviewformclose
 msgid "Close preview"
@@ -1914,16 +1993,18 @@ msgid "Edit page"
 msgstr "Editar página"
 
 #: lr_const.spreviewformfind
+msgctxt "lr_const.spreviewformfind"
 msgid "Find text"
-msgstr ""
+msgstr "Bucar texto"
 
 #: lr_const.spreviewformhelp
 msgid "Show help"
 msgstr "Mostrar ayuda"
 
 #: lr_const.spreviewformopen
+msgctxt "lr_const.spreviewformopen"
 msgid "Open report"
-msgstr ""
+msgstr "Abrir reporte"
 
 #: lr_const.spreviewformprint
 msgid "Print report"
@@ -1934,8 +2015,9 @@ msgid "&Page width"
 msgstr "Ancho de &Página"
 
 #: lr_const.spreviewformsave
+msgctxt "lr_const.spreviewformsave"
 msgid "Save report"
-msgstr ""
+msgstr "Guardar reporte"
 
 #: lr_const.spreviewformscale
 msgid "Scale"
@@ -1958,6 +2040,7 @@ msgid "&Copies:"
 msgstr "&Copias:"
 
 #: lr_const.sprintformcurpg
+msgctxt "lr_const.sprintformcurpg"
 msgid "Current &page"
 msgstr "&Página actual"
 
@@ -1978,8 +2061,9 @@ msgid "Print"
 msgstr "Imprimier"
 
 #: lr_const.sprintformprinter
+msgctxt "lr_const.sprintformprinter"
 msgid "Printer"
-msgstr ""
+msgstr "Impresora"
 
 #: lr_const.sprintformprop
 msgid "Properties"
@@ -2070,6 +2154,7 @@ msgid "Save changes"
 msgstr "Guardar cambios"
 
 #: lr_const.sshape1
+msgctxt "lr_const.sshape1"
 msgid "Rectangle"
 msgstr "Rectángulo"
 
@@ -2101,6 +2186,11 @@ msgstr "Forma"
 msgid "Shape kind"
 msgstr "Clase de forma"
 
+#: lr_const.sspecval
+msgctxt "lr_const.sspecval"
+msgid "Other"
+msgstr ""
+
 #: lr_const.sstretched
 msgid "Stretched"
 msgstr "Ajustado"
@@ -2122,6 +2212,7 @@ msgid "Description"
 msgstr "Descripción"
 
 #: lr_const.stemplformnewrp
+msgctxt "lr_const.stemplformnewrp"
 msgid "New report"
 msgstr "Nuevo reporte"
 
@@ -2166,10 +2257,12 @@ msgid "Expression"
 msgstr "Expresión"
 
 #: lr_const.svar3
+msgctxt "lr_const.svar3"
 msgid "Date"
 msgstr "Fecha"
 
 #: lr_const.svar4
+msgctxt "lr_const.svar4"
 msgid "Time"
 msgstr "Hora"
 
@@ -2222,12 +2315,14 @@ msgid "Band data sources"
 msgstr "Fuentes de datos de la banda"
 
 #: lr_const.svbandeditorformdatasource
+msgctxt "lr_const.svbandeditorformdatasource"
 msgid "Data source"
-msgstr ""
+msgstr "Fuente de datos"
 
 #: lr_const.svbandeditorformrecordcount
+msgctxt "lr_const.svbandeditorformrecordcount"
 msgid "&Record count"
-msgstr ""
+msgstr "Cuenta de &Registros"
 
 #: lr_const.svirtualdataset
 msgid "Virtual Dataset"

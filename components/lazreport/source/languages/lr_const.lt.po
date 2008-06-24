@@ -123,10 +123,12 @@ msgid "Band data source"
 msgstr "Juostos duomenų šaltinis"
 
 #: lr_const.sbandeditorformdatasrc
+msgctxt "lr_const.sbandeditorformdatasrc"
 msgid "Data source"
 msgstr "Duomenų šaltinis"
 
 #: lr_const.sbandeditorformreccount
+msgctxt "lr_const.sbandeditorformreccount"
 msgid "&Record count"
 msgstr "Įrašų &kiekis"
 
@@ -151,10 +153,12 @@ msgid "&Code"
 msgstr "&Kodas"
 
 #: lr_const.sbarcodeformdbfld
+msgctxt "lr_const.sbarcodeformdbfld"
 msgid "Insert DB field"
 msgstr ""
 
 #: lr_const.sbarcodeformopts
+msgctxt "lr_const.sbarcodeformopts"
 msgid "Options"
 msgstr ""
 
@@ -195,6 +199,7 @@ msgid "Cancel"
 msgstr "Atsisakyti"
 
 #: lr_const.scateg1
+msgctxt "lr_const.scateg1"
 msgid "Text"
 msgstr ""
 
@@ -203,10 +208,12 @@ msgid "Number"
 msgstr "Skaičius"
 
 #: lr_const.scateg3
+msgctxt "lr_const.scateg3"
 msgid "Date"
 msgstr ""
 
 #: lr_const.scateg4
+msgctxt "lr_const.scateg4"
 msgid "Time"
 msgstr ""
 
@@ -367,6 +374,7 @@ msgid "&Contents"
 msgstr "&Turinys"
 
 #: lr_const.sdesoptionsformdes
+msgctxt "lr_const.sdesoptionsformdes"
 msgid "Designer"
 msgstr "Konstruktorius"
 
@@ -379,6 +387,7 @@ msgid "Grid size"
 msgstr "Tinklelio tankumas"
 
 #: lr_const.sdesoptionsformgrid
+msgctxt "lr_const.sdesoptionsformgrid"
 msgid "Grid"
 msgstr "Tinklelis"
 
@@ -394,7 +403,13 @@ msgstr "&Milimetrai"
 msgid "Object moving"
 msgstr "Objektas judinamas"
 
+#: lr_const.sdesoptionsformopt
+msgctxt "lr_const.sdesoptionsformopt"
+msgid "Options"
+msgstr ""
+
 #: lr_const.sdesoptionsformother
+msgctxt "lr_const.sdesoptionsformother"
 msgid "Other"
 msgstr "Kita"
 
@@ -454,7 +469,13 @@ msgstr "Raktažodžiai"
 msgid "Report options"
 msgstr "Pranešimo parinktys"
 
+#: lr_const.sdocoptformother
+msgctxt "lr_const.sdocoptformother"
+msgid "Other"
+msgstr ""
+
 #: lr_const.sdocoptformprinter
+msgctxt "lr_const.sdocoptformprinter"
 msgid "Printer"
 msgstr "Spausdintuvas"
 
@@ -491,10 +512,12 @@ msgid "&DB field"
 msgstr "&DB laukas"
 
 #: lr_const.seditorformformat
+msgctxt "lr_const.seditorformformat"
 msgid "&Format"
 msgstr "&Formatas"
 
 #: lr_const.seditorformmemo
+msgctxt "lr_const.seditorformmemo"
 msgid "&Memo"
 msgstr "&Pastabos"
 
@@ -507,6 +530,7 @@ msgid "&Script"
 msgstr "&Scenarijus"
 
 #: lr_const.seditorformvar
+msgctxt "lr_const.seditorformvar"
 msgid "&Variable"
 msgstr "&Kintamasis"
 
@@ -543,8 +567,9 @@ msgid "Va&lue"
 msgstr "&Reikšmė"
 
 #: lr_const.sevformvar
+msgctxt "lr_const.sevformvar"
 msgid "&Variable"
-msgstr ""
+msgstr "&Kintamasis"
 
 #: lr_const.sevformvars
 msgid "Va&riables..."
@@ -555,6 +580,7 @@ msgid "&Available DB's"
 msgstr "Esamos duomenų b&azės"
 
 #: lr_const.sfieldsforminsert
+msgctxt "lr_const.sfieldsforminsert"
 msgid "Insert DB field"
 msgstr "Įterpti DB lauką"
 
@@ -567,6 +593,7 @@ msgid "Average font height:"
 msgstr "Vidutinis šrifto aukštis:"
 
 #: lr_const.sfindtextcaption
+msgctxt "lr_const.sfindtextcaption"
 msgid "Find text"
 msgstr "Teksto paieška"
 
@@ -575,12 +602,18 @@ msgid "&Case sensitive"
 msgstr "&Skirti raidžių lygį"
 
 #: lr_const.sfindtextcurrentpg
+msgctxt "lr_const.sfindtextcurrentpg"
 msgid "Current &page"
 msgstr ""
 
 #: lr_const.sfindtextfirstpg
 msgid "&1st page"
 msgstr "Nuo &1-mo lapo"
+
+#: lr_const.sfindtextoptions
+msgctxt "lr_const.sfindtextoptions"
+msgid "Options"
+msgstr ""
 
 #: lr_const.sfindtextorg
 msgid "Origin"
@@ -603,8 +636,9 @@ msgid "Fraction &symbol"
 msgstr "Trupmenos &simbolis"
 
 #: lr_const.sfmtformfrmt
+msgctxt "lr_const.sfmtformfrmt"
 msgid "&Format"
-msgstr ""
+msgstr "&Formatas"
 
 #: lr_const.sfmtformfrmtvar
 msgid "Variable formatting"
@@ -619,6 +653,7 @@ msgid "Font..."
 msgstr "Šriftas..."
 
 #: lr_const.sformat11
+msgctxt "lr_const.sformat11"
 msgid "[None]"
 msgstr ""
 
@@ -638,6 +673,11 @@ msgstr "1 234,5"
 msgid "1 234,50"
 msgstr "1 234,50"
 
+#: lr_const.sformat25
+msgctxt "lr_const.sformat25"
+msgid "Custom"
+msgstr ""
+
 #: lr_const.sformat31
 msgid "11.15.98"
 msgstr "11.15.98"
@@ -654,6 +694,11 @@ msgstr "15 lap 2010"
 msgid "15 november 1998"
 msgstr "15 lapkritis 2010"
 
+#: lr_const.sformat35
+msgctxt "lr_const.sformat35"
+msgid "Custom"
+msgstr ""
+
 #: lr_const.sformat41
 msgid "02:43:35"
 msgstr "02:43:35"
@@ -669,6 +714,11 @@ msgstr "02:43"
 #: lr_const.sformat44
 msgid "2:43"
 msgstr "2:43"
+
+#: lr_const.sformat45
+msgctxt "lr_const.sformat45"
+msgid "Custom"
+msgstr ""
 
 #: lr_const.sformat51
 msgid "0;1"
@@ -687,6 +737,7 @@ msgid "False;True"
 msgstr "Netiesa;Tiesa"
 
 #: lr_const.sformat55
+msgctxt "lr_const.sformat55"
 msgid "Custom"
 msgstr ""
 
@@ -699,6 +750,7 @@ msgid "Force new page"
 msgstr "Naujas lapas"
 
 #: lr_const.sfrdesignerformaddpg
+msgctxt "lr_const.sfrdesignerformaddpg"
 msgid "Add page"
 msgstr "Pridėti lapą"
 
@@ -759,8 +811,9 @@ msgid "Bring to front"
 msgstr "Perkelti priekin"
 
 #: lr_const.sfrdesignerformcapt
+msgctxt "lr_const.sfrdesignerformcapt"
 msgid "Designer"
-msgstr ""
+msgstr "Konstruktorius"
 
 #: lr_const.sfrdesignerformceneralign
 msgid "Center align"
@@ -819,14 +872,16 @@ msgid "Frame width"
 msgstr "Rėmelio plotis"
 
 #: lr_const.sfrdesignerformgrid
+msgctxt "lr_const.sfrdesignerformgrid"
 msgid "Grid"
-msgstr ""
+msgstr "Tinklelis"
 
 #: lr_const.sfrdesignerformgridalign
 msgid "Grid align"
 msgstr "Lygiuoti pagal tinklelį"
 
 #: lr_const.sfrdesignerformhightlight
+msgctxt "lr_const.sfrdesignerformhightlight"
 msgid "Highlight attributes"
 msgstr ""
 
@@ -859,6 +914,7 @@ msgid "Left frame line"
 msgstr "Kairioji kadro linija"
 
 #: lr_const.sfrdesignerformnewrp
+msgctxt "lr_const.sfrdesignerformnewrp"
 msgid "New report"
 msgstr ""
 
@@ -875,6 +931,7 @@ msgid "Objects"
 msgstr "Objektai"
 
 #: lr_const.sfrdesignerformopenrp
+msgctxt "lr_const.sfrdesignerformopenrp"
 msgid "Open report"
 msgstr "Atverti pranešimą"
 
@@ -883,6 +940,7 @@ msgid "Paste"
 msgstr "Įdėti"
 
 #: lr_const.sfrdesignerformpgoption
+msgctxt "lr_const.sfrdesignerformpgoption"
 msgid "Page options"
 msgstr ""
 
@@ -891,6 +949,7 @@ msgid "Preview report"
 msgstr "Pranešimo peržiūra"
 
 #: lr_const.sfrdesignerformrect
+msgctxt "lr_const.sfrdesignerformrect"
 msgid "Rectangle"
 msgstr ""
 
@@ -911,6 +970,7 @@ msgid "Right frame line"
 msgstr "Dešinioji rėmelio linija"
 
 #: lr_const.sfrdesignerformsaverp
+msgctxt "lr_const.sfrdesignerformsaverp"
 msgid "Save report"
 msgstr "Įrašyti pranešimą"
 
@@ -935,6 +995,7 @@ msgid "Standard"
 msgstr "Standartinis"
 
 #: lr_const.sfrdesignerformtext
+msgctxt "lr_const.sfrdesignerformtext"
 msgid "Text"
 msgstr "Tekstas"
 
@@ -999,6 +1060,7 @@ msgid "&Delete"
 msgstr "Paša&linti"
 
 #: lr_const.sfrdesignerform_edit
+msgctxt "lr_const.sfrdesignerform_edit"
 msgid "&Edit..."
 msgstr "K&eisti..."
 
@@ -1007,8 +1069,9 @@ msgid "&Edit"
 msgstr "K&eisti"
 
 #: lr_const.sfrdesignerform_editp
+msgctxt "lr_const.sfrdesignerform_editp"
 msgid "&Edit..."
-msgstr ""
+msgstr "K&eisti..."
 
 #: lr_const.sfrdesignerform_exit
 msgid "E&xit"
@@ -1107,12 +1170,14 @@ msgid "&Tools"
 msgstr "Į&rankiai"
 
 #: lr_const.sfrdesignerform_tools2
+msgctxt "lr_const.sfrdesignerform_tools2"
 msgid "Too&ls"
 msgstr "Įran&kiai"
 
 #: lr_const.sfrdesignerform_tools3
+msgctxt "lr_const.sfrdesignerform_tools3"
 msgid "Too&ls"
-msgstr ""
+msgstr "Įran&kiai"
 
 #: lr_const.sfrdesignerform_undo
 msgid "&Undo"
@@ -1147,18 +1212,24 @@ msgid "&Load..."
 msgstr "Į&kelti..."
 
 #: lr_const.sgeditorformmemo
+msgctxt "lr_const.sgeditorformmemo"
 msgid "&Memo"
-msgstr ""
+msgstr "&Pastabos"
 
 #: lr_const.sgeditorformstretch
 msgid "&Stretch"
 msgstr "&Ištempti"
+
+#: lr_const.sgroupeditorformadddbfield
+msgid "Insert DB field"
+msgstr ""
 
 #: lr_const.sgroupeditorformcapt
 msgid "Group"
 msgstr "Grupė"
 
 #: lr_const.sgroupeditorformcond
+msgctxt "lr_const.sgroupeditorformcond"
 msgid "Condition"
 msgstr ""
 
@@ -1179,6 +1250,7 @@ msgid "Co&lor..."
 msgstr "&Spalva..."
 
 #: lr_const.shilightformcond
+msgctxt "lr_const.shilightformcond"
 msgid "Condition"
 msgstr "Sąlyga"
 
@@ -1187,6 +1259,7 @@ msgid "Font"
 msgstr "Šriftas"
 
 #: lr_const.shilightformhilitattr
+msgctxt "lr_const.shilightformhilitattr"
 msgid "Highlight attributes"
 msgstr "Paryškinimo požymiai"
 
@@ -1287,6 +1360,7 @@ msgid "No"
 msgstr "Ne"
 
 #: lr_const.snotassigned
+msgctxt "lr_const.snotassigned"
 msgid "[None]"
 msgstr "[Joks]"
 
@@ -1311,8 +1385,9 @@ msgid "Other..."
 msgstr "Kita..."
 
 #: lr_const.sothercategory
+msgctxt "lr_const.sothercategory"
 msgid "Other"
-msgstr ""
+msgstr "Kita"
 
 #: lr_const.spagepreparing
 msgid "Processing page:"
@@ -1471,6 +1546,7 @@ msgid "D Sheet, 22 x 34\""
 msgstr "D lakštas, 22 x 34″"
 
 #: lr_const.spaper256
+msgctxt "lr_const.spaper256"
 msgid "Custom"
 msgstr "Naudotojo"
 
@@ -1799,6 +1875,7 @@ msgid "&Bottom, mm"
 msgstr "&Apačioje, mm"
 
 #: lr_const.spgoptformcapt
+msgctxt "lr_const.spgoptformcapt"
 msgid "Page options"
 msgstr "Lapo parinktys"
 
@@ -1835,6 +1912,7 @@ msgid "&Number"
 msgstr "&Kiekis"
 
 #: lr_const.spgoptformoptions
+msgctxt "lr_const.spgoptformoptions"
 msgid "Options"
 msgstr "Parinktys"
 
@@ -1899,8 +1977,9 @@ msgid "&Two pages"
 msgstr "&Du lapai"
 
 #: lr_const.spreviewformadd
+msgctxt "lr_const.spreviewformadd"
 msgid "Add page"
-msgstr ""
+msgstr "Pridėti lapą"
 
 #: lr_const.spreviewformclose
 msgid "Close preview"
@@ -1915,16 +1994,18 @@ msgid "Edit page"
 msgstr "Keisti lapą"
 
 #: lr_const.spreviewformfind
+msgctxt "lr_const.spreviewformfind"
 msgid "Find text"
-msgstr ""
+msgstr "Teksto paieška"
 
 #: lr_const.spreviewformhelp
 msgid "Show help"
 msgstr "Rodyti žinyną"
 
 #: lr_const.spreviewformopen
+msgctxt "lr_const.spreviewformopen"
 msgid "Open report"
-msgstr ""
+msgstr "Atverti pranešimą"
 
 #: lr_const.spreviewformprint
 msgid "Print report"
@@ -1935,8 +2016,9 @@ msgid "&Page width"
 msgstr "&Lapo plotis"
 
 #: lr_const.spreviewformsave
+msgctxt "lr_const.spreviewformsave"
 msgid "Save report"
-msgstr ""
+msgstr "Įrašyti pranešimą"
 
 #: lr_const.spreviewformscale
 msgid "Scale"
@@ -1959,6 +2041,7 @@ msgid "&Copies:"
 msgstr "&Kopijos:"
 
 #: lr_const.sprintformcurpg
+msgctxt "lr_const.sprintformcurpg"
 msgid "Current &page"
 msgstr "Veikiamasis &lapas"
 
@@ -1979,8 +2062,9 @@ msgid "Print"
 msgstr "Spausdinti"
 
 #: lr_const.sprintformprinter
+msgctxt "lr_const.sprintformprinter"
 msgid "Printer"
-msgstr ""
+msgstr "Spausdintuvas"
 
 #: lr_const.sprintformprop
 msgid "Properties"
@@ -2071,6 +2155,7 @@ msgid "Save changes"
 msgstr "Įrašyti pakeitimus"
 
 #: lr_const.sshape1
+msgctxt "lr_const.sshape1"
 msgid "Rectangle"
 msgstr "Stačiakampis"
 
@@ -2102,6 +2187,11 @@ msgstr "Figūra"
 msgid "Shape kind"
 msgstr "Figūros rūšis"
 
+#: lr_const.sspecval
+msgctxt "lr_const.sspecval"
+msgid "Other"
+msgstr ""
+
 #: lr_const.sstretched
 msgid "Stretched"
 msgstr "Ištemptas"
@@ -2123,6 +2213,7 @@ msgid "Description"
 msgstr "Aprašymas"
 
 #: lr_const.stemplformnewrp
+msgctxt "lr_const.stemplformnewrp"
 msgid "New report"
 msgstr "Naujas pranešimas"
 
@@ -2167,10 +2258,12 @@ msgid "Expression"
 msgstr "Išraiška"
 
 #: lr_const.svar3
+msgctxt "lr_const.svar3"
 msgid "Date"
 msgstr "Data"
 
 #: lr_const.svar4
+msgctxt "lr_const.svar4"
 msgid "Time"
 msgstr "Laikas"
 
@@ -2223,12 +2316,14 @@ msgid "Band data sources"
 msgstr "Juostos duomenų šaltiniai"
 
 #: lr_const.svbandeditorformdatasource
+msgctxt "lr_const.svbandeditorformdatasource"
 msgid "Data source"
-msgstr ""
+msgstr "Duomenų šaltinis"
 
 #: lr_const.svbandeditorformrecordcount
+msgctxt "lr_const.svbandeditorformrecordcount"
 msgid "&Record count"
-msgstr ""
+msgstr "Įrašų &kiekis"
 
 #: lr_const.svirtualdataset
 msgid "Virtual Dataset"

@@ -68,6 +68,7 @@ type
     Identifier: string;
     Original: string;
     Translation: string;
+    Context: string;
     constructor Create(const TheIdentifier, TheOriginal, TheTranslated: string);
   end;
 
@@ -94,7 +95,8 @@ type
     constructor Create(AStream: TStream; Full:boolean=false);
     destructor Destroy; override;
     procedure ReadPOText(const s: string);
-    procedure Add(const Identifier, OriginalValue, TranslatedValue, Comments: string);
+    procedure Add(const Identifier, OriginalValue, TranslatedValue, Comments,
+                        Context: string);
     function Translate(const Identifier, OriginalValue: String): String;
     Property CharSet: String read FCharSet;
     procedure Report;
@@ -146,6 +148,37 @@ begin
   {$ELSE}
   Result:=Utf8ToAnsi(s);
   {$ENDIF}
+end;
+
+
+function StrToPoStr(const s:string):string;
+var
+  SrcPos, DestPos: Integer;
+  NewLength: Integer;
+begin
+  NewLength:=length(s);
+  for SrcPos:=1 to length(s) do
+    if s[SrcPos] in ['"','\'] then inc(NewLength);
+  if NewLength=length(s) then begin
+    Result:=s;
+  end else begin
+    SetLength(Result,NewLength);
+    DestPos:=1;
+    for SrcPos:=1 to length(s) do begin
+      case s[SrcPos] of
+      '"','\':
+        begin
+          Result[DestPos]:='\';
+          inc(DestPos);
+          Result[DestPos]:=s[SrcPos];
+          inc(DestPos);
+        end;
+      else
+        Result[DestPos]:=s[SrcPos];
+        inc(DestPos);
+      end;
+    end;
+  end;
 end;
 
 function FindAllTranslatedPoFiles(const Filename: string): TStringList;
@@ -443,6 +476,8 @@ const
   sCharSetIdentifier: PChar = '"Content-Type: text/plain; charset=';
   sMsgID: PChar = 'msgid "';
   sMsgStr: PChar = 'msgstr "';
+  sMsgCtxt: Pchar = 'msgctxt "';
+  
 var
   l: Integer;
   LineLen: Integer;
@@ -453,25 +488,45 @@ var
   MsgID: String;
   Line: String;
   Comments: String;
+  Context: string;
   TextEnd: PChar;
   i: Integer;
   
+  procedure ResetVars;
+  begin
+    MsgId  := '';
+    Line := '';
+    Identifier := '';
+    Comments := '';
+    Context := '';
+  end;
+  
   procedure AddEntry;
+  var
+    Item: TPOFileItem;
   begin
     if Identifier<>'' then begin
-      Add(Identifier,MsgID,Line,Comments);
-      MsgId  := '';
-      Line := '';
-      Identifier := '';
-      Comments := '';
+      // check for unresolved duplicates in po file
+      Item := TPOFileItem(FOriginalToItem.Data[MsgID]);
+      if (Item<>nil) then begin
+        // fix old duplicate context
+        if Item.Context='' then
+          Item.Context:=Item.Identifier;
+        // set context of new duplicate
+        if Context='' then
+          Context := Identifier;
+        // if old duplicate was translated and
+        // new one is not, provide a initial translation
+        if Line='' then
+          Line := Item.Translation;
+      end;
+      Add(Identifier,MsgID,Line,Comments,Context);
+      ResetVars;
     end else
     if (Line<>'') and (FHeader=nil) then begin
       FHeader := TPOFileItem.Create('',MsgID,Line);
       FHeader.Comments:=Comments;
-      MsgId  := '';
-      Line := '';
-      Identifier := '';
-      Comments := '';
+      ResetVars;
     end
   end;
 
@@ -505,6 +560,8 @@ begin
         MsgId := Line;
         // start collecting MsgStr lines
         Line:=UTF8CStringToUTF8String(LineStart+8,LineLen-9);
+      end else if CompareMem(LineStart, sMsgCtxt,9) then begin
+        Context:= Copy(LineStart, 10, LineLen-10);
       end else if LineStart^='"' then begin
         if CompareMem(LineStart,sCharSetIdentifier,35) then
           FCharSet:=copy(LineStart, 35,LineLen-37);
@@ -523,7 +580,7 @@ begin
 end;
 
 procedure TPOFile.Add(const Identifier, OriginalValue, TranslatedValue,
-  Comments: string);
+  Comments, Context: string);
 var
   Item: TPOFileItem;
   p: Integer;
@@ -532,6 +589,7 @@ begin
   //debugln('TPOFile.Add Identifier="',Identifier,'" OriginalValue="',OriginalValue,'" TranslatedValue="',TranslatedValue,'"');
   Item:=TPOFileItem.Create(Identifier,OriginalValue,TranslatedValue);
   Item.Comments:=Comments;
+  Item.Context:=Context;
   Item.Tag:=FTag;
   FItems.Add(Item);
   
@@ -595,38 +653,8 @@ procedure TPOFile.CreateHeader;
 begin
   if FHeader=nil then
     FHeader := TPOFileItem.Create('','','');
-  FHeader.Translation:='Content-Type: text/plain; charset=UTF-8\n';
+  FHeader.Translation:='Content-Type: text/plain; charset=UTF-8';
   FHeader.Comments:='';
-end;
-
-function StrToPoStr(const s:string):string;
-var
-  SrcPos, DestPos: Integer;
-  NewLength: Integer;
-begin
-  NewLength:=length(s);
-  for SrcPos:=1 to length(s) do
-    if s[SrcPos] in ['"','\'] then inc(NewLength);
-  if NewLength=length(s) then begin
-    Result:=s;
-  end else begin
-    SetLength(Result,NewLength);
-    DestPos:=1;
-    for SrcPos:=1 to length(s) do begin
-      case s[SrcPos] of
-      '"','\':
-        begin
-          Result[DestPos]:='\';
-          inc(DestPos);
-          Result[DestPos]:=s[SrcPos];
-          inc(DestPos);
-        end;
-      else
-        Result[DestPos]:=s[SrcPos];
-        inc(DestPos);
-      end;
-    end;
-  end;
 end;
 
 procedure TPOFile.UpdateStrings(InputLines: TStrings; SType: TStringsType);
@@ -649,7 +677,7 @@ begin
 
     if SType=stLrt then begin
       p:=Pos('=',Line);
-      Value := StrToPoStr( copy(Line,p+1,n-p) );//if p=0, that's OK, all the string
+      Value :=copy(Line,p+1,n-p); //if p=0, that's OK, all the string
       Identifier:=copy(Line,1,p-1);
       UpdateItem(Identifier, Value);
       continue;
@@ -711,7 +739,6 @@ begin
         
     end;
     if not Multi then begin
-      Value := StrToPoStr(Value);
       if Value<>'' then
         UpdateItem(Identifier, Value);
     end;
@@ -773,8 +800,10 @@ var
     WriteLst('',Item.Comments);
     if Item.Identifier<>'' then
       OutLst.Add('#: '+Item.Identifier);
-    WriteLst('msgid', Item.Original);
-    WriteLst('msgstr', Item.Translation);
+    if Item.Context<>'' then
+      WriteLst('msgctxt', Item.Context);
+    WriteLst('msgid', StrToPoStr(Item.Original));
+    WriteLst('msgstr', StrToPoStr(Item.Translation));
     OutLst.Add('');
   end;
   
@@ -811,6 +840,7 @@ procedure TPOFile.UpdateItem(const Identifier: string; Original: string);
 var
   Item: TPOFileItem;
   p: Integer;
+  AContext,AComment,ATranslation: string;
 begin
   if FHelperList=nil then
     FHelperList := TStringList.Create;
@@ -849,24 +879,26 @@ begin
   end;
   
   // try to find po entry based only on it's value
+  AContext := '';
+  AComment := '';
+  ATranslation := '';
   Item := TPOFileItem(FOriginalToItem.Data[Original]);
   if Item<>nil then begin
-    // found!, this would mean that both module name and variable part
-    // have been changed (NOTE: this might also give false positives)
-    AddToModuleList(Item.Identifier);
+    // old item don't have context, add one
+    if Item.Context='' then
+      Item.Context := Item.Identifier;
+      
+    // if old item it's already translated use translated
+    if Item.Translation<>'' then
+      ATranslation := Item.Translation;
     
     // update identifier list
-    FIdentifierToItem.Remove(Item.Identifier);
-    FIdentifierToItem.Add(Identifier, Item);
-    FModified := true;
-    Item.Identifier:=Identifier;
-    Item.Tag := FTag;
-    exit;
+    AContext := Identifier;
   end;
 
   // this appear to be a new item
   FModified := true;
-  Add(Identifier, Original, '', '');
+  Add(Identifier, Original, ATranslation, AComment, AContext);
 end;
 
 procedure TPOFile.UpdateTranslation(BasePOFile: TPOFile);

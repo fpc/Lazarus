@@ -145,6 +145,7 @@ msgid "Invalid BinHex character"
 msgstr ""
 
 #: ipconst.sbinhexbaddatacrc
+msgctxt "ipconst.sbinhexbaddatacrc"
 msgid "Bad header CRC"
 msgstr ""
 
@@ -153,6 +154,7 @@ msgid "Invalid BinHex format"
 msgstr ""
 
 #: ipconst.sbinhexbadheadercrc
+msgctxt "ipconst.sbinhexbadheadercrc"
 msgid "Bad header CRC"
 msgstr ""
 
@@ -225,6 +227,7 @@ msgid " bytes Transferred"
 msgstr ""
 
 #: ipconst.sftpclose
+msgctxt "ipconst.sftpclose"
 msgid "Disconnected"
 msgstr ""
 
@@ -967,6 +970,7 @@ msgid "LAST"
 msgstr ""
 
 #: ipconst.snntpcmdlist
+msgctxt "ipconst.snntpcmdlist"
 msgid "LIST"
 msgstr ""
 
@@ -1019,10 +1023,12 @@ msgid "POST"
 msgstr ""
 
 #: ipconst.snntpcmdquit
+msgctxt "ipconst.snntpcmdquit"
 msgid "QUIT"
 msgstr ""
 
 #: ipconst.snntpcmdstat
+msgctxt "ipconst.snntpcmdstat"
 msgid "STAT"
 msgstr ""
 
@@ -1087,6 +1093,7 @@ msgid "Retrieving body"
 msgstr ""
 
 #: ipconst.snsconnect
+msgctxt "ipconst.snsconnect"
 msgid "Connecting"
 msgstr ""
 
@@ -1155,6 +1162,7 @@ msgid "Selecting next article"
 msgstr ""
 
 #: ipconst.snsnoop
+msgctxt "ipconst.snsnoop"
 msgid "No operation"
 msgstr ""
 
@@ -1167,6 +1175,7 @@ msgid "Retrieving patterns"
 msgstr ""
 
 #: ipconst.snspost
+msgctxt "ipconst.snspost"
 msgid "Posting article"
 msgstr ""
 
@@ -1175,10 +1184,12 @@ msgid "Preparing to post article"
 msgstr ""
 
 #: ipconst.snsquit
+msgctxt "ipconst.snsquit"
 msgid "Disconnecting"
 msgstr ""
 
 #: ipconst.snsspecial
+msgctxt "ipconst.snsspecial"
 msgid "Sending special command"
 msgstr ""
 
@@ -1195,10 +1206,12 @@ msgid "Retrieving new news"
 msgstr ""
 
 #: ipconst.sntnotask
+msgctxt "ipconst.sntnotask"
 msgid "No task"
 msgstr ""
 
 #: ipconst.sntpostto
+msgctxt "ipconst.sntpostto"
 msgid "Posting article"
 msgstr ""
 
@@ -1387,6 +1400,7 @@ msgid "DELE"
 msgstr ""
 
 #: ipconst.spop3cmdlist
+msgctxt "ipconst.spop3cmdlist"
 msgid "LIST"
 msgstr ""
 
@@ -1399,6 +1413,7 @@ msgid "PASS"
 msgstr ""
 
 #: ipconst.spop3cmdquit
+msgctxt "ipconst.spop3cmdquit"
 msgid "QUIT"
 msgstr ""
 
@@ -1411,6 +1426,7 @@ msgid "RSET"
 msgstr ""
 
 #: ipconst.spop3cmdstat
+msgctxt "ipconst.spop3cmdstat"
 msgid "STAT"
 msgstr ""
 
@@ -1451,10 +1467,12 @@ msgid "Marking message for deletion"
 msgstr ""
 
 #: ipconst.spslist
+msgctxt "ipconst.spslist"
 msgid "Retrieving mailbox list"
 msgstr ""
 
 #: ipconst.spsnoop
+msgctxt "ipconst.spsnoop"
 msgid "No operation"
 msgstr ""
 
@@ -1463,6 +1481,7 @@ msgid "Logging on with Password"
 msgstr ""
 
 #: ipconst.spsquit
+msgctxt "ipconst.spsquit"
 msgid "Disconnecting"
 msgstr ""
 
@@ -1487,6 +1506,7 @@ msgid "Retrieving top of message"
 msgstr ""
 
 #: ipconst.spsuidl
+msgctxt "ipconst.spsuidl"
 msgid "Retrieving mailbox UID list"
 msgstr ""
 
@@ -1503,18 +1523,22 @@ msgid "An error occured with the last task."
 msgstr ""
 
 #: ipconst.sptlist
+msgctxt "ipconst.sptlist"
 msgid "Retrieving mailbox list"
 msgstr ""
 
 #: ipconst.sptlogon
+msgctxt "ipconst.sptlogon"
 msgid "Logging on"
 msgstr ""
 
 #: ipconst.sptnone
+msgctxt "ipconst.sptnone"
 msgid "No task"
 msgstr ""
 
 #: ipconst.sptuidl
+msgctxt "ipconst.sptuidl"
 msgid "Retrieving mailbox UID list"
 msgstr ""
 
@@ -1583,6 +1607,7 @@ msgid "Device connected"
 msgstr ""
 
 #: ipconst.srasdisconnected
+msgctxt "ipconst.srasdisconnected"
 msgid "Disconnected"
 msgstr ""
 
@@ -1903,6 +1928,7 @@ msgid "Authenticating username"
 msgstr ""
 
 #: ipconst.sssconnect
+msgctxt "ipconst.sssconnect"
 msgid "Connecting"
 msgstr ""
 
@@ -2099,6 +2125,7 @@ msgid "Sending sender's info"
 msgstr ""
 
 #: ipconst.sssnoop
+msgctxt "ipconst.sssnoop"
 msgid "No operation"
 msgstr ""
 
@@ -2143,6 +2170,7 @@ msgid "ssSoml"
 msgstr ""
 
 #: ipconst.sssspecial
+msgctxt "ipconst.sssspecial"
 msgid "Sending special command"
 msgstr ""
 
@@ -2159,6 +2187,7 @@ msgid "An error has occured during this task."
 msgstr ""
 
 #: ipconst.sstlogon
+msgctxt "ipconst.sstlogon"
 msgid "Logging on"
 msgstr ""
 
@@ -2327,6 +2356,7 @@ msgid "No buffer space available"
 msgstr ""
 
 #: ipconst.swsaenomore
+msgctxt "ipconst.swsaenomore"
 msgid "No more data available"
 msgstr ""
 
@@ -2451,6 +2481,7 @@ msgid "Lookup cancelled"
 msgstr ""
 
 #: ipconst.swsa_e_no_more
+msgctxt "ipconst.swsa_e_no_more"
 msgid "No more data available"
 msgstr ""
 
