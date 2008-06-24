@@ -21,93 +21,11 @@ unit LazXPM;
 interface
 
 uses
-  SysUtils, Classes, FPImage, IntfGraphics, Graphics,
-  FPReadXPM, FPWriteXPM,
-  ClipBrd;
+  Graphics;
 
 type
-  TXPMImage = class(TFPImageBitmap)
-  protected
-    procedure InitFPImageReader(IntfImg: TLazIntfImage; ImgReader: TFPCustomImageReader); override;
-    procedure FinalizeFPImageReader(ImgReader: TFPCustomImageReader); override;
-    procedure InitFPImageWriter(IntfImg: TLazIntfImage; ImgWriter: TFPCustomImageWriter); override;
-  public
-    constructor Create; override;
-    class function GetFileExtensions: string; override;
-    class function GetDefaultFPReader: TFPCustomImageReaderClass; override;
-    class function GetDefaultFPWriter: TFPCustomImageWriterClass; override;
-  end;
-
-const
-  DefaultXPMMimeType = 'image/xpm';
-
-procedure Register;
-procedure UnRegister;
+  TXPMImage = TPixmap; // deprecated
 
 implementation
-
-{ TXPMImage }
-
-procedure TXPMImage.InitFPImageReader(IntfImg: TLazIntfImage; ImgReader: TFPCustomImageReader);
-var
-  XPMReader: TFPReaderXPM;
-begin
-  if ImgReader is TFPReaderXPM then begin
-  end;
-  inherited InitFPImageReader(IntfImg, ImgReader);
-end;
-
-procedure TXPMImage.FinalizeFPImageReader(ImgReader: TFPCustomImageReader);
-var
-  XPMReader: TFPReaderXPM;
-begin
-  if ImgReader is TFPReaderXPM then begin
-    XPMReader:=TFPReaderXPM(ImgReader);
-  end;
-  inherited FinalizeFPImageReader(ImgReader);
-end;
-
-procedure TXPMImage.InitFPImageWriter(IntfImg: TLazIntfImage; ImgWriter: TFPCustomImageWriter);
-var
-  XPMWriter: TFPWriterXPM;
-begin
-  if ImgWriter is TFPWriterXPM then begin
-    XPMWriter:=TFPWriterXPM(ImgWriter);
-    if XPMWriter<>nil then ;
-  end;
-  inherited InitFPImageWriter(IntfImg, ImgWriter);
-end;
-
-class function TXPMImage.GetDefaultFPReader: TFPCustomImageReaderClass;
-begin
-  Result:=TFPReaderXPM;
-end;
-
-class function TXPMImage.GetDefaultFPWriter: TFPCustomImageWriterClass;
-begin
-  Result:=TFPWriterXPM;
-end;
-
-constructor TXPMImage.Create;
-begin
-  inherited Create;
-end;
-
-class function TXPMImage.GetFileExtensions: string;
-begin
-  Result:='xpm';
-end;
-
-procedure Register;
-begin
-  TPicture.RegisterFileFormat('xpm', 'XPM Image File', TXPMImage);
-  TPicture.RegisterClipboardFormat(RegisterClipboardFormat(DefaultXPMMimeType),
-    TXPMImage);
-end;
-
-procedure UnRegister;
-begin
-  TPicture.UnregisterGraphicClass(TXPMImage);
-end;
 
 end.

@@ -381,7 +381,6 @@ components/images/lazpnm.pas svneol=native#text/pascal
 components/images/laztga.pas svneol=native#text/pascal
 components/images/lazxpm.pas svneol=native#text/pascal
 components/images/readme.txt svneol=native#text/plain
-components/images/registerimg4laz.pas svneol=native#text/plain
 components/lazreport/doc/contributors.txt svneol=native#text/plain
 components/lazreport/doc/firststeps.odt -text
 components/lazreport/doc/fr_eng.sxw -text

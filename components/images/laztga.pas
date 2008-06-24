@@ -26,16 +26,21 @@ uses
   ClipBrd;
 
 type
+
+  { TSharedTGAImage }
+
+  TSharedTGAImage = class(TSharedCustomBitmap)
+  end;
+
+  { TTGAImage }
+
   TTGAImage = class(TFPImageBitmap)
   protected
-    procedure InitFPImageReader(IntfImg: TLazIntfImage; ImgReader: TFPCustomImageReader); override;
-    procedure FinalizeFPImageReader(ImgReader: TFPCustomImageReader); override;
-    procedure InitFPImageWriter(IntfImg: TLazIntfImage; ImgWriter: TFPCustomImageWriter); override;
+    class function GetReaderClass: TFPCustomImageReaderClass; override;
+    class function GetWriterClass: TFPCustomImageWriterClass; override;
+    class function GetSharedImageClass: TSharedRasterImageClass; override;
   public
-    constructor Create; override;
     class function GetFileExtensions: string; override;
-    class function GetDefaultFPReader: TFPCustomImageReaderClass; override;
-    class function GetDefaultFPWriter: TFPCustomImageWriterClass; override;
   end;
 
 const
@@ -48,44 +53,19 @@ implementation
 
 { TTGAImage }
 
-procedure TTGAImage.InitFPImageReader(IntfImg: TLazIntfImage; ImgReader: TFPCustomImageReader);
-begin
-  if ImgReader is TFPReaderTarga then begin
-  end;
-  inherited InitFPImageReader(IntfImg, ImgReader);
-end;
-
-procedure TTGAImage.FinalizeFPImageReader(ImgReader: TFPCustomImageReader);
-begin
-  if ImgReader is TFPReaderTarga then begin
-  end;
-  inherited FinalizeFPImageReader(ImgReader);
-end;
-
-procedure TTGAImage.InitFPImageWriter(IntfImg: TLazIntfImage; ImgWriter: TFPCustomImageWriter);
-var
-  TGAWriter: TFPWriterTarga;
-begin
-  if ImgWriter is TFPWriterTarga then begin
-    TGAWriter:=TFPWriterTarga(ImgWriter);
-    if TGAWriter<>nil then ;
-  end;
-  inherited InitFPImageWriter(IntfImg, ImgWriter);
-end;
-
-class function TTGAImage.GetDefaultFPReader: TFPCustomImageReaderClass;
+class function TTGAImage.GetReaderClass: TFPCustomImageReaderClass;
 begin
   Result:=TFPReaderTarga;
 end;
 
-class function TTGAImage.GetDefaultFPWriter: TFPCustomImageWriterClass;
+class function TTGAImage.GetWriterClass: TFPCustomImageWriterClass;
 begin
   Result:=TFPWriterTarga;
 end;
 
-constructor TTGAImage.Create;
+class function TTGAImage.GetSharedImageClass: TSharedRasterImageClass;
 begin
-  inherited Create;
+  Result:=TSharedTGAImage;
 end;
 
 class function TTGAImage.GetFileExtensions: string;

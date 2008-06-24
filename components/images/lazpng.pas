@@ -21,59 +21,11 @@ unit LazPNG;
 interface
 
 uses
-  SysUtils, Classes, FPImage, IntfGraphics, Graphics,
-  FPReadPNG, FPWritePNG,ClipBrd;
+  Graphics;
 
 type
-
-  TPNGImage = class(TFPImageBitmap)
-  public
-    constructor Create; override;
-    class function GetFileExtensions: string; override;
-    class function GetDefaultFPReader: TFPCustomImageReaderClass; override;
-    class function GetDefaultFPWriter: TFPCustomImageWriterClass; override;
-  end;
-
-const
-  DefaultPNGMimeType = 'image/png';
-
-procedure Register;
-procedure UnRegister;
+  TPNGImage = TPortableNetworkGraphic; // deprecated
 
 implementation
-
-{ TPNGImage }
-
-class function TPNGImage.GetDefaultFPReader: TFPCustomImageReaderClass;
-begin
-  Result:=TFPReaderPNG;
-end;
-
-class function TPNGImage.GetDefaultFPWriter: TFPCustomImageWriterClass;
-begin
-  Result:=TFPWriterPNG;
-end;
-
-constructor TPNGImage.Create;
-begin
-  inherited Create;
-end;
-
-class function TPNGImage.GetFileExtensions: string;
-begin
-  Result:='png';
-end;
-
-procedure Register;
-begin
-  TPicture.RegisterFileFormat('png', 'PNG Image File', TPNGImage);
-  TPicture.RegisterClipboardFormat(RegisterClipboardFormat(DefaultPNGMimeType),
-    TPNGImage);
-end;
-
-procedure UnRegister;
-begin
-  TPicture.UnregisterGraphicClass(TPNGImage);
-end;
 
 end.

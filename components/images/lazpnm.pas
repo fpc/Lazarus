@@ -21,69 +21,12 @@ unit LazPNM;
 interface
 
 uses
-  SysUtils, Classes, FPImage, IntfGraphics, Graphics,
-  FPReadPNM, FPWritePNM,
-  ClipBrd;
+  Graphics;
 
 type
-
-  TPNMImage = class(TFPImageBitmap)
-  public
-    constructor Create; override;
-    class function GetFileExtensions: string; override;
-    class function GetDefaultFPReader: TFPCustomImageReaderClass; override;
-    class function GetDefaultFPWriter: TFPCustomImageWriterClass; override;
-  end;
-
-const
-  DefaultPPMMimeType = 'image/ppm';
-  DefaultPGMMimeType = 'image/pgm';
-  DefaultPBMMimeType = 'image/pbm';
-
-procedure Register;
-procedure UnRegister;
+  TPNMImage = TPortableAnyMapGraphic; // deprecated
 
 implementation
-
-{ TPNMImage }
-
-class function TPNMImage.GetDefaultFPReader: TFPCustomImageReaderClass;
-begin
-  Result:=TFPReaderPNM;
-end;
-
-class function TPNMImage.GetDefaultFPWriter: TFPCustomImageWriterClass;
-begin
-  Result:=TFPWriterPNM;
-end;
-
-constructor TPNMImage.Create;
-begin
-  inherited Create;
-end;
-
-class function TPNMImage.GetFileExtensions: string;
-begin
-  Result:='ppm;pgm;pbm';
-end;
-
-procedure Register;
-begin
-  TPicture.RegisterFileFormat('ppm', 'PNM Image File', TPNMImage);
-  TPicture.RegisterFileFormat('pgm', 'PNM Image File', TPNMImage);
-  TPicture.RegisterFileFormat('pbm', 'PNM Image File', TPNMImage);
-  TPicture.RegisterClipboardFormat(RegisterClipboardFormat(DefaultPPMMimeType),
-    TPNMImage);
-  TPicture.RegisterClipboardFormat(RegisterClipboardFormat(DefaultPGMMimeType),
-    TPNMImage);
-  TPicture.RegisterClipboardFormat(RegisterClipboardFormat(DefaultPBMMimeType),
-    TPNMImage);
-end;
-
-procedure UnRegister;
-begin
-  TPicture.UnregisterGraphicClass(TPNMImage);
-end;
 
 end.
 

@@ -21,89 +21,11 @@ unit LazBMP;
 interface
 
 uses
-  SysUtils, Classes, FPImage, IntfGraphics, Graphics,
-  FPReadBMP, FPWriteBMP,
-  ClipBrd;
+  Graphics;
 
 type
-
-  TBMPImage = class(TFPImageBitmap)
-  protected
-    procedure InitFPImageReader(IntfImg: TLazIntfImage; ImgReader: TFPCustomImageReader); override;
-    procedure FinalizeFPImageReader(ImgReader: TFPCustomImageReader); override;
-    procedure InitFPImageWriter(IntfImg: TLazIntfImage; ImgWriter: TFPCustomImageWriter); override;
-  public
-    constructor Create; override;
-    class function GetFileExtensions: string; override;
-    class function GetDefaultFPReader: TFPCustomImageReaderClass; override;
-    class function GetDefaultFPWriter: TFPCustomImageWriterClass; override;
-  end;
-
-const
-  DefaultBMPMimeType = 'image/bmp';
-
-procedure Register;
-procedure UnRegister;
+  TBMPImage = TBitmap; // deprecated
 
 implementation
-
-{ TBMPImage }
-
-procedure TBMPImage.InitFPImageReader(IntfImg: TLazIntfImage; ImgReader: TFPCustomImageReader);
-begin
-  if ImgReader is TFPReaderBMP then begin
-  end;
-  inherited InitFPImageReader(IntfImg, ImgReader);
-end;
-
-procedure TBMPImage.FinalizeFPImageReader(ImgReader: TFPCustomImageReader);
-begin
-  if ImgReader is TFPReaderBMP then begin
-  end;
-  inherited FinalizeFPImageReader(ImgReader);
-end;
-
-procedure TBMPImage.InitFPImageWriter(IntfImg: TLazIntfImage; ImgWriter: TFPCustomImageWriter);
-var
-  BMPWriter: TFPWriterBMP;
-begin
-  if ImgWriter is TFPWriterBMP then begin
-    BMPWriter:=TFPWriterBMP(ImgWriter);
-    if BMPWriter<>nil then ;
-  end;
-  inherited InitFPImageWriter(IntfImg, ImgWriter);
-end;
-
-class function TBMPImage.GetDefaultFPReader: TFPCustomImageReaderClass;
-begin
-  Result:=TFPReaderBMP;
-end;
-
-class function TBMPImage.GetDefaultFPWriter: TFPCustomImageWriterClass;
-begin
-  Result:=TFPWriterBMP;
-end;
-
-constructor TBMPImage.Create;
-begin
-  inherited Create;
-end;
-
-class function TBMPImage.GetFileExtensions: string;
-begin
-  Result:='bmp';
-end;
-
-procedure Register;
-begin
-  TPicture.RegisterFileFormat('bmp', 'BMP Image File', TBMPImage);
-  TPicture.RegisterClipboardFormat(RegisterClipboardFormat(DefaultBMPMimeType),
-    TBMPImage);
-end;
-
-procedure UnRegister;
-begin
-  TPicture.UnregisterGraphicClass(TBMPImage);
-end;
 
 end.

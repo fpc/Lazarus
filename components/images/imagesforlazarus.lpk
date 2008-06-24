@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="2">
+  <Package Version="3">
     <Name Value="ImagesForLazarus"/>
     <Author Value="Mazen NEIFER"/>
     <CompilerOptions>
@@ -25,7 +25,7 @@
 "/>
     <License Value="LGPL"/>
     <Version Major="1" Release="1"/>
-    <Files Count="8">
+    <Files Count="7">
       <Item1>
         <Filename Value="lazpng.pas"/>
         <UnitName Value="LazPNG"/>
@@ -48,16 +48,13 @@
       </Item5>
       <Item6>
         <Filename Value="laztga.pas"/>
+        <HasRegisterProc Value="True"/>
         <UnitName Value="LazTGA"/>
       </Item6>
       <Item7>
         <Filename Value="lazxpm.pas"/>
         <UnitName Value="LazXPM"/>
       </Item7>
-      <Item8>
-        <Filename Value="registerimg4laz.pas"/>
-        <UnitName Value="RegisterImg4Laz"/>
-      </Item8>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="1">
