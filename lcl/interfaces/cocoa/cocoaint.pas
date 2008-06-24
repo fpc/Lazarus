@@ -41,8 +41,8 @@ uses
   ctypes, objc, foundation, appkit,
   // interfacebase
   InterfaceBase,
-  // widgetset
-//  CarbonGDIObjects,
+  // private
+  CocoaPrivate,
   // LCL
   LCLStrConsts, LMessages, LCLMessageGlue, LCLProc, LCLIntf, LCLType;
 //  GraphType, GraphMath, Graphics, Controls, Forms, Dialogs, Menus, Maps, Themes;
@@ -107,7 +107,7 @@ type
  //     lParam: LParam; out Target: EventTargetRef): EventRef;
 
     // the winapi compatibility methods
-//    {$I carbonwinapih.inc}
+    {$I cocoawinapih.inc}
     // the extra LCL interface methods
 //    {$I carbonlclintfh.inc}
 
@@ -154,7 +154,7 @@ uses
 // the implementation of the utility methods
 {$I cocoaobject.inc}
 // the implementation of the winapi compatibility methods
-//{$I Cocoawinapi.inc}
+{$I cocoawinapi.inc}
 // the implementation of the extra LCL interface methods
 //{$I Cocoalclintf.inc}
 

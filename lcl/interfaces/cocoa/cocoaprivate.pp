@@ -125,21 +125,31 @@ begin
 end;
 
 procedure TCocoaControl.InitializeFields;
+var
+  ParentHeight: Single;
 begin
+  ParentHeight := 0;
+  
   CFTitle := CFStringCreateWithPascalString(nil, LCLControl.Caption, kCFStringEncodingUTF8);
 
-  ControlRect.origin.x := LCLControl.Left;
-  ControlRect.origin.y := LCLControl.Top;
-  ControlRect.size.width := LCLControl.Width;
-  ControlRect.size.height := LCLControl.Height;
-
+  // Get's information form the parent
   if LCLControl.Parent <> nil then
   begin
      if LCLControl.Parent is TCustomForm then
      begin
        ParentView := TCocoaForm(LCLControl.Parent.Handle).MainWindowView;
+       ParentHeight := ParentView.frame.size.height;
      end;
   end;
+
+  // Calculates the position on the Screen
+  // Cocoa and LCL declare differently the coordinates system
+  // In LCL (0,0) is in the top-left corner without title,
+  // and in Cocoa it is in the bottom-left corner
+  ControlRect.origin.x := LCLControl.Left;
+  ControlRect.origin.y := ParentHeight - LCLControl.Top;
+  ControlRect.size.width := LCLControl.Width;
+  ControlRect.size.height := LCLControl.Height;
 end;
 
 procedure TCocoaControl.InitializeControl;
@@ -155,12 +165,15 @@ begin
   inherited Create(AWinControl, AParams);
 
   Control := NSButton.initWithFrame(ControlRect);
+  
+  InitializeControl();
+  
   Button.setTitle(CFTitle);
   Button.setBezelStyle(NSRoundedBezelStyle);
   Button.setAction(sel_registerName(PChar(Str_Button_OnClick)));
   Button.setTarget(Handle);
 
-  if ParentView <> nil then ParentView.addSubview(Button);
+  if ParentView <> nil then ParentView.addSubview(Button.Handle);
 end;
 
 function TCocoaButton.Button: NSButton;

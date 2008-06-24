@@ -129,6 +129,7 @@ begin
     DebugLn('TCocoaWidgetSet.AppTerminate');
   {$ENDIF}
 
+  NSApp.terminate(nil);
 end;
 
 {------------------------------------------------------------------------------

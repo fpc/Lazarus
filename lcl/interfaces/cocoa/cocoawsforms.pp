@@ -157,7 +157,9 @@ var
 begin
   CocoaForm := TCocoaForm(ACustomForm.Handle);
   
-  CocoaForm.MainWindow.orderFrontRegardless;
+  if AWinControl.Visible then
+    CocoaForm.MainWindow.orderFrontRegardless()
+  else CocoaForm.MainWindow.orderOut(nil);
 end;
 
 initialization
