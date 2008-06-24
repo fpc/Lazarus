@@ -29,7 +29,7 @@ unit ComponentReg;
 interface
 
 uses
-  Classes, SysUtils, Controls, LazarusPackageIntf;
+  Classes, SysUtils, Controls, LazarusPackageIntf, LCLProc;
 
 type
   TComponentPriorityCategory = (
@@ -51,7 +51,8 @@ const
 type
   TBaseComponentPage = class;
   TBaseComponentPalette = class;
-
+  TOnGetCreationClass = procedure(Sender: TObject;
+                              var NewComponentClass: TComponentClass) of object;
 
   { TRegisteredComponent }
 
@@ -59,6 +60,7 @@ type
   private
     FButton: TComponent;
     FComponentClass: TComponentClass;
+    FOnGetCreationClass: TOnGetCreationClass;
     FPage: TBaseComponentPage;
     FPageName: string;
   protected
@@ -74,6 +76,7 @@ type
     function GetPriority: TComponentPriority; virtual;
     procedure AddToPalette; virtual;
     function CanBeCreatedInDesigner: boolean; virtual;
+    function GetCreationClass: TComponentClass; virtual;
     procedure ShowHideControl(Show: boolean);
     function IsTControl: boolean;
   public
@@ -82,6 +85,8 @@ type
     property Page: TBaseComponentPage read FPage write FPage;
     property Button: TComponent read FButton write FButton;
     property Visible: boolean read FVisible write SetVisible;
+    property OnGetCreationClass: TOnGetCreationClass read FOnGetCreationClass
+                                                     write FOnGetCreationClass;
   end;
   TRegisteredComponentClass = class of TRegisteredComponent;
 
@@ -131,7 +136,7 @@ type
     procedure(Sender: TObject; PaletteChanged: boolean) of object;
   TGetComponentClass = procedure(const AClass: TComponentClass) of object;
   RegisterUnitComponentProc = procedure(const Page, UnitName: ShortString;
-                                       ComponentClass: TComponentClass);
+                                        ComponentClass: TComponentClass);
 
   TBaseComponentPalette = class
   private
@@ -278,6 +283,13 @@ end;
 function TRegisteredComponent.CanBeCreatedInDesigner: boolean;
 begin
   Result:=true;
+end;
+
+function TRegisteredComponent.GetCreationClass: TComponentClass;
+begin
+  Result:=FComponentClass;
+  if Assigned(OnGetCreationClass) then
+    OnGetCreationClass(Self,Result);
 end;
 
 procedure TRegisteredComponent.ShowHideControl(Show: boolean);

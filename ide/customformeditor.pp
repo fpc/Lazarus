@@ -128,6 +128,8 @@ each control that's dropped onto the form
     function GetPropertyEditorHook: TPropertyEditorHook;
     function FindDefinePropertyNode(const APersistentClassName: string
                                     ): TAVLTreeNode;
+    procedure FrameCompGetCreationClass(Sender: TObject;
+      var NewComponentClass: TComponentClass);
   protected
     FNonFormForms: TAVLTree; // tree of TNonControlDesignerForm sorted for LookupRoot
     procedure SetSelection(const ASelection: TPersistentSelectionList);
@@ -157,6 +159,7 @@ each control that's dropped onto the form
 
     constructor Create;
     destructor Destroy; override;
+    procedure RegisterFrame;
 
     // selection
     function AddSelected(Value: TComponent) : Integer;
@@ -253,7 +256,6 @@ each control that's dropped onto the form
                                  var Ancestor, RootAncestor: TComponent);
     procedure SetComponentNameAndClass(CI: TIComponentInterface;
                                        const NewName, NewClassName: shortstring);
-    function GetDescendantTypeClass(TypeClass: TComponentClass): TComponentClass;
 
     // ancestors
     function GetAncestorLookupRoot(AComponent: TComponent): TComponent; override;
@@ -879,6 +881,14 @@ begin
   inherited Destroy;
 end;
 
+procedure TCustomFormEditor.RegisterFrame;
+var
+  FrameComp: TRegisteredComponent;
+begin
+  FrameComp:=IDEComponentPalette.FindComponent('TFrame');
+  FrameComp.OnGetCreationClass:=@FrameCompGetCreationClass;
+end;
+
 procedure TCustomFormEditor.SetSelection(
   const ASelection: TPersistentSelectionList);
 begin
@@ -1461,20 +1471,6 @@ begin
   Result:=ACompIntf.GetComponentEditor;
 end;
 
-function TCustomFormEditor.GetDescendantTypeClass(TypeClass: TComponentClass): TComponentClass;
-begin
-  // maybe we should do that through hooks?
-  if (TypeClass <> nil) and (TypeClass = TFrame) then
-  begin
-    if Assigned(OnSelectFrame) then
-      OnSelectFrame(Self, Result)
-    else 
-      Result := nil;
-  end
-  else
-    Result := TypeClass;
-end;
-
 function TCustomFormEditor.CreateComponent(ParentCI: TIComponentInterface;
   TypeClass: TComponentClass; const AUnitName: shortstring; X,Y,W,H: Integer
   ): TIComponentInterface;
@@ -1512,9 +1508,6 @@ begin
       if OwnerComponent.Owner <> nil then
         OwnerComponent := OwnerComponent.Owner;
       try
-        TypeClass := GetDescendantTypeClass(TypeClass);
-        if TypeClass = nil then
-          Exit;
         NewComponent := TypeClass.Create(OwnerComponent);
       except
         on e: Exception do begin
@@ -2297,6 +2290,13 @@ function TCustomFormEditor.GetDesignerBaseClasses(Index: integer
   ): TComponentClass;
 begin
   Result:=TComponentClass(FDesignerBaseClasses[Index]);
+end;
+
+procedure TCustomFormEditor.FrameCompGetCreationClass(Sender: TObject;
+  var NewComponentClass: TComponentClass);
+begin
+  if Assigned(OnSelectFrame) then
+    OnSelectFrame(Sender,NewComponentClass);
 end;
 
 function TCustomFormEditor.GetPropertyEditorHook: TPropertyEditorHook;

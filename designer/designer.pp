@@ -1433,6 +1433,7 @@ var
     NewParent: TComponent;
     NewParentControl: TWinControl;
     NewComponent: TComponent;
+    NewComponentClass: TComponentClass;
   begin
     if MouseDownComponent=nil then exit;
 
@@ -1485,9 +1486,13 @@ var
       NewHeight:=0;
     end;
 
+    NewComponentClass:=SelectedCompClass.GetCreationClass;
+    //DebugLn(['AddComponent ',dbgsName(NewComponentClass)]);
+    if NewComponentClass=nil then exit;
+    
     // create component and component interface
     NewCI := TComponentInterface(TheFormEditor.CreateComponent(
-       ParentCI,SelectedCompClass.ComponentClass,'',
+       ParentCI,NewComponentClass,'',
        NewLeft,NewTop,NewWidth,NewHeight));
     if NewCI=nil then exit;
     NewComponent:=NewCI.Component;

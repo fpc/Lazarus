@@ -879,7 +879,9 @@ type
 
     procedure DoGotoIncludeDirective;
     procedure SaveIncludeLinks;
-    function SelectProjectItems(ItemList: TStringList; ItemType: TIDEProjectItem): TModalResult;
+    function SelectProjectItems(ItemList: TStringList;
+                                ItemType: TIDEProjectItem;
+                                MultiSelect: boolean): TModalResult;
 
     // tools
     function DoMakeResourceString: TModalResult;
@@ -1195,6 +1197,7 @@ begin
 
   // load installed packages
   PkgBoss.LoadInstalledPackages;
+  FormEditor1.RegisterFrame;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create INSTALLED COMPONENTS');{$ENDIF}
 
   // load package configs
@@ -7577,7 +7580,8 @@ begin
   end;
 end;
 
-function TMainIDE.SelectProjectItems(ItemList: TStringList; ItemType: TIDEProjectItem): TModalResult;
+function TMainIDE.SelectProjectItems(ItemList: TStringList;
+  ItemType: TIDEProjectItem; MultiSelect: boolean): TModalResult;
 var
   i: integer;
   MainUnitName, DlgCaption: string;
@@ -7598,7 +7602,8 @@ begin
         if (ItemType = piComponent) or
            ((ItemType = piFrame) and (Project1.Units[i].ResourceBaseClass = pfcbcFrame)) then
           ItemList.AddObject(Project1.Units[i].UnitName,
-            TViewUnitsEntry.Create(Project1.Units[i].ComponentName, i, Project1.Units[i] = ActiveUnitInfo));
+            TViewUnitsEntry.Create(Project1.Units[i].ComponentName, i,
+                                   Project1.Units[i] = ActiveUnitInfo));
       end;
     end else
     begin
@@ -7606,7 +7611,8 @@ begin
       if (Project1.Units[i].UnitName <> '') then
       begin
         ItemList.AddObject(Project1.Units[i].UnitName,
-          TViewUnitsEntry.Create(Project1.Units[i].UnitName, i, Project1.Units[i] = ActiveUnitInfo));
+          TViewUnitsEntry.Create(Project1.Units[i].UnitName, i,
+                                 Project1.Units[i] = ActiveUnitInfo));
       end
       else
       if Project1.MainUnitID = i then
@@ -7630,7 +7636,7 @@ begin
     piComponent: DlgCaption := dlgMainViewForms;
     piFrame: DlgCaption := dlgMainViewFrames;
   end;
-  Result := ShowViewUnitsDlg(ItemList, True, DlgCaption);
+  Result := ShowViewUnitsDlg(ItemList, MultiSelect, DlgCaption);
 end;
 
 function TMainIDE.DoSelectFrame: TComponentClass;
@@ -7643,7 +7649,7 @@ begin
   UnitList := TStringList.Create;
   UnitList.Sorted := True;
   try
-    if SelectProjectItems(UnitList, piFrame) = mrOk then
+    if SelectProjectItems(UnitList, piFrame, false) = mrOk then
     begin
       { This is where we check what the user selected. }
       AnUnitInfo := nil;
@@ -7654,8 +7660,8 @@ begin
           AnUnitInfo := Project1.Units[TViewUnitsEntry(UnitList.Objects[i]).ID];
           if (AnUnitInfo.ComponentName <> '') then
           begin
-            // Result := ...
-            DebugLn(AnUnitInfo.ComponentName + ' has been selected');
+            Result := TComponentClass(AnUnitInfo.Component.ClassType);
+            //DebugLn(AnUnitInfo.ComponentName + ' has been selected');
             break;
           end;
         end;
@@ -7680,7 +7686,7 @@ begin
   UnitList := TStringList.Create;
   UnitList.Sorted := True;
   try
-    if SelectProjectItems(UnitList, UseItemType[OnlyForms]) = mrOk then
+    if SelectProjectItems(UnitList, UseItemType[OnlyForms], true) = mrOk then
     begin
       { This is where we check what the user selected. }
       AnUnitInfo := nil;

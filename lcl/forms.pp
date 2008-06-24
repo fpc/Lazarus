@@ -1376,9 +1376,6 @@ var
 
 procedure Register;
 begin
-{$ifdef EnableTFrame}
-  RegisterComponents('Standard',[TFrame]);
-{$endif}
   RegisterComponents('Additional',[TScrollBox, TApplicationProperties]);
 end;
 
