@@ -898,8 +898,12 @@ begin
 
   // The next values are only valid, if there is a precision
   if (RedPrec   <> 0) and (RedShift   <> ADesc.RedShift  ) then Exit;
-  if (GreenPrec <> 0) and (GreenShift <> ADesc.GreenShift) then Exit;
-  if (BluePrec  <> 0) and (BlueShift  <> ADesc.BlueShift ) then Exit;
+  if Format = ricfRGBA
+  then begin
+    // for mono images only red is of importance
+    if (GreenPrec <> 0) and (GreenShift <> ADesc.GreenShift) then Exit;
+    if (BluePrec  <> 0) and (BlueShift  <> ADesc.BlueShift ) then Exit;
+  end;
   if (AlphaPrec <> 0) and (AlphaShift <> ADesc.AlphaShift) then Exit;
 
   // The next values are only valid, if there is a mask (MaskBitsPerPixel > 0)

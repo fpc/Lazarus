@@ -41,11 +41,15 @@ uses
 procedure DbgDumpBitmap(ABitmap: PGdkBitmap; ATitle: String = ''; AWidth: Integer = -1; AHeight: Integer = -1);
 procedure DbgDumpPixmap(APixmap: PGdkPixmap; ATitle: String = ''; AWidth: Integer = -1; AHeight: Integer = -1);
 procedure DbgDumpPixbuf(APixbuf: PGdkPixbuf; ATitle: String = ''; AWidth: Integer = -1; AHeight: Integer = -1);
+{$ifndef gtk1}
+// dont debug images on gtk1, we cannot ref, unref them and thus we cannot rely that they will not be destroyed
+procedure DbgDumpImage(AImage: PGdkImage; ATitle: String = ''; AWidth: Integer = -1; AHeight: Integer = -1);
+{$endif}
 
 implementation
 
 type
-  TDbgDumpType = (ddtBitmap, ddtPixmap, ddtPixbuf);
+  TDbgDumpType = (ddtBitmap, ddtPixmap, ddtPixbuf, ddtImage);
 
   PDbgDumpInfo = ^TDbgDumpInfo;
   TDbgDumpInfo = record                            
@@ -54,6 +58,7 @@ type
       ddtBitmap: (Bitmap: PGdkBitmap);
       ddtPixmap: (Pixmap: PGdkPixmap);
       ddtPixbuf: (Pixbuf: PGdkPixbuf);
+      ddtImage: (Image: PGdkImage);
   end;
                     
 procedure OnDbgWindowDestroy(widget: PGtkWidget; Data: Pointer); cdecl;
@@ -64,6 +69,7 @@ begin
     ddtBitmap: if Info^.Bitmap <> nil then  gdk_pixmap_unref(Info^.Bitmap);
     ddtPixmap: if Info^.Pixmap <> nil then gdk_pixmap_unref(Info^.Pixmap);
     ddtPixbuf: if Info^.Pixbuf <> nil then gdk_pixbuf_unref(Info^.Pixbuf);
+    ddtImage: if Info^.Image <> nil then {$ifndef gtk1}gdk_image_unref(Info^.Image){$endif};
   end;
   Dispose(Info);
 end;
@@ -100,6 +106,10 @@ begin
       if Info^.Pixbuf <> nil
       then gdk_pixbuf_render_to_drawable_alpha(Info^.Pixbuf, widget^.window, 0, 0, 0, 0, Info^.Width, Info^.Height, GDK_PIXBUF_ALPHA_BILEVEL, $80, GDK_RGB_DITHER_NORMAL, 0, 0);
     end;
+    ddtImage: begin
+      if Info^.Image <> nil
+      then gdk_draw_image(widget^.window, gc, Info^.Image, 0, 0, 0, 0, Info^.Width, Info^.Height);
+    end;
   end;
   
   gdk_gc_destroy(gc);
@@ -122,7 +132,6 @@ begin
 
   gtk_widget_show_all(window);
 end;
-
 
 procedure DbgDumpBitmap(ABitmap: PGdkBitmap; ATitle: String = ''; AWidth: Integer = -1; AHeight: Integer = -1);
 var
@@ -218,6 +227,27 @@ begin
   gdk_pixbuf_ref(APixbuf);
 
   ATitle := ATitle + Format(' (Pixbuf:$%p W:%d H:%d C:%d)', [APixbuf, w, h, c]);
+  DbgCreateWindow(Info, ATitle);
+end;
+
+procedure DbgDumpImage(AImage: PGdkImage; ATitle: String; AWidth: Integer;
+  AHeight: Integer);
+var
+  Info: PDbgDumpInfo;
+begin
+  New(Info);
+
+  if AWidth = -1 then AWidth := AImage^.width;
+  if AHeight = -1 then AHeight := AImage^.height;
+  
+  Info^.Width := AWidth;
+  Info^.Height := AHeight;
+  Info^.DumpType := ddtImage;
+  Info^.Image := AImage;
+  {$ifndef gtk1}
+  gdk_image_ref(AImage);
+  {$endif}
+
   DbgCreateWindow(Info, ATitle);
 end;
 

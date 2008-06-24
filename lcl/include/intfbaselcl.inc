@@ -299,11 +299,14 @@ begin
     ADesc.AlphaShift := Desc.AlphaShift;
   end
   else begin
-    if Desc.Depth = 32
+    if (Desc.Depth = 32) and (ADesc.Format = ricfRGBA)
     then begin
       ADesc.Depth := 24;
+      //---
+      // maybe move this to win32 only
       if Desc.AlphaShift = 24
       then ADesc.BitsPerPixel := 24;
+      //---
     end;
   end;
   

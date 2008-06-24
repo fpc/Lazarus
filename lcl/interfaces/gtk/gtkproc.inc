@@ -1190,6 +1190,7 @@ begin
     Warn('Result=nil');
     Exit;
   end;
+  //DbgDumpPixbuf(Result, 'Pixbuf from Source');
 
   // Apply mask if present
   if ASrcMask <> nil
@@ -1395,6 +1396,7 @@ begin
   end;
 
   if (GdiImage = nil)
+  or (GdiImage^.GDIBitmapType <> gbPixmap)
   or (GdiImage^.GDIPixmapObject.Mask = nil)
   then begin
     gdk_window_get_size(GdiMask^.GDIBitmapObject, @W, @H);
@@ -1404,7 +1406,7 @@ begin
     gdk_draw_pixmap(Result, GC, GdiMask^.GDIBitmapObject, 0, 0, 0, 0, -1, -1);
     gdk_gc_unref(GC);
 
-//    DbgDumpBitmap(Result, 'CreateGdkMaskBitmap - Mask');
+    //DbgDumpBitmap(Result, 'CreateGdkMaskBitmap - Mask');
     Exit;
   end;
   
@@ -5650,17 +5652,25 @@ end;
 function CreatePixbufFromDrawable(ASource: PGdkDrawable; AColorMap:PGdkColormap; AIncludeAplha: Boolean; ASrcX, ASrcY, ADstX, ADstY, AWidth, AHeight: longint): PGdkPixbuf;
 {$ifndef HasX}
 const
-  CanRequestAlpha = True;
+  CanRequestAlpha: Boolean = True;
 var
 {$else}
 var
   CanRequestAlpha: Boolean;
 {$endif}
   PixBuf: PGdkPixBuf;
+{$ifdef Windows}
+  Image: PGdkImage;
+{$endif}
 begin
   {$ifdef HasX}
   CanRequestAlpha := BitmapBitOrder(gdk_display) = LSBFirst;
   {$endif}
+  
+  // If Source is GdkBitmap then gdk_pixbuf_get_from_drawable will get
+  // pixbuf with 2 colors: transparent and white, but we need only Black and White.
+  // If we all alpha at the end then problem is gone.
+  CanRequestAlpha := CanRequestAlpha and (gdk_drawable_get_depth(ASource) > 1);
   
   if CanRequestAlpha and AIncludeAplha
   then Pixbuf := gdk_pixbuf_new(GDK_COLORSPACE_RGB, True, 8, AWidth, AHeight)
@@ -5679,7 +5689,19 @@ begin
   and (gdk_drawable_get_colormap(ASource) = nil)
   then AColorMap := gdk_colormap_get_system;
   {$endif}
+  {$ifdef Windows}
+  if gdk_drawable_get_depth(ASource) = 1 then
+  begin
+    // Fix gdk error in converter. For 1 bit Byte order is not significant
+    Image := gdk_drawable_get_image(ASource, ASrcX, ASrcY, AWidth, AHeight);
+    Image^.byte_order := GDK_MSB_FIRST;
+    Result := gdk_pixbuf_get_from_image(Pixbuf, Image, nil, ASrcX, ASrcY, ADstX, ADstY, AWidth, AHeight);
+    gdk_image_unref(Image);
+  end
+  else
+  {$endif}
   Result := gdk_pixbuf_get_from_drawable(Pixbuf, ASource, AColorMap, ASrcX, ASrcY, ADstX, ADstY, AWidth, AHeight);
+  //DbgDumpPixbuf(Result, '');
 
   if CanRequestAlpha then Exit; // we're done
   if not AIncludeAplha then Exit;

@@ -5022,6 +5022,7 @@ end;
 
 procedure TLazReaderIconDIB.InternalRead(Stream: TStream; Img: TFPCustomImage);
 var
+  Desc: TRawImageDescription;
   Row, Column: Integer;
   NewColor: TFPColor;
   BufPtr: PByte;
@@ -5030,28 +5031,33 @@ begin
   FImage := TheImage as TLazIntfImage;
   InternalReadHead;
   
-  // force alpha description
-  CheckAlphaDescription(TheImage);
-
   // Height field is doubled, to (sort of) accomodate mask
   // MWE: it shoud be safer to verify the division agains the dirinfo.height
   //      anyway I haven't encountered an icon in the wild which doesn't have a mask
   FBFI.biHeight := FBFI.biHeight div 2;
+  if FUpdateDescription
+  then begin
+    DefaultReaderDescription(FBFI.biWidth, FBFI.biHeight, FBFI.biBitCount, Desc);
+//    if FMaskMode = lrmmNone
+//    then Desc.MaskBitsPerPixel := 0;
+    FImage.DataDescription := Desc;
+  end
+  else Desc := FImage.DataDescription;
   InternalReadBody; { Now read standard bitmap }
 
   // Mask immediately follows unless bitmap was 32 bit - monchrome bitmap with no header
   // MWE: Correction, it seems that even 32bit icons can have a mask following
   // if BFI.biBitCount >= 32 then Exit;
 
-  FReadSize := ((Img.Width + 31) div 32) shl 2;
-  SetupRead(2, Img.Width, False, False);
+  FReadSize := ((Desc.Width + 31) div 32) shl 2;
+  SetupRead(2, Desc.Width, False, False);
   try
-    for Row := Img.Height - 1 downto 0 do
+    for Row := Desc.Height - 1 downto 0 do
     begin
       ReadScanLine(Row); // Scanline in LineBuf with Size ReadSize.
       BufPtr := LineBuf;
       MaskBit := $80;
-      for Column:=0 to FImage.Width - 1 do
+      for Column:=0 to Desc.Width - 1 do
       begin
         if BufPtr^ and MaskBit = 0
         then begin
@@ -5062,7 +5068,7 @@ begin
           // transparent
           FImage.Masked[Column, Row] := True;
           // add alpha when source wasn't 32bit
-          if FBitsPerPixel <> 32
+          if (Desc.AlphaPrec <> 0) and (Desc.Depth < 32)
           then begin
             NewColor := FImage.Colors[Column, Row];
             NewColor.Alpha := alphaTransparent;

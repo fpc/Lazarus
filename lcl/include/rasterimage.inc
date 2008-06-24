@@ -121,7 +121,9 @@ begin
   H := Height;
   if H < 1 then H := 1;
 
-  QueryFlags := [riqfRGB];
+  if ImagePtr^.Description.Depth = 1
+  then QueryFlags := [riqfMono]
+  else QueryFlags := [riqfRGB];
   if ImagePtr^.Description.AlphaPrec <> 0
   then Include(QueryFlags, riqfAlpha);
   if ImagePtr^.Description.MaskBitsPerPixel <> 0

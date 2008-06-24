@@ -541,7 +541,12 @@ begin
     ADesc.LineEnd := Desc.MaskLineEnd;
     ADesc.BitsPerPixel := Desc.MaskBitsPerPixel;
     ADesc.RedPrec := 1;
-    ADesc.RedShift := Desc.MaskShift
+    ADesc.RedShift := Desc.MaskShift;
+    // in theory only redshift is used, but if someone reads it as color thsi works too.
+    ADesc.GreenPrec := 1;
+    ADesc.GreenShift := Desc.MaskShift;
+    ADesc.BluePrec := 1;
+    ADesc.BlueShift := Desc.MaskShift;
   end
 (*
   //TODO

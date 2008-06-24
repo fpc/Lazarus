@@ -250,11 +250,11 @@ end;
 
 function TGtk2WidgetSet.CreateIconIndirect(IconInfo: PIconInfo): HICON;
 var
-  pixmap: PGdkPixmap;
   bitmap: PGdkBitmap;
+  pixmap: PGdkPixmap;
+  pixbuf: PGdkPixbuf;
   Width, Height: integer;
   MaxWidth, MaxHeight: guint;
-  pixbuf, masked_pixbuf: PGdkPixbuf;
 {$ifdef Windows}
   Old80807CW: Word;
 
@@ -274,46 +274,42 @@ begin
   if not IsValidGDIObject(IconInfo^.hbmColor) then Exit;
 
   pixmap := PGDIObject(IconInfo^.hbmColor)^.GDIPixmapObject.Image;
-  bitmap := PGDIObject(IconInfo^.hbmColor)^.GDIPixmapObject.Mask;
+  //DbgDumpPixmap(pixmap, '');
 
   gdk_drawable_get_size(pixmap, @Width, @Height);
   gdk_display_get_maximal_cursor_size(gdk_display_get_default,
                                       @MaxWidth, @MaxHeight);
 
-  if (Width > integer(MaxWidth)) or (Height > integer(MaxHeight)) then
-    exit;
-
-  // create alpha pixbuf
-  pixbuf := gdk_pixbuf_new(GDK_COLORSPACE_RGB, True, 8, Width, Height);
-
-  // fill pixbuf from pixmap
-  gdk_pixbuf_get_from_drawable(pixbuf, pixmap, nil, 0, 0, 0, 0, -1, -1);
-
-  masked_pixbuf := GdkPixbufAddBitmapMask(pixbuf, bitmap, 0);
-  if masked_pixbuf <> nil then
-  begin
-    // masked_pixuf is a new pixbuf created from pixbuf with applying mask
-    gdk_pixbuf_unref(pixbuf);
-    pixbuf := masked_pixbuf;
-  end;
-
-  if IconInfo^.fIcon then
-    Result := HICON(PtrUInt(pixbuf))
-  else
-  begin
+  if (Width > integer(MaxWidth))
+  or (Height > integer(MaxHeight)) then Exit;
+  
+  bitmap := CreateGdkMaskBitmap(IconInfo^.hbmColor, IconInfo^.hbmMask);
+  try
+    pixbuf := CreatePixbufFromImageAndMask(pixmap, 0, 0, Width, Height, nil, Bitmap);
+    
+    if IconInfo^.fIcon
+    then begin
+      Result := HICON(PtrUInt(pixbuf));
+      Exit;
+    end;
+    
     // create cursor from pixbuf
+    {$IFDEF Windows}
     try
-      {$IFDEF Windows}
       // we'll get 'division by zero' error in CMCheckColorsInGamut in other case
       SetCW;
-      {$ENDIF}
-      Result := HCURSOR(PtrUInt(gdk_cursor_new_from_pixbuf(gdk_display_get_default, pixbuf,
-        IconInfo^.xHotSpot, IconInfo^.yHotSpot)));
+    {$ENDIF}
+    Result := HCURSOR(PtrUInt(gdk_cursor_new_from_pixbuf(gdk_display_get_default, pixbuf,
+      IconInfo^.xHotSpot, IconInfo^.yHotSpot)));
+    {$IFDEF Windows}
     finally
-      {$IFDEF Windows}
       ResetCW;
-      {$ENDIF}
     end;
+    {$ENDIF}
+
+  finally
+    if bitmap <> nil
+    then gdk_bitmap_unref(bitmap);
   end;
 end;
 
