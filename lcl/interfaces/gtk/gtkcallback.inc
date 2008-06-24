@@ -169,8 +169,8 @@ begin
   {$ifdef windows}
   if (PMSG(xevent)^.message = WM_NCLBUTTONDOWN) and
      (PMSG(xevent)^.wParam = HTCAPTION) and
-     (TWinControlAccess(AForm).DragKind = dkDock) and
-     (TWinControlAccess(AForm).DragMode = dmAutomatic) then
+     (TWinControlAccess(TWinControl(AForm)).DragKind = dkDock) and
+     (TWinControlAccess(TWinControl(AForm)).DragMode = dmAutomatic) then
   begin
     AForm.BeginDrag(True);
     Result := GDK_FILTER_REMOVE;
