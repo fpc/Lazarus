@@ -21,7 +21,7 @@
 }
 unit CocoaPrivate;
 
-{$mode objfpc}{$H+}
+{$mode delphi}
 
 interface
 
@@ -38,6 +38,9 @@ uses
   // LCL
   LMessages, LCLMessageGlue, LCLProc, LCLType, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Buttons, ComCtrls, ExtCtrls, Menus;
+  
+const
+  Str_Button_OnClick = 'ButtonOnClick';
   
 type
 
@@ -57,25 +60,30 @@ type
   
   { TCocoaControl }
 
-  TCocoaControl = class(TObject)
+  TCocoaControl = class(NSObject)
   public
     { classes }
     ParentView: NSView;
+    Control: NSControl;
+    LCLControl: TWinControl;
     { strings and sizes }
     CFTitle: CFStringRef;
     ControlRect: NSRect;
   public
     constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams);
+    procedure InitializeFields;
+    procedure InitializeControl;
   end;
 
   { TCocoaButton }
 
   TCocoaButton = class(TCocoaControl)
   public
-    { classes }
-    Handle: NSButton;
-  public
     constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams);
+    function Button: NSButton;
+    procedure AddMethods; override;
+    { Objective-c Methods }
+    class procedure ButtonOnClick(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl;
   end;
 
 implementation
@@ -101,6 +109,44 @@ begin
   MainWindow.setTitle(CFTitle);
 end;
 
+{ TCocoaControl }
+
+constructor TCocoaControl.Create(const AWinControl: TWinControl;
+  const AParams: TCreateParams);
+begin
+  { The class is registered on the Objective-C runtime before the NSObject constructor is called }
+  if not CreateClassDefinition(ClassName(), Str_NSObject) then Exception.Create('Failed to create objc class: ' + ClassName());
+
+  inherited Create;
+
+  // Initializes information fields
+  LCLControl := AWinControl;
+  InitializeFields();
+end;
+
+procedure TCocoaControl.InitializeFields;
+begin
+  CFTitle := CFStringCreateWithPascalString(nil, LCLControl.Caption, kCFStringEncodingUTF8);
+
+  ControlRect.origin.x := LCLControl.Left;
+  ControlRect.origin.y := LCLControl.Top;
+  ControlRect.size.width := LCLControl.Width;
+  ControlRect.size.height := LCLControl.Height;
+
+  if LCLControl.Parent <> nil then
+  begin
+     if LCLControl.Parent is TCustomForm then
+     begin
+       ParentView := TCocoaForm(LCLControl.Parent.Handle).MainWindowView;
+     end;
+  end;
+end;
+
+procedure TCocoaControl.InitializeControl;
+begin
+  Control.setTag(PtrInt(Self));
+end;
+
 { TCocoaButton }
 
 constructor TCocoaButton.Create(const AWinControl: TWinControl;
@@ -108,33 +154,37 @@ constructor TCocoaButton.Create(const AWinControl: TWinControl;
 begin
   inherited Create(AWinControl, AParams);
 
-  Handle := NSButton.initWithFrame(ControlRect);
-  Handle.setTitle(CFTitle);
-  Handle.setBezelStyle(NSRoundedBezelStyle);
-//  Handle.setAction(sel_registerName(PChar(ACallbackName)));
-//  Handle.setTarget(ACallbackClass.Handle);
+  Control := NSButton.initWithFrame(ControlRect);
+  Button.setTitle(CFTitle);
+  Button.setBezelStyle(NSRoundedBezelStyle);
+  Button.setAction(sel_registerName(PChar(Str_Button_OnClick)));
+  Button.setTarget(Handle);
 
-  if ParentView <> nil then ParentView.addSubview(Handle);
+  if ParentView <> nil then ParentView.addSubview(Button);
 end;
 
-{ TCocoaControl }
-
-constructor TCocoaControl.Create(const AWinControl: TWinControl;
-  const AParams: TCreateParams);
+function TCocoaButton.Button: NSButton;
 begin
-  CFTitle := CFStringCreateWithPascalString(nil, AWinControl.Caption, kCFStringEncodingUTF8);
+  Result := NSButton(Control);
+end;
 
-  ControlRect.origin.x := AWinControl.Left;
-  ControlRect.origin.y := AWinControl.Top;
-  ControlRect.size.width := AWinControl.Width;
-  ControlRect.size.height := AWinControl.Height;
-  
-  if AWinControl.Parent <> nil then
-  begin
-     if AWinControl.Parent is TCustomForm then
-     begin
-       ParentView := TCocoaForm(AWinControl.Parent.Handle).MainWindowView;
-     end;
+procedure TCocoaButton.AddMethods;
+begin
+  AddMethod(Str_Button_OnClick, 'v@:@', Pointer(ButtonOnClick));
+end;
+
+class procedure TCocoaButton.ButtonOnClick(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl;
+var
+  VSelf: TCocoaButton;
+  VNSControl: NSControl;
+begin
+  VNSControl := NSControl.CreateWithHandle(sender);
+  try
+    VSelf := TCocoaButton(VNSControl.tag);
+    VSelf.LCLControl.OnClick(VSelf.LCLControl);
+  finally
+    VNSControl.Handle := nil;
+    VNSControl.Free;
   end;
 end;
 

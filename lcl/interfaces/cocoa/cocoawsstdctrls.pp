@@ -328,7 +328,7 @@ var
   CocoaButton: TCocoaButton;
 begin
   CocoaButton := TCocoaButton.Create(AWinControl, AParams);
-  CocoaButton.Handle.setButtonType(NSSwitchButton);
+  CocoaButton.Button.setButtonType(NSSwitchButton);
 
   Result := TLCLIntfHandle(CocoaButton);
 end;
