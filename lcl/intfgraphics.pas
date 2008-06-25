@@ -2924,7 +2924,7 @@ end;
 
 function TLazIntfImage.HasMask: boolean;
 begin
-  Result := FMaskSet;
+  Result := FMaskSet or FRawImage.IsMasked(False);
 end;
 
 constructor TLazIntfImage.Create(AWidth, AHeight: integer);
@@ -5101,10 +5101,14 @@ begin
   if FUpdateDescription and (theImage is TLazIntfImage)
   then begin
     // init some default
-    Desc.Init_BPP32_B8G8R8A8_BIO_TTB(Header.Width, Header.height);
 
     IsGray := Header.ColorType and 3 = 0;
-    IsAlpha := (Header.ColorType and 4 <> 0) or FAlphaPalette;
+    // Paul: todo - remove UseTransparent and use mask if no alpha
+    IsAlpha := (Header.ColorType and 4 <> 0) or FAlphaPalette or UseTransparent;
+    
+    if not IsAlpha and UseTransparent
+    then Desc.Init_BPP32_B8G8R8A8_M1_BIO_TTB(Header.Width, Header.height)
+    else Desc.Init_BPP32_B8G8R8A8_BIO_TTB(Header.Width, Header.height);
 
     if IsGray
     then Desc.Format := ricfGray;

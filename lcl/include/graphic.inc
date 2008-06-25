@@ -18,7 +18,7 @@
 
 constructor TGraphic.Create;
 begin
-  Inherited Create;
+  inherited Create;
 end;
 
 procedure TGraphic.Clear;

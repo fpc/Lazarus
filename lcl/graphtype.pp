@@ -784,7 +784,7 @@ end;
 
 procedure TRawImageDescription.Init_BPP32_B8G8R8A8_M1_BIO_TTB(AWidth, AHeight: integer);
 begin
-  Init_BPP32_B8G8R8A8_BIO_TTB(Width, Height);
+  Init_BPP32_B8G8R8A8_BIO_TTB(AWidth, AHeight);
 
   MaskBitsPerPixel := 1;
   MaskBitOrder := riboBitsInOrder;

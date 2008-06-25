@@ -125,7 +125,7 @@ begin
     SCB.FImage.FreeData;
     IntfImg.GetRawImage(SCB.FImage, True);
     SCB.FHasMask := IntfImg.HasMask;
-    if not IntfImg.HasMask
+    if not SCB.FHasMask
     then SCB.FImage.Description.MaskBitsPerPixel := 0;
   finally
     LazReader := nil;
