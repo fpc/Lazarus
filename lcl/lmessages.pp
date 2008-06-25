@@ -403,8 +403,13 @@ type
 {$ifdef cpu64}
     UnusedMsg: Cardinal;
 {$endif}
+{$IFDEF FPC_LITTLE_ENDIAN}
     CharCode: Word; // VK_XXX constants as TLMKeyDown/Up, ascii if TLMChar
     Unused: Word;
+{$ELSE}
+    Unused: Word;
+    CharCode: Word; // VK_XXX constants as TLMKeyDown/Up, ascii if TLMChar
+{$ENDIF}
 {$ifdef cpu64}
     Unused2 : Longint;
 {$endif cpu64}
@@ -459,8 +464,13 @@ type
 {$ifdef cpu64}
     UnusedMsg: Cardinal;
 {$endif}
+{$IFDEF FPC_LITTLE_ENDIAN}
     Active: WordBool;
     Minimized: WordBool;
+{$ELSE}
+    Minimized: WordBool;
+    Active: WordBool;
+{$ENDIF}
 {$ifdef cpu64}
     Unused : Longint;
 {$endif cpu64}
@@ -572,7 +582,12 @@ type
         ActivateWnd: HWND;
         Result: LRESULT);
       SC_KEYMENU: (
+{$IFDEF FPC_LITTLE_ENDIAN}
         Key: Word);
+{$ELSE}
+        Unused: Word;
+        Key: Word);
+{$ENDIF}
       SC_CLOSE, SC_HSCROLL, SC_MAXIMIZE, SC_MINIMIZE, SC_MOUSEMENU, SC_MOVE,
       SC_NEXTWINDOW, SC_PREVWINDOW, SC_RESTORE, SC_SCREENSAVE, SC_SIZE,
       SC_TASKLIST, SC_VSCROLL: (
@@ -585,8 +600,13 @@ type
 {$ifdef cpu64}
     UnusedMsg: Cardinal;
 {$endif}
+{$IFDEF FPC_LITTLE_ENDIAN}
     CharCode: Word;
     Unused: Word;
+{$ELSE}
+    Unused: Word;
+    CharCode: Word;
+{$ENDIF}
 {$ifdef cpu64}
     Unused2 : Longint;
 {$endif cpu64}
@@ -600,8 +620,13 @@ type
 {$ifdef cpu64}
     UnusedMsg: Cardinal;
 {$endif}
+{$IFDEF FPC_LITTLE_ENDIAN}
     ErrSpec: Word;
     Unused1 : Word;
+{$ELSE}
+    Unused1 : Word;
+    ErrSpec: Word;
+{$ENDIF}
 {$ifdef cpu64}
     Unused2 : Longint;
 {$endif cpu64}
@@ -628,8 +653,13 @@ type
 {$ifdef cpu64}
     UnusedMsg: Cardinal;
 {$endif}
+{$IFDEF FPC_LITTLE_ENDIAN}
     Button: Word;         // 1=left, 2=right, 3=middle
     WheelDelta: SmallInt; // -1 for up, 1 for down
+{$ELSE}
+    WheelDelta: SmallInt; // -1 for up, 1 for down
+    Button: Word;         // 1=left, 2=right, 3=middle
+{$ENDIF}
 {$ifdef cpu64}
     Unused1 : Longint;
 {$endif cpu64}
@@ -706,12 +736,21 @@ type
       {$IFNDEF CPU64}
       // on a 64 bit platform these make no sense
       1 : (
+{$IFDEF FPC_LITTLE_ENDIAN}
         WParamLo: Word;
         WParamHi: Word;
         LParamLo: Word;
         LParamHi: Word;
         ResultLo: Word;
         ResultHi: Word);
+{$ELSE}
+        WParamHi: Word;
+        WParamLo: Word;
+        LParamHi: Word;
+        LParamLo: Word;
+        ResultHi: Word;
+        ResultLo: Word);
+{$ENDIF}
       {$endif}
     end;
 {$else}
@@ -732,8 +771,13 @@ type
 {$ifdef cpu64}
     UnusedMsg: Cardinal;
 {$endif}
+{$IFDEF FPC_LITTLE_ENDIAN}
     ScrollCode: SmallInt; // SB_xxx
     SmallPos: SmallInt;
+{$ELSE}
+    SmallPos: SmallInt;
+    ScrollCode: SmallInt; // SB_xxx
+{$ENDIF}
 {$ifdef cpu64}
     Unused : Longint;
 {$endif cpu64}
@@ -792,8 +836,13 @@ type
 {$ifdef cpu64}
     UnusedMsg: Cardinal;
 {$endif}
+{$IFDEF FPC_LITTLE_ENDIAN}
     ItemID: Word;
     NotifyCode: Word;
+{$ELSE}
+    NotifyCode: Word;
+    ItemID: Word;
+{$ENDIF}
 {$ifdef cpu64}
     Unused : Longint;
 {$endif cpu64}
