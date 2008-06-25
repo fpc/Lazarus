@@ -33,6 +33,7 @@ uses
 {$else}
   MacOSAll,
 {$endif}
+  // Cocoa
   foundation, appkit,
   // LCL
   Controls, StdCtrls, Graphics, LCLType, LMessages, LCLProc, Classes,
