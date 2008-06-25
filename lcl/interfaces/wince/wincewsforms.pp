@@ -205,10 +205,10 @@ var
   BorderStyle: TFormBorderStyle;
 begin
   BorderStyle := AForm.BorderStyle;
-  Flags := BorderStyleToWin32Flags(BorderStyle);
+  Flags := BorderStyleToWinAPIFlags(BorderStyle);
   if AForm.Parent <> nil then
     Flags := (Flags or WS_CHILD) and not WS_POPUP;
-  FlagsEx := BorderStyleToWin32FlagsEx(BorderStyle);
+  FlagsEx := BorderStyleToWinAPIFlagsEx(AForm, BorderStyle);
   if (AForm.FormStyle in fsAllStayOnTop) then
     FlagsEx := FlagsEx or WS_EX_TOPMOST;
   Flags := Flags or CalcBorderIconsFlags(AForm);
@@ -219,8 +219,8 @@ begin
   // the LCL defines the size of a form without border, win32 with.
   // -> adjust size according to BorderStyle
   SizeRect := AForm.BoundsRect;
-  Windows.AdjustWindowRectEx(@SizeRect, BorderStyleToWin32Flags(
-    AForm.BorderStyle), false, BorderStyleToWin32FlagsEx(AForm.BorderStyle));
+  Windows.AdjustWindowRectEx(@SizeRect, BorderStyleToWinAPIFlags(
+    AForm.BorderStyle), false, BorderStyleToWinAPIFlagsEx(AForm, AForm.BorderStyle));
 end;
 
 procedure CalculateDialogPosition(var Params: TCreateWindowExParams;
@@ -400,8 +400,8 @@ begin
     -> adjust size according to BorderStyle
     Must be done after setting sizeRect }
   BorderStyle := TCustomForm(AWinControl).BorderStyle;
-  Windows.AdjustWindowRectEx(@SizeRect, BorderStyleToWin32Flags(
-      BorderStyle), false, BorderStyleToWin32FlagsEx(BorderStyle));
+  Windows.AdjustWindowRectEx(@SizeRect, BorderStyleToWinAPIFlags(
+      BorderStyle), false, BorderStyleToWinAPIFlagsEx(TCustomForm(AWinControl), BorderStyle));
 
   // rect adjusted, pass to inherited to do real work
   TWinCEWSWinControl.SetBounds(AWinControl, SizeRect.Left, SizeRect.Top,
@@ -409,7 +409,6 @@ begin
 end;
 
 class procedure TWinCEWSCustomForm.SetIcon(const AForm: TCustomForm; const AIcon: HICON);
-  iconHandle: HICON;
 begin
   if not WSCheckHandleAllocated(AForm, 'SetIcon') then
     Exit;

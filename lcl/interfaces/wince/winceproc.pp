@@ -80,8 +80,8 @@ procedure LCLFormSizeToWin32Size(Form: TCustomForm; var AWidth, AHeight: Integer
 procedure GetWin32ControlPos(Window, Parent: HWND; var Left, Top: integer);
 
 procedure UpdateWindowStyle(Handle: HWnd; Style: integer; StyleMask: integer);
-function BorderStyleToWin32Flags(Style: TFormBorderStyle): DWORD;
-function BorderStyleToWin32FlagsEx(Style: TFormBorderStyle): DWORD;
+function BorderStyleToWinAPIFlags(Style: TFormBorderStyle): DWORD;
+function BorderStyleToWinAPIFlagsEx(AForm: TCustomForm; Style: TFormBorderStyle): DWORD;
 
 function GetFileVersion(FileName: string): dword;
 function AllocWindowInfo(Window: HWND): PWindowInfo;
@@ -1028,8 +1028,8 @@ begin
     Bottom := AHeight;
   end;
   BorderStyle := Form.BorderStyle;
-  Windows.AdjustWindowRectEx(@SizeRect, BorderStyleToWin32Flags(
-      BorderStyle), false, BorderStyleToWin32FlagsEx(BorderStyle));
+  Windows.AdjustWindowRectEx(@SizeRect, BorderStyleToWinAPIFlags(
+      BorderStyle), false, BorderStyleToWinAPIFlagsEx(Form, BorderStyle));
   AWidth := SizeRect.Right - SizeRect.Left;
   AHeight := SizeRect.Bottom - SizeRect.Top;
 end;
@@ -1062,7 +1062,7 @@ begin
   Windows.SetWindowLong(Handle, GWL_STYLE, NewStyle);
 end;
 
-function BorderStyleToWin32Flags(Style: TFormBorderStyle): DWORD;
+function BorderStyleToWinAPIFlags(Style: TFormBorderStyle): DWORD;
 begin
   Result := WS_CLIPCHILDREN or WS_CLIPSIBLINGS;
   case Application.ApplicationType of
@@ -1097,7 +1097,7 @@ begin
   end;
 end;
 
-function BorderStyleToWin32FlagsEx(Style: TFormBorderStyle): DWORD;
+function BorderStyleToWinAPIFlagsEx(AForm: TCustomForm; Style: TFormBorderStyle): DWORD;
 begin
   Result := 0;
 
@@ -1118,10 +1118,18 @@ begin
       {$ifdef WinCE}
       // Adds an "OK" close button to the title bar instead of the standard
       // "X" minimize button, unless the developer overrides that decision
-      if WinCEWidgetset.WinCETitlePolicy = tpAlwaysUseOKButton then
-        Result := WS_EX_CAPTIONOKBTN
+      case WinCEWidgetset.WinCETitlePolicy of
+
+        tpAlwaysUseOKButton: Result := WS_EX_CAPTIONOKBTN;
+        
+        
+        tpControlWithBorderIcons:
+        begin
+          if not (biMinimize in AForm.BorderIcons) then Result := WS_EX_CAPTIONOKBTN;
+        end;
       else
         if Style = bsDialog then Result := WS_EX_CAPTIONOKBTN;
+      end;
       {$endif}
     end;
 

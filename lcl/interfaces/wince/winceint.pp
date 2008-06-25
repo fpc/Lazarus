@@ -107,7 +107,7 @@ type
 
   { Policy for using the "OK" close button in the title instead of
     the default "X" minimize button }
-  TWinCETitlePolicy = (tpAlwaysUseOKButton, tpOKButtonOnlyOnDialogs);
+  TWinCETitlePolicy = (tpAlwaysUseOKButton, tpOKButtonOnlyOnDialogs, tpControlWithBorderIcons);
 
   PPPipeEventInfo = ^PPipeEventInfo;
   PPipeEventInfo = ^TPipeEventInfo;
