@@ -298,6 +298,8 @@ begin
 
   Tips := nil;
 
+  ATrayIcon.Handle := PtrInt(0);
+
   Result := True;
 end;
 
@@ -372,6 +374,13 @@ begin
   *******************************************************************}
 
   gtk_widget_show(GtkForm);
+  
+  {*******************************************************************
+  * We don't use the GtkPlug for anything, but we reuse the image
+  * to update it in InternalUpdate, so we save the image
+  * as the handle
+  *******************************************************************}
+  ATrayIcon.Handle := PtrInt(AImage);
 
   Result := True;
 end;
@@ -388,8 +397,30 @@ end;
 *
 *******************************************************************}
 class procedure TGtk2WSCustomTrayIcon.InternalUpdate(const ATrayIcon: TCustomTrayIcon);
+var
+  AImage: PGtkWidget;
+  AMask: PGdkBitmap;
+  GDIObject: PgdiObject;
 begin
+  // Updates the tooltips
   if Assigned(Tips) then gtk_tooltips_set_tip(GTK_TOOLTIPS(Tips), GtkForm, PChar(ATrayIcon.Hint), '');
+
+  // Updates the icon
+  
+  AImage := PGtkWidget(ATrayIcon.Handle);
+
+  if AImage <> nil then
+  begin
+    GDIObject := PgdiObject(ATrayIcon.Icon.Handle);
+
+    AMask := CreateGdkMaskBitmap(
+     GDIObject^.GDIPixmapObject.Mask,
+     GDIObject^.GDIBitmapObject);
+
+    gtk_image_set_from_pixmap(GTK_IMAGE(AImage),GDIObject^.GDIPixmapObject.Image, AMask);
+
+    g_object_unref(AMask);
+  end;
 end;
 
 {*******************************************************************
