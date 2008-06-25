@@ -1414,6 +1414,9 @@ begin
     Exit;
   end;
   
+  if Data = nil then Exit;
+  if DataSize = 0 then Exit;
+    
   // allocate some space
   ADst.CreateData(False);
 
