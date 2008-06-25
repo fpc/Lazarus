@@ -464,42 +464,50 @@ begin
 
   if Windows.OpenClipboard(Windows.HWND(nil)) then
     try
-      if FormatID=Windows.CF_BITMAP then
-      begin
-        Bitmap:= TBitmap.Create;
-        Bitmap.TransparentColor := clNone;
-        DataHandle := Windows.GetClipboardData(FormatID);
-        Bitmap.SetHandles(DataHandle, 0);
-        Bitmap.SaveToStream(Stream);
-        Bitmap.Free;
-        Result := true;
-      end
-      else
+      case FormatID of
+      Windows.CF_BITMAP:
+        begin
+          Bitmap:= TBitmap.Create;
+          Bitmap.TransparentColor := clNone;
+          DataHandle := Windows.GetClipboardData(FormatID);
+          Bitmap.SetHandles(DataHandle, 0);
+          Bitmap.SaveToStream(Stream);
+          Bitmap.Free;
+          Result := true;
+        end;
       {$IFDEF WindowsUnicodeSupport}
       { In the case of unicode text, it's necessary to
         convert it from UTF-16 to UTF-8 }
-      if FormatID=Windows.CF_UNICODETEXT then
-      begin
-        BufferStream := TMemoryStream.Create;
-        try
-          Result := ReadClipboardToStream(BufferStream);
-          
-          if Size>0 then
-          begin
-            BufferStream.Position := 0;
-            SetLength(BufferWideString, Size div 2);
-            BufferStream.Read(BufferWideString[1], Size);
-            BufferString := Utf8Encode(BufferWideString);
-            Stream.Write(BufferString[1], Length(BufferString));
+      Windows.CF_UNICODETEXT, Windows.CF_TEXT:
+        begin
+          BufferStream := TMemoryStream.Create;
+          try
+            Result := ReadClipboardToStream(BufferStream);
+
+            if Size>0 then
+            begin
+              BufferStream.Position := 0;
+              if FormatID=Windows.CF_UNICODETEXT then
+              begin;
+                SetLength(BufferWideString, Size div 2);
+                BufferStream.Read(BufferWideString[1], Size);
+                BufferString := Utf8Encode(BufferWideString);
+              end
+              else
+              begin
+                SetLength(BufferString, Size);
+                BufferStream.Read(BufferString[1], Size);
+                BufferString := AnsiToUtf8(BufferString);
+              end;
+              Stream.Write(BufferString[1], Length(BufferString));
+            end;
+          finally
+            BufferStream.Free;
           end;
-        finally
-          BufferStream.Free;
-        end;
-      end
-      else
+        end
       {$ENDIF}
-      begin
-        Result := ReadClipboardToStream(Stream);
+      else
+        Result := ReadClipboardToStream(Stream)
       end;
     finally
       Windows.CloseClipboard;
@@ -608,33 +616,40 @@ function TWin32WidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
     try
       OnClipBoardRequest(FormatID, DataStream);
       DataStream.Position:=0;
-      if FormatID=CF_BITMAP then
-      begin
-        Bitmap:= TBitmap.Create;
-        Bitmap.TransparentColor := clNone;
-        Bitmap.LoadFromStream(DataStream);
-        Windows.SetClipboardData(FormatID, Bitmap.Handle);
-        Bitmap.Free;
-      end
+      case FormatID of
+      CF_BITMAP:
+        begin
+          Bitmap:= TBitmap.Create;
+          Bitmap.TransparentColor := clNone;
+          Bitmap.LoadFromStream(DataStream);
+          Windows.SetClipboardData(FormatID, Bitmap.Handle);
+          Bitmap.Free;
+        end;
+     {$IFDEF WindowsUnicodeSupport}
+      Windows.CF_UNICODETEXT, Windows.CF_TEXT:
+        // CF_UNICODETEXT is used by UnicodeEnabledOS, CF_TEXT by others
+        // we need to convert it from UTF8 to UTF16 or Ansi
+        begin
+          SetLength(BufferString, DataStream.Size);
+          DataStream.Read(BufferString[1], DataStream.Size);
+          if FormatID=Windows.CF_UNICODETEXT then
+          begin
+            BufferWideString := Utf8Decode(BufferString);
+            BufferStream.Write(BufferWideString[1], Length(BufferWideString) * 2);
+          end
+          else
+          begin
+            BufferString := Utf8ToAnsi(BufferString);
+            BufferStream.Write(BufferString[1], Length(BufferString));
+          end;
+          BufferStream.Position := 0;
+          WriteStreamToClipBoard(FormatID, BufferStream);
+        end
+     {$ENDIF}
       else
-      {$IFDEF WindowsUnicodeSupport}
-      { In the case of unicode text, it's necessary to
-        convert it from UTF-8 to UTF-16 before sending
-        to the clipboard }
-      if FormatID=Windows.CF_UNICODETEXT then
-      begin
-        SetLength(BufferString, DataStream.Size);
-        DataStream.Read(PChar(BufferString)^, DataStream.Size);
-        BufferWideString := Utf8Decode(BufferString);
-        BufferStream.Write(PChar(BufferWideString)^, Length(BufferString) * 2);
-        BufferStream.Position := 0;
-
-        WriteStreamToClipBoard(FormatID, BufferStream);
-      end
-      else
-      {$ENDIF}
-      begin
-        WriteStreamToClipBoard(FormatID, DataStream);
+        begin
+          WriteStreamToClipBoard(FormatID, DataStream);
+        end;
       end;
     finally
       DataStream.Free;
@@ -715,7 +730,9 @@ function TWin32WidgetSet.ClipboardRegisterFormat(Const AMimeType: String): TClip
 begin
   if AMimeType=PredefinedClipboardMimeTypes[pcfText] then
   {$IFDEF WindowsUnicodeSupport}
-    Result := Windows.CF_UNICODETEXT
+    if UnicodeEnabledOS
+      then Result := Windows.CF_UNICODETEXT
+      else Result := Windows.CF_TEXT
   {$ELSE}
     Result := Windows.CF_TEXT
   {$ENDIF}
