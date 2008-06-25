@@ -238,24 +238,15 @@ var
 begin
   Picture := TPicture(GetObjectValue(TPicture));
   TheDialog := TGraphicPropertyEditorForm.Create(nil);
-  if (Picture.Graphic <> nil) and (Picture.Graphic is TBitmap) then
-  begin
-    TheDialog.Preview.Picture.Bitmap.Width := Picture.Width;
-    TheDialog.Preview.Picture.Bitmap.Height := Picture.Height;
-    with TheDialog.Preview.Picture.Bitmap.Canvas do
-    begin
-      Brush.Color := clWhite;
-      FillRect(Rect(0, 0, Picture.Width, Picture.Height));
-      Draw(0, 0, Picture.Graphic);
-    end;
-  end;
+  if (Picture.Graphic <> nil) then
+    TheDialog.Preview.Picture.Graphic := Picture.Graphic;
   try
     if (TheDialog.ShowModal = mrOK) then
     begin
       if TheDialog.Preview.Picture.Graphic <> nil then
       begin
         if TheDialog.FileName <> '' then
-          If FileExists(TheDialog.FileName) then
+          if FileExists(TheDialog.FileName) then
           begin
             Picture.LoadFromFile(TheDialog.FileName);
             AddPackage(Picture);
