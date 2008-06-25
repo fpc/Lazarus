@@ -5103,7 +5103,18 @@ begin
     // init some default
 
     IsGray := Header.ColorType and 3 = 0;
-    // Paul: todo - remove UseTransparent and use mask if no alpha
+
+    // Paul: if we have a mask in the description then we need to set it manually
+    // by Masked[x, y] := Color.Alpha = AlphaTransparent, but to do that we must
+    // read format ourself. fpReaders set alpha instead - they dont have Masked[].
+    // So if we want true description with mask we must teach our SetInternalColor
+    // method to handle Alpha if mask needed (or do it any other way). In other words
+    // this is now unimplemented and we'll get randomly masked image.
+    // As a temporary solution I'm enable alpha description if transparent color
+    // is present. This is indicated by UseTransparent property.
+    // When we will handle Mask in SetInternalColor please remove UseTransparent
+    // from the IsAlpha assignment.
+    
     IsAlpha := (Header.ColorType and 4 <> 0) or FAlphaPalette or UseTransparent;
     
     if not IsAlpha and UseTransparent
