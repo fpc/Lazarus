@@ -19,6 +19,7 @@
 constructor TSharedCustomBitmap.Create;
 begin
   inherited Create;
+  FImage.Init;
 end;
 
 destructor TSharedCustomBitmap.Destroy;
@@ -84,6 +85,16 @@ begin
     32: Exit(pf32Bit);
   end;
   Result := pfCustom;
+end;
+
+function TSharedCustomBitmap.IsEmpty: boolean;
+begin
+  Result := inherited IsEmpty and not
+    (
+      (FImage.Description.Format <> ricfNone) and
+      (FImage.Data <> nil) and
+      (FImage.DataSize <> 0)
+    );
 end;
 
 function TSharedCustomBitmap.GetWidth: Integer;

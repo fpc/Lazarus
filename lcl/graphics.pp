@@ -1081,7 +1081,7 @@ type
   protected
     procedure FreeHandle; override;
     function ReleaseHandle: THandle; virtual;
-    function IsEmpty: boolean;
+    function IsEmpty: boolean; virtual;
   public
     constructor Create; virtual;
     procedure CreateDefaultHandle(AWidth, AHeight: Integer; ABPP: Byte); virtual; abstract;
@@ -1218,6 +1218,7 @@ type
     procedure FreeImage;
     function ReleasePalette: HPALETTE;
     function GetPixelFormat: TPixelFormat;
+    function IsEmpty: boolean; override;
   public
     constructor Create; override;
     destructor Destroy; override;
