@@ -84,11 +84,16 @@ var
 {$endif WindowsUnicodeSupport}
 begin
   len := GetLineLength(Index);
-
+  if len=0 then
+  begin
+    Result := '';
+    exit;
+  end;
 {$ifdef WindowsUnicodeSupport}
   if UnicodeEnabledOS then
   begin
     Setlength(WideBuffer, len);
+    PWord(@WideBuffer[1])^ := len+1;
     len := SendMessageW(fHandle, EM_GETLINE, Index, lparam(PWideChar(WideBuffer)));
 
     Result := Utf8Encode(WideBuffer);
@@ -96,13 +101,13 @@ begin
   else
   begin
     Setlength(AnsiBuffer, len);
+    PWord(@AnsiBuffer[1])^ := len+1;
     len := SendMessage(fHandle, EM_GETLINE, Index, lparam(PChar(AnsiBuffer)));
 
     Result := AnsiToUtf8(AnsiBuffer);
   end;
 {$else}
   Setlength(Result, len);
-  if len = 0 then Exit;
 
   // no need for temp buf and moving
   // the result is without null terminator.
