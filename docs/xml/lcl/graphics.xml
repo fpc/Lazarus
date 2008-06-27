@@ -2261,7 +2261,8 @@ Property is a set, so may contain zero or more of the above (if set is empty, No
       <element name="TPenData.Style">
         <short>The <var>Style</var> asociated with the current <var>Pen</var>
         </short>
-        <descr>The <var>Style</var> asociated with the current <var>Pen</var><br/>
+        <descr>The <var>Style</var> asociated with the current <var>Pen</var>
+          <br/>
 Can take any of the values:
 psSolid, psDash, psDot, psDashDot, psDashDotDot, psinsideFrame, psPattern,psClear</descr>
       </element>
@@ -2419,7 +2420,8 @@ psSolid, psDash, psDot, psDashDot, psDashDotDot, psinsideFrame, psPattern,psClea
       </element>
       <!-- procedure Visibility: public -->
       <element name="TPen.Assign">
-        <short>Copies the <var>Source</var><var>Pen</var> to itself</short>
+        <short>Copies the <var>Source</var>
+          <var>Pen</var> to itself</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TPen.Assign.Source">
@@ -2848,10 +2850,24 @@ Default is psSolid</descr>
       <!-- object Visibility: default -->
       <element name="TGraphic">
         <short>Base class for dealing with <var>Graphic</var>   images</short>
-        <descr>The <var>TGraphic</var> class is an <b>abstract</b> base class for dealing with graphic images such as bitmaps, pixmaps, icons, and other image formats. It does not contain an actual area for displaying the image; this is provided by the descendant classes eg <var>BitMap</var>, <var>Icon</var> etc which have a <var>Canvas</var> element defined <br/><var>LoadFromFile</var> - Read the graphic from the file system.  The old contents of the graphic are lost.  If the file is not of the right format, an exception will be generated.<br/><var>SaveToFile</var> - Writes the graphic to disk in the file provided.<br/><var>LoadFromStream</var> - Like <var>LoadFromFile</var>  except source is a stream (e.g.  <var>TBlobStream</var>
-).<br/><var>SaveToStream</var> - stream analogue of <var>SaveToFile</var> .<br/><var>LoadFromClipboardFormat</var> - Replaces the current image with the data provided.  If the <var>TGraphic</var>
- does not support that format it will generate an exception.<br/><var>SaveToClipboardFormats</var> - Converts the image to a clipboard format.  If the image does not support being translated into a clipboard format it will generate an exception.<br/><var>Height</var> - The native, unstretched, height of the graphic.<br/><var>Palette</var> - Color palette of image.  Zero if graphic doesn't need/use palettes.<br/><var>Transparent</var> - Some parts of the image are not opaque, ie the background can be seen through.<br/><var>Width</var> - The native, unstretched, width of the graphic.<br/><var>OnChange</var> - Called whenever the graphic changes<br/><var>PaletteModified</var> - Indicates in <var>OnChange</var>  whether color palette has changed. Stays true until whoever is responsible for realizing this new palette    (ex: TImage) sets it to False.<br/><var>OnProgress</var> - Generic progress indicator event. Propagates out to <var>TPicture</var>
-  and <var>TImage OnProgress</var> events.<br/><br/>
+        <descr>The <var>TGraphic</var> class is an <b>abstract</b> base class for dealing with graphic images such as bitmaps, pixmaps, icons, and other image formats. It does not contain an actual area for displaying the image; this is provided by the descendant classes eg <var>BitMap</var>, <var>Icon</var> etc which have a <var>Canvas</var> element defined <br/>
+          <var>LoadFromFile</var> - Read the graphic from the file system.  The old contents of the graphic are lost.  If the file is not of the right format, an exception will be generated.<br/>
+          <var>SaveToFile</var> - Writes the graphic to disk in the file provided.<br/>
+          <var>LoadFromStream</var> - Like <var>LoadFromFile</var>  except source is a stream (e.g.  <var>TBlobStream</var>
+).<br/>
+          <var>SaveToStream</var> - stream analogue of <var>SaveToFile</var> .<br/>
+          <var>LoadFromClipboardFormat</var> - Replaces the current image with the data provided.  If the <var>TGraphic</var>
+ does not support that format it will generate an exception.<br/>
+          <var>SaveToClipboardFormats</var> - Converts the image to a clipboard format.  If the image does not support being translated into a clipboard format it will generate an exception.<br/>
+          <var>Height</var> - The native, unstretched, height of the graphic.<br/>
+          <var>Palette</var> - Color palette of image.  Zero if graphic doesn't need/use palettes.<br/>
+          <var>Transparent</var> - Some parts of the image are not opaque, ie the background can be seen through.<br/>
+          <var>Width</var> - The native, unstretched, width of the graphic.<br/>
+          <var>OnChange</var> - Called whenever the graphic changes<br/>
+          <var>PaletteModified</var> - Indicates in <var>OnChange</var>  whether color palette has changed. Stays true until whoever is responsible for realizing this new palette    (ex: TImage) sets it to False.<br/>
+          <var>OnProgress</var> - Generic progress indicator event. Propagates out to <var>TPicture</var>
+  and <var>TImage OnProgress</var> events.<br/>
+          <br/>
  
   As many of the methods and properties are <b>virtual</b> and/or <b>abstract</b>, it is the responsibility of the application programmer to supply suitable methods when implementing any descendant classes
 </descr>
@@ -2958,6 +2974,17 @@ Default is psSolid</descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="TGraphic.GetHeight.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TGraphic.GetMimeType">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TGraphic.GetMimeType.Result">
         <short/>
       </element>
       <!-- function Visibility: protected -->
@@ -3105,6 +3132,24 @@ Default is psSolid</descr>
       <element name="TGraphic.WriteData.Stream">
         <short/>
       </element>
+      <!-- procedure Visibility: public -->
+      <element name="TGraphic.Assign">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TGraphic.Assign.ASource">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TGraphic.Clear">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
       <!-- constructor Visibility: public -->
       <element name="TGraphic.Create">
         <short>
@@ -3191,6 +3236,20 @@ If the file is not of the right format, an exception will be generated.</descr>
           <var>LoadFromMimeStream </var>- reads graphic data from a MIME stream</short>
         <descr/>
         <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TGraphic.LoadFromMimeStream.AStream">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TGraphic.LoadFromMimeStream.AMimeType">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TGraphic.MimeType">
+        <short/>
+        <descr/>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
@@ -4538,7 +4597,8 @@ If the file is not of the right format, an exception will be generated.</descr>
 
 Params:   ALeft, ATop, ARight, ABottom, sx, sy, ex, ey<br/>
 
-Returns:  Nothing<br/><br/>
+Returns:  Nothing<br/>
+          <br/>
 
 Use Arc to draw an elliptically curved line with the current Pen. The values sx,sy, and ex,ey represent the starting and ending radial-points between which the Arc is drawn.</descr>
       </element>
@@ -4573,7 +4633,8 @@ Use Arc to draw an elliptically curved line with the current Pen. The values sx,
 
 Params:   ALeft, ATop, ARight, ABottom, angle1, angle2<br/>
 
-Returns:  Nothing<br/><br/>
+Returns:  Nothing<br/>
+          <br/>
 
 Use Arc to draw an elliptically curved line with the current Pen.<br/>
 
@@ -4689,7 +4750,8 @@ Params:   x1, y1, x2, y2, StartAngle16Deg, EndAngle16Deg<br/>
 
 
 
-Returns:  Nothing<br/><br/>
+Returns:  Nothing<br/>
+          <br/>
 
 
 
@@ -4822,7 +4884,8 @@ Zero degrees is at the 3 o'clock position.</descr>
 
 		      Params:   X1, Y1, X2, Y2<br/>
 
-Returns:  Nothing<br/><br/>
+Returns:  Nothing<br/>
+          <br/>
 Use <var>Ellipse</var>
  to draw a filled circle or ellipse on the canvas.</descr>
       </element>
@@ -5099,7 +5162,8 @@ Params:   x1, y1, x2, y2, StartAngle16Deg, EndAngle16Deg: Integer<br/>
 
 
 
-Returns:  Nothing<br/><br/>
+Returns:  Nothing<br/>
+          <br/>
 
 
 
@@ -5178,7 +5242,8 @@ Zero degrees is at the 3 o'clock position</descr>
 
 Params:   EllipseX1, EllipseY1, EllipseX2, EllipseY2, StartX, StartY, EndX, EndY<br/>
 
-Returns:  Nothing<br/><br/>
+Returns:  Nothing<br/>
+          <br/>
 
 Use <var>Pie</var>
  to draw a filled Pie-shaped wedge on the canvas. The pie is part of an ellipse between the points EllipseX1, EllipseY1, EllipseX2, EllipseY2. The values StartX, StartY and EndX, EndY represent the starting and ending radial-points between which the Bounding-Arc is drawn. <br/>
@@ -5246,7 +5311,8 @@ Params:  Points, Filled, Continous<br/>
 
 
 
-Returns: Boolean<br/><br/>
+Returns: Boolean<br/>
+          <br/>
 
 
 
@@ -5261,15 +5327,18 @@ The first curve is drawn from the first point to the fourth point with the secon
 
 
 
-If the Continuous flag is TRUE then each subsequent curve requires three more points, using the end-point of the previous Curve as its starting point, the first and second points being used as its control points, and the third point its end-point. <br/><br/>
+If the Continuous flag is TRUE then each subsequent curve requires three more points, using the end-point of the previous Curve as its starting point, the first and second points being used as its control points, and the third point its end-point. <br/>
+          <br/>
 
 
 
-If the continous flag is set to FALSE, then each subsequent Curve requires 4 additional points, which are used exactly as in the first curve. <br/><br/>
+If the continous flag is set to FALSE, then each subsequent Curve requires 4 additional points, which are used exactly as in the first curve. <br/>
+          <br/>
 
 
 
-Any additonal points which do not add up to a full bezier(4 for Continuous, 3 otherwise) are ingored. There must be at least 4 points for an drawing to occur. <br/><br/>
+Any additonal points which do not add up to a full bezier(4 for Continuous, 3 otherwise) are ingored. There must be at least 4 points for an drawing to occur. <br/>
+          <br/>
 
 
 
@@ -5340,7 +5409,8 @@ Params:   Points: array of TPoint; Winding: Boolean = False; StartIndex: Integer
 
 
 
-Returns:  Nothing<br/><br/>
+Returns:  Nothing<br/>
+          <br/>
 
 
 
@@ -5366,7 +5436,8 @@ Use <var>Polygon</var>
 
 
 
-.<br/><br/>
+.<br/>
+          <br/>
 
 
 
@@ -5377,7 +5448,8 @@ The <var>Points</var>
 
 
 
- parameter is an array of points that give the vertices of the polygon.<br/><var>Winding</var>
+ parameter is an array of points that give the vertices of the polygon.<br/>
+          <var>Winding</var>
 
 
 
@@ -5414,12 +5486,14 @@ When <var>Winding</var>
 
 
 
- uses the even-odd (alternative) fill algorithm.<br/><var>StartIndex</var>
+ uses the even-odd (alternative) fill algorithm.<br/>
+          <var>StartIndex</var>
 
 
 
 
- gives the index of the first point in the array to use. All points before this are ignored.<br/><var>NumPts</var>
+ gives the index of the first point in the array to use. All points before this are ignored.<br/>
+          <var>NumPts</var>
 
 
 
@@ -5523,7 +5597,8 @@ Params:   Points: array of TPoint; StartIndex: Integer = 0; NumPts: Integer = -1
 
 
 
-Returns:  Nothing<br/><br/>
+Returns:  Nothing<br/>
+          <br/>
 
 
 
@@ -5561,13 +5636,15 @@ The <var>Points</var>
 
 
 
- parameter is an array of points to be connected.<br/><var>StartIndex</var>
+ parameter is an array of points to be connected.<br/>
+          <var>StartIndex</var>
 
 
 
 
 
- identifies the first point in the array to use.<br/><var>NumPts</var>
+ identifies the first point in the array to use.<br/>
+          <var>NumPts</var>
 
 
 
@@ -5765,8 +5842,12 @@ Calling the <var>MoveTo</var>
       <element name="TCanvas.TextRect">
         <short>Writes <var>Text</var> string within a specified rectangle, according to predefined <var>Style</var>
         </short>
-        <descr>Writes <var>Text</var> string within a specified rectangle, according to predefined <var>Style</var><br/>
-The boundaries of the rectangle are specified in <var>ARect</var><br/><var>X, Y</var> specify the starting point for writing the <var>Text</var> within the rectangle <br/><var>TextStyle</var> determines whether the text is justified, centered, word-wrapped etc. If the <var>Style</var> argument is omitted, defaults are assumed</descr>
+        <descr>Writes <var>Text</var> string within a specified rectangle, according to predefined <var>Style</var>
+          <br/>
+The boundaries of the rectangle are specified in <var>ARect</var>
+          <br/>
+          <var>X, Y</var> specify the starting point for writing the <var>Text</var> within the rectangle <br/>
+          <var>TextStyle</var> determines whether the text is justified, centered, word-wrapped etc. If the <var>Style</var> argument is omitted, defaults are assumed</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.TextRect.ARect">
@@ -11355,7 +11436,8 @@ This function checks that the value in
       </element>
       <!-- function result Visibility: default -->
       <element name="CreateBitmapFromLazarusResource.Result">
-        <short>Returns a Bitmap of type <var>TCustomBitMap</var><var/>
+        <short>Returns a Bitmap of type <var>TCustomBitMap</var>
+          <var/>
         </short>
       </element>
       <!-- argument Visibility: default -->
@@ -11403,6 +11485,2576 @@ This function checks that the value in
       </element>
       <element name="TCustomBitmap.CanReadGraphicStreams.Result">
         <short>Returns True if the supplied class is capable of reading graphic streams</short>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="EGraphicException">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TSharedRasterImage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TSharedRasterImage.FHandle">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TSharedRasterImage.FBitmapCanvas">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TSharedRasterImage.FSaveStream">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TSharedRasterImage.FreeHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TSharedRasterImage.ReleaseHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TSharedRasterImage.ReleaseHandle.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TSharedRasterImage.IsEmpty">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TSharedRasterImage.IsEmpty.Result">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TSharedRasterImage.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TSharedRasterImage.CreateDefaultHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TSharedRasterImage.CreateDefaultHandle.AWidth">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TSharedRasterImage.CreateDefaultHandle.AHeight">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TSharedRasterImage.CreateDefaultHandle.ABPP">
+        <short/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TSharedRasterImage.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TSharedRasterImage.HandleAllocated">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TSharedRasterImage.HandleAllocated.Result">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TSharedRasterImage.BitmapCanvas">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TSharedRasterImage.SaveStream">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- "class of" type Visibility: default -->
+      <element name="TSharedRasterImageClass">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TRasterImage">
+        <short>
+          <var>TRasterImage</var> - base class for a number of graphic controls, including <var>TCustomBitmap</var> and <var>TCustomIcon</var>, which use a raster of dots to display graphic information</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TRasterImage.FCanvas">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TRasterImage.FSharedImage">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TRasterImage.FTransparentColor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TRasterImage.FTransparentMode">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TRasterImage.FInternalState">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TRasterImage.CreateCanvas">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TRasterImage.CreateMask">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TRasterImage.CreateMask.AColor">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TRasterImage.FreeCanvasContext">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TRasterImage.GetCanvas">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TRasterImage.GetCanvas.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TRasterImage.SetTransparentColor">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TRasterImage.SetTransparentColor.AValue">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TRasterImage.CanShareImage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TRasterImage.CanShareImage.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TRasterImage.CanShareImage.AClass">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TRasterImage.Changed">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TRasterImage.Changed.Sender">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TRasterImage.Changing">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TRasterImage.Changing.Sender">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TRasterImage.CreateDefaultBitmapHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TRasterImage.CreateDefaultBitmapHandle.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TRasterImage.CreateDefaultBitmapHandle.ADesc">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TRasterImage.Draw">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TRasterImage.Draw.DestCanvas">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TRasterImage.Draw.DestRect">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TRasterImage.GetEmpty">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TRasterImage.GetEmpty.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TRasterImage.GetHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TRasterImage.GetHandle.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TRasterImage.GetBitmapHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TRasterImage.GetBitmapHandle.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TRasterImage.GetMaskHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TRasterImage.GetMaskHandle.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TRasterImage.GetMimeType">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TRasterImage.GetMimeType.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TRasterImage.GetPixelFormat">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TRasterImage.GetPixelFormat.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TRasterImage.GetRawImage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TRasterImage.GetRawImage.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TRasterImage.GetRawImageDescription">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TRasterImage.GetRawImageDescription.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TRasterImage.GetTransparent">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TRasterImage.GetTransparent.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TRasterImage.GetSharedImageClass">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TRasterImage.GetSharedImageClass.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TRasterImage.GetHeight">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TRasterImage.GetHeight.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TRasterImage.GetWidth">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TRasterImage.GetWidth.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TRasterImage.BitmapHandleNeeded">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TRasterImage.HandleNeeded">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TRasterImage.MaskHandleNeeded">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TRasterImage.PaletteNeeded">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TRasterImage.InternalReleaseBitmapHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TRasterImage.InternalReleaseBitmapHandle.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TRasterImage.InternalReleaseMaskHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TRasterImage.InternalReleaseMaskHandle.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TRasterImage.InternalReleasePalette">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TRasterImage.InternalReleasePalette.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TRasterImage.SetBitmapHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TRasterImage.SetBitmapHandle.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TRasterImage.SetMaskHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TRasterImage.SetMaskHandle.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TRasterImage.UnshareImage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TRasterImage.UnshareImage.CopyContent">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TRasterImage.UpdateHandles">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TRasterImage.UpdateHandles.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TRasterImage.UpdateHandles.ABitmap">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TRasterImage.UpdateHandles.AMask">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TRasterImage.SaveStreamNeeded">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TRasterImage.FreeSaveStream">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TRasterImage.ReadData">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TRasterImage.ReadData.Stream">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TRasterImage.ReadStream">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TRasterImage.ReadStream.AStream">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TRasterImage.ReadStream.ASize">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TRasterImage.SetSize">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TRasterImage.SetSize.AWidth">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TRasterImage.SetSize.AHeight">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TRasterImage.SetHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TRasterImage.SetHandle.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TRasterImage.SetHeight">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TRasterImage.SetHeight.AHeight">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TRasterImage.SetWidth">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TRasterImage.SetWidth.AWidth">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TRasterImage.SetTransparentMode">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TRasterImage.SetTransparentMode.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TRasterImage.SetPixelFormat">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TRasterImage.SetPixelFormat.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TRasterImage.WriteData">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TRasterImage.WriteData.Stream">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TRasterImage.WriteStream">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TRasterImage.WriteStream.AStream">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TRasterImage.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TRasterImage.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TRasterImage.Assign">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TRasterImage.Assign.Source">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TRasterImage.Clear">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TRasterImage.FreeImage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TRasterImage.BitmapHandleAllocated">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TRasterImage.BitmapHandleAllocated.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TRasterImage.MaskHandleAllocated">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TRasterImage.MaskHandleAllocated.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TRasterImage.PaletteAllocated">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TRasterImage.PaletteAllocated.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TRasterImage.LoadFromBitmapHandles">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TRasterImage.LoadFromBitmapHandles.ABitmap">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TRasterImage.LoadFromBitmapHandles.AMask">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TRasterImage.LoadFromBitmapHandles.ARect">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TRasterImage.LoadFromDevice">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TRasterImage.LoadFromDevice.DC">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TRasterImage.LoadFromStream">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TRasterImage.LoadFromStream.AStream">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TRasterImage.LoadFromStream.ASize">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TRasterImage.LoadFromMimeStream">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TRasterImage.LoadFromMimeStream.AStream">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TRasterImage.LoadFromMimeStream.AMimeType">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TRasterImage.LoadFromIntfImage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TRasterImage.LoadFromIntfImage.IntfImage">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TRasterImage.SaveToStream">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TRasterImage.SaveToStream.AStream">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TRasterImage.GetSupportedSourceMimeTypes">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TRasterImage.GetSupportedSourceMimeTypes.List">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TRasterImage.Mask">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TRasterImage.Mask.ATransparentColor">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TRasterImage.SetHandles">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TRasterImage.SetHandles.ABitmap">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TRasterImage.SetHandles.AMask">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TRasterImage.ReleaseBitmapHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TRasterImage.ReleaseBitmapHandle.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TRasterImage.ReleaseMaskHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TRasterImage.ReleaseMaskHandle.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TRasterImage.ReleasePalette">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TRasterImage.ReleasePalette.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TRasterImage.CreateIntfImage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TRasterImage.CreateIntfImage.Result">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TRasterImage.Canvas">
+        <short>The <var>Canvas</var> on which this raster image is to be painted</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TRasterImage.HandleAllocated">
+        <short>
+          <var>HandleAllocated</var> - if True, an Operating System handle has been allocated</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TRasterImage.HandleAllocated.Result">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TRasterImage.BitmapHandle">
+        <short>
+          <var>BitmapHandle</var> - the Handle that has been allocated for the Bitmap</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TRasterImage.MaskHandle">
+        <short>
+          <var>MaskHandle</var> - the handle that has been allocated for the Bitmap Mask</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TRasterImage.PixelFormat">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TRasterImage.TransparentColor">
+        <short>
+          <var>TransparentColor</var> - the colour used in transparent mode</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TRasterImage.TransparentMode">
+        <short>In <var>TransparentMode</var> ir is possible to see the underlying objects through the current image</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TSharedCustomBitmap">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TSharedCustomBitmap.FHandleType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TSharedCustomBitmap.FImage">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TSharedCustomBitmap.FHasMask">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TSharedCustomBitmap.FPalette">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TSharedCustomBitmap.GetHeight">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TSharedCustomBitmap.GetHeight.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TSharedCustomBitmap.GetWidth">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TSharedCustomBitmap.GetWidth.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TSharedCustomBitmap.FreeHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TSharedCustomBitmap.FreePalette">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TSharedCustomBitmap.FreeImage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TSharedCustomBitmap.ReleasePalette">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TSharedCustomBitmap.ReleasePalette.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TSharedCustomBitmap.GetPixelFormat">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TSharedCustomBitmap.GetPixelFormat.Result">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TSharedCustomBitmap.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TSharedCustomBitmap.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TSharedCustomBitmap.HandleAllocated">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TSharedCustomBitmap.HandleAllocated.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TSharedCustomBitmap.ImageAllocated">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TSharedCustomBitmap.ImageAllocated.Result">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TSharedCustomBitmap.HandleType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TSharedCustomBitmap.Height">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TSharedCustomBitmap.Width">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomBitmap.FMaskHandle">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomBitmap.SetBitmapHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomBitmap.SetBitmapHandle.AValue">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomBitmap.SetHandleType.AValue">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomBitmap.CanShareImage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomBitmap.CanShareImage.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomBitmap.CanShareImage.AClass">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomBitmap.CreateDefaultBitmapHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomBitmap.CreateDefaultBitmapHandle.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomBitmap.CreateDefaultBitmapHandle.ADesc">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomBitmap.GetBitmapHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomBitmap.GetBitmapHandle.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomBitmap.GetPixelFormat">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomBitmap.GetPixelFormat.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomBitmap.GetRawImage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomBitmap.GetRawImage.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomBitmap.GetRawImageDescription">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomBitmap.GetRawImageDescription.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomBitmap.InternalReleaseBitmapHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomBitmap.InternalReleaseBitmapHandle.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomBitmap.InternalReleaseMaskHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomBitmap.InternalReleaseMaskHandle.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomBitmap.InternalReleasePalette">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomBitmap.InternalReleasePalette.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomBitmap.RawimageNeeded">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomBitmap.RawimageNeeded.ADescOnly">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomBitmap.SetHandle.AValue">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomBitmap.UpdateHandles">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomBitmap.UpdateHandles.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomBitmap.UpdateHandles.ABitmap">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomBitmap.UpdateHandles.AMask">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TCustomBitmap.BitmapHandleAllocated">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomBitmap.BitmapHandleAllocated.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TCustomBitmap.SetSize">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomBitmap.SetSize.AWidth">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomBitmap.SetSize.AHeight">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPImageBitmap.GetMimeType">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPImageBitmap.GetMimeType.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPImageBitmap.GetReaderClass">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPImageBitmap.GetReaderClass.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFPImageBitmap.GetWriterClass">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFPImageBitmap.GetWriterClass.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPImageBitmap.InitializeReader">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPImageBitmap.InitializeReader.AImage">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPImageBitmap.InitializeReader.AReader">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPImageBitmap.InitializeWriter">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPImageBitmap.InitializeWriter.AImage">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPImageBitmap.InitializeWriter.AWriter">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPImageBitmap.FinalizeReader">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPImageBitmap.FinalizeReader.AReader">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFPImageBitmap.FinalizeWriter">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPImageBitmap.FinalizeWriter.AWriter">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPImageBitmap.ReadStream.AStream">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPImageBitmap.ReadStream.ASize">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFPImageBitmap.WriteStream.AStream">
+        <short/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TSharedBitmap">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TBitmap.InitializeReader">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TBitmap.InitializeReader.AImage">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TBitmap.InitializeReader.AReader">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TBitmap.InitializeWriter">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TBitmap.InitializeWriter.AImage">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TBitmap.InitializeWriter.AWriter">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TBitmap.FinalizeReader">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TBitmap.FinalizeReader.AReader">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TBitmap.GetReaderClass">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TBitmap.GetReaderClass.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TBitmap.GetWriterClass">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TBitmap.GetWriterClass.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TBitmap.GetSharedImageClass">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TBitmap.GetSharedImageClass.Result">
+        <short/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TSharedPixmap">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TPixmap.GetReaderClass">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPixmap.GetReaderClass.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TPixmap.GetWriterClass">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPixmap.GetWriterClass.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TPixmap.GetSharedImageClass">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPixmap.GetSharedImageClass.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TPixmap.GetFileExtensions">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPixmap.GetFileExtensions.Result">
+        <short/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TSharedPortableNetworkGraphic">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TPortableNetworkGraphic.GetReaderClass">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPortableNetworkGraphic.GetReaderClass.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TPortableNetworkGraphic.GetWriterClass">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPortableNetworkGraphic.GetWriterClass.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TPortableNetworkGraphic.InitializeWriter">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPortableNetworkGraphic.InitializeWriter.AImage">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPortableNetworkGraphic.InitializeWriter.AWriter">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TPortableNetworkGraphic.GetSharedImageClass">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPortableNetworkGraphic.GetSharedImageClass.Result">
+        <short/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TSharedPortableAnyMapGraphic">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TPortableAnyMapGraphic.GetReaderClass">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPortableAnyMapGraphic.GetReaderClass.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TPortableAnyMapGraphic.GetWriterClass">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPortableAnyMapGraphic.GetWriterClass.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TPortableAnyMapGraphic.GetSharedImageClass">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPortableAnyMapGraphic.GetSharedImageClass.Result">
+        <short/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TIconImage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- "class of" type Visibility: default -->
+      <element name="TIconImageClass">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TSharedIcon">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TSharedIcon.FImages">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TSharedIcon.FreeHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TSharedIcon.GetImagesClass">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TSharedIcon.GetImagesClass.Result">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TSharedIcon.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TSharedIcon.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TSharedIcon.Clear">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TSharedIcon.Delete">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TSharedIcon.Delete.Aindex">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TSharedIcon.GetIndex">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TSharedIcon.GetIndex.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TSharedIcon.GetIndex.AFormat">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TSharedIcon.GetIndex.AHeight">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TSharedIcon.GetIndex.AWidth">
+        <short/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TIconImage.FHeight">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TIconImage.FPixelFormat">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TIconImage.FWidth">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TIconImage.FImage">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TIconImage.FHandle">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TIconImage.FMaskHandle">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TIconImage.FPalette">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TIconImage.GetPalette">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TIconImage.GetPalette.Result">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TIconImage.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TIconImage.Create.AFormat">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TIconImage.Create.AHeight">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TIconImage.Create.AWidth">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TIconImage.Create.AImage">
+        <short/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TIconImage.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TIconImage.ReleaseHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TIconImage.ReleaseHandle.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TIconImage.ReleaseMaskHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TIconImage.ReleaseMaskHandle.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TIconImage.ReleasePalette">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TIconImage.ReleasePalette.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TIconImage.UpdateHandles">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TIconImage.UpdateHandles.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TIconImage.UpdateHandles.ABitmap">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TIconImage.UpdateHandles.AMask">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TIconImage.Height">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TIconImage.Width">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TIconImage.PixelFormat">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TIconImage.Handle">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TIconImage.MaskHandle">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TIconImage.Palette">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TCustomIcon">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomIcon.FCurrent">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TCustomIcon.GetCount">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomIcon.GetCount.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomIcon.SetCurrent">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomIcon.SetCurrent.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomIcon.MaskHandleNeeded">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomIcon.PaletteNeeded">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomIcon.GetIndex">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomIcon.GetIndex.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomIcon.GetIndex.AFormat">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomIcon.GetIndex.AHeight">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomIcon.GetIndex.AWidth">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomIcon.GetBitmapHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomIcon.GetBitmapHandle.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomIcon.GetMaskHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomIcon.GetMaskHandle.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomIcon.GetPalette">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomIcon.GetPalette.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomIcon.GetPixelFormat">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomIcon.GetPixelFormat.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomIcon.GetRawImage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomIcon.GetRawImage.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomIcon.GetRawImageDescription">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomIcon.GetRawImageDescription.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomIcon.GetSharedImageClass">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomIcon.GetSharedImageClass.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomIcon.HandleNeeded">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomIcon.InternalReleaseBitmapHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomIcon.InternalReleaseBitmapHandle.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomIcon.InternalReleaseMaskHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomIcon.InternalReleaseMaskHandle.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomIcon.InternalReleasePalette">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomIcon.InternalReleasePalette.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomIcon.ReadData">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomIcon.ReadData.Stream">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomIcon.ReadStream">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomIcon.ReadStream.AStream">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomIcon.ReadStream.ASize">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomIcon.SetPixelFormat">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomIcon.SetPixelFormat.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomIcon.UnshareImage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomIcon.UnshareImage.CopyContent">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomIcon.UpdateCurrentView">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomIcon.UpdateHandles">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomIcon.UpdateHandles.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomIcon.UpdateHandles.ABitmap">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomIcon.UpdateHandles.AMask">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomIcon.WriteStream">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomIcon.WriteStream.AStream">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TCustomIcon.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TCustomIcon.Add">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomIcon.Add.AFormat">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomIcon.Add.AHeight">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomIcon.Add.AWidth">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TCustomIcon.Assign">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomIcon.Assign.Source">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TCustomIcon.Clear">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TCustomIcon.Delete">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomIcon.Delete.Aindex">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TCustomIcon.Remove">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomIcon.Remove.AFormat">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomIcon.Remove.AHeight">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomIcon.Remove.AWidth">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TCustomIcon.GetDescription">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomIcon.GetDescription.Aindex">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomIcon.GetDescription.AFormat">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomIcon.GetDescription.AHeight">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomIcon.GetDescription.AWidth">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TCustomIcon.SetSize">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomIcon.SetSize.AWidth">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomIcon.SetSize.AHeight">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TCustomIcon.GetFileExtensions">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomIcon.GetFileExtensions.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TCustomIcon.LazarusResourceTypeValid">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomIcon.LazarusResourceTypeValid.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomIcon.LazarusResourceTypeValid.ResourceType">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TCustomIcon.BitmapHandleAllocated">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomIcon.BitmapHandleAllocated.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TCustomIcon.MaskHandleAllocated">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomIcon.MaskHandleAllocated.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TCustomIcon.PaletteAllocated">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomIcon.PaletteAllocated.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TCustomIcon.SetHandles">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomIcon.SetHandles.ABitmap">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomIcon.SetHandles.AMask">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomIcon.Current">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomIcon.Count">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TIcon.GetIconHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TIcon.GetIconHandle.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TIcon.SetIconHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TIcon.SetIconHandle.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TIcon.HandleNeeded">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TIcon.ReleaseHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TIcon.ReleaseHandle.Result">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TIcon.Handle">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TSharedCursorImage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TSharedCursorImage.FreeHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TSharedCursorImage.GetImagesClass">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TSharedCursorImage.GetImagesClass.Result">
+        <short/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TCursorImageImage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCursorImageImage.FHotSpot">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCursorImageImage.HotSpot">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TCursorImage.GetHotSpot">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCursorImage.GetHotSpot.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCursorImage.SetCursorHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCursorImage.SetCursorHandle.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCursorImage.HandleNeeded">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TCursorImage.GetSharedImageClass">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCursorImage.GetSharedImageClass.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TCursorImage.ReleaseHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCursorImage.ReleaseHandle.Result">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCursorImage.Handle">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- class Visibility: default -->
+      <element name="TSharedJpegImage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TJPEGImage.InitializeReader">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TJPEGImage.InitializeReader.AImage">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TJPEGImage.InitializeReader.AReader">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TJPEGImage.InitializeWriter">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TJPEGImage.InitializeWriter.AImage">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TJPEGImage.InitializeWriter.AWriter">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TJPEGImage.FinalizeReader">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TJPEGImage.FinalizeReader.AReader">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TJPEGImage.GetReaderClass">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TJPEGImage.GetReaderClass.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TJPEGImage.GetWriterClass">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TJPEGImage.GetWriterClass.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TJPEGImage.GetSharedImageClass">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TJPEGImage.GetSharedImageClass.Result">
+        <short/>
       </element>
     </module>
     <!-- Graphics -->
