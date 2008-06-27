@@ -182,6 +182,7 @@ type
     fChangeEndian: boolean;
     FInputStream: TStream;
     FHeader: tppuheader;
+    FVersion: integer;
     procedure ReadHeader;
     procedure InitInput(s: TStream);
     procedure ReadBuf(var Buf; Count: longint);
@@ -200,6 +201,7 @@ type
 
 function PPUTargetToStr(w: longint): string;
 function PPUCpuToStr(w: longint): string;
+function PPUFlagsToStr(flags:longint):string;
 
 implementation
 
@@ -334,6 +336,59 @@ begin
     Result:='<!! Unknown cpu value '+IntToStr(w)+'>';
 end;
 
+function PPUFlagsToStr(flags:longint):string;
+type
+  tflagopt=record
+    mask : longint;
+    str  : string[30];
+  end;
+const
+  flagopts=17;
+  flagopt : array[1..flagopts] of tflagopt=(
+    (mask: $1    ;str:'init'),
+    (mask: $2    ;str:'final'),
+    (mask: $4    ;str:'big_endian'),
+    (mask: $8    ;str:'dbx'),
+//    (mask: $10   ;str:'browser'),
+    (mask: $20   ;str:'in_library'),
+    (mask: $40   ;str:'smart_linked'),
+    (mask: $80   ;str:'static_linked'),
+    (mask: $100  ;str:'shared_linked'),
+//    (mask: $200  ;str:'local_browser'),
+    (mask: $400  ;str:'no_link'),
+    (mask: $800  ;str:'has_resources'),
+    (mask: $1000  ;str:'little_endian'),
+    (mask: $2000  ;str:'release'),
+    (mask: $4000  ;str:'local_threadvars'),
+    (mask: $8000  ;str:'fpu_emulation_on'),
+    (mask: $10000  ;str:'has_debug_info'),
+    (mask: $20000  ;str:'local_symtable'),
+    (mask: $40000  ;str:'uses_variants')
+  );
+var
+  i : longint;
+  first  : boolean;
+  s : string;
+begin
+  s:='';
+  if flags<>0 then
+   begin
+     first:=true;
+     for i:=1to flagopts do
+      if (flags and flagopt[i].mask)<>0 then
+       begin
+         if first then
+           first:=false
+         else
+           s:=s+', ';
+         s:=s+flagopt[i].str;
+       end;
+   end
+  else
+   s:='none';
+  Result:=s;
+end;
+
 { TPPU }
 
 procedure TPPU.ReadHeader;
@@ -344,6 +399,9 @@ begin
     Error('This is not a PPU. Wrong ID.');
   // read version
   ReadBuf(FHeader.ver,PPU_Ver_Size);
+  FVersion:=StrToIntDef(String(FHeader.ver),0);
+  if FVersion<16 then
+    Error('Old PPU versions (<16) are not supported.');
   // read rest of header
   ReadBuf(FHeader.compiler,SizeOf(tppuheader)-PPU_Ver_Size-PPU_ID_Size);
   if fChangeEndian then begin
@@ -433,16 +491,18 @@ procedure TPPU.DumpHeader(const Prefix: string);
 begin
   DebugLn([Prefix,'Header']);
   DebugLn([Prefix,'  ID=',String(FHeader.ID)]);
-  DebugLn([Prefix,'  Ver=',String(FHeader.ver)]);
-  DebugLn([Prefix,'  Compiler=',FHeader.compiler]);
-  DebugLn([Prefix,'  CPU=',PPUCpuToStr(FHeader.cpu)]);
-  DebugLn([Prefix,'  Target=',PPUTargetToStr(FHeader.target)]);
-  DebugLn([Prefix,'  Flags=',FHeader.flags]);
-  DebugLn([Prefix,'  Size=',FHeader.size]);
+  DebugLn([Prefix,'  Ver=',StrToIntDef(String(FHeader.ver),0)]);
+  DebugLn([Prefix,'  Compiler=',FHeader.compiler shr 14,'.',
+                            (FHeader.compiler shr 7) and $7f,'.',
+                            FHeader.compiler and $7f]);
+  DebugLn([Prefix,'  Target CPU=',PPUCpuToStr(FHeader.cpu)]);
+  DebugLn([Prefix,'  Target OS=',PPUTargetToStr(FHeader.target)]);
+  DebugLn([Prefix,'  Unit Flags=',PPUFlagsToStr(FHeader.flags)]);
+  DebugLn([Prefix,'  Filesize (w/o header)=',FHeader.size]);
   DebugLn([Prefix,'  Checksum=',FHeader.checksum]);
-  DebugLn([Prefix,'  Interface_CheckSum=',FHeader.interface_checksum]);
-  DebugLn([Prefix,'  deflistsize=',FHeader.deflistsize]);
-  DebugLn([Prefix,'  symlistsize=',FHeader.symlistsize]);
+  DebugLn([Prefix,'  Interface CheckSum=',FHeader.interface_checksum]);
+  DebugLn([Prefix,'  Number of Definitions=',FHeader.deflistsize]);
+  DebugLn([Prefix,'  Number of Symbols=',FHeader.symlistsize]);
 end;
 
 end.
