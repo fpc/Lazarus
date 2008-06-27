@@ -185,6 +185,11 @@ if [ $BuildCrossWin32DEB = "yes" ]; then
     cp -av $BuildRoot/binutils/cross/destination/$FPCLibDir/$Target $DestDir
   done
   
+  #----------------------------------------------------------------------------
+  # create default /usr/lib/fpc/fpc-cross.cfg
+  #----------------------------------------------------------------------------
+  touch $FPCBuildDir/usr/lib/fpc/fpc-cross.cfg
+  
   #------------------------------------------------------------------------------
   # create rulez and files
 
