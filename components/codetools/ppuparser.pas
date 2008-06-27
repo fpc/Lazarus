@@ -201,6 +201,7 @@ type
     procedure ReadUsedUnits;
     procedure ReadLinkContainer(Nr: byte);
     procedure ReadImportSymbols;
+    procedure ReadDerefData;
     procedure Skip(Count: integer);
     procedure Error(const Msg: string);
   public
@@ -522,6 +523,9 @@ begin
     ibImportSymbols:
       ReadImportSymbols;
 
+    ibderefdata:
+      ReadDerefData;
+
     ibusedmacros:
       begin
         while not EndOfEntry do
@@ -699,6 +703,14 @@ begin
       {$ENDIF}
     end;
   end;
+end;
+
+procedure TPPU.ReadDerefData;
+begin
+  {$IFDEF VerbosePPUParser}
+  DebugLn(['TPPU.ReadDerefData Deref Data length: ',FEntry.size-FEntryPos]);
+  {$ENDIF}
+  FEntryPos:=FEntry.size;
 end;
 
 procedure TPPU.Skip(Count: integer);
