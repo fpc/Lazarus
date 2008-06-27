@@ -547,7 +547,10 @@ begin
        break;
        
     else
-      Error('unknown interface entry nr '+IntToStr(EntryNr));
+      {$IFDEF VerbosePPUParser}
+      DebugLn(['TPPU.ReadInterface Skipping unsupported entry ',EntryNr]);
+      {$ENDIF}
+      FEntryPos:=FEntry.size;
     end;
   until false;
 end;
