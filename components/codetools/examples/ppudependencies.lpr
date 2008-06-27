@@ -28,12 +28,26 @@ program PPUDependencies;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils;
+  Classes, SysUtils, PPUParser;
 
-const
-  ConfigFilename = 'codetools.config';
+var
+  PPU: TPPU;
+  Filename: String;
 begin
-  CodeToolBoss.SimpleInit(ConfigFilename);
-  
+  if (Paramcount<1) then begin
+    writeln('Usage:');
+    writeln('  ',ParamStr(0),' <ppu filename>');
+    Halt;
+  end;
+
+  Filename:=ParamStr(1);
+
+  PPU:=TPPU.Create;
+  try
+    PPU.LoadFromFile(Filename);
+    PPU.Dump('');
+  finally
+    PPU.Free;
+  end;
 end.
 

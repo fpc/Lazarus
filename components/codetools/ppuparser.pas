@@ -35,7 +35,7 @@ unit PPUParser;
 interface
 
 uses
-  Classes, SysUtils; 
+  Classes, SysUtils, FileProcs;
 
 const
   PPUIsEndianBig = {$IFDEF ENDIAN_BIG}True{$ELSE}False{$ENDIF};
@@ -178,13 +178,16 @@ type
     FHeader: tppuheader;
     procedure ReadHeader;
     procedure InitInput(s: TStream);
-    procedure ReadBuf(Buf; Count: longint);
+    procedure ReadBuf(var Buf; Count: longint);
     procedure ReadWord(out w: word);
   public
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
     procedure LoadFromStream(s: TStream);
+    procedure LoadFromFile(const Filename: string);
+    procedure Dump(const Prefix: string = '');
+    procedure DumpHeader(const Prefix: string = '');
     property InputStream: TStream read FInputStream;
   end;
 
@@ -217,10 +220,10 @@ end;
 procedure TPPU.InitInput(s: TStream);
 begin
   FInputStream:=s;
-  fChangeEndian:=not PPUIsEndianBig;
+  fChangeEndian:=PPUIsEndianBig;
 end;
 
-procedure TPPU.ReadBuf(Buf; Count: longint);
+procedure TPPU.ReadBuf(var Buf; Count: longint);
 begin
   FInputStream.Read(Buf,Count);
 end;
@@ -244,7 +247,7 @@ end;
 
 procedure TPPU.Clear;
 begin
-
+  FillByte(FHeader,SizeOf(FHeader),0);
 end;
 
 procedure TPPU.LoadFromStream(s: TStream);
@@ -252,6 +255,46 @@ begin
   Clear;
   InitInput(s);
   ReadHeader;
+  FInputStream:=nil;
+end;
+
+procedure TPPU.LoadFromFile(const Filename: string);
+var
+  ms: TMemoryStream;
+  fs: TFileStream;
+begin
+  fs:=TFileStream.Create(Filename,fmOpenRead);
+  ms:=TMemoryStream.Create;
+  try
+    ms.CopyFrom(fs,fs.Size);
+    ms.Position:=0;
+    LoadFromStream(ms);
+  finally
+    ms.Free;
+    fs.Free;
+  end;
+end;
+
+procedure TPPU.Dump(const Prefix: string);
+begin
+  DebugLn([Prefix+'TPPU.Dump ']);
+  DumpHeader(Prefix+'  ');
+end;
+
+procedure TPPU.DumpHeader(const Prefix: string);
+begin
+  DebugLn([Prefix,'Header']);
+  DebugLn([Prefix,'  ID=',String(FHeader.ID)]);
+  DebugLn([Prefix,'  Ver=',String(FHeader.ver)]);
+  DebugLn([Prefix,'  Compiler=',FHeader.compiler]);
+  DebugLn([Prefix,'  CPU=',FHeader.cpu]);
+  DebugLn([Prefix,'  Target=',FHeader.target]);
+  DebugLn([Prefix,'  Flags=',FHeader.flags]);
+  DebugLn([Prefix,'  Size=',FHeader.size]);
+  DebugLn([Prefix,'  Checksum=',FHeader.checksum]);
+  DebugLn([Prefix,'  Interface_CheckSum=',FHeader.interface_checksum]);
+  DebugLn([Prefix,'  deflistsize=',FHeader.deflistsize]);
+  DebugLn([Prefix,'  symlistsize=',FHeader.symlistsize]);
 end;
 
 end.
