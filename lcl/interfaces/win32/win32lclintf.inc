@@ -511,29 +511,35 @@ begin
   { first color is black, second color is white, for monochrome bitmap }
   Info.Colors[1] := $FFFFFFFF;
 
-  DC := Windows.GetDC(0);
-  // Use createDIBSection, since only devicedepth bitmaps can be selected into a DC
-  // when they are created with createDIBitmap
-  //  ABitmap := Windows.CreateDIBitmap(DC, Info.Header, CBM_INIT, ARawImage.Data, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS);
-  ABitmap := Windows.CreateDIBSection(DC, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS, BitsPtr, 0, 0);
-  Windows.ReleaseDC(0, DC);
-
-  if ABitmap = 0 then 
+  if not ((ADesc.BitsPerPixel = 1) and (ADesc.LineEnd = rileWordBoundary)) then
   begin
-    DebugLn('Windows.CreateDIBSection returns 0. Reason = ' + GetLastErrorText(Windows.GetLastError));
-    Exit;
-  end;
-  if BitsPtr = nil then Exit;
+    DC := Windows.GetDC(0);
+    // Use createDIBSection, since only devicedepth bitmaps can be selected into a DC
+    // when they are created with createDIBitmap
+    //  ABitmap := Windows.CreateDIBitmap(DC, Info.Header, CBM_INIT, ARawImage.Data, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS);
+    ABitmap := Windows.CreateDIBSection(DC, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS, BitsPtr, 0, 0);
+    Windows.ReleaseDC(0, DC);
 
-  // copy the image data
-  DataSize := (Windows.MulDiv(ADesc.BitsPerPixel, ADesc.Width, 8) + 3) and not 3;
-  Align := DataSize and 3;
-  if Align <> 0
-  then DataSize := DataSize + (4 - Align);
-  DataSize := DataSize * ADesc.Height;
-  if DataSize > ARawImage.DataSize
-  then DataSize := ARawImage.DataSize;
-  Move(ARawImage.Data^, BitsPtr^, DataSize);
+    if ABitmap = 0 then
+    begin
+      DebugLn('Windows.CreateDIBSection returns 0. Reason = ' + GetLastErrorText(Windows.GetLastError));
+      Exit;
+    end;
+    if BitsPtr = nil then Exit;
+
+    // copy the image data
+    DataSize := (Windows.MulDiv(ADesc.BitsPerPixel, ADesc.Width, 8) + 3) and not 3;
+    Align := DataSize and 3;
+    if Align <> 0
+    then DataSize := DataSize + (4 - Align);
+    DataSize := DataSize * ADesc.Height;
+    if DataSize > ARawImage.DataSize
+    then DataSize := ARawImage.DataSize;
+    Move(ARawImage.Data^, BitsPtr^, DataSize);
+  end
+  else
+    ABitmap := Windows.CreateBitmap(ADesc.Width, ADesc.Height, 1, 1, ARawImage.Data);
+    
   //DbgDumpBitmap(ABitmap, 'CreateBitmaps - Image');
   if ASkipMask then Exit(True);
 
