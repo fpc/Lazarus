@@ -2083,8 +2083,6 @@ begin
         MouseDownFocusWindow := Window;
       end;
       LMessage.Msg := LM_SETFOCUS;
-      if (lWinControl <> nil) and (lWinControl is TCustomEdit) then
-        Windows.SendMessage(Window, EM_SETSEL, 0, -1);
       // RadioButton functionality
       if (lWinControl <> nil) and (lWinControl is TRadioButton) then
         Windows.PostMessage(Window, BM_SETCHECK, BST_CHECKED, 0);
