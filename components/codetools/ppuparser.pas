@@ -32,6 +32,8 @@ unit PPUParser;
 
 {$mode objfpc}{$H+}
 
+{$DEFINE VerbosePPUParser}
+
 interface
 
 uses
@@ -149,7 +151,7 @@ const
   PPU_Ver_Size = 3;
 
 type
-  tppuheader=packed record
+  TPPUHeader = packed record
     id       : array[1..PPU_ID_Size] of char; { = 'PPU' }
     ver      : array[1..PPU_Ver_Size] of char;
     compiler : word;
@@ -164,8 +166,8 @@ type
     future   : array[0..0] of longint;
   end;
 
-  tppuentry=packed record
-    size : longint;
+  TPPUEntry = packed record
+    size : longint; // number of bytes following directly behind the entry
     id   : byte;
     nr   : byte;
   end;
@@ -181,12 +183,23 @@ type
   private
     fChangeEndian: boolean;
     FInputStream: TStream;
-    FHeader: tppuheader;
+    FHeader: TPPUHeader;
+    FEntry: TPPUEntry;
+    FEntryPos: integer;
+    FEntryBuf: Pointer;
+    FEntryBufSize: integer;
     FVersion: integer;
     procedure ReadHeader;
+    procedure ReadInterface;
+    function ReadEntry: byte;
+    function EndOfEntry: boolean;
     procedure InitInput(s: TStream);
     procedure ReadBuf(var Buf; Count: longint);
-    procedure ReadWord(out w: word);
+    function ReadEntryByte: byte;
+    function ReadEntryShortstring: shortstring;
+    function ReadEntryLongint: longint;
+    procedure ReadUsedUnits;
+    procedure Skip(Count: integer);
     procedure Error(const Msg: string);
   public
     constructor Create;
@@ -201,7 +214,8 @@ type
 
 function PPUTargetToStr(w: longint): string;
 function PPUCpuToStr(w: longint): string;
-function PPUFlagsToStr(flags:longint):string;
+function PPUFlagsToStr(flags: longint): string;
+function PPUTimeToStr(t: longint): string;
 
 implementation
 
@@ -389,6 +403,41 @@ begin
   Result:=s;
 end;
 
+function L0(l: longint): shortstring;
+{
+  return the string of value l, if l<10 then insert a zero, so
+  the string is always at least 2 chars '01','02',etc
+}
+var
+  s : shortstring;
+begin
+  Str(l,s);
+  if l<10 then
+    s:='0'+s;
+  Result:=s;
+end;
+
+function PPUTimeToStr(t: longint): string;
+{
+  convert dos datetime t to a string YY/MM/DD HH:MM:SS
+}
+var
+  DT: TDateTime;
+  hsec: word;
+  Year, Month, Day: Word;
+  hour, min, sec: word;
+begin
+  if t=-1 then
+  begin
+    Result := '<invalid time>';
+    exit;
+  end;
+  DT := FileDateToDateTime(t);
+  DecodeTime(DT,hour,min,sec,hsec);
+  DecodeDate(DT,year,month,day);
+  Result := L0(Year)+'/'+L0(Month)+'/'+L0(Day)+' '+L0(Hour)+':'+L0(min)+':'+L0(sec);
+end;
+
 { TPPU }
 
 procedure TPPU.ReadHeader;
@@ -403,7 +452,7 @@ begin
   if FVersion<16 then
     Error('Old PPU versions (<16) are not supported.');
   // read rest of header
-  ReadBuf(FHeader.compiler,SizeOf(tppuheader)-PPU_Ver_Size-PPU_ID_Size);
+  ReadBuf(FHeader.compiler,SizeOf(TPPUHeader)-PPU_Ver_Size-PPU_ID_Size);
   if fChangeEndian then begin
     fHeader.compiler := swapendian(fHeader.compiler);
     fHeader.cpu := swapendian(fHeader.cpu);
@@ -416,6 +465,97 @@ begin
     fHeader.symlistsize := swapendian(fHeader.symlistsize);
   end;
   fChangeEndian:=((FHeader.flags and uf_big_endian) = uf_big_endian)<>PPUIsEndianBig;
+  FEntryPos:=0;
+  FillByte(FEntry,SizeOf(FEntry),0);
+  
+  {$IFDEF VerbosePPUParser}
+  DumpHeader('');
+  {$ENDIF}
+end;
+
+procedure TPPU.ReadInterface;
+var
+  EntryNr: Byte;
+  ModuleName: ShortString;
+  Filename: ShortString;
+  FileTime: LongInt;
+  Conditional: ShortString;
+  DefinedAtStartUp: Boolean;
+  IsUsed: Boolean;
+begin
+  repeat
+    EntryNr:=ReadEntry;
+    DebugLn(['TPPU.ReadInterface EntryNr=',EntryNr]);
+    case EntryNr of
+    
+    ibmodulename:
+      begin
+        ModuleName:=ReadEntryShortstring;
+        {$IFDEF VerbosePPUParser}
+        DebugLn(['TPPU.ReadInterface ModuleName=',ModuleName]);
+        {$ENDIF}
+      end;
+    
+    ibsourcefiles:
+      begin
+        while not EndOfEntry do
+        begin
+          Filename:=ReadEntryShortstring;// filename
+          FileTime:=ReadEntryLongint;// file time
+          {$IFDEF VerbosePPUParser}
+          DebugLn(['TPPU.ReadInterface SourceFile=',Filename,' Time=',PPUTimeToStr(FileTime)]);
+          {$ENDIF}
+        end;
+      end;
+      
+    ibloadunit:
+      ReadUsedUnits;
+    
+    ibusedmacros:
+      begin
+        while not EndOfEntry do
+        begin
+          Conditional:=ReadEntryShortstring;
+          DefinedAtStartUp:=boolean(ReadEntryByte);
+          IsUsed:=boolean(ReadEntryByte);
+          {$IFDEF VerbosePPUParser}
+          DebugLn(['TPPU.ReadInterface Macro=',Conditional,' DefinedAtStartUp=',DefinedAtStartUp,' Used=',IsUsed]);
+          {$ENDIF}
+        end;
+      end;
+
+    ibendinterface :
+       break;
+       
+    else
+      Error('unknown interface entry nr '+IntToStr(EntryNr));
+    end;
+  until false;
+end;
+
+function TPPU.ReadEntry: byte;
+begin
+  if FEntryPos<FEntry.size then
+    Skip(FEntry.size-FEntryPos);
+  FEntryPos:=0;
+  ReadBuf(FEntry,SizeOf(FEntry));
+  if fChangeEndian then
+    FEntry.size:=SwapEndian(FEntry.size);
+  if not (FEntry.id in [mainentryid,subentryid]) then
+    Error('Invalid entry id '+IntToStr(FEntry.id));
+  Result:=FEntry.nr;
+  if FEntryBufSize<FEntry.size then begin
+    FEntryBufSize:=FEntryBufSize*2;
+    if FEntryBufSize<FEntry.size then
+      FEntryBufSize:=FEntry.size;
+    ReAllocMem(FEntryBuf,FEntryBufSize);
+  end;
+  ReadBuf(FEntryBuf^,FEntry.size);
+end;
+
+function TPPU.EndOfEntry: boolean;
+begin
+  Result:=FEntryPos>=FEntry.Size;
 end;
 
 procedure TPPU.InitInput(s: TStream);
@@ -429,11 +569,55 @@ begin
   FInputStream.Read(Buf,Count);
 end;
 
-procedure TPPU.ReadWord(out w: word);
+function TPPU.ReadEntryByte: byte;
 begin
-  FInputStream.Read(w,2);
-  if fChangeEndian then
-    swapendian(w);
+  if FEntryPos>=FEntry.size then
+    Error('TPPU.ReadEntryByte: out of bytes');
+  Result:=PByte(FEntryBuf+FEntryPos)^;
+  inc(FEntryPos);
+end;
+
+function TPPU.ReadEntryShortstring: shortstring;
+var
+  l: byte;
+  s: shortstring;
+begin
+  l:=ReadEntryByte;
+  s[0]:=chr(l);
+  if FEntryPos+l>FEntry.size then
+    Error('TPPU.ReadEntryShortstring: out of bytes ');
+  System.Move(Pointer(FEntryBuf+FEntryPos)^,s[1],l);
+  Result:=s;
+  inc(FEntryPos,l);
+end;
+
+function TPPU.ReadEntryLongint: longint;
+begin
+  if FEntryPos+4>FEntry.size then
+    Error('TPPU.ReadEntryLongint: out of bytes');
+  Result:=PLongint(FEntryBuf+FEntryPos)^;
+  inc(FEntryPos,4);
+end;
+
+procedure TPPU.ReadUsedUnits;
+var
+  Unitname: ShortString;
+  CRC: LongInt;
+  IntfCRC: LongInt;
+begin
+  while not EndOfEntry do begin
+    Unitname:=ReadEntryShortstring;
+    CRC:=ReadEntryLongint;
+    IntfCRC:=ReadEntryLongint;
+    {$IFDEF VerbosePPUParser}
+    DebugLn(['TPPU.ReadUsedUnits Unit=',Unitname,' CRC=',HexStr(cardinal(CRC),8),' IntfCRC=',HexStr(cardinal(IntfCRC),8)]);
+    {$ENDIF}
+  end;
+end;
+
+procedure TPPU.Skip(Count: integer);
+begin
+  FInputStream.Seek(Count,soFromCurrent);
 end;
 
 procedure TPPU.Error(const Msg: string);
@@ -448,12 +632,16 @@ end;
 
 destructor TPPU.Destroy;
 begin
+  Clear;
   inherited Destroy;
 end;
 
 procedure TPPU.Clear;
 begin
   FillByte(FHeader,SizeOf(FHeader),0);
+  FillByte(FEntry,SizeOf(FEntry),0);
+  ReAllocMem(FEntryBuf,0);
+  FEntryBufSize:=0;
 end;
 
 procedure TPPU.LoadFromStream(s: TStream);
@@ -461,6 +649,7 @@ begin
   Clear;
   InitInput(s);
   ReadHeader;
+  ReadInterface;
   FInputStream:=nil;
 end;
 
@@ -499,8 +688,8 @@ begin
   DebugLn([Prefix,'  Target OS=',PPUTargetToStr(FHeader.target)]);
   DebugLn([Prefix,'  Unit Flags=',PPUFlagsToStr(FHeader.flags)]);
   DebugLn([Prefix,'  Filesize (w/o header)=',FHeader.size]);
-  DebugLn([Prefix,'  Checksum=',FHeader.checksum]);
-  DebugLn([Prefix,'  Interface CheckSum=',FHeader.interface_checksum]);
+  DebugLn([Prefix,'  Checksum=',HexStr(cardinal(FHeader.checksum),8)]);
+  DebugLn([Prefix,'  Interface CheckSum=',HexStr(cardinal(FHeader.interface_checksum),8)]);
   DebugLn([Prefix,'  Number of Definitions=',FHeader.deflistsize]);
   DebugLn([Prefix,'  Number of Symbols=',FHeader.symlistsize]);
 end;
