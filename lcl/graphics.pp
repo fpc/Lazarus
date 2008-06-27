@@ -1114,7 +1114,6 @@ type
   TRasterImage = class(TGraphic)
   private
     FCanvas: TCanvas;
-    FSharedImage: TSharedRasterImage;
     FTransparentColor: TColor;
     FTransparentMode: TTransparentMode;
     FInternalState: TBitmapInternalState;
@@ -1124,6 +1123,7 @@ type
     function  GetCanvas: TCanvas;
     procedure SetTransparentColor(AValue: TColor);
   protected
+    FSharedImage: TSharedRasterImage;
     function  CanShareImage(AClass: TSharedRasterImageClass): Boolean; virtual;
     procedure Changed(Sender: TObject); override;
     procedure Changing(Sender: TObject); virtual;
@@ -1386,13 +1386,15 @@ type
     FImages: TFPList;
   protected
     procedure FreeHandle; override;
-    class function GetImagesClass: TIconImageClass; virtual;
   public
     constructor Create; override;
     destructor Destroy; override;
     procedure Clear;
     procedure Delete(Aindex: Integer);
     function GetIndex(AFormat: TPixelFormat; AHeight, AWidth: Word): Integer;
+    class function GetImagesClass: TIconImageClass; virtual;
+    procedure Add(AIconImage: TIconImage);
+    function Count: Integer;
   end;
 
   { TIconImage }
@@ -1442,10 +1444,10 @@ type
 
   TCustomIcon = class(TRasterImage)
   private
-    FCurrent: Integer;
     function GetCount: Integer;
     procedure SetCurrent(const AValue: Integer);
   protected
+    FCurrent: Integer;
     procedure MaskHandleNeeded; override;
     procedure PaletteNeeded; override;
     function GetIndex(AFormat: TPixelFormat; AHeight, AWidth: Word): Integer;
@@ -1504,6 +1506,7 @@ type
   TSharedCursorImage = class(TSharedIcon)
   protected
     procedure FreeHandle; override;
+  public
     class function GetImagesClass: TIconImageClass; override;
   end;
   

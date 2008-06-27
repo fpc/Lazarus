@@ -95,6 +95,11 @@ begin
   Result := TIconImage;
 end;
 
+procedure TSharedIcon.Add(AIconImage: TIconImage);
+begin
+  FImages.Add(AIconImage);
+end;
+
 constructor TSharedIcon.Create;
 begin
   inherited Create;
@@ -140,6 +145,11 @@ begin
     Exit;
   end;
   Result := -1;
+end;
+
+function TSharedIcon.Count: Integer;
+begin
+  Result := FImages.Count;
 end;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -302,7 +312,7 @@ end;
 
 function TCustomIcon.GetCount: Integer;
 begin
-  Result := TSharedIcon(FSharedImage).FImages.Count;
+  Result := TSharedIcon(FSharedImage).Count;
 end;
 
 procedure TCustomIcon.GetDescription(Aindex: Integer; out AFormat: TPixelFormat; out AHeight, AWidth: Word);
