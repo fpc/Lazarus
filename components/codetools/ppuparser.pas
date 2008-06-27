@@ -202,6 +202,7 @@ type
     procedure ReadLinkContainer(Nr: byte);
     procedure ReadImportSymbols;
     procedure ReadDerefData;
+    procedure ReadDerefMap;
     procedure Skip(Count: integer);
     procedure Error(const Msg: string);
   public
@@ -523,9 +524,6 @@ begin
     ibImportSymbols:
       ReadImportSymbols;
 
-    ibderefdata:
-      ReadDerefData;
-
     ibusedmacros:
       begin
         while not EndOfEntry do
@@ -538,6 +536,12 @@ begin
           {$ENDIF}
         end;
       end;
+
+    ibderefdata:
+      ReadDerefData;
+
+    ibderefmap:
+      ReadDerefMap;
 
     ibendinterface :
        break;
@@ -711,6 +715,21 @@ begin
   DebugLn(['TPPU.ReadDerefData Deref Data length: ',FEntry.size-FEntryPos]);
   {$ENDIF}
   FEntryPos:=FEntry.size;
+end;
+
+procedure TPPU.ReadDerefMap;
+var
+  Count: LongInt;
+  MapName: ShortString;
+  i: Integer;
+begin
+  Count:=ReadEntryLongint;
+  for i:=0 to Count-1 do begin
+    MapName:=ReadEntryShortstring;
+    {$IFDEF VerbosePPUParser}
+    DebugLn(['TPPU.ReadDerefMap ',i,' ',MapName]);
+    {$ENDIF}
+  end;
 end;
 
 procedure TPPU.Skip(Count: integer);
