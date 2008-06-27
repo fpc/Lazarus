@@ -199,6 +199,7 @@ type
     function ReadEntryShortstring: shortstring;
     function ReadEntryLongint: longint;
     procedure ReadUsedUnits;
+    procedure ReadLinkContainer(Nr: byte);
     procedure Skip(Count: integer);
     procedure Error(const Msg: string);
   public
@@ -510,7 +511,13 @@ begin
       
     ibloadunit:
       ReadUsedUnits;
+      
+    // ToDo: ibinitunit:
     
+    iblinkunitofiles,iblinkunitstaticlibs,iblinkunitsharedlibs,
+    iblinkotherofiles,iblinkotherstaticlibs,iblinkothersharedlibs:
+      ReadLinkContainer(EntryNr);
+
     ibusedmacros:
       begin
         while not EndOfEntry do
@@ -611,6 +618,54 @@ begin
     IntfCRC:=ReadEntryLongint;
     {$IFDEF VerbosePPUParser}
     DebugLn(['TPPU.ReadUsedUnits Unit=',Unitname,' CRC=',HexStr(cardinal(CRC),8),' IntfCRC=',HexStr(cardinal(IntfCRC),8)]);
+    {$ENDIF}
+  end;
+end;
+
+procedure TPPU.ReadLinkContainer(Nr: byte);
+{$IFDEF VerbosePPUParser}
+const
+  { link options }
+  link_none    = $0;
+  link_always  = $1;
+  link_static  = $2;
+  link_smart   = $4;
+  link_shared  = $8;
+var
+  Desc: String;
+{$ENDIF}
+var
+  Filename: ShortString;
+  Flags: LongInt;
+begin
+  while not EndOfEntry do begin
+    Filename:=ReadEntryShortstring;
+    Flags:=ReadEntryLongint;
+    {$IFDEF VerbosePPUParser}
+    case Nr of
+    iblinkunitofiles:
+      Desc:='Link unit object file: ';
+    iblinkunitstaticlibs :
+      Desc:='Link unit static lib: ';
+    iblinkunitsharedlibs :
+      Desc:='Link unit shared lib: ';
+    iblinkotherofiles :
+      Desc:='Link other object file: ';
+    iblinkotherstaticlibs :
+      Desc:='Link other static lib: ';
+    iblinkothersharedlibs :
+      Desc:='Link other shared lib: ';
+    end;
+    Desc:=Desc+Filename;
+    if (Flags and link_always)<>0 then
+     Desc:=Desc+' always';
+    if (Flags and link_static)<>0 then
+     Desc:=Desc+' static';
+    if (Flags and link_smart)<>0 then
+     Desc:=Desc+' smart';
+    if (Flags and link_shared)<>0 then
+     Desc:=Desc+' shared';
+    DebugLn(['TPPU.ReadLinkContainer ',Desc]);
     {$ENDIF}
   end;
 end;
