@@ -3886,6 +3886,14 @@ begin
     ExternalMacroStart+'IncPath',
     IncPathMacro+';'+Dir+'compiler',da_DefineRecurse));
   MainDir.AddChild(CompilerDir);
+  
+  // compiler/utils
+  UtilsDir:=TDefineTemplate.Create('utils',ctsUtilsDirectories,'',
+     'utils',da_Directory);
+  UtilsDir.AddChild(TDefineTemplate.Create('SrcPath','SrcPath addition',
+    ExternalMacroStart+'SrcPath',
+    SrcPathMacro+';..',da_Define));
+  CompilerDir.AddChild(UtilsDir);
 
   // clean up
   if UnitTree<>nil then begin
