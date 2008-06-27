@@ -40,17 +40,24 @@ unit SysUtilsAdds;
 interface
 
 {$IFDEF UNIX}
-uses
-  Classes, SysUtils
-  {$IF defined(VER2) and (FPC_RELEASE>=2)}
-  ,CLocale
+  {$IF (FPC_VERSION > 2) or
+       ((FPC_VERSION = 2)
+         and ((FPC_RELEASE > 2) or
+              ((FPC_RELEASE = 2) and (FPC_PATCH >= 1))))}
+    {$DEFINE USECLOCALE}
   {$ENDIF}
-  ;
+{$ENDIF}
+
+{$IFDEF USECLOCALE}
+uses
+  Classes, SysUtils,
+  {$info if compiler can't find clocale unit, you probably are using old 2.2.1 or 2.3.1 version, please upgrade}
+  CLocale;
 {$ENDIF}
 
 implementation
 
-{$IFDEF UNIX}
+{$IFDEF USECLOCALE}
 procedure InitInternationalFormats;
 Var i      : Integer;
     St     : string;
@@ -214,9 +221,8 @@ end;
 
 
 INITIALIZATION
-  {$IF defined(VER2) and (FPC_RELEASE>=2)}
   InitInternationalFormats;
-  {$ENDIF}
 {$ENDIF}
+
 end.
 
