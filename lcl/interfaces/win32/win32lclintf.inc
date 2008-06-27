@@ -500,19 +500,19 @@ begin
   Result := False;
   AMask := 0;
 
-  FillChar(Info, SizeOf(Info), 0);
-  Info.Header.biSize := SizeOf(Info.Header);
-  Info.Header.biWidth := ADesc.Width;
-  Info.Header.biHeight := -ADesc.Height; // create top to bottom
-  Info.Header.biPlanes := 1;
-  Info.Header.biBitCount := ADesc.BitsPerPixel;
-  Info.Header.biCompression := BI_RGB;
-  {BitmapInfo.bmiHeader.biSizeImage := 0;}
-  { first color is black, second color is white, for monochrome bitmap }
-  Info.Colors[1] := $FFFFFFFF;
-
   if not ((ADesc.BitsPerPixel = 1) and (ADesc.LineEnd = rileWordBoundary)) then
   begin
+    FillChar(Info, SizeOf(Info), 0);
+    Info.Header.biSize := SizeOf(Info.Header);
+    Info.Header.biWidth := ADesc.Width;
+    Info.Header.biHeight := -ADesc.Height; // create top to bottom
+    Info.Header.biPlanes := 1;
+    Info.Header.biBitCount := ADesc.BitsPerPixel;
+    Info.Header.biCompression := BI_RGB;
+    {BitmapInfo.bmiHeader.biSizeImage := 0;}
+    { first color is black, second color is white, for monochrome bitmap }
+    Info.Colors[1] := $FFFFFFFF;
+
     DC := Windows.GetDC(0);
     // Use createDIBSection, since only devicedepth bitmaps can be selected into a DC
     // when they are created with createDIBitmap

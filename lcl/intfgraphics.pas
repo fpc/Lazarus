@@ -2924,7 +2924,7 @@ end;
 
 function TLazIntfImage.HasMask: boolean;
 begin
-  Result := FMaskSet or FRawImage.IsMasked(False);
+  Result := FMaskSet;
 end;
 
 constructor TLazIntfImage.Create(AWidth, AHeight: integer);
