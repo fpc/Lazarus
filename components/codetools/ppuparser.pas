@@ -200,6 +200,7 @@ type
     function ReadEntryLongint: longint;
     procedure ReadUsedUnits;
     procedure ReadLinkContainer(Nr: byte);
+    procedure ReadImportSymbols;
     procedure Skip(Count: integer);
     procedure Error(const Msg: string);
   public
@@ -517,6 +518,9 @@ begin
     iblinkunitofiles,iblinkunitstaticlibs,iblinkunitsharedlibs,
     iblinkotherofiles,iblinkotherstaticlibs,iblinkothersharedlibs:
       ReadLinkContainer(EntryNr);
+      
+    ibImportSymbols:
+      ReadImportSymbols;
 
     ibusedmacros:
       begin
@@ -667,6 +671,33 @@ begin
      Desc:=Desc+' shared';
     DebugLn(['TPPU.ReadLinkContainer ',Desc]);
     {$ENDIF}
+  end;
+end;
+
+procedure TPPU.ReadImportSymbols;
+var
+  LibName: ShortString;
+  SymbolCount: LongInt;
+  SymbolName: ShortString;
+  SymbolOrdNr: LongInt;
+  SymbolIsVar: Boolean;
+  i: Integer;
+begin
+  while not EndOfEntry do begin
+    LibName:=ReadEntryShortstring;
+    SymbolCount:=ReadEntryLongint;
+    {$IFDEF VerbosePPUParser}
+    DebugLn(['TPPU.ReadImportSymbols External Library: ',LibName,' (',SymbolCount,' imports)']);
+    {$ENDIF}
+    for i:=0 to SymbolCount-1 do
+    begin
+      SymbolName:=ReadEntryShortstring;
+      SymbolOrdNr:=ReadEntryLongint;
+      SymbolIsVar:=ReadEntryByte<>0;
+      {$IFDEF VerbosePPUParser}
+      DebugLn(['TPPU.ReadImportSymbols ',SymbolName,' (OrdNr: ',SymbolOrdNr,' IsVar: ',SymbolIsVar,')']);
+      {$ENDIF}
+    end;
   end;
 end;
 
