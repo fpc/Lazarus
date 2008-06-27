@@ -1,17 +1,16 @@
 object PublishProjectDialog: TPublishProjectDialog
   Left = 319
-  Height = 505
+  Height = 531
   Top = 146
   Width = 484
-  HorzScrollBar.Page = 483
-  VertScrollBar.Page = 504
   ActiveControl = DestDirComboBox
   BorderIcons = [biSystemMenu]
   Caption = 'Publish Project'
-  ClientHeight = 505
+  ClientHeight = 531
   ClientWidth = 484
   OnCreate = FormCreate
   Position = poScreenCenter
+  LCLVersion = '0.9.25'
   object DestDirGroupBox: TGroupBox
     Left = 6
     Height = 111
@@ -36,7 +35,7 @@ object PublishProjectDialog: TPublishProjectDialog
     end
     object DestDirComboBox: TComboBox
       Left = 6
-      Height = 25
+      Height = 29
       Top = 1
       Width = 406
       Anchors = [akTop, akLeft, akRight]
@@ -49,10 +48,10 @@ object PublishProjectDialog: TPublishProjectDialog
     object BrowseDestDirBitBtn: TBitBtn
       AnchorSideBottom.Control = DestDirComboBox
       AnchorSideBottom.Side = asrBottom
-      Left = 415
-      Height = 25
+      Left = 423
+      Height = 29
       Top = 1
-      Width = 35
+      Width = 27
       Anchors = [akTop, akRight, akBottom]
       AutoSize = True
       Caption = '...'
@@ -62,7 +61,7 @@ object PublishProjectDialog: TPublishProjectDialog
     end
     object CommandAfterCombobox: TComboBox
       Left = 6
-      Height = 25
+      Height = 29
       Top = 58
       Width = 444
       Anchors = [akTop, akLeft, akRight]
@@ -134,23 +133,6 @@ object PublishProjectDialog: TPublishProjectDialog
       TabOrder = 1
     end
   end
-  object SaveSettingsButton: TButton
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = CancelButton
-    AnchorSideRight.Control = CancelButton
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 6
-    Height = 29
-    Top = 470
-    Width = 99
-    Anchors = [akLeft, akBottom]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    Caption = 'Save settings'
-    OnClick = SaveSettingsButtonCLICK
-    TabOrder = 5
-  end
   object IncludeFilterGroupbox: TGroupBox
     Left = 6
     Height = 88
@@ -186,7 +168,7 @@ object PublishProjectDialog: TPublishProjectDialog
     end
     object IncludeFilterCombobox: TComboBox
       Left = 6
-      Height = 25
+      Height = 29
       Top = 33
       Width = 444
       Anchors = [akTop, akLeft, akRight]
@@ -232,7 +214,7 @@ object PublishProjectDialog: TPublishProjectDialog
     end
     object ExcludeFilterCombobox: TComboBox
       Left = 6
-      Height = 25
+      Height = 29
       Top = 33
       Width = 446
       Anchors = [akTop, akLeft, akRight]
@@ -243,42 +225,62 @@ object PublishProjectDialog: TPublishProjectDialog
       Text = 'ExcludeFilterCombobox'
     end
   end
-  object OkButton: TBitBtn
-    AnchorSideRight.Control = CancelButton
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 337
-    Height = 36
-    Top = 463
-    Width = 57
-    Anchors = [akRight, akBottom]
+  object BtnPanel: TPanel
+    Height = 48
+    Top = 483
+    Width = 484
+    Align = alBottom
     AutoSize = True
-    BorderSpacing.Around = 6
-    Caption = '&OK'
-    Default = True
-    Kind = bkOK
-    ModalResult = 1
-    NumGlyphs = 0
-    OnClick = OkButtonCLICK
-    TabOrder = 6
-  end
-  object CancelButton: TBitBtn
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 400
-    Height = 32
-    Top = 467
-    Width = 78
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    Cancel = True
-    Caption = 'Cancel'
-    Kind = bkCancel
-    ModalResult = 2
-    NumGlyphs = 0
-    TabOrder = 7
+    BevelOuter = bvNone
+    ClientHeight = 48
+    ClientWidth = 484
+    TabOrder = 5
+    object SaveSettingsButton: TButton
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 36
+      Top = 6
+      Width = 99
+      Align = alLeft
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'Save settings'
+      OnClick = SaveSettingsButtonCLICK
+      TabOrder = 0
+    end
+    object CancelButton: TBitBtn
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Side = asrBottom
+      Left = 400
+      Height = 36
+      Top = 6
+      Width = 78
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Cancel = True
+      Caption = 'Cancel'
+      Kind = bkCancel
+      ModalResult = 2
+      NumGlyphs = 0
+      TabOrder = 1
+    end
+    object OkButton: TBitBtn
+      AnchorSideBottom.Side = asrBottom
+      Left = 337
+      Height = 36
+      Top = 6
+      Width = 57
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = '&OK'
+      Default = True
+      Kind = bkOK
+      ModalResult = 1
+      NumGlyphs = 0
+      OnClick = OkButtonCLICK
+      TabOrder = 2
+    end
   end
 end

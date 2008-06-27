@@ -41,7 +41,7 @@ uses
   Dialogs,
   IDEWindowIntf,
   ProjectDefs, PackageDefs, PublishModule, IDEOptionDefs, InputHistory,
-  LazarusIDEStrConsts;
+  LazarusIDEStrConsts, ExtCtrls;
 
 type
   { TPublishProjectDialog }
@@ -60,6 +60,7 @@ type
 
     IncludeFilterCombobox: TComboBox;
     IncFilterSimpleSyntaxCheckbox: TCheckBox;
+    BtnPanel: TPanel;
     UseIncludeFilterCheckbox: TCheckBox;
     IncludeFilterGroupbox: TGroupBox;
 
