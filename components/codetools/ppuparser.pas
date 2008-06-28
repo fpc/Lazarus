@@ -145,6 +145,21 @@ const
   uf_has_resourcefiles = $80000; { this unit has external resources (using $R directive)}
   uf_has_exports = $100000;   { this module or a used unit has exports }
 
+type
+  TPPUPart = (
+    ppInterfaceHeader,
+    ppInterfaceDefinitions,
+    ppInterfaceSymbols,
+    ppInterfaceMacros,
+    ppImplementationHeader,
+    ppImplementationDefinitions,
+    ppImplementationSymbols
+  );
+  TPPUParts = set of TPPUPart;
+  
+const
+  PPUPartsAll = [low(TPPUPart)..high(TPPUPart)];
+
 const
   PPU_ID = 'PPU';
   PPU_ID_Size = 3;
@@ -176,7 +191,7 @@ type
 
   EPPUParserError = class(Exception)
   end;
-  
+
   { TPPU }
 
   TPPU = class
@@ -189,28 +204,35 @@ type
     FEntryBuf: Pointer;
     FEntryBufSize: integer;
     FVersion: integer;
+    FDerefData: PByte;
+    FDerefDataSize: integer;
     procedure ReadHeader;
-    procedure ReadInterface;
+    procedure ReadInterfaceHeader;
     function ReadEntry: byte;
     function EndOfEntry: boolean;
+    procedure SkipUntilEntry(EntryNr: byte);
     procedure InitInput(s: TStream);
     procedure ReadBuf(var Buf; Count: longint);
     function ReadEntryByte: byte;
     function ReadEntryShortstring: shortstring;
     function ReadEntryLongint: longint;
+    procedure ReadEntrySmallSet(var s);
     procedure ReadUsedUnits;
     procedure ReadLinkContainer(Nr: byte);
     procedure ReadImportSymbols;
     procedure ReadDerefData;
     procedure ReadDerefMap;
+    procedure ReadDereference;
+    procedure ReadDefinitions;
+    procedure ReadCommonDefinition;
     procedure Skip(Count: integer);
     procedure Error(const Msg: string);
   public
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
-    procedure LoadFromStream(s: TStream);
-    procedure LoadFromFile(const Filename: string);
+    procedure LoadFromStream(s: TStream; const Parts: TPPUParts = PPUPartsAll);
+    procedure LoadFromFile(const Filename: string; const Parts: TPPUParts = PPUPartsAll);
     procedure Dump(const Prefix: string = '');
     procedure DumpHeader(const Prefix: string = '');
     property InputStream: TStream read FInputStream;
@@ -222,6 +244,15 @@ function PPUFlagsToStr(flags: longint): string;
 function PPUTimeToStr(t: longint): string;
 
 implementation
+
+function reverse_byte(b: byte): byte;
+const
+  reverse_nible: array[0..15] of 0..15 =
+    (%0000,%1000,%0100,%1100,%0010,%1010,%0110,%1110,
+     %0001,%1001,%0101,%1101,%0011,%1011,%0111,%1111);
+begin
+  Result:=(reverse_nible[b and $f] shl 4) or reverse_nible[b shr 4];
+end;
 
 function PPUTargetToStr(w: longint): string;
 type
@@ -477,7 +508,7 @@ begin
   {$ENDIF}
 end;
 
-procedure TPPU.ReadInterface;
+procedure TPPU.ReadInterfaceHeader;
 var
   EntryNr: Byte;
   ModuleName: ShortString;
@@ -489,7 +520,7 @@ var
 begin
   repeat
     EntryNr:=ReadEntry;
-    DebugLn(['TPPU.ReadInterface EntryNr=',EntryNr]);
+    //DebugLn(['TPPU.ReadInterface EntryNr=',EntryNr]);
     case EntryNr of
     
     ibmodulename:
@@ -515,8 +546,6 @@ begin
     ibloadunit:
       ReadUsedUnits;
       
-    // ToDo: ibinitunit:
-    
     iblinkunitofiles,iblinkunitstaticlibs,iblinkunitsharedlibs,
     iblinkotherofiles,iblinkotherstaticlibs,iblinkothersharedlibs:
       ReadLinkContainer(EntryNr);
@@ -543,8 +572,8 @@ begin
     ibderefmap:
       ReadDerefMap;
 
-    ibendinterface :
-       break;
+    ibendinterface:
+      break;
        
     else
       {$IFDEF VerbosePPUParser}
@@ -555,14 +584,239 @@ begin
   until false;
 end;
 
+procedure TPPU.ReadDefinitions;
+type
+  tsettype  = (normset,smallset,varset);
+  tordtype = (
+    uvoid,
+    u8bit,u16bit,u32bit,u64bit,
+    s8bit,s16bit,s32bit,s64bit,
+    bool8bit,bool16bit,bool32bit,bool64bit,
+    uchar,uwidechar,scurrency
+  );
+  tobjecttyp = (odt_none,
+    odt_class,
+    odt_object,
+    odt_interfacecom,
+    odt_interfacecorba,
+    odt_cppclass,
+    odt_dispinterface
+  );
+  tvarianttype = (
+    vt_normalvariant,vt_olevariant
+  );
+var
+  EntryNr: Byte;
+  IsFar: Byte;
+begin
+  if ReadEntry<>ibstartdefs then
+  begin
+    Error('missing definitions');
+  end;
+  repeat
+    EntryNr:=ReadEntry;
+    case EntryNr of
+    
+    ibpointerdef:
+      begin
+        {$IFDEF VerbosePPUParser} DebugLn(['TPPU.ReadDefinitions Pointer definition:']); {$ENDIF}
+        ReadCommonDefinition;
+        {$IFDEF VerbosePPUParser} DebugLn(['TPPU.ReadDefinitions Pointed type:']); {$ENDIF}
+        ReadDereference;
+        IsFar:=ReadEntryByte;
+        {$IFDEF VerbosePPUParser} DebugLn(['TPPU.ReadDefinitions Is far: ',IsFar]); {$ENDIF}
+      end;
+      
+    ibenddefs:
+      break;
+
+    else
+      {$IFDEF VerbosePPUParser} DebugLn(['TPPU.ReadDefinitions Skipping unsupported: ',EntryNr]); {$ENDIF}
+    end;
+    {$IFDEF VerbosePPUParser}
+    if not EndOfEntry then
+      DebugLn(['TPPU.ReadDefinitions: Warning: Entry has more information stored']);
+    {$ENDIF}
+  until false;
+end;
+
+procedure TPPU.ReadCommonDefinition;
+type
+  { flags for a definition }
+  tdefoption=(
+    df_none,
+    { type is unique, i.e. declared with type = type <tdef>; }
+    df_unique,
+    { type is a generic }
+    df_generic,
+    { type is a specialization of a generic type }
+    df_specialization
+  );
+  tdefoptions=set of tdefoption;
+
+  tdefstate=(
+    ds_none,
+    ds_vmt_written,
+    ds_rtti_table_used,
+    ds_init_table_used,
+    ds_rtti_table_written,
+    ds_init_table_written,
+    ds_dwarf_dbg_info_used,
+    ds_dwarf_dbg_info_written
+  );
+  tdefstates=set of tdefstate;
+const
+  defoptionNames : array[tdefoption] of string=(
+     '?',
+     'Unique Type',
+     'Generic',
+     'Specialization'
+  );
+  defstateNames : array[tdefstate] of string=(
+     '?',
+     'VMT Written',
+     'RTTITable Used',
+     'InitTable Used',
+     'RTTITable Written',
+     'InitTable Written',
+     'Dwarf DbgInfo Used',
+     'Dwarf DbgInfo Written'
+  );
+var
+  defoptions: tdefoptions;
+  defopt: tdefoption;
+  defstates: tdefstates;
+  defstate: tdefstate;
+  TokenBuf: Pointer;
+  TokenBufSize: LongInt;
+  i: Integer;
+begin
+  ReadEntryLongint;// DefinitionID
+  ReadDereference;
+
+  ReadEntrySmallSet(defoptions);
+  {$IFDEF VerbosePPUParser}
+  dbgout(' DefOptions:');
+  if defoptions<>[] then begin
+    for defopt:=low(tdefoption) to high(tdefoption) do
+      if defopt in defoptions then
+        dbgout(' ',defoptionNames[defopt]);
+  end;
+  debugln;
+  {$ENDIF}
+  
+  ReadEntrySmallSet(defstates);
+  {$IFDEF VerbosePPUParser}
+  dbgout(' DefStates:');
+  if defstates<>[] then begin
+    for defstate:=low(tdefstate) to high(tdefstate) do
+      if defstate in defstates then
+        dbgout(' ',defstateNames[defstate]);
+  end;
+  debugln;
+  {$ENDIF}
+
+  if df_generic in defoptions then begin
+    TokenBufSize:=ReadEntryLongint;
+    TokenBuf:=allocmem(TokenBufSize);
+    try
+      System.Move(Pointer(FEntryBuf+FEntryPos)^,TokenBuf^,TokenBufSize);
+      inc(FEntryPos,TokenBufSize);
+      i:=0;
+      while i<TokenBufSize do begin
+        // The tokens depends on compiler version
+        // ToDo: write tokens
+        inc(i);
+      end;
+    finally
+      FreeMem(TokenBuf);
+    end;
+  end;
+
+  if df_specialization in defoptions then
+  begin
+    ReadDereference;
+  end;
+end;
+
+procedure TPPU.ReadDereference;
+type
+  tdereftype = (
+    deref_nil,
+    deref_unit,
+    deref_symid,
+    deref_defid
+  );
+var
+  DerefPos: LongInt;
+  pdata: PByte;
+  n: Byte;
+  i: Integer;
+  b: tdereftype;
+  idx: integer;
+begin
+  DerefPos:=ReadEntryLongint;
+  if DerefPos>=FDerefDataSize then
+    Error('Invalid Deref, DerefPos>=FDerefDataSize');
+  {$IFDEF VerbosePPUParser}
+  dbgout('(',IntToStr(DerefPos),')');
+  {$ENDIF}
+  pdata:=@FDerefData[DerefPos];
+  n:=pdata^;
+  if n<1 then
+    Error('Invalid Deref, n<1');
+  i:=1;
+  while i<=n do begin
+    b:=tdereftype(pdata[i]);
+    inc(i);
+    case b of
+    deref_nil :
+      {$IFDEF VerbosePPUParser}
+      dbgout('Nil');
+      {$ENDIF}
+    deref_symid :
+      begin
+        idx:=pdata[i] shl 24 or pdata[i+1] shl 16 or pdata[i+2] shl 8 or pdata[i+3];
+        inc(i,4);
+        {$IFDEF VerbosePPUParser}
+        dbgout('SymId ',IntToStr(idx));
+        {$ENDIF}
+      end;
+    deref_defid :
+      begin
+        idx:=pdata[i] shl 24 or pdata[i+1] shl 16 or pdata[i+2] shl 8 or pdata[i+3];
+        inc(i,4);
+        {$IFDEF VerbosePPUParser}
+        dbgout('DefId ',IntToStr(idx));
+        {$ENDIF}
+      end;
+    deref_unit :
+      begin
+        idx:=pdata[i] shl 8 or pdata[i+1];
+        inc(i,2);
+        {$IFDEF VerbosePPUParser}
+        dbgout('Unit ',IntToStr(idx));
+        {$ENDIF}
+      end;
+    else
+      begin
+        Error('unsupported dereftyp: '+IntToStr(ord(b)));
+        break;
+      end;
+    end;
+  end;
+  {$IFDEF VerbosePPUParser}
+  debugln;
+  {$ENDIF}
+end;
+
 function TPPU.ReadEntry: byte;
 begin
-  if FEntryPos<FEntry.size then
-    Skip(FEntry.size-FEntryPos);
   FEntryPos:=0;
   ReadBuf(FEntry,SizeOf(FEntry));
   if fChangeEndian then
     FEntry.size:=SwapEndian(FEntry.size);
+  //DebugLn(['TPPU.ReadEntry ',FEntry.Nr,' ',FInputStream.Position]);
   if not (FEntry.id in [mainentryid,subentryid]) then
     Error('Invalid entry id '+IntToStr(FEntry.id));
   Result:=FEntry.nr;
@@ -572,12 +826,24 @@ begin
       FEntryBufSize:=FEntry.size;
     ReAllocMem(FEntryBuf,FEntryBufSize);
   end;
-  ReadBuf(FEntryBuf^,FEntry.size);
+  if FEntry.size>0 then
+    ReadBuf(FEntryBuf^,FEntry.size);
 end;
 
 function TPPU.EndOfEntry: boolean;
 begin
   Result:=FEntryPos>=FEntry.Size;
+end;
+
+procedure TPPU.SkipUntilEntry(EntryNr: byte);
+var
+  b: Byte;
+begin
+  repeat
+    b:=ReadEntry;
+  until (b=ibend) or ((b=EntryNr) and (FEntry.id=mainentryid));
+  if b<>EntryNr then
+    Error('TPPU.SkipUntilEntry not found: '+IntToStr(EntryNr));
 end;
 
 procedure TPPU.InitInput(s: TStream);
@@ -619,6 +885,17 @@ begin
     Error('TPPU.ReadEntryLongint: out of bytes');
   Result:=PLongint(FEntryBuf+FEntryPos)^;
   inc(FEntryPos,4);
+end;
+
+procedure TPPU.ReadEntrySmallSet(var s);
+var
+  i: longint;
+begin
+  System.Move(PByte(FEntryBuf+FEntryPos)^,s,4);
+  inc(FEntryPos,4);
+  if fChangeEndian then
+    for i:=0 to 3 do
+      Pbyte(@s)[i]:=reverse_byte(Pbyte(@s)[i]);
 end;
 
 procedure TPPU.ReadUsedUnits;
@@ -717,7 +994,12 @@ begin
   {$IFDEF VerbosePPUParser}
   DebugLn(['TPPU.ReadDerefData Deref Data length: ',FEntry.size-FEntryPos]);
   {$ENDIF}
-  FEntryPos:=FEntry.size;
+  FDerefDataSize:=FEntry.size-FEntryPos;
+  if FDerefDataSize>0 then begin
+    FDerefData:=AllocMem(FDerefDataSize);
+    System.Move(PByte(FEntryBuf+FEntryPos)^,FDerefData^,FDerefDataSize);
+    FEntryPos:=FEntry.size;
+  end;
 end;
 
 procedure TPPU.ReadDerefMap;
@@ -761,19 +1043,58 @@ begin
   FillByte(FHeader,SizeOf(FHeader),0);
   FillByte(FEntry,SizeOf(FEntry),0);
   ReAllocMem(FEntryBuf,0);
+  ReAllocMem(FDerefData,0);
   FEntryBufSize:=0;
 end;
 
-procedure TPPU.LoadFromStream(s: TStream);
+procedure TPPU.LoadFromStream(s: TStream; const Parts: TPPUParts);
 begin
   Clear;
   InitInput(s);
   ReadHeader;
-  ReadInterface;
+  
+  // interface header
+  if ppInterfaceHeader in Parts then
+    ReadInterfaceHeader
+  else
+    SkipUntilEntry(ibendinterface);
+    
+  // interface definitions
+  if ppInterfaceDefinitions in Parts then
+    ReadDefinitions
+  else
+    SkipUntilEntry(ibenddefs);
+    
+  // Interface Symbols
+  SkipUntilEntry(ibendsyms);
+  
+  // Interface Macros
+  if ReadEntry<>ibexportedmacros then
+    Error('missing exported macros');
+  if boolean(ReadEntryByte) then begin
+    // skip the definition section for macros (since they are never used)
+    SkipUntilEntry(ibenddefs);
+    // read the macro symbols
+    SkipUntilEntry(ibendsyms);
+  end else begin
+    // no macros
+  end;
+  
+  // Implementation Header
+  SkipUntilEntry(ibendimplementation);
+  
+  // Implementation Definitions and Symbols
+  if (FHeader.flags and uf_local_symtable)<>0 then begin
+    SkipUntilEntry(ibenddefs);
+    SkipUntilEntry(ibendsyms);
+  end else begin
+    // no definitions and no symbols
+  end;
+
   FInputStream:=nil;
 end;
 
-procedure TPPU.LoadFromFile(const Filename: string);
+procedure TPPU.LoadFromFile(const Filename: string; const Parts: TPPUParts);
 var
   ms: TMemoryStream;
   fs: TFileStream;
@@ -783,7 +1104,7 @@ begin
   try
     ms.CopyFrom(fs,fs.Size);
     ms.Position:=0;
-    LoadFromStream(ms);
+    LoadFromStream(ms,Parts);
   finally
     ms.Free;
     fs.Free;
