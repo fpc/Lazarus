@@ -146,6 +146,109 @@ const
   uf_has_exports = $100000;   { this module or a used unit has exports }
 
 type
+  tproccalloption=(
+    pocall_none,
+    { procedure uses C styled calling }
+    pocall_cdecl,
+    { C++ calling conventions }
+    pocall_cppdecl,
+    { Far16 for OS/2 }
+    pocall_far16,
+    { Old style FPC default calling }
+    pocall_oldfpccall,
+    { Procedure has compiler magic}
+    pocall_internproc,
+    { procedure is a system call, applies e.g. to MorphOS and PalmOS }
+    pocall_syscall,
+    { pascal standard left to right }
+    pocall_pascal,
+    { procedure uses register (fastcall) calling }
+    pocall_register,
+    { safe call calling conventions }
+    pocall_safecall,
+    { procedure uses stdcall call }
+    pocall_stdcall,
+    { Special calling convention for cpus without a floating point
+      unit. Floating point numbers are passed in integer registers
+      instead of floating point registers. Depending on the other
+      available calling conventions available for the cpu
+      this replaces either pocall_fastcall or pocall_stdcall.
+    }
+    pocall_softfloat,
+    { Metrowerks Pascal. Special case on Mac OS (X): passes all }
+    { constant records by reference.                            }
+    pocall_mwpascal
+  );
+  tproccalloptions = set of tproccalloption;
+  
+  tproctypeoption=(
+    potype_none,
+    potype_proginit,     { Program initialization }
+    potype_unitinit,     { unit initialization }
+    potype_unitfinalize, { unit finalization }
+    potype_constructor,  { Procedure is a constructor }
+    potype_destructor,   { Procedure is a destructor }
+    potype_operator,     { Procedure defines an operator }
+    potype_procedure,
+    potype_function
+  );
+  tproctypeoptions = set of tproctypeoption;
+  
+  tprocoption=(
+    po_none,
+    po_classmethod,       { class method }
+    po_virtualmethod,     { Procedure is a virtual method }
+    po_abstractmethod,    { Procedure is an abstract method }
+    po_staticmethod,      { static method }
+    po_overridingmethod,  { method with override directive }
+    po_methodpointer,     { method pointer, only in procvardef, also used for 'with object do' }
+    po_interrupt,         { Procedure is an interrupt handler }
+    po_iocheck,           { IO checking should be done after a call to the procedure }
+    po_assembler,         { Procedure is written in assembler }
+    po_msgstr,            { method for string message handling }
+    po_msgint,            { method for int message handling }
+    po_exports,           { Procedure has export directive (needed for OS/2) }
+    po_external,          { Procedure is external (in other object or lib)}
+    po_overload,          { procedure is declared with overload directive }
+    po_varargs,           { printf like arguments }
+    po_internconst,       { procedure has constant evaluator intern }
+    { flag that only the address of a method is returned and not a full methodpointer }
+    po_addressonly,
+    { procedure is exported }
+    po_public,
+    { calling convention is specified explicitly }
+    po_hascallingconvention,
+    { reintroduce flag }
+    po_reintroduce,
+    { location of parameters is given explicitly as it is necessary for some syscall
+      conventions like that one of MorphOS }
+    po_explicitparaloc,
+    { no stackframe will be generated, used by lowlevel assembler like get_frame }
+    po_nostackframe,
+    po_has_mangledname,
+    po_has_public_name,
+    po_forward,
+    po_global,
+    po_has_inlininginfo,
+    { The different kind of syscalls on MorphOS }
+    po_syscall_legacy,
+    po_syscall_sysv,
+    po_syscall_basesysv,
+    po_syscall_sysvbase,
+    po_syscall_r12base,
+    po_local,
+    { Procedure can be inlined }
+    po_inline,
+    { Procedure is used for internal compiler calls }
+    po_compilerproc,
+    { importing }
+    po_has_importdll,
+    po_has_importname,
+    po_kylixlocal
+  );
+  tprocoptions = set of tprocoption;
+
+type
   TPPUPart = (
     ppInterfaceHeader,
     ppInterfaceDefinitions,
@@ -215,17 +318,29 @@ type
     procedure InitInput(s: TStream);
     procedure ReadBuf(var Buf; Count: longint);
     function ReadEntryByte: byte;
+    function ReadEntryByte(const Msg: string): byte;
     function ReadEntryShortstring: shortstring;
+    function ReadEntryShortstring(const Msg: string): shortstring;
     function ReadEntryLongint: longint;
+    function ReadEntryLongint(const Msg: string): longint;
+    function ReadEntryWord: word;
+    function ReadEntryWord(const Msg: string): word;
     procedure ReadEntrySmallSet(var s);
+    procedure ReadEntryNormalSet(var s);
     procedure ReadUsedUnits;
     procedure ReadLinkContainer(Nr: byte);
     procedure ReadImportSymbols;
     procedure ReadDerefData;
     procedure ReadDerefMap;
     procedure ReadDereference;
+    procedure ReadPosInfo;
     procedure ReadDefinitions;
+    procedure ReadSymbols;
+    procedure ReadNodeTree;
     procedure ReadCommonDefinition;
+    procedure ReadAbstractProcDef(out proccalloption: tproccalloption;
+                                  out procoptions: tprocoptions);
+    procedure ReadSymOptions;
     procedure Skip(Count: integer);
     procedure Error(const Msg: string);
   public
@@ -620,6 +735,7 @@ type
     bool8bit,bool16bit,bool32bit,bool64bit,
     uchar,uwidechar,scurrency
   );
+
   tobjecttyp = (odt_none,
     odt_class,
     odt_object,
@@ -628,12 +744,44 @@ type
     odt_cppclass,
     odt_dispinterface
   );
+
   tvarianttype = (
     vt_normalvariant,vt_olevariant
   );
+
+  tprocinfoflag=(
+    {# procedure uses asm }
+    pi_uses_asm,
+    {# procedure does a call }
+    pi_do_call,
+    {# procedure has a try statement = no register optimization }
+    pi_uses_exceptions,
+    {# procedure is declared as @var(assembler), don't optimize}
+    pi_is_assembler,
+    {# procedure contains data which needs to be finalized }
+    pi_needs_implicit_finally
+  );
+  tprocinfoflags=set of tprocinfoflag;
+
+  tsystemcpu=
+  (
+    cpu_no,                       { 0 }
+    cpu_i386,                     { 1 }
+    cpu_m68k,                     { 2 }
+    cpu_alpha,                    { 3 }
+    cpu_powerpc,                  { 4 }
+    cpu_sparc,                    { 5 }
+    cpu_vm,                       { 6 }
+    cpu_iA64,                     { 7 }
+    cpu_x86_64,                   { 8 }
+    cpu_mips,                     { 9 }
+    cpu_arm                       { 10 }
+  );
 var
   EntryNr: Byte;
-  IsFar: Byte;
+  calloption: tproccalloption;
+  procoptions: tprocoptions;
+  procinfooptions : tprocinfoflag;
 begin
   if ReadEntry<>ibstartdefs then
   begin
@@ -649,8 +797,66 @@ begin
         ReadCommonDefinition;
         {$IFDEF VerbosePPUParser} DebugLn(['TPPU.ReadDefinitions Pointed type:']); {$ENDIF}
         ReadDereference;
-        IsFar:=ReadEntryByte;
-        {$IFDEF VerbosePPUParser} DebugLn(['TPPU.ReadDefinitions Is far: ',IsFar]); {$ENDIF}
+        ReadEntryByte{$IFDEF VerbosePPUParser}('IsFar='){$ENDIF}; // is Far
+      end;
+      
+    ibprocdef:
+      begin
+        {$IFDEF VerbosePPUParser} DebugLn(['TPPU.ReadDefinitions Procedure definition:']); {$ENDIF}
+        ReadCommonDefinition;
+        ReadAbstractProcDef(calloption,procoptions);
+        if (po_has_mangledname in procoptions) then begin
+          ReadEntryShortstring{$IFDEF VerbosePPUParser}('     Mangled name : '){$ENDIF};
+        end;
+        ReadEntryWord{$IFDEF VerbosePPUParser}('           Number : '){$ENDIF};
+        ReadEntryByte{$IFDEF VerbosePPUParser}('            Level : '){$ENDIF};
+        {$IFDEF VerbosePPUParser}
+        dbgout('            Class : ');
+        {$ENDIF}
+        ReadDereference;
+        {$IFDEF VerbosePPUParser}
+        dbgout('          Procsym : ');
+        {$ENDIF}
+        ReadDereference;
+        {$IFDEF VerbosePPUParser}
+        dbgout('         File Pos : ');
+        {$ENDIF}
+        readposinfo;
+        {$IFDEF VerbosePPUParser}
+        dbgout('       SymOptions : ');
+        {$ENDIF}
+        ReadSymOptions;
+        if tsystemcpu(FHeader.cpu)=cpu_powerpc then begin
+          { library symbol for AmigaOS/MorphOS }
+          {$IFDEF VerbosePPUParser} dbgout('   Library symbol : '); {$ENDIF}
+          ReadDereference;
+        end;
+        if (po_has_importdll in procoptions) then
+          ReadEntryShortstring{$IFDEF VerbosePPUParser}('       Import DLL : '){$ENDIF};
+        if (po_has_importname in procoptions) then
+          ReadEntryShortstring{$IFDEF VerbosePPUParser}('      Import Name : '){$ENDIF};
+        ReadEntryWord{$IFDEF VerbosePPUParser}('        Import Nr : '){$ENDIF};
+        if (po_msgint in procoptions) then
+          ReadEntryLongint{$IFDEF VerbosePPUParser}('           MsgInt : '){$ENDIF};
+        if (po_msgstr in procoptions) then
+          ReadEntryShortstring{$IFDEF VerbosePPUParser}('           MsgStr : '){$ENDIF};
+        if (po_has_inlininginfo in procoptions) then begin
+          {$IFDEF VerbosePPUParser} dbgout('       FuncretSym : '); {$ENDIF}
+          ReadDereference;
+          ReadEntrySmallSet(procinfooptions);
+          {$IFDEF VerbosePPUParser} debugln(['  ProcInfoOptions : ',dword(procinfooptions)]);{$ENDIF}
+        end;
+        // parast
+        ReadDefinitions;
+        ReadSymbols;
+        // localst
+        if (po_has_inlininginfo in procoptions) then
+        begin
+          ReadDefinitions;
+          ReadSymbols;
+        end;
+        if (po_has_inlininginfo in procoptions) then
+          readnodetree;
       end;
       
     ibenddefs:
@@ -664,6 +870,67 @@ begin
       DebugLn(['TPPU.ReadDefinitions: Warning: Entry has more information stored']);
     {$ENDIF}
   until false;
+end;
+
+procedure TPPU.ReadSymbols;
+type
+  pguid = ^tguid;
+  tguid = packed record
+    D1: LongWord;
+    D2: Word;
+    D3: Word;
+    D4: array[0..7] of Byte;
+  end;
+
+  absolutetyp = (
+    tovar,
+    toasm,
+    toaddr
+    );
+  tconsttyp = (
+    constnone,
+    constord,
+    conststring,
+    constreal,
+    constset,
+    constpointer,
+    constnil,
+    constresourcestring,
+    constwstring,
+    constguid
+    );
+var
+  EntryNr: Byte;
+begin
+  if ReadEntry<>ibstartsyms then
+    Error('missing ibstartsyms');
+  ReadEntryLongint{$IFDEF VerbosePPUParser}('Symtable datasize : '){$ENDIF};
+  if FEntryPos<FEntry.size then
+    ReadEntryLongint{$IFDEF VerbosePPUParser}('Symtable alignment: '){$ENDIF};
+  repeat
+    EntryNr:=ReadEntry;
+    case EntryNr of
+    
+    ibendsyms:
+      break;
+
+    else
+      {$IFDEF VerbosePPUParser}
+      DebugLn(['TPPU.ReadSymbols Skipping unsupported PPU Entry in Symbols: ',EntryNr]);
+      {$ENDIF}
+    end;
+    {$IFDEF VerbosePPUParser}
+    if not EndOfEntry then
+      DebugLn(['TPPU.ReadSymbols Entry has more information stored: ',EntryNr]);
+    {$ENDIF}
+  until false;
+end;
+
+procedure TPPU.ReadNodeTree;
+begin
+  if ReadEntry<>ibnodetree then
+    Error('TPPU.ReadNodeTree missing ibnodetree');
+  FEntryPos:=FEntry.size;
 end;
 
 procedure TPPU.ReadCommonDefinition;
@@ -717,29 +984,29 @@ var
   TokenBufSize: LongInt;
   i: Integer;
 begin
-  ReadEntryLongint;// DefinitionID
+  ReadEntryLongint{$IFDEF VerbosePPUParser}('DefinitionID='){$ENDIF};
   ReadDereference;
 
   ReadEntrySmallSet(defoptions);
   {$IFDEF VerbosePPUParser}
-  dbgout(' DefOptions:');
   if defoptions<>[] then begin
+    dbgout(' DefOptions:');
     for defopt:=low(tdefoption) to high(tdefoption) do
       if defopt in defoptions then
         dbgout(' ',defoptionNames[defopt]);
+    debugln;
   end;
-  debugln;
   {$ENDIF}
   
   ReadEntrySmallSet(defstates);
   {$IFDEF VerbosePPUParser}
-  dbgout(' DefStates:');
   if defstates<>[] then begin
+    dbgout(' DefStates:');
     for defstate:=low(tdefstate) to high(tdefstate) do
       if defstate in defstates then
         dbgout(' ',defstateNames[defstate]);
+    debugln;
   end;
-  debugln;
   {$ENDIF}
 
   if df_generic in defoptions then begin
@@ -763,6 +1030,184 @@ begin
   begin
     ReadDereference;
   end;
+end;
+
+procedure TPPU.ReadAbstractProcDef(out proccalloption: tproccalloption; out
+  procoptions: tprocoptions);
+type
+  tproccallopt=record
+    mask : tproccalloption;
+    str  : string[30];
+  end;
+  tproctypeopt=record
+    mask : tproctypeoption;
+    str  : string[30];
+  end;
+  tprocopt=record
+    mask : tprocoption;
+    str  : string[30];
+  end;
+const
+  proccalloptionNames : array[tproccalloption] of string[14]=(
+     '',
+     'CDecl',
+     'CPPDecl',
+     'Far16',
+     'OldFPCCall',
+     'InternProc',
+     'SysCall',
+     'Pascal',
+     'Register',
+     'SafeCall',
+     'StdCall',
+     'SoftFloat',
+     'MWPascal'
+   );
+  proctypeoptionNames : array[tproctypeoption] of string[14]=(
+    'none',
+    'proginit',     { Program initialization }
+    'unitinit',     { unit initialization }
+    'unitfinalize', { unit finalization }
+    'constructor',  { Procedure is a constructor }
+    'destructor',   { Procedure is a destructor }
+    'operator',     { Procedure defines an operator }
+    'procedure',
+    'function'
+  );
+  procoptionNames : array[tprocoption] of string[20]=(
+    'none',
+    'classmethod',       { class method }
+    'virtualmethod',     { Procedure is a virtual method }
+    'abstractmethod',    { Procedure is an abstract method }
+    'staticmethod',      { static method }
+    'overridingmethod',  { method with override directive }
+    'methodpointer',     { method pointer, only in procvardef, also used for 'with object do' }
+    'interrupt',         { Procedure is an interrupt handler }
+    'iocheck',           { IO checking should be done after a call to the procedure }
+    'assembler',         { Procedure is written in assembler }
+    'msgstr',            { method for string message handling }
+    'msgint',            { method for int message handling }
+    'exports',           { Procedure has export directive (needed for OS/2) }
+    'external',          { Procedure is external (in other object or lib)}
+    'overload',          { procedure is declared with overload directive }
+    'varargs',           { printf like arguments }
+    'internconst',       { procedure has constant evaluator intern }
+    { flag that only the address of a method is returned and not a full methodpointer }
+    'addressonly',
+    { procedure is exported }
+    'public',
+    { calling convention is specified explicitly }
+    'hascallingconvention',
+    { reintroduce flag }
+    'reintroduce',
+    { location of parameters is given explicitly as it is necessary for some syscall
+      conventions like that one of MorphOS }
+    'explicitparaloc',
+    { no stackframe will be generated, used by lowlevel assembler like get_frame }
+    'nostackframe',
+    'has_mangledname',
+    'has_public_name',
+    'forward',
+    'global',
+    'has_inlininginfo',
+    { The different kind of syscalls on MorphOS }
+    'syscall_legacy',
+    'syscall_sysv',
+    'syscall_basesysv',
+    'syscall_sysvbase',
+    'syscall_r12base',
+    'local',
+    { Procedure can be inlined }
+    'inline',
+    { Procedure is used for internal compiler calls }
+    'compilerproc',
+    { importing }
+    'has_importdll',
+    'has_importname',
+    'kylixlocal'
+  );
+var
+  proctypeoption  : tproctypeoption;
+  i     : longint;
+  {$IFDEF VerbosePPUParser}
+  po: tprocoption;
+  {$ENDIF}
+begin
+  {$IFDEF VerbosePPUParser}
+  dbgout('Return type: ');
+  {$ENDIF}
+  ReadDereference;
+  ReadEntryByte{$IFDEF VerbosePPUParser}('FPU='){$ENDIF};
+  proctypeoption:=tproctypeoption(ReadEntryByte);
+  {$IFDEF VerbosePPUParser}
+  debugln('Typeoptions: ',proctypeoptionNames[proctypeoption]);
+  {$ENDIF}
+  proccalloption:=tproccalloption(ReadEntryByte);
+  debugln('CallOption : ',proccalloptionNames[proccalloption]);
+  ReadEntryNormalSet(procoptions);
+  {$IFDEF VerbosePPUParser}
+  if procoptions<>[] then begin
+    dbgout('Options: ');
+    for po:=low(tprocoption) to high(tprocoption) do
+      if po in procoptions then
+        dbgout(' ',procoptionNames[po]);
+    debugln;
+  end;
+  {$ENDIF}
+  if (po_explicitparaloc in procoptions) then
+  begin
+    i:=ReadEntryByte;
+    inc(FEntryPos,i);
+  end;
+end;
+
+procedure TPPU.ReadSymOptions;
+type
+  tsymoption=(
+    sp_none,
+    sp_public,
+    sp_private,
+    sp_published,
+    sp_protected,
+    sp_static,
+    sp_hint_deprecated,
+    sp_hint_platform,
+    sp_hint_library,
+    sp_hint_unimplemented,
+    sp_has_overloaded,
+    sp_internal  { internal symbol, not reported as unused }
+  );
+  tsymoptions=set of tsymoption;
+const
+  symoptionNames : array[tsymoption] of string[20]=(
+     '?',
+     'Public',
+     'Private',
+     'Published',
+     'Protected',
+     'Static',
+     'Hint Deprecated',
+     'Hint Platform',
+     'Hint Library',
+     'Hint Unimplemented',
+     'Has overloaded',
+     'Internal'
+  );
+var
+  symoptions : tsymoptions;
+  {$IFDEF VerbosePPUParser}
+  s: tsymoption;
+  {$ENDIF}
+begin
+  ReadEntrySmallSet(symoptions);
+  {$IFDEF VerbosePPUParser}
+  if symoptions<>[] then begin
+    for s:=Low(tsymoption) to high(tsymoption) do
+      if s in SymOptions then
+        dbgout(' ',symoptionNames[s]);
+  end;
+  debugln;
+  {$ENDIF}
 end;
 
 procedure TPPU.ReadDereference;
@@ -798,14 +1243,14 @@ begin
     case b of
     deref_nil :
       {$IFDEF VerbosePPUParser}
-      dbgout('Nil');
+      dbgout(' Nil');
       {$ENDIF}
     deref_symid :
       begin
         idx:=pdata[i] shl 24 or pdata[i+1] shl 16 or pdata[i+2] shl 8 or pdata[i+3];
         inc(i,4);
         {$IFDEF VerbosePPUParser}
-        dbgout('SymId ',IntToStr(idx));
+        dbgout(' SymId ',IntToStr(idx));
         {$ENDIF}
       end;
     deref_defid :
@@ -813,7 +1258,7 @@ begin
         idx:=pdata[i] shl 24 or pdata[i+1] shl 16 or pdata[i+2] shl 8 or pdata[i+3];
         inc(i,4);
         {$IFDEF VerbosePPUParser}
-        dbgout('DefId ',IntToStr(idx));
+        dbgout(' DefId ',IntToStr(idx));
         {$ENDIF}
       end;
     deref_unit :
@@ -821,7 +1266,7 @@ begin
         idx:=pdata[i] shl 8 or pdata[i+1];
         inc(i,2);
         {$IFDEF VerbosePPUParser}
-        dbgout('Unit ',IntToStr(idx));
+        dbgout(' Unit ',IntToStr(idx));
         {$ENDIF}
       end;
     else
@@ -833,6 +1278,41 @@ begin
   end;
   {$IFDEF VerbosePPUParser}
   debugln;
+  {$ENDIF}
+end;
+
+procedure TPPU.ReadPosInfo;
+var
+  info : byte;
+  fileindex,line,column : longint;
+begin
+  {
+     info byte layout in bits:
+     0-1 - amount of bytes for fileindex
+     2-3 - amount of bytes for line
+     4-5 - amount of bytes for column
+  }
+  info:=ReadEntryByte;
+  case (info and $03) of
+    0 : fileindex:=ReadEntryByte;
+    1 : fileindex:=ReadEntryWord;
+    2 : fileindex:=(ReadEntryByte shl 16) or ReadEntryWord;
+    3 : fileindex:=ReadEntryLongint;
+  end;
+  case ((info shr 2) and $03) of
+    0 : line:=ReadEntryByte;
+    1 : line:=ReadEntryWord;
+    2 : line:=(ReadEntryByte shl 16) or ReadEntryWord;
+    3 : line:=ReadEntryLongint;
+  end;
+  case ((info shr 4) and $03) of
+    0 : column:=ReadEntryByte;
+    1 : column:=ReadEntryWord;
+    2 : column:=(ReadEntryByte shl 16) or ReadEntryWord;
+    3 : column:=ReadEntryLongint;
+  end;
+  {$IFDEF VerbosePPUParser}
+  debugln(dbgs(fileindex),' (',dbgs(line),',',dbgs(column),')');
   {$ENDIF}
 end;
 
@@ -891,6 +1371,12 @@ begin
   inc(FEntryPos);
 end;
 
+function TPPU.ReadEntryByte(const Msg: string): byte;
+begin
+  Result:=ReadEntryByte();
+  debugln([Msg,Result]);
+end;
+
 function TPPU.ReadEntryShortstring: shortstring;
 var
   l: byte;
@@ -905,6 +1391,12 @@ begin
   inc(FEntryPos,l);
 end;
 
+function TPPU.ReadEntryShortstring(const Msg: string): shortstring;
+begin
+  Result:=ReadEntryShortstring();
+  debugln([Msg,Result]);
+end;
+
 function TPPU.ReadEntryLongint: longint;
 begin
   if FEntryPos+4>FEntry.size then
@@ -913,14 +1405,49 @@ begin
   inc(FEntryPos,4);
 end;
 
+function TPPU.ReadEntryLongint(const Msg: string): longint;
+begin
+  Result:=ReadEntryLongint();
+  debugln([Msg,Result]);
+end;
+
+function TPPU.ReadEntryWord: word;
+begin
+  if FEntryPos+2>FEntry.size then
+    Error('TPPU.ReadEntryLongint: out of bytes');
+  Result:=PWord(FEntryBuf+FEntryPos)^;
+  inc(FEntryPos,2);
+end;
+
+function TPPU.ReadEntryWord(const Msg: string): word;
+begin
+  Result:=ReadEntryWord();
+  debugln([Msg,Result]);
+end;
+
 procedure TPPU.ReadEntrySmallSet(var s);
 var
   i: longint;
 begin
+  if FEntryPos+4>FEntry.size then
+    Error('TPPU.ReadEntryLongint: out of bytes');
   System.Move(PByte(FEntryBuf+FEntryPos)^,s,4);
   inc(FEntryPos,4);
   if fChangeEndian then
     for i:=0 to 3 do
+      Pbyte(@s)[i]:=reverse_byte(Pbyte(@s)[i]);
+end;
+
+procedure TPPU.ReadEntryNormalSet(var s);
+var
+  i: longint;
+begin
+  if FEntryPos+32>FEntry.size then
+    Error('TPPU.ReadEntryLongint: out of bytes');
+  System.Move(PByte(FEntryBuf+FEntryPos)^,s,32);
+  inc(FEntryPos,32);
+  if fChangeEndian then
+    for i:=0 to 31 do
       Pbyte(@s)[i]:=reverse_byte(Pbyte(@s)[i]);
 end;
 
@@ -1114,7 +1641,10 @@ begin
   
   // Implementation Definitions and Symbols
   if (FHeader.flags and uf_local_symtable)<>0 then begin
-    SkipUntilEntry(ibenddefs);
+    if ppImplementationDefinitions in Parts then
+      ReadDefinitions
+    else
+      SkipUntilEntry(ibenddefs);
     SkipUntilEntry(ibendsyms);
   end else begin
     // no definitions and no symbols
