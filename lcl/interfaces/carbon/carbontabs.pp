@@ -669,7 +669,10 @@ begin
   if (Index >= 0) and (Index < FTabs.Count) then
     PIndex := TabIndexToPageIndex(Index)
   else
-    PIndex := -1;
+  begin // select no tab
+    SetPageIndex(-1);
+    Exit;
+  end;
 
   // send changing
   FillChar(Msg, SizeOf(TLMNotify), 0);

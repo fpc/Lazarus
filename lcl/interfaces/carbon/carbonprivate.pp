@@ -780,7 +780,7 @@ begin
   if FMulY > 1 then
     ALineSize.height := FMulY
   else
-    ALineSize.height := 10;
+    ALineSize.height := 20;
   
   {$IFDEF VerboseScroll}
     DebugLn('TCarbonCustomControl.GetInfo ' + LCLObject.Name + ' Origin: ' +
