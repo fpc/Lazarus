@@ -289,6 +289,7 @@ type
     id   : byte;
     nr   : byte;
   end;
+  PPPUEntry = ^TPPUEntry;
   
   { EPPUParserError }
 
@@ -300,7 +301,6 @@ type
   TPPU = class
   private
     fChangeEndian: boolean;
-    FInputStream: TStream;
     FHeader: TPPUHeader;
     FEntry: TPPUEntry;
     FEntryPos: integer;
@@ -309,14 +309,18 @@ type
     FVersion: integer;
     FDerefData: PByte;
     FDerefDataSize: integer;
+    FData: Pointer;
+    FDataPos: integer;
+    FDataSize: integer;
+    procedure ReadPPU(const Parts: TPPUParts);
     procedure ReadHeader;
     procedure ReadInterfaceHeader;
     procedure ReadImplementationHeader;
     function ReadEntry: byte;
     function EndOfEntry: boolean;
     procedure SkipUntilEntry(EntryNr: byte);
-    procedure InitInput(s: TStream);
-    procedure ReadBuf(var Buf; Count: longint);
+    procedure ReadDataFromStream(s: TStream);
+    procedure ReadData(var Buf; Count: longint);
     function ReadEntryByte: byte;
     function ReadEntryByte(const Msg: string): byte;
     function ReadEntryShortstring: shortstring;
@@ -351,7 +355,6 @@ type
     procedure LoadFromFile(const Filename: string; const Parts: TPPUParts = PPUPartsAll);
     procedure Dump(const Prefix: string = '');
     procedure DumpHeader(const Prefix: string = '');
-    property InputStream: TStream read FInputStream;
   end;
 
 function PPUTargetToStr(w: longint): string;
@@ -591,19 +594,69 @@ end;
 
 { TPPU }
 
+procedure TPPU.ReadPPU(const Parts: TPPUParts);
+begin
+  ReadHeader;
+
+  // interface header
+  if ppInterfaceHeader in Parts then
+    ReadInterfaceHeader
+  else
+    SkipUntilEntry(ibendinterface);
+
+  // interface definitions
+  if ppInterfaceDefinitions in Parts then
+    ReadDefinitions
+  else
+    SkipUntilEntry(ibenddefs);
+
+  // Interface Symbols
+  SkipUntilEntry(ibendsyms);
+
+  // Interface Macros
+  if ReadEntry<>ibexportedmacros then
+    Error('missing exported macros');
+  if boolean(ReadEntryByte) then begin
+    // skip the definition section for macros (since they are never used)
+    SkipUntilEntry(ibenddefs);
+    // read the macro symbols
+    SkipUntilEntry(ibendsyms);
+  end else begin
+    // no macros
+  end;
+
+  // Implementation Header
+  if ppImplementationHeader in Parts then
+    ReadImplementationHeader
+  else
+    SkipUntilEntry(ibendimplementation);
+
+  // Implementation Definitions and Symbols
+  if (FHeader.flags and uf_local_symtable)<>0 then begin
+    if ppImplementationDefinitions in Parts then
+      ReadDefinitions
+    else
+      SkipUntilEntry(ibenddefs);
+    SkipUntilEntry(ibendsyms);
+  end else begin
+    // no definitions and no symbols
+  end;
+end;
+
 procedure TPPU.ReadHeader;
 begin
+  fChangeEndian:=PPUIsEndianBig;
   // read ID
-  ReadBuf(FHeader.id,PPU_ID_Size);
+  ReadData(FHeader.id,PPU_ID_Size);
   if String(FHeader.id)<>PPU_ID then
     Error('This is not a PPU. Wrong ID.');
   // read version
-  ReadBuf(FHeader.ver,PPU_Ver_Size);
+  ReadData(FHeader.ver,PPU_Ver_Size);
   FVersion:=StrToIntDef(String(FHeader.ver),0);
   if FVersion<16 then
     Error('Old PPU versions (<16) are not supported.');
   // read rest of header
-  ReadBuf(FHeader.compiler,SizeOf(TPPUHeader)-PPU_Ver_Size-PPU_ID_Size);
+  ReadData(FHeader.compiler,SizeOf(TPPUHeader)-PPU_Ver_Size-PPU_ID_Size);
   if fChangeEndian then begin
     fHeader.compiler := swapendian(fHeader.compiler);
     fHeader.cpu := swapendian(fHeader.cpu);
@@ -618,7 +671,7 @@ begin
   fChangeEndian:=((FHeader.flags and uf_big_endian) = uf_big_endian)<>PPUIsEndianBig;
   FEntryPos:=0;
   FillByte(FEntry,SizeOf(FEntry),0);
-  
+
   {$IFDEF VerbosePPUParser}
   DumpHeader('');
   {$ENDIF}
@@ -1319,10 +1372,10 @@ end;
 function TPPU.ReadEntry: byte;
 begin
   FEntryPos:=0;
-  ReadBuf(FEntry,SizeOf(FEntry));
+  ReadData(FEntry,SizeOf(FEntry));
   if fChangeEndian then
     FEntry.size:=SwapEndian(FEntry.size);
-  //DebugLn(['TPPU.ReadEntry ',FEntry.Nr,' ',FInputStream.Position]);
+  //DebugLn(['TPPU.ReadEntry ',FEntry.Nr,' ',FDataPos]);
   if not (FEntry.id in [mainentryid,subentryid]) then
     Error('Invalid entry id '+IntToStr(FEntry.id));
   Result:=FEntry.nr;
@@ -1333,7 +1386,7 @@ begin
     ReAllocMem(FEntryBuf,FEntryBufSize);
   end;
   if FEntry.size>0 then
-    ReadBuf(FEntryBuf^,FEntry.size);
+    ReadData(FEntryBuf^,FEntry.size);
 end;
 
 function TPPU.EndOfEntry: boolean;
@@ -1352,15 +1405,112 @@ begin
     Error('TPPU.SkipUntilEntry not found: '+IntToStr(EntryNr));
 end;
 
-procedure TPPU.InitInput(s: TStream);
+procedure TPPU.ReadDataFromStream(s: TStream);
+var
+  Entry: PPPUEntry;
+
+  procedure Grow(Add: integer);
+  const InitialSize = 65536;
+  var
+    NewSize: Integer;
+  begin
+    NewSize:=FDataPos+Add;
+    if NewSize<=FDataSize then exit;
+    if FDataSize<InitialSize then
+      FDataSize:=InitialSize
+    else
+      FDataSize:=FDataSize*2;
+    if FDataSize<NewSize then
+      FDataSize:=NewSize;
+    ReAllocMem(FData,FDataSize);
+  end;
+  
+  function Read(Count: integer): Pointer;
+  begin
+    DebugLn(['Read Count=',Count,' Pos=',FDataPos]);
+    // read and copy some more data to FData
+    Grow(Count);
+    Result:=Pointer(FData+FDataPos);
+    s.Read(Result^,Count);
+    inc(FDataPos,Count);
+  end;
+
+  function ReadEntryBlock: byte;
+  begin
+    Entry:=PPPUEntry(Read(SizeOf(FEntry)));
+    if not (Entry^.id in [mainentryid,subentryid]) then
+      Error('Invalid entry id '+IntToStr(Entry^.id));
+    Result:=Entry^.nr;
+    Read(Entry^.Size);
+  end;
+  
+  procedure ReadUntilEntry(EntryNr: byte);
+  var
+    b: Byte;
+  begin
+    repeat
+      b:=ReadEntryBlock;
+    until (b=ibend) or ((b=EntryNr) and (Entry^.id=mainentryid));
+  end;
+
+var
+  p: Pointer;
 begin
-  FInputStream:=s;
-  fChangeEndian:=PPUIsEndianBig;
+  Entry:=nil;
+  
+  // read header
+  p:=Read(SizeOf(TPPUHeader));
+  System.Move(p^,FHeader,SizeOf(TPPUHeader));
+  
+  if String(FHeader.id)<>PPU_ID then
+    Error('This is not a PPU. Wrong ID.');
+  // read version
+  FVersion:=StrToIntDef(String(FHeader.ver),0);
+  if FVersion<16 then
+    Error('Old PPU versions (<16) are not supported.');
+  // read rest of header
+  if fChangeEndian then begin
+    fHeader.compiler := swapendian(fHeader.compiler);
+    fHeader.cpu := swapendian(fHeader.cpu);
+    fHeader.target := swapendian(fHeader.target);
+    fHeader.flags := swapendian(fHeader.flags);
+    fHeader.size := swapendian(fHeader.size);
+    fHeader.checksum := swapendian(fHeader.checksum);
+    fHeader.interface_checksum := swapendian(fHeader.interface_checksum);
+    fHeader.deflistsize := swapendian(fHeader.deflistsize);
+    fHeader.symlistsize := swapendian(fHeader.symlistsize);
+  end;
+  fChangeEndian:=((FHeader.flags and uf_big_endian) = uf_big_endian)<>PPUIsEndianBig;
+
+  // read entries
+  ReadUntilEntry(ibendinterface);
+  ReadUntilEntry(ibenddefs);
+  ReadUntilEntry(ibendsyms);
+  if ReadEntryBlock<>ibexportedmacros then
+    Error('missing exported macros');
+  if boolean(PByte(PByte(Entry)+SizeOf(TPPUEntry))^) then begin
+    ReadUntilEntry(ibenddefs);
+    ReadUntilEntry(ibendsyms);
+  end;
+  ReadUntilEntry(ibendimplementation);
+  if (FHeader.flags and uf_local_symtable)<>0 then begin
+    ReadUntilEntry(ibenddefs);
+    ReadUntilEntry(ibendsyms);
+  end;
+  
+  // shrink FData
+  FDataSize:=FDataPos;
+  ReAllocMem(FData,FDataSize);
+  FDataPos:=0;
 end;
 
-procedure TPPU.ReadBuf(var Buf; Count: longint);
+procedure TPPU.ReadData(var Buf; Count: longint);
 begin
-  FInputStream.Read(Buf,Count);
+  DebugLn(['TPPU.ReadData Count=',Count,' Pos=',FDataPos]);
+  if FDataPos+Count>FDataSize then
+    Error('TPPU.ReadData: out of data');
+  System.Move(Pointer(FData+FDataPos)^,Buf,Count);
+  inc(FDataPos,Count);
 end;
 
 function TPPU.ReadEntryByte: byte;
@@ -1572,7 +1722,9 @@ end;
 
 procedure TPPU.Skip(Count: integer);
 begin
-  FInputStream.Seek(Count,soFromCurrent);
+  if FDataPos+Count>FDataSize then
+    Error('TPPU.Skip: out of data');
+  inc(FDataPos,Count);
 end;
 
 procedure TPPU.Error(const Msg: string);
@@ -1595,62 +1747,24 @@ procedure TPPU.Clear;
 begin
   FillByte(FHeader,SizeOf(FHeader),0);
   FillByte(FEntry,SizeOf(FEntry),0);
+  FEntryPos:=0;
+  
   ReAllocMem(FEntryBuf,0);
-  ReAllocMem(FDerefData,0);
   FEntryBufSize:=0;
+  
+  ReAllocMem(FDerefData,0);
+  FDerefDataSize:=0;
+  
+  ReAllocMem(FData,0);
+  FDataSize:=0;
+  FDataPos:=0;
 end;
 
 procedure TPPU.LoadFromStream(s: TStream; const Parts: TPPUParts);
 begin
   Clear;
-  InitInput(s);
-  ReadHeader;
-  
-  // interface header
-  if ppInterfaceHeader in Parts then
-    ReadInterfaceHeader
-  else
-    SkipUntilEntry(ibendinterface);
-    
-  // interface definitions
-  if ppInterfaceDefinitions in Parts then
-    ReadDefinitions
-  else
-    SkipUntilEntry(ibenddefs);
-    
-  // Interface Symbols
-  SkipUntilEntry(ibendsyms);
-  
-  // Interface Macros
-  if ReadEntry<>ibexportedmacros then
-    Error('missing exported macros');
-  if boolean(ReadEntryByte) then begin
-    // skip the definition section for macros (since they are never used)
-    SkipUntilEntry(ibenddefs);
-    // read the macro symbols
-    SkipUntilEntry(ibendsyms);
-  end else begin
-    // no macros
-  end;
-  
-  // Implementation Header
-  if ppImplementationHeader in Parts then
-    ReadImplementationHeader
-  else
-    SkipUntilEntry(ibendimplementation);
-  
-  // Implementation Definitions and Symbols
-  if (FHeader.flags and uf_local_symtable)<>0 then begin
-    if ppImplementationDefinitions in Parts then
-      ReadDefinitions
-    else
-      SkipUntilEntry(ibenddefs);
-    SkipUntilEntry(ibendsyms);
-  end else begin
-    // no definitions and no symbols
-  end;
-
-  FInputStream:=nil;
+  ReadDataFromStream(s);
+  ReadPPU(Parts);
 end;
 
 procedure TPPU.LoadFromFile(const Filename: string; const Parts: TPPUParts);
