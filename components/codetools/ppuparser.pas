@@ -208,6 +208,7 @@ type
     FDerefDataSize: integer;
     procedure ReadHeader;
     procedure ReadInterfaceHeader;
+    procedure ReadImplementationHeader;
     function ReadEntry: byte;
     function EndOfEntry: boolean;
     procedure SkipUntilEntry(EntryNr: byte);
@@ -527,7 +528,7 @@ begin
       begin
         ModuleName:=ReadEntryShortstring;
         {$IFDEF VerbosePPUParser}
-        DebugLn(['TPPU.ReadInterface ModuleName=',ModuleName]);
+        DebugLn(['TPPU.ReadInterfaceHeader ModuleName=',ModuleName]);
         {$ENDIF}
       end;
     
@@ -538,7 +539,7 @@ begin
           Filename:=ReadEntryShortstring;// filename
           FileTime:=ReadEntryLongint;// file time
           {$IFDEF VerbosePPUParser}
-          DebugLn(['TPPU.ReadInterface SourceFile=',Filename,' Time=',PPUTimeToStr(FileTime)]);
+          DebugLn(['TPPU.ReadInterfaceHeader SourceFile=',Filename,' Time=',PPUTimeToStr(FileTime)]);
           {$ENDIF}
         end;
       end;
@@ -561,7 +562,7 @@ begin
           DefinedAtStartUp:=boolean(ReadEntryByte);
           IsUsed:=boolean(ReadEntryByte);
           {$IFDEF VerbosePPUParser}
-          DebugLn(['TPPU.ReadInterface Macro=',Conditional,' DefinedAtStartUp=',DefinedAtStartUp,' Used=',IsUsed]);
+          DebugLn(['TPPU.ReadInterfaceHeader Macro=',Conditional,' DefinedAtStartUp=',DefinedAtStartUp,' Used=',IsUsed]);
           {$ENDIF}
         end;
       end;
@@ -577,7 +578,32 @@ begin
        
     else
       {$IFDEF VerbosePPUParser}
-      DebugLn(['TPPU.ReadInterface Skipping unsupported entry ',EntryNr]);
+      DebugLn(['TPPU.ReadInterfaceHeader Skipping unsupported entry ',EntryNr]);
+      {$ENDIF}
+      FEntryPos:=FEntry.size;
+    end;
+  until false;
+end;
+
+procedure TPPU.ReadImplementationHeader;
+var
+  EntryNr: Byte;
+begin
+  repeat
+    EntryNr:=ReadEntry;
+    case EntryNr of
+
+    // ToDo: ibasmsymbols
+    
+    ibloadunit:
+      ReadUsedUnits;
+
+    ibendimplementation:
+      break;
+
+    else
+      {$IFDEF VerbosePPUParser}
+      DebugLn(['TPPU.ReadImplementationHeader Skipping unsupported entry ',EntryNr]);
       {$ENDIF}
       FEntryPos:=FEntry.size;
     end;
@@ -1081,7 +1107,10 @@ begin
   end;
   
   // Implementation Header
-  SkipUntilEntry(ibendimplementation);
+  if ppImplementationHeader in Parts then
+    ReadImplementationHeader
+  else
+    SkipUntilEntry(ibendimplementation);
   
   // Implementation Definitions and Symbols
   if (FHeader.flags and uf_local_symtable)<>0 then begin
@@ -1102,6 +1131,7 @@ begin
   fs:=TFileStream.Create(Filename,fmOpenRead);
   ms:=TMemoryStream.Create;
   try
+    ms.Size:=fs.Size;
     ms.CopyFrom(fs,fs.Size);
     ms.Position:=0;
     LoadFromStream(ms,Parts);
