@@ -3815,7 +3815,8 @@ function TPascalParserTool.GetExtraction: string;
 begin
   SetLength(Result,ExtractMemStream.Position);
   ExtractMemStream.Position:=0;
-  ExtractMemStream.Read(Result[1],length(Result));
+  if Result<>'' then
+    ExtractMemStream.Read(Result[1],length(Result));
 end;
 
 function TPascalParserTool.ExtractStreamEndIsIdentChar: boolean;
