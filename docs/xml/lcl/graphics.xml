@@ -11091,7 +11091,8 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- class Visibility: default -->
       <element name="TCursorImage">
-        <short/>
+        <short>
+          <var>TCursorImage</var> - an Icon to be used to represent a cursor</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11196,7 +11197,8 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- property Visibility: public -->
       <element name="TCursorImage.HotSpot">
-        <short/>
+        <short>
+          <var>HotSpot</var> - the coordinates of the point to which the cursor refers, and which represents the 'active' position on the current form or canvas</short>
         <descr/>
         <seealso/>
       </element>
@@ -11495,7 +11497,8 @@ This function checks that the value in
       </element>
       <!-- class Visibility: default -->
       <element name="TSharedRasterImage">
-        <short/>
+        <short>
+          <var>TSharedRasterImage</var> - a reference counted raster image (may be shared between several controls)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11538,7 +11541,8 @@ This function checks that the value in
       </element>
       <!-- function Visibility: protected -->
       <element name="TSharedRasterImage.IsEmpty">
-        <short/>
+        <short>
+          <var>IsEmpty</var> - checks if there is actually an image at the reference, and returns True if there is not</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11556,7 +11560,8 @@ This function checks that the value in
       </element>
       <!-- procedure Visibility: public -->
       <element name="TSharedRasterImage.CreateDefaultHandle">
-        <short/>
+        <short>
+          <var>CreateDefaultHandle</var> - virtual abstract method for creating a default handle for the shared raster image</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11593,13 +11598,15 @@ This function checks that the value in
       </element>
       <!-- property Visibility: public -->
       <element name="TSharedRasterImage.BitmapCanvas">
-        <short/>
+        <short>
+          <var>BitmapCanvas</var> - the canvas to be used for painting this bitmap</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TSharedRasterImage.SaveStream">
-        <short/>
+        <short>
+          <var>SaveStream</var> - the mamory sgtream to be used for saving this image</short>
         <descr/>
         <seealso/>
       </element>
@@ -12426,7 +12433,8 @@ This function checks that the value in
       </element>
       <!-- class Visibility: default -->
       <element name="TSharedCustomBitmap">
-        <short/>
+        <short>
+          <var>TSharedCustomBitmap</var> - a reference counted base  class for TSharedBitmap, TSharedPixmap, TSharedJPEGImage, TSharedPortableNetworkGraphic and TSharedPortableAnyMapGraphic</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12547,7 +12555,8 @@ This function checks that the value in
       </element>
       <!-- function Visibility: public -->
       <element name="TSharedCustomBitmap.ImageAllocated">
-        <short/>
+        <short>
+          <var>ImageAllocated</var> - returns True if an image has been allocated</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12558,19 +12567,20 @@ This function checks that the value in
       </element>
       <!-- property Visibility: public -->
       <element name="TSharedCustomBitmap.HandleType">
-        <short/>
+        <short>
+          <var>HandleType</var> the type of Bitmap Handle that has been allocated</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TSharedCustomBitmap.Height">
-        <short/>
+        <short>The <var>Height</var> of the Bitmap</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TSharedCustomBitmap.Width">
-        <short/>
+        <short>The <var>Width</var> of the Bitmap</short>
         <descr/>
         <seealso/>
       </element>
@@ -12993,7 +13003,8 @@ This function checks that the value in
       </element>
       <!-- class Visibility: default -->
       <element name="TSharedPortableNetworkGraphic">
-        <short/>
+        <short>
+          <var>TSharedPortableNetworkGraphic</var> - a reference counted PNG Image</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13048,7 +13059,8 @@ This function checks that the value in
       </element>
       <!-- class Visibility: default -->
       <element name="TSharedPortableAnyMapGraphic">
-        <short/>
+        <short>
+          <var>TSharedPortableAnyMapGraphic</var> - a reference counted shared PAMG</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13101,7 +13113,8 @@ This function checks that the value in
       </element>
       <!-- class Visibility: default -->
       <element name="TSharedIcon">
-        <short/>
+        <short>
+          <var>TSharedIcon</var> - a reference counted shared Icon</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13121,7 +13134,8 @@ This function checks that the value in
       </element>
       <!-- function Visibility: protected -->
       <element name="TSharedIcon.GetImagesClass">
-        <short/>
+        <short>
+          <var>GetImagesClass</var> - finds which class of icon images is being referenced</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13146,14 +13160,16 @@ This function checks that the value in
       </element>
       <!-- procedure Visibility: public -->
       <element name="TSharedIcon.Clear">
-        <short/>
+        <short>
+          <var>Clear</var> - remove the icon and free its resources</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TSharedIcon.Delete">
-        <short/>
+        <short>
+          <var>Delete</var> - remove the icon with specified index</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13164,7 +13180,8 @@ This function checks that the value in
       </element>
       <!-- function Visibility: public -->
       <element name="TSharedIcon.GetIndex">
-        <short/>
+        <short>
+          <var>GetIndex</var> - returns the Index of an image with specified pixel format, height and width</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13876,7 +13893,8 @@ This function checks that the value in
       </element>
       <!-- class Visibility: default -->
       <element name="TSharedCursorImage">
-        <short/>
+        <short>
+          <var>TSharedCursorImage</var> - a reference counted shared image to be used for cursors</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13971,13 +13989,14 @@ This function checks that the value in
       </element>
       <!-- property Visibility: public -->
       <element name="TCursorImage.Handle">
-        <short/>
+        <short>The Operating System <var>Handle</var> allocated for this cursor</short>
         <descr/>
         <seealso/>
       </element>
       <!-- class Visibility: default -->
       <element name="TSharedJpegImage">
-        <short/>
+        <short>
+          <var>TSharedJpegImage</var> - a reference counted shared image of type JPEG</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14055,6 +14074,14 @@ This function checks that the value in
       <!-- function result Visibility: default -->
       <element name="TJPEGImage.GetSharedImageClass.Result">
         <short/>
+      </element>
+      <element name="TSharedIcon.Add">
+        <short>
+          <var>Add</var> a reference to the shared icon</short>
+      </element>
+      <element name="TSharedIcon.Count">
+        <short>
+          <var>Count</var> - returns the number of references to the shared icon</short>
       </element>
     </module>
     <!-- Graphics -->
