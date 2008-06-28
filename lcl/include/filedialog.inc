@@ -193,7 +193,7 @@ end;
 
 function TOpenDialog.CheckFileMustExist(const AFileName: string): boolean;
 begin
-  if not FileExists(AFilename) then begin
+  if not FileExists(Utf8ToAnsi(AFilename)) then begin
     Result:=false;
     MessageDlg(rsfdFileMustExist,
                Format(rsfdFileNotExist,[AFileName]),mtError,
@@ -319,7 +319,7 @@ end;
 
 function TSelectDirectoryDialog.CheckFileMustExist(const AFilename: string): boolean;
 begin
-  if not DirPathExists(AFilename) then begin
+  if not DirPathExists(Utf8ToAnsi(AFilename)) then begin
     Result:=false;
     MessageDlg(rsfdDirectoryMustExist,
                Format(rsfdDirectoryNotExist,[AFileName]),mtError,
