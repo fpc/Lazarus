@@ -96,7 +96,7 @@ var
   DataSize: Integer;
   OldCount: Integer;
 begin
-  if (AValue = nil) or (AValue=Self) then exit;
+  if (AValue = nil) or (AValue=Self) or (AValue.FCount = 0) then exit;
 
   AllocData(FCount + AValue.FCount);
   if (AValue.FWidth = FWidth) and (AValue.FHeight = FHeight)
