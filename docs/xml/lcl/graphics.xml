@@ -11606,7 +11606,7 @@ This function checks that the value in
       <!-- property Visibility: public -->
       <element name="TSharedRasterImage.SaveStream">
         <short>
-          <var>SaveStream</var> - the mamory sgtream to be used for saving this image</short>
+          <var>SaveStream</var> - the memory stream to be used for saving this image</short>
         <descr/>
         <seealso/>
       </element>
@@ -12871,7 +12871,8 @@ This function checks that the value in
       </element>
       <!-- class Visibility: default -->
       <element name="TSharedBitmap">
-        <short/>
+        <short>
+          <var>TSharedBitmap</var> - a reference counted Bitmap graphic</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12952,7 +12953,8 @@ This function checks that the value in
       </element>
       <!-- class Visibility: default -->
       <element name="TSharedPixmap">
-        <short/>
+        <short>
+          <var>TSharedPixmap</var> - a reference counted Pixmap graphic</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13100,7 +13102,8 @@ This function checks that the value in
       </element>
       <!-- class Visibility: default -->
       <element name="TIconImage">
-        <short/>
+        <short>
+          <var>TIconImage</var> - a primitive Icon class with handles for the Bitmap, Mask and Palette</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13287,7 +13290,8 @@ This function checks that the value in
       </element>
       <!-- function Visibility: public -->
       <element name="TIconImage.ReleaseHandle">
-        <short/>
+        <short>
+          <var>ReleaseHandle</var> - returns Bitmap handle to Operating system</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13298,7 +13302,8 @@ This function checks that the value in
       </element>
       <!-- function Visibility: public -->
       <element name="TIconImage.ReleaseMaskHandle">
-        <short/>
+        <short>
+          <var>ReleaseMaskHandle</var> - returns mask Bitmap handle to operating system</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13309,7 +13314,8 @@ This function checks that the value in
       </element>
       <!-- function Visibility: public -->
       <element name="TIconImage.ReleasePalette">
-        <short/>
+        <short>
+          <var>ReleasePalette</var> - returns Palette handle to operating system</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13320,7 +13326,8 @@ This function checks that the value in
       </element>
       <!-- function Visibility: public -->
       <element name="TIconImage.UpdateHandles">
-        <short/>
+        <short>
+          <var>UpdateHandles</var> - returns True when Bitmap and Mask handles have been updated</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13357,25 +13364,29 @@ This function checks that the value in
       </element>
       <!-- property Visibility: public -->
       <element name="TIconImage.Handle">
-        <short/>
+        <short>
+          <var>Handle</var> - for the Bitmap</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TIconImage.MaskHandle">
-        <short/>
+        <short>
+          <var>MaskHandle</var> - Bitmap handle for the Mask</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TIconImage.Palette">
-        <short/>
+        <short>Handle for the <var>Palette</var>
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- class Visibility: default -->
       <element name="TCustomIcon">
-        <short/>
+        <short>
+          <var>TCustomIcon</var> - base class for TIcon</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13656,7 +13667,9 @@ This function checks that the value in
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomIcon.Add">
-        <short/>
+        <short>
+          <var>Add</var> - an Icon formatted as <var>AFormat</var>, with specified <var>Height</var> and <var>Width</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13686,14 +13699,16 @@ This function checks that the value in
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomIcon.Clear">
-        <short/>
+        <short>
+          <var>Clear</var> the Icon and release its resources</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomIcon.Delete">
-        <short/>
+        <short>
+          <var>Delete</var> the indexed Icon</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13704,7 +13719,9 @@ This function checks that the value in
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomIcon.Remove">
-        <short/>
+        <short>
+          <var>Remove</var> the Icon specified by <var>AFormat</var>, <var>AHeight</var> and <var>AWidth</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13723,30 +13740,36 @@ This function checks that the value in
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomIcon.GetDescription">
-        <short/>
+        <short>
+          <var>GetDescription</var> - find the description for the Icon</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomIcon.GetDescription.Aindex">
-        <short/>
+        <short>
+          <var>Aindex</var> - the Index value for the Icon</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomIcon.GetDescription.AFormat">
-        <short/>
+        <short>
+          <var>AFormat</var> - the Pixel Format for the Icon</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomIcon.GetDescription.AHeight">
-        <short/>
+        <short>
+          <var>AHeight</var> - the height of the Icon</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomIcon.GetDescription.AWidth">
-        <short/>
+        <short>
+          <var>AWidth</var> - the width of the Icon</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomIcon.SetSize">
-        <short/>
+        <short>
+          <var>SetSize</var> - write the size (width, height) of the Icon</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13761,7 +13784,8 @@ This function checks that the value in
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomIcon.GetFileExtensions">
-        <short/>
+        <short>
+          <var>GetFileExtensions</var> - returns a list of valid file extensions associated with the Icon</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13772,7 +13796,8 @@ This function checks that the value in
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomIcon.LazarusResourceTypeValid">
-        <short/>
+        <short>
+          <var>LazarusResourceTypeValid</var> - returns True if the specified <var>ResourceType</var> is valid</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13787,7 +13812,8 @@ This function checks that the value in
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomIcon.BitmapHandleAllocated">
-        <short/>
+        <short>
+          <var>BitmapHandleAllocated</var> - returns True if a Bitmap Handle has been allocated</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13798,7 +13824,8 @@ This function checks that the value in
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomIcon.MaskHandleAllocated">
-        <short/>
+        <short>
+          <var>MaskHandleAllocated</var> - returns True if a Mask Bitmap handle has been allocated</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13809,7 +13836,8 @@ This function checks that the value in
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomIcon.PaletteAllocated">
-        <short/>
+        <short>
+          <var>PaletteAllocated</var> - returns True if a Palette handle has been allocated</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13820,7 +13848,8 @@ This function checks that the value in
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomIcon.SetHandles">
-        <short/>
+        <short>
+          <var>SetHandles</var> - writes the values of the Bitmap and Mask handles</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13835,13 +13864,15 @@ This function checks that the value in
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomIcon.Current">
-        <short/>
+        <short>
+          <var>Current</var> - the sequence number of the current Icon</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomIcon.Count">
-        <short/>
+        <short>
+          <var>Count</var> - the number of references to this Icon</short>
         <descr/>
         <seealso/>
       </element>
@@ -13919,7 +13950,8 @@ This function checks that the value in
       </element>
       <!-- class Visibility: default -->
       <element name="TCursorImageImage">
-        <short/>
+        <short>
+          <var>TCursorImageImage</var> - the image for a cursor, stored as an Icon</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13932,7 +13964,8 @@ This function checks that the value in
       </element>
       <!-- property Visibility: public -->
       <element name="TCursorImageImage.HotSpot">
-        <short/>
+        <short>
+          <var>HotSpot</var> - the coordinates of the point to which the cursor refers, and which represents the 'active' position on the current form or canvas</short>
         <descr/>
         <seealso/>
       </element>
