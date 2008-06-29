@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-06-14 09:42+0100\n"
+"PO-Revision-Date: 2008-06-29 21:21+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -63,10 +63,6 @@ msgstr "%s Verzeichnis"
 #: lazarusidestrconsts:lislddoesnothaveanyvalidlazdocpathunabletocreatethefpdo
 msgid "%s does not have any valid LazDoc path.%sUnable to create the fpdoc file for %s"
 msgstr "%s hat keinen gültigen LazDoc-Pfad.%sKann die FPDoc-Datei für %s nicht schreiben"
-
-#: lazarusidestrconsts:lisisathiscircledependencyisnotallowed
-msgid "%s is a %s.%sThis circle dependency is not allowed."
-msgstr ""
 
 #: lazarusidestrconsts:lisisalreadypartoftheproject
 msgid "%s is already part of the Project."
@@ -470,7 +466,7 @@ msgstr "Abbruch beim Laden"
 
 #: lazarusidestrconsts:lisinfobuildabort
 msgid "Aborted..."
-msgstr ""
+msgstr "Abgebrochen..."
 
 #: lazarusidestrconsts:lismenutemplateabout
 msgid "About"
@@ -1798,7 +1794,7 @@ msgstr "IDE kompilieren (ohne Linken)"
 
 #: lazarusidestrconsts:lisinfobuildcaption
 msgid "Compile Project"
-msgstr ""
+msgstr "Kompiliere Projekt"
 
 #: lazarusidestrconsts:lispckeditcompileeverything
 msgid "Compile everything?"
@@ -1850,7 +1846,7 @@ msgstr "Compilerdateiname (%s)"
 
 #: lazarusidestrconsts:lisinfobuildcomplile
 msgid "Compiling..."
-msgstr ""
+msgstr "Kompilieren..."
 
 #: lazarusidestrconsts:lismenucompletecode
 msgid "Complete Code"
@@ -2982,7 +2978,7 @@ msgstr "Auswahl einschließen ..."
 
 #: lazarusidestrconsts:uemencoding
 msgid "Encoding"
-msgstr ""
+msgstr "Kodieren"
 
 #: lazarusidestrconsts:lisencodingoffileondiskisnewencodingis2
 msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
@@ -3146,7 +3142,7 @@ msgstr "Fehler beim Schreiben der Package-Liste in die Datei%s%s%s%s"
 
 #: lazarusidestrconsts:lisinfobuilderror
 msgid "Error..."
-msgstr ""
+msgstr "Fehler..."
 
 #: lazarusidestrconsts:liserror
 msgid "Error: "
@@ -3162,7 +3158,7 @@ msgstr "Fehler"
 
 #: lazarusidestrconsts:lisinfobuilderrors
 msgid "Errors:"
-msgstr ""
+msgstr "Fehler:"
 
 #: lazarusidestrconsts:srvk_escape
 msgid "Escape"
@@ -3299,10 +3295,6 @@ msgstr "Externe Werkzeuge"
 #: lazarusidestrconsts:srkmecexttoolsettings
 msgid "External tools settings"
 msgstr "Einstellungen für externe Werkzeuge"
-
-#: lazarusidestrconsts:dlgextracharspacing
-msgid "Extra char spacing"
-msgstr ""
 
 #: lazarusidestrconsts:dlgextralinespacing
 msgid "Extra line spacing"
@@ -3670,7 +3662,7 @@ msgstr "Fließkomma"
 
 #: lazarusidestrconsts:dlgeofocusmessagesaftercompilation
 msgid "Focus messages after compilation"
-msgstr ""
+msgstr "Meldungen nach dem Kompilieren fokussieren"
 
 #: lazarusidestrconsts:srkmecjumptoeditor
 msgid "Focus to source editor"
@@ -4150,7 +4142,7 @@ msgstr "Hinweise für die Haupt-Speedbuttons (Öffnen, Speichern, ...)"
 
 #: lazarusidestrconsts:lisinfobuildhint
 msgid "Hints:"
-msgstr ""
+msgstr "Hinweise:"
 
 #: lazarusidestrconsts:srvk_home
 msgid "Home"
@@ -4787,10 +4779,6 @@ msgstr "Ungültiger Unit-Name"
 #: lazarusidestrconsts:lispkgsysinvalidunitname
 msgid "Invalid Unitname: %s"
 msgstr "Ungültiger Unit-Name: %s"
-
-#: lazarusidestrconsts:lisinvalidcircle
-msgid "Invalid circle"
-msgstr ""
 
 #: lazarusidestrconsts:lisinvalidcommand
 msgid "Invalid command"
@@ -6050,7 +6038,7 @@ msgstr "Hinweis: Alle Tasten werden auf die Werte der gewählten Belegung gesetz
 
 #: lazarusidestrconsts:lisinfobuildnote
 msgid "Notes:"
-msgstr ""
+msgstr "Bemerkungen:"
 
 #: lazarusidestrconsts:dlgenvbackuphelpnote
 msgid "Notes: Project files are all files in the project directory"
@@ -8210,7 +8198,7 @@ msgstr "Code-Context anzeigen"
 
 #: lazarusidestrconsts:dlgqshowcompiledialog
 msgid "Show compile dialog"
-msgstr ""
+msgstr "Zeige Compile-Dialog"
 
 #: lazarusidestrconsts:dlgshowcompiledprocedures
 msgid "Show compiled procedures"
@@ -8622,7 +8610,7 @@ msgstr "Erfolg"
 
 #: lazarusidestrconsts:lisinfobuildsuccess
 msgid "Success..."
-msgstr ""
+msgstr "Erfolg..."
 
 #: lazarusidestrconsts:lisa2pswitchpaths
 msgid "Switch Paths"
@@ -9666,7 +9654,7 @@ msgstr "Zurechtschneiden überflüssiger Leerzeichen"
 
 #: lazarusidestrconsts:rslanguageturkish
 msgid "Turkish"
-msgstr ""
+msgstr "Türkisch"
 
 #: lazarusidestrconsts:lismenutemplatetutorial
 msgid "Tutorial"
@@ -10634,7 +10622,7 @@ msgstr "Warnung: Unklarer Dateiname gefunden: %s%s%s. Quelldatei ist: %s%s%s"
 
 #: lazarusidestrconsts:lisinfobuildwarning
 msgid "Warnings:"
-msgstr ""
+msgstr "Warnungen:"
 
 #: lazarusidestrconsts:liswatchpropert
 msgid "Watch Properties"
