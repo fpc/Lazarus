@@ -343,6 +343,7 @@ type
     procedure SetColumn(const AValue: TOICustomPropertyGridColumn);
     procedure SetCurrentEditValue(const NewValue: string);
     procedure SetFavourites(const AValue: TOIFavouriteProperties);
+    procedure SetFilter(const AValue: TTypeKinds);
     procedure SetItemIndex(NewIndex:integer);
 
     function GetNameRowHeight: Integer; // temp solution untill TFont.height returns its actual value
@@ -493,6 +494,7 @@ type
     property ValueFont: TFont read FValueFont write FValueFont;
     property Favourites: TOIFavouriteProperties read FFavourites
                                                 write SetFavourites;
+    Property Filter : TTypeKinds Read FFilter Write SetFilter;
   end;
 
 
@@ -2568,6 +2570,15 @@ begin
   if FFavourites=AValue then exit;
   FFavourites:=AValue;
   BuildPropertyList;
+end;
+
+procedure TOICustomPropertyGrid.SetFilter(const AValue: TTypeKinds);
+begin
+  If (AValue<>FFilter) then
+    begin
+    FFilter:=AValue;
+    BuildPropertyList;
+    end;
 end;
 
 procedure TOICustomPropertyGrid.Clear;
