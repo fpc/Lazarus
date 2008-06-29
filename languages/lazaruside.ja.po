@@ -60,6 +60,10 @@ msgstr "%s ディレクトリ"
 msgid "%s does not have any valid LazDoc path.%sUnable to create the fpdoc file for %s"
 msgstr ""
 
+#: lazarusidestrconsts:lisisathiscircledependencyisnotallowed
+msgid "%s is a %s.%sThis circle dependency is not allowed."
+msgstr ""
+
 #: lazarusidestrconsts:lisisalreadypartoftheproject
 msgid "%s is already part of the Project."
 msgstr "%s はすでにプロジェクトの一部です"
@@ -3292,6 +3296,10 @@ msgstr "外部ツール"
 msgid "External tools settings"
 msgstr "外部ツールの設定"
 
+#: lazarusidestrconsts:dlgextracharspacing
+msgid "Extra char spacing"
+msgstr ""
+
 #: lazarusidestrconsts:dlgextralinespacing
 msgid "Extra line spacing"
 msgstr "行間隔"
@@ -4775,6 +4783,10 @@ msgstr "無効なユニット名"
 #: lazarusidestrconsts:lispkgsysinvalidunitname
 msgid "Invalid Unitname: %s"
 msgstr "無効なユニット名"
+
+#: lazarusidestrconsts:lisinvalidcircle
+msgid "Invalid circle"
+msgstr ""
 
 #: lazarusidestrconsts:lisinvalidcommand
 msgid "Invalid command"

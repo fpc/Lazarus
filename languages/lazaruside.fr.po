@@ -62,6 +62,10 @@ msgstr "répertoire %s"
 msgid "%s does not have any valid LazDoc path.%sUnable to create the fpdoc file for %s"
 msgstr "%s ne dispose d'aucun chemin d'accès LazDoc valide.%sImpossible de créer le fichier pour fpdoc %s"
 
+#: lazarusidestrconsts:lisisathiscircledependencyisnotallowed
+msgid "%s is a %s.%sThis circle dependency is not allowed."
+msgstr ""
+
 #: lazarusidestrconsts:lisisalreadypartoftheproject
 msgid "%s is already part of the Project."
 msgstr "%s fait déjà partie du projet"
@@ -3294,6 +3298,10 @@ msgstr "Outils externes"
 msgid "External tools settings"
 msgstr "Configurations des outils externes"
 
+#: lazarusidestrconsts:dlgextracharspacing
+msgid "Extra char spacing"
+msgstr ""
+
 #: lazarusidestrconsts:dlgextralinespacing
 msgid "Extra line spacing"
 msgstr "Interligne supplémentaire"
@@ -4777,6 +4785,10 @@ msgstr "Nom d'unité non valide"
 #: lazarusidestrconsts:lispkgsysinvalidunitname
 msgid "Invalid Unitname: %s"
 msgstr "Nom d'unité non valide : %s"
+
+#: lazarusidestrconsts:lisinvalidcircle
+msgid "Invalid circle"
+msgstr ""
 
 #: lazarusidestrconsts:lisinvalidcommand
 msgid "Invalid command"

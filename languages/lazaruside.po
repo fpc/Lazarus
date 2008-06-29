@@ -3240,6 +3240,10 @@ msgstr ""
 msgid "Editor font height"
 msgstr ""
 
+#: lazarusidestrconsts:dlgextracharspacing
+msgid "Extra char spacing"
+msgstr ""
+
 #: lazarusidestrconsts:dlgextralinespacing
 msgid "Extra line spacing"
 msgstr ""
@@ -11634,5 +11638,13 @@ msgstr ""
 
 #: lazarusidestrconsts:lispwconvertproject
 msgid "Convert Delphi Project"
+msgstr ""
+
+#: lazarusidestrconsts:lisinvalidcircle
+msgid "Invalid circle"
+msgstr ""
+
+#: lazarusidestrconsts:lisisathiscircledependencyisnotallowed
+msgid "%s is a %s.%sThis circle dependency is not allowed."
 msgstr ""
 
