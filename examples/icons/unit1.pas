@@ -70,7 +70,7 @@ begin
   if TrackBar1.Enabled then
   begin
     TrackBar1.Min := 0;
-    TrackBar1.Max := TCustomIcon(Image1.Picture.Graphic).Count;
+    TrackBar1.Max := TCustomIcon(Image1.Picture.Graphic).Count - 1;
     TrackBar1.Position := TCustomIcon(Image1.Picture.Graphic).Current;
     TrackBar1Change(TrackBar1);
   end;
