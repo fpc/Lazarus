@@ -14,10 +14,12 @@ msgid "Active report: %s"
 msgstr "Reporte Activo: %s"
 
 #: maincalleditor.cerappcaption
+msgctxt "maincalleditor.cerappcaption"
 msgid "LazReport Test Suite"
 msgstr "Banco de pruebas de LazReport"
 
 #: maincalleditor.cereditreport
+msgctxt "maincalleditor.cereditreport"
 msgid "Edit Report"
 msgstr "Editar Reporte"
 
@@ -98,6 +100,7 @@ msgid "Close"
 msgstr "Cerrar"
 
 #: TFRMMAIN.ACCEDITREPORT.CAPTION
+msgctxt "TFRMMAIN.ACCEDITREPORT.CAPTION"
 msgid "Edit Report"
 msgstr "Editar Reporte"
 
@@ -134,6 +137,7 @@ msgid "Print Report"
 msgstr "Imprimir Reporte"
 
 #: TFRMMAIN.CAPTION
+msgctxt "TFRMMAIN.CAPTION"
 msgid "LazReport Test Suite"
 msgstr "Banco de pruebas de LazReport"
 

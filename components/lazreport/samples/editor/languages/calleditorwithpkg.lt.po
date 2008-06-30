@@ -16,10 +16,12 @@ msgid "Active report: %s"
 msgstr ""
 
 #: maincalleditor.cerappcaption
+msgctxt "maincalleditor.cerappcaption"
 msgid "LazReport Test Suite"
 msgstr ""
 
 #: maincalleditor.cereditreport
+msgctxt "maincalleditor.cereditreport"
 msgid "Edit Report"
 msgstr "Keisti pranešimą"
 
@@ -100,6 +102,7 @@ msgid "Close"
 msgstr ""
 
 #: TFRMMAIN.ACCEDITREPORT.CAPTION
+msgctxt "TFRMMAIN.ACCEDITREPORT.CAPTION"
 msgid "Edit Report"
 msgstr "Keisti pranešimą"
 
@@ -136,6 +139,7 @@ msgid "Print Report"
 msgstr ""
 
 #: TFRMMAIN.CAPTION
+msgctxt "TFRMMAIN.CAPTION"
 msgid "LazReport Test Suite"
 msgstr ""
 

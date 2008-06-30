@@ -14,7 +14,7 @@ msgstr ""
 
 #: frmselectdataset.serrcomponentnotfound
 msgid "Error: Component \"%s\" not found"
-msgstr "Fehler: Komponente "%s" nicht gefunden"
+msgstr "Fehler: Komponente \"%s\" nicht gefunden"
 
 #: frmselectdataset.serrselectdataset
 msgid "Please select a dataset first"
