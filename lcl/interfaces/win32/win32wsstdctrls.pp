@@ -1233,7 +1233,7 @@ var
 begin
   { X position calculation }
   
-  { EM_GETSET returns the char index of the caret, but this index
+  { EM_GETSEL returns the char index of the caret, but this index
     doesn't go back to zero in new lines, so we need to subtract
     the char index from the line
 
