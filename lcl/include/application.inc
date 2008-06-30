@@ -869,10 +869,15 @@ procedure TApplication.IconChanged(Sender: TObject);
 var
   i: integer;
 begin
+  Icon.OnChange := nil;
+  
+  Icon.Current := Icon.GetBestApplicationIndex;
   Widgetset.AppSetIcon(GetIconHandle);
   if FFormList<>nil then
     for i :=0 to FFormList.Count - 1 do
       TForm(FFormList[i]).Perform(CM_ICONCHANGED, 0, 0);
+
+  Icon.OnChange := @IconChanged;
 end;
 
 {------------------------------------------------------------------------------

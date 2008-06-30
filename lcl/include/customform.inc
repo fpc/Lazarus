@@ -161,8 +161,13 @@ End;
  ------------------------------------------------------------------------------}
 procedure TCustomForm.IconChanged(Sender: TObject);
 begin
+  Icon.OnChange := nil;
+
+  Icon.Current := Icon.GetBestApplicationIndex;
   if HandleAllocated then
     TWSCustomFormClass(WidgetSetClass).SetIcon(Self, GetIconHandle);
+    
+  Icon.OnChange := @IconChanged;
 end;
 
 {------------------------------------------------------------------------------
