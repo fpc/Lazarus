@@ -32,7 +32,7 @@ interface
 
 uses
   Classes, SysUtils, fpImage, FPReadBMP, BMPComn, FPCAdds, AvgLvlTree, LCLType,
-  LCLProc, GraphType, LCLIntf, FPReadPNG;
+  LCLProc, GraphType, LCLIntf, FPReadPNG, IcnsTypes;
 
 type
   { TLazIntfImage }
@@ -515,6 +515,39 @@ type
     property UpdateDescription: Boolean read GetUpdateDescription write SetUpdateDescription;
   end;
 
+  { TLazReaderIcnsPart }
+
+  TLazReaderIcnsPart = class(TFPCustomImageReader, ILazImageReader)
+  private
+    FUpdateDescription: Boolean;
+    FPalette: TFPPalette;
+    FImage: TLazIntfImage;
+    FData: PByte;
+    FCalcSize: Integer;
+    FDataSize: Integer;
+    FIconType: TicnsIconType;
+    FIconInfo: TicnsIconInfo;
+  protected
+    function  InternalCheck(Str:TStream): boolean; override;
+    procedure InternalRead(Stream: TStream; Img: TFPCustomImage); override;
+    function QueryInterface(const iid: TGuid; out obj): LongInt; stdcall;
+    function _AddRef: LongInt; stdcall;
+    function _Release: LongInt; stdcall;
+    function GetUpdateDescription: Boolean;
+    procedure SetUpdateDescription(AValue: Boolean);
+    procedure SetupRead(AWidth, AHeight, ADepth: Integer; IsMask: Boolean);
+    function Create256ColorPalette: TFPPalette;
+    procedure DoReadRaw;
+    procedure DoReadRLE;
+    procedure DoReadJpeg2000;
+    procedure DoReadMask;
+  public
+    constructor Create; override;
+    destructor Destroy; override;
+    property UpdateDescription: Boolean read GetUpdateDescription write SetUpdateDescription;
+    property IconType: TicnsIconType read FIconType;
+    property DataSize: Integer read FDataSize;
+  end;
 
 // extra Rawimage utility functions
 
@@ -5206,6 +5239,327 @@ end;
 function TLazReaderPNG._Release: LongInt; stdcall;
 begin
   Result := -1;
+end;
+
+{ TLazReaderIcnsPart }
+
+function TLazReaderIcnsPart.InternalCheck(Str: TStream): boolean;
+begin
+  // todo: write check code
+  Result := True;
+end;
+
+procedure TLazReaderIcnsPart.InternalRead(Stream: TStream; Img: TFPCustomImage);
+var
+  Desc: TRawImageDescription;
+  Element: TIconFamilyElement;
+  IsMask: Boolean;
+begin
+  FImage := TheImage as TLazIntfImage;
+
+  Stream.Read(Element, SizeOf(Element));
+  Element.elementSize := BEtoN(Element.elementSize);
+  FIconType := GetIcnsIconType(Element.elementType);
+  FIconInfo := icnsIconTypeInfo[FIconType];
+  IsMask := FIconType in icnsMaskTypes;
+
+  if UpdateDescription
+  then begin
+    if IsMask then
+    begin
+      if FIconInfo.Depth = 1 then
+        DefaultReaderDescription(FIconInfo.Width, FIconInfo.Height, FIconInfo.Depth, Desc)
+      else
+        DefaultReaderDescription(FIconInfo.Width, FIconInfo.Height, 32, Desc);
+    end
+    else
+      DefaultReaderDescription(FIconInfo.Width, FIconInfo.Height, FIconInfo.Depth, Desc);
+    if (Desc.BitsPerPixel = 32) then
+      Desc.MaskBitsPerPixel := 0;
+    FImage.DataDescription := Desc;
+  end
+  else Desc := FImage.DataDescription;
+
+  SetupRead(FIconInfo.Width, FIconInfo.Height, FIconInfo.Depth, IsMask);
+
+  FDataSize := Element.elementSize - SizeOf(Element);
+
+  GetMem(FData, FDataSize);
+  try
+    Stream.Read(FData^, FDataSize);
+    if FIconType in icnsWithAlpha then
+      DoReadJpeg2000
+    else
+    if IsMask then
+      DoReadMask
+    else
+    if FIconType in icnsRGB then
+      DoReadRLE
+    else
+      DoReadRaw;
+  finally
+    FreeMem(FData);
+    FData := nil;
+  end;
+end;
+
+function TLazReaderIcnsPart.QueryInterface(const iid: TGuid; out obj): LongInt; stdcall;
+begin
+  if GetInterface(iid, obj)
+  then Result := S_OK
+  else Result := E_NOINTERFACE;
+end;
+
+function TLazReaderIcnsPart._AddRef: LongInt; stdcall;
+begin
+  Result := -1;
+end;
+
+function TLazReaderIcnsPart._Release: LongInt; stdcall;
+begin
+  Result := -1;
+end;
+
+function TLazReaderIcnsPart.GetUpdateDescription: Boolean;
+begin
+  Result := FUpdateDescription;
+end;
+
+procedure TLazReaderIcnsPart.SetUpdateDescription(AValue: Boolean);
+begin
+  FUpdateDescription := AValue;
+end;
+
+procedure TLazReaderIcnsPart.SetupRead(AWidth, AHeight, ADepth: Integer; IsMask: Boolean);
+begin
+  if FData <> nil then
+    FreeMem(FData);
+  FreeAndNil(FPalette);
+  if not IsMask then
+    case ADepth of
+      4: FPalette := CreateVGAPalette;
+      8: FPalette := Create256ColorPalette;
+    end;
+
+  FCalcSize := ((AWidth * AHeight * ADepth) shr 3);
+  TheImage.SetSize(AWidth, AHeight);
+end;
+
+procedure TLazReaderIcnsPart.DoReadRaw;
+var
+  Row, Column: Integer;
+  shift: byte;
+  b: PByte;
+begin
+  // only 4 and 8 are stored as raw image format
+  case FIconInfo.Depth of
+    4 :
+      begin
+        b := FData;
+        shift := 4;
+        for Row := 0 to FIconInfo.Height - 1 do
+          for Column := 0 to FIconInfo.Width - 1 do
+          begin
+            FImage.colors[Column, Row] := FPalette[(b^ shr shift) mod 16];
+            if shift = 0 then
+            begin
+              shift := 4;
+              inc(b);
+            end
+            else
+              shift := 0;
+          end;
+      end;
+    8 :
+      begin
+        b := FData;
+        for Row := 0 to FIconInfo.Height - 1 do
+          for Column := 0 to FIconInfo.Width - 1 do
+          begin
+            FImage.colors[Column, Row] := FPalette[b^];
+            inc(b);
+          end;
+      end;
+  end;
+end;
+
+procedure TLazReaderIcnsPart.DoReadRLE;
+var
+  ADecompData: PDWord;
+  ARGBAData: PRGBAQuad;
+  Component, Shift: Byte;
+  PixelCount, j, l: Integer;
+  RepeatValue: DWord;
+  SourcePtr: PByte;
+  DestPtr: PDWord;
+begin
+  // only 24 bit RGB is RLE encoded the same way as TIFF or TGA RLE
+  // data is encoded channel by channel:
+  // high bit = 0 => length = low 0..6 bits + 1; read length times next value
+  // high bit = 1 => length = value - 125      ; read one value and repeat length times
+
+  ADecompData := AllocMem(FCalcSize);
+  DestPtr := ADecompData;
+
+  if FIconType = iitThumbnail32BitData
+  then SourcePtr := @FData[4]
+  else SourcePtr := FData;
+
+  PixelCount := FIconInfo.Height * FIconInfo.Width;
+
+  for Component := 0 to 2 do
+  begin
+    DestPtr := ADecompData;
+    Shift := (2 - Component) * 8;
+    while DestPtr - ADecompData < PixelCount do
+    begin
+      l := SourcePtr^;
+      inc(SourcePtr);
+      if (l and $80) = 0 then // high bit = 0
+      begin
+        for j := 0 to l do
+        begin
+          DestPtr^ := DestPtr^ or (DWord(SourcePtr^) shl Shift);
+          inc(SourcePtr);
+          inc(DestPtr);
+        end;
+      end
+      else
+      begin                   // high bit = 1
+        l := l - 126;
+        RepeatValue := DWord(SourcePtr^) shl Shift;
+        inc(SourcePtr);
+        for j := 0 to l do
+        begin
+          DestPtr^ := DestPtr^ or RepeatValue;
+          inc(DestPtr);
+        end;
+      end;
+    end;
+  end;
+
+  ARGBAData := PRGBAQuad(ADecompData);
+  for l := 0 to FIconInfo.Height - 1 do
+    for j := 0 to FIconInfo.Width - 1 do
+    begin
+      FImage.Colors[j, l] :=
+        FPColor(ARGBAData^.Red shl 8 or ARGBAData^.Red,
+                ARGBAData^.Green shl 8 or ARGBAData^.Green,
+                ARGBAData^.Blue shl 8 or ARGBAData^.Blue,
+                alphaOpaque);
+      inc(ARGBAData);
+    end;
+  FreeMem(ADecompData);
+end;
+
+procedure TLazReaderIcnsPart.DoReadJpeg2000;
+begin
+  // TODO: according to some research in the web we need to read jpeg 2000 data
+end;
+
+procedure TLazReaderIcnsPart.DoReadMask;
+var
+  Row, Column: Integer;
+  shift: byte;
+  b: PByte;
+begin
+  case FIconInfo.Depth of
+    1:
+      begin
+        // actually here is stored 2 1-bit images, but we will get only first
+        shift := 7;
+        b := FData;
+        for Row := 0 to FIconInfo.Height - 1 do
+        begin
+          for Column := 0 to FIconInfo.Width - 1 do
+          begin
+            FImage.colors[Column, Row] := FPColor(0, 0, 0);
+            FImage.Masked[Column, Row] := (b^ shr shift) mod 2 = 0;
+            if shift = 0 then
+            begin
+              shift := 7;
+              inc(b);
+            end
+            else
+              dec(shift);
+          end;
+        end;
+      end;
+    8:
+      begin
+        b := FData;
+        for Row := 0 to FIconInfo.Height - 1 do
+          for Column := 0 to FIconInfo.Width - 1 do
+          begin
+            FImage.colors[Column, Row] := FPColor(0, 0, 0, (b^ shl 8) or b^);
+            inc(b);
+          end;
+      end;
+  end;
+end;
+
+function TLazReaderIcnsPart.Create256ColorPalette: TFPPalette;
+const
+  CHANNELVAL: array[0..15] of Word = (
+    $FFFF, $CCCC, $9999, $6666, $3333, $0000,
+    $EEEE, $DDDD, $BBBB, $AAAA, $8888,
+    $7777, $5555, $4444, $2222, $1111
+  );
+
+var
+  rIdx, gIdx, bIdx: byte;
+  PalIdx: Byte;
+begin
+  Result := TFPPalette.Create(256);
+  PalIdx := 0;
+  for rIdx := 0 to 5 do
+  begin
+    for gIdx := 0 to 5 do
+    begin
+      for bIdx := 0 to 5 do
+      begin
+        Result[PalIdx] := FPColor(CHANNELVAL[rIdx], CHANNELVAL[gIdx], CHANNELVAL[bIdx]);
+        Inc(PalIdx);
+      end;
+    end;
+  end;
+  for rIdx := 6 to 15 do
+  begin
+    Result[PalIdx] := FPColor(CHANNELVAL[rIdx], 0, 0);
+    Inc(PalIdx);
+  end;
+  for gIdx := 6 to 15 do
+  begin
+    Result[PalIdx] := FPColor(0, CHANNELVAL[gIdx], 0);
+    Inc(PalIdx);
+  end;
+  for bIdx := 6 to 15 do
+  begin
+    Result[PalIdx] := FPColor(0, 0, CHANNELVAL[bIdx]);
+    Inc(PalIdx);
+  end;
+  for rIdx := 6 to 15 do
+  begin
+    Result[PalIdx] := FPColor(CHANNELVAL[rIdx], CHANNELVAL[rIdx], CHANNELVAL[rIdx]);
+    Inc(PalIdx);
+  end;
+  Result[PalIdx] := FPColor(0, 0, 0);
+end;
+
+constructor TLazReaderIcnsPart.Create;
+begin
+  inherited Create;
+  FData := nil;
+  FPalette := nil;
+  FCalcSize := 0;
+  FIconType := iitNone;
+end;
+
+destructor TLazReaderIcnsPart.Destroy;
+begin
+  FPalette.Free;
+  FreeMem(FData);
+  inherited Destroy;
 end;
 
 //------------------------------------------------------------------------------

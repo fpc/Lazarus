@@ -42,7 +42,7 @@ uses
   IntfGraphics,
   AvgLvlTree,
   LCLStrConsts, LCLType, LCLProc, LMessages, LCLIntf, LResources, LCLResCache,
-  GraphType, GraphMath, InterfaceBase, WSReferences;
+  GraphType, IcnsTypes, GraphMath, InterfaceBase, WSReferences;
 
 
 type
@@ -1489,6 +1489,8 @@ type
     property Current: Integer read FCurrent write SetCurrent;
     property Count: Integer read GetCount;
   end;
+
+  { TIcon }
   
   TIcon = class(TCustomIcon)
   private
@@ -1499,6 +1501,45 @@ type
   public
     function ReleaseHandle: HICON;
     property Handle: HICON read GetIconHandle write SetIconHandle;
+  end;
+  
+  TIcnsRec = record
+    IconType: TicnsIconType;
+    RawImage: TRawImage;
+  end;
+  PIcnsRec = ^TIcnsRec;
+
+  { TIcnsList }
+
+  TIcnsList = class(TList)
+  private
+    function GetItem(Index: Integer): PIcnsRec;
+    procedure SetItem(Index: Integer; const AValue: PIcnsRec);
+  protected
+    procedure Notify(Ptr: Pointer; Action: TListNotification); override;
+  public
+    function Add(AIconType: TicnsIconType; ARawImage: TRawImage): Integer; reintroduce;
+    property Items[Index: Integer]: PIcnsRec read GetItem write SetItem; default;
+  end;
+
+  { TIcnsIcon }
+
+  TIcnsIcon = class(TCustomIcon)
+  private
+    FImageList: TIcnsList;
+    FMaskList: TIcnsList;
+    procedure IcnsAdd(AIconType: TicnsIconType; ARawImage: TRawImage);
+    procedure IcnsProcess;
+  protected
+    procedure ReadData(Stream: TStream); override;
+    procedure ReadStream(AStream: TMemoryStream; ASize: Longint); override;
+    procedure WriteStream(AStream: TMemoryStream); override;
+  public
+    constructor Create; override;
+    destructor Destroy; override;
+
+    class function GetFileExtensions: string; override;
+    function LazarusResourceTypeValid(const ResourceType: string): boolean; override;
   end;
 
   { TSharedCursorImage }
@@ -2173,6 +2214,7 @@ end;
 {$I jpegimage.inc}
 {$I cursorimage.inc}
 {$I icon.inc}
+{$I icnsicon.inc}
 {$I fpimagebitmap.inc}
 {$I bitmap.inc}
 
