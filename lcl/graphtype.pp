@@ -1295,7 +1295,7 @@ procedure TRawImage.ExtractRect(const ARect: TRect; out ADst: TRawImage);
                         ABitOrder: TRawImageBitOrder; ALineEnd: TRawImageLineEnd;
                         ADest: PByte; ADestSize: PtrUInt);
   var
-    SrcWidth, SrcHeight: LongInt;
+    SrcWidth, SrcHeight, SrcRight: LongInt;
     DstWidth, DstHeight: LongInt;
     x, y: Integer;
     LineOrder: TRawImageLineOrder;
@@ -1333,10 +1333,11 @@ procedure TRawImage.ExtractRect(const ARect: TRect; out ADst: TRawImage);
     DstLineStarts.Init(DstWidth, DstHeight, ABitsPerPixel, ALineEnd, LineOrder);
 
     // copy
+    SrcRight := ARect.Left + DstWidth;
     for y := 0 to DstHeight - 1 do
     begin
       SrcStartPos := SrcLineStarts.GetPosition(ARect.Left, y + ARect.Top);
-      SrcEndPos   := SrcLineStarts.GetPosition(ARect.Right, y + ARect.Top);
+      SrcEndPos   := SrcLineStarts.GetPosition(SrcRight, y + ARect.Top);
       DstStartPos := DstLineStarts.GetPosition(0, y);
       
       //DebugLn'ExtractRawImageDataRect A y=',y,' SrcByte=',SrcLineStartPosition.Byte,' SrcBit=',SrcLineStartPosition.Bit,
