@@ -531,7 +531,7 @@ begin
     DataSize := (Windows.MulDiv(ADesc.BitsPerPixel, ADesc.Width, 8) + 3) and not 3;
     Align := DataSize and 3;
     if Align <> 0
-    then DataSize := DataSize + (4 - Align);
+    then DataSize := DataSize + PtrUInt(4 - Align);
     DataSize := DataSize * ADesc.Height;
     if DataSize > ARawImage.DataSize
     then DataSize := ARawImage.DataSize;
