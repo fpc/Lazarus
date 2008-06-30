@@ -1485,6 +1485,7 @@ type
     function MaskHandleAllocated: boolean; override;
     function PaletteAllocated: boolean; override;
     procedure SetHandles(ABitmap, AMask: HBITMAP); override;
+    function GetBestApplicationIndex: Integer;
 
     property Current: Integer read FCurrent write SetCurrent;
     property Count: Integer read GetCount;

@@ -647,6 +647,59 @@ begin
   {$IFDEF VerboseLCLTodos}{$note Implement me (or raise exception)}{$ENDIF}
 end;
 
+function TCustomIcon.GetBestApplicationIndex: Integer;
+var
+  BestCX, BestCY, BestDepth, i, dx, dy, dd: Integer;
+  CurRawImage: TRawImage;
+  ScreenDC: HDC;
+begin
+  Result := -1;
+  
+  BestCX := GetSystemMetrics(SM_CXICON);
+  if BestCX = -1 then
+    BestCX := 32;
+
+  BestCY := GetSystemMetrics(SM_CYICON);
+  if BestCY = -1 then
+    BestCY := 32;
+
+  ScreenDC := GetDC(0);
+  BestDepth := GetDeviceCaps(ScreenDC, BITSPIXEL);
+  ReleaseDC(0, ScreenDC);
+
+  dx := MaxInt;
+  dy := MaxInt;
+  dd := MaxInt;
+
+  for i := 0 to Count - 1 do
+  begin
+    CurRawImage := TIconImage(TSharedIcon(FSharedImage).FImages[FCurrent]).FImage;
+    if Abs(BestCX - CurRawImage.Description.Width) < dx then
+    begin
+      dx := Abs(BestCX - CurRawImage.Description.Width);
+      Result := i;
+    end
+    else
+    if Abs(BestCX - CurRawImage.Description.Width) = dx then
+    begin
+      if Abs(BestCY - CurRawImage.Description.Height) < dy then
+      begin
+        dy := Abs(BestCY - CurRawImage.Description.Height);
+        Result := i;
+      end
+      else
+      if Abs(BestCY - CurRawImage.Description.Height) = dy then
+      begin
+        if Abs(BestDepth - CurRawImage.Description.Depth) < dd then
+        begin
+          dd := Abs(BestDepth - CurRawImage.Description.Depth);
+          Result := i;
+        end;
+      end;
+    end
+  end;
+end;
+
 procedure TCustomIcon.SetPixelFormat(AValue: TPixelFormat);
 begin
   raise EInvalidGraphicOperation.Create('Cannot change format of icon image');
