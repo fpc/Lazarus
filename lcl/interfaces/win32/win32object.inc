@@ -392,7 +392,7 @@ end;
 
 procedure TWin32WidgetSet.AppSetIcon(const AIcon: HICON);
 begin
-  SendMessage(Win32Widgetset.AppHandle, WM_SETICON, ICON_BIG, AIcon);
+  Windows.SendMessage(Win32Widgetset.AppHandle, WM_SETICON, ICON_BIG, LPARAM(AIcon));
 end;
 
 procedure TWin32WidgetSet.AppSetTitle(const ATitle: string);
