@@ -216,9 +216,14 @@ var
     SetTextColor(hdcNewBitmap, 0);
     {$IFDEF WindowsUnicodeSupport}
     if UnicodeEnabledOS then
-      DrawStateW(hdcNewBitmap, 0, nil, LPARAM(ButtonCaptionW), 0, XDestText, YDestText, 0, 0, TextFlags)
-    else
+    begin
+      ButtonCaptionW := UTF8Decode(ButtonCaption);
+      DrawStateW(hdcNewBitmap, 0, nil, LPARAM(ButtonCaptionW), 0, XDestText, YDestText, 0, 0, TextFlags);
+    end
+    else begin
+      ButtonCaptionA := Utf8ToAnsi(ButtonCaption);
       DrawState(hdcNewBitmap, 0, nil, LPARAM(ButtonCaptionA), 0, XDestText, YDestText, 0, 0, TextFlags);
+    end;
     {$ELSE}
     DrawState(hdcNewBitmap, 0, nil, LPARAM(ButtonCaption), 0, XDestText, YDestText, 0, 0, TextFlags);
     {$ENDIF}
@@ -243,19 +248,7 @@ begin
   BitBtnDC := GetDC(BitBtnHandle);
   hdcNewBitmap := CreateCompatibleDC(BitBtnDC);
   OldFontHandle := SelectObject(hdcNewBitmap, BitBtn.Font.Reference.Handle);
-  {$IFDEF WindowsUnicodeSupport}
-  if UnicodeEnabledOS then
-  begin
-    ButtonCaptionW := UTF8Decode(ButtonCaption);
-    GetTextExtentPoint32W(hdcNewBitmap, LPWSTR(ButtonCaptionW), Length(ButtonCaptionW), TextSize);
-  end else
-  begin
-    ButtonCaptionA := Utf8ToAnsi(ButtonCaption);
-    GetTextExtentPoint32(hdcNewBitmap, LPSTR(ButtonCaptionA), Length(ButtonCaptionA), TextSize);
-  end;
-  {$ELSE}
-  GetTextExtentPoint32(hdcNewBitmap, LPSTR(ButtonCaption), Length(ButtonCaption), TextSize);
-  {$ENDIF}
+  MeasureText(BitBtn, ButtonCaption, TextSize.cx, TextSize.cy);
   // calculate size of new bitmap
   case BitBtnLayout of
     blGlyphLeft, blGlyphRight:
