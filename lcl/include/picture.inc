@@ -51,7 +51,9 @@ begin
   Add('pbm', rsPortableBitmap, TPortableAnyMapGraphic);
   Add('pgm', rsPortableGrayMap, TPortableAnyMapGraphic);
   Add('ppm', rsPortablePixmap, TPortableAnyMapGraphic);
-  Add('ico', rsIcon, TCustomIcon);
+  Add('ico', rsIcon, TIcon);
+  Add('icns', rsIcns, TIcnsIcon);
+  Add('cur', rsCursor, TCursorImage);
   Add('jpg', rsJpeg, TJpegImage);
 end;
 
@@ -432,9 +434,10 @@ var
 begin
   if (Value=FGraphic) then exit;
   NewGraphic := nil;
-  ok:=false;
+  ok := False;
   try
-    if Value <> nil then begin
+    if Value <> nil then
+    begin
       NewGraphic := TGraphicClass(Value.ClassType).Create;
       NewGraphic.Assign(Value);
       NewGraphic.OnChange := @Changed;
@@ -443,7 +446,7 @@ begin
     FGraphic.Free;
     FGraphic := NewGraphic;
     Changed(Self);
-    ok:=true;
+    ok := True;
   finally
     // this try..finally construction will in case of an exception
     // not alter the error backtrace output

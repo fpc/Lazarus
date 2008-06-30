@@ -185,6 +185,8 @@ ResourceString
   rsPortableGrayMap = 'Portable GrayMap';
   rsPortablePixmap = 'Portable PixMap';
   rsIcon = 'Icon';
+  rsIcns = 'OSX Icon Resource';
+  rsCursor = 'Cursor';
   rsJpeg = 'Joint Picture Expert Group';
   rsUnsupportedClipboardFormat = 'Unsupported clipboard format: %s';
   rsGroupIndexCannotBeLessThanPrevious = 'GroupIndex cannot be less than a '

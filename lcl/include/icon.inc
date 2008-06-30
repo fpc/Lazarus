@@ -712,6 +712,8 @@ end;
 procedure TCustomIcon.UpdateCurrentView;
 begin
   {$IFDEF VerboseLCLTodos}{$note implement me}{$ENDIF}
+  FreeCanvasContext;
+  Changed(Self);
 end;
 
 function TCustomIcon.UpdateHandles(ABitmap, AMask: HBITMAP): Boolean;
