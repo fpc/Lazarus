@@ -293,7 +293,8 @@ begin
       Widget := gtk_hscale_new(Adjustment)
     else
       Widget := gtk_vscale_new(Adjustment);
-//     gtk_scale_set_digits(PGtkScale(Widget), 0);
+
+     gtk_scale_set_digits(PGtkScale(Widget), 0);
   end;
   Result := TLCLIntfHandle(PtrUInt(Widget));
   {$IFDEF DebugLCLComponents}
@@ -305,17 +306,27 @@ begin
 end;
 
 class procedure TGtk2WSTrackBar.ApplyChanges(const ATrackBar: TCustomTrackBar);
+const
+  ValuePositionMap: array[TTrackBarScalePos] of TGtkPositionType =
+  (
+ { trLeft   } GTK_POS_LEFT,
+ { trRight  } GTK_POS_RIGHT,
+ { trTop    } GTK_POS_TOP,
+ { trBottom } GTK_POS_BOTTOM
+  );
 var
   wHandle: HWND;
   Adjustment: PGtkAdjustment;
 begin
+  if not WSCheckHandleAllocated(ATrackBar, 'ApplyChanges') then
+    Exit;
   with ATrackBar do
   begin
     wHandle := Handle;
     Adjustment := gtk_range_get_adjustment (GTK_RANGE(Pointer(wHandle)));
     Adjustment^.lower := Min;
-    Adjustment^.Upper := Max;
-    Adjustment^.Value := Position;
+    Adjustment^.upper := Max;
+    Adjustment^.value := Position;
     Adjustment^.step_increment := LineSize;
     Adjustment^.page_increment := PageSize;
     { now do some of the more sophisticated features }
@@ -323,15 +334,10 @@ begin
       otherwise it's set always to true }
     gtk_scale_set_draw_value (GTK_SCALE (Pointer(wHandle)), false);
 
-    if (TickStyle<>tsNone) then
+    if (TickStyle <> tsNone) then
     begin
-       gtk_scale_set_draw_value (GTK_SCALE (Pointer(wHandle)), true);
-       case ScalePos of
-          trLeft  : gtk_scale_set_value_pos (GTK_SCALE (Pointer(wHandle)), GTK_POS_LEFT);
-          trRight : gtk_scale_set_value_pos (GTK_SCALE (Pointer(wHandle)), GTK_POS_RIGHT);
-          trTop   : gtk_scale_set_value_pos (GTK_SCALE (Pointer(wHandle)), GTK_POS_TOP);
-          trBottom: gtk_scale_set_value_pos (GTK_SCALE (Pointer(wHandle)), GTK_POS_BOTTOM);
-       end;
+      gtk_scale_set_draw_value (GTK_SCALE (Pointer(wHandle)), true);
+      gtk_scale_set_value_pos (GTK_SCALE (Pointer(wHandle)), ValuePositionMap[ScalePos]);
     end;
     //Not here (Delphi compatibility):  gtk_signal_emit_by_name (GTK_Object (Adjustment), 'value_changed');
   end;
@@ -343,7 +349,8 @@ var
   Range: PGtkRange;
 begin
   Result := 0;
-  if not ATRackBar.HandleAllocated then exit;
+  if not WSCheckHandleAllocated(ATrackBar, 'GetPosition') then
+    Exit;
 
   Range := PGtkRange(ATrackBar.Handle);
   Result := Trunc(gtk_range_get_value(Range));
@@ -354,6 +361,8 @@ class procedure TGtk2WSTrackBar.SetPosition(const ATrackBar: TCustomTrackBar;
 var
   Range: PGtkRange;
 begin
+  if not WSCheckHandleAllocated(ATrackBar, 'SetPosition') then
+    Exit;
   Range := PGtkRange(ATrackBar.Handle);
   gtk_range_set_value(Range, Trunc(NewPosition));
 end;
