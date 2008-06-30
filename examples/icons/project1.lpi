@@ -8,7 +8,7 @@
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
       <UseXPManifest Value="True"/>
-      <ActiveEditorIndexAtStart Value="0"/>
+      <ActiveEditorIndexAtStart Value="1"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -30,30 +30,36 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="1">
+    <Units Count="2">
       <Unit0>
         <Filename Value="project1.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="project1"/>
-        <CursorPos X="53" Y="12"/>
+        <CursorPos X="41" Y="12"/>
         <TopLine Value="1"/>
+        <EditorIndex Value="0"/>
         <UsageCount Value="140"/>
+        <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="unit1.pas"/>
         <ComponentName Value="Form1"/>
-        <IsPartOfProject Value="True"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <ResourceFilename Value="unit1.lrs"/>
         <UnitName Value="Unit1"/>
-        <CursorPos X="40" Y="63"/>
-        <TopLine Value="48"/>
-        <EditorIndex Value="0"/>
-        <UsageCount Value="140"/>
+        <CursorPos X="40" Y="12"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="10"/>
         <Loaded Value="True"/>
       </Unit1>
     </Units>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
+    <JumpHistory Count="1" HistoryIndex="0">
+      <Position1>
+        <Filename Value="project1.lpr"/>
+        <Caret Line="12" Column="41" TopLine="1"/>
+      </Position1>
+    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
