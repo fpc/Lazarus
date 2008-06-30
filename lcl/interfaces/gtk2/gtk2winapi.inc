@@ -277,11 +277,15 @@ begin
   //DbgDumpPixmap(pixmap, '');
 
   gdk_drawable_get_size(pixmap, @Width, @Height);
-  gdk_display_get_maximal_cursor_size(gdk_display_get_default,
-                                      @MaxWidth, @MaxHeight);
 
-  if (Width > integer(MaxWidth))
-  or (Height > integer(MaxHeight)) then Exit;
+  if not IconInfo^.fIcon then
+  begin
+    gdk_display_get_maximal_cursor_size(gdk_display_get_default,
+                                        @MaxWidth, @MaxHeight);
+
+    if (Width > integer(MaxWidth))
+    or (Height > integer(MaxHeight)) then Exit;
+  end;
   
   bitmap := CreateGdkMaskBitmap(IconInfo^.hbmColor, IconInfo^.hbmMask);
   try
