@@ -371,7 +371,7 @@ begin
     QtTrackBar.setPageStep(ATrackBar.PageSize);
   if QtTrackBar.getTickInterval <> ATrackBar.Frequency then
     QtTrackBar.setTickInterval(ATrackBar.Frequency);
-  if QtTrackBar.getValue <> ATrackBar.Position then
+  if QtTrackBar.getSliderPosition <> ATrackBar.Position then
     QtTrackBar.setSliderPosition(ATrackBar.Position);
 
   if QtTrackBar.getOrientation <> TrackBarOrientationToQtOrientationMap[ATrackBar.Orientation] then
@@ -390,7 +390,7 @@ var
   QtTrackBar: TQtTrackBar;
 begin
   QtTrackBar := TQtTrackBar(ATrackBar.Handle);
-  Result := QtTrackBar.getValue;
+  Result := QtTrackBar.getSliderPosition;
 end;
 
 class procedure TQtWSTrackBar.SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer);
@@ -398,7 +398,7 @@ var
   QtTrackBar: TQtTrackBar;
 begin
   QtTrackBar := TQtTrackBar(ATrackBar.Handle);
-  QtTrackBar.setValue(NewPosition);
+  QtTrackBar.setSliderPosition(NewPosition);
 end;
 
 { TQtWSProgressBar }
