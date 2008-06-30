@@ -288,7 +288,7 @@ begin
   with TCustomTrackBar(AWinControl) do
   begin
     Adjustment := PGtkAdjustment(gtk_adjustment_new (Position, Min, Max,
-                                                  linesize, pagesize, 1));
+                                                  linesize, pagesize, 0));
     if (Orientation = trHorizontal) then
       Widget := gtk_hscale_new(Adjustment)
     else
