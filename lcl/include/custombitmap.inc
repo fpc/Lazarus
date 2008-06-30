@@ -220,17 +220,53 @@ end;
 procedure TCustomBitmap.SetSize(AWidth, AHeight: integer);
 var
   SCB: TSharedCustomBitmap absolute FSharedImage;
+  CurIntfImage, NewIntfImage: TLazIntfImage;
+  NewRawImage: TRawImage;
 begin
   RawImageNeeded(True);
+  
+  if AWidth < 0 then AWidth := 0;
+  if AHeight < 0 then AHeight := 0;
 
   if  (SCB.FImage.Description.Height = cardinal(AHeight))
   and (SCB.FImage.Description.Width = cardinal(AWidth))
   then Exit;
 
   UnshareImage(False);
+  
+  // for delphi compatibility copy old image
+  RawImageNeeded(False);
+  if  (SCB.FImage.Description.Height >= cardinal(AHeight))
+  and (SCB.FImage.Description.Width >= cardinal(AWidth))
+  then begin
+    // use the faster ExtractRect. Since it calculates the intersection of source
+    // and requested rect we can only use it when shrinking the image.
+    SCB.FImage.ExtractRect(Rect(0, 0, AWidth, AHeight), NewRawImage);
+  end
+  else begin
+    // use slow copy of pixeldata till rawimage can also copy to larger destination
+  
+    NewRawImage.Description := SCB.FImage.Description;
+    NewRawImage.Description.Width := AWidth;
+    NewRawImage.Description.Height := AHeight;
+    NewRawImage.ReleaseData;
+
+    if SCB.FImage.DataSize > 0 then
+    begin
+      NewRawImage.CreateData(True);
+      CurIntfImage := TLazIntfImage.Create(SCB.FImage, False);
+      NewIntfImage := TLazIntfImage.Create(NewRawImage, False);
+      NewIntfImage.CopyPixels(CurIntfImage);
+      CurIntfImage.Free;
+      NewIntfImage.Free;
+    end;
+  end;
+
   SCB.FImage.FreeData;
-  SCB.FImage.Description.Width := AWidth;
-  SCB.FImage.Description.Height := AHeight;
+  SCB.FImage := NewRawImage;
+  // size was changed => update HBITMAP and HDC
+  SCB.FreeHandle;
+  FreeCanvasContext;
   Changed(Self);
 end;
 
