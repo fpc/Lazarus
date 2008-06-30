@@ -1,11 +1,12 @@
 object Form1: TForm1
   Left = 564
-  Height = 353
+  Height = 387
   Top = 423
   Width = 308
   Caption = 'Icon example'
-  ClientHeight = 353
+  ClientHeight = 387
   ClientWidth = 308
+  Position = poScreenCenter
   LCLVersion = '0.9.25'
   object Image1: TImage
     AnchorSideLeft.Control = Owner
@@ -45,7 +46,7 @@ object Form1: TForm1
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 5
-    Height = 24
+    Height = 32
     Top = 264
     Width = 298
     Anchors = [akTop, akLeft, akRight]
@@ -82,8 +83,8 @@ object Form1: TForm1
     AnchorSideRight.Control = Button1
     AnchorSideRight.Side = asrBottom
     Left = 5
-    Height = 24
-    Top = 293
+    Height = 32
+    Top = 301
     Width = 298
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 5
@@ -96,8 +97,8 @@ object Form1: TForm1
     AnchorSideTop.Control = Button2
     AnchorSideTop.Side = asrBottom
     Left = 4
-    Height = 24
-    Top = 322
+    Height = 32
+    Top = 338
     Width = 150
     BorderSpacing.Top = 5
     Caption = 'Set as Form icon'
@@ -110,8 +111,8 @@ object Form1: TForm1
     AnchorSideRight.Control = Button2
     AnchorSideRight.Side = asrBottom
     Left = 160
-    Height = 24
-    Top = 322
+    Height = 32
+    Top = 338
     Width = 143
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 5
