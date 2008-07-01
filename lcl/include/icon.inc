@@ -613,8 +613,8 @@ begin
 
       // Add image
       IntfImage.GetRawImage(RawImage, True);
-      if not IntfImage.HasMask
-      then RawImage.Description.MaskBitsPerPixel := 0;
+      // Paul: don't set MaskBitsPerPixel to zero => windows will fail with no mask
+      // Even empty mask is better than no mask. But maybe CreateIconIndirect must be fixed on windows?
       with TSharedIcon(FSharedImage) do
       begin
         IconImage := GetImagesClass.Create(RawImage);
