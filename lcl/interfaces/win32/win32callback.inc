@@ -1093,9 +1093,7 @@ var
     UTF8Char: TUTF8Char;
   begin
     Result := false;
-  
     UTF8Char := UTF8Encode(WideChar(AChar));
-    
     lWinControl := WindowInfo^.WinControl;
     if assigned(lWinControl) then
     begin
@@ -2405,9 +2403,13 @@ begin
       // if key not yet processed, let windows process it
       WinProcess := LMChar.Result = 0;
       {$IFDEF WindowsUnicodeSupport}
-      if UnicodeEnabledOS then
-        WParam := Word(WideChar(Char(LMChar.CharCode)))
-      else
+      if UnicodeEnabledOS then begin
+        // if charcode was modified by LCL, convert ansi char
+        // to unicode char, if not change was made WParam has
+        // the right unicode char so just use it.
+        if (LMChar.Result=1) then
+          WParam := Word(WideChar(Char(LMChar.CharCode)));
+      end else
       {$ENDIF}
         WParam := LMChar.CharCode;
     end;
