@@ -1570,7 +1570,8 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TPortableNetworkGraphic">
-        <short/>
+        <short>
+          <var>TPortableNetworkGraphic</var> - a PNG image</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4102,14 +4103,16 @@ If the file is not of the right format, an exception will be generated.</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="EInvalidGraphic">
-        <short/>
+        <short>
+          <var>EInvalidGraphic</var> - exception handler for an invalid graphic</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- object Visibility: default -->
       <element name="EInvalidGraphicOperation">
-        <short/>
+        <short>
+          <var>EInvalidGraphicOperation</var> - exception handler for invalid graphic operation</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8797,7 +8800,8 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- class Visibility: default -->
       <element name="TPortableAnyMapGraphic">
-        <short/>
+        <short>
+          <var>TPortableAnyMapGraphic</var> - a PAM graphic image</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11490,7 +11494,8 @@ This function checks that the value in
       </element>
       <!-- class Visibility: default -->
       <element name="EGraphicException">
-        <short/>
+        <short>
+          <var>EGraphicException</var> - exception handler for error in graphics</short>
         <descr/>
         <errors/>
         <seealso/>
