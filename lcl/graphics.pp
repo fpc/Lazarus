@@ -1457,6 +1457,7 @@ type
     function GetPixelFormat: TPixelFormat; override;
     function GetRawImage: PRawImage; override;
     function GetRawImageDescription: PRawImageDescription; override;
+    function GetTransparent: Boolean; override;
     class function GetSharedImageClass: TSharedRasterImageClass; override;
     procedure HandleNeeded; override;
     function InternalReleaseBitmapHandle: HBITMAP; override;
@@ -1465,6 +1466,7 @@ type
     procedure ReadData(Stream: TStream); override;
     procedure ReadStream(AStream: TMemoryStream; ASize: Longint); override;
     procedure SetPixelFormat(AValue: TPixelFormat); override;
+    procedure SetTransparent(Value: Boolean); override;
     procedure UnshareImage(CopyContent: boolean); override;
     procedure UpdateCurrentView;
     function  UpdateHandles(ABitmap, AMask: HBITMAP): Boolean; override;

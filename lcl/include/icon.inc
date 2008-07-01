@@ -386,6 +386,11 @@ begin
   else Result := @TIconImage(TSharedIcon(FSharedImage).FImages[FCurrent]).FImage.Description;
 end;
 
+function TCustomIcon.GetTransparent: Boolean;
+begin
+  Result := True;
+end;
+
 class function TCustomIcon.GetSharedImageClass: TSharedRasterImageClass;
 begin
   Result := TSharedIcon;
@@ -703,6 +708,11 @@ end;
 procedure TCustomIcon.SetPixelFormat(AValue: TPixelFormat);
 begin
   raise EInvalidGraphicOperation.Create('Cannot change format of icon image');
+end;
+
+procedure TCustomIcon.SetTransparent(Value: Boolean);
+begin
+  // nothing
 end;
 
 procedure TCustomIcon.SetSize(AWidth, AHeight: integer);
