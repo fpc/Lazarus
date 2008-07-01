@@ -932,19 +932,33 @@ var
   procedure DoReadLaz2;
   var
     i, NewCount, Size: cardinal;
-    bmp: TBitmap;
+    bmp: TCustomBitmap;
+    Sig: array[0..1] of char;
   begin
-    //DebugLn('TCustomImageList.ReadData DoReadLaz2');
     NewCount := ReadLRSCardinal(AStream);
     Width := ReadLRSCardinal(AStream);
     Height := ReadLRSCardinal(AStream);
-    //DebugLn('TCustomImageList.ReadData DoReadLaz2 NewCount=',NewCount,' Width=',Width,' Height=',Height);
     for i := 0 to NewCount - 1 do
     begin
-      bmp := TBitMap.Create;
-      //DebugLn('TCustomImageList.ReadData DoReadLaz2 i=',i,' ',AStream.Position);
-      Size:=ReadLRSCardinal(AStream);
-      //DebugLn('TCustomImageList.ReadData DoReadLaz2 Size=',Size,' ',AStream.Position);
+      Size := ReadLRSCardinal(AStream);
+      bmp := nil;
+      // Before our TBitmap can have bpm, xpm, png or other content
+      // We need to look at signature before loading
+      if Size > 2 then
+      begin
+        AStream.Read(Sig[0], 2);
+        if Sig = 'BM' then
+          bmp := TBitmap.Create
+        else
+        if Sig = '/*' then
+          bmp := TPixmap.Create
+        else
+        if Sig = '%P' then
+          bmp := TPortableNetworkGraphic.Create
+        else
+          raise EInvalidGraphicOperation.Create('TCustomImageList.ReadData Invalid stream format');
+        AStream.Position := AStream.Position - 2;
+      end;
       bmp.LoadFromStream(AStream, Size);
       Add(bmp, nil);
       bmp.Free;
