@@ -316,8 +316,6 @@ end;
 class function TGtk2WSCustomTrayIcon.Show(const ATrayIcon: TCustomTrayIcon): Boolean;
 var
   AImage: PGtkWidget;
-  AMask: PGdkBitmap;
-  GDIObject: PgdiObject;
 begin
   Result := False;
 
@@ -355,15 +353,7 @@ begin
   *  Draws the icon
   *******************************************************************}
 
-  GDIObject := PgdiObject(ATrayIcon.Icon.Handle);
-
-  AMask := CreateGdkMaskBitmap(
-   GDIObject^.GDIPixmapObject.Mask,
-   GDIObject^.GDIBitmapObject);
-
-  AImage := gtk_image_new_from_pixmap(GDIObject^.GDIPixmapObject.Image, AMask);
-
-  g_object_unref(AMask);
+  AImage := gtk_image_new_from_pixbuf(PGdkPixbuf(ATrayIcon.Icon.Handle));
 
   gtk_widget_show(AImage);
 
