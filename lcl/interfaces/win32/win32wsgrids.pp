@@ -24,6 +24,8 @@ unit Win32WSGrids;
 
 {$mode objfpc}{$H+}
 
+{$I win32defines.inc}
+
 interface
 
 uses
@@ -33,7 +35,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-//  Grids,
+  Windows, LCLType, Controls, Grids, Win32Proc,
 ////////////////////////////////////////////////////
   WSGrids, WSLCLClasses;
 
@@ -53,6 +55,7 @@ type
   private
   protected
   public
+    class procedure SendCharToEditor(AEditor:TWinControl; Ch: TUTF8Char); override;
   end;
 
   { TWin32WSDrawGrid }
@@ -74,6 +77,30 @@ type
 
 implementation
 
+{ TWin32WSCustomGrid }
+
+class procedure TWin32WSCustomGrid.SendCharToEditor(AEditor: TWinControl;
+  Ch: TUTF8Char);
+var
+  S: widestring;
+  WChar: WPARAM;
+begin
+  WChar:=WPARAM(Ord(Ch[1]));
+  {$ifdef WindowsUnicodeSupport}
+  if UnicodeEnabledOS then begin
+    if Length(Ch)>1 then begin
+      S := UTF8Decode(Ch);
+      if S='' then WChar := WPARAM(Ord('?'))
+      else         WChar := WPARAM(S[1]);
+    end;
+    PostMessageW(AEditor.Handle, WM_CHAR, WChar, 0);
+    exit;
+  end else
+    WChar := WPARAM(Ord(UTF8ToAnsi(Ch)[1]));
+  {$endif}
+  PostMessage(AEditor.Handle, WM_CHAR, WChar, 0);
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -83,7 +110,7 @@ initialization
 // which actually implement something
 ////////////////////////////////////////////////////
 //  RegisterWSComponent(TStringCellEditor, TWin32WSStringCellEditor);
-//  RegisterWSComponent(TCustomGrid, TWin32WSCustomGrid);
+  RegisterWSComponent(TCustomGrid, TWin32WSCustomGrid);
 //  RegisterWSComponent(TDrawGrid, TWin32WSDrawGrid);
 //  RegisterWSComponent(TStringGrid, TWin32WSStringGrid);
 ////////////////////////////////////////////////////

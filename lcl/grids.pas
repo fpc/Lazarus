@@ -256,6 +256,7 @@ type
     procedure DispatchMsg(msg: TGridMessage);
     function GetActiveControl: TWinControl;
   protected
+    function  DoUTF8KeyPress(var UTF8Key: TUTF8Char): boolean; override;
     procedure msg_GetValue(var Msg: TGridMessage); message GM_GETVALUE;
     procedure msg_SetGrid(var Msg: TGridMessage); message GM_SETGRID;
     procedure msg_SetValue(var Msg: TGridMessage); message GM_SETVALUE;
@@ -265,6 +266,7 @@ type
     procedure CMControlChange(var Message: TLMEssage); message CM_CONTROLCHANGE;
     procedure msg_SetPos(var Msg: TGridMessage); message GM_SETPOS;
     procedure VisibleChanging; override;
+    function  SendChar(AChar: TUTF8Char): Integer;
     procedure SetFocus; override;
     procedure WndProc(var TheMessage : TLMessage); override;
   public
@@ -666,10 +668,10 @@ type
     procedure doTopleftChange(DimChg: Boolean);
     procedure DrawXORVertLine(X: Integer);
     procedure DrawXORHorzLine(Y: Integer);
-    function  EditorCanProcessKey(var Key: Char): boolean;
+    function  EditorCanProcessKey(var Key: TUTF8Char): boolean;
     procedure EditorGetValue;
     procedure EditorPos;
-    procedure EditorShowChar(Ch: Char);
+    procedure EditorShowChar(Ch: TUTF8Char);
     procedure EditorSetMode(const AValue: Boolean);
     procedure EditorSetValue;
     function  EditorAlwaysShown: Boolean;
@@ -786,6 +788,7 @@ type
     procedure DoPasteFromClipboard; virtual;
     procedure DoPrepareCanvas(aCol,aRow:Integer; aState: TGridDrawState); virtual;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
+    function  DoUTF8KeyPress(var UTF8Key: TUTF8Char): boolean; override;
     procedure DrawBorder;
     procedure DrawAllRows; virtual;
     procedure DrawCell(aCol,aRow:Integer; aRect:TRect; aState:TGridDrawState); virtual;
@@ -799,7 +802,7 @@ type
     procedure EditButtonClicked(Sender: TObject);
     procedure EditordoGetValue; virtual;
     procedure EditordoSetValue; virtual;
-    function  EditorCanAcceptKey(const ch: Char): boolean; virtual;
+    function  EditorCanAcceptKey(const ch: TUTF8Char): boolean; virtual;
     function  EditorIsReadOnly: boolean; virtual;
     procedure EditorHide; virtual;
     function  EditorLocked: boolean;
@@ -1477,6 +1480,8 @@ procedure Register;
 
 implementation
 
+uses WSGrids;
+
 function PointIgual(const P1,P2: TPoint): Boolean;
 begin
   result:=(P1.X=P2.X)and(P1.Y=P2.Y);
@@ -1627,35 +1632,6 @@ begin
     DrawHorzLine(Right-1, Bottom-1, Left);
     DrawVertLine(Left, Bottom-1, Top);
   end;
-end;
-
-procedure SendCharToEditor(AControl: TWinControl; AChar:Word; UseNotify: boolean);
-{$ifndef WINDOWS}
-var
-  msg: TGridMessage;
-{$endif}
-begin
-  {$ifdef WINDOWS}
-  // lcl win32 interface does a big mess with the message
-  // as we only need the message to be handled by destination
-  // then we send it directly to it bypassing the queue.
-  //PostMessage(FEditor.Handle, LM_CHAR, Word(Ch), 0);
-  SendMessage(AControl.Handle, LM_CHAR, AChar, 0);
-  {$else}
-  ///
-  // Note. this is a workaround because the call above doesn't work
-  ///
-  if UseNotify then
-    SendMessage(AControl.Handle, CN_CHAR, AChar, 0)
-  else begin
-    Msg.LclMsg.Msg:=GM_SETVALUE;
-    if AChar=8 then // backspace
-      Msg.Value:=''
-    else
-      Msg.Value:=Char(AChar);
-    AControl.Dispatch(Msg);
-  end;
-  {$endif}
 end;
 
 function Between(const AValue,AMin,AMax: Integer): boolean;
@@ -2436,11 +2412,11 @@ begin
   Canvas.Pen.Color := OldPenColor;
 end;
 
-function TCustomGrid.EditorCanProcessKey(var Key: Char): boolean;
+function TCustomGrid.EditorCanProcessKey(var Key: TUTF8Char): boolean;
 begin
   result := EditorCanAcceptKey(Key) and not EditorIsReadOnly;
   if not Result then
-    Key := #0;
+    Key := '';
 end;
 
 procedure TCustomGrid.VisualChange;
@@ -5158,6 +5134,16 @@ begin
   inherited DoSetBounds(ALeft, ATop, AWidth, AHeight);
 end;
 
+function TCustomGrid.DoUTF8KeyPress(var UTF8Key: TUTF8Char): boolean;
+begin
+  Result := inherited DoUTF8KeyPress(UTF8Key);
+  if (goEditing in Options) and (not result) and (Length(UTF8Key)>1) then begin
+    EditorShowChar(UTF8Key);
+    UTF8Key := '';
+    Result := true
+  end;
+end;
+
 procedure TCustomGrid.doExit;
 begin
   {$IfDef dbgGrid}DebugLn('DoExit - INIT');{$Endif}
@@ -6012,7 +5998,7 @@ begin
   end;
 end;
 
-function TCustomGrid.EditorCanAcceptKey(const ch: Char): boolean;
+function TCustomGrid.EditorCanAcceptKey(const ch: TUTF8Char): boolean;
 begin
   result := True;
 end;
@@ -6075,6 +6061,8 @@ begin
 end;
 
 procedure TCustomGrid.EditorKeyPress(Sender: TObject; var Key: Char);
+var
+  AChar: TUTF8Char;
 {$ifdef dbgGrid}
 function PrintKey:String;
 begin
@@ -6094,8 +6082,11 @@ begin
     #8:
       if EditorIsReadOnly then
         Key := #0;
-    else
-      EditorCanProcessKey(Key)
+    else begin
+      AChar := Key;
+      EditorCanProcessKey(AChar);
+      Key := AChar[1];
+    end;
   end;
   FEditorKey := False;
   {$ifdef dbgGrid}DebugLn('Grid.EditorKeyPress: END Key=',PrintKey);{$Endif}
@@ -6218,20 +6209,13 @@ begin
   FixEditor;
 end;
 
-procedure TCustomGrid.EditorShowChar(Ch: Char);
-var
-  UseNotify: boolean;
+procedure TCustomGrid.EditorShowChar(Ch: TUTF8Char);
 begin
   SelectEditor;
-  if FEditor<>nil then begin
-    //DebugLn('Posting editor LM_CHAR, ch=',ch, ' ', InttoStr(Ord(ch)));
-    if EditorCanProcessKey(ch) and not EditorIsReadOnly then begin
+  if FEDitor<>nil then begin
+    if EditorCanProcessKey(Ch) and not EditorIsReadOnly then begin
       EditorShow(true);
-      UseNotify := False;
-      {$if defined(Windows) and defined(EnableFieldEditmask)}
-      UseNotify := (FEditor=FStringEditor) and (FStringEditor.IsMasked);
-      {$endif}
-      SendCharToEditor(FEditor, Word(ch), UseNotify);
+      TWSCustomGridClass(WidgetSetClass).SendCharToEditor(Editor, Ch);
     end;
   end;
 end;
@@ -7356,7 +7340,7 @@ end;
 procedure TStringCellEditor.msg_SetValue(var Msg: TGridMessage);
 begin
   Text:=Msg.Value;
-  SelStart := Length(Text);
+  SelStart := UTF8Length(Text);
 end;
 
 procedure TStringCellEditor.msg_GetValue(var Msg: TGridMessage);
@@ -9484,18 +9468,37 @@ begin
 end;
 
 procedure TCompositeCellEditor.WndProc(var TheMessage: TLMessage);
+begin
+  with TheMessage do
+  if msg=LM_CHAR then begin
+    Result := SendChar(Char(WParam));
+    if Result=1 then
+      exit;
+  end;
+  inherited WndProc(TheMessage);
+end;
+
+function TCompositeCellEditor.DoUTF8KeyPress(var UTF8Key: TUTF8Char): boolean;
+begin
+  Result:=inherited DoUTF8KeyPress(UTF8Key);
+  if not Result and (Length(UTF8Key)>1) then begin
+    if SendChar(UTF8Key)=1 then begin
+      UTF8Key := '';
+      Result := true;
+    end;
+  end;
+end;
+
+function TCompositeCellEditor.SendChar(AChar: TUTF8Char): Integer;
 var
   ActCtrl: TWinControl;
 begin
-  if (TheMessage.msg=LM_CHAR) or (TheMessage.msg=CN_CHAR) then begin
-    ActCtrl := GetActiveControl;
-    if (ActCtrl<>nil) and ActCtrl.HandleAllocated then begin
-      SendCharToEditor(ActCtrl, TheMessage.WParam, false);
-      TheMessage.Result:=1;
-      exit;
-    end;
+  Result := 0;
+  ActCtrl := GetActiveControl;
+  if (ActCtrl<>nil) and ActCtrl.HandleAllocated then begin
+    TWSCustomGridClass(FGrid.WidgetSetClass).SendCharToEditor(ActCtrl, AChar);
+    Result:=1;
   end;
-  inherited WndProc(TheMessage);
 end;
 
 destructor TCompositeCellEditor.destroy;

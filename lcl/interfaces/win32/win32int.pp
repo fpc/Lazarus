@@ -270,7 +270,7 @@ uses
 // Win32WSExtDlgs,
 // Win32WSFileCtrl,
  Win32WSForms,
-// Win32WSGrids,
+ Win32WSGrids,
  Win32WSImgList,
 // Win32WSMaskEdit,
  Win32WSMenus,

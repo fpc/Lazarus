@@ -382,7 +382,7 @@ type
     procedure EditingColumn(aCol: Integer; Ok: boolean);
     procedure EditorCancelEditing;
     procedure EditorDoGetValue; override;
-    function  EditorCanAcceptKey(const ch: Char): boolean; override;
+    function  EditorCanAcceptKey(const ch: TUTF8Char): boolean; override;
     function  EditorIsReadOnly: boolean; override;
     procedure EndLayout;
     function  FieldIndexFromGridColumn(Column: Integer): Integer;
@@ -405,6 +405,7 @@ type
                   out HsbRange,VsbRange, HsbPage, VsbPage:Integer); override;
     procedure HeaderClick(IsColumn: Boolean; index: Integer); override;
     procedure HeaderSized(IsColumn: Boolean; Index: Integer); override;
+    function  IsValidChar(AField: TField; AChar: TUTF8Char): boolean;
     procedure KeyDown(var Key : Word; Shift : TShiftState); override;
     procedure LinkActive(Value: Boolean); virtual;
     procedure LayoutChanged; virtual;
@@ -2429,7 +2430,7 @@ begin
     DrawColumnText(aCol, aRow, aRect, aState);
 end;
 
-function TCustomDBGrid.EditorCanAcceptKey(const ch: Char): boolean;
+function TCustomDBGrid.EditorCanAcceptKey(const ch: TUTF8Char): boolean;
 var
   aField: TField;
 begin
@@ -2437,7 +2438,7 @@ begin
   if FDataLink.Active then begin
     aField := SelectedField;
     if aField<>nil then begin
-      Result := aField.IsValidChar(Ch) and not aField.Calculated and
+      Result := IsValidChar(AField, Ch) and not aField.Calculated and
         (aField.DataType<>ftAutoInc) and not aField.IsBlob;
     end;
   end;
@@ -2466,6 +2467,30 @@ begin
     if Assigned(OnColumnSized) then
       OnColumnSized(Self);
   end;
+end;
+
+function TCustomDBGrid.IsValidChar(AField: TField; AChar: TUTF8Char): boolean;
+begin
+  result := False;
+
+  if Length(AChar)>1 then begin
+    // problem: AField should validate a unicode char, but AField has no
+    //          such facility, ask the user, if user is not interested
+    //          do ansi convertion and try with field.
+    
+    { TODO: is this really necessary?
+    if Assigned(FOnValidateUTF8Char) then begin
+      result := true;
+      OnValidateUT8Char(Self, AField, AChar, Result)
+      exit;
+    end else
+    }
+      AChar := UTF8ToAnsi(AChar);
+  end else
+  if Length(AChar)=0 then
+    exit;
+  
+  Result := AField.IsValidChar(AChar[1])
 end;
 
 procedure TCustomDBGrid.UpdateActive;

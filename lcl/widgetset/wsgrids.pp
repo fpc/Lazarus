@@ -44,7 +44,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-//  Grids,
+  Controls, LCLType, Grids,
 ////////////////////////////////////////////////////
   WSLCLClasses, WSMaskEdit, WSControls;
 
@@ -54,9 +54,11 @@ type
   TWSStringCellEditor = class(TWSCustomMaskEdit)
   end;
 
+  TWSCustomGridClass = class of TWSCustomgrid;
   { TWSCustomGrid }
 
   TWSCustomGrid = class(TWSCustomControl)
+    class procedure SendCharToEditor(AEditor:TWinControl; Ch: TUTF8Char); virtual;
   end;
 
   { TWSDrawGrid }
@@ -71,6 +73,23 @@ type
 
 
 implementation
+uses LCLIntf, LCLProc;
+
+{ TWSCustomGrid }
+
+class procedure TWSCustomGrid.SendCharToEditor(AEditor:TWinControl;
+  Ch: TUTF8Char);
+var
+  GMsg: TGridMessage;
+begin
+  WriteLn('Using TWSCustomGrid.SendCharToEditor Ch=',Ch,' ',dbgstr(ch));
+  GMsg.LclMsg.Msg:=GM_SETVALUE;
+  if Ch=#8 then // backspace
+    GMsg.Value:=''
+  else
+    GMsg.Value:=Ch;
+  AEditor.Dispatch(GMsg);
+end;
 
 initialization
 
@@ -79,7 +98,7 @@ initialization
 // which actually implement something
 ////////////////////////////////////////////////////
 //  RegisterWSComponent(TStringCellEditor, TWSStringCellEditor);
-//  RegisterWSComponent(TCustomGrid, TWSCustomGrid);
+    RegisterWSComponent(TCustomGrid, TWSCustomGrid);
 //  RegisterWSComponent(TDrawGrid, TWSDrawGrid);
 //  RegisterWSComponent(TStringGrid, TWSStringGrid);
 ////////////////////////////////////////////////////
