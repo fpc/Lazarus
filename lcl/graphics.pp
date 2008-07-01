@@ -1226,6 +1226,7 @@ type
     function ImageAllocated: boolean;
     property HandleType: TBitmapHandleType read FHandleType write FHandleType;
     property Height: Integer read GetHeight;
+    property PixelFormat: TPixelFormat read GetPixelFormat;
     property Width: Integer read GetWidth;
   end;
 
