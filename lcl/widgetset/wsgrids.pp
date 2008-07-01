@@ -82,7 +82,6 @@ class procedure TWSCustomGrid.SendCharToEditor(AEditor:TWinControl;
 var
   GMsg: TGridMessage;
 begin
-  WriteLn('Using TWSCustomGrid.SendCharToEditor Ch=',Ch,' ',dbgstr(ch));
   GMsg.LclMsg.Msg:=GM_SETVALUE;
   if Ch=#8 then // backspace
     GMsg.Value:=''
