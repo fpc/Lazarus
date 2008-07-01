@@ -1387,6 +1387,7 @@ type
     FImages: TFPList;
   protected
     procedure FreeHandle; override;
+    function IsEmpty: boolean; override;
   public
     constructor Create; override;
     destructor Destroy; override;

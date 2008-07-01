@@ -90,6 +90,11 @@ begin
   FHandle := 0;
 end;
 
+function TSharedIcon.IsEmpty: boolean;
+begin
+  Result := inherited IsEmpty and (Count = 0);
+end;
+
 class function TSharedIcon.GetImagesClass: TIconImageClass;
 begin
   Result := TIconImage;
@@ -615,6 +620,7 @@ begin
       IntfImage.GetRawImage(RawImage, True);
       // Paul: don't set MaskBitsPerPixel to zero => windows will fail with no mask
       // Even empty mask is better than no mask. But maybe CreateIconIndirect must be fixed on windows?
+      RawImage.Description.MaskBitsPerPixel := 1;
       with TSharedIcon(FSharedImage) do
       begin
         IconImage := GetImagesClass.Create(RawImage);
@@ -789,6 +795,7 @@ begin
           NewImage.FImage.Palette := GetMem(NewImage.FImage.PaletteSize);
           Move(OldBitmap.FImage.Palette^, NewImage.FImage.Palette^, NewImage.FImage.PaletteSize);
         end;
+        NewImage.FImage.Description.MaskBitsPerPixel := 1;
       end;
     end;
     FreeCanvasContext;
