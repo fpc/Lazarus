@@ -192,12 +192,16 @@ begin
       begin
         if TheDialog.Modified and FileExists(TheDialog.FileName) then
         begin
-          if AGraphic = nil then begin
+          FreeGraphic := AGraphic = nil;
+
+          if FreeGraphic then 
             AGraphic := TGraphicClass(GetTypeData(GetPropType)^.ClassType).Create;
-            FreeGraphic:=true;
-          end;
-          AGraphic.LoadFromFile(TheDialog.FileName);
-          FreeGraphic:=false;
+
+          if AGraphic.ClassType = TheDialog.Preview.Picture.Graphic.ClassType then
+            AGraphic.LoadFromFile(TheDialog.FileName)
+          else
+            AGraphic.Assign(TheDialog.Preview.Picture.Graphic);
+
           SetPtrValue(AGraphic);
           Modified;
         end;
