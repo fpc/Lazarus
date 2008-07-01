@@ -43,6 +43,7 @@ begin
   FShowIcon := True;
 
   FIcon := TIcon.Create;
+  FIcon.OnChange := @IconChanged;
 
   FNotifier := TPopupNotifier.Create(Self);
   FNotifier.OnClose := @HandleNotifierClose;
@@ -150,6 +151,12 @@ begin
   FNotifier.Hide;
 end;
 
+procedure TCustomTrayIcon.IconChanged(Sender: TObject);
+begin
+  if Handle <> 0 then
+    TWSCustomTrayIconClass(WidgetSetClass).InternalUpdate(Self);
+end;
+
 {*******************************************************************
 *  TCustomTrayIcon.InternalUpdate ()
 *
@@ -237,6 +244,11 @@ begin
   FHint := AValue;
 
   if FVisible then InternalUpdate;
+end;
+
+procedure TCustomTrayIcon.SetIcon(const AValue: TIcon);
+begin
+  FIcon.Assign(AValue);
 end;
 
 // included by extctrls.pp

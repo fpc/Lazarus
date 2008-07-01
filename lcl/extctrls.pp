@@ -1112,9 +1112,11 @@ type
     FOnMouseMove: TMouseMoveEvent;
     function  GetCanvas: TCanvas;
     procedure SetHint(const AValue: string);
+    procedure SetIcon(const AValue: TIcon);
     procedure SetVisible(Value: Boolean);
     procedure HandleNotifierClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure HandleNotifierTimeout(Sender: TObject);
+    procedure IconChanged(Sender: TObject);
   public
     Handle: PtrInt;
     constructor Create(TheOwner: TComponent); override;
@@ -1131,7 +1133,7 @@ type
     property BalloonTitle: string read FBalloonTitle write FBalloonTitle;
     property Canvas: TCanvas read GetCanvas;
     property PopUpMenu: TPopupMenu read FPopUpMenu write FPopUpMenu;
-    property Icon: TIcon read FIcon;
+    property Icon: TIcon read FIcon write SetIcon;
     property Hint: string read FHint write SetHint;
     property ShowIcon: Boolean read FShowIcon write FShowIcon default True;
     property Visible: Boolean read FVisible write SetVisible;

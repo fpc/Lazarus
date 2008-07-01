@@ -502,10 +502,6 @@ begin
 
   SystemTrayIcon.Hide;
 
-  QIcon_destroy(SystemTrayIcon.IconHandle);
-  
-  SystemTrayIcon.IconHandle := nil;
-
   SystemTrayIcon.Free;
 
   ATrayIcon.Handle := 0;
@@ -517,12 +513,16 @@ class function TQtWSCustomTrayIcon.Show(const ATrayIcon: TCustomTrayIcon): Boole
 var
   Text: WideString;
   SystemTrayIcon: TQtSystemTrayIcon;
+  IconH: QIconH;
 begin
   Result := False;
 
-  SystemTrayIcon.IconHandle := TQtSystemTrayIcon.TIconToQIconH(ATrayIcon.Icon);
-
-  SystemTrayIcon := TQtSystemTrayIcon.Create(SystemTrayIcon.IconHandle);
+  if ATrayIcon.Icon.Handle = 0 then
+    IconH := nil
+  else
+    IconH := TQtIcon(ATrayIcon.Icon.Handle).Handle;
+    
+  SystemTrayIcon := TQtSystemTrayIcon.Create(IconH);
 
   ATrayIcon.Handle := PtrInt(SystemTrayIcon);
 
@@ -530,8 +530,8 @@ begin
   SystemTrayIcon.setToolTip(Text);
 
   if Assigned(ATrayIcon.PopUpMenu) then
-   if TQtMenu(ATrayIcon.PopUpMenu.Handle).Widget <> nil then
-    SystemTrayIcon.setContextMenu(QMenuH(TQtMenu(ATrayIcon.PopUpMenu.Handle).Widget));
+    if TQtMenu(ATrayIcon.PopUpMenu.Handle).Widget <> nil then
+      SystemTrayIcon.setContextMenu(QMenuH(TQtMenu(ATrayIcon.PopUpMenu.Handle).Widget));
 
   SystemTrayIcon.show;
 
@@ -554,8 +554,8 @@ begin
 
   { PopUpMenu }
   if Assigned(ATrayIcon.PopUpMenu) then
-   if TQtMenu(ATrayIcon.PopUpMenu.Handle).Widget <> nil then
-    SystemTrayIcon.setContextMenu(QMenuH(TQtMenu(ATrayIcon.PopUpMenu.Handle).Widget));
+    if TQtMenu(ATrayIcon.PopUpMenu.Handle).Widget <> nil then
+      SystemTrayIcon.setContextMenu(QMenuH(TQtMenu(ATrayIcon.PopUpMenu.Handle).Widget));
 end;
 
 class function TQtWSCustomTrayIcon.GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint;
