@@ -1432,6 +1432,7 @@ docs/xml/lcl/graphtype.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/graphutil.xml svneol=native#text/plain
 docs/xml/lcl/grids.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/helpintfs.xml svneol=native#text/plain
+docs/xml/lcl/icnstypes.xml svneol=native#text/plain
 docs/xml/lcl/imagelistcache.xml svneol=native#text/plain
 docs/xml/lcl/imglist.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/inipropstorage.xml svneol=LF#text/xml eol=lf
