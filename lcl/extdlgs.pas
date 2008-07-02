@@ -29,7 +29,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, LResources, LCLType, LCLStrConsts, FileUtil,
   Controls, Dialogs, GraphType, Graphics, ExtCtrls, StdCtrls, Forms,
-  Calendar, Buttons;
+  Calendar, Buttons, Masks;
 
 type
 
@@ -88,6 +88,7 @@ type
     procedure UpdatePreview; virtual;
   public
     constructor Create(TheOwner: TComponent); override;
+    function GetFilterExt: String;
     property DefaultFilter: string read FDefaultFilter;
   published
     property Filter stored IsFilterStored;
@@ -387,6 +388,31 @@ begin
     Align:=alClient;
     Center:=true;
     Proportional:=true;
+  end;
+end;
+
+function TOpenPictureDialog.GetFilterExt: String;
+var
+  ParsedFilter: TParseStringList;
+begin
+  Result := '';
+  
+  ParsedFilter := TParseStringList.Create(Filter, '|');
+  try
+    if (FilterIndex > 0) and (FilterIndex * 2 <= ParsedFilter.Count) then
+    begin
+      Result := AnsiLowerCase(ParsedFilter[FilterIndex * 2 - 1]);
+      // remove *.*
+      if (Result <> '') and (Result[1] = '*') then Delete(Result, 1, 1);
+      if (Result <> '') and (Result[1] = '.') then Delete(Result, 1, 1);
+      if (Result <> '') and (Result[1] = '*') then Delete(Result, 1, 1);
+      // remove all after ;
+      if Pos(';', Result) > 0 then Delete(Result, Pos(';', Result), MaxInt);
+    end;
+    
+    if Result = '' then Result := DefaultExt;
+  finally
+    ParsedFilter.Free;
   end;
 end;
 

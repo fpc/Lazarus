@@ -3,8 +3,6 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
   Height = 381
   Top = 147
   Width = 436
-  HorzScrollBar.Page = 435
-  VertScrollBar.Page = 380
   ActiveControl = LoadButton
   Caption = 'Load Image Dialog'
   ClientHeight = 381
@@ -13,15 +11,16 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
   Constraints.MinWidth = 200
   OnCreate = FormCreate
   Position = poScreenCenter
+  LCLVersion = '0.9.25'
   object GroupBox1: TGroupBox
     Left = 6
-    Height = 319
+    Height = 329
     Top = 6
     Width = 424
     Align = alClient
     BorderSpacing.Around = 6
     Caption = 'Picture'
-    ClientHeight = 300
+    ClientHeight = 311
     ClientWidth = 420
     TabOrder = 0
     object ScrollBox: TScrollBox
@@ -30,10 +29,9 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
       AnchorSideBottom.Control = GroupBox1
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 288
+      Height = 299
       Top = 6
-      Width = 357
-      AutoScroll = True
+      Width = 351
       Align = alClient
       BorderSpacing.Around = 6
       ParentColor = False
@@ -46,20 +44,20 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
       end
     end
     object LoadSaveBtnPanel: TPanel
-      Left = 369
-      Height = 288
+      Left = 363
+      Height = 299
       Top = 6
-      Width = 45
+      Width = 51
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
       BevelOuter = bvNone
-      ClientHeight = 288
-      ClientWidth = 45
+      ClientHeight = 299
+      ClientWidth = 51
       TabOrder = 1
       object LoadButton: TButton
         Height = 25
-        Width = 45
+        Width = 51
         Align = alTop
         BorderSpacing.Bottom = 6
         Caption = 'Load'
@@ -69,7 +67,7 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
       object SaveButton: TButton
         Height = 25
         Top = 31
-        Width = 45
+        Width = 51
         Align = alTop
         BorderSpacing.Bottom = 6
         Caption = 'Save'
@@ -79,7 +77,7 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
       object ClearButton: TButton
         Height = 25
         Top = 62
-        Width = 45
+        Width = 51
         Align = alTop
         BorderSpacing.Bottom = 6
         Caption = 'Clear'
@@ -90,27 +88,21 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
   end
   object OkCancelButtonPanel: TButtonPanel
     Left = 6
-    Height = 50
-    Top = 331
+    Height = 40
+    Top = 341
     Width = 424
     Align = alBottom
     AutoSize = True
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel]
-    ShowGlyphs = [pbOK, pbCancel, pbClose, pbHelp]
   end
   object OpenDialog: TOpenPictureDialog
-    Title = 'Open existing file'
-    Filter = 'Graphic (*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp)|*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp|Icon (*.ico)|*.ico|Portable PixMap (*.ppm)|*.ppm|Portable GrayMap (*.pgm)|*.pgm|Portable BitMap (*.pbm)|*.pbm|Portable Network Graphic (*.png)|*.png|Pixmap (*.xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp|All files (*.*)|*.*|'
-    FilterIndex = 0
-    left = 152
-    top = 160
+    left = 138
+    top = 182
   end
   object SaveDialog: TSavePictureDialog
     Title = 'Save file as'
-    Filter = 'Graphic (*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp)|*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp|Icon (*.ico)|*.ico|Portable PixMap (*.ppm)|*.ppm|Portable GrayMap (*.pgm)|*.pgm|Portable BitMap (*.pbm)|*.pbm|Portable Network Graphic (*.png)|*.png|Pixmap (*.xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp|All files (*.*)|*.*|'
-    FilterIndex = 0
-    left = 192
-    top = 160
+    left = 186
+    top = 182
   end
 end

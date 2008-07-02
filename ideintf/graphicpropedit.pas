@@ -36,10 +36,10 @@ type
     ImagePreview: TImage;
     LoadButton: TButton;
     LoadSaveBtnPanel: TPanel;
+    OpenDialog: TOpenPictureDialog;
     SaveButton: TButton;
     ClearButton: TButton;
     GroupBox1: TGroupBox;
-    OpenDialog: TOpenPictureDialog;
     SaveDialog: TSavePictureDialog;
     ScrollBox: TScrollBox;
     procedure ClearButtonClick(Sender: TObject);
@@ -119,7 +119,11 @@ procedure TGraphicPropertyEditorForm.SaveButtonClick(Sender: TObject);
 begin
   InitIDEFileDialog(SaveDialog);
   if SaveDialog.Execute then
-    Preview.Picture.SaveToFile(SaveDialog.FileName);
+    if SaveDialog.FilterIndex > 1 then
+      Preview.Picture.SaveToFile(SaveDialog.FileName, SaveDialog.GetFilterExt)
+    else
+      Preview.Picture.SaveToFile(SaveDialog.FileName);
+      
   StoreIDEFileDialog(SaveDialog);
 end;
 

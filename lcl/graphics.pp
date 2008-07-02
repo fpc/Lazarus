@@ -821,7 +821,8 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure LoadFromFile(const Filename: string);
-    procedure SaveToFile(const Filename: string);
+    procedure SaveToFile(const Filename: string; const FileExt: string = '');
+    procedure SaveToStreamWithFileExt(Stream: TStream; const FileExt: string);
     procedure LoadFromStreamWithFileExt(Stream: TStream; const FileExt: string);
     procedure LoadFromLazarusResource(const AName: string);
     procedure LoadFromClipboardFormat(FormatID: TClipboardFormat);
@@ -1303,6 +1304,8 @@ type
     class function IsFileExtensionSupported(const FileExtension: string): boolean;
     function LazarusResourceTypeValid(const ResourceType: string): boolean; override;
   end;
+  
+  TFPImageBitmapClass = class of TFPImageBitmap;
 
 
   { TSharedBitmap }

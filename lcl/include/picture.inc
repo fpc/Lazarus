@@ -22,7 +22,7 @@ type
   PPicFileFormat = ^TPicFileFormat;
   TPicFileFormat = record
     GraphicClass: TGraphicClass;
-    Extension: string;
+    Extension: string; // ; low case separated list, first is default
     Description: string;
   end;
 
@@ -34,6 +34,8 @@ type
     procedure Delete(Index: Integer);
     procedure Add(const Ext, Desc: String; AClass: TGraphicClass);
     function GetFormats(Index: integer): PPicFileFormat;
+    function GetFormatExt(Index: integer): String;
+    function GetFormatFilter(Index: integer): String;
     function FindExt(const Ext: string): TGraphicClass;
     function FindClassName(const AClassname: string): TGraphicClass;
     procedure Remove(AClass: TGraphicClass);
@@ -45,16 +47,14 @@ type
 constructor TPicFileFormatsList.Create;
 begin
   inherited Create;
-  Add('bmp', rsBitmaps, TBitmap);
-  Add('xpm', rsPixmap, TPixmap);
-  Add('png', rsPortableNetworkGraphic, TPortableNetworkGraphic);
-  Add('pbm', rsPortableBitmap, TPortableAnyMapGraphic);
-  Add('pgm', rsPortableGrayMap, TPortableAnyMapGraphic);
-  Add('ppm', rsPortablePixmap, TPortableAnyMapGraphic);
-  Add('ico', rsIcon, TIcon);
-  Add('icns', rsIcns, TIcnsIcon);
-  Add('cur', rsCursor, TCursorImage);
-  Add('jpg', rsJpeg, TJpegImage);
+  Add(TBitmap.GetFileExtensions, rsBitmaps, TBitmap);
+  Add(TPixmap.GetFileExtensions, rsPixmap, TPixmap);
+  Add(TPortableNetworkGraphic.GetFileExtensions, rsPortableNetworkGraphic, TPortableNetworkGraphic);
+  Add(TPortableAnyMapGraphic.GetFileExtensions, rsPortablePixmap, TPortableAnyMapGraphic);
+  Add(TIcon.GetFileExtensions, rsIcon, TIcon);
+  Add(TIcnsIcon.GetFileExtensions, rsIcns, TIcnsIcon);
+  Add(TCursorImage.GetFileExtensions, rsCursor, TCursorImage);
+  Add(TJpegImage.GetFileExtensions, rsJpeg, TJpegImage);
 end;
 
 procedure TPicFileFormatsList.Clear;
@@ -83,10 +83,7 @@ var
 begin
   New(NewFormat);
   with NewFormat^ do begin
-    if (Ext<>'') and (Ext[1]='.') then
-      Extension := AnsiLowerCase(copy(Ext,2,length(Ext)-1))
-    else
-      Extension := AnsiLowerCase(Ext);
+    Extension := AnsiLowerCase(Ext);
     GraphicClass := AClass;
     Description := Desc;
   end;
@@ -98,20 +95,44 @@ begin
   Result:=PPicFileFormat(Items[Index]);
 end;
 
+function TPicFileFormatsList.GetFormatExt(Index: integer): String;
+begin
+  Result := PPicFileFormat(Items[Index])^.Extension;
+  if Pos(';', Result) > 0 then
+    System.Delete(Result, Pos(';', Result), MaxInt);
+end;
+
+function TPicFileFormatsList.GetFormatFilter(Index: integer): String;
+begin
+  Result := StringReplace('*.' + PPicFileFormat(Items[Index])^.Extension, ';', ';*.', [rfReplaceAll]);
+end;
+
 function TPicFileFormatsList.FindExt(const Ext: string): TGraphicClass;
 var
-  I: Integer;
+  I, P: Integer;
+  E, ExtList: String;
 begin
   if Ext<>'' then
-    for I := Count-1 downto 0 do
+  begin
+    E := AnsiLowerCase(Ext);
+    if E[1] = '.' then System.Delete(E, 1, 1);
+    
+    for I := Count - 1 downto 0 do
       with PPicFileFormat(Items[I])^ do
-        if (AnsiCompareText(Extension,Ext)=0)
-        or ((Ext[1]='.')
-            and (AnsiCompareText(Extension,copy(Ext,2,length(Ext)-1))=0)) then
+        if Pos(E, Extension) > 0 then
         begin
-          Result := GraphicClass;
-          Exit;
+          ExtList := Extension;
+          repeat
+            P := Pos(';', ExtList);
+            if (P = 0) and (ExtList = E) or (Pos(E + ';', ExtList) = 1) then
+            begin
+              Result := GraphicClass;
+              Exit;
+            end;
+            System.Delete(ExtList, 1, P);
+          until P = 0;
         end;
+  end;
   Result := nil;
 end;
 
@@ -147,11 +168,13 @@ procedure TPicFileFormatsList.BuildFilterStrings(GraphicClass: TGraphicClass;
 var
   C, I: Integer;
   P: PPicFileFormat;
+  Filter: String;
 begin
   Descriptions := '';
   Filters := '';
   C := 0;
-  for I := Count-1 downto 0 do begin
+  for I := 0 to Count - 1 do
+  begin
     P := GetFormats(I);
     if P^.GraphicClass.InheritsFrom(GraphicClass) and (P^.Extension <> '') then
       with P^ do begin
@@ -159,9 +182,10 @@ begin
           Descriptions := Descriptions + '|';
           Filters := Filters + ';';
         end;
-        FmtStr(Descriptions, '%s%s (*.%s)|*.%2:s',
-             [Descriptions, Description, Extension]);
-        FmtStr(Filters, '%s*.%s', [Filters, Extension]);
+        Filter := GetFormatFilter(I);
+        FmtStr(Descriptions, '%s%s (%s)|%s',
+             [Descriptions, Description, Filter, Filter]);
+        FmtStr(Filters, '%s%s', [Filters, Filter]);
         Inc(C);
       end;
   end;
@@ -304,8 +328,9 @@ var
 begin
   PicFormats := GetPicFileFormats;
   for I := PicFormats.Count-1 downto 0 do
-    if PicFormats[I]^.GraphicClass.ClassName = GraphicClass.ClassName then begin
-      Result := PicFormats[I]^.Extension;
+    if PicFormats[I]^.GraphicClass.ClassName = GraphicClass.ClassName then
+    begin
+      Result := PicFormats.GetFormatExt(I);
       Exit;
     end;
   Result := '';
@@ -486,9 +511,61 @@ begin
   end;
 end;
 
-procedure TPicture.SaveToFile(const Filename: string);
+procedure TPicture.SaveToFile(const Filename: string; const FileExt: string = '');
+var
+  Ext, F: string;
+  Stream: TStream;
 begin
-  if FGraphic <> nil then FGraphic.SaveToFile(Filename);
+  if FileExt <> '' then
+    Ext := AnsiLowerCase(FileExt)
+  else
+    Ext := AnsiLowerCase(ExtractFileExt(Filename));
+    
+  if (Ext <> '') and (Ext[1] = '.') then System.Delete(Ext, 1, 1); // delete '.'
+
+  Stream := TFileStream.Create(Filename, fmCreate);
+  try
+    SaveToStreamWithFileExt(Stream, Ext);
+  finally
+    Stream.Free;
+  end;
+end;
+
+procedure TPicture.SaveToStreamWithFileExt(Stream: TStream; const FileExt: string);
+var
+  GraphicClass: TGraphicClass;
+  IntfImage: TLazIntfImage;
+  ImageWriterClass: TFPCustomImageWriterClass;
+  ImageWriter: TFPCustomImageWriter;
+begin
+  if Graphic = nil then Exit;
+  if FileExt <> '' then
+    GraphicClass := FindGraphicClassWithFileExt(FileExt);
+
+  if (FileExt = '') or (Graphic is GraphicClass) then
+    Graphic.SaveToStream(Stream)
+  else
+  begin
+    // save in different format
+    if (Graphic is TFPImageBitmap) and GraphicClass.InheritsFrom(TFPImageBitmap) then
+    begin
+      ImageWriterClass := TFPImageBitmapClass(GraphicClass).GetWriterClass;
+
+      IntfImage := (Graphic as TFPImageBitmap).CreateIntfImage;
+      try
+        ImageWriter := ImageWriterClass.Create;
+        try
+          IntfImage.SaveToStream(Stream, ImageWriter);
+        finally
+          ImageWriter.Free;
+        end;
+      finally
+        IntfImage.Free;
+      end;
+    end
+    else
+      raise Exception.CreateFmt('TODO: Conversion for vector or icon images of format "%s" to "%s"!', [Graphic.GetFileExtensions, FileExt]);
+  end;
 end;
 
 procedure TPicture.LoadFromStreamWithFileExt(Stream: TStream;
