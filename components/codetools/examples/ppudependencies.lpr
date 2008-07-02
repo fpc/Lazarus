@@ -56,6 +56,8 @@ begin
     UsedUnits.Clear;
     PPU.GetImplementationUsesSectionNames(UsedUnits);
     debugln('Implementation used units: ',UsedUnits.DelimitedText);
+    debugln('Intialization proc: ',PPU.GetInitProcName);
+    debugln('Finalization proc: ',PPU.GetFinalProcName);
   finally
     PPU.Free;
     UsedUnits.Free;
