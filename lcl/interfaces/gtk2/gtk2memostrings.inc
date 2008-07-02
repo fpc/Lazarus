@@ -97,12 +97,13 @@ begin
   // if a row is blank gtk_text_iter_forward_to_line_end will goto the row ahead
   // this is not desired. so if it jumped ahead a row then the row we want is blank
   if gtk_text_iter_get_line(@StartIter) = gtk_text_iter_get_line(@EndIter) then
-    AText := gtk_text_iter_get_text(@StartIter, @EndIter)
-  else
-    AText := nil;
-  Result := StrPas(AText);
-  if AText <> nil then
+  begin
+    AText := gtk_text_iter_get_text(@StartIter, @EndIter);
+    Result := StrPas(AText);
     g_free(AText);
+  end
+  else
+    Result := '';
 end;
 
 constructor TGtk2MemoStrings.Create(TextView: PGtkTextView;
