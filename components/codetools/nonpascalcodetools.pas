@@ -519,12 +519,12 @@ function ExtractCodeFromMakefile(const Source: string): string;
 var
   NewLength: integer;
 begin
-  DebugLn(['ExtractCodeFromMakefile START ',Result]);
+  //DebugLn(['ExtractCodeFromMakefile START ',Result]);
   Result:='';
   Run(Result,NewLength);
   SetLength(Result,NewLength);
   Run(Result,NewLength);
-  DebugLn(['ExtractCodeFromMakefile END ',Result]);
+  //DebugLn(['ExtractCodeFromMakefile END ',Result]);
 end;
 
 function CConstantToInt64(const s: string; out i: int64): boolean;
