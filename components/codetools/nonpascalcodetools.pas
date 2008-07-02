@@ -508,7 +508,7 @@ function ExtractCodeFromMakefile(const Source: string): string;
       end;
 
       // next line
-      SrcPos:=LineEndPos+1;
+      SrcPos:=LineEndPos;
       if (SrcPos<=SrcLen) and (Source[SrcLen] in [#10,#13])
       and (Source[SrcLen]<>Source[SrcLen-1]) then
         inc(SrcPos);
@@ -519,10 +519,12 @@ function ExtractCodeFromMakefile(const Source: string): string;
 var
   NewLength: integer;
 begin
+  DebugLn(['ExtractCodeFromMakefile START ',Result]);
   Result:='';
   Run(Result,NewLength);
   SetLength(Result,NewLength);
   Run(Result,NewLength);
+  DebugLn(['ExtractCodeFromMakefile END ',Result]);
 end;
 
 function CConstantToInt64(const s: string; out i: int64): boolean;

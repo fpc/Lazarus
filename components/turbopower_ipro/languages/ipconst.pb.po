@@ -1162,6 +1162,7 @@ msgid "Selecting next article"
 msgstr ""
 
 #: ipconst.snsnoop
+msgctxt "ipconst.snsnoop"
 msgid "No operation"
 msgstr ""
 

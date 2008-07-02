@@ -1174,6 +1174,7 @@ msgid "Selecting next article"
 msgstr "Žymimas tolesnis straipsnis"
 
 #: ipconst.snsnoop
+msgctxt "ipconst.snsnoop"
 msgid "No operation"
 msgstr ""
 
