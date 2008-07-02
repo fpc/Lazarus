@@ -63,14 +63,17 @@ end;
 
 function TGtk2MemoStrings.GetTextStr: string;
 var
-StartIter,
-EndIter: TGtkTextIter;
+  StartIter, EndIter: TGtkTextIter;
+  AText: PgChar;
 begin
   Result := '';
   gtk_text_buffer_get_start_iter(FGtkBuf, @StartIter);
   gtk_text_buffer_get_end_iter(FGtkBuf, @EndIter);
 
-  Result := PChar(gtk_text_iter_get_text(@StartIter, @EndIter));
+  AText := gtk_text_iter_get_text(@StartIter, @EndIter);
+  Result := StrPas(AText);
+  if AText <> nil then
+    g_free(AText);
 end;
 
 function TGtk2MemoStrings.GetCount: integer;
@@ -98,7 +101,8 @@ begin
   else
     AText := nil;
   Result := StrPas(AText);
-  g_free(AText);
+  if AText <> nil then
+    g_free(AText);
 end;
 
 constructor TGtk2MemoStrings.Create(TextView: PGtkTextView;
