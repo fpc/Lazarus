@@ -1711,11 +1711,6 @@ begin
       // CheckListBox functionality
       if lWinControl is TCheckListBox then
         CheckListBoxLButtonDown;
-      // focus window
-      if (Windows.GetFocus <> Window) and
-          ((lWinControl = nil) or (lWinControl.CanFocus)) then
-        Windows.SetFocus(Window);
-
     end;
     WM_LBUTTONUP:
     begin
