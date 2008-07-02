@@ -7498,7 +7498,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- object Visibility: default -->
       <element name="TPortableNetworkGraphic">
-        <short/>
+        <short><var>TPortableNetworkGraphic</var> - a PNG image</short>
         <descr/>
         <errors/>
         <seealso/>
