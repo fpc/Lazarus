@@ -63,7 +63,9 @@ type
   private
     FMembers: TAVLTree;// tree of TPPUMember sorted for unitname
     FUnitGraph: TCodeGraph;
+    FSortedUnits: TFPList;// list of TPPUMember
     function FindAVLNodeOfMemberWithUnitName(const AName: string): TAVLTreeNode;
+    function GetSortedUnits(Index: integer): TPPUMember;
     procedure InternalRemoveMember(AMember: TPPUMember);
     procedure UpdateTopologicalSortedList;
   public
@@ -78,7 +80,9 @@ type
     function UpdatePPUs: boolean;
     function UpdateDependencies: boolean;
     procedure GetMissingUnits(var List: TStrings);
+    property Members: TAVLTree read FMembers;
     property UnitGraph: TCodeGraph read FUnitGraph;
+    property SortedUnits[Index: integer]: TPPUMember read GetSortedUnits;
   end;
 
   { TPPUGroups }
@@ -225,6 +229,11 @@ begin
   Result:=FMembers.FindKey(PChar(AName),@CompareNameWithPPUMemberName);
 end;
 
+function TPPUGroup.GetSortedUnits(Index: integer): TPPUMember;
+begin
+  Result:=TPPUMember(FSortedUnits[Index]);
+end;
+
 procedure TPPUGroup.InternalRemoveMember(AMember: TPPUMember);
 begin
   FUnitGraph.DeleteGraphNode(AMember.KeyNode);
@@ -235,30 +244,29 @@ end;
 
 procedure TPPUGroup.UpdateTopologicalSortedList;
 var
-  ListOfGraphNodes: TFPList;
   i: Integer;
   GraphNode: TCodeGraphNode;
   Member: TPPUMember;
 begin
-  UnitGraph.GetTopologicalSortedList(ListOfGraphNodes,true,false,false);
-  if ListOfGraphNodes=nil then
-    ListOfGraphNodes:=TFPList.Create;
-  DebugLn(['TPPUGroup.UpdateTopologicalSortedList ',Name,' ',FMembers.Count,' ',ListOfGraphNodes.Count]);
+  FreeAndNil(FSortedUnits);
+  UnitGraph.GetTopologicalSortedList(FSortedUnits,true,false,false);
+  if FSortedUnits=nil then
+    FSortedUnits:=TFPList.Create;
+  DebugLn(['TPPUGroup.UpdateTopologicalSortedList ',Name,' ',FMembers.Count,' ',FSortedUnits.Count]);
   DebugLn(['Initialization: ================================']);
-  for i:=ListOfGraphNodes.Count-1 downto 0 do begin
-    GraphNode:=TCodeGraphNode(ListOfGraphNodes[i]);
+  for i:=FSortedUnits.Count-1 downto 0 do begin
+    GraphNode:=TCodeGraphNode(FSortedUnits[i]);
     Member:=TPPUMember(GraphNode.Data);
     if Member.InitializationMangledName<>'' then
       DebugLn([Member.InitializationMangledName]);
   end;
   DebugLn(['Finalization: ===================================']);
-  for i:=0 to ListOfGraphNodes.Count-1 do begin
-    GraphNode:=TCodeGraphNode(ListOfGraphNodes[i]);
+  for i:=0 to FSortedUnits.Count-1 do begin
+    GraphNode:=TCodeGraphNode(FSortedUnits[i]);
     Member:=TPPUMember(GraphNode.Data);
     if Member.FinalizationMangledName<>'' then
       DebugLn([Member.FinalizationMangledName]);
   end;
-  ListOfGraphNodes.Free;
 end;
 
 constructor TPPUGroup.Create;
@@ -283,6 +291,7 @@ end;
 
 procedure TPPUGroup.Clear;
 begin
+  FreeAndNil(FSortedUnits);
   FUnitGraph.Clear;
   while FMembers.Count>0 do
     TPPUMember(FMembers.Root.Data).Free;
