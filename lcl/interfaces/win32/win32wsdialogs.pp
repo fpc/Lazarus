@@ -648,20 +648,28 @@ var
   procedure SetFilesPropertyForOldStyle(AFiles:TStrings);
   var
     SelectedStr: string;
+    FolderName: string;
     I,Start: integer;
   begin
-    SelectedStr:=StrPas(OpenFile^.lpStrFile);
-    I:=Pos(' ',SelectedStr);
-    if I = 0 then
+    {$ifdef WindowsUnicodeSupport}
+       if UnicodeEnabledOS then
+         SelectedStr:=UTF8Encode(PWideChar(OpenFile^.lpStrFile))
+       else
+         SelectedStr:=AnsiToUtf8(OpenFile^.lpStrFile);
+    {$else}
+    SelectedStr:=OpenFile^.lpStrFile;
+    {$endif}
+    if not (ofAllowMultiSelect in AOpenDialog.Options) then
       AFiles.Add(SelectedStr)
     else begin
-      Delete(SelectedStr,1,I);
+      Start:=Pos(' ',SelectedStr);
+      FolderName := copy(SelectedStr,1,start-1);
       SelectedStr:=SelectedStr+' ';
-      Start:=1;
-      for I:= 1 to Length(SelectedStr) do
+      inc(start);
+      for I:= Start to Length(SelectedStr) do
         if SelectedStr[I] =  ' ' then
         begin
-          AFiles.Add(ExpandFileName(Copy(SelectedStr,Start,I - Start)));
+          AFiles.Add(ExpandFileName(FolderName+Copy(SelectedStr,Start,I - Start)));
           Start:=Succ(I);
         end;
     end;
