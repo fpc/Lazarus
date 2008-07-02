@@ -96,6 +96,7 @@ type
     function FindGraphNodeWithNumberOfInEdges(MinNumber, MaxNumber: integer
                                               ): TCodeGraphNode;
 
+    function PathExists(FromNode, ToNode: TCodeTreeNode): boolean;
     function AddEdge(FromNode, ToNode: TCodeTreeNode): TCodeGraphEdge;
     function GetEdge(FromNode, ToNode: TCodeTreeNode;
                      CreateIfNotExists: boolean): TCodeGraphEdge;
@@ -511,6 +512,33 @@ begin
     AVLNode:=Nodes.FindSuccessor(AVLNode);
   end;
   Result:=nil;
+end;
+
+function TCodeGraph.PathExists(FromNode, ToNode: TCodeTreeNode): boolean;
+
+  function Search(GraphNode: TCodeGraphNode): boolean;
+  var
+    AVLNode: TAVLTreeNode;
+    GraphEdge: TCodeGraphEdge;
+  begin
+    Result:=false;
+    if GraphNode=nil then exit;
+    if GraphNode.Node=ToNode then exit(true);
+    if GraphNode.FInternalFlags>0 then exit;
+    GraphNode.FInternalFlags:=1;
+    if GraphNode.OutTree=nil then exit;
+    AVLNode:=GraphNode.OutTree.FindLowest;
+    while AVLNode<>nil do begin
+      GraphEdge:=TCodeGraphEdge(AVLNode.Data);
+      if Search(GraphEdge.ToNode) then exit(true);
+      AVLNode:=GraphNode.OutTree.FindSuccessor(AVLNode);
+    end;
+  end;
+
+begin
+  Result:=false;
+  ClearInternalNodeFlags;
+  Result:=Search(GetGraphNode(FromNode,false));
 end;
 
 function TCodeGraph.AddEdge(FromNode, ToNode: TCodeTreeNode): TCodeGraphEdge;

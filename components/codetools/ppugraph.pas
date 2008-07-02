@@ -75,6 +75,7 @@ type
     procedure Clear;
     function AddMember(const NewUnitName: string): TPPUMember;
     function FindMemberWithUnitName(const AName: string): TPPUMember;
+    function UpdatePPUs: boolean;
     function UpdateDependencies: boolean;
     procedure GetMissingUnits(var List: TStrings);
     property UnitGraph: TCodeGraph read FUnitGraph;
@@ -91,7 +92,6 @@ type
     function FindAVLNodeOfMemberWithName(const AName: string): TAVLTreeNode;
     procedure InternalRemoveMember(AMember: TPPUMember);
     procedure InternalRemoveGroup(AGroup: TPPUGroup);
-    procedure AddDependency(Member: TPPUMember; const UsedUnit: string);
   public
     Name: string;
     constructor Create;
@@ -111,6 +111,7 @@ function CompareNameWithPPUMemberName(NamePChar, Member: Pointer): integer;
 function ComparePPUGroupsByName(Group1, Group2: Pointer): integer;
 function CompareNameWithPPUGroupName(NamePChar, Group: Pointer): integer;
 
+function PPUGroupObjectAsString(Obj: TObject): string;
 
 implementation
 
@@ -134,6 +135,16 @@ end;
 function CompareNameWithPPUGroupName(NamePChar, Group: Pointer): integer;
 begin
   Result:=CompareIdentifierPtrs(NamePChar,Pointer(TPPUGroup(Group).Name));
+end;
+
+function PPUGroupObjectAsString(Obj: TObject): string;
+begin
+  if Obj is TPPUMember then
+    Result:='unit '+TPPUMember(Obj).Unitname
+  else if Obj is TPPUGroup then
+    Result:='group '+TPPUGroup(Obj).Name
+  else
+    Result:=dbgs(Obj);
 end;
 
 { TPPUMember }
@@ -232,7 +243,7 @@ begin
   UnitGraph.GetTopologicalSortedList(ListOfGraphNodes,true,false,false);
   if ListOfGraphNodes=nil then
     ListOfGraphNodes:=TFPList.Create;
-  DebugLn(['TPPUGroup.UpdateTopologicalSortedList ',FMembers.Count,' ',ListOfGraphNodes.Count]);
+  DebugLn(['TPPUGroup.UpdateTopologicalSortedList ',Name,' ',FMembers.Count,' ',ListOfGraphNodes.Count]);
   DebugLn(['Initialization: ================================']);
   for i:=ListOfGraphNodes.Count-1 downto 0 do begin
     GraphNode:=TCodeGraphNode(ListOfGraphNodes[i]);
@@ -299,15 +310,68 @@ begin
     Result:=nil;
 end;
 
+function TPPUGroup.UpdatePPUs: boolean;
+var
+  AVLNode: TAVLTreeNode;
+  Member: TPPUMember;
+begin
+  Result:=true;
+  // load all PPU
+  AVLNode:=FMembers.FindLowest;
+  while AVLNode<>nil do begin
+    Member:=TPPUMember(AVLNode.Data);
+    if not Member.UpdatePPU then exit(false);
+    AVLNode:=FMembers.FindSuccessor(AVLNode);
+  end;
+end;
+
 function TPPUGroup.UpdateDependencies: boolean;
 
-  procedure AddDependencies(Member: TPPUMember; UsesList: TStrings);
+  procedure AddUnitDependency(Member: TPPUMember; const UsedUnit: string);
+  var
+    Graph: TCodeGraph;
+    UsedMember: TPPUMember;
+  begin
+    UsedMember:=FindMemberWithUnitName(UsedUnit);
+    if UsedMember=nil then exit;
+    if Member.Group=UsedMember.Group then begin
+      Graph:=Member.Group.UnitGraph;
+      if not Graph.PathExists(UsedMember.KeyNode,Member.KeyNode) then
+        Graph.AddEdge(Member.KeyNode,UsedMember.KeyNode)
+      else
+        DebugLn(['AddUnitDependency Unit circle found: ',Member.Unitname,' to ',UsedMember.Unitname]);
+    end else begin
+      if not Groups.GroupGraph.PathExists(UsedMember.Group.KeyNode,Member.Group.KeyNode) then
+        Groups.GroupGraph.AddEdge(Member.Group.KeyNode,UsedMember.Group.KeyNode)
+      else
+        DebugLn(['AddUnitDependency Group circle found: ',Member.Group.Name,' to ',UsedMember.Group.Name]);
+    end;
+  end;
+
+  procedure AddSectionDependencies(Member: TPPUMember; UsesList: TStrings);
   var
     i: Integer;
   begin
     if UsesList=nil then exit;
     for i:=0 to UsesList.Count-1 do
-      Groups.AddDependency(Member,UsesList[i]);
+      AddUnitDependency(Member,UsesList[i]);
+  end;
+  
+  procedure AddDependencies(Main: boolean);
+  var
+    AVLNode: TAVLTreeNode;
+    Member: TPPUMember;
+  begin
+    AVLNode:=FMembers.FindLowest;
+    while AVLNode<>nil do begin
+      Member:=TPPUMember(AVLNode.Data);
+      if not Member.UpdatePPU then exit;
+      if Main then
+        AddSectionDependencies(Member,Member.MainUses)
+      else
+        AddSectionDependencies(Member,Member.ImplementationUses);
+      AVLNode:=FMembers.FindSuccessor(AVLNode);
+    end;
   end;
 
 var
@@ -318,7 +382,7 @@ begin
   Result:=false;
   FUnitGraph.Clear;
 
-  // create nodes in the UnitGraph
+  // create graph nodes
   AVLNode:=FMembers.FindLowest;
   while AVLNode<>nil do begin
     Member:=TPPUMember(AVLNode.Data);
@@ -326,17 +390,12 @@ begin
     GraphNode.Data:=Member;
     AVLNode:=FMembers.FindSuccessor(AVLNode);
   end;
-
-  // load all PPU
-  AVLNode:=FMembers.FindLowest;
-  while AVLNode<>nil do begin
-    Member:=TPPUMember(AVLNode.Data);
-    if not Member.UpdatePPU then exit;
-    AddDependencies(Member,Member.MainUses);
-    AddDependencies(Member,Member.ImplementationUses);
-    AVLNode:=FMembers.FindSuccessor(AVLNode);
-  end;
   
+  // add primary dependencies
+  AddDependencies(true);
+  // add secondary dependencies
+  AddDependencies(false);
+
   UpdateTopologicalSortedList;
 
   Result:=true;
@@ -377,19 +436,6 @@ end;
 procedure TPPUGroups.InternalRemoveGroup(AGroup: TPPUGroup);
 begin
   FGroups.RemovePointer(AGroup);
-end;
-
-procedure TPPUGroups.AddDependency(Member: TPPUMember; const UsedUnit: string);
-var
-  UsedMember: TPPUMember;
-begin
-  UsedMember:=FindMemberWithUnitName(UsedUnit);
-  if UsedMember=nil then exit;
-  if Member.Group=UsedMember.Group then begin
-    Member.Group.UnitGraph.AddEdge(Member.KeyNode,UsedMember.KeyNode);
-  end else begin
-    GroupGraph.AddEdge(Member.Group.KeyNode,UsedMember.Group.KeyNode);
-  end;
 end;
 
 constructor TPPUGroups.Create;
@@ -465,6 +511,13 @@ begin
     AVLNode:=FGroups.FindSuccessor(AVLNode);
   end;
   // parse PPU
+  AVLNode:=FGroups.FindLowest;
+  while AVLNode<>nil do begin
+    Group:=TPPUGroup(AVLNode.Data);
+    if not Group.UpdatePPUs then exit;
+    AVLNode:=FGroups.FindSuccessor(AVLNode);
+  end;
+  // update dependencies
   AVLNode:=FGroups.FindLowest;
   while AVLNode<>nil do begin
     Group:=TPPUGroup(AVLNode.Data);
