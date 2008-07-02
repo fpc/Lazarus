@@ -123,12 +123,12 @@ type
   end;
   
 function CompareGraphNodeByNode(GraphNode1, GraphNode2: Pointer): integer;
-function ComparePointerWithGraphNodeNode(p, GraphNode: Pointer): integer;
+function CompareNodeWithGraphNodeNode(p, GraphNode: Pointer): integer;
 
 function CompareGraphEdgeByFromNode(GraphEdge1, GraphEdge2: Pointer): integer;
-function ComparePointerWithGraphEdgeFromNode(p, GraphEdge: Pointer): integer;
+function CompareNodeWithGraphEdgeFromNode(p, GraphEdge: Pointer): integer;
 function CompareGraphEdgeByToNode(GraphEdge1, GraphEdge2: Pointer): integer;
-function ComparePointerWithGraphEdgeToNode(p, GraphEdge: Pointer): integer;
+function CompareNodeWithGraphEdgeToNode(p, GraphEdge: Pointer): integer;
 
 function CompareGraphEdgeByNodes(GraphEdge1, GraphEdge2: Pointer): integer;
 function CompareEdgeKeyWithGraphEdge(EdgeKey, GraphEdge: Pointer): integer;
@@ -151,7 +151,7 @@ begin
   //DebugLn(['CompareGraphNodeByNode ',Node1.DescAsString,' ',Node2.DescAsString,' ',Result]);
 end;
 
-function ComparePointerWithGraphNodeNode(p, GraphNode: Pointer): integer;
+function CompareNodeWithGraphNodeNode(p, GraphNode: Pointer): integer;
 var
   Node: TCodeTreeNode;
 begin
@@ -180,7 +180,7 @@ begin
     Result:=0;
 end;
 
-function ComparePointerWithGraphEdgeFromNode(p, GraphEdge: Pointer): integer;
+function CompareNodeWithGraphEdgeFromNode(p, GraphEdge: Pointer): integer;
 var
   Node: TCodeTreeNode;
 begin
@@ -208,7 +208,7 @@ begin
     Result:=0;
 end;
 
-function ComparePointerWithGraphEdgeToNode(p, GraphEdge: Pointer): integer;
+function CompareNodeWithGraphEdgeToNode(p, GraphEdge: Pointer): integer;
 var
   Node: TCodeTreeNode;
 begin
@@ -382,6 +382,8 @@ var
 begin
   if Source=Self then exit;
   Clear;
+  FNodeClass:=Source.FNodeClass;
+  FEdgeClass:=Source.FEdgeClass;
   // copy nodes
   AVLNode:=Source.Nodes.FindLowest;
   while AVLNode<>nil do begin
@@ -841,14 +843,14 @@ end;
 
 function TCodeGraph.FindAVLNodeOfNode(Node: TCodeTreeNode): TAVLTreeNode;
 begin
-  Result:=Nodes.FindKey(Node,@ComparePointerWithGraphNodeNode);
+  Result:=Nodes.FindKey(Node,@CompareNodeWithGraphNodeNode);
 end;
 
 function TCodeGraph.FindAVLNodeOfToNode(InTree: TAVLTree; ToNode: TCodeTreeNode
   ): TAVLTreeNode;
 begin
   if InTree<>nil then
-    Result:=InTree.FindKey(ToNode,@ComparePointerWithGraphEdgeToNode)
+    Result:=InTree.FindKey(ToNode,@CompareNodeWithGraphEdgeToNode)
   else
     Result:=nil;
 end;
@@ -857,7 +859,7 @@ function TCodeGraph.FindAVLNodeOfFromNode(OutTree: TAVLTree;
   FromNode: TCodeTreeNode): TAVLTreeNode;
 begin
   if OutTree<>nil then
-    Result:=OutTree.FindKey(FromNode,@ComparePointerWithGraphEdgeFromNode)
+    Result:=OutTree.FindKey(FromNode,@CompareNodeWithGraphEdgeFromNode)
   else
     Result:=nil;
 end;

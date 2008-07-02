@@ -28,39 +28,34 @@ program PPUDependencies;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, PPUParser, FileProcs;
+  Classes, SysUtils, PPUParser, FileProcs, PPUGraph;
 
 var
-  PPU: TPPU;
   Filename: String;
-  UsedUnits: TStringList;
+  Groups: TPPUGroups;
+  Group: TPPUGroup;
+  i: Integer;
+  Member: TPPUMember;
 begin
   if (Paramcount<1) then begin
     writeln('Usage:');
-    writeln('  ',ParamStr(0),' <ppu filename>');
+    writeln('  ',ParamStr(0),' <ppu filename1> ...');
     Halt;
   end;
-
-  Filename:=ParamStr(1);
-
-  PPU:=TPPU.Create;
-  UsedUnits:=TStringList.Create;
+  
+  Groups:=TPPUGroups.Create;
   try
-    PPU.LoadFromFile(Filename);
-    debugln('================================================================');
-    PPU.Dump('');
-    debugln('================================================================');
-    UsedUnits.Clear;
-    PPU.GetMainUsesSectionNames(UsedUnits);
-    debugln('Main used units: ',UsedUnits.DelimitedText);
-    UsedUnits.Clear;
-    PPU.GetImplementationUsesSectionNames(UsedUnits);
-    debugln('Implementation used units: ',UsedUnits.DelimitedText);
-    debugln('Intialization proc: ',PPU.GetInitProcName);
-    debugln('Finalization proc: ',PPU.GetFinalProcName);
+    Group:=Groups.AddGroup('Default');
+    for i:=1 to Paramcount do begin
+      Filename:=ParamStr(i);
+      debugln(Filename);
+      Member:=Group.AddMember(ExtractFileNameOnly(Filename));
+      Member.PPUFilename:=Filename;
+    end;
+    
+    Groups.UpdateDependencies;
   finally
-    PPU.Free;
-    UsedUnits.Free;
+    Groups.Free;
   end;
 end.
 
