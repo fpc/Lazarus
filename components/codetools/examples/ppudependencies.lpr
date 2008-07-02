@@ -36,6 +36,7 @@ var
   Group: TPPUGroup;
   i: Integer;
   Member: TPPUMember;
+  MissingUnit: TStringList;
 begin
   if (Paramcount<1) then begin
     writeln('Usage:');
@@ -44,17 +45,24 @@ begin
   end;
   
   Groups:=TPPUGroups.Create;
+  MissingUnit:=TStringList.Create;
   try
     Group:=Groups.AddGroup('Default');
     for i:=1 to Paramcount do begin
-      Filename:=ParamStr(i);
+      Filename:=CleanAndExpandFilename(ParamStr(i));
       debugln(Filename);
       Member:=Group.AddMember(ExtractFileNameOnly(Filename));
       Member.PPUFilename:=Filename;
     end;
     
     Groups.UpdateDependencies;
+    Groups.GetMissingUnits(MissingUnit);
+    if MissingUnit.Count>0 then begin
+      debugln('ERROR: Missing units: ',MissingUnit.DelimitedText);
+    end;
+    
   finally
+    MissingUnit.Free;
     Groups.Free;
   end;
 end.

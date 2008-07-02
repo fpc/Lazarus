@@ -30,7 +30,8 @@ unit PPUGraph;
 interface
 
 uses
-  Classes, SysUtils, PPUParser, CodeTree, AVL_Tree, FileProcs, BasicCodeTools;
+  Classes, SysUtils, PPUParser, CodeTree, AVL_Tree, FileProcs, BasicCodeTools,
+  CodeGraph;
   
 type
   TPPUGroup = class;
@@ -44,10 +45,14 @@ type
     KeyNode: TCodeTreeNode;
     InitializationMangledName: string;
     FinalizationMangledName: string;
+    MainUses: TStrings;
+    ImplementationUses: TStrings;
     Group: TPPUGroup;
+    PPU: TPPU;
     constructor Create;
     destructor Destroy; override;
-    function UpdateDependencies: boolean;
+    function UpdatePPU: boolean;
+    procedure GetMissingUnits(var List: TStrings);
   end;
 
   TPPUGroups = class;
@@ -57,6 +62,7 @@ type
   TPPUGroup = class
   private
     FMembers: TAVLTree;// tree of TPPUMember sorted for unitname
+    FUnitGraph: TCodeGraph;
     function FindAVLNodeOfMemberWithUnitName(const AName: string): TAVLTreeNode;
     procedure InternalRemoveMember(AMember: TPPUMember);
   public
@@ -69,6 +75,8 @@ type
     function AddMember(const NewUnitName: string): TPPUMember;
     function FindMemberWithUnitName(const AName: string): TPPUMember;
     function UpdateDependencies: boolean;
+    procedure GetMissingUnits(var List: TStrings);
+    property UnitGraph: TCodeGraph read FUnitGraph;
   end;
 
   { TPPUGroups }
@@ -77,6 +85,7 @@ type
   private
     FGroups: TAVLTree;// tree of TPPUGroup sorted for name
     FMembers: TAVLTree;// tree of TPPUMember sorted for unitname
+    FUnitGraph: TCodeGraph;
     function FindAVLNodeOfGroupWithName(const AName: string): TAVLTreeNode;
     function FindAVLNodeOfMemberWithName(const AName: string): TAVLTreeNode;
     procedure InternalRemoveMember(AMember: TPPUMember);
@@ -90,6 +99,8 @@ type
     function FindGroupWithName(const AName: string): TPPUGroup;
     function FindMemberWithUnitName(const AName: string): TPPUMember;
     function UpdateDependencies: boolean;
+    procedure GetMissingUnits(var List: TStrings);
+    property UnitGraph: TCodeGraph read FUnitGraph;
   end;
   
 function ComparePPUMembersByUnitName(Member1, Member2: Pointer): integer;
@@ -128,10 +139,15 @@ end;
 constructor TPPUMember.Create;
 begin
   KeyNode:=NodeMemManager.NewNode;
+  MainUses:=TStringList.Create;
+  ImplementationUses:=TStringList.Create;
 end;
 
 destructor TPPUMember.Destroy;
 begin
+  FreeAndNil(PPU);
+  FreeAndNil(MainUses);
+  FreeAndNil(ImplementationUses);
   if KeyNode<>nil then
     NodeMemManager.DisposeNode(KeyNode);
   KeyNode:=nil;
@@ -140,35 +156,52 @@ begin
   inherited Destroy;
 end;
 
-function TPPUMember.UpdateDependencies: boolean;
-var
-  PPU: TPPU;
-  UsedUnits: TStringList;
+function TPPUMember.UpdatePPU: boolean;
 begin
   Result:=false;
-  PPU:=TPPU.Create;
-  UsedUnits:=TStringList.Create;
-  try
-    PPU.LoadFromFile(PPUFilename);
-    debugln('================================================================');
-    DebugLn(['TPPUMember.UpdateDependencies UnitName=',Unitname,' Filename=',PPUFilename]);
-    PPU.Dump('');
-    debugln('================================================================');
-    UsedUnits.Clear;
-    PPU.GetMainUsesSectionNames(UsedUnits);
-    debugln('Main used units: ',UsedUnits.DelimitedText);
-    UsedUnits.Clear;
-    PPU.GetImplementationUsesSectionNames(UsedUnits);
-    debugln('Implementation used units: ',UsedUnits.DelimitedText);
-    InitializationMangledName:=PPU.GetInitProcName;
-    debugln('Initialization proc: ',InitializationMangledName);
-    FinalizationMangledName:=PPU.GetFinalProcName;
-    debugln('Finalization proc: ',FinalizationMangledName);
-  finally
-    PPU.Free;
-    UsedUnits.Free;
-  end;
+  MainUses.Clear;
+  ImplementationUses.Clear;
+  InitializationMangledName:='';
+  FinalizationMangledName:='';
+  if PPU=nil then PPU:=TPPU.Create;
+  PPU.LoadFromFile(PPUFilename);
+  debugln('================================================================');
+  DebugLn(['TPPUMember.UpdateDependencies UnitName=',Unitname,' Filename=',PPUFilename]);
+  //PPU.Dump('');
+  PPU.GetMainUsesSectionNames(MainUses);
+  debugln('Main used units: ',MainUses.DelimitedText);
+  PPU.GetImplementationUsesSectionNames(ImplementationUses);
+  debugln('Implementation used units: ',ImplementationUses.DelimitedText);
+  InitializationMangledName:=PPU.GetInitProcName;
+  debugln('Initialization proc: ',InitializationMangledName);
+  FinalizationMangledName:=PPU.GetFinalProcName;
+  debugln('Finalization proc: ',FinalizationMangledName);
+  
   Result:=true;
+end;
+
+procedure TPPUMember.GetMissingUnits(var List: TStrings);
+
+  procedure GetMissing(UsesList: TStrings);
+  var
+    i: Integer;
+    CurUnitName: string;
+  begin
+    if UsesList=nil then exit;
+    for i:=0 to UsesList.Count-1 do begin
+      CurUnitName:=UsesList[i];
+      if Group.Groups.FindMemberWithUnitName(CurUnitName)=nil then begin
+        if List=nil then
+          List:=TStringList.Create;
+        if List.IndexOf(CurUnitName)<0 then
+          List.Add(CurUnitName);
+      end;
+    end;
+  end;
+
+begin
+  GetMissing(MainUses);
+  GetMissing(ImplementationUses);
 end;
 
 { TPPUGroup }
@@ -190,11 +223,13 @@ constructor TPPUGroup.Create;
 begin
   FMembers:=TAVLTree.Create(@ComparePPUMembersByUnitName);
   KeyNode:=NodeMemManager.NewNode;
+  FUnitGraph:=TCodeGraph.Create;
 end;
 
 destructor TPPUGroup.Destroy;
 begin
   Clear;
+  FreeAndNil(FUnitGraph);
   FreeAndNil(FMembers);
   if KeyNode<>nil then
     NodeMemManager.DisposeNode(KeyNode);
@@ -206,6 +241,7 @@ end;
 
 procedure TPPUGroup.Clear;
 begin
+  FUnitGraph.Clear;
   while FMembers.Count>0 do
     TPPUMember(FMembers.Root.Data).Free;
 end;
@@ -235,14 +271,32 @@ end;
 function TPPUGroup.UpdateDependencies: boolean;
 var
   AVLNode: TAVLTreeNode;
+  Member: TPPUMember;
 begin
   Result:=false;
+  FUnitGraph.Clear;
+  // load all PPU
   AVLNode:=FMembers.FindLowest;
   while AVLNode<>nil do begin
-    if not TPPUMember(AVLNode.Data).UpdateDependencies then exit;
+    Member:=TPPUMember(AVLNode.Data);
+    if not Member.UpdatePPU then exit;
     AVLNode:=FMembers.FindSuccessor(AVLNode);
   end;
+
   Result:=true;
+end;
+
+procedure TPPUGroup.GetMissingUnits(var List: TStrings);
+var
+  Member: TPPUMember;
+  AVLNode: TAVLTreeNode;
+begin
+  AVLNode:=FMembers.FindLowest;
+  while AVLNode<>nil do begin
+    Member:=TPPUMember(AVLNode.Data);
+    Member.GetMissingUnits(List);
+    AVLNode:=FMembers.FindSuccessor(AVLNode);
+  end;
 end;
 
 { TPPUGroups }
@@ -273,11 +327,13 @@ constructor TPPUGroups.Create;
 begin
   FGroups:=TAVLTree.Create(@ComparePPUGroupsByName);
   FMembers:=TAVLTree.Create(@ComparePPUMembersByUnitName);
+  FUnitGraph:=TCodeGraph.Create;
 end;
 
 destructor TPPUGroups.Destroy;
 begin
   Clear;
+  FreeAndNil(FUnitGraph);
   FreeAndNil(FGroups);
   FreeAndNil(FMembers);
   inherited Destroy;
@@ -285,6 +341,7 @@ end;
 
 procedure TPPUGroups.Clear;
 begin
+  FUnitGraph.Clear;
   while FGroups.Count>0 do
     TPPUGroup(FGroups.Root.Data).Free;
 end;
@@ -324,14 +381,30 @@ end;
 function TPPUGroups.UpdateDependencies: boolean;
 var
   AVLNode: TAVLTreeNode;
+  Group: TPPUGroup;
 begin
+  FUnitGraph.Clear;
   Result:=false;
   AVLNode:=FGroups.FindLowest;
   while AVLNode<>nil do begin
-    if not TPPUGroup(AVLNode.Data).UpdateDependencies then exit;
+    Group:=TPPUGroup(AVLNode.Data);
+    if not Group.UpdateDependencies then exit;
     AVLNode:=FGroups.FindSuccessor(AVLNode);
   end;
   Result:=true;
+end;
+
+procedure TPPUGroups.GetMissingUnits(var List: TStrings);
+var
+  AVLNode: TAVLTreeNode;
+  Group: TPPUGroup;
+begin
+  AVLNode:=FGroups.FindLowest;
+  while AVLNode<>nil do begin
+    Group:=TPPUGroup(AVLNode.Data);
+    Group.GetMissingUnits(List);
+    AVLNode:=FGroups.FindSuccessor(AVLNode);
+  end;
 end;
 
 end.
