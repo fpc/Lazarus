@@ -48,9 +48,13 @@ end;
 //////// Code        //////
 
 function TGtkMemoStrings.GetTextStr: string;
+var
+  AText: PgChar;
 begin
-  Result := gtk_editable_get_chars(PGtkEditable(FGtkText), 0,
-                                   gtk_text_get_length(FGtkText));
+  AText := gtk_editable_get_chars(PGtkEditable(FGtkText), 0,
+    gtk_text_get_length(FGtkText));
+  Result := StrPas(AText);
+  g_free(AText);
 end;
 
 function TGtkMemoStrings.GetCount: integer;
@@ -63,18 +67,22 @@ function TGtkMemoStrings.Get(Index: Integer): string;
 var
   LineStart,
   LineEnd: Integer;
+  AText: PgChar;
 begin
   LineStart := FLineStartPos[Index];
-  if FCachedCount-1 = Index then begin
-    LineEnd := gtk_text_get_length(FGtkText);
-  end
-  else begin
-    LineEnd := FLineStartPos[Index+1]-Length(LineEnding);
-  end;
-  if LineStart=LineEnd then
-    Result := ''
+  if FCachedCount - 1 = Index then
+    LineEnd := gtk_text_get_length(FGtkText)
   else
-    Result := gtk_editable_get_chars(@(FGtkText^.editable), LineStart, LineEnd);
+    LineEnd := FLineStartPos[Index + 1] - Length(LineEnding);
+
+  if LineStart <> LineEnd then
+  begin
+    AText := gtk_editable_get_chars(@(FGtkText^.editable), LineStart, LineEnd);
+    Result := StrPas(AText);
+    g_free(AText);
+  end
+  else
+    Result := ''
 end;
 
 procedure TGtkMemoStrings.AdjustIndices(FromIndex, ToIndex: Integer;
