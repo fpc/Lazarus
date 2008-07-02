@@ -303,6 +303,7 @@ type
     fChangeEndian: boolean;
     FHeader: TPPUHeader;
     FEntry: TPPUEntry;
+    FEntryStart: integer;
     FEntryPos: integer;
     FEntryBuf: Pointer;
     FEntryBufSize: integer;
@@ -312,6 +313,8 @@ type
     FData: Pointer;
     FDataPos: integer;
     FDataSize: integer;
+    FMainUsesSectionPos: integer;// start of the ibloadunit entry
+    FImplementationUsesSectionPos: integer;// start of the ibloadunit entry
     procedure ReadPPU(const Parts: TPPUParts);
     procedure ReadHeader;
     procedure ReadInterfaceHeader;
@@ -347,6 +350,9 @@ type
     procedure ReadSymOptions;
     procedure Skip(Count: integer);
     procedure Error(const Msg: string);
+    
+    procedure GetUsesSection(StartPos: integer; var List: TStrings);
+    procedure SetDataPos(NewPos: integer);
   public
     constructor Create;
     destructor Destroy; override;
@@ -355,6 +361,8 @@ type
     procedure LoadFromFile(const Filename: string; const Parts: TPPUParts = PPUPartsAll);
     procedure Dump(const Prefix: string = '');
     procedure DumpHeader(const Prefix: string = '');
+    procedure GetMainUsesSectionNames(var List: TStrings);
+    procedure GetImplementationUsesSectionNames(var List: TStrings);
   end;
 
 function PPUTargetToStr(w: longint): string;
@@ -669,6 +677,7 @@ begin
     fHeader.symlistsize := swapendian(fHeader.symlistsize);
   end;
   fChangeEndian:=((FHeader.flags and uf_big_endian) = uf_big_endian)<>PPUIsEndianBig;
+  
   FEntryPos:=0;
   FillByte(FEntry,SizeOf(FEntry),0);
 
@@ -713,8 +722,11 @@ begin
       end;
       
     ibloadunit:
-      ReadUsedUnits;
-      
+      begin
+        FMainUsesSectionPos:=FEntryStart;
+        ReadUsedUnits;
+      end;
+
     iblinkunitofiles,iblinkunitstaticlibs,iblinkunitsharedlibs,
     iblinkotherofiles,iblinkotherstaticlibs,iblinkothersharedlibs:
       ReadLinkContainer(EntryNr);
@@ -764,7 +776,10 @@ begin
     // ToDo: ibasmsymbols
     
     ibloadunit:
-      ReadUsedUnits;
+      begin
+        FImplementationUsesSectionPos:=FEntryStart;
+        ReadUsedUnits;
+      end;
 
     ibendimplementation:
       break;
@@ -1372,6 +1387,7 @@ end;
 function TPPU.ReadEntry: byte;
 begin
   FEntryPos:=0;
+  FEntryStart:=FDataPos;
   ReadData(FEntry,SizeOf(FEntry));
   if fChangeEndian then
     FEntry.size:=SwapEndian(FEntry.size);
@@ -1506,7 +1522,7 @@ end;
 
 procedure TPPU.ReadData(var Buf; Count: longint);
 begin
-  DebugLn(['TPPU.ReadData Count=',Count,' Pos=',FDataPos]);
+  //DebugLn(['TPPU.ReadData Count=',Count,' Pos=',FDataPos]);
   if FDataPos+Count>FDataSize then
     Error('TPPU.ReadData: out of data');
   System.Move(Pointer(FData+FDataPos)^,Buf,Count);
@@ -1732,6 +1748,32 @@ begin
   raise EPPUParserError.Create(Msg);
 end;
 
+procedure TPPU.GetUsesSection(StartPos: integer; var List: TStrings);
+var
+  Unitname: String;
+begin
+  if StartPos<=0 then exit;
+  SetDataPos(StartPos);
+  if ReadEntry<>ibloadunit then exit;
+  FDataPos:=StartPos;
+  while not EndOfEntry do begin
+    Unitname:=ReadEntryShortstring;
+    if List=nil then
+      List:=TStringList.Create;
+    if List.IndexOf(Unitname)<0 then
+      List.Add(UnitName);
+    ReadEntryLongint; // CRC
+    ReadEntryLongint; // IntfCRC
+  end;
+end;
+
+procedure TPPU.SetDataPos(NewPos: integer);
+begin
+  FillByte(FEntry,SizeOf(FEntry),0);
+  FEntryPos:=0;
+  FDataPos:=NewPos;
+end;
+
 constructor TPPU.Create;
 begin
 
@@ -1758,6 +1800,9 @@ begin
   ReAllocMem(FData,0);
   FDataSize:=0;
   FDataPos:=0;
+
+  FMainUsesSectionPos:=0;
+  FImplementationUsesSectionPos:=0;
 end;
 
 procedure TPPU.LoadFromStream(s: TStream; const Parts: TPPUParts);
@@ -1807,6 +1852,16 @@ begin
   DebugLn([Prefix,'  Interface CheckSum=',HexStr(cardinal(FHeader.interface_checksum),8)]);
   DebugLn([Prefix,'  Number of Definitions=',FHeader.deflistsize]);
   DebugLn([Prefix,'  Number of Symbols=',FHeader.symlistsize]);
+end;
+
+procedure TPPU.GetMainUsesSectionNames(var List: TStrings);
+begin
+  GetUsesSection(FMainUsesSectionPos,List);
+end;
+
+procedure TPPU.GetImplementationUsesSectionNames(var List: TStrings);
+begin
+  GetUsesSection(FImplementationUsesSectionPos,List);
 end;
 
 end.

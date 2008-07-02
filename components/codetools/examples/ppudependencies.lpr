@@ -28,11 +28,12 @@ program PPUDependencies;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, PPUParser;
+  Classes, SysUtils, PPUParser, FileProcs;
 
 var
   PPU: TPPU;
   Filename: String;
+  UsedUnits: TStringList;
 begin
   if (Paramcount<1) then begin
     writeln('Usage:');
@@ -43,11 +44,21 @@ begin
   Filename:=ParamStr(1);
 
   PPU:=TPPU.Create;
+  UsedUnits:=TStringList.Create;
   try
     PPU.LoadFromFile(Filename);
+    debugln('================================================================');
     PPU.Dump('');
+    debugln('================================================================');
+    UsedUnits.Clear;
+    PPU.GetMainUsesSectionNames(UsedUnits);
+    debugln('Main used units: ',UsedUnits.DelimitedText);
+    UsedUnits.Clear;
+    PPU.GetImplementationUsesSectionNames(UsedUnits);
+    debugln('Implementation used units: ',UsedUnits.DelimitedText);
   finally
     PPU.Free;
+    UsedUnits.Free;
   end;
 end.
 
