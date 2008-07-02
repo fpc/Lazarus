@@ -81,8 +81,8 @@ end;
 
 function TGtk2MemoStrings.Get(Index: Integer): string;
 var
-StartIter,
-EndIter: TGtkTextIter;
+  StartIter, EndIter: TGtkTextIter;
+  AText: PgChar;
 begin
   gtk_text_buffer_get_iter_at_line(FGtkBuf, @StartIter, Index);
   if Index = gtk_text_buffer_get_line_count(FGtkBuf) then
@@ -94,9 +94,11 @@ begin
   // if a row is blank gtk_text_iter_forward_to_line_end will goto the row ahead
   // this is not desired. so if it jumped ahead a row then the row we want is blank
   if gtk_text_iter_get_line(@StartIter) = gtk_text_iter_get_line(@EndIter) then
-    Result := PChar(gtk_text_iter_get_text(@StartIter, @EndIter))
-  else Result := '';
-
+    AText := gtk_text_iter_get_text(@StartIter, @EndIter)
+  else
+    AText := nil;
+  Result := StrPas(AText);
+  g_free(AText);
 end;
 
 constructor TGtk2MemoStrings.Create(TextView: PGtkTextView;
