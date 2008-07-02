@@ -48,6 +48,7 @@ type
     function OutTreeCount: integer;
     function InTreeCount: integer;
   end;
+  TCodeGraphNodeClass = class of TCodeGraphNode;
   
   PCodeGraphEdgeKey = ^TCodeGraphEdgeKey;
   TCodeGraphEdgeKey = record
@@ -66,16 +67,20 @@ type
     Data: Pointer;  // custom data
     Flags: cardinal;// custom flags
   end;
+  TCodeGraphEdgeClass = class of TCodeGraphEdge;
 
   { TCodeGraph }
 
   TCodeGraph = class
   private
+    FEdgeClass: TCodeGraphEdgeClass;
+    FNodeClass: TCodeGraphNodeClass;
     procedure ClearInternalNodeFlags;
   public
     Nodes: TAVLTree; // tree of TCodeGraphNode sorted for Node
     Edges: TAVLTree; // tree of TCodeGraphEdge sorted for FromNode,ToNode
-    constructor Create;
+    constructor Create(ANodeClass: TCodeGraphNodeClass = nil;
+                       AnEdgeClass: TCodeGraphEdgeClass = nil);
     destructor Destroy; override;
     procedure Clear;
     procedure ClearNodeFlags;
@@ -111,6 +116,9 @@ type
                                    ): TAVLTreeNode;
     function FindAVLNodeOfEdge(FromNode, ToNode: TCodeTreeNode): TAVLTreeNode;
     
+    property NodeClass: TCodeGraphNodeClass read FNodeClass;
+    property EdgeClass: TCodeGraphEdgeClass read FEdgeClass;
+
     procedure ConsistencyCheck;
   end;
   
@@ -297,8 +305,17 @@ begin
   end;
 end;
 
-constructor TCodeGraph.Create;
+constructor TCodeGraph.Create(ANodeClass: TCodeGraphNodeClass;
+  AnEdgeClass: TCodeGraphEdgeClass);
 begin
+  if ANodeClass<>nil then
+    FNodeClass:=ANodeClass
+  else
+    FNodeClass:=TCodeGraphNode;
+  if AnEdgeClass<>nil then
+    FEdgeClass:=AnEdgeClass
+  else
+    FEdgeClass:=TCodeGraphEdge;
   Nodes:=TAVLTree.Create(@CompareGraphNodeByNode);
   Edges:=TAVLTree.Create(@CompareGraphEdgeByNodes);
 end;
@@ -404,7 +421,7 @@ begin
   if AVLNode<>nil then
     Result:=TCodeGraphNode(AVLNode.Data)
   else if CreateIfNotExists then begin
-    Result:=TCodeGraphNode.Create;
+    Result:=FNodeClass.Create;
     Result.Node:=Node;
     Nodes.Add(Result);
   end else
@@ -809,7 +826,7 @@ begin
     if not CreateIfNotExists then exit;
     FromGraphNode:=GetGraphNode(FromNode,true);
     ToGraphNode:=GetGraphNode(ToNode,true);
-    Result:=TCodeGraphEdge.Create;
+    Result:=FEdgeClass.Create;
     Result.ToNode:=ToGraphNode;
     Result.FromNode:=FromGraphNode;
     Edges.Add(Result);

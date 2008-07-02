@@ -21,10 +21,10 @@
   Author: Mattias Gaertner
 
   Note:
-    This unit will move to the FCL when it has stabilized.
+    This unit will be moved to the FCL when it has stabilized.
 
   Abstract:
-    Functions to classes to read ppu streams (Free Pascal compiled units)
+    Functions and classes to read ppu streams (Free Pascal compiled units)
     of various versions. For example reading 2.3.1 ppus compiled for 64bit
     with a lazarus compiled with fpc 2.2.2 i386.
 }
