@@ -104,8 +104,10 @@ type
     procedure DeleteSelfCircles;
     procedure CombineNodes(ListOfGraphNodes: TFPList; GraphNode: TCodeGraphNode);
     function GetTopologicalSortedList(out ListOfGraphNodes: TFPList;
-                    InEdgeDirection, SetTopologicalLvl, SortForStartPos: boolean
-                    ): TCodeGraphEdge;
+                    InEdgeDirection, // true=start with source nodes (no InEdges)
+                    SetTopologicalLvl,// true=set Node.Flags to level
+                    SortForStartPos: boolean// true=secondary sort order is Node.StartPos
+                    ): TCodeGraphEdge;// is a circle edge (if found, else nil)
     procedure GetMaximumCircle(StartNode: TCodeGraphNode;
                                out ListOfGraphNodes: TFPList);
 
