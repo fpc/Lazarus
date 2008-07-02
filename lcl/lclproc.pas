@@ -2670,6 +2670,7 @@ begin
         CharLen:=1;
       end;
       inc(Result,CharLen);
+      inc(p,CharLen);
       if Result>Count then begin
         dec(Result,CharLen);
         exit; // missing following bytes
