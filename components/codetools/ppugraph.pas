@@ -65,6 +65,7 @@ type
     FUnitGraph: TCodeGraph;
     function FindAVLNodeOfMemberWithUnitName(const AName: string): TAVLTreeNode;
     procedure InternalRemoveMember(AMember: TPPUMember);
+    procedure UpdateTopologicalSortedList;
   public
     Name: string;
     KeyNode: TCodeTreeNode;
@@ -221,6 +222,34 @@ begin
     Groups.InternalRemoveMember(AMember);
 end;
 
+procedure TPPUGroup.UpdateTopologicalSortedList;
+var
+  ListOfGraphNodes: TFPList;
+  i: Integer;
+  GraphNode: TCodeGraphNode;
+  Member: TPPUMember;
+begin
+  UnitGraph.GetTopologicalSortedList(ListOfGraphNodes,true,false,false);
+  if ListOfGraphNodes=nil then
+    ListOfGraphNodes:=TFPList.Create;
+  DebugLn(['TPPUGroup.UpdateTopologicalSortedList ',FMembers.Count,' ',ListOfGraphNodes.Count]);
+  DebugLn(['Initialization: ================================']);
+  for i:=ListOfGraphNodes.Count-1 downto 0 do begin
+    GraphNode:=TCodeGraphNode(ListOfGraphNodes[i]);
+    Member:=TPPUMember(GraphNode.Data);
+    if Member.InitializationMangledName<>'' then
+      DebugLn([Member.InitializationMangledName]);
+  end;
+  DebugLn(['Finalization: ===================================']);
+  for i:=0 to ListOfGraphNodes.Count-1 do begin
+    GraphNode:=TCodeGraphNode(ListOfGraphNodes[i]);
+    Member:=TPPUMember(GraphNode.Data);
+    if Member.FinalizationMangledName<>'' then
+      DebugLn([Member.FinalizationMangledName]);
+  end;
+  ListOfGraphNodes.Free;
+end;
+
 constructor TPPUGroup.Create;
 begin
   FMembers:=TAVLTree.Create(@ComparePPUMembersByUnitName);
@@ -284,6 +313,7 @@ function TPPUGroup.UpdateDependencies: boolean;
 var
   AVLNode: TAVLTreeNode;
   Member: TPPUMember;
+  GraphNode: TCodeGraphNode;
 begin
   Result:=false;
   FUnitGraph.Clear;
@@ -292,7 +322,8 @@ begin
   AVLNode:=FMembers.FindLowest;
   while AVLNode<>nil do begin
     Member:=TPPUMember(AVLNode.Data);
-    UnitGraph.AddGraphNode(Member.KeyNode);
+    GraphNode:=UnitGraph.AddGraphNode(Member.KeyNode);
+    GraphNode.Data:=Member;
     AVLNode:=FMembers.FindSuccessor(AVLNode);
   end;
 
@@ -305,6 +336,8 @@ begin
     AddDependencies(Member,Member.ImplementationUses);
     AVLNode:=FMembers.FindSuccessor(AVLNode);
   end;
+  
+  UpdateTopologicalSortedList;
 
   Result:=true;
 end;
@@ -418,6 +451,7 @@ function TPPUGroups.UpdateDependencies: boolean;
 var
   AVLNode: TAVLTreeNode;
   Group: TPPUGroup;
+  GraphNode: TCodeGraphNode;
 begin
   FGroupGraph.Clear;
   Result:=false;
@@ -426,7 +460,8 @@ begin
   AVLNode:=FGroups.FindLowest;
   while AVLNode<>nil do begin
     Group:=TPPUGroup(AVLNode.Data);
-    GroupGraph.AddGraphNode(Group.KeyNode);
+    GraphNode:=GroupGraph.AddGraphNode(Group.KeyNode);
+    GraphNode.Data:=Group;
     AVLNode:=FGroups.FindSuccessor(AVLNode);
   end;
   // parse PPU
