@@ -109,16 +109,18 @@ make -C fpcsrc compiler_install rtl_install packages_install utils_install \
 make -C fpcsrc/compiler installsymlink PP=$COMPILER INSTALL_PREFIX=$INSTALLFPCDIR
 
 if [ $CREATECROSSPPC == 1 ]; then
-  make -C fpcsrc/compiler PPC_TARGET=powerpc PP=$COMPILER EXENAME=ppcppc
-  make all PP=$PPC_RELEASE CPU_TARGET=powerpc
-  CROSSCOMPILER=$FPCBUILDDIR/fpcsrc/compiler/ppcppc
+  make all PP=$PPC_RELEASE CPU_TARGET=powerpc CROSSINSTALL=0
+  
+  CROSSCOMPILER=$FPCBUILDDIR/fpcsrc/compiler/ppcrossppc
   make -C fpcsrc compiler_install rtl_install packages_install CPU_TARGET=powerpc FPC=$CROSSCOMPILER CROSSINSTALL=0 \
      INSTALL_PREFIX=$INSTALLDIR FPCMAKE=$FPCBUILDDIR/fpcsrc/utils/fpcm/fpcmake
   # install for use by lazarus
   make -C fpcsrc compiler_install rtl_install packages_install CPU_TARGET=powerpc FPC=$CROSSCOMPILER CROSSINSTALL=0 \
-    INSTALL_PREFIX=$INSTALLFPCDIR FPCMAKE=$FPCBUILDDIR/fpcsrc/utils/fpcm/fpcmake
+    INSTALL_PREFIX=$INSTALLFPCDIR FPCMAKE=$FPCBUILDDIR/fpcsrc/utils/fpcm/fpcmake EXENAME=ppcppc
 
-  make -C fpcsrc/compiler CPU_TARGET=powerpc installsymlink FPC=$CROSSCOMPILER INSTALL_PREFIX=$INSTALLFPCDIR
+  #make -C fpcsrc/compiler CPU_TARGET=powerpc installsymlink FPC=$CROSSCOMPILER INSTALL_PREFIX=$INSTALLFPCDIR CROSSINSTALL=0
+  ln -sf ../lib/fpc/$FPCVERSION/ppcrossppc $INSTALLFPCDIR/bin/ppcppc
+  ln -sf ../lib/fpc/$FPCVERSION/ppcrossppc $INSTALLDIR/bin/ppcppc
 fi
 
 # create symlink using relative paths, make symlinkinstall uses absolute path, 

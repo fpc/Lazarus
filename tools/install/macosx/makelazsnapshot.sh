@@ -36,7 +36,7 @@ fi
 LAZSOURCEDIR=~/src/lazsource
 
 COMPILER=~/fpc/bin/$PPCARCH
-CROSSCOMPILER=~/fpc/bin/ppcppc
+CROSSCOMPILER=~/fpc/bin/fpc
 FPCVERSION=`$COMPILER -iV`
 BUILDDIR=~/tmp/buildlaz
 LAZBUILDDIR=$BUILDDIR/lazarus
