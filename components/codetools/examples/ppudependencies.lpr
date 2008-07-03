@@ -68,7 +68,7 @@ begin
     Groups.UpdateDependencies;
     Groups.GetMissingUnits(MissingUnit);
     if MissingUnit.Count>0 then begin
-      debugln('ERROR: Missing units: ',MissingUnit.DelimitedText);
+      debugln('NOTE: Missing units: ',MissingUnit.DelimitedText);
     end;
     
   finally

@@ -39,6 +39,12 @@ const
 type
   TPPUGroup = class;
 
+  TPPUMemberFlag = (
+    pmfDisabled,
+    pmfAutoDisabled
+    );
+  TPPUMemberFlags = set of TPPUMemberFlag;
+  
   { TPPUMember }
 
   TPPUMember = class
@@ -52,6 +58,7 @@ type
     ImplementationUses: TStrings;
     Group: TPPUGroup;
     PPU: TPPU;
+    Flags: TPPUMemberFlags;
     constructor Create;
     destructor Destroy; override;
     function UpdatePPU: boolean;
@@ -95,6 +102,7 @@ type
     FGroups: TAVLTree;// tree of TPPUGroup sorted for name
     FMembers: TAVLTree;// tree of TPPUMember sorted for unitname
     FGroupGraph: TCodeGraph;
+    FUnitGraph: TCodeGraph;
     function FindAVLNodeOfGroupWithName(const AName: string): TAVLTreeNode;
     function FindAVLNodeOfMemberWithName(const AName: string): TAVLTreeNode;
     procedure InternalRemoveMember(AMember: TPPUMember);
@@ -104,6 +112,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
+    procedure ClearAutoDisableFlags;
     function AddGroup(const NewName: string): TPPUGroup;
     procedure AddFPCGroupsForCurrentCompiler(const BaseDirectory: string);
     procedure AddFPCGroups(const FPCPPUBaseDir: string // for example: /usr/lib/fpc/2.2.3/units/i386-linux/
@@ -112,8 +121,11 @@ type
     function FindGroupWithName(const AName: string): TPPUGroup;
     function FindMemberWithUnitName(const AName: string): TPPUMember;
     function UpdateDependencies: boolean;
+    procedure AutoDisableUnitsWithBrokenDependencies;
+    procedure AutoDisableMember(Member: TPPUMember);
     procedure GetMissingUnits(var List: TStrings);
     property GroupGraph: TCodeGraph read FGroupGraph;
+    property UnitGraph: TCodeGraph read FUnitGraph;
   end;
   
 function ComparePPUMembersByUnitName(Member1, Member2: Pointer): integer;
@@ -350,13 +362,21 @@ function TPPUGroup.UpdateDependencies: boolean;
   begin
     UsedMember:=FindMemberWithUnitName(UsedUnit);
     if UsedMember=nil then exit;
+    // add to 'global' unit graph
+    Graph:=Groups.UnitGraph;
+    if not Graph.PathExists(UsedMember.KeyNode,Member.KeyNode) then
+      Graph.AddEdge(Member.KeyNode,UsedMember.KeyNode)
+    else
+      DebugLn(['AddUnitDependency Unit circle found: ',Member.Unitname,' to ',UsedMember.Unitname]);
     if Member.Group=UsedMember.Group then begin
+      // add to unit graph of group
       Graph:=Member.Group.UnitGraph;
       if not Graph.PathExists(UsedMember.KeyNode,Member.KeyNode) then
         Graph.AddEdge(Member.KeyNode,UsedMember.KeyNode)
       else
         DebugLn(['AddUnitDependency Unit circle found: ',Member.Unitname,' to ',UsedMember.Unitname]);
     end else begin
+      // add to 'global' package graph
       if not Groups.GroupGraph.PathExists(UsedMember.Group.KeyNode,Member.Group.KeyNode) then
         Groups.GroupGraph.AddEdge(Member.Group.KeyNode,UsedMember.Group.KeyNode)
       else
@@ -459,11 +479,13 @@ begin
   FGroups:=TAVLTree.Create(@ComparePPUGroupsByName);
   FMembers:=TAVLTree.Create(@ComparePPUMembersByUnitName);
   FGroupGraph:=TCodeGraph.Create;
+  FUnitGraph:=TCodeGraph.Create;
 end;
 
 destructor TPPUGroups.Destroy;
 begin
   Clear;
+  FreeAndNil(FUnitGraph);
   FreeAndNil(FGroupGraph);
   FreeAndNil(FGroups);
   FreeAndNil(FMembers);
@@ -473,8 +495,22 @@ end;
 procedure TPPUGroups.Clear;
 begin
   FGroupGraph.Clear;
+  FUnitGraph.Clear;
   while FGroups.Count>0 do
     TPPUGroup(FGroups.Root.Data).Free;
+end;
+
+procedure TPPUGroups.ClearAutoDisableFlags;
+var
+  AVLNode: TAVLTreeNode;
+  Member: TPPUMember;
+begin
+  AVLNode:=FMembers.FindLowest;
+  while AVLNode<>nil do begin
+    Member:=TPPUMember(AVLNode.Data);
+    Exclude(Member.Flags,pmfAutoDisabled);
+    AVLNode:=FMembers.FindSuccessor(AVLNode);
+  end;
 end;
 
 function TPPUGroups.AddGroup(const NewName: string): TPPUGroup;
@@ -596,9 +632,11 @@ var
   Group: TPPUGroup;
   GraphNode: TCodeGraphNode;
 begin
-  FGroupGraph.Clear;
   Result:=false;
-  
+  FGroupGraph.Clear;
+  FUnitGraph.Clear;
+  ClearAutoDisableFlags;
+
   // add nodes to GroupGraph
   AVLNode:=FGroups.FindLowest;
   while AVLNode<>nil do begin
@@ -621,7 +659,56 @@ begin
     if not Group.UpdateDependencies then exit;
     AVLNode:=FGroups.FindSuccessor(AVLNode);
   end;
+  // auto disable units with broken dependencies
+  AutoDisableUnitsWithBrokenDependencies;
+  
   Result:=true;
+end;
+
+procedure TPPUGroups.AutoDisableUnitsWithBrokenDependencies;
+var
+  AVLNode: TAVLTreeNode;
+  Member: TPPUMember;
+  List: TStringList;
+begin
+  AVLNode:=FMembers.FindLowest;
+  List:=TStringList.Create;
+  while AVLNode<>nil do begin
+    Member:=TPPUMember(AVLNode.Data);
+    if not (pmfAutoDisabled in Member.Flags) then begin
+      List.Clear;
+      Member.GetMissingUnits(List);
+      if List.Count>0 then begin
+        DebugLn(['TPPUGroups.AutoDisableUnitsWithBrokenDependencies auto disabling unit ',Member.Unitname,' due to missing units: ',List.DelimitedText]);
+        AutoDisableMember(Member);
+      end;
+    end;
+    AVLNode:=FMembers.FindSuccessor(AVLNode);
+  end;
+  List.Free;
+end;
+
+procedure TPPUGroups.AutoDisableMember(Member: TPPUMember);
+var
+  GraphNode: TCodeGraphNode;
+  AVLNode: TAVLTreeNode;
+  GraphEdge: TCodeGraphEdge;
+  DependingMember: TPPUMember;
+begin
+  if pmfAutoDisabled in Member.Flags then exit;
+  Include(Member.Flags,pmfAutoDisabled);
+  GraphNode:=FUnitGraph.GetGraphNode(Member.KeyNode,false);
+  if GraphNode.InTree=nil then exit;
+  AVLNode:=GraphNode.InTree.FindLowest;
+  while AVLNode<>nil do begin
+    GraphEdge:=TCodeGraphEdge(AVLNode.Data);
+    DependingMember:=TPPUMember(GraphEdge.FromNode.Data);
+    if not (pmfAutoDisabled in DependingMember.Flags) then begin
+      DebugLn(['TPPUGroups.AutoDisableMember auto disabling unit ',DependingMember.Unitname,' because it uses auto disabled unit ',Member.Unitname]);
+      AutoDisableMember(DependingMember);
+    end;
+    AVLNode:=GraphNode.InTree.FindSuccessor(AVLNode);
+  end;
 end;
 
 procedure TPPUGroups.GetMissingUnits(var List: TStrings);
