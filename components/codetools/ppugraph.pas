@@ -82,6 +82,7 @@ type
     Name: string;
     KeyNode: TCodeTreeNode;
     Groups: TPPUGroups;
+    LibName: string;
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
@@ -89,6 +90,7 @@ type
     function FindMemberWithUnitName(const AName: string): TPPUMember;
     function UpdatePPUs: boolean;
     function UpdateDependencies: boolean;
+    function UpdateLoader: boolean;
     procedure GetMissingUnits(var List: TStrings);
     property Members: TAVLTree read FMembers;
     property UnitGraph: TCodeGraph read FUnitGraph;
@@ -103,10 +105,13 @@ type
     FMembers: TAVLTree;// tree of TPPUMember sorted for unitname
     FGroupGraph: TCodeGraph;
     FUnitGraph: TCodeGraph;
+    FSortedGroups: TFPList; // list of TPPUGroup
     function FindAVLNodeOfGroupWithName(const AName: string): TAVLTreeNode;
     function FindAVLNodeOfMemberWithName(const AName: string): TAVLTreeNode;
+    function GetSortedGroups(Index: integer): TPPUGroup;
     procedure InternalRemoveMember(AMember: TPPUMember);
     procedure InternalRemoveGroup(AGroup: TPPUGroup);
+    procedure UpdateTopologicalSortedList;
   public
     Name: string;
     constructor Create;
@@ -121,11 +126,13 @@ type
     function FindGroupWithName(const AName: string): TPPUGroup;
     function FindMemberWithUnitName(const AName: string): TPPUMember;
     function UpdateDependencies: boolean;
+    function UpdateLoaders: boolean;
     procedure AutoDisableUnitsWithBrokenDependencies;
     procedure AutoDisableMember(Member: TPPUMember);
     procedure GetMissingUnits(var List: TStrings);
     property GroupGraph: TCodeGraph read FGroupGraph;
     property UnitGraph: TCodeGraph read FUnitGraph;
+    property SortedGroups[Index: integer]: TPPUGroup read GetSortedGroups;
   end;
   
 function ComparePPUMembersByUnitName(Member1, Member2: Pointer): integer;
@@ -202,16 +209,18 @@ begin
   if PPU=nil then PPU:=TPPU.Create;
   PPU.LoadFromFile(PPUFilename);
   debugln('================================================================');
-  DebugLn(['TPPUMember.UpdateDependencies UnitName=',Unitname,' Filename=',PPUFilename]);
+  DebugLn(['TPPUMember.UpdateDependencies Group=',Group.Name,' UnitName=',Unitname,' Filename=',PPUFilename]);
   //PPU.Dump('');
   PPU.GetMainUsesSectionNames(MainUses);
-  debugln('Main used units: ',MainUses.DelimitedText);
+  if MainUses.Count>0 then
+    debugln('Main used units: ',MainUses.DelimitedText);
   PPU.GetImplementationUsesSectionNames(ImplementationUses);
-  debugln('Implementation used units: ',ImplementationUses.DelimitedText);
+  if ImplementationUses.Count>0 then
+    debugln('Implementation used units: ',ImplementationUses.DelimitedText);
   InitializationMangledName:=PPU.GetInitProcName;
-  debugln('Initialization proc: ',InitializationMangledName);
+  //debugln('Initialization proc: ',InitializationMangledName);
   FinalizationMangledName:=PPU.GetFinalProcName;
-  debugln('Finalization proc: ',FinalizationMangledName);
+  //debugln('Finalization proc: ',FinalizationMangledName);
   
   Result:=true;
 end;
@@ -250,7 +259,7 @@ end;
 
 function TPPUGroup.GetSortedUnits(Index: integer): TPPUMember;
 begin
-  Result:=TPPUMember(FSortedUnits[Index]);
+  Result:=TPPUMember(TCodeGraphNode(FSortedUnits[Index]).Data);
 end;
 
 procedure TPPUGroup.InternalRemoveMember(AMember: TPPUMember);
@@ -262,30 +271,12 @@ begin
 end;
 
 procedure TPPUGroup.UpdateTopologicalSortedList;
-var
-  i: Integer;
-  GraphNode: TCodeGraphNode;
-  Member: TPPUMember;
 begin
   FreeAndNil(FSortedUnits);
   UnitGraph.GetTopologicalSortedList(FSortedUnits,true,false,false);
   if FSortedUnits=nil then
     FSortedUnits:=TFPList.Create;
-  DebugLn(['TPPUGroup.UpdateTopologicalSortedList ',Name,' ',FMembers.Count,' ',FSortedUnits.Count]);
-  DebugLn(['Initialization: ================================']);
-  for i:=FSortedUnits.Count-1 downto 0 do begin
-    GraphNode:=TCodeGraphNode(FSortedUnits[i]);
-    Member:=TPPUMember(GraphNode.Data);
-    if Member.InitializationMangledName<>'' then
-      DebugLn([Member.InitializationMangledName]);
-  end;
-  DebugLn(['Finalization: ===================================']);
-  for i:=0 to FSortedUnits.Count-1 do begin
-    GraphNode:=TCodeGraphNode(FSortedUnits[i]);
-    Member:=TPPUMember(GraphNode.Data);
-    if Member.FinalizationMangledName<>'' then
-      DebugLn([Member.FinalizationMangledName]);
-  end;
+  //DebugLn(['TPPUGroup.UpdateTopologicalSortedList ',Name,' ',FMembers.Count,' ',FSortedUnits.Count]);
 end;
 
 constructor TPPUGroup.Create;
@@ -360,8 +351,11 @@ function TPPUGroup.UpdateDependencies: boolean;
     Graph: TCodeGraph;
     UsedMember: TPPUMember;
   begin
-    UsedMember:=FindMemberWithUnitName(UsedUnit);
-    if UsedMember=nil then exit;
+    UsedMember:=Groups.FindMemberWithUnitName(UsedUnit);
+    if UsedMember=nil then begin
+      DebugLn(['AddUnitDependency ',Member.Unitname,' misses an unit: ',UsedUnit]);
+      exit;
+    end;
     // add to 'global' unit graph
     Graph:=Groups.UnitGraph;
     if not Graph.PathExists(UsedMember.KeyNode,Member.KeyNode) then
@@ -432,9 +426,52 @@ begin
   // add secondary dependencies
   AddDependencies(false);
 
+  // sort topological
   UpdateTopologicalSortedList;
 
   Result:=true;
+end;
+
+function TPPUGroup.UpdateLoader: boolean;
+const
+  LibExtension = '.so';
+var
+  i: Integer;
+  GraphNode: TCodeGraphNode;
+  Member: TPPUMember;
+  Group: TPPUGroup;
+begin
+  Result:=true;
+  LibName:=Name+LibExtension;
+  DebugLn(['TPPUGroup.UpdateLoader Group=',Name,' LibName=',LibName]);
+  // needed groups in topological order
+  DebugLn(['Required groups: ================================']);
+  if Groups.GroupGraph.GetGraphNode(KeyNode,false)=nil then
+    raise Exception.Create('inconsistency');
+  for i:=0 to Groups.FSortedGroups.Count-1 do begin
+    Group:=Groups.SortedGroups[i];
+    if Groups.GroupGraph.GetGraphNode(Group.KeyNode,false)=nil then
+      raise Exception.Create('inconsistency');
+    if Groups.GroupGraph.GetEdge(KeyNode,Group.KeyNode,false)<>nil then begin
+      DebugLn([Group.Name]);
+    end;
+  end;
+  // initialize units
+  DebugLn(['Initialization: ================================']);
+  for i:=FSortedUnits.Count-1 downto 0 do begin
+    GraphNode:=TCodeGraphNode(FSortedUnits[i]);
+    Member:=TPPUMember(GraphNode.Data);
+    if Member.InitializationMangledName<>'' then
+      DebugLn([Member.InitializationMangledName]);
+  end;
+  // finalize units
+  DebugLn(['Finalization: ===================================']);
+  for i:=0 to FSortedUnits.Count-1 do begin
+    GraphNode:=TCodeGraphNode(FSortedUnits[i]);
+    Member:=TPPUMember(GraphNode.Data);
+    if Member.FinalizationMangledName<>'' then
+      DebugLn([Member.FinalizationMangledName]);
+  end;
 end;
 
 procedure TPPUGroup.GetMissingUnits(var List: TStrings);
@@ -464,6 +501,11 @@ begin
   Result:=FMembers.FindKey(PChar(AName),@CompareNameWithPPUMemberName);
 end;
 
+function TPPUGroups.GetSortedGroups(Index: integer): TPPUGroup;
+begin
+  Result:=TPPUGroup(TCodeGraphNode(FSortedGroups[Index]).Data);
+end;
+
 procedure TPPUGroups.InternalRemoveMember(AMember: TPPUMember);
 begin
   FMembers.RemovePointer(AMember);
@@ -472,6 +514,15 @@ end;
 procedure TPPUGroups.InternalRemoveGroup(AGroup: TPPUGroup);
 begin
   FGroups.RemovePointer(AGroup);
+end;
+
+procedure TPPUGroups.UpdateTopologicalSortedList;
+begin
+  FreeAndNil(FSortedGroups);
+  GroupGraph.GetTopologicalSortedList(FSortedGroups,true,false,false);
+  if FSortedGroups=nil then
+    FSortedGroups:=TFPList.Create;
+  //DebugLn(['TPPUGroups.UpdateTopologicalSortedList ',FGroups.Count,' ',FSortedGroups.Count]);
 end;
 
 constructor TPPUGroups.Create;
@@ -494,6 +545,7 @@ end;
 
 procedure TPPUGroups.Clear;
 begin
+  FreeAndNil(FSortedGroups);
   FGroupGraph.Clear;
   FUnitGraph.Clear;
   while FGroups.Count>0 do
@@ -635,6 +687,7 @@ begin
   Result:=false;
   FGroupGraph.Clear;
   FUnitGraph.Clear;
+  FreeAndNil(FSortedGroups);
   ClearAutoDisableFlags;
 
   // add nodes to GroupGraph
@@ -661,8 +714,21 @@ begin
   end;
   // auto disable units with broken dependencies
   AutoDisableUnitsWithBrokenDependencies;
+  // sort topologically
+  UpdateTopologicalSortedList;
+  // update loader units
+  if not UpdateLoaders then exit;
   
   Result:=true;
+end;
+
+function TPPUGroups.UpdateLoaders: boolean;
+var
+  i: Integer;
+begin
+  Result:=true;
+  for i:=0 to FSortedGroups.Count-1 do
+    if not SortedGroups[i].UpdateLoader then exit(false);
 end;
 
 procedure TPPUGroups.AutoDisableUnitsWithBrokenDependencies;
