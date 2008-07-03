@@ -28,8 +28,10 @@ program PPUDependencies;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, PPUParser, FileProcs, PPUGraph;
+  Classes, SysUtils, PPUParser, FileProcs, PPUGraph, CodeToolManager;
 
+const
+  ConfigFilename = 'codetools.config';
 var
   Filename: String;
   Groups: TPPUGroups;
@@ -40,19 +42,27 @@ var
 begin
   if (Paramcount<1) then begin
     writeln('Usage:');
-    writeln('  ',ParamStr(0),' <ppu filename1> ...');
+    writeln('  ',ParamStr(0),' [fpc] <ppu filename1> ...');
+    writeln('  The "fpc" parameter auto generates groups for all fpc units.');
     Halt;
   end;
   
+  CodeToolBoss.SimpleInit(ConfigFilename);
+
   Groups:=TPPUGroups.Create;
   MissingUnit:=TStringList.Create;
   try
     Group:=Groups.AddGroup('Default');
     for i:=1 to Paramcount do begin
-      Filename:=CleanAndExpandFilename(ParamStr(i));
-      debugln(Filename);
-      Member:=Group.AddMember(ExtractFileNameOnly(Filename));
-      Member.PPUFilename:=Filename;
+      Filename:=ParamStr(i);
+      if Filename='fpc' then
+        Groups.AddFPCGroupsForCurrentCompiler(CleanAndExpandDirectory(GetCurrentDir))
+      else begin
+        Filename:=CleanAndExpandFilename(Filename);
+        debugln(Filename);
+        Member:=Group.AddMember(ExtractFileNameOnly(Filename));
+        Member.PPUFilename:=Filename;
+      end;
     end;
     
     Groups.UpdateDependencies;

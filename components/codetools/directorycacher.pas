@@ -48,7 +48,7 @@ type
     ctdcsIncludePath,
     ctdcsCompleteSrcPath, // including unit path, src path and compiled src paths
     ctdcsUnitLinks,
-    ctdcsFPCUnitPath
+    ctdcsFPCUnitPath  // unit paths reported by FPC
     );
     
   TCTDirCacheStringRecord = record

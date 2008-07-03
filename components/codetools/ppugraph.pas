@@ -31,7 +31,10 @@ interface
 
 uses
   Classes, SysUtils, PPUParser, CodeTree, AVL_Tree, FileProcs, BasicCodeTools,
-  CodeGraph;
+  CodeGraph, CodeToolManager;
+
+const
+  FPCPPUGroupPrefix = 'fpc_';
   
 type
   TPPUGroup = class;
@@ -102,6 +105,10 @@ type
     destructor Destroy; override;
     procedure Clear;
     function AddGroup(const NewName: string): TPPUGroup;
+    procedure AddFPCGroupsForCurrentCompiler(const BaseDirectory: string);
+    procedure AddFPCGroups(const FPCPPUBaseDir: string // for example: /usr/lib/fpc/2.2.3/units/i386-linux/
+                );
+    procedure AddFPCGroup(const Groupname, Directory: string);
     function FindGroupWithName(const AName: string): TPPUGroup;
     function FindMemberWithUnitName(const AName: string): TPPUMember;
     function UpdateDependencies: boolean;
@@ -478,6 +485,87 @@ begin
   Result.Name:=NewName;
   FGroups.Add(Result);
   Result.Groups:=Self;
+end;
+
+procedure TPPUGroups.AddFPCGroupsForCurrentCompiler(const BaseDirectory: string);
+var
+  FPCSearchPath: String;
+  SystemPPUFilename: String;
+  RTLPPUDirectory: String; // directory containing the system.ppu
+  FPCPPUBaseDir: String; // directory containing all FPC ppu directories
+begin
+  FPCSearchPath:=CodeToolBoss.GetFPCUnitPathForDirectory(BaseDirectory);
+  // search system.ppu
+  SystemPPUFilename:=SearchFileInPath('system.ppu',BaseDirectory,FPCSearchPath,
+                                      ';',ctsfcDefault);
+  if SystemPPUFilename='' then
+    raise Exception.Create('TPPUGroups.AddFPCGroupsForCurrentCompiler: system.ppu is not in the FPC search paths');
+  RTLPPUDirectory:=ExtractFilePath(SystemPPUFilename);
+  FPCPPUBaseDir:=ExtractFilePath(ChompPathDelim(RTLPPUDirectory));
+  AddFPCGroups(FPCPPUBaseDir);
+end;
+
+procedure TPPUGroups.AddFPCGroups(const FPCPPUBaseDir: string);
+var
+  FileInfo: TSearchRec;
+  GroupName: String;
+  i: Integer;
+begin
+  DebugLn(['TPPUGroups.AddFPCGroups ',FPCPPUBaseDir]);
+  if SysUtils.FindFirst(AppendPathDelim(FPCPPUBaseDir)+FileMask,faAnyFile,FileInfo)=0
+  then begin
+    repeat
+      // check if special file
+      if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
+        continue;
+      if (faDirectory and FileInfo.Attr)<>0 then begin
+        GroupName:=FileInfo.Name;
+        for i:=length(GroupName) downto 1 do
+          if not (Groupname[i] in ['a'..'z','A'..'Z','0'..'9','_']) then
+            System.Delete(GroupName,i,1);
+        if (Groupname='') then continue;
+        Groupname:=FPCPPUGroupPrefix+LowerCase(Groupname);
+        if (not IsValidIdent(Groupname)) then continue;
+        AddFPCGroup(GroupName,AppendPathDelim(FPCPPUBaseDir)+FileInfo.Name);
+      end;
+    until SysUtils.FindNext(FileInfo)<>0;
+  end;
+  SysUtils.FindClose(FileInfo);
+end;
+
+procedure TPPUGroups.AddFPCGroup(const Groupname, Directory: string);
+var
+  FileInfo: TSearchRec;
+  Filename: String;
+  UnitName: String;
+  Group: TPPUGroup;
+  Member: TPPUMember;
+begin
+  //DebugLn(['TPPUGroups.AddFPCGroup ',Groupname,' ',Directory]);
+  Group:=nil;
+  if SysUtils.FindFirst(AppendPathDelim(Directory)+FileMask,faAnyFile,FileInfo)=0
+  then begin
+    repeat
+      // check if special file
+      if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
+        continue;
+      Filename:=FileInfo.Name;
+      if (CompareFileExt(Filename,'ppu',false)<>0) then continue;
+      UnitName:=ExtractFileNameOnly(Filename);
+      Filename:=AppendPathDelim(Directory)+Filename;
+      if (UnitName='') or (not IsValidIdent(UnitName)) then begin
+        DebugLn(['TPPUGroups.AddFPCGroup NOTE: invalid ppu name: ',Filename]);
+        continue;
+      end;
+      if Group=nil then begin
+        DebugLn(['TPPUGroups.AddFPCGroup Creating group ',Groupname]);
+        Group:=AddGroup(Groupname);
+      end;
+      Member:=Group.AddMember(UnitName);
+      Member.PPUFilename:=Filename;
+    until SysUtils.FindNext(FileInfo)<>0;
+  end;
+  SysUtils.FindClose(FileInfo);
 end;
 
 function TPPUGroups.FindGroupWithName(const AName: string): TPPUGroup;

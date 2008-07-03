@@ -286,7 +286,7 @@ type
     function GetUnitLinksForDirectory(const Directory: string;
                                       UseCache: boolean = false): string;
     function GetFPCUnitPathForDirectory(const Directory: string;
-                                        UseCache: boolean = false): string;
+                                        UseCache: boolean = false): string;// unit paths reported by FPC
     procedure GetFPCVersionForDirectory(const Directory: string;
                                  out FPCVersion, FPCRelease, FPCPatch: integer);
 
