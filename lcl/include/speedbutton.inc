@@ -42,10 +42,11 @@ constructor TCustomSpeedButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FGlyph := TButtonGlyph.Create;
+  FGlyph.SetTransparentMode(gtmTransparent);
   FGlyph.OnChange := @GlyphChanged;
 
   SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
-  ControlStyle := ControlStyle + [csCaptureMouse]-[csSetCaption, csClickEvents];
+  ControlStyle := ControlStyle + [csCaptureMouse]-[csSetCaption, csClickEvents, csOpaque];
 
   FLayout:= blGlyphLeft;
   FAllowAllUp:= false;
@@ -54,7 +55,6 @@ begin
   FShowAccelChar:=true;
   FSpacing := 4;
   FMargin := -1;
-  FTransparent := true;
   Color := clBtnFace;
   FShowCaption := true;
 end;
@@ -811,16 +811,19 @@ end;
   Returns:  nothing
 
  ------------------------------------------------------------------------------}
-procedure TCustomSpeedButton.SetTransparent(const Value : boolean);
+procedure TCustomSpeedButton.SetTransparent(const AValue : boolean);
+const
+  MODE: array[Boolean] of TGlyphTransparencyMode = (gtmOpaque, gtmTransparent);
 begin
-  if Value <> FTransparent then begin
-    FTransparent:= Value;
-    if Value then
-      ControlStyle:= ControlStyle - [csOpaque]
-    else
-      ControlStyle:= ControlStyle + [csOpaque];
-    Invalidate;
-  end;
+  if AValue = Transparent then Exit;
+
+  if AValue then
+    ControlStyle := ControlStyle - [csOpaque]
+  else
+    ControlStyle := ControlStyle + [csOpaque];
+
+  FGlyph.SetTransparentMode(MODE[AValue]);
+  Invalidate;
 end;
 
 {------------------------------------------------------------------------------
@@ -928,6 +931,13 @@ begin
     Result.CY:= 0;
     Result.CX:= 0;
   end;
+end;
+
+function TCustomSpeedButton.GetTransparent: Boolean;
+begin
+  if FGlyph.TransparentMode = gtmGlyph
+  then Result := FGlyph.FOriginal.Transparent
+  else Result := FGlyph.TransparentMode = gtmTransparent;
 end;
 
 function TCustomSpeedButton.DrawGlyph(ACanvas: TCanvas; const AClient: TRect;

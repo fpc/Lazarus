@@ -74,6 +74,12 @@ type
   TButton = StdCtrls.TButton;
 
   { TButtonGlyph }
+  TGlyphTransparencyMode = (
+    gtmGlyph,       // transparency is defined by the glyph itself (bitbtn)
+    gtmOpaque,      // transparent = false is defined by the owner (speedbutton)
+    gtmTransparent  // transparent = true
+  );
+  
 
   TButtonGlyph = class(TObject, IUnknown, IImageCacheListener)
   private
@@ -83,6 +89,7 @@ type
     FNumGlyphs: TNumGlyphs;
     FOnChange: TNotifyEvent;
     FImagesCache: TImageListCache;
+    FTransparentMode: TGlyphTransparencyMode;         // set by our owner to indicate that the glyphbitmap should be transparent
     function GetHeight: Integer;
     function GetWidth: Integer;
     procedure SetGlyph(Value: TBitmap);
@@ -99,6 +106,9 @@ type
     procedure CacheSetImageIndex(AIndex, AImageIndex: Integer);
 
     procedure GlyphChanged(Sender: TObject);
+    procedure SetTransparentMode(AValue: TGlyphTransparencyMode);
+    
+    property TransparentMode: TGlyphTransparencyMode read FTransparentMode;
   public
     constructor Create;
     destructor Destroy; override;
@@ -232,7 +242,6 @@ type
     FShortcut: TShortCut;
     FShowAccelChar: boolean;
     FShowCaption: boolean;
-    FTransparent: Boolean;
     FAllowAllUp: Boolean;
     FDown: Boolean;
     FDownLoaded : Boolean;// value of Down set during loading
@@ -242,11 +251,12 @@ type
     function GetGlyph: TBitmap;
     procedure SetShowCaption(const AValue: boolean);
     procedure UpdateExclusive;
+    function  GetTransparent: Boolean;
     procedure SetAllowAllUp(Value: Boolean);
     procedure SetGlyph(Value: TBitmap);
     procedure SetLayout(const Value: TButtonLayout);
     procedure SetShowAccelChar(Value: boolean);
-    procedure SetTransparent(const Value: boolean);
+    procedure SetTransparent(const AValue: boolean);
     procedure CMButtonPressed(var Message: TLMessage); message CM_BUTTONPRESSED;
     procedure CMEnabledChanged(var Message: TLMessage); message CM_ENABLEDCHANGED;
   private
@@ -307,7 +317,7 @@ type
     property ShowAccelChar: boolean read FShowAccelChar write SetShowAccelChar default true;
     property ShowCaption: boolean read FShowCaption write SetShowCaption default true;
     property Spacing: integer read FSpacing write SetSpacing default 4;
-    property Transparent: Boolean read FTransparent write SetTransparent default true;
+    property Transparent: Boolean read GetTransparent write SetTransparent default true;
   end;
 
 

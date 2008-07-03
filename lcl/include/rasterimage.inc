@@ -31,35 +31,31 @@ begin
   then begin
     // TRasterImage can share image data
     
-    // -> check if already shared
-    if SrcImage.FSharedImage = FSharedImage then Exit;// already sharing
-
-    // MWE: dont call ChangingAll, since it will create a new image,
-    // which we will replace anyway.
-    // ChangingAll(Self);
-
-    //DebugLn(['TRasterImage.Assign Self=',ClassName,' Source=',Source.ClassName,' HandleAllocated=',HandleAllocated,' Canvas=',DbgSName(FCanvas)]);
     FTransparent := SrcImage.Transparent;
+    FTransparentMode := SrcImage.TransparentMode;
+    FTransparentColor := SrcImage.TransparentColor;
 
-    //DebugLn('TRasterImage.Assign A  RefCount=',FImage.RefCount);
-    // image is not shared => new image data
-    // -> free canvas (interface handles)
-    FreeCanvasContext;
-    // release old FImage
-    FSharedImage.Release;
-    // share FImage with assigned graphic
-    FSharedImage := SrcImage.FSharedImage;
-    FSharedImage.Reference;
-
-    // We only can share images of the same type.
-    // Since we "share" it first, the unshare code will create a copy
-    if not CanShareImage(SrcImage.GetSharedImageClass)
+    // -> check if already shared
+    if SrcImage.FSharedImage <> FSharedImage
     then begin
-      UnshareImage(True);
-      FreeSaveStream;
+      // image is not shared => new image data
+      // -> free canvas (interface handles)
+      FreeCanvasContext;
+      // release old FImage
+      FSharedImage.Release;
+      // share FImage with assigned graphic
+      FSharedImage := SrcImage.FSharedImage;
+      FSharedImage.Reference;
+
+      // We only can share images of the same type.
+      // Since we "share" it first, the unshare code will create a copy
+      if not CanShareImage(SrcImage.GetSharedImageClass)
+      then begin
+        UnshareImage(True);
+        FreeSaveStream;
+      end;
     end;
 
-    //DebugLn(['TRasterImage.Assign B ',Width,',',Height,' ',HandleAllocated,' RefCount=',FImage.RefCount]);
     Changed(Self);
 
     Exit;
@@ -303,9 +299,9 @@ end;
 
 procedure TRasterImage.SetTransparentColor(AValue: TColor);
 begin
-  if FTransparentColor = AValue then exit;
+  if TransparentColor = AValue then exit;
   FTransparentColor := AValue;
-  if FTransparentMode <> tmFixed then Exit;
+  if TransparentMode <> tmFixed then Exit;
 
   CreateMask;
 end;
@@ -571,8 +567,8 @@ begin
   if (Width = 0)
   or (Height = 0)
   or (AColor = clNone)
-  or (  (FTransparentMode = tmFixed)
-    and (FTransparentColor = clNone)
+  or (  (TransparentMode = tmFixed)
+    and (TransparentColor = clNone)
     and (AColor = clDefault)
   )
   then begin
@@ -597,8 +593,8 @@ begin
 
     if AColor = clDefault
     then begin
-      if (FTransparentMode = tmFixed) and (FTransparentColor <> clDefault)
-      then TransColor := ColorToRGB(FTransparentColor)
+      if (TransparentMode = tmFixed) and (TransparentColor <> clDefault)
+      then TransColor := ColorToRGB(TransparentColor)
       else TransColor := FPColorToTColor(IntfImage.Colors[0, stopy]);
     end
     else TransColor := ColorToRGB(AColor);

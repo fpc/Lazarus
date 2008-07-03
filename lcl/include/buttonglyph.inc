@@ -15,13 +15,50 @@
  *****************************************************************************
 }
 
+type
+
+  { TGlyphBitmap }
+
+  TGlyphBitmap = class(TBitmap)
+  private
+    FOwner: TButtonGlyph;
+  protected
+    procedure SetTransparent(AValue: Boolean); override;
+  public
+    procedure Assign(ASource: TPersistent); override;
+    constructor Create(AOwner: TButtonGlyph);
+  end;
+
+procedure TGlyphBitmap.Assign(ASource: TPersistent);
+begin
+  inherited Assign(ASource);
+  if FOwner.FTransparentMode = gtmGlyph then Exit;
+  inherited SetTransparent(FOwner.FTransparentMode = gtmTransparent);
+end;
+
+constructor TGlyphBitmap.Create(AOwner: TButtonGlyph);
+begin
+  FOwner := AOwner;
+  inherited Create;
+  inherited SetTransparent(True);
+end;
+
+procedure TGlyphBitmap.SetTransparent(AValue: Boolean);
+begin
+  if FOwner.FTransparentMode = gtmGlyph
+  then inherited SetTransparent(AValue)
+  else inherited SetTransparent(FOwner.FTransparentMode = gtmTransparent);
+end;
+  
+
+
 {------------------------------------------------------------------------------}
 {       TButtonGlyph Constructor                                                    }
 {------------------------------------------------------------------------------}
 constructor TButtonGlyph.Create;
 begin
   FImagesCache := nil;
-  FOriginal := TBitmap.Create;
+  FOriginal := TGlyphBitmap.Create(Self);
   FOriginal.OnChange := @GlyphChanged;
 end;
 
@@ -86,7 +123,7 @@ begin
   if FOriginal = Value then
     exit;
   if FOriginal = nil then
-    FOriginal := TBitmap.Create;
+    FOriginal := TGlyphBitmap.Create(Self);
   FOriginal.OnChange := nil;
   FOriginal.Assign(Value);
   FOriginal.OnChange := @GlyphChanged;
@@ -178,6 +215,14 @@ begin
     FNumGlyphs := Value;
     GlyphChanged(FOriginal);
   end;
+end;
+
+procedure TButtonGlyph.SetTransparentMode(AValue: TGlyphTransparencyMode);
+begin
+  if AValue = FTransparentMode then Exit;
+  FTransparentMode := AValue;
+  if FTransparentMode = gtmGlyph then Exit;
+  FOriginal.Transparent := FTransparentMode = gtmTransparent;
 end;
 
 procedure TButtonGlyph.ClearImages;
