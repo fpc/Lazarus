@@ -1,0 +1,36 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TForm1','FORMDATA',[
+  'TPF0'#6'TForm1'#5'Form1'#4'Left'#3'"'#1#6'Height'#3#236#0#3'Top'#3#156#0#5'W'
+  +'idth'#3'^'#2#7'Caption'#6#27'Mouse and key input example'#12'ClientHeight'#3
+  +#236#0#11'ClientWidth'#3'^'#2#10'OnDblClick'#7#12'FormDblClick'#10'LCLVersio'
+  +'n'#6#6'0.9.25'#0#11'TStringGrid'#11'StringGrid1'#4'Left'#2#19#6'Height'#3
+  +#128#0#3'Top'#2'X'#5'Width'#3'['#1#8'ColCount'#2#5#14'ExtendedSelect'#9#10'F'
+  +'ixedColor'#7#9'clBtnFace'#9'FixedCols'#2#0#9'FixedRows'#2#0#7'Options'#11#15
+  +'goFixedVertLine'#15'goFixedHorzLine'#10'goVertLine'#10'goHorzLine'#13'goRan'
+  +'geSelect'#14'goSmoothScroll'#0#8'RowCount'#2#8#8'TabOrder'#2#0#0#0#5'TEdit'
+  +#5'Edit1'#4'Left'#2'f'#6'Height'#2#23#3'Top'#2'*'#5'Width'#2'}'#8'TabOrder'#2
+  +#1#0#0#7'TButton'#7'Button1'#4'Left'#3'z'#1#6'Height'#2'%'#3'Top'#2#12#5'Wid'
+  +'th'#3#219#0#7'Caption'#6#12'Select cells'#7'OnClick'#7#12'Button1Click'#8'T'
+  +'abOrder'#2#2#0#0#7'TButton'#7'Button2'#4'Left'#3'z'#1#6'Height'#2'$'#3'Top'
+  +#2'<'#5'Width'#3#219#0#7'Caption'#6'&Move to upper left corner and dblclick'
+  +#7'OnClick'#7#12'Button2Click'#8'TabOrder'#2#3#0#0#7'TButton'#7'Button3'#4'L'
+  +'eft'#3'z'#1#6'Height'#2'%'#3'Top'#2'l'#5'Width'#3#219#0#7'Caption'#6#21'Pre'
+  +'ss ''hello'' in Edit'#7'OnClick'#7#12'Button3Click'#8'TabOrder'#2#4#0#0#0#6
+  +'TForm1'#5'Form1'#4'Left'#3'"'#1#6'Height'#3#236#0#3'Top'#3#156#0#5'Width'#3
+  +'^'#2#7'Caption'#6#27'Mouse and key input example'#12'ClientHeight'#3#236#0
+  +#11'ClientWidth'#3'^'#2#10'OnDblClick'#7#12'FormDblClick'#10'LCLVersion'#6#6
+  +'0.9.25'#0#11'TStringGrid'#11'StringGrid1'#4'Left'#2#19#6'Height'#3#128#0#3
+  +'Top'#2'X'#5'Width'#3'['#1#8'ColCount'#2#5#14'ExtendedSelect'#9#10'FixedColo'
+  +'r'#7#9'clBtnFace'#9'FixedCols'#2#0#9'FixedRows'#2#0#7'Options'#11#15'goFixe'
+  +'dVertLine'#15'goFixedHorzLine'#10'goVertLine'#10'goHorzLine'#13'goRangeSele'
+  +'ct'#14'goSmoothScroll'#0#8'RowCount'#2#8#8'TabOrder'#2#0#0#0#5'TEdit'#5'Edi'
+  +'t1'#4'Left'#2'f'#6'Height'#2#23#3'Top'#2'*'#5'Width'#2'}'#8'TabOrder'#2#1#0
+  +#0#7'TButton'#7'Button1'#4'Left'#3'z'#1#6'Height'#2'%'#3'Top'#2#12#5'Width'#3
+  +#219#0#7'Caption'#6#12'Select cells'#7'OnClick'#7#12'Button1Click'#8'TabOrde'
+  +'r'#2#2#0#0#7'TButton'#7'Button2'#4'Left'#3'z'#1#6'Height'#2'$'#3'Top'#2'<'#5
+  +'Width'#3#219#0#7'Caption'#6'&Move to upper left corner and dblclick'#7'OnCl'
+  +'ick'#7#12'Button2Click'#8'TabOrder'#2#3#0#0#7'TButton'#7'Button3'#4'Left'#3
+  +'z'#1#6'Height'#2'%'#3'Top'#2'l'#5'Width'#3#219#0#7'Caption'#6#21'Press ''he'
+  +'llo'' in Edit'#7'OnClick'#7#12'Button3Click'#8'TabOrder'#2#4#0#0#0
+]);

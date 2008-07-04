@@ -1,0 +1,59 @@
+object Form1: TForm1
+  Left = 290
+  Height = 236
+  Top = 156
+  Width = 606
+  Caption = 'Mouse and key input example'
+  ClientHeight = 236
+  ClientWidth = 606
+  OnDblClick = FormDblClick
+  LCLVersion = '0.9.25'
+  object StringGrid1: TStringGrid
+    Left = 19
+    Height = 128
+    Top = 88
+    Width = 347
+    ColCount = 5
+    ExtendedSelect = True
+    FixedColor = clBtnFace
+    FixedCols = 0
+    FixedRows = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goSmoothScroll]
+    RowCount = 8
+    TabOrder = 0
+  end
+  object Edit1: TEdit
+    Left = 102
+    Height = 23
+    Top = 42
+    Width = 125
+    TabOrder = 1
+  end
+  object Button1: TButton
+    Left = 378
+    Height = 37
+    Top = 12
+    Width = 219
+    Caption = 'Select cells'
+    OnClick = Button1Click
+    TabOrder = 2
+  end
+  object Button2: TButton
+    Left = 378
+    Height = 36
+    Top = 60
+    Width = 219
+    Caption = 'Move to upper left corner and dblclick'
+    OnClick = Button2Click
+    TabOrder = 3
+  end
+  object Button3: TButton
+    Left = 378
+    Height = 37
+    Top = 108
+    Width = 219
+    Caption = 'Press ''hello'' in Edit'
+    OnClick = Button3Click
+    TabOrder = 4
+  end
+end
