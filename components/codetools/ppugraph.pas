@@ -439,7 +439,11 @@ var
   Group: TPPUGroup;
 begin
   Result:=true;
+  {$IFDEF VER2_2_0}
+  LibName:=Name+'.so';
+  {$ELSE}
   LibName:=Name+'.'+SharedSuffix;
+  {$ENDIF}
   DebugLn(['TPPUGroup.UpdateLoader Group=',Name,' LibName=',LibName]);
   // needed groups in topological order
   DebugLn(['Required groups: ================================']);
