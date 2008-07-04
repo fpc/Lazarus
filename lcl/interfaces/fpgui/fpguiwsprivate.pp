@@ -328,7 +328,7 @@ end;
 
 destructor TFPGUIPrivateWidget.Destroy;
 begin
-  if (Widget <> nil) then FreeAndNil(Widget);
+  if (FWidget <> nil) then FreeAndNil(FWidget);
 
   inherited Destroy;
 end;
