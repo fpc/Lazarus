@@ -1346,10 +1346,10 @@ var
     if Desc.GreenShift and 7 <> 0 then Exit;
     if Desc.BlueShift and 7 <> 0 then Exit;
     
-    Positions := ((Desc.AlphaShift shr 3) and 3) shl 6
+    Positions := (((Desc.AlphaShift shr 3) and 3) shl 6
               or ((Desc.RedShift shr 3) and 3) shl 4
               or ((Desc.GreenShift shr 3) and 3) shl 2
-              or ((Desc.BlueShift shr 3) and 3);
+              or ((Desc.BlueShift shr 3) and 3)) and $FF;
 
     if Desc.ByteOrder = riboMSBFirst
     then Positions := not Positions; // reverse positions
@@ -1439,9 +1439,9 @@ var
     if Desc.GreenShift and 7 <> 0 then Exit;
     if Desc.BlueShift and 7 <> 0 then Exit;
 
-    Positions := ((Desc.RedShift shr 3) and 3) shl 4
+    Positions := (((Desc.RedShift shr 3) and 3) shl 4
               or ((Desc.GreenShift shr 3) and 3) shl 2
-              or ((Desc.BlueShift shr 3) and 3);
+              or ((Desc.BlueShift shr 3) and 3)) and $FF;
 
     if Desc.ByteOrder = riboMSBFirst
     then Positions := not Positions and %00111111; // reverse positions
@@ -1533,13 +1533,13 @@ var
 
     if Desc.ByteOrder = riboMSBFirst
     then
-      Positions := (2-((Desc.RedShift   shr 3) and 3)) shl 4
+      Positions := ((2-((Desc.RedShift   shr 3) and 3)) shl 4
                 or (2-((Desc.GreenShift shr 3) and 3)) shl 2
-                or (2-((Desc.BlueShift  shr 3) and 3))
+                or (2-((Desc.BlueShift  shr 3) and 3))) and $FF
     else
-      Positions := ((Desc.RedShift   shr 3) and 3) shl 4
+      Positions := (((Desc.RedShift   shr 3) and 3) shl 4
                 or ((Desc.GreenShift shr 3) and 3) shl 2
-                or ((Desc.BlueShift  shr 3) and 3);
+                or ((Desc.BlueShift  shr 3) and 3)) and $FF;
 
 
     // the locations of R,G,B are now coded in 2 bits each: xxRRBBGG

@@ -589,7 +589,7 @@ begin
   ADesc.BitOrder := riboReversedBits;
   ADesc.ByteOrder := riboMSBFirst;
 
-  BPR := CGImageGetBytesPerRow(ABitmap.CGImage);
+  BPR := CGImageGetBytesPerRow(ABitmap.CGImage) and $FF;
   if BPR and $F = 0 then ADesc.LineEnd := rileDQWordBoundary     // 128bit aligned
   else if BPR and $7 = 0 then ADesc.LineEnd := rileQWordBoundary //  64bit aligned
   else if BPR and $3 = 0 then ADesc.LineEnd := rileWordBoundary  //  32bit aligned
@@ -604,7 +604,7 @@ begin
   ADesc.MaskLineEnd := rileByteBoundary;
   // ADesc.MaskShift := 0;
 
-  Prec := CGImageGetBitsPerComponent(ABitmap.CGImage);
+  Prec := CGImageGetBitsPerComponent(ABitmap.CGImage) and $FF;
   AlphaInfo := CGImageGetAlphaInfo(ABitmap.CGImage);
 
   if AlphaInfo <> kCGImageAlphaOnly
