@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-06-21 03:17+0300\n"
+"PO-Revision-Date: 2008-07-02 03:43+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -63,7 +63,7 @@ msgstr "%s не содержит ни одного корректного пут
 
 #: lazarusidestrconsts:lisisathiscircledependencyisnotallowed
 msgid "%s is a %s.%sThis circle dependency is not allowed."
-msgstr ""
+msgstr "%s является %s.%sТакая круговая зависимость не разрешена."
 
 #: lazarusidestrconsts:lisisalreadypartoftheproject
 msgid "%s is already part of the Project."
@@ -1179,7 +1179,7 @@ msgstr "Собрать примеры"
 
 #: lazarusidestrconsts:srkmecbuildlazarus
 msgid "Build lazarus"
-msgstr "Собрать Lazarus"
+msgstr "Собрать lazarus"
 
 #: lazarusidestrconsts:lisbuildnewproject
 msgid "Build new project"
@@ -3299,7 +3299,7 @@ msgstr "Параметры внешних средств"
 
 #: lazarusidestrconsts:dlgextracharspacing
 msgid "Extra char spacing"
-msgstr ""
+msgstr "Дополнительные символы отступа"
 
 #: lazarusidestrconsts:dlgextralinespacing
 msgid "Extra line spacing"
@@ -4787,7 +4787,7 @@ msgstr "Неправильное имя модуля: %s"
 
 #: lazarusidestrconsts:lisinvalidcircle
 msgid "Invalid circle"
-msgstr ""
+msgstr "Неверная круговая зависимость"
 
 #: lazarusidestrconsts:lisinvalidcommand
 msgid "Invalid command"
@@ -8987,7 +8987,7 @@ msgstr "Редактор компонента для класса %s%s%s выз�
 
 #: lazarusidestrconsts:listhecomponenteditorofclassinvokedwithverbhascreated
 msgid "The component editor of class %s%s%s%sinvoked with verb #%s %s%s%s%shas created the error:%s%s%s%s"
-msgstr "Редактор компонента для класса %s%s%sсвязанный со словом #%s %s%s%sвызвал ошибку:%s%s%s%s"
+msgstr "Редактор компонента для класса %s%s%s,%sсвязанный со словом #%s %s%s%s,%sвызвал ошибку:%s%s%s%s"
 
 #: lazarusidestrconsts:listhecurrentfreepascalsourcedirectorydoesnotlookcorr2
 msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sCheck Environment -> Environment Options -> Files"

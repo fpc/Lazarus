@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-06-21 03:09+0300\n"
+"PO-Revision-Date: 2008-07-02 03:33+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -244,6 +244,10 @@ msgstr "Создание ошибки, захватываемой GDB:"
 #: lclstrconsts:ifsctrl
 msgid "Ctrl"
 msgstr "Ctrl"
+
+#: lclstrconsts:rscursor
+msgid "Cursor"
+msgstr "Курсор"
 
 #: lclstrconsts:rsmtcustom
 msgid "Custom"
@@ -620,6 +624,10 @@ msgstr "Numlock"
 #: lclstrconsts:ifsvk_numpad
 msgid "Numpad %d"
 msgstr "Numpad %d"
+
+#: lclstrconsts:rsicns
+msgid "OSX Icon Resource"
+msgstr "Ресурс значков OSX"
 
 #: lclstrconsts:rsfdopenfile
 msgid "Open existing file"
