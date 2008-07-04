@@ -1,14 +1,16 @@
 <?xml version="1.0"?>
 <CONFIG>
   <Package Version="3">
+    <PathDelim Value="\"/>
     <Name Value="Printer4Lazarus"/>
     <Author Value="Olivier Guilbaud"/>
     <CompilerOptions>
       <Version Value="5"/>
+      <PathDelim Value="\"/>
       <SearchPaths>
-        <IncludeFiles Value="unix/;win32/;carbon/;qt/"/>
-        <OtherUnitFiles Value="unix/;win32/;carbon/;qt/"/>
-        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
+        <IncludeFiles Value="unix\;win32\;carbon\;qt\"/>
+        <OtherUnitFiles Value="unix\;win32\;carbon\;qt\"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\$(LCLWidgetType)"/>
       </SearchPaths>
       <CodeGeneration>
         <Generate Value="Faster"/>
@@ -26,7 +28,7 @@
     <License Value="LGPL
 "/>
     <Version Minor="5"/>
-    <Files Count="31">
+    <Files Count="32">
       <Item1>
         <Filename Value="printersdlgs.lrs"/>
         <Type Value="LRS"/>
@@ -45,118 +47,122 @@
         <Type Value="Text"/>
       </Item4>
       <Item5>
-        <Filename Value="unix/udlgselectprinter.lfm"/>
+        <Filename Value="unix\udlgselectprinter.lfm"/>
         <Type Value="LFM"/>
       </Item5>
       <Item6>
-        <Filename Value="unix/udlgselectprinter.lrs"/>
+        <Filename Value="unix\udlgselectprinter.lrs"/>
         <Type Value="LRS"/>
       </Item6>
       <Item7>
-        <Filename Value="unix/udlgselectprinter.pp"/>
+        <Filename Value="unix\udlgselectprinter.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="uDlgSelectPrinter"/>
       </Item7>
       <Item8>
-        <Filename Value="unix/cupsdyn.pp"/>
+        <Filename Value="unix\cupsdyn.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="cupsdyn"/>
       </Item8>
       <Item9>
-        <Filename Value="unix/cupsprinters.inc"/>
+        <Filename Value="unix\cupsprinters.inc"/>
         <Type Value="Include"/>
       </Item9>
       <Item10>
-        <Filename Value="unix/cupsprinters_h.inc"/>
+        <Filename Value="unix\cupsprinters_h.inc"/>
         <Type Value="Include"/>
       </Item10>
       <Item11>
-        <Filename Value="unix/jobsimglist.lrs"/>
+        <Filename Value="unix\jobsimglist.lrs"/>
         <Type Value="LRS"/>
       </Item11>
       <Item12>
-        <Filename Value="unix/printerprop.lrs"/>
+        <Filename Value="unix\printerprop.lrs"/>
         <Type Value="LRS"/>
       </Item12>
       <Item13>
-        <Filename Value="unix/selectprinter.lrs"/>
+        <Filename Value="unix\selectprinter.lrs"/>
         <Type Value="LRS"/>
       </Item13>
       <Item14>
-        <Filename Value="unix/udlgprintersjobs.lfm"/>
+        <Filename Value="unix\udlgprintersjobs.lfm"/>
         <Type Value="LFM"/>
       </Item14>
       <Item15>
-        <Filename Value="unix/udlgprintersjobs.lrs"/>
+        <Filename Value="unix\udlgprintersjobs.lrs"/>
         <Type Value="LRS"/>
       </Item15>
       <Item16>
-        <Filename Value="unix/udlgprintersjobs.pp"/>
+        <Filename Value="unix\udlgprintersjobs.pp"/>
         <Type Value="Text"/>
         <UnitName Value="udlgPrintersJobs"/>
       </Item16>
       <Item17>
-        <Filename Value="unix/udlgpropertiesprinter.lfm"/>
+        <Filename Value="unix\udlgpropertiesprinter.lfm"/>
         <Type Value="LFM"/>
       </Item17>
       <Item18>
-        <Filename Value="unix/udlgpropertiesprinter.lrs"/>
+        <Filename Value="unix\udlgpropertiesprinter.lrs"/>
         <Type Value="LRS"/>
       </Item18>
       <Item19>
-        <Filename Value="unix/udlgpropertiesprinter.pp"/>
+        <Filename Value="unix\udlgpropertiesprinter.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="uDlgPropertiesPrinter"/>
       </Item19>
       <Item20>
-        <Filename Value="win32/winprinters.inc"/>
+        <Filename Value="win32\winprinters.inc"/>
         <Type Value="Include"/>
       </Item20>
       <Item21>
-        <Filename Value="win32/winutilprnconst.inc"/>
+        <Filename Value="win32\winutilprnconst.inc"/>
         <Type Value="Include"/>
       </Item21>
       <Item22>
-        <Filename Value="win32/winprinters_h.inc"/>
+        <Filename Value="win32\winprinters_h.inc"/>
         <Type Value="Include"/>
       </Item22>
       <Item23>
-        <Filename Value="win32/winprndialogs.inc"/>
+        <Filename Value="win32\winprndialogs.inc"/>
         <Type Value="Include"/>
       </Item23>
       <Item24>
-        <Filename Value="unix/cupsprndialogs.inc"/>
+        <Filename Value="unix\cupsprndialogs.inc"/>
         <Type Value="Include"/>
       </Item24>
       <Item25>
-        <Filename Value="carbon/carbonprinters.inc"/>
+        <Filename Value="carbon\carbonprinters.inc"/>
         <Type Value="Include"/>
       </Item25>
       <Item26>
-        <Filename Value="carbon/carbonprinters_h.inc"/>
+        <Filename Value="carbon\carbonprinters_h.inc"/>
         <Type Value="Include"/>
       </Item26>
       <Item27>
-        <Filename Value="carbon/carbonprndialogs.inc"/>
+        <Filename Value="carbon\carbonprndialogs.inc"/>
         <Type Value="Include"/>
       </Item27>
       <Item28>
-        <Filename Value="carbon/carbonprinting.pas"/>
+        <Filename Value="carbon\carbonprinting.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CarbonPrinting"/>
       </Item28>
       <Item29>
-        <Filename Value="qt/qtprndialogs.inc"/>
+        <Filename Value="qt\qtprndialogs.inc"/>
         <Type Value="Include"/>
       </Item29>
       <Item30>
-        <Filename Value="qt/qtprinters_h.inc"/>
+        <Filename Value="qt\qtprinters_h.inc"/>
         <Type Value="Include"/>
       </Item30>
       <Item31>
-        <Filename Value="qt/qtprinters.inc"/>
+        <Filename Value="qt\qtprinters.inc"/>
         <Type Value="Include"/>
       </Item31>
+      <Item32>
+        <Filename Value="carbon\issues.xml"/>
+        <Type Value="Issues"/>
+      </Item32>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
@@ -169,10 +175,11 @@
       </Item2>
     </RequiredPkgs>
     <UsageOptions>
-      <UnitPath Value="$(PkgOutDir)/"/>
+      <UnitPath Value="$(PkgOutDir)\"/>
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>
+      <DestinationDirectory Value="$(TestDir)\publishedpackage\"/>
       <CommandAfter Value="tar czf $MakeFile($(ProjPublishDir)).tgz $(ProjPublishDir)"/>
     </PublishOptions>
   </Package>
