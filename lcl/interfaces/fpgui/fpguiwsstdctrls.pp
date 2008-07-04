@@ -86,6 +86,7 @@ type
 
     class function GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
 //    class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); override;
+    class procedure ShowHide(const AWinControl: TWinControl); override;
   end;
 
   { TFpGuiWSComboBox }
@@ -135,6 +136,7 @@ type
     class procedure GetPreferredSize(const AWinControl: TWinControl;
                         var PreferredWidth, PreferredHeight: integer); override;}
 //    class procedure SetColor(const AWinControl: TWinControl); override;
+    class procedure ShowHide(const AWinControl: TWinControl); override;
   end;
 
   { TFpGuiWSCustomMemo }
@@ -153,6 +155,7 @@ type
     class procedure SetWantReturns(const ACustomMemo: TCustomMemo; const NewWantReturns: boolean); override;
     class procedure SetWantTabs(const ACustomMemo: TCustomMemo; const NewWantTabs: boolean); override;
     class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); override;}
+    class procedure ShowHide(const AWinControl: TWinControl); override;
   end;
 
   { TFpGuiWSEdit }
@@ -187,9 +190,10 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
-
+    class procedure Invalidate(const AWinControl: TWinControl); override;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
+    class procedure ShowHide(const AWinControl: TWinControl); override;
   end;
 
   { TFpGuiWSCustomCheckBox }
@@ -206,10 +210,9 @@ type
     class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox;
       const OldShortCut, NewShortCut: TShortCut); override;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
-
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
-
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
+    class procedure ShowHide(const AWinControl: TWinControl); override;
   end;
 
   { TFpGuiWSCheckBox }
@@ -245,6 +248,7 @@ type
 
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
+    class procedure ShowHide(const AWinControl: TWinControl); override;
   end;
 
   { TFpGuiWSCustomStaticText }
@@ -346,6 +350,13 @@ begin
   Result := FComboBox.Items;
 end;
 
+class procedure TFpGuiWSCustomComboBox.ShowHide(const AWinControl: TWinControl
+  );
+begin
+  inherited ShowHide(AWinControl);
+  TFPGUIPrivateComboBox(AWinControl.Handle).Widget.Visible := AWinControl.Visible;
+end;
+
 { TFpGuiWSCustomEdit }
 
 {------------------------------------------------------------------------------
@@ -357,6 +368,12 @@ class function TFpGuiWSCustomEdit.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 begin
   Result := TLCLIntfHandle(TFPGUIPrivateEdit.Create(AWinControl, AParams));
+end;
+
+class procedure TFpGuiWSCustomEdit.ShowHide(const AWinControl: TWinControl);
+begin
+  inherited ShowHide(AWinControl);
+  TFPGUIPrivateEdit(AWinControl.Handle).Widget.Visible := AWinControl.Visible;
 end;
 
 { TFpGuiWSButton }
@@ -384,6 +401,12 @@ begin
   TFPGUIPrivateButton(AWinControl.Handle).SetText(AText);
 end;
 
+class procedure TFpGuiWSButton.ShowHide(const AWinControl: TWinControl);
+begin
+  inherited ShowHide(AWinControl);
+  TFPGUIPrivateButton(AWinControl.Handle).Widget.Visible := AWinControl.Visible;
+end;
+
 {------------------------------------------------------------------------------
   Method: TFpGuiWSButton.CreateHandle
   Params:  None
@@ -402,6 +425,12 @@ begin
   TFPGUIPrivateButton(AWinControl.Handle).Free;
 
   AWinControl.Handle := 0;
+end;
+
+class procedure TFpGuiWSButton.Invalidate(const AWinControl: TWinControl);
+begin
+  inherited Invalidate(AWinControl);
+  TFPGUIPrivateButton(AWinControl.Handle).Widget.Invalidate;
 end;
 
 { TFpGuiWSCustomCheckBox }
@@ -457,6 +486,13 @@ var
 begin
   vCheckBox := TFPGUIPrivateCheckBox(AWinControl.Handle).CheckBox;
   vCheckBox.Text := AText;
+end;
+
+class procedure TFpGuiWSCustomCheckBox.ShowHide(const AWinControl: TWinControl
+  );
+begin
+  inherited ShowHide(AWinControl);
+  TFPGUIPrivateCheckBox(AWinControl.Handle).Widget.Visible := AWinControl.Visible;
 end;
 
 class function TFpGuiWSCustomCheckBox.CreateHandle(
@@ -529,6 +565,12 @@ begin
   vRadioButton.Text := AText;
 end;
 
+class procedure TFpGuiWSRadioButton.ShowHide(const AWinControl: TWinControl);
+begin
+  inherited ShowHide(AWinControl);
+  TFPGUIPrivateRadioButton(AWinControl.Handle).Widget.Visible := AWinControl.Visible;
+end;
+
 class function TFpGuiWSRadioButton.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 begin
@@ -554,6 +596,13 @@ class function TFpGuiWSCustomMemo.GetStrings(const ACustomMemo: TCustomMemo): TS
 begin
   Result:=inherited GetStrings(ACustomMemo);
 end;
+
+class procedure TFpGuiWSCustomMemo.ShowHide(const AWinControl: TWinControl);
+begin
+  inherited ShowHide(AWinControl);
+  TFPGUIPrivateMemo(AWinControl.Handle).Widget.Visible := AWinControl.Visible;
+end;
+
 
 initialization
 

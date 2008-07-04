@@ -590,7 +590,6 @@ begin
 {$IFDEF VerboseFPGUIPrivate}
   WriteLn('[TFPGUIPrivateButton.CreateWidget]');
 {$ENDIF}
-
   Widget := TfpgButton.Create(GetParentContainerWidget());
   Widget.SetPosition(LCLObject.Left, LCLObject.Top, LCLObject.Width, LCLObject.Height);
 end;
