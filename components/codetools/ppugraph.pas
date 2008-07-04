@@ -30,8 +30,8 @@ unit PPUGraph;
 interface
 
 uses
-  Classes, SysUtils, PPUParser, CodeTree, AVL_Tree, FileProcs, BasicCodeTools,
-  CodeGraph, CodeToolManager;
+  Classes, SysUtils, dynlibs, PPUParser, CodeTree, AVL_Tree, FileProcs,
+  BasicCodeTools, CodeGraph, CodeToolManager;
 
 const
   FPCPPUGroupPrefix = 'fpc_';
@@ -122,7 +122,7 @@ type
     procedure AddFPCGroupsForCurrentCompiler(const BaseDirectory: string);
     procedure AddFPCGroups(const FPCPPUBaseDir: string // for example: /usr/lib/fpc/2.2.3/units/i386-linux/
                 );
-    procedure AddFPCGroup(const Groupname, Directory: string);
+    procedure AddFPCGroup(const BaseGroupname, Directory: string);
     function FindGroupWithName(const AName: string): TPPUGroup;
     function FindMemberWithUnitName(const AName: string): TPPUMember;
     function UpdateDependencies: boolean;
@@ -209,7 +209,7 @@ begin
   if PPU=nil then PPU:=TPPU.Create;
   PPU.LoadFromFile(PPUFilename);
   debugln('================================================================');
-  DebugLn(['TPPUMember.UpdateDependencies Group=',Group.Name,' UnitName=',Unitname,' Filename=',PPUFilename]);
+  DebugLn(['TPPUMember.UpdatePPU Group=',Group.Name,' UnitName=',Unitname,' Filename=',PPUFilename]);
   //PPU.Dump('');
   PPU.GetMainUsesSectionNames(MainUses);
   if MainUses.Count>0 then
@@ -395,7 +395,6 @@ function TPPUGroup.UpdateDependencies: boolean;
     AVLNode:=FMembers.FindLowest;
     while AVLNode<>nil do begin
       Member:=TPPUMember(AVLNode.Data);
-      if not Member.UpdatePPU then exit;
       if Main then
         AddSectionDependencies(Member,Member.MainUses)
       else
@@ -433,8 +432,6 @@ begin
 end;
 
 function TPPUGroup.UpdateLoader: boolean;
-const
-  LibExtension = '.so';
 var
   i: Integer;
   GraphNode: TCodeGraphNode;
@@ -442,7 +439,7 @@ var
   Group: TPPUGroup;
 begin
   Result:=true;
-  LibName:=Name+LibExtension;
+  LibName:=Name+'.'+SharedSuffix;
   DebugLn(['TPPUGroup.UpdateLoader Group=',Name,' LibName=',LibName]);
   // needed groups in topological order
   DebugLn(['Required groups: ================================']);
@@ -621,13 +618,14 @@ begin
   SysUtils.FindClose(FileInfo);
 end;
 
-procedure TPPUGroups.AddFPCGroup(const Groupname, Directory: string);
+procedure TPPUGroups.AddFPCGroup(const BaseGroupname, Directory: string);
 var
   FileInfo: TSearchRec;
   Filename: String;
   UnitName: String;
   Group: TPPUGroup;
   Member: TPPUMember;
+  GroupName: String;
 begin
   //DebugLn(['TPPUGroups.AddFPCGroup ',Groupname,' ',Directory]);
   Group:=nil;
@@ -645,10 +643,25 @@ begin
         DebugLn(['TPPUGroups.AddFPCGroup NOTE: invalid ppu name: ',Filename]);
         continue;
       end;
-      if Group=nil then begin
-        DebugLn(['TPPUGroups.AddFPCGroup Creating group ',Groupname]);
-        Group:=AddGroup(Groupname);
+      GroupName:=BaseGroupName;
+      if BaseGroupname=FPCPPUGroupPrefix+'rtl' then begin
+        if (CompareFilenames(FileInfo.Name,'system.ppu')=0)
+        or (CompareFilenames(FileInfo.Name,'dl.ppu')=0)
+        then begin
+          // the RTL should only contain the minimum for dynamic libs.
+          // It looks strange to exclude the dynlibs.ppu, but
+          // the dynlibs.ppu uses objpas.ppu, which might not be needed.
+          // But: do they hurt?
+          GroupName:=BaseGroupName+'_system';
+        end else begin
+          // all other ppu of the rtl directory need to be loaded separately
+          // => put them into separate groups
+          GroupName:=BaseGroupName+'_'+lowercase(ExtractFileNameOnly(FileInfo.Name));
+        end;
       end;
+      if FindGroupWithName(GroupName)=nil then
+        DebugLn(['TPPUGroups.AddFPCGroup Creating group ',GroupName]);
+      Group:=AddGroup(GroupName);
       Member:=Group.AddMember(UnitName);
       Member.PPUFilename:=Filename;
     until SysUtils.FindNext(FileInfo)<>0;
