@@ -51,8 +51,8 @@ begin
 
   Groups:=TPPUGroups.Create;
   MissingUnit:=TStringList.Create;
+  Group:=nil;
   try
-    Group:=Groups.AddGroup('Default');
     for i:=1 to Paramcount do begin
       Filename:=ParamStr(i);
       if Filename='fpc' then
@@ -60,6 +60,8 @@ begin
       else begin
         Filename:=CleanAndExpandFilename(Filename);
         debugln(Filename);
+        if Group=nil then
+          Group:=Groups.AddGroup('Default');
         Member:=Group.AddMember(ExtractFileNameOnly(Filename));
         Member.PPUFilename:=Filename;
       end;

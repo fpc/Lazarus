@@ -432,11 +432,53 @@ begin
 end;
 
 function TPPUGroup.UpdateLoader: boolean;
+
+  function StringToParagraph(Code: string): string;
+  const
+    MaxLineLen=80;
+  var
+    p: Integer;
+    LineLen: Integer;
+    BreakPos: Integer;
+    Indent: String;
+    InsertStr: String;
+  begin
+    Result:=Code;
+    p:=1;
+    LineLen:=0;
+    BreakPos:=0;
+    Indent:='      ';
+    while (p<length(Result)) do begin
+      if (LineLen>=MaxLineLen) and (BreakPos>0) then begin
+        if Result[BreakPos]=',' then begin
+          InsertStr:=LineEnding+Indent;
+          LineLen:=length(Indent);
+        end else begin
+          InsertStr:=''''+LineEnding+Indent+'+''';
+          LineLen:=length(Indent)+2;
+        end;
+        Result:=copy(Result,1,BreakPos)+InsertStr+copy(Result,BreakPos+1,length(Result));
+        inc(p,length(InsertStr));
+        BreakPos:=0;
+      end else begin
+        if Result[p] in [',',';'] then
+          BreakPos:=p;
+        inc(p);
+        inc(LineLen);
+      end;
+    end;
+  end;
+
 var
   i: Integer;
   GraphNode: TCodeGraphNode;
   Member: TPPUMember;
   Group: TPPUGroup;
+  NeededLibs: String;
+  InitProcs: String;
+  FinalProcs: String;
+  s: String;
+  RegisterFPLibProcName: String;
 begin
   Result:=true;
   {$IFDEF VER2_2_0}
@@ -444,35 +486,47 @@ begin
   {$ELSE}
   LibName:=Name+'.'+SharedSuffix;
   {$ENDIF}
-  DebugLn(['TPPUGroup.UpdateLoader Group=',Name,' LibName=',LibName]);
   // needed groups in topological order
-  DebugLn(['Required groups: ================================']);
   if Groups.GroupGraph.GetGraphNode(KeyNode,false)=nil then
     raise Exception.Create('inconsistency');
+    
+    
+  NeededLibs:='';
   for i:=0 to Groups.FSortedGroups.Count-1 do begin
     Group:=Groups.SortedGroups[i];
     if Groups.GroupGraph.GetGraphNode(Group.KeyNode,false)=nil then
       raise Exception.Create('inconsistency');
     if Groups.GroupGraph.GetEdge(KeyNode,Group.KeyNode,false)<>nil then begin
-      DebugLn([Group.Name]);
+      if NeededLibs<>'' then NeededLibs:=NeededLibs+';';
+      NeededLibs:=NeededLibs+Group.Name;
     end;
   end;
   // initialize units
-  DebugLn(['Initialization: ================================']);
+  InitProcs:='';
   for i:=FSortedUnits.Count-1 downto 0 do begin
     GraphNode:=TCodeGraphNode(FSortedUnits[i]);
     Member:=TPPUMember(GraphNode.Data);
-    if Member.InitializationMangledName<>'' then
-      DebugLn([Member.InitializationMangledName]);
+    if Member.InitializationMangledName<>'' then begin
+      if InitProcs<>'' then InitProcs:=InitProcs+';';
+      InitProcs:=InitProcs+Member.InitializationMangledName;
+    end;
   end;
   // finalize units
-  DebugLn(['Finalization: ===================================']);
+  FinalProcs:='';
   for i:=0 to FSortedUnits.Count-1 do begin
     GraphNode:=TCodeGraphNode(FSortedUnits[i]);
     Member:=TPPUMember(GraphNode.Data);
-    if Member.FinalizationMangledName<>'' then
-      DebugLn([Member.FinalizationMangledName]);
+    if Member.FinalizationMangledName<>'' then begin
+      if FinalProcs<>'' then FinalProcs:=FinalProcs+';';
+      FinalProcs:=FinalProcs+Member.FinalizationMangledName;
+    end;
   end;
+  RegisterFPLibProcName:='REGISTER_FPLIBRARY_'+UpperCase(Name);
+  s:=  'procedure '+RegisterFPLibProcName+';[public, alias : '''+RegisterFPLibProcName+'''];'+LineEnding;
+  s:=s+'begin'+LineEnding;
+  s:=s+StringToParagraph('  RegisterFPDynLib('''+Name+''','''+NeededLibs+''','''+InitProcs+''','''+FinalProcs+''');')+LineEnding;
+  s:=s+'end;'+LineEnding;
+  Debugln(s);
 end;
 
 procedure TPPUGroup.GetMissingUnits(var List: TStrings);
@@ -520,7 +574,7 @@ end;
 procedure TPPUGroups.UpdateTopologicalSortedList;
 begin
   FreeAndNil(FSortedGroups);
-  GroupGraph.GetTopologicalSortedList(FSortedGroups,true,false,false);
+  GroupGraph.GetTopologicalSortedList(FSortedGroups,false,false,false);
   if FSortedGroups=nil then
     FSortedGroups:=TFPList.Create;
   //DebugLn(['TPPUGroups.UpdateTopologicalSortedList ',FGroups.Count,' ',FSortedGroups.Count]);
@@ -649,6 +703,11 @@ begin
       end;
       GroupName:=BaseGroupName;
       if BaseGroupname=FPCPPUGroupPrefix+'rtl' then begin
+        if (copy(FileInfo.Name,1,3)='si_') then begin
+          // the si_* units are program loaders => not for libraries
+          continue;
+        end;
+
         if (CompareFilenames(FileInfo.Name,'system.ppu')=0)
         or (CompareFilenames(FileInfo.Name,'dl.ppu')=0)
         then begin
