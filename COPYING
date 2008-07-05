@@ -9,9 +9,9 @@ The license directory tree:
 
 <lazarus>/
  |
- +- ide             (mostly GPL2, but with a few files under modified LGPL)
+ +- ide             (GPL2)
  |
- +- designer        (mostly GPL2, but with a few files under modified LGPL)
+ +- designer        (GPL2)
  |
  +- debugger        (GPL2)
  |
