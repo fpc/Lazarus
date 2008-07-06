@@ -264,6 +264,7 @@ each control that's dropped onto the form
     function DesignerBaseClassCount: Integer; override;
     procedure UnregisterDesignerBaseClass(AClass: TComponentClass); override;
     function IndexOfDesignerBaseClass(AClass: TComponentClass): integer; override;
+    function DescendFromDesignerBaseClass(AClass: TComponentClass): integer; override;
     function FindDesignerBaseClassByName(const AClassName: shortstring; WithDefaults: boolean): TComponentClass; override;
 
     // define properties
@@ -1510,6 +1511,12 @@ begin
       try
         NewComponent := TComponent(TypeClass.newinstance);
         SetComponentDesignMode(NewComponent,true);
+        if DescendFromDesignerBaseClass(TypeClass)>=0 then begin
+          // this class can have its own lfm streams (e.g. a TFrame)
+          //  => set csInline
+          DebugLn(['TCustomFormEditor.CreateComponent Inline ',DbgSName(TypeClass)]);
+          SetComponentInlineMode(NewComponent,true);
+        end;
         NewComponent.Create(OwnerComponent);
       except
         on e: Exception do begin
@@ -1854,6 +1861,15 @@ function TCustomFormEditor.IndexOfDesignerBaseClass(AClass: TComponentClass
   ): integer;
 begin
   Result:=FDesignerBaseClasses.IndexOf(AClass);
+end;
+
+function TCustomFormEditor.DescendFromDesignerBaseClass(AClass: TComponentClass
+  ): integer;
+begin
+  Result:=FDesignerBaseClasses.Count-1;
+  while (Result>=0)
+  and (not AClass.InheritsFrom(TClass(FDesignerBaseClasses[Result]))) do
+    dec(Result);
 end;
 
 function TCustomFormEditor.FindDesignerBaseClassByName(

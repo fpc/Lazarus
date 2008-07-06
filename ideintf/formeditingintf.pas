@@ -127,6 +127,7 @@ type
     property DesignerBaseClasses[Index: integer]: TComponentClass read GetDesignerBaseClasses;
     procedure UnregisterDesignerBaseClass(AClass: TComponentClass); virtual; abstract;
     function IndexOfDesignerBaseClass(AClass: TComponentClass): integer; virtual; abstract;
+    function DescendFromDesignerBaseClass(AClass: TComponentClass): integer; virtual; abstract;
     function FindDesignerBaseClassByName(const AClassName: shortstring; WithDefaults: boolean): TComponentClass; virtual; abstract;
 
     // designers
