@@ -148,6 +148,9 @@ begin
     {$IFDEF MSWindows}{$DEFINE WidgetSetDefined}
     Result:= lpWin32;
     {$ENDIF}
+    {$IFDEF darwin}{$DEFINE WidgetSetDefined}
+    Result:= lpCarbon;;
+    {$ENDIF}
     {$IFNDEF WidgetSetDefined}
     Result:= lpGtk;
     {$ENDIF}
