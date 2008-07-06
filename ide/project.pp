@@ -90,7 +90,8 @@ type
   TUnitCompDependencyType = (
     ucdtAncestor, // RequiresUnit is ancestor
     ucdtProperty, // a property references RequiresUnit's component or sub component
-    ucdtOldProperty // like ucdtProperty, but for the old state before the revert
+    ucdtOldProperty, // like ucdtProperty, but for the old state before the revert
+    ucdtInlineClass // RequiresUnit is class of an inline component
     );
   TUnitCompDependencyTypes = set of TUnitCompDependencyType;
 
@@ -910,6 +911,7 @@ begin
   ucdtAncestor: Result:='Ancestor';
   ucdtProperty: Result:='Property';
   ucdtOldProperty: Result:='OldProperty';
+  ucdtInlineClass: Result:='InlineClass';
   else Result:='?'
   end;
 end;
@@ -1490,10 +1492,11 @@ begin
     Result:=Result.NextRequiresDependency;
   end;
   // if none exists, then create one
-  if Result=nil then
+  if Result=nil then begin
     Result:=TUnitComponentDependency.Create;
-  Result.UsedByUnit:=Self;
-  Result.RequiresUnit:=RequiredUnit;
+    Result.UsedByUnit:=Self;
+    Result.RequiresUnit:=RequiredUnit;
+  end;
   Result.Types:=Result.Types+Types;
 end;
 
@@ -3641,6 +3644,18 @@ procedure TProject.UpdateUnitComponentDependencies;
     ReferenceUnit: TUnitInfo;
     Dependency: TUnitComponentDependency;
   begin
+    if AComponent<>AnUnitInfo.Component then begin
+      ReferenceUnit:=UnitWithComponent(AComponent);
+      if (ReferenceUnit<>nil) then begin
+        // component class references another unit
+        {$IFDEF VerboseIDEMultiForm}
+        DebugLn(['TProject.UpdateUnitComponentDependencies inline component found: ',DbgSName(AComponent),' ',AnUnitInfo.Filename,' -> ',ReferenceUnit.Filename]);
+        {$ENDIF}
+        AnUnitInfo.AddRequiresComponentDependency(
+                             ReferenceUnit,[ucdtInlineClass]);
+      end;
+    end;
+  
     // read all properties and remove doubles
     TypeInfo:=PTypeInfo(AComponent.ClassInfo);
     repeat
@@ -3727,7 +3742,7 @@ begin
   or (lpsfPropertyDependenciesChanged in FStateFlags) then begin
     Exclude(FStateFlags,lpsfPropertyDependenciesChanged);
     // clear dependencies
-    ClearUnitComponentDependencies([ucdtProperty]);
+    ClearUnitComponentDependencies([ucdtProperty,ucdtInlineClass]);
     {$IFDEF VerboseIDEMultiForm}
     DebugLn(['TProject.UpdateUnitComponentDependencies checking properties ...']);
     {$ENDIF}
@@ -3751,15 +3766,14 @@ begin
     // find designer dependencies
     AnUnitInfo:=FirstUnitWithComponent;
     while AnUnitInfo<>nil do begin
-      Exclude(AnUnitInfo.FFlags,uifMarked);
-      Exclude(AnUnitInfo.FFlags,uifComponentIndirectlyUsedByDesigner);
+      AnUnitInfo.FFlags:=AnUnitInfo.FFlags-
+        [uifMarked,uifComponentIndirectlyUsedByDesigner,uifComponentUsedByDesigner];
       if FindRootDesigner(AnUnitInfo.Component)<>nil then begin
         {$IFDEF VerboseIDEMultiForm}
         DebugLn(['TProject.UpdateUnitComponentDependencies used by designer: ',AnUnitInfo.Filename]);
         {$ENDIF}
         Include(AnUnitInfo.FFlags,uifComponentUsedByDesigner);
-      end else
-        Exclude(AnUnitInfo.FFlags,uifComponentUsedByDesigner);
+      end;
       AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
     end;
     // mark all units that are used indirectly by a designer
@@ -4196,7 +4210,7 @@ begin
     exit(true);
   if (uifComponentIndirectlyUsedByDesigner in ComponentUnit.Flags) then
     exit(true);
-  if ComponentUnit.FindUsedByComponentDependency([ucdtAncestor])<>nil then
+  if ComponentUnit.FindUsedByComponentDependency([ucdtAncestor,ucdtInlineClass])<>nil then
     exit(true);
   Result:=false;
 end;
