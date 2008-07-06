@@ -45,7 +45,7 @@ uses
   // IDEIntf
   PropEdits, ObjectInspector, IDECommands, FormEditingIntf,
   // IDE
-  LazarusIDEStrConsts, Project, JITForms,
+  LazarusIDEStrConsts, Project, JITForm, JITForms,
   CustomNonFormDesigner, NonControlDesigner, FrameDesigner,
   ComponentReg, IDEProcs, ComponentEditors, KeyMapping, EditorOptions,
   DesignerProcs;
@@ -1508,7 +1508,9 @@ begin
       if OwnerComponent.Owner <> nil then
         OwnerComponent := OwnerComponent.Owner;
       try
-        NewComponent := TypeClass.Create(OwnerComponent);
+        NewComponent := TComponent(TypeClass.newinstance);
+        SetComponentDesignMode(NewComponent,true);
+        NewComponent.Create(OwnerComponent);
       except
         on e: Exception do begin
           DumpExceptionBackTrace;
