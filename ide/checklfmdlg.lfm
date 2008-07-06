@@ -1,63 +1,42 @@
 object CheckLFMDialog: TCheckLFMDialog
   Left = 367
-  Height = 516
+  Height = 580
   Top = 196
-  Width = 458
+  Width = 552
   ActiveControl = LFMSynEdit
   Caption = 'Repair LFM file'
-  ClientHeight = 516
-  ClientWidth = 458
+  ClientHeight = 580
+  ClientWidth = 552
   OnCreate = CheckLFMDialogCreate
   LCLVersion = '0.9.25'
   object NoteLabel: TLabel
-    Left = 8
     Height = 20
-    Top = 8
-    Width = 66
+    Width = 552
+    Align = alTop
     Caption = 'NoteLabel'
     ParentColor = False
     WordWrap = True
   end
-  object CancelButton: TButton
-    Left = 359
-    Height = 25
-    Top = 483
-    Width = 75
-    Anchors = [akLeft, akBottom]
-    Caption = 'Cancel'
-    ModalResult = 2
-    TabOrder = 0
-  end
-  object RemoveAllButton: TButton
-    Left = 24
-    Height = 25
-    Top = 483
-    Width = 311
-    Anchors = [akLeft, akBottom]
-    Caption = 'Remove all invalid properties'
-    OnClick = RemoveAllButtonClick
-    TabOrder = 1
-  end
   object LFMGroupBox: TGroupBox
-    Left = 8
-    Height = 283
-    Top = 80
-    Width = 446
-    Anchors = [akTop, akLeft, akRight, akBottom]
+    Height = 415
+    Top = 20
+    Width = 552
+    Align = alClient
     Caption = 'LFM file'
-    ClientHeight = 264
-    ClientWidth = 442
+    ClientHeight = 396
+    ClientWidth = 548
     ParentCtl3D = False
-    TabOrder = 2
+    TabOrder = 0
     object LFMSynEdit: TSynEdit
-      Height = 264
-      Width = 442
+      Height = 396
+      Width = 548
       Align = alClient
       Font.Height = -15
       Font.Name = 'courier'
       ParentColor = False
       ParentCtl3D = False
       TabOrder = 0
+      BookMarkOptions.OnChange = nil
       Gutter.CodeFoldingWidth = 14
       Highlighter = SynLFMSyn1
       Keystrokes = <      
@@ -384,27 +363,62 @@ object CheckLFMDialog: TCheckLFMDialog
       Lines.Strings = (
         'LFMSynEdit'
       )
+      SelectedColor.OnChange = nil
       OnSpecialLineColors = LFMSynEditSpecialLineColors
     end
   end
   object ErrorsGroupBox: TGroupBox
-    Left = 8
     Height = 104
-    Top = 371
-    Width = 446
-    Anchors = [akLeft, akRight, akBottom]
+    Top = 435
+    Width = 552
+    Align = alBottom
     Caption = 'Errors'
     ClientHeight = 85
-    ClientWidth = 442
+    ClientWidth = 548
     ParentCtl3D = False
-    TabOrder = 3
+    TabOrder = 1
     object ErrorsListBox: TListBox
       Height = 85
-      Width = 442
+      Width = 548
       Align = alClient
       OnClick = ErrorsListBoxClick
       TabOrder = 0
       TopIndex = -1
+    end
+  end
+  object BtnPanel: TPanel
+    Height = 41
+    Top = 539
+    Width = 552
+    Align = alBottom
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 41
+    ClientWidth = 552
+    TabOrder = 2
+    object CancelButton: TButton
+      Left = 491
+      Height = 29
+      Top = 6
+      Width = 55
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'Cancel'
+      ModalResult = 2
+      TabOrder = 0
+    end
+    object RemoveAllButton: TButton
+      Left = 291
+      Height = 29
+      Top = 6
+      Width = 194
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'Remove all invalid properties'
+      OnClick = RemoveAllButtonClick
+      TabOrder = 1
     end
   end
   object SynLFMSyn1: TSynLFMSyn

@@ -41,9 +41,12 @@ uses
   // IDE
   PropEdits, IDEDialogs, ComponentReg, PackageIntf, IDEWindowIntf,
   CustomFormEditor, LazarusIDEStrConsts, OutputFilter, IDEProcs, IDEOptionDefs,
-  EditorOptions;
+  EditorOptions, ExtCtrls;
 
 type
+
+  { TCheckLFMDialog }
+
   TCheckLFMDialog = class(TForm)
     CancelButton: TButton;
     ErrorsGroupBox: TGroupBox;
@@ -51,6 +54,7 @@ type
     NoteLabel: TLabel;
     LFMGroupBox: TGroupBox;
     LFMSynEdit: TSynEdit;
+    BtnPanel: TPanel;
     RemoveAllButton: TButton;
     SynLFMSyn1: TSynLFMSyn;
     procedure ErrorsListBoxClick(Sender: TObject);
