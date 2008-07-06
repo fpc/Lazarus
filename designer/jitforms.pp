@@ -138,13 +138,14 @@ type
     // some useful functions
     function GetItem(Index:integer):TComponent;
     function OnFindGlobalComponent(const AName:AnsiString):TComponent;
-    procedure InitReading(BinStream: TStream; var Reader: TReader;
-                          DestroyDriver: Boolean); virtual;
+    procedure InitReading;
     procedure CreateReader(BinStream: TStream; var Reader: TReader;
                            DestroyDriver: Boolean); virtual;
     function DoCreateJITComponent(const NewComponentName, NewClassName,
                          NewUnitName: shortstring; AncestorClass: TClass;
                          Visible: boolean):integer;
+    procedure ReadInlineComponent(var Component: TComponent;
+                            ComponentClass: TComponentClass; Owner: TComponent);
     procedure DoFinishReading; virtual;
     procedure HandleException(E: Exception; const Context: string;
                               out Action: TModalResult);
@@ -179,8 +180,9 @@ type
                                       const NewUnitName: ShortString);
     // child components
     function AddJITChildComponentFromStream(JITOwnerComponent: TComponent;
-      BinStream: TStream; ComponentClass: TComponentClass;
-      ParentControl: TWinControl): TComponent;
+                            BinStream: TStream; ComponentClass: TComponentClass;
+                            ParentControl: TWinControl): TComponent;
+    procedure ReadInlineJITChildComponent(Component: TComponent);
   public
     property OnReaderError: TJITReaderErrorEvent
                                        read FOnReaderError write FOnReaderError;
@@ -770,7 +772,8 @@ function TJITComponentList.AddJITComponentFromStream(BinStream: TStream;
 
     FCurReadStreamClass:=StreamClass;
     DestroyDriver:=false;
-    InitReading(AStream,Reader,DestroyDriver);
+    InitReading;
+    CreateReader(AStream,Reader,DestroyDriver);
     { $IFDEF VerboseJITForms}
     DebugLn(['TJITComponentList.AddJITComponentFromStream.ReadStream Reading: FCurReadJITComponent=',DbgSName(FCurReadJITComponent),' StreamClass=',DbgSName(StreamClass)]);
     { $ENDIF}
@@ -878,8 +881,7 @@ begin
   //DebugLn(dbgsName(CurReadJITComponent), ' FIND global component ', AName, ' ', dbgsName(Result));
 end;
 
-procedure TJITComponentList.InitReading(BinStream: TStream;
-  var Reader: TReader; DestroyDriver: Boolean);
+procedure TJITComponentList.InitReading;
 begin
   FFlags:=FFlags-[jclAutoRenameComponents];
   FErrors.Clear;
@@ -887,8 +889,6 @@ begin
   MyFindGlobalComponentProc:=@OnFindGlobalComponent;
   RegisterFindGlobalComponentProc(@MyFindGlobalComponent);
   Application.FindGlobalComponentEnabled:=false;
-  
-  CreateReader(BinStream,Reader,DestroyDriver);
 end;
 
 procedure TJITComponentList.CreateReader(BinStream: TStream;
@@ -980,6 +980,90 @@ begin
   end;
   if FCurReadJITComponent<>nil then
     Result:=FJITComponents.Add(FCurReadJITComponent);
+end;
+
+procedure TJITComponentList.ReadInlineComponent(var Component: TComponent;
+  ComponentClass: TComponentClass; Owner: TComponent);
+var
+  DestroyDriver: Boolean;
+  SubReader: TReader;
+  BinStream: TExtMemoryStream;
+  Ancestor: TComponent;
+  Abort: boolean;
+  Ancestors: TFPList;
+  AncestorStreams: TFPList;
+  i: Integer;
+  OldStreamClass: TClass;
+begin
+  fCurReadChild:=Component;
+  fCurReadChildClass:=ComponentClass;
+
+  if Assigned(OnFindAncestors) then begin
+    Ancestors:=nil;
+    AncestorStreams:=nil;
+    OldStreamClass:=FCurReadStreamClass;
+    try
+      Abort:=false;
+      OnFindAncestors(Self,ComponentClass,Ancestors,AncestorStreams,Abort);
+      if Abort then begin
+        DebugLn(['TJITComponentList.ReadInlineComponent aborted reading ComponentClass=',DbgSName(ComponentClass)]);
+        raise EReadError.Create('TJITComponentList.ReadInlineComponent aborted reading ComponentClass='+DbgSName(ComponentClass));
+      end;
+      if Ancestors<>nil then begin
+        // read ancestor streams
+        Ancestor:=nil;
+        for i:=Ancestors.Count-1 downto 0 do begin
+          BinStream:=TExtMemoryStream(AncestorStreams[i]);
+          FCurReadStreamClass:=TComponent(Ancestors[i]).ClassType;
+
+          DebugLn(['TJITComponentList.ReadInlineComponent Has Stream: ',DbgSName(FCurReadStreamClass)]);
+          // create component
+          if Component=nil then begin
+            DebugLn(['TJITComponentList.ReadInlineComponent creating ',DbgSName(ComponentClass),' Owner=',DbgSName(Owner),' ...']);
+            // allocate memory without running the constructor
+            Component:=TComponent(ComponentClass.newinstance);
+            // set csDesigning
+            SetComponentDesignMode(Component,true);
+            // this is a streamed sub component => set csInline
+            SetComponentInlineMode(Component,true);
+            // now run the constructor
+            Component.Create(Owner);
+          end;
+          // read stream
+          fCurReadChild:=Component;
+          fCurReadChildClass:=ComponentClass;
+          SubReader:=nil;
+          DestroyDriver:=false;
+          try
+            CreateReader(BinStream,SubReader,DestroyDriver);
+            // The stream contains only the diff to the Ancestor instance,
+            // => give it the Ancestor instance
+            SubReader.Ancestor:=Ancestor;
+            SubReader.ReadRootComponent(Component);
+          finally
+            if SubReader<>nil then begin
+              if DestroyDriver then SubReader.Driver.Free;
+              SubReader.Free;
+            end;
+          end;
+          FCurReadStreamClass:=OldStreamClass;
+
+          // next
+          Ancestor:=TComponent(Ancestors[i]);
+        end;
+      end;
+    finally
+      Ancestors.Free;
+      if AncestorStreams<>nil then
+        for i:=0 to AncestorStreams.Count-1 do
+          TObject(AncestorStreams[i]).Free;
+      AncestorStreams.Free;
+    end;
+    FCurReadStreamClass:=OldStreamClass;
+    fCurReadChild:=Component;
+    fCurReadChildClass:=ComponentClass;
+  end;
+  //debugln(['[TJITComponentList.ReadInlineComponent] Class=',ComponentClass.ClassName,' Component=',dbgsName(Component)]);
 end;
 
 procedure TJITComponentList.DoFinishReading;
@@ -1110,7 +1194,8 @@ begin
   FCurReadStreamClass:=nil;
   try
     DestroyDriver:=false;
-    InitReading(BinStream,Reader,DestroyDriver);
+    InitReading;
+    CreateReader(BinStream,Reader,DestroyDriver);
     {$IFDEF VerboseJITForms}
     debugln('[TJITComponentList.AddJITChildComponentFromStream] B');
     {$ENDIF}
@@ -1153,6 +1238,35 @@ begin
   end;
   FCurReadStreamClass:=nil;
   Result:=NewComponent;
+end;
+
+procedure TJITComponentList.ReadInlineJITChildComponent(Component: TComponent);
+var
+  Action: TModalResult;
+begin
+  FCurReadStreamClass:=nil;
+  InitReading;
+  { $IFDEF VerboseJITForms}
+  DebugLn(['TJITComponentList.ReadInlineJITChildComponent Reading: ',DbgSName(Component)]);
+  { $ENDIF}
+  try
+    try
+      ReadInlineComponent(Component,TComponentClass(Component.ClassType),Component.Owner);
+    except
+      on E: Exception do begin
+        HandleException(E,'[TJITComponentList.ReadInlineJITChildComponent] ERROR reading inline stream'
+           +' of "'+DbgSName(Component)+'"',Action);
+      end;
+    end;
+    {$IFDEF VerboseJITForms}
+    debugln('[TJITComponentList.ReadInlineJITChildComponent] Finish Reading ...');
+    {$ENDIF}
+    DoFinishReading;
+  finally
+    UnregisterFindGlobalComponentProc(@MyFindGlobalComponent);
+    Application.FindGlobalComponentEnabled:=true;
+  end;
+  FCurReadStreamClass:=nil;
 end;
 
 function TJITComponentList.CreateNewMethod(JITComponent: TComponent;
@@ -1626,88 +1740,12 @@ end;
 
 procedure TJITComponentList.ReaderCreateComponent(Reader: TReader;
   ComponentClass: TComponentClass; var Component: TComponent);
-{$IFDEF EnableTFrame}
-var
-  DestroyDriver: Boolean;
-  SubReader: TReader;
-  BinStream: TExtMemoryStream;
-  Ancestor: TComponent;
-  Abort: boolean;
-  Ancestors: TFPList;
-  AncestorStreams: TFPList;
-  i: Integer;
-  OldStreamClass: TClass;
-{$ENDIF}
 begin
   fCurReadChild:=Component;
   fCurReadChildClass:=ComponentClass;
   
   {$IFDEF EnableTFrame}
-  if Assigned(OnFindAncestors) then begin
-    Ancestors:=nil;
-    AncestorStreams:=nil;
-    OldStreamClass:=FCurReadStreamClass;
-    try
-      Abort:=false;
-      OnFindAncestors(Self,ComponentClass,Ancestors,AncestorStreams,Abort);
-      if Abort then begin
-        DebugLn(['TJITComponentList.ReaderCreateComponent aborted reading ComponentClass=',DbgSName(ComponentClass)]);
-        raise EReadError.Create('TJITComponentList.ReaderCreateComponent aborted reading ComponentClass='+DbgSName(ComponentClass));
-      end;
-      if Ancestors<>nil then begin
-        // read ancestor streams
-        Ancestor:=nil;
-        for i:=Ancestors.Count-1 downto 0 do begin
-          BinStream:=TExtMemoryStream(AncestorStreams[i]);
-          FCurReadStreamClass:=TComponent(Ancestors[i]).ClassType;
-
-          DebugLn(['TJITComponentList.ReaderCreateComponent Has Stream: ',DbgSName(FCurReadStreamClass)]);
-          // create component
-          if Component=nil then begin
-            DebugLn(['TJITComponentList.ReaderCreateComponent creating ',DbgSName(ComponentClass),' Owner=',DbgSName(Reader.Owner),' ...']);
-            // allocate memory without running the constructor
-            Component:=TComponent(ComponentClass.newinstance);
-            // set csDesigning
-            SetComponentDesignMode(Component,true);
-            // this is a streamed sub component => set csInline
-            SetComponentInlineMode(Component,true);
-            // now run the constructor
-            Component.Create(Reader.Owner);
-          end;
-          // read stream
-          fCurReadChild:=Component;
-          fCurReadChildClass:=ComponentClass;
-          SubReader:=nil;
-          DestroyDriver:=false;
-          try
-            CreateReader(BinStream,SubReader,DestroyDriver);
-            // The stream contains only the diff to the Ancestor instance,
-            // => give it the Ancestor instance
-            SubReader.Ancestor:=Ancestor;
-            SubReader.ReadRootComponent(Component);
-          finally
-            if SubReader<>nil then begin
-              if DestroyDriver then SubReader.Driver.Free;
-              SubReader.Free;
-            end;
-          end;
-          FCurReadStreamClass:=OldStreamClass;
-
-          // next
-          Ancestor:=TComponent(Ancestors[i]);
-        end;
-      end;
-    finally
-      Ancestors.Free;
-      if AncestorStreams<>nil then
-        for i:=0 to AncestorStreams.Count-1 do
-          TObject(AncestorStreams[i]).Free;
-      AncestorStreams.Free;
-    end;
-    FCurReadStreamClass:=OldStreamClass;
-    fCurReadChild:=Component;
-    fCurReadChildClass:=ComponentClass;
-  end;
+  ReadInlineComponent(Component,ComponentClass,Reader.Owner);
   {$ENDIF}
   //debugln(['[TJITComponentList.ReaderCreateComponent] Class=',ComponentClass.ClassName,' Component=',dbgsName(Component)]);
 end;

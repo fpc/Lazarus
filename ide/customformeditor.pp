@@ -1537,8 +1537,17 @@ begin
         exit;
       end;
       
+      // read inline streams
+      if csInline in NewComponent.ComponentState then begin
+        JITList:=FindJITList(OwnerComponent);
+        if JITList=nil then
+          RaiseException('TCustomFormEditor.CreateComponent '+TypeClass.ClassName);
+        JITList.ReadInlineJITChildComponent(NewComponent);
+      end;
+
       // create component interface
       Temp := TComponentInterface.Create(NewComponent);
+      
       // calc parent
       AParent:=nil;
       if ParentComponent is TControl then begin
