@@ -630,21 +630,27 @@ function TWin32WidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
         // CF_UNICODETEXT is used by UnicodeEnabledOS, CF_TEXT by others
         // we need to convert it from UTF8 to UTF16 or Ansi
         begin
-          SetLength(BufferString, DataStream.Size);
-          DataStream.Read(BufferString[1], DataStream.Size);
-          if FormatID=Windows.CF_UNICODETEXT then
-          begin
-            BufferWideString := Utf8Decode(BufferString);
-            BufferStream.Write(BufferWideString[1], Length(BufferWideString) * 2);
-          end
-          else
-          begin
-            BufferString := Utf8ToAnsi(BufferString);
-            BufferStream.Write(BufferString[1], Length(BufferString));
+          if DataStream.Size>0 then begin
+            SetLength(BufferString, DataStream.Size);
+            DataStream.Read(BufferString[1], DataStream.Size);
+            if FormatID=Windows.CF_UNICODETEXT then
+            begin
+              BufferWideString := Utf8Decode(BufferString);
+              if BufferWideString<>'' then  // bufferstring may contain invalid UTF8
+                BufferStream.Write(BufferWideString[1], Length(BufferWideString) * 2);
+            end
+            else
+            begin
+              BufferString := Utf8ToAnsi(BufferString);
+              if BufferString<>'' then  // original string may contain invalid UTF8
+                BufferStream.Write(BufferString[1], Length(BufferString));
+            end;
+            BufferStream.Position := 0;
           end;
-          BufferStream.Position := 0;
           WriteStreamToClipBoard(FormatID, BufferStream);
         end
+     {$ELSE}
+        // no clipboard support without unicode anymore
      {$ENDIF}
       else
         begin
