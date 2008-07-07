@@ -1842,7 +1842,7 @@ function TJITMethods.Add(aClass: TClass;
 begin
   Result:=Find(aClass,aMethodName);
   if Result=nil then begin
-    DebugLn(['TJITMethods.Add Create Class=',dbgsname(aClass),' aMethodName=',aMethodName]);
+    //DebugLn(['TJITMethods.Add Create Class=',dbgsname(aClass),' aMethodName=',aMethodName]);
     Result:=TJITMethod.Create(Self,aClass,aMethodName);
   end;
 end;
