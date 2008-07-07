@@ -1874,7 +1874,7 @@ begin
   // the length of utf8 vs Wide/Ansi the strings differ, so recalc.
   if UnicodeEnabledOS then
   begin
-    // TODO: use the real number of chars (and not the lenght)
+    // TODO: use the real number of chars (and not the length)
     w := Utf8Decode(S);
     Result := Windows.GetTextExtentPoint32W(DC, PWideChar(W), Length(W), @Size);
   end else

@@ -1251,7 +1251,7 @@ var
 begin
   winHandle := AWinControl.Handle;
   canvasHandle := Windows.GetDC(winHandle);
-  oldFontHandle := SelectObject(canvasHandle, Windows.SendMessage(winHandle, WM_GetFont, 0, 0));
+  oldFontHandle := SelectObject(canvasHandle, AWinControl.Font.Reference.Handle);
   DeleteAmpersands(Text);
 
   Result := LCLIntf.GetTextExtentPoint32(canvasHandle, PChar(Text), Length(Text), textSize);

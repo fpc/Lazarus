@@ -167,7 +167,7 @@ var
     // fill with background color
     OldBitmapHandle := SelectObject(hdcNewBitmap, NewBitmap);
 
-    // dont use BitBtn.Brush.Reference.Handle - since button is painted with BtnFact color and
+    // dont use BitBtn.Brush.Reference.Handle - since button is painted with BtnFace color and
     // only glyph will have that bg - this will look very ugly
 
     Windows.FillRect(hdcNewBitmap, BitmapRect, GetSysColorBrush(COLOR_BTNFACE));
