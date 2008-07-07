@@ -1251,6 +1251,7 @@ begin
   { $ENDIF}
   try
     try
+      FCurReadJITComponent:=Component;
       ReadInlineComponent(Component,TComponentClass(Component.ClassType),Component.Owner);
     except
       on E: Exception do begin
@@ -1266,6 +1267,7 @@ begin
     UnregisterFindGlobalComponentProc(@MyFindGlobalComponent);
     Application.FindGlobalComponentEnabled:=true;
   end;
+  FCurReadJITComponent:=nil;
   FCurReadStreamClass:=nil;
 end;
 
