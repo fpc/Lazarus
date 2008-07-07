@@ -885,11 +885,20 @@ const
 
 var
   Project1: TProject = nil;// the main project
+  
+const
+  UnitInfoFlagNames: array[TUnitInfoFlag] of string = (
+    'uifComponentUsedByDesigner',
+    'uifComponentIndirectlyUsedByDesigner',
+    'uifMarked'
+    );
 
 procedure AddCompileReasonsDiff(Tool: TCompilerDiffTool;
   const PropertyName: string; const Old, New: TCompileReasons);
 function dbgs(aType: TUnitCompDependencyType): string; overload;
 function dbgs(Types: TUnitCompDependencyTypes): string; overload;
+function dbgs(Flag: TUnitInfoFlag): string; overload;
+function dbgs(Flags: TUnitInfoFlags): string; overload;
 
 implementation
 
@@ -926,6 +935,24 @@ begin
     if t in Types then begin
       if Result<>'' then Result:=Result+';';
       Result:=Result+dbgs(t);
+    end;
+  Result:='['+Result+']';
+end;
+
+function dbgs(Flag: TUnitInfoFlag): string;
+begin
+  Result:=UnitInfoFlagNames[Flag];
+end;
+
+function dbgs(Flags: TUnitInfoFlags): string;
+var
+  f: TUnitInfoFlag;
+begin
+  Result:='';
+  for f:=low(Flags) to High(Flags) do
+    if f in Flags then begin
+      if Result<>'' then Result:=Result+';';
+      Result:=Result+dbgs(f);
     end;
   Result:='['+Result+']';
 end;
@@ -3646,7 +3673,8 @@ procedure TProject.UpdateUnitComponentDependencies;
     Dependency: TUnitComponentDependency;
   begin
     if AComponent<>AnUnitInfo.Component then begin
-      ReferenceUnit:=UnitWithComponent(AComponent);
+      ReferenceUnit:=UnitWithComponentClass(TComponentClass(AComponent.ClassType));
+      DebugLn(['Search UnitComponent=',DbgSName(AnUnitInfo.Component),' AComponent=',DbgSName(AComponent),' ReferenceUnit=',ReferenceUnit<>nil]);
       if (ReferenceUnit<>nil) then begin
         // component class references another unit
         {$IFDEF VerboseIDEMultiForm}
@@ -3713,7 +3741,7 @@ procedure TProject.UpdateUnitComponentDependencies;
   procedure DFSUsedByDesigner(AnUnitInfo, IgnoreUnitInfo: TUnitInfo);
   var
     Dependency: TUnitComponentDependency;
-    UsedByUnitInfo: TUnitInfo;
+    UsingUnitInfo: TUnitInfo;
   begin
     if (AnUnitInfo=nil) or (AnUnitInfo.Component=nil)
     or (uifMarked in AnUnitInfo.FFlags) then
@@ -3721,15 +3749,15 @@ procedure TProject.UpdateUnitComponentDependencies;
     Include(AnUnitInfo.FFlags,uifMarked);
     Dependency:=AnUnitInfo.FirstUsedByComponent;
     while Dependency<>nil do begin
-      UsedByUnitInfo:=Dependency.UsedByUnit;
-      if (UsedByUnitInfo<>IgnoreUnitInfo)
-      and (not (uifComponentIndirectlyUsedByDesigner in UsedByUnitInfo.FFlags))
+      UsingUnitInfo:=Dependency.UsedByUnit;
+      if (UsingUnitInfo<>IgnoreUnitInfo)
+      and (not (uifComponentIndirectlyUsedByDesigner in UsingUnitInfo.FFlags))
       then begin
         {$IFDEF VerboseIDEMultiForm}
-        DebugLn(['TProject.UpdateUnitComponentDependencies.DFSUsedByDesigner ',UsedByUnitInfo.Filename,' is used indirect by designer of ',AnUnitInfo.Filename]);
+        DebugLn(['TProject.UpdateUnitComponentDependencies.DFSUsedByDesigner designer of ',UsingUnitInfo.Filename,' uses ',AnUnitInfo.Filename]);
         {$ENDIF}
-        Include(UsedByUnitInfo.FFlags,uifComponentIndirectlyUsedByDesigner);
-        DFSUsedByDesigner(UsedByUnitInfo,IgnoreUnitInfo);
+        Include(UsingUnitInfo.FFlags,uifComponentIndirectlyUsedByDesigner);
+        DFSUsedByDesigner(UsingUnitInfo,IgnoreUnitInfo);
       end;
       Dependency:=Dependency.NextUsedByDependency;
     end;
@@ -3788,7 +3816,9 @@ begin
       end;
       AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
     end;
-    //WriteDebugReportUnitComponentDependencies('D ');
+    {$IFDEF EnableTFrame}
+    WriteDebugReportUnitComponentDependencies('UUCD ');
+    {$ENDIF}
   end;
 end;
 
@@ -4220,7 +4250,9 @@ begin
     exit(true);
   if (uifComponentIndirectlyUsedByDesigner in ComponentUnit.Flags) then
     exit(true);
-  if ComponentUnit.FindUsedByComponentDependency([ucdtAncestor,ucdtInlineClass])<>nil then
+  if ComponentUnit.FindUsedByComponentDependency([ucdtAncestor])<>nil then
+    exit(true);
+  if ComponentUnit.FindUsedByComponentDependency([ucdtInlineClass])<>nil then
     exit(true);
   Result:=false;
 end;

@@ -6227,6 +6227,7 @@ begin
       FLastFormActivated:=nil;
     ComponentStillUsed:=(not (cfCloseDependencies in Flags))
                         and UnitComponentIsUsed(AnUnitInfo,false);
+    //DebugLn(['TMainIDE.CloseUnitComponent ',AnUnitInfo.Filename,' ComponentStillUsed=',ComponentStillUsed,' UnitComponentIsUsed=',UnitComponentIsUsed(AnUnitInfo,false),' ',dbgs(AnUnitInfo.Flags),' DepAncestor=',AnUnitInfo.FindUsedByComponentDependency([ucdtAncestor])<>nil,' DepInline=',AnUnitInfo.FindUsedByComponentDependency([ucdtInlineClass])<>nil]);
     if (OldDesigner=nil) then begin
       // hidden component
       //DebugLn(['TMainIDE.CloseUnitComponent freeing hidden component without designer: ',AnUnitInfo.Filename,' ',DbgSName(AnUnitInfo.Component)]);
