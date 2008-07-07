@@ -329,9 +329,14 @@ begin
 
   //MWE: shouldn't the memory get copied at the place where it is needed,
   //     its not really oo if the bitmap (or thisr party) needs this to do it here.
-  NewData := GetMem(ARawImage.DataSize);
-  Move(ARawImage.Data^, NewData^, ARawImage.DataSize);
-
+  if ARawImage.DataSize > 0 then
+  begin
+    NewData := GetMem(ARawImage.DataSize);
+    Move(ARawImage.Data^, NewData^, ARawImage.DataSize);
+  end
+  else
+    NewData := nil;
+    
   // this is only a rough implementation, there is no check against bitsperpixel
   case Desc.Depth of
     1: ImageFormat := QImageFormat_Mono;
@@ -349,9 +354,14 @@ begin
   if ARawImage.Mask = nil then Exit;
   if ARawImage.MaskSize = 0 then Exit;
   
-  NewData := GetMem(ARawImage.MaskSize);
-  Move(ARawImage.Mask^, NewData^, ARawImage.MaskSize);
-
+  if ARawImage.MaskSize > 0 then
+  begin
+    NewData := GetMem(ARawImage.MaskSize);
+    Move(ARawImage.Mask^, NewData^, ARawImage.MaskSize);
+  end
+  else
+    NewData := nil;
+    
   AMask := HBitmap(TQtImage.Create(NewData, Desc.Width, Desc.Height, QImageFormat_Mono, True));
 end;
 
