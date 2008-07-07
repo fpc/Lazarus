@@ -8348,12 +8348,17 @@ begin
         SaveFileFlags:=[sfProjectSaving]
                        +Flags*[sfCheckAmbiguousFiles];
         AnUnitInfo:=Project1.UnitWithEditorIndex(i);
-        if AnUnitInfo.IsVirtual then begin
-          if (sfSaveToTestDir in Flags) then
-            Include(SaveFileFlags,sfSaveToTestDir)
-          else
-            continue;
-        end;
+        if AnUnitInfo = nil
+        then
+          DebugLn('TMainIDE.DoSaveProject - unit not found for page %d', [i])
+        else
+          if AnUnitInfo.IsVirtual
+          then begin
+            if (sfSaveToTestDir in Flags) then
+              Include(SaveFileFlags,sfSaveToTestDir)
+            else
+              continue;
+          end;
         Result:=DoSaveEditorFile(i,SaveFileFlags);
         if Result=mrAbort then exit;
       end;
