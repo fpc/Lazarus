@@ -1413,6 +1413,8 @@ end;
 
 function TMainIDE.OnPropHookGetMethodName(const Method: TMethod;
   CheckOwner: TObject): ShortString;
+var
+  JITMethod: TJITMethod;
 begin
   if Method.Code<>nil then begin
     if Method.Data<>nil then begin
@@ -1426,7 +1428,11 @@ begin
     end else
       Result:='<No LookupRoot>';
   end else if IsJITMethod(Method) then begin
-    Result:=TJITMethod(Method.Data).TheMethodName;
+    JITMethod:=TJITMethod(Method.Data);
+    Result:=JITMethod.TheMethodName;
+    if GlobalDesignHook.LookupRoot.ClassType<>JITMethod.TheClass then begin
+      Result:=JITMethod.TheClass.ClassName+'.'+Result;
+    end;
   end else
     Result:='';
 end;

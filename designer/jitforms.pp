@@ -1648,7 +1648,7 @@ begin
     Method.Data := FCurReadJITComponent;
   end else begin
     // create a fake TJITMethod
-    JITMethod:=JITMethods.Add(FCurReadJITComponent.ClassType,TheMethodName);
+    JITMethod:=JITMethods.Add(Reader.LookupRoot.ClassType,TheMethodName);
     Method:=JITMethod.Method;
   end;
   SetMethodProp(Instance, PropInfo, Method);
@@ -1842,7 +1842,7 @@ function TJITMethods.Add(aClass: TClass;
 begin
   Result:=Find(aClass,aMethodName);
   if Result=nil then begin
-    //DebugLn(['TJITMethods.Add Create Class=',dbgsname(aClass),' aMethodName=',aMethodName]);
+    DebugLn(['TJITMethods.Add Create Class=',dbgsname(aClass),' aMethodName=',aMethodName]);
     Result:=TJITMethod.Create(Self,aClass,aMethodName);
   end;
 end;
