@@ -514,6 +514,8 @@ type
     FActiveEditSymbolBGColor: TColor;
     FActiveEditIncSearchFGColor: TColor;
     FActiveEditIncSearchBGColor: TColor;
+    FActiveEditHighAllSearchFGColor: TColor;
+    FActiveEditHighAllSearchBGColor: TColor;
 
     // PopupMenu
     procedure BuildPopupMenu;
@@ -4609,8 +4611,11 @@ begin
   Exclude(States,snIncrementalFind);
 
   if FIncrementalSearchEditor <> nil
-  then SetSelectedColors(FIncrementalSearchEditor.EditorComponent);
-  FIncrementalSearchEditor := nil;
+  then begin
+    SetSelectedColors(FIncrementalSearchEditor.EditorComponent);
+    FIncrementalSearchEditor.EditorComponent.SetHighlightSearch('', []);
+    FIncrementalSearchEditor := nil;
+  end;
 
   LazFindReplaceDialog.FindText:=fIncrementalSearchStr;
   LazFindReplaceDialog.Options:=[];
@@ -5042,7 +5047,7 @@ var
   IsHTML: Boolean;
   Provider: TAbstractIDEHTMLProvider;
   HTMLControl: TControl;
-  ms: TMemoryStream;
+  ms: TMemoryStream; 
   NewWidth, NewHeight: integer;
 begin
   if FHintWindow<>nil then
@@ -6337,12 +6342,15 @@ begin
     
     // cut the not found
     FIncrementalSearchStr := CurEdit.SelText;
+
+    CurEdit.SetHighlightSearch(FIncrementalSearchStr, []);
   end
   else begin
     // go to start
     CurEdit.LogicalCaretXY:=fIncrementalSearchCancelPos;
     CurEdit.BlockBegin:=CurEdit.LogicalCaretXY;
     CurEdit.BlockEnd:=CurEdit.BlockBegin;
+    CurEdit.SetHighlightSearch('', []);
   end;
   FIncrementalSearchPos:=CurEdit.LogicalCaretXY;
   CurEdit.EndUpdate;
@@ -6416,6 +6424,11 @@ begin
     FActiveEditSelectedFGColor, FActiveEditSelectedBGColor);
   EditorOpts.GetLineColors(AEditor.Highlighter, ahaIncrementalSearch,
     FActiveEditIncSearchFGColor, FActiveEditIncSearchBGColor);
+  EditorOpts.GetLineColors(AEditor.Highlighter, ahaHighlightAll,
+    FActiveEditHighAllSearchFGColor, FActiveEditHighAllSearchBGColor);
+
+  AEditor.HighlightAllColor.Background := FActiveEditHighAllSearchBGColor;
+  AEditor.HighlightAllColor.Foreground := FActiveEditHighAllSearchFGColor;
 
     
   FActiveEditKeyFGColor:=FActiveEditDefaultFGColor;

@@ -75,6 +75,9 @@ uses
   Imm,
 {$ENDIF}
   SynEditTypes, SynEditSearch, SynEditKeyCmds, SynEditMiscProcs,
+{$ifdef SYN_LAZARUS}
+  SynEditMarkup, SynEditMarkupHighAll, SynEditMarkupBracket,
+{$ENDIF}
   SynEditMiscClasses, SynEditTextBuffer, SynEditHighlighter, SynTextDrawer;
 
 const
@@ -360,10 +363,11 @@ type
     fBlockIndent: integer;
     fCaretX: Integer;      // physical position (screen)
     {$IFDEF SYN_LAZARUS}
-    fBracketHighlightPos: TPoint;
-    fBracketHighlightAntiPos: TPoint;
     fCtrlMouseActive: boolean;
     FCFDividerDrawLevel: Integer;
+    fMarkupManager : TSynEditMarkupManager;
+    fMarkupHighAll : TSynEditMarkupHighlightAll;
+    fMarkupBracket : TSynEditMarkupBracket;
     {$ENDIF}
     fLastCaretX: integer;  // physical position (screen)                        //mh 2000-10-19
     fCaretY: Integer;
@@ -481,6 +485,8 @@ type
     function AdjustPhysPosToCharacterStart(Line: integer; PhysPos: integer): integer;
     function GetLogicalCaretXY: TPoint;
     procedure SetCFDividerDrawLevel(const AValue: Integer);
+    procedure SetHighlightAllColor(const AValue : TSynSelectedColor); {TODO: move into highlighter? markupHA.GetAttributesFrom(editoptions)}
+    function GetHighlightAllColor : TSynSelectedColor;
     procedure SetLogicalCaretXY(const NewLogCaretXY: TPoint);
     procedure SetBeautifier(NewBeautifier: TSynCustomBeautifier);
     {$ENDIF}
@@ -601,9 +607,11 @@ type
                                  StartIncludeNeighborChars, MoveCaret,
                                  SelectBrackets, OnlyVisible: boolean
                                  ): TPoint; virtual;
+public
     procedure FindMatchingBracketPair(const PhysCaret: TPoint;
                                       var StartBracket, EndBracket: TPoint;
                                       OnlyVisible: boolean);
+protected
     {$ENDIF}
     function GetReadOnly: boolean; virtual;
     procedure HideCaret;
@@ -613,9 +621,6 @@ type
     // note: FirstLine and LastLine don't need to be in correct order
     procedure InvalidateGutterLines(FirstLine, LastLine: integer);
     procedure InvalidateLines(FirstLine, LastLine: integer);
-    {$IFDEF SYN_LAZARUS}
-    procedure InvalidateBracketHighlight;
-    {$ENDIF}
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     {$IFDEF SYN_LAZARUS}
     procedure UTF8KeyPress(var Key: TUTF8Char); override;
@@ -794,6 +799,7 @@ type
       AOptions: TSynSearchOptions): integer;
     procedure SelectAll;
     {$IFDEF SYN_LAZARUS}
+    Procedure SetHighlightSearch(const ASearch: String; AOptions: TSynSearchOptions);
     procedure SelectToBrace;
     procedure SelectLine;
     procedure SelectParagraph;
@@ -896,6 +902,8 @@ type
     property SelectionMode: TSynSelectionMode
       read FSelectionMode write SetSelectionMode default smNormal;
     {$IFDEF SYN_LAZARUS}
+    property HighlightAllColor: TSynSelectedColor
+       read GetHighlightAllColor write SetHighlightAllColor;
     property TabChar: char read FTabChar write SetTabChar;
     property CFDividerDrawLevel: Integer
         read FCFDividerDrawLevel write SetCFDividerDrawLevel;
@@ -1007,6 +1015,7 @@ type
     property Options;
     {$IFDEF SYN_LAZARUS}
     property Options2;
+    property HighlightAllColor;
     {$ENDIF}
     property OverwriteCaret;
     property ReadOnly;
@@ -1404,6 +1413,16 @@ begin
   Width := 200;
   Cursor := crIBeam;
 {$IFDEF SYN_LAZARUS}
+  // needed before setting color
+  fMarkupHighAll := TSynEditMarkupHighlightAll.Create(self);
+  fMarkupBracket := TSynEditMarkupBracket.Create(self);
+
+  fMarkupManager := TSynEditMarkupManager.Create(self);
+  fMarkupManager.AddMarkUp(fMarkupHighAll);
+  fMarkupManager.AddMarkUp(fMarkupBracket);
+  fMarkupManager.Lines := TSynEditStringList(fLines);
+  fMarkupManager.InvalidateLinesMethod := @InvalidateLines;
+
   Color := clWhite;
   {$IFDEF LCLgtk}
   fFontDummy.Name := '-adobe-courier-medium-r-normal-*-*-140-*-*-*-*-iso10646-1';
@@ -1540,8 +1559,8 @@ begin
       UpdateScrollbars;
     if sfCaretChanged in fStateFlags then
       UpdateCaret
-    else if not(sfPainting in fStateFlags) then
-      InvalidateBracketHighlight; // This can change, without moving the Cursor
+    else if not(sfPainting in fStateFlags) and assigned(fMarkupBracket)
+      then fMarkupBracket.InvalidateBracketHighlight;
     if fStatusChanges <> [] then
       DoOnStatusChange(fStatusChanges);
   end;
@@ -1587,6 +1606,7 @@ begin
   fPlugins:=nil;
   FreeAndNil(fScrollTimer);
   FreeAndNil(fTSearch);
+  FreeAndNil(fMarkupManager);
   FreeAndNil(fMarkList);
   FreeAndNil(fBookMarkOpt);
   FreeAndNil(fKeyStrokes);
@@ -1709,6 +1729,18 @@ begin
   if FCFDividerDrawLevel = AValue then
     Exit; //==>
   FCFDividerDrawLevel := AValue;
+end;
+
+procedure TCustomSynEdit.SetHighlightAllColor(const AValue : TSynSelectedColor);
+begin
+  fMarkupHighAll.FGColor := AValue.Foreground;
+  fMarkupHighAll.BGColor := AValue.Background;
+  Invalidate;
+end;
+
+function TCustomSynEdit.GetHighlightAllColor : TSynSelectedColor;
+begin
+  result := fMarkupHighAll.MarkupInfo;
 end;
 
 procedure TCustomSynEdit.SetLogicalCaretXY(const NewLogCaretXY: TPoint);
@@ -2042,6 +2074,9 @@ begin
   {$ENDIF}
   if Visible and HandleAllocated then
     if (FirstLine = -1) and (LastLine = -1) then begin
+      {$IFDEF SYN_LAZARUS}
+      fMarkupHighAll.InvalidateScreenLines(0, LinesInWindow+1);
+      {$ENDIF}
       rcInval := ClientRect;
       rcInval.Left := fGutterWidth;
       if sfLinesChanging in fStateFlags then
@@ -2062,6 +2097,9 @@ begin
       { any line visible? }
       if (LastLine >= FirstLine) then begin
         {$IFDEF SYN_LAZARUS}
+        fMarkupHighAll.InvalidateLines(FirstLine, LastLine);
+        {$ENDIF}
+        {$IFDEF SYN_LAZARUS}
         rcInval := Rect(fGutterWidth, fTextHeight * RowToScreenRow(FirstLine),
           ClientWidth-ScrollBarWidth,
           fTextHeight * (RowToScreenRow(LastLine)+1));
@@ -2078,57 +2116,6 @@ begin
 end;
 
 {$IFDEF SYN_LAZARUS}
-procedure TCustomSynEdit.InvalidateBracketHighlight;
-var
-  NewPos, NewAntiPos, SwapPos : TPoint;
-begin
-  NewPos.Y:=-1;
-  NewAntiPos.Y:=-1;
-  if eoBracketHighlight in Options
-  then FindMatchingBracketPair(CaretXY, NewPos, NewAntiPos, false);
-
-  // Always keep ordered
-  if (NewAntiPos.Y > 0)
-  and ((NewAntiPos.Y < NewPos.Y) or ((NewAntiPos.Y = NewPos.Y) and (NewAntiPos.X < NewPos.X)))
-  then begin
-    SwapPos    := NewAntiPos;
-    NewAntiPos := NewPos;
-    NewPos     := SwapPos;
-  end;
-
-  // invalidate old bracket highlighting, if changed
-  if (fBracketHighlightPos.Y > 0)
-  and ((fBracketHighlightPos.Y <> NewPos.Y) or (fBracketHighlightPos.X <> NewPos.X))
-  then begin
-    //DebugLn('TCustomSynEdit.InvalidateBracketHighlight A Y=',fBracketHighlightPos.Y,' X=',fBracketHighlightPos.X);
-    InvalidateLines(fBracketHighlightPos.Y,fBracketHighlightPos.Y);
-  end;
-
-  if (fBracketHighlightAntiPos.Y > 0)
-  and (fBracketHighlightPos.Y <> fBracketHighlightAntiPos.Y)
-  and ((fBracketHighlightAntiPos.Y <> NewAntiPos.Y) OR (fBracketHighlightAntiPos.X <> NewAntiPos.X))
-  then
-    InvalidateLines(fBracketHighlightAntiPos.Y,fBracketHighlightAntiPos.Y);
-
-  // invalidate new bracket highlighting, if changed
-  if NewPos.Y>0 then begin
-    //DebugLn('TCustomSynEdit.InvalidateBracketHighlight C ',
-    //  ' Y=',NewPos.Y,' X=',NewPos.X,
-    //  ' Y=',NewAntiPos.Y,' X=',NewAntiPos.X,
-    //  '');
-    if ((fBracketHighlightPos.Y <> NewPos.Y) or (fBracketHighlightPos.X <> NewPos.X))
-    then InvalidateLines(NewPos.Y, NewPos.Y);
-
-    if ((NewPos.Y <> NewAntiPos.Y)
-        or ((fBracketHighlightPos.Y = NewPos.Y) and (fBracketHighlightPos.X = NewPos.X))
-       )
-    and ((fBracketHighlightAntiPos.Y <> NewAntiPos.Y) OR (fBracketHighlightAntiPos.X <> NewAntiPos.X))
-    then InvalidateLines(NewAntiPos.Y, NewAntiPos.Y);
-  end;
-  fBracketHighlightPos     := NewPos;
-  fBracketHighlightAntiPos := NewAntiPos;
-end;
-
 procedure TCustomSynEdit.FindMatchingBracketPair(const PhysCaret: TPoint;
   var StartBracket, EndBracket: TPoint; OnlyVisible: boolean);
 var
@@ -3501,7 +3488,7 @@ var
       bSel := bLineSelected;
       bU2 := False;
       bComplexToken := FALSE;
-    end;
+      end;
     {debugln('PaintHighlightToken A TokenAccu: CharsBefore=',dbgs(TokenAccu.CharsBefore),
       ' Len=',dbgs(TokenAccu.Len),
       ' PhysicalStartPos=',dbgs(TokenAccu.PhysicalStartPos),
@@ -3525,7 +3512,7 @@ var
           SetDrawingColors(FALSE);
           rcToken.Right := ScreenColumnToXValue(nSelStart);
           with TokenAccu do
-            PaintToken(p,Len,CharsBefore,C1Phys,nC1,SelStartLogical-1);
+          PaintToken(p,Len,CharsBefore,C1Phys,nC1,SelStartLogical-1);
         end;
         // selected part of the token
         SetDrawingColors(TRUE);
@@ -3602,17 +3589,19 @@ var
     function TokenIsSpaces: boolean;
     var
       pTok: PChar;
-      SpaceCnt: Integer;
+      Cnt: Integer;
     begin
       if not bSpacesTest then begin
         bSpacesTest := TRUE;
+        bIsSpaces := TRUE;
         pTok := PChar(Pointer(Token));
-        SpaceCnt:=0;
-        while (pTok^ in [' ',#9]) do begin
+        Cnt := TokenLen;
+        while bIsSpaces and (Cnt > 0) do begin
+          if not (pTok^ in [' ',#9])
+          then bIsSpaces := False;
           Inc(pTok);
-          inc(SpaceCnt);
+          dec(Cnt);
         end;
-        bIsSpaces := (SpaceCnt>=TokenLen);
       end;
       Result := bIsSpaces;
     end;
@@ -3680,29 +3669,38 @@ var
       ' "',copy(TokenAccu.s,1,TokenAccu.Len),'"');}
   end;
 
-  procedure DrawHilightBracketToken(attr: TSynHighlighterAttributes;
+  procedure DrawHilightMarkupToken(attr: TSynHighlighterAttributes;
     sToken: PChar; nLine, nTokenPos, nTokenLen,
     PhysicalStartPos: integer);
-  // Bracket Highlighting
   var
-    BracketFGCol, BracketBGCol: TColor;
-    BracketStyle, TokenStyle: TFontStyles;
+    DefaultFGCol, DefaultBGCol: TColor;
+    DefaultStyle: TFontStyles;
 
-    procedure PaintSubToken(SubTokenLen: integer; Hilight: boolean);
+    procedure PaintSubToken(SubTokenLen: integer; Hilight: TSynSelectedColor);
     var
       PhysicalEndPos: integer;
-      PaintStyle: TFontStyles;
+      Style: TFontStyles;
+      BG, FG : TColor;
     begin
       if SubTokenLen=0 then exit;
-      if Hilight then
-        PaintStyle:=BracketStyle
-      else
-        PaintStyle:=TokenStyle;
+
+      BG := DefaultBGCol;
+      fG := DefaultFGCol;
+      Style := DefaultStyle;
+      if assigned(Hilight) then begin
+        if Hilight.Foreground <> clNone then FG := Hilight.Foreground;
+        if Hilight.Background <> clNone then BG := Hilight.Background;
+        Style := Hilight.GetModifiedStyle(Style);
+      end;
+        
       PhysicalEndPos:=LogicalToPhysicalCol(sToken,nTokenLen,
         SubTokenLen+1,1,PhysicalStartPos)-1;
+        
       AddHighlightToken(sToken, nTokenPos, SubTokenLen,
         PhysicalStartPos, PhysicalEndPos,
-        BracketFGCol, BracketBGCol, PaintStyle);
+        FG, BG, Style
+        );
+        
       PhysicalStartPos:=PhysicalEndPos+1;
       inc(nTokenPos,SubTokenLen);
       dec(nTokenLen,SubTokenLen);
@@ -3710,59 +3708,26 @@ var
     end;
 
   var
-    LeftBracketX, RightBracketX, Dummy: integer;
+    NextPos : Integer;
+    MarkupInfo : TSynSelectedColor;
   begin
-    // get bracket positions
-    if (nLine=fBracketHighlightPos.Y)
-    and (fBracketHighlightPos.X-1>=nTokenPos) and (fBracketHighlightPos.X-1<nTokenPos+nTokenLen) then
-      LeftBracketX:=fBracketHighlightPos.X-1
-    else
-      LeftBracketX:=-1;
-    if (nLine=fBracketHighlightAntiPos.Y)
-    and (fBracketHighlightAntiPos.X-1>=nTokenPos) and (fBracketHighlightAntiPos.X-1<nTokenPos+nTokenLen) then
-      RightBracketX:=fBracketHighlightAntiPos.X-1
-    else
-      RightBracketX:=-1;
-    if (LeftBracketX<0) and (RightBracketX>=0) then begin
-      LeftBracketX:=RightBracketX;
-      RightBracketX:=-1;
-    end;
-    if (RightBracketX>=0) and (RightBracketX<LeftBracketX) then begin
-      Dummy:=LeftBracketX;
-      LeftBracketX:=RightBracketX;
-      RightBracketX:=Dummy;
-    end;
-    if LeftBracketX<0 then exit;
-
-    // get style
     if Assigned(attr) then begin
-      BracketFGCol:=attr.Foreground;
-      BracketBGCol:=attr.Background;
-      TokenStyle:=attr.Style;
-      BracketStyle:=TokenStyle;
+      DefaultFGCol:=attr.Foreground;
+      DefaultBGCol:=attr.Background;
+      DefaultStyle:=attr.Style;
     end else begin
-      BracketFGCol:=colFG;
-      BracketBGCol:=colBG;
-      TokenStyle:=Font.Style;
-      BracketStyle:=TokenStyle;
+      DefaultFGCol:=colFG;
+      DefaultBGCol:=colBG;
+      DefaultStyle:=Font.Style;
     end;
-    if fsBold in BracketStyle then
-      Exclude(BracketStyle,fsBold)
-    else
-      Include(BracketStyle,fsBold);
 
-    // draw non hilight left of token
-    PaintSubToken(LeftBracketX-nTokenPos,false);
-    // draw left hilight bracket
-    PaintSubToken(1,true);
-    if RightBracketX>=0 then begin
-      // draw middle
-      PaintSubToken(RightBracketX-nTokenPos,false);
-      // draw right hilight bracket
-      PaintSubToken(1,true);
+    while (nTokenLen > 0) do begin
+      NextPos := fMarkupManager.GetNextMarkupColAfterRowCol(CurLine, nTokenPos+1); // ntokenPos is zero base
+      if (NextPos < 1) or (NextPos - nTokenPos - 1 > nTokenLen)
+      then NextPos := nTokenPos + nTokenLen + 1; // paint remainder
+      MarkupInfo := fMarkupManager.GetMarkupAttributeAtRowCol(CurLine, nTokenPos+1);
+      PaintSubToken(NextPos - nTokenPos - 1, MarkupInfo);
     end;
-    // draw rest
-    PaintSubToken(nTokenLen,false);
   end;
 
   procedure DrawCtrlMouseToken(attr: TSynHighlighterAttributes;
@@ -3827,6 +3792,7 @@ var
       TokenAccu.MaxLen := Max(128, fCharsInWindow * 4);
       SetTokenAccuLength;
     end;
+
     // Now loop through all the lines. The indices are valid for Lines.
     CurLine := FirstLine-1;
     while CurLine<LastLine do begin
@@ -3973,25 +3939,8 @@ var
             if (fLastCtrlMouseLinkY<>CurLine)
             or (nTokenPos+1<>fLastCtrlMouseLinkX1)
             then begin
-              if ((fBracketHighlightPos.Y<>CurLine) or (nTokenPos+nTokenLen<=fBracketHighlightPos.X-1)
-                or (nTokenPos>fBracketHighlightPos.X-1))
-              and ((fBracketHighlightAntiPos.Y<>CurLine) or (nTokenPos+nTokenLen<=fBracketHighlightAntiPos.X-1)
-                or (nTokenPos>fBracketHighlightAntiPos.X-1)) then
-              begin
-                // normal token
-                if Assigned(attr) then
-                  AddHighlightToken(sToken, nTokenPos, nTokenLen,
-                    TokenPhysStart, TokenPhysEnd,
-                    attr.Foreground, attr.Background, attr.Style)
-                else
-                  AddHighlightToken(sToken, nTokenPos, nTokenLen,
-                    TokenPhysStart, TokenPhysEnd,
-                    colFG, colBG, Font.Style);
-              end else begin
-                // token with bracket hilighting
-                DrawHilightBracketToken(attr,sToken,CurLine,
-                  nTokenPos,nTokenLen,TokenPhysStart);
-              end;
+              DrawHilightMarkupToken(attr,sToken,CurLine,
+                nTokenPos,nTokenLen,TokenPhysStart);
             end else begin
               // token is link
               DrawCtrlMouseToken(attr,sToken,CurLine,nTokenPos,nTokenLen,
@@ -4726,6 +4675,9 @@ procedure TCustomSynEdit.Invalidate;
 begin
   //DebugLn('TCustomSynEdit.Invalidate A');
   //RaiseGDBException('');
+  {$IFDEF SYN_LAZARUS}
+  fMarkupHighAll.InvalidateScreenLines(0, LinesInWindow+1);
+  {$ENDIF}
   inherited Invalidate;
 end;
 
@@ -4863,6 +4815,15 @@ begin
   // Selection should have changed...
   StatusChanged([scSelection]);
 end;
+
+{$IFDEF SYN_LAZARUS}
+procedure TCustomSynEdit.SetHighlightSearch(const ASearch : String; AOptions : TSynSearchOptions);
+begin
+  fMarkupHighAll.SearchOptions := AOptions;
+  fMarkupHighAll.SearchString := ASearch;
+end;
+
+{$ENDIF}
 
 {$IFDEF SYN_LAZARUS}
 procedure TCustomSynEdit.SelectToBrace;
@@ -5641,6 +5602,9 @@ begin
       Invalidate;
     StatusChanged([scTopLine]);
   end;
+{$ifdef SYN_LAZARUS}
+  fMarkupManager.TopLine:= fTopLine;
+{$endif}
 end;
 
 procedure TCustomSynEdit.ShowCaret;
@@ -5749,7 +5713,7 @@ begin
       {$ENDIF}
     end;
     {$IFDEF SYN_LAZARUS}
-    InvalidateBracketHighlight();
+    if assigned(fMarkupBracket) then fMarkupBracket.InvalidateBracketHighlight;
     {$ENDIF}
 {$IFDEF SYN_MBCSSUPPORT}
     if HandleAllocated then begin
@@ -7621,7 +7585,7 @@ begin
     // Make sure Y is visible
     if CaretY < TopLine then
       TopLine := CaretY
-    {$IFDEF SYN_LAZARUS}
+      {$IFDEF SYN_LAZARUS}
     else if CaretY > ScreenRowToRow(Max(1, LinesInWindow) - 1) then begin                  //mh 2000-10-19
       Y := CaretY;
       for i:=1 to (Max(1, LinesInWindow) - 1) do begin
@@ -7630,10 +7594,10 @@ begin
       end;
       TopLine:=Max(Y, 1);
       end
-    {$ELSE}
+      {$ELSE}
     else if CaretY > TopLine + Max(1, LinesInWindow) - 1 then                   //mh 2000-10-19
       TopLine := CaretY - (LinesInWindow - 1)
-    {$ENDIF}
+      {$ENDIF}
     else
       TopLine := TopLine;                                                       //mh 2000-10-19
   finally
@@ -9655,6 +9619,7 @@ begin
     fCharsInWindow := Max(1,(ClientWidth - fGutterWidth - 2 - ScrollBarWidth)
                             div fCharWidth);
     fLinesInWindow := Max(0,ClientHeight - ScrollBarWidth) div Max(1,fTextHeight);
+    fMarkupManager.LinesInWindow:= fLinesInWindow;
     //DebugLn('TCustomSynEdit.SizeOrFontChanged fLinesInWindow=',dbgs(fLinesInWindow),' ClientHeight=',dbgs(ClientHeight),' ',dbgs(fTextHeight));
     //debugln('TCustomSynEdit.SizeOrFontChanged A ClientWidth=',dbgs(ClientWidth),' fGutterWidth=',dbgs(fGutterWidth),' ScrollBarWidth=',dbgs(ScrollBarWidth),' fCharWidth=',dbgs(fCharWidth),' fCharsInWindow=',dbgs(fCharsInWindow),' Width=',dbgs(Width));
     {$ELSE}
@@ -10451,6 +10416,9 @@ begin
   if Visible and (Line >= TopLine) and (Line <= TopLine + LinesInWindow) and
      (Line <= Lines.Count) and HandleAllocated
   then begin
+    {$IFDEF SYN_LAZARUS}
+    fMarkupHighAll.InvalidateLines(Line, Line);
+    {$ENDIF}
     // we invalidate gutter and text area of this line
     rcInval := Rect(0, fTextHeight * (Line - TopLine)
         , ClientWidth{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF}, 0);
@@ -11462,7 +11430,4 @@ initialization
   {$ENDIF}
 
 end.
-
-
-
 

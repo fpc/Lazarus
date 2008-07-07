@@ -85,7 +85,7 @@ type
   TAdditionalHilightAttribute = (ahaNone, ahaTextBlock, ahaExecutionPoint,
     ahaEnabledBreakpoint, ahaDisabledBreakpoint,
     ahaInvalidBreakpoint, ahaUnknownBreakpoint,
-    ahaErrorLine, ahaIncrementalSearch);
+    ahaErrorLine, ahaIncrementalSearch, ahaHighlightAll);
 
 const
   AdditionalHighlightAttributes: array[TAdditionalHilightAttribute] of String =
@@ -98,7 +98,8 @@ const
     'Invalid breakpoint',
     'Unknown breakpoint',
     'Error line',
-    'Incremental search match'
+    'Incremental search match',
+    'Highlight all'
     );
     
 type
@@ -136,7 +137,8 @@ const
       { ahaInvalidBreakpoint  } (BG: clOlive;  FG: clGreen; Styles: []),
       { ahaUnknownBreakpoint  } (BG: clRed;    FG: clBlack; Styles: []),
       { ahaErrorLine          } (BG: $50a0ff;  FG: clBlack; Styles: []),
-      { ahaIncrementalSearch  } (BG: $30D070;  FG: clWhite; Styles: [])
+      { ahaIncrementalSearch  } (BG: $30D070;  FG: clWhite; Styles: []),
+      { ahaHighlightAll       } (BG: clYellow; FG: clNone;  Styles: [])
     )
   );
   
@@ -161,7 +163,8 @@ const
       { ahaInvalidBreakpoint  } (BG: clOlive;  FG: clGreen; Styles: []),
       { ahaUnknownBreakpoint  } (BG: clRed;    FG: clBlack; Styles: []),
       { ahaErrorLine          } (BG: $50a0ff;  FG: clBlack; Styles: []),
-      { ahaIncrementalSearch  } (BG: $30D070;  FG: clWhite; Styles: [])
+      { ahaIncrementalSearch  } (BG: $30D070;  FG: clWhite; Styles: []),
+      { ahaHighlightAll       } (BG: clYellow; FG: clNone;  Styles: [])
     )
   );
 
@@ -186,7 +189,8 @@ const
       { ahaInvalidBreakpoint  } (BG: clOlive;  FG: clLime;  Styles: []),
       { ahaUnknownBreakpoint  } (BG: clNone;   FG: clNone;  Styles: []),
       { ahaErrorLine          } (BG: clMaroon; FG: clWhite; Styles: []),
-      { ahaIncrementalSearch  } (BG: $30D070;  FG: clWhite; Styles: [])
+      { ahaIncrementalSearch  } (BG: $30D070;  FG: clWhite; Styles: []),
+      { ahaHighlightAll       } (BG: clYellow; FG: clNone;  Styles: [])
     )
   );
   
@@ -211,7 +215,8 @@ const
       { ahaInvalidBreakpoint  } (BG: clOlive;  FG: clGreen; Styles: []),
       { ahaUnknownBreakpoint  } (BG: clRed;    FG: clBlack; Styles: []),
       { ahaErrorLine          } (BG: $50A0FF;  FG: clBlack; Styles: []),
-      { ahaIncrementalSearch  } (BG: $30D070;  FG: clWhite; Styles: [])
+      { ahaIncrementalSearch  } (BG: $30D070;  FG: clWhite; Styles: []),
+      { ahaHighlightAll       } (BG: clYellow; FG: clNone;  Styles: [])
     )
   );
 
@@ -236,7 +241,8 @@ const
       { ahaInvalidBreakpoint  } (BG: clOlive;     FG: clLime;          Styles: []),
       { ahaUnknownBreakpoint  } (BG: clRed;       FG: clBlack;         Styles: []),
       { ahaErrorLine          } (BG: clMaroon;    FG: clWhite;         Styles: []),
-      { ahaIncrementalSearch  } (BG: $30D070;     FG: clWhite;         Styles: [])
+      { ahaIncrementalSearch  } (BG: $30D070;     FG: clWhite;         Styles: []),
+      { ahaHighlightAll       } (BG: clYellow;    FG: clNone;          Styles: [])
     )
   );
 

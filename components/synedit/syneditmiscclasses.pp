@@ -57,14 +57,23 @@ type
   private
     fBG: TColor;
     fFG: TColor;
+    // StyleMask = 1 => Copy Style Bits
+    // StyleMask = 0 => Invert where Style Bit = 1
+    fStyle, fStyleMask: TFontStyles;
     fOnChange: TNotifyEvent;
     procedure SetBG(Value: TColor);
     procedure SetFG(Value: TColor);
+    procedure SetStyle(const AValue : TFontStyles);
+    procedure SetStyleMask(const AValue : TFontStyles);
   public
     constructor Create;
+    procedure Assign(aSource: TPersistent); override;
   published
+    function GetModifiedStyle(aStyle : TFontStyles): TFontStyles;
     property Background: TColor read fBG write SetBG default clHighLight;
     property Foreground: TColor read fFG write SetFG default clHighLightText;
+    property Style: TFontStyles read fStyle write SetStyle default [];
+    property StyleMask: TFontStyles read fStyleMask write SetStyleMask default [];
     property OnChange: TNotifyEvent read fOnChange write fOnChange;
   end;
 
@@ -262,6 +271,21 @@ begin
   fFG := clHighLightText;
 end;
 
+function TSynSelectedColor.GetModifiedStyle(aStyle : TFontStyles) : TFontStyles;
+  function fsNot (s : TFontStyles) : TFontStyles; inline;
+  begin
+    Result := [low(TFontStyle)..High(TFontStyle)] - s;
+  end;
+  function fsXor (s1,s2 : TFontStyles) : TFontStyles; inline;
+  begin
+    Result := s1 + s2 - (s1*s2);
+  end;
+begin
+  Result := fsXor(aStyle, fStyle * fsNot(fStyleMask)) // Invert Styles
+            + (fStyle*fStyleMask)                     // Set Styles
+            - (fsNot(fStyle)*fStyleMask);             // Remove Styles
+end;
+
 procedure TSynSelectedColor.SetBG(Value: TColor);
 begin
   if (fBG <> Value) then begin
@@ -275,6 +299,35 @@ begin
   if (fFG <> Value) then begin
     fFG := Value;
     if Assigned(fOnChange) then fOnChange(Self);
+  end;
+end;
+
+procedure TSynSelectedColor.SetStyle(const AValue : TFontStyles);
+begin
+  if (fStyle <> AValue) then begin
+    fStyle := AValue;
+    if Assigned(fOnChange) then fOnChange(Self);
+  end;
+end;
+
+procedure TSynSelectedColor.SetStyleMask(const AValue : TFontStyles);
+begin
+  if (fStyleMask <> AValue) then begin
+    fStyleMask := AValue;
+    if Assigned(fOnChange) then fOnChange(Self);
+  end;
+end;
+
+procedure TSynSelectedColor.Assign(aSource : TPersistent);
+var
+  Source : TSynSelectedColor;
+begin
+  if Assigned(aSource) and (aSource is TSynSelectedColor) then begin
+    Source := TSynSelectedColor(aSource);
+    fBG := Source.fBG;
+    fFG := Source.fFG;
+    fStyle := Source.fStyle;
+    fStyleMask := Source.fStyleMask;
   end;
 end;
 

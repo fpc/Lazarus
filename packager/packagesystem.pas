@@ -1392,11 +1392,26 @@ begin
 
     // add units
     AddFile('synedit.pp','SynEdit',pftUnit,[],cpBase);
+    AddFile('synedit.inc','',pftInclude,[],cpBase);
+    AddFile('syneditkeycmds.pp','SynEditKeyCmds',pftUnit,[],cpBase);
     AddFile('syneditlazdsgn.pas','SynEditLazDsgn',pftUnit,[],cpBase);
     AddFile('syncompletion.pas','SynCompletion',pftUnit,[],cpBase);
     AddFile('synexporthtml.pas','SynExportHTML',pftUnit,[],cpBase);
     AddFile('synmacrorecorder.pas','SynMacroRecorder',pftUnit,[],cpBase);
     AddFile('synmemo.pas','SynMemo',pftUnit,[],cpBase);
+    AddFile('syneditsearch.pp','SynEditSearch',pftUnit,[],cpBase);
+    AddFile('syneditplugins.pas','SynEditPlugins',pftUnit,[],cpBase);
+    AddFile('syneditregexsearch.pas','SynEditRegExSearch',pftUnit,[],cpBase);
+    AddFile('synedittypes.pp','SynEditTypes',pftUnit,[],cpBase);
+    AddFile('syneditstrconst.pp','SynEditStrConst',pftUnit,[],cpBase);
+    AddFile('syncompletion.pas','SynCompletion',pftUnit,[],cpBase);
+    AddFile('synexporthtml.pas','SynExportHTML',pftUnit,[],cpBase);
+    AddFile('syneditmiscclasses.pp','SynEditMiscClasses',pftUnit,[],cpBase);
+    AddFile('syneditmiscprocs.pp','SynEditMiscProcs',pftUnit,[],cpBase);
+    AddFile('syneditmarkup.pp','SynEditMarkup',pftUnit,[],cpBase);
+    AddFile('syneditmarkupbracket.pp','SynEditMarkupBracket',pftUnit,[],cpBase);
+    AddFile('syneditmarkuphighall.pp','SynEditMarkupHighAll',pftUnit,[],cpBase);
+    
     AddFile('synhighlighterpas.pp','SynHighlighterPas',pftUnit,[],cpBase);
     AddFile('synhighlightercpp.pp','SynHighlighterCPP',pftUnit,[],cpBase);
     AddFile('synhighlighterjava.pas','SynHighlighterJava',pftUnit,[],cpBase);
