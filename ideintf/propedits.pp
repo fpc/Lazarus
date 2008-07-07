@@ -4007,26 +4007,26 @@ begin
   //writeln('### TMethodPropertyEditor.SetValue B NewMethodExists=',NewMethodExists,' NewMethodIsCompatible=',NewMethodIsCompatible,' ',NewMethodIsPublished,' ',NewIdentIsMethod);
   if NewMethodExists then begin
     if not NewIdentIsMethod then begin
-      if MessageDlg('Incompatible Identifier',
-        'The identifier "'+NewValue+'" is not a method.'#13
-        +'Press Cancel to undo,'#13
-        +'press Ignore to force it.',mtWarning,[mbCancel,mbIgnore],0)<>mrIgnore
+      if MessageDlg(oisIncompatibleIdentifier,
+        Format(oisTheIdentifierIsNotAMethodPressCancelToUndoPressIgn, ['"',
+          NewValue, '"', #13, #13]), mtWarning, [mbCancel, mbIgnore], 0)<>
+          mrIgnore
       then
         exit;
     end;
     if not NewMethodIsPublished then begin
-      if MessageDlg('Incompatible Method',
-        'The method "'+NewValue+'" is not published.'#13
-        +'Press Cancel to undo,'#13
-        +'press Ignore to force it.',mtWarning,[mbCancel,mbIgnore],0)<>mrIgnore
+      if MessageDlg(oisIncompatibleMethod,
+        Format(oisTheMethodIsNotPublishedPressCancelToUndoPressIgnor, ['"',
+          NewValue, '"', #13, #13]), mtWarning, [mbCancel, mbIgnore], 0)<>
+          mrIgnore
       then
         exit;
     end;
     if not NewMethodIsCompatible then begin
-      if MessageDlg('Incompatible Method',
-        'The method "'+NewValue+'" is incompatible to this event ('+GetName+').'#13
-        +'Press Cancel to undo,'#13
-        +'press Ignore to force it.',mtWarning,[mbCancel,mbIgnore],0)<>mrIgnore
+      if MessageDlg(oisIncompatibleMethod,
+        Format(oisTheMethodIsIncompatibleToThisEventPressCancelToUnd, ['"',
+          NewValue, '"', GetName, #13, #13]), mtWarning, [mbCancel, mbIgnore], 0
+          )<>mrIgnore
       then
         exit;
     end;
