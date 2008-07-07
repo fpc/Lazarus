@@ -18,7 +18,7 @@
  *                                                                         *
  ***************************************************************************
 
-  Author: Sérgio Marcelo S. Gomes <smace at smace.com.br>
+  Author: SÃ©rgio Marcelo S. Gomes <smace at smace.com.br>
   Modified by Andrew Haines
 
   Abstract: Invert Assignment Code.
