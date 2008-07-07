@@ -2860,29 +2860,34 @@ var
     RegComp: TRegisteredComponent;
     NewUnitName: String;
     PkgFile: TPkgFile;
+    ClassUnitInfo: TUnitInfo;
   begin
     for i:=0 to ComponentClassnames.Count-1 do begin
       //DebugLn(['CollectNeededUnitnamesAndPackages ComponentClassnames[i]=',ComponentClassnames[i]]);
       RegComp:=IDEComponentPalette.FindComponent(ComponentClassnames[i]);
+      NewUnitName:='';
       if (RegComp<>nil) then begin
-        NewUnitName:='';
         if RegComp.ComponentClass<>nil then
           NewUnitName:=GetClassUnitName(RegComp.ComponentClass);
         //DebugLn(['CollectNeededUnitnamesAndPackages AAA1 NewUnitName=',NewUnitName]);
         if NewUnitName='' then
           NewUnitName:=RegComp.GetUnitName;
-        if (NewUnitName<>'') and (UnitNames.IndexOf(NewUnitName)<0) then begin
-          // new needed unit
-          UnitNames.Add(NewUnitName);
-          // find package
-          PkgFile:=PackageGraph.FindUnitInAllPackages(NewUnitName,true);
-          //DebugLn(['CollectNeededUnitnamesAndPackages AAA2 PkgFile=',PkgFile<>nil]);
-          if (PkgFile=nil) and (RegComp is TPkgComponent) then begin
-            PkgFile:=TPkgComponent(RegComp).PkgFile;
-            if (PkgFile<>nil) and (PkgFile.LazPackage<>nil)
-            and (Packages.IndexOf(PkgFile.LazPackage)<0) then
-              Packages.Add(PkgFile.LazPackage);
-          end;
+      end else begin
+        ClassUnitInfo:=Project1.UnitWithComponentClassName(ComponentClassnames[i]);
+        if ClassUnitInfo<>nil then
+          NewUnitName:=ClassUnitInfo.UnitName;
+      end;
+      if (NewUnitName<>'') and (UnitNames.IndexOf(NewUnitName)<0) then begin
+        // new needed unit
+        UnitNames.Add(NewUnitName);
+        // find package
+        PkgFile:=PackageGraph.FindUnitInAllPackages(NewUnitName,true);
+        //DebugLn(['CollectNeededUnitnamesAndPackages AAA2 PkgFile=',PkgFile<>nil]);
+        if (PkgFile=nil) and (RegComp is TPkgComponent) then begin
+          PkgFile:=TPkgComponent(RegComp).PkgFile;
+          if (PkgFile<>nil) and (PkgFile.LazPackage<>nil)
+          and (Packages.IndexOf(PkgFile.LazPackage)<0) then
+            Packages.Add(PkgFile.LazPackage);
         end;
       end;
     end;

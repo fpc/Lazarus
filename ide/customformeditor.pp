@@ -2310,7 +2310,7 @@ begin
       AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
     end;
   end;
-  DebugLn(['TCustomFormEditor.JITListFindClass Searched=',ComponentClassName,' Found=',DbgSName(ComponentClass)]);
+  //DebugLn(['TCustomFormEditor.JITListFindClass Searched=',ComponentClassName,' Found=',DbgSName(ComponentClass)]);
 end;
 
 function TCustomFormEditor.GetDesignerBaseClasses(Index: integer

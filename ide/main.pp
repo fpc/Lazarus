@@ -14063,6 +14063,7 @@ var
   ActiveUnitInfo: TUnitInfo;
   Ancestor: TComponent;
   ComponentClassNames: TStringList;
+  ClassUnitInfo: TUnitInfo;
 begin
   DebugLn('TMainIDE.OnPropHookPersistentAdded A ',dbgsName(APersistent));
   ADesigner:=nil;
@@ -14072,9 +14073,12 @@ begin
     AComponent:=nil;
   RegComp:=IDEComponentPalette.FindComponent(APersistent.ClassName);
   if (RegComp=nil) and (AComponent<>nil) then begin
-    DebugLn('TMainIDE.OnPropHookPersistentAdded ',APersistent.ClassName,
-            ' not registered');
-    exit;
+    ClassUnitInfo:=Project1.UnitWithComponentClass(TComponentClass(APersistent.ClassType));
+    if ClassUnitInfo=nil then begin
+      DebugLn('TMainIDE.OnPropHookPersistentAdded ',APersistent.ClassName,
+              ' not registered');
+      exit;
+    end;
   end;
   if AComponent<>nil then begin
     // create unique name
@@ -14091,7 +14095,7 @@ begin
     ADesigner:=FindRootDesigner(AComponent) as TDesigner;
   end;
 
-  if RegComp<>nil then begin
+  if (RegComp<>nil) or (ClassUnitInfo<>nil) then begin
     if not BeginCodeTool(ADesigner,ActiveSrcEdit,ActiveUnitInfo,
       [ctfSwitchToFormSource])
     then exit;

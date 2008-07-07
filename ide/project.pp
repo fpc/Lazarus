@@ -715,6 +715,7 @@ type
     function UnitWithEditorIndex(Index:integer): TUnitInfo;
     function UnitWithComponent(AComponent: TComponent): TUnitInfo;
     function UnitWithComponentClass(AClass: TComponentClass): TUnitInfo;
+    function UnitWithComponentClassName(const AClassName: string): TUnitInfo;
     function UnitWithComponentName(AComponentName: String): TUnitInfo;
     function UnitComponentInheritingFrom(AClass: TComponentClass;
                                          Ignore: TUnitInfo): TUnitInfo;
@@ -4170,6 +4171,15 @@ begin
   Result:=fFirst[uilWithComponent];
   while (Result<>nil) and (Result.Component.ClassType<>AClass) do
     Result:=Result.fNext[uilWithComponent];
+end;
+
+function TProject.UnitWithComponentClassName(const AClassName: string
+  ): TUnitInfo;
+begin
+  Result := fFirst[uilWithComponent];
+  while (Result<>nil)
+  and (SysUtils.CompareText(Result.Component.ClassName, AClassName) <> 0) do
+    Result := Result.fNext[uilWithComponent];
 end;
 
 function TProject.UnitWithComponentName(AComponentName: String): TUnitInfo;
