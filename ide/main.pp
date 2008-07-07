@@ -4727,7 +4727,6 @@ begin
           if AncestorUnit<>nil then
             Ancestor:=AncestorUnit.Component;
           Writer.WriteDescendent(AnUnitInfo.Component,Ancestor);
-          Writer.WriteDescendent(AnUnitInfo.Component,nil);
           if DestroyDriver then Writer.Driver.Free;
           FreeAndNil(Writer);
           AnUnitInfo.ComponentLastBinStreamSize:=BinCompStream.Size;

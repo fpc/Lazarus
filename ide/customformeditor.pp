@@ -1376,6 +1376,9 @@ begin
     try
       BinCompStream.Position:=0;
       Writer:=CreateLRSWriter(BinCompStream,DestroyDriver);
+      {$IFNDEF DisableFakeMethods}
+      Writer.OnWriteMethodProperty:=@WriteMethodPropertyEvent;
+      {$ENDIF}
       Writer.OnFindAncestor:=@WriterFindAncestor;
       AncestorUnit:=AnUnitInfo.FindAncestorUnit;
       Ancestor:=nil;
