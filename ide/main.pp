@@ -6227,7 +6227,9 @@ begin
       FLastFormActivated:=nil;
     ComponentStillUsed:=(not (cfCloseDependencies in Flags))
                         and UnitComponentIsUsed(AnUnitInfo,false);
-    //DebugLn(['TMainIDE.CloseUnitComponent ',AnUnitInfo.Filename,' ComponentStillUsed=',ComponentStillUsed,' UnitComponentIsUsed=',UnitComponentIsUsed(AnUnitInfo,false),' ',dbgs(AnUnitInfo.Flags),' DepAncestor=',AnUnitInfo.FindUsedByComponentDependency([ucdtAncestor])<>nil,' DepInline=',AnUnitInfo.FindUsedByComponentDependency([ucdtInlineClass])<>nil]);
+    {$IFDEF EnableTFrame}
+    DebugLn(['TMainIDE.CloseUnitComponent ',AnUnitInfo.Filename,' ComponentStillUsed=',ComponentStillUsed,' UnitComponentIsUsed=',UnitComponentIsUsed(AnUnitInfo,false),' ',dbgs(AnUnitInfo.Flags),' DepAncestor=',AnUnitInfo.FindUsedByComponentDependency([ucdtAncestor])<>nil,' DepInline=',AnUnitInfo.FindUsedByComponentDependency([ucdtInlineClass])<>nil]);
+    {$ENDIF}
     if (OldDesigner=nil) then begin
       // hidden component
       //DebugLn(['TMainIDE.CloseUnitComponent freeing hidden component without designer: ',AnUnitInfo.Filename,' ',DbgSName(AnUnitInfo.Component)]);
@@ -7647,6 +7649,9 @@ var
   UnitList: TStringList;
   i: integer;
   AnUnitInfo: TUnitInfo;
+  LFMCode: TCodeBuffer;
+  LFMFilename: String;
+  TheModalResult: TModalResult;
 begin
   Result := nil;
   UnitList := TStringList.Create;
@@ -7661,6 +7666,26 @@ begin
         if TViewUnitsEntry(UnitList.Objects[i]).Selected then
         begin
           AnUnitInfo := Project1.Units[TViewUnitsEntry(UnitList.Objects[i]).ID];
+          if (AnUnitInfo.Component=nil) then begin
+            // load the frame
+            LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lfm');
+            if not FileExists(LFMFilename) then begin
+              DebugLn(['TMainIDE.DoSelectFrame file not found: ',LFMFilename]);
+              exit;
+            end;
+            // load the lfm file
+            TheModalResult:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText]);
+            if TheModalResult<>mrOk then begin
+              debugln('TMainIDE.DoSelectFrame Failed loading ',LFMFilename);
+              exit;
+            end;
+            TheModalResult:=DoLoadLFM(AnUnitInfo,LFMCode,
+                              [ofQuiet,ofOnlyIfExists,ofLoadHiddenResource],[]);
+            if TheModalResult<>mrOk then begin
+              debugln('TMainIDE.DoSelectFrame Failed streaming ',LFMFilename);
+              exit;
+            end;
+          end;
           if (AnUnitInfo.Component<>nil) then
           begin
             Result := TComponentClass(AnUnitInfo.Component.ClassType);
