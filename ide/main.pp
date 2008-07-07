@@ -7661,7 +7661,7 @@ begin
         if TViewUnitsEntry(UnitList.Objects[i]).Selected then
         begin
           AnUnitInfo := Project1.Units[TViewUnitsEntry(UnitList.Objects[i]).ID];
-          if (AnUnitInfo.ComponentName <> '') then
+          if (AnUnitInfo.Component<>nil) then
           begin
             Result := TComponentClass(AnUnitInfo.Component.ClassType);
             //DebugLn(AnUnitInfo.ComponentName + ' has been selected');
