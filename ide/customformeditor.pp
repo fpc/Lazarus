@@ -1820,6 +1820,15 @@ begin
   if AComponent=nil then exit;
   CurRoot:=AComponent.Owner;
   if CurRoot=nil then exit;
+  
+  if csInline in CurRoot.ComponentState then begin
+    // inline/embedded components (e.g. nested frame)
+    CurRoot:=FindJITComponentByClass(TComponentClass(CurRoot.ClassType));
+    if CurRoot=nil then exit;
+    if CurRoot.FindComponent(AComponent.Name)=nil then exit;
+    Result:=CurRoot;
+  end;
+
   repeat
     // search in next ancestor
     AncestorRoot:=GetAncestorInstance(CurRoot);
