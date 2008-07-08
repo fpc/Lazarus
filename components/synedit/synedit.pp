@@ -6736,7 +6736,7 @@ begin
         begin
           SetCaretAndSelection(
             {$IFDEF SYN_LAZARUS}PhysStartPos{$ELSE}Item.fChangeStartPos{$ENDIF},
-            Item.fChangeStartPos, Item.fChangeStartPos
+            Item.fChangeStartPos,{$IFDEF SYN_LAZARUS}Item.fChangeEndPos{$ELSE}Item.fChangeStartPos{$ENDIF}
             );
           fUndoList.AddChange(Item.fChangeReason, Item.fChangeStartPos,
             Item.fChangeEndPos, GetSelText, Item.fChangeSelMode);
@@ -6751,7 +6751,7 @@ begin
         begin
           SetCaretAndSelection(
             {$IFDEF SYN_LAZARUS}PhysStartPos{$ELSE}Item.fChangeStartPos{$ENDIF},
-            Item.fChangeStartPos, Item.fChangeStartPos
+            Item.fChangeStartPos, {$IFDEF SYN_LAZARUS}Item.fChangeEndPos{$ELSE}Item.fChangeStartPos{$ENDIF}
             );
           fUndoList.AddChange(Item.fChangeReason, Item.fChangeStartPos,
             Item.fChangeEndPos, GetSelText, Item.fChangeSelMode);
