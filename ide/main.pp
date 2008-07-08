@@ -403,9 +403,9 @@ type
     procedure OIOnFindDeclarationOfProperty(Sender: TObject);
     procedure OIOnUpdateRestricted(Sender: TObject);
     function OnPropHookGetMethodName(const Method: TMethod;
-                                     CheckOwner: TObject): ShortString;
+                                     CheckOwner: TObject): String;
     procedure OnPropHookGetMethods(TypeData: PTypeData; Proc:TGetStringProc);
-    function OnPropHookMethodExists(const AMethodName: ShortString;
+    function OnPropHookMethodExists(const AMethodName: String;
                                     TypeData: PTypeData;
                                     var MethodIsCompatible, MethodIsPublished,
                                     IdentIsMethod: boolean): boolean;
@@ -413,8 +413,8 @@ type
                                     ATypeInfo:PTypeInfo;
                                     APersistent: TPersistent;
                                     const APropertyPath: string): TMethod;
-    procedure OnPropHookShowMethod(const AMethodName:ShortString);
-    procedure OnPropHookRenameMethod(const CurName, NewName:ShortString);
+    procedure OnPropHookShowMethod(const AMethodName: String);
+    procedure OnPropHookRenameMethod(const CurName, NewName: String);
     function OnPropHookBeforeAddPersistent(Sender: TObject;
                                            APersistentClass: TPersistentClass;
                                            AParent: TPersistent): boolean;
@@ -1412,7 +1412,7 @@ begin
 end;
 
 function TMainIDE.OnPropHookGetMethodName(const Method: TMethod;
-  CheckOwner: TObject): ShortString;
+  CheckOwner: TObject): String;
 var
   JITMethod: TJITMethod;
 begin
@@ -13927,7 +13927,7 @@ begin
   Result:=GetProjectFileWithRootComponent(AComponent);
 end;
 
-function TMainIDE.OnPropHookMethodExists(const AMethodName: ShortString;
+function TMainIDE.OnPropHookMethodExists(const AMethodName: String;
   TypeData: PTypeData;
   var MethodIsCompatible,MethodIsPublished,IdentIsMethod: boolean): boolean;
 var ActiveSrcEdit: TSourceEditor;
@@ -13991,7 +13991,7 @@ begin
   end;
 end;
 
-procedure TMainIDE.OnPropHookShowMethod(const AMethodName: ShortString);
+procedure TMainIDE.OnPropHookShowMethod(const AMethodName: String);
 var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
@@ -14019,7 +14019,7 @@ begin
   end;
 end;
 
-procedure TMainIDE.OnPropHookRenameMethod(const CurName, NewName: ShortString);
+procedure TMainIDE.OnPropHookRenameMethod(const CurName, NewName: String);
 var ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   BossResult: boolean;

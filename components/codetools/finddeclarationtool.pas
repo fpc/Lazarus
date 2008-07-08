@@ -136,7 +136,7 @@ type
 
   //----------------------------------------------------------------------------
   TOnGetMethodname = function(const AMethod: TMethod;
-                              CheckOwner: TObject): shortstring of object;
+                              CheckOwner: TObject): string of object;
 
   //----------------------------------------------------------------------------
   // flags/states for searching

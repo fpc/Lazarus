@@ -1125,13 +1125,13 @@ type
   TPropHookCreateMethod = function(const Name: ShortString; ATypeInfo: PTypeInfo;
       APersistent: TPersistent; const APropertyPath: string): TMethod of object;
   TPropHookGetMethodName = function(const Method: TMethod;
-                                    CheckOwner: TObject): ShortString of object;
+                                    CheckOwner: TObject): String of object;
   TPropHookGetMethods = procedure(TypeData:PTypeData; Proc:TGetStringProc) of object;
-  TPropHookMethodExists = function(const Name:ShortString; TypeData: PTypeData;
+  TPropHookMethodExists = function(const Name: String; TypeData: PTypeData;
                  var MethodIsCompatible,MethodIsPublished,IdentIsMethod: boolean
                  ):boolean of object;
-  TPropHookRenameMethod = procedure(const CurName, NewName:ShortString) of object;
-  TPropHookShowMethod = procedure(const Name:ShortString) of object;
+  TPropHookRenameMethod = procedure(const CurName, NewName: String) of object;
+  TPropHookShowMethod = procedure(const Name: String) of object;
   TPropHookMethodFromAncestor = function(const Method:TMethod):boolean of object;
   TPropHookChainCall = procedure(const AMethodName, InstanceName,
                       InstanceMethod:ShortString; TypeData:PTypeData) of object;
@@ -1230,12 +1230,12 @@ type
     function CreateMethod(const Name: ShortString; ATypeInfo:PTypeInfo;
                           APersistent: TPersistent;
                           const APropertyPath: string): TMethod;
-    function GetMethodName(const Method: TMethod; CheckOwner: TObject): ShortString;
+    function GetMethodName(const Method: TMethod; CheckOwner: TObject): String;
     procedure GetMethods(TypeData: PTypeData; Proc: TGetStringProc);
-    function MethodExists(const Name: ShortString; TypeData: PTypeData;
+    function MethodExists(const Name: String; TypeData: PTypeData;
       var MethodIsCompatible,MethodIsPublished,IdentIsMethod: boolean):boolean;
-    procedure RenameMethod(const CurName, NewName: ShortString);
-    procedure ShowMethod(const Name: ShortString);
+    procedure RenameMethod(const CurName, NewName: String);
+    procedure ShowMethod(const Name: String);
     function MethodFromAncestor(const Method: TMethod):boolean;
     procedure ChainCall(const AMethodName, InstanceName,
                         InstanceMethod: ShortString;  TypeData: PTypeData);
@@ -3908,7 +3908,7 @@ end;
 
 function TMethodPropertyEditor.GetEditLimit: Integer;
 begin
-  Result := MaxIdentLength;
+  Result := 2*MaxIdentLength+1; // clasname.methodname
 end;
 
 function TMethodPropertyEditor.GetFormMethodName: shortstring;
@@ -4013,9 +4013,8 @@ end;
 procedure TMethodPropertyEditor.SetValue(const NewValue: ansistring);
 var
   CreateNewMethod: Boolean;
-  CurValue: ansistring;
-  //OldMethod: TMethod;
-  NewMethodExists,NewMethodIsCompatible,NewMethodIsPublished,
+  CurValue: string;
+  NewMethodExists, NewMethodIsCompatible, NewMethodIsPublished,
   NewIdentIsMethod: boolean;
 begin
   CurValue:=GetValue;
@@ -5214,7 +5213,7 @@ begin
 end;
 
 function TPropertyEditorHook.GetMethodName(const Method: TMethod;
-  CheckOwner: TObject): ShortString;
+  CheckOwner: TObject): String;
 var
   i: Integer;
 begin
@@ -5249,7 +5248,7 @@ begin
     TPropHookGetMethods(FHandlers[htGetMethods][i])(TypeData,Proc);
 end;
 
-function TPropertyEditorHook.MethodExists(const Name:Shortstring;
+function TPropertyEditorHook.MethodExists(const Name: String;
   TypeData: PTypeData;
   var MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean):boolean;
 var
@@ -5274,7 +5273,7 @@ begin
   end;
 end;
 
-procedure TPropertyEditorHook.RenameMethod(const CurName, NewName:ShortString);
+procedure TPropertyEditorHook.RenameMethod(const CurName, NewName: String);
 // rename published method in LookupRoot object and source
 var
   i: Integer;
@@ -5284,7 +5283,7 @@ begin
     TPropHookRenameMethod(FHandlers[htRenameMethod][i])(CurName,NewName);
 end;
 
-procedure TPropertyEditorHook.ShowMethod(const Name:Shortstring);
+procedure TPropertyEditorHook.ShowMethod(const Name:String);
 // jump cursor to published method body
 var
   i: Integer;

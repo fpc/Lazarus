@@ -120,7 +120,7 @@ type
     function DoOnGetSrcPathForCompiledUnit(Sender: TObject;
           const AFilename: string): string;
     function OnInternalGetMethodName(const AMethod: TMethod;
-                                     CheckOwner: TObject): shortstring;
+                                     CheckOwner: TObject): string;
     function FindCodeOfMainUnitHint(Code: TCodeBuffer): TCodeBuffer;
     procedure CreateScanner(Code: TCodeBuffer);
     procedure SetAbortable(const AValue: boolean);
@@ -4347,7 +4347,7 @@ begin
 end;
 
 function TCodeToolManager.OnInternalGetMethodName(const AMethod: TMethod;
-  CheckOwner: TObject): shortstring;
+  CheckOwner: TObject): string;
 begin
   if Assigned(OnGetMethodName) then
     Result:=OnGetMethodName(AMethod,CheckOwner)
