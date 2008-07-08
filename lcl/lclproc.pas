@@ -376,10 +376,29 @@ type
     mkcDel, mkcShift, mkcCtrl, mkcAlt);
 
 const
+  SmkcBkSp = 'BkSp';
+  SmkcTab = 'Tab';
+  SmkcEsc = 'Esc';
+  SmkcEnter = 'Enter';
+  SmkcSpace = 'Space';
+  SmkcPgUp = 'PgUp';
+  SmkcPgDn = 'PgDn';
+  SmkcEnd = 'End';
+  SmkcHome = 'Home';
+  SmkcLeft = 'Left';
+  SmkcUp = 'Up';
+  SmkcRight = 'Right';
+  SmkcDown = 'Down';
+  SmkcIns = 'Ins';
+  SmkcDel = 'Del';
+  SmkcShift = 'Shift+';
+  SmkcCtrl = 'Ctrl+';
+  SmkcAlt = 'Alt+';
+
   MenuKeyCaps: array[TMenuKeyCap] of string = (
-    rssmkcBkSp, rssmkcTab, rssmkcEsc, rssmkcEnter, rssmkcSpace, rssmkcPgUp,
-    rssmkcPgDn, rssmkcEnd, rssmkcHome, rssmkcLeft, rssmkcUp, rssmkcRight,
-    rssmkcDown, rssmkcIns, rssmkcDel, rssmkcShift, rssmkcCtrl, rssmkcAlt);
+    SmkcBkSp, SmkcTab, SmkcEsc, SmkcEnter, SmkcSpace, SmkcPgUp,
+    SmkcPgDn, SmkcEnd, SmkcHome, SmkcLeft, SmkcUp, SmkcRight,
+    SmkcDown, SmkcIns, SmkcDel, SmkcShift, SmkcCtrl, SmkcAlt);
 
 function GetSpecialShortCutName(ShortCut: TShortCut): string;
 {var
@@ -433,7 +452,6 @@ var
   Name: string;
   Key: Byte;
 begin
-  MenuKeyCaps[mkcShift] := rssmkcShift;
   Key := ShortCut and $FF;
   case Key of
     $08, $09:
