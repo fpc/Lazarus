@@ -1433,7 +1433,10 @@ begin
     {$IFDEF EnableTFrame}
     DebugLn(['TMainIDE.OnPropHookGetMethodName ',dbgsName(GlobalDesignHook.LookupRoot),' ',dbgsName(JITMethod.TheClass)]);
     {$ENDIF}
-    if GlobalDesignHook.LookupRoot.ClassType<>JITMethod.TheClass then begin
+    if (GlobalDesignHook.LookupRoot.ClassType<>JITMethod.TheClass)
+    or ((GlobalDesignHook.LookupRoot is TComponent)
+        and (csInline in TComponent(GlobalDesignHook.LookupRoot).ComponentState))
+    then begin
       Result:=JITMethod.TheClass.ClassName+'.'+Result;
     end;
   end else
