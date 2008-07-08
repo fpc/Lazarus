@@ -1430,6 +1430,9 @@ begin
   end else if IsJITMethod(Method) then begin
     JITMethod:=TJITMethod(Method.Data);
     Result:=JITMethod.TheMethodName;
+    {$IFDEF EnableTFrame}
+    DebugLn(['TMainIDE.OnPropHookGetMethodName ',dbgsName(GlobalDesignHook.LookupRoot),' ',dbgsName(JITMethod.TheClass)]);
+    {$ENDIF}
     if GlobalDesignHook.LookupRoot.ClassType<>JITMethod.TheClass then begin
       Result:=JITMethod.TheClass.ClassName+'.'+Result;
     end;
