@@ -156,7 +156,8 @@ var
   var
     ScrollInfo: Windows.tagScrollInfo;
     WParam: Windows.WParam;
-    ScrollMsg, ScrollBar: dword;
+    ScrollMsg, ScrollBar, WheelScrollLines: dword;
+    ScrollOffset: integer;
   begin
     if not TWinControl(Sender).HandleAllocated then
       exit;
@@ -186,7 +187,11 @@ var
     begin
       with TLMMouseEvent(Message) do
       begin
-        WParam := Windows.WParam(ScrollInfo.nPos - (WheelDelta * Integer(ScrollInfo.nPage)) div (120 * 8));
+        if SystemParametersInfo(SPI_GETWHEELSCROLLLINES, sizeof(WheelScrollLines), @WheelScrollLines, 0) then
+          ScrollOffset := (WheelDelta * WheelScrollLines) div 120
+        else // no system parameter, scroll 1/8 page
+          ScrollOffset := (WheelDelta * Integer(ScrollInfo.nPage)) div (120 * 8);
+        WParam := Windows.WParam(ScrollInfo.nPos - ScrollOffset);
         if WParam > ScrollInfo.nMax - integer(ScrollInfo.nPage) + 1 then
           WParam := ScrollInfo.nMax - integer(ScrollInfo.nPage) + 1;
         if WParam < ScrollInfo.nMin then
