@@ -1060,7 +1060,7 @@ begin
 
   WriteHeader('/underline_off');
   WriteHeader('{ %def');
-  WriteHeader('    /undefline false def');
+  WriteHeader('    /underline false def');
   WriteHeader('    /TEXT { TEXTwithout } def');
   WriteHeader('} def');
 

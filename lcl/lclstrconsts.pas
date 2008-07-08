@@ -265,6 +265,26 @@ ResourceString
   ifsVK_NUMPAD     = 'Numpad %d';
   ifsVK_NUMLOCK    = 'Numlock';
   ifsVK_SCROLL     = 'Scroll';
+  
+  // shortcut keys
+  rssmkcBkSp = 'BkSp';
+  rssmkcTab = 'Tab';
+  rssmkcEsc = 'Esc';
+  rssmkcEnter = 'Enter';
+  rssmkcSpace = 'Space';
+  rssmkcPgUp = 'PgUp';
+  rssmkcPgDn = 'PgDn';
+  rssmkcEnd = 'End';
+  rssmkcHome = 'Home';
+  rssmkcLeft = 'Left';
+  rssmkcUp = 'Up';
+  rssmkcRight = 'Right';
+  rssmkcDown = 'Down';
+  rssmkcIns = 'Ins';
+  rssmkcDel = 'Del';
+  rssmkcShift = 'Shift+';
+  rssmkcCtrl = 'Ctrl+';
+  rssmkcAlt = 'Alt+';
 
   // docking
   rsDocking = 'Docking';

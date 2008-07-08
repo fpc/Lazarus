@@ -189,6 +189,7 @@ begin
 
   if FCacheIndex = idx 
   then FCacheIndex := -1;
+  DebugLn([FItems.Count,' ', idx]);
   FItems.Delete(idx);
 end;
 

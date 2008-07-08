@@ -321,6 +321,7 @@ end;
 {------------------------------------------------------------------------------}
 procedure TListItem.Delete;
 begin
+  DebugLn(['TListItem.Delete ', Caption, 'lifDestroying in FFlags: ', lifDestroying in FFlags]);
   if not (lifDestroying in FFlags) then Free;
 end;
 
@@ -329,6 +330,7 @@ end;
 {------------------------------------------------------------------------------}
 destructor TListItem.Destroy;
 begin
+  DebugLn(['TListItem.Destroy', Caption]);
   Include(FFlags, lifDestroying);
   if FOwner <> nil
   then FOwner.ItemDestroying(Self);
