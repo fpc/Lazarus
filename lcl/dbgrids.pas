@@ -303,6 +303,8 @@ type
     FCheckedBitmap, FUnCheckedBitmap, FGrayedBitmap: TBitmap;
     FSelectedRows: TBookmarkList;
     FOnPrepareCanvas: TPrepareDbGridCanvasEvent;
+    FKeyBookmark: TBookmarkStr;
+    FKeySign: Integer;
     procedure EmptyGrid;
     function GetCurrentColumn: TColumn;
     function GetCurrentField: TField;
@@ -355,6 +357,7 @@ type
     procedure GetScrollbarParams(out aRange, aPage, aPos: Integer);
     procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
     function  LoadResBitmapImage(const ResName: string): TBitmap;
+    procedure ClearSelection(selCurrent:boolean=false);
   protected
     procedure AddAutomaticColumns;
     procedure BeforeMoveSelection(const DCol,DRow: Integer); override;
@@ -966,8 +969,10 @@ begin
 
     inherited Options := OldOptions;
     
-    if MultiSel and not (dgMultiSelect in FOptions) then
+    if MultiSel and not (dgMultiSelect in FOptions) then begin
       FSelectedRows.Clear;
+      FKeyBookmark:='';
+    end;
 
     EndLayout;
   end;
@@ -1646,7 +1651,7 @@ end;
 procedure TCustomDBGrid.KeyDown(var Key: Word; Shift: TShiftState);
 var
   DeltaCol,DeltaRow: Integer;
-
+  
   procedure DoOnKeyDown;
   begin
     {$ifdef dbgGrid}DebugLn('DoOnKeyDown INIT');{$endif}
@@ -1686,6 +1691,43 @@ var
     FDatalink.Dataset.Insert;
     {$IfDef dbgGrid}DebugLn('KeyDown.doInsert FIN');{$Endif}
   end;
+  procedure SelectNext(const AStart,ADown:Boolean);
+  var
+    N: Integer;
+    CurBookmark: TBookmarkStr;
+  begin
+    if (ssShift in Shift) then begin
+
+      CurBookmark := FDatalink.DataSet.Bookmark;
+      if FKeyBookmark='' then
+        FKeyBookmark:=CurBookmark;
+        
+      if (FKeyBookmark=CurBookmark) then begin
+        if AStart then begin
+          SelectRecord(true);
+          if ADown then
+            FKeySign := 1
+          else
+            FKeySign := -1;
+          exit;
+        end;
+        FKeySign := 0;
+      end;
+      
+      n := 4*Ord(FKeySign>=0) + 2*Ord(ADown) + 1*Ord(AStart);
+      case n of
+        0,6,8..11:
+          begin
+            SelectRecord(True);
+          end;
+        3,5:
+          begin
+            SelectRecord(False);
+          end;
+      end;
+    end else
+      ClearSelection(true);
+  end;
   function doVKDown: boolean;
   begin
     {$ifdef dbgGrid}DebugLn('DoVKDown INIT');{$endif}
@@ -1699,10 +1741,12 @@ var
       end;
     end else begin
       result:=false;
+      SelectNext(true,true);
       doMoveBy(1);
-      if GridCanModify and FDataLink.EOF then begin
-        doAppend;
-      end;
+      if GridCanModify and FDataLink.EOF then
+        doAppend
+      else
+        SelectNext(false,true);
     end;
     {$ifdef dbgGrid}DebugLn('DoVKDown FIN');{$endif}
   end;
@@ -1711,8 +1755,11 @@ var
     {$ifdef dbgGrid}DebugLn('DoVKUP INIT');{$endif}
     if InsertCancelable then
       doCancel
-    else
+    else begin
+      SelectNext(true, false);
       doMoveBy(-1);
+      SelectNext(false, false);
+    end;
     result := FDatalink.DataSet.BOF;
     {$ifdef dbgGrid}DebugLn('DoVKUP FIN');{$endif}
   end;
@@ -1799,6 +1846,7 @@ begin
         doOnKeyDown;
         if Key<>0 then begin
           doMoveBy( VisibleRowCount );
+          ClearSelection(true);
           Key := 0;
         end;
       end;
@@ -1808,6 +1856,7 @@ begin
         doOnKeyDown;
         if Key<>0 then begin
           doMoveBy( -VisibleRowCount );
+          ClearSelection(true);
           key := 0;
         end;
       end;
@@ -1846,6 +1895,7 @@ begin
               FDataLink.DataSet.First
             else
               MoveNextSelectable(False, FixedCols, Row);
+            ClearSelection(true);
             Key:=0;
           end;
         end;
@@ -1860,6 +1910,7 @@ begin
               FDatalink.DataSet.Last
             else
               MoveNextSelectable(False, ColCount-1, Row);
+            ClearSelection(true);
             Key:=0;
           end;
         end;
@@ -1949,13 +2000,20 @@ begin
       doInherited;
     else
       begin
+
+        FKeyBookmark:=''; // force new keyboard selection start
+        
         P:=MouseToCell(Point(X,Y));
         if P.Y=Row then begin
           //doAcceptValue;
+          
           if ssCtrl in Shift then
             ToggleSelectedRow
-          else
+          else begin
+            ClearSelection(true);
             doInherited;
+          end;
+          
         end else begin
           doMouseDown;
           if ValidDataSet then begin
@@ -1965,8 +2023,10 @@ begin
           end;
           if ssCtrl in Shift then
             ToggleSelectedRow
-          else
+          else begin
+            ClearSelection(true);
             doMoveToColumn;
+          end;
         end;
       end;
   end;
@@ -2719,6 +2779,17 @@ begin
     C.Free;
   end else
     Result:=nil;
+end;
+
+procedure TCustomDBGrid.ClearSelection(selCurrent:boolean=false);
+begin
+  if (dgMultiSelect in Options) then begin
+    if SelectedRows.Count>0 then
+      SelectedRows.Clear;
+    if SelCurrent then
+      SelectRecord(true);
+  end;
+  FKeyBookmark:='';
 end;
 
 destructor TCustomDBGrid.Destroy;
