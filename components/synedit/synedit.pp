@@ -3295,7 +3295,7 @@ var
       while SrcPos<Count do begin
         c:=p[SrcPos];
         case c of
-        #128..#195:
+        #128..#191:
           begin
             // non UTF-8 character
             Dest[DestPos]:='?';
@@ -3304,7 +3304,7 @@ var
             inc(ScreenPos);
           end;
 
-        #196..#255:
+        #192..#255:
           begin
             // could be UTF8 char
             CharLen:=UTF8CharacterStrictLength(@p[SrcPos]);
