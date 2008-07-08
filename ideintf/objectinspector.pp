@@ -292,6 +292,11 @@ type
    oilHorizontal,
    oilVertical
   );
+  
+  TOIQuickEdit = (
+    oiqeEdit,
+    oiqeShowValue
+  );
 
   TOICustomPropertyGrid = class(TCustomControl)
   private
@@ -374,7 +379,7 @@ type
     function CanExpandRow(Row: TOIPropertyGridRow): boolean;
 
     procedure SetRowValue;
-    procedure DoCallEdit;
+    procedure DoCallEdit(Edit: TOIQuickEdit = oiqeEdit);
     procedure RefreshValueEdit;
     procedure ToggleRow;
     procedure ValueEditDblClick(Sender : TObject);
@@ -386,14 +391,17 @@ type
     procedure ValueEditKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ValueEditExit(Sender: TObject);
     procedure ValueEditChange(Sender: TObject);
+    procedure ValueEditMouseUp(Sender: TObject; Button: TMouseButton;
+                               Shift: TShiftState; X, Y: Integer);
     procedure ValueCheckBoxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ValueCheckBoxKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ValueCheckBoxExit(Sender: TObject);
     procedure ValueCheckBoxClick(Sender: TObject);
     procedure ValueComboBoxExit(Sender: TObject);
-    procedure ValueComboBoxChange(Sender: TObject);
     procedure ValueComboBoxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ValueComboBoxKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure ValueComboBoxMouseUp(Sender: TObject; Button: TMouseButton;
+                                   Shift: TShiftState; X, Y: Integer);
     procedure ValueComboBoxCloseUp(Sender: TObject);
     procedure ValueComboBoxDropDown(Sender: TObject);
     procedure ValueButtonClick(Sender: TObject);
@@ -832,6 +840,7 @@ begin
     OnChange:=@ValueEditChange;
     OnKeyDown:=@ValueEditKeyDown;
     OnKeyUp:=@ValueEditKeyUp;
+    OnMouseUp:=@ValueEditMouseUp;
   end;
 
   ValueComboBox:=TComboBox.Create(Self);
@@ -850,6 +859,7 @@ begin
                                    // if the user is still editing
     OnKeyDown:=@ValueComboBoxKeyDown;
     OnKeyUp:=@ValueComboBoxKeyUp;
+    OnMouseUp:=@ValueComboBoxMouseUp;
     OnDropDown:=@ValueComboBoxDropDown;
     OnCloseUp:=@ValueComboBoxCloseUp;
     OnDrawItem:=@ValueComboBoxDrawItem;
@@ -1230,7 +1240,7 @@ begin
   if Assigned(FOnModified) then FOnModified(Self);
 end;
 
-procedure TOICustomPropertyGrid.DoCallEdit;
+procedure TOICustomPropertyGrid.DoCallEdit(Edit: TOIQuickEdit);
 var
   CurRow:TOIPropertyGridRow;
   OldChangeStep: integer;
@@ -1256,7 +1266,10 @@ begin
       DebugLn('#################### TOICustomPropertyGrid.DoCallEdit for ',CurRow.Editor.ClassName);
       Include(FStates,pgsApplyingValue);
       try
-        CurRow.Editor.Edit;
+        if Edit=oiqeShowValue then
+          CurRow.Editor.ShowValue
+        else
+          CurRow.Editor.Edit;
       finally
         Exclude(FStates,pgsApplyingValue);
       end;
@@ -1327,6 +1340,13 @@ begin
   end;
 end;
 
+procedure TOICustomPropertyGrid.ValueEditMouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  if (Button=mbLeft) and (Shift=[ssCtrl,ssLeft]) then
+    DoCallEdit(oiqeShowValue);
+end;
+
 procedure TOICustomPropertyGrid.ValueCheckBoxKeyDown(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 begin
@@ -1364,14 +1384,6 @@ begin
   SetRowValue;
 end;
 
-procedure TOICustomPropertyGrid.ValueComboBoxChange(Sender: TObject);
-var i:integer;
-begin
-  if pgsUpdatingEditControl in FStates then exit;
-  i:=TComboBox(Sender).Items.IndexOf(TComboBox(Sender).Text);
-  if i>=0 then SetRowValue;
-end;
-
 procedure TOICustomPropertyGrid.ValueComboBoxKeyDown(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 begin
@@ -1383,6 +1395,13 @@ procedure TOICustomPropertyGrid.ValueComboBoxKeyUp(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 begin
   HandleKeyUp(Key,Shift);
+end;
+
+procedure TOICustomPropertyGrid.ValueComboBoxMouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  if (Button=mbLeft) and (Shift=[ssCtrl,ssLeft]) then
+    DoCallEdit(oiqeShowValue);
 end;
 
 procedure TOICustomPropertyGrid.ValueButtonClick(Sender: TObject);

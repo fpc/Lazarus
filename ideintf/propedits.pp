@@ -298,7 +298,8 @@ type
     procedure Deactivate; virtual;
     function AllEqual: Boolean; virtual;
     function AutoFill: Boolean; virtual;
-    procedure Edit; virtual;
+    procedure Edit; virtual; // called when clicking on OI property button or double clicking on value
+    procedure ShowValue; virtual; // called when Ctrl-Click on value
     function GetAttributes: TPropertyAttributes; virtual;
     function IsReadOnly: boolean; virtual;
     function GetComponent(Index: Integer): TPersistent;// for Delphi compatibility it is called GetComponent instead of GetPersistent
@@ -560,6 +561,7 @@ type
   public
     function AllEqual: Boolean; override;
     procedure Edit; override;
+    procedure ShowValue; override;
     function GetAttributes: TPropertyAttributes; override;
     function GetEditLimit: Integer; override;
     function GetValue: ansistring; override;
@@ -2046,6 +2048,11 @@ begin
   finally
     Values.Free;
   end;
+end;
+
+procedure TPropertyEditor.ShowValue;
+begin
+
 end;
 
 function TPropertyEditor.AutoFill:Boolean;
@@ -3861,24 +3868,37 @@ begin
 end;
 
 procedure TMethodPropertyEditor.Edit;
+{ If the method does not exist in current lookuproot: create it
+  Then jump to the source.
+  
+  For inherited methods this means: A new method is created and a call of
+  the ancestor value is added. Then the IDE jumps to the new method body.
+}
 var
-  FormMethodName: shortstring;
+  NewMethodName: shortstring;
 begin
-  FormMethodName := GetValue;
-  DebugLn('### TMethodPropertyEditor.Edit A OldValue=',FormMethodName);
-  if (not IsValidIdent(FormMethodName))
+  NewMethodName:=GetValue;
+  DebugLn('### TMethodPropertyEditor.Edit A OldValue=',NewMethodName);
+  if (not IsValidIdent(NewMethodName))
   or PropertyHook.MethodFromAncestor(GetMethodValue) then begin
-    if not IsValidIdent(FormMethodName) then
-      FormMethodName := GetFormMethodName;
-    DebugLn('### TMethodPropertyEditor.Edit B FormMethodName=',FormMethodName);
-    if not IsValidIdent(FormMethodName) then begin
-      raise EPropertyError.Create('Method name must be an identifier'{@SCannotCreateName});
-      exit;
-    end;
-    SetValue(FormMethodName); // this will jump to the method
+    // the current method is from the ancestor
+    // -> add an override with the default name
+    NewMethodName := GetFormMethodName;
+    DebugLn('### TMethodPropertyEditor.Edit B FormMethodName=',NewMethodName);
+    if not IsValidIdent(NewMethodName) then
+      raise EPropertyError.Create('Method name '+NewMethodName+' must be an identifier');
+    SetValue(NewMethodName); // this will jump to the method
     PropertyHook.RefreshPropertyValues;
   end else
-    PropertyHook.ShowMethod(FormMethodName);
+    PropertyHook.ShowMethod(NewMethodName);
+end;
+
+procedure TMethodPropertyEditor.ShowValue;
+var
+  CurMethodName: String;
+begin
+  CurMethodName:=GetValue;
+  PropertyHook.ShowMethod(CurMethodName);
 end;
 
 function TMethodPropertyEditor.GetAttributes: TPropertyAttributes;
@@ -4001,10 +4021,16 @@ begin
   CurValue:=GetValue;
   if CurValue=NewValue then exit;
   //DebugLn('### TMethodPropertyEditor.SetValue A OldValue="',CurValue,'" NewValue=',NewValue);
-  NewMethodExists:=IsValidIdent(NewValue)
-               and PropertyHook.MethodExists(NewValue,GetTypeData(GetPropType),
+  if not IsValidIdent(NewValue) then begin
+    MessageDlg(oisIncompatibleIdentifier,
+      '"'+NewValue+'" is not a valid method name.', mtError,
+      [mbCancel, mbIgnore], 0);
+    exit;
+  end;
+  
+  NewMethodExists:=PropertyHook.MethodExists(NewValue,GetTypeData(GetPropType),
                    NewMethodIsCompatible,NewMethodIsPublished,NewIdentIsMethod);
-  //writeln('### TMethodPropertyEditor.SetValue B NewMethodExists=',NewMethodExists,' NewMethodIsCompatible=',NewMethodIsCompatible,' ',NewMethodIsPublished,' ',NewIdentIsMethod);
+  //DebugLn('### TMethodPropertyEditor.SetValue B NewMethodExists=',NewMethodExists,' NewMethodIsCompatible=',NewMethodIsCompatible,' ',NewMethodIsPublished,' ',NewIdentIsMethod);
   if NewMethodExists then begin
     if not NewIdentIsMethod then begin
       if MessageDlg(oisIncompatibleIdentifier,
@@ -4031,8 +4057,8 @@ begin
         exit;
     end;
   end;
-  //writeln('### TMethodPropertyEditor.SetValue C');
-  if IsValidIdent(CurValue) and IsValidIdent(NewValue)
+  //DebugLn('### TMethodPropertyEditor.SetValue C');
+  if IsValidIdent(CurValue)
   and (not NewMethodExists)
   and (not PropertyHook.MethodFromAncestor(GetMethodValue)) then begin
     // rename the method
@@ -4044,17 +4070,14 @@ begin
     PropertyHook.RenameMethod(CurValue, NewValue)
   end else
   begin
-    //writeln('### TMethodPropertyEditor.SetValue E');
-    CreateNewMethod := IsValidIdent(NewValue) and not NewMethodExists;
+    //DebugLn('### TMethodPropertyEditor.SetValue E');
+    CreateNewMethod := not NewMethodExists;
     SetMethodValue(
        PropertyHook.CreateMethod(NewValue,GetPropType,
                                  GetComponent(0),GetPropertyPath(0)));
-    //writeln('### TMethodPropertyEditor.SetValue F NewValue=',GetValue);
+    //DebugLn('### TMethodPropertyEditor.SetValue F NewValue=',GetValue);
     if CreateNewMethod then begin
-      {if (PropCount = 1) and (OldMethod.Data <> nil) and (OldMethod.Code <> nil)
-      then
-        CheckChainCall(NewValue, OldMethod);}
-      //writeln('### TMethodPropertyEditor.SetValue G');
+      //DebugLn('### TMethodPropertyEditor.SetValue G');
       PropertyHook.ShowMethod(NewValue);
     end;
   end;
