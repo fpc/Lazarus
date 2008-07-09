@@ -177,15 +177,17 @@
       <!-- object Visibility: default -->
       <element name="TCustomImageList">
         <short>
-          <var>TCustomImageList</var> base class for <var>TImageList</var> (not the same as a <var>TBitmap</var> collection)</short>
+          <var>TCustomImageList</var>  - base class for <var>TImageList</var> (not the same as a <var>TBitmap</var> collection)</short>
         <descr>
           <p>
             <printshort id="TCustomImageList"/>
           </p>
+          <p>Ancestor of <var>TDragImageList</var> which is base class for <var>TImageList</var> in Unit <var>Controls</var>
+          </p>
           <pre>Delphi's TCustomImageList is based on the Win32 imagelists which has
     internally only one bitmap to hold all images. This reduces handle
     allocation.
-    The original TCustomImageList implementation was LCL only based, so for
+    The original Lazarus TCustomImageList implementation was LCL only based, so for
     other platforms the single bitmap implementation had some speed drawbacks.
     Therefore it was implemented as a list of bitmaps, however it doesn't reduce
     handle allocation.
@@ -198,8 +200,7 @@
     NOTE: due to its implementation, the TCustomImageList is not a TBitmap
     collection. If a fast storage of bitmaps is needed, create your own list!
 </pre>
-          <p>Ancestor of <var>TDragImageList</var> which is base class for <var>TImageList</var> in Unit <var>Controls</var>
-          </p>
+          <p/>
         </descr>
         <errors/>
         <seealso/>
@@ -686,21 +687,24 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomImageList.Change">
-        <short/>
+        <short>
+          <var>Change</var> - software method to force <var>OnChange</var> event</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomImageList.Clear">
-        <short/>
+        <short>
+          <var>Clear</var> - removes all images from the list</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TCustomImageList.CreateSize">
-        <short/>
+        <short>
+          <var>CreateSize</var> - runtime constructor for image(s) with given height and width</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -803,7 +807,8 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomImageList.GetHotSpot">
-        <short/>
+        <short>
+          <var>GetHotSpot</var> - returns the co-ordinates for the hotspot of the drag image</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1089,7 +1094,10 @@
         <short>
           <var>FillDescription</var> - fills the description with the default info of the imagedata</short>
       </element>
-      <element name="TCustomImageList.GetRawImage"/>
+      <element name="TCustomImageList.GetRawImage">
+        <short>
+          <var>GetRawImage</var> - primitive method for loading an image: you have to fill in all the description fields yourself</short>
+      </element>
       <element name="TCustomImageList.Reference">
         <short>
           <var>Reference</var> to the imagelist</short>
