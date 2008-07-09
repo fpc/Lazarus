@@ -371,6 +371,7 @@ var
   i: Integer;
   CurItem: TBuildLazarusItem;
   MakeMode: TMakeMode;
+  PkgOptions: String;
 begin
   Result:=false;
 
@@ -417,7 +418,6 @@ begin
   end;
   
   DebugLn(['TLazBuildApplication.BuildLazarusIDE ToDo: compile installed packages']);
-  DebugLn(['TLazBuildApplication.BuildLazarusIDE ToDo: compile IDE']);
 
   // compile auto install static packages
   {CurResult:=PkgBoss.DoCompileAutoInstallPackages([]);
@@ -426,6 +426,20 @@ begin
     exit;
   end;}
 
+  DebugLn(['TLazBuildApplication.BuildLazarusIDE ToDo: create inherited options from installed packages']);
+  // create inherited compiler options
+  PkgOptions:=''; //PkgBoss.DoGetIDEInstallPackageOptions(InheritedOptionStrings);
+  
+  CurResult:=BuildLazarus(MiscellaneousOptions.BuildLazOpts,
+                          EnvironmentOptions.ExternalTools,GlobalMacroList,
+                          PkgOptions,EnvironmentOptions.CompilerFilename,
+                          EnvironmentOptions.MakeFilename,
+                          Flags+[blfUseMakeIDECfg,blfOnlyIDE]
+                          );
+  if CurResult<>mrOk then begin
+    DebugLn('TLazBuildApplication.BuildLazarusIDE: Building IDE failed.');
+    exit;
+  end;
 
   Result:=true;
 end;
