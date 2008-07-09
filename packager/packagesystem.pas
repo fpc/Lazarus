@@ -108,7 +108,6 @@ type
     FDefaultPackage: TLazPackage;
     FErrorMsg: string;
     FFCLPackage: TLazPackage;
-    FFirstAutoInstallDependency: TPkgDependency;
     FIDEIntfPackage: TLazPackage;
     FItems: TFPList;   // unsorted list of TLazPackage
     FLazarusBasePackages: TFPList;
@@ -292,6 +291,9 @@ type
                             Globals: TGlobalCompilerOptions = nil): TModalResult;
     function ConvertPackageRSTFiles(APackage: TLazPackage): TModalResult;
   public
+    // installed packages
+    FirstAutoInstallDependency: TPkgDependency;
+  public
     // registration
     procedure RegisterUnitHandler(const TheUnitName: string;
                                   RegisterProc: TRegisterProc);
@@ -330,8 +332,6 @@ type
     property IDEIntfPackage: TLazPackage read FIDEIntfPackage;
     property LazarusBasePackages: TFPList read FLazarusBasePackages;
     property DefaultPackage: TLazPackage read FDefaultPackage;// fall back package for buggy/obsoleted stuff
-    property FirstAutoInstallDependency: TPkgDependency
-             read FFirstAutoInstallDependency write FFirstAutoInstallDependency;
 
     property OnAddPackage: TPkgAddedEvent read FOnAddPackage write FOnAddPackage;
     property OnBeginUpdate: TNotifyEvent read FOnBeginUpdate write FOnBeginUpdate;
