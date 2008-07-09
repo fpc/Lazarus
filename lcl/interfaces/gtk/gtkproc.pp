@@ -665,8 +665,8 @@ procedure UpdateStatusBarPanel(StatusBar: TObject; Index: integer;
                                StatusPanelWidget: PGtkWidget);
 
 // list
-function gtkListSelectChild(widget: PGtkWidget;child : PGtkWidget;
-                                      data: gPointer): GBoolean; cdecl;
+function gtkListSelectChild(widget: PGtkWidget; child: PGtkWidget;
+                            data: gPointer): GBoolean; cdecl;
 function gtkListGetSelectionMode(list: PGtkList): TGtkSelectionMode;cdecl;
 
 

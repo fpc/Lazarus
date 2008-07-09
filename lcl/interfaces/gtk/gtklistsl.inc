@@ -869,7 +869,6 @@ function TGtkListStringList.IndexOf(const S: string): Integer;
 var
   l, m, r, cmp: integer;
 begin
-  BeginUpdate;
   if FSorted then begin
     l:=0;
     r:=Count-1;
@@ -891,7 +890,6 @@ begin
   end else begin
     Result:=inherited IndexOf(S);
   end;
-  EndUpdate;
 end;
 
 {------------------------------------------------------------------------------
