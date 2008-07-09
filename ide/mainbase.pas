@@ -168,6 +168,11 @@ type
 
 var
   MainIDE: TMainIDEBase = nil;
+  
+  { Normally the IDE builds itself with packages named in config files.
+    When the IDE should keep the packages installed in the current executable
+    set KeepInstalledPackages to true. }
+var KeepInstalledPackages: boolean = false;
 
 implementation
 

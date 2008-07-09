@@ -158,7 +158,6 @@ type
     function LoadDependencyList(FirstDependency: TPkgDependency): TModalResult;
     procedure OnOpenPackageForCurrentSrcEditFile(Sender: TObject);
   private
-    FirstAutoInstallDependency: TPkgDependency;
     // helper functions
     function DoShowSavePackageAsDialog(APackage: TLazPackage): TModalResult;
     function DoWriteMakefile(APackage: TLazPackage): TModalResult;
@@ -451,7 +450,7 @@ begin
   NewFirstAutoInstallDependency:=nil;
   PkgList:=nil;
   try
-    if ShowEditInstallPkgsDialog(FirstAutoInstallDependency,
+    if ShowEditInstallPkgsDialog(PackageGraph.FirstAutoInstallDependency,
       @OnCheckInstallPackageList,PkgIDList,RebuildIDE)<>mrOk
     then exit;
     
@@ -467,7 +466,7 @@ begin
 
     // tell the user, which packages will stay, which will be removed and
     // which will be newly installed
-    Report:=CreateChangeReport(FirstAutoInstallDependency,
+    Report:=CreateChangeReport(PackageGraph.FirstAutoInstallDependency,
                                NewFirstAutoInstallDependency);
     if IDEMessageDialog(lisConfirmNewPackageSetForTheIDE,
       Format(lisThisWillHappenContinue, [#13#13, Report, #13]), mtConfirmation,
@@ -492,7 +491,7 @@ begin
 
       // mark packages for uninstall
       //debugln('TPkgManager.MainIDEitmPkgEditInstallPkgsClick mark packages for uninstall');
-      CurDependency:=FirstAutoInstallDependency;
+      CurDependency:=PackageGraph.FirstAutoInstallDependency;
       while CurDependency<>nil do begin
         if (CurDependency.RequiredPackage<>nil)
         and (not CurDependency.RequiredPackage.AutoCreated) then
@@ -502,8 +501,8 @@ begin
 
       // replace install list
       //debugln('TPkgManager.MainIDEitmPkgEditInstallPkgsClick replace install list');
-      FreeDependencyList(FirstAutoInstallDependency,pdlRequires);
-      FirstAutoInstallDependency:=NewFirstAutoInstallDependency;
+      FreeDependencyList(PackageGraph.FirstAutoInstallDependency,pdlRequires);
+      PackageGraph.FirstAutoInstallDependency:=NewFirstAutoInstallDependency;
       NewFirstAutoInstallDependency:=nil;
     finally
       PackageGraph.EndUpdate;
@@ -1604,7 +1603,7 @@ begin
   end;
 
   sl:=TStringList.Create;
-  Dependency:=FirstAutoInstallDependency;
+  Dependency:=PackageGraph.FirstAutoInstallDependency;
   while Dependency<>nil do begin
     if (Dependency.LoadPackageResult=lprSuccess)
     and (not Dependency.RequiredPackage.AutoCreated)
@@ -1635,7 +1634,7 @@ begin
     BasePackage:=TLazPackage(PackageGraph.LazarusBasePackages[i]);
     Dependency:=BasePackage.CreateDependencyWithOwner(Self);
     PackageGraph.OpenDependency(Dependency);
-    Dependency.AddToList(FirstAutoInstallDependency,pdlRequires)
+    Dependency.AddToList(PackageGraph.FirstAutoInstallDependency,pdlRequires)
   end;
   SortAutoInstallDependencies;
 
@@ -1673,8 +1672,7 @@ begin
     end;
     
     // load package
-    APackage:=LoadInstalledPackage(StaticPackage^.Name,
-                                   {$IFDEF BigIDE}True{$ELSE}False{$ENDIF},
+    APackage:=LoadInstalledPackage(StaticPackage^.Name,KeepInstalledPackages,
                                    Quiet);
     
     // register
@@ -1697,7 +1695,7 @@ begin
   PackageGraph.OpenInstalledDependency(NewDependency,pitStatic,Quiet);
   Result:=NewDependency.RequiredPackage;
   if AddToAutoInstall and (Result<>nil) then begin
-    NewDependency.AddToList(FirstAutoInstallDependency,pdlRequires);
+    NewDependency.AddToList(PackageGraph.FirstAutoInstallDependency,pdlRequires);
     PackageList:=MiscellaneousOptions.BuildLazOpts.StaticAutoInstallPackages;
     if PackageList.IndexOf(NewDependency.PackageName)<0 then
       PackageList.Add(NewDependency.PackageName);
@@ -1719,14 +1717,14 @@ begin
   for i:=0 to PkgList.Count-1 do begin
     PackageName:=PkgList[i];
     if (PackageName='') or (not IsValidIdent(PackageName)) then continue;
-    Dependency:=FindDependencyByNameInList(FirstAutoInstallDependency,
+    Dependency:=FindDependencyByNameInList(PackageGraph.FirstAutoInstallDependency,
                                            pdlRequires,PackageName);
     //DebugLn('TPkgManager.LoadAutoInstallPackages ',dbgs(Dependency),' ',PackageName);
     if Dependency<>nil then continue;
     Dependency:=TPkgDependency.Create;
     Dependency.Owner:=Self;
     Dependency.PackageName:=PackageName;
-    Dependency.AddToList(FirstAutoInstallDependency,pdlRequires);
+    Dependency.AddToList(PackageGraph.FirstAutoInstallDependency,pdlRequires);
     if PackageGraph.OpenDependency(Dependency)<>lprSuccess then begin
       IDEMessageDialog(lisPkgMangUnableToLoadPackage,
         Format(lisPkgMangUnableToOpenThePackage, ['"', PackageName, '"', #13]),
@@ -1742,7 +1740,7 @@ end;
 procedure TPkgManager.SortAutoInstallDependencies;
 begin
   // sort install dependencies, so that lower packages come first
-  PackageGraph.SortDependencyListTopologically(FirstAutoInstallDependency,
+  PackageGraph.SortDependencyListTopologically(PackageGraph.FirstAutoInstallDependency,
                                                false);
 end;
 
@@ -1844,10 +1842,10 @@ begin
   if IDEComponentPalette<>nil then
     TComponentPalette(IDEComponentPalette).Notebook:=nil;
   FreeThenNil(LazPackageDescriptors);
-  while FirstAutoInstallDependency<>nil do begin
-    Dependency:=FirstAutoInstallDependency;
+  while PackageGraph.FirstAutoInstallDependency<>nil do begin
+    Dependency:=PackageGraph.FirstAutoInstallDependency;
     Dependency.RequiredPackage:=nil;
-    Dependency.RemoveFromList(FirstAutoInstallDependency,pdlRequires);
+    Dependency.RemoveFromList(PackageGraph.FirstAutoInstallDependency,pdlRequires);
     Dependency.Free;
   end;
   FreeThenNil(PackageGraphExplorer);
@@ -1954,10 +1952,10 @@ var
   Dependency: TPkgDependency;
 begin
   // break and free auto installed packages
-  while FirstAutoInstallDependency<>nil do begin
-    Dependency:=FirstAutoInstallDependency;
+  while PackageGraph.FirstAutoInstallDependency<>nil do begin
+    Dependency:=PackageGraph.FirstAutoInstallDependency;
     Dependency.RequiredPackage:=nil;
-    Dependency.RemoveFromList(FirstAutoInstallDependency,pdlRequires);
+    Dependency.RemoveFromList(PackageGraph.FirstAutoInstallDependency,pdlRequires);
     Dependency.Free;
   end;
 end;
@@ -2000,7 +1998,7 @@ var
   i: Integer;
 begin
   PkgList:=nil;
-  OnGetAllRequiredPackages(FirstAutoInstallDependency,PkgList);
+  OnGetAllRequiredPackages(PackageGraph.FirstAutoInstallDependency,PkgList);
   if PkgList=nil then exit;
   for i:=0 to PkgList.Count-1 do
     if TObject(PkgList[i]) is TLazPackage then
@@ -3628,7 +3626,7 @@ begin
       if RequiredPackage.AutoInstall=pitNope then begin
         RequiredPackage.AutoInstall:=pitStatic;
         Dependency:=RequiredPackage.CreateDependencyWithOwner(Self);
-        Dependency.AddToList(FirstAutoInstallDependency,pdlRequires);
+        Dependency.AddToList(PackageGraph.FirstAutoInstallDependency,pdlRequires);
         PackageGraph.OpenDependency(Dependency);
         NeedSaving:=true;
       end;
@@ -3706,10 +3704,10 @@ begin
     // remove package from auto installed packages
     if APackage.AutoInstall<>pitNope then begin
       APackage.AutoInstall:=pitNope;
-      Dependency:=FindCompatibleDependencyInList(FirstAutoInstallDependency,
+      Dependency:=FindCompatibleDependencyInList(PackageGraph.FirstAutoInstallDependency,
                                                  pdlRequires,APackage);
       if Dependency<>nil then begin
-        Dependency.RemoveFromList(FirstAutoInstallDependency,pdlRequires);
+        Dependency.RemoveFromList(PackageGraph.FirstAutoInstallDependency,pdlRequires);
         Dependency.Free;
         SortAutoInstallDependencies;
       end;
@@ -3785,7 +3783,7 @@ var
 begin
   PackageGraph.BeginUpdate(false);
   try
-    Dependency:=FirstAutoInstallDependency;
+    Dependency:=PackageGraph.FirstAutoInstallDependency;
     while Dependency<>nil do begin
       OldDependency:=Dependency;
       Dependency:=Dependency.NextRequiresDependency;
@@ -3796,14 +3794,14 @@ begin
           mtError,[mbYes,mbNo,mbAbort]);
         if Result=mrNo then Result:=mrCancel;
         if Result<>mrYes then exit;
-        OldDependency.RemoveFromList(FirstAutoInstallDependency,pdlRequires);
+        OldDependency.RemoveFromList(PackageGraph.FirstAutoInstallDependency,pdlRequires);
         OldDependency.Free;
         SaveAutoInstallDependencies(true);
       end;
     end;
     
     // check consistency
-    Result:=CheckPackageGraphForCompilation(nil,FirstAutoInstallDependency,
+    Result:=CheckPackageGraphForCompilation(nil,PackageGraph.FirstAutoInstallDependency,
                                            EnvironmentOptions.LazarusDirectory);
     if Result<>mrOk then exit;
     //DebugLn(['TPkgManager.DoCompileAutoInstallPackages LCLUnitPath=',PackageGraph.LCLPackage.CompilerOptions.GetUnitPath(true)]);
@@ -3815,7 +3813,7 @@ begin
     end;
     
     // compile all auto install dependencies
-    Result:=PackageGraph.CompileRequiredPackages(nil,FirstAutoInstallDependency,
+    Result:=PackageGraph.CompileRequiredPackages(nil,PackageGraph.FirstAutoInstallDependency,
                        MiscellaneousOptions.BuildLazOpts.Globals,[pupAsNeeded]);
     if Result<>mrOk then exit;
     
@@ -3837,7 +3835,7 @@ begin
   
   // create auto install package list for the Lazarus uses section
   StaticPackagesInc:='';
-  Dependency:=FirstAutoInstallDependency;
+  Dependency:=PackageGraph.FirstAutoInstallDependency;
   while Dependency<>nil do begin
     if (Dependency.RequiredPackage<>nil)
     and (not Dependency.RequiredPackage.AutoCreated) then
@@ -3884,7 +3882,7 @@ begin
   
   // get all required packages
   PkgList:=nil;
-  OnGetAllRequiredPackages(FirstAutoInstallDependency,PkgList);
+  OnGetAllRequiredPackages(PackageGraph.FirstAutoInstallDependency,PkgList);
   if PkgList=nil then exit;
   // get all usage options
   AddOptionsList:=GetUsageOptionsList(PkgList);

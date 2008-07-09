@@ -661,7 +661,7 @@ type
 
 
 var
-  EnvironmentOptions: TEnvironmentOptions;
+  EnvironmentOptions: TEnvironmentOptions = nil;
 
 function DebuggerNameToType(const s: string): TDebuggerType;
 function PascalExtToType(const Ext: string): TPascalExtType;

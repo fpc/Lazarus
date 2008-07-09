@@ -38,8 +38,8 @@ uses
   // IDE
   IDEProcs, InitialSetupDlgs, OutputFilter, Compiler, CompilerOptions,
   TransferMacros, EnvironmentOpts, IDETranslations, LazarusIDEStrConsts,
-  Project, LazConf, PackageDefs, PackageLinks, PackageSystem,
-  BuildManager, BaseBuildManager;
+  MiscOptions, Project, LazConf, PackageDefs, PackageLinks, PackageSystem,
+  BuildLazDialog, BuildManager, BaseBuildManager;
   
 type
 
@@ -48,6 +48,8 @@ type
   TLazBuildApplication = class(TCustomApplication)
   private
     FBuildAll: boolean;
+    FBuildIDE: boolean;
+    FBuildIDEOptions: string;
     FBuildRecursive: boolean;
     fCompilerOverride: String;
     fCPUOverride: String;
@@ -87,18 +89,24 @@ type
   protected
     function BuildFile(Filename: string): boolean;
 
+    // packages
     function BuildPackage(const AFilename: string): boolean;
     function LoadPackage(const AFilename: string): TLazPackage;
     procedure CompilePackage(APackage: TLazPackage; Flags: TPkgCompileFlags);
     procedure CheckPackageGraphForCompilation(APackage: TLazPackage;
                                  FirstDependency: TPkgDependency);
 
+    // projects
     function BuildProject(const AFilename: string): boolean;
     function LoadProject(const AFilename: string): TProject;
     procedure CloseProject(var AProject: TProject);
 
+    // IDE
+    function BuildLazarusIDE: boolean;
+
     function Init: boolean;
     procedure LoadEnvironmentOptions;
+    procedure LoadMiscellaneousOptions;
     procedure SetupOutputFilter;
     procedure SetupMacros;
     procedure SetupPackageSystem;
@@ -121,6 +129,8 @@ type
                                      write FBuildRecursive;
     property SkipDependencies: boolean read FSkipDependencies
                                             write FSkipDependencies;
+    property BuildIDE: boolean read FBuildIDE write FBuildIDE;
+    property BuildIDEOptions: string read FBuildIDEOptions write FBuildIDEOptions;
     property WidgetSetOverride: String read fWidgetsetOverride
                                             write fWidgetsetOverride;
     property OSOverride: String read fOSOverride write fOSOverride;
@@ -353,6 +363,73 @@ begin
   PkgLinks.SaveUserLinks;
 end;
 
+function TLazBuildApplication.BuildLazarusIDE: boolean;
+var
+  Flags: TBuildLazarusFlags;
+  CurResult: TModalResult;
+  BuildLazOptions: TBuildLazarusOptions;
+  i: Integer;
+  CurItem: TBuildLazarusItem;
+  MakeMode: TMakeMode;
+begin
+  Result:=false;
+
+  Init;
+
+  LoadMiscellaneousOptions;
+  BuildLazOptions:=MiscellaneousOptions.BuildLazOpts;
+  BuildLazOptions.TargetOS:=OSOverride;
+  BuildLazOptions.TargetCPU:=CPUOverride;
+  BuildLazOptions.TargetPlatform:=DirNameToLCLPlatform(WidgetSetOverride);
+  BuildLazOptions.ExtraOptions:=BuildIDEOptions;
+  MakeMode:=mmNone;
+  if BuildAll then begin
+    BuildLazOptions.CleanAll:=true;
+    MakeMode:=mmBuild;
+  end;
+  for i:=0 to BuildLazOptions.Count-1 do begin
+    CurItem:=BuildLazOptions.Items[i];
+    if (BuildLazOptions.IndexOf(CurItem)<BuildLazOptions.IndexOf(BuildLazOptions.ItemIDE))
+    then
+      // these items are needed for the IDE
+      CurItem.MakeMode:=MakeMode
+    else if CurItem=BuildLazOptions.ItemIDE then
+      // always build the IDE
+      CurItem.MakeMode:=mmBuild
+    else
+      // these are goodies (starter, examples)
+      CurItem.MakeMode:=mmNone;
+  end;
+
+  MainBuildBoss.SetBuildTargetIDE;
+  Flags:=[];
+  
+  // first compile all lazarus components (LCL, SynEdit, CodeTools, ...)
+  // but not the IDE
+  CurResult:=BuildLazarus(MiscellaneousOptions.BuildLazOpts,
+                          EnvironmentOptions.ExternalTools,GlobalMacroList,
+                          '',EnvironmentOptions.CompilerFilename,
+                          EnvironmentOptions.MakeFilename,
+                          Flags+[blfWithoutCompilingIDE,blfWithoutLinkingIDE]);
+  if CurResult<>mrOk then begin
+    DebugLn('TLazBuildApplication.BuildLazarusIDE: Building standard components (LCL, SynEdit, CodeTools) failed.');
+    exit;
+  end;
+  
+  DebugLn(['TLazBuildApplication.BuildLazarusIDE ToDo: compile installed packages']);
+  DebugLn(['TLazBuildApplication.BuildLazarusIDE ToDo: compile IDE']);
+
+  // compile auto install static packages
+  {CurResult:=PkgBoss.DoCompileAutoInstallPackages([]);
+  if CurResult<>mrOk then begin
+    DebugLn('TLazBuildApplication.BuildLazarusIDE: Compile AutoInstall Packages failed.');
+    exit;
+  end;}
+
+
+  Result:=true;
+end;
+
 procedure TLazBuildApplication.CompilePackage(APackage: TLazPackage;
   Flags: TPkgCompileFlags);
 begin
@@ -572,6 +649,7 @@ begin
   MainBuildBoss:=TBuildManager.Create;
   MainBuildBoss.ScanningCompilerDisabled:=true;
   LoadEnvironmentOptions;
+  LoadMiscellaneousOptions;
   InteractiveSetup:=false;
   SetupCompilerFilename(InteractiveSetup);
   SetupLazarusDirectory(InteractiveSetup);
@@ -590,6 +668,7 @@ end;
 
 procedure TLazBuildApplication.LoadEnvironmentOptions;
 begin
+  if EnvironmentOptions<>nil then exit;
   EnvironmentOptions:=TEnvironmentOptions.Create;
   with EnvironmentOptions do begin
     SetLazarusDefaultFilename;
@@ -606,6 +685,13 @@ begin
     if CompilerOverride<>'' then
       CompilerFilename:=CompilerOverride;
   end;
+end;
+
+procedure TLazBuildApplication.LoadMiscellaneousOptions;
+begin
+  if MiscellaneousOptions<>nil then exit;
+  MiscellaneousOptions:=TMiscellaneousOptions.Create;
+  MiscellaneousOptions.Load;
 end;
 
 procedure TLazBuildApplication.SetupOutputFilter;
@@ -808,6 +894,14 @@ begin
       exit;
     end;
   end;
+  
+  if BuildIDE then begin
+    if not BuildLazarusIDE then begin
+      writeln('Failed building Lazarus IDE');
+      ExitCode := ErrorBuildFailed;
+      exit;
+    end;
+  end;
 end;
 
 function TLazBuildApplication.ParseParameters: boolean;
@@ -845,6 +939,7 @@ begin
     LongOptions.Add('scp:');
     LongOptions.Add('language:');
     LongOptions.Add('build-all');
+    LongOptions.Add('build-ide:');
     LongOptions.Add('recursive');
     LongOptions.Add('skip-dependencies');
     LongOptions.Add('widgetset:');
@@ -860,9 +955,15 @@ begin
       exit;
     end;
 
+    // building IDE
+    if HasOption('build-ide') then begin
+      BuildIDE:=true;
+      BuildIDEOptions:=GetOptionValue('build-ide');
+    end;
+
     // files
     Files.Assign(NonOptions);
-    if Files.Count=0 then begin
+    if (Files.Count=0) and (not BuildIDE) then begin
       writeln('Error: missing file');
       WriteUsage;
       exit;
@@ -887,7 +988,7 @@ begin
       BuildRecursive:=true;
     if HasOption('d','skip-dependencies') then
       SkipDependencies:=true;
-      
+
     // overides
     // widgetset
     if HasOption('ws') then
@@ -930,8 +1031,9 @@ begin
   writeln('--help or -?              ', listhisHelpMessage);
   writeln('');
   writeln('-B or --build-all         ','build all files of project/package');
-  writeln('-r or --recursive         ','apply build flags (-B) to dependencies too.');
+  writeln('-r or --recursive         ','apply build flags (-B) to dependencies too');
   writeln('-d or --skip-dependencies ','do not compile dependencies');
+  writeln('--build-ide=<options>     ','build IDE with packages');
   writeln('-v or --version           ','show version and exit');
   writeln('');
   writeln(PrimaryConfPathOptLong,'<path>');

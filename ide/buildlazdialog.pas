@@ -436,8 +436,8 @@ begin
       LinkerAddition := LCLWidgetLinkerAddition[Options.LCLPlatform];
       if LinkerAddition <> '' then
       begin
-          if ExtraOptions <> '' then ExtraOptions := ExtraOptions + ' ' + LinkerAddition
-          else ExtraOptions := LinkerAddition;
+        if ExtraOptions <> '' then ExtraOptions := ExtraOptions + ' ' + LinkerAddition
+        else ExtraOptions := LinkerAddition;
       end;
       
       if ExtraOptions<>'' then

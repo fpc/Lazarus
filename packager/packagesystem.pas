@@ -108,6 +108,7 @@ type
     FDefaultPackage: TLazPackage;
     FErrorMsg: string;
     FFCLPackage: TLazPackage;
+    FFirstAutoInstallDependency: TPkgDependency;
     FIDEIntfPackage: TLazPackage;
     FItems: TFPList;   // unsorted list of TLazPackage
     FLazarusBasePackages: TFPList;
@@ -329,6 +330,9 @@ type
     property IDEIntfPackage: TLazPackage read FIDEIntfPackage;
     property LazarusBasePackages: TFPList read FLazarusBasePackages;
     property DefaultPackage: TLazPackage read FDefaultPackage;// fall back package for buggy/obsoleted stuff
+    property FirstAutoInstallDependency: TPkgDependency
+             read FFirstAutoInstallDependency write FFirstAutoInstallDependency;
+
     property OnAddPackage: TPkgAddedEvent read FOnAddPackage write FOnAddPackage;
     property OnBeginUpdate: TNotifyEvent read FOnBeginUpdate write FOnBeginUpdate;
     property OnChangePackageName: TPkgChangeNameEvent read FOnChangePackageName

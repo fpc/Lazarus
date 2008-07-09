@@ -9696,7 +9696,7 @@ begin
                          EnvironmentOptions.MakeFilename,
                          Flags+[blfWithoutCompilingIDE,blfWithoutLinkingIDE]);
     if Result<>mrOk then begin
-      DebugLn('TMainIDE.DoBuildLazarus: Build Lazarus without linking failed.');
+      DebugLn('TMainIDE.DoBuildLazarus: Building standard components (LCL, SynEdit, CodeTools) failed.');
       exit;
     end;
 
@@ -14004,7 +14004,7 @@ begin
   writeln('');
   writeln('[TMainIDE.OnPropHookShowMethod] ************ "',AMethodName,'" ',ActiveUnitInfo.Filename);
   {$ENDIF}
-
+  
   if CodeToolBoss.JumpToPublishedMethodBody(ActiveUnitInfo.Source,
     ActiveUnitInfo.Component.ClassName,AMethodName,
     NewSource,NewX,NewY,NewTopLine) then

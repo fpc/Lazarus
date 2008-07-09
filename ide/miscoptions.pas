@@ -103,7 +103,7 @@ const
     'AllOpenProjectsAndPackages'
     );
 
-var MiscellaneousOptions: TMiscellaneousOptions;
+var MiscellaneousOptions: TMiscellaneousOptions = nil;
 
 function SortDirectionNameToType(const s: string): TSortDirection;
 function SortDomainNameToType(const s: string): TSortDomain;
