@@ -111,8 +111,6 @@ type
     FLazarusPID: Integer;
     FCmdLineParams: TStrings;
     FShowSplashOption: boolean;
-    procedure ParseCommandLine;
-    function GetCommandLineParameters: string;
     function GetLazarusPath(const FileName: string): string;
     function RenameLazarusExecutable(const Directory: string): TModalResult;
     procedure LazarusProcessStart(Sender: TObject);
@@ -126,57 +124,12 @@ type
   end;
 
 implementation
+uses IDECmdLine;
 
 destructor TLazarusManager.Destroy;
 begin
   FreeAndNil(FCmdLineParams);
   inherited Destroy;
-end;
-
-procedure TLazarusManager.ParseCommandLine;
-const
-  LazarusPidOpt='--lazarus-pid=';
-  LazarusDebugOpt ='--debug';
-var
-  i: Integer;
-  Param: string;
-begin
-  FCmdLineParams := TStringList.Create;
-  FLazarusPID := 0;
-  for i := 1 to ParamCount do begin
-    Param := ParamStr(i);
-    if Param=LazarusDebugOpt then begin
-      FCmdLineParams.Add('--debug-log=' +
-                          AppendPathDelim(GetPrimaryConfigPath) + 'debug.log');
-    end;
-    if LeftStr(Param,length(LazarusPidOpt))=LazarusPidOpt then begin
-      try
-        FLazarusPID :=
-          StrToInt(RightStr(Param,Length(Param)-Length(LazarusPidOpt)));
-      except
-        DebugLn('Failed to parse %s',[Param]);
-        FLazarusPid := 0;
-      end;
-    end
-    else
-      FCmdLineParams.Add(Param);
-  end;
-  // make sure that command line parameters are still
-  // double quoted, if they contain spaces
-  for i := 0 to FCmdLineParams.Count -1 do
-  begin
-    if pos(' ',FCmdLineParams[i])>0 then
-      FCmdLineParams[i] := '"' + FCmdLineParams[i] + '"';
-  end;
-end;
-
-function TLazarusManager.GetCommandLineParameters: string;
-var
-  i: Integer;
-begin
-  Result := ' --no-splash-screen --started-by-startlazarus';
-  for i := 0 to FCmdLineParams.Count - 1 do
-    Result := Result + ' ' + FCmdLineParams[i];
 end;
 
 function TLazarusManager.GetLazarusPath(const FileName: string) : string;
@@ -274,7 +227,8 @@ procedure TLazarusManager.Initialize;
 begin
   FShowSplashOption:=true;
   SplashForm := nil;
-  ParseCommandLine;
+  FCmdLineParams := TStringList.Create;
+  ParseCommandLine(FCmdLineParams, FLazarusPID);
   if FShowSplashOption then
     ShowSplash;
 end;
@@ -368,8 +322,14 @@ begin
       end;
 
       DebugLn(['TLazarusManager.Run starting ',FLazarusPath,' ...']);
+      if not Assigned(FCmdLineParams) then
+        begin
+          FCmdLineParams := TStringList.Create;
+          ParseCommandLine(FCmdLineParams, FLazarusPID);
+        end;
       FLazarusProcess :=
-        TLazarusProcess.Create(FLazarusPath, GetCommandLineParameters);
+        TLazarusProcess.Create(FLazarusPath,
+             GetCommandLineParameters(FCmdLineParams, True));
       FLazarusProcess.OnStart := @LazarusProcessStart;
       FLazarusProcess.Execute;
       FLazarusProcess.WaitOnExit;

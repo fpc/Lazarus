@@ -128,7 +128,7 @@ uses
   DialogProcs, FindReplaceDialog, FindInFilesDlg, CodeExplorer, BuildFileDlg,
   ProcedureList, ExtractProcDlg, FindRenameIdentifier, AbstractsMethodsDlg,
   EmptyMethodsDlg, CleanDirDlg, CodeContextForm, AboutFrm, BuildManager,
-  CompatibilityRestrictions, RestrictionBrowser, ProjectWizardDlg,
+  CompatibilityRestrictions, RestrictionBrowser, ProjectWizardDlg, IDECmdLine,
   // main ide
   MainBar, MainIntf, MainBase;
 
@@ -953,40 +953,13 @@ var
   Parses the command line for the IDE.
 -------------------------------------------------------------------------------}
 class procedure TMainIDE.ParseCmdLineOptions;
-
-  function ParamIsOption(ParamIndex: integer;
-    const Option: string): boolean;
-  begin
-    Result:=CompareText(ParamStr(ParamIndex),Option)=0;
-  end;
-
-  function ParamIsOptionPlusValue(ParamIndex: integer;
-    const Option: string; var AValue: string): boolean;
-  var
-    p: String;
-  begin
-    p:=ParamStr(ParamIndex);
-    Result:=CompareText(LeftStr(p,length(Option)),Option)=0;
-    if Result then
-      AValue:=copy(p,length(Option)+1,length(p))
-    else
-      AValue:='';
-  end;
-
 const
   space = '                      ';
-var
-  i: integer;
-  AValue: string;
 begin
   StartedByStartLazarus:=false;
   SkipAutoLoadingLastProject:=false;
   EnableRemoteControl:=false;
-  if (ParamCount>0)
-  and ((CompareText(ParamStr(1),'--help')=0)
-    or (CompareText(ParamStr(1),'-help')=0)
-    or (CompareText(ParamStr(1),'-?')=0)
-    or (CompareText(ParamStr(1),'-h')=0)) then
+  if IsHelpRequested then
   begin
     TranslateResourceStrings(ProgramDirectory,'');
 
@@ -1027,31 +1000,9 @@ begin
     Application.Terminate;
     exit;
   end;
-  for i:=1 to ParamCount do begin
-    //DebugLn(['TMainIDE.ParseCmdLineOptions ',i,' "',ParamStr(i),'"']);
-    if ParamIsOptionPlusValue(i,PrimaryConfPathOptLong,AValue) then begin
-      SetPrimaryConfigPath(AValue);
-    end;
-    if ParamIsOptionPlusValue(i,PrimaryConfPathOptShort,AValue) then begin
-      SetPrimaryConfigPath(AValue);
-    end;
-    if ParamIsOptionPlusValue(i,SecondaryConfPathOptLong,AValue) then begin
-      SetSecondaryConfigPath(AValue);
-    end;
-    if ParamIsOptionPlusValue(i,SecondaryConfPathOptShort,AValue) then begin
-      SetSecondaryConfigPath(AValue);
-    end;
-    if ParamIsOption(i,NoSplashScreenOptLong)
-    or ParamIsOption(i,NoSplashScreenOptShort) then begin
-      ShowSplashScreen:=false;
-    end;
-    if ParamIsOption(i,SkipLastProjectOpt) then
-      SkipAutoLoadingLastProject:=true;
-    if ParamIsOption(i,StartedByStartLazarusOpt) then
-      StartedByStartLazarus:=true;
-    if ParamIsOption(i,EnableRemoteControlOpt) then
-      EnableRemoteControl:=true;
-  end;
+  
+  SetParamOptions(SkipAutoLoadingLastProject, StartedByStartLazarus, EnableRemoteControl, ShowSplashScreen);
+
   DebugLn('TMainIDE.ParseCmdLineOptions:');
   Debugln('  PrimaryConfigPath="',GetPrimaryConfigPath,'"');
   Debugln('  SecondaryConfigPath="',GetSecondaryConfigPath,'"');
@@ -1810,22 +1761,6 @@ begin
 end;
 
 procedure TMainIDE.SetupStartProject;
-
-  function ExtractCmdLineFilenames: TStrings;
-  var
-    i: LongInt;
-    Filename: String;
-  begin
-    Result:=nil;
-    i:=ParamCount;
-    while (i>0) do begin
-      Filename:=ParamStr(i);
-      if (Filename='') or (Filename[1]='-') then break;
-      if Result=nil then Result:=TStringList.Create;
-      Result.Insert(0,Filename);
-      dec(i);
-    end;
-  end;
 
   function AskIfLoadLastFailingProject: boolean;
   begin
@@ -9479,13 +9414,19 @@ procedure TMainIDE.DoRestart;
 
   procedure StartStarter;
   var
-    StartLazProcess: TProcess;
-    ExeName: string;
+    StartLazProcess : TProcess;
+    ExeName         : string;
+    Params          : TStrings;
+    Dummy           : Integer;
   begin
     StartLazProcess := TProcess.Create(nil);
     try
       // TODO: use the target directory, where the new startlazarus is
-      StartLazProcess.CurrentDirectory := ExtractFileDir(ParamStr(0));
+      StartLazProcess.CurrentDirectory := GetLazarusDirectory;
+      //DebugLn('Parsing commandLine: ');
+      Params := TStringList.Create;
+      ParseCommandLine(Params, Dummy);
+      //DebugLn('Done parsing CommandLine');
       ExeName := AppendPathDelim(StartLazProcess.CurrentDirectory) +
         'startlazarus' + GetExecutableExt;
       if not FileExists(ExeName) then begin
@@ -9493,11 +9434,24 @@ procedure TMainIDE.DoRestart;
                             [LineEnding, ExeName]),mtError,[mbCancel]);
         exit;
       end;
-      StartLazProcess.CommandLine := ExeName
-        +' --lazarus-pid='+IntToStr(GetProcessID)
-        +' "--primary-config-path='+GetPrimaryConfigPath+'"';
+      //DebugLn('Setting CommandLine');
+      StartLazProcess.CommandLine := ExeName                   +
+         ' --lazarus-pid='+IntToStr(GetProcessID)              +
+         ' '                                                   +
+         GetCommandLineParameters(Params, False);
+
+      //DebugLn('CommandLine 1 : %s', [StartLazProcess.CommandLine]);
+         
+      if (pos(PrimaryConfPathOptLong, StartLazProcess.CommandLine) = 0) and
+         (pos(PrimaryConfPathOptShort, StartLazProcess.CommandLine) = 0)    then
+        StartLazProcess.CommandLine := StartLazProcess.CommandLine +
+                   ' ' + PrimaryConfPathOptLong + '="'+GetPrimaryConfigPath+'"';
+                            
+      //DebugLn('CommandLine 2 : %s', [StartLazProcess.CommandLine]);
+      
       StartLazProcess.Execute;
     finally
+      FreeAndNil(Params);
       StartLazProcess.Free;
     end;
   end;

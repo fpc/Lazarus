@@ -2104,6 +2104,7 @@ ide/helpmanager.pas svneol=native#text/pascal
 ide/helpoptions.lfm svneol=native#text/plain
 ide/helpoptions.lrs svneol=native#text/pascal
 ide/helpoptions.pas svneol=native#text/pascal
+ide/idecmdline.pas svneol=native#text/plain
 ide/idecontexthelpedit.lfm svneol=native#text/plain
 ide/idecontexthelpedit.lrs svneol=native#text/plain
 ide/idecontexthelpedit.pas svneol=native#text/plain
