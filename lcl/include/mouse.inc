@@ -21,7 +21,6 @@
 constructor TMouse.Create;
 begin
   inherited Create;
-  FWheelScrollLines := -1;
 end;
 
 destructor TMouse.destroy;
@@ -61,9 +60,10 @@ end;
 
 function TMouse.GetWheelScrollLines: Integer;
 begin
-  if FWheelScrollLines = -1 then
+  if FWheelScrollLines = 0 then
   begin
-    WidgetSet.SystemParametersInfo(SPI_GETWHEELSCROLLLINES, 0, @FWheelScrollLines, 0);
+    if not WidgetSet.SystemParametersInfo(SPI_GETWHEELSCROLLLINES, 0, @FWheelScrollLines, 0) then
+      FWheelScrollLines := 3;
   end;
   Result := FWheelScrollLines;
 end;

@@ -173,7 +173,6 @@ var
     FillChar(ScrollInfo, sizeof(ScrollInfo), #0);
     ScrollInfo.cbSize := sizeof(ScrollInfo);
     ScrollInfo.fMask := SIF_PAGE or SIF_POS or SIF_RANGE;
-    WParam := (TLMMouseEvent(Message).X and $FFFF) or (longint(TLMMouseEvent(Message).Y and $FFFF) shl 16);
     // if mouse is over horizontal scrollbar, scroll horizontally
     if Windows.SendMessage(Handle, WM_NCHITTEST, 0, WParam) = HTHSCROLL then
     begin
@@ -187,10 +186,11 @@ var
     begin
       with TLMMouseEvent(Message) do
       begin
-        if SystemParametersInfo(SPI_GETWHEELSCROLLLINES, sizeof(WheelScrollLines), @WheelScrollLines, 0) then
-          ScrollOffset := (WheelDelta * WheelScrollLines) div 120
-        else // no system parameter, scroll 1/8 page
-          ScrollOffset := (WheelDelta * Integer(ScrollInfo.nPage)) div (120 * 8);
+        if Mouse.WheelScrollLines=-1 then
+          // -1 means, scroll one page
+          ScrollOffset := (WheelDelta * ScrollInfo.nPage) div 120
+        else
+          ScrollOffset := (WheelDelta * Mouse.WheelScrollLines) div 120;
         WParam := Windows.WParam(ScrollInfo.nPos - ScrollOffset);
         if WParam > ScrollInfo.nMax - integer(ScrollInfo.nPage) + 1 then
           WParam := ScrollInfo.nMax - integer(ScrollInfo.nPage) + 1;
