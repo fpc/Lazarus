@@ -124,10 +124,10 @@ end;
 
 function IsHelpRequested (index : Integer = 1) : Boolean;
 begin
-  Result := (ParamCount>0)                                   and
-            ((CompareText (ParamStr(index), '--help') = 0)   or
-             (CompareText (ParamStr(index), '-help')  = 0)   or
-             (CompareText (ParamStr(index), '-?')     = 0)   or
+  Result := (ParamCount>=index) and
+            ((CompareText (ParamStr(index), '--help') = 0) or
+             (CompareText (ParamStr(index), '-help')  = 0) or
+             (CompareText (ParamStr(index), '-?')     = 0) or
              (CompareText (ParamStr(index), '-h')     = 0));
 end;
 
