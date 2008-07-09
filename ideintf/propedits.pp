@@ -5498,24 +5498,14 @@ var
   i: Integer;
   Handler: TPropHookSetSelection;
   APersistent: TPersistent;
-  AComponent: TComponent;
   NewLookupRoot: TPersistent;
 begin
   // update LookupRoot
   NewLookupRoot:=LookupRoot;
   if (ASelection<>nil) and (ASelection.Count>0) then begin
     APersistent:=ASelection[0];
-    if APersistent<>nil then begin
-      if (APersistent is TComponent) then begin
-        AComponent:=TComponent(APersistent);
-        if AComponent.Owner<>nil then
-          NewLookupRoot:=AComponent.Owner
-        else
-          NewLookupRoot:=AComponent;
-      end else begin
-        NewLookupRoot:=APersistent;
-      end;
-    end;
+    if APersistent<>nil then
+      NewLookupRoot:=GetLookupRootForComponent(APersistent);
   end;
   LookupRoot:=NewLookupRoot;
   // set selection
@@ -6163,9 +6153,10 @@ var
 function GetLookupRootForComponent(APersistent: TPersistent): TPersistent;
 begin
   Result:=APersistent;
-  if (Result<>nil) and (Result is TComponent)
-  and (TComponent(Result).Owner<>nil) then
-    Result:=TComponent(Result).Owner;
+  if (Result<>nil) and (Result is TComponent) then begin
+    while TComponent(Result).Owner<>nil do
+      Result:=TComponent(Result).Owner;
+  end;
 end;
 
 function GetClassUnitName(Value: TClass): string;

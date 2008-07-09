@@ -1349,7 +1349,7 @@ begin
           // child selection
         end else begin
           if (ssShift in Shift) then begin
-          // shift key pressed (multiselection)
+            // shift key pressed (multiselection)
 
             if CompIndex<0 then begin
               // not selected
