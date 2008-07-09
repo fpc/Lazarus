@@ -1904,8 +1904,8 @@ begin
     AComponent:=TComponent(ControlSelection[i].Persistent);
     if AComponent.Owner<>FLookupRoot then begin
       MessageDlg(lisInvalidDelete,
-       'The component '+dbgsName(ControlSelection[i].Persistent)
-       +' can not be deleted, because it is not owned by '+dbgsName(FLookupRoot)+'.',
+       Format(lisTheComponentCanNotBeDeletedBecauseItIsNotOwnedBy, [dbgsName(
+         ControlSelection[i].Persistent), dbgsName(FLookupRoot)]),
        mtInformation, [mbCancel],0);
       exit;
     end;

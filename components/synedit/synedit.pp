@@ -1197,10 +1197,10 @@ begin
   Result:=TopLine;
   if ScreenRow>LinesInWindow+1 then ScreenRow:=LinesInWindow+1;
   while ScreenRow>0 do begin
+    inc(Result);
     if (Result>Lines.Count)
     or (not TSynEditStringList(fLines).Folded[Result-1]) then
       dec(ScreenRow);
-    inc(Result);
   end;
 end;
 
@@ -1216,7 +1216,7 @@ begin
   if PhysicalRow<TopLine then exit(-1);
   Result:=0;
   i:=TopLine;
-  while (Result<LinesInWindow) and (i<PhysicalRow) do begin
+  while (Result<=LinesInWindow) and (i<PhysicalRow) do begin
     if (i>Lines.Count)
     or (not TSynEditStringList(fLines).Folded[i-1]) then
       inc(Result);
@@ -2055,7 +2055,7 @@ begin
           fTextHeight * {$IFDEF SYN_LAZARUS}RowToScreenRow(FirstLine)
                         {$ELSE}(FirstLine - TopLine){$ENDIF},
           fGutterWidth,
-          fTextHeight * {$IFDEF SYN_LAZARUS}RowToScreenRow(LastLine+1)
+          fTextHeight * {$IFDEF SYN_LAZARUS}(RowToScreenRow(LastLine)+1)
                         {$ELSE}(LastLine - TopLine + 1){$ENDIF});
         if sfLinesChanging in fStateFlags then
           UnionRect(fInvalidateRect, fInvalidateRect, rcInval)
@@ -3063,7 +3063,7 @@ begin
       Pen.Color := clDkGray;
       Pen.Width := 1;
 
-      rcLine.Bottom := (FirstLine - TopLine) * fTextHeight;
+      rcLine.Bottom := RowToScreenRow(FirstLine) * fTextHeight;
       for iLine := FirstLine to LastLine do
       begin
         //only draw visible items
@@ -3991,7 +3991,7 @@ var
     PhysLinkEnd: LongInt;
   begin
     if fLastCtrlMouseLinkY<1 then exit;
-    LineTop:=(fLastCtrlMouseLinkY-TopLine+1)*fTextHeight-1;
+    LineTop:= (RowToScreenRow(fLastCtrlMouseLinkY)+1)*fTextHeight-1;
     s:=Lines[fLastCtrlMouseLinkY-1];
     PhysLinkStart:=Max(FirstCol,LogicalToPhysicalCol(s,fLastCtrlMouseLinkX1));
     PhysLinkEnd:=Min(LastCol,LogicalToPhysicalCol(s,fLastCtrlMouseLinkX2));
@@ -7845,7 +7845,7 @@ begin
         end;
       ecPageBottom, ecSelPageBottom:
         begin
-          CaretNew := Point(CaretX, TopLine + LinesInWindow - 1);
+          CaretNew := Point(CaretX, ScreenRowToRow(LinesInWindow - 1));
           {$IFDEF SYN_LAZARUS}
           MoveCaretAndSelectionPhysical
           {$ELSE}
@@ -9660,7 +9660,7 @@ begin
       NewCaret.X:=1
     else begin
       // move to end of prev line
-      dec(NewCaret.Y);
+      NewCaret.Y:=FindNextUnfoldedLine(NewCaret.Y-1, false);
       s:=Lines[NewCaret.Y-1];
       PhysicalLineLen:=LogicalToPhysicalPos(Point(length(s)+1,NewCaret.Y)).X-1;
       NewCaret.X:=PhysicalLineLen+1;
@@ -9671,7 +9671,7 @@ begin
     if NewCaret.X>PhysicalLineLen+1 then begin
       // move to start of next line
       NewCaret.X:=1;
-      inc(NewCaret.Y);
+      NewCaret.Y:=FindNextUnfoldedLine(NewCaret.Y+1, true);
     end;
   end;
 
@@ -10420,7 +10420,7 @@ begin
     fMarkupHighAll.InvalidateLines(Line, Line);
     {$ENDIF}
     // we invalidate gutter and text area of this line
-    rcInval := Rect(0, fTextHeight * (Line - TopLine)
+    rcInval := Rect(0, fTextHeight * RowToScreenRow(Line)
         , ClientWidth{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF}, 0);
     rcInval.Bottom := rcInval.Top + fTextHeight;
     if sfLinesChanging in fStateFlags then

@@ -3796,6 +3796,8 @@ resourcestring
   lisInvalidCircle = 'Invalid circle';
   lisIsAThisCircleDependencyIsNotAllowed = '%s is a %s.%sThis circle '
     +'dependency is not allowed.';
+  lisTheComponentCanNotBeDeletedBecauseItIsNotOwnedBy = 'The component %s can '
+    +'not be deleted, because it is not owned by %s.';
   
 implementation
 
