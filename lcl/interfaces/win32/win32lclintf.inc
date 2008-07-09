@@ -130,10 +130,13 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-//function TWin32WidgetSet.RawImage_QueryDescription(AFlags: TRawImageQueryFlags; out ADesc: TRawImageDescription): Boolean;
-//begin
-//  // override only when queried formats are different from screen description
-//end;
+function TWin32WidgetSet.RawImage_QueryDescription(AFlags: TRawImageQueryFlags; out ADesc: TRawImageDescription): Boolean;
+begin
+  Result := inherited RawImage_QueryDescription(AFlags, ADesc);
+  // reduce mem
+  if Result and (ADesc.Depth = 24) 
+  then ADesc.BitsPerPixel := 24;
+end;
 
 procedure TWin32WidgetSet.RemoveProcessEventHandler(var AHandler: PProcessEventHandler);
 var

@@ -300,14 +300,7 @@ begin
   end
   else begin
     if (Desc.Depth = 32) and (ADesc.Format = ricfRGBA)
-    then begin
-      ADesc.Depth := 24;
-      //---
-      // maybe move this to win32 only
-      if Desc.AlphaShift = 24
-      then ADesc.BitsPerPixel := 24;
-      //---
-    end;
+    then ADesc.Depth := 24;
   end;
   
   if riqfMask in AFlags
