@@ -1466,9 +1466,12 @@ begin
   fOverwriteCaret := ctBlock;
   FSelectionMode := smNormal;
   fKeystrokes := TSynEditKeyStrokes.Create(Self);
+  {$IFDEF SYN_LAZARUS}
+  if assigned(Owner) and not (csLoading in Owner.ComponentState) then
+  {$ENDIF}
+  SetDefaultKeystrokes;
   fMarkList := TSynEditMarkList.Create(self);
   fMarkList.OnChange := {$IFDEF FPC}@{$ENDIF}MarkListChange;
-  SetDefaultKeystrokes;
   fRightEdgeColor := clSilver;
 {$IFDEF SYN_MBCSSUPPORT}
   fImeCount := 0;
