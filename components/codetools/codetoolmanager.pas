@@ -649,7 +649,8 @@ type
     function CreatePublishedMethod(Code: TCodeBuffer; const AClassName,
           NewMethodName: string; ATypeInfo: PTypeInfo;
           UseTypeInfoForParameters: boolean = false;
-          const APropertyUnitName: string = ''; const APropertyPath: string = ''
+          const APropertyUnitName: string = ''; const APropertyPath: string = '';
+          const CallAncestorMethod: string = ''
           ): boolean;
 
     // private class parts
@@ -2912,7 +2913,8 @@ end;
 function TCodeToolManager.CreatePublishedMethod(Code: TCodeBuffer;
   const AClassName, NewMethodName: string; ATypeInfo: PTypeInfo;
   UseTypeInfoForParameters: boolean;
-  const APropertyUnitName: string; const APropertyPath: string): boolean;
+  const APropertyUnitName: string; const APropertyPath: string;
+  const CallAncestorMethod: string): boolean;
 begin
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.CreatePublishedMethod A');
@@ -2923,7 +2925,8 @@ begin
     SourceChangeCache.Clear;
     Result:=FCurCodeTool.CreateMethod(UpperCaseStr(AClassName),
             NewMethodName,ATypeInfo,APropertyUnitName,APropertyPath,
-            SourceChangeCache,UseTypeInfoForParameters,pcsPublished);
+            SourceChangeCache,UseTypeInfoForParameters,pcsPublished,
+            CallAncestorMethod);
   except
     on e: Exception do Result:=HandleException(e);
   end;

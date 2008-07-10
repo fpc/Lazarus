@@ -13908,6 +13908,12 @@ var
   ActiveUnitInfo: TUnitInfo;
   r: boolean;
   OldChange: Boolean;
+  p: Integer;
+  APropName: String;
+  OldMethod: TMethod;
+  JITMethod: TJITMethod;
+  OverrideMethodName: String;
+  AComponent: TComponent;
 begin
   Result.Code:=nil;
   Result.Data:=nil;
@@ -13919,15 +13925,52 @@ begin
   DebugLn(['[TMainIDE.OnPropHookCreateMethod] Persistent=',dbgsName(APersistent),' Unit=',GetClassUnitName(APersistent.ClassType),' Path=',APropertyPath]);
   {$ENDIF}
   
-  DebugLn(['TMainIDE.OnPropHookCreateMethod ',APropertyPath]);
-  
+  OverrideMethodName:='';
+  if APersistent is TComponent then begin
+    AComponent:=TComponent(APersistent);
+    p:=length(APropertyPath);
+    while (p>0) and (APropertyPath[p]<>'.') do dec(p);
+    if p>0 then begin
+      APropName:=copy(APropertyPath,p+1,length(APropertyPath));
+      OldMethod:=GetMethodProp(APersistent,APropName);
+      if IsJITMethod(OldMethod) then begin
+        // there is an old method
+        JITMethod:=TJITMethod(OldMethod.Data);
+        if JITMethod.ClassType<>ActiveUnitInfo.Component.ClassType then begin
+          // the old method is inherited
+          // => search the component that has the method
+          //DebugLn(['TMainIDE.OnPropHookCreateMethod ',dbgsName(JITMethod.TheClass),' ',dbgsName(APersistent.ClassType),' ',dbgsName(APersistent)]);
+          while (AComponent<>nil)
+          and (not JITMethod.TheClass.InheritsFrom(AComponent.ClassType)) do
+            AComponent:=AComponent.Owner;
+          // create a path to the component
+          while (AComponent<>nil) and (AComponent<>ActiveUnitInfo.Component) do
+          begin
+            if OverrideMethodName<>'' then
+              OverrideMethodName:='.'+OverrideMethodName;
+            OverrideMethodName:=AComponent.Name+OverrideMethodName;
+            AComponent:=AComponent.Owner;
+          end;
+          if (AComponent=ActiveUnitInfo.Component)
+          and (OverrideMethodName<>'') then begin
+            // the old value does not belong to this main component, but to
+            // a nested/inline component
+            OverrideMethodName:=OverrideMethodName+'.'+JITMethod.TheMethodName;
+            DebugLn(['TMainIDE.OnPropHookCreateMethod OverrideMethodName=',OverrideMethodName]);
+          end;
+        end;
+      end;
+    end;
+  end;
+
   OldChange:=OpenEditorsOnCodeToolChange;
   OpenEditorsOnCodeToolChange:=true;
   try
     // create published method
     r:=CodeToolBoss.CreatePublishedMethod(ActiveUnitInfo.Source,
         ActiveUnitInfo.Component.ClassName,AMethodName,
-        ATypeInfo,false,GetClassUnitName(APersistent.ClassType),APropertyPath);
+        ATypeInfo,false,GetClassUnitName(APersistent.ClassType),APropertyPath,
+        OverrideMethodName);
     {$IFDEF IDE_DEBUG}
     writeln('');
     writeln('[TMainIDE.OnPropHookCreateMethod] ************2 ',r,' ',AMethodName);

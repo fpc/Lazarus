@@ -90,13 +90,15 @@ type
         const APropertyUnitName, APropertyPath: string;
         SourceChangeCache: TSourceChangeCache;
         UseTypeInfoForParameters: boolean = false;
-        Section: TPascalClassSection = pcsPublished): boolean;
+        Section: TPascalClassSection = pcsPublished;
+        const CallAncestorMethod: string = ''): boolean;
     function CreateMethod(ClassNode: TCodeTreeNode;
         const AMethodName: string;
         ATypeInfo: PTypeInfo; const APropertyUnitName, APropertyPath: string;
         SourceChangeCache: TSourceChangeCache;
         UseTypeInfoForParameters: boolean = false;
-        Section: TPascalClassSection = pcsPublished): boolean;
+        Section: TPascalClassSection = pcsPublished;
+        const CallAncestorMethod: string = ''): boolean;
 
     function CreateExprListFromMethodTypeData(TypeData: PTypeData;
         Params: TFindDeclarationParams): TExprTypeList;
@@ -651,7 +653,8 @@ function TEventsCodeTool.CreateMethod(const UpperClassName,
   const APropertyUnitName, APropertyPath: string;
   SourceChangeCache: TSourceChangeCache;
   UseTypeInfoForParameters: boolean;
-  Section: TPascalClassSection): boolean;
+  Section: TPascalClassSection;
+  const CallAncestorMethod: string): boolean;
 var AClassNode: TCodeTreeNode;
 begin
   Result:=false;
@@ -659,14 +662,16 @@ begin
   AClassNode:=FindClassNodeInInterface(UpperClassName,true,false,true);
   Result:=CreateMethod(AClassNode,AMethodName,ATypeInfo,
                        APropertyUnitName,APropertyPath,
-                       SourceChangeCache,UseTypeInfoForParameters,Section);
+                       SourceChangeCache,UseTypeInfoForParameters,Section,
+                       CallAncestorMethod);
 end;
 
 function TEventsCodeTool.CreateMethod(ClassNode: TCodeTreeNode;
   const AMethodName: string; ATypeInfo: PTypeInfo;
   const APropertyUnitName, APropertyPath: string;
   SourceChangeCache: TSourceChangeCache; UseTypeInfoForParameters: boolean;
-  Section: TPascalClassSection): boolean;
+  Section: TPascalClassSection;
+  const CallAncestorMethod: string): boolean;
 
   procedure AddNeededUnits(const AFindContext: TFindContext);
   var
@@ -733,6 +738,9 @@ var
   FindContext: TFindContext;
   ATypeData: PTypeData;
   NewSection: TNewClassPart;
+  InsertCall: String;
+  ProcBody: String;
+  BeautifyCodeOpts: TBeautifyCodeOptions;
 begin
   Result:=false;
   try
@@ -746,7 +754,7 @@ begin
     CodeCompleteSrcChgCache:=SourceChangeCache;
     // check if method definition already exists in class
     if UseTypeInfoForParameters then begin
-      // do not lookup the declaration in the source
+      // do not lookup the declaration in the source, use RTTI instead
       ATypeData:=GetTypeData(ATypeInfo);
       if ATypeData=nil then exit(false);
       CleanMethodDefinition:=UpperCaseStr(AMethodName)
@@ -765,20 +773,33 @@ begin
       DebugLn('[TEventsCodeTool.CreateMethod] insert method definition to class');
       {$ENDIF}
       // insert method definition into class
+      InsertCall:='';
       if UseTypeInfoForParameters then begin
         MethodDefinition:=MethodTypeDataToStr(ATypeData,
                     [phpWithStart, phpWithoutClassKeyword, phpWithoutClassName,
                      phpWithoutName, phpWithVarModifiers, phpWithParameterNames,
                      phpWithDefaultValues, phpWithResultType]);
+        if CallAncestorMethod<>'' then begin
+          InsertCall:=CallAncestorMethod+MethodTypeDataToStr(ATypeData,
+                      [phpWithoutClassKeyword, phpWithoutClassName,
+                       phpWithoutName, phpWithParameterNames,
+                       phpWithoutParamTypes]);
+        end;
       end else begin
         MethodDefinition:=TrimCodeSpace(FindContext.Tool.ExtractProcHead(
                      FindContext.Node,
                     [phpWithStart, phpWithoutClassKeyword, phpWithoutClassName,
                      phpWithoutName, phpWithVarModifiers, phpWithParameterNames,
                      phpWithDefaultValues, phpWithResultType]));
+        if CallAncestorMethod<>'' then begin
+          InsertCall:=CallAncestorMethod
+                    +TrimCodeSpace(FindContext.Tool.ExtractProcHead(
+                     FindContext.Node,
+                    [phpWithoutClassKeyword, phpWithoutClassName,
+                     phpWithoutName, phpWithParameterNames,
+                     phpWithoutParamTypes]));
+        end;
       end;
-      MethodDefinition:=SourceChangeCache.BeautifyCodeOptions.
-                         AddClassAndNameToProc(MethodDefinition, '', AMethodName);
       {$IFDEF CTDEBUG}
       DebugLn('[TEventsCodeTool.CreateMethod] MethodDefinition="',MethodDefinition,'"');
       {$ENDIF}
@@ -786,8 +807,25 @@ begin
         NewSection:=ncpPublishedProcs
       else
         NewSection:=ncpPrivateProcs;
+      ProcBody:='';
+      if InsertCall<>'' then begin
+        BeautifyCodeOpts:=SourceChangeCache.BeautifyCodeOptions;
+        ProcBody:=SourceChangeCache.BeautifyCodeOptions.
+                         AddClassAndNameToProc(MethodDefinition,
+                         ExtractClassName(CodeCompleteClassNode,false),
+                         AMethodName)
+          +BeautifyCodeOpts.LineEnd
+          +'begin'+BeautifyCodeOpts.LineEnd
+          +GetIndentStr(BeautifyCodeOpts.Indent)
+            +InsertCall+BeautifyCodeOpts.LineEnd
+          +'end;';
+        //DebugLn(['TEventsCodeTool.CreateMethod ProcBody=""',ProcBody,'']);
+      end;
+        
+      MethodDefinition:=SourceChangeCache.BeautifyCodeOptions.
+                         AddClassAndNameToProc(MethodDefinition, '', AMethodName);
       AddClassInsertion(CleanMethodDefinition, MethodDefinition, AMethodName,
-                        NewSection);
+                        NewSection,nil,ProcBody);
     end;
     {$IFDEF CTDEBUG}
     DebugLn('[TEventsCodeTool.CreateMethod] invoke class completion');
