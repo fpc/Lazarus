@@ -3,11 +3,9 @@ object MainForm: TMainForm
   Height = 374
   Top = 141
   Width = 487
-  HorzScrollBar.Page = 486
-  VertScrollBar.Page = 354
   ActiveControl = LVConnections
   Caption = 'Lazarus Data Dictionary'
-  ClientHeight = 355
+  ClientHeight = 347
   ClientWidth = 487
   Menu = MainMenu1
   OnClose = FormClose
@@ -100,7 +98,7 @@ object MainForm: TMainForm
     end
   end
   object PCDD: TPageControl
-    Height = 309
+    Height = 301
     Top = 26
     Width = 487
     ActivePage = TSConnections
@@ -109,10 +107,10 @@ object MainForm: TMainForm
     TabOrder = 1
     object TSRecent: TTabSheet
       Caption = 'Dictionaries'
-      ClientHeight = 302
+      ClientHeight = 309
       ClientWidth = 487
       object LVDicts: TListView
-        Height = 302
+        Height = 309
         Width = 487
         Align = alClient
         Columns = <        
@@ -138,11 +136,11 @@ object MainForm: TMainForm
     end
     object TSConnections: TTabSheet
       Caption = 'Connections'
-      ClientHeight = 283
-      ClientWidth = 479
+      ClientHeight = 270
+      ClientWidth = 483
       object LVConnections: TListView
-        Height = 283
-        Width = 479
+        Height = 270
+        Width = 483
         Align = alClient
         Columns = <        
           item
@@ -172,7 +170,7 @@ object MainForm: TMainForm
   end
   object PStatus: TPanel
     Height = 20
-    Top = 335
+    Top = 327
     Width = 487
     Align = alBottom
     BevelOuter = bvNone
@@ -659,7 +657,7 @@ object MainForm: TMainForm
       DisableIfNoHandler = True
       Hint = 'Delete the current field'
       ImageIndex = 6
-      OnExecute = ADeleteFieldUpdate
+      OnExecute = ADeleteFieldExecute
       OnUpdate = ADeleteFieldUpdate
     end
     object AGenerateSQL: TAction
