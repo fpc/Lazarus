@@ -34,20 +34,25 @@ uses
   glib2, gdk2pixbuf, pango, gdk2, gtk2,
   GtkExtra, GtkDef;
 
+//paul: this improvement brings an issue: 0011523
+{off $define gtk2_improve_TextOut_speed}
 
 type
-
+{$ifdef gtk2_improve_TextOut_speed}
   TSetTextArgs = record
     Font: PPangoLayout;
     Len: LongInt;
     Text: array of char;
   end;
+{$endif}
 
   { TGtk2DeviceContext }
 
   TGtk2DeviceContext = class(TGtkDeviceContext)
   private
+{$ifdef gtk2_improve_TextOut_speed}
     OldText: TSetTextArgs;
+{$endif}
   protected
     function GetFunction: TGdkFunction; override;
   public
@@ -57,7 +62,6 @@ type
   end;
 
 implementation
-
 {$i gtk2devicecontext.inc}
 
 end.

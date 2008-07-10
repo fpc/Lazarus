@@ -34,19 +34,25 @@ end;
 constructor TGtk2DeviceContext.Create;
 begin
   inherited Create;
+{$ifdef gtk2_improve_TextOut_speed}
   FillChar(OldText, SizeOf(OldText), 0);
+{$endif}
 end;
 
 procedure TGtk2DeviceContext.SetText(AFont: PPangoLayout; AText: PChar; ALength: LongInt);
 begin
-  if (OldText.Font <> AFont) or (OldText.Len <> ALength) or (CompareChar(AText^, OldText.Text[0], ALength) <> 0) then
+{$ifdef gtk2_improve_TextOut_speed}
+  if (OldText.Font <> AFont) or (OldText.Len <> ALength) or (CompareChar(AText^, PChar(OldText.Text)^, ALength) <> 0) then
   begin
     pango_layout_set_text(AFont, AText, ALength);
     OldText.Font := AFont;
     OldText.Len := ALength;
     SetLength(OldText.Text, ALength);
-    Move(AText^, OldText.Text[0], ALength);
+    Move(AText^, PChar(OldText.Text)^, ALength);
   end;
+{$else}
+  pango_layout_set_text(AFont, AText, ALength);
+{$endif}
 end;
 
 procedure TGtk2DeviceContext.DrawTextWithColors(AText: PChar; ALength: LongInt;
