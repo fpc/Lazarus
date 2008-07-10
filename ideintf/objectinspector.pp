@@ -1263,7 +1263,7 @@ begin
     {$IFNDEF DoNotCatchOIExceptions}
     try
     {$ENDIF}
-      DebugLn('#################### TOICustomPropertyGrid.DoCallEdit for ',CurRow.Editor.ClassName);
+      DebugLn(['#################### TOICustomPropertyGrid.DoCallEdit for ',CurRow.Editor.ClassName,' Edit=',Edit=oiqeEdit]);
       Include(FStates,pgsApplyingValue);
       try
         if Edit=oiqeShowValue then

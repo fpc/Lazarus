@@ -84,6 +84,9 @@ function FindNextIdentifier(const Source: string; StartPos, MaxPos: integer
     ): integer;
 function FindNextIdentifierSkipStrings(const Source: string;
     StartPos, MaxPos: integer): integer;
+function IsValidIdentPair(const NamePair: string): boolean;
+function IsValidIdentPair(const NamePair: string;
+    out First, Second: string): boolean;
 
 // line/code ends
 function LineEndCount(const Txt: string): integer;
@@ -3050,6 +3053,60 @@ begin
     end;
     inc(Result);
   end;
+end;
+
+function IsValidIdentPair(const NamePair: string): boolean;
+var
+  p: Integer;
+begin
+  Result:=false;
+  p:=1;
+  if (p>length(NamePair)) or (not IsIdentStartChar[NamePair[p]]) then exit;
+  repeat
+    inc(p);
+    if p>length(NamePair) then exit;
+    if NamePair[p]='.' then break;
+    if not IsIdentChar[NamePair[p]] then exit;
+  until false;
+  inc(p);
+  if (p>length(NamePair)) or (not IsIdentStartChar[NamePair[p]]) then exit;
+  repeat
+    inc(p);
+    if p>length(NamePair) then exit(true);
+    if not IsIdentChar[NamePair[p]] then exit;
+  until false;
+end;
+
+function IsValidIdentPair(const NamePair: string; out First, Second: string
+  ): boolean;
+var
+  p: Integer;
+  StartPos: LongInt;
+begin
+  Result:=false;
+  First:='';
+  Second:='';
+  p:=1;
+  if (p>length(NamePair)) or (not IsIdentStartChar[NamePair[p]]) then exit;
+  StartPos:=p;
+  repeat
+    inc(p);
+    if p>length(NamePair) then exit;
+    if NamePair[p]='.' then break;
+    if not IsIdentChar[NamePair[p]] then exit;
+  until false;
+  First:=copy(NamePair,StartPos,p-StartPos);
+  inc(p);
+  if (p>length(NamePair)) or (not IsIdentStartChar[NamePair[p]]) then exit;
+  StartPos:=p;
+  repeat
+    inc(p);
+    if p>length(NamePair) then begin
+      Second:=copy(NamePair,StartPos,p-StartPos);
+      exit(true);
+    end;
+    if not IsIdentChar[NamePair[p]] then exit;
+  until false;
 end;
 
 function GetBlockMinIndent(const Source: string;

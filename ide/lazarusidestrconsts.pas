@@ -655,6 +655,8 @@ resourcestring
     +'method. Please fix the error shown in the message window.';
   lisUnableToShowMethodPleaseFixTheErrorShownInTheMessage = 'Unable to show '
     +'method. Please fix the error shown in the message window.';
+  lisMethodClassNotFound = 'Method class not found';
+  lisClassOfMethodNotFound = 'Class %s%s%s of method %s%s%s not found.';
   lisUnableToRenameMethodPleaseFixTheErrorShownInTheMessag = 'Unable to rename '
     +'method. Please fix the error shown in the message window.';
   lisStopDebugging = 'Stop Debugging?';

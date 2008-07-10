@@ -77,7 +77,7 @@ uses
   LResources, StdCtrls, Forms, Buttons, Menus, FileUtil, Controls, GraphType,
   Graphics, ExtCtrls, Dialogs, InterfaceBase, LDockCtrl,
   // codetools
-  AVL_Tree, Laz_XMLCfg,
+  BasicCodeTools, AVL_Tree, Laz_XMLCfg,
   CodeToolsStructs, CodeToolManager, CodeCache, DefineTemplates,
   // synedit
   SynEditKeyCmds,
@@ -4592,7 +4592,7 @@ var
 begin
   if not Assigned(Instance) then exit;
   if not Assigned(PropInfo) then exit;
-  if CompareText(PropInfo^.PropType^.Name,'TTRANSLATESTRING')<>0 then exit;
+  if SysUtils.CompareText(PropInfo^.PropType^.Name,'TTRANSLATESTRING')<>0 then exit;
   Path:='';
   if Writer.Driver is TLRSObjectWriter then begin
     LRSWriter:=TLRSObjectWriter(Writer.Driver);
@@ -5571,7 +5571,7 @@ begin
   // find the ancestor class
   if AComponentClassName<>'' then begin
     if (DescendantClassName<>'')
-    and (CompareText(AComponentClassName,'TCustomForm')=0) then begin
+    and (SysUtils.CompareText(AComponentClassName,'TCustomForm')=0) then begin
       // this is a common user mistake
       MessageDlg(lisCodeTemplError, Format(
         lisTheResourceClassDescendsFromProbablyThisIsATypoFor, ['"',
@@ -5580,7 +5580,7 @@ begin
       Result:=false;
       exit;
     end else if (DescendantClassName<>'')
-    and (CompareText(AComponentClassName,'TComponent')=0) then begin
+    and (SysUtils.CompareText(AComponentClassName,'TComponent')=0) then begin
       // this is not yet implemented
       MessageDlg(lisCodeTemplError, Format(
         lisUnableToOpenDesignerTheClassDoesNotDescendFromADes, [#13,
@@ -5931,7 +5931,7 @@ var
     begin
       // unit with loaded component found -> check if it is the right one
       //DebugLn(['TMainIDE.DoLoadComponentDependencyHidden unit with a component found CurUnitInfo=',CurUnitInfo.Filename,' ',dbgsName(CurUnitInfo.Component)]);
-      if CompareText(CurUnitInfo.Component.ClassName,AComponentClassName)=0
+      if SysUtils.CompareText(CurUnitInfo.Component.ClassName,AComponentClassName)=0
       then begin
         // component found (it was already loaded)
         ComponentUnitInfo:=CurUnitInfo;
@@ -5956,7 +5956,7 @@ var
         // read the LFM classname
         ReadLFMHeader(LFMCode.Source,LFMClassName,LFMType);
         if LFMType='' then ;
-        if CompareText(LFMClassName,AComponentClassName)<>0 then exit;
+        if SysUtils.CompareText(LFMClassName,AComponentClassName)<>0 then exit;
         
         // .lfm found
         Result:=true;
@@ -9549,7 +9549,7 @@ begin
         // execute
         Files:=TStringList.Create;
         for i:=0 to List.Count-1 do begin
-          if CompareText(copy(List[i],1,5),'open ')=0 then
+          if SysUtils.CompareText(copy(List[i],1,5),'open ')=0 then
             Files.Add(copy(List[i],6,length(List[i])));
         end;
         if Files.Count>0 then begin
@@ -11892,11 +11892,11 @@ begin
   FuncData:=PReadFunctionData(Data);
   Param:=FuncData^.Param;
   //debugln('TMainIDE.MacroFunctionProject A Param="',Param,'"');
-  if CompareText(Param,'SrcPath')=0 then
+  if SysUtils.CompareText(Param,'SrcPath')=0 then
     FuncData^.Result:=Project1.CompilerOptions.GetSrcPath(false)
-  else if CompareText(Param,'IncPath')=0 then
+  else if SysUtils.CompareText(Param,'IncPath')=0 then
     FuncData^.Result:=Project1.CompilerOptions.GetIncludePath(false)
-  else if CompareText(Param,'UnitPath')=0 then
+  else if SysUtils.CompareText(Param,'UnitPath')=0 then
     FuncData^.Result:=Project1.CompilerOptions.GetUnitPath(false)
   else begin
     FuncData^.Result:='<unknown parameter for CodeTools Macro project:"'+Param+'">';
@@ -12990,7 +12990,7 @@ var
     ConflictingClass: TClass;
     s: string;
   begin
-    if CompareText(ActiveUnitInfo.UnitName,AName)=0 then
+    if SysUtils.CompareText(ActiveUnitInfo.UnitName,AName)=0 then
       raise Exception.Create(Format(
         lisTheUnitItselfHasAlreadyTheNamePascalIdentifiersMus, ['"', AName, '"']
         ));
@@ -13950,16 +13950,37 @@ var
   ActiveUnitInfo: TUnitInfo;
   NewSource: TCodeBuffer;
   NewX, NewY, NewTopLine: integer;
+  AClassName: string;
+  AInheritedMethodName: string;
+  AnInheritedClassName: string;
+  CurMethodName: String;
 begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource])
   then exit;
   {$IFDEF IDE_DEBUG}
-  writeln('');
-  writeln('[TMainIDE.OnPropHookShowMethod] ************ "',AMethodName,'" ',ActiveUnitInfo.Filename);
+  debugln('');
+  debugln('[TMainIDE.OnPropHookShowMethod] ************ "',AMethodName,'" ',ActiveUnitInfo.Filename);
   {$ENDIF}
   
+  AClassName:=ActiveUnitInfo.Component.ClassName;
+  CurMethodName:=AMethodName;
+
+  if IsValidIdentPair(AMethodName,AnInheritedClassName,AInheritedMethodName) then begin
+    ActiveSrcEdit:=nil;
+    ActiveUnitInfo:=Project1.UnitWithComponentClassName(AnInheritedClassName);
+    if ActiveUnitInfo=nil then begin
+      IDEMessageDialog(lisMethodClassNotFound,
+        Format(lisClassOfMethodNotFound, ['"', AnInheritedClassName, '"', '"',
+          AInheritedMethodName, '"']),
+        mtError,[mbCancel],'');
+      exit;
+    end;
+    AClassName:=AnInheritedClassName;
+    CurMethodName:=AInheritedMethodName;
+  end;
+
   if CodeToolBoss.JumpToPublishedMethodBody(ActiveUnitInfo.Source,
-    ActiveUnitInfo.Component.ClassName,AMethodName,
+    AClassName,CurMethodName,
     NewSource,NewX,NewY,NewTopLine) then
   begin
     DoJumpToCodePos(ActiveSrcEdit, ActiveUnitInfo,
