@@ -60,6 +60,7 @@ function CP1255ToUTF8(const s: string): string; // hebrew
 function CP1256ToUTF8(const s: string): string; // arabic
 function CP1257ToUTF8(const s: string): string; // baltic
 function CP1258ToUTF8(const s: string): string; // vietnam
+function CP866ToUTF8(const s: string): string;  // DOS and Windows console's cyrillic
 function CP874ToUTF8(const s: string): string;  // thai
 function KOI8ToUTF8(const s: string): string;  // russian cyrillic
 function SingleByteToUTF8(const s: string;
@@ -75,6 +76,7 @@ function UTF8ToCP1255(const s: string): string; // hebrew
 function UTF8ToCP1256(const s: string): string; // arabic
 function UTF8ToCP1257(const s: string): string; // baltic
 function UTF8ToCP1258(const s: string): string; // vietnam
+function UTF8ToCP866(const s: string): string;  // DOS and Windows console's cyrillic
 function UTF8ToCP874(const s: string): string;  // thai
 function UTF8ToKOI8(const s: string): string;  // russian cyrillic
 function UTF8ToSingleByte(const s: string;
@@ -2743,6 +2745,265 @@ const
     #226#130#171,       // #254
     #195#191            // #255
   );
+  
+  ArrayCP866ToUTF8 : TCharToUTF8Table = (
+    #0,                 //#0
+    #1,                 //#1
+    #2,                 //#2
+    #3,                 //#3
+    #4,                 //#4
+    #5,                 //#5
+    #6,                 //#6
+    #7,                 //#7
+    #8,                 //#8
+    #9,                 //#9
+    #10,                //#10
+    #11,                //#11
+    #12,                //#12
+    #13,                //#13
+    #14,                //#14
+    #15,                //#15
+    #16,                //#16
+    #17,                //#17
+    #18,                //#18
+    #19,                //#19
+    #20,                //#20
+    #21,                //#21
+    #22,                //#22
+    #23,                //#23
+    #24,                //#24
+    #25,                //#25
+    #26,                //#26
+    #27,                //#27
+    #28,                //#28
+    #29,                //#29
+    #30,                //#30
+    #31,                //#31
+    #32,                //#32
+    #33,                //#33
+    #34,                //#34
+    #35,                //#35
+    #36,                //#36
+    #37,                //#37
+    #38,                //#38
+    #39,                //#39
+    #40,                //#40
+    #41,                //#41
+    #42,                //#42
+    #43,                //#43
+    #44,                //#44
+    #45,                //#45
+    #46,                //#46
+    #47,                //#47
+    #48,                //#48
+    #49,                //#49
+    #50,                //#50
+    #51,                //#51
+    #52,                //#52
+    #53,                //#53
+    #54,                //#54
+    #55,                //#55
+    #56,                //#56
+    #57,                //#57
+    #58,                //#58
+    #59,                //#59
+    #60,                //#60
+    #61,                //#61
+    #62,                //#62
+    #63,                //#63
+    #64,                //#64
+    #65,                //#65
+    #66,                //#66
+    #67,                //#67
+    #68,                //#68
+    #69,                //#69
+    #70,                //#70
+    #71,                //#71
+    #72,                //#72
+    #73,                //#73
+    #74,                //#74
+    #75,                //#75
+    #76,                //#76
+    #77,                //#77
+    #78,                //#78
+    #79,                //#79
+    #80,                //#80
+    #81,                //#81
+    #82,                //#82
+    #83,                //#83
+    #84,                //#84
+    #85,                //#85
+    #86,                //#86
+    #87,                //#87
+    #88,                //#88
+    #89,                //#89
+    #90,                //#90
+    #91,                //#91
+    #92,                //#92
+    #93,                //#93
+    #94,                //#94
+    #95,                //#95
+    #96,                //#96
+    #97,                //#97
+    #98,                //#98
+    #99,                //#99
+    #100,               //#100
+    #101,               //#101
+    #102,               //#102
+    #103,               //#103
+    #104,               //#104
+    #105,               //#105
+    #106,               //#106
+    #107,               //#107
+    #108,               //#108
+    #109,               //#109
+    #110,               //#110
+    #111,               //#111
+    #112,               //#112
+    #113,               //#113
+    #114,               //#114
+    #115,               //#115
+    #116,               //#116
+    #117,               //#117
+    #118,               //#118
+    #119,               //#119
+    #120,               //#120
+    #121,               //#121
+    #122,               //#122
+    #123,               //#123
+    #124,               //#124
+    #125,               //#125
+    #126,               //#126
+    #127,               //#127
+    #208#144,           //#128
+    #208#145,           //#129
+    #208#146,           //#130
+    #208#147,           //#131
+    #208#148,           //#132
+    #208#149,           //#133
+    #208#150,           //#134
+    #208#151,           //#135
+    #208#152,           //#136
+    #208#153,           //#137
+    #208#154,           //#138
+    #208#155,           //#139
+    #208#156,           //#140
+    #208#157,           //#141
+    #208#158,           //#142
+    #208#159,           //#143
+    #208#160,           //#144
+    #208#161,           //#145
+    #208#162,           //#146
+    #208#163,           //#147
+    #208#164,           //#148
+    #208#165,           //#149
+    #208#166,           //#150
+    #208#167,           //#151
+    #208#168,           //#152
+    #208#169,           //#153
+    #208#170,           //#154
+    #208#171,           //#155
+    #208#172,           //#156
+    #208#173,           //#157
+    #208#174,           //#158
+    #208#175,           //#159
+    #208#176,           //#160
+    #208#177,           //#161
+    #208#178,           //#162
+    #208#179,           //#163
+    #208#180,           //#164
+    #208#181,           //#165
+    #208#182,           //#166
+    #208#183,           //#167
+    #208#184,           //#168
+    #208#185,           //#169
+    #208#186,           //#170
+    #208#187,           //#171
+    #208#188,           //#172
+    #208#189,           //#173
+    #208#190,           //#174
+    #208#191,           //#175
+    #226#150#145,       //#176
+    #226#150#146,       //#177
+    #226#150#147,       //#178
+    #226#148#130,       //#179
+    #226#148#164,       //#180
+    #226#149#161,       //#181
+    #226#149#162,       //#182
+    #226#149#150,       //#183
+    #226#149#149,       //#184
+    #226#149#163,       //#185
+    #226#149#145,       //#186
+    #226#149#151,       //#187
+    #226#149#157,       //#188
+    #226#149#156,       //#189
+    #226#149#155,       //#190
+    #226#148#144,       //#191
+    #226#148#148,       //#192
+    #226#148#180,       //#193
+    #226#148#172,       //#194
+    #226#148#156,       //#195
+    #226#148#128,       //#196
+    #226#148#188,       //#197
+    #226#149#158,       //#198
+    #226#149#159,       //#199
+    #226#149#154,       //#200
+    #226#149#148,       //#201
+    #226#149#169,       //#202
+    #226#149#166,       //#203
+    #226#149#160,       //#204
+    #226#149#144,       //#205
+    #226#149#172,       //#206
+    #226#149#167,       //#207
+    #226#149#168,       //#208
+    #226#149#164,       //#209
+    #226#149#165,       //#210
+    #226#149#153,       //#211
+    #226#149#152,       //#212
+    #226#149#146,       //#213
+    #226#149#147,       //#214
+    #226#149#171,       //#215
+    #226#149#170,       //#216
+    #226#148#152,       //#217
+    #226#148#140,       //#218
+    #226#150#136,       //#219
+    #226#150#132,       //#220
+    #226#150#140,       //#221
+    #226#150#144,       //#222
+    #226#150#128,       //#223
+    #209#128,           //#224
+    #209#129,           //#225
+    #209#130,           //#226
+    #209#131,           //#227
+    #209#132,           //#228
+    #209#133,           //#229
+    #209#134,           //#230
+    #209#135,           //#231
+    #209#136,           //#232
+    #209#137,           //#233
+    #209#138,           //#234
+    #209#139,           //#235
+    #209#140,           //#236
+    #209#141,           //#237
+    #209#142,           //#238
+    #209#143,           //#239
+    #208#129,           //#240
+    #209#145,           //#241
+    #208#132,           //#242
+    #209#148,           //#243
+    #208#135,           //#244
+    #209#151,           //#245
+    #208#142,           //#246
+    #209#158,           //#247
+    #194#176,           //#248
+    #226#136#153,       //#249
+    #194#183,           //#250
+    #226#136#154,       //#251
+    #226#132#150,       //#252
+    #194#164,           //#253
+    #226#150#160,       //#254
+    #194#160            //#255
+  );
 
   ArrayCP874ToUTF8: TCharToUTF8Table = (
     #0,                 // #0
@@ -3310,6 +3571,11 @@ end;
 function CP1258ToUTF8(const s: string): string;
 begin
   Result:=SingleByteToUTF8(s,ArrayCP1258ToUTF8);
+end;
+
+function CP866ToUTF8(const s: string): string;
+begin
+  Result:=SingleByteToUTF8(s,ArrayCP866ToUTF8);
 end;
 
 function CP874ToUTF8(const s: string): string;
@@ -3887,6 +4153,78 @@ begin
   end;
 end;
 
+function UnicodeToCP866(Unicode: cardinal): integer;
+begin
+  case Unicode of
+  0..127: Result:=Unicode;
+  1040..1087 : Result := Unicode-912;
+  9617..9619 : Result := Unicode-9441;
+  9474 : Result := 179;
+  9508 : Result := 180;
+  9569 : Result := 181;
+  9570 : Result := 182;
+  9558 : Result := 183;
+  9557 : Result := 184;
+  9571 : Result := 185;
+  9553 : Result := 186;
+  9559 : Result := 187;
+  9565 : Result := 188;
+  9564 : Result := 189;
+  9563 : Result := 190;
+  9488 : Result := 191;
+  9492 : Result := 192;
+  9524 : Result := 193;
+  9516 : Result := 194;
+  9500 : Result := 195;
+  9472 : Result := 196;
+  9532 : Result := 197;
+  9566 : Result := 198;
+  9567 : Result := 199;
+  9562 : Result := 200;
+  9556 : Result := 201;
+  9577 : Result := 202;
+  9574 : Result := 203;
+  9568 : Result := 204;
+  9552 : Result := 205;
+  9580 : Result := 206;
+  9575 : Result := 207;
+  9576 : Result := 208;
+  9572 : Result := 209;
+  9573 : Result := 210;
+  9561 : Result := 211;
+  9560 : Result := 212;
+  9554 : Result := 213;
+  9555 : Result := 214;
+  9579 : Result := 215;
+  9578 : Result := 216;
+  9496 : Result := 217;
+  9484 : Result := 218;
+  9608 : Result := 219;
+  9604 : Result := 220;
+  9612 : Result := 221;
+  9616 : Result := 222;
+  9600 : Result := 223;
+  1088..1103 : Result := Unicode-864;
+  1025 : Result := 240;
+  1105 : Result := 241;
+  1028 : Result := 242;
+  1108 : Result := 243;
+  1031 : Result := 244;
+  1111 : Result := 245;
+  1038 : Result := 246;
+  1118 : Result := 247;
+  176  : Result := 248;
+  8729 : Result := 249;
+  183  : Result := 250;
+  8730 : Result := 251;
+  8470 : Result := 252;
+  164  : Result := 253;
+  9632 : Result := 254;
+  160  : Result := 255;
+  else Result:=-1;
+  end;
+end;
+
 function UnicodeToCP874(Unicode: cardinal): integer;
 begin
   case Unicode of
@@ -4009,6 +4347,11 @@ begin
   Result:=UTF8ToSingleByte(s,@UnicodeToCP1258);
 end;
 
+function UTF8ToCP866(const s: string): string;
+begin
+  Result:=UTF8ToSingleByte(s,@UnicodeToCP866);
+end;
+
 function UTF8ToCP874(const s: string): string;
 begin
   Result:=UTF8ToSingleByte(s,@UnicodeToCP874);
@@ -4072,6 +4415,7 @@ begin
   List.Add('CP1256');
   List.Add('CP1257');
   List.Add('CP1258');
+  List.Add('CP866');
   List.Add('CP874');
   List.Add('ISO-8859-1');
   List.Add('KOI-8');
@@ -4164,7 +4508,8 @@ end;
 
 function ConvertEncoding(const s, FromEncoding, ToEncoding: string): string;
 var
-  AFrom, ATo, SysEnc: String;
+  AFrom, ATo, SysEnc : String;
+  Encoded : Boolean;
   {$ifdef Unix}
   SL: TStringList;
   FN1, FN2: String;
@@ -4192,6 +4537,7 @@ begin
     if ATo='cp1256' then begin Result:=UTF8ToCP1256(s); exit; end;
     if ATo='cp1257' then begin Result:=UTF8ToCP1257(s); exit; end;
     if ATo='cp1258' then begin Result:=UTF8ToCP1258(s); exit; end;
+    if ATo='cp866' then begin  Result:=UTF8ToCP866(s);  exit; end;
     if ATo='cp874' then begin  Result:=UTF8ToCP874(s);  exit; end;
     if ATo='koi8' then begin  Result:=UTF8ToKOI8(s);  exit; end;
 
@@ -4210,6 +4556,7 @@ begin
     if AFrom='cp1256' then begin Result:=CP1256ToUTF8(s); exit; end;
     if AFrom='cp1257' then begin Result:=CP1257ToUTF8(s); exit; end;
     if AFrom='cp1258' then begin Result:=CP1258ToUTF8(s); exit; end;
+    if AFrom='cp866' then begin  Result:=CP866ToUTF8(s);  exit; end;
     if AFrom='cp874' then begin  Result:=CP874ToUTF8(s);  exit; end;
     if AFrom='koi8' then begin  Result:=KOI8ToUTF8(s);  exit; end;
 
@@ -4217,6 +4564,136 @@ begin
       Result:=ConvertAnsiToUTF8(s);
       exit;
     end;
+  end
+  else begin
+    //ATo and AFrom <> EncodingUTF8. Need to do ANSI->UTF8->ANSI.
+    //TempStr := s;
+    Encoded := false;
+    
+    //ANSI->UTF8
+    if AFrom='iso88591' then begin
+      Result:=ISO_8859_1ToUTF8(s);
+      Encoded := true;
+    end
+    else if AFrom='cp1250' then begin
+      Result:=CP1250ToUTF8(s);
+      Encoded := true;
+    end
+    else if AFrom='cp1251' then begin
+      Result:=CP1251ToUTF8(s);
+      Encoded := true;
+    end
+    else if AFrom='cp1252' then begin
+      Result:=CP1252ToUTF8(s);
+      Encoded := true;
+    end
+    else if AFrom='cp1253' then begin
+      Result:=CP1253ToUTF8(s);
+      Encoded := true;
+    end
+    else if AFrom='cp1254' then begin
+      Result:=CP1254ToUTF8(s);
+      Encoded := true;
+    end
+    else if AFrom='cp1255' then begin
+      Result:=CP1255ToUTF8(s);
+      Encoded := true;
+    end
+    else if AFrom='cp1256' then begin
+      Result:=CP1256ToUTF8(s);
+      Encoded := true;
+    end
+    else if AFrom='cp1257' then begin
+      Result:=CP1257ToUTF8(s);
+      Encoded := true;
+    end
+    else if AFrom='cp1258' then begin
+      Result:=CP1258ToUTF8(s);
+      Encoded := true;
+    end
+    else if AFrom='cp866' then begin
+      Result:=CP866ToUTF8(s);
+      Encoded := true;
+    end
+    else if AFrom='cp874' then begin
+      Result:=CP874ToUTF8(s);
+      Encoded := true;
+    end
+    else if AFrom='koi8' then begin
+      Result:=KOI8ToUTF8(s);
+      Encoded := true;
+    end
+    else if (AFrom=SysEnc) and Assigned(ConvertAnsiToUTF8) then begin
+      Result:=ConvertAnsiToUTF8(s);
+      Encoded := true;
+    end;
+    
+    if Encoded = true then begin
+      //UTF8->ANSI
+      Encoded := false;
+      if ATo='iso88591' then begin
+        Result:=UTF8ToISO_8859_1(Result);
+        Encoded := true;
+      end
+      else if ATo='cp1250' then begin
+        Result:=UTF8ToCP1250(Result);
+        Encoded := true;
+      end
+      else if ATo='cp1251' then begin
+        Result:=UTF8ToCP1251(Result);
+        Encoded := true;
+      end
+      else if ATo='cp1252' then begin
+        Result:=UTF8ToCP1252(Result);
+        Encoded := true;
+      end
+      else if ATo='cp1253' then begin
+        Result:=UTF8ToCP1253(Result);
+        Encoded := true;
+      end
+      else if ATo='cp1254' then begin
+        Result:=UTF8ToCP1254(Result);
+        Encoded := true;
+      end
+      else if ATo='cp1255' then begin
+        Result:=UTF8ToCP1255(Result);
+        Encoded := true;
+      end
+      else if ATo='cp1256' then begin
+        Result:=UTF8ToCP1256(Result);
+        Encoded := true;
+      end
+      else if ATo='cp1257' then begin
+        Result:=UTF8ToCP1257(Result);
+        Encoded := true;
+      end
+      else if ATo='cp1258' then begin
+        Result:=UTF8ToCP1258(Result);
+        Encoded := true;
+      end
+      else if ATo='cp866' then begin
+        Result:=UTF8ToCP866(Result);
+        Encoded := true;
+      end
+      else if ATo='cp874' then begin
+        Result:=UTF8ToCP874(Result);
+        Encoded := true;
+      end
+      else if ATo='koi8' then begin
+        Result:=UTF8ToKOI8(Result);
+        Encoded := true;
+      end
+      else if (ATo=SysEnc) and Assigned(ConvertUTF8ToAnsi) then begin
+        Result:=ConvertUTF8ToAnsi(Result);
+        Encoded := true;
+      end;
+    end;
+    
+    //Exit if encoded succesfully.
+    if Encoded = true then begin
+      exit;
+    end;
+    
   end;
 
   //Stupid code. Works anyway, but extra-slow
