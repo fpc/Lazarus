@@ -121,8 +121,7 @@ begin
         AComponent:=TComponent(ANode.Data);
         if AComponent=nil then
           RaiseGDBException('TComponentTreeView.DoSelectionChanged ANode.Data=nil');
-        if (AComponent=PropertyEditorHook.LookupRoot)
-        or (AComponent.Owner=PropertyEditorHook.LookupRoot)
+        if GetLookupRootForComponent(AComponent)=PropertyEditorHook.LookupRoot
         then
           NewSelection.Add(AComponent);
         ANode:=ANode.GetNextMultiSelected;
@@ -257,7 +256,7 @@ end;
 destructor TComponentTreeView.Destroy;
 begin
   FreeThenNil(FComponentList);
-  FImageList.Free;
+  FreeThenNil(FImageList);
   inherited Destroy;
 end;
 
@@ -277,7 +276,7 @@ var
     if AControl=nil then exit;
     for i:=0 to AControl.ControlCount-1 do begin
       CurControl:=AControl.Controls[i];
-      if CurControl.Owner<>AControl.Owner then continue;
+      if GetLookupRootForComponent(CurControl)<>RootComponent then continue;
       AVLNode:=Candidates.FindKey(CurControl,
                     TListSortCompare(@ComparePersistentWithComponentCandidate));
       Candidate:=TComponentCandidate(AVLNode.Data);
@@ -320,6 +319,28 @@ var
     end;
     ANode.Expanded:=true;
   end;
+  
+  procedure AddCandidates(OwnerComponent: TComponent);
+  var
+    AComponent: TComponent;
+    Candidate: TComponentCandidate;
+    i: Integer;
+  begin
+    if OwnerComponent=nil then exit;
+    for i:=0 to OwnerComponent.ComponentCount-1 do begin
+      AComponent:=OwnerComponent.Components[i];
+      Candidate:=TComponentCandidate.Create;
+      Candidate.APersistent:=AComponent;
+      if Candidates.Find(Candidate)<>nil then begin
+        DebugLn('WARNING: TComponentTreeView.RebuildComponentNodes doppelganger found ',AComponent.Name);
+        Candidate.Free;
+      end else begin
+        Candidates.Add(Candidate);
+        if csInline in AComponent.ComponentState then
+          AddCandidates(AComponent);
+      end;
+    end;
+  end;
 
 var
   OldExpanded: TTreeNodeExpandedState;
@@ -355,23 +376,11 @@ begin
       Candidate.Added:=true;
       Candidates.Add(Candidate);
 
-      if RootObject is TComponent then begin
-        RootComponent:=TComponent(RootObject);
-        for i:=0 to RootComponent.ComponentCount-1 do begin
-          AComponent:=RootComponent.Components[i];
-          Candidate:=TComponentCandidate.Create;
-          Candidate.APersistent:=AComponent;
-          if Candidates.Find(Candidate)<>nil then begin
-            DebugLn('WARNING: TComponentTreeView.RebuildComponentNodes doppelganger found ',AComponent.Name);
-            Candidate.Free;
-          end else
-            Candidates.Add(Candidate);
-        end;
-      end;
-
       // add components in creation order and TControl.Parent relationship
       if RootObject is TComponent then begin
         RootComponent:=TComponent(RootObject);
+        AddCandidates(RootComponent);
+        
         for i:=0 to RootComponent.ComponentCount-1 do begin
           AComponent:=RootComponent.Components[i];
           AVLNode:=Candidates.FindKey(AComponent,
