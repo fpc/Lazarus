@@ -25,7 +25,7 @@ unit datapanel;
 interface
 
 uses
-  Classes, SysUtils, Controls, ExtCtrls, StdCtrls, DB, dbgrids, dbCtrls,
+  Graphics, Classes, SysUtils, Controls, ExtCtrls, StdCtrls, DB, dbgrids, dbCtrls,
   buttons;
   
 Type
@@ -127,7 +127,12 @@ end;
 
 Procedure TDataPanel.CreateControls;
 
+Var
+  P : TPixMap;
+
 begin
+  P:=TPixMap.Create;
+  try
   // Top panel;
   FTopPanel:=TPanel.Create(Self);
   FTopPanel.Parent:=Self;
@@ -155,7 +160,8 @@ begin
   FExportSB.Top:=4;
   FExportSB.Height:=22;
   FExportSB.Width:=22;
-  FExportSB.Glyph.LoadFromLazarusResource('qrybtn_export');
+  P.LoadFromLazarusResource('qrybtn_export');
+  FExportSB.Glyph.Assign(P);
   FExportSB.Flat:=True;
   FExportSB.OnClick:=@DoExport;
   FCodeSB:=TSpeedButton.Create(Self);
@@ -164,9 +170,13 @@ begin
   FCodeSB.Top:=4;
   FCodeSB.Height:=22;
   FCodeSB.Width:=22;
-  FCodeSB.Glyph.LoadFromLazarusResource('qrybtn_code');
+  P.LoadFromLazarusResource('qrybtn_code');
+  FCodeSB.Glyph.Assign(P);
   FCodeSB.Flat:=True;
   FCodeSB.OnClick:=@DoCode;
+  Finally
+    FreeAndNil(P);
+  end;
 end;
 
 procedure TDataPanel.Checkbuttons;
