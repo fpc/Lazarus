@@ -5939,14 +5939,9 @@ begin
       {$endif}
         end;
       end;
-    SM_CXICON:
-      begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXICON           ');
-      end;
+    SM_CXICON,
     SM_CYICON:
-      begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYICON           ');
-      end;
+      Result := 32;
     SM_CXICONSPACING:
       begin
         Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXICONSPACING    ');
@@ -6080,14 +6075,9 @@ begin
       begin
         Result := 4;
       end;
-    SM_CXSMICON:
-      begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXSMICON         ');
-      end;
+    SM_CXSMICON,
     SM_CYSMICON:
-      begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CYSMICON         ');
-      end;
+      Result := 16;
     SM_CXSMSIZE:
       begin
         Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetSystemMetrics] --> SM_CXSMSIZE         ');
