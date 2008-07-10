@@ -4809,6 +4809,9 @@ var
 begin
   inherited MouseMove(Shift, X, Y);
 
+  if Dragging then
+    exit;
+  
   HeadersMouseMove(X,Y);
   
   case FGridState of
