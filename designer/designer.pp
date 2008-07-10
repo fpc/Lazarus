@@ -1452,6 +1452,7 @@ var
         NewParentControl:=WinControlAtPos(MouseDownPos.X,MouseUpPos.X,true,true);
       while (NewParentControl<>nil)
       and ((not (csAcceptsControls in NewParentControl.ControlStyle))
+        or (csInline in NewParentControl.ComponentState) // Because of TWriter, you can not put a control onto an csInline control (e.g. on a frame).
         or ((NewParentControl.Owner<>FLookupRoot)
              and (NewParentControl<>FLookupRoot)))
       do begin
@@ -1505,6 +1506,7 @@ var
        ParentCI,NewComponentClass,'',
        NewLeft,NewTop,NewWidth,NewHeight));
     if NewCI=nil then exit;
+    Modified;
     NewComponent:=NewCI.Component;
 
     // set initial properties
