@@ -56,7 +56,9 @@ resourcestring
   sPgoptFormColumn = 'Columns';
   sPgoptFormNumber = '&Number';
   sPgoptFormColGap = '&Column gap, mm';
-
+  sPgoptFormLayoutOrder = 'Layout Order';
+  sPgoptFormByColumns = 'By Colum&ns';
+  sPgoptFormByRows = 'By Row&s';
 
 //--- EditorForm resources ----------------------------------------------------
   sEditorFormCapt = 'Text editor';

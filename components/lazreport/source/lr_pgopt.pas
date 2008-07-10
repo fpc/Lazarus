@@ -31,13 +31,18 @@ TfrPgoptForm = class(TForm)
   E5: TEdit;
   E6: TEdit;
   GroupBox4: TGroupBox;
+  imgColumns: TImage;
+  imgRows: TImage;
   Label3: TLabel;
   Label4: TLabel;
   Label5: TLabel;
   Label6: TLabel;
+  lblLayout: TLabel;
     PageControl1: TPageControl;
     ecolCount: TSpinEdit;
     Panel1: TPanel;
+    RBColumns: TRadioButton;
+    RBRows: TRadioButton;
     RB1: TRadioButton;
     RB2: TRadioButton;
     TabSheet1: TTabSheet;
@@ -59,14 +64,18 @@ TfrPgoptForm = class(TForm)
     Label8: TLabel;
     procedure ComB1DrawItem(Control: TWinControl; Index: Integer; ARect: TRect;
       State: TOwnerDrawState);
+    procedure ecolCountChange(Sender: TObject);
     procedure RB1Click(Sender: TObject);
     procedure RB2Click(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure ComB1Click(Sender: TObject);
     procedure CB5Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure RBColumnsClick(Sender: TObject);
+    procedure RBRowsClick(Sender: TObject);
   private
     { Private declarations }
+    procedure UpdateColumnsLayout;
   public
     { Public declarations }
   end;
@@ -118,6 +127,11 @@ begin
   end;
 end;
 
+procedure TfrPgoptForm.ecolCountChange(Sender: TObject);
+begin
+  UpdateColumnsLayout;
+end;
+
 procedure TfrPgoptForm.RB2Click(Sender: TObject);
 begin
   ImgLandscape.Show;
@@ -139,6 +153,8 @@ begin
   
   Label3.Left:=Max(Label3.Left, Label4.Width + Label4.Left);
   Label3.Left:=Max(Label3.Left, Label5.Width + Label5.Left);
+  
+  UpdateColumnsLayout;
 end;
 
 procedure TfrPgoptForm.ComB1Click(Sender: TObject);
@@ -163,9 +179,7 @@ begin
   GroupBox3.Caption :=sPgoptFormSize;
   Label1.Caption := sPgoptFormWidth;
   Label2.Caption := sPgoptFormHeight;
-//  TabSheet2.Caption := sPgoptFormMargins;
   GroupBox4.Caption := sPgoptFormPgMargins;
-//  Label9.Caption := sPgoptFormPgMargins;
   Label3.Caption := sPgoptFormLeft;
   Label4.Caption := sPgoptFormTop;
   Label5.Caption := sPgoptFormRight;
@@ -177,6 +191,32 @@ begin
   GroupBox5.Caption := sPgoptFormColumn;
   Label7.Caption := sPgoptFormNumber;
   Label8.Caption := sPgoptFormColGap;
+  lblLayout.Caption := sPgoptFormLayoutOrder;
+  RBColumns.Caption := sPgoptFormByColumns;
+  RBRows.Caption := sPgoptFormByRows;
+end;
+
+procedure TfrPgoptForm.RBColumnsClick(Sender: TObject);
+begin
+  ImgColumns.Visible:=true;
+  ImgRows.Visible:=false;
+end;
+
+procedure TfrPgoptForm.RBRowsClick(Sender: TObject);
+begin
+  ImgColumns.Visible:=false;
+  ImgRows.Visible:=true;
+end;
+
+procedure TfrPgoptForm.UpdateColumnsLayout;
+begin
+  if EColCount.Value<2 then begin
+    RBColumns.Enabled:=false;
+    RBRows.Enabled:=false;
+  end else begin
+    RBColumns.Enabled:=true;
+    RBRows.Enabled:=true;
+  end;
 end;
 
 

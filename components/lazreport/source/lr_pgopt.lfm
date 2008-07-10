@@ -138,18 +138,18 @@ object frPgoptForm: TfrPgoptForm
           Left = 3
           Height = 44
           Top = 98
-          Width = 85
+          Width = 83
           AutoSize = True
           BorderSpacing.Left = 3
           BevelOuter = bvNone
           ClientHeight = 44
-          ClientWidth = 85
+          ClientWidth = 83
           TabOrder = 0
           object RB1: TRadioButton
             AnchorSideTop.Control = Panel1
             Left = 6
             Height = 19
-            Width = 59
+            Width = 62
             HelpContext = 111
             AllowGrayed = True
             BorderSpacing.Left = 6
@@ -166,7 +166,7 @@ object frPgoptForm: TfrPgoptForm
             Left = 6
             Height = 19
             Top = 25
-            Width = 79
+            Width = 77
             HelpContext = 120
             AllowGrayed = True
             BorderSpacing.Top = 6
@@ -289,14 +289,14 @@ object frPgoptForm: TfrPgoptForm
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
         Caption = 'Options'
-        ClientHeight = 34
-        ClientWidth = 212
+        ClientHeight = 52
+        ClientWidth = 216
         TabOrder = 0
         object CB1: TCheckBox
           Left = 6
           Height = 19
           Top = 6
-          Width = 129
+          Width = 132
           HelpContext = 160
           Caption = '&Print to previous page'
           TabOrder = 0
@@ -317,8 +317,8 @@ object frPgoptForm: TfrPgoptForm
         BorderSpacing.Right = 6
         BorderSpacing.Bottom = 6
         Caption = 'Columns'
-        ClientHeight = 240
-        ClientWidth = 210
+        ClientHeight = 258
+        ClientWidth = 214
         TabOrder = 1
         object Label7: TLabel
           Left = 6
@@ -339,6 +339,59 @@ object frPgoptForm: TfrPgoptForm
           Caption = '&Column gap, mm'
           FocusControl = E7
           ParentColor = False
+        end
+        object lblLayout: TLabel
+          Left = 6
+          Height = 14
+          Top = 105
+          Width = 65
+          Caption = 'Layout Order'
+          ParentColor = False
+        end
+        object imgColumns: TImage
+          Left = 142
+          Height = 32
+          Top = 128
+          Width = 26
+          AutoSize = True
+          Picture.Data = {
+            1754506F727461626C654E6574776F726B477261706869636901000089504E47
+            0D0A1A0A0000000D494844520000001A00000020080200000083C9FF52000000
+            097048597300000EC400000EC401952B0E1B0000011B49444154789CCD96C16D
+            C3300C45BF0A0FD37B878977B1018A80866917B12F1D20DB2807212E4D514AA8
+            144579B1CD48CFCF8AFCE19052C22FD5BAAE138065595E67EDFB0E60BA5F7EA9
+            9F99AF44EFF5B446FF520E6FB217780E3C977393D5E91B3865E1EA3FC0FDA99D
+            5C9657ED4CD0A05D87D5C399768595E9BB35EBD87765E3CCC7393313D1991500
+            4444E0E33CCBC0D576062B536E8D2FD5593B3659B2EFC01D76CA4B59FBECEA67
+            1CB733D76BD0AEB5F623769DFFB16F67E49DD85F3A04A1F3EE187051B85365FA
+            6CDDDF9D288565BEB381E7BA2FDFE2939D946A594444C2CF309508EE4491883A
+            5D7C8962AEA96CBAED14515DBAD358220CD99452B62AC6E8EA6FDBD6C379ABE0
+            9ECABB67FA0F1E76CC6EC2FD6BE53FD60DBD715BF9EA5227680000000049454E
+            44AE426082
+          }
+        end
+        object imgRows: TImage
+          Left = 142
+          Height = 32
+          Top = 128
+          Width = 26
+          AutoSize = True
+          Picture.Data = {
+            1754506F727461626C654E6574776F726B477261706869636C01000089504E47
+            0D0A1A0A0000000D494844520000001A00000020080200000083C9FF52000000
+            097048597300000EC400000EC401952B0E1B0000011E49444154789CCD56C10D
+            8420101C2E146137D885F6A28931B198BB2EE0652BD705F7201294DD45F472B9
+            F9181718661776542DCB822F611C470D601886FB5CEBBA02D0DBEBEB30EC5C63
+            CC3B5FC6C4BBF07870BB915C42BC40E75C53150FD0E98B9AFBDDA065165900F0
+            D3B342DD35ECD4911BE6382691A0BA76818BDBB8EE64652E24C976993A678CD9
+            732900B6B5800103CD0D905C7EF2DCFC00A1768EE44AE3157451DD41D741759D
+            BA3CC7EBEAC87A5D54C7D55E56479F2CC715E25BCF12A74CF85DB8ABB6B5B909
+            FAE9193B4CCD2AB9CF94DFA9B98FF79EF3B5B425F2E6E592659B5CC6AF0C4AF8
+            56B4B6CDE717D471B513B8243AD2EF624D398F121C855057B4EB0ABF93E30165
+            4739192FD071BD79D7EF4EC60334B6BF957FC4072D668C7B8DFC603E00000000
+            49454E44AE426082
+          }
+          Visible = False
         end
         object E7: TEdit
           AnchorSideLeft.Control = Label7
@@ -363,7 +416,30 @@ object frPgoptForm: TfrPgoptForm
           Top = 26
           Width = 127
           BorderSpacing.Around = 6
+          OnChange = ecolCountChange
           TabOrder = 1
+        end
+        object RBColumns: TRadioButton
+          Left = 14
+          Height = 19
+          Top = 124
+          Width = 90
+          Caption = 'By Colum&ns'
+          Checked = True
+          Enabled = False
+          OnClick = RBColumnsClick
+          State = cbChecked
+          TabOrder = 2
+        end
+        object RBRows: TRadioButton
+          Left = 14
+          Height = 19
+          Top = 144
+          Width = 90
+          Caption = 'By Row&s'
+          Enabled = False
+          OnClick = RBRowsClick
+          TabOrder = 3
         end
       end
       object GroupBox4: TGroupBox
@@ -380,8 +456,8 @@ object frPgoptForm: TfrPgoptForm
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Around = 6
         Caption = 'Page margins'
-        ClientHeight = 182
-        ClientWidth = 212
+        ClientHeight = 200
+        ClientWidth = 216
         TabOrder = 2
         object Label3: TLabel
           AnchorSideTop.Control = CB5

@@ -482,7 +482,7 @@ msgstr "Reportoptionen"
 #: lr_const.sdocoptformother
 msgctxt "lr_const.sdocoptformother"
 msgid "Other"
-msgstr ""
+msgstr "Sonstiges"
 
 #: lr_const.sdocoptformprinter
 msgctxt "lr_const.sdocoptformprinter"
@@ -1231,8 +1231,9 @@ msgid "&Stretch"
 msgstr "&Dehnen"
 
 #: lr_const.sgroupeditorformadddbfield
+msgctxt "lr_const.sgroupeditorformadddbfield"
 msgid "Insert DB field"
-msgstr ""
+msgstr "Datenbankfeld einfügen"
 
 #: lr_const.sgroupeditorformcapt
 msgid "Group"
@@ -1884,6 +1885,14 @@ msgstr "Seite"
 msgid "&Bottom, mm"
 msgstr "&Unten, mm"
 
+#: lr_const.spgoptformbycolumns
+msgid "By Colum&ns"
+msgstr ""
+
+#: lr_const.spgoptformbyrows
+msgid "By Row&s"
+msgstr ""
+
 #: lr_const.spgoptformcapt
 msgctxt "lr_const.spgoptformcapt"
 msgid "Page options"
@@ -1908,6 +1917,10 @@ msgstr "&Höhe, mm"
 #: lr_const.spgoptformland
 msgid "&Landscape"
 msgstr "&Querformat"
+
+#: lr_const.spgoptformlayoutorder
+msgid "Layout Order"
+msgstr ""
 
 #: lr_const.spgoptformleft
 msgid "&Left, mm"
@@ -2200,7 +2213,7 @@ msgstr "Umrißart"
 #: lr_const.sspecval
 msgctxt "lr_const.sspecval"
 msgid "Other"
-msgstr ""
+msgstr "Sonstiges"
 
 #: lr_const.sstretched
 msgid "Stretched"

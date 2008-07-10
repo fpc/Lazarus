@@ -471,7 +471,7 @@ msgstr "Opsi laporan"
 #: lr_const.sdocoptformother
 msgctxt "lr_const.sdocoptformother"
 msgid "Other"
-msgstr ""
+msgstr "Lain-lain"
 
 #: lr_const.sdocoptformprinter
 msgctxt "lr_const.sdocoptformprinter"
@@ -1220,8 +1220,9 @@ msgid "&Stretch"
 msgstr "&Direntangkan"
 
 #: lr_const.sgroupeditorformadddbfield
+msgctxt "lr_const.sgroupeditorformadddbfield"
 msgid "Insert DB field"
-msgstr ""
+msgstr "Sisipkan field DB"
 
 #: lr_const.sgroupeditorformcapt
 msgid "Group"
@@ -1873,6 +1874,14 @@ msgstr "Halaman"
 msgid "&Bottom, mm"
 msgstr "&Bawah, mm"
 
+#: lr_const.spgoptformbycolumns
+msgid "By Colum&ns"
+msgstr ""
+
+#: lr_const.spgoptformbyrows
+msgid "By Row&s"
+msgstr ""
+
 #: lr_const.spgoptformcapt
 msgctxt "lr_const.spgoptformcapt"
 msgid "Page options"
@@ -1897,6 +1906,10 @@ msgstr "&Tinggi, mm"
 #: lr_const.spgoptformland
 msgid "&Landscape"
 msgstr "Membentan&g"
+
+#: lr_const.spgoptformlayoutorder
+msgid "Layout Order"
+msgstr ""
 
 #: lr_const.spgoptformleft
 msgid "&Left, mm"
@@ -2189,7 +2202,7 @@ msgstr "Jenis bentuk"
 #: lr_const.sspecval
 msgctxt "lr_const.sspecval"
 msgid "Other"
-msgstr ""
+msgstr "Lain-lain"
 
 #: lr_const.sstretched
 msgid "Stretched"

@@ -4759,6 +4759,10 @@ begin
     E6.Text := IntToStr(Margins.Bottom * 5 div 18);
     E7.Text := IntToStr(ColGap * 5 div 18);
     ecolCount.Value := ColCount;
+    if LayoutOrder = loColumns then
+      RBColumns.Checked := true
+    else
+      RBRows.Checked := true;
     WasOk := False;
     if ShowModal = mrOk then
     begin
@@ -4771,6 +4775,10 @@ begin
         Orientation := poPortrait
       else
         Orientation := poLandscape;
+      if RBColumns.Checked then
+        LayoutOrder := loColumns
+      else
+        LayoutOrder := loRows;
         
       p := Prn.PaperSizes[ComB1.ItemIndex];
       w := 0; h := 0;

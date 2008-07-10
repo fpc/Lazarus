@@ -1215,6 +1215,7 @@ msgid "&Stretch"
 msgstr ""
 
 #: lr_const.sgroupeditorformadddbfield
+msgctxt "lr_const.sgroupeditorformadddbfield"
 msgid "Insert DB field"
 msgstr ""
 
@@ -1868,6 +1869,14 @@ msgstr ""
 msgid "&Bottom, mm"
 msgstr ""
 
+#: lr_const.spgoptformbycolumns
+msgid "By Colum&ns"
+msgstr ""
+
+#: lr_const.spgoptformbyrows
+msgid "By Row&s"
+msgstr ""
+
 #: lr_const.spgoptformcapt
 msgctxt "lr_const.spgoptformcapt"
 msgid "Page options"
@@ -1891,6 +1900,10 @@ msgstr ""
 
 #: lr_const.spgoptformland
 msgid "&Landscape"
+msgstr ""
+
+#: lr_const.spgoptformlayoutorder
+msgid "Layout Order"
 msgstr ""
 
 #: lr_const.spgoptformleft

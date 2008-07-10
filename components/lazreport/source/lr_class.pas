@@ -126,6 +126,8 @@ type
     Band   : TfrBand;
     Action : TfrBandRecType;
   end;
+  
+  TLayoutOrder = (loColumns, loRows);
 
   TfrMemoStrings  =Class(TStringList);
   TfrScriptStrings=Class(TStringList);
@@ -507,6 +509,7 @@ type
     procedure DrawCrossCell(Parnt: TfrBand; CurX: Integer);
     procedure DrawCross;
     function CheckPageBreak(ay, ady: Integer; PBreak: Boolean): Boolean;
+    function CheckNextColumn: boolean;
     procedure DrawPageBreak;
     function HasCross: Boolean;
     function DoCalcHeight: Integer;
@@ -586,6 +589,7 @@ type
     ColPos            : Integer;
     CurPos            : Integer;
     PageType          : TfrPageType;
+    fLayoutOrder      : TLayoutOrder;
     procedure DoAggregate(a: Array of TfrBandType);
     procedure AddRecord(b: TfrBand; rt: TfrBandRecType);
     procedure ClearRecList;
@@ -635,6 +639,8 @@ type
     procedure ShowBandByType(bt: TfrBandType);
     procedure NewPage;
     procedure NewColumn(Band: TfrBand);
+    procedure NextColumn(Band: TFrBand);
+    function RowsLayout: boolean;
     
     property ColCount : Integer read fColCount write fColCount;
     property ColWidth : Integer read fColWidth write fColWidth;
@@ -643,6 +649,7 @@ type
     property Margins    : TfrRect read fMargins write fMargins;
     property PrintToPrevPage : Boolean read fPrintToPrevPage write fPrintToPrevPage;
     property Orientation : TPrinterOrientation read fOrientation write fOrientation;
+    property LayoutOrder: TLayoutOrder read fLayoutOrder write fLayoutOrder;
 
   published
     property Script;
@@ -668,6 +675,7 @@ type
     property Margins;
     property PrintToPrevPage;
     property Orientation;
+    property LayoutOrder;
   end;
 
   { TfrPageDialog }
@@ -1143,6 +1151,51 @@ var
   PrevY, PrevBottomY, ColumnXAdjust: Integer;
   Append, WasPF: Boolean;
   CompositeMode: Boolean;
+  
+{$IFDEF DebugLR}
+var
+  nspc: integer = 0;
+  sspc: string = '';
+procedure IncSpc(aInc:Integer);
+begin
+  nspc := nspc + aInc;
+  if nspc<0 then
+    nspc := 0;
+  //WriteLn('[',nspc,']');
+  SetLength(sspc, nspc*2);
+  if aInc>0 then
+    fillchar(sspc[1], nspc*2, ' ');
+end;
+
+function typ2str(typ: TfrBandType): string;
+begin
+  case typ of
+    btReportTitle: result := 'btReportTitle';
+    btReportSummary: result := 'btReportSummary';
+    btPageHeader: result := 'btPageHeader';
+    btPageFooter: result := 'btPageFooter';
+    btMasterHeader: result := 'btMasterHeader';
+    btMasterData: result := 'btMasterData';
+    btMasterFooter: result := 'btMasterFooter';
+    btDetailHeader: result := 'btDetailHeader';
+    btDetailData: result := 'btDetailData';
+    btDetailFooter: result := 'btDetailFooter';
+    btSubDetailHeader: result := 'btSubDetailHeader';
+    btSubDetailData: result := 'btSubDetailData';
+    btSubDetailFooter: result := 'btSubDetailFooter';
+    btOverlay: result := 'btOverlay';
+    btColumnHeader: result := 'btColumnHeader';
+    btColumnFooter: result := 'btColumnFooter';
+    btGroupHeader: result := 'btGroupHeader';
+    btGroupFooter: result := 'btGroupFooter';
+    btCrossHeader: result := 'btCrossHeader';
+    btCrossData: result := 'btCrossData';
+    btCrossFooter: result := 'btCrossFooter';
+    btNone: result:='btNone';
+  end;
+
+end;
+{$ENDIF}
 
 {----------------------------------------------------------------------------}
 function frCreateObject(Typ: Byte; const ClassName: String): TfrView;
@@ -1556,7 +1609,7 @@ end;
 procedure TfrView.Print(Stream: TStream);
 begin
   {$IFDEF DebugLR}
-  DebugLn(Name+'.TfrView.Print() ');
+  DebugLn('%s%s.TfrView.Print()',[sspc,name]);
   {$ENDIF}
   BeginDraw(Canvas);
   Memo1.Assign(Memo);
@@ -1569,7 +1622,7 @@ begin
     frWriteString(Stream, ClassName);
   SaveToStream(Stream);
   {$IFDEF DebugLR}
-  DebugLn(Name+'.TfrView.Print() end');
+  DebugLn('%s%s.TfrView.Print() end',[sspc,name]);
   {$ENDIF}
 end;
 
@@ -1582,8 +1635,8 @@ procedure TfrView.LoadFromStream(Stream: TStream);
 var  wb : Word;
 begin
   {$IFDEF DebugLR}
-  DebugLn(name,'.TfrView.LoadFromStream begin StreamMode =',
-    IntToStr(Ord(StreamMode)),' ClassName=',ClassName);
+  DebugLn('%s%s.TfrView.LoadFromStream begin StreamMode=%d ClassName=%s',
+    [sspc,name,Ord(StreamMode),ClassName]);
   {$ENDIF}
   with Stream do
   begin
@@ -1624,7 +1677,7 @@ begin
     end;
   end;
   {$IFDEF DebugLR}
-  DebugLn(name,'.TfrView.LoadFromStream end');
+  DebugLn('%s%s.TfrView.LoadFromStream end',[sspc,name]);
   {$ENDIF}
 end;
 
@@ -1674,7 +1727,7 @@ end;
 procedure TfrView.SaveToStream(Stream: TStream);
 begin
   {$IFDEF DebugLR}
-  DebugLn(name,'.SaveToStream begin');
+  DebugLn('%s%s.SaveToStream begin',[sspc,name]);
   {$ENDIF}
 
   with Stream do
@@ -1706,7 +1759,7 @@ begin
     else frWriteMemo(Stream, Memo1);
   end;
   {$IFDEF DebugLR}
-  Debugln(name,'.SaveToStream end');
+  Debugln('%s%s.SaveToStream end',[sspc,name]);
   {$ENDIF}
 end;
 
@@ -1989,21 +2042,6 @@ begin
       Font.Height := -Round(Font.Size * 96 / 72 * ScaleY);
   end;
 end;
-
-{$IFDEF DebugLR}
-function dbgstr(s: string): string;
-var
-  i: Integer;
-begin
-  result := '';
-  for i:=1 to length(s) do begin
-    if S[i]<#32 then
-      result := result + '#'+IntTostr(ord(s[i]))
-    else
-      result := result + s[i];
-  end;
-end;
-{$ENDIF}
 
 type
   TWordBreaks = string;
@@ -2600,7 +2638,7 @@ var
   i: Integer;
 begin
   {$IFDEF DebugLR}
-  DebugLn('TfrMemoView.Print ',Name);
+  DebugLn('%sTfrMemoView.Print %s',[sspc,Name]);
   {$ENDIF}
   BeginDraw(TempBmp.Canvas);
   Streaming := True;
@@ -4066,6 +4104,10 @@ procedure TfrBand.DrawObject(t: TfrView);
 var
   ox,oy: Integer;
 begin
+  {$IFDEF DebugLR}
+  DebugLn('%sTfrBand.DrawObject INI t=%s:%s',[sspc,dbgsname(t),t.name]);
+  IncSpc(1);
+  {$ENDIF}
   CurPage := Parent;
   CurBand := Self;
   AggrBand := Self;
@@ -4083,6 +4125,10 @@ begin
   except
     on exception do DoError;
   end;
+  {$IFDEF DebugLR}
+  IncSpc(-1);
+  DebugLn('%sTfrBand.DrawObject DONE t=%s:%s',[sspc,dbgsname(t),t.name]);
+  {$ENDIF}
 end;
 
 procedure TfrBand.PrepareSubReports;
@@ -4333,13 +4379,52 @@ end;
 
 function TfrBand.CheckPageBreak(ay, ady: Integer; PBreak: Boolean): Boolean;
 begin
+  {$IFDEF DebugLR}
+  DebugLn('%sTfrBand.CheckPageBreak INI ay=%d ady=%d Pbreak=%d',
+    [sspc,ay,ady,ord(pbreak)]);
+  IncSpc(1);
+  {$ENDIF}
   Result := False;
-  with Parent do
-  if ay + Bands[btColumnFooter].dy + ady > CurBottomY then
-  begin
-    if not PBreak then
-      NewColumn(Self);
-    Result := True;
+  with Parent do begin
+    {$IFDEF DebugLR}
+    DebugLn('%say+dy+ady=%d CurBottomY=%d',
+      [sspc, ay+Bands[btColumnFooter].dy+ady,CurBottomY]);
+    {$ENDIF}
+    if not RowsLayout then begin
+      if ay + Bands[btColumnFooter].dy + ady > CurBottomY then
+      begin
+        if not PBreak then
+          NewColumn(Self);
+        Result := True;
+      end;
+    end;
+  end;
+  {$IFDEF DebugLR}
+  IncSpc(-1);
+  DebugLn('%sTfrBand.CheckPageBreak END ay=%d ady=%d Result=%d',
+    [sspc,ay,ady,ord(Result)]);
+  {$ENDIF}
+end;
+
+function TfrBand.CheckNextColumn: boolean;
+var
+  BandHeight: Integer;
+begin
+  with Parent do begin
+    if (CurColumn=0) and (typ=btMasterData) then begin
+      BandHeight := DoCalcHeight;
+      {$IFDEF DebugLR}
+      DebugLn('%sTfrBand.CheckNextColumn INI CurY=%d BHeight=%d CurY+BH=%d CurBottomY=%d',
+        [sspc,CurY,BandHeight,CurY+BandHeight,CurBottomY]);
+      {$ENDIF}
+      // check left height space when on last column
+      if CurY + BandHeight>CurBottomY then
+        NewPage;
+      {$IFDEF DebugLR}
+      DebugLn('%sTfrBand.CheckNextColumn END CurY=%d BHeight=%d CurY+BH=%d CurBottomY=%d',
+        [sspc,CurY,BandHeight,CurY+BandHeight,CurBottomY]);
+      {$ENDIF}
+    end;
   end;
 end;
 
@@ -4365,6 +4450,10 @@ var
   end;
 
 begin
+  {$IFDEF DebugLR}
+  DebugLn('%sDrawPageBreak INI y=%d Maxdy',[sspc,y,maxdy]);
+  IncSpc(1);
+  {$ENDIF}
   for i := 0 to Objects.Count - 1 do
   begin
     t :=TfrView(Objects[i]);
@@ -4468,6 +4557,10 @@ begin
     t.dy := t.OriginalRect.Bottom;
   end;
   Inc(Parent.CurY, maxdy);
+  {$IFDEF DebugLR}
+  IncSpc(-1);
+  DebugLn('%sDrawPageBreak END Parent.CurY=%d',[sspc,Parent.CurY]);
+  {$ENDIF}
 end;
 
 function TfrBand.HasCross: Boolean;
@@ -4496,14 +4589,23 @@ begin
   if Objects.Count = 0 then Exit;
   sfy := y;
   UseY := not (Typ in [btPageFooter, btOverlay, btNone]);
-  if UseY then y := Parent.CurY;
+  if UseY then
+    y := Parent.CurY;
+  {$IFDEF DebugLR}
+  DebugLn('%sTfrBand.DoDraw INI sfy=%d y=%d dy=%d XAdjust=%d CurY=%d Stretch=%d PageBreak=%d',
+    [sspc, sfy, y, dy, Parent.XAdjust, parent.cury, Ord(Stretched), Ord(PageBreak)]);
+  IncSpc(1);
+  {$ENDIF}
+    
   if Stretched then
   begin
     sh := CalculatedHeight;
 //    sh := CalcHeight;
-    if sh > dy then StretchObjects(sh);
+    if sh > dy then
+      StretchObjects(sh);
     maxdy := sh;
-    if not PageBreak then CheckPageBreak(y, sh, False);
+    if not PageBreak then
+      CheckPageBreak(y, sh, False);
     y := Parent.CurY;
     WasSub := False;
     if PageBreak then
@@ -4514,16 +4616,19 @@ begin
     else
     begin
       WasSub := DrawObjects;
-      if HasCross then DrawCross;
+      if HasCross then
+        DrawCross;
     end;
     UnStretchObjects;
-    if not WasSub then Inc(Parent.CurY, sh);
+    if not WasSub then
+      Inc(Parent.CurY, sh);
   end
   else
   begin
     if UseY then
     begin
-      if not PageBreak then CheckPageBreak(y, dy, False);
+      if not PageBreak then
+        CheckPageBreak(y, dy, False);
       y := Parent.CurY;
     end;
     if PageBreak then
@@ -4535,14 +4640,23 @@ begin
     else
     begin
       WasSub := DrawObjects;
-      if HasCross then DrawCross;
-      if UseY and not WasSub then Inc(Parent.CurY, dy);
+      if HasCross then
+        DrawCross;
+      if UseY and not WasSub then begin
+        if (not Parent.RowsLayout) or (Parent.CurColumn=Parent.ColCount-1) then
+          Inc(Parent.CurY, dy);
+      end;
     end;
   end;
   y := sfy;
   if Typ in [btMasterData, btDetailData, btSubDetailData] then
     Parent.DoAggregate([btPageFooter, btMasterFooter, btDetailFooter,
                  btSubDetailFooter, btGroupFooter, btReportSummary]);
+  {$IFDEF DebugLR}
+  IncSpc(-1);
+  DebugLn('%sTfrBand.DoDraw END sfy=%d y=%d dy=%d xadjust=%d CurY=%d',
+    [sspc, sfy, y, dy, parent.xadjust, parent.cury]);
+  {$ENDIF}
 end;
 
 function TfrBand.DoCalcHeight: Integer;
@@ -4571,77 +4685,114 @@ function TfrBand.Draw: Boolean;
 var
   b: TfrBand;
 begin
+  {$IFDEF debugLr}
+  DebugLn('%sTFrBand.Draw INI %s:%s y=%d vis=%s',[sspc, Name, ClassName,y,BoolToStr(Visible,true)]);
+  IncSpc(1);
+  {$endif}
   Result := False;
   CurView := View;
   CurBand := Self;
   AggrBand := Self;
   CalculatedHeight := -1;
-
   ForceNewPage := False;
   ForceNewColumn := False;
   if Assigned(CurReport.FOnBeginBand) then
     CurReport.FOnBeginBand(Self);
   frInterpretator.DoScript(Script);
 
-  // new page was requested in script
-  if ForceNewPage then
-  begin
-    Parent.CurColumn := Parent.ColCount - 1;
-    Parent.NewColumn(Self);
-  end;
-  if ForceNewColumn then
-    Parent.NewColumn(Self);
-
-  if Visible then
-  begin
-    if Typ = btColumnHeader then
-      Parent.LastStaticColumnY := Parent.CurY;
-    if Typ = btPageFooter then
-      y := Parent.CurBottomY;
-    if Objects.Count > 0 then
+  if Parent.RowsLayout then begin
+  
+    if Visible then
     begin
-      if not (Typ in [btPageFooter, btOverlay, btNone]) then
-        if (Parent.CurY + DoCalcHeight > Parent.CurBottomY) and not PageBreak then
-        begin
-          Result := True;
+      if Objects.Count > 0 then
+      begin
+        if not (Typ in [btPageFooter, btOverlay, btNone]) then begin
           if Parent.Skip then
-            Exit else
-            CheckPageBreak(0, 10000, False);
+            exit
+          else
+            CheckNextColumn;
         end;
-      EOFReached := True;
-
-      // dealing with multiple bands
-      if (Typ in [btMasterData, btDetailData, btSubDetailData]) and
-        (Next <> nil) and (Next.Dataset = nil) and (DataSet <> nil) then
-      begin
-        b := Self;
-        repeat
-          b.DoDraw;
-          b := b.Next;
-        until b = nil;
-      end
-      else
-      begin
-        DoDraw;
-        if not (Typ in [btMasterData, btDetailData, btSubDetailData, btGroupHeader]) and
-          NewPageAfter then
-          Parent.NewPage;
+        EOFReached := True;
+        // only masterdata band supported in RowsLayout columns report
+        if typ=btMasterData then begin
+          DoDraw;
+          Parent.NextColumn(Self);
+        end;
+        if not EOFReached then
+          Result := True;
       end;
-      if not EOFReached then Result := True;
     end;
-  end
-// if band is not visible, just performing aggregate calculations
-// relative to it
-  else if Typ in [btMasterData, btDetailData, btSubDetailData] then
-    Parent.DoAggregate([btPageFooter, btMasterFooter, btDetailFooter,
-                        btSubDetailFooter, btGroupFooter, btReportSummary]);
 
-// check if multiple pagefooters (in cross-tab report) - resets last of them
-  if not DisableInit then
-    if (Typ <> btPageFooter) or (PageNo = MasterReport.EMFPages.Count - 1) then
-      InitValues;
+  end else begin
+
+    // new page was requested in script
+    if ForceNewPage then
+    begin
+      Parent.CurColumn := Parent.ColCount - 1;
+      Parent.NewColumn(Self);
+    end;
+    if ForceNewColumn then
+      Parent.NewColumn(Self);
+
+    if Visible then
+    begin
+      if Typ = btColumnHeader then
+        Parent.LastStaticColumnY := Parent.CurY;
+      if Typ = btPageFooter then
+        y := Parent.CurBottomY;
+      if Objects.Count > 0 then
+      begin
+        if not (Typ in [btPageFooter, btOverlay, btNone]) then
+          if (Parent.CurY + DoCalcHeight > Parent.CurBottomY) and not PageBreak then
+          begin
+            Result := True;
+            if Parent.Skip then
+              Exit
+            else
+              CheckPageBreak(0, 10000, False);
+          end;
+        EOFReached := True;
+
+        // dealing with multiple bands
+        if (Typ in [btMasterData, btDetailData, btSubDetailData]) and
+          (Next <> nil) and (Next.Dataset = nil) and (DataSet <> nil) then
+        begin
+          b := Self;
+          repeat
+            b.DoDraw;
+            b := b.Next;
+          until b = nil;
+        end
+        else
+        begin
+          DoDraw;
+          if not (Typ in [btMasterData, btDetailData, btSubDetailData, btGroupHeader]) and
+            NewPageAfter then
+            Parent.NewPage;
+        end;
+        if not EOFReached then Result := True;
+      end;
+    end
+    // if band is not visible, just performing aggregate calculations
+    // relative to it
+    else
+    if Typ in [btMasterData, btDetailData, btSubDetailData] then
+      Parent.DoAggregate([btPageFooter, btMasterFooter, btDetailFooter,
+                          btSubDetailFooter, btGroupFooter, btReportSummary]);
+
+    // check if multiple pagefooters (in cross-tab report) - resets last of them
+    if not DisableInit then
+      if (Typ <> btPageFooter) or (PageNo = MasterReport.EMFPages.Count - 1) then
+        InitValues;
+
+  end;
+  
   if Assigned(CurReport.FOnEndBand) then
     CurReport.FOnEndBand(Self);
+  {$IFDEF debugLr}
+  IncSpc(-1);
+  DebugLn('%sTFrBand.Draw END %s y=%d PageNo=%d',[sspc, dbgsname(self),y, PageNo]);
+  {$endif}
 end;
 
 procedure TfrBand.InitValues;
@@ -5215,9 +5366,19 @@ end;
 procedure TfrPage.ShowBand(b: TfrBand);
 begin
   if b <> nil then
+  begin
+    {$IFDEF DebugLR}
+    DebugLn('%sTfrPage.ShowBand INI b=%s:%s',[sspc,dbgsname(b),typ2str(b.typ)]);
+    IncSpc(1);
+    {$ENDIF}
     if Mode = pmBuildList then
       AddRecord(b, rtShowBand) else
       b.Draw;
+    {$IFDEF DebugLR}
+    IncSpc(-1);
+    DebugLn('%sTfrPage.ShowBand END b=%s:%s',[sspc,dbgsname(b),typ2str(b.typ)]);
+    {$ENDIF}
+  end;
 end;
 
 constructor TfrPage.Create;
@@ -5329,6 +5490,10 @@ end;
 
 procedure TfrPage.DrawPageFooters;
 begin
+  {$IFDEF DebugLR}
+  DebugLn('%sTFrPage.DrawPageFootersPage INI PageNo=%d XAdjust=%d CurColumn=%d',
+    [sspc,PageNo, XAdjust, CurColumn]);
+  {$ENDIF}
   CurColumn := 0;
   XAdjust := LeftMargin;
   if (PageNo <> 0) or ((Bands[btPageFooter].Flags and flBandOnFirstPage) <> 0) then
@@ -5341,17 +5506,29 @@ begin
         if (MasterReport <> CurReport) and (MasterReport <> nil) and
           Assigned(MasterReport.FOnEndPage) then
           MasterReport.FOnEndPage(PageNo);
-        ShowBand(Bands[btPageFooter]);
+        if not RowsLayout then
+          ShowBand(Bands[btPageFooter]);
       end;
       Inc(PageNo);
     end;
   PageNo := MasterReport.EMFPages.Count;
+  {$IFDEF DebugLR}
+  DebugLn('%sTFrPage.DrawPageFootersPage FIN PageNo=%d XAdjust=%d CurColumn=%d',
+    [sspc, PageNo, XAdjust, CurColumn]);
+  {$ENDIF}
 end;
 
 procedure TfrPage.NewPage;
 begin
+  {$IFDEF DebugLR}
+  DebugLn('%sTFrPage.NewPage INI PageNo=%d CurBottomY=%d CurY=%d XAdjust=%d',
+    [sspc,PageNo, CurBottomY, CurY, XAdjust]);
+  IncSpc(1);
+  {$ENDIF}
+
   CurReport.InternalOnProgress(PageNo + 1);
-  ShowBand(Bands[btColumnFooter]);
+  if not RowsLayout then
+    ShowBand(Bands[btColumnFooter]);
   DrawPageFooters;
   CurBottomY := BottomMargin;
   MasterReport.EMFPages.Add(Self);
@@ -5359,13 +5536,24 @@ begin
   ShowBand(Bands[btOverlay]);
   CurY := TopMargin;
   ShowBand(Bands[btPageHeader]);
-  ShowBand(Bands[btColumnHeader]);
+  if not RowsLayout then
+    ShowBand(Bands[btColumnHeader]);
+  {$IFDEF DebugLR}
+  IncSpc(-1);
+  DebugLn('%sTFrPage.NewPage END PageNo=%d CurBottomY=%d CurY=%d XAdjust=%d',
+    [sspc,PageNo, CurBottomY, CurY, XAdjust]);
+  {$ENDIF}
 end;
 
 procedure TfrPage.NewColumn(Band: TfrBand);
 var
   b: TfrBand;
 begin
+  {$IFDEF DebugLR}
+  DebugLn('%sTfrPage.NewColumn INI CurColumn=%d ColCount=%d CurY=%d XAdjust=%d',
+    [sspc,CurColumn, ColCount, CurY, XAdjust]);
+  IncSpc(1);
+  {$ENDIF}
   if CurColumn < ColCount - 1 then
   begin
     ShowBand(Bands[btColumnFooter]);
@@ -5390,6 +5578,43 @@ begin
     if (Band.HeaderBand <> nil) and
       ((Band.HeaderBand.Flags and flBandRepeatHeader) <> 0) then
       ShowBand(Band.HeaderBand);
+  {$IFDEF DebugLR}
+  IncSpc(-1);
+  DebugLn('%sTfrPage.NewColumn END CurColumn=%d ColCount=%d CurY=%d XAdjust=%d',
+    [sspc,CurColumn, ColCount, CurY, XAdjust]);
+  {$ENDIF}
+end;
+
+procedure TfrPage.NextColumn(Band: TFrBand);
+begin
+  {$IFDEF DebugLR}
+  DebugLn('%sTfrPage.NextColumn INI CurColumn=%d ColCount=%d CurY=%d XAdjust=%d',
+    [sspc,CurColumn, ColCount, CurY, XAdjust]);
+  IncSpc(1);
+  {$ENDIF}
+  if CurColumn < ColCount - 1 then
+  begin
+    Inc(CurColumn);
+    Inc(XAdjust, ColWidth + ColGap);
+    Inc(ColPos);
+  end
+  else
+  begin
+    CurColumn := 0;
+    ColPos:=1;
+    XAdjust := LeftMargin;
+  end;
+  {$IFDEF DebugLR}
+  IncSpc(-1);
+  DebugLn('%sTfrPage.NextColumn END CurColumn=%d ColCount=%d CurY=%d XAdjust=%d',
+    [sspc,CurColumn, ColCount, CurY, XAdjust]);
+  {$ENDIF}
+end;
+
+function TfrPage.RowsLayout: boolean;
+begin
+  // esta funcion debe leerse de las opciones de la pagina
+  result := (ColCount>1) and (LayoutOrder=loRows)
 end;
 
 procedure TfrPage.DoAggregate(a: Array of TfrBandType);
@@ -5431,10 +5656,16 @@ var
   var
     i: Integer;
   begin
+    {$IFDEF DebugLR}
+    DebugLn('%sShowStack INI',[sspc]);
+    {$ENDIF}
     for i := 1 to BndStackTop do
       if BandExists(BndStack[i]) then
         ShowBand(BndStack[i]);
     BndStackTop := 0;
+    {$IFDEF DebugLR}
+    DebugLn('%sShowStack END',[sspc]);
+    {$ENDIF}
   end;
 
   procedure DoLoop(Level: Integer);
@@ -5455,6 +5686,10 @@ var
     end;
 
   begin
+    {$IFDEF DebugLR}
+    DebugLn('%sDoop(Level=%d) INI',[sspc,Level]);
+    IncSpc(1);
+    {$ENDIF}
     b := Bands[Bnds[Level, bpData]];
     while (b <> nil) and (b.Dataset <> nil) do
     begin
@@ -5464,7 +5699,8 @@ var
         b.DataSet.First;
 
         if Mode = pmBuildList then
-          AddRecord(b, rtFirst) else
+          AddRecord(b, rtFirst)
+        else
           b.Positions[psLocal] := 1;
 
         b1 := Bands[btGroupHeader];
@@ -5487,7 +5723,8 @@ var
           while not b.DataSet.Eof do
           begin
             Application.ProcessMessages;
-            if MasterReport.Terminated then break;
+            if MasterReport.Terminated then
+              break;
             AddToStack(b);
             WasPrinted := True;
             if Level < MaxLevel then
@@ -5502,7 +5739,8 @@ var
                   WasPrinted := False;
                 end;
             end
-            else ShowStack;
+            else
+              ShowStack;
 
             b.DataSet.Next;
 
@@ -5543,9 +5781,11 @@ var
               Inc(CurPos);
               Inc(b.Positions[psGlobal]);
               Inc(b.Positions[psLocal]);
-              if not b.DataSet.Eof and b.NewPageAfter then NewPage;
+              if not b.DataSet.Eof and b.NewPageAfter then
+                NewPage;
             end;
-            if MasterReport.Terminated then break;
+            if MasterReport.Terminated then
+              break;
           end;
           if BndStackTop = 0 then
             ShowBand(b.FooterBand) else
@@ -5558,9 +5798,17 @@ var
       end;
       b := b.Next;
     end;
+    {$IFDEF DebugLR}
+    IncSpc(-1);
+    DebugLn('%sDoop(Level=%d) END',[sspc,Level]);
+    {$ENDIF}
   end;
 
 begin
+  {$IFDEF DebugLR}
+  DebugLn('%sTfrPage.FormPage INI Mode=%d',[sspc,ord(mode)]);
+  IncSpc(1);
+  {$ENDIF}
   if Mode = pmNormal then
   begin
     if Append then
@@ -5580,6 +5828,9 @@ begin
       
     CurColumn := 0;
     XAdjust := LeftMargin;
+    {$IFDEF DebugLR}
+    DebugLn('%sXAdjust=%d CurBottomY=%d PrevY=%d',[sspc,XAdjust,CurBottomY,PrevY]);
+    {$ENDIF}
     if not Append then
     begin
       MasterReport.EMFPages.Add(Self);
@@ -5590,13 +5841,17 @@ begin
     else
       CurY := PrevY;
     sfPage := PageNo;
+    {$IFDEF DebugLR}
+    DebugLn('%sXAdjust=%d CurY=%d sfPage=%d',[sspc,XAdjust,CurY,sfpage]);
+    {$ENDIF}
     ShowBand(Bands[btReportTitle]);
     if PageNo = sfPage then // check if new page was formed
     begin
       if BandExists(Bands[btPageHeader]) and
         ((Bands[btPageHeader].Flags and flBandOnFirstPage) <> 0) then
         ShowBand(Bands[btPageHeader]);
-      ShowBand(Bands[btColumnHeader]);
+      if not RowsLayout then
+        ShowBand(Bands[btColumnHeader]);
     end;
   end;
 
@@ -5607,10 +5862,14 @@ begin
       MaxLevel := i;
   end;
   HasGroups := Bands[btGroupHeader].Objects.Count > 0;
+  {$IFDEF DebugLR}
+  DebugLn('%sMaxLevel=%d doing DoLoop(1)',[sspc,MaxLevel]);
+  {$ENDIF}
   DoLoop(1);
   if Mode = pmNormal then
   begin
-    ShowBand(Bands[btColumnFooter]);
+    if not RowsLayout then
+      ShowBand(Bands[btColumnFooter]);
     ShowBand(Bands[btReportSummary]);
     PrevY := CurY;
     PrevBottomY := CurBottomY;
@@ -5628,6 +5887,11 @@ begin
     end;
     PageNo := sfPage + 1;
   end;
+  {$IFDEF DebugLR}
+  IncSpc(-1);
+  DebugLn('%sTfrPage.FormPage END PrevY=%d PrevBottomY=%d PageNo=%d XAdjust=%d',
+    [sspc,PrevY,PrevBottomY,PageNo,XAdjust]);
+  {$ENDIF}
 end;
 
 function TfrPage.BandExists(b: TfrBand): Boolean;
@@ -5669,6 +5933,7 @@ begin
     Read(fColGap, 4);
     if frVersion>23 then
       Read(ord(PageType), SizeOf(TfrPageType));
+    Read(fLayoutOrder, 4);
   end;
   ChangePaper(pgSize, Width, Height, Orientation);
 end;
@@ -5707,6 +5972,7 @@ begin
     Write(ColCount, 4);
     Write(ColGap, 4);
     Write(ord(PageType), SizeOf(TfrPageType));
+    Write(LayoutOrder, 4);
   end;
 end;
 
@@ -6024,9 +6290,9 @@ var
 begin
   IsPrinting := Printer.Printing and (Canvas is TPrinterCanvas);
   {$IFDEF DebugLR}
-  DebugLn('IsPrinting=',dbgs(IsPrinting),' PageIndex=', dbgs(Index),
-    ' Canvas.ClassName=',Canvas.ClassName,
-    ' Canvas.Font.PPI=',dbgs(Canvas.Font.pixelsPerInch));
+  DebugLn('TfrEMFPages.Draw IsPrinting=%d PageIndex=%d Canvas.ClassName=%s '+
+          'CanvasPPI=%d',[ord(IsPrinting), Index, Canvas.ClassName,
+          Canvas.Font.pixelsPerInch]);
   DebugLn('----------------------------------------------------');
   {$ENDIF}
 
@@ -6649,9 +6915,6 @@ var
   V : Variant;
   ValStr: String;
 begin
-  {$IFDEF DebugLR}
-  DebugLn('TfrReport.InternalOnGetValue(',ParName,')');
-  {$ENDIF}
   SubValue := '';
   Format := CurView.Format;
   FormatStr := CurView.FormatStr;
@@ -6716,6 +6979,9 @@ begin
     ValStr := CurValue;
   ParValue := FormatValueStr(ValStr, Format, FormatStr);
   }
+  {$IFDEF DebugLR}
+  DebugLn('%sTfrReport.InternalOnGetValue(%s) Value=%s',[sspc,ParName,ParValue]);
+  {$ENDIF}
 end;
 
 procedure TfrReport.InternalOnEnterRect(Memo: TStringList; View: TfrView);
@@ -9075,7 +9341,8 @@ begin
   UseMargins := XML.GetValue(Path+'UseMargins/Value', True); // TODO chk
   PrintToPrevPage := XML.GetValue(Path+'PrintToPrevPage/Value', True); // TODO chk
   ColCount := XML.GetValue(Path+'ColCount/Value', 1); // TODO chk
-  ColGap := XML.GetValue(Path+'ColGap/Value', 10); // TODO chk
+  ColGap := XML.GetValue(Path+'ColGap/Value', 0);
+  RestoreProperty('LayoutOrder',XML.GetValue(Path+'LayoutOrder/Value',''));
   ChangePaper(pgSize, Width, Height, Orientation);
 end;
 
@@ -9096,6 +9363,7 @@ begin
   XML.SetValue(Path+'PrintToPrevPage/Value', PrintToPrevPage);
   XML.SetValue(Path+'ColCount/Value', ColCount);
   XML.SetValue(Path+'ColGap/Value', ColGap);
+  XML.SetValue(Path+'LayoutOrder/Value', GetSaveProperty('LayoutOrder'));
 end;
 
 constructor TfrPageReport.CreatePage;

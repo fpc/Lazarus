@@ -480,7 +480,7 @@ msgstr "Options du rapport"
 #: lr_const.sdocoptformother
 msgctxt "lr_const.sdocoptformother"
 msgid "Other"
-msgstr ""
+msgstr "Autre"
 
 #: lr_const.sdocoptformprinter
 msgctxt "lr_const.sdocoptformprinter"
@@ -1229,8 +1229,9 @@ msgid "&Stretch"
 msgstr "&Etirer"
 
 #: lr_const.sgroupeditorformadddbfield
+msgctxt "lr_const.sgroupeditorformadddbfield"
 msgid "Insert DB field"
-msgstr ""
+msgstr "Insérer un champ BDD"
 
 #: lr_const.sgroupeditorformcapt
 msgid "Group"
@@ -1882,6 +1883,14 @@ msgstr "Page"
 msgid "&Bottom, mm"
 msgstr "&Bas, mm"
 
+#: lr_const.spgoptformbycolumns
+msgid "By Colum&ns"
+msgstr ""
+
+#: lr_const.spgoptformbyrows
+msgid "By Row&s"
+msgstr ""
+
 #: lr_const.spgoptformcapt
 msgctxt "lr_const.spgoptformcapt"
 msgid "Page options"
@@ -1906,6 +1915,10 @@ msgstr "&Hauteur, mm"
 #: lr_const.spgoptformland
 msgid "&Landscape"
 msgstr "Pa&ysage"
+
+#: lr_const.spgoptformlayoutorder
+msgid "Layout Order"
+msgstr ""
 
 #: lr_const.spgoptformleft
 msgid "&Left, mm"
@@ -2198,7 +2211,7 @@ msgstr "Type de forme"
 #: lr_const.sspecval
 msgctxt "lr_const.sspecval"
 msgid "Other"
-msgstr ""
+msgstr "Autre"
 
 #: lr_const.sstretched
 msgid "Stretched"

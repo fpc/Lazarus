@@ -472,7 +472,7 @@ msgstr "Pranešimo parinktys"
 #: lr_const.sdocoptformother
 msgctxt "lr_const.sdocoptformother"
 msgid "Other"
-msgstr ""
+msgstr "Kita"
 
 #: lr_const.sdocoptformprinter
 msgctxt "lr_const.sdocoptformprinter"
@@ -1221,8 +1221,9 @@ msgid "&Stretch"
 msgstr "&Ištempti"
 
 #: lr_const.sgroupeditorformadddbfield
+msgctxt "lr_const.sgroupeditorformadddbfield"
 msgid "Insert DB field"
-msgstr ""
+msgstr "Įterpti DB lauką"
 
 #: lr_const.sgroupeditorformcapt
 msgid "Group"
@@ -1874,6 +1875,14 @@ msgstr "Lapas"
 msgid "&Bottom, mm"
 msgstr "&Apačioje, mm"
 
+#: lr_const.spgoptformbycolumns
+msgid "By Colum&ns"
+msgstr ""
+
+#: lr_const.spgoptformbyrows
+msgid "By Row&s"
+msgstr ""
+
 #: lr_const.spgoptformcapt
 msgctxt "lr_const.spgoptformcapt"
 msgid "Page options"
@@ -1898,6 +1907,10 @@ msgstr "&Aukštis, mm"
 #: lr_const.spgoptformland
 msgid "&Landscape"
 msgstr "&Gulščias"
+
+#: lr_const.spgoptformlayoutorder
+msgid "Layout Order"
+msgstr ""
 
 #: lr_const.spgoptformleft
 msgid "&Left, mm"
@@ -2190,7 +2203,7 @@ msgstr "Figūros rūšis"
 #: lr_const.sspecval
 msgctxt "lr_const.sspecval"
 msgid "Other"
-msgstr ""
+msgstr "Kita"
 
 #: lr_const.sstretched
 msgid "Stretched"
