@@ -6264,6 +6264,10 @@ begin
     // This must happen in the right order (descendants before ancestor)
     if not CloseNext(Result,[ucdtAncestor]) then exit;
 
+    // then close all nested descendants recursively
+    // This must happen in the right order (nested descendants before ancestor)
+    if not CloseNext(Result,[ucdtInlineClass]) then exit;
+
     // then close all referring components
     // These can build circles and can be freed in any order.
     if not CloseNext(Result,[ucdtProperty]) then exit;
