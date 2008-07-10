@@ -127,6 +127,7 @@ Var
   I,J : Integer;
   PD : TFieldPropDef;
   CC : TCodeGeneratorOptionsClass;
+  S : TStringList;
   
 begin
   { The following construct means that only explicitly added
@@ -140,8 +141,16 @@ begin
     end
   else
     begin
-    For I:=0 to FGen.Fields.Count-1 do
-      FFieldMap.Add.Assign(FGen.Fields[i]);
+    S:=TStringList.Create;
+    try
+      S.Sorted:=true;
+      For I:=0 to FGen.Fields.Count-1 do
+        S.AddObject(FGen.Fields[i].FieldName,FGen.Fields[i]);
+      For I:=0 to S.Count-1 do
+        FFieldMap.Add.Assign((S.Objects[i] as TFieldPropDef));
+    finally
+      S.Free;
+    end;
     For I:=0 to FFieldMap.Count-1 do
       begin
       PD:=FFieldMap[i];

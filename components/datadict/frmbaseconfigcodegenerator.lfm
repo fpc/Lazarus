@@ -3,14 +3,13 @@ object BaseConfigGeneratorForm: TBaseConfigGeneratorForm
   Height = 378
   Top = 207
   Width = 462
-  HorzScrollBar.Page = 461
-  VertScrollBar.Page = 377
   ActiveControl = FEFile
   Caption = 'Configure generated code'
   ClientHeight = 378
   ClientWidth = 462
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  LCLVersion = '0.9.25'
   object PGenerator: TPanel
     Height = 56
     Width = 462
@@ -44,7 +43,7 @@ object BaseConfigGeneratorForm: TBaseConfigGeneratorForm
     end
     object CBShowDialog: TCheckBox
       Left = 72
-      Height = 22
+      Height = 23
       Top = 33
       Width = 147
       Caption = 'Sho&w generated code'
@@ -52,7 +51,7 @@ object BaseConfigGeneratorForm: TBaseConfigGeneratorForm
     end
   end
   object PCConf: TPageControl
-    Height = 280
+    Height = 279
     Top = 56
     Width = 462
     ActivePage = TSFields
@@ -61,7 +60,7 @@ object BaseConfigGeneratorForm: TBaseConfigGeneratorForm
     TabOrder = 1
     object TSFields: TTabSheet
       Caption = 'Fields'
-      ClientHeight = 250
+      ClientHeight = 248
       ClientWidth = 458
       object Panel2: TPanel
         Height = 28
@@ -94,32 +93,31 @@ object BaseConfigGeneratorForm: TBaseConfigGeneratorForm
         end
       end
       object PFieldList: TPanel
-        Height = 222
+        Height = 220
         Top = 28
         Width = 170
         Align = alLeft
         BevelOuter = bvNone
-        ClientHeight = 222
+        ClientHeight = 220
         ClientWidth = 170
         TabOrder = 1
         object CLBFields: TCheckListBox
           Left = 35
-          Height = 222
+          Height = 220
           Width = 135
           Align = alClient
           OnClick = CLBFieldsClick
           OnItemClick = CLBFieldsItemClick
           OnKeyUp = CLBFieldsKeyUp
-          Sorted = True
           TabOrder = 0
           TopIndex = -1
         end
         object PButtons: TPanel
-          Height = 222
+          Height = 220
           Width = 35
           Align = alLeft
           BevelOuter = bvNone
-          ClientHeight = 222
+          ClientHeight = 220
           ClientWidth = 35
           TabOrder = 1
           object SBup: TSpeedButton
@@ -308,13 +306,13 @@ object BaseConfigGeneratorForm: TBaseConfigGeneratorForm
       end
       object Splitter1: TSplitter
         Left = 170
-        Height = 222
+        Height = 220
         Top = 28
         Width = 5
       end
       object GFieldProps: TTIPropertyGrid
         Left = 175
-        Height = 222
+        Height = 220
         Top = 28
         Width = 283
         Align = alClient
@@ -337,14 +335,12 @@ object BaseConfigGeneratorForm: TBaseConfigGeneratorForm
   end
   object PDlgButtons: TButtonPanel
     Left = 6
-    Height = 42
-    Top = 336
+    Height = 43
+    Top = 335
     Width = 450
     Align = alBottom
     AutoSize = True
     TabOrder = 2
-    ShowButtons = [pbOK, pbCancel, pbClose, pbHelp]
-    ShowGlyphs = [pbOK, pbCancel, pbClose, pbHelp]
   end
   object ALList: TActionList
     left = 5
