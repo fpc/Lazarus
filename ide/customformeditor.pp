@@ -2407,10 +2407,14 @@ procedure TCustomFormEditor.CreateChildComponentInterfaces(
   AComponent: TComponent);
 var
   i: Integer;
+  ChildComponent: TComponent;
 begin
   // create a component interface for each component owned by the new component
-  for i:=0 to AComponent.ComponentCount-1 do
-    CreateComponentInterface(AComponent.Components[i],false);
+  for i:=0 to AComponent.ComponentCount-1 do begin
+    ChildComponent:=AComponent.Components[i];
+    CreateComponentInterface(ChildComponent,
+                             csInline in ChildComponent.ComponentState);
+  end;
 end;
 
 function TCustomFormEditor.GetDefaultComponentParent(TypeClass: TComponentClass

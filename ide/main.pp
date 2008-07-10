@@ -1381,9 +1381,7 @@ begin
   end else if IsJITMethod(Method) then begin
     JITMethod:=TJITMethod(Method.Data);
     Result:=JITMethod.TheMethodName;
-    {$IFDEF EnableTFrame}
-    DebugLn(['TMainIDE.OnPropHookGetMethodName ',dbgsName(GlobalDesignHook.LookupRoot),' ',dbgsName(JITMethod.TheClass)]);
-    {$ENDIF}
+    //DebugLn(['TMainIDE.OnPropHookGetMethodName ',dbgsName(GlobalDesignHook.LookupRoot),' ',dbgsName(JITMethod.TheClass)]);
     if (GlobalDesignHook.LookupRoot.ClassType<>JITMethod.TheClass)
     or ((GlobalDesignHook.LookupRoot is TComponent)
         and (csInline in TComponent(GlobalDesignHook.LookupRoot).ComponentState))
@@ -13905,7 +13903,8 @@ end;
 function TMainIDE.OnPropHookCreateMethod(const AMethodName: ShortString;
   ATypeInfo: PTypeInfo;
   APersistent: TPersistent; const APropertyPath: string): TMethod;
-var ActiveSrcEdit: TSourceEditor;
+var
+  ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   r: boolean;
   OldChange: Boolean;
@@ -13915,10 +13914,13 @@ begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource])
   then exit;
   {$IFDEF IDE_DEBUG}
-  writeln('');
-  writeln('[TMainIDE.OnPropHookCreateMethod] ************ ',AMethodName);
+  debugln('');
+  debugln('[TMainIDE.OnPropHookCreateMethod] ************ ',AMethodName);
   DebugLn(['[TMainIDE.OnPropHookCreateMethod] Persistent=',dbgsName(APersistent),' Unit=',GetClassUnitName(APersistent.ClassType),' Path=',APropertyPath]);
   {$ENDIF}
+  
+  DebugLn(['TMainIDE.OnPropHookCreateMethod ',APropertyPath]);
+  
   OldChange:=OpenEditorsOnCodeToolChange;
   OpenEditorsOnCodeToolChange:=true;
   try
@@ -13965,7 +13967,8 @@ begin
   AClassName:=ActiveUnitInfo.Component.ClassName;
   CurMethodName:=AMethodName;
 
-  if IsValidIdentPair(AMethodName,AnInheritedClassName,AInheritedMethodName) then begin
+  if IsValidIdentPair(AMethodName,AnInheritedClassName,AInheritedMethodName)
+  then begin
     ActiveSrcEdit:=nil;
     ActiveUnitInfo:=Project1.UnitWithComponentClassName(AnInheritedClassName);
     if ActiveUnitInfo=nil then begin
