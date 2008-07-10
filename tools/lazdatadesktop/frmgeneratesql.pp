@@ -66,7 +66,6 @@ type
     procedure BGenerateClick(Sender: TObject);
     procedure CBTablesChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure LBKeyFieldsClick(Sender: TObject);
     procedure TSResize(Sender: TObject);
   private
     FTableDefs : TDDTableDefs;
@@ -232,7 +231,10 @@ procedure TGenerateSQLForm.SetTableName(const AValue: String);
 
 begin
   With CBTables do
+    begin
     ItemIndex:=Items.IndexOf(AValue);
+    CBTablesChange(CBTables);
+    end;
 end;
 
 procedure TGenerateSQLForm.SetFieldLists(TD: TDDTableDef);
@@ -276,15 +278,12 @@ begin
   SELineLength.Link.TIObject:=FGenerator;
 end;
 
-procedure TGenerateSQLForm.LBKeyFieldsClick(Sender: TObject);
-begin
-
-end;
 
 procedure TGenerateSQLForm.BGenerateClick(Sender: TObject);
 begin
   GenerateSQL;
 end;
+
 
 initialization
   {$I frmgeneratesql.lrs}

@@ -1,18 +1,17 @@
 object GenerateSQLForm: TGenerateSQLForm
   Left = 349
-  Height = 361
+  Height = 363
   Top = 273
-  Width = 510
-  HorzScrollBar.Page = 509
-  VertScrollBar.Page = 360
+  Width = 593
   ActiveControl = CBTables
   Caption = 'Generate SQL statements'
-  ClientHeight = 361
-  ClientWidth = 510
+  ClientHeight = 363
+  ClientWidth = 593
   OnCreate = FormCreate
+  LCLVersion = '0.9.25'
   object PCSQL: TPageControl
-    Height = 325
-    Width = 510
+    Height = 327
+    Width = 593
     ActivePage = TSFields
     Align = alClient
     TabIndex = 0
@@ -24,23 +23,23 @@ object GenerateSQLForm: TGenerateSQLForm
       ChildSizing.ShrinkHorizontal = crsScaleChilds
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.ControlsPerLine = 3
-      ClientHeight = 293
-      ClientWidth = 506
+      ClientHeight = 294
+      ClientWidth = 589
       OnResize = TSResize
       object POptions: TPanel
-        Height = 293
-        Width = 180
+        Height = 294
+        Width = 254
         Align = alLeft
         BevelOuter = bvNone
-        ClientHeight = 293
-        ClientWidth = 180
+        ClientHeight = 294
+        ClientWidth = 254
         Constraints.MinWidth = 180
         TabOrder = 0
         object LCBTables: TLabel
           Left = 4
           Height = 16
           Top = 5
-          Width = 164
+          Width = 238
           Anchors = [akTop, akLeft, akRight]
           AutoSize = False
           Caption = 'Ta&ble'
@@ -51,7 +50,7 @@ object GenerateSQLForm: TGenerateSQLForm
           Left = 40
           Height = 20
           Top = 205
-          Width = 76
+          Width = 150
           Alignment = taRightJustify
           Anchors = [akTop, akLeft, akRight]
           AutoSize = False
@@ -63,7 +62,7 @@ object GenerateSQLForm: TGenerateSQLForm
           Left = 36
           Height = 20
           Top = 234
-          Width = 80
+          Width = 154
           Alignment = taRightJustify
           Anchors = [akTop, akLeft, akRight]
           AutoSize = False
@@ -75,7 +74,7 @@ object GenerateSQLForm: TGenerateSQLForm
           Left = 4
           Height = 21
           Top = 26
-          Width = 164
+          Width = 238
           Anchors = [akTop, akLeft, akRight]
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           MaxLength = 0
@@ -87,8 +86,8 @@ object GenerateSQLForm: TGenerateSQLForm
         object BGenerate: TButton
           Left = 4
           Height = 25
-          Top = 264
-          Width = 164
+          Top = 265
+          Width = 238
           Anchors = [akLeft, akRight, akBottom]
           BorderSpacing.InnerBorder = 4
           Caption = '&Generate SQL'
@@ -97,7 +96,7 @@ object GenerateSQLForm: TGenerateSQLForm
           TabOrder = 1
         end
         object SEindent: TTISpinEdit
-          Left = 130
+          Left = 204
           Height = 23
           Top = 202
           Width = 34
@@ -106,7 +105,7 @@ object GenerateSQLForm: TGenerateSQLForm
           TabOrder = 2
         end
         object SELineLength: TTISpinEdit
-          Left = 131
+          Left = 205
           Height = 23
           Top = 231
           Width = 34
@@ -118,7 +117,7 @@ object GenerateSQLForm: TGenerateSQLForm
           Left = 6
           Height = 144
           Top = 50
-          Width = 160
+          Width = 234
           Anchors = [akTop, akLeft, akRight]
           Caption = 'Options'
           Link.TIPropertyName = 'Options'
@@ -136,17 +135,17 @@ object GenerateSQLForm: TGenerateSQLForm
         AnchorSideLeft.Control = POptions
         AnchorSideLeft.Side = asrBottom
         AnchorSideRight.Control = PSelectFields
-        Left = 180
-        Height = 293
-        Width = 158
+        Left = 254
+        Height = 294
+        Width = 167
         Align = alClient
         BevelOuter = bvNone
-        ClientHeight = 293
-        ClientWidth = 158
+        ClientHeight = 294
+        ClientWidth = 167
         TabOrder = 1
         object LLBKeyFields: TLabel
           Height = 26
-          Width = 158
+          Width = 167
           Align = alTop
           Alignment = taCenter
           AutoSize = False
@@ -158,7 +157,8 @@ object GenerateSQLForm: TGenerateSQLForm
           Left = 2
           Height = 249
           Top = 34
-          Width = 152
+          Width = 161
+          Anchors = [akTop, akLeft, akRight, akBottom]
           MultiSelect = True
           Sorted = True
           TabOrder = 0
@@ -166,12 +166,12 @@ object GenerateSQLForm: TGenerateSQLForm
         end
       end
       object PSelectFields: TPanel
-        Left = 338
-        Height = 293
+        Left = 421
+        Height = 294
         Width = 168
         Align = alRight
         BevelOuter = bvNone
-        ClientHeight = 293
+        ClientHeight = 294
         ClientWidth = 168
         TabOrder = 2
         object Label2: TLabel
@@ -189,6 +189,7 @@ object GenerateSQLForm: TGenerateSQLForm
           Height = 249
           Top = 34
           Width = 146
+          Anchors = [akTop, akLeft, akRight]
           MultiSelect = True
           Sorted = True
           TabOrder = 0
@@ -198,13 +199,13 @@ object GenerateSQLForm: TGenerateSQLForm
     end
     object TSSelect: TTabSheet
       Caption = '&Select'
-      ClientHeight = 321
-      ClientWidth = 548
+      ClientHeight = 327
+      ClientWidth = 593
       object MSelect: TMemo
         Left = 8
-        Height = 305
+        Height = 311
         Top = 8
-        Width = 532
+        Width = 577
         Align = alClient
         BorderSpacing.Around = 8
         Lines.Strings = (
@@ -215,13 +216,13 @@ object GenerateSQLForm: TGenerateSQLForm
     end
     object TSInsert: TTabSheet
       Caption = '&Insert'
-      ClientHeight = 321
-      ClientWidth = 548
+      ClientHeight = 327
+      ClientWidth = 593
       object MInsert: TMemo
         Left = 8
-        Height = 305
+        Height = 311
         Top = 8
-        Width = 532
+        Width = 577
         Align = alClient
         BorderSpacing.Around = 8
         Lines.Strings = (
@@ -232,13 +233,13 @@ object GenerateSQLForm: TGenerateSQLForm
     end
     object TSUpdate: TTabSheet
       Caption = '&Update'
-      ClientHeight = 321
-      ClientWidth = 548
+      ClientHeight = 327
+      ClientWidth = 593
       object MUpdate: TMemo
         Left = 8
-        Height = 305
+        Height = 311
         Top = 8
-        Width = 532
+        Width = 577
         Align = alClient
         BorderSpacing.Around = 8
         Lines.Strings = (
@@ -249,13 +250,13 @@ object GenerateSQLForm: TGenerateSQLForm
     end
     object TSDelete: TTabSheet
       Caption = '&Delete'
-      ClientHeight = 321
-      ClientWidth = 548
+      ClientHeight = 327
+      ClientWidth = 593
       object MDelete: TMemo
         Left = 8
-        Height = 305
+        Height = 311
         Top = 8
-        Width = 532
+        Width = 577
         Align = alClient
         BorderSpacing.Around = 8
         Lines.Strings = (
@@ -266,13 +267,13 @@ object GenerateSQLForm: TGenerateSQLForm
     end
     object TSCreate: TTabSheet
       Caption = 'Create table'
-      ClientHeight = 321
-      ClientWidth = 548
+      ClientHeight = 327
+      ClientWidth = 593
       object MCreate: TMemo
         Left = 8
-        Height = 305
+        Height = 311
         Top = 8
-        Width = 532
+        Width = 577
         Align = alClient
         BorderSpacing.Around = 8
         Lines.Strings = (
@@ -284,15 +285,15 @@ object GenerateSQLForm: TGenerateSQLForm
   end
   object PButtons: TPanel
     Height = 36
-    Top = 325
-    Width = 510
+    Top = 327
+    Width = 593
     Align = alBottom
     BevelOuter = bvLowered
     ClientHeight = 36
-    ClientWidth = 510
+    ClientWidth = 593
     TabOrder = 1
     object BOK: TButton
-      Left = 420
+      Left = 503
       Height = 25
       Top = 6
       Width = 83
@@ -303,7 +304,7 @@ object GenerateSQLForm: TGenerateSQLForm
       TabOrder = 0
     end
     object BCancel: TButton
-      Left = 332
+      Left = 415
       Height = 25
       Top = 6
       Width = 83
