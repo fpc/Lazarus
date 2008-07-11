@@ -319,7 +319,7 @@ type
     procedure setPenPos(x, y: Integer);
 
     function font: TQtFont;
-    procedure setFont(f: TQtFont);
+    procedure setFont(AFont: TQtFont);
     function brush: TQtBrush;
     procedure setBrush(ABrush: TQtBrush);
     function BackgroundBrush: TQtBrush;
@@ -1614,7 +1614,8 @@ end;
 
 procedure TQtDeviceContext.DestroyObjects;
 begin
-  vFont.Widget := nil;
+  // vFont creates widget and copies font into it => we should destroy it
+  //vFont.Widget := nil;
   FreeAndNil(vFont);
   //WriteLn('Destroying brush: ', PtrUInt(vBrush), ' ', ClassName, ' ', PtrUInt(Self));
   vBrush.Widget := nil;
@@ -2031,11 +2032,16 @@ begin
   Write('TQtDeviceContext.font()');
   {$endif}
 
-  if vFont <> nil then
-    vFont.Widget := QPainter_font(Widget);
-    
   if SelFont = nil then
-    Result := vFont
+  begin
+    if vFont <> nil then
+    begin
+      if vFont.Widget <> nil then
+        QFont_destroy(vFont.Widget);
+      QFont_create(QPainter_font(Widget));
+    end;
+    Result := vFont;
+  end
   else
     Result := SelFont;
 end;
@@ -2045,16 +2051,16 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TQtDeviceContext.setFont(f: TQtFont);
+procedure TQtDeviceContext.setFont(AFont: TQtFont);
 begin
   {$ifdef VerboseQt}
   Write('TQtDeviceContext.setFont() ');
   {$endif}
-  SelFont := F;
-  if (f.Widget <> nil) and (Widget <> nil) then
+  SelFont := AFont;
+  if (AFont.Widget <> nil) and (Widget <> nil) then
   begin
-    QPainter_setFont(Widget, QFontH(f.Widget));
-    vFont.Angle := f.Angle;
+    QPainter_setFont(Widget, QFontH(AFont.Widget));
+    vFont.Angle := AFont.Angle;
   end;
 end;
 
