@@ -914,6 +914,7 @@ var
   i: integer;
   AForm: TCustomForm;
   AWinControl: TWinControl;
+  IsJIT: Boolean;
 Begin
   CompIntf := TComponentInterface(FindComponent(AComponent));
   if CompIntf <> nil then
@@ -922,8 +923,8 @@ Begin
   {$IFDEF IDE_DEBUG}
   DebugLn(['TCustomFormEditor.DeleteComponent ',DbgSName(AComponent),' IsJITComponent=',IsJITComponent(AComponent),' FreeComponent=',FreeComponent]);
   {$ENDIF}
-  if IsJITComponent(AComponent) then begin
-    // value is a top level component
+  IsJIT:=IsJITComponent(AComponent);
+  if IsJIT or (csInline in AComponent.ComponentState) then begin
     i:=AComponent.ComponentCount-1;
     while i>=0 do begin
       DeleteComponent(AComponent.Components[i],FreeComponent);
@@ -931,8 +932,11 @@ Begin
       if i>AComponent.ComponentCount-1 then
         i:=AComponent.ComponentCount-1;
     end;
-    if PropertyEditorHook.LookupRoot=AComponent then
-      PropertyEditorHook.LookupRoot:=nil;
+  end;
+  if PropertyEditorHook.LookupRoot=AComponent then
+    PropertyEditorHook.LookupRoot:=nil;
+  if IsJITComponent(AComponent) then begin
+    // value is a top level component
     if JITFormList.IsJITForm(AComponent) then begin
       // free/unbind a form component
       if FreeComponent then
