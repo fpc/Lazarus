@@ -279,6 +279,7 @@ var
       if GetLookupRootForComponent(CurControl)<>RootComponent then continue;
       AVLNode:=Candidates.FindKey(CurControl,
                     TListSortCompare(@ComparePersistentWithComponentCandidate));
+      if AVLNode=nil then continue;
       Candidate:=TComponentCandidate(AVLNode.Data);
       if Candidate.Added then continue;
       Candidate.Added:=true;
