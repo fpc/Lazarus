@@ -1,21 +1,23 @@
 object GenerateSQLForm: TGenerateSQLForm
-  Left = 349
-  Height = 363
-  Top = 273
+  Left = 274
+  Height = 395
+  Top = 144
   Width = 593
-  ActiveControl = CBTables
+  ActiveControl = PCSQL
   Caption = 'Generate SQL statements'
-  ClientHeight = 363
+  ClientHeight = 395
   ClientWidth = 593
   OnCreate = FormCreate
   LCLVersion = '0.9.25'
   object PCSQL: TPageControl
-    Height = 327
+    Height = 359
     Width = 593
     ActivePage = TSFields
     Align = alClient
     TabIndex = 0
     TabOrder = 0
+    OnChange = PCSQLChange
+    OnPageChanged = PCSQLChange
     object TSFields: TTabSheet
       Caption = 'Table and &Fields'
       ChildSizing.EnlargeHorizontal = crsScaleChilds
@@ -23,15 +25,15 @@ object GenerateSQLForm: TGenerateSQLForm
       ChildSizing.ShrinkHorizontal = crsScaleChilds
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.ControlsPerLine = 3
-      ClientHeight = 294
+      ClientHeight = 326
       ClientWidth = 589
       OnResize = TSResize
       object POptions: TPanel
-        Height = 294
+        Height = 326
         Width = 254
         Align = alLeft
         BevelOuter = bvNone
-        ClientHeight = 294
+        ClientHeight = 326
         ClientWidth = 254
         Constraints.MinWidth = 180
         TabOrder = 0
@@ -86,7 +88,7 @@ object GenerateSQLForm: TGenerateSQLForm
         object BGenerate: TButton
           Left = 4
           Height = 25
-          Top = 265
+          Top = 297
           Width = 238
           Anchors = [akLeft, akRight, akBottom]
           BorderSpacing.InnerBorder = 4
@@ -130,17 +132,25 @@ object GenerateSQLForm: TGenerateSQLForm
             'eoAddTerminator=Add terminator'
           )
         end
+        object CBIgnoreSelection: TCheckBox
+          Left = 6
+          Height = 21
+          Top = 257
+          Width = 190
+          Caption = 'Create full table creation SQL'
+          TabOrder = 5
+        end
       end
       object PKeyFields: TPanel
         AnchorSideLeft.Control = POptions
         AnchorSideLeft.Side = asrBottom
         AnchorSideRight.Control = PSelectFields
         Left = 254
-        Height = 294
+        Height = 326
         Width = 167
         Align = alClient
         BevelOuter = bvNone
-        ClientHeight = 294
+        ClientHeight = 326
         ClientWidth = 167
         TabOrder = 1
         object LLBKeyFields: TLabel
@@ -155,7 +165,7 @@ object GenerateSQLForm: TGenerateSQLForm
         end
         object LBKeyFields: TListBox
           Left = 2
-          Height = 249
+          Height = 281
           Top = 34
           Width = 161
           Anchors = [akTop, akLeft, akRight, akBottom]
@@ -167,11 +177,11 @@ object GenerateSQLForm: TGenerateSQLForm
       end
       object PSelectFields: TPanel
         Left = 421
-        Height = 294
+        Height = 326
         Width = 168
         Align = alRight
         BevelOuter = bvNone
-        ClientHeight = 294
+        ClientHeight = 326
         ClientWidth = 168
         TabOrder = 2
         object Label2: TLabel
@@ -186,10 +196,10 @@ object GenerateSQLForm: TGenerateSQLForm
         end
         object LBFields: TListBox
           Left = 12
-          Height = 249
+          Height = 281
           Top = 34
           Width = 146
-          Anchors = [akTop, akLeft, akRight]
+          Anchors = [akTop, akLeft, akRight, akBottom]
           MultiSelect = True
           Sorted = True
           TabOrder = 0
@@ -216,13 +226,13 @@ object GenerateSQLForm: TGenerateSQLForm
     end
     object TSInsert: TTabSheet
       Caption = '&Insert'
-      ClientHeight = 327
-      ClientWidth = 593
+      ClientHeight = 326
+      ClientWidth = 589
       object MInsert: TMemo
         Left = 8
-        Height = 311
+        Height = 310
         Top = 8
-        Width = 577
+        Width = 573
         Align = alClient
         BorderSpacing.Around = 8
         Lines.Strings = (
@@ -285,7 +295,7 @@ object GenerateSQLForm: TGenerateSQLForm
   end
   object PButtons: TPanel
     Height = 36
-    Top = 327
+    Top = 359
     Width = 593
     Align = alBottom
     BevelOuter = bvLowered

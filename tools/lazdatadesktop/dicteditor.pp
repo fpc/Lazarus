@@ -41,6 +41,7 @@ Type
     FSplit : TSplitter;
     FDDNode,FTablesNode : TTreeNode;
     function GetCurrentField: TDDFieldDef;
+    function GetCurrentIndex: TDDIndexDef;
     function GetCurrentObjectType: TObjectType;
     function GetCurrentTable: TDDTableDef;
     Function NewNode (TV : TTreeView;ParentNode : TTreeNode; ACaption : String; AImageIndex : Integer) : TTreeNode;
@@ -50,14 +51,17 @@ Type
     Procedure ClearEditor;
     Procedure SelectTable(TD : TDDTableDef);
     Procedure SelectField(FD : TDDFieldDef);
+    Procedure SelectIndex(ID : TDDIndexDef);
     procedure SelectDictionary;
     procedure SelectTables;
     procedure SelectFields(TableDef : TDDTableDef);
+    procedure SelectIndexes(TableDef : TDDTableDef);
     procedure SetModified(const AValue: Boolean);
     procedure UpdateSelectedNode;
     Function GetObjectType(Node : TTreeNode): TObjectType;
     Function CreatePropertyGrid(P : TPersistent) : TTIPropertyGrid;
     procedure FieldsDblClick(Sender : TObject);
+    procedure IndexesDblClick(Sender : TObject);
     Function  FindNodeWithData(TV : TTreeView; P : Pointer) : TTreeNode;
     procedure TablesDblClick(Sender : TObject);
   Public
@@ -66,28 +70,37 @@ Type
     Procedure ShowDictionary;
     Procedure NewTable(ATableName: String);
     Procedure NewField(AFieldName : String; TD : TDDTableDef);
-    Procedure ShowTables(TV : TTreeView;ParentNode: TTreeNode; AddFieldsNode : Boolean);
+    Procedure NewIndex(AIndexName : String; TD : TDDTableDef);
+    Procedure ShowTables(TV : TTreeView;ParentNode: TTreeNode; AddFieldsNode : Boolean; AddIndexesNode : Boolean);
     Procedure ShowFields(TV : TTreeView;TableNode: TTreeNode; TableDef : TDDTableDef);
+    Procedure ShowIndexes(TV : TTreeView;TableNode: TTreeNode; TableDef : TDDTableDef);
     Procedure LoadFromFile(AFileName : String);
     Procedure SaveToFile(AFileName : String);
     Procedure DeleteTable(TD : TDDTableDef);
     Procedure DeleteField(FD : TDDFieldDef);
+    Procedure DeleteIndex(ID : TDDIndexDef);
     Property DataDictionary : TFPDataDictionary Read FDD;
     Property Modified : Boolean Read FModified Write SetModified;
     Property ImageOffset : Integer Read FImageOffset Write FImageOffset;
     Property ObjectType : TObjectType Read GetCurrentObjectType;
     Property CurrentTable : TDDTableDef Read GetCurrentTable;
     Property CurrentField : TDDFieldDef Read GetCurrentField;
+    Property CurrentIndex : TDDIndexDef Read GetCurrentIndex;
   end;
   
 
 Const
   // Image Index for nodes. Relative to ImageOffset;
-  iiDataDict = 0;
-  iiTables   = 1;
-  iiTable    = 2;
-  iiFields   = 3;
-  iiField    = 4;
+  // Must match the TObjectType
+  iiDataDict   = 0;
+  iiTables     = 1;
+  iiTable      = 2;
+  iiFields     = 3;
+  iiField      = 4;
+  iiConnection = 5;
+  iiTableData  = 6;
+  iiIndexes    = 7;
+  iiIndex      = 8;
 
 implementation
 
@@ -98,7 +111,8 @@ ResourceString
   SNodeTables         = 'Tables';
   SNodeFields         = 'Fields';
   SNewDictionary      = 'New dictionary';
-  
+  SNodeIndexes         = 'Indexes';
+
 { TDataDictEditor }
 
 function TDataDictEditor.NewNode(TV : TTreeView;ParentNode: TTreeNode; ACaption: String; AImageIndex : Integer
@@ -127,6 +141,20 @@ begin
   if (N<>Nil) then
     Result:=TDDFieldDef(N.Data);
 
+end;
+
+function TDataDictEditor.GetCurrentIndex: TDDIndexDef;
+
+Var
+  N: TTreeNode;
+
+begin
+  Result:=Nil;
+  N:=FTV.Selected;
+  While (N<>Nil) and (GetObjectType(N)<>otIndexDef) do
+    N:=N.Parent;
+  if (N<>Nil) then
+    Result:=TDDIndexDef(N.Data);
 end;
 
 function TDataDictEditor.GetCurrentTable: TDDTableDef;
@@ -186,7 +214,7 @@ begin
     FDDNode:=NewNode(FTV,Nil,S,iiDataDict);
     FDDNode.Data:=FDD;
     FTablesNode:=NewNode(FTV,FDDNode,SNodeTables,iiTables);
-    ShowTables(FTV,FTablesNode,True);
+    ShowTables(FTV,FTablesNode,True,True);
     SetCaption;
     FTV.Selected:=FDDNode;
   finally
@@ -233,6 +261,27 @@ begin
     end;
 end;
 
+procedure TDataDictEditor.NewIndex(AIndexName: String; TD: TDDTableDef);
+
+Var
+  TN : TTreeNode;
+  ID : TDDIndexDef;
+  
+begin
+  TN:=FindNodeWithData(FTV,TD);
+  TN:=TN.GetFirstChild;
+  While (TN<>Nil) and (GetObjectType(TN)<>otIndexDefs) do
+    TN:=TN.GetNextSibling;
+  If (TN<>Nil) then
+    begin
+    ID:=TD.Indexes.AddDDIndexDef(AIndexName);
+    TN:=NewNode(FTV,TN,AIndexName,iiIndex);
+    TN.Data:=ID;
+    FTV.Selected:=TN;
+    Modified:=True;
+    end;
+end;
+
 procedure TDataDictEditor.SetCaption;
 
 Var
@@ -270,6 +319,8 @@ begin
     otTable      : SelectTable(O as TDDTableDef);
     otFields     : SelectFields(OP as TDDTableDef);
     otField      : SelectField(TDDFieldDef(O));
+    otIndexDefs  : SelectIndexes(OP as TDDTableDef);
+    otIndexDef   : SelectIndex(TDDIndexDef(O));
   end;
 end;
 
@@ -313,7 +364,7 @@ begin
   TV:=TTreeView.Create(Self);
   TV.Parent:=FEdit;
   TV.Align:=alClient;
-  ShowTables(TV,Nil,False);
+  ShowTables(TV,Nil,False,false);
   TV.OnDblClick:=@TablesDblClick;
 end;
 
@@ -342,6 +393,20 @@ begin
   TV.Align:=alClient;
   ShowFields(TV,Nil,TableDef);
   TV.OnDblClick:=@FieldsDblClick;
+end;
+
+procedure TDataDictEditor.SelectIndexes(TableDef: TDDTableDef);
+
+Var
+  TV : TTreeView;
+
+begin
+  ClearEditor;
+  TV:=TTreeView.Create(Self);
+  TV.Parent:=FEdit;
+  TV.Align:=alClient;
+  ShowIndexes(TV,Nil,TableDef);
+  TV.OnDblClick:=@IndexesDblClick;
 end;
 
 procedure TDataDictEditor.SetModified(const AValue: Boolean);
@@ -376,6 +441,19 @@ begin
   TV:=Sender As TTreeView;
   N:=TV.Selected;
   If (GetObjectType(N)=otField) and (N.Data<>Nil) then
+    FTV.Selected:=FindNodeWithData(FTV,N.Data);
+end;
+
+procedure TDataDictEditor.IndexesDblClick(Sender: TObject);
+
+Var
+  TV : TTreeView;
+  N : TTreeNode;
+
+begin
+  TV:=Sender As TTreeView;
+  N:=TV.Selected;
+  If (GetObjectType(N)=otIndexDef) and (N.Data<>Nil) then
     FTV.Selected:=FindNodeWithData(FTV,N.Data);
 end;
 
@@ -414,6 +492,12 @@ begin
   CreatePropertyGrid(FD);
 end;
 
+procedure TDataDictEditor.SelectIndex(ID: TDDIndexDef);
+begin
+  ClearEditor;
+  CreatePropertyGrid(ID);
+end;
+
 function TDataDictEditor.GetObjectType(Node: TTreeNode): TObjectType;
 
 Var
@@ -430,7 +514,7 @@ begin
     end;
 end;
 
-procedure TDataDictEditor.ShowTables(TV : TTreeView;ParentNode: TTreeNode; AddFieldsNode: Boolean);
+procedure TDataDictEditor.ShowTables(TV : TTreeView;ParentNode: TTreeNode; AddFieldsNode: Boolean; AddIndexesNode : Boolean);
 
 Var
   TN,FN : TTreeNode;
@@ -453,6 +537,11 @@ begin
         begin
         FN:=NewNode(TV,TN,SNodeFields,iiFields);
         ShowFields(TV,FN,TD);
+        end;
+      If AddIndexesNode then
+        begin
+        FN:=NewNode(TV,TN,SNodeIndexes,iiIndexes);
+        ShowIndexes(TV,FN,TD);
         end;
       end;
     If Assigned(ParentNode) then
@@ -481,6 +570,34 @@ begin
       FD:=TL.Objects[i] as TDDFieldDef;
       TN:=NewNode(TV,TableNode,FD.FieldName,iiField);
       TN.Data:=FD;
+      end;
+    If Assigned(TableNode) then
+      TableNode.Expand(False);
+  Finally
+    FreeAndNil(TL);
+  end;
+end;
+
+procedure TDataDictEditor.ShowIndexes(TV: TTreeView; TableNode: TTreeNode;
+  TableDef: TDDTableDef);
+  
+Var
+  TN : TTreeNode;
+  TL : TStringList;
+  ID : TDDIndexDef;
+  I  : Integer;
+
+begin
+  TL:=TStringList.Create;
+  Try
+    TL.Sorted:=true;
+    For I:=0 to TableDef.Indexes.Count-1 do
+      TL.AddObject(TableDef.Indexes[i].IndexName,TableDef.Indexes[i]);
+    For I:=0 to TL.Count-1 do
+      begin
+      ID:=TL.Objects[i] as TDDIndexDef;
+      TN:=NewNode(TV,TableNode,ID.IndexName,iiindex);
+      TN.Data:=ID;
       end;
     If Assigned(TableNode) then
       TableNode.Expand(False);
@@ -548,6 +665,30 @@ begin
   N.Free;
   FTV.Selected:=NN;
   FD.Free;
+  Modified:=True;
+end;
+
+procedure TDataDictEditor.DeleteIndex(ID: TDDIndexDef);
+
+Var
+  N,NN : TTreeNode;
+
+begin
+  N:=FindNodeWithData(FTV,Pointer(ID));
+  NN:=N.GetNextSibling;
+  If (NN=Nil) then
+    begin
+    NN:=N.GetPrevSibling;
+    If (NN=Nil) then
+      begin
+      NN:=N.Parent;
+      If Assigned(NN) then
+        NN:=NN.Parent;
+      end;
+    end;
+  N.Free;
+  FTV.Selected:=NN;
+  ID.Free;
   Modified:=True;
 end;
 

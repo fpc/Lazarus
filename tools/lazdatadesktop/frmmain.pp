@@ -50,6 +50,8 @@ type
     AClose: TAction;
     ACloseAll: TAction;
     ACopyConnection: TAction;
+    ANewIndex: TAction;
+    ADeleteIndex: TAction;
     ADeleteConnection: TAction;
     ANewConnection: TAction;
     ASaveAs: TAction;
@@ -103,6 +105,9 @@ type
     ODDD: TOpenDialog;
     PCDD: TPageControl;
     SDDD: TSaveDialog;
+    ToolButton4: TToolButton;
+    TBAddIndex: TToolButton;
+    TBDeleteIndex: TToolButton;
     TSConnections: TTabSheet;
     ToolButton1: TToolButton;
     TBNewTable: TToolButton;
@@ -121,6 +126,8 @@ type
     procedure ACloseExecute(Sender: TObject);
     procedure ADeleteFieldExecute(Sender: TObject);
     procedure ADeleteFieldUpdate(Sender: TObject);
+    procedure ADeleteIndexExecute(Sender: TObject);
+    procedure ADeleteIndexUpdate(Sender: TObject);
     procedure ADeleteTableExecute(Sender: TObject);
     procedure ADeleteTableUpdate(Sender: TObject);
     procedure AExitExecute(Sender: TObject);
@@ -129,6 +136,8 @@ type
     procedure ANewExecute(Sender: TObject);
     procedure ANewFieldExecute(Sender: TObject);
     procedure ANewFieldUpdate(Sender: TObject);
+    procedure ANewIndexExecute(Sender: TObject);
+    procedure ANewIndexUpdate(Sender: TObject);
     procedure ANewTableExecute(Sender: TObject);
     procedure ANewTableUpdate(Sender: TObject);
     procedure AOpenExecute(Sender: TObject);
@@ -200,8 +209,10 @@ type
     function NewConnectionEditor(AName : String): TConnectionEditor;
     procedure DeleteCurrentTable;
     procedure DeleteCurrentField;
+    procedure DeleteCurrentIndex;
     Procedure DoNewTable;
     Procedure DoNewField;
+    Procedure DoNewIndex;
     procedure ShowGenerateSQL;
     Property CurrentEditor : TDataDictEditor Read GetCurrentEditor;
     Property CurrentConnection : TConnectionEditor Read GetCurrentConnection;
@@ -242,6 +253,8 @@ ResourceString
   SNewTableName   = 'Enter a name for the new table:';
   SNewField       = 'Create new field in table %s';
   SNewFieldName   = 'Enter a name for the new field:';
+  SNewIndex       = 'Create new index on table %s';
+  SNewIndexName   = 'Enter a name for the new index:';
   SSelectDBFDir   = 'Select a directory with DBF files';
   SNewConnection  = 'New connection';
   SConnectionDescription = 'Enter a descriptive name for the connection';
@@ -696,6 +709,17 @@ begin
                                Assigned(CurrentEditor.CurrentField);
 end;
 
+procedure TMainForm.ADeleteIndexExecute(Sender: TObject);
+begin
+  DeleteCurrentIndex;
+end;
+
+procedure TMainForm.ADeleteIndexUpdate(Sender: TObject);
+begin
+  (Sender as TAction).Enabled:=Assigned(CurrentEditor) and
+                               Assigned(CurrentEditor.CurrentIndex);
+end;
+
 procedure TMainForm.ADeleteTableExecute(Sender: TObject);
 begin
   DeleteCurrentTable;
@@ -723,6 +747,17 @@ begin
 end;
 
 procedure TMainForm.ANewFieldUpdate(Sender: TObject);
+begin
+  (Sender as TAction).Enabled:=(CurrentEditor<>nil)
+                                and (CurrentEditor.CurrentTable<>Nil);
+end;
+
+procedure TMainForm.ANewIndexExecute(Sender: TObject);
+begin
+  DoNewIndex;
+end;
+
+procedure TMainForm.ANewIndexUpdate(Sender: TObject);
 begin
   (Sender as TAction).Enabled:=(CurrentEditor<>nil)
                                 and (CurrentEditor.CurrentTable<>Nil);
@@ -1012,6 +1047,14 @@ begin
         DeleteField(CurrentField);
 end;
 
+procedure TMainForm.DeleteCurrentIndex;
+begin
+  if Assigned(CurrentEditor) then
+    With CurrentEditor do
+      If Assigned(CurrentIndex) then
+        DeleteIndex(CurrentIndex);
+end;
+
 procedure TMainForm.DoNewField;
 
 Var
@@ -1028,6 +1071,26 @@ begin
       If InputQuery(Format(SNewField,[TD.TableName]),SNEwFieldName,AFieldName) then
         If (AFieldName<>'') then
           CurrentEditor.NewField(AFieldName,TD);
+      end;
+    end;
+end;
+
+procedure TMainForm.DoNewIndex;
+
+Var
+  TD : TDDTableDef;
+  AIndexName : String;
+
+begin
+  If Assigned(CurrentEditor) then
+    begin
+    TD:=CurrentEditor.CurrentTable;
+    If Assigned(TD) then
+      begin
+      AIndexName:='';
+      If InputQuery(Format(SNewIndex,[TD.TableName]),SNewIndexName,AIndexName) then
+        If (AIndexName<>'') then
+          CurrentEditor.NewIndex(AIndexName,TD);
       end;
     end;
 end;

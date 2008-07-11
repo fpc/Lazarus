@@ -37,6 +37,7 @@ type
     BCancel: TButton;
     BGenerate: TButton;
     CBTables: TComboBox;
+    CBIgnoreSelection: TCheckBox;
     LBKeyFields: TListBox;
     LCBTables: TLabel;
     Label2: TLabel;
@@ -66,6 +67,7 @@ type
     procedure BGenerateClick(Sender: TObject);
     procedure CBTablesChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure PCSQLChange(Sender: TObject);
     procedure TSResize(Sender: TObject);
   private
     FTableDefs : TDDTableDefs;
@@ -86,6 +88,10 @@ type
     Property TableDefs : TDDTableDefs Read FTableDefs Write SetTableDefs;
     Property TableName : String Read GetTableName Write SetTableName;
     Property SelectSQL : TStrings Index 0 Read GetSQLStatement;
+    Property InsertSQL : TStrings Index 1 Read GetSQLStatement;
+    Property UpdateSQL : TStrings Index 2 Read GetSQLStatement;
+    Property DeleteSQL : TStrings Index 3 Read GetSQLStatement;
+    Property CreateSQL : TStrings Index 4 Read GetSQLStatement;
     Property TableDef  : TDDTableDef Read GetTableDef;
   end; 
 
@@ -128,6 +134,10 @@ function TGenerateSQLForm.GetSQLStatement(Index: integer): TStrings;
 begin
   Case Index of
     0 : Result:=MSelect.Lines;
+    1 : Result:=MInsert.Lines;
+    2 : Result:=MUpdate.Lines;
+    3 : Result:=MDelete.Lines;
+    4 : Result:=MCreate.Lines;
   end;
 end;
 
@@ -213,7 +223,12 @@ begin
         CreateInsertSQLStrings(FL,MInsert.Lines);
         CreateUpdateSQLStrings(FL,KL,MUpdate.Lines);
         CreateDeleteSQLStrings(KL,MDelete.Lines);
-        CreateCreateSQLStrings(FL,KL,MCreate.Lines);
+{$IFNDEF VER2_2}
+        If CBIgnoreSelection.Checked  then
+          CreateTableSQLStrings(MCreate.Lines)
+        else
+{$ENDIF}
+          CreateCreateSQLStrings(FL,KL,MCreate.Lines);
         end;
       FSQLGenerated:=True;
       BGenerate.Default:=False;
@@ -276,6 +291,14 @@ begin
   CLBOptions.Link.TIObject:=FGenerator;
   SEIndent.Link.TIObject:=FGenerator;
   SELineLength.Link.TIObject:=FGenerator;
+{$IFDEF VER2_2}
+  CBIgnoreSelection.Visible:=False;
+{$ENDIF VER2_2}
+end;
+
+procedure TGenerateSQLForm.PCSQLChange(Sender: TObject);
+begin
+
 end;
 
 
