@@ -513,7 +513,7 @@ end;
 
 procedure TPicture.SaveToFile(const Filename: string; const FileExt: string = '');
 var
-  Ext, F: string;
+  Ext: string;
   Stream: TStream;
 begin
   if FileExt <> '' then

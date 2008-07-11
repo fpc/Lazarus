@@ -2927,6 +2927,14 @@ begin
   if FMaskLineStarts <> nil then Dispose(FMaskLineStarts);
   FMaskLineStarts := nil;
   FMaskSet := False;
+  
+  if FDataOwner
+  then ReallocMem(FRawImage.Palette, 0)
+  else FRawImage.Palette := nil;
+  FRawImage.PaletteSize := 0;
+  
+  // old RawImage data has been cleared/destroyed => so new data must be owned by us
+  FDataOwner := True;
 end;
 
 procedure TLazIntfImage.CreateData;
