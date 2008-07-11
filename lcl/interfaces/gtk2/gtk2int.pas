@@ -70,10 +70,11 @@ type
     destructor Destroy; override;
 
     function LCLPlatform: TLCLPlatform; override;
-    
-    procedure SetWidgetFont(const AWidget: PGtkWidget; const AFont: TFont); override;
 
-    function AppHandle: Thandle; override;
+    procedure AppInit(var ScreenInfo: TScreenInfo); override;
+    function AppHandle: THandle; override;
+
+    procedure SetWidgetFont(const AWidget: PGtkWidget; const AFont: TFont); override;
 
     {$I gtk2winapih.inc}
     {$I gtk2lclintfh.inc}

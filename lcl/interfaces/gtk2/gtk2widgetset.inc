@@ -559,6 +559,14 @@ begin
   Result:= lpGtk2;
 end;
 
+procedure TGtk2WidgetSet.AppInit(var ScreenInfo: TScreenInfo);
+begin
+  inherited AppInit(ScreenInfo);
+{$ifdef Windows}
+  Set8087CW($133F);
+{$endif}
+end;
+
 function TGtk2WidgetSet.AppHandle: Thandle;
 begin
   {$ifdef windows}

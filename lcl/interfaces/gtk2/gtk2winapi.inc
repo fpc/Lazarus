@@ -255,20 +255,6 @@ var
   pixbuf: PGdkPixbuf;
   Width, Height: integer;
   MaxWidth, MaxHeight: guint;
-{$ifdef Windows}
-  Old80807CW: Word;
-
-  procedure SetCW; inline;
-  begin
-    Old80807CW := Get8087CW;
-    Set8087CW($133F);
-  end;
-
-  procedure ResetCW; inline;
-  begin
-    Set8087CW(Old80807CW);
-  end;
-{$endif}
 begin
   Result := 0;
   if not IsValidGDIObject(IconInfo^.hbmColor) then Exit;
@@ -298,18 +284,8 @@ begin
     end;
     
     // create cursor from pixbuf
-    {$IFDEF Windows}
-    try
-      // we'll get 'division by zero' error in CMCheckColorsInGamut in other case
-      SetCW;
-    {$ENDIF}
     Result := HCURSOR(PtrUInt(gdk_cursor_new_from_pixbuf(gdk_display_get_default, pixbuf,
       IconInfo^.xHotSpot, IconInfo^.yHotSpot)));
-    {$IFDEF Windows}
-    finally
-      ResetCW;
-    end;
-    {$ENDIF}
 
   finally
     if bitmap <> nil
