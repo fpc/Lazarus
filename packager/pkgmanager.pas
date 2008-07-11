@@ -3771,9 +3771,6 @@ function TPkgManager.DoSaveAutoInstallConfig: TModalResult;
 var
   TargetDir: String;
 begin
-  Result:=PackageGraph.SaveAutoInstallConfig;
-  if Result<>mrOk then exit;
-
   TargetDir:=MiscellaneousOptions.BuildLazOpts.TargetDirectory;
   IDEMacros.SubstituteMacros(TargetDir);
   if not ForceDirectory(TargetDir) then begin
@@ -3784,7 +3781,7 @@ begin
     exit;
   end;
 
-  Result:=mrOk;
+  Result:=PackageGraph.SaveAutoInstallConfig;
 end;
 
 function TPkgManager.DoGetIDEInstallPackageOptions(

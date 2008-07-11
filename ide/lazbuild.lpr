@@ -374,6 +374,7 @@ var
   MakeMode: TMakeMode;
   PkgOptions: String;
   InheritedOptionStrings: TInheritedCompOptsStrings;
+  TargetDir: String;
 begin
   Result:=false;
 
@@ -413,6 +414,21 @@ begin
   PackageGraph.LoadStaticBasePackages;
   PackageGraph.LoadAutoInstallPackages(BuildLazOptions.StaticAutoInstallPackages);
 
+  // save target directory
+  TargetDir:=MiscellaneousOptions.BuildLazOpts.TargetDirectory;
+  IDEMacros.SubstituteMacros(TargetDir);
+  if not ForceDirectory(TargetDir) then begin
+    DebugLn('TLazBuildApplication.BuildLazarusIDE: failed creating IDE target directory "',TargetDir,'"');
+    exit;
+  end;
+
+  // save configs for 'make'
+  CurResult:=PackageGraph.SaveAutoInstallConfig;
+  if CurResult<>mrOk then begin
+    DebugLn('TLazBuildApplication.BuildLazarusIDE: failed saving IDE make config files.');
+    exit;
+  end;
+
   // first compile all lazarus components (LCL, SynEdit, CodeTools, ...)
   // but not the IDE
   CurResult:=BuildLazarus(MiscellaneousOptions.BuildLazOpts,
@@ -433,7 +449,15 @@ begin
   
   // create inherited compiler options
   PkgOptions:=PackageGraph.GetIDEInstallPackageOptions(InheritedOptionStrings);
-  
+
+  // save
+  CurResult:=SaveIDEMakeOptions(BuildLazOptions,
+                                GlobalMacroList,PkgOptions,Flags+[blfOnlyIDE]);
+  if CurResult<>mrOk then begin
+    DebugLn('TLazBuildApplication.BuildLazarusIDE: failed saving idemake.cfg');
+    exit;
+  end;
+
   // compile IDE
   CurResult:=BuildLazarus(BuildLazOptions,
                           EnvironmentOptions.ExternalTools,GlobalMacroList,
