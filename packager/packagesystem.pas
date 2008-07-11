@@ -263,10 +263,6 @@ type
     function CreateNewPackage(const Prefix: string): TLazPackage;
     procedure AddPackage(APackage: TLazPackage);
     procedure ReplacePackage(OldPackage, NewPackage: TLazPackage);
-    procedure AddStaticBasePackages;
-    procedure LoadStaticBasePackages;
-    procedure LoadAutoInstallPackages(PkgList: TStringList);
-    procedure SortAutoInstallDependencies;
     procedure ClosePackage(APackage: TLazPackage);
     procedure CloseUnneededPackages;
     procedure ChangePackageID(APackage: TLazPackage;
@@ -296,6 +292,13 @@ type
   public
     // installed packages
     FirstAutoInstallDependency: TPkgDependency;
+    procedure AddStaticBasePackages;
+    procedure LoadStaticBasePackages;
+    procedure LoadAutoInstallPackages(PkgList: TStringList);
+    procedure SortAutoInstallDependencies;
+    function GetIDEInstallPackageOptions(
+                 var InheritedOptionStrings: TInheritedCompOptsStrings): string;
+    function SaveAutoInstallConfig: TModalResult;
   public
     // registration
     procedure RegisterUnitHandler(const TheUnitName: string;
@@ -1223,7 +1226,8 @@ begin
       end;
     end;
     {$ENDIF}
-    if IDEComponentPalette.FindComponent(CurClassname)<>nil then begin
+    if (IDEComponentPalette<>nil)
+    and (IDEComponentPalette.FindComponent(CurClassname)<>nil) then begin
       RegistrationError(
         Format(lisPkgSysComponentClassAlreadyDefined, ['"',
           CurComponent.ClassName, '"']));
@@ -1232,7 +1236,8 @@ begin
     NewPkgComponent:=
       FRegistrationPackage.AddComponent(FRegistrationFile,Page,CurComponent);
     //debugln('TLazPackageGraph.RegisterComponentsHandler Page="',Page,'" CurComponent=',CurComponent.ClassName,' FRegistrationFile=',FRegistrationFile.Filename);
-    IDEComponentPalette.AddComponent(NewPkgComponent);
+    if IDEComponentPalette<>nil then
+      IDEComponentPalette.AddComponent(NewPkgComponent);
   end;
 end;
 
@@ -1782,6 +1787,73 @@ begin
   // sort install dependencies, so that lower packages come first
   SortDependencyListTopologically(PackageGraph.FirstAutoInstallDependency,
                                                false);
+end;
+
+function TLazPackageGraph.GetIDEInstallPackageOptions(
+  var InheritedOptionStrings: TInheritedCompOptsStrings): string;
+
+  procedure AddOption(const s: string);
+  begin
+    if s='' then exit;
+    if Result='' then
+      Result:=s
+    else
+      Result:=Result+' '+s;
+  end;
+
+var
+  PkgList: TFPList;
+  AddOptionsList: TFPList;
+  ConfigDir: String;
+begin
+  Result:='';
+  if not Assigned(OnGetAllRequiredPackages) then exit;
+
+  // get all required packages
+  PkgList:=nil;
+  OnGetAllRequiredPackages(PackageGraph.FirstAutoInstallDependency,PkgList);
+  if PkgList=nil then exit;
+  // get all usage options
+  AddOptionsList:=GetUsageOptionsList(PkgList);
+  PkgList.Free;
+  if AddOptionsList<>nil then begin
+    // combine options of same type
+    GatherInheritedOptions(AddOptionsList,coptParsed,InheritedOptionStrings);
+    AddOptionsList.Free;
+  end;
+
+  // convert options to compiler parameters
+  Result:=InheritedOptionsToCompilerParameters(InheritedOptionStrings,[]);
+
+  // add activate-static-packages option
+  AddOption('-dAddStaticPkgs');
+
+  // add include path to config directory
+  ConfigDir:=AppendPathDelim(GetPrimaryConfigPath);
+  AddOption(PrepareCmdLineOption('-Fi'+ConfigDir));
+end;
+
+function TLazPackageGraph.SaveAutoInstallConfig: TModalResult;
+var
+  ConfigDir: String;
+  StaticPackagesInc: String;
+  StaticPckIncludeFile: String;
+  Dependency: TPkgDependency;
+begin
+  ConfigDir:=AppendPathDelim(GetPrimaryConfigPath);
+
+  // create auto install package list for the Lazarus uses section
+  StaticPackagesInc:='';
+  Dependency:=FirstAutoInstallDependency;
+  while Dependency<>nil do begin
+    if (Dependency.RequiredPackage<>nil)
+    and (not Dependency.RequiredPackage.AutoCreated) then
+      StaticPackagesInc:=StaticPackagesInc+Dependency.PackageName+','+LineEnding;
+    Dependency:=Dependency.NextRequiresDependency;
+  end;
+  StaticPckIncludeFile:=ConfigDir+'staticpackages.inc';
+  Result:=SaveStringToFile(StaticPckIncludeFile,StaticPackagesInc,[],
+                           lisPkgMangstaticPackagesConfigFile);
 end;
 
 procedure TLazPackageGraph.ClosePackage(APackage: TLazPackage);

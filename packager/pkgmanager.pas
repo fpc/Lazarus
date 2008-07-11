@@ -3743,8 +3743,9 @@ begin
     end;
     
     // check consistency
-    Result:=CheckPackageGraphForCompilation(nil,PackageGraph.FirstAutoInstallDependency,
-                                           EnvironmentOptions.LazarusDirectory);
+    Result:=CheckPackageGraphForCompilation(nil,
+                                PackageGraph.FirstAutoInstallDependency,
+                                EnvironmentOptions.LazarusDirectory);
     if Result<>mrOk then exit;
     //DebugLn(['TPkgManager.DoCompileAutoInstallPackages LCLUnitPath=',PackageGraph.LCLPackage.CompilerOptions.GetUnitPath(true)]);
 
@@ -3755,7 +3756,8 @@ begin
     end;
     
     // compile all auto install dependencies
-    Result:=PackageGraph.CompileRequiredPackages(nil,PackageGraph.FirstAutoInstallDependency,
+    Result:=PackageGraph.CompileRequiredPackages(nil,
+                       PackageGraph.FirstAutoInstallDependency,
                        MiscellaneousOptions.BuildLazOpts.Globals,[pupAsNeeded]);
     if Result<>mrOk then exit;
     
@@ -3767,26 +3769,9 @@ end;
 
 function TPkgManager.DoSaveAutoInstallConfig: TModalResult;
 var
-  ConfigDir: String;
-  StaticPackagesInc: String;
-  StaticPckIncludeFile: String;
-  Dependency: TPkgDependency;
   TargetDir: String;
 begin
-  ConfigDir:=AppendPathDelim(GetPrimaryConfigPath);
-  
-  // create auto install package list for the Lazarus uses section
-  StaticPackagesInc:='';
-  Dependency:=PackageGraph.FirstAutoInstallDependency;
-  while Dependency<>nil do begin
-    if (Dependency.RequiredPackage<>nil)
-    and (not Dependency.RequiredPackage.AutoCreated) then
-      StaticPackagesInc:=StaticPackagesInc+Dependency.PackageName+','+LineEnding;
-    Dependency:=Dependency.NextRequiresDependency;
-  end;
-  StaticPckIncludeFile:=ConfigDir+'staticpackages.inc';
-  Result:=SaveStringToFile(StaticPckIncludeFile,StaticPackagesInc,[],
-                           lisPkgMangstaticPackagesConfigFile);
+  Result:=PackageGraph.SaveAutoInstallConfig;
   if Result<>mrOk then exit;
 
   TargetDir:=MiscellaneousOptions.BuildLazOpts.TargetDirectory;
@@ -3804,46 +3789,8 @@ end;
 
 function TPkgManager.DoGetIDEInstallPackageOptions(
   var InheritedOptionStrings: TInheritedCompOptsStrings): string;
-  
-  procedure AddOption(const s: string);
-  begin
-    if s='' then exit;
-    if Result='' then
-      Result:=s
-    else
-      Result:=Result+' '+s;
-  end;
-  
-var
-  PkgList: TFPList;
-  AddOptionsList: TFPList;
-  ConfigDir: String;
 begin
-  Result:='';
-  if not Assigned(OnGetAllRequiredPackages) then exit;
-  
-  // get all required packages
-  PkgList:=nil;
-  OnGetAllRequiredPackages(PackageGraph.FirstAutoInstallDependency,PkgList);
-  if PkgList=nil then exit;
-  // get all usage options
-  AddOptionsList:=GetUsageOptionsList(PkgList);
-  PkgList.Free;
-  if AddOptionsList<>nil then begin
-    // combine options of same type
-    GatherInheritedOptions(AddOptionsList,coptParsed,InheritedOptionStrings);
-    AddOptionsList.Free;
-  end;
-
-  // convert options to compiler parameters
-  Result:=InheritedOptionsToCompilerParameters(InheritedOptionStrings,[]);
-  
-  // add activate-static-packages option
-  AddOption('-dAddStaticPkgs');
-  
-  // add include path to config directory
-  ConfigDir:=AppendPathDelim(GetPrimaryConfigPath);
-  AddOption(PrepareCmdLineOption('-Fi'+ConfigDir));
+  Result:=PackageGraph.GetIDEInstallPackageOptions(InheritedOptionStrings);
 end;
 
 function TPkgManager.DoPublishPackage(APackage: TLazPackage;

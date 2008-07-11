@@ -103,6 +103,7 @@ type
 
     // IDE
     function BuildLazarusIDE: boolean;
+    function CompileAutoInstallPackages: boolean;
 
     function Init: boolean;
     procedure LoadEnvironmentOptions;
@@ -372,6 +373,7 @@ var
   CurItem: TBuildLazarusItem;
   MakeMode: TMakeMode;
   PkgOptions: String;
+  InheritedOptionStrings: TInheritedCompOptsStrings;
 begin
   Result:=false;
 
@@ -382,6 +384,8 @@ begin
   BuildLazOptions.TargetOS:=OSOverride;
   BuildLazOptions.TargetCPU:=CPUOverride;
   BuildLazOptions.TargetPlatform:=DirNameToLCLPlatform(WidgetSetOverride);
+  BuildLazOptions.LCLPlatform:=BuildLazOptions.TargetPlatform;
+  BuildLazOptions.IDEPlatform:=BuildLazOptions.TargetPlatform;
   BuildLazOptions.ExtraOptions:=BuildIDEOptions;
   MakeMode:=mmNone;
   if BuildAll then begin
@@ -405,6 +409,10 @@ begin
   MainBuildBoss.SetBuildTargetIDE;
   Flags:=[];
   
+  // try loading install packages
+  PackageGraph.LoadStaticBasePackages;
+  PackageGraph.LoadAutoInstallPackages(BuildLazOptions.StaticAutoInstallPackages);
+
   // first compile all lazarus components (LCL, SynEdit, CodeTools, ...)
   // but not the IDE
   CurResult:=BuildLazarus(MiscellaneousOptions.BuildLazOpts,
@@ -417,20 +425,17 @@ begin
     exit;
   end;
   
-  DebugLn(['TLazBuildApplication.BuildLazarusIDE ToDo: compile installed packages']);
-
   // compile auto install static packages
-  {CurResult:=PkgBoss.DoCompileAutoInstallPackages([]);
-  if CurResult<>mrOk then begin
+  if not CompileAutoInstallPackages then begin
     DebugLn('TLazBuildApplication.BuildLazarusIDE: Compile AutoInstall Packages failed.');
     exit;
-  end;}
-
-  DebugLn(['TLazBuildApplication.BuildLazarusIDE ToDo: create inherited options from installed packages']);
-  // create inherited compiler options
-  PkgOptions:=''; //PkgBoss.DoGetIDEInstallPackageOptions(InheritedOptionStrings);
+  end;
   
-  CurResult:=BuildLazarus(MiscellaneousOptions.BuildLazOpts,
+  // create inherited compiler options
+  PkgOptions:=PackageGraph.GetIDEInstallPackageOptions(InheritedOptionStrings);
+  
+  // compile IDE
+  CurResult:=BuildLazarus(BuildLazOptions,
                           EnvironmentOptions.ExternalTools,GlobalMacroList,
                           PkgOptions,EnvironmentOptions.CompilerFilename,
                           EnvironmentOptions.MakeFilename,
@@ -441,6 +446,42 @@ begin
     exit;
   end;
 
+  Result:=true;
+end;
+
+function TLazBuildApplication.CompileAutoInstallPackages: boolean;
+var
+  Dependency: TPkgDependency;
+  OldDependency: TPkgDependency;
+  CurResult: TModalResult;
+begin
+  Result:=false;
+  PackageGraph.BeginUpdate(false);
+  try
+    Dependency:=PackageGraph.FirstAutoInstallDependency;
+    while Dependency<>nil do begin
+      OldDependency:=Dependency;
+      Dependency:=Dependency.NextRequiresDependency;
+      if OldDependency.LoadPackageResult<>lprSuccess then begin
+        raise Exception.Create(Format(
+            lisPkgMangThePackageIsMarkedForInstallationButCanNotBeFound, [
+            '"', OldDependency.AsString, '"', #13]));
+      end;
+    end;
+
+    // check consistency
+    CheckPackageGraphForCompilation(nil,
+                      PackageGraph.FirstAutoInstallDependency);
+
+    // compile all auto install dependencies
+    CurResult:=PackageGraph.CompileRequiredPackages(nil,
+                       PackageGraph.FirstAutoInstallDependency,
+                       MiscellaneousOptions.BuildLazOpts.Globals,[pupAsNeeded]);
+    if CurResult<>mrOk then exit;
+
+  finally
+    PackageGraph.EndUpdate;
+  end;
   Result:=true;
 end;
 
