@@ -562,9 +562,10 @@ end;
 procedure TGtk2WidgetSet.AppInit(var ScreenInfo: TScreenInfo);
 begin
   inherited AppInit(ScreenInfo);
-{$ifdef Windows}
+  {$if defined(cpui386) or defined(cpux86_64)}
+  // needed otherwise some gtk theme engines crash with division by zero
   Set8087CW($133F);
-{$endif}
+  {$endif}
 end;
 
 function TGtk2WidgetSet.AppHandle: Thandle;

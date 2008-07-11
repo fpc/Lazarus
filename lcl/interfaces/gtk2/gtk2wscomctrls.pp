@@ -364,7 +364,7 @@ begin
   if not WSCheckHandleAllocated(ATrackBar, 'SetPosition') then
     Exit;
   Range := PGtkRange(ATrackBar.Handle);
-  gtk_range_set_value(Range, Trunc(NewPosition));
+  gtk_range_set_value(Range, NewPosition);
 end;
 
 { TGtk2WSProgressBar }
