@@ -264,6 +264,9 @@ type
     procedure AddPackage(APackage: TLazPackage);
     procedure ReplacePackage(OldPackage, NewPackage: TLazPackage);
     procedure AddStaticBasePackages;
+    procedure LoadStaticBasePackages;
+    procedure LoadAutoInstallPackages(PkgList: TStringList);
+    procedure SortAutoInstallDependencies;
     procedure ClosePackage(APackage: TLazPackage);
     procedure CloseUnneededPackages;
     procedure ChangePackageID(APackage: TLazPackage;
@@ -1721,6 +1724,64 @@ begin
   AddStaticBasePackage(CreateIDEIntfPackage,FIDEIntfPackage);
   // the default package will be added on demand
   FDefaultPackage:=CreateDefaultPackage;
+end;
+
+procedure TLazPackageGraph.LoadStaticBasePackages;
+var
+  i: Integer;
+  BasePackage: TLazPackage;
+  Dependency: TPkgDependency;
+begin
+  // create static base packages
+  AddStaticBasePackages;
+
+  // add them to auto install list
+  for i:=0 to LazarusBasePackages.Count-1 do begin
+    BasePackage:=TLazPackage(LazarusBasePackages[i]);
+    Dependency:=BasePackage.CreateDependencyWithOwner(Self);
+    OpenDependency(Dependency);
+    Dependency.AddToList(FirstAutoInstallDependency,pdlRequires)
+  end;
+  SortAutoInstallDependencies;
+
+  // register them
+  RegisterStaticBasePackages;
+end;
+
+procedure TLazPackageGraph.LoadAutoInstallPackages(PkgList: TStringList);
+var
+  i: Integer;
+  PackageName: string;
+  Dependency: TPkgDependency;
+begin
+  for i:=0 to PkgList.Count-1 do begin
+    PackageName:=PkgList[i];
+    if (PackageName='') or (not IsValidIdent(PackageName)) then continue;
+    Dependency:=FindDependencyByNameInList(FirstAutoInstallDependency,
+                                           pdlRequires,PackageName);
+    //DebugLn('TLazPackageGraph.LoadAutoInstallPackages ',dbgs(Dependency),' ',PackageName);
+    if Dependency<>nil then continue;
+    Dependency:=TPkgDependency.Create;
+    Dependency.Owner:=Self;
+    Dependency.PackageName:=PackageName;
+    Dependency.AddToList(FirstAutoInstallDependency,pdlRequires);
+    if OpenDependency(Dependency)<>lprSuccess then begin
+      IDEMessageDialog(lisPkgMangUnableToLoadPackage,
+        Format(lisPkgMangUnableToOpenThePackage, ['"', PackageName, '"', #13]),
+        mtWarning,[mbOk]);
+      continue;
+    end;
+    if not Dependency.RequiredPackage.Missing then
+      Dependency.RequiredPackage.AutoInstall:=pitStatic;
+  end;
+  SortAutoInstallDependencies;
+end;
+
+procedure TLazPackageGraph.SortAutoInstallDependencies;
+begin
+  // sort install dependencies, so that lower packages come first
+  SortDependencyListTopologically(PackageGraph.FirstAutoInstallDependency,
+                                               false);
 end;
 
 procedure TLazPackageGraph.ClosePackage(APackage: TLazPackage);

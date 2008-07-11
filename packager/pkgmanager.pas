@@ -168,12 +168,10 @@ type
                           var TheUnitName: string; var HasRegisterProc: boolean;
                           IgnoreErrors: boolean): TModalResult;
     procedure SaveAutoInstallDependencies(SetWithStaticPcksFlagForIDE: boolean);
-    procedure LoadStaticBasePackages;
     procedure LoadStaticCustomPackages;
     function LoadInstalledPackage(const PackageName: string;
                     AddToAutoInstall: boolean; var Quiet: boolean): TLazPackage;
     procedure LoadAutoInstallPackages;
-    procedure SortAutoInstallDependencies;
     procedure AddUnitToProjectMainUsesSection(AProject: TProject;
                                     const AnUnitName, AnUnitInFilename: string);
                                     
@@ -510,7 +508,7 @@ begin
 
     // save package list
     //debugln('TPkgManager.MainIDEitmPkgEditInstallPkgsClick save package list');
-    SortAutoInstallDependencies;
+    PackageGraph.SortAutoInstallDependencies;
     SaveAutoInstallDependencies(true);
 
     // save IDE build configs, so user can build IDE on command line
@@ -1620,28 +1618,6 @@ begin
   sl.Free;
 end;
 
-procedure TPkgManager.LoadStaticBasePackages;
-var
-  i: Integer;
-  BasePackage: TLazPackage;
-  Dependency: TPkgDependency;
-begin
-  // create static base packages
-  PackageGraph.AddStaticBasePackages;
-
-  // add them to auto install list
-  for i:=0 to PackageGraph.LazarusBasePackages.Count-1 do begin
-    BasePackage:=TLazPackage(PackageGraph.LazarusBasePackages[i]);
-    Dependency:=BasePackage.CreateDependencyWithOwner(Self);
-    PackageGraph.OpenDependency(Dependency);
-    Dependency.AddToList(PackageGraph.FirstAutoInstallDependency,pdlRequires)
-  end;
-  SortAutoInstallDependencies;
-
-  // register them
-  PackageGraph.RegisterStaticBasePackages;
-end;
-
 procedure TPkgManager.LoadStaticCustomPackages;
 var
   StaticPackages: TFPList;
@@ -1678,7 +1654,7 @@ begin
     // register
     PackageGraph.RegisterStaticPackage(APackage,StaticPackage^.RegisterProc);
   end;
-  SortAutoInstallDependencies;
+  PackageGraph.SortAutoInstallDependencies;
   ClearRegisteredPackages;
 end;
 
@@ -1706,42 +1682,9 @@ begin
 end;
 
 procedure TPkgManager.LoadAutoInstallPackages;
-var
-  PkgList: TStringList;
-  i: Integer;
-  PackageName: string;
-  Dependency: TPkgDependency;
 begin
-  PkgList:=MiscellaneousOptions.BuildLazOpts.StaticAutoInstallPackages;
-  
-  for i:=0 to PkgList.Count-1 do begin
-    PackageName:=PkgList[i];
-    if (PackageName='') or (not IsValidIdent(PackageName)) then continue;
-    Dependency:=FindDependencyByNameInList(PackageGraph.FirstAutoInstallDependency,
-                                           pdlRequires,PackageName);
-    //DebugLn('TPkgManager.LoadAutoInstallPackages ',dbgs(Dependency),' ',PackageName);
-    if Dependency<>nil then continue;
-    Dependency:=TPkgDependency.Create;
-    Dependency.Owner:=Self;
-    Dependency.PackageName:=PackageName;
-    Dependency.AddToList(PackageGraph.FirstAutoInstallDependency,pdlRequires);
-    if PackageGraph.OpenDependency(Dependency)<>lprSuccess then begin
-      IDEMessageDialog(lisPkgMangUnableToLoadPackage,
-        Format(lisPkgMangUnableToOpenThePackage, ['"', PackageName, '"', #13]),
-        mtWarning,[mbOk]);
-      continue;
-    end;
-    if not Dependency.RequiredPackage.Missing then
-      Dependency.RequiredPackage.AutoInstall:=pitStatic;
-  end;
-  SortAutoInstallDependencies;
-end;
-
-procedure TPkgManager.SortAutoInstallDependencies;
-begin
-  // sort install dependencies, so that lower packages come first
-  PackageGraph.SortDependencyListTopologically(PackageGraph.FirstAutoInstallDependency,
-                                               false);
+  PackageGraph.LoadAutoInstallPackages(
+    MiscellaneousOptions.BuildLazOpts.StaticAutoInstallPackages);
 end;
 
 procedure TPkgManager.AddUnitToProjectMainUsesSection(AProject: TProject;
@@ -1938,9 +1881,8 @@ procedure TPkgManager.LoadInstalledPackages;
 begin
   IDEComponentPalette.BeginUpdate(true);
   try
-    LoadStaticBasePackages;
+    PackageGraph.LoadStaticBasePackages;
     LoadStaticCustomPackages;
-
     LoadAutoInstallPackages;
   finally
     IDEComponentPalette.EndUpdate;
@@ -3637,7 +3579,7 @@ begin
   end;
 
   if NeedSaving then begin
-    SortAutoInstallDependencies;
+    PackageGraph.SortAutoInstallDependencies;
     SaveAutoInstallDependencies(true);
   end;
 
@@ -3709,7 +3651,7 @@ begin
       if Dependency<>nil then begin
         Dependency.RemoveFromList(PackageGraph.FirstAutoInstallDependency,pdlRequires);
         Dependency.Free;
-        SortAutoInstallDependencies;
+        PackageGraph.SortAutoInstallDependencies;
       end;
       SaveAutoInstallDependencies(true);
     end;

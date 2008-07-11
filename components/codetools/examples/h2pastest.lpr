@@ -33,7 +33,7 @@ program H2PasTest;
 uses
   Classes, SysUtils, CodeCache, CodeToolManager, FileProcs,
   CodeAtom, CodeTree, NonPascalCodeTools, CCodeParserTool,
-  H2PasTool, ctypes;
+  H2PasTool;
   
 const
   ConfigFilename = 'codetools.config';
