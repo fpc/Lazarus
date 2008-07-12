@@ -124,7 +124,7 @@ begin
   then Include(QueryFlags, riqfAlpha);
   if ImagePtr^.Description.MaskBitsPerPixel <> 0
   then Include(QueryFlags, riqfMask);
-  DevDesc := QueryDescription(QueryFlags, W, H);
+  QueryDescription(DevDesc, QueryFlags, W, H);
 
   if DevDesc.IsEqual(ImagePtr^.Description)
   then begin
@@ -135,8 +135,19 @@ begin
     // create compatible copy
     SrcImage := TLazIntfImage.Create(ImagePtr^, False);
     DstImage := TLazIntfImage.Create(0, 0);
-    DstImage.DataDescription := DevDesc;
-    DstImage.CopyPixels(SrcImage);
+    // create mask for alphachannel when device has no alpha support
+    if (DevDesc.AlphaPrec = 0) and (riqfAlpha in QueryFlags)
+    then begin
+      //add mask if not already queried
+      if not (riqfMask in QueryFlags)
+      then QueryDescription(DevDesc, [riqfMask, riqfUpdate]);
+      DstImage.DataDescription := DevDesc;
+      DstImage.CopyPixels(SrcImage, 0, 0, True, $8000);
+    end
+    else begin
+      DstImage.DataDescription := DevDesc;
+      DstImage.CopyPixels(SrcImage);
+    end;
     SrcImage.Free;
     DstImage.GetRawImage(DevImage);
     ImagePtr := @DevImage;

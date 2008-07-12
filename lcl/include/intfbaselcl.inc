@@ -299,7 +299,8 @@ begin
     ADesc.AlphaShift := Desc.AlphaShift;
   end
   else begin
-    if (Desc.Depth = 32) and (ADesc.Format = ricfRGBA)
+    if  (Desc.Depth = 32) and (ADesc.Format = ricfRGBA)
+    and ([riqfMono, riqfGrey, riqfRGB] * AFlags <> [])
     then ADesc.Depth := 24;
   end;
   

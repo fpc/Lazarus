@@ -251,7 +251,8 @@ type
     procedure SetRawImage(const ARawImage: TRawImage; ADataOwner: Boolean = True); virtual;
     procedure GetRawImage(out ARawImage: TRawImage; ATransferOwnership: Boolean = False); virtual;
     procedure FillPixels(const Color: TFPColor); virtual;
-    procedure CopyPixels(ASource: TFPCustomImage; XDst: Integer = 0; YDst: Integer = 0); virtual;
+    procedure CopyPixels(ASource: TFPCustomImage; XDst: Integer = 0; YDst: Integer = 0;
+                         AlphaMask: Boolean = False; AlphaTreshold: Word = 0); virtual;
     procedure AlphaFromMask(AKeepAlpha: Boolean = True);
     procedure GetXYDataPostion(x, y: integer; out Position: TRawImagePosition);
     procedure GetXYMaskPostion(x, y: integer; out Position: TRawImagePosition);
@@ -552,6 +553,7 @@ type
 // extra Rawimage utility functions
 
 function QueryDescription(AFlags: TRawImageQueryFlags; AWidth: Integer = -1; AHeight: integer = -1): TRawImageDescription;
+procedure QueryDescription(var ADesc: TRawImageDescription; AFlags: TRawImageQueryFlags; AWidth: Integer = -1; AHeight: integer = -1);
 function GetDescriptionFromDevice(ADC: HDC; AWidth: Integer = -1; AHeight: integer = -1): TRawImageDescription;
 function GetDescriptionFromBitmap(ABitmap: HBitmap; AWidth: Integer = -1; AHeight: integer = -1): TRawImageDescription;
 function AddAlphaToDescription(var ADesc: TRawImageDescription; APrec: Byte): Boolean;
@@ -653,13 +655,19 @@ begin
         +',b='+hexStr(FPColor.blue,4)+',a='+hexStr(FPColor.alpha,4);
 end;
 
-function QueryDescription(AFlags: TRawImageQueryFlags; AWidth: Integer; AHeight: integer): TRawImageDescription;
+function QueryDescription(AFlags: TRawImageQueryFlags; AWidth: Integer = -1; AHeight: integer = -1): TRawImageDescription;
 begin
-  if not (riqfUpdate in AFlags) then Result.Init;
+  Exclude(AFlags, riqfUpdate);
+  QueryDescription(Result, AFlags, AWidth, AHeight);
+end;
 
-  if not RawImage_QueryDescription(AFlags, Result) then Exit;
-  if AWidth <> -1 then Result.Width := AWidth;
-  if AHeight <> -1 then Result.Height := AHeight;
+procedure QueryDescription(var ADesc: TRawImageDescription; AFlags: TRawImageQueryFlags; AWidth: Integer = -1; AHeight: integer = -1);
+begin
+  if not (riqfUpdate in AFlags) then ADesc.Init;
+
+  if not RawImage_QueryDescription(AFlags, ADesc) then Exit;
+  if AWidth <> -1 then ADesc.Width := AWidth;
+  if AHeight <> -1 then ADesc.Height := AHeight;
 end;
 
 function GetDescriptionFromDevice(ADC: HDC; AWidth, AHeight: integer): TRawImageDescription;
@@ -3227,10 +3235,12 @@ begin
   // ToDo: mask
 end;
 
-procedure TLazIntfImage.CopyPixels(ASource: TFPCustomImage; XDst: Integer = 0; YDst: Integer = 0);
+procedure TLazIntfImage.CopyPixels(ASource: TFPCustomImage; XDst, YDst: Integer;
+                                   AlphaMask: Boolean; AlphaTreshold: Word);
 var
   SrcImg: TLazIntfImage absolute ASource;
   x, y, xStop, yStop: Integer;
+  c: TFPColor;
 begin
 {
   if (Src.Width<>Width) or (Src.Height<>Height) then
@@ -3256,14 +3266,20 @@ begin
   then yStop := Height - YDst;
   Dec(xStop);
   Dec(yStop);
-  for y:=0 to yStop do
-    for x:=0 to xStop do
-      Colors[x+XDst,y+YDst] := ASource.Colors[x,y];
 
   if ASource is TLazIntfImage then
     for y:=0 to yStop do
       for x:=0 to xStop do
         Masked[x+XDst,y+YDst] := SrcImg.Masked[x,y];
+
+  for y:=0 to yStop do
+    for x:=0 to xStop do
+    begin
+      c := ASource.Colors[x,y];
+      Colors[x+XDst,y+YDst] := c;
+      if AlphaMask and (c.alpha < AlphaTreshold)
+      then Masked[x+XDst,y+YDst] := True;
+    end;
 
 end;
 
