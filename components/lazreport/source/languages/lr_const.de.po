@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
-"PO-Revision-Date: 2008-04-13 21:26+0100\n"
+"PO-Revision-Date: 2008-07-12 11:34+0100\n"
 "Project-Id-Version: lazreport\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -165,12 +165,12 @@ msgstr "&Code"
 #: lr_const.sbarcodeformdbfld
 msgctxt "lr_const.sbarcodeformdbfld"
 msgid "Insert DB field"
-msgstr ""
+msgstr "DB-Feld einfügen"
 
 #: lr_const.sbarcodeformopts
 msgctxt "lr_const.sbarcodeformopts"
 msgid "Options"
-msgstr ""
+msgstr "Optionen"
 
 #: lr_const.sbarcodeformreadable
 msgid "&Human readable"
@@ -186,7 +186,7 @@ msgstr "Barcode-Editor"
 
 #: lr_const.sbarcodeformtype
 msgid "&Type of barcode"
-msgstr "Barcode-&Version"
+msgstr "&Art des Barcodes"
 
 #: lr_const.sbarcodeformvar
 msgid "Insert variable"
@@ -211,7 +211,7 @@ msgstr "Abbrechen"
 #: lr_const.scateg1
 msgctxt "lr_const.scateg1"
 msgid "Text"
-msgstr ""
+msgstr "Text"
 
 #: lr_const.scateg2
 msgid "Number"
@@ -220,12 +220,12 @@ msgstr "Zahl"
 #: lr_const.scateg3
 msgctxt "lr_const.scateg3"
 msgid "Date"
-msgstr ""
+msgstr "Datum"
 
 #: lr_const.scateg4
 msgctxt "lr_const.scateg4"
 msgid "Time"
-msgstr ""
+msgstr "Zeit"
 
 #: lr_const.scateg5
 msgid "Boolean"
@@ -416,7 +416,7 @@ msgstr "Objektbewegungen"
 #: lr_const.sdesoptionsformopt
 msgctxt "lr_const.sdesoptionsformopt"
 msgid "Options"
-msgstr ""
+msgstr "Optionen"
 
 #: lr_const.sdesoptionsformother
 msgctxt "lr_const.sdesoptionsformother"
@@ -614,7 +614,7 @@ msgstr "&Schreibweisenabhängig"
 #: lr_const.sfindtextcurrentpg
 msgctxt "lr_const.sfindtextcurrentpg"
 msgid "Current &page"
-msgstr ""
+msgstr "Aktuelle Seite"
 
 #: lr_const.sfindtextfirstpg
 msgid "&1st page"
@@ -623,7 +623,7 @@ msgstr "&1. Seite"
 #: lr_const.sfindtextoptions
 msgctxt "lr_const.sfindtextoptions"
 msgid "Options"
-msgstr ""
+msgstr "Optionen"
 
 #: lr_const.sfindtextorg
 msgid "Origin"
@@ -665,7 +665,7 @@ msgstr "Schrift ..."
 #: lr_const.sformat11
 msgctxt "lr_const.sformat11"
 msgid "[None]"
-msgstr ""
+msgstr "[Keine]"
 
 #: lr_const.sformat21
 msgid "1234,5"
@@ -686,7 +686,7 @@ msgstr "1 234,50"
 #: lr_const.sformat25
 msgctxt "lr_const.sformat25"
 msgid "Custom"
-msgstr ""
+msgstr "Benutzerdef."
 
 #: lr_const.sformat31
 msgid "11.15.98"
@@ -707,7 +707,7 @@ msgstr "15. November 1998"
 #: lr_const.sformat35
 msgctxt "lr_const.sformat35"
 msgid "Custom"
-msgstr ""
+msgstr "Benutzerdef."
 
 #: lr_const.sformat41
 msgid "02:43:35"
@@ -728,7 +728,7 @@ msgstr "2:43"
 #: lr_const.sformat45
 msgctxt "lr_const.sformat45"
 msgid "Custom"
-msgstr ""
+msgstr "Benutzerdef."
 
 #: lr_const.sformat51
 msgid "0;1"
@@ -749,7 +749,7 @@ msgstr "Falsch;Wahr"
 #: lr_const.sformat55
 msgctxt "lr_const.sformat55"
 msgid "Custom"
-msgstr ""
+msgstr "Benutzerdef."
 
 #: lr_const.sformfile
 msgid "FastReport form"
@@ -893,7 +893,7 @@ msgstr "Am Gitter ausrichten"
 #: lr_const.sfrdesignerformhightlight
 msgctxt "lr_const.sfrdesignerformhightlight"
 msgid "Highlight attributes"
-msgstr ""
+msgstr "Hervorgehobene Attribute"
 
 #: lr_const.sfrdesignerforminsband
 msgid "Insert band"
@@ -926,7 +926,7 @@ msgstr "Linke Rahmenlinie"
 #: lr_const.sfrdesignerformnewrp
 msgctxt "lr_const.sfrdesignerformnewrp"
 msgid "New report"
-msgstr ""
+msgstr "Neuer Report"
 
 #: lr_const.sfrdesignerformnoframe
 msgid "No frame"
@@ -952,7 +952,7 @@ msgstr "Einfügen"
 #: lr_const.sfrdesignerformpgoption
 msgctxt "lr_const.sfrdesignerformpgoption"
 msgid "Page options"
-msgstr ""
+msgstr "Seitenoptionen"
 
 #: lr_const.sfrdesignerformpreview
 msgid "Preview report"
@@ -961,7 +961,7 @@ msgstr "Reportvorschau"
 #: lr_const.sfrdesignerformrect
 msgctxt "lr_const.sfrdesignerformrect"
 msgid "Rectangle"
-msgstr ""
+msgstr "Rechteck"
 
 #: lr_const.sfrdesignerformredo
 msgid "Redo cancelled action"
@@ -1242,7 +1242,7 @@ msgstr "Gruppe"
 #: lr_const.sgroupeditorformcond
 msgctxt "lr_const.sgroupeditorformcond"
 msgid "Condition"
-msgstr ""
+msgstr "Bedingung"
 
 #: lr_const.shilightformback
 msgid "Background"
@@ -1887,11 +1887,11 @@ msgstr "&Unten, mm"
 
 #: lr_const.spgoptformbycolumns
 msgid "By Colum&ns"
-msgstr ""
+msgstr "Nach Spalten"
 
 #: lr_const.spgoptformbyrows
 msgid "By Row&s"
-msgstr ""
+msgstr "Nach Zeilen"
 
 #: lr_const.spgoptformcapt
 msgctxt "lr_const.spgoptformcapt"
@@ -1920,7 +1920,7 @@ msgstr "&Querformat"
 
 #: lr_const.spgoptformlayoutorder
 msgid "Layout Order"
-msgstr ""
+msgstr "Layout-Reihenfolge"
 
 #: lr_const.spgoptformleft
 msgid "&Left, mm"
@@ -2163,7 +2163,7 @@ msgstr "Stil"
 
 #: lr_const.sroundrectformstyledif
 msgid "Vertical,Horizontal,Elliptic,Rectangle,Horiz._Center,Vert._Center"
-msgstr ""
+msgstr "Senkrecht,Waagerecht,Elliptisch,Rechteckig,Horiz.-Zentr.,Vert.-Zentr."
 
 #: lr_const.sroundrectformvar
 msgid "Variables ..."
@@ -2274,7 +2274,7 @@ msgstr "Unbenannt"
 
 #: lr_const.svar1
 msgid "Page#"
-msgstr ""
+msgstr "Seite #"
 
 #: lr_const.svar2
 msgid "Expression"

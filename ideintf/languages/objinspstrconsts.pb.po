@@ -536,6 +536,14 @@ msgstr "Editor ImageList"
 msgid "Images"
 msgstr "Imagens"
 
+#: objinspstrconsts:oisincompatibleidentifier
+msgid "Incompatible Identifier"
+msgstr ""
+
+#: objinspstrconsts:oisincompatiblemethod
+msgid "Incompatible Method"
+msgstr ""
+
 #: objinspstrconsts:oisinputmask
 msgid "Input Mask:"
 msgstr "Inserir Mascara:"
@@ -951,6 +959,18 @@ msgstr "Texto:"
 #: objinspstrconsts:cgcheckduplicatemsg
 msgid "The \"%s\" Item is already listed. Add it anyway?"
 msgstr "O item \"%s\" já está listado. Adicionar assim mesmo?"
+
+#: objinspstrconsts:oistheidentifierisnotamethodpresscanceltoundopressign
+msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
+msgstr ""
+
+#: objinspstrconsts:oisthemethodisincompatibletothiseventpresscanceltound
+msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
+msgstr ""
+
+#: objinspstrconsts:oisthemethodisnotpublishedpresscanceltoundopressignor
+msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
+msgstr ""
 
 #: objinspstrconsts:cactionlisteditorpaneltoolbar
 msgid "Toolbar"

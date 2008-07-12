@@ -1497,6 +1497,10 @@ msgstr "La classe %s%s%s no està registrada com a component de classe. %sNo es 
 msgid "Class %s%s%s not found."
 msgstr "No s'ha trobat la Classe %s%s%S"
 
+#: lazarusidestrconsts:lisclassofmethodnotfound
+msgid "Class %s%s%s of method %s%s%s not found."
+msgstr ""
+
 #: lazarusidestrconsts:lisa2pclassnamealreadyexists
 msgid "Class Name already exists"
 msgstr "Ja existeix el nom de la classe"
@@ -5517,6 +5521,10 @@ msgstr "Editor del menú"
 msgid "Messages"
 msgstr "Missatges"
 
+#: lazarusidestrconsts:lismethodclassnotfound
+msgid "Method class not found"
+msgstr ""
+
 #: lazarusidestrconsts:dlgmethodinspolicy
 msgid "Method insert policy"
 msgstr "Política d'inserir mètodes"
@@ -8976,6 +8984,10 @@ msgstr "El fitxer del compilador \"%s\" no és executable"
 #: lazarusidestrconsts:lispkgmangthecompilerfileforpackageisnotavalidexecutable
 msgid "The compiler file for package %s is not a valid executable:%s%s"
 msgstr "El fitxer de compilador pel paquet %s no és un executable vàlid:%s%s"
+
+#: lazarusidestrconsts:listhecomponentcannotbedeletedbecauseitisnotownedby
+msgid "The component %s can not be deleted, because it is not owned by %s."
+msgstr ""
 
 #: lazarusidestrconsts:listhecomponentisinheritedfromtodeleteaninheritedcomp
 msgid "The component %s is inherited from %s.%sTo delete an inherited component open the ancestor and delete it there."

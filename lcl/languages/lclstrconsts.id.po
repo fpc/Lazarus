@@ -247,6 +247,10 @@ msgstr "Pembuatan cachable salah: "
 msgid "Ctrl"
 msgstr "Ctrl"
 
+#: lclstrconsts:rscursor
+msgid "Cursor"
+msgstr ""
+
 #: lclstrconsts:rsmtcustom
 msgid "Custom"
 msgstr "Kustom"
@@ -622,6 +626,10 @@ msgstr "Numlock"
 #: lclstrconsts:ifsvk_numpad
 msgid "Numpad %d"
 msgstr "Numpad %d"
+
+#: lclstrconsts:rsicns
+msgid "OSX Icon Resource"
+msgstr ""
 
 #: lclstrconsts:rsfdopenfile
 msgid "Open existing file"

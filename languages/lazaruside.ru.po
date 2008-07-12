@@ -1497,6 +1497,10 @@ msgstr "Класс %s%s%s - не зарегистрированный класс
 msgid "Class %s%s%s not found."
 msgstr "Класс %s%s%s не найден."
 
+#: lazarusidestrconsts:lisclassofmethodnotfound
+msgid "Class %s%s%s of method %s%s%s not found."
+msgstr ""
+
 #: lazarusidestrconsts:lisa2pclassnamealreadyexists
 msgid "Class Name already exists"
 msgstr "Имя класса уже существует"
@@ -5517,6 +5521,10 @@ msgstr "Редактор меню"
 msgid "Messages"
 msgstr "Сообщения"
 
+#: lazarusidestrconsts:lismethodclassnotfound
+msgid "Method class not found"
+msgstr ""
+
 #: lazarusidestrconsts:dlgmethodinspolicy
 msgid "Method insert policy"
 msgstr "Политика вставки методов"
@@ -8976,6 +8984,10 @@ msgstr "Файл компилятора \"%s\" не исполняемый."
 #: lazarusidestrconsts:lispkgmangthecompilerfileforpackageisnotavalidexecutable
 msgid "The compiler file for package %s is not a valid executable:%s%s"
 msgstr "Файл компилятора для пакета %s - недопустимый исполняемый:%s%s"
+
+#: lazarusidestrconsts:listhecomponentcannotbedeletedbecauseitisnotownedby
+msgid "The component %s can not be deleted, because it is not owned by %s."
+msgstr ""
 
 #: lazarusidestrconsts:listhecomponentisinheritedfromtodeleteaninheritedcomp
 msgid "The component %s is inherited from %s.%sTo delete an inherited component open the ancestor and delete it there."

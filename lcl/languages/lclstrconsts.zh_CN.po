@@ -247,6 +247,10 @@ msgstr "创建 GDB 可以捕捉的错误"
 msgid "Ctrl"
 msgstr ""
 
+#: lclstrconsts:rscursor
+msgid "Cursor"
+msgstr ""
+
 #: lclstrconsts:rsmtcustom
 msgid "Custom"
 msgstr "自定义"
@@ -622,6 +626,10 @@ msgstr "数字锁定"
 #: lclstrconsts:ifsvk_numpad
 msgid "Numpad %d"
 msgstr "数字键盘 %d"
+
+#: lclstrconsts:rsicns
+msgid "OSX Icon Resource"
+msgstr ""
 
 #: lclstrconsts:rsfdopenfile
 msgid "Open existing file"

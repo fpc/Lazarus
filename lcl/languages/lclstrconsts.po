@@ -448,6 +448,14 @@ msgstr ""
 msgid "Icon"
 msgstr ""
 
+#: lclstrconsts:rsicns
+msgid "OSX Icon Resource"
+msgstr ""
+
+#: lclstrconsts:rscursor
+msgid "Cursor"
+msgstr ""
+
 #: lclstrconsts:rsjpeg
 msgid "Joint Picture Expert Group"
 msgstr ""

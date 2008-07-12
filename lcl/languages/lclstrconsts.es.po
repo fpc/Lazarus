@@ -244,6 +244,10 @@ msgstr "Creando un error capturable por gdb"
 msgid "Ctrl"
 msgstr "Ctrl"
 
+#: lclstrconsts:rscursor
+msgid "Cursor"
+msgstr ""
+
 #: lclstrconsts:rsmtcustom
 msgid "Custom"
 msgstr "Personalizado"
@@ -619,6 +623,10 @@ msgstr "BloqNum"
 #: lclstrconsts:ifsvk_numpad
 msgid "Numpad %d"
 msgstr "TeclaNum %d"
+
+#: lclstrconsts:rsicns
+msgid "OSX Icon Resource"
+msgstr ""
 
 #: lclstrconsts:rsfdopenfile
 msgid "Open existing file"

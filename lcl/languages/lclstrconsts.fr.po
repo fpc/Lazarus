@@ -247,6 +247,10 @@ msgstr "Créer une erreur d'arret de gdb :"
 msgid "Ctrl"
 msgstr "Ctrl"
 
+#: lclstrconsts:rscursor
+msgid "Cursor"
+msgstr ""
+
 #: lclstrconsts:rsmtcustom
 msgid "Custom"
 msgstr "Personnalisé"
@@ -622,6 +626,10 @@ msgstr "Verr num."
 #: lclstrconsts:ifsvk_numpad
 msgid "Numpad %d"
 msgstr "%d pav num."
+
+#: lclstrconsts:rsicns
+msgid "OSX Icon Resource"
+msgstr ""
 
 #: lclstrconsts:rsfdopenfile
 msgid "Open existing file"

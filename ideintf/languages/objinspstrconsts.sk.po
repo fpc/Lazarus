@@ -543,6 +543,14 @@ msgstr "Editor ImageList"
 msgid "Images"
 msgstr "Obrázky"
 
+#: objinspstrconsts:oisincompatibleidentifier
+msgid "Incompatible Identifier"
+msgstr ""
+
+#: objinspstrconsts:oisincompatiblemethod
+msgid "Incompatible Method"
+msgstr ""
+
 #: objinspstrconsts:oisinputmask
 msgid "Input Mask:"
 msgstr "Vstupná maska:"
@@ -958,6 +966,18 @@ msgstr "Text:"
 #: objinspstrconsts:cgcheckduplicatemsg
 msgid "The \"%s\" Item is already listed. Add it anyway?"
 msgstr "Položka „%s“ je už v zozname. Chcete ju napriek tomu pridať?"
+
+#: objinspstrconsts:oistheidentifierisnotamethodpresscanceltoundopressign
+msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
+msgstr ""
+
+#: objinspstrconsts:oisthemethodisincompatibletothiseventpresscanceltound
+msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
+msgstr ""
+
+#: objinspstrconsts:oisthemethodisnotpublishedpresscanceltoundopressignor
+msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
+msgstr ""
 
 #: objinspstrconsts:cactionlisteditorpaneltoolbar
 msgid "Toolbar"

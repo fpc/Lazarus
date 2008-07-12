@@ -247,6 +247,10 @@ msgstr ""
 msgid "Ctrl"
 msgstr "Ctrl"
 
+#: lclstrconsts:rscursor
+msgid "Cursor"
+msgstr ""
+
 #: lclstrconsts:rsmtcustom
 msgid "Custom"
 msgstr "Vlastné"
@@ -622,6 +626,10 @@ msgstr ""
 #: lclstrconsts:ifsvk_numpad
 msgid "Numpad %d"
 msgstr "Numerická klávesnica %d"
+
+#: lclstrconsts:rsicns
+msgid "OSX Icon Resource"
+msgstr ""
 
 #: lclstrconsts:rsfdopenfile
 msgid "Open existing file"

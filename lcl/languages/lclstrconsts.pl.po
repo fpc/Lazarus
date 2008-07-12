@@ -249,6 +249,10 @@ msgstr "Błąd przy tworzeniu \"gdb catchable\":"
 msgid "Ctrl"
 msgstr ""
 
+#: lclstrconsts:rscursor
+msgid "Cursor"
+msgstr ""
+
 #: lclstrconsts:rsmtcustom
 msgid "Custom"
 msgstr "Inny"
@@ -623,6 +627,10 @@ msgstr ""
 
 #: lclstrconsts:ifsvk_numpad
 msgid "Numpad %d"
+msgstr ""
+
+#: lclstrconsts:rsicns
+msgid "OSX Icon Resource"
 msgstr ""
 
 #: lclstrconsts:rsfdopenfile

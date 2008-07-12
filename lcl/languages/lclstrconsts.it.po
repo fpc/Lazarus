@@ -244,6 +244,10 @@ msgstr "Creazione errore intercettabile gdb:"
 msgid "Ctrl"
 msgstr "Ctrl"
 
+#: lclstrconsts:rscursor
+msgid "Cursor"
+msgstr ""
+
 #: lclstrconsts:rsmtcustom
 msgid "Custom"
 msgstr "Personalizza"
@@ -619,6 +623,10 @@ msgstr "BlocNum"
 #: lclstrconsts:ifsvk_numpad
 msgid "Numpad %d"
 msgstr "TastNum %d"
+
+#: lclstrconsts:rsicns
+msgid "OSX Icon Resource"
+msgstr ""
 
 #: lclstrconsts:rsfdopenfile
 msgid "Open existing file"

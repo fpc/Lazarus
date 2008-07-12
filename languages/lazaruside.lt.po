@@ -1498,6 +1498,10 @@ msgstr "Klasė %s%s%s nėra registruoto komponento klasė.%sĮdėti nepavyks."
 msgid "Class %s%s%s not found."
 msgstr "Klasė %s%s%s nerasta."
 
+#: lazarusidestrconsts:lisclassofmethodnotfound
+msgid "Class %s%s%s of method %s%s%s not found."
+msgstr ""
+
 #: lazarusidestrconsts:lisa2pclassnamealreadyexists
 msgid "Class Name already exists"
 msgstr "Dubliuojasi klasės pavadinimas "
@@ -5518,6 +5522,10 @@ msgstr "Meniu rengyklė"
 msgid "Messages"
 msgstr "Pranešimai"
 
+#: lazarusidestrconsts:lismethodclassnotfound
+msgid "Method class not found"
+msgstr ""
+
 #: lazarusidestrconsts:dlgmethodinspolicy
 msgid "Method insert policy"
 msgstr "Metodo įterpimo policija"
@@ -8977,6 +8985,10 @@ msgstr "Kompiliatoriaus failas „%s“ nėra paleidžiamasis."
 #: lazarusidestrconsts:lispkgmangthecompilerfileforpackageisnotavalidexecutable
 msgid "The compiler file for package %s is not a valid executable:%s%s"
 msgstr "Paketo %s kompiliatoriaus failas nėra vykdomasis:%s%s"
+
+#: lazarusidestrconsts:listhecomponentcannotbedeletedbecauseitisnotownedby
+msgid "The component %s can not be deleted, because it is not owned by %s."
+msgstr ""
 
 #: lazarusidestrconsts:listhecomponentisinheritedfromtodeleteaninheritedcomp
 msgid "The component %s is inherited from %s.%sTo delete an inherited component open the ancestor and delete it there."

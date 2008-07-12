@@ -1500,6 +1500,10 @@ msgstr "Trieda %s%s%s nie je triedou registrovaného komponenta.%sNemožno vlož
 msgid "Class %s%s%s not found."
 msgstr "Trieda %s%s%s nenájdená."
 
+#: lazarusidestrconsts:lisclassofmethodnotfound
+msgid "Class %s%s%s of method %s%s%s not found."
+msgstr ""
+
 #: lazarusidestrconsts:lisa2pclassnamealreadyexists
 msgid "Class Name already exists"
 msgstr "Meno triedy už existuje"
@@ -5520,6 +5524,10 @@ msgstr "Editor menu"
 msgid "Messages"
 msgstr "Správy"
 
+#: lazarusidestrconsts:lismethodclassnotfound
+msgid "Method class not found"
+msgstr ""
+
 #: lazarusidestrconsts:dlgmethodinspolicy
 msgid "Method insert policy"
 msgstr "Pravidlá vkladania metód"
@@ -8979,6 +8987,10 @@ msgstr "Súbor prekladača \"%s\" nie je spustiteľný."
 #: lazarusidestrconsts:lispkgmangthecompilerfileforpackageisnotavalidexecutable
 msgid "The compiler file for package %s is not a valid executable:%s%s"
 msgstr "Súbor prekladača pre balíček %s nie je platný spustiteľný súbor:%S%S"
+
+#: lazarusidestrconsts:listhecomponentcannotbedeletedbecauseitisnotownedby
+msgid "The component %s can not be deleted, because it is not owned by %s."
+msgstr ""
 
 #: lazarusidestrconsts:listhecomponentisinheritedfromtodeleteaninheritedcomp
 msgid "The component %s is inherited from %s.%sTo delete an inherited component open the ancestor and delete it there."

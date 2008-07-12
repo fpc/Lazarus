@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-06-29 21:21+0100\n"
+"PO-Revision-Date: 2008-07-08 21:33+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -63,6 +63,10 @@ msgstr "%s Verzeichnis"
 #: lazarusidestrconsts:lislddoesnothaveanyvalidlazdocpathunabletocreatethefpdo
 msgid "%s does not have any valid LazDoc path.%sUnable to create the fpdoc file for %s"
 msgstr "%s hat keinen gültigen LazDoc-Pfad.%sKann die FPDoc-Datei für %s nicht schreiben"
+
+#: lazarusidestrconsts:lisisathiscircledependencyisnotallowed
+msgid "%s is a %s.%sThis circle dependency is not allowed."
+msgstr ""
 
 #: lazarusidestrconsts:lisisalreadypartoftheproject
 msgid "%s is already part of the Project."
@@ -1496,6 +1500,10 @@ msgstr "Klasse %s%s%s ist keine registrierte Komponentenklasse.%sKann keine Übe
 msgid "Class %s%s%s not found."
 msgstr "Klasse %s%s%s nicht gefunden."
 
+#: lazarusidestrconsts:lisclassofmethodnotfound
+msgid "Class %s%s%s of method %s%s%s not found."
+msgstr ""
+
 #: lazarusidestrconsts:lisa2pclassnamealreadyexists
 msgid "Class Name already exists"
 msgstr "Klassenname bereits belegt"
@@ -2394,7 +2402,7 @@ msgstr "Debuggerfenster"
 
 #: lazarusidestrconsts:lismendebuggeroptions
 msgid "Debugger Options ..."
-msgstr "Debuggereinstellungen ..."
+msgstr "Debuggeroptionen ..."
 
 #: lazarusidestrconsts:lisdebuggererror
 msgid "Debugger error"
@@ -2418,7 +2426,7 @@ msgstr "Zusätzlicher Debuggerpfad (keiner):"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmdebuggerspecific
 msgid "Debugger specific options (depends on type of debugger)"
-msgstr "Debuggerspezifische Optionen (abhängig vom Typ des Debuggers)"
+msgstr "Spezifische Debuggeroptionen (abhängig vom Typ des Debuggers)"
 
 #: lazarusidestrconsts:dlgdebugtype
 msgid "Debugger type and path"
@@ -3295,6 +3303,10 @@ msgstr "Externe Werkzeuge"
 #: lazarusidestrconsts:srkmecexttoolsettings
 msgid "External tools settings"
 msgstr "Einstellungen für externe Werkzeuge"
+
+#: lazarusidestrconsts:dlgextracharspacing
+msgid "Extra char spacing"
+msgstr ""
 
 #: lazarusidestrconsts:dlgextralinespacing
 msgid "Extra line spacing"
@@ -4780,6 +4792,10 @@ msgstr "Ungültiger Unit-Name"
 msgid "Invalid Unitname: %s"
 msgstr "Ungültiger Unit-Name: %s"
 
+#: lazarusidestrconsts:lisinvalidcircle
+msgid "Invalid circle"
+msgstr ""
+
 #: lazarusidestrconsts:lisinvalidcommand
 msgid "Invalid command"
 msgstr "Ungültiger Befehl"
@@ -5507,6 +5523,10 @@ msgstr "Menüeditor"
 #: lazarusidestrconsts:lismenuviewmessages
 msgid "Messages"
 msgstr "Nachrichten ..."
+
+#: lazarusidestrconsts:lismethodclassnotfound
+msgid "Method class not found"
+msgstr ""
 
 #: lazarusidestrconsts:dlgmethodinspolicy
 msgid "Method insert policy"
@@ -8702,7 +8722,7 @@ msgstr "Zielbetriebssystem"
 
 #: lazarusidestrconsts:liscotargetosspecificoptions
 msgid "Target OS specific options"
-msgstr "Zielbetriebssystemspezifische Einstellungen"
+msgstr "Zielbetriebssystemspezifische Optionen"
 
 #: lazarusidestrconsts:lislazbuildtargetos
 msgid "Target OS:"
@@ -8967,6 +8987,10 @@ msgstr "Die Compilerdatei \"%s\" ist nicht ausführbar."
 #: lazarusidestrconsts:lispkgmangthecompilerfileforpackageisnotavalidexecutable
 msgid "The compiler file for package %s is not a valid executable:%s%s"
 msgstr "Die Compilerdatei des Packages %s ist keine gültige ausführbare Datei:%s%s"
+
+#: lazarusidestrconsts:listhecomponentcannotbedeletedbecauseitisnotownedby
+msgid "The component %s can not be deleted, because it is not owned by %s."
+msgstr ""
 
 #: lazarusidestrconsts:listhecomponentisinheritedfromtodeleteaninheritedcomp
 msgid "The component %s is inherited from %s.%sTo delete an inherited component open the ancestor and delete it there."
