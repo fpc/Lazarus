@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-06-19 16:19+0100\n"
+"PO-Revision-Date: 2008-07-12 13:23+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -545,11 +545,11 @@ msgstr "Bilder"
 
 #: objinspstrconsts:oisincompatibleidentifier
 msgid "Incompatible Identifier"
-msgstr ""
+msgstr "Inkompatibler Bezeichner"
 
 #: objinspstrconsts:oisincompatiblemethod
 msgid "Incompatible Method"
-msgstr ""
+msgstr "Inkompatible Methode"
 
 #: objinspstrconsts:oisinputmask
 msgid "Input Mask:"
@@ -969,15 +969,15 @@ msgstr "Der Eintrag \"%s\" ist bereits enthalten, trotzdem hinzufügen?"
 
 #: objinspstrconsts:oistheidentifierisnotamethodpresscanceltoundopressign
 msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr ""
+msgstr "Der Bezeichner %s%s%s ist keine Methode.%Zurücknehmen mit Cancel,%sÜbergehen um ihn zu erzwingen"
 
 #: objinspstrconsts:oisthemethodisincompatibletothiseventpresscanceltound
 msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
-msgstr ""
+msgstr "Die Methode %s%s%s ist zu diesem Event (%s) inkompatibel.%sAbbrechen um zurückzunehmen,%sÜbergehen um sie zu erzwingen."
 
 #: objinspstrconsts:oisthemethodisnotpublishedpresscanceltoundopressignor
 msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr ""
+msgstr "Die Methode %s%s%s ist nicht Published.%sAbbrechen um zurückzunehmen,%sÜbergehen um sie zu erzwingen."
 
 #: objinspstrconsts:cactionlisteditorpaneltoolbar
 msgid "Toolbar"

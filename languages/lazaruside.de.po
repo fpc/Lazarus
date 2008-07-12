@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-07-08 21:33+0100\n"
+"PO-Revision-Date: 2008-07-12 13:21+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -66,7 +66,7 @@ msgstr "%s hat keinen gültigen LazDoc-Pfad.%sKann die FPDoc-Datei für %s nicht
 
 #: lazarusidestrconsts:lisisathiscircledependencyisnotallowed
 msgid "%s is a %s.%sThis circle dependency is not allowed."
-msgstr ""
+msgstr "%s ist ein %s.%sDiese zirkuläre Abhängigkeit ist nicht erlaubt"
 
 #: lazarusidestrconsts:lisisalreadypartoftheproject
 msgid "%s is already part of the Project."
@@ -1502,7 +1502,7 @@ msgstr "Klasse %s%s%s nicht gefunden."
 
 #: lazarusidestrconsts:lisclassofmethodnotfound
 msgid "Class %s%s%s of method %s%s%s not found."
-msgstr ""
+msgstr "Klasse %s%s%s der Methode %s%s%s nicht gefunden."
 
 #: lazarusidestrconsts:lisa2pclassnamealreadyexists
 msgid "Class Name already exists"
@@ -3306,7 +3306,7 @@ msgstr "Einstellungen für externe Werkzeuge"
 
 #: lazarusidestrconsts:dlgextracharspacing
 msgid "Extra char spacing"
-msgstr ""
+msgstr "Zusätzlicher Zeichenabstand"
 
 #: lazarusidestrconsts:dlgextralinespacing
 msgid "Extra line spacing"
@@ -4734,7 +4734,7 @@ msgstr "Ungültige Basisklasse"
 
 #: lazarusidestrconsts:lisa2pinvalidcircle
 msgid "Invalid Circle"
-msgstr "Ungültiger Kreis"
+msgstr "Ungültiger Ringschluß"
 
 #: lazarusidestrconsts:lisa2pinvalidclassname
 msgid "Invalid Class Name"
@@ -4794,7 +4794,7 @@ msgstr "Ungültiger Unit-Name: %s"
 
 #: lazarusidestrconsts:lisinvalidcircle
 msgid "Invalid circle"
-msgstr ""
+msgstr "Ungültiger Kreis"
 
 #: lazarusidestrconsts:lisinvalidcommand
 msgid "Invalid command"
@@ -5526,7 +5526,7 @@ msgstr "Nachrichten ..."
 
 #: lazarusidestrconsts:lismethodclassnotfound
 msgid "Method class not found"
-msgstr ""
+msgstr "Methodenklasse nicht gefunden"
 
 #: lazarusidestrconsts:dlgmethodinspolicy
 msgid "Method insert policy"
@@ -8990,7 +8990,7 @@ msgstr "Die Compilerdatei des Packages %s ist keine gültige ausführbare Datei:
 
 #: lazarusidestrconsts:listhecomponentcannotbedeletedbecauseitisnotownedby
 msgid "The component %s can not be deleted, because it is not owned by %s."
-msgstr ""
+msgstr "Die Komponente %s kann nicht gelöscht werden, da sie nicht %s gehört."
 
 #: lazarusidestrconsts:listhecomponentisinheritedfromtodeleteaninheritedcomp
 msgid "The component %s is inherited from %s.%sTo delete an inherited component open the ancestor and delete it there."

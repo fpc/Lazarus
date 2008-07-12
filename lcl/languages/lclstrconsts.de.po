@@ -4,7 +4,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-06-19 16:21+0100\n"
+"PO-Revision-Date: 2008-07-12 13:24+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -250,7 +250,7 @@ msgstr "Strg"
 
 #: lclstrconsts:rscursor
 msgid "Cursor"
-msgstr ""
+msgstr "Zeiger"
 
 #: lclstrconsts:rsmtcustom
 msgid "Custom"
@@ -282,7 +282,7 @@ msgstr "Runter"
 
 #: lclstrconsts:rsduplicateiconformat
 msgid "Duplicate icon format."
-msgstr ""
+msgstr "Doppeltes Icon-Format"
 
 #: lclstrconsts:sduplicatemenus
 msgid "Duplicate menus"
@@ -630,7 +630,7 @@ msgstr "Zahlenblock %s"
 
 #: lclstrconsts:rsicns
 msgid "OSX Icon Resource"
-msgstr ""
+msgstr "OSX-Icon-Ressource"
 
 #: lclstrconsts:rsfdopenfile
 msgid "Open existing file"
