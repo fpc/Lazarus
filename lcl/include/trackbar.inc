@@ -148,7 +148,7 @@ begin
     if APosition<AMin then APosition:=AMin;
     if APosition>AMax then APosition:=AMax;
   end;
-  if (FPosition=APosition) and (FMin=AMin) and (AMax=AMin) then exit;
+  if (FPosition=APosition) and (FMin=AMin) and (FMax=AMax) then exit;
   FPosition := APosition;
   FMax := AMax;
   FMin := AMin;
