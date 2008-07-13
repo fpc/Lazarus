@@ -24,21 +24,13 @@
 //  {$DEFINE ASSERT_IS_ON}
 {$ENDIF}
 
-var
-  TextLengthQuark: TGQuark;
-
 procedure SetLayoutText(ALayout: PPangoLayout; AText: PChar; ALength: LongInt);
 var
   OldStr: PChar;
-  OldLength: Integer;
 begin
   OldStr := pango_layout_get_text(ALayout);
-  OldLength := PtrInt(g_object_get_qdata(PGObject(ALayout), TextLengthQuark));
-  if (OldLength <> ALength) or (CompareByte(AText^, OldStr^, ALength) <> 0) then
-  begin
+  if (strcomp(AText, OldStr) <> 0) then
     pango_layout_set_text(ALayout, AText, ALength);
-    g_object_set_qdata(PGObject(ALayout), TextLengthQuark, gpointer(PtrInt(ALength)));
-  end;
 end;
 
 { TGtk2DeviceContext }
@@ -102,9 +94,4 @@ begin
   else
     gdk_draw_layout_with_colors(drawable, GC, X, Y, AFont^.GDIFontObject, FGColor, BGColor);
 end;
-
-initialization
-  TextLengthQuark := g_quark_from_static_string('layouttextlength');
-
-
 
