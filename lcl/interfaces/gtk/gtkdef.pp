@@ -405,8 +405,6 @@ type
     procedure DisposeDeviceContext(ADeviceContext: TGtkDeviceContext);
     function NewDeviceContext: TGtkDeviceContext;
   end;
-
-
   
   
   TWidgetInfoFlag = (

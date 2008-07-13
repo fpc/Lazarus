@@ -487,6 +487,11 @@ begin
 
     FontCache.AddWithoutName(FCurrentFont^.GDIFontObject);
 
+    // the gtk internal reference count was increased by
+    // gtk_widget_create_pango_layout and by FontCache.AddWithoutName
+    // reduce it to one, because only this DC is using them at this point
+    UnreferenceGtkIntfFont(FCurrentFont^.GDIFontObject);
+
     {$ifdef fontconsistencychecks}
     // MWE: are we paranoid or so ? (if you can't trust the cache, don't use it or stop coding)
     // MG: some people are coding without knowing about the cache
