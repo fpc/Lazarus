@@ -583,24 +583,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TCustomImageList.GetInternalImage(Index: integer; var Image,
-    Mask: TBitmap);
-
-  Returns the bitmaps of the n-th image. The Imagelist can combine several
-  images into one bitmap (plus one mask), therefore ImageRect contains the
-  bounds of the n-th image on the bitmap.
- ------------------------------------------------------------------------------}
-{$ifdef IMGLIST_KEEP_EXTRA}
-procedure TCustomImageList.GetInternalImage(Index: integer; var Image,
-  Mask: TBitmap; var ImageRect: TRect);
-begin
-  Image:=TBitmap(FImageList[Index]);
-  Mask:=TBitmap(FMaskList[Index]);
-  ImageRect:=Rect(0,0,Image.Width,Image.Height);
-end;
-{$endif}
-
-{------------------------------------------------------------------------------
   Function: TCustomImageList.GetHotspot
   Params:   None
   Returns:  The co-ordinates for the hotspot of the drag image

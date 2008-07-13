@@ -178,10 +178,6 @@ type
     procedure GetBitmap(Index: Integer; Image: TBitmap); overload;
     procedure GetBitmap(Index: Integer; Image: TBitmap; AEffect: TGraphicsDrawEffect); overload;
     procedure GetRawImage(Index: Integer; out Image: TRawImage);
-    {$ifdef IMGLIST_KEEP_EXTRA}
-    procedure GetInternalImage(Index: integer; var Image, Mask: TBitmap;
-                               var ImageRect: TRect);
-    {$endif}
     function GetHotSpot: TPoint; virtual;
 
     procedure Insert(AIndex: Integer; AImage, AMask: TCustomBitmap);
@@ -203,10 +199,6 @@ type
     property Width: Integer read FWidth write SetWidth default 16;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property Masked: boolean read FMasked write SetMasked;
-    {$ifdef IMGLIST_KEEP_EXTRA}
-    property Bitmap: TBitmap read FBitmap;
-    property MaskBitmap: TBitmap read FMaskBitmap;
-    {$endif}
     property Reference: TWSCustomImageListReference read GetReference;
     property ShareImages: Boolean read FShareImages write SetShareImages;
     property ImageType: TImageType read FImageType write FImageType default itImage;
