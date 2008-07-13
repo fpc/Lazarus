@@ -24,12 +24,12 @@
 //  {$DEFINE ASSERT_IS_ON}
 {$ENDIF}
 
-procedure SetLayoutText(ALayout: PPangoLayout; AText: PChar; ALength: LongInt);
+procedure SetLayoutText(ALayout: PPangoLayout; AText: PChar; ALength: PtrInt);
 var
   OldStr: PChar;
 begin
   OldStr := pango_layout_get_text(ALayout);
-  if (strcomp(AText, OldStr) <> 0) then
+  if (strlcomp(AText, OldStr, ALength) <> 0) then
     pango_layout_set_text(ALayout, AText, ALength);
 end;
 

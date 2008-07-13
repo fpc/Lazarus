@@ -44,7 +44,7 @@ type
     procedure DrawTextWithColors(AText: PChar; ALength: LongInt; X, Y: Integer; FGColor, BGColor: PGdkColor);
   end;
   
-  procedure SetLayoutText(ALayout: PPangoLayout; AText: PChar; ALength: LongInt);
+  procedure SetLayoutText(ALayout: PPangoLayout; AText: PChar; ALength: PtrInt);
 
 implementation
 {$i gtk2devicecontext.inc}
