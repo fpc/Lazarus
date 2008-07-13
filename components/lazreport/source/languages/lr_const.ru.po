@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-07-02 03:43+0300\n"
+"PO-Revision-Date: 2008-07-11 04:14+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -675,7 +675,7 @@ msgstr "1 234,50"
 #: lr_const.sformat25
 msgctxt "lr_const.sformat25"
 msgid "Custom"
-msgstr ""
+msgstr "Пользовательский"
 
 #: lr_const.sformat31
 msgid "11.15.98"
@@ -696,7 +696,7 @@ msgstr "15 ноября 1998"
 #: lr_const.sformat35
 msgctxt "lr_const.sformat35"
 msgid "Custom"
-msgstr ""
+msgstr "Пользовательский"
 
 #: lr_const.sformat41
 msgid "02:43:35"
@@ -717,7 +717,7 @@ msgstr "2:43"
 #: lr_const.sformat45
 msgctxt "lr_const.sformat45"
 msgid "Custom"
-msgstr ""
+msgstr "Пользовательский"
 
 #: lr_const.sformat51
 msgid "0;1"
@@ -738,7 +738,7 @@ msgstr "False;True"
 #: lr_const.sformat55
 msgctxt "lr_const.sformat55"
 msgid "Custom"
-msgstr "Пользовательское"
+msgstr "Пользовательский"
 
 #: lr_const.sformfile
 msgid "FastReport form"
@@ -1110,7 +1110,7 @@ msgstr "&Открыть..."
 
 #: lr_const.sfrdesignerform_opts
 msgid "&Options..."
-msgstr "&Настройки..."
+msgstr "П&араметры..."
 
 #: lr_const.sfrdesignerform_paste
 msgid "&Paste"
@@ -1548,7 +1548,7 @@ msgstr "D Sheet, 22 x 34\""
 #: lr_const.spaper256
 msgctxt "lr_const.spaper256"
 msgid "Custom"
-msgstr "Пользовательское"
+msgstr "Пользовательский"
 
 #: lr_const.spaper26
 msgid "E Sheet, 34 x 44\""
@@ -1876,11 +1876,11 @@ msgstr "&Нижнее, мм"
 
 #: lr_const.spgoptformbycolumns
 msgid "By Colum&ns"
-msgstr ""
+msgstr "По &столбцам"
 
 #: lr_const.spgoptformbyrows
 msgid "By Row&s"
-msgstr ""
+msgstr "По с&трокам"
 
 #: lr_const.spgoptformcapt
 msgctxt "lr_const.spgoptformcapt"
@@ -1909,7 +1909,7 @@ msgstr "&Альбомная"
 
 #: lr_const.spgoptformlayoutorder
 msgid "Layout Order"
-msgstr ""
+msgstr "Порядок расположения"
 
 #: lr_const.spgoptformleft
 msgid "&Left, mm"
@@ -1926,7 +1926,7 @@ msgstr "&Количество"
 #: lr_const.spgoptformoptions
 msgctxt "lr_const.spgoptformoptions"
 msgid "Options"
-msgstr "Настройки"
+msgstr "Параметры"
 
 #: lr_const.spgoptformor
 msgid "Orientation"
