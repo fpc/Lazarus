@@ -132,6 +132,40 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.RawImage_QueryDescription(AFlags: TRawImageQueryFlags; out ADesc: TRawImageDescription): Boolean;
 begin
+  if riqfAlpha in AFlags
+  then begin
+    //always return rgba description
+    if not (riqfUpdate in AFlags)
+    then ADesc.Init;
+
+    ADesc.Format := ricfRGBA;
+    ADesc.Depth := 32;
+    ADesc.BitOrder := riboReversedBits;
+    ADesc.ByteOrder := riboLSBFirst;
+    ADesc.LineOrder := riloTopToBottom;
+    ADesc.LineEnd := rileDWordBoundary;
+    ADesc.BitsPerPixel := 32;
+
+    ADesc.AlphaPrec := 8;
+    ADesc.AlphaShift := 24;
+
+    if riqfRGB in AFlags
+    then begin
+      ADesc.RedPrec := 8;
+      ADesc.GreenPrec := 8;
+      ADesc.BluePrec := 8;
+      ADesc.RedShift := 16;
+      ADesc.GreenShift := 8;
+      ADesc.BlueShift := 0;
+    end;
+    
+    AFlags := AFlags - [riqfRGB, riqfAlpha, riqfUpdate];
+    if AFlags = [] then Exit(True);
+    
+    // continue with default
+    Include(AFlags, riqfUpdate);
+  end;
+
   Result := inherited RawImage_QueryDescription(AFlags, ADesc);
   // reduce mem
   if Result and (ADesc.Depth = 24) 
