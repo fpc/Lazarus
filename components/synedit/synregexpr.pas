@@ -411,8 +411,8 @@ type
     property ModifierR : boolean index 2 read GetModifier write SetModifier;
     // Modifier /r - use r.e.syntax extended for russian,
     // (was property ExtSyntaxEnabled in previous versions)
-    // If true, then à-ÿ  additional include russian letter '¸',
-    // À-ß  additional include '¨', and à-ß include all russian symbols.
+    // If true, then Ğ°-Ñ  additional include russian letter 'Ñ‘',
+    // Ğ-Ğ¯  additional include 'Ğ', and Ğ°-Ğ¯ include all russian symbols.
     // You have to turn it off if it may interfere with you national alphabet.
     // , initialized from RegExprModifierR
 
@@ -1480,7 +1480,7 @@ procedure TRegExpr.Tail (p : PRegExprChar; val : PRegExprChar);
    // shr after subtraction to calculate widechar distance %-( )
    // so, if difference is negative we have .. the "feature" :(
    // I could wrap it in $IFDEF UniCode, but I didn't because
-   // "P – Q computes the difference between the address given
+   // "P â€“ Q computes the difference between the address given
    // by P (the higher address) and the address given by Q (the
    // lower address)" - Delphi help quotation.
    else PRENextOff (scan + REOpSz)^ := val - scan; //###0.933
@@ -1591,17 +1591,17 @@ const
    #$418,#$419,#$41A,#$41B,#$41C,#$41D,#$41E,#$41F,
    #$420,#$421,#$422,#$423,#$424,#$425,#$426,#$427,
    #$428,#$429,#$42A,#$42B,#$42C,#$42D,#$42E,#$42F,#0);
- RusRangeLoLow = #$430{'à'};
- RusRangeLoHigh = #$44F{'ÿ'};
- RusRangeHiLow = #$410{'À'};
- RusRangeHiHigh = #$42F{'ß'};
+ RusRangeLoLow = #$430{'Ğ°'};
+ RusRangeLoHigh = #$44F{'Ñ'};
+ RusRangeHiLow = #$410{'Ğ'};
+ RusRangeHiHigh = #$42F{'Ğ¯'};
 {$ELSE}
- RusRangeLo = 'àáâãäå¸æçèéêëìíîïğñòóôõö÷øùúûüışÿ';
- RusRangeHi = 'ÀÁÂÃÄÅ¨ÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕÖ×ØÙÚÛÜİŞß';
- RusRangeLoLow = 'à';
- RusRangeLoHigh = 'ÿ';
- RusRangeHiLow = 'À';
- RusRangeHiHigh = 'ß';
+ RusRangeLo = 'Ğ°Ğ±Ğ²Ğ³Ğ´ĞµÑ‘Ğ¶Ğ·Ğ¸Ğ¹ĞºĞ»Ğ¼Ğ½Ğ¾Ğ¿Ñ€ÑÑ‚ÑƒÑ„Ñ…Ñ†Ñ‡ÑˆÑ‰ÑŠÑ‹ÑŒÑÑÑ';
+ RusRangeHi = 'ĞĞ‘Ğ’Ğ“Ğ”Ğ•ĞĞ–Ğ—Ğ˜Ğ™ĞšĞ›ĞœĞĞĞŸĞ Ğ¡Ğ¢Ğ£Ğ¤Ğ¥Ğ¦Ğ§Ğ¨Ğ©ĞªĞ«Ğ¬Ğ­Ğ®Ğ¯';
+ RusRangeLoLow = 'Ğ°';
+ RusRangeLoHigh = 'Ñ';
+ RusRangeHiLow = 'Ğ';
+ RusRangeHiHigh = 'Ğ¯';
 {$ENDIF}
 
 function TRegExpr.CompileRegExpr (exp : PRegExprChar) : boolean;
@@ -3621,7 +3621,7 @@ procedure TRegExpr.SetInputString (const AInputString : RegExprString);
   fInputStart := PChar (fInputString);
   Len := length (fInputString);
   fInputEnd := PRegExprChar (integer (fInputStart) + Len); ??
-  !! startp/endp âñå ğàâíî áóäåò îïàñíî èñïîëüçîâàòü ?
+  !! startp/endp Ğ²ÑĞµ Ñ€Ğ°Ğ²Ğ½Ğ¾ Ğ±ÑƒĞ´ĞµÑ‚ Ğ¾Ğ¿Ğ°ÑĞ½Ğ¾ Ğ¸ÑĞ¿Ğ¾Ğ»ÑŒĞ·Ğ¾Ğ²Ğ°Ñ‚ÑŒ ?
   }
  end; { of procedure TRegExpr.SetInputString
 --------------------------------------------------------------}

@@ -4422,12 +4422,7 @@ begin
 end;
 
 function GuessEncoding(const s: string): string;
-var
-  l: Integer;
-  p: Integer;
-  EndPos: LongInt;
-  i: LongInt;
-  
+
   function CompareI(p1, p2: PChar; Count: integer): boolean;
   var
     i: Integer;
@@ -4450,6 +4445,37 @@ var
     Result:=true;
   end;
   
+  {$IFDEF VerboseIDEEncoding}
+  function PosToStr(p: integer): string;
+  var
+    y: Integer;
+    x: Integer;
+    i: Integer;
+  begin
+    y:=1;
+    x:=1;
+    i:=1;
+    while (i<=length(s)) and (i<p) do begin
+      if s[i] in [#10,#13] then begin
+        inc(i);
+        x:=1;
+        inc(y);
+        if (i<=length(s)) and (s[i] in [#10,#13]) and (s[i]<>s[i-1]) then
+          inc(i);
+      end else begin
+        inc(i);
+        inc(x);
+      end;
+    end;
+    Result:='x='+IntToStr(x)+',y='+IntToStr(y);
+  end;
+  {$ENDIF}
+
+var
+  l: Integer;
+  p: Integer;
+  EndPos: LongInt;
+  i: LongInt;
 begin
   l:=length(s);
   if l=0 then begin
@@ -4484,7 +4510,7 @@ begin
       //DebugLn(['GuessEncoding ',i,' ',DbgStr(s[p])]);
       if i=0 then begin
         {$IFDEF VerboseIDEEncoding}
-        DebugLn(['GuessEncoding non UTF-8 found at ',p,' ',dbgstr(copy(s,p-10,20))]);
+        DebugLn(['GuessEncoding non UTF-8 found at ',PosToStr(p),' ',dbgstr(copy(s,p-10,20))]);
         {$ENDIF}
         break;
       end;

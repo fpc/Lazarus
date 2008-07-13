@@ -42,7 +42,7 @@ unit SynEditTypes;
 interface
 
 const
-  TSynSpecialChars = ['À'..'Ö', 'Ø'..'ö', 'ø'..'ÿ'];
+  TSynSpecialChars = ['Ã€'..'Ã–', 'Ã˜'..'Ã¶', 'Ã¸'..'Ã¿'];
   TSynValidStringChars = ['_', '0'..'9', 'A'..'Z', 'a'..'z'] + TSynSpecialChars;
   TSynWhiteChars = [' ', #9];
   TSynWordBreakChars = ['.', ',', ';', ':', '"', '''', '!', '?', '[', ']', '(',
