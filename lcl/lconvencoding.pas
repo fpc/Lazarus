@@ -4481,14 +4481,14 @@ begin
       inc(p);
     end else begin
       i:=UTF8CharacterStrictLength(@s[p]);
-      DebugLn(['GuessEncoding ',i,' ',DbgStr(s[p])]);
+      //DebugLn(['GuessEncoding ',i,' ',DbgStr(s[p])]);
       if i=0 then begin
         {$IFDEF VerboseIDEEncoding}
         DebugLn(['GuessEncoding non UTF-8 found at ',p,' ',dbgstr(copy(s,p-10,20))]);
         {$ENDIF}
         break;
       end;
-      inc(p);
+      inc(p,i);
     end;
   end;
   if p>l then begin
