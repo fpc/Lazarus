@@ -38,9 +38,7 @@ uses
   LCLClasses, Menus, popupnotifier;
 
 type
-  { workaround problem with fcl }
-  TAbstractReader = TReader;
-  
+
   { TCustomPage }
 
   TPageFlag = (
@@ -184,7 +182,7 @@ type
     procedure DoCreateWnd; virtual;
     procedure Change; virtual;
     procedure Loaded; override;
-    procedure ReadState(Reader: TAbstractReader); override;
+    procedure ReadState(Reader: TReader); override;
     function  DialogChar(var Message: TLMKey): boolean; override;
     procedure ShowControl(APage: TControl); override;
     procedure UpdateTabProperties; virtual;
