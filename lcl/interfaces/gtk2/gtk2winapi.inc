@@ -496,7 +496,7 @@ begin
 
   UpdateDCTextMetric(TGtkDeviceContext(DC));
 
-  TGtk2DeviceContext(DC).SetText(UseFont, Str, Count);
+  SetLayoutText(UseFont, Str, Count);
   pango_layout_get_pixel_size(UseFont, @Size.cX, @Size.cY);
   //DebugLn(['TGtk2WidgetSet.GetTextExtentPoint Str="',copy(Str,1,Count),' Count=',Count,' X=',Size.cx,' Y=',Size.cY]);
 

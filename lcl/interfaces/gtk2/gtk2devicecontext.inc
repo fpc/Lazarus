@@ -24,35 +24,28 @@
 //  {$DEFINE ASSERT_IS_ON}
 {$ENDIF}
 
+var
+  TextLengthQuark: TGQuark;
+
+procedure SetLayoutText(ALayout: PPangoLayout; AText: PChar; ALength: LongInt);
+var
+  OldStr: PChar;
+  OldLength: Integer;
+begin
+  OldStr := pango_layout_get_text(ALayout);
+  OldLength := PtrInt(g_object_get_qdata(PGObject(ALayout), TextLengthQuark));
+  if (OldLength <> ALength) or (CompareByte(AText^, OldStr^, ALength) <> 0) then
+  begin
+    pango_layout_set_text(ALayout, AText, ALength);
+    g_object_set_qdata(PGObject(ALayout), TextLengthQuark, gpointer(PtrInt(ALength)));
+  end;
+end;
+
 { TGtk2DeviceContext }
 
 function TGtk2DeviceContext.GetFunction: TGdkFunction;
 begin
   Result := GCValues._function;
-end;
-
-constructor TGtk2DeviceContext.Create;
-begin
-  inherited Create;
-{$ifdef gtk2_improve_TextOut_speed}
-  FillChar(OldText, SizeOf(OldText), 0);
-{$endif}
-end;
-
-procedure TGtk2DeviceContext.SetText(AFont: PPangoLayout; AText: PChar; ALength: LongInt);
-begin
-{$ifdef gtk2_improve_TextOut_speed}
-  if (OldText.Font <> AFont) or (OldText.Len <> ALength) or (CompareChar(AText^, PChar(OldText.Text)^, ALength) <> 0) then
-  begin
-    pango_layout_set_text(AFont, AText, ALength);
-    OldText.Font := AFont;
-    OldText.Len := ALength;
-    SetLength(OldText.Text, ALength);
-    Move(AText^, PChar(OldText.Text)^, ALength);
-  end;
-{$else}
-  pango_layout_set_text(AFont, AText, ALength);
-{$endif}
 end;
 
 procedure TGtk2DeviceContext.DrawTextWithColors(AText: PChar; ALength: LongInt;
@@ -74,7 +67,7 @@ var
   
 begin
   AFont := GetFont;
-  SetText(AFont^.GDIFontObject, AText, ALength);
+  SetLayoutText(AFont^.GDIFontObject, AText, ALength);
 
   if AFont^.LogFont.lfEscapement <> 0 then
   begin
@@ -109,5 +102,9 @@ begin
   else
     gdk_draw_layout_with_colors(drawable, GC, X, Y, AFont^.GDIFontObject, FGColor, BGColor);
 end;
+
+initialization
+  TextLengthQuark := g_quark_from_static_string('layouttextlength');
+
 
 
