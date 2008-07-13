@@ -27,6 +27,7 @@ type
   TGtkMemoStrings = class(TStrings)
   private
     FGtkText : PGtkText;
+    FFreezed: boolean;
     FOwner: TWinControl;
     fTextInsertEvent: TGtkTextInsertEvent;
     fTextDeleteEvent: TGtkTextDeleteEvent;
@@ -46,6 +47,7 @@ type
     procedure TextInserted(NewText: pgchar; NewTextLength: gint; position: pgint);
     procedure TextDeleted(StartPos, EndPos: gint);
     function PositionToLine(Position: Integer; StartLine: Integer = 0): Integer;
+    procedure SetUpdateState(Updating: Boolean); override;
     //procedure SetSorted(Val : boolean); virtual;
   public
     constructor Create(GtkText : PGtkText; TheOwner: TWinControl);

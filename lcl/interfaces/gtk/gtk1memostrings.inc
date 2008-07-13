@@ -16,22 +16,6 @@
 }
 
 //////// Callbacks   //////
-type
-PFreezeRec = ^TFreezeRec;
-TFreezeRec = record
-  GtkText: PGtkText;
-  NewCursorPos: Integer;
-end;
-
-function GtkWS_GtkTextUnFreeze(Freeze: PFreezeRec): guint; cdecl;
-begin
-  gtk_text_thaw(Freeze^.GtkText);
-  if Freeze^.NewCursorPos <> -1 then
-    gtk_editable_set_position(PGtkEditable(Freeze^.GtkText), Freeze^.NewCursorPos);
-  Dispose(Freeze);
-  Result := 0;
-end;
-
 procedure GtkWS_GtkTextInserting(GtkEditable: PGtkEditable; NewText: pgchar;
   NewTextLength: gint; position: pgint; TextInserted:
   PGtkTextInsertEvent); cdecl;
@@ -213,6 +197,21 @@ begin
  Result := X;
 end;
 
+procedure TGtkMemoStrings.SetUpdateState(Updating: Boolean);
+begin
+  inherited SetUpdateState(Updating);
+  //DebugLn(['TGtkMemoStrings.SetUpdateState Updating=',Updating,' ',FGtkText<>nil,' FFreezed=',FFreezed]);
+  if Updating and (FGtkText<>nil) and (not FFreezed) then begin
+    gtk_text_freeze(FGtkText);
+    FFreezed:=true;
+  end;
+  if (not Updating) and (FFreezed) then begin
+    if FGtkText<>nil then
+      gtk_text_thaw(FGtkText);
+    FFreezed:=false;
+  end;
+end;
+
 constructor TGtkMemoStrings.Create(GtkText: PGtkText; TheOwner: TWinControl);
 begin
   inherited Create;
@@ -279,16 +278,11 @@ var
   LineStart: Integer;
   NewLine: String;
   NeedMoveCursor: Boolean;
-  Freeze: PFreezeRec;
+  LocalFreeze: Boolean;
 begin
-  Freeze := nil;
-  if FGtkText^.freeze_count = 0 then begin
+  LocalFreeze:=FGtkText^.freeze_count = 0;
+  if LocalFreeze then
     gtk_text_freeze(FGtkText);
-    New(Freeze);
-    Freeze^.GtkText := FGtkText;
-    Freeze^.NewCursorPos := -1;
-    gtk_idle_add(TGtkfunction(@GtkWS_GtkTextUnFreeze), Freeze);
-  end;
 
   LockOnChange(PGtkObject(FGtkText),+1);
 
@@ -313,8 +307,11 @@ begin
   end;
 
   // when we are thawed out we will move the cursor
-  if NeedMoveCursor and (Freeze <> nil) then
-    Freeze^.NewCursorPos := LineStart;
+  if LocalFreeze then begin
+    gtk_text_thaw(FGtkText);
+    if NeedMoveCursor and (LineStart <> -1) then
+      gtk_editable_set_position(PGtkEditable(FGtkText), LineStart);
+  end;
 
   LockOnChange(PGtkObject(FGtkText),-1);
 end;
