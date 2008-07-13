@@ -80,8 +80,9 @@ type
   TDebugLCLItems = class
   private
     FItems: TAvgLvlTree;// tree of TDebugLCLItemInfo
+    FName: string;
   public
-    constructor Create;
+    constructor Create(const TheName: string);
     destructor Destroy; override;
     function FindInfo(p: Pointer; CreateIfNotExists: boolean = false
                       ): TDebugLCLItemInfo;
@@ -90,6 +91,7 @@ type
     function MarkCreated(p: Pointer; const InfoText: string): TDebugLCLItemInfo;
     procedure MarkDestroyed(p: Pointer);
     function GetInfo(p: Pointer; WithStackTraces: boolean): string;
+    property Name: string read FName;
   end;
 
   TLineInfoCacheItem = record
@@ -2459,8 +2461,13 @@ procedure UTF8FixBroken(P: PChar);
 begin
   if p=nil then exit;
   while p^<>#0 do begin
-    if ord(p^)<%11000000 then begin
+    if ord(p^)<%10000000 then begin
       // regular single byte character
+      inc(p);
+    end
+    else if ord(p^)<%11000000 then begin
+      // invalid
+      p^:=' ';
       inc(p);
     end
     else if ((ord(p^) and %11100000) = %11000000) then begin
@@ -2497,9 +2504,13 @@ end;
 function UTF8CharacterStrictLength(P: PChar): integer;
 begin
   if p=nil then exit(0);
-  if ord(p^)<%11000000 then begin
+  if ord(p^)<%10000000 then begin
     // regular single byte character
     exit(1);
+  end
+  else if ord(p^)<%11000000 then begin
+    // invalid single byte character
+    exit(0);
   end
   else if ((ord(p^) and %11100000) = %11000000) then begin
     // should be 2 byte character
@@ -3227,8 +3238,9 @@ end;
 
 { TDebugLCLItems }
 
-constructor TDebugLCLItems.Create;
+constructor TDebugLCLItems.Create(const TheName: string);
 begin
+  FName:=TheName;
   FItems:=TAvgLvlTree.Create(@CompareDebugLCLItemInfos);
 end;
 
@@ -3307,6 +3319,7 @@ begin
     RaiseDoubleDestroyed;
   Info.IsDestroyed:=true;
   GetStackTracePointers(Info.DestructionStack);
+  //DebugLn(['TDebugLCLItems.MarkDestroyed ',dbgs(p)]);
 end;
 
 function TDebugLCLItems.GetInfo(p: Pointer; WithStackTraces: boolean): string;
@@ -3347,6 +3360,8 @@ begin
   Info.Info:=InfoText;
   GetStackTracePointers(Info.CreationStack);
   SetLength(Info.DestructionStack,0);
+  //DebugLn(['TDebugLCLItems.MarkCreated ',Name,' ',dbgs(p),' ',FItems.Count]);
+  //DebugLn(GetStackTrace(true));
   Result:=Info;
 end;
 
@@ -3377,7 +3392,7 @@ initialization
   InterfaceInitializationHandlers := TFPList.Create;
   InterfaceFinalizationHandlers := TFPList.Create;
   {$IFDEF DebugLCLComponents}
-  DebugLCLComponents:=TDebugLCLItems.Create;
+  DebugLCLComponents:=TDebugLCLItems.Create('LCLComponents');
   {$ENDIF}
 finalization
   InterfaceInitializationHandlers.Free;
