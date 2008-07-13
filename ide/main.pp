@@ -359,7 +359,7 @@ type
     procedure OnSrcNoteBookActivated(Sender: TObject);
     procedure OnSrcNoteBookAddJumpPoint(ACaretXY: TPoint; ATopLine: integer;
       APageIndex: integer; DeleteForwardHistory: boolean);
-    procedure OnSrcNoteBookCtrlMouseUp(Sender: TObject;
+    procedure OnSrcNoteBookClickLink(Sender: TObject;
       Button: TMouseButton; Shift: TShiftstate; X, Y: Integer);
     procedure OnSrcNotebookDeleteLastJumPoint(Sender: TObject);
     procedure OnSrcNotebookEditorVisibleChanged(Sender: TObject);
@@ -1669,7 +1669,7 @@ begin
   SourceNotebook.OnActivate := @OnSrcNoteBookActivated;
   SourceNotebook.OnAddJumpPoint := @OnSrcNoteBookAddJumpPoint;
   SourceNotebook.OnCloseClicked := @OnSrcNotebookFileClose;
-  SourceNotebook.OnCtrlLeftMouseUp := @OnSrcNoteBookCtrlMouseUp;
+  SourceNotebook.OnClickLink := @OnSrcNoteBookClickLink;
   SourceNotebook.OnCurrentCodeBufferChanged:=@OnSrcNotebookCurCodeBufferChanged;
   SourceNotebook.OnDeleteLastJumpPoint := @OnSrcNotebookDeleteLastJumPoint;
   SourceNotebook.OnEditorVisibleChanged := @OnSrcNotebookEditorVisibleChanged;
@@ -2832,7 +2832,7 @@ begin
     Key := VK_UNKNOWN;
 end;
 
-procedure TMainIDE.OnSrcNoteBookCtrlMouseUp(Sender: TObject;
+procedure TMainIDE.OnSrcNoteBookClickLink(Sender: TObject;
   Button: TMouseButton; Shift: TShiftstate; X, Y: Integer);
 var
   ActiveSrcEdit: TSourceEditor;

@@ -457,7 +457,7 @@ type
     fOnSpecialLineColors: TSpecialLineColorsEvent;
     fOnStatusChange: TStatusChangeEvent;
     {$IFDEF SYN_LAZARUS}
-    FOnCtrlLeftMouseUp: TMouseEvent;
+    FOnClickLink: TMouseEvent;
     {$ENDIF}
 
     {$IFDEF SYN_LAZARUS}
@@ -991,7 +991,7 @@ protected
     property OnMouseMove;
     property OnMouseUp;
     {$IFDEF SYN_LAZARUS}
-    property OnCtrlLeftMouseUp : TMouseEvent read FOnCtrlLeftMouseUp write FOnCtrlLeftMouseUp;
+    property OnClickLink : TMouseEvent read FOnClickLink write FOnClickLink;
     property OnMouseEnter;
     property OnMouseLeave;
     {$ENDIF}
@@ -2637,9 +2637,11 @@ begin
   {$IFDEF SYN_LAZARUS}
     if (eoShowCtrlMouseLinks in Options)
     and not(wasDragging)
-    and (Button=mbLeft) and (Shift=[ssCtrl])
-    and assigned(FOnCtrlLeftMouseUp)
-    then FOnCtrlLeftMouseUp(Self, Button, Shift, X,Y);;
+    and (Button=mbLeft) and (Shift=[ssLeft,ssCtrl])
+    and assigned(FOnClickLink)
+    then begin
+      FOnClickLink(Self, Button, Shift, X,Y);;
+    end;
   {$ENDIF}
   //DebugLn('TCustomSynEdit.MouseUp END Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
 end;
