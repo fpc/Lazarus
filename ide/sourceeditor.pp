@@ -136,7 +136,7 @@ type
     FVisible: Boolean;
     FOnMouseMove: TMouseMoveEvent;
     FOnMouseDown: TMouseEvent;
-    FOnMouseUp: TMouseEvent;
+    FOnCtrlLeftMouseUp: TMouseEvent;
     FOnMouseWheel : tMouseWheelEvent;
     FOnKeyDown: TKeyEvent;
 
@@ -145,7 +145,7 @@ type
     Procedure EditorMouseMoved(Sender: TObject; Shift: TShiftState; X,Y:Integer);
     Procedure EditorMouseDown(Sender: TObject; Button: TMouseButton;
           Shift: TShiftState; X,Y: Integer);
-    Procedure EditorMouseUp(Sender: TObject; Button: TMouseButton;
+    Procedure EditorCtrlLeftMouseUp(Sender: TObject; Button: TMouseButton;
           Shift: TShiftState; X,Y: Integer);
     procedure EditorMouseWheel(Sender: TObject; Shift: TShiftState;
          WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -361,7 +361,7 @@ type
                                           write FOnEditorChange;
     property OnMouseMove: TMouseMoveEvent read FOnMouseMove write FOnMouseMove;
     property OnMouseDown: TMouseEvent read FOnMouseDown write FOnMouseDown;
-    property OnMouseUp: TMouseEvent read FOnMouseUp write FOnMouseUp;
+    property OnCtrlLeftMouseUp: TMouseEvent read FOnCtrlLeftMouseUp write FOnCtrlLeftMouseUp;
     property OnMouseWheel: TMouseWheelEvent read FOnMouseWheel write FOnMouseWheel;
     property OnKeyDown: TKeyEvent read FOnKeyDown write FOnKeyDown;
     property Owner: TComponent read FAOwner;
@@ -476,7 +476,7 @@ type
     FOnAddJumpPoint: TOnAddJumpPoint;
     FOnAddWatchAtCursor: TOnAddWatch;
     FOnCloseClicked: TOnCloseSrcEditor;
-    FOnCtrlMouseUp: TMouseEvent;
+    FOnCtrlLeftMouseUp: TMouseEvent;
     FOnCurrentCodeBufferChanged: TNotifyEvent;
     FOnDeleteLastJumpPoint: TNotifyEvent;
     FOnEditorChanged: TNotifyEvent;
@@ -576,7 +576,7 @@ type
                               X,Y: Integer);
     procedure EditorMouseDown(Sender: TObject; Button: TMouseButton;
                               Shift: TShiftstate; X,Y: Integer);
-    procedure EditorMouseUp(Sender: TObject; Button: TMouseButton;
+    procedure EditorCtrlLeftMouseUp(Sender: TObject; Button: TMouseButton;
                             Shift: TShiftstate; X,Y: Integer);
     procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure EditorMouseWheel(Sender: TObject; Shift: TShiftState;
@@ -755,8 +755,8 @@ type
                                      read FOnAddJumpPoint write FOnAddJumpPoint;
     property OnCloseClicked: TOnCloseSrcEditor
                                      read FOnCloseClicked write FOnCloseClicked;
-    property OnCtrlMouseUp: TMouseEvent
-                                       read FOnCtrlMouseUp write FOnCtrlMouseUp;
+    property OnCtrlLeftMouseUp: TMouseEvent
+                                       read FOnCtrlLeftMouseUp write FOnCtrlLeftMouseUp;
     property OnDeleteLastJumpPoint: TNotifyEvent
                        read FOnDeleteLastJumpPoint write FOnDeleteLastJumpPoint;
     property OnEditorVisibleChanged: TNotifyEvent
@@ -2260,7 +2260,7 @@ Begin
       OnMouseMove := @EditorMouseMoved;
       OnMouseWheel := @EditorMouseWheel;
       OnMouseDown := @EditorMouseDown;
-      OnMouseUp := @EditorMouseUp;
+      OnCtrlLeftMouseUp := @EditorCtrlLeftMouseUp;
       OnKeyDown := @EditorKeyDown;
     end;
     if FCodeTemplates<>nil then
@@ -2665,11 +2665,11 @@ begin
     OnMouseDown(Sender, Button, Shift, X,Y);
 end;
 
-procedure TSourceEditor.EditorMouseUp(Sender: TObject; Button: TMouseButton;
+procedure TSourceEditor.EditorCtrlLeftMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  if Assigned(OnMouseUp) then
-    OnMouseUp(Sender, Button, Shift, X,Y);
+  if Assigned(OnCtrlLeftMouseUp) then
+    OnCtrlLeftMouseUp(Sender, Button, Shift, X,Y);
 end;
 
 Procedure TSourceEditor.EditorKeyDown(Sender: TObject; var Key: Word; Shift :
@@ -4388,7 +4388,7 @@ Begin
   Result.OnMouseMove := @EditorMouseMove;
   Result.OnMouseDown := @EditorMouseDown;
   Result.OnMouseWheel := @EditorMouseWheel;
-  Result.OnMouseUp := @EditorMouseUp;
+  Result.OnCtrlLeftMouseUp := @EditorCtrlLeftMouseUp;
   Result.OnKeyDown :=@EditorKeyDown;
 
   Result.EditorComponent.EndUpdate;
@@ -6231,15 +6231,13 @@ begin
   HideHint;
 end;
 
-procedure TSourceNotebook.EditorMouseUp(Sender: TObject; Button: TMouseButton;
+procedure TSourceNotebook.EditorCtrlLeftMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftstate; X, Y: Integer);
 begin
-  if EditorOpts.CtrlMouseLinks and (GetKeyShiftState=[ssCtrl]) then begin
-    // Control+MouseUp = Find Declaration
-    if Assigned(FOnCtrlMouseUp) then begin
-      FOnCtrlMouseUp(Sender,Button,Shift,X,Y);
+  // CtrlLeftMouseUp = Find Declaration
+  if Assigned(FOnCtrlLeftMouseUp) then begin
+    FOnCtrlLeftMouseUp(Sender,Button,Shift,X,Y);
     end;
-  end;
 end;
 
 procedure TSourceNotebook.EditorKeyDown(Sender: TObject; var Key: Word;

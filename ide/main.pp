@@ -1669,7 +1669,7 @@ begin
   SourceNotebook.OnActivate := @OnSrcNoteBookActivated;
   SourceNotebook.OnAddJumpPoint := @OnSrcNoteBookAddJumpPoint;
   SourceNotebook.OnCloseClicked := @OnSrcNotebookFileClose;
-  SourceNotebook.OnCtrlMouseUp := @OnSrcNoteBookCtrlMouseUp;
+  SourceNotebook.OnCtrlLeftMouseUp := @OnSrcNoteBookCtrlMouseUp;
   SourceNotebook.OnCurrentCodeBufferChanged:=@OnSrcNotebookCurCodeBufferChanged;
   SourceNotebook.OnDeleteLastJumpPoint := @OnSrcNotebookDeleteLastJumPoint;
   SourceNotebook.OnEditorVisibleChanged := @OnSrcNotebookEditorVisibleChanged;

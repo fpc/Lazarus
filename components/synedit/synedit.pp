@@ -163,7 +163,7 @@ type
     {$IFDEF SYN_LAZARUS}
     sfTripleClicked, sfQuadClicked, sfPainting,
     {$ENDIF}
-    sfWaitForDragging, sfInsideRedo
+    sfWaitForDragging,{$IFDEF SYN_LAZARUS} sfIsDragging,{$ENDIF} sfInsideRedo
     );                                           //mh 2000-10-30
   TSynStateFlags = set of TSynStateFlag;
 
@@ -456,6 +456,9 @@ type
     fOnReplaceText: TReplaceTextEvent;
     fOnSpecialLineColors: TSpecialLineColorsEvent;
     fOnStatusChange: TStatusChangeEvent;
+    {$IFDEF SYN_LAZARUS}
+    FOnCtrlLeftMouseUp: TMouseEvent;
+    {$ENDIF}
 
     {$IFDEF SYN_LAZARUS}
     procedure AquirePrimarySelection;
@@ -988,6 +991,7 @@ protected
     property OnMouseMove;
     property OnMouseUp;
     {$IFDEF SYN_LAZARUS}
+    property OnCtrlLeftMouseUp : TMouseEvent read FOnCtrlLeftMouseUp write FOnCtrlLeftMouseUp;
     property OnMouseEnter;
     property OnMouseLeave;
     {$ENDIF}
@@ -2423,6 +2427,9 @@ begin
       or (Abs(fMouseDownY - Y) >= GetSystemMetrics(SM_CYDRAG))
     then begin
       Exclude(fStateFlags, sfWaitForDragging);
+      {$IFDEF SYN_LAZARUS}
+      Include(fStateFlags, sfIsDragging);
+      {$ENDIF}
       //debugln('TCustomSynEdit.MouseMove BeginDrag');
       BeginDrag({$IFDEF SYN_LAZARUS}true{$ELSE}false{$ENDIF});
     end;
@@ -2436,6 +2443,10 @@ begin
       and (Y < ClientHeight{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF})
     then
       ComputeCaret(X, Y);
+    {$IFDEF SYN_LAZARUS}
+    if (not(sfIsDragging in fStateFlags))
+    then
+    {$ENDIF}
     SetBlockEnd({$IFDEF SYN_LAZARUS}PhysicalToLogicalPos(CaretXY)
                 {$ELSE}CaretXY{$ENDIF});
     // should we begin scrolling?
@@ -2466,7 +2477,9 @@ begin
     end;
     fScrollTimer.Enabled := (fScrollDeltaX <> 0) or (fScrollDeltaY <> 0);
   {$IFDEF SYN_LAZARUS}
-  end else if MouseCapture then begin
+  end else if MouseCapture
+  and (not(sfIsDragging in fStateFlags))
+  then begin
     MouseCapture:=false;
     fScrollTimer.Enabled := False;
   {$ENDIF}
@@ -2528,6 +2541,10 @@ begin
       if fScrollDeltaX > 0 then  // scrolling right?
         Inc(X, CharsInWindow);
       CaretXY := Point(X, C.Y);
+      {$IFDEF SYN_LAZARUS}
+      if (not(sfIsDragging in fStateFlags))
+      then
+      {$ENDIF}
       SetBlockEnd({$IFDEF SYN_LAZARUS}PhysicalToLogicalPos(CaretXY)
                   {$ELSE}CaretXY{$ENDIF});
     end;
@@ -2540,6 +2557,10 @@ begin
       if fScrollDeltaY > 0 then  // scrolling down?
         Inc(Y, LinesInWindow - 1);
       CaretXY := Point(C.X, Y);
+      {$IFDEF SYN_LAZARUS}
+      if (not(sfIsDragging in fStateFlags))
+      then
+      {$ENDIF}
       SetBlockEnd({$IFDEF SYN_LAZARUS}PhysicalToLogicalPos(CaretXY)
                   {$ELSE}CaretXY{$ENDIF});
     end;
@@ -2550,9 +2571,18 @@ end;
 
 procedure TCustomSynEdit.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
+{$IFDEF SYN_LAZARUS}
+var
+  wasDragging : Boolean;
+{$ENDIF}
 begin
 //DebugLn('TCustomSynEdit.MouseUp Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
+  {$IFDEF SYN_LAZARUS}
+  wasDragging := (sfIsDragging in fStateFlags);
+  Exclude(fStateFlags, sfIsDragging);
+  {$ENDIF}
   inherited MouseUp(Button, Shift, X, Y);
+
   fScrollTimer.Enabled := False;
   {$IFDEF SYN_LAZARUS}
   MouseCapture := False;
@@ -2602,6 +2632,14 @@ begin
   {$ELSE}
   Exclude(fStateFlags, sfDblClicked);
   Exclude(fStateFlags, sfPossibleGutterClick);
+  {$ENDIF}
+  
+  {$IFDEF SYN_LAZARUS}
+    if (eoShowCtrlMouseLinks in Options)
+    and not(wasDragging)
+    and (Button=mbLeft) and (Shift=[ssCtrl])
+    and assigned(FOnCtrlLeftMouseUp)
+    then FOnCtrlLeftMouseUp(Self, Button, Shift, X,Y);;
   {$ENDIF}
   //DebugLn('TCustomSynEdit.MouseUp END Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
 end;
