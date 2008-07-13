@@ -29,7 +29,7 @@ var
   OldStr: PChar;
 begin
   OldStr := pango_layout_get_text(ALayout);
-  if (strlcomp(AText, OldStr, ALength) <> 0) then
+  if (strlcomp(AText, OldStr, ALength) <> 0) or (strlen(OldStr)<>ALength) then
     pango_layout_set_text(ALayout, AText, ALength);
 end;
 

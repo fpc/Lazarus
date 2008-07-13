@@ -13,14 +13,14 @@ Project notes
  tested. I also converted the designer and registration unit I wasn't
  able to get them to install. I haven't touched the Syntax Editor app
  although it would definitely be a useful one to convert!
- 
+
  There are more than 300 highlighters available. See the project homepage.
- 
+
 
  Changes for FPC
- 
+
  Most of the common changes that were needed for FPC conversion were:
- 
+
    - Added GraphType to the uses statement to resolve TFontStyles
    - In Designer, added Buttons for TButton and LCLType vk_* key declarations
    - In Designer, changed TPageControl to TNotebook and TTabset to TPage. There
