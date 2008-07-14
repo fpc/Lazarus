@@ -6285,8 +6285,8 @@ begin
       if (Lines.Count > 1) then
         ScanFrom(0);
     end;
-  InvalidateLines(Index + 1, TopLine + LinesInWindow);
-  InvalidateGutterLines(Index + 1, TopLine + LinesInWindow);
+  InvalidateLines(Index + 1, {$IFDEF SYN_LAZARUS}ScreenRowToRow(LinesInWindow+1){$ELSE}TopLine + LinesInWindow{$ENDIF});
+  InvalidateGutterLines(Index + 1, {$IFDEF SYN_LAZARUS}ScreenRowToRow(LinesInWindow+1){$ELSE}TopLine + LinesInWindow{$ENDIF});
 end;
 
 procedure TCustomSynEdit.ListPutted(Index: Integer);
@@ -8593,8 +8593,8 @@ begin
       ecScrollUp:
         begin
           TopLine := TopLine - 1;
-          if CaretY > TopLine + LinesInWindow - 1 then
-            CaretY := TopLine + LinesInWindow - 1;
+          if CaretY > {$IFDEF SYN_LAZARUS}ScreenRowToRow(LinesInWindow-1){$ELSE}TopLine + LinesInWindow - 1{$ENDIF} then
+            CaretY := {$IFDEF SYN_LAZARUS}ScreenRowToRow(LinesInWindow-1){$ELSE}TopLine + LinesInWindow - 1{$ENDIF};
           Update;
         end;
       ecScrollDown:
@@ -10456,8 +10456,10 @@ procedure TCustomSynEdit.InvalidateLine(Line: integer);
 var
   rcInval: TRect;
 begin
-  if Visible and (Line >= TopLine) and (Line <= TopLine + LinesInWindow) and
-     (Line <= Lines.Count) and HandleAllocated
+  if Visible and (Line >= TopLine) and
+    (Line <= {$IFDEF SYN_LAZARUS}ScreenRowToRow(LinesInWindow){$ELSE}
+    TopLine + LinesInWindow{$ENDIF})
+    and (Line <= Lines.Count) and HandleAllocated
   then begin
     {$IFDEF SYN_LAZARUS}
     fMarkupHighAll.InvalidateLines(Line, Line);
@@ -10640,7 +10642,8 @@ var
         // get previous line if possible
         if PosY = 1 then break;
         Dec(PosY);
-        if OnlyVisible and ((PosY<TopLine) or (PosY>=TopLine+LinesInWindow))
+        if OnlyVisible and ((PosY<TopLine)
+          or (PosY >= {$IFDEF SYN_LAZARUS}ScreenRowToRow(LinesInWindow){$ELSE}TopLine+LinesInWindow{$ENDIF}))
         then
           break;
         Line := Lines[PosY - 1];
@@ -10667,7 +10670,8 @@ var
         // get next line if possible
         if PosY = Lines.Count then break;
         Inc(PosY);
-        if OnlyVisible and ((PosY<TopLine) or (PosY>=TopLine+LinesInWindow))
+        if OnlyVisible and ((PosY < TopLine)
+          or (PosY >= {$IFDEF SYN_LAZARUS}ScreenRowToRow(LinesInWindow){$ELSE}TopLine+LinesInWindow{$ENDIF}))
         then
           break;
         Line := Lines[PosY - 1];
@@ -10703,7 +10707,8 @@ begin
   PosX := LogicalStart.X;
   PosY := LogicalStart.Y;
   if (PosY<1) or (PosY>Lines.Count) then exit;
-  if OnlyVisible and ((PosY<TopLine) or (PosY>=TopLine+LinesInWindow)) then
+  if OnlyVisible and ((PosY<TopLine)
+    or (PosY >= {$IFDEF SYN_LAZARUS}ScreenRowToRow(LinesInWindow){$ELSE}TopLine+LinesInWindow{$ENDIF})) then
    exit;
 
   Line := LineText;
