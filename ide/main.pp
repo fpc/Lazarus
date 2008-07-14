@@ -9441,14 +9441,14 @@ procedure TMainIDE.DoRestart;
          ' --lazarus-pid='+IntToStr(GetProcessID) + ' '                                                   +
          GetCommandLineParameters(Params, False);
 
-      //DebugLn('CommandLine 1 : %s', [StartLazProcess.CommandLine]);
+      DebugLn('CommandLine 1 : %s', [StartLazProcess.CommandLine]);
          
       if (pos(PrimaryConfPathOptLong, StartLazProcess.CommandLine) = 0) and
          (pos(PrimaryConfPathOptShort, StartLazProcess.CommandLine) = 0) then
         StartLazProcess.CommandLine := StartLazProcess.CommandLine +
-                   ' "' + PrimaryConfPathOptLong + '='+GetPrimaryConfigPath+'"';
+                   ' "' + PrimaryConfPathOptLong + GetPrimaryConfigPath+'"';
                             
-      //DebugLn('CommandLine 2 : %s', [StartLazProcess.CommandLine]);
+      DebugLn('CommandLine 2 : %s', [StartLazProcess.CommandLine]);
       
       StartLazProcess.Execute;
     finally
