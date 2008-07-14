@@ -1523,8 +1523,7 @@ begin
             CurrentIdentifierList.ContextFlags:=
               CurrentIdentifierList.ContextFlags+[ilcfStartIsLValue];
           end;
-          if UpAtomIs('IF') or UpAtomIs('FOR') or UpAtomIs('DO')
-          or UpAtomIs('CASE') or UpAtomIs('OF') or UpAtomIs('WHILE') then begin
+          if UpAtomIs('IF') or UpAtomIs('CASE') or UpAtomIs('WHILE') then begin
             CurrentIdentifierList.ContextFlags:=
               CurrentIdentifierList.ContextFlags+[ilcfIsExpression];
           end;

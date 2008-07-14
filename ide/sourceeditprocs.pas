@@ -511,6 +511,7 @@ begin
     Result:=Result+' := ';
     CursorAtEnd:=false;
   end;}
+  if CursorAtEnd then ;
 
   // add assignment operator :=
   if (ilcfStartIsLValue in  IdentList.ContextFlags)
@@ -534,9 +535,7 @@ begin
   if (ilcfNeedsEndSemicolon in IdentList.ContextFlags)
   and CodeToolsOpts.IdentComplAddSemicolon then begin
     Result:=Result+';';
-    if (not CursorAtEnd) or IdentItem.HasChilds
-    or ([ilcfStartIsLValue,ilcfIsExpression]*IdentList.ContextFlags<>[]) then
-      inc(CursorToLeft);
+    inc(CursorToLeft);
   end;
 
   //DebugLn(['GetIdentCompletionValue END Result="',Result,'"']);
