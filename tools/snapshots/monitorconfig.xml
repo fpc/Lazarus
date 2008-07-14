@@ -2,8 +2,8 @@
 <CONFIG>
     <Version
         Lazarus="0.9.25"
-        FPC_Release="2.2.0"
-        FPC_Fixes="2.2.1"
+        FPC_Release="2.2.2rc2"
+        FPC_Fixes="2.2.3"
         FPC_Devel="2.3.1"
     />
     <Server Type="ftp" Name="Snapshot on scenergy">
@@ -16,8 +16,12 @@
             Description="Lazarus source bzip2"
         />
         <File
-            Mask="Lazarus-$LAZVER-fpc-$FPCRELEASEVER-*-win32.exe"
+            Mask="Lazarus-$LAZVER-fpc-$FPCRELEASEVER-????????-win32.exe"
             Description="Lazarus win32 with fpc release ($FPCRELEASEVER)"
+        />
+        <File
+            Mask="Lazarus-$LAZVER-fpc-$FPCRELEASEVER-????????-cross-arm-wince-win32.exe"
+            Description="Lazarus win32 cross arm-wince with fpc release ($FPCRELEASEVER)"
         />
         <File
             Mask="Lazarus-$LAZVER-fpc-$FPCFIXESVER-????????-win32.exe"
@@ -37,7 +41,7 @@
         />
         <File
             Mask="Lazarus-$LAZVER-fpc-$FPCFIXESVER-*-win64.exe"
-            Description="Lazarus win64 with fpc fixes branch ($FPCFIXESVER)"
+            Description="Lazarus win64 with fpc development branch ($FPCFIXESVER)"
         />
         <File
             Mask="Lazarus-$LAZVER-fpc-$FPCDEVELVER-*-win64.exe"
