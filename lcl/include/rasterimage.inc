@@ -649,12 +649,56 @@ begin
 end;
 
 procedure TRasterImage.ReadData(Stream: TStream);
+  function GetImageClass: TRasterImageClass;
+  const
+    // need to repeat here since they aren't defined yet
+    IconSignature: array [0..3] of char = #0#0#1#0;
+    CursorSignature: array [0..3] of char = #0#0#2#0;
+  var
+    Sig: array[0..7] of Char;
+    Position: Int64;
+  begin
+    Position := Stream.Position;
+    Stream.Read(Sig[0], SizeOf(Sig));
+    Stream.Position := Position;
+
+    if (Sig[0] = 'B') and (Sig[1] = 'M') then Exit(TBitmap);
+    if CompareMem(@Sig[0], @PNGcomn.Signature[0], 8) then Exit(TPortableNetworkGraphic);
+    if CompareMem(@Sig[0], @IconSignature[0], 4) then Exit(TIcon);
+    if CompareMem(@Sig[0], @CursorSignature[0], 4) then Exit(TCursorImage);
+    if TestStreamIsXPM(Stream) then Exit(TPixmap);
+
+    Result := nil;
+  end;
+
 var
   Size: Longint;
+  ImageClass: TRasterImageClass;
+  Image: TRasterImage;
 begin
   Stream.Read(Size, SizeOf(Size));
   Size := LEtoN(Size);
-  LoadFromStream(Stream, Size);
+  
+  // pre laz 0.9.26 there was no strict relation between graphic format and
+  // classtype, so we need to check if we need some conversion
+  if Size >= 8
+  then ImageClass := GetImageClass
+  else ImageClass := nil;
+
+  if (ImageClass = nil) or ClassType.InheritsFrom(ImageClass)
+  then begin
+    // no conversion needed, or it wasn't a known "old" format
+    LoadFromStream(Stream, Size);
+    Exit;
+  end;
+  
+  Image := ImageClass.Create;
+  Image.LoadFromStream(Stream, Size);
+  try
+    Assign(Image);
+  finally
+    Image.Free;
+  end;
 end;
 
 procedure TRasterImage.WriteData(Stream: TStream);

@@ -196,6 +196,10 @@ ResourceString
   rsUnsupportedBitmapFormat = 'Unsupported bitmap format.';
   rsErrorWhileSavingBitmap = 'Error while saving bitmap.';
   rsDuplicateIconFormat = 'Duplicate icon format.';
+  rsIconImageEmpty = 'Icon image cannot be empty';
+  rsIconImageSize = 'Icon image must have the same size';
+  rsIconNoCurrent = 'Icon has no current image';
+  rsIconImageFormat = 'Icon image must have the same format';
   rsNoWidgetSet = 'No widgetset object. '
     +'Please check if the unit "interfaces" was added to the programs uses clause.';
   rsPressOkToIgnoreAndRiskDataCorruptionPressCancelToK = '%s%sPress Ok to '

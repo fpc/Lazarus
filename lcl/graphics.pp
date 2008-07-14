@@ -391,10 +391,13 @@ const
 
 type
   TCanvas = class;
-
-  // standard LCL graphic formats
-  TCustomBitmap = class;            // base class
+  
+  // base class
+  TRasterImage = class;
+  TRasterImageClass = class of TRasterImage;
+  TCustomBitmap = class;
   TCustomBitmapClass = class of TCustomBitmap;
+  // standard LCL graphic formats
   TBitmap = class;                  // bmp
   TPixmap = class;                  // xpm
   TIcon = class;                    // ico
@@ -1481,6 +1484,7 @@ type
 
     procedure Add(AFormat: TPixelFormat; AHeight, AWidth: Word);
     procedure Assign(Source: TPersistent); override;
+    procedure AssignImage(ASource: TRasterImage); virtual;
     procedure Clear; override;
     procedure Delete(Aindex: Integer);
     procedure Remove(AFormat: TPixelFormat; AHeight, AWidth: Word);
@@ -1778,6 +1782,7 @@ begin
   if fsUnderline in Style then Add('fsUnderline');
   Result:='['+Result+']';
 end;
+
 
 function LoadCursorFromLazarusResource(ACursorName: String): HCursor;
 var

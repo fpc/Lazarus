@@ -270,10 +270,83 @@ end;
 
 procedure TCustomIcon.Assign(Source: TPersistent);
 begin
-  if Source is TCustomIcon then
+  if Source is TCustomIcon
+  then begin
     FCurrent := TCustomIcon(Source).Current;
+  end
+  else if Source is TRasterImage
+  then begin
+    Clear;
+    
+    with TRasterImage(Source) do
+      Self.Add(PixelFormat, Height, Width);
+
+    AssignImage(TRasterImage(Source));
+    Exit;
+  end;
 
   inherited Assign(Source);
+end;
+
+procedure TCustomIcon.AssignImage(ASource: TRasterImage);
+var
+  Image, NewImage: TIconImage;
+  RawImage: PRawImage;
+begin
+  if FCurrent = -1
+  then raise EInvalidGraphicOperation.Create(rsIconNoCurrent);
+
+  if ASource = nil
+  then raise EInvalidGraphicOperation.Create(rsIconImageEmpty);
+
+  Image := TIconImage(TSharedIcon(FSharedImage).FImages[FCurrent]);
+
+  if (Image.Width <> ASource.Width)
+  or (Image.Height <> ASource.Height)
+  then raise EInvalidGraphicOperation.Create(rsIconImageSize);
+  
+  if Image.PixelFormat <> ASource.PixelFormat
+  then raise EInvalidGraphicOperation.Create(rsIconImageFormat);
+
+  UnshareImage(True);
+  FreeCanvasContext;
+  
+  RawImage := ASource.GetRawImage;
+  NewImage := TIconImage.Create(Image.PixelFormat, Image.Height, Image.Width);
+  try
+    NewImage.FImage.Description := RawImage^.Description;
+
+    NewImage.FImage.DataSize := RawImage^.DataSize;
+    if NewImage.FImage.DataSize > 0
+    then begin
+      NewImage.FImage.Data := GetMem(NewImage.FImage.DataSize);
+      Move(RawImage^.Data^, NewImage.FImage.Data^, NewImage.FImage.DataSize);
+    end;
+    NewImage.FImage.MaskSize := RawImage^.MaskSize;
+    if NewImage.FImage.MaskSize > 0
+    then begin
+      NewImage.FImage.Mask := GetMem(NewImage.FImage.MaskSize);
+      Move(RawImage^.Mask^, NewImage.FImage.Mask^, NewImage.FImage.MaskSize);
+    end;
+    NewImage.FImage.PaletteSize := RawImage^.PaletteSize;
+    if NewImage.FImage.PaletteSize > 0
+    then begin
+      NewImage.FImage.Palette := GetMem(NewImage.FImage.PaletteSize);
+      Move(RawImage^.Palette^, NewImage.FImage.Palette^, NewImage.FImage.PaletteSize);
+    end;
+
+    // this cannot be shcanged without adjusting data
+    // NewImage.FImage.Description.MaskBitsPerPixel := 1;
+
+    TSharedIcon(FSharedImage).FImages[FCurrent] := NewImage;
+    NewImage := nil;
+    Image.Free;
+
+  finally
+    NewImage.Free;
+  end;
+
+  Changed(Self);
 end;
 
 procedure TCustomIcon.Clear;
@@ -475,14 +548,15 @@ begin
 
   Position := Stream.Position;
   Stream.Read(Signature, SizeOf(Signature));
+  Stream.Position := Position;
   if Cardinal(Signature) = Cardinal(IconSignature)
   then begin
     // Assume Icon - stream without explicit size
-    Stream.Position := Position;
     LoadFromStream(Stream);
   end
   else begin
-    LoadFromStream(Stream, LEtoN(Size));
+    // use inherited to read, so "old" streams are converted
+    inherited;
   end;
 end;
 
@@ -731,7 +805,7 @@ var
   NewIcon, OldIcon: TSharedIcon;
   n: Integer;
   OldImage, NewImage: TIconImage;
-  OldBitmap: TSharedCustomBitmap;
+//  OldBitmap: TSharedCustomBitmap;
   OldSharedImage: TSharedImage;
 begin
   if FSharedImage.RefCount <= 1 then Exit;
@@ -741,8 +815,12 @@ begin
     NewIcon.Reference;
     if CopyContent
     then begin
+      // in theory we should have a compatible shared image
+      // if not, something internal is wrong
+      (*
       if FSharedImage is TSharedIcon then
       begin
+      *)
         OldIcon := FSharedImage as TSharedIcon;
         for n := 0 to OldIcon.FImages.Count -1 do
         begin
@@ -769,6 +847,7 @@ begin
             Move(OldImage.FImage.Palette^, NewImage.FImage.Palette^, NewImage.FImage.PaletteSize);
           end;
         end;
+(*
       end
       else
       if FSharedImage is TSharedCustomBitmap then
@@ -797,6 +876,7 @@ begin
         end;
         NewImage.FImage.Description.MaskBitsPerPixel := 1;
       end;
+*)
     end;
     FreeCanvasContext;
     OldSharedImage := FSharedImage;
