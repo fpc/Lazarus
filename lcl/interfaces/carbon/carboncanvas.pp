@@ -1494,11 +1494,14 @@ procedure TCarbonBitmapContext.Reset;
 var
   Info: CGBitmapInfo;
 begin
-  if CGContext <> nil then CGContextRelease(CGContext);
+  if CGContext <> nil then
+  begin
+    CGContextRelease(CGContext);
+    CGContext := nil;
+  end;
 
-  if FBitmap = nil then
-    CGContext := nil
-  else
+
+  if FBitmap <> nil then
   begin
     {$note TODO: convert data if image format is incomatible with context}
     // MWE:
@@ -1526,6 +1529,9 @@ begin
     CGContext := CGBitmapContextCreate(FBitmap.Data, FBitmap.Width, FBitmap.Height,
                    FBitmap.BitsPerComponent, FBitmap.BytesPerRow, FBitmap.ColorSpace,
                    Info);
+                   
+    if CGContext = nil then
+      DebugLn('Unable to create Canvas Handle for Bitmap. Format "', DbgS(Info), '" is not supported!');
 
     // flip and offset CTM to upper left corner
     CGContextTranslateCTM(CGContext, 0, FBitmap.Height);
