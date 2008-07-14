@@ -35,7 +35,7 @@ uses
   MacOSAll,
 {$endif}
  // LCL
-  LCLProc, LCLType, Graphics, GraphType, Controls, Forms,
+  LCLProc, LCLType, Graphics, GraphType, IntfGraphics, Controls, Forms,
  // LCL Carbon
   CarbonDef, CarbonUtils,
   {$ifdef DebugBitmaps}
@@ -123,6 +123,7 @@ type
     procedure Frame(X1, Y1, X2, Y2: Integer);
     procedure Frame3D(var ARect: TRect; const FrameWidth: integer; const Style: TBevelCut);
     function GetClipRect: TRect;
+    function GetPixel(X, Y: Integer): TGraphicsColor; virtual;
     function GetTextExtentPoint(Str: PChar; Count: Integer; var Size: TSize): Boolean;
     function GetTextMetrics(var TM: TTextMetric): Boolean;
     procedure InvertRectangle(X1, Y1, X2, Y2: Integer);
@@ -189,6 +190,8 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Reset; override;
+    
+    function GetPixel(X, Y: Integer): TGraphicsColor; override;
   public
     property Bitmap: TCarbonBitmap read GetBitmap write SetBitmap;
   end;
@@ -929,6 +932,17 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  TCarbonDeviceContext.GetPixel
+  Params:  X, Y - Coordinates of pixel
+  Returns: Specified pixel color
+ ------------------------------------------------------------------------------}
+function TCarbonDeviceContext.GetPixel(X, Y: Integer): TGraphicsColor;
+begin
+  Result := clNone;
+  DebugLn('TODO: Implement get pixel for CGContext.');
+end;
+
+{------------------------------------------------------------------------------
   Method:  TCarbonDeviceContext.GetTextExtentPoint
   Params:  Str   - Text string
            Count - Number of characters in string
@@ -1539,6 +1553,33 @@ begin
   end;
 
   inherited Reset;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonBitmapContext.GetPixel
+  Params:  X, Y - Coordinates of pixel
+  Returns: Specified pixel color
+ ------------------------------------------------------------------------------}
+function TCarbonBitmapContext.GetPixel(X, Y: Integer): TGraphicsColor;
+var
+  S: TPoint;
+  R: TRect;
+  RawImage: TRawImage;
+  IntfImage: TLazIntfImage;
+begin
+  Result := clNone;
+  
+  S := GetSize;
+  if (X < 0) or (Y < 0) or (X > S.X - 1) or (Y > S.Y - 1) then Exit;
+  
+  R := Classes.Rect(X, Y, 1, 1);
+  if not RawImage_FromBitmap(RawImage, HBITMAP(Bitmap), 0, @R) then Exit;
+  IntfImage := TLazIntfImage.Create(RawImage, True);
+  try
+    Result := IntfImage.TColors[X, Y];
+  finally
+    IntfImage.Free;
+  end;
 end;
 
 {------------------------------------------------------------------------------

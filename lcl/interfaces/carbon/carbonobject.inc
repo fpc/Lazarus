@@ -1024,17 +1024,19 @@ end;
   Params:  CanvasHandle - Canvas handle to get color from
            X, Y         - Position
   Returns: Color of the specified pixel on the canvas
-  Not implemented!
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.DCGetPixel(CanvasHandle: HDC; X, Y: integer
   ): TGraphicsColor;
 begin
+  Result := clNone;
+  
   {$IFDEF VerboseObject}
     DebugLn('TCarbonWidgetSet.DCGetPixel DC: ' + DbgS(CanvasHandle) + ' X: ' + DbgS(X) + ' Y: ' + DbgS(Y));
   {$ENDIF}
   
-  DebugLn('TCarbonWidgetSet.DCGetPixel TODO');
-  Result := clNone;
+  if not CheckDC(CanvasHandle, 'DCGetPixel') then Exit;
+
+  Result := TCarbonDeviceContext(CanvasHandle).GetPixel(X, Y);
 end;
 
 {------------------------------------------------------------------------------
