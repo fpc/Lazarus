@@ -2725,7 +2725,7 @@ begin
   nC1 := LeftChar;
   if (rcClip.Left > fGutterWidth + 2) then
     Inc(nC1, (rcClip.Left - fGutterWidth - 2) div CharWidth);
-  nC2 := nC1 +
+  nC2 := {$IFDEF SYN_LAZARUS}LeftChar{$ELSE}nC1{$ENDIF} +
     (rcClip.Right - fGutterWidth - 2 + CharWidth - 1) div CharWidth;
   // lines
   nL1 := Max({$IFDEF SYN_LAZARUS}
