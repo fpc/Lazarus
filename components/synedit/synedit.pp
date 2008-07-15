@@ -2637,7 +2637,7 @@ begin
   {$IFDEF SYN_LAZARUS}
     if (eoShowCtrlMouseLinks in Options)
     and not(wasDragging)
-    and (Button=mbLeft) and (Shift=[ssLeft,ssCtrl])
+    and (Button=mbLeft) and (ssCtrl in Shift)
     and assigned(FOnClickLink)
     then begin
       FOnClickLink(Self, Button, Shift, X,Y);;
