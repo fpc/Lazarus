@@ -266,7 +266,9 @@ endif
 endif
 export LCL_PLATFORM
 ifeq ($(OS_TARGET),darwin)
+ifneq ($(LCL_PLATFORM),carbon)
 LAZARUS_LIBPATHS=-Fl/usr/X11R6/lib -Fl/sw/lib
+endif
 endif
 ifeq ($(FULL_TARGET),i386-linux)
 override TARGET_PROGRAMS+=apiwizz

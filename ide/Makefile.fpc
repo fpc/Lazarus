@@ -72,7 +72,9 @@ export LCL_PLATFORM
 #
 # LibPaths
 ifeq ($(OS_TARGET),darwin)
+ifneq ($(LCL_PLATFORM),carbon)
 LAZARUS_LIBPATHS=-Fl/usr/X11R6/lib -Fl/sw/lib
+endif
 endif
 
 #
