@@ -319,6 +319,9 @@ Begin
        Char_AllDownCase         : Result := True;
        Char_AllFixedUpCase      : Result := True;
        Char_AllFixedDownCase    : Result := True;
+       Char_Space               : Result := Ch in [' ', '_'];
+       Char_HourSeparator       : Result := Ch in [TimeSeparator];
+       Char_DateSeparator       : Result := Ch in [DateSeparator];
   end;
 end;
 
@@ -422,13 +425,15 @@ End;
 // Get the current selection
 procedure TCustomMaskEdit.GetSel(var _SelStart: Integer; var _SelStop: Integer);
 begin
-//  SendMessage(Handle, EM_GETSEL, Integer(@_SelStart), Integer(@_SelStop));
+  _SelStart:= GetSelStart();
+  _SelStop:= _SelStart + GetSelLength();
 end;
 
 // Set the current selection
 procedure TCustomMaskEdit.SetSel(_SelStart: Integer; _SelStop: Integer);
 begin
-//  SendMessage(Handle, EM_SETSEL, _SelStart, _SelStop);
+  SetSelStart(_SelStart);
+  SetSelLength(_SelStop - _SelStart);
 end;
 
 procedure TCustomMaskEdit.ValidateEdit;
@@ -465,7 +470,6 @@ begin
       Key := 0;
       SetCursorPos;
     end;
-
     Exit;
   end;
 
@@ -473,7 +477,7 @@ begin
   if (Key = VK_HOME) or (Key = VK_end) then
   begin
     if Key = VK_HOME then FPosition := 1
-                     else FPosition := FMaxChars-1;
+                     else FPosition := FMaxChars;
     SetCursorPos;
     Key := 0;
     Exit;
@@ -500,8 +504,8 @@ begin
     DeleteSelected(False);
     SetCharToPos;
     InsertChar(Char(Lo(Key)));
-    Key := 0;
   end;
+  Key := 0;
 end;
 
 // Delete a single char from position
