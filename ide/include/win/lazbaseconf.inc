@@ -107,18 +107,6 @@ begin
                             []);
 end;
 
-function CreateCompilerTestPascalFilename: string;
-var
-  fs: TFileStream;
-begin
-  Result := AppendPathDelim(GetPrimaryConfigPath) + 'compilertest.pas';
-  if not FileExists(Result) then
-  begin
-    fs := TFileStream.Create(Result, fmCreate);
-    fs.Free;
-  end;
-end;
-
 function GetDefaultCompiledUnitExt(FPCVersion, FPCRelease: integer): string;
 begin
   if (FPCVersion=1) and (FPCRelease=0) then

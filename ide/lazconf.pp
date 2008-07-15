@@ -130,6 +130,34 @@ implementation
 
 {$I lazconf.inc}
 
+{---------------------------------------------------------------------------
+  function CreateCompilerTestPascalFilename: string;
+ ---------------------------------------------------------------------------}
+function CreateCompilerTestPascalFilename: string;
+
+  function CreateFile(const Filename: string): boolean;
+  var
+    fs: TFileStream;
+  begin
+    if FileExists(Filename) then exit(true);
+    Result:=false;
+    try
+      fs:=TFileStream.Create(Filename,fmCreate);
+      fs.Free;
+      Result:=true;
+    except
+    end;
+  end;
+
+begin
+  Result:=AppendPathDelim(GetPrimaryConfigPath)+'compilertest.pas';
+  if CreateFile(Result) then exit;
+  Result:=AppendPathDelim(GetTempDir)+'compilertest.pas';
+  if CreateFile(Result) then exit;
+  Debugln('unable to create temporay file ',Result);
+  Result:='';
+end;
+
 function FindDefaultExecutablePath(const Executable: string): string;
 begin
   if FilenameIsAbsolute(Executable) then

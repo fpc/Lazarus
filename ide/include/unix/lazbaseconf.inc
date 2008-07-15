@@ -100,33 +100,6 @@ begin
 end;
 
 {---------------------------------------------------------------------------
-  function CreateCompilerTestPascalFilename: string;
- ---------------------------------------------------------------------------}
-function CreateCompilerTestPascalFilename: string;
-
-  function CreateFile(const Filename: string): boolean;
-  var
-    fs: TFileStream;
-  begin
-    if FileExists(Filename) then exit(true);
-    Result:=false;
-    try
-      fs:=TFileStream.Create(Filename,fmCreate);
-      fs.Free;
-      Result:=true;
-    except
-    end;
-  end;
-
-begin
-  Result:=AppendPathDelim(GetPrimaryConfigPath)+'compilertest.pas';
-  if CreateFile(Result) then exit;
-  Result:=AppendPathDelim(GetTempDir)+'compilertest1.pas';
-  if CreateFile(Result) then exit;
-  writeln('unable to create temporay file ',Result);
-end;
-
-{---------------------------------------------------------------------------
   function FindDefaultCompilerPath: string;
  ---------------------------------------------------------------------------}
 function FindDefaultCompilerPath: string;
