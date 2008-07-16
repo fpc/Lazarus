@@ -1,19 +1,19 @@
 msgid ""
-msgstr ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
 
-#: h2passtrconsts:h2pcheaderfileconverter
+#: h2passtrconsts.h2pcheaderfileconverter
 msgid "C header file converter"
 msgstr "Conversor de cabecalho C"
 
-#: h2passtrconsts:h2pcreateunitsfromcheaderfiles
+#: h2passtrconsts.h2pcreateunitsfromcheaderfiles
 msgid "Create units from C header files"
 msgstr "Criar unidades de arquivos de cabecalho C"
 
-#: h2passtrconsts:h2ph2pas
+#: h2passtrconsts.h2ph2pas
 msgid "H2Pas"
 msgstr "H para Pas"
 
-#: h2passtrconsts:h2ph2pastool
+#: h2passtrconsts.h2ph2pastool
 msgid "H2PasTool"
 msgstr "Ferramenta H para Pas"
 

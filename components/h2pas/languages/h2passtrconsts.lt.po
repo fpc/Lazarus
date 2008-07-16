@@ -10,19 +10,19 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: h2passtrconsts:h2pcheaderfileconverter
+#: h2passtrconsts.h2pcheaderfileconverter
 msgid "C header file converter"
 msgstr "C antraštės failo konverteris"
 
-#: h2passtrconsts:h2pcreateunitsfromcheaderfiles
+#: h2passtrconsts.h2pcreateunitsfromcheaderfiles
 msgid "Create units from C header files"
 msgstr "Kurti modulius pagal C antraštės failus"
 
-#: h2passtrconsts:h2ph2pas
+#: h2passtrconsts.h2ph2pas
 msgid "H2Pas"
 msgstr "H2Pas"
 
-#: h2passtrconsts:h2ph2pastool
+#: h2passtrconsts.h2ph2pastool
 msgid "H2PasTool"
 msgstr "H2PasTool"
 

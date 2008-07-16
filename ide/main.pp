@@ -8292,10 +8292,11 @@ begin
                        +Flags*[sfCheckAmbiguousFiles];
         AnUnitInfo:=Project1.UnitWithEditorIndex(i);
         if AnUnitInfo = nil
-        then
+        then begin
           {$NOTE ToDo: EditorIndex/Source editor inconsistency: fix the real bug, see http://bugs.freepascal.org/view.php?id=10171}
+          DumpStack;
           DebugLn('TMainIDE.DoSaveProject - unit not found for page %d', [i])
-        else
+        end else begin
           if AnUnitInfo.IsVirtual
           then begin
             if (sfSaveToTestDir in Flags) then
@@ -8303,6 +8304,7 @@ begin
             else
               continue;
           end;
+        end;
         Result:=DoSaveEditorFile(i,SaveFileFlags);
         if Result=mrAbort then exit;
       end;

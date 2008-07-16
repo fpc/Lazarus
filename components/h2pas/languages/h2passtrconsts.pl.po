@@ -11,19 +11,19 @@ msgstr ""
 "X-Poedit-Language: Polish\n"
 "X-Poedit-Country: POLAND\n"
 
-#: h2passtrconsts:h2pcheaderfileconverter
+#: h2passtrconsts.h2pcheaderfileconverter
 msgid "C header file converter"
 msgstr ""
 
-#: h2passtrconsts:h2pcreateunitsfromcheaderfiles
+#: h2passtrconsts.h2pcreateunitsfromcheaderfiles
 msgid "Create units from C header files"
 msgstr ""
 
-#: h2passtrconsts:h2ph2pas
+#: h2passtrconsts.h2ph2pas
 msgid "H2Pas"
 msgstr "H2Pas"
 
-#: h2passtrconsts:h2ph2pastool
+#: h2passtrconsts.h2ph2pastool
 msgid "H2PasTool"
 msgstr ""
 
