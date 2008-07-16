@@ -1570,6 +1570,8 @@ begin
       XMLConfig.GetValue('EditorOptions/Display/EditorFont', 'courier');
     fEditorFontHeight :=
       XMLConfig.GetValue('EditorOptions/Display/EditorFontHeight', 12);
+    if fEditorFontHeight<=0 then
+      fEditorFontHeight:=12;
     fExtraCharSpacing :=
       XMLConfig.GetValue('EditorOptions/Display/ExtraCharSpacing', 0);
     fExtraLineSpacing :=
@@ -2659,13 +2661,17 @@ end;
 procedure TEditorOptionsForm.EditorFontButtonClick(Sender: TObject);
 var
   FontDialog: TFontDialog;
+  NewHeight: LongInt;
 begin
   FontDialog := TFontDialog.Create(Nil);
   try
     with FontDialog do
     begin
       Font.Name   := EditorFontComboBox.Text;
-      Font.Height := StrToIntDef(EditorFontHeightComboBox.Text, PreviewEdits[1].Font.Height);
+      NewHeight := StrToIntDef(EditorFontHeightComboBox.Text, PreviewEdits[1].Font.Height);
+      if NewHeight<=0 then
+        NewHeight:=12;
+      Font.Height := NewHeight;
       Options := Options + [fdApplyButton];
       OnApplyClicked := @FontDialogApplyClicked;
       if Execute then
@@ -2720,17 +2726,11 @@ begin
     if Sender = EditorFontHeightComboBox then
     begin
       NewVal := StrToIntDef(EditorFontHeightComboBox.Text,
-        PreviewEdits[1].Font.Height);
-      if (NewVal < 0) then
-        if (NewVal > -6) then
-          NewVal := -6;
-      if (NewVal >= 0) then
-        if (NewVal < 6) then
-          NewVal := 6;
+                            PreviewEdits[1].Font.Height);
+      if (NewVal <= 6) then
+        NewVal := 6;
       if (NewVal > 40) then
         NewVal := 40;
-      if (NewVal < -40) then
-        NewVal := -40;
       SetComboBoxText(EditorFontHeightComboBox, IntToStr(NewVal));
       for a := Low(PreviewEdits) to High(PreviewEdits) do
         if PreviewEdits[a] <> Nil then
@@ -3570,8 +3570,7 @@ begin
   EditorFontLabel.Caption := dlgEditorFont;
 
   with EditorFontHeightComboBox do
-    SetComboBoxText(EditorFontHeightComboBox
-      , IntToStr(EditorOpts.EditorFontHeight));
+    SetComboBoxText(EditorFontHeightComboBox,IntToStr(EditorOpts.EditorFontHeight));
 
   EditorFontHeightLabel.Caption := dlgEditorFontHeight;
 
