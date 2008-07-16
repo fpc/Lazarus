@@ -1435,6 +1435,7 @@ begin
   fFontDummy.Name := 'courier';
   fFontDummy.Size := 12;
   {$ENDIF}
+  fFontDummy.Pitch := fpFixed;
   fLastMouseCaret := Point(-1,-1);
   fLastCtrlMouseLinkY := -1;
   fLastControlIsPressed := false;
@@ -1444,9 +1445,7 @@ begin
   Color := clWindow;
   fFontDummy.Name := 'Courier New';
   fFontDummy.Size := 10;
-{$ENDIF}
 {$IFDEF SYN_COMPILER_3_UP}
-{$IFNDEF SYN_LAZARUS}
 // ToDo Font CharSet
   fFontDummy.CharSet := DEFAULT_CHARSET;
 {$ENDIF}
