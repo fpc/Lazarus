@@ -344,7 +344,7 @@ begin
 
   // check if file already exists in package
   if FilenameIsAbsolute(AFilename) then begin
-    PkgFile:=LazPackage.FindPkgFile(AFilename,true,true,false);
+    PkgFile:=LazPackage.FindPkgFile(AFilename,true,false);
     if PkgFile<>nil then begin
       Msg:=Format(lisA2PFileAlreadyExistsInTheProject, ['"', AFilename, '"']);
       if PkgFile.Filename<>AFilename then
@@ -606,7 +606,7 @@ begin
       mtError,[mbCancel],0);
     exit;
   end;
-  if LazPackage.FindPkgFile(Params.UnitFilename,true,true,false)<>nil then begin
+  if LazPackage.FindPkgFile(Params.UnitFilename,true,false)<>nil then begin
     MessageDlg(lisA2PFileAlreadyInPackage,
       Format(lisA2PTheFileIsAlreadyInThePackage, ['"', Params.UnitFilename, '"']
         ),
@@ -825,7 +825,7 @@ begin
 
       NewFileType:=FileNameToPkgFileType(Filename);
 
-      if LazPackage.FindPkgFile(Filename,true,true,false)<>nil then begin
+      if LazPackage.FindPkgFile(Filename,true,false)<>nil then begin
         // file already in package
         FilesListView.Items.Delete(i);
         continue;

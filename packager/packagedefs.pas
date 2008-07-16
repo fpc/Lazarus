@@ -723,8 +723,7 @@ type
     procedure ShortenFilename(var ExpandedFilename: string; UseUp: boolean);
     procedure LongenFilename(var AFilename: string);
     function FindPkgFile(const AFilename: string;
-                         ResolveLinks, IgnoreRemoved, FindNewFile: boolean
-                         ): TPkgFile;
+                         IgnoreRemoved, FindNewFile: boolean): TPkgFile;
     function FindUnit(const TheUnitName: string): TPkgFile;
     function FindUnit(const TheUnitName: string; IgnoreRemoved: boolean): TPkgFile;
     function FindUnit(const TheUnitName: string; IgnoreRemoved: boolean;
@@ -2859,7 +2858,7 @@ begin
 end;
 
 function TLazPackage.FindPkgFile(const AFilename: string;
-  ResolveLinks, IgnoreRemoved, FindNewFile: boolean): TPkgFile;
+  IgnoreRemoved, FindNewFile: boolean): TPkgFile;
 var
   TheFilename: String;
   Cnt: Integer;
@@ -2880,32 +2879,18 @@ begin
     end;
   end;
   
-  if ResolveLinks and FilenameIsAbsolute(TheFilename) then begin
-    TheFilename:=ReadAllLinks(TheFilename,false);
-    if TheFilename='' then TheFilename:=AFilename;
-  end;
   Cnt:=FileCount;
   for i:=0 to Cnt-1 do begin
     Result:=Files[i];
-    if ResolveLinks then begin
-      if CompareFilenames(Result.GetResolvedFilename,TheFilename)=0 then
-        exit;
-    end else begin
-      if CompareFilenames(Result.Filename,TheFilename)=0 then
-        exit;
-    end;
+    if CompareFilenames(Result.Filename,TheFilename)=0 then
+      exit;
   end;
   if not IgnoreRemoved then begin
     Cnt:=RemovedFilesCount;
     for i:=0 to Cnt-1 do begin
       Result:=RemovedFiles[i];
-      if ResolveLinks then begin
-        if CompareFilenames(Result.GetResolvedFilename,TheFilename)=0 then
-          exit;
-      end else begin
-        if CompareFilenames(Result.Filename,TheFilename)=0 then
-          exit;
-      end;
+      if CompareFilenames(Result.Filename,TheFilename)=0 then
+        exit;
     end;
   end;
   Result:=nil;

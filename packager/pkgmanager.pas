@@ -701,7 +701,7 @@ begin
 
   Filename:=ActiveUnitInfo.Filename;
 
-  PkgFile:=PackageGraph.FindFileInAllPackages(Filename,false,true,
+  PkgFile:=PackageGraph.FindFileInAllPackages(Filename,true,
                                             not ActiveUnitInfo.IsPartOfProject);
   if PkgFile=nil then begin
     IDEMessageDialog(lisProjAddPackageNotFound,
@@ -1157,7 +1157,7 @@ begin
       end;
       
       // check file name conflicts with files in other packages
-      PkgFile:=PackageGraph.FindFileInAllPackages(NewFilename,true,true,false);
+      PkgFile:=PackageGraph.FindFileInAllPackages(NewFilename,true,false);
       if PkgFile<>nil then begin
         Result:=IDEMessageDialog(lisPkgMangFilenameIsUsedByOtherPackage,
           Format(lisPkgMangTheFileNameIsUsedByThePackageInFile, ['"',
@@ -1856,7 +1856,7 @@ var
   PkgFile: TPkgFile;
 begin
   Result:='';
-  PkgFile:=PackageGraph.FindFileInAllPackages(Filename,false,true,true);
+  PkgFile:=PackageGraph.FindFileInAllPackages(Filename,true,true);
   if PkgFile=nil then exit;
   APackage:=PkgFile.LazPackage;
   if APackage.AutoCreated or (not APackage.HasDirectory) then exit;
@@ -2381,7 +2381,7 @@ begin
   OpenEditor:=true;
 
   // check if package is already loaded
-  APackage:=PackageGraph.FindPackageWithFilename(AFilename,true);
+  APackage:=PackageGraph.FindPackageWithFilename(AFilename);
   if (APackage=nil) or (pofRevert in Flags) then begin
     // package not yet loaded or it should be reloaded
     
@@ -2707,13 +2707,13 @@ begin
   if (OldFilename=NewFilename) then
     exit;
   //debugln('TPkgManager.OnRenameFile A OldFilename="',OldFilename,'" New="',NewFilename,'"');
-  OldPkgFile:=PackageGraph.FindFileInAllPackages(OldFilename,false,true,
+  OldPkgFile:=PackageGraph.FindFileInAllPackages(OldFilename,true,
                                                  not IsPartOfProject);
   if (OldPkgFile=nil) or (OldPkgFile.LazPackage.ReadOnly) then
     exit;
   OldPackage:=OldPkgFile.LazPackage;
   debugln('TPkgManager.OnRenameFile A OldPackage="',OldPackage.Name);
-  NewPkgFile:=PackageGraph.FindFileInAllPackages(NewFilename,false,true,false);
+  NewPkgFile:=PackageGraph.FindFileInAllPackages(NewFilename,true,false);
   if (NewPkgFile<>nil) and (OldPackage<>NewPkgFile.LazPackage) then exit;
 
   Result:=IDEMessageDialog(lisPkgMangRenameFileInPackage,
@@ -3194,9 +3194,9 @@ begin
   
   // find all packages owning file
   if piosfIncludeSourceDirectories in Flags then begin
-    PackageGraph.FindPossibleOwnersOfUnit(UnitFilename,Result,false);
+    PackageGraph.FindPossibleOwnersOfUnit(UnitFilename,Result);
   end else if not (piosfExcludeOwned in Flags) then begin
-    PkgFile:=PackageGraph.FindFileInAllPackages(UnitFilename,false,true,true);
+    PkgFile:=PackageGraph.FindFileInAllPackages(UnitFilename,true,true);
     if (PkgFile<>nil) and (PkgFile.LazPackage<>nil) then
       Result.Add(PkgFile.LazPackage);
     // check package source files (they usually do not have a TPkgFile)
@@ -3418,7 +3418,7 @@ begin
   end;
   
   // check if file is already in a package
-  PkgFile:=PackageGraph.FindFileInAllPackages(Filename,false,true,true);
+  PkgFile:=PackageGraph.FindFileInAllPackages(Filename,true,true);
   if PkgFile<>nil then begin
     Result:=IDEMessageDialog(lisPkgMangFileIsAlreadyInPackage,
       Format(lisPkgMangTheFileIsAlreadyInThePackage, ['"', Filename, '"', #13,

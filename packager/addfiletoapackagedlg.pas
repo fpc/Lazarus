@@ -148,7 +148,7 @@ begin
     end;
 
     // check if file is already in the package
-    PkgFile:=APackage.FindPkgFile(Filename,false,true,false);
+    PkgFile:=APackage.FindPkgFile(Filename,true,false);
     if PkgFile<>nil then begin
       MessageDlg(lisPkgMangFileIsAlreadyInPackage,
         Format(lisAF2PTheFileIsAlreadyInThePackage, ['"', Filename, '"', #13,
@@ -335,7 +335,7 @@ begin
     // skip readonly packages
     if APackage.ReadOnly then continue;
     // skip packages, that already contains the file
-    if APackage.FindPkgFile(AFilename,false,true,false)<>nil then continue;
+    if APackage.FindPkgFile(AFilename,true,false)<>nil then continue;
     if not ShowAllCheckBox.Checked then begin
       // skip packages, where the filename is not in the package directory
       // or one of its source directories

@@ -508,7 +508,7 @@ begin
           DebugLn('FindAllDelphiPackageUnits file not found: "',CurFilename,'"');
           continue;
         end;
-        PkgFile:=APackage.FindPkgFile(CurFilename,false,true,false);
+        PkgFile:=APackage.FindPkgFile(CurFilename,true,false);
         if PkgFile=nil then begin
           if FilenameIsPascalUnit(CurFilename) then begin
             // check unitname

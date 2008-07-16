@@ -200,19 +200,16 @@ type
                                 var File1: TPkgFile;
                                 var ConflictPkg: TLazPackage): boolean;
     function FindFileInAllPackages(const TheFilename: string;
-                                ResolveLinks, IgnoreDeleted,
-                                FindNewFile: boolean): TPkgFile;
+                                IgnoreDeleted, FindNewFile: boolean): TPkgFile;
     procedure FindPossibleOwnersOfUnit(const TheFilename: string;
-                                       OwnerList: TFPList;
-                                       ResolveLinks: boolean);
+                                       OwnerList: TFPList);
     function FindLowestPkgNodeByName(const PkgName: string): TAVLTreeNode;
     function FindNextSameName(ANode: TAVLTreeNode): TAVLTreeNode;
     function FindNodeOfDependency(Dependency: TPkgDependency;
                                   Flags: TFindPackageFlags): TAVLTreeNode;
     function FindOpenPackage(Dependency: TPkgDependency;
                              Flags: TFindPackageFlags): TLazPackage;
-    function FindPackageWithFilename(const TheFilename: string;
-                                     ResolveLinks: boolean): TLazPackage;
+    function FindPackageWithFilename(const TheFilename: string): TLazPackage;
     function FindPackageWithID(PkgID: TLazPackageID): TLazPackage;
     function FindPackageWithIDMask(PkgIDMask: TLazPackageID): TLazPackage;
     function FindPackageProvidingName(FirstDependency: TPkgDependency;
@@ -984,14 +981,14 @@ begin
 end;
 
 function TLazPackageGraph.FindFileInAllPackages(const TheFilename: string;
-  ResolveLinks, IgnoreDeleted, FindNewFile: boolean): TPkgFile;
+  IgnoreDeleted, FindNewFile: boolean): TPkgFile;
 var
   Cnt: Integer;
   i: Integer;
 begin
   Cnt:=Count;
   for i:=0 to Cnt-1 do begin
-    Result:=Packages[i].FindPkgFile(TheFilename,ResolveLinks,IgnoreDeleted,
+    Result:=Packages[i].FindPkgFile(TheFilename,IgnoreDeleted,
                                     FindNewFile);
     if Result<>nil then exit;
   end;
@@ -999,22 +996,16 @@ begin
 end;
 
 procedure TLazPackageGraph.FindPossibleOwnersOfUnit(const TheFilename: string;
-  OwnerList: TFPList; ResolveLinks: boolean);
+  OwnerList: TFPList);
 var
   Cnt: Integer;
   i: Integer;
-  AFilename: string;
   APackage: TLazPackage;
   PkgDirs: String;
   SrcDir: String;
 begin
   if not FilenameIsAbsolute(TheFilename) then exit;
   Cnt:=Count;
-  AFilename:=TheFilename;
-  if ResolveLinks then begin
-    AFilename:=ReadAllLinks(TheFilename,false);
-    if AFilename='' then AFilename:=TheFilename;
-  end;
   SrcDir:=ExtractFilePath(TheFilename);
   for i:=0 to Cnt-1 do begin
     APackage:=Packages[i];
@@ -1030,29 +1021,18 @@ begin
   end;
 end;
 
-function TLazPackageGraph.FindPackageWithFilename(const TheFilename: string;
-  ResolveLinks: boolean): TLazPackage;
+function TLazPackageGraph.FindPackageWithFilename(const TheFilename: string
+  ): TLazPackage;
 var
   Cnt: Integer;
   i: Integer;
-  AFilename: string;
 begin
   Cnt:=Count;
-  AFilename:=TheFilename;
-  if ResolveLinks then begin
-    AFilename:=ReadAllLinks(TheFilename,false);
-    if AFilename='' then AFilename:=TheFilename;
-  end;
   for i:=0 to Cnt-1 do begin
     Result:=Packages[i];
     if Result.IsVirtual then continue;
-    if ResolveLinks then begin
-      if CompareFilenames(TheFilename,Result.GetResolvedFilename)=0 then
-        exit;
-    end else begin
-      if CompareFilenames(TheFilename,Result.Filename)=0 then
-        exit;
-    end;
+    if CompareFilenames(TheFilename,Result.Filename)=0 then
+      exit;
   end;
   Result:=nil;
 end;

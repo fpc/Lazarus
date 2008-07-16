@@ -7211,7 +7211,7 @@ begin
   Result:=mrOk;
   if Filename='' then exit;
   UnitIndex:=Project1.IndexOfFilename(TrimFilename(Filename),
-                                    [pfsfOnlyEditorFiles,pfsfResolveFileLinks]);
+                                      [pfsfOnlyEditorFiles]);
   if UnitIndex<0 then exit;
   AnUnitInfo:=Project1.Units[UnitIndex];
   if AnUnitInfo.EditorIndex>=0 then
@@ -7295,10 +7295,14 @@ begin
   AFilename:=TrimFilename(AFilename);
   DiskFilename:=FindDiskFilename(AFilename);
   if DiskFilename<>AFilename then begin
-    debugln('WARNING: TMainIDE.DoOpenEditorFile Opening "',DiskFilename,'" instead "',AFilename,'"');
+    // the case is different
+    DebugLn(['TMainIDE.DoOpenEditorFile Fixing file case: ',AFilename,' -> ',DiskFilename]);
     AFilename:=DiskFilename;
   end;
-  
+
+  // check if symlink and ask user open the real file instead
+  ChooseSymlink(AFilename);
+
   FilenameNoPath:=ExtractFilename(AFilename);
 
   // check to not open directories
@@ -7355,7 +7359,7 @@ begin
     ReOpen:=(UnitIndex>=0);
     // check if there is already a symlinked file open in the editor
     OtherUnitIndex:=Project1.IndexOfFilename(AFilename,
-                                    [pfsfOnlyEditorFiles,pfsfResolveFileLinks]);
+                                             [pfsfOnlyEditorFiles]);
     if (OtherUnitIndex>=0) and (OtherUnitIndex<>UnitIndex) then begin
       // There is another file open in the editor symlinked to the same file
       // ToDo
