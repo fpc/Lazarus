@@ -32,6 +32,7 @@ type
 procedure TGlyphBitmap.Assign(ASource: TPersistent);
 begin
   inherited Assign(ASource);
+  if FOwner = nil then Exit;
   if FOwner.FTransparentMode = gtmGlyph then Exit;
   inherited SetTransparent(FOwner.FTransparentMode = gtmTransparent);
 end;
@@ -45,7 +46,8 @@ end;
 
 procedure TGlyphBitmap.SetTransparent(AValue: Boolean);
 begin
-  if FOwner.FTransparentMode = gtmGlyph
+  if (FOwner = nil)
+  or (FOwner.FTransparentMode = gtmGlyph)
   then inherited SetTransparent(AValue)
   else inherited SetTransparent(FOwner.FTransparentMode = gtmTransparent);
 end;
