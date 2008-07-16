@@ -4016,18 +4016,24 @@ var
   CurValue: string;
   NewMethodExists, NewMethodIsCompatible, NewMethodIsPublished,
   NewIdentIsMethod: boolean;
+  IsNil: Boolean;
+  NewMethod: TMethod;
 begin
   CurValue:=GetValue;
   if CurValue=NewValue then exit;
   //DebugLn('### TMethodPropertyEditor.SetValue A OldValue="',CurValue,'" NewValue=',NewValue);
-  if not IsValidIdent(NewValue) then begin
+  IsNil:=(NewValue='') or (NewValue=oisNone);
+  
+  if (not IsNil) and (not IsValidIdent(NewValue))
+  then begin
     MessageDlg(oisIncompatibleIdentifier,
       '"'+NewValue+'" is not a valid method name.', mtError,
       [mbCancel, mbIgnore], 0);
     exit;
   end;
   
-  NewMethodExists:=PropertyHook.MethodExists(NewValue,GetTypeData(GetPropType),
+  NewMethodExists:=(not IsNil)
+       and PropertyHook.MethodExists(NewValue,GetTypeData(GetPropType),
                    NewMethodIsCompatible,NewMethodIsPublished,NewIdentIsMethod);
   //DebugLn('### TMethodPropertyEditor.SetValue B NewMethodExists=',NewMethodExists,' NewMethodIsCompatible=',NewMethodIsCompatible,' ',NewMethodIsPublished,' ',NewIdentIsMethod);
   if NewMethodExists then begin
@@ -4057,6 +4063,11 @@ begin
     end;
   end;
   //DebugLn('### TMethodPropertyEditor.SetValue C');
+  if IsNil then begin
+    NewMethod.Data:=nil;
+    NewMethod.Code:=nil;
+    SetMethodValue(NewMethod);
+  end else
   if IsValidIdent(CurValue)
   and (not NewMethodExists)
   and (not PropertyHook.MethodFromAncestor(GetMethodValue)) then begin
