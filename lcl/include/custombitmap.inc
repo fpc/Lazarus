@@ -113,6 +113,7 @@ procedure TCustomBitmap.RawimageNeeded(ADescOnly: Boolean);
 var
   OldChangeEvent: TNotifyEvent;
   ImagePtr: PRawImage;
+  Flags: TRawImageQueryFlags;
 begin
   ImagePtr := @TSharedCustomBitmap(FSharedImage).FImage;
   if ImagePtr^.Description.Format <> ricfNone
@@ -137,7 +138,18 @@ begin
     end;
   
     // keep size
-    ImagePtr^.Description := GetDescriptionFromDevice(0, ImagePtr^.Description.Width, ImagePtr^.Description.Height);
+    // ImagePtr^.Description := GetDescriptionFromDevice(0, ImagePtr^.Description.Width, ImagePtr^.Description.Height);
+    // use query to get a default description without alpha, since alpha drawing
+    // is not yet supported (unless asked for)
+    case PixelFormat of
+      pf1bit: Flags := [riqfMono, riqfMask];
+      pf4bit,
+      pf8bit: Flags := [riqfRGB, riqfMask, riqfPalette];
+      pf32bit: Flags := [riqfRGB, riqfMask, riqfAlpha];
+    else
+      Flags := [riqfRGB, riqfMask];
+    end;
+    ImagePtr^.Description := QueryDescription(Flags, ImagePtr^.Description.Width, ImagePtr^.Description.Height);
     Exit;
   end;
   
@@ -307,7 +319,11 @@ begin
   try
     NewImage.Reference;
     if CopyContent and OldImage.ImageAllocated
-    then OldImage.FImage.ExtractRect(Rect(0, 0, Width, Height), NewImage.FImage);
+    then begin
+      // force a complete rawimage, so we can copy it
+      RawimageNeeded(False);
+      OldImage.FImage.ExtractRect(Rect(0, 0, Width, Height), NewImage.FImage);
+    end;
 
     FreeCanvasContext;
     FSharedImage := NewImage;
