@@ -35,6 +35,7 @@ Type
     FShowResult: Boolean;
     FExporter : TCustomDatasetExporter;
     FProgress : TExportProgressForm;
+    FTableNameHint: String;
     procedure SetDataset(const AValue: TDataset);
     procedure DoCancel(Sender : TObject);
     Procedure Doprogress(Sender : TObject; Const ItemNo : Integer);
@@ -48,12 +49,13 @@ Type
     Property Dataset : TDataset Read FDataset Write SetDataset;
     Property ShowProgress : Boolean Read FShowProgress Write FShowProgress default true;
     Property ShowResult : Boolean Read FShowResult Write FShowResult default true;
+    Property TableNameHint : String Read FTableNameHint Write FTableNameHint;
   end;
   
 
 implementation
 
-uses frmSelectExportFormat, frmBaseConfigExport;
+uses typinfo, frmSelectExportFormat, frmBaseConfigExport;
 
 Resourcestring
   SNRecordsExported = 'Succesfully exported %d records.';
@@ -117,6 +119,8 @@ begin
     FExporter:=FI.ExportClass.Create(Self);
     Try
       FExporter.Dataset:=Self.Dataset;
+      If IsPublishedProp(FExporter.FormatSettings,'TableName') then
+        SetStrProp(FExporter.FormatSettings,'TableName',TableNameHint);
       Result:=Exporter.ShowConfigDialog;
       if Result then
         begin
