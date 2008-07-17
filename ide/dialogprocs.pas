@@ -471,6 +471,7 @@ function ChooseSymlink(var Filename: string): TModalResult;
 var
   TargetFilename: String;
 begin
+  if not FileExists(Filename) then exit(mrOk);
   Result:=mrCancel;
   try
     TargetFilename:=ReadAllLinks(Filename,true);
