@@ -3801,13 +3801,31 @@ tools/install/win/lazarus_install_cheetah.bmp -text svneol=unset#image/bmp
 tools/install/win/lazarus_install_cheetah_small.bmp -text svneol=unset#image/bmp
 tools/install/win/readme.txt svneol=native#text/plain
 tools/lazdatadesktop/README.txt svneol=native#text/plain
+tools/lazdatadesktop/bitmaps/btndown.bmp -text
+tools/lazdatadesktop/bitmaps/btndown.xpm -text
+tools/lazdatadesktop/bitmaps/btnup.bmp -text
+tools/lazdatadesktop/bitmaps/btnup.xpm -text
+tools/lazdatadesktop/bitmaps/ddconnection.png -text svneol=unset#image/png
+tools/lazdatadesktop/bitmaps/dddatadict.png -text svneol=unset#image/png
+tools/lazdatadesktop/bitmaps/ddfield.png -text svneol=unset#image/png
+tools/lazdatadesktop/bitmaps/ddfields.png -text svneol=unset#image/png
+tools/lazdatadesktop/bitmaps/ddforeignkey.png -text svneol=unset#image/png
+tools/lazdatadesktop/bitmaps/ddforeignkeys.png -text svneol=unset#image/png
+tools/lazdatadesktop/bitmaps/ddindex.png -text svneol=unset#image/png
+tools/lazdatadesktop/bitmaps/ddindexes.png -text svneol=unset#image/png
+tools/lazdatadesktop/bitmaps/ddtable.png -text svneol=unset#image/png
+tools/lazdatadesktop/bitmaps/ddtabledata.png -text svneol=unset#image/png
+tools/lazdatadesktop/bitmaps/ddtables.png -text svneol=unset#image/png
 tools/lazdatadesktop/bitmaps/deletefield.bmp -text
 tools/lazdatadesktop/bitmaps/deletetable.bmp -text
+tools/lazdatadesktop/bitmaps/generateimages svneol=native#text/plain
 tools/lazdatadesktop/bitmaps/generatesql.bmp -text
 tools/lazdatadesktop/bitmaps/newfield.bmp -text
 tools/lazdatadesktop/bitmaps/newtable.bmp -text
 tools/lazdatadesktop/bitmaps/qrybtn_close.xpm svneol=native#text/plain
+tools/lazdatadesktop/bitmaps/qrybtn_code.xpm svneol=native#text/plain
 tools/lazdatadesktop/bitmaps/qrybtn_execute.xpm svneol=native#text/plain
+tools/lazdatadesktop/bitmaps/qrybtn_export.xpm svneol=native#text/plain
 tools/lazdatadesktop/bitmaps/qrybtn_next.xpm svneol=native#text/plain
 tools/lazdatadesktop/bitmaps/qrybtn_open.xpm svneol=native#text/plain
 tools/lazdatadesktop/bitmaps/qrybtn_previous.xpm svneol=native#text/plain
@@ -3815,6 +3833,7 @@ tools/lazdatadesktop/bitmaps/qrybtn_save.xpm svneol=native#text/plain
 tools/lazdatadesktop/conneditor.pp svneol=native#text/plain
 tools/lazdatadesktop/datapanel.pp svneol=native#text/plain
 tools/lazdatadesktop/ddfiles.pp svneol=native#text/plain
+tools/lazdatadesktop/dicteditor.lrs svneol=native#text/plain
 tools/lazdatadesktop/dicteditor.pp svneol=native#text/plain
 tools/lazdatadesktop/frmgeneratesql.lfm svneol=native#text/plain
 tools/lazdatadesktop/frmgeneratesql.lrs svneol=native#text/plain

@@ -25,7 +25,8 @@ unit conneditor;
 interface
 
 uses
-  Classes, SysUtils, db, fpdatadict, controls, comctrls, stdctrls, extctrls, RTTIGrids, querypanel;
+  Classes, SysUtils, db, fpdatadict, controls, comctrls, stdctrls, extctrls,
+  graphics, imglist, lresources, RTTIGrids, querypanel;
 
 Type
 
@@ -38,6 +39,7 @@ Type
     FDisplay: TPanel;
     FSplit : TSplitter;
     FTV: TTreeView;
+    FImgList : TImageList;
     FTSDisplay : TTabsheet;
     FTSQuery : TTabsheet;
     FQueryPanel : TQueryPanel;
@@ -143,6 +145,19 @@ end;
 
 constructor TConnectionEditor.Create(AOwner: TComponent);
 
+Const
+  ImageNames : Array[0..9] of string =
+        ('ddconnection','ddtables','ddtable','ddfields','ddfield',
+         'ddindexes','ddindex','ddtabledata',
+         // Need images for these...
+         'ddtables','ddtables');
+
+
+
+Var
+  P : TPortableNetworkGraphic;
+  I : Integer;
+
 begin
   inherited Create(AOwner);
   FTV:=TTreeView.Create(Self);
@@ -151,6 +166,19 @@ begin
   FTV.Align:=alLeft;
   FTV.Width:=300;
   FTV.OnSelectionChanged:=@DoSelectNode;
+  // Image list
+  FImgList:=TImageList.Create(Self);
+  For I:=0 to 8 do
+    begin
+    P:=TPortableNetworkGraphic.Create;
+    try
+      P.LoadFromLazarusResource(ImageNames[i]);
+      FImgList.Add(P,Nil);
+    finally
+      P.Free;
+    end;
+    end;
+  FTV.Images:=FImgList;
   // Splitter
   FSplit:=TSplitter.Create(Self);
   FSplit.Parent:=Self;
@@ -216,7 +244,10 @@ function TConnectionEditor.NewNode(TV : TTreeView;ParentNode: TTreeNode; ACaptio
 begin
   Result:=TV.Items.AddChild(ParentNode,ACaption);
   If AImageIndex>=0 then
+    begin
     Result.ImageIndex:=FImageOffset+AImageIndex;
+    Result.SelectedIndex:=Result.ImageIndex;
+    end;
 end;
 
 procedure TConnectionEditor.ShowDatabase;

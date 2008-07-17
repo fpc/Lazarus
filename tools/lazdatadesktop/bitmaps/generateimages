@@ -1,0 +1,6 @@
+#!/bin/sh
+../../lazres ../dicteditor.lrs ddtables.png ddtable.png ddfields.png ddfield.png\
+  ddindexes.png ddindex.png ddforeignkeys.png ddforeignkey.png ddtabledata.png\
+  dddatadict.png ddconnection.png
+  
+  

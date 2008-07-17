@@ -25,7 +25,8 @@ unit dicteditor;
 interface
 
 uses
-  Classes, SysUtils, fpdatadict, controls, comctrls, stdctrls, extctrls, RTTIGrids;
+  Classes, SysUtils, fpdatadict, controls, comctrls, stdctrls, extctrls,
+  graphics, imglist, RTTIGrids, lresources;
 
 Type
 
@@ -34,6 +35,7 @@ Type
   TDataDictEditor = Class(TTabSheet)
   private
     FDD: TFPDataDictionary;
+    FIMgList : TImageList;
     FImageOffset: Integer;
     FModified: Boolean;
     FTV : TTreeView;
@@ -120,7 +122,10 @@ function TDataDictEditor.NewNode(TV : TTreeView;ParentNode: TTreeNode; ACaption:
 begin
   Result:=TV.Items.AddChild(ParentNode,ACaption);
   If AImageIndex>=0 then
+    begin
     Result.ImageIndex:=FImageOffset+AImageIndex;
+    Result.SelectedIndex:=Result.ImageIndex;
+    end;
 end;
 
 function TDataDictEditor.GetCurrentObjectType: TObjectType;
@@ -172,6 +177,17 @@ begin
 end;
 
 constructor TDataDictEditor.Create(AOwner: TComponent);
+
+Const
+  ImageNames : Array[0..8] of string =
+        ('dddatadict','ddtables','ddtable','ddfields','ddfield',
+         'ddtables','ddtabledata','ddindexes','ddindex');
+
+
+Var
+  P : TPortableNetworkGraphic;
+  I : Integer;
+
 begin
   inherited Create(AOwner);
   FDD:=TFPDataDictionary.Create;
@@ -189,6 +205,18 @@ begin
   FTV.Parent:=Self;
   FTV.Align:=alClient;
   FTV.OnSelectionChanged:=@DoSelectNode;
+  FIMgList:=TImageList.Create(Self);
+  For I:=0 to 8 do
+    begin
+    P:=TPortableNetworkGraphic.Create;
+    try
+      P.LoadFromLazarusResource(ImageNames[i]);
+      FImgList.Add(P,Nil);
+    finally
+      P.Free;
+    end;
+    end;
+  FTV.Images:=FImgList;
   ShowDictionary;
 end;
 
@@ -692,5 +720,7 @@ begin
   Modified:=True;
 end;
 
+initialization
+{$i dicteditor.lrs}
 end.
 
