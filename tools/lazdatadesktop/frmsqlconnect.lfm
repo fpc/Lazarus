@@ -3,14 +3,13 @@ object SQLConnectionForm: TSQLConnectionForm
   Height = 177
   Top = 454
   Width = 314
-  HorzScrollBar.Page = 313
-  VertScrollBar.Page = 176
   ActiveControl = EHostName
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Connect to a database'
   ClientHeight = 177
   ClientWidth = 314
+  LCLVersion = '0.9.25'
   object LEHostName: TLabel
     Left = 8
     Height = 23
@@ -93,38 +92,14 @@ object SQLConnectionForm: TSQLConnectionForm
     PasswordChar = '*'
     TabOrder = 3
   end
-  object PButtons: TPanel
-    Height = 34
-    Top = 143
-    Width = 314
+  object BPButtons: TButtonPanel
+    Left = 6
+    Height = 42
+    Top = 135
+    Width = 302
     Align = alBottom
-    BevelOuter = bvLowered
-    ClientHeight = 34
-    ClientWidth = 314
+    AutoSize = True
     TabOrder = 4
-    object BOK: TButton
-      Left = 229
-      Height = 25
-      Top = 6
-      Width = 75
-      Anchors = [akTop, akRight]
-      BorderSpacing.InnerBorder = 4
-      Caption = '&OK'
-      Default = True
-      ModalResult = 1
-      TabOrder = 0
-    end
-    object BCancel: TButton
-      Left = 146
-      Height = 25
-      Top = 6
-      Width = 75
-      Anchors = [akTop, akRight]
-      BorderSpacing.InnerBorder = 4
-      Cancel = True
-      Caption = '&Cancel'
-      ModalResult = 2
-      TabOrder = 1
-    end
+    ShowButtons = [pbOK, pbCancel]
   end
 end

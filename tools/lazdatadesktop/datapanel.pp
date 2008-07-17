@@ -26,7 +26,7 @@ interface
 
 uses
   Graphics, Classes, SysUtils, Controls, ExtCtrls, StdCtrls, DB, dbgrids, dbCtrls,
-  buttons;
+  buttons, fpdatadict;
   
 Type
 
@@ -34,6 +34,7 @@ Type
   TDataPanel = Class(TCustomPanel)
   private
     FDataSource: TDatasource;
+    FTableName: String;
     FTopPanel: TPanel;
     FDBGrid : TDBGrid;
     FNavigator : TDBNavigator;
@@ -54,6 +55,7 @@ Type
   Public
     Constructor Create(AOwner : TComponent); Override;
     Property Dataset : TDataset Read GetDataset Write SetDataset;
+    Property TableName: String Read FTableName Write FTableName;
     Procedure ExportData;
     Procedure CreateCode;
     Property ShowExtraButtons : Boolean Read GetExtra Write SetExtra;
@@ -102,6 +104,8 @@ procedure TDataPanel.ExportData;
 begin
   With TFPDataExporter.Create(Dataset) do
     Try
+      If Self.TableName<>'' then
+        TableNameHint:=Self.TableName;
       Execute;
     Finally
       Free;

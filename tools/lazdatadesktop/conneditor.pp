@@ -315,6 +315,7 @@ Var
 begin
   ClearDisplay;
   P:=TDataPanel.Create(Self);
+  P.TableName:=ATableName;
   P.Parent:=FDisplay;
   P.Align:=alClient;
   P.Dataset:=FEngine.ViewTable(ATableName,Self);

@@ -84,6 +84,7 @@
         <Filename Value="frmsqlconnect.pp"/>
         <ComponentName Value="SQLConnectionForm"/>
         <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <ResourceFilename Value="frmsqlconnect.lrs"/>
         <UnitName Value="frmSQLConnect"/>
       </Unit5>
@@ -119,7 +120,7 @@
       <Filename Value="lazdatadesktop"/>
     </Target>
     <SearchPaths>
-      <Libraries Value="/opt/gnome/lib64/"/>
+      <Libraries Value="/opt/gnome/lib/"/>
     </SearchPaths>
     <CodeGeneration>
       <Generate Value="Faster"/>

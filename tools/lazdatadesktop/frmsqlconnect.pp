@@ -26,15 +26,14 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, ExtCtrls, ComCtrls;
+  Buttons, ExtCtrls, ComCtrls, ButtonPanel;
 
 type
 
   { TSQLConnectionForm }
 
   TSQLConnectionForm = class(TForm)
-    BCancel: TButton;
-    BOK: TButton;
+    BPButtons: TButtonPanel;
     EHostName: TEdit;
     EDatabaseName: TEdit;
     EUserName: TEdit;
@@ -43,7 +42,6 @@ type
     LEPassword: TLabel;
     LEHostName: TLabel;
     LEDatabaseName: TLabel;
-    PButtons: TPanel;
   private
     function GetShowHost: Boolean;
     function GetString(Index: integer): String;
