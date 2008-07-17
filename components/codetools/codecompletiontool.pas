@@ -4604,7 +4604,7 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
         end else begin
           // index + param list
           AccessFunc:='function '+AccessParam
-                      +'(Index:integer;'+ParamList+'):'+PropType+';';
+                      +'(AIndex:integer;'+ParamList+'):'+PropType+';';
         end;
       end else begin
         if (Parts[ppIndexWord].StartPos<1) then begin
@@ -4613,7 +4613,7 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
         end else begin
           // index, no param list
           AccessFunc:='function '+AccessParam
-                      +'(Index:integer):'+PropType+';';
+                      +'(AIndex:integer):'+PropType+';';
         end;
       end;
       // add new Insert Node
@@ -4728,7 +4728,7 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
         end else begin
           // index + param list
           AccessFunc:='procedure '+AccessParam
-                      +'(Index:integer;'+ParamList+';'
+                      +'(AIndex:integer;'+ParamList+';'
                       +'const '+SetPropertyVariablename+': '+PropType+');';
         end;
       end else begin
@@ -4765,7 +4765,7 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
         end else begin
           // index, no param list
           AccessFunc:='procedure '+AccessParam
-                      +'(Index:integer; const '+SetPropertyVariablename+': '
+                      +'(AIndex:integer; const '+SetPropertyVariablename+': '
                       +PropType+');';
         end;
       end;
