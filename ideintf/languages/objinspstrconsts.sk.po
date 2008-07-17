@@ -1,8 +1,10 @@
+# translation of objinspstrconsts.po to Slovenský
+# Slavko <slavino@slavino.sk>, 2008.
 msgid ""
 msgstr ""
 "Project-Id-Version: objinspstrconsts\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-06-19 20:10+0200\n"
+"PO-Revision-Date: 2008-07-17 21:53+0200\n"
 "Last-Translator: Slavko <slavino@slavino.sk>\n"
 "Language-Team: Slovenský <sk@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -545,11 +547,11 @@ msgstr "Obrázky"
 
 #: objinspstrconsts:oisincompatibleidentifier
 msgid "Incompatible Identifier"
-msgstr ""
+msgstr "Nekompatibilný identifikátor"
 
 #: objinspstrconsts:oisincompatiblemethod
 msgid "Incompatible Method"
-msgstr ""
+msgstr "Nekompatibilná metóda"
 
 #: objinspstrconsts:oisinputmask
 msgid "Input Mask:"
@@ -969,15 +971,15 @@ msgstr "Položka „%s“ je už v zozname. Chcete ju napriek tomu pridať?"
 
 #: objinspstrconsts:oistheidentifierisnotamethodpresscanceltoundopressign
 msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr ""
+msgstr "Identifikátor %s%s%s nie je metóda.%sPoužite Zrušiť pre zrušenie,%spoužite Ignorovať pre jeho vynútenie."
 
 #: objinspstrconsts:oisthemethodisincompatibletothiseventpresscanceltound
 msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
-msgstr ""
+msgstr "Metóda %s%s%s nie je kompatibilná s touto udalosťou (%s).%sPoužite Zrušiť pre zrušenie,%spoužite Ignorovať pre jeho vynútenie."
 
 #: objinspstrconsts:oisthemethodisnotpublishedpresscanceltoundopressignor
 msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr ""
+msgstr "Metóda %s%s%s nie je published.%sPoužite Zrušiť pre zrušenie,%spoužite Ignorovať pre jeho vynútenie."
 
 #: objinspstrconsts:cactionlisteditorpaneltoolbar
 msgid "Toolbar"
