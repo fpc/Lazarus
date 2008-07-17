@@ -4000,7 +4000,7 @@ end;
 
 function TMethodPropertyEditor.GetValue: ansistring;
 begin
-  Result:=PropertyHook.GetMethodName(GetMethodValue,nil);
+  Result:=PropertyHook.GetMethodName(GetMethodValue,GetComponent(0));
 end;
 
 procedure TMethodPropertyEditor.GetValues(Proc: TGetStringProc);

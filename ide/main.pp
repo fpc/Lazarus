@@ -1366,6 +1366,7 @@ function TMainIDE.OnPropHookGetMethodName(const Method: TMethod;
   CheckOwner: TObject): String;
 var
   JITMethod: TJITMethod;
+  LookupRoot: TPersistent;
 begin
   if Method.Code<>nil then begin
     if Method.Data<>nil then begin
@@ -1381,15 +1382,20 @@ begin
   end else if IsJITMethod(Method) then begin
     JITMethod:=TJITMethod(Method.Data);
     Result:=JITMethod.TheMethodName;
-    //DebugLn(['TMainIDE.OnPropHookGetMethodName ',dbgsName(GlobalDesignHook.LookupRoot),' ',dbgsName(JITMethod.TheClass)]);
-    if (GlobalDesignHook.LookupRoot.ClassType<>JITMethod.TheClass)
-    or ((GlobalDesignHook.LookupRoot is TComponent)
-        and (csInline in TComponent(GlobalDesignHook.LookupRoot).ComponentState))
-    then begin
-      Result:=JITMethod.TheClass.ClassName+'.'+Result;
+    if CheckOwner is TComponent then begin
+      LookupRoot:=GetLookupRootForComponent(TComponent(CheckOwner));
+      if LookupRoot is TComponent then begin
+        //DebugLn(['TMainIDE.OnPropHookGetMethodName ',dbgsName(GlobalDesignHook.LookupRoot),' ',dbgsName(JITMethod.TheClass)]);
+        if (LookupRoot.ClassType<>JITMethod.TheClass) then begin
+          Result:=JITMethod.TheClass.ClassName+'.'+Result;
+        end;
+      end;
     end;
   end else
     Result:='';
+  {$IFDEF VerboseDanglingComponentEvents}
+  DebugLn(['TMainIDE.OnPropHookGetMethodName ',Result,' ',IsJITMethod(Method)]);
+  {$ENDIF}
 end;
 
 procedure TMainIDE.OnPropHookGetMethods(TypeData:PTypeData;

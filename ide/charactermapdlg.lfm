@@ -1,10 +1,9 @@
 object CharacterMapDialog: TCharacterMapDialog
-  Left = 507
+  Left = 426
   Height = 397
-  Top = 139
+  Top = 221
   Width = 471
-  HorzScrollBar.Page = 470
-  VertScrollBar.Page = 396
+  ActiveControl = StringGrid1
   Caption = 'CharacterMapDialog'
   ClientHeight = 397
   ClientWidth = 471
@@ -12,6 +11,7 @@ object CharacterMapDialog: TCharacterMapDialog
   KeyPreview = True
   OnCreate = FormCreate
   OnShow = FormShow
+  LCLVersion = '0.9.25'
   object CharactersGroupbox: TGroupBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -19,20 +19,20 @@ object CharacterMapDialog: TCharacterMapDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = CloseButton
     Left = 6
-    Height = 353
+    Height = 343
     Top = 6
     Width = 459
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Characters'
-    ClientHeight = 335
+    ClientHeight = 324
     ClientWidth = 455
     ParentCtl3D = False
     TabOrder = 0
     object CharInfoLabel: TLabel
       Left = 6
-      Height = 14
-      Top = 315
+      Height = 20
+      Top = 298
       Width = 443
       Align = alBottom
       BorderSpacing.Around = 6
@@ -47,19 +47,18 @@ object CharacterMapDialog: TCharacterMapDialog
       AnchorSideBottom.Control = CharactersGroupbox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 323
+      Height = 312
       Top = 6
       Width = 443
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
       ColCount = 17
       DefaultColWidth = 16
+      ExtendedSelect = True
       FixedColor = clBtnFace
       Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goSmoothScroll]
       RowCount = 15
-      ScrollBars = ssAutoBoth
       TabOrder = 0
-      TabStop = True
       OnMouseDown = StringGrid1MouseDown
       OnMouseMove = StringGrid1MouseMove
     end
@@ -69,10 +68,10 @@ object CharacterMapDialog: TCharacterMapDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 376
-    Height = 26
-    Top = 365
-    Width = 89
+    Left = 369
+    Height = 36
+    Top = 355
+    Width = 96
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6

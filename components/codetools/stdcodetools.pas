@@ -4227,7 +4227,9 @@ function TStandardCodeTool.GatherPublishedClassElements(
         while ANode<>nil do begin
           if (ANode.Desc=ctnProcedure) and WithMethods then begin
             CurProcName:=CurTool.ExtractProcName(ANode,[]);
-            //debugln('TStandardCodeTool.GatherPublishedClassElements CurProcName="',CurProcName,'"');
+            {$IFDEF VerboseDanglingComponentEvents}
+            debugln('TStandardCodeTool.GatherPublishedClassElements CurProcName="',CurProcName,'"');
+            {$ENDIF}
             NewNodeExt:=NodeExtMemManager.NewNode;
             with NewNodeExt do begin
               Node:=ANode;
@@ -4307,7 +4309,9 @@ var
     NewItem^.PropInfo:=PropInfo;
     if ListOfPInstancePropInfo=nil then ListOfPInstancePropInfo:=TFPList.Create;
     ListOfPInstancePropInfo.Add(NewItem);
-    //debugln('AddDanglingEvent ',DbgSName(Instance),' ',PropInfo^.Name);
+    {$IFDEF VerboseDanglingComponentEvents}
+    debugln('AddDanglingEvent ',DbgSName(Instance),' ',PropInfo^.Name);
+    {$ENDIF}
   end;
 
   procedure CheckMethodsInComponent(AComponent: TComponent);
@@ -4322,7 +4326,9 @@ var
     CurMethodName: String;
   begin
     if AComponent=nil then exit;
+    {$IFDEF VerboseDanglingComponentEvents}
     //debugln('TStandardCodeTool.FindDanglingComponentEvents Checking ',DbgSName(AComponent));
+    {$ENDIF}
     // read all properties and remove doubles
     TypeInfo:=AComponent.ClassInfo;
     repeat
@@ -4333,18 +4339,25 @@ var
       // read property count
       CurCount:=PWord(PropInfo)^;
       inc(PtrUInt(PropInfo),SizeOf(Word));
+      {$IFDEF VerboseDanglingComponentEvents}
       //debugln('    UnitName=',TypeData^.UnitName,' Type=',TypeInfo^.Name,' CurPropCount=',dbgs(CurCount));
+      {$ENDIF}
       // read properties
       while CurCount>0 do begin
         // point PropInfo to next propinfo record.
         // Located at Name[Length(Name)+1] !
+        {$IFDEF VerboseDanglingComponentEvents}
         //debugln('      Property ',PropInfo^.Name,' Type=',PropInfo^.PropType^.Name);
+        {$ENDIF}
         PropType:=PropInfo^.PropType;
         if PropType^.Kind=tkMethod then begin
           // RTTI property is method
           // -> search method in source
           CurMethod:=GetMethodProp(AComponent,PropInfo);
           CurMethodName:=OnGetMethodName(CurMethod,RootComponent);
+          {$IFDEF VerboseDanglingComponentEvents}
+          debugln('      Component ',DbgSName(AComponent),' Property ',PropInfo^.Name,' Type=',PropInfo^.PropType^.Name,' CurMethodName="',CurMethodName,'"');
+          {$ENDIF}
           if CurMethodName<>'' then begin
             NodeExt:=FindCodeTreeNodeExt(PublishedMethods,CurMethodName);
             if NodeExt=nil then begin
@@ -4367,7 +4380,9 @@ begin
   ListOfPInstancePropInfo:=nil;
   try
     // search all available published methods
-    //debugln('TStandardCodeTool.FindDanglingComponentEvents A ',MainFilename,' ',DbgSName(RootComponent));
+    {$IFDEF VerboseDanglingComponentEvents}
+    debugln('TStandardCodeTool.FindDanglingComponentEvents A ',MainFilename,' ',DbgSName(RootComponent));
+    {$ENDIF}
     Result:=GatherPublishedClassElements(TheClassName,ExceptionOnClassNotFound,
                                          false,true,false,SearchInAncestors,
                                          PublishedMethods);

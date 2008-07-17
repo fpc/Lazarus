@@ -1,7 +1,7 @@
 object CheckLFMDialog: TCheckLFMDialog
-  Left = 367
+  Left = 430
   Height = 580
-  Top = 196
+  Top = 210
   Width = 552
   ActiveControl = LFMSynEdit
   Caption = 'Repair LFM file'
@@ -33,6 +33,7 @@ object CheckLFMDialog: TCheckLFMDialog
       Align = alClient
       Font.Height = -15
       Font.Name = 'courier'
+      Font.Pitch = fpFixed
       ParentColor = False
       ParentCtl3D = False
       TabOrder = 0

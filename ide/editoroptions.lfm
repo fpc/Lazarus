@@ -1,7 +1,7 @@
 object EditorOptionsForm: TEditorOptionsForm
-  Left = 443
+  Left = 410
   Height = 541
-  Top = 167
+  Top = 201
   Width = 554
   ActiveControl = MainNotebook
   Caption = 'EditorOptionsForm'
@@ -417,6 +417,7 @@ object EditorOptionsForm: TEditorOptionsForm
         BorderSpacing.Around = 6
         Font.Height = -16
         Font.Name = 'courier'
+        Font.Pitch = fpFixed
         ParentColor = False
         TabOrder = 2
         Gutter.CodeFoldingWidth = 14
@@ -906,6 +907,7 @@ object EditorOptionsForm: TEditorOptionsForm
         Anchors = [akTop, akLeft, akRight, akBottom]
         Font.Height = -16
         Font.Name = 'courier'
+        Font.Pitch = fpFixed
         ParentColor = False
         TabOrder = 3
         OnMouseDown = ColorPreviewMouseUp
