@@ -3,12 +3,11 @@ object CodeForm: TCodeForm
   Height = 300
   Top = 190
   Width = 400
-  HorzScrollBar.Page = 399
-  VertScrollBar.Page = 299
   ActiveControl = MCode
   Caption = 'Generated code'
   ClientHeight = 300
   ClientWidth = 400
+  LCLVersion = '0.9.25'
   object MCode: TSynMemo
     Cursor = crIBeam
     Height = 256
@@ -19,6 +18,7 @@ object CodeForm: TCodeForm
     ParentColor = False
     TabOrder = 0
     BookMarkOptions.Xoffset = 17
+    BookMarkOptions.OnChange = nil
     ExtraLineSpacing = 2
     Gutter.DigitCount = 3
     Gutter.LeftOffset = 4
@@ -349,6 +349,7 @@ object CodeForm: TCodeForm
     Lines.Strings = (
       ''
     )
+    SelectedColor.OnChange = nil
   end
   object PButtons: TPanel
     Height = 44
@@ -359,7 +360,7 @@ object CodeForm: TCodeForm
     ClientWidth = 400
     TabOrder = 1
     object BClose: TButton
-      Left = 308
+      Left = 312
       Height = 25
       Top = 8
       Width = 75
@@ -369,7 +370,7 @@ object CodeForm: TCodeForm
       TabOrder = 0
     end
     object BSave: TButton
-      Left = 16
+      Left = 8
       Height = 25
       Top = 8
       Width = 75
@@ -385,7 +386,6 @@ object CodeForm: TCodeForm
     top = 27
   end
   object SDCode: TSaveDialog
-    Title = 'Save file as'
     DefaultExt = '.pp'
     Filter = 'Pascal files|*.pp;*.pas;*.inc|All files|*.*'
     Options = [ofOverwritePrompt, ofPathMustExist, ofEnableSizing, ofViewDetail]

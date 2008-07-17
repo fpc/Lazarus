@@ -6,15 +6,14 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, EditBtn,
-  StdCtrls, idedatadict;
+  StdCtrls, idedatadict, ButtonPanel;
 
 type
 
   { TConfigIDEDataDictForm }
 
   TConfigIDEDataDictForm = class(TForm)
-    BOK: TButton;
-    BCancel: TButton;
+    ButtonPanel1: TButtonPanel;
     DEDD: TDirectoryEdit;
     FEDD: TFileNameEdit;
     Label1: TLabel;
@@ -77,6 +76,7 @@ begin
   InitDDSettings;
   DataDictToForm;
 end;
+
 
 procedure TConfigIDEDataDictForm.FormToDataDict;
 

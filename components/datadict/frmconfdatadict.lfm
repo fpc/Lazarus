@@ -3,15 +3,13 @@ object ConfigIDEDataDictForm: TConfigIDEDataDictForm
   Height = 152
   Top = 368
   Width = 463
-  HorzScrollBar.Page = 462
-  VertScrollBar.Page = 151
-  ActiveControl = BOK
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Configure Data Dictionary'
   ClientHeight = 152
   ClientWidth = 463
   OnCreate = FormCreate
+  LCLVersion = '0.9.25'
   object Label1: TLabel
     Left = 8
     Height = 13
@@ -39,29 +37,6 @@ object ConfigIDEDataDictForm: TConfigIDEDataDictForm
     ParentColor = False
     TabOrder = 0
   end
-  object BOK: TButton
-    Left = 376
-    Height = 25
-    Top = 120
-    Width = 75
-    BorderSpacing.InnerBorder = 4
-    Caption = '&OK'
-    Default = True
-    ModalResult = 1
-    OnClick = BOKClick
-    TabOrder = 1
-  end
-  object BCancel: TButton
-    Left = 288
-    Height = 25
-    Top = 120
-    Width = 75
-    BorderSpacing.InnerBorder = 4
-    Cancel = True
-    Caption = '&Cancel'
-    ModalResult = 2
-    TabOrder = 2
-  end
   object DEDD: TDirectoryEdit
     Left = 32
     Height = 23
@@ -70,6 +45,16 @@ object ConfigIDEDataDictForm: TConfigIDEDataDictForm
     ButtonWidth = 23
     NumGlyphs = 1
     ParentColor = False
-    TabOrder = 3
+    TabOrder = 1
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 42
+    Top = 110
+    Width = 451
+    Align = alBottom
+    AutoSize = True
+    TabOrder = 2
+    ShowButtons = [pbOK, pbCancel]
   end
 end

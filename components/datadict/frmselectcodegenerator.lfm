@@ -3,14 +3,13 @@ object SelectCodeGeneratorForm: TSelectCodeGeneratorForm
   Height = 300
   Top = 239
   Width = 400
-  HorzScrollBar.Page = 399
-  VertScrollBar.Page = 299
   ActiveControl = BPButtons.CancelButton
   Caption = 'Select code to be generated'
   ClientHeight = 300
   ClientWidth = 400
   OnClose = FormClose
   OnShow = FormShow
+  LCLVersion = '0.9.25'
   object RGGenerators: TRadioGroup
     Left = 8
     Height = 240
@@ -38,6 +37,5 @@ object SelectCodeGeneratorForm: TSelectCodeGeneratorForm
     AutoSize = True
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel]
-    ShowGlyphs = [pbOK, pbCancel, pbClose, pbHelp]
   end
 end

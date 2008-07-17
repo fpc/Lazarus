@@ -22,8 +22,8 @@ type
     CLBFields: TCheckListBox;
     FEFile: TFileNameEdit;
     LSave: TLabel;
-    Label2: TLabel;
-    Label3: TLabel;
+    LFields: TLabel;
+    LProperties: TLabel;
     PCConf: TPageControl;
     PGenerator: TPanel;
     Panel2: TPanel;
@@ -44,6 +44,7 @@ type
     procedure AUpExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure Splitter1Moved(Sender: TObject);
   private
     { private declarations }
     FFieldmap : TFieldPropDefs;
@@ -233,6 +234,11 @@ procedure TBaseConfigGeneratorForm.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(FFieldMap);
   FreeAndNil(FCodeOPtions);
+end;
+
+procedure TBaseConfigGeneratorForm.Splitter1Moved(Sender: TObject);
+begin
+  LFields.Width:=Splitter1.Left;
 end;
 
 procedure TBaseConfigGeneratorForm.OnOkClick(Sender: TObject);

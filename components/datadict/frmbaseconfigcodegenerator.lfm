@@ -43,7 +43,7 @@ object BaseConfigGeneratorForm: TBaseConfigGeneratorForm
     end
     object CBShowDialog: TCheckBox
       Left = 72
-      Height = 23
+      Height = 22
       Top = 33
       Width = 147
       Caption = 'Sho&w generated code'
@@ -51,7 +51,7 @@ object BaseConfigGeneratorForm: TBaseConfigGeneratorForm
     end
   end
   object PCConf: TPageControl
-    Height = 279
+    Height = 280
     Top = 56
     Width = 462
     ActivePage = TSFields
@@ -60,7 +60,7 @@ object BaseConfigGeneratorForm: TBaseConfigGeneratorForm
     TabOrder = 1
     object TSFields: TTabSheet
       Caption = 'Fields'
-      ClientHeight = 248
+      ClientHeight = 250
       ClientWidth = 458
       object Panel2: TPanel
         Height = 28
@@ -70,7 +70,7 @@ object BaseConfigGeneratorForm: TBaseConfigGeneratorForm
         ClientHeight = 28
         ClientWidth = 458
         TabOrder = 0
-        object Label2: TLabel
+        object LFields: TLabel
           Height = 28
           Width = 170
           Align = alLeft
@@ -80,11 +80,11 @@ object BaseConfigGeneratorForm: TBaseConfigGeneratorForm
           Layout = tlCenter
           ParentColor = False
         end
-        object Label3: TLabel
-          Left = 256
+        object LProperties: TLabel
+          Left = 170
           Height = 28
-          Width = 202
-          Align = alRight
+          Width = 288
+          Align = alClient
           Alignment = taCenter
           AutoSize = False
           Caption = 'Properties for selected field'
@@ -93,17 +93,17 @@ object BaseConfigGeneratorForm: TBaseConfigGeneratorForm
         end
       end
       object PFieldList: TPanel
-        Height = 220
+        Height = 222
         Top = 28
         Width = 170
         Align = alLeft
         BevelOuter = bvNone
-        ClientHeight = 220
+        ClientHeight = 222
         ClientWidth = 170
         TabOrder = 1
         object CLBFields: TCheckListBox
           Left = 35
-          Height = 220
+          Height = 222
           Width = 135
           Align = alClient
           OnClick = CLBFieldsClick
@@ -113,11 +113,11 @@ object BaseConfigGeneratorForm: TBaseConfigGeneratorForm
           TopIndex = -1
         end
         object PButtons: TPanel
-          Height = 220
+          Height = 222
           Width = 35
           Align = alLeft
           BevelOuter = bvNone
-          ClientHeight = 220
+          ClientHeight = 222
           ClientWidth = 35
           TabOrder = 1
           object SBup: TSpeedButton
@@ -306,27 +306,30 @@ object BaseConfigGeneratorForm: TBaseConfigGeneratorForm
       end
       object Splitter1: TSplitter
         Left = 170
-        Height = 220
+        Height = 222
         Top = 28
         Width = 5
+        OnMoved = Splitter1Moved
       end
       object GFieldProps: TTIPropertyGrid
         Left = 175
-        Height = 220
+        Height = 222
         Top = 28
         Width = 283
         Align = alClient
+        Filter = [tkInteger, tkChar, tkEnumeration, tkFloat, tkSet, tkMethod, tkSString, tkLString, tkAString, tkWString, tkVariant, tkArray, tkRecord, tkInterface, tkClass, tkObject, tkWChar, tkBool, tkInt64, tkQWord, tkDynArray, tkInterfaceRaw]
         ValueFont.Color = clMaroon
       end
     end
     object TSOptions: TTabSheet
       Caption = 'Options'
-      ClientHeight = 280
+      ClientHeight = 279
       ClientWidth = 462
       object GCodeOptions: TTIPropertyGrid
-        Height = 280
+        Height = 279
         Width = 462
         Align = alClient
+        Filter = [tkInteger, tkChar, tkEnumeration, tkFloat, tkSet, tkMethod, tkSString, tkLString, tkAString, tkWString, tkVariant, tkArray, tkRecord, tkInterface, tkClass, tkObject, tkWChar, tkBool, tkInt64, tkQWord, tkDynArray, tkInterfaceRaw]
         PrefferedSplitterX = 200
         SplitterX = 200
         ValueFont.Color = clMaroon
@@ -335,8 +338,8 @@ object BaseConfigGeneratorForm: TBaseConfigGeneratorForm
   end
   object PDlgButtons: TButtonPanel
     Left = 6
-    Height = 43
-    Top = 335
+    Height = 42
+    Top = 336
     Width = 450
     Align = alBottom
     AutoSize = True
