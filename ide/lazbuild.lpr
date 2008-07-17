@@ -334,7 +334,7 @@ var
   ConflictPkg: TLazPackage;
 begin
   // check if package is already loaded
-  Result:=PackageGraph.FindPackageWithFilename(AFilename,true);
+  Result:=PackageGraph.FindPackageWithFilename(AFilename);
   if (Result<>nil) then exit;
   Result:=TLazPackage.Create;
   // load the package file
