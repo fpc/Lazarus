@@ -663,11 +663,15 @@ end;
 
 procedure QueryDescription(var ADesc: TRawImageDescription; AFlags: TRawImageQueryFlags; AWidth: Integer = -1; AHeight: integer = -1);
 begin
-  if not (riqfUpdate in AFlags) then ADesc.Init;
-
-  if not RawImage_QueryDescription(AFlags, ADesc) then Exit;
-  if AWidth <> -1 then ADesc.Width := AWidth;
-  if AHeight <> -1 then ADesc.Height := AHeight;
+  if RawImage_QueryDescription(AFlags, ADesc)
+  then begin
+    if AWidth <> -1 then ADesc.Width := AWidth;
+    if AHeight <> -1 then ADesc.Height := AHeight;
+  end
+  else begin
+    if not (riqfUpdate in AFlags) then ADesc.Init;
+  end;
+  
 end;
 
 function GetDescriptionFromDevice(ADC: HDC; AWidth, AHeight: integer): TRawImageDescription;

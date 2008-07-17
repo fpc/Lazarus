@@ -130,7 +130,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.RawImage_QueryDescription(AFlags: TRawImageQueryFlags; out ADesc: TRawImageDescription): Boolean;
+function TWin32WidgetSet.RawImage_QueryDescription(AFlags: TRawImageQueryFlags; var ADesc: TRawImageDescription): Boolean;
 begin
   if riqfAlpha in AFlags
   then begin

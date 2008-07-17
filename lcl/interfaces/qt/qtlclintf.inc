@@ -583,7 +583,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.RawImage_QueryDescription(AFlags: TRawImageQueryFlags; out ADesc: TRawImageDescription): Boolean;
+function TQtWidgetSet.RawImage_QueryDescription(AFlags: TRawImageQueryFlags; var ADesc: TRawImageDescription): Boolean;
 begin
   Result := inherited RawImage_QueryDescription(AFlags, ADesc);
   if ADesc.BitsPerPixel > 8 then

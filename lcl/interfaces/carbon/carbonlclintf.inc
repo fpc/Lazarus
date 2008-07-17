@@ -614,7 +614,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-//function TCarbonWidgetSet.RawImage_QueryDescription(AFlags: TRawImageQueryFlags; out ADesc: TRawImageDescription): Boolean;
+//function TCarbonWidgetSet.RawImage_QueryDescription(AFlags: TRawImageQueryFlags; var ADesc: TRawImageDescription): Boolean;
 //begin
 //  // override only when queried formats are different from screen description
 //end;

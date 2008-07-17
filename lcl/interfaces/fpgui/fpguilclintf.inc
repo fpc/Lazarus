@@ -48,7 +48,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-//function TFpguiWidgetSet.RawImage_QueryDescription(AFlags: TRawImageQueryFlags; out ADesc: TRawImageDescription): Boolean;
+//function TFpguiWidgetSet.RawImage_QueryDescription(AFlags: TRawImageQueryFlags; var ADesc: TRawImageDescription): Boolean;
 //begin
 //  // override only when queried formats are different from screen description
 //end;

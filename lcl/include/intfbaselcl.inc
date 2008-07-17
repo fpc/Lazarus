@@ -240,7 +240,7 @@ begin
   Result := False;
 end;
 
-function TWidgetSet.RawImage_QueryDescription(AFlags: TRawImageQueryFlags; out ADesc: TRawImageDescription): Boolean;
+function TWidgetSet.RawImage_QueryDescription(AFlags: TRawImageQueryFlags; var ADesc: TRawImageDescription): Boolean;
 var
   Desc: TRawImageDescription;
 begin

@@ -190,7 +190,7 @@ begin
   Result := WidgetSet.RawImage_FromDevice(ARawImage, ADC, ARect);
 end;
 
-function RawImage_QueryDescription(AFlags: TRawImageQueryFlags; out ADesc: TRawImageDescription): Boolean;
+function RawImage_QueryDescription(AFlags: TRawImageQueryFlags; var ADesc: TRawImageDescription): Boolean;
 begin
   Result := WidgetSet.RawImage_QueryDescription(AFlags, ADesc);
 end;
