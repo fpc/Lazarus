@@ -50,8 +50,6 @@ type
     property Control: TWinControl read FControl write SetControl;
   end;
 
-  { TCodeHintFrm }
-
   { TSrcEditHintWindow }
 
   TSrcEditHintWindow = class(THintWindow)
@@ -315,9 +313,10 @@ end;
 
 destructor TSrcEditHintWindow.Destroy;
 begin
-  inherited Destroy;
+  Application.RemoveAllHandlersOfObject(Self);
   if SrcEditHintWindow=Self then
     SrcEditHintWindow:=nil;
+  inherited Destroy;
 end;
 
 procedure TSrcEditHintWindow.UpdateHints;

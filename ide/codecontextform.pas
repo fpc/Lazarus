@@ -700,9 +700,10 @@ end;
 
 destructor TCodeContextFrm.Destroy;
 begin
-  inherited Destroy;
+  Application.RemoveAllHandlersOfObject(Self);
   if CodeContextFrm=Self then
     CodeContextFrm:=nil;
+  inherited Destroy;
 end;
 
 end.
