@@ -1394,7 +1394,8 @@ begin
   end else
     Result:='';
   {$IFDEF VerboseDanglingComponentEvents}
-  DebugLn(['TMainIDE.OnPropHookGetMethodName ',Result,' ',IsJITMethod(Method)]);
+  if IsJITMethod(Method) then
+    DebugLn(['TMainIDE.OnPropHookGetMethodName ',Result,' ',IsJITMethod(Method)]);
   {$ENDIF}
 end;
 

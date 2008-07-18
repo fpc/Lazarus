@@ -580,7 +580,7 @@ type
     BackGroundUseDefaultCheckBox: TCheckBox;
     SetAttributeToDefaultButton: TButton;
     SetAllAttributesToDefaultButton: TButton;
-    ColorPreview:     TPreviewEditor;
+    ColorPreview: TPreviewEditor;
 
     // Code Tools options
     AutomaticFeaturesGroupBox: TGroupBox;

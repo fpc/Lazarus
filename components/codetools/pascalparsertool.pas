@@ -601,6 +601,7 @@ begin
   then
     // class already parsed
     exit;
+  DebugLn(['TPascalParserTool.BuildSubTreeForClass AAA1']);
   // avoid endless loop
   ClassNode.SubDesc:=ClassNode.SubDesc and (not ctnsNeedJITParsing);
   OldPhase:=CurrentPhase;
@@ -642,8 +643,12 @@ begin
     CurKeyWordFuncList:=InnerClassKeyWordFuncList;
     try
       repeat
+        //DebugLn(['TPascalParserTool.BuildSubTreeForClass Atom=',GetAtom,' ',CurPos.StartPos>=ClassNode.EndPos]);
         if CurPos.StartPos>=ClassNode.EndPos then break;
-        if not DoAtom then break;
+        if not DoAtom then begin
+          //DebugLn(['TPascalParserTool.BuildSubTreeForClass DoAtom=false']);
+          break;
+        end;
         ReadNextAtom;
       until false;
       // end last class section (public, private, ...)

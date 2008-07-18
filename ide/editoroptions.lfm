@@ -1,7 +1,7 @@
 object EditorOptionsForm: TEditorOptionsForm
-  Left = 410
+  Left = 437
   Height = 541
-  Top = 201
+  Top = 206
   Width = 554
   ActiveControl = MainNotebook
   Caption = 'EditorOptionsForm'
@@ -420,6 +420,7 @@ object EditorOptionsForm: TEditorOptionsForm
         Font.Pitch = fpFixed
         ParentColor = False
         TabOrder = 2
+        BookMarkOptions.OnChange = nil
         Gutter.CodeFoldingWidth = 14
         Keystrokes = <        
           item
@@ -746,6 +747,7 @@ object EditorOptionsForm: TEditorOptionsForm
           'DisplayPreview'
         )
         ReadOnly = True
+        SelectedColor.OnChange = nil
         OnSpecialLineColors = OnSpecialLineColors
       end
     end
@@ -911,6 +913,7 @@ object EditorOptionsForm: TEditorOptionsForm
         ParentColor = False
         TabOrder = 3
         OnMouseDown = ColorPreviewMouseUp
+        BookMarkOptions.OnChange = nil
         Gutter.CodeFoldingWidth = 14
         Keystrokes = <        
           item
@@ -1237,6 +1240,7 @@ object EditorOptionsForm: TEditorOptionsForm
           'ColorPreview'
         )
         ReadOnly = True
+        SelectedColor.OnChange = nil
         OnSpecialLineColors = OnSpecialLineColors
       end
       object ColorElementListBox: TListBox

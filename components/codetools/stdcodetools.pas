@@ -4272,7 +4272,13 @@ begin
   TreeOfCodeTreeNodeExtension:=nil;
   if (TheClassName='') or (length(TheClassName)>255) then
     RaiseException(Format(ctsInvalidClassName, ['"', TheClassName, '"']));
+  {$IFDEF VerboseDanglingComponentEvents}
+  DebugLn(['TStandardCodeTool.GatherPublishedClassElements AAA1']);
+  {$ENDIF}
   BuildTree(true);
+  {$IFDEF VerboseDanglingComponentEvents}
+  DebugLn(['TStandardCodeTool.GatherPublishedClassElements AAA2']);
+  {$ENDIF}
   ClassNode:=FindClassNodeInInterface(TheClassName,true,false,
     ExceptionOnClassNotFound);
   if ClassNode=nil then exit;
@@ -4356,7 +4362,8 @@ var
           CurMethod:=GetMethodProp(AComponent,PropInfo);
           CurMethodName:=OnGetMethodName(CurMethod,RootComponent);
           {$IFDEF VerboseDanglingComponentEvents}
-          debugln('      Component ',DbgSName(AComponent),' Property ',PropInfo^.Name,' Type=',PropInfo^.PropType^.Name,' CurMethodName="',CurMethodName,'"');
+          if (CurMethod.Data<>nil) or (CurMethod.COde<>nil) then
+            debugln('      Component ',DbgSName(AComponent),' Property ',PropInfo^.Name,' Type=',PropInfo^.PropType^.Name,' CurMethodName="',CurMethodName,'"');
           {$ENDIF}
           if CurMethodName<>'' then begin
             NodeExt:=FindCodeTreeNodeExt(PublishedMethods,CurMethodName);
