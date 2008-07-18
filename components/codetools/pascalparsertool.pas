@@ -601,7 +601,6 @@ begin
   then
     // class already parsed
     exit;
-  DebugLn(['TPascalParserTool.BuildSubTreeForClass AAA1']);
   // avoid endless loop
   ClassNode.SubDesc:=ClassNode.SubDesc and (not ctnsNeedJITParsing);
   OldPhase:=CurrentPhase;

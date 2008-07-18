@@ -758,7 +758,6 @@ const
     lshJScript
     );
 
-
 function ShowEditorOptionsDialog: TModalResult;
 var
   EditorOptionsForm: TEditorOptionsForm;
@@ -770,6 +769,13 @@ begin
   finally
     EditorOptionsForm.Free;
   end;
+end;
+
+procedure RepairEditorFontHeight(var FontHeight: integer);
+begin
+  if ((FontHeight>=0) and (FontHeight<=5))
+  or ((FontHeight<0) and (FontHeight>=-5)) then
+    FontHeight:=12;
 end;
 
 function CheckGroupItemChecked(CheckGroup: TCheckGroup;
@@ -1570,8 +1576,7 @@ begin
       XMLConfig.GetValue('EditorOptions/Display/EditorFont', 'courier');
     fEditorFontHeight :=
       XMLConfig.GetValue('EditorOptions/Display/EditorFontHeight', 12);
-    if fEditorFontHeight<=0 then
-      fEditorFontHeight:=12;
+    RepairEditorFontHeight(fEditorFontHeight);
     fExtraCharSpacing :=
       XMLConfig.GetValue('EditorOptions/Display/ExtraCharSpacing', 0);
     fExtraLineSpacing :=
@@ -2669,8 +2674,7 @@ begin
     begin
       Font.Name   := EditorFontComboBox.Text;
       NewHeight := StrToIntDef(EditorFontHeightComboBox.Text, PreviewEdits[1].Font.Height);
-      if NewHeight<=0 then
-        NewHeight:=12;
+      RepairEditorFontHeight(NewHeight);
       Font.Height := NewHeight;
       Options := Options + [fdApplyButton];
       OnApplyClicked := @FontDialogApplyClicked;
@@ -2727,10 +2731,7 @@ begin
     begin
       NewVal := StrToIntDef(EditorFontHeightComboBox.Text,
                             PreviewEdits[1].Font.Height);
-      if (NewVal <= 6) then
-        NewVal := 6;
-      if (NewVal > 40) then
-        NewVal := 40;
+      RepairEditorFontHeight(NewVal);
       SetComboBoxText(EditorFontHeightComboBox, IntToStr(NewVal));
       for a := Low(PreviewEdits) to High(PreviewEdits) do
         if PreviewEdits[a] <> Nil then
