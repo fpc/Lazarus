@@ -474,7 +474,7 @@ begin
   end;
 
   // Cursor position to end or to begin
-  if (Key = VK_HOME) or (Key = VK_end) then
+  if (Key = VK_HOME) or (Key = VK_END) then
   begin
     if Key = VK_HOME then FPosition := 1
                      else FPosition := FMaxChars;
@@ -504,8 +504,9 @@ begin
     DeleteSelected(False);
     SetCharToPos;
     InsertChar(Char(Lo(Key)));
+    Key:= 0;
   end;
-  Key := 0;
+  
 end;
 
 // Delete a single char from position
