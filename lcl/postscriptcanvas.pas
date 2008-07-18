@@ -558,8 +558,8 @@ end;
 //Modify X and Y for use Left and Top margin
 procedure TPostScriptPrinterCanvas.TranslateCoord(var X,Y : Integer);
 begin
-  Y:=PageHeight-TopMarging-Y;
-  X:=X+LeftMarging;
+  Y:=PageHeight+BottomMargin-Y;
+  X:=X+LeftMargin;
 end;
 
 //Save the last position

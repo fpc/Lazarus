@@ -53,8 +53,10 @@ type
     fPageHeight   : Integer;
     fPageWidth    : Integer;
     fPageNum      : Integer;
-    fTopMarging   : Integer;
-    fLeftMarging  : Integer;
+    fTopMargin    : Integer;
+    fLeftMargin   : Integer;
+    fBottomMargin : Integer;
+    fRightMargin  : Integer;
     
     function GetPageHeight: Integer;
     function GetPageWidth: Integer;
@@ -66,7 +68,10 @@ type
     procedure BeginDoc; virtual;
     procedure NewPage;  virtual;
     procedure EndDoc; virtual;
-
+    function GetLeftMargin: Integer;
+    function GetTopMargin: Integer;
+    function GetBottomMargin: Integer;
+    function GetRightMargin: Integer;
   public
     constructor Create(APrinter: TPrinter); virtual;
     procedure Changing; override;
@@ -77,8 +82,10 @@ type
     property PageHeight : Integer read GetPageHeight write SetPageHeight;
     property PageWidth  : Integer read GetPageWidth write SetPageWidth;
     property PageNumber : Integer read fPageNum;
-    property TopMarging : Integer read fTopMarging write fTopMarging;
-    property LeftMarging: Integer read fLeftMarging write fLeftMarging;
+    property TopMargin : Integer read GetLeftMargin write FTopMargin;
+    property LeftMargin: Integer read GetTopMargin write FLeftMargin;
+    property BottomMargin: Integer read GetBottomMargin write FBottomMargin;
+    property RightMargin: Integer read GetRightMargin write FRightMargin;
 
   end;
 
@@ -903,8 +910,10 @@ begin
   Inherited Create;
   fPageWidth      :=0;
   fPageHeight     :=0;
-  fTopMarging :=0;
-  fLeftMarging:=0;
+  fTopMargin      :=0;
+  fLeftMargin     :=0;
+  fRightMargin    :=0;
+  fBottomMargin   :=0;
   fPrinter:=aPrinter;
 end;
 
@@ -928,6 +937,42 @@ end;
 procedure TPrinterCanvas.EndDoc;
 begin
   //No special action
+end;
+
+function TPrinterCanvas.GetLeftMargin: Integer;
+begin
+  if (fLeftMargin=0) and (fPrinter<>nil) then
+    Result:=fPrinter.PaperSize.PaperRect.WorkRect.Left
+  else
+    Result:=FLeftMargin;
+end;
+
+function TPrinterCanvas.GetTopMargin: Integer;
+begin
+  if (fTopMargin=0) and (fPrinter<>nil) then
+    Result:=fPrinter.PaperSize.PaperRect.WorkRect.Top
+  else
+    Result:=fTopMargin;
+end;
+
+function TPrinterCanvas.GetBottomMargin: Integer;
+begin
+  if (fBottomMargin=0) and (fPrinter<>nil) then
+  begin
+    with fPrinter.Papersize.PaperRect do
+      Result := PhysicalRect.Bottom-WorkRect.Bottom;
+  end else
+    Result := fBottomMargin;
+end;
+
+function TPrinterCanvas.GetRightMargin: Integer;
+begin
+  if (fRightMargin=0) and (fPrinter<>nil) then
+  begin
+    with fPrinter.Papersize.PaperRect do
+      Result := PhysicalRect.Right-WorkRect.Right;
+  end else
+    Result := fRightMargin;
 end;
 
 INITIALIZATION
