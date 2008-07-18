@@ -1,22 +1,27 @@
 <?xml version="1.0"?>
 <CONFIG>
   <LazReport>
-    <Version Value="23"/>
+    <Version Value="24"/>
     <Title Value=""/>
     <Subject Value=""/>
     <KeyWords Value=""/>
     <Comments Value=""/>
+    <ReportVersionBuild Value=""/>
+    <ReportVersionMajor Value=""/>
+    <ReportVersionMinor Value=""/>
+    <ReportVersionRelease Value=""/>
+    <ReportAutor Value=""/>
     <Pages>
       <PrintToDefault Value="False"/>
       <DoublePass Value="True"/>
-      <SelectedPrinter Value="hp1200_conta"/>
+      <SelectedPrinter Value="HP1100"/>
       <PageCount Value="1"/>
       <Page1>
         <Name Value="Page1"/>
         <ClassName Value="TfrPageReport"/>
         <Visible Value="1"/>
-        <Width Value="595"/>
-        <Height Value="842"/>
+        <Width Value="547"/>
+        <Height Value="770" PageType="0"/>
         <PgSize Value="9"/>
         <Margins>
           <left Value="0"/>
@@ -29,6 +34,7 @@
         <PrintToPrevPage Value="False"/>
         <ColCount Value="1"/>
         <ColGap Value="0"/>
+        <LayoutOrder Value="loColumns"/>
         <ObjectCount Value="6"/>
         <Object1>
           <Name Value="ReportTitle1"/>
@@ -43,7 +49,9 @@
             <Height Value="40"/>
           </Size>
           <Flags Value="48"/>
-          <Data><Script Value=""/></Data>
+          <Data>
+            <Script Value=""/>
+          </Data>
           <BandType Value="btReportTitle"/>
           <Condition Value=""/>
           <DatasetStr Value=""/>
@@ -61,7 +69,9 @@
             <Height Value="24"/>
           </Size>
           <Flags Value="48"/>
-          <Data><Script Value=""/></Data>
+          <Data>
+            <Script Value=""/>
+          </Data>
           <BandType Value="btMasterData"/>
           <Condition Value=""/>
           <DatasetStr Value="frDBDataSet1"/>
@@ -89,8 +99,7 @@
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="TITLE OF REPORT   
-"/>
+            <Memo Value="TITLE OF REPORT    &#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -133,8 +142,7 @@
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="[Dbf1.&quot;TITLE&quot;]
-"/>
+            <Memo Value="[Dbf1.&quot;TITLE&quot;] &#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -177,8 +185,7 @@
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="[Dbf1.&quot;AUTHOR&quot;]
-"/>
+            <Memo Value="[Dbf1.&quot;AUTHOR&quot;] &#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -221,8 +228,7 @@
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="Page [PAGE#]/[TOTALPAGES]
-"/>
+            <Memo Value="Page [PAGE#]/[TOTALPAGES] &#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -243,7 +249,9 @@
           <Angle Value="0"/>
         </Object6>
       </Page1>
-      <FVal><Count Value="0"/></FVal>
+      <FVal>
+        <Count Value="0"/>
+      </FVal>
       <ParentVars Value=""/>
     </Pages>
   </LazReport>

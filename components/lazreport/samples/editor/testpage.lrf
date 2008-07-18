@@ -1,0 +1,360 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <LazReport>
+    <Version Value="24"/>
+    <Title Value=""/>
+    <Subject Value=""/>
+    <KeyWords Value=""/>
+    <Comments Value=""/>
+    <ReportVersionBuild Value=""/>
+    <ReportVersionMajor Value=""/>
+    <ReportVersionMinor Value=""/>
+    <ReportVersionRelease Value=""/>
+    <ReportAutor Value=""/>
+    <Pages>
+      <PrintToDefault Value="False"/>
+      <DoublePass Value="False"/>
+      <SelectedPrinter Value="HP1100"/>
+      <PageCount Value="1"/>
+      <Page1>
+        <Name Value="Page1"/>
+        <ClassName Value="TfrPageReport"/>
+        <Visible Value="1"/>
+        <Width Value="564"/>
+        <Height Value="720" PageType="0"/>
+        <PgSize Value="1"/>
+        <Margins>
+          <left Value="0"/>
+          <Top Value="0"/>
+          <Right Value="0"/>
+          <Bottom Value="0"/>
+        </Margins>
+        <Orientation Value="poPortrait"/>
+        <UseMargins Value="True"/>
+        <PrintToPrevPage Value="False"/>
+        <ColCount Value="0"/>
+        <ColGap Value="0"/>
+        <LayoutOrder Value="loColumns"/>
+        <ObjectCount Value="10"/>
+        <Object1>
+          <Name Value="Memo5"/>
+          <ClassName Value="TfrMemoView"/>
+          <Visible Value="1"/>
+          <Typ Value="gtMemo"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="32"/>
+            <Top Value="32"/>
+            <Width Value="708"/>
+            <Height Value="914"/>
+          </Size>
+          <Flags Value="3"/>
+          <FillColor Value="clNone"/>
+          <Frames>
+            <FrameWidth Value="1"/>
+            <FrameColor Value="clBlack"/>
+            <FrameBorders Value="frbLeft,frbTop,frbRight,frbBottom"/>
+            <FrameStyle Value="frsSolid"/>
+          </Frames>
+          <Data>
+            <Format Value="558"/>
+            <FormatStr Value=""/>
+            <Memo Value=""/>
+            <Script Value=""/>
+          </Data>
+          <Font>
+            <Name Value="helvetica [urw]"/>
+            <Size Value="10"/>
+            <Color Value="clBlack"/>
+            <Charset Value="0"/>
+            <Style Value=""/>
+          </Font>
+          <Highlight>
+            <FontStyle Value="2"/>
+            <FontColor Value="clBlack"/>
+            <FillColor Value="clWhite"/>
+            <HighlightStr Value=""/>
+          </Highlight>
+          <Alignment Value="taLeftJustify"/>
+          <Layout Value="tlTop"/>
+          <Angle Value="0"/>
+        </Object1>
+        <Object2>
+          <Name Value="Memo1"/>
+          <ClassName Value="TfrMemoView"/>
+          <Visible Value="1"/>
+          <Typ Value="gtMemo"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="32"/>
+            <Top Value="32"/>
+            <Width Value="60"/>
+            <Height Value="48"/>
+          </Size>
+          <Flags Value="3"/>
+          <FillColor Value="clNone"/>
+          <Frames>
+            <FrameWidth Value="1"/>
+            <FrameColor Value="clBlack"/>
+            <FrameBorders Value="frbLeft,frbTop,frbRight,frbBottom"/>
+            <FrameStyle Value="frsSolid"/>
+          </Frames>
+          <Data>
+            <Format Value="558"/>
+            <FormatStr Value=""/>
+            <Memo Value=""/>
+            <Script Value=""/>
+          </Data>
+          <Font>
+            <Name Value="helvetica [urw]"/>
+            <Size Value="10"/>
+            <Color Value="clBlack"/>
+            <Charset Value="0"/>
+            <Style Value=""/>
+          </Font>
+          <Highlight>
+            <FontStyle Value="2"/>
+            <FontColor Value="clBlack"/>
+            <FillColor Value="clWhite"/>
+            <HighlightStr Value=""/>
+          </Highlight>
+          <Alignment Value="taLeftJustify"/>
+          <Layout Value="tlTop"/>
+          <Angle Value="0"/>
+        </Object2>
+        <Object3>
+          <Name Value="Memo2"/>
+          <ClassName Value="TfrMemoView"/>
+          <Visible Value="1"/>
+          <Typ Value="gtMemo"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="680"/>
+            <Top Value="32"/>
+            <Width Value="60"/>
+            <Height Value="48"/>
+          </Size>
+          <Flags Value="3"/>
+          <FillColor Value="clNone"/>
+          <Frames>
+            <FrameWidth Value="1"/>
+            <FrameColor Value="clBlack"/>
+            <FrameBorders Value="frbLeft,frbTop,frbRight,frbBottom"/>
+            <FrameStyle Value="frsSolid"/>
+          </Frames>
+          <Data>
+            <Format Value="558"/>
+            <FormatStr Value=""/>
+            <Memo Value=""/>
+            <Script Value=""/>
+          </Data>
+          <Font>
+            <Name Value="helvetica [urw]"/>
+            <Size Value="10"/>
+            <Color Value="clBlack"/>
+            <Charset Value="0"/>
+            <Style Value=""/>
+          </Font>
+          <Highlight>
+            <FontStyle Value="2"/>
+            <FontColor Value="clBlack"/>
+            <FillColor Value="clWhite"/>
+            <HighlightStr Value=""/>
+          </Highlight>
+          <Alignment Value="taLeftJustify"/>
+          <Layout Value="tlTop"/>
+          <Angle Value="0"/>
+        </Object3>
+        <Object4>
+          <Name Value="Memo3"/>
+          <ClassName Value="TfrMemoView"/>
+          <Visible Value="1"/>
+          <Typ Value="gtMemo"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="32"/>
+            <Top Value="896"/>
+            <Width Value="60"/>
+            <Height Value="48"/>
+          </Size>
+          <Flags Value="3"/>
+          <FillColor Value="clNone"/>
+          <Frames>
+            <FrameWidth Value="1"/>
+            <FrameColor Value="clBlack"/>
+            <FrameBorders Value="frbLeft,frbTop,frbRight,frbBottom"/>
+            <FrameStyle Value="frsSolid"/>
+          </Frames>
+          <Data>
+            <Format Value="558"/>
+            <FormatStr Value=""/>
+            <Memo Value=""/>
+            <Script Value=""/>
+          </Data>
+          <Font>
+            <Name Value="helvetica [urw]"/>
+            <Size Value="10"/>
+            <Color Value="clBlack"/>
+            <Charset Value="0"/>
+            <Style Value=""/>
+          </Font>
+          <Highlight>
+            <FontStyle Value="2"/>
+            <FontColor Value="clBlack"/>
+            <FillColor Value="clWhite"/>
+            <HighlightStr Value=""/>
+          </Highlight>
+          <Alignment Value="taLeftJustify"/>
+          <Layout Value="tlTop"/>
+          <Angle Value="0"/>
+        </Object4>
+        <Object5>
+          <Name Value="Memo4"/>
+          <ClassName Value="TfrMemoView"/>
+          <Visible Value="1"/>
+          <Typ Value="gtMemo"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="680"/>
+            <Top Value="896"/>
+            <Width Value="60"/>
+            <Height Value="48"/>
+          </Size>
+          <Flags Value="3"/>
+          <FillColor Value="clNone"/>
+          <Frames>
+            <FrameWidth Value="1"/>
+            <FrameColor Value="clBlack"/>
+            <FrameBorders Value="frbLeft,frbTop,frbRight,frbBottom"/>
+            <FrameStyle Value="frsSolid"/>
+          </Frames>
+          <Data>
+            <Format Value="558"/>
+            <FormatStr Value=""/>
+            <Memo Value=""/>
+            <Script Value=""/>
+          </Data>
+          <Font>
+            <Name Value="helvetica [urw]"/>
+            <Size Value="10"/>
+            <Color Value="clBlack"/>
+            <Charset Value="0"/>
+            <Style Value=""/>
+          </Font>
+          <Highlight>
+            <FontStyle Value="2"/>
+            <FontColor Value="clBlack"/>
+            <FillColor Value="clWhite"/>
+            <HighlightStr Value=""/>
+          </Highlight>
+          <Alignment Value="taLeftJustify"/>
+          <Layout Value="tlTop"/>
+          <Angle Value="0"/>
+        </Object5>
+        <Object6>
+          <Name Value="Line1"/>
+          <ClassName Value="TfrLineView"/>
+          <Visible Value="1"/>
+          <Typ Value="gtLine"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="92"/>
+            <Top Value="80"/>
+            <Width Value="492"/>
+            <Height Value="0"/>
+          </Size>
+          <Flags Value="1"/>
+        </Object6>
+        <Object7>
+          <Name Value="Line2"/>
+          <ClassName Value="TfrLineView"/>
+          <Visible Value="1"/>
+          <Typ Value="gtLine"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="680"/>
+            <Top Value="80"/>
+            <Width Value="0"/>
+            <Height Value="476"/>
+          </Size>
+          <Flags Value="1"/>
+        </Object7>
+        <Object8>
+          <Name Value="Line3"/>
+          <ClassName Value="TfrLineView"/>
+          <Visible Value="1"/>
+          <Typ Value="gtLine"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="132"/>
+            <Top Value="896"/>
+            <Width Value="548"/>
+            <Height Value="0"/>
+          </Size>
+          <Flags Value="1"/>
+        </Object8>
+        <Object9>
+          <Name Value="Line4"/>
+          <ClassName Value="TfrLineView"/>
+          <Visible Value="1"/>
+          <Typ Value="gtLine"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="92"/>
+            <Top Value="500"/>
+            <Width Value="0"/>
+            <Height Value="396"/>
+          </Size>
+          <Flags Value="1"/>
+        </Object9>
+        <Object10>
+          <Name Value="Memo6"/>
+          <ClassName Value="TfrMemoView"/>
+          <Visible Value="1"/>
+          <Typ Value="gtMemo"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="180"/>
+            <Top Value="180"/>
+            <Width Value="252"/>
+            <Height Value="108"/>
+          </Size>
+          <Flags Value="3"/>
+          <FillColor Value="clNone"/>
+          <Frames>
+            <FrameWidth Value="1"/>
+            <FrameColor Value="clBlack"/>
+            <FrameBorders Value="frbLeft,frbTop,frbRight,frbBottom"/>
+            <FrameStyle Value="frsSolid"/>
+          </Frames>
+          <Data>
+            <Format Value="558"/>
+            <FormatStr Value=""/>
+            <Memo Value="THIS MEMO IS AT 50 MILIMETERS FROM LEFT BORDER OF SHEET AND 50 MM FROM TOP BORDER OF SHEET, IT'S HAS WIDTH OF 70 MM AND 30 MM OF HEIGHT&#xA;"/>
+            <Script Value=""/>
+          </Data>
+          <Font>
+            <Name Value="helvetica [urw]"/>
+            <Size Value="10"/>
+            <Color Value="clBlack"/>
+            <Charset Value="0"/>
+            <Style Value=""/>
+          </Font>
+          <Highlight>
+            <FontStyle Value="2"/>
+            <FontColor Value="clBlack"/>
+            <FillColor Value="clWhite"/>
+            <HighlightStr Value=""/>
+          </Highlight>
+          <Alignment Value="taLeftJustify"/>
+          <Layout Value="tlTop"/>
+          <Angle Value="0"/>
+        </Object10>
+      </Page1>
+      <FVal>
+        <Count Value="0"/>
+      </FVal>
+      <ParentVars Value=""/>
+    </Pages>
+  </LazReport>
+</CONFIG>

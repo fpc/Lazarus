@@ -459,6 +459,7 @@ components/lazreport/samples/editor/maincalleditor.lrs svneol=native#text/plain
 components/lazreport/samples/editor/maincalleditor.pas svneol=native#text/pascal
 components/lazreport/samples/editor/readme.txt svneol=native#text/plain
 components/lazreport/samples/editor/salida.lrf svneol=native#text/xml
+components/lazreport/samples/editor/testpage.lrf svneol=LF#text/xml eol=lf
 components/lazreport/samples/index.txt svneol=native#text/plain
 components/lazreport/samples/stringgrid/project1.lpi svneol=native#text/plain
 components/lazreport/samples/stringgrid/project1.lpr svneol=native#text/pascal

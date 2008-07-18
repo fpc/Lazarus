@@ -27,8 +27,8 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  StdCtrls, LR_Class, LR_Desgn, Dbf, DB, DBGrids, LR_DBSet, LR_PGrid, Menus,
-  ComCtrls, ActnList, Lr_e_txt, Lr_e_htm, LR_E_CSV;
+  StdCtrls, LR_Const, LR_Class, LR_Desgn, Dbf, DB, DBGrids, LR_DBSet, LR_PGrid,
+  Menus, ComCtrls, ActnList, Lr_e_txt, Lr_e_htm, LR_E_CSV;
 
 type
 
@@ -209,6 +209,7 @@ end;
 procedure TfrmMain.accNewReportExecute(Sender: TObject);
 begin
   TheReport.Pages.Clear;
+  TheReport.FileName:=SUntitled;
   TheReport.DesignReport;
   UpdateActiveReport;
 end;
