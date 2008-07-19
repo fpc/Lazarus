@@ -1236,7 +1236,7 @@
       <!-- object Visibility: default -->
       <element name="TLazAVLPalette">
         <short>
-          <var>TLazAVLPalette </var>- his descendant of <var>TFPPalette </var>uses an AVL tree for speed up</short>
+          <var>TLazAVLPalette </var>- this descendant of <var>TFPPalette </var>uses an AVL tree for speed up</short>
         <descr/>
         <errors/>
         <seealso/>
