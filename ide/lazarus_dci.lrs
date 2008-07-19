@@ -27,5 +27,7 @@ LazarusResources.Add('lazarus_dci_file','DCI',[
   +'be | begin end else begin end]'#10'begin'#10'  |'#10'end else begin'#10#10
   +'end;'#10'[withc | with for components]'#10'with | do begin'#10'  Name:='''''
   +';'#10'  Parent:=;'#10'  Left:=;'#10'  Top:=;'#10'  Width:=;'#10'  Height:=;'
-  +#10'  Caption:='''';'#10'end;'#10
+  +#10'  Caption:='''';'#10'end;'#10'[d | debugln]'#10'$(AttributesStart)'#10'E'
+  +'nableMakros=true'#10'$(AttributesEnd)'#10'debugln([''$ProcedureName() ''|])'
+  +';'#10
 ]);

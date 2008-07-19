@@ -229,6 +229,10 @@ procedure MergeSort(List: PPointer; ListLength: PtrInt;
                     Compare: TListSortCompare);
 function GetNextDelimitedItem(const List: string; Delimiter: char;
                               var Position: integer): string;
+function HasDelimitedItem(const List: string; Delimiter: char; FindItem: string
+                          ): boolean;
+function FindNextDelimitedItem(const List: string; Delimiter: char;
+                               var Position: integer; FindItem: string): string;
 function AVLTreeHasDoubles(Tree: TAVLTree): TAVLTreeNode;
 
 // debugging
@@ -1875,6 +1879,25 @@ begin
     inc(Position);
   Result:=copy(List,StartPos,Position-StartPos);
   if Position<=length(List) then inc(Position); // skip Delimiter
+end;
+
+function HasDelimitedItem(const List: string; Delimiter: char; FindItem: string
+  ): boolean;
+var
+  p: Integer;
+begin
+  p:=1;
+  Result:=FindNextDelimitedItem(List,Delimiter,p,FindItem)<>'';
+end;
+
+function FindNextDelimitedItem(const List: string; Delimiter: char;
+  var Position: integer; FindItem: string): string;
+begin
+  while Position<=length(List) do begin
+    Result:=GetNextDelimitedItem(List,Delimiter,Position);
+    if Result=FindItem then exit;
+  end;
+  Result:='';
 end;
 
 function AVLTreeHasDoubles(Tree: TAVLTree): TAVLTreeNode;

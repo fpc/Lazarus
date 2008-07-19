@@ -179,6 +179,8 @@ ResourceString
   ctsSrcPathInitialization = 'SrcPath Initialization';
   ctsUnitPathInitialization = 'UnitPath Initialization';
   ctsNestedCommentsOn = 'Nested Comments On';
+  ctsDefineLCL = 'Define LCL';
+  ctsDefineLCLWidgetset = 'Define LCLwidgetset, e.g. LCLgtk';
   ctsFPDocSystemOn = 'enable FPDocSystem';
   ctsCompiler = 'Compiler';
   ctsDefineProcessorType = 'Define processor type';

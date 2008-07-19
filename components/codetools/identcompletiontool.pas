@@ -149,8 +149,8 @@ type
   
   TIdentifierListContextFlag = (
     ilcfStartInStatement,  // context starts in statements. e.g. between begin..end
-    ilcfStartIsLValue,     // position is start of one statement. e.g. 'A:=', does not check if A can be assigned
-    ilcfNeedsEndSemicolon, // after context a semicolon is needed. e.g. 'A end'
+    ilcfStartIsLValue,     // position is start of one statement. e.g. 'A|:=', does not check if A can be assigned
+    ilcfNeedsEndSemicolon, // after context a semicolon is needed. e.g. 'A| end'
     ilcfIsExpression,      // is expression part of statement. e.g. 'if expr'
     ilcfCanProcDeclaration // context allows to declare a procedure/method
     );
@@ -1514,16 +1514,18 @@ begin
         MoveCursorToCleanPos(StartPosOfVariable);
         ReadPriorAtom;
         CurrentIdentifierList.StartAtomInFront:=CurPos;
-        // check if LValue
         if (ilcfStartInStatement in CurrentIdentifierList.ContextFlags) then
         begin
+          // check if LValue
           if (CurPos.Flag in [cafSemicolon,cafBegin,cafEnd])
           or UpAtomIs('TRY') or UpAtomIs('FOR') or UpAtomIs('DO')
           then begin
             CurrentIdentifierList.ContextFlags:=
               CurrentIdentifierList.ContextFlags+[ilcfStartIsLValue];
           end;
+          // check if expression
           if UpAtomIs('IF') or UpAtomIs('CASE') or UpAtomIs('WHILE') then begin
+            // todo: check at start of expression, not only in front of variable
             CurrentIdentifierList.ContextFlags:=
               CurrentIdentifierList.ContextFlags+[ilcfIsExpression];
           end;
@@ -1537,13 +1539,19 @@ begin
         // check if in statement
         if (ilcfStartInStatement in CurrentIdentifierList.ContextFlags) then
         begin
-          if (CurrentIdentifierList.StartBracketLvl=0) then begin
+          if (CurrentIdentifierList.StartBracketLvl=0)
+          and (not (ilcfStartIsLValue in CurrentIdentifierList.ContextFlags))
+          then begin
             // check if end needs semicolon
             if (CurPos.Flag in [cafEnd,cafBegin])
             or WordIsBlockKeyWord.DoItUpperCase(UpperSrc,
                                   CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
             or ((CurPos.Flag=cafWord)
                 and (not UpAtomIs('ELSE'))
+                and (not UpAtomIs('THEN'))
+                and (not UpAtomIs('DO'))
+                and (not UpAtomIs('TO'))
+                and (not UpAtomIs('OF'))
                 and (not PositionsInSameLine(Src,IdentEndPos,CurPos.StartPos)))
             then begin
               // add semicolon

@@ -508,6 +508,8 @@ type
   { TEditorOptionsForm }
 
   TEditorOptionsForm = class(TForm)
+    KeyMappingFindKeyButton: TButton;
+    KeyMappingFilterEdit: TEdit;
     ForeGroundLabel: TLabel;
     BackGroundLabel: TLabel;
     EditorOptionsGroupBox: TCheckGroup;
@@ -619,10 +621,12 @@ type
     procedure RightMarginColorButtonColorChanged(Sender: TObject);
 
     // key mapping
+    procedure KeyMappingFilterEditChange(Sender: TObject);
     procedure KeyMappingChooseSchemeButtonClick(Sender: TObject);
     procedure KeyMappingTreeViewMouseUp(Sender: TObject;
                       Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure KeyMappingConsistencyCheckButtonClick(Sender: TObject);
+    procedure KeyMappingFindKeyButtonClick(Sender: TObject);
 
     // color
     procedure ColorElementListBoxSelectionChange(Sender: TObject; User: Boolean);
@@ -667,6 +671,8 @@ type
     procedure SetupDisplayPage(Page: Integer);
 
     // keymapping
+    KeyMapNameFilter: string;
+    KeyMapKeyFilter: TIDEShortCut;
     procedure SetupKeyMappingsPage(Page: Integer);
     function KeyMappingRelationToString(Index: Integer): String;
     function KeyMappingRelationToString(KeyRelation:
@@ -1452,7 +1458,8 @@ begin
   fTabWidth := 8;
 
   // Display options
-  fEditorFont := 'courier';
+  fEditorFont := SynDefaultFontName;
+  fEditorFontHeight := SynDefaultFontHeight;
 
   // Key Mappings
   fKeyMappingScheme := 'default';
@@ -1573,7 +1580,7 @@ begin
       XMLConfig.GetValue('EditorOptions/Display/VisibleRightMarginColor'
       , clBtnFace);
     fEditorFont  :=
-      XMLConfig.GetValue('EditorOptions/Display/EditorFont', 'courier');
+      XMLConfig.GetValue('EditorOptions/Display/EditorFont', SynDefaultFontName);
     fEditorFontHeight :=
       XMLConfig.GetValue('EditorOptions/Display/EditorFontHeight', 12);
     RepairEditorFontHeight(fEditorFontHeight);
@@ -1705,9 +1712,9 @@ begin
     XMLConfig.SetDeleteValue('EditorOptions/Display/RightMarginColor',
       fRightMarginColor, clBtnFace);
     XMLConfig.SetDeleteValue('EditorOptions/Display/EditorFont',
-      fEditorFont, 'courier');
+      fEditorFont, SynDefaultFontName);
     XMLConfig.SetDeleteValue('EditorOptions/Display/EditorFontHeight'
-      ,fEditorFontHeight, 12);
+      ,fEditorFontHeight, SynDefaultFontHeight);
     XMLConfig.SetDeleteValue('EditorOptions/Display/ExtraCharSpacing'
       ,fExtraCharSpacing, 1);
     XMLConfig.SetDeleteValue('EditorOptions/Display/ExtraLineSpacing'
@@ -2206,6 +2213,8 @@ begin
   ASynEdit.RightEdgeColor := fRightMarginColor;
   ASynEdit.Font.Height := fEditorFontHeight;// set height before name for XLFD !
   ASynEdit.Font.Name := fEditorFont;
+  //debugln(['TEditorOptions.GetSynEditSettings ',ASynEdit.font.height]);
+  
   ASynEdit.ExtraCharSpacing := fExtraCharSpacing;
   ASynEdit.ExtraLineSpacing := fExtraLineSpacing;
   ASynEdit.MaxUndo := fUndoLimit;
@@ -2220,7 +2229,7 @@ begin
 end;
 
 procedure TEditorOptions.SetSynEditSettings(ASynEdit: TSynEdit);
-// write synedit settings to file
+// copy settings from a synedit to the options
 begin
   // general options
   fSynEditOptions := ASynEdit.Options;
@@ -2297,6 +2306,7 @@ begin
   ASynEdit.RightEdgeColor := fRightMarginColor;
   ASynEdit.Font.Height := fEditorFontHeight; // set height before Name for XLFD !
   ASynEdit.Font.Name := fEditorFont;
+  //debugln(['TEditorOptions.GetSynEditPreviewSettings ',DbgSName(ASynEdit),' ',ASynEdit.font.Height,' ',ASynEdit.font.name]);
   ASynEdit.ExtraCharSpacing := fExtraCharSpacing;
   ASynEdit.ExtraLineSpacing := fExtraLineSpacing;
   ASynEdit.ReadOnly := True;
@@ -2315,10 +2325,10 @@ begin
   inherited Create(TheOwner);
   FormCreating := True;
   Caption      := lismenueditoroptions;
+  KeyMapNameFilter:='';
+  KeyMapKeyFilter:=CleanIDEShortCut;
 
   IDEDialogLayoutList.ApplyLayout(Self, 480, 480);
-
-  MainNoteBook.PageIndex := 0;
 
   SetupGeneralPage(0);
   SetupDisplayPage(1);
@@ -2351,7 +2361,7 @@ begin
       begin
         if EditorOpts.UseSyntaxHighlight then
           Highlighter := PreviewSyn;
-        EditorOpts.GetSynEditSettings(PreviewEdits[a]);
+        EditorOpts.GetSynEditPreviewSettings(PreviewEdits[a]);
         EditingKeyMap.AssignTo(PreviewEdits[a].KeyStrokes,
           TSourceEditorWindowInterface);
         if a <> 3 then
@@ -2634,6 +2644,7 @@ begin
     begin
       if (FontDialogName[p] = '-') then
       begin
+        // this is an XLFD font name, the third item is the name
         s := copy(FontDialogName, p2 + 1, p - p2 - 1);
         p2 := p;
         case Index of
@@ -2684,6 +2695,27 @@ begin
   finally
     FontDialog.Free;
   end;
+end;
+
+procedure TEditorOptionsForm.KeyMappingFilterEditChange(Sender: TObject);
+var
+  Filter: String;
+begin
+  if [csLoading,csDestroying]*ComponentState<>[] then exit;
+  Filter:=KeyMappingFilterEdit.Text;
+  if (Filter=lisFilter2) or (Filter=KeyMappingFilterEdit.Name) then Filter:='';
+  KeyMapNameFilter:=Filter;
+  FillKeyMappingTreeView;
+end;
+
+procedure TEditorOptionsForm.KeyMappingFindKeyButtonClick(Sender: TObject);
+var
+  KeyFilter: TIDEShortCut;
+begin
+  if ShowKeyMappingGrabForm(EditingKeyMap,KeyFilter)<>mrOK then exit;
+  //debugln(['TEditorOptionsForm.KeyMappingFindKeyButtonClick ',KeyAndShiftStateToEditorKeyString(KeyFilter)]);
+  KeyMapKeyFilter:=KeyFilter;
+  FillKeyMappingTreeView;
 end;
 
 procedure TEditorOptionsForm.KeyMappingChooseSchemeButtonClick(
@@ -3351,16 +3383,24 @@ var
   NewCategoryNode, NewKeyNode: TTreeNode;
   CurCategory: TIDECommandCategory;
   CurKeyRelation: TKeyCommandRelation;
+  ChildNodeIndex: Integer;
+  CategoryNodeIndex: Integer;
+  HasFilter: Boolean;
+  ItemCaption: String;
+  NameFilterUp: String;
 begin
+  HasFilter:=(KeyMapNameFilter<>'');
+  NameFilterUp:=uppercase(KeyMapNameFilter);
   with KeyMappingTreeView do
   begin
     BeginUpdate;
+    CategoryNodeIndex:=0;
     for i := 0 to EditingKeyMap.CategoryCount - 1 do
     begin
       CurCategory := EditingKeyMap.Categories[i];
-      if Items.TopLvlCount > i then
+      if Items.TopLvlCount > CategoryNodeIndex then
       begin
-        NewCategoryNode := Items.TopLvlItems[i];
+        NewCategoryNode := Items.TopLvlItems[CategoryNodeIndex];
         NewCategoryNode.Text := CurCategory.Description;
         NewCategoryNode.Data := CurCategory;
       end
@@ -3368,25 +3408,42 @@ begin
         NewCategoryNode := Items.AddObject(Nil, CurCategory.Description, CurCategory);
       NewCategoryNode.ImageIndex := 0;
       NewCategoryNode.SelectedIndex := NewCategoryNode.ImageIndex;
+      ChildNodeIndex:=0;
       for j := 0 to CurCategory.Count - 1 do
       begin
         CurKeyRelation := TKeyCommandRelation(CurCategory[j]);
-        if NewCategoryNode.Count > j then
+        ItemCaption:=KeyMappingRelationToString(CurKeyRelation);
+        if (NameFilterUp<>'')
+        and (System.Pos(NameFilterUp,UpperCase(ItemCaption))=0) then
+          continue;
+        if (KeyMapKeyFilter.Key1<>VK_UNKNOWN)
+        and (CompareIDEShortCutKey1s(@KeyMapKeyFilter,@CurKeyRelation.ShortcutA)<>0)
+        and (CompareIDEShortCutKey1s(@KeyMapKeyFilter,@CurKeyRelation.ShortcutB)<>0)
+        then
+          continue;
+        if NewCategoryNode.Count > ChildNodeIndex then
         begin
-          NewKeyNode := NewCategoryNode.Items[j];
-          NewKeyNode.Text := KeyMappingRelationToString(CurKeyRelation);
+          NewKeyNode := NewCategoryNode.Items[ChildNodeIndex];
+          NewKeyNode.Text := ItemCaption;
           NewKeyNode.Data := CurKeyRelation;
         end
         else
           NewKeyNode := Items.AddChildObject(NewCategoryNode,
-            KeyMappingRelationToString(CurKeyRelation), CurKeyRelation);
+            ItemCaption, CurKeyRelation);
         NewKeyNode.ImageIndex := 1;
         NewKeyNode.SelectedIndex := NewKeyNode.ImageIndex;
+        inc(ChildNodeIndex);
       end;
-      while NewCategoryNode.Count > CurCategory.Count do
+      // delete unneeded ones
+      while NewCategoryNode.Count > ChildNodeIndex do
         NewCategoryNode[NewCategoryNode.Count - 1].Delete;
+      if NewCategoryNode.Count>0 then begin
+        if HasFilter then
+          NewCategoryNode.Expanded:=true;
+        inc(CategoryNodeIndex);
+      end;
     end;
-    while Items.TopLvlCount > EditingKeyMap.CategoryCount do
+    while Items.TopLvlCount > CategoryNodeIndex do
       Items.TopLvlItems[Items.TopLvlCount - 1].Delete;
     EndUpdate;
   end;
@@ -3590,6 +3647,8 @@ begin
   KeyMappingConsistencyCheckButton.Caption := dlgCheckConsistency;
 
   KeyMappingHelpLabel.Caption := dlgEdHintCommand;
+  KeyMappingFilterEdit.Text:=lisFilter2;
+  KeyMappingFindKeyButton.Caption:=lisFindKeyCombination;
 end;
 
 procedure TEditorOptionsForm.SetupColorPage(Page: Integer);

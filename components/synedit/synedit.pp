@@ -88,7 +88,24 @@ const
   ALPHA_LC = ['a'..'z'];
 
 {$IFDEF SYN_LAZARUS}
-ScrollBarWidth=0;
+  ScrollBarWidth=0;
+  {$UNDEF SynDefaultFont}
+  {$IFDEF LCLgtk}
+  SynDefaultFontName = '-adobe-courier-medium-r-normal-*-*-140-*-*-*-*-iso10646-1';
+  SynDefaultFontHeight = 14;
+  {$DEFINE SynDefaultFont}
+  {$ENDIF}
+  {$IFDEF LCLcarbon}
+  SynDefaultFontName = 'Courier'; // Note: carbon is case sensitive
+  SynDefaultFontHeight = 14;
+  {$DEFINE SynDefaultFont}
+  {$ENDIF}
+  {$IFNDEF SynDefaultFont}
+  SynDefaultFontName = 'courier';
+  SynDefaultFontHeight = 12;
+  {$ENDIF}
+  SynDefaultFontPitch = fpFixed;
+
 {$ENDIF}
 
 {$IFNDEF SYN_COMPILER_3_UP}
@@ -1428,14 +1445,9 @@ begin
   fMarkupManager.InvalidateLinesMethod := @InvalidateLines;
 
   Color := clWhite;
-  {$IFDEF LCLgtk}
-  fFontDummy.Name := '-adobe-courier-medium-r-normal-*-*-140-*-*-*-*-iso10646-1';
-  fFontDummy.Height := 14;
-  {$ELSE}
-  fFontDummy.Name := 'courier';
-  fFontDummy.Size := 12;
-  {$ENDIF}
-  fFontDummy.Pitch := fpFixed;
+  fFontDummy.Name := SynDefaultFontName;
+  fFontDummy.Height := SynDefaultFontHeight;
+  fFontDummy.Pitch := SynDefaultFontPitch;
   fLastMouseCaret := Point(-1,-1);
   fLastCtrlMouseLinkY := -1;
   fLastControlIsPressed := false;

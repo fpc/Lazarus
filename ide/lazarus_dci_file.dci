@@ -124,3 +124,8 @@ with | do begin
   Height:=;
   Caption:='';
 end;
+[d | debugln]
+$(AttributesStart)
+EnableMakros=true
+$(AttributesEnd)
+debugln(['$ProcedureName() '|]);

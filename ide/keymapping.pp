@@ -136,9 +136,14 @@ type
     property Relations[Index:integer]:TKeyCommandRelation read GetRelation; default;
     property RelationCount:integer read GetRelationCount;
   end;
+  
+  TKMEditFormMode = (
+    kmefmEdit,
+    kmefmGrab
+    );
 
-  //---------------------------------------------------------------------------
-  // form for editing one command - key relationship
+  { TKeyMappingEditForm - form for editing one command - key relationship }
+  
   TKeyMappingEditForm = class(TForm)
   public
     OkButton: TButton;
@@ -156,6 +161,7 @@ type
   protected
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
   private
+    FMode: TKMEditFormMode;
     GrabbingKey: integer; { 0=none,
                             1=Default key (1st in sequence),
                             2=Default key (second in sequence),
@@ -165,10 +171,16 @@ type
     procedure DeactivateGrabbing;
     procedure SetComboBox(AComboBox: TComboBox; const AValue: string);
     function ResolveConflicts(Key: TIDEShortCut; Scope: TIDECommandScope): boolean;
+    procedure SetMode(const AValue: TKMEditFormMode);
+    procedure SetupFindView;
+    procedure CheckEditModeInput;
+    procedure CheckGrabModeInput;
   public
     constructor Create(TheOwner: TComponent); override;
     KeyCommandRelationList: TKeyCommandRelationList;
-    KeyIndex:integer;
+    KeyIndex: integer;
+    NewKeyA, NewKeyB: TIDEShortCut;
+    property Mode: TKMEditFormMode read FMode write SetMode;
   end;
 
 function KeyAndShiftStateToEditorKeyString(
@@ -176,6 +188,8 @@ function KeyAndShiftStateToEditorKeyString(
 function KeyAndShiftStateToEditorKeyString(const Key: TIDEShortCut): String;
 function ShowKeyMappingEditForm(Index: integer;
                 AKeyCommandRelationList: TKeyCommandRelationList): TModalResult;
+function ShowKeyMappingGrabForm(AKeyCommandRelationList: TKeyCommandRelationList;
+                out Key: TIDEShortCut): TModalResult;
 function FindKeymapConflicts(Keymap: TKeyCommandRelationList;
                       Protocol: TStrings; out Index1, Index2: integer): integer;
 function EditorCommandToDescriptionString(cmd: word): String;
@@ -1547,6 +1561,26 @@ begin
   end;
 end;
 
+function ShowKeyMappingGrabForm(
+  AKeyCommandRelationList: TKeyCommandRelationList; out Key: TIDEShortCut
+  ): TModalResult;
+begin
+  Result:=mrCancel;
+  if KeyMappingEditForm<>nil then exit;
+  KeyMappingEditForm:=TKeyMappingEditForm.Create(nil);
+  with KeyMappingEditForm do begin
+    try
+      KeyCommandRelationList:=AKeyCommandRelationList;
+      KeyIndex:=-1;
+      Mode:=kmefmGrab;
+      Result:=ShowModal;
+      Key:=NewKeyA;
+    finally
+      FreeThenNil(KeyMappingEditForm);
+    end;
+  end;
+end;
+
 function FindKeymapConflicts(Keymap: TKeyCommandRelationList;
    Protocol: TStrings; out Index1,Index2:integer):integer;
 // 0 = ok, no errors
@@ -1746,6 +1780,8 @@ var
   s: string;
 begin
   inherited Create(TheOwner);
+  NewKeyA:=CleanIDEShortCut;
+  NewKeyB:=CleanIDEShortCut;
   if LazarusResources.Find(ClassName)=nil then
   begin
     SetBounds((Screen.Width-432) div 2, (Screen.Height-310) div 2, 432, 340);
@@ -1878,9 +1914,14 @@ begin
   GrabbingKey := 0;
 end;
 
-procedure TKeyMappingEditForm.OkButtonClick(Sender:TObject);
+procedure TKeyMappingEditForm.SetupFindView;
+begin
+  KeyGroupBox[1].Visible:=false;
+  CommandLabel.Caption:='Choose a key to find';
+end;
+
+procedure TKeyMappingEditForm.CheckEditModeInput;
 var
-  NewKeyA, NewKeyB: TIDEShortCut;
   CurRelation: TKeyCommandRelation;
 begin
   // set defaults
@@ -1968,6 +2009,52 @@ begin
 
   //debugln('TKeyMappingEditForm.OkButtonClick B ShortcutA=',KeyAndShiftStateToEditorKeyString(NewKeyA),' ShortcutB=',KeyAndShiftStateToEditorKeyString(NewKeyB));
   ModalResult:=mrOk;
+end;
+
+procedure TKeyMappingEditForm.CheckGrabModeInput;
+begin
+  // set defaults
+  NewKeyA:=CleanIDEShortCut;
+
+  //debugln('TKeyMappingEditForm.OkButtonClick A ShortcutA=',KeyAndShiftStateToEditorKeyString(NewKeyA),' ShortcutB=',KeyAndShiftStateToEditorKeyString(NewKeyB));
+
+  // get settings for key1
+  NewKeyA.Key1:=EditorKeyStringToVKCode(KeyComboBox[0].Text);
+  if NewKeyA.Key1<>VK_UNKNOWN then
+  begin
+    if KeyCtrlCheckBox[0].Checked then include(NewKeyA.Shift1,ssCtrl);
+    if KeyAltCheckBox[0].Checked then include(NewKeyA.Shift1,ssAlt);
+    if KeyShiftCheckBox[0].Checked then include(NewKeyA.Shift1,ssShift);
+
+    NewKeyA.Key2:=EditorKeyStringToVKCode(KeyComboBox[1].Text);
+    if NewKeyA.Key2<>VK_UNKNOWN then
+    begin
+      if KeyCtrlCheckBox[1].Checked then include(NewKeyA.Shift2,ssCtrl);
+      if KeyAltCheckBox[1].Checked then include(NewKeyA.Shift2,ssAlt);
+      if KeyShiftCheckBox[1].Checked then include(NewKeyA.Shift2,ssShift);
+    end;
+  end;
+
+  if NewKeyA.Key1=VK_UNKNOWN then
+  begin
+    NewKeyA:=NewKeyB;
+    NewKeyB.Key1:=VK_UNKNOWN;
+    NewKeyB.Shift1:=[];
+    NewKeyB.Key2:=VK_UNKNOWN;
+    NewKeyB.Shift2:=[];
+  end;
+
+  //debugln('TKeyMappingEditForm.OkButtonClick D ShortcutA=',KeyAndShiftStateToEditorKeyString(NewKeyA),' ShortcutB=',KeyAndShiftStateToEditorKeyString(NewKeyB));
+
+  ModalResult:=mrOk;
+end;
+
+procedure TKeyMappingEditForm.OkButtonClick(Sender:TObject);
+begin
+  if Mode=kmefmGrab then
+    CheckGrabModeInput
+  else
+    CheckEditModeInput;
 end;
 
 procedure TKeyMappingEditForm.CancelButtonClick(Sender:TObject);
@@ -2077,6 +2164,13 @@ begin
   end;
 
   Result:=true;
+end;
+
+procedure TKeyMappingEditForm.SetMode(const AValue: TKMEditFormMode);
+begin
+  if FMode=AValue then exit;
+  FMode:=AValue;
+  if FMode=kmefmGrab then SetupFindView;
 end;
 
 procedure TKeyMappingEditForm.ActivateGrabbing(AGrabbingKey: integer);
@@ -2222,7 +2316,6 @@ begin
     );
   AddDefault(C, 'Uncomment selection', lisMenuUncommentSelection,
     ecSelectionUncomment);
-  AddDefault(C, 'Insert $IFDEF', lisKMInsertIFDEF, ecSelectionConditional);
   AddDefault(C, 'Sort selection', lisSortSelSortSelection, ecSelectionSort);
   AddDefault(C, 'Break Lines in selection', lisMenuBeakLinesInSelection,
     ecSelectionBreakLines);
@@ -2257,6 +2350,7 @@ begin
   AddDefault(C, 'Delete whole text', srkmecClearAll, ecClearAll);
   AddDefault(C, 'Break line and move cursor', srkmecLineBreak, ecLineBreak);
   AddDefault(C, 'Break line, leave cursor', srkmecInsertLine, ecInsertLine);
+  AddDefault(C, 'Insert $IFDEF', lisKMInsertIFDEF, ecSelectionConditional);
   AddDefault(C, 'Insert from Character Map', lisMenuInsertCharacter,
     ecInsertCharacter);
   AddDefault(C, 'Insert GPL notice', srkmecInsertGPLNotice, ecInsertGPLNotice);

@@ -1692,7 +1692,7 @@ resourcestring
   srkmConflicW = ' conflicts with ';
   srkmCommand1 = '    command1 "';
   srkmCommand2 = '    command2 "';
-  srkmEditForCmd='Edit keys for command';
+  srkmEditForCmd='Edit keys of command';
   srkmKey      = 'Key (or 2 keys combination)';
   srkmGrabKey  = 'Grab key';
   srkmGrabSecondKey  = 'Grab second key';
@@ -3800,6 +3800,8 @@ resourcestring
     +'dependency is not allowed.';
   lisTheComponentCanNotBeDeletedBecauseItIsNotOwnedBy = 'The component %s can '
     +'not be deleted, because it is not owned by %s.';
+  lisFilter2 = '(filter)';
+  lisFindKeyCombination = 'Find key combination';
   
 implementation
 

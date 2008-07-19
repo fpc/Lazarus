@@ -548,16 +548,14 @@ begin
       repeat
         p:=length(NameValue);
         while (p>=1) and (NameValue[p] in [' ',#9]) do dec(p);
-        //List.Add('AAA1 NameValue="'+NameValue+'" p='+IntToStr(p)+' "'+NameValue[p]+'"');
+        //List.Add(' NameValue="'+NameValue+'" p='+IntToStr(p)+' "'+NameValue[p]+'"');
         if (p>=1) and (NameValue[p]='\')
         and ((p=1) or (NameValue[p-1]<>'\')) then begin
           // append next line
           NameValue:=copy(NameValue,1,p-1);
-          //List.Add('AAA2 NameValue="'+NameValue+'"');
           inc(i);
           if i>=MakefileFPC.Count then break;
           NameValue:=NameValue+MakefileFPC[i];
-          //List.Add('AAA3 NameValue="'+NameValue+'"');
         end else break;
       until false;
       List.Add(NameValue);
@@ -3949,6 +3947,8 @@ var
   CodeToolsDirTempl: TDefineTemplate;
   CodeToolsUnitsDirTempl: TDefineTemplate;
   FPGUIPlatformTempl: TDefineTemplate;
+  AllWidgetSets: String;
+  p: Integer;
 begin
   Result:=nil;
   if (LazarusSrcDir='') or (WidgetType='') then exit;
@@ -3957,6 +3957,19 @@ begin
   SrcOS:='$('+ExternalMacroStart+'SrcOS)';
   SrcPath:='$('+ExternalMacroStart+'SrcPath)';
   IncPath:='$('+ExternalMacroStart+'IncPath)';
+  
+  AllWidgetSets:='';
+  for i:=Low(Lazarus_CPU_OS_Widget_Combinations)
+      to High(Lazarus_CPU_OS_Widget_Combinations) do
+  begin
+    SplitLazarusCPUOSWidgetCombo(Lazarus_CPU_OS_Widget_Combinations[i],
+                                 CurCPU,CurOS,CurWidgetSet);
+    if not HasDelimitedItem(AllWidgetSets,';',CurWidgetSet) then begin
+      if AllWidgetSets<>'' then
+        AllWidgetSets:=AllWidgetSets+';';
+      AllWidgetSets:=AllWidgetSets+CurWidgetSet;
+    end;
+  end;
 
   // <LazarusSrcDir>
   MainDir:=TDefineTemplate.Create(
@@ -3974,40 +3987,24 @@ begin
       ExternalMacroStart+'SrcPath',
       d(LazarusSrcDir+'/lcl/nonwin32;')+SrcPath,da_DefineRecurse));
   MainDir.AddChild(IfTemplate);
-  MainDir.AddChild(TDefineTemplate.Create(
-    'LCL path addition',
-    Format(ctsAddsDirToSourcePath,['lcl']),ExternalMacroStart+'SrcPath',
-    d('lcl;lcl/interfaces/')+WidgetType+';'+SrcPath
-    ,da_Define));
-  // set SrcPath for IDE
-  MainDir.AddChild(TDefineTemplate.Create(
-    'Component path addition',
-    Format(ctsAddsDirToSourcePath,['designer, debugger, components, ..']),
-    ExternalMacroStart+'SrcPath',
-      d('designer;'
-       +'designer/jitform;'
-       +'debugger;'
-       +'converter;'
-       +'packager;'
-       +'packager/registration;'
-       +'ideintf;'
-       +'ide;'
-       +'components/synedit;'
-       +'components/codetools;'
-       +'components/custom;'
-       +'components/mpaslex;')
-       +SrcPath
-    ,da_Define));
-  // include path addition
-  MainDir.AddChild(TDefineTemplate.Create('includepath addition',
-    Format(ctsSetsIncPathTo,['ide/include, ide/include/TargetOS, ide/include/SrcOS']),
-    ExternalMacroStart+'IncPath',
-    d('ide/include;ide/include/'+TargetOS+';ide/include/'+SrcOS),
-    da_Define));
   // turn Nested comments on
   MainDir.AddChild(TDefineTemplate.Create('Nested Comments',
     ctsNestedCommentsOn,ExternalMacroStart+'NestedComments','',da_DefineRecurse));
-
+  // define 'LCL'
+  MainDir.AddChild(TDefineTemplate.Create('define LCL',
+    ctsDefineLCL,'LCL',WidgetType,da_DefineRecurse));
+  // define LCLwidgetset, e.g. LCLcarbon, LCLgtk, LCLgtk2
+  p:=1;
+  repeat
+    CurWidgetSet:=GetNextDelimitedItem(AllWidgetSets,';',p);
+    if CurWidgetSet='' then break;
+    IfTemplate:=TDefineTemplate.Create('IF '''+WidgetType+'''='''+CurWidgetSet+'''',
+      ctsDefineLCLWidgetset,'',''''+WidgetType+'''='''+CurWidgetSet+'''',da_If);
+      // then define LCLgtk, LCLgtk2, LCLcarbon, ...
+      IfTemplate.AddChild(TDefineTemplate.Create('Define LCL'+CurWidgetSet,
+        ctsDefineLCLWidgetset,'LCL'+CurWidgetSet,'',da_DefineRecurse));
+    MainDir.AddChild(IfTemplate);
+  until false;
 
   // <LazarusSrcDir>/include
   // (does not need special setup)
@@ -4448,8 +4445,7 @@ begin
     +';'+LazarusSrcDir+'/lcl/interfaces/'+WidgetType)
     +';'+SrcPath
     ,da_DefineRecurse));
-  MainDir.AddChild(DirTempl);
-  
+
   // <LazarusSrcDir>/components/synedit/units
   SynEditDirTempl:=TDefineTemplate.Create('synedit',
     'SynEdit','','synedit',da_Directory);
