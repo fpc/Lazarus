@@ -1,0 +1,23 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: javivf <javivf@gmail.com>\n"
+"Language-Team: \n"
+
+#: projecttemplates.serrcouldnotcreatedir
+msgid "Could not create directory \"%s\""
+msgstr "No se puede crear el directorio \"%s\""
+
+#: projecttemplates.serrfailedtocopyfile
+msgid "Failed to copy file \"%s\" to \"%s\""
+msgstr "Ha fallado la copia del archivo \"%s\" a \"%s\""
+
+#: projecttemplates.serrnosuchtemplate
+msgid "\"%s\": No such template."
+msgstr "\"%s\": No existe plantilla."
+

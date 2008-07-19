@@ -5,8 +5,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-02-26\n"
-"Last-Translator: Jose Angel <angelhjose@gmail.com>\n"
+"PO-Revision-Date: 2008-07-18 09:15+0100\n"
+"Last-Translator: javivf <javivf@gmail.com>\n"
 "Language-Team: \n"
 
 #: lr_const.saboutformcapt
@@ -154,12 +154,12 @@ msgstr "&Código"
 #: lr_const.sbarcodeformdbfld
 msgctxt "lr_const.sbarcodeformdbfld"
 msgid "Insert DB field"
-msgstr ""
+msgstr "Inserta campo del DataSet"
 
 #: lr_const.sbarcodeformopts
 msgctxt "lr_const.sbarcodeformopts"
 msgid "Options"
-msgstr ""
+msgstr "Opciones"
 
 #: lr_const.sbarcodeformreadable
 msgid "&Human readable"
@@ -200,7 +200,7 @@ msgstr "Cancelar"
 #: lr_const.scateg1
 msgctxt "lr_const.scateg1"
 msgid "Text"
-msgstr ""
+msgstr "Texto"
 
 #: lr_const.scateg2
 msgid "Number"
@@ -209,12 +209,12 @@ msgstr "Número"
 #: lr_const.scateg3
 msgctxt "lr_const.scateg3"
 msgid "Date"
-msgstr ""
+msgstr "Fecha"
 
 #: lr_const.scateg4
 msgctxt "lr_const.scateg4"
 msgid "Time"
-msgstr ""
+msgstr "Hora"
 
 #: lr_const.scateg5
 msgid "Boolean"
@@ -405,7 +405,7 @@ msgstr "Moviendo objeto"
 #: lr_const.sdesoptionsformopt
 msgctxt "lr_const.sdesoptionsformopt"
 msgid "Options"
-msgstr ""
+msgstr "Opciones"
 
 #: lr_const.sdesoptionsformother
 msgctxt "lr_const.sdesoptionsformother"
@@ -603,7 +603,7 @@ msgstr "&Mayúsculas/Minúsculas"
 #: lr_const.sfindtextcurrentpg
 msgctxt "lr_const.sfindtextcurrentpg"
 msgid "Current &page"
-msgstr ""
+msgstr "&Página Actual"
 
 #: lr_const.sfindtextfirstpg
 msgid "&1st page"
@@ -612,7 +612,7 @@ msgstr "&1ra página"
 #: lr_const.sfindtextoptions
 msgctxt "lr_const.sfindtextoptions"
 msgid "Options"
-msgstr ""
+msgstr "Opciones"
 
 #: lr_const.sfindtextorg
 msgid "Origin"
@@ -915,7 +915,7 @@ msgstr "Línea de marco izquierda"
 #: lr_const.sfrdesignerformnewrp
 msgctxt "lr_const.sfrdesignerformnewrp"
 msgid "New report"
-msgstr ""
+msgstr "Nuevo Informe"
 
 #: lr_const.sfrdesignerformnoframe
 msgid "No frame"
@@ -941,7 +941,7 @@ msgstr "Pegar"
 #: lr_const.sfrdesignerformpgoption
 msgctxt "lr_const.sfrdesignerformpgoption"
 msgid "Page options"
-msgstr ""
+msgstr "Opciones de Página"
 
 #: lr_const.sfrdesignerformpreview
 msgid "Preview report"
@@ -950,7 +950,7 @@ msgstr "Vista previa del reporte"
 #: lr_const.sfrdesignerformrect
 msgctxt "lr_const.sfrdesignerformrect"
 msgid "Rectangle"
-msgstr ""
+msgstr "Rectángulo"
 
 #: lr_const.sfrdesignerformredo
 msgid "Redo cancelled action"
@@ -1231,7 +1231,7 @@ msgstr "Grupo"
 #: lr_const.sgroupeditorformcond
 msgctxt "lr_const.sgroupeditorformcond"
 msgid "Condition"
-msgstr ""
+msgstr "Condición"
 
 #: lr_const.shilightformback
 msgid "Background"
@@ -1876,11 +1876,11 @@ msgstr "A&bajo, mm"
 
 #: lr_const.spgoptformbycolumns
 msgid "By Colum&ns"
-msgstr ""
+msgstr "Por Colum&nas"
 
 #: lr_const.spgoptformbyrows
 msgid "By Row&s"
-msgstr ""
+msgstr "Por Fila&s"
 
 #: lr_const.spgoptformcapt
 msgctxt "lr_const.spgoptformcapt"
@@ -1909,7 +1909,7 @@ msgstr "&Horizontal"
 
 #: lr_const.spgoptformlayoutorder
 msgid "Layout Order"
-msgstr ""
+msgstr "Orden de Impresión"
 
 #: lr_const.spgoptformleft
 msgid "&Left, mm"
