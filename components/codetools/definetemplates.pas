@@ -4483,6 +4483,7 @@ begin
     +SrcPath
     ,da_DefineRecurse));
   DirTempl.AddChild(SubDirTempl);
+  MainDir.AddChild(DirTempl);
 
   // <LazarusSrcDir>/tools
   DirTempl:=TDefineTemplate.Create('Tools',
