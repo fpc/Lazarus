@@ -816,7 +816,11 @@ protected
     function RowColumnToPixels(
                       {$IFDEF SYN_LAZARUS}const {$ENDIF}RowCol: TPoint): TPoint;
     function SearchReplace(const ASearch, AReplace: string;
-      AOptions: TSynSearchOptions): integer;
+      AOptions: TSynSearchOptions): integer; {$IFDEF SYN_LAZARUS} overload; {$ENDIF}
+    {$IFDEF SYN_LAZARUS}
+    function SearchReplace(const ASearch, AReplace: string;
+      AOptions: TSynSearchOptions; AStart: TPoint): integer; overload;
+    {$ENDIF}
     procedure SelectAll;
     {$IFDEF SYN_LAZARUS}
     Procedure SetHighlightSearch(const ASearch: String; AOptions: TSynSearchOptions);
@@ -9292,9 +9296,18 @@ begin
 end;
 
 // find / replace
-
+{$IFDEF SYN_LAZARUS}
 function TCustomSynEdit.SearchReplace(const ASearch, AReplace: string;
   AOptions: TSynSearchOptions): integer;
+begin
+  Result := SearchReplace(ASearch, AReplace, AOptions, LogicalCaretXY);
+end;
+{$ENDIF}
+
+function TCustomSynEdit.SearchReplace(const ASearch, AReplace: string;
+  AOptions: TSynSearchOptions
+  {$IFDEF SYN_LAZARUS};AStart: TPoint{$ENDIF}
+  ): integer;
 var
   ptStart, ptEnd: TPoint; // start and end of the search range
   ptCurrent: TPoint; // current search position

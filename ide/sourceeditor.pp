@@ -6310,6 +6310,7 @@ const
   SEARCH_OPTS: array[Boolean] of TSynSearchOptions = ([], [ssoBackwards]);
 var
   CurEdit: TSynEdit;
+  AStart : TPoint;
 begin
   if not (snIncrementalFind in States)
   then begin
@@ -6324,11 +6325,12 @@ begin
   if FIncrementalSearchStr<>''
   then begin
     // search from search start position when not searching for the next
+    AStart := CurEdit.LogicalCaretXY;
     if not ANext
-    then CurEdit.LogicalCaretXY := FIncrementalSearchStartPos
+    then AStart := FIncrementalSearchStartPos
     else if ABackward
-    then CurEdit.LogicalCaretXY := CurEdit.BlockBegin;
-    CurEdit.SearchReplace(FIncrementalSearchStr,'', SEARCH_OPTS[ABackward]);
+    then AStart := CurEdit.BlockBegin;
+    CurEdit.SearchReplace(FIncrementalSearchStr,'', SEARCH_OPTS[ABackward], AStart);
     CurEdit.LogicalCaretXY:=CurEdit.BlockEnd;
 
     // searching next resets incremental history
