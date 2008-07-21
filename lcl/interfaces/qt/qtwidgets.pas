@@ -4501,7 +4501,6 @@ function TQtScrollBar.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 begin
   beginEventProcessing;
   case QEvent_type(Event) of
-    {$IFDEF DARWIN}
     {if any of those events returs TRUE our scrollbar becomes invisible.}
     QEventMouseButtonPress,
     QEventMouseButtonRelease,
@@ -4509,7 +4508,6 @@ begin
     QEventMouseMove,
     QEventWheel,
     QEventPaint,
-    {$ENDIF}
     QEventKeyPress,
     QEventKeyRelease: Result := False;
   else
