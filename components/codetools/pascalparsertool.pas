@@ -471,6 +471,7 @@ begin
   if not UpdateNeeded(OnlyInterfaceNeeded) then begin
     // input is the same as last time -> output is the same
     // -> if there was an error, raise it again
+    //debugln(['TPascalParserTool.BuildTree ',ord(LastErrorPhase),' ',IgnoreErrorAfterValid]);
     if (LastErrorPhase in [CodeToolPhaseScan,CodeToolPhaseParse])
     and ((not IgnoreErrorAfterValid)
       or (not IgnoreErrorAfterPositionIsInFrontOfLastErrMessage))

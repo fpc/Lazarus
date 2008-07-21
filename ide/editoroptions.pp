@@ -545,20 +545,20 @@ type
     RightMarginColorLabel: TLabel;
     EditorFontGroupBox: TGroupBox;
     EditorFontComboBox: TComboBox;
-    EditorFontButton:  TButton;
-    EditorFontLabel:   TLabel;
+    EditorFontButton: TButton;
+    EditorFontLabel: TLabel;
     EditorFontHeightLabel: TLabel;
     EditorFontHeightComboBox: TComboBox;
     ExtraLineSpacingLabel: TLabel;
     ExtraLineSpacingComboBox: TComboBox;
     ExtraCharSpacingLabel: TLabel;
     ExtraCharSpacingComboBox: TComboBox;
-    DisplayPreview:    TPreviewEditor;
+    DisplayPreview: TPreviewEditor;
 
     // Key Mappings
     KeyMappingChooseSchemeButton: TButton;
     KeyMappingHelpLabel: TLabel;
-    KeyMappingTreeView:  TTreeView;
+    KeyMappingTreeView: TTreeView;
     KeyMappingConsistencyCheckButton: TButton;
 
     // Color options

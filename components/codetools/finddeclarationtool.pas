@@ -3448,7 +3448,7 @@ var
   Params: TFindDeclarationParams;
 begin
   {$IFDEF CheckNodeTool}CheckNodeTool(ClassNode);{$ENDIF}
-  Result:=true;
+  Result:=false;
   ListOfPFindContext:=nil;
   if (ClassNode=nil) or (ClassNode.Desc<>ctnClass) or (ClassNode.Parent=nil)
   or (not (ClassNode.Parent.Desc in [ctnTypeDefinition,ctnGenericType])) then
@@ -3474,8 +3474,9 @@ begin
         or (not (ClassNode.Desc in [ctnClass,ctnClassInterface])) then
           break;
       end;
+      Result:=true;
     except
-      // just stop on errors
+      // catch syntax errors
       on E: ECodeToolError do ;
       on E: ELinkScannerError do ;
     end;

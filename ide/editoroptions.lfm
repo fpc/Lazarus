@@ -1,5 +1,5 @@
 object EditorOptionsForm: TEditorOptionsForm
-  Left = 390
+  Left = 438
   Height = 541
   Top = 120
   Width = 554

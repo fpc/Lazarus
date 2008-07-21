@@ -1,7 +1,7 @@
 { This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TEditorOptionsForm','FORMDATA',[
-  'TPF0'#18'TEditorOptionsForm'#17'EditorOptionsForm'#4'Left'#3#134#1#6'Height'
+  'TPF0'#18'TEditorOptionsForm'#17'EditorOptionsForm'#4'Left'#3#182#1#6'Height'
   +#3#29#2#3'Top'#2'x'#5'Width'#3'*'#2#13'ActiveControl'#7#12'MainNotebook'#7'C'
   +'aption'#6#17'EditorOptionsForm'#12'ClientHeight'#3#29#2#11'ClientWidth'#3'*'
   +#2#21'Constraints.MinHeight'#3#244#1#20'Constraints.MinWidth'#3#144#1#8'Posi'
@@ -534,5 +534,3 @@ LazarusResources.Add('TEditorOptionsForm','FORMDATA',[
   +#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0
   +#0#0
 ]);
-
-

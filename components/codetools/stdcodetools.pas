@@ -4293,6 +4293,7 @@ begin
     for i:=0 to AncestorList.Count-1 do begin
       if not Add(PFindContext(AncestorList[i])) then exit;
     end;
+    //debugln(['TStandardCodeTool.GatherPublishedClassElements END']);
   finally
     FreeListOfPFindContext(AncestorList);
   end;
