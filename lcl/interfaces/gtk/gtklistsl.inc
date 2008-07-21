@@ -564,6 +564,9 @@ end;
 
 procedure TGtkListStringList.BeginUpdate;
 begin
+  //NOTE: in TComboBox, event handling is done inside the 'changed' event
+  //  of the entry widget. Here we are locking the main combo widget.
+  //  Currently, there's no know bug origined from this flaw.
   inc(FUpdateCount);
   if (FUpdateCount=1) and (Owner<>nil) and (Owner.HandleAllocated) then
     LockOnChange(PGtkObject(Owner.Handle),+1);
@@ -830,7 +833,7 @@ begin
   // change selection mode if needed
   if (gtkListGetSelectionMode(FGtkList)=GTK_SELECTION_BROWSE)
   and (FGtkList^.selection<>nil)
-  and (g_list_nth_data(FGtkList^.children, Index)=FGtkList^.selection) then begin
+  and (g_list_nth_data(FGtkList^.children, Index)=FGtkList^.selection^.data) then begin
     // item is selected and BROWSE mode is enabled
     // -> change selection mode to prevent, that gtk auto selects another child
     gtk_list_set_selection_mode(FGtkList,GTK_SELECTION_SINGLE);
@@ -854,6 +857,10 @@ begin
   end;
   gtk_list_clear_items(FGtkList, Index, Index + 1);
   Include(FStates,glsItemCacheNeedsUpdate);
+  
+  //Clear the combobox text
+  if FOwner is TCustomComboBox then
+    SetComboBoxText(PGtkCombo(FOwner.Handle), '');
   
   {$IFDEF CheckGtkList}
   ConsistencyCheck;

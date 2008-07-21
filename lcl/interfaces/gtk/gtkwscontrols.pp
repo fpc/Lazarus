@@ -675,7 +675,7 @@ begin
     begin
       //DebugLn('SetLabel: ',TComboBox(Sender).Name,':',TComboBox(Sender).ClassName,
       //  ' ',DbgS(TComboBox(Sender).Handle),' "',PLabel,'"');
-      SetComboBoxText(PGtkCombo(TComboBox(AWinControl).Handle), PLabel);
+      SetComboBoxText(PGtkCombo(TComboBox(AWinControl).Handle), AText)
     end;
 
   else

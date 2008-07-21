@@ -488,10 +488,23 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TGtkListStoreStringList.Clear;
+var
+  WidgetInfo: PWidgetInfo;
 begin
   //DebugLn(['TGtkListStoreStringList.Clear ']);
   //while Count>0 do Delete(Count-1);
-  gtk_list_store_clear(FGtkListStore);
+
+  //Lock the widget to avoid trigger events
+  //Note: Assign/Clear is called inside CreateHandle before Handle is set
+  if FOwner.HandleAllocated then begin
+    WidgetInfo := GetWidgetInfo(Pointer(FOwner.Handle), False);
+    if WidgetInfo <> nil then
+      Inc(WidgetInfo^.ChangeLock);
+    gtk_list_store_clear(FGtkListStore);
+    if WidgetInfo <> nil then
+      Dec(WidgetInfo^.ChangeLock);
+  end;
+    
   IncreaseChangeStamp;
 
   ReAllocMem(FCachedItems,0);
@@ -511,6 +524,7 @@ end;
 procedure TGtkListStoreStringList.Delete(Index : integer);
 var
   ListItem: TGtkTreeIter;
+  WidgetInfo: PWidgetInfo;
 begin
   if not (glsItemCacheNeedsUpdate in FStates) then
     ListItem := FCachedItems[Index]
@@ -518,8 +532,11 @@ begin
     gtk_tree_model_iter_nth_child(FGtkListStore, @ListItem, nil, Index);
 
   //gtk_list_store_g
+  WidgetInfo := GetWidgetInfo(Pointer(FOwner.Handle));
+  //Lock the widget to avoid trigger events
+  Inc(WidgetInfo^.ChangeLock);
   gtk_list_store_remove(FGtkListStore, @ListItem);
-
+  Dec(WidgetInfo^.ChangeLock);
   IncreaseChangeStamp;
   
   if not (glsCountNeedsUpdate in FStates) then
@@ -532,6 +549,9 @@ begin
       ShrinkCache;
   end else
     Include(FStates, glsItemCacheNeedsUpdate);
+
+  if FOwner is TCustomComboBox then
+    TGtk2WSCustomComboBox.SetText(FOwner, '');
 end;
 
 function TGtkListStoreStringList.IndexOf(const S: string): Integer;

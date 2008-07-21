@@ -460,6 +460,7 @@ class procedure TGtk2WSCustomListBox.SetItemIndex(
   const ACustomListBox: TCustomListBox; const AIndex: integer);
 var
   Widget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
   Selection: PGtkTreeSelection;
   Path: PGtkTreePath;
 
@@ -476,12 +477,14 @@ begin
   if not WSCheckHandleAllocated(ACustomListBox, 'SetItemIndex') then
     Exit;
 
-  Widget := GetWidgetInfo(Pointer(ACustomListBox.Handle), True)^.CoreWidget;
+  WidgetInfo := GetWidgetInfo(Pointer(ACustomListBox.Handle), True);
+  Widget := WidgetInfo^.CoreWidget;
   if not GtkWidgetIsA(Widget, gtk_tree_view_get_type) then
     raise Exception.Create('');
 
   Selection := gtk_tree_view_get_selection(PGtkTreeView(Widget));
 
+  Inc(WidgetInfo^.ChangeLock);
   if (AIndex < 0) then
     if (gtk_tree_selection_get_mode(Selection) <> GTK_SELECTION_SINGLE) then
       Path := gtk_tree_path_new_first
@@ -502,6 +505,7 @@ begin
 
   if Path <> nil then
     gtk_tree_path_free(Path);
+  Dec(WidgetInfo^.ChangeLock);
 end;
 
 class procedure TGtk2WSCustomListBox.SetSelectionMode(
@@ -576,17 +580,19 @@ begin
 end;
 
 function gtk2ListBoxSelectionChangedAfter(Widget: PGtkWidget;
-  AWinControl: TWinControl): gboolean; cdecl;
+  WidgetInfo: PWidgetInfo): gboolean; cdecl;
 var
   Mess: TLMessage;
 begin
   Result := CallBackDefaultReturn;
+  if WidgetInfo^.ChangeLock > 0 then
+    Exit;
   {$IFDEF EventTrace}
-  EventTrace('gtk2ListSelectionChangedAfter', dbgsName(AWinControl));
+  EventTrace('gtk2ListSelectionChangedAfter', WidgetInfo^.LCLObject);
   {$ENDIF}
   FillChar(Mess,SizeOf(Mess),0);
   Mess.msg := LM_SelChange;
-  DeliverMessage(AWinControl, Mess);
+  DeliverMessage(WidgetInfo^.LCLObject, Mess);
 end;
 
 class function TGtk2WSCustomListBox.CreateHandle(const AWinControl: TWinControl;
@@ -646,7 +652,7 @@ begin
   end;
   
   g_signal_connect_after(Selection, 'changed',
-    G_CALLBACK(@gtk2ListBoxSelectionChangedAfter), AWinControl);
+    G_CALLBACK(@gtk2ListBoxSelectionChangedAfter), WidgetInfo);
 
   // Sets the callbacks
   SetCallbacks(p, WidgetInfo);
@@ -964,11 +970,13 @@ begin
   // keep items
   ItemList := ACustomComboBox.Items as TGtkListStoreStringList;
   
-  LCLIndex := gtk_object_get_data(GTK_OBJECT(ComboWidget), GtkComboLCLItemIndexTag);
+  LCLIndex := AWidgetInfo^.UserData;
   if not Assigned(LCLIndex) then begin
     //debugln('Gtk2WSCustomComboBox ReCreateCombo: LCLIndex unassigned!');
     LCLIndex := New(PLongint);
     LCLIndex^ := -1;
+    AWidgetInfo^.UserData := LCLIndex;
+    AWidgetInfo^.DataOwner := True;
   end;
   
   // this should work but may not in all circumstances
@@ -980,7 +988,6 @@ begin
   if Index = -1 then Index := GetItemIndex(ACustomComboBox);
 
   gtk_object_set_data(PGtkObject(ComboWidget), GtkListItemLCLListTag,nil);
-  gtk_object_set_data(PGtkObject(ComboWidget), GtkComboLCLItemIndexTag, nil);
   gtk_widget_destroy(ComboWidget);
 
   // create the new widget with the old model
@@ -990,7 +997,6 @@ begin
   end;
   // undone the above increase of the ref count
   gtk_object_set_data(PGtkObject(ComboWidget),GtkListItemLCLListTag,ItemList);
-  gtk_object_set_data(PGtkObject(ComboWidget), GtkComboLCLItemIndexTag, LCLIndex);
   g_object_unref (G_OBJECT(Model));
 
   SetMainWidget(Box, GTK_BIN(ComboWidget)^.child);
@@ -1070,11 +1076,11 @@ var
   LCLIndex: PLongint;
   Index, GtkIndex: Integer;
 begin
-  if WidgetInfo^.UserData <> nil then Exit;
+  if WidgetInfo^.ChangeLock > 0 then Exit;
   LCLSendChangedMsg(TControl(WidgetInfo^.LCLObject));
   
   Index := -1;
-  LCLIndex := gtk_object_get_data(GTK_OBJECT(WidgetInfo^.CoreWidget), GtkComboLCLItemIndexTag);
+  LCLIndex := WidgetInfo^.UserData;
   if Assigned(LCLIndex) then
     Index := LCLIndex^
   else
@@ -1287,8 +1293,7 @@ begin
   
   // if we are a fixed un-editable combo then ...
   Index := GetItemIndex(TCustomComboBox(AWinControl));
-  if Index > -1 then  AText := TCustomComboBox(AWinControl).Items.Strings[Index]
-  else Result := False;
+  if Index > -1 then  AText := TCustomComboBox(AWinControl).Items.Strings[Index];
 end;
 
 class procedure TGtk2WSCustomComboBox.SetArrowKeysTraverseList(
@@ -1341,17 +1346,20 @@ begin
   p := WidgetInfo^.CoreWidget;
   if gtk_combo_box_get_active(PGtkComboBox(p)) = NewIndex then exit;
   // to be delphi compatible OnChange only fires in response to user actions not program actions
-  // so we use WidgetInfo^.Userdata as a flag to not signal the OnChange Event
-  WidgetInfo^.UserData := Pointer(1);
+  // so we use WidgetInfo^.ChangeLock as a flag to not signal the OnChange Event
+  Inc(WidgetInfo^.ChangeLock);
   gtk_combo_box_set_active(PGtkComboBox(p), NewIndex);
 
-  LCLIndex := gtk_object_get_data(GTK_OBJECT(p), GtkComboLCLItemIndexTag);
+  LCLIndex := WidgetInfo^.UserData;
   if not Assigned(LCLIndex) then
+  begin
     LCLIndex := New(PLongint);
+    WidgetInfo^.UserData := LCLIndex;
+    WidgetInfo^.DataOwner := True;
+  end;
   LCLIndex^ := NewIndex;
-  gtk_object_set_data(GTK_OBJECT(p), GtkComboLCLItemIndexTag, LCLIndex); // set LCLIndex for OnChange -> OnSelect
 
-  WidgetInfo^.UserData := Pointer(nil);
+  Dec(WidgetInfo^.ChangeLock);
 end;
 
 class procedure TGtk2WSCustomComboBox.SetMaxLength(
@@ -1472,8 +1480,8 @@ var
   Index: Integer;
 begin
   WidgetInfo := GetWidgetInfo(Pointer(AWinControl.Handle));
-  // we use user data to not signal onchange
-  WidgetInfo^.UserData := Pointer(1);
+  // we use user ChangeLock to not signal onchange
+  Inc(WidgetInfo^.ChangeLock);
   if gtk_is_combo_box_entry(WidgetInfo^.CoreWidget) then begin
     Entry := GTK_BIN(WidgetInfo^.CoreWidget)^.child;
     gtk_entry_set_text(PGtkEntry(Entry), PChar(AText));
@@ -1483,7 +1491,7 @@ begin
     Index := TCustomComboBox(AWinControl).Items.IndexOf(AText);
     SetItemIndex(TCustomComboBox(AWinControl), Index);
   end;
-  WidgetInfo^.UserData := nil;
+  Dec(WidgetInfo^.ChangeLock);
 end;
 
 class function TGtk2WSCustomComboBox.CreateHandle(const AWinControl: TWinControl;
@@ -1529,12 +1537,13 @@ begin
   if PGtkComboBoxPrivate(PGtkComboBox(ComboWidget)^.priv)^.button <> nil then
     SetMainWidget(Box, PGtkComboBoxPrivate(PGtkComboBox(ComboWidget)^.priv)^.button);
 
+  LCLIndex := New(PLongint);
+  //Should not set the ItemIndex value here?
+  LCLIndex^ := -1;
   WidgetInfo^.CoreWidget := ComboWidget;
   WidgetInfo^.ClientWidget := Box;
-  
-  LCLIndex := New(PLongint);
-  LCLIndex^ := -1;
-  gtk_object_set_data(GTK_OBJECT(ComboWidget), GtkComboLCLItemIndexTag, LCLIndex);
+  WidgetInfo^.UserData := LCLIndex;
+  WidgetInfo^.DataOwner := True;
 
   //gtk_widget_add_events(Box, GDK_ALL_EVENTS_MASK);
 
@@ -1556,17 +1565,10 @@ class procedure TGtk2WSCustomComboBox.DestroyHandle(
 var
   Handle: HWND;
   ComboWidget: PGtkWidget;
-  LCLIndex: PLongint;
 begin
   Handle := AWinControl.Handle;
   ComboWidget := GetWidgetInfo(Pointer(Handle), True)^.CoreWidget;
   gtk_object_set_data(PGtkObject(ComboWidget),GtkListItemLCLListTag,nil);
-  LCLIndex := gtk_object_get_data(PGtkObject(ComboWidget), GtkComboLCLItemIndexTag);
-  if Assigned(LCLIndex) then begin
-    gtk_object_set_data(PGtkObject(ComboWidget), GtkComboLCLItemIndexTag, nil);
-    Dispose(LCLIndex);
-  end else
-    debugln('Gtk2WSCustomComboBox DestroyHandle: LCLIndex unassigned!');
 
   //DebugLn(['TGtk2WSCustomComboBox.DestroyHandle ',dbgsName(AWinControl),' ClassParent=',ClassParent.ClassName]);
 

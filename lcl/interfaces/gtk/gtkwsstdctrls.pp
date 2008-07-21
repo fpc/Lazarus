@@ -804,15 +804,64 @@ end;
 { TGtkWSCustomComboBox }
 
 {$IFDEF GTK1}
+
+function gtkComboBoxChanged(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+var
+  Mess : TLMessage;
+  GtkComboWidget: PGtkCombo;
+  GtkListWidget: PGtkList;
+  LCLIndex: PInteger;
+  GtkIndex: Integer;
+begin
+  Result := CallBackDefaultReturn;
+
+  if ComponentIsDestroyingHandle(TWinControl(Data)) or
+    (LockOnChange(PGtkObject(Widget), 0) > 0) or
+    (gtk_signal_n_emissions_by_name(PGtkObject(widget), 'changed') > 1)
+     then exit;
+
+  {$IFDEF EventTrace}
+  EventTrace('changed', data);
+  {$ENDIF}
+  FillChar(Mess, SizeOf(Mess), 0);
+  Mess.Msg := LM_CHANGED;
+  DeliverMessage(Data, Mess);
+  
+  GtkComboWidget := PGtkCombo(TComboBox(Data).Handle);
+  GtkListWidget := PGtkList(GtkComboWidget^.list);
+  LCLIndex := PInteger(GetWidgetInfo(GtkComboWidget)^.UserData);
+
+  //Check if an item is selected
+  if (GtkListWidget^.selection <> nil) then
+  begin
+    GtkIndex := gtk_list_child_position(GtkListWidget,
+      PGtkWidget(GtkListWidget^.selection^.data));
+    //If the selected item index changed send a LM_SELCHANGE msg
+    if LCLIndex^ <> GtkIndex then
+    begin
+      gtk_list_set_selection_mode(GtkListWidget, GTK_SELECTION_BROWSE);
+      LCLIndex^ := GtkIndex;
+      Mess.Msg := LM_SELCHANGE;
+      DeliverMessage(Data, Mess);
+    end;
+  end
+  else
+  begin
+    LCLIndex^ := -1;
+    gtk_list_set_selection_mode(GtkListWidget, GTK_SELECTION_SINGLE);
+  end;
+end;
+
 class procedure TGtkWSCustomComboBox.SetCallbacks(const AGtkWidget: PGtkWidget;
   const AWidgetInfo: PWidgetInfo);
 begin
   TGtkWSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
   with TGtkWidgetset(Widgetset) do
   begin
-    SetCallback(LM_CHANGED, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
+    //gtk1 and gtk2 have different 'changed' event handlers
+    ConnectSignal(PGtkObject(PGtkCombo(AGtkWidget)^.entry),
+      'changed', @gtkComboBoxChanged, AWidgetInfo^.LCLObject);
     SetCallback(LM_COMMAND, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
-    SetCallback(LM_SELCHANGE, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
   end;
 end;
 
@@ -826,6 +875,7 @@ var
   ItemList: TGtkListStringList;
   GtkList: PGtkList;
   Allocation: TGtkAllocation;
+  LCLIndex: PInteger;
 begin
   Widget := gtk_combo_new();
 
@@ -834,13 +884,19 @@ begin
   gtk_combo_disable_activate(ComboWidget);
   gtk_combo_set_case_sensitive(ComboWidget, GdkTrue);
 
-  // Prevents the OnSelect event be fired after inserting the first item
-  // or deleting the selected item
   GtkList:=PGtkList(ComboWidget^.List);
-  if GtkList^.selection = nil then
-    gtk_list_set_selection_mode(GtkList, GTK_SELECTION_SINGLE)
-  else
-    gtk_list_set_selection_mode(GtkList, GTK_SELECTION_BROWSE);
+
+  // Switching the selection mode is necessary to avoid the following problems:
+  // - The first added item is automatically selected when mode is "BROWSE"
+  // - Is not possible to select the previous selected item if mode is "BROWSE"
+  //   and current index is -1
+  // - The item is deselected after a second click if mode is "SINGLE"
+  // - The OnSelect event could be fired after add the first item when mode is
+  //   "BROWSE". Since LM_SELCHANGE is sent in 'changed' event now, no problem.
+  // So basically the mode is set to BROWSE when a item is selected and
+  //   "SINGLE" when there's no item selected
+  
+  gtk_list_set_selection_mode(GtkList, GTK_SELECTION_SINGLE);
 
   // Items
   ItemList:= TGtkListStringList.Create(GtkList, ComboBox, False);
@@ -848,9 +904,18 @@ begin
   ItemList.Assign(ComboBox.Items);
   ItemList.Sorted:= ComboBox.Sorted;
 
+  WidgetInfo := CreateWidgetInfo(Widget, AWinControl, AParams);
+  New(LCLIndex);
+  WidgetInfo^.UserData := LCLIndex;
+  WidgetInfo^.DataOwner := True;
   // ItemIndex
   if ComboBox.ItemIndex >= 0 then
+  begin
     gtk_list_select_item(GtkList, ComboBox.ItemIndex);
+    LCLIndex^ := ComboBox.ItemIndex;
+  end
+  else
+    LCLIndex^ := -1;
 
   // MaxLength
   gtk_entry_set_max_length(PGtkEntry(ComboWidget^.entry),guint16(ComboBox.MaxLength));
@@ -859,7 +924,7 @@ begin
   DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
   {$ENDIF}
   Result := THandle(PtrUInt(Widget));
-  WidgetInfo := CreateWidgetInfo(Widget, AWinControl, AParams);
+
 
   Allocation.X := AParams.X;
   Allocation.Y := AParams.Y;

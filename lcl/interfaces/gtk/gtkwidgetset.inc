@@ -3103,10 +3103,6 @@ begin
                       'value_changed', @gtkvaluechanged);
        end
        else
-       if ALCLObject is TCustomCombobox then
-         ConnectSenderSignal (PGtkObject(
-                   PGtkCombo(gObject)^.entry), 'changed', @gtkchangedCB)
-       else
        if ALCLObject is TCustomMemo then
          ConnectSenderSignal(gCore, 'changed', @gtkchanged_editbox)
        else if ALCLObject is TCustomCheckbox then
@@ -3449,13 +3445,9 @@ begin
 
     LM_SelChange:
     begin
-      if ALCLObject is TCustomListBox then begin
+      if ALCLObject is TCustomListBox then
         ConnectSenderSignalAfter(PgtkObject(gCore),
           'selection_changed', @gtkListBoxSelectionChangedAfter);
-      end else if ALCLObject is TCustomCombobox then begin
-         ConnectSenderSignal (PGtkObject(PGtkCombo(gObject)^.list),
-                              'unselect_child', @gtkListSelectChild);
-      end;
     end;
     
     LM_DROPFILES:
@@ -3654,7 +3646,7 @@ begin
   if GtkWidgetIsA(Widget,GTK_COMBO_GET_TYPE) then begin
     g_signal_handlers_destroy(PGtkObject(PGtkCombo(Widget)^.Entry));
     g_signal_handlers_destroy(PGtkObject(PGtkCombo(Widget)^.List));
-    SetComboBoxText(PGtkCombo(Widget),nil);
+    SetComboBoxText(PGtkCombo(Widget), '');
 
     // MWE:
     // TODO: Check: Why is there widgetinfo on subwidgets ???

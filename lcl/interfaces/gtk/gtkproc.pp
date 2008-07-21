@@ -62,7 +62,6 @@ uses
 const
   GtkListItemGtkListTag = 'GtkList';
   GtkListItemLCLListTag = 'LCLList';
-  GtkComboLCLItemIndexTag = 'LCLItemIndex';
   
 
 type
@@ -355,7 +354,7 @@ procedure GrabMouseToForm(AForm: TCustomForm);
 procedure ReleaseMouseFromForm(AForm: TCustomForm);
 
 // combobox
-procedure SetComboBoxText(ComboWidget: PGtkCombo; NewText: PChar);
+procedure SetComboBoxText(ComboWidget: PGtkCombo; const NewText: String);
 function GetComboBoxText(ComboWidget: PGtkCombo): string;
 function GetComboBoxItemIndex(ComboBox: TCustomComboBox): integer;
 procedure SetComboBoxItemIndex(ComboBox: TCustomComboBox; Index: integer);
@@ -665,10 +664,7 @@ procedure UpdateStatusBarPanel(StatusBar: TObject; Index: integer;
                                StatusPanelWidget: PGtkWidget);
 
 // list
-function gtkListSelectChild(widget: PGtkWidget; child: PGtkWidget;
-                            data: gPointer): GBoolean; cdecl;
 function gtkListGetSelectionMode(list: PGtkList): TGtkSelectionMode;cdecl;
-
 
 // sizing
 procedure SaveSizeNotification(Widget: PGtkWidget);

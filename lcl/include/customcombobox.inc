@@ -204,11 +204,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomComboBox.Select;
 begin
-  if ItemIndex>=0 then
-    if Assigned(FOnSelect) then
-      FOnSelect(Self)
-    else
-      Change;
+  if Assigned(FOnSelect) and (ItemIndex >= 0) then
+    FOnSelect(Self);
 end;
 
 {------------------------------------------------------------------------------

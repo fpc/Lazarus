@@ -867,23 +867,22 @@ end;
 
   Sets the text of the combobox entry.
  ------------------------------------------------------------------------------}
-procedure SetComboBoxText(ComboWidget: PGtkCombo; NewText: PChar);
+
+procedure SetComboBoxText(ComboWidget: PGtkCombo; const NewText: String);
 begin
-  //DebugLn('SetComboBoxText ',DbgS(ComboWidget),' "',NewText,'"');
-  // lock combobox, so that no OnChange event is fired
-  LockOnChange(PGtkObject(ComboWidget^.entry),+1);
-  LockOnChange(PGtkObject(ComboWidget^.list),+1);
+  // lock combobox, so that no OnChange event is not fired
+  LockOnChange(PGtkObject(ComboWidget^.entry), +1);
   // set text
-  if NewText = nil then NewText:=#0; // gtk expects at least a #0
-  gtk_entry_set_text(PGtkEntry(ComboWidget^.entry), NewText);
+  // The String > PChar conversion ensures at least a null terminated string
+  gtk_entry_set_text(PGtkEntry(ComboWidget^.entry), PChar(NewText));
   // unlock combobox
-  LockOnChange(PGtkObject(ComboWidget^.list),-1);
-  LockOnChange(PGtkObject(ComboWidget^.entry),-1);
+  LockOnChange(PGtkObject(ComboWidget^.entry), -1);
 end;
+
 
 function GetComboBoxText(ComboWidget: PGtkCombo): string;
 begin
-  Result:=StrPas(gtk_entry_get_text(PGtkEntry(ComboWidget^.entry)));
+  Result := String(gtk_entry_get_text(PGtkEntry(ComboWidget^.entry)));
 end;
 
 {------------------------------------------------------------------------------
@@ -909,23 +908,29 @@ end;
 {------------------------------------------------------------------------------
   procedure SetComboBoxItemIndex(ComboBox: TCustomComboBox; Index: integer);
 
-  Returns the current ItemIndex of a TComboBox
+  Set the current ItemIndex of a TComboBox
  ------------------------------------------------------------------------------}
 procedure SetComboBoxItemIndex(ComboBox: TCustomComboBox; Index: integer);
 var
   ComboWidget: PGtkCombo;
-  ComboStrings: TStrings;
+  WidgetInfo: PWidgetInfo;
 begin
-  ComboWidget:=PGtkCombo(ComboBox.Handle);
-  LockOnChange(PGtkObject(ComboWidget),+1);
-  gtk_list_select_item(PGtkList(ComboWidget^.list),Index);
-  if Index>=0 then begin
-    ComboStrings:=TStrings(gtk_object_get_data(PGtkObject(ComboWidget),GtkListItemLCLListTag));
-    if Index < ComboStrings.Count
-    then SetComboBoxText(ComboWidget, PChar(ComboStrings[Index]))
-    else SetComboBoxText(ComboWidget, '#error#');
+  ComboWidget := PGtkCombo(ComboBox.Handle);
+  WidgetInfo := GetWidgetInfo(ComboWidget);
+  //Store the LCLIndex
+  PInteger(WidgetInfo^.UserData)^ := Index;
+  //Avoid calling OnChange/OnSelect events
+  LockOnChange(PGtkObject(ComboWidget), +1);
+  //gtk_list_select_item does not update the list when Index is -1
+  if Index > -1 then
+    gtk_list_select_item(PGtkList(ComboWidget^.list), Index)
+  else
+  begin
+    gtk_list_set_selection_mode(PGtkList(ComboWidget^.list),
+      GTK_SELECTION_SINGLE);
+    SetComboBoxText(ComboWidget, '');
   end;
-  LockOnChange(PGtkObject(ComboWidget),-1);
+  LockOnChange(PGtkObject(ComboWidget), -1);
 end;
 
 procedure SetLabelAlignment(LabelWidget: PGtkLabel;
@@ -6346,22 +6351,6 @@ begin
     gtk_widget_set_usize(StatusPanelWidget,CurPanel.Width,
       StatusPanelWidget^.allocation.height);
   end;
-end;
-
-function gtkListSelectChild(widget: PGtkWidget; child: PGtkWidget;
-  data: gPointer): GBoolean; cdecl;
-var
-  Mess: TLMessage;
-begin
-  Result := CallBackDefaultReturn;
-  if LockOnChange(PgtkObject(TWinControl(Data).Handle),0) > 0 then Exit;
-
-  {$IFDEF EventTrace}
-  EventTrace('gtkListSelectChild', data);
-  {$ENDIF}
-  FillChar(Mess,SizeOf(Mess),0);
-  Mess.msg := LM_SelChange;
-  DeliverMessage(Data, Mess);
 end;
 
 function gtkListGetSelectionMode(list: PGtkList): TGtkSelectionMode; cdecl;

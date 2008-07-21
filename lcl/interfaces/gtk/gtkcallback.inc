@@ -414,28 +414,16 @@ end;
 function gtkchangedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
-  AComboBox: TComboBox;
-  GtkComboWidget: PGtkCombo;
 begin
   Result := CallBackDefaultReturn;
 
   if ComponentIsDestroyingHandle(TWinControl(Data))
   or (LockOnChange(PgtkObject(Widget),0)>0) then exit;
   
-  if (TObject(Data) is TComboBox) then begin
-    AComboBox:=TComboBox(Data);
-    GtkComboWidget:=PGtkCombo(AComboBox.Handle);
-    if (GtkComboWidget^.popwin<>nil)
-    and (GTK_WIDGET_VISIBLE(GtkComboWidget^.popwin)) then begin
-      // Ignoring changed events during popup
-      //DebugLn(['gtkchangedCB Ignoring changed events during popup']);
-      exit;
-    end;
-  end;
-
   {$IFDEF EventTrace}
   EventTrace('changed', data);
   {$ENDIF}
+  FillChar(Mess, SizeOf(Mess), 0);
   Mess.Msg := LM_CHANGED;
   DeliverMessage(Data, Mess);
 end;
@@ -453,8 +441,6 @@ begin
 
   Mess.Msg := CM_TEXTCHANGED;
   DeliverMessage(Data, Mess);
-
-  Result := CallBackDefaultReturn;
 end;
 
 function gtkdaychanged(Widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;

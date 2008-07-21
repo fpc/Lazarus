@@ -280,7 +280,7 @@ uses
 // Win32WSToolwin,
  Win32Themes,
 ////////////////////////////////////////////////////
- Arrow, Calendar, Spin, CheckLst, Win32Extra, LclProc;
+ Arrow, Calendar, Spin, CheckLst, Win32Extra, LclProc, LCLMessageGlue;
 
 type
   TMouseDownFocusStatus = (mfNone, mfFocusSense, mfFocusChanged);
