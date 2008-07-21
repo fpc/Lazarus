@@ -1023,9 +1023,23 @@ end;
 { TQtFont }
 
 function TQtFont.GetMetrics: TQtFontMetrics;
+var
+  QtAppFont: QFontH;
 begin
   if FMetrics = nil then
-    FMetrics := TQtFontMetrics.Create(Widget);
+  begin
+    if Widget = nil then
+    begin
+      QtAppFont := QFont_create();
+      try
+        QApplication_font(QtAppFont);
+        FMetrics := TQtFontMetrics.Create(QtAppFont);
+      finally
+        QFont_destroy(QtAppFont);
+      end;
+    end else
+      FMetrics := TQtFontMetrics.Create(Widget);
+  end;
   Result := FMetrics;
 end;
 
