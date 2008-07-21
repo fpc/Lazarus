@@ -39,8 +39,9 @@ end;
 
 procedure GetDefaultLCLLibPaths(List: TStrings);
 begin
-  IfDirectoryExistsAdd('/usr/X11R6/lib',List);
-  IfDirectoryExistsAdd('/sw/lib',List);
+  // needed for gtk, but carbon is now default widgetset:
+  //IfDirectoryExistsAdd('/usr/X11R6/lib',List);
+  //IfDirectoryExistsAdd('/sw/lib',List);
 end;
 
 {$I ../unix/lazbaseconf.inc}
