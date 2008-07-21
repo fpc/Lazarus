@@ -130,8 +130,10 @@ type
 
   TQtFont = class(TQtResource)
   private
+    FDefaultFont: QFontH;
     FMetrics: TQtFontMetrics;
     function GetMetrics: TQtFontMetrics;
+    function GetDefaultFont: QFontH;
   public
     Widget: QFontH;
     Angle: Integer;
@@ -1029,18 +1031,27 @@ begin
   if FMetrics = nil then
   begin
     if Widget = nil then
-    begin
-      QtAppFont := QFont_create();
-      try
-        QApplication_font(QtAppFont);
-        FMetrics := TQtFontMetrics.Create(QtAppFont);
-      finally
-        QFont_destroy(QtAppFont);
-      end;
-    end else
+      FMetrics := TQtFontMetrics.Create(getDefaultFont)
+    else
       FMetrics := TQtFontMetrics.Create(Widget);
   end;
   Result := FMetrics;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtFont.GetDefaultFont
+  Params:  None
+  Returns: QFontH
+  If our Widget is nil then we have to ask for default application font.
+ ------------------------------------------------------------------------------}
+function TQtFont.GetDefaultFont: QFontH;
+begin
+  if FDefaultFont = nil then
+  begin
+    FDefaultFont := QFont_create();
+    QApplication_font(FDefaultFont);
+  end;
+  Result := FDefaultFont;
 end;
 
 {------------------------------------------------------------------------------
@@ -1075,13 +1086,19 @@ begin
   FMetrics.Free;
   if not FShared and (Widget <> nil) then
     QFont_destroy(Widget);
+    
+  if FDefaultFont <> nil then
+    QFont_destroy(FDefaultFont);
 
   inherited Destroy;
 end;
 
 function TQtFont.getPointSize: Integer;
 begin
-  Result := QFont_pointSize(Widget);
+  if Widget = nil then
+    Result := QFont_pointSize(getDefaultFont)
+  else
+    Result := QFont_pointSize(Widget);
 end;
 
 procedure TQtFont.setPointSize(p1: Integer);
@@ -1092,7 +1109,10 @@ end;
 
 function TQtFont.getPixelSize: Integer;
 begin
-  Result := QFont_pixelSize(Widget);
+  if Widget = nil then
+    Result := QFont_pixelSize(getDefaultFont)
+  else
+    Result := QFont_pixelSize(Widget);
 end;
 
 procedure TQtFont.setPixelSize(p1: Integer);
@@ -1103,32 +1123,50 @@ end;
 
 function TQtFont.getWeight: Integer;
 begin
-  Result := QFont_weight(Widget);
+  if Widget = nil then
+    Result := QFont_weight(getDefaultFont)
+  else
+    Result := QFont_weight(Widget);
 end;
 
 function TQtFont.getItalic: Boolean;
 begin
-  Result := QFont_italic(Widget);
+  if Widget = nil then
+    Result := QFont_italic(getDefaultFont)
+  else
+    Result := QFont_italic(Widget);
 end;
 
 function TQtFont.getBold: Boolean;
 begin
-  Result := QFont_bold(Widget);
+  if Widget = nil then
+    Result := QFont_bold(getDefaultFont)
+  else
+    Result := QFont_bold(Widget);
 end;
 
 function TQtFont.getUnderline: Boolean;
 begin
-  Result := QFont_underline(Widget);
+  if Widget = nil then
+    Result := QFont_underline(getDefaultFont)
+  else
+    Result := QFont_underline(Widget);
 end;
 
 function TQtFont.getStrikeOut: Boolean;
 begin
-  Result := QFont_strikeOut(Widget);
+  if Widget = nil then
+    Result := QFont_strikeOut(getDefaultFont)
+  else
+    Result := QFont_strikeOut(Widget);
 end;
 
 function TQtFont.getFamily: WideString;
 begin
-  QFont_family(Widget, @Result);
+  if Widget = nil then
+    QFont_family(getDefaultFont, @Result)
+  else
+    QFont_family(Widget, @Result);
 end;
 
 procedure TQtFont.setWeight(p1: Integer);
@@ -1175,13 +1213,21 @@ begin
 end;
 
 procedure TQtFont.family(retval: PWideString);
+var
+  QtAppFont: QFontH;
 begin
-  QFont_family(Widget, retval);
+  if Widget = nil then
+    QFont_family(getDefaultFont, retval)
+  else
+    QFont_family(Widget, retval);
 end;
 
 function TQtFont.fixedPitch: Boolean;
 begin
-  Result := QFont_fixedPitch(Widget);
+  if Widget = nil then
+    Result := QFont_fixedPitch(getDefaultFont)
+  else
+    Result := QFont_fixedPitch(Widget);
 end;
 
 { TQtFontMetrics }
