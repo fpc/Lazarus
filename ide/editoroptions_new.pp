@@ -44,7 +44,7 @@ uses
   SynHighlighterCPP, SynHighlighterHTML, SynHighlighterJava, SynHighlighterLFM,
   SynHighlighterPas, SynHighlighterPerl, SynHighlighterPHP, SynHighlighterSQL,
   SynHighlighterPython, SynHighlighterUNIXShellScript, SynHighlighterXML,
-  SynHighlighterJScript,
+  SynHighlighterJScript, SynEditMiscClasses,
   // codetools
   Laz_XMLCfg,
   // IDEIntf
@@ -61,6 +61,8 @@ uses
 type
 
   { TEditorOptionsForm }
+
+  { TEditorOptionsFormNew }
 
   TEditorOptionsFormNew = class(TOptionsEditorForm)
     ForeGroundLabel: TLabel;
@@ -79,6 +81,24 @@ type
     BlockIndentComboBox: TComboBox;
     BlockIndentLabel: TLabel;
     CodeFolding: TPage;
+    TextBoldCheckBox : TCheckBox;
+    TextBoldPanel : TPanel;
+    TextBoldRadioInvert : TRadioButton;
+    TextBoldRadioOff : TRadioButton;
+    TextBoldRadioOn : TRadioButton;
+    TextBoldRadioPanel : TPanel;
+    TextItalicCheckBox : TCheckBox;
+    TextItalicPanel : TPanel;
+    TextItalicRadioInvert : TRadioButton;
+    TextItalicRadioOff : TRadioButton;
+    TextItalicRadioOn : TRadioButton;
+    TextItalicRadioPanel : TPanel;
+    TextUnderlineCheckBox : TCheckBox;
+    TextUnderlinePanel : TPanel;
+    TextUnderlineRadioInvert : TRadioButton;
+    TextUnderlineRadioOff : TRadioButton;
+    TextUnderlineRadioOn : TRadioButton;
+    TextUnderlineRadioPanel : TPanel;
     UndoLimitComboBox: TComboBox;
     UndoLimitLabel: TLabel;
     TabWidthsComboBox: TComboBox;
@@ -123,9 +143,6 @@ type
     ColorElementLabel: TLabel;
     ColorElementListBox: TListBox;
     TextAttributesGroupBox: TGroupBox;
-    TextBoldCheckBox: TCheckBox;
-    TextItalicCheckBox: TCheckBox;
-    TextUnderlineCheckBox: TCheckBox;
     ForeGroundGroupBox: TGroupBox;
     ForeGroundColorButton: TColorButton;
     ForeGroundUseDefaultCheckBox: TCheckBox;
@@ -155,6 +172,7 @@ type
 
     // general
     procedure GeneralCheckBoxOnChange(Sender: TObject; Index: integer);
+    procedure DisplayPreviewStatusChange(Sender : TObject; Changes : TSynStatusChanges);
     procedure ComboBoxOnChange(Sender: TObject);
     procedure ComboBoxOnExit(Sender: TObject);
     procedure ComboBoxOnKeyDown(Sender: TObject;
@@ -178,7 +196,7 @@ type
     procedure ColorPreviewMouseUp(Sender: TObject; Button: TMouseButton;
                                   Shift: TShiftState; X, Y: Integer);
     procedure OnSpecialLineColors(Sender: TObject; Line: Integer;
-                                  var Special: Boolean; var FG, BG: TColor);
+                                  var Special: boolean; aMarkUp : TSynSelectedColor);
     procedure SetAttributeToDefaultButtonClick(Sender: TObject);
     procedure SetAllAttributesToDefaultButtonClick(Sender: TObject);
 
@@ -190,6 +208,7 @@ type
     // buttons at bottom
     procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
+    procedure TextStyleRadioOnChange(Sender : TObject);
   private
     FormCreating: Boolean;
     PreviewSyn:   TCustomSyn;
@@ -197,6 +216,7 @@ type
     CurLanguageID: Integer;
     // current index in EditorOpts.EditOptHighlighterList
     CurHighlightElement: TSynHighlightElement;
+    CurHighlightElementIsExtra: Boolean;
     UpdatingColor: Boolean;
     fHighlighterList: TStringList; // list of "ColorScheme" Data=TCustomSyn
     fColorSchemes: TStringList;    // list of LanguageName=ColorScheme
@@ -281,6 +301,7 @@ begin
   Dest.Background := Src.Background;
   Dest.Foreground := Src.Foreground;
   Dest.Style      := Src.Style;
+  Dest.StyleMask  := Src.StyleMask;
 end;
 
 { TEditorOptionsFormNew }
@@ -310,6 +331,7 @@ begin
 
   UpdatingColor := False;
   CurHighlightElement := Nil;
+  CurHighlightElementIsExtra := False;
 
   // create a temporary copy of the keymap for editing
   EditingKeyMap := TKeyCommandRelationList.Create;
@@ -339,7 +361,8 @@ begin
           Lines.Text := EditorOpts.HighlighterList[CurLanguageID].SampleSource;
           PreviewEdits[a].Options :=
             PreviewEdits[a].Options + [eoNoCaret,
-            eoNoSelection] - [eoBracketHighlight];
+            eoNoSelection];
+          PreviewEdits[a].CaretXY := EditorOpts.HighlighterList[CurLanguageID].CaretXY;
         end;
       end;
 
@@ -358,6 +381,7 @@ begin
   FillColorElementListBox;
   FindCurHighlightElement;
   ShowCurAttribute;
+  InvalidatePreviews;
 
   // code Tools options
 
@@ -506,7 +530,9 @@ begin
         end;
       end;
     if Sender = TextBoldCheckBox then
-      if TextBoldCheckBox.Checked xor (fsBold in CurHighlightElement.Style) then
+      if CurHighlightElementIsExtra
+      then TextStyleRadioOnChange(Sender)
+      else if TextBoldCheckBox.Checked xor (fsBold in CurHighlightElement.Style) then
       begin
         if TextBoldCheckBox.Checked then
           CurHighlightElement.Style := CurHighlightElement.Style + [fsBold]
@@ -515,7 +541,9 @@ begin
         InvalidatePreviews;
       end;
     if Sender = TextItalicCheckBox then
-      if TextItalicCheckBox.Checked then
+      if CurHighlightElementIsExtra
+      then TextStyleRadioOnChange(Sender)
+      else if TextItalicCheckBox.Checked then
       begin
         if not (fsItalic in CurHighlightElement.Style) then
         begin
@@ -530,7 +558,9 @@ begin
         InvalidatePreviews;
       end;
     if Sender = TextUnderlineCheckBox then
-      if TextUnderlineCheckBox.Checked then
+      if CurHighlightElementIsExtra
+      then TextStyleRadioOnChange(Sender)
+      else if TextUnderlineCheckBox.Checked then
       begin
         if not (fsUnderline in CurHighlightElement.Style) then
         begin
@@ -545,6 +575,18 @@ begin
         InvalidatePreviews;
       end;
   end;
+end;
+
+procedure TEditorOptionsFormNew.DisplayPreviewStatusChange(Sender : TObject; Changes : TSynStatusChanges);
+var
+  Syn: TSynEdit;
+  p: TPoint;
+begin
+  p := EditorOpts.HighlighterList[CurLanguageID].CaretXY;
+  Syn := Sender as TSynEdit;
+  if (Syn.CaretX <> p.x)
+  or (Syn.Carety <> p.y)
+  then Syn.CaretXY:= p;
 end;
 
 procedure TEditorOptionsFormNew.chkCodeFoldingEnabledChange(Sender: TObject);
@@ -810,12 +852,15 @@ begin
           SetComboBoxText(FileExtensionsComboBox,
             GetCurFileExtensions(PreviewSyn.LanguageName));
           for a := Low(PreviewEdits) to High(PreviewEdits) do
-            if a <> 3 then
+            if a <> 3 then begin
               PreviewEdits[a].Lines.Text :=
                 EditorOpts.HighlighterList[CurLanguageID].SampleSource;
+              PreviewEdits[a].CaretXY := EditorOpts.HighlighterList[CurLanguageID].CaretXY;
+            end;
           SetPreviewSynInAllPreviews;
           FillColorElementListBox;
           FindCurHighlightElement;
+          InvalidatePreviews;
         end;
       end// change language
     // general
@@ -841,6 +886,7 @@ end;
 procedure TEditorOptionsFormNew.FindCurHighlightElement;
 var
   a, i: Integer;
+  h: TAdditionalHilightAttribute;
   Old:  TSynHighlightElement;
 begin
   Old := CurHighlightElement;
@@ -859,8 +905,15 @@ begin
       dec(i);
     end;
   end;
-  if Old <> CurHighlightElement then
+
+  if Old <> CurHighlightElement then begin
+    CurHighlightElementIsExtra := False;
+    for h := Low(TAdditionalHilightAttribute)
+    to high(TAdditionalHilightAttribute) do
+      if ColorElementListBox.Items[a] = AdditionalHighlightAttributes[h]
+        then CurHighlightElementIsExtra := true;
     ShowCurAttribute;
+  end;
 end;
 
 procedure TEditorOptionsFormNew.InvalidatePreviews;
@@ -868,8 +921,10 @@ var
   a: Integer;
 begin
   for a := Low(PreviewEdits) to High(PreviewEdits) do
-    if PreviewEdits[a] <> Nil then
+    if PreviewEdits[a] <> Nil then begin
+      EditorOpts.SetMarkupColors(PreviewEdits[a].Highlighter, PreviewEdits[a]);
       PreviewEdits[a].Invalidate;
+    end;
 end;
 
 procedure TEditorOptionsFormNew.SetPreviewSynInAllPreviews;
@@ -889,9 +944,44 @@ begin
   if (CurHighlightElement = Nil) or UpdatingColor then
     exit;
   UpdatingColor := True;
-  TextBoldCheckBox.Checked := fsBold in CurHighlightElement.Style;
-  TextItalicCheckBox.Checked := fsItalic in CurHighlightElement.Style;
-  TextUnderlineCheckBox.Checked := fsUnderline in CurHighlightElement.Style;
+  
+  TextBoldRadioPanel.Visible := CurHighlightElementIsExtra;
+  TextItalicRadioPanel.Visible := CurHighlightElementIsExtra;
+  TextUnderlineRadioPanel.Visible := CurHighlightElementIsExtra;
+  if CurHighlightElementIsExtra then begin
+    TextBoldCheckBox.Checked := (fsBold in CurHighlightElement.Style)
+      or (fsBold in CurHighlightElement.StyleMask);
+    TextBoldRadioPanel.Enabled := TextBoldCheckBox.Checked;
+    if not(fsBold in CurHighlightElement.StyleMask)
+    then TextBoldRadioInvert.Checked := True
+    else if fsBold in CurHighlightElement.Style
+    then TextBoldRadioOn.Checked := True
+    else TextBoldRadioOff.Checked := True;
+
+    TextItalicCheckBox.Checked := (fsItalic in CurHighlightElement.Style)
+      or (fsItalic in CurHighlightElement.StyleMask);
+    TextItalicRadioPanel.Enabled := TextItalicCheckBox.Checked;
+    if not(fsItalic in CurHighlightElement.StyleMask)
+    then TextItalicRadioInvert.Checked := True
+    else if fsItalic  in CurHighlightElement.Style
+    then TextItalicRadioOn.Checked := True
+    else TextItalicRadioOff.Checked := True;
+
+    TextUnderlineCheckBox.Checked := (fsUnderline in CurHighlightElement.Style)
+      or (fsUnderline in CurHighlightElement.StyleMask);
+    TextUnderlineRadioPanel.Enabled := TextUnderlineCheckBox.Checked;
+    if not(fsUnderline in CurHighlightElement.StyleMask)
+    then TextUnderlineRadioInvert.Checked := True
+    else if fsUnderline in CurHighlightElement.Style
+    then TextUnderlineRadioOn.Checked := True
+    else TextUnderlineRadioOff.Checked := True;
+  end else begin
+    TextBoldCheckBox.Checked := fsBold in CurHighlightElement.Style;
+    TextItalicCheckBox.Checked := fsItalic in CurHighlightElement.Style;
+    TextUnderlineCheckBox.Checked := fsUnderline in CurHighlightElement.Style;
+  end;
+
+
   if CurHighlightElement.Foreground = clNone then
     ForeGroundUseDefaultCheckBox.Checked := True
   else
@@ -1038,6 +1128,7 @@ begin
   end;
 
   CurHighlightElement := Nil;
+  CurHighlightElementIsExtra := False;
   if ColorElementListBox.Items.Count > 0 then
     ColorElementListBox.Selected[0] := True;
   FindCurHighlightElement;
@@ -1079,7 +1170,7 @@ begin
 end;
 
 procedure TEditorOptionsFormNew.OnSpecialLineColors(Sender: TObject;
-  Line: Integer; var Special: Boolean; var FG, BG: TColor);
+  Line: Integer; var Special: boolean; aMarkup: TSynSelectedColor);
 var
   e: TSynHighlightElement;
   AddAttr: TAdditionalHilightAttribute;
@@ -1098,11 +1189,8 @@ begin
           continue;
         if e.Name = AdditionalHighlightAttributes[AddAttr] then
         begin
-          Special := (e.ForeGround <> clNone) or (e.BackGround <> clNone);
-          if e.ForeGround <> clNone then
-            FG := e.ForeGround;
-          if e.BackGround <> clNone then
-            BG := e.BackGround;
+          Special := True;
+          EditorOpts.SetMarkupColor(PreviewSyn, AddAttr, aMarkup);
           exit;
         end;
         dec(i);
@@ -1644,10 +1732,19 @@ begin
   TextAttributesGroupBox.Caption := dlgTextAttributes;
 
   TextBoldCheckBox.Caption := dlgEdBold;
+  TextBoldRadioOn.Caption := dlgEdOn;
+  TextBoldRadioOff.Caption := dlgEdOff;
+  TextBoldRadioInvert.Caption := dlgEdInvert;
 
   TextItalicCheckBox.Caption := dlgEdItal;
+  TextItalicRadioOn.Caption := dlgEdOn;
+  TextItalicRadioOff.Caption := dlgEdOff;
+  TextItalicRadioInvert.Caption := dlgEdInvert;
 
   TextUnderlineCheckBox.Caption := dlgEdUnder;
+  TextUnderlineRadioOn.Caption := dlgEdOn;
+  TextUnderlineRadioOff.Caption := dlgEdOff;
+  TextUnderlineRadioInvert.Caption := dlgEdInvert;
 end;
 
 procedure TEditorOptionsFormNew.SetupCodeToolsPage(Page: Integer);
@@ -1721,8 +1818,7 @@ begin
   PreviewEdits[1].Options := SynOptions;
   EditorOpts.SetSynEditSettings(PreviewEdits[1]);
   PreviewEdits[1].Options :=
-    SynOptions - [eoBracketHighlight] +
-    [eoNoCaret, eoNoSelection];
+    SynOptions + [eoNoCaret, eoNoSelection];
 
   // general
   EditorOpts.ShowTabCloseButtons :=
@@ -1785,6 +1881,52 @@ begin
   IDEDialogLayoutList.SaveLayout(Self);
   EditorOpts.Load;
   ModalResult := mrCancel;
+end;
+
+procedure TEditorOptionsFormNew.TextStyleRadioOnChange(Sender : TObject);
+  procedure CalcNewStyle(CheckBox: TCheckBox; RadioOn, RadioOff,
+                         RadioInvert: TRadioButton; fs : TFontStyle;
+                         Panel: TPanel);
+  begin
+    if CheckBox.Checked then begin
+      Panel.Enabled := True;
+      if RadioInvert.Checked then begin
+        CurHighlightElement.Style     := CurHighlightElement.Style + [fs];
+        CurHighlightElement.StyleMask := CurHighlightElement.StyleMask - [fs];
+      end else if RadioOn.Checked then begin
+        CurHighlightElement.Style     := CurHighlightElement.Style + [fs];
+        CurHighlightElement.StyleMask := CurHighlightElement.StyleMask + [fs];
+      end else if RadioOff.Checked then begin
+        CurHighlightElement.Style     := CurHighlightElement.Style - [fs];
+        CurHighlightElement.StyleMask := CurHighlightElement.StyleMask + [fs];
+      end
+    end else begin
+      Panel.Enabled := False;
+      CurHighlightElement.Style     := CurHighlightElement.Style - [fs];
+      CurHighlightElement.StyleMask := CurHighlightElement.StyleMask - [fs];
+    end;
+  end;
+begin
+  if FormCreating then exit;
+  if UpdatingColor or not CurHighlightElementIsExtra then exit;
+
+  if (Sender = TextBoldCheckBox) or (Sender = TextBoldRadioOn)
+    or (Sender = TextBoldRadioOff) or (Sender = TextBoldRadioInvert)
+  then CalcNewStyle(TextBoldCheckBox, TextBoldRadioOn, TextBoldRadioOff,
+                    TextBoldRadioInvert, fsBold, TextBoldRadioPanel);
+
+  if (Sender = TextItalicCheckBox) or (Sender = TextItalicRadioOn)
+    or (Sender = TextItalicRadioOff) or (Sender = TextItalicRadioInvert)
+  then CalcNewStyle(TextItalicCheckBox, TextItalicRadioOn, TextItalicRadioOff,
+                    TextItalicRadioInvert, fsItalic, TextItalicRadioPanel);
+
+  if (Sender = TextUnderlineCheckBox) or (Sender = TextUnderlineRadioOn)
+    or (Sender = TextUnderlineRadioOff) or (Sender = TextUnderlineRadioInvert)
+  then CalcNewStyle(TextUnderlineCheckBox, TextUnderlineRadioOn, TextUnderlineRadioOff,
+                    TextUnderlineRadioInvert, fsUnderline, TextUnderlineRadioPanel);
+
+
+  InvalidatePreviews;
 end;
 
 //=============================================================================
