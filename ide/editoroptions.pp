@@ -607,7 +607,7 @@ type
 
     // general
     procedure ColorElementListBoxClick(Sender: TObject);
-    procedure GeneralCheckBoxOnChange(Sender: TObject; Index: integer);
+    procedure GeneralCheckBoxOnChange(Sender: TObject);
     procedure ComboBoxOnChange(Sender: TObject);
     procedure ComboBoxOnExit(Sender: TObject);
     procedure ComboBoxOnKeyDown(Sender: TObject;
@@ -2407,7 +2407,7 @@ end;
 
 // general
 
-procedure TEditorOptionsForm.GeneralCheckBoxOnChange(Sender: TObject; Index: integer);
+procedure TEditorOptionsForm.GeneralCheckBoxOnChange(Sender: TObject);
 var
   a: Integer;
   NewColor: TColor;
