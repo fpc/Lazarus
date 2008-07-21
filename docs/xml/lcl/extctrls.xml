@@ -5256,7 +5256,7 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <short/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomPanel.Align">
+      <element name="TCustomPanel.Align" link="Controls.TControl.Align">
         <short/>
         <descr/>
         <seealso/>
@@ -5282,15 +5282,16 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
           <var>BevelWidth </var>- the Width of the panel's bevel in pixels</short>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomPanel.BorderWidth"/>
+      <element name="TCustomPanel.BorderWidth" link="Controls.TWincontrol.BorderWidth">
+      </element>
       <!-- property Visibility: public -->
-      <element name="TCustomPanel.Color">
+      <element name="TCustomPanel.Color" link="Controls.TControl.Color">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomPanel.Caption">
+      <element name="TCustomPanel.Caption" link="Controls.TControl.Caption">
         <short/>
         <descr/>
         <seealso/>
@@ -5302,13 +5303,13 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomPanel.ParentColor">
+      <element name="TCustomPanel.ParentColor" link="Controls.TControl.ParentColor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomPanel.TabStop">
+      <element name="TCustomPanel.TabStop" link="Controls.TWinControl.TabStop">
         <short/>
         <descr/>
         <seealso/>
@@ -5329,115 +5330,115 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         </seealso>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.Align">
+      <element name="TPanel.Align" link="Controls.TControl.Align">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.Alignment">
+      <element name="TPanel.Alignment" link="TCustomPanel.Alignment">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.Anchors">
+      <element name="TPanel.Anchors" link="Controls.TControl.Anchors">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.AutoSize">
+      <element name="TPanel.AutoSize" link="Controls.TControl.AutoSize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.BorderSpacing">
+      <element name="TPanel.BorderSpacing" link="Controls.TControl.BorderSpacing">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.BevelInner">
+      <element name="TPanel.BevelInner" link="TCustomPanel.BevelInner">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.BevelOuter">
+      <element name="TPanel.BevelOuter" link="TCustomPanel.BevelOuter">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.BevelWidth">
+      <element name="TPanel.BevelWidth" link="TCustomPanel.BevelWidth">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.BorderWidth">
+      <element name="TPanel.BorderWidth" link="Controls.TWinControl.BorderWidth">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.BorderStyle">
+      <element name="TPanel.BorderStyle" link="Controls.TWinControl.BorderStyle">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.Caption">
+      <element name="TPanel.Caption" link="Controls.TControl.Caption">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.ChildSizing">
+      <element name="TPanel.ChildSizing" link="Controls.TWinControl,ChildSizing">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.ClientHeight">
+      <element name="TPanel.ClientHeight" link="Controls.TControl.ClientHeight">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.ClientWidth">
+      <element name="TPanel.ClientWidth" link="Controls.TControl.ClientWidth">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.Color">
+      <element name="TPanel.Color" link="Controls.TControl.Color">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.Constraints">
+      <element name="TPanel.Constraints" link="Controls.TControl.Constraints">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.DragMode">
+      <element name="TPanel.DragMode" link="Controls.TControl.DragMode">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.Enabled">
+      <element name="TPanel.Enabled" link="Controls.TControl.Enabled">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.Font">
+      <element name="TPanel.Font" link="Controls.TControl.Font">
         <short/>
         <descr/>
         <seealso/>
@@ -5449,79 +5450,79 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.ParentColor">
+      <element name="TPanel.ParentColor" link="Controls.TControl.ParentColor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.ParentFont">
+      <element name="TPanel.ParentFont" link="Controls.TControl.ParentFont">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.ParentShowHint">
+      <element name="TPanel.ParentShowHint" link="Controls.TControl.ParentShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.PopupMenu">
+      <element name="TPanel.PopupMenu" link="Controls.TControl.PopupMenu">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.ShowHint">
+      <element name="TPanel.ShowHint" link="Controls.TControl.ShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.TabOrder">
+      <element name="TPanel.TabOrder" link="Controls.TWinControl.TabOrder">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.TabStop">
+      <element name="TPanel.TabStop" link="Controls.TWinControl.TabStop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.Visible">
+      <element name="TPanel.Visible" link="Controls.TControl.Visible">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.OnClick">
+      <element name="TPanel.OnClick" link="Controls.TControl.OnClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.OnDblClick">
+      <element name="TPanel.OnDblClick" link="Controls.TControl.OnDblClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.OnDragDrop">
+      <element name="TPanel.OnDragDrop" link="Controls.TControl.OnDragDrop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.OnDragOver">
+      <element name="TPanel.OnDragOver" link="Controls.TControl.OnDragOver">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.OnEndDrag">
+      <element name="TPanel.OnEndDrag" link="Controls.TControl.OnEndDrag">
         <short/>
         <descr/>
         <seealso/>
@@ -5537,31 +5538,31 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
           <var>OnExit </var>- event handler for mouse leaving the control or the control losing focus</short>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.OnMouseDown">
+      <element name="TPanel.OnMouseDown" link="Controls.TControl.OnMouseDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.OnMouseMove">
+      <element name="TPanel.OnMouseMove" link="Controls.TControl.OnMouseMove">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.OnMouseUp">
+      <element name="TPanel.OnMouseUp" link="Controls.TControl.OnMouseUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.OnResize">
+      <element name="TPanel.OnResize" link="Controls.TControl.OnResize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.OnStartDrag">
+      <element name="TPanel.OnStartDrag" link="Controls.TControl.OnStartDrag">
         <short/>
         <descr/>
         <seealso/>
