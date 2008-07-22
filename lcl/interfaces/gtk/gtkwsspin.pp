@@ -28,11 +28,7 @@ interface
 
 uses
   // Bindings
-  {$IFDEF gtk2}
-  glib2, gdk2pixbuf, gdk2, gtk2, Pango,
-  {$ELSE}
   glib, gdk, gtk,
-  {$ENDIF}
   // RTL, FCL, LCL
   Math, Controls, LCLType, LCLProc, Spin, StdCtrls,
   // Widgetset
