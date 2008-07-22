@@ -15,7 +15,7 @@
   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 }
 {
-  See the file COPYING.modifiedLGPL, included in this distribution,
+  See the file COPYING.modifiedLGPL.txt, included in this distribution,
   for details about the copyright.
 }
 unit chmbase;
