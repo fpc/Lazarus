@@ -43,7 +43,7 @@ end;
 
 procedure TCustomFloatSpinEdit.TextChanged;
 var
-  PrevValue: Single;
+  PrevValue: Double;
 begin
   PrevValue := FValue;
   FValueChanged := True;
@@ -58,7 +58,7 @@ begin
   end;
 end;
 
-procedure TCustomFloatSpinEdit.SetMaxValue(const AValue: Single);
+procedure TCustomFloatSpinEdit.SetMaxValue(const AValue: Double);
 begin
   if FMaxValue = AValue then Exit;
   FMaxValue := AValue;
@@ -71,7 +71,7 @@ begin
   Result := True;
 end;
 
-procedure TCustomFloatSpinEdit.SetMinValue(const AValue: Single);
+procedure TCustomFloatSpinEdit.SetMinValue(const AValue: Double);
 begin
   if FMinValue = AValue then Exit;
   FMinValue := AValue;
@@ -85,7 +85,7 @@ begin
   UpdateControl;
 end;
 
-procedure TCustomFloatSpinEdit.SetIncrement(const AIncrement: Single);
+procedure TCustomFloatSpinEdit.SetIncrement(const AIncrement: Double);
 begin
   if AIncrement = FIncrement then Exit;
   FIncrement := AIncrement;
@@ -110,7 +110,7 @@ begin
   Result.Y:=23;
 end;
 
-procedure TCustomFloatSpinEdit.SetValue(const AValue: Single);
+procedure TCustomFloatSpinEdit.SetValue(const AValue: Double);
 begin
   if FValue = AValue then Exit;
   FValue := AValue;
@@ -121,7 +121,7 @@ begin
   UpdateControl;
 end;
 
-function TCustomFloatSpinEdit.GetValue: Single;
+function TCustomFloatSpinEdit.GetValue: Double;
 begin
   if HandleAllocated and FValueChanged 
     and not (wcfCreatingHandle in FWinControlFlags) then 
@@ -155,7 +155,7 @@ begin
   SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
 end;
 
-function TCustomFloatSpinEdit.GetLimitedValue(const AValue: Single): Single;
+function TCustomFloatSpinEdit.GetLimitedValue(const AValue: Double): Double;
 begin
   Result := AValue;
   if FMaxValue > FMinValue then
@@ -165,12 +165,12 @@ begin
   end;
 end;
 
-function TCustomFloatSpinEdit.ValueToStr(const AValue: Single): String;
+function TCustomFloatSpinEdit.ValueToStr(const AValue: Double): String;
 begin
   Result := FloatToStrF(GetLimitedValue(AValue), ffFixed, 20, DecimalPlaces);
 end;
 
-function TCustomFloatSpinEdit.StrToValue(const S: String): Single;
+function TCustomFloatSpinEdit.StrToValue(const S: String): Double;
 begin
   try
     Result := GetLimitedValue(StrToFloatDef(S, FValue));

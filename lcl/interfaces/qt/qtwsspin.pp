@@ -51,12 +51,12 @@ type
           const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit); override;
 
-    class function GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): single; override;
+    class function GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): Double; override;
 
   (*TODO: seperation into properties instead of bulk update
-    class procedure SetIncrement(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewIncrement: single); virtual;
-    class procedure SetMinValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewValue: single); virtual;
-    class procedure SetMaxValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewValue: single); virtual;
+    class procedure SetIncrement(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewIncrement: Double); virtual;
+    class procedure SetMinValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewValue: Double); virtual;
+    class procedure SetMaxValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewValue: Double); virtual;
     class procedure SetValueEmpty(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewEmpty: boolean); virtual;
     *)
 
@@ -112,7 +112,7 @@ begin
   Result := TLCLIntfHandle(QtSpinBox);
 end;
 
-class function  TQtWSCustomFloatSpinEdit.GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): single;
+class function  TQtWSCustomFloatSpinEdit.GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): Double;
 begin
   Result := TQtAbstractSpinBox(ACustomFloatSpinEdit.Handle).getValue;
 end;

@@ -59,7 +59,7 @@ Type
     DrawItemSelected: boolean;// whether this item is selected LB_GETSEL not uptodate yet
     MouseX, MouseY: smallint; // noticing spurious WM_MOUSEMOVE messages
     case integer of
-      0: (spinValue: single);
+      0: (spinValue: Double);
       1: (
         TrackValid: Boolean; // Set when we have a valid trackpos
         TrackPos: Integer    // keeps the thumb position while tracking

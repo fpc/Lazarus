@@ -49,7 +49,7 @@ type
   protected
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-    class function  GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): Single; override;
+    class function  GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): Double; override;
     class procedure UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit); override;
   end;
 
@@ -88,7 +88,7 @@ end;
   Params:  ACustomFloatSpinEdit - LCL custom float spin edit
   Returns: The float spin edit value
  ------------------------------------------------------------------------------}
-class function TCarbonWSCustomFloatSpinEdit.GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): Single;
+class function TCarbonWSCustomFloatSpinEdit.GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): Double;
 begin
   Result := 0;
   if not CheckHandle(ACustomFloatSpinEdit, Self, 'GetValue') then Exit;

@@ -117,10 +117,10 @@ type
   TCarbonSpinEdit = class(TCarbonCustomEdit)
   private
     FUpDown: ControlRef;
-    FValue: Single;
-    FMin: Single;
-    FMax: Single;
-    FIncrement: Single;
+    FValue: Double;
+    FMin: Double;
+    FMax: Double;
+    FIncrement: Double;
     FDecimalPlaces: Integer;
     function UpDownThemeWidth: Integer;
     function FocusRectThemeOutset: Integer;
@@ -141,7 +141,7 @@ type
     function SetText(const S: String): Boolean; override;
   public
     procedure UpdateControl;
-    property Value: Single read FValue;
+    property Value: Double read FValue;
   end;
 
   { TCarbonEdit }

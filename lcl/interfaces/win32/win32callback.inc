@@ -913,7 +913,7 @@ var
   var
     SpinEdit: TCustomFloatSpinEdit;
     spinHandle: HWND;
-    newValue: single;
+    newValue: Double;
   begin
     SpinEdit := TCustomFloatSpinEdit(WindowInfo^.WinControl);
     

@@ -716,16 +716,16 @@ type
     procedure setSelection(const AStart, ALength: Integer);
     procedure Undo;
   public
-    function getValue: single; virtual; abstract;
+    function getValue: Double; virtual; abstract;
     function getReadOnly: Boolean;
     function getText: WideString; override;
     function getTextStatic: Boolean; override;
     procedure setFocusPolicy(const APolicy: QtFocusPolicy); override;
-    procedure setMinimum(const v: single); virtual; abstract;
-    procedure setMaximum(const v: single); virtual; abstract;
-    procedure setSingleStep(const v: single); virtual; abstract;
+    procedure setMinimum(const v: Double); virtual; abstract;
+    procedure setMaximum(const v: Double); virtual; abstract;
+    procedure setSingleStep(const v: Double); virtual; abstract;
     procedure setReadOnly(const r: Boolean);
-    procedure setValue(const v: single); virtual; abstract;
+    procedure setValue(const v: Double); virtual; abstract;
     procedure setText(const W: WideString); override;
 
     property LineEdit: QLineEditH read GetLineEdit;
@@ -744,12 +744,12 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
-    function getValue: single; override;
+    function getValue: Double; override;
     procedure setDecimals(const v: integer);
-    procedure setMinimum(const v: single); override;
-    procedure setMaximum(const v: single); override;
-    procedure setSingleStep(const v: single); override;
-    procedure setValue(const v: single); override;
+    procedure setMinimum(const v: Double); override;
+    procedure setMaximum(const v: Double); override;
+    procedure setSingleStep(const v: Double); override;
+    procedure setValue(const v: Double); override;
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
@@ -765,11 +765,11 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
-    function getValue: single; override;
-    procedure setMinimum(const v: single); override;
-    procedure setMaximum(const v: single); override;
-    procedure setSingleStep(const v: single); override;
-    procedure setValue(const v: single); override;
+    function getValue: Double; override;
+    procedure setMinimum(const v: Double); override;
+    procedure setMaximum(const v: Double); override;
+    procedure setSingleStep(const v: Double); override;
+    procedure setValue(const v: Double); override;
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
@@ -5814,7 +5814,7 @@ begin
   Result := QDoubleSpinBox_create();
 end;
 
-function TQtFloatSpinBox.getValue: single;
+function TQtFloatSpinBox.getValue: Double;
 begin
   Result := QDoubleSpinBox_value(QDoubleSpinBoxH(Widget));
 end;
@@ -5824,22 +5824,22 @@ begin
   QDoubleSpinBox_setDecimals(QDoubleSpinBoxH(Widget), v);
 end;
 
-procedure TQtFloatSpinBox.setMinimum(const v: single);
+procedure TQtFloatSpinBox.setMinimum(const v: Double);
 begin
   QDoubleSpinBox_setMinimum(QDoubleSpinBoxH(Widget), v);
 end;
 
-procedure TQtFloatSpinBox.setMaximum(const v: single);
+procedure TQtFloatSpinBox.setMaximum(const v: Double);
 begin
   QDoubleSpinBox_setMaximum(QDoubleSpinBoxH(Widget), v);
 end;
 
-procedure TQtFloatSpinBox.setSingleStep(const v: single);
+procedure TQtFloatSpinBox.setSingleStep(const v: Double);
 begin
   QDoubleSpinBox_setSingleStep(QDoubleSpinBoxH(Widget), v);
 end;
 
-procedure TQtFloatSpinBox.setValue(const v: single);
+procedure TQtFloatSpinBox.setValue(const v: Double);
 begin
   QDoubleSpinBox_setValue(QDoubleSpinBoxH(Widget), v);
 end;
@@ -5880,27 +5880,27 @@ begin
   Result := QSpinBox_create();
 end;
 
-function TQtSpinBox.getValue: single;
+function TQtSpinBox.getValue: Double;
 begin
   Result := QSpinBox_value(QSpinBoxH(Widget));
 end;
 
-procedure TQtSpinBox.setMinimum(const v: single);
+procedure TQtSpinBox.setMinimum(const v: Double);
 begin
   QSpinBox_setMinimum(QSpinBoxH(Widget), round(v));
 end;
 
-procedure TQtSpinBox.setMaximum(const v: single);
+procedure TQtSpinBox.setMaximum(const v: Double);
 begin
   QSpinBox_setMaximum(QSpinBoxH(Widget), round(v));
 end;
 
-procedure TQtSpinBox.setSingleStep(const v: single);
+procedure TQtSpinBox.setSingleStep(const v: Double);
 begin
   QSpinBox_setSingleStep(QSpinBoxH(Widget), round(v));
 end;
 
-procedure TQtSpinBox.setValue(const v: single);
+procedure TQtSpinBox.setValue(const v: Double);
 begin
   QSpinBox_setValue(QSpinBoxH(Widget), round(v));
 end;

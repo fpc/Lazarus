@@ -776,7 +776,7 @@ Var
 {  procedure HandleSpinEditChange(ASpinEdit: TCustomFloatSpinEdit);
   var
     lWindowInfo: PWindowInfo;
-    lNewValue: single;
+    lNewValue: Double;
   begin
     lWindowInfo := GetWindowInfo(ASpinEdit.Handle);
     if lWindowInfo = @DefaultWindowInfo then exit;
@@ -792,7 +792,7 @@ Var
   var
     lSpinEdit: TCustomFloatSpinEdit;
     spinHandle: HWND;
-    newValue: single;
+    newValue: Double;
   begin
     lSpinEdit := TCustomFloatSpinEdit(WindowInfo^.WinControl);
     newValue := WindowInfo^.spinValue + AUpDownMsg^.iDelta * lSpinEdit.Increment;

@@ -52,12 +52,12 @@ type
   { TWSCustomFloatSpinEdit }
 
   TWSCustomFloatSpinEdit = class(TWSCustomEdit)
-    class function  GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): single; virtual;
+    class function  GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): double; virtual;
 
 (*  TODO: seperation into properties instead of bulk update
-    class procedure SetIncrement(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewIncrement: single); virtual;
-    class procedure SetMinValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewValue: single); virtual;
-    class procedure SetMaxValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewValue: single); virtual;
+    class procedure SetIncrement(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewIncrement: Double); virtual;
+    class procedure SetMinValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewValue: Double); virtual;
+    class procedure SetMaxValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewValue: Double); virtual;
     class procedure SetValueEmpty(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewEmpty: boolean); virtual;
 *)
 
@@ -75,7 +75,7 @@ implementation
 
 { TWSCustomFloatSpinEdit }
 
-class function  TWSCustomFloatSpinEdit.GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): single;
+class function  TWSCustomFloatSpinEdit.GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): double;
 begin
   Result := 0.0;
 end;

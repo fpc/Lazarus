@@ -37,16 +37,16 @@ type
 
   TCustomFloatSpinEdit = class(TCustomEdit)
   private
-    FIncrement: Single;
+    FIncrement: Double;
     FDecimals: Integer;
-    FMaxValue: Single;
-    FMinValue: Single;
-    FValue: Single;
+    FMaxValue: Double;
+    FMinValue: Double;
+    FValue: Double;
     FValueEmpty: Boolean;
     FUpdatePending: Boolean;
     FValueChanged: Boolean;
-    procedure SetMaxValue(const AValue: Single);
-    procedure SetMinValue(const AValue: Single);
+    procedure SetMaxValue(const AValue: Double);
+    procedure SetMinValue(const AValue: Double);
     procedure SetValueEmpty(const AValue: Boolean);
     procedure UpdateControl;
     function IsStored: Boolean; // FPC bug workaround
@@ -54,24 +54,24 @@ type
     function  RealGetText: TCaption; override;
     procedure TextChanged; override;
     procedure SetDecimals(ADecimals: Integer);
-    function GetValue: Single;
-    procedure SetValue(const AValue: Single);
-    procedure SetIncrement(const AIncrement: Single);
+    function GetValue: Double;
+    procedure SetValue(const AValue: Double);
+    procedure SetIncrement(const AIncrement: Double);
     procedure InitializeWnd; override;
     procedure FinalizeWnd; override;
     procedure Loaded; override;
     class function GetControlClassDefaultSize: TPoint; override;
   public
     constructor Create(TheOwner: TComponent); override;
-    function GetLimitedValue(const AValue: Single): Single;
-    function ValueToStr(const AValue: Single): String;
-    function StrToValue(const S: String): Single;
+    function GetLimitedValue(const AValue: Double): Double;
+    function ValueToStr(const AValue: Double): String;
+    function StrToValue(const S: String): Double;
   public
     property DecimalPlaces: Integer read FDecimals write SetDecimals default 2;
-    property Increment: Single read FIncrement write SetIncrement stored IsStored default 1;
-    property MinValue: Single read FMinValue write SetMinValue stored IsStored default 0;
-    property MaxValue: Single read FMaxValue write SetMaxValue stored IsStored default 100;
-    property Value: Single read GetValue write SetValue stored IsStored default 0;
+    property Increment: Double read FIncrement write SetIncrement stored IsStored;
+    property MinValue: Double read FMinValue write SetMinValue stored IsStored;
+    property MaxValue: Double read FMaxValue write SetMaxValue stored IsStored;
+    property Value: Double read GetValue write SetValue stored IsStored;
     property ValueEmpty: Boolean read FValueEmpty write SetValueEmpty default False;
   end;
   

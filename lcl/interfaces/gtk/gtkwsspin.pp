@@ -34,7 +34,7 @@ uses
   glib, gdk, gtk,
   {$ENDIF}
   // RTL, FCL, LCL
-  Controls, LCLType, LCLProc, Spin, StdCtrls,
+  Math, Controls, LCLType, LCLProc, Spin, StdCtrls,
   // Widgetset
   GtkProc, GtkExtra, GtkDef, GtkInt, GtkWSControls, GtkWSStdCtrls,
   WSLCLClasses, WSSpin;
@@ -50,7 +50,7 @@ type
   public
     class function GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
-    class function GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): single; override;
+    class function GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): Double; override;
 
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
@@ -106,15 +106,9 @@ begin
 end;
 
 class function TGtkWSCustomFloatSpinEdit.GetValue(
-  const ACustomFloatSpinEdit: TCustomFloatSpinEdit): single;
+  const ACustomFloatSpinEdit: TCustomFloatSpinEdit): Double;
 begin
-{$IFDEF GTK2}
-  // developer.gnome.org/doc/API/2.2/gtk/GtkSpinButton.html:
-  // "function gtk_spin_button_get_value_as_float is deprecated, use gtk_spin_button_get_value() instead"
-  Result:=Single(gtk_spin_button_get_value(PGtkSpinButton(ACustomFloatSpinEdit.Handle)));
-{$ELSE}
   Result:=gtk_spin_button_get_value_as_float(PGtkSpinButton(ACustomFloatSpinEdit.Handle));
-{$ENDIF}
 end;
 
 class procedure TGtkWSCustomFloatSpinEdit.SetSelStart(const ACustomEdit: TCustomEdit;
@@ -136,7 +130,7 @@ var
   AnAdjustment: PGtkAdjustment;
   wHandle: HWND;
   SpinWidget: PGtkSpinButton;
-  AMin, AMax: Single;
+  AMin, AMax: Double;
 begin
   //DebugLn(['TGtkWSCustomFloatSpinEdit.UpdateControl ',dbgsName(ACustomFloatSpinEdit)]);
   wHandle := ACustomFloatSpinEdit.Handle;
@@ -149,8 +143,8 @@ begin
   end
   else
   begin
-    AMin := -3.4E38; // min single
-    AMax := 3.4E38;  // max single
+    AMin := -MaxDouble;
+    AMax := MaxDouble;
   end;
   
   AnAdjustment:=gtk_spin_button_get_adjustment(SpinWidget);

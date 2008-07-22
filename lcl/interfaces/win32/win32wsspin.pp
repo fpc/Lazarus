@@ -55,7 +55,7 @@ type
     class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
-    class function  GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): single; override;
+    class function  GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): Double; override;
 
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
@@ -76,7 +76,7 @@ type
 
 
 procedure UpdateFloatSpinEditText(const ASpinEdit: TCustomFloatSpinEdit;
-  const ANewValue: single);
+  const ANewValue: Double);
 
 implementation
 
@@ -121,7 +121,7 @@ begin
 end;
 
 procedure UpdateFloatSpinEditText(const ASpinEdit: TCustomFloatSpinEdit;
-  const ANewValue: single);
+  const ANewValue: Double);
 var
   editHandle: HWND;
   newValueText: string;
@@ -197,7 +197,7 @@ begin
 end;
 
 class function TWin32WSCustomFloatSpinEdit.GetValue(
-  const ACustomFloatSpinEdit: TCustomFloatSpinEdit): single;
+  const ACustomFloatSpinEdit: TCustomFloatSpinEdit): Double;
 begin
   Result := GetWindowInfo(ACustomFloatSpinEdit.Handle)^.spinValue;
 end;
