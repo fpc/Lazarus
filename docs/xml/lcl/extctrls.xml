@@ -2158,6 +2158,140 @@
         </descr>
       </element>
       <!-- variable Visibility: private -->
+      <element name="TCustomSplitter.FMouseInControl">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomSplitter.FResizeAnchor">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function Visibility: private -->
+      <element name="TCustomSplitter.GetResizeControl">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TCustomSplitter.GetResizeControl.Result">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: private -->
+      <element name="TCustomSplitter.SetResizeAnchor">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomSplitter.SetResizeAnchor.AValue">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: private -->
+      <element name="TCustomSplitter.SetResizeControl">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomSplitter.SetResizeControl.AValue">
+	      <short></short>
+      </element>
+      
+      <!-- function Visibility: protected -->
+      <element name="TCustomSplitter.FindAlignOtherControl">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TCustomSplitter.FindAlignOtherControl.Result">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomSplitter.MouseEnter">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomSplitter.MouseLeave">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomSplitter.AnchorSplitter.Kind">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomSplitter.AnchorSplitter.AControl">
+	      <short></short>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TCustomSplitter.GetOtherResizeControl.Result">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomSplitter.MoveSplitter.Offset">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomSplitter.SetSplitterPosition.NewPosition">
+	      <short></short>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TCustomSplitter.GetSplitterPosition.Result">
+	      <short></short>
+      </element>
+      
+      <!-- variable Visibility: private -->
       <element name="TCustomSplitter.FAutoSnap">
         <short/>
         <descr/>
@@ -2451,6 +2585,37 @@
         <descr/>
         <seealso/>
       </element>
+      <element name="TCustomSplitter.AnchorSplitter">
+	      <short>
+		      <var>AnchorSplitter</var> - anchor the splitter to <var>Acontrol </var>using the specified <var>Kind </var>of anchor</short>
+      </element>
+      <element name="TCustomSplitter.ResizeControl">
+	      <short>
+		      <var>ResizeControl</var> - the control that is to be re-sized with the splitter</short>
+      </element>
+      <element name="TCustomSplitter.GetOtherResizeControl">
+	      <short>
+		      <var>GetOtherResizeControl</var> - find out which other control is to be re-sized</short>
+      </element>
+      <element name="TCustomSplitter.MoveSplitter">
+	      <short>
+		      <var>MoveSplitter</var> - by an amount specified by <var>Offset</var>
+	      </short>
+      </element>
+      <element name="TCustomSplitter.SetSplitterPosition">
+	      <short>
+		      <var>SetSplitterPosition</var> - to specified <var>NewPosition</var>
+	      </short>
+      </element>
+      <element name="TCustomSplitter.GetSplitterPosition">
+	      <short>
+		      <var>GetSplitterPosition</var> - returns the current position of the splitter</short>
+      </element>
+      <element name="TCustomSplitter.ResizeAnchor">
+	      <short>
+		      <var>ResizeAnchor</var> - the kind of anchor to be used for resizing</short>
+      </element>
+
       <!-- object Visibility: default -->
       <element name="TSplitter">
         <short>
@@ -2572,6 +2737,26 @@
         <descr/>
         <seealso/>
       </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TSplitter.PopupMenu">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TSplitter.ResizeAnchor">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+
       <!-- object Visibility: default -->
       <element name="TPaintBox">
         <short>
@@ -4265,6 +4450,76 @@ requiring the user to select one af a set of alternatives</p>
           <var>OnItemClick</var> - event handler for mouse click on one of the Items in the Check Group</short>
       </element>
       <!-- object Visibility: default -->
+      <!-- variable Visibility: private -->
+      <element name="TCustomCheckGroup.FAutoFill">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomCheckGroup.FUpdatingItems">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- procedure Visibility: private -->
+      <element name="TCustomCheckGroup.RaiseIndexOutOfBounds">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomCheckGroup.RaiseIndexOutOfBounds.Index">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: private -->
+      <element name="TCustomCheckGroup.SetAutoFill">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomCheckGroup.SetAutoFill.AValue">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: private -->
+      <element name="TCustomCheckGroup.UpdateControlsPerLine">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: public -->
+      <element name="TCustomCheckGroup.AutoFill">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
       <element name="TCheckGroup">
         <short>
           <var>TCheckGroup</var>  : A group of Check Boxes physically and logically grouped together on a form</short>
@@ -4474,6 +4729,53 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <descr/>
         <seealso/>
       </element>
+      <!-- property Visibility: published -->
+      <element name="TCheckGroup.AutoFill">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TCheckGroup.AutoSize">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TCheckGroup.Font">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TCheckGroup.ParentFont">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TCheckGroup.TabOrder">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      
+      
       <!-- object Visibility: default -->
       <element name="TBoundLabel">
         <short>
@@ -4719,7 +5021,7 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomLabeledEdit.SetParent">
+      <element name="TCustomLabeledEdit.SetParent" link="#lcl.Controls.TControl.SetParent">
         <short/>
         <descr/>
         <errors/>
@@ -4730,7 +5032,7 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomLabeledEdit.SetName">
+      <element name="TCustomLabeledEdit.SetName" link="#lcl.Controls.TControl.SetName">
         <short/>
         <descr/>
         <errors/>
@@ -4771,7 +5073,7 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomLabeledEdit.Notification">
+      <element name="TCustomLabeledEdit.Notification" link="#rtl.Classes.TComponent.Notification">
         <short/>
         <descr/>
         <errors/>
@@ -4815,7 +5117,7 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomLabeledEdit.Create">
+      <element name="TCustomLabeledEdit.Create" link="#lcl.StdCtrls.TCustomEdit.Create">
         <short/>
         <descr/>
         <errors/>
@@ -4875,121 +5177,121 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         </seealso>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabeledEdit.Anchors">
+      <element name="TLabeledEdit.Anchors" link="#lcl.Controls.TControl.Anchors">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabeledEdit.AutoSize">
+      <element name="TLabeledEdit.AutoSize" link="#lcl.Controls.TControl.AutoSize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabeledEdit.BorderSpacing">
+      <element name="TLabeledEdit.BorderSpacing" link="#lcl.Controls.TControl.BorderSpacing">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabeledEdit.CharCase">
+      <element name="TLabeledEdit.CharCase" link="#lcl.StdCtrls.TCustomEdit.CharCase">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabeledEdit.Color">
+      <element name="TLabeledEdit.Color" link="#lcl.Controls.TControl.Color">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabeledEdit.Constraints">
+      <element name="TLabeledEdit.Constraints" link="#lcl.Controls.TControl.Constraints">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabeledEdit.Enabled">
+      <element name="TLabeledEdit.Enabled" link="#lcl.Controls.TControl.Enabled">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabeledEdit.LabelPosition">
+      <element name="TLabeledEdit.LabelPosition" link="#lcl.ExtCtrls.TCustomLabeledEdit.LabelPosition">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabeledEdit.LabelSpacing">
+      <element name="TLabeledEdit.LabelSpacing" link="#lcl.ExtCtrls.TCustomLabeledEdit.LabelSpacing">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabeledEdit.MaxLength">
+      <element name="TLabeledEdit.MaxLength" link="#lcl.StdCtrls.TCustomEdit.MaxLength">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabeledEdit.ParentColor">
+      <element name="TLabeledEdit.ParentColor" link="#lcl.COntrols.TControl.ParentColor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabeledEdit.ParentFont">
+      <element name="TLabeledEdit.ParentFont" link="#lcl.COntrols.TControl.ParentFont">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabeledEdit.ParentShowHint">
+      <element name="TLabeledEdit.ParentShowHint" link="#lcl.Controls.TControl.ParentShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabeledEdit.PasswordChar">
+      <element name="TLabeledEdit.PasswordChar"  link="#lcl.StdCtrls.TCustomEdit.PasswordChar">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabeledEdit.PopupMenu">
+      <element name="TLabeledEdit.PopupMenu"  link="#lcl.StdCtrls.TCustomEdit.PopupMenu">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabeledEdit.ReadOnly">
+      <element name="TLabeledEdit.ReadOnly" link="#lcl.StdCtrls.TCustomEdit.ReadOnly">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabeledEdit.ShowHint">
+      <element name="TLabeledEdit.ShowHint" link="#lcl.Controls.TControl.ShowHint" >
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabeledEdit.TabOrder">
+      <element name="TLabeledEdit.TabOrder"  link="#lcl.StdCtrls.TCustomEdit.TabOrder">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabeledEdit.TabStop">
+      <element name="TLabeledEdit.TabStop" link="#lcl.StdCtrls.TCustomEdit.TabStop" >
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabeledEdit.Text">
+      <element name="TLabeledEdit.Text" link="#lcl.StdCtrls.TCustomEdit.Text">
         <short>
           <var>Text</var>
 
@@ -5001,77 +5303,158 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
 : the text-string being entered or edited in the Labelled Edit box</short>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabeledEdit.Visible">
+      <element name="TLabeledEdit.Visible" link="#lcl.Controls.TControl.Visible">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabeledEdit.OnChange">
+      <element name="TLabeledEdit.OnChange" link="#lcl.StdCtrls.TCustomEdit.OnChange">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabeledEdit.OnClick">
+      <element name="TLabeledEdit.OnClick" link="#lcl.Controls.TControl.OnClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabeledEdit.OnDblClick">
+      <element name="TLabeledEdit.OnDblClick" link="#lcl.Controls.TControl.OnDblClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabeledEdit.OnEnter">
+      <element name="TLabeledEdit.OnEnter" link="#lcl.Controls.TWinControl.OnEnter">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabeledEdit.OnExit">
+      <element name="TLabeledEdit.OnExit" link="#lcl.Controls.TWinControl.OnExit">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabeledEdit.OnKeyDown">
+      <element name="TLabeledEdit.OnKeyDown" link="#lcl.Controls.TWinControl.OnKeyDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabeledEdit.OnKeyPress">
+      <element name="TLabeledEdit.OnKeyPress" link="#lcl.Controls.TWinControl.OnKeyPress">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabeledEdit.OnKeyUp">
+      <element name="TLabeledEdit.OnKeyUp" link="#lcl.Controls.TWinControl.OnKeyUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabeledEdit.OnMouseDown">
+      <element name="TLabeledEdit.OnMouseDown" link="#lcl.Controls.TControl.OnMouseDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabeledEdit.OnMouseMove">
+      <element name="TLabeledEdit.OnMouseMove" link="#lcl.Controls.TControl.OnMouseMove">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabeledEdit.OnMouseUp">
+      <element name="TLabeledEdit.OnMouseUp" link="#lcl.Controls.TControl.OnMouseUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
+      <!-- property Visibility: published -->
+      <element name="TLabeledEdit.AutoSelect" link="#lcl.StdCtrls.TCustomEdit.AutoSelect">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TLabeledEdit.DragCursor" link="#lcl.Controls.TControl.DragCursor">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TLabeledEdit.DragMode" link="#lcl.Controls.TControl.DragMode">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TLabeledEdit.EchoMode" link="#lcl.StdCtrls.TCustomEdit.EchoMode">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TLabeledEdit.EditLabel" link="#lcl.ExtCtrls.TCustomLabeledEdit.EditLabel">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TLabeledEdit.OnDragDrop" link="#lcl.Controls.TControl.OnDragDrop">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TLabeledEdit.OnDragOver" link="#lcl.Controls.TControl.OnDragOver">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TLabeledEdit.OnEndDrag" link="#lcl.Controls.TControl.OnEndDrag" >
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TLabeledEdit.OnStartDrag" link="#lcl.Controls.TControl.OnStartDrag">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+
       <!-- alias type Visibility: default -->
       <element name="TPanelBevel">
         <short/>
@@ -5099,7 +5482,7 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
           </p>
           <p>A Panel is a defined rectangular area of the form into which other components can be placed to group them functionally and geographically.</p>
           <p>
-            <var>TCustomPanel </var>defines the positioning and bevelling properties of any descendant classes, and provides methods for painting and writing text to the panel.</p>
+            <var>TCustomPanel </var>defines the positioning and bevelling properties of any descendent classes, and provides methods for painting and writing text to the panel.</p>
         </descr>
       </element>
       <!-- variable Visibility: private -->
@@ -5205,7 +5588,7 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomPanel.RealSetText">
+      <element name="TCustomPanel.RealSetText" link="#lcl.Controls.TControl.RealSetText">
         <short/>
         <descr/>
         <errors/>
@@ -5216,14 +5599,14 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomPanel.Paint">
+      <element name="TCustomPanel.Paint" link="#lcl.Controls.TCustomControl.Paint">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomPanel.ParentColorIsStored">
+      <element name="TCustomPanel.ParentColorIsStored" >
         <short/>
         <descr/>
         <errors/>
@@ -5242,10 +5625,93 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
       </element>
       <!-- function result Visibility: default -->
       <element name="TCustomPanel.CanTab.Result">
-        <short/>
+	      <short/>
       </element>
+
+      <!-- procedure Visibility: private -->
+      <element name="TCustomPanel.UpdateBordersAndBevels">
+	      <short><var>UpdateBordersAndBevels</var> - make sure any changes to borders and bevels are accurately shown</short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function Visibility: protected -->
+      <element name="TCustomPanel.GetControlClassDefaultSize" link="#lcl.Controls.TControl.GetControlClassDefaultSize">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TCustomPanel.GetControlClassDefaultSize.Result">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomPanel.CMParentColorChanged">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomPanel.CMParentColorChanged.Message">
+	      <short></short>
+      </element>
+      
+      <!-- function Visibility: protected -->
+      <element name="TCustomPanel.GetDefaultDockCaption">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TCustomPanel.GetDefaultDockCaption.Result">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomPanel.Loaded" link="#rtl.Classes.TComponent.Loaded">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomPanel.UpdateParentColorChange">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+
       <!-- constructor Visibility: public -->
-      <element name="TCustomPanel.Create">
+      <element name="TCustomPanel.Create" link="#lcl.Controls.TCustomControl.Create">
         <short/>
         <descr/>
         <errors/>
@@ -5298,7 +5764,7 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomPanel.FullRepaint">
-        <short/>
+        <short><var>FullRepaint</var> - if True, the panel needs to be fully repainted after each change</short>
         <descr/>
         <seealso/>
       </element>
@@ -5336,7 +5802,7 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.Alignment" link="TCustomPanel.Alignment">
+      <element name="TPanel.Alignment" link="#lcl.ExtCtrls.TCustomPanel.Alignment">
         <short/>
         <descr/>
         <seealso/>
@@ -5360,19 +5826,19 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.BevelInner" link="TCustomPanel.BevelInner">
+      <element name="TPanel.BevelInner" link="#lcl.ExtCtrls.TCustomPanel.BevelInner">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.BevelOuter" link="TCustomPanel.BevelOuter">
+      <element name="TPanel.BevelOuter" link="#lcl.ExtCtrls.TCustomPanel.BevelOuter">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.BevelWidth" link="TCustomPanel.BevelWidth">
+      <element name="TPanel.BevelWidth" link="#lcl.ExtCtrls.TCustomPanel.BevelWidth">
         <short/>
         <descr/>
         <seealso/>
@@ -5444,7 +5910,7 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.FullRepaint">
+      <element name="TPanel.FullRepaint" link="#lcl.ExtCtrls.TCustomPanel.FullRepaint">
         <short/>
         <descr/>
         <seealso/>
@@ -5567,6 +6033,105 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <descr/>
         <seealso/>
       </element>
+      <!-- property Visibility: published -->
+      <element name="TPanel.DockSite" link="#lcl.Controls.TWinControl.DockSite">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TPanel.DragCursor" link="#lcl.Controls.TControl.DragCursor">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TPanel.DragKind" link="#lcl.Controls.TControl.DragKind">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TPanel.UseDockManager" link="#lcl.Controls.TWinControl.UseDockManager">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TPanel.OnDockDrop" link="#lcl.Controls.TWinControl.OnDockDrop">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TPanel.OnDockOver" link="#lcl.Controls.TWinControl.OnDockOver">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TPanel.OnEndDock" link="#lcl.Controls.TControl.OnEndDock">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TPanel.OnGetSiteInfo">
+	      <short><var>OnGetSiteInfo</var> - event handler for getting information about the site</short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TPanel.OnGetDockCaption">
+	      <short><var>OnGetDockCaption</var> - event handler for getting a caption for the docking site</short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TPanel.OnStartDock" link="#lcl.Controls.TControl.OnStartDock">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TPanel.OnUnDock" link="#lcl.Controls.TWinControl.OnUnDock">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+
       <!-- constant Visibility: default -->
       <element name="TCN_First">
         <short/>
@@ -5951,36 +6516,1403 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
           <p>In a typical application a <var>THeaderControl</var> and a <var>TPanel</var> or <var>TForm</var> would be docked together, and code would be written to find which Section of the Header had been selected, then use its index to control the display in the other docked control.</p>
         </descr>
       </topic>
-      <element name="TCustomSplitter.AnchorSplitter">
-        <short>
-          <var>AnchorSplitter</var> - anchor the splitter to <var>Acontrol </var>using the specified <var>Kind </var>of anchor</short>
+        <!-- enumeration value Visibility: default -->
+      <element name="TPageFlag.pfAdding">
+	      <short></short>
       </element>
-      <element name="TCustomSplitter.ResizeControl">
-        <short>
-          <var>ResizeControl</var> - the control that is to be re-sized with the splitter</short>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomPage.FTabVisible">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
       </element>
-      <element name="TCustomSplitter.GetOtherResizeControl">
-        <short>
-          <var>GetOtherResizeControl</var> - find out which other control is to be re-sized</short>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomPage.FOnHide">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
       </element>
-      <element name="TCustomSplitter.MoveSplitter">
-        <short>
-          <var>MoveSplitter</var> - by an amount specified by <var>Offset</var>
-        </short>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomPage.FOnShow">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
       </element>
-      <element name="TCustomSplitter.SetSplitterPosition">
-        <short>
-          <var>SetSplitterPosition</var> - to specified <var>NewPosition</var>
-        </short>
+      
+      <!-- function Visibility: protected -->
+      <element name="TCustomPage.DialogChar">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
       </element>
-      <element name="TCustomSplitter.GetSplitterPosition">
-        <short>
-          <var>GetSplitterPosition</var> - returns the current position of the splitter</short>
+      
+      <!-- function result Visibility: default -->
+      <element name="TCustomPage.DialogChar.Result">
+	      <short></short>
       </element>
-      <element name="TCustomSplitter.ResizeAnchor">
-        <short>
-          <var>ResizeAnchor</var> - the kind of anchor to be used for resizing</short>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomPage.DialogChar.Message">
+	      <short></short>
       </element>
+      
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomPage.DoHide">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomPage.DoShow">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TCustomPage.AutoSizeDelayed.Result">
+	      <short></short>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TCustomPage.IsControlVisible.Result">
+	      <short></short>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TCustomPage.VisibleIndex.Result">
+	      <short></short>
+      </element>
+      
+      <!-- property Visibility: public -->
+      <element name="TCustomPage.Visible">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- procedure Visibility: private -->
+      <element name="TNBPages.PageListChange">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TNBPages.PageListChange.Ptr">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TNBPages.PageListChange.AnAction">
+	      <short></short>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomNotebook.FPageIndexOnLastShow">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function Visibility: private -->
+      <element name="TCustomNotebook.FindVisiblePage">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TCustomNotebook.FindVisiblePage.Result">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomNotebook.FindVisiblePage.Index">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: private -->
+      <element name="TCustomNotebook.AddRemovePageHandle">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomNotebook.AddRemovePageHandle.APage">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: private -->
+      <element name="TCustomNotebook.PageRemoved">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomNotebook.PageRemoved.Index">
+	      <short></short>
+      </element>
+      
+      <!-- function Visibility: protected -->
+      <element name="TCustomNotebook.DialogChar">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TCustomNotebook.DialogChar.Result">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomNotebook.DialogChar.Message">
+	      <short></short>
+      </element>
+      
+      <!-- function Visibility: protected -->
+      <element name="TCustomNotebook.GetControlClassDefaultSize">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TCustomNotebook.GetControlClassDefaultSize.Result">
+	      <short></short>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TPage.Font">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TPage.ParentFont">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TNotebook.DragCursor">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TNotebook.DragMode">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TNotebook.Font">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TNotebook.OnChanging">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TNotebook.OnDragDrop">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TNotebook.OnDragOver">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TNotebook.OnEndDrag">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TNotebook.OnStartDrag">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TNotebook.ParentFont">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TNotebook.PopupMenu">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TNotebook.TabOrder">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TNotebook.TabStop">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TIdleTimer.DoOnIdle.Done">
+	      <short></short>
+      </element>
+      
+      <!-- function Visibility: protected -->
+      <element name="TShape.GetControlClassDefaultSize">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TShape.GetControlClassDefaultSize.Result">
+	      <short></short>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TShape.OnDragDrop">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TShape.OnDragOver">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TShape.OnEndDrag">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TShape.OnPaint">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TShape.OnStartDrag">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+       <!-- function Visibility: protected -->
+      <element name="TPaintBox.GetControlClassDefaultSize">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TPaintBox.GetControlClassDefaultSize.Result">
+	      <short></short>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TPaintBox.DragCursor">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TPaintBox.DragMode">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TPaintBox.OnDragDrop">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TPaintBox.OnDragOver">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TPaintBox.OnEndDrag">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TPaintBox.OnMouseWheel">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TPaintBox.OnMouseWheelDown">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TPaintBox.OnMouseWheelUp">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TPaintBox.OnStartDrag">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomImage.FUseParentCanvas">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function Visibility: private -->
+      <element name="TCustomImage.GetCanvas">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TCustomImage.GetCanvas.Result">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomImage.CalculatePreferredSize">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomImage.CalculatePreferredSize.PreferredWidth">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomImage.CalculatePreferredSize.PreferredHeight">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomImage.CalculatePreferredSize.WithThemeSpace">
+	      <short></short>
+      </element>
+      
+      <!-- function Visibility: protected -->
+      <element name="TCustomImage.GetControlClassDefaultSize">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TCustomImage.GetControlClassDefaultSize.Result">
+	      <short></short>
+      </element>
+      
+      <!-- property Visibility: public -->
+      <element name="TCustomImage.Canvas">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TImage.DragCursor">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TImage.DragMode">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TImage.Enabled">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TImage.OnDblClick">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TImage.OnDragDrop">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TImage.OnDragOver">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TImage.OnEndDrag">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TImage.OnStartDrag">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TImage.ParentShowHint">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TImage.PopupMenu">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TImage.ShowHint">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TBevel.Assign.Source">
+	      <short></short>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomRadioGroup.FAutoFill">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomRadioGroup.fIgnoreClicks">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomRadioGroup.FLastClickedItemIndex">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomRadioGroup.FUpdatingItems">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- procedure Visibility: private -->
+      <element name="TCustomRadioGroup.Changed">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomRadioGroup.Changed.Sender">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: private -->
+      <element name="TCustomRadioGroup.ItemEnter">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomRadioGroup.ItemEnter.Sender">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: private -->
+      <element name="TCustomRadioGroup.ItemExit">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomRadioGroup.ItemExit.Sender">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: private -->
+      <element name="TCustomRadioGroup.ItemKeyDown">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomRadioGroup.ItemKeyDown.Sender">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomRadioGroup.ItemKeyDown.Key">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomRadioGroup.ItemKeyDown.Shift">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: private -->
+      <element name="TCustomRadioGroup.ItemResize">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomRadioGroup.ItemResize.Sender">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: private -->
+      <element name="TCustomRadioGroup.SetAutoFill">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomRadioGroup.SetAutoFill.AValue">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: private -->
+      <element name="TCustomRadioGroup.UpdateControlsPerLine">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- procedure Visibility: private -->
+      <element name="TCustomRadioGroup.UpdateItems">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- procedure Visibility: private -->
+      <element name="TCustomRadioGroup.UpdateTabStops">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomRadioGroup.Loaded">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomRadioGroup.InitializeWnd">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomRadioGroup.SetItems">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomRadioGroup.SetItems.Value">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomRadioGroup.CheckItemIndexChanged">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: public -->
+      <element name="TCustomRadioGroup.AutoFill">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: public -->
+      <element name="TCustomRadioGroup.TabStop">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TRadioGroup.AutoFill">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TRadioGroup.AutoSize">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TRadioGroup.ClientHeight">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TRadioGroup.ClientWidth">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TRadioGroup.DragCursor">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TRadioGroup.DragMode">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TRadioGroup.Font">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TRadioGroup.OnDragDrop">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TRadioGroup.OnDragOver">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TRadioGroup.OnEndDrag">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TRadioGroup.OnStartDrag">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TRadioGroup.ParentFont">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TRadioGroup.TabOrder">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TRadioGroup.TabStop">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      
+      
+      <!-- enumeration type Visibility: default -->
+      <element name="TBallonFlags">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- enumeration value Visibility: default -->
+      <element name="TBallonFlags.bfNone">
+	      <short></short>
+      </element>
+      
+      <!-- enumeration value Visibility: default -->
+      <element name="TBallonFlags.bfInfo">
+	      <short></short>
+      </element>
+      
+      <!-- enumeration value Visibility: default -->
+      <element name="TBallonFlags.bfWarning">
+	      <short></short>
+      </element>
+      
+      <!-- enumeration value Visibility: default -->
+      <element name="TBallonFlags.bfError">
+	      <short></short>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomTrayIcon.FBalloonFlags">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomTrayIcon.FBalloonHint">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomTrayIcon.FBalloonTimeout">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomTrayIcon.FBalloonTitle">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomTrayIcon.FPopUpMenu">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomTrayIcon.FIcon">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomTrayIcon.FHint">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomTrayIcon.FVisible">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomTrayIcon.FShowIcon">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomTrayIcon.FNotifier">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomTrayIcon.FTimer">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomTrayIcon.FOnPaint">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomTrayIcon.FOnClick">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomTrayIcon.FOnDblClick">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomTrayIcon.FOnMouseDown">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomTrayIcon.FOnMouseUp">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomTrayIcon.FOnMouseMove">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function Visibility: private -->
+      <element name="TCustomTrayIcon.GetCanvas">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TCustomTrayIcon.GetCanvas.Result">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: private -->
+      <element name="TCustomTrayIcon.SetHint">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomTrayIcon.SetHint.AValue">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: private -->
+      <element name="TCustomTrayIcon.SetIcon">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomTrayIcon.SetIcon.AValue">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: private -->
+      <element name="TCustomTrayIcon.SetVisible">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomTrayIcon.SetVisible.Value">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: private -->
+      <element name="TCustomTrayIcon.HandleNotifierClose">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomTrayIcon.HandleNotifierClose.Sender">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomTrayIcon.HandleNotifierClose.CloseAction">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: private -->
+      <element name="TCustomTrayIcon.HandleNotifierTimeout">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomTrayIcon.HandleNotifierTimeout.Sender">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: private -->
+      <element name="TCustomTrayIcon.IconChanged">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomTrayIcon.IconChanged.Sender">
+	      <short></short>
+      </element>
+      
+      <!-- variable Visibility: public -->
+      <element name="TCustomTrayIcon.Handle">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomTrayIcon.Create.TheOwner">
+	      <short></short>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TCustomTrayIcon.Hide.Result">
+	      <short></short>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TCustomTrayIcon.Show.Result">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: public -->
+      <element name="TCustomTrayIcon.InternalUpdate">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TCustomTrayIcon.GetPosition.Result">
+	      <short></short>
+      </element>
+
     </module>
     <!-- ExtCtrls -->
   </package>
