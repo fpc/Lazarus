@@ -47,25 +47,27 @@ begin
       FSharedImage := SrcImage.FSharedImage;
       FSharedImage.Reference;
 
-      // We only can share images of the same type.
+      // We only can share images of the same type and when neither we or source is updating
       // Since we "share" it first, the unshare code will create a copy
-      if not CanShareImage(SrcImage.GetSharedImageClass)
+      if (FUpdateCount > 0)
+      or (SrcImage.FUpdateCount > 0)
+      or not CanShareImage(SrcImage.GetSharedImageClass)
       then begin
         UnshareImage(True);
         FreeSaveStream;
       end;
     end;
 
-    Changed(Self);
+    if FUpdateCount = 0
+    then Changed(Self);
 
     Exit;
   end;
 
   if Source is TFPCustomImage
   then begin
-    // MWE: no need for a changeall, the sethandles will handle this
-    // ChangingAll(Self);
-    
+    // todo: base on rawimage
+  
     IntfImage := TLazIntfImage.Create(0,0);
     try
       if BitmapHandleAllocated
@@ -77,7 +79,8 @@ begin
     finally
       IntfImage.Free;
     end;
-    Changed(Self);
+    if FUpdateCount = 0
+    then Changed(Self);
     
     Exit;
   end;
@@ -86,13 +89,31 @@ begin
   inherited Assign(Source);
 end;
 
+procedure TRasterImage.BeginUpdate(ACanvasOnly: Boolean);
+begin
+  if FUpdateCount = 0
+  then begin
+    UnshareImage(True);
+    FUpdateCanvasOnly := ACanvasOnly;
+  end
+  else begin
+    // if we are updating all, then requesting a canvas only won't change it
+    // if we are updating canvas only, then requesting all is an error
+    if FUpdateCanvasOnly and not ACanvasOnly
+    then raise EInvalidGraphicOperation.Create('cannot begin update all when canvas only update in progress');
+  end;
+
+  Inc(FUpdateCount);
+end;
+
 procedure TRasterImage.Clear;
 begin
   if not Empty then
   begin
     FreeSaveStream;
     SetSize(0, 0);
-    Changed(Self);
+    if FUpdateCount = 0
+    then Changed(Self);
   end;
 end;
 
@@ -203,6 +224,20 @@ begin
   DestCanvas.Changed;
 end;
 
+procedure TRasterImage.EndUpdate;
+begin
+  if FUpdatecount = 0
+  then raise EInvalidGraphicOperation.Create('Endupdate while no update in progress');
+  
+  Dec(FUpdatecount);
+  if FUpdatecount > 0 then Exit;
+
+  if not FUpdateCanvasOnly
+  then FreeCanvasContext;
+  FreeSaveStream;
+  Changed(Self);
+end;
+
 constructor TRasterImage.Create;
 begin
   inherited Create;
@@ -236,16 +271,10 @@ end;
 procedure TRasterImage.CreateCanvas;
 begin
   if FCanvas <> nil then Exit;
-  if bmisCreatingCanvas in FInternalState then Exit;
 
-  Include(FInternalState, bmisCreatingCanvas);
-  try
-    FCanvas := TBitmapCanvas.Create(Self);
-    FCanvas.OnChanging := @Changing;
-    FCanvas.OnChange := @Changed;
-  finally
-    Exclude(FInternalState,bmisCreatingCanvas);
-  end;
+  FCanvas := TBitmapCanvas.Create(Self);
+  FCanvas.OnChanging := @CanvasChanging;
+  FCanvas.OnChange := @Changed;
 end;
 
 procedure TRasterImage.FreeImage;
@@ -319,6 +348,8 @@ end;
 
 procedure TRasterImage.Changed(Sender: TObject);
 begin
+  if FUpdateCount > 0 then Exit;
+
   //FMaskBitsValid := False;
   if Sender = FCanvas
   then FreeSaveStream;
@@ -326,15 +357,14 @@ begin
   inherited Changed(Sender);
 end;
 
-procedure TRasterImage.Changing(Sender: TObject);
+procedure TRasterImage.CanvasChanging(Sender: TObject);
 begin
-  // called before the bitmap is modified
+  if FUpdateCount > 0 then Exit;
+
+  // called before the canvas is modified
   // -> make sure the handle is unshared (otherwise the modifications will also
   //    modify all copies)
-  // -> When canvas changing: Savestream will be freed when changed (so it can
-  //    be loaded by canvas)
-  if Sender <> FCanvas
-  then FreeSaveStream;
+  // -> Savestream will be freed when changed (so it can be loaded by canvas)
   UnshareImage(True);
 end;
 
@@ -380,7 +410,8 @@ begin
     // if something went wrong, free the workstream
     WorkStream.Free;
   end;
-  Changed(Self);
+  if FUpdateCount = 0
+  then Changed(Self);
 end;
 
 procedure TRasterImage.GetSupportedSourceMimeTypes(List: TStrings);
@@ -509,7 +540,8 @@ begin
   FreeCanvasContext;
   UnshareImage(False);
   FSharedImage.FHandle := AValue;
-  Changed(Self);
+  if FUpdateCount = 0
+  then Changed(Self);
 end;
 
 procedure TRasterImage.SetMaskHandle(AValue: HBITMAP);
@@ -546,6 +578,10 @@ procedure TRasterImage.SaveStreamNeeded;
 var
   WorkStream: TMemoryStream;
 begin
+  if FUpdateCount > 0
+  then raise EInvalidGraphicOperation.Create('Cannot save image wile update in progress');
+
+
   if FSharedImage.SaveStream <> nil then Exit;
   
   WorkStream := TMemoryStream.Create;

@@ -1108,11 +1108,6 @@ type
     Handle is interface dependent.
     To access the raw data, see TLazIntfImage in IntfGraphics.pas }
 
-  TBitmapInternalStateFlag = (
-    bmisCreatingCanvas
-    );
-  TBitmapInternalState = set of TBitmapInternalStateFlag;
-
   { TRasterImage }
 
   TRasterImage = class(TGraphic)
@@ -1120,7 +1115,10 @@ type
     FCanvas: TCanvas;
     FTransparentColor: TColor;
     FTransparentMode: TTransparentMode;
-    FInternalState: TBitmapInternalState;
+    FUpdateCount: Integer;
+    FUpdateCanvasOnly: Boolean;
+
+    procedure CanvasChanging(Sender: TObject);
     procedure CreateCanvas;
     procedure CreateMask(AColor: TColor = clDefault);
     procedure FreeCanvasContext;
@@ -1130,7 +1128,6 @@ type
     FSharedImage: TSharedRasterImage;
     function  CanShareImage(AClass: TSharedRasterImageClass): Boolean; virtual;
     procedure Changed(Sender: TObject); override;
-    procedure Changing(Sender: TObject); virtual;
     function  CreateDefaultBitmapHandle(const ADesc: TRawImageDescription): HBITMAP; virtual; abstract;
     procedure Draw(DestCanvas: TCanvas; const DestRect: TRect); override;
     function GetEmpty: Boolean; override;
@@ -1155,11 +1152,11 @@ type
     procedure SetBitmapHandle(AValue: HBITMAP);
     procedure SetMaskHandle(AValue: HBITMAP);
     procedure UnshareImage(CopyContent: boolean); virtual; abstract;
-    function  UpdateHandles(ABitmap, AMask: HBITMAP): Boolean; virtual; abstract; // called when handles are created from rawimage (true whan handle changed)
+    function  UpdateHandles(ABitmap, AMask: HBITMAP): Boolean; virtual; abstract; // called when handles are created from rawimage (true when handle changed)
     procedure SaveStreamNeeded;
     procedure FreeSaveStream;
     procedure ReadData(Stream: TStream); override;
-    procedure ReadStream(AStream: TMemoryStream; ASize: Longint); virtual; abstract; // loads imagedata into rawimage, this method shouldn't call changed.
+    procedure ReadStream(AStream: TMemoryStream; ASize: Longint); virtual; abstract; // loads imagedata into rawimage, this method shouldn't call changed().
     procedure SetSize(AWidth, AHeight: integer); virtual; abstract;
     procedure SetHandle(AValue: THandle); virtual;
     procedure SetHeight(AHeight: Integer); override;
@@ -1173,6 +1170,8 @@ type
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure Clear; override;
+    procedure BeginUpdate(ACanvasOnly: Boolean = False);
+    procedure EndUpdate;
     procedure FreeImage;
     function BitmapHandleAllocated: boolean; virtual; abstract;
     function MaskHandleAllocated: boolean; virtual; abstract;
@@ -1198,6 +1197,7 @@ type
     property BitmapHandle: HBITMAP read GetBitmapHandle write SetBitmapHandle;
     property MaskHandle: HBITMAP read GetMaskHandle write SetMaskHandle;
     property PixelFormat: TPixelFormat read GetPixelFormat write SetPixelFormat default pfDevice;
+    property RawImagePtr: PRawImage read GetRawImage; // be carefull with this, modify only within a begin/endupdate
     // property ScanLine[Row: Integer]: Pointer; -> Use TLazIntfImage for such things
     property TransparentColor: TColor read FTransparentColor
                                       write SetTransparentColor default clDefault;

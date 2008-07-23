@@ -27,6 +27,8 @@
 constructor TBitmapCanvas.Create(AImage: TRasterImage);
 begin
   inherited Create;
+  // set FImage after inherited create to make sure that the inherited Create
+  // won't trigger a call to FImage
   FImage := AImage;
 end;
 
