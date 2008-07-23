@@ -363,6 +363,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure PopUp();
     procedure PopUp(X, Y: Integer); virtual;
     property PopupComponent: TComponent read FPopupComponent
                                         write FPopupComponent;
