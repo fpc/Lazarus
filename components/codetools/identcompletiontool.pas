@@ -1540,22 +1540,25 @@ begin
         // check if in statement
         if (ilcfStartInStatement in CurrentIdentifierList.ContextFlags) then
         begin
-          if (CurrentIdentifierList.StartBracketLvl=0)
-          and (not (ilcfStartIsLValue in CurrentIdentifierList.ContextFlags))
+          // check if a semicolon is needed at the end
+          if (CurrentIdentifierList.StartBracketLvl>0)
+          or (CurPos.Flag in [cafSemicolon, cafEqual, cafColon, cafComma,
+                     cafPoint, cafRoundBracketOpen, cafRoundBracketClose,
+                     cafEdgedBracketOpen, cafEdgedBracketClose])
+          or ((CurPos.Flag=cafWord)
+              and (UpAtomIs('ELSE')
+                   or UpAtomIs('THEN')
+                   or UpAtomIs('DO')
+                   or UpAtomIs('TO')
+                   or UpAtomIs('OF')))
+          then begin
+            // do not add semicolon
+            CurrentIdentifierList.ContextFlags:=
+              CurrentIdentifierList.ContextFlags+[ilcfNoEndSemicolon];
+          end
+          else if (not (ilcfStartIsLValue in CurrentIdentifierList.ContextFlags))
           then begin
             // check if a semicolon is needed at the end
-            if (CurPos.Flag=cafWord)
-            and (UpAtomIs('ELSE')
-                 or UpAtomIs('THEN')
-                 or UpAtomIs('DO')
-                 or UpAtomIs('TO')
-                 or UpAtomIs('OF'))
-            then begin
-              // do not add semicolon
-              CurrentIdentifierList.ContextFlags:=
-                CurrentIdentifierList.ContextFlags+[ilcfNoEndSemicolon];
-            end
-            else
             if (CurPos.Flag in [cafEnd,cafBegin])
             or WordIsBlockKeyWord.DoItUpperCase(UpperSrc,
                                   CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)

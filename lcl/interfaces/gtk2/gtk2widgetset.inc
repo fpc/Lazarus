@@ -564,7 +564,9 @@ begin
   inherited AppInit(ScreenInfo);
   {$if defined(cpui386) or defined(cpux86_64)}
   // needed otherwise some gtk theme engines crash with division by zero
+  {$IFNDEF DisableGtkDivZeroFix}
   SetExceptionMask(GetExceptionMask + [exZeroDivide]);
+  {$ENDIF}
   {$endif}
 end;
 
