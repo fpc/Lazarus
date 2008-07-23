@@ -796,6 +796,9 @@ begin
   end;
   gtk_list_clear_items(FGtkList, 0, Count);
   FCachedCount:=0;
+  //Update the internal Item Index cache
+  if FOwner.HandleAllocated and (FOwner is TCustomComboBox) then
+    PInteger(GetWidgetInfo(Pointer(FOwner.Handle))^.UserData)^ := -1;
   EndUpdate;
   {$IFDEF CheckGtkList}
   ConsistencyCheck;
@@ -858,9 +861,9 @@ begin
   gtk_list_clear_items(FGtkList, Index, Index + 1);
   Include(FStates,glsItemCacheNeedsUpdate);
   
-  //Clear the combobox text
+  //Clear the combobox text and set item index to -1
   if FOwner is TCustomComboBox then
-    SetComboBoxText(PGtkCombo(FOwner.Handle), '');
+    TGtkWSCustomComboBox.SetItemIndex(TCustomComboBox(FOwner), -1);
   
   {$IFDEF CheckGtkList}
   ConsistencyCheck;
@@ -910,6 +913,7 @@ var
   li, cb, box,aLabel: PGtkWidget;
   item_requisition: TGtkRequisition;
   OldCount: LongInt;
+  LCLIndex: PInteger;
   
   procedure RaiseIndexOutOfBounds;
   begin
@@ -982,6 +986,14 @@ begin
     // insert in gtk
     gtk_widget_show_all(li);
     gtk_list_insert_items(FGtkList, g_list_append(nil, li), Index);
+    //if the item is inserted before the selected item the
+    //internal index cache becomes out of sync
+    if (FOwner is TCustomComboBox) and FOwner.HandleAllocated then
+    begin
+      LCLIndex := PInteger(GetWidgetInfo(Pointer(FOwner.Handle))^.UserData);
+      if Index <= LCLIndex^ then
+        Inc(LCLIndex^);
+    end;
     // adjust gtk height
     if (Owner is TCustomListBox)
     and (TListBox(Owner).ItemHeight>1) then begin

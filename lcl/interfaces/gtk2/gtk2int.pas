@@ -498,11 +498,13 @@ begin
   //Note: Assign/Clear is called inside CreateHandle before Handle is set
   if FOwner.HandleAllocated then begin
     WidgetInfo := GetWidgetInfo(Pointer(FOwner.Handle), False);
-    if WidgetInfo <> nil then
-      Inc(WidgetInfo^.ChangeLock);
+    Inc(WidgetInfo^.ChangeLock);
+    
     gtk_list_store_clear(FGtkListStore);
-    if WidgetInfo <> nil then
-      Dec(WidgetInfo^.ChangeLock);
+
+    Dec(WidgetInfo^.ChangeLock);
+    //Update the internal Index cache
+    PInteger(WidgetInfo^.UserData)^ := -1;
   end;
     
   IncreaseChangeStamp;
@@ -551,7 +553,11 @@ begin
     Include(FStates, glsItemCacheNeedsUpdate);
 
   if FOwner is TCustomComboBox then
+  begin
     TGtk2WSCustomComboBox.SetText(FOwner, '');
+    //Update the internal Index cache
+    PInteger(WidgetInfo^.UserData)^ := -1;
+  end;
 end;
 
 function TGtkListStoreStringList.IndexOf(const S: string): Integer;

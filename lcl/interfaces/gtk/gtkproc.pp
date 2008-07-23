@@ -353,12 +353,6 @@ procedure ReleaseKeyBoardFromForm(AForm: TCustomForm);
 procedure GrabMouseToForm(AForm: TCustomForm);
 procedure ReleaseMouseFromForm(AForm: TCustomForm);
 
-// combobox
-procedure SetComboBoxText(ComboWidget: PGtkCombo; const NewText: String);
-function GetComboBoxText(ComboWidget: PGtkCombo): string;
-function GetComboBoxItemIndex(ComboBox: TCustomComboBox): integer;
-procedure SetComboBoxItemIndex(ComboBox: TCustomComboBox; Index: integer);
-
 // label
 procedure SetLabelAlignment(LabelWidget: PGtkLabel; 
   const NewAlignment: TAlignment);

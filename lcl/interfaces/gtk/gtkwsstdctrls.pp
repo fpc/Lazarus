@@ -98,6 +98,7 @@ type
     class procedure SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer); override;
     class procedure SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
     class procedure SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle); override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
     class procedure SetReadOnly(const ACustomComboBox: TCustomComboBox; NewReadOnly: boolean); override;
 
     class function  GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
@@ -886,18 +887,6 @@ begin
 
   GtkList:=PGtkList(ComboWidget^.List);
 
-  // Switching the selection mode is necessary to avoid the following problems:
-  // - The first added item is automatically selected when mode is "BROWSE"
-  // - Is not possible to select the previous selected item if mode is "BROWSE"
-  //   and current index is -1
-  // - The item is deselected after a second click if mode is "SINGLE"
-  // - The OnSelect event could be fired after add the first item when mode is
-  //   "BROWSE". Since LM_SELCHANGE is sent in 'changed' event now, no problem.
-  // So basically the mode is set to BROWSE when a item is selected and
-  //   "SINGLE" when there's no item selected
-  
-  gtk_list_set_selection_mode(GtkList, GTK_SELECTION_SINGLE);
-
   // Items
   ItemList:= TGtkListStringList.Create(GtkList, ComboBox, False);
   gtk_object_set_data(PGtkObject(Widget), GtkListItemLCLListTag, ItemList);
@@ -908,14 +897,29 @@ begin
   New(LCLIndex);
   WidgetInfo^.UserData := LCLIndex;
   WidgetInfo^.DataOwner := True;
+
   // ItemIndex
+
+  // Switching the selection mode is necessary to avoid the following problems:
+  // - The first added item is automatically selected when mode is "BROWSE"
+  // - Is not possible to select the previous selected item if mode is "BROWSE"
+  //   and current index is -1
+  // - The item is deselected after a second click if mode is "SINGLE"
+  // - The OnSelect event could be fired after add the first item when mode is
+  //   "BROWSE". Since LM_SELCHANGE is sent in 'changed' event now, no problem.
+  // So basically the mode is set to BROWSE when a item is selected and
+  //   "SINGLE" when there's no item selected
   if ComboBox.ItemIndex >= 0 then
   begin
+    gtk_list_set_selection_mode(GtkList, GTK_SELECTION_BROWSE);
     gtk_list_select_item(GtkList, ComboBox.ItemIndex);
     LCLIndex^ := ComboBox.ItemIndex;
   end
   else
+  begin
+    gtk_list_set_selection_mode(GtkList, GTK_SELECTION_SINGLE);
     LCLIndex^ := -1;
+  end;
 
   // MaxLength
   gtk_entry_set_max_length(PGtkEntry(ComboWidget^.entry),guint16(ComboBox.MaxLength));
@@ -955,7 +959,7 @@ class function TGtkWSCustomComboBox.GetText(const AWinControl: TWinControl;
   var AText: String): Boolean;
 begin
   //DebugLn('TGtkWSCustomComboBox.GetText ',DbgSName(ACustomComboBox),' ',GetWidgetDebugReport(PGtkWidget(ACustomComboBox.Handle)));
-  AText:=GetComboBoxText(PGtkCombo(AWinControl.Handle));
+  AText := gtk_entry_get_text(PGtkEntry(PGtkCombo(AWinControl.Handle)^.entry));
   //if AWinControl.Name='FileExtensionsComboBox' then
   //  DebugLn('TGtkWSCustomComboBox.GetText ',DbgSName(AWinControl),' ',GetWidgetDebugReport(PGtkWidget(AWinControl.Handle)),' AText="',AText,'"');
   Result:=true;
@@ -963,9 +967,15 @@ end;
 
 class function TGtkWSCustomComboBox.GetItemIndex(
   const ACustomComboBox: TCustomComboBox): integer;
+var
+  ListWidget: PGtkList;
 begin
   //DebugLn('TGtkWSCustomComboBox.GetItemIndex ',DbgSName(ACustomComboBox),' ',GetWidgetDebugReport(PGtkWidget(ACustomComboBox.Handle)));
-  Result:=GetComboBoxItemIndex(ACustomComboBox);
+  ListWidget := PGtkList(PGtkCombo(ACustomComboBox.Handle)^.list);
+  if ListWidget^.selection <> nil then
+    Result := gtk_list_child_position(ListWidget, ListWidget^.selection^.data)
+  else
+    Result := -1;
 end;
 
 class function  TGtkWSCustomComboBox.GetMaxLength(
@@ -1006,8 +1016,30 @@ end;
 
 class procedure TGtkWSCustomComboBox.SetItemIndex(
   const ACustomComboBox: TCustomComboBox; NewIndex: integer);
+var
+  ComboWidget: PGtkCombo;
+  WidgetInfo: PWidgetInfo;
 begin
-  SetComboBoxItemIndex(ACustomComboBox, NewIndex);
+  ComboWidget := PGtkCombo(ACustomComboBox.Handle);
+  WidgetInfo := GetWidgetInfo(ComboWidget);
+  //Store the LCLIndex
+  PInteger(WidgetInfo^.UserData)^ := NewIndex;
+  //Avoid calling OnChange/OnSelect events
+  Inc(WidgetInfo^.ChangeLock);
+  //gtk_list_select_item does not update the list when Index is -1
+  if NewIndex > -1 then
+  begin
+    gtk_list_set_selection_mode(PGtkList(ComboWidget^.list),
+      GTK_SELECTION_BROWSE);
+    gtk_list_select_item(PGtkList(ComboWidget^.list), NewIndex);
+  end
+  else
+  begin
+    gtk_list_set_selection_mode(PGtkList(ComboWidget^.list),
+      GTK_SELECTION_SINGLE);
+    gtk_entry_set_text(PGtkEntry(ComboWidget^.entry), '');
+  end;
+  Dec(WidgetInfo^.ChangeLock);
 end;
 
 class procedure TGtkWSCustomComboBox.SetMaxLength(
@@ -1038,6 +1070,31 @@ begin
         gtk_combo_set_use_arrows_always(GtkCombo,GdkFalse);
         gtk_combo_set_case_sensitive(GtkCombo,GdkTrue);
       end;
+  end;
+end;
+
+class procedure TGtkWSCustomComboBox.SetText(const AWinControl: TWinControl;
+  const AText: String);
+var
+  ComboControl: TCustomComboBox absolute AWinControl;
+  ComboWidget: PGtkCombo;
+  i: Integer;
+begin
+  if ComboControl.ReadOnly then
+  begin
+    i := ComboControl.Items.IndexOf(AText);
+    TGtkWSCustomComboBox.SetItemIndex(ComboControl, i);
+  end
+  else
+  begin
+    ComboWidget := PGtkCombo(AWinControl.Handle);
+    // lock combobox, so that no OnChange event is not fired
+    LockOnChange(PGtkObject(ComboWidget^.entry), +1);
+    // set text
+    // The String > PChar conversion ensures at least a null terminated string
+    gtk_entry_set_text(PGtkEntry(ComboWidget^.entry), PChar(AText));
+    // unlock combobox
+    LockOnChange(PGtkObject(ComboWidget^.entry), -1);
   end;
 end;
 

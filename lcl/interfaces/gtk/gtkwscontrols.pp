@@ -671,13 +671,6 @@ begin
   csPage:
     SetNotebookPageTabLabel;
 
-  csComboBox    :
-    begin
-      //DebugLn('SetLabel: ',TComboBox(Sender).Name,':',TComboBox(Sender).ClassName,
-      //  ' ',DbgS(TComboBox(Sender).Handle),' "',PLabel,'"');
-      SetComboBoxText(PGtkCombo(TComboBox(AWinControl).Handle), AText)
-    end;
-
   else
     // DebugLn('WARNING: [TGtkWidgetSet.SetLabel] --> not handled for class ',Sender.ClassName);
   end;
