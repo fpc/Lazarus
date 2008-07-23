@@ -7472,6 +7472,9 @@ begin
     if fHighlighter<>nil then begin
       fHighlighter.ResetRange;
       TSynEditStringList(Lines).ClearRanges(fHighlighter.GetRange);
+      fTSearch.IdentChars:=fHighlighter.IdentChars;
+    end else begin
+      fTSearch.ResetIdentChars;
     end;
     {$ENDIF}
     RecalcCharExtent;

@@ -43,10 +43,14 @@ interface
 
 uses
   Classes
-  {$IFDEF SYN_LAZARUS}, LCLProc, SynRegExpr, SynEditMiscProcs{$ENDIF};
+  {$IFDEF SYN_LAZARUS}
+  , LCLProc, SynRegExpr, SynEditMiscProcs, SynEditTypes
+  {$ENDIF};
 
 procedure MakeCompTable(Sensitive: boolean);
+{$IFNDEF SYN_LAZARUS}
 procedure MakeDelimiterTable;
+{$ENDIF}
 
 type
   {$IFDEF SYN_LAZARUS}
@@ -77,6 +81,7 @@ type
     fResults: TList;
     fShiftInitialized: boolean;
     {$IFDEF SYN_LAZARUS}
+    FIdentChars: TSynIdentChars;
     FoundLen: integer;
     RegExprEngine : TRegExpr;
     fRegExpr: Boolean;
@@ -116,6 +121,7 @@ type
     {$IFDEF SYN_LAZARUS}
   public
     procedure ClearResults;
+    procedure ResetIdentChars;
     function GetReplace(Index: integer): string;
     property RegularExpressions: Boolean read fRegExpr write SetRegExpr;
     property ResultLengths[Index: integer]: integer read GetResultLen;
@@ -124,6 +130,7 @@ type
     property RegExprReplace: string read fRegExprReplace write fRegExprReplace;
     property Replacement: string read fReplacement write fReplacement;
     property Backwards: boolean read FBackwards write FBackwards;
+    property IdentChars: TSynIdentChars read FIdentChars write FIdentChars;
     {$ENDIF}
   end;
 
@@ -147,7 +154,9 @@ uses
 var
   CompTableSensitive: boolean;
   CompTable: array[#0..#255] of Byte;
+  {$IFNDEF SYN_LAZARUS}
   DelimTable: array[#0..#255] of boolean;
+  {$ENDIF}
 
 procedure MakeCompTable(Sensitive: Boolean);
 var
@@ -168,12 +177,14 @@ begin
   end;
 end;
 
+{$IFNDEF SYN_LAZARUS}
 procedure MakeDelimiterTable;
 var
   c: char;
 begin
   for c := #0 to #255 do DelimTable[c] := not IsCharAlphaNumeric(c);
 end;
+{$ENDIF}
 
 {$IFDEF SYN_LAZARUS}
 function GetLineCountOfString(const aText: string): integer;
@@ -255,6 +266,7 @@ begin
   fResults := TList.Create;
   {$IFDEF SYN_LAZARUS}
   RegExprEngine:=TRegExpr.Create;
+  ResetIdentChars;
   {$ENDIF}
 end;
 
@@ -327,8 +339,13 @@ var
   Test: PChar;
 begin
   Test := Run - PatLen;
+  {$IFDEF SYN_LAZARUS}
+  Result := ((Test < Origin) or (not (Test[0] in FIdentChars))) and
+    ((Run >= TheEnd) or (not (Run[1] in FIdentChars)));
+  {$ELSE}
   Result := ((Test < Origin) or DelimTable[Test[0]]) and
     ((Run >= TheEnd) or DelimTable[Run[1]]);
+  {$ENDIF}
 end;
 
 function TSynEditSearch.Next: Integer;
@@ -523,10 +540,10 @@ var
       if FoundStartPos.X<1 then
         Result:=true
       else if (FoundStartPos.y=y+1) then begin
-        Result:=DelimTable[Line[FoundStartPos.X]];// line is PChar
+        Result:=not (Line[FoundStartPos.X] in FIdentChars);// line is PChar
       end else if FoundStartPos.y>0 then begin
         CurLine:=Lines[FoundStartPos.Y-1];
-        Result:=DelimTable[CurLine[FoundStartPos.X-1]]; // CurLine is string
+        Result:=not (CurLine[FoundStartPos.X-1] in FIdentChars); // CurLine is string
       end else
         Result:=true;
     end;
@@ -542,12 +559,13 @@ var
       // check for word boundary
       if (FoundEndPos.y=y+1) then begin
         //DebugLn(['WholeWordAtEndFits Line="',Line,'" FoundEndPos=',dbgs(FoundEndPos),' Line[FoundEndPos.X-1]=',Line[FoundEndPos.X-1]]);
-        Result:=(FoundEndPos.X>LineLen) or DelimTable[Line[FoundEndPos.X-1]];// Line is PChar
+        Result:=(FoundEndPos.X>LineLen)
+                or (not (Line[FoundEndPos.X-1] in FIdentChars));// Line is PChar
       end else if FoundEndPos.y<=Lines.Count then begin
         CurLine:=Lines[FoundEndPos.Y-1];
         //DebugLn(['WholeWordAtEndFits CurLine="',CurLine,'" FoundEndPos=',dbgs(FoundEndPos)]);
         Result:=(FoundEndPos.X>length(CurLine))
-                or DelimTable[CurLine[FoundEndPos.X]];// CurLine is string
+                or (not (CurLine[FoundEndPos.X] in FIdentChars));// CurLine is string
       end else
         Result:=true;
     end;
@@ -813,7 +831,7 @@ begin
   end;
   SearchFor:=PChar(FirstPattern);
   SearchLen:=length(FirstPattern);
-
+  
   if fRegExpr then begin
     RegExprEngine.ModifierI:=not fSensitive;
     RegExprEngine.ModifierM:=IsMultiLinePattern;
@@ -889,7 +907,7 @@ begin
           if CompTable[Line[x]]=CompTable[SearchFor^] then begin
             //DebugLn(['TSynEditSearch.FindNextOne First character found x=',x,' Line[x]=',Line[x]]);
             if (not fWhole)
-            or (x=0) or DelimTable[Line[x-1]] then begin
+            or (x=0) or (not (Line[x-1] in FIdentChars)) then begin
               i:=1;
               while (i<SearchLen) and (CompTable[Line[x+i]]=CompTable[SearchFor[i]])
               do
@@ -1018,6 +1036,16 @@ begin
   fResults.Clear;
 end;
 
+procedure TSynEditSearch.ResetIdentChars;
+var
+  c: Char;
+begin
+  FIdentChars:=[];
+  for c := #0 to #255 do
+    if IsCharAlphaNumeric(c) then
+      Include(FIdentChars,c);
+end;
+
 function TSynEditSearch.GetReplace(Index: integer): string;
 begin
   if (Index >= 0) and (Index < fResults.Count) then
@@ -1056,7 +1084,9 @@ end;
 initialization
   CompTableSensitive := True; // force the table initialization
   MakeCompTable(False);
+  {$IFNDEF SYN_LAZARUS}
   MakeDelimiterTable;
+  {$ENDIF}
   
 end.
 
