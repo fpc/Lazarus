@@ -372,16 +372,37 @@ begin
     if ErrorExists and (ofoExceptionOnError in Options) then
       raise EOutputFilterError.Create('there was an error');
   finally
+    {$IFDEF VerboseOFExecute}
+    WriteLn('TOutputFilter.Execute W1');
+    {$ENDIF}
     if EndUpdateNeeded then
       EndUpdate;
+    {$IFDEF VerboseOFExecute}
+    WriteLn('TOutputFilter.Execute W2');
+    {$ENDIF}
     EndBufferingOutput;
     fProcess:=nil;
+    {$IFDEF VerboseOFExecute}
+    WriteLn('TOutputFilter.Execute W3');
+    {$ENDIF}
     FreeAndNil(FAsyncOutput);
+    {$IFDEF VerboseOFExecute}
+    WriteLn('TOutputFilter.Execute W4');
+    {$ENDIF}
     if Assigned(OnEndReading) then OnEndReading(Self,fOutput);
+    {$IFDEF VerboseOFExecute}
+    WriteLn('TOutputFilter.Execute W5');
+    {$ENDIF}
     FreeAndNil(FScanLine);
+    {$IFDEF VerboseOFExecute}
+    WriteLn('TOutputFilter.Execute W6');
+    {$ENDIF}
     FTool:=nil;
     FCaller:=nil;
     ClearScanners;
+    {$IFDEF VerboseOFExecute}
+    WriteLn('TOutputFilter.Execute W7');
+    {$ENDIF}
   end;
 end;
 
