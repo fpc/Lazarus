@@ -419,6 +419,7 @@ begin
   if FDefaultBrowser='' then begin
     // Then search in path. Prefer open source ;)
     if Find('htmlview')
+    or Find('xdg-open')
     or Find('firefox')
     or Find('mozilla')
     or Find('galeon')

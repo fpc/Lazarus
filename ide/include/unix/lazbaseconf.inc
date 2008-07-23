@@ -165,6 +165,7 @@ begin
   Params:='%s';
   Browser:='';
   // prefer open source ;)
+  if Find('xdg-open',Browser) then exit;
   if Find('mozilla',Browser) then exit;
   if Find('galeon',Browser) then exit;
   if Find('konqueror',Browser) then exit;
