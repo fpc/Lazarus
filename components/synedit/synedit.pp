@@ -10658,6 +10658,8 @@ var
         fHighlighter.Next;
       end;
       MaxKnownTokenPos := Length(Line);
+      TokenPosList[i].X := MaxKnownTokenPos;
+      TokenListCnt := i + 1;
       Result := TokenPosList[i-1].Attr = BracketKind;
       exit;
     end;
