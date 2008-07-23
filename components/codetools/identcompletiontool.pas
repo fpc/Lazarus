@@ -151,6 +151,7 @@ type
     ilcfStartInStatement,  // context starts in statements. e.g. between begin..end
     ilcfStartIsLValue,     // position is start of one statement. e.g. 'A|:=', does not check if A can be assigned
     ilcfNeedsEndSemicolon, // after context a semicolon is needed. e.g. 'A| end'
+    ilcfNoEndSemicolon,    // no semicolon after. E.g. 'A| else'
     ilcfIsExpression,      // is expression part of statement. e.g. 'if expr'
     ilcfCanProcDeclaration // context allows to declare a procedure/method
     );
@@ -1542,16 +1543,23 @@ begin
           if (CurrentIdentifierList.StartBracketLvl=0)
           and (not (ilcfStartIsLValue in CurrentIdentifierList.ContextFlags))
           then begin
-            // check if end needs semicolon
+            // check if a semicolon is needed at the end
+            if (CurPos.Flag=cafWord)
+            and (UpAtomIs('ELSE')
+                 or UpAtomIs('THEN')
+                 or UpAtomIs('DO')
+                 or UpAtomIs('TO')
+                 or UpAtomIs('OF'))
+            then begin
+              // do not add semicolon
+              CurrentIdentifierList.ContextFlags:=
+                CurrentIdentifierList.ContextFlags+[ilcfNoEndSemicolon];
+            end
+            else
             if (CurPos.Flag in [cafEnd,cafBegin])
             or WordIsBlockKeyWord.DoItUpperCase(UpperSrc,
                                   CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
             or ((CurPos.Flag=cafWord)
-                and (not UpAtomIs('ELSE'))
-                and (not UpAtomIs('THEN'))
-                and (not UpAtomIs('DO'))
-                and (not UpAtomIs('TO'))
-                and (not UpAtomIs('OF'))
                 and (not PositionsInSameLine(Src,IdentEndPos,CurPos.StartPos)))
             then begin
               // add semicolon

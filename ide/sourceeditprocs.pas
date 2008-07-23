@@ -410,6 +410,7 @@ var
   CursorAtEnd: boolean;
   ProcModifierPos: LongInt;
   ProcHeadFlags: TProcHeadAttributes;
+  CanAddSemicolon: Boolean;
 begin
   Result:='';
   CursorToLeft:=0;
@@ -417,6 +418,7 @@ begin
   ValueType:=icvIdentifier;
   Index:=aCompletion.Position;
   IdentList:=CodeToolBoss.IdentifierList;
+  CanAddSemicolon:=CodeToolsOpts.IdentComplAddSemicolon;
 
   IdentItem:=IdentList.FilteredItems[Index];
   if IdentItem=nil then exit;
@@ -496,6 +498,7 @@ begin
         Result:=TrimLeft(CodeToolBoss.SourceChangeCache
           .BeautifyCodeOptions.BeautifyProc(
                    Result,CodeToolBoss.IdentifierList.StartContextPos.X,false));
+        CanAddSemicolon:=false;
       end;
 
     icvUnitName:
@@ -532,10 +535,15 @@ begin
     Result:=Result+AddChar;
 
   // add semicolon for statement ends
-  if (ilcfNeedsEndSemicolon in IdentList.ContextFlags)
-  and CodeToolsOpts.IdentComplAddSemicolon then begin
-    Result:=Result+';';
-    inc(CursorToLeft);
+  if CanAddSemicolon
+  and (not (ilcfNoEndSemicolon in IdentList.ContextFlags))
+  then begin
+    if (ilcfNeedsEndSemicolon in IdentList.ContextFlags)
+    or (IdentItem.GetDesc=ctnProcedure)
+    then begin
+      Result:=Result+';';
+      inc(CursorToLeft);
+    end;
   end;
 
   //DebugLn(['GetIdentCompletionValue END Result="',Result,'"']);
