@@ -414,13 +414,13 @@ begin
   Result := FPixelFormat;
 end;
 
-function TCustomBitmap.GetRawImage: PRawImage;
+function TCustomBitmap.GetRawImagePtr: PRawImage;
 begin
   RawimageNeeded(False);
   Result := @TSharedCustomBitmap(FSharedImage).FImage;
 end;
 
-function TCustomBitmap.GetRawImageDescription: PRawImageDescription;
+function TCustomBitmap.GetRawImageDescriptionPtr: PRawImageDescription;
 begin
   RawimageNeeded(True);
   Result := @TSharedCustomBitmap(FSharedImage).FImage.Description;

@@ -291,7 +291,7 @@ end;
 procedure TCustomIcon.AssignImage(ASource: TRasterImage);
 var
   Image, NewImage: TIconImage;
-  RawImage: PRawImage;
+  RawImg: PRawImage;
 begin
   if FCurrent = -1
   then raise EInvalidGraphicOperation.Create(rsIconNoCurrent);
@@ -311,28 +311,28 @@ begin
   UnshareImage(True);
   FreeCanvasContext;
   
-  RawImage := ASource.GetRawImage;
+  RawImg := ASource.GetRawImagePtr;
   NewImage := TIconImage.Create(Image.PixelFormat, Image.Height, Image.Width);
   try
-    NewImage.FImage.Description := RawImage^.Description;
+    NewImage.FImage.Description := RawImg^.Description;
 
-    NewImage.FImage.DataSize := RawImage^.DataSize;
+    NewImage.FImage.DataSize := RawImg^.DataSize;
     if NewImage.FImage.DataSize > 0
     then begin
       NewImage.FImage.Data := GetMem(NewImage.FImage.DataSize);
-      Move(RawImage^.Data^, NewImage.FImage.Data^, NewImage.FImage.DataSize);
+      Move(RawImg^.Data^, NewImage.FImage.Data^, NewImage.FImage.DataSize);
     end;
-    NewImage.FImage.MaskSize := RawImage^.MaskSize;
+    NewImage.FImage.MaskSize := RawImg^.MaskSize;
     if NewImage.FImage.MaskSize > 0
     then begin
       NewImage.FImage.Mask := GetMem(NewImage.FImage.MaskSize);
-      Move(RawImage^.Mask^, NewImage.FImage.Mask^, NewImage.FImage.MaskSize);
+      Move(RawImg^.Mask^, NewImage.FImage.Mask^, NewImage.FImage.MaskSize);
     end;
-    NewImage.FImage.PaletteSize := RawImage^.PaletteSize;
+    NewImage.FImage.PaletteSize := RawImg^.PaletteSize;
     if NewImage.FImage.PaletteSize > 0
     then begin
       NewImage.FImage.Palette := GetMem(NewImage.FImage.PaletteSize);
-      Move(RawImage^.Palette^, NewImage.FImage.Palette^, NewImage.FImage.PaletteSize);
+      Move(RawImg^.Palette^, NewImage.FImage.Palette^, NewImage.FImage.PaletteSize);
     end;
 
     // this cannot be shcanged without adjusting data
@@ -450,14 +450,14 @@ begin
   else Result := TIconImage(TSharedIcon(FSharedImage).FImages[FCurrent]).PixelFormat;
 end;
 
-function TCustomIcon.GetRawImage: PRawImage;
+function TCustomIcon.GetRawImagePtr: PRawImage;
 begin
   if FCurrent = -1
   then Result := nil
   else Result := @TIconImage(TSharedIcon(FSharedImage).FImages[FCurrent]).FImage;
 end;
 
-function TCustomIcon.GetRawImageDescription: PRawImageDescription;
+function TCustomIcon.GetRawImageDescriptionPtr: PRawImageDescription;
 begin
   if FCurrent = -1
   then Result := nil
@@ -575,7 +575,7 @@ var
   DIBReader: TLazReaderDIB;
   ImgReader: TFPCustomImageReader;
   LazReader: ILazImageReader;
-  RawImage: TRawImage;
+  RawImg: TRawImage;
   Depth: Byte;
 
 begin
@@ -691,13 +691,13 @@ begin
       end;
 
       // Add image
-      IntfImage.GetRawImage(RawImage, True);
+      IntfImage.GetRawImage(RawImg, True);
       // Paul: don't set MaskBitsPerPixel to zero => windows will fail with no mask
       // Even empty mask is better than no mask. But maybe CreateIconIndirect must be fixed on windows?
-      RawImage.Description.MaskBitsPerPixel := 1;
+      RawImg.Description.MaskBitsPerPixel := 1;
       with TSharedIcon(FSharedImage) do
       begin
-        IconImage := GetImagesClass.Create(RawImage);
+        IconImage := GetImagesClass.Create(RawImg);
         if IconImage is TCursorImageImage then
           TCursorImageImage(IconImage).HotSpot := Point(IconDir[n].wXHotSpot, IconDir[n].wYHotSpot);
         FImages.Add(IconImage);

@@ -1123,6 +1123,7 @@ type
     procedure CreateMask(AColor: TColor = clDefault);
     procedure FreeCanvasContext;
     function  GetCanvas: TCanvas;
+    function  GetRawImage: TRawImage;
     procedure SetTransparentColor(AValue: TColor);
   protected
     FSharedImage: TSharedRasterImage;
@@ -1136,8 +1137,8 @@ type
     function GetMaskHandle: HBITMAP; virtual; abstract;
     function GetMimeType: string; override;
     function GetPixelFormat: TPixelFormat; virtual; abstract;
-    function GetRawImage: PRawImage; virtual; abstract;
-    function GetRawImageDescription: PRawImageDescription; virtual; abstract;
+    function GetRawImagePtr: PRawImage; virtual; abstract;
+    function GetRawImageDescriptionPtr: PRawImageDescription; virtual; abstract;
     function GetTransparent: Boolean; override;
     class function GetSharedImageClass: TSharedRasterImageClass; virtual;
     function GetHeight: Integer; override;
@@ -1197,7 +1198,7 @@ type
     property BitmapHandle: HBITMAP read GetBitmapHandle write SetBitmapHandle;
     property MaskHandle: HBITMAP read GetMaskHandle write SetMaskHandle;
     property PixelFormat: TPixelFormat read GetPixelFormat write SetPixelFormat default pfDevice;
-    property RawImagePtr: PRawImage read GetRawImage; // be carefull with this, modify only within a begin/endupdate
+    property RawImage: TRawImage read GetRawImage; // be carefull with this, modify only within a begin/endupdate
     // property ScanLine[Row: Integer]: Pointer; -> Use TLazIntfImage for such things
     property TransparentColor: TColor read FTransparentColor
                                       write SetTransparentColor default clDefault;
@@ -1256,8 +1257,8 @@ type
     function GetMaskHandle: HBITMAP; override;
     function GetPalette: HPALETTE; override;
     function GetPixelFormat: TPixelFormat; override;
-    function GetRawImage: PRawImage; override;
-    function GetRawImageDescription: PRawImageDescription; override;
+    function GetRawImagePtr: PRawImage; override;
+    function GetRawImageDescriptionPtr: PRawImageDescription; override;
     function GetTransparent: Boolean; override;
     procedure HandleNeeded; override;
     function InternalReleaseBitmapHandle: HBITMAP; override;
@@ -1463,8 +1464,8 @@ type
     function GetMaskHandle: HBITMAP; override;
     function GetPalette: HPALETTE; override;
     function GetPixelFormat: TPixelFormat; override;
-    function GetRawImage: PRawImage; override;
-    function GetRawImageDescription: PRawImageDescription; override;
+    function GetRawImagePtr: PRawImage; override;
+    function GetRawImageDescriptionPtr: PRawImageDescription; override;
     function GetTransparent: Boolean; override;
     class function GetSharedImageClass: TSharedRasterImageClass; override;
     procedure HandleNeeded; override;

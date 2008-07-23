@@ -129,7 +129,7 @@ var
 begin
   if BitmapHandleAllocated then exit;
 
-  ImagePtr := GetRawImage;
+  ImagePtr := GetRawImagePtr;
   ImgMaskHandle := 0;
 
   // create a device compatible image
@@ -284,23 +284,23 @@ end;
 
 procedure TRasterImage.LoadFromBitmapHandles(ABitmap, AMask: HBitmap; ARect: PRect);
 var
-  RawImage: TRawImage;
+  RawImg: TRawImage;
   ImgHandle, ImgMaskHandle: HBitmap;
 begin
   //DebugLn('TRasterImage.CreateFromBitmapHandles A SrcRect=',dbgs(SrcRect));
-  if not RawImage_FromBitmap(RawImage, ABitmap, AMask, ARect) then
+  if not RawImage_FromBitmap(RawImg, ABitmap, AMask, ARect) then
     raise EInvalidGraphicOperation.Create('TRasterImage.LoadFromBitmapHandles Get RawImage');
   ImgHandle:=0;
   ImgMaskHandle:=0;
   try
     //DebugLn('TRasterImage.CreateFromBitmapHandles B SrRect=',dbgs(SrcRect));
-    if not RawImage_CreateBitmaps(RawImage, ImgHandle, ImgMaskHandle) then
+    if not RawImage_CreateBitmaps(RawImg, ImgHandle, ImgMaskHandle) then
       raise EInvalidGraphicOperation.Create('TRasterImage.LoadFromBitmapHandles Create bitmaps');
     SetHandles(ImgHandle, ImgMaskHandle);
     ImgHandle:=0;
     ImgMaskHandle:=0;
   finally
-    RawImage.FreeData;
+    RawImg.FreeData;
     if ImgHandle<>0 then DeleteObject(ImgHandle);
     if ImgMaskHandle<>0 then DeleteObject(ImgMaskHandle);
   end;
@@ -414,6 +414,16 @@ begin
   then Changed(Self);
 end;
 
+function TRasterImage.GetRawImage: TRawImage;
+var
+  p: PRawImage;
+begin
+  p := GetRawImagePtr;
+  if p = nil
+  then Result.Init
+  else Result := p^;
+end;
+
 procedure TRasterImage.GetSupportedSourceMimeTypes(List: TStrings);
 begin
   if (ClassType=TBitmap) or (ClassType=TPixmap) or (ClassType=TCustomIcon) then
@@ -443,7 +453,7 @@ function TRasterImage.GetWidth: Integer;
 var
   Desc: PRawImageDescription;
 begin
-  Desc := GetRawImageDescription;
+  Desc := GetRawImageDescriptionPtr;
   if (Desc = nil) or (Desc^.Format = ricfNone)
   then Result := 0
   else Result := Desc^.Width;
@@ -673,7 +683,7 @@ function TRasterImage.GetHeight: Integer;
 var
   Desc: PRawImageDescription;
 begin
-  Desc := GetRawImageDescription;
+  Desc := GetRawImageDescriptionPtr;
   if (Desc = nil) or (Desc^.Format = ricfNone)
   then Result := 0
   else Result := Desc^.Height;

@@ -189,7 +189,7 @@ var
   IntfImage: TLazIntfImage;
   ImgReader: TLazReaderIcnsPart;
   LazReader: ILazImageReader;
-  RawImage: TRawImage;
+  RawImg: TRawImage;
 begin
   AStream.Read(Resource, SizeOf(Resource));
 
@@ -218,9 +218,9 @@ begin
     else IntfImage.DataDescription := QueryDescription([riqfRGB, riqfAlpha, riqfMask]); // fallback to default
 
     ImgReader.ImageRead(AStream, IntfImage);
-    IntfImage.GetRawImage(RawImage, True);
+    IntfImage.GetRawImage(RawImg, True);
 
-    IcnsAdd(ImgReader.IconType, RawImage);
+    IcnsAdd(ImgReader.IconType, RawImg);
   end;
 
   LazReader := nil;
