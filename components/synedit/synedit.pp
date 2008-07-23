@@ -627,11 +627,11 @@ type
                                  StartIncludeNeighborChars, MoveCaret,
                                  SelectBrackets, OnlyVisible: boolean
                                  ): TPoint; virtual;
-public
+  public
     procedure FindMatchingBracketPair(const PhysCaret: TPoint;
                                       var StartBracket, EndBracket: TPoint;
                                       OnlyVisible: boolean);
-protected
+  protected
     {$ENDIF}
     function GetReadOnly: boolean; virtual;
     procedure HideCaret;
@@ -10605,11 +10605,68 @@ function TCustomSynEdit.FindMatchingBracket(PhysStartBracket: TPoint;
 // returns physical (screen) position of end bracket
 const
   Brackets: array[0..5] of char = ('(', ')', '[', ']', '{', '}');
+type
+  TokenPos = Record X: Integer; Attr: Integer; end;
 var
-  Line: string;
+  Line, s1: string;
   PosX, PosY: integer;
   StartPt: TPoint;
   LogicalStart: TPoint;
+  // for ContextMatch
+  BracketKind, TmpStart: Integer;
+  TmpAttr : TSynHighlighterAttributes;
+  // for IsContextBracket
+  MaxKnownTokenPos, TokenListCnt: Integer;
+  TokenPosList: Array of TokenPos;
+
+  // remove all text, that is not of desired attribute
+  function IsContextBracket: boolean;
+  var
+    i, l: Integer;
+  begin
+    if not assigned(fHighlighter) then exit(true);
+    if PosX > MaxKnownTokenPos then begin
+      // Token is not yet known
+      l := Length(TokenPosList);
+      if l < max(CharsInWindow * 2, 32) then begin
+        l := max(CharsInWindow * 2, 32);
+        SetLength(TokenPosList, l);
+      end;
+      // Init the Highlighter only once per line
+      if MaxKnownTokenPos < 1 then begin
+        fHighlighter.SetRange(TSynEditStringList(Lines).Ranges[PosY - 1]);
+        fHighlighter.SetLine(Line, PosY);
+        TokenListCnt := 0;
+      end
+      else
+        fHighlighter.Next;
+      i := TokenListCnt;
+      while not fHighlighter.GetEol do begin
+        TokenPosList[i].X := fHighlighter.GetTokenPos + 1;
+        TokenPosList[i].Attr := fHighlighter.GetTokenKind;
+        if TokenPosList[i].X > PosX then begin
+          TokenListCnt := i + 1;
+          MaxKnownTokenPos := TokenPosList[i].X;
+          Result := TokenPosList[i-1].Attr = BracketKind;
+          exit;
+        end;
+        inc(i);
+        if i >= l then begin
+          l := l * 4;
+          SetLength(TokenPosList, l);
+        end;
+        fHighlighter.Next;
+      end;
+      MaxKnownTokenPos := Length(Line);
+      Result := TokenPosList[i-1].Attr = BracketKind;
+      exit;
+    end;
+    // Token is in previously retrieved values
+    i := 1;
+    while (i < TokenListCnt) and (TokenPosList[i].X <= PosX) do
+      inc(i);
+    Result := TokenPosList[i-1].Attr = BracketKind;
+  end;
 
   procedure DoMatchingBracketFound;
   var
@@ -10642,6 +10699,8 @@ var
     NumBrackets, Len: integer;
   begin
     StartPt:=Point(PosX,PosY);
+    GetHighlighterAttriAtRowColEx(StartPt, s1, BracketKind, TmpStart, TmpAttr);
+    MaxKnownTokenPos := 0;
     BracketInc := Brackets[i];
     BracketDec := Brackets[i xor 1]; // 0 -> 1, 1 -> 0, ...
     // search for the matching bracket (that is until NumBrackets = 0)
@@ -10653,9 +10712,9 @@ var
         while PosX > 1 do begin
           Dec(PosX);
           Test := Line[PosX];
-          if Test = BracketInc then
+          if (Test = BracketInc) and IsContextBracket then
             Inc(NumBrackets)
-          else if Test = BracketDec then begin
+          else if (Test = BracketDec) and IsContextBracket then begin
             Dec(NumBrackets);
             if NumBrackets = 0 then begin
               DoMatchingBracketFound;
@@ -10666,11 +10725,12 @@ var
         // get previous line if possible
         if PosY = 1 then break;
         Dec(PosY);
-        if OnlyVisible and ((PosY<TopLine)
-          or (PosY >= {$IFDEF SYN_LAZARUS}ScreenRowToRow(LinesInWindow){$ELSE}TopLine+LinesInWindow{$ENDIF}))
+        if OnlyVisible
+        and ((PosY<TopLine) or (PosY >= ScreenRowToRow(LinesInWindow)))
         then
           break;
         Line := Lines[PosY - 1];
+        MaxKnownTokenPos := 0;
         PosX := Length(Line) + 1;
       until FALSE;
     end else begin
@@ -10681,9 +10741,9 @@ var
         while PosX < Len do begin
           Inc(PosX);
           Test := Line[PosX];
-          if Test = BracketInc then
+          if (Test = BracketInc) and IsContextBracket then
             Inc(NumBrackets)
-          else if Test = BracketDec then begin
+          else if (Test = BracketDec) and IsContextBracket then begin
             Dec(NumBrackets);
             if NumBrackets = 0 then begin
               DoMatchingBracketFound;
@@ -10694,11 +10754,12 @@ var
         // get next line if possible
         if PosY = Lines.Count then break;
         Inc(PosY);
-        if OnlyVisible and ((PosY < TopLine)
-          or (PosY >= {$IFDEF SYN_LAZARUS}ScreenRowToRow(LinesInWindow){$ELSE}TopLine+LinesInWindow{$ENDIF}))
+        if OnlyVisible
+        and ((PosY < TopLine) or (PosY >= ScreenRowToRow(LinesInWindow)))
         then
           break;
         Line := Lines[PosY - 1];
+        MaxKnownTokenPos := 0;
         PosX := 0;
       until FALSE;
     end;
@@ -10731,9 +10792,10 @@ begin
   PosX := LogicalStart.X;
   PosY := LogicalStart.Y;
   if (PosY<1) or (PosY>Lines.Count) then exit;
-  if OnlyVisible and ((PosY<TopLine)
-    or (PosY >= {$IFDEF SYN_LAZARUS}ScreenRowToRow(LinesInWindow){$ELSE}TopLine+LinesInWindow{$ENDIF})) then
-   exit;
+  if OnlyVisible
+  and ((PosY<TopLine) or (PosY >= ScreenRowToRow(LinesInWindow)))
+  then
+    exit;
 
   Line := LineText;
   DoCheckBracket;
@@ -10803,6 +10865,7 @@ begin
   end;
   Token := '';
   Attri := nil;
+  TokenType := -1;
   Result := FALSE;
 end;
                                                                                  //L505 end
