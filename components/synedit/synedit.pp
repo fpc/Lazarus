@@ -816,10 +816,10 @@ type
     function RowColumnToPixels(
                       {$IFDEF SYN_LAZARUS}const {$ENDIF}RowCol: TPoint): TPoint;
     function SearchReplace(const ASearch, AReplace: string;
-      AOptions: TSynSearchOptions): integer; {$IFDEF SYN_LAZARUS} overload; {$ENDIF}
+      AOptions: TSynSearchOptions): integer;
     {$IFDEF SYN_LAZARUS}
-    function SearchReplace(const ASearch, AReplace: string;
-      AOptions: TSynSearchOptions; AStart: TPoint): integer; overload;
+    function SearchReplaceEx(const ASearch, AReplace: string;
+      AOptions: TSynSearchOptions; AStart: TPoint): integer; 
     {$ENDIF}
     procedure SelectAll;
     {$IFDEF SYN_LAZARUS}
@@ -9299,18 +9299,16 @@ begin
 end;
 
 // find / replace
-{$IFDEF SYN_LAZARUS}
 function TCustomSynEdit.SearchReplace(const ASearch, AReplace: string;
   AOptions: TSynSearchOptions): integer;
+{$IFDEF SYN_LAZARUS}
 begin
-  Result := SearchReplace(ASearch, AReplace, AOptions, LogicalCaretXY);
+  Result := SearchReplaceEx(ASearch, AReplace, AOptions, LogicalCaretXY);
 end;
-{$ENDIF}
 
-function TCustomSynEdit.SearchReplace(const ASearch, AReplace: string;
-  AOptions: TSynSearchOptions
-  {$IFDEF SYN_LAZARUS};AStart: TPoint{$ENDIF}
-  ): integer;
+function TCustomSynEdit.SearchReplaceEx(const ASearch, AReplace: string;
+  AOptions: TSynSearchOptions; AStart: TPoint): integer;
+{$ENDIF}
 var
   ptStart, ptEnd: TPoint; // start and end of the search range
   ptCurrent: TPoint; // current search position
@@ -9372,9 +9370,9 @@ begin
     ptEnd.X := Length(Lines[ptEnd.Y - 1]) + 1;
     if bFromCursor then
       if bBackward then
-        ptEnd := {$IFDEF SYN_LAZARUS}LogicalCaretXY{$ELSE}CaretXY{$ENDIF}
+        ptEnd := {$IFDEF SYN_LAZARUS}AStart{$ELSE}CaretXY{$ENDIF}
       else
-        ptStart := {$IFDEF SYN_LAZARUS}LogicalCaretXY{$ELSE}CaretXY{$ENDIF};
+        ptStart := {$IFDEF SYN_LAZARUS}AStart{$ELSE}CaretXY{$ENDIF};
     if bBackward then ptCurrent := ptEnd else ptCurrent := ptStart;
   end;
   // initialize the search engine

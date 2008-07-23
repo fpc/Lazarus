@@ -6330,7 +6330,7 @@ begin
     then AStart := FIncrementalSearchStartPos
     else if ABackward
     then AStart := CurEdit.BlockBegin;
-    CurEdit.SearchReplace(FIncrementalSearchStr,'', SEARCH_OPTS[ABackward], AStart);
+    CurEdit.SearchReplaceEx(FIncrementalSearchStr,'', SEARCH_OPTS[ABackward], AStart);
     CurEdit.LogicalCaretXY:=CurEdit.BlockEnd;
 
     // searching next resets incremental history
