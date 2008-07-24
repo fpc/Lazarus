@@ -2195,10 +2195,9 @@ end;
 
 procedure TKeyMappingEditForm.KeyDown(var Key: Word; Shift: TShiftState);
 begin
-  {writeln('TKeyMappingEditForm.FormKeyUp Sender=',Classname
-     ,' Key=',Key,' Ctrl=',ssCtrl in Shift,' Shift=',ssShift in Shift
-     ,' Alt=',ssAlt in Shift,' AsString=',KeyAndShiftStateToEditorKeyString(Key),
-     '');}
+  debugln(['TKeyMappingEditForm.FormKeyUp Sender=',Classname
+     ,' Key=',Key,' Shift=',dbgs(Shift),' AsString=',KeyAndShiftStateToEditorKeyString(Key,[]),
+     '']);
   if (GrabbingKey>0)
   and not (Key in [VK_CONTROL, VK_LCONTROL, VK_RCONTROL,
              VK_SHIFT, VK_LSHIFT, VK_RSHIFT,

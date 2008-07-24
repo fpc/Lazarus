@@ -2200,7 +2200,7 @@ procedure AdjustBorderSpace(var RemainingClientRect, CurBorderSpace: TRect;
 function DbgS(a: TAnchorKind): string; overload;
 function DbgS(Anchors: TAnchors): string; overload;
 function DbgS(a: TAlign): string; overload;
-function DbgS(a: TAnchorKind; Side: TAnchorSideReference): string;
+function DbgS(a: TAnchorKind; Side: TAnchorSideReference): string; overload;
 
 // register (called by the package initialization in design mode)
 procedure Register;
