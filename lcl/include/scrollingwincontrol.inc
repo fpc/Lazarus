@@ -69,6 +69,7 @@ end;
 procedure TScrollingWinControl.DoOnResize;
 begin
   inherited DoOnResize;
+  if (HorzScrollBar=nil) or (VertScrollBar=nil) then exit;
   if AutoScroll or HorzScrollBar.Visible or VertScrollBar.Visible
   then
     UpdateScrollBars;
@@ -173,7 +174,8 @@ procedure TScrollingWinControl.UpdateScrollbars;
 begin
   if ([csLoading,csDestroying]*ComponentState<>[]) then exit;
   if not HandleAllocated then exit;
-  
+  if (HorzScrollBar=nil) or (VertScrollBar=nil) then exit;
+
   if FIsUpdating then exit;
   FIsUpdating := True;
   try
