@@ -75,6 +75,7 @@ type
     FNextArrow: ControlRef;
     FScrollingLeftTimer: TTimer;
     FScrollingRightTimer: TTimer;
+    FLockChangeEvent: integer;
     function GetPrevArrowBounds(const R: TRect): TRect;
     function GetNextArrowBounds(const R: TRect): TRect;
     procedure ScrollingLeftTimer(Sender: TObject);
@@ -88,12 +89,14 @@ type
     procedure UpdateTabs(EnsureLastVisible: Boolean = False; UpdateIndex: Boolean = True);
     procedure UpdateTabIndex;
     procedure Remove(ATab: TCarbonTab);
-    function GetControlTabIndex: Integer;
+    function GetControlTabIndex: Integer; // visible index, without hidden or scrolled tabs
     function GetTabIndex(APageIndex: Integer): Integer;
     function TabIndexToPageIndex(AIndex: Integer): Integer;
   public
     class function GetValidEvents: TCarbonControlEvents; override;
     procedure ValueChanged; override;
+    procedure DisableChangeEvent;
+    procedure EnableChangeEvent;
   public
     function GetClientRect(var ARect: TRect): Boolean; override;
     function SetBounds(const ARect: TRect): Boolean; override;
@@ -587,7 +590,13 @@ end;
 procedure TCarbonTabsControl.UpdateTabIndex;
 begin
   // set tab index
-  SetControl32BitValue(ControlRef(Widget), GetControlTabIndex);
+  //debugln(['TCarbonTabsControl.UpdateTabIndex FFirstIndex=',FFirstIndex,' FLastIndex=',FLastIndex,' TabIndex=',FTabIndex]);
+  DisableChangeEvent;
+  try
+    SetControl32BitValue(ControlRef(Widget), GetControlTabIndex);
+  finally
+    EnableChangeEvent;
+  end;
   Invalidate;
   ShowTab;
 end;
@@ -599,8 +608,12 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonTabsControl.Remove(ATab: TCarbonTab);
 begin
+  // FTabs is a TObjectLisy and Remove frees the ATab, which will
+  // automatically call this proc again. Check if ATab is already removed.
+  if FTabs.IndexOf(ATab)<0 then exit;
   FTabs.Remove(ATab);
   UpdateTabs(False, False);
+  //debugln(['TCarbonTabsControl.Remove ',GetControlTabIndex,' FFirstIndex=',FFirstIndex,' FTabIndex=',FTabIndex,' Count=',ftabs.Count]);
 end;
 
 function TCarbonTabsControl.GetControlTabIndex: Integer;
@@ -609,6 +622,7 @@ begin
 end;
 
 function TCarbonTabsControl.GetTabIndex(APageIndex: Integer): Integer;
+// find the index in FTabs with TCustomPage.PageIndex=APageIndex
 var
   I: Integer;
 begin
@@ -659,6 +673,7 @@ var
   NMHdr: TNMHDR;
   Index, PIndex: Integer;
 begin
+  if FLockChangeEvent>0 then exit;
   Index := GetValue - 1;
   if Index >= 0 then Inc(Index, FFirstIndex);
   
@@ -705,6 +720,16 @@ begin
   Msg.NMHdr := @NMHdr;
   
   DeliverMessage(LCLObject, Msg);
+end;
+
+procedure TCarbonTabsControl.DisableChangeEvent;
+begin
+  inc(FLockChangeEvent);
+end;
+
+procedure TCarbonTabsControl.EnableChangeEvent;
+begin
+  dec(FLockChangeEvent);
 end;
 
 {------------------------------------------------------------------------------
@@ -832,11 +857,13 @@ end;
 procedure TCarbonTabsControl.Add(ATab: TCarbonTab; AIndex: Integer);
 begin
   //DebugLn('TCarbonTabsControl.Add ' + DbgS(AIndex));
-  if FTabs.IndexOf(ATab) < 0 then
-    FTabs.Insert(AIndex, ATab);
+  if FTabs.IndexOf(ATab) >= 0 then exit;
+  FTabs.Insert(AIndex, ATab);
   ATab.Attach(Self);
   
   UpdateTabs;
+  // sync PageIndex with LCL
+  SetPageIndex(TCustomNotebook(LCLObject).PageIndex);
 end;
 
 {------------------------------------------------------------------------------
@@ -848,6 +875,8 @@ end;
 procedure TCarbonTabsControl.Remove(AIndex: Integer);
 begin
   Remove(FTabs[AIndex] as TCarbonTab);
+  // sync PageIndex with LCL
+  SetPageIndex(TCustomNotebook(LCLObject).PageIndex);
 end;
 
 {------------------------------------------------------------------------------
@@ -860,26 +889,34 @@ procedure TCarbonTabsControl.SetPageIndex(AIndex: Integer);
 var
   ATabIndex: Integer;
 begin
-  ATabIndex := GetTabIndex(AIndex);
+  DisableChangeEvent;
+  try
+    ATabIndex := GetTabIndex(AIndex);
 
-  //DebugLn('TCarbonTabsControl.SetPageIndex Page: ' + DbgS(AIndex) + ' Tab: ' + DbgS(ATabIndex));
+    //DebugLn('TCarbonTabsControl.SetPageIndex Page: ' + DbgS(AIndex) + ' Tab: ' + DbgS(ATabIndex));
 
-  if (ATabIndex < 0) or (ATabIndex >= FTabs.Count) then
-  begin
-    ATabIndex := -1;
-    SetControl32BitValue(ControlRef(Widget), 0);
-    ShowTab;
-    Exit;
+    if (ATabIndex < 0) or (ATabIndex >= FTabs.Count) then
+    begin
+      // this PageIndex does not exist. This should only happen if AIndex<0
+      if AIndex>=0 then
+        debugln(['TCarbonTabsControl.SetPageIndex unknown pageindex: ',AIndex]);
+      ATabIndex := -1;
+      SetControl32BitValue(ControlRef(Widget), 0);
+      ShowTab;
+      Exit;
+    end;
+
+    FTabIndex := ATabIndex;
+    if (ATabIndex < FFirstIndex) or (ATabIndex > FLastIndex) then
+    begin
+      FFirstIndex := ATabIndex;
+      UpdateTabs;
+    end
+    else
+      UpdateTabIndex;
+  finally
+    EnableChangeEvent;
   end;
-  
-  FTabIndex := ATabIndex;
-  if (ATabIndex < FFirstIndex) or (ATabIndex > FLastIndex) then
-  begin
-    FFirstIndex := ATabIndex;
-    UpdateTabs;
-  end
-  else
-    UpdateTabIndex;
 end;
 
 {------------------------------------------------------------------------------

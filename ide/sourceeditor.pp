@@ -715,8 +715,8 @@ type
     procedure StartShowCodeHelp;
 
     // new, close, focus
-    procedure NewFile(const NewShortName: String; ASource: TCodeBuffer;
-                      FocusIt: boolean);
+    function NewFile(const NewShortName: String; ASource: TCodeBuffer;
+                      FocusIt: boolean): TSourceEditor;
     procedure CloseFile(PageIndex:integer);
     procedure FocusEditor;
 
@@ -4377,10 +4377,12 @@ Begin
   {$ENDIF}
   Result := TSourceEditor.Create(Self,Notebook.Page[PageNum]);
   Result.EditorComponent.BeginUpdate;
+  //debugln(['TSourceNotebook.NewSE PageNum=',PageNum,' Notebook.PageIndex=',Notebook.PageIndex,' FindPageWithEditor=',FindPageWithEditor(Result)]);
 
   FSourceEditorList.Add(Result);
   Result.CodeTemplates:=CodeTemplateModul;
   Notebook.PageIndex := Pagenum;
+  //debugln(['TSourceNotebook.NewSE C GetActiveSE=Result=',GetActiveSE=Result]);
   Result.FPageName:=NoteBook.Pages[Pagenum];
   Result.EditorComponent.BookMarkOptions.BookmarkImages :=
                                                       SourceEditorMarks.ImgList;
@@ -5639,25 +5641,23 @@ begin
   BookMarkGoTo(Value);
 End;
 
-Procedure TSourceNotebook.NewFile(const NewShortName: String;
-  ASource: TCodeBuffer; FocusIt: boolean);
-Var
-  TempEditor: TSourceEditor;
+function TSourceNotebook.NewFile(const NewShortName: String;
+  ASource: TCodeBuffer; FocusIt: boolean): TSourceEditor;
 Begin
   //create a new page
   {$IFDEF IDE_DEBUG}
   writeln('[TSourceNotebook.NewFile] A ');
   {$ENDIF}
   Visible:=true;
-  TempEditor := NewSE(-1);
+  Result := NewSE(-1);
   {$IFDEF IDE_DEBUG}
   writeln('[TSourceNotebook.NewFile] B ');
   {$ENDIF}
-  TempEditor.CodeBuffer:=ASource;
+  Result.CodeBuffer:=ASource;
   {$IFDEF IDE_DEBUG}
   writeln('[TSourceNotebook.NewFile] D ');
   {$ENDIF}
-  TempEditor.PageName:=FindUniquePageName(NewShortName,Notebook.PageIndex);
+  Result.PageName:=FindUniquePageName(NewShortName,Notebook.PageIndex);
   if FocusIt then FocusEditor;
   {$IFDEF IDE_DEBUG}
   writeln('[TSourceNotebook.NewFile] end');
@@ -5674,20 +5674,22 @@ begin
   {$ENDIF}
   TempEditor:=FindSourceEditorWithPageIndex(PageIndex);
   if TempEditor=nil then exit;
+  //debugln(['TSourceNotebook.CloseFile ',TempEditor.FileName,' ',TempEditor.PageIndex]);
   Visible:=true;
   EndIncrementalFind;
   TempEditor.Close;
   TempEditor.Free;
   if Notebook.PageCount>1 then
   begin
-    //writeln('TSourceNotebook.CloseFile B  PageIndex=',PageIndex);
+    //writeln('TSourceNotebook.CloseFile B  PageIndex=',PageIndex,' Notebook.PageIndex=',Notebook.PageIndex);
     // if this is the current page, switch to right PageIndex (if possible)
     if (Notebook.PageIndex = PageIndex) then
       Notebook.PageIndex := PageIndex +
         IfThen(PageIndex + 1 < Notebook.PageCount, 1, -1);
     // delete the page
+    //writeln('TSourceNotebook.CloseFile C  PageIndex=',PageIndex,' Notebook.PageCount=',Notebook.PageCount,' NoteBook.PageIndex=',Notebook.PageIndex);
     Notebook.Pages.Delete(PageIndex);
-    //writeln('TSourceNotebook.CloseFile C  PageIndex=',PageIndex,' Notebook.PageCount=',Notebook.PageCount);
+    //writeln('TSourceNotebook.CloseFile D  PageIndex=',PageIndex,' Notebook.PageCount=',Notebook.PageCount,' NoteBook.PageIndex=',Notebook.PageIndex);
     UpdateStatusBar;
     // set focus to new editor
     TempEditor:=FindSourceEditorWithPageIndex(Notebook.PageIndex);
@@ -5695,9 +5697,9 @@ begin
       TempEditor.EditorComponent.SetFocus;
   end else
   begin
-    //writeln('TSourceNotebook.CloseFile D  PageIndex=',PageIndex);
-    Notebook.Free;
     //writeln('TSourceNotebook.CloseFile E  PageIndex=',PageIndex);
+    Notebook.Free;
+    //writeln('TSourceNotebook.CloseFile F  PageIndex=',PageIndex);
     Notebook:=nil;
     Hide;
   end;

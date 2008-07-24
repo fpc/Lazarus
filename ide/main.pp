@@ -6736,9 +6736,8 @@ begin
     // update marks and cursor positions in Project1, so that merging the old
     // settings during restoration will work
     SaveSourceEditorProjectSpecificSettings;
-    SourceNotebook.NewFile(CreateSrcEditPageName(AnUnitInfo.UnitName,
+    NewSrcEdit:=SourceNotebook.NewFile(CreateSrcEditPageName(AnUnitInfo.UnitName,
       AFilename,-1),AnUnitInfo.Source,false);
-    NewSrcEdit:=SourceNotebook.GetActiveSE;
     NewSrcEdit.EditorComponent.BeginUpdate;
     NewSrcEditorCreated:=true;
     MainIDEBar.itmFileClose.Enabled:=True;
@@ -6769,7 +6768,8 @@ begin
   if (not (ofProjectLoading in Flags)) and NewSrcEditorCreated then
     Project1.InsertEditorIndex(SourceNotebook.Notebook.PageIndex);
   AnUnitInfo.EditorIndex:=SourceNotebook.FindPageWithEditor(NewSrcEdit);
-
+  //debugln(['TMainIDE.DoOpenFileInSourceEditor ',AnUnitInfo.Filename,' ',AnUnitInfo.EditorIndex]);
+  
   // restore source editor settings
   DoRestoreBookMarks(AnUnitInfo,NewSrcEdit);
   DebugBoss.DoRestoreDebuggerMarks(AnUnitInfo);
@@ -7234,7 +7234,6 @@ var
   ReOpen, Handled:boolean;
   NewUnitInfo:TUnitInfo;
   NewBuf: TCodeBuffer;
-  OtherUnitIndex: Integer;
   FilenameNoPath: String;
   LoadBufferFlags: TLoadBufferFlags;
   DiskFilename: String;
@@ -7364,13 +7363,6 @@ begin
   if (not (ofRevert in Flags)) then begin
     UnitIndex:=Project1.IndexOfFilename(AFilename);
     ReOpen:=(UnitIndex>=0);
-    // check if there is already a symlinked file open in the editor
-    OtherUnitIndex:=Project1.IndexOfFilename(AFilename,
-                                             [pfsfOnlyEditorFiles]);
-    if (OtherUnitIndex>=0) and (OtherUnitIndex<>UnitIndex) then begin
-      // There is another file open in the editor symlinked to the same file
-      // ToDo
-    end;
     if ReOpen then begin
       NewUnitInfo:=Project1.Units[UnitIndex];
       if (ofAddToProject in Flags) and (not NewUnitInfo.IsPartOfProject) then

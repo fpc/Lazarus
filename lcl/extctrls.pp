@@ -42,9 +42,10 @@ type
   { TCustomPage }
 
   TPageFlag = (
-    pfAdded,  // page handle added to notebook handle
-    pfAdding, // currently page handle adding to notebook handle
-    pfRemoving
+    pfHandleAdded,  // page handle added to notebook handle
+    pfHandleAdding, // currently page handle adding to notebook handle
+    pfHandleRemoving,
+    pfAdding
     );
   TPageFlags = set of TPageFlag;
 

@@ -102,12 +102,12 @@ var
   ParentNotebook: TCustomNotebook;
   i: integer;
 begin
-  if AParent=Parent then exit;
+  if (AParent=Parent) or (pfAdding in FFlags) then exit;
   CheckNewParent(AParent);
   OldParent:=Parent;
   if (OldParent<>AParent) and (OldParent<>nil)
   and (OldParent is TCustomNotebook)
-  and (not (pfRemoving in FFlags)) then begin
+  and (not (pfHandleRemoving in FFlags)) then begin
     // remove from old pagelist
     ParentNotebook := TCustomNotebook(OldParent);
     i := PageIndex;
@@ -122,11 +122,8 @@ begin
     // add to new pagelist
     ParentNotebook:=TCustomNotebook(Parent);
     i:=ParentNotebook.PageList.IndexOf(Self);
-    if i>=0 then
-      ParentNotebook.PageList.Delete(i)
-    else
-      i:=ParentNotebook.PageCount;
-    ParentNotebook.InsertPage(Self,i);
+    if i<0 then
+      ParentNotebook.InsertPage(Self,ParentNotebook.PageCount);
   end;
 end;
 
@@ -203,7 +200,7 @@ end;
 procedure TCustomPage.DestroyHandle;
 begin
   inherited DestroyHandle;
-  Exclude(FFlags,pfAdded);
+  Exclude(FFlags,pfHandleAdded);
 end;
 
 function TCustomPage.IsControlVisible: Boolean;
@@ -248,7 +245,7 @@ end;
 
 function TCustomPage.AutoSizeDelayed: boolean;
 begin
-  Result:=(not (pfAdded in FFlags)) or (inherited AutoSizeDelayed);
+  Result:=(not (pfHandleAdded in FFlags)) or (inherited AutoSizeDelayed);
 end;
 
 // included by extctrls.pp
