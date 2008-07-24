@@ -1127,6 +1127,9 @@ resourcestring
   dlgEdBold = 'Bold';
   dlgEdItal = 'Italic';
   dlgEdUnder = 'Underline';
+  dlgEdOn = 'On';
+  dlgEdOff = 'Off';
+  dlgEdInvert = 'Invert';
   dlgEdIdComlet = 'Identifier completion';
   dlgEdCodeParams = 'Code parameters';
   dlgTooltipEval = 'Tooltip expression evaluation';

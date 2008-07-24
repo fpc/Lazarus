@@ -105,15 +105,12 @@ function ShowSortSelectionDialog(const TheText: string;
   var SortedText: string): TModalResult;
 var
   SortSelectionDialog: TSortSelectionDialog;
-  FG, BG: TCOlor;
 begin
   SortSelectionDialog:=TSortSelectionDialog.Create(nil);
   SortSelectionDialog.BeginUpdate;
   SortSelectionDialog.TheText:=TheText;
   SortSelectionDialog.PreviewSynEdit.Highlighter:=Highlighter;
-  EditorOpts.GetLineColors(Highlighter, ahaTextBlock, FG, BG);
-  SortSelectionDialog.PreviewSynEdit.SelectedColor.Foreground := FG;
-  SortSelectionDialog.PreviewSynEdit.SelectedColor.Background := BG;
+  EditorOpts.SetMarkupColor(Highlighter, ahaTextBlock, SortSelectionDialog.PreviewSynEdit.SelectedColor);
   SortSelectionDialog.UpdatePreview;
   SortSelectionDialog.EndUpdate;
   Result:=SortSelectionDialog.ShowModal;

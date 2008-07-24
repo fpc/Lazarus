@@ -47,7 +47,7 @@ uses
   {$ELSE}
   Windows,
   {$ENDIF}
-  Classes, SynEditTypes;
+  Classes, SynEditTypes, Graphics;
 
 type
   PIntArray = ^TIntArray;
@@ -124,10 +124,24 @@ function CompareCarets(const FirstCaret, SecondCaret: TPoint): integer;
 function DecodeString(s: string): string;
 {end}                                                                           //gp 2000-06-24
 
+function fsNot (s : TFontStyles) : TFontStyles; inline;
+function fsXor (s1,s2 : TFontStyles) : TFontStyles; inline;
+
 implementation
 
 uses
   SysUtils;
+
+{* fontstyle utilities *}
+
+function fsNot (s : TFontStyles) : TFontStyles; inline;
+begin
+  Result := [low(TFontStyle)..High(TFontStyle)] - s;
+end;
+function fsXor (s1,s2 : TFontStyles) : TFontStyles; inline;
+begin
+  Result := s1 + s2 - (s1*s2);
+end;
 
 {***}
 

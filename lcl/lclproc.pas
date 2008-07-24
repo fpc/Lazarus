@@ -292,6 +292,8 @@ function UTF8FindNearestCharStart(UTF8Str: PChar; Len: integer;
                                   BytePos: integer): integer;
 // find the n-th UTF8 character, ignoring BIDI
 function UTF8CharStart(UTF8Str: PChar; Len, Index: integer): PChar;
+// find the byte index of the n-th UTF8 character, ignoring BIDI (byte len of substr)
+function UTF8CharToByteIndex(UTF8Str: PChar; Len, Index: integer): Integer;
 procedure UTF8FixBroken(P: PChar);
 function UTF8CharacterStrictLength(P: PChar): integer;
 function UTF8CStringToUTF8String(SourceStart: PChar; SourceLen: SizeInt) : string;
@@ -2454,6 +2456,16 @@ begin
     if (Index>0) or (Len<0) then
       Result:=nil;
   end;
+end;
+
+function UTF8CharToByteIndex(UTF8Str : PChar; Len, Index : integer) : Integer;
+var
+  p: PChar;
+begin
+  p := UTF8CharStart(UTF8Str, Len, Index);
+  if p = nil
+  then Result := -1
+  else Result := p - UTF8Str;
 end;
 
 { fix any broken UTF8 sequences with spaces }

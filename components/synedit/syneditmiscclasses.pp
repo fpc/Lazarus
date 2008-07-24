@@ -57,23 +57,33 @@ type
   private
     fBG: TColor;
     fFG: TColor;
+    fStyle: TFontStyles;
+    {$IFDEF SYN_LAZARUS}
     // StyleMask = 1 => Copy Style Bits
     // StyleMask = 0 => Invert where Style Bit = 1
-    fStyle, fStyleMask: TFontStyles;
+    fStyleMask: TFontStyles;
+    {$ENDIF}
     fOnChange: TNotifyEvent;
     procedure SetBG(Value: TColor);
     procedure SetFG(Value: TColor);
     procedure SetStyle(const AValue : TFontStyles);
+    {$IFDEF SYN_LAZARUS}
     procedure SetStyleMask(const AValue : TFontStyles);
+    {$ENDIF}
   public
     constructor Create;
     procedure Assign(aSource: TPersistent); override;
   published
+    {$IFDEF SYN_LAZARUS}
     function GetModifiedStyle(aStyle : TFontStyles): TFontStyles;
+    procedure ModifyColors(var aForeground, aBackground: TColor; var aStyle: TFontStyles);
+    {$ENDIF}
     property Background: TColor read fBG write SetBG default clHighLight;
     property Foreground: TColor read fFG write SetFG default clHighLightText;
     property Style: TFontStyles read fStyle write SetStyle default [];
+    {$IFDEF SYN_LAZARUS}
     property StyleMask: TFontStyles read fStyleMask write SetStyleMask default [];
+    {$ENDIF}
     property OnChange: TNotifyEvent read fOnChange write fOnChange;
   end;
 
@@ -271,20 +281,21 @@ begin
   fFG := clHighLightText;
 end;
 
+{$IFDEF SYN_LAZARUS}
 function TSynSelectedColor.GetModifiedStyle(aStyle : TFontStyles) : TFontStyles;
-  function fsNot (s : TFontStyles) : TFontStyles; inline;
-  begin
-    Result := [low(TFontStyle)..High(TFontStyle)] - s;
-  end;
-  function fsXor (s1,s2 : TFontStyles) : TFontStyles; inline;
-  begin
-    Result := s1 + s2 - (s1*s2);
-  end;
 begin
   Result := fsXor(aStyle, fStyle * fsNot(fStyleMask)) // Invert Styles
             + (fStyle*fStyleMask)                     // Set Styles
             - (fsNot(fStyle)*fStyleMask);             // Remove Styles
 end;
+
+procedure TSynSelectedColor.ModifyColors(var aForeground, aBackground : TColor; var aStyle : TFontStyles);
+begin
+  if Foreground <> clNone then aForeground := Foreground;
+  if Background <> clNone then aBackground := Background;
+  aStyle := GetModifiedStyle(aStyle);
+end;
+{$ENDIF}
 
 procedure TSynSelectedColor.SetBG(Value: TColor);
 begin
@@ -310,6 +321,7 @@ begin
   end;
 end;
 
+{$IFDEF SYN_LAZARUS}
 procedure TSynSelectedColor.SetStyleMask(const AValue : TFontStyles);
 begin
   if (fStyleMask <> AValue) then begin
@@ -317,6 +329,7 @@ begin
     if Assigned(fOnChange) then fOnChange(Self);
   end;
 end;
+{$ENDIF}
 
 procedure TSynSelectedColor.Assign(aSource : TPersistent);
 var
@@ -328,6 +341,7 @@ begin
     fFG := Source.fFG;
     fStyle := Source.fStyle;
     fStyleMask := Source.fStyleMask;
+    if Assigned(fOnChange) then fOnChange(Self); {TODO: only if really changed}
   end;
 end;
 

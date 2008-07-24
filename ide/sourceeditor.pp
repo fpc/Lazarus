@@ -49,7 +49,7 @@ uses
   CodeToolManager, CodeCache, SourceLog,
   // synedit
   SynEditStrConst, SynEditTypes, SynEdit, SynRegExpr, SynEditHighlighter, 
-  SynEditAutoComplete, SynEditKeyCmds, SynCompletion,
+  SynEditAutoComplete, SynEditKeyCmds, SynCompletion, SynEditMiscClasses,
   // IDE interface
   MacroIntf, ProjectIntf, SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf,
   IDEDialogs, IDEHelpIntf, IDEWindowIntf, IDEImagesIntf,
@@ -189,7 +189,7 @@ type
     procedure OnGutterClick(Sender: TObject; X, Y, Line: integer;
          mark: TSynEditMark);
     procedure OnEditorSpecialLineColor(Sender: TObject; Line: integer;
-         var Special: boolean; var FG, BG: TColor);
+         var Special: boolean; Markup: TSynSelectedColor);
     function RefreshEditorSettings: Boolean;
     procedure SetSyntaxHighlighterType(
                                  ASyntaxHighlighterType: TLazSyntaxHighlighter);
@@ -512,10 +512,6 @@ type
     FActiveEditKeyBGColor: TColor;
     FActiveEditSymbolFGColor: TColor;
     FActiveEditSymbolBGColor: TColor;
-    FActiveEditIncSearchFGColor: TColor;
-    FActiveEditIncSearchBGColor: TColor;
-    FActiveEditHighAllSearchFGColor: TColor;
-    FActiveEditHighAllSearchBGColor: TColor;
 
     // PopupMenu
     procedure BuildPopupMenu;
@@ -531,7 +527,6 @@ type
                                      const NewOnClick: TNotifyEvent): TIDEMenuItem;
 
     procedure UpdateActiveEditColors(AEditor: TSynEdit);
-    procedure SetSelectedColors(AEditor: TSynEdit);
     procedure SetIncrementalSearchStr(const AValue: string);
     procedure IncrementalSearch(ANext, ABackward: Boolean);
 
@@ -2084,7 +2079,7 @@ begin
 end;
 
 procedure TSourceEditor.OnEditorSpecialLineColor(Sender: TObject; Line: integer;
-  var Special: boolean; var FG, BG: TColor);
+  var Special: boolean; Markup: TSynSelectedColor);
 var
   i:integer;
   aha: TAdditionalHilightAttribute;
@@ -2094,6 +2089,7 @@ var
   CurBG: TColor;
 begin
   aha := ahaNone;
+  Special := False;
 
   if ErrorLine = Line
   then begin
@@ -2115,8 +2111,8 @@ begin
         CurFG:=CurMarks[i].LineColorForeGround;
         CurBG:=CurMarks[i].LineColorBackGround;
         if (CurFG<>clNone) or (CurBG<>clNone) then begin
-          FG:=CurFG;
-          BG:=CurBG;
+          Markup.Foreground := CurFG;
+          Markup.Background := CurBG;
           Special:=true;
           break;
         end;
@@ -2128,7 +2124,8 @@ begin
   
   if aha <> ahaNone
   then begin
-    Special := EditorOpts.GetLineColors(TCustomSynEdit(Sender).Highlighter, aha, FG, BG);
+    Special := True;
+    EditorOpts.SetMarkupColor(TCustomSynEdit(Sender).Highlighter, aha, Markup);
   end;
 end;
 
@@ -2256,7 +2253,7 @@ Begin
       OnCommandProcessed := @UserCommandProcessed;
       OnReplaceText := @OnReplace;
       OnGutterClick := @Self.OnGutterClick;
-      OnSpecialLineColors := @OnEditorSpecialLineColor;
+      OnSpecialLineMarkup := @OnEditorSpecialLineColor;
       OnMouseMove := @EditorMouseMoved;
       OnMouseWheel := @EditorMouseWheel;
       OnMouseDown := @EditorMouseDown;
@@ -4609,7 +4606,8 @@ begin
   fIncrementalSearchStartPos:=TempEditor.EditorComponent.LogicalCaretXY;
   FIncrementalSearchPos:=fIncrementalSearchStartPos;
   FIncrementalSearchEditor := TempEditor;
-  SetSelectedColors(FIncrementalSearchEditor.EditorComponent);
+  if assigned(FIncrementalSearchEditor.EditorComponent)
+  then FIncrementalSearchEditor.EditorComponent.UseIncrementalColor:= true;
 
   IncrementalSearchStr:='';
 
@@ -4624,7 +4622,8 @@ begin
 
   if FIncrementalSearchEditor <> nil
   then begin
-    SetSelectedColors(FIncrementalSearchEditor.EditorComponent);
+    if assigned(FIncrementalSearchEditor.EditorComponent)
+    then FIncrementalSearchEditor.EditorComponent.UseIncrementalColor:= false;
     FIncrementalSearchEditor.EditorComponent.SetHighlightSearch('', []);
     FIncrementalSearchEditor := nil;
   end;
@@ -6428,22 +6427,18 @@ begin
 end;
 
 procedure TSourceNotebook.UpdateActiveEditColors(AEditor: TSynEdit);
+var
+  s, sm : TFontStyles;
 begin
   if AEditor=nil then exit;
-  
+
+  EditorOpts.SetMarkupColors(AEditor.Highlighter, AEditor);
+
   FActiveEditDefaultFGColor:=AEditor.Font.Color;
   FActiveEditDefaultBGColor:=AEditor.Color;
-  EditorOpts.GetLineColors(AEditor.Highlighter, ahaTextBlock,
-    FActiveEditSelectedFGColor, FActiveEditSelectedBGColor);
-  EditorOpts.GetLineColors(AEditor.Highlighter, ahaIncrementalSearch,
-    FActiveEditIncSearchFGColor, FActiveEditIncSearchBGColor);
-  EditorOpts.GetLineColors(AEditor.Highlighter, ahaHighlightAll,
-    FActiveEditHighAllSearchFGColor, FActiveEditHighAllSearchBGColor);
+  EditorOpts.GetLineColors(AEditor.Highlighter, ahaTextBlock, {TODO: MFR use AEditor.SelectedColor which includes styles / or have a copy}
+    FActiveEditSelectedFGColor, FActiveEditSelectedBGColor, s ,sm);
 
-  AEditor.HighlightAllColor.Background := FActiveEditHighAllSearchBGColor;
-  AEditor.HighlightAllColor.Foreground := FActiveEditHighAllSearchFGColor;
-
-    
   FActiveEditKeyFGColor:=FActiveEditDefaultFGColor;
   FActiveEditKeyBGColor:=FActiveEditDefaultBGColor;
   FActiveEditSymbolFGColor:=FActiveEditDefaultFGColor;
@@ -6475,24 +6470,8 @@ begin
       end;
     end;
   end;
-  SetSelectedColors(AEditor);
+  AEditor.UseIncrementalColor:= snIncrementalFind in States;
 end;
-
-procedure TSourceNotebook.SetSelectedColors(AEditor: TSynEdit);
-begin
-  if AEditor = nil then Exit;
-  
-  if snIncrementalFind in States
-  then begin
-    AEditor.SelectedColor.Background := FActiveEditIncSearchBGColor;
-    AEditor.SelectedColor.Foreground := FActiveEditIncSearchFGColor;
-  end
-  else begin
-    AEditor.SelectedColor.Background := FActiveEditSelectedBGColor;
-    AEditor.SelectedColor.Foreground := FActiveEditSelectedFGColor;
-  end;
-end;
-
 
 Procedure TSourceNotebook.GetSynEditPreviewSettings(APreviewEditor: TObject);
 var ASynEdit: TSynEdit;

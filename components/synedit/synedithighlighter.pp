@@ -62,6 +62,8 @@ type
   {$ENDIF}
   end;
 
+  { TSynHighlighterAttributes }
+
   TSynHighlighterAttributes = class(TPersistent)
   private
     fBackground: TColor;
@@ -71,18 +73,28 @@ type
     fName: string;
     fStyle: TFontStyles;
     fStyleDefault: TFontStyles;                                                 //mh 2000-10-08
+    {$IFDEF SYN_LAZARUS}
+    fStyleMask: TFontStyles;
+    fStyleMaskDefault: TFontStyles;                                                 //mh 2000-10-08
+    {$ENDIF}
     fOnChange: TNotifyEvent;
     procedure Changed; virtual;
 {begin}                                                                         //mh 2000-10-08
     function GetBackgroundColorStored: boolean;
+    function GetFontStyleMaskStored : boolean;
     function GetForegroundColorStored: boolean;
-    function GetFontStyleStored: boolean;
 {end}                                                                           //mh 2000-10-08
     procedure SetBackground(Value: TColor);
     procedure SetForeground(Value: TColor);
     procedure SetStyle(Value: TFontStyles);
     function GetStyleFromInt: integer;
     procedure SetStyleFromInt(const Value: integer);
+    function GetFontStyleStored: boolean;
+    {$IFDEF SYN_LAZARUS}
+    procedure SetStyleMask(const AValue : TFontStyles);
+    function GetStyleMaskFromInt : integer;
+    procedure SetStyleMaskFromInt(const Value : integer);
+    {$ENDIF}
   public
     procedure Assign(Source: TPersistent); override;
     constructor Create(attribName: string);
@@ -95,6 +107,9 @@ type
     function SaveToFile(Ini : TIniFile): boolean;                               //DDH 10/16/01
   public
     property IntegerStyle: integer read GetStyleFromInt write SetStyleFromInt;
+    {$IFDEF SYN_LAZARUS}
+    property IntegerStyleMask: integer read GetStyleMaskFromInt write SetStyleMaskFromInt;
+    {$ENDIF}
     property Name: string read fName;
     property OnChange: TNotifyEvent read fOnChange write fOnChange;
   published
@@ -104,6 +119,10 @@ type
       stored GetForegroundColorStored;                                          //mh 2000-10-08
     property Style: TFontStyles read fStyle write SetStyle //default [];
       stored GetFontStyleStored;                                                //mh 2000-10-08
+    {$IFDEF SYN_LAZARUS}
+    property StyleMask: TFontStyles read fStyleMask write SetStyleMask //default [];
+      stored GetFontStyleMaskStored;                                                //mh 2000-10-08
+    {$ENDIF}
   end;
 
   TSynHighlighterCapability = (
@@ -506,6 +525,12 @@ begin
       fStyle := src.fStyle;
       bChanged := TRUE;
     end;
+    {$IFDEF SYN_LAZARUS}
+    if fStyleMask <> src.fStyleMask then begin
+      fStyleMask := src.fStyleMask;
+      bChanged := TRUE;
+    end;
+    {$ENDIF}
     if bChanged then
       Changed;
   end else
@@ -531,6 +556,11 @@ begin
   Result := fBackground <> fBackgroundDefault;
 end;
 
+function TSynHighlighterAttributes.GetFontStyleMaskStored : boolean;
+begin
+  Result := fStyleMask <> fStyleMaskDefault;
+end;
+
 function TSynHighlighterAttributes.GetForegroundColorStored: boolean;
 begin
   Result := fForeground <> fForegroundDefault;
@@ -546,6 +576,9 @@ begin
   fForegroundDefault := fForeground;
   fBackgroundDefault := fBackground;
   fStyleDefault := fStyle;
+  {$IFDEF SYN_LAZARUS}
+  fStyleMaskDefault := fStyleMask;
+  {$ENDIF}
 end;
 
 function TSynHighlighterAttributes.LoadFromBorlandRegistry(rootKey: HKEY;
@@ -780,6 +813,9 @@ begin
     Reg.WriteInteger('Background', Background);
     Reg.WriteInteger('Foreground', Foreground);
     Reg.WriteInteger('Style', IntegerStyle);
+    {$IFDEF SYN_LAZARUS}
+    Reg.WriteInteger('StyleMask', IntegerStyleMask);
+    {$ENDIF}
     reg.OpenKey('\' + key, false);
     Result := true;
   end else
@@ -801,6 +837,10 @@ begin
         Foreground := Ini.ReadInteger(Name, 'Foreground', clWindowText);
       if S.IndexOf('Style') <> -1 then
         IntegerStyle := Ini.ReadInteger(Name, 'Style', 0);
+      {$IFDEF SYN_LAZARUS}
+      if S.IndexOf('StyleMask') <> -1 then
+        IntegerStyleMask := Ini.ReadInteger(Name, 'StyleMask', 0);
+      {$ENDIF}
       Result := true;
     end else Result := false;
   finally
@@ -813,6 +853,9 @@ begin
   Ini.WriteInteger(Name, 'Background', Background);
   Ini.WriteInteger(Name, 'Foreground', Foreground);
   Ini.WriteInteger(Name, 'Style', IntegerStyle);
+  {$IFDEF SYN_LAZARUS}
+  Ini.WriteInteger(Name, 'StyleMask', IntegerStyleMask);
+  {$ENDIF}
   Result := true;
 end;
 
@@ -831,6 +874,32 @@ begin
   if Value and $4 <> 0 then Style:= Style + [fsUnderline];
   if Value and $8 <> 0 then Style:= Style + [fsStrikeout];
 end;
+
+{$IFDEF SYN_LAZARUS}
+procedure TSynHighlighterAttributes.SetStyleMask(const AValue : TFontStyles);
+begin
+  if fStyleMask <> AValue then begin
+    fStyleMask := AValue;
+    Changed;
+  end;
+end;
+
+function TSynHighlighterAttributes.GetStyleMaskFromInt : integer;
+begin
+  if fsBold in StyleMask then Result:= 1 else Result:= 0;
+  if fsItalic in StyleMask then Result:= Result + 2;
+  if fsUnderline in StyleMask then Result:= Result + 4;
+  if fsStrikeout in StyleMask then Result:= Result + 8;
+end;
+
+procedure TSynHighlighterAttributes.SetStyleMaskFromInt(const Value : integer);
+begin
+  if Value and $1 = 0 then  StyleMask:= [] else StyleMask:= [fsBold];
+  if Value and $2 <> 0 then StyleMask:= StyleMask + [fsItalic];
+  if Value and $4 <> 0 then StyleMask:= StyleMask + [fsUnderline];
+  if Value and $8 <> 0 then StyleMask:= StyleMask + [fsStrikeout];
+end;
+{$ENDIF}
 
 { TSynCustomHighlighter }
 

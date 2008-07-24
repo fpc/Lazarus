@@ -37,7 +37,7 @@ uses
   Graphics, Dialogs, Buttons, StdCtrls,
   // components
   SynHighlighterLFM, SynEdit, BasicCodeTools, CodeCache, CodeToolManager,
-  LFMTrees,
+  SynEditMiscClasses, LFMTrees,
   // IDE
   PropEdits, IDEDialogs, ComponentReg, PackageIntf, IDEWindowIntf,
   CustomFormEditor, LazarusIDEStrConsts, OutputFilter, IDEProcs, IDEOptionDefs,
@@ -59,7 +59,7 @@ type
     SynLFMSyn1: TSynLFMSyn;
     procedure ErrorsListBoxClick(Sender: TObject);
     procedure LFMSynEditSpecialLineColors(Sender: TObject; Line: integer;
-      var Special: boolean; var FG, BG: TColor);
+      var Special: boolean; AMarkup: TSynSelectedColor);
     procedure RemoveAllButtonClick(Sender: TObject);
     procedure CheckLFMDialogCREATE(Sender: TObject);
   private
@@ -521,14 +521,15 @@ begin
 end;
 
 procedure TCheckLFMDialog.LFMSynEditSpecialLineColors(Sender: TObject;
-  Line: integer; var Special: boolean; var FG, BG: TColor);
+  Line: integer; var Special: boolean; AMarkup: TSynSelectedColor);
 var
   CurError: TLFMError;
 begin
   CurError:=LFMTree.FindErrorAtLine(Line);
   if CurError = nil then Exit;
   
-  Special := EditorOpts.GetLineColors(SynLFMSyn1,ahaErrorLine,FG,BG);
+  Special := True;
+  EditorOpts.SetMarkupColor(SynLFMSyn1, ahaErrorLine, AMarkup);
 end;
 
 procedure TCheckLFMDialog.CheckLFMDialogCREATE(Sender: TObject);

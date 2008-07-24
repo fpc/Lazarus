@@ -360,8 +360,7 @@ begin
         begin
           Lines.Text := EditorOpts.HighlighterList[CurLanguageID].SampleSource;
           PreviewEdits[a].Options :=
-            PreviewEdits[a].Options + [eoNoCaret,
-            eoNoSelection];
+            PreviewEdits[a].Options - [eoScrollPastEol] + [eoNoCaret, eoNoSelection];
           PreviewEdits[a].CaretXY := EditorOpts.HighlighterList[CurLanguageID].CaretXY;
         end;
       end;
@@ -1811,14 +1810,16 @@ begin
   // save all values
   EditorOpts.KeyMap.Assign(EditingKeyMap);
   SynOptions := PreviewEdits[1].Options - [eoNoSelection, eoNoCaret];
-  if CheckGroupItemChecked(EditorOptionsGroupBox,dlgBracHighlight) then
-    Include(SynOptions, eoBracketHighlight)
-  else
-    Exclude(SynOptions, eoBracketHighlight);
+  if CheckGroupItemChecked(EditorOptionsGroupBox,dlgBracHighlight)
+  then Include(SynOptions, eoBracketHighlight)
+  else Exclude(SynOptions, eoBracketHighlight);
+  if CheckGroupItemChecked(EditorOptionsGroupBox,dlgScrollPastEndLine)
+  then Include(SynOptions, eoScrollPastEol)
+  else Exclude(SynOptions, eoScrollPastEol);
   PreviewEdits[1].Options := SynOptions;
   EditorOpts.SetSynEditSettings(PreviewEdits[1]);
   PreviewEdits[1].Options :=
-    SynOptions + [eoNoCaret, eoNoSelection];
+    SynOptions - [eoScrollPastEol] + [eoNoCaret, eoNoSelection];
 
   // general
   EditorOpts.ShowTabCloseButtons :=

@@ -45,7 +45,7 @@ uses
   SynHighlighterCPP, SynHighlighterHTML, SynHighlighterJava, SynHighlighterLFM,
   SynHighlighterPas, SynHighlighterPerl, SynHighlighterPHP, SynHighlighterSQL,
   SynHighlighterPython, SynHighlighterUNIXShellScript, SynHighlighterXML,
-  SynHighlighterJScript,
+  SynHighlighterJScript, SynEditMiscClasses,
   // codetools
   Laz_XMLCfg,
   // IDEIntf
@@ -55,6 +55,9 @@ uses
   KeymapSchemeDlg, LazConf, Spin;
 
 type
+
+  { TPreviewEditor }
+
   TPreviewEditor = TSynEdit;
   TPreviewPasSyn = TSynFreePascalSyn;
   TCustomSyn     = TSynCustomHighlighter;
@@ -85,7 +88,8 @@ type
   TAdditionalHilightAttribute = (ahaNone, ahaTextBlock, ahaExecutionPoint,
     ahaEnabledBreakpoint, ahaDisabledBreakpoint,
     ahaInvalidBreakpoint, ahaUnknownBreakpoint,
-    ahaErrorLine, ahaIncrementalSearch, ahaHighlightAll);
+    ahaErrorLine, ahaIncrementalSearch, ahaHighlightAll, ahaBracketMatch,
+    ahaMouseLink);
 
 const
   AdditionalHighlightAttributes: array[TAdditionalHilightAttribute] of String =
@@ -99,13 +103,16 @@ const
     'Unknown breakpoint',
     'Error line',
     'Incremental search match',
-    'Highlight all'
+    'Highlight all',
+    'Matching Brackets',
+    'Mouse Link'
     );
     
 type
   TSchemeAttribute = record
     BG, FG: TColor;
     Styles: TFontStyles;
+    StylesMask: TFontStyles; // For Markup, normal Attributes will ignore this
   end;
 
   TPascalColorScheme = record
@@ -118,138 +125,148 @@ type
 const
   DEFAULT_COLOR_SCHEME: TPascalColorScheme = (
     Name: 'Default';
-    Default: (BG: clNone;  FG: clNone; Styles: []);
+    Default: (BG: clNone;  FG: clNone; Styles: []; StylesMask: []);
     Attributes: (
-      { phaAssembler    } (BG: clNone;  FG: clGreen; Styles: []),
-      { phaComment      } (BG: clNone;  FG: clBlue;  Styles: [fsBold]),
-      { phaDirective    } (BG: clNone;  FG: clRed;   Styles: [fsBold]),
-      { phaReservedWord } (BG: clNone;  FG: clNone;  Styles: [fsBold]),
-      { phaNumber       } (BG: clNone;  FG: clNavy;  Styles: []),
-      { phaString       } (BG: clNone;  FG: clBlue;  Styles: []),
-      { phaSymbol       } (BG: clNone;  FG: clRed;   Styles: [])
+      { phaAssembler    } (BG: clNone;  FG: clGreen; Styles: [];       StylesMask: []),
+      { phaComment      } (BG: clNone;  FG: clBlue;  Styles: [fsBold]; StylesMask: []),
+      { phaDirective    } (BG: clNone;  FG: clRed;   Styles: [fsBold]; StylesMask: []),
+      { phaReservedWord } (BG: clNone;  FG: clNone;  Styles: [fsBold]; StylesMask: []),
+      { phaNumber       } (BG: clNone;  FG: clNavy;  Styles: [];       StylesMask: []),
+      { phaString       } (BG: clNone;  FG: clBlue;  Styles: [];       StylesMask: []),
+      { phaSymbol       } (BG: clNone;  FG: clRed;   Styles: [];       StylesMask: [])
     );
     Additional: (
-      { ahaNone               } (BG: clWhite;  FG: clBlack; Styles: []),
-      { ahaTextBlock          } (BG: clNavy;   FG: clWhite; Styles: []),
-      { ahaExecutionPoint     } (BG: clDKGray; FG: clWhite; Styles: []),
-      { ahaEnabledBreakpoint  } (BG: clRed;    FG: clBlack; Styles: []),
-      { ahaDisabledBreakpoint } (BG: clGreen;  FG: clBlack; Styles: []),
-      { ahaInvalidBreakpoint  } (BG: clOlive;  FG: clGreen; Styles: []),
-      { ahaUnknownBreakpoint  } (BG: clRed;    FG: clBlack; Styles: []),
-      { ahaErrorLine          } (BG: $50a0ff;  FG: clBlack; Styles: []),
-      { ahaIncrementalSearch  } (BG: $30D070;  FG: clWhite; Styles: []),
-      { ahaHighlightAll       } (BG: clYellow; FG: clNone;  Styles: [])
+      { ahaNone               } (BG: clWhite;  FG: clBlack; Styles: []; StylesMask: []),
+      { ahaTextBlock          } (BG: clNavy;   FG: clWhite; Styles: []; StylesMask: []),
+      { ahaExecutionPoint     } (BG: clDKGray; FG: clWhite; Styles: []; StylesMask: []),
+      { ahaEnabledBreakpoint  } (BG: clRed;    FG: clBlack; Styles: []; StylesMask: []),
+      { ahaDisabledBreakpoint } (BG: clGreen;  FG: clBlack; Styles: []; StylesMask: []),
+      { ahaInvalidBreakpoint  } (BG: clOlive;  FG: clGreen; Styles: []; StylesMask: []),
+      { ahaUnknownBreakpoint  } (BG: clRed;    FG: clBlack; Styles: []; StylesMask: []),
+      { ahaErrorLine          } (BG: $50a0ff;  FG: clBlack; Styles: []; StylesMask: []),
+      { ahaIncrementalSearch  } (BG: $30D070;  FG: clWhite; Styles: []; StylesMask: []),
+      { ahaHighlightAll       } (BG: clYellow; FG: clNone;  Styles: []; StylesMask: []),
+      { ahaBracketMatch       } (BG: clNone;   FG: clNone;  Styles: [fsBold]; StylesMask: []),
+      { ahaMouseLink          } (BG: clNone;   FG: clBlue;  Styles: []; StylesMask: [])
     )
   );
   
   TWILIGHT_COLOR_SCHEME: TPascalColorScheme = (
     Name: 'Twilight';
-    Default: (BG: clBlack;  FG: clWhite; Styles: []);
+    Default: (BG: clBlack;  FG: clWhite; Styles: []; StylesMask: []);
     Attributes: (
-      { phaAssembler    } (BG: clNone;  FG: clLime;    Styles: []),
-      { phaComment      } (BG: clNone;  FG: clGray;    Styles: []),
-      { phaDirective    } (BG: clNone;  FG: clRed;     Styles: []),
-      { phaReservedWord } (BG: clNone;  FG: clAqua;    Styles: [fsBold]),
-      { phaNumber       } (BG: clNone;  FG: clFuchsia; Styles: []),
-      { phaString       } (BG: clNone;  FG: clYellow;  Styles: []),
-      { phaSymbol       } (BG: clNone;  FG: clAqua;    Styles: [])
+      { phaAssembler    } (BG: clNone;  FG: clLime;    Styles: [];       StylesMask: []),
+      { phaComment      } (BG: clNone;  FG: clGray;    Styles: [];       StylesMask: []),
+      { phaDirective    } (BG: clNone;  FG: clRed;     Styles: [];       StylesMask: []),
+      { phaReservedWord } (BG: clNone;  FG: clAqua;    Styles: [fsBold]; StylesMask: []),
+      { phaNumber       } (BG: clNone;  FG: clFuchsia; Styles: [];       StylesMask: []),
+      { phaString       } (BG: clNone;  FG: clYellow;  Styles: [];       StylesMask: []),
+      { phaSymbol       } (BG: clNone;  FG: clAqua;    Styles: [];       StylesMask: [])
     );
     Additional: (
-      { ahaNone               } (BG: clNone;   FG: clNone;  Styles: []),
-      { ahaTextBlock          } (BG: clWhite;  FG: clBlack; Styles: []),
-      { ahaExecutionPoint     } (BG: clBlue;   FG: clWhite; Styles: []),
-      { ahaEnabledBreakpoint  } (BG: clRed;    FG: clWhite; Styles: []),
-      { ahaDisabledBreakpoint } (BG: clLime;   FG: clRed;   Styles: []),
-      { ahaInvalidBreakpoint  } (BG: clOlive;  FG: clGreen; Styles: []),
-      { ahaUnknownBreakpoint  } (BG: clRed;    FG: clBlack; Styles: []),
-      { ahaErrorLine          } (BG: $50a0ff;  FG: clBlack; Styles: []),
-      { ahaIncrementalSearch  } (BG: $30D070;  FG: clWhite; Styles: []),
-      { ahaHighlightAll       } (BG: clYellow; FG: clNone;  Styles: [])
+      { ahaNone               } (BG: clNone;   FG: clNone;  Styles: []; StylesMask: []),
+      { ahaTextBlock          } (BG: clWhite;  FG: clBlack; Styles: []; StylesMask: []),
+      { ahaExecutionPoint     } (BG: clBlue;   FG: clWhite; Styles: []; StylesMask: []),
+      { ahaEnabledBreakpoint  } (BG: clRed;    FG: clWhite; Styles: []; StylesMask: []),
+      { ahaDisabledBreakpoint } (BG: clLime;   FG: clRed;   Styles: []; StylesMask: []),
+      { ahaInvalidBreakpoint  } (BG: clOlive;  FG: clGreen; Styles: []; StylesMask: []),
+      { ahaUnknownBreakpoint  } (BG: clRed;    FG: clBlack; Styles: []; StylesMask: []),
+      { ahaErrorLine          } (BG: $50a0ff;  FG: clBlack; Styles: []; StylesMask: []),
+      { ahaIncrementalSearch  } (BG: $30D070;  FG: clWhite; Styles: []; StylesMask: []),
+      { ahaHighlightAll       } (BG: clYellow; FG: clNone;  Styles: []; StylesMask: []),
+      { ahaBracketMatch       } (BG: clNone;   FG: clNone;  Styles: [fsBold]; StylesMask: []),
+      { ahaMouseLink          } (BG: clNone;   FG: clBlue;  Styles: []; StylesMask: [])
     )
   );
 
   CLASSIC_COLOR_SCHEME: TPascalColorScheme = (
     Name: 'Pascal Classic';
-    Default: (BG: clNavy;  FG: clYellow; Styles: []);
+    Default: (BG: clNavy;  FG: clYellow; Styles: []; StylesMask: []);
     Attributes: (
-      { phaAssembler    } (BG: clNone;  FG: clLime;    Styles: []),
-      { phaComment      } (BG: clNone;  FG: clSilver;  Styles: []),
-      { phaDirective    } (BG: clNone;  FG: clSilver;  Styles: []),
-      { phaReservedWord } (BG: clNone;  FG: clWhite;   Styles: []),
-      { phaNumber       } (BG: clNone;  FG: clYellow;  Styles: []),
-      { phaString       } (BG: clNone;  FG: clYellow;  Styles: []),
-      { phaSymbol       } (BG: clNone;  FG: clYellow;  Styles: [])
+      { phaAssembler    } (BG: clNone;  FG: clLime;    Styles: []; StylesMask: []),
+      { phaComment      } (BG: clNone;  FG: clSilver;  Styles: []; StylesMask: []),
+      { phaDirective    } (BG: clNone;  FG: clSilver;  Styles: []; StylesMask: []),
+      { phaReservedWord } (BG: clNone;  FG: clWhite;   Styles: []; StylesMask: []),
+      { phaNumber       } (BG: clNone;  FG: clYellow;  Styles: []; StylesMask: []),
+      { phaString       } (BG: clNone;  FG: clYellow;  Styles: []; StylesMask: []),
+      { phaSymbol       } (BG: clNone;  FG: clYellow;  Styles: []; StylesMask: [])
     );
     Additional: (
-      { ahaNone               } (BG: clNone;   FG: clNone;  Styles: []),
-      { ahaTextBlock          } (BG: clBlue;   FG: clWhite; Styles: []),
-      { ahaExecutionPoint     } (BG: clAqua;   FG: clBlack; Styles: []),
-      { ahaEnabledBreakpoint  } (BG: clRed;    FG: clWhite; Styles: []),
-      { ahaDisabledBreakpoint } (BG: clLime;   FG: clRed;   Styles: []),
-      { ahaInvalidBreakpoint  } (BG: clOlive;  FG: clLime;  Styles: []),
-      { ahaUnknownBreakpoint  } (BG: clNone;   FG: clNone;  Styles: []),
-      { ahaErrorLine          } (BG: clMaroon; FG: clWhite; Styles: []),
-      { ahaIncrementalSearch  } (BG: $30D070;  FG: clWhite; Styles: []),
-      { ahaHighlightAll       } (BG: clYellow; FG: clNone;  Styles: [])
+      { ahaNone               } (BG: clNone;   FG: clNone;  Styles: []; StylesMask: []),
+      { ahaTextBlock          } (BG: clBlue;   FG: clWhite; Styles: []; StylesMask: []),
+      { ahaExecutionPoint     } (BG: clAqua;   FG: clBlack; Styles: []; StylesMask: []),
+      { ahaEnabledBreakpoint  } (BG: clRed;    FG: clWhite; Styles: []; StylesMask: []),
+      { ahaDisabledBreakpoint } (BG: clLime;   FG: clRed;   Styles: []; StylesMask: []),
+      { ahaInvalidBreakpoint  } (BG: clOlive;  FG: clLime;  Styles: []; StylesMask: []),
+      { ahaUnknownBreakpoint  } (BG: clNone;   FG: clNone;  Styles: []; StylesMask: []),
+      { ahaErrorLine          } (BG: clMaroon; FG: clWhite; Styles: []; StylesMask: []),
+      { ahaIncrementalSearch  } (BG: $30D070;  FG: clWhite; Styles: []; StylesMask: []),
+      { ahaHighlightAll       } (BG: clYellow; FG: clNone;  Styles: []; StylesMask: []),
+      { ahaBracketMatch       } (BG: clNone;   FG: clNone;  Styles: [fsBold]; StylesMask: []),
+      { ahaMouseLink          } (BG: clNone;   FG: clBlue;  Styles: []; StylesMask: [])
     )
   );
   
   OCEAN_COLOR_SCHEME: TPascalColorScheme = (
     Name: 'Ocean';
-    Default: (BG: clNavy;  FG: clYellow; Styles: []);
+    Default: (BG: clNavy;  FG: clYellow; Styles: []; StylesMask: []);
     Attributes: (
-      { phaAssembler    } (BG: clNone;  FG: clLime;    Styles: []),
-      { phaComment      } (BG: clNone;  FG: clGray;    Styles: []),
-      { phaDirective    } (BG: clNone;  FG: clRed;     Styles: []),
-      { phaReservedWord } (BG: clNone;  FG: clAqua;    Styles: [fsBold]),
-      { phaNumber       } (BG: clNone;  FG: clFuchsia; Styles: []),
-      { phaString       } (BG: clNone;  FG: clYellow;  Styles: []),
-      { phaSymbol       } (BG: clNone;  FG: clAqua;    Styles: [])
+      { phaAssembler    } (BG: clNone;  FG: clLime;    Styles: [];       StylesMask: []),
+      { phaComment      } (BG: clNone;  FG: clGray;    Styles: [];       StylesMask: []),
+      { phaDirective    } (BG: clNone;  FG: clRed;     Styles: [];       StylesMask: []),
+      { phaReservedWord } (BG: clNone;  FG: clAqua;    Styles: [fsBold]; StylesMask: []),
+      { phaNumber       } (BG: clNone;  FG: clFuchsia; Styles: [];       StylesMask: []),
+      { phaString       } (BG: clNone;  FG: clYellow;  Styles: [];       StylesMask: []),
+      { phaSymbol       } (BG: clNone;  FG: clAqua;    Styles: [];       StylesMask: [])
     );
     Additional: (
-      { ahaNone               } (BG: clNone;   FG: clNone;  Styles: []),
-      { ahaTextBlock          } (BG: clWhite;  FG: clBlack; Styles: []),
-      { ahaExecutionPoint     } (BG: clBlue;   FG: clWhite; Styles: []),
-      { ahaEnabledBreakpoint  } (BG: clRed;    FG: clWhite; Styles: []),
-      { ahaDisabledBreakpoint } (BG: clLime;   FG: clRed;   Styles: []),
-      { ahaInvalidBreakpoint  } (BG: clOlive;  FG: clGreen; Styles: []),
-      { ahaUnknownBreakpoint  } (BG: clRed;    FG: clBlack; Styles: []),
-      { ahaErrorLine          } (BG: $50A0FF;  FG: clBlack; Styles: []),
-      { ahaIncrementalSearch  } (BG: $30D070;  FG: clWhite; Styles: []),
-      { ahaHighlightAll       } (BG: clYellow; FG: clNone;  Styles: [])
+      { ahaNone               } (BG: clNone;   FG: clNone;  Styles: []; StylesMask: []),
+      { ahaTextBlock          } (BG: clWhite;  FG: clBlack; Styles: []; StylesMask: []),
+      { ahaExecutionPoint     } (BG: clBlue;   FG: clWhite; Styles: []; StylesMask: []),
+      { ahaEnabledBreakpoint  } (BG: clRed;    FG: clWhite; Styles: []; StylesMask: []),
+      { ahaDisabledBreakpoint } (BG: clLime;   FG: clRed;   Styles: []; StylesMask: []),
+      { ahaInvalidBreakpoint  } (BG: clOlive;  FG: clGreen; Styles: []; StylesMask: []),
+      { ahaUnknownBreakpoint  } (BG: clRed;    FG: clBlack; Styles: []; StylesMask: []),
+      { ahaErrorLine          } (BG: $50A0FF;  FG: clBlack; Styles: []; StylesMask: []),
+      { ahaIncrementalSearch  } (BG: $30D070;  FG: clWhite; Styles: []; StylesMask: []),
+      { ahaHighlightAll       } (BG: clYellow; FG: clNone;  Styles: []; StylesMask: []),
+      { ahaBracketMatch       } (BG: clNone;   FG: clNone;  Styles: [fsBold]; StylesMask: []),
+      { ahaMouseLink          } (BG: clNone;   FG: clBlue;  Styles: []; StylesMask: [])
     )
   );
 
   DELPHI_COLOR_SCHEME: TPascalColorScheme = (
     Name: 'Delphi';
-    Default: (BG: clNone;  FG: clNone; Styles: []);
+    Default: (BG: clNone;  FG: clNone; Styles: []; StylesMask: []);
     Attributes: (
-      { phaAssembler    } (BG: clNone;  FG: clBlack;   Styles: []),
-      { phaComment      } (BG: clNone;  FG: clNavy;    Styles: [fsItalic]),
-      { phaDirective    } (BG: clNone;  FG: clGreen;   Styles: []),
-      { phaReservedWord } (BG: clNone;  FG: clBlack;   Styles: [fsBold]),
-      { phaNumber       } (BG: clNone;  FG: clNavy;    Styles: []),
-      { phaString       } (BG: clNone;  FG: clNavy;    Styles: []),
-      { phaSymbol       } (BG: clNone;  FG: clBlack;   Styles: [])
+      { phaAssembler    } (BG: clNone;  FG: clBlack;   Styles: [];         StylesMask: []),
+      { phaComment      } (BG: clNone;  FG: clNavy;    Styles: [fsItalic]; StylesMask: []),
+      { phaDirective    } (BG: clNone;  FG: clGreen;   Styles: [];         StylesMask: []),
+      { phaReservedWord } (BG: clNone;  FG: clBlack;   Styles: [fsBold];   StylesMask: []),
+      { phaNumber       } (BG: clNone;  FG: clNavy;    Styles: [];         StylesMask: []),
+      { phaString       } (BG: clNone;  FG: clNavy;    Styles: [];         StylesMask: []),
+      { phaSymbol       } (BG: clNone;  FG: clBlack;   Styles: [];         StylesMask: [])
     );
     Additional: (
-      { ahaNone               } (BG: clNone;      FG: clNone;          Styles: []),
-      { ahaTextBlock          } (BG: clHighlight; FG: clHighlightText; Styles: []),
-      { ahaExecutionPoint     } (BG: clNavy;      FG: clWhite;         Styles: []),
-      { ahaEnabledBreakpoint  } (BG: clRed;       FG: clWhite;         Styles: []),
-      { ahaDisabledBreakpoint } (BG: clLime;      FG: clRed;           Styles: []),
-      { ahaInvalidBreakpoint  } (BG: clOlive;     FG: clLime;          Styles: []),
-      { ahaUnknownBreakpoint  } (BG: clRed;       FG: clBlack;         Styles: []),
-      { ahaErrorLine          } (BG: clMaroon;    FG: clWhite;         Styles: []),
-      { ahaIncrementalSearch  } (BG: $30D070;     FG: clWhite;         Styles: []),
-      { ahaHighlightAll       } (BG: clYellow;    FG: clNone;          Styles: [])
+      { ahaNone               } (BG: clNone;      FG: clNone;          Styles: []; StylesMask: []),
+      { ahaTextBlock          } (BG: clHighlight; FG: clHighlightText; Styles: []; StylesMask: []),
+      { ahaExecutionPoint     } (BG: clNavy;      FG: clWhite;         Styles: []; StylesMask: []),
+      { ahaEnabledBreakpoint  } (BG: clRed;       FG: clWhite;         Styles: []; StylesMask: []),
+      { ahaDisabledBreakpoint } (BG: clLime;      FG: clRed;           Styles: []; StylesMask: []),
+      { ahaInvalidBreakpoint  } (BG: clOlive;     FG: clLime;          Styles: []; StylesMask: []),
+      { ahaUnknownBreakpoint  } (BG: clRed;       FG: clBlack;         Styles: []; StylesMask: []),
+      { ahaErrorLine          } (BG: clMaroon;    FG: clWhite;         Styles: []; StylesMask: []),
+      { ahaIncrementalSearch  } (BG: $30D070;     FG: clWhite;         Styles: []; StylesMask: []),
+      { ahaHighlightAll       } (BG: clYellow;    FG: clNone;          Styles: []; StylesMask: []),
+      { ahaBracketMatch       } (BG: clNone;      FG: clNone;          Styles: [fsBold]; StylesMask: []),
+      { ahaMouseLink          } (BG: clNone;      FG: clBlue;          Styles: []; StylesMask: [])
     )
   );
 
 
 
 const
-  EditorOptsFormatVersion = 2;
+  EditorOptsFormatVersion = 3;
 
   LazSyntaxHighlighterClasses: array[TLazSyntaxHighlighter] of
     TCustomSynClass =
@@ -307,6 +324,7 @@ type
     Integer; // first line = 1
     MappedAttributes: TStringList; // map attributes to pascal
     DefaultCommentType: TCommentType;
+    CaretXY: TPoint;
     constructor Create;
     destructor Destroy; override;
     function GetDefaultFilextension: String;
@@ -422,8 +440,11 @@ type
                                                  DefaultPascalSyn: TPreviewPasSyn);
     procedure WriteHighlighterSettings(Syn: TCustomSyn;
                                        SynColorScheme: String);
-    function GetLineColors(Syn: TCustomSyn; AddHilightAttr: TAdditionalHilightAttribute;
-                           out FG, BG: TColor): Boolean;
+    function GetLineColors(Syn: TCustomSyn; AddHilightAttr: TAdditionalHilightAttribute; {TODO: MFR maybe remove?}
+                           out FG, BG: TColor; out Styles, StylesMask: TFontStyles): Boolean;
+    procedure SetMarkupColor(Syn: TCustomSyn; AddHilightAttr: TAdditionalHilightAttribute;
+                              aMarkup: TSynSelectedColor); 
+    procedure SetMarkupColors(Syn: TCustomSyn; aSynEd: TSynEdit);
   published
     // general options
     property SynEditOptions: TSynEditorOptions
@@ -527,6 +548,21 @@ type
     BlockIndentLabel: TLabel;
     CodeFolding: TPage;
     BtnPanel: TPanel;
+    TextBoldRadioOn : TRadioButton;
+    TextBoldRadioOff : TRadioButton;
+    TextBoldRadioInvert : TRadioButton;
+    TextItalicRadioOn : TRadioButton;
+    TextItalicRadioOff : TRadioButton;
+    TextItalicRadioInvert : TRadioButton;
+    TextUnderlineRadioOn : TRadioButton;
+    TextUnderlineRadioOff : TRadioButton;
+    TextUnderlineRadioInvert : TRadioButton;
+    TextBoldRadioPanel : TPanel;
+    TextItalicRadioPanel : TPanel;
+    TextUnderlineRadioPanel : TPanel;
+    TextUnderlinePanel : TPanel;
+    TextItalicPanel : TPanel;
+    TextBoldPanel : TPanel;
     UndoLimitComboBox: TComboBox;
     UndoLimitLabel: TLabel;
     TabWidthsComboBox: TComboBox;
@@ -607,6 +643,7 @@ type
 
     // general
     procedure ColorElementListBoxClick(Sender: TObject);
+    procedure DisplayPreviewStatusChange(Sender : TObject; Changes : TSynStatusChanges);
     procedure GeneralCheckBoxOnChange(Sender: TObject);
     procedure ComboBoxOnChange(Sender: TObject);
     procedure ComboBoxOnExit(Sender: TObject);
@@ -633,7 +670,7 @@ type
     procedure ColorPreviewMouseUp(Sender: TObject; Button: TMouseButton;
                                   Shift: TShiftState; X, Y: Integer);
     procedure OnSpecialLineColors(Sender: TObject; Line: Integer;
-                                  var Special: Boolean; var FG, BG: TColor);
+                                  var Special: boolean; aMarkUp : TSynSelectedColor);
     procedure SetAttributeToDefaultButtonClick(Sender: TObject);
     procedure SetAllAttributesToDefaultButtonClick(Sender: TObject);
 
@@ -645,6 +682,7 @@ type
     // buttons at bottom
     procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
+    procedure TextStyleRadioOnChange(Sender : TObject);
   private
     FormCreating: Boolean;
     PreviewSyn:   TCustomSyn;
@@ -652,6 +690,7 @@ type
     CurLanguageID: Integer;
     // current index in EditorOpts.EditOptHighlighterList
     CurHighlightElement: TSynHighlightElement;
+    CurHighlightElementIsExtra: Boolean;
     UpdatingColor: Boolean;
     fHighlighterList: TStringList; // list of "ColorScheme" Data=TCustomSyn
     fColorSchemes: TStringList;    // list of LanguageName=ColorScheme
@@ -904,6 +943,7 @@ begin
   Dest.Background := Src.Background;
   Dest.Foreground := Src.Foreground;
   Dest.Style      := Src.Style;
+  Dest.StyleMask  := Src.StyleMask;
 end;
 
 { TEditOptLanguageInfo }
@@ -1000,20 +1040,20 @@ begin
       'var  // Delphi Comment'#13 +
       '  Number, I, X: Integer;'#13 +
       'begin'#13 +
-      '  Number := 12345;'#13 +
+      '  Number := 12345 * (2 + 9) // << Matching Brackets ;'#13 +
       '  Caption := ''The number is '' + IntToStr(Number);'#13 +
       '  asm'#13 + '    MOV AX,1234h'#13 +
       '    MOV Number,AX'#13 +
       '  end;'#13 +
       '  X := 10;'#13 +
-      '  { Search Match, Text Block }'#13 +
-      '  for I := 0 to Number do { execution point }'#13 +
+      '  inc(X); {$R+} { Search Match, Text Block }'#13 +
+      '  for I := 0 to Number do {$R-} { execution point }'#13 +
       '  begin'#13 +
-      '    Inc(X); { Enabled breakpoint }'#13 +
-      '    Dec(X); { Disabled breakpoint }'#13 +
-      '    // { Invalid breakpoint }'#13 +
-      '    WriteLN(X); { Unknown breakpoint }'#13 +
-      '    X := X + 1.0; { Error line }'#13 +
+      '    Inc(X, 2); {$R+} { Enabled breakpoint }'#13 +
+      '    Dec(X, 3); {$R+} { Disabled breakpoint }'#13 +
+      '    {$R-} // { Invalid breakpoint }'#13 +
+      '    WriteLN(X); {$R-} { Unknown breakpoint }'#13 +
+      '    X := X + 1.0; {$R-} { Error line }'#13 +
       '    ListBox1.Items.Add(IntToStr(X));'#13 +
       '  end;'#13 +
       'end;'#13 + #13;
@@ -1024,6 +1064,7 @@ begin
     AddAttrSampleLines[ahaErrorLine] := 21;
     AddAttrSampleLines[ahaExecutionPoint] := 15;
     AddAttrSampleLines[ahaTextBlock] := 14;
+    CaretXY := Point(21, 7);
   end;
   Add(NewInfo);
 
@@ -1050,6 +1091,7 @@ begin
       Add('Comment=Comment');
       Add('Space=Space');
     end;
+    CaretXY := Point(1,1);
   end;
   Add(NewInfo);
 
@@ -1082,6 +1124,7 @@ begin
       Add('String=String');
       Add('Symbol=Symbol');
     end;
+    CaretXY := Point(1,1);
   end;
   Add(NewInfo);
 
@@ -1108,6 +1151,7 @@ begin
       Add('Space=Space');
       Add('Symbol=Symbol');
     end;
+    CaretXY := Point(1,1);
   end;
   Add(NewInfo);
 
@@ -1137,6 +1181,7 @@ begin
       Add('String=String');
       Add('Symbol=Symbol');
     end;
+    CaretXY := Point(1,1);
   end;
   Add(NewInfo);
 
@@ -1165,6 +1210,7 @@ begin
       Add('StringAttri=String');
       Add('Symbol=Symbol');
     end;
+    CaretXY := Point(1,1);
   end;
   Add(NewInfo);
 
@@ -1200,6 +1246,7 @@ begin
       Add('String=String');
       Add('Symbol=Symbol');
     end;
+    CaretXY := Point(1,1);
   end;
   Add(NewInfo);
 
@@ -1233,6 +1280,7 @@ begin
       Add('String=String');
       Add('Symbol=Symbol');
     end;
+    CaretXY := Point(1,1);
   end;
   Add(NewInfo);
 
@@ -1266,6 +1314,7 @@ begin
       Add('String=String');
       Add('Symbol=Symbol');
     end;
+    CaretXY := Point(1,1);
   end;
   Add(NewInfo);
 
@@ -1293,6 +1342,7 @@ begin
       Add('Key=Key');
       Add('String=String');
     end;
+    CaretXY := Point(1,1);
   end;
   Add(NewInfo);
 
@@ -1323,6 +1373,7 @@ begin
       Add('Key=Key');
       Add('String=String');
     end;
+    CaretXY := Point(1,1);
   end;
   Add(NewInfo);
 
@@ -1351,6 +1402,7 @@ begin
       Add('String=String');
       Add('Symbol=Symbol');
     end;
+    CaretXY := Point(1,1);
   end;
   Add(NewInfo);
 end;
@@ -1510,6 +1562,7 @@ var
   SynEditOpt2: TSynEditorOption2;
 begin
   try
+
     // general options
     for SynEditOpt := Low(TSynEditorOption) to High(TSynEditorOption) do
     begin
@@ -1908,6 +1961,7 @@ begin
     else Attr.Background := Scheme.Attributes[pha].BG;
     //DebugLn(['TEditorOptions.GetDefaultsForPascalAttribute SynColorScheme=',SynColorScheme,' AttriName=',AttriName,' BG=',ColorToString(Scheme.Attributes[pha].BG),' Background=',ColorToString(Attr.Background),' SchemeBG=',ColorToString(Scheme.Default.BG)]);
     Attr.Style := Scheme.Attributes[pha].Styles;
+    Attr.StyleMask := Scheme.Attributes[pha].StylesMask;
     Exit;
   end;
   
@@ -1921,12 +1975,14 @@ begin
     then Attr.Background := Scheme.Default.BG
     else Attr.Background := Scheme.Additional[aha].BG;
     Attr.Style := Scheme.Additional[aha].Styles;
+    Attr.StyleMask := Scheme.Additional[aha].StylesMask;
     Exit;
   end;
   
   Attr.Foreground := Scheme.Default.FG;
   Attr.Background := Scheme.Default.BG;
-  Attr.Style := Scheme.Additional[aha].Styles;
+  Attr.Style := Scheme.Default.Styles;
+  Attr.StyleMask := Scheme.Default.StylesMask;
 end;
 
 procedure TEditorOptions.ReadDefaultsForHighlighterSettings(Syn: TCustomSyn;
@@ -2063,6 +2119,17 @@ begin
       if b then
         Include(fs, fsUnderline);
       Attri.Style := fs;
+      fs   := [];
+      b    := XMLConfig.GetValue(Path + 'StyleMask/Bold', fsBold in Attri.StyleMask);
+      if b then
+        Include(fs, fsBold);
+      b := XMLConfig.GetValue(Path + 'StyleMask/Italic', fsItalic in Attri.StyleMask);
+      if b then
+        Include(fs, fsItalic);
+      b := XMLConfig.GetValue(Path + 'StyleMask/Underline', fsUnderline in Attri.StyleMask);
+      if b then
+        Include(fs, fsUnderline);
+      Attri.StyleMask := fs;
     end// read all attributes
   else
   if Syn is TPreviewPasSyn then
@@ -2089,6 +2156,7 @@ begin
       if b then
         Include(fs, fsUnderline);
       Attri.Style := fs;
+      Attri.StyleMask := [];
     end// FormatVersion < 2
        // the oldest format only supports pascal
   ;
@@ -2135,6 +2203,12 @@ begin
         XMLConfig.SetValue(Path + 'Style/Italic', fsItalic in Attri.Style);
         XMLConfig.SetValue(Path + 'Style/Underline', fsUnderline in Attri.Style);
       end;
+      if Attri.StyleMask <> OldAttri.StyleMask then
+      begin
+        XMLConfig.SetValue(Path + 'StyleMask/Bold', fsBold in Attri.StyleMask);
+        XMLConfig.SetValue(Path + 'StyleMask/Italic', fsItalic in Attri.StyleMask);
+        XMLConfig.SetValue(Path + 'StyleMask/Underline', fsUnderline in Attri.StyleMask);
+      end;
     end;
   finally
     OldSyn.Free;
@@ -2153,8 +2227,9 @@ begin
   WriteHighlighterSettings(Syn, '');
 end;
 
-function TEditorOptions.GetLineColors(Syn: TCustomSyn; AddHilightAttr: TAdditionalHilightAttribute;
-  out FG, BG: TColor{; out Styles: TFontStyles}): Boolean;
+function TEditorOptions.GetLineColors(Syn: TCustomSyn;
+  AddHilightAttr: TAdditionalHilightAttribute;
+  out FG, BG: TColor; out Styles, StylesMask: TFontStyles): Boolean;
 var
   i: Integer;
   Attrib: TSynHighlighterAttributes;
@@ -2170,22 +2245,60 @@ begin
       
       FG := Attrib.Foreground;
       BG := Attrib.Background;
-//      Styles := Attrib.Style;
-      Exit((FG <> clNone) or (BG <> clNone) {or (Styles <> [])});
+      Styles := Attrib.Style;
+      StylesMask := Attrib.StyleMask;
+      Exit((FG <> clNone) or (BG <> clNone) or (Styles <> []) or (StylesMask <> []));
     end;
   end;
     
   // set default
   FG := DEFAULT_COLOR_SCHEME.Additional[AddHilightAttr].FG;
   BG := DEFAULT_COLOR_SCHEME.Additional[AddHilightAttr].BG;
-//  Styles := DEFAULT_COLOR_SCHEME.Additional[AddHilightAttr].Styles;
+  Styles := DEFAULT_COLOR_SCHEME.Additional[AddHilightAttr].Styles;
+  StylesMask := DEFAULT_COLOR_SCHEME.Additional[AddHilightAttr].StylesMask;
   Result := True;
+end;
+
+procedure TEditorOptions.SetMarkupColors(Syn : TCustomSyn; aSynEd : TSynEdit);
+begin
+  SetMarkupColor(aSynEd.Highlighter, ahaTextBlock, aSynEd.SelectedColor);
+  SetMarkupColor(aSynEd.Highlighter, ahaIncrementalSearch, aSynEd.IncrementColor);
+  SetMarkupColor(aSynEd.Highlighter, ahaHighlightAll, aSynEd.HighlightAllColor);
+  SetMarkupColor(aSynEd.Highlighter, ahaBracketMatch, aSynEd.BracketMatchColor);
+  SetMarkupColor(aSynEd.Highlighter, ahaMouseLink, aSynEd.MouseLinkColor);
+end;
+
+procedure TEditorOptions.SetMarkupColor(Syn : TCustomSyn; AddHilightAttr : TAdditionalHilightAttribute; aMarkup : TSynSelectedColor);
+var
+  i: Integer;
+  Attrib: TSynHighlighterAttributes;
+begin
+  if Syn <> nil
+  then begin
+    for i := 0 to Syn.AttrCount - 1 do
+    begin
+      Attrib := Syn.Attribute[i];
+      if Attrib.Name = '' then Continue;
+      if LowerCase(Attrib.Name) <> LowerCase(AdditionalHighlightAttributes[AddHilightAttr])
+      then Continue;
+
+      aMarkup.Foreground := Attrib.Foreground;
+      aMarkup.Background := Attrib.Background;
+      aMarkup.Style      := Attrib.Style;
+      aMarkup.StyleMask  := Attrib.StyleMask;
+      Exit;
+    end;
+  end;
+
+  // set default
+  aMarkup.Foreground := DEFAULT_COLOR_SCHEME.Additional[AddHilightAttr].FG;;
+  aMarkup.Background := DEFAULT_COLOR_SCHEME.Additional[AddHilightAttr].BG;
+  aMarkup.Style := DEFAULT_COLOR_SCHEME.Additional[AddHilightAttr].Styles;
+  aMarkup.StyleMask := DEFAULT_COLOR_SCHEME.Additional[AddHilightAttr].StylesMask;
 end;
 
 procedure TEditorOptions.GetSynEditSettings(ASynEdit: TSynEdit);
 // read synedit setings from config file
-var
-  FG, BG: TColor;
 begin
   // general options
   ASynEdit.Options := fSynEditOptions;
@@ -2218,10 +2331,8 @@ begin
   ASynEdit.ExtraCharSpacing := fExtraCharSpacing;
   ASynEdit.ExtraLineSpacing := fExtraLineSpacing;
   ASynEdit.MaxUndo := fUndoLimit;
-  GetLineColors(ASynEdit.Highlighter, ahaTextBlock, FG, BG);
-  ASynEdit.SelectedColor.Foreground := FG;
-  ASynEdit.SelectedColor.Background := BG;
-  
+  SetMarkupColors(ASynEdit.Highlighter, ASynEdit);
+
   // Code Folding
   ASynEdit.CFDividerDrawLevel := FCFDividerDrawLevel;
 
@@ -2293,7 +2404,7 @@ begin
 
   // general options
   ASynEdit.Options := fSynEditOptions - [eoDragDropEditing, eoDropFiles,
-    eoScrollPastEof] + [eoNoCaret, eoNoSelection];
+    eoScrollPastEof, eoScrollPastEol] + [eoNoCaret, eoNoSelection];
   ASynEdit.BlockIndent := fBlockIndent;
   ASynEdit.TabWidth := fTabWidth;
 
@@ -2340,6 +2451,7 @@ begin
 
   UpdatingColor := False;
   CurHighlightElement := Nil;
+  CurHighlightElementIsExtra := False;
 
   // create a temporary copy of the keymap for editing
   EditingKeyMap := TKeyCommandRelationList.Create;
@@ -2368,8 +2480,8 @@ begin
         begin
           Lines.Text := EditorOpts.HighlighterList[CurLanguageID].SampleSource;
           PreviewEdits[a].Options :=
-            PreviewEdits[a].Options + [eoNoCaret,
-            eoNoSelection] - [eoBracketHighlight];
+            PreviewEdits[a].Options - [eoScrollPastEol] + [eoNoCaret, eoNoSelection];
+          PreviewEdits[a].CaretXY := EditorOpts.HighlighterList[CurLanguageID].CaretXY;
         end;
       end;
 
@@ -2388,6 +2500,7 @@ begin
   FillColorElementListBox;
   FindCurHighlightElement;
   ShowCurAttribute;
+  InvalidatePreviews;
 
   // code Tools options
 
@@ -2531,7 +2644,9 @@ begin
         end;
       end;
     if Sender = TextBoldCheckBox then
-      if TextBoldCheckBox.Checked xor (fsBold in CurHighlightElement.Style) then
+      if CurHighlightElementIsExtra
+      then TextStyleRadioOnChange(Sender)
+      else if TextBoldCheckBox.Checked xor (fsBold in CurHighlightElement.Style) then
       begin
         if TextBoldCheckBox.Checked then
           CurHighlightElement.Style := CurHighlightElement.Style + [fsBold]
@@ -2540,7 +2655,9 @@ begin
         InvalidatePreviews;
       end;
     if Sender = TextItalicCheckBox then
-      if TextItalicCheckBox.Checked then
+      if CurHighlightElementIsExtra
+      then TextStyleRadioOnChange(Sender)
+      else if TextItalicCheckBox.Checked then
       begin
         if not (fsItalic in CurHighlightElement.Style) then
         begin
@@ -2555,7 +2672,9 @@ begin
         InvalidatePreviews;
       end;
     if Sender = TextUnderlineCheckBox then
-      if TextUnderlineCheckBox.Checked then
+      if CurHighlightElementIsExtra
+      then TextStyleRadioOnChange(Sender)
+      else if TextUnderlineCheckBox.Checked then
       begin
         if not (fsUnderline in CurHighlightElement.Style) then
         begin
@@ -2575,6 +2694,18 @@ end;
 procedure TEditorOptionsForm.ColorElementListBoxClick(Sender: TObject);
 begin
   FindCurHighlightElement;
+end;
+
+procedure TEditorOptionsForm.DisplayPreviewStatusChange(Sender : TObject; Changes : TSynStatusChanges);
+var
+  Syn: TSynEdit;
+  p: TPoint;
+begin
+  p := EditorOpts.HighlighterList[CurLanguageID].CaretXY;
+  Syn := Sender as TSynEdit;
+  if (Syn.CaretX <> p.x)
+  or (Syn.Carety <> p.y)
+  then Syn.CaretXY:= p;
 end;
 
 procedure TEditorOptionsForm.chkCodeFoldingEnabledChange(Sender: TObject);
@@ -2856,12 +2987,15 @@ begin
           SetComboBoxText(FileExtensionsComboBox,
             GetCurFileExtensions(PreviewSyn.LanguageName));
           for a := Low(PreviewEdits) to High(PreviewEdits) do
-            if a <> 3 then
+            if a <> 3 then begin
               PreviewEdits[a].Lines.Text :=
                 EditorOpts.HighlighterList[CurLanguageID].SampleSource;
+              PreviewEdits[a].CaretXY := EditorOpts.HighlighterList[CurLanguageID].CaretXY;
+            end;
           SetPreviewSynInAllPreviews;
           FillColorElementListBox;
           FindCurHighlightElement;
+          InvalidatePreviews;
         end;
       end// change language
     // general
@@ -2887,6 +3021,7 @@ end;
 procedure TEditorOptionsForm.FindCurHighlightElement;
 var
   a, i: Integer;
+  h: TAdditionalHilightAttribute;
   Old:  TSynHighlightElement;
 begin
   Old := CurHighlightElement;
@@ -2905,8 +3040,15 @@ begin
       dec(i);
     end;
   end;
-  if Old <> CurHighlightElement then
+  
+  if Old <> CurHighlightElement then begin
+    CurHighlightElementIsExtra := False;
+    for h := Low(TAdditionalHilightAttribute)
+    to high(TAdditionalHilightAttribute) do
+      if ColorElementListBox.Items[a] = AdditionalHighlightAttributes[h]
+        then CurHighlightElementIsExtra := true;
     ShowCurAttribute;
+  end;
 end;
 
 procedure TEditorOptionsForm.InvalidatePreviews;
@@ -2914,8 +3056,10 @@ var
   a: Integer;
 begin
   for a := Low(PreviewEdits) to High(PreviewEdits) do
-    if PreviewEdits[a] <> Nil then
+    if PreviewEdits[a] <> Nil then begin
+      EditorOpts.SetMarkupColors(PreviewEdits[a].Highlighter, PreviewEdits[a]);
       PreviewEdits[a].Invalidate;
+    end;
 end;
 
 procedure TEditorOptionsForm.SetPreviewSynInAllPreviews;
@@ -2935,9 +3079,44 @@ begin
   if (CurHighlightElement = nil) or UpdatingColor then
     exit;
   UpdatingColor := True;
-  TextBoldCheckBox.Checked := fsBold in CurHighlightElement.Style;
-  TextItalicCheckBox.Checked := fsItalic in CurHighlightElement.Style;
-  TextUnderlineCheckBox.Checked := fsUnderline in CurHighlightElement.Style;
+  
+  TextBoldRadioPanel.Visible := CurHighlightElementIsExtra;
+  TextItalicRadioPanel.Visible := CurHighlightElementIsExtra;
+  TextUnderlineRadioPanel.Visible := CurHighlightElementIsExtra;
+  if CurHighlightElementIsExtra then begin
+    TextBoldCheckBox.Checked := (fsBold in CurHighlightElement.Style)
+      or (fsBold in CurHighlightElement.StyleMask);
+    TextBoldRadioPanel.Enabled := TextBoldCheckBox.Checked;
+    if not(fsBold in CurHighlightElement.StyleMask)
+    then TextBoldRadioInvert.Checked := True
+    else if fsBold in CurHighlightElement.Style
+    then TextBoldRadioOn.Checked := True
+    else TextBoldRadioOff.Checked := True;
+
+    TextItalicCheckBox.Checked := (fsItalic in CurHighlightElement.Style)
+      or (fsItalic in CurHighlightElement.StyleMask);
+    TextItalicRadioPanel.Enabled := TextItalicCheckBox.Checked;
+    if not(fsItalic in CurHighlightElement.StyleMask)
+    then TextItalicRadioInvert.Checked := True
+    else if fsItalic  in CurHighlightElement.Style
+    then TextItalicRadioOn.Checked := True
+    else TextItalicRadioOff.Checked := True;
+
+    TextUnderlineCheckBox.Checked := (fsUnderline in CurHighlightElement.Style)
+      or (fsUnderline in CurHighlightElement.StyleMask);
+    TextUnderlineRadioPanel.Enabled := TextUnderlineCheckBox.Checked;
+    if not(fsUnderline in CurHighlightElement.StyleMask)
+    then TextUnderlineRadioInvert.Checked := True
+    else if fsUnderline in CurHighlightElement.Style
+    then TextUnderlineRadioOn.Checked := True
+    else TextUnderlineRadioOff.Checked := True;
+  end else begin
+    TextBoldCheckBox.Checked := fsBold in CurHighlightElement.Style;
+    TextItalicCheckBox.Checked := fsItalic in CurHighlightElement.Style;
+    TextUnderlineCheckBox.Checked := fsUnderline in CurHighlightElement.Style;
+  end;
+  
+  
   if CurHighlightElement.Foreground = clNone then
     ForeGroundUseDefaultCheckBox.Checked := True
   else
@@ -3084,6 +3263,7 @@ begin
   end;
 
   CurHighlightElement := Nil;
+  CurHighlightElementIsExtra := False;
   if ColorElementListBox.Items.Count > 0 then
     ColorElementListBox.Selected[0] := True;
   FindCurHighlightElement;
@@ -3127,7 +3307,7 @@ begin
 end;
 
 procedure TEditorOptionsForm.OnSpecialLineColors(Sender: TObject;
-  Line: Integer; var Special: Boolean; var FG, BG: TColor);
+  Line: Integer; var Special: boolean; aMarkup: TSynSelectedColor);
 var
   e: TSynHighlightElement;
   AddAttr: TAdditionalHilightAttribute;
@@ -3146,11 +3326,8 @@ begin
           continue;
         if e.Name = AdditionalHighlightAttributes[AddAttr] then
         begin
-          Special := (e.ForeGround <> clNone) or (e.BackGround <> clNone);
-          if e.ForeGround <> clNone then
-            FG := e.ForeGround;
-          if e.BackGround <> clNone then
-            BG := e.BackGround;
+          Special := True;
+          EditorOpts.SetMarkupColor(PreviewSyn, AddAttr, aMarkup);
           exit;
         end;
         dec(i);
@@ -3715,10 +3892,19 @@ begin
   TextAttributesGroupBox.Caption := dlgTextAttributes;
 
   TextBoldCheckBox.Caption := dlgEdBold;
+  TextBoldRadioOn.Caption := dlgEdOn;
+  TextBoldRadioOff.Caption := dlgEdOff;
+  TextBoldRadioInvert.Caption := dlgEdInvert;
 
   TextItalicCheckBox.Caption := dlgEdItal;
+  TextItalicRadioOn.Caption := dlgEdOn;
+  TextItalicRadioOff.Caption := dlgEdOff;
+  TextItalicRadioInvert.Caption := dlgEdInvert;
 
   TextUnderlineCheckBox.Caption := dlgEdUnder;
+  TextUnderlineRadioOn.Caption := dlgEdOn;
+  TextUnderlineRadioOff.Caption := dlgEdOff;
+  TextUnderlineRadioInvert.Caption := dlgEdInvert;
 end;
 
 procedure TEditorOptionsForm.SetupCodeToolsPage(Page: Integer);
@@ -3786,15 +3972,16 @@ begin
   // save all values
   EditorOpts.KeyMap.Assign(EditingKeyMap);
   SynOptions := PreviewEdits[1].Options - [eoNoSelection, eoNoCaret];
-  if CheckGroupItemChecked(EditorOptionsGroupBox,dlgBracHighlight) then
-    Include(SynOptions, eoBracketHighlight)
-  else
-    Exclude(SynOptions, eoBracketHighlight);
+  if CheckGroupItemChecked(EditorOptionsGroupBox,dlgBracHighlight)
+  then Include(SynOptions, eoBracketHighlight)
+  else Exclude(SynOptions, eoBracketHighlight);
+  if CheckGroupItemChecked(EditorOptionsGroupBox,dlgScrollPastEndLine)
+  then Include(SynOptions, eoScrollPastEol)
+  else Exclude(SynOptions, eoScrollPastEol);
   PreviewEdits[1].Options := SynOptions;
   EditorOpts.SetSynEditSettings(PreviewEdits[1]);
   PreviewEdits[1].Options :=
-    SynOptions - [eoBracketHighlight] +
-    [eoNoCaret, eoNoSelection];
+    SynOptions - [eoScrollPastEol] + [eoNoCaret, eoNoSelection];
 
   // general
   EditorOpts.ShowTabCloseButtons :=
@@ -3857,6 +4044,52 @@ begin
   IDEDialogLayoutList.SaveLayout(Self);
   EditorOpts.Load;
   ModalResult := mrCancel;
+end;
+
+procedure TEditorOptionsForm.TextStyleRadioOnChange(Sender : TObject);
+  procedure CalcNewStyle(CheckBox: TCheckBox; RadioOn, RadioOff,
+                         RadioInvert: TRadioButton; fs : TFontStyle;
+                         Panel: TPanel);
+  begin
+    if CheckBox.Checked then begin
+      Panel.Enabled := True;
+      if RadioInvert.Checked then begin
+        CurHighlightElement.Style     := CurHighlightElement.Style + [fs];
+        CurHighlightElement.StyleMask := CurHighlightElement.StyleMask - [fs];
+      end else if RadioOn.Checked then begin
+        CurHighlightElement.Style     := CurHighlightElement.Style + [fs];
+        CurHighlightElement.StyleMask := CurHighlightElement.StyleMask + [fs];
+      end else if RadioOff.Checked then begin
+        CurHighlightElement.Style     := CurHighlightElement.Style - [fs];
+        CurHighlightElement.StyleMask := CurHighlightElement.StyleMask + [fs];
+      end
+    end else begin
+      Panel.Enabled := False;
+      CurHighlightElement.Style     := CurHighlightElement.Style - [fs];
+      CurHighlightElement.StyleMask := CurHighlightElement.StyleMask - [fs];
+    end;
+  end;
+begin
+  if FormCreating then exit;
+  if UpdatingColor or not CurHighlightElementIsExtra then exit;
+
+  if (Sender = TextBoldCheckBox) or (Sender = TextBoldRadioOn)
+    or (Sender = TextBoldRadioOff) or (Sender = TextBoldRadioInvert)
+  then CalcNewStyle(TextBoldCheckBox, TextBoldRadioOn, TextBoldRadioOff,
+                    TextBoldRadioInvert, fsBold, TextBoldRadioPanel);
+
+  if (Sender = TextItalicCheckBox) or (Sender = TextItalicRadioOn)
+    or (Sender = TextItalicRadioOff) or (Sender = TextItalicRadioInvert)
+  then CalcNewStyle(TextItalicCheckBox, TextItalicRadioOn, TextItalicRadioOff,
+                    TextItalicRadioInvert, fsItalic, TextItalicRadioPanel);
+
+  if (Sender = TextUnderlineCheckBox) or (Sender = TextUnderlineRadioOn)
+    or (Sender = TextUnderlineRadioOff) or (Sender = TextUnderlineRadioInvert)
+  then CalcNewStyle(TextUnderlineCheckBox, TextUnderlineRadioOn, TextUnderlineRadioOff,
+                    TextUnderlineRadioInvert, fsUnderline, TextUnderlineRadioPanel);
+
+
+  InvalidatePreviews;
 end;
 
 //=============================================================================

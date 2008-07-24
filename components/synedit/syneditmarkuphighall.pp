@@ -108,12 +108,13 @@ type
   protected
     procedure DoTopLineChanged(OldTopLine : Integer); override;
     procedure DoLinesInWindoChanged(OldLinesInWindow : Integer); override;
+    procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
   public
     constructor Create(ASynEdit : TCustomControl);
     destructor Destroy; override;
 
-    Function GetMarkupAttributeAtRowCol(aRow, aCol : Integer) : TSynSelectedColor; override;
-    Function GetNextMarkupColAfterRowCol(aRow, aCol : Integer) : Integer; override;
+    Function GetMarkupAttributeAtRowCol(const aRow, aCol : Integer) : TSynSelectedColor; override;
+    Function GetNextMarkupColAfterRowCol(const aRow, aCol : Integer) : Integer; override;
 
     Procedure InvalidateScreenLines(aFirstCodeLine, aLastCodeLine: Integer);
     Procedure InvalidateLines(aFirstCodeLine, aLastCodeLine: Integer);
@@ -304,6 +305,12 @@ begin
   ValidateMatches;
 end;
 
+procedure TSynEditMarkupHighlightAll.DoMarkupChanged(AMarkup : TSynSelectedColor);
+begin
+  Invalidate; {TODO: only redraw, no search}
+  ValidateMatches;
+end;
+
 procedure TSynEditMarkupHighlightAll.FindInitialize(Backward : Boolean);
 begin
   fSearch.Pattern   := fSearchString;
@@ -363,8 +370,8 @@ begin
     ptStart := ptFoundEnd;
 
     { TODO: skip if all folded }
-    fMatches.StartPoint[Pos] := ptFoundStart;
-    fMatches.EndPoint[Pos]:= ptFoundEnd;
+    fMatches.StartPoint[Pos] := LogicalToPhysicalPos(ptFoundStart);
+    fMatches.EndPoint[Pos]:= LogicalToPhysicalPos(ptFoundEnd);
     inc(Pos);
   end;
 
@@ -431,7 +438,7 @@ begin
   fInvalidating := False;
 end;
 
-function TSynEditMarkupHighlightAll.GetMarkupAttributeAtRowCol(aRow, aCol : Integer) : TSynSelectedColor;
+function TSynEditMarkupHighlightAll.GetMarkupAttributeAtRowCol(const aRow, aCol : Integer) : TSynSelectedColor;
 var
   Pos: Integer;
 begin
@@ -456,7 +463,7 @@ begin
   result := MarkupInfo;
 end;
 
-function TSynEditMarkupHighlightAll.GetNextMarkupColAfterRowCol(aRow, aCol : Integer) : Integer;
+function TSynEditMarkupHighlightAll.GetNextMarkupColAfterRowCol(const aRow, aCol : Integer) : Integer;
 var
   Pos: Integer;
 begin

@@ -34,13 +34,17 @@ type
 
   TSynEditMarkupBracket = class(TSynEditMarkup)
   private
+    // Physical Position
     fBracketHighlightPos: TPoint;
     fBracketHighlightAntiPos: TPoint;
+  protected
+    procedure FindMatchingBracketPair(const PhysCaret: TPoint;
+      var StartBracket, EndBracket: TPoint);
   public
     constructor Create(ASynEdit : TCustomControl);
 
-    Function GetMarkupAttributeAtRowCol(aRow, aCol : Integer) : TSynSelectedColor; override;
-    Function GetNextMarkupColAfterRowCol(aRow, aCol : Integer) : Integer; override;
+    Function GetMarkupAttributeAtRowCol(const aRow, aCol : Integer) : TSynSelectedColor; override;
+    Function GetNextMarkupColAfterRowCol(const aRow, aCol : Integer) : Integer; override;
 
     procedure InvalidateBracketHighlight;
   end;
@@ -50,7 +54,6 @@ uses SynEdit;
 
 
 { TSynEditMarkupBracket }
-
 
 constructor TSynEditMarkupBracket.Create(ASynEdit : TCustomControl);
 begin
@@ -63,6 +66,23 @@ begin
   MarkupInfo.StyleMask := [];
 end;
 
+procedure TSynEditMarkupBracket.FindMatchingBracketPair(const PhysCaret : TPoint;
+  var StartBracket, EndBracket : TPoint);
+var
+  StartLine: string;
+  LogCaretXY: TPoint;
+begin
+  StartBracket.Y:=-1;
+  EndBracket.Y:=-1;
+  if (PhysCaret.Y<1) or (PhysCaret.Y>Lines.Count) or (PhysCaret.X<1) then exit;
+  StartLine := Lines[PhysCaret.Y - 1];
+  LogCaretXY:=TSynEdit(SynEdit).PhysicalToLogicalPos(PhysCaret);
+  if (length(StartLine)<LogCaretXY.X)
+  or (not (StartLine[LogCaretXY.X] in ['(',')','{','}','[',']'])) then exit;
+  StartBracket:=PhysCaret;
+  EndBracket:=TSynEdit(SynEdit).FindMatchingBracket(PhysCaret,false,false,false,false);
+end;
+
 procedure TSynEditMarkupBracket.InvalidateBracketHighlight;
 var
   NewPos, NewAntiPos, SwapPos : TPoint;
@@ -70,7 +90,7 @@ begin
   NewPos.Y:=-1;
   NewAntiPos.Y:=-1;
   if eoBracketHighlight in TSynEdit(SynEdit).Options 
-  then TSynEdit(SynEdit).FindMatchingBracketPair(TSynEdit(SynEdit).CaretXY, NewPos, NewAntiPos, false);
+  then FindMatchingBracketPair(TSynEdit(SynEdit).CaretXY, NewPos, NewAntiPos);
 
   // Always keep ordered
   if (NewAntiPos.Y > 0)
@@ -109,11 +129,12 @@ begin
   end;
   fBracketHighlightPos     := NewPos;
   fBracketHighlightAntiPos := NewAntiPos;
+//  DebugLn('TCustomSynEdit.InvalidateBracketHighlight C P=',dbgs(NewPos),' A=',dbgs(NewAntiPos), ' LP=',dbgs(fLogicalPos),' LA',dbgs(fLogicalAntiPos));
 end;
 
 
 
-function TSynEditMarkupBracket.GetMarkupAttributeAtRowCol(aRow, aCol : Integer) : TSynSelectedColor;
+function TSynEditMarkupBracket.GetMarkupAttributeAtRowCol(const aRow, aCol : Integer) : TSynSelectedColor;
 begin
   Result := nil;
   if ((fBracketHighlightPos.y = aRow) and  (fBracketHighlightPos.x = aCol))
@@ -121,7 +142,7 @@ begin
   then Result := MarkupInfo;
 end;
 
-function TSynEditMarkupBracket.GetNextMarkupColAfterRowCol(aRow, aCol : Integer) : Integer;
+function TSynEditMarkupBracket.GetNextMarkupColAfterRowCol(const aRow, aCol : Integer) : Integer;
 begin
   Result := -1;
   if (fBracketHighlightPos.y = aRow) then begin

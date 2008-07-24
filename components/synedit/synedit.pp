@@ -77,6 +77,7 @@ uses
   SynEditTypes, SynEditSearch, SynEditKeyCmds, SynEditMiscProcs,
 {$ifdef SYN_LAZARUS}
   SynEditMarkup, SynEditMarkupHighAll, SynEditMarkupBracket,
+  SynEditMarkupCtrlMouseLink, SynEditMarkupSpecialLine, SynEditMarkupSelection,
 {$ENDIF}
   SynEditMiscClasses, SynEditTextBuffer, SynEditHighlighter, SynTextDrawer;
 
@@ -170,6 +171,10 @@ type
   TReplaceTextEvent = procedure(Sender: TObject; const ASearch, AReplace:
     string; Line, Column: integer; var ReplaceAction: TSynReplaceAction) of object;
 
+  {$IFDEF SYN_LAZARUS}
+  TSpecialLineMarkupEvent = procedure(Sender: TObject; Line: integer;
+    var Special: boolean; Markup: TSynSelectedColor) of object;
+  {$ENDIF}
   TSpecialLineColorsEvent = procedure(Sender: TObject; Line: integer;
     var Special: boolean; var FG, BG: TColor) of object;
 
@@ -385,6 +390,9 @@ type
     fMarkupManager : TSynEditMarkupManager;
     fMarkupHighAll : TSynEditMarkupHighlightAll;
     fMarkupBracket : TSynEditMarkupBracket;
+    fMarkupCtrlMouse : TSynEditMarkupCtrlMouseLink;
+    fMarkupSpecialLine : TSynEditMarkupSpecialLine;
+    fMarkupSelection : TSynEditMarkupSelection;
     {$ENDIF}
     fLastCaretX: integer;  // physical position (screen)                        //mh 2000-10-19
     fCaretY: Integer;
@@ -400,6 +408,7 @@ type
     fLastMouseCaret: TPoint;  // physical (screen)
     fLastControlIsPressed: boolean;
     fLastCtrlMouseLinkY: integer;
+{TODO: MFR move to markup}
     fLastCtrlMouseLinkX1: integer; // logical (byte)
     fLastCtrlMouseLinkX2: integer; // logical (byte)
     fHighlighterNeedsUpdateStartLine: integer; // 1 based, 0 means invalid
@@ -421,7 +430,9 @@ type
     fTextOffset: Integer;
     fTopLine: Integer;
     fHighlighter: TSynCustomHighlighter;
+    {$IFNDEF SYN_LAZARUS}
     fSelectedColor: TSynSelectedColor;
+    {$ENDIF}
     fUndoList: TSynEditUndoList;
     fRedoList: TSynEditUndoList;
     fBookMarks: array[0..9] of TSynEditMark;
@@ -471,7 +482,7 @@ type
     fOnProcessCommand: TProcessCommandEvent;
     fOnProcessUserCommand: TProcessCommandEvent;
     fOnReplaceText: TReplaceTextEvent;
-    fOnSpecialLineColors: TSpecialLineColorsEvent;
+    {$IFNDEF SYN_LAZARUS}fOnSpecialLineColors: TSpecialLineColorsEvent;{$ENDIF}
     fOnStatusChange: TStatusChangeEvent;
     {$IFDEF SYN_LAZARUS}
     FOnClickLink: TMouseEvent;
@@ -497,6 +508,18 @@ type
     function GetCanUndo: Boolean;
     function GetCaretXY: TPoint;
     function GetFont: TFont;
+    {$IFDEF SYN_LAZARUS}
+    function GetHighlightAllColor : TSynSelectedColor;
+    function GetIncrementColor : TSynSelectedColor;
+    function GetSelectedColor : TSynSelectedColor;
+    function GetSpecialLineColors : TSpecialLineColorsEvent;
+    function GetSpecialLineMarkup : TSpecialLineMarkupEvent;
+    function GetBracketMatchColor : TSynSelectedColor;
+    function GetMouseLinkColor : TSynSelectedColor;
+    procedure SetSelectedColor(const AValue : TSynSelectedColor);
+    procedure SetSpecialLineColors(const AValue : TSpecialLineColorsEvent);
+    procedure SetSpecialLineMarkup(const AValue : TSpecialLineMarkupEvent);
+    {$ENDIF}
     function GetHookedCommandHandlersCount: integer;
     function GetLineText: string;
     {$IFDEF SYN_LAZARUS}
@@ -505,8 +528,6 @@ type
     function AdjustPhysPosToCharacterStart(Line: integer; PhysPos: integer): integer;
     function GetLogicalCaretXY: TPoint;
     procedure SetCFDividerDrawLevel(const AValue: Integer);
-    procedure SetHighlightAllColor(const AValue : TSynSelectedColor); {TODO: move into highlighter? markupHA.GetAttributesFrom(editoptions)}
-    function GetHighlightAllColor : TSynSelectedColor;
     procedure SetLogicalCaretXY(const NewLogCaretXY: TPoint);
     procedure SetBeautifier(NewBeautifier: TSynCustomBeautifier);
     {$ENDIF}
@@ -621,18 +642,6 @@ type
     procedure DestroyWnd; override;
     procedure DragOver(Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean); override;
-    procedure FindMatchingBracket; virtual;
-    {$IFDEF SYN_LAZARUS}
-    function FindMatchingBracket(PhysStartBracket: TPoint;
-                                 StartIncludeNeighborChars, MoveCaret,
-                                 SelectBrackets, OnlyVisible: boolean
-                                 ): TPoint; virtual;
-  public
-    procedure FindMatchingBracketPair(const PhysCaret: TPoint;
-                                      var StartBracket, EndBracket: TPoint;
-                                      OnlyVisible: boolean);
-  protected
-    {$ENDIF}
     function GetReadOnly: boolean; virtual;
     procedure HideCaret;
     procedure HighlighterAttrChanged(Sender: TObject);
@@ -712,8 +721,10 @@ type
       Data: pointer); virtual;
     function DoOnReplaceText(const ASearch, AReplace: string;
       Line, Column: integer): TSynReplaceAction; virtual;
+    {$IFNDEF SYN_LAZARUS}
     function DoOnSpecialLineColors(Line: integer;
       var Foreground, Background: TColor): boolean; virtual;
+    {$ENDIF}
     procedure DoOnStatusChange(Changes: TSynStatusChanges); virtual;
     {$IFDEF SYN_LAZARUS}
     property LastMouseCaret: TPoint read FLastMouseCaret write SetLastMouseCaret;
@@ -723,7 +734,12 @@ type
     procedure SetSelStart(const Value: integer);
     {$ENDIF}
   public
+    procedure FindMatchingBracket; virtual;
     {$IFDEF SYN_LAZARUS}
+    function FindMatchingBracket(PhysStartBracket: TPoint;
+                                 StartIncludeNeighborChars, MoveCaret,
+                                 SelectBrackets, OnlyVisible: Boolean
+                                 ): TPoint; virtual;
     //code fold
     procedure CodeFoldAction(iLine: integer);
     function FindNextUnfoldedLine(iLine: integer; Down: boolean): Integer;
@@ -792,6 +808,7 @@ type
                                   PhysicalPos: integer): integer;
     function PhysicalToLogicalCol(const Line: string;
                  PhysicalPos, StartBytePos, StartPhysicalPos: integer): integer;
+    function ScreenColumnToXValue(Col: integer): integer;  // map screen column to screen pixel
     procedure MoveCaretToVisibleArea;
     procedure MoveCaretIgnoreEOL(const NewCaret: TPoint);
     procedure MoveLogicalCaretIgnoreEOL(const NewLogCaret: TPoint);
@@ -827,6 +844,7 @@ type
     procedure SelectToBrace;
     procedure SelectLine;
     procedure SelectParagraph;
+    procedure SetUseIncrementalColor(const AValue : Boolean);
     {$ENDIF}
     procedure SetBookMark(BookMark: Integer; X: Integer; Y: Integer);
     procedure SetDefaultKeystrokes; virtual;
@@ -856,6 +874,7 @@ type
     property LogicalCaretXY: TPoint read GetLogicalCaretXY write SetLogicalCaretXY;
     property SelStart: Integer read GetSelStart write SetSelStart;
     property SelEnd: Integer read GetSelEnd write SetSelEnd;
+    property UseIncrementalColor : Boolean write SetUseIncrementalColor;
     {$ENDIF}
     property Font: TFont read GetFont write SetFont;
     property GutterWidth: Integer read fGutterWidth;
@@ -921,13 +940,21 @@ type
       read fRightEdgeColor write SetRightEdgeColor default clSilver;
     property ScrollBars: TScrollStyle
       read FScrollBars write SetScrollBars default ssBoth;
+    {$IFDEF SYN_LAZARUS}
+    property SelectedColor: TSynSelectedColor
+    read GetSelectedColor write SetSelectedColor;  // Setter for compatibility
+    property IncrementColor: TSynSelectedColor read GetIncrementColor;
+    property HighlightAllColor: TSynSelectedColor read GetHighlightAllColor;
+    property BracketMatchColor: TSynSelectedColor read GetBracketMatchColor;
+    property MouseLinkColor: TSynSelectedColor read GetMouseLinkColor;
+    //property Color: TSynSelectedColor read GetSelectedColor;
+    {$ELSE}
     property SelectedColor: TSynSelectedColor
       read FSelectedColor write FSelectedColor;
+    {$ENDIF}
     property SelectionMode: TSynSelectionMode
       read FSelectionMode write SetSelectionMode default smNormal;
     {$IFDEF SYN_LAZARUS}
-    property HighlightAllColor: TSynSelectedColor
-       read GetHighlightAllColor write SetHighlightAllColor;
     property TabChar: char read FTabChar write SetTabChar;
     property CFDividerDrawLevel: Integer
         read FCFDividerDrawLevel write SetCFDividerDrawLevel;
@@ -950,7 +977,12 @@ type
     property OnReplaceText: TReplaceTextEvent read fOnReplaceText
       write fOnReplaceText;
     property OnSpecialLineColors: TSpecialLineColorsEvent
-      read fOnSpecialLineColors write fOnSpecialLineColors;
+      {$IFDEF SYN_LAZARUS}read GetSpecialLineColors write SetSpecialLineColors
+      {$ELSE}read fOnSpecialLineColors write fOnSpecialLineColors{$ENDIF}; deprecated;
+    {$IFDEF SYN_LAZARUS}
+    property OnSpecialLineMarkup: TSpecialLineMarkupEvent
+      read GetSpecialLineMarkup write SetSpecialLineMarkup;
+    {$ENDIF}
     property OnStatusChange: TStatusChangeEvent
       read fOnStatusChange write fOnStatusChange;
   end;
@@ -1040,7 +1072,6 @@ type
     property Options;
     {$IFDEF SYN_LAZARUS}
     property Options2;
-    property HighlightAllColor;
     {$ENDIF}
     property OverwriteCaret;
     property ReadOnly;
@@ -1048,6 +1079,12 @@ type
     property RightEdgeColor;
     property ScrollBars;
     property SelectedColor;
+    {$IFDEF SYN_LAZARUS}
+    property IncrementColor;
+    property HighlightAllColor;
+    property BracketMatchColor;
+    property MouseLinkColor;
+    {$ENDIF}
     property SelectionMode;
     property TabWidth;
     property WantTabs;
@@ -1062,7 +1099,10 @@ type
     property OnProcessCommand;
     property OnProcessUserCommand;
     property OnReplaceText;
-    property OnSpecialLineColors;
+    property OnSpecialLineColors; deprecated;
+    {$IFDEF SYN_LAZARUS}
+    property OnSpecialLineMarkup;
+    {$ENDIF}
     property OnStatusChange;
   end;
 
@@ -1422,8 +1462,10 @@ begin
   DoubleBuffered := false;
 {$ENDIF}
 {$ENDIF}
+  {$IFNDEF SYN_LAZARUS}
   fSelectedColor := TSynSelectedColor.Create;
   fSelectedColor.OnChange := {$IFDEF FPC}@{$ENDIF}SelectedColorsChanged;
+  {$ENDIF}
   fBookMarkOpt := TSynBookMarkOpt.Create(Self);
   fBookMarkOpt.OnChange := {$IFDEF FPC}@{$ENDIF}BookMarkOptionsChanged;
 // fRightEdge has to be set before FontChanged is called for the first time
@@ -1441,10 +1483,16 @@ begin
   // needed before setting color
   fMarkupHighAll := TSynEditMarkupHighlightAll.Create(self);
   fMarkupBracket := TSynEditMarkupBracket.Create(self);
+  fMarkupCtrlMouse := TSynEditMarkupCtrlMouseLink.Create(self);
+  fMarkupSpecialLine := TSynEditMarkupSpecialLine.Create(self);
+  fMarkupSelection := TSynEditMarkupSelection.Create(self);
 
   fMarkupManager := TSynEditMarkupManager.Create(self);
   fMarkupManager.AddMarkUp(fMarkupHighAll);
   fMarkupManager.AddMarkUp(fMarkupBracket);
+  fMarkupManager.AddMarkUp(fMarkupCtrlMouse);
+  fMarkupManager.AddMarkUp(fMarkupSpecialLine);
+  fMarkupManager.AddMarkUp(fMarkupSelection);
   fMarkupManager.Lines := TSynEditStringList(fLines);
   fMarkupManager.InvalidateLinesMethod := @InvalidateLines;
 
@@ -1632,7 +1680,6 @@ begin
   FreeAndNil(fMarkList);
   FreeAndNil(fBookMarkOpt);
   FreeAndNil(fKeyStrokes);
-  FreeAndNil(fSelectedColor);
   FreeAndNil(fUndoList);
   FreeAndNil(fRedoList);
   FreeAndNil(fGutter);
@@ -1701,6 +1748,62 @@ begin
 end;
 
 {$IFDEF SYN_LAZARUS}
+function TCustomSynEdit.GetHighlightAllColor : TSynSelectedColor;
+begin
+  result := fMarkupHighAll.MarkupInfo;
+end;
+
+function TCustomSynEdit.GetIncrementColor : TSynSelectedColor;
+begin
+  result := fMarkupSelection.MarkupInfoIncr;
+end;
+
+function TCustomSynEdit.GetSelectedColor : TSynSelectedColor;
+begin
+  result := fMarkupSelection.MarkupInfoSeletion;
+end;
+
+procedure TCustomSynEdit.SetSelectedColor(const AValue : TSynSelectedColor);
+begin
+  fMarkupSelection.MarkupInfoSeletion.Assign(AValue);
+end;
+
+function TCustomSynEdit.GetSpecialLineColors : TSpecialLineColorsEvent;
+begin
+  Result := fMarkupSpecialLine.OnSpecialLineColors;
+end;
+
+procedure TCustomSynEdit.SetSpecialLineColors(const AValue : TSpecialLineColorsEvent);
+begin
+  fMarkupSpecialLine.OnSpecialLineColors := AValue;
+end;
+
+
+function TCustomSynEdit.GetSpecialLineMarkup : TSpecialLineMarkupEvent;
+begin
+  Result := fMarkupSpecialLine.OnSpecialLineMarkup;
+end;
+
+procedure TCustomSynEdit.SetSpecialLineMarkup(const AValue : TSpecialLineMarkupEvent);
+begin
+  fMarkupSpecialLine.OnSpecialLineMarkup := AValue;
+end;
+
+function TCustomSynEdit.GetBracketMatchColor : TSynSelectedColor;
+begin
+  Result := fMarkupBracket.MarkupInfo;
+end;
+
+function TCustomSynEdit.GetMouseLinkColor : TSynSelectedColor;
+begin
+  Result := fMarkupCtrlMouse.MarkupInfo;
+end;
+
+procedure TCustomSynEdit.SetUseIncrementalColor(const AValue : Boolean);
+begin
+  fMarkupSelection.UseIncrementalColor:=AValue;
+end;
+
 function TCustomSynEdit.GetCharLen(const Line: string; CharStartPos: integer
   ): integer;
 begin
@@ -1751,18 +1854,6 @@ begin
   if FCFDividerDrawLevel = AValue then
     Exit; //==>
   FCFDividerDrawLevel := AValue;
-end;
-
-procedure TCustomSynEdit.SetHighlightAllColor(const AValue : TSynSelectedColor);
-begin
-  fMarkupHighAll.FGColor := AValue.Foreground;
-  fMarkupHighAll.BGColor := AValue.Background;
-  Invalidate;
-end;
-
-function TCustomSynEdit.GetHighlightAllColor : TSynSelectedColor;
-begin
-  result := fMarkupHighAll.MarkupInfo;
 end;
 
 procedure TCustomSynEdit.SetLogicalCaretXY(const NewLogCaretXY: TPoint);
@@ -2136,25 +2227,6 @@ begin
       end;
     end;
 end;
-
-{$IFDEF SYN_LAZARUS}
-procedure TCustomSynEdit.FindMatchingBracketPair(const PhysCaret: TPoint;
-  var StartBracket, EndBracket: TPoint; OnlyVisible: boolean);
-var
-  StartLine: string;
-  LogCaretXY: TPoint;
-begin
-  StartBracket.Y:=-1;
-  EndBracket.Y:=-1;
-  if (PhysCaret.Y<1) or (PhysCaret.Y>Lines.Count) or (PhysCaret.X<1) then exit;
-  StartLine := Lines[PhysCaret.Y - 1];
-  LogCaretXY:=PhysicalToLogicalPos(PhysCaret);
-  if (length(StartLine)<LogCaretXY.X)
-  or (not (StartLine[LogCaretXY.X] in ['(',')','{','}','[',']'])) then exit;
-  StartBracket:=PhysCaret;
-  EndBracket:=FindMatchingBracket(PhysCaret,false,false,false,OnlyVisible);
-end;
-{$ENDIF}
 
 procedure TCustomSynEdit.KeyDown(var Key: Word; Shift: TShiftState);
 var
@@ -3203,28 +3275,13 @@ procedure TCustomSynEdit.PaintTextLines(AClip: TRect; FirstLine, LastLine,
 var
   bDoRightEdge: boolean; // right edge
   nRightEdge: integer;
-    // selection info
-  bSelectionVisible: boolean; // any selection visible?
-  nSelL1, nSelCol1: integer; // start of selected area (physical)
-  nSelL2, nSelCol2: integer; // end of selected area (physical)
-    // info about normal and selected text and background colors
-  bSpecialLine, bLineSelected: boolean;
-  colFG, colBG: TColor;
-  colSelFG, colSelBG: TColor;
   colEditorBG: TColor;
-    // info about selection of the current line
-  nSelStart, nSelEnd: integer; // start, end of selected area in current line (physical)
-  bComplexLine: boolean; // selected and unselected area in current line
-  FirstColLogical: integer; // FirstCol converted to logical in current line
-  LastColLogical: integer; // LastCol converted to logical in current line
-  SelStartLogical: integer; // nSelStart converted to logical in current line
-  SelEndLogical: integer; // nSelEnd converted to logical in current line
     // painting the background and the text
   rcLine, rcToken: TRect;
-  CurLine: integer; // line index for the loop
+  CurLine: integer;         // line index for the loop
+  CurPhysPos : Integer; // Physical Start Position of next token in current Line
   TokenAccu: record
     Len, MaxLen: integer;
-    CharsBefore: integer;
     PhysicalStartPos, PhysicalEndPos: integer;
     p: PChar;
     FG, BG: TColor;
@@ -3242,78 +3299,6 @@ var
   begin
     ReAllocMem(TokenAccu.p,TokenAccu.MaxLen+1);
     TokenAccu.p[TokenAccu.MaxLen]:=#0;
-  end;
-
-  procedure ComputeSelectionInfo;
-  var
-    p: TPoint;
-  begin
-    bSelectionVisible := FALSE;
-    // Only if selection is visible anyway.
-    if (not HideSelection or Self.Focused) then begin
-      bSelectionVisible := TRUE;
-      // Get the *real* start of the selected area.
-      if (fBlockBegin.Y < fBlockEnd.Y) then begin
-        nSelL1 := fBlockBegin.Y;
-        nSelCol1 := fBlockBegin.X;
-        nSelL2 := fBlockEnd.Y;
-        nSelCol2 := fBlockEnd.X;
-      end else if (fBlockBegin.Y > fBlockEnd.Y) then begin
-        nSelL2 := fBlockBegin.Y;
-        nSelCol2 := fBlockBegin.X;
-        nSelL1 := fBlockEnd.Y;
-        nSelCol1 := fBlockEnd.X;
-      end else if (fBlockBegin.X <> fBlockEnd.X) then begin
-        // No selection at all, or it is only on this line.
-        nSelL1 := fBlockBegin.Y;
-        nSelL2 := nSelL1;
-        if (fBlockBegin.X < fBlockEnd.X) then begin
-          nSelCol1 := fBlockBegin.X;
-          nSelCol2 := fBlockEnd.X;
-        end else begin
-          nSelCol2 := fBlockBegin.X;
-          nSelCol1 := fBlockEnd.X;
-        end;
-      end else
-        bSelectionVisible := FALSE;
-      // If there is any visible selection so far, then test if there is an
-      // intersection with the area to be painted.
-      if bSelectionVisible then begin
-        // Don't care if the selection is not visible.
-        bSelectionVisible := (nSelL2 >= FirstLine) and (nSelL1 <= LastLine);
-        // In the column selection mode sort the begin and end of the selection,
-        // this makes the painting code simpler.
-        if (SelectionMode = smColumn) and (nSelCol1 > nSelCol2) then
-          SwapInt(nSelCol1, nSelCol2);
-        if bSelectionVisible then begin
-          // Transform the selection from text space into screen space
-          p := LogicalToPhysicalPos(Point(nSelCol1, nSelL1));
-          nSelCol1 := p.x;
-          nSelL1 := p.y;
-          p := LogicalToPhysicalPos(point(nSelCol2, nSelL2));
-          nSelCol2 := p.x;
-          nSelL2 := p.y;
-        end;
-      end;
-    end;
-  end;
-
-  procedure SetDrawingColors(Selected: boolean);
-  begin
-    with fTextDrawer do
-      if Selected then begin
-        SetBackColor(colSelBG);
-        SetForeColor(colSelFG);
-      end else begin
-        SetBackColor(colBG);
-        SetForeColor(colFG);
-      end;
-  end;
-
-  function ScreenColumnToXValue(Col: integer): integer;
-  // map screen column to screen pixel
-  begin
-    Result := fTextOffset + Pred(Col) * fCharWidth;
   end;
 
   procedure ExpandSpecialChars(var p: PChar; var Count: integer;
@@ -3468,40 +3453,21 @@ var
     //debugln('ExpandSpecialChars Token with Tabs: "',DbgStr(copy(ExpandedPaintToken,1,Count)),'"');
   end;
 
-  procedure PaintToken(
-    Token: PChar;
-    TokenLen,     // TokenLen is the maximum logical (byte) position for Token
-    CharsBefore,  // CharsBefore tells if Token starts at column one or not
-    FirstPhysical,// FirstPhysical is the physical (screen without scrolling)
-                  //   column of the first character
-    First, Last   // First, Last minus CharsBefore are logical (byte) positions in Token
-    : integer);
+  procedure PaintToken(Token: PChar; TokenLen, FirstPhysical: integer);
+  // FirstPhysical is the physical (screen without scrolling)
+  // column of the first character
   var
-    pszText: PChar;
-    nCharsToPaint: integer;
     nX: integer;
   const
     ETOOptions = ETO_OPAQUE; // Note: clipping is slow and not needed
   begin
     {debugln('PaintToken A TokenLen=',dbgs(TokenLen),
-      ' CharsBefore=',dbgs(CharsBefore),
       ' FirstPhysical=',dbgs(FirstPhysical),
-      ' First='+dbgs(First),' Last=',dbgs(Last),
-      ' Tok="'+copy(Token,First-CharsBefore,Last-First+1),'"',
+      ' Tok="'+copy(Token, 1, TokenLen),'"',
       ' rcToken='+dbgs(rcToken.Left)+'-'+dbgs(rcToken.Right));}
-    if (Last < First) or (rcToken.Right <= rcToken.Left) then exit;
-    Dec(First, CharsBefore);
-    Dec(Last, CharsBefore);
-    if (First > TokenLen) then begin
-      pszText := nil;
-      nCharsToPaint := 0;
-    end else begin
-      pszText := PChar(@Token[First-1]);
-      nCharsToPaint := Min(Last - First + 1, TokenLen - First + 1);
-      ExpandSpecialChars(pszText,nCharsToPaint,FirstPhysical);
-    end;
+    if (rcToken.Right <= rcToken.Left) then exit;
     // Draw the right edge under the text if necessary
-    nX := ScreenColumnToXValue(FirstPhysical);
+    nX := ScreenColumnToXValue(FirstPhysical); // == rcToken.Left
     if bDoRightEdge and (not (eoHideRightMargin in Options))
     and (nRightEdge<rcToken.Right) and (nRightEdge>=rcToken.Left)
     then begin
@@ -3512,122 +3478,77 @@ var
       LCLIntf.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
       // draw text
       fTextDrawer.ExtTextOut(nX, rcToken.Top, ETOOptions-ETO_OPAQUE, rcToken,
-        pszText, nCharsToPaint);
+        Token, TokenLen);
     end else begin
       // draw text with background
-      //debugln('PaintToken nX=',dbgs(nX),' Token=',dbgstr(copy(pszText,1,nCharsToPaint)),' rcToken=',dbgs(rcToken));
+      //debugln('PaintToken nX=',dbgs(nX),' Token=',dbgstr(copy(Token,1, TokenLen)),' rcToken=',dbgs(rcToken));
       fTextDrawer.ExtTextOut(nX, rcToken.Top, ETOOptions, rcToken,
-        pszText, nCharsToPaint);
+        Token, TokenLen);
     end;
     rcToken.Left := rcToken.Right;
   end;
 
   procedure PaintHighlightToken(bFillToEOL: boolean);
   var
-    bComplexToken: boolean;
-    nC1, nC2, nC1Sel, nC2Sel: integer; // logical (byte)
-    bU1, bSel, bU2: boolean;
-    nX1, nX2: integer;
-    C1Phys: integer;
-    C1SelPhys: integer;
-    C2Phys: integer;
-    C2SelPhys: LongInt;
+    nX1, eolx: integer;
+    NextPos : Integer;
+    MarkupInfo : TSynSelectedColor;
   begin
-    // Compute some helper variables.
-    nC1 := Max(FirstColLogical, TokenAccu.CharsBefore + 1);
-    nC2 := Min(LastColLogical, TokenAccu.CharsBefore + TokenAccu.Len);
-    if bComplexLine then begin
-      bU1 := (nC1 < SelStartLogical);
-      bSel := (nC1 < SelEndLogical) and (nC2 >= SelStartLogical);
-      bU2 := (nC2 >= SelEndLogical);
-      bComplexToken := bSel and (bU1 or bU2);
-    end else begin
-      bU1 := False;
-      bSel := bLineSelected;
-      bU2 := False;
-      bComplexToken := FALSE;
-      end;
-    {debugln('PaintHighlightToken A TokenAccu: CharsBefore=',dbgs(TokenAccu.CharsBefore),
-      ' Len=',dbgs(TokenAccu.Len),
+    {debugln('PaintHighlightToken A TokenAccu: Len=',dbgs(TokenAccu.Len),
       ' PhysicalStartPos=',dbgs(TokenAccu.PhysicalStartPos),
       ' PhysicalEndPos=',dbgs(TokenAccu.PhysicalEndPos),
-      ' Complex=',dbgs(bComplexToken),
-      ' "',copy(TokenAccu.s,1,TokenAccu.Len),'"');}
+      ' "',copy(TokenAccu.p,1,TokenAccu.Len),'"');}
 
     // Any token chars accumulated?
     if (TokenAccu.Len > 0) then begin
       // Initialize the colors and the font style.
-      if not bSpecialLine then begin
-        colBG := TokenAccu.BG;
-        colFG := TokenAccu.FG;
+      with fTextDrawer do begin
+        SetBackColor(TokenAccu.BG);
+        SetForeColor(TokenAccu.FG);
+        SetStyle(TokenAccu.Style);
       end;
-      fTextDrawer.SetStyle(TokenAccu.Style);
       // Paint the chars
-      if bComplexToken then begin
-        // first unselected part of the token
-        C1Phys := Max(FirstCol, TokenAccu.PhysicalStartPos);
-        if bU1 then begin
-          SetDrawingColors(FALSE);
-          rcToken.Right := ScreenColumnToXValue(nSelStart);
-          with TokenAccu do
-          PaintToken(p,Len,CharsBefore,C1Phys,nC1,SelStartLogical-1);
-        end;
-        // selected part of the token
-        SetDrawingColors(TRUE);
-        nC1Sel := Max(SelStartLogical, nC1);
-        nC2Sel := Min(SelEndLogical, nC2+1);
-        C2Phys := Min(LastCol, TokenAccu.PhysicalEndPos+1);
-        C1SelPhys := Max(nSelStart, C1Phys);
-        C2SelPhys := Min(nSelEnd, C2Phys);
-        rcToken.Right := ScreenColumnToXValue(C2SelPhys);
-        with TokenAccu do PaintToken(p,Len,CharsBefore,C1SelPhys,nC1Sel,nC2Sel-1);
-        // second unselected part of the token
-        if bU2 then begin
-          SetDrawingColors(FALSE);
-          rcToken.Right := ScreenColumnToXValue(C2Phys);
-          with TokenAccu do
-            PaintToken(p,Len,CharsBefore,nSelEnd,SelEndLogical,nC2);
-        end;
-      end else begin
-        C1Phys := Max(FirstCol, TokenAccu.PhysicalStartPos);
-        C2Phys := Min(LastCol, TokenAccu.PhysicalEndPos+1);
-        SetDrawingColors(bSel);
-        rcToken.Right := ScreenColumnToXValue(C2Phys);
-        with TokenAccu do PaintToken(p, Len, CharsBefore, C1Phys, nC1, nC2);
-      end;
+      rcToken.Right := ScreenColumnToXValue(TokenAccu.PhysicalEndPos+1);
+      with TokenAccu do PaintToken(p, Len, PhysicalStartPos);
     end;
 
     // Fill the background to the end of this line if necessary.
     if bFillToEOL and (rcToken.Left < rcLine.Right) then begin
-      if not bSpecialLine then colBG := colEditorBG;
-      if bComplexLine then begin
-        nX1 := ScreenColumnToXValue(nSelStart);
-        nX2 := ScreenColumnToXValue(nSelEnd);
-        if (rcToken.Left < nX1) then begin
-          SetDrawingColors(FALSE);
-          rcToken.Right := nX1;
-          InternalFillRect(dc, rcToken);
-          rcToken.Left := nX1;
+      eolx := rcToken.Left; // remeber end of actual line, so we can decide to draw the right edge
+      NextPos := Min(LastCol, TokenAccu.PhysicalEndPos+1);
+      Repeat
+        MarkupInfo := fMarkupManager.GetMarkupAttributeAtRowCol(CurLine, NextPos);
+        NextPos := fMarkupManager.GetNextMarkupColAfterRowCol(CurLine, NextPos);
+
+        with fTextDrawer do
+          if MarkupInfo = nil
+          then begin
+            SetBackColor(colEditorBG);
+            //SetForeColor(TokenAccu.FG); // for underline
+            //SetStyle(TokenAccu.Style);
+          end
+          else begin
+            SetBackColor(MarkupInfo.Background);
+            //SetForeColor(TokenAccu.FG);
+            //SetStyle(TokenAccu.Style);
+          end;
+
+        if NextPos < 1
+        then nX1 := rcLine.Right
+        else begin
+          nX1 := ScreenColumnToXValue(NextPos);
+          if nX1 > rcLine.Right
+          then nX1 := rcLine.Right;
         end;
-        if (rcToken.Left < nX2) then begin
-          SetDrawingColors(TRUE);
-          rcToken.Right := nX2;
-          InternalFillRect(dc, rcToken);
-          rcToken.Left := nX2;
-        end;
-        if (rcToken.Left < rcLine.Right) then begin
-          SetDrawingColors(FALSE);
-          rcToken.Right := rcLine.Right;
-          InternalFillRect(dc, rcToken);
-        end;
-      end else begin
-        SetDrawingColors(bLineSelected);
-        rcToken.Right := rcLine.Right;
-        InternalFillRect(dc, rcToken);
-      end;
+
+        rcToken.Right := nX1;
+        InternalFillRect(dc, rcToken); {TODO: if style underline, then print spaces}
+        rcToken.Left := nX1;
+      until nX1 >= rcLine.Right;
+
       // Draw the right edge if necessary.
       if bDoRightEdge and (not (eoHideRightMargin in Options))
-      and (nRightEdge>=rcToken.Left) then begin
+      and (nRightEdge >= eolx) then begin // xx rc Token
         LCLIntf.MoveToEx(dc, nRightEdge, rcToken.Top, nil);
         LCLIntf.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
       end;
@@ -3636,7 +3557,7 @@ var
 
   procedure AddHighlightToken(
     Token: PChar;
-    CharsBefore, TokenLen, PhysicalStartPos, PhysicalEndPos: integer;
+    TokenLen, PhysicalStartPos, PhysicalEndPos: integer;
     Foreground, Background: TColor;
     Style: TFontStyles);
   var
@@ -3665,39 +3586,39 @@ var
     end;
 
   begin
-    {DebugLn('AddHighlightToken A CharsBefore=',dbgs(CharsBefore),
-      ' TokenLen=',dbgs(TokenLen),
+    {DebugLn('AddHighlightToken A TokenLen=',dbgs(TokenLen),
       ' PhysicalStartPos=',dbgs(PhysicalStartPos),' PhysicalEndPos=',dbgs(PhysicalEndPos),
       ' Tok="',copy(Token,1,TokenLen),'"');}
-    if Background = clNone then Background := colEditorBG;
-    if Foreground = clNone then Foreground := Font.Color;
+
     // Do we have to paint the old chars first, or can we just append?
     bCanAppend := FALSE;
     bSpacesTest := FALSE;
     if (TokenAccu.Len > 0) then begin
       // font style must be the same or token is only spaces
-      if (TokenAccu.Style = Style)
-      or (not (fsUnderline in Style) and not (fsUnderline in TokenAccu.Style)
-          and TokenIsSpaces)
+      if ( (TokenAccu.Style = Style)
+          or (not(fsUnderline in Style) and not(fsUnderline in TokenAccu.Style)
+              and not(eoShowSpecialChars in fOptions) and TokenIsSpaces )
+         )
+      // background color must be the same and
+      // foreground color must be the same or token is only spaces
+      and ( ((TokenAccu.BG = Background) 
+           and ((TokenAccu.FG = Foreground)
+                or (not(eoShowSpecialChars in fOptions) and TokenIsSpaces)))
+          )
       then
-        // either special colors or same colors
-        if bSpecialLine or bLineSelected or
-        // background color must be the same and
-        ((TokenAccu.BG = Background) and
-        // foreground color must be the same or token is only spaces
-        ((TokenAccu.FG = Foreground) or TokenIsSpaces))
-        then
-          bCanAppend := TRUE;
+        bCanAppend := TRUE;
       // If we can't append it, then we have to paint the old token chars first.
       if not bCanAppend then
         PaintHighlightToken(FALSE);
     end;
     // Don't use AppendStr because it's more expensive.
+    //if (CurLine=fTopLine) then debugln('      -t-Accu len ',dbgs(TokenAccu.Len),' pstart ',dbgs(TokenAccu.PhysicalStartPos),' p-end ',dbgs(TokenAccu.PhysicalEndPos));
     if bCanAppend then begin
       if (TokenAccu.Len + TokenLen > TokenAccu.MaxLen) then begin
         TokenAccu.MaxLen := TokenAccu.Len + TokenLen + 32;
         SetTokenAccuLength;
       end;
+      // use move() ???
       for i := 0 to TokenLen-1 do begin
         TokenAccu.p[TokenAccu.Len + i] := Token[i];
       end;
@@ -3712,7 +3633,6 @@ var
       for i := 0 to TokenLen-1 do begin
         TokenAccu.p[i] := Token[i];
       end;
-      TokenAccu.CharsBefore := CharsBefore;
       TokenAccu.PhysicalStartPos := PhysicalStartPos;
       TokenAccu.PhysicalEndPos := PhysicalEndPos;
       TokenAccu.FG := Foreground;
@@ -3720,125 +3640,124 @@ var
       TokenAccu.Style := Style;
     end;
     {debugln('AddHighlightToken END bCanAppend=',dbgs(bCanAppend),
-      ' TokenAccu: CharsBefore=',dbgs(TokenAccu.CharsBefore),
       ' Len=',dbgs(TokenAccu.Len),
       ' PhysicalStartPos=',dbgs(TokenAccu.PhysicalStartPos),
       ' PhysicalEndPos=',dbgs(TokenAccu.PhysicalEndPos),
       ' "',copy(TokenAccu.s,1,TokenAccu.Len),'"');}
   end;
 
-  procedure DrawHilightMarkupToken(attr: TSynHighlighterAttributes;
-    sToken: PChar; nLine, nTokenPos, nTokenLen,
-    PhysicalStartPos: integer);
+  procedure DrawHiLightMarkupToken(attr: TSynHighlighterAttributes;
+    sToken: PChar; nTokenByteLen: integer);
   var
     DefaultFGCol, DefaultBGCol: TColor;
     DefaultStyle: TFontStyles;
-
-    procedure PaintSubToken(SubTokenLen: integer; Hilight: TSynSelectedColor);
-    var
-      PhysicalEndPos: integer;
-      Style: TFontStyles;
-      BG, FG : TColor;
-    begin
-      if SubTokenLen=0 then exit;
-
-      BG := DefaultBGCol;
-      fG := DefaultFGCol;
-      Style := DefaultStyle;
-      if assigned(Hilight) then begin
-        if Hilight.Foreground <> clNone then FG := Hilight.Foreground;
-        if Hilight.Background <> clNone then BG := Hilight.Background;
-        Style := Hilight.GetModifiedStyle(Style);
-      end;
-        
-      PhysicalEndPos:=LogicalToPhysicalCol(sToken,nTokenLen,
-        SubTokenLen+1,1,PhysicalStartPos)-1;
-        
-      AddHighlightToken(sToken, nTokenPos, SubTokenLen,
-        PhysicalStartPos, PhysicalEndPos,
-        FG, BG, Style
-        );
-        
-      PhysicalStartPos:=PhysicalEndPos+1;
-      inc(nTokenPos,SubTokenLen);
-      dec(nTokenLen,SubTokenLen);
-      inc(sToken,SubTokenLen);
-    end;
-
-  var
-    NextPos : Integer;
+    BG, FG : TColor;
+    Style: TFontStyles;
+    PhysicalStartPos: integer;
+    PhysicalEndPos: integer;
+    len: Integer;
+    SubTokenByteLen, SubCharLen, TokenCharLen : Integer;
+    NextPhysPos : Integer;
     MarkupInfo : TSynSelectedColor;
   begin
+    if CurPhysPos > LastCol then exit;
+
+    PhysicalStartPos := CurPhysPos;
+    ExpandSpecialChars(sToken, nTokenByteLen, PhysicalStartPos);
+    TokenCharLen := UTF8Length(sToken, nTokenByteLen);
+    // Prepare position for next token
+    inc(CurPhysPos, TokenCharLen); 
+    if CurPhysPos <= FirstCol then exit;
+    
+    // Remove any Part of the Token that is before FirstCol
+    if PhysicalStartPos < FirstCol then begin
+      SubCharLen := FirstCol - PhysicalStartPos;
+      len := UTF8CharToByteIndex(sToken, nTokenByteLen, SubCharLen);
+      if len < 0 then begin
+        debugln('ERROR: Could not find PhysStart in token (maybe invalid UTF8?',' len ',dbgs(nTokenByteLen),' Line ',dbgs(CurLine),' PhysPos ',dbgs(CurPhysPos));
+        exit;
+      end;
+      dec(TokenCharLen, SubCharLen);
+      inc(PhysicalStartPos, SubCharLen);
+      dec(nTokenByteLen, len);
+      inc(sToken, len);
+    end;
+
+    // Remove any Part of the Token that is after LastCol
+    SubCharLen := PhysicalStartPos + TokenCharLen - (LastCol + 1);
+    if SubCharLen > 0 then begin
+      dec(TokenCharLen, SubCharLen);
+      nTokenByteLen := UTF8CharToByteIndex(sToken, nTokenByteLen, TokenCharLen);
+      if nTokenByteLen < 0 then begin
+        debugln('ERROR: Could not find PhysEnd in token (maybe invalid UTF8?',' len ',dbgs(nTokenByteLen),' Line ',dbgs(CurLine),' PhysPos ',dbgs(CurPhysPos));
+        exit;
+      end;
+    end;
+    
     if Assigned(attr) then begin
       DefaultFGCol:=attr.Foreground;
       DefaultBGCol:=attr.Background;
       DefaultStyle:=attr.Style;
+      if DefaultBGCol = clNone then DefaultBGCol := colEditorBG;
+      if DefaultFGCol = clNone then DefaultFGCol := Font.Color;
     end else begin
-      DefaultFGCol:=colFG;
-      DefaultBGCol:=colBG;
+      DefaultFGCol:=Font.Color;
+      DefaultBGCol:=colEditorBG;
       DefaultStyle:=Font.Style;
     end;
 
-    while (nTokenLen > 0) do begin
-      NextPos := fMarkupManager.GetNextMarkupColAfterRowCol(CurLine, nTokenPos+1); // ntokenPos is zero base
-      if (NextPos < 1) or (NextPos - nTokenPos - 1 > nTokenLen)
-      then NextPos := nTokenPos + nTokenLen + 1; // paint remainder
-      MarkupInfo := fMarkupManager.GetMarkupAttributeAtRowCol(CurLine, nTokenPos+1);
-      PaintSubToken(NextPos - nTokenPos - 1, MarkupInfo);
+    {TODO: cache NextPhysPos, and MarkupInfo between 2 calls }
+    while (nTokenByteLen > 0) do begin
+      // Calculate Token Sublen for current Markup
+      NextPhysPos := fMarkupManager.GetNextMarkupColAfterRowCol(CurLine, PhysicalStartPos);
+      if NextPhysPos < 1
+      then SubCharLen := TokenCharLen
+      else SubCharLen := NextPhysPos - PhysicalStartPos;
+
+      if SubCharLen > TokenCharLen then SubCharLen := TokenCharLen;
+      if SubCharLen < 1 then begin // safety for broken input...
+        debugln('ERROR: Got invalid SubCharLen ',dbgs(SubCharLen),' len ',dbgs(nTokenByteLen),' Line ',dbgs(CurLine),' PhysPos ',dbgs(CurPhysPos));
+        SubCharLen:=1;
+      end;
+      
+      SubTokenByteLen := UTF8CharToByteIndex(sToken,nTokenByteLen,SubCharLen);
+      if SubTokenByteLen < 0 then begin
+        debugln('ERROR: Can not find pso in SubToken ',dbgs(SubCharLen),' len ',dbgs(nTokenByteLen),' Line ',dbgs(CurLine),' PhysPos ',dbgs(CurPhysPos));
+        SubTokenByteLen := nTokenByteLen; // Draw the rest
+      end;
+      PhysicalEndPos:= PhysicalStartPos + SubCharLen - 1;
+
+      // Calculate Markup
+      BG := DefaultBGCol;
+      FG := DefaultFGCol;
+      Style := DefaultStyle;
+      MarkupInfo := fMarkupManager.GetMarkupAttributeAtRowCol(CurLine, PhysicalStartPos);
+      if assigned(MarkupInfo)
+      then MarkupInfo.ModifyColors(FG, BG, Style);
+      // Deal with equal colors
+      if (BG = FG) then begin // or if diff(gb,fg) < x
+        if BG = DefaultBGCol
+        then FG := not(BG) and $00ffffff // or maybe Font.color ?
+        else FG := DefaultBGCol;
+      end;
+
+      // Add to TokenAccu
+      AddHighlightToken(sToken, SubTokenByteLen,
+        PhysicalStartPos, PhysicalEndPos, FG, BG, Style);
+
+      PhysicalStartPos:=PhysicalEndPos + 1;
+      dec(nTokenByteLen,SubTokenByteLen);
+      dec(TokenCharLen, SubCharLen);
+      inc(sToken, SubTokenByteLen);
     end;
-  end;
-
-  procedure DrawCtrlMouseToken(attr: TSynHighlighterAttributes;
-    sToken: PChar; nLine, nTokenPos, nTokenLen,
-    PhysicalStartPos, PhysicalEndPos: integer);
-  var
-    LinkBGCol: TColor;
-    LinkStyle: TFontStyles;
-    fRed, fGreen, fBlue: integer;
-    {bRed, bGreen,} bBlue: integer;
-    NewRed, NewGreen, NewBlue: integer;
-  begin
-    if Assigned(attr) then begin
-      LinkFGCol:=attr.Foreground;
-      LinkBGCol:=attr.Background;
-      LinkStyle:=attr.Style;
-    end else begin
-      LinkFGCol:=colFG;
-      LinkBGCol:=colBG;
-      LinkStyle:=Font.Style;
-    end;
-    if LinkBGCol = clNone then LinkBGCol := colEditorBG;
-    if LinkFGCol = clNone then LinkFGCol := Font.Color;
-
-    // change FG color
-    fRed  :=(LinkFGCol and $ff);
-    fGreen:=(LinkFGCol shr 8) and $ff;
-    fBlue :=(LinkFGCol shr 16) and $ff;
-    //bRed  :=(LinkBGCol and $ff);
-    //bGreen:=(LinkBGCol shr 8) and $ff;
-    bBlue :=(LinkBGCol shr 16) and $ff;
-    NewRed  :=fRed;
-    NewGreen:=fGreen;
-    NewBlue :=bBlue;
-    if Abs(NewBlue-fBlue)<128 then
-      NewBlue:=(255-fBlue) and $ff;
-    LinkFGCol:=NewRed+(NewGreen shl 8)+(NewBlue shl 16);
-
-    AddHighlightToken(sToken, nTokenPos, nTokenLen,
-      PhysicalStartPos, PhysicalEndPos,
-      LinkFGCol, LinkBGCol, LinkStyle);
   end;
 
   procedure PaintLines;
   var
     sLine: string; // the current line
     sToken: PChar; // highlighter token info
-    nTokenPos, nTokenLen: integer;
-    TokenPhysStart: integer; // nTokenPos converted to physical (screen)
-    TokenPhysEnd: integer; // nTokenPos+nTokenLen converted to physical (screen)
+    nTokenLen: integer; // Pos in Char // Len in Byte ??
     attr: TSynHighlighterAttributes;
-    LastTokenPosLogical: Integer;
-    LastTokenPosPhyscial: Integer;
     ypos: Integer;
   begin
     // Initialize rcLine for drawing. Note that Top and Bottom are updated
@@ -3861,102 +3780,21 @@ var
         //debugln('line folded ',dbgs(CurLine));
         continue;
       end;
-
+      
+      fMarkupManager.PrepareMarkupForRow(CurLine);
       // Get the line.
       sLine := Lines[CurLine - 1];
-      // Get the information about the line selection. Three different parts
-      // are possible (unselected before, selected, unselected after), only
-      // unselected or only selected means bComplexLine will be FALSE. Start
-      // with no selection, compute based on the visible columns.
-      bComplexLine := FALSE;
-      nSelStart := 0;
-      nSelEnd := 0;
-      SelStartLogical:= 0;
-      SelEndLogical:= 0;
-      // Does the selection intersect the visible area?
-      if bSelectionVisible and (CurLine >= nSelL1) and (CurLine <= nSelL2) then begin
-        // Default to a fully selected line. This is correct for the smLine
-        // selection mode and a good start for the smNormal mode.
-        nSelStart := FirstCol;
-        nSelEnd := LastCol + 1;
-        if (SelectionMode = smColumn) or
-          ((SelectionMode = smNormal) and (CurLine = nSelL1))
-        then
-          if (nSelCol1 > LastCol) then begin
-            nSelStart := 0;
-            nSelEnd := 0;
-          end else if (nSelCol1 > FirstCol) then begin
-            nSelStart := nSelCol1;
-            bComplexLine := TRUE;
-          end;
-        if (SelectionMode = smColumn) or
-          ((SelectionMode = smNormal) and (CurLine = nSelL2))
-        then
-          if (nSelCol2 < FirstCol) then begin
-            nSelStart := 0;
-            nSelEnd := 0;
-          end else if (nSelCol2 < LastCol) then begin
-            nSelEnd := nSelCol2;
-            bComplexLine := TRUE;
-          end;
-      end;
-      //debugln('PaintLines A nSelStart=',dbgs(nSelStart),' nSelEnd=',dbgs(nSelEnd));
-
       // Update the rcLine rect to this line.
       rcLine.Top := rcLine.Bottom;
       Inc(rcLine.Bottom, fTextHeight);
-      // Initialize the text and background colors, maybe the line should
-      // use special values for them.
-      colFG := Font.Color;
-      colBG := colEditorBG;
-      bSpecialLine := DoOnSpecialLineColors(CurLine, colFG, colBG);
-      if bSpecialLine then begin
-        // The selection colors are just swapped, like seen in Delphi.
-        colSelFG := colBG;
-        colSelBG := colFG;
-      end else begin
-        colSelFG := fSelectedColor.Foreground;
-        colSelBG := fSelectedColor.Background;
-      end;
       // Paint the lines depending on the assigned highlighter.
-      bLineSelected := not bComplexLine and (nSelStart > 0);
       rcToken := rcLine;
-      FirstColLogical:=PhysicalToLogicalCol(sLine,FirstCol);
-      LastColLogical:=PhysicalToLogicalCol(sLine,LastCol,
-                                           FirstColLogical,FirstCol);
-      if nSelStart>0 then begin
-        SelStartLogical:=PhysicalToLogicalCol(sLine,nSelStart,
-                                              FirstColLogical,FirstCol);
-        SelEndLogical:=PhysicalToLogicalCol(sLine,nSelEnd,
-                                            SelStartLogical,nSelStart);
-      end;
+      TokenAccu.Len := 0;
+      TokenAccu.PhysicalEndPos := FirstCol - 1; // in case of an empty line
+      CurPhysPos := 1;
+
       if not Assigned(fHighlighter) then begin
-        // Note: The PaintToken procedure will take care of invalid parameters
-        // like empty token rect or invalid indices into sLine.
-        nTokenLen := Length(sLine);
-        if bComplexLine then begin
-          SetDrawingColors(FALSE);
-          // paint unselected text in front of selection
-          rcToken.Left := Max(rcLine.Left, ScreenColumnToXValue(FirstCol));
-          rcToken.Right := Min(rcLine.Right, ScreenColumnToXValue(nSelStart));
-          PaintToken(PChar(Pointer(sLine)), nTokenLen, 0, FirstCol,
-                     FirstColLogical, SelStartLogical-1);
-          // paint unselected text behind selection
-          rcToken.Left := Max(rcLine.Left, ScreenColumnToXValue(nSelEnd));
-          rcToken.Right := Min(rcLine.Right, ScreenColumnToXValue(LastCol));
-          PaintToken(PChar(Pointer(sLine)), nTokenLen, 0, nSelEnd,
-                     SelEndLogical, LastColLogical);
-          // paint selection
-          SetDrawingColors(TRUE);
-          rcToken.Left := Max(rcLine.Left, ScreenColumnToXValue(nSelStart));
-          rcToken.Right := Min(rcLine.Right, ScreenColumnToXValue(nSelEnd));
-          PaintToken(PChar(Pointer(sLine)), nTokenLen, 0, nSelStart,
-                     SelStartLogical, SelEndLogical-1);
-        end else begin
-          SetDrawingColors(bLineSelected);
-          PaintToken(PChar(Pointer(sLine)), nTokenLen, 0, FirstCol,
-                     FirstColLogical, LastColLogical);
-        end;
+        DrawHiLightMarkupToken(nil, PChar(Pointer(sLine)), Length(sLine));
       end else begin
         // Initialize highlighter with line text and range info. It is
         // necessary because we probably did not scan to the end of the last
@@ -3967,51 +3805,23 @@ var
         // of ExtTextOut calls necessary. This depends on the selection state
         // or the line having special colors. For spaces the foreground color
         // is ignored as well.
-        TokenAccu.Len := 0;
-        LastTokenPosLogical:=1;
-        LastTokenPosPhyscial:=1;
-        //debugln('PaintLines A FirstColLogical=',dbgs(FirstColLogical));
+        //debugln('>>>> PaintLines Line=',dbgs(CurLine),' rect=',dbgs(rcToken));
         while not fHighlighter.GetEol do begin
-          // Test first whether anything of this token is visible.
-          nTokenPos := fHighlighter.GetTokenPos; // zero-based
           fHighlighter.GetTokenEx(sToken,nTokenLen);
-          //debugln('Paintlines B nTokenPos=',dbgs(nTokenPos),' nTokenLen=',dbgs(nTokenLen),' "',copy(sLine,nTokenPos+1,ntokenLen),'"');
-          if (nTokenPos + nTokenLen + 1>= FirstColLogical) then begin
-            // It's at least partially visible.
-            // convert nTokenPos to physical (screen)
-            TokenPhysStart:=LogicalToPhysicalCol(PChar(sLine),length(sLine),
-                                      nTokenPos+1,
-                                      LastTokenPosLogical,LastTokenPosPhyscial);
-            LastTokenPosLogical:=nTokenPos+nTokenLen+1;
-            LastTokenPosPhyscial:=LogicalToPhysicalCol(
-                                PChar(sLine),length(sLine),
-                                LastTokenPosLogical,nTokenPos+1,TokenPhysStart);
-            TokenPhysEnd:=LastTokenPosPhyscial-1;
-            {debugln('Paintlines C nTokenPos=',dbgs(nTokenPos),' nTokenLen=',dbgs(nTokenLen),' "',copy(sLine,nTokenPos+1,ntokenLen),'"',
-              ' TokenPhysStart=',dbgs(TokenPhysStart),' TokenPhysEnd=',dbgs(TokenPhysEnd));}
-            // Get the token attributes now.
-            attr := fHighlighter.GetTokenAttribute;
-            // Store the token chars with the attributes in the TokenAccu
-            // record. This will paint any chars already stored if there is
-            // a (visible) change in the attributes.
-            if (fLastCtrlMouseLinkY<>CurLine)
-            or (nTokenPos+1<>fLastCtrlMouseLinkX1)
-            then begin
-              DrawHilightMarkupToken(attr,sToken,CurLine,
-                nTokenPos,nTokenLen,TokenPhysStart);
-            end else begin
-              // token is link
-              DrawCtrlMouseToken(attr,sToken,CurLine,nTokenPos,nTokenLen,
-                                 TokenPhysStart,TokenPhysEnd);
-            end;
-          end;
+          attr := fHighlighter.GetTokenAttribute;
+          // Add Markup to the token and append it to the TokenAccu
+          // record. This will paint any chars already stored if there is
+          // a (visible) change in the attributes.
+          DrawHiLightMarkupToken(attr,sToken,nTokenLen);
           // Let the highlighter scan the next token.
           fHighlighter.Next;
         end;
-        // Draw anything that's left in the TokenAccu record. Fill to the end
-        // of the invalid area with the correct colors.
-        PaintHighlightToken(TRUE);
       end;
+      // Draw anything that's left in the TokenAccu record. Fill to the end
+      // of the invalid area with the correct colors.
+      PaintHighlightToken(TRUE);
+
+      fMarkupManager.FinishMarkupForRow(CurLine);
 
       // codefold draw splitter line
       if Gutter.ShowCodeFolding and (CurLine>=0)
@@ -4029,6 +3839,7 @@ var
   procedure CalculateCtrlMouseLink;
   begin
     fLastCtrlMouseLinkY:=-1;
+    fMarkupCtrlMouse.CtrlMouseLine:=-1;
     if (not (eoShowCtrlMouseLinks in Options))
     or (fLastMouseCaret.X<1) or (fLastMouseCaret.Y<1)
     or (not fLastControlIsPressed) then
@@ -4039,31 +3850,18 @@ var
       exit;
     fLastCtrlMouseLinkY:=fLastMouseCaret.Y;
     LinkFGCol:=clBlue;
-  end;
-
-  procedure PaintCtrlMouseLinkLine;
-  var
-    LineLeft, LineTop, LineRight: integer;
-    s: string;
-    PhysLinkStart: LongInt;
-    PhysLinkEnd: LongInt;
-  begin
-    if fLastCtrlMouseLinkY<1 then exit;
-    LineTop:= (RowToScreenRow(fLastCtrlMouseLinkY)+1)*fTextHeight-1;
-    s:=Lines[fLastCtrlMouseLinkY-1];
-    PhysLinkStart:=Max(FirstCol,LogicalToPhysicalCol(s,fLastCtrlMouseLinkX1));
-    PhysLinkEnd:=Min(LastCol,LogicalToPhysicalCol(s,fLastCtrlMouseLinkX2));
-    LineLeft:=ScreenColumnToXValue(PhysLinkStart);
-    LineRight:=ScreenColumnToXValue(PhysLinkEnd);
-    Canvas.Pen.Color:=LinkFGCol;
-    Canvas.MoveTo(LineLeft,LineTop);
-    Canvas.LineTo(LineRight,LineTop);
+    with fMarkupCtrlMouse do begin
+      CtrlMouseLine := fLastCtrlMouseLinkY;
+      CtrlMouseX1 := fLastCtrlMouseLinkX1;
+      CtrlMouseX2 := fLastCtrlMouseLinkX2;
+    end;
   end;
 
 { end local procedures }
 
 var
   ypos : integer;
+  ColBG : TColor;
 begin
   CurLine:=-1;
   FillChar(TokenAccu,SizeOf(TokenAccu),0);
@@ -4106,7 +3904,6 @@ begin
     // necessary information about the selected area: is there any visible
     // selected area, and what are its lines / columns?
     // Moved to two local procedures to make it easier to read.
-    ComputeSelectionInfo;
     fTextDrawer.Style := Font.Style;
     fTextDrawer.BeginDrawing(dc);
     try
@@ -4139,7 +3936,7 @@ begin
     end;
   end;
 
-  PaintCtrlMouseLinkLine;
+  fMarkupManager.EndMarkup;
   ReAllocMem(TokenAccu.p,0);
 end;
 {$ELSE below for NOT SYN_LAZARUS ----------------------------------------------}
@@ -5739,9 +5536,12 @@ begin
   {$ELSE}
   or not Focused
   {$ENDIF}
-  then
-    Include(fStateFlags, sfCaretChanged)
-  else begin
+  then begin
+    Include(fStateFlags, sfCaretChanged);
+    {$IFDEF SYN_LAZARUS}
+    if assigned(fMarkupBracket) then fMarkupBracket.InvalidateBracketHighlight;
+    {$ENDIF}
+  end else begin
     Exclude(fStateFlags, sfCaretChanged);
     {$IFDEF SYN_LAZARUS}
     if eoAlwaysVisibleCaret in fOptions2 then
@@ -10469,6 +10269,7 @@ begin
   end;
 end;
 
+{$IFNDEF SYN_LAZARUS}
 function TCustomSynEdit.DoOnSpecialLineColors(Line: integer; var Foreground,
   Background: TColor): boolean;
 begin
@@ -10476,6 +10277,7 @@ begin
   if Assigned(fOnSpecialLineColors) then
     fOnSpecialLineColors(Self, Line, Result, Foreground, Background);
 end;
+{$ENDIF}
 
 procedure TCustomSynEdit.InvalidateLine(Line: integer);
 var
@@ -10692,8 +10494,6 @@ var
       StatusChanged([scSelection]);
     end else if MoveCaret then
       CaretXY := LogicalToPhysicalPos(Result)
-    else
-      Result := LogicalToPhysicalPos(Result);
   end;
 
   procedure DoFindMatchingBracket(i: integer);
@@ -10798,11 +10598,11 @@ begin
   if OnlyVisible
   and ((PosY<TopLine) or (PosY >= ScreenRowToRow(LinesInWindow)))
   then
-    exit;
+   exit;
 
-  Line := LineText;
-  DoCheckBracket;
+  Line := Lines[PosY - 1];
   try
+    DoCheckBracket;
     if Result.Y>0 then exit;
     if StartIncludeNeighborChars then begin
       if PosX>1 then begin
@@ -11256,6 +11056,12 @@ begin
     dec(BytePos);
   Result := BytePos;
 end;
+
+function TCustomSynEdit.ScreenColumnToXValue(Col : integer) : integer;
+begin
+  Result := fTextOffset + Pred(Col) * fCharWidth;
+end;
+
 {$ENDIF}
 
 procedure TCustomSynEdit.DoLinesDeleted(FirstLine, Count: integer);
