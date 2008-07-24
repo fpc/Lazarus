@@ -2199,7 +2199,8 @@ begin
      ,' Key=',Key,' Ctrl=',ssCtrl in Shift,' Shift=',ssShift in Shift
      ,' Alt=',ssAlt in Shift,' AsString=',KeyAndShiftStateToEditorKeyString(Key),
      '');}
-  if not (Key in [VK_CONTROL, VK_LCONTROL, VK_RCONTROL,
+  if (GrabbingKey>0)
+  and not (Key in [VK_CONTROL, VK_LCONTROL, VK_RCONTROL,
              VK_SHIFT, VK_LSHIFT, VK_RSHIFT,
              VK_MENU, VK_LMENU, VK_RMENU]) then
   begin
