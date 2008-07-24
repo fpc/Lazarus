@@ -3281,16 +3281,32 @@ end;
 procedure TCustomGrid.DrawCellText(aCol, aRow: Integer; aRect: TRect;
   aState: TGridDrawState; aText: String);
 begin
-  dec(aRect.Right, 3);
-  case Canvas.TextStyle.Alignment of
-    Classes.taLeftJustify: Inc(aRect.Left, 3);
-    Classes.taRightJustify: Dec(aRect.Right, 1);
+
+  with ARect do begin
+  
+    dec(Right, 3);
+    case Canvas.TextStyle.Alignment of
+      Classes.taLeftJustify: Inc(Left, 3);
+      Classes.taRightJustify: Dec(Right, 1);
+    end;
+    case Canvas.TextStyle.Layout of
+      tlTop: Inc(Top, 3);
+      tlBottom: Dec(Bottom, 3);
+    end;
+  
+    if Right<Left then
+      Right:=Left;
+    if Left>Right then
+      Left:=Right;
+    if Bottom<Top then
+      Bottom:=Top;
+    if Top>Bottom then
+      Top:=Bottom;
+    
+    if (Left<>Right) and (Top<>Bottom) then
+      Canvas.TextRect(aRect,Left,Top, aText);
+      
   end;
-  case Canvas.TextStyle.Layout of
-    tlTop: Inc(aRect.Top, 3);
-    tlBottom: Dec(aRect.Bottom, 3);
-  end;
-  Canvas.TextRect(aRect,ARect.Left,ARect.Top, aText);
 end;
 
 procedure TCustomGrid.OnTitleFontChanged(Sender: TObject);
