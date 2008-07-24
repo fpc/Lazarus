@@ -10636,7 +10636,7 @@ var
       // Init the Highlighter only once per line
       if MaxKnownTokenPos < 1 then begin
         fHighlighter.SetRange(TSynEditStringList(Lines).Ranges[PosY - 1]);
-        fHighlighter.SetLine(Line, PosY);
+        fHighlighter.SetLine(Line, PosY - 1);
         TokenListCnt := 0;
       end
       else
@@ -10847,10 +10847,7 @@ begin
   if Assigned(Highlighter) and (PosY >= 0) and (PosY < Lines.Count) then
   begin
     Line := Lines[PosY];
-    if PosY = 0 then
-      Highlighter.ResetRange
-    else
-      Highlighter.SetRange(TSynEditStringList(Lines).Ranges[PosY - 1]);
+    Highlighter.SetRange(TSynEditStringList(Lines).Ranges[PosY ]);
     Highlighter.SetLine(Line, PosY);
     PosX := XY.X;
     if (PosX > 0) and (PosX <= Length(Line)) then
