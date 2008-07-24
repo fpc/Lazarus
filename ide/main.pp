@@ -8296,9 +8296,8 @@ begin
         AnUnitInfo:=Project1.UnitWithEditorIndex(i);
         if AnUnitInfo = nil
         then begin
-          {$NOTE ToDo: EditorIndex/Source editor inconsistency: fix the real bug, see http://bugs.freepascal.org/view.php?id=10171}
+          DebugLn('TMainIDE.DoSaveProject - unit not found for page %d', [i]);
           DumpStack;
-          DebugLn('TMainIDE.DoSaveProject - unit not found for page %d', [i])
         end else begin
           if AnUnitInfo.IsVirtual
           then begin
