@@ -468,8 +468,8 @@ type
     fIdentCompletionJumpToError: boolean;
     FIncrementalSearchPos: TPoint; // last set position
     fIncrementalSearchStartPos: TPoint; // position where to start searching
-    fIncrementalSearchCancelPos: TPoint;// position where to jump on cancel
-    FIncrementalSearchStr: string;
+    FIncrementalSearchStr, FIncrementalFoundStr: string;
+    FIncrementalSearchBackwards : Boolean;
     FIncrementalSearchEditor: TSourceEditor; // editor with active search (MWE:shouldnt all FIncrementalSearch vars go to that editor ?)
     FKeyStrokes: TSynEditKeyStrokes;
     FLastCodeBuffer: TCodeBuffer;
@@ -4593,11 +4593,20 @@ procedure TSourceNotebook.BeginIncrementalFind;
 var
   TempEditor: TSourceEditor;
 begin
+  if (snIncrementalFind in States)AND not(FIncrementalSearchEditor = nil)
+  then begin
+    if (IncrementalSearchStr=  '') then begin
+      FIncrementalSearchStr := FIncrementalFoundStr;
+      IncrementalSearch(False, FIncrementalSearchBackwards);
+    end
+    else IncrementalSearch(True, FIncrementalSearchBackwards);
+    exit;
+  end;
+
   TempEditor:=GetActiveSE;
   if TempEditor = nil then exit;
   Include(States, snIncrementalFind);
   fIncrementalSearchStartPos:=TempEditor.EditorComponent.LogicalCaretXY;
-  fIncrementalSearchCancelPos:=fIncrementalSearchStartPos;
   FIncrementalSearchPos:=fIncrementalSearchStartPos;
   FIncrementalSearchEditor := TempEditor;
   SetSelectedColors(FIncrementalSearchEditor.EditorComponent);
@@ -6332,6 +6341,7 @@ begin
     then AStart := FIncrementalSearchStartPos
     else if ABackward
     then AStart := CurEdit.BlockBegin;
+    FIncrementalSearchBackwards:=ABackward;
     CurEdit.SearchReplaceEx(FIncrementalSearchStr,'', SEARCH_OPTS[ABackward], AStart);
     CurEdit.LogicalCaretXY:=CurEdit.BlockEnd;
 
@@ -6339,17 +6349,18 @@ begin
     if ANext
     then begin
       FIncrementalSearchStartPos := CurEdit.BlockBegin;
-      FIncrementalSearchCancelPos := FIncrementalSearchStartPos;
     end;
     
     // cut the not found
     FIncrementalSearchStr := CurEdit.SelText;
 
     CurEdit.SetHighlightSearch(FIncrementalSearchStr, []);
+    if Length(FIncrementalSearchStr) > 0
+    then FIncrementalFoundStr := FIncrementalSearchStr;
   end
   else begin
     // go to start
-    CurEdit.LogicalCaretXY:=fIncrementalSearchCancelPos;
+    CurEdit.LogicalCaretXY:= FIncrementalSearchStartPos;
     CurEdit.BlockBegin:=CurEdit.LogicalCaretXY;
     CurEdit.BlockEnd:=CurEdit.BlockBegin;
     CurEdit.SetHighlightSearch('', []);
