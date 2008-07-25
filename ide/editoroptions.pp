@@ -2581,7 +2581,7 @@ begin
   SetOption(dlgScrollPastEndFile, eoScrollPastEoF);
   SetOption(dlgScrollPastEndLine, eoScrollPastEoL);
   SetOption(lisShowSpecialCharacters, eoShowSpecialChars);
-  SetOption(dlgShowScrollHint, eoShowScrollHint);
+  //SetOption(dlgShowScrollHint, eoShowScrollHint);
   SetOption(dlgSmartTabs, eoSmartTabs);
   SetOption(dlgTabsToSpaces, eoTabsToSpaces);
   SetOption(dlgTabIndent, eoTabIndent);
@@ -3657,7 +3657,7 @@ begin
     // visual effects
     Items.Add(dlgBracHighlight);
     Items.Add(dlgShowGutterHints);
-    Items.Add(dlgShowScrollHint);
+    //Items.Add(dlgShowScrollHint);
     Items.Add(lisShowSpecialCharacters);
     Items.Add(dlgUseSyntaxHighlight);
     // drag&drop
@@ -3717,8 +3717,8 @@ begin
     Checked[Items.IndexOf(dlgScrollPastEndLine)] :=
                                    eoScrollPastEoL in EditorOpts.SynEditOptions;
     Checked[Items.IndexOf(dlgCloseButtonsNotebook)] := EditorOpts.ShowTabCloseButtons;
-    Checked[Items.IndexOf(dlgShowScrollHint)] :=
-                                  eoShowScrollHint in EditorOpts.SynEditOptions;
+    //Checked[Items.IndexOf(dlgShowScrollHint)] :=
+    //                              eoShowScrollHint in EditorOpts.SynEditOptions;
     Checked[Items.IndexOf(lisShowSpecialCharacters)] :=
                                 eoShowSpecialChars in EditorOpts.SynEditOptions;
     Checked[Items.IndexOf(dlgSmartTabs)] := eoSmartTabs in EditorOpts.SynEditOptions;
