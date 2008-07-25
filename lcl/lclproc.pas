@@ -786,15 +786,8 @@ begin
   debugln(rsERRORInLCL, Msg);
   // creates an exception, that gdb catches:
   debugln(rsCreatingGdbCatchableError);
-//  {$IF defined(CPUI386) or defined(CPUX86_64) }
-// MWE: not yet, linux i386 seems to choke on this
-//  asm
-//    INT $3
-//  end;
-//  {$ELSE}
   DumpStack;
   if (length(Msg) div (length(Msg) div 10000))=0 then ;
-//  {$ENDIF}
 end;
 
 procedure DumpExceptionBackTrace;

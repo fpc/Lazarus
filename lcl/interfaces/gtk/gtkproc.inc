@@ -2999,7 +2999,7 @@ type
     ShiftState: TShiftStateEnum;
   begin
     if AModMap[AKeyCode] = 0 then Exit;
-    
+
     case AKeySym of
       GDK_Key_Shift_L,
       GDK_Key_Shift_R: ShiftState := ssShift;

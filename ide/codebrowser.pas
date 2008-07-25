@@ -39,10 +39,11 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  Clipbrd, LCLIntf, AvgLvlTree, StdCtrls, ExtCtrls, ComCtrls, Buttons,
+  Clipbrd, LCLIntf, AVL_Tree, StdCtrls, ExtCtrls, ComCtrls, Buttons,
   // codetools
   CodeAtom, BasicCodeTools, DefineTemplates, CodeTree, CodeCache,
-  CodeToolManager, PascalParserTool, LinkScanner, FileProcs,
+  CodeToolManager, PascalParserTool, LinkScanner, FileProcs, CodeIndex,
+  StdCodeTools,
   // IDEIntf
   IDEDialogs, LazConfigStorage, Project, PackageIntf, IDECommands, LazIDEIntf,
   DialogProcs,
@@ -50,106 +51,7 @@ uses
   PackageSystem, PackageDefs, LazarusIDEStrConsts, IDEOptionDefs,
   EnvironmentOpts, Menus;
 
-type
-  TCodeBrowserUnit = class;
-  TCodeBrowserUnitList = class;
 
-
-  { TCodeBrowserNode }
-
-  TCodeBrowserNode = class
-  private
-    FCBUnit: TCodeBrowserUnit;
-    FChildNodes: TAvgLvlTree;
-    FCodePos: TCodePosition;
-    FDesc: TCodeTreeNodeDesc;
-    FDescription: string;
-    FIdentifier: string;
-    FParentNode: TCodeBrowserNode;
-  public
-    constructor Create(TheUnit: TCodeBrowserUnit;
-                       TheParent: TCodeBrowserNode;
-                       const TheDescription, TheIdentifier: string);
-    destructor Destroy; override;
-    procedure Clear;
-    function AddNode(const Description, Identifier: string): TCodeBrowserNode;
-    property CBUnit: TCodeBrowserUnit read FCBUnit;
-    property Desc: TCodeTreeNodeDesc read FDesc write FDesc;
-    property CodePos: TCodePosition read FCodePos write FCodePos;
-    property ParentNode: TCodeBrowserNode read FParentNode;
-    property ChildNodes: TAvgLvlTree read FChildNodes;
-    property Description: string read FDescription;
-    property Identifier: string read FIdentifier;
-  end;
-
-
-  { TCodeBrowserUnit }
-
-  TCodeBrowserUnit = class
-  private
-    FChildNodes: TAvgLvlTree;
-    FCodeBuffer: TCodeBuffer;
-    FCodeTool: TCodeTool;
-    FCodeTreeChangeStep: integer;
-    FFilename: string;
-    FScanned: boolean;
-    FScannedBytes: integer;
-    FScannedIdentifiers: integer;
-    FScannedLines: integer;
-    FUnitList: TCodeBrowserUnitList;
-    procedure SetCodeBuffer(const AValue: TCodeBuffer);
-    procedure SetCodeTool(const AValue: TCodeTool);
-    procedure SetScanned(const AValue: boolean);
-  public
-    constructor Create(const TheFilename: string);
-    destructor Destroy; override;
-    procedure Clear;
-    function AddNode(const Description, Identifier: string): TCodeBrowserNode;
-    procedure DeleteNode(var Node: TCodeBrowserNode);
-    property Filename: string read FFilename;
-    property CodeBuffer: TCodeBuffer read FCodeBuffer write SetCodeBuffer;
-    property CodeTool: TCodeTool read FCodeTool write SetCodeTool;
-    property CodeTreeChangeStep: integer read FCodeTreeChangeStep;
-    property UnitList: TCodeBrowserUnitList read FUnitList;
-    property ChildNodes: TAvgLvlTree read FChildNodes;
-    property ScannedLines: integer read FScannedLines write FScannedLines;
-    property ScannedBytes: integer read FScannedBytes write FScannedBytes;
-    property ScannedIdentifiers: integer read FScannedIdentifiers write FScannedIdentifiers;
-    property Scanned: boolean read FScanned write SetScanned;
-  end;
-  
-
-  { TCodeBrowserUnitList }
-
-  TCodeBrowserUnitList = class
-  private
-    FOwner: string;
-    FParentList: TCodeBrowserUnitList;
-    FScannedUnits: integer;
-    FUnitLists: TAvgLvlTree;
-    FUnits: TAvgLvlTree;
-    FUnitsValid: boolean;
-    procedure SetOwner(const AValue: string);
-    procedure InternalAddUnitList(List: TCodeBrowserUnitList);
-    procedure InternalRemoveUnitList(List: TCodeBrowserUnitList);
-    procedure InternalAddUnit(AnUnit: TCodeBrowserUnit);
-    procedure InternalRemoveUnit(AnUnit: TCodeBrowserUnit);
-  public
-    constructor Create(TheOwner: string; TheParent: TCodeBrowserUnitList);
-    destructor Destroy; override;
-    procedure Clear;
-    function FindUnit(const Filename: string): TCodeBrowserUnit;
-    function FindUnitList(const OwnerName: string): TCodeBrowserUnitList;
-    procedure DeleteUnit(AnUnit: TCodeBrowserUnit);
-    function AddUnit(const Filename: string): TCodeBrowserUnit;
-    property Owner: string read FOwner write SetOwner;// IDE, project, package
-    property ParentList: TCodeBrowserUnitList read FParentList;
-    property Units: TAvgLvlTree read FUnits;
-    property UnitLists: TAvgLvlTree read FUnitLists;
-    property UnitsValid: boolean read FUnitsValid write FUnitsValid;
-    property ScannedUnits: integer read FScannedUnits write FScannedUnits;
-  end;
-  
 type
   TCodeBrowserLevel = (
     cblPackages,
@@ -331,7 +233,7 @@ type
     FWorkingParserRoot: TCodeBrowserUnitList;
     fUpdateCount: integer;
     fStage: TCodeBrowserWorkStage;
-    fOutdatedFiles: TAvgLvlTree;// tree of TCodeBrowserUnit
+    fOutdatedFiles: TAVLTree;// tree of TCodeBrowserUnit
     fLastStatusBarUpdate: TDateTime;
     ImgIDDefault: integer;
     ImgIDProgramCode: Integer;
@@ -416,14 +318,6 @@ type
 var
   CodeBrowserView: TCodeBrowserView = nil;
   
-function CompareUnitListOwners(Data1, Data2: Pointer): integer;
-function ComparePAnsiStringWithUnitListOwner(Data1, Data2: Pointer): integer;
-function CompareUnitFilenames(Data1, Data2: Pointer): integer;
-function ComparePAnsiStringWithUnitFilename(Data1, Data2: Pointer): integer;
-function CompareNodeIdentifiers(Data1, Data2: Pointer): integer;
-function ComparePAnsiStringWithNodeIdentifier(Data1, Data2: Pointer): integer;
-
-
 function StringToCodeBrowserTextFilter(const s: string): TCodeBrowserTextFilter;
 
 implementation
@@ -448,42 +342,6 @@ const
   ProgressUpdateTreeViewStart=ProgressGetViewOptionsStart+ProgressGetViewOptionsSize;
   ProgressUpdateTreeViewSize=1000;
   ProgressTotal=ProgressUpdateTreeViewStart+ProgressUpdateTreeViewSize;
-
-function CompareUnitListOwners(Data1, Data2: Pointer): integer;
-begin
-  Result:=SysUtils.CompareText(TCodeBrowserUnitList(Data1).Owner,
-                               TCodeBrowserUnitList(Data2).Owner);
-end;
-
-function ComparePAnsiStringWithUnitListOwner(Data1, Data2: Pointer): integer;
-begin
-  Result:=SysUtils.CompareText(PAnsiString(Data1)^,
-                               TCodeBrowserUnitList(Data2).Owner);
-end;
-
-function CompareUnitFilenames(Data1, Data2: Pointer): integer;
-begin
-  Result:=CompareFilenames(TCodeBrowserUnit(Data1).Filename,
-                           TCodeBrowserUnit(Data2).Filename);
-end;
-
-function ComparePAnsiStringWithUnitFilename(Data1, Data2: Pointer): integer;
-begin
-  Result:=CompareFilenames(PAnsiString(Data1)^,
-                           TCodeBrowserUnit(Data2).Filename);
-end;
-
-function CompareNodeIdentifiers(Data1, Data2: Pointer): integer;
-begin
-  Result:=SysUtils.CompareText(TCodeBrowserNode(Data1).Identifier,
-                               TCodeBrowserNode(Data2).Identifier);
-end;
-
-function ComparePAnsiStringWithNodeIdentifier(Data1, Data2: Pointer): integer;
-begin
-  Result:=SysUtils.CompareText(PAnsiString(Data1)^,
-                               TCodeBrowserNode(Data2).Identifier);
-end;
 
 function StringToCodeBrowserTextFilter(const s: string): TCodeBrowserTextFilter;
 begin
@@ -939,7 +797,7 @@ procedure TCodeBrowserView.WorkFreeUnusedPackages;
 
   function FindUnusedUnitList: TCodeBrowserUnitList;
   var
-    Node: TAvgLvlTreeNode;
+    Node: TAVLTreeNode;
     UnusedPackage: TCodeBrowserUnitList;
     PackageName: String;
   begin
@@ -982,7 +840,7 @@ end;
 
 procedure TCodeBrowserView.WorkAddNewUnitLists;
 var
-  Node: TAvgLvlTreeNode;
+  Node: TAVLTreeNode;
   List: TCodeBrowserUnitList;
 begin
   ProgressBar1.Position:=ProgressAddNewUnitListsStart;
@@ -1016,7 +874,7 @@ procedure TCodeBrowserView.WorkGatherFileLists;
     ): TCodeBrowserUnitList;
   var
     APackage: TCodeBrowserUnitList;
-    Node: TAvgLvlTreeNode;
+    Node: TAVLTreeNode;
   begin
     Result:=nil;
     if StartList=nil then exit;
@@ -1052,7 +910,7 @@ end;
 
 procedure TCodeBrowserView.WorkUpdateFileList(List: TCodeBrowserUnitList);
 var
-  NewFileList: TAvgLvlTree;
+  NewFileList: TAVLTree;
 
   procedure AddFile(const Filename: string; ClearIncludedByInfo: boolean);
   begin
@@ -1224,9 +1082,9 @@ var
 
   procedure DeleteUnusedFiles;
   var
-    Node: TAvgLvlTreeNode;
+    Node: TAVLTreeNode;
     CurUnit: TCodeBrowserUnit;
-    NextNode: TAvgLvlTreeNode;
+    NextNode: TAVLTreeNode;
   begin
     if List.Units=nil then exit;
     Node:=List.Units.FindLowest;
@@ -1246,7 +1104,7 @@ var
   
   procedure AddNewFiles;
   var
-    Node: TAvgLvlTreeNode;
+    Node: TAVLTreeNode;
     AnUnit: TCodeBrowserUnit;
   begin
     Node:=NewFileList.FindLowest;
@@ -1266,7 +1124,7 @@ var
   APackage: TLazPackage;
 begin
   DebugLn(['TCodeBrowserView.WorkUpdateFiles ',List.Owner]);
-  NewFileList:=TAvgLvlTree.Create(@CompareUnitFilenames);
+  NewFileList:=TAVLTree.Create(@CompareUnitFilenames);
   try
     // get new list of files
     if List.Owner=CodeBrowserIDEName then begin
@@ -1295,14 +1153,14 @@ procedure TCodeBrowserView.WorkGatherOutdatedFiles;
   procedure AddFile(AnUnit: TCodeBrowserUnit);
   begin
     if fOutdatedFiles=nil then
-      fOutdatedFiles:=TAvgLvlTree.Create(@CompareUnitFilenames);
+      fOutdatedFiles:=TAVLTree.Create(@CompareUnitFilenames);
     if fOutdatedFiles.Find(AnUnit)<>nil then exit;
     fOutdatedFiles.Add(AnUnit);
   end;
 
   procedure AddFiles(List: TCodeBrowserUnitList);
   var
-    Node: TAvgLvlTreeNode;
+    Node: TAVLTreeNode;
   begin
     if List.Units<>nil then begin
       Node:=List.Units.FindLowest;
@@ -1334,7 +1192,7 @@ procedure TCodeBrowserView.WorkUpdateUnits;
 
   function FindOutdatedUnit: TCodeBrowserUnit;
   var
-    Node: TAvgLvlTreeNode;
+    Node: TAVLTreeNode;
   begin
     Result:=nil;
     if fOutdatedFiles=nil then exit;
@@ -1424,7 +1282,7 @@ begin
   AnUnit.Scanned:=true;
   inc(FScannedUnits);
   // load the file
-  AnUnit.FCodeBuffer:=CodeToolBoss.LoadFile(AnUnit.Filename,false,false);
+  AnUnit.CodeBuffer:=CodeToolBoss.LoadFile(AnUnit.Filename,false,false);
   if AnUnit.CodeBuffer=nil then exit;
   // check if this is a unit
   MainCodeBuf:=CodeToolBoss.GetMainCode(AnUnit.CodeBuffer);
@@ -1500,7 +1358,7 @@ end;
 
 procedure TCodeBrowserView.FreeUnitList(List: TCodeBrowserUnitList);
 var
-  Node: TAvgLvlTreeNode;
+  Node: TAVLTreeNode;
   AnUnit: TCodeBrowserUnit;
 begin
   //DebugLn(['TCodeBrowserView.FreeUnitList ',List.Owner]);
@@ -1552,7 +1410,7 @@ var
   LevelFilterText: array[TCodeBrowserLevel] of string;
   LevelFilterType: array[TCodeBrowserLevel] of TCodeBrowserTextFilter;
 
-  function GetCodeTool(AnUnit: TCodeBrowserUnit): TCodeTool;
+  function GetCodeTool(AnUnit: TCodeBrowserUnit): TStandardCodeTool;
   begin
     //DebugLn(['GetCodeTool ',AnUnit.CodeTool<>nil,' ',AnUnit.CodeBuffer<>nil]);
     Result:=AnUnit.CodeTool;
@@ -1584,7 +1442,7 @@ var
 
   procedure AddUnitNodes(SrcUnit: TCodeBrowserUnit; var DestUnit: TObject);
   var
-    Tool: TCodeTool;
+    Tool: TStandardCodeTool;
     
     procedure AddUnit;
     begin
@@ -1668,6 +1526,7 @@ var
       var
         NewChildNode: TCodeBrowserNode;
         ChildDescription, ChildIdentifier: string;
+        NewCodePos: TCodePosition;
       begin
         //DebugLn(['AddChildNode ',ChildCTNode.DescAsString,' ',ChildDescription]);
         if (ChildCTNode.Parent.Desc=ctnClassPrivate) and (not ShowPrivate) then
@@ -1681,7 +1540,8 @@ var
           NewChildNode:=NewNode.AddNode(ChildDescription,ChildIdentifier);
           if NewChildNode<>nil then begin
             NewChildNode.Desc:=ChildCTNode.Desc;
-            Tool.CleanPosToCodePos(ChildCTNode.StartPos,NewChildNode.FCodePos);
+            Tool.CleanPosToCodePos(ChildCTNode.StartPos,NewCodePos);
+            NewChildNode.CodePos:=NewCodePos;
           end;
         end;
       end;
@@ -1689,6 +1549,7 @@ var
     var
       Description, Identifier: string;
       CurUnit: TCodeBrowserUnit;
+      NewCodePos: TCodePosition;
     begin
       if not ShowIdentifiers then exit;
       AddUnit;
@@ -1697,7 +1558,8 @@ var
       GetNodeDescription(CTNode,Description,Identifier);
       NewNode:=CurUnit.AddNode(Description,Identifier);
       NewNode.Desc:=CTNode.Desc;
-      Tool.CleanPosToCodePos(CTNode.StartPos,NewNode.FCodePos);
+      Tool.CleanPosToCodePos(CTNode.StartPos,NewCodePos);
+      NewNode.CodePos:=NewCodePos;
       //DebugLn(['AddIdentifierNode Code=',NewNode.FCodePos.Code<>nil,' P=',NewNode.FCodePos.P]);
       
       if (CTNode.Desc=ctnTypeDefinition)
@@ -1772,7 +1634,7 @@ var
     end;
     
   var
-    Node: TAvgLvlTreeNode;
+    Node: TAVLTreeNode;
     CurUnit: TCodeBrowserUnit;
     NewUnit: TCodeBrowserUnit;
     List: TCodeBrowserUnitList;
@@ -1816,7 +1678,7 @@ var
   procedure AddUnitLists(SrcList: TCodeBrowserUnitList;
     var DestParentList: TObject);
   var
-    Node: TAvgLvlTreeNode;
+    Node: TAVLTreeNode;
     SubList: TCodeBrowserUnitList;
     NewList: TCodeBrowserUnitList;
   begin
@@ -1858,11 +1720,11 @@ var
   var
     List: TCodeBrowserUnitList;
     ListName: String;
-    Node: TAvgLvlTreeNode;
+    Node: TAVLTreeNode;
     TVNode: TTreeNode;
     CurUnit: TCodeBrowserUnit;
     CurUnitName: String;
-    CurTool: TCodeTool;
+    CurTool: TStandardCodeTool;
     CurNode: TCodeBrowserNode;
     ExpandParent: Boolean;
   begin
@@ -1909,7 +1771,7 @@ var
         CurTool:=GetCodeTool(CurUnit);
       if CurTool<>nil then begin
         // add a treenode for this unit
-        CurUnitName:=CurTool.GetCachedSourceName;
+        CurUnitName:=TCodeTool(CurTool).GetCachedSourceName;
         if CurUnitName='' then
           CurUnitName:=ExtractFileNameOnly(CurTool.MainFilename);
         inc(NewUnitCount);
@@ -2396,221 +2258,6 @@ begin
       end;
     end;
   end;
-end;
-
-{ TCodeBrowserNode }
-
-constructor TCodeBrowserNode.Create(TheUnit: TCodeBrowserUnit;
-  TheParent: TCodeBrowserNode; const TheDescription, TheIdentifier: string);
-begin
-  FCBUnit:=TheUnit;
-  FParentNode:=TheParent;
-  FDescription:=TheDescription;
-  FIdentifier:=TheIdentifier;
-end;
-
-destructor TCodeBrowserNode.Destroy;
-begin
-  Clear;
-  inherited Destroy;
-end;
-
-procedure TCodeBrowserNode.Clear;
-begin
-  if FChildNodes<>nil then
-    FChildNodes.FreeAndClear;
-  FreeAndNil(FChildNodes);
-end;
-
-function TCodeBrowserNode.AddNode(const Description,
-  Identifier: string): TCodeBrowserNode;
-begin
-  Result:=TCodeBrowserNode.Create(nil,Self,Description,Identifier);
-  if FChildNodes=nil then
-    FChildNodes:=TAvgLvlTree.Create(@CompareNodeIdentifiers);
-  FChildNodes.Add(Result);
-end;
-
-{ TCodeBrowserUnit }
-
-procedure TCodeBrowserUnit.SetScanned(const AValue: boolean);
-begin
-  if FScanned=AValue then exit;
-  FScanned:=AValue;
-  FScannedBytes:=0;
-  FScannedLines:=0;
-  FScannedIdentifiers:=0;
-  if UnitList<>nil then begin
-    if FScanned then
-      inc(UnitList.FScannedUnits)
-    else
-      dec(UnitList.FScannedUnits);
-  end;
-end;
-
-procedure TCodeBrowserUnit.SetCodeTool(const AValue: TCodeTool);
-begin
-  if FCodeTool=nil then exit;
-  FCodeTool:=AValue;
-end;
-
-procedure TCodeBrowserUnit.SetCodeBuffer(const AValue: TCodeBuffer);
-begin
-  if FCodeBuffer=AValue then exit;
-  FCodeBuffer:=AValue;
-end;
-
-constructor TCodeBrowserUnit.Create(const TheFilename: string);
-begin
-  FFilename:=TheFilename;
-end;
-
-destructor TCodeBrowserUnit.Destroy;
-begin
-  Clear;
-  inherited Destroy;
-end;
-
-procedure TCodeBrowserUnit.Clear;
-begin
-  if FChildNodes<>nil then
-    FChildNodes.FreeAndClear;
-  FreeAndNil(FChildNodes);
-end;
-
-function TCodeBrowserUnit.AddNode(const Description,
-  Identifier: string): TCodeBrowserNode;
-begin
-  Result:=TCodeBrowserNode.Create(Self,nil,Description,Identifier);
-  if FChildNodes=nil then
-    FChildNodes:=TAvgLvlTree.Create(@CompareNodeIdentifiers);
-  FChildNodes.Add(Result);
-end;
-
-procedure TCodeBrowserUnit.DeleteNode(var Node: TCodeBrowserNode);
-begin
-  if Node=nil then exit;
-  if ChildNodes<>nil then
-    FChildNodes.RemovePointer(Node);
-  FreeAndNil(Node);
-end;
-
-{ TCodeBrowserUnitList }
-
-procedure TCodeBrowserUnitList.SetOwner(const AValue: string);
-begin
-  if Owner=AValue then exit;
-  if ParentList<>nil then RaiseGDBException('not allowed');
-  FOwner:=AValue;
-  FUnitsValid:=false;
-end;
-
-procedure TCodeBrowserUnitList.InternalAddUnitList(List: TCodeBrowserUnitList);
-begin
-  if FUnitLists=nil then
-    FUnitLists:=TAvgLvlTree.Create(@CompareUnitListOwners);
-  FUnitLists.Add(List);
-end;
-
-procedure TCodeBrowserUnitList.InternalRemoveUnitList(List: TCodeBrowserUnitList
-  );
-begin
-  if FUnitLists<>nil then
-    FUnitLists.Remove(List);
-end;
-
-procedure TCodeBrowserUnitList.InternalAddUnit(AnUnit: TCodeBrowserUnit);
-begin
-  if FUnits=nil then
-    FUnits:=TAvgLvlTree.Create(@CompareUnitFilenames);
-  FUnits.Add(AnUnit);
-end;
-
-procedure TCodeBrowserUnitList.InternalRemoveUnit(AnUnit: TCodeBrowserUnit);
-begin
-  if FUnits<>nil then
-    FUnits.Remove(AnUnit);
-end;
-
-constructor TCodeBrowserUnitList.Create(TheOwner: string;
-  TheParent: TCodeBrowserUnitList);
-begin
-  //DebugLn(['TCodeBrowserUnitList.Create ',TheOwner]);
-  //DumpStack;
-  FOwner:=TheOwner;
-  FParentList:=TheParent;
-  if FParentList<>nil then
-    FParentList.InternalAddUnitList(Self);
-end;
-
-destructor TCodeBrowserUnitList.Destroy;
-begin
-  Clear;
-  if FParentList<>nil then begin
-    FParentList.InternalRemoveUnitList(Self);
-    FParentList:=nil;
-  end;
-  inherited Destroy;
-end;
-
-procedure TCodeBrowserUnitList.Clear;
-
-  procedure FreeTree(var Tree: TAvgLvlTree);
-  var
-    TmpTree: TAvgLvlTree;
-  begin
-    if Tree=nil then exit;
-    TmpTree:=Tree;
-    Tree:=nil;
-    TmpTree.FreeAndClear;
-    TmpTree.Free;
-  end;
-
-begin
-  FreeTree(FUnits);
-  FreeTree(FUnitLists);
-  FUnitsValid:=false;
-end;
-
-function TCodeBrowserUnitList.FindUnit(const Filename: string
-  ): TCodeBrowserUnit;
-var
-  Node: TAvgLvlTreeNode;
-begin
-  Result:=nil;
-  if Filename='' then exit;
-  if FUnits=nil then exit;
-  Node:=FUnits.FindKey(@Filename,@ComparePAnsiStringWithUnitFilename);
-  if Node=nil then exit;
-  Result:=TCodeBrowserUnit(Node.Data);
-end;
-
-function TCodeBrowserUnitList.FindUnitList(const OwnerName: string
-  ): TCodeBrowserUnitList;
-var
-  Node: TAvgLvlTreeNode;
-begin
-  Result:=nil;
-  if FUnitLists=nil then exit;
-  if OwnerName='' then exit;
-  Node:=FUnitLists.FindKey(@OwnerName,@ComparePAnsiStringWithUnitListOwner);
-  if Node=nil then exit;
-  Result:=TCodeBrowserUnitList(Node.Data);
-end;
-
-procedure TCodeBrowserUnitList.DeleteUnit(AnUnit: TCodeBrowserUnit);
-begin
-  if AnUnit=nil then exit;
-  if FUnits=nil then exit;
-  FUnits.Remove(AnUnit);
-  AnUnit.Free;
-end;
-
-function TCodeBrowserUnitList.AddUnit(const Filename: string
-  ): TCodeBrowserUnit;
-begin
-  Result:=TCodeBrowserUnit.Create(Filename);
-  InternalAddUnit(Result);
 end;
 
 { TCodeBrowserViewOptions }

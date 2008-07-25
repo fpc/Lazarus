@@ -74,6 +74,7 @@ components/codetools/codebeautifier.pas svneol=native#text/plain
 components/codetools/codecache.pas svneol=native#text/pascal
 components/codetools/codecompletiontool.pas svneol=native#text/pascal
 components/codetools/codegraph.pas svneol=native#text/plain
+components/codetools/codeindex.pas svneol=native#text/plain
 components/codetools/codetemplatestool.pas svneol=native#text/pascal
 components/codetools/codetoolmanager.pas svneol=native#text/pascal
 components/codetools/codetoolmemmanager.pas svneol=native#text/pascal
