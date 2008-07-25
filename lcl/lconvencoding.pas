@@ -27,7 +27,7 @@ interface
 
 uses
   SysUtils, Classes, dos, LCLProc
-  {$IFDEF UNIX},unix{$ENDIF};
+  {$IFDEF UNIX},{$IFDEF VER2_3}iconvenc{$ELSE}unix{$ENDIF}{$ENDIF};
   
 {$inline on}
 
@@ -4538,8 +4538,12 @@ var
   AFrom, ATo, SysEnc : String;
   Encoded : Boolean;
   {$ifdef Unix}
+  {$ifdef VER2_3}
+  Dummy: String;
+  {$else}
   SL: TStringList;
   FN1, FN2: String;
+  {$endif}
   {$endif}
 begin
   AFrom:=NormalizeEncoding(FromEncoding);
@@ -4723,11 +4727,22 @@ begin
     
   end;
 
-  //Stupid code. Works anyway, but extra-slow
   Result:=s;
   {$ifdef Unix}
-  DebugLn(['CPConvert NOTE: using slow iconv workaround to convert from ',AFrom,' to ',ATo]);
   try
+    {$ifdef VER2_3}
+    if not IconvLibFound and not InitIconv(Dummy) then
+    begin
+      DebugLn(['Can not init iconv: ',Dummy]);
+      Exit;
+    end;
+    if Iconvert(s, Result, AFrom, ATo)<>0 then
+    begin
+      Result:=s;
+      Exit;
+    end;
+    {$else}
+    DebugLn(['CPConvert NOTE: using slow iconv workaround to convert from ',AFrom,' to ',ATo]);
     SL:=TStringList.Create;
     SL.Text:=s;
     FN1:=GetTempFileName;
@@ -4739,6 +4754,7 @@ begin
       Result:=SL.Text;
     DeleteFile(FN1);
     DeleteFile(FN2);
+    {$endif}
   except
   end;
   {$endif}
