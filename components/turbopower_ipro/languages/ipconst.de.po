@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-06-19 16:18+0100\n"
+"PO-Revision-Date: 2008-07-25 21:26+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "X-Poedit-Language: German\n"
@@ -155,7 +155,7 @@ msgstr "Ungültiges BinHex-Zeichen"
 #: ipconst.sbinhexbaddatacrc
 msgctxt "ipconst.sbinhexbaddatacrc"
 msgid "Bad header CRC"
-msgstr ""
+msgstr "Defekte Header-CRC"
 
 #: ipconst.sbinhexbadformat
 msgid "Invalid BinHex format"
@@ -237,7 +237,7 @@ msgstr "Byte übertragen"
 #: ipconst.sftpclose
 msgctxt "ipconst.sftpclose"
 msgid "Disconnected"
-msgstr ""
+msgstr "Verbindung beendet"
 
 #: ipconst.sftpcomplete
 msgid "Transfer complete. "
@@ -416,6 +416,12 @@ msgid ""
 "             Tos = %d\n"
 "             IpFlags = %d\n"
 msgstr ""
+"Echo-Antwort (Hop-Nummer: %d)\n"
+"             Status = %d\n"
+"             RTTime = %d\n"
+"             Ttl = %d\n"
+"             Tos = %d\n"
+"             IpFlags = %d\n"
 
 #: ipconst.sicmpechostring
 msgid "Echo string: %s"
@@ -980,7 +986,7 @@ msgstr "LAST"
 #: ipconst.snntpcmdlist
 msgctxt "ipconst.snntpcmdlist"
 msgid "LIST"
-msgstr ""
+msgstr "LIST"
 
 #: ipconst.snntpcmdlistacttimes
 msgid "LIST ACTIVE.TIMES"
@@ -1033,12 +1039,12 @@ msgstr "POST"
 #: ipconst.snntpcmdquit
 msgctxt "ipconst.snntpcmdquit"
 msgid "QUIT"
-msgstr ""
+msgstr "QUIT"
 
 #: ipconst.snntpcmdstat
 msgctxt "ipconst.snntpcmdstat"
 msgid "STAT"
-msgstr ""
+msgstr "STAT"
 
 #: ipconst.snntpcmdxover
 msgid "XOVER"
@@ -1103,7 +1109,7 @@ msgstr "Lese Body"
 #: ipconst.snsconnect
 msgctxt "ipconst.snsconnect"
 msgid "Connecting"
-msgstr ""
+msgstr "Verbinde"
 
 #: ipconst.snsdate
 msgid "Retrieving server date"
@@ -1172,7 +1178,7 @@ msgstr "Wähle nächsten Artikel"
 #: ipconst.snsnoop
 msgctxt "ipconst.snsnoop"
 msgid "No operation"
-msgstr ""
+msgstr "Keine Ausführung"
 
 #: ipconst.snsover
 msgid "Retrieving overview"
@@ -1194,12 +1200,12 @@ msgstr "Bereite Versand des Artikels vor"
 #: ipconst.snsquit
 msgctxt "ipconst.snsquit"
 msgid "Disconnecting"
-msgstr ""
+msgstr "Beende Verbindung"
 
 #: ipconst.snsspecial
 msgctxt "ipconst.snsspecial"
 msgid "Sending special command"
-msgstr ""
+msgstr "Sende Sonderkommando"
 
 #: ipconst.snsstat
 msgid "Retrieving status"
@@ -1216,7 +1222,7 @@ msgstr "Lese neue News"
 #: ipconst.sntnotask
 msgctxt "ipconst.sntnotask"
 msgid "No task"
-msgstr ""
+msgstr "Kein Task"
 
 #: ipconst.sntpostto
 msgctxt "ipconst.sntpostto"
@@ -1482,7 +1488,7 @@ msgstr "Lese Postfächerliste"
 #: ipconst.spsnoop
 msgctxt "ipconst.spsnoop"
 msgid "No operation"
-msgstr ""
+msgstr "Keine Ausführung"
 
 #: ipconst.spspass
 msgid "Logging on with Password"
@@ -1538,7 +1544,7 @@ msgstr "Lese Postfächerliste"
 #: ipconst.sptlogon
 msgctxt "ipconst.sptlogon"
 msgid "Logging on"
-msgstr ""
+msgstr "Logge ein"
 
 #: ipconst.sptnone
 msgctxt "ipconst.sptnone"
