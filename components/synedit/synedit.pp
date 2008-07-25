@@ -57,6 +57,7 @@ unit SynEdit;
 interface
 
 { $DEFINE VerboseKeys}
+{ $DEFINE VerboseSynEditInvalidate}
 
 uses
 {$IFDEF SYN_LAZARUS}
@@ -2149,8 +2150,12 @@ begin
                       ClientHeight{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF});
       if sfLinesChanging in fStateFlags then
         UnionRect(fInvalidateRect, fInvalidateRect, rcInval)
-      else
+      else begin
+        {$IFDEF VerboseSynEditInvalidate}
+        DebugLn(['TCustomSynEdit.InvalidateGutterLines ALL ',dbgs(rcInval)]);
+        {$ENDIF}
         InvalidateRect(Handle, @rcInval, FALSE);
+      end;
     end else begin
       { find the visible lines first }
       if (LastLine < FirstLine) then SwapInt(LastLine, FirstLine);
@@ -2172,8 +2177,12 @@ begin
                         {$ELSE}(LastLine - TopLine + 1){$ENDIF});
         if sfLinesChanging in fStateFlags then
           UnionRect(fInvalidateRect, fInvalidateRect, rcInval)
-        else
+        else begin
+          {$IFDEF VerboseSynEditInvalidate}
+          DebugLn(['TCustomSynEdit.InvalidateGutterLines PART ',dbgs(rcInval)]);
+          {$ENDIF}
           InvalidateRect(Handle, @rcInval, FALSE);
+        end;
       end;
     end;
 end;
@@ -2194,8 +2203,12 @@ begin
       rcInval.Left := fGutterWidth;
       if sfLinesChanging in fStateFlags then
         UnionRect(fInvalidateRect, fInvalidateRect, rcInval)
-      else
+      else begin
+        {$IFDEF VerboseSynEditInvalidate}
+        DebugLn(['TCustomSynEdit.InvalidateLines ALL ',dbgs(rcInval)]);
+        {$ENDIF}
         InvalidateRect(Handle, @rcInval, FALSE);
+      end;
     end else begin
       { find the visible lines first }
       if (LastLine < FirstLine) then SwapInt(LastLine, FirstLine);
@@ -2222,8 +2235,12 @@ begin
         {$ENDIF}
         if sfLinesChanging in fStateFlags then
           UnionRect(fInvalidateRect, fInvalidateRect, rcInval)
-        else
+        else begin
+          {$IFDEF VerboseSynEditInvalidate}
+          DebugLn(['TCustomSynEdit.InvalidateLines PART ',dbgs(rcInval)]);
+          {$ENDIF}
           InvalidateRect(Handle, @rcInval, FALSE);
+        end;
       end;
     end;
 end;
@@ -2364,6 +2381,9 @@ begin
     UpdateScrollBars;
     SetBlockBegin({$IFDEF SYN_LAZARUS}PhysicalToLogicalPos(CaretXY)
                   {$ELSE}CaretXY{$ENDIF});
+    {$IFDEF VerboseSynEditInvalidate}
+    DebugLn(['TCustomSynEdit.LinesChanged ',dbgs(fInvalidateRect)]);
+    {$ENDIF}
     InvalidateRect(Handle, @fInvalidateRect, False);
     FillChar(fInvalidateRect, SizeOf(TRect), 0);
     if fGutter.ShowLineNumbers and fGutter.AutoSize then
@@ -2797,12 +2817,12 @@ begin
   // Get the invalidated rect. Compute the invalid area in lines / columns.
   {$IFDEF SYN_LAZARUS}
     {$IFDEF EnableDoubleBuf}
-  //rcClip:=Rect(0,0,ClientWidth,ClientHeight);
-  rcClip := Canvas.ClipRect;
-  StartPaintBuffer(rcClip);
+    //rcClip:=Rect(0,0,ClientWidth,ClientHeight);
+    rcClip := Canvas.ClipRect;
+    StartPaintBuffer(rcClip);
     {$ELSE}
-  rcClip := Canvas.ClipRect;
-  //DebugLn(['TCustomSynEdit.Paint rcClip=',dbgs(rcClip)]);
+    rcClip := Canvas.ClipRect;
+    //DebugLn(['TCustomSynEdit.Paint rcClip=',dbgs(rcClip)]);
     {$ENDIF}
   Include(fStateFlags,sfPainting);
   {$ELSE}
@@ -3290,8 +3310,6 @@ var
   dc: HDC;
 
   ExpandedPaintToken: string; // used to create the string sent to TextDrawer
-
-  LinkFGCol: TColor;
 
 { local procedures }
 
@@ -3849,7 +3867,6 @@ var
     if fLastCtrlMouseLinkX1=fLastCtrlMouseLinkX2 then
       exit;
     fLastCtrlMouseLinkY:=fLastMouseCaret.Y;
-    LinkFGCol:=clBlue;
     with fMarkupCtrlMouse do begin
       CtrlMouseLine := fLastCtrlMouseLinkY;
       CtrlMouseX1 := fLastCtrlMouseLinkX1;
@@ -3865,7 +3882,7 @@ var
 begin
   CurLine:=-1;
   FillChar(TokenAccu,SizeOf(TokenAccu),0);
-  //DebugLn('TCustomSynEdit.PaintTextLines ',DbgSName(Self),' TopLine=',dbgs(TopLine));
+  //DebugLn('TCustomSynEdit.PaintTextLines ',DbgSName(Self),' TopLine=',dbgs(TopLine),' AClip=',dbgs(AClip));
   colEditorBG := Color;
   if Assigned(Highlighter) and Assigned(Highlighter.WhitespaceAttribute) then
   begin
@@ -5618,9 +5635,10 @@ begin
         //' ClientW=',ClientWidth
         //);
       end else begin
-
-        // ToDo: tell interface to remove horizontal scrollbar
-
+        {$IFDEF SYN_LAZARUS}
+        // tell interface to remove horizontal scrollbar
+        ShowScrollBar(Handle, SB_HORZ, FALSE);
+        {$ENDIF}
       end;
       if fScrollBars in [ssBoth, ssVertical] then begin
         nMaxScroll := Lines.Count{$IFDEF SYN_LAZARUS}+1{$ENDIF};
@@ -5645,6 +5663,11 @@ begin
         ShowScrollBar(Handle, SB_VERT, True);
         {$ENDIF}
         SetScrollInfo(Handle, SB_VERT, ScrollInfo, True);
+      end else begin
+        {$IFDEF SYN_LAZARUS}
+        // tell interface to remove vertical scrollbar
+        ShowScrollBar(Handle, SB_Vert, FALSE);
+        {$ENDIF}
       end;
     end;
   end;
@@ -7215,6 +7238,9 @@ begin
       nX := fTextOffset + fRightEdge * fCharWidth;
       rcInval := Rect(nX - 1, 0, nX + 1
          , ClientHeight{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF});
+      {$IFDEF VerboseSynEditInvalidate}
+      DebugLn(['TCustomSynEdit.SetRightEdgeColor ',dbgs(rcInval)]);
+      {$ENDIF}
       InvalidateRect(Handle, @rcInval, FALSE);
     end;
   end;
@@ -10297,8 +10323,12 @@ begin
     rcInval.Bottom := rcInval.Top + fTextHeight;
     if sfLinesChanging in fStateFlags then
       UnionRect(fInvalidateRect, fInvalidateRect, rcInval)
-    else
+    else begin
+      {$IFDEF VerboseSynEditInvalidate}
+      DebugLn(['TCustomSynEdit.InvalidateLines ',dbgs(rcInval)]);
+      {$ENDIF}
       InvalidateRect(Handle, @rcInval, FALSE);
+    end;
   end;
 end;
 

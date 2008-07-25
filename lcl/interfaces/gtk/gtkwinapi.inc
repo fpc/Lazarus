@@ -110,15 +110,21 @@ end;
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.BeginPaint(Handle: hWnd; var PS : TPaintStruct) : hdc;
 var
-{$IFDEF Gtk1}
   Widget: PGtkWidget;
+  Info: PWidgetInfo;
+{$IFDEF Gtk1}
+  IsDoubleBuffered: Boolean;
   TargetObject: TObject;
   PaintWidget: Pointer;
+{$ELSE}
+  DC: TGtkDeviceContext;
 {$ENDIF}
-  IsDoubleBuffered: Boolean;
 begin
-  {$IFDEF Gtk1}
   Widget:=PGtkWidget(Handle);
+  Info:=GetWidgetInfo(Widget,false);
+  if Info<>nil then
+    Inc(Info^.PaintDepth);
+  {$IFDEF Gtk1}
   TargetObject:=GetNearestLCLObject(Widget);
   IsDoubleBuffered:=(TargetObject is TWinControl)
                     and TWinControl(TargetObject).DoubleBuffered;
@@ -136,13 +142,16 @@ begin
   {$IFNDEF UseGTKDoubleBuf}
   IsDoubleBuffered:=false;
   {$ENDIF}
-  {$ELSE  below: not GTK1}
-  IsDoubleBuffered:=false;
-  {$ENDIF}
   if IsDoubleBuffered then
     PS.hDC:=GetDoubleBufferedDC(Handle)
   else
     PS.hDC:=GetDC(Handle);
+  {$ELSE  below: not GTK1}
+  PS.hDC:=GetDC(Handle);
+  DC:=TGtkDeviceContext(PS.hDC);
+  DC.PaintRectangle:=PS.rcPaint;
+  {$ENDIF}
+
   Result := PS.hDC;
 end;
 
@@ -3331,12 +3340,13 @@ end;
 
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.EndPaint(Handle: hwnd; var PS: TPaintStruct): Integer;
-{$IFDEF Gtk1}
 var
   Widget: PGtkWidget;
+  Info: PWidgetInfo;
+{$IFDEF Gtk1}
+  DevCtx: TGtkDeviceContext;
   DCDrawable: PGdkDrawable;
   Width, Height: integer;
-  DevCtx: TGtkDeviceContext;
   CaretWasVisible: Boolean;
   MainWidget: PGtkWidget;
 {$ENDIF}
@@ -3344,11 +3354,15 @@ begin
   Result:=1;
   if PS.HDC = 0 then Exit;
 
-  {$IFDEF Gtk1}
   Widget := PGtkWidget(Handle);
+  Info:=GetWidgetInfo(Widget,false);
+  if Info<>nil then
+    dec(Info^.PaintDepth);
+
+  {$IFDEF Gtk1}
   DevCtx := TGtkDeviceContext(PS.HDC);
   if Widget <> DevCtx.Widget then
-    RaiseGDBException('Gpt paint event for other than our window');
+    RaiseGDBException('Gtk paint event for other than our window');
     
   DCDrawable := DevCtx.Drawable;
 
@@ -4762,14 +4776,16 @@ begin
   DCOrigin := DevCtx.Offset;
   if DevCtx.ClipRegion = nil
   then begin
-    {$IFDEF DebugGDKTraps}
-    BeginGDKErrorTrap;
-    {$ENDIF}
-    gdk_window_get_size(DevCtx.Drawable, @X, @Y);
-    {$IFDEF DebugGDKTraps}
-    EndGDKErrorTrap;
-    {$ENDIF}
-    lpRect^ := Rect(-DCOrigin.X, -DCOrigin.Y, X-DCOrigin.X, Y-DCOrigin.Y);
+    if (DevCtx.PaintRectangle.Left<>0)
+    or (DevCtx.PaintRectangle.Top<>0)
+    or (DevCtx.PaintRectangle.Right<>0)
+    or (DevCtx.PaintRectangle.Bottom<>0) then begin
+      lpRect^:=DevCtx.PaintRectangle;
+    end else begin
+      gdk_window_get_size(DevCtx.Drawable, @X, @Y);
+      lpRect^ := Rect(0,0,X,Y);
+    end;
+    OffsetRect(lpRect^,-DCOrigin.X, -DCOrigin.Y);
     Result := SIMPLEREGION;
   end
   else begin
@@ -6738,7 +6754,11 @@ begin
 
   gtk_widget_queue_draw_area(PaintWidget,
                              gdkRect.X,gdkRect.Y,gdkRect.Width,gdkRect.Height);
-
+  {$IfDef GTK2}
+  //DebugLn(['TGtkWidgetSet.InvalidateRect ',GetWidgetDebugReport(Widget),' IsAPI=',GtkWidgetIsA(PGTKWidget(Widget),GTKAPIWidget_GetType)]);
+  if GtkWidgetIsA(PGTKWidget(Widget),GTKAPIWidget_GetType) then
+    GTKAPIWidget_InvalidateCaret(PGTKAPIWidget(Widget));
+  {$EndIf}
 end;
 
 {------------------------------------------------------------------------------

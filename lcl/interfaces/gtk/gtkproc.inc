@@ -697,28 +697,6 @@ begin
   Result := Info^.ChangeLock;
 end;
 
-{------------------------------------------------------------------------------
-  procedure HideCaretOfWidgetGroup(ChildWidget: PGtkWidget;
-    var MainWidget: PGtkWidget; var CaretWasVisible: boolean);
-
-  Find main widget and if it is a API widget, hide caret.
- ------------------------------------------------------------------------------}
-procedure HideCaretOfWidgetGroup(ChildWidget: PGtkWidget;
-  var MainWidget: PGtkWidget; var CaretWasVisible: boolean);
-var
-  LCLObject: TObject;
-  IsAPIWidget: Boolean;
-begin
-  MainWidget:=ChildWidget;
-  LCLObject:=GetNearestLCLObject(ChildWidget);
-  if (LCLObject is TWinControl) then
-    MainWidget:=PGtkWidget(TWinControl(LCLObject).Handle);
-  IsAPIWidget:=GtkWidgetIsA(MainWidget,GTKAPIWidget_GetType);
-  CaretWasVisible:=false;
-  if IsAPIWidget then
-    GTKAPIWidget_HideCaret(PGTKAPIWidget(MainWidget),CaretWasVisible);
-end;
-
 procedure SetFormShowInTaskbar(AForm: TCustomForm;
   const AValue: TShowInTaskbar);
 var
@@ -4660,7 +4638,7 @@ var
 begin
   Result:=nil;
   if Widget=nil then exit;
-  if GtkWidgetIsA(Widget,GTKAPIWidget_GetType) then begin
+  if GtkWidgetIsA(Widget,GTKAPIWidget_Type) then begin
     WidgetInfo:=GetWidgetInfo(Widget,false);
     if WidgetInfo<>nil then
       Result:=WidgetInfo^.CoreWidget;
@@ -8945,7 +8923,7 @@ begin
       // don't set background for custom controls, which paint themselves
       // (this prevents flickering)
       if (csOpaque in AWinControl.ControlStyle)
-      and GtkWidgetIsA(MainWidget,GTKAPIWidget_GetType) then exit;
+      and GtkWidgetIsA(MainWidget,GTKAPIWidget_Type) then exit;
 
       {for i:=0 to 4 do begin
         RCStyle^.bg[i]:=NewColor;

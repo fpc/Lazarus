@@ -54,7 +54,7 @@ uses
   {$ENDIF}
   Math, // Math after gtk to get the correct Float type
   LMessages, LCLProc, LCLStrConsts, LCLIntf, LCLType, DynHashArray, Maps, Masks,
-  GraphType, GraphMath, Graphics, GTKWinApiWindow, LResources, Controls, Forms,
+  GraphType, GraphMath, Graphics, LResources, Controls, Forms,
   Buttons, Menus, StdCtrls, ComCtrls, ExtCtrls, Dialogs, ExtDlgs,
   FileUtil, ImgList, GtkFontCache, GTKGlobals, gtkDef, GtkExtra, GtkDebug;
 
@@ -89,6 +89,9 @@ type
   end;
     
 {$endif}
+
+var
+  GTKAPIWidget_Type: guint = 0;
 
 // GTKCallback.inc headers
 procedure EventTrace(const TheMessage: string; data: pointer);
@@ -339,10 +342,6 @@ function CreateFixedClientWidget(WithWindow: Boolean = true): PGTKWidget;
 procedure FixedMoveControl(Parent, Child: PGTKWidget; Left, Top: Longint);
 procedure FixedPutControl(Parent, Child: PGTKWidget; Left, Top: Longint);
 
-// caret
-procedure HideCaretOfWidgetGroup(ChildWidget: PGtkWidget;
-  var MainWidget: PGtkWidget; var CaretWasVisible: boolean);
-  
 // forms
 procedure SetFormShowInTaskbar(AForm: TCustomForm;
                                const AValue: TShowInTaskbar);

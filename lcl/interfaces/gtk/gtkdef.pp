@@ -257,7 +257,6 @@ type
   TGtkDeviceContextClass = class of TGtkDeviceContext;
   TGtkDeviceContext = class
   private
-
     FClipRegion: PGdiObject;
     FCurrentBitmap: PGdiObject;
     FCurrentBrush: PGdiObject;
@@ -283,7 +282,6 @@ type
 
     FFlags: TDeviceContextsFlags;
     FSelectedColors: TDevContextSelectedColorsType;
-
 
     FOwnedGDIObjects: array[TGDIType] of PGdiObject;
 
@@ -365,7 +363,8 @@ type
     CurrentTextColor: TGDIColor;
     CurrentBackColor: TGDIColor;
     DCTextMetric: TDevContextTextMetric; // only valid if dcfTextMetricsValid set
-    
+    PaintRectangle: TRect;// set during paint, BeginPaint/EndPaint
+
     // control
     property SelectedColors: TDevContextSelectedColorsType read FSelectedColors write SetSelectedColors;
     SavedContext: TGtkDeviceContext; // linked list of saved DCs
@@ -409,7 +408,7 @@ type
   
   TWidgetInfoFlag = (
     wwiNotOnParentsClientArea,
-    wwiValidQueuedEvent               // Mark this widgetinfo as valid queued proc
+    wwiValidQueuedEvent              // Mark this widgetinfo as valid queued proc
                                       // see gtkwsmenus.pp: gtkWSPopupMenuDeactivate
     );
   TWidgetInfoFlags = set of TWidgetInfoFlag;
@@ -436,6 +435,7 @@ type
     DefaultCursor: HCursor;           // default widget cursor
     Flags: TWidgetInfoFlags;
     ChangeLock: Integer;              // lock events
+    PaintDepth: integer;              // increased/decreased by Begin/EndPaint
     DataOwner: Boolean;               // Set if the UserData should be freed when the info is freed
     UserData: Pointer;
   end;
