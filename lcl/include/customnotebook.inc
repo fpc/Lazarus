@@ -41,7 +41,7 @@ var
 begin
   if (AnAction=lnAdded) then begin
     APage:=TObject(Ptr) as TCustomPage;
-    if not (pfAdding in APage.FFlags) then
+    if not (pfInserting in APage.FFlags) then
       APage.Parent:=fNotebook;
   end;
 end;
@@ -252,7 +252,7 @@ begin
   fAddingPages:=true;
   for i := 0 to FPageList.Count -1 do begin
     {$IFDEF NOTEBOOK_DEBUG}
-    DebugLn(['TCustomNotebook.DoCreateWnd ',dbgsName(Self),' Page.Caption=',Page[i].Caption,' pfHandleAdded=',pfHandleAdded in Page[i].Flags]);
+    DebugLn(['TCustomNotebook.DoCreateWnd ',dbgsName(Self),' Page.Caption=',Page[i].Caption,' pfAdded=',pfAdded in Page[i].Flags]);
     {$ENDIF}
     lPage := Page[i];
     AddRemovePageHandle(lPage);
@@ -459,9 +459,9 @@ begin
       NewZPosition:=GetControlIndex(TCustomPage(fPageList[Index]))
     else
       NewZPosition:=-1;
-    Include(APage.FFlags,pfAdding);
+    Include(APage.FFlags,pfInserting);
     FPageList.Insert(Index,APage);
-    Exclude(APage.FFlags,pfAdding);
+    Exclude(APage.FFlags,pfInserting);
     APage.Parent := Self;
     if NewZPosition>=0 then
       SetControlIndex(APage,NewZPosition);
@@ -539,13 +539,13 @@ var
   RealIndex: Integer;
   i: Integer;
 begin
-  //DebugLn(['TCustomNotebook.WSMovePage APage=',DbgSName(APage),' NewIndex=',NewIndex,' pfHandleAdded=',pfHandleAdded in APage.FFlags]);
-  if HandleAllocated and (pfHandleAdded in APage.FFlags) then begin
+  //DebugLn(['TCustomNotebook.WSMovePage APage=',DbgSName(APage),' NewIndex=',NewIndex,' pfAdded=',pfAdded in APage.FFlags]);
+  if HandleAllocated and (pfAdded in APage.FFlags) then begin
     RealIndex:=0;
     i:=0;
     repeat
       if (i=NewIndex) or (i=PageCount) then break;
-      if pfHandleAdded in Page[i].FFlags then inc(RealIndex);
+      if pfAdded in Page[i].FFlags then inc(RealIndex);
       inc(i);
     until false;
     //DebugLn(['TCustomNotebook.WSMovePage APage=',DbgSName(APage),' NewIndex=',NewIndex,' RealIndex=',RealIndex]);
@@ -558,24 +558,24 @@ begin
   if (not (csDestroying in APage.ComponentState))
   and (APage.TabVisible or (csDesigning in ComponentState)) then begin
     {$IFDEF NOTEBOOK_DEBUG}
-    DebugLn(['TCustomNoteBook.AddRemovePageHandle ADD ',DbgSName(APage),' pfHandleAdded=',pfHandleAdded in APage.FFlags]);
+    DebugLn(['TCustomNoteBook.AddRemovePageHandle ADD ',DbgSName(APage),' pfAdded=',pfAdded in APage.FFlags]);
     {$ENDIF}
-    if (pfHandleAdded in APage.FFlags) then exit;
-    Include(APage.FFlags,pfHandleAdding);
+    if (pfAdded in APage.FFlags) then exit;
+    Include(APage.FFlags,pfAdding);
     TWSCustomNotebookClass(WidgetSetClass).AddPage(Self, APage, APage.VisibleIndex);
-    APage.FFlags:=APage.FFlags+[pfHandleAdded]-[pfHandleAdding];
+    APage.FFlags:=APage.FFlags+[pfAdded]-[pfAdding];
     APage.ResizeDelayedAutoSizeChildren
   end else begin
     {$IFDEF NOTEBOOK_DEBUG}
-    DebugLn(['TCustomNoteBook.AddRemovePageHandle REMOVE ',DbgSName(APage),' pfHandleAdded=',pfHandleAdded in APage.FFlags]);
+    DebugLn(['TCustomNoteBook.AddRemovePageHandle REMOVE ',DbgSName(APage),' pfAdded=',pfAdded in APage.FFlags]);
     {$ENDIF}
-    if not (pfHandleAdded in APage.FFlags) or (pfHandleRemoving in APage.FFlags) then
+    if not (pfAdded in APage.FFlags) or (pfRemoving in APage.FFlags) then
       exit;
-    APage.FFlags := APage.FFlags - [pfHandleAdded] + [pfHandleRemoving];
+    APage.FFlags := APage.FFlags - [pfAdded] + [pfRemoving];
     TWSCustomNotebookClass(WidgetSetClass).RemovePage(Self, APage.VisibleIndex);
     if APage.HandleAllocated then
       APage.DestroyHandle;
-    Exclude(APage.FFlags, pfHandleRemoving);
+    Exclude(APage.FFlags, pfRemoving);
   end;
 end;
 

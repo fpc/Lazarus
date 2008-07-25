@@ -305,10 +305,10 @@ var
   PageIndex: integer;
   PageControlHandle: HWND;
 begin
-  // remove tab from pagecontrol only if not pfHandleRemoving is set
+  // remove tab from pagecontrol only if not pfRemoving is set
   // if pfRemoving is set then Tab has been deleted by RemovePage
   if (AWinControl.Parent <> nil) and (AWinControl.Parent.HandleAllocated) and
-     not (pfHandleRemoving in TCustomPageAccess(AWinControl).Flags) then
+     not (pfRemoving in TCustomPageAccess(AWinControl).Flags) then
   begin
     PageControlHandle := AWinControl.Parent.Handle;
     PageIndex := TCustomPage(AWinControl).PageIndex;
