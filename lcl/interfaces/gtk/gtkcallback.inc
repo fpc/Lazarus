@@ -37,7 +37,7 @@ begin
 
   if (TObject(Target) is TCustomControl) and
   {$ifdef gtk1}
-     GtkWidgetIsA(PGtkWidget(TCustomControl(Target).Handle), GTKAPIWidget_GetType) and
+     GtkWidgetIsA(PGtkWidget(TCustomControl(Target).Handle), GTKAPIWidget_Type) and
   {$endif}
      not (csOpaque in TWinControl(Target).ControlStyle) then
   begin
