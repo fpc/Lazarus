@@ -125,6 +125,7 @@ type
   public
     function DeliverMessage(var Msg): LRESULT; virtual;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
+    procedure SlotActivateWindow(vActivate: Boolean); cdecl;
     procedure SlotShow(vShow: Boolean); cdecl;
     function SlotClose: Boolean; cdecl; virtual;
     procedure SlotDestroy; cdecl;
@@ -1539,6 +1540,8 @@ begin
   if LCLObject <> nil then
   begin
     case QEvent_type(Event) of
+      QEventWindowActivate: SlotActivateWindow(True);
+      QEventWindowDeactivate: SlotActivateWindow(False);
       QEventShow: SlotShow(True);
       QEventHide: SlotShow(False);
       QEventClose:
@@ -1601,6 +1604,44 @@ begin
   else
     QEvent_ignore(Event);
   EndEventProcessing;
+end;
+
+procedure TQtWidget.SlotActivateWindow(vActivate: Boolean); cdecl;
+var
+  Msg: TLMActivate;
+  ParentForm: TCustomForm;
+  FIsActivated: Boolean;
+begin
+  {$ifdef VerboseQt}
+  WriteLn('TQtWidget.SlotActivateWindow Name', LCLObject.Name, ' vActivate: ', dbgs(vActivate));
+  {$endif}
+
+  FillChar(Msg, SizeOf(Msg), #0);
+  
+  if LCLObject is TCustomForm then
+  begin
+    FIsActivated := TCustomForm(LCLObject).Active;
+    if vActivate = FIsActivated then
+      exit;
+  end;
+
+  Msg.Active := vActivate;
+  
+  if not (LCLObject is TCustomForm) then
+  begin
+    ParentForm := GetParentForm(LCLObject);
+    if Assigned(ParentForm) then
+      TQtWidget(ParentForm.Handle).SlotActivateWindow(vActivate);
+    exit;
+  end else
+    Msg.ActiveWindow := LCLObject.Handle;
+  
+  if vActivate then
+    Msg.Msg := LM_ACTIVATE
+  else
+    Msg.Msg := LM_DEACTIVATE;
+
+  DeliverMessage(Msg);
 end;
 
 {------------------------------------------------------------------------------
