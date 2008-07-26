@@ -2340,6 +2340,7 @@ begin
     // since only the interface (or custom interface dependent controls) should
     // call us, the handle is always created
     DebugLN('WARNING: obsolete call to RecreateWnd for %s', [AWinControl.ClassName]);
+    DumpStack;
   end;
 
   IsFocused := AWinControl.Focused;
