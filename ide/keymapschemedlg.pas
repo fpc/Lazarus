@@ -35,6 +35,9 @@ uses
   ExtCtrls, Buttons, LazarusIDEStrConsts;
 
 type
+
+  { TChooseKeySchemeDlg }
+
   TChooseKeySchemeDlg = class(TForm)
     OkButton: TBUTTON;
     CancelButton: TBUTTON;

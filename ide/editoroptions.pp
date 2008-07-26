@@ -38,7 +38,7 @@ uses
   Classes, SysUtils,
   // LCL
   Buttons, ComCtrls, Controls, Dialogs, ExtCtrls, Forms, Graphics,
-  GraphType, LCLIntf, LCLProc, LCLType, LResources, StdCtrls,
+  GraphType, LCLIntf, LCLProc, LCLType, LResources, StdCtrls, Spin,
   // synedit
   SynEdit, SynEditAutoComplete, SynEditHighlighter, SynEditKeyCmds,
   SynEditStrConst,
@@ -52,7 +52,7 @@ uses
   IDECommands, IDEWindowIntf, SrcEditorIntf,
   // IDE
   LazarusIDEStrConsts, IDEOptionDefs, IDEProcs, InputHistory, KeyMapping,
-  KeymapSchemeDlg, LazConf, Spin;
+  KeymapSchemeDlg, LazConf;
 
 type
 
