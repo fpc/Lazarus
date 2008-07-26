@@ -525,6 +525,7 @@ begin
       ReadNextAtom;
       CurNode.EndPos:=CurPos.StartPos;
       EndChildNode;
+      //DebugLn(['TPascalParserTool.BuildTree ',MainFilename,' ',Scanner.NestedComments]);
       if not UpAtomIs('INTERFACE') then
         RaiseStringExpectedButAtomFound('"interface"');
       CreateChildNode;

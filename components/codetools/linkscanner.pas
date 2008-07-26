@@ -651,7 +651,8 @@ begin
   FMainSourceFilename:='';
   BuildDirectiveFuncList;
   FIncludeStack:=TFPList.Create;
-  FNestedComments:=false;
+  FPascalCompiler:=pcFPC;
+  FNestedComments:=true;
 end;
 
 procedure TLinkScanner.DecCommentLevel;
@@ -1118,11 +1119,11 @@ begin
 
   // nested comments
   FNestedComments:=false;
-  if (PascalCompiler=pcFPC) and (CompilerMode in [cmFPC,cmOBJFPC])
-  and ((FInitValues.IsDefined(NestedCompilerDefine))
-    or (CompareFileExt(MainFilename,'pp',false)=0))
+  if ((PascalCompiler=pcFPC) and (CompilerMode in [cmFPC,cmOBJFPC]))
+  or FInitValues.IsDefined(NestedCompilerDefine)
   then
     FNestedComments:=true;
+  //DebugLn(['TLinkScanner.Scan ',MainFilename,' ',PascalCompilerNames[PascalCompiler],' ',CompilerModeNames[CompilerMode],' ',FInitValues.IsDefined(NestedCompilerDefine),' FNestedComments=',FNestedComments]);
     
   //DebugLn(Values.AsString);
   //DebugLn('TLinkScanner.Scan E --------');
@@ -2122,7 +2123,6 @@ begin
   // undefine all mode macros
   for AMode:=Low(TCompilerMode) to High(TCompilerMode) do
     Values.Undefine(CompilerModeVars[AMode]);
-  CompilerMode:=cmFPC;
   // define new mode macro
   if CompareUpToken('DEFAULT',Src,ValStart,SrcPos) then begin
     // set mode to initial mode
@@ -2916,6 +2916,7 @@ begin
   FCompilerMode:=AValue;
   FNestedComments:=(PascalCompiler=pcFPC)
                    and (FCompilerMode in [cmFPC,cmOBJFPC]);
+  //DebugLn(['TLinkScanner.SetCompilerMode ',MainFilename,' ',PascalCompilerNames[PascalCompiler],' Mode=',CompilerModeNames[CompilerMode],' FNestedComments=',FNestedComments]);
 end;
 
 function TLinkScanner.SkipIfDirective: boolean;

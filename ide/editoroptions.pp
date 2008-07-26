@@ -2083,7 +2083,7 @@ begin
   // initialize with defaults
   if SynColorScheme = '' then
     SynColorScheme := ReadColorScheme(Syn.LanguageName);
-  DebugLn(['TEditorOptions.ReadHighlighterSettings ',SynColorScheme,' Syn.ClassName=',Syn.ClassName]);
+  //DebugLn(['TEditorOptions.ReadHighlighterSettings ',SynColorScheme,' Syn.ClassName=',Syn.ClassName]);
   if (SynColorScheme = '') or (Syn.LanguageName = '') then
     exit;
   ReadDefaultsForHighlighterSettings(Syn, SynColorScheme, Nil);

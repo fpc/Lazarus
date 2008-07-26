@@ -1337,6 +1337,8 @@ end;
 constructor TSynCustomHighlighterRange.Create(
   Template: TSynCustomHighlighterRange);
 begin
+  if (Template<>nil) and (ClassType<>Template.ClassType) then
+    RaiseGDBException('');
   FBlockClass:=TSynCustomCodeFoldBlock;
   if Template<>nil then
     Assign(Template);
@@ -1480,11 +1482,13 @@ function TSynCustomHighlighterRanges.GetEqual(Range: TSynCustomHighlighterRange
 var
   Node: TAvgLvlTreeNode;
 begin
+  if Range=nil then exit(nil);
   Node:=FItems.Find(Range);
   if Node<>nil then begin
     Result:=TSynCustomHighlighterRange(Node.Data);
   end else begin
-    Result:=TSynCustomHighlighterRange.Create(Range);
+    // add a copy
+    Result:=TSynCustomHighlighterRangeClass(Range.ClassType).Create(Range);
     FItems.Add(Result);
   end;
   //debugln('TSynCustomHighlighterRanges.GetEqual A ',dbgs(Node),' ',dbgs(Result.Compare(Range)),' ',dbgs(Result.CodeFoldStackSize));

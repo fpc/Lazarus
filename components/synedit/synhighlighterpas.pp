@@ -85,6 +85,25 @@ type
     cfbtBeginEnd,
     cfbtNestedComment
     );
+  TPascalCompilerMode = (
+    pcmObjFPC,
+    pcmDelphi,
+    pcmFPC,
+    pcmTP,
+    pcmGPC,
+    pcmMacPas
+    );
+    
+  { TSynPasSynRange }
+
+  TSynPasSynRange = class(TSynCustomHighlighterRange)
+  private
+    FMode: TPascalCompilerMode;
+  public
+    function Compare(Range: TSynCustomHighlighterRange): integer; override;
+    procedure Assign(Src: TSynCustomHighlighterRange); override;
+    property Mode: TPascalCompilerMode read FMode write FMode;
+  end;
   {$ENDIF}
 
   TProcTableProc = procedure of object;
@@ -97,6 +116,7 @@ type
   TSynPasSyn = class(TSynCustomHighlighter)
   private
     fAsmStart: Boolean;
+    FNestedComments: boolean;
     fRange: TRangeState;
     {$IFDEF SYN_LAZARUS}
     fLineStr: string;
@@ -127,10 +147,11 @@ type
     fSpaceAttri: TSynHighlighterAttributes;
     {$IFDEF SYN_LAZARUS}
     fDirectiveAttri: TSynHighlighterAttributes;
-    FNestedComments: boolean;
+    FCompilerMode: TPascalCompilerMode;
     {$ENDIF}
     fD4syntax: boolean;
     {$IFDEF SYN_LAZARUS}
+    procedure SetCompilerMode(const AValue: TPascalCompilerMode);
     function TextComp(aText: PChar): Boolean;
     function KeyHash: Integer;
     {$ELSE}
@@ -258,6 +279,7 @@ type
     {$IFDEF SYN_LAZARUS}
     function StartPascalCodeFoldBlock(ABlockType: TPascalCodeFoldBlockType;
                             SubBlock: boolean = false): TSynCustomCodeFoldBlock;
+    function GetRangeClass: TSynCustomHighlighterRangeClass; override;
     {$ENDIF}
   public
     {$IFNDEF SYN_CPPB_1} class {$ENDIF}
@@ -308,7 +330,8 @@ type
     {$IFDEF SYN_LAZARUS}
     property DirectiveAttri: TSynHighlighterAttributes read fDirectiveAttri
       write fDirectiveAttri;
-    property NestedComments: boolean read FNestedComments write FNestedComments;
+    property NestedComments: boolean read FNestedComments;
+    property CompilerMode: TPascalCompilerMode read FCompilerMode write SetCompilerMode;
     {$ENDIF}
     property D4syntax: boolean read FD4syntax write SetD4syntax default true;
   end;
@@ -318,6 +341,7 @@ type
   TSynFreePascalSyn = class(TSynPasSyn)
   public
     constructor Create(AOwner: TComponent); override;
+    procedure ResetRange; override;
   end;
 
 
@@ -604,13 +628,23 @@ var
   CurPos: PChar;
 begin
   CurPos:=@fLine[Run];
-  while (aText<>#0) do begin
+  while (aText^<>#0) do begin
     if mHashTable[aText^]<>mHashTable[CurPos^] then exit(false);
     inc(aText);
     inc(CurPos);
   end;
   Result:=true;
 end;
+
+procedure TSynPasSyn.SetCompilerMode(const AValue: TPascalCompilerMode);
+begin
+  if FCompilerMode=AValue then exit;
+  FCompilerMode:=AValue;
+  FNestedComments:=FCompilerMode in [pcmFPC,pcmObjFPC];
+  TSynPasSynRange(CodeFoldRange).Mode:=FCompilerMode;
+  //DebugLn(['TSynPasSyn.SetCompilerMode FCompilerMode=',ord(FCompilerMode),' FNestedComments=',FNestedComments]);
+end;
+
 {$ENDIF}
 
 function TSynPasSyn.Func15: TtkTokenKind;
@@ -1266,6 +1300,7 @@ begin
   fDirectiveAttri := TSynHighlighterAttributes.Create(SYNS_AttrDirective);
   fDirectiveAttri.Style:= [fsItalic];
   AddAttribute(fDirectiveAttri);
+  CompilerMode:=pcmDelphi;
   {$ENDIF}
   SetAttributesOnChange({$IFDEF FPC}@{$ENDIF}DefHighlightChange);
 
@@ -1278,7 +1313,7 @@ end; { Create }
 
 procedure TSynPasSyn.SetLine(const NewValue: string; LineNumber:Integer);
 begin
-  //DebugLn(['TSynPasSyn.SetLine LineNumber=',LineNumber,' Line="',NewValue,'"']);
+  //DebugLn(['TSynPasSyn.SetLine START LineNumber=',LineNumber,' Line="',NewValue,'"']);
   {$IFDEF SYN_LAZARUS}
   fLineStr := NewValue;
   fLineLen:=length(fLineStr);
@@ -1361,6 +1396,24 @@ end;
 procedure TSynPasSyn.DirectiveProc;
 begin
   fTokenID := tkDirective;
+  if TextComp('mode') then begin
+    // $mode directive
+    inc(Run,4);
+    // skip space
+    while (fLine[Run] in [' ',#9,#10,#13]) do inc(Run);
+    if TextComp('objfpc') then
+      CompilerMode:=pcmObjFPC
+    else if TextComp('delphi') then
+      CompilerMode:=pcmDelphi
+    else if TextComp('fpc') then
+      CompilerMode:=pcmFPC
+    else if TextComp('gpc') then
+      CompilerMode:=pcmGPC
+    else if TextComp('tp') then
+      CompilerMode:=pcmTP
+    else if TextComp('macpas') then
+      CompilerMode:=pcmMacPas;
+  end;
   repeat
     case fLine[Run] of
     #0,#10,#13: break;
@@ -1376,9 +1429,8 @@ begin
         break;
       end;
     '{':
-      if NestedComments then begin
+      if NestedComments then
         StartPascalCodeFoldBlock(cfbtNestedComment);
-      end;
     end;
     Inc(Run);
   until (Run>=fLineLen);
@@ -1789,7 +1841,9 @@ end;
 procedure TSynPasSyn.SetRange(Value: Pointer);
 begin
   {$IFDEF SYN_LAZARUS}
+  //DebugLn(['TSynPasSyn.SetRange START']);
   inherited SetRange(Value);
+  CompilerMode := TSynPasSynRange(CodeFoldRange).Mode;
   fRange := TRangeState(PtrUInt(CodeFoldRange.RangeType));
   {$ELSE}
   fRange := TRangeState(PtrUInt(Value));
@@ -1801,6 +1855,7 @@ begin
   fRange:= rsUnknown;
   {$IFDEF SYN_LAZARUS}
   Inherited ResetRange;
+  CompilerMode:=pcmDelphi;
   {$ENDIF}
 end;
 
@@ -1841,6 +1896,12 @@ begin
   Result:=TSynCustomCodeFoldBlock(
             inherited StartCodeFoldBlock(Pointer(PtrInt(ABlockType)),SubBlock));
 end;
+
+function TSynPasSyn.GetRangeClass: TSynCustomHighlighterRangeClass;
+begin
+  Result:=TSynPasSynRange;
+end;
+
 {$endif}
 
 function TSynPasSyn.UseUserSettings(settingIndex: integer): boolean;
@@ -2003,8 +2064,31 @@ end;
 constructor TSynFreePascalSyn.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  NestedComments:=true;
+  CompilerMode:=pcmObjFPC;
 end;
+
+procedure TSynFreePascalSyn.ResetRange;
+begin
+  inherited ResetRange;
+  CompilerMode:=pcmObjFPC;
+end;
+
+{$IFDEF SYN_LAZARUS}
+{ TSynPasSynRange }
+
+function TSynPasSynRange.Compare(Range: TSynCustomHighlighterRange): integer;
+begin
+  Result:=inherited Compare(Range);
+  if Result<>0 then exit;
+  Result:=ord(FMode)-ord(TSynPasSynRange(Range).FMode);
+end;
+
+procedure TSynPasSynRange.Assign(Src: TSynCustomHighlighterRange);
+begin
+  inherited Assign(Src);
+  FMode:=TSynPasSynRange(Src).FMode;
+end;
+{$ENDIF}
 
 initialization
   MakeIdentTable;

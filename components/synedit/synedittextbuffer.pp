@@ -1097,8 +1097,10 @@ var
   StartPos: Integer;
   p: Integer;
   Len: Integer;
+  sl: TStringList;
 begin
   BeginUpdate;
+  sl:=TStringList.Create;
   try
     Clear;
     p:=1;
@@ -1108,7 +1110,7 @@ begin
       if not (Value[p] in [#10,#13]) then begin
         inc(p);
       end else begin
-        Add(copy(Value,StartPos,p-StartPos));
+        sl.Add(copy(Value,StartPos,p-StartPos));
         inc(p);
         if (p<=Len) and (Value[p] in [#10,#13]) and (Value[p-1]<>Value[p]) then
           inc(p);
@@ -1116,8 +1118,10 @@ begin
       end;
     end;
     if StartPos<=Len then
-      Add(copy(Value,StartPos,Len-StartPos+1));
+      sl.Add(copy(Value,StartPos,Len-StartPos+1));
+    AddStrings(sl);
   finally
+    sl.Free;
     EndUpdate;
   end;
 end;

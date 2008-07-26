@@ -4893,7 +4893,7 @@ begin
   DebugLn('TCustomSynEdit.SetFont--------------------------------------------');
   DebugLn('  TCustomSynEdit.SetFont A1',Value.Name);
   DC := GetDC(0);
-  Save := SelectObject(DC, Value.Handle);
+  Save := SelectObject(DC, Value.Reference.Handle);
   DebugLn('  TCustomSynEdit.SetFont A2',Value.Name);
   GetTextMetrics(DC, Metrics);
   SelectObject(DC, Save);
@@ -6049,10 +6049,12 @@ begin
   InvalidateLine(LastIndex);
 *)
 procedure TCustomSynEdit.ListAdded(Index: integer);
+// Index is 0 based
 begin
   //debugln('TCustomSynEdit.ListAdded ',dbgs(Index),' ',dbgs(Assigned(fHighlighter)));
   if Assigned(fHighlighter) then begin
     if (Index > 0) then begin
+      // the current line was added, start scanning from the prior line
       fHighlighter.SetRange(TSynEditStringList(Lines).Ranges[Index - 1]);
       ScanFrom(Index - 1);
     end else begin
@@ -6083,9 +6085,11 @@ begin
 end;
 
 procedure TCustomSynEdit.ListDeleted(Index: Integer);
+// Index is 0 based
 begin
   if Assigned(fHighlighter) and (Lines.Count >= 1) then
     if (Index > 0) then begin
+      // start scanning from prior line
 {begin}                                                                         //mh 2000-10-10
 //      fHighlighter.SetRange(Lines.Objects[Index - 1]);
       //DebugLn(['TCustomSynEdit.ListDeleted A Index=',Index]);
@@ -6105,9 +6109,11 @@ begin
 end;
 
 procedure TCustomSynEdit.ListInserted(Index: Integer);
+// Index is 0 based
 begin
   if Assigned(fHighlighter) and (Lines.Count >= 1) then
     if (Index > 0) then begin
+      // start scanning from prior line
 {begin}                                                                         //mh 2000-10-10
 //      fHighlighter.SetRange(Lines.Objects[Index - 1]);
       // the line and the range of the line
@@ -6128,6 +6134,7 @@ begin
 end;
 
 procedure TCustomSynEdit.ListPutted(Index: Integer);
+// Index is 0 based
 {$IFDEF SYN_LAZARUS}
 var
   EndIndex: Integer;
@@ -10677,7 +10684,7 @@ begin
   if Assigned(Highlighter) and (PosY >= 0) and (PosY < Lines.Count) then
   begin
     Line := Lines[PosY];
-    Highlighter.SetRange(TSynEditStringList(Lines).Ranges[PosY ]);
+    Highlighter.SetRange(TSynEditStringList(Lines).Ranges[PosY]);
     Highlighter.SetLine(Line, PosY);
     PosX := XY.X;
     if (PosX > 0) and (PosX <= Length(Line)) then
