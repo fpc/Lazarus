@@ -1030,16 +1030,16 @@ begin
           while (CurPos.EndPos<=SrcLen) and (IsNumberChar[Src[CurPos.EndPos]])
           do
             inc(CurPos.EndPos);
-          if (CurPos.EndPos<=SrcLen) and (UpperSrc[CurPos.EndPos]='E') then
-          begin
-            // read exponent
+        end;
+        if (CurPos.EndPos<=SrcLen) and (UpperSrc[CurPos.EndPos]='E') then
+        begin
+          // read exponent
+          inc(CurPos.EndPos);
+          if (CurPos.EndPos<=SrcLen) and (Src[CurPos.EndPos] in ['-','+'])
+          then inc(CurPos.EndPos);
+          while (CurPos.EndPos<=SrcLen) and (IsNumberChar[Src[CurPos.EndPos]])
+          do
             inc(CurPos.EndPos);
-            if (CurPos.EndPos<=SrcLen) and (Src[CurPos.EndPos] in ['-','+'])
-            then inc(CurPos.EndPos);
-            while (CurPos.EndPos<=SrcLen) and (IsNumberChar[Src[CurPos.EndPos]])
-            do
-              inc(CurPos.EndPos);
-          end;
         end;
       end;
     '%':

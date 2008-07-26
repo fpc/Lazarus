@@ -1698,13 +1698,13 @@ begin
           inc(Position);
           while (Position<=Len) and (Source[Position] in ['0'..'9']) do
             inc(Position);
-          if (Position<=Len) and (Source[Position] in ['e','E']) then begin
-            // read exponent
+        end;
+        if (Position<=Len) and (Source[Position] in ['e','E']) then begin
+          // read exponent
+          inc(Position);
+          if (Position<=Len) and (Source[Position]='-') then inc(Position);
+          while (Position<=Len) and (Source[Position] in ['0'..'9']) do
             inc(Position);
-            if (Position<=Len) and (Source[Position]='-') then inc(Position);
-            while (Position<=Len) and (Source[Position] in ['0'..'9']) do
-              inc(Position);
-          end;
         end;
       end;
      '''','#':  // string constant

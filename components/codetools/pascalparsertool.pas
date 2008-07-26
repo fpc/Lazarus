@@ -1277,10 +1277,12 @@ var
   copying: boolean;
   IsArrayType: Boolean;
   IsFileType: Boolean;
+  NeedIdentifier: boolean;
 begin
   copying:=[phpWithoutParamList,phpWithoutParamTypes]*Attr=[];
   Result:=false;
   if CurPos.Flag in AllCommonAtomWords then begin
+    NeedIdentifier:=true;
     IsArrayType:=UpAtomIs('ARRAY');
     if IsArrayType then begin
       if (phpCreateNodes in Attr) then begin
@@ -1315,36 +1317,39 @@ begin
         CurNode.Desc:=ctnFileType;
       end;
       if not Extract then ReadNextAtom else ExtractNextAtom(copying,Attr);
-      if not UpAtomIs('OF') then
-        if ExceptionOnError then
-          RaiseStringExpectedButAtomFound('"of"')
-        else exit;
-      if not Extract then ReadNextAtom else ExtractNextAtom(copying,Attr);
+      if UpAtomIs('OF') then begin
+        if not Extract then ReadNextAtom else ExtractNextAtom(copying,Attr);
+      end else begin
+        NeedIdentifier:=false;
+      end;
     end;
-    if not AtomIsIdentifier(ExceptionOnError) then exit;
-    if (phpCreateNodes in Attr) then begin
-      CreateChildNode;
-      CurNode.Desc:=ctnIdentifier;
-      CurNode.EndPos:=CurPos.EndPos;
-    end;
-    if not Extract then
-      ReadNextAtom
-    else
-      ExtractNextAtom(copying,Attr);
-    if CurPos.Flag=cafPoint then begin
-      //  first identifier was unitname -> read '.' + identifier
-      if not Extract then
-        ReadNextAtom
-      else
-        ExtractNextAtom(copying,Attr);
+    if NeedIdentifier then begin
       if not AtomIsIdentifier(ExceptionOnError) then exit;
+      if (phpCreateNodes in Attr) then begin
+        CreateChildNode;
+        CurNode.Desc:=ctnIdentifier;
+        CurNode.EndPos:=CurPos.EndPos;
+      end;
       if not Extract then
         ReadNextAtom
       else
         ExtractNextAtom(copying,Attr);
+      if CurPos.Flag=cafPoint then begin
+        //  first identifier was unitname -> read '.' + identifier
+        if not Extract then
+          ReadNextAtom
+        else
+          ExtractNextAtom(copying,Attr);
+        if not AtomIsIdentifier(ExceptionOnError) then exit;
+        if not Extract then
+          ReadNextAtom
+        else
+          ExtractNextAtom(copying,Attr);
+      end;
+      if (phpCreateNodes in Attr) then
+        EndChildNode;
     end;
     if (phpCreateNodes in Attr) then begin
-      EndChildNode;
       if IsFileType then
         EndChildNode;
       if IsArrayType then
