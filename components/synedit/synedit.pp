@@ -8184,7 +8184,7 @@ begin
             end;
             Lines.Insert(CaretY, '');
             if Command = ecLineBreak then begin
-              if SpaceCount2 > 0 then
+              if (SpaceCount2 > 0) and (not (eoScrollPastEol in Options)) then
                 Lines[CaretY] := StringOfChar(' ', SpaceCount2);
               CaretXY := Point(SpaceCount2 + 1, CaretY + 1);
             end;
