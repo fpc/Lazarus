@@ -1276,6 +1276,7 @@ function TPascalParserTool.ReadParamType(ExceptionOnError, Extract: boolean;
 var
   copying: boolean;
   IsArrayType: Boolean;
+  IsFileType: Boolean;
 begin
   copying:=[phpWithoutParamList,phpWithoutParamTypes]*Attr=[];
   Result:=false;
@@ -1307,6 +1308,19 @@ begin
         exit;
       end;
     end;
+    IsFileType:=UpAtomIs('FILE');
+    if IsFileType then begin
+      if (phpCreateNodes in Attr) then begin
+        CreateChildNode;
+        CurNode.Desc:=ctnFileType;
+      end;
+      if not Extract then ReadNextAtom else ExtractNextAtom(copying,Attr);
+      if not UpAtomIs('OF') then
+        if ExceptionOnError then
+          RaiseStringExpectedButAtomFound('"of"')
+        else exit;
+      if not Extract then ReadNextAtom else ExtractNextAtom(copying,Attr);
+    end;
     if not AtomIsIdentifier(ExceptionOnError) then exit;
     if (phpCreateNodes in Attr) then begin
       CreateChildNode;
@@ -1331,6 +1345,8 @@ begin
     end;
     if (phpCreateNodes in Attr) then begin
       EndChildNode;
+      if IsFileType then
+        EndChildNode;
       if IsArrayType then
         EndChildNode;
     end;
