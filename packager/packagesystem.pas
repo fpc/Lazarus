@@ -49,7 +49,7 @@ uses
   Classes, SysUtils, FileProcs, FileUtil, LCLProc, Forms, Controls, Dialogs,
   // codetools
   AVL_Tree, Laz_XMLCfg, DefineTemplates, CodeCache, BasicCodeTools,
-  CodeToolManager,
+  SourceChanger, CodeToolManager,
   // IDEIntf,
   SrcEditorIntf, IDEExternToolIntf, IDEDialogs, IDEMsgIntf, PackageIntf,
   LazIDEIntf,
@@ -3173,6 +3173,7 @@ var
   NeedsRegisterProcCall: boolean;
   CurSrcUnitName: String;
   NewShortenSrc: String;
+  BeautifyCodeOptions: TBeautifyCodeOptions;
 begin
   {$IFDEF VerbosePkgCompile}
   debugln('TLazPackageGraph.SavePackageMainSource A');
@@ -3263,28 +3264,28 @@ begin
   end;
 
   // create source
+  BeautifyCodeOptions:=CodeToolBoss.SourceChangeCache.BeautifyCodeOptions;
   HeaderSrc:=lisPkgMangThisSourceIsOnlyUsedToCompileAndInstallThePackage;
   HeaderSrc:= '{ '
            +lisPkgMangThisFileWasAutomaticallyCreatedByLazarusDoNotEdit+e
-           +lisPkgMangThisSourceIsOnlyUsedToCompileAndInstallThePackage+e
+           +'  '+lisPkgMangThisSourceIsOnlyUsedToCompileAndInstallThePackage+e
            +' }'+e+e;
-  Src:='unit '+APackage.Name+';'+e
+  Src:=HeaderSrc
+      +'unit '+APackage.Name+';'+e
       +e
       +'interface'+e
       +e;
+  Src:=BeautifyCodeOptions.BeautifyStatement(Src,0);
   if UsedUnits<>'' then
     Src:=Src
-      +'uses'+e
-      +'  '+UsedUnits+';'+e
+      +BreakString('uses'+e+UsedUnits+';',
+      BeautifyCodeOptions.LineLength,BeautifyCodeOptions.Indent)+e
       +e;
-  Src:=Src
-      +'implementation'+e
+  Src:=Src+BeautifyCodeOptions.BeautifyStatement(
+       'implementation'+e
       +e
       +RegistrationCode
-      +'end.'+e;
-  Src:=CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.
-                                                       BeautifyStatement(Src,0);
-  Src:=HeaderSrc+Src;
+      +'end.'+e,0);
 
   // check if old code is already uptodate
   Result:=LoadCodeBuffer(CodeBuffer,SrcFilename,[lbfQuiet,lbfCheckIfText,

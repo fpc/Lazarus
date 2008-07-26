@@ -447,7 +447,7 @@ begin
   NewUsesTerm:=NewUnitName;
   if NewUnitInFile<>'' then
     NewUsesTerm:=NewUsesTerm+' in '''+NewUnitInFile+'''';
-  //
+  // Note: do not use beautifier, unit names are case sensitive
   if ReplacementNeedsLineEnd(Src,UnitPos.StartPos,UnitPos.EndPos,
     length(NewUsesTerm),SourceChangeCache.BeautifyCodeOptions.LineLength) then
   begin
