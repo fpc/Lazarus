@@ -60,9 +60,9 @@ type
 
   TPreviewEditor = TSynEdit;
   TPreviewPasSyn = TSynFreePascalSyn;
-  TCustomSyn     = TSynCustomHighlighter;
+  TSrcIDEHighlighter     = TSynCustomHighlighter;
   TSynHighlightElement = TSynHighlighterAttributes;
-  TCustomSynClass = class of TCustomSyn;
+  TCustomSynClass = class of TSrcIDEHighlighter;
 
   TLazSyntaxHighlighter =
     (lshNone, lshText, lshFreePascal, lshDelphi, lshLFM, lshXML, lshHTML,
@@ -416,35 +416,31 @@ type
     procedure Save;
     function GetSynEditOptionName(SynOption: TSynEditorOption): string;
 
-    procedure GetHighlighterSettings(Syn: TCustomSyn);
-              // read highlight settings from config file
-    procedure SetHighlighterSettings(Syn: TCustomSyn);
-              // write highlight settings to config file
-    procedure GetSynEditSettings(ASynEdit: TSynEdit);
-              // read synedit settings from config file
-    procedure SetSynEditSettings(ASynEdit: TSynEdit);
-              // write synedit settings to file
+    procedure GetHighlighterSettings(Syn: TSrcIDEHighlighter); // read highlight settings from config file
+    procedure SetHighlighterSettings(Syn: TSrcIDEHighlighter); // write highlight settings to config file
+    procedure GetSynEditSettings(ASynEdit: TSynEdit); // read synedit settings from config file
+    procedure SetSynEditSettings(ASynEdit: TSynEdit); // write synedit settings to file
     procedure GetSynEditPreviewSettings(APreviewEditor: TObject);
-    procedure AddSpecialHilightAttribsToHighlighter(Syn: TCustomSyn);
+    procedure AddSpecialHilightAttribsToHighlighter(Syn: TSrcIDEHighlighter);
 
-    function CreateSyn(LazSynHilighter: TLazSyntaxHighlighter): TCustomSyn;
+    function CreateSyn(LazSynHilighter: TLazSyntaxHighlighter): TSrcIDEHighlighter;
     function ReadColorScheme(const LanguageName: String): String;
     function ReadPascalColorScheme: String;
     procedure WriteColorScheme(const LanguageName, SynColorScheme: String);
     procedure GetDefaultsForPascalAttribute(Attr: TSynHighlightElement;
                                             const SynColorScheme: String);
-    procedure ReadHighlighterSettings(Syn: TCustomSyn;
+    procedure ReadHighlighterSettings(Syn: TSrcIDEHighlighter;
                                       SynColorScheme: String);
-    procedure ReadDefaultsForHighlighterSettings(Syn: TCustomSyn;
+    procedure ReadDefaultsForHighlighterSettings(Syn: TSrcIDEHighlighter;
                                                  SynColorScheme: String;
                                                  DefaultPascalSyn: TPreviewPasSyn);
-    procedure WriteHighlighterSettings(Syn: TCustomSyn;
+    procedure WriteHighlighterSettings(Syn: TSrcIDEHighlighter;
                                        SynColorScheme: String);
-    function GetLineColors(Syn: TCustomSyn; AddHilightAttr: TAdditionalHilightAttribute; {TODO: MFR maybe remove?}
+    function GetLineColors(Syn: TSrcIDEHighlighter; AddHilightAttr: TAdditionalHilightAttribute; {TODO: MFR maybe remove?}
                            out FG, BG: TColor; out Styles, StylesMask: TFontStyles): Boolean;
-    procedure SetMarkupColor(Syn: TCustomSyn; AddHilightAttr: TAdditionalHilightAttribute;
+    procedure SetMarkupColor(Syn: TSrcIDEHighlighter; AddHilightAttr: TAdditionalHilightAttribute;
                               aMarkup: TSynSelectedColor); 
-    procedure SetMarkupColors(Syn: TCustomSyn; aSynEd: TSynEdit);
+    procedure SetMarkupColors(Syn: TSrcIDEHighlighter; aSynEd: TSynEdit);
   published
     // general options
     property SynEditOptions: TSynEditorOptions
@@ -685,14 +681,14 @@ type
     procedure TextStyleRadioOnChange(Sender : TObject);
   private
     FormCreating: Boolean;
-    PreviewSyn:   TCustomSyn;
+    PreviewSyn:   TSrcIDEHighlighter;
     PreviewEdits: array[1..2] of TPreviewEditor;
     CurLanguageID: Integer;
     // current index in EditorOpts.EditOptHighlighterList
     CurHighlightElement: TSynHighlightElement;
     CurHighlightElementIsExtra: Boolean;
     UpdatingColor: Boolean;
-    fHighlighterList: TStringList; // list of "ColorScheme" Data=TCustomSyn
+    fHighlighterList: TStringList; // list of "ColorScheme" Data=TSrcIDEHighlighter
     fColorSchemes: TStringList;    // list of LanguageName=ColorScheme
     fFileExtensions: TStringList;  // list of LanguageName=FileExtensions
     EditingKeyMap: TKeyCommandRelationList;
@@ -723,7 +719,7 @@ type
     procedure ShowCurAttribute;
     procedure FindCurHighlightElement;
     function GetHighlighter(SynClass: TCustomSynClass;
-      const ColorScheme: String; CreateIfNotExists: Boolean): TCustomSyn;
+      const ColorScheme: String; CreateIfNotExists: Boolean): TSrcIDEHighlighter;
     procedure ClearHighlighters;
     procedure SaveAllHighlighters;
     procedure FillColorElementListBox;
@@ -1870,7 +1866,7 @@ begin
 end;
 
 function TEditorOptions.CreateSyn(LazSynHilighter: TLazSyntaxHighlighter):
-TCustomSyn;
+TSrcIDEHighlighter;
 begin
   if LazSyntaxHighlighterClasses[LazSynHilighter] <> Nil then
   begin
@@ -1985,11 +1981,11 @@ begin
   Attr.StyleMask := Scheme.Default.StylesMask;
 end;
 
-procedure TEditorOptions.ReadDefaultsForHighlighterSettings(Syn: TCustomSyn;
+procedure TEditorOptions.ReadDefaultsForHighlighterSettings(Syn: TSrcIDEHighlighter;
   SynColorScheme: String; DefaultPascalSyn: TPreviewPasSyn);
 // if SynColorScheme='' then default ColorScheme will be used
 var
-  VirginSyn, DefaultSyn: TCustomSyn;
+  VirginSyn, DefaultSyn: TSrcIDEHighlighter;
   i, j: Integer;
   MappedAttriName, AttriName: String;
   HilightInfo: TEditOptLanguageInfo;
@@ -2001,7 +1997,7 @@ begin
   if SynColorScheme = '' then
     exit;
   CustomPascalSyn := (DefaultPascalSyn <> Nil);
-  if (Syn is TPreviewPasSyn) then
+  if (Syn is TPreviewPasSyn) or (Syn is TSynPasSyn) then
   begin
     for i := 0 to Syn.AttrCount - 1 do
       GetDefaultsForPascalAttribute(Syn.Attribute[i], SynColorScheme);
@@ -2072,7 +2068,7 @@ begin
   end;
 end;
 
-procedure TEditorOptions.ReadHighlighterSettings(Syn: TCustomSyn;
+procedure TEditorOptions.ReadHighlighterSettings(Syn: TSrcIDEHighlighter;
   SynColorScheme: String);
 // if SynColorScheme='' then default ColorScheme will be used
 var
@@ -2087,6 +2083,7 @@ begin
   // initialize with defaults
   if SynColorScheme = '' then
     SynColorScheme := ReadColorScheme(Syn.LanguageName);
+  DebugLn(['TEditorOptions.ReadHighlighterSettings ',SynColorScheme,' Syn.ClassName=',Syn.ClassName]);
   if (SynColorScheme = '') or (Syn.LanguageName = '') then
     exit;
   ReadDefaultsForHighlighterSettings(Syn, SynColorScheme, Nil);
@@ -2162,10 +2159,10 @@ begin
   ;
 end;
 
-procedure TEditorOptions.WriteHighlighterSettings(Syn: TCustomSyn;
+procedure TEditorOptions.WriteHighlighterSettings(Syn: TSrcIDEHighlighter;
   SynColorScheme: String);
 var
-  OldSyn: TCustomSyn;
+  OldSyn: TSrcIDEHighlighter;
   i:      Integer;
   AttriName: String;
   Attri, OldAttri: TSynHighlightElement;
@@ -2215,19 +2212,19 @@ begin
   end;
 end;
 
-procedure TEditorOptions.GetHighlighterSettings(Syn: TCustomSyn);
+procedure TEditorOptions.GetHighlighterSettings(Syn: TSrcIDEHighlighter);
 // read highlight settings from config file
 begin
   ReadHighlighterSettings(Syn, '');
 end;
 
-procedure TEditorOptions.SetHighlighterSettings(Syn: TCustomSyn);
+procedure TEditorOptions.SetHighlighterSettings(Syn: TSrcIDEHighlighter);
 // write highlight settings to config file
 begin
   WriteHighlighterSettings(Syn, '');
 end;
 
-function TEditorOptions.GetLineColors(Syn: TCustomSyn;
+function TEditorOptions.GetLineColors(Syn: TSrcIDEHighlighter;
   AddHilightAttr: TAdditionalHilightAttribute;
   out FG, BG: TColor; out Styles, StylesMask: TFontStyles): Boolean;
 var
@@ -2259,7 +2256,7 @@ begin
   Result := True;
 end;
 
-procedure TEditorOptions.SetMarkupColors(Syn : TCustomSyn; aSynEd : TSynEdit);
+procedure TEditorOptions.SetMarkupColors(Syn : TSrcIDEHighlighter; aSynEd : TSynEdit);
 begin
   SetMarkupColor(aSynEd.Highlighter, ahaTextBlock, aSynEd.SelectedColor);
   SetMarkupColor(aSynEd.Highlighter, ahaIncrementalSearch, aSynEd.IncrementColor);
@@ -2268,7 +2265,7 @@ begin
   SetMarkupColor(aSynEd.Highlighter, ahaMouseLink, aSynEd.MouseLinkColor);
 end;
 
-procedure TEditorOptions.SetMarkupColor(Syn : TCustomSyn; AddHilightAttr : TAdditionalHilightAttribute; aMarkup : TSynSelectedColor);
+procedure TEditorOptions.SetMarkupColor(Syn : TSrcIDEHighlighter; AddHilightAttr : TAdditionalHilightAttribute; aMarkup : TSynSelectedColor);
 var
   i: Integer;
   Attrib: TSynHighlighterAttributes;
@@ -2366,7 +2363,7 @@ begin
 end;
 
 procedure TEditorOptions.AddSpecialHilightAttribsToHighlighter(
-  Syn: TCustomSyn);
+  Syn: TSrcIDEHighlighter);
 type
   THasSpecialAttribute = array[TAdditionalHilightAttribute] of Boolean;
 var
@@ -3359,7 +3356,7 @@ end;
 
 procedure TEditorOptionsForm.SetColorElementsToDefaults(OnlySelected: Boolean);
 var
-  DefaultSyn: TCustomSyn;
+  DefaultSyn: TSrcIDEHighlighter;
   PascalSyn: TPreviewPasSyn;
   i, j: Integer;
   CurSynClass: TCustomSynClass;
@@ -3468,7 +3465,7 @@ begin
 end;
 
 function TEditorOptionsForm.GetHighlighter(SynClass: TCustomSynClass;
-  const ColorScheme: String; CreateIfNotExists: Boolean): TCustomSyn;
+  const ColorScheme: String; CreateIfNotExists: Boolean): TSrcIDEHighlighter;
 var
   i: Integer;
 begin
@@ -3476,10 +3473,10 @@ begin
     fHighlighterList := TStringList.Create;
   for i := 0 to fHighlighterList.Count - 1 do
     if (fHighlighterList[i] = ColorScheme) and
-      (TCustomSynClass(TCustomSyn(fHighlighterList.Objects[i]).ClassType) =
+      (TCustomSynClass(TSrcIDEHighlighter(fHighlighterList.Objects[i]).ClassType) =
       SynClass) then
     begin
-      Result := TCustomSyn(fHighlighterList.Objects[i]);
+      Result := TSrcIDEHighlighter(fHighlighterList.Objects[i]);
       exit;
     end;
   if CreateIfNotExists then
@@ -3498,20 +3495,20 @@ begin
   if fHighlighterList = Nil then
     exit;
   for i := 0 to fHighlighterList.Count - 1 do
-    TCustomSyn(fHighlighterList.Objects[i]).Free;
+    TSrcIDEHighlighter(fHighlighterList.Objects[i]).Free;
   fHighlighterList.Free;
 end;
 
 procedure TEditorOptionsForm.SaveAllHighlighters;
 var
   i: Integer;
-  Syn: TCustomSyn;
+  Syn: TSrcIDEHighlighter;
 begin
   if fHighlighterList = Nil then
     exit;
   for i := 0 to fHighlighterList.Count - 1 do
   begin
-    Syn := TCustomSyn(fHighlighterList.Objects[i]);
+    Syn := TSrcIDEHighlighter(fHighlighterList.Objects[i]);
     EditorOpts.WriteHighlighterSettings(Syn, fHighlighterList[i]);
   end;
 end;
