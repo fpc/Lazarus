@@ -814,6 +814,7 @@ begin
         SetPreviewSynInAllPreviews;
         FillColorElementListBox;
         FindCurHighlightElement;
+        InvalidatePreviews;
       end// change the colorscheme
       ;
     end
