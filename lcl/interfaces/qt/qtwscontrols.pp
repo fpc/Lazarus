@@ -192,6 +192,7 @@ begin
     if fsModal in TForm(AWinControl).FormState then
     begin
       {$ifdef linux}
+      QWidget_setParent(Widget.Widget, QApplication_activeWindow());
       QWidget_setWindowFlags(Widget.Widget, QtDialog);
       {$endif}
       Widget.setWindowModality(QtApplicationModal);
@@ -208,7 +209,7 @@ begin
         TForm(AWinControl).Height := TForm(AWinControl).Height + R.Top;
         TForm(AWinControl).Left := TForm(AWinControl).Left - R.Left;
         TForm(AWinControl).Top := TForm(AWinControl).Top - R.Top;
-
+        
         TForm(AWinControl).ReAlign;
       end;
     end;
