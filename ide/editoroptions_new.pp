@@ -211,8 +211,9 @@ type
     procedure TextStyleRadioOnChange(Sender : TObject);
   private
     FormCreating: Boolean;
-    PreviewSyn:   TCustomSyn;
-    PreviewEdits: array[1..2] of TPreviewEditor;
+    PreviewSyn:   TSrcIDEHighlighter;
+    // 3 is used to hold the true (non-preview) options, it is not displayed
+    PreviewEdits: array[1..3] of TPreviewEditor;
     CurLanguageID: Integer;
     // current index in EditorOpts.EditOptHighlighterList
     CurHighlightElement: TSynHighlightElement;
@@ -247,7 +248,7 @@ type
     procedure ShowCurAttribute;
     procedure FindCurHighlightElement;
     function GetHighlighter(SynClass: TCustomSynClass;
-      const ColorScheme: String; CreateIfNotExists: Boolean): TCustomSyn;
+      const ColorScheme: String; CreateIfNotExists: Boolean): TSrcIDEHighlighter;
     procedure ClearHighlighters;
     procedure SaveAllHighlighters;
     procedure FillColorElementListBox;
@@ -347,21 +348,25 @@ begin
 
   PreviewEdits[1] := DisplayPreview;
   PreviewEdits[2] := ColorPreview;
+  PreviewEdits[3] := TSynEdit.Create(self);
   for a := Low(PreviewEdits) to High(PreviewEdits) do
     if PreviewEdits[a] <> Nil then
       with PreviewEdits[a] do
       begin
         if EditorOpts.UseSyntaxHighlight then
           Highlighter := PreviewSyn;
-        EditorOpts.GetSynEditSettings(PreviewEdits[a]);
+        if a <> 3 then
+          EditorOpts.GetSynEditPreviewSettings(PreviewEdits[a])
+        else
+          EditorOpts.GetSynEditSettings(PreviewEdits[a]);
         EditingKeyMap.AssignTo(PreviewEdits[a].KeyStrokes,
           TSourceEditorWindowInterface);
         if a <> 3 then
         begin
           Lines.Text := EditorOpts.HighlighterList[CurLanguageID].SampleSource;
-          PreviewEdits[a].Options :=
-            PreviewEdits[a].Options - [eoScrollPastEol] + [eoNoCaret, eoNoSelection];
           PreviewEdits[a].CaretXY := EditorOpts.HighlighterList[CurLanguageID].CaretXY;
+          PreviewEdits[a].TopLine := 1;
+          PreviewEdits[a].LeftChar := 1;
         end;
       end;
 
@@ -422,12 +427,15 @@ var
       DebugLn(['TEditorOptionsFormNew.GeneralCheckBoxOnChange.SetOption i<0']);
       exit;
     end;
-    for a := Low(PreviewEdits) to High(PreviewEdits) do
+    for a := Low(PreviewEdits) to High(PreviewEdits) do begin
+      if (a <> 3) and (AnOption in SynEditPreviewExcludeOptions) then
+        continue;
       if PreviewEdits[a] <> Nil then
         if EditorOptionsGroupBox.Checked[i] then
           PreviewEdits[a].Options := PreviewEdits[a].Options + [AnOption]
         else
           PreviewEdits[a].Options := PreviewEdits[a].Options - [AnOption];
+    end;
   end;
 
   procedure SetOption2(const CheckBoxName: String; AnOption: TSynEditorOption2);
@@ -437,12 +445,15 @@ var
   begin
     i:=EditorOptionsGroupBox.Items.IndexOf(CheckBoxName);
     if i<0 then exit;
-    for a := Low(PreviewEdits) to High(PreviewEdits) do
+    for a := Low(PreviewEdits) to High(PreviewEdits) do begin
+      if (a <> 3) and (AnOption in SynEditPreviewExcludeOptions2) then
+        continue;
       if PreviewEdits[a] <> Nil then
         if EditorOptionsGroupBox.Checked[i] then
           PreviewEdits[a].Options2 := PreviewEdits[a].Options2 + [AnOption]
         else
           PreviewEdits[a].Options2 := PreviewEdits[a].Options2 - [AnOption];
+    end;
   end;
 
   // GeneralCheckBoxOnChange
@@ -452,7 +463,7 @@ begin
   // general
   SetOption(dlgAltSetClMode, eoAltSetsColumnMode);
   SetOption(dlgAutoIdent, eoAutoIndent);
-  // not for Preview: SetOption(dlgBracHighlight,eoBracketHighlight);
+  SetOption(dlgBracHighlight,eoBracketHighlight);
   SetOption(dlgDoubleClickLine, eoDoubleClickSelectsLine);
   SetOption(dlgDragDropEd, eoDragDropEditing);
   SetOption(dlgDropFiles, eoDropFiles);
@@ -466,7 +477,8 @@ begin
   SetOption(dlgScrollByOneLess, eoScrollByOneLess);
   SetOption(dlgScrollPastEndFile, eoScrollPastEoF);
   SetOption(dlgScrollPastEndLine, eoScrollPastEoL);
-  SetOption(dlgShowScrollHint, eoShowScrollHint);
+  SetOption(lisShowSpecialCharacters, eoShowSpecialChars);
+  //SetOption(dlgShowScrollHint, eoShowScrollHint);
   SetOption(dlgSmartTabs, eoSmartTabs);
   SetOption(dlgTabsToSpaces, eoTabsToSpaces);
   SetOption(dlgTabIndent, eoTabIndent);
@@ -576,16 +588,29 @@ begin
   end;
 end;
 
+type
+  // This is only needed until SynEdit does the ScrollWindowEx in Paint, instead of SetTopline
+  TSynEditAccess = class(TSynEdit);
 procedure TEditorOptionsFormNew.DisplayPreviewStatusChange(Sender : TObject; Changes : TSynStatusChanges);
 var
-  Syn: TSynEdit;
+  Syn: TSynEditAccess;
   p: TPoint;
+  tl, lc: Integer;
 begin
   p := EditorOpts.HighlighterList[CurLanguageID].CaretXY;
-  Syn := Sender as TSynEdit;
-  if (Syn.CaretX <> p.x)
-  or (Syn.Carety <> p.y)
-  then Syn.CaretXY:= p;
+  Syn := TSynEditAccess(Pointer(Sender as TSynEdit));
+  if p.y > Syn.Lines.Count then exit;
+  if (Syn.CaretX = p.x) and (Syn.Carety = p.y) then exit;
+  try
+    Syn.IncPaintLock;
+    tl := Syn.TopLine;
+    lc := Syn.LeftChar;
+    Syn.CaretXY:= p;
+    Syn.TopLine := tl;
+    Syn.LeftChar := lc;
+  finally
+    Syn.DecPaintLock;
+  end;
 end;
 
 procedure TEditorOptionsFormNew.chkCodeFoldingEnabledChange(Sender: TObject);
@@ -802,11 +827,12 @@ begin
     if Sender = ColorSchemeComboBox then
     begin
       if Box.Items.IndexOf(Box.Text) < 0 then
-        SetComboBoxText(Box, GetCurColorScheme(PreviewSyn.LanguageName))
         // unknown color scheme -> switch back
+        SetComboBoxText(Box, GetCurColorScheme(PreviewSyn.LanguageName))
       else
       if Box.Text <> GetCurColorScheme(PreviewSyn.LanguageName) then
       begin
+        // change the colorscheme
         SetCurColorScheme(PreviewSyn.LanguageName, Box.Text);
         SetComboBoxText(Box, Box.Text);
         PreviewSyn := GetHighlighter(TCustomSynClass(PreviewSyn.ClassType),
@@ -815,8 +841,7 @@ begin
         FillColorElementListBox;
         FindCurHighlightElement;
         InvalidatePreviews;
-      end// change the colorscheme
-      ;
+      end;
     end
     else
     if Sender = FileExtensionsComboBox then
@@ -856,6 +881,8 @@ begin
               PreviewEdits[a].Lines.Text :=
                 EditorOpts.HighlighterList[CurLanguageID].SampleSource;
               PreviewEdits[a].CaretXY := EditorOpts.HighlighterList[CurLanguageID].CaretXY;
+              PreviewEdits[a].TopLine := 1;
+              PreviewEdits[a].LeftChar := 1;
             end;
           SetPreviewSynInAllPreviews;
           FillColorElementListBox;
@@ -1156,6 +1183,8 @@ begin
   end;
   if NewIndex < 0 then
   begin
+    Token:='';
+    Attri:=nil;
     ColorPreview.GetHighlighterAttriAtRowCol(XY, Token, Attri);
     if Attri = Nil then
       Attri := PreviewSyn.WhitespaceAttribute;
@@ -1222,7 +1251,7 @@ end;
 
 procedure TEditorOptionsFormNew.SetColorElementsToDefaults(OnlySelected: Boolean);
 var
-  DefaultSyn: TCustomSyn;
+  DefaultSyn: TSrcIDEHighlighter;
   PascalSyn: TPreviewPasSyn;
   i, j: Integer;
   CurSynClass: TCustomSynClass;
@@ -1331,7 +1360,7 @@ begin
 end;
 
 function TEditorOptionsFormNew.GetHighlighter(SynClass: TCustomSynClass;
-  const ColorScheme: String; CreateIfNotExists: Boolean): TCustomSyn;
+  const ColorScheme: String; CreateIfNotExists: Boolean): TSrcIDEHighlighter;
 var
   i: Integer;
 begin
@@ -1339,10 +1368,10 @@ begin
     fHighlighterList := TStringList.Create;
   for i := 0 to fHighlighterList.Count - 1 do
     if (fHighlighterList[i] = ColorScheme) and
-      (TCustomSynClass(TCustomSyn(fHighlighterList.Objects[i]).ClassType) =
+      (TCustomSynClass(TSrcIDEHighlighter(fHighlighterList.Objects[i]).ClassType) =
       SynClass) then
     begin
-      Result := TCustomSyn(fHighlighterList.Objects[i]);
+      Result := TSrcIDEHighlighter(fHighlighterList.Objects[i]);
       exit;
     end;
   if CreateIfNotExists then
@@ -1361,20 +1390,20 @@ begin
   if fHighlighterList = Nil then
     exit;
   for i := 0 to fHighlighterList.Count - 1 do
-    TCustomSyn(fHighlighterList.Objects[i]).Free;
+    TSrcIDEHighlighter(fHighlighterList.Objects[i]).Free;
   fHighlighterList.Free;
 end;
 
 procedure TEditorOptionsFormNew.SaveAllHighlighters;
 var
   i: Integer;
-  Syn: TCustomSyn;
+  Syn: TSrcIDEHighlighter;
 begin
   if fHighlighterList = Nil then
     exit;
   for i := 0 to fHighlighterList.Count - 1 do
   begin
-    Syn := TCustomSyn(fHighlighterList.Objects[i]);
+    Syn := TSrcIDEHighlighter(fHighlighterList.Objects[i]);
     EditorOpts.WriteHighlighterSettings(Syn, fHighlighterList[i]);
   end;
 end;
@@ -1495,7 +1524,8 @@ begin
     // visual effects
     Items.Add(dlgBracHighlight);
     Items.Add(dlgShowGutterHints);
-    Items.Add(dlgShowScrollHint);
+    //Items.Add(dlgShowScrollHint);
+    Items.Add(lisShowSpecialCharacters);
     Items.Add(dlgUseSyntaxHighlight);
     // drag&drop
     Items.Add(dlgDragDropEd);
@@ -1554,8 +1584,10 @@ begin
     Checked[Items.IndexOf(dlgScrollPastEndLine)] :=
                                    eoScrollPastEoL in EditorOpts.SynEditOptions;
     Checked[Items.IndexOf(dlgCloseButtonsNotebook)] := EditorOpts.ShowTabCloseButtons;
-    Checked[Items.IndexOf(dlgShowScrollHint)] :=
-                                  eoShowScrollHint in EditorOpts.SynEditOptions;
+    //Checked[Items.IndexOf(dlgShowScrollHint)] :=
+    //                              eoShowScrollHint in EditorOpts.SynEditOptions;
+    Checked[Items.IndexOf(lisShowSpecialCharacters)] :=
+                                eoShowSpecialChars in EditorOpts.SynEditOptions;
     Checked[Items.IndexOf(dlgSmartTabs)] := eoSmartTabs in EditorOpts.SynEditOptions;
     //DebugLn(['TEditorOptionsFormNew.SetupGeneralPage ',Checked[Items.IndexOf(dlgSmartTabs)],' ',Items.IndexOf(dlgSmartTabs),' ',eoSmartTabs in EditorOpts.SynEditOptions]);
     Checked[Items.IndexOf(dlgTabsToSpaces)] :=
@@ -1810,17 +1842,7 @@ begin
 
   // save all values
   EditorOpts.KeyMap.Assign(EditingKeyMap);
-  SynOptions := PreviewEdits[1].Options - [eoNoSelection, eoNoCaret];
-  if CheckGroupItemChecked(EditorOptionsGroupBox,dlgBracHighlight)
-  then Include(SynOptions, eoBracketHighlight)
-  else Exclude(SynOptions, eoBracketHighlight);
-  if CheckGroupItemChecked(EditorOptionsGroupBox,dlgScrollPastEndLine)
-  then Include(SynOptions, eoScrollPastEol)
-  else Exclude(SynOptions, eoScrollPastEol);
-  PreviewEdits[1].Options := SynOptions;
-  EditorOpts.SetSynEditSettings(PreviewEdits[1]);
-  PreviewEdits[1].Options :=
-    SynOptions - [eoScrollPastEol] + [eoNoCaret, eoNoSelection];
+  EditorOpts.SetSynEditSettings(PreviewEdits[3]);
 
   // general
   EditorOpts.ShowTabCloseButtons :=

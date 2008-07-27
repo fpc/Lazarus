@@ -5450,7 +5450,8 @@ begin
     fTopLine := Value;
     UpdateScrollBars;
     Delta := OldTopLine - TopLine;
-    if (Abs(Delta) < fLinesInWindow) and not (sfPainting in fStateFlags) then
+    if (Abs(Delta) < fLinesInWindow) and not (sfPainting in fStateFlags)
+    and not (fPaintLock <> 0) then
     begin
       // TODO: SW_SMOOTHSCROLL --> can't get it work
       if not ScrollWindowEx(Handle, 0, fTextHeight * Delta, nil, nil, 0, nil,
