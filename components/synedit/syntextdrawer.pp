@@ -1169,7 +1169,10 @@ begin
   end else begin
     DistArray:=nil;
   end;
-  LCLIntf.ExtUTF8Out(FDC, X, Y, fuOptions, @ARect, Text, Length, DistArray);
+  if UseUTF8 then
+    LCLIntf.ExtUTF8Out(FDC, X, Y, fuOptions, @ARect, Text, Length, DistArray)
+  else
+    LCLIntf.ExtTextOut(FDC, X, Y, fuOptions, @ARect, Text, Length, DistArray)
   {$ELSE}
   if FETOSizeInChar < Length then
     InitETODist(GetCharWidth);

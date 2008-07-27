@@ -1,14 +1,18 @@
 object FInfoCompile: TFInfoCompile
   Left = 270
-  Height = 199
+  Height = 202
   Top = 251
-  Width = 397
+  Width = 430
   ActiveControl = BClose
   BorderIcons = []
   BorderStyle = bsDialog
   Caption = 'Compile project'
-  ClientHeight = 199
-  ClientWidth = 397
+  ChildSizing.LeftRightSpacing = 6
+  ChildSizing.TopBottomSpacing = 6
+  ChildSizing.HorizontalSpacing = 6
+  ChildSizing.VerticalSpacing = 6
+  ClientHeight = 202
+  ClientWidth = 430
   FormStyle = fsStayOnTop
   OnCreate = FormCreate
   Position = poScreenCenter
@@ -17,7 +21,8 @@ object FInfoCompile: TFInfoCompile
     Left = 6
     Height = 24
     Top = 6
-    Width = 386
+    Width = 418
+    Align = alTop
     BevelInner = bvLowered
     BevelOuter = bvLowered
     BorderStyle = bsSingle
@@ -26,10 +31,13 @@ object FInfoCompile: TFInfoCompile
     TabOrder = 0
   end
   object BClose: TBitBtn
-    Left = 138
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 154
     Height = 34
-    Top = 154
+    Top = 162
     Width = 107
+    Anchors = [akBottom]
     Caption = '&OK'
     Default = True
     Kind = bkOK
@@ -41,19 +49,20 @@ object FInfoCompile: TFInfoCompile
   object Panel1: TPanel
     Left = 6
     Height = 50
-    Top = 34
-    Width = 386
+    Top = 36
+    Width = 418
+    Align = alTop
     BevelInner = bvLowered
     BevelOuter = bvLowered
     BorderWidth = 1
     ClientHeight = 50
-    ClientWidth = 386
+    ClientWidth = 418
     TabOrder = 2
     object PCurrentStatus: TLabel
       Left = 3
       Height = 44
       Top = 3
-      Width = 380
+      Width = 412
       Align = alClient
       Alignment = taCenter
       AutoSize = False
@@ -63,15 +72,22 @@ object FInfoCompile: TFInfoCompile
     end
   end
   object Panel4: TPanel
-    Left = 176
+    AnchorSideLeft.Control = Panel2
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Panel1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 156
     Height = 48
-    Top = 94
-    Width = 210
+    Top = 92
+    Width = 268
+    Anchors = [akTop, akLeft, akRight]
     BevelInner = bvLowered
     BevelOuter = bvLowered
     BorderStyle = bsSingle
     ClientHeight = 48
-    ClientWidth = 210
+    ClientWidth = 268
     TabOrder = 3
     object LNHint: TLabel
       Left = 68
@@ -86,17 +102,17 @@ object FInfoCompile: TFInfoCompile
     end
     object LInfoHint: TLabel
       Left = 6
-      Height = 14
+      Height = 20
       Top = 5
-      Width = 29
+      Width = 38
       Caption = 'Hints:'
       ParentColor = False
     end
     object LInfoWarning: TLabel
       Left = 6
-      Height = 14
+      Height = 20
       Top = 26
-      Width = 50
+      Width = 62
       Caption = 'Warnings:'
       ParentColor = False
     end
@@ -113,9 +129,9 @@ object FInfoCompile: TFInfoCompile
     end
     object LInfoError: TLabel
       Left = 112
-      Height = 14
+      Height = 20
       Top = 26
-      Width = 34
+      Width = 43
       Caption = 'Errors:'
       ParentColor = False
     end
@@ -132,9 +148,9 @@ object FInfoCompile: TFInfoCompile
     end
     object LInfoNote: TLabel
       Left = 112
-      Height = 14
+      Height = 20
       Top = 5
-      Width = 33
+      Width = 43
       Caption = 'Notes:'
       ParentColor = False
     end
@@ -151,9 +167,12 @@ object FInfoCompile: TFInfoCompile
     end
   end
   object Panel2: TPanel
-    Left = 8
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Panel4
+    AnchorSideTop.Side = asrCenter
+    Left = 6
     Height = 28
-    Top = 104
+    Top = 102
     Width = 144
     BevelInner = bvLowered
     BevelOuter = bvLowered

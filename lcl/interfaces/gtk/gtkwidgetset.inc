@@ -3642,19 +3642,16 @@ begin
   // callbacks
   RemoveCallbacks(Widget);
 
+  {$ifdef Gtk1}
+  //Gtk2 uses a different combobox widget class
   // childs
   if GtkWidgetIsA(Widget,GTK_COMBO_GET_TYPE) then begin
     g_signal_handlers_destroy(PGtkObject(PGtkCombo(Widget)^.Entry));
     g_signal_handlers_destroy(PGtkObject(PGtkCombo(Widget)^.List));
     //is really necessary to clear the text here?
     gtk_entry_set_text(PGtkEntry(PGtkCombo(Widget)^.Entry), '');
-
-    // MWE:
-    // TODO: Check: Why is there widgetinfo on subwidgets ???
-    FreeWidgetInfo(PGtkCombo(Widget)^.List);
-    FreeWidgetInfo(PGtkCombo(Widget)^.Entry);
-    FreeWidgetInfo(PGtkCombo(Widget)^.Button);
   end;
+  {$endif}
 
   // update mouse capturing
   if (MouseCaptureWidget=Widget) or (MouseCaptureWidget=FixWidget) then

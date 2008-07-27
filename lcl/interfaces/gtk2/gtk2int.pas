@@ -599,6 +599,7 @@ procedure TGtkListStoreStringList.Insert(Index : integer; const S : string);
 var
   li : TGtkTreeIter;
   l, m, r, cmp: integer;
+  LCLIndex: PInteger;
   
   {procedure TestNewItem;
   var
@@ -654,6 +655,16 @@ begin
       gtk_list_store_insert(FGtkListStore, @li, Index);
     gtk_list_store_set(FGtkListStore, @li, [FColumnIndex, PChar(S), -1]);
     IncreaseChangeStamp;
+
+    //if the item is inserted before the selected item the
+    //internal index cache becomes out of sync
+    if (FOwner is TCustomComboBox) and FOwner.HandleAllocated then
+    begin
+      LCLIndex := PInteger(GetWidgetInfo(Pointer(FOwner.Handle))^.UserData);
+      if Index <= LCLIndex^ then
+        Inc(LCLIndex^);
+    end;
+
     // ToDo: connect callbacks
 
     if not (glsCountNeedsUpdate in FStates) then

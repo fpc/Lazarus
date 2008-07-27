@@ -806,7 +806,7 @@ end;
 
 {$IFDEF GTK1}
 
-function gtkComboBoxChanged(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+function gtkComboBoxChanged(Widget: PGtkWidget; Info: PWidgetInfo): GBoolean; cdecl;
 var
   Mess : TLMessage;
   GtkComboWidget: PGtkCombo;
@@ -816,21 +816,21 @@ var
 begin
   Result := CallBackDefaultReturn;
 
-  if ComponentIsDestroyingHandle(TWinControl(Data)) or
-    (LockOnChange(PGtkObject(Widget), 0) > 0) or
+  if ComponentIsDestroyingHandle(TWinControl(Info^.LCLObject)) or
+    (Info^.ChangeLock > 0) or
     (gtk_signal_n_emissions_by_name(PGtkObject(widget), 'changed') > 1)
      then exit;
 
   {$IFDEF EventTrace}
-  EventTrace('changed', data);
+  EventTrace('changed', Info^.LCLObject);
   {$ENDIF}
   FillChar(Mess, SizeOf(Mess), 0);
   Mess.Msg := LM_CHANGED;
-  DeliverMessage(Data, Mess);
+  DeliverMessage(Info^.LCLObject, Mess);
   
-  GtkComboWidget := PGtkCombo(TComboBox(Data).Handle);
+  GtkComboWidget := PGtkCombo(Info^.CoreWidget);
   GtkListWidget := PGtkList(GtkComboWidget^.list);
-  LCLIndex := PInteger(GetWidgetInfo(GtkComboWidget)^.UserData);
+  LCLIndex := PInteger(Info^.UserData);
 
   //Check if an item is selected
   if (GtkListWidget^.selection <> nil) then
@@ -843,7 +843,7 @@ begin
       gtk_list_set_selection_mode(GtkListWidget, GTK_SELECTION_BROWSE);
       LCLIndex^ := GtkIndex;
       Mess.Msg := LM_SELCHANGE;
-      DeliverMessage(Data, Mess);
+      DeliverMessage(Info^.LCLObject, Mess);
     end;
   end
   else
@@ -860,8 +860,8 @@ begin
   with TGtkWidgetset(Widgetset) do
   begin
     //gtk1 and gtk2 have different 'changed' event handlers
-    ConnectSignal(PGtkObject(PGtkCombo(AGtkWidget)^.entry),
-      'changed', @gtkComboBoxChanged, AWidgetInfo^.LCLObject);
+    g_signal_connect(PGtkObject(PGtkCombo(AGtkWidget)^.entry),
+      'changed', TGTKSignalFunc(@gtkComboBoxChanged), AWidgetInfo);
     SetCallback(LM_COMMAND, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
   end;
 end;
@@ -881,6 +881,7 @@ begin
   Widget := gtk_combo_new();
 
   SetMainWidget(Widget, ComboWidget^.entry);
+  SetMainWidget(Widget, ComboWidget^.button);
 
   gtk_combo_disable_activate(ComboWidget);
   gtk_combo_set_case_sensitive(ComboWidget, GdkTrue);
@@ -1078,6 +1079,7 @@ class procedure TGtkWSCustomComboBox.SetText(const AWinControl: TWinControl;
 var
   ComboControl: TCustomComboBox absolute AWinControl;
   ComboWidget: PGtkCombo;
+  WidgetInfo: PWidgetInfo;
   i: Integer;
 begin
   if ComboControl.ReadOnly then
@@ -1088,13 +1090,14 @@ begin
   else
   begin
     ComboWidget := PGtkCombo(AWinControl.Handle);
+    WidgetInfo := GetWidgetInfo(ComboWidget);
     // lock combobox, so that no OnChange event is not fired
-    LockOnChange(PGtkObject(ComboWidget^.entry), +1);
+    Inc(WidgetInfo^.ChangeLock);
     // set text
     // The String > PChar conversion ensures at least a null terminated string
     gtk_entry_set_text(PGtkEntry(ComboWidget^.entry), PChar(AText));
     // unlock combobox
-    LockOnChange(PGtkObject(ComboWidget^.entry), -1);
+    Dec(WidgetInfo^.ChangeLock);
   end;
 end;
 
