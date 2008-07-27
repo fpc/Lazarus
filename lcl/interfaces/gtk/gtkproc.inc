@@ -7255,7 +7255,7 @@ begin
     DebugLn(' WHITE ',GdkColorAsString(white));
     {$ENDIF}
     
-    {$IFDEF NewSysColors}
+    {$IFNDEF DisableGtkSysColors}
     SysColorMap[COLOR_SCROLLBAR] := TGDKColorToTColor(bg[GTK_STATE_ACTIVE]);
     SysColorMap[COLOR_BACKGROUND] := TGDKColorToTColor(bg[GTK_STATE_PRELIGHT]);
     SysColorMap[COLOR_ACTIVECAPTION] := TGDKColorToTColor(text[GTK_STATE_ACTIVE]);
