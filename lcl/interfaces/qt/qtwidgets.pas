@@ -4861,14 +4861,17 @@ begin
   case QEvent_type(Event) of
     QEventFocusIn:
     begin
-      if QFocusEvent_reason(QFocusEventH(Event)) in
-        [QtTabFocusReason,QtBacktabFocusReason,QtActiveWindowFocusReason,
-         QtShortcutFocusReason, QtOtherFocusReason] then
+      if not (csDesigning in LCLObject.ComponentState) then
       begin
-        // it would be better if we have AutoSelect published from TCustomEdit
-        // then TMaskEdit also belongs here.
-        if ((LCLObject is TEdit) and (TEdit(LCLObject).AutoSelect)) then
-          QLineEdit_selectAll(QLineEditH(Widget));
+        if QFocusEvent_reason(QFocusEventH(Event)) in
+          [QtTabFocusReason,QtBacktabFocusReason,QtActiveWindowFocusReason,
+           QtShortcutFocusReason, QtOtherFocusReason] then
+        begin
+          // it would be better if we have AutoSelect published from TCustomEdit
+          // then TMaskEdit also belongs here.
+          if ((LCLObject is TEdit) and (TEdit(LCLObject).AutoSelect)) then
+            QLineEdit_selectAll(QLineEditH(Widget));
+        end;
       end;
     end;
   end;
