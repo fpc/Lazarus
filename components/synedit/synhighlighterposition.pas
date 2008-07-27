@@ -21,7 +21,8 @@ unit SynHighlighterPosition;
 interface
 
 uses
-  Classes, SysUtils, SynEditStrConst, SynEditTypes, SynEditHighlighter;
+  Classes, SysUtils, Graphics, SynEditStrConst, SynEditTypes,
+  SynEditHighlighter;
 
 const
   tkNone   = 0;
@@ -44,6 +45,8 @@ type
     Tokens: array[0..MaxColumns] of TPositionToken;
   end;
   PPositionTokens = ^TPositionTokens;
+
+  { TSynPositionHighlighter }
 
   TSynPositionHighlighter = class(TSynCustomHighlighter)
   private
@@ -88,12 +91,20 @@ type
     procedure EnumUserSettings(settings: TStrings); override;
     property IdentChars;
   public
-    procedure AddToken(Line, Col: integer; TokenKind: TtkTokenKind);
-    procedure ClearTokens(Line: integer);
+    procedure AddToken(Line, // 0 based
+                       Col: integer; // 1 based
+                       TokenKind: TtkTokenKind);
+    procedure ClearTokens(Line: integer // 0 based
+                          );
     procedure ClearAllCopiedAttributes;
     procedure ClearAllTokens;
     procedure InsertTokens(Lines: TStringList;
-      Highlighter: TSynCustomHighlighter; Line, Col: integer);
+      Highlighter: TSynCustomHighlighter;
+      Line, //0 based
+      Col: integer // 1 based
+      );
+    function CreateTokenID(const aName: string; Foreground, BackGround: TColor;
+                           Style: TFontStyles): TtkTokenKind;
     function GetCopiedTokenID(Attr: TSynHighlighterAttributes): TtkTokenKind;
     function GetCopiedAttribute(TokenID: TtkTokenKind): TSynHighlighterAttributes;
     property Tokens[TheLineNumber: integer]: PPositionTokens read GetTokens;
@@ -380,6 +391,20 @@ begin
     inc(RelLine);
     Col:=1;
   end;
+end;
+
+function TSynPositionHighlighter.CreateTokenID(const aName: string;
+  Foreground, BackGround: TColor;
+  Style: TFontStyles): TtkTokenKind;
+var
+  Attr: TSynHighlighterAttributes;
+begin
+  Attr:=TSynHighlighterAttributes.Create(aName);
+  Attr.Foreground:=Foreground;
+  Attr.Background:=BackGround;
+  Attr.Style:=Style;
+  Result:=GetCopiedTokenID(Attr);
+  Attr.Free;
 end;
 
 function TSynPositionHighlighter.GetCopiedTokenID(
