@@ -120,6 +120,8 @@ procedure FillRawImageDescription(const ABitmapInfo: Windows.TBitmap; out ADesc:
 
 function GetBitmapOrder(AWinBmp: Windows.TBitmap; ABitmap: HBITMAP):TRawImageLineOrder;
 function GetBitmapBytes(AWinBmp: Windows.TBitmap; ABitmap: HBITMAP; const ARect: TRect; ALineEnd: TRawImageLineEnd; ALineOrder: TRawImageLineOrder; out AData: Pointer; out ADataSize: PtrUInt): Boolean;
+function IsAlphaBitmap(ABitmap: HBITMAP): Boolean;
+function IsAlphaDC(ADC: HDC): Boolean;
 
 procedure BlendRect(ADC: HDC; const ARect: TRect; Color: ColorRef);
 function GetLastErrorText(AErrorCode: Cardinal): String;
@@ -1543,6 +1545,21 @@ begin
     Result := Result and CopyImageData(biWidth, H, SrcLineBytes, biBitCount, SrcData, R, riloTopToBottom, ALineOrder, ALineEnd, AData, ADataSize);
 
   FreeMem(SrcData);
+end;
+
+function IsAlphaBitmap(ABitmap: HBITMAP): Boolean;
+var
+  Info: Windows.BITMAP;
+begin
+  FillChar(Info, SizeOf(Info), 0);
+  Result := (GetObject(ABitmap, SizeOf(Info), @Info) <> 0)
+        and (Info.bmBitsPixel = 32);
+end;
+
+function IsAlphaDC(ADC: HDC): Boolean;
+begin
+  Result := (GetObjectType(ADC) = OBJ_MEMDC)
+        and IsAlphaBitmap(GetCurrentObject(ADC, OBJ_BITMAP));
 end;
 
 procedure BlendRect(ADC: HDC; const ARect: TRect; Color: ColorRef);

@@ -100,7 +100,10 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean;
 begin
-  Result := Boolean(Windows.BitBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Rop));
+  // use stretchmaskblt for alpha images, since that one is customized for alpha
+  if IsAlphaDC(DestDC) or IsAlphaDC(SrcDC)
+  then Result := StretchMaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Width, Height, 0, 0, 0, Rop)
+  else Result := Windows.BitBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Rop);
 end;
 
 {------------------------------------------------------------------------------
@@ -3053,9 +3056,10 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Rop: Cardinal): Boolean;
 begin
-  Assert(True, Format('Trace:> [TWin32WidgetSet.StretchBlt] DestDC:0x%x; X:%d, Y:%d, Width:%d, Height:%d; SrcDC:0x%x; XSrc:%d, YSrc:%d, SrcWidth:%d, SrcHeight:%d; Rop:0x%x', [DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Rop]));
-  Result := Boolean(Windows.StretchBlt(DestDc, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Rop));
-  Assert(True, Format('Trace:< [TWin32WidgetSet.StretchBlt] DestDC:0x%x --> %s', [DestDC, BOOL_TEXT[Result]]));
+  // use stretchmaskblt for alpha images, since that one is customized for alpha
+  if IsAlphaDC(DestDC) or IsAlphaDC(SrcDC)
+  then Result := StretchMaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, 0, 0, 0, Rop)
+  else Result := Windows.StretchBlt(DestDc, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Rop);
 end;
 
 {------------------------------------------------------------------------------
