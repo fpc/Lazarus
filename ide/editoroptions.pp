@@ -52,7 +52,7 @@ uses
   IDECommands, IDEWindowIntf, SrcEditorIntf,
   // IDE
   LazarusIDEStrConsts, IDEOptionDefs, IDEProcs, InputHistory, KeyMapping,
-  KeymapSchemeDlg, LazConf;
+  KeymapSchemeDlg, KeyMapShortCutDlg, LazConf;
 
 type
   TPreviewEditor = TSynEdit;
@@ -2854,7 +2854,7 @@ procedure TEditorOptionsForm.KeyMappingFindKeyButtonClick(Sender: TObject);
 var
   KeyFilter: TIDEShortCut;
 begin
-  if ShowKeyMappingGrabForm(EditingKeyMap,KeyFilter)<>mrOK then exit;
+  if ShowKeyMappingGrabForm(KeyFilter)<>mrOK then exit;
   //debugln(['TEditorOptionsForm.KeyMappingFindKeyButtonClick ',KeyAndShiftStateToEditorKeyString(KeyFilter)]);
   KeyMapKeyFilter:=KeyFilter;
   FillKeyMappingTreeView;
@@ -3978,7 +3978,6 @@ end;
 
 procedure TEditorOptionsForm.OkButtonClick(Sender: TObject);
 var
-  SynOptions: TSynEditorOptions;
   i: Integer;
 begin
   IDEDialogLayoutList.SaveLayout(Self);

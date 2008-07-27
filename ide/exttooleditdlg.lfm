@@ -3,8 +3,6 @@ object ExternalToolOptionDlg: TExternalToolOptionDlg
   Height = 501
   Top = 210
   Width = 661
-  HorzScrollBar.Page = 660
-  VertScrollBar.Page = 500
   ActiveControl = TitleEdit
   Caption = 'ExternalToolOptionDlg'
   ClientHeight = 501
@@ -14,7 +12,6 @@ object ExternalToolOptionDlg: TExternalToolOptionDlg
   KeyPreview = True
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  OnKeyUp = FormKeyUp
   Position = poScreenCenter
   LCLVersion = '0.9.25'
   object TitleLabel: TLabel
@@ -194,92 +191,15 @@ object ExternalToolOptionDlg: TExternalToolOptionDlg
     AnchorSideRight.Control = OptionsGroupBox
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 49
+    Height = 25
     Top = 220
     Width = 649
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'KeyGroupBox'
-    ClientHeight = 30
-    ClientWidth = 645
+    Constraints.MinHeight = 25
     TabOrder = 6
-    object KeyCtrlCheckBox: TCheckBox
-      AnchorSideLeft.Control = KeyGroupBox
-      AnchorSideTop.Control = KeyGroupBox
-      AnchorSideBottom.Control = KeyGroupBox
-      AnchorSideBottom.Side = asrBottom
-      Left = 6
-      Height = 22
-      Top = 2
-      Width = 131
-      Anchors = [akTop, akLeft, akBottom]
-      BorderSpacing.Left = 6
-      BorderSpacing.Top = 2
-      BorderSpacing.Bottom = 6
-      Caption = 'KeyCtrlCheckBox'
-      TabOrder = 0
-    end
-    object KeyAltCheckBox: TCheckBox
-      AnchorSideLeft.Control = KeyCtrlCheckBox
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = KeyCtrlCheckBox
-      Left = 143
-      Height = 22
-      Top = 2
-      Width = 126
-      BorderSpacing.Left = 6
-      Caption = 'KeyAltCheckBox'
-      TabOrder = 1
-    end
-    object KeyShiftCheckBox: TCheckBox
-      AnchorSideLeft.Control = KeyAltCheckBox
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = KeyCtrlCheckBox
-      Left = 275
-      Height = 22
-      Top = 2
-      Width = 138
-      BorderSpacing.Left = 6
-      Caption = 'KeyShiftCheckBox'
-      TabOrder = 2
-    end
-    object KeyComboBox: TComboBox
-      AnchorSideLeft.Control = KeyShiftCheckBox
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = KeyCtrlCheckBox
-      AnchorSideTop.Side = asrCenter
-      AnchorSideRight.Control = KeyGrabButton
-      Left = 419
-      Height = 29
-      Top = -1
-      Width = 106
-      Anchors = [akTop, akLeft, akRight]
-      AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-      BorderSpacing.Left = 6
-      BorderSpacing.Right = 6
-      MaxLength = 0
-      TabOrder = 3
-      Text = 'KeyComboBox'
-    end
-    object KeyGrabButton: TButton
-      AnchorSideTop.Control = KeyCtrlCheckBox
-      AnchorSideTop.Side = asrCenter
-      AnchorSideRight.Control = KeyGroupBox
-      AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Side = asrBottom
-      Left = 531
-      Height = 29
-      Top = -2
-      Width = 108
-      Anchors = [akRight]
-      AutoSize = True
-      BorderSpacing.Left = 6
-      BorderSpacing.Right = 6
-      Caption = 'KeyGrabButton'
-      OnClick = KeyGrabButtonClick
-      TabOrder = 4
-    end
   end
   object MacrosGroupbox: TGroupBox
     AnchorSideLeft.Control = Owner
@@ -289,13 +209,13 @@ object ExternalToolOptionDlg: TExternalToolOptionDlg
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = BtnPanel
     Left = 6
-    Height = 172
-    Top = 275
+    Height = 196
+    Top = 251
     Width = 649
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'MacrosGroupbox'
-    ClientHeight = 153
+    ClientHeight = 177
     ClientWidth = 645
     TabOrder = 7
     object MacrosListbox: TListBox
@@ -305,7 +225,7 @@ object ExternalToolOptionDlg: TExternalToolOptionDlg
       AnchorSideBottom.Control = MacrosGroupbox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 145
+      Height = 169
       Top = 2
       Width = 490
       Anchors = [akTop, akLeft, akRight, akBottom]

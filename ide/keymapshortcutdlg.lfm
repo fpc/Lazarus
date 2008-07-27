@@ -1,0 +1,71 @@
+object ShortCutDialog: TShortCutDialog
+  Left = 290
+  Height = 257
+  Top = 189
+  Width = 545
+  Caption = 'ShortCutDialog'
+  ClientHeight = 257
+  ClientWidth = 545
+  OnCreate = FormCreate
+  LCLVersion = '0.9.25'
+  object BtnPanel: TPanel
+    Height = 41
+    Top = 216
+    Width = 545
+    Align = alBottom
+    AutoSize = True
+    BevelOuter = bvNone
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.HorizontalSpacing = 6
+    ChildSizing.VerticalSpacing = 6
+    ClientHeight = 41
+    ClientWidth = 545
+    TabOrder = 0
+    object CancelButton: TButton
+      Left = 441
+      Height = 29
+      Top = 6
+      Width = 98
+      Align = alRight
+      AutoSize = True
+      Caption = 'CancelButton'
+      Constraints.MinWidth = 75
+      ModalResult = 2
+      OnClick = CancelButtonClick
+      TabOrder = 0
+    end
+    object OkButton: TButton
+      Left = 360
+      Height = 29
+      Top = 6
+      Width = 75
+      Align = alRight
+      AutoSize = True
+      Caption = 'OkButton'
+      Constraints.MinWidth = 75
+      OnClick = OkButtonClick
+      TabOrder = 1
+    end
+  end
+  object PrimaryGroupBox: TGroupBox
+    Left = 6
+    Height = 93
+    Top = 6
+    Width = 533
+    Align = alTop
+    BorderSpacing.Around = 6
+    Caption = 'PrimaryGroupBox'
+    TabOrder = 1
+  end
+  object SecondaryGroupBox: TGroupBox
+    Left = 6
+    Height = 105
+    Top = 105
+    Width = 533
+    Align = alTop
+    BorderSpacing.Around = 6
+    Caption = 'SecondaryGroupBox'
+    TabOrder = 2
+  end
+end

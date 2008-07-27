@@ -1691,11 +1691,17 @@ resourcestring
   //
   srkmEditKeys ='Edit Keys';
   srkmCommand  = 'Command:';
+  lisKeyOr2KeySequence = 'Key (or 2 key sequence)';
+  lisTheKeyIsAlreadyAssignedToRemoveTheOldAssignmentAnd = 'The key %s%sis '
+    +'already assigned to %s.%s%sRemove the old assignment and assign the key '
+    +'to the new function%s%s?';
+  lisAlternativeKeyOr2KeySequence = 'Alternative key (or 2 key sequence)';
   srkmConflic  = 'Conflict ';
   srkmConflicW = ' conflicts with ';
   srkmCommand1 = '    command1 "';
   srkmCommand2 = '    command2 "';
   srkmEditForCmd='Edit keys of command';
+  lisChooseAKey = 'Choose a key ...';
   srkmKey      = 'Key (or 2 keys combination)';
   srkmGrabKey  = 'Grab key';
   srkmGrabSecondKey  = 'Grab second key';
@@ -2713,6 +2719,7 @@ resourcestring
     +'Free Pascal Compiler messages';
   lisEdtExtToolScanOutputForMakeMessages = 'Scan output for make messages';
   lisEdtExtToolKey = 'Key';
+  lisAlternativeKey = 'Alternative key';
   lisEdtExtToolCtrl = 'Ctrl';
   lisEdtExtToolAlt = 'Alt';
   lisEdtExtToolShift = 'Shift';

@@ -45,7 +45,8 @@ uses
   Classes, SysUtils, LCLType, Controls, Forms, Buttons, StdCtrls, ComCtrls,
   Dialogs, LResources, ExtCtrls, LCLProc,
   IDEMsgIntf, IDEExternToolIntf,
-  KeyMapping, TransferMacros, LazarusIDEStrConsts, EditMsgScannersDlg;
+  KeyMapping, KeyMapShortCutDlg, TransferMacros, LazarusIDEStrConsts,
+  EditMsgScannersDlg;
 
 type
   { TExternalToolOptions }
@@ -82,11 +83,6 @@ type
     OptionScanOutputForFPCMessagesCheckBox: TCheckBox;
     OptionScanOutputForMakeMessagesCheckBox: TCheckBox;
     KeyGroupBox: TGroupBox;
-    KeyCtrlCheckBox: TCheckBox;
-    KeyAltCheckBox: TCheckBox;
-    KeyShiftCheckBox: TCheckBox;
-    KeyComboBox: TComboBox;
-    KeyGrabButton: TButton;
     MacrosGroupbox: TGroupbox;
     MacrosListbox: TListbox;
     MacrosInsertButton: TButton;
@@ -94,8 +90,6 @@ type
     CancelButton: TBitBtn;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure FormKeyUp(Sender: TObject; var Key: Word; Shift:TShiftState);
-    procedure KeyGrabButtonClick(Sender: TObject);
     procedure MacrosInsertButtonClick(Sender: TObject);
     procedure MacrosListboxClick(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
@@ -105,9 +99,7 @@ type
     fOptions: TExternalToolOptions;
     fTransferMacros: TTransferMacroList;
     fScanners: TStrings;
-    GrabbingKey: integer; // 0=none, 1=Default key
-    procedure ActivateGrabbing(AGrabbingKey: integer);
-    procedure DeactivateGrabbing;
+    fKeyBox: TShortCutGrabBox;
     procedure FillMacroList;
     procedure LoadFromOptions;
     procedure SaveToOptions;
@@ -168,16 +160,8 @@ begin
   fOptions.Filename:=FilenameEdit.Text;
   fOptions.CmdLineParams:=ParametersEdit.Text;
   fOptions.WorkingDirectory:=WorkingDirEdit.Text;
-  fOptions.Key:=EditorKeyStringToVKCode(KeyComboBox.Text);
-  fOptions.Shift:=[];
-  if fOptions.Key<>VK_UNKNOWN then begin
-    if KeyCtrlCheckBox.Checked then
-      fOptions.Shift := fOptions.Shift + [ssCtrl];
-    if KeyAltCheckBox.Checked then
-      fOptions.Shift := fOptions.Shift + [ssAlt];
-    if KeyShiftCheckBox.Checked then
-      fOptions.Shift := fOptions.Shift + [ssShift];
-  end;
+  fOptions.Key:=fKeyBox.Key;
+  fOptions.Shift:=fKeyBox.ShiftState;
   fOptions.ScanOutputForFPCMessages:=
     OptionScanOutputForFPCMessagesCheckBox.Checked;
   fOptions.ScanOutputForMakeMessages:=
@@ -222,10 +206,8 @@ begin
   FilenameEdit.Text:=fOptions.Filename;
   ParametersEdit.Text:=fOptions.CmdLineParams;
   WorkingDirEdit.Text:=fOptions.WorkingDirectory;
-  SetComboBox(KeyComboBox,KeyAndShiftStateToEditorKeyString(fOptions.Key,[]));
-  KeyCtrlCheckBox.Checked:=(ssCtrl in fOptions.Shift);
-  KeyShiftCheckBox.Checked:=(ssShift in fOptions.Shift);
-  KeyAltCheckBox.Checked:=(ssAlt in fOptions.Shift);
+  fKeyBox.Key:=fOptions.Key;
+  fKeyBox.ShiftState:=fOptions.Shift;
   OptionScanOutputForFPCMessagesCheckBox.Checked:=
     fOptions.ScanOutputForFPCMessages;
   OptionScanOutputForMakeMessagesCheckBox.Checked:=
@@ -235,12 +217,8 @@ begin
 end;
 
 procedure TExternalToolOptionDlg.FormCreate(Sender: TObject);
-var
-  i: word;
-  s: string;
 begin
   fScanners:=TStringList.Create;
-  GrabbingKey:=0;
   Caption:=lisEdtExtToolEditTool;
 
   TitleLabel.Caption:=dlgPOTitle;
@@ -269,29 +247,13 @@ begin
   with KeyGroupBox do
     Caption:=lisEdtExtToolKey;
 
-  with KeyCtrlCheckBox do
-    Caption:=lisEdtExtToolCtrl;
-
-  with KeyAltCheckBox do
-    Caption:=lisEdtExtToolAlt;
-
-  with KeyShiftCheckBox do
-    Caption:=lisEdtExtToolShift;
-
-  with KeyComboBox do begin
-    Items.BeginUpdate;
-    Items.Add(srVK_NONE);
-    for i:=1 to 145 do begin
-      s:=KeyAndShiftStateToEditorKeyString(i,[]);
-      if not EditorKeyStringIsIrregular(s) then
-        Items.Add(s);
-    end;
-    Items.EndUpdate;
-    ItemIndex:=0;
+  fKeyBox:=TShortCutGrabBox.Create(Self);
+  with fKeyBox do begin
+    Name:='fKeyBox';
+    Align:=alClient;
+    BorderSpacing.Around:=6;
+    Parent:=KeyGroupBox;
   end;
-
-  with KeyGrabButton do
-    Caption:=srkmGrabKey;
 
   with MacrosGroupbox do
     Caption:=lisEdtExtToolMacros;
@@ -309,11 +271,6 @@ procedure TExternalToolOptionDlg.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(fOptions);
   FreeAndNil(fScanners);
-end;
-
-procedure TExternalToolOptionDlg.KeyGrabButtonClick(Sender: TObject);
-begin
-  ActivateGrabbing(1);
 end;
 
 procedure TExternalToolOptionDlg.SetOptions(TheOptions: TExternalToolOptions);
@@ -361,58 +318,6 @@ begin
   else begin
     AComboBox.Items.Add(AValue);
     AComboBox.ItemIndex:=AComboBox.Items.IndexOf(AValue);
-  end;
-end;
-
-procedure TExternalToolOptionDlg.DeactivateGrabbing;
-var i: integer;
-begin
-  if GrabbingKey=0 then exit;
-  // enable all components
-  for i:=0 to ComponentCount-1 do begin
-    if (Components[i] is TWinControl) then
-      TWinControl(Components[i]).Enabled:=true;
-  end;
-  if GrabbingKey=1 then
-    KeyGrabButton.Caption:=srkmGrabKey;
-  GrabbingKey:=0;
-end;
-
-procedure TExternalToolOptionDlg.ActivateGrabbing(AGrabbingKey: integer);
-var i: integer;
-begin
-  if GrabbingKey>0 then exit;
-  GrabbingKey:=AGrabbingKey;
-  if GrabbingKey=0 then exit;
-  // disable all components
-  for i:=0 to ComponentCount-1 do begin
-    if (Components[i] is TWinControl) then begin
-      if ((GrabbingKey=1) and (Components[i]<>KeyGrabButton)
-      and (Components[i]<>KeyGroupBox)) then
-        TWinControl(Components[i]).Enabled:=false;
-    end;
-  end;
-  if GrabbingKey=1 then
-    KeyGrabButton.Caption:=srkmPressKey;
-end;
-
-procedure TExternalToolOptionDlg.FormKeyUp(Sender: TObject; var Key: Word;
-  Shift:TShiftState);
-begin
-  //writeln('TExternalToolOptionDlg.FormKeyUp Sender=',Classname
-  //   ,' Key=',Key,' Ctrl=',ssCtrl in Shift,' Shift=',ssShift in Shift
-  //   ,' Alt=',ssAlt in Shift,' AsString=',KeyAndShiftStateToStr(Key,Shift)
-  //   );
-  if Key in [VK_CONTROL, VK_SHIFT, VK_LCONTROL, VK_RCONTROl,
-             VK_LSHIFT, VK_RSHIFT] then exit;
-  if (GrabbingKey in [1]) then begin
-    if GrabbingKey=1 then begin
-      KeyCtrlCheckBox.Checked:=(ssCtrl in Shift);
-      KeyShiftCheckBox.Checked:=(ssShift in Shift);
-      KeyAltCheckBox.Checked:=(ssAlt in Shift);
-      SetComboBox(KeyComboBox,KeyAndShiftStateToEditorKeyString(Key,[]));
-    end;
-    DeactivateGrabbing;
   end;
 end;
 

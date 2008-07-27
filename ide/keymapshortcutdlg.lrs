@@ -1,0 +1,24 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TShortCutDialog','FORMDATA',[
+  'TPF0'#15'TShortCutDialog'#14'ShortCutDialog'#4'Left'#3'"'#1#6'Height'#3#1#1#3
+  +'Top'#3#189#0#5'Width'#3'!'#2#7'Caption'#6#14'ShortCutDialog'#12'ClientHeigh'
+  +'t'#3#1#1#11'ClientWidth'#3'!'#2#8'OnCreate'#7#10'FormCreate'#10'LCLVersion'
+  +#6#6'0.9.25'#0#6'TPanel'#8'BtnPanel'#6'Height'#2')'#3'Top'#3#216#0#5'Width'#3
+  +'!'#2#5'Align'#7#8'alBottom'#8'AutoSize'#9#10'BevelOuter'#7#6'bvNone'#28'Chi'
+  +'ldSizing.LeftRightSpacing'#2#6#28'ChildSizing.TopBottomSpacing'#2#6#29'Chil'
+  +'dSizing.HorizontalSpacing'#2#6#27'ChildSizing.VerticalSpacing'#2#6#12'Clien'
+  +'tHeight'#2')'#11'ClientWidth'#3'!'#2#8'TabOrder'#2#0#0#7'TButton'#12'Cancel'
+  +'Button'#4'Left'#3#185#1#6'Height'#2#29#3'Top'#2#6#5'Width'#2'b'#5'Align'#7#7
+  +'alRight'#8'AutoSize'#9#7'Caption'#6#12'CancelButton'#20'Constraints.MinWidt'
+  +'h'#2'K'#11'ModalResult'#2#2#7'OnClick'#7#17'CancelButtonClick'#8'TabOrder'#2
+  +#0#0#0#7'TButton'#8'OkButton'#4'Left'#3'h'#1#6'Height'#2#29#3'Top'#2#6#5'Wid'
+  +'th'#2'K'#5'Align'#7#7'alRight'#8'AutoSize'#9#7'Caption'#6#8'OkButton'#20'Co'
+  +'nstraints.MinWidth'#2'K'#7'OnClick'#7#13'OkButtonClick'#8'TabOrder'#2#1#0#0
+  +#0#9'TGroupBox'#15'PrimaryGroupBox'#4'Left'#2#6#6'Height'#2']'#3'Top'#2#6#5
+  +'Width'#3#21#2#5'Align'#7#5'alTop'#20'BorderSpacing.Around'#2#6#7'Caption'#6
+  +#15'PrimaryGroupBox'#8'TabOrder'#2#1#0#0#9'TGroupBox'#17'SecondaryGroupBox'#4
+  +'Left'#2#6#6'Height'#2'i'#3'Top'#2'i'#5'Width'#3#21#2#5'Align'#7#5'alTop'#20
+  +'BorderSpacing.Around'#2#6#7'Caption'#6#17'SecondaryGroupBox'#8'TabOrder'#2#2
+  +#0#0#0
+]);
