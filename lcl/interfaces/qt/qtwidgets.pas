@@ -1206,7 +1206,6 @@ var
 constructor TQtWidget.Create(const AWinControl: TWinControl; const AParams: TCreateParams);
 begin
   inherited Create;
-
   FOwner := nil;
   FCentralWidget := nil;
   FOwnWidget := True;
@@ -1542,6 +1541,21 @@ begin
     case QEvent_type(Event) of
       QEventWindowActivate: SlotActivateWindow(True);
       QEventWindowDeactivate: SlotActivateWindow(False);
+      QEventShowToParent:
+      begin
+        if (LCLObject is TCustomForm) then
+        begin
+          if TCustomForm(LCLObject).FormStyle = fsMDIChild then
+          begin
+            if not TCustomForm(LCLObject).Active then
+            begin
+              SlotActivateWindow(True);
+              Result := True;
+              QEvent_ignore(Event);
+            end;
+          end;
+        end;
+      end;
       QEventShow: SlotShow(True);
       QEventHide: SlotShow(False);
       QEventClose:
@@ -1553,12 +1567,10 @@ begin
       QEventDestroy: SlotDestroy;
       QEventEnter,
       QEventLeave: SlotMouseEnter(Sender, Event);
+      
       QEventHoverEnter,
       QEventHoverLeave,
-      QEventHoverMove:
-        begin
-          SlotHover(Sender, Event);
-        end;
+      QEventHoverMove: SlotHover(Sender, Event);
 
       QEventKeyPress,
       QEventKeyRelease:
@@ -1568,10 +1580,7 @@ begin
 
       QEventMouseButtonPress,
       QEventMouseButtonRelease,
-      QEventMouseButtonDblClick:
-        begin
-          SlotMouse(Sender, Event);
-        end;
+      QEventMouseButtonDblClick: SlotMouse(Sender, Event);
       QEventMouseMove:
         begin
           SlotMouseMove(Event);
@@ -2380,8 +2389,7 @@ begin
   // front of others.
   {$note Check this with next qt version (>4.3.4)}
   if QWidget_isWindow(Widget)
-  and not QWidget_isModal(Widget)
-  and (QApplication_activeWindow() <> Widget) then
+  and not QWidget_isModal(Widget) then
     QWidget_raise(Widget);
   {$ENDIF}
 end;
@@ -3700,9 +3708,15 @@ begin
     QBoxLayout_setSpacing(LayoutWidget, 0);
     QLayout_setContentsMargins(LayoutWidget, 0, 0, 0, 0);
 
+    {we must fix mouse events in QMDISubWindow by adding FCentralWidget as it''s widget }
+    if (LCLObject is TCustomForm) and (TCustomForm(LCLObject).FormStyle = fsMDIChild) and
+        not (csDesigning in LCLObject.ComponentState) then
+      QMdiSubWindow_setWidget(QMdiSubWindowH(Result), FCentralWidget);
+      
     QLayout_addWidget(LayoutWidget, FCentralWidget);
     QWidget_setLayout(Result, QLayoutH(LayoutWidget));
   end;
+  
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
 
@@ -4506,8 +4520,8 @@ procedure TQtAbstractSlider.SlotValueChanged(p1: Integer); cdecl;
 var
   LMScroll: TLMScroll;
 begin
- {$ifdef VerboseQt}
-  writeln('TQtAbstractSlider.SlotValueChanged()');
+  {$ifdef VerboseQt}
+  writeln('TQtAbstractSlider.SlotValueChanged() to value ',p1);
  {$endif}
  
   FillChar(LMScroll, SizeOf(LMScroll), #0);
