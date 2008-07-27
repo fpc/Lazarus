@@ -3622,6 +3622,7 @@ end;
 function TQtMainWindow.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   w: QWidgetH;
+  p: QPaletteH;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
@@ -3653,6 +3654,9 @@ begin
     begin
       FCentralWidget := QWidget_create(Result);
       MDIAreaHandle := QMdiArea_create(Result);
+      p := QWidget_palette(FCentralWidget);
+      if p <> nil then
+        QMdiArea_setBackground(MdiAreaHandle, QPalette_background(P));
       QWidget_setParent(MdiAreaHandle, FCentralWidget);
     end
     else
@@ -5655,13 +5659,14 @@ begin
     case QEvent_type(Event) of
       QEventFocusIn:
       begin
-        if QFocusEvent_reason(QFocusEventH(Event)) in
-          [QtTabFocusReason,QtBacktabFocusReason,QtActiveWindowFocusReason,
-           QtShortcutFocusReason, QtOtherFocusReason] then
-        begin
-          if Assigned(LineEdit) and TComboBox(LCLObject).AutoSelect then
-            LineEdit.selectAll;
-        end;
+        if not (csDesigning in LCLObject.ComponentState) then
+          if QFocusEvent_reason(QFocusEventH(Event)) in
+            [QtTabFocusReason,QtBacktabFocusReason,QtActiveWindowFocusReason,
+             QtShortcutFocusReason, QtOtherFocusReason] then
+          begin
+            if Assigned(LineEdit) and TComboBox(LCLObject).AutoSelect then
+              LineEdit.selectAll;
+          end;
       end;
 
       QEventKeyPress,
@@ -5696,7 +5701,6 @@ begin
     Exit;
 
   FillChar(Msg, SizeOf(Msg), #0);
-
   Msg.Msg := LM_ACTIVATE;
   DeliverMessage(Msg);
 end;
@@ -5722,8 +5726,18 @@ begin
   if InUpdate then
     exit;
 
+  {we must fire OnChange() if it isn''t editable
+   since SlotChange() fires only for editable
+   comboboxes }
+  if not getEditable then
+  begin
+    FillChar(Msg, SizeOf(Msg), #0);
+    Msg.Msg := LM_CHANGED;
+    DeliverMessage(Msg);
+  end;
+  
   FillChar(Msg, SizeOf(Msg), #0);
-
+  
   Msg.Msg := LM_SELCHANGE;
 
   DeliverMessage(Msg);
