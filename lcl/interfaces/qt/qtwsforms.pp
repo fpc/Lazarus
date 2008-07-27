@@ -63,6 +63,8 @@ type
   private
   protected
   public
+    class procedure ScrollBy(const AWinControl: TScrollingWinControl;
+      const DeltaX, DeltaY: integer); override;
   end;
 
   { TQtWSFrame }
@@ -388,6 +390,19 @@ begin
   Widget.viewport.scroll(-DeltaX, -DeltaY);
 end;
 
+{ TQtWSCustomFrame }
+
+class procedure TQtWSCustomFrame.ScrollBy(
+  const AWinControl: TScrollingWinControl; const DeltaX, DeltaY: integer);
+var
+  Widget: TQtWidget;
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'ScollBy') then
+    Exit;
+  Widget := TQtWidget(AWinControl.Handle);
+  Widget.scroll(-DeltaX, -DeltaY);
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -398,7 +413,7 @@ initialization
 ////////////////////////////////////////////////////
 //  RegisterWSComponent(TScrollingWinControl, TQtWSScrollingWinControl);
   RegisterWSComponent(TScrollBox, TQtWSScrollBox);
-//  RegisterWSComponent(TCustomFrame, TQtWSCustomFrame);
+  RegisterWSComponent(TCustomFrame, TQtWSCustomFrame);
 //  RegisterWSComponent(TFrame, TQtWSFrame);
   RegisterWSComponent(TCustomForm, TQtWSCustomForm);
 //  RegisterWSComponent(TForm, TQtWSForm);
