@@ -434,7 +434,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisinfobuildmakeabort
 msgid "Abort"
-msgstr ""
+msgstr "Keskeytä"
 
 #: lazarusidestrconsts:lismenuabortbuild
 msgid "Abort Build"
@@ -810,7 +810,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisanerroroccuredatlaststartupwhileloadingloadthispro
 msgid "An error occured at last startup while loading %s!%s%sLoad this project again?"
-msgstr ""
+msgstr "Virhe esiintyi kun avattiin projektia %s!%s%sAvataanko tämä projekti uudelleen?"
 
 #: lazarusidestrconsts:lisa2pancestortype
 msgid "Ancestor Type"
@@ -1794,7 +1794,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisinfobuildcaption
 msgid "Compile Project"
-msgstr ""
+msgstr "Tietoja projektin käännöksestä"
 
 #: lazarusidestrconsts:lispckeditcompileeverything
 msgid "Compile everything?"
@@ -1846,7 +1846,7 @@ msgstr "FreePascal kääntäjä (%s) löytyy tästä polusta/linkistä"
 
 #: lazarusidestrconsts:lisinfobuildcomplile
 msgid "Compiling..."
-msgstr ""
+msgstr "Käännetään..."
 
 #: lazarusidestrconsts:lismenucompletecode
 msgid "Complete Code"
@@ -2038,7 +2038,7 @@ msgstr "Muunna tiedosto: DFM -> LFM ..."
 
 #: lazarusidestrconsts:lispwconvertproject
 msgid "Convert Delphi Project"
-msgstr ""
+msgstr "Muunna Delphi-projektista"
 
 #: lazarusidestrconsts:liskmconvertdelphipackagetolazaruspackage
 msgid "Convert Delphi package to Lazarus package"
@@ -2502,7 +2502,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisdeleteallthesefiles
 msgid "Delete all these files?"
-msgstr ""
+msgstr "Poistetaanko kaikki nämä tiedostot?"
 
 #: lazarusidestrconsts:lisdeleteambiguousfile
 msgid "Delete ambiguous file?"
@@ -3150,7 +3150,7 @@ msgstr "Virhe: "
 
 #: lazarusidestrconsts:liscompilererrorinvalidcompiler
 msgid "Error: invalid compiler: %s"
-msgstr ""
+msgstr "Virhe: toimimaton kääntäjä: %s"
 
 #: lazarusidestrconsts:liserrors
 msgid "Errors"
@@ -3158,7 +3158,7 @@ msgstr "Virheet"
 
 #: lazarusidestrconsts:lisinfobuilderrors
 msgid "Errors:"
-msgstr ""
+msgstr "Virheitä:"
 
 #: lazarusidestrconsts:srvk_escape
 msgid "Escape"
@@ -4134,7 +4134,7 @@ msgstr "Vihje: Klikkaa komentoa jota haluat muuttaa"
 
 #: lazarusidestrconsts:liscompilerhintyoucansetthecompilerpath
 msgid "Hint: you can set the compiler path in Environment->Environment options->Files->Compiler Path"
-msgstr ""
+msgstr "Vihje: voitte asettaa kääntäjän halupolun Käyttöliittymä-valikon -> Käyttöliittymä asetukset -> Tiedostot-välilehdessä"
 
 #: lazarusidestrconsts:dlgpalhints
 msgid "Hints for component palette"
@@ -4146,7 +4146,7 @@ msgstr "Vihjetekstit työkalupainikkeille"
 
 #: lazarusidestrconsts:lisinfobuildhint
 msgid "Hints:"
-msgstr ""
+msgstr "Vihjeitä:"
 
 #: lazarusidestrconsts:srvk_home
 msgid "Home"
@@ -5862,7 +5862,7 @@ msgstr "Uusi Lomake"
 
 #: lazarusidestrconsts:lispwnewproject
 msgid "New Project"
-msgstr ""
+msgstr "Luo uusi Projekti"
 
 #: lazarusidestrconsts:lismenunewproject
 msgid "New Project ..."
@@ -6050,7 +6050,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisinfobuildnote
 msgid "Notes:"
-msgstr ""
+msgstr "Huomioita:"
 
 #: lazarusidestrconsts:dlgenvbackuphelpnote
 msgid "Notes: Project files are all files in the project directory"
@@ -6186,7 +6186,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lispwopenproject
 msgid "Open Project"
-msgstr ""
+msgstr "Avaa Projekti"
 
 #: lazarusidestrconsts:lismenuopenproject
 msgid "Open Project ..."
@@ -6278,7 +6278,7 @@ msgstr "Avaa projekti"
 
 #: lazarusidestrconsts:lisopenprojectagain
 msgid "Open project again"
-msgstr ""
+msgstr "Avaa projekti uudelleen"
 
 #: lazarusidestrconsts:lisiecoopenrecent
 msgid "Open recent"
@@ -6910,7 +6910,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisprojectwizard
 msgid "Project Wizard"
-msgstr ""
+msgstr "Projekti 'velho'"
 
 #: lazarusidestrconsts:lisprojectchanged
 msgid "Project changed"
@@ -8210,7 +8210,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgqshowcompiledialog
 msgid "Show compile dialog"
-msgstr ""
+msgstr "Näytä käännösikkuna"
 
 #: lazarusidestrconsts:dlgshowcompiledprocedures
 msgid "Show compiled procedures"
@@ -8502,7 +8502,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisstartwithanewproject
 msgid "Start with a new project"
-msgstr ""
+msgstr "Aloita uusi projekti"
 
 #: lazarusidestrconsts:lisstarter
 msgid "Starter"
@@ -8622,7 +8622,7 @@ msgstr "Onnistui"
 
 #: lazarusidestrconsts:lisinfobuildsuccess
 msgid "Success..."
-msgstr ""
+msgstr "Kääntäminen onnistui..."
 
 #: lazarusidestrconsts:lisa2pswitchpaths
 msgid "Switch Paths"
@@ -9014,7 +9014,7 @@ msgstr ""
 
 #: lazarusidestrconsts:listhecurrentcompilerfilenameisnotavalidexecutablecho
 msgid "The current compiler filename %s%s%s%sis not a valid executable.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
-msgstr ""
+msgstr "Tällä hetkellä käytössä oleva kääntäjän tiedostonimi %s%s%s%sei ole suoritettavissa.%sValitsemalla Ok käytetään oletuksena olevaa %s%s%s.%sMuussa tapauksessa tarkista Käyttöliittymä-valikon -> Käyttöliittymä asetukset -> Tiedostot-välilehden kohdat"
 
 #: lazarusidestrconsts:listhecurrentcompilerfilenameisnotavalidexecutableplease
 msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlease check Environment -> Environment Options -> Files"
@@ -10638,7 +10638,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisinfobuildwarning
 msgid "Warnings:"
-msgstr ""
+msgstr "Varoituksia:"
 
 #: lazarusidestrconsts:liswatchpropert
 msgid "Watch Properties"
