@@ -651,6 +651,7 @@ var fs: TFileStream;
   Buf: string;
   Len, i: integer;
   NewLine: boolean;
+  Size: Int64;
 begin
   Result:=false;
   try
@@ -658,14 +659,18 @@ begin
     try
       // read the first 1024 bytes
       Len:=1024;
-      if Len>fs.Size then Len:=integer(fs.Size);
+      Size:=fs.Size;
+      if Len>Size then Len:=integer(Size);
       if Len>0 then begin
         SetLength(Buf,Len);
         fs.Read(Buf[1],length(Buf));
         NewLine:=false;
         for i:=1 to length(Buf) do begin
           case Buf[i] of
-          #0..#8,#11..#12,#14..#31: exit;
+          // #10,#13: new line
+          // #12: form feed
+          // #26: end of file
+          #0..#8,#11,#14..#25,#27..#31: exit;
           #10,#13: NewLine:=true;
           end;
         end;
