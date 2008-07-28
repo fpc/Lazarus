@@ -1635,7 +1635,8 @@ begin
     fEditorFont  :=
       XMLConfig.GetValue('EditorOptions/Display/EditorFont', SynDefaultFontName);
     fEditorFontHeight :=
-      XMLConfig.GetValue('EditorOptions/Display/EditorFontHeight', 12);
+      XMLConfig.GetValue('EditorOptions/Display/EditorFontHeight',
+      SynDefaultFontHeight);
     RepairEditorFontHeight(fEditorFontHeight);
     fExtraCharSpacing :=
       XMLConfig.GetValue('EditorOptions/Display/ExtraCharSpacing', 0);
@@ -2811,7 +2812,7 @@ begin
   for a := Low(PreviewEdits) to High(PreviewEdits) do
     if PreviewEdits[a] <> Nil then
       PreviewEdits[a].Font.Assign(TFontDialog(Sender).Font);
-  EditorFontComboBox.Text := DisplayPreview.Font.Name;
+  SetComboBoxText(EditorFontComboBox,DisplayPreview.Font.Name);
   SetComboBoxText(EditorFontHeightComboBox,
                   IntToStr(DisplayPreview.Font.Height));
 end;
