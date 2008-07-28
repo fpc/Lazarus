@@ -607,6 +607,7 @@ function TBuildManager.CheckAmbiguousSources(const AFilename: string;
   function CheckFile(const AmbiguousFilename: string): TModalResult;
   begin
     Result:=mrOk;
+    if CompareFilenames(AFilename,AmbiguousFilename)=0 then exit;
     if not FileExists(AmbiguousFilename) then exit;
     if Compiling then begin
       Result:=AddCompileWarning(AmbiguousFilename);
