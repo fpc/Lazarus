@@ -3,8 +3,6 @@ object BuildFileDialog: TBuildFileDialog
   Height = 417
   Top = 196
   Width = 451
-  HorzScrollBar.Page = 450
-  VertScrollBar.Page = 416
   ActiveControl = Notebook1
   BorderIcons = [biSystemMenu]
   Caption = 'BuildFileDialog'
@@ -24,26 +22,26 @@ object BuildFileDialog: TBuildFileDialog
     TabOrder = 0
     object GeneralPage: TPage
       Caption = 'Options'
-      ClientWidth = 447
-      ClientHeight = 338
+      ClientWidth = 449
+      ClientHeight = 342
       object WhenFileIsActiveGroupbox: TGroupBox
         Left = 6
         Height = 81
         Top = 6
-        Width = 435
+        Width = 437
         Align = alTop
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'When this file is active in source editor ...'
-        ClientHeight = 77
-        ClientWidth = 431
+        ClientHeight = 62
+        ClientWidth = 433
         ParentCtl3D = False
         TabOrder = 0
         object OverrideBuildProjectCheckbox: TCheckBox
           Left = 6
           Height = 22
           Top = 6
-          Width = 419
+          Width = 421
           Align = alTop
           BorderSpacing.Around = 6
           Caption = 'On build project execute the Build File command instead'
@@ -53,7 +51,7 @@ object BuildFileDialog: TBuildFileDialog
           Left = 6
           Height = 22
           Top = 34
-          Width = 419
+          Width = 421
           Align = alTop
           BorderSpacing.Around = 6
           Caption = 'On run project execute the Run File command instead'
@@ -63,25 +61,25 @@ object BuildFileDialog: TBuildFileDialog
     end
     object BuildPage: TPage
       Caption = 'Build'
-      ClientWidth = 447
-      ClientHeight = 338
+      ClientWidth = 449
+      ClientHeight = 342
       object BuildCommandGroupbox: TGroupBox
         Left = 6
         Height = 80
         Top = 72
-        Width = 435
+        Width = 437
         Align = alTop
         BorderSpacing.Around = 6
         Caption = 'Build Command'
         ClientHeight = 61
-        ClientWidth = 431
+        ClientWidth = 433
         ParentCtl3D = False
         TabOrder = 0
         object BuildCommandMemo: TMemo
           Left = 6
           Height = 49
           Top = 6
-          Width = 419
+          Width = 421
           Align = alClient
           BorderSpacing.Around = 6
           Lines.Strings = (
@@ -94,7 +92,7 @@ object BuildFileDialog: TBuildFileDialog
         Left = 6
         Height = 22
         Top = 158
-        Width = 435
+        Width = 437
         Align = alTop
         BorderSpacing.Around = 6
         Caption = 'Scan for FPC messages'
@@ -104,7 +102,7 @@ object BuildFileDialog: TBuildFileDialog
         Left = 6
         Height = 22
         Top = 186
-        Width = 435
+        Width = 437
         Align = alTop
         BorderSpacing.Around = 6
         Caption = 'Scan for Make messages'
@@ -114,13 +112,13 @@ object BuildFileDialog: TBuildFileDialog
         Left = 6
         Height = 60
         Top = 6
-        Width = 435
+        Width = 437
         Align = alTop
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'Working directory (Leave empty for file path)'
         ClientHeight = 41
-        ClientWidth = 431
+        ClientWidth = 433
         ParentCtl3D = False
         TabOrder = 3
         object BuildWorkDirCombobox: TComboBox
@@ -130,7 +128,7 @@ object BuildFileDialog: TBuildFileDialog
           Left = 6
           Height = 29
           Top = 6
-          Width = 388
+          Width = 390
           Anchors = [akTop, akLeft, akRight]
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           BorderSpacing.Around = 6
@@ -143,7 +141,7 @@ object BuildFileDialog: TBuildFileDialog
           AnchorSideTop.Control = BuildWorkingDirGroupbox
           AnchorSideRight.Control = BuildWorkingDirGroupbox
           AnchorSideRight.Side = asrBottom
-          Left = 400
+          Left = 402
           Height = 25
           Top = 6
           Width = 25
@@ -157,13 +155,13 @@ object BuildFileDialog: TBuildFileDialog
     end
     object RunPage: TPage
       Caption = 'Run'
-      ClientWidth = 447
-      ClientHeight = 338
+      ClientWidth = 449
+      ClientHeight = 342
       object AlwaysCompileFirstCheckbox: TCheckBox
         Left = 6
         Height = 22
         Top = 6
-        Width = 435
+        Width = 437
         Align = alTop
         BorderSpacing.Around = 6
         Caption = 'Always Build before Run'
@@ -171,21 +169,21 @@ object BuildFileDialog: TBuildFileDialog
       end
       object RunCommandGroupbox: TGroupBox
         Left = 6
-        Height = 70
+        Height = 98
         Top = 100
-        Width = 435
+        Width = 437
         Align = alTop
         BorderSpacing.Around = 6
         Caption = 'Run Command'
-        ClientHeight = 51
-        ClientWidth = 431
+        ClientHeight = 79
+        ClientWidth = 433
         ParentCtl3D = False
         TabOrder = 1
         object RunCommandMemo: TMemo
           Left = 6
-          Height = 39
+          Height = 67
           Top = 6
-          Width = 419
+          Width = 421
           Align = alClient
           BorderSpacing.Around = 6
           Lines.Strings = (
@@ -198,13 +196,13 @@ object BuildFileDialog: TBuildFileDialog
         Left = 6
         Height = 60
         Top = 34
-        Width = 435
+        Width = 437
         Align = alTop
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'Working Directory (Leave empty for file path)'
         ClientHeight = 41
-        ClientWidth = 431
+        ClientWidth = 433
         ParentCtl3D = False
         TabOrder = 2
         object RunWorkDirCombobox: TComboBox
@@ -214,7 +212,7 @@ object BuildFileDialog: TBuildFileDialog
           Left = 6
           Height = 29
           Top = 6
-          Width = 388
+          Width = 390
           Anchors = [akTop, akLeft, akRight]
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           BorderSpacing.Around = 6
@@ -224,15 +222,13 @@ object BuildFileDialog: TBuildFileDialog
           Text = 'RunWorkDirCombobox'
         end
         object RunBrowseWorkDirButton: TButton
-          AnchorSideTop.Control = RunWorkDirGroupbox
-          AnchorSideRight.Control = RunWorkDirGroupbox
           AnchorSideRight.Side = asrBottom
-          Left = 400
-          Height = 25
+          Left = 402
+          Height = 29
           Top = 6
           Width = 25
           HelpType = htKeyword
-          Anchors = [akTop, akRight]
+          Align = alRight
           BorderSpacing.Around = 6
           Caption = '...'
           OnClick = BuildBrowseWorkDirButtonCLICK
