@@ -10496,14 +10496,10 @@ begin
   if CompareFilenames(CleanAndExpandDirectory(SrcDir),
                       CleanAndExpandDirectory(DestDir))=0
   then begin
-    MessageDlg('Invalid publishing Directory',
-      'Source directory "'+SrcDir+'"'#13
-      +'and destination directory "'+DestDir+'"'#13
-      +'are the same.'#13
-      +#13
-      +'Maybe you misunderstand this feature.'#13
-      +'It will clean/recreate the destination directory'#13
-      +'and copies the package/project into it.',mtError,[mbCancel],0);
+    MessageDlg(lisInvalidPublishingDirectory,
+      Format(lisSourceDirectoryAndDestinationDirectoryAreTheSameMa, ['"',
+        SrcDir, '"', #13, '"', DestDir, '"', #13, #13, #13, #13, #13]),
+        mtError, [mbCancel], 0);
     Result:=mrCancel;
     exit;
   end;
@@ -10539,6 +10535,14 @@ begin
 
   // clear destination directory
   if DirPathExists(DestDir) then begin
+    // ask user, if destination can be delete
+    if MessageDlg(lisClearDirectory,
+      Format(lisInOrderToCreateACleanCopyOfTheProjectPackageAllFil, [#13, #13,
+        '"', DestDir, '"']), mtConfirmation,
+      [mbYes,mbNo],0)<>mrYes
+    then
+      exit(mrCancel);
+
     if (not DeleteDirectory(ChompPathDelim(DestDir),true)) then begin
       MessageDlg(lisUnableToCleanUpDestinationDirectory,
         Format(lisUnableToCleanUpPleaseCheckPermissions, ['"', DestDir, '"', #13]

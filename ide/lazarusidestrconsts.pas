@@ -3812,6 +3812,16 @@ resourcestring
     +'not be deleted, because it is not owned by %s.';
   lisFilter2 = '(filter)';
   lisFindKeyCombination = 'Find key combination';
+  lisInvalidPublishingDirectory = 'Invalid publishing Directory';
+  lisSourceDirectoryAndDestinationDirectoryAreTheSameMa = 'Source directory %'
+    +'s%s%s%sand destination directory %s%s%s%sare the same.%s%sMaybe you '
+    +'misunderstand this feature.%sIt will clean/recreate the destination '
+    +'directory%sand copies the package/project into it.';
+  lisClearDirectory = 'Clear Directory?';
+  lisInOrderToCreateACleanCopyOfTheProjectPackageAllFil = 'In order to create '
+    +'a clean copy of the project/package, all files in the following '
+    +'directory will be deleted and all its content will be lost.%s%sDelete '
+    +'all files in %s%s%s?';
   
 implementation
 
