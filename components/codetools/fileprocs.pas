@@ -566,6 +566,7 @@ end;
 function ExtractFileNameOnly(const AFilename: string): string;
 var ExtLen: integer;
 begin
+  // beware: filename.ext1.ext2
   Result:=ExtractFilename(AFilename);
   ExtLen:=length(ExtractFileExt(Result));
   Result:=copy(Result,1,length(Result)-ExtLen);

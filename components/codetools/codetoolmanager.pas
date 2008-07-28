@@ -980,10 +980,17 @@ function TCodeToolManager.CreateTempFile(const AFilename: string): TCodeBuffer;
 var
   i: Integer;
   TempFilename: string;
+  CurName: String;
+  CurExt: String;
 begin
+  TempFilename:=VirtualTempDir+PathDelim+AFilename;
+  Result:=FindFile(TempFilename);
+  if (Result<>nil) and (Result.ReferenceCount=0) then exit;
+  CurName:=ExtractFileNameOnly(AFilename);
+  CurExt:=ExtractFileExt(AFilename);
   i:=1;
   repeat
-    TempFilename:=VirtualTempDir+PathDelim+IntToStr(i)+PathDelim+AFilename;
+    TempFilename:=VirtualTempDir+PathDelim+CurName+IntToStr(i)+CurExt;
     Result:=FindFile(TempFilename);
     if (Result<>nil) and (Result.ReferenceCount=0) then exit;
     inc(i);
