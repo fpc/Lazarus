@@ -442,6 +442,9 @@ begin
   end;
   {$ENDIF}
 
+  // skip end of file characters
+  while buf^=#26 do inc(buf);
+  // check if whole document was read
   if buf[0] <> #0 then
     RaiseExc('Text after end of document element found');
 end;
