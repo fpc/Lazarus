@@ -2300,7 +2300,7 @@ begin
 end;
 
 procedure TEditorOptions.GetSynEditSettings(ASynEdit: TSynEdit);
-// read synedit setings from config file
+// read synedit settings from config file
 begin
   // general options
   ASynEdit.Options := fSynEditOptions;
@@ -2599,8 +2599,7 @@ begin
       else
         PreviewEdits[a].Highlighter := Nil;
       // display
-      if (a in [1, 2]) then
-        PreviewEdits[a].Gutter.Visible := VisibleGutterCheckBox.Checked;
+      PreviewEdits[a].Gutter.Visible := VisibleGutterCheckBox.Checked;
       PreviewEdits[a].Gutter.ShowLineNumbers := ShowLineNumbersCheckBox.Checked;
       PreviewEdits[a].RightEdgeColor:=RightMarginColorButton.ButtonColor;
       if VisibleRightMarginCheckBox.Checked then
