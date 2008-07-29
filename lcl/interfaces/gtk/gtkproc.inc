@@ -1592,13 +1592,16 @@ var
     {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
     with SysGCValues do
     begin
-      gdk_gc_set_fill(GC, fill);
       AllocFG := Foreground.Pixel = 0;
       if AllocFG then
         if not gdk_colormap_alloc_color(GDK_Colormap_get_system, @Foreground,
                                         True, True) then
           WarnAllocFailed(Foreground);
-      gdk_gc_set_foreground(GC, @foreground);
+      gdk_gc_set_fill(GC, fill);
+      if AsBackground then
+        gdk_gc_set_background(GC, @foreground)
+      else
+        gdk_gc_set_foreground(GC, @foreground);
       case Fill of
         GDK_TILED :
           if Tile <> nil then
@@ -1671,7 +1674,7 @@ begin
     clWindow,
     clForm:
       //often have a BK Pixmap
-      If IsSolidBrush then
+      if IsSolidBrush then
         EnsureAsGCValues
       else
         EnsureAsColor;//GC's with Pixmaps can't work w/Hatch's (yet)
@@ -1698,7 +1701,9 @@ end;
 
 function IsBackgroundColor(Color: TColor): boolean;
 begin
-  Result:=(Color=clForm) or (Color=clInfoBk) or (Color=clBackground);
+  Result := (Color = clForm) or
+            (Color = clInfoBk) or
+            (Color = clBackground);
 end;
 
 function CompareGDIColor(const Color1, Color2: TGDIColor): boolean;
@@ -7922,11 +7927,11 @@ begin
       end
     else
       If CompareText(WName,LazGtkStyleNames[lgsTooltip])=0 then begin
-        lgs:=lgsTooltip;
-        AddToStyleWindow:=false;
+        lgs := lgsTooltip;
+        AddToStyleWindow := false;
         TP := gtk_tooltips_new;
         StyleObject^.Widget := nil;
-        GTK_Tooltips_Force_Window(TP);
+        gtk_tooltips_force_window(TP);
         gtk_widget_ensure_style(PGTKTooltips(TP)^.Tip_Window);
         StyleObject^.Style:=gtk_widget_get_style(PGTKTooltips(TP)^.Tip_Window);
       end
@@ -8075,9 +8080,9 @@ begin
     end;
 
     // increase refcount of style
-    If StyleObject^.Style <> nil then
-      If CompareText(WName,LazGtkStyleNames[lgsGTK_Default])<>0 then
-        StyleObject^.Style:=GTK_Style_Ref(StyleObject^.Style);
+    if StyleObject^.Style <> nil then
+      if CompareText(WName,LazGtkStyleNames[lgsGTK_Default])<>0 then
+        StyleObject^.Style := GTK_Style_Ref(StyleObject^.Style);
         
     // if successful add to style objects list
     if StyleObject^.Style <> nil then begin
@@ -8265,7 +8270,7 @@ begin
   and ((Color^.red<>0) or (Color^.blue<>0) or (Color^.green<>0)) then
     gdk_colormap_alloc_colors(ColorMap, Color, 1, false, true, @AllocResult)
   else
-    gdk_colormap_query_color(ColorMap,Color^.pixel, Color);
+    gdk_colormap_query_color(ColorMap, Color^.pixel, Color);
 end;
 
 procedure RealizeGtkStyleColor(Style: PGTKStyle; Color: PGDKColor);
@@ -8301,24 +8306,23 @@ var
   BaseColor: TColorRef;
   Red, Green, Blue: byte;
 begin
-  BaseColor := Color and $FF;
-
   // Set defaults in case something goes wrong
   FillChar(Result, SizeOf(Result), 0);
   Style := nil;
   GC := nil;
   Pixmap := nil;
 
-  SysColor := ColorToRGB(BaseColor);
+  SysColor := ColorToRGB(Color);
   Result.Fill := GDK_Solid;
-  RedGreenBlue(TColor(SysColor),Red,Green,Blue);
-  Result.foreground.Red:=gushort(Red) shl 8+Red;
-  Result.foreground.Green:=gushort(Green) shl 8+Green;
-  Result.foreground.Blue:=gushort(Blue) shl 8+Blue;
+  RedGreenBlue(TColor(SysColor), Red, Green, Blue);
+  Result.foreground.Red:=gushort(Red) shl 8 + Red;
+  Result.foreground.Green:=gushort(Green) shl 8 + Green;
+  Result.foreground.Blue:=gushort(Blue) shl 8 + Blue;
 
   {$IfDef Disable_GC_SysColors}
   exit;
   {$EndIf}
+  BaseColor := Color and $FF;
   case BaseColor of
     {These are WM/X defined, but might be possible to get
 
@@ -8541,7 +8545,7 @@ begin
     COLOR_HIGHLIGHT :
       begin
         Style := GetStyle(lgsDefault);
-        If Style = nil then
+        if Style = nil then
           exit;
         GC := Style^.bg_gc[GTK_STATE_SELECTED];
         if GC = nil then
@@ -8585,7 +8589,7 @@ begin
     ?????????????????}
   end;
 
-  RealizeGtkStyleColor(Style,@Result.foreground);
+  RealizeGtkStyleColor(Style, @Result.foreground);
 end;
 
 function StyleForegroundColor(Color: TColorRef;
@@ -8795,7 +8799,7 @@ var
 begin
   style := nil;
   
-  Case TColor(Color) of
+  case TColor(Color) of
    { clMenu:
       begin
         Style := GetStyle('menuitem');
