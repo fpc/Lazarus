@@ -29,8 +29,6 @@ uses
   SysUtils, Classes, dos, LCLProc
   {$IFDEF UNIX},{$IFDEF VER2_3}iconvenc{$ELSE}unix{$ENDIF}{$ENDIF};
   
-{$inline on}
-
 const
   EncodingUTF8 = 'utf8';
   EncodingAnsi = 'ansi';
