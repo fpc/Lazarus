@@ -531,6 +531,7 @@ begin
   if ShortCut and scShift <> 0 then Include(Shift,ssShift);
   if ShortCut and scAlt <> 0 then Include(Shift,ssAlt);
   if ShortCut and scCtrl <> 0 then Include(Shift,ssCtrl);
+  if ShortCut and scMeta <> 0 then Include(Shift,ssMeta);
 end;
 
 

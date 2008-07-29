@@ -389,13 +389,14 @@ begin
 
   Modifiers := GetCurrentEventKeyModifiers;  // shift, control, option, command
   ButtonState := GetCurrentEventButtonState; // Bit 0 first button (left),
-   // bit 1 second (right), bit2 third (middle) ...
+  // bit 1 second (right), bit2 third (middle) ...
 
   if (ButtonState and 1)         > 0 then Inc(Result, MK_LButton);
   if (ButtonState and 2)         > 0 then Inc(Result, MK_RButton);
   if (ButtonState and 4)         > 0 then Inc(Result, MK_MButton);
   if (shiftKey    and Modifiers) > 0 then Inc(Result, MK_Shift);
-  if (cmdKey      and Modifiers) > 0 then Inc(Result, MK_Control);
+  if (controlKey  and Modifiers) > 0 then Inc(Result, MK_Control);
+  if (optionKey   and Modifiers) > 0 then Inc(Result, $20000000);
 
   //DebugLn('GetCarbonMsgKeyState Result=',dbgs(KeysToShiftState(Result)),' Modifiers=',hexstr(Modifiers,8),' ButtonState=',hexstr(ButtonState,8));
 end;
@@ -418,8 +419,8 @@ begin
   if (ButtonState and 2)         > 0 then Include(Result, ssRight);
   if (ButtonState and 4)         > 0 then Include(Result, ssMiddle);
   if (shiftKey    and Modifiers) > 0 then Include(Result, ssShift);
-  if (cmdKey      and Modifiers) > 0 then Include(Result, ssCtrl);
-  if (controlKey  and Modifiers) > 0 then Include(Result, ssMeta);
+  if (cmdKey      and Modifiers) > 0 then Include(Result, ssMeta);
+  if (controlKey  and Modifiers) > 0 then Include(Result, ssCtrl);
   if (optionKey   and Modifiers) > 0 then Include(Result, ssAlt);
   if (alphaLock   and Modifiers) > 0 then Include(Result, ssCaps);
 
@@ -433,17 +434,19 @@ end;
  ------------------------------------------------------------------------------}
 function ShiftStateToModifiers(const Shift: TShiftState): Byte;
 begin
-  if Shift = [ssCtrl] then
-    Result := kMenuNoModifiers
-  else
-  begin
-    if ssCtrl in Shift then Result := kMenuNoModifiers
-    else Result := kMenuNoCommandModifier;
-    
+  //if Shift = [ssAlt] then
+  //  Result := kMenuNoModifiers
+  //else
+  //begin
+    if ssMeta in Shift then
+      Result := kMenuNoModifiers
+    else
+      Result := kMenuNoCommandModifier;
+
     if ssShift in Shift then Inc(Result, kMenuShiftModifier);
-    if ssMeta  in Shift then Inc(Result, kMenuControlModifier);
+    if ssCtrl  in Shift then Inc(Result, kMenuControlModifier);
     if ssAlt   in Shift then Inc(Result, kMenuOptionModifier);
-  end;
+  //end;
 end;
 
 {------------------------------------------------------------------------------

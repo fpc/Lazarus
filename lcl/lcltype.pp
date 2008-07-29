@@ -330,6 +330,9 @@ const
   KF_REPEAT = $4000;
   KF_UP = $8000;
 
+// TShortCut additions:
+  scMeta = $1000;
+
 //-------------
 // Virtual keys
 //-------------
@@ -2579,6 +2582,7 @@ type
   NM_LISTVIEW = TNMListView;
   tagNMLISTVIEW = TNMListView;
 
+
 function CS_To_String(CompStyle: Integer): String;
 // key mapping
 
@@ -2643,6 +2647,7 @@ begin
   if ssShift in Shift then Inc(Result,scShift);
   if ssCtrl in Shift then Inc(Result,scCtrl);
   if ssAlt in Shift then Inc(Result,scAlt);
+  if ssMeta in Shift then Inc(Result,scMeta);
 end;
 
 {------------------------------------------------------------------------------

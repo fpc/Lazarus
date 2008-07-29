@@ -167,7 +167,7 @@ implementation
 
 
 const
-  KeyMappingFormatVersion = 4;
+  KeyMappingFormatVersion = 5;
 
   VirtualKeyStrings: TStringHashList = nil;
 
@@ -1048,16 +1048,127 @@ procedure GetDefaultKeyForMacOSXScheme(Command: word; var TheKeyA, TheKeyB: TIDE
     TheKeyB:=IDEShortCut(NewKeyB, NewShiftB, VK_UNKNOWN, []);
   end;
   
+  procedure SetResult2(
+    NewKey1A: word; NewShift1A: TShiftState;
+    NewKey1B: word; NewShift1B: TShiftState;
+    NewKey2A: word; NewShift2A: TShiftState;
+    NewKey2B: word; NewShift2B: TShiftState);
+  begin
+    TheKeyA:=IDEShortCut(NewKey1A,NewShift1A,NewKey1B,NewShift1B);
+    TheKeyB:=IDEShortCut(NewKey2A,NewShift2A,NewKey2B,NewShift2B);
+  end;
+
 begin
-  GetDefaultKeyForCommand(Command,TheKeyA,TheKeyB);
-  
-  // override only problematic key commands
   case Command of
+  // moving
+  ecWordLeft: SetResult(VK_LEFT, [ssAlt],VK_UNKNOWN,[]);
+  ecWordRight: SetResult(VK_RIGHT, [ssAlt],VK_UNKNOWN,[]);
+  ecLineStart: SetResult(VK_LEFT, [ssMeta],VK_UNKNOWN,[]);
+  ecLineEnd: SetResult(VK_RIGHT, [ssMeta],VK_UNKNOWN,[]);
+  ecPageUp: SetResult(VK_PRIOR, [],VK_UNKNOWN,[]);
+  ecPageDown: SetResult(VK_NEXT, [],VK_UNKNOWN,[]);
+  ecPageLeft: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecPageRight: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecPageTop: SetResult(VK_PRIOR, [ssAlt],VK_UNKNOWN,[]);
+  ecPageBottom: SetResult(VK_END, [ssAlt],VK_UNKNOWN,[]);
+  ecEditorTop: SetResult(VK_HOME,[],VK_UNKNOWN,[]);
+  ecEditorBottom: SetResult(VK_END,[],VK_UNKNOWN,[]);
+  ecScrollUp: SetResult(VK_UP, [ssCtrl],VK_UNKNOWN,[]);
+  ecScrollDown: SetResult(VK_DOWN, [ssCtrl],VK_UNKNOWN,[]);
+  ecScrollLeft: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
+  ecScrollRight: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
+
+  // selection
+  ecCopy: SetResult(VK_C,[ssMeta],VK_Insert,[ssCtrl]);
+  ecCut: SetResult(VK_X,[ssMeta],VK_Delete,[ssShift]);
+  ecPaste: SetResult(VK_V,[ssMeta],VK_Insert,[ssShift]);
+  ecNormalSelect: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecColumnSelect: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecLineSelect: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSelWordLeft: SetResult(VK_LEFT,[ssAlt,ssShift],VK_UNKNOWN,[]);
+  ecSelWordRight: SetResult(VK_RIGHT,[ssAlt,ssShift],VK_UNKNOWN,[]);
+  ecSelLineStart: SetResult(VK_LEFT,[ssMeta,ssShift],VK_UNKNOWN,[]);
+  ecSelLineEnd: SetResult(VK_RIGHT,[ssMeta,ssShift],VK_UNKNOWN,[]);
+  ecSelPageTop: SetResult(VK_PRIOR, [ssShift,ssAlt],VK_UNKNOWN,[]);
+  ecSelPageBottom: SetResult(VK_NEXT, [ssShift,ssAlt],VK_UNKNOWN,[]);
+  ecSelEditorTop: SetResult(VK_HOME, [ssShift],VK_UNKNOWN,[]);
+  ecSelEditorBottom: SetResult(VK_END, [ssShift],VK_UNKNOWN,[]);
+  ecSelectAll: SetResult(VK_A,[ssMeta],VK_UNKNOWN,[]);
+  ecSelectToBrace: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSelectCodeBlock: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSelectWord: SetResult2(VK_K,[SSCtrl],VK_T,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSelectLine: SetResult2(VK_K,[SSCtrl],VK_L,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSelectParagraph: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSelectionUpperCase: SetResult2(VK_K,[SSCtrl],VK_N,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSelectionLowerCase: SetResult2(VK_K,[SSCtrl],VK_O,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSelectionTabs2Spaces: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
+  ecSelectionEnclose: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
+  ecSelectionComment: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
+  ecSelectionUncomment: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
+  ecSelectionConditional: SetResult(VK_D, [ssShift,ssCtrl],VK_UNKNOWN,[]);
+  ecSelectionSort: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
+  ecSelectionBreakLines: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
+
   // editing
-  ecInsertLine: SetResult(VK_N,[ssCtrl, ssShift],VK_UNKNOWN,[]);
-  ecDeleteEOL:  SetResult(VK_Y,[ssCtrl,ssShift],VK_UNKNOWN,[]);
-  
+  ecBlockIndent: SetResult2(VK_I,[ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_I,[]);
+  ecBlockUnindent: SetResult2(VK_U,[ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_U,[]);
+  ecDeleteLastChar: SetResult(VK_BACK, [],VK_BACK, [ssShift]);  // ctrl H used for scroll window.
+  ecDeleteChar: SetResult(VK_DELETE,[],VK_UNKNOWN,[]); // ctrl G conflicts with GO
+  ecDeleteWord: SetResult(VK_DELETE,[ssAlt],VK_UNKNOWN,[]);
+  ecDeleteLastWord: SetResult(VK_BACK,[ssCtrl],VK_UNKNOWN,[]);
+  ecDeleteBOL: SetResult(VK_BACK,[ssMeta],VK_UNKNOWN,[]);
+  ecDeleteEOL: SetResult(VK_DELETE,[ssMeta],VK_UNKNOWN,[]);
+  ecDeleteLine: SetResult(VK_Y,[ssCtrl],VK_UNKNOWN,[]);
+  ecClearAll: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecLineBreak: SetResult(VK_RETURN,[],VK_UNKNOWN,[]);
+  ecInsertLine: SetResult(VK_N,[ssShift,ssMeta],VK_UNKNOWN,[]);
+  ecInsertCharacter: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertGPLNotice: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertLGPLNotice: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertModifiedLGPLNotice: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertUserName: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertDateTime: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertChangeLogEntry: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertCVSAuthor: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertCVSDate: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertCVSHeader: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertCVSID: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertCVSLog: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertCVSName: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertCVSRevision: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertCVSSource: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertGUID: SetResult(VK_G, [ssCtrl,ssShift],VK_UNKNOWN,[]);
+  ecInsertToDo: SetResult(VK_T, [ssCtrl,ssShift],VK_UNKNOWN,[]);
+
+  // command commands
+  ecUndo: SetResult(VK_Z,[ssMeta],VK_UNKNOWN,[]);
+  ecRedo: SetResult(VK_Z,[ssMeta,ssShift],VK_UNKNOWN,[]);
+
+  // search & replace
+  ecMatchBracket: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecFind: SetResult(VK_F,[ssMeta],VK_UNKNOWN,[]);
+  ecFindNext: SetResult(VK_G,[ssMeta],VK_UNKNOWN,[]);
+  ecFindPrevious: SetResult(VK_G,[ssShift,ssMeta],VK_UNKNOWN,[]);
+  ecFindInFiles: SetResult(VK_F,[ssMeta,ssShift],VK_UNKNOWN,[]);
+  ecReplace: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecIncrementalFind: SetResult(VK_E,[ssMeta],VK_UNKNOWN,[]);
+  ecGotoLineNumber: SetResult(VK_L,[ssMeta],VK_UNKNOWN,[]);
+  ecFindNextWordOccurrence: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecFindPrevWordOccurrence: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecJumpBack: SetResult(VK_H,[ssCtrl],VK_UNKNOWN,[]);
+  ecJumpForward: SetResult(VK_H,[ssCtrl,ssShift],VK_UNKNOWN,[]);
+  ecAddJumpPoint: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecViewJumpHistory: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecJumpToPrevError: SetResult(VK_ADD,[ssMeta],VK_UNKNOWN,[]);
+  ecJumpToNextError: SetResult(VK_ADD,[ssMeta,ssShift],VK_UNKNOWN,[]);
+  ecOpenFileAtCursor: SetResult(VK_RETURN,[ssCtrl],VK_UNKNOWN,[]);
+  ecProcedureList: SetResult(VK_G, [ssAlt],VK_UNKNOWN,[]);
+
+
   // marker
+  ecSetFreeBookmark: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecPrevBookmark: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecNextBookmark: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecGotoMarker0: SetResult(VK_0,[ssCtrl],VK_UNKNOWN,[]);
   ecGotoMarker1: SetResult(VK_1,[ssCtrl],VK_UNKNOWN,[]);
   ecGotoMarker2: SetResult(VK_2,[ssCtrl],VK_UNKNOWN,[]);
@@ -1068,49 +1179,194 @@ begin
   ecGotoMarker7: SetResult(VK_7,[ssCtrl],VK_UNKNOWN,[]);
   ecGotoMarker8: SetResult(VK_8,[ssCtrl],VK_UNKNOWN,[]);
   ecGotoMarker9: SetResult(VK_9,[ssCtrl],VK_UNKNOWN,[]);
-  
+  ecSetMarker0: SetResult2(VK_0,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_0,[]);
+  ecSetMarker1: SetResult2(VK_1,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_1,[]);
+  ecSetMarker2: SetResult2(VK_2,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_2,[]);
+  ecSetMarker3: SetResult2(VK_3,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_3,[]);
+  ecSetMarker4: SetResult2(VK_4,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_4,[]);
+  ecSetMarker5: SetResult2(VK_5,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_5,[]);
+  ecSetMarker6: SetResult2(VK_6,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_6,[]);
+  ecSetMarker7: SetResult2(VK_7,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_7,[]);
+  ecSetMarker8: SetResult2(VK_8,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_8,[]);
+  ecSetMarker9: SetResult2(VK_9,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_K,[SSCtrl],VK_9,[]);
+
+  // codetools
+  ecAutoCompletion: SetResult(VK_J,[ssMeta],VK_UNKNOWN,[]);
+  ecWordCompletion: SetResult(VK_SPACE,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
+  ecCompleteCode: SetResult(VK_C,[ssCtrl,ssShift],VK_UNKNOWN,[]);
+  ecIdentCompletion: SetResult(VK_SPACE,[ssCtrl],VK_UNKNOWN,[]);
+  ecShowCodeContext: SetResult(VK_SPACE,[ssCtrl,ssShift],VK_UNKNOWN,[]);
+  ecExtractProc: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecFindIdentifierRefs: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecRenameIdentifier: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInvertAssignment: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSyntaxCheck: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecGuessUnclosedBlock: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecGuessMisplacedIFDEF: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecConvertDFM2LFM: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecCheckLFM: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecConvertDelphiUnit: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecConvertDelphiProject: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecConvertDelphiPackage: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecFindProcedureDefinition: SetResult(VK_UP,[ssShift,SSCtrl],VK_UNKNOWN,[]);
+  ecFindProcedureMethod: SetResult(VK_DOWN,[ssShift,SSCtrl],VK_UNKNOWN,[]);
+  ecFindDeclaration: SetResult(VK_UP,[ssAlt],VK_UNKNOWN,[]);
+  ecFindBlockOtherEnd: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecFindBlockStart: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecGotoIncludeDirective: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecShowAbstractMethods: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecRemoveEmptyMethods: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
+  // source notebook
+  ecNextEditor: SetResult(VK_RIGHT, [ssMeta,ssAlt], VK_UNKNOWN, []);
+  ecPrevEditor: SetResult(VK_LEFT, [ssMeta,ssAlt], VK_UNKNOWN, []);
+  ecResetDebugger: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecAddBreakPoint: SetResult(VK_P,[ssCtrl],VK_UNKNOWN,[]);
+  ecMoveEditorLeft: SetResult(VK_UNKNOWN, [], VK_UNKNOWN, []);
+  ecMoveEditorRight: SetResult(VK_UNKNOWN, [], VK_UNKNOWN, []);
+  ecMoveEditorLeftmost: SetResult(VK_UNKNOWN, [], VK_UNKNOWN, []);
+  ecMoveEditorRightmost: SetResult(VK_UNKNOWN, [], VK_UNKNOWN, []);
+  ecGotoEditor1: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecGotoEditor2: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecGotoEditor3: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecGotoEditor4: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecGotoEditor5: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecGotoEditor6: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecGotoEditor7: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecGotoEditor8: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecGotoEditor9: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecGotoEditor0: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
   // file menu
-  ecNew: SetResult(VK_N,[ssCtrl],VK_UNKNOWN,[]);
-  ecSaveAs: SetResult(VK_S,[ssCtrl,ssShift],VK_UNKNOWN,[]);
-  ecSaveAll: SetResult(VK_S,[ssShift,ssAlt],VK_UNKNOWN,[]);
-  ecQuit: SetResult(VK_Q,[ssCtrl],VK_UNKNOWN,[]);
-  
-  // search & replace
-  ecFind: SetResult(VK_F,[ssCtrl],VK_UNKNOWN,[]);
-  ecFindNext: SetResult(VK_G,[ssCtrl],VK_UNKNOWN,[]);
-  ecFindPrevious: SetResult(VK_G,[ssCtrl, ssShift],VK_UNKNOWN,[]);
-  ecReplace: SetResult(VK_R,[SSCtrl],VK_UNKNOWN,[]);
-  ecGotoLineNumber: SetResult(VK_L,[ssCtrl],VK_UNKNOWN,[]);
+  ecNew: SetResult(VK_N,[ssMeta],VK_UNKNOWN,[]);
+  ecNewUnit: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecNewForm: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecOpen: SetResult(VK_O,[ssMeta],VK_UNKNOWN,[]);
+  ecRevert: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSave: SetResult(VK_S,[ssMeta],VK_UNKNOWN,[]);
+  ecSaveAs: SetResult(VK_S,[ssMeta,ssShift],VK_UNKNOWN,[]);
+  ecSaveAll: SetResult(VK_S,[ssMeta,ssAlt],VK_UNKNOWN,[]);
+  ecClose: SetResult(VK_W,[ssMeta,ssShift],VK_UNKNOWN,[]);
+  ecCloseAll: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecCleanDirectory: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecRestart: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecQuit: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // view menu
-  ecToggleObjectInsp: SetResult(VK_F11,[ssCtrl],VK_UNKNOWN,[]);
-  ecToggleFormUnit: SetResult(VK_F12,[],VK_UNKNOWN,[]);
+  ecToggleObjectInsp: SetResult(VK_I,[ssAlt,ssMeta],VK_UNKNOWN,[]);
+  ecToggleSourceEditor: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleCodeExpl: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleFPDocEditor: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleMessages: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleSearchResults: SetResult(VK_F,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
+  ecToggleWatches: SetResult(VK_W,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
+  ecToggleBreakPoints: SetResult(VK_B,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
+  ecToggleLocals: SetResult(VK_L,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
+  ecToggleCallStack: SetResult(VK_S,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
+  ecToggleDebuggerOut: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecViewUnits: SetResult(VK_U,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
+  ecViewForms: SetResult(VK_U,[ssShift,ssCtrl],VK_UNKNOWN,[]);
+  ecViewUnitDependencies: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecViewUnitInfo: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecJumpToEditor: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleFormUnit: SetResult(VK_F,[ssMeta,ssAlt],VK_UNKNOWN,[]);
+  ecViewAnchorEditor: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleCodeBrowser: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleRestrictionBrowser: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleCompPalette: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleIDESpeedBtns: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecViewTodoList: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // project menu
-  ecOpenProject: SetResult(VK_F11,[ssAlt],VK_UNKNOWN,[]);
-  ecAddCurUnitToProj: SetResult(VK_F11,[ssShift],VK_UNKNOWN,[]);
-  ecProjectOptions: SetResult(VK_F11,[ssShift,ssCtrl],VK_UNKNOWN,[]);
+  ecNewProject: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecNewProjectFromFile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecOpenProject: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecCloseProject: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSaveProject: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSaveProjectAs: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecPublishProject: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecProjectInspector: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecAddCurUnitToProj: SetResult(VK_A,[ssAlt,ssMeta],VK_UNKNOWN,[]);
+  ecRemoveFromProj: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecViewProjectSource: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecProjectOptions: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // run menu
-  ecBuild: SetResult(VK_F9,[ssCtrl],VK_UNKNOWN,[]);
-  ecRun: SetResult(VK_F9,[],VK_UNKNOWN,[]);
-  ecStepInto: SetResult(VK_F7,[],VK_UNKNOWN,[]);
-  ecStepOver: SetResult(VK_F8,[],VK_UNKNOWN,[]);
-  ecRunToCursor: SetResult(VK_F4,[],VK_UNKNOWN,[]);
-  
-  //codetools
-  ecFindBlockOtherEnd: SetResult(VK_END,[ssAlt],VK_UNKNOWN,[]);
-  ecFindBlockStart: SetResult(VK_HOME,[ssAlt],VK_UNKNOWN,[]);
+  ecBuild: SetResult(VK_B,[ssMeta],VK_UNKNOWN,[]);
+  ecBuildAll: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecQuickCompile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecAbortBuild: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecRun: SetResult(VK_R,[ssMeta],VK_UNKNOWN,[]);
+  ecPause: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecStepInto: SetResult(VK_R,[ssMeta,ssAlt],VK_UNKNOWN,[]);
+  ecStepOver: SetResult(VK_R,[ssMeta,ssShift],VK_UNKNOWN,[]);
+  ecRunToCursor: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecStopProgram: SetResult(VK_RETURN,[ssShift,ssMeta],VK_UNKNOWN,[]);
+  ecRemoveBreakPoint: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecCompilerOptions: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecRunParameters: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecBuildFile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecRunFile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecConfigBuildFile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInspect: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecEvaluate: SetResult(VK_E,[ssCtrl,ssShift],VK_UNKNOWN,[]);
+  ecAddWatch: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
+  // components menu
+  ecNewPackage: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecOpenPackage: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecOpenPackageFile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecOpenPackageOfCurUnit: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecAddCurUnitToPkg: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecPackageGraph: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecEditInstallPkgs: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecConfigCustomComps: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
+  // tools menu
+  ecExtToolSettings: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecBuildLazarus: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecConfigBuildLazarus: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecMakeResourceString: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecDiff: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
+  // environment menu
+  ecEnvironmentOptions: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecEditorOptions: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecEditCodeTemplates: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecCodeToolsOptions: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecCodeToolsDefinesEd: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecRescanFPCSrcDir: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
+  // help menu
+  ecAboutLazarus: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecOnlineHelp: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecConfigureHelp: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecContextHelp: SetResult(VK_HELP,[],VK_UNKNOWN,[]);
+  ecEditContextHelp: SetResult(VK_HELP,[ssShift,ssCtrl],VK_HELP,[ssCtrl]);
+  ecReportingBug: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
+  // designer
+  ecDesignerCopy        : SetResult(VK_C,[ssMeta],VK_UNKNOWN,[]);
+  ecDesignerCut         : SetResult(VK_X,[ssMeta],VK_UNKNOWN,[]);
+  ecDesignerPaste       : SetResult(VK_V,[ssMeta],VK_UNKNOWN,[]);
+  ecDesignerSelectParent: SetResult(VK_ESCAPE,[],VK_UNKNOWN,[]);
+  ecDesignerMoveToFront : SetResult(VK_PRIOR,[ssShift],VK_UNKNOWN,[]);
+  ecDesignerMoveToBack  : SetResult(VK_NEXT,[ssShift],VK_UNKNOWN,[]);
+  ecDesignerForwardOne  : SetResult(VK_PRIOR,[ssMeta],VK_UNKNOWN,[]);
+  ecDesignerBackOne     : SetResult(VK_NEXT,[ssMeta],VK_UNKNOWN,[]);
+
+  else
+    SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   end;
 end;
 
 function KeySchemeNameToSchemeType(const SchemeName: string): TKeyMapScheme;
 begin
-  if (SchemeName='') or (AnsiCompareText(SchemeName,'Default')=0) then
+  if (SchemeName='') or (CompareText(SchemeName,'Default')=0) then
     Result:=kmsLazarus
-  else if (AnsiCompareText(SchemeName,'Classic')=0) then
+  else if (CompareText(SchemeName,'Classic')=0) then
     Result:=kmsClassic
-  else if (AnsiCompareText(SchemeName,'Mac OS X')=0) then
+  else if (CompareText(SchemeName,'Mac OS X')=0) then
     Result:=kmsMacOSX
   else
     Result:=kmsCustom;
@@ -1123,6 +1379,8 @@ begin
   if ssCtrl in Shift then inc(i,1);
   if ssShift in Shift then inc(i,2);
   if ssAlt in Shift then inc(i,4);
+  if ssMeta in Shift then inc(i,8);
+  if ssSuper in Shift then inc(i,16);
   Result:=IntToStr(i);
 end;
 
@@ -1535,6 +1793,13 @@ var
     if ssCtrl in ShiftState then AddAttribute(srkm_Ctrl);
     if ssAlt in ShiftState then AddAttribute(srkm_Alt);
     if ssShift in ShiftState then AddAttribute(srVK_SHIFT);
+    if ssMeta in ShiftState then
+      {$IFDEF LCLcarbon}
+      AddAttribute(srVK_CMD);
+      {$ELSE}
+      AddAttribute(srVK_SHIFT);
+      {$ENDIF}
+    if ssSuper in ShiftState then AddAttribute(srVK_SUPER);
   end;
 
   // Tricky routine. This only works for western languages
@@ -2193,7 +2458,9 @@ end;
 
 function TKeyCommandRelationList.LoadFromXMLConfig(
   XMLConfig:TXMLConfig; const Prefix: String):boolean;
-var a,b,p:integer;
+var
+  a,b,p:integer;
+  FileVersion: integer;
   Name:ShortString;
   NewValue: String;
 
@@ -2215,6 +2482,8 @@ var a,b,p:integer;
     if (i and 1)>0 then Include(Result,ssCtrl);
     if (i and 2)>0 then Include(Result,ssShift);
     if (i and 4)>0 then Include(Result,ssAlt);
+    if (i and 8)>0 then Include(Result,ssMeta);
+    if (i and 16)>0 then Include(Result,ssSuper);
   end;
 
   function OldKeyValuesToStr(const ShortcutA, ShortcutB: TIDEShortCut): string;
@@ -2222,10 +2491,18 @@ var a,b,p:integer;
     Result:=IntToStr(ShortcutA.Key1) + ',' + ShiftStateToStr(ShortcutA.Shift1) + ',' +
             IntToStr(ShortcutB.Key1) + ',' + ShiftStateToStr(ShortcutB.Shift1);
   end;
+
+  function FixShift(Shift: TShiftState): TShiftState;
+  begin
+    Result:=Shift;
+    {$IFDEF LCLcarbon}
+    if (FileVersion<5) and (Result*[ssCtrl,ssMeta]=[ssCtrl]) then
+      Result:=Result-[ssCtrl]+[ssMeta];
+    {$ENDIF}
+  end;
   
 // LoadFromXMLConfig
 var
-  FileVersion: integer;
   Key1, Key2: word;
   Shift1, Shift2: TShiftState;
 begin
@@ -2248,10 +2525,10 @@ begin
     end else begin
       p:=1;
       Key1:=word(ReadNextInt);
-      Shift1:=IntToShiftState(ReadNextInt);
+      Shift1:=FixShift(IntToShiftState(ReadNextInt));
       if FileVersion>2 then begin
         Key2:=word(ReadNextInt);
-        Shift2:=IntToShiftState(ReadNextInt);
+        Shift2:=FixShift(IntToShiftState(ReadNextInt));
       end else begin
         Key2:=VK_UNKNOWN;
         Shift2:=[];
@@ -2259,10 +2536,10 @@ begin
       Relations[a].ShortcutA:=IDEShortCut(Key1, Shift1, Key2, Shift2);
 
       Key1:=word(ReadNextInt);
-      Shift1:=IntToShiftState(ReadNextInt);
+      Shift1:=FixShift(IntToShiftState(ReadNextInt));
       if FileVersion>2 then begin
         Key2:=word(ReadNextInt);
-        Shift2:=IntToShiftState(ReadNextInt);
+        Shift2:=FixShift(IntToShiftState(ReadNextInt));
       end else begin
         Key2:=VK_UNKNOWN;
         Shift2:=[];

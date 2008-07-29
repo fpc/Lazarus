@@ -461,7 +461,7 @@ end;
 function TCustomShortCutGrabBox.GetDefaultShiftButtons: TShiftState;
 begin
   {$IFDEF Darwin}
-  Result:=[ssCtrl,ssShift,ssAlt,ssHyper];
+  Result:=[ssCtrl,ssShift,ssAlt,ssMeta];
   {$ELSE}
   Result:=[ssCtrl,ssShift,ssAlt];
   {$ENDIF}

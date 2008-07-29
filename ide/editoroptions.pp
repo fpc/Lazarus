@@ -3195,25 +3195,22 @@ begin
     with ListBox do
     begin
       Name := 'ListBox';
+      Align:=alTop;
       Parent := Self;
-      Left := 0;
-      Top  := 0;
-      Width := Self.ClientWidth - 4;
-      Height := Self.ClientHeight - 50;
     end;
 
     BackButton := TButton.Create(Self);
     with BackButton do
     begin
       Name := 'BackButton';
+      AutoSize:=true;
+      Anchors:=[akBottom];
       Parent := Self;
-      Width := 60;
-      Height := 25;
+      AnchorParallel(akBottom,6,Self);
       Caption := dlgEdBack;
-      Left := ((Self.ClientWidth - 4) - Width) div 2;
-      Top  := Self.ClientHeight - 38;
       OnClick := @BackButtonClick;
     end;
+    ListBox.AnchorToNeighbour(akBottom,6,BackButton);
   end;
 end;
 

@@ -160,6 +160,7 @@ begin
 
   if GetKeyState(VK_SHIFT) < 0 then Include(Result, ssShift);
   if GetKeyState(VK_CONTROL) < 0 then Include(Result, ssCtrl);
+  if GetKeyState(VK_LWIN) < 0 then Include(Result, ssMeta);
   if KeyData and $20000000 <> 0 then Include(Result, ssAlt);
 end;
 

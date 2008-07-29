@@ -1344,8 +1344,13 @@ begin
     if (GetCurrentEventKeyModifiers and shiftKey) > 0 then
       Result := StateDown;
   VK_CONTROL:
+    if (GetCurrentEventKeyModifiers and controlKey) > 0 then
+      // the ssCtrl/VK_CONTROL is mapped to controlKey under MacOS
+      Result := StateDown;
+  VK_LWIN, VK_RWIN:
+    // distinguish left and right
     if (GetCurrentEventKeyModifiers and cmdKey) > 0 then
-      // the ssCtrl/VK_CONTROL is mapped to cmdKey under MacOS
+      // the ssMeta/VK_LWIN is mapped to cmdKey under MacOS
       Result := StateDown;
   VK_LBUTTON:
     if (GetCurrentEventButtonState and $01) > 0 then Result := StateDown;

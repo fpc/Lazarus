@@ -376,11 +376,11 @@ const
 
     case diff of
       0          : exit;  //nothing (that we cared of) changed
-      cmdKey     : VKKeyCode := VK_CONTROL; //command mapped to control
+      controlKey : VKKeyCode := VK_CONTROL; //command mapped to control
       shiftKey   : VKKeyCode := VK_SHIFT;
       alphaLock  : VKKeyCode := VK_CAPITAL; //caps lock
       optionKey  : VKKeyCode := VK_MENU;    //option is alt
-      controlKey : VKKeyCode := VK_LWIN;    //meta... map to left Windows Key?
+      cmdKey     : VKKeyCode := VK_LWIN;    //meta... map to left Windows Key?
       else exit; //Error! More that one bit changed in the modifiers?
     end;
     Result:=true;

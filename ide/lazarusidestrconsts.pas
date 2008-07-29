@@ -1960,6 +1960,9 @@ resourcestring
   srVK_RETURN     = 'Return';
   srVK_SHIFT      = 'Shift';
   srVK_CONTROL    = 'Control';
+  srVK_SUPER      = 'Super';
+  srVK_META       = 'Meta';
+  srVK_CMD        = 'Cmd';
   srVK_MENU       = 'Menu';
   srVK_PAUSE      = 'Pause key';
   srVK_CAPITAL    = 'Capital';
