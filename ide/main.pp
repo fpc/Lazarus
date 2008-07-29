@@ -11429,7 +11429,7 @@ var
   CurDesigner: TDesigner;
 begin
   if not (APersistent is TComponent) then exit;
-
+  //DebugLn(['TMainIDE.OnPropHookPersistentDeleting ',dbgsName(APersistent)]);
   CurDesigner:=TDesigner(FindRootDesigner(TComponent(APersistent)));
   if CurDesigner=nil then exit;
 
@@ -11455,6 +11455,7 @@ begin
 
     // remove component definition from owner source
     OwnerClassName:=CurDesigner.LookupRoot.ClassName;
+    //DebugLn(['TMainIDE.OnPropHookPersistentDeleting ',dbgsName(APersistent),' OwnerClassName=',OwnerClassName]);
     CodeToolBoss.RemovePublishedVariable(ActiveUnitInfo.Source,OwnerClassName,
                                          TComponent(APersistent).Name,false);
   end;

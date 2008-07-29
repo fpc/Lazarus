@@ -225,7 +225,7 @@ each control that's dropped onto the form
     function CreateUniqueComponentName(const AClassName: string;
                                        OwnerComponent: TComponent): string;
     function CreateComponentInterface(AComponent: TComponent;
-                                     WithChilds: Boolean): TIComponentInterface;
+                                WithOwnedChilds: Boolean): TIComponentInterface;
     procedure CreateChildComponentInterfaces(AComponent: TComponent);
     function GetDefaultComponentParent(TypeClass: TComponentClass
                                        ): TIComponentInterface; override;
@@ -2396,14 +2396,14 @@ begin
 end;
 
 Function TCustomFormEditor.CreateComponentInterface(
-  AComponent: TComponent; WithChilds: Boolean): TIComponentInterface;
+  AComponent: TComponent; WithOwnedChilds: Boolean): TIComponentInterface;
 Begin
   Result:=FindComponent(AComponent);
   if Result=nil then begin
     Result := TComponentInterface.Create(AComponent);
     FComponentInterfaces.Add(Result);
   end;
-  if WithChilds then
+  if WithOwnedChilds then
     CreateChildComponentInterfaces(AComponent);
 end;
 

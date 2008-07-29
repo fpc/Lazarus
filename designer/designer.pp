@@ -1924,7 +1924,7 @@ begin
     if DeletingPersistent.Count=0 then exit;
     while DeletingPersistent.Count>0 do begin
       APersistent:=TPersistent(DeletingPersistent[DeletingPersistent.Count-1]);
-      //writeln('TDesigner.DoDeleteSelectedComponents A ',AComponent.Name,':',AComponent.ClassName,' ',DbgS(AComponent));
+      //debugln(['TDesigner.DoDeleteSelectedComponents A ',dbgsName(APersistent),' ',(APersistent is TComponent) and (TheFormEditor.FindComponent(TComponent(APersistent))<>nil)]);
       RemovePersistentAndChilds(APersistent);
       //writeln('TDesigner.DoDeleteSelectedComponents B ',DeletingPersistent.IndexOf(AComponent));
     end;
@@ -1942,7 +1942,7 @@ var
   Hook: TPropertyEditorHook;
 begin
   if APersistent=nil then exit;
-  //writeln('TDesigner.DoDeleteComponent A ',AComponent.Name,':',AComponent.ClassName,' ',DbgS(AComponent));
+  //debugln(['TDesigner.DoDeletePersistent A ',dbgsName(APersistent),' FreeIt=',FreeIt]);
   PopupMenuComponentEditor:=nil;
   // unselect component
   ControlSelection.Remove(APersistent);
@@ -1951,9 +1951,10 @@ begin
     // this component is currently in the process of deletion or the component
     // was not properly created
     // -> do not call handlers and simply get rid of the rubbish
-    //writeln('TDesigner.DoDeleteComponent UNKNOWN ',AComponent.Name,':',AComponent.ClassName,' ',DbgS(AComponent));
-    if FreeIt then
+    if FreeIt then begin
+      //debugln('TDesigner.DoDeletePersistent UNKNOWN in formeditor: ',dbgsName(APersistent));
       APersistent.Free;
+    end;
     // unmark component
     DeletingPersistent.Remove(APersistent);
     IgnoreDeletingPersistent.Remove(APersistent);
@@ -2058,7 +2059,7 @@ var
 Begin
   if APersistent=nil then exit;
   {$IFDEF VerboseDesigner}
-  DebugLn('[TDesigner.RemovePersistentAndChilds] ',dbgsName(APersistent),' ',DbgS(APersistent));
+  DebugLn('[TDesigner.RemovePersistentAndChilds] START ',dbgsName(APersistent),' ',DbgS(APersistent));
   {$ENDIF}
   if (APersistent=FLookupRoot) or (APersistent=Form)
   or (IgnoreDeletingPersistent.IndexOf(APersistent)>=0)
@@ -2069,9 +2070,9 @@ Begin
     i:=AWinControl.ControlCount-1;
     while (i>=0) do begin
       ChildControl:=AWinControl.Controls[i];
-      if (ChildControl.Owner=FLookupRoot)
+      if (GetLookupRootForComponent(ChildControl)=FLookupRoot)
       and (IgnoreDeletingPersistent.IndexOf(ChildControl)<0) then begin
-        //Writeln('[TDesigner.RemoveComponentAndChilds] B ',AComponent.Name,':',AComponent.ClassName,' ',DbgS(AComponent),' Child=',ChildControl.Name,':',ChildControl.ClassName,' i=',i);
+        //Debugln(['[TDesigner.RemoveComponentAndChilds] B ',dbgsName(APersistent),' Child=',dbgsName(ChildControl),' i=',i,' ',TheFormEditor.FindComponent(ChildControl)<>nil]);
         RemovePersistentAndChilds(ChildControl);
         // the component list of the form has changed
         // -> restart the search
@@ -2082,7 +2083,7 @@ Begin
   end;
   // remove component
   {$IFDEF VerboseDesigner}
-  DebugLn('[TDesigner.RemovePersistentAndChilds] C ',dbgsName(APersistent));
+  DebugLn('[TDesigner.RemovePersistentAndChilds] DoDeletePersistent ',dbgsName(APersistent));
   {$ENDIF}
   DoDeletePersistent(APersistent,true);
 end;
@@ -2097,6 +2098,9 @@ Begin
       // a component has auto created a new component during deletion
       // -> ignore the new component
       IgnoreDeletingPersistent.Add(AComponent);
+    end else begin
+      if TheFormEditor<>nil then
+        TheFormEditor.CreateComponentInterface(AComponent,false);
     end;
   end
   else
