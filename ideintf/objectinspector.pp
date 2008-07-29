@@ -1734,7 +1734,7 @@ end;
 
 function TOICustomPropertyGrid.CanExpandRow(Row: TOIPropertyGridRow): boolean;
 var
-  AnObject: TObject;
+  AnObject: TPersistent;
   ParentRow: TOIPropertyGridRow;
 begin
   Result:=false;
@@ -1742,7 +1742,8 @@ begin
   if (not (paSubProperties in Row.Editor.GetAttributes)) then exit;
   // check if circling
   if (Row.Editor is TPersistentPropertyEditor) then begin
-    AnObject:=Row.Editor.GetObjectValue;
+    AnObject:=TPersistent(Row.Editor.GetObjectValue);
+    if FSelection.IndexOf(AnObject)>=0 then exit;
     ParentRow:=Row.Parent;
     while ParentRow<>nil do begin
       if (ParentRow.Editor is TPersistentPropertyEditor)
