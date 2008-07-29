@@ -252,13 +252,78 @@
         <descr/>
         <seealso/>
       </element>
-      <!-- property Visibility: public -->
-      <element name="TCustomPage.PageIndex">
-        <short>
-          <var>PageIndex </var>- integer index value for this page in the notebook</short>
+      <!-- variable Visibility: private -->
+      <element name="TCustomPage.FTabVisible">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
       </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomPage.FOnHide">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomPage.FOnShow">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function Visibility: protected -->
+      <element name="TCustomPage.DialogChar">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TCustomPage.DialogChar.Result">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomPage.DialogChar.Message">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomPage.DoHide">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomPage.DoShow">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
       <!-- constructor Visibility: public -->
-      <element name="TCustomPage.Create">
+      <element name="TCustomPage.Create" link="#lcl.Controls.TControl.Create">
         <short/>
         <descr/>
         <errors/>
@@ -282,6 +347,54 @@
       <element name="TCustomPage.AdjustClientRect.ARect">
         <short/>
       </element>
+      <element name="TCustomPage.AutoSizeDelayed" link="#lcl.Controls.TControl.AutoSizeDelayed">
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomPage.AutoSizeDelayed.Result">
+	      <short></short>
+      </element>
+      
+
+      <element name="TCustomPage.IsControlVisible" link="#lcl.Controls.TControl.IsControlVisible">
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomPage.IsControlVisible.Result">
+	      <short></short>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomPage.Visible" link="#lcl.Controls.TControl.Visible">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomPage.PageIndex">
+	      <short>
+		      <var>PageIndex </var>- integer index value for this page in the notebook</short>
+      </element>
+ 
+ 
+      <element name="TCustomPage.VisibleIndex">
+	      <short>
+		      <var>VisibleIndex</var> - returns the index number of a visible page</short>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomPage.VisibleIndex.Result">
+	      <short></short>
+      </element>
+      
+
+      <element name="TCustomPage.OnHide">
+	      <short>
+		      <var>OnHide</var> - event handler for hiding this page in a notebook</short>
+      </element>
+      <element name="TCustomPage.OnShow">
+	      <short>
+		      <var>OnShow</var> - event handler for showing (making visible) this page of a notebook</short>
+      </element>
+
       <!-- function Visibility: public -->
       <element name="TCustomPage.CanTab">
         <short>
@@ -306,31 +419,31 @@
           <var>ImageIndex</var> - integer index value for the image associated with this page</short>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomPage.Left">
+      <element name="TCustomPage.Left" link="#lcl.Controls.TControl.Left">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomPage.Top">
+      <element name="TCustomPage.Top" link="#lcl.Controls.TControl.Top">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomPage.Width">
+      <element name="TCustomPage.Width" link="#lcl.Controls.TControl.Width">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomPage.Height">
+      <element name="TCustomPage.Height" link="#lcl.Controls.TControl.Height">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomPage.TabOrder">
+      <element name="TCustomPage.TabOrder" link="#lcl.Controls.TWinControl.TabOrder">
         <short/>
         <descr/>
         <seealso/>
@@ -6357,20 +6470,6 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
       <element name="TBoundLabel.OnStartDrag">
         <short>Event handler for beginning of drag manoeuvre</short>
       </element>
-      <element name="TCustomPage.AutoSizeDelayed"/>
-      <element name="TCustomPage.IsControlVisible"/>
-      <element name="TCustomPage.VisibleIndex">
-        <short>
-          <var>VisibleIndex</var> - returns the index number of a visible page</short>
-      </element>
-      <element name="TCustomPage.OnHide">
-        <short>
-          <var>OnHide</var> - event handler for hiding this page in a notebook</short>
-      </element>
-      <element name="TCustomPage.OnShow">
-        <short>
-          <var>OnShow</var> - event handler for showing (making visible) this page of a notebook</short>
-      </element>
       <topic name="Multi-PageControls">
         <short>
           <var>Multi-PageControls</var> - controls that offer a selection of alternative pages for display</short>
@@ -6521,99 +6620,6 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
 	      <short></short>
       </element>
       
-      <!-- variable Visibility: private -->
-      <element name="TCustomPage.FTabVisible">
-	      <short></short>
-	      <descr>
-	      </descr>
-	      <seealso>
-	      </seealso>
-      </element>
-      
-      <!-- variable Visibility: private -->
-      <element name="TCustomPage.FOnHide">
-	      <short></short>
-	      <descr>
-	      </descr>
-	      <seealso>
-	      </seealso>
-      </element>
-      
-      <!-- variable Visibility: private -->
-      <element name="TCustomPage.FOnShow">
-	      <short></short>
-	      <descr>
-	      </descr>
-	      <seealso>
-	      </seealso>
-      </element>
-      
-      <!-- function Visibility: protected -->
-      <element name="TCustomPage.DialogChar">
-	      <short></short>
-	      <descr>
-	      </descr>
-	      <errors>
-	      </errors>
-	      <seealso>
-	      </seealso>
-      </element>
-      
-      <!-- function result Visibility: default -->
-      <element name="TCustomPage.DialogChar.Result">
-	      <short></short>
-      </element>
-      
-      <!-- argument Visibility: default -->
-      <element name="TCustomPage.DialogChar.Message">
-	      <short></short>
-      </element>
-      
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomPage.DoHide">
-	      <short></short>
-	      <descr>
-	      </descr>
-	      <errors>
-	      </errors>
-	      <seealso>
-	      </seealso>
-      </element>
-      
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomPage.DoShow">
-	      <short></short>
-	      <descr>
-	      </descr>
-	      <errors>
-	      </errors>
-	      <seealso>
-	      </seealso>
-      </element>
-      
-      <!-- function result Visibility: default -->
-      <element name="TCustomPage.AutoSizeDelayed.Result">
-	      <short></short>
-      </element>
-      
-      <!-- function result Visibility: default -->
-      <element name="TCustomPage.IsControlVisible.Result">
-	      <short></short>
-      </element>
-      
-      <!-- function result Visibility: default -->
-      <element name="TCustomPage.VisibleIndex.Result">
-	      <short></short>
-      </element>
-      
-      <!-- property Visibility: public -->
-      <element name="TCustomPage.Visible">
-	      <short></short>
-	      <descr>
-	      </descr>
-	      <seealso>
-	      </seealso>
-      </element>
       
       <!-- procedure Visibility: private -->
       <element name="TNBPages.PageListChange">
