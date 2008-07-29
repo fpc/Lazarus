@@ -483,7 +483,7 @@ function ThemedElementDetailsEqual(const D1, D2: TThemedElementDetails): Boolean
 const
   // Do not modify the copyright in any way! Usage of this unit is prohibited without the copyright notice
   // in the compiled binary file.
-  ThemeManagerCopyright: string = 'Theme manager © 2001-2005 Mike Lischke';
+  ThemeManagerCopyright: string = 'Theme manager Â© 2001-2005 Mike Lischke';
 
 implementation
 
