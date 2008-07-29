@@ -279,6 +279,7 @@ begin
   if not (AKey in [VK_CONTROL, VK_LCONTROL, VK_RCONTROL,
              VK_SHIFT, VK_LSHIFT, VK_RSHIFT,
              VK_MENU, VK_LMENU, VK_RMENU,
+             VK_LWIN, VK_RWIN,
              VK_UNKNOWN, VK_UNDEFINED])
   then begin
     Key:=AKey;
