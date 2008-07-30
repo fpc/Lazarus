@@ -952,7 +952,7 @@ var
 begin
   if not GetMakeModeAtX(X, NewMakeMode) then
     exit;
-  i := ItemsListBox.GetIndexAtY(Y);
+  i := ItemsListBox.ItemAtPos(Point(X,Y),true);
   if (i < 0) or (i >= Options.Count) then
     exit;
   Options.Items[i].MakeMode:=NewMakeMode;
@@ -968,7 +968,7 @@ begin
   with HintInfo^ do begin
     HintStr:='';
     if not GetMakeModeAtX(CursorPos.X, MakeMode) then exit;
-    i:=ItemsListBox.GetIndexAtY(CursorPos.Y);
+    i:=ItemsListBox.ItemAtPos(CursorPos,true);
     if (i<0) or (i>=Options.Count) then exit;
     HintStr := MakeModeNames[MakeMode];
   end;

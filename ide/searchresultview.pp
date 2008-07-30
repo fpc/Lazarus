@@ -260,14 +260,12 @@ begin
   begin
     with Sender as TLazSearchResultLB do
     begin
-      fMouseOverIndex:= GetIndexAtY(Y);
-      if (fMouseOverIndex > -1) and (fMouseOverIndex < Items.Count) then
-      begin
-        if (Canvas.TextWidth(Items[fMouseOverIndex]) > Width) then
-          ShowHint:= True
-        else
-          ShowHint:= False;
-      end;//if
+      fMouseOverIndex:= ItemAtPos(Point(X,Y),true);
+      if (fMouseOverIndex > -1) and (fMouseOverIndex < Items.Count)
+      and (Canvas.TextWidth(Items[fMouseOverIndex]) > Width) then
+        ShowHint:= True
+      else
+        ShowHint:= False;
     end;//with
   end;//
 end;//LazLBMousemove

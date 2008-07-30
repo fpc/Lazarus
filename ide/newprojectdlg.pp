@@ -205,7 +205,7 @@ end;
 
 procedure TNewProjectDialog.ListBoxDblClick(Sender: TObject);
 begin
-  if ListBox.GetIndexAtY(ListBox.ScreenToClient(Mouse.CursorPos).Y) >= 0
+  if ListBox.ItemAtPos(ListBox.ScreenToClient(Mouse.CursorPos),true) >= 0
   then CreateButtonClick(Self);
 end;
 
