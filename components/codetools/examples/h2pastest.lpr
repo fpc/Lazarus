@@ -82,6 +82,9 @@ begin
       CCode:=CodeToolBoss.LoadFile(Filename,false,false);
       if CCode=nil then
         raise Exception.Create('loading failed '+Filename);
+      Tool.FindEnclosingIFNDEF(CCode);
+      Halt;
+
       if Src<>'' then
         Src:=Src+LineEnding;
       Src:=Src+CCode.Source;

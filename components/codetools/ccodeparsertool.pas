@@ -235,6 +235,8 @@ type
     function ExtractDefine(DefineNode: TCodeTreeNode;
                            out MacroName, MacroParamList, MacroValue: string): boolean;
 
+    function FindEnclosingIFNDEF: TCodeTreeNode;// finds the typical IFNDEF that encloses the whole header source
+
     procedure Replace(FromPos, ToPos: integer; const NewSrc: string);
 
     procedure IncreaseChangeStep;
@@ -360,9 +362,12 @@ function TCCodeParserTool.DirectiveToken: boolean;
       end else if AtomIsChar(')') then begin
         if BracketLevel=0 then
           RaiseException(') without (');
-        inc(BracketLevel);
-      end else if AtomIsCharOfSet('!+-*/') or AtomIs('!=') or AtomIs('==')
+        dec(BracketLevel);
+      end else if AtomIsCharOfSet('!+-*/><')
+      or AtomIs('!=') or AtomIs('==') or AtomIs('<=') or AtomIs('>=')
+      or AtomIs('&&') or AtomIs('||')
       then begin
+        // valid operator
       end else if IsIdentChar[Src[AtomStart]] then begin
         if AtomIs('defined') then begin
           // read  defined(macro)
@@ -1861,6 +1866,21 @@ begin
     dec(EndPos);
   MacroValue:=copy(Src,StartPos,EndPos-StartPos);
   Result:=true;
+end;
+
+function TCCodeParserTool.FindEnclosingIFNDEF: TCodeTreeNode;
+{ Search for the typical enclosing IFNDEF of c header file:
+   - No code in front
+   - #IFNDEF NAME
+   - #DEFINE NAME
+   - ...
+   - #ENDIF
+   - No code behind
+}
+begin
+  Result:=Tree.Root;
+  // skip non code
+  WriteDebugReport;
 end;
 
 function TCCodeParserTool.GetAtom: string;

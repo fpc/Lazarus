@@ -246,6 +246,7 @@ type
     Macros: TAVLTree;// tree of TH2PMacroStats
     function Convert(CCode, PascalCode: TCodeBuffer): boolean;
     procedure BuildH2PTree(ParentNode: TH2PNode = nil; StartNode: TCodeTreeNode = nil);
+    function FindEnclosingIFNDEF(CCode: TCodeBuffer): TCodeTreeNode;
     procedure SimplifyDirectives;
     procedure WritePascal(PascalCode: TCodeBuffer);
     procedure WritePascalToStream(s: TStream);
@@ -1945,7 +1946,7 @@ begin
 
   if CTool=nil then
     CTool:=TCCodeParserTool.Create;
-  // pare C header file
+  // parse C header file
   CTool.Parse(CCode);
   CTool.WriteDebugReport;
 
@@ -2018,6 +2019,15 @@ begin
       NextCNode:=nil;
     CNode:=NextCNode;
   end;
+end;
+
+function TH2PasTool.FindEnclosingIFNDEF(CCode: TCodeBuffer): TCodeTreeNode;
+begin
+  if CTool=nil then
+    CTool:=TCCodeParserTool.Create;
+  // parse C header file
+  CTool.Parse(CCode);
+  Result:=CTool.FindEnclosingIFNDEF;
 end;
 
 procedure TH2PasTool.SimplifyDirectives;
