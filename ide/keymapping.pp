@@ -1159,8 +1159,8 @@ begin
   ecJumpForward: SetResult(VK_H,[ssCtrl,ssShift],VK_UNKNOWN,[]);
   ecAddJumpPoint: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecViewJumpHistory: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecJumpToPrevError: SetResult(VK_ADD,[ssMeta],VK_UNKNOWN,[]);
-  ecJumpToNextError: SetResult(VK_ADD,[ssMeta,ssShift],VK_UNKNOWN,[]);
+  ecJumpToPrevError: SetResult(VK_ADD,[ssMeta,ssShift],VK_UNKNOWN,[]);
+  ecJumpToNextError: SetResult(VK_ADD,[ssMeta],VK_UNKNOWN,[]);
   ecOpenFileAtCursor: SetResult(VK_RETURN,[ssCtrl],VK_UNKNOWN,[]);
   ecProcedureList: SetResult(VK_G, [ssAlt],VK_UNKNOWN,[]);
 
