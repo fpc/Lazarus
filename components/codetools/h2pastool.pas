@@ -247,6 +247,7 @@ type
     function Convert(CCode, PascalCode: TCodeBuffer): boolean;
     procedure BuildH2PTree(ParentNode: TH2PNode = nil; StartNode: TCodeTreeNode = nil);
     function FindEnclosingIFNDEF(CCode: TCodeBuffer): TCodeTreeNode;
+    procedure UndefineEnclosingIFNDEF(CCode: TCodeBuffer);
     procedure SimplifyDirectives;
     procedure WritePascal(PascalCode: TCodeBuffer);
     procedure WritePascalToStream(s: TStream);
@@ -2028,6 +2029,18 @@ begin
   // parse C header file
   CTool.Parse(CCode);
   Result:=CTool.FindEnclosingIFNDEF;
+end;
+
+procedure TH2PasTool.UndefineEnclosingIFNDEF(CCode: TCodeBuffer);
+var
+  Node: TCodeTreeNode;
+  MacroName: String;
+begin
+  Node:=FindEnclosingIFNDEF(CCode);
+  if Node=nil then exit;
+  MacroName:=CTool.ExtractDirectiveFirstAtom(Node);
+  if MacroName='' then exit;
+  Undefines.Add(MacroName,'');
 end;
 
 procedure TH2PasTool.SimplifyDirectives;

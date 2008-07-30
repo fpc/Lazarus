@@ -85,6 +85,22 @@ const
   ccnFuncParameter  = 15+ccnBase;// e.g. ()
   ccnStatementBlock = 16+ccnBase;// e.g. {}
 
+  // values for Node.SubDesc
+  ccnsNone             =  0;
+  // values for Node.SubDesc if Node.Desc=ccnDirective
+  ccnsDirectiveIf      =  1;
+  ccnsDirectiveIfDef   =  2;
+  ccnsDirectiveIfNDef  =  3;
+  ccnsDirectiveElIf    =  4;
+  ccnsDirectiveElse    =  5;
+  ccnsDirectiveEndIf   =  6;
+  ccnsDirectiveDefine  =  7;
+  ccnsDirectiveUndef   =  8;
+  ccnsDirectiveInclude =  9;
+  ccnsDirectiveLine    = 10;
+  ccnsDirectiveError   = 11;
+  ccnsDirectivePragma  = 12;
+
 type
   TCCodeParserTool = class;
 
@@ -235,6 +251,9 @@ type
     function ExtractDefine(DefineNode: TCodeTreeNode;
                            out MacroName, MacroParamList, MacroValue: string): boolean;
 
+    function FindDirectiveBlockEnd(InnerNode: TCodeTreeNode): TCodeTreeNode;
+    function FindElseOrEndIf(IfOrElseNode: TCodeTreeNode): TCodeTreeNode;// find corresponding #EndIf or #Else or #ElIf
+    function FindEndIf(IfOrElseNode: TCodeTreeNode): TCodeTreeNode;// find corresponding #EndIf
     function FindEnclosingIFNDEF: TCodeTreeNode;// finds the typical IFNDEF that encloses the whole header source
 
     procedure Replace(FromPos, ToPos: integer; const NewSrc: string);
@@ -247,7 +266,7 @@ type
     property ChangeStep: integer read FChangeStep;
   end;
   
-function CCNodeDescAsString(Desc: TCCodeNodeDesc): string;
+function CCNodeDescAsString(Desc: TCCodeNodeDesc; SubDesc: TCCodeNodeDesc = 0): string;
 procedure InitCCodeKeyWordLists;
 
 var
@@ -259,12 +278,29 @@ implementation
 var
   KeyWordLists: TFPList;
 
-function CCNodeDescAsString(Desc: TCCodeNodeDesc): string;
+function CCNodeDescAsString(Desc: TCCodeNodeDesc; SubDesc: TCCodeNodeDesc): string;
 begin
   case Desc of
   ccnNone          : Result:='None';
   ccnRoot          : Result:='Root';
-  ccnDirective     : Result:='Directive';
+  ccnDirective     :
+    begin
+      Result:='Directive';
+      case SubDesc of
+      ccnsDirectiveIf      : Result:=Result+'.If';
+      ccnsDirectiveIfDef   : Result:=Result+'.IfDef';
+      ccnsDirectiveIfNDef  : Result:=Result+'.IfNDef';
+      ccnsDirectiveElIf    : Result:=Result+'.ElIf';
+      ccnsDirectiveElse    : Result:=Result+'.Else';
+      ccnsDirectiveEndIf   : Result:=Result+'.EndIf';
+      ccnsDirectiveDefine  : Result:=Result+'.Define';
+      ccnsDirectiveUndef   : Result:=Result+'.Undef';
+      ccnsDirectiveInclude : Result:=Result+'.Include';
+      ccnsDirectiveLine    : Result:=Result+'.Line';
+      ccnsDirectiveError   : Result:=Result+'.Error';
+      ccnsDirectivePragma  : Result:=Result+'.Pragma';
+      end;
+    end;
   ccnExtern        : Result:='extern-block';
   ccnEnumBlock     : Result:='enum-block';
   ccnEnumID        : Result:='enum-ID';
@@ -398,6 +434,7 @@ begin
     // read directive
     ReadRawNextAtom;
     if AtomIs('include') then begin
+      CurNode.SubDesc:=ccnsDirectiveInclude;
       ReadRawNextAtom;
       if AtomIsChar('<') then begin
         // #include <filename>  // search independent of source position
@@ -417,6 +454,7 @@ begin
     end else if AtomIs('define') then begin
       // #define FMAC(a,b) a here, then b
       // #define NONFMAC some text here
+      CurNode.SubDesc:=ccnsDirectiveDefine;
       ReadRawNextAtom;
       if not AtomIsIdentifier then
         RaiseExpectedButAtomFound('identifier');
@@ -425,9 +463,9 @@ begin
         AtomStart:=SrcPos;
         SrcPos:=AtomStart+1;
         ReadTilBracketClose(true);
-        ReadRawNextAtom;
       end;
     end else if AtomIs('undef') then begin
+      CurNode.SubDesc:=ccnsDirectiveUndef;
       ReadRawNextAtom;
       if not AtomIsIdentifier then
         RaiseExpectedButAtomFound('identifier');
@@ -435,12 +473,23 @@ begin
       {$IFDEF VerboseCDirectives}
       DebugLn(['TCCodeParserTool.DirectiveToken ',GetIndentStr(IfLevel*2),GetAtom]);
       {$ENDIF}
+      CurNode.SubDesc:=ccnsDirectiveIf;
       IncIfLevel(AtomStart);
       ReadExpression;
-    end else if AtomIs('ifdef') or AtomIs('ifndef') then begin
+    end else if AtomIs('ifdef') then begin
       {$IFDEF VerboseCDirectives}
       DebugLn(['TCCodeParserTool.DirectiveToken ',GetIndentStr(IfLevel*2),GetAtom]);
       {$ENDIF}
+      CurNode.SubDesc:=ccnsDirectiveIfDef;
+      IncIfLevel(AtomStart);
+      ReadRawNextAtom;
+      if not AtomIsIdentifier then
+        RaiseExpectedButAtomFound('identifier');
+    end else if AtomIs('ifndef') then begin
+      {$IFDEF VerboseCDirectives}
+      DebugLn(['TCCodeParserTool.DirectiveToken ',GetIndentStr(IfLevel*2),GetAtom]);
+      {$ENDIF}
+      CurNode.SubDesc:=ccnsDirectiveIfNDef;
       IncIfLevel(AtomStart);
       ReadRawNextAtom;
       if not AtomIsIdentifier then
@@ -449,6 +498,7 @@ begin
       {$IFDEF VerboseCDirectives}
       DebugLn(['TCCodeParserTool.DirectiveToken ',GetIndentStr(IfLevel*2-2),GetAtom]);
       {$ENDIF}
+      CurNode.SubDesc:=ccnsDirectiveElIf;
       if IfLevel=0 then
         RaiseException('elif without if');
       ReadExpression;
@@ -456,9 +506,11 @@ begin
       {$IFDEF VerboseCDirectives}
       DebugLn(['TCCodeParserTool.DirectiveToken ',GetIndentStr(IfLevel*2-2),GetAtom]);
       {$ENDIF}
+      CurNode.SubDesc:=ccnsDirectiveElse;
       if IfLevel=0 then
         RaiseException('else without if');
     end else if AtomIs('endif') then begin
+      CurNode.SubDesc:=ccnsDirectiveEndIf;
       if IfLevel=0 then
         RaiseException('endif without if');
       dec(IfLevel);
@@ -466,8 +518,11 @@ begin
       DebugLn(['TCCodeParserTool.DirectiveToken ',GetIndentStr(IfLevel*2),GetAtom]);
       {$ENDIF}
     end else if AtomIs('line') then begin
+      CurNode.SubDesc:=ccnsDirectiveLine;
     end else if AtomIs('error') then begin
+      CurNode.SubDesc:=ccnsDirectiveError;
     end else if AtomIs('pragma') then begin
+      CurNode.SubDesc:=ccnsDirectivePragma;
     end else begin
       RaiseExpectedButAtomFound('directive')
     end;
@@ -475,6 +530,7 @@ begin
   // read til end of line
   ReadTilCLineEnd(Src,SrcPos);
   AtomStart:=SrcPos;
+  //DebugLn(['TCCodeParserTool.DirectiveToken ',copy(Src,CurNode.StartPos,AtomStart-CurNode.Startpos)]);
   EndChildNode;
 end;
 
@@ -1868,6 +1924,74 @@ begin
   Result:=true;
 end;
 
+function TCCodeParserTool.FindDirectiveBlockEnd(InnerNode: TCodeTreeNode
+  ): TCodeTreeNode;
+// find the end of block that contains InnerNode
+begin
+  Result:=InnerNode;
+  if Result=nil then exit;
+  Result:=Result.Next;
+  IfLevel:=0;
+  while Result<>nil do begin
+    if Result.Desc=ccnDirective then begin
+      //DebugLn(['TCCodeParserTool.FindDirectiveBlockEnd ',NodeAsString(Result),' ',IfLevel]);
+      case Result.SubDesc of
+      ccnsDirectiveIf,ccnsDirectiveIfDef,ccnsDirectiveIfNDef:
+        IncIfLevel(Result.StartPos);
+      ccnsDirectiveElse,ccnsDirectiveElIf:
+        begin
+          if IfLevel=0 then
+            exit;
+          dec(IfLevel);
+          IncIfLevel(Result.StartPos);
+        end;
+      ccnsDirectiveEndIf:
+        begin
+          if IfLevel=0 then
+            exit;
+          dec(IfLevel);
+        end;
+      end;
+    end;
+    Result:=Result.Next;
+  end;
+end;
+
+function TCCodeParserTool.FindElseOrEndIf(IfOrElseNode: TCodeTreeNode
+  ): TCodeTreeNode;
+// find corresponding #EndIf or #Else or #ElIf
+begin
+  Result:=IfOrElseNode;
+  // check if IfOrElseNode is valid
+  if (Result=nil) or (Result.Desc<>ccnDirective)
+  or (not (Result.SubDesc in [ccnsDirectiveIf,ccnsDirectiveIfDef,
+                      ccnsDirectiveIfNDef,ccnsDirectiveElIf,ccnsDirectiveElse]))
+  then
+    exit(nil);
+  // check if next node is the end of the block
+  Result:=Result.Next;
+  if Result=nil then exit;
+  if (Result.Desc=ccnDirective)
+  and (Result.SubDesc in [ccnsDirectiveElIf,ccnsDirectiveElse,ccnsDirectiveEndIf])
+  then
+    exit;
+  // Result is a node in the block => search end of block
+  Result:=FindDirectiveBlockEnd(Result);
+end;
+
+function TCCodeParserTool.FindEndIf(IfOrElseNode: TCodeTreeNode): TCodeTreeNode;
+// find corresponding #EndIf
+begin
+  Result:=IfOrElseNode;
+  repeat
+    Result:=FindElseOrEndIf(Result);
+    if (Result=nil)
+    or ((Result.Desc=ccnDirective) and (Result.SubDesc=ccnsDirectiveEndIf))
+    then
+      exit;
+  until false;
+end;
+
 function TCCodeParserTool.FindEnclosingIFNDEF: TCodeTreeNode;
 { Search for the typical enclosing IFNDEF of c header file:
    - No code in front
@@ -1877,10 +2001,53 @@ function TCCodeParserTool.FindEnclosingIFNDEF: TCodeTreeNode;
    - #ENDIF
    - No code behind
 }
+var
+  IfNDefNode: TCodeTreeNode;
+  MacroName: String;
+  DefNode: TCodeTreeNode;
+  DefMacroName: String;
+  EndIfNode: TCodeTreeNode;
+  Node: TCodeTreeNode;
 begin
-  Result:=Tree.Root;
-  // skip non code
+  Result:=nil;
   WriteDebugReport;
+  IfNDefNode:=Tree.Root;
+  // skip root and extern nodes
+  while (IfNDefNode<>nil) do begin
+    if (IfNDefNode.Desc<>ccnRoot)
+    and (IfNDefNode.Desc<>ccnExtern) then
+      break;
+    IfNDefNode:=IfNDefNode.Next;
+  end;
+  if IfNDefNode=nil then exit;
+  // check if IfNDefNode is #IFNDEF name
+  if (IfNDefNode.Desc<>ccnDirective)
+  or (IfNDefNode.SubDesc<>ccnsDirectiveIfNDef) then
+    exit;
+  MacroName:=ExtractDirectiveFirstAtom(IfNDefNode);
+  // check if next node is #DEFINE name
+  DefNode:=IfNDefNode.Next;
+  if (DefNode=nil) or (DefNode.Desc<>ccnDirective)
+  or (DefNode.SubDesc<>ccnsDirectiveDefine) then exit;
+  DefMacroName:=ExtractDirectiveFirstAtom(DefNode);
+  if CompareIdentifiers(PChar(MacroName),PChar(DefMacroName))<>0 then exit;
+  // find #endif
+  EndIfNode:=FindEndIf(IfNDefNode);
+  if EndIfNode=nil then exit;
+  // check that no code comes after the #EndIf
+  Node:=EndIfNode;
+  while (Node<>nil) do begin
+    if (Node.Desc=ccnExtern)
+    or ((Node.Desc=ccnDirective)
+        and (Node.SubDesc in [ccnsDirectiveIf,ccnsDirectiveIfDef,
+          ccnsDirectiveIfNDef,ccnsDirectiveElIf,ccnsDirectiveEndIf]))
+    then
+      Node:=Node.Next
+    else
+      exit;
+  end;
+  Result:=IfNDefNode;
+  DebugLn(['TCCodeParserTool.FindEnclosingIFNDEF ']);
 end;
 
 function TCCodeParserTool.GetAtom: string;
@@ -1960,7 +2127,8 @@ begin
   ccnName: Result:=copy(Src,Node.StartPos,Node.EndPos-Node.StartPos);
   else Result:='';
   end;
-  Result:=CCNodeDescAsString(Node.Desc)+'('+Result+' at '+CleanPosToStr(Node.StartPos)+')';
+  Result:=Result+'('+CCNodeDescAsString(Node.Desc,Node.SubDesc)
+                    +' at '+CleanPosToStr(Node.StartPos)+')';
 end;
 
 procedure InternalFinal;
