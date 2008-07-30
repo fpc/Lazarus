@@ -905,8 +905,11 @@ procedure TCCodeParserTool.ReadVariable(AsParameter: boolean);
         return memcmp(ba1, ba2, sizeof(bdaddr_t));
   }
   bdaddr_t *strtoba(const char *str);
+
+
 *)
 {
+  const char* (*item_name)(void* ctx);
   int (*fp)(char*); // pointer to function taking a char* argument; returns an int
   int * f(char*); // function taking a char* argument; returns a pointer to int
 
@@ -976,6 +979,10 @@ begin
 
   // read name
   ReadNextAtom;
+  while AtomIsChar('*') or AtomIs('const') do begin
+    // pointer or const
+    ReadNextAtom;
+  end;
   if AtomIs('operator') then begin
     if AsParameter then
       RaiseException('operator not allowed as parameter');
@@ -1012,11 +1019,6 @@ begin
     if not AtomIsChar(')') then
       RaiseExpectedButAtomFound(')');
   end else begin
-    while AtomIsChar('*') or AtomIs('const') do begin
-      // pointer or const
-      ReadNextAtom;
-    end;
-
     {$IFDEF VerboseCCodeParser}
     DebugLn(['TCCodeParserTool.ReadVariable name=',GetAtom]);
     {$ENDIF}
@@ -2047,7 +2049,6 @@ begin
       exit;
   end;
   Result:=IfNDefNode;
-  DebugLn(['TCCodeParserTool.FindEnclosingIFNDEF ']);
 end;
 
 function TCCodeParserTool.GetAtom: string;
