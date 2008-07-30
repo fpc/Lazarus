@@ -167,6 +167,9 @@ typedef unsigned short sa_family_t;
 int hci_inquiry(int dev_id, int len, int num_rsp, const uint8_t *lap, inquiry_info **ii, long flags);
 
 const char* (*item_name)(void* ctx);
+const struct AVOption *option;
+#if LIBAVUTIL_VERSION_INT < (50<<16)
+void av_log(void*, int level, const char *fmt, ...) __attribute__ ((__format__ (__printf__, 3, 4)));
 
 #ifdef __cplusplus
 }

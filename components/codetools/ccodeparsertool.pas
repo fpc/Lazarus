@@ -146,6 +146,7 @@ type
     procedure ReadStruct;
     procedure ReadUnion;
     procedure ReadConstant;
+    procedure Read__attribute__;
     
     procedure IncIfLevel(StartPos: integer);
 
@@ -401,7 +402,7 @@ function TCCodeParserTool.DirectiveToken: boolean;
         dec(BracketLevel);
       end else if AtomIsCharOfSet('!+-*/><')
       or AtomIs('!=') or AtomIs('==') or AtomIs('<=') or AtomIs('>=')
-      or AtomIs('&&') or AtomIs('||')
+      or AtomIs('&&') or AtomIs('||') or AtomIs('<<') or AtomIs('>>')
       then begin
         // valid operator
       end else if IsIdentChar[Src[AtomStart]] then begin
@@ -659,10 +660,7 @@ begin
   
   // read front attributes
   if AtomIs('__attribute__') then begin
-    ReadNextAtom;
-    if not AtomIsChar('(') then
-      RaiseExpectedButAtomFound('(');
-    ReadTilBracketClose(true);
+    Read__attribute__;
     ReadNextAtom;
   end;
   if AtomIsChar('{') then begin
@@ -687,10 +685,7 @@ begin
     // read after attributes
     ReadNextAtom;
     if AtomIs('__attribute__') then begin
-      ReadNextAtom;
-      if not AtomIsChar('(') then
-        RaiseExpectedButAtomFound('(');
-      ReadTilBracketClose(true);
+      Read__attribute__;
     end else begin
       UndoReadNextAtom;
     end;
@@ -878,6 +873,14 @@ begin
   EndChildNode;
 end;
 
+procedure TCCodeParserTool.Read__attribute__;
+begin
+  ReadNextAtom;
+  if not AtomIsChar('(') then
+    RaiseExpectedButAtomFound('(');
+  ReadTilBracketClose(true);
+end;
+
 procedure TCCodeParserTool.IncIfLevel(StartPos: integer);
 begin
   inc(IfLevel);
@@ -906,6 +909,7 @@ procedure TCCodeParserTool.ReadVariable(AsParameter: boolean);
   }
   bdaddr_t *strtoba(const char *str);
 
+  void av_log(void*, int level, const char *fmt, ...) __attribute__ ((__format__ (__printf__, 3, 4)));
 
 *)
 {
@@ -934,6 +938,7 @@ begin
     CreateChildNode(ccnVariable);
   MainNode:=CurNode;
   IsFunction:=false;
+  if AtomIs('const') then ReadNextAtom;
   if AtomIs('struct') then begin
     // for example: struct structname varname
     ReadNextAtom;
@@ -953,9 +958,8 @@ begin
         RaiseExpectedButAtomFound('identifier');
     end;
   end;
-  
   if AtomIs('const') then ReadNextAtom;
-  
+
   // prefixes: signed, unsigned
   // prefixes and/or names long, short
 
@@ -1046,6 +1050,10 @@ begin
     MainNode.Desc:=ccnFunction;
     ReadParameterList;
     ReadNextAtom;
+    if AtomIs('__attribute__') then begin
+      Read__attribute__;
+      ReadNextAtom;
+    end;
     if (CurNode.Parent.Desc=ccnTypedef) then begin
       if AtomIsChar('{') then
         RaiseException('a typedef can not have a statement block');
