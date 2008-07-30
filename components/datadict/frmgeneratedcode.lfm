@@ -381,7 +381,6 @@ object CodeForm: TCodeForm
   end
   object SynFreePascalSyn1: TSynFreePascalSyn
     Enabled = False
-    NestedComments = True
     left = 106
     top = 27
   end
