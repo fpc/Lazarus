@@ -81,6 +81,7 @@ Type
     Procedure DeleteTable(TD : TDDTableDef);
     Procedure DeleteField(FD : TDDFieldDef);
     Procedure DeleteIndex(ID : TDDIndexDef);
+    Procedure CreateCode;
     Property DataDictionary : TFPDataDictionary Read FDD;
     Property Modified : Boolean Read FModified Write SetModified;
     Property ImageOffset : Integer Read FImageOffset Write FImageOffset;
@@ -106,7 +107,7 @@ Const
 
 implementation
 
-uses Dialogs;
+uses DB, MemDS, Dialogs, fpcodegenerator;
 
 ResourceString
   SNodeDataDictionary = 'Datadictionary';
@@ -114,6 +115,34 @@ ResourceString
   SNodeFields         = 'Fields';
   SNewDictionary      = 'New dictionary';
   SNodeIndexes         = 'Indexes';
+
+Function CreateDatasetFromTabledef(TD : TDDTableDef;AOwner : TComponent = Nil) : TDataset;
+
+Var
+  MDS : TMemDataset;
+  I : Integer;
+  FD : TFieldDef;
+  FDD : TDDFieldDef;
+
+begin
+  MDS:=TMemDataset.Create(AOwner);
+  try
+    For I:=0 to TD.Fields.Count-1 do
+      begin
+      FDD:=TD.Fields[i];
+      MDS.FieldDefs.Add(FDD.FieldName,FDD.FieldType);
+      end;
+    MDS.CreateTable;
+    MDS.Open;
+  except
+    MDS.Free;
+    Raise;
+  end;
+  Result:=MDS;
+end;
+
+
+
 
 { TDataDictEditor }
 
@@ -718,6 +747,30 @@ begin
   FTV.Selected:=NN;
   ID.Free;
   Modified:=True;
+end;
+
+procedure TDataDictEditor.CreateCode;
+
+Var
+  TD : TDDTableDef;
+  DS : TDataset;
+
+begin
+  TD:=CurrentTable;
+  If Not assigned(TD) then
+    exit;
+  DS:=CreateDatasetFromTabledef(TD,Self);
+  try
+    With TFPCodeGenerator.Create(DS) do
+      try
+        DataSet:=DS;
+        Execute;
+      Finally
+        Free;
+      end;
+  finally
+    DS.Free;
+  end;
 end;
 
 initialization

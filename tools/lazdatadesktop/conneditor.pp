@@ -72,6 +72,8 @@ Type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     Procedure Connect(Connectstring : String);
     Procedure DisConnect;
+    Function CanCreateCode : Boolean;
+    Procedure CreateCode;
     Property Engine : TFPDDEngine Read FEngine Write SetEngine;
     Property ObjectType : TObjectType Read GetCurrentObjectType;
     Property Description : String Read FDescription Write SetDescription;
@@ -237,6 +239,44 @@ procedure TConnectionEditor.DisConnect;
 begin
   If Assigned(FEngine) then
     FEngine.Disconnect;
+end;
+
+function TConnectionEditor.CanCreateCode: Boolean;
+
+Var
+  C : TControl;
+
+begin
+  Result:=False;
+  If FPC.ActivePage=FTSQuery then
+    begin
+    Result:=Assigned(FQueryPanel.Dataset) and FQueryPanel.Dataset.Active;
+    end
+  else  If FPC.ActivePage=FTSDisplay then
+    begin
+    C:=FDisplay.Controls[0];
+    If Not (C is TDataPanel) then
+      C:=Nil;
+    Result:=Assigned(C);
+    end;
+end;
+
+procedure TConnectionEditor.CreateCode;
+
+Var
+  C : TControl;
+
+begin
+  If FPC.ActivePage=FTSQuery then
+    begin
+    FQueryPanel.CreateCode;
+    end
+  else If FPC.ActivePage=FTSDisplay then
+    begin
+    C:=FDisplay.Controls[0];
+    If (C is TDataPanel) then
+      TDataPanel(C).CreateCode;
+    end;
 end;
 
 function TConnectionEditor.NewNode(TV : TTreeView;ParentNode: TTreeNode; ACaption: String; AImageIndex : Integer

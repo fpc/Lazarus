@@ -50,6 +50,7 @@ type
     AClose: TAction;
     ACloseAll: TAction;
     ACopyConnection: TAction;
+    ACreateCode: TAction;
     ANewIndex: TAction;
     ADeleteIndex: TAction;
     ADeleteConnection: TAction;
@@ -108,6 +109,8 @@ type
     ToolButton4: TToolButton;
     TBAddIndex: TToolButton;
     TBDeleteIndex: TToolButton;
+    TBCreateCode: TToolButton;
+    ToolButton5: TToolButton;
     TSConnections: TTabSheet;
     ToolButton1: TToolButton;
     TBNewTable: TToolButton;
@@ -124,6 +127,8 @@ type
     TBNew: TToolButton;
     procedure ACloseAllExecute(Sender: TObject);
     procedure ACloseExecute(Sender: TObject);
+    procedure ACreateCodeExecute(Sender: TObject);
+    procedure ACreateCodeUpdate(Sender: TObject);
     procedure ADeleteFieldExecute(Sender: TObject);
     procedure ADeleteFieldUpdate(Sender: TObject);
     procedure ADeleteIndexExecute(Sender: TObject);
@@ -262,6 +267,7 @@ ResourceString
                           'Would you like to override the connection data ?';
   SUnknownDictionary = 'Unknown data dictionary: %s';
   SUnknownConnection = 'Unknown connection: %s';
+  SCreateConnection = 'Would you like to create a new connection for this database ?';
 
   
 { ---------------------------------------------------------------------
@@ -698,6 +704,37 @@ begin
   CloseCurrentTab;
 end;
 
+procedure TMainForm.ACreateCodeExecute(Sender: TObject);
+begin
+  If Assigned(CurrentEditor) then
+    begin
+    If Assigned(CurrentEditor.CurrentTable) then
+      CurrentEditor.CreateCode
+    end
+  else if Assigned(CurrentConnection) then
+    begin
+    CurrentConnection.CreateCode;
+    end;
+end;
+
+procedure TMainForm.ACreateCodeUpdate(Sender: TObject);
+
+Var
+  B : Boolean;
+
+begin
+  B:=Assigned(CurrentEditor);
+  If B then
+    B:=Assigned(CurrentEditor.CurrentTable)
+  else
+    begin
+    B:=Assigned(CurrentConnection);
+    If B then
+      B:=CurrentConnection.CanCreateCode;
+    end;
+  (Sender as TAction).Enabled:=B;
+end;
+
 procedure TMainForm.ADeleteFieldExecute(Sender: TObject);
 begin
   DeleteCurrentField;
@@ -1130,7 +1167,7 @@ procedure TMainForm.DoImport(Const EngineName, Connectionstring : String);
 Var
   DDE : TFPDDengine;
   CDE : TDatadictEditor;
-  CS  : String;
+  CS,CN  : String;
   L : TStringList;
   B : Boolean;
 
@@ -1139,7 +1176,12 @@ begin
   Try
     CS:=ConnectionString;
     If (CS='') then
+      begin
       CS:=DDE.GetConnectString;
+      If (CS<>'') then
+        if MessageDLg(SCreateConnection,mtConfirmation,[mbYes,mbNo],0)=mrYes then
+          GetConnectionName(CN);
+      end;
     If (CS='') then
       exit;
     DDE.Connect(CS);
