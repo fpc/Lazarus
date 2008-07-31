@@ -421,7 +421,7 @@ begin
       IsTrueType := (0 <> (TRUETYPE_FONTTYPE and LF.lfPitchAndFamily));
       // find out whether the font `IsDBCSFont'
       DC := GetDC(0);
-      hOldFont := SelectObject(DC, ABaseFont.Handle);
+      hOldFont := SelectObject(DC, ABaseFont.Reference.Handle);
       IsDBCSFont := (0 <> (GCP_DBCS and GetFontLanguageInfo(DC)));
       //debugln('TheFontsInfoManager.CreateFontsInfo IsDBCSFont=',IsDBCSFont);
       SelectObject(DC, hOldFont);
