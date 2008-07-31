@@ -18,6 +18,7 @@ Type
     FGenerator : TDDCustomCodeGenerator;
     FShowResult: Boolean;
     FSQL: TStrings;
+    FTableNameHint: String;
     function SelectGenerator: TCodeGeneratorItem;
     procedure SetDataset(const AValue: TDataset);
     procedure SetFieldDefs(const AValue: TDDFieldDefs);
@@ -35,6 +36,7 @@ Type
     Property SQL : TStrings Read FSQL Write SetSQL;
     Property ShowResult : Boolean Read FShowResult Write FShowResult default true;
     Property FileName : String Read FFileName Write FFileName;
+    Property TableNameHint : String Read FTableNameHint Write FTableNameHint;
   end;
 
 implementation
@@ -115,6 +117,8 @@ begin
     end;
   If FGenerator.NeedsSQL then
     FGenerator.SQL:=Self.SQL;
+  If (TableNameHint<>'') and IsPublishedProp(FGenerator.CodeOptions,'TableName') then
+    SetStrProp(FGenerator.CodeOptions,'TableName',TableNameHint);
   F:=TBaseConfigGeneratorForm.Create(Application);
   try
     F.ShowExtra:=True;

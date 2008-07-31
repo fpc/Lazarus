@@ -1,7 +1,7 @@
 object CodeForm: TCodeForm
-  Left = 290
+  Left = 350
   Height = 300
-  Top = 190
+  Top = 194
   Width = 400
   ActiveControl = MCode
   Caption = 'Generated code'
@@ -15,10 +15,10 @@ object CodeForm: TCodeForm
     Align = alClient
     Font.Height = 14
     Font.Name = '-adobe-courier-medium-r-normal-*-*-*-*-*-*-*-iso10646-1'
+    Font.Pitch = fpFixed
     ParentColor = False
     TabOrder = 0
     BookMarkOptions.Xoffset = 17
-    BookMarkOptions.OnChange = nil
     ExtraLineSpacing = 2
     Gutter.DigitCount = 3
     Gutter.LeftOffset = 4
@@ -349,7 +349,6 @@ object CodeForm: TCodeForm
     Lines.Strings = (
       ''
     )
-    SelectedColor.OnChange = nil
   end
   object PButtons: TPanel
     Height = 44

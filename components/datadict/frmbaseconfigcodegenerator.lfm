@@ -317,7 +317,6 @@ object BaseConfigGeneratorForm: TBaseConfigGeneratorForm
         Top = 28
         Width = 283
         Align = alClient
-        Filter = [tkInteger, tkChar, tkEnumeration, tkFloat, tkSet, tkMethod, tkSString, tkLString, tkAString, tkWString, tkVariant, tkArray, tkRecord, tkInterface, tkClass, tkObject, tkWChar, tkBool, tkInt64, tkQWord, tkDynArray, tkInterfaceRaw]
         ValueFont.Color = clMaroon
       end
     end
@@ -329,7 +328,6 @@ object BaseConfigGeneratorForm: TBaseConfigGeneratorForm
         Height = 279
         Width = 462
         Align = alClient
-        Filter = [tkInteger, tkChar, tkEnumeration, tkFloat, tkSet, tkMethod, tkSString, tkLString, tkAString, tkWString, tkVariant, tkArray, tkRecord, tkInterface, tkClass, tkObject, tkWChar, tkBool, tkInt64, tkQWord, tkDynArray, tkInterfaceRaw]
         PrefferedSplitterX = 200
         SplitterX = 200
         ValueFont.Color = clMaroon
