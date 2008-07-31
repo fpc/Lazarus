@@ -192,7 +192,8 @@ begin
   Result:=true;
   if (RSTDirectory='') then exit;// nothing to do
   RSTDirectory:=AppendPathDelim(RSTDirectory);
-  if not DirectoryIsWritableCached(RSTDirectory) then begin
+  PODirectory:=AppendPathDelim(PODirectory);
+  if not DirectoryIsWritableCached(PODirectory) then begin
     // only update writable directories
     DebugLn(['ConvertRSTFiles skipping read only directory ',RSTDirectory]);
     exit(true);
