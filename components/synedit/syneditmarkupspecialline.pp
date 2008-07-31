@@ -50,7 +50,7 @@ type
     Function GetNextMarkupColAfterRowCol(const aRow, aCol : Integer) : Integer; override;
 
     property OnSpecialLineColors: TSpecialLineColorsEvent
-      read fOnSpecialLineColors write fOnSpecialLineColors; deprecated; // use SpecialMarkup instead
+      read fOnSpecialLineColors write fOnSpecialLineColors;
     property OnSpecialLineMarkup: TSpecialLineMarkupEvent
       read fOnSpecialLineMarkup write fOnSpecialLineMarkup;
   end;
