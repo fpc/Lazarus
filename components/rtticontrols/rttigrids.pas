@@ -53,6 +53,7 @@ type
     property Constraints;
     property DefaultItemHeight;
     property DefaultValueFont;
+    property Filter;
     property Indent;
     property NameFont;
     property OnChangeBounds;
