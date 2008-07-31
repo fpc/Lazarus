@@ -68,9 +68,6 @@ uses
 {$ELSE}
   Windows,
 {$ENDIF}
-  {$IFDEF DebugCodeFolding}
-  Dialogs,
-  {$ENDIF}
   SysUtils, Classes, Messages, Controls, Graphics, Forms, StdCtrls, ExtCtrls,
 {$IFDEF SYN_MBCSSUPPORT}
   Imm,
