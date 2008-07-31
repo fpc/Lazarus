@@ -116,6 +116,8 @@ procedure TDataPanel.CreateCode;
 begin
   With TFPCodeGenerator.Create(Dataset) do
     try
+      If Self.TableName<>'' then
+        TableNameHint:=Self.TableName;
       Execute;
     Finally
       Free;

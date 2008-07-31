@@ -234,6 +234,7 @@ begin
   FTV.Parent:=Self;
   FTV.Align:=alClient;
   FTV.OnSelectionChanged:=@DoSelectNode;
+  FTV.ShowLines:=True;
   FIMgList:=TImageList.Create(Self);
   For I:=0 to 8 do
     begin
@@ -419,6 +420,7 @@ Var
 begin
   ClearEditor;
   TV:=TTreeView.Create(Self);
+  TV.ShowLines:=True;
   TV.Parent:=FEdit;
   TV.Align:=alClient;
   ShowTables(TV,Nil,False,false);
@@ -446,6 +448,7 @@ Var
 begin
   ClearEditor;
   TV:=TTreeView.Create(Self);
+  TV.ShowLines:=True;
   TV.Parent:=FEdit;
   TV.Align:=alClient;
   ShowFields(TV,Nil,TableDef);
@@ -460,6 +463,7 @@ Var
 begin
   ClearEditor;
   TV:=TTreeView.Create(Self);
+  TV.ShowLines:=True;
   TV.Parent:=FEdit;
   TV.Align:=alClient;
   ShowIndexes(TV,Nil,TableDef);
@@ -764,6 +768,7 @@ begin
     With TFPCodeGenerator.Create(DS) do
       try
         DataSet:=DS;
+        TableNameHint:=TD.TableName;
         Execute;
       Finally
         Free;
