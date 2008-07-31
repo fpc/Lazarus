@@ -330,8 +330,8 @@ type
     {$IFDEF SYN_LAZARUS}
     property DirectiveAttri: TSynHighlighterAttributes read fDirectiveAttri
       write fDirectiveAttri;
-    property NestedComments: boolean read FNestedComments;
     property CompilerMode: TPascalCompilerMode read FCompilerMode write SetCompilerMode;
+    property NestedComments: boolean read FNestedComments write FNestedComments;
     {$ENDIF}
     property D4syntax: boolean read FD4syntax write SetD4syntax default true;
   end;
