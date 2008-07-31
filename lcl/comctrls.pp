@@ -2418,7 +2418,7 @@ type
     property SelectionColor: TColor read FSelectedColor write SetSelectedColor default clHighlight;
     property SeparatorColor: TColor read fSeparatorColor write SetSeparatorColor default clGray;
     property TopItem: TTreeNode read GetTopItem write SetTopItem;
-    property TreeLineColor: TColor read FTreeLineColor write FTreeLineColor default cl3DLight;
+    property TreeLineColor: TColor read FTreeLineColor write FTreeLineColor default clWindowFrame;
     property ExpandSignColor: TColor read FExpandSignColor write FExpandSignColor default clWindowFrame;
   published
     property TabStop default true;

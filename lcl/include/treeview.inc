@@ -2749,7 +2749,7 @@ begin
   FStateChangeLink := TChangeLink.Create;
   FStateChangeLink.OnChange := @ImageListChange;
   FStates:=[tvsMaxLvlNeedsUpdate,tvsMaxRightNeedsUpdate,tvsScrollbarChanged];
-  FTreeLineColor := cl3DLight;
+  FTreeLineColor := clWindowFrame;
   FExpandSignColor := clWindowFrame;
 end;
 
