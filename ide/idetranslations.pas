@@ -184,7 +184,10 @@ var
       UpdatePoFile(FileList, OutputFilename);
       Result := true;
     except
-      Result := false;
+      on E: Exception do begin
+        DebugLn(['ConvertRSTFiles.UpdateList OutputFilename="',OutputFilename,'" ',E.Message]);
+        Result := false;
+      end;
     end;
   end;
   
