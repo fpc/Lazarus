@@ -635,6 +635,7 @@ procedure TCCodeParserTool.ReadStruct;
     struct hidp_connadd_req {
       int ctrl_sock;
     }
+    struct SwsContext; // no content
 
   As variable:
     struct hidp_conninfo *ci;
@@ -693,6 +694,8 @@ begin
     // using another struct
     CreateChildNode(ccnStructAlias);
     EndChildNode;
+  end else if AtomIsChar(';') then begin
+    // struct without content
   end else
     RaiseExpectedButAtomFound('{');
 

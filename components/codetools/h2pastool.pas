@@ -225,7 +225,7 @@ type
     procedure SimplifyDefineDirective(Node: TH2PDirectiveNode;
                                       var NextNode: TH2PDirectiveNode;
                                       var Changed: boolean);
-    procedure SimplifyIfDirective(Node: TH2PDirectiveNode; const Expression: string;
+    procedure SimplifyIfDirective(Node: TH2PDirectiveNode; Expression: string;
                                   var NextNode: TH2PDirectiveNode;
                                   var Changed: boolean);
     function SimplifyIfDirectiveExpression(var Expression: string): boolean;
@@ -1604,7 +1604,7 @@ begin
 end;
 
 procedure TH2PasTool.SimplifyIfDirective(Node: TH2PDirectiveNode;
-  const Expression: string; var NextNode: TH2PDirectiveNode;
+  Expression: string; var NextNode: TH2PDirectiveNode;
   var Changed: boolean);
 begin
   if Node.H2PNode=nil then exit;
@@ -1616,18 +1616,35 @@ begin
   then begin
     // no content
     DebugLn(['TH2PasTool.SimplifyIfDirective REMOVING empty if directive: ',Node.DescAsString(CTool)]);
-    if (NextNode=Node.NextBrother) and (NextNode.Desc=h2pdnEndIf) then
+    if NextNode.HasAsParent(Node)
+    or ((NextNode=Node.NextBrother) and (NextNode.Desc=h2pdnEndIf)) then
       NextNode:=TH2PDirectiveNode(NextNode.NextSkipChilds);
     DeleteDirectiveNode(Node,true,true);
     Changed:=true;
-  end else begin
-  
+    exit;
+  end;
+
+  Changed:=SimplifyIfDirectiveExpression(Expression);
+  if Expression='0' then begin
+    // always false
+    DebugLn(['TH2PasTool.SimplifyIfDirective REMOVING directive, because always false: ',Node.DescAsString(CTool)]);
+    if NextNode.HasAsParent(Node)
+    or ((NextNode=Node.NextBrother) and (NextNode.Desc=h2pdnEndIf)) then
+      NextNode:=TH2PDirectiveNode(NextNode.NextSkipChilds);
+    DeleteDirectiveNode(Node,true,true);
+    Changed:=true;
+    exit;
+  end;
+
+  if Changed and ((Node.Desc=h2pdnIf) or (Node.Desc=h2pdnElseIf)) then begin
+    Node.Expression:=Expression;
   end;
 end;
 
 function TH2PasTool.SimplifyIfDirectiveExpression(var Expression: string
   ): boolean;
 // returns true, if changed
+// uses current Undefines and Defines
 var
   p: Integer;
   AtomStart: integer;
@@ -1639,9 +1656,7 @@ begin
     ReadRawNextCAtom(Expression,p,AtomStart);
     if AtomStart>length(Expression) then break;
     CurAtom:=copy(Expression,AtomStart,p-AtomStart);
-    if (CurAtom='not') then begin
-
-    end;
+    if CurAtom='' then ;
   until false;
 end;
 
@@ -2040,6 +2055,7 @@ begin
   if Node=nil then exit;
   MacroName:=CTool.ExtractDirectiveFirstAtom(Node);
   if MacroName='' then exit;
+  //DebugLn(['TH2PasTool.UndefineEnclosingIFNDEF UNDEFINE ',MacroName]);
   Undefines.Add(MacroName,'');
 end;
 
@@ -2068,6 +2084,7 @@ var
   Changed: Boolean;
   H2PNode: TH2PNode;
 begin
+  // Undefines.WriteDebugReport;
   repeat
     Changed:=false;
     InitMacros;
@@ -2679,7 +2696,8 @@ end;
 
 procedure TH2PasTool.AddCommonCDefines;
 begin
-  Undefines['__cplusplus']:='1';
+  Undefines['__cplusplus']:='1';// avoid C++ and use the easier c part
+  Defines['__GNUC__']:='1';// assume the GNUC compiler
 end;
 
 procedure TH2PasTool.ResetMacros;

@@ -170,6 +170,8 @@ const char* (*item_name)(void* ctx);
 const struct AVOption *option;
 #if LIBAVUTIL_VERSION_INT < (50<<16)
 void av_log(void*, int level, const char *fmt, ...) __attribute__ ((__format__ (__printf__, 3, 4)));
+struct SwsContext; // SwsContext = record end;
+
 
 #ifdef __cplusplus
 }

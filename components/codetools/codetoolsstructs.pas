@@ -35,7 +35,7 @@ unit CodeToolsStructs;
 interface
 
 uses
-  Classes, SysUtils, AVL_Tree, CodeCache, CodeAtom;
+  Classes, SysUtils, FileProcs, AVL_Tree, CodeCache, CodeAtom;
   
 type
   TResourcestringInsertPolicy = (
@@ -124,6 +124,7 @@ type
     property Strings[const s: string]: string read GetStrings write SetStrings; default;
     property CaseSensitive: boolean read FCaseSensitive;
     property Tree: TAVLTree read FTree;
+    procedure WriteDebugReport;
   end;
   
 function CompareStringToStringItems(Data1, Data2: Pointer): integer;
@@ -423,6 +424,20 @@ begin
     FTree.Delete(Node);
     Item:=PStringToStringTreeItem(Node.Data);
     Dispose(Item);
+  end;
+end;
+
+procedure TStringToStringTree.WriteDebugReport;
+var
+  Node: TAVLTreeNode;
+  Item: PStringToStringTreeItem;
+begin
+  DebugLn(['TStringToStringTree.WriteDebugReport ',Tree.Count]);
+  Node:=Tree.FindLowest;
+  while Node<>nil do begin
+    Item:=PStringToStringTreeItem(Node.Data);
+    DebugLn([Item^.Name,'=',Item^.Value]);
+    Node:=Tree.FindSuccessor(Node);
   end;
 end;
 

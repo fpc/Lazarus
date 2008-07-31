@@ -87,7 +87,6 @@ begin
         Src:=Src+LineEnding;
       Src:=Src+CCode.Source;
     end;
-    Halt;
 
     // Step 2: create a temporary file
     Filename:='h2pasoutput.pas';
