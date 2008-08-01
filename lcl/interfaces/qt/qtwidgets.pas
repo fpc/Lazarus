@@ -5688,10 +5688,11 @@ begin
         end;
         QEvent_accept(Event);
       	Result := SlotKey(Sender, Event);
-        exit;
       end;
+      else
+        Result := inherited EventFilter(Sender, Event);
     end;
-    Result := inherited EventFilter(Sender, Event);
+
   end;
   
   EndEventProcessing;
