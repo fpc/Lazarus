@@ -4605,6 +4605,7 @@ begin
     QEventMouseButtonDblClick:
     begin
       if (FRealParentCtl <> nil)
+      and (FRealParentCtl.CanFocus)
       and not FRealParentCtl.Focused then
         FRealParentCtl.SetFocus;
       Result := False;
