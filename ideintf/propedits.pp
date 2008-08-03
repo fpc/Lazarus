@@ -584,6 +584,7 @@ type
     function FilterFunc(const ATestEditor: TPropertyEditor): Boolean;
     function GetPersistentReference: TPersistent; virtual;
     function GetSelections: TPersistentSelectionList; virtual;
+    function CheckNewValue(APersistent: TPersistent): boolean; virtual;
   public
     function AllEqual: Boolean; override;
     procedure Edit; override;
@@ -608,15 +609,14 @@ type
     function AllEqual: Boolean; override;
   end;
 
-{ TInterfaceProperty
+{ TInterfacePropertyEditor
   The default editor for interface references. It allows the user to set
   the value of this property to refer to an interface implemented by
   a component on the form (or via form linking) that is type compatible
   with the property being edited. }
 
-  TInterfaceProperty = class(TComponentPropertyEditor)
+  TInterfacePropertyEditor = class(TComponentPropertyEditor)
   private
-    //FGetValuesStrProc: TGetStrProc;
   protected
     procedure ReceiveComponentNames(const S: string);
     function GetComponent(const AInterface: Pointer {IInterface}): TComponent;
@@ -626,6 +626,16 @@ type
     function AllEqual: Boolean; override;
     procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const Value: string); override;
+  end;
+
+  { TNoteBookActiveControlPropertyEditor }
+
+  TNoteBookActiveControlPropertyEditor = class(TComponentPropertyEditor)
+  protected
+    function CheckNewValue(APersistent: TPersistent): boolean; override;
+  public
+    function GetAttributes: TPropertyAttributes; override;
+    procedure GetValues(Proc: TGetStrProc); override;
   end;
 
 { TComponentNamePropertyEditor
@@ -4121,6 +4131,11 @@ begin
   end;
 end;
 
+function TPersistentPropertyEditor.CheckNewValue(APersistent: TPersistent): boolean;
+begin
+  Result:=true;
+end;
+
 function TPersistentPropertyEditor.AllEqual: Boolean;
 var
   I: Integer;
@@ -4224,6 +4239,7 @@ begin
     end;
   end;
   if GetPersistentReference=Persistent then exit;
+  if not CheckNewValue(Persistent) then exit;
   SetPtrValue(Persistent);
   if Assigned(PropertyHook) then begin
     PropertyHook.ObjectReferenceChanged(Self,Persistent);
@@ -4249,40 +4265,40 @@ begin
 end;
 
 
-{ TInterfaceProperty }
+{ TInterfacePropertyEditor }
 
-function TInterfaceProperty.AllEqual: Boolean;
+function TInterfacePropertyEditor.AllEqual: Boolean;
 begin
   Result := False;
 end;
 
-function TInterfaceProperty.GetComponent(
+function TInterfacePropertyEditor.GetComponent(
   const AInterface: Pointer {IInterface}): TComponent;
 begin
   Result := nil;
 end;
 
-function TInterfaceProperty.GetComponentReference: TComponent;
+function TInterfacePropertyEditor.GetComponentReference: TComponent;
 begin
   Result := nil; //GetComponent(GetIntfValue);
 end;
 
-function TInterfaceProperty.GetSelections: TPersistentSelectionList{IDesignerSelections};
+function TInterfacePropertyEditor.GetSelections: TPersistentSelectionList{IDesignerSelections};
 begin
   Result := nil;
 end;
 
-procedure TInterfaceProperty.ReceiveComponentNames(const S: string);
+procedure TInterfacePropertyEditor.ReceiveComponentNames(const S: string);
 begin
 
 end;
 
-procedure TInterfaceProperty.GetValues(Proc: TGetStrProc);
+procedure TInterfacePropertyEditor.GetValues(Proc: TGetStrProc);
 begin
 
 end;
 
-procedure TInterfaceProperty.SetValue(const Value: string);
+procedure TInterfacePropertyEditor.SetValue(const Value: string);
 begin
 
 end;
@@ -6288,9 +6304,11 @@ begin
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('longint'),
     TControl, 'ClientHeight', THiddenPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
-    TForm, 'LCLVersion', THiddenPropertyEditor);
+    TCustomForm, 'LCLVersion', THiddenPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
-    TFrame, 'LCLVersion', THiddenPropertyEditor);
+    TCustomFrame, 'LCLVersion', THiddenPropertyEditor);
+  RegisterPropertyEditor(ClassTypeInfo(TCustomPage),
+    TCustomNotebook, 'ActivePage', TNoteBookActiveControlPropertyEditor);
 end;
 
 procedure FinalPropEdits;
@@ -6321,6 +6339,43 @@ end;
 procedure EditCollection(AComponent: TComponent; ACollection: TCollection; APropertyName: String);
 begin
   TCollectionPropertyEditor.ShowCollectionEditor(ACollection, AComponent, APropertyName);
+end;
+
+{ TNoteBookActiveControlPropertyEditor }
+
+function TNoteBookActiveControlPropertyEditor.CheckNewValue(
+  APersistent: TPersistent): boolean;
+var
+  AComponent: TPersistent;
+  Notebook: TCustomNotebook;
+begin
+  Result:=true;
+  if APersistent=nil then exit;
+  AComponent:=GetComponent(0);
+  if not (AComponent is TCustomNotebook) then
+    raise Exception.Create('invalid instance for this property editor');
+  Notebook:=TCustomNotebook(AComponent);
+  if Notebook.PageList.IndexOf(APersistent)<0 then
+    raise Exception.Create('only childs are allowed for this property');
+end;
+
+function TNoteBookActiveControlPropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result:=(inherited GetAttributes)-[paMultiSelect];
+end;
+
+procedure TNoteBookActiveControlPropertyEditor.GetValues(Proc: TGetStrProc);
+var
+  AComponent: TPersistent;
+  Notebook: TCustomNotebook;
+  i: Integer;
+begin
+  Proc(oisNone);
+  AComponent:=GetComponent(0);
+  if not (AComponent is TCustomNotebook) then exit;
+  Notebook:=TCustomNotebook(AComponent);
+  for i:=0 to Notebook.PageList.Count-1 do
+    Proc(TComponent(Notebook.PageList[i]).Name);
 end;
 
 initialization
