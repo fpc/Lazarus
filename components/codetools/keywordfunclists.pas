@@ -724,6 +724,7 @@ begin
     Add('REGISTER'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('REINTRODUCE'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('STDCALL'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SAFECALL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('STATIC'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('UNIMPLEMENTED',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('VIRTUAL'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -792,6 +793,7 @@ begin
     Add('INTERNCONST'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('SAVEREGISTERS',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('IOCHECK'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SAFECALL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
   IsKeyWordSection:=TKeyWordFunctionList.Create;
