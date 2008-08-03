@@ -865,6 +865,7 @@ var
   FocusHandle : HWND;
   MenuItem : TMenuItem;
 begin
+  //debugln(['TCustomForm.WndProc ',dbgsname(Self)]);
   with TheMessage do
   case Msg of
     LM_ACTIVATE, LM_SETFOCUS, LM_KILLFOCUS:

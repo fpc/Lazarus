@@ -780,6 +780,7 @@ end;
 procedure TCustomNotebook.CNNotify(var Message: TLMNotify);
 var
   OldPageIndex: LongInt;
+  APage: TCustomPage;
 begin
   with Message do
     case NMHdr^.code of
@@ -801,6 +802,11 @@ begin
                 //DebugLn(['TCustomNotebook.CNNotify ',DbgSName(Page[PageIndex]),' ',Page[PageIndex].Visible]);
                 ResizeDelayedAutoSizeChildren;
                 Change;
+                if FPageIndex>=0 then begin
+                  APage:=Page[FPageIndex];
+                  // update FShowing
+                  APage.UpdateShowing;
+                end;
               end;
             end;
           end;

@@ -1498,6 +1498,7 @@ begin
   begin
     // redirect messages to designer
     Form := GetParentForm(Self);
+    //debugln(['TControl.WndProc ',dbgsname(Self)]);
     if (Form <> nil) and (Form.Designer <> nil)
     and Form.Designer.IsDesignMsg(Self,TheMessage) then begin
       Exit;

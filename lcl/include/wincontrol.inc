@@ -5580,6 +5580,7 @@ begin
   if not (csDestroying in ComponentState) then
     AControl.RequestAlign;
   Perform(CM_CONTROLCHANGE, WParam(AControl), LParam(True));
+  //debugln(['TWinControl.InsertControl ',DbgSName(Self),' ',csDesigning in ComponentState,' ',DbgSName(AControl),' ',csDesigning in AControl.ComponentState]);
 end;
 
 {------------------------------------------------------------------------------

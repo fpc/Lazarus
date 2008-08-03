@@ -208,7 +208,6 @@ begin
   if Parent is TCustomNotebook then
   begin
     Result := (PageIndex = TCustomNotebook(Parent).PageIndex);
-    //if Name='FormEditorPage' then DebugLn(['TCustomPage.IsControlVisible PageIndex=',PageIndex,' Parent.PageIndex=',TCustomNotebook(Parent).PageIndex]);
   end else begin
     Result := inherited IsControlVisible;
   end;
