@@ -1563,7 +1563,7 @@ function TPkgManager.DoGetUnitRegisterInfo(const AFilename: string;
   
   function ErrorsHandled: boolean;
   begin
-    if (CodeToolBoss.ErrorMessage='') or IgnoreErrors then exit;
+    if (CodeToolBoss.ErrorMessage='') or IgnoreErrors then exit(true);
     MainIDE.DoJumpToCodeToolBossError;
     Result:=false;
   end;
@@ -3397,7 +3397,7 @@ var
 begin
   MainIDE.GetCurrentUnitInfo(ActiveSourceEditor,ActiveUnitInfo);
   if ActiveSourceEditor=nil then exit;
-  
+
   Filename:=ActiveUnitInfo.Filename;
   
   // check if filename is absolute
@@ -3431,7 +3431,10 @@ begin
   HasRegisterProc:=false;
   if FilenameIsPascalUnit(Filename) then begin
     Result:=DoGetUnitRegisterInfo(Filename,TheUnitName,HasRegisterProc,false);
-    if Result<>mrOk then exit;
+    if Result<>mrOk then begin
+      debugln(['TPkgManager.DoAddActiveUnitToAPackage DoGetUnitRegisterInfo failed']);
+      exit;
+    end;
   end;
   
   Result:=ShowAddFileToAPackageDlg(Filename,TheUnitName,HasRegisterProc);

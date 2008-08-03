@@ -271,6 +271,7 @@ type
                                       IgnoreErrors: boolean): TModalResult;
     function CheckCompileNeedDueToDependencies(FirstDependency: TPkgDependency;
                                            StateFileAge: longint): TModalResult;
+    function ExtractCompilerParamsForBuildAll(const CompParams: string): string;
     function CheckIfPackageNeedsCompilation(APackage: TLazPackage;
                     const CompilerFilename, CompilerParams, SrcFilename: string;
                     out NeedBuildAllFlag: boolean): TModalResult;
@@ -2647,6 +2648,17 @@ begin
     Dependency:=Dependency.NextRequiresDependency;
   end;
   Result:=mrNo;
+end;
+
+function TLazPackageGraph.ExtractCompilerParamsForBuildAll(
+  const CompParams: string): string;
+{ Some compiler flags require a clean build -B, because the compiler
+  does not recompile update some ppu.
+  Remove all flags that do not require build all:
+  -l -F* -B -e -i -o -s -v* }
+begin
+  Result:=CompParams;
+
 end;
 
 function TLazPackageGraph.CheckIfPackageNeedsCompilation(APackage: TLazPackage;
