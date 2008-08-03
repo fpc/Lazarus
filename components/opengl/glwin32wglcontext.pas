@@ -292,8 +292,10 @@ begin
     if DoubleBuffered then
       dwFlags:=dwFlags or PFD_DOUBLEBUFFER;
     if RGBA then
-      dwFlags:=dwFlags or PFD_TYPE_RGBA;
-    iPixelType:=24; // color depth
+      iPixelType:=PFD_TYPE_RGBA
+    else
+      iPixelType:=PFD_TYPE_COLORINDEX;
+    cColorBits:=24; // color depth
     cDepthBits:=16; // Z-Buffer
     iLayerType:=PFD_MAIN_PLANE;
   end;
