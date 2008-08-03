@@ -16,6 +16,7 @@
 unit GLCarbonAGLContext;
 
 {$mode objfpc}{$H+}
+{$linkframework agl}
 
 interface
 
@@ -93,7 +94,9 @@ var
   Control: TCarbonCustomControl;
   AttrList: PInteger;
   C: TCreateParams;
+  AGLInfo: PAGLControlInfo;
 begin
+  Result:=0;
   if AWinControl.Parent=nil then
     RaiseGDBException('GLCarbonAGLContext.LOpenGLCreateContext no parent');
 
@@ -103,6 +106,7 @@ begin
   C.Height := AWinControl.Height;
   // create a custom control
   Control := TCarbonCustomControl.Create(AWinControl, C);
+  debugln(['LOpenGLCreateContext ',dbgsName(Control)]);
 
   // create the AGL context
   disp := GetMainDevice ();
@@ -119,7 +123,10 @@ begin
 
   AGLControlInfo_FOURCC := MakeFourCC('ACI ');
 
-  CreateAGLControlInfo(Control.Widget, AGLContext);
+  AGLInfo:=CreateAGLControlInfo(Control.Widget, AGLContext);
+  if AGLInfo<>GetAGLControlInfo(Control.Widget) then
+    RaiseGDBException('GLCarbonAGLContext.LOpenGLCreateContext inconsistency');
+  Result:=HWnd(Control);
 end;
 
 procedure LOpenGLDestroyContextInfo(AWinControl: TWinControl);
@@ -178,7 +185,7 @@ function CreateAGLControlInfo(Control: ControlRef; AGLContext: TAGLContext
   ): PAGLControlInfo;
 begin
   New(Result);
-  FillChar(Result^, SizeOf(Result^), 0);
+  FillByte(Result^, SizeOf(Result^), 0);
   Result^.Control:=Control;
   Result^.AGLContext:=AGLContext;
 
@@ -206,7 +213,7 @@ end;
 
 function GetAGLContext(Control: ControlRef): TAGLContext;
 begin
-  Result:=GetAGLControlInfo(Control)^.AGLContext;
+  Result:=GetAGLControlInfo(TCarbonCustomControl(Control).Widget)^.AGLContext;
 end;
 
 end.
