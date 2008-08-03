@@ -2178,16 +2178,19 @@ begin
     if not (CurPos.Flag in AllCommonAtomWords) then continue;
     
     if (CurPos.Flag=cafEND) then begin
-      if BlockType=ebtRepeat then
-        RaiseStrExpectedWithBlockStartHint('"until"');
-      if (BlockType=ebtTry) and (TryType=ttNone) then
-        RaiseStrExpectedWithBlockStartHint('"finally"');
-      ReadNextAtom;
-      if (CurPos.Flag=cafPoint) and (BlockType<>ebtBegin) then begin
-        RaiseCharExpectedButAtomFound(';');
+      if (BlockType<>ebtAsm) or (CurPos.StartPos=1) or (Src[CurPos.StartPos-1]<>'@')
+      then begin
+        if BlockType=ebtRepeat then
+          RaiseStrExpectedWithBlockStartHint('"until"');
+        if (BlockType=ebtTry) and (TryType=ttNone) then
+          RaiseStrExpectedWithBlockStartHint('"finally"');
+        ReadNextAtom;
+        if (CurPos.Flag=cafPoint) and (BlockType<>ebtBegin) then begin
+          RaiseCharExpectedButAtomFound(';');
+        end;
+        UndoReadNextAtom;
+        break;
       end;
-      UndoReadNextAtom;
-      break;
     end else if EndKeyWordFuncList.DoItUppercase(UpperSrc,CurPos.StartPos,
         CurPos.EndPos-CurPos.StartPos)
       or UpAtomIs('REPEAT') then
