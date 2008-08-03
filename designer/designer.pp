@@ -1826,7 +1826,7 @@ Begin
   Handled:=false;
   Command:=FTheFormEditor.TranslateKeyToDesignerCommand(
                                                      TheMessage.CharCode,Shift);
-  //DebugLn('TDesigner.KEYDOWN Command=',dbgs(Command));
+  //DebugLn(['TDesigner.KEYDOWN Command=',dbgs(Command),' ',TheMessage.CharCode,' ',dbgs(Shift)]);
   DoProcessCommand(Self,Command,Handled);
   //DebugLn(['TDesigner.KeyDown Command=',Command,' Handled=',Handled,' TheMessage.CharCode=',TheMessage.CharCode]);
 
@@ -2004,8 +2004,8 @@ Begin
     Result:=true;
     case TheMessage.Msg of
       LM_PAINT:       Result := PaintControl(Sender, TLMPaint(TheMessage));
-      CN_KEYDOWN:     KeyDown(Sender,TLMKey(TheMessage));
-      CN_KEYUP:       KeyUP(Sender,TLMKey(TheMessage));
+      CN_KEYDOWN,CN_SYSKEYDOWN: KeyDown(Sender,TLMKey(TheMessage));
+      CN_KEYUP,CN_SYSKEYUP:     KeyUP(Sender,TLMKey(TheMessage));
       LM_LBUTTONDOWN,
       LM_RBUTTONDOWN,
       LM_LBUTTONDBLCLK: MouseDownOnControl(Sender,TLMMouse(TheMessage));
