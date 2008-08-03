@@ -340,7 +340,9 @@ var
   Widget: TCarbonWidget;    // the widget specific to the mouse event
                             // or the window's widget if none found
   KeyChar : char;           //Ascii char, when possible (xx_(SYS)CHAR)
+  VKKeyChar: char;          // Ascii char without modifiers
   UTF8Character: TUTF8Char; //char to send via IntfUtf8KeyPress
+  UTF8VKCharacter: TUTF8Char; //char without modifiers, used for VK_ key value
   VKKeyCode : word;         //VK_ code
   SendChar : boolean;       //Should we send char?
   IsSysKey: Boolean;        //Is alt (option) key down?
@@ -381,7 +383,10 @@ const
       alphaLock  : VKKeyCode := VK_CAPITAL; //caps lock
       optionKey  : VKKeyCode := VK_MENU;    //option is alt
       cmdKey     : VKKeyCode := VK_LWIN;    //meta... map to left Windows Key?
-      else exit; //Error! More that one bit changed in the modifiers?
+      else begin
+        debugln(['EmulateModifiersDownUp TODO: more than one modifier changed ',diff]);
+        exit; //Error! More that one bit changed in the modifiers?
+      end;
     end;
     Result:=true;
     
@@ -469,7 +474,30 @@ const
       Result:=true;
       exit;
     end;
-    
+
+    // untranslated key (key without modifiers)
+    OSError(KLGetCurrentKeyboardLayout(KeyboardLayout), SName, 'KLGetCurrentKeyboardLayout');
+    OSError(KLGetKeyboardLayoutProperty(KeyboardLayout, kKLuchrData, Layout), SName, 'KLGetKeyboardLayoutProperty');
+    TextLen:=0;
+    OSError(UCKeyTranslate(Layout^, KeyCode, kUCKeyActionDisplay,
+          0, LMGetKbdType,
+          kUCKeyTranslateNoDeadKeysMask, DeadKeys, 6, TextLen, @Buf[1]), SName, 'UCKeyTranslate');
+    UTF8VKCharacter:='';
+    VKKeyChar:=#0;
+    if TextLen>0 then begin
+      u:=UTF16CharacterToUnicode(PWideChar(@Buf[1]),CharLen);
+      if CharLen>0 then begin
+        UTF8VKCharacter:=UnicodeToUTF8(u);
+        if (UTF8VKCharacter<>'') and (ord(Utf8VKCharacter[1])<=127) then //It's (true) ascii.
+          VKKeyChar:=Utf8VKCharacter[1]
+        else //not ascii, get the Mac character.
+          OSError(
+            GetEventParameter(AEvent, kEventParamKeyMacCharCodes, typeChar, nil,
+              Sizeof(VKKeyChar), nil, @VKKeyChar), SName, AGetEvent,
+            'kEventParamKeyMacCharCodes');
+      end;
+    end;
+
 
     //printable keys
     //for these keys, send char or UTF8KeyPress
@@ -478,8 +506,6 @@ const
     if IsSysKey then
     begin // workaround for Command modifier suppressing shift
       DeadKeys := 0;
-      OSError(KLGetCurrentKeyboardLayout(KeyboardLayout), SName, 'KLGetCurrentKeyboardLayout');
-      OSError(KLGetKeyboardLayoutProperty(KeyboardLayout, kKLuchrData, Layout), SName, 'KLGetKeyboardLayoutProperty');
       OSError(UCKeyTranslate(Layout^, KeyCode, kUCKeyActionDisplay,
           (GetCurrentEventKeyModifiers and not cmdkey) shr 8, LMGetKbdType,
           kUCKeyTranslateNoDeadKeysMask, DeadKeys, 6, TextLen, @Buf[1]), SName, 'UCKeyTranslate');
@@ -500,7 +526,7 @@ const
       if CharLen=0 then exit;
       UTF8Character:=UnicodeToUTF8(u);
 
-      if ord(Utf8Character[1])<=127 then //It's (true) ascii.
+      if (UTF8Character<>'') and (ord(Utf8Character[1])<=127) then //It's (true) ascii.
         KeyChar:=Utf8Character[1]
       else //not ascii, get the Mac character.
         if OSError(
@@ -508,9 +534,11 @@ const
             Sizeof(KeyChar), nil, @KeyChar), SName, AGetEvent,
           'kEventParamKeyMacCharCodes') then Exit;
 
-      case KeyChar of
-        'a'..'z': VKKeyCode:=VK_A+ord(KeyChar)-ord('a');
-        'A'..'Z': VKKeyCode:=ord(KeyChar);
+      // the VKKeyCode is independent of the modifier
+      // => use the VKKeyChar instead of the KeyChar
+      case VKKeyChar of
+        'a'..'z': VKKeyCode:=VK_A+ord(VKKeyChar)-ord('a');
+        'A'..'Z': VKKeyCode:=ord(VKKeyChar);
         #27     : VKKeyCode:=VK_ESCAPE;
         #8      : VKKeyCode:=VK_BACK;
         ' '     : VKKeyCode:=VK_SPACE;
@@ -527,7 +555,7 @@ const
             MK_NUMPAD7: VKKeyCode:=VK_NUMPAD7;
             MK_NUMPAD8: VKKeyCode:=VK_NUMPAD8;
             MK_NUMPAD9: VKKeyCode:=VK_NUMPAD9
-            else VKKeyCode:=ord(KeyChar);
+            else VKKeyCode:=ord(VKKeyChar);
           end;
         else
         case KeyCode of
@@ -539,8 +567,8 @@ const
           MK_PADENTER:
             begin
               VKKeyCode:=VK_RETURN;
-              KeyChar:=#13;
-              UTF8Character:=KeyChar;
+              VKKeyChar:=#13;
+              UTF8Character:=VKKeyChar;
             end;
         end;
       end;
@@ -555,7 +583,7 @@ const
 
       {$IFDEF VerboseKeyboard}
        DebugLn('[TranslateMacKeyCode] VK=', DbgsVKCode(VKKeyCode), ' Utf8="',
-         UTF8Character, '" KeyChar="', KeyChar, '"');
+         UTF8Character, '" VKKeyChar="', VKKeyChar, '" KeyChar="',KeyCHar,'"' );
       {$ENDIF}
 
       Result := True;

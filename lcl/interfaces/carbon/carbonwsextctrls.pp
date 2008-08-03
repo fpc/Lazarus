@@ -292,8 +292,11 @@ class procedure TCarbonWSCustomNotebook.AddPage(const ANotebook: TCustomNotebook
   const AChild: TCustomPage; const AIndex: integer);
 begin
   if not CheckHandle(ANotebook, Self, 'AddPage') then Exit;
-  if not CheckHandle(AChild, Self, 'AddPage AChild') then Exit;
+  if AChild.HandleAllocated and not CheckHandle(AChild, Self, 'AddPage AChild') then Exit;
   
+  // create child handle
+  AChild.HandleNeeded;
+  // add page
   TCarbonTabsControl(ANotebook.Handle).Add(TCarbonTab(AChild.Handle), AIndex);
 end;
 

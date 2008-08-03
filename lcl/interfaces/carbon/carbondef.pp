@@ -185,9 +185,10 @@ uses
 function CheckHandle(const AWinControl: TWinControl; const AClass: TClass;
   const DbgText: String): Boolean;
 begin
-   if AWinControl <> nil then
+  if AWinControl <> nil then
   begin
-    if TObject(AWinControl.Handle) is TCarbonWidget then
+    if (AWinControl.HandleAllocated)
+    and (TObject(AWinControl.Handle) is TCarbonWidget) then
     begin
       {$IFDEF VerboseWSClass}
         DebugLn(AClass.ClassName + '.' + DbgText + ' for ' + AWinControl.Name);
@@ -198,8 +199,8 @@ begin
     else
     begin
       Result := False;
-      DebugLn(AClass.ClassName + '.' + DbgText + ' for ' + AWinControl.Name +
-        ' failed: Handle ' + DbgS(Integer(AWinControl.Handle)) + ' is invalid!');
+      debugln(['CheckHandle failed AWinControl=',DbgSName(AWinControl),' AClass=',DbgSName(AClass),' ',DbgText,' HandleAllocated=',AWinControl.HandleAllocated]);
+      DumpStack;
     end;
   end
   else
