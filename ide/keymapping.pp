@@ -1071,8 +1071,8 @@ begin
   ecPageRight: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecPageTop: SetResult(VK_PRIOR, [ssAlt],VK_UNKNOWN,[]);
   ecPageBottom: SetResult(VK_END, [ssAlt],VK_UNKNOWN,[]);
-  ecEditorTop: SetResult(VK_HOME,[],VK_UNKNOWN,[]);
-  ecEditorBottom: SetResult(VK_END,[],VK_UNKNOWN,[]);
+  ecEditorTop: SetResult(VK_HOME,[],VK_UP,[ssMeta]);
+  ecEditorBottom: SetResult(VK_END,[],VK_DOWN,[ssMeta]);
   ecScrollUp: SetResult(VK_UP, [ssCtrl],VK_UNKNOWN,[]);
   ecScrollDown: SetResult(VK_DOWN, [ssCtrl],VK_UNKNOWN,[]);
   ecScrollLeft: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
@@ -2338,7 +2338,7 @@ begin
     ecEditContextHelp);
   AddDefault(C, 'Reporting a bug', lisMenuReportingBug, ecReportingBug);
 
-  // designer  - without menu items in the IDE bar (at least no direct)
+  // designer  - without menu items in the IDE bar (at least not directly)
   C:=Categories[AddCategory('Designer',lisKeyCatDesigner,IDECmdScopeDesignerOnly)];
   AddDefault(C, 'Copy selected Components to clipboard',
     lisKMCopySelectedComponentsToClipboard, ecDesignerCopy);
@@ -2591,11 +2591,17 @@ var
   a:integer;
 begin
   Result:=nil;
+  //debugln(['TKeyCommandRelationList.Find START ',DbgSName(IDEWindowClass)]);
+  //if IDEWindowClass=nil then RaiseGDBException('');
   if Key.Key1=VK_UNKNOWN then exit;
   for a:=0 to FRelations.Count-1 do
     with Relations[a] do begin
       //if Command=ecDesignerSelectParent then
       //  debugln('TKeyCommandRelationList.Find A ',Category.Scope.Name,' ',dbgsName(IDEWindowClass),' ',dbgs(IDECmdScopeDesignerOnly.IDEWindowClassCount),' ',dbgsName(IDECmdScopeDesignerOnly.IDEWindowClasses[0]));
+      //debugln(['TKeyCommandRelationList.Find ',Name,' HasScope=',Category.Scope<>nil,' ',KeyAndShiftStateToEditorKeyString(ShortcutA),' ',KeyAndShiftStateToEditorKeyString(Key),' ',(Category.Scope<>nil)      and (not Category.Scope.HasIDEWindowClass(IDEWindowClass))]);
+      //if (Category.Scope<>nil) and (Category.Scope.IDEWindowClassCount>0) then
+      //  debugln(['TKeyCommandRelationList.Find ',DbgSName(Category.Scope.IDEWindowClasses[0]),' ',DbgSName(IDEWindowClass)]);
+
       if (Category.Scope<>nil)
       and (not Category.Scope.HasIDEWindowClass(IDEWindowClass)) then continue;
       if ((ShortcutA.Key1=Key.Key1) and (ShortcutA.Shift1=Key.Shift1) and
@@ -2889,6 +2895,20 @@ function TKeyCommandRelationList.TranslateKey(Key: word; Shift: TShiftState;
 var
   ARelation: TKeyCommandRelation;
 begin
+  //debugln(['TKeyCommandRelationList.TranslateKey ',DbgSName(IDEWindowClass)]);
+  //if IDEWindowClass=nil then DumpStack;
+  Result:=ecNone;
+  case Key of
+  VK_UNDEFINED,VK_UNKNOWN,
+  VK_CONTROL,VK_LCONTROL,VK_RCONTROL,
+  VK_SHIFT,VK_LSHIFT,VK_RSHIFT,
+  VK_LBUTTON,VK_MBUTTON,VK_RBUTTON,
+  VK_LWIN,VK_RWIN:
+    begin
+      //debugln(['TKeyCommandRelationList.TranslateKey ignoring ',dbgs(Key)]);
+      exit;
+    end;
+  end;
   if UseLastKey and (fLastKey.Key1<>VK_UNKNOWN) then begin
     // the last key had no command
     // => try a two key combination command
@@ -2915,9 +2935,7 @@ begin
     fLastKey.Key2 := VK_UNKNOWN;
     fLastKey.Shift2 := [];
     Result:=ARelation.Command
-  end
-  else
-    Result:=ecNone;
+  end;
 end;
 
 function TKeyCommandRelationList.IndexOf(ARelation: TKeyCommandRelation

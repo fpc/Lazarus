@@ -5478,8 +5478,6 @@ begin
         end;
         if ([ofProjectLoading,ofLoadHiddenResource]*OpenFlags=[]) then
           FormEditor1.ClearSelection;
-          
-          
 
         // create JIT component
         NewUnitName:=AnUnitInfo.UnitName;
@@ -10082,6 +10080,8 @@ begin
                      true,true)<>mrOk
   then begin
     DoJumpToCompilerMessage(-1,true);
+    Result:=mrAbort;
+    exit;
   end;
 
   Result:=mrOk;

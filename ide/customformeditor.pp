@@ -2392,6 +2392,7 @@ end;
 function TCustomFormEditor.TranslateKeyToDesignerCommand(Key: word;
   Shift: TShiftState): word;
 begin
+  //debugln(['TCustomFormEditor.TranslateKeyToDesignerCommand ',DbgSName(TDesignerIDECommandForm),' ',Key,' ',dbgs(Shift)]);
   Result:=EditorOpts.KeyMap.TranslateKey(Key,Shift,TDesignerIDECommandForm);
 end;
 

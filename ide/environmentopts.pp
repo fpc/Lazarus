@@ -1531,7 +1531,7 @@ begin
   AMacroList.Add(TTransferMacro.Create('LazarusDir','',
                  lisLazarusDirectory,@MacroFuncLazarusDir,[]));
   AMacroList.Add(TTransferMacro.Create('ExeExt','',
-                 lisLazarusDirectory,@MacroFuncExeExt,[]));
+                 lisFileExtensionOfPrograms, @MacroFuncExeExt, []));
   AMacroList.Add(TTransferMacro.Create('LanguageID','',
                  lisLazarusLanguageID,@MacroFuncLanguageID,[]));
   AMacroList.Add(TTransferMacro.Create('LanguageName','',

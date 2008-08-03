@@ -1158,8 +1158,7 @@ begin
 
   // Fill in history items
   LazFindReplaceDialog.TextToFindComboBox.Items.Assign(InputHistories.FindHistory);
-  if Replace then
-    LazFindReplaceDialog.ReplaceTextComboBox.Items.Assign(
+  LazFindReplaceDialog.ReplaceTextComboBox.Items.Assign(
                                                  InputHistories.ReplaceHistory);
 
   with EditorComponent do begin
@@ -1196,6 +1195,7 @@ begin
     end;
     //debugln('TSourceEditor.StartFindAndReplace B LazFindReplaceDialog.FindText="',dbgstr(LazFindReplaceDialog.FindText),'"');
 
+    Replace:=ssoReplace in LazFindReplaceDialog.Options;
     if Replace then
       InputHistories.AddToReplaceHistory(LazFindReplaceDialog.ReplaceText);
     InputHistories.AddToFindHistory(LazFindReplaceDialog.FindText);

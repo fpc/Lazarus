@@ -52,30 +52,31 @@ type
   TLazFindReplaceDialog = class(TForm)
     BackwardRadioButton: TRadioButton;
     BtnPanel: TPanel;
-    ReplaceAllButton: TBitBtn;
+    CancelButton: TBitBtn;
     CaseSensitiveCheckBox: TCheckBox;
+    DirectionGroupBox: TGroupBox;
     EntireScopeRadioButton: TRadioButton;
     ForwardRadioButton: TRadioButton;
     FromCursorRadioButton: TRadioButton;
     GlobalRadioButton: TRadioButton;
-    DirectionGroupBox: TGroupBox;
-    OriginGroupBox: TGroupBox;
-    ScopeGroupBox: TGroupBox;
-    OptionsGroupBox: TGroupBox;
     MultiLineCheckBox: TCheckBox;
     OKButton: TBitBtn;
+    OptionsGroupBox: TGroupBox;
+    OriginGroupBox: TGroupBox;
     PromptOnReplaceCheckBox: TCheckBox;
     RegularExpressionsCheckBox: TCheckBox;
-    SelectedRadioButton: TRadioButton;
-    TextToFindLabel: TLabel;
-    ReplaceWithLabel: TLabel;
-    TextToFindComboBox: TComboBox;
+    ReplaceAllButton: TBitBtn;
     ReplaceTextComboBox: TComboBox;
-    CancelButton: TBitBtn;
+    ReplaceWithCheckbox: TCheckBox;
+    ScopeGroupBox: TGroupBox;
+    SelectedRadioButton: TRadioButton;
+    TextToFindComboBox: TComboBox;
+    TextToFindLabel: TLabel;
     WholeWordsOnlyCheckBox: TCheckBox;
     procedure FormChangeBounds(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure OptionsGroupBoxResize(Sender: TObject);
+    procedure ReplaceWithCheckboxChange(Sender: TObject);
     procedure TextToFindComboboxKeyDown(Sender: TObject; var Key: Word;
        Shift: TShiftState);
     procedure OkButtonClick(Sender: TObject);
@@ -128,7 +129,7 @@ begin
   TextToFindComboBox.Text:='';
   TextToFindLabel.Caption:=dlgTextToFing;
   ReplaceTextComboBox.Text:='';
-  ReplaceWithLabel.Caption:=dlgReplaceWith;
+  ReplaceWithCheckbox.Caption:=dlgReplaceWith;
 
   OptionsGroupBox.Caption:=dlgFROpts;
 
@@ -213,6 +214,20 @@ begin
   ScopeGroupBox.Height := h;
   DirectionGroupBox.Height := OptionsGroupBox.Height-2*h-12;
   EnableAlign;
+end;
+
+procedure TLazFindReplaceDialog.ReplaceWithCheckboxChange(Sender: TObject);
+begin
+  ReplaceAllButton.Visible:=ReplaceWithCheckbox.Checked;
+  ReplaceTextComboBox.Enabled:=ReplaceAllButton.Visible;
+  PromptOnReplaceCheckBox.Enabled:=ReplaceAllButton.Visible;
+  if ReplaceAllButton.Visible then begin
+    Caption:=lisMenuReplace;
+    OkButton.Caption:=lisMenuReplace;
+  end else begin
+    Caption:=lisMenuFind;
+    OkButton.Caption:=lisMenuFind;
+  end;
 end;
 
 procedure TLazFindReplaceDialog.FormChangeBounds(Sender: TObject);
@@ -322,8 +337,8 @@ begin
     else ForwardRadioButton.Checked:=True;
 
   ReplaceAllButton.Visible:=ssoReplace in NewOptions;
+  ReplaceWithCheckbox.Checked:=ssoReplace in NewOptions;
   ReplaceTextComboBox.Enabled:=ReplaceAllButton.Visible;
-  ReplaceWithLabel.Enabled:=ReplaceAllButton.Visible;
   PromptOnReplaceCheckBox.Enabled:=ReplaceAllButton.Visible;
 
   if ssoReplace in NewOptions then begin
