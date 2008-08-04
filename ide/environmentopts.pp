@@ -36,7 +36,7 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, FPCAdds, LCLProc, Forms, Controls, Buttons, GraphType,
+  Classes, SysUtils, LCLProc, Forms, Controls, Buttons, GraphType,
   Graphics, ExtCtrls, StdCtrls, Spin, FileUtil, LResources, Dialogs,
   Laz_XMLCfg,
   ObjectInspector, IDEWindowIntf,

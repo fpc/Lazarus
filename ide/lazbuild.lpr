@@ -36,7 +36,7 @@ uses
   // IDEIntf
   MacroIntf, PackageIntf, IDEDialogs, ProjectIntf, IDEExternToolIntf,
   // IDE
-  IDEProcs, InitialSetupDlgs, OutputFilter, Compiler, CompilerOptions,
+  IDEProcs, InitialSetupDlgs, OutputFilter, CompilerOptions,
   TransferMacros, EnvironmentOpts, IDETranslations, LazarusIDEStrConsts,
   MiscOptions, Project, LazConf, PackageDefs, PackageLinks, PackageSystem,
   BuildLazDialog, BuildManager, BaseBuildManager;

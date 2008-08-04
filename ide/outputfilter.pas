@@ -1414,8 +1414,8 @@ end;
 
 procedure TOutputFilter.EndBufferingOutput;
 begin
+  if FBufferingOutputLock<=0 then RaiseException('');
   dec(FBufferingOutputLock);
-  if FBufferingOutputLock<0 then RaiseException('');
   if FBufferingOutputLock=0 then
     WriteOutput(true);
 end;

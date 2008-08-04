@@ -39,8 +39,8 @@ unit Compiler;
 interface
 
 uses
-  Classes, SysUtils, Process, LCLProc, Forms, Controls, FileUtil, AsyncProcess,
-  LazarusIDEStrConsts, CompilerOptions, Project, IDEProcs, OutputFilter;
+  Classes, SysUtils, Process, LCLProc, Forms, Controls, FileUtil,
+  LazarusIDEStrConsts, CompilerOptions, Project, OutputFilter;
 
 type
   TOnCmdLineCreate = procedure(var CmdLine: string; var Abort:boolean)
