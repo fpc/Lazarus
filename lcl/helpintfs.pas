@@ -38,7 +38,7 @@ unit HelpIntfs;
 interface
 
 uses
-  Classes, SysUtils;
+  Classes, SysUtils, LCLProc;
   
 type
   // All help-specific errors should be thrown as this type.
@@ -377,6 +377,7 @@ var
 begin
   ErrMsg:='';
   Result:=ShowHelpForMessageLine(MessageLine,MessageParts,ErrMsg);
+  //debugln(['ShowHelpOrErrorForMessageLine Result=',ord(Result),' ErrMsg=',ErrMsg,' ',dbgsName(HelpManager)]);
   HelpManager.ShowError(Result,ErrMsg);
 end;
 

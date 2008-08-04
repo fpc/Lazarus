@@ -1129,7 +1129,7 @@ begin
   DebugBoss.ConnectMainBarEvents;
   PkgBoss:=TPkgManager.Create(nil);
   PkgBoss.ConnectMainBarEvents;
-  HelpBoss:=THelpManager.Create(nil);
+  HelpBoss:=TIDEHelpManager.Create(nil);
   HelpBoss.ConnectMainBarEvents;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create MANAGERS');{$ENDIF}
   // setup the IDE components
@@ -12918,7 +12918,7 @@ begin
       writeln('[TMainIDE.OnSrcNotebookShowHintForSource] ************ ',ActiveUnitInfo.Source.Filename,' X=',CaretPos.X,' Y=',CaretPos.Y);
       {$ENDIF}
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.OnSrcNotebookShowHintForSource A');{$ENDIF}
-      THelpManager(HelpBoss).GetHintForSourcePosition(ActiveUnitInfo.Filename,
+      TIDEHelpManager(HelpBoss).GetHintForSourcePosition(ActiveUnitInfo.Filename,
                                             CaretPos,BaseURL,SmartHintStr);
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.OnSrcNotebookShowHintForSource B');{$ENDIF}
     end;

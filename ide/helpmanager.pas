@@ -124,9 +124,9 @@ type
   end;
   
   
-  { THelpManager }
+  { TIDEHelpManager }
 
-  THelpManager = class(TBaseHelpManager)
+  TIDEHelpManager = class(TBaseHelpManager)
     // help menu of the IDE menu bar
     procedure mnuHelpAboutLazarusClicked(Sender: TObject);
     procedure mnuHelpConfigureHelpClicked(Sender: TObject);
@@ -236,7 +236,7 @@ end;
 function LazCreateIDEHTMLProvider(Owner: TComponent): TAbstractIDEHTMLProvider;
 begin
   Result:=TLazIDEHTMLProvider.Create(Owner);
-  TLazIDEHTMLProvider(Result).Providers:=THelpManager(HelpBoss).FHTMLProviders;
+  TLazIDEHTMLProvider(Result).Providers:=TIDEHelpManager(HelpBoss).FHTMLProviders;
 end;
 
 function CompareLIHProviderStream(Data1, Data2: Pointer): integer;
@@ -635,30 +635,30 @@ begin
   Result:=IDEMacros.SubstituteMacros(s);
 end;
 
-{ THelpManager }
+{ TIDEHelpManager }
 
-procedure THelpManager.mnuHelpAboutLazarusClicked(Sender: TObject);
+procedure TIDEHelpManager.mnuHelpAboutLazarusClicked(Sender: TObject);
 begin
   ShowAboutForm;
 end;
 
-procedure THelpManager.mnuHelpConfigureHelpClicked(Sender: TObject);
+procedure TIDEHelpManager.mnuHelpConfigureHelpClicked(Sender: TObject);
 begin
   if ShowHelpOptionsDialog=mrOk then
     SaveHelpOptions;
 end;
 
-procedure THelpManager.mnuHelpOnlineHelpClicked(Sender: TObject);
+procedure TIDEHelpManager.mnuHelpOnlineHelpClicked(Sender: TObject);
 begin
   ShowLazarusHelpStartPage;
 end;
 
-procedure THelpManager.mnuHelpReportBugClicked(Sender: TObject);
+procedure TIDEHelpManager.mnuHelpReportBugClicked(Sender: TObject);
 begin
   ShowHelpOrError(lisReportingBugURL, lisMenuReportingBug, 'text/html');
 end;
 
-procedure THelpManager.RegisterIDEHelpDatabases;
+procedure TIDEHelpManager.RegisterIDEHelpDatabases;
 
   procedure CreateMainIDEHelpDB;
   var
@@ -768,7 +768,7 @@ begin
   CreateFPCMessagesHelpDB;
 end;
 
-procedure THelpManager.RegisterDefaultIDEHelpViewers;
+procedure TIDEHelpManager.RegisterDefaultIDEHelpViewers;
 var
   HelpViewer: THTMLBrowserHelpViewer;
 begin
@@ -777,12 +777,12 @@ begin
   HelpViewers.RegisterViewer(HelpViewer);
 end;
 
-procedure THelpManager.FindDefaultBrowser(var DefaultBrowser, Params: string);
+procedure TIDEHelpManager.FindDefaultBrowser(var DefaultBrowser, Params: string);
 begin
   GetDefaultBrowser(DefaultBrowser, Params);
 end;
 
-constructor THelpManager.Create(TheOwner: TComponent);
+constructor TIDEHelpManager.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   HelpBoss:=Self;
@@ -809,7 +809,7 @@ begin
     CreateIDEHTMLProvider:=@LazCreateIDEHTMLProvider;
 end;
 
-destructor THelpManager.Destroy;
+destructor TIDEHelpManager.Destroy;
 begin
   FreeThenNil(FHTMLProviders);
   FreeThenNil(CodeHelpBoss);
@@ -827,7 +827,7 @@ begin
   inherited Destroy;
 end;
 
-procedure THelpManager.UpdateFPCDocsHTMLDirectory;
+procedure TIDEHelpManager.UpdateFPCDocsHTMLDirectory;
 
   function IsFPCDocsHTMDirectory(const Directory: string): boolean;
   var
@@ -929,7 +929,7 @@ begin
   if TryDirectoryMask('/usr/local/share/doc/fpdocs-*') then exit;
 end;
 
-procedure THelpManager.ConnectMainBarEvents;
+procedure TIDEHelpManager.ConnectMainBarEvents;
 begin
   with MainIDEBar do begin
   itmHelpAboutLazarus.OnClick := @mnuHelpAboutLazarusClicked;
@@ -939,32 +939,32 @@ begin
   end;
 end;
 
-procedure THelpManager.LoadHelpOptions;
+procedure TIDEHelpManager.LoadHelpOptions;
 begin
   HelpOpts.Load;
 end;
 
-procedure THelpManager.SaveHelpOptions;
+procedure TIDEHelpManager.SaveHelpOptions;
 begin
   HelpOpts.Save;
 end;
 
-procedure THelpManager.ShowLazarusHelpStartPage;
+procedure TIDEHelpManager.ShowLazarusHelpStartPage;
 begin
   ShowIDEHelpForKeyword(lihcStartPage);
 end;
 
-procedure THelpManager.ShowIDEHelpForContext(HelpContext: THelpContext);
+procedure TIDEHelpManager.ShowIDEHelpForContext(HelpContext: THelpContext);
 begin
   ShowHelpOrErrorForContext(MainHelpDB.ID,HelpContext);
 end;
 
-procedure THelpManager.ShowIDEHelpForKeyword(const Keyword: string);
+procedure TIDEHelpManager.ShowIDEHelpForKeyword(const Keyword: string);
 begin
   ShowHelpOrErrorForKeyword(MainHelpDB.ID,Keyword);
 end;
 
-function THelpManager.ShowHelpForSourcePosition(const Filename: string;
+function TIDEHelpManager.ShowHelpForSourcePosition(const Filename: string;
   const CodePos: TPoint; var ErrMsg: string): TShowHelpResult;
   
   function ShowHelpForFPCKeyWord(const KeyWord: string): TShowHelpResult;
@@ -1049,11 +1049,11 @@ function THelpManager.ShowHelpForSourcePosition(const Filename: string;
         ListOfPCodeXYPosition,[fdlfWithoutEmptyProperties,fdlfWithoutForwards])
       then begin
         if ListOfPCodeXYPosition=nil then exit;
-        debugln('THelpManager.ShowHelpForSourcePosition B Success ',dbgs(ListOfPCodeXYPosition.Count));
+        debugln('TIDEHelpManager.ShowHelpForSourcePosition B Success ',dbgs(ListOfPCodeXYPosition.Count));
         // convert the source positions in pascal help context list
         for i:=0 to ListOfPCodeXYPosition.Count-1 do begin
           CurCodePos:=PCodeXYPosition(ListOfPCodeXYPosition[i]);
-          debugln('THelpManager.ShowHelpForSourcePosition C ',CurCodePos^.Code.Filename,' X=',dbgs(CurCodePos^.X),' Y=',dbgs(CurCodePos^.Y));
+          debugln('TIDEHelpManager.ShowHelpForSourcePosition C ',CurCodePos^.Code.Filename,' X=',dbgs(CurCodePos^.X),' Y=',dbgs(CurCodePos^.Y));
           NewList:=ConvertCodePosToPascalHelpContext(CurCodePos);
           if NewList<>nil then begin
             if PascalHelpContextLists=nil then
@@ -1064,7 +1064,7 @@ function THelpManager.ShowHelpForSourcePosition(const Filename: string;
         if PascalHelpContextLists=nil then exit;
 
         // invoke help system
-        debugln('THelpManager.ShowHelpForSourcePosition D PascalHelpContextLists.Count=',dbgs(PascalHelpContextLists.Count));
+        debugln('TIDEHelpManager.ShowHelpForSourcePosition D PascalHelpContextLists.Count=',dbgs(PascalHelpContextLists.Count));
         Result:=ShowHelpForPascalContexts(Filename,CodePos,PascalHelpContextLists,ErrMsg);
       end else begin
         MainIDEInterface.DoJumpToCodeToolBossError;
@@ -1082,7 +1082,7 @@ function THelpManager.ShowHelpForSourcePosition(const Filename: string;
 var
   CodeBuffer: TCodeBuffer;
 begin
-  debugln('THelpManager.ShowHelpForSourcePosition A Filename=',Filename,' ',dbgs(CodePos));
+  debugln('TIDEHelpManager.ShowHelpForSourcePosition A Filename=',Filename,' ',dbgs(CodePos));
   Result:=shrHelpNotFound;
   ErrMsg:='No help found for "'+Filename+'"'
          +' at ('+IntToStr(CodePos.Y)+','+IntToStr(CodePos.X)+')';
@@ -1097,7 +1097,7 @@ begin
   CollectDeclarations(CodeBuffer);
 end;
 
-function THelpManager.ConvertCodePosToPascalHelpContext(
+function TIDEHelpManager.ConvertCodePosToPascalHelpContext(
   ACodePos: PCodeXYPosition): TPascalHelpContextList;
 
   procedure AddContext(Descriptor: TPascalHelpContextType;
@@ -1190,7 +1190,7 @@ begin
   AddContextsBackwards(TCodeTool(Tool),Node);
 end;
 
-procedure THelpManager.ShowHelpForMessage(Line: integer);
+procedure TIDEHelpManager.ShowHelpForMessage(Line: integer);
 
   function ParseMessage(MsgItem: TIDEMessageLine): TStringList;
   begin
@@ -1204,11 +1204,11 @@ var
   MsgItem: TIDEMessageLine;
   MessageParts: TStringList;
 begin
-  //debugln('THelpManager.ShowHelpForMessage A Line=',dbgs(Line));
+  //debugln('TIDEHelpManager.ShowHelpForMessage A Line=',dbgs(Line));
   if MessagesView=nil then exit;
   if Line<0 then
     Line:=MessagesView.SelectedMessageIndex;
-  //DebugLn('THelpManager.ShowHelpForMessage B Line=',dbgs(Line),' ',dbgs(MessagesView.VisibleItemCount));
+  //DebugLn('TIDEHelpManager.ShowHelpForMessage B Line=',dbgs(Line),' ',dbgs(MessagesView.VisibleItemCount));
   if (Line<0) or (Line>=MessagesView.VisibleItemCount) then exit;
   MsgItem:=MessagesView.VisibleItems[Line];
   if MsgItem=nil then exit;
@@ -1218,7 +1218,7 @@ begin
   end;
 end;
 
-procedure THelpManager.ShowHelpForObjectInspector(Sender: TObject);
+procedure TIDEHelpManager.ShowHelpForObjectInspector(Sender: TObject);
 var
   AnInspector: TObjectInspectorDlg;
   Code: TCodeBuffer;
@@ -1226,7 +1226,7 @@ var
   ErrMsg: string;
   NewTopLine: integer;
 begin
-  //DebugLn('THelpManager.ShowHelpForObjectInspector ',dbgsName(Sender));
+  //DebugLn('TIDEHelpManager.ShowHelpForObjectInspector ',dbgsName(Sender));
   if Sender=nil then Sender:=ObjectInspector1;
   if Sender is TObjectInspectorDlg then begin
     AnInspector:=TObjectInspectorDlg(Sender);
@@ -1237,13 +1237,13 @@ begin
         ShowHelpForSourcePosition(Code.Filename,Caret,ErrMsg);
       end;
     end else begin
-      DebugLn('THelpManager.ShowHelpForObjectInspector show default help for OI');
+      DebugLn('TIDEHelpManager.ShowHelpForObjectInspector show default help for OI');
       ShowContextHelpForIDE(AnInspector);
     end;
   end;
 end;
 
-function THelpManager.GetHintForSourcePosition(const ExpandedFilename: string;
+function TIDEHelpManager.GetHintForSourcePosition(const ExpandedFilename: string;
   const CodePos: TPoint; out BaseURL, HTMLHint: string): TShowHelpResult;
 var
   Code: TCodeBuffer;
@@ -1257,11 +1257,11 @@ begin
     BaseURL,HTMLHint,CacheWasUsed)=chprSuccess
   then
     exit(shrSuccess);
-  DebugLn(['THelpManager.GetHintForSourcePosition not found']);
+  DebugLn(['TIDEHelpManager.GetHintForSourcePosition not found']);
   Result:=shrHelpNotFound;
 end;
 
-function THelpManager.ConvertSourcePosToPascalHelpContext(
+function TIDEHelpManager.ConvertSourcePosToPascalHelpContext(
   const CaretPos: TPoint; const Filename: string): TPascalHelpContextList;
 var
   CodePos: TCodeXYPosition;

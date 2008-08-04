@@ -359,7 +359,7 @@ type
   
 
   { THelpDatabases
-    Class for storing all registered THelpDatabase }
+    Class for storing all registered THelpDatabase(s) }
 
   THelpDatabases = class(THelpManager)
   private
@@ -1529,9 +1529,8 @@ begin
 
     // check if at least one node found
     if (Nodes=nil) or (Nodes.Count=0) then begin
-      // no node found for the message is not a bug
-      Result:=shrSuccess;
-      ErrMsg:='';
+      Result:=shrHelpNotFound;
+      ErrMsg:='No help found for "'+Query.WholeMessage+'"';
       exit;
     end;
 
