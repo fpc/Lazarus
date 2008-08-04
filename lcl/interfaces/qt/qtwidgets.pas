@@ -861,6 +861,10 @@ type
   TQtHeaderView = class (TQtAbstractItemView)
   private
     FSelectionClicked: QHeaderView_hookH;
+    function getClickable: Boolean;
+    function getMinSectionSize: Integer;
+    procedure setClickable(const AValue: Boolean);
+    procedure setMinSectionSize(const AValue: Integer);
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
@@ -868,27 +872,38 @@ type
     procedure DetachEvents; override;
     procedure SignalSectionClicked(logicalIndex: Integer) cdecl;
     function getResizeMode(AIndex: Integer): QHeaderViewResizeMode;
-    procedure setResizeMode(AResizeMode: QHeaderViewResizeMode);
+    procedure setResizeMode(AResizeMode: QHeaderViewResizeMode); overload;
+    procedure setResizeMode(AIndex: Integer; AResizeMode: QHeaderViewResizeMode); overload;
     procedure moveSection(AFromIndex: Integer; AToIndex: Integer);
     procedure resizeSection(ASection: Integer; ASize: Integer);
     procedure setHighlightSections(AValue: Boolean);
     procedure setDefaultSectionSize(AValue: Integer);
     procedure setStretchLastSection(AValue: Boolean);
+    function sortIndicatorOrder: QtSortOrder;
+    property Clickable: Boolean read getClickable write setClickable;
+    property MinSectionSize: Integer read getMinSectionSize write setMinSectionSize;
   end;
 
   { TQtTreeView }
   
   TQtTreeView = class (TQtAbstractItemView)
   private
+    function getColVisible(AIndex: Integer): Boolean;
+    function getColWidth(AIndex: Integer): Integer;
+    procedure setColVisible(AIndex: Integer; const AValue: Boolean);
+    procedure setColWidth(AIndex: Integer; const AValue: Integer);
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
+  public
+    property ColWidth[AIndex: Integer]: Integer read getColWidth write setColWidth;
+    property ColVisible[AIndex: Integer]: Boolean read getColVisible write setColVisible;
   end;
   
   { TQtTreeWidget }
 
   TQtTreeWidget = class(TQtTreeView)
   private
-    Header: TQtHeaderView;
+    FHeader: TQtHeaderView;
     FCurrentItemChangedHook: QTreeWidget_hookH;
     FItemDoubleClickedHook: QTreeWidget_hookH;
     FItemClickedHook: QTreeWidget_hookH;
@@ -897,13 +912,37 @@ type
     FItemSelectionChangedHook: QTreeWidget_hookH;
     FItemPressedHook: QTreeWidget_hookH;
     FItemEnteredHook: QTreeWidget_hookH;
+    function getColCount: Integer;
+    function getHeader: TQtHeaderView;
+    function getMaxColSize(ACol: Integer): Integer;
+    function getMinColSize(ACol: Integer): Integer;
+    function getSortEnabled: Boolean;
+    procedure setColCount(const AValue: Integer);
+    procedure setMaxColSize(ACol: Integer; const AValue: Integer);
+    procedure setMinColSize(ACol: Integer; const AValue: Integer);
+    procedure setSortEnabled(const AValue: Boolean);
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     destructor Destroy; override;
-    
     function currentRow: Integer;
     procedure setCurrentRow(row: Integer);
+    function currentItem: QTreeWidgetItemH;
+    procedure setCurrentItem(AItem: QTreeWidgetItemH);
+    function headerItem: QTreeWidgetItemH;
+    function itemAt(APoint: TPoint): QTreeWidgetItemH; overload;
+    function itemAt(x: Integer; y: Integer): QTreeWidgetItemH; overload;
+    function indexOfTopLevelItem(AItem: QTreeWidgetItemH): Integer;
+    procedure insertTopLevelItem(AIndex: Integer; AItem: QTreeWidgetItemH);
+    function takeTopLevelItem(AIndex: Integer): QTreeWidgetItemH;
+    function topLevelItem(AIndex: Integer): QTreeWidgetItemH;
+    function visualItemRect(AItem: QTreeWidgetItemH): TRect;
+    function getItemVisible(AItem: QTreeWidgetItemH): Boolean;
+    procedure setItemVisible(AItem: QTreeWidgetItemH; Const AVisible: Boolean);
+    function selCount: Integer;
+    function selectedItems: TIntArray;
+    procedure setItemSelected(AItem: QTreeWidgetItemH; ASelect: Boolean);
+    procedure sortItems(Acolumn: Integer; AOrder: QtSortOrder);
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
@@ -918,6 +957,12 @@ type
     procedure SignalItemCollapsed(item: QTreeWidgetItemH) cdecl;
     procedure SignalCurrentItemChanged(current: QTreeWidgetItemH; previous: QTreeWidgetItemH) cdecl;
     procedure SignalItemSelectionChanged; cdecl;
+
+    property ColCount: Integer read getColCount write setColCount;
+    property Header: TQtHeaderView read getHeader;
+    property MaxColSize[ACol: Integer]: Integer read getMaxColSize write setMaxColSize;
+    property MinColSize[ACol: Integer]: Integer read getMinColSize write setMinColSize;
+    property SortEnabled: Boolean read getSortEnabled write setSortEnabled;
   end;
   
   {TQtTableView}
@@ -6294,7 +6339,28 @@ begin
 end;
 
   { TQtHeaderView }
-  
+
+function TQtHeaderView.getClickable: Boolean;
+begin
+  Result := QHeaderView_isClickable(QHeaderViewH(Widget));
+end;
+
+
+function TQtHeaderView.getMinSectionSize: Integer;
+begin
+  Result := QHeaderView_minimumSectionSize(QHeaderViewH(Widget));
+end;
+
+procedure TQtHeaderView.setClickable(const AValue: Boolean);
+begin
+  QHeaderView_setClickable(QHeaderViewH(Widget), AValue);
+end;
+
+procedure TQtHeaderView.setMinSectionSize(const AValue: Integer);
+begin
+  QHeaderView_setMinimumSectionSize(QHeaderViewH(Widget), AValue);
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtHeaderView.CreateWidget
   Params:  None
@@ -6315,7 +6381,6 @@ var
 begin
   inherited AttachEvents;
   FSelectionClicked := QHeaderView_hook_create(Widget);
-  
   QHeaderView_sectionClicked_Event(Method) := @SignalSectionClicked;
   QHeaderView_hook_hook_sectionClicked(FSelectionClicked, Method);
 end;
@@ -6336,7 +6401,6 @@ var
   Msg: TLMNotify;
   NMLV: TNMListView;
 begin
-
   FillChar(Msg, SizeOf(Msg), #0);
   FillChar(NMLV, SizeOf(NMLV), #0);
   
@@ -6360,6 +6424,12 @@ end;
 procedure TQtHeaderView.setResizeMode(AResizeMode: QHeaderViewResizeMode);
 begin
   QHeaderView_setResizeMode(QHeaderViewH(Widget), AResizeMode);
+end;
+
+procedure TQtHeaderView.setResizeMode(AIndex: Integer;
+  AResizeMode: QHeaderViewResizeMode);
+begin
+  QHeaderView_setResizeMode(QHeaderViewH(Widget), AIndex, AResizeMode);
 end;
 
 procedure TQtHeaderView.moveSection(AFromIndex: Integer; AToIndex: Integer);
@@ -6387,7 +6457,32 @@ begin
   QHeaderView_setStretchLastSection(QHeaderViewH(Widget), AValue);
 end;
 
+function TQtHeaderView.sortIndicatorOrder: QtSortOrder;
+begin
+  Result := QHeaderView_sortIndicatorOrder(QHeaderViewH(Widget));
+end;
+
   { TQtTreeView }
+
+function TQtTreeView.getColVisible(AIndex: Integer): Boolean;
+begin
+  Result := not QTreeView_isColumnHidden(QTreeViewH(Widget), AIndex);
+end;
+
+function TQtTreeView.getColWidth(AIndex: Integer): Integer;
+begin
+  Result := QTreeView_columnWidth(QTreeViewH(Widget), AIndex);
+end;
+
+procedure TQtTreeView.setColVisible(AIndex: Integer; const AValue: Boolean);
+begin
+  QTreeView_setColumnHidden(QTreeViewH(Widget), AIndex, not AValue);
+end;
+
+procedure TQtTreeView.setColWidth(AIndex: Integer; const AValue: Integer);
+begin
+  QTreeView_setColumnWidth(QTreeViewH(Widget), AIndex, AValue);
+end;
 
 {------------------------------------------------------------------------------
   Function: TQtTreeView.CreateWidget
@@ -6417,11 +6512,7 @@ begin
     WriteLn('TQtTreeWidget.Create');
   {$endif}
   Result := QTreeWidget_create();
-  
-  Header := TQtHeaderView.Create(LCLObject, AParams);
-  Header.AttachEvents;
-  
-  QTreeView_setHeader(QTreeViewH(Result), QHeaderViewH(Header.Widget));
+  FHeader := nil;
 end;
 
 {------------------------------------------------------------------------------
@@ -6435,10 +6526,75 @@ begin
     WriteLn('TQtTreeWidget.Destroy');
   {$endif}
 
-  if Assigned(Header) then
-    Header.Free;
+  if Assigned(FHeader) then
+    FHeader.Free;
 
   inherited Destroy;
+end;
+
+function TQtTreeWidget.getHeader: TQtHeaderView;
+var
+  AParams: TCreateParams;
+begin
+  {while designing TQtHeaderView is a no-no}
+  if not (csDesigning in LCLObject.ComponentState) and (FHeader = nil) then
+  begin
+    FHeader := TQtHeaderView.CreateFrom(LCLObject, QTreeView_header(QTreeViewH(Widget)));
+    FHeader.AttachEvents;
+    QTreeView_setHeader(QTreeViewH(Widget), QHeaderViewH(FHeader.Widget));
+  end;
+  Result := FHeader;
+end;
+
+function TQtTreeWidget.getMaxColSize(ACol: Integer): Integer;
+var
+  Size: TSize;
+begin
+  {$note QSizeH implementation missing for this}
+  Result := MAXINT -1;
+end;
+
+function TQtTreeWidget.getMinColSize(ACol: Integer): Integer;
+begin
+  {$note QSizeH implementation missing for this}
+  Result := 0;
+end;
+
+function TQtTreeWidget.getSortEnabled: Boolean;
+begin
+  Result := QTreeWidget_isSortingEnabled(QTreeWidgetH(Widget));
+end;
+
+function TQtTreeWidget.getColCount: Integer;
+begin
+  Result := QTreeWidget_columnCount(QTreeWidgetH(Widget));
+end;
+
+procedure TQtTreeWidget.setColCount(const AValue: Integer);
+begin
+  QTreeWidget_setColumnCount(QTreeWidgetH(Widget), AValue);
+end;
+
+procedure TQtTreeWidget.setMaxColSize(ACol: Integer; const AValue: Integer);
+begin
+  {$note QSizeH implementation missing for this}
+end;
+
+procedure TQtTreeWidget.setMinColSize(ACol: Integer; const AValue: Integer);
+begin
+  // QTreeWidgetItem_setSizeHint(headerItem, @Size, ACol);
+  {$note QSizeH implementation missing for this}
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtTreeWidget.setSortEnabled
+  Params:  Boolean
+  Returns: Nothing
+  Enables sorting of items.
+ ------------------------------------------------------------------------------}
+procedure TQtTreeWidget.setSortEnabled(const AValue: Boolean);
+begin
+  QTreeWidget_setSortingEnabled(QTreeWidgetH(Widget), AValue);
 end;
 
 {------------------------------------------------------------------------------
@@ -6465,6 +6621,95 @@ var
 begin
   TWI := QTreeWidget_topLevelItem(QTreeWidgetH(Widget), Row);
   QTreeWidget_setCurrentItem(QTreeWidgetH(Widget), TWI);
+end;
+
+function TQtTreeWidget.currentItem: QTreeWidgetItemH;
+begin
+  Result := QTreeWidget_currentItem(QTreeWidgetH(Widget));
+end;
+
+procedure TQtTreeWidget.setCurrentItem(AItem: QTreeWidgetItemH);
+begin
+  QTreeWidget_setCurrentItem(QTreeWidgetH(Widget), AItem);
+end;
+
+function TQtTreeWidget.headerItem: QTreeWidgetItemH;
+begin
+  Result := QTreeWidget_headerItem(QTreeWidgetH(Widget));
+end;
+
+function TQtTreeWidget.itemAt(APoint: TPoint): QTreeWidgetItemH;
+begin
+  Result := QTreeWidget_itemAt(QTreeWidgetH(Widget), APoint.x, APoint.y);
+end;
+
+function TQtTreeWidget.itemAt(x: Integer; y: Integer): QTreeWidgetItemH;
+begin
+  Result := QTreeWidget_itemAt(QTreeWidgetH(Widget), x, y);
+end;
+
+function TQtTreeWidget.indexOfTopLevelItem(AItem: QTreeWidgetItemH): Integer;
+begin
+  Result := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), AItem);
+end;
+
+procedure TQtTreeWidget.insertTopLevelItem(AIndex: Integer;
+  AItem: QTreeWidgetItemH);
+begin
+  QTreeWidget_insertTopLevelItem(QTreeWidgetH(Widget), AIndex, AItem);
+end;
+
+function TQtTreeWidget.takeTopLevelItem(AIndex: Integer): QTreeWidgetItemH;
+begin
+  Result := QTreeWidget_takeTopLevelItem(QTreeWidgetH(Widget), AIndex);
+end;
+
+function TQtTreeWidget.topLevelItem(AIndex: Integer): QTreeWidgetItemH;
+begin
+  Result := QTreeWidget_topLevelItem(QTreeWidgetH(Widget), AIndex);
+end;
+
+function TQtTreeWidget.visualItemRect(AItem: QTreeWidgetItemH): TRect;
+var
+  ItemRect: TRect;
+begin
+  QTreeWidget_visualItemRect(QTreeWidgetH(Widget), @ItemRect, AItem);
+  Result := ItemRect;
+end;
+
+function TQtTreeWidget.getItemVisible(AItem: QTreeWidgetItemH): Boolean;
+begin
+  Result := not QTreeWidget_isItemHidden(QTreeWidgetH(Widget), AItem);
+end;
+
+procedure TQtTreeWidget.setItemVisible(AItem: QTreeWidgetItemH;
+  const AVisible: Boolean);
+begin
+  QTreeWidget_setItemHidden(QTreeWidgetH(Widget), AItem, not AVisible);
+end;
+
+function TQtTreeWidget.selCount: Integer;
+var
+  FPInts: TIntArray;
+begin
+  QTreeWidget_selectedItems(QTreeWidgetH(Widget), @FPInts);
+  Result := length(FPInts);
+end;
+
+function TQtTreeWidget.selectedItems: TIntArray;
+begin
+  QTreeWidget_selectedItems(QTreeWidgetH(Widget), @Result);
+end;
+
+procedure TQtTreeWidget.setItemSelected(AItem: QTreeWidgetItemH;
+  ASelect: Boolean);
+begin
+  QTreeWidget_setItemSelected(QTreeWidgetH(Widget), AItem, ASelect);
+end;
+
+procedure TQtTreeWidget.sortItems(Acolumn: Integer; AOrder: QtSortOrder);
+begin
+  QTreeWidget_sortItems(QTreeWidgetH(Widget), AColumn, AOrder);
 end;
 
 procedure TQtTreeWidget.AttachEvents;
