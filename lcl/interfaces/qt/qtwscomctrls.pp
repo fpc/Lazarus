@@ -1064,8 +1064,6 @@ var
   TWI: QTreeWidgetItemH;
   Str: WideString;
 begin
-  writeln('TQtWSCustomListView.ItemSetText() AIndex=',AIndex,' ASubIndex=',ASubIndex,
-   ' Text=',AText,' SubItemsCount=',AItem.SubItems.Count);
   if not WSCheckHandleAllocated(ALV, 'ItemSetText') then
     Exit;
 
