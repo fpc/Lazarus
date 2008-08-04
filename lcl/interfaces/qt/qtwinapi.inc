@@ -2125,8 +2125,10 @@ begin
     VK_CONTROL:
       if (QApplication_keyboardModifiers and QtControlModifier) > 0 then
         Result := Result or StateDown;
+   {$ifdef VerboseQtWinAPI}
     else
       DebugLn('TQtWidgetSet.GetKeyState TODO ', DbgSVKCode(Word(nVirtkey)));
+   {$endif}
   end;
 end;
 
