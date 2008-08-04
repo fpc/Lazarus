@@ -382,6 +382,7 @@ function TCCodeParserTool.DirectiveToken: boolean;
   procedure ReadExpression;
   var
     BracketLevel: Integer;
+    NeedBracket: Boolean;
   begin
     BracketLevel:=0;
     repeat
@@ -407,16 +408,22 @@ function TCCodeParserTool.DirectiveToken: boolean;
         // valid operator
       end else if IsIdentChar[Src[AtomStart]] then begin
         if AtomIs('defined') then begin
-          // read  defined(macro)
+          //    read  defined(macro)
+          // or read  defined macro
           ReadRawNextCAtom(Src,SrcPos,AtomStart);
-          if not AtomIsChar('(') then
-            RaiseExpectedButAtomFound('(');
-          ReadRawNextCAtom(Src,SrcPos,AtomStart);
+          if AtomIsChar('(') then begin
+            NeedBracket:=true;
+            ReadRawNextCAtom(Src,SrcPos,AtomStart);
+          end else begin
+            NeedBracket:=false;
+          end;
           if not AtomIsIdentifier then
             RaiseExpectedButAtomFound('macro');
-          ReadRawNextCAtom(Src,SrcPos,AtomStart);
-          if not AtomIsChar(')') then
-            RaiseExpectedButAtomFound(')');
+          if NeedBracket then begin
+            ReadRawNextCAtom(Src,SrcPos,AtomStart);
+            if not AtomIsChar(')') then
+              RaiseExpectedButAtomFound(')');
+          end;
         end else begin
           // constant
         end;

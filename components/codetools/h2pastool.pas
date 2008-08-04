@@ -1012,6 +1012,7 @@ var
   AtomStart: integer;
   BracketLvl: Integer;
   LastToken: TTokenType;
+  NeedBracket: Boolean;
 
   function AtomIs(const s: shortstring): boolean;
   var
@@ -1105,12 +1106,12 @@ begin
       end;
       if AtomIs('defined') then begin
         Add(ttValue);
-        // read   defined(name)
+        // read   defined(name)   or   defined name
         ReadRawNextCAtom(CCode,p,AtomStart);
-        if not AtomIs('(') then begin
-          ErrorExpectedButFound('(');
-          exit;
-        end;
+        if AtomIs('(') then
+          NeedBracket:=true
+        else
+          NeedBracket:=false;
         Add(ttBracketOpen);
         ReadRawNextCAtom(CCode,p,AtomStart);
         if (AtomStart>=EndPos) or (not IsIdentStartChar[CCode[AtomStart]])
@@ -1123,10 +1124,12 @@ begin
           Add(ttValue,'FPC')
         else
           Add(ttValue);
-        ReadRawNextCAtom(CCode,p,AtomStart);
-        if not AtomIs(')') then begin
-          ErrorExpectedButFound(')');
-          exit;
+        if NeedBracket then begin
+          ReadRawNextCAtom(CCode,p,AtomStart);
+          if not AtomIs(')') then begin
+            ErrorExpectedButFound(')');
+            exit;
+          end;
         end;
         Add(ttBracketClose);
       end else begin
