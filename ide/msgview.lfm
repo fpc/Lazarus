@@ -1,7 +1,7 @@
 inherited MessagesView: TMessagesView
-  Left = 291
+  Left = 284
   Height = 79
-  Top = 627
+  Top = 640
   Width = 722
   ActiveControl = MessageTreeView
   BorderStyle = bsSizeToolWin

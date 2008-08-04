@@ -1,16 +1,16 @@
 { This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TMessagesView','FORMDATA',[
-  'TPF0'#241#13'TMessagesView'#12'MessagesView'#4'Left'#3'#'#1#6'Height'#2'O'#3
-  +'Top'#3's'#2#5'Width'#3#210#2#13'ActiveControl'#7#15'MessageTreeView'#11'Bor'
-  +'derStyle'#7#13'bsSizeToolWin'#7'Caption'#6#12'MessagesView'#12'ClientHeight'
-  +#2'O'#11'ClientWidth'#3#210#2#10'KeyPreview'#9#12'OnDeactivate'#7#14'FormDea'
-  +'ctivate'#9'OnKeyDown'#7#19'MessagesViewKeyDown'#0#242#2#0#9'TTreeView'#15'M'
-  +'essageTreeView'#6'Height'#2'O'#5'Width'#3#210#2#5'Align'#7#8'alClient'#17'D'
-  +'efaultItemHeight'#2#19#9'PopupMenu'#7#13'MainPopupMenu'#8'ReadOnly'#9#8'Sho'
-  +'wRoot'#8#8'TabOrder'#2#0#6'OnExit'#7#15'MessageViewExit'#7'Options'#11#19't'
-  +'voAllowMultiselect'#17'tvoAutoItemHeight'#16'tvoHideSelection'#21'tvoKeepCo'
-  +'llapsedNodes'#11'tvoReadOnly'#14'tvoShowButtons'#12'tvoShowLines'#11'tvoToo'
-  +'lTips'#0#0#0#242#2#1#10'TPopupMenu'#13'MainPopupMenu'#7'OnPopup'#7#18'MainP'
-  +'opupMenuPopup'#4'left'#2'.'#3'top'#2')'#0#0#0
+  'TPF0'#241#13'TMessagesView'#12'MessagesView'#4'Left'#3#28#1#6'Height'#2'O'#3
+  +'Top'#3#128#2#5'Width'#3#210#2#13'ActiveControl'#7#15'MessageTreeView'#11'Bo'
+  +'rderStyle'#7#13'bsSizeToolWin'#7'Caption'#6#12'MessagesView'#12'ClientHeigh'
+  +'t'#2'O'#11'ClientWidth'#3#210#2#10'KeyPreview'#9#12'OnDeactivate'#7#14'Form'
+  +'Deactivate'#9'OnKeyDown'#7#19'MessagesViewKeyDown'#0#242#2#0#9'TTreeView'#15
+  +'MessageTreeView'#6'Height'#2'O'#5'Width'#3#210#2#5'Align'#7#8'alClient'#17
+  +'DefaultItemHeight'#2#19#9'PopupMenu'#7#13'MainPopupMenu'#8'ReadOnly'#9#8'Sh'
+  +'owRoot'#8#8'TabOrder'#2#0#6'OnExit'#7#15'MessageViewExit'#7'Options'#11#19
+  +'tvoAllowMultiselect'#17'tvoAutoItemHeight'#16'tvoHideSelection'#21'tvoKeepC'
+  +'ollapsedNodes'#11'tvoReadOnly'#14'tvoShowButtons'#12'tvoShowLines'#11'tvoTo'
+  +'olTips'#0#0#0#242#2#1#10'TPopupMenu'#13'MainPopupMenu'#7'OnPopup'#7#18'Main'
+  +'PopupMenuPopup'#4'left'#2'.'#3'top'#2')'#0#0#0
 ]);

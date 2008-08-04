@@ -343,6 +343,11 @@ type
     property OnFindComponentClass;
   end;
 
+const
+  ObjStreamMaskInherited = 1;
+  ObjStreamMaskChildPos  = 2;
+  ObjStreamMaskInline    = 4;
+
 var
   LazarusResources: TLResourceList;
 
@@ -639,9 +644,10 @@ begin
   NameLen:=0;
   s.Read(NameLen,1);
   if (NameLen and $f0) = $f0 then begin
-    // Read Flag Byte
+    // this was the Flag Byte
+    IsInherited := (NameLen and ObjStreamMaskInherited) <> 0;
+    // read namelen
     s.Read(NameLen,1);
-    IsInherited := (NameLen and 1) = 1;
   end else
     IsInherited := False;
   // read classname
@@ -658,6 +664,7 @@ var
   Signature: TFilerSignature;
   NameLen: byte;
   OldPosition: Int64;
+  Flag: Byte;
 begin
   ComponentName:='';
   ComponentClassName:='';
@@ -671,8 +678,9 @@ begin
   s.Read(NameLen,1);
   if (NameLen and $f0) = $f0 then begin
     // Read Flag Byte
+    Flag:=NameLen;
+    IsInherited := (Flag and ObjStreamMaskInherited) <> 0;
     s.Read(NameLen,1);
-    IsInherited := (NameLen and 1) = 1;
   end else
     IsInherited := False;
   // read classname
@@ -1633,11 +1641,11 @@ begin
   if Byte(NextValue) and $F0 = $F0 then
   begin
     Prefix := Byte(ReadValue);
-    if (Prefix and $01)>0 then
+    if (Prefix and ObjStreamMaskInherited)>0 then
       Include(Flags,ffInherited);
-    if (Prefix and $02)>0 then
+    if (Prefix and ObjStreamMaskChildPos)>0 then
       Include(Flags,ffChildPos);
-    if (Prefix and $04)>0 then
+    if (Prefix and ObjStreamMaskInline)>0 then
       Include(Flags,ffInline);
     if ffChildPos in Flags then AChildPos := ReadInteger;
   end;
@@ -2257,7 +2265,8 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
     // Check for FilerFlags
     b := Input.ReadByte;
     if (b and $f0) = $f0 then begin
-      if (b and 2) <> 0 then ChildPos := ReadInt;
+      if (b and ObjStreamMaskChildPos) <> 0 then
+        ChildPos := ReadInt;
     end else begin
       b := 0;
       Input.Seek(-1, soFromCurrent);
@@ -2267,14 +2276,14 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
     ObjName := ReadShortString;
 
     OutStr(Indent);
-    if (b and 1) <> 0 then OutStr('inherited')
-    else if (b and 4) <> 0 then OutStr('inline')
+    if (b and ObjStreamMaskInherited) <> 0 then OutStr('inherited')
+    else if (b and ObjStreamMaskInline) <> 0 then OutStr('inline')
     else OutStr('object');
     OutStr(' ');
     if ObjName <> '' then
       OutStr(ObjName + ': ');
     OutStr(ObjClassName);
-    if (b and 2) <> 0 then OutStr('[' + IntToStr(ChildPos) + ']');
+    if (b and ObjStreamMaskChildPos) <> 0 then OutStr('[' + IntToStr(ChildPos) + ']');
     OutLn('');
 
     ReadPropList(indent + '  ');
@@ -2721,7 +2730,7 @@ var
     end;
     if Flags <> 0 then begin
       Output.WriteByte($f0 or Flags);
-      if (Flags and 2) <> 0 then
+      if (Flags and ObjStreamMaskChildPos) <> 0 then
         WriteInteger(ChildPos);
     end;
     WriteShortString(ObjectType);
@@ -3615,9 +3624,13 @@ begin
   if (Byte(NextValue) and $f0) = $f0 then
   begin
     Prefix := Byte(ReadValue);
-    Flags := TFilerFlags(longint(Prefix and $0f));
-    if ffChildPos in Flags then
+    if (ObjStreamMaskInherited and Prefix)<>0 then
+      Include(Flags,ffInherited);
+    if (ObjStreamMaskInline and Prefix)<>0 then
+      Include(Flags,ffInline);
+    if (ObjStreamMaskChildPos and Prefix)<>0 then
     begin
+      Include(Flags,ffChildPos);
       ValueType := ReadValue;
       case ValueType of
         vaInt8:
@@ -4125,7 +4138,13 @@ begin
   { Only write the flags if they are needed! }
   if Flags <> [] then
   begin
-    Prefix := Integer(Flags) or $f0;
+    Prefix := $f0;
+    if ffInherited in Flags then
+      inc(Prefix,ObjStreamMaskInherited);
+    if ffInline in Flags then
+      inc(Prefix,ObjStreamMaskInline);
+    if ffChildPos in Flags then
+      inc(Prefix,ObjStreamMaskChildPos);
     Write(Prefix, 1);
     if ffChildPos in Flags then
       WriteInteger(ChildPos);
