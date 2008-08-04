@@ -365,12 +365,17 @@ begin
       OutputLine:=OutputLine+copy(Buf,LineStart,Count-LineStart+1);
     until false;
     //DebugLn('TOutputFilter.Execute After Loop');
-    fProcess.WaitOnExit;
-    //DebugLn('TOutputFilter.Execute fProcess.ExitStatus=',dbgs(fProcess.ExitStatus));
-    if fProcess.ExitStatus=0 then
-      ErrorExists:=false;
-    if ErrorExists and (ofoExceptionOnError in Options) then
-      raise EOutputFilterError.Create('there was an error');
+    if not fProcess.WaitOnExit then begin
+      // process was terminated by signal or OS
+      if ErrorExists and (ofoExceptionOnError in Options) then
+        raise EOutputFilterError.Create('process terminated with errors');
+    end else begin
+      //DebugLn('TOutputFilter.Execute fProcess.ExitStatus=',dbgs(fProcess.ExitStatus));
+      if fProcess.ExitStatus=0 then
+        ErrorExists:=false;
+      if ErrorExists and (ofoExceptionOnError in Options) then
+        raise EOutputFilterError.Create('there was an error');
+    end;
   finally
     {$IFDEF VerboseOFExecute}
     WriteLn('TOutputFilter.Execute W1');
