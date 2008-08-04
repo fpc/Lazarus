@@ -260,6 +260,11 @@ begin
     Result:='.dll'
   else if CompareText(TargetOS, 'darwin') = 0 then
     Result:='.dylib'
+  else if (CompareText(TargetOS, 'linux') = 0)
+  or (CompareText(TargetOS, 'freebsd') = 0)
+  or (CompareText(TargetOS, 'openbsd') = 0)
+  or (CompareText(TargetOS, 'netbsd') = 0) then
+    Result:='.so'
   else
     Result:='';
 end;

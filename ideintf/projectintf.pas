@@ -528,10 +528,19 @@ type
     );
   TProjectFileSearchFlags = set of TProjectFileSearchFlag;
 
+  TProjectExecutableType = (
+    petNone,
+    petProgram,
+    petLibrary,
+    petPackage,
+    petUnit
+    );
+
   TLazProject = class(TPersistent)
   private
     FCustomData: TStringToStringTree;
     FCustomSessionData: TStringToStringTree;
+    FExecutableType: TProjectExecutableType;
     FLazCompilerOptions: TLazCompilerOptions;
     fModified: boolean;
     FProjectSessionFile: string;
@@ -555,6 +564,7 @@ type
     procedure SetSessionStorage(const AValue: TProjectSessionStorage); virtual;
     procedure SetModified(const AValue: boolean); virtual;
     procedure SetSessionModified(const AValue: boolean); virtual;
+    procedure SetExecutableType(const AValue: TProjectExecutableType); virtual;
   public
     constructor Create(ProjectDescription: TProjectDescriptor); virtual;
     destructor Destroy; override;
@@ -570,6 +580,7 @@ type
     procedure ClearModifieds(ClearUnits: boolean);
     function FindFile(const AFilename: string;
                       SearchFlags: TProjectFileSearchFlags): TLazProjectFile; virtual; abstract;
+    procedure UpdateExecutableType; virtual; abstract;
   public
     property MainFileID: Integer read GetMainFileID write SetMainFileID;
     property Files[Index: integer]: TLazProjectFile read GetFiles;
@@ -577,6 +588,8 @@ type
     property MainFile: TLazProjectFile read GetMainFile;
     property Title: String read fTitle write SetTitle;
     property Flags: TProjectFlags read FFlags write SetFlags;
+    property ExecutableType: TProjectExecutableType read FExecutableType
+                 write SetExecutableType;// read from MainFile, not saved to lpi
     property LazCompilerOptions: TLazCompilerOptions read FLazCompilerOptions
                                                      write SetLazCompilerOptions;
     property ProjectInfoFile: string
@@ -1122,17 +1135,25 @@ begin
   Modified:=true;
 end;
 
+procedure TLazProject.SetExecutableType(const AValue: TProjectExecutableType);
+begin
+  if FExecutableType=AValue then exit;
+  FExecutableType:=AValue;
+  Modified:=true;
+end;
+
 procedure TLazProject.SetLazCompilerOptions(const AValue: TLazCompilerOptions);
 begin
   if FLazCompilerOptions=AValue then exit;
   FLazCompilerOptions:=AValue;
+  Modified:=true;
 end;
 
 procedure TLazProject.SetTitle(const AValue: String);
 begin
   if fTitle=AValue then exit;
-  Modified:=true;
   fTitle:=AValue;
+  Modified:=true;
 end;
 
 constructor TLazProject.Create(ProjectDescription: TProjectDescriptor);

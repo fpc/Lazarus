@@ -641,7 +641,7 @@ begin
   if CodeBuffer=nil then exit;
   SourceKeyWord:=CodeToolBoss.GetSourceType(CodeBuffer,false);
   for ASrcType:=Low(TUnitNodeSourceType) to High(TUnitNodeSourceType) do
-    if AnsiCompareText(SourceKeyWord,UnitNodeSourceTypeNames[ASrcType])=0
+    if CompareText(SourceKeyWord,UnitNodeSourceTypeNames[ASrcType])=0
     then
       FSourceType:=ASrcType;
   if TreeNode<>nil then begin

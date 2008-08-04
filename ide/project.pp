@@ -648,6 +648,7 @@ type
     procedure SetSessionStorage(const AValue: TProjectSessionStorage); override;
     procedure SetModified(const AValue: boolean); override;
     procedure SetSessionModified(const AValue: boolean); override;
+    procedure SetExecutableType(const AValue: TProjectExecutableType); override;
   protected
     // special unit lists
     procedure AddToList(AnUnitInfo: TUnitInfo; ListType: TUnitInfoList);
@@ -678,7 +679,8 @@ type
     function ReadProject(const NewProjectInfoFile: string): TModalResult;
     function WriteProject(ProjectWriteFlags: TProjectWriteFlags;
                           const OverrideProjectInfoFile: string): TModalResult;
-                          
+    procedure UpdateExecutableType; override;
+
     // title
     function GetDefaultTitle: string;
     function TitleIsDefault(Fuzzy: boolean = false): boolean;
@@ -2214,6 +2216,35 @@ begin
   end;
 end;
 
+procedure TProject.UpdateExecutableType;
+
+  function GetMainSourceType: string;
+  var
+    AnUnitInfo: TUnitInfo;
+  begin
+    Result:='';
+    if MainUnitID<0 then exit;
+    AnUnitInfo:=Units[MainUnitID];
+    if AnUnitInfo.Source=nil then exit;
+    Result:=CodeToolBoss.GetSourceType(AnUnitInfo.Source,false);
+  end;
+
+var
+  SourceType: String;
+begin
+  SourceType:=GetMainSourceType;
+  if SysUtils.CompareText(SourceType,'Program')=0 then
+    ExecutableType:=petProgram
+  else if SysUtils.CompareText(SourceType,'Library')=0 then
+    ExecutableType:=petLibrary
+  else if SysUtils.CompareText(SourceType,'Unit')=0 then
+    ExecutableType:=petUnit
+  else if SysUtils.CompareText(SourceType,'Package')=0 then
+    ExecutableType:=petPackage
+  else
+    ExecutableType:=petNone;
+end;
+
 function TProject.GetDefaultTitle: string;
 begin
   Result:=ExtractFilenameOnly(ProjectInfoFile);
@@ -2847,6 +2878,15 @@ procedure TProject.SetSessionModified(const AValue: boolean);
 begin
   if AValue=SessionModified then exit;
   inherited SetSessionModified(AValue);
+end;
+
+procedure TProject.SetExecutableType(const AValue: TProjectExecutableType);
+begin
+  inherited SetExecutableType(AValue);
+  case ExecutableType of
+  petLibrary: CompilerOptions.ExecutableType:=cetLibrary;
+  else        CompilerOptions.ExecutableType:=cetProgram;
+  end;
 end;
 
 function TProject.UnitCount:integer;

@@ -3550,6 +3550,7 @@ var
 begin
   frmCompilerOptions:=TfrmCompilerOptions.Create(nil);
   try
+    Project1.UpdateExecutableType;
     NewCaption:=Project1.Title;
     if NewCaption='' then
       NewCaption:=ExtractFilenameOnly(Project1.ProjectInfoFile);
@@ -5208,6 +5209,7 @@ var
   Ext, NewProgramName, LPIFilename, ACaption, AText: string;
   PreReadBuf: TCodeBuffer;
   LoadFlags: TLoadBufferFlags;
+  SourceType: String;
 begin
   Handled:=false;
   Ext:=lowercase(ExtractFileExt(AFilename));
@@ -5229,35 +5231,39 @@ begin
 
   // check if unit is a program
   if ([ofProjectLoading,ofRegularFile]*Flags=[])
-  and FilenameIsPascalSource(AFilename)
-  and (CodeToolBoss.GetSourceType(PreReadBuf,false)='PROGRAM') then begin
-    NewProgramName:=CodeToolBoss.GetSourceName(PreReadBuf,false);
-    if NewProgramName<>'' then begin
-      // source is a program
-      // either this is a lazarus project
-      // or it is not yet a lazarus project ;)
-      LPIFilename:=ChangeFileExt(AFilename,'.lpi');
-      if FileExists(LPIFilename) then begin
-        if QuestionDlg(lisProjectInfoFileDetected,
-          Format(lisTheFileSeemsToBeTheProgramFileOfAnExistingLazarusP, [
-            AFilename]), mtConfirmation,
-            [mrOk, lisOpenProject2, mrCancel, lisOpenTheFileAsNormalSource], 0)
-          =mrOk then
-        begin
-          Result:=DoOpenProjectFile(LPIFilename,[]);
-          Handled:=true;
-          exit;
-        end;
-      end else begin
-        AText:=Format(lisTheFileSeemsToBeAProgramCloseCurrentProject, ['"',
-          AFilename, '"', #13, #13]);
-        ACaption:=lisProgramDetected;
-        if MessageDlg(ACaption, AText, mtConfirmation,
-            [mbYes, mbNo], 0)=mrYes then
-        begin
-          Result:=DoCreateProjectForProgram(PreReadBuf);
-          Handled:=true;
-          exit;
+  and FilenameIsPascalSource(AFilename) then begin
+    SourceType:=CodeToolBoss.GetSourceType(PreReadBuf,false);
+    if (SysUtils.CompareText(SourceType,'PROGRAM')=0)
+    or (SysUtils.CompareText(SourceType,'LIBRARY')=0)
+    then begin
+      NewProgramName:=CodeToolBoss.GetSourceName(PreReadBuf,false);
+      if NewProgramName<>'' then begin
+        // source is a program
+        // either this is a lazarus project
+        // or it is not yet a lazarus project ;)
+        LPIFilename:=ChangeFileExt(AFilename,'.lpi');
+        if FileExists(LPIFilename) then begin
+          if QuestionDlg(lisProjectInfoFileDetected,
+            Format(lisTheFileSeemsToBeTheProgramFileOfAnExistingLazarusP, [
+              AFilename]), mtConfirmation,
+              [mrOk, lisOpenProject2, mrCancel, lisOpenTheFileAsNormalSource], 0)
+            =mrOk then
+          begin
+            Result:=DoOpenProjectFile(LPIFilename,[]);
+            Handled:=true;
+            exit;
+          end;
+        end else begin
+          AText:=Format(lisTheFileSeemsToBeAProgramCloseCurrentProject, ['"',
+            AFilename, '"', #13, #13]);
+          ACaption:=lisProgramDetected;
+          if MessageDlg(ACaption, AText, mtConfirmation,
+              [mbYes, mbNo], 0)=mrYes then
+          begin
+            Result:=DoCreateProjectForProgram(PreReadBuf);
+            Handled:=true;
+            exit;
+          end;
         end;
       end;
     end;
@@ -8918,6 +8924,7 @@ begin
     Result:=DoSaveAll([sfCheckAmbiguousFiles])
   else
     Result:=DoSaveProjectToTestDirectory([sfSaveNonProjectFiles]);
+  Project1.UpdateExecutableType;
   if Result<>mrOk then begin
     {$IFDEF VerboseSaveForBuild}
     DebugLn('TMainIDE.DoSaveForBuild project saving failed');

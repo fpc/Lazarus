@@ -1400,7 +1400,7 @@ begin
   else
     RaiseGDBException('');
   end;
-  //DebugLn('TBaseCompilerOptions.GetTargetFileExt ',Result);
+  //DebugLn('TBaseCompilerOptions.GetTargetFileExt ',Result,' ',dbgs(ord(ExecutableType)),' ',fTargetOS);
 end;
 
 procedure TBaseCompilerOptions.GetInheritedCompilerOptions(
