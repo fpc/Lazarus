@@ -3639,7 +3639,7 @@ begin
   if Handle <> 0 then
   begin
     Event := QLCLMessageEvent_create(QEventLCLMessage, Msg, wParam, lParam, 0);
-    QCoreApplication_postEvent(Widget.Widget, Event);
+    QCoreApplication_postEvent(Widget.Widget, Event, 1 {high priority});
     Result := True;
   end;
 end;

@@ -356,7 +356,7 @@ var
   Event: QEventH;
 begin
   Event := QEvent_create(LCLQt_CheckSynchronize);
-  QCoreApplication_postEvent(QCoreApplication_instance(), Event);
+  QCoreApplication_postEvent(QCoreApplication_instance(), Event, 1 {high priority});
 end;
 
 function TQtWidgetSet.LCLPlatform: TLCLPlatform;

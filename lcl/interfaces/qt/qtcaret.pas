@@ -374,12 +374,18 @@ end;
 
 procedure TEmulatedCaret.Lock;
 begin
-  EnterCriticalSection(FCritSect);
+  {$note TEmulatedCaret.Lock()
+    remove this routine later, after
+   testing on all platforms}
+  // EnterCriticalSection(FCritSect);
 end;
 
 procedure TEmulatedCaret.Unlock;
 begin
-  LeaveCriticalSection(FCritSect);
+  {$note TEmulatedCaret.UnLock()
+   remove this routine later, after
+   testing on all platforms}
+  // LeaveCriticalSection(FCritSect);
 end;
 
 function TEmulatedCaret.CreateColorPixmap(Color: PtrUInt): QPixmapH;
