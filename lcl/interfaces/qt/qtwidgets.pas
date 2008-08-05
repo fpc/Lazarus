@@ -5273,6 +5273,7 @@ end;
 
 procedure TQtTabWidget.DetachEvents;
 begin
+  QTabBar_hook_destroy(FTabBarChangedHook);
   QTabWidget_hook_destroy(FCurrentChangedHook);
   QWidget_hook_destroy(FTabBarEventHook);
   inherited DetachEvents;
