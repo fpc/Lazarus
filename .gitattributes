@@ -873,6 +873,7 @@ components/rtticontrols/examples/exampleproject3.lpi svneol=native#text/plain
 components/rtticontrols/examples/exampleproject3.lpr svneol=native#text/pascal
 components/rtticontrols/examples/exampleprojectgrid1.lpi svneol=native#text/plain
 components/rtticontrols/examples/exampleprojectgrid1.lpr svneol=native#text/pascal
+components/rtticontrols/fpdoc/rttictrls.xml svneol=native#text/plain
 components/rtticontrols/lib/README.txt svneol=native#text/plain
 components/rtticontrols/rttictrls.bat svneol=native#text/plain
 components/rtticontrols/rttictrls.lrs svneol=native#text/pascal
