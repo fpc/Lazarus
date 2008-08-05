@@ -607,8 +607,11 @@ type
   private
     FCurrentChangedHook: QTabWidget_hookH;
     FTabBarEventHook: QWidget_hookH;
+    FTabBarChangedHook: QTabBar_hookH;
     FTabBar: QTabBarH;
+    function getShowTabs: Boolean;
     function getTabBar: QTabBarH;
+    procedure setShowTabs(const AValue: Boolean);
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
@@ -617,6 +620,7 @@ type
     
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure SignalCurrentChanged(Index: Integer); cdecl;
+    procedure SignalTabBarCurrentChanged(Index: Integer); cdecl;
     function SlotTabBarMouse(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
   public
     function indexOf(const AWidget: QWidgetH): integer;
@@ -627,10 +631,13 @@ type
     function getTabPosition: QTabWidgetTabPosition;
     procedure removeTab(AIndex: Integer);
     procedure setCurrentIndex(AIndex: Integer);
+    procedure setCurrentWidget(APage: TQtWidget);
     procedure setFocusPolicy(const APolicy: QtFocusPolicy); override;
     procedure setTabPosition(ATabPosition: QTabWidgetTabPosition);
     procedure setTabText(index: Integer; p2: WideString);
+    function tabAt(APoint: TPoint): Integer;
 
+    property ShowTabs: Boolean read getShowTabs write setShowTabs;
     property TabBar: QTabBarH read getTabBar;
   end;
 
@@ -2401,6 +2408,14 @@ var
   Modifiers: QtKeyboardModifiers;
   MousePos: TQtPoint;
 begin
+  {$note fix for #11796, only OI is a black sheep}
+  if Assigned(LCLObject.PopupMenu) then
+  begin
+    if (Self is TQtComboBox) and (TQtComboBox(Self).FLineEdit <> nil) then
+      QWidget_setContextMenuPolicy(TQtComboBox(Self).FLineEdit.Widget, QtNoContextMenu);
+    QWidget_setContextMenuPolicy(Widget, QtNoContextMenu);
+  end;
+
   FillChar(Msg, SizeOf(Msg), #0);
   MousePos := QContextMenuEvent_pos(QContextMenuEventH(Event))^;
   OffsetMousePos(@MousePos);
@@ -5205,8 +5220,21 @@ end;
 function TQtTabWidget.getTabBar: QTabBarH;
 begin
   if FTabBar = nil then
+  begin
     FTabBar := QLCLTabWidget_tabBarHandle(QTabWidgetH(Widget));
+    QWidget_setFocusPolicy(FTabBar, QtNoFocus);
+  end;
   Result := FTabBar;
+end;
+
+function TQtTabWidget.getShowTabs: Boolean;
+begin
+  Result := QWidget_isVisible(TabBar);
+end;
+
+procedure TQtTabWidget.setShowTabs(const AValue: Boolean);
+begin
+  QWidget_setVisible(TabBar, AValue);
 end;
 
 function TQtTabWidget.CreateWidget(const AParams: TCreateParams): QWidgetH;
@@ -5233,9 +5261,12 @@ begin
 
   FCurrentChangedHook := QTabWidget_hook_create(Widget);
   FTabBarEventHook := QWidget_hook_create(TabBar);
+  FTabBarChangedHook := QTabBar_hook_create(TabBar);
 
   QTabWidget_currentChanged_Event(Method) := @SignalCurrentChanged;
   QTabWidget_hook_hook_currentChanged(FCurrentChangedHook, Method);
+  QTabBar_currentChanged_Event(Method) := @SignalTabBarCurrentChanged;
+  QTabBar_hook_hook_currentChanged(FTabBarChangedHook, Method);
   TEventFilterMethod(Method) := @EventFilter;
   QObject_hook_hook_events(FTabBarEventHook, Method);
 end;
@@ -5337,10 +5368,15 @@ begin
   QTabWidget_setCurrentIndex(QTabWidgetH(Widget), AIndex);
 end;
 
+procedure TQtTabWidget.setCurrentWidget(APage: TQtWidget);
+begin
+  QTabWidget_setCurrentWidget(QTabWidgetH(Widget), APage.Widget);
+  APage.setFocus;
+end;
+
 procedure TQtTabWidget.setFocusPolicy(const APolicy: QtFocusPolicy);
 begin
-  inherited setFocusPolicy(APolicy);
-  QWidget_setFocusPolicy(TabBar, QtClickFocus);
+  QWidget_setFocusPolicy(TabBar, QtNoFocus);
 end;
 
 {------------------------------------------------------------------------------
@@ -5367,6 +5403,26 @@ begin
   if LCLObject = nil then
     Exit;
     
+  FillChar(Msg, SizeOf(Msg), 0);
+  Msg.Msg := LM_NOTIFY;
+  FillChar(Hdr, SizeOf(Hdr), 0);
+
+  Hdr.hwndFrom := LCLObject.Handle;
+  Hdr.Code := TCN_SELCHANGING;
+  Hdr.idFrom := Index;
+  Msg.NMHdr := @Hdr;
+  Msg.Result := 0;
+  DeliverMessage(Msg);
+end;
+
+procedure TQtTabWidget.SignalTabBarCurrentChanged(Index: Integer); cdecl;
+var
+  Msg: TLMNotify;
+  Hdr: TNmHdr;
+begin
+  if LCLObject = nil then
+    Exit;
+
   FillChar(Msg, SizeOf(Msg), 0);
   Msg.Msg := LM_NOTIFY;
   FillChar(Hdr, SizeOf(Hdr), 0);
@@ -5421,6 +5477,14 @@ end;
 procedure TQtTabWidget.setTabText(index: Integer; p2: WideString);
 begin
   QTabWidget_setTabText(QTabWidgetH(Widget), index, @p2);
+end;
+
+function TQtTabWidget.tabAt(APoint: TPoint): Integer;
+var
+  AQtPoint: TQtPoint;
+begin
+  AQtPoint := QtPoint(APoint.x, APoint.y);
+  Result := QTabBar_tabAt(TabBar, @AQtPoint);
 end;
 
 { TQtComboBox }

@@ -37,7 +37,7 @@ uses
   SysUtils, Classes, Controls, Graphics, Forms, StdCtrls, ExtCtrls, LCLType,
   ImgList,
   // Widgetset
-  WSExtCtrls, WSLCLClasses;
+  WSExtCtrls, WSProc, WSLCLClasses;
 
 type
 
@@ -329,7 +329,6 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtWSCustomNotebook.CreateHandle');
   {$endif}
-
   QtTabWidget := TQtTabWidget.Create(AWinControl, AParams);
   QtTabWidget.SetTabPosition(QTabWidgetTabPositionMap[TCustomNoteBook(AWinControl).TabPosition]);
   QtTabWidget.AttachEvents;
@@ -375,45 +374,29 @@ begin
     WriteLn('TQtWSCustomNotebook.RemovePage');
   {$endif}
   TabWidget := TQtTabWidget(ANotebook.Handle);
+  TabWidget.setUpdatesEnabled(false);
   TabWidget.removeTab(AIndex);
+  TabWidget.setUpdatesEnabled(true);
 end;
 
 class function TQtWSCustomNotebook.GetTabIndexAtPos(
   const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer;
 var
   TabWidget: TQtTabWidget;
-  APoint: TQtPoint;
 begin
   TabWidget := TQtTabWidget(ANotebook.Handle);
-  if TabWidget.TabBar <> nil then
-  begin
-    APoint := QtPoint(AClientPos.x, AClientPos.y);
-
-    Result := QTabBar_tabAt(TabWidget.TabBar, @APoint);
-  end
-  else
-    Result := -1;
+  Result := TabWidget.tabAt(AClientPos);
 end;
 
 class procedure TQtWSCustomNotebook.SetPageIndex(
   const ANotebook: TCustomNotebook; const AIndex: integer);
 var
   TabWidget: TQtTabWidget;
-  OldIndex: Integer;
 begin
+  if not WSCheckHandleAllocated(ANotebook, 'SetPageIndex') then
+    Exit;
   TabWidget := TQtTabWidget(ANotebook.Handle);
-
-  // copy pasted from win32wsextctrls with corrections
-
-  OldIndex := TabWidget.getCurrentIndex;
   TabWidget.setCurrentIndex(AIndex);
-  if not (csDestroying in ANotebook.ComponentState) then
-  begin
-    if (OldIndex >= 0) and (OldIndex <> AIndex) and
-       (OldIndex < ANotebook.PageCount) and
-       (ANotebook.CustomPage(OldIndex).HandleAllocated) then
-      TQtWidget(ANotebook.CustomPage(OldIndex).Handle).setVisible(False);
-  end;
 end;
 
 class procedure TQtWSCustomNotebook.SetTabCaption(
@@ -436,7 +419,7 @@ var
 begin
   TabWidget := TQtTabWidget(ANotebook.Handle);
   if TabWidget.TabBar <> nil then
-    QWidget_setVisible(TabWidget.TabBar, AShowTabs);
+    TabWidget.ShowTabs := AShowTabs;
 end;
 
 { TQtWSCustomRadioGroup }
