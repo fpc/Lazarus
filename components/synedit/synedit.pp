@@ -3884,6 +3884,8 @@ var
   ypos : integer;
   ColBG : TColor;
 begin
+  if (AClip.Right < fGutterWidth) then exit;
+  //DebugLn(['TCustomSynEdit.PaintTextLines ',dbgs(AClip)]);
   CurLine:=-1;
   FillChar(TokenAccu,SizeOf(TokenAccu),0);
   //DebugLn('TCustomSynEdit.PaintTextLines ',DbgSName(Self),' TopLine=',dbgs(TopLine),' AClip=',dbgs(AClip));

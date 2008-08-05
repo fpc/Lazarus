@@ -98,11 +98,13 @@ type
     Visible: Boolean;  // Caret is on (can be visible/invisible due to Blinking)
     IsDrawn: Boolean;  // Caret is visible at the moment
     Blinking: Boolean; // Caret should blink
+    BlinkHide: boolean; // current blinking phase is Hide
     Pixmap: PGDKPixMap;
     BackPixmap: PGDKPixMap;
     Timer: guint;
     TimerInterval: guint32;
     ShowHideOnFocus: boolean; // true = hide on loose focus, show on get focus
+    Invalidated: boolean;
   end;
 
   PGTKAPIWidgetClient = ^TGTKAPIWidgetClient;
@@ -207,12 +209,13 @@ function GTKAPIWidgetClient_New: PGTKWidget; forward;
 
 procedure GTKAPIWidgetClient_HideCaret(Client: PGTKAPIWidgetClient;
                                        var OldVisible: boolean); forward;
-procedure GTKAPIWidgetClient_DrawCaret(Client: PGTKAPIWidgetClient; CalledByTimer: boolean); forward;
 procedure GTKAPIWidgetClient_ShowCaret(Client: PGTKAPIWidgetClient); forward;
+procedure GTKAPIWidgetClient_DrawCaret(Client: PGTKAPIWidgetClient; CalledByTimer: boolean); forward;
 procedure GTKAPIWidgetClient_CreateCaret(Client: PGTKAPIWidgetClient;
   AWidth, AHeight: Integer; ABitmap: PGDKPixmap); forward;
 procedure GTKAPIWidgetClient_DestroyCaret(Client: PGTKAPIWidgetClient); forward;
 procedure GTKAPIWidgetClient_InvalidateCaret(Client: PGTKAPIWidgetClient); forward;
+function GTKAPIWidgetClient_IsPainting(Client: PGTKAPIWidgetClient): boolean; forward;
 procedure GTKAPIWidgetClient_SetCaretPos(Client: PGTKAPIWidgetClient;
   AX, AY: Integer); forward;
 procedure GTKAPIWidgetClient_GetCaretPos(Client: PGTKAPIWidgetClient;
@@ -356,13 +359,17 @@ end;
 
 function GTKAPIWidgetClient_Timer(Client: Pointer): GTKEventResult; cdecl;
 // returning 0 would stop the timer, 1 will restart it
+var
+  WClient: PGTKAPIWidgetClient;
 begin
-  if PGTKAPIWidgetClient(Client)^.Caret.Timer<=0 then begin
+  WClient:=PGTKAPIWidgetClient(Client);
+  if WClient^.Caret.Timer<=0 then begin
     Result := gtk_False;
     exit;
   end;
+  WClient^.Caret.BlinkHide:=not WClient^.Caret.BlinkHide;
   GTKAPIWidgetClient_DrawCaret(Client,true);
-  if PGTKAPIWidgetClient(Client)^.Caret.Timer<>0 then
+  if WClient^.Caret.Timer<>0 then
     Result := gtk_True
   else
     Result := gtk_False;
@@ -629,7 +636,7 @@ begin
     Exit;
   end;
   {$IFDEF VerboseCaret}
-  DebugLn('GTKAPIWidgetClient_HideCaret ',DbgS(Client),' ShowHideOnFocus=',Client^.Caret.ShowHideOnFocus);
+  DebugLn(['GTKAPIWidgetClient_HideCaret ',DbgS(Client),' ShowHideOnFocus=',Client^.Caret.ShowHideOnFocus]);
   {$ENDIF}
   OldVisible:=Client^.Caret.Visible;
   Client^.Caret.Visible := False;
@@ -648,6 +655,40 @@ end;
 
 procedure GTKAPIWidgetClient_DrawCaret(Client: PGTKAPIWidgetClient;
   CalledByTimer: boolean);
+{ ShowCaret/HideCaret are used in winapi like:
+   ShowCaret (paint xor)
+   Blinking (restore)
+   StartPaintEvent
+   HideCaret
+   Painting
+   ShowCaret
+   EndPaintEvent
+   Blinking
+
+   Moving a caret works like this: HideCaret, move, ShowCaret
+
+   The gtk2 uses double buffering with clipping.
+   This means, during a paint event you can only paint in the clipping area,
+   which does not need to be rectangular.
+   => If the caret would be painted outside the paint event, then we can not hide
+   it if the clipping area does not completely contain the old position.
+   => Therefore we can only paint either inside or outside the paint event.
+   Painting outside the paint event means that between painting and showing
+   caret there are other events, so continuus painting will hardly show the
+   caret. It appears to be almost invisible.
+   => Therefore we must paint only inside the paint event
+   Algorithm:
+     InvalidateRect automatically invalidates the caret
+     Hide
+       outside paint event: invalidate and IsDrawn:=false
+       inside paint event: IsDrawn:=false
+     Show
+       outside paint event: invalidate
+       inside paint event: draw and IsDrawn:=true
+
+     Blinking makes it more complicated, because a Hide triggers an OnPaint,
+     which triggers in synedit code HideCaret+ShowCaret.
+}
 const
   BlinkingInterval = 500;
   GC_STATE: array[Boolean] of TGtkStateType =
@@ -657,7 +698,6 @@ var
   WidgetStyle: PGTKStyle;
   HasFocus: boolean;
   ForeGroundGC: PGdkGC;
-  Info: PWidgetInfo;
   WidgetIsPainting: Boolean;
 begin
   if Client = nil then begin
@@ -666,142 +706,158 @@ begin
   end;
   Widget := PGTKWidget(Client);
   WidgetStyle := gtk_widget_get_style(Widget);
-  Info:=GetWidgetInfo(Widget,false);
-  WidgetIsPainting:=(Info<>nil) and (Info^.PaintDepth>0);
-  {$IFDEF Gtk1}
-  // the gtk1 has no double buffering, there is no difference between
-  // painting outside/inside OnPaint
-  WidgetIsPainting:=false;
-  {$ENDIF}
+  WidgetIsPainting:=GTKAPIWidgetClient_IsPainting(Client);
 
   with Client^.Caret do 
   begin
     HasFocus:=gtk_widget_has_focus(Widget);
-  
-    if Timer<>0 then begin
-      gtk_timeout_remove(Timer);
-      Timer := 0;
-    end;
+    if WidgetIsPainting then
+      Invalidated:=false;
+
+    {$IFDEF VerboseCaret}
+    DebugLn(['GTKAPIWidgetClient_DrawCaret START Client=',DbgS(Client),' Timer=',Timer,' Blink=',Blinking,' BlinkHide=',BlinkHide,' Visible=',Visible,' ShowHideOnFocus=',ShowHideOnFocus,' Focus=',gtk_widget_has_focus(Widget),' IsDrawn=',IsDrawn,' W=',Width,' H=',Height,' WidgetIsPainting=',WidgetIsPainting]);
+    {$ENDIF}
+
     if IsDrawn
     and ((not Visible)
-         or (Blinking and CalledByTimer))
+         or (Blinking and BlinkHide))
     then begin
-      {$IFDEF VerboseCaret}
-      DebugLn(['GTKAPIWidgetClient_DrawCaret ',DbgS(Client),
-        ' HIDING Caret IsDrawn=',IsDrawn,' Visible=',Visible,' Blinking=',Blinking,' CalledByTimer=',CalledByTimer,' TimerInterval=',TimerInterval,' X=',X,' Y=',Y,' WidgetIsPainting=',WidgetIsPainting]);
-      {$ENDIF}
       // hide caret (restore background)
-      if (BackPixmap <> nil)
-      and (Widget<>nil)
-      and (WidgetStyle<>nil)
-      and (not WidgetIsPainting)
-      then begin
-        gdk_draw_pixmap(
-          Widget^.Window,
-          WidgetStyle^.bg_gc[GTK_STATE_NORMAL],
-          BackPixmap, 0, 0,
-          X, Y-1, // Y-1 for Delphi compatibility
-          Width, Height
-        );
+      if WidgetIsPainting then begin
+        if (BackPixmap <> nil)
+        and (Widget<>nil)
+        and (WidgetStyle<>nil)
+        then begin
+          gdk_draw_pixmap(
+            Widget^.Window,
+            WidgetStyle^.bg_gc[GTK_STATE_NORMAL],
+            BackPixmap, 0, 0,
+            X, Y-1, // Y-1 for Delphi compatibility
+            Width, Height
+          );
+          {$IFDEF VerboseCaret}
+          DebugLn(['GTKAPIWidgetClient_DrawCaret Real Hide ',X,',',Y]);
+          {$ENDIF}
+        end;
+        IsDrawn := False;
+        Invalidated:=false;
+      end else begin
+        // paint only during painting, otherwise invalidate
         {$IFDEF VerboseCaret}
-        DebugLn(['GTKAPIWidgetClient_DrawCaret Real Hide ',X,',',Y]);
+        DebugLn(['GTKAPIWidgetClient_DrawCaret Invalidate Hide ',X,',',Y]);
         {$ENDIF}
+        GTKAPIWidgetClient_InvalidateCaret(Client);
+        IsDrawn:=false;
       end;
-      IsDrawn := False;
     end
     else
     if Visible
     and (HasFocus or (not ShowHideOnFocus))
-    and (not IsDrawn) 
-    and (not WidgetIsPainting)
-    and (Widget^.Window<>nil) 
+    and (not IsDrawn)
+    and (not (Blinking and BlinkHide))
+    and (Widget^.Window<>nil)
     and (WidgetStyle<>nil)
     then begin
       if Pixmap <> nil then
         Assert(False, 'Trace:TODO: [GTKAPIWidgetClient_DrawCaret] Implement bitmap');
       
-      //Create backbitmap if needed
-      if (BackPixmap = nil) 
-      and (Widget^.Window<>nil) 
-      and (Width>0)
-      and (Height>0)
-      then
-        BackPixmap := gdk_pixmap_new(Widget^.Window, Width, Height, -1);
+      if WidgetIsPainting then begin
 
-      // store background
-      if (BackPixmap <> nil) 
-      and (Widget<>nil) 
-      and (WidgetStyle<>nil)
-      and (Width>0) and (Height>0)
-      then begin
-        {$IFDEF VerboseCaret}
-        DebugLn(['GTKAPIWidgetClient_DrawCaret Store ',X,',',Y]);
-        {$ENDIF}
-        gdk_draw_pixmap(
-          BackPixmap,
-          WidgetStyle^.bg_gc[GTK_STATE_NORMAL],
-          Widget^.Window,
-            X, Y-1, // Y-1 for Delphi compatibility
-            0, 0,
-            Width, Height
-        );
-      end;
+        //Create backbitmap if needed
+        if (BackPixmap = nil)
+        and (Widget^.Window<>nil)
+        and (Width>0)
+        and (Height>0)
+        then
+          BackPixmap := gdk_pixmap_new(Widget^.Window, Width, Height, -1);
 
-      // draw caret
-      {$IFDEF VerboseCaret}
-      DebugLn(['GTKAPIWidgetClient_DrawCaret SHOWING Client=',DbgS(Client)
-      ,' ',cardinal(WidgetStyle)
-      ,' ',cardinal(Widget^.Window)
-      ,' X=',X,' Y=',Y
-      ,' W=',Width
-      ,' H=',Height
-      ]);
-      {$ENDIF}
-      if (WidgetStyle<>nil) 
-      and (Widget^.Window<>nil)
-      and (Width>0) 
-      and (Height>0) 
-      then begin
-        // set draw function to xor
-        ForeGroundGC:=WidgetStyle^.fg_gc[GC_STATE[PtrUInt(Pixmap) <> 1]];
-        //gdk_gc_get_values(ForeGroundGC,@ForeGroundGCValues);
-        //OldGdkFunction:=ForeGroundGCValues.thefunction;
-        {$IFDEF VerboseCaret}
-        DebugLn(['GTKAPIWidgetClient_DrawCaret Real Draw ',X,',',Y]);
-        {$ENDIF}
-        gdk_gc_set_function(ForeGroundGC,GDK_invert);
-        try
-          // draw the caret
-          //DebugLn('DRAWING');
-          gdk_draw_rectangle(
+        // store background
+        if (BackPixmap <> nil)
+        and (Widget<>nil)
+        and (WidgetStyle<>nil)
+        and (Width>0) and (Height>0)
+        then begin
+          {$IFDEF VerboseCaret}
+          DebugLn(['GTKAPIWidgetClient_DrawCaret Store ',X,',',Y]);
+          {$ENDIF}
+          gdk_draw_pixmap(
+            BackPixmap,
+            WidgetStyle^.bg_gc[GTK_STATE_NORMAL],
             Widget^.Window,
-            ForeGroundGC,
-            1,
-            X, Y-1,  // Y-1 for Delphi compatibility
-            Width, Height
+              X, Y-1, // Y-1 for Delphi compatibility
+              0, 0,
+              Width, Height
           );
-        finally
-          // restore draw function
-          gdk_gc_set_function(ForeGroundGC,GDK_COPY);
         end;
-      end else
-        DebugLn('***: Draw Caret failed: Client=',DbgS(Client),
-          ' X='+dbgs(X)+' Y='+dbgs(Y)+' W='+dbgs(Width)+' H='+dbgs(Height),
-          ' ',dbgs(Pixmap<>nil),',',dbgs(Widget^.Window),',',dbgs(WidgetStyle));
-      IsDrawn := True;
+
+        // draw caret
+        {$IFDEF VerboseCaret}
+        DebugLn(['GTKAPIWidgetClient_DrawCaret SHOWING Client=',DbgS(Client)
+        ,' ',cardinal(WidgetStyle)
+        ,' ',cardinal(Widget^.Window)
+        ,' X=',X,' Y=',Y
+        ,' W=',Width
+        ,' H=',Height
+        ]);
+        {$ENDIF}
+        if (WidgetStyle<>nil)
+        and (Widget^.Window<>nil)
+        and (Width>0)
+        and (Height>0)
+        then begin
+          // set draw function to xor
+          ForeGroundGC:=WidgetStyle^.fg_gc[GC_STATE[PtrUInt(Pixmap) <> 1]];
+          //gdk_gc_get_values(ForeGroundGC,@ForeGroundGCValues);
+          //OldGdkFunction:=ForeGroundGCValues.thefunction;
+          {$IFDEF VerboseCaret}
+          DebugLn(['GTKAPIWidgetClient_DrawCaret Real Draw ',X,',',Y]);
+          {$ENDIF}
+          gdk_gc_set_function(ForeGroundGC,GDK_invert);
+          try
+            // draw the caret
+            //DebugLn('DRAWING');
+            gdk_draw_rectangle(
+              Widget^.Window,
+              ForeGroundGC,
+              1,
+              X, Y-1,  // Y-1 for Delphi compatibility
+              Width, Height
+            );
+          finally
+            // restore draw function
+            gdk_gc_set_function(ForeGroundGC,GDK_COPY);
+          end;
+        end else
+          DebugLn('***: Draw Caret failed: Client=',DbgS(Client),
+            ' X='+dbgs(X)+' Y='+dbgs(Y)+' W='+dbgs(Width)+' H='+dbgs(Height),
+            ' ',dbgs(Pixmap<>nil),',',dbgs(Widget^.Window),',',dbgs(WidgetStyle));
+        IsDrawn := True;
+        Invalidated:=false;
+      end else begin
+        // not in a paint event => use only invalidate
+        {$IFDEF VerboseCaret}
+        DebugLn(['GTKAPIWidgetClient_DrawCaret Invalidate Show']);
+        {$ENDIF}
+        GTKAPIWidgetClient_InvalidateCaret(Client);
+      end;
     end;
-    {$IFDEF VerboseCaret}
-    DebugLn(['GTKAPIWidgetClient_DrawCaret A Client=',DbgS(Client),' Timer=',Timer,' Blink=',Blinking,' Visible=',Visible,' ShowHideOnFocus=',ShowHideOnFocus,' Focus=',gtk_widget_has_focus(Widget),' IsDrawn=',IsDrawn,' W=',Width,' H=',Height,' WidgetIsPainting=',WidgetIsPainting]);
-    {$ENDIF}
-    if Visible and (Timer = 0)
+    // stop, start timer
+    if Visible and Blinking
     and ((not ShowHideOnFocus) or HasFocus)
-    and (Blinking or not IsDrawn)
     then begin
       TimerInterval:=BlinkingInterval;
-      if WidgetIsPainting and (not IsDrawn) then
-        TimerInterval:=1; // paint immediately after the paint event
-      Timer := gtk_timeout_add(TimerInterval, @GTKAPIWidgetClient_Timer, Client);
+      if Timer=0 then begin
+        Timer := gtk_timeout_add(TimerInterval, @GTKAPIWidgetClient_Timer, Client);
+      end;
+    end else begin
+      if Timer<>0 then begin
+        gtk_timeout_remove(Timer);
+        Timer:=0;
+      end;
     end;
+    {$IFDEF VerboseCaret}
+    DebugLn(['GTKAPIWidgetClient_DrawCaret END Client=',DbgS(Client),' Timer=',Timer,' Blink=',Blinking,' BlinkHide=',BlinkHide,' Visible=',Visible,' ShowHideOnFocus=',ShowHideOnFocus,' Focus=',gtk_widget_has_focus(Widget),' IsDrawn=',IsDrawn,' W=',Width,' H=',Height,' WidgetIsPainting=',WidgetIsPainting]);
+    {$ENDIF}
   end;
 end;
 
@@ -818,26 +874,8 @@ begin
   DebugLn('GTKAPIWidgetClient_ShowCaret ',DbgS(Client));
   {$ENDIF}
 
-  // force restarting time
-  with Client^.Caret do
-    if Timer<>0 then begin
-      gtk_timeout_remove(Timer);
-      Timer := 0;
-    end;
-  
   Client^.Caret.Visible := True;
   GTKAPIWidgetClient_DrawCaret(Client,false);
-  
-  {if (not Client^.Caret.IsDrawn)
-  and (gtk_widget_has_focus(PGtkWidget(Client))) then begin
-    with Client^.Caret do begin
-      DebugLn('GTKAPIWidgetClient_ShowCaret IsDrawn=',dbgs(IsDrawn),' Visible=',dbgs(Visible),
-        ' Blinking='+dbgs(Blinking),' HasFocus=',dbgs(gtk_widget_has_focus(PGtkWidget(Client))),
-        ' ShowHideOnFocus='+dbgs(ShowHideOnFocus),
-        ' Window='+dbgs(PGtkWidget(Client)^.Window<>nil),
-        ' Style='+dbgs(gtk_widget_get_style(PGtkWidget(Client))<>nil));
-    end;
-  end;}
 end;
 
 procedure GTKAPIWidgetClient_CreateCaret(Client: PGTKAPIWidgetClient;
@@ -847,7 +885,7 @@ var
   WasVisible: boolean;
 begin
   {$IFDEF VerboseCaret}
-  DebugLn('********** [GTKAPIWidgetClient_CreateCaret] A Client=',DbgS(Client),' Width=',AWidth,' Height=',AHeight,' Bitmap=',ABitmap<>nil);
+  DebugLn(['********** [GTKAPIWidgetClient_CreateCaret] A Client=',DbgS(Client),' Width=',AWidth,' Height=',AHeight,' Bitmap=',ABitmap<>nil]);
   {$ENDIF}
   if Client = nil 
   then begin
@@ -888,7 +926,15 @@ begin
   end;
 
   with Client^.Caret do begin
-    if Visible then GTKAPIWidgetClient_HideCaret(Client,WasVisible);
+    if Visible then begin
+      Visible:=false;
+      GTKAPIWidgetClient_HideCaret(Client,WasVisible);
+    end;
+
+    if Timer<>0 then begin
+      gtk_timeout_remove(Timer);
+      Timer:=0;
+    end;
     
     if BackPixmap <> nil then begin
       gdk_pixmap_unref(BackPixmap);
@@ -907,17 +953,34 @@ begin
   DebugLn('********** [GTKAPIWidgetClient_InvalidateCaret] A Client=',DbgS(Client));
   {$ENDIF}
   with Client^.Caret do begin
-    if IsDrawn then begin
+    if not Invalidated then begin
       {$IFDEF VerboseCaret}
       DebugLn(['GTKAPIWidgetClient_InvalidateCaret invalidate caret: X=',X,' Y=',Y-1,' ',Width,'x',Height]);
       {$ENDIF}
       gtk_widget_queue_draw_area(PGtkWidget(Client),
           X, Y-1, // Y-1 for Delphi compatibility
           Width,Height);
+      Invalidated:=true;
     end;
   end;
   {$IFDEF VerboseCaret}
   DebugLn('********** B[GTKAPIWidgetClient_InvalidateCaret] A Client=',DbgS(Client));
+  {$ENDIF}
+end;
+
+function GTKAPIWidgetClient_IsPainting(Client: PGTKAPIWidgetClient): boolean;
+{$IFNDEF Gtk1}
+var
+  Info: PWidgetInfo;
+{$ENDIF}
+begin
+  {$IFDEF Gtk1}
+  // the gtk1 has no double buffering, there is no difference between
+  // painting outside/inside OnPaint
+  Result:=true;
+  {$ELSE}
+  Info:=GetWidgetInfo(Client,false);
+  Result:=(Info<>nil) and (Info^.PaintDepth>0);
   {$ENDIF}
 end;
 
@@ -938,10 +1001,18 @@ begin
   
   with Client^.Caret do
   begin
+    if (X=AX) and (Y=AY) then exit;
     IsVisible := Visible;
     if IsVisible then GTKAPIWidgetClient_HideCaret(Client,WasVisible);
     X := AX;
     Y := AY;
+    BlinkHide:=false;// start show phase
+    Invalidated:=false;
+    if Timer<>0 then begin
+      // reset timer
+      gtk_timeout_remove(Timer);
+      Timer:=0;
+    end;
     if IsVisible then GTKAPIWidgetClient_ShowCaret(Client);
   end;
 end;
@@ -963,7 +1034,7 @@ procedure GTKAPIWidgetClient_SetCaretRespondToFocus(Client: PGTKAPIWidgetClient;
   ShowHideOnFocus: boolean);
 begin
   {$IFDEF VerboseCaret}
-  DebugLn('[GTKAPIWidgetClient_SetCaretRespondToFocus] A ',ShowHideOnFocus);
+  DebugLn(['[GTKAPIWidgetClient_SetCaretRespondToFocus] A ',ShowHideOnFocus]);
   {$ENDIF}
   if Client = nil
   then begin
@@ -1200,7 +1271,7 @@ procedure GTKAPIWidget_SetCaretRespondToFocus(APIWidget: PGTKAPIWidget;
   ShowHideOnFocus: boolean); 
 begin
   {$IFDEF VerboseCaret}
-  DebugLn('[GTKAPIWidget_SetCaretRespondToFocus] A ',ShowHideOnFocus);
+  DebugLn(['[GTKAPIWidget_SetCaretRespondToFocus] A ',ShowHideOnFocus]);
   {$ENDIF}
   if APIWidget = nil
   then begin
