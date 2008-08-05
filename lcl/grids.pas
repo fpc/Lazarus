@@ -4434,9 +4434,7 @@ begin
         InternalSetColCount( FixedCols + Columns.VisibleCount )
       else
         VisualChange;
-    end else
-      if not (csloading in ComponentState) then
-        ColCount := FixedCols + 1
+    end;
   end else begin
     aCol := Columns.IndexOf(AColumn);
     if ACol>=0 then begin
@@ -4619,23 +4617,32 @@ end;
 
 procedure TCustomGrid.DoOPDeleteColRow(IsColumn: Boolean; index: Integer);
   procedure doDeleteColumn;
+  var
+    tmpIndex: Integer;
   begin
     CheckFixedCount(ColCount-1, RowCount, FFixedCols, FFixedRows);
     CheckCount(ColCount-1, RowCount, false);
+
     // before deleteing column hide editor
     if EditorMode and (Index=Col) then
       EditorMode:=False;
-    if Columns.Enabled then begin
-      Columns.RemoveColumn(ColumnIndexFromGridColumn(Index));
-    end else begin
-      if Index<FixedCols then begin
-        Dec(FFixedCols);
-        FTopLeft.x := FFixedCols;
-      end;
-      FCols.Delete(Index);
-      FGCache.AccumWidth.Delete(Index);
+
+    if Columns.Enabled then
+      tmpIndex := ColumnIndexFromGridColumn(Index);
+
+    if Index<FixedCols then begin
+      Dec(FFixedCols);
+      FTopLeft.x := FFixedCols;
     end;
+
+    FCols.Delete(Index);
+    FGCache.AccumWidth.Delete(Index);
+
     ColRowDeleted(True, Index);
+
+    if Columns.Enabled then
+      Columns.RemoveColumn(tmpIndex);
+
     FixPosition(True, Index);
   end;
   procedure doDeleteRow;
@@ -7635,8 +7642,7 @@ end;
 
 procedure TCustomDrawGrid.ColRowDeleted(IsColumn: Boolean; index: Integer);
 begin
-  if not IsColumn or not Columns.Enabled then
-    FGrid.DeleteColRow(IsColumn, index);
+  FGrid.DeleteColRow(IsColumn, index);
   NotifyColRowChange(False, IsColumn, Index, Index);
 end;
 
