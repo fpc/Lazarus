@@ -177,8 +177,9 @@ type
 
   TStringToStringTree = class
   private
+    FCompareItems: TListSortCompare;
+    FCompareNameWithItem: TListSortCompare;
     FItems: TAvgLvlTree;
-    fCaseSensitive: Boolean;
     function GetCount: Integer;
     function GetValues(const Name: string): string;
     procedure SetValues(const Name: string; const AValue: string);
@@ -186,10 +187,13 @@ type
     function GetNode(Node: TAvgLvlTreeNode; out Name, Value: string): Boolean;
   public
     constructor Create(CaseSensitive: boolean);
+    constructor Create(const ACompareItems, ACompareNameWithItem: TListSortCompare);
     destructor Destroy; override;
     procedure Clear;
     function Contains(const Name: string): Boolean;
     procedure Add(const Name, Value, Delimiter: string);
+    procedure AddNameValues(List: TStrings);
+    procedure AddValues(List: TStrings);
     function GetFirst(out Name, Value: string): Boolean;
     function GetLast(out Name, Value: string): Boolean;
     function GetNext(const Name: string; out NextName, NextValue: string): Boolean;
@@ -197,11 +201,13 @@ type
     property Count: Integer read GetCount;
     property Values[const Name: string]: string read GetValues write SetValues; default;
     property Tree: TAvgLvlTree read FItems;
+    property CompareItems: TListSortCompare read FCompareItems;
+    property CompareNameWithItem: TListSortCompare read FCompareNameWithItem;
   end;
 
 function CompareStringToStringItems(Data1, Data2: Pointer): integer;
-function CompareStringToStringItemsI(Data1, Data2: Pointer): integer;
 function ComparePAnsiStringWithStrToStrItem(Key, Data: Pointer): Integer;
+function CompareStringToStringItemsI(Data1, Data2: Pointer): integer;
 function ComparePAnsiStringWithStrToStrItemI(Key, Data: Pointer): Integer;
 
 
@@ -1362,10 +1368,7 @@ end;
 
 function TStringToStringTree.FindNode(const Name: string): TAvgLvlTreeNode;
 begin
-  if fCaseSensitive then
-    Result:=FItems.FindKey(@Name,@ComparePAnsiStringWithStrToStrItem)
-  else
-    Result:=FItems.FindKey(@Name,@ComparePAnsiStringWithStrToStrItemI)
+   Result:=FItems.FindKey(@Name,FCompareNameWithItem);
 end;
 
 function TStringToStringTree.GetNode(Node: TAvgLvlTreeNode;
@@ -1387,11 +1390,18 @@ end;
 
 constructor TStringToStringTree.Create(CaseSensitive: boolean);
 begin
-  fCaseSensitive:=CaseSensitive;
-  if fCaseSensitive then
-    FItems:=TAvgLvlTree.Create(@CompareStringToStringItems)
+  if CaseSensitive then
+    Create(@CompareStringToStringItems,@ComparePAnsiStringWithStrToStrItem)
   else
-    FItems:=TAvgLvlTree.Create(@CompareStringToStringItemsI);
+    Create(@CompareStringToStringItemsI,@ComparePAnsiStringWithStrToStrItemI);
+end;
+
+constructor TStringToStringTree.Create(const ACompareItems,
+  ACompareNameWithItem: TListSortCompare);
+begin
+  FCompareItems:=ACompareItems;
+  FCompareNameWithItem:=ACompareNameWithItem;
+  FItems:=TAvgLvlTree.Create(FCompareItems);
 end;
 
 destructor TStringToStringTree.Destroy;
@@ -1429,6 +1439,22 @@ begin
     OldValue:=OldValue+Delimiter;
   OldValue:=OldValue+Value;
   Values[Name]:=OldValue;
+end;
+
+procedure TStringToStringTree.AddNameValues(List: TStrings);
+var
+  i: Integer;
+begin
+  for i:=0 to List.Count-1 do
+    Values[List.Names[i]]:=List.ValueFromIndex[i];
+end;
+
+procedure TStringToStringTree.AddValues(List: TStrings);
+var
+  i: Integer;
+begin
+  for i:=0 to List.Count-1 do
+    Values[List[i]]:='';
 end;
 
 function TStringToStringTree.GetFirst(out Name, Value: string): Boolean;

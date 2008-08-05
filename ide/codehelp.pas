@@ -208,6 +208,9 @@ type
                                        out CacheWasUsed: boolean;
                                        out AnOwner: TObject;// package or project
                                        CreateIfNotExists: boolean = false): string;
+    procedure GetFPDocFilenamesForSources(SrcFilenames: TStringToStringTree;
+                                          ResolveIncludeFiles: boolean;
+                                          var FPDocFilenames: TStringToStringTree);
     function FindModuleOwner(const Modulename: string): TObject;
     function GetOwnerModuleName(TheOwner: TObject): string;
     function ExpandFPDocLinkID(const LinkID, DefaultUnitName,
@@ -1245,6 +1248,33 @@ begin
     {$IFDEF VerboseLazDoc}
     DebugLn(['TCodeHelpManager.GetFPDocFilenameForSource SrcFilename="',SrcFilename,'" Result="',Result,'"']);
     {$ENDIF}
+  end;
+end;
+
+procedure TCodeHelpManager.GetFPDocFilenamesForSources(
+  SrcFilenames: TStringToStringTree; ResolveIncludeFiles: boolean;
+  var FPDocFilenames: TStringToStringTree);
+var
+  Node: TAvgLvlTreeNode;
+  Item: PStringToStringItem;
+  SrcFilename: String;
+  CacheWasUsed: boolean;
+  AnOwner: TObject;
+  FPDocFilename: String;
+begin
+  Node:=SrcFilenames.Tree.FindLowest;
+  while Node<>nil do begin
+    Item:=PStringToStringItem(Node.Data);
+    SrcFilename:=Item^.Name;
+    FPDocFilename:=GetFPDocFilenameForSource(SrcFilename,ResolveIncludeFiles,
+                                             CacheWasUsed,AnOwner);
+    //DebugLn(['TCodeHelpManager.GetFPDocFilenamesForSources FPDoc=',FPDocFilename,' Src=',SrcFilename]);
+    if FPDocFilename<>'' then begin
+      if FPDocFilenames=nil then
+        FPDocFilenames:=CreateFilenameToStringTree;
+      FPDocFilenames[FPDocFilename]:=SrcFilename;
+    end;
+    Node:=SrcFilenames.Tree.FindSuccessor(Node);
   end;
 end;
 

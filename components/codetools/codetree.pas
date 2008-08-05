@@ -856,7 +856,7 @@ begin
   if Root=nil then exit;
   ANode:=Root;
   while (ANode.NextBrother<>nil) do ANode:=ANode.NextBrother;
-  debugln('TCodeTree.FindLastPosition A ',Anode.DescAsString,' ANode.StartPos=',dbgs(ANode.StartPos),' ANode.EndPos=',dbgs(ANode.EndPos));
+  //debugln('TCodeTree.FindLastPosition A ',Anode.DescAsString,' ANode.StartPos=',dbgs(ANode.StartPos),' ANode.EndPos=',dbgs(ANode.EndPos));
   Result:=ANode.EndPos;
 end;
 

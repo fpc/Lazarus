@@ -12282,7 +12282,7 @@ var
   ExtraFiles: TStrings;
   Files: TStringList;
   Identifier: string;
-  TreeOfPCodeXYPosition: TAVLTree;
+  PascalReferences, FPDocReferences: TAVLTree;
 begin
   Result:=mrCancel;
   if not BeginCodeTool(TargetSrcEdit,TargetUnitInfo,[]) then exit;
@@ -12314,7 +12314,8 @@ begin
 
   Files:=nil;
   OwnerList:=nil;
-  TreeOfPCodeXYPosition:=nil;
+  PascalReferences:=nil;
+  FPDocReferences:=nil;
   try
     // create the file list
     Files:=TStringList.Create;
@@ -12363,30 +12364,39 @@ begin
 
     // search pascal source references
     Result:=GatherIdentifierReferences(Files,DeclarationUnitInfo.Source,
-      DeclarationCaretXY,Options.SearchInComments,TreeOfPCodeXYPosition);
+      DeclarationCaretXY,Options.SearchInComments,PascalReferences);
     if CodeToolBoss.ErrorMessage<>'' then
       DoJumpToCodeToolBossError;
     if Result<>mrOk then begin
-      debugln('TMainIDE.DoFindRenameIdentifier unable to gather identifiers');
+      debugln('TMainIDE.DoFindRenameIdentifier GatherIdentifierReferences failed');
       exit;
     end;
 
-    // ToDo: designer references
-    // ToDo: search lfm source references
+    {$IFDEF EnableFPDocRename}
     // ToDo: search fpdoc references
+    Result:=GatherFPDocReferences(Files,DeclarationUnitInfo.Source,
+                                  DeclarationCaretXY,FPDocReferences);
+    if Result<>mrOk then begin
+      debugln('TMainIDE.DoFindRenameIdentifier GatherFPDocReferences failed');
+      exit;
+    end;
+    {$ENDIF}
+
+    // ToDo: search lfm source references
     // ToDo: search i18n references
+    // ToDo: designer references
 
     // show result
     if (not Options.Rename) or (not Rename) then begin
       CreateSearchResultWindow;
       Result:=ShowIdentifierReferences(DeclarationUnitInfo.Source,
-        DeclarationCaretXY,TreeOfPCodeXYPosition);
+        DeclarationCaretXY,PascalReferences);
       if Result<>mrOk then exit;
     end;
 
     // rename identifier
     if Options.Rename and Rename then begin
-      if not CodeToolBoss.RenameIdentifier(TreeOfPCodeXYPosition,
+      if not CodeToolBoss.RenameIdentifier(PascalReferences,
         Identifier,Options.RenameTo)
       then begin
         DoJumpToCodeToolBossError;
@@ -12399,7 +12409,8 @@ begin
   finally
     Files.Free;
     OwnerList.Free;
-    CodeToolBoss.FreeTreeOfPCodeXYPosition(TreeOfPCodeXYPosition);
+    CodeToolBoss.FreeTreeOfPCodeXYPosition(FPDocReferences);
+    CodeToolBoss.FreeTreeOfPCodeXYPosition(PascalReferences);
   end;
 end;
 

@@ -3586,7 +3586,7 @@ var
     and ((not IsComment)
          or ((not SkipComments) and UnitStartFound))
     then begin
-      debugln('Identifier with same name found at: ',
+      {debugln('Identifier with same name found at: ',
         dbgs(StartPos),' ',GetIdentifier(@Src[StartPos]),
         ' CleanDeclCursorPos=',dbgs(CleanDeclCursorPos),
         ' MaxPos='+dbgs(MaxPos),
@@ -3594,10 +3594,10 @@ var
         ' SkipComments='+dbgs(SkipComments),
         ' UnitStartFound='+dbgs(UnitStartFound));
       if CleanPosToCaret(StartPos,ReferencePos) then
-        debugln('  x=',dbgs(ReferencePos.X),' y=',dbgs(ReferencePos.Y),' ',ReferencePos.Code.Filename);
+        debugln('  x=',dbgs(ReferencePos.X),' y=',dbgs(ReferencePos.Y),' ',ReferencePos.Code.Filename);}
 
       CursorNode:=BuildSubTreeAndFindDeepestNodeAtPos(StartPos,true);
-      debugln('  CursorNode=',CursorNode.DescAsString,' Forward=',dbgs(CursorNode.SubDesc and ctnsForwardDeclaration));
+      //debugln('  CursorNode=',CursorNode.DescAsString,' Forward=',dbgs(CursorNode.SubDesc and ctnsForwardDeclaration));
 
       if (DeclarationTool=Self)
       and ((StartPos=CleanDeclCursorPos) or (CursorNode=AliasDeclarationNode))
@@ -3615,7 +3615,7 @@ var
         Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
                        fdfExceptionOnNotFound,fdfIgnoreCurContextNode];
         if NodeIsForwardDeclaration(CursorNode) then begin
-          debugln('Node is forward declaration');
+          //debugln('Node is forward declaration');
           Params.Flags:=Params.Flags+[fdfSearchForward];
         end;
         Params.ContextNode:=CursorNode;
@@ -3636,7 +3636,7 @@ var
             raise;
         end;
 
-        debugln(' Found=',dbgs(Found));
+        //debugln(' Found=',dbgs(Found));
         if Found and (Params.NewNode<>nil) then begin
           if (Params.NewNode.Desc=ctnProcedure)
           and (Params.NewNode.FirstChild<>nil)
@@ -3647,7 +3647,7 @@ var
             Params.NewCodeTool.MoveCursorToProcName(Params.NewNode,true);
             Params.NewCleanPos:=Params.NewCodeTool.CurPos.StartPos;
           end;
-          debugln('Context=',Params.NewNode.DescAsString,' ',dbgs(Params.NewNode.StartPos),' ',dbgs(DeclarationNode.StartPos));
+          //debugln('Context=',Params.NewNode.DescAsString,' ',dbgs(Params.NewNode.StartPos),' ',dbgs(DeclarationNode.StartPos));
           if (Params.NewNode=DeclarationNode)
           or (Params.NewNode=AliasDeclarationNode) then
             AddReference;
@@ -3797,7 +3797,7 @@ var
     end;
 
     // find alias declaration node
-    debugln('FindDeclarationNode DeclarationNode=',DeclarationNode.DescAsString);
+    //debugln('FindDeclarationNode DeclarationNode=',DeclarationNode.DescAsString);
     AliasDeclarationNode:=nil;
     case DeclarationNode.Desc of
 
@@ -3837,7 +3837,7 @@ var
     and (AliasDeclarationNode.FirstChild.Desc=ctnProcedureHead) then
       AliasDeclarationNode:=AliasDeclarationNode.FirstChild;
     if AliasDeclarationNode<>nil then begin
-      debugln('FindDeclarationNode AliasDeclarationNode=',AliasDeclarationNode.DescAsString);
+      //debugln('FindDeclarationNode AliasDeclarationNode=',AliasDeclarationNode.DescAsString);
     end;
 
     Result:=true;
@@ -3845,7 +3845,7 @@ var
   
 begin
   Result:=false;
-  debugln('FindReferences CursorPos=',CursorPos.Code.Filename,' x=',dbgs(CursorPos.X),' y=',dbgs(CursorPos.Y),' SkipComments=',dbgs(SkipComments));
+  //debugln('FindReferences CursorPos=',CursorPos.Code.Filename,' x=',dbgs(CursorPos.X),' y=',dbgs(CursorPos.Y),' SkipComments=',dbgs(SkipComments));
   
   ListOfPCodeXYPosition:=nil;
   Params:=nil;

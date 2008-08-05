@@ -232,6 +232,11 @@ procedure FreeListObjects(List: TList; FreeList: boolean);
 procedure FreeListObjects(List: TFPList; FreeList: boolean);
 function CompareMemStreamText(s1, s2: TMemoryStream): Boolean;
 
+function CompareStringToStringItemsFilename(Data1, Data2: Pointer): integer;
+function ComparePAnsiStringWithStrToStrItemFilename(Key, Data: Pointer): Integer;
+function CreateFilenameToStringTree: TStringToStringTree;
+
+
 implementation
 
 
@@ -2588,6 +2593,23 @@ begin
   end;
 end;
 
+function CompareStringToStringItemsFilename(Data1, Data2: Pointer): integer;
+begin
+  Result:=CompareFilenames(PStringToStringItem(Data1)^.Name,
+                           PStringToStringItem(Data2)^.Name);
+end;
+
+function ComparePAnsiStringWithStrToStrItemFilename(Key, Data: Pointer
+  ): Integer;
+begin
+  Result:=CompareFilenames(PAnsiString(Key)^,PStringToStringItem(Data)^.Name);
+end;
+
+function CreateFilenameToStringTree: TStringToStringTree;
+begin
+  Result:=TStringToStringTree.Create(@CompareStringToStringItemsFilename,
+                                   @ComparePAnsiStringWithStrToStrItemFilename);
+end;
 
 end.
 

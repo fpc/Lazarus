@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, Buttons, ExtCtrls,
+  StdCtrls, Buttons, ExtCtrls, AvgLvlTree,
   // codetools
   AVL_Tree, CodeAtom, CodeCache, CodeToolManager,
   // IDE
@@ -272,27 +272,23 @@ function GatherFPDocReferences(PascalFiles: TStringList;
   DeclarationCode: TCodeBuffer; const DeclarationCaretXY: TPoint;
   var TreeOfPCodeXYPosition: TAVLTree): TModalResult;
 var
-  i: Integer;
-  PascalFilename: string;
-  Filename: string;
-  CurOwner: TObject;
-  CacheWasUsed: boolean;
+  PascalFilenames, FPDocFilenames: TStringToStringTree;
 begin
   Result:=mrCancel;
   TreeOfPCodeXYPosition:=nil;
+  PascalFilenames:=nil;
+  FPDocFilenames:=nil;
   try
     CleanUpFileList(PascalFiles);
 
-    // search fpdoc files
-    for i:=0 to PascalFiles.Count-1 do begin
-      PascalFilename:=PascalFiles[i];
-      Filename:=CodeHelpBoss.GetFPDocFilenameForSource(PascalFilename,true,
-        CacheWasUsed,CurOwner);
-      if Filename='' then continue;
-    end;
+    PascalFilenames:=CreateFilenameToStringTree;
+    PascalFilenames.AddValues(PascalFiles);
+    CodeHelpBoss.GetFPDocFilenamesForSources(PascalFilenames,true,FPDocFilenames);
 
     Result:=mrOk;
   finally
+    PascalFilenames.Free;
+    FPDocFilenames.Free;
     if Result<>mrOk then
       CodeToolBoss.FreeTreeOfPCodeXYPosition(TreeOfPCodeXYPosition);
   end;
