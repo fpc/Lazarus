@@ -12361,7 +12361,7 @@ begin
       exit;
     end;
 
-    // gather identifiers
+    // search pascal source references
     Result:=GatherIdentifierReferences(Files,DeclarationUnitInfo.Source,
       DeclarationCaretXY,Options.SearchInComments,TreeOfPCodeXYPosition);
     if CodeToolBoss.ErrorMessage<>'' then
@@ -12370,6 +12370,11 @@ begin
       debugln('TMainIDE.DoFindRenameIdentifier unable to gather identifiers');
       exit;
     end;
+
+    // ToDo: designer references
+    // ToDo: search lfm source references
+    // ToDo: search fpdoc references
+    // ToDo: search i18n references
 
     // show result
     if (not Options.Rename) or (not Rename) then begin

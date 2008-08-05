@@ -32,10 +32,11 @@ interface
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   StdCtrls, Buttons, ExtCtrls,
-  AVL_Tree, CodeAtom, CodeCache,
-  CodeToolManager,
+  // codetools
+  AVL_Tree, CodeAtom, CodeCache, CodeToolManager,
+  // IDE
   LazarusIDEStrConsts, IDEProcs, IDEWindowIntf, MiscOptions, DialogProcs,
-  InputHistory, SearchResultView;
+  InputHistory, SearchResultView, CodeHelp;
 
 type
   TFindRenameIdentifierDialog = class(TForm)
@@ -74,6 +75,7 @@ type
     property AllowRename: boolean read FAllowRename write SetAllowRename;
   end;
 
+procedure CleanUpFileList(Files: TStringList);
 
 function ShowFindRenameIdentifierDialog(const Filename: string;
   const Position: TPoint; AllowRename, SetRenameActive: boolean;
@@ -88,10 +90,30 @@ function ShowIdentifierReferences(
 procedure AddReferencesToResultView(DeclarationCode: TCodeBuffer;
   const DeclarationCaretXY: TPoint; TargetCode: TCodeBuffer;
   TreeOfPCodeXYPosition: TAVLTree; ClearItems: boolean; SearchPageIndex: integer);
+
+function GatherFPDocReferences(PascalFiles: TStringList;
+  DeclarationCode: TCodeBuffer; const DeclarationCaretXY: TPoint;
+  var TreeOfPCodeXYPosition: TAVLTree): TModalResult;
   
 
 implementation
 
+procedure CleanUpFileList(Files: TStringList);
+var
+  i: Integer;
+begin
+  // sort files
+  Files.Sort;
+  // remove doubles
+  i:=0;
+  while i<=Files.Count-2 do begin
+    while (i<=Files.Count-2) and (CompareFilenames(Files[i],Files[i+1])=0) do
+    begin
+      Files.Delete(i+1);
+    end;
+    inc(i);
+  end;
+end;
 
 function ShowFindRenameIdentifierDialog(const Filename: string;
   const Position: TPoint; AllowRename, SetRenameActive: boolean;
@@ -129,17 +151,7 @@ begin
   ListOfPCodeXYPosition:=nil;
   TreeOfPCodeXYPosition:=nil;
   try
-    // sort files
-    Files.Sort;
-    // remove doubles
-    i:=0;
-    while i<=Files.Count-2 do begin
-      while (i<=Files.Count-2) and (CompareFilenames(Files[i],Files[i+1])=0) do
-      begin
-        Files.Delete(i+1);
-      end;
-      inc(i);
-    end;
+    CleanUpFileList(Files);
 
     // search in every file
     for i:=0 to Files.Count-1 do begin
@@ -254,6 +266,36 @@ begin
     end;
   end;
   SearchResultsView.EndUpdate(SearchPageIndex);
+end;
+
+function GatherFPDocReferences(PascalFiles: TStringList;
+  DeclarationCode: TCodeBuffer; const DeclarationCaretXY: TPoint;
+  var TreeOfPCodeXYPosition: TAVLTree): TModalResult;
+var
+  i: Integer;
+  PascalFilename: string;
+  Filename: string;
+  CurOwner: TObject;
+  CacheWasUsed: boolean;
+begin
+  Result:=mrCancel;
+  TreeOfPCodeXYPosition:=nil;
+  try
+    CleanUpFileList(PascalFiles);
+
+    // search fpdoc files
+    for i:=0 to PascalFiles.Count-1 do begin
+      PascalFilename:=PascalFiles[i];
+      Filename:=CodeHelpBoss.GetFPDocFilenameForSource(PascalFilename,true,
+        CacheWasUsed,CurOwner);
+      if Filename='' then continue;
+    end;
+
+    Result:=mrOk;
+  finally
+    if Result<>mrOk then
+      CodeToolBoss.FreeTreeOfPCodeXYPosition(TreeOfPCodeXYPosition);
+  end;
 end;
 
 { TFindRenameIdentifierDialog }
