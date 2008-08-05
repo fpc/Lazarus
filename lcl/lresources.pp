@@ -3836,7 +3836,6 @@ begin
   //debugln('TLRSObjectReader.ReadWideString ',Result);
 end;
 
-
 procedure TLRSObjectReader.SkipComponent(SkipComponentInfos: Boolean);
 var
   Flags: TFilerFlags;

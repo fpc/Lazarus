@@ -2990,6 +2990,7 @@ var
   rcCodeFold: TRect;
   tmp: TSynEditCodeFoldType;
   CodeFoldOffset: Integer;
+  ShowDot: boolean;
 
   procedure DrawMark(iMark: integer);
   {$IFDEF SYN_LAZARUS}
@@ -3176,13 +3177,19 @@ begin
         // erase the background and draw the line number string in one go
         {$IFDEF SYN_LAZARUS}
         if not TSynEditStringList(fLines).Folded[iLine-1] then begin
-          s := fGutter.FormatLineNumber(iLine);
+          // Must show a dot instead of line number if
+          // line number is not the first, the last, the current line
+          // or a multiple of Gutter.ShowOnlyLineNumbersMultiplesOf
+          ShowDot := ((iLine mod fGutter.ShowOnlyLineNumbersMultiplesOf) <> 0)
+              and (iLine <> CaretY) and (iLine <> 1) and (iLine <> Lines.Count);
+          // Get the formatted line number or dot
+          s := fGutter.FormatLineNumber(iLine, ShowDot);
           Inc(rcLine.Bottom, fTextHeight);
           fTextDrawer.ExtTextOut(CodeFoldOffset+fGutter.LeftOffset,
                      rcLine.Top, ETO_OPAQUE,rcLine,PChar(Pointer(S)),Length(S));
         end;
         {$ELSE}
-        s := fGutter.FormatLineNumber(iLine);
+        s := fGutter.FormatLineNumber(iLine, false);
         Inc(rcLine.Bottom, fTextHeight);
         Windows.ExtTextOut(DC, fGutter.LeftOffset, rcLine.Top, ETO_OPAQUE,
           @rcLine, PChar(s), Length(s), nil);
@@ -4862,6 +4869,10 @@ begin
         Include(fStatusChanges, scCaretX);
       end;
       if fCaretY <> Value.Y then begin
+        {$IFDEF SYN_LAZARUS}
+        InvalidateGutterLines(fCaretY, fCaretY);
+        InvalidateGutterLines(Value.Y, Value.Y);
+        {$ENDIF}
         fCaretY := Value.Y;
         Include(fStatusChanges, scCaretY);
       end;
@@ -11403,6 +11414,4 @@ initialization
   {$IFNDEF SYN_LAZARUS}
   SynEditClipboardFormat := RegisterClipboardFormat(SYNEDIT_CLIPBOARD_FORMAT);
   {$ENDIF}
-
-end.
-
+    end.

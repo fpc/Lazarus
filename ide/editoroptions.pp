@@ -383,6 +383,7 @@ type
     fVisibleRightMargin: Boolean;
     fVisibleGutter: Boolean;
     fShowLineNumbers: Boolean;
+    fShowOnlyLineNumbersMultiplesOf: integer;
     fGutterColor: TColor;
     fGutterWidth: Integer;
     fRightMargin: Integer;
@@ -476,6 +477,8 @@ type
       write fVisibleGutter default True;
     property ShowLineNumbers: Boolean read fShowLineNumbers
       write fShowLineNumbers default False;
+    property ShowOnlyLineNumbersMultiplesOf: integer read fShowOnlyLineNumbersMultiplesOf
+      write fShowOnlyLineNumbersMultiplesOf;
     property GutterColor: TColor
       read fGutterColor write fGutterColor default clBtnFace;
     property GutterWidth: Integer
@@ -491,7 +494,8 @@ type
       read fExtraCharSpacing write fExtraCharSpacing default 0;
     property ExtraLineSpacing: Integer
       read fExtraLineSpacing write fExtraLineSpacing default 1;
-    property DoNotWarnForFont: string read FDoNotWarnForFont write FDoNotWarnForFont;
+    property DoNotWarnForFont: string
+      read FDoNotWarnForFont write FDoNotWarnForFont;
 
     // Key Mappings
     property KeyMappingScheme: String
@@ -572,6 +576,8 @@ type
     VisibleRightMarginCheckBox: TCheckBox;
     VisibleGutterCheckBox: TCheckBox;
     ShowLineNumbersCheckBox: TCheckBox;
+    ShowOnlyLineNumbersMultiplesOfLabel: TLabel;
+    ShowOnlyLineNumbersMultiplesOfSpinEdit: TSpinEdit;
     GutterColorButton: TColorButton;
     GutterColorLabel:  TLabel;
     RightMarginComboBox: TComboBox;
@@ -681,6 +687,7 @@ type
     // buttons at bottom
     procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
+    procedure ShowLineNumbersCheckBoxClick(Sender: TObject);
     procedure TextStyleRadioOnChange(Sender : TObject);
   private
     FormCreating: Boolean;
@@ -1623,6 +1630,8 @@ begin
       XMLConfig.GetValue('EditorOptions/Display/VisibleGutter', True);
     fShowLineNumbers :=
       XMLConfig.GetValue('EditorOptions/Display/ShowLineNumbers', False);
+    fShowOnlyLineNumbersMultiplesOf :=
+      XMLConfig.GetValue('EditorOptions/Display/ShowOnlyLineNumbersMultiplesOf', 1);
     fGutterColor :=
       XMLConfig.GetValue('EditorOptions/Display/GutterColor', clBtnFace);
     fGutterWidth :=
@@ -1757,6 +1766,8 @@ begin
       fVisibleGutter, True);
     XMLConfig.SetDeleteValue('EditorOptions/Display/ShowLineNumbers',
       fShowLineNumbers, False);
+    XMLConfig.SetDeleteValue('EditorOptions/Display/ShowOnlyLineNumbersMultiplesOf',
+      fShowOnlyLineNumbersMultiplesOf, 1);
     XMLConfig.SetDeleteValue('EditorOptions/Display/GutterColor',
       fGutterColor, clBtnFace);
     XMLConfig.SetDeleteValue('EditorOptions/Display/GutterWidth',
@@ -2312,6 +2323,8 @@ begin
   ASynEdit.Gutter.Visible := fVisibleGutter;
   ASynEdit.Gutter.ShowLineNumbers := fShowLineNumbers;
   ASynEdit.Gutter.AutoSize := true;
+  ASynEdit.Gutter.ShowOnlyLineNumbersMultiplesOf := fShowOnlyLineNumbersMultiplesOf;
+
   //ASynEdit.Gutter.AutoSize:= fShowLineNumbers;
   if ASynEdit.Gutter.ShowCodeFolding<>FUseCodeFolding then begin
     ASynEdit.Gutter.ShowCodeFolding := FUseCodeFolding;
@@ -2353,6 +2366,7 @@ begin
   // Display options
   fVisibleGutter := ASynEdit.Gutter.Visible;
   fShowLineNumbers := ASynEdit.Gutter.ShowLineNumbers;
+  fShowOnlyLineNumbersMultiplesOf := ASynEdit.Gutter.ShowOnlyLineNumbersMultiplesOf;
   FUseCodeFolding := ASynEdit.Gutter.ShowCodeFolding;
   fGutterColor   := ASynEdit.Gutter.Color;
   fGutterWidth   := ASynEdit.Gutter.Width;
@@ -2600,7 +2614,8 @@ begin
         PreviewEdits[a].Highlighter := Nil;
       // display
       PreviewEdits[a].Gutter.Visible := VisibleGutterCheckBox.Checked;
-      PreviewEdits[a].Gutter.ShowLineNumbers := ShowLineNumbersCheckBox.Checked;
+      PreviewEdits[a].Gutter.ShowLineNumbers  := ShowLineNumbersCheckBox.Checked;
+      PreviewEdits[a].Gutter.ShowOnlyLineNumbersMultiplesOf := ShowOnlyLineNumbersMultiplesOfSpinEdit.Value;
       PreviewEdits[a].RightEdgeColor:=RightMarginColorButton.ButtonColor;
       if VisibleRightMarginCheckBox.Checked then
         PreviewEdits[a].RightEdge:=StrToIntDef(RightMarginComboBox.Text,80)
@@ -3794,6 +3809,10 @@ begin
     Checked := EditorOpts.ShowLineNumbers;
   end;
 
+  ShowOnlyLineNumbersMultiplesOfSpinEdit.Caption:=lisEveryNThLineNumber;
+  ShowOnlyLineNumbersMultiplesOfSpinEdit.Value := EditorOpts.ShowOnlyLineNumbersMultiplesOf;
+  ShowOnlyLineNumbersMultiplesOfSpinEdit.Enabled := ShowLineNumbersCheckBox.Checked;
+
   RightMarginLabel.Caption := dlgRightMargin;
 
   VisibleRightMarginCheckBox.Checked:=EditorOpts.VisibleRightMargin;
@@ -4044,6 +4063,11 @@ begin
   IDEDialogLayoutList.SaveLayout(Self);
   EditorOpts.Load;
   ModalResult := mrCancel;
+end;
+
+procedure TEditorOptionsForm.ShowLineNumbersCheckBoxClick(Sender: TObject);
+begin
+  ShowOnlyLineNumbersMultiplesOfSpinEdit.Enabled := ShowLineNumbersCheckBox.Checked;
 end;
 
 procedure TEditorOptionsForm.TextStyleRadioOnChange(Sender : TObject);

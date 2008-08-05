@@ -1,7 +1,7 @@
 object EditorOptionsForm: TEditorOptionsForm
-  Left = 438
+  Left = 322
   Height = 577
-  Top = 120
+  Top = 149
   Width = 554
   ActiveControl = MainNotebook
   Caption = 'EditorOptionsForm'
@@ -13,26 +13,26 @@ object EditorOptionsForm: TEditorOptionsForm
   LCLVersion = '0.9.25'
   object MainNotebook: TNotebook
     AnchorSideBottom.Control = BtnPanel
-    Height = 534
+    Height = 530
     Width = 554
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Bottom = 6
-    PageIndex = 2
+    PageIndex = 1
     TabOrder = 0
     object GeneralPage: TPage
       Caption = 'GeneralPage'
-      ClientWidth = 546
-      ClientHeight = 508
+      ClientWidth = 552
+      ClientHeight = 509
       object BlockIndentLabel: TLabel
         AnchorSideLeft.Control = BlockIndentComboBox
         AnchorSideLeft.Side = asrBottom
         AnchorSideBottom.Control = BlockIndentComboBox
         AnchorSideBottom.Side = asrCenter
         Left = 112
-        Height = 16
-        Top = 429
-        Width = 92
+        Height = 14
+        Top = 431
+        Width = 82
         Anchors = [akLeft, akBottom]
         BorderSpacing.Around = 6
         Caption = 'BlockIndentLabel'
@@ -44,9 +44,9 @@ object EditorOptionsForm: TEditorOptionsForm
         AnchorSideBottom.Control = UndoLimitComboBox
         AnchorSideBottom.Side = asrCenter
         Left = 112
-        Height = 16
-        Top = 456
-        Width = 85
+        Height = 14
+        Top = 458
+        Width = 72
         Anchors = [akLeft, akBottom]
         BorderSpacing.Around = 6
         Caption = 'UndoLimitLabel'
@@ -58,9 +58,9 @@ object EditorOptionsForm: TEditorOptionsForm
         AnchorSideBottom.Control = TabWidthsComboBox
         AnchorSideBottom.Side = asrCenter
         Left = 112
-        Height = 16
-        Top = 483
-        Width = 86
+        Height = 14
+        Top = 485
+        Width = 77
         Anchors = [akLeft, akBottom]
         BorderSpacing.Around = 6
         Caption = 'TabWidthsLabel'
@@ -70,9 +70,9 @@ object EditorOptionsForm: TEditorOptionsForm
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = BlockIndentLabel
         Left = 6
-        Height = 411
+        Height = 413
         Top = 6
-        Width = 534
+        Width = 540
         Align = alTop
         Anchors = [akTop, akLeft, akRight, akBottom]
         AutoFill = True
@@ -96,7 +96,7 @@ object EditorOptionsForm: TEditorOptionsForm
         AnchorSideBottom.Control = UndoLimitComboBox
         Left = 6
         Height = 21
-        Top = 427
+        Top = 428
         Width = 100
         Anchors = [akLeft, akBottom]
         AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
@@ -117,7 +117,7 @@ object EditorOptionsForm: TEditorOptionsForm
         AnchorSideBottom.Control = TabWidthsComboBox
         Left = 6
         Height = 21
-        Top = 454
+        Top = 455
         Width = 100
         Anchors = [akLeft, akBottom]
         AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
@@ -138,7 +138,7 @@ object EditorOptionsForm: TEditorOptionsForm
         AnchorSideBottom.Side = asrBottom
         Left = 6
         Height = 21
-        Top = 481
+        Top = 482
         Width = 100
         Anchors = [akLeft, akBottom]
         AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
@@ -158,31 +158,31 @@ object EditorOptionsForm: TEditorOptionsForm
     end
     object DisplayPage: TPage
       Caption = 'DisplayPage'
-      ClientWidth = 548
-      ClientHeight = 455
+      ClientWidth = 552
+      ClientHeight = 503
       object MarginAndGutterGroupBox: TGroupBox
         Left = 6
         Height = 128
         Top = 6
-        Width = 536
+        Width = 540
         Align = alTop
         BorderSpacing.Around = 6
         Caption = 'MarginAndGutterGroupBox'
-        ClientHeight = 128
+        ClientHeight = 109
         ClientWidth = 536
         TabOrder = 1
         object RightMarginLabel: TLabel
           Left = 358
-          Height = 18
-          Top = 10
-          Width = 107
+          Height = 20
+          Top = 8
+          Width = 110
           Caption = 'RightMarginLabel'
           ParentColor = False
         end
         object RightMarginColorButton: TColorButton
           Left = 246
           Height = 21
-          Top = 36
+          Top = 34
           Width = 100
           BorderWidth = 2
           ButtonColorSize = 16
@@ -192,7 +192,7 @@ object EditorOptionsForm: TEditorOptionsForm
         object GutterColorButton: TColorButton
           Left = 246
           Height = 21
-          Top = 63
+          Top = 60
           Width = 100
           BorderWidth = 2
           ButtonColorSize = 16
@@ -201,51 +201,63 @@ object EditorOptionsForm: TEditorOptionsForm
         end
         object RightMarginColorLabel: TLabel
           Left = 358
-          Height = 18
-          Top = 34
-          Width = 140
+          Height = 20
+          Top = 32
+          Width = 143
           Caption = 'RightMarginColorLabel'
           ParentColor = False
         end
         object GutterColorLabel: TLabel
-          Left = 355
-          Height = 18
-          Top = 64
-          Width = 107
+          Left = 358
+          Height = 20
+          Top = 61
+          Width = 109
           Caption = 'GutterColorLabel'
+          ParentColor = False
+        end
+        object ShowOnlyLineNumbersMultiplesOfLabel: TLabel
+          AnchorSideTop.Control = ShowLineNumbersCheckBox
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 20
+          Top = 84
+          Width = 146
+          BorderSpacing.Top = 6
+          Caption = 'Every n-th line number'
           ParentColor = False
         end
         object VisibleRightMarginCheckBox: TCheckBox
           Left = 6
-          Height = 18
+          Height = 22
           Top = 8
-          Width = 201
+          Width = 203
           Caption = 'VisibleRightMarginCheckBox'
           OnChange = GeneralCheckBoxOnChange
           TabOrder = 0
         end
         object VisibleGutterCheckBox: TCheckBox
           Left = 6
-          Height = 18
+          Height = 22
           Top = 32
-          Width = 164
+          Width = 169
           Caption = 'VisibleGutterCheckBox'
           OnChange = GeneralCheckBoxOnChange
           TabOrder = 1
         end
         object ShowLineNumbersCheckBox: TCheckBox
           Left = 6
-          Height = 18
+          Height = 22
           Top = 56
-          Width = 199
+          Width = 206
           Caption = 'ShowLineNumbersCheckBox'
           OnChange = GeneralCheckBoxOnChange
+          OnClick = ShowLineNumbersCheckBoxClick
           TabOrder = 2
         end
         object RightMarginComboBox: TComboBox
           Left = 246
-          Height = 21
-          Top = 8
+          Height = 29
+          Top = 4
           Width = 100
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           Items.Strings = (
@@ -259,24 +271,39 @@ object EditorOptionsForm: TEditorOptionsForm
           OnKeyDown = ComboBoxOnKeyDown
           TabOrder = 3
         end
+        object ShowOnlyLineNumbersMultiplesOfSpinEdit: TSpinEdit
+          AnchorSideLeft.Control = ShowOnlyLineNumbersMultiplesOfLabel
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = ShowOnlyLineNumbersMultiplesOfLabel
+          AnchorSideTop.Side = asrCenter
+          Left = 158
+          Height = 23
+          Top = 83
+          Width = 54
+          BorderSpacing.Left = 6
+          MinValue = 1
+          OnChange = GeneralCheckBoxOnChange
+          TabOrder = 4
+          Value = 1
+        end
       end
       object EditorFontGroupBox: TGroupBox
         Left = 6
-        Height = 117
+        Height = 148
         Top = 140
-        Width = 536
+        Width = 540
         Align = alTop
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'EditorFontGroupBox'
-        ClientHeight = 117
+        ClientHeight = 129
         ClientWidth = 536
         TabOrder = 0
         object EditorFontLabel: TLabel
           Left = 6
-          Height = 16
+          Height = 20
           Top = 6
-          Width = 516
+          Width = 524
           Align = alTop
           BorderSpacing.Left = 6
           BorderSpacing.Top = 6
@@ -289,7 +316,7 @@ object EditorOptionsForm: TEditorOptionsForm
           AnchorSideTop.Side = asrCenter
           Left = 116
           Height = 20
-          Top = 33
+          Top = 45
           Width = 389
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 6
@@ -301,7 +328,7 @@ object EditorOptionsForm: TEditorOptionsForm
           AnchorSideTop.Side = asrCenter
           Left = 116
           Height = 20
-          Top = 54
+          Top = 74
           Width = 389
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 6
@@ -313,7 +340,7 @@ object EditorOptionsForm: TEditorOptionsForm
           AnchorSideTop.Side = asrCenter
           Left = 116
           Height = 20
-          Top = 75
+          Top = 103
           Width = 389
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 6
@@ -323,7 +350,7 @@ object EditorOptionsForm: TEditorOptionsForm
         object EditorFontComboBox: TComboBox
           AnchorSideRight.Control = EditorFontButton
           Left = 6
-          Height = 21
+          Height = 29
           Top = 6
           Width = 471
           Anchors = [akTop, akLeft, akRight]
@@ -348,8 +375,8 @@ object EditorOptionsForm: TEditorOptionsForm
           AnchorSideTop.Control = EditorFontComboBox
           AnchorSideTop.Side = asrBottom
           Left = 6
-          Height = 21
-          Top = 33
+          Height = 29
+          Top = 41
           Width = 100
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           Items.Strings = (
@@ -373,8 +400,8 @@ object EditorOptionsForm: TEditorOptionsForm
           AnchorSideTop.Control = EditorFontHeightComboBox
           AnchorSideTop.Side = asrBottom
           Left = 6
-          Height = 21
-          Top = 54
+          Height = 29
+          Top = 70
           Width = 100
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           Items.Strings = (
@@ -392,8 +419,8 @@ object EditorOptionsForm: TEditorOptionsForm
           AnchorSideTop.Control = ExtraLineSpacingComboBox
           AnchorSideTop.Side = asrBottom
           Left = 6
-          Height = 21
-          Top = 75
+          Height = 29
+          Top = 99
           Width = 100
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           Items.Strings = (
@@ -410,9 +437,9 @@ object EditorOptionsForm: TEditorOptionsForm
       end
       object DisplayPreview: TSynEdit
         Left = 6
-        Height = 155
+        Height = 203
         Top = 294
-        Width = 536
+        Width = 540
         Align = alClient
         BorderSpacing.Around = 6
         Font.Height = -16
@@ -421,7 +448,6 @@ object EditorOptionsForm: TEditorOptionsForm
         ParentColor = False
         TabOrder = 2
         BookMarkOptions.OnChange = nil
-        Gutter.CodeFoldingWidth = 14
         Keystrokes = <        
           item
             Command = 3
@@ -753,14 +779,14 @@ object EditorOptionsForm: TEditorOptionsForm
     end
     object KeymappingPage: TPage
       Caption = 'KeymappingPage'
-      ClientWidth = 546
-      ClientHeight = 508
+      ClientWidth = 552
+      ClientHeight = 509
       object KeyMappingHelpLabel: TLabel
         AnchorSideTop.Control = KeymappingPage
         Left = 8
-        Height = 16
+        Height = 14
         Top = 6
-        Width = 121
+        Width = 105
         BorderSpacing.Left = 6
         BorderSpacing.Top = 6
         BorderSpacing.Right = 6
@@ -773,9 +799,9 @@ object EditorOptionsForm: TEditorOptionsForm
         AnchorSideBottom.Control = KeymappingPage
         AnchorSideBottom.Side = asrBottom
         Left = 6
-        Height = 25
-        Top = 477
-        Width = 211
+        Height = 23
+        Top = 480
+        Width = 189
         Anchors = [akLeft, akBottom]
         AutoSize = True
         BorderSpacing.Around = 6
@@ -789,10 +815,10 @@ object EditorOptionsForm: TEditorOptionsForm
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = KeymappingPage
         AnchorSideBottom.Side = asrBottom
-        Left = 314
-        Height = 25
-        Top = 477
-        Width = 226
+        Left = 343
+        Height = 23
+        Top = 480
+        Width = 203
         Anchors = [akRight, akBottom]
         AutoSize = True
         BorderSpacing.Around = 6
@@ -808,12 +834,12 @@ object EditorOptionsForm: TEditorOptionsForm
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = KeyMappingFindKeyButton
         Left = 6
-        Height = 390
-        Top = 50
-        Width = 534
+        Height = 397
+        Top = 48
+        Width = 540
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Around = 6
-        DefaultItemHeight = 21
+        DefaultItemHeight = 23
         Images = ImageList
         ReadOnly = True
         RowSelect = True
@@ -829,8 +855,8 @@ object EditorOptionsForm: TEditorOptionsForm
         AnchorSideRight.Side = asrBottom
         Left = 6
         Height = 16
-        Top = 28
-        Width = 534
+        Top = 26
+        Width = 540
         Anchors = [akTop, akLeft, akRight]
         AutoSize = True
         BorderSpacing.Around = 6
@@ -843,9 +869,9 @@ object EditorOptionsForm: TEditorOptionsForm
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = KeyMappingChooseSchemeButton
         Left = 6
-        Height = 25
-        Top = 446
-        Width = 171
+        Height = 23
+        Top = 451
+        Width = 154
         Anchors = [akLeft, akBottom]
         AutoSize = True
         BorderSpacing.Around = 6
@@ -856,37 +882,37 @@ object EditorOptionsForm: TEditorOptionsForm
     end
     object ColorPage: TPage
       Caption = 'ColorPage'
-      ClientWidth = 546
-      ClientHeight = 508
+      ClientWidth = 552
+      ClientHeight = 509
       object LanguageLabel: TLabel
         Left = 214
-        Height = 16
+        Height = 14
         Top = 12
-        Width = 81
+        Width = 73
         Caption = 'LanguageLabel'
         ParentColor = False
       end
       object ColorSchemeLabel: TLabel
         Left = 214
-        Height = 16
+        Height = 14
         Top = 36
-        Width = 100
+        Width = 88
         Caption = 'ColorSchemeLabel'
         ParentColor = False
       end
       object FileExtensionsLabel: TLabel
         Left = 214
-        Height = 16
+        Height = 14
         Top = 60
-        Width = 102
+        Width = 94
         Caption = 'FileExtensionsLabel'
         ParentColor = False
       end
       object ColorElementLabel: TLabel
         Left = 4
-        Height = 16
+        Height = 14
         Top = 90
-        Width = 101
+        Width = 89
         Caption = 'ColorElementLabel'
         ParentColor = False
       end
@@ -935,9 +961,9 @@ object EditorOptionsForm: TEditorOptionsForm
       end
       object ColorPreview: TSynEdit
         Left = 4
-        Height = 126
+        Height = 127
         Top = 378
-        Width = 538
+        Width = 544
         Align = alBottom
         BorderSpacing.Around = 4
         Anchors = [akTop, akLeft, akRight, akBottom]
@@ -948,7 +974,6 @@ object EditorOptionsForm: TEditorOptionsForm
         TabOrder = 3
         OnMouseDown = ColorPreviewMouseUp
         BookMarkOptions.OnChange = nil
-        Gutter.CodeFoldingWidth = 14
         Keystrokes = <        
           item
             Command = 3
@@ -1286,6 +1311,7 @@ object EditorOptionsForm: TEditorOptionsForm
         OnClick = ColorElementListBoxClick
         OnSelectionChange = ColorElementListBoxSelectionChange
         TabOrder = 4
+        TopIndex = -1
       end
       object SetAttributeToDefaultButton: TButton
         AnchorSideRight.Control = ColorPage
@@ -1293,7 +1319,7 @@ object EditorOptionsForm: TEditorOptionsForm
         Left = 212
         Height = 25
         Top = 90
-        Width = 328
+        Width = 334
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
         Caption = 'SetAttributeToDefaultButton'
@@ -1306,7 +1332,7 @@ object EditorOptionsForm: TEditorOptionsForm
         Left = 212
         Height = 25
         Top = 122
-        Width = 328
+        Width = 334
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
         Caption = 'SetAllAttributesToDefaultButton'
@@ -1320,17 +1346,17 @@ object EditorOptionsForm: TEditorOptionsForm
         Left = 212
         Height = 218
         Top = 154
-        Width = 328
+        Width = 334
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Around = 6
         Caption = 'Attributes'
-        ClientHeight = 218
-        ClientWidth = 328
+        ClientHeight = 214
+        ClientWidth = 330
         TabOrder = 7
         object ForeGroundLabel: TLabel
           Left = 8
-          Height = 16
-          Width = 92
+          Height = 14
+          Width = 83
           Caption = 'ForeGroundLabel'
           ParentColor = False
         end
@@ -1339,7 +1365,7 @@ object EditorOptionsForm: TEditorOptionsForm
           AnchorSideTop.Side = asrBottom
           Left = 8
           Height = 21
-          Top = 18
+          Top = 16
           Width = 75
           BorderSpacing.Top = 2
           BorderWidth = 2
@@ -1352,7 +1378,7 @@ object EditorOptionsForm: TEditorOptionsForm
           AnchorSideTop.Side = asrBottom
           Left = 8
           Height = 21
-          Top = 62
+          Top = 58
           Width = 75
           BorderSpacing.Top = 2
           BorderWidth = 2
@@ -1364,9 +1390,9 @@ object EditorOptionsForm: TEditorOptionsForm
           AnchorSideTop.Control = ForeGroundLabel
           AnchorSideTop.Side = asrBottom
           Left = 8
-          Height = 16
-          Top = 44
-          Width = 94
+          Height = 14
+          Top = 42
+          Width = 83
           BorderSpacing.Top = 28
           Caption = 'BackGroundLabel'
           ParentColor = False
@@ -1375,9 +1401,9 @@ object EditorOptionsForm: TEditorOptionsForm
           AnchorSideTop.Control = ForeGroundLabel
           AnchorSideTop.Side = asrBottom
           Left = 94
-          Height = 22
-          Top = 22
-          Width = 197
+          Height = 19
+          Top = 16
+          Width = 195
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Top = 2
           Caption = 'ForeGroundUseDefaultCheckBox'
@@ -1388,9 +1414,9 @@ object EditorOptionsForm: TEditorOptionsForm
           AnchorSideTop.Control = BackGroundLabel
           AnchorSideTop.Side = asrBottom
           Left = 94
-          Height = 22
-          Top = 68
-          Width = 197
+          Height = 19
+          Top = 56
+          Width = 195
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Right = 2
           Caption = 'BackGroundUseDefaultCheckBox'
@@ -1399,28 +1425,28 @@ object EditorOptionsForm: TEditorOptionsForm
         end
         object TextUnderlinePanel: TPanel
           Left = 6
-          Height = 22
-          Top = 93
-          Width = 312
+          Height = 19
+          Top = 139
+          Width = 318
           Align = alBottom
           AutoSize = True
           BorderSpacing.Around = 6
           BevelOuter = bvNone
-          ClientHeight = 22
-          ClientWidth = 312
+          ClientHeight = 19
+          ClientWidth = 318
           TabOrder = 2
           object TextUnderlineCheckBox: TCheckBox
-            Height = 21
-            Width = 159
+            Height = 19
+            Width = 174
             Align = alClient
             Caption = 'TextUnderlineCheckBox'
             OnChange = GeneralCheckBoxOnChange
             TabOrder = 0
           end
           object TextUnderlineRadioPanel: TPanel
-            Left = 159
-            Height = 21
-            Width = 153
+            Left = 174
+            Height = 19
+            Width = 144
             Align = alRight
             AutoSize = True
             BevelOuter = bvNone
@@ -1429,14 +1455,14 @@ object EditorOptionsForm: TEditorOptionsForm
             ChildSizing.ShrinkHorizontal = crsScaleChilds
             ChildSizing.Layout = cclLeftToRightThenTopToBottom
             ChildSizing.ControlsPerLine = 3
-            ClientHeight = 21
-            ClientWidth = 153
+            ClientHeight = 19
+            ClientWidth = 144
             TabOrder = 1
             Visible = False
             object TextUnderlineRadioOn: TRadioButton
               Tag = 3
               Height = 21
-              Width = 44
+              Width = 40
               Caption = 'On'
               Checked = True
               OnChange = TextStyleRadioOnChange
@@ -1445,16 +1471,16 @@ object EditorOptionsForm: TEditorOptionsForm
             end
             object TextUnderlineRadioOff: TRadioButton
               Tag = 3
-              Left = 47
+              Left = 43
               Height = 21
-              Width = 45
+              Width = 40
               Caption = 'Off'
               OnChange = TextStyleRadioOnChange
               TabOrder = 1
             end
             object TextUnderlineRadioInvert: TRadioButton
               Tag = 3
-              Left = 95
+              Left = 86
               Height = 21
               Width = 58
               Caption = 'Invert'
@@ -1465,28 +1491,28 @@ object EditorOptionsForm: TEditorOptionsForm
         end
         object TextBoldPanel: TPanel
           Left = 6
-          Height = 22
-          Top = 121
-          Width = 312
+          Height = 19
+          Top = 164
+          Width = 318
           Align = alBottom
           AutoSize = True
           BorderSpacing.Around = 6
           BevelOuter = bvNone
-          ClientHeight = 22
-          ClientWidth = 312
+          ClientHeight = 19
+          ClientWidth = 318
           TabOrder = 3
           object TextBoldCheckBox: TCheckBox
-            Height = 21
-            Width = 159
+            Height = 19
+            Width = 174
             Align = alClient
             Caption = 'TextBoldCheckBox'
             OnChange = GeneralCheckBoxOnChange
             TabOrder = 0
           end
           object TextBoldRadioPanel: TPanel
-            Left = 159
-            Height = 21
-            Width = 153
+            Left = 174
+            Height = 19
+            Width = 144
             Align = alRight
             AutoSize = True
             BevelOuter = bvNone
@@ -1495,14 +1521,14 @@ object EditorOptionsForm: TEditorOptionsForm
             ChildSizing.ShrinkHorizontal = crsScaleChilds
             ChildSizing.Layout = cclLeftToRightThenTopToBottom
             ChildSizing.ControlsPerLine = 3
-            ClientHeight = 21
-            ClientWidth = 153
+            ClientHeight = 19
+            ClientWidth = 144
             TabOrder = 1
             Visible = False
             object TextBoldRadioOn: TRadioButton
               Tag = 1
               Height = 21
-              Width = 44
+              Width = 40
               Caption = 'On'
               Checked = True
               OnChange = TextStyleRadioOnChange
@@ -1511,16 +1537,16 @@ object EditorOptionsForm: TEditorOptionsForm
             end
             object TextBoldRadioOff: TRadioButton
               Tag = 1
-              Left = 47
+              Left = 43
               Height = 21
-              Width = 45
+              Width = 40
               Caption = 'Off'
               OnChange = TextStyleRadioOnChange
               TabOrder = 1
             end
             object TextBoldRadioInvert: TRadioButton
               Tag = 1
-              Left = 95
+              Left = 86
               Height = 21
               Width = 58
               Caption = 'Invert'
@@ -1531,28 +1557,28 @@ object EditorOptionsForm: TEditorOptionsForm
         end
         object TextItalicPanel: TPanel
           Left = 6
-          Height = 22
-          Top = 149
-          Width = 312
+          Height = 19
+          Top = 189
+          Width = 318
           Align = alBottom
           AutoSize = True
           BorderSpacing.Around = 6
           BevelOuter = bvNone
-          ClientHeight = 22
-          ClientWidth = 312
+          ClientHeight = 19
+          ClientWidth = 318
           TabOrder = 4
           object TextItalicCheckBox: TCheckBox
-            Height = 21
-            Width = 159
+            Height = 19
+            Width = 174
             Align = alClient
             Caption = 'TextItalicCheckBox'
             OnChange = GeneralCheckBoxOnChange
             TabOrder = 0
           end
           object TextItalicRadioPanel: TPanel
-            Left = 159
-            Height = 21
-            Width = 153
+            Left = 174
+            Height = 19
+            Width = 144
             Align = alRight
             AutoSize = True
             BevelOuter = bvNone
@@ -1561,14 +1587,14 @@ object EditorOptionsForm: TEditorOptionsForm
             ChildSizing.ShrinkHorizontal = crsScaleChilds
             ChildSizing.Layout = cclLeftToRightThenTopToBottom
             ChildSizing.ControlsPerLine = 3
-            ClientHeight = 21
-            ClientWidth = 153
+            ClientHeight = 19
+            ClientWidth = 144
             TabOrder = 1
             Visible = False
             object TextItalicRadioOn: TRadioButton
               Tag = 2
               Height = 21
-              Width = 44
+              Width = 40
               Caption = 'On'
               Checked = True
               OnChange = TextStyleRadioOnChange
@@ -1577,16 +1603,16 @@ object EditorOptionsForm: TEditorOptionsForm
             end
             object TextItalicRadioOff: TRadioButton
               Tag = 2
-              Left = 47
+              Left = 43
               Height = 21
-              Width = 45
+              Width = 40
               Caption = 'Off'
               OnChange = TextStyleRadioOnChange
               TabOrder = 1
             end
             object TextItalicRadioInvert: TRadioButton
               Tag = 2
-              Left = 95
+              Left = 86
               Height = 21
               Width = 58
               Caption = 'Invert'
@@ -1599,24 +1625,24 @@ object EditorOptionsForm: TEditorOptionsForm
     end
     object CodetoolsPage: TPage
       Caption = 'CodetoolsPage'
-      ClientWidth = 550
-      ClientHeight = 463
+      ClientWidth = 552
+      ClientHeight = 509
       object AutomaticFeaturesGroupBox: TGroupBox
         Left = 6
-        Height = 451
+        Height = 497
         Top = 6
-        Width = 538
+        Width = 540
         Align = alClient
         BorderSpacing.Around = 6
         Caption = 'AutomaticFeaturesGroupBox'
-        ClientHeight = 451
-        ClientWidth = 538
+        ClientHeight = 493
+        ClientWidth = 536
         TabOrder = 0
         object AutoDelayLabel: TLabel
           Left = 6
-          Height = 20
-          Top = 188
-          Width = 518
+          Height = 14
+          Top = 176
+          Width = 524
           Align = alTop
           BorderSpacing.Top = 24
           BorderSpacing.Around = 6
@@ -1627,9 +1653,9 @@ object EditorOptionsForm: TEditorOptionsForm
           AnchorSideTop.Control = AutoDelayTrackBar
           AnchorSideTop.Side = asrBottom
           Left = 6
-          Height = 20
-          Top = 160
-          Width = 123
+          Height = 14
+          Top = 148
+          Width = 92
           BorderSpacing.Top = 2
           Caption = 'AutoDelayMinLabel'
           ParentColor = False
@@ -1637,10 +1663,10 @@ object EditorOptionsForm: TEditorOptionsForm
         object AutoDelayMaxLabel: TLabel
           AnchorSideTop.Control = AutoDelayTrackBar
           AnchorSideTop.Side = asrBottom
-          Left = 385
-          Height = 20
-          Top = 160
-          Width = 127
+          Left = 410
+          Height = 14
+          Top = 148
+          Width = 96
           Alignment = taRightJustify
           Anchors = [akTop, akRight]
           BorderSpacing.Top = 2
@@ -1649,9 +1675,9 @@ object EditorOptionsForm: TEditorOptionsForm
         end
         object AutoIdentifierCompletionCheckBox: TCheckBox
           Left = 6
-          Height = 22
+          Height = 19
           Top = 6
-          Width = 518
+          Width = 524
           Align = alTop
           BorderSpacing.Around = 6
           Caption = 'AutoIdentifierCompletionCheckBox'
@@ -1659,9 +1685,9 @@ object EditorOptionsForm: TEditorOptionsForm
         end
         object AutoCodeParametersCheckBox: TCheckBox
           Left = 6
-          Height = 22
-          Top = 62
-          Width = 518
+          Height = 19
+          Top = 56
+          Width = 524
           Align = alTop
           BorderSpacing.Around = 6
           Caption = 'AutoCodeParametersCheckBox'
@@ -1670,9 +1696,9 @@ object EditorOptionsForm: TEditorOptionsForm
         end
         object AutoToolTipExprEvalCheckBox: TCheckBox
           Left = 6
-          Height = 22
-          Top = 90
-          Width = 518
+          Height = 19
+          Top = 81
+          Width = 524
           Align = alTop
           BorderSpacing.Around = 6
           Caption = 'AutoToolTipExprEvalCheckBox'
@@ -1680,9 +1706,9 @@ object EditorOptionsForm: TEditorOptionsForm
         end
         object AutoToolTipSymbToolsCheckBox: TCheckBox
           Left = 6
-          Height = 22
-          Top = 34
-          Width = 518
+          Height = 19
+          Top = 31
+          Width = 524
           Align = alTop
           BorderSpacing.Around = 6
           Caption = 'AutoToolTipSymbToolsCheckBox'
@@ -1691,8 +1717,8 @@ object EditorOptionsForm: TEditorOptionsForm
         object AutoDelayTrackBar: TTrackBar
           Left = 6
           Height = 40
-          Top = 118
-          Width = 518
+          Top = 106
+          Width = 524
           Frequency = 250
           Max = 4000
           Min = 500
@@ -1708,13 +1734,13 @@ object EditorOptionsForm: TEditorOptionsForm
     end
     object CodeFolding: TPage
       Caption = 'CodeFolding'
-      ClientWidth = 550
-      ClientHeight = 463
+      ClientWidth = 552
+      ClientHeight = 509
       object lblDividerDrawLevel: TLabel
         Left = 6
-        Height = 20
+        Height = 14
         Top = 71
-        Width = 124
+        Width = 94
         Caption = 'lblDividerDrawLevel'
         ParentColor = False
       end
@@ -1722,14 +1748,14 @@ object EditorOptionsForm: TEditorOptionsForm
         Left = 6
         Height = 2
         Top = 49
-        Width = 537
+        Width = 539
         Anchors = [akTop, akLeft, akRight]
       end
       object chkCodeFoldingEnabled: TCheckBox
         Left = 6
-        Height = 22
+        Height = 19
         Top = 23
-        Width = 175
+        Width = 139
         Caption = 'chkCodeFoldingEnabled'
         OnChange = chkCodeFoldingEnabledChange
         TabOrder = 0
@@ -1747,21 +1773,21 @@ object EditorOptionsForm: TEditorOptionsForm
     end
   end
   object BtnPanel: TPanel
-    Height = 37
-    Top = 540
+    Height = 41
+    Top = 536
     Width = 554
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 37
+    ClientHeight = 41
     ClientWidth = 554
     TabOrder = 1
     object OkButton: TButton
       AnchorSideBottom.Side = asrBottom
-      Left = 367
-      Height = 25
+      Left = 369
+      Height = 29
       Top = 6
-      Width = 77
+      Width = 75
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
@@ -1774,7 +1800,7 @@ object EditorOptionsForm: TEditorOptionsForm
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
       Left = 450
-      Height = 25
+      Height = 29
       Top = 6
       Width = 98
       Align = alRight

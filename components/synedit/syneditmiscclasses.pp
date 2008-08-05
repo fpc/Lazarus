@@ -93,11 +93,12 @@ type
   private
     {$IFDEF SYN_LAZARUS}
     FCodeFoldingWidth: integer;
+    fShowCodeFolding: boolean;
+    FShowOnlyLineNumbersMultiplesOf: integer;
     {$ENDIF}
     fColor: TColor;
     fWidth: integer;
     fShowLineNumbers: boolean;
-    fShowCodeFolding: boolean;
     fDigitCount: integer;
     fLeadingZeros: boolean;
     fZeroStart: boolean;
@@ -112,6 +113,8 @@ type
     procedure SetAutoSize(const Value: boolean);
     {$IFDEF SYN_LAZARUS}
     procedure SetCodeFoldingWidth(const AValue: integer);
+    procedure SetShowCodeFolding(const Value: boolean);
+    procedure SetShowOnlyLineNumbersMultiplesOf(const AValue: integer);
     {$ENDIF}
     procedure SetColor(const Value: TColor);
     procedure SetDigitCount(Value: integer);
@@ -119,7 +122,6 @@ type
     procedure SetLeftOffset(Value: integer);
     procedure SetRightOffset(Value: integer);
     procedure SetShowLineNumbers(const Value: boolean);
-    procedure SetShowCodeFolding(const Value: boolean);
     procedure SetUseFontStyle(Value: boolean);
     procedure SetVisible(Value: boolean);
     procedure SetWidth(Value: integer);
@@ -128,7 +130,7 @@ type
     constructor Create;
     procedure Assign(Source: TPersistent); override;
     procedure AutoSizeDigitCount(LinesCount: integer);
-    function FormatLineNumber(Line: integer): string;
+    function FormatLineNumber(Line: integer; IsDot: boolean): string;
     function RealGutterWidth(CharWidth: integer): integer;
     {$IFDEF SYN_LAZARUS}
     property OnChange: TNotifyEvent read fOnChange write fOnChange;
@@ -147,8 +149,6 @@ type
       default 2;
     property ShowLineNumbers: boolean read fShowLineNumbers
       write SetShowLineNumbers default FALSE;
-    property ShowCodeFolding: boolean read fShowCodeFolding
-      write SetShowCodeFolding default FALSE;
     property UseFontStyle: boolean read fUseFontStyle write SetUseFontStyle
       default FALSE;
     property Visible: boolean read fVisible write SetVisible default TRUE;
@@ -158,7 +158,12 @@ type
     property OnChange: TNotifyEvent read fOnChange write fOnChange;
     {$ENDIF}
     {$IFDEF SYN_LAZARUS}
-    property CodeFoldingWidth: integer read FCodeFoldingWidth write SetCodeFoldingWidth;
+    property ShowCodeFolding: boolean read fShowCodeFolding
+      write SetShowCodeFolding default FALSE;
+    property CodeFoldingWidth: integer read FCodeFoldingWidth write SetCodeFoldingWidth
+      default 14;
+    property ShowOnlyLineNumbersMultiplesOf: integer read FShowOnlyLineNumbersMultiplesOf
+      write SetShowOnlyLineNumbersMultiplesOf default 1;
     {$ENDIF}
   end;
 
@@ -357,7 +362,8 @@ begin
   fDigitCount := 4;
   fAutoSizeDigitCount := fDigitCount;
   fRightOffset := 2;
-  CodeFoldingWidth := 14;
+  fShowOnlyLineNumbersMultiplesOf := 1;
+  fCodeFoldingWidth := 14;
 end;
 
 procedure TSynGutter.Assign(Source: TPersistent);
@@ -370,7 +376,6 @@ begin
     fVisible := Src.fVisible;
     fWidth := Src.fWidth;
     fShowLineNumbers := Src.fShowLineNumbers;
-    fShowCodeFolding := Src.fShowCodeFolding;
     fLeadingZeros := Src.fLeadingZeros;
     fZeroStart := Src.fZeroStart;
     fLeftOffset := Src.fLeftOffset;
@@ -378,6 +383,11 @@ begin
     fRightOffset := Src.fRightOffset;
     fAutoSize := Src.fAutoSize;
     fAutoSizeDigitCount := Src.fAutoSizeDigitCount;
+    {$IFDEF SYN_LAZARUS}
+    FCodeFoldingWidth := Src.FCodeFoldingWidth;
+    fShowCodeFolding := Src.fShowCodeFolding;
+    FShowOnlyLineNumbersMultiplesOf := Src.FShowOnlyLineNumbersMultiplesOf;
+    {$ENDIF}
     if Assigned(fOnChange) then fOnChange(Self);
   end else
     inherited;
@@ -398,18 +408,24 @@ begin
     fAutoSizeDigitCount := fDigitCount;
 end;
 
-function TSynGutter.FormatLineNumber(Line: integer): string;
+function TSynGutter.FormatLineNumber(Line: integer; IsDot: boolean): string;
 var
   i: integer;
 begin
   Result := '';
-  if fZeroStart then Dec(Line);
-  Str(Line : fAutoSizeDigitCount, Result);
-  if fLeadingZeros then
-    for i := 1 to fAutoSizeDigitCount - 1 do begin
-      if (Result[i] <> ' ') then break;
-      Result[i] := '0';
-    end;
+  // if a dot must be showed
+  if IsDot then
+    Result :=  StringOfChar(' ', fAutoSizeDigitCount-1) + '.'
+  // else format the line number
+  else begin
+    if fZeroStart then Dec(Line);
+    Str(Line : fAutoSizeDigitCount, Result);
+    if fLeadingZeros then
+      for i := 1 to fAutoSizeDigitCount - 1 do begin
+        if (Result[i] <> ' ') then break;
+        Result[i] := '0';
+      end;
+  end;
 end;
 
 function TSynGutter.RealGutterWidth(CharWidth: integer): integer;
@@ -486,6 +502,14 @@ begin
   Value := Max(0, Value);
   if fRightOffset <> Value then begin
     fRightOffset := Value;
+    if Assigned(fOnChange) then fOnChange(Self);
+  end;
+end;
+
+procedure TSynGutter.SetShowOnlyLineNumbersMultiplesOf(const AValue: integer);
+begin
+  if FShowOnlyLineNumbersMultiplesOf <> AValue then begin
+    FShowOnlyLineNumbersMultiplesOf := AValue;
     if Assigned(fOnChange) then fOnChange(Self);
   end;
 end;
