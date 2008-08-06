@@ -90,11 +90,9 @@ end;
 procedure TDBCustomNavigator.SetDataSource(const AValue: TDataSource);
 begin
   if AValue=DataSource then exit;
-  FDataLink.DataSource:=AValue;
+  ChangeDataSource(Self,FDataLink,AValue);
   if not (csLoading in ComponentState) then
     ActiveChanged;
-  if AValue <> nil then
-    AValue.FreeNotification(Self);
 end;
 
 procedure TDBCustomNavigator.SetDirection(const AValue: TDBNavButtonDirection);

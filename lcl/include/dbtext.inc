@@ -61,7 +61,7 @@ end;
 
 procedure TDBText.SetDataSource(Value: TDataSource);
 begin
-  FDataLink.DataSource := Value;
+  ChangeDataSource(Self,FDataLink,Value);
 end;
 
 procedure TDBText.CMGetDataLink(var Message: TLMessage);

@@ -42,13 +42,8 @@ begin
 end;
 
 procedure TDBRadioGroup.SetDataSource(const AValue: TDataSource);
-var
-  NewDataSource: TDataSource;
 begin
-  if DataSource=AValue then exit;
-  FDataLink.DataSource:=AValue;
-  NewDataSource:=DataSource;
-  if NewDataSource<>nil then NewDataSource.FreeNotification(Self);
+  ChangeDataSource(Self,FDataLink,AValue);
 end;
 
 procedure TDBRadioGroup.SetItems(const AValue: TStrings);

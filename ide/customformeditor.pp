@@ -407,7 +407,7 @@ Begin
   {$IFNDEF NoCompCatch}
   except
     on E: Exception do begin
-      DebugLn('TComponentInterface.Delete ERROR:',
+      DebugLn('TryFreeComponent ERROR:',
         ' "'+OldName+':'+OldClassName+'" ',E.Message);
       DumpExceptionBackTrace;
       MessageDlg('Error',
@@ -418,6 +418,19 @@ Begin
     end;
   end;
   {$ENDIF}
+  if not Result then begin
+    // maybe some references can be removed
+    try
+      if AComponent is TControl then begin
+        TControl(AComponent).Parent:=nil;
+      end;
+    except
+      on e: Exception do begin
+        DebugLn('TryFreeComponent manual clean up failed also for ',
+          ' "'+OldName+':'+OldClassName+'". This is likely, nothing to worry about. ',E.Message);
+      end;
+    end;
+  end;
   AComponent:=nil;
 end;
 

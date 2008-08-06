@@ -994,6 +994,8 @@ function ExtractFieldName(const Fields: string; var StartPos: Integer): string;
 procedure FillBarChart(BC: TBarChart; DS: TDataset;
   const LabelField, ValueField: String; AColor: TColor);
 
+procedure ChangeDataSource(AControl: TControl; Link: TDataLink;
+  NewDataSource: TDataSource);
 
 procedure Register;
 
@@ -1059,6 +1061,17 @@ begin
   Finally
     LF.Free;
   end;
+end;
+
+procedure ChangeDataSource(AControl: TControl; Link: TDataLink;
+  NewDataSource: TDataSource);
+begin
+  if Link.DataSource=NewDataSource then exit;
+  if Link.DataSource<>nil then
+    Link.DataSource.RemoveFreeNotification(AControl);
+  Link.DataSource:=NewDataSource;
+  if Link.DataSource<>nil then
+    Link.DataSource.FreeNotification(AControl);
 end;
 
 procedure Register;

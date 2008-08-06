@@ -38,7 +38,7 @@ end;
 
 procedure TDBGroupBox.SetDataSource(const AValue: TDataSource);
 begin
-  FDataLink.DataSource:=AValue;
+  ChangeDataSource(Self,FDataLink,AValue);
 end;
 
 procedure TDBGroupBox.CMGetDataLink(var Message: TLMessage);

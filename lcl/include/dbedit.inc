@@ -1,4 +1,4 @@
-{%MainUnit ../dbctrls.pas}
+{%MainUnit ../dbctrls.pp}
 
 {******************************************************************************
                                      TDBEdit
@@ -120,7 +120,7 @@ end;
 
 procedure TDBEdit.SetDataSource(Value: TDataSource);
 begin
-  FDataLink.DataSource := Value;
+  ChangeDataSource(Self,FDataLink,Value);
 end;
 
 function TDBEdit.IsReadOnly: boolean;

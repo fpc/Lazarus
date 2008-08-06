@@ -43,10 +43,9 @@ end;
 
 procedure TDBCheckBox.SetDataSource(const AValue: TDataSource);
 begin
+  if AValue=DataSource then exit;
   if not (FDataLink.DataSourceFixed and (csLoading in ComponentState)) then
-    FDataLink.DataSource:=AValue;
-  if AValue<>nil then
-    AValue.FreeNotification(Self);
+    ChangeDataSource(Self,FDataLink,AValue);
 end;
 
 procedure TDBCheckBox.SetReadOnly(const AValue: Boolean);

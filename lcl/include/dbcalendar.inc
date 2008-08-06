@@ -84,7 +84,7 @@ end;
 
 procedure TDBCalendar.SetDataSource(Value: TDataSource);
 begin
-  FDataLink.DataSource := Value;
+  ChangeDataSource(Self,FDataLink,Value);
 end;
 
 procedure TDBCalendar.UpdateDate(const AValue: string);

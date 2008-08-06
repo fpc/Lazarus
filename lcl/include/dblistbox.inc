@@ -106,7 +106,7 @@ end;
 
 procedure TDBListBox.SetDataSource(Value: TDataSource);
 begin
-  FDataLink.DataSource := Value;
+  ChangeDataSource(Self,FDataLink,Value);
 end;
 
 procedure TDBListBox.CMGetDataLink(var Message: TLMessage);

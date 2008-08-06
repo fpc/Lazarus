@@ -58,9 +58,7 @@ end;
 procedure TDBImage.SetDataSource(const AValue: TDataSource);
 begin
   if not (FDataLink.DataSourceFixed and (csLoading in ComponentState)) then
-    FDataLink.DataSource:=AValue;
-  if AValue <> nil then
-    AValue.FreeNotification(Self);
+    ChangeDataSource(Self,FDataLink,AValue);
 end;
 
 procedure TDBImage.SetReadOnly(const AValue: Boolean);

@@ -58,9 +58,7 @@ end;
 procedure TDBComboBox.SetDataSource(const AValue: TDataSource);
 begin
   if not (FDataLink.DataSourceFixed and (csLoading in ComponentState)) then
-    FDataLink.DataSource:=AValue;
-  if AValue <> nil then
-    AValue.FreeNotification(Self);
+    ChangeDataSource(Self,FDataLink,AValue);
 end;
 
 procedure TDBComboBox.SetReadOnly(const AValue: Boolean);
@@ -72,7 +70,6 @@ procedure TDBComboBox.CMGetDataLink(var Message: TLMessage);
 begin
   Message.Result := PtrUInt(FDataLink);
 end;
-
 
 procedure TDBComboBox.DataChange(Sender: TObject);
 begin

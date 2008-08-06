@@ -6198,8 +6198,11 @@ begin
         {$IFDEF VerboseIDEMultiForm}
         DebugLn(['TMainIDE.CloseUnitComponent hidden component is not used => free it ',AnUnitInfo.Filename,' ',DbgSName(AnUnitInfo.Component)]);
         {$ENDIF}
-        FormEditor1.DeleteComponent(LookupRoot,true);
-        AnUnitInfo.Component:=nil;
+        try
+          FormEditor1.DeleteComponent(LookupRoot,true);
+        finally
+          AnUnitInfo.Component:=nil;
+        end;
         FreeUnusedComponents;
       end;
     end else begin
@@ -6215,8 +6218,11 @@ begin
         {$IFDEF VerboseIDEMultiForm}
         DebugLn(['TMainIDE.CloseUnitComponent freeing component and designer: ',AnUnitInfo.Filename,' ',DbgSName(AnUnitInfo.Component)]);
         {$ENDIF}
-        OldDesigner.FreeDesigner(true);
-        AnUnitInfo.Component:=nil;
+        try
+          OldDesigner.FreeDesigner(true);
+        finally
+          AnUnitInfo.Component:=nil;
+        end;
       end;
       Project1.InvalidateUnitComponentDesignerDependencies;
       FreeUnusedComponents;
