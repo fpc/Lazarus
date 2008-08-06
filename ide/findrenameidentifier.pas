@@ -273,17 +273,35 @@ function GatherFPDocReferences(PascalFiles: TStringList;
   var TreeOfPCodeXYPosition: TAVLTree): TModalResult;
 var
   PascalFilenames, FPDocFilenames: TStringToStringTree;
+  CacheWasUsed: boolean;
+  Chain: TCodeHelpElementChain;
+  CHResult: TCodeHelpParseResult;
+  CHElement: TCodeHelpElement;
 begin
   Result:=mrCancel;
-  TreeOfPCodeXYPosition:=nil;
   PascalFilenames:=nil;
   FPDocFilenames:=nil;
   try
+    // gather FPDoc files
     CleanUpFileList(PascalFiles);
 
     PascalFilenames:=CreateFilenameToStringTree;
     PascalFilenames.AddValues(PascalFiles);
     CodeHelpBoss.GetFPDocFilenamesForSources(PascalFilenames,true,FPDocFilenames);
+    if FPDocFilenames=nil then begin
+      DebugLn(['GatherFPDocReferences no fpdoc files found']);
+      exit(mrOk);
+    end;
+
+    // get codehelp element
+    CHResult:=CodeHelpBoss.GetElementChain(DeclarationCode,
+             DeclarationCaretXY.X,DeclarationCaretXY.Y,true,Chain,CacheWasUsed);
+    if CHResult<>chprSuccess then begin
+      DebugLn(['GatherFPDocReferences CodeHelpBoss.GetElementChain failed']);
+      exit;
+    end;
+    CHElement:=Chain[0];
+    DebugLn(['GatherFPDocReferences ModuleName=',CHElement.ElementModuleName,' Name=',CHElement.ElementName]);
 
     Result:=mrOk;
   finally

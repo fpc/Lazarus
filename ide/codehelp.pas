@@ -1273,6 +1273,7 @@ begin
     and (not CheckIfInLazarus(Result))
     then begin
       // not found
+      DebugLn(['TCodeHelpManager.GetFPDocFilenameForSource WARNING: file without owner: ',SrcFilename]);
     end;
 
     // save to cache
@@ -1292,6 +1293,7 @@ begin
     DebugLn(['TCodeHelpManager.GetFPDocFilenameForSource SrcFilename="',SrcFilename,'" Result="',Result,'"']);
     {$ENDIF}
   end;
+  DebugLn(['TCodeHelpManager.GetFPDocFilenameForSource ',dbgsName(AnOwner)]);
 end;
 
 procedure TCodeHelpManager.GetFPDocFilenamesForSources(
@@ -1555,7 +1557,7 @@ var
   ListOfPCodeXYPosition: TFPList;
   i: Integer;
   CodePos: PCodeXYPosition;
-  LDElement: TCodeHelpElement;
+  CHElement: TCodeHelpElement;
   FPDocFilename: String;
   FindContext: TFindContext;
   AnOwner: TObject;
@@ -1593,23 +1595,24 @@ begin
       if (not CacheWasUsed) and (not Complete) then exit(chprParsing);
 
       // add element
-      LDElement:=Chain.Add;
-      LDElement.CodeXYPos:=CodePos^;
-      LDElement.CodeContext:=FindContext;
-      //DebugLn(['TCodeHelpManager.GetElementChain i=',i,' CodeContext=',FindContextToString(LDElement.CodeContext)]);
+      CHElement:=Chain.Add;
+      CHElement.CodeXYPos:=CodePos^;
+      CHElement.CodeContext:=FindContext;
+      //DebugLn(['TCodeHelpManager.GetElementChain i=',i,' CodeContext=',FindContextToString(CHElement.CodeContext)]);
 
       // find corresponding FPDoc file
-      LDElement.ElementUnitFileName:=LDElement.CodeContext.Tool.MainFilename;
-      LDElement.ElementUnitName:=LDElement.CodeContext.Tool.GetSourceName(false);
-      FPDocFilename:=GetFPDocFilenameForSource(LDElement.ElementUnitFileName,
-                                            false,CacheWasUsed,AnOwner);
-      LDElement.ElementModuleName:=GetOwnerModuleName(AnOwner);
+      CHElement.ElementUnitFileName:=CHElement.CodeContext.Tool.MainFilename;
+      CHElement.ElementUnitName:=CHElement.CodeContext.Tool.GetSourceName(false);
+      FPDocFilename:=GetFPDocFilenameForSource(CHElement.ElementUnitFileName,
+                                               false,CacheWasUsed,AnOwner);
+      DebugLn(['TCodeHelpManager.GetElementChain ',dbgsName(AnOwner)]);
+      CHElement.ElementModuleName:=GetOwnerModuleName(AnOwner);
       //DebugLn(['TCodeHelpManager.GetElementChain FPDocFilename=',FPDocFilename]);
       if (not CacheWasUsed) and (not Complete) then exit(chprParsing);
 
       if FPDocFilename<>'' then begin
         // load FPDoc file
-        LoadFPDocFile(FPDocFilename,true,false,LDElement.FPDocFile,
+        LoadFPDocFile(FPDocFilename,true,false,CHElement.FPDocFile,
                       CacheWasUsed);
         if (not CacheWasUsed) and (not Complete) then exit(chprParsing);
       end;
@@ -1617,18 +1620,18 @@ begin
     
     // get fpdoc nodes
     for i:=0 to Chain.Count-1 do begin
-      LDElement:=Chain[i];
+      CHElement:=Chain[i];
       // get fpdoc element path
-      LDElement.ElementName:=CodeNodeToElementName(LDElement.CodeContext.Tool,
-                                                   LDElement.CodeContext.Node);
-      //DebugLn(['TCodeHelpManager.GetElementChain i=',i,' Element=',LDElement.ElementName]);
+      CHElement.ElementName:=CodeNodeToElementName(CHElement.CodeContext.Tool,
+                                                   CHElement.CodeContext.Node);
+      //DebugLn(['TCodeHelpManager.GetElementChain i=',i,' Element=',CHElement.ElementName]);
       // get fpdoc node
-      if (LDElement.FPDocFile<>nil) and (LDElement.ElementName<>'') then begin
-        LDElement.ElementNode:=
-                  LDElement.FPDocFile.GetElementWithName(LDElement.ElementName);
-        LDElement.ElementNodeValid:=true;
+      if (CHElement.FPDocFile<>nil) and (CHElement.ElementName<>'') then begin
+        CHElement.ElementNode:=
+                  CHElement.FPDocFile.GetElementWithName(CHElement.ElementName);
+        CHElement.ElementNodeValid:=true;
       end;
-      //DebugLn(['TCodeHelpManager.GetElementChain ElementNode=',LDElement.ElementNode<>nil]);
+      //DebugLn(['TCodeHelpManager.GetElementChain ElementNode=',CHElement.ElementNode<>nil]);
     end;
 
     Result:=chprSuccess;
