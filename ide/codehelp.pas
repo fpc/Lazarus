@@ -113,6 +113,7 @@ type
   public
     SourceFilename: string;
     FPDocFilename: string;
+    FPDocFileOwner: TObject;
     FPDocFilenameTimeStamp: integer;
     FilesTimeStamp: integer;
   end;
@@ -211,8 +212,9 @@ type
                                        out AnOwner: TObject;// package or project
                                        CreateIfNotExists: boolean = false): string;
     procedure GetFPDocFilenamesForSources(SrcFilenames: TStringToStringTree;
-                                          ResolveIncludeFiles: boolean;
-                                          var FPDocFilenames: TStringToStringTree);
+                      ResolveIncludeFiles: boolean;
+                      var FPDocFilenames: TStringToStringTree // Names=Filename, Values=ModuleName
+                      );
     function FindModuleOwner(const Modulename: string): TObject;
     function GetOwnerModuleName(TheOwner: TObject): string;
     function ExpandFPDocLinkID(const LinkID, DefaultUnitName,
@@ -1255,6 +1257,7 @@ begin
       MapEntry:=TCHSourceToFPDocFile(AVLNode.Data);
       if (MapEntry.FPDocFilenameTimeStamp=CompilerParseStamp)
       and (MapEntry.FilesTimeStamp=FileStateCache.TimeStamp) then begin
+        AnOwner:=MapEntry.FPDocFileOwner;
         Result:=MapEntry.FPDocFilename;
         exit;
       end;
@@ -1284,6 +1287,7 @@ begin
     end;
     MapEntry.FPDocFilename:=Result;
     MapEntry.FPDocFilenameTimeStamp:=CompilerParseStamp;
+    MapEntry.FPDocFileOwner:=AnOwner;
     MapEntry.FilesTimeStamp:=FileStateCache.TimeStamp;
   finally
     if (Result='') and CreateIfNotExists then begin
@@ -1317,7 +1321,7 @@ begin
     if FPDocFilename<>'' then begin
       if FPDocFilenames=nil then
         FPDocFilenames:=CreateFilenameToStringTree;
-      FPDocFilenames[FPDocFilename]:=SrcFilename;
+      FPDocFilenames[FPDocFilename]:=GetOwnerModuleName(AnOwner);
     end;
     Node:=SrcFilenames.Tree.FindSuccessor(Node);
   end;
@@ -1603,9 +1607,9 @@ begin
       // find corresponding FPDoc file
       CHElement.ElementUnitFileName:=CHElement.CodeContext.Tool.MainFilename;
       CHElement.ElementUnitName:=CHElement.CodeContext.Tool.GetSourceName(false);
+      AnOwner:=Self;
       FPDocFilename:=GetFPDocFilenameForSource(CHElement.ElementUnitFileName,
                                                false,CacheWasUsed,AnOwner);
-      DebugLn(['TCodeHelpManager.GetElementChain ',dbgsName(AnOwner)]);
       CHElement.ElementModuleName:=GetOwnerModuleName(AnOwner);
       //DebugLn(['TCodeHelpManager.GetElementChain FPDocFilename=',FPDocFilename]);
       if (not CacheWasUsed) and (not Complete) then exit(chprParsing);

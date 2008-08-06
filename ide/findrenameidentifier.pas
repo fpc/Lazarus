@@ -94,6 +94,9 @@ procedure AddReferencesToResultView(DeclarationCode: TCodeBuffer;
 function GatherFPDocReferences(PascalFiles: TStringList;
   DeclarationCode: TCodeBuffer; const DeclarationCaretXY: TPoint;
   var TreeOfPCodeXYPosition: TAVLTree): TModalResult;
+function GatherFPDocReferences(const ElementModuleName, ElementName,
+  FileModuleName, FPDocFilename: string;
+  var TreeOfPCodeXYPosition: TAVLTree): TModalResult;
   
 
 implementation
@@ -277,6 +280,10 @@ var
   Chain: TCodeHelpElementChain;
   CHResult: TCodeHelpParseResult;
   CHElement: TCodeHelpElement;
+  AVLNode: TAvgLvlTreeNode;
+  Item: PStringToStringItem;
+  FPDocFilename: String;
+  ModuleName: String;
 begin
   Result:=mrCancel;
   PascalFilenames:=nil;
@@ -303,6 +310,18 @@ begin
     CHElement:=Chain[0];
     DebugLn(['GatherFPDocReferences ModuleName=',CHElement.ElementModuleName,' Name=',CHElement.ElementName]);
 
+    // search FPDoc files
+    AVLNode:=FPDocFilenames.Tree.FindLowest;
+    while AVLNode<>nil do begin
+      Item:=PStringToStringItem(AVLNode.Data);
+      FPDocFilename:=Item^.Name;
+      ModuleName:=Item^.Value;
+      Result:=GatherFPDocReferences(CHElement.ElementModuleName,CHElement.ElementName,
+        ModuleName,FPDocFilename,TreeOfPCodeXYPosition);
+      if Result<>mrOk then exit;
+      AVLNode:=FPDocFilenames.Tree.FindSuccessor(AVLNode);
+    end;
+
     Result:=mrOk;
   finally
     PascalFilenames.Free;
@@ -310,6 +329,17 @@ begin
     if Result<>mrOk then
       CodeToolBoss.FreeTreeOfPCodeXYPosition(TreeOfPCodeXYPosition);
   end;
+end;
+
+function GatherFPDocReferences(const ElementModuleName, ElementName,
+  FileModuleName, FPDocFilename: string; var TreeOfPCodeXYPosition: TAVLTree
+  ): TModalResult;
+begin
+  Result:=mrCancel;
+  DebugLn(['GatherFPDocReferences ElementModuleName=',ElementModuleName,
+    ' ElementName=',ElementName,' FPDocFilename=',FPDocFilename,
+    ' FileModuleName=',FileModuleName]);
+  Result:=mrOk;
 end;
 
 { TFindRenameIdentifierDialog }
