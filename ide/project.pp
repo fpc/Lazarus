@@ -757,8 +757,8 @@ type
     function FileIsInProjectDir(const AFilename: string): boolean;
     procedure GetVirtualDefines(DefTree: TDefineTree; DirDef: TDirectoryDefines);
     function SearchFile(const Filename,SearchPaths,InitialDir:string):string;
-    procedure ShortenFilename(var AFilename: string);
-    procedure LongenFilename(var AFilename: string);
+    procedure ShortenFilename(var AFilename: string); override;
+    procedure LongenFilename(var AFilename: string); override;
 
     // bookmarks
     procedure SetBookmark(AnUnitInfo: TUnitInfo; X,Y,ID: integer);

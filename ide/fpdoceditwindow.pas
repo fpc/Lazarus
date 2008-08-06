@@ -41,7 +41,7 @@ uses
   FileProcs, CodeAtom, CodeCache, CodeToolManager,
   Laz_DOM, Laz_XMLRead, Laz_XMLWrite,
   // IDEIntf
-  LazIDEIntf, IDEHelpIntf, LazHelpIntf,
+  ProjectIntf, LazIDEIntf, IDEHelpIntf, LazHelpIntf,
   // IDE
   IDEOptionDefs, EnvironmentOpts,
   IDEProcs, LazarusIDEStrConsts, FPDocSelectInherited, FPDocSelectLink,
@@ -523,6 +523,7 @@ end;
 procedure TFPDocEditor.UpdateCaption;
 var
   strCaption: String;
+  Filename: String;
 begin
   if fUpdateLock>0 then begin
     Include(FFlags,fpdefCaptionNeedsUpdate);
@@ -540,9 +541,12 @@ begin
   else
     strCaption := strCaption + lisCodeHelpNoTagCaption + ' - ';
 
-  if DocFile<>nil then
-    Caption := strCaption + DocFile.Filename
-  else
+  if DocFile<>nil then begin
+    Filename:=DocFile.Filename;
+    if (LazarusIDE.ActiveProject<>nil) then
+      LazarusIDE.ActiveProject.ShortenFilename(Filename);
+    Caption := strCaption + Filename;
+  end else
     Caption := strCaption + lisCodeHelpNoTagCaption;
   {$IFDEF VerboseCodeHelp}
   DebugLn(['TLazDocForm.UpdateCaption ',Caption]);
