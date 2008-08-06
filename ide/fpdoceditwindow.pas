@@ -365,10 +365,18 @@ begin
 end;
 
 procedure TFPDocEditor.LinkChange(Sender: TObject);
+var
+  NewLink: String;
+  OldLink: string;
 begin
   if LinkListBox.ItemIndex<0 then
     Exit;
-  LinkListBox.Items[LinkListBox.ItemIndex] := MakeLink;
+  NewLink:=MakeLink;
+  OldLink:=LinkListBox.Items[LinkListBox.ItemIndex];
+  if NewLink<>OldLink then begin
+    LinkListBox.Items[LinkListBox.ItemIndex] := NewLink;
+    Modified:=true;
+  end;
 end;
 
 procedure TFPDocEditor.LinkListBoxClick(Sender: TObject);
@@ -1041,8 +1049,7 @@ begin
     CurDocFile.SetChildValue(TopNode,'elementlink',Values[fpdiElementLink]);
     CurDocFile.SetChildValue(TopNode,'descr',Values[fpdiDescription]);
     CurDocFile.SetChildValue(TopNode,'errors',Values[fpdiErrors]);
-    // ToDo:
-    //CurDocFile.SetChildValue(TopNode,'seealso',Values[fpdiSeeAlso]);
+    CurDocFile.SetChildValue(TopNode,'seealso',Values[fpdiSeeAlso]);
     CurDocFile.SetChildValue(TopNode,'example',Values[fpdiExample]);
   finally
     CurDocFile.EndUpdate;
