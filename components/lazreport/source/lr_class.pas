@@ -194,10 +194,17 @@ type
     fStreamMode: TfrStreamMode;
     fFormat    : Integer;
     fFormatStr : string;
-    
+    function GetHeight: Double;
+    function GetLeft: Double;
+    function GetTop: Double;
+    function GetWidth: Double;
     procedure P1Click(Sender: TObject);
     procedure SetFillColor(const AValue: TColor);
     procedure SetFrames(const AValue: TfrFrameBorders);
+    procedure SetHeight(const AValue: Double);
+    procedure SetLeft(const AValue: Double);
+    procedure SetTop(const AValue: Double);
+    procedure SetWidth(const AValue: Double);
   protected
     SaveX, SaveY, SaveDX, SaveDY: Integer;
     SaveFW: Single;
@@ -267,10 +274,10 @@ type
     property StreamMode: TfrStreamMode read fStreamMode write fStreamMode;
 
   published
-    property Left;
-    property Top;
-    property Width;
-    property Height;
+    property Left: double read GetLeft write SetLeft;
+    property Top: double read GetTop write SetTop;
+    property Width: double read GetWidth write SetWidth;
+    property Height: double read GetHeight write SetHeight;
   end;
 
   TfrStretcheable = class(TfrView)
@@ -951,6 +958,10 @@ type
     procedure BeforeChange; virtual; abstract;
     procedure AfterChange; virtual; abstract;
     procedure RedrawPage; virtual; abstract;
+    //
+    function PointsToUnits(x: Integer): Double;  virtual; abstract;
+    function UnitsToPoints(x: Double): Integer;  virtual; abstract;
+    procedure MoveObjects(dx, dy: Integer; aResize: Boolean); virtual; abstract;
   end;
 
   TfrDataManager = class(TObject)
@@ -1695,10 +1706,10 @@ begin
       CreateUniqueName;
   end;
 
-  Left  := XML.GetValue(Path + 'Size/Left/Value', 0); // TODO Check default
-  Top   := XML.GetValue(Path + 'Size/Top/Value', 0); // TODO Check default
-  Width := XML.GetValue(Path + 'Size/Width/Value', 100); // TODO Check default
-  Height:= XML.GetValue(Path + 'Size/Height/Value', 100); // TODO Check default
+  x  := XML.GetValue(Path + 'Size/Left/Value', 0);
+  y  := XML.GetValue(Path + 'Size/Top/Value', 0);
+  dx := XML.GetValue(Path + 'Size/Width/Value', 100);
+  dy := XML.GetValue(Path + 'Size/Height/Value', 100);
   Flags := Word(XML.GetValue(Path + 'Flags/Value', 0)); // TODO Check default
 
   FFrameWidth := XML.GetValue(Path+'Frames/FrameWidth/Value', 1); // TODO Check default
@@ -1920,6 +1931,42 @@ begin
   frDesigner.AfterChange;
 end;
 
+function TfrView.GetLeft: Double;
+begin
+  if frDesigner<>nil then
+    result := frDesigner.PointsToUnits(inherited Left)
+  else
+    result := inherited Left;
+  WriteLn('GetLeft=',FloatToStr(result),' Left=',inherited Left);
+end;
+
+function TfrView.GetHeight: Double;
+begin
+  if frDesigner<>nil then
+    result := frDesigner.PointsToUnits(inherited Height)
+  else
+    result := inherited Height;
+  WriteLn('GetHeight=',FloatToStr(result),' Height=',inherited Height);
+end;
+
+function TfrView.GetTop: Double;
+begin
+  if frDesigner<>nil then
+    result := frDesigner.PointsToUnits(inherited Top)
+  else
+    result := inherited Top;
+  WriteLn('GetTop=',FloatToStr(result),' Top=',inherited Top);
+end;
+
+function TfrView.GetWidth: Double;
+begin
+  if frDesigner<>nil then
+    result := frDesigner.PointsToUnits(inherited Width)
+  else
+    result := inherited Width;
+  WriteLn('GetWidth=',FloatToStr(result),' Width=',inherited Width);
+end;
+
 procedure TfrView.SetFillColor(const AValue: TColor);
 begin
   if (aValue<>fFillColor) and (fUpdate=0) then
@@ -1933,6 +1980,50 @@ procedure TfrView.SetFrames(const AValue: TfrFrameBorders);
 begin
   if (aValue<>fFrames) and (fUpdate=0) then
       fFrames:=AValue;
+end;
+
+procedure TfrView.SetHeight(const AValue: Double);
+var
+  tmp: Integer;
+begin
+  if frDesigner<>nil then begin
+    tmp := frDesigner.UnitsToPoints(AValue);
+    frDesigner.MoveObjects(0,tmp-dy,true);
+  end else
+    dy := round(Avalue);
+end;
+
+procedure TfrView.SetLeft(const AValue: Double);
+var
+  tmp: Integer;
+begin
+  if frDesigner<>nil then begin
+    tmp := frDesigner.UnitsToPoints(AValue);
+    frDesigner.MoveObjects(tmp-x, 0, false);
+  end else
+    x := round(AValue);
+end;
+
+procedure TfrView.SetTop(const AValue: Double);
+var
+  tmp: Integer;
+begin
+  if frDesigner<>nil then begin
+    tmp := frDesigner.UnitsToPoints(AValue);
+    frDesigner.MoveObjects(0, tmp-y, false);
+  end else
+    y := round(AValue);
+end;
+
+procedure TfrView.SetWidth(const AValue: Double);
+var
+  tmp: Integer;
+begin
+  if frDesigner<>nil then begin
+    tmp := frDesigner.UnitsToPoints(AValue);
+    frDesigner.MoveObjects(tmp-dx, 0, true);
+  end else
+    dx := round(AValue);
 end;
 
 {----------------------------------------------------------------------------}

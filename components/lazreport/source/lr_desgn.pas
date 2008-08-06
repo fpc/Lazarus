@@ -485,7 +485,6 @@ type
     function DelEnabled: Boolean;
     function EditEnabled: Boolean;
     procedure ColorSelected(Sender: TObject);
-    procedure MoveObjects(dx, dy: Integer; aResize: Boolean);
     procedure SelectAll;
     procedure Unselect;
     procedure CutToClipboard;
@@ -533,9 +532,10 @@ type
     procedure ShowEditor;
     procedure RedrawPage; override;
     procedure OnModify(Item: Integer; var EditText: String);
-    function PointsToUnits(x: Integer): Double;
-    function UnitsToPoints(x: Double): Integer;
-    
+    function PointsToUnits(x: Integer): Double;  override;
+    function UnitsToPoints(x: Double): Integer;  override;
+    procedure MoveObjects(dx, dy: Integer; aResize: Boolean); override;
+
     property CurDocName: String read FCurDocName write SetCurDocName;
     property CurPage: Integer read FCurPage write SetCurPage;
     property GridSize: Integer read FGridSize write SetGridSize;
