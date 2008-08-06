@@ -63,7 +63,9 @@ type
   TFPDocEditor = class(TForm)
     AddLinkButton: TButton;
     BrowseExampleButton: TButton;
-    AddLinkToInheritedButton: TButton;
+    LinkEdit: TEdit;
+    LinkLabel: TLabel;
+    SetLinkToInheritedButton: TButton;
     RightBtnPanel: TPanel;
     SaveButton: TButton;
     CreateButton: TButton;
@@ -98,7 +100,8 @@ type
     SeeAlsoTabSheet: TTabSheet;
     ControlDocker: TLazControlDocker;
     procedure AddLinkButtonClick(Sender: TObject);
-    procedure AddLinkToInheritedButtonClick(Sender: TObject);
+    procedure LinkEditEditingDone(Sender: TObject);
+    procedure SetLinkToInheritedButtonClick(Sender: TObject);
     procedure BrowseExampleButtonClick(Sender: TObject);
     procedure CopyFromInheritedButtonClick(Sender: TObject);
     procedure CreateButtonClick(Sender: TObject);
@@ -259,6 +262,7 @@ begin
   InsertParagraphSpeedButton.Hint := lisCodeHelpInsertParagraphFormattingTag;
   InsertLinkSpeedButton.Hint := lisCodeHelpInsertALink;
 
+  LinkLabel.Caption:=lisLink;
   CreateButton.Caption := lisCodeHelpCreateButton;
   CreateButton.Enabled:=false;
   SaveButton.Caption := lisCodeHelpSaveButton;
@@ -271,7 +275,7 @@ begin
   
   MoveToInheritedButton.Caption:=lisLDMoveEntriesToInherited;
   CopyFromInheritedButton.Caption:=lisLDCopyFromInherited;
-  AddLinkToInheritedButton.Caption:=lisLDAddLinkToInherited;
+  SetLinkToInheritedButton.Caption:=lisLDAddLinkToInherited;
 
   Reset;
   
@@ -584,14 +588,14 @@ begin
     ShortDescr:=Element.FPDocFile.GetValueFromNode(Element.ElementNode,fpdiShort);
     InheritedShortEdit.Text:=ShortDescr;
     InheritedShortEdit.Enabled:=true;
-    InheritedShortLabel.Caption:=lisCodeHelpShortdescriptionof+' '
+    InheritedShortLabel.Caption:=lisCodeHelpShortdescriptionOf+' '
                                  +GetContextTitle(Element);
   end;
   MoveToInheritedButton.Enabled:=(fChain<>nil)
                                  and (fChain.Count>1)
                                  and (ShortEdit.Text<>'');
   CopyFromInheritedButton.Enabled:=(i>=0);
-  AddLinkToInheritedButton.Enabled:=(i>=0);
+  SetLinkToInheritedButton.Enabled:=(i>=0);
 end;
 
 procedure TFPDocEditor.UpdateChain;
@@ -677,6 +681,7 @@ begin
   begin
     FOldValues:=Element.FPDocFile.GetValuesFromNode(Element.ElementNode);
     FOldVisualValues[fpdiShort]:=ReplaceLineEndings(FOldValues[fpdiShort],'');
+    FOldVisualValues[fpdiElementLink]:=ConvertLineEndings(FOldValues[fpdiElementLink]);
     FOldVisualValues[fpdiDescription]:=ConvertLineEndings(FOldValues[fpdiDescription]);
     FOldVisualValues[fpdiErrors]:=ConvertLineEndings(FOldValues[fpdiErrors]);
     FOldVisualValues[fpdiSeeAlso]:=ConvertLineEndings(FOldValues[fpdiSeeAlso]);
@@ -689,6 +694,7 @@ begin
   else
   begin
     FOldVisualValues[fpdiShort]:=lisCodeHelpNoDocumentation;
+    FOldVisualValues[fpdiElementLink]:=lisCodeHelpNoDocumentation;
     FOldVisualValues[fpdiDescription]:=lisCodeHelpNoDocumentation;
     FOldVisualValues[fpdiErrors]:=lisCodeHelpNoDocumentation;
     FOldVisualValues[fpdiSeeAlso]:=lisCodeHelpNoDocumentation;
@@ -698,11 +704,13 @@ begin
     LinkListBox.Clear;
   end;
   ShortEdit.Text := FOldVisualValues[fpdiShort];
+  LinkEdit.Text := FOldVisualValues[fpdiElementLink];
   DescrMemo.Lines.Text := FOldVisualValues[fpdiDescription];
   ErrorsMemo.Lines.Text := FOldVisualValues[fpdiErrors];
   ExampleEdit.Text := FOldVisualValues[fpdiExample];
 
   ShortEdit.Enabled := EnabledState;
+  LinkEdit.Enabled := EnabledState;
   DescrMemo.Enabled := EnabledState;
   ErrorsMemo.Enabled := EnabledState;
   LinkIdComboBox.Enabled := EnabledState;
@@ -958,12 +966,18 @@ begin
 end;
 
 function TFPDocEditor.GetGUIValues: TFPDocElementValues;
+var
+  i: TFPDocItem;
 begin
   Result[fpdiShort]:=ShortEdit.Text;
   Result[fpdiDescription]:=DescrMemo.Text;
   Result[fpdiErrors]:=ErrorsMemo.Text;
   Result[fpdiSeeAlso]:=LinkListBox.Items.Text;
   Result[fpdiExample]:=ExampleEdit.Text;
+  Result[fpdiElementLink]:=LinkEdit.Text;
+  for i:=Low(TFPDocItem) to High(TFPDocItem) do
+    if Result[i]=lisCodeHelpNoDocumentation then
+      Result[i]:='';
 end;
 
 procedure TFPDocEditor.SetModified(const AValue: boolean);
@@ -1026,6 +1040,7 @@ begin
   CurDocFile.BeginUpdate;
   try
     CurDocFile.SetChildValue(TopNode,'short',Values[fpdiShort]);
+    CurDocFile.SetChildValue(TopNode,'elementlink',Values[fpdiElementLink]);
     CurDocFile.SetChildValue(TopNode,'descr',Values[fpdiDescription]);
     CurDocFile.SetChildValue(TopNode,'errors',Values[fpdiErrors]);
     // ToDo:
@@ -1094,7 +1109,13 @@ begin
   end;
 end;
 
-procedure TFPDocEditor.AddLinkToInheritedButtonClick(Sender: TObject);
+procedure TFPDocEditor.LinkEditEditingDone(Sender: TObject);
+begin
+  if LinkEdit.Text<>FOldVisualValues[fpdiElementLink] then
+    Modified:=true;
+end;
+
+procedure TFPDocEditor.SetLinkToInheritedButtonClick(Sender: TObject);
 var
   i: LongInt;
   Element: TCodeHelpElement;

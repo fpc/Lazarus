@@ -52,6 +52,7 @@ uses
 type
   TFPDocItem = (
     fpdiShort,
+    fpdiElementLink,
     fpdiDescription,
     fpdiErrors,
     fpdiSeeAlso,
@@ -63,6 +64,7 @@ type
 const
   FPDocItemNames: array[TFPDocItem] of shortstring = (
       'short',
+      'elementlink',
       'descr',
       'errors',
       'seealso',
@@ -532,7 +534,8 @@ begin
   finally
     MemStream.Free;
   end;
-  DebugLn(['TLazFPDocFile.GetChildValuesAsString Node=',Node.NodeName,' Result=',Result]);
+  if Result<>'' then
+    DebugLn(['TLazFPDocFile.GetChildValuesAsString Node=',Node.NodeName,' Result=',Result]);
 end;
 
 function TLazFPDocFile.GetValuesFromNode(Node: TDOMNode): TFPDocElementValues;
@@ -540,6 +543,9 @@ function TLazFPDocFile.GetValuesFromNode(Node: TDOMNode): TFPDocElementValues;
 var
   S: String;
 begin
+  //DebugLn(['TLazFPDocFile.GetValuesFromNode ',Node.NodeName,' ',dbgsName(Node),' ',Node is TDomElement]);
+  if Node is TDomElement then
+    Result[fpdiElementLink] := TDomElement(Node).GetAttribute('link');
   Node := Node.FirstChild;
   while Assigned(Node) do
   begin
@@ -547,19 +553,19 @@ begin
     begin
       S := Node.NodeName;
 
-      if S = 'short' then
+      if S = FPDocItemNames[fpdiShort] then
         Result[fpdiShort] := GetChildValuesAsString(Node);
 
-      if S = 'descr' then
+      if S = FPDocItemNames[fpdiDescription] then
         Result[fpdiDescription] := GetChildValuesAsString(Node);
 
-      if S = 'errors' then
+      if S = FPDocItemNames[fpdiErrors] then
         Result[fpdiErrors] := GetChildValuesAsString(Node);
 
-      if S = 'seealso' then
+      if S = FPDocItemNames[fpdiSeeAlso] then
         Result[fpdiSeeAlso] := GetChildValuesAsString(Node);
 
-      if S = 'example' then
+      if S = FPDocItemNames[fpdiExample] then
         Result[fpdiExample] := Node.Attributes.GetNamedItem('file').NodeValue;
     end;
     Node := Node.NextSibling;
@@ -603,59 +609,83 @@ procedure TLazFPDocFile.SetChildValue(Node: TDOMNode; const ChildName: string;
 var
   Child: TDOMNode;
   OldNode: TDOMNode;
-  FileAttribute: TDOMAttr;
+  FileAttribute, LinkAttribute: TDOMAttr;
 begin
-  Child:=Node.FindNode(ChildName);
   NewValue:=ToUnixLineEnding(NewValue);
-  if ChildName = 'example' then begin
-    OldNode:=nil;
-    if Child<>nil then
-      OldNode:=Child.Attributes.GetNamedItem('file');
-    NewValue:=FilenameToURLPath(NewValue);
-    if (NewValue<>'')
-    or (not (OldNode is TDOMAttr))
-    or (TDOMAttr(OldNode).Value<>NewValue) then begin
-      DebugLn(['TLazFPDocFile.SetChildValue Changing Name=',ChildName,' NewValue="',NewValue,'"']);
-      // add or change example
-      DocChanging;
-      try
-        FileAttribute := Doc.CreateAttribute('file');
-        FileAttribute.Value := NewValue;
-        OldNode:=Node.Attributes.SetNamedItem(FileAttribute);
-        OldNode.Free;
-      finally
-        DocChanged;
-      end;
-    end;
-  end else begin
-    if Child=nil then begin
-      // add node
-      if NewValue<>'' then begin
-        DebugLn(['TLazFPDocFile.SetChildValue Adding Name=',ChildName,' NewValue="',NewValue,'"']);
+  if ChildName=FPDocItemNames[fpdiElementLink] then begin
+    // update attribute
+    if Node is TDomElement then begin
+      LinkAttribute:=TDomElement(Node).GetAttributeNode('link');
+      if ((NewValue='') and (LinkAttribute<>nil))
+      or ((NewValue<>'') and ((LinkAttribute=nil) or (LinkAttribute.NodeValue<>NewValue)))
+      then begin
+        // delete, add or change attribute 'link'
+        DebugLn(['TLazFPDocFile.SetChildValue Changing link Name=',ChildName,' NewValue="',NewValue,'"']);
         DocChanging;
         try
-          Child := Doc.CreateElement(ChildName);
-          Node.AppendChild(Child);
-          ReadXMLFragmentFromString(Child,NewValue);
+          if NewValue='' then begin
+            TDomElement(Node).RemoveAttributeNode(LinkAttribute);
+            LinkAttribute.Free;
+          end else
+            TDomElement(Node).SetAttribute('link',NewValue);
         finally
           DocChanged;
         end;
       end;
-    end else if GetChildValuesAsString(Child)<>NewValue then begin
-      // change node
-      DocChanging;
-      try
-        DebugLn(['TLazFPDocFile.CheckAndWriteNode Changing ',Node.NodeName,
-          ' ChildName=',Child.NodeName,
-          ' OldValue=',GetChildValuesAsString(Child),
-          ' NewValue="',NewValue,'"']);
-        // remove old content
-        while Child.LastChild<>nil do
-          Child.RemoveChild(Child.LastChild);
-        // set new content
-        ReadXMLFragmentFromString(Child,NewValue);
-      finally
-        DocChanged;
+    end;
+  end else begin
+    // update sub node
+    Child:=Node.FindNode(ChildName);
+    if ChildName = FPDocItemNames[fpdiExample] then begin
+      OldNode:=nil;
+      if Child<>nil then
+        OldNode:=Child.Attributes.GetNamedItem('file');
+      NewValue:=FilenameToURLPath(NewValue);
+      if (NewValue<>'')
+      or (not (OldNode is TDOMAttr))
+      or (TDOMAttr(OldNode).Value<>NewValue) then begin
+        DebugLn(['TLazFPDocFile.SetChildValue Changing example file Name=',ChildName,' NewValue="',NewValue,'"']);
+        // add, change or delete example file
+        DocChanging;
+        try
+          FileAttribute := Doc.CreateAttribute('file');
+          FileAttribute.Value := NewValue;
+          OldNode:=Node.Attributes.SetNamedItem(FileAttribute);
+          OldNode.Free;
+        finally
+          DocChanged;
+        end;
+      end;
+    end else begin
+      if Child=nil then begin
+        // add node
+        if NewValue<>'' then begin
+          DebugLn(['TLazFPDocFile.SetChildValue Adding Name=',ChildName,' NewValue="',NewValue,'"']);
+          DocChanging;
+          try
+            Child := Doc.CreateElement(ChildName);
+            Node.AppendChild(Child);
+            ReadXMLFragmentFromString(Child,NewValue);
+          finally
+            DocChanged;
+          end;
+        end;
+      end else if GetChildValuesAsString(Child)<>NewValue then begin
+        // change node
+        DocChanging;
+        try
+          DebugLn(['TLazFPDocFile.SetChildValue Changing ',Node.NodeName,
+            ' ChildName=',Child.NodeName,
+            ' OldValue=',GetChildValuesAsString(Child),
+            ' NewValue="',NewValue,'"']);
+          // remove old content
+          while Child.LastChild<>nil do
+            Child.RemoveChild(Child.LastChild);
+          // set new content
+          ReadXMLFragmentFromString(Child,NewValue);
+        finally
+          DocChanged;
+        end;
       end;
     end;
   end;

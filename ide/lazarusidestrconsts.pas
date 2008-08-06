@@ -3557,9 +3557,9 @@ resourcestring
   lisMenuFPDocEditor = 'FPDoc Editor';
   lisCodeHelpMainFormCaption = 'FPDoc editor';
   lisCodeHelpNoTagCaption = '<NONE>';
-  lisCodeHelpnoinheriteddescriptionfound = 'no inherited description found';
-  lisCodeHelpShortdescriptionof = 'Short description of';
-  lisCodeHelpNoDocumentation = 'Documentation entry does not exist';
+  lisCodeHelpnoinheriteddescriptionfound = '(no inherited description found)';
+  lisCodeHelpShortdescriptionOf = 'Short description of';
+  lisCodeHelpNoDocumentation = '(none)';
   lisCodeHelpInherited = 'Inherited';
   lisCodeHelpShortTag = 'Short';
   lisCodeHelpDescrTag = 'Description';
@@ -3827,6 +3827,7 @@ resourcestring
     +'all files in %s%s%s?';
   lisFileExtensionOfPrograms = 'File extension of programs';
   lisEveryNThLineNumber = 'Every n-th line number:';
+  lisLink = 'Link:';
   
 implementation
 
