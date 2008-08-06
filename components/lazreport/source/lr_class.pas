@@ -1937,7 +1937,6 @@ begin
     result := frDesigner.PointsToUnits(inherited Left)
   else
     result := inherited Left;
-  WriteLn('GetLeft=',FloatToStr(result),' Left=',inherited Left);
 end;
 
 function TfrView.GetHeight: Double;
@@ -1946,7 +1945,6 @@ begin
     result := frDesigner.PointsToUnits(inherited Height)
   else
     result := inherited Height;
-  WriteLn('GetHeight=',FloatToStr(result),' Height=',inherited Height);
 end;
 
 function TfrView.GetTop: Double;
@@ -1955,7 +1953,6 @@ begin
     result := frDesigner.PointsToUnits(inherited Top)
   else
     result := inherited Top;
-  WriteLn('GetTop=',FloatToStr(result),' Top=',inherited Top);
 end;
 
 function TfrView.GetWidth: Double;
@@ -1964,7 +1961,6 @@ begin
     result := frDesigner.PointsToUnits(inherited Width)
   else
     result := inherited Width;
-  WriteLn('GetWidth=',FloatToStr(result),' Width=',inherited Width);
 end;
 
 procedure TfrView.SetFillColor(const AValue: TColor);
