@@ -565,9 +565,13 @@ begin
   {$if defined(cpui386) or defined(cpux86_64)}
   // needed otherwise some gtk theme engines crash with division by zero
   {$IFNDEF DisableGtkDivZeroFix}
-  SetExceptionMask(GetExceptionMask + [exZeroDivide]);
+    {$IFDEF windows}
+      Set8087CW($133F);
+    {$ELSE}
+      SetExceptionMask(GetExceptionMask + [exZeroDivide]);
+    {$ENDIF}
   {$ENDIF}
-  {$endif}
+  {$ifend}
 end;
 
 function TGtk2WidgetSet.AppHandle: Thandle;
