@@ -51,7 +51,7 @@ uses
   IDECommands, IDEWindowIntf, SrcEditorIntf,
   // IDE
   LazarusIDEStrConsts, IDEOptionDefs, IDEProcs, InputHistory, KeyMapping,
-  KeymapSchemeDlg, LazConf, Spin,
+  KeymapSchemeDlg, KeyMapShortCutDlg, LazConf, Spin,
   //PreferencesDialog
   OptionsEditorBase,
   // uses EditorOptions too for common declarations
