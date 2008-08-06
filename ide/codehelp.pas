@@ -608,7 +608,6 @@ procedure TLazFPDocFile.SetChildValue(Node: TDOMNode; const ChildName: string;
   
 var
   Child: TDOMNode;
-  OldNode: TDOMNode;
   FileAttribute, LinkAttribute: TDOMAttr;
 begin
   NewValue:=ToUnixLineEnding(NewValue);
@@ -637,21 +636,30 @@ begin
     // update sub node
     Child:=Node.FindNode(ChildName);
     if ChildName = FPDocItemNames[fpdiExample] then begin
-      OldNode:=nil;
-      if Child<>nil then
-        OldNode:=Child.Attributes.GetNamedItem('file');
+      // update sub node example, attribute file
       NewValue:=FilenameToURLPath(NewValue);
-      if (NewValue<>'')
-      or (not (OldNode is TDOMAttr))
-      or (TDOMAttr(OldNode).Value<>NewValue) then begin
+      FileAttribute:=nil;
+      if Child is TDomElement then
+        FileAttribute:=TDomElement(Child).GetAttributeNode('file');
+      if ((NewValue='') and (FileAttribute<>nil))
+      or ((NewValue<>'') and ((FileAttribute=nil) or (FileAttribute.NodeValue<>NewValue)))
+      then begin
+        // delete, add or change attribute 'file'
         DebugLn(['TLazFPDocFile.SetChildValue Changing example file Name=',ChildName,' NewValue="',NewValue,'"']);
-        // add, change or delete example file
         DocChanging;
         try
-          FileAttribute := Doc.CreateAttribute('file');
-          FileAttribute.Value := NewValue;
-          OldNode:=Node.Attributes.SetNamedItem(FileAttribute);
-          OldNode.Free;
+          if NewValue='' then begin
+            // remove old content
+            while Child.LastChild<>nil do
+              Child.RemoveChild(Child.LastChild);
+            Node.RemoveChild(Child);
+          end else begin
+            if Child=nil then begin
+              Child := Doc.CreateElement(ChildName);
+              Node.AppendChild(Child);
+            end;
+            TDomElement(Child).SetAttribute('file',NewValue);
+          end;
         finally
           DocChanged;
         end;
@@ -681,8 +689,13 @@ begin
           // remove old content
           while Child.LastChild<>nil do
             Child.RemoveChild(Child.LastChild);
-          // set new content
-          ReadXMLFragmentFromString(Child,NewValue);
+          if NewValue='' then begin
+            // remove entire child
+            Node.RemoveChild(Child);
+          end else begin
+            // set new content
+            ReadXMLFragmentFromString(Child,NewValue);
+          end;
         finally
           DocChanged;
         end;

@@ -1043,7 +1043,7 @@ begin
     CurDocFile.SetChildValue(TopNode,'errors',Values[fpdiErrors]);
     // ToDo:
     //CurDocFile.SetChildValue(TopNode,'seealso',Values[fpdiSeeAlso]);
-    //CurDocFile.SetChildValue(TopNode,'example',Values[fpdiExample]);
+    CurDocFile.SetChildValue(TopNode,'example',Values[fpdiExample]);
   finally
     CurDocFile.EndUpdate;
     fChain.MakeValid;
