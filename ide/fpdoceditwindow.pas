@@ -63,9 +63,10 @@ type
   TFPDocEditor = class(TForm)
     AddLinkButton: TButton;
     BrowseExampleButton: TButton;
+    ShortLabel: TLabel;
     LinkEdit: TEdit;
     LinkLabel: TLabel;
-    SetLinkToInheritedButton: TButton;
+    AddLinkToInheritedButton: TButton;
     RightBtnPanel: TPanel;
     SaveButton: TButton;
     CreateButton: TButton;
@@ -101,7 +102,7 @@ type
     ControlDocker: TLazControlDocker;
     procedure AddLinkButtonClick(Sender: TObject);
     procedure LinkEditEditingDone(Sender: TObject);
-    procedure SetLinkToInheritedButtonClick(Sender: TObject);
+    procedure AddLinkToInheritedButtonClick(Sender: TObject);
     procedure BrowseExampleButtonClick(Sender: TObject);
     procedure CopyFromInheritedButtonClick(Sender: TObject);
     procedure CreateButtonClick(Sender: TObject);
@@ -260,6 +261,7 @@ begin
   InsertParagraphSpeedButton.Hint := lisCodeHelpInsertParagraphFormattingTag;
   InsertLinkSpeedButton.Hint := lisCodeHelpInsertALink;
 
+  ShortLabel.Caption:=lisShort;
   LinkLabel.Caption:=lisLink;
   CreateButton.Caption := lisCodeHelpCreateButton;
   CreateButton.Enabled:=false;
@@ -273,7 +275,7 @@ begin
   
   MoveToInheritedButton.Caption:=lisLDMoveEntriesToInherited;
   CopyFromInheritedButton.Caption:=lisLDCopyFromInherited;
-  SetLinkToInheritedButton.Caption:=lisLDAddLinkToInherited;
+  AddLinkToInheritedButton.Caption:=lisLDAddLinkToInherited;
 
   Reset;
   
@@ -605,7 +607,7 @@ begin
                                  and (fChain.Count>1)
                                  and (ShortEdit.Text<>'');
   CopyFromInheritedButton.Enabled:=(i>=0);
-  SetLinkToInheritedButton.Enabled:=(i>=0);
+  AddLinkToInheritedButton.Enabled:=(i>=0);
 end;
 
 procedure TFPDocEditor.UpdateChain;
@@ -892,6 +894,7 @@ begin
 
   // clear all element editors/viewers
   ShortEdit.Clear;
+  LinkEdit.Clear;
   DescrMemo.Clear;
   ErrorsMemo.Clear;
   LinkIdComboBox.Text := '';
@@ -1124,7 +1127,7 @@ begin
     Modified:=true;
 end;
 
-procedure TFPDocEditor.SetLinkToInheritedButtonClick(Sender: TObject);
+procedure TFPDocEditor.AddLinkToInheritedButtonClick(Sender: TObject);
 var
   i: LongInt;
   Element: TCodeHelpElement;

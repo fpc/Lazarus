@@ -3828,6 +3828,7 @@ resourcestring
   lisFileExtensionOfPrograms = 'File extension of programs';
   lisEveryNThLineNumber = 'Every n-th line number:';
   lisLink = 'Link:';
+  lisShort = 'Short:';
   
 implementation
 

@@ -37,11 +37,29 @@ object FPDocEditor: TFPDocEditor
         Caption = 'LinkLabel'
         ParentColor = False
       end
+      object ShortLabel: TLabel
+        AnchorSideLeft.Control = ShortTabSheet
+        AnchorSideTop.Control = ShortEdit
+        AnchorSideTop.Side = asrCenter
+        Left = 6
+        Height = 20
+        Top = 3
+        Width = 70
+        BorderSpacing.Left = 6
+        Caption = 'ShortLabel'
+        ParentColor = False
+      end
       object ShortEdit: TEdit
+        AnchorSideLeft.Control = ShortLabel
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideRight.Control = ShortTabSheet
+        AnchorSideRight.Side = asrBottom
+        Left = 82
         Height = 27
-        Width = 709
-        Align = alTop
+        Width = 627
+        Anchors = [akTop, akLeft, akRight]
         AutoSize = True
+        BorderSpacing.Left = 6
         BorderSpacing.Right = 2
         OnChange = ShortEditEditingDone
         OnEditingDone = ShortEditEditingDone
@@ -153,18 +171,18 @@ object FPDocEditor: TFPDocEditor
         OnClick = CopyFromInheritedButtonClick
         TabOrder = 2
       end
-      object SetLinkToInheritedButton: TButton
+      object AddLinkToInheritedButton: TButton
         AnchorSideLeft.Control = CopyFromInheritedButton
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = CopyFromInheritedButton
         Left = 353
         Height = 29
         Top = 57
-        Width = 171
+        Width = 174
         AutoSize = True
         BorderSpacing.Left = 10
-        Caption = 'SetLinkToInheritedButton'
-        OnClick = SetLinkToInheritedButtonClick
+        Caption = 'AddLinkToInheritedButton'
+        OnClick = AddLinkToInheritedButtonClick
         TabOrder = 3
       end
     end

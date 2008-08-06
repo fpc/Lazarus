@@ -1061,6 +1061,7 @@ begin
     // read Method name of interface
     ReadNextAtom;
     AtomIsIdentifier(true);
+    //DebugLn(['TPascalParserTool.KeyWordFuncClassMethod ',GetAtom,' at ',CleanPosToStr(CurPos.StartPos,true)]);
     // read '='
     ReadNextAtomIsChar('=');
     // read implementing method name
@@ -4125,11 +4126,19 @@ var HasForwardModifier, IsFunction, IsOperator, IsMethod: boolean;
   IsProcType: Boolean;
 begin
   if ProcNode.Desc=ctnProcedureHead then ProcNode:=ProcNode.Parent;
-  if (ProcNode=nil) or (not (ProcNode.Desc in [ctnProcedure,ctnProcedureType]))
+  if ProcNode.Desc=ctnMethodMap then begin
+    exit;
+  end;
+  if (not (ProcNode.Desc in [ctnProcedure,ctnProcedureType]))
   or (ProcNode.FirstChild=nil) then begin
     {$IFDEF CheckNodeTool}
     CTDumpStack;
     {$ENDIF}
+    if ProcNode<>nil then begin
+      DebugLn(['TPascalParserTool.BuildSubTreeForProcHead Desc=',ProcNode.DescAsString]);
+      if ProcNode.FirstChild<>nil then
+        DebugLn(['TPascalParserTool.BuildSubTreeForProcHead FirstChild=',ProcNode.FirstChild.DescAsString]);
+    end;
     RaiseException('[TPascalParserTool.BuildSubTreeForProcHead] '
       +'internal error: invalid ProcNode');
   end;
