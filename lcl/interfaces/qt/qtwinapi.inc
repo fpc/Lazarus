@@ -4597,7 +4597,7 @@ begin
   begin
     inc(Y, dy);
     dec(Height, dy);
-    dec(SrcWidth, dy);
+    dec(SrcHeight, dy);
   end;
   
   DstRect := Bounds(X, Y, Width, Height);
