@@ -242,16 +242,14 @@ procedure TFPDocEditor.FormCreate(Sender: TObject);
 begin
   Caption := lisCodeHelpMainFormCaption;
 
-  with PageControl do
-  begin
-    Page[0].Caption := lisCodeHelpShortTag;
-    Page[1].Caption := lisCodeHelpDescrTag;
-    Page[2].Caption := lisCodeHelpErrorsTag;
-    Page[3].Caption := lisCodeHelpSeeAlsoTag;
-    Page[4].Caption := lisCodeHelpExampleTag;
-    Page[5].Caption := lisCodeHelpInherited;
-    PageIndex := 0;
-  end;
+  ShortTabSheet.Caption := lisCodeHelpShortTag;
+  InheritedTabSheet.Caption := lisCodeHelpInherited;
+  DescrTabSheet.Caption := lisCodeHelpDescrTag;
+  ErrorsTabSheet.Caption := lisCodeHelpErrorsTag;
+  SeeAlsoTabSheet.Caption := lisCodeHelpSeeAlsoTag;
+  ExampleTabSheet.Caption := lisCodeHelpExampleTag;
+
+  PageControl.PageIndex := 0;
 
   BoldFormatButton.Hint := lisCodeHelpHintBoldFormat;
   ItalicFormatButton.Hint := lisCodeHelpHintItalicFormat;
@@ -1120,20 +1118,21 @@ var
   i: LongInt;
   Element: TCodeHelpElement;
   Link: String;
-  LinkTitle: String;
 begin
   i:=FindInheritedIndex;
   if i<0 then exit;
-  DebugLn(['TFPDocEditor.AddLinkToInheritedButtonClick ']);
+  //DebugLn(['TFPDocEditor.AddLinkToInheritedButtonClick ']);
   Element:=fChain[i];
   Link:=Element.ElementName;
-  LinkTitle:=Link;
   if Element.ElementUnitName<>'' then begin
     Link:=Element.ElementUnitName+'.'+Link;
     if Element.ElementModuleName<>'' then
       Link:='#'+Element.ElementModuleName+'.'+Link;
   end;
-  AddSeeAlsoLink(Link,LinkTitle);
+  if Link<>LinkEdit.Text then begin
+    LinkEdit.Text:=Link;
+    Modified:=true;
+  end;
 end;
 
 procedure TFPDocEditor.BrowseExampleButtonClick(Sender: TObject);
