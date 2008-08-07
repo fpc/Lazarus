@@ -596,7 +596,11 @@ begin
   if isMasked then
   begin
     S  := '';
-    for I := 1 To Length(FMask) do S := S + ClearChar(I);
+    for I := 1 To Length(FMask) do
+      if FMask[I]=';' then
+        break
+      else
+        S := S + ClearChar(I);
     inherited Text := S;
     CurrentText := S;
     FPosition := 0;
