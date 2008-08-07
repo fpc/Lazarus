@@ -12380,7 +12380,7 @@ begin
     end;
 
     {$IFDEF EnableFPDocRename}
-    // ToDo: search fpdoc references
+    // search fpdoc references
     Result:=GatherFPDocReferencesForPascalFiles(Files,DeclarationUnitInfo.Source,
                                   DeclarationCaretXY,ListOfLazFPDocNode);
     if Result<>mrOk then begin

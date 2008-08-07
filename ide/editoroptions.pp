@@ -3809,7 +3809,8 @@ begin
     Checked := EditorOpts.ShowLineNumbers;
   end;
 
-  ShowOnlyLineNumbersMultiplesOfSpinEdit.Caption:=lisEveryNThLineNumber;
+  ShowOnlyLineNumbersMultiplesOfLabel.Caption := lisEveryNThLineNumber;
+  ShowOnlyLineNumbersMultiplesOfLabel.Enabled := ShowLineNumbersCheckBox.Checked;
   ShowOnlyLineNumbersMultiplesOfSpinEdit.Value := EditorOpts.ShowOnlyLineNumbersMultiplesOf;
   ShowOnlyLineNumbersMultiplesOfSpinEdit.Enabled := ShowLineNumbersCheckBox.Checked;
 
@@ -4068,6 +4069,7 @@ end;
 procedure TEditorOptionsForm.ShowLineNumbersCheckBoxClick(Sender: TObject);
 begin
   ShowOnlyLineNumbersMultiplesOfSpinEdit.Enabled := ShowLineNumbersCheckBox.Checked;
+  ShowOnlyLineNumbersMultiplesOfLabel.Enabled := ShowLineNumbersCheckBox.Checked;
 end;
 
 procedure TEditorOptionsForm.TextStyleRadioOnChange(Sender : TObject);
