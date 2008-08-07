@@ -696,8 +696,9 @@ function CreateFormContents(AForm: TCustomForm; var FormWidget: Pointer): Pointe
 type
   PStyleObject = ^TStyleObject;
   TStyleObject = Record
-    Style : PGTKStyle;
-    Widget : PGTKWidget;
+    Obj: PGtkObject;
+    Style: PGTKStyle;
+    Widget: PGTKWidget;
     FrameBordersValid: boolean;
     FrameBorders: TRect;
   end;

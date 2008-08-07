@@ -1702,7 +1702,7 @@ end;
 function IsBackgroundColor(Color: TColor): boolean;
 begin
   Result := (Color = clForm) or
-            //(Color = clInfoBk) or
+            (Color = clInfoBk) or
             (Color = clBackground);
 end;
 
@@ -7596,24 +7596,27 @@ end;
 function NewStyleObject : PStyleObject;
 begin
   New(Result);
-  FillChar(Result^,SizeOf(TStyleObject),0);
+  FillChar(Result^, SizeOf(TStyleObject), 0);
 end;
 
 procedure FreeStyleObject(var StyleObject : PStyleObject);
 // internal function to dispose a styleobject
 // it does *not* remove it from the style lists
 begin
-  If StyleObject <> nil then begin
-    If StyleObject^.Widget <> nil then begin
+  if StyleObject <> nil then
+  begin
+    if StyleObject^.Obj <> nil then
+      gtk_object_destroy(StyleObject^.Obj);
+    if StyleObject^.Widget <> nil then
+    begin
       // first unref
       gtk_widget_unref(StyleObject^.Widget);
       // then destroy
-      GTK_Widget_Destroy(StyleObject^.Widget);
+      gtk_widget_destroy(StyleObject^.Widget);
     end;
-    If StyleObject^.Style <> nil then
-      If StyleObject^.Style^.{$IFDEF Gtk2}attach_count{$ELSE}Ref_Count{$ENDIF}>0
-      then
-        GTK_Style_Unref(StyleObject^.Style);
+    if StyleObject^.Style <> nil then
+      if StyleObject^.Style^.{$IFDEF Gtk2}attach_count{$ELSE}Ref_Count{$ENDIF} > 0 then
+        gtk_style_unref(StyleObject^.Style);
     Dispose(StyleObject);
     StyleObject := nil;
   end;
@@ -7898,11 +7901,12 @@ begin
     else
       If CompareText(WName,LazGtkStyleNames[lgsTooltip])=0 then begin
         lgs := lgsTooltip;
-        AddToStyleWindow := false;
-        TP := gtk_tooltips_new;
-        gtk_tooltips_force_window(TP);
-        StyleObject^.Widget := PGTKTooltips(TP)^.Tip_Window;
+        Tp := gtk_tooltips_new;
+        gtk_tooltips_force_window(Tp);
+        StyleObject^.Widget := PGTKTooltips(Tp)^.Tip_Window;
         WidgetName := 'gtk-tooltip-lcl';
+        StyleObject^.Obj := Tp;
+        Tp := nil;
       end
     else
       If CompareText(WName,LazGtkStyleNames[lgsHScale])=0 then begin
@@ -8006,7 +8010,8 @@ begin
         end
         else
 {$endif}
-        if lgs = lgsToolButton then
+        if (lgs = lgsToolButton) or
+           (lgs = lgsTooltip) then
         begin
           // already on a parent => nothing to do
         end
@@ -8072,9 +8077,8 @@ begin
     end;
     
     // clean up
-    If Tp<>nil then
-      GTK_Object_Destroy(Tp);
-      
+    if Tp <> nil then
+      gtk_object_destroy(Tp);
   end;
 end;
 
