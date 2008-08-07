@@ -12288,7 +12288,8 @@ var
   ExtraFiles: TStrings;
   Files: TStringList;
   Identifier: string;
-  PascalReferences, FPDocReferences: TAVLTree;
+  PascalReferences: TAVLTree;
+  ListOfLazFPDocNode: TFPList;
 begin
   Result:=mrCancel;
   if not BeginCodeTool(TargetSrcEdit,TargetUnitInfo,[]) then exit;
@@ -12312,7 +12313,7 @@ begin
 
   // let user choose the search scope
   Result:=ShowFindRenameIdentifierDialog(DeclarationUnitInfo.Source.Filename,
-    DeclarationCaretXY,Rename,Rename,nil);
+    DeclarationCaretXY,true,Rename,nil);
   if Result<>mrOk then begin
     debugln('TMainIDE.DoFindRenameIdentifier failed: let user choose the search scope');
     exit;
@@ -12321,7 +12322,7 @@ begin
   Files:=nil;
   OwnerList:=nil;
   PascalReferences:=nil;
-  FPDocReferences:=nil;
+  ListOfLazFPDocNode:=nil;
   try
     // create the file list
     Files:=TStringList.Create;
@@ -12380,8 +12381,8 @@ begin
 
     {$IFDEF EnableFPDocRename}
     // ToDo: search fpdoc references
-    Result:=GatherFPDocReferences(Files,DeclarationUnitInfo.Source,
-                                  DeclarationCaretXY,FPDocReferences);
+    Result:=GatherFPDocReferencesForPascalFiles(Files,DeclarationUnitInfo.Source,
+                                  DeclarationCaretXY,ListOfLazFPDocNode);
     if Result<>mrOk then begin
       debugln('TMainIDE.DoFindRenameIdentifier GatherFPDocReferences failed');
       exit;
@@ -12415,8 +12416,8 @@ begin
   finally
     Files.Free;
     OwnerList.Free;
-    CodeToolBoss.FreeTreeOfPCodeXYPosition(FPDocReferences);
     CodeToolBoss.FreeTreeOfPCodeXYPosition(PascalReferences);
+    FreeListObjects(ListOfLazFPDocNode,true);
   end;
 end;
 

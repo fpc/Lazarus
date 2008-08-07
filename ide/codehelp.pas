@@ -93,7 +93,10 @@ type
     ChangeStep: integer;// the CodeBuffer.ChangeStep value, when Doc was built
     CodeBuffer: TCodeBuffer;
     destructor Destroy; override;
-    function GetModuleNode: TDOMNode;
+    function GetPackageNode: TDOMNode; // the lazarus project or package
+    function GetPackageName: string;
+    function GetModuleNode: TDOMNode; // the unit
+    function GetModuleName: string;
     function GetFirstElement: TDOMNode;
     function GetElementWithName(const ElementName: string;
                                 CreateIfNotExists: boolean = false): TDOMNode;
@@ -105,6 +108,15 @@ type
     procedure DocChanged;
     procedure BeginUpdate;
     procedure EndUpdate;
+  end;
+
+  { TLazFPDocNode }
+
+  TLazFPDocNode = class
+  public
+    DocFile: TLazFPDocFile;
+    Node: TDomNode;
+    constructor Create(AFile: TLazFPDocFile; ANode: TDOMNode);
   end;
   
   { TCHSourceToFPDocFile - cache item for source to FPDoc file mapping }
@@ -125,7 +137,7 @@ type
   public
     CodeContext: TFindContext;
     CodeXYPos: TCodeXYPosition;
-    ElementModuleName: string;
+    ElementOwnerName: string;// the 'fpdoc package' = the name of the lazarus package or project
     ElementUnitName: string;
     ElementUnitFileName: string;
     ElementName: string;
@@ -201,7 +213,7 @@ type
     function LoadFPDocFile(const Filename: string;
                            UpdateFromDisk, Revert: Boolean;
                            out ADocFile: TLazFPDocFile;
-                           out CacheWasUsed: boolean): Boolean;
+                           out CacheWasUsed: boolean): TCodeHelpParseResult;
     function SaveFPDocFile(ADocFile: TLazFPDocFile): TModalResult;
     function GetFPDocFilenameForHelpContext(
                                        Context: TPascalHelpContextList;
@@ -216,9 +228,9 @@ type
                       var FPDocFilenames: TStringToStringTree // Names=Filename, Values=ModuleName
                       );
     function FindModuleOwner(const Modulename: string): TObject;
-    function GetOwnerModuleName(TheOwner: TObject): string;
+    function GetModuleOwnerName(TheOwner: TObject): string;
     function ExpandFPDocLinkID(const LinkID, DefaultUnitName,
-                               DefaultModule: string): string;
+                               DefaultOwnerName: string): string;
     function ExpandFPDocLinkID(const LinkID, DefaultUnitName: string;
                                TheOwner: TObject): string;
     function CodeNodeToElementName(Tool: TFindDeclarationTool;
@@ -373,7 +385,7 @@ begin
   inherited Destroy;
 end;
 
-function TLazFPDocFile.GetModuleNode: TDOMNode;
+function TLazFPDocFile.GetPackageNode: TDOMNode;
 begin
   Result:=nil;
   if Doc=nil then exit;
@@ -381,12 +393,28 @@ begin
   // get first node
   Result := Doc.FindNode('fpdoc-descriptions');
   if Result=nil then begin
-    //DebugLn(['TLazFPDocFile.GetModuleNode fpdoc-descriptions not found']);
+    //DebugLn(['TLazFPDocFile.GetPackageNode fpdoc-descriptions not found']);
     exit;
   end;
 
   // proceed to package
   Result := Result.FindNode('package');
+end;
+
+function TLazFPDocFile.GetPackageName: string;
+var
+  Node: TDOMNode;
+begin
+  Node:=GetPackageNode;
+  if Node is TDOMElement then
+    Result:=TDomElement(Node).GetAttribute('name')
+  else
+    Result:='';
+end;
+
+function TLazFPDocFile.GetModuleNode: TDOMNode;
+begin
+  Result:=GetPackageNode;
   if Result=nil then begin
     //DebugLn(['TLazFPDocFile.GetModuleNode fpdoc-descriptions has no package']);
     exit;
@@ -394,6 +422,17 @@ begin
 
   // proceed to module
   Result := Result.FindNode('module');
+end;
+
+function TLazFPDocFile.GetModuleName: string;
+var
+  Node: TDOMNode;
+begin
+  Node:=GetModuleNode;
+  if Node is TDOMElement then
+    Result:=TDomElement(Node).GetAttribute('name')
+  else
+    Result:='';
 end;
 
 function TLazFPDocFile.GetFirstElement: TDOMNode;
@@ -858,14 +897,14 @@ begin
       if AProject.LazDocPaths='' then
         AProject.LazDocPaths:=SelectNewLazDocPaths(AProject.ShortDescription,BaseDir);
       LazDocPaths:=AProject.LazDocPaths;
-      LazDocPackageName:=GetOwnerModuleName(AProject);
+      LazDocPackageName:=GetModuleOwnerName(AProject);
     end else if NewOwner is TLazPackage then begin
       APackage:=TLazPackage(NewOwner);
       BaseDir:=APackage.Directory;
       if APackage.LazDocPaths='' then
         APackage.LazDocPaths:=SelectNewLazDocPaths(APackage.Name,BaseDir);
       LazDocPaths:=APackage.LazDocPaths;
-      LazDocPackageName:=GetOwnerModuleName(APackage);
+      LazDocPackageName:=GetModuleOwnerName(APackage);
     end else begin
       DebugLn(['TCodeHelpManager.DoCreateFPDocFileForSource unknown owner type ',dbgsName(NewOwner)]);
       NewOwner:=nil;
@@ -995,14 +1034,16 @@ begin
 end;
 
 function TCodeHelpManager.LoadFPDocFile(const Filename: string; UpdateFromDisk,
-  Revert: Boolean; out ADocFile: TLazFPDocFile; out CacheWasUsed: boolean): Boolean;
+  Revert: Boolean; out ADocFile: TLazFPDocFile; out CacheWasUsed: boolean
+  ): TCodeHelpParseResult;
 var
   MemStream: TMemoryStream;
 begin
-  Result:=false;
+  Result:=chprFailed;
   CacheWasUsed:=true;
   ADocFile:=FindFPDocFile(Filename);
   if ADocFile=nil then begin
+    CacheWasUsed:=false;
     ADocFile:=TLazFPDocFile.Create;
     ADocFile.Filename:=Filename;
     FDocs.Add(ADocFile);
@@ -1020,7 +1061,7 @@ begin
         // revert the modifications => rebuild the Doc from the CodeBuffer
       end else begin
         // no update needed
-        exit(true);
+        exit(chprSuccess);
       end;
     end;
   end;
@@ -1040,11 +1081,11 @@ begin
   try
     ADocFile.CodeBuffer.SaveToStream(MemStream);
     MemStream.Position:=0;
-    Result:=false;
+    Result:=chprFailed;
     ReadXMLFile(ADocFile.Doc, MemStream);
-    Result:=true;
+    Result:=chprSuccess;
   finally
-    if not Result then
+    if Result<>chprSuccess then
       FreeAndNil(ADocFile.Doc);
     MemStream.Free;
     CallDocChangeEvents(chmhDocChanging,ADocFile);
@@ -1321,7 +1362,7 @@ begin
     if FPDocFilename<>'' then begin
       if FPDocFilenames=nil then
         FPDocFilenames:=CreateFilenameToStringTree;
-      FPDocFilenames[FPDocFilename]:=GetOwnerModuleName(AnOwner);
+      FPDocFilenames[FPDocFilename]:=GetModuleOwnerName(AnOwner);
     end;
     Node:=SrcFilenames.Tree.FindSuccessor(Node);
   end;
@@ -1335,7 +1376,7 @@ begin
   if Result<>nil then exit;
   AProject:=LazarusIDE.ActiveProject;
   if (AProject<>nil)
-  and (SysUtils.CompareText(GetOwnerModuleName(AProject),Modulename)=0)
+  and (SysUtils.CompareText(GetModuleOwnerName(AProject),Modulename)=0)
   then begin
     Result:=AProject;
     exit;
@@ -1343,7 +1384,7 @@ begin
   Result:=nil;
 end;
 
-function TCodeHelpManager.GetOwnerModuleName(TheOwner: TObject): string;
+function TCodeHelpManager.GetModuleOwnerName(TheOwner: TObject): string;
 begin
   if TheOwner is TLazPackage then
     Result:=TLazPackage(TheOwner).Name
@@ -1354,11 +1395,12 @@ begin
 end;
 
 function TCodeHelpManager.ExpandFPDocLinkID(const LinkID, DefaultUnitName,
-  DefaultModule: string): string;
+  DefaultOwnerName: string): string;
 begin
   Result:=LinkID;
   if (LinkID='') or (LinkID[1]='#') then exit;
-  Result:=ExpandFPDocLinkID(LinkId,DefaultUnitName,FindModuleOwner(DefaultModule));
+  Result:=ExpandFPDocLinkID(LinkId,DefaultUnitName,
+                            FindModuleOwner(DefaultOwnerName));
 end;
 
 function TCodeHelpManager.ExpandFPDocLinkID(const LinkID,
@@ -1422,7 +1464,7 @@ begin
     if AddUnit then
       Result:=DefaultUnitName+'.'+Result;
   end;
-  Result:='#'+GetOwnerModuleName(TheOwner)+'.'+Result;
+  Result:='#'+GetModuleOwnerName(TheOwner)+'.'+Result;
 end;
 
 function TCodeHelpManager.CodeNodeToElementName(Tool: TFindDeclarationTool;
@@ -1470,8 +1512,8 @@ begin
   if (not CacheWasUsed) and (not Complete) then exit(chprParsing);
 
   // load FPDoc file
-  if not LoadFPDocFile(FPDocFilename,true,false,FPDocFile,CacheWasUsed) then
-    exit(chprFailed);
+  Result:=LoadFPDocFile(FPDocFilename,true,false,FPDocFile,CacheWasUsed);
+  if Result<>chprSuccess then exit;
   if (not CacheWasUsed) and (not Complete) then exit(chprParsing);
 
   // find FPDoc node
@@ -1610,7 +1652,7 @@ begin
       AnOwner:=Self;
       FPDocFilename:=GetFPDocFilenameForSource(CHElement.ElementUnitFileName,
                                                false,CacheWasUsed,AnOwner);
-      CHElement.ElementModuleName:=GetOwnerModuleName(AnOwner);
+      CHElement.ElementOwnerName:=GetModuleOwnerName(AnOwner);
       //DebugLn(['TCodeHelpManager.GetElementChain FPDocFilename=',FPDocFilename]);
       if (not CacheWasUsed) and (not Complete) then exit(chprParsing);
 
@@ -1805,6 +1847,7 @@ var
   CacheWasUsed: boolean;
   FPDocFilename: String;
   AnOwner: TObject;
+  CHResult: TCodeHelpParseResult;
 begin
   Result:=false;
   Element:=nil;
@@ -1842,8 +1885,8 @@ begin
     DebugLn(['TCodeHelpManager.CreateElement FPDocFilename=',FPDocFilename]);
 
     // parse fpdoc file
-    if not LoadFPDocFile(FPDocFilename,true,false,Element.FPDocFile,CacheWasUsed)
-    then begin
+    CHResult:=LoadFPDocFile(FPDocFilename,true,false,Element.FPDocFile,CacheWasUsed);
+    if CHResult<>chprSuccess then begin
       DebugLn(['TCodeHelpManager.CreateElement unable to load fpdoc file ',FPDocFilename]);
       exit;
     end;
@@ -1971,6 +2014,14 @@ begin
   Result:=nil;
   if (Count>0) then
     Result:=Items[0].FPDocFile;
+end;
+
+{ TLazFPDocNode }
+
+constructor TLazFPDocNode.Create(AFile: TLazFPDocFile; ANode: TDOMNode);
+begin
+  Node:=ANode;
+  DocFile:=AFile;
 end;
 
 end.

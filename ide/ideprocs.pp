@@ -1258,6 +1258,7 @@ procedure FreeListObjects(List: TFPList; FreeList: boolean);
 var
   i: Integer;
 begin
+  if List=nil then exit;
   for i:=0 to List.Count-1 do
     TObject(List[i]).Free;
   List.Clear;

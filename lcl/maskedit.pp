@@ -634,7 +634,7 @@ begin
         FMask   := FMask + S[I];
         Special := False;
       end
-        else
+      else
       begin
         Inc(FMaxChars);
 
@@ -730,7 +730,7 @@ begin
   end;
 end;
 
-// Trasform a position from Text in a real position
+// Transform a position from Text in a real position
 procedure TCustomMaskEdit.SetCharToPos;
 Var
   SelectionStart, SelectionStop : Integer;

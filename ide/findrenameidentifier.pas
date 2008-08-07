@@ -33,7 +33,7 @@ uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   StdCtrls, Buttons, ExtCtrls, AvgLvlTree,
   // codetools
-  AVL_Tree, CodeAtom, CodeCache, CodeToolManager,
+  Laz_Dom, AVL_Tree, CodeAtom, CodeCache, CodeToolManager,
   // IDE
   LazarusIDEStrConsts, IDEProcs, IDEWindowIntf, MiscOptions, DialogProcs,
   InputHistory, SearchResultView, CodeHelp;
@@ -78,7 +78,9 @@ type
 procedure CleanUpFileList(Files: TStringList);
 
 function ShowFindRenameIdentifierDialog(const Filename: string;
-  const Position: TPoint; AllowRename, SetRenameActive: boolean;
+  const Position: TPoint;
+  AllowRename: boolean; // allow user to disable/enable rename
+  SetRenameActive: boolean; // enable rename
   Options: TFindRenameIdentifierOptions): TModalResult;
 function GatherIdentifierReferences(Files: TStringList;
   DeclarationCode: TCodeBuffer; const DeclarationCaretXY: TPoint;
@@ -91,12 +93,13 @@ procedure AddReferencesToResultView(DeclarationCode: TCodeBuffer;
   const DeclarationCaretXY: TPoint; TargetCode: TCodeBuffer;
   TreeOfPCodeXYPosition: TAVLTree; ClearItems: boolean; SearchPageIndex: integer);
 
-function GatherFPDocReferences(PascalFiles: TStringList;
+function GatherFPDocReferencesForPascalFiles(PascalFiles: TStringList;
   DeclarationCode: TCodeBuffer; const DeclarationCaretXY: TPoint;
-  var TreeOfPCodeXYPosition: TAVLTree): TModalResult;
-function GatherFPDocReferences(const ElementModuleName, ElementName,
-  FileModuleName, FPDocFilename: string;
-  var TreeOfPCodeXYPosition: TAVLTree): TModalResult;
+  var ListOfLazFPDocNode: TFPList): TModalResult;
+function GatherReferencesInFPDocFile(
+  const OldPackageName, OldModuleName, OldElementName: string;
+  const FPDocFilename: string;
+  var ListOfLazFPDocNode: TFPList): TModalResult;
   
 
 implementation
@@ -119,7 +122,7 @@ begin
 end;
 
 function ShowFindRenameIdentifierDialog(const Filename: string;
-  const Position: TPoint; AllowRename, SetRenameActive: boolean;
+  const Position: TPoint; AllowRename: boolean; SetRenameActive: boolean;
   Options: TFindRenameIdentifierOptions): TModalResult;
 var
   FindRenameIdentifierDialog: TFindRenameIdentifierDialog;
@@ -129,8 +132,7 @@ begin
     FindRenameIdentifierDialog.LoadFromConfig;
     FindRenameIdentifierDialog.SetIdentifier(Filename,Position);
     FindRenameIdentifierDialog.AllowRename:=AllowRename;
-    if SetRenameActive and AllowRename then
-      FindRenameIdentifierDialog.RenameCheckBox.Checked:=true;
+    FindRenameIdentifierDialog.RenameCheckBox.Checked:=SetRenameActive and AllowRename;
     Result:=FindRenameIdentifierDialog.ShowModal;
     if Result=mrOk then
       if Options<>nil then
@@ -271,9 +273,9 @@ begin
   SearchResultsView.EndUpdate(SearchPageIndex);
 end;
 
-function GatherFPDocReferences(PascalFiles: TStringList;
+function GatherFPDocReferencesForPascalFiles(PascalFiles: TStringList;
   DeclarationCode: TCodeBuffer; const DeclarationCaretXY: TPoint;
-  var TreeOfPCodeXYPosition: TAVLTree): TModalResult;
+  var ListOfLazFPDocNode: TFPList): TModalResult;
 var
   PascalFilenames, FPDocFilenames: TStringToStringTree;
   CacheWasUsed: boolean;
@@ -283,7 +285,6 @@ var
   AVLNode: TAvgLvlTreeNode;
   Item: PStringToStringItem;
   FPDocFilename: String;
-  ModuleName: String;
 begin
   Result:=mrCancel;
   PascalFilenames:=nil;
@@ -308,16 +309,17 @@ begin
       exit;
     end;
     CHElement:=Chain[0];
-    DebugLn(['GatherFPDocReferences ModuleName=',CHElement.ElementModuleName,' Name=',CHElement.ElementName]);
+    DebugLn(['GatherFPDocReferences OwnerName=',CHElement.ElementOwnerName,' Name=',CHElement.ElementName]);
 
     // search FPDoc files
     AVLNode:=FPDocFilenames.Tree.FindLowest;
     while AVLNode<>nil do begin
       Item:=PStringToStringItem(AVLNode.Data);
       FPDocFilename:=Item^.Name;
-      ModuleName:=Item^.Value;
-      Result:=GatherFPDocReferences(CHElement.ElementModuleName,CHElement.ElementName,
-        ModuleName,FPDocFilename,TreeOfPCodeXYPosition);
+      Result:=GatherReferencesInFPDocFile(
+                CHElement.ElementOwnerName,CHElement.ElementUnitName,
+                CHElement.ElementName,
+                FPDocFilename,ListOfLazFPDocNode);
       if Result<>mrOk then exit;
       AVLNode:=FPDocFilenames.Tree.FindSuccessor(AVLNode);
     end;
@@ -326,19 +328,100 @@ begin
   finally
     PascalFilenames.Free;
     FPDocFilenames.Free;
-    if Result<>mrOk then
-      CodeToolBoss.FreeTreeOfPCodeXYPosition(TreeOfPCodeXYPosition);
+    if Result<>mrOk then begin
+      FreeListObjects(ListOfLazFPDocNode,true);
+      ListOfLazFPDocNode:=nil;
+    end;
   end;
 end;
 
-function GatherFPDocReferences(const ElementModuleName, ElementName,
-  FileModuleName, FPDocFilename: string; var TreeOfPCodeXYPosition: TAVLTree
+function GatherReferencesInFPDocFile(
+  const OldPackageName, OldModuleName, OldElementName: string;
+  const FPDocFilename: string;
+  var ListOfLazFPDocNode: TFPList
   ): TModalResult;
+var
+  DocFile: TLazFPDocFile;
+  IsSamePackage: Boolean;
+  IsSameModule: Boolean;// = same unit
+
+  procedure CheckLink(Node: TDOMNode; Link: string);
+  var
+    p: LongInt;
+    PackageName: String;
+  begin
+    if Link='' then exit;
+    if Link[1]='#' then begin
+      p:=System.Pos('.',Link);
+      if p<1 then exit;
+      PackageName:=copy(Link,2,p-2);
+      if SysUtils.CompareText(PackageName,OldPackageName)<>0 then exit;
+      Link:=copy(Link,p+1,length(Link));
+    end;
+    if (SysUtils.CompareText(Link,OldElementName)=0)
+    or (SysUtils.CompareText(Link,OldModuleName+'.'+OldElementName)=0) then
+    begin
+      DebugLn(['CheckLink Found: ',Link]);
+      if ListOfLazFPDocNode=nil then
+        ListOfLazFPDocNode:=TFPList.Create;
+      ListOfLazFPDocNode.Add(TLazFPDocNode.Create(DocFile,Node));
+    end;
+  end;
+
+  procedure SearchLinksInChildNodes(Node: TDomNode);
+  // search recursively for links
+  begin
+    Node:=Node.FirstChild;
+    while Node<>nil do begin
+      if (Node.NodeName='link')
+      and (Node is TDomElement) then begin
+        CheckLink(Node,TDomElement(Node).GetAttribute('id'));
+      end;
+      SearchLinksInChildNodes(Node);
+      Node:=Node.NextSibling;
+    end;
+  end;
+
+var
+  CHResult: TCodeHelpParseResult;
+  CacheWasUsed: boolean;
+  Node: TDOMNode;
 begin
   Result:=mrCancel;
-  DebugLn(['GatherFPDocReferences ElementModuleName=',ElementModuleName,
-    ' ElementName=',ElementName,' FPDocFilename=',FPDocFilename,
-    ' FileModuleName=',FileModuleName]);
+  DebugLn(['GatherFPDocReferences ',
+    ' OldPackageName=',OldPackageName,
+    ' OldModuleName=',OldModuleName,' OldElementName=',OldElementName,
+    ' FPDocFilename=',FPDocFilename]);
+
+  CHResult:=CodeHelpBoss.LoadFPDocFile(FPDocFilename,true,false,DocFile,
+                                       CacheWasUsed);
+  if CHResult<>chprSuccess then begin
+    DebugLn(['GatherReferencesInFPDocFile CodeHelpBoss.LoadFPDocFile failed File=',FPDocFilename]);
+    exit(mrCancel);
+  end;
+
+  // search in Doc nodes
+  IsSamePackage:=SysUtils.CompareText(DocFile.GetPackageName,OldPackageName)=0;
+  IsSameModule:=SysUtils.CompareText(DocFile.GetModuleName,OldModuleName)=0;
+  DebugLn(['GatherReferencesInFPDocFile ',DocFile.GetPackageName,'=',OldPackageName,' ',DocFile.GetModuleName,'=',OldModuleName]);
+  Node:=DocFile.GetFirstElement;
+  while Node<>nil do begin
+    if Node is TDomElement then begin
+      if (SysUtils.CompareText(TDomElement(Node).GetAttribute('name'),OldElementName)=0)
+      and IsSamePackage and IsSameModule
+      then begin
+        // this is the element itself
+        DebugLn(['GatherReferencesInFPDocFile Element itself found: ',Node.NodeName,' ',Node.NodeValue]);
+        if ListOfLazFPDocNode=nil then
+          ListOfLazFPDocNode:=TFPList.Create;
+        ListOfLazFPDocNode.Add(TLazFPDocNode.Create(DocFile,Node));
+      end;
+      CheckLink(Node,TDomElement(Node).GetAttribute('link'));
+      SearchLinksInChildNodes(Node);
+    end;
+    Node:=Node.NextSibling;
+  end;
+
   Result:=mrOk;
 end;
 

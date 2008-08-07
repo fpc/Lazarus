@@ -784,10 +784,10 @@ begin
           Element:=fChain[0];
           if (ExpandedLink='') then begin
             ExpandedLink:=CodeHelpBoss.ExpandFPDocLinkID(Link,
-                             Element.ElementUnitName,Element.ElementModuleName);
+                             Element.ElementUnitName,Element.ElementOwnerName);
           end;
           ExpandedID:=CodeHelpBoss.ExpandFPDocLinkID(ID,
-                             Element.ElementUnitName,Element.ElementModuleName);
+                             Element.ElementUnitName,Element.ElementOwnerName);
           if SysUtils.CompareText(ExpandedID,ExpandedLink)=0 then
             exit;
         end;
@@ -883,7 +883,7 @@ end;
 function TFPDocEditor.GetCurrentModuleName: string;
 begin
   if (fChain<>nil) and (fChain.Count>0) then
-    Result:=fChain[0].ElementModuleName
+    Result:=fChain[0].ElementOwnerName
   else
     Result:='';
 end;
@@ -1140,8 +1140,8 @@ begin
   Link:=Element.ElementName;
   if Element.ElementUnitName<>'' then begin
     Link:=Element.ElementUnitName+'.'+Link;
-    if Element.ElementModuleName<>'' then
-      Link:='#'+Element.ElementModuleName+'.'+Link;
+    if Element.ElementOwnerName<>'' then
+      Link:='#'+Element.ElementOwnerName+'.'+Link;
   end;
   if Link<>LinkEdit.Text then begin
     LinkEdit.Text:=Link;
