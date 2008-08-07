@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-07-02 03:43+0300\n"
+"PO-Revision-Date: 2008-08-07 02:57+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -361,9 +361,21 @@ msgstr "Ок&но"
 msgid "(Filter)"
 msgstr "(Фильтр)"
 
+#: lazarusidestrconsts:lisfilter2
+msgid "(filter)"
+msgstr "(фильтр)"
+
+#: lazarusidestrconsts:liscodehelpnoinheriteddescriptionfound
+msgid "(no inherited description found)"
+msgstr "(не найдено унаследованного описания)"
+
 #: lazarusidestrconsts:dlgbaknosubdirectory
 msgid "(no subdirectory)"
 msgstr "(нет подкаталога)"
+
+#: lazarusidestrconsts:liscodehelpnodocumentation
+msgid "(none)"
+msgstr "(нет)"
 
 #: lazarusidestrconsts:listmunknownmacro
 msgid "(unknown macro: %s)"
@@ -748,6 +760,14 @@ msgstr "Alt"
 #: lazarusidestrconsts:dlgaltsetclmode
 msgid "Alt-Key sets column mode"
 msgstr "Кнопка Alt - режим колонок"
+
+#: lazarusidestrconsts:lisalternativekey
+msgid "Alternative key"
+msgstr "Альтернативная клавиша"
+
+#: lazarusidestrconsts:lisalternativekeyor2keysequence
+msgid "Alternative key (or 2 key sequence)"
+msgstr "Альтернативная клавиша (или двухклавишная комбинация)"
 
 #: lazarusidestrconsts:srkmalternkey
 msgid "Alternative key (or 2 keys combination)"
@@ -1433,6 +1453,10 @@ msgstr "Выберите базовый класс для избранного �
 msgid "Choose a different name"
 msgstr "Выберите другое имя"
 
+#: lazarusidestrconsts:lischooseakey
+msgid "Choose a key ..."
+msgstr "Выберите клавишу ..."
+
 #: lazarusidestrconsts:dlgchscodetempl
 msgid "Choose code template file (*.dci)"
 msgstr "Выберите файл шаблонов кода (*.dci)"
@@ -1499,7 +1523,7 @@ msgstr "Класс %s%s%s не найден."
 
 #: lazarusidestrconsts:lisclassofmethodnotfound
 msgid "Class %s%s%s of method %s%s%s not found."
-msgstr ""
+msgstr "Класс %s%s%s метода %s%s%s не найден."
 
 #: lazarusidestrconsts:lisa2pclassnamealreadyexists
 msgid "Class Name already exists"
@@ -1561,6 +1585,10 @@ msgstr "Очистить+Собрать"
 msgid "Clear"
 msgstr "Clear"
 
+#: lazarusidestrconsts:liscleardirectory
+msgid "Clear Directory?"
+msgstr "Очистить каталог?"
+
 #: lazarusidestrconsts:lispckeditcleardependencydefaultfilename
 msgid "Clear dependency filename"
 msgstr "Очистить имя файла зависимости"
@@ -1604,6 +1632,10 @@ msgstr "Закрыть страницу"
 #: lazarusidestrconsts:liskmcloseproject
 msgid "Close project"
 msgstr "Закрыть проект"
+
+#: lazarusidestrconsts:srvk_cmd
+msgid "Cmd"
+msgstr "Cmd"
 
 #: lazarusidestrconsts:dlgcodegeneration
 msgid "Code"
@@ -2793,10 +2825,6 @@ msgstr "Стыковка"
 msgid "Documentation Editor"
 msgstr "Редактор документации"
 
-#: lazarusidestrconsts:liscodehelpnodocumentation
-msgid "Documentation entry does not exist"
-msgstr "Записи в документации не существует"
-
 #: lazarusidestrconsts:lissortseldomain
 msgid "Domain"
 msgstr "Домен"
@@ -2890,8 +2918,8 @@ msgid "Edit custom scanners (%s)"
 msgstr "Настройка пользовательских сканеров (%s)"
 
 #: lazarusidestrconsts:srkmeditforcmd
-msgid "Edit keys for command"
-msgstr "Править клавиши для команды"
+msgid "Edit keys of command"
+msgstr "Редактирование клавиш вызова команды"
 
 #: lazarusidestrconsts:lispvueditvirtualunit
 msgid "Edit virtual unit"
@@ -3181,6 +3209,10 @@ msgstr "Вычислить/Изменить..."
 msgid "Event Log"
 msgstr "Протокол событий"
 
+#: lazarusidestrconsts:liseverynthlinenumber
+msgid "Every n-th line number:"
+msgstr "Каждый n-ный номер строки:"
+
 #: lazarusidestrconsts:liscodehelpexampletag
 msgid "Example"
 msgstr "Пример"
@@ -3425,6 +3457,10 @@ msgstr "Файл уже существует"
 msgid "File already in package"
 msgstr "Файл уже в пакете"
 
+#: lazarusidestrconsts:lisfileextensionofprograms
+msgid "File extension of programs"
+msgstr "Расширение файла программы"
+
 #: lazarusidestrconsts:dlgfileexts
 msgid "File extensions"
 msgstr "Расширения файлов"
@@ -3608,6 +3644,10 @@ msgstr "Найти в файлах"
 #: lazarusidestrconsts:liskmfindincremental
 msgid "Find incremental"
 msgstr "Найти далее"
+
+#: lazarusidestrconsts:lisfindkeycombination
+msgid "Find key combination"
+msgstr "Найти комбинацию клавиш"
 
 #: lazarusidestrconsts:srkmecfindnext
 msgid "Find next"
@@ -4333,6 +4373,10 @@ msgstr "Список импорта"
 msgid "In front of methods"
 msgstr "Перед методами"
 
+#: lazarusidestrconsts:lisinordertocreateacleancopyoftheprojectpackageallfil
+msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
+msgstr "Для создания очищенной копии проекта/пакета все файлы в следующем каталоге будут удалены, и всё их содержимое будет утеряно.%s%sУдалить все файлы в %s%s%s?"
+
 #: lazarusidestrconsts:lispckoptsinclude
 msgid "Include"
 msgstr "Включаемый"
@@ -4905,6 +4949,10 @@ msgstr "Неправильное имя процедуры"
 msgid "Invalid project filename"
 msgstr "Неправильное имя файла проекта"
 
+#: lazarusidestrconsts:lisinvalidpublishingdirectory
+msgid "Invalid publishing Directory"
+msgstr "Неверный каталог публикации"
+
 #: lazarusidestrconsts:lisccoinvalidsearchpath
 msgid "Invalid search path"
 msgstr "Неверный путь поиска"
@@ -4928,6 +4976,10 @@ msgstr "Неправильное имя переменной"
 #: lazarusidestrconsts:lisprojaddinvalidversion
 msgid "Invalid version"
 msgstr "Неправильная версия"
+
+#: lazarusidestrconsts:dlgedinvert
+msgid "Invert"
+msgstr "Обратить"
 
 #: lazarusidestrconsts:ueminvertassignment
 msgid "Invert Assignment"
@@ -5040,6 +5092,10 @@ msgstr "Оставить их и продолжить"
 #: lazarusidestrconsts:lisedtexttoolkey
 msgid "Key"
 msgstr "Клавиша"
+
+#: lazarusidestrconsts:liskeyor2keysequence
+msgid "Key (or 2 key sequence)"
+msgstr "Клавиша (или двухклавишная комбинация)"
 
 #: lazarusidestrconsts:srkmkey
 msgid "Key (or 2 keys combination)"
@@ -5333,6 +5389,10 @@ msgstr "Умное связывание"
 msgid "Link Style:"
 msgstr "Стиль связывания"
 
+#: lazarusidestrconsts:lislink
+msgid "Link:"
+msgstr "Ссылка:"
+
 #: lazarusidestrconsts:lispckoptslinker
 msgid "Linker"
 msgstr "Компоновщик"
@@ -5521,9 +5581,13 @@ msgstr "Редактор меню"
 msgid "Messages"
 msgstr "Сообщения"
 
+#: lazarusidestrconsts:srvk_meta
+msgid "Meta"
+msgstr "Meta"
+
 #: lazarusidestrconsts:lismethodclassnotfound
 msgid "Method class not found"
-msgstr ""
+msgstr "Класс метода не найден"
 
 #: lazarusidestrconsts:dlgmethodinspolicy
 msgid "Method insert policy"
@@ -6097,6 +6161,10 @@ msgstr "Инспектор объектов"
 msgid "Object Inspector commands"
 msgstr "Команды инспектора объектов"
 
+#: lazarusidestrconsts:dlgedoff
+msgid "Off"
+msgstr "Выкл."
+
 #: lazarusidestrconsts:lisokbtn
 msgid "Ok"
 msgstr "ОК"
@@ -6108,6 +6176,10 @@ msgstr "Старые предки"
 #: lazarusidestrconsts:lisoldclass
 msgid "Old Class"
 msgstr "Старый класс"
+
+#: lazarusidestrconsts:dlgedon
+msgid "On"
+msgstr "Вкл."
 
 #: lazarusidestrconsts:lisbfonbuildprojectexecutethebuildfilecommandinstead
 msgid "On build project execute the Build File command instead"
@@ -8117,6 +8189,10 @@ msgstr "Краткое"
 msgid "Short description of"
 msgstr "Краткое описание"
 
+#: lazarusidestrconsts:lisshort
+msgid "Short:"
+msgstr "Краткое:"
+
 #: lazarusidestrconsts:lisa2pshortenorexpandfilename
 msgid "Shorten or expand filename"
 msgstr "Сократить или развернуть имя файла"
@@ -8453,6 +8529,10 @@ msgstr "Точка останова в исходном коде"
 msgid "Source directory %s%s%s does not exist."
 msgstr "Каталог исходного кода %s%s%s не существует."
 
+#: lazarusidestrconsts:lissourcedirectoryanddestinationdirectoryarethesamema
+msgid "Source directory %s%s%s%sand destination directory %s%s%s%sare the same.%s%sMaybe you misunderstand this feature.%sIt will clean/recreate the destination directory%sand copies the package/project into it."
+msgstr "Исходный каталог %s%s%s%sи каталог назначения %s%s%s%sсовпадают.%s%sВозможно, вы не поняли смысл функции.%sОна очистит/пересоздаст каталог назначения%sи скопирует в него пакет/проект."
+
 #: lazarusidestrconsts:lissourcemodified
 msgid "Source modified"
 msgstr "Исходный код изменён"
@@ -8628,6 +8708,10 @@ msgstr "Успешно"
 #: lazarusidestrconsts:lisinfobuildsuccess
 msgid "Success..."
 msgstr "Успешно..."
+
+#: lazarusidestrconsts:srvk_super
+msgid "Super"
+msgstr "Super"
 
 #: lazarusidestrconsts:lisa2pswitchpaths
 msgid "Switch Paths"
@@ -8987,7 +9071,7 @@ msgstr "Файл компилятора для пакета %s - недопус�
 
 #: lazarusidestrconsts:listhecomponentcannotbedeletedbecauseitisnotownedby
 msgid "The component %s can not be deleted, because it is not owned by %s."
-msgstr ""
+msgstr "Компонент %s не может быть удалён, так как %s им не владеет."
 
 #: lazarusidestrconsts:listhecomponentisinheritedfromtodeleteaninheritedcomp
 msgid "The component %s is inherited from %s.%sTo delete an inherited component open the ancestor and delete it there."
@@ -9168,6 +9252,10 @@ msgstr "Следующие модули не были найдены:%s%s%s%s1) 
 #: lazarusidestrconsts:lisrunparamsthehostapplicationisnotexecutable
 msgid "The host application %s%s%s is not executable."
 msgstr "Главное приложение %s%s%s - не исполняемый файл."
+
+#: lazarusidestrconsts:listhekeyisalreadyassignedtoremovetheoldassignmentand
+msgid "The key %s%sis already assigned to %s.%s%sRemove the old assignment and assign the key to the new function%s%s?"
+msgstr "Клавиша %s%sуже назначена для %s.%s%sУдалить старую ассоциацию и назначить клавишу для новой функции%s%s?"
 
 #: lazarusidestrconsts:listhelaunchingapplicationdoesnotexistsorisnotexecuta
 msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
@@ -11000,10 +11088,6 @@ msgstr "класс отсутствует"
 #: lazarusidestrconsts:liscconocfgfound
 msgid "no fpc.cfg found"
 msgstr "не найден fpc.cfg"
-
-#: lazarusidestrconsts:liscodehelpnoinheriteddescriptionfound
-msgid "no inherited description found"
-msgstr "не найдено унаследованного описания"
 
 #: lazarusidestrconsts:lisccononascii
 msgid "non ASCII"

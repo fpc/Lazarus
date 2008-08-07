@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-06-20 03:32+0300\n"
+"PO-Revision-Date: 2008-07-27 01:14+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -543,11 +543,11 @@ msgstr "Изображения"
 
 #: objinspstrconsts:oisincompatibleidentifier
 msgid "Incompatible Identifier"
-msgstr ""
+msgstr "Несовместимый идентификатор"
 
 #: objinspstrconsts:oisincompatiblemethod
 msgid "Incompatible Method"
-msgstr ""
+msgstr "Несовместимый метод"
 
 #: objinspstrconsts:oisinputmask
 msgid "Input Mask:"
@@ -967,15 +967,15 @@ msgstr "Элемент \"%s\" уже имеется. Всё равно доба�
 
 #: objinspstrconsts:oistheidentifierisnotamethodpresscanceltoundopressign
 msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr ""
+msgstr "Идентификатор %s%s%s не является методом.%sНажмите \"Отмена\" для отмены действия,%sнажмите \"Игнорировать\" для принудительного выполнения."
 
 #: objinspstrconsts:oisthemethodisincompatibletothiseventpresscanceltound
 msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
-msgstr ""
+msgstr "Метод %s%s%s несовместим с этим событием (%s).%sНажмите \"Отмена\" для отмены действия,%sнажмите \"Игнорировать\" для принудительного выполнения."
 
 #: objinspstrconsts:oisthemethodisnotpublishedpresscanceltoundopressignor
 msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr ""
+msgstr "Метод %s%s%s не опубликован.%sНажмите \"Отмена\" для отмены действия,%sнажмите \"Игнорировать\" для принудительного выполнения."
 
 #: objinspstrconsts:cactionlisteditorpaneltoolbar
 msgid "Toolbar"

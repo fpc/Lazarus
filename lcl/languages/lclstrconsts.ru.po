@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-07-02 03:33+0300\n"
+"PO-Revision-Date: 2008-08-07 02:12+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -51,7 +51,7 @@ msgstr "%s уже сопоставлено с %s"
 
 #: lclstrconsts:rspressoktoignoreandriskdatacorruptionpresscanceltok
 msgid "%s%sPress Ok to ignore and risk data corruption.%sPress Cancel to kill the program."
-msgstr "%s%Нажмите 'Ok' чтобы игнорировать и подвергнуться риску повреждения данных.%sНажмите 'Отмена' для закрытия программы."
+msgstr "%s%sНажмите 'Ok' чтобы игнорировать и подвергнуться риску повреждения данных.%sНажмите 'Отмена' для закрытия программы."
 
 #: lclstrconsts:rshelpalreadyregistered
 msgid "%s: Already registered"
@@ -464,6 +464,22 @@ msgstr "Home"
 #: lclstrconsts:rsicon
 msgid "Icon"
 msgstr "Значок"
+
+#: lclstrconsts:rsiconnocurrent
+msgid "Icon has no current image"
+msgstr "Значок не имеет текущего изображения"
+
+#: lclstrconsts:rsiconimageempty
+msgid "Icon image cannot be empty"
+msgstr "Изображение значка не может быть пустым"
+
+#: lclstrconsts:rsiconimageformat
+msgid "Icon image must have the same format"
+msgstr "Изображение значка должно иметь тот же формат"
+
+#: lclstrconsts:rsiconimagesize
+msgid "Icon image must have the same size"
+msgstr "Изображение значка должно иметь тот же размер"
 
 #: lclstrconsts:rsindexoutofrange
 msgid "Index Out of range Cell[Col=%d Row=%d]"
