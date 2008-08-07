@@ -1048,10 +1048,10 @@ begin
   // create node for procedure head
   CreateChildNode;
   CurNode.Desc:=ctnProcedureHead;
-  CurNode.SubDesc:=ctnsNeedJITParsing;
   ReadNextAtom;
   if (CurPos.Flag<>cafPoint) then begin
     // read rest
+    CurNode.SubDesc:=ctnsNeedJITParsing;
     ParseAttr:=[pphIsMethod];
     if IsFunction then Include(ParseAttr,pphIsFunction);
     ReadTilProcedureHeadEnd(ParseAttr,HasForwardModifier);
