@@ -1702,7 +1702,7 @@ end;
 function IsBackgroundColor(Color: TColor): boolean;
 begin
   Result := (Color = clForm) or
-            (Color = clInfoBk) or
+            //(Color = clInfoBk) or
             (Color = clBackground);
 end;
 
@@ -7292,38 +7292,6 @@ begin
     SysColorMap[COLOR_FORM] := TGDKColorToTColor(bg[GTK_STATE_NORMAL]);
     {$ENDIF}
   end;
-(*
-    $C0C0C0,     {COLOR_SCROLLBAR}
-    $808000,     {COLOR_BACKGROUND}
-    $800000,     {COLOR_ACTIVECAPTION}
-    $808080,     {COLOR_INACTIVECAPTION}
-    $C0C0C0,     {COLOR_MENU}
-    $FFFFFF,     {COLOR_WINDOW}
-    $000000,     {COLOR_WINDOWFRAME}
-    $000000,     {COLOR_MENUTEXT}
-    $000000,     {COLOR_WINDOWTEXT}
-    $FFFFFF,     {COLOR_CAPTIONTEXT}
-    $C0C0C0,     {COLOR_ACTIVEBORDER}
-    $C0C0C0,     {COLOR_INACTIVEBORDER}
-    $808080,     {COLOR_APPWORKSPACE}
-    $800000,     {COLOR_HIGHLIGHT}
-    $FFFFFF,     {COLOR_HIGHLIGHTTEXT}
-    $D0D0D0,     {COLOR_BTNFACE}
-    $808080,     {COLOR_BTNSHADOW}
-    $808080,     {COLOR_GRAYTEXT}
-    $000000,     {COLOR_BTNTEXT}
-    $C0C0C0,     {COLOR_INACTIVECAPTIONTEXT}
-    $F0F0F0,     {COLOR_BTNHIGHLIGHT}
-    $000000,     {COLOR_3DDKSHADOW}
-    $C0C0C0,     {COLOR_3DLIGHT}
-    $000000,     {COLOR_INFOTEXT}
-    $E1FFFF,     {COLOR_INFOBK}
-    $000000,     {unasigned}
-    $000000,     {COLOR_HOTLIGHT}
-    $000000,     {COLOR_GRADIENTACTIVECAPTION}
-    $000000      {COLOR_GRADIENTINACTIVECAPTION}
-  *)
-
 end;
 
 
@@ -7804,16 +7772,18 @@ begin
   l:=IndexOfStyleWithName(WName);
   //DebugLn(['GetStyleWithName START ',WName,' ',l]);
 
-  if l >= 0 then begin
+  if l >= 0 then
+  begin
     StyleObject:=PStyleObject(Styles.Objects[l]);
     Result := StyleObject^.Style;
-
-  end else begin
+  end else
+  begin
     // create a new style object
     StyleObject := NewStyleObject;
-    lgs:=lgsUserDefined;
-    Tp:=nil;
-    AddToStyleWindow:=true;
+    lgs := lgsUserDefined;
+    Tp := nil;
+    AddToStyleWindow := True;
+    WidgetName := 'LazStyle' + WName;
     // create a style widget
     If CompareText(WName,LazGtkStyleNames[lgsButton])=0 then begin
         StyleObject^.Widget := GTK_BUTTON_NEW;
@@ -7930,10 +7900,9 @@ begin
         lgs := lgsTooltip;
         AddToStyleWindow := false;
         TP := gtk_tooltips_new;
-        StyleObject^.Widget := nil;
         gtk_tooltips_force_window(TP);
-        gtk_widget_ensure_style(PGTKTooltips(TP)^.Tip_Window);
-        StyleObject^.Style:=gtk_widget_get_style(PGTKTooltips(TP)^.Tip_Window);
+        StyleObject^.Widget := PGTKTooltips(TP)^.Tip_Window;
+        WidgetName := 'gtk-tooltip-lcl';
       end
     else
       If CompareText(WName,LazGtkStyleNames[lgsHScale])=0 then begin
@@ -8053,7 +8022,6 @@ begin
         end;
       end;
 
-      WidgetName:='LazStyle'+WName;
       gtk_widget_set_name(StyleObject^.Widget,PChar(WidgetName));
       gtk_widget_ensure_style(StyleObject^.Widget);
       
@@ -8385,7 +8353,11 @@ begin
           if GC = nil then
           begin
             Result.Fill := GDK_Solid;
+            {$IFDEF Gtk1}
             Result.foreground := Style^.bg[GTK_STATE_PRELIGHT];
+            {$ELSE}
+            Result.foreground := Style^.bg[GTK_STATE_NORMAL];
+            {$ENDIF}
           end
           else
             GDK_GC_Get_Values(GC, @Result);
@@ -8792,19 +8764,21 @@ end;
 procedure StyleFillRectangle(drawable : PGDKDrawable; GC : PGDKGC;
   Color : TColorRef; x, y, width, height : gint);
 var
-  style : PGTKStyle;
-  widget : PGTKWidget;
-  state : TGTKStateType;
-  detail : pgchar;
+  style: PGTKStyle;
+  widget: PGTKWidget;
+  state: TGTKStateType;
+  shadow: TGtkShadowType;
+  detail: pgchar;
 begin
   style := nil;
-  
+  shadow := GTK_SHADOW_NONE;
+  state := GTK_STATE_NORMAL;
+
   case TColor(Color) of
    { clMenu:
       begin
         Style := GetStyle('menuitem');
         widget := GetStyleWidget('menuitem');
-        state := GTK_STATE_NORMAL;
         detail := 'menuitem';
       end;
 
@@ -8812,7 +8786,6 @@ begin
       begin
         Style := GetStyle('button');
         widget := GetStyleWidget('button');
-        state := GTK_STATE_NORMAL;
         detail := 'button';
       end;
 
@@ -8820,7 +8793,6 @@ begin
       begin
         Style := GetStyle('default');
         widget := GetStyleWidget('default');
-        state := GTK_STATE_NORMAL;
         detail := 'list';
       end;   }
 
@@ -8828,16 +8800,14 @@ begin
       begin
         Style := GetStyle(lgsWindow);
         widget := GetStyleWidget(lgsWindow);
-        state := GTK_STATE_NORMAL;
         detail := 'window';
       end;
 
     clInfoBk :
       begin
-        Style := GetStyle(lgsWindow);
-        widget := GetStyleWidget(lgsWindow);
- //       Style := GetStyle('tooltip');
-        state := GTK_STATE_NORMAL;
+        Style := GetStyle(lgsToolTip);
+        Widget := GetStyleWidget(lgsToolTip);
+        shadow := GTK_SHADOW_OUT;
         detail := 'tooltip';
       end;
 
@@ -8845,13 +8815,12 @@ begin
       begin
         Style := GetStyle(lgsWindow);
         widget := GetStyleWidget(lgsWindow);
-        state := GTK_STATE_NORMAL;
         detail := 'window';
       end;
   end;
 
   if Assigned(Style) then
-    gtk_paint_flat_box(style, drawable, state, GTK_SHADOW_NONE, nil, widget,
+    gtk_paint_flat_box(style, drawable, state, shadow, nil, widget,
                        detail, x, y, width, height)
   else
     gdk_draw_rectangle(drawable, GC, 1, x, y, width, height);
