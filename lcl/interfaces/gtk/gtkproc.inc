@@ -7907,6 +7907,9 @@ begin
         WidgetName := 'gtk-tooltip-lcl';
         StyleObject^.Obj := Tp;
         Tp := nil;
+        {$IFDEF GTK1}
+        AddToStyleWindow := False;
+        {$ENDIF}
       end
     else
       If CompareText(WName,LazGtkStyleNames[lgsHScale])=0 then begin
