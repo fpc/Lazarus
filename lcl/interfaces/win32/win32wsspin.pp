@@ -101,7 +101,7 @@ begin
     Windows.SetFocus(BuddyWindow);
     // don't select text in edit, if user clicked on the up down and the edit
     // was already focused
-    if WPARAM<>BuddyWindow then ;
+    if HWND(WPARAM)<>BuddyWindow then ;
       // for LCL controls this is done in win32callback.inc
       Windows.SendMessage(BuddyWindow, EM_SETSEL, 0, -1);
   end;
