@@ -7904,6 +7904,7 @@ begin
         Tp := gtk_tooltips_new;
         gtk_tooltips_force_window(Tp);
         StyleObject^.Widget := PGTKTooltips(Tp)^.Tip_Window;
+        gtk_widget_ref(StyleObject^.Widget);// MG: why is this needed?
         WidgetName := 'gtk-tooltip-lcl';
         StyleObject^.Obj := Tp;
         Tp := nil;
