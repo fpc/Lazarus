@@ -314,8 +314,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomButton.WSSetDefault;
 begin
+  // Default only tell us if button was set to Default in the design time.
+  // In run time Active actually shows us if this button is a default button
+  // (will be clicked on enter)
   if HandleAllocated then
-    TWSButtonClass(WidgetSetClass).SetDefault(Self, FDefault);
+    TWSButtonClass(WidgetSetClass).SetDefault(Self, FActive);
 end;
 
 
