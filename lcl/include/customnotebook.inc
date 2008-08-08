@@ -341,6 +341,11 @@ begin
   //debugln('TCustomNotebook.GetMinimumTabHeight A ',dbgs(Result));
 end;
 
+function TCustomNotebook.GetCapabilities: TNoteBookCapabilities;
+begin
+  Result:=TWSCustomNotebookClass(WidgetSetClass).GetCapabilities;
+end;
+
 {------------------------------------------------------------------------------
   method TCustomNotebook DoCloseTabClicked
   Params: APage: TCustomPage
@@ -414,6 +419,8 @@ begin
   FOptions:=AValue;
   if nboShowCloseButtons in ChangedOptions then
     UpdateTabProperties;
+  if nboMultiLine in ChangedOptions then
+    TWSCustomNotebookClass(WidgetSetClass).GetCapabilities;
 end;
 
 {------------------------------------------------------------------------------

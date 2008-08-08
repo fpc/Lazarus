@@ -131,6 +131,8 @@ type
 
   TNoteBookOption = (nboShowCloseButtons, nboMultiLine);
   TNoteBookOptions = set of TNoteBookOption;
+  TNoteBookCapability = (nbcShowCloseButtons, nbcMultiLine, nbcPageListPopup);
+  TNoteBookCapabilities = set of TNoteBookCapability;
 
   TCustomNotebook = class(TWinControl)
   private
@@ -204,6 +206,7 @@ type
     function CanChangePageIndex: boolean; virtual;
     function GetMinimumTabWidth: integer; virtual;
     function GetMinimumTabHeight: integer; virtual;
+    function GetCapabilities: TNoteBookCapabilities; virtual;
   public
     //property MultiLine: boolean read fMultiLine write SetMultiLine default false;
     procedure DoCloseTabClicked(APage: TCustomPage); virtual;

@@ -67,11 +67,13 @@ type
     class function GetNotebookMinTabWidth(const AWinControl: TWinControl): integer; virtual;
     class function GetPageRealIndex(const ANotebook: TCustomNotebook; AIndex: Integer): Integer; virtual;
     class function GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer; virtual;
+    class function GetCapabilities: TNoteBookCapabilities; virtual;
     class procedure SetImageList(const ANotebook: TCustomNotebook; const AImageList: TCustomImageList); virtual;
     class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); virtual;
     class procedure SetTabCaption(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const AText: string); virtual;
     class procedure SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition); virtual;
     class procedure ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean); virtual;
+    class procedure UpdateProperties(const ANotebook: TCustomNotebook); virtual;
   end;
   TWSCustomNotebookClass = class of TWSCustomNotebook;
 
@@ -262,6 +264,11 @@ begin
   Result := -1;
 end;
 
+class function TWSCustomNotebook.GetCapabilities: TNoteBookCapabilities;
+begin
+  Result:=[];
+end;
+
 class procedure TWSCustomNotebook.SetImageList(
   const ANotebook: TCustomNotebook; const AImageList: TCustomImageList);
 begin
@@ -285,6 +292,12 @@ end;
 class procedure TWSCustomNotebook.ShowTabs(const ANotebook: TCustomNotebook;
   AShowTabs: boolean);
 begin
+end;
+
+class procedure TWSCustomNotebook.UpdateProperties(
+  const ANotebook: TCustomNotebook);
+begin
+
 end;
 
 { TWSCustomTrayIcon }

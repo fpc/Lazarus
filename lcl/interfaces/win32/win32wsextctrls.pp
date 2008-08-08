@@ -76,11 +76,13 @@ type
 
     class function GetPageRealIndex(const ANotebook: TCustomNotebook; AIndex: Integer): Integer; override;
     class function GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer; override;
+    class function GetCapabilities: TNoteBookCapabilities;override;
     class function GetDesignInteractive(const AWinControl: TWinControl; AClientPos: TPoint): Boolean; override;
     class procedure SetImageList(const ANotebook: TCustomNotebook; const AImageList: TCustomImageList); override;
     class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); override;
     class procedure SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition); override;
     class procedure ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean); override;
+    class procedure UpdateProperties(const ANotebook: TCustomNotebook); override;
   end;
 
   { TWin32WSPage }
@@ -437,6 +439,8 @@ begin
       tpRight:
         Flags := Flags or (TCS_VERTICAL or TCS_RIGHT or TCS_MULTILINE);
     end;
+    if nboMultiLine in TCustomNotebook(AWinControl).Options then
+      Flags := Flags or TCS_MULTILINE;
     pClassName := WC_TABCONTROL;
   end;
   // create window
@@ -621,6 +625,11 @@ begin
   Result := Windows.SendMessage(ANotebook.Handle, TCM_HITTEST, 0, LPARAM(@hittestInfo));
 end;
 
+class function TWin32WSCustomNotebook.GetCapabilities: TNoteBookCapabilities;
+begin
+  Result:=[nbcMultiLine];
+end;
+
 class function TWin32WSCustomNotebook.GetDesignInteractive(
   const AWinControl: TWinControl; AClientPos: TPoint): Boolean;
 var
@@ -685,6 +694,17 @@ begin
   end else begin
     RemoveAllNBPages(ANotebook);
   end;
+end;
+
+class procedure TWin32WSCustomNotebook.UpdateProperties(
+  const ANotebook: TCustomNotebook);
+var currentStyle: cardinal;
+begin
+  currentStyle:=GetWindowLong(ANotebook.Handle,GWL_STYLE);
+  if nboMultiLine in ANotebook.Options then
+    SetWindowLong(ANotebook.Handle,GWL_STYLE,currentStyle or TCS_MULTILINE)
+   else
+    SetWindowLong(ANotebook.Handle,GWL_STYLE,currentStyle and not TCS_MULTILINE)
 end;
 
 { TWin32WSCustomPanel }

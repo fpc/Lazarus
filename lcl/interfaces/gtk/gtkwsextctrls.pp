@@ -69,6 +69,7 @@ type
     class procedure RemovePage(const ANotebook: TCustomNotebook; 
       const AIndex: integer); override;
     
+    class function GetCapabilities: TNoteBookCapabilities; override;
     class function GetNotebookMinTabHeight(const AWinControl: TWinControl): integer; override;
     class function GetNotebookMinTabWidth(const AWinControl: TWinControl): integer; override;
     class function GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer; override;
@@ -487,6 +488,11 @@ begin
   if not Page.HandleAllocated then exit;
   PageWidget := PGtkWidget(Page.Handle);
   gtk_widget_hide(PageWidget);
+end;
+
+class function TGtkWSCustomNotebook.GetCapabilities: TNoteBookCapabilities;
+begin
+  Result:=[nbcPageListPopup, nbcShowCloseButtons];
 end;
 
 class function TGtkWSCustomNotebook.GetNotebookMinTabHeight(
