@@ -255,6 +255,37 @@ begin
 end;
 
 procedure TTestRunner.DoRun;
+
+  procedure CheckTestRegistry (test:TTest; ATestName:string);
+  var s, c : string;
+      I, p : integer;
+  begin
+    if test is TTestSuite then
+      begin
+      p := pos ('.', ATestName);
+      if p > 0 then
+        begin
+        s := copy (ATestName, 1, p-1);
+        c := copy (ATestName, p+1, maxint);
+        end
+      else
+        begin
+        s := '';
+        c := ATestName;
+        end;
+      if comparetext(c, test.TestName) = 0 then
+        DoTestRun(test)
+      else if (CompareText( s, Test.TestName) = 0) or (s = '') then
+        for I := 0 to TTestSuite(test).Tests.Count - 1 do
+          CheckTestRegistry (TTest(TTestSuite(test).Tests[I]), c)
+      end
+    else // if test is TTestCase then
+      begin
+      if comparetext(test.TestName, ATestName) = 0 then
+        DoTestRun(test);
+      end;
+  end;
+
 var
   I: integer;
   S: string;
@@ -286,9 +317,8 @@ begin
       for I := 0 to GetTestRegistry.Tests.Count - 1 do
         writeln(GetTestRegistry[i].TestName)
     else
-      for I := 0 to GetTestRegistry.Tests.Count - 1 do
-        if GetTestRegistry[i].TestName = S then
-          DoTestRun(GetTestRegistry[i]);
+      for I := 0 to GetTestRegistry.Tests.count-1 do
+        CheckTestRegistry (GetTestregistry[I], S);
   end;
   Terminate;
 end;
