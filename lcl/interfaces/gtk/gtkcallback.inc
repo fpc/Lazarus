@@ -1522,7 +1522,7 @@ begin
     end;
   end else begin
     if (event^.Button=1)
-    or ((TControl(Data) is TCustomNoteBook) or (TControl(Data) is TCustomTabControl))
+    and ((TControl(Data) is TCustomNoteBook) or (TControl(Data) is TCustomTabControl))
     then begin
       // clicks on the notebook should be handled by the gtk (switching page)
       {DebugLn(['gtkMouseBtnPress notebook ',
