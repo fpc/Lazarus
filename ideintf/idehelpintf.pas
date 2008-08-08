@@ -23,7 +23,7 @@ unit IDEHelpIntf;
 interface
 
 uses
-  Classes, SysUtils, Controls, HelpIntfs, LazHelpIntf, TextTools;
+  Classes, SysUtils, LCLProc, Controls, HelpIntfs, LazHelpIntf, TextTools;
 
 type
   { THelpDBIRegExprMessage
@@ -95,6 +95,8 @@ type
     procedure SetBaseURL(const AValue: string); virtual;
     procedure SetControlIntf(const AValue: TIDEHTMLControlIntf); virtual;
   public
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
     function GetStream(const URL: string
       ): TStream; virtual; abstract; { provider assumes ownership of returned TStream
                                        and increases internal reference count.
@@ -149,6 +151,17 @@ procedure TAbstractIDEHTMLProvider.SetControlIntf(
 begin
   if FControlIntf=AValue then exit;
   FControlIntf:=AValue;
+end;
+
+constructor TAbstractIDEHTMLProvider.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+end;
+
+destructor TAbstractIDEHTMLProvider.Destroy;
+begin
+  FControlIntf:=nil; // decrease reference count
+  inherited Destroy;
 end;
 
 function TAbstractIDEHTMLProvider.BuildURL(const CurBaseURL, CurURL: string
