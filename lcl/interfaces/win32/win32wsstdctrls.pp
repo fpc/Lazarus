@@ -1169,17 +1169,19 @@ class function TWin32WSCustomMemo.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
+  ACustomMemo: TCustomMemo;
 begin
   // general initialization of Params
   PrepareCreateWindow(AWinControl, Params);
   // customization of Params
+  ACustomMemo := TCustomMemo(AWinControl);
   with Params do
   begin
     Flags := Flags or ES_AUTOVSCROLL or ES_MULTILINE or ES_WANTRETURN;
-    if TCustomMemo(AWinControl).ReadOnly then
+    if ACustomMemo.ReadOnly then
       Flags := Flags or ES_READONLY;
-    Flags := Flags or AlignmentMap[TCustomMemo(AWinControl).Alignment];
-    case TCustomMemo(AWinControl).ScrollBars of
+    Flags := Flags or AlignmentMap[ACustomMemo.Alignment];
+    case ACustomMemo.ScrollBars of
       ssHorizontal, ssAutoHorizontal:
         Flags := Flags or WS_HSCROLL;
       ssVertical, ssAutoVertical:
@@ -1187,11 +1189,12 @@ begin
       ssBoth, ssAutoBoth:
         Flags := Flags or WS_HSCROLL or WS_VSCROLL;
     end;
-    if TCustomMemo(AWinControl).WordWrap then
+    if ACustomMemo.WordWrap then
       Flags := Flags and not WS_HSCROLL
     else
       Flags := Flags or ES_AUTOHSCROLL;
-    FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
+    if ACustomMemo.BorderStyle=bsSingle then
+      FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
     pClassName := @EditClsName[0];
     WindowTitle := StrCaption;
   end;
@@ -1306,7 +1309,7 @@ begin
   Result :=
    AlignmentToStaticTextFlags[AAlignment] or
    BorderToStaticTextFlags[ABorder] or
-   AccelCharToStaticTextFlags[AShowAccelChar];
+   DWORD(AccelCharToStaticTextFlags[AShowAccelChar]);
 end;
 
 class function TWin32WSCustomStaticText.CreateHandle(const AWinControl: TWinControl;
