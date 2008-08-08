@@ -2586,8 +2586,8 @@ begin
   SetOption(dlgGroupUndo, eoGroupUndo);
   SetOption(dlgHomeKeyJumpsToNearestStart, eoEnhanceHomeKey);
   SetOption(dlgHalfPageScroll, eoHalfPageScroll);
-  SetOption(dlgKeepCaretX, eoKeepCaretX);
-  SetOption(dlgPersistentCaret, eoPersistentCaret);
+  SetOption(dlgKeepCursorX, eoKeepCaretX);
+  SetOption(dlgPersistentCursor, eoPersistentCaret);
   SetOption(dlgRightMouseMovesCursor, eoRightMouseMovesCursor);
   // not for Preview: SetOption('NoSelectionCheckBox',eoNoSelection);
   SetOption(dlgScrollByOneLess, eoScrollByOneLess);
@@ -2600,8 +2600,8 @@ begin
   SetOption(dlgTabIndent, eoTabIndent);
   SetOption(dlgTrimTrailingSpaces, eoTrimTrailingSpaces);
   
-  SetOption2(dlgCaretSkipsSelection, eoCaretSkipsSelection);
-  SetOption2(dlgAlwaysVisibleCaret, eoAlwaysVisibleCaret);
+  SetOption2(dlgCursorSkipsSelection, eoCaretSkipsSelection);
+  SetOption2(dlgAlwaysVisibleCursor, eoAlwaysVisibleCaret);
 
   for a := Low(PreviewEdits) to High(PreviewEdits) do
     if PreviewEdits[a] <> Nil then
@@ -3691,15 +3691,15 @@ begin
     Items.Add(dlgDropFiles);
     // caret + scrolling + key navigation
     Items.Add(dlgHalfPageScroll);
-    Items.Add(dlgKeepCaretX);
-    Items.Add(dlgPersistentCaret);
-    Items.Add(dlgCaretSkipsSelection);
+    Items.Add(dlgKeepCursorX);
+    Items.Add(dlgPersistentCursor);
+    Items.Add(dlgCursorSkipsSelection);
     Items.Add(dlgRightMouseMovesCursor);
     Items.Add(dlgScrollByOneLess);
     Items.Add(dlgScrollPastEndFile);
     Items.Add(dlgScrollPastEndLine);
     Items.Add(dlgHomeKeyJumpsToNearestStart);
-    Items.Add(dlgAlwaysVisibleCaret);
+    Items.Add(dlgAlwaysVisibleCursor);
     // tabs
     Items.Add(dlgSmartTabs);
     Items.Add(dlgTabsToSpaces);
@@ -3729,8 +3729,8 @@ begin
     Checked[Items.IndexOf(dlgGroupUndo)] := eoGroupUndo in EditorOpts.SynEditOptions;
     Checked[Items.IndexOf(dlgHalfPageScroll)] :=
                                   eoHalfPageScroll in EditorOpts.SynEditOptions;
-    Checked[Items.IndexOf(dlgKeepCaretX)]   := eoKeepCaretX in EditorOpts.SynEditOptions;
-    Checked[Items.IndexOf(dlgPersistentCaret)] :=
+    Checked[Items.IndexOf(dlgKeepCursorX)] := eoKeepCaretX in EditorOpts.SynEditOptions;
+    Checked[Items.IndexOf(dlgPersistentCursor)] :=
                                  eoPersistentCaret in EditorOpts.SynEditOptions;
     Checked[Items.IndexOf(dlgRightMouseMovesCursor)] :=
                            eoRightMouseMovesCursor in EditorOpts.SynEditOptions;
@@ -3763,9 +3763,9 @@ begin
                                           EditorOpts.CopyWordAtCursorOnCopyNone;
     Checked[Items.IndexOf(dlgHomeKeyJumpsToNearestStart)] :=
                                   eoEnhanceHomeKey in EditorOpts.SynEditOptions;
-    Checked[Items.IndexOf(dlgCaretSkipsSelection)] :=
+    Checked[Items.IndexOf(dlgCursorSkipsSelection)] :=
                             eoCaretSkipsSelection in EditorOpts.SynEditOptions2;
-    Checked[Items.IndexOf(dlgAlwaysVisibleCaret)] :=
+    Checked[Items.IndexOf(dlgAlwaysVisibleCursor)] :=
                              eoAlwaysVisibleCaret in EditorOpts.SynEditOptions2;
   end;
 
