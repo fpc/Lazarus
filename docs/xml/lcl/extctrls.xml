@@ -3247,7 +3247,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TImage.Anchors" link="#lclControls.TControl.Anchors">
+      <element name="TImage.Anchors" link="#lcl.Controls.TControl.Anchors">
         <short/>
         <descr/>
         <seealso>
@@ -3269,7 +3269,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TImage.Center" link="ExtCtrls.TCustomImage.Center">
+      <element name="TImage.Center" link="#lcl.ExtCtrls.TCustomImage.Center">
         <short/>
         <descr/>
         <seealso/>
@@ -3335,21 +3335,21 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TImage.Picture" link="ExtCtrls.TCustomImage.Picture"/>
+      <element name="TImage.Picture" link="#lcl.ExtCtrls.TCustomImage.Picture"/>
       <!-- property Visibility: published -->
-      <element name="TImage.Proportional" link="ExtCtrls.TCustomImage.Proportional">
+      <element name="TImage.Proportional" link="#lcl.ExtCtrls.TCustomImage.Proportional">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TImage.Stretch" link="ExtCtrls.TCustomImage.Stretch">
+      <element name="TImage.Stretch" link="#lcl.ExtCtrls.TCustomImage.Stretch">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TImage.Transparent" link="ExtCtrls.TCustomImage.Transparent">
+      <element name="TImage.Transparent" link="#lcl.ExtCtrls.TCustomImage.Transparent">
         <short/>
         <descr/>
         <seealso/>
