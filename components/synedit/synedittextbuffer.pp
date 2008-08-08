@@ -1127,7 +1127,7 @@ end;
 procedure TSynEditStringList.FixFolding(AStartIndex: integer; AMinEndIndex : Integer = 0);
 var
   Level, CoLevel: LongInt;
-  cnt, i: Integer;
+  cnt: Integer;
 begin
   cnt := Count;
   if (AStartIndex < 0) or (AStartIndex >= cnt) then exit;
