@@ -47,6 +47,39 @@ begin
   Result:='bmp';
 end;
 
+procedure TBitmap.LoadFromStream(AStream: TStream; ASize: Cardinal);
+var
+  TempStream: TMemoryStream;
+  Header: TBitmapFileHeader;
+begin
+  if AStream is TResourceStream then
+  begin
+    FillChar(Header, SizeOf(Header), 0);
+
+    Header.bfType := $4d42;
+    Header.bfSize := SizeOf(Header) + ASize;
+    Header.bfOffBits := SizeOf(Header);
+    {$IFDEF ENDIAN_BIG}
+    swap(Header.bfType);
+    swap(Header.bfSize);
+    swap(Header.bfOffBits);
+    {$ENDIF}
+
+    TempStream := TMemoryStream.Create;
+    try
+      TempStream.SetSize(Header.bfSize);
+      TempStream.Write(Header, SizeOf(Header));
+      TempStream.CopyFrom(AStream, ASize);
+      TempStream.Position := 0;
+      inherited LoadFromStream(TempStream, ASize);
+    finally
+      TempStream.Free;
+    end;
+  end
+  else
+    inherited LoadFromStream(AStream, ASize);
+end;
+
 class function TBitmap.GetReaderClass: TFPCustomImageReaderClass;
 begin
   Result := TLazReaderBMP;

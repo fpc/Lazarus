@@ -1179,8 +1179,8 @@ type
     function PaletteAllocated: boolean; virtual; abstract;
     procedure LoadFromBitmapHandles(ABitmap, AMask: HBitmap; ARect: PRect = nil);
     procedure LoadFromDevice(DC: HDC); virtual;
-    procedure LoadFromStream(AStream: TStream); override;
-    procedure LoadFromStream(AStream: TStream; ASize: Cardinal); virtual;
+    procedure LoadFromStream(AStream: TStream); overload; override;
+    procedure LoadFromStream(AStream: TStream; ASize: Cardinal); overload; virtual;
     procedure LoadFromMimeStream(AStream: TStream; const AMimeType: string); override;
     //todo LoadFromRawImage
     procedure LoadFromIntfImage(IntfImage: TLazIntfImage);
@@ -1330,6 +1330,7 @@ type
     class function GetSharedImageClass: TSharedRasterImageClass; override;
   public
     class function GetFileExtensions: string; override;
+    procedure LoadFromStream(AStream: TStream; ASize: Cardinal); override;
   end;
 
 
