@@ -102,9 +102,6 @@ ln -s ../share/lazarus/lazarus lazarus
 ln -s ../share/lazarus/startlazarus startlazarus
 ln -s ../share/lazarus/lazbuild lazbuild
 
-# copy license file, it must be a txt file.
-cp $LAZBUILDDIR/COPYING.GPL $BUILDDIR/License.txt
-
 # fill in packproj template.
 OLDIFS=$IFS
 IFS=.
