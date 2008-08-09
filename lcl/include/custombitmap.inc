@@ -45,6 +45,12 @@ begin
   FPixelFormat := pfDevice;
 end;
 
+destructor TCustomBitmap.Destroy;
+begin
+  FreeMaskHandle;
+  inherited Destroy;
+end;
+
 function TCustomBitmap.CreateDefaultBitmapHandle(const ADesc: TRawImageDescription): HBITMAP;
 var
   DC: HDC;
@@ -79,6 +85,14 @@ begin
       //AType := bmDDB;
     end;
   end;
+end;
+
+procedure TCustomBitmap.FreeMaskHandle;
+begin
+  if FMaskHandle = 0 then Exit;
+
+  DeleteObject(FMaskHandle);
+  FMaskHandle := 0;
 end;
 
 procedure TCustomBitmap.HandleNeeded;
@@ -353,8 +367,7 @@ begin
 
   if FMaskHandle <> AMask
   then begin
-    if FMaskHandle <> 0
-    then DeleteObject(FMaskHandle);
+    FreeMaskHandle;
     FMaskHandle := AMask;
     Result := True;
   end;

@@ -1252,7 +1252,8 @@ type
     procedure PaletteNeeded; override;
     function  CanShareImage(AClass: TSharedRasterImageClass): Boolean; override;
     procedure Changed(Sender: TObject); override;
-    function  CreateDefaultBitmapHandle(const ADesc: TRawImageDescription): HBITMAP; override;
+    function CreateDefaultBitmapHandle(const ADesc: TRawImageDescription): HBITMAP; override;
+    procedure FreeMaskHandle;
     function GetBitmapHandle: HBITMAP; override;
     function GetMaskHandle: HBITMAP; override;
     function GetPalette: HPALETTE; override;
@@ -1271,6 +1272,7 @@ type
     function  UpdateHandles(ABitmap, AMask: HBITMAP): Boolean; override;
   public
     constructor Create; override;
+    destructor Destroy; override;
 
     function GetResourceType: TResourceType; override;
     function LazarusResourceTypeValid(const ResourceType: string): Boolean; override;

@@ -636,14 +636,17 @@ begin
   {$IFDEF VerboseLCLTodos}{$note todo: move to IntfImage}{$ENDIF}
   IntfImage := TLazIntfImage.Create(0, 0);
   try
+    // force handle creation here, since at next step we will check for mask handle
+    ImgHandle := BitmapHandle;
     // load from bitmap needs a mask handle otherwise no mask description is
     // created.
     if MaskHandleAllocated
     then MskHandle := MaskHandle 
     else MskHandle := CreateBitmap(Width, Height, 1, 1, nil);
-    IntfImage.LoadFromBitmap(BitmapHandle, MskHandle);
+    IntfImage.LoadFromBitmap(ImgHandle, MskHandle);
     if not MaskHandleAllocated
     then DeleteObject(MskHandle);
+    ImgHandle := 0;
     
     stopx := IntfImage.Width - 1;
     stopy := IntfImage.Height - 1;
