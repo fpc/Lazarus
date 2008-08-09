@@ -635,10 +635,12 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.Insert(AIndex: Integer; AImage, AMask: TCustomBitmap);
 var
-  msk: THandle;
+  img, msk: THandle;
 begin
   if AImage = nil then Exit;
   
+  // Paul: dont optimize. We need to call HandleNeeded before checking of maskhandle
+  img := AImage.Handle;
   if AMask = nil
   then begin
     if AImage.MaskHandleAllocated
@@ -647,7 +649,7 @@ begin
   end
   else msk := AMask.Handle;
   
-  InternalInsert(AIndex, AImage.Handle, msk, AImage.Width, AImage.Height);
+  InternalInsert(AIndex, img, msk, AImage.Width, AImage.Height);
 end;
 
 {------------------------------------------------------------------------------

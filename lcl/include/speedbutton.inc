@@ -811,7 +811,7 @@ end;
   Returns:  nothing
 
  ------------------------------------------------------------------------------}
-procedure TCustomSpeedButton.SetTransparent(const AValue : boolean);
+procedure TCustomSpeedButton.SetTransparent(const AValue: boolean);
 const
   MODE: array[Boolean] of TGlyphTransparencyMode = (gtmOpaque, gtmTransparent);
 begin
@@ -857,7 +857,8 @@ procedure TCustomSpeedButton.Loaded;
 begin
   inherited Loaded;
   UpdateExclusive;
-  if FDownLoaded then SetDown(FDownLoaded);
+  if FDownLoaded then
+    SetDown(FDownLoaded);
 end;
 
 procedure TCustomSpeedButton.LoadGlyphFromLazarusResource(const AName: String);

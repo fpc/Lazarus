@@ -26,7 +26,7 @@ type
     procedure SetTransparent(AValue: Boolean); override;
   public
     procedure Assign(ASource: TPersistent); override;
-    constructor Create(AOwner: TButtonGlyph);
+    constructor Create(AOwner: TButtonGlyph); reintroduce;
   end;
 
 procedure TGlyphBitmap.Assign(ASource: TPersistent);

@@ -161,7 +161,7 @@ type
     class function GetControlClassDefaultSize: TPoint; override;
   public
     constructor Create(TheOwner: TComponent); override;
-    destructor Destroy; Override;
+    destructor Destroy; override;
     procedure Click; override;
   public
     property Glyph: TBitmap read GetGlyph write SetGlyph stored IsGlyphStored;
