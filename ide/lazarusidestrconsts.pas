@@ -1351,6 +1351,7 @@ resourcestring
   lisCCOInvalidSearchPath = 'Invalid search path';
   lisCCOSkip = 'Skip';
   dlgCCOTestCheckingCompiler = 'Test: Checking compiler ...';
+  lisDoesNotExists = '%s does not exists: %s';
   lisCCOInvalidCompiler = 'Invalid compiler';
   lisCCOCompilerNotAnExe = 'The compiler "%s" is not an executable file.%s'
     +'Details: %s';
@@ -1407,6 +1408,17 @@ resourcestring
   lisCCOPPUExistsTwice = 'ppu exists twice: %s, %s';
   dlgCCOTestSrcInPPUPaths = 'Test: Checking sources in fpc ppu search paths ...';
   lisCCOFPCUnitPathHasSource = 'FPC unit path contains a source: ';
+  lisTheOutputDirectoryOfIsListedInTheUnitSearchPathOf = 'The output '
+    +'directory of %s is listed in the unit search path of %s.';
+  lisTheOutputDirectoryShouldBeASeparateDirectoryAndNot = ' The output '
+    +'directory should be a separate directory and not contain any source '
+    +'files.';
+  lisTheOutputDirectoryOfIsListedInTheIncludeSearchPath = 'The output '
+    +'directory of %s is listed in the include search path of %s.';
+  lisTheOutputDirectoryOfIsListedInTheInheritedUnitSear = 'The output '
+    +'directory of %s is listed in the inherited unit search path of %s.';
+  lisTheOutputDirectoryOfIsListedInTheInheritedIncludeS = 'The output '
+    +'directory of %s is listed in the inherited include search path of %s.';
   lisCCOTestsSuccess = 'All tests succeeded.';
   lisCCOWarningMsg = 'WARNING: ';
   lisCCOHintMsg = 'HINT: ';

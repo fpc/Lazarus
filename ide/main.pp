@@ -1209,6 +1209,7 @@ begin
   Application.RemoveAllHandlersOfObject(Self);
   Screen.RemoveAllHandlersOfObject(Self);
   IDECommands.OnExecuteIDECommand:=nil;
+  TestCompilerOptions:=nil;
 
   // free project, if it is still there
   FreeThenNil(Project1);
@@ -1566,6 +1567,7 @@ begin
   StoreIDEFileDialog:=@OnStoreIDEFileDialog;
   IDEMessageDialog:=@OnIDEMessageDialog;
   IDEQuestionDialog:=@OnIDEQuestionDialog;
+  TestCompilerOptions:=@OnCompilerOptionsDialogTest;
 end;
 
 procedure TMainIDE.SetupComponentNoteBook;
@@ -3558,7 +3560,6 @@ begin
       ]);
     frmCompilerOptions.CompilerOpts:=Project1.CompilerOptions;
     frmCompilerOptions.GetCompilerOptions;
-    frmCompilerOptions.OnTest:=@OnCompilerOptionsDialogTest;
     frmCompilerOptions.OnImExportCompilerOptions:=@OnCompilerOptionsImExport;
     if frmCompilerOptions.ShowModal=mrOk then begin
       MainBuildBoss.RescanCompilerDefines(true,true);

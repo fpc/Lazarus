@@ -26,11 +26,14 @@ interface
 
 uses
   Classes, SysUtils, LCLProc,  LResources, Forms, Controls, Graphics, Dialogs,
-  Clipbrd, StdCtrls, Buttons, FileUtil, Process,
+  Clipbrd, StdCtrls, Buttons, FileUtil, Process, Menus, ExtCtrls,
+  // codetools
   KeywordFuncLists, CodeToolManager,
+  // IDEIntf
   MacroIntf, IDEExternToolIntf,
-  IDEProcs, EnvironmentOpts, LazarusIDEStrConsts,
-  CompilerOptions, ExtToolEditDlg, TransferMacros, LazConf, Menus, ExtCtrls;
+  // IDE
+  ExtToolEditDlg, IDEProcs, EnvironmentOpts, LazarusIDEStrConsts,
+  PackageDefs, CompilerOptions, TransferMacros, LazConf;
 
 type
   TCompilerOptionsTest = (
@@ -87,9 +90,10 @@ type
                                    SearchInPPUs: TStrings = nil): TModalResult;
     function CheckFPCUnitPathsContainSources(const FPCCfgUnitPath: string
                                               ): TModalResult;
+    function CheckOutputPathInSourcePaths(CurOptions: TCompilerOptions): TModalResult;
     function CheckCompileBogusFile(const CompilerFilename: string): TModalResult;
   public
-    function DoTest: TModalResult;
+    function DoTestAll: TModalResult;
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     function RunTool(ExtTool: TExternalToolOptions): TModalResult;
@@ -173,7 +177,7 @@ procedure TCheckCompilerOptsDlg.ApplicationOnIdle(Sender: TObject;
   var Done: Boolean);
 begin
   Application.RemoveOnIdleHandler(@ApplicationOnIdle);
-  DoTest;
+  DoTestAll;
 end;
 
 procedure TCheckCompilerOptsDlg.CopyOutputMenuItemClick(Sender: TObject);
@@ -243,7 +247,7 @@ begin
     if (CurPath<>'') and (not IDEMacros.StrHasMacros(CurPath))
     and (FilenameIsAbsolute(CurPath)) then begin
       if not DirPathExistsCached(CurPath) then begin
-        AddWarning(Title+' does not exists: '+CurPath);
+        AddWarning(Format(lisDoesNotExists, [Title, CurPath]));
       end;
     end;
   until p>length(ExpandedPath);
@@ -798,13 +802,52 @@ begin
   Result:=mrOk;
 end;
 
+function TCheckCompilerOptsDlg.CheckOutputPathInSourcePaths(
+  CurOptions: TCompilerOptions): TModalResult;
+var
+  OutputDir: String;
+  SrcPath: String;
+begin
+  OutputDir:=CurOptions.GetUnitOutPath(false);
+  if OutputDir='' then exit(mrOk);
+  // check unit search path
+  SrcPath:=CurOptions.GetParsedPath(pcosUnitPath,icoNone,false);
+  if SearchDirectoryInSearchPath(SrcPath,OutputDir)>0 then begin
+    AddWarning(Format(lisTheOutputDirectoryOfIsListedInTheUnitSearchPathOf, [
+      CurOptions.GetOwnerName, CurOptions.GetOwnerName])
+      +lisTheOutputDirectoryShouldBeASeparateDirectoryAndNot);
+  end;
+  // check include search path
+  SrcPath:=CurOptions.GetParsedPath(pcosIncludePath,icoNone,false);
+  if SearchDirectoryInSearchPath(SrcPath,OutputDir)>0 then begin
+    AddWarning(Format(lisTheOutputDirectoryOfIsListedInTheIncludeSearchPath, [
+      CurOptions.GetOwnerName, CurOptions.GetOwnerName])
+      +lisTheOutputDirectoryShouldBeASeparateDirectoryAndNot);
+  end;
+  // check inherited unit search path
+  SrcPath:=CurOptions.GetParsedPath(pcosNone,icoUnitPath,false);
+  if SearchDirectoryInSearchPath(SrcPath,OutputDir)>0 then begin
+    AddWarning(Format(lisTheOutputDirectoryOfIsListedInTheInheritedUnitSear, [
+      CurOptions.GetOwnerName, CurOptions.GetOwnerName])
+      +lisTheOutputDirectoryShouldBeASeparateDirectoryAndNot);
+  end;
+  // check inherited include search path
+  SrcPath:=CurOptions.GetParsedPath(pcosNone,icoIncludePath,false);
+  if SearchDirectoryInSearchPath(SrcPath,OutputDir)>0 then begin
+    AddWarning(Format(lisTheOutputDirectoryOfIsListedInTheInheritedIncludeS, [
+      CurOptions.GetOwnerName, CurOptions.GetOwnerName])
+      +lisTheOutputDirectoryShouldBeASeparateDirectoryAndNot);
+  end;
+  Result:=mrOk;
+end;
+
 procedure TCheckCompilerOptsDlg.SetMacroList(const AValue: TTransferMacroList);
 begin
   if FMacroList=AValue then exit;
   FMacroList:=AValue;
 end;
 
-function TCheckCompilerOptsDlg.DoTest: TModalResult;
+function TCheckCompilerOptsDlg.DoTestAll: TModalResult;
 var
   CompilerFilename: String;
   CompileTool: TExternalToolOptions;
@@ -869,9 +912,16 @@ begin
     Result:=CheckForAmbiguousPPUs(FPC_PPUs);
     if not (Result in [mrOk,mrIgnore]) then exit;
 
-    // check if FPC unit paths do not contain sources
+    // check if FPC unit paths contain sources
     Result:=CheckFPCUnitPathsContainSources(FPCCfgUnitPath);
     if not (Result in [mrOk,mrIgnore]) then exit;
+
+    DebugLn(['TCheckCompilerOptsDlg.DoTestAll ',dbgsName(Options)]);
+    if Options is TPkgCompilerOptions then begin
+      // check if package has no separate output directory
+      Result:=CheckOutputPathInSourcePaths(Options);
+      if not (Result in [mrOk,mrIgnore]) then exit;
+    end;
 
     // gather PPUs in project/package unit search paths
     TargetUnitPath:=Options.GetUnitPath(false);

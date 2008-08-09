@@ -642,6 +642,7 @@ end;
 
 function SearchDirectoryInSearchPath(const SearchPath, Directory: string;
   DirStartPos: integer): integer;
+// -1 on not found
 var
   PathLen: Integer;
   DirLen: Integer;

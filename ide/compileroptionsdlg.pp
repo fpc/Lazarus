@@ -247,7 +247,6 @@ type
                              Level: TCheckCompileOptionsMsgLvl): boolean;
   private
     FOnImExportCompilerOptions: TNotifyEvent;
-    FOnTest: TNotifyEvent;
     FReadOnly: boolean;
     ImageIndexPackage: integer;
     ImageIndexRequired: integer;
@@ -270,10 +269,12 @@ type
                             DestCompilerOptions: TBaseCompilerOptions): boolean;
   public
     property ReadOnly: boolean read FReadOnly write SetReadOnly;
-    property OnTest: TNotifyEvent read FOnTest write FOnTest;
     property OnImExportCompilerOptions: TNotifyEvent
                read FOnImExportCompilerOptions write FOnImExportCompilerOptions;
   end;
+
+var
+  TestCompilerOptions: TNotifyEvent = nil;
 
 implementation
 
@@ -361,10 +362,10 @@ procedure TfrmCompilerOptions.btnTestClicked(Sender: TObject);
 begin
   // Apply any changes and test
   if not PutCompilerOptions(ccomlHints) then exit;
-  if Assigned(OnTest) then begin
+  if Assigned(TestCompilerOptions) then begin
     btnCheck.Enabled:=false;
     try
-      OnTest(CompilerOpts);
+      TestCompilerOptions(CompilerOpts);
     finally
       btnCheck.Enabled:=true;
     end;
