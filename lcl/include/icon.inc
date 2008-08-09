@@ -805,7 +805,6 @@ var
   NewIcon, OldIcon: TSharedIcon;
   n: Integer;
   OldImage, NewImage: TIconImage;
-//  OldBitmap: TSharedCustomBitmap;
   OldSharedImage: TSharedImage;
 begin
   if FSharedImage.RefCount <= 1 then Exit;
@@ -815,68 +814,32 @@ begin
     NewIcon.Reference;
     if CopyContent
     then begin
-      // in theory we should have a compatible shared image
-      // if not, something internal is wrong
-      (*
-      if FSharedImage is TSharedIcon then
+      OldIcon := FSharedImage as TSharedIcon;
+      for n := 0 to OldIcon.FImages.Count -1 do
       begin
-      *)
-        OldIcon := FSharedImage as TSharedIcon;
-        for n := 0 to OldIcon.FImages.Count -1 do
-        begin
-          OldImage := TIconImage(OldIcon.FImages[n]);
-          NewImage := TIconImage.Create(OldImage.PixelFormat, OldImage.Height, OldImage.Width);
-          NewIcon.FImages.Add(NewImage);
-          NewImage.FImage.Description := OldImage.FImage.Description;
-          NewImage.FImage.DataSize := OldImage.FImage.DataSize;
-          if NewImage.FImage.DataSize > 0
-          then begin
-            NewImage.FImage.Data := GetMem(NewImage.FImage.DataSize);
-            Move(OldImage.FImage.Data^, NewImage.FImage.Data^, NewImage.FImage.DataSize);
-          end;
-          NewImage.FImage.MaskSize := OldImage.FImage.MaskSize;
-          if NewImage.FImage.MaskSize > 0
-          then begin
-            NewImage.FImage.Mask := GetMem(NewImage.FImage.MaskSize);
-            Move(OldImage.FImage.Mask^, NewImage.FImage.Mask^, NewImage.FImage.MaskSize);
-          end;
-          NewImage.FImage.PaletteSize := OldImage.FImage.PaletteSize;
-          if NewImage.FImage.PaletteSize > 0
-          then begin
-            NewImage.FImage.Palette := GetMem(NewImage.FImage.PaletteSize);
-            Move(OldImage.FImage.Palette^, NewImage.FImage.Palette^, NewImage.FImage.PaletteSize);
-          end;
-        end;
-(*
-      end
-      else
-      if FSharedImage is TSharedCustomBitmap then
-      begin
-        OldBitmap := FSharedImage as TSharedCustomBitmap;
-        NewImage := TIconImage.Create(OldBitmap.PixelFormat, OldBitmap.Height, OldBitmap.Width);
+        OldImage := TIconImage(OldIcon.FImages[n]);
+        NewImage := TIconImage.Create(OldImage.PixelFormat, OldImage.Height, OldImage.Width);
         NewIcon.FImages.Add(NewImage);
-        NewImage.FImage.Description := OldBitmap.FImage.Description;
-        NewImage.FImage.DataSize := OldBitmap.FImage.DataSize;
+        NewImage.FImage.Description := OldImage.FImage.Description;
+        NewImage.FImage.DataSize := OldImage.FImage.DataSize;
         if NewImage.FImage.DataSize > 0
         then begin
           NewImage.FImage.Data := GetMem(NewImage.FImage.DataSize);
-          Move(OldBitmap.FImage.Data^, NewImage.FImage.Data^, NewImage.FImage.DataSize);
+          Move(OldImage.FImage.Data^, NewImage.FImage.Data^, NewImage.FImage.DataSize);
         end;
-        NewImage.FImage.MaskSize := OldBitmap.FImage.MaskSize;
+        NewImage.FImage.MaskSize := OldImage.FImage.MaskSize;
         if NewImage.FImage.MaskSize > 0
         then begin
           NewImage.FImage.Mask := GetMem(NewImage.FImage.MaskSize);
-          Move(OldBitmap.FImage.Mask^, NewImage.FImage.Mask^, NewImage.FImage.MaskSize);
+          Move(OldImage.FImage.Mask^, NewImage.FImage.Mask^, NewImage.FImage.MaskSize);
         end;
-        NewImage.FImage.PaletteSize := OldBitmap.FImage.PaletteSize;
+        NewImage.FImage.PaletteSize := OldImage.FImage.PaletteSize;
         if NewImage.FImage.PaletteSize > 0
         then begin
           NewImage.FImage.Palette := GetMem(NewImage.FImage.PaletteSize);
-          Move(OldBitmap.FImage.Palette^, NewImage.FImage.Palette^, NewImage.FImage.PaletteSize);
+          Move(OldImage.FImage.Palette^, NewImage.FImage.Palette^, NewImage.FImage.PaletteSize);
         end;
-        NewImage.FImage.Description.MaskBitsPerPixel := 1;
       end;
-*)
     end;
     FreeCanvasContext;
     OldSharedImage := FSharedImage;

@@ -159,7 +159,7 @@ var
   var
     ScrollInfo: Windows.tagScrollInfo;
     WParam: Windows.WParam;
-    ScrollMsg, ScrollBar, WheelScrollLines: dword;
+    ScrollMsg, ScrollBar: dword;
     ScrollOffset: integer;
   begin
     if not TWinControl(Sender).HandleAllocated then
