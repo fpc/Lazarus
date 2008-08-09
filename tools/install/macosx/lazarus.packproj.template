@@ -28,7 +28,7 @@
 							<key>Mode</key>
 							<integer>1</integer>
 							<key>Path</key>
-							<string>COPYING.GPL.txt</string>
+							<string>lazarus/COPYING.GPL.txt</string>
 							<key>Path Type</key>
 							<integer>2</integer>
 						</dict>
