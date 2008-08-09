@@ -54,6 +54,9 @@ ARCH=`rpm --eval "%{_arch}"`
 # create a temporary copy of the fpc sources to patch it
 TmpDir=/tmp/`whoami`/fpc
 rm -rf $TmpDir
+if [ ! -d /tmp/`whoami` ]; then
+  mkdir -p /tmp/`whoami`
+fi
 
 echo "extracting FPC from local svn ..."
 svn export $FPCSrcDir $TmpDir
