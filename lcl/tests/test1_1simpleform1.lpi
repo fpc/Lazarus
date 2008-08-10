@@ -2,7 +2,7 @@
 <CONFIG>
   <ProjectOptions>
     <PathDelim Value="/"/>
-    <Version Value="5"/>
+    <Version Value="6"/>
     <General>
       <Flags>
         <SaveClosedFiles Value="False"/>
@@ -40,9 +40,6 @@
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
-    <SearchPaths>
-      <LCLWidgetType Value="gtk2"/>
-    </SearchPaths>
     <CodeGeneration>
       <Checks>
         <IOChecks Value="True"/>

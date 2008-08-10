@@ -384,14 +384,14 @@ const
       optionKey  : VKKeyCode := VK_MENU;    //option is alt
       cmdKey     : VKKeyCode := VK_LWIN;    //meta... map to left Windows Key?
       else begin
-        debugln(['EmulateModifiersDownUp TODO: more than one modifier changed ',diff]);
+        debugln(['CarbonWindow_KeyboardProc.EmulateModifiersDownUp TODO: more than one modifier changed ',diff]);
         exit; //Error! More that one bit changed in the modifiers?
       end;
     end;
     Result:=true;
     
     {$IFDEF VerboseKeyboard}
-      DebugLn('[EmulateModifiersDownUp] VK =', DbgsVKCode(VKKeyCode));
+      DebugLn('[CarbonWindow_KeyboardProc.EmulateModifiersDownUp] VK =', DbgsVKCode(VKKeyCode));
     {$ENDIF}
   end;
 
@@ -417,6 +417,7 @@ const
       TextLen : UInt32;
       CharLen : integer;
       buf : array[1..6] of Char; //isn't 4 bytes enough?
+      widebuf: array[1..2] of widechar;
       U: Cardinal;
       Layout: UCKeyboardLayoutPtr;
       KeyboardLayout: KeyboardLayoutRef;
@@ -469,23 +470,25 @@ const
     begin
       //stop here, we won't send char or UTF8KeyPress
       {$IFDEF VerboseKeyboard}
-       DebugLn('[TranslateMacKeyCode] VK = ', DbgsVKCode(VKKeyCode));
+       DebugLn('[TranslateMacKeyCode] non printable VK = ', DbgsVKCode(VKKeyCode));
       {$ENDIF}
       Result:=true;
       exit;
     end;
 
-    // untranslated key (key without modifiers)
+    // get untranslated key (key without modifiers)
     OSError(KLGetCurrentKeyboardLayout(KeyboardLayout), SName, 'KLGetCurrentKeyboardLayout');
     OSError(KLGetKeyboardLayoutProperty(KeyboardLayout, kKLuchrData, Layout), SName, 'KLGetKeyboardLayoutProperty');
     TextLen:=0;
+    DeadKeys:=0;
     OSError(UCKeyTranslate(Layout^, KeyCode, kUCKeyActionDisplay,
           0, LMGetKbdType,
-          kUCKeyTranslateNoDeadKeysMask, DeadKeys, 6, TextLen, @Buf[1]), SName, 'UCKeyTranslate');
+          kUCKeyTranslateNoDeadKeysMask, DeadKeys, 6, TextLen, @WideBuf[1]), SName, 'UCKeyTranslate');
     UTF8VKCharacter:='';
     VKKeyChar:=#0;
+    CharLen:=0;
     if TextLen>0 then begin
-      u:=UTF16CharacterToUnicode(PWideChar(@Buf[1]),CharLen);
+      u:=UTF16CharacterToUnicode(@WideBuf[1],CharLen);
       if CharLen>0 then begin
         UTF8VKCharacter:=UnicodeToUTF8(u);
         if (UTF8VKCharacter<>'') and (ord(Utf8VKCharacter[1])<=127) then //It's (true) ascii.
@@ -497,7 +500,9 @@ const
             'kEventParamKeyMacCharCodes');
       end;
     end;
-
+    {$IFDEF VerboseKeyboard}
+    debugln(['TranslateMacKeyCode TextLen=',TextLen,' CharLen=',CharLen,' UTF8VKCharacter=',UTF8VKCharacter,' VKKeyChar=',VKKeyChar]);
+    {$ENDIF}
 
     //printable keys
     //for these keys, send char or UTF8KeyPress
@@ -508,21 +513,24 @@ const
       DeadKeys := 0;
       OSError(UCKeyTranslate(Layout^, KeyCode, kUCKeyActionDisplay,
           (GetCurrentEventKeyModifiers and not cmdkey) shr 8, LMGetKbdType,
-          kUCKeyTranslateNoDeadKeysMask, DeadKeys, 6, TextLen, @Buf[1]), SName, 'UCKeyTranslate');
+          kUCKeyTranslateNoDeadKeysMask, DeadKeys, 6, TextLen, @WideBuf[1]), SName, 'UCKeyTranslate');
+      {$IFDEF VerboseKeyboard}
+      debugln(['TranslateMacKeyCode IsSysKey: TextLen=',TextLen,' CharLen=',CharLen,' UTF8VKCharacter=',UTF8VKCharacter]);
+      {$ENDIF}
     end;
       
     if TextLen = 0 then
     begin
       if OSError(
         GetEventParameter(AEvent, kEventParamKeyUnicodes, typeUnicodeText, nil,
-          6, @TextLen, @Buf[1]), SName, AGetEvent, 'kEventParamKeyUnicodes') then Exit;
+          6, @TextLen, @WideBuf[1]), SName, AGetEvent, 'kEventParamKeyUnicodes') then Exit;
     end;
 
     if TextLen>0 then
     begin
       SendChar:=true;
 
-      u:=UTF16CharacterToUnicode(PWideChar(@Buf[1]),CharLen);
+      u:=UTF16CharacterToUnicode(@WideBuf[1],CharLen);
       if CharLen=0 then exit;
       UTF8Character:=UnicodeToUTF8(u);
 
@@ -533,6 +541,10 @@ const
           GetEventParameter(AEvent, kEventParamKeyMacCharCodes, typeChar, nil,
             Sizeof(KeyChar), nil, @KeyChar), SName, AGetEvent,
           'kEventParamKeyMacCharCodes') then Exit;
+
+      {$IFDEF VerboseKeyboard}
+      debugln(['TranslateMacKeyCode printable key: TextLen=',TextLen,' UTF8Character=',UTF8Character,' KeyChar=',KeyChar,' VKKeyChar=',VKKeyChar]);
+      {$ENDIF}
 
       // the VKKeyCode is independent of the modifier
       // => use the VKKeyChar instead of the KeyChar
@@ -573,17 +585,19 @@ const
         end;
       end;
 
-      // There is no known VK_ code for this characther. Use a dummy keycode
-      // (E8, which is unused by Windows) so that KeyUp/KeyDown events will be
-      // triggered by LCL.
-      // Note: we can't use the raw mac keycode, since it could collide with
-      // well known VK_ keycodes (e.g on my italian ADB keyboard, keycode for
-      // "&egrave;" is 33, which is the same as VK_PRIOR)
-      if VKKeyCode=VK_UNKNOWN then VKKeyCode:=$E8;
+      if VKKeyCode=VK_UNKNOWN then begin
+        // There is no known VK_ code for this characther. Use a dummy keycode
+        // (E8, which is unused by Windows) so that KeyUp/KeyDown events will be
+        // triggered by LCL.
+        // Note: we can't use the raw mac keycode, since it could collide with
+        // well known VK_ keycodes (e.g on my italian ADB keyboard, keycode for
+        // "&egrave;" is 33, which is the same as VK_PRIOR)
+        VKKeyCode:=$E8;
+      end;
 
       {$IFDEF VerboseKeyboard}
-       DebugLn('[TranslateMacKeyCode] VK=', DbgsVKCode(VKKeyCode), ' Utf8="',
-         UTF8Character, '" VKKeyChar="', VKKeyChar, '" KeyChar="',KeyCHar,'"' );
+      DebugLn('[TranslateMacKeyCode] VKKeyCode=', DbgsVKCode(VKKeyCode), ' Utf8="',
+         UTF8Character, '" VKKeyChar="', VKKeyChar, '" KeyChar="',KeyChar,'"' );
       {$ENDIF}
 
       Result := True;

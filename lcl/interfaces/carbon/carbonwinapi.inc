@@ -1331,9 +1331,7 @@ const
 begin
   Result := 0;
 
-  {$IFDEF VerboseKeyboard}
-    DebugLn('TCarbonWidgetSet.GetKeyState ' + DbgSVKCode(nVirtKey));
-  {$ENDIF}
+  // DebugLn('TCarbonWidgetSet.GetKeyState ' + DbgSVKCode(nVirtKey));
 
   case nVirtKey of
   VK_MENU:
@@ -1366,9 +1364,7 @@ begin
     DebugLn('TCarbonWidgetSet.GetKeyState TODO ', DbgSVKCode(Word(nVirtkey)));
   end;
   
-  {$IFDEF VerboseKeyboard}
-    DebugLn('TCarbonWidgetSet.GetKeyState Result: ' + DbgS(Result));
-  {$ENDIF}
+  // DebugLn('TCarbonWidgetSet.GetKeyState Result: ' + DbgS(Result));
 end;
 
 {------------------------------------------------------------------------------
