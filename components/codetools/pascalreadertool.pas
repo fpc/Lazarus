@@ -969,6 +969,12 @@ begin
     ExtractNextAtom(phpWithResultType in Attr,Attr);
     if not AtomIsIdentifier(false) then exit;
     ExtractNextAtom(phpWithResultType in Attr,Attr);
+    if CurPos.Flag=cafPoint then begin
+      // unit.type
+      ExtractNextAtom(phpWithResultType in Attr,Attr);
+      if not AtomIsIdentifier(false) then exit;
+      ExtractNextAtom(phpWithResultType in Attr,Attr);
+    end;
     ExtractProcHeadPos:=phepResultType;
   end;
 

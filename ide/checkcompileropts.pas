@@ -916,7 +916,6 @@ begin
     Result:=CheckFPCUnitPathsContainSources(FPCCfgUnitPath);
     if not (Result in [mrOk,mrIgnore]) then exit;
 
-    DebugLn(['TCheckCompilerOptsDlg.DoTestAll ',dbgsName(Options)]);
     if Options is TPkgCompilerOptions then begin
       // check if package has no separate output directory
       Result:=CheckOutputPathInSourcePaths(Options);
