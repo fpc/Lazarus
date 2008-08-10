@@ -2540,7 +2540,8 @@ begin
       exit(4)
     else
       exit(0);
-  end;
+  end else
+    exit(0);
 end;
 
 function UTF8CStringToUTF8String(SourceStart: PChar; SourceLen: SizeInt) : string;
