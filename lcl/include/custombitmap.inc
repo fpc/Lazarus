@@ -290,9 +290,9 @@ begin
 
   SCB.FImage.FreeData;
   SCB.FImage := NewRawImage;
-  // size was changed => update HBITMAP and HDC
-  SCB.FreeHandle;
+  // size was changed => update HDC and HBITMAP
   FreeCanvasContext;
+  SCB.FreeHandle;
   Changed(Self);
 end;
 
