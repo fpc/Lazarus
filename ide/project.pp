@@ -3888,6 +3888,8 @@ procedure TProject.FindUnitsUsingSubComponent(SubComponent: TComponent;
     CurCount: Word;
     ReferenceComponent: TComponent;
   begin
+    if csDestroying in AComponent.ComponentState then exit;
+
     // read all properties and remove doubles
     TypeInfo:=PTypeInfo(AComponent.ClassInfo);
     repeat
@@ -3933,6 +3935,7 @@ begin
     OwnerComponent:=nil;
   AnUnitInfo:=FirstUnitWithComponent;
   while AnUnitInfo<>nil do begin
+    if csDestroying in AnUnitInfo.Component.ComponentState then continue;
     if AnUnitInfo.Component<>OwnerComponent then begin
       Search(AnUnitInfo,AnUnitInfo.Component);
       for i:=AnUnitInfo.Component.ComponentCount-1 downto 0 do

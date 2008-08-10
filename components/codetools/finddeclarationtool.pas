@@ -3179,6 +3179,14 @@ begin
           ReadNextAtom;
           AtomIsIdentifier(true);
           OldPos:=CurPos.StartPos;
+          ReadNextAtom;
+          if CurPos.Flag=cafPoint then begin
+            // unit.type
+            ReadNextAtom;
+            AtomIsIdentifier(true);
+            OldPos:=CurPos.StartPos;
+            ReadNextAtom;
+          end;
           // property has type
           Params.Save(OldInput);
           Params.SetIdentifier(Self,@Src[CurPos.StartPos],nil);
