@@ -3361,6 +3361,15 @@ begin
 end;
 
 procedure TCustomGrid.WMHScroll(var message: TLMHScroll);
+
+  function NextColWidth(aCol: Integer; Delta: Integer): integer;
+  begin
+    repeat
+      result := GetColWidths(aCol);
+      aCol := aCol + Delta;
+    until (Result<>0) or (aCol>=ColCount) or (aCol<0);
+  end;
+
 var
   C,TL,CTL: Integer;
   R: TRect;
@@ -3383,8 +3392,8 @@ begin
     SB_TOP:        C := 0;
     SB_BOTTOM:     C := TL;
       // Scrolls one line left / right
-    SB_LINERIGHT:  C := CTL + GetColWidths( FTopLeft.X );
-    SB_LINELEFT:   C := CTL - GetColWidths( FTopLeft.X - 1);
+    SB_LINERIGHT:  C := CTL + NextColWidth( FTopLeft.X, 1);
+    SB_LINELEFT:   C := CTL - NextColWidth( FTopLeft.X - 1, -1);
       // Scrolls one page of lines up / down
     SB_PAGERIGHT:  C := CTL + FGCache.ClientWidth;
     SB_PAGELEFT:   C := CTL - FGCache.ClientWidth;
@@ -3448,6 +3457,15 @@ begin
 end;
 
 procedure TCustomGrid.WMVScroll(var message: TLMVScroll);
+
+  function NextRowHeight(aRow: Integer; Delta: Integer): integer;
+  begin
+    repeat
+      result := GetRowHeights(aRow);
+      aRow := aRow + Delta;
+    until (Result<>0) or (aRow>=RowCount) or (aRow<0);
+  end;
+
 var
   C, TL, CTL: Integer;
   R: TRect;
@@ -3469,8 +3487,8 @@ begin
     SB_TOP:        C := 0;
     SB_BOTTOM:     C := TL;
       // Scrolls one line up / down
-    SB_LINEDOWN:   C := CTL + GetRowHeights( FTopleft.Y );
-    SB_LINEUP:     C := CTL - GetRowHeights( FTopleft.Y - 1 );
+    SB_LINEDOWN:   C := CTL + NextRowHeight(FTopleft.Y, 1);
+    SB_LINEUP:     C := CTL - NextRowHeight(FTopleft.Y-1, -1);
       // Scrolls one page of lines up / down
     SB_PAGEDOWN:   C := CTL + FGCache.ClientHeight;
     SB_PAGEUP:     C := CTL - FGCache.ClientHeight;
@@ -5216,33 +5234,33 @@ end;
 function TCustomGrid.DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint
   ): Boolean;
 begin
-  {$ifdef dbgGrid}DebugLn('doMouseWheelDown INIT');{$endif}
+  {$ifdef dbgScroll}DebugLn('doMouseWheelDown INIT');{$endif}
   Result:=inherited DoMouseWheelDown(Shift, MousePos);
   if not result then begin
     // event wasn't handled by the user
     if ssCtrl in Shift then
-      MoveExtend(true, 1, 0)
+      MoveNextSelectable(true, 1, 0)
     else
-      MoveExtend(true, 0, 1);
+      MoveNextSelectable(true, 0, 1);
     Result := true;
   end;
-  {$ifdef dbgGrid}DebugLn('doMouseWheelDown END');{$endif}
+  {$ifdef dbgScroll}DebugLn('doMouseWheelDown END');{$endif}
 end;
 
 function TCustomGrid.DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint
   ): Boolean;
 begin
-  {$ifdef dbgGrid}DebugLn('doMouseWheelUP INIT');{$endif}
+  {$ifdef dbgScroll}DebugLn('doMouseWheelUP INIT');{$endif}
   Result:=inherited DoMouseWheelUp(Shift, MousePos);
   if not result then begin
     // event wasn't handled by the user
     if ssCtrl in Shift then
-      MoveExtend(true, -1, 0)
+      MoveNextSelectable(true, -1, 0)
     else
-      MoveExtend(true, 0, -1);
+      MoveNextSelectable(true, 0, -1);
     Result := True;
   end;
-  {$ifdef dbgGrid}DebugLn('doMouseWheelUP END');{$endif}
+  {$ifdef dbgScroll}DebugLn('doMouseWheelUP END');{$endif}
 end;
 
 procedure TCustomGrid.KeyDown(var Key: Word; Shift: TShiftState);
