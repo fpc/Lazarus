@@ -1739,7 +1739,7 @@ begin
   FPixmapHandle^^.pixelType := RGBDirect;
   FPixmapHandle^^.cmpSize := ABitmap.BitsPerComponent;
   FPixmapHandle^^.cmpCount := ABitmap.Depth div FPixmapHandle^^.cmpSize;  // $AARRGGBB
-  FPixmapHandle^^.pixelSize := ABitmap.Depth; // depth
+  FPixmapHandle^^.pixelSize := ABitmap.FBitsPerPixel; // depth
   FPixmapHandle^^.pmTable := nil;
   FPixmapHandle^^.baseAddr := Ptr(ABitmap.Data);
 
@@ -1781,7 +1781,7 @@ begin
   FPixmapHandle^^.pixelType := RGBDirect;
   FPixmapHandle^^.cmpSize := ABitmap.BitsPerComponent;
   FPixmapHandle^^.cmpCount := ABitmap.Depth div FPixmapHandle^^.cmpSize;  // $AARRGGBB
-  FPixmapHandle^^.pixelSize := ABitmap.Depth; // depth
+  FPixmapHandle^^.pixelSize := ABitmap.FBitsPerPixel; // depth
   rowBytes := FPixmapHandle^^.Bounds.right * (FPixmapHandle^^.pixelSize shr 3);
   FPixmapHandle^^.rowBytes := rowBytes or $8000;
   FPixmapHandle^^.pmTable := nil;
