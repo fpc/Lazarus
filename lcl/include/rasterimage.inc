@@ -19,9 +19,32 @@
 }
 
 procedure TRasterImage.Assign(Source: TPersistent);
+  procedure CopyMask(AMask: HBITMAP);
+  var
+    RI: TRawImage;
+    msk, dummy: HBITMAP;
+  begin
+    // we need a winapi.CopyImage here (would make things easier)
+    // in theory, it should not matter if a HBITMAP was created as bitmap or as mask
+    // since there is a description problem in gtk, create both (we cannot create mask only)
+    // todo: fix gtk
+    if not RawImage_FromBitmap(RI, AMask, AMask) then Exit;
+    msk := 0;
+    dummy := 0;
+    RawImage_CreateBitmaps(RI, dummy, msk {, True});
+    RI.FreeData;
+    DeleteObject(dummy);
+
+    if BitmapHandleAllocated
+    then UpdateHandles(BitmapHandle, msk)
+    else UpdateHandles(0, msk);
+  end;
+
+
 var
   SrcImage: TRasterImage absolute Source;
   SrcFPImage: TFPCustomImage absolute Source;
+  SrcRawImage, DstRawImage: PRawImage;
   IntfImage: TLazIntfImage;
   ImgHandle,ImgMaskHandle: HBitmap;
 begin
@@ -29,8 +52,14 @@ begin
 
   if Source is TRasterImage
   then begin
-    // TRasterImage can share image data
-    
+    if MaskHandleAllocated
+    then begin
+      // Clear mask first mask
+      if BitmapHandleAllocated
+      then UpdateHandles(BitmapHandle, 0)
+      else UpdateHandles(0, 0);
+    end;
+
     FTransparent := SrcImage.Transparent;
     FTransparentMode := SrcImage.TransparentMode;
     FTransparentColor := SrcImage.TransparentColor;
@@ -43,20 +72,40 @@ begin
       FreeCanvasContext;
       // release old FImage
       FSharedImage.Release;
-      // share FImage with assigned graphic
-      FSharedImage := SrcImage.FSharedImage;
-      FSharedImage.Reference;
 
-      // We only can share images of the same type and when neither we or source is updating
-      // Since we "share" it first, the unshare code will create a copy
-      if (FUpdateCount > 0)
-      or (SrcImage.FUpdateCount > 0)
-      or not CanShareImage(SrcImage.GetSharedImageClass)
+      // We only can share images of the same type ...
+      if CanShareImage(SrcImage.GetSharedImageClass)
       then begin
-        UnshareImage(True);
-        FreeSaveStream;
+        // share FImage with assigned graphic
+        FSharedImage := SrcImage.FSharedImage;
+        FSharedImage.Reference;
+
+        // when updating, unshare
+        // Since we "share" it first, the unshare code will create a copy
+        if (FUpdateCount > 0)
+        or (SrcImage.FUpdateCount > 0)
+        then begin
+          UnshareImage(True);
+          FreeSaveStream;
+        end;
+      end
+      else begin
+        // not sharable, create rawimage copy
+        FSharedImage := GetSharedImageClass.Create;
+        FSharedImage.Reference;
+
+        // copy raw image
+        SrcRawImage := SrcImage.GetRawImagePtr;
+        DstRawImage := GetRawImagePtr;
+        if (SrcRawImage <> nil) and (DstRawImage <> nil)
+        then with SrcRawImage^ do
+          ExtractRect(Rect(0, 0, Description.Width, Description.Height), DstRawImage^);
       end;
     end;
+
+    if SrcImage.MaskHandleAllocated
+    then CopyMask(SrcImage.MaskHandle);
+
 
     if FUpdateCount = 0
     then Changed(Self);
@@ -696,6 +745,24 @@ class function TRasterImage.GetSharedImageClass: TSharedRasterImageClass;
 begin
   Result := TSharedRasterImage;
 end;
+
+procedure TRasterImage.GetSize(out AWidth, AHeight: Integer);
+var
+  Desc: PRawImageDescription;
+begin
+  Desc := GetRawImageDescriptionPtr;
+  if (Desc = nil) or (Desc^.Format = ricfNone)
+  then begin
+    AWidth := 0;
+    AHeight := 0;
+  end
+  else begin
+    AWidth := Desc^.Width;
+    AHeight := Desc^.Height;
+  end;
+end;
+
+
 
 procedure TRasterImage.ReadData(Stream: TStream);
   function GetImageClass: TRasterImageClass;

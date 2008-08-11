@@ -1186,6 +1186,7 @@ type
     procedure LoadFromIntfImage(IntfImage: TLazIntfImage);
     procedure SaveToStream(AStream: TStream); override;
     procedure GetSupportedSourceMimeTypes(List: TStrings); override;
+    procedure GetSize(out AWidth, AHeight: Integer);
     procedure Mask(ATransparentColor: TColor);
     procedure SetHandles(ABitmap, AMask: HBITMAP); virtual; abstract; // called when handles are set by user
     function ReleaseBitmapHandle: HBITMAP;
@@ -1204,9 +1205,6 @@ type
                                       write SetTransparentColor default clDefault;
     property TransparentMode: TTransparentMode read FTransparentMode
                                         write SetTransparentMode default tmAuto;
-    {$IFDEF DebugBitmap}
-    DebugEnabled: boolean;
-    {$ENDIF}
   end;
   
   TSharedCustomBitmap = class(TSharedRasterImage)

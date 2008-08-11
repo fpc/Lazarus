@@ -272,9 +272,10 @@ procedure TCustomIcon.Assign(Source: TPersistent);
 begin
   if Source is TCustomIcon
   then begin
-    FCurrent := TCustomIcon(Source).Current;
-  end
-  else if Source is TRasterImage
+    FCurrent := -1;
+  end;
+
+  if Source is TRasterImage
   then begin
     Clear;
     
@@ -286,6 +287,11 @@ begin
   end;
 
   inherited Assign(Source);
+
+  if Source is TCustomIcon
+  then begin
+    FCurrent := TCustomIcon(Source).Current;
+  end;
 end;
 
 procedure TCustomIcon.AssignImage(ASource: TRasterImage);
