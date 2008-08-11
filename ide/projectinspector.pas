@@ -726,8 +726,8 @@ begin
   dec(FUpdateLock);
   if FUpdateLock=0 then begin
     if pifTitleChanged in FFlags then UpdateTitle;
-    if pifButtonsChanged in FFlags then UpdateButtons;
     if pifItemsChanged in FFlags then UpdateItems;
+    if pifButtonsChanged in FFlags then UpdateButtons;
   end;
 end;
 

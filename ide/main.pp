@@ -13727,37 +13727,43 @@ var
   Dummy: Boolean;
 begin
   Result:=mrOk;
-  AnUnitInfo.IsPartOfProject:=false;
-  if (Project1.MainUnitID>=0)
-  and (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags)
-  then begin
-    BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[]);
-    ShortUnitName:=AnUnitInfo.UnitName;
-    if (ShortUnitName<>'') then begin
-      Dummy:=CodeToolBoss.RemoveUnitFromAllUsesSections(
-                                    Project1.MainUnitInfo.Source,ShortUnitName);
-      if Dummy then
-        Project1.MainUnitInfo.Modified:=true
-      else begin
-        ApplyCodeToolChanges;
-        DoJumpToCodeToolBossError;
-        Result:=mrCancel;
-        exit;
+  if not AnUnitInfo.IsPartOfProject then exit;
+  Project1.BeginUpdate(true);
+  try
+    AnUnitInfo.IsPartOfProject:=false;
+    if (Project1.MainUnitID>=0)
+    and (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags)
+    then begin
+      BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[]);
+      ShortUnitName:=AnUnitInfo.UnitName;
+      if (ShortUnitName<>'') then begin
+        Dummy:=CodeToolBoss.RemoveUnitFromAllUsesSections(
+                                      Project1.MainUnitInfo.Source,ShortUnitName);
+        if Dummy then
+          Project1.MainUnitInfo.Modified:=true
+        else begin
+          ApplyCodeToolChanges;
+          DoJumpToCodeToolBossError;
+          Result:=mrCancel;
+          exit;
+        end;
       end;
-    end;
-    if (AnUnitInfo.ComponentName<>'') then begin
-      Dummy:=Project1.RemoveCreateFormFromProjectFile(
-          'T'+AnUnitInfo.ComponentName,AnUnitInfo.ComponentName);
-      if not Dummy then begin
-        ApplyCodeToolChanges;
-        DoJumpToCodeToolBossError;
-        Result:=mrCancel;
-        exit;
+      if (AnUnitInfo.ComponentName<>'') then begin
+        Dummy:=Project1.RemoveCreateFormFromProjectFile(
+            'T'+AnUnitInfo.ComponentName,AnUnitInfo.ComponentName);
+        if not Dummy then begin
+          ApplyCodeToolChanges;
+          DoJumpToCodeToolBossError;
+          Result:=mrCancel;
+          exit;
+        end;
       end;
+      ApplyCodeToolChanges;
     end;
-    ApplyCodeToolChanges;
+    Project1.Modified:=true;
+  finally
+    Project1.EndUpdate;
   end;
-  Project1.Modified:=true;
 end;
 
 procedure TMainIDE.OnCompilerOptionsDialogTest(Sender: TObject);

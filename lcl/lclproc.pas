@@ -337,8 +337,8 @@ implementation
 
 
 var
-  InterfaceInitializationHandlers,
-  InterfaceFinalizationHandlers: TFPList;
+  InterfaceInitializationHandlers: TFPList = nil;
+  InterfaceFinalizationHandlers: TFPList = nil;
   DebugTextAllocated: boolean;
   DebugText: ^Text;
   LineInfoCache: TAvgLvlTree = nil;
