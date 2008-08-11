@@ -2493,7 +2493,7 @@ begin
         // we cannot tell for sure windows didn't want the key
         // for WM_CHAR check WM_GETDLGCODE/DLGC_WANTCHARS
         // winapi too inconsistent about return value
-        if PLMsg^.Result = 0 then
+        if  (lWinControl <> nil) and (PLMsg^.Result = 0) then
           DeliverMessage(lWinControl, PLMsg^);
 
         // handle Ctrl-A for edit controls
