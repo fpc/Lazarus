@@ -430,47 +430,10 @@ var
   ADesc: TRawImageDescription absolute ARawImage.Description;
   bmpType: TCarbonBitmapType;
 begin
-  Result := False;
-
-  if ADesc.Format = ricfGray
-  then bmpType := cbtGray
-  else if ADesc.Depth = 1
-  then bmpType := cbtMono
-  else if ADesc.AlphaPrec <> 0
-  then begin
-    if ADesc.ByteOrder = riboMSBFirst
-    then begin
-      if  (ADesc.AlphaShift = 24)
-      and (ADesc.RedShift   = 16)
-      and (ADesc.GreenShift = 8 )
-      and (ADesc.BlueShift  = 0 )
-      then bmpType := cbtARGB
-      else
-      if  (ADesc.AlphaShift = 0 )
-      and (ADesc.RedShift   = 8 )
-      and (ADesc.GreenShift = 16)
-      and (ADesc.BlueShift  = 24)
-      then bmpType := cbtBGRA
-      else Exit;
-    end
-    else begin
-      if  (ADesc.AlphaShift = 24)
-      and (ADesc.RedShift   = 16)
-      and (ADesc.GreenShift = 8 )
-      and (ADesc.BlueShift  = 0 )
-      then bmpType := cbtBGRA
-      else
-      if  (ADesc.AlphaShift = 0 )
-      and (ADesc.RedShift   = 8 )
-      and (ADesc.GreenShift = 16)
-      and (ADesc.BlueShift  = 24)
-      then bmpType := cbtARGB
-      else Exit;
-    end;
-  end
-  else begin
-    bmpType := cbtRGB;
-  end;
+  Result := RawImage_DescriptionToBitmapType(ADesc, bmpType);
+  
+  if not Result then
+    Exit;
 
   ABitmap := HBITMAP(TCarbonBitmap.Create(ADesc.Width, ADesc.Height, ADesc.Depth, ADesc.BitsPerPixel, ALIGNMAP[ADesc.LineEnd], bmpType, ARawImage.Data));
 

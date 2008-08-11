@@ -400,6 +400,8 @@ end;
   Creates an icon / cursor from bitmap and mask
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.CreateIconIndirect(IconInfo: PIconInfo): HICON;
+var
+  ABitmap: TCarbonBitmap;
 begin
   {$IFDEF VerboseWinAPI}
     DebugLn('TCarbonWidgetSet.CreateIconIndirect');
@@ -410,7 +412,11 @@ begin
     Exit;
   
   if IconInfo^.fIcon then
-    Result := HICON(TCarbonBitmap.Create(TCarbonBitmap(IconInfo^.hbmColor)))
+  begin
+    ABitmap := TCarbonBitmap.Create(TCarbonBitmap(IconInfo^.hbmColor));
+    ABitmap.AddMask(TCarbonBitmap(IconInfo^.hbmMask));
+    Result := HICON(ABitmap)
+  end
   else
     Result := HICON(TCarbonCursor.CreateFromInfo(IconInfo));
 end;

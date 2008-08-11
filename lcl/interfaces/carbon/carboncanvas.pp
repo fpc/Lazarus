@@ -1597,7 +1597,7 @@ begin
     // converted
     
     // update bitmap to reflect changes made via canvas
-    FBitmap.Update;
+    FBitmap.UpdateImage;
     Result := FBitmap;
   end;
 end;

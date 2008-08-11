@@ -79,10 +79,6 @@ type
     {$ifdef CarbonUseCocoa}
       pool: NSAutoreleasePool;
     {$endif}
-    
-    function RawImage_DescriptionFromCarbonBitmap(out ADesc: TRawImageDescription; ABitmap: TCarbonBitmap): Boolean;
-    function RawImage_FromCarbonBitmap(out ARawImage: TRawImage; ABitmap, AMask: TCarbonBitmap; ARect: PRect = nil): Boolean;
-    function GetImagePixelData(AImage: CGImageRef; var bitmapByteCount: PtrUInt): Pointer;
   protected
     function CreateThemeServices: TThemeServices; override;
     procedure PassCmdLineOptions; override;
@@ -121,6 +117,11 @@ type
     function DestroyTimer(TimerHandle: THandle) : boolean; override;
     function PrepareUserEvent(Handle: HWND; Msg: Cardinal; wParam: WParam;
       lParam: LParam; out Target: EventTargetRef): EventRef;
+
+    function RawImage_DescriptionFromCarbonBitmap(out ADesc: TRawImageDescription; ABitmap: TCarbonBitmap): Boolean;
+    function RawImage_FromCarbonBitmap(out ARawImage: TRawImage; ABitmap, AMask: TCarbonBitmap; ARect: PRect = nil): Boolean;
+    function RawImage_DescriptionToBitmapType(ADesc: TRawImageDescription; out bmpType: TCarbonBitmapType): Boolean;
+    function GetImagePixelData(AImage: CGImageRef; var bitmapByteCount: PtrUInt): Pointer;
 
     // the winapi compatibility methods
     {$I carbonwinapih.inc}

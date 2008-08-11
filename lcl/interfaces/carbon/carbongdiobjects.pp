@@ -35,7 +35,7 @@ uses
   MacOSAll,
 {$endif}
  // LCL
-  LCLProc, LCLType, Graphics, Controls, Forms,
+  LCLProc, LCLType, GraphType, Graphics, Controls, Forms,
  // LCL Carbon
  {$ifdef DebugBitmaps}
   CarbonDebug,
@@ -246,20 +246,25 @@ type
     function GetBitsPerComponent: Integer;
     function GetColorSpace: CGColorSpaceRef;
     function GetInfo: CGBitmapInfo;
+    procedure SetCGImage(const AValue: CGImageRef);
   public
     constructor Create(AWidth, AHeight, ADepth, ABitsPerPixel: Integer;
       AAlignment: TCarbonBitmapAlignment; AType: TCarbonBitmapType;
       AData: Pointer; ACopyData: Boolean = True);
     constructor Create(ABitmap: TCarbonBitmap);
     destructor Destroy; override;
-    procedure Update;
+    procedure SetInfo(AWidth, AHeight, ADepth, ABitsPerPixel: Integer;
+      AAlignment: TCarbonBitmapAlignment; AType: TCarbonBitmapType);
+    procedure UpdateImage;
+    procedure UpdateInfo;
     function CreateSubImage(const ARect: TRect): CGImageRef;
     function CreateMaskedImage(AMask: TCarbonBitmap): CGImageRef;
     function CreateMaskedImage(AMask: TCarbonBitmap; const ARect: TRect): CGImageRef;
+    procedure AddMask(AMask: TCarbonBitmap);
   public
     property BitsPerComponent: Integer read GetBitsPerComponent;
     property BytesPerRow: Integer read FBytesPerRow;
-    property CGImage: CGImageRef read FCGImage;
+    property CGImage: CGImageRef read FCGImage write SetCGImage;
     property ColorSpace: CGColorSpaceRef read GetColorSpace;
     property Data: Pointer read FData;
     property DataSize: Integer read FDataSize;
@@ -369,7 +374,7 @@ var
 implementation
 
 uses
-  CarbonProc, CarbonCanvas, CarbonDbgConsts;
+  CarbonInt, CarbonProc, CarbonCanvas, CarbonDbgConsts;
   
 const
   BITMAPINFOMAP: array[TCarbonBitmapType] of CGBitmapInfo = (
@@ -1449,6 +1454,19 @@ begin
   Result := BITMAPINFOMAP[FType];
 end;
 
+procedure TCarbonBitmap.SetCGImage(const AValue: CGImageRef);
+begin
+  if FCGImage = AValue then
+    Exit;
+    
+  if FCGImage <> nil then
+    CGImageRelease(FCGImage);
+
+  FCGImage := AValue;
+
+  UpdateInfo;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCarbonBitmap.Create
   Params:  AWidth        - Bitmap width
@@ -1464,29 +1482,12 @@ end;
 constructor TCarbonBitmap.Create(AWidth, AHeight, ADepth, ABitsPerPixel: Integer;
   AAlignment: TCarbonBitmapAlignment; AType: TCarbonBitmapType; AData: Pointer;
   ACopyData: Boolean);
-const
-  ALIGNBITS: array[TCarbonBitmapAlignment] of Integer = (0, 1, 3, 7, $F);
-var
-  M: Integer;
 begin
   inherited Create(False);
   
   FCGImage := nil;
   
-  if AWidth < 1 then AWidth := 1;
-  if AHeight < 1 then AHeight := 1;
-  FWidth := AWidth;
-  FHeight := AHeight;
-  FDepth := ADepth;
-  FBitsPerPixel := ABitsPerPixel;
-  FType := AType;
-  FAlignment := AAlignment;
-
-  FBytesPerRow := ((AWidth * ABitsPerPixel) + 7) shr 3;
-  M := FBytesPerRow and ALIGNBITS[AAlignment];
-  if M <> 0 then Inc(FBytesPerRow, ALIGNBITS[AAlignment] + 1 - M);
-
-  FDataSize := FBytesPerRow * FHeight;
+  SetInfo(AWidth, AHeight, ADepth, ABitsPerPixel, AAlignment, AType);
   
   if (AData = nil) or ACopyData then
   begin
@@ -1505,7 +1506,7 @@ begin
 //DebugLn(Format('TCarbonBitmap.Create %d x %d Data: %d RowSize: %d Size: %d',
 //  [AWidth, AHeight, Integer(AData), DataRowSize, FDataSize]));
 
-  Update;
+  UpdateImage;
   
   //DbgDumpImage(FCGImage, 'TCarbonBitmap.Create');
 end;
@@ -1535,15 +1536,41 @@ begin
   inherited Destroy;
 end;
 
+procedure TCarbonBitmap.SetInfo(AWidth, AHeight, ADepth,
+  ABitsPerPixel: Integer; AAlignment: TCarbonBitmapAlignment;
+  AType: TCarbonBitmapType);
+const
+  ALIGNBITS: array[TCarbonBitmapAlignment] of Integer = (0, 1, 3, 7, $F);
+var
+  M: Integer;
+begin
+  if AWidth < 1 then AWidth := 1;
+  if AHeight < 1 then AHeight := 1;
+  FWidth := AWidth;
+  FHeight := AHeight;
+  FDepth := ADepth;
+  FBitsPerPixel := ABitsPerPixel;
+  FType := AType;
+  FAlignment := AAlignment;
+
+  FBytesPerRow := ((AWidth * ABitsPerPixel) + 7) shr 3;
+  M := FBytesPerRow and ALIGNBITS[AAlignment];
+  if M <> 0 then Inc(FBytesPerRow, ALIGNBITS[AAlignment] + 1 - M);
+
+  FDataSize := FBytesPerRow * FHeight;
+end;
+
 {------------------------------------------------------------------------------
-  Method:  TCarbonBitmap.Update
+  Method:  TCarbonBitmap.UpdateImage
 
   Updates Carbon bitmap
  ------------------------------------------------------------------------------}
-procedure TCarbonBitmap.Update;
+procedure TCarbonBitmap.UpdateImage;
 var
   CGDataProvider: CGDataProviderRef;
 begin
+  // we have a data and description and we need to build CGImage
+  
   if FData = nil then Exit;
   if FCGImage <> nil then CGImageRelease(FCGImage);
 
@@ -1558,6 +1585,33 @@ begin
   finally
     CGDataProviderRelease(CGDataProvider);
   end;
+end;
+
+procedure TCarbonBitmap.UpdateInfo;
+const
+  ALIGNMAP: array[TRawImageLineEnd] of TCarbonBitmapAlignment = (cbaByte, cbaByte, cbaWord, cbaDWord, cbaQWord, cbaDQWord);
+var
+  ADesc: TRawImageDescription;
+  AType: TCarbonBitmapType;
+  ADataSize: PtrUInt;
+begin
+  // we have a CGImage and we need to update all info related to that image
+  
+  if FFreeData then System.FreeMem(FData);
+  FData := nil;
+  FFreeData := True;
+  
+  if not CarbonWidgetSet.RawImage_DescriptionFromCarbonBitmap(ADesc, Self) then
+    Exit;
+
+  if not CarbonWidgetSet.RawImage_DescriptionToBitmapType(ADesc, AType) then
+    Exit;
+
+  SetInfo(ADesc.Width, ADesc.Height, ADesc.Depth, ADesc.BitsPerPixel,
+    ALIGNMAP[ADesc.LineEnd], AType);
+
+  FData := CarbonWidgetSet.GetImagePixelData(FCGImage, ADataSize);
+  FDataSize := FDataSize;
 end;
 
 {------------------------------------------------------------------------------
@@ -1604,6 +1658,14 @@ begin
   end
   else
     Result := CreateSubImage(ARect);
+end;
+
+procedure TCarbonBitmap.AddMask(AMask: TCarbonBitmap);
+begin
+  if AMask = nil then
+    Exit;
+
+  CGImage := CreateMaskedImage(AMask);
 end;
 
 { TCarbonCursor }
@@ -1781,6 +1843,7 @@ end;
 constructor TCarbonCursor.CreateFromInfo(AInfo: PIconInfo);
 var
   AHotspot: Point;
+  AMaskedBitmap: TCarbonBitmap;
 begin
   Create;
 
@@ -1790,9 +1853,20 @@ begin
   AHotspot.h := AInfo^.xHotspot;
   AHotspot.v := AInfo^.yHotspot;
   
+  AMaskedBitmap := TCarbonBitmap(AInfo^.hbmColor);
+  if (AInfo^.hbmMask <> 0) then
+  begin
+    AMaskedBitmap := TCarbonBitmap.Create(AMaskedBitmap);
+    AMaskedBitmap.AddMask(TCarbonBitmap(AInfo^.hbmMask));
+  end;
+  
   if HardwareCursorsSupported then
-    CreateHardwareCursor(TCarbonBitmap(AInfo^.hbmColor), AHotSpot) else
-    CreateColorCursor(TCarbonBitmap(AInfo^.hbmColor), AHotSpot);
+    CreateHardwareCursor(AMaskedBitmap, AHotSpot)
+  else
+    CreateColorCursor(AMaskedBitmap, AHotSpot);
+
+   if (AInfo^.hbmMask <> 0) then
+     AMaskedBitmap.Free;
 end;
 
 {------------------------------------------------------------------------------
