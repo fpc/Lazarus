@@ -2002,6 +2002,7 @@ begin
       begin
 
         FKeyBookmark:=''; // force new keyboard selection start
+        SetFocus;
         
         P:=MouseToCell(Point(X,Y));
         if P.Y=Row then begin
