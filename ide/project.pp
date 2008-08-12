@@ -42,6 +42,8 @@ interface
 
 {$I ide.inc}
 
+{off $DEFINE VerboseProjectModified}
+
 uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
@@ -4191,35 +4193,47 @@ begin
   Result:=true;
   if CheckData then begin
     if Modified then begin
-      //DebugLn('TProject.SomethingModified Modified');
+      {$IFDEF VerboseProjectModified}
+      DebugLn('TProject.SomethingModified Modified');
+      {$ENDIF}
       exit;
     end;
     if CompilerOptions.Modified then begin
       Modified:=true;
-      //DebugLn(['TProject.SomethingModified CompilerOptions']);
+      {$IFDEF VerboseProjectModified}
+      DebugLn(['TProject.SomethingModified CompilerOptions']);
+      {$ENDIF}
       exit;
     end;
     for i:=0 to UnitCount-1 do
       if (Units[i].IsPartOfProject) and Units[i].Modified then begin
         Modified:=true;
-        //DebugLn('TProject.SomethingModified PartOfProject ',Units[i].Filename);
+        {$IFDEF VerboseProjectModified}
+        DebugLn('TProject.SomethingModified PartOfProject ',Units[i].Filename);
+        {$ENDIF}
         exit;
       end;
   end;
   if CheckSession then begin
     if SessionModified then begin
-      //DebugLn('TProject.SomethingModified SessionModified');
+      {$IFDEF VerboseProjectModified}
+      DebugLn('TProject.SomethingModified SessionModified');
+      {$ENDIF}
       exit;
     end;
     for i:=0 to UnitCount-1 do begin
       if Units[i].SessionModified then begin
         SessionModified:=true;
-        //DebugLn('TProject.SomethingModified Session ',Units[i].Filename);
+        {$IFDEF VerboseProjectModified}
+        DebugLn('TProject.SomethingModified Session ',Units[i].Filename);
+        {$ENDIF}
         exit;
       end;
       if (not Units[i].IsPartOfProject) and Units[i].Modified then begin
         SessionModified:=true;
-        //DebugLn('TProject.SomethingModified Not PartOfProject ',Units[i].Filename);
+        {$IFDEF VerboseProjectModified}
+        DebugLn('TProject.SomethingModified Not PartOfProject ',Units[i].Filename);
+        {$ENDIF}
         exit;
       end;
     end;

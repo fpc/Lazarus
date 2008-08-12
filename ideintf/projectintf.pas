@@ -1114,7 +1114,9 @@ end;
 procedure TLazProject.SetModified(const AValue: boolean);
 begin
   if fModified=AValue then exit;
+  DebugLn(['TLazProject.SetModified New=',AValue]);
   fModified:=AValue;
+  DumpStack;
 end;
 
 procedure TLazProject.SetSessionModified(const AValue: boolean);
@@ -1141,7 +1143,7 @@ procedure TLazProject.SetExecutableType(const AValue: TProjectExecutableType);
 begin
   if FExecutableType=AValue then exit;
   FExecutableType:=AValue;
-  Modified:=true;
+  // not saved to lpi, so do not set Modified
 end;
 
 procedure TLazProject.SetLazCompilerOptions(const AValue: TLazCompilerOptions);
