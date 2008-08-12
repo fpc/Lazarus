@@ -5157,6 +5157,9 @@ begin
     end;
   end;
 
+  // delete old pas, .pp, ppu
+
+
   Result:=mrOk;
 end;
 

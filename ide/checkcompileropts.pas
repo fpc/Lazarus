@@ -934,6 +934,9 @@ begin
     Result:=CheckForAmbiguousPPUs(FPC_PPUs,Target_PPUs);
     if not (Result in [mrOk,mrIgnore]) then exit;
 
+    // ToDo: check that all ppu in the output directory have sources
+
+
     // compile bogus file
     Result:=CheckCompileBogusFile(CompilerFilename);
     if not (Result in [mrOk,mrIgnore]) then exit;

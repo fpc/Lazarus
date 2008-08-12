@@ -1114,9 +1114,7 @@ end;
 procedure TLazProject.SetModified(const AValue: boolean);
 begin
   if fModified=AValue then exit;
-  DebugLn(['TLazProject.SetModified New=',AValue]);
   fModified:=AValue;
-  DumpStack;
 end;
 
 procedure TLazProject.SetSessionModified(const AValue: boolean);
