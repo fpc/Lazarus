@@ -517,7 +517,6 @@ begin
       typeCFIndex, nil, SizeOf(CFIndex), nil, @Index),
     'CarbonComboBox_ListItemSelected', SGetEvent,
     'kEventParamComboBoxListSelectedItemIndex') then Index := -1;
-
   (AWidget as TCarbonComboBox).ListItemSelected(Index);
 end;
 
