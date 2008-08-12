@@ -121,7 +121,6 @@ begin
 end;
 
 procedure TCustomImage.SetTransparent(Value : Boolean);
-
 begin
   if FTransparent=Value then exit;
   FTransparent := Value;

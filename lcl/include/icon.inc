@@ -273,8 +273,8 @@ begin
   if Source is TCustomIcon
   then begin
     FCurrent := -1;
-  end;
-
+  end
+  else
   if Source is TRasterImage
   then begin
     Clear;
