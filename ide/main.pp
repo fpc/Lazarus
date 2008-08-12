@@ -4937,6 +4937,11 @@ var
   i: Integer;
   AmbiguousFilename: String;
   OldUnitPath: String;
+  OldLFMFilename: String;
+  OldLRSFilename: String;
+  OldPPUFilename: String;
+  OutDir: string;
+  Owners: TFPList;
 begin
   OldFilename:=AnUnitInfo.Filename;
   OldFilePath:=ExtractFilePath(OldFilename);
@@ -5157,8 +5162,69 @@ begin
     end;
   end;
 
-  // delete old pas, .pp, ppu
-
+  // delete old pas, .pp, .ppu
+  if (CompareFilenames(NewFilename,OldFilename)<>0)
+  and FilenameIsAbsolute(OldFilename) and FileExists(OldFilename) then begin
+    if MessageDlg('Delete old file?',
+      'Delete old file "'+OldFilename+'"?',
+      mtConfirmation,[mbYes,mbNo],0)=mrYes then
+    begin
+      Result:=DeleteFileInteractive(OldFilename,[mbAbort]);
+      if Result=mrAbort then exit;
+      // delete old lfm
+      OldLFMFilename:=ChangeFileExt(OldFilename,'.lfm');
+      if FileExists(OldLFMFilename) then begin
+        Result:=DeleteFileInteractive(OldLFMFilename,[mbAbort]);
+        if Result=mrAbort then exit;
+      end;
+      // delete old lrs
+      OldLRSFilename:=ChangeFileExt(OldFilename,'.lrs');
+      if FileExists(OldLRSFilename) then begin
+        Result:=DeleteFileInteractive(OldLRSFilename,[mbAbort]);
+        if Result=mrAbort then exit;
+      end;
+      // delete ppu in source directory
+      OldPPUFilename:=ChangeFileExt(OldFilename,'.ppu');
+      if FileExists(OldPPUFilename) then begin
+        Result:=DeleteFileInteractive(OldPPUFilename,[mbAbort]);
+        if Result=mrAbort then exit;
+      end;
+      OldPPUFilename:=ChangeFileExt(OldPPUFilename,'.o');
+      if FileExists(OldPPUFilename) then begin
+        Result:=DeleteFileInteractive(OldPPUFilename,[mbAbort]);
+        if Result=mrAbort then exit;
+      end;
+      Owners:=PkgBoss.GetOwnersOfUnit(NewFilename);
+      try
+        if Owners<>nil then begin
+          for i:=0 to Owners.Count-1 do begin
+            OutDir:='';
+            if TObject(Owners[i]) is TProject then begin
+              // delete ppu in project output directory
+              OutDir:=TProject(Owners[i]).CompilerOptions.GetUnitOutPath(false);
+            end else if TObject(Owners[i]) is TLazPackage then begin
+              // delete ppu in package output directory
+              OutDir:=TLazPackage(Owners[i]).CompilerOptions.GetUnitOutPath(false);
+            end;
+            if (OutDir<>'') and FilenameIsAbsolute(OutDir) then begin
+              OldPPUFilename:=AppendPathDelim(OutDir)+ChangeFileExt(ExtractFilenameOnly(OldFilename),'.ppu');
+              if FileExists(OldPPUFilename) then begin
+                Result:=DeleteFileInteractive(OldPPUFilename,[mbAbort]);
+                if Result=mrAbort then exit;
+              end;
+              OldPPUFilename:=ChangeFileExt(OldPPUFilename,'.o');
+              if FileExists(OldPPUFilename) then begin
+                Result:=DeleteFileInteractive(OldPPUFilename,[mbAbort]);
+                if Result=mrAbort then exit;
+              end;
+            end;
+          end;
+        end;
+      finally
+        Owners.Free;
+      end;
+    end;
+  end;
 
   Result:=mrOk;
 end;
