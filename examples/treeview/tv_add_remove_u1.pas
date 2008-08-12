@@ -64,6 +64,7 @@ begin
    end
    else begin
          {Get a name for the new node}
+      sText := 'New node';
       InputQuery(  'New Node',  'Caption ?', sText  );
 
          {Add the node as a child of the selected node}

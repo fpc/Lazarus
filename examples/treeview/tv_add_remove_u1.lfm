@@ -4,7 +4,6 @@ object Form1: TForm1
   ClientWidth = 455
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
-  TextHeight = 13
   HorzScrollBar.Page = 456
   VertScrollBar.Page = 428
   Left = 570
