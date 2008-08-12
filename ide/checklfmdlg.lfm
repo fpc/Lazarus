@@ -1,7 +1,7 @@
 object CheckLFMDialog: TCheckLFMDialog
-  Left = 430
+  Left = 420
   Height = 580
-  Top = 210
+  Top = 206
   Width = 552
   ActiveControl = LFMSynEdit
   Caption = 'Repair LFM file'
@@ -37,8 +37,6 @@ object CheckLFMDialog: TCheckLFMDialog
       ParentColor = False
       ParentCtl3D = False
       TabOrder = 0
-      BookMarkOptions.OnChange = nil
-      Gutter.CodeFoldingWidth = 14
       Highlighter = SynLFMSyn1
       Keystrokes = <      
         item
@@ -364,8 +362,7 @@ object CheckLFMDialog: TCheckLFMDialog
       Lines.Strings = (
         'LFMSynEdit'
       )
-      SelectedColor.OnChange = nil
-      OnSpecialLineColors = LFMSynEditSpecialLineColors
+      OnSpecialLineMarkup = LFMSynEditSpecialLineMarkup
     end
   end
   object ErrorsGroupBox: TGroupBox

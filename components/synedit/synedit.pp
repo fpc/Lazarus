@@ -977,9 +977,13 @@ type
       read FOnProcessUserCommand write FOnProcessUserCommand;
     property OnReplaceText: TReplaceTextEvent read fOnReplaceText
       write fOnReplaceText;
+    {$IFDEF SYN_LAZARUS}
     property OnSpecialLineColors: TSpecialLineColorsEvent
-      {$IFDEF SYN_LAZARUS}read GetSpecialLineColors write SetSpecialLineColors
-      {$ELSE}read fOnSpecialLineColors write fOnSpecialLineColors{$ENDIF}; deprecated;
+      read GetSpecialLineColors write SetSpecialLineColors;  deprecated;
+    {$ELSE}
+    property OnSpecialLineColors: TSpecialLineColorsEvent
+      read fOnSpecialLineColors write fOnSpecialLineColors;
+    {$ENDIF}
     {$IFDEF SYN_LAZARUS}
     property OnSpecialLineMarkup: TSpecialLineMarkupEvent
       read GetSpecialLineMarkup write SetSpecialLineMarkup;

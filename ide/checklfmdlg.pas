@@ -58,7 +58,7 @@ type
     RemoveAllButton: TButton;
     SynLFMSyn1: TSynLFMSyn;
     procedure ErrorsListBoxClick(Sender: TObject);
-    procedure LFMSynEditSpecialLineColors(Sender: TObject; Line: integer;
+    procedure LFMSynEditSpecialLineMarkup(Sender: TObject; Line: integer;
       var Special: boolean; AMarkup: TSynSelectedColor);
     procedure RemoveAllButtonClick(Sender: TObject);
     procedure CheckLFMDialogCREATE(Sender: TObject);
@@ -520,7 +520,7 @@ begin
   JumpToError(FindListBoxError);
 end;
 
-procedure TCheckLFMDialog.LFMSynEditSpecialLineColors(Sender: TObject;
+procedure TCheckLFMDialog.LFMSynEditSpecialLineMarkup(Sender: TObject;
   Line: integer; var Special: boolean; AMarkup: TSynSelectedColor);
 var
   CurError: TLFMError;

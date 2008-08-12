@@ -440,10 +440,12 @@ type
                                                  DefaultPascalSyn: TPreviewPasSyn);
     procedure WriteHighlighterSettings(Syn: TSrcIDEHighlighter;
                                        SynColorScheme: String);
-    function GetLineColors(Syn: TSrcIDEHighlighter; AddHilightAttr: TAdditionalHilightAttribute; {TODO: MFR maybe remove?}
-                           out FG, BG: TColor; out Styles, StylesMask: TFontStyles): Boolean;
-    procedure SetMarkupColor(Syn: TSrcIDEHighlighter; AddHilightAttr: TAdditionalHilightAttribute;
-                              aMarkup: TSynSelectedColor); 
+    function GetLineColors(Syn: TSrcIDEHighlighter;
+          AddHilightAttr: TAdditionalHilightAttribute; {TODO: MFR maybe remove?}
+          out FG, BG: TColor; out Styles, StylesMask: TFontStyles): Boolean;
+    procedure SetMarkupColor(Syn: TSrcIDEHighlighter;
+                             AddHilightAttr: TAdditionalHilightAttribute;
+                             aMarkup: TSynSelectedColor);
     procedure SetMarkupColors(Syn: TSrcIDEHighlighter; aSynEd: TSynEdit);
   published
     // general options
@@ -2281,7 +2283,8 @@ begin
   SetMarkupColor(aSynEd.Highlighter, ahaMouseLink, aSynEd.MouseLinkColor);
 end;
 
-procedure TEditorOptions.SetMarkupColor(Syn : TSrcIDEHighlighter; AddHilightAttr : TAdditionalHilightAttribute; aMarkup : TSynSelectedColor);
+procedure TEditorOptions.SetMarkupColor(Syn : TSrcIDEHighlighter;
+  AddHilightAttr : TAdditionalHilightAttribute; aMarkup : TSynSelectedColor);
 var
   i: Integer;
   Attrib: TSynHighlighterAttributes;
@@ -2292,7 +2295,7 @@ begin
     begin
       Attrib := Syn.Attribute[i];
       if Attrib.Name = '' then Continue;
-      if LowerCase(Attrib.Name) <> LowerCase(AdditionalHighlightAttributes[AddHilightAttr])
+      if SysUtils.CompareText(Attrib.Name,AdditionalHighlightAttributes[AddHilightAttr])<>0
       then Continue;
 
       aMarkup.Foreground := Attrib.Foreground;
