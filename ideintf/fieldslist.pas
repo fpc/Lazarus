@@ -85,21 +85,30 @@ begin
 end;
 
 begin
-  PreActive := LinkDataset.Active;
-  LinkDataSet.Active := False;
-  fModified := False;
-  for i := 0 to ListBox1.Items.Count - 1 do begin
-    if ListBox1.Selected[i] And (LinkDataset.FindField(ListBox1.Items[i]) = Nil) then
-    begin
-      NewField := TFieldDef(ListBox1.Items.Objects[i]).CreateField(LinkDataset.Owner);
-      NewField.Name := CreateFieldName(LinkDataset.Owner, LinkDataset.Name + NewField.FieldName);
-      FDesigner.PropertyEditorHook.PersistentAdded(NewField, True);
-      fModified := True;
-    end;
-  end;
-  if fModified then FDesigner.Modified;
-  if PreActive then
-    LinkDataset.Active:=True;
+  LinkDataset.DisableControls;
+  try
+    PreActive := LinkDataset.Active;
+    try
+      LinkDataSet.Active := False;
+      fModified := False;
+      for i := 0 to ListBox1.Items.Count - 1 do 
+        begin
+        if ListBox1.Selected[i] And (LinkDataset.FindField(ListBox1.Items[i]) = Nil) then
+          begin
+          NewField := TFieldDef(ListBox1.Items.Objects[i]).CreateField(LinkDataset.Owner);
+          NewField.Name := CreateFieldName(LinkDataset.Owner, LinkDataset.Name + NewField.FieldName);
+          FDesigner.PropertyEditorHook.PersistentAdded(NewField, True);
+          fModified := True;
+          end;
+        end;
+      if fModified then FDesigner.Modified;
+    Finally  
+      if PreActive then
+        LinkDataset.Active:=True;
+    end;    
+  Finally
+    LinkDataset.EnableControls;  
+  end;  
 end;
 
 procedure TFieldsListFrm.RefreshFieldsList;
@@ -138,10 +147,13 @@ begin
   LinkDataset.FieldDefs.Update;
   PreActive:=LinkDataset.Active;
   LinkDataset.Active := False;
-  i := FillList;
-  BitBtnOk.Enabled := i > 0;
-  if PreActive then
-    LinkDataset.Active:=True;
+  Try
+    i := FillList;
+    BitBtnOk.Enabled := i > 0;
+  Finally  
+    if PreActive then
+      LinkDataset.Active:=True;
+  end;    
 end;
 
 constructor TFieldsListFrm.Create(AOwner: TComponent; ADataset: TDataset;
