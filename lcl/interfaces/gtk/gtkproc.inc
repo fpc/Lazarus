@@ -3459,6 +3459,7 @@ var
     i: integer;
   begin
     StrList.Sorted := True;
+    //DebugLn(['AddList ',StrList.Text]);
     for i:=0 to StrList.Count-1 do
       Add(List, StrList[i]);
     StrList.Sorted := False;
@@ -3474,6 +3475,7 @@ begin
     SetLength(Dir, LastDelimiter(PathDelim,Dir));
   end else
     Dir := '';
+  //DebugLn(['PopulateFileAndDirectoryLists ',Dir]);
   Text[1] := nil;
   gtk_clist_freeze(Dirs);
   gtk_clist_clear(Dirs);
@@ -3483,12 +3485,13 @@ begin
   Strlist.Add('..'+PathDelim);
   if FindFirst(AppendPathDelim(Dir)+GetAllFilesMask, faAnyFile and faDirectory,
     Info) = 0
-  then
+  then begin
     repeat
       if ((Info.Attr and faDirectory) = faDirectory) and (Info.Name <> '.')
       and (Info.Name <> '..') and (Info.Name<>'') then
         StrList.Add(AppendPathDelim(Info.Name));
     until FindNext(Info) <> 0;
+  end;
   FindClose(Info);
   AddList(Dirs);
   // add required files

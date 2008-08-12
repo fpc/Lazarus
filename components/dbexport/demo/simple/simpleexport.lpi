@@ -4,7 +4,7 @@
     <PathDelim Value="/"/>
     <Version Value="6"/>
     <General>
-      <SessionStorage Value="InProjectDir"/>
+      <SessionStorage Value="InIDEConfig"/>
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
@@ -27,7 +27,6 @@
     <RequiredPackages Count="5">
       <Item1>
         <PackageName Value="lazdbexport"/>
-        <MinVersion Major="1" Valid="True"/>
       </Item1>
       <Item2>
         <PackageName Value="LCL"/>

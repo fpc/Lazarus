@@ -3622,6 +3622,7 @@ packager/globallinks/lazcustforms-0.lpl svneol=native#text/plain
 packager/globallinks/lazcustomform-0.lpl svneol=native#text/plain
 packager/globallinks/lazdaemon-0.lpl svneol=native#text/plain
 packager/globallinks/lazdatadict-0.lpl svneol=native#text/plain
+packager/globallinks/lazdbexport-0.lpl svneol=native#text/plain
 packager/globallinks/lazopenglcontext-0.lpl svneol=native#text/plain
 packager/globallinks/lazparadox-0.lpl svneol=native#text/plain
 packager/globallinks/lazreport-0.9.5.lpl svneol=native#text/plain
