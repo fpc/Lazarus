@@ -4942,35 +4942,21 @@ var
   OldPPUFilename: String;
   OutDir: string;
   Owners: TFPList;
+  LFMBuf: TCodeBuffer;
 begin
   OldFilename:=AnUnitInfo.Filename;
   OldFilePath:=ExtractFilePath(OldFilename);
+  OldLFMFilename:=ChangeFileExt(OldFilename,'.lfm');
   SrcEdit:=GetSourceEditorForUnitInfo(AnUnitInfo);
   if NewUnitName='' then
     NewUnitName:=AnUnitInfo.UnitName;
   //debugln('TMainIDE.DoRenameUnit ',AnUnitInfo.Filename,' NewUnitName=',NewUnitName,' OldUnitName=',AnUnitInfo.UnitName);
 
   // check new resource file
+  NewLFMFilename:=ChangeFileExt(NewFilename,'.lfm');
   if AnUnitInfo.ComponentName='' then begin
     // unit has no component
     // -> remove lfm file, so that it will not be auto loaded on next open
-    NewLFMFilename:=ChangeFileExt(NewFilename,'.lfm');
-    if (FileExists(NewLFMFilename))
-    and (not DeleteFile(NewLFMFilename))
-    and (MessageDlg(lisPkgMangDeleteFailed, Format(lisDeletingOfFileFailed, [
-      '"', NewLFMFilename, '"']), mtError, [mbIgnore, mbCancel], 0)=mrCancel)
-      then
-    begin
-      Result:=mrCancel;
-      exit;
-    end;
-  end;
-
-  // check new resource file
-  if AnUnitInfo.ComponentName='' then begin
-    // unit has no component
-    // -> remove lfm file, so that it will not be auto loaded on next open
-    NewLFMFilename:=ChangeFileExt(NewFilename,'.lfm');
     if (FileExists(NewLFMFilename))
     and (not DeleteFile(NewLFMFilename))
     and (MessageDlg(lisPkgMangDeleteFailed, Format(lisDeletingOfFileFailed, [
@@ -5018,7 +5004,7 @@ begin
     end;
   end;
 
-  // rename Resource file
+  // rename Resource file (.lrs)
   if (ResourceCode<>nil) then begin
     // the resource include line in the code will be changed later after
     // changing the unitname
@@ -5058,6 +5044,19 @@ begin
   {$IFDEF IDE_DEBUG}
   writeln('TMainIDE.DoRenameUnit D ',ResourceCode<>nil);
   {$ENDIF}
+
+  // save new lfm
+  if FilenameIsAbsolute(OldLFMFilename) and FileExists(OldLFMFilename) then
+  begin
+    LFMBuf:=CodeToolBoss.LoadFile(OldLFMFilename,false,false);
+    if LFMBuf<>nil then begin
+      Result:=SaveCodeBufferToFile(LFMBuf,NewLFMFilename,true);
+      if Result<>mrOk then begin
+        DebugLn(['TMainIDE.DoRenameUnit SaveCodeBufferToFile failed for ',NewLFMFilename]);
+      end;
+      if Result=mrAbort then exit;
+    end;
+  end;
 
   // set new codebuffer in unitinfo and sourceeditor
   AnUnitInfo.Source:=NewSource;
@@ -5165,23 +5164,33 @@ begin
   // delete old pas, .pp, .ppu
   if (CompareFilenames(NewFilename,OldFilename)<>0)
   and FilenameIsAbsolute(OldFilename) and FileExists(OldFilename) then begin
-    if MessageDlg('Delete old file?',
-      'Delete old file "'+OldFilename+'"?',
+    if MessageDlg(lisDeleteOldFile2,
+      Format(lisDeleteOldFile, ['"', OldFilename, '"']),
       mtConfirmation,[mbYes,mbNo],0)=mrYes then
     begin
       Result:=DeleteFileInteractive(OldFilename,[mbAbort]);
       if Result=mrAbort then exit;
       // delete old lfm
-      OldLFMFilename:=ChangeFileExt(OldFilename,'.lfm');
-      if FileExists(OldLFMFilename) then begin
-        Result:=DeleteFileInteractive(OldLFMFilename,[mbAbort]);
-        if Result=mrAbort then exit;
+      if FileExists(NewLFMFilename) then begin
+        // the new file has a lfm, so it is safe to delete the old
+        // (if NewLFMFilename does not exist, it didn't belong to the unit
+        //  or there was an error during delete. Never delete files in doubt.)
+        OldLFMFilename:=ChangeFileExt(OldFilename,'.lfm');
+        if FileExists(OldLFMFilename) then begin
+          Result:=DeleteFileInteractive(OldLFMFilename,[mbAbort]);
+          if Result=mrAbort then exit;
+        end;
       end;
       // delete old lrs
-      OldLRSFilename:=ChangeFileExt(OldFilename,'.lrs');
-      if FileExists(OldLRSFilename) then begin
-        Result:=DeleteFileInteractive(OldLRSFilename,[mbAbort]);
-        if Result=mrAbort then exit;
+      if (ResourceCode<>nil) and FileExists(ResourceCode.Filename) then begin
+        // the new file has a lrs, so it is safe to delete the old
+        // (if the new lrs does not exist, it didn't belong to the unit
+        //  or there was an error during delete. Never delete files in doubt.)
+        OldLRSFilename:=ChangeFileExt(OldFilename,'.lrs');
+        if FileExists(OldLRSFilename) then begin
+          Result:=DeleteFileInteractive(OldLRSFilename,[mbAbort]);
+          if Result=mrAbort then exit;
+        end;
       end;
       // delete ppu in source directory
       OldPPUFilename:=ChangeFileExt(OldFilename,'.ppu');

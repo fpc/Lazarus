@@ -3841,6 +3841,7 @@ resourcestring
   lisEveryNThLineNumber = 'Every n-th line number:';
   lisLink = 'Link:';
   lisShort = 'Short:';
+  lisDeleteOldFile2 = 'Delete old file?';
   
 implementation
 
