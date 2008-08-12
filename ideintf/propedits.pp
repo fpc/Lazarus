@@ -6252,7 +6252,7 @@ begin
   // RegisterPropertyEditor(TypeInfo(TColor),nil,'',TColorPropertyEditor);
   DummyClassForPropTypes:=TDummyClassForPropTypes.Create;
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
-    nil,'Name',TComponentNamePropertyEditor);
+    TComponent,'Name',TComponentNamePropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TTranslateString'),
     TCustomLabel, 'Caption', TStringMultilinePropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TTranslateString'),
