@@ -4987,6 +4987,8 @@ begin
 end;
 
 constructor TFileFilterPropertyEditorForm.Create(AOwner: TComponent);
+var
+  BtnPanel: TPanel;
 begin
   inherited Create(AOwner);
   Caption:='Filter editor';
@@ -4994,37 +4996,42 @@ begin
   Width:=417;
   Position:=poScreenCenter;
   BorderStyle:=bsDialog;
-  StringGrid1:=TStringGrid.Create(Self);
-  StringGrid1.ColCount:=2;
-  StringGrid1.DefaultColWidth:=190;
-  StringGrid1.Options:=StringGrid1.Options + [goEditing, goAlwaysShowEditor];
-  StringGrid1.RowCount:= 100;
-  StringGrid1.Left:= 8;
-  StringGrid1.Height := 248;
-  StringGrid1.Top := 8;
-  StringGrid1.Width := 408;
-  StringGrid1.Parent:=Self;
-  StringGrid1.FixedCols := 0;
+  BtnPanel:=TPanel.Create(Self);
+  with BtnPanel do begin
+    Name:='BtnPanel';
+    Caption:='';
+    BevelOuter:=bvNone;
+    Align:=alBottom;
+    AutoSize:=true;
+    Parent:=Self;
+  end;
   with TBitBtn.Create(Self) do
   begin
-    Parent:=Self;
+    BorderSpacing.Around:=6;
     Kind := bkOK;
-    Left := 256;
-    Height := 25;
-    Top := 264;
-    Width := 75;
+    Align:=alRight;
+    Parent:=BtnPanel;
   end;
   with TBitBtn.Create(Self) do
   begin
-    Parent:=Self;
+    BorderSpacing.Around:=6;
     Kind := bkCancel;
-    Left := 341;
-    Height := 25;
-    Top := 264;
-    Width := 75;
+    Align:=alRight;
+    Parent:=BtnPanel;
   end;
-  StringGrid1.Cells[0,0]:='Filter name';
-  StringGrid1.Cells[1,0]:='Filter';
+  StringGrid1:=TStringGrid.Create(Self);
+  with StringGrid1 do begin
+    BorderSpacing.Around:=6;
+    ColCount:=2;
+    DefaultColWidth:=190;
+    Options:=StringGrid1.Options + [goEditing, goAlwaysShowEditor];
+    RowCount:= 100;
+    FixedCols := 0;
+    Align:=alClient;
+    Parent:=Self;
+    Cells[0, 0]:=peFilterName;
+    Cells[1, 0]:=peFilter;
+  end;
 end;
 
 { TFileDlgFilterProperty }

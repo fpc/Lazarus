@@ -359,6 +359,8 @@ resourcestring
   oisTheMethodIsIncompatibleToThisEventPressCancelToUnd = 'The method %s%s%s '
     +'is incompatible to this event (%s).%sPress Cancel to undo,%spress '
     +'Ignore to force it.';
+  peFilterName = 'Filter name';
+  peFilter = 'Filter';
   
 implementation
 
