@@ -31,7 +31,8 @@
 { $DEFINE TREEVIEW_DEBUG}
 
 const
-  TTreeNodeStreamVersion : word = 1;
+  TTreeNodeWithPointerStreamVersion : word = 1;
+  TTreeNodeStreamVersion : word = 2;
   TVAutoHeightString = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789|\()^';
   MinNodeCapacity = 10;
 
@@ -1600,28 +1601,44 @@ begin
   Result := (Text = Node.Text) and (Data = Node.Data);
 end;
 
-procedure TTreeNode.ReadData(Stream: TStream; StreamVersion: integer;
-  Info: PTreeNodeInfo);
+procedure TTreeNode.ReadData(Stream: TStream; StreamVersion: integer);
 var
   I, ItemCount: Integer;
   NewExpanded: boolean;
+  OldInfo: TOldTreeNodeInfo;
+  Info: TTreeNodeInfo;
 begin
   if Owner<>nil then Owner.ClearCache;
-  Stream.ReadBuffer(Info^, SizeOf(TTreeNodeInfo));
-  ImageIndex := Info^.ImageIndex;
-  SelectedIndex := Info^.SelectedIndex;
-  StateIndex := Info^.StateIndex;
-  OverlayIndex := Info^.OverlayIndex;
-  Data := Info^.Data;
-  Height := Info^.Height;
-  NewExpanded := Info^.Expanded;
-  SetLength(FText,Info^.TextLen);
+  if StreamVersion=TTreeNodeWithPointerStreamVersion then
+  begin
+    Stream.ReadBuffer(OldInfo, SizeOf(TOldTreeNodeInfo));
+    ImageIndex := OldInfo.ImageIndex;
+    SelectedIndex := OldInfo.SelectedIndex;
+    StateIndex := OldInfo.StateIndex;
+    OverlayIndex := OldInfo.OverlayIndex;
+    Data := OldInfo.Data;
+    Height := OldInfo.Height;
+    NewExpanded := OldInfo.Expanded;
+    ItemCount := OldInfo.Count;
+    SetLength(FText,OldInfo.TextLen)
+  end
+  else
+  begin
+    Stream.ReadBuffer(Info, SizeOf(TTreeNodeInfo));
+    ImageIndex := Info.ImageIndex;
+    SelectedIndex := Info.SelectedIndex;
+    StateIndex := Info.StateIndex;
+    OverlayIndex := Info.OverlayIndex;
+    Height := Info.Height;
+    NewExpanded := Info.Expanded;
+    ItemCount := Info.Count;
+    SetLength(FText,Info.TextLen);
+  end;
   if FText<>'' then
     Stream.Read(FText[1],length(FText));
   if Owner<>nil then begin
-    ItemCount := Info^.Count;
     for I := 0 to ItemCount - 1 do
-      Owner.AddChild(Self, '').ReadData(Stream, StreamVersion, Info);
+      Owner.AddChild(Self, '').ReadData(Stream, StreamVersion);
   end;
   Expanded := NewExpanded;
 end;
@@ -1646,23 +1663,24 @@ begin
   end;
 end;
 
-procedure TTreeNode.WriteData(Stream: TStream; Info: PTreeNodeInfo);
-var i: integer;
+procedure TTreeNode.WriteData(Stream: TStream);
+var
+  i: integer;
+  Info: TTreeNodeInfo;
 begin
-  Info^.ImageIndex := ImageIndex;
-  Info^.SelectedIndex := SelectedIndex;
-  Info^.OverlayIndex := OverlayIndex;
-  Info^.StateIndex := StateIndex;
-  Info^.Data := Data;
-  Info^.Height := FHeight;
-  Info^.Count := Count;
-  Info^.Expanded := Expanded;
-  Info^.TextLen := Length(Text);
-  Stream.WriteBuffer(Info^, SizeOf(TTreeNodeInfo));
+  Info.ImageIndex := ImageIndex;
+  Info.SelectedIndex := SelectedIndex;
+  Info.OverlayIndex := OverlayIndex;
+  Info.StateIndex := StateIndex;
+  Info.Height := FHeight;
+  Info.Count := Count;
+  Info.Expanded := Expanded;
+  Info.TextLen := Length(Text);
+  Stream.WriteBuffer(Info, SizeOf(TTreeNodeInfo));
   if Text<>'' then
     Stream.Write(FText[1],length(Text));
   for i := 0 to Count - 1 do
-    Items[i].WriteData(Stream, Info);
+    Items[i].WriteData(Stream);
 end;
 
 procedure TTreeNode.WriteDelphiData(Stream: TStream; Info: PDelphiNodeInfo);
@@ -2359,7 +2377,6 @@ end;
 procedure TTreeNodes.ReadData(Stream: TStream);
 var
   I, NewCount, MagicNumber: Integer;
-  NodeInfo: TTreeNodeInfo;
   DelphiNodeInfo: TDelphiNodeInfo;
   StreamVersion: word;
 begin
@@ -2372,7 +2389,7 @@ begin
     // read top level node count
     Stream.ReadBuffer(NewCount, SizeOf(NewCount));
     for I := 0 to NewCount - 1 do
-      Add(nil, '').ReadData(Stream, StreamVersion, @NodeInfo);
+      Add(nil, '').ReadData(Stream, StreamVersion);
   end else begin
     // delphi stream
     NewCount:=MagicNumber;
@@ -2384,7 +2401,6 @@ end;
 procedure TTreeNodes.WriteData(Stream: TStream);
 var
   ANode: TTreeNode;
-  NodeInfo: TTreeNodeInfo;
   MagicNumber: integer;
 begin
   // -7 for lcl stream
@@ -2397,7 +2413,7 @@ begin
   // write all nodes recursively
   ANode := GetFirstNode;
   while ANode <> nil do begin
-    ANode.WriteData(Stream, @NodeInfo);
+    ANode.WriteData(Stream);
     ANode := ANode.GetNextSibling;
   end;
 end;

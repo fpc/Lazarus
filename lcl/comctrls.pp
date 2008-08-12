@@ -1799,13 +1799,24 @@ type
 
   TTreeNodeCompare = function(Node1, Node2: TTreeNode): integer of object;
 
-  PTreeNodeInfo = ^TTreeNodeInfo;
-  TTreeNodeInfo = packed record
+  TOldTreeNodeInfo = packed record
     ImageIndex: Integer;
     SelectedIndex: Integer;
     StateIndex: Integer;
     OverlayIndex: Integer;
     Data: Pointer;
+    Count: Integer;
+    Height: integer;
+    Expanded: boolean;
+    TextLen: integer;
+    // here follows the text
+  end;
+
+  TTreeNodeInfo = packed record
+    ImageIndex: Integer;
+    SelectedIndex: Integer;
+    StateIndex: Integer;
+    OverlayIndex: Integer;
     Count: Integer;
     Height: integer;
     Expanded: boolean;
@@ -1877,8 +1888,7 @@ type
     function IsEqual(Node: TTreeNode): Boolean;
     function IsNodeVisible: Boolean;
     function IsNodeHeightFullVisible: Boolean;
-    procedure ReadData(Stream: TStream; StreamVersion: integer;
-      Info: PTreeNodeInfo);
+    procedure ReadData(Stream: TStream; StreamVersion: integer);
     procedure ReadDelphiData(Stream: TStream; Info: PDelphiNodeInfo);
     procedure SetCut(AValue: Boolean);
     procedure SetData(AValue: Pointer);
@@ -1898,7 +1908,7 @@ type
     procedure SetText(const S: string);
     procedure Unbind;
     procedure UnbindFromMultiSelected;
-    procedure WriteData(Stream: TStream; Info: PTreeNodeInfo);
+    procedure WriteData(Stream: TStream);
     procedure WriteDelphiData(Stream: TStream; Info: PDelphiNodeInfo);
   public
     constructor Create(AnOwner: TTreeNodes);
