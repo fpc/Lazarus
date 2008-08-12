@@ -278,6 +278,7 @@ type
     fExecuteBefore: TCompilationToolOptions;
     fExecuteAfter: TCompilationToolOptions;
     FCreateMakefileOnBuild: boolean;
+    procedure SetTargetFilename(const AValue: String);
   protected
     procedure SetBaseDirectory(const AValue: string); override;
     procedure SetCompilerPath(const AValue: String); override;
@@ -374,7 +375,7 @@ type
     // Properties
     property ParsedOpts: TParsedCompilerOptions read FParsedOpts;
     property BaseDirectory: string read FBaseDirectory write SetBaseDirectory;
-    property TargetFilename: String read fTargetFilename write fTargetFilename;
+    property TargetFilename: String read fTargetFilename write SetTargetFilename;
     property DefaultMakeOptionsFlags: TCompilerCmdLineOptions
                  read FDefaultMakeOptionsFlags write SetDefaultMakeOptionsFlags;
 
@@ -936,6 +937,13 @@ begin
   if fTargetOS=AValue then exit;
   fTargetOS:=AValue;
   IncreaseCompilerParseStamp;
+end;
+
+procedure TBaseCompilerOptions.SetTargetFilename(const AValue: String);
+begin
+  if fTargetFilename=AValue then exit;
+  fTargetFilename:=AValue;
+  Modified:=true;
 end;
 
 procedure TBaseCompilerOptions.SetBaseDirectory(const AValue: string);
