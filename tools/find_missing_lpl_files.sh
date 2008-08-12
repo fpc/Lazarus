@@ -12,7 +12,7 @@ fi
 
 LPKFiles=$(find . -name '*.lpk' | xargs)
 for LPK in $LPKFiles; do
-  LPKName=$(echo $LPK | sed -e 's/.*\///' -e 's/.lpk//')
+  LPKName=$(echo $LPK | sed -e 's/.*\///' -e 's/\.lpk//')
   Missing=
   ls packager/globallinks/${LPKName}-*.lpl >/dev/null 2>/dev/null || Missing=1
   if [ -n "$Missing" ]; then
