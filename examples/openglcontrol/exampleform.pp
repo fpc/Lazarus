@@ -28,11 +28,11 @@ unit ExampleForm;
 interface
 
 uses
-  Classes, SysUtils, Forms, LResources, Buttons,
+  Classes, SysUtils, LCLProc, Forms, LResources, Buttons,
   StdCtrls, Dialogs, GL, OpenGLContext;
 
 const
- GL_CLAMP_TO_EDGE = $812F;
+  GL_CLAMP_TO_EDGE = $812F;
 
 type
   TglTexture = class
@@ -69,6 +69,8 @@ type
     destructor Destroy; override;
   private
     AreaInitialized: boolean;
+    FrameCount: integer;
+    LastFrameTicks: integer;
   end;
 
   TParticle = class
@@ -443,8 +445,10 @@ end;
 
 procedure TExampleForm.IdleFunc(Sender: TObject; var Done: Boolean);
 begin
+  OpenGLControl1.Invalidate;
   OpenGLControl1Paint(Self);
   Done:=false; // tell lcl to handle messages and return immediatly
+
 end;
 
 // --------------------------------------------------------------------------
@@ -455,36 +459,37 @@ procedure TExampleForm.LightingButton1Click(Sender: TObject);
 begin
   if lighted then glDisable(GL_LIGHTING) else glEnable(GL_LIGHTING);
   lighted:=not lighted;
-  OpenGLControl1Paint(Self);
+  OpenGLControl1.Invalidate;// not need
 end;
 
 procedure TExampleForm.BlendButton1Click(Sender: TObject);
 begin
   blended:=not blended;
-  OpenGLControl1Paint(Self);
+  OpenGLControl1.Invalidate;
 end;
 
 procedure TExampleForm.MoveCubeButton1Click(Sender: TObject);
 begin
   MoveCube:=not MoveCube;
-  OpenGLControl1Paint(Self);
+  OpenGLControl1.Invalidate;
 end;
 
 procedure TExampleForm.MoveBackgroundButton1Click(Sender: TObject);
 begin
   MoveBackground:=not MoveBackground;
-  OpenGLControl1Paint(Self);
+  OpenGLControl1.Invalidate;
 end;
 
 procedure TExampleForm.RotateZButton1Click(Sender: TObject);
 begin
   ParticleEngine.Start;
+  OpenGLControl1.Invalidate;
 end;
 
 procedure TExampleForm.RotateZButton2Click(Sender: TObject);
 begin
   ParticleBlended:=not ParticleBlended;
-  OpenGLControl1Paint(Self);
+  OpenGLControl1.Invalidate;
 end;
 
 // ---------------------------------------------------------------------------
@@ -742,6 +747,14 @@ var
   CurTime: TDateTime;
   MSecs: integer;
 begin
+  inc(FrameCount);
+  inc(LastFrameTicks,OpenGLControl1.FrameDiffTimeInMSecs);
+  if (LastFrameTicks>=1000) then begin
+    DebugLn(['TExampleForm.OpenGLControl1Paint Frames per second: ',FrameCount]);
+    dec(LastFrameTicks,1000);
+    FrameCount:=0;
+  end;
+
   if OpenGLControl1.MakeCurrent then
   begin
     if not AreaInitialized then begin
