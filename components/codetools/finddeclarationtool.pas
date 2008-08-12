@@ -3189,7 +3189,7 @@ begin
           end;
           // property has type
           Params.Save(OldInput);
-          Params.SetIdentifier(Self,@Src[CurPos.StartPos],nil);
+          Params.SetIdentifier(Self,@Src[OldPos],nil);
           Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound]
                         +(fdfGlobals*Params.Flags);
           Params.ContextNode:=Result.Node.Parent;
