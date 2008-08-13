@@ -21,13 +21,13 @@ If you have not yet compiled lazres, go to the tools directory and type make.
 1. bookmark.lrs
 
 cd <lazarusdir>/images/sourceeditor/
-../../tools/lazres ../bookmark.lrs *.xpm
+../../tools/lazres ../bookmark.lrs *.png
 
 
 2. codetoolsdefines.lrs
 
 cd <lazarusdir>/images/codetoolsdefines
-../../tools/lazres ../../codetoolsdefines.lrs *.xpm
+../../tools/lazres ../../ide/codetoolsdefines.lrs *.png
 
 
 3. components_images.lrs
@@ -35,10 +35,11 @@ cd <lazarusdir>/images/codetoolsdefines
 cd <lazarusdir>/images/
 ../tools/lazres components_images.lrs @components_images_list.txt
 
+
 4. mainicon.lrs
 
 cd <lazarusdir>/images/
-../tools/lazres mainicon.lrs mainicon.xpm
+../tools/lazres mainicon.lrs mainicon.ico
 
 
 5. laz_images.lrs
@@ -50,14 +51,8 @@ rm ../main.ppu
 
 6. splash.lrs
 
-cd <lazarusdir>/
-./tools/lazres splash.lrs images/splash_logo.xpm
-
-
-7. unitdependencies.lrs
-
-cd <lazarusdir>/images/unitdependencies
-../../tools/lazres ../../unitdependencies.lrs *.xpm
+cd <lazarusdir>/images
+./tools/lazres splash_logo.lrs splash_logo.png
 
 
 Others
