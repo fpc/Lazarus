@@ -123,8 +123,9 @@ type
     constructor Create(aOwner : TComponent); override;
     destructor Destroy; override;
 
-    procedure SelectOne(Per : TPersistent);
-    procedure GetSelectedObjects;
+    procedure Select(Obj: TObject);
+    procedure SetModifiedEvent(AEvent: TNotifyEvent);
+    procedure Refresh;
   end;
   
   { TfrDesignerPage }
@@ -440,7 +441,6 @@ type
     FUndoBufferLength, FRedoBufferLength: Integer;
     FirstTime: Boolean;
     MaxItemWidth, MaxShortCutWidth: Integer;
-    fld: Array[0..6] of String[100];
     FirstInstance: Boolean;
     EditAfterInsert: Boolean;
     FCurDocName, FCaption: String;
@@ -451,10 +451,11 @@ type
     {$IFDEF StdOI}
     ObjInsp  : TObjectInspector;
     PropHook : TPropertyEditorHook;
-    procedure ObjInsp_Select(Obj:TObject);
     {$ELSE}
     ObjInsp  : TfrObjectInspector;
     {$ENDIF}
+    procedure ObjInspSelect(Obj:TObject);
+    procedure ObjInspRefresh;
 
     procedure GetFontList;
     procedure SetMenuBitmaps;
@@ -516,7 +517,6 @@ type
     procedure UpdScrollbars;
     procedure InsertFieldsFormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure InsertDbFields;
-    
   public
     constructor Create(aOwner : TComponent); override;
     destructor Destroy; override;
@@ -531,7 +531,7 @@ type
     procedure ShowMemoEditor;
     procedure ShowEditor;
     procedure RedrawPage; override;
-    procedure OnModify(Item: Integer; var EditText: String);
+    procedure OnModify(sender: TObject);
     function PointsToUnits(x: Integer): Double;  override;
     function UnitsToPoints(x: Double): Integer;  override;
     procedure MoveObjects(dx, dy: Integer; aResize: Boolean); override;
@@ -847,28 +847,53 @@ var
   end;
 begin
   if t.Selected then
-  with t, Canvas do
+  with t, Self.Canvas do
   begin
     Pen.Width := 5;
     Pen.Mode := pmXor;
     Pen.Color := clWhite;
     px := x + dx div 2;
     py := y + dy div 2;
+
     DrawPoint(x, y); 
-    DrawPoint(x + dx, y);
-    DrawPoint(x, y + dy);
-    if Objects.IndexOf(t) = RightBottom then
-      Pen.Color := clTeal;
-    DrawPoint(x + dx, y + dy);
+
+    if dx>0 then
+      DrawPoint(x + dx, y);
+
+    if dy>0 then
+      DrawPoint(x, y + dy);
+
+    if (dx>0) and (dy>0) then
+    begin
+      if Objects.IndexOf(t) = RightBottom then
+        Pen.Color := clTeal;
+      DrawPoint(x + dx, y + dy);
+    end;
+
     Pen.Color := clWhite;
     if SelNum = 1 then
     begin
-      DrawPoint(px, y); 
-      DrawPoint(px, y + dy);
-      DrawPoint(x, py); 
-      DrawPoint(x + dx, py);
+      if px>x then
+        DrawPoint(px, y);
+
+      if py>y then
+        DrawPoint(x, py);
+
+      if (py>y) and (px>x) then
+      begin
+        DrawPoint(px, y + dy);
+        DrawPoint(x + dx, py);
+      end;
     end;
     Pen.Mode := pmCopy;
+    // NOTE: ROP mode under gtk is used not only to draw with pen but
+    //       also any other filled graphics, the problem is that brush
+    //       handle is not invalidated when pen has changed as result
+    //       the ROP mode is not updated and next operation will use
+    //       the old XOR mode.
+    // TODO: Solve this problem in LCL-gtk, as workaround draw something
+    //       using new pen.
+    EllipseC(-100,-100,1,1);
   end;
 end;
 
@@ -1318,7 +1343,7 @@ begin
     DrawPage(dmSelection);
     Down := False;
     GetCursorPos(p);
-    FDesigner.Popup1Popup(nil);
+    //FDesigner.Popup1Popup(nil);
     
     FDesigner.Popup1.PopUp(p.X,p.Y);
     //**
@@ -1345,6 +1370,8 @@ var
   begin
     Objects.Add(frCreateObject(ot, ''));
     t := TfrView(Objects.Last);
+    if t is TfrMemoView then
+      TfrMemoView(t).MonitorFontChanges;
   end;
   
   procedure CreateSection;
@@ -2177,6 +2204,7 @@ begin
   ObjInsp.PropertyEditorHook := PropHook;
   {$ELSE}
   ObjInsp := TFrObjectInspector.Create(Self);
+  ObjInsp.SetModifiedEvent(@OnModify);
   {$ENDIF}
 end;
 
@@ -2880,6 +2908,11 @@ begin
   PageView.Draw(10000, 0);
 end;
 
+procedure TfrDesignerForm.OnModify(sender: TObject);
+begin
+  SelectionChanged;
+end;
+
 procedure TfrDesignerForm.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 var
@@ -3238,6 +3271,7 @@ begin
             Font.Size := LastFontSize;
             if HeaderCB.Checked then
               Font.Style := [fsBold];
+            MonitorFontChanges;
           end;
           PageView.Canvas.Font.Assign(TfrMemoView(t).Font);
           t.Selected := True;
@@ -3272,6 +3306,7 @@ begin
             begin
               Font.Name := LastFontName;
               Font.Size := LastFontSize;
+              MonitorFontChanges;
             end;
             t.Selected := True;
             Inc(SelNum);
@@ -3552,14 +3587,6 @@ begin
   StatusBar1.Panels[2].Text := s;
 end;
 
-procedure SetBit(var w: Word; e: Boolean; m: Integer);
-begin
-  if e then
-    w:=w or m
-  else
-    w:=w and not m;
-end;
-
 procedure TfrDesignerForm.DoClick(Sender: TObject);
 var
   i, j, b: Integer;
@@ -3605,8 +3632,7 @@ begin
              end;
          11..13:
              begin
-               Alignment:=Classes.TAlignment(b-11);
-               Adjust := (Adjust and $FC) + (b - 11);
+               Adjust := (Adjust and $FC) + (b-11);
                LastAdjust := Adjust;
              end;
          14: begin
@@ -3614,16 +3640,6 @@ begin
                LastAdjust := Adjust;
              end;
          15: begin
-               if Sender=ALB5 then
-                 Layout:=tlCenter
-               else if Sender=ALB7 then
-                       Layout:=tlBottom
-                    else
-                       Layout:=tlTop;
-               {$IFDEF DebugLR}
-               DebugLn('SetLayout=',IntToStr(Ord(Layout)));
-               {$ENDIF}
-
                Adjust := (Adjust and $E7) + Word(AlB5.Down) * 8 + Word(AlB7.Down) * $10;
                LastAdjust := Adjust;
              end;
@@ -3760,91 +3776,24 @@ begin
 end;
 
 procedure TfrDesignerForm.FillInspFields;
-var  t: TfrView;
-     i, x, y, dx, dy, v: Integer;
-  
-  procedure FillFields(x, y, dx, dy, v: Integer);
-  begin
-    if FUnits = ruPixels then
-    begin
-      if x <> -10000 then fld[1] := IntToStr(x);
-      if y <> -10000 then fld[2] := IntToStr(y);
-      if dx <> -10000 then fld[3] := IntToStr(dx);
-      if dy <> -10000 then fld[4] := IntToStr(dy);
-    end
-    else
-    begin
-      if x <> -10000 then fld[1] := FloatToStrF(PointsToUnits(x), ffFixed, 4, 2);
-      if y <> -10000 then fld[2] := FloatToStrF(PointsToUnits(y), ffFixed, 4, 2);
-      if dx <> -10000 then fld[3] := FloatToStrF(PointsToUnits(dx), ffFixed, 4, 2);
-      if dy <> -10000 then fld[4] := FloatToStrF(PointsToUnits(dy), ffFixed, 4, 2);
-    end;
-    if v <> -10000 then
-    begin
-      if v <> 0 then v := 1;
-      fld[5] := IntToStr(v);
-    end;
-  end;
-  
+var
+  t: TfrView;
 begin
-  fld[0] := ''; fld[1] := ''; fld[2] := '';
-  fld[3] := ''; fld[4] := ''; fld[5] := ''; fld[6] := '';
-
-
-  {$IFDEF STDOI}
-  ObjInsp_Select(nil);
-  {$ELSE}
-  ObjInsp.SelectOne(nil);
-  {$ENDIF}
+  ObjInspSelect(nil);
   if SelNum = 0 then
-    {$IFDEF STDOI}
-    ObjInsp_Select(Page)
-    {$ELSE}
-    ObjInsp.SelectOne(Page)
-    {$ENDIF}
+    ObjInspSelect(Page)
   else
-    if SelNum = 1 then
-    begin
-      t := TfrView(Objects[TopSelected]);
-      {$IFDEF STDOI}
-      ObjInsp_Select(t);
-      {$ELSE}
-      ObjInsp.SelectOne(t);
-      {$ENDIF}
-      fld[0] := t.Name;
-      FillFields(t.x, t.y, t.dx, t.dy, Integer(t.Visible));
-    end
-    else
-      if SelNum > 1 then
-      begin
-        t := TfrView(Objects[TopSelected]);
-        x := t.x;
-        y := t.y;
-        dx := t.dx;
-        dy := t.dy;
-        v := Integer(t.Visible);
-        for i := 0 to Objects.Count - 1 do
-        begin
-          t := TfrView(Objects[i]);
-          if t.Selected then
-          begin
-            if t.x <> x then x := -10000;
-            if t.y <> y then y := -10000;
-            if t.dx <> dx then dx := -10000;
-            if t.dy <> dy then dy := -10000;
-            if Integer(t.Visible) <> v then v := -10000;
-          end;
-        end;
-        FillFields(x, y, dx, dy, v);
-
-        {$IFDEF STDOI}
-        ObjInsp_Select(Objects);
-        {$ELSE}
-        ObjInsp.GetSelectedObjects;
-        {$ENDIF}
-      end;
+  if SelNum = 1 then
+  begin
+    t := TfrView(Objects[TopSelected]);
+    ObjInspSelect(t);
+  end else
+  if SelNum > 1 then
+    ObjInspSelect(Objects);
+  ObjInspRefresh;
 end;
 
+{
 procedure TfrDesignerForm.OnModify(Item: Integer; var EditText: String);
 var
   t: TfrView;
@@ -3890,7 +3839,7 @@ begin
   StatusBar1.Repaint;
   PBox1.Invalidate;
 end;
-
+}
 procedure TfrDesignerForm.StB1Click(Sender: TObject);
 var
   p: TPoint;
@@ -3906,30 +3855,45 @@ begin
   LinePanel.Visible := not LinePanel.Visible;
 end;
 
+procedure TfrDesignerForm.ObjInspSelect(Obj: TObject);
 {$IFDEF STDOI}
-procedure TfrDesignerForm.ObjInsp_Select(Obj: TObject);
 var
   Selection: TPersistentSelectionList;
   i: Integer;
+{$ENDIF}
 begin
+  {$IFDEF STDOI}
   Selection := TPersistentSelectionList.Create;
   PropHook.LookupRoot:=nil;
-  if Obj is TPersistent then begin
+  if Obj is TPersistent then
+  begin
     Selection.Add(TPersistent(Obj));
     PropHook.LookupRoot:=TPersistent(Obj);
-  end else if Obj is TList then begin
+  end else
+  if Obj is TList then
     with frDesigner.page do
       for i:=0 to Objects.Count-1 do
-        if TfrView(Objects[i]).Selected then begin
+        if TfrView(Objects[i]).Selected then
+        begin
           if PropHook.LookupRoot=nil then
             PropHook.LookupRoot := TPersistent(Objects[i]);
           Selection.Add(TPersistent(Objects[i]));
         end;
-  end;
   ObjInsp.Selection := Selection;
   Selection.Free;
+  {$ELSE}
+  ObjInsp.Select(Obj);
+  {$ENDIF}
 end;
-{$ENDIF}
+
+procedure TfrDesignerForm.ObjInspRefresh;
+begin
+  {$IFDEF STDOI}
+  //TODO: refresh
+  {$ELSE}
+  ObjInsp.Refresh;
+  {$ENDIF}
+end;
 
 procedure TfrDesignerForm.ClB1Click(Sender: TObject);
 var p  : TPoint;
@@ -6192,8 +6156,7 @@ begin
   begin
     DoOnResize;
     BringToFront;
-
-    GetSelectedObjects;
+    Select(Objects);
   end;
   {$IFDEF DebugLR}
   debugLn('TfrObjectInspector.CMVisibleChanged: ', BooLTOStr(Visible));
@@ -6337,6 +6300,7 @@ begin
     Width :=240-10;
     Height:=self.Height-(fPanelHeader.Top+fPanelHeader.Height)-5;
     ShowHint:=false; //cause problems in windows
+    fPropertyGrid.SaveOnChangeTIObject:=false;
   end;
   {$ENDIF}
 end;
@@ -6347,30 +6311,37 @@ begin
   inherited Destroy;
 end;
 
-procedure TfrObjectInspector.SelectOne(Per: TPersistent);
+procedure TfrObjectInspector.Select(Obj: TObject);
+var
+  i      : Integer;
+  NewSel : TPersistentSelectionList;
 begin
-  Self.fPropertyGrid.TIObject:=Per;
+  if (Obj=nil) or (Obj is TPersistent) then
+    fPropertyGrid.TIObject := TPersistent(Obj)
+  else
+  if Obj is TList then
+    with Obj as TList do
+    begin
+      NewSel:=TPersistentSelectionList.Create;
+      try
+        for i:=0 to Count-1 do
+          if TfrView(Items[i]).Selected then
+            NewSel.Add(TfrView(Items[i]));
+        fPropertyGrid.Selection:=NewSel;
+      finally
+        NewSel.Free;
+      end;
+    end;
 end;
 
-procedure TfrObjectInspector.GetSelectedObjects;
-var i      : Integer;
-    NewSel : TPersistentSelectionList;
+procedure TfrObjectInspector.SetModifiedEvent(AEvent: TNotifyEvent);
 begin
-  if Assigned(Objects) then
-  begin
-    NewSel:=TPersistentSelectionList.Create;
-    Try
-      for i:=0 to Objects.Count-1 do
-      begin
-        if TfrView(Objects[i]).Selected then
-          NewSel.Add(TfrView(Objects[i]));
-      end;
+  fPropertyGrid.OnModified:=AEvent;
+end;
 
-      fPropertyGrid.Selection:=NewSel;
-    finally
-      NewSel.Free;
-    end;
-  end;
+procedure TfrObjectInspector.Refresh;
+begin
+  fPropertyGrid.RefreshPropertyValues;
 end;
 
 initialization

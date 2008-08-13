@@ -55,8 +55,8 @@ type
     procedure SetFormatStr(const AValue: string);
   public
     { Public declarations }
-    property AFormat: Integer read GetFormat write SetFormat;
-    property FormatStr:string read GetFormatStr write SetFormatStr;
+    property EdFormat: Integer read GetFormat write SetFormat;
+    property EdFormatStr:string read GetFormatStr write SetFormatStr;
   end;
 
 var

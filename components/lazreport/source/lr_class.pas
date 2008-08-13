@@ -189,7 +189,7 @@ type
     fFrameColor: TColor;
     fFrames    : TfrFrameBorders;
     fFrameStyle: TfrFrameStyle;
-    fFrameWidth: Single;
+    fFrameWidth: Double;
     fStretched : Boolean;
     fStreamMode: TfrStreamMode;
     fFormat    : Integer;
@@ -200,14 +200,20 @@ type
     function GetWidth: Double;
     procedure P1Click(Sender: TObject);
     procedure SetFillColor(const AValue: TColor);
+    procedure SetFormat(const AValue: Integer);
+    procedure SetFormatStr(const AValue: String);
+    procedure SetFrameColor(const AValue: TColor);
     procedure SetFrames(const AValue: TfrFrameBorders);
+    procedure SetFrameStyle(const AValue: TfrFrameStyle);
+    procedure SetFrameWidth(const AValue: Double);
     procedure SetHeight(const AValue: Double);
     procedure SetLeft(const AValue: Double);
+    procedure SetStretched(const AValue: Boolean);
     procedure SetTop(const AValue: Double);
     procedure SetWidth(const AValue: Double);
   protected
     SaveX, SaveY, SaveDX, SaveDY: Integer;
-    SaveFW: Single;
+    SaveFW: Double;
 
     gapx, gapy: Integer;
     Memo1: TStringList;
@@ -222,6 +228,8 @@ type
     procedure BeginDraw(ACanvas: TCanvas);
     procedure GetBlob(b: TfrTField); virtual;
     procedure OnHook(View: TfrView); virtual;
+    procedure BeforeChange;
+    procedure AfterChange;
   public
     Parent: TfrBand;
     ID: Integer;
@@ -262,14 +270,14 @@ type
     property Canvas : TCanvas read fCanvas write fCanvas;
 
     property FillColor : TColor read fFillColor write SetFillColor;
-    property Stretched : Boolean read fStretched write fStretched;
+    property Stretched : Boolean read fStretched write SetStretched;
 
     property Frames : TfrFrameBorders read fFrames write SetFrames;
-    property FrameColor : TColor read fFrameColor write fFrameColor;
-    property FrameStyle : TfrFrameStyle read fFrameStyle write fFrameStyle;
-    property FrameWidth : Single read fFrameWidth write fFrameWidth;
-    property Format     : Integer read fFormat write fFormat;
-    property FormatStr  : String read fFormatStr write fFormatStr;
+    property FrameColor : TColor read fFrameColor write SetFrameColor;
+    property FrameStyle : TfrFrameStyle read fFrameStyle write SetFrameStyle;
+    property FrameWidth : Double read fFrameWidth write SetFrameWidth;
+    property Format     : Integer read fFormat write SetFormat;
+    property FormatStr  : String read fFormatStr write SetFormatStr;
 
     property StreamMode: TfrStreamMode read fStreamMode write fStreamMode;
 
@@ -296,20 +304,23 @@ type
 
   TfrMemoView = class(TfrStretcheable)
   private
-    fAlignment   : Classes.TAlignment;
     fAngle       : Byte;
     fFont        : TFont;
-    fLayout      : TTextLayout;
-    fWordWrap    : Boolean;
 
+    function GetAlignment: TAlignment;
     function GetAutoSize: Boolean;
+    function GetLayout: TTextLayout;
+    function GetWordWrap: Boolean;
     procedure P1Click(Sender: TObject);
     procedure P2Click(Sender: TObject);
     procedure P3Click(Sender: TObject);
     procedure P4Click(Sender: TObject);
     procedure P5Click(Sender: TObject);
+    procedure SetAlignment(const AValue: TAlignment);
     procedure SetAutoSize(const AValue: Boolean);
     procedure SetFont(Value: TFont);
+    procedure SetLayout(const AValue: TTextLayout);
+    procedure SetWordWrap(const AValue: Boolean);
   protected
     Streaming: Boolean;
     TextHeight: Integer;
@@ -325,8 +336,9 @@ type
     function MinHeight: Integer; override;
     function RemainHeight: Integer; override;
     procedure GetBlob(b: TfrTField); override;
+    procedure FontChange(sender: TObject);
   public
-    Adjust: Integer;
+    Adjust: Integer; // bit format xxxLLRAA: LL=Layout, R=Rotated, AA=Alignment
     Highlight: TfrHighlightAttr;
     HighlightStr: String;
     LineSpacing, CharacterSpacing: Integer;
@@ -343,13 +355,15 @@ type
     procedure SaveToStream(Stream: TStream); override;
     procedure SaveToXML(XML: TXMLConfig; Path: String); override;
     procedure DefinePopupMenu(Popup: TPopupMenu); override;
+
+    procedure MonitorFontChanges;
     
   published
     property Font      : TFont read fFont write SetFont;
-    property Alignment : Classes.TAlignment read fAlignment write fAlignment;
-    property Layout    : TTextLayout read fLayout write fLayout;
+    property Alignment : TAlignment read GetAlignment write SetAlignment;
+    property Layout    : TTextLayout read GetLayout write SetLayout;
     property Angle     : Byte read fAngle write fAngle;
-    property WordWrap  : Boolean read fWordWrap write fWordWrap;
+    property WordWrap  : Boolean read GetWordWrap write SetWordWrap;
     property AutoSize  : Boolean read GetAutoSize write SetAutoSize;
     
     property FillColor;
@@ -429,6 +443,7 @@ type
     procedure P2Click(Sender: TObject);
     function GetPictureType: byte;
     function PictureTypeToGraphic(b: Byte): TGraphic;
+    procedure SetPicture(const AValue: TPicture);
   protected
     procedure GetBlob(b: TfrTField); override;
   public
@@ -444,7 +459,7 @@ type
     procedure DefinePopupMenu(Popup: TPopupMenu); override;
     class function GetFilter: string;
   published
-    property Picture : TPicture read fPicture write fPicture;
+    property Picture : TPicture read fPicture write SetPicture;
 
     property Memo;
     property Script;
@@ -810,7 +825,7 @@ type
     FComments     : TStringList;
     
     
-    function FormatValue(V: Variant; Format: Integer; const FormatStr: String): String;
+    function FormatValue(V: Variant; AFormat: Integer; const AFormatStr: String): String;
 //    function GetLRTitle: String;
 
     procedure OnGetParsFunction(const aName: String; p1, p2, p3: Variant;
@@ -1035,6 +1050,7 @@ procedure frRegisterExportFilter(ClassRef: TClass;
 procedure frRegisterFunctionLibrary(ClassRef: TClass);
 procedure frRegisterTool(MenuCaption: String; ButtonBmp: TBitmap; OnClick: TNotifyEvent);
 function GetDefaultDataSet: TfrTDataSet;
+procedure SetBit(var w: Word; e: Boolean; m: Integer);
 
 const
   frCurrentVersion = 24; // this is current version (2.4)
@@ -1368,14 +1384,35 @@ begin
     DataSet.Init;
 end;
 
+// locale neutral StrToFloatDef
+function StringToFloatDef(S:String; const ADefault:Double): Double;
+var
+  Code: Integer;
+begin
+  if S='' then
+    Code:=1
+  else
+    Val(S, Result, Code);
+  if Code>0 then
+    Result:=ADefault;
+end;
+
+procedure SetBit(var w: Word; e: Boolean; m: Integer);
+begin
+  if e then
+    w:=w or m
+  else
+    w:=w and not m;
+end;
+
 {----------------------------------------------------------------------------}
 constructor TfrView.Create;
 begin
   inherited Create;
   Parent := nil;
   Memo1 := TStringList.Create;
-  FrameWidth := 1;
-  FrameColor := clBlack;
+  fFrameWidth := 1;
+  fFrameColor := clBlack;
   fFillColor := clNone;
   fFormat := 2*256 + Ord(DecimalSeparator);
   BaseName := 'View';
@@ -1406,14 +1443,14 @@ begin
   Selected := From.Selected;
 
   Flags := From.Flags;
-  FrameWidth := From.FrameWidth;
-  FrameColor := From.FrameColor;
-  FrameStyle := From.FrameStyle;
-  FillColor := From.FillColor;
+  fFrameWidth := From.FrameWidth;
+  fFrameColor := From.FrameColor;
+  fFrameStyle := From.FrameStyle;
+  fFillColor := From.FillColor;
   fFormat := From.Format;
   fFormatStr := From.FormatStr;
-  Visible := From.Visible;
-  Frames:=From.Frames;
+  fVisible := From.Visible;
+  fFrames:=From.Frames;
 end;
 
 procedure TfrView.CalcGaps;
@@ -1445,7 +1482,7 @@ begin
   {$IFDEF DebugLR}
   DebugLn('CalcGaps: dx=',dbgs(dx),' ScaleX=',dbgs(ScaleX));
   {$ENDIF}
-  FrameWidth := FrameWidth * ScaleX;
+  fFrameWidth := FrameWidth * ScaleX;
   gapx := wx2 + 2;
   gapy := wy2 div 2 + 1;
   bx := x;
@@ -1466,7 +1503,7 @@ begin
   y  := SaveY;
   dx := SaveDX;
   dy := SaveDY;
-  FrameWidth := SaveFW;
+  fFrameWidth := SaveFW;
 end;
 
 procedure TfrView.ShowBackground;
@@ -1643,7 +1680,9 @@ begin
 end;
 
 procedure TfrView.LoadFromStream(Stream: TStream);
-var  wb : Word;
+var
+  wb : Word;
+  S  : Single;
 begin
   {$IFDEF DebugLR}
   DebugLn('%s%s.TfrView.LoadFromStream begin StreamMode=%d ClassName=%s',
@@ -1666,7 +1705,7 @@ begin
     Read(dy, 4);
     Read(Flags, 2);
 
-    Read(fFrameWidth, SizeOf(fFrameWidth));
+    Read(S, SizeOf(S)); fFrameWidth := S;
     Read(fFrameColor, SizeOf(fFrameColor));
     Read(fFrames,SizeOf(fFrames));
     Read(fFrameStyle, SizeOf(fFrameStyle));
@@ -1712,7 +1751,7 @@ begin
   dy := XML.GetValue(Path + 'Size/Height/Value', 100);
   Flags := Word(XML.GetValue(Path + 'Flags/Value', 0)); // TODO Check default
 
-  FFrameWidth := XML.GetValue(Path+'Frames/FrameWidth/Value', 1); // TODO Check default
+  FFrameWidth := StringToFloatDef(XML.GetValue(Path+'Frames/FrameWidth/Value', ''), 1.0);
   FFramecolor := StringToColor(XML.GetValue(Path+'Frames/FrameColor/Value', 'clBlack')); // TODO Check default
 
   S:=XML.GetValue(Path+'Frames/FrameBorders/Value','');
@@ -1736,6 +1775,8 @@ begin
 end;
 
 procedure TfrView.SaveToStream(Stream: TStream);
+var
+  S: Single;
 begin
   {$IFDEF DebugLR}
   DebugLn('%s%s.SaveToStream begin',[sspc,name]);
@@ -1752,7 +1793,7 @@ begin
     Write(dy, 4);
     Write(Flags, 2);
 
-    Write(fFrameWidth,SizeOf(fFrameWidth));
+    S := fFrameWidth; Write(s,SizeOf(s));
     Write(fFrameColor, SizeOf(fFrameColor));
     Write(fFrames,SizeOf(fFrames));
     Write(fFrameStyle, SizeOf(fFrameStyle));
@@ -1779,23 +1820,27 @@ begin
   inherited SaveToXML(XML,Path);
   XML.SetValue(Path+'Typ/Value', frTypeObjectToStr(Typ));
   XML.SetValue(Path+'StreamMode/Value', Ord(StreamMode)); //todo: use symbolic valuess
-  XML.SetValue(Path+'Size/Left/Value', GetSaveProperty('Left'));
-  XML.SetValue(Path+'Size/Top/Value', GetSaveProperty('Top'));
-  XML.SetValue(Path+'Size/Width/Value', GetSaveProperty('Width'));
-  XML.SetValue(Path+'Size/Height/Value', GetSaveProperty('Height'));
+  XML.SetValue(Path+'Size/Left/Value', x);
+  XML.SetValue(Path+'Size/Top/Value', y);
+  XML.SetValue(Path+'Size/Width/Value', dx);
+  XML.SetValue(Path+'Size/Height/Value', dy);
   XML.SetValue(Path+'Flags/Value', flags);
   
   if IsPublishedProp(self,'FillColor') then
     XML.SetValue(Path+'FillColor/Value', GetSaveProperty('FillColor'));
 
-  if IsPublishedProp(self,'Frames') then
-  begin
-    XML.SetValue(Path+'Frames/FrameWidth/Value', GetSaveProperty('FrameWidth'));
+  if IsPublishedProp(self,'FrameColor') then
     XML.SetValue(Path+'Frames/FrameColor/Value', GetSaveProperty('FrameColor'));
-    XML.SetValue(Path+'Frames/FrameBorders/Value', GetSaveProperty('Frames'));
+
+  if IsPublishedProp(self,'FrameStyle') then
     XML.SetValue(Path+'Frames/FrameStyle/Value', GetSaveProperty('FrameStyle'));
-  end;
-  
+
+  if IsPublishedProp(self,'FrameWidth') then
+    XML.SetValue(Path+'Frames/FrameWidth/Value', GetSaveProperty('FrameWidth'));
+
+  if IsPublishedProp(self,'Frames') then
+    XML.SetValue(Path+'Frames/FrameBorders/Value', GetSaveProperty('Frames'));
+
   if StreamMode = smDesigning then
   begin
     if IsPublishedProp(self,'Format') then
@@ -1824,6 +1869,18 @@ end;
 procedure TfrView.OnHook(View: TfrView);
 begin
   if view=nil then;
+end;
+
+procedure TfrView.BeforeChange;
+begin
+  if (frDesigner<>nil) and (fUpdate=0) then
+    frDesigner.BeforeChange;
+end;
+
+procedure TfrView.AfterChange;
+begin
+  if (frDesigner<>nil) and (fUpdate=0) then
+    frDesigner.AfterChange;
 end;
 
 function TfrView.GetClipRgn(rt: TfrRgnType): HRGN;
@@ -1934,48 +1991,103 @@ end;
 function TfrView.GetLeft: Double;
 begin
   if frDesigner<>nil then
-    result := frDesigner.PointsToUnits(inherited Left)
+    result := frDesigner.PointsToUnits(x)
   else
-    result := inherited Left;
+    result := x;
 end;
 
 function TfrView.GetHeight: Double;
 begin
   if frDesigner<>nil then
-    result := frDesigner.PointsToUnits(inherited Height)
+    result := frDesigner.PointsToUnits(dy)
   else
-    result := inherited Height;
+    result := dy;
 end;
 
 function TfrView.GetTop: Double;
 begin
   if frDesigner<>nil then
-    result := frDesigner.PointsToUnits(inherited Top)
+    result := frDesigner.PointsToUnits(y)
   else
-    result := inherited Top;
+    result := y;
 end;
 
 function TfrView.GetWidth: Double;
 begin
   if frDesigner<>nil then
-    result := frDesigner.PointsToUnits(inherited Width)
+    result := frDesigner.PointsToUnits(dx)
   else
-    result := inherited Width;
+    result := dx;
 end;
 
 procedure TfrView.SetFillColor(const AValue: TColor);
 begin
   if (aValue<>fFillColor) and (fUpdate=0) then
   begin
+    BeforeChange;
     fFillColor:=aValue;
-    //Invalidate;
+    AfterChange;
+  end;
+end;
+
+procedure TfrView.SetFormat(const AValue: Integer);
+begin
+  if fFormat<>AValue then
+  begin
+    BeforeChange;
+    fFormat := AValue;
+    AfterChange;
+  end;
+end;
+
+procedure TfrView.SetFormatStr(const AValue: String);
+begin
+  if fFormatStr<>AValue then
+  begin
+    BeforeChange;
+    fFormatStr := AValue;
+    AFterChange;
+  end;
+end;
+
+procedure TfrView.SetFrameColor(const AValue: TColor);
+begin
+  if fFramecolor<>AValue then
+  begin
+    BeforeChange;
+    fFrameColor := AValue;
+    AfterChange;
   end;
 end;
 
 procedure TfrView.SetFrames(const AValue: TfrFrameBorders);
 begin
   if (aValue<>fFrames) and (fUpdate=0) then
-      fFrames:=AValue;
+  begin
+    BeforeChange;
+    fFrames:=AValue;
+    AfterChange;
+  end;
+end;
+
+procedure TfrView.SetFrameStyle(const AValue: TfrFrameStyle);
+begin
+  if fFrameStyle<>AValue then
+  begin
+    BeforeChange;
+    fFrameStyle := AValue;
+    AfterChange;
+  end;
+end;
+
+procedure TfrView.SetFrameWidth(const AValue: Double);
+begin
+  if fFrameWidth<>AValue then
+  begin
+    BeforeChange;
+    fFrameWidth := AValue;
+    AfterChange;
+  end;
 end;
 
 procedure TfrView.SetHeight(const AValue: Double);
@@ -1998,6 +2110,16 @@ begin
     frDesigner.MoveObjects(tmp-x, 0, false);
   end else
     x := round(AValue);
+end;
+
+procedure TfrView.SetStretched(const AValue: Boolean);
+begin
+  if fStretched<>AValue then
+  begin
+    BeforeChange;
+    fStretched := AValue;
+    AfterChange;
+  end;
 end;
 
 procedure TfrView.SetTop(const AValue: Double);
@@ -2039,11 +2161,8 @@ begin
   Flags := flStretched + flWordWrap;
   LineSpacing := 2;
   CharacterSpacing := 0;
-  
-  fAlignment:=Classes.taLeftJustify;
-  fLayout   :=tlTop;
+  Adjust := 0;
   fAngle    :=0;
-  fWordWrap :=True;
 end;
 
 destructor TfrMemoView.Destroy;
@@ -2054,20 +2173,39 @@ end;
 
 procedure TfrMemoView.SetFont(Value: TFont);
 begin
+  BeforeChange;
   fFont.Assign(Value);
+  AfterChange;
+end;
+
+procedure TfrMemoView.SetLayout(const AValue: TTextLayout);
+begin
+  if Layout<>AValue then
+  begin
+    BeforeChange;
+    Adjust := (Adjust and %11100111) or (ord(AValue) shl 3);
+    AfterChange;
+  end;
+end;
+
+procedure TfrMemoView.SetWordWrap(const AValue: Boolean);
+begin
+  if WordWrap<>AValue then
+  begin
+    BeforeChange;
+    SetBit(Flags, AValue, flWordWrap);
+    AfterChange;
+  end;
 end;
 
 procedure TfrMemoView.Assign(From: TfrView);
 begin
   inherited Assign(From);
-  Font := TfrMemoView(From).Font;
+  FFont.Assign(TfrMemoView(From).Font);
   Adjust := TfrMemoView(From).Adjust;
   Highlight := TfrMemoView(From).Highlight;
   HighlightStr := TfrMemoView(From).HighlightStr;
   LineSpacing := TfrMemoView(From).LineSpacing;
-  
-  Alignment:=TfrMemoView(From).Alignment;
-  Layout:=TfrMemoView(From).Layout;
 end;
 
 procedure TfrMemoView.ExpandVariables;
@@ -2390,7 +2528,10 @@ var
 
     function OutLine(st: String): Boolean;
     var
-      i, n, aw, nw, w, curx: Integer;
+      {$IFDEF DebugLR}
+      aw: Integer;
+      {$ENDIF}
+      n, nw, w, curx: Integer;
       ParaEnd: Boolean;
       Ts: TTextStyle;
     begin
@@ -2408,74 +2549,43 @@ var
             ParaEnd := False;
         end;
 
-        if Alignment in [Classes.taLeftJustify..Classes.taCenter] then
+        // handle any alignment with same code
+        AssignFont(Canvas);
+        Ts := Canvas.TextStyle;
+        Ts.Layout    :=tlTop;
+        Ts.Alignment :=self.Alignment;
+        Ts.Wordbreak :=false;
+        Ts.SingleLine:=True;
+        Ts.Clipping  :=True;
+        Canvas.TextStyle := Ts;
+        
+        nw := Round(w * ScaleX);                    // needed width
+        {$IFDEF DebugLR}
+        DebugLn('2 Canvas.Font.Size=%d TextWidth=%d',[Canvas.Font.Size,Canvas.TextWidth(St)]);
+        {$ENDIF}
+        while (Canvas.TextWidth(St) > nw) and (Canvas.Font.Size>1) do
         begin
-          AssignFont(Canvas);
-          Ts := Canvas.TextStyle;
-          Ts.Layout    :=tlTop;
-          Ts.Alignment :=self.Alignment;
-          Ts.Wordbreak :=false;
-          Ts.SingleLine:=True;
-          Ts.Clipping  :=True;
-          Canvas.TextStyle := Ts;
-          
-          nw := Round(w * ScaleX);                    // needed width
+          Canvas.Font.Size := Canvas.Font.Size-1;
           {$IFDEF DebugLR}
-          DebugLn('2 Canvas.Font.Size=',IntToStr(Canvas.Font.Size),
-            '  TextWidth=',IntToStr(Canvas.TextWidth(St)));
+          DebugLn('Rescal font %d',[Canvas.Font.Size]);
           {$ENDIF}
-          while (Canvas.TextWidth(St) > nw) and (Canvas.Font.Size>1) do
-          begin
-            Canvas.Font.Size := Canvas.Font.Size-1;
-            {$IFDEF DebugLR}
-            DebugLn('Rescal font ',IntToStr(Canvas.Font.Size));
-            {$ENDIF}
-          end;
-          th := -Canvas.Font.Height+Round(LineSpacing * ScaleY);
-          {$IFDEF DebugLR}
-          DebugLn('Th=',Inttostr(Th),' Canvas.TextHeight(H)=',InttoStr(Canvas.TextHeight('H')));
-          Debugln('2 Canvas.Font.Size=',InttoStr(Canvas.Font.Size),'  TextWidth=',InttoStr(Canvas.TextWidth(St)));
-          {$ENDIF}
-
-          aw := Canvas.TextWidth(St);                // actual width
-
-          {$IFDEF DebugLR}
-          DebugLn('nw=',InttoStr(nw),'  aw=',IntToStr(aw));
-          {$ENDIF}
-          Case Alignment of
-            Classes.taLeftJustify : CurX :=x+gapx;
-            Classes.taRightJustify: CurX :=x+dx-1-gapx-nw;
-            Classes.taCenter      : CurX :=x+gapx+(dx-gapx-gapx-nw) div 2;
-          end;
-
-         if not Exporting then
-           Canvas.TextRect(DR, CurX, CurY, St);
-            {ExtTextOut(Canvas.Handle, CurX, CurY, 0, nil,
-             PChar(St), Length(St), nil);}
-            {ExtTextOut(Canvas.Handle,DR.Left+CurX,DR.Top+CurY,ETO_CLIPPED,@DR,
-               PChar(ST),Length(St),NIL);}
         end;
-        (*
+        th := -Canvas.Font.Height+Round(LineSpacing * ScaleY);
+        {$IFDEF DebugLR}
+        DebugLn('Th=%d Canvas.TextHeight(H)=%d',[Th,Canvas.TextHeight('H')]);
+        Debugln('2 Canvas.Font.Size=%d TextWidth=%d',[Canvas.Font.Size,Canvas.TextWidth(St)]);
+        aw := Canvas.TextWidth(St);                // actual width
+        DebugLn('nw=%d  aw=%d',[nw,aw]);
+        {$ENDIF}
+        case Alignment of
+          Classes.taLeftJustify : CurX :=x+gapx;
+          Classes.taRightJustify: CurX :=x+dx-1-gapx-nw;
+          Classes.taCenter      : CurX :=x+gapx+(dx-gapx-gapx-nw) div 2;
+        end;
+
+        if not Exporting then
+          Canvas.TextRect(DR, CurX, CurY, St)
         else
-        begin
-          curx := x + gapx;
-          if not Exporting then
-          begin
-            n := 0;
-            for i := 1 to Length(str) do
-              if str[i] = ' ' then Inc(n);
-            //**
-            {if (n <> 0) and not ParaEnd then
-              SetTextJustification(Canvas.Handle,
-                dx - gapx - gapx - Canvas.TextWidth(str), n);
-
-            ExtTextOut(Canvas.Handle, curx, cury, ETO_CLIPPED, @DR,
-              PChar(str), Length(str), nil);
-            SetTextJustification(Canvas.Handle, 0, 0);    }
-          end;
-        end;
-        *)
-        if Exporting then
           CurReport.InternalOnExportText(curx, cury, St, Self);
           
         Inc(CurStrNo);
@@ -2762,7 +2872,7 @@ begin
     begin
       Font.Style:= frSetFontStyle(Highlight.FontStyle);
       Font.Color:= Highlight.FontColor;
-      FillColor := Highlight.FillColor;
+      fFillColor := Highlight.FillColor;
     end;
   end;
   
@@ -2793,7 +2903,7 @@ begin
 
   Font.Assign(OldFont);
   OldFont.Free;
-  FillColor := OldFill;
+  fFillColor := OldFill;
   DrawMode := drAll;
 end;
 
@@ -2833,7 +2943,7 @@ begin
     begin
       Font.Style := frSetFontStyle(Highlight.FontStyle);
       Font.Color := Highlight.FontColor;
-      FillColor := Highlight.FillColor;
+      fFillColor := Highlight.FillColor;
     end;
   if ((Flags and flAutoSize) <> 0) and (Memo1.Count > 0) and
      (DocMode <> dmDesigning) then
@@ -2847,7 +2957,7 @@ begin
   end;
   Font.Assign(OldFont);
   OldFont.Free;
-  FillColor := OldFill;
+  fFillColor := OldFill;
 end;
 
 function TfrMemoView.MinHeight: Integer;
@@ -2864,6 +2974,8 @@ procedure TfrMemoView.LoadFromStream(Stream: TStream);
 var
   w: Word;
   i: Integer;
+  TmpAlign: TAlignment;
+  TmpLayout: TTextLayout;
 begin
   {$IFDEF DebugLR}
   DebugLn('Stream.Position=',IntToStr(Stream.Position),' Stream.Size=',InttoStr(Stream.Size));
@@ -2889,9 +3001,15 @@ begin
       HighlightStr := ReadString(Stream);
     end;
     
-    Read(fAlignment,SizeOf(fAlignment));
-    Read(fLayout,SizeOf(fLayout));
+
+    Read(TmpAlign,SizeOf(TmpAlign));
+    Read(TmpLayout,SizeOf(TmpLayout));
     Read(fAngle,SizeOf(fAngle));
+
+    BeginUpdate;
+    Alignment := tmpAlign;
+    Layout := tmpLayout;
+    EndUpdate;
   end;
 
   if frVersion = 21 then
@@ -2924,6 +3042,8 @@ procedure TfrMemoView.SaveToStream(Stream: TStream);
 var
   i: Integer;
   w: Word;
+  tmpAlign: TAlignment;
+  tmpLayout: TTextLayout;
 begin
   inherited SaveToStream(Stream);
   frWriteString(Stream, Font.Name);
@@ -2943,8 +3063,13 @@ begin
       frWriteString(Stream, HighlightStr);
     end;
     
-    Write(fAlignment,SizeOf(fAlignment));
-    Write(fLayout,SizeOf(fLayout));
+    if (Adjust and %11 = %11) then
+      tmpAlign := taLeftJustify
+    else
+      tmpAlign := Alignment;
+    tmpLayout := Layout;
+    Write(tmpAlign,SizeOf(tmpAlign));
+    Write(tmpLayout,SizeOf(tmpLayout));
     Write(fAngle,SizeOf(fAngle));
   end;
 end;
@@ -2990,6 +3115,11 @@ begin
   end;
 end;
 
+procedure TfrMemoView.FontChange(sender: TObject);
+begin
+  AfterChange;
+end;
+
 procedure TfrMemoView.DefinePopupMenu(Popup: TPopupMenu);
 var
   m: TMenuItem;
@@ -3026,18 +3156,23 @@ begin
   Popup.Items.Add(m);
 end;
 
+procedure TfrMemoView.MonitorFontChanges;
+begin
+  FFont.OnChange:= @FontChange;
+end;
+
 procedure TfrMemoView.P1Click(Sender: TObject);
 var
   t: TfrView;
   i: Integer;
 begin
-  frDesigner.BeforeChange;
+  BeforeChange;
   frFmtForm := TfrFmtForm.Create(nil);
   try
     with frFmtForm do
     begin
-      Format := Self.Format;
-      FormatStr := Self.FormatStr;
+      EdFormat := Self.Format;
+      EdFormatStr := Self.FormatStr;
       if ShowModal = mrOk then
       begin
         for i := 0 to frDesigner.Page.Objects.Count - 1 do
@@ -3045,20 +3180,36 @@ begin
           t := TfrView(frDesigner.Page.Objects[i]);
           if t.Selected then
           begin
-            (t as TfrMemoView).Format := Format;
-            (t as TfrMemoView).FormatStr := FormatStr;
+            (t as TfrMemoView).Format := EdFormat;
+            (t as TfrMemoView).FormatStr := EdFormatStr;
           end;
         end;
       end;
     end;
   finally
     frFmtForm.Free;
+    AfterChange
   end;
 end;
 
 function TfrMemoView.GetAutoSize: Boolean;
 begin
   Result:=((Flags and flAutoSize)<>0);
+end;
+
+function TfrMemoView.GetLayout: TTextLayout;
+begin
+  result := TTextLayout((adjust shr 3) and %11);
+end;
+
+function TfrMemoView.GetAlignment: TAlignment;
+begin
+  Result:=Classes.TAlignment(Adjust and %11);
+end;
+
+function TfrMemoView.GetWordWrap: Boolean;
+begin
+  Result:=((Flags and flWordWrap)<>0);
 end;
 
 procedure TfrMemoView.P2Click(Sender: TObject);
@@ -3074,7 +3225,7 @@ begin
     begin
       t :=TfrView(frDesigner.Page.Objects[i]);
       if t.Selected then
-        t.Flags := (t.Flags and not flWordWrap) + Word(Checked) * flWordWrap;
+        SetBit(t.Flags, Checked, flWordWrap);
     end;
   end;
   frDesigner.AfterChange;
@@ -3152,6 +3303,16 @@ begin
   frDesigner.AfterChange;
 end;
 
+procedure TfrMemoView.SetAlignment(const AValue: TAlignment);
+begin
+  if Alignment<>AValue then
+  begin
+    BeforeChange;
+    Adjust := (Adjust and not 3) or ord(AValue);
+    AfterChange;
+  end;
+end;
+
 procedure TfrMemoView.SetAutoSize(const AValue: Boolean);
 begin
   Flags:=Flags+flAutoSize;
@@ -3162,7 +3323,7 @@ constructor TfrBandView.Create;
 begin
   inherited Create;
   Typ := gtBand;
-  Format := 0;
+  fFormat := 0;
   BaseName := 'Band';
   Flags := flBandOnFirstPage + flBandOnLastPage;
 end;
@@ -3223,7 +3384,7 @@ var
   h, oldh: HFont;
   St     : String;
 begin
-  FrameWidth := 1;
+  fFrameWidth := 1;
   if BandType in [btCrossHeader..btCrossFooter] then
   begin
     y := 0;
@@ -3536,7 +3697,7 @@ end;
 procedure TfrSubReportView.Draw(aCanvas: TCanvas);
 begin
   BeginDraw(aCanvas);
-  FrameWidth := 1;
+  fFrameWidth := 1;
   CalcGaps;
   with aCanvas do
   begin
@@ -3958,6 +4119,13 @@ begin
   end;
 end;
 
+procedure TfrPictureView.SetPicture(const AValue: TPicture);
+begin
+  BeforeChange;
+  fPicture := AValue;
+  AfterChange;
+end;
+
 class function TfrPictureView.GetFilter: string;
   procedure AddFilter(G:TGraphicClass);
   var
@@ -3982,7 +4150,7 @@ constructor TfrLineView.Create;
 begin
   inherited Create;
   Typ := gtLine;
-  Frames:=[frbLeft];
+  fFrames:=[frbLeft];
   BaseName := 'Line';
 end;
 
@@ -3992,12 +4160,12 @@ begin
   if dx > dy then
   begin
     dy := 0;
-    Frames:=[frbTop];
+    fFrames:=[frbTop];
   end
   else
   begin
     dx := 0;
-    Frames:=[frbLeft];
+    fFrames:=[frbLeft];
   end;
   CalcGaps;
   ShowFrame;
@@ -6997,68 +7165,68 @@ end;
 
 procedure TfrReport.InternalOnGetValue(ParName: String; var ParValue: String);
 var
-  i, j, Format: Integer;
-  FormatStr: String;
+  i, j, AFormat: Integer;
+  AFormatStr: String;
   V : Variant;
   ValStr: String;
 begin
   SubValue := '';
-  Format := CurView.Format;
-  FormatStr := CurView.FormatStr;
+  AFormat := CurView.Format;
+  AFormatStr := CurView.FormatStr;
   i := Pos(' #', ParName);
   if i <> 0 then
   begin
-    FormatStr := Copy(ParName, i + 2, Length(ParName) - i - 1);
+    AFormatStr := Copy(ParName, i + 2, Length(ParName) - i - 1);
     ParName := Copy(ParName, 1, i - 1);
 
-    if FormatStr[1] in ['0'..'9', 'N', 'n'] then
+    if AFormatStr[1] in ['0'..'9', 'N', 'n'] then
     begin
-      if FormatStr[1] in ['0'..'9'] then
-        FormatStr := 'N' + FormatStr;
-      Format := $01000000;
-      if FormatStr[2] in ['0'..'9'] then
-        Format := Format + $00010000;
-      i := Length(FormatStr);
+      if AFormatStr[1] in ['0'..'9'] then
+        AFormatStr := 'N' + AFormatStr;
+      AFormat := $01000000;
+      if AFormatStr[2] in ['0'..'9'] then
+        AFormat := AFormat + $00010000;
+      i := Length(AFormatStr);
       while i > 1 do
       begin
-        if FormatStr[i] in ['.', ',', '-'] then
+        if AFormatStr[i] in ['.', ',', '-'] then
         begin
-          Format := Format + Ord(FormatStr[i]);
-          FormatStr[i] := '.';
-          if FormatStr[2] in ['0'..'9'] then
+          AFormat := AFormat + Ord(AFormatStr[i]);
+          AFormatStr[i] := '.';
+          if AFormatStr[2] in ['0'..'9'] then
           begin
             Inc(i);
             j := i;
-            while (i <= Length(FormatStr)) and (FormatStr[i] in ['0'..'9']) do
+            while (i <= Length(AFormatStr)) and (AFormatStr[i] in ['0'..'9']) do
               Inc(i);
-            Format := Format + 256 * StrToInt(Copy(FormatStr, j, i - j));
+            AFormat := AFormat + 256 * StrToInt(Copy(AFormatStr, j, i - j));
           end;
           break;
         end;
         Dec(i);
       end;
-      if not (FormatStr[2] in ['0'..'9']) then
+      if not (AFormatStr[2] in ['0'..'9']) then
       begin
-        FormatStr := Copy(FormatStr, 2, 255);
-        Format := Format + $00040000;
+        AFormatStr := Copy(AFormatStr, 2, 255);
+        AFormat := AFormat + $00040000;
       end;
     end
-    else if FormatStr[1] in ['D', 'T', 'd', 't'] then
+    else if AFormatStr[1] in ['D', 'T', 'd', 't'] then
     begin
-      Format := $02040000;
-      FormatStr := Copy(FormatStr, 2, 255);
+      AFormat := $02040000;
+      AFormatStr := Copy(AFormatStr, 2, 255);
     end
-    else if FormatStr[1] in ['B', 'b'] then
+    else if AFormatStr[1] in ['B', 'b'] then
     begin
-      Format := $04040000;
-      FormatStr := Copy(FormatStr, 2, 255);
+      AFormat := $04040000;
+      AFormatStr := Copy(AFormatStr, 2, 255);
     end;
   end;
 
   CurVariable := ParName;
   CurValue := 0;
   GetVariableValue(ParName, CurValue);
-  ParValue := FormatValue(CurValue, Format, FormatStr);
+  ParValue := FormatValue(CurValue, AFormat, AFormatStr);
   {
   if TVarData(CurValue).VType=varString then
     ValStr := CopyVarString(CurValue)
@@ -7102,8 +7270,8 @@ begin
 end;
 
 function TfrReport.FormatValue(V: Variant;
-  Format: Integer;
-  const FormatStr: String): String;
+  AFormat: Integer;
+  const AFormatStr: String): String;
 var
   f1, f2: Integer;
   c: Char;
@@ -7116,8 +7284,8 @@ begin
   end;
   
   c := DecimalSeparator;
-  f1 := (Format div $01000000) and $0F;
-  f2 := (Format div $00010000) and $FF;
+  f1 := (AFormat div $01000000) and $0F;
+  f2 := (AFormat div $00010000) and $FF;
   try
     case f1 of
       fmtText:
@@ -7126,29 +7294,29 @@ begin
         end;
       fmtNumber:
         begin
-          DecimalSeparator := Chr(Format and $FF);
+          DecimalSeparator := Chr(AFormat and $FF);
           case f2 of
             0: Result := FormatFloat('###.##', v);
-            1: Result := FloatToStrF(Extended(v), ffFixed, 15, (Format div $0100) and $FF);
+            1: Result := FloatToStrF(Extended(v), ffFixed, 15, (AFormat div $0100) and $FF);
             2: Result := FormatFloat('#,###.##', v);
-            3: Result := FloatToStrF(Extended(v), ffNumber, 15, (Format div $0100) and $FF);
-            4: Result := FormatFloat(FormatStr, v);
+            3: Result := FloatToStrF(Extended(v), ffNumber, 15, (AFormat div $0100) and $FF);
+            4: Result := FormatFloat(AFormatStr, v);
           end;
         end;
       fmtDate:
          if f2 = 4 then
-           Result := FormatDateTime(FormatStr, v)
+           Result := FormatDateTime(AFormatStr, v)
          else
            Result := FormatDateTime(frDateFormats[f2], v);
       fmtTime:
          if f2 = 4 then
-           Result := FormatDateTime(FormatStr, v)
+           Result := FormatDateTime(AFormatStr, v)
          else
            Result := FormatDateTime(frTimeFormats[f2], v);
       fmtBoolean :
          begin
            if f2 = 4 then
-             s := FormatStr
+             s := AFormatStr
            else
              s := BoolStr[f2];
            if Integer(v) = 0 then
@@ -9243,6 +9411,7 @@ end;
 function TfrObject.GetSaveProperty(Prop: String; aObj : TPersistent=nil): string;
 Var PropInfo  : PPropInfo;
     Obj       : TObject;
+    OldSep    : char;
 begin
   Result:='';
 
@@ -9264,7 +9433,12 @@ begin
                                           Result:=IntToStr(GetOrdProp(aObj,PropInfo));
                                       end;
         tkSet                       : Result:=GetSetProp(aObj,Prop);
-        tkFloat                     : Result:=FloatToStr(GetFloatProp(aObj,Prop));
+        tkFloat                     : begin
+                                        OldSep := DecimalSeparator;
+                                        DecimalSeparator := '.';
+                                        Result := FloatToStr(GetFloatProp(aObj,Prop));
+                                        DecimalSeparator := OldSep;
+                                      end;
         tkEnumeration               : Result:=GetEnumProp(aObj,Prop);
         tkClass                     : Begin
                                         Obj:=GetObjectProp(aObj,Prop);

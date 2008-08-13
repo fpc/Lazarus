@@ -263,13 +263,13 @@ begin
   frFmtForm := TfrFmtForm.Create(nil);
   with frFmtForm do
   begin
-    AFormat := t.Format;
-    FormatStr:=t.FormatStr;
+    EdFormat := t.Format;
+    EdFormatStr:=t.FormatStr;
     if ShowModal = mrOk then
     begin
       frDesigner.BeforeChange;
-      t.Format := AFormat;
-      t.FormatStr := FormatStr;
+      t.Format := EdFormat;
+      t.FormatStr := EdFormatStr;
     end;
   end;
   frFmtForm.Free;
