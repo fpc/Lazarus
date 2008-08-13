@@ -26,11 +26,11 @@ interface
 
 uses
   Classes, SysUtils, LCLProc,  LResources, Forms, Controls, Graphics, Dialogs,
-  Clipbrd, StdCtrls, Buttons, FileUtil, Process, Menus, ExtCtrls,
+  FileUtil, Clipbrd, StdCtrls, Buttons, Process, Menus, ExtCtrls,
   // codetools
-  KeywordFuncLists, CodeToolManager,
+  KeywordFuncLists, CodeToolManager, FileProcs,
   // IDEIntf
-  MacroIntf, IDEExternToolIntf,
+  ProjectIntf, MacroIntf, IDEExternToolIntf,
   // IDE
   ExtToolEditDlg, IDEProcs, EnvironmentOpts, LazarusIDEStrConsts,
   PackageDefs, CompilerOptions, TransferMacros, LazConf;
@@ -91,6 +91,7 @@ type
     function CheckFPCUnitPathsContainSources(const FPCCfgUnitPath: string
                                               ): TModalResult;
     function CheckOutputPathInSourcePaths(CurOptions: TCompilerOptions): TModalResult;
+    function CheckOrphanedPPUs(CurOptions: TCompilerOptions): TModalResult;
     function CheckCompileBogusFile(const CompilerFilename: string): TModalResult;
   public
     function DoTestAll: TModalResult;
@@ -841,6 +842,79 @@ begin
   Result:=mrOk;
 end;
 
+function TCheckCompilerOptsDlg.CheckOrphanedPPUs(CurOptions: TCompilerOptions
+  ): TModalResult;
+// check for ppu and .o files that were not created from known .pas/.pp/.p files
+var
+  FileInfo: TSearchRec;
+  PPUFiles: TStringList;
+  i: Integer;
+  OutputDir: String;
+  PPUFilename: string;
+  UnitName: String;
+  SrcPath: String;
+  Directory: String;
+  CurProject: TLazProject;
+  ProjFile: TLazProjectFile;
+begin
+  OutputDir:=CurOptions.GetUnitOutPath(false);
+  if OutputDir='' then exit(mrOk);
+
+  PPUFiles:=TStringList.Create;
+  try
+    // search .ppu and .o files in output directory
+    Directory:=AppendPathDelim(OutputDir);
+    if SysUtils.FindFirst(Directory+GetAllFilesMask,faAnyFile,FileInfo)=0 then
+    begin
+      repeat
+        // check if special file
+        if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
+          continue;
+        // check extension
+        if (CompareFileExt(FileInfo.Name,'.ppu',
+          {$IFDEF MSWINDOWS}false{$ELSE}true{$ENDIF})<>0)
+        and (CompareFileExt(FileInfo.Name,'.o',
+          {$IFDEF MSWINDOWS}false{$ELSE}true{$ENDIF})<>0)
+        then
+          continue;
+        PPUFiles.Add(Directory+FileInfo.Name);
+      until SysUtils.FindNext(FileInfo)<>0;
+    end;
+    SysUtils.FindClose(FileInfo);
+
+    // remove all .ppu/.o files with a unit source
+    SrcPath:=Options.GetParsedPath(pcosUnitPath,icoNone,false);
+    SrcPath:=MergeSearchPaths(SrcPath,Options.BaseDirectory);
+    DebugLn(['TCheckCompilerOptsDlg.CheckOrphanedPPUs SrcPath="',SrcPath,'" OutDir="',OutputDir,'"']);
+    for i:=PPUFiles.Count-1 downto 0 do begin
+      PPUFilename:=PPUFiles[i];
+      UnitName:=ExtractFileNameOnly(PPUFilename);
+      // search .pas/.pp/.p file
+      if SearchPascalUnitInPath(UnitName,'',SrcPath,';',ctsfcAllCase)<>'' then
+        PPUFiles.Delete(i);
+      // check for main source
+      if (Options.Owner is TLazProject) then begin
+        CurProject:=TLazProject(Options.Owner);
+        if (CurProject.MainFileID>=0) then begin
+          ProjFile:=CurProject.MainFile;
+          if (SysUtils.CompareText(ExtractFileNameOnly(ProjFile.Filename),UnitName)=0)
+          then
+            PPUFiles.Delete(i);
+        end;
+      end;
+    end;
+
+    // PPUFiles now contains all orphaned ppu/o files
+    PPUFiles.Sort;
+    for i:=0 to PPUFiles.Count-1 do
+      AddWarning('orphaned file found: '+PPUFiles[i]);
+  finally
+    PPUFiles.Free;
+  end;
+
+  Result:=mrOk;
+end;
+
 procedure TCheckCompilerOptsDlg.SetMacroList(const AValue: TTransferMacroList);
 begin
   if FMacroList=AValue then exit;
@@ -934,8 +1008,9 @@ begin
     Result:=CheckForAmbiguousPPUs(FPC_PPUs,Target_PPUs);
     if not (Result in [mrOk,mrIgnore]) then exit;
 
-    // ToDo: check that all ppu in the output directory have sources
-
+    // check that all ppu in the output directory have sources in project/package
+    Result:=CheckOrphanedPPUs(Options);
+    if not (Result in [mrOk,mrIgnore]) then exit;
 
     // compile bogus file
     Result:=CheckCompileBogusFile(CompilerFilename);

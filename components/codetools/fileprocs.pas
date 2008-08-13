@@ -1114,7 +1114,7 @@ begin
                                 PChar(Pointer(AnUnitName)),
                                 length(AnUnitName),false)=0)
         then begin
-          CurUnitName:=ExtractFilePath(FileInfo.Name);
+          CurUnitName:=ExtractFileNameOnly(FileInfo.Name);
           if CurUnitName=AnUnitName then begin
             Result:=FileInfo.Name;
             break;
@@ -1127,10 +1127,11 @@ begin
       ctsfcAllCase:
         if (CompareFilenameOnly(PChar(Pointer(FileInfo.Name)),// pointer type cast avoids #0 check
                                 length(FileInfo.Name),
-                          PChar(Pointer(AnUnitName)),length(AnUnitName),true)=0)
+                                PChar(Pointer(AnUnitName)),length(AnUnitName),
+                                false)=0)
         then begin
           Result:=FileInfo.Name;
-          CurUnitName:=ExtractFilePath(FileInfo.Name);
+          CurUnitName:=ExtractFileNameOnly(FileInfo.Name);
           if CurUnitName=AnUnitName then
             break;
         end;
