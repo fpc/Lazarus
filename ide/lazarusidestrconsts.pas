@@ -3842,6 +3842,8 @@ resourcestring
   lisLink = 'Link:';
   lisShort = 'Short:';
   lisDeleteOldFile2 = 'Delete old file?';
+  lisTheUnitSearchPathOfContainsTheSourceDirectoryOfPac = 'The unit search '
+    +'path of %s%s%s contains the source directory %s%s%s of package %s';
   
 implementation
 

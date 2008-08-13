@@ -1320,6 +1320,8 @@ begin
     Description:=lisPkgSysTheLCLLazarusComponentLibraryContainsAllBase;
     PackageType:=lptRunAndDesignTime;
     Installed:=pitStatic;
+    CompilerOptions.OtherUnitFiles:='$(LazarusDir)/lcl/';
+    CompilerOptions.OtherUnitFiles:='$(LazarusDir)/lcl/widgetset/';
     CompilerOptions.UnitOutputDirectory:='$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/';
     POOutputDirectory:='languages';
     Translated:=SystemLanguageID1;

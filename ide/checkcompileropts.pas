@@ -32,8 +32,8 @@ uses
   // IDEIntf
   ProjectIntf, MacroIntf, IDEExternToolIntf,
   // IDE
-  ExtToolEditDlg, IDEProcs, EnvironmentOpts, LazarusIDEStrConsts,
-  PackageDefs, CompilerOptions, TransferMacros, LazConf;
+  Project, PackageSystem, ExtToolEditDlg, IDEProcs, EnvironmentOpts,
+  LazarusIDEStrConsts, PackageDefs, CompilerOptions, TransferMacros, LazConf;
 
 type
   TCompilerOptionsTest = (
@@ -93,6 +93,7 @@ type
     function CheckOutputPathInSourcePaths(CurOptions: TCompilerOptions): TModalResult;
     function CheckOrphanedPPUs(CurOptions: TCompilerOptions): TModalResult;
     function CheckCompileBogusFile(const CompilerFilename: string): TModalResult;
+    function CheckPackagePathsIntersections(CurOptions: TCompilerOptions): TModalResult;
   public
     function DoTestAll: TModalResult;
     constructor Create(TheOwner: TComponent); override;
@@ -275,13 +276,17 @@ begin
   // check if there are several compilers in path
   CompilerFiles:=SearchAllFilesInPath(GetDefaultCompilerFilename,'',
        SysUtils.GetEnvironmentVariable('PATH'),':',[sffDontSearchInBasePath]);
-  ResolveLinksInFileList(CompilerFiles,false);
-  RemoveDoubles(CompilerFiles);
-  if (CompilerFiles<>nil) and (CompilerFiles.Count>1) then begin
-    Result:=MessageDlg(lisCCOAmbiguousCompiler,
-      Format(lisCCOSeveralCompilers,[#13#13,CompilerFiles.Text,#13]),
-      mtWarning,[mbAbort,mbIgnore],0);
-    if Result<>mrIgnore then exit;
+  try
+    ResolveLinksInFileList(CompilerFiles,false);
+    RemoveDoubles(CompilerFiles);
+    if (CompilerFiles<>nil) and (CompilerFiles.Count>1) then begin
+      Result:=MessageDlg(lisCCOAmbiguousCompiler,
+        Format(lisCCOSeveralCompilers,[#13#13,CompilerFiles.Text,#13]),
+        mtWarning,[mbAbort,mbIgnore],0);
+      if Result<>mrIgnore then exit;
+    end;
+  finally
+    CompilerFiles.Free;
   end;
   
   Result:=mrOk;
@@ -402,6 +407,69 @@ begin
     DeleteFile(BogusFilename);
   end;
   
+  Result:=mrOk;
+end;
+
+function TCheckCompilerOptsDlg.CheckPackagePathsIntersections(
+  CurOptions: TCompilerOptions): TModalResult;
+// check if the search paths contains source directories of used packages
+// instead of only the output directories
+var
+  CurProject: TProject;
+  CurPkg: TLazPackage;
+  FirstDependency: TPkgDependency;
+  PkgList: TFPList;
+  i: Integer;
+  UsedPkg: TLazPackage;
+  UnitPath: String;
+  OtherOutputDir: String;
+  OtherSrcPath: String;
+  p: Integer;
+  SrcDir: String;
+begin
+  if CurOptions.BaseDirectory='' then exit(mrOk);
+
+  // get dependencies
+  CurProject:=nil;
+  CurPkg:=nil;
+  if CurOptions.Owner is TProject then begin
+    CurProject:=TProject(CurOptions.Owner);
+    FirstDependency:=CurProject.FirstRequiredDependency;
+  end;
+  if CurOptions.Owner is TLazPackage then begin
+    CurPkg:=TLazPackage(CurOptions.Owner);
+    FirstDependency:=CurPkg.FirstRequiredDependency;
+  end;
+  if FirstDependency=nil then exit(mrOK);
+  try
+    // get used packages
+    PackageGraph.GetAllRequiredPackages(FirstDependency,PkgList);
+    if PkgList=nil then exit(mrOk);
+
+    // get search path
+    UnitPath:=CurOptions.GetParsedPath(pcosUnitPath,icoNone,false,true);
+    // check each used package
+    for i:=0 to PkgList.Count-1 do begin
+      UsedPkg:=TLazPackage(PkgList[i]);
+      if UsedPkg.CompilerOptions.BaseDirectory='' then exit;
+      // get source directories of used package (excluding the output directory)
+      OtherSrcPath:=UsedPkg.CompilerOptions.GetParsedPath(pcosUnitPath,icoNone,false,true);
+      OtherOutputDir:=UsedPkg.CompilerOptions.GetUnitOutPath(false);
+      OtherSrcPath:=RemoveSearchPaths(OtherSrcPath,OtherOutputDir);
+      // find intersections
+      p:=1;
+      repeat
+        SrcDir:=GetNextDirectoryInSearchPath(UnitPath,p);
+        if SearchDirectoryInSearchPath(OtherSrcPath,SrcDir)>0 then begin
+          AddWarning(Format(
+            lisTheUnitSearchPathOfContainsTheSourceDirectoryOfPac, ['"',
+            CurOptions.GetOwnerName, '"', '"', SrcDir, '"', UsedPkg.Name]));
+        end;
+      until p>length(UnitPath);
+    end;
+  finally
+    PkgList.Free;
+  end;
   Result:=mrOk;
 end;
 
@@ -810,7 +878,11 @@ var
   SrcPath: String;
 begin
   OutputDir:=CurOptions.GetUnitOutPath(false);
-  if OutputDir='' then exit(mrOk);
+  if OutputDir='' then begin
+    if CurOptions.Owner is TLazPackage then
+      AddWarning(CurOptions.GetOwnerName+' has no output directory set');
+    exit(mrOk);
+  end;
   // check unit search path
   SrcPath:=CurOptions.GetParsedPath(pcosUnitPath,icoNone,false);
   if SearchDirectoryInSearchPath(SrcPath,OutputDir)>0 then begin
@@ -883,9 +955,8 @@ begin
     SysUtils.FindClose(FileInfo);
 
     // remove all .ppu/.o files with a unit source
-    SrcPath:=Options.GetParsedPath(pcosUnitPath,icoNone,false);
-    SrcPath:=MergeSearchPaths(SrcPath,Options.BaseDirectory);
-    DebugLn(['TCheckCompilerOptsDlg.CheckOrphanedPPUs SrcPath="',SrcPath,'" OutDir="',OutputDir,'"']);
+    SrcPath:=Options.GetParsedPath(pcosUnitPath,icoNone,false,true);
+    //DebugLn(['TCheckCompilerOptsDlg.CheckOrphanedPPUs SrcPath="',SrcPath,'" OutDir="',OutputDir,'"']);
     for i:=PPUFiles.Count-1 downto 0 do begin
       PPUFilename:=PPUFiles[i];
       UnitName:=ExtractFileNameOnly(PPUFilename);
@@ -1016,8 +1087,10 @@ begin
     Result:=CheckCompileBogusFile(CompilerFilename);
     if not (Result in [mrOk,mrIgnore]) then exit;
     
-    // ToDo: check if search paths of packages/projects intersects
-    
+    // check if search paths of packages/projects intersects
+    Result:=CheckPackagePathsIntersections(Options);
+    if not (Result in [mrOk,mrIgnore]) then exit;
+
     // ToDo: check ppu checksums and versions
 
     if OutputListbox.Items.Count=0 then

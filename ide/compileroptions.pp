@@ -360,7 +360,8 @@ type
                      WithProjDir: boolean): string;
     function GetParsedPath(Option: TParsedCompilerOptString;
                            InheritedOption: TInheritedCompilerOption;
-                           RelativeToBaseDir: boolean): string;
+                           RelativeToBaseDir: boolean;
+                           AddBaseDir: boolean = false): string;
     function GetParsedPIPath(Option: TParsedCompilerOptString;
                            InheritedOption: TInheritedCompilerOption;
                            RelativeToBaseDir: boolean): string;
@@ -1551,10 +1552,11 @@ end;
 
 function TBaseCompilerOptions.GetParsedPath(Option: TParsedCompilerOptString;
   InheritedOption: TInheritedCompilerOption;
-  RelativeToBaseDir: boolean): string;
+  RelativeToBaseDir: boolean; AddBaseDir: boolean = false): string;
 var
   CurrentPath: String;
   InheritedPath: String;
+  ParsedBaseDir: String;
 begin
   // current path
   if Option<>pcosNone then begin
@@ -1591,6 +1593,12 @@ begin
     {$ENDIF}
   end else
     Result:=CurrentPath;
+
+  if AddBaseDir then begin
+    ParsedBaseDir:=ParsedOpts.GetParsedValue(pcosBaseDir);
+    if ParsedBaseDir<>'' then
+      Result:=MergeSearchPaths(Result,ParsedBaseDir);
+  end;
 end;
 
 function TBaseCompilerOptions.GetParsedPIPath(Option: TParsedCompilerOptString;
