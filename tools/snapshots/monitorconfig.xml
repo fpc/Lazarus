@@ -2,7 +2,7 @@
 <CONFIG>
     <Version
         Lazarus="0.9.25"
-        FPC_Release="2.2.2rc2"
+        FPC_Release="2.2.2"
         FPC_Fixes="2.2.3"
         FPC_Devel="2.3.1"
     />
