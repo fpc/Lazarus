@@ -1985,6 +1985,7 @@ procedure TSourceEditor.InsertTodo;
 Var
   aTodoItem: TTodoItem;
 begin
+  DebugLn(['TSourceEditor.InsertTodo ']);
   if ReadOnly then Exit;
   aTodoItem := ExecuteTodoDialog;
   try

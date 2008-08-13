@@ -217,7 +217,7 @@ type
     procedure mnuEditInsertUsernameClick(Sender: TObject);
     procedure mnuEditInsertDateTimeClick(Sender: TObject);
     procedure mnuEditInsertChangeLogEntryClick(Sender: TObject);
-    procedure mnuInsertTodo(Sender: TObject);
+    procedure mnuEditInsertTodo(Sender: TObject);
     procedure mnuEditInsertGUID(Sender: TObject);
 
     // search menu
@@ -1686,7 +1686,7 @@ begin
   SourceNotebook.OnEditorPropertiesClicked := @mnuEnvEditorOptionsClicked;
   SourceNotebook.OnFindDeclarationClicked := @OnSrcNotebookFindDeclaration;
   SourceNotebook.OnInitIdentCompletion :=@OnSrcNotebookInitIdentCompletion;
-  SourceNotebook.OnInsertTodoClicked := @mnuInsertTodo;
+  SourceNotebook.OnInsertTodoClicked := @mnuEditInsertTodo;
   SourceNotebook.OnShowCodeContext :=@OnSrcNotebookShowCodeContext;
   SourceNotebook.OnJumpToHistoryPoint := @OnSrcNotebookJumpToHistoryPoint;
   SourceNotebook.OnMovingPage := @OnSrcNotebookMovingPage;
@@ -2112,6 +2112,7 @@ begin
     itmEditInsertUsername.OnClick:=@mnuEditInsertUsernameClick;
     itmEditInsertDateTime.OnClick:=@mnuEditInsertDateTimeClick;
     itmEditInsertChangeLogEntry.OnClick:=@mnuEditInsertChangeLogEntryClick;
+    itmEditInsertTodo.OnClick:=@mnuEditInsertTodo;
     itmEditInsertGUID.OnClick:=@mnuEditInsertGUID;
   end;
 end;
@@ -2752,7 +2753,7 @@ begin
     mnuEditInsertGUID(self);
     
   ecInsertTodo:
-    mnuInsertTodo(self);
+    mnuEditInsertTodo(self);
     
   else
     Handled:=false;
@@ -14558,7 +14559,7 @@ begin
   DoSourceEditorCommand(ecInsertChangeLogEntry);
 end;
 
-procedure TMainIDE.mnuInsertTodo(Sender: TObject);
+procedure TMainIDE.mnuEditInsertTodo(Sender: TObject);
 begin
   DoSourceEditorCommand(ecInsertTodo);
 end;
