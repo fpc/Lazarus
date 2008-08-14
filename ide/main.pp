@@ -11353,9 +11353,9 @@ begin
 
   // search file in debug path
   if fsfUseDebugPath in Flags then begin
-    SearchPath:=MergeSearchPaths(Project1.CompilerOptions.DebugPath,
+    SearchPath:=MergeSearchPaths(Project1.CompilerOptions.GetDebugPath(false),
                                  EnvironmentOptions.DebuggerSearchPath);
-    SearchPath:=TrimSearchPath(SearchPath,Project1.ProjectDirectory);
+    SearchPath:=TrimSearchPath(SearchPath,BaseDir);
     if SearchInPath(SearchPath,AFilename,Result) then exit;
   end;
 

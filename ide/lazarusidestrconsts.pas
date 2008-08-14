@@ -2683,6 +2683,13 @@ resourcestring
   lisTheDebuggerDoesNotExistsOrIsNotExecutableSeeEnviro = 'The debugger %s%s%'
     +'s%sdoes not exist or is not executable.%s%sSee Environment -> Debugger '
     +'Options';
+  lisUnableToRun = 'Unable to run';
+  lisTheDestinationDirectoryDoesNotExistPleaseCheckTheP = 'The destination '
+    +'directory %s%s%s does not exist.%sPlease check the project target file '
+    +'name Menu > Project > Project Options.';
+  lisTheWorkingDirectoryDoesNotExistPleaseCheckTheWorki = 'The working '
+    +'directory %s%s%s does not exist.%sPlease check the working directory in '
+    +'Menu > Project > Run parameters.';
   lisPleaseOpenAUnitBeforeRun = 'Please open a unit before run.';
   
   // disk diff dialog
