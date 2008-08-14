@@ -45,8 +45,8 @@ begin
   try
     PageHeight:=842;
     PageWidth:=595;
-    TopMarging :=40;
-    LeftMarging:=20;
+    TopMargin:=40;
+    LeftMargin:=20;
 
     BeginDoc;
     Font.Size:=24;
