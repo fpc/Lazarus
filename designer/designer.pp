@@ -2092,22 +2092,21 @@ procedure TDesigner.Notification(AComponent: TComponent; Operation: TOperation);
 Begin
   if Operation = opInsert then begin
     {$IFDEF VerboseDesigner}
-    DebugLn('opInsert ',AComponent.Name,':',AComponent.ClassName,' ',DbgS(AComponent));
+    DebugLn('opInsert ',dbgsName(AComponent),' ',DbgS(AComponent));
     {$ENDIF}
     if dfDeleting in FFlags then begin
       // a component has auto created a new component during deletion
       // -> ignore the new component
       IgnoreDeletingPersistent.Add(AComponent);
     end else begin
-      if TheFormEditor<>nil then
+      if (TheFormEditor<>nil) then
         TheFormEditor.CreateComponentInterface(AComponent,false);
     end;
   end
   else
   if Operation = opRemove then begin
     {$IFDEF VerboseDesigner}
-    DebugLn('[TDesigner.Notification] opRemove ',
-            AComponent.Name,':',AComponent.ClassName);
+    DebugLn('[TDesigner.Notification] opRemove ',dbgsName(AComponent));
     {$ENDIF}
     DoDeletePersistent(AComponent,false);
   end;

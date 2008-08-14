@@ -77,7 +77,6 @@ each control that's dropped onto the form
     Function GetPPropInfoByIndex(Index : Integer) : PPropInfo;
     Function GetPPropInfoByName(Name : ShortString) : PPropInfo;
   public
-    constructor Create;
     constructor Create(AComponent: TComponent);
     destructor Destroy; override;
 
@@ -435,11 +434,6 @@ Begin
 end;
 
 { TComponentInterface }
-
-constructor TComponentInterface.Create;
-begin
-  inherited Create;
-end;
 
 constructor TComponentInterface.Create(AComponent: TComponent);
 begin
@@ -936,6 +930,8 @@ Begin
   {$IFDEF IDE_DEBUG}
   DebugLn(['TCustomFormEditor.DeleteComponent ',DbgSName(AComponent),' IsJITComponent=',IsJITComponent(AComponent),' FreeComponent=',FreeComponent]);
   {$ENDIF}
+  if PropertyEditorHook.LookupRoot=AComponent then
+    PropertyEditorHook.LookupRoot:=nil;
   IsJIT:=IsJITComponent(AComponent);
   if IsJIT or (csInline in AComponent.ComponentState) then begin
     i:=AComponent.ComponentCount-1;
@@ -946,8 +942,6 @@ Begin
         i:=AComponent.ComponentCount-1;
     end;
   end;
-  if PropertyEditorHook.LookupRoot=AComponent then
-    PropertyEditorHook.LookupRoot:=nil;
   if IsJITComponent(AComponent) then begin
     // value is a top level component
     if JITFormList.IsJITForm(AComponent) then begin
@@ -1566,8 +1560,8 @@ begin
       end;
 
       // create component interface
-      Temp := TComponentInterface.Create(NewComponent);
-      
+      Temp:=TComponentInterface(CreateComponentInterface(NewComponent,false));
+
       // calc parent
       AParent:=nil;
       if ParentComponent is TControl then begin
@@ -1596,7 +1590,7 @@ begin
       NewJITIndex := JITList.AddNewJITComponent(NewUnitName,TypeClass);
       if NewJITIndex >= 0 then
         // create component interface
-        Temp := TComponentInterface.Create(JITList[NewJITIndex])
+        Temp := TComponentInterface(CreateComponentInterface(JITList[NewJITIndex],false))
       else
         exit;
     end;
@@ -1700,7 +1694,9 @@ begin
 
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TCustomFormEditor.CreateComponent F ');{$ENDIF}
     // add to component list
-    FComponentInterfaces.Add(Temp);
+    DebugLn(['TCustomFormEditor.CreateComponent ',dbgsName(Temp.Component),' ',FindComponent(Temp.Component)<>nil]);
+    if FindComponent(Temp.Component)=nil then
+      FComponentInterfaces.Add(Temp);
 
     if Temp.Component.Owner<>nil then
       CreateChildComponentInterfaces(Temp.Component.Owner);
