@@ -256,7 +256,8 @@ begin
     tnidw.cbSize := SizeOf(TNotifyIconDataW);
     tnidw.hWnd := ATrayIcon.Handle;
     tnidw.uID := uIDTrayIcon;
-    tnidw.uFlags := NIF_TIP;
+    tnidw.hIcon := ATrayIcon.Icon.Handle;
+    tnidw.uFlags := NIF_TIP or NIF_ICON;
 
     WideBuffer := UTF8Decode(ATrayIcon.Hint);
     WideStrLCopy(@tnidw.szTip, PWideChar(WideBuffer), 127);
@@ -270,7 +271,8 @@ begin
     tnida.cbSize := SizeOf(TNotifyIconDataA);
     tnida.hWnd := ATrayIcon.Handle;
     tnida.uID := uIDTrayIcon;
-    tnida.uFlags := NIF_TIP;
+    tnida.hIcon := ATrayIcon.Icon.Handle;
+    tnida.uFlags := NIF_TIP or NIF_ICON;
 
     AnsiBuffer := UTF8ToAnsi(ATrayIcon.Hint);
     StrLCopy(@tnida.szTip, PChar(AnsiBuffer), 127);
