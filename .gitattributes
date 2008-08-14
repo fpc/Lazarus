@@ -189,6 +189,7 @@ components/codetools/multikeywordlisttool.pas svneol=native#text/pascal
 components/codetools/nonpascalcodetools.pas svneol=native#text/plain
 components/codetools/pascalparsertool.pas svneol=native#text/pascal
 components/codetools/pascalreadertool.pas svneol=native#text/pascal
+components/codetools/ppucodetools.pas svneol=native#text/plain
 components/codetools/ppugraph.pas svneol=native#text/plain
 components/codetools/ppuparser.pas svneol=native#text/plain
 components/codetools/resourcecodetool.pas svneol=native#text/pascal
