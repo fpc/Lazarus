@@ -456,8 +456,8 @@ begin
     Parent := pnlDebugSpecific;   //gbDebuggerSpecific;
     Visible := True;
     Align := alClient;
-    //Layout := oilVertical;
-    //RowSpacing := 4;
+    Layout := oilVertical;
+    RowSpacing := 4;
   end;
 
   FetchDebuggerClass;

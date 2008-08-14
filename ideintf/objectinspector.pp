@@ -2300,12 +2300,16 @@ begin
   ValueRect := FullRect;
   Inc(FullRect.Bottom, FRowSpacing);
 
-  if ARow = FItemIndex then begin
-    if Assigned(FCurrentButton) and (FCurrentButton.Visible) then
-      Dec(FullRect.Right, FCurrentButton.Width);
+  if ARow = FItemIndex then 
+  begin
+    if Layout = oilHorizontal then
+    begin
+      if Assigned(FCurrentButton) and (FCurrentButton.Visible) then
+        Dec(FullRect.Right, FCurrentButton.Width);
 
-    if Assigned(FCurrentEdit) and (FCurrentEdit.Visible) then
-      Dec(FullRect.Right, FCurrentEdit.Width);
+      if Assigned(FCurrentEdit) and (FCurrentEdit.Visible) then
+        Dec(FullRect.Right, FCurrentEdit.Width);
+    end;
   end;
 
   if Layout = oilHorizontal
