@@ -22,7 +22,9 @@ program runtests;
 
 uses
   Classes, consoletestrunner,
-  testglobals, testunits;
+  testglobals, testunits, dom,
+  {Unit needed to set the LCL version and widget set name}
+  LCLVersion, InterfaceBase, Interfaces;
   
 type
 
@@ -33,6 +35,8 @@ type
     procedure AppendLongOpts; override;
     procedure ParseOptions; override;
     procedure WriteCustomHelp; override;
+
+    procedure ExtendXmlDocument(Doc: TXMLDocument); override;
   end;
 
 { TLazTestRunner }
@@ -53,6 +57,29 @@ end;
 procedure TLazTestRunner.WriteCustomHelp;
 begin
   writeln('  --compiler=<ppcxxx>       use ppcxxx to build test projects');
+end;
+
+procedure TLazTestRunner.ExtendXmlDocument(Doc: TXMLDocument);
+var
+  env: TDOMElement;
+  procedure AddElement(const name, value: string);
+  var
+    n: TDOMElement;
+  begin
+    n := Doc.CreateElement(name);
+    n.AppendChild(Doc.CreateTextNode(value));
+    env.AppendChild(n);
+  end;
+begin
+  inherited ExtendXmlDocument(Doc);
+  env := Doc.CreateElement('Environment');
+  AddElement('Date', {$I %DATE%});
+  AddElement('CPU', {$I %FPCTARGETCPU%});
+  AddElement('OS', {$I %FPCTARGETOS%});
+  AddElement('FPCVersion', {$I %FPCVERSION%});
+  AddElement('LCLVersion', lcl_version);
+  AddElement('WidgetSet', LCLPlatformDirNames[WidgetSet.LCLPlatform]);
+  Doc.FirstChild.AppendChild(env);
 end;
 
 var

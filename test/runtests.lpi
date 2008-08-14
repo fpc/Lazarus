@@ -17,7 +17,7 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <CommandLineParams Value="-a --file=results.xml"/>
+        <CommandLineParams Value="-s bugs.2068 --file=results.xml"/>
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
@@ -47,14 +47,14 @@
         <UnitName Value="TestLpi"/>
       </Unit1>
       <Unit2>
-        <Filename Value="..\components\fpcunit\console\fpcunitproject1.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="FPCUnitProject1"/>
-      </Unit2>
-      <Unit3>
         <Filename Value="bugtestcase.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="BugTestCase"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="testglobals.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="testglobals"/>
       </Unit3>
     </Units>
   </ProjectOptions>

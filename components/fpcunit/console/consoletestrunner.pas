@@ -56,7 +56,7 @@ type
     procedure AppendLongOpts; virtual;
     procedure WriteCustomHelp; virtual;
     procedure ParseOptions; virtual;
-    procedure ExtendXmlDocument(Doc: TXMLDocument);
+    procedure ExtendXmlDocument(Doc: TXMLDocument); virtual;
     function GetResultsWriter: TCustomResultsWriter; virtual;
   public
     constructor Create(AOwner: TComponent); override;

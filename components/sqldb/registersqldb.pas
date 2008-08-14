@@ -100,7 +100,7 @@ Resourcestring
 
 function TSQLFirebirdFileNamePropertyEditor.GetFilter: String;
 begin
-  Result := sFireBirdDatabases+' (*.fb)|*.fb;*.fdb';
+  Result := sFireBirdDatabases+' (*.fb;*.fdb)|*.fb;*.fdb';
   Result := Result + '|' + sInterbaseDatabases  +' (*.gdb)|*.gdb;*.GDB';
   Result:= Result+ '|'+ inherited GetFilter;
 end;

@@ -23,16 +23,16 @@
     </RunParams>
     <RequiredPackages Count="4">
       <Item1>
-        <PackageName Value="CodeTools"/>
+        <PackageName Value="LCL"/>
       </Item1>
       <Item2>
-        <PackageName Value="FCL"/>
+        <PackageName Value="FPCUnitTestRunner"/>
       </Item2>
       <Item3>
-        <PackageName Value="FPCUnitTestRunner"/>
+        <PackageName Value="FCL"/>
       </Item3>
       <Item4>
-        <PackageName Value="LCL"/>
+        <PackageName Value="CodeTools"/>
       </Item4>
     </RequiredPackages>
     <Units Count="7">
