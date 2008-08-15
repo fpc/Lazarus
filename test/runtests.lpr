@@ -77,7 +77,7 @@ begin
   AddElement('CPU', {$I %FPCTARGETCPU%});
   AddElement('OS', {$I %FPCTARGETOS%});
   AddElement('FPCVersion', {$I %FPCVERSION%});
-  AddElement('LCLVersion', lcl_version);
+  AddElement('LazVersion', lcl_version);
   AddElement('WidgetSet', LCLPlatformDirNames[WidgetSet.LCLPlatform]);
   Doc.FirstChild.AppendChild(env);
 end;
