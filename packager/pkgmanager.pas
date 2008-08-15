@@ -2259,7 +2259,7 @@ var
   CurEditor: TPackageEditorForm;
 begin
   // create a new package with standard dependencies
-  NewPackage:=PackageGraph.CreateNewPackage(lisPkgMangNewPackage);
+  NewPackage:=PackageGraph.CreateNewPackage(NameToValidIdentifier(lisPkgMangNewPackage));
   PackageGraph.AddDependencyToPackage(NewPackage,
                 PackageGraph.FCLPackage.CreateDependencyWithOwner(NewPackage));
   NewPackage.Modified:=false;
