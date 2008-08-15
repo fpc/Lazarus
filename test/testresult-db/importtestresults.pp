@@ -20,7 +20,8 @@
 program importtestresults;
 
 uses
-  sysutils,teststr,testu,tresults,dbtests;
+  sysutils,teststr,testu,tresults,dbtests,
+  dom, XMLRead;
 
 
 Var
@@ -68,8 +69,8 @@ TConfigOpt = (
   coLogFile,
   coOS,
   coCPU,
-  coCategory,
-  coVersion,
+  coWidgetset,
+  coFPCVersion,
   coDate,
   coSubmitter,
   coMachine,
@@ -90,8 +91,7 @@ ConfigStrings : Array [TConfigOpt] of string = (
   'os',
   'cpu',
   'widgetset',
-  'category',
-  'version',
+  'fpcversion',
   'date',
   'submitter',
   'machine',
@@ -102,13 +102,13 @@ ConfigStrings : Array [TConfigOpt] of string = (
 );
 
 ConfigOpts : Array[TConfigOpt] of char
-           = ('d','h','u','p','l','o','c','w','a','v','t','s','m','C','S','r','V');
+           = ('d','h','u','p','l','o','c','w', 'v','t','s','m','C','S','r','V');
 
 Var
   TestOS,
   TestCPU,
-  TestVersion,
-  TestCategory,
+  TestFPCVersion,
+  TestLazVersion,
   DatabaseName,
   HostName,
   UserName,
@@ -131,22 +131,21 @@ begin
     coLogFile      : ResultsFileName:=Value;
     coOS           : TestOS:=Value;
     coCPU          : TestCPU:=Value;
-    coCategory     : TestCategory:=Value;
-    coVersion      : TestVersion:=Value;
+    coFPCVersion   : TestFPCVersion:=Value;
     coDate         : 
       begin
         { Formated like YYYYMMDDhhmm }
-	if Length(value)=12 then
-	  begin
-	    year:=StrToInt(Copy(value,1,4));
-	    month:=StrToInt(Copy(value,5,2));
-	    day:=StrToInt(Copy(Value,7,2));
-	    hour:=StrToInt(Copy(Value,9,2));
-	    min:=StrToInt(Copy(Value,11,2));
-	    TestDate:=EncodeDate(year,month,day)+EncodeTime(hour,min,0,0);
-	  end
-	else
-	  Verbose(V_Error,'Error in date format, use YYYYMMDDhhmm');  
+      	if Length(value)=12 then
+      	  begin
+      	    year:=StrToInt(Copy(value,1,4));
+      	    month:=StrToInt(Copy(value,5,2));
+      	    day:=StrToInt(Copy(Value,7,2));
+      	    hour:=StrToInt(Copy(Value,9,2));
+      	    min:=StrToInt(Copy(Value,11,2));
+      	    TestDate:=EncodeDate(year,month,day)+EncodeTime(hour,min,0,0);
+      	  end
+      	else
+      	  Verbose(V_Error,'Error in date format, use YYYYMMDDhhmm');
       end;
     coSubmitter    : Submitter:=Value;
     coMachine      : Machine:=Value;
@@ -273,36 +272,58 @@ begin
 end;
 
 Var
+  Doc: TXMLDocument;
   TestCPUID : Integer;
   TestOSID  : Integer;
-  TestVersionID  : Integer;
-  TestCategoryID : Integer;
+  TestFPCVersionID : Integer;
+  TestLazVersionID : Integer;
   TestRunID : Integer;
 
 Procedure GetIDs;
+var
+  EnvNode: TDOMElement;
+
+  function GetEnvValue(const Name: string): string;
+  var
+    Node: TDomNode;
+  begin
+    Node := EnvNode.FindNode(Name);
+    if not assigned(Node) then
+      Verbose(V_Error,'No environment element for '+Name);
+    Result := Node.TextContent;
+    Verbose(V_Debug,format('Environment: retrieved %s=%s', [Name, Result]));
+  end;
 
 begin
+  EnvNode := Doc.FirstChild.FindNode('Environment') as TDomElement;
+  if not Assigned(EnvNode) then
+    Verbose(V_Error,'No environment element');
+  TestCPU := GetEnvValue('CPU');
   TestCPUID := GetCPUId(TestCPU);
   If TestCPUID=-1 then
     Verbose(V_Error,'NO ID for CPU "'+TestCPU+'" found.');
+
+  TestOS := GetEnvValue('OS');
   TestOSID  := GetOSID(TestOS);
   If TestOSID=-1 then
     Verbose(V_Error,'NO ID for OS "'+TestOS+'" found.');
-  TestCategoryID := GetCategoryID(TestCategory);
-  If TestCategoryID=-1 then
-    begin
-//    Verbose(V_Error,'NO ID for Category "'+TestCategory+'" found.');
-    TestCategoryID:=1;
-    end;
-  TestVersionID  := GetVersionID(TestVersion);
-  If TestVersionID=-1 then
-    Verbose(V_Error,'NO ID for version "'+TestVersion+'" found.');
+
+  TestFPCVersion := GetEnvValue('FPCVersion');
+  TestFPCVersionID  := GetFPCVersionID(TestFPCVersion);
+  If TestFPCVersionID=-1 then
+    Verbose(V_Error,'NO ID for fpc version "'+TestFPCVersion+'" found.');
+
+  TestLazVersion := GetEnvValue('LazVersion');
+  TestLazVersionID  := GetLazVersionID(TestLazVersion);
+  If TestLazVersionID=-1 then
+    Verbose(V_Error,'NO ID for fpc version "'+TestLazVersion+'" found.');
+
   If (Round(TestDate)=0) then
     Testdate:=Now;
-  TestRunID:=GetRunID(TestOSID,TestCPUID,TestVersionID,TestDate);
+  TestRunID:=GetRunID(TestOSID,TestCPUID,TestFPCVersionID,TestLazVersionID, TestDate);
   If (TestRunID=-1) then
     begin
-    TestRunID:=AddRun(TestOSID,TestCPUID,TestVersionID,TestCategoryID,TestDate);
+    TestRunID:=AddRun(TestOSID,TestCPUID,TestFPCVersionID,TestLazVersionID,TestDate);
     If TestRUnID=-1 then
       Verbose(V_Error,'Could not insert new testrun record!');
     end
@@ -376,8 +397,17 @@ begin
   close(logfile);
 end;
 
-procedure ProcessResultsFile;
+procedure ProcessResultsFile(FN: String);
+
 begin
+  Verbose(V_Debug,'Start ProcessResultsFile');
+  if not FileExists(FN) then
+    Verbose(V_Error,'Results file "'+ResultsFileName+'" does not exist.');
+
+  ReadXMLFile(Doc, FN);
+  GetIDs;
+  Doc.Free;
+  Verbose(V_Debug,'End ProcessResultsFile');
 end;
 
 procedure UpdateTestRun;
@@ -389,21 +419,22 @@ procedure UpdateTestRun;
 
   begin
     qry:='UPDATE TESTRUN SET ';
-    for i:=low(TTestStatus) to high(TTestStatus) do
-      qry:=qry+format('%s=%d, ',[SQLField[i],StatusCount[i]]);
-    qry:=qry+format('TU_SUBMITTER="%s", TU_MACHINE="%s", TU_COMMENT="%s", TU_DATE="%s"',[Submitter,Machine,Comment,SqlDate(TestDate)]);
+    //for i:=low(TTestStatus) to high(TTestStatus) do
+      //qry:=qry+format('%s=%d, ',[SQLField[i],StatusCount[i]]);
+    qry:=qry+format('TU_SUBMITTER="%s", TU_MACHINE="%s", TU_COMMENT="%s", TU_DATE="%s"',
+                [Submitter,Machine,Comment,SqlDate(TestDate)]);
     qry:=qry+' WHERE TU_ID='+format('%d',[TestRunID]);
     RunQuery(Qry,res)
   end;
 
 
 begin
+  DoVerbose := true;
   ProcessConfigFile('dbdigest.cfg');
   ProcessCommandLine;
   If ResultsFileName<>'' then
     begin
     ConnectToDatabase(DatabaseName,HostName,UserName,Password);
-    GetIDs;
     ProcessResultsFile(ResultsFileName);
     UpdateTestRun;
     end

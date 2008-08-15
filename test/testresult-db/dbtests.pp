@@ -21,9 +21,10 @@ Function GetTestID(Name : string) : Integer;
 Function GetOSID(Name : String) : Integer;
 Function GetCPUID(Name : String) : Integer;
 Function GetCategoryID(Name : String) : Integer;
-Function GetVersionID(Name : String) : Integer;
-Function GetRunID(OSID, CPUID, VERSIONID : Integer; Date : TDateTime) : Integer;
-Function AddRun(OSID, CPUID, VERSIONID, CATEGORYID : Integer; Date : TDateTime) : Integer;
+Function GetFPCVersionID(Name : String) : Integer;
+Function GetLAZVersionID(Name : String) : Integer;
+Function GetRunID(OSID, CPUID, FPCVERSIONID, LazVersionID : Integer; Date : TDateTime) : Integer;
+Function AddRun(OSID, CPUID, FPCVERSIONID, LazVersionID : Integer; Date : TDateTime) : Integer;
 Function AddTest(Name : String; AddSource : Boolean) : Integer;
 Function UpdateTest(ID : Integer; Info : TConfig; Source : String) : Boolean;
 Function AddTestResult(TestID,RunID,TestRes : Integer;
@@ -191,15 +192,6 @@ begin
   Result:=IDQuery(Format(SFromName,[Name]));
 end;
 
-Function GetVersionID(Name : String) : Integer;
-
-Const
-  SFromName = 'SELECT TV_ID FROM TESTVERSION WHERE (TV_VERSION="%s")';
-
-begin
-  Result:=IDQuery(Format(SFromName,[Name]));
-end;
-
 Function GetCPUID(Name : String) : Integer;
 
 Const
@@ -218,25 +210,44 @@ begin
   Result:=IDQuery(Format(SFromName,[Name]));
 end;
 
-Function GetRunID(OSID, CPUID, VERSIONID : Integer; Date : TDateTime) : Integer;
+function GetFPCVersionID(Name: String): Integer;
+
+Const
+  SFromName = 'SELECT TFV_ID FROM TESTFPCVERSION WHERE (TFV_VERSION="%s")';
+
+begin
+  Result:=IDQuery(Format(SFromName,[Name]));
+end;
 
 
+function GetLAZVersionID(Name: String): Integer;
+Const
+  SFromName = 'SELECT TLV_ID FROM TESTLAZVERSION WHERE (TLV_VERSION="%s")';
+
+begin
+  Result:=IDQuery(Format(SFromName,[Name]));
+end;
+
+
+function GetRunID(OSID, CPUID, FPCVERSIONID, LazVersionID: Integer;
+  Date: TDateTime): Integer;
 Const
   SFromIDS = 'SELECT TU_ID FROM TESTRUN WHERE '+
              ' (TU_OS_FK=%d) '+
              ' AND (TU_CPU_FK=%d) '+
-             ' AND (TU_VERSION_FK=%d) '+
+             ' AND (TU_FPC_VERSION_FK=%d) '+
+             ' AND (TU_LAZ_VERSION_FK=%d) '+
              ' AND (TU_DATE="%s")';
 
 begin
-  Result:=IDQuery(Format(SFromIDS,[OSID,CPUID,VERSIONID,SQLDate(Date)]));
+  Result:=IDQuery(Format(SFromIDS,[OSID,CPUID,FPCVERSIONID,LazVersionID,SQLDate(Date)]));
 end;
 
-Function AddRun(OSID, CPUID, VERSIONID, CATEGORYID : Integer; Date : TDateTime) : Integer;
+Function AddRun(OSID, CPUID, FPCVERSIONID, LazVersionID : Integer; Date : TDateTime) : Integer;
 
 Const
   SInsertRun = 'INSERT INTO TESTRUN '+
-               '(TU_OS_FK,TU_CPU_FK,TU_VERSION_FK,TU_CATEGORY_FK,TU_DATE)'+
+               '(TU_OS_FK,TU_CPU_FK,TU_FPC_VERSION_FK,TU_LAZ_VERSION_FK,TU_DATE)'+
                ' VALUES '+
                '(%d,%d,%d,%d,"%s")';
 
@@ -244,7 +255,7 @@ Var
   Res : TQueryResult;
 
 begin
-  If RunQuery(Format(SInsertRun,[OSID,CPUID,VERSIONID,CATEGORYID,SQLDate(Date)]),Res) then
+  If RunQuery(Format(SInsertRun,[OSID,CPUID,FPCVERSIONID,LazVersionID,SQLDate(Date)]),Res) then
     Result:=mysql_insert_id(@connection)
   else
     Result:=-1;

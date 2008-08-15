@@ -4,14 +4,13 @@
     <PathDelim Value="\"/>
     <Version Value="6"/>
     <General>
+      <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
+      <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="2"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
-      <Language Value=""/>
-      <CharSet Value=""/>
     </VersionInfo>
     <PublishOptions>
       <Version Value="2"/>
@@ -25,46 +24,13 @@
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <Units Count="3">
+    <Units Count="1">
       <Unit0>
         <Filename Value="importtestresults.pp"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="importtestresuls"/>
-        <CursorPos X="25" Y="20"/>
-        <TopLine Value="7"/>
-        <EditorIndex Value="0"/>
-        <UsageCount Value="20"/>
-        <Loaded Value="True"/>
+        <UnitName Value="importtestresults"/>
       </Unit0>
-      <Unit1>
-        <Filename Value="teststr.pp"/>
-        <UnitName Value="teststr"/>
-        <CursorPos X="45" Y="37"/>
-        <TopLine Value="8"/>
-        <EditorIndex Value="1"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit1>
-      <Unit2>
-        <Filename Value="testu.pp"/>
-        <UnitName Value="testu"/>
-        <CursorPos X="1" Y="37"/>
-        <TopLine Value="37"/>
-        <EditorIndex Value="2"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit2>
     </Units>
-    <JumpHistory Count="2" HistoryIndex="1">
-      <Position1>
-        <Filename Value="teststr.pp"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position1>
-      <Position2>
-        <Filename Value="testu.pp"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position2>
-    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
@@ -73,65 +39,9 @@
       <Generate Value="Faster"/>
     </CodeGeneration>
     <Other>
+      <CustomOptions Value="
+"/>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
-  <Debugging>
-    <BreakPoints Count="11">
-      <Item1>
-        <Source Value="..\..\ide\compileroptions.pp"/>
-        <InitialEnabled Value="False"/>
-        <Line Value="1695"/>
-      </Item1>
-      <Item2>
-        <Source Value="..\..\ide\ideprocs.pp"/>
-        <Line Value="1396"/>
-      </Item2>
-      <Item3>
-        <Source Value="..\..\ide\compileroptionsdlg.pp"/>
-        <Line Value="1656"/>
-      </Item3>
-      <Item4>
-        <Source Value="..\..\lcl\include\fileutil.inc"/>
-        <InitialEnabled Value="False"/>
-        <Line Value="210"/>
-      </Item4>
-      <Item5>
-        <Source Value="..\..\ide\condef.pas"/>
-        <Line Value="148"/>
-      </Item5>
-      <Item6>
-        <Source Value="..\..\lcl\include\treeview.inc"/>
-        <Line Value="3949"/>
-      </Item6>
-      <Item7>
-        <Source Value="..\..\components\synedit\synedit.pp"/>
-        <Line Value="6322"/>
-      </Item7>
-      <Item8>
-        <Source Value="..\..\components\synedit\synedit.pp"/>
-        <Line Value="2189"/>
-      </Item8>
-      <Item9>
-        <Source Value="..\..\ide\editoroptions.pp"/>
-        <Line Value="3621"/>
-      </Item9>
-      <Item10>
-        <Source Value="..\..\ide\main.pp"/>
-        <Line Value="3257"/>
-      </Item10>
-      <Item11>
-        <Source Value="..\..\ide\main.pp"/>
-        <Line Value="3256"/>
-      </Item11>
-    </BreakPoints>
-    <Watches Count="2">
-      <Item1>
-        <Expression Value="MainUnitInfo.FSource.FSource"/>
-      </Item1>
-      <Item2>
-        <Expression Value="FOnCompare"/>
-      </Item2>
-    </Watches>
-  </Debugging>
 </CONFIG>
