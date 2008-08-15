@@ -27,7 +27,7 @@ interface
 
 uses
   SysUtils, Classes, dos, LCLProc
-  {$IFDEF UNIX},{$IFDEF VER2_3}iconvenc{$ELSE}unix{$ENDIF}{$ENDIF};
+  {$IFDEF UNIX},iconvenc{$ENDIF};
   
 const
   EncodingUTF8 = 'utf8';
@@ -4536,12 +4536,7 @@ var
   AFrom, ATo, SysEnc : String;
   Encoded : Boolean;
   {$ifdef Unix}
-  {$ifdef VER2_3}
   Dummy: String;
-  {$else}
-  SL: TStringList;
-  FN1, FN2: String;
-  {$endif}
   {$endif}
 begin
   AFrom:=NormalizeEncoding(FromEncoding);
@@ -4728,7 +4723,6 @@ begin
   Result:=s;
   {$ifdef Unix}
   try
-    {$ifdef VER2_3}
     if not IconvLibFound and not InitIconv(Dummy) then
     begin
       DebugLn(['Can not init iconv: ',Dummy]);
@@ -4739,20 +4733,6 @@ begin
       Result:=s;
       Exit;
     end;
-    {$else}
-    DebugLn(['CPConvert NOTE: using slow iconv workaround to convert from ',AFrom,' to ',ATo]);
-    SL:=TStringList.Create;
-    SL.Text:=s;
-    FN1:=GetTempFileName;
-    SL.SaveToFile(FN1);
-    FN2:=GetTempFileName;
-    fpSystem('iconv -f '+FromEncoding+' -t '+ToEncoding+' '+FN1+' >'+FN2);
-    SL.LoadFromFile(FN2);
-    if SL.Text<>'' then
-      Result:=SL.Text;
-    DeleteFile(FN1);
-    DeleteFile(FN2);
-    {$endif}
   except
   end;
   {$endif}

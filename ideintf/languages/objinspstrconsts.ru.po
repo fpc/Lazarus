@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-07-27 01:14+0300\n"
+"PO-Revision-Date: 2008-08-13 17:29+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -484,6 +484,14 @@ msgstr "FieldDefs"
 #: objinspstrconsts:cactionlisteditorfilecategory
 msgid "File"
 msgstr "Файл"
+
+#: objinspstrconsts:pefilter
+msgid "Filter"
+msgstr "Фильтр"
+
+#: objinspstrconsts:pefiltername
+msgid "Filter name"
+msgstr "Имя фильтра"
 
 #: objinspstrconsts:oistdactsearchfindhint
 msgid "Find"
