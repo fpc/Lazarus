@@ -323,7 +323,7 @@ var
   po: TPOFile;
 begin
   Result:=false;
-  debugln('TranslateUnitResourceStrings) ResUnitName="',ResUnitName,'" AFilename="',AFilename,'"');
+  //debugln('TranslateUnitResourceStrings) ResUnitName="',ResUnitName,'" AFilename="',AFilename,'"');
   if (ResUnitName='') or (AFilename='') or (not FileExists(AFilename)) then
     exit;
   try
