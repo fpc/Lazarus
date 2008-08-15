@@ -32,18 +32,30 @@
 
 
   Example 2: Load the current language file using the GetLanguageIDs function
-    of the gettext unit:
-  
-    procedure TForm1.FormCreate(Sender: TObject);
+    of the gettext unit in the project lpr file:
+
+    uses
+      ...
+      Translations, gettext;
+
+    procedure TranslateLCL;
     var
       PODirectory, Lang, FallbackLang: String;
     begin
       PODirectory:='/path/to/lazarus/lcl/languages/';
+      Lang:='';
+      FallbackLang:='';
       GetLanguageIDs(Lang,FallbackLang); // in unit gettext
-      TranslateUnitResourceStrings('LCLStrConsts',PODirectory+'lcl.%s.po',
-                                   Lang,FallbackLang);
-      MessageDlg('Title','Text',mtInformation,[mbOk,mbCancel,mbYes],0);
+      Translations.TranslateUnitResourceStrings('LCLStrConsts',
+                                PODirectory+'lclstrconsts.%s.po',Lang,FallbackLang);
     end;
+
+    begin
+      TranslateLCL;
+      Application.Initialize;
+      Application.CreateForm(TForm1, Form1);
+      Application.Run;
+    end.
 }
 unit Translations;
 
@@ -311,7 +323,7 @@ var
   po: TPOFile;
 begin
   Result:=false;
-  //debugln('TranslateUnitResourceStrings) ResUnitName="',ResUnitName,'" AFilename="',AFilename,'"');
+  debugln('TranslateUnitResourceStrings) ResUnitName="',ResUnitName,'" AFilename="',AFilename,'"');
   if (ResUnitName='') or (AFilename='') or (not FileExists(AFilename)) then
     exit;
   try
