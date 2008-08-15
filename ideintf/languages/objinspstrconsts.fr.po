@@ -488,6 +488,14 @@ msgstr "Définition du champ"
 msgid "File"
 msgstr "Fichier"
 
+#: objinspstrconsts:pefilter
+msgid "Filter"
+msgstr ""
+
+#: objinspstrconsts:pefiltername
+msgid "Filter name"
+msgstr ""
+
 #: objinspstrconsts:oistdactsearchfindhint
 msgid "Find"
 msgstr ""

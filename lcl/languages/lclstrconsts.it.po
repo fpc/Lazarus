@@ -464,6 +464,22 @@ msgstr "Home"
 msgid "Icon"
 msgstr "Icona"
 
+#: lclstrconsts:rsiconnocurrent
+msgid "Icon has no current image"
+msgstr ""
+
+#: lclstrconsts:rsiconimageempty
+msgid "Icon image cannot be empty"
+msgstr ""
+
+#: lclstrconsts:rsiconimageformat
+msgid "Icon image must have the same format"
+msgstr ""
+
+#: lclstrconsts:rsiconimagesize
+msgid "Icon image must have the same size"
+msgstr ""
+
 #: lclstrconsts:rsindexoutofrange
 msgid "Index Out of range Cell[Col=%d Row=%d]"
 msgstr "Indice fuori dall'ampiezza massima Cell[Col=%d Row=%d]"

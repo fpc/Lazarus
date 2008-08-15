@@ -467,6 +467,22 @@ msgstr ""
 msgid "Icon"
 msgstr "图标"
 
+#: lclstrconsts:rsiconnocurrent
+msgid "Icon has no current image"
+msgstr ""
+
+#: lclstrconsts:rsiconimageempty
+msgid "Icon image cannot be empty"
+msgstr ""
+
+#: lclstrconsts:rsiconimageformat
+msgid "Icon image must have the same format"
+msgstr ""
+
+#: lclstrconsts:rsiconimagesize
+msgid "Icon image must have the same size"
+msgstr ""
+
 #: lclstrconsts:rsindexoutofrange
 msgid "Index Out of range Cell[Col=%d Row=%d]"
 msgstr "单元格索引超过范围[列=%d 行=%d]"

@@ -20,6 +20,10 @@ msgstr ""
 msgid " The key \"%s\" is already connected to \"%s\"."
 msgstr ""
 
+#: lazarusidestrconsts:listheoutputdirectoryshouldbeaseparatedirectoryandnot
+msgid " The output directory should be a separate directory and not contain any source files."
+msgstr ""
+
 #: lazarusidestrconsts:srkmconflicw
 msgid " conflicts with "
 msgstr ""
@@ -50,6 +54,10 @@ msgstr "%s tavua"
 
 #: lazarusidestrconsts:liscodetoolsdefsdirectory
 msgid "%s directory"
+msgstr ""
+
+#: lazarusidestrconsts:lisdoesnotexists
+msgid "%s does not exists: %s"
 msgstr ""
 
 #: lazarusidestrconsts:lislddoesnothaveanyvalidlazdocpathunabletocreatethefpdo
@@ -356,9 +364,21 @@ msgstr "Ikkunat"
 msgid "(Filter)"
 msgstr ""
 
+#: lazarusidestrconsts:lisfilter2
+msgid "(filter)"
+msgstr ""
+
+#: lazarusidestrconsts:liscodehelpnoinheriteddescriptionfound
+msgid "(no inherited description found)"
+msgstr ""
+
 #: lazarusidestrconsts:dlgbaknosubdirectory
 msgid "(no subdirectory)"
 msgstr "(ei alikansiota)"
+
+#: lazarusidestrconsts:liscodehelpnodocumentation
+msgid "(none)"
+msgstr ""
 
 #: lazarusidestrconsts:listmunknownmacro
 msgid "(unknown macro: %s)"
@@ -744,6 +764,14 @@ msgstr ""
 msgid "Alt-Key sets column mode"
 msgstr ""
 
+#: lazarusidestrconsts:lisalternativekey
+msgid "Alternative key"
+msgstr ""
+
+#: lazarusidestrconsts:lisalternativekeyor2keysequence
+msgid "Alternative key (or 2 key sequence)"
+msgstr ""
+
 #: lazarusidestrconsts:srkmalternkey
 msgid "Alternative key (or 2 keys combination)"
 msgstr ""
@@ -756,8 +784,8 @@ msgstr ""
 msgid "Always build (even if nothing changed)"
 msgstr "Aina käännetään kaikki (vaikka mikään ei muuttunutkaan)"
 
-#: lazarusidestrconsts:dlgalwaysvisiblecaret
-msgid "Always visible caret"
+#: lazarusidestrconsts:dlgalwaysvisiblecursor
+msgid "Always visible cursor"
 msgstr ""
 
 #: lazarusidestrconsts:lisa2pambiguousancestortype
@@ -1264,10 +1292,6 @@ msgstr ""
 msgid "Capital"
 msgstr ""
 
-#: lazarusidestrconsts:dlgcaretskipsselection
-msgid "Caret skips selection"
-msgstr ""
-
 #: lazarusidestrconsts:lisdiffdlgcaseinsensitive
 msgid "Case Insensitive"
 msgstr "Kirjaimen koolla ei väliä"
@@ -1428,6 +1452,10 @@ msgstr ""
 msgid "Choose a different name"
 msgstr "Valitse toisenlainen nimi"
 
+#: lazarusidestrconsts:lischooseakey
+msgid "Choose a key ..."
+msgstr ""
+
 #: lazarusidestrconsts:dlgchscodetempl
 msgid "Choose code template file (*.dci)"
 msgstr "Valitse koodilyhennetiedosto (*.dci)"
@@ -1556,6 +1584,10 @@ msgstr ""
 msgid "Clear"
 msgstr "Tyhjennä"
 
+#: lazarusidestrconsts:liscleardirectory
+msgid "Clear Directory?"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditcleardependencydefaultfilename
 msgid "Clear dependency filename"
 msgstr ""
@@ -1599,6 +1631,10 @@ msgstr "Sulje välilehti"
 #: lazarusidestrconsts:liskmcloseproject
 msgid "Close project"
 msgstr "Sulje projekti"
+
+#: lazarusidestrconsts:srvk_cmd
+msgid "Cmd"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcodegeneration
 msgid "Code"
@@ -2316,6 +2352,10 @@ msgstr "Kursorin siirtokomennot"
 msgid "Cursor row in current editor"
 msgstr ""
 
+#: lazarusidestrconsts:dlgcursorskipsselection
+msgid "Cursor skips selection"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptscustom
 msgid "Custom"
 msgstr ""
@@ -2547,6 +2587,10 @@ msgstr ""
 #: lazarusidestrconsts:lisdeleteoldfile
 msgid "Delete old file %s%s%s?"
 msgstr "Poistetaanko %s%s%s-niminen vanha fiedosto?"
+
+#: lazarusidestrconsts:lisdeleteoldfile2
+msgid "Delete old file?"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangdeleteoldpackagefile2
 msgid "Delete old package file %s%s%s?"
@@ -2788,10 +2832,6 @@ msgstr ""
 msgid "Documentation Editor"
 msgstr ""
 
-#: lazarusidestrconsts:liscodehelpnodocumentation
-msgid "Documentation entry does not exist"
-msgstr ""
-
 #: lazarusidestrconsts:lissortseldomain
 msgid "Domain"
 msgstr "Lajittelu peruste"
@@ -2885,7 +2925,7 @@ msgid "Edit custom scanners (%s)"
 msgstr ""
 
 #: lazarusidestrconsts:srkmeditforcmd
-msgid "Edit keys for command"
+msgid "Edit keys of command"
 msgstr ""
 
 #: lazarusidestrconsts:lispvueditvirtualunit
@@ -3176,6 +3216,10 @@ msgstr ""
 msgid "Event Log"
 msgstr ""
 
+#: lazarusidestrconsts:liseverynthlinenumber
+msgid "Every n-th line number:"
+msgstr ""
+
 #: lazarusidestrconsts:liscodehelpexampletag
 msgid "Example"
 msgstr ""
@@ -3420,6 +3464,10 @@ msgstr ""
 msgid "File already in package"
 msgstr ""
 
+#: lazarusidestrconsts:lisfileextensionofprograms
+msgid "File extension of programs"
+msgstr ""
+
 #: lazarusidestrconsts:dlgfileexts
 msgid "File extensions"
 msgstr "Tiedostopäätteet"
@@ -3602,6 +3650,10 @@ msgstr "Etsi tiedostoista"
 
 #: lazarusidestrconsts:liskmfindincremental
 msgid "Find incremental"
+msgstr ""
+
+#: lazarusidestrconsts:lisfindkeycombination
+msgid "Find key combination"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecfindnext
@@ -4328,6 +4380,10 @@ msgstr ""
 msgid "In front of methods"
 msgstr ""
 
+#: lazarusidestrconsts:lisinordertocreateacleancopyoftheprojectpackageallfil
+msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsinclude
 msgid "Include"
 msgstr ""
@@ -4900,6 +4956,10 @@ msgstr "Vääränlainen aliohjelman nimi"
 msgid "Invalid project filename"
 msgstr "Vääränlainen projektitiedoston nimi"
 
+#: lazarusidestrconsts:lisinvalidpublishingdirectory
+msgid "Invalid publishing Directory"
+msgstr ""
+
 #: lazarusidestrconsts:lisccoinvalidsearchpath
 msgid "Invalid search path"
 msgstr ""
@@ -4922,6 +4982,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisprojaddinvalidversion
 msgid "Invalid version"
+msgstr ""
+
+#: lazarusidestrconsts:dlgedinvert
+msgid "Invert"
 msgstr ""
 
 #: lazarusidestrconsts:ueminvertassignment
@@ -5008,12 +5072,12 @@ msgstr ""
 msgid "Keep all text files"
 msgstr "Säilytä kaikki tekstitiedostot"
 
-#: lazarusidestrconsts:dlgkeepcaretx
-msgid "Keep caret X position"
-msgstr "Yritä pysyä samalla kohtaa eri riveillä (x-paikka)"
-
 #: lazarusidestrconsts:dlgcokeepvarsreg
 msgid "Keep certain variables in registers"
+msgstr ""
+
+#: lazarusidestrconsts:dlgkeepcursorx
+msgid "Keep cursor X position"
 msgstr ""
 
 #: lazarusidestrconsts:liscldirkeepfilesmatchingfilter
@@ -5034,6 +5098,10 @@ msgstr "Pidä ne ja jatka"
 
 #: lazarusidestrconsts:lisedtexttoolkey
 msgid "Key"
+msgstr ""
+
+#: lazarusidestrconsts:liskeyor2keysequence
+msgid "Key (or 2 key sequence)"
 msgstr ""
 
 #: lazarusidestrconsts:srkmkey
@@ -5328,6 +5396,10 @@ msgstr ""
 msgid "Link Style:"
 msgstr ""
 
+#: lazarusidestrconsts:lislink
+msgid "Link:"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptslinker
 msgid "Linker"
 msgstr ""
@@ -5515,6 +5587,10 @@ msgstr "Valikkomuokkain"
 #: lazarusidestrconsts:lismenuviewmessages
 msgid "Messages"
 msgstr "Kääntäjän viestit"
+
+#: lazarusidestrconsts:srvk_meta
+msgid "Meta"
+msgstr ""
 
 #: lazarusidestrconsts:lismethodclassnotfound
 msgid "Method class not found"
@@ -6092,6 +6168,10 @@ msgstr "Komponenttimuokkain"
 msgid "Object Inspector commands"
 msgstr ""
 
+#: lazarusidestrconsts:dlgedoff
+msgid "Off"
+msgstr ""
+
 #: lazarusidestrconsts:lisokbtn
 msgid "Ok"
 msgstr ""
@@ -6102,6 +6182,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisoldclass
 msgid "Old Class"
+msgstr ""
+
+#: lazarusidestrconsts:dlgedon
+msgid "On"
 msgstr ""
 
 #: lazarusidestrconsts:lisbfonbuildprojectexecutethebuildfilecommandinstead
@@ -6672,8 +6756,8 @@ msgstr ""
 msgid "Pause program"
 msgstr ""
 
-#: lazarusidestrconsts:dlgpersistentcaret
-msgid "Persistent caret"
+#: lazarusidestrconsts:dlgpersistentcursor
+msgid "Persistent cursor"
 msgstr ""
 
 #: lazarusidestrconsts:lisccochecktestdir
@@ -7449,7 +7533,7 @@ msgid "Right margin color"
 msgstr "Oikean marginaaliviivan väri"
 
 #: lazarusidestrconsts:dlgrightmousemovescursor
-msgid "Right mouse moves caret"
+msgid "Right mouse moves cursor"
 msgstr ""
 
 #: lazarusidestrconsts:lisrightsides
@@ -8112,6 +8196,10 @@ msgstr ""
 msgid "Short description of"
 msgstr ""
 
+#: lazarusidestrconsts:lisshort
+msgid "Short:"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2pshortenorexpandfilename
 msgid "Shorten or expand filename"
 msgstr ""
@@ -8448,6 +8536,10 @@ msgstr ""
 msgid "Source directory %s%s%s does not exist."
 msgstr ""
 
+#: lazarusidestrconsts:lissourcedirectoryanddestinationdirectoryarethesamema
+msgid "Source directory %s%s%s%sand destination directory %s%s%s%sare the same.%s%sMaybe you misunderstand this feature.%sIt will clean/recreate the destination directory%sand copies the package/project into it."
+msgstr ""
+
 #: lazarusidestrconsts:lissourcemodified
 msgid "Source modified"
 msgstr "Lähdekoodi muuttunut"
@@ -8623,6 +8715,10 @@ msgstr "Onnistui"
 #: lazarusidestrconsts:lisinfobuildsuccess
 msgid "Success..."
 msgstr "Kääntäminen onnistui..."
+
+#: lazarusidestrconsts:srvk_super
+msgid "Super"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pswitchpaths
 msgid "Switch Paths"
@@ -9044,6 +9140,10 @@ msgstr ""
 msgid "The dependency %s%s%s was not found.%sPlease choose an existing package."
 msgstr "Tarvittavaa komponenttipakettia %s%s%s ei löytynyt.%sJos mahdollista niin valitse jokin toinen komponenttipaketti."
 
+#: lazarusidestrconsts:listhedestinationdirectorydoesnotexistpleasecheckthep
+msgid "The destination directory %s%s%s does not exist.%sPlease check the project target file name Menu > Project > Project Options."
+msgstr ""
+
 #: lazarusidestrconsts:listhedestinationdirectorydoesnotexist
 msgid "The destination directory%s%s%s%s does not exist."
 msgstr ""
@@ -9164,6 +9264,10 @@ msgstr "Seuraavia käännösyksiköitä (unit) ei löydetty:%s%s%s%s1) Joko näm
 msgid "The host application %s%s%s is not executable."
 msgstr ""
 
+#: lazarusidestrconsts:listhekeyisalreadyassignedtoremovetheoldassignmentand
+msgid "The key %s%sis already assigned to %s.%s%sRemove the old assignment and assign the key to the new function%s%s?"
+msgstr ""
+
 #: lazarusidestrconsts:listhelaunchingapplicationdoesnotexistsorisnotexecuta
 msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
 msgstr ""
@@ -9194,6 +9298,22 @@ msgstr ""
 
 #: lazarusidestrconsts:listhenewunitisnotyetintheunitsearchpathadddirectory
 msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
+msgstr ""
+
+#: lazarusidestrconsts:listheoutputdirectoryofislistedintheincludesearchpath
+msgid "The output directory of %s is listed in the include search path of %s."
+msgstr ""
+
+#: lazarusidestrconsts:listheoutputdirectoryofislistedintheinheritedincludes
+msgid "The output directory of %s is listed in the inherited include search path of %s."
+msgstr ""
+
+#: lazarusidestrconsts:listheoutputdirectoryofislistedintheinheritedunitsear
+msgid "The output directory of %s is listed in the inherited unit search path of %s."
+msgstr ""
+
+#: lazarusidestrconsts:listheoutputdirectoryofislistedintheunitsearchpathof
+msgid "The output directory of %s is listed in the unit search path of %s."
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthepackageisaruntimeonlypackageruntimeonlypackages
@@ -9352,6 +9472,10 @@ msgstr ""
 msgid "The unit name %s%s%s%sand filename %s%s%s differ."
 msgstr ""
 
+#: lazarusidestrconsts:listheunitsearchpathofcontainsthesourcedirectoryofpac
+msgid "The unit search path of %s%s%s contains the source directory %s%s%s of package %s"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2ptheunitnamealreadyexistsinthepackage
 msgid "The unitname %s%s%s already exists in the package:%s%s"
 msgstr ""
@@ -9366,6 +9490,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispvutheunitnameisusedwhentheideextendsusesclauses
 msgid "The unitname is used when the IDE extends uses clauses."
+msgstr ""
+
+#: lazarusidestrconsts:listheworkingdirectorydoesnotexistpleasechecktheworki
+msgid "The working directory %s%s%s does not exist.%sPlease check the working directory in Menu > Project > Run parameters."
 msgstr ""
 
 #: lazarusidestrconsts:lissamthereareabstractmethodstooverrideselectthemethodsf
@@ -9975,6 +10103,10 @@ msgstr ""
 #: lazarusidestrconsts:lisunabletorenamevariableinsource
 msgid "Unable to rename variable in source."
 msgstr "Ei pystytä tekemään muutoksia lähdekoodiin."
+
+#: lazarusidestrconsts:lisunabletorun
+msgid "Unable to run"
+msgstr ""
 
 #: lazarusidestrconsts:lisexttoolunabletorunthetool
 msgid "Unable to run the tool %s%s%s:%s%s"
@@ -10994,10 +11126,6 @@ msgstr ""
 
 #: lazarusidestrconsts:liscconocfgfound
 msgid "no fpc.cfg found"
-msgstr ""
-
-#: lazarusidestrconsts:liscodehelpnoinheriteddescriptionfound
-msgid "no inherited description found"
 msgstr ""
 
 #: lazarusidestrconsts:lisccononascii

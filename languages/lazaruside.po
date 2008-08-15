@@ -3068,8 +3068,8 @@ msgstr ""
 msgid "Alt-Key sets column mode"
 msgstr ""
 
-#: lazarusidestrconsts:dlgalwaysvisiblecaret
-msgid "Always visible caret"
+#: lazarusidestrconsts:dlgalwaysvisiblecursor
+msgid "Always visible cursor"
 msgstr ""
 
 #: lazarusidestrconsts:dlgautoident
@@ -3096,20 +3096,20 @@ msgstr ""
 msgid "Half page scroll"
 msgstr ""
 
-#: lazarusidestrconsts:dlgkeepcaretx
-msgid "Keep caret X position"
+#: lazarusidestrconsts:dlgkeepcursorx
+msgid "Keep cursor X position"
 msgstr ""
 
-#: lazarusidestrconsts:dlgpersistentcaret
-msgid "Persistent caret"
+#: lazarusidestrconsts:dlgpersistentcursor
+msgid "Persistent cursor"
 msgstr ""
 
-#: lazarusidestrconsts:dlgcaretskipsselection
-msgid "Caret skips selection"
+#: lazarusidestrconsts:dlgcursorskipsselection
+msgid "Cursor skips selection"
 msgstr ""
 
 #: lazarusidestrconsts:dlgrightmousemovescursor
-msgid "Right mouse moves caret"
+msgid "Right mouse moves cursor"
 msgstr ""
 
 #: lazarusidestrconsts:dlgscrollbyoneless
@@ -3318,6 +3318,18 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgedunder
 msgid "Underline"
+msgstr ""
+
+#: lazarusidestrconsts:dlgedon
+msgid "On"
+msgstr ""
+
+#: lazarusidestrconsts:dlgedoff
+msgid "Off"
+msgstr ""
+
+#: lazarusidestrconsts:dlgedinvert
+msgid "Invert"
 msgstr ""
 
 #: lazarusidestrconsts:dlgedidcomlet
@@ -4140,6 +4152,10 @@ msgstr ""
 msgid "Test: Checking compiler ..."
 msgstr ""
 
+#: lazarusidestrconsts:lisdoesnotexists
+msgid "%s does not exists: %s"
+msgstr ""
+
 #: lazarusidestrconsts:lisccoinvalidcompiler
 msgid "Invalid compiler"
 msgstr ""
@@ -4302,6 +4318,26 @@ msgstr ""
 
 #: lazarusidestrconsts:lisccofpcunitpathhassource
 msgid "FPC unit path contains a source: "
+msgstr ""
+
+#: lazarusidestrconsts:listheoutputdirectoryofislistedintheunitsearchpathof
+msgid "The output directory of %s is listed in the unit search path of %s."
+msgstr ""
+
+#: lazarusidestrconsts:listheoutputdirectoryshouldbeaseparatedirectoryandnot
+msgid " The output directory should be a separate directory and not contain any source files."
+msgstr ""
+
+#: lazarusidestrconsts:listheoutputdirectoryofislistedintheincludesearchpath
+msgid "The output directory of %s is listed in the include search path of %s."
+msgstr ""
+
+#: lazarusidestrconsts:listheoutputdirectoryofislistedintheinheritedunitsear
+msgid "The output directory of %s is listed in the inherited unit search path of %s."
+msgstr ""
+
+#: lazarusidestrconsts:listheoutputdirectoryofislistedintheinheritedincludes
+msgid "The output directory of %s is listed in the inherited include search path of %s."
 msgstr ""
 
 #: lazarusidestrconsts:lisccotestssuccess
@@ -5260,6 +5296,18 @@ msgstr ""
 msgid "Command:"
 msgstr ""
 
+#: lazarusidestrconsts:liskeyor2keysequence
+msgid "Key (or 2 key sequence)"
+msgstr ""
+
+#: lazarusidestrconsts:listhekeyisalreadyassignedtoremovetheoldassignmentand
+msgid "The key %s%sis already assigned to %s.%s%sRemove the old assignment and assign the key to the new function%s%s?"
+msgstr ""
+
+#: lazarusidestrconsts:lisalternativekeyor2keysequence
+msgid "Alternative key (or 2 key sequence)"
+msgstr ""
+
 #: lazarusidestrconsts:srkmconflic
 msgid "Conflict "
 msgstr ""
@@ -5277,7 +5325,11 @@ msgid "    command2 \""
 msgstr ""
 
 #: lazarusidestrconsts:srkmeditforcmd
-msgid "Edit keys for command"
+msgid "Edit keys of command"
+msgstr ""
+
+#: lazarusidestrconsts:lischooseakey
+msgid "Choose a key ..."
 msgstr ""
 
 #: lazarusidestrconsts:srkmkey
@@ -6210,6 +6262,18 @@ msgstr ""
 
 #: lazarusidestrconsts:srvk_control
 msgid "Control"
+msgstr ""
+
+#: lazarusidestrconsts:srvk_super
+msgid "Super"
+msgstr ""
+
+#: lazarusidestrconsts:srvk_meta
+msgid "Meta"
+msgstr ""
+
+#: lazarusidestrconsts:srvk_cmd
+msgid "Cmd"
 msgstr ""
 
 #: lazarusidestrconsts:srvk_menu
@@ -8316,6 +8380,18 @@ msgstr ""
 msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Environment -> Debugger Options"
 msgstr ""
 
+#: lazarusidestrconsts:lisunabletorun
+msgid "Unable to run"
+msgstr ""
+
+#: lazarusidestrconsts:listhedestinationdirectorydoesnotexistpleasecheckthep
+msgid "The destination directory %s%s%s does not exist.%sPlease check the project target file name Menu > Project > Project Options."
+msgstr ""
+
+#: lazarusidestrconsts:listheworkingdirectorydoesnotexistpleasechecktheworki
+msgid "The working directory %s%s%s does not exist.%sPlease check the working directory in Menu > Project > Run parameters."
+msgstr ""
+
 #: lazarusidestrconsts:lispleaseopenaunitbeforerun
 msgid "Please open a unit before run."
 msgstr ""
@@ -8478,6 +8554,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisedtexttoolkey
 msgid "Key"
+msgstr ""
+
+#: lazarusidestrconsts:lisalternativekey
+msgid "Alternative key"
 msgstr ""
 
 #: lazarusidestrconsts:lisedtexttoolctrl
@@ -10777,7 +10857,7 @@ msgid "<NONE>"
 msgstr ""
 
 #: lazarusidestrconsts:liscodehelpnoinheriteddescriptionfound
-msgid "no inherited description found"
+msgid "(no inherited description found)"
 msgstr ""
 
 #: lazarusidestrconsts:liscodehelpshortdescriptionof
@@ -10785,7 +10865,7 @@ msgid "Short description of"
 msgstr ""
 
 #: lazarusidestrconsts:liscodehelpnodocumentation
-msgid "Documentation entry does not exist"
+msgid "(none)"
 msgstr ""
 
 #: lazarusidestrconsts:liscodehelpinherited
@@ -11658,5 +11738,53 @@ msgstr ""
 
 #: lazarusidestrconsts:listhecomponentcannotbedeletedbecauseitisnotownedby
 msgid "The component %s can not be deleted, because it is not owned by %s."
+msgstr ""
+
+#: lazarusidestrconsts:lisfilter2
+msgid "(filter)"
+msgstr ""
+
+#: lazarusidestrconsts:lisfindkeycombination
+msgid "Find key combination"
+msgstr ""
+
+#: lazarusidestrconsts:lisinvalidpublishingdirectory
+msgid "Invalid publishing Directory"
+msgstr ""
+
+#: lazarusidestrconsts:lissourcedirectoryanddestinationdirectoryarethesamema
+msgid "Source directory %s%s%s%sand destination directory %s%s%s%sare the same.%s%sMaybe you misunderstand this feature.%sIt will clean/recreate the destination directory%sand copies the package/project into it."
+msgstr ""
+
+#: lazarusidestrconsts:liscleardirectory
+msgid "Clear Directory?"
+msgstr ""
+
+#: lazarusidestrconsts:lisinordertocreateacleancopyoftheprojectpackageallfil
+msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
+msgstr ""
+
+#: lazarusidestrconsts:lisfileextensionofprograms
+msgid "File extension of programs"
+msgstr ""
+
+#: lazarusidestrconsts:liseverynthlinenumber
+msgid "Every n-th line number:"
+msgstr ""
+
+#: lazarusidestrconsts:lislink
+msgid "Link:"
+msgstr ""
+
+#: lazarusidestrconsts:lisshort
+msgid "Short:"
+msgstr ""
+
+#: lazarusidestrconsts:lisdeleteoldfile2
+msgid "Delete old file?"
+msgstr ""
+
+#: lazarusidestrconsts:listheunitsearchpathofcontainsthesourcedirectoryofpac
+msgid "The unit search path of %s%s%s contains the source directory %s%s%s of package %s"
 msgstr ""
 

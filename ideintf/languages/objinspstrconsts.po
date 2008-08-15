@@ -1152,3 +1152,11 @@ msgstr ""
 msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
 msgstr ""
 
+#: objinspstrconsts:pefiltername
+msgid "Filter name"
+msgstr ""
+
+#: objinspstrconsts:pefilter
+msgid "Filter"
+msgstr ""
+

@@ -24,6 +24,10 @@ msgstr "トークン %s%s%s はすでに存在します!"
 msgid " The key \"%s\" is already connected to \"%s\"."
 msgstr "キー \"%s\" はすでに \"%s\" に接続しています."
 
+#: lazarusidestrconsts:listheoutputdirectoryshouldbeaseparatedirectoryandnot
+msgid " The output directory should be a separate directory and not contain any source files."
+msgstr ""
+
 #: lazarusidestrconsts:srkmconflicw
 msgid " conflicts with "
 msgstr " 右と衝突： "
@@ -55,6 +59,10 @@ msgstr "%s バイト"
 #: lazarusidestrconsts:liscodetoolsdefsdirectory
 msgid "%s directory"
 msgstr "%s ディレクトリ"
+
+#: lazarusidestrconsts:lisdoesnotexists
+msgid "%s does not exists: %s"
+msgstr ""
 
 #: lazarusidestrconsts:lislddoesnothaveanyvalidlazdocpathunabletocreatethefpdo
 msgid "%s does not have any valid LazDoc path.%sUnable to create the fpdoc file for %s"
@@ -360,9 +368,21 @@ msgstr ""
 msgid "(Filter)"
 msgstr "(フィルター)"
 
+#: lazarusidestrconsts:lisfilter2
+msgid "(filter)"
+msgstr ""
+
+#: lazarusidestrconsts:liscodehelpnoinheriteddescriptionfound
+msgid "(no inherited description found)"
+msgstr ""
+
 #: lazarusidestrconsts:dlgbaknosubdirectory
 msgid "(no subdirectory)"
 msgstr "(サブディレクトリ無し)"
+
+#: lazarusidestrconsts:liscodehelpnodocumentation
+msgid "(none)"
+msgstr ""
 
 #: lazarusidestrconsts:listmunknownmacro
 msgid "(unknown macro: %s)"
@@ -748,6 +768,14 @@ msgstr ""
 msgid "Alt-Key sets column mode"
 msgstr "Alt-キーで列モードに"
 
+#: lazarusidestrconsts:lisalternativekey
+msgid "Alternative key"
+msgstr ""
+
+#: lazarusidestrconsts:lisalternativekeyor2keysequence
+msgid "Alternative key (or 2 key sequence)"
+msgstr ""
+
 #: lazarusidestrconsts:srkmalternkey
 msgid "Alternative key (or 2 keys combination)"
 msgstr "代替キー （あるいは２つのキーの組み合わせ）"
@@ -760,9 +788,9 @@ msgstr "実行の前に常に構築"
 msgid "Always build (even if nothing changed)"
 msgstr "常に構築（変更がなくても）"
 
-#: lazarusidestrconsts:dlgalwaysvisiblecaret
-msgid "Always visible caret"
-msgstr "常にキャレットを可視状態に"
+#: lazarusidestrconsts:dlgalwaysvisiblecursor
+msgid "Always visible cursor"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pambiguousancestortype
 msgid "Ambiguous Ancestor Type"
@@ -1268,10 +1296,6 @@ msgstr "Lazarusのスターターが見つかりません"
 msgid "Capital"
 msgstr "大文字"
 
-#: lazarusidestrconsts:dlgcaretskipsselection
-msgid "Caret skips selection"
-msgstr "選択範囲内でキャレットをスキップ"
-
 #: lazarusidestrconsts:lisdiffdlgcaseinsensitive
 msgid "Case Insensitive"
 msgstr "大文字と小文字を区別しない"
@@ -1432,6 +1456,10 @@ msgstr "お気に入りのプロパティの基本クラスを選択してくだ
 msgid "Choose a different name"
 msgstr "違う名前を選択してください"
 
+#: lazarusidestrconsts:lischooseakey
+msgid "Choose a key ..."
+msgstr ""
+
 #: lazarusidestrconsts:dlgchscodetempl
 msgid "Choose code template file (*.dci)"
 msgstr "コードテンプテートファイル(*.dpi)を選択してください"
@@ -1560,6 +1588,10 @@ msgstr "消去＋構築"
 msgid "Clear"
 msgstr "消去"
 
+#: lazarusidestrconsts:liscleardirectory
+msgid "Clear Directory?"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditcleardependencydefaultfilename
 msgid "Clear dependency filename"
 msgstr "依存性ファイル名を消去"
@@ -1603,6 +1635,10 @@ msgstr "ページを閉じる"
 #: lazarusidestrconsts:liskmcloseproject
 msgid "Close project"
 msgstr "プロジェクトを閉じる"
+
+#: lazarusidestrconsts:srvk_cmd
+msgid "Cmd"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcodegeneration
 msgid "Code"
@@ -2320,6 +2356,10 @@ msgstr "カーソル移動コマンド"
 msgid "Cursor row in current editor"
 msgstr "カーソル"
 
+#: lazarusidestrconsts:dlgcursorskipsselection
+msgid "Cursor skips selection"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptscustom
 msgid "Custom"
 msgstr "カスタム"
@@ -2551,6 +2591,10 @@ msgstr "ノードを削除"
 #: lazarusidestrconsts:lisdeleteoldfile
 msgid "Delete old file %s%s%s?"
 msgstr "古いファイル%s%s%sを削除しますか？"
+
+#: lazarusidestrconsts:lisdeleteoldfile2
+msgid "Delete old file?"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangdeleteoldpackagefile2
 msgid "Delete old package file %s%s%s?"
@@ -2792,10 +2836,6 @@ msgstr ""
 msgid "Documentation Editor"
 msgstr "ドキュメントエディター"
 
-#: lazarusidestrconsts:liscodehelpnodocumentation
-msgid "Documentation entry does not exist"
-msgstr "ドキュメントエントリーがありません"
-
 #: lazarusidestrconsts:lissortseldomain
 msgid "Domain"
 msgstr "領域"
@@ -2889,8 +2929,8 @@ msgid "Edit custom scanners (%s)"
 msgstr ""
 
 #: lazarusidestrconsts:srkmeditforcmd
-msgid "Edit keys for command"
-msgstr "コマンドへのキーを編集"
+msgid "Edit keys of command"
+msgstr ""
 
 #: lazarusidestrconsts:lispvueditvirtualunit
 msgid "Edit virtual unit"
@@ -3180,6 +3220,10 @@ msgstr "評価/変更 ..."
 msgid "Event Log"
 msgstr "イベントログ"
 
+#: lazarusidestrconsts:liseverynthlinenumber
+msgid "Every n-th line number:"
+msgstr ""
+
 #: lazarusidestrconsts:liscodehelpexampletag
 msgid "Example"
 msgstr "実例"
@@ -3424,6 +3468,10 @@ msgstr "ファイルはすでに存在します。"
 msgid "File already in package"
 msgstr "パッケージにファイルがすでに存在します"
 
+#: lazarusidestrconsts:lisfileextensionofprograms
+msgid "File extension of programs"
+msgstr ""
+
 #: lazarusidestrconsts:dlgfileexts
 msgid "File extensions"
 msgstr "ファイルの拡張子"
@@ -3607,6 +3655,10 @@ msgstr "ファイルの中を検索"
 #: lazarusidestrconsts:liskmfindincremental
 msgid "Find incremental"
 msgstr "インクリメンタルを検索"
+
+#: lazarusidestrconsts:lisfindkeycombination
+msgid "Find key combination"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecfindnext
 msgid "Find next"
@@ -4332,6 +4384,10 @@ msgstr "インポートリスト"
 msgid "In front of methods"
 msgstr "メソッドの前"
 
+#: lazarusidestrconsts:lisinordertocreateacleancopyoftheprojectpackageallfil
+msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsinclude
 msgid "Include"
 msgstr "インクルード"
@@ -4904,6 +4960,10 @@ msgstr "無効な手続き名"
 msgid "Invalid project filename"
 msgstr "無効なプロジェクト名"
 
+#: lazarusidestrconsts:lisinvalidpublishingdirectory
+msgid "Invalid publishing Directory"
+msgstr ""
+
 #: lazarusidestrconsts:lisccoinvalidsearchpath
 msgid "Invalid search path"
 msgstr ""
@@ -4927,6 +4987,10 @@ msgstr "無効な変数名"
 #: lazarusidestrconsts:lisprojaddinvalidversion
 msgid "Invalid version"
 msgstr "無効なバージョン"
+
+#: lazarusidestrconsts:dlgedinvert
+msgid "Invert"
+msgstr ""
 
 #: lazarusidestrconsts:ueminvertassignment
 msgid "Invert Assignment"
@@ -5012,13 +5076,13 @@ msgstr "カナ"
 msgid "Keep all text files"
 msgstr "すべてのテキストファイルを保持"
 
-#: lazarusidestrconsts:dlgkeepcaretx
-msgid "Keep caret X position"
-msgstr "キャレットのX位置を保持"
-
 #: lazarusidestrconsts:dlgcokeepvarsreg
 msgid "Keep certain variables in registers"
 msgstr "レジスタにある変数を保持"
+
+#: lazarusidestrconsts:dlgkeepcursorx
+msgid "Keep cursor X position"
+msgstr ""
 
 #: lazarusidestrconsts:liscldirkeepfilesmatchingfilter
 msgid "Keep files matching filter"
@@ -5039,6 +5103,10 @@ msgstr "それらを保持し、続行"
 #: lazarusidestrconsts:lisedtexttoolkey
 msgid "Key"
 msgstr "キー"
+
+#: lazarusidestrconsts:liskeyor2keysequence
+msgid "Key (or 2 key sequence)"
+msgstr ""
 
 #: lazarusidestrconsts:srkmkey
 msgid "Key (or 2 keys combination)"
@@ -5332,6 +5400,10 @@ msgstr "スマートリンク"
 msgid "Link Style:"
 msgstr "リンクスタイル:"
 
+#: lazarusidestrconsts:lislink
+msgid "Link:"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptslinker
 msgid "Linker"
 msgstr "リンカー"
@@ -5519,6 +5591,10 @@ msgstr "メニューエディター"
 #: lazarusidestrconsts:lismenuviewmessages
 msgid "Messages"
 msgstr "メッセージ"
+
+#: lazarusidestrconsts:srvk_meta
+msgid "Meta"
+msgstr ""
 
 #: lazarusidestrconsts:lismethodclassnotfound
 msgid "Method class not found"
@@ -6096,6 +6172,10 @@ msgstr "オブジェクトインスペクタ"
 msgid "Object Inspector commands"
 msgstr "オブジェクトインスペクタコマンド"
 
+#: lazarusidestrconsts:dlgedoff
+msgid "Off"
+msgstr ""
+
 #: lazarusidestrconsts:lisokbtn
 msgid "Ok"
 msgstr ""
@@ -6107,6 +6187,10 @@ msgstr "古い先祖型"
 #: lazarusidestrconsts:lisoldclass
 msgid "Old Class"
 msgstr "古いクラス"
+
+#: lazarusidestrconsts:dlgedon
+msgid "On"
+msgstr ""
 
 #: lazarusidestrconsts:lisbfonbuildprojectexecutethebuildfilecommandinstead
 msgid "On build project execute the Build File command instead"
@@ -6676,9 +6760,9 @@ msgstr "一時停止キー"
 msgid "Pause program"
 msgstr "プログラムを一時停止"
 
-#: lazarusidestrconsts:dlgpersistentcaret
-msgid "Persistent caret"
-msgstr "固定キャレット"
+#: lazarusidestrconsts:dlgpersistentcursor
+msgid "Persistent cursor"
+msgstr ""
 
 #: lazarusidestrconsts:lisccochecktestdir
 msgid "Please check the Test directory under %sEnvironment -> Environment Options -> Files -> Directory for building test projects"
@@ -7453,8 +7537,8 @@ msgid "Right margin color"
 msgstr "右マージン色"
 
 #: lazarusidestrconsts:dlgrightmousemovescursor
-msgid "Right mouse moves caret"
-msgstr "右クリックでキャレットを移動"
+msgid "Right mouse moves cursor"
+msgstr ""
 
 #: lazarusidestrconsts:lisrightsides
 msgid "Right sides"
@@ -8116,6 +8200,10 @@ msgstr "短い"
 msgid "Short description of"
 msgstr ""
 
+#: lazarusidestrconsts:lisshort
+msgid "Short:"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2pshortenorexpandfilename
 msgid "Shorten or expand filename"
 msgstr "ファイル名を短縮もしくは拡張"
@@ -8452,6 +8540,10 @@ msgstr "ソースのブレークポイント"
 msgid "Source directory %s%s%s does not exist."
 msgstr "ソースディレクトリ %s%s%s は存在しません"
 
+#: lazarusidestrconsts:lissourcedirectoryanddestinationdirectoryarethesamema
+msgid "Source directory %s%s%s%sand destination directory %s%s%s%sare the same.%s%sMaybe you misunderstand this feature.%sIt will clean/recreate the destination directory%sand copies the package/project into it."
+msgstr ""
+
 #: lazarusidestrconsts:lissourcemodified
 msgid "Source modified"
 msgstr "ソースが変更されています"
@@ -8626,6 +8718,10 @@ msgstr "成功"
 
 #: lazarusidestrconsts:lisinfobuildsuccess
 msgid "Success..."
+msgstr ""
+
+#: lazarusidestrconsts:srvk_super
+msgid "Super"
 msgstr ""
 
 #: lazarusidestrconsts:lisa2pswitchpaths
@@ -9048,6 +9144,10 @@ msgstr "デバッガファイル\"%s\"は実行ファイルではありません
 msgid "The dependency %s%s%s was not found.%sPlease choose an existing package."
 msgstr "依存性%s%s%sが見つかりませんでした。%s存在しているパッケージを選んでください。"
 
+#: lazarusidestrconsts:listhedestinationdirectorydoesnotexistpleasecheckthep
+msgid "The destination directory %s%s%s does not exist.%sPlease check the project target file name Menu > Project > Project Options."
+msgstr ""
+
 #: lazarusidestrconsts:listhedestinationdirectorydoesnotexist
 msgid "The destination directory%s%s%s%s does not exist."
 msgstr "行き先のディレクトリ%s%s%s%sは存在しません。"
@@ -9168,6 +9268,10 @@ msgstr "以下のユニットが見つかりませんでした：%s%s%s%s1)そ�
 msgid "The host application %s%s%s is not executable."
 msgstr "そのホストアプリケーション%s%s%sは実行ファイルではありません。"
 
+#: lazarusidestrconsts:listhekeyisalreadyassignedtoremovetheoldassignmentand
+msgid "The key %s%sis already assigned to %s.%s%sRemove the old assignment and assign the key to the new function%s%s?"
+msgstr ""
+
 #: lazarusidestrconsts:listhelaunchingapplicationdoesnotexistsorisnotexecuta
 msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
 msgstr "起動しようとしているアプリケーション%s%s%s%sは存在しないか、実行ファイルではありません。実行→実行パラメータ→ローカル を参照のこと"
@@ -9198,6 +9302,22 @@ msgstr "その名前\"%s\"は有効なpascal識別子ではありません。"
 
 #: lazarusidestrconsts:listhenewunitisnotyetintheunitsearchpathadddirectory
 msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
+msgstr ""
+
+#: lazarusidestrconsts:listheoutputdirectoryofislistedintheincludesearchpath
+msgid "The output directory of %s is listed in the include search path of %s."
+msgstr ""
+
+#: lazarusidestrconsts:listheoutputdirectoryofislistedintheinheritedincludes
+msgid "The output directory of %s is listed in the inherited include search path of %s."
+msgstr ""
+
+#: lazarusidestrconsts:listheoutputdirectoryofislistedintheinheritedunitsear
+msgid "The output directory of %s is listed in the inherited unit search path of %s."
+msgstr ""
+
+#: lazarusidestrconsts:listheoutputdirectoryofislistedintheunitsearchpathof
+msgid "The output directory of %s is listed in the unit search path of %s."
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthepackageisaruntimeonlypackageruntimeonlypackages
@@ -9356,6 +9476,10 @@ msgstr "ユニット名%s%s%sは登録済みコンポーネントと同じです
 msgid "The unit name %s%s%s%sand filename %s%s%s differ."
 msgstr "ユニット名%s%s%sはとファイル名%s%s%sが異なっています。"
 
+#: lazarusidestrconsts:listheunitsearchpathofcontainsthesourcedirectoryofpac
+msgid "The unit search path of %s%s%s contains the source directory %s%s%s of package %s"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2ptheunitnamealreadyexistsinthepackage
 msgid "The unitname %s%s%s already exists in the package:%s%s"
 msgstr "ユニット名%s%s%sは次のパッケージに既に存在しています:%s%s"
@@ -9371,6 +9495,10 @@ msgstr "そのユニット名は有効なpascal識別子ではありません。
 #: lazarusidestrconsts:lispvutheunitnameisusedwhentheideextendsusesclauses
 msgid "The unitname is used when the IDE extends uses clauses."
 msgstr "そのユニット名はIDEがuses節を拡張するときに用いられます。"
+
+#: lazarusidestrconsts:listheworkingdirectorydoesnotexistpleasechecktheworki
+msgid "The working directory %s%s%s does not exist.%sPlease check the working directory in Menu > Project > Run parameters."
+msgstr ""
 
 #: lazarusidestrconsts:lissamthereareabstractmethodstooverrideselectthemethodsf
 msgid "There are %s abstract methods to override.%sSelect the methods for which stubs should be created:"
@@ -9979,6 +10107,10 @@ msgstr "メソッドの名称を変更できません。メッセージウィン
 #: lazarusidestrconsts:lisunabletorenamevariableinsource
 msgid "Unable to rename variable in source."
 msgstr "ソース内の変数名を変更できません。"
+
+#: lazarusidestrconsts:lisunabletorun
+msgid "Unable to run"
+msgstr ""
 
 #: lazarusidestrconsts:lisexttoolunabletorunthetool
 msgid "Unable to run the tool %s%s%s:%s%s"
@@ -10998,10 +11130,6 @@ msgstr ""
 
 #: lazarusidestrconsts:liscconocfgfound
 msgid "no fpc.cfg found"
-msgstr ""
-
-#: lazarusidestrconsts:liscodehelpnoinheriteddescriptionfound
-msgid "no inherited description found"
 msgstr ""
 
 #: lazarusidestrconsts:lisccononascii

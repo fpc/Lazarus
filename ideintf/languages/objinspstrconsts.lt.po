@@ -486,6 +486,14 @@ msgstr "FieldDefs"
 msgid "File"
 msgstr "Failas"
 
+#: objinspstrconsts:pefilter
+msgid "Filter"
+msgstr ""
+
+#: objinspstrconsts:pefiltername
+msgid "Filter name"
+msgstr ""
+
 #: objinspstrconsts:oistdactsearchfindhint
 msgid "Find"
 msgstr "Paieška"

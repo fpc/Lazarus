@@ -468,6 +468,22 @@ msgstr "Pos1"
 msgid "Icon"
 msgstr "Symbol"
 
+#: lclstrconsts:rsiconnocurrent
+msgid "Icon has no current image"
+msgstr ""
+
+#: lclstrconsts:rsiconimageempty
+msgid "Icon image cannot be empty"
+msgstr ""
+
+#: lclstrconsts:rsiconimageformat
+msgid "Icon image must have the same format"
+msgstr ""
+
+#: lclstrconsts:rsiconimagesize
+msgid "Icon image must have the same size"
+msgstr ""
+
 #: lclstrconsts:rsindexoutofrange
 msgid "Index Out of range Cell[Col=%d Row=%d]"
 msgstr "Index außerhalb des Bereichs Zelle[Spalte=%s Reihe=%d]"

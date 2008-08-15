@@ -488,6 +488,22 @@ msgstr ""
 msgid "Duplicate icon format."
 msgstr ""
 
+#: lclstrconsts:rsiconimageempty
+msgid "Icon image cannot be empty"
+msgstr ""
+
+#: lclstrconsts:rsiconimagesize
+msgid "Icon image must have the same size"
+msgstr ""
+
+#: lclstrconsts:rsiconnocurrent
+msgid "Icon has no current image"
+msgstr ""
+
+#: lclstrconsts:rsiconimageformat
+msgid "Icon image must have the same format"
+msgstr ""
+
 #: lclstrconsts:rsnowidgetset
 msgid "No widgetset object. Please check if the unit \"interfaces\" was added to the programs uses clause."
 msgstr ""

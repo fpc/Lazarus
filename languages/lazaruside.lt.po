@@ -26,6 +26,10 @@ msgstr "Leksema %s%s%s jau egzistuoja! "
 msgid " The key \"%s\" is already connected to \"%s\"."
 msgstr "Klavišas „%s“ jau yra surištas su „%s“."
 
+#: lazarusidestrconsts:listheoutputdirectoryshouldbeaseparatedirectoryandnot
+msgid " The output directory should be a separate directory and not contain any source files."
+msgstr ""
+
 #: lazarusidestrconsts:srkmconflicw
 msgid " conflicts with "
 msgstr " konfliktuoja su "
@@ -57,6 +61,10 @@ msgstr "%s baitų"
 #: lazarusidestrconsts:liscodetoolsdefsdirectory
 msgid "%s directory"
 msgstr "%s katalogas"
+
+#: lazarusidestrconsts:lisdoesnotexists
+msgid "%s does not exists: %s"
+msgstr ""
 
 #: lazarusidestrconsts:lislddoesnothaveanyvalidlazdocpathunabletocreatethefpdo
 msgid "%s does not have any valid LazDoc path.%sUnable to create the fpdoc file for %s"
@@ -362,9 +370,21 @@ msgstr "&Langai"
 msgid "(Filter)"
 msgstr "(Filtras)"
 
+#: lazarusidestrconsts:lisfilter2
+msgid "(filter)"
+msgstr ""
+
+#: lazarusidestrconsts:liscodehelpnoinheriteddescriptionfound
+msgid "(no inherited description found)"
+msgstr ""
+
 #: lazarusidestrconsts:dlgbaknosubdirectory
 msgid "(no subdirectory)"
 msgstr "(pakatalogio nėra)"
+
+#: lazarusidestrconsts:liscodehelpnodocumentation
+msgid "(none)"
+msgstr ""
 
 #: lazarusidestrconsts:listmunknownmacro
 msgid "(unknown macro: %s)"
@@ -750,6 +770,14 @@ msgstr "Alt"
 msgid "Alt-Key sets column mode"
 msgstr "Nuspaudus Alt klavišą - žymimi stulpeliai"
 
+#: lazarusidestrconsts:lisalternativekey
+msgid "Alternative key"
+msgstr ""
+
+#: lazarusidestrconsts:lisalternativekeyor2keysequence
+msgid "Alternative key (or 2 key sequence)"
+msgstr ""
+
 #: lazarusidestrconsts:srkmalternkey
 msgid "Alternative key (or 2 keys combination)"
 msgstr "Alternatyvusis klavišas (arba dviejų kombinacija)"
@@ -762,9 +790,9 @@ msgstr "Prieš startuojant visada daryti"
 msgid "Always build (even if nothing changed)"
 msgstr "Visada daryti (net jei nėra pakeitimų)"
 
-#: lazarusidestrconsts:dlgalwaysvisiblecaret
-msgid "Always visible caret"
-msgstr "Žymeklis matomas nuolat"
+#: lazarusidestrconsts:dlgalwaysvisiblecursor
+msgid "Always visible cursor"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pambiguousancestortype
 msgid "Ambiguous Ancestor Type"
@@ -1270,10 +1298,6 @@ msgstr "Nepavyko rasti Lazarus startuotoją:%s%s"
 msgid "Capital"
 msgstr "Caps Lock"
 
-#: lazarusidestrconsts:dlgcaretskipsselection
-msgid "Caret skips selection"
-msgstr "Nuo žymėjimo atitrūkstantis žymeklis"
-
 #: lazarusidestrconsts:lisdiffdlgcaseinsensitive
 msgid "Case Insensitive"
 msgstr "Skirti didžiąsias ir mažąsias raides"
@@ -1434,6 +1458,10 @@ msgstr "Mėgstamiausiąjai savybei %s%s%s parinkite bazinę klasę."
 msgid "Choose a different name"
 msgstr "Nurodykite kitokį pavadinimą"
 
+#: lazarusidestrconsts:lischooseakey
+msgid "Choose a key ..."
+msgstr ""
+
 #: lazarusidestrconsts:dlgchscodetempl
 msgid "Choose code template file (*.dci)"
 msgstr "Rinkitės kodo šablono failą (*.dci)"
@@ -1562,6 +1590,10 @@ msgstr "Apvalyti ir daryti"
 msgid "Clear"
 msgstr "Clear"
 
+#: lazarusidestrconsts:liscleardirectory
+msgid "Clear Directory?"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditcleardependencydefaultfilename
 msgid "Clear dependency filename"
 msgstr "Išvalyti priklausomo failo pavadinimą"
@@ -1605,6 +1637,10 @@ msgstr "Užverti lapą"
 #: lazarusidestrconsts:liskmcloseproject
 msgid "Close project"
 msgstr "Užverti projektą"
+
+#: lazarusidestrconsts:srvk_cmd
+msgid "Cmd"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcodegeneration
 msgid "Code"
@@ -2322,6 +2358,10 @@ msgstr "Žymeklio perkėlimo komandos"
 msgid "Cursor row in current editor"
 msgstr "Žymeklio eilutė veikiamojoje rengyklėje"
 
+#: lazarusidestrconsts:dlgcursorskipsselection
+msgid "Cursor skips selection"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptscustom
 msgid "Custom"
 msgstr "Naudotojo"
@@ -2553,6 +2593,10 @@ msgstr "Pašalinti mazgą"
 #: lazarusidestrconsts:lisdeleteoldfile
 msgid "Delete old file %s%s%s?"
 msgstr "Ištrinti senąjį failą %s%s%s?"
+
+#: lazarusidestrconsts:lisdeleteoldfile2
+msgid "Delete old file?"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangdeleteoldpackagefile2
 msgid "Delete old package file %s%s%s?"
@@ -2794,10 +2838,6 @@ msgstr "Lango pritvirtinimas"
 msgid "Documentation Editor"
 msgstr "Dokumentacijos rengyklė"
 
-#: lazarusidestrconsts:liscodehelpnodocumentation
-msgid "Documentation entry does not exist"
-msgstr "Dokumento įrašas neegzistuoja"
-
 #: lazarusidestrconsts:lissortseldomain
 msgid "Domain"
 msgstr "Sritis"
@@ -2891,8 +2931,8 @@ msgid "Edit custom scanners (%s)"
 msgstr "Keisti naudotojo žvalgytuvus (%s)"
 
 #: lazarusidestrconsts:srkmeditforcmd
-msgid "Edit keys for command"
-msgstr "Keisti klavišus komandai"
+msgid "Edit keys of command"
+msgstr ""
 
 #: lazarusidestrconsts:lispvueditvirtualunit
 msgid "Edit virtual unit"
@@ -3182,6 +3222,10 @@ msgstr "Įvertinti/Modifikuoti..."
 msgid "Event Log"
 msgstr "Įvykių žurnalas"
 
+#: lazarusidestrconsts:liseverynthlinenumber
+msgid "Every n-th line number:"
+msgstr ""
+
 #: lazarusidestrconsts:liscodehelpexampletag
 msgid "Example"
 msgstr "Pavyzdys"
@@ -3426,6 +3470,10 @@ msgstr "Failas jau egzistuoja"
 msgid "File already in package"
 msgstr "Pakete jau yra toks failas"
 
+#: lazarusidestrconsts:lisfileextensionofprograms
+msgid "File extension of programs"
+msgstr ""
+
 #: lazarusidestrconsts:dlgfileexts
 msgid "File extensions"
 msgstr "Failų plėtiniai"
@@ -3609,6 +3657,10 @@ msgstr "Ieškoti failuose"
 #: lazarusidestrconsts:liskmfindincremental
 msgid "Find incremental"
 msgstr "Prieauginė paieška"
+
+#: lazarusidestrconsts:lisfindkeycombination
+msgid "Find key combination"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecfindnext
 msgid "Find next"
@@ -4334,6 +4386,10 @@ msgstr "Importuoti sąrašą"
 msgid "In front of methods"
 msgstr "Priešais metodus"
 
+#: lazarusidestrconsts:lisinordertocreateacleancopyoftheprojectpackageallfil
+msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsinclude
 msgid "Include"
 msgstr "Įtraukti"
@@ -4906,6 +4962,10 @@ msgstr "Klaidingas procedūros pavadinimas"
 msgid "Invalid project filename"
 msgstr "Klaidingas projekto failo pavadinimas"
 
+#: lazarusidestrconsts:lisinvalidpublishingdirectory
+msgid "Invalid publishing Directory"
+msgstr ""
+
 #: lazarusidestrconsts:lisccoinvalidsearchpath
 msgid "Invalid search path"
 msgstr "Klaidingas paieškos kelias"
@@ -4929,6 +4989,10 @@ msgstr "Klaidingas kintamojo pavadinimas"
 #: lazarusidestrconsts:lisprojaddinvalidversion
 msgid "Invalid version"
 msgstr "Klaidinga versija"
+
+#: lazarusidestrconsts:dlgedinvert
+msgid "Invert"
+msgstr ""
 
 #: lazarusidestrconsts:ueminvertassignment
 msgid "Invert Assignment"
@@ -5014,13 +5078,13 @@ msgstr "Kana"
 msgid "Keep all text files"
 msgstr "Palikti visus tekstinius failus"
 
-#: lazarusidestrconsts:dlgkeepcaretx
-msgid "Keep caret X position"
-msgstr "Išlaikyti žymeklio X poziciją"
-
 #: lazarusidestrconsts:dlgcokeepvarsreg
 msgid "Keep certain variables in registers"
 msgstr "Registre laikyti dažniausiai naudojamus kintamuosius"
+
+#: lazarusidestrconsts:dlgkeepcursorx
+msgid "Keep cursor X position"
+msgstr ""
 
 #: lazarusidestrconsts:liscldirkeepfilesmatchingfilter
 msgid "Keep files matching filter"
@@ -5041,6 +5105,10 @@ msgstr "Jį palikti ir tęsti"
 #: lazarusidestrconsts:lisedtexttoolkey
 msgid "Key"
 msgstr "Klavišas"
+
+#: lazarusidestrconsts:liskeyor2keysequence
+msgid "Key (or 2 key sequence)"
+msgstr ""
 
 #: lazarusidestrconsts:srkmkey
 msgid "Key (or 2 keys combination)"
@@ -5334,6 +5402,10 @@ msgstr "Saistyti sumaniai"
 msgid "Link Style:"
 msgstr "Saistymo stilius:"
 
+#: lazarusidestrconsts:lislink
+msgid "Link:"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptslinker
 msgid "Linker"
 msgstr "Saistyklė"
@@ -5521,6 +5593,10 @@ msgstr "Meniu rengyklė"
 #: lazarusidestrconsts:lismenuviewmessages
 msgid "Messages"
 msgstr "Pranešimai"
+
+#: lazarusidestrconsts:srvk_meta
+msgid "Meta"
+msgstr ""
 
 #: lazarusidestrconsts:lismethodclassnotfound
 msgid "Method class not found"
@@ -6098,6 +6174,10 @@ msgstr "Objektų inspektorius"
 msgid "Object Inspector commands"
 msgstr "Objetų inspektoriaus komandos"
 
+#: lazarusidestrconsts:dlgedoff
+msgid "Off"
+msgstr ""
+
 #: lazarusidestrconsts:lisokbtn
 msgid "Ok"
 msgstr "Tinka"
@@ -6109,6 +6189,10 @@ msgstr "Buvęs protėvis"
 #: lazarusidestrconsts:lisoldclass
 msgid "Old Class"
 msgstr "Buvusi klasė"
+
+#: lazarusidestrconsts:dlgedon
+msgid "On"
+msgstr ""
 
 #: lazarusidestrconsts:lisbfonbuildprojectexecutethebuildfilecommandinstead
 msgid "On build project execute the Build File command instead"
@@ -6678,9 +6762,9 @@ msgstr "Pause klavišas"
 msgid "Pause program"
 msgstr "Pristabdyti veiką"
 
-#: lazarusidestrconsts:dlgpersistentcaret
-msgid "Persistent caret"
-msgstr "Nuolatinis žymeklis"
+#: lazarusidestrconsts:dlgpersistentcursor
+msgid "Persistent cursor"
+msgstr ""
 
 #: lazarusidestrconsts:lisccochecktestdir
 msgid "Please check the Test directory under %sEnvironment -> Environment Options -> Files -> Directory for building test projects"
@@ -7455,8 +7539,8 @@ msgid "Right margin color"
 msgstr "Dešiniosios paraštės spalva"
 
 #: lazarusidestrconsts:dlgrightmousemovescursor
-msgid "Right mouse moves caret"
-msgstr "Spragtelėjus dešinį pelės mygtuką perkeliamas žymeklis"
+msgid "Right mouse moves cursor"
+msgstr ""
 
 #: lazarusidestrconsts:lisrightsides
 msgid "Right sides"
@@ -8118,6 +8202,10 @@ msgstr "Santrumpa"
 msgid "Short description of"
 msgstr "Trumpas aprašymas"
 
+#: lazarusidestrconsts:lisshort
+msgid "Short:"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2pshortenorexpandfilename
 msgid "Shorten or expand filename"
 msgstr "Suskleisti ar išplėsti failo pavadinimą"
@@ -8454,6 +8542,10 @@ msgstr "Stabdos taškas pirminiame kode"
 msgid "Source directory %s%s%s does not exist."
 msgstr "Pirminio kodo katalogas %s%s%s neegzistuoja."
 
+#: lazarusidestrconsts:lissourcedirectoryanddestinationdirectoryarethesamema
+msgid "Source directory %s%s%s%sand destination directory %s%s%s%sare the same.%s%sMaybe you misunderstand this feature.%sIt will clean/recreate the destination directory%sand copies the package/project into it."
+msgstr ""
+
 #: lazarusidestrconsts:lissourcemodified
 msgid "Source modified"
 msgstr "Pirminis kodas pakeistas"
@@ -8628,6 +8720,10 @@ msgstr "Tvarka"
 
 #: lazarusidestrconsts:lisinfobuildsuccess
 msgid "Success..."
+msgstr ""
+
+#: lazarusidestrconsts:srvk_super
+msgid "Super"
 msgstr ""
 
 #: lazarusidestrconsts:lisa2pswitchpaths
@@ -9050,6 +9146,10 @@ msgstr "Derintuvės failas „%s“ nėra paleidžiamasis."
 msgid "The dependency %s%s%s was not found.%sPlease choose an existing package."
 msgstr "Priklausinys %s%s%s nerastas.%sNurodykite egzistuojantį paketą."
 
+#: lazarusidestrconsts:listhedestinationdirectorydoesnotexistpleasecheckthep
+msgid "The destination directory %s%s%s does not exist.%sPlease check the project target file name Menu > Project > Project Options."
+msgstr ""
+
 #: lazarusidestrconsts:listhedestinationdirectorydoesnotexist
 msgid "The destination directory%s%s%s%s does not exist."
 msgstr "Paskirties katalogas%s%s%s%s neegzistuoja."
@@ -9170,6 +9270,10 @@ msgstr "Šių modulių nepavyko rasti:%s%s%s%s 1) Ko gero šie moduliai nėra mo
 msgid "The host application %s%s%s is not executable."
 msgstr "Programa-šeimininkas %s%s%s nėra vykdomasis failas."
 
+#: lazarusidestrconsts:listhekeyisalreadyassignedtoremovetheoldassignmentand
+msgid "The key %s%sis already assigned to %s.%s%sRemove the old assignment and assign the key to the new function%s%s?"
+msgstr ""
+
 #: lazarusidestrconsts:listhelaunchingapplicationdoesnotexistsorisnotexecuta
 msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
 msgstr "Nerasta paleidžiančioji programa%s%s%s%s, arba ji nėra paleidžiamasis failas.%s%sŽvilgterėkit į „Startuoti -> Startavimo parametrai -> Vietiniai“."
@@ -9201,6 +9305,22 @@ msgstr "Pavadinimas „%s“ nėra paskalio identifikatorius."
 #: lazarusidestrconsts:listhenewunitisnotyetintheunitsearchpathadddirectory
 msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
 msgstr "Naujojo modulio nėra dar nėra modulių paieškos kelyje.%sĮtraukti modulio katalogą į modulių paieškos kelią?"
+
+#: lazarusidestrconsts:listheoutputdirectoryofislistedintheincludesearchpath
+msgid "The output directory of %s is listed in the include search path of %s."
+msgstr ""
+
+#: lazarusidestrconsts:listheoutputdirectoryofislistedintheinheritedincludes
+msgid "The output directory of %s is listed in the inherited include search path of %s."
+msgstr ""
+
+#: lazarusidestrconsts:listheoutputdirectoryofislistedintheinheritedunitsear
+msgid "The output directory of %s is listed in the inherited unit search path of %s."
+msgstr ""
+
+#: lazarusidestrconsts:listheoutputdirectoryofislistedintheunitsearchpathof
+msgid "The output directory of %s is listed in the unit search path of %s."
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthepackageisaruntimeonlypackageruntimeonlypackages
 msgid "The package %s is a runtime only package.%sRuntime only packages can not be installed in the IDE."
@@ -9358,6 +9478,10 @@ msgstr "Modulio pavadinimas %s%s%s tokspat kaip ir užregistruota komponentė.%s
 msgid "The unit name %s%s%s%sand filename %s%s%s differ."
 msgstr "Modulio %s%s%s%s ir failo %s%s%s pavadinimai skiriasi."
 
+#: lazarusidestrconsts:listheunitsearchpathofcontainsthesourcedirectoryofpac
+msgid "The unit search path of %s%s%s contains the source directory %s%s%s of package %s"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2ptheunitnamealreadyexistsinthepackage
 msgid "The unitname %s%s%s already exists in the package:%s%s"
 msgstr "Modulio pavadinimas %s%s%s jau yra pakete:%s%s"
@@ -9373,6 +9497,10 @@ msgstr "Modulio pavadinimas nėra paskalio identifikatorius."
 #: lazarusidestrconsts:lispvutheunitnameisusedwhentheideextendsusesclauses
 msgid "The unitname is used when the IDE extends uses clauses."
 msgstr "Modulio pavadinimas naudojamas kai IKA praplečia naudojamų modulių sąrašą."
+
+#: lazarusidestrconsts:listheworkingdirectorydoesnotexistpleasechecktheworki
+msgid "The working directory %s%s%s does not exist.%sPlease check the working directory in Menu > Project > Run parameters."
+msgstr ""
 
 #: lazarusidestrconsts:lissamthereareabstractmethodstooverrideselectthemethodsf
 msgid "There are %s abstract methods to override.%sSelect the methods for which stubs should be created:"
@@ -9981,6 +10109,10 @@ msgstr "Nepavyko pervardyti metodą. Ištaisykite klaidą, rodoma pranešimų la
 #: lazarusidestrconsts:lisunabletorenamevariableinsource
 msgid "Unable to rename variable in source."
 msgstr "Nepavyko pirminiame kode pervardyti kintamąjį."
+
+#: lazarusidestrconsts:lisunabletorun
+msgid "Unable to run"
+msgstr ""
 
 #: lazarusidestrconsts:lisexttoolunabletorunthetool
 msgid "Unable to run the tool %s%s%s:%s%s"
@@ -11001,10 +11133,6 @@ msgstr "jokia klasė"
 #: lazarusidestrconsts:liscconocfgfound
 msgid "no fpc.cfg found"
 msgstr "nerastas „fpc.cfg“"
-
-#: lazarusidestrconsts:liscodehelpnoinheriteddescriptionfound
-msgid "no inherited description found"
-msgstr "paveldėtas aprašymas nerastas"
 
 #: lazarusidestrconsts:lisccononascii
 msgid "non ASCII"

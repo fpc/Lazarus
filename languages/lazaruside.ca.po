@@ -25,6 +25,10 @@ msgstr "Ja existeix un testimoni %s%s%s !"
 msgid " The key \"%s\" is already connected to \"%s\"."
 msgstr "La tecla \"%s\" ja està connectada a \"%s\"."
 
+#: lazarusidestrconsts:listheoutputdirectoryshouldbeaseparatedirectoryandnot
+msgid " The output directory should be a separate directory and not contain any source files."
+msgstr ""
+
 #: lazarusidestrconsts:srkmconflicw
 msgid " conflicts with "
 msgstr "conflicte amb"
@@ -56,6 +60,10 @@ msgstr "%s octets"
 #: lazarusidestrconsts:liscodetoolsdefsdirectory
 msgid "%s directory"
 msgstr "%s directori"
+
+#: lazarusidestrconsts:lisdoesnotexists
+msgid "%s does not exists: %s"
+msgstr ""
 
 #: lazarusidestrconsts:lislddoesnothaveanyvalidlazdocpathunabletocreatethefpdo
 msgid "%s does not have any valid LazDoc path.%sUnable to create the fpdoc file for %s"
@@ -361,9 +369,21 @@ msgstr ""
 msgid "(Filter)"
 msgstr "(Filtre)"
 
+#: lazarusidestrconsts:lisfilter2
+msgid "(filter)"
+msgstr ""
+
+#: lazarusidestrconsts:liscodehelpnoinheriteddescriptionfound
+msgid "(no inherited description found)"
+msgstr ""
+
 #: lazarusidestrconsts:dlgbaknosubdirectory
 msgid "(no subdirectory)"
 msgstr "(Cap subdirectori)"
+
+#: lazarusidestrconsts:liscodehelpnodocumentation
+msgid "(none)"
+msgstr ""
 
 #: lazarusidestrconsts:listmunknownmacro
 msgid "(unknown macro: %s)"
@@ -749,6 +769,14 @@ msgstr "Alt"
 msgid "Alt-Key sets column mode"
 msgstr "La tecla d'alternativa defineix el mode columna"
 
+#: lazarusidestrconsts:lisalternativekey
+msgid "Alternative key"
+msgstr ""
+
+#: lazarusidestrconsts:lisalternativekeyor2keysequence
+msgid "Alternative key (or 2 key sequence)"
+msgstr ""
+
 #: lazarusidestrconsts:srkmalternkey
 msgid "Alternative key (or 2 keys combination)"
 msgstr ""
@@ -761,9 +789,9 @@ msgstr ""
 msgid "Always build (even if nothing changed)"
 msgstr "Construeix sempre (inclús si res ha canviat)"
 
-#: lazarusidestrconsts:dlgalwaysvisiblecaret
-msgid "Always visible caret"
-msgstr "Cursor sempre visible"
+#: lazarusidestrconsts:dlgalwaysvisiblecursor
+msgid "Always visible cursor"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pambiguousancestortype
 msgid "Ambiguous Ancestor Type"
@@ -1269,10 +1297,6 @@ msgstr "No es pot trobar l'iniciador del Lazarus:%s%s"
 msgid "Capital"
 msgstr "Majúscula"
 
-#: lazarusidestrconsts:dlgcaretskipsselection
-msgid "Caret skips selection"
-msgstr ""
-
 #: lazarusidestrconsts:lisdiffdlgcaseinsensitive
 msgid "Case Insensitive"
 msgstr "No distingeixis entre majúscules i minúscules"
@@ -1433,6 +1457,10 @@ msgstr ""
 msgid "Choose a different name"
 msgstr "Tria un nom diferent"
 
+#: lazarusidestrconsts:lischooseakey
+msgid "Choose a key ..."
+msgstr ""
+
 #: lazarusidestrconsts:dlgchscodetempl
 msgid "Choose code template file (*.dci)"
 msgstr "Tria un fitxer de plantilla (*.dci)"
@@ -1561,6 +1589,10 @@ msgstr "Neteja i munta"
 msgid "Clear"
 msgstr "Neteja"
 
+#: lazarusidestrconsts:liscleardirectory
+msgid "Clear Directory?"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditcleardependencydefaultfilename
 msgid "Clear dependency filename"
 msgstr ""
@@ -1603,6 +1635,10 @@ msgstr "Tanca pàgina"
 
 #: lazarusidestrconsts:liskmcloseproject
 msgid "Close project"
+msgstr ""
+
+#: lazarusidestrconsts:srvk_cmd
+msgid "Cmd"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcodegeneration
@@ -2321,6 +2357,10 @@ msgstr "Ordres de moviment del cursor"
 msgid "Cursor row in current editor"
 msgstr "La línia del cursor en l'editor actual"
 
+#: lazarusidestrconsts:dlgcursorskipsselection
+msgid "Cursor skips selection"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptscustom
 msgid "Custom"
 msgstr "Personalitzat"
@@ -2552,6 +2592,10 @@ msgstr "Elimina el node"
 #: lazarusidestrconsts:lisdeleteoldfile
 msgid "Delete old file %s%s%s?"
 msgstr "Voleu eliminar el fitxer antic %s%s%s?"
+
+#: lazarusidestrconsts:lisdeleteoldfile2
+msgid "Delete old file?"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangdeleteoldpackagefile2
 msgid "Delete old package file %s%s%s?"
@@ -2793,10 +2837,6 @@ msgstr ""
 msgid "Documentation Editor"
 msgstr "Editor de documentació"
 
-#: lazarusidestrconsts:liscodehelpnodocumentation
-msgid "Documentation entry does not exist"
-msgstr ""
-
 #: lazarusidestrconsts:lissortseldomain
 msgid "Domain"
 msgstr "Domini"
@@ -2890,8 +2930,8 @@ msgid "Edit custom scanners (%s)"
 msgstr ""
 
 #: lazarusidestrconsts:srkmeditforcmd
-msgid "Edit keys for command"
-msgstr "Edita les tecles per l'ordre"
+msgid "Edit keys of command"
+msgstr ""
 
 #: lazarusidestrconsts:lispvueditvirtualunit
 msgid "Edit virtual unit"
@@ -3181,6 +3221,10 @@ msgstr "Avalua/Modifica ..."
 msgid "Event Log"
 msgstr "Bitàcora d'events"
 
+#: lazarusidestrconsts:liseverynthlinenumber
+msgid "Every n-th line number:"
+msgstr ""
+
 #: lazarusidestrconsts:liscodehelpexampletag
 msgid "Example"
 msgstr "Ejemple"
@@ -3425,6 +3469,10 @@ msgstr "Ja existeix el fitxer"
 msgid "File already in package"
 msgstr "El fitxer ja és al paquet"
 
+#: lazarusidestrconsts:lisfileextensionofprograms
+msgid "File extension of programs"
+msgstr ""
+
 #: lazarusidestrconsts:dlgfileexts
 msgid "File extensions"
 msgstr "Extensions d'Arxiu"
@@ -3607,6 +3655,10 @@ msgstr "Cerca en els fitxers"
 
 #: lazarusidestrconsts:liskmfindincremental
 msgid "Find incremental"
+msgstr ""
+
+#: lazarusidestrconsts:lisfindkeycombination
+msgid "Find key combination"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecfindnext
@@ -4333,6 +4385,10 @@ msgstr "importar la llista"
 msgid "In front of methods"
 msgstr "Davant dels mètodes"
 
+#: lazarusidestrconsts:lisinordertocreateacleancopyoftheprojectpackageallfil
+msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsinclude
 msgid "Include"
 msgstr "Inclou"
@@ -4905,6 +4961,10 @@ msgstr "El nom del procediment no és vàlid"
 msgid "Invalid project filename"
 msgstr "El nom del fitxer del projecte no és vàlid"
 
+#: lazarusidestrconsts:lisinvalidpublishingdirectory
+msgid "Invalid publishing Directory"
+msgstr ""
+
 #: lazarusidestrconsts:lisccoinvalidsearchpath
 msgid "Invalid search path"
 msgstr ""
@@ -4928,6 +4988,10 @@ msgstr "El nom de la variable no és vàlid"
 #: lazarusidestrconsts:lisprojaddinvalidversion
 msgid "Invalid version"
 msgstr "la versió no és vàlida"
+
+#: lazarusidestrconsts:dlgedinvert
+msgid "Invert"
+msgstr ""
 
 #: lazarusidestrconsts:ueminvertassignment
 msgid "Invert Assignment"
@@ -5013,13 +5077,13 @@ msgstr "Kana"
 msgid "Keep all text files"
 msgstr "Manté tots els fitxers de text"
 
-#: lazarusidestrconsts:dlgkeepcaretx
-msgid "Keep caret X position"
-msgstr ""
-
 #: lazarusidestrconsts:dlgcokeepvarsreg
 msgid "Keep certain variables in registers"
 msgstr "Manté certes variables en els registres"
+
+#: lazarusidestrconsts:dlgkeepcursorx
+msgid "Keep cursor X position"
+msgstr ""
 
 #: lazarusidestrconsts:liscldirkeepfilesmatchingfilter
 msgid "Keep files matching filter"
@@ -5040,6 +5104,10 @@ msgstr "Mantin-los i continua"
 #: lazarusidestrconsts:lisedtexttoolkey
 msgid "Key"
 msgstr "Tecla"
+
+#: lazarusidestrconsts:liskeyor2keysequence
+msgid "Key (or 2 key sequence)"
+msgstr ""
 
 #: lazarusidestrconsts:srkmkey
 msgid "Key (or 2 keys combination)"
@@ -5333,6 +5401,10 @@ msgstr "Enllaçament intel·ligent"
 msgid "Link Style:"
 msgstr "Estil d'enllaçament"
 
+#: lazarusidestrconsts:lislink
+msgid "Link:"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptslinker
 msgid "Linker"
 msgstr "Enllaçador"
@@ -5520,6 +5592,10 @@ msgstr "Editor del menú"
 #: lazarusidestrconsts:lismenuviewmessages
 msgid "Messages"
 msgstr "Missatges"
+
+#: lazarusidestrconsts:srvk_meta
+msgid "Meta"
+msgstr ""
 
 #: lazarusidestrconsts:lismethodclassnotfound
 msgid "Method class not found"
@@ -6097,6 +6173,10 @@ msgstr "Inspector dels objectes"
 msgid "Object Inspector commands"
 msgstr ""
 
+#: lazarusidestrconsts:dlgedoff
+msgid "Off"
+msgstr ""
+
 #: lazarusidestrconsts:lisokbtn
 msgid "Ok"
 msgstr "D'acord"
@@ -6107,6 +6187,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisoldclass
 msgid "Old Class"
+msgstr ""
+
+#: lazarusidestrconsts:dlgedon
+msgid "On"
 msgstr ""
 
 #: lazarusidestrconsts:lisbfonbuildprojectexecutethebuildfilecommandinstead
@@ -6677,9 +6761,9 @@ msgstr "Tecla de pausa"
 msgid "Pause program"
 msgstr ""
 
-#: lazarusidestrconsts:dlgpersistentcaret
-msgid "Persistent caret"
-msgstr "Intercalació persistent"
+#: lazarusidestrconsts:dlgpersistentcursor
+msgid "Persistent cursor"
+msgstr ""
 
 #: lazarusidestrconsts:lisccochecktestdir
 msgid "Please check the Test directory under %sEnvironment -> Environment Options -> Files -> Directory for building test projects"
@@ -7454,8 +7538,8 @@ msgid "Right margin color"
 msgstr "Color del marge dret"
 
 #: lazarusidestrconsts:dlgrightmousemovescursor
-msgid "Right mouse moves caret"
-msgstr "El botó dret del ratolí mou l'intercalació"
+msgid "Right mouse moves cursor"
+msgstr ""
 
 #: lazarusidestrconsts:lisrightsides
 msgid "Right sides"
@@ -8117,6 +8201,10 @@ msgstr ""
 msgid "Short description of"
 msgstr ""
 
+#: lazarusidestrconsts:lisshort
+msgid "Short:"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2pshortenorexpandfilename
 msgid "Shorten or expand filename"
 msgstr "Acurta o allarga nom d'arxiu"
@@ -8453,6 +8541,10 @@ msgstr "Punt de ruptura de les fonts"
 msgid "Source directory %s%s%s does not exist."
 msgstr "El directori font %s%s%s no existeix."
 
+#: lazarusidestrconsts:lissourcedirectoryanddestinationdirectoryarethesamema
+msgid "Source directory %s%s%s%sand destination directory %s%s%s%sare the same.%s%sMaybe you misunderstand this feature.%sIt will clean/recreate the destination directory%sand copies the package/project into it."
+msgstr ""
+
 #: lazarusidestrconsts:lissourcemodified
 msgid "Source modified"
 msgstr "S'ha modificat el codi font"
@@ -8627,6 +8719,10 @@ msgstr "Correcte!"
 
 #: lazarusidestrconsts:lisinfobuildsuccess
 msgid "Success..."
+msgstr ""
+
+#: lazarusidestrconsts:srvk_super
+msgid "Super"
 msgstr ""
 
 #: lazarusidestrconsts:lisa2pswitchpaths
@@ -9049,6 +9145,10 @@ msgstr "El fitxer del depurador \"%s\" no és executable"
 msgid "The dependency %s%s%s was not found.%sPlease choose an existing package."
 msgstr "No s'ha trobat la dependència %s%s%s.%sSi us plau, escolliu un paquet que existeixi"
 
+#: lazarusidestrconsts:listhedestinationdirectorydoesnotexistpleasecheckthep
+msgid "The destination directory %s%s%s does not exist.%sPlease check the project target file name Menu > Project > Project Options."
+msgstr ""
+
 #: lazarusidestrconsts:listhedestinationdirectorydoesnotexist
 msgid "The destination directory%s%s%s%s does not exist."
 msgstr "No existeix el directori de destinació%s%s%s%s."
@@ -9169,6 +9269,10 @@ msgstr ""
 msgid "The host application %s%s%s is not executable."
 msgstr "L'aplicació amfitriona %s%s%s no és executable"
 
+#: lazarusidestrconsts:listhekeyisalreadyassignedtoremovetheoldassignmentand
+msgid "The key %s%sis already assigned to %s.%s%sRemove the old assignment and assign the key to the new function%s%s?"
+msgstr ""
+
 #: lazarusidestrconsts:listhelaunchingapplicationdoesnotexistsorisnotexecuta
 msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
 msgstr ""
@@ -9199,6 +9303,22 @@ msgstr "El nom \"%s\" no és un identificador vàlid de Pascal"
 
 #: lazarusidestrconsts:listhenewunitisnotyetintheunitsearchpathadddirectory
 msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
+msgstr ""
+
+#: lazarusidestrconsts:listheoutputdirectoryofislistedintheincludesearchpath
+msgid "The output directory of %s is listed in the include search path of %s."
+msgstr ""
+
+#: lazarusidestrconsts:listheoutputdirectoryofislistedintheinheritedincludes
+msgid "The output directory of %s is listed in the inherited include search path of %s."
+msgstr ""
+
+#: lazarusidestrconsts:listheoutputdirectoryofislistedintheinheritedunitsear
+msgid "The output directory of %s is listed in the inherited unit search path of %s."
+msgstr ""
+
+#: lazarusidestrconsts:listheoutputdirectoryofislistedintheunitsearchpathof
+msgid "The output directory of %s is listed in the unit search path of %s."
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthepackageisaruntimeonlypackageruntimeonlypackages
@@ -9357,6 +9477,10 @@ msgstr "El nom d'unitat %s%s%s és el mateix que el d'un component registrat.%sU
 msgid "The unit name %s%s%s%sand filename %s%s%s differ."
 msgstr ""
 
+#: lazarusidestrconsts:listheunitsearchpathofcontainsthesourcedirectoryofpac
+msgid "The unit search path of %s%s%s contains the source directory %s%s%s of package %s"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2ptheunitnamealreadyexistsinthepackage
 msgid "The unitname %s%s%s already exists in the package:%s%s"
 msgstr "El nom d'unitat %s%s%s ja existeix en el paquet:%s%s"
@@ -9371,6 +9495,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispvutheunitnameisusedwhentheideextendsusesclauses
 msgid "The unitname is used when the IDE extends uses clauses."
+msgstr ""
+
+#: lazarusidestrconsts:listheworkingdirectorydoesnotexistpleasechecktheworki
+msgid "The working directory %s%s%s does not exist.%sPlease check the working directory in Menu > Project > Run parameters."
 msgstr ""
 
 #: lazarusidestrconsts:lissamthereareabstractmethodstooverrideselectthemethodsf
@@ -9980,6 +10108,10 @@ msgstr "No es pot canviar el nom del mètode. Si us plau, corregiu l'error de la
 #: lazarusidestrconsts:lisunabletorenamevariableinsource
 msgid "Unable to rename variable in source."
 msgstr "No es pot canviar el nom de la variable en el codi font."
+
+#: lazarusidestrconsts:lisunabletorun
+msgid "Unable to run"
+msgstr ""
 
 #: lazarusidestrconsts:lisexttoolunabletorunthetool
 msgid "Unable to run the tool %s%s%s:%s%s"
@@ -10999,10 +11131,6 @@ msgstr ""
 
 #: lazarusidestrconsts:liscconocfgfound
 msgid "no fpc.cfg found"
-msgstr ""
-
-#: lazarusidestrconsts:liscodehelpnoinheriteddescriptionfound
-msgid "no inherited description found"
 msgstr ""
 
 #: lazarusidestrconsts:lisccononascii

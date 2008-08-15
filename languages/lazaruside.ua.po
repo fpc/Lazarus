@@ -20,6 +20,10 @@ msgstr "Елемент %s%s%s вже існує! "
 msgid " The key \"%s\" is already connected to \"%s\"."
 msgstr "Клавіша \"%s\" вже приєднана до \"%s\"."
 
+#: lazarusidestrconsts:listheoutputdirectoryshouldbeaseparatedirectoryandnot
+msgid " The output directory should be a separate directory and not contain any source files."
+msgstr ""
+
 #: lazarusidestrconsts:srkmconflicw
 msgid " conflicts with "
 msgstr " конфліктує з "
@@ -51,6 +55,10 @@ msgstr "%s байтів"
 #: lazarusidestrconsts:liscodetoolsdefsdirectory
 msgid "%s directory"
 msgstr "тека %s"
+
+#: lazarusidestrconsts:lisdoesnotexists
+msgid "%s does not exists: %s"
+msgstr ""
 
 #: lazarusidestrconsts:lislddoesnothaveanyvalidlazdocpathunabletocreatethefpdo
 msgid "%s does not have any valid LazDoc path.%sUnable to create the fpdoc file for %s"
@@ -356,9 +364,21 @@ msgstr ""
 msgid "(Filter)"
 msgstr "(Фільтр)"
 
+#: lazarusidestrconsts:lisfilter2
+msgid "(filter)"
+msgstr ""
+
+#: lazarusidestrconsts:liscodehelpnoinheriteddescriptionfound
+msgid "(no inherited description found)"
+msgstr ""
+
 #: lazarusidestrconsts:dlgbaknosubdirectory
 msgid "(no subdirectory)"
 msgstr "(немає підтеки)"
+
+#: lazarusidestrconsts:liscodehelpnodocumentation
+msgid "(none)"
+msgstr ""
 
 #: lazarusidestrconsts:listmunknownmacro
 msgid "(unknown macro: %s)"
@@ -744,6 +764,14 @@ msgstr "Alt"
 msgid "Alt-Key sets column mode"
 msgstr "Alt-клавіша встан. реж. колонки"
 
+#: lazarusidestrconsts:lisalternativekey
+msgid "Alternative key"
+msgstr ""
+
+#: lazarusidestrconsts:lisalternativekeyor2keysequence
+msgid "Alternative key (or 2 key sequence)"
+msgstr ""
+
 #: lazarusidestrconsts:srkmalternkey
 msgid "Alternative key (or 2 keys combination)"
 msgstr "Альтернативна клавіша (або комбінація з 2 клавіш)"
@@ -756,9 +784,9 @@ msgstr "Завжди Будувати перед Виконанням"
 msgid "Always build (even if nothing changed)"
 msgstr "Завжди будувати (навіть якщо нічого не мінялось)"
 
-#: lazarusidestrconsts:dlgalwaysvisiblecaret
-msgid "Always visible caret"
-msgstr "Завжди видимий симвок CR"
+#: lazarusidestrconsts:dlgalwaysvisiblecursor
+msgid "Always visible cursor"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pambiguousancestortype
 msgid "Ambiguous Ancestor Type"
@@ -1264,10 +1292,6 @@ msgstr "Не можу знайти пускач lazarus:%s%s"
 msgid "Capital"
 msgstr "Заголовний"
 
-#: lazarusidestrconsts:dlgcaretskipsselection
-msgid "Caret skips selection"
-msgstr ""
-
 #: lazarusidestrconsts:lisdiffdlgcaseinsensitive
 msgid "Case Insensitive"
 msgstr "Без урахування регістру"
@@ -1428,6 +1452,10 @@ msgstr "Вибрати базовий клас для улюбленої вла�
 msgid "Choose a different name"
 msgstr "Виберіть іншу назву"
 
+#: lazarusidestrconsts:lischooseakey
+msgid "Choose a key ..."
+msgstr ""
+
 #: lazarusidestrconsts:dlgchscodetempl
 msgid "Choose code template file (*.dci)"
 msgstr "Виберіть файл шаблонів коду (*.dci)"
@@ -1556,6 +1584,10 @@ msgstr "Очистити+Побудувати"
 msgid "Clear"
 msgstr "Очистити"
 
+#: lazarusidestrconsts:liscleardirectory
+msgid "Clear Directory?"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditcleardependencydefaultfilename
 msgid "Clear dependency filename"
 msgstr "Очистити залежності до газви файла"
@@ -1599,6 +1631,10 @@ msgstr "Закрити сторінку"
 #: lazarusidestrconsts:liskmcloseproject
 msgid "Close project"
 msgstr "Закрити проект"
+
+#: lazarusidestrconsts:srvk_cmd
+msgid "Cmd"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcodegeneration
 msgid "Code"
@@ -2316,6 +2352,10 @@ msgstr "Команди переміщення курсора"
 msgid "Cursor row in current editor"
 msgstr "Рядок курсора в цьому редакторі"
 
+#: lazarusidestrconsts:dlgcursorskipsselection
+msgid "Cursor skips selection"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptscustom
 msgid "Custom"
 msgstr "Спеціальний"
@@ -2547,6 +2587,10 @@ msgstr "Видалити вузол"
 #: lazarusidestrconsts:lisdeleteoldfile
 msgid "Delete old file %s%s%s?"
 msgstr "Видалити старий файл %s%s%s?"
+
+#: lazarusidestrconsts:lisdeleteoldfile2
+msgid "Delete old file?"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangdeleteoldpackagefile2
 msgid "Delete old package file %s%s%s?"
@@ -2788,10 +2832,6 @@ msgstr ""
 msgid "Documentation Editor"
 msgstr "Редактор документації"
 
-#: lazarusidestrconsts:liscodehelpnodocumentation
-msgid "Documentation entry does not exist"
-msgstr "Документації немає"
-
 #: lazarusidestrconsts:lissortseldomain
 msgid "Domain"
 msgstr "Домен"
@@ -2885,8 +2925,8 @@ msgid "Edit custom scanners (%s)"
 msgstr ""
 
 #: lazarusidestrconsts:srkmeditforcmd
-msgid "Edit keys for command"
-msgstr "Редагувати клавіші для команди"
+msgid "Edit keys of command"
+msgstr ""
 
 #: lazarusidestrconsts:lispvueditvirtualunit
 msgid "Edit virtual unit"
@@ -3176,6 +3216,10 @@ msgstr "Обчислити/Змінити..."
 msgid "Event Log"
 msgstr "Лог-файл подій"
 
+#: lazarusidestrconsts:liseverynthlinenumber
+msgid "Every n-th line number:"
+msgstr ""
+
 #: lazarusidestrconsts:liscodehelpexampletag
 msgid "Example"
 msgstr "Приклад"
@@ -3420,6 +3464,10 @@ msgstr "Файл вже існує"
 msgid "File already in package"
 msgstr "Файл вже є в пакунку"
 
+#: lazarusidestrconsts:lisfileextensionofprograms
+msgid "File extension of programs"
+msgstr ""
+
 #: lazarusidestrconsts:dlgfileexts
 msgid "File extensions"
 msgstr "Файлові розширення"
@@ -3603,6 +3651,10 @@ msgstr "Знайти в файлах"
 #: lazarusidestrconsts:liskmfindincremental
 msgid "Find incremental"
 msgstr "Знайти за зростанням"
+
+#: lazarusidestrconsts:lisfindkeycombination
+msgid "Find key combination"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecfindnext
 msgid "Find next"
@@ -4328,6 +4380,10 @@ msgstr "Список імпорту"
 msgid "In front of methods"
 msgstr "Перед методами"
 
+#: lazarusidestrconsts:lisinordertocreateacleancopyoftheprojectpackageallfil
+msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsinclude
 msgid "Include"
 msgstr "Вставити"
@@ -4900,6 +4956,10 @@ msgstr "Неправильна назва проц."
 msgid "Invalid project filename"
 msgstr "Неправильна назва файлу проекту"
 
+#: lazarusidestrconsts:lisinvalidpublishingdirectory
+msgid "Invalid publishing Directory"
+msgstr ""
+
 #: lazarusidestrconsts:lisccoinvalidsearchpath
 msgid "Invalid search path"
 msgstr ""
@@ -4923,6 +4983,10 @@ msgstr "Неправильна назва змінної"
 #: lazarusidestrconsts:lisprojaddinvalidversion
 msgid "Invalid version"
 msgstr "Неправильна версія"
+
+#: lazarusidestrconsts:dlgedinvert
+msgid "Invert"
+msgstr ""
 
 #: lazarusidestrconsts:ueminvertassignment
 msgid "Invert Assignment"
@@ -5008,13 +5072,13 @@ msgstr "Японська"
 msgid "Keep all text files"
 msgstr "Залишати всі текстові файли"
 
-#: lazarusidestrconsts:dlgkeepcaretx
-msgid "Keep caret X position"
-msgstr "Залишати знак вставляння в поз. X"
-
 #: lazarusidestrconsts:dlgcokeepvarsreg
 msgid "Keep certain variables in registers"
 msgstr "Залишати однакові змінні в регістрах"
+
+#: lazarusidestrconsts:dlgkeepcursorx
+msgid "Keep cursor X position"
+msgstr ""
 
 #: lazarusidestrconsts:liscldirkeepfilesmatchingfilter
 msgid "Keep files matching filter"
@@ -5035,6 +5099,10 @@ msgstr "Залишити їх і продовжити"
 #: lazarusidestrconsts:lisedtexttoolkey
 msgid "Key"
 msgstr "Ключ"
+
+#: lazarusidestrconsts:liskeyor2keysequence
+msgid "Key (or 2 key sequence)"
+msgstr ""
 
 #: lazarusidestrconsts:srkmkey
 msgid "Key (or 2 keys combination)"
@@ -5328,6 +5396,10 @@ msgstr "Розумне компонування"
 msgid "Link Style:"
 msgstr "Стиль компонування"
 
+#: lazarusidestrconsts:lislink
+msgid "Link:"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptslinker
 msgid "Linker"
 msgstr "Компонувальник"
@@ -5515,6 +5587,10 @@ msgstr "Редактор меню"
 #: lazarusidestrconsts:lismenuviewmessages
 msgid "Messages"
 msgstr "Повідомлення"
+
+#: lazarusidestrconsts:srvk_meta
+msgid "Meta"
+msgstr ""
 
 #: lazarusidestrconsts:lismethodclassnotfound
 msgid "Method class not found"
@@ -6092,6 +6168,10 @@ msgstr "Інспектор об'єкту"
 msgid "Object Inspector commands"
 msgstr "Команди Інспектора об'єктів"
 
+#: lazarusidestrconsts:dlgedoff
+msgid "Off"
+msgstr ""
+
 #: lazarusidestrconsts:lisokbtn
 msgid "Ok"
 msgstr "Гаразд"
@@ -6103,6 +6183,10 @@ msgstr "Старі предки"
 #: lazarusidestrconsts:lisoldclass
 msgid "Old Class"
 msgstr "Старий клас"
+
+#: lazarusidestrconsts:dlgedon
+msgid "On"
+msgstr ""
 
 #: lazarusidestrconsts:lisbfonbuildprojectexecutethebuildfilecommandinstead
 msgid "On build project execute the Build File command instead"
@@ -6672,9 +6756,9 @@ msgstr "Клавіша Pause"
 msgid "Pause program"
 msgstr "Зупинити програму"
 
-#: lazarusidestrconsts:dlgpersistentcaret
-msgid "Persistent caret"
-msgstr "Нерухомий курсор"
+#: lazarusidestrconsts:dlgpersistentcursor
+msgid "Persistent cursor"
+msgstr ""
 
 #: lazarusidestrconsts:lisccochecktestdir
 msgid "Please check the Test directory under %sEnvironment -> Environment Options -> Files -> Directory for building test projects"
@@ -7449,8 +7533,8 @@ msgid "Right margin color"
 msgstr "Колір прав. поля"
 
 #: lazarusidestrconsts:dlgrightmousemovescursor
-msgid "Right mouse moves caret"
-msgstr "Права кнопка пересуває курсор"
+msgid "Right mouse moves cursor"
+msgstr ""
 
 #: lazarusidestrconsts:lisrightsides
 msgid "Right sides"
@@ -8112,6 +8196,10 @@ msgstr "Короткий"
 msgid "Short description of"
 msgstr ""
 
+#: lazarusidestrconsts:lisshort
+msgid "Short:"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2pshortenorexpandfilename
 msgid "Shorten or expand filename"
 msgstr "Скоротити або розширити назву файла"
@@ -8448,6 +8536,10 @@ msgstr "Точка зупину в коді"
 msgid "Source directory %s%s%s does not exist."
 msgstr "Теки кодів %s%s%s не існує."
 
+#: lazarusidestrconsts:lissourcedirectoryanddestinationdirectoryarethesamema
+msgid "Source directory %s%s%s%sand destination directory %s%s%s%sare the same.%s%sMaybe you misunderstand this feature.%sIt will clean/recreate the destination directory%sand copies the package/project into it."
+msgstr ""
+
 #: lazarusidestrconsts:lissourcemodified
 msgid "Source modified"
 msgstr "Код змінено"
@@ -8622,6 +8714,10 @@ msgstr "Успішно"
 
 #: lazarusidestrconsts:lisinfobuildsuccess
 msgid "Success..."
+msgstr ""
+
+#: lazarusidestrconsts:srvk_super
+msgid "Super"
 msgstr ""
 
 #: lazarusidestrconsts:lisa2pswitchpaths
@@ -9044,6 +9140,10 @@ msgstr "Файл налагоджувача \"%s\" не є виконувани�
 msgid "The dependency %s%s%s was not found.%sPlease choose an existing package."
 msgstr "Залежності %s%s%s не знайдено.%sВиберіть існуючий пакунок."
 
+#: lazarusidestrconsts:listhedestinationdirectorydoesnotexistpleasecheckthep
+msgid "The destination directory %s%s%s does not exist.%sPlease check the project target file name Menu > Project > Project Options."
+msgstr ""
+
 #: lazarusidestrconsts:listhedestinationdirectorydoesnotexist
 msgid "The destination directory%s%s%s%s does not exist."
 msgstr "Теки призначення%s%s%s%s не існує."
@@ -9164,6 +9264,10 @@ msgstr ""
 msgid "The host application %s%s%s is not executable."
 msgstr "Головна програма %s%s%s не є виконуваним файлом."
 
+#: lazarusidestrconsts:listhekeyisalreadyassignedtoremovetheoldassignmentand
+msgid "The key %s%sis already assigned to %s.%s%sRemove the old assignment and assign the key to the new function%s%s?"
+msgstr ""
+
 #: lazarusidestrconsts:listhelaunchingapplicationdoesnotexistsorisnotexecuta
 msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
 msgstr "Виконувана програма %s%s%s%sне існує або не є виконуваною.%s%sДивіться -> Запуск -> Параметри запуску -> Локальні"
@@ -9194,6 +9298,22 @@ msgstr "Слово \"%s\" є неправильним ідентифікатор
 
 #: lazarusidestrconsts:listhenewunitisnotyetintheunitsearchpathadddirectory
 msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
+msgstr ""
+
+#: lazarusidestrconsts:listheoutputdirectoryofislistedintheincludesearchpath
+msgid "The output directory of %s is listed in the include search path of %s."
+msgstr ""
+
+#: lazarusidestrconsts:listheoutputdirectoryofislistedintheinheritedincludes
+msgid "The output directory of %s is listed in the inherited include search path of %s."
+msgstr ""
+
+#: lazarusidestrconsts:listheoutputdirectoryofislistedintheinheritedunitsear
+msgid "The output directory of %s is listed in the inherited unit search path of %s."
+msgstr ""
+
+#: lazarusidestrconsts:listheoutputdirectoryofislistedintheunitsearchpathof
+msgid "The output directory of %s is listed in the unit search path of %s."
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthepackageisaruntimeonlypackageruntimeonlypackages
@@ -9352,6 +9472,10 @@ msgstr "Назва модуля збігається із зареєстрова
 msgid "The unit name %s%s%s%sand filename %s%s%s differ."
 msgstr "Назва модулю %s%s%s%sі назва файлу %s%s%s різні."
 
+#: lazarusidestrconsts:listheunitsearchpathofcontainsthesourcedirectoryofpac
+msgid "The unit search path of %s%s%s contains the source directory %s%s%s of package %s"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2ptheunitnamealreadyexistsinthepackage
 msgid "The unitname %s%s%s already exists in the package:%s%s"
 msgstr "Така назва модуля %s%s%s вже є в цьому пакунку:%s%s"
@@ -9367,6 +9491,10 @@ msgstr "Назва модуля не є правильним ідентифік�
 #: lazarusidestrconsts:lispvutheunitnameisusedwhentheideextendsusesclauses
 msgid "The unitname is used when the IDE extends uses clauses."
 msgstr "Назва модуля використана графічною оболонкою при розширенні користувацьких виразів."
+
+#: lazarusidestrconsts:listheworkingdirectorydoesnotexistpleasechecktheworki
+msgid "The working directory %s%s%s does not exist.%sPlease check the working directory in Menu > Project > Run parameters."
+msgstr ""
 
 #: lazarusidestrconsts:lissamthereareabstractmethodstooverrideselectthemethodsf
 msgid "There are %s abstract methods to override.%sSelect the methods for which stubs should be created:"
@@ -9975,6 +10103,10 @@ msgstr "Не можу змінити назву метода. Виправте �
 #: lazarusidestrconsts:lisunabletorenamevariableinsource
 msgid "Unable to rename variable in source."
 msgstr "Неможливо змінити назву змінної в коді."
+
+#: lazarusidestrconsts:lisunabletorun
+msgid "Unable to run"
+msgstr ""
 
 #: lazarusidestrconsts:lisexttoolunabletorunthetool
 msgid "Unable to run the tool %s%s%s:%s%s"
@@ -10994,10 +11126,6 @@ msgstr ""
 
 #: lazarusidestrconsts:liscconocfgfound
 msgid "no fpc.cfg found"
-msgstr ""
-
-#: lazarusidestrconsts:liscodehelpnoinheriteddescriptionfound
-msgid "no inherited description found"
 msgstr ""
 
 #: lazarusidestrconsts:lisccononascii

@@ -487,6 +487,14 @@ msgstr ""
 msgid "File"
 msgstr "Datei"
 
+#: objinspstrconsts:pefilter
+msgid "Filter"
+msgstr ""
+
+#: objinspstrconsts:pefiltername
+msgid "Filter name"
+msgstr ""
+
 #: objinspstrconsts:oistdactsearchfindhint
 msgid "Find"
 msgstr "Suchen"

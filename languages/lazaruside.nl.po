@@ -25,6 +25,10 @@ msgstr " Het teken %s%s%s bestaat al !"
 msgid " The key \"%s\" is already connected to \"%s\"."
 msgstr "Het teken \"%s\" is al gekoppeld aan \"%s\"."
 
+#: lazarusidestrconsts:listheoutputdirectoryshouldbeaseparatedirectoryandnot
+msgid " The output directory should be a separate directory and not contain any source files."
+msgstr ""
+
 #: lazarusidestrconsts:srkmconflicw
 msgid " conflicts with "
 msgstr " is in conflict met "
@@ -56,6 +60,10 @@ msgstr "%s bytes"
 #: lazarusidestrconsts:liscodetoolsdefsdirectory
 msgid "%s directory"
 msgstr "%s directory"
+
+#: lazarusidestrconsts:lisdoesnotexists
+msgid "%s does not exists: %s"
+msgstr ""
 
 #: lazarusidestrconsts:lislddoesnothaveanyvalidlazdocpathunabletocreatethefpdo
 msgid "%s does not have any valid LazDoc path.%sUnable to create the fpdoc file for %s"
@@ -361,9 +369,21 @@ msgstr ""
 msgid "(Filter)"
 msgstr "(Filter)"
 
+#: lazarusidestrconsts:lisfilter2
+msgid "(filter)"
+msgstr ""
+
+#: lazarusidestrconsts:liscodehelpnoinheriteddescriptionfound
+msgid "(no inherited description found)"
+msgstr ""
+
 #: lazarusidestrconsts:dlgbaknosubdirectory
 msgid "(no subdirectory)"
 msgstr "(geen subdirectory)"
+
+#: lazarusidestrconsts:liscodehelpnodocumentation
+msgid "(none)"
+msgstr ""
 
 #: lazarusidestrconsts:listmunknownmacro
 msgid "(unknown macro: %s)"
@@ -749,6 +769,14 @@ msgstr "Alt"
 msgid "Alt-Key sets column mode"
 msgstr "Alt-toets stelt kolommodus in"
 
+#: lazarusidestrconsts:lisalternativekey
+msgid "Alternative key"
+msgstr ""
+
+#: lazarusidestrconsts:lisalternativekeyor2keysequence
+msgid "Alternative key (or 2 key sequence)"
+msgstr ""
+
 #: lazarusidestrconsts:srkmalternkey
 msgid "Alternative key (or 2 keys combination)"
 msgstr "Alternatieve toets (of 2 toets combinaties)"
@@ -761,9 +789,9 @@ msgstr ""
 msgid "Always build (even if nothing changed)"
 msgstr "Altijd bouwen (ook als er niks is gewijzigd)"
 
-#: lazarusidestrconsts:dlgalwaysvisiblecaret
-msgid "Always visible caret"
-msgstr "Altijd zichtbaar invoegteken"
+#: lazarusidestrconsts:dlgalwaysvisiblecursor
+msgid "Always visible cursor"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pambiguousancestortype
 msgid "Ambiguous Ancestor Type"
@@ -1269,10 +1297,6 @@ msgstr "Kan Lazarus Starter niet vinden:%s%s"
 msgid "Capital"
 msgstr "Kapitaal"
 
-#: lazarusidestrconsts:dlgcaretskipsselection
-msgid "Caret skips selection"
-msgstr "Invoegteken slaat selectie over"
-
 #: lazarusidestrconsts:lisdiffdlgcaseinsensitive
 msgid "Case Insensitive"
 msgstr "Hoofd/kleine letter ongevoelig"
@@ -1433,6 +1457,10 @@ msgstr "Kies een basisklasse voor de favoriete eigenschap %s%s%s."
 msgid "Choose a different name"
 msgstr "Kies een andere naam"
 
+#: lazarusidestrconsts:lischooseakey
+msgid "Choose a key ..."
+msgstr ""
+
 #: lazarusidestrconsts:dlgchscodetempl
 msgid "Choose code template file (*.dci)"
 msgstr "Kies code sjabloonbestand (*.dci)"
@@ -1561,6 +1589,10 @@ msgstr "Maak schoon + Bouw"
 msgid "Clear"
 msgstr "Maak schoon"
 
+#: lazarusidestrconsts:liscleardirectory
+msgid "Clear Directory?"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditcleardependencydefaultfilename
 msgid "Clear dependency filename"
 msgstr "Maak schoon afhankelijkheid bestandsnaam "
@@ -1604,6 +1636,10 @@ msgstr "Sluit pagina"
 #: lazarusidestrconsts:liskmcloseproject
 msgid "Close project"
 msgstr "Sluit project"
+
+#: lazarusidestrconsts:srvk_cmd
+msgid "Cmd"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcodegeneration
 msgid "Code"
@@ -2321,6 +2357,10 @@ msgstr "Cursor beweeg commando's"
 msgid "Cursor row in current editor"
 msgstr "Cursor rij in huidige editor"
 
+#: lazarusidestrconsts:dlgcursorskipsselection
+msgid "Cursor skips selection"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptscustom
 msgid "Custom"
 msgstr "Aanpasbaar"
@@ -2552,6 +2592,10 @@ msgstr "Verwijder node"
 #: lazarusidestrconsts:lisdeleteoldfile
 msgid "Delete old file %s%s%s?"
 msgstr "Verwijder oud bestand %s%s%s?"
+
+#: lazarusidestrconsts:lisdeleteoldfile2
+msgid "Delete old file?"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangdeleteoldpackagefile2
 msgid "Delete old package file %s%s%s?"
@@ -2793,10 +2837,6 @@ msgstr ""
 msgid "Documentation Editor"
 msgstr "Documentatie bewerker"
 
-#: lazarusidestrconsts:liscodehelpnodocumentation
-msgid "Documentation entry does not exist"
-msgstr "Documentatie op dit punt bestaat niet"
-
 #: lazarusidestrconsts:lissortseldomain
 msgid "Domain"
 msgstr "Domein"
@@ -2890,8 +2930,8 @@ msgid "Edit custom scanners (%s)"
 msgstr ""
 
 #: lazarusidestrconsts:srkmeditforcmd
-msgid "Edit keys for command"
-msgstr "Bewerk Toetsen voor commando's"
+msgid "Edit keys of command"
+msgstr ""
 
 #: lazarusidestrconsts:lispvueditvirtualunit
 msgid "Edit virtual unit"
@@ -3181,6 +3221,10 @@ msgstr "Evalueer/Wijzig ..."
 msgid "Event Log"
 msgstr ""
 
+#: lazarusidestrconsts:liseverynthlinenumber
+msgid "Every n-th line number:"
+msgstr ""
+
 #: lazarusidestrconsts:liscodehelpexampletag
 msgid "Example"
 msgstr "Voorbeeld"
@@ -3425,6 +3469,10 @@ msgstr "Bestand bestaat reeds"
 msgid "File already in package"
 msgstr "Bestand al aanwezig in pakket"
 
+#: lazarusidestrconsts:lisfileextensionofprograms
+msgid "File extension of programs"
+msgstr ""
+
 #: lazarusidestrconsts:dlgfileexts
 msgid "File extensions"
 msgstr "Bestands extensie"
@@ -3607,6 +3655,10 @@ msgstr "Vind in bestanden"
 
 #: lazarusidestrconsts:liskmfindincremental
 msgid "Find incremental"
+msgstr ""
+
+#: lazarusidestrconsts:lisfindkeycombination
+msgid "Find key combination"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecfindnext
@@ -4333,6 +4385,10 @@ msgstr "Import lijst"
 msgid "In front of methods"
 msgstr "Voor methoden"
 
+#: lazarusidestrconsts:lisinordertocreateacleancopyoftheprojectpackageallfil
+msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsinclude
 msgid "Include"
 msgstr "Neem op"
@@ -4905,6 +4961,10 @@ msgstr "Ongeldige proc naam"
 msgid "Invalid project filename"
 msgstr "Ongeldige project bestandsnaam"
 
+#: lazarusidestrconsts:lisinvalidpublishingdirectory
+msgid "Invalid publishing Directory"
+msgstr ""
+
 #: lazarusidestrconsts:lisccoinvalidsearchpath
 msgid "Invalid search path"
 msgstr ""
@@ -4928,6 +4988,10 @@ msgstr "Ongeldige variabele naam"
 #: lazarusidestrconsts:lisprojaddinvalidversion
 msgid "Invalid version"
 msgstr "Ongeldige versie"
+
+#: lazarusidestrconsts:dlgedinvert
+msgid "Invert"
+msgstr ""
 
 #: lazarusidestrconsts:ueminvertassignment
 msgid "Invert Assignment"
@@ -5013,13 +5077,13 @@ msgstr "Kana"
 msgid "Keep all text files"
 msgstr "Behoud alle Tekst bestanden"
 
-#: lazarusidestrconsts:dlgkeepcaretx
-msgid "Keep caret X position"
-msgstr "Behoud caret X positie"
-
 #: lazarusidestrconsts:dlgcokeepvarsreg
 msgid "Keep certain variables in registers"
 msgstr "Houd bepaalde variabelen in registers"
+
+#: lazarusidestrconsts:dlgkeepcursorx
+msgid "Keep cursor X position"
+msgstr ""
 
 #: lazarusidestrconsts:liscldirkeepfilesmatchingfilter
 msgid "Keep files matching filter"
@@ -5040,6 +5104,10 @@ msgstr ""
 #: lazarusidestrconsts:lisedtexttoolkey
 msgid "Key"
 msgstr "Toets"
+
+#: lazarusidestrconsts:liskeyor2keysequence
+msgid "Key (or 2 key sequence)"
+msgstr ""
 
 #: lazarusidestrconsts:srkmkey
 msgid "Key (or 2 keys combination)"
@@ -5333,6 +5401,10 @@ msgstr "Slim linken"
 msgid "Link Style:"
 msgstr "Linkstijl"
 
+#: lazarusidestrconsts:lislink
+msgid "Link:"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptslinker
 msgid "Linker"
 msgstr "Linker"
@@ -5520,6 +5592,10 @@ msgstr "Menu editor"
 #: lazarusidestrconsts:lismenuviewmessages
 msgid "Messages"
 msgstr "Berichten"
+
+#: lazarusidestrconsts:srvk_meta
+msgid "Meta"
+msgstr ""
 
 #: lazarusidestrconsts:lismethodclassnotfound
 msgid "Method class not found"
@@ -6097,6 +6173,10 @@ msgstr "Object Inspecteur"
 msgid "Object Inspector commands"
 msgstr "Object Inspecteur commando's"
 
+#: lazarusidestrconsts:dlgedoff
+msgid "Off"
+msgstr ""
+
 #: lazarusidestrconsts:lisokbtn
 msgid "Ok"
 msgstr "Ok"
@@ -6108,6 +6188,10 @@ msgstr "Oude Ancestors"
 #: lazarusidestrconsts:lisoldclass
 msgid "Old Class"
 msgstr "Oude Klasse"
+
+#: lazarusidestrconsts:dlgedon
+msgid "On"
+msgstr ""
 
 #: lazarusidestrconsts:lisbfonbuildprojectexecutethebuildfilecommandinstead
 msgid "On build project execute the Build File command instead"
@@ -6677,9 +6761,9 @@ msgstr "Pauze toets"
 msgid "Pause program"
 msgstr "Pauseer programma"
 
-#: lazarusidestrconsts:dlgpersistentcaret
-msgid "Persistent caret"
-msgstr "Persistent caret"
+#: lazarusidestrconsts:dlgpersistentcursor
+msgid "Persistent cursor"
+msgstr ""
 
 #: lazarusidestrconsts:lisccochecktestdir
 msgid "Please check the Test directory under %sEnvironment -> Environment Options -> Files -> Directory for building test projects"
@@ -7454,8 +7538,8 @@ msgid "Right margin color"
 msgstr "Rechter marge kleur"
 
 #: lazarusidestrconsts:dlgrightmousemovescursor
-msgid "Right mouse moves caret"
-msgstr "Rechter muistoets verplaats caret"
+msgid "Right mouse moves cursor"
+msgstr ""
 
 #: lazarusidestrconsts:lisrightsides
 msgid "Right sides"
@@ -8117,6 +8201,10 @@ msgstr "Kort"
 msgid "Short description of"
 msgstr ""
 
+#: lazarusidestrconsts:lisshort
+msgid "Short:"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2pshortenorexpandfilename
 msgid "Shorten or expand filename"
 msgstr "Verkort of verleng bestandsnaam"
@@ -8453,6 +8541,10 @@ msgstr "Broncode breekpunt"
 msgid "Source directory %s%s%s does not exist."
 msgstr "Bron directory %s%s%s bestaat niet"
 
+#: lazarusidestrconsts:lissourcedirectoryanddestinationdirectoryarethesamema
+msgid "Source directory %s%s%s%sand destination directory %s%s%s%sare the same.%s%sMaybe you misunderstand this feature.%sIt will clean/recreate the destination directory%sand copies the package/project into it."
+msgstr ""
+
 #: lazarusidestrconsts:lissourcemodified
 msgid "Source modified"
 msgstr "Bron gewijzigd"
@@ -8627,6 +8719,10 @@ msgstr "Succes!"
 
 #: lazarusidestrconsts:lisinfobuildsuccess
 msgid "Success..."
+msgstr ""
+
+#: lazarusidestrconsts:srvk_super
+msgid "Super"
 msgstr ""
 
 #: lazarusidestrconsts:lisa2pswitchpaths
@@ -9049,6 +9145,10 @@ msgstr "Het debuggerbestand \"%s\" is niet uitvoerbaar."
 msgid "The dependency %s%s%s was not found.%sPlease choose an existing package."
 msgstr "De afhankelijkheid %s%s%s is niet gevonden.%sKies een bestaand package."
 
+#: lazarusidestrconsts:listhedestinationdirectorydoesnotexistpleasecheckthep
+msgid "The destination directory %s%s%s does not exist.%sPlease check the project target file name Menu > Project > Project Options."
+msgstr ""
+
 #: lazarusidestrconsts:listhedestinationdirectorydoesnotexist
 msgid "The destination directory%s%s%s%s does not exist."
 msgstr "De doel directorie%s%s%s%s bestaat niet."
@@ -9169,6 +9269,10 @@ msgstr "De volgende units werden niet gevonden:%s%s%s%s1) Deze units bevinden zi
 msgid "The host application %s%s%s is not executable."
 msgstr "Het \"host\" programma %s%s%s is niet uitvoerbaar."
 
+#: lazarusidestrconsts:listhekeyisalreadyassignedtoremovetheoldassignmentand
+msgid "The key %s%sis already assigned to %s.%s%sRemove the old assignment and assign the key to the new function%s%s?"
+msgstr ""
+
 #: lazarusidestrconsts:listhelaunchingapplicationdoesnotexistsorisnotexecuta
 msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
 msgstr "Het startende programma %s%s%s%sbestaat niet of is niet uitvoerbaar.%s%sZie Starten -> Start paramaters -> Lokaal"
@@ -9199,6 +9303,22 @@ msgstr "De naam \"%s\" is geen geldige pascal identifier."
 
 #: lazarusidestrconsts:listhenewunitisnotyetintheunitsearchpathadddirectory
 msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
+msgstr ""
+
+#: lazarusidestrconsts:listheoutputdirectoryofislistedintheincludesearchpath
+msgid "The output directory of %s is listed in the include search path of %s."
+msgstr ""
+
+#: lazarusidestrconsts:listheoutputdirectoryofislistedintheinheritedincludes
+msgid "The output directory of %s is listed in the inherited include search path of %s."
+msgstr ""
+
+#: lazarusidestrconsts:listheoutputdirectoryofislistedintheinheritedunitsear
+msgid "The output directory of %s is listed in the inherited unit search path of %s."
+msgstr ""
+
+#: lazarusidestrconsts:listheoutputdirectoryofislistedintheunitsearchpathof
+msgid "The output directory of %s is listed in the unit search path of %s."
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthepackageisaruntimeonlypackageruntimeonlypackages
@@ -9357,6 +9477,10 @@ msgstr "De unitnaam %s%s%s is gelijk aan die van een geregistreerd component.%Di
 msgid "The unit name %s%s%s%sand filename %s%s%s differ."
 msgstr "De naam van de unit %s%s%s%sen de bestandsnaam %s%s%s verschillen"
 
+#: lazarusidestrconsts:listheunitsearchpathofcontainsthesourcedirectoryofpac
+msgid "The unit search path of %s%s%s contains the source directory %s%s%s of package %s"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2ptheunitnamealreadyexistsinthepackage
 msgid "The unitname %s%s%s already exists in the package:%s%s"
 msgstr "De unitnaam %s%s%s bestaat al in het package:%s%s"
@@ -9371,6 +9495,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispvutheunitnameisusedwhentheideextendsusesclauses
 msgid "The unitname is used when the IDE extends uses clauses."
+msgstr ""
+
+#: lazarusidestrconsts:listheworkingdirectorydoesnotexistpleasechecktheworki
+msgid "The working directory %s%s%s does not exist.%sPlease check the working directory in Menu > Project > Run parameters."
 msgstr ""
 
 #: lazarusidestrconsts:lissamthereareabstractmethodstooverrideselectthemethodsf
@@ -9980,6 +10108,10 @@ msgstr "Kan de methode niet hernoemen. Herstel de fout in het mededelingen scher
 #: lazarusidestrconsts:lisunabletorenamevariableinsource
 msgid "Unable to rename variable in source."
 msgstr "Kan de variabele niet hernoemen in de broncode."
+
+#: lazarusidestrconsts:lisunabletorun
+msgid "Unable to run"
+msgstr ""
 
 #: lazarusidestrconsts:lisexttoolunabletorunthetool
 msgid "Unable to run the tool %s%s%s:%s%s"
@@ -10999,10 +11131,6 @@ msgstr ""
 
 #: lazarusidestrconsts:liscconocfgfound
 msgid "no fpc.cfg found"
-msgstr ""
-
-#: lazarusidestrconsts:liscodehelpnoinheriteddescriptionfound
-msgid "no inherited description found"
 msgstr ""
 
 #: lazarusidestrconsts:lisccononascii
