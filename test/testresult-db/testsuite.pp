@@ -10,7 +10,7 @@ Var
 begin
   App:=TTestSuite.Create(nil);
   Try
-    App.Title:='Free Pascal Compiler Test Suite Results';
+    App.Title:='Lazarus Test Suite Results';
     App.Initialize;
     App.Run;
   Finally

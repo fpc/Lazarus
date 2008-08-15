@@ -42,6 +42,9 @@
   <CompilerOptions>
     <Version Value="5"/>
     <PathDelim Value="\"/>
+    <Target>
+      <Filename Value="testsuite.cgi"/>
+    </Target>
     <CodeGeneration>
       <Generate Value="Faster"/>
     </CodeGeneration>

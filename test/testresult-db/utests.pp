@@ -84,7 +84,7 @@ implementation
 Const
 {$i utests.cfg}
 
-{ if utests.cfg is missed, create one with the following contents:
+{ if utests.cfg is missing, create one with the following contents:
   DefDatabase = 'TESTSUITE';
   DefHost     = '';
   DefDBUser   = ''; // fill this in when compiling.
