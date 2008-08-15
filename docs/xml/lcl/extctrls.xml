@@ -1112,7 +1112,7 @@
           <var>Page</var> that is currently selected and is available for interaction</short>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomNotebook.Create">
+      <element name="TCustomNotebook.Create" link="#LCL.Controls.TWinControl.Create">
         <short/>
         <descr/>
         <errors/>
@@ -1123,7 +1123,7 @@
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomNotebook.Destroy">
+      <element name="TCustomNotebook.Destroy" link="#LCL.Controls.TWinControl.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -1246,7 +1246,8 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomNotebook.DoCloseTabClicked">
-        <short/>
+        <short>
+          <var>DoCloseTabClicked</var> - perform the action associated with clicking the Close tab for this page (<var>OnCloseTabClicked</var>)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1375,127 +1376,127 @@
         </seealso>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPage.Caption">
+      <element name="TPage.Caption" link="#LCL.Controls.TControl.Caption">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPage.ChildSizing">
+      <element name="TPage.ChildSizing" link="#LCL.Controls.TWinControl.ChildSizing">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPage.ClientWidth">
+      <element name="TPage.ClientWidth" link="#LCL.Controls.TControl.ClientWidth">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPage.ClientHeight">
+      <element name="TPage.ClientHeight" link="#LCL.Controls.TControl.ClientHeight">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPage.ImageIndex">
+      <element name="TPage.ImageIndex" link="#LCL.ExtCtrls.TCustomPage.ImageIndex">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPage.Left">
+      <element name="TPage.Left" link="#LCL.Controls.TControl.Left">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPage.Top">
+      <element name="TPage.Top" link="#LCL.Controls.TControl.Top">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPage.Width">
+      <element name="TPage.Width" link="#LCL.Controls.TControl.Width">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPage.Height">
+      <element name="TPage.Height" link="#LCL.Controls.TControl.Height">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPage.OnContextPopup">
+      <element name="TPage.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPage.OnEnter">
+      <element name="TPage.OnEnter" link="#LCL.Controls.TWinControl.OnEnter">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPage.OnExit">
+      <element name="TPage.OnExit" link="#LCL.Controls.TWinControl.OnExit">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPage.OnMouseDown">
+      <element name="TPage.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPage.OnMouseMove">
+      <element name="TPage.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPage.OnMouseUp">
+      <element name="TPage.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPage.OnResize">
+      <element name="TPage.OnResize" link="#LCL.Controls.TControl.OnResize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPage.PageIndex">
+      <element name="TPage.PageIndex" link="#LCL.ExtCtrls.TCustomPage.PageIndex">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPage.ParentShowHint">
+      <element name="TPage.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPage.PopupMenu">
+      <element name="TPage.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPage.TabOrder">
+      <element name="TPage.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPage.Visible">
+      <element name="TPage.Visible" link="#LCL.Controls.TControl.Visible">
         <short/>
         <descr/>
         <seealso/>
@@ -1560,7 +1561,7 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TNotebook.Create">
+      <element name="TNotebook.Create" link="#LCL.Controls.TWinControl.Create">
         <short/>
         <descr/>
         <errors/>
@@ -1571,7 +1572,7 @@
         <short/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TNotebook.Page">
+      <element name="TNotebook.Page" link="#LCL.ExtCtrls.TCustomNotebook.Page">
         <short/>
         <descr/>
         <seealso/>
@@ -1581,97 +1582,97 @@
         <short/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TNotebook.ActivePageComponent">
+      <element name="TNotebook.ActivePageComponent" link="#LCL.ExtCtrls.TCustomNotebook.ActivePageComponent">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TNotebook.Pages">
+      <element name="TNotebook.Pages" link="#LCL.ExtCtrls.TCustomNotebook.Pages">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TNotebook.ActivePage">
+      <element name="TNotebook.ActivePage" link="#LCL.ExtCtrls.TCustomNotebook.ActivePage">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TNotebook.Align">
+      <element name="TNotebook.Align" link="#LCL.Controls.TControl.Align">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TNotebook.Anchors">
+      <element name="TNotebook.Anchors" link="#LCL.Controls.TControl.Anchors">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TNotebook.BorderSpacing">
+      <element name="TNotebook.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TNotebook.Constraints">
+      <element name="TNotebook.Constraints" link="#LCL.Controls.TControl.Constraints">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TNotebook.Enabled">
+      <element name="TNotebook.Enabled" link="#LCL.Controls.TControl.Enabled">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TNotebook.Images">
+      <element name="TNotebook.Images" link="#LCL.ExtCtrls.TCustomNotebook.Images">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TNotebook.OnChangeBounds">
+      <element name="TNotebook.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TNotebook.OnCloseTabClicked">
+      <element name="TNotebook.OnCloseTabClicked" link="#LCL.ExtCtrls.TCustomNotebook.OnCloseTabClicked">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TNotebook.OnContextPopup">
+      <element name="TNotebook.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TNotebook.OnEnter">
+      <element name="TNotebook.OnEnter" link="#LCL.Controls.TWinControl.OnEnter">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TNotebook.OnExit">
+      <element name="TNotebook.OnExit" link="#LCL.Controls.TWinControl.OnExit">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TNotebook.OnGetImageIndex">
+      <element name="TNotebook.OnGetImageIndex" link="#LCL.ExtCtrls.TCustomNotebook.OnGetImageIndex">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TNotebook.OnMouseDown">
+      <element name="TNotebook.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
         <short/>
         <descr/>
         <seealso/>
@@ -1683,25 +1684,25 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TNotebook.OnMouseUp">
+      <element name="TNotebook.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TNotebook.OnPageChanged">
+      <element name="TNotebook.OnPageChanged" link="#LCL.ExtCtrls.TCustomNotebook.OnPageChanged">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TNotebook.OnResize">
+      <element name="TNotebook.OnResize" link="#LCL.Controls.TControl.OnResize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TNotebook.Options">
+      <element name="TNotebook.Options" link="#LCL.ExtCtrls.TCustomNotebook.Options">
         <short>Set of <var>Options</var> for this Notebook. Include <var>nboShowCloseButtons</var>, <var>nboMultiLine</var>
         </short>
         <descr>
@@ -1712,13 +1713,13 @@
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TNotebook.PageIndex">
+      <element name="TNotebook.PageIndex" link="#LCL.ExtCtrls.TCustomNotebook.PageIndex">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TNotebook.ShowTabs">
+      <element name="TNotebook.ShowTabs" link="#LCL.ExtCtrls.TCustomNotebook.ShowTabs">
         <short/>
         <descr/>
         <seealso/>
@@ -3115,14 +3116,14 @@
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomImage.Paint">
+      <element name="TCustomImage.Paint" link="#LCL.Controls.TGraphicControl.Paint">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomImage.Create">
+      <element name="TCustomImage.Create" link="#LCL.Controls.TGraphicControl.Create">
         <short/>
         <descr/>
         <errors/>
@@ -3133,14 +3134,14 @@
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomImage.Destroy">
+      <element name="TCustomImage.Destroy" link="#LCL.Controls.TGraphicControl.Destroy">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomImage.Align">
+      <element name="TCustomImage.Align" link="#LCL.Controls.TControl.Align">
         <short/>
         <descr/>
         <seealso/>
@@ -3241,7 +3242,7 @@
         </seealso>
       </element>
       <!-- property Visibility: published -->
-      <element name="TImage.Align">
+      <element name="TImage.Align" link="#LCL.Controls.TControl.Align">
         <short/>
         <descr/>
         <seealso/>
@@ -6507,31 +6508,31 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
         <short/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPage.Font">
+      <element name="TPage.Font" link="#LCL.Controls.TControl.Font">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPage.ParentFont">
+      <element name="TPage.ParentFont" link="#LCL.Controls.TControl.ParentFont">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TNotebook.DragCursor">
+      <element name="TNotebook.DragCursor" link="#LCL.Controls.TControl.DragCursor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TNotebook.DragMode">
+      <element name="TNotebook.DragMode" link="#LCL.Controls.TControl.DragMode">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TNotebook.Font">
+      <element name="TNotebook.Font" link="#LCL.Controls.TControl.Font">
         <short/>
         <descr/>
         <seealso/>
@@ -6543,49 +6544,49 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TNotebook.OnDragDrop">
+      <element name="TNotebook.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TNotebook.OnDragOver">
+      <element name="TNotebook.OnDragOver" link="#LCL.Controls.TControl.OnDragOver">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TNotebook.OnEndDrag">
+      <element name="TNotebook.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TNotebook.OnStartDrag">
+      <element name="TNotebook.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TNotebook.ParentFont">
+      <element name="TNotebook.ParentFont" link="#LCL.Controls.TControl.ParentFont">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TNotebook.PopupMenu">
+      <element name="TNotebook.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TNotebook.TabOrder">
+      <element name="TNotebook.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TNotebook.TabStop">
+      <element name="TNotebook.TabStop" link="#LCL.ExtCtrls.TCustomNotebook.TabStop">
         <short/>
         <descr/>
         <seealso/>

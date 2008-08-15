@@ -849,7 +849,7 @@
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TTabSheet.Create">
+      <element name="TTabSheet.Create" link="#LCL.Controls.TWinControl.Create">
         <short/>
         <descr/>
         <errors/>
@@ -860,7 +860,7 @@
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TTabSheet.Destroy">
+      <element name="TTabSheet.Destroy" link="#LCL.Controls.TWinControl.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -1138,7 +1138,7 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TPageControl.Create">
+      <element name="TPageControl.Create" link="#LCL.Controls.TWinControl.Create">
         <short/>
         <descr/>
         <errors/>
@@ -1229,7 +1229,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPageControl.Align">
+      <element name="TPageControl.Align" link="#LCL.Controls.TControl.Align">
         <short/>
         <descr/>
         <seealso/>
@@ -1241,55 +1241,55 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPageControl.BorderSpacing">
+      <element name="TPageControl.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPageControl.Constraints">
+      <element name="TPageControl.Constraints" link="#LCL.Controls.TControl.Constraints">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPageControl.Enabled">
+      <element name="TPageControl.Enabled" link="#LCL.Controls.TControl.Enabled">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPageControl.Font">
+      <element name="TPageControl.Font" link="#LCL.Controls.TControl.Font">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPageControl.Images">
+      <element name="TPageControl.Images" link="#LCL.ExtCtrls.TCustomNotebook.Images">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPageControl.ParentFont">
+      <element name="TPageControl.ParentFont" link="#LCL.Controls.TControl.ParentFont">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPageControl.ParentShowHint">
+      <element name="TPageControl.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPageControl.PopupMenu">
+      <element name="TPageControl.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPageControl.ShowHint">
+      <element name="TPageControl.ShowHint" link="#LCL.Controls.TControl.ShowHint">
         <short/>
         <descr/>
         <seealso/>
@@ -1302,25 +1302,25 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPageControl.TabOrder">
+      <element name="TPageControl.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPageControl.TabPosition">
+      <element name="TPageControl.TabPosition" link="#LCL.ExtCtrls.TCustomNotebook.TabPosition">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPageControl.TabStop">
+      <element name="TPageControl.TabStop" link="#LCL.ExtCtrls.TCustomNotebook.TabStop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPageControl.Visible">
+      <element name="TPageControl.Visible" link="#LCL.Controls.TControl.Visible">
         <short/>
         <descr/>
         <seealso/>
@@ -1333,43 +1333,43 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPageControl.OnChanging">
+      <element name="TPageControl.OnChanging" link="#LCL.ExtCtrls.TCustomNotebook.OnChanging">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPageControl.OnContextPopup">
+      <element name="TPageControl.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPageControl.OnEnter">
+      <element name="TPageControl.OnEnter" link="#LCL.Controls.TWinControl.OnEnter">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPageControl.OnExit">
+      <element name="TPageControl.OnExit" link="#LCL.Controls.TWinControl.OnExit">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPageControl.OnGetImageIndex">
+      <element name="TPageControl.OnGetImageIndex" link="#LCL.ExtCtrls.TCustomNotebook.OnGetImageIndex">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPageControl.OnMouseDown">
+      <element name="TPageControl.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPageControl.OnMouseMove">
+      <element name="TPageControl.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
         <short/>
         <descr/>
         <seealso/>
@@ -1381,7 +1381,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPageControl.OnResize">
+      <element name="TPageControl.OnResize" link="#LCL.Controls.TControl.OnResize">
         <short/>
         <descr/>
         <seealso/>
@@ -2755,7 +2755,7 @@
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomTabControl.Create">
+      <element name="TCustomTabControl.Create" link="#LCL.Controls.TCustomControl.Create">
         <short/>
         <descr/>
         <errors/>
@@ -2766,7 +2766,7 @@
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomTabControl.Destroy">
+      <element name="TCustomTabControl.Destroy" link="#LCL.Controls.TCustomControl.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -2882,7 +2882,7 @@
         <short/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomTabControl.TabStop">
+      <element name="TCustomTabControl.TabStop" link="#LCL.Controls.TWinControl.TabStop">
         <short/>
         <descr/>
         <seealso/>
@@ -2905,67 +2905,67 @@
         </seealso>
       </element>
       <!-- property Visibility: public -->
-      <element name="TTabControl.DisplayRect">
+      <element name="TTabControl.DisplayRect" link="#LCL.ComCtrls.TCustomTabControl.DisplayRect">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.Align">
+      <element name="TTabControl.Align" link="#LCL.Controls.TControl.Align">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.Anchors">
+      <element name="TTabControl.Anchors" link="#LCL.Controls.TControl.Anchors">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.BorderSpacing">
+      <element name="TTabControl.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.Constraints">
+      <element name="TTabControl.Constraints" link="#LCL.Controls.TControl.Constraints">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.DockSite">
+      <element name="TTabControl.DockSite" link="#LCL.Controls.TWinControl.DockSite">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.DragCursor">
+      <element name="TTabControl.DragCursor" link="#LCL.Controls.TControl.DragCursor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.DragKind">
+      <element name="TTabControl.DragKind" link="#LCL.Controls.TControl.DragKind">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.DragMode">
+      <element name="TTabControl.DragMode" link="#LCL.Controls.TControl.DragMode">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.Enabled">
+      <element name="TTabControl.Enabled" link="#LCL.Controls.TControl.Enabled">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.Font">
+      <element name="TTabControl.Font" link="#LCL.Controls.TControl.Font">
         <short/>
         <descr/>
         <seealso/>
@@ -2977,103 +2977,103 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.Images">
+      <element name="TTabControl.Images" link="#LCL.ComCtrls.TCustomTabControl.Images">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.MultiLine">
+      <element name="TTabControl.MultiLine" link="#LCL.ComCtrls.TCustomTabControl.MultiLine">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.MultiSelect">
+      <element name="TTabControl.MultiSelect" link="#LCL.ComCtrls.TCustomTabControl.MultiSelect">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.OnChange">
+      <element name="TTabControl.OnChange" link="#LCL.ComCtrls.TCustomTabControl.OnChange">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.OnChangeBounds">
+      <element name="TTabControl.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.OnChanging">
+      <element name="TTabControl.OnChanging" link="#LCL.ComCtrls.TCustomTabControl.OnChanging">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.OnContextPopup">
+      <element name="TTabControl.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.OnDockDrop">
+      <element name="TTabControl.OnDockDrop" link="#LCL.Controls.TWinControl.OnDockDrop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.OnDockOver">
+      <element name="TTabControl.OnDockOver" link="#LCL.Controls.TWinControl.OnDockOver">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.OnDragDrop">
+      <element name="TTabControl.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.OnDragOver">
+      <element name="TTabControl.OnDragOver" link="#LCL.Controls.TControl.OnDragOver">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.OnDrawTab">
+      <element name="TTabControl.OnDrawTab" link="#LCL.ComCtrls.TCustomTabControl.OnDrawTab">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.OnEndDock">
+      <element name="TTabControl.OnEndDock" link="#LCL.Controls.TControl.OnEndDock">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.OnEndDrag">
+      <element name="TTabControl.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.OnEnter">
+      <element name="TTabControl.OnEnter" link="#LCL.Controls.TWinControl.OnEnter">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.OnExit">
+      <element name="TTabControl.OnExit" link="#LCL.Controls.TWinControl.OnExit">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.OnGetImageIndex">
+      <element name="TTabControl.OnGetImageIndex" link="#LCL.ComCtrls.TCustomTabControl.OnGetImageIndex">
         <short/>
         <descr/>
         <seealso/>
@@ -3086,139 +3086,139 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.OnMouseDown">
+      <element name="TTabControl.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.OnMouseMove">
+      <element name="TTabControl.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.OnMouseUp">
+      <element name="TTabControl.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.OnResize">
+      <element name="TTabControl.OnResize" link="#LCL.Controls.TControl.OnResize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.OnStartDock">
+      <element name="TTabControl.OnStartDock" link="#LCL.Controls.TControl.OnStartDock">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.OnStartDrag">
+      <element name="TTabControl.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.OnUnDock">
+      <element name="TTabControl.OnUnDock" link="#LCL.Controls.TWinControl.OnUnDock">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.OwnerDraw">
+      <element name="TTabControl.OwnerDraw" link="#LCL.ComCtrls.TCustomTabControl.OwnerDraw">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.ParentFont">
+      <element name="TTabControl.ParentFont" link="#LCL.Controls.TControl.ParentFont">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.ParentShowHint">
+      <element name="TTabControl.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.PopupMenu">
+      <element name="TTabControl.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.RaggedRight">
+      <element name="TTabControl.RaggedRight" link="#LCL.ComCtrls.TCustomTabControl.RaggedRight">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.ScrollOpposite">
+      <element name="TTabControl.ScrollOpposite" link="#LCL.ComCtrls.TCustomTabControl.ScrollOpposite">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.ShowHint">
+      <element name="TTabControl.ShowHint" link="#LCL.Controls.TControl.ShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.Style">
+      <element name="TTabControl.Style" link="#LCL.ComCtrls.TCustomTabControl.Style">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.TabHeight">
+      <element name="TTabControl.TabHeight" link="#LCL.ComCtrls.TCustomTabControl.TabHeight">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.TabIndex">
+      <element name="TTabControl.TabIndex" link="#LCL.ComCtrls.TCustomTabControl.TabIndex">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.TabOrder">
+      <element name="TTabControl.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.TabPosition">
+      <element name="TTabControl.TabPosition" link="#LCL.ComCtrls.TCustomTabControl.TabPosition">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.Tabs">
+      <element name="TTabControl.Tabs" link="#LCL.ComCtrls.TCustomTabControl.Tabs">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.TabStop">
+      <element name="TTabControl.TabStop" link="#LCL.Controls.TWinControl.TabStop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.TabWidth">
+      <element name="TTabControl.TabWidth" link="#LCL.ComCtrls.TCustomTabControl.TabWidth">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabControl.Visible">
+      <element name="TTabControl.Visible" link="#LCL.Controls.TControl.Visible">
         <short/>
         <descr/>
         <seealso/>
@@ -4236,13 +4236,13 @@ cdsIndeterminate</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TListColumn.AutoSize">
-        <short> Whether <var>AutoSize</var> is to be operational</short>
+        <short>Whether <var>AutoSize</var> is to be operational</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TListColumn.Caption">
-        <short> A text string or <var>Caption</var> (which may be translated) to be used at the top of the column</short>
+        <short>A text string or <var>Caption</var> (which may be translated) to be used at the top of the column</short>
         <descr/>
         <seealso/>
       </element>
@@ -15876,6 +15876,20 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
           <var>OriginalIndex</var> - index which doesn't change when the user reorders the sections</short>
       </element>
       <element name="TListColumns.Update"/>
+      <element name="TPageControl.DockSite" link="#LCL.Controls.TWinControl.DockSite"/>
+      <element name="TPageControl.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
+      <element name="TPageControl.DragKind" link="#LCL.Controls.TControl.DragKind"/>
+      <element name="TPageControl.DragMode" link="#LCL.Controls.TControl.DragMode"/>
+      <element name="TPageControl.OnDockDrop" link="#LCL.Controls.TWinControl.OnDockDrop"/>
+      <element name="TPageControl.OnDockOver" link="#LCL.Controls.TWinControl.OnDockOver"/>
+      <element name="TPageControl.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop"/>
+      <element name="TPageControl.OnDragOver" link="#LCL.Controls.TControl.OnDragOver"/>
+      <element name="TPageControl.OnEndDock" link="#LCL.Controls.TControl.OnEndDock"/>
+      <element name="TPageControl.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag"/>
+      <element name="TPageControl.OnPageChanged" link="#LCL.ExtCtrls.TCustomNotebook.OnPageChanged"/>
+      <element name="TPageControl.OnStartDock" link="#LCL.Controls.TControl.OnStartDock"/>
+      <element name="TPageControl.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
+      <element name="TPageControl.OnUnDock" link="#LCL.Controls.TWinControl.OnUnDock"/>
     </module>
     <!-- ComCtrls -->
   </package>
