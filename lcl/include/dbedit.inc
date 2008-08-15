@@ -262,6 +262,20 @@ begin
     FUpdatingRecord := False;
 end;
 
+procedure TDBEdit.LMPasteFromClip(var Message: TLMessage);
+begin
+  if not IsReadOnly then
+    FDatalink.Edit;
+  inherited LMPasteFromClip(Message);
+end;
+
+procedure TDBEdit.LMCutToClip(var Message: TLMessage);
+begin
+  if not IsReadOnly then
+    FDatalink.Edit;
+  inherited LMCutToClip(Message);
+end;
+
 { Public Methods }
 constructor TDBEdit.Create(AOwner: TComponent);
 begin
