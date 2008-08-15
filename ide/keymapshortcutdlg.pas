@@ -428,7 +428,7 @@ begin
   FGrabButton:=TButton.Create(Self);
   with FGrabButton do begin
     Name:='GrabButton';
-    Caption:='Grab key';
+    Caption:=srkmGrabKey;
     Align:=alRight;
     AutoSize:=true;
     Parent:=Self;
