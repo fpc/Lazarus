@@ -462,7 +462,7 @@ const LCLWidgetLinkerAddition: array[TLCLPlatform] of string = (
     '', // gtk2
     '', // win32
     '', // wince
-    ' -k-framework -kcarbon -k-framework -kOpenGL -k''-dylib_file'' -k''/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib:/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib''', // carbon
+    ' -k-framework -kCarbon -k-framework -kOpenGL -k''-dylib_file'' -k''/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib:/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib''', // carbon
     '', // qt
     '', // fpGUI
     '',  // noGUI
