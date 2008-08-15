@@ -8,7 +8,6 @@ object MainForm: TMainForm
   Menu = MainMenu1
   OnKeyDown = FormKeyDown
   OnShow = FormShow
-  TextHeight = 16
   HorzScrollBar.Page = 871
   HorzScrollBar.Range = 165
   VertScrollBar.Page = 615
