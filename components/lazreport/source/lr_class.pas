@@ -3752,7 +3752,7 @@ constructor TfrPictureView.Create;
 begin
   inherited Create;
   Typ := gtPicture;
-  Picture := TPicture.Create;
+  fPicture := TPicture.Create;
   Flags := flStretched + flPictRatio;
   BaseName := 'Picture';
 end;
