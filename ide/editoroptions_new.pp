@@ -1419,13 +1419,15 @@ function TEditorOptionsFormNew.KeyMappingRelationToString(
   KeyRelation: TKeyCommandRelation): String;
 var
   s: String;
+  CopiedLength: Integer;
 begin
   with KeyRelation do
   begin
-    Result := copy(LocalizedName, 1, 40);
-    if length(Result) < 40 then
+    Result := UTF8Copy(LocalizedName, 1, 40);
+    CopiedLength := UTF8Length(Result);
+    if CopiedLength < 40 then
     begin
-      SetLength(s, (40 - length(Result)));
+      SetLength(s, (40 - CopiedLength));
       FillChar(s[1], length(s), ' ');
     end
     else
