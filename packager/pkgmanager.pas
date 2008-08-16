@@ -816,7 +816,7 @@ function TPkgManager.OnPackageEditorRevertPackage(Sender: TObject;
 begin
   if APackage.AutoCreated or (not FilenameIsAbsolute(APackage.Filename))
   or (not FileExists(APackage.Filename)) then
-    exit;
+    exit(mrCancel);
   Result:=DoOpenPackageFile(APackage.Filename,[pofRevert]);
 end;
 
@@ -918,7 +918,7 @@ end;
 function TPkgManager.PackageGraphExplorerOpenProject(Sender: TObject;
   AProject: TProject): TModalResult;
 begin
-  if AProject<>Project1 then exit;
+  if AProject<>Project1 then exit(mrCancel);
   Result:=MainIDE.DoShowProjectInspector;
 end;
 

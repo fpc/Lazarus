@@ -1252,7 +1252,7 @@ begin
   BaseURL:='';
   HTMLHint:='';
   Code:=CodeToolBoss.LoadFile(ExpandedFilename,true,false);
-  if Code=nil then exit;
+  if Code=nil then exit(shrHelpNotFound);
   if CodeHelpBoss.GetHTMLHint(Code,CodePos.X,CodePos.Y,true,
     BaseURL,HTMLHint,CacheWasUsed)=chprSuccess
   then

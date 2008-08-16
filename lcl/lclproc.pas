@@ -2910,7 +2910,7 @@ begin
     else
     begin
       if SrcI >= SrcCharCount then
-        if UnfinishedCharError then Exit
+        if UnfinishedCharError then Exit(trInvalidChar)
         else Break;
 
       B2 := Byte(Src[SrcI]);
@@ -2924,12 +2924,12 @@ begin
           Inc(DestI);
         end
         else // invalid character, assume single byte UTF-8 char
-          if InvalidCharError(1) then Exit;
+          if InvalidCharError(1) then Exit(trInvalidChar);
       end
       else
       begin
         if SrcI >= SrcCharCount then
-          if UnfinishedCharError then Exit
+          if UnfinishedCharError then Exit(trInvalidChar)
           else Break;
 
         B3 := Byte(Src[SrcI]);
@@ -2955,12 +2955,12 @@ begin
             end;
           end
           else // invalid character, assume single byte UTF-8 char
-            if InvalidCharError(2) then Exit;
+            if InvalidCharError(2) then Exit(trInvalidChar);
         end
         else
         begin
           if SrcI >= SrcCharCount then
-            if UnfinishedCharError then Exit
+            if UnfinishedCharError then Exit(trInvalidChar)
             else Break;
 
           B4 := Byte(Src[SrcI]);
@@ -2979,7 +2979,7 @@ begin
             Inc(DestI);
           end
           else // invalid character, assume single byte UTF-8 char
-            if InvalidCharError(3) then Exit;
+            if InvalidCharError(3) then Exit(trInvalidChar);
         end;
       end;
     end;
@@ -3115,7 +3115,7 @@ begin
     else
     begin
       if SrcI >= SrcWideCharCount then
-        if UnfinishedCharError then Exit
+        if UnfinishedCharError then Exit(trInvalidChar)
         else Break;
 
       W2 := Word(Src[SrcI]);
@@ -3155,13 +3155,13 @@ begin
             end;
           end
           else // invalid character, assume single wide char UTF-16 char
-            if InvalidCharError(1) then Exit;
+            if InvalidCharError(1) then Exit(trInvalidChar);
         end
         else // invalid character, assume single wide char UTF-16 char
-          if InvalidCharError(1) then Exit;
+          if InvalidCharError(1) then Exit(trInvalidChar);
       end
       else // invalid character, assume single wide char UTF-16 char
-        if InvalidCharError(1) then Exit;
+        if InvalidCharError(1) then Exit(trInvalidChar);
     end;
   end;
 

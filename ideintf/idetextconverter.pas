@@ -601,7 +601,9 @@ end;
 function TIDETextConverter.GetTempFilename: string;
 begin
   if TextConverterToolClasses<>nil then
-    Result:=TextConverterToolClasses.GetTempFilename;
+    Result:=TextConverterToolClasses.GetTempFilename
+  else
+    Result:='';
   if Result='' then
     Result:='temp.txt';
 end;

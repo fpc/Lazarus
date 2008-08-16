@@ -1533,6 +1533,7 @@ begin
     dvaInt32:
       Read(Result, SizeOf(Result));
   else
+    Result:=0;
     PropValueError;
   end;
 end;
@@ -1745,6 +1746,7 @@ begin
     dvaNull:
       Result := 'Null';
   else
+    Result:='';
     PropValueError;
   end;
 end;
@@ -3728,6 +3730,9 @@ begin
       Result := 'True';
     vaNull:
       Result := 'Null';
+  else
+    Result:='';
+    RaiseGDBException('');
   end;
 end;
 
@@ -3823,7 +3828,6 @@ begin
   if i > 0 then
     Read(Pointer(@Result[1])^, i);
 end;
-
 
 function TLRSObjectReader.ReadWideString: WideString;
 var

@@ -1400,6 +1400,8 @@ var LinkIndex: integer;
   CurCode: TCodeBuffer;
 begin
   Result.StartPos:=-1;
+  Result.EndPos:=-1;
+  Result.Flag:=cafNone;
   LinkIndex:=-1;
   CurCode:=FindNextIncludeInInitialization(LinkIndex);
   while (CurCode<>nil) do begin

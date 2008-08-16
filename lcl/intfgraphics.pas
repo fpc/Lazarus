@@ -658,6 +658,7 @@ end;
 function QueryDescription(AFlags: TRawImageQueryFlags; AWidth: Integer = -1; AHeight: integer = -1): TRawImageDescription;
 begin
   Exclude(AFlags, riqfUpdate);
+  Result.Init;
   QueryDescription(Result, AFlags, AWidth, AHeight);
 end;
 
@@ -671,7 +672,6 @@ begin
   else begin
     if not (riqfUpdate in AFlags) then ADesc.Init;
   end;
-  
 end;
 
 function GetDescriptionFromDevice(ADC: HDC; AWidth, AHeight: integer): TRawImageDescription;
@@ -698,9 +698,10 @@ function AddAlphaToDescription(var ADesc: TRawImageDescription; APrec: Byte): Bo
 var
   Mask: Cardinal;
 begin
-  if ADesc.AlphaPrec >= APrec then Exit(False);
-  if ADesc.BitsPerPixel <> 32 then Exit(False);
-  if ADesc.Depth <> 24 then Exit(False);
+  Result:=false;
+  if ADesc.AlphaPrec >= APrec then Exit;
+  if ADesc.BitsPerPixel <> 32 then Exit;
+  if ADesc.Depth <> 24 then Exit;
 
   Mask := CreateBitMask(ADesc.RedShift, ADesc.RedPrec)
        or CreateBitMask(ADesc.GreenShift, ADesc.GreenPrec)

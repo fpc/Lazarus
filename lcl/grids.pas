@@ -1490,7 +1490,6 @@ end;
 function NormalizarRect(const R:TRect): TRect;
 begin
   Result.Left:=Min(R.Left, R.Right);
-
   Result.Top:=Min(R.Top, R.Bottom);
   Result.Right:=Max(R.Left, R.Right);
   Result.Bottom:=Max(R.Top, R.Bottom);
@@ -4398,6 +4397,7 @@ function TCustomGrid.ColRowToOffset(IsCol, Relative: Boolean; Index:Integer;
 var
   Dim: Integer;
 begin
+  Result:=false;
   with FGCache do begin
     if IsCol then begin
       StartPos:=integer(PtrUInt(AccumWidth[index]));

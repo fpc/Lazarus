@@ -655,6 +655,7 @@ function TDesignerMainMenu.GetMaxCoordinates(DesignerMenuItem: PDesignerMenuItem
 var
   temp_coord: TRect;
 begin
+  Result:=Rect(0,0,0,0);
   if (DesignerMenuItem^.coord.Right > Max_Width) then
     Max_Width:=DesignerMenuItem^.coord.Right;
   if (DesignerMenuItem^.coord.Bottom > Max_Height) then

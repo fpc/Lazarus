@@ -82,6 +82,7 @@ function TResourceCodeTool.FindLazarusResourceHeaderComment(
 begin
   Result.StartPos:=-1;
   Result.EndPos:=-1;
+  Result.Flag:=cafNone;
   SetSource(ResourceCode);
 
   Result.StartPos:=FindNextNonSpace(Src,1);

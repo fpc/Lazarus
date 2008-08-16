@@ -1391,7 +1391,7 @@ function TCodeToolsDefinesEditor.ConsistencyCheck: integer;
   function CheckNode(ATreeNode: TTreeNode): integer;
   var ADefNode, DummyDefNode: TDefineTemplate;
   begin
-    if ATreeNode=nil then exit;
+    if ATreeNode=nil then exit(0);
     ADefNode:=TDefineTemplate(ATreeNode.Data);
 //writeln(' CheckNode "',ATreeNode.Text,'" "',ADefNode.Name,'"');
     if ADefNode=nil then begin

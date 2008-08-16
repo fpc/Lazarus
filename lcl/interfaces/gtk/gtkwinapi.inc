@@ -8543,7 +8543,7 @@ var
   NewTopLevelObject: TObject;
   NewForm: TCustomForm;
 begin
-  if hWnd=0 then exit;
+  if hWnd=0 then exit(0);
   Widget:=PGtkWidget(hWnd);
   {$IfDef VerboseFocus}
   DebugLn('');

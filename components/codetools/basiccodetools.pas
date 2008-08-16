@@ -2965,7 +2965,7 @@ end;
 function TextBeginsWith(Txt: PChar; TxtLen: integer; StartTxt: PChar;
     StartTxtLen: integer; CaseSensitive: boolean): boolean;
 begin
-  if TxtLen<StartTxtLen then exit;
+  if TxtLen<StartTxtLen then exit(false);
   Result:=CompareText(Txt,StartTxtLen,StartTxt,StartTxtLen,CaseSensitive)=0;
 end;
 

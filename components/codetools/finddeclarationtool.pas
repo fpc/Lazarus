@@ -1817,7 +1817,7 @@ end;
 function TFindDeclarationTool.FindUnitCaseInsensitive(var AnUnitName,
   AnUnitInFilename: string): string;
 begin
-  if not CheckDirectoryCache then exit;
+  if not CheckDirectoryCache then exit('');
   Result:=DirectoryCache.FindUnitSourceInCompletePath(
                                               AnUnitName,AnUnitInFilename,true);
 end;

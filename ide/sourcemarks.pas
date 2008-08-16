@@ -555,7 +555,7 @@ end;
 
 function TSourceMarks.Add(AMark: TSourceMark): integer;
 begin
-  if AMark=nil then exit;
+  if AMark=nil then exit(-1);
   Result:=fItems.Add(AMark);
   fSortedItems.Add(AMark);
   AMark.FSourceMarks:=Self;

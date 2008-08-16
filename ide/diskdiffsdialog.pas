@@ -179,7 +179,7 @@ begin
   if EnvironmentOptions.CheckDiskChangesWithLoading then begin
     CheckUnitsWithLoading;
     CheckPackagesWithLoading;
-    if ListsAreEmpty then exit;
+    if ListsAreEmpty then exit(mrIgnore);
   end;
   DiskDiffsDlg:=TDiskDiffsDlg.Create(nil);
   DiskDiffsDlg.UnitList:=AnUnitList;

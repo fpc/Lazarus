@@ -865,6 +865,7 @@ var
   PS : PPaintStruct;
   Widget: PGtkWidget;
 begin
+  FillByte(Result,SizeOf(Result),0);
   Result.Msg := LM_PAINT;
   New(PS);
   FillChar(PS^, SizeOf(TPaintStruct), 0);
@@ -5292,7 +5293,7 @@ end;
 function SetAccelKey(const Widget: PGtkWidget;
   Key: guint; Mods: TGdkModifierType; const Signal: string): PAcceleratorKey;
 begin
-  if (Widget = nil) then exit;
+  if (Widget = nil) then exit(nil);
   Result:=GetAccelKey(Widget);
   if Result=nil then begin
     if Key>0 then begin
@@ -9473,6 +9474,7 @@ function GetWindowFunction(AForm : TCustomForm) : Longint;
 var
   ABorderStyle: TFormBorderStyle;
 begin
+  Result:=0;
   if not (csDesigning in AForm.ComponentState) then
     ABorderStyle:=AForm.BorderStyle
   else

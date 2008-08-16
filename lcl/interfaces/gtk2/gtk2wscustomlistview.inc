@@ -755,6 +755,7 @@ var
   Iter: TGtkTreeIter;
   AValue: gboolean;
 begin
+  Result:=false;
   if not WSCheckHandleAllocated(ALV, 'ItemGetChecked')
   then Exit;
 

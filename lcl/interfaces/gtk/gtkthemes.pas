@@ -198,6 +198,7 @@ var
   DevCtx: TGtkDeviceContext absolute DC;
   ClientWidget: PGtkWidget;
 begin
+  FillByte(Result,SizeOf(Result),0);
   Result.Style := nil;
   if not GTKWidgetSet.IsValidDC(DC) then Exit;
   

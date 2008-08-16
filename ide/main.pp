@@ -12522,7 +12522,7 @@ var
   ActiveUnitInfo: TUnitInfo;
   LogCaretXY: TPoint;
 begin
-  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit(false);
   {$IFDEF IDE_DEBUG}
   writeln('');
   writeln('[TMainIDE.DoInitIdentCompletion] ************');
@@ -12544,7 +12544,7 @@ var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
 begin
-  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit(false);
   {$IFDEF IDE_DEBUG}
   writeln('');
   writeln('[TMainIDE.DoShowCodeContext] ************');

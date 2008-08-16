@@ -942,7 +942,7 @@ function TGtkWidgetSet.AddProcessEventHandler(AHandle: THandle;
 var
   lHandler: PChildSignalEventHandler;
 begin
-  if AEventHandler = nil then exit;
+  if AEventHandler = nil then exit(nil);
   New(lHandler);
   lHandler^.PID := TPid(AHandle);
   lHandler^.UserData := AData;

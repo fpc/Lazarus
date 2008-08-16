@@ -736,6 +736,7 @@ class function TGtk2WSCustomListBox.GetStrings(
 var
   Widget: PGtkWidget;// pointer to gtk-widget
 begin
+  Result:=nil;
   if not WSCheckHandleAllocated(ACustomListBox, 'GetStrings') then
     Exit;
   case ACustomListBox.fCompStyle of

@@ -1985,7 +1985,7 @@ end;
 
 function TPackageEditorForm.CanBeAddedToProject: boolean;
 begin
-  if LazPackage=nil then exit;
+  if LazPackage=nil then exit(false);
   Result:=PackageEditors.AddToProject(LazPackage,true)=mrOk;
 end;
 

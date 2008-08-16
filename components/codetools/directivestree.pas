@@ -2099,7 +2099,7 @@ var
   function HasCodeBetween(FromPos, ToPos: integer): boolean;
   begin
     if FromPos<1 then FromPos:=1;
-    if FromPos>ToPos then exit;
+    if FromPos>ToPos then exit(false);
     MoveCursorToPos(FromPos);
     ReadNextAtom;
     Result:=AtomStart<ToPos;

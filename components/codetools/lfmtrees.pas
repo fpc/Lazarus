@@ -431,7 +431,7 @@ end;
 
 function TLFMTree.ParseIfNeeded: boolean;
 begin
-  if not UpdateNeeded then exit;
+  if not UpdateNeeded then exit(true);
   Result:=Parse(LFMBuffer);
 end;
 

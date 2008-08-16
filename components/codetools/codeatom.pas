@@ -177,6 +177,7 @@ function AtomPosition(StartPos, EndPos: integer): TAtomPosition;
 begin
   Result.StartPos:=StartPos;
   Result.EndPos:=EndPos;
+  Result.Flag:=cafNone;
 end;
 
 function CodePosition(P: integer; Code: TCodeBuffer): TCodePosition;
@@ -406,6 +407,7 @@ begin
   else begin
     Result.StartPos:=1;
     Result.EndPos:=1;
+    Result.Flag:=cafNone;
   end;
 end;
 

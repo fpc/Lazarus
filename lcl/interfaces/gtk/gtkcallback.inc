@@ -106,14 +106,14 @@ begin
   // ToDo: Eventually there must be a 'before paint message'.
   if IsAfterGtk then
   begin
-    if TObject(Target) is TCustomControl then exit;
+    if TObject(Target) is TCustomControl then exit(false);
   end else
   begin
-    if not (TObject(Target) is TCustomControl) then exit;
+    if not (TObject(Target) is TCustomControl) then exit(false);
   end;
   {$ENDIF}
   
-  if (not RepaintAll) and ((Area^.Width<1) or (Area^.Height<1)) then exit;
+  if (not RepaintAll) and ((Area^.Width<1) or (Area^.Height<1)) then exit(false);
 
   MSG.Msg := LM_GTKPAINT;
   MSG.Data := TLMGtkPaintData.Create;

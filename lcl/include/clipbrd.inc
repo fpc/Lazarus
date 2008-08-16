@@ -747,6 +747,7 @@ begin
   if CanReadFromCache then
     Result:=FCount
   else begin
+    Result:=0;
     if ClipboardGetFormats(ClipboardType,Result,List) then begin
       if List<>nil then FreeMem(List);
     end else

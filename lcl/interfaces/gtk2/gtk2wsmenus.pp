@@ -303,6 +303,7 @@ var
   Group: PGSList;
   Item: Pointer;
 begin
+  Result:=false;
   if not WSCheckMenuItem(AMenuItem, 'SetCheck') then
     Exit;
   Item := Pointer(AMenuItem.Handle);

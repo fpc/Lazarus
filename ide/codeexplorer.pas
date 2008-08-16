@@ -1123,7 +1123,7 @@ var
   ChildNode: TTreeNode;
   HasVisibleChilds: Boolean;
 begin
-  if ANode=nil then exit;
+  if ANode=nil then exit(false);
   ChildNode:=ANode.GetFirstChild;
   HasVisibleChilds:=false;
   while ChildNode<>nil do begin

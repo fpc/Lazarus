@@ -1985,7 +1985,7 @@ var
   OldBreakPoint: TIDEBreakPoint;
 begin
   OldBreakPoint:=FBreakPoints.Find(AFilename,ALine);
-  if OldBreakPoint=nil then exit;
+  if OldBreakPoint=nil then exit(mrOk);
   OldBreakPoint.Free;
   Project1.Modified:=true;
   Result := mrOK

@@ -348,7 +348,7 @@ var
   function Breakable(Breaks : TList; Index : Integer) : Boolean;
   begin
     If not Assigned(Breaks) then
-      exit;
+      exit(false);
     Result := Breaks.IndexOf(Pointer(PtrInt(Index))) <> -1;
   end;
 
