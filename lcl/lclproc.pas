@@ -232,6 +232,7 @@ function DbgS(const p: TPoint): string; overload;
 function DbgS(const p: pointer): string; overload;
 function DbgS(const e: extended; MaxDecimals: integer = 999): string; overload;
 function DbgS(const b: boolean): string; overload;
+function DbgS(const s: TComponentState): string; overload;
 function DbgSName(const p: TObject): string; overload;
 function DbgSName(const p: TClass): string; overload;
 function DbgStr(const StringWithSpecialChars: string): string; overload;
@@ -1613,6 +1614,31 @@ end;
 function DbgS(const b: boolean): string;
 begin
   if b then Result:='True' else Result:='False';
+end;
+
+function DbgS(const s: TComponentState): string;
+
+  procedure Add(const a: string);
+  begin
+    if Result<>'' then
+      Result:=Result+',';
+    Result:=Result+a;
+  end;
+
+begin
+  Result:='';
+  if csLoading in s then Add('csLoading');
+  if csReading in s then Add('csReading');
+  if csWriting in s then Add('csWriting');
+  if csDestroying in s then Add('csDestroying');
+  if csDesigning in s then Add('csDesigning');
+  if csAncestor in s then Add('csAncestor');
+  if csUpdating in s then Add('csUpdating');
+  if csFixups in s then Add('csFixups');
+  if csFreeNotification in s then Add('csFreeNotification');
+  if csInline in s then Add('csInline');
+  if csDesignInstance in s then Add('csDesignInstance');
+  Result:='['+Result+']';
 end;
 
 function DbgSName(const p: TObject): string;

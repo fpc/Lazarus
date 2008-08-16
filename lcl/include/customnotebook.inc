@@ -249,18 +249,24 @@ begin
   {$IFDEF NOTEBOOK_DEBUG}
   DebugLn(['TCustomNotebook.DoCreateWnd ',dbgsName(Self),' HandleAllocated=',HandleAllocated]);
   {$ENDIF}
-  fAddingPages:=true;
-  for i := 0 to FPageList.Count -1 do begin
-    {$IFDEF NOTEBOOK_DEBUG}
-    DebugLn(['TCustomNotebook.DoCreateWnd ',dbgsName(Self),' Page.Caption=',Page[i].Caption,' pfAdded=',pfAdded in Page[i].Flags]);
-    {$ENDIF}
-    lPage := Page[i];
-    AddRemovePageHandle(lPage);
-  end;
-  fAddingPages:=false;
+  DisableAlign;
+  try
+    fAddingPages:=true;
+    for i := 0 to FPageList.Count -1 do begin
+      {$IFDEF NOTEBOOK_DEBUG}
+      DebugLn(['TCustomNotebook.DoCreateWnd ',dbgsName(Self),' Page.Caption=',Page[i].Caption,' pfAdded=',pfAdded in Page[i].Flags]);
+      {$ENDIF}
+      lPage := Page[i];
+      AddRemovePageHandle(lPage);
+    end;
+    fAddingPages:=false;
 
-  DoSendShowTabs;
-  DoSendPageIndex;
+    DoSendShowTabs;
+    DoSendPageIndex;
+    ReAlign;
+  finally
+    EnableAlign;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -429,7 +435,7 @@ end;
 procedure TCustomNotebook.SetPageIndex(AValue: Integer);
 begin
   if (csLoading in ComponentState) then FLoadedPageIndex:=AValue;
-  //debugln('TCustomNotebook.SetPageIndex A ',dbgsName(Self),' AValue=',dbgs(AValue),' fPageIndex=',dbgs(fPageIndex),' PageCount=',dbgs(PageCount),' HandleAllocated=',dbgs(HandleAllocated));
+  //debugln('TCustomNotebook.SetPageIndex A ',dbgsName(Self),' AValue=',dbgs(AValue),' fPageIndex=',dbgs(fPageIndex),' PageCount=',dbgs(PageCount),' HandleAllocated=',dbgs(HandleAllocated),' ',dbgs(ComponentState));
   if (AValue < 0) or (AValue >= PageCount) then exit;
   if fPageIndex = AValue then exit;
   if not CanChangePageIndex then exit;
@@ -787,7 +793,6 @@ end;
 procedure TCustomNotebook.CNNotify(var Message: TLMNotify);
 var
   OldPageIndex: LongInt;
-  APage: TCustomPage;
 begin
   with Message do
     case NMHdr^.code of
@@ -807,13 +812,7 @@ begin
                 if csDesigning in ComponentState then
                   OwnerFormDesignerModified(Self);
                 //DebugLn(['TCustomNotebook.CNNotify ',DbgSName(Page[PageIndex]),' ',Page[PageIndex].Visible]);
-                ResizeDelayedAutoSizeChildren;
                 Change;
-                if FPageIndex>=0 then begin
-                  APage:=Page[FPageIndex];
-                  // update FShowing
-                  APage.UpdateShowing;
-                end;
               end;
             end;
           end;
@@ -861,6 +860,7 @@ begin
       end;
     end else begin
       CurPage.Visible := true;
+      //DebugLn(['TCustomNotebook.ShowCurrentPage CurPage.AutoSizeDelayed=',CurPage.AutoSizeDelayed,' ',dbgs(CurPage.ComponentState),' ',CurPage.HandleAllocated]);
     end;
     FPageIndexOnLastShow:=fPageIndex;
     CurPage.DoShow;
@@ -868,7 +868,7 @@ begin
        (FPageIndexOnLastChange <> FPageIndex) then
     begin
       // Page[FPageIndexOnLastChange].Visible := False; <-- this will be better,
-      // but this is not work on gtk (tab hides too)
+      // but this does not work on gtk (tab hides too)
       Page[FPageIndexOnLastChange].DoHide;
     end;
   end;

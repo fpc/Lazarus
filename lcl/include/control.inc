@@ -3327,15 +3327,18 @@ begin
       end;
       if FVisible then
       begin
-        if AsWincontrol <> nil then
+        if AsWincontrol <> nil then begin
+          AsWincontrol.InvalidatePreferredChildSizes;
           Include(AsWincontrol.FWinControlFlags, wcfReAlignNeeded);
+        end;
         AdjustSize;
         if (AsWincontrol <> nil) and (wcfReAlignNeeded in AsWincontrol.FWinControlFlags) then
           AsWincontrol.ReAlign;
       end;
       if cfRequestAlignNeeded in FControlFlags then
         RequestAlign;
-      if AsWincontrol <> nil then
+      //DebugLn(['TControl.SetVisible ',dbgsName(AsWincontrol)]);
+      if FVisible and (AsWincontrol <> nil) then
         AsWincontrol.ResizeDelayedAutoSizeChildren;
     finally
       VisibleChanged;

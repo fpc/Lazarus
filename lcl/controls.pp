@@ -1573,6 +1573,7 @@ type
                      AControlList: TFPList; var ARect: TRect): Boolean; virtual;
     procedure DoChildSizingChange(Sender: TObject); virtual;
     procedure ResizeDelayedAutoSizeChildren; virtual;
+    procedure InvalidatePreferredChildSizes;
     function CanTab: Boolean; override;
     procedure CMShowingChanged(var Message: TLMessage); message CM_SHOWINGCHANGED;
     procedure CMVisibleChanged(var TheMessage: TLMessage); message CM_VISIBLECHANGED;

@@ -27,6 +27,7 @@
 
 {off $DEFINE VerboseAutoSizeCtrlData}
 {off $DEFINE VerboseMouseBugfix}
+{off $DEFINE VerboseCanAutoSize}
 
 {off $DEFINE VerboseSizeMsg}
 {off $DEFINE CHECK_POSITION}
@@ -2901,11 +2902,16 @@ begin
   try
     for i:=0 to ControlCount-1 do begin
       Child:=Controls[i];
-      if Child.AutoSizeDelayed then continue;
+      if Child.AutoSizeDelayed then begin
+        //DebugLn(['TWinControl.ResizeDelayedAutoSizeChildren Child.AutoSizeDelayed Child=',dbgsName(Child)]);
+        continue;
+      end;
 
+      //DebugLn(['TWinControl.ResizeDelayedAutoSizeChildren ',dbgsName(Child),' AutoSize=',Child.AutoSize,' cfAutoSizeNeeded=',cfAutoSizeNeeded in Child.FControlFlags]);
       if cfRequestAlignNeeded in Child.FControlFlags then
         Child.RequestAlign;
-      if cfAutoSizeNeeded in Child.FControlFlags then
+      if (cfAutoSizeNeeded in Child.FControlFlags)
+      or (Child.AutoSize and (not (cfPreferredSizeValid in Child.FControlFlags))) then
         Child.AdjustSize;
 
       if Child is TWinControl then begin
@@ -2917,6 +2923,20 @@ begin
     end;
   finally
     EnableAlign;
+  end;
+end;
+
+procedure TWinControl.InvalidatePreferredChildSizes;
+var
+  AControl: TControl;
+  i: Integer;
+begin
+  for i:=0 to ControlCount-1 do begin
+    AControl:=Controls[i];
+    Exclude(AControl.FControlFlags,cfPreferredSizeValid);
+    Exclude(AControl.FControlFlags,cfPreferredMinSizeValid);
+    if AControl is TWinControl then
+      TWinControl(AControl).InvalidatePreferredChildSizes;
   end;
 end;
 
@@ -3771,7 +3791,7 @@ begin
 
   if not HandleAllocated then Exit;
 
-  //DebugLn('TWinControl.UpdateShowing A ',Name,':',ClassName,' FShowing=',dbgs(FShowing),' bShow=',dbgs(bShow));
+  //DebugLn('TWinControl.UpdateShowing A ',dbgsName(Self),' FShowing=',dbgs(FShowing),' bShow=',dbgs(bShow));
   if FShowing = bShow then Exit;
   
   FShowing := bShow;
