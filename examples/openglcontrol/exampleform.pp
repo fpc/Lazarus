@@ -43,6 +43,9 @@ type
   end;
   
 type
+
+  { TExampleForm }
+
   TExampleForm = class(TForm)
     OpenGLControl1: TOpenGLControl;
     ExitButton1: TButton;
@@ -446,9 +449,8 @@ end;
 procedure TExampleForm.IdleFunc(Sender: TObject; var Done: Boolean);
 begin
   OpenGLControl1.Invalidate;
-  OpenGLControl1Paint(Self);
+  //OpenGLControl1Paint(Self);
   Done:=false; // tell lcl to handle messages and return immediatly
-
 end;
 
 // --------------------------------------------------------------------------
