@@ -46,10 +46,9 @@ const
   Kinds: array[TScrollBarKind] of DWORD = (SBS_HORZ, SBS_VERT);
 begin
   inherited CreateParams(Params);
-  CreateSubClass(Params, 'SCROLLBAR');
   Params.Style := Params.Style or Kinds[FKind];
   if FKind = sbVertical then
-      Params.Style := Params.Style or SBS_LEFTALIGN;
+    Params.Style := Params.Style or SBS_LEFTALIGN;
   FRTLFactor := 1
 end;
 
