@@ -49,8 +49,10 @@ function TMouse.GetCursorPos : TPoint;
 var
   p : TPoint;
 begin
-  WidgetSet.GetCursorPos(p);
-  Result := P;
+  if WidgetSet.GetCursorPos(p) then
+    Result := P
+  else
+    Result:=Point(0,0);
 end;
 
 procedure TMouse.SetCursorPos(AValue : TPoint);
