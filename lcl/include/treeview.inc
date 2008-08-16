@@ -1831,9 +1831,15 @@ end;
 
 procedure TTreeNodes.Clear;
 begin
+  BeginUpdate;
   ClearCache;
-  while GetLastNode<>nil do
-    GetLastNode.Delete;
+  if GetLastNode<>nil then begin
+    while GetLastNode<>nil do
+      GetLastNode.Delete;
+    if (FUpdateCount=0) and (Owner<>nil) then
+      Owner.Invalidate;
+  end;
+  EndUpdate;
 end;
 
 procedure TTreeNodes.ClearMultiSelection(ClearSelected: boolean = false);
