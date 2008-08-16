@@ -711,7 +711,7 @@ const
   SBS_SIZEBOX = 8;
   SBS_SIZEGRIP = $10;
 
-  SIF_Range = 1;
+  SIF_RANGE = 1;
   SIF_PAGE = 2;
   SIF_POS = 4;
   SIF_DISABLENOSCROLL = 8;

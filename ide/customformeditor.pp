@@ -894,7 +894,8 @@ var
   FrameComp: TRegisteredComponent;
 begin
   FrameComp:=IDEComponentPalette.FindComponent('TFrame');
-  FrameComp.OnGetCreationClass:=@FrameCompGetCreationClass;
+  if FrameComp <> nil then
+    FrameComp.OnGetCreationClass:=@FrameCompGetCreationClass;
 end;
 
 procedure TCustomFormEditor.SetSelection(
