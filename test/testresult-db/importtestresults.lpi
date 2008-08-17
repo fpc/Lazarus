@@ -36,6 +36,10 @@
     <Version Value="5"/>
     <PathDelim Value="\"/>
     <CodeGeneration>
+      <Checks>
+        <RangeChecks Value="True"/>
+        <OverflowChecks Value="True"/>
+      </Checks>
       <Generate Value="Faster"/>
     </CodeGeneration>
     <Other>

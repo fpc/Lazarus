@@ -39,6 +39,7 @@ begin
 end;
 
 initialization
+  GetTestRegistry.TestName := 'All tests';
   BugsTestSuite := TTestSuite.Create('Bugs');
   GetTestRegistry.AddTest(BugsTestSuite);
 

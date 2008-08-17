@@ -27,126 +27,53 @@ uses
 
 Type
   TTestStatus = (
-  stFailedToCompile,
-  stSuccessCompilationFailed,
-  stFailedCompilationsuccessful,
-  stSuccessfullyCompiled,
-  stFailedToRun,
-  stKnownRunProblem,
-  stSuccessFullyRun,
-  stSkippingGraphTest,
-  stSkippingInteractiveTest,
-  stSkippingKnownBug,
-  stSkippingCompilerVersionTooLow,
-  stSkippingCompilerVersionTooHigh,
-  stSkippingOtherCpu,
-  stSkippingOtherTarget,
-  stskippingRunUnit,
-  stskippingRunTest
+  stOK,
+  stFailed,
+  stIgnored
   );
 
 
 Const
-  FirstStatus = stFailedToCompile;
-  LastStatus = stskippingRunTest;
+  FirstStatus = low(TTestStatus);
+  LastStatus = high(TTestStatus);
 
   TestOK : Array[TTestStatus] of Boolean = (
-    False, // stFailedToCompile,
-    True,  // stSuccessCompilationFailed,
-    False, // stFailedCompilationsuccessful,
-    True,  // stSuccessfullyCompiled,
-    False, // stFailedToRun,
-    True,  // stKnownRunProblem,
-    True,  // stSuccessFullyRun,
-    False, // stSkippingGraphTest,
-    False, // stSkippingInteractiveTest,
-    False, // stSkippingKnownBug,
-    False, // stSkippingCompilerVersionTooLow,
-    False, // stSkippingCompilerVersionTooHigh,
-    False, // stSkippingOtherCpu,
-    False, // stSkippingOtherTarget,
-    False, // stskippingRunUnit,
-    False  // stskippingRunTest
+    True,  // stOK
+    False, // stFailed
+    False  // stIgnored
   );
 
   TestSkipped : Array[TTestStatus] of Boolean = (
-    False,  // stFailedToCompile,
-    False,  // stSuccessCompilationFailed,
-    False,  // stFailedCompilationsuccessful,
-    False,  // stSuccessfullyCompiled,
-    False,  // stFailedToRun,
-    False,  // stKnownRunProblem,
-    False,  // stSuccessFullyRun,
-    True,   // stSkippingGraphTest,
-    True,   // stSkippingInteractiveTest,
-    True,   // stSkippingKnownBug,
-    True,   // stSkippingCompilerVersionTooLow,
-    True,   // stSkippingCompilerVersionTooHigh,
-    True,   // stSkippingOtherCpu,
-    True,   // stSkippingOtherTarget,
-    True,   // stskippingRunUnit,
-    True    // stskippingRunTest
+    False,  // stOK
+    False, // stFailed
+    True  // stIgnored
   );
 
-  ExpectRun : Array[TTestStatus] of Boolean = (
-    False,  // stFailedToCompile,
-    False,  // stSuccessCompilationFailed,
-    False,  // stFailedCompilationsuccessful,
-    True ,  // stSuccessfullyCompiled,
-    False,  // stFailedToRun,
-    False,  // stKnownRunProblem,
-    False,  // stSuccessFullyRun,
-    False,  // stSkippingGraphTest,
-    False,  // stSkippingInteractiveTest,
-    False,  // stSkippingKnownBug,
-    False,  // stSkippingCompilerVersionTooLow,
-    False,  // stSkippingCompilerVersionTooHigh,
-    False,  // stSkippingOtherCpu,
-    False,  // stSkippingOtherTarget,
-    False,  // stskippingRunUnit,
-    False   // stskippingRunTest
-   );
-
   StatusText : Array[TTestStatus] of String = (
-    failed_to_compile,
-    success_compilation_failed,
-    failed_compilation_successful ,
-    successfully_compiled ,
-    failed_to_run ,
-    known_problem ,
-    successfully_run ,
-    skipping_graph_test ,
-    skipping_interactive_test ,
-    skipping_known_bug ,
-    skipping_compiler_version_too_low,
-    skipping_compiler_version_too_high,
-    skipping_other_cpu ,
-    skipping_other_target ,
-    skipping_run_unit ,
-    skipping_run_test
+    success,
+    failed,
+    skipped
   );
 
   SQLField : Array[TTestStatus] of String = (
-    'TU_FAILEDTOCOMPILE',
-    'TU_SUCCESSFULLYFAILED',
-    'TU_FAILEDTOFAIL',
-    'TU_SUCCESFULLYCOMPILED',
-    'TU_FAILEDTORUN',
-    'TU_KNOWNPROBLEM',
-    'TU_SUCCESSFULLYRUN',
-    'TU_SKIPPEDGRAPHTEST',
-    'TU_SKIPPEDINTERACTIVETEST',
-    'TU_KNOWNBUG',
-    'TU_COMPILERVERIONTOOLOW',
-    'TU_COMPILERVERIONTOOHIGH',
-    'TU_OTHERCPU',
-    'TU_OTHERTARGET',
-    'TU_UNIT',
-    'TU_SKIPPINGRUNTEST'
+    'TU_OK',
+    'TU_FAILED',
+    'TU_SKIPPED'
   );
 
 
+function GetTestStatus(AStatusText: string): TTestStatus;
+
 implementation
+
+function GetTestStatus(AStatusText: string): TTestStatus;
+var
+  TS: TTestStatus;
+begin
+  for TS := FirstStatus to LastStatus do
+    if StatusText[TS]=AStatusText then
+      exit(TS);
+end;
 
 end.
 

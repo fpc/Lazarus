@@ -73,7 +73,6 @@ var
 begin
   inherited ExtendXmlDocument(Doc);
   env := Doc.CreateElement('Environment');
-  AddElement('Date', {$I %DATE%});
   AddElement('CPU', {$I %FPCTARGETCPU%});
   AddElement('OS', {$I %FPCTARGETOS%});
   AddElement('FPCVersion', {$I %FPCVERSION%});

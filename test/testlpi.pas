@@ -23,7 +23,7 @@ unit TestLpi;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testregistry, process, FileUtil,
+  Classes, SysUtils, strutils, fpcunit, testregistry, process, FileUtil,
   TestGlobals;
 
 type
@@ -124,7 +124,7 @@ end;
 class function TLpkTest.CreateSuiteFromFile(const AName,
   APath: string): TTestSuite;
 begin
-  Result := TTestSuite.Create(AName);
+  Result := TTestSuite.Create(AnsiReplaceStr(AName, DirectorySeparator, '/'));
   Result.AddTest(Create(APath, 'TestCompile'));
 end;
 

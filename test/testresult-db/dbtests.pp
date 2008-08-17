@@ -23,8 +23,9 @@ Function GetCPUID(Name : String) : Integer;
 Function GetCategoryID(Name : String) : Integer;
 Function GetFPCVersionID(Name : String) : Integer;
 Function GetLAZVersionID(Name : String) : Integer;
-Function GetRunID(OSID, CPUID, FPCVERSIONID, LazVersionID : Integer; Date : TDateTime) : Integer;
-Function AddRun(OSID, CPUID, FPCVERSIONID, LazVersionID : Integer; Date : TDateTime) : Integer;
+Function GetWidgetSetID(Name : String) : Integer;
+Function GetRunID(OSID, CPUID, FPCVERSIONID, LazVersionID,WidgetSetID : Integer; Date : TDateTime) : Integer;
+Function AddRun(OSID, CPUID, FPCVERSIONID, LazVersionID, WidgetSetID : Integer; Date : TDateTime) : Integer;
 Function AddTest(Name : String; AddSource : Boolean) : Integer;
 Function UpdateTest(ID : Integer; Info : TConfig; Source : String) : Boolean;
 Function AddTestResult(TestID,RunID,TestRes : Integer;
@@ -43,7 +44,7 @@ Type
 
 Function  ConnectToDatabase(DatabaseName,Host,User,Password : String) : Boolean;
 Procedure DisconnectDatabase;
-Function  RunQuery (Qry : String; Var res : TQueryResult) : Boolean ;
+Function  RunQuery (Qry : String; out res : TQueryResult) : Boolean ;
 Procedure FreeQueryResult (Res : TQueryResult);
 Function  GetResultField (Res : TQueryResult; Id : Integer) : String;
 Function  IDQuery(Qry : String) : Integer;
@@ -104,7 +105,7 @@ begin
   mysql_close(@Connection);
 end;
 
-Function RunQuery (Qry : String; Var res : TQueryResult) : Boolean ;
+Function RunQuery (Qry : String; out res : TQueryResult) : Boolean ;
 
 begin
   Verbose(V_DEBUG,'Running query:'+Qry);
@@ -228,8 +229,15 @@ begin
   Result:=IDQuery(Format(SFromName,[Name]));
 end;
 
+function GetWidgetSetID(Name: String): Integer;
+Const
+  SFromName = 'SELECT TW_ID FROM TESTWIDGETSET WHERE (TW_NAME="%s")';
 
-function GetRunID(OSID, CPUID, FPCVERSIONID, LazVersionID: Integer;
+begin
+  Result:=IDQuery(Format(SFromName,[Name]));
+end;
+
+function GetRunID(OSID, CPUID, FPCVERSIONID, LazVersionID, WidgetSetID: Integer;
   Date: TDateTime): Integer;
 Const
   SFromIDS = 'SELECT TU_ID FROM TESTRUN WHERE '+
@@ -237,25 +245,26 @@ Const
              ' AND (TU_CPU_FK=%d) '+
              ' AND (TU_FPC_VERSION_FK=%d) '+
              ' AND (TU_LAZ_VERSION_FK=%d) '+
+             ' AND (TU_WS_FK=%d) '+
              ' AND (TU_DATE="%s")';
 
 begin
-  Result:=IDQuery(Format(SFromIDS,[OSID,CPUID,FPCVERSIONID,LazVersionID,SQLDate(Date)]));
+  Result:=IDQuery(Format(SFromIDS,[OSID,CPUID,FPCVERSIONID,LazVersionID,WidgetSetID,SQLDate(Date)]));
 end;
 
-Function AddRun(OSID, CPUID, FPCVERSIONID, LazVersionID : Integer; Date : TDateTime) : Integer;
+Function AddRun(OSID, CPUID, FPCVERSIONID, LazVersionID, WidgetSetID: Integer; Date : TDateTime) : Integer;
 
 Const
   SInsertRun = 'INSERT INTO TESTRUN '+
-               '(TU_OS_FK,TU_CPU_FK,TU_FPC_VERSION_FK,TU_LAZ_VERSION_FK,TU_DATE)'+
+               '(TU_OS_FK,TU_CPU_FK,TU_FPC_VERSION_FK,TU_LAZ_VERSION_FK,TU_WS_FK,TU_DATE)'+
                ' VALUES '+
-               '(%d,%d,%d,%d,"%s")';
+               '(%d,%d,%d,%d,%d,"%s")';
 
 Var
   Res : TQueryResult;
 
 begin
-  If RunQuery(Format(SInsertRun,[OSID,CPUID,FPCVERSIONID,LazVersionID,SQLDate(Date)]),Res) then
+  If RunQuery(Format(SInsertRun,[OSID,CPUID,FPCVERSIONID,LazVersionID,WidgetSetID,SQLDate(Date)]),Res) then
     Result:=mysql_insert_id(@connection)
   else
     Result:=-1;
@@ -341,6 +350,23 @@ begin
   close(t);
 end;
 
+function GetLazarusTestConfig(var r : TConfig) : Boolean;
+var
+  Path       : string;
+  ClassName  : string;
+  MethodName : string;
+  slashpos   : integer;
+  FileName   : string;
+  s          : string;
+  t          : text;
+begin
+  Verbose(V_Debug,'GetLazarusTestConfig');
+  Result := False;
+  FillChar(r,sizeof(r),0);
+  r.Note:= 'unittest';
+  Result := True;
+end;
+
 Function AddTest(Name : String; AddSource : Boolean) : Integer;
 
 Const
@@ -355,7 +381,8 @@ begin
   Result:=-1;
   If (FileExists(TestSrcDir+RelSrcDir+Name) and
      GetConfig(TestSrcDir+RelSrcDir+Name,Info)) or
-     GetUnitTestConfig(Name,Info) then
+     GetUnitTestConfig(Name,Info) or
+     GetLazarusTestConfig(Info) then
     begin
     If RunQuery(Format(SInsertTest,[Name]),Res) then
       begin
@@ -417,7 +444,7 @@ Function AddTestResult(TestID,RunID,TestRes : Integer;
                        Log : String) : Integer;
 
 Const
-  SInsertRes='Insert into TESTRESULTS '+
+  SInsertRes : string ='Insert into TESTRESULTS '+
              '(TR_TEST_FK,TR_TESTRUN_FK,TR_OK,TR_SKIP,TR_RESULT,TR_LOG) '+
              ' VALUES '+
              '(%d,%d,"%s","%s",%d,"%s") ';

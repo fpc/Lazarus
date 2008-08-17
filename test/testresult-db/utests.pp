@@ -452,10 +452,9 @@ Procedure TTestSuite.ShowRunOverview;
 Const
   SOverview = 'SELECT TU_ID as ID,TU_DATE as Date,TC_NAME as CPU,TO_NAME as OS,'+
                'TFV_VERSION as Version,COUNT(TR_ID) as Count,'+
-               '(TU_SUCCESFULLYCOMPILED+TU_SUCCESSFULLYRUN) AS OK,'+
-               '(TU_FAILEDTOCOMPILE+TU_FAILEDTORUN+TU_FAILEDTOFAIL) as Failed,'+
-               '(TU_SUCCESFULLYCOMPILED+TU_SUCCESSFULLYRUN+'+
-                'TU_FAILEDTOCOMPILE+TU_FAILEDTORUN+TU_FAILEDTOFAIL) as Total,'+
+               '(TU_TESTCOUNT - TU_FAILURECOUNT - TU_ERRORCOUNT) AS OK,'+
+               '(TU_FAILURECOUNT + TU_ERRORCOUNT) as Failed,'+
+               'TU_TESTCOUNT as Total,'+
                'TU_SUBMITTER as Submitter, TU_MACHINE as Machine, TU_COMMENT as Comment '+
               'FROM TESTRESULTS,TESTRUN,TESTCPU,TESTOS,TESTFPCVERSION '+
               'WHERE '+
@@ -543,7 +542,7 @@ Function TTestSuite.GetVersionName(ID : String) : String;
 
 begin
   if (ID<>'') then
-    Result:=GetSingleton('SELECT TFV_VERSION FROM TESTFPCVERSION WHERE TV_ID='+ID);
+    Result:=GetSingleton('SELECT TFV_VERSION FROM TESTFPCVERSION WHERE TFV_ID='+ID);
 end;
 
 Function TTestSuite.ShowRunData : Boolean;
@@ -551,11 +550,12 @@ Function TTestSuite.ShowRunData : Boolean;
 Const
   SGetRunData = 'SELECT TU_ID,TU_DATE,TC_NAME,TO_NAME,' +
                 'TU_SUBMITTER,TU_MACHINE,TU_COMMENT,TFV_VERSION '+
-                ' FROM TESTRUN,TESTCPU,TESTOS,TESTFPCVERSION '+
+                ' FROM TESTRUN,TESTCPU,TESTOS,TESTFPCVERSION,TESTLAZVERSION '+
                 'WHERE '+
                 ' (TC_ID=TU_CPU_FK) AND '+
                 ' (TO_ID=TU_OS_FK) AND '+
-                ' (TV_ID=TU_VERSION_FK) AND '+
+                ' (TFV_ID=TU_FPC_VERSION_FK) AND '+
+                ' (TLV_ID=TU_LAZ_VERSION_FK) AND '+
                 ' (TU_ID=%s)';
 
 

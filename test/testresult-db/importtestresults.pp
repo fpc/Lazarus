@@ -21,7 +21,7 @@ program importtestresults;
 
 uses
   sysutils,teststr,testu,tresults,dbtests,
-  dom, XMLRead;
+  dom, XMLRead, dateutils;
 
 
 Var
@@ -109,6 +109,7 @@ Var
   TestCPU,
   TestFPCVersion,
   TestLazVersion,
+  TestWidgetSet,
   DatabaseName,
   HostName,
   UserName,
@@ -277,7 +278,9 @@ Var
   TestOSID  : Integer;
   TestFPCVersionID : Integer;
   TestLazVersionID : Integer;
+  TestWidgetSetID : Integer;
   TestRunID : Integer;
+  TestCount, ErrorCount, FailureCount, IgnoreCount: integer;
 
 Procedure GetIDs;
 var
@@ -292,6 +295,18 @@ var
       Verbose(V_Error,'No environment element for '+Name);
     Result := Node.TextContent;
     Verbose(V_Debug,format('Environment: retrieved %s=%s', [Name, Result]));
+  end;
+
+  function GetDate: TDateTime;
+  var
+    Node: TDomNode;
+  begin
+    Result := 0;
+    Node := Doc.FirstChild.FindNode('DateTimeRan') as TDomElement;
+    if assigned(Node) then
+      Result := ScanDateTime('YYYY-MM-DD hh:nn:ss', Node.TextContent)
+    else
+      Verbose(V_Debug,'No DateTimeRan node');
   end;
 
 begin
@@ -316,19 +331,45 @@ begin
   TestLazVersion := GetEnvValue('LazVersion');
   TestLazVersionID  := GetLazVersionID(TestLazVersion);
   If TestLazVersionID=-1 then
+    Verbose(V_Error,'NO ID for lazarus version "'+TestLazVersion+'" found.');
+
+  TestWidgetSet := GetEnvValue('WidgetSet');
+  TestWidgetSetID  := GetWidgetSetID(TestWidgetSet);
+  If TestWidgetSetID=-1 then
     Verbose(V_Error,'NO ID for fpc version "'+TestLazVersion+'" found.');
+
+  TestDate := GetDate;
 
   If (Round(TestDate)=0) then
     Testdate:=Now;
-  TestRunID:=GetRunID(TestOSID,TestCPUID,TestFPCVersionID,TestLazVersionID, TestDate);
+  TestRunID:=GetRunID(TestOSID,TestCPUID,TestFPCVersionID,TestLazVersionID, TestWidgetSetID, TestDate);
   If (TestRunID=-1) then
     begin
-    TestRunID:=AddRun(TestOSID,TestCPUID,TestFPCVersionID,TestLazVersionID,TestDate);
+    TestRunID:=AddRun(TestOSID,TestCPUID,TestFPCVersionID,TestLazVersionID,TestWidgetSetID,TestDate);
     If TestRUnID=-1 then
       Verbose(V_Error,'Could not insert new testrun record!');
     end
   else
     CleanTestRun(TestRunID);
+end;
+
+procedure GetCounts;
+  Function GetIntValue(name: string): integer;
+  var
+    Node: TDomNode;
+  begin
+    Result := -2;
+    Node := Doc.FirstChild.FindNode(name);
+    if not assigned(Node) then
+      Verbose(V_Error,'No element for '+Name);
+    Result := StrToIntDef(Node.TextContent,-1);
+    Verbose(V_Debug,format('Environment: retrieved %s=%d', [Name, Result]));
+  end;
+begin
+  TestCount := GetIntValue('NumberOfRunTests');
+  ErrorCount := GetIntValue('NumberOfErrors');
+  FailureCount := GetIntValue('NumberOfFailures');
+  IgnoreCount := GetIntValue('NumberOfIgnoredTests');
 end;
 
 Function GetLog(FN : String) : String;
@@ -374,27 +415,88 @@ begin
       begin
       Verbose(V_NORMAL,'Analysing result for test '+Line);
       Inc(StatusCount[TS]);
-      If Not ExpectRun[TS] then
-        begin
-        ID:=RequireTestID(Line);
-        If (ID<>-1) then
-          begin
-          If Not (TestOK[TS] or TestSkipped[TS]) then
-            begin
-              TestLog:=GetExecuteLog(Line);
-              if pos(failed_to_compile,TestLog)=1 then
-                TestLog:=GetLog(Line);
-            end  
-          else
-            TestLog:='';
-          AddTestResult(ID,TestRunID,Ord(TS),TestOK[TS],TestSkipped[TS],TestLog);
-          end;
-        end
+//      If Not ExpectRun[TS] then
+        //begin
+        //ID:=RequireTestID(Line);
+        //If (ID<>-1) then
+          //begin
+          //If Not (TestOK[TS] or TestSkipped[TS]) then
+            //begin
+              //TestLog:=GetExecuteLog(Line);
+              //if pos(failed_to_compile,TestLog)=1 then
+                //TestLog:=GetLog(Line);
+            //end
+          //else
+            //TestLog:='';
+          //AddTestResult(ID,TestRunID,Ord(TS),TestOK[TS],TestSkipped[TS],TestLog);
+          //end;
+        //end
       end
     else
       Inc(UnknownLines);
     end;
   close(logfile);
+end;
+
+procedure ProcessTestListing;
+
+  procedure ProcessNodes(AParentNode: TDomNode; APath: string); forward;
+
+  procedure ProcessTestSuite(ATestSuiteElement: TDOMElement; APath: string);
+  var
+    Name: string;
+  begin
+    Name := ATestSuiteElement.GetAttribute('Name');
+    Verbose(V_NORMAL,'Analysing result for testsuite '+Name + ' at '+ APath);
+    ProcessNodes(ATestSuiteElement, APath + '|' + Name);
+  end;
+
+  procedure ProcessTest(ATestElement: TDOMElement; APath: string);
+  var
+    Name, FullName: string;
+    TestResult: string;
+    TS: TTestStatus;
+    ID: LongInt;
+    i: Integer;
+  begin
+    Name := ATestElement.GetAttribute('Name');
+    TestResult := ATestElement.GetAttribute('Result');
+    Verbose(V_NORMAL,'Analysing result for test '+Name);
+    for i := 0 to ATestElement.Attributes.Length-1 do
+      Verbose(V_NORMAL,ATestElement.Attributes[i].NodeName+ '=' + ATestElement.Attributes[i].NodeValue);
+    FullName := APath + '|' + Name;
+    ID := RequireTestID(FullName);
+    TS:=GetTestStatus(TestResult);
+    Verbose(V_Debug,'Test result: '+TestResult+' TestStatus: '+IntToStr(ord(TS)));
+    AddTestResult(ID,TestRunID,Ord(TS),TestOK[TS],TestSkipped[TS],'No log yet');
+  end;
+
+  procedure ProcessNodes(AParentNode: TDomNode; APath: string);
+
+  var
+    Node: TDomNode;
+    Element: TDomElement absolute Node;
+  begin
+    Node := AParentNode.FirstChild;
+    while assigned(Node) do
+    begin
+      if node is TDOMElement then
+      begin
+        if Element.TagName='TestSuite' then
+          ProcessTestSuite(Element, APath)
+        else if Element.TagName='Test' then
+          ProcessTest(Element, APath);
+      end;
+      Node := Node.NextSibling;
+    end;
+  end;
+
+var
+  ListingNode: TDomNode;
+begin
+  ListingNode := Doc.FirstChild.FindNode('TestListing');
+  if assigned(ListingNode) then
+    ProcessNodes(ListingNode, '');
 end;
 
 procedure ProcessResultsFile(FN: String);
@@ -406,6 +508,8 @@ begin
 
   ReadXMLFile(Doc, FN);
   GetIDs;
+  GetCounts;
+  ProcessTestListing;
   Doc.Free;
   Verbose(V_Debug,'End ProcessResultsFile');
 end;
@@ -413,7 +517,6 @@ end;
 procedure UpdateTestRun;
 
   var
-     i : TTestStatus;
      qry : string;
      res : TQueryResult;
 
@@ -421,7 +524,9 @@ procedure UpdateTestRun;
     qry:='UPDATE TESTRUN SET ';
     //for i:=low(TTestStatus) to high(TTestStatus) do
       //qry:=qry+format('%s=%d, ',[SQLField[i],StatusCount[i]]);
-    qry:=qry+format('TU_SUBMITTER="%s", TU_MACHINE="%s", TU_COMMENT="%s", TU_DATE="%s"',
+    qry:=qry+format('TU_TESTCOUNT=%d, TU_ERRORCOUNT=%d, TU_FAILURECOUNT=%d, TU_IGNORECOUNT=%d,',
+                [TestCount, ErrorCount, FailureCount, IgnoreCount]);
+    qry:=qry+format(' TU_SUBMITTER="%s", TU_MACHINE="%s", TU_COMMENT="%s", TU_DATE="%s"',
                 [Submitter,Machine,Comment,SqlDate(TestDate)]);
     qry:=qry+' WHERE TU_ID='+format('%d',[TestRunID]);
     RunQuery(Qry,res)
