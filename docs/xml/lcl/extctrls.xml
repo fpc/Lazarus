@@ -3970,7 +3970,7 @@ requiring the user to select one af a set of alternatives</p>
         <example file="extctrls/radiobutton.pas"/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioGroup.Align">
+      <element name="TRadioGroup.Align" link="#LCL.Controls.TControl.Align">
         <short/>
         <descr/>
         <seealso/>
@@ -4557,7 +4557,7 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         </seealso>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckGroup.Align">
+      <element name="TCheckGroup.Align" link="#LCL.Controls.TControl.Align">
         <short/>
         <descr/>
         <seealso/>
@@ -4569,7 +4569,7 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckGroup.BorderSpacing" link="Controls.TControl.BorderSpacing">
+      <element name="TCheckGroup.BorderSpacing" link="#lcl.Controls.TControl.BorderSpacing">
         <short/>
         <descr/>
         <seealso/>
@@ -4596,13 +4596,13 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckGroup.ColumnLayout" link="ExtCtrls.TCustomCheckGroup.ColumnLayout">
+      <element name="TCheckGroup.ColumnLayout" link="#lcl.ExtCtrls.TCustomCheckGroup.ColumnLayout">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckGroup.Columns" link="ExtCtrls.TCustomCheckGroup.Columns">
+      <element name="TCheckGroup.Columns" link="#lcl.ExtCtrls.TCustomCheckGroup.Columns">
         <short/>
         <descr/>
         <seealso/>
@@ -4666,7 +4666,7 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckGroup.OnItemClick" link="ExtCtrls.TCustomCheckGroup.OnItemClick">
+      <element name="TCheckGroup.OnItemClick" link="#lcl.ExtCtrls.TCustomCheckGroup.OnItemClick">
         <short/>
         <descr/>
         <seealso/>
@@ -4750,7 +4750,7 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckGroup.AutoFill" link="ExtCtrls.TCustomCheckGroup.AutoFill">
+      <element name="TCheckGroup.AutoFill" link="#lcl.ExtCtrls.TCustomCheckGroup.AutoFill">
         <short/>
         <descr/>
         <seealso/>
@@ -4892,7 +4892,7 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBoundLabel.Width">
+      <element name="TBoundLabel.Width" link="#LCL.Controls.TControl.Width">
         <short/>
         <descr/>
         <seealso/>
