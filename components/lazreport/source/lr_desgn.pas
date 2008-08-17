@@ -6341,6 +6341,8 @@ end;
 
 procedure TfrObjectInspector.Refresh;
 begin
+  if not visible then
+    exit;
   fPropertyGrid.RefreshPropertyValues;
 end;
 
