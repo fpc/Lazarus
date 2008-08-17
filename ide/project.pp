@@ -808,8 +808,8 @@ type
                            ): TModalResult;
                            
     // source editor
-    procedure UpdateCustomHighlighter;
-    procedure UpdateSyntaxHighlighter;
+    procedure UpdateAllCustomHighlighter;
+    procedure UpdateAllSyntaxHighlighter;
     
     // i18n
     function GetPOOutDirectory: string;
@@ -2699,8 +2699,7 @@ var
 begin
   NewBuf:=CodeToolBoss.CreateFile(Filename);
   AnUnitInfo:=TUnitInfo.Create(NewBuf);
-  AnUnitInfo.SyntaxHighlighter:=
-               ExtensionToLazSyntaxHighlighter(ExtractFileExt(NewBuf.Filename));
+  AnUnitInfo.SyntaxHighlighter:=FilenameToLazSyntaxHighlighter(NewBuf.Filename);
   Result:=AnUnitInfo;
 end;
 
@@ -4097,7 +4096,7 @@ begin
   Result:=mrOk;
 end;
 
-procedure TProject.UpdateCustomHighlighter;
+procedure TProject.UpdateAllCustomHighlighter;
 var
   i: Integer;
   AnUnitInfo: TUnitInfo;
@@ -4105,11 +4104,11 @@ begin
   for i:=0 to UnitCount-1 do begin
     AnUnitInfo:=Units[i];
     AnUnitInfo.CustomHighlighter:=AnUnitInfo.SyntaxHighlighter
-         <>ExtensionToLazSyntaxHighlighter(ExtractFileExt(AnUnitInfo.Filename));
+         <>FilenameToLazSyntaxHighlighter(AnUnitInfo.Filename);
   end;
 end;
 
-procedure TProject.UpdateSyntaxHighlighter;
+procedure TProject.UpdateAllSyntaxHighlighter;
 var
   AnUnitInfo: TUnitInfo;
   i: Integer;
@@ -4118,7 +4117,7 @@ begin
     AnUnitInfo:=Units[i];
     if not AnUnitInfo.CustomHighlighter then
       AnUnitInfo.SyntaxHighlighter:=
-        ExtensionToLazSyntaxHighlighter(ExtractFileExt(AnUnitInfo.Filename));
+        FilenameToLazSyntaxHighlighter(AnUnitInfo.Filename);
   end;
 end;
 
@@ -5042,7 +5041,7 @@ begin
   if (not Project.NeedsDefineTemplates) or (not Active) then exit;
 
   // check if something has changed
-  NewCustomOptions:=Project.CompilerOptions.GetCustomOptions;
+  NewCustomOptions:=Project.CompilerOptions.GetOptionsForCTDefines;
   if (FLastCustomOptions=NewCustomOptions) then exit;
 
   FLastCustomOptions:=NewCustomOptions;

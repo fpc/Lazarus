@@ -225,6 +225,7 @@ type
     procedure ButtonShowOptionsClicked(Sender: TObject);
     procedure FileBrowseBtnClick(Sender: TObject);
     procedure FormResize(Sender: TObject);
+    procedure grpSyntaxOptionsItemClick(Sender: TObject; Index: integer);
     procedure HelpButtonClick(Sender: TObject);
     procedure InhTreeViewSelectionChanged(Sender: TObject);
     procedure chkCustomConfigFileClick(Sender: TObject);
@@ -426,6 +427,20 @@ end;
 
 procedure TfrmCompilerOptions.FormResize(Sender: TObject);
 begin
+end;
+
+procedure TfrmCompilerOptions.grpSyntaxOptionsItemClick(Sender: TObject;
+  Index: integer);
+begin
+  case Index of
+  0,6,9,11:
+    if grpSyntaxOptions.Checked[Index] then begin
+      grpSyntaxOptions.Checked[0]:=Index=0;  // objfpc mode
+      grpSyntaxOptions.Checked[6]:=Index=6;  // tp mode
+      grpSyntaxOptions.Checked[9]:=Index=9;  // delphi mode
+      grpSyntaxOptions.Checked[11]:=Index=11;// gpc mode
+    end;
+  end;
 end;
 
 procedure TfrmCompilerOptions.HelpButtonClick(Sender: TObject);

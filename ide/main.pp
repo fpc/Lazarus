@@ -77,7 +77,7 @@ uses
   LResources, StdCtrls, Forms, Buttons, Menus, FileUtil, Controls, GraphType,
   Graphics, ExtCtrls, Dialogs, InterfaceBase, LDockCtrl,
   // codetools
-  BasicCodeTools, AVL_Tree, Laz_XMLCfg,
+  LinkScanner, BasicCodeTools, AVL_Tree, Laz_XMLCfg,
   CodeToolsStructs, CodeToolManager, CodeCache, DefineTemplates,
   // synedit
   SynEditKeyCmds,
@@ -3566,6 +3566,7 @@ begin
       MainBuildBoss.RescanCompilerDefines(true,true);
       Project1.DefineTemplates.AllChanged;
       IncreaseCompilerParseStamp;
+      UpdateHighlighters;
     end;
   finally
     frmCompilerOptions.Free;
@@ -3593,6 +3594,7 @@ begin
       MainBuildBoss.RescanCompilerDefines(true,true);
       Project1.DefineTemplates.AllChanged;
       IncreaseCompilerParseStamp;
+      UpdateHighlighters;
     end;
   finally
     frmCompilerOptions.Free;
@@ -4125,9 +4127,9 @@ var EditorOptionsForm: TEditorOptionsForm;
 Begin
   EditorOptionsForm:=TEditorOptionsForm.Create(nil);
   try
-    Project1.UpdateCustomHighlighter;
+    Project1.UpdateAllCustomHighlighter;
     if EditorOptionsForm.ShowModal=mrOk then begin
-      Project1.UpdateSyntaxHighlighter;
+      Project1.UpdateAllSyntaxHighlighter;
       SourceNotebook.ReloadEditorOptions;
       ReloadMenuShortCuts;
     end;
@@ -5080,8 +5082,7 @@ begin
 
   // change syntax highlighter
   if not AnUnitInfo.CustomHighlighter then begin
-    NewHighlighter:=
-      ExtensionToLazSyntaxHighlighter(ExtractFileExt(NewFilename));
+    NewHighlighter:=FilenameToLazSyntaxHighlighter(NewFilename);
     if NewHighlighter<>AnUnitInfo.SyntaxHighlighter then begin
       AnUnitInfo.SyntaxHighlighter:=NewHighlighter;
       if SrcEdit<>nil then
@@ -6815,8 +6816,7 @@ begin
 
   // get syntax highlighter type
   if not AnUnitInfo.CustomHighlighter then
-    AnUnitInfo.SyntaxHighlighter:=
-      ExtensionToLazSyntaxHighlighter(ExtractFileExt(AFilename));
+    AnUnitInfo.SyntaxHighlighter:=FilenameToLazSyntaxHighlighter(AFilename);
 
   NewSrcEditorCreated:=false;
   //DebugLn(['TMainIDE.DoOpenFileInSourceEditor Revert=',ofRevert in Flags,' ',AnUnitInfo.Filename,' PageIndex=',PageIndex]);
@@ -6976,8 +6976,7 @@ begin
   end;
 
   // syntax highlighter type
-  NewUnitInfo.SyntaxHighlighter:=
-    ExtensionToLazSyntaxHighlighter(ExtractFileExt(NewFilename));
+  NewUnitInfo.SyntaxHighlighter:=FilenameToLazSyntaxHighlighter(NewFilename);
     
   // required packages
   if NewUnitInfo.IsPartOfProject and (NewFileDescriptor.RequiredPackages<>'')
@@ -13658,6 +13657,8 @@ var
   AnIDesigner: TIDesigner;
 begin
   UpdateWindowMenu;
+  if FNeedUpdateHighlighters then
+    UpdateHighlighters(true);
   GetDefaultProcessList.FreeStoppedProcesses;
   EnvironmentOptions.ExternalTools.FreeStoppedProcesses;
   if (SplashForm<>nil) then FreeThenNil(SplashForm);

@@ -4749,7 +4749,7 @@ end;
 
 function TDefinePool.CreateFPCCommandLineDefines(const Name, CmdLine: string;
   RecursiveDefines: boolean; Owner: TObject; AlwaysCreate: boolean): TDefineTemplate;
-  
+
   function ReadNextParam(LastEndPos: integer;
     var StartPos, EndPos: integer): boolean;
   begin
@@ -4781,15 +4781,51 @@ function TDefinePool.CreateFPCCommandLineDefines(const Name, CmdLine: string;
     Result.AddChild(NewTempl);
   end;
   
+  procedure AddDefine(const AName, ADescription, AVariable, AValue: string);
+  var
+    NewAction: TDefineAction;
+  begin
+    if RecursiveDefines then
+      NewAction:=da_DefineRecurse
+    else
+      NewAction:=da_Define;
+    AddDefine(AName,ADescription,AVariable,AValue,NewAction);
+  end;
+
+  procedure AddDefine(const AName: string; const AValue: string = '');
+  begin
+    AddDefine('Define '+AName,ctsDefine+AName,AName,AValue);
+  end;
+
+  procedure AddUndefine(const AName: string);
+  var
+    NewAction: TDefineAction;
+  begin
+    if RecursiveDefines then
+      NewAction:=da_UndefineRecurse
+    else
+      NewAction:=da_Undefine;
+    AddDefine('Undefine '+AName,ctsUndefine+AName,AName,'',NewAction);
+  end;
+
+  procedure AddDefineUndefine(const AName: string; Define: boolean);
+  begin
+    if Define then
+      AddDefine(AName)
+    else
+      AddUndefine(AName);
+  end;
+
 var
   StartPos, EndPos: Integer;
   s: string;
-  NewAction: TDefineAction;
+  CompilerMode: String;
 begin
   Result:=nil;
   if AlwaysCreate then
     CreateMainTemplate;
   EndPos:=1;
+  CompilerMode:='';
   while ReadNextParam(EndPos,StartPos,EndPos) do begin
     if (StartPos<length(CmdLine)) and (CmdLine[StartPos]='-') then begin
       // a parameter
@@ -4799,16 +4835,42 @@ begin
         begin
           // define
           s:=copy(CmdLine,StartPos+2,EndPos-StartPos-2);
-          if RecursiveDefines then
-            NewAction:=da_DefineRecurse
-          else
-            NewAction:=da_Define;
-          AddDefine('Define '+s,ctsDefine+s,s,'',NewAction);
+          AddDefine(s);
+        end;
+
+      'u':
+        begin
+          // undefine
+          s:=copy(CmdLine,StartPos+2,EndPos-StartPos-2);
+          AddUndefine(s);
+        end;
+
+      'S':
+        begin
+          // syntax
+          inc(StartPos,2);
+          while StartPos<EndPos do begin
+            case CmdLine[StartPos] of
+            '2': CompilerMode:='ObjFPC';
+            'd': CompilerMode:='Delphi';
+            'o': CompilerMode:='TP';
+            'p': CompilerMode:='GPC';
+            end;
+            inc(StartPos);
+          end;
         end;
 
       end;
     end;
   end;
+  if CompilerMode<>'' then begin
+    AddDefineUndefine('FPC_ObjFPC',SysUtils.CompareText(CompilerMode,'ObjFPC')=0);
+    AddDefineUndefine('FPC_Delphi',SysUtils.CompareText(CompilerMode,'Delphi')=0);
+    AddDefineUndefine('FPC_TP',SysUtils.CompareText(CompilerMode,'TP')=0);
+    AddDefineUndefine('FPC_GPC',SysUtils.CompareText(CompilerMode,'GPC')=0);
+    AddDefineUndefine('FPC_MACPAS',SysUtils.CompareText(CompilerMode,'MACPAS')=0);
+  end;
+
   Result.SetDefineOwner(Owner,true);
 end;
 

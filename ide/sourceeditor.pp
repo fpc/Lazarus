@@ -727,6 +727,7 @@ type
     procedure GotoBookmark(Value: Integer);
 
     procedure ReloadEditorOptions;
+    procedure ReloadHighlighters;
     procedure CheckFont;
     procedure GetSynEditPreviewSettings(APreviewEditor: TObject);
     function GetEditorControlSettings(EditControl: TControl): boolean; override;
@@ -2130,7 +2131,8 @@ begin
   end;
 end;
 
-procedure TSourceEditor.SetSyntaxHighlighterType(ASyntaxHighlighterType: TLazSyntaxHighlighter);
+procedure TSourceEditor.SetSyntaxHighlighterType(
+  ASyntaxHighlighterType: TLazSyntaxHighlighter);
 begin
   if (ASyntaxHighlighterType=fSyntaxHighlighterType)
   and ((FEditor.Highlighter<>nil) = EditorOpts.UseSyntaxHighlight) then exit;
@@ -6082,20 +6084,14 @@ Procedure TSourceNotebook.ReloadEditorOptions;
 var
   I: integer;
   h: TLazSyntaxHighlighter;
-  ASrcEdit: TSourceEditor;
-  AnUnitInfo: TUnitInfo;
 Begin
   // this reloads the colors for the highlighter and other editor settings.
   for h:=Low(TLazSyntaxHighlighter) to High(TLazSyntaxHighlighter) do
     if Highlighters[h]<>nil then
       EditorOpts.GetHighlighterSettings(Highlighters[h]);
-  for i := 0 to EditorCount-1 do begin
-    ASrcEdit:=Editors[i];
-    AnUnitInfo:=Project1.UnitWithEditorIndex(i);
-    if AnUnitInfo<>nil then
-      ASrcEdit.SyntaxHighlighterType:=AnUnitInfo.SyntaxHighlighter;
-    ASrcEdit.RefreshEditorSettings;
-  end;
+  ReloadHighlighters;
+  for i := 0 to EditorCount-1 do
+    Editors[i].RefreshEditorSettings;
 
   // reload code templates
   with CodeTemplateModul do begin
@@ -6119,6 +6115,20 @@ Begin
   
   Exclude(States,snWarnedFont);
   CheckFont;
+end;
+
+procedure TSourceNotebook.ReloadHighlighters;
+var
+  i: Integer;
+  ASrcEdit: TSourceEditor;
+  AnUnitInfo: TUnitInfo;
+begin
+  for i := 0 to EditorCount-1 do begin
+    ASrcEdit:=Editors[i];
+    AnUnitInfo:=Project1.UnitWithEditorIndex(i);
+    if AnUnitInfo<>nil then
+      ASrcEdit.SyntaxHighlighterType:=AnUnitInfo.SyntaxHighlighter;
+  end;
 end;
 
 procedure TSourceNotebook.CheckFont;

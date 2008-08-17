@@ -162,6 +162,7 @@ type
 
     procedure UpdateWindowMenu; virtual; abstract;
     procedure SaveEnvironment; virtual; abstract;
+    procedure UpdateHighlighters(Immediately: boolean = false); virtual; abstract;
     procedure SetRecentSubMenu(Section: TIDEMenuSection; FileList: TStringList;
                                OnClickEvent: TNotifyEvent); virtual; abstract;
     function DoJumpToSourcePosition(const Filename: string;

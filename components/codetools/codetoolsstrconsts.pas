@@ -237,6 +237,7 @@ ResourceString
   ctsDefineMacroName = 'Define Macro %s';
   ctsNamedProject = '%s Project';
   ctsDefine = 'Define ';
+  ctsUndefine = 'Undefine ';
   ctsCommandLineParameters = 'Command line parameters';
 
   // eventcodetool

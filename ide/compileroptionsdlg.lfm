@@ -20,7 +20,7 @@ object frmCompilerOptions: TfrmCompilerOptions
     Width = 669
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    PageIndex = 2
+    PageIndex = 1
     TabOrder = 0
     object PathPage: TPage
       Caption = 'PathPage'
@@ -280,6 +280,7 @@ object frmCompilerOptions: TfrmCompilerOptions
         ChildSizing.ShrinkVertical = crsScaleChilds
         ChildSizing.Layout = cclLeftToRightThenTopToBottom
         ChildSizing.ControlsPerLine = 1
+        OnItemClick = grpSyntaxOptionsItemClick
         TabOrder = 1
       end
     end

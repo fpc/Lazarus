@@ -322,6 +322,7 @@ type
     function MakeOptionsString(const MainSourceFileName: string;
                                Globals: TGlobalCompilerOptions;
                                Flags: TCompilerCmdLineOptions): String; virtual;
+    function GetSyntaxOptionsString: string; virtual;
     function GetXMLConfigPath: String; virtual;
     function CreateTargetFilename(const MainSourceFileName: string): string; virtual;
     function GetTargetFileExt: string; virtual;
@@ -371,6 +372,7 @@ type
     function ShortenPath(const SearchPath: string;
                          MakeAlwaysRelative: boolean): string;
     function GetCustomOptions(Parsed: TCompilerOptionsParseType = coptParsed): string;
+    function GetOptionsForCTDefines: string;
     function GetEffectiveLCLWidgetType: string;
   public
     // Properties
@@ -1703,6 +1705,20 @@ begin
   Result:=SpecialCharsToSpaces(Result);
 end;
 
+function TBaseCompilerOptions.GetOptionsForCTDefines: string;
+
+  procedure Add(s: string);
+  begin
+    if Result<>'' then
+      Result:=Result+' ';
+    Result:=Result+s;
+  end;
+
+begin
+  Result:=GetCustomOptions(coptParsed);
+  Add(GetSyntaxOptionsString);
+end;
+
 function TBaseCompilerOptions.GetEffectiveLCLWidgetType: string;
 begin
   Result:=LCLWidgetType;
@@ -1961,6 +1977,7 @@ Processor specific options:
     tempsw := '-S' + tempsw;
     switches := switches + ' ' + tempsw;
   end;
+  tempsw:=GetSyntaxOptionsString;
 
   { TODO: Implement the following switches. They need to be added
           to the dialog. }
@@ -2297,6 +2314,67 @@ Processor specific options:
 
   fOptionsString := switches;
   Result := fOptionsString;
+end;
+
+function TBaseCompilerOptions.GetSyntaxOptionsString: string;
+var
+  tempsw: String;
+begin
+  { Syntax Options
+   -S<x>  Syntax options:
+      -S2        Same as -Mobjfpc
+      -Sc        Support operators like C (*=,+=,/= and -=)
+      -Sa        Turn on assertions
+      -Sd        Same as -Mdelphi
+      -Se<x>     Error options. <x> is a combination of the following:
+         <n> : Compiler halts after the <n> errors (default is 1)
+         w : Compiler also halts after warnings
+         n : Compiler also halts after notes
+         h : Compiler also halts after hints
+      -Sg        Enable LABEL and GOTO (default in -Mtp and -Mdelphi)
+      -Sh        Use ansistrings by default instead of shortstrings
+      -Si        Turn on inlining of procedures/functions declared as "inline"
+      -Sk        Load fpcylix unit
+      -SI<x>     Set interface style to <x>
+         -SIcom     COM compatible interface (default)
+         -SIcorba   CORBA compatible interface
+      -Sm        Support macros like C (global)
+      -So        Same as -Mtp
+      -Ss        Constructor name must be init (destructor must be done)
+      -St        Allow static keyword in objects
+      -Sx        Enable exception keywords (default in Delphi/ObjFPC modes)
+  }
+  tempsw := '';
+
+  if (Delphi2Extensions) then
+    tempsw := tempsw + '2';
+  if (CStyleOperators) then
+    tempsw := tempsw + 'c';
+  if (IncludeAssertionCode) then
+    tempsw := tempsw + 'a';
+  if (DelphiCompat) then
+    tempsw := tempsw + 'd';
+  if (AllowLabel) then
+    tempsw := tempsw + 'g';
+  if (UseAnsiStrings) then
+    tempsw := tempsw + 'h';
+  if (CPPInline) then
+    tempsw := tempsw + 'i';
+  if (CStyleMacros) then
+    tempsw := tempsw + 'm';
+  if (TPCompatible) then
+    tempsw := tempsw + 'o';
+  if (GPCCompat) then
+    tempsw := tempsw + 'p';
+  if (InitConstructor) then
+    tempsw := tempsw + 's';
+  if (StaticKeyword) then
+    tempsw := tempsw + 't';
+
+  if (tempsw <> '') then
+    Result := '-S' + tempsw
+  else
+    Result:='';
 end;
 
 {------------------------------------------------------------------------------

@@ -56,12 +56,13 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, LCLType, LCLIntf, StdCtrls, Buttons, Menus, ComCtrls, SysUtils,
-  Controls, Graphics, ExtCtrls, Dialogs, FileUtil, Forms, CodeToolManager,
-  CodeCache, AVL_Tree, SynEditKeyCmds,
-  // IDE
+  Classes, LCLType, LCLProc, LCLIntf, StdCtrls, Buttons, Menus, ComCtrls,
+  SysUtils, Controls, Graphics, ExtCtrls, Dialogs, FileUtil, Forms,
+  CodeToolManager, CodeCache, AVL_Tree, SynEditKeyCmds,
+  // IDEIntf
   LazConf, LazarusIDEStrConsts, SrcEditorIntf, LazIDEIntf, MenuIntf,
   IDECommands, IDEMsgIntf,
+  // IDE
   ProjectDefs, Project, PublishModule, BuildLazDialog, Compiler,
   ComponentReg, OutputFilter,
   TransferMacros, ObjectInspector, PropEdits, IDEDefs, MsgView,
@@ -77,6 +78,7 @@ type
   private
     FToolStatus: TIDEToolStatus;
   protected
+    FNeedUpdateHighlighters: boolean;
     function GetMainBar: TComponent; override;
 
     function CreateMenuSeparator : TMenuItem;
@@ -151,6 +153,7 @@ type
     procedure UpdateWindowMenu; override;
     procedure SetRecentSubMenu(Section: TIDEMenuSection; FileList: TStringList;
                                OnClickEvent: TNotifyEvent); override;
+    procedure UpdateHighlighters(Immediately: boolean = false); override;
 
     function DoJumpToCodePosition(
                         ActiveSrcEdit: TSourceEditorInterface;
@@ -1090,6 +1093,17 @@ begin
     AMenuItem:=Section.Items[i];
     AMenuItem.Caption := FileList[i];
     AMenuItem.OnClick := OnClickEvent;
+  end;
+end;
+
+procedure TMainIDEBase.UpdateHighlighters(Immediately: boolean = false);
+begin
+  if Immediately then begin
+    FNeedUpdateHighlighters:=false;
+    Project1.UpdateAllSyntaxHighlighter;
+    SourceNotebook.ReloadHighlighters;
+  end else begin
+    FNeedUpdateHighlighters:=true;
   end;
 end;
 

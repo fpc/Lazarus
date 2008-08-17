@@ -1318,7 +1318,7 @@ begin
   Result:=cmFPC;
   Evaluator:=DefineTree.GetDefinesForDirectory(Directory,true);
   if Evaluator=nil then exit;
-  for cm:=Low(TCompilerMode) to High(TCompilerMode) do
+  for cm:=Succ(Low(TCompilerMode)) to High(TCompilerMode) do
     if Evaluator.IsDefined(CompilerModeVars[cm]) then
       Result:=cm;
 end;

@@ -2452,6 +2452,9 @@ begin
     Result:=mrOk;
 
   PkgLinks.SaveUserLinks;
+
+  // the source editor highlighting depends on the compiler mode
+  MainIDEInterface.UpdateHighlighters;
 end;
 
 function TPkgManager.DoSavePackage(APackage: TLazPackage;

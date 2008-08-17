@@ -37,10 +37,13 @@ unit PackageEditor;
 interface
 
 uses
+  // LCL FCL
   Classes, SysUtils, Forms, Controls, StdCtrls, ComCtrls, Buttons, LResources,
-  Graphics, LCLType, LCLProc, Menus, Dialogs, FileUtil,
-  HelpIntfs, AVL_Tree, Laz_XMLCfg, LazIDEIntf, ProjectIntf, FormEditingIntf,
-  IDEProcs, LazConf, LazarusIDEStrConsts, IDEOptionDefs, IDEDefs,
+  Graphics, LCLType, LCLProc, Menus, Dialogs, FileUtil, AVL_Tree,
+  // IDEIntf CodeTools
+  HelpIntfs, LazIDEIntf, ProjectIntf, FormEditingIntf, Laz_XMLCfg,
+  // IDE
+  MainIntf, IDEProcs, LazConf, LazarusIDEStrConsts, IDEOptionDefs, IDEDefs,
   IDEContextHelpEdit, CompilerOptions, CompilerOptionsDlg, ComponentReg,
   PackageDefs, PkgOptionsDlg, AddToPackageDlg, PkgVirtualUnitEditor,
   PackageSystem;
@@ -1266,8 +1269,10 @@ begin
     GetCompilerOptions;
     Caption:=Format(lisPckEditCompilerOptionsForPackage,[LazPackage.IDAsString]);
     ReadOnly:=LazPackage.ReadOnly;
-    if ShowModal=mrOk then
+    if ShowModal=mrOk then begin
       LazPackage.DefineTemplates.AllChanged;
+      MainIDEInterface.UpdateHighlighters;// highlighting depends on compiler mode
+    end;
     Free;
   end;
   UpdateTitle;

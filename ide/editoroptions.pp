@@ -47,7 +47,7 @@ uses
   SynHighlighterPython, SynHighlighterUNIXShellScript, SynHighlighterXML,
   SynHighlighterJScript, SynEditMiscClasses,
   // codetools
-  Laz_XMLCfg,
+  LinkScanner, CodeToolManager, Laz_XMLCfg,
   // IDEIntf
   IDECommands, IDEWindowIntf, SrcEditorIntf,
   // IDE
@@ -780,6 +780,7 @@ var
 function ShowEditorOptionsDialog: TModalResult;
 function StrToLazSyntaxHighlighter(const s: String): TLazSyntaxHighlighter;
 function ExtensionToLazSyntaxHighlighter(Ext: String): TLazSyntaxHighlighter;
+function FilenameToLazSyntaxHighlighter(Filename: String): TLazSyntaxHighlighter;
 
 function BuildBorlandDCIFile(
   ACustomSynAutoComplete: TCustomSynAutoComplete): Boolean;
@@ -878,6 +879,21 @@ begin
       Startpos := EndPos + 1;
     end;
     inc(LangID);
+  end;
+end;
+
+function FilenameToLazSyntaxHighlighter(Filename: String
+  ): TLazSyntaxHighlighter;
+var
+  CompilerMode: TCompilerMode;
+begin
+  Result:=ExtensionToLazSyntaxHighlighter(ExtractFileExt(Filename));
+  if Result in [lshFreePascal,lshDelphi] then begin
+    CompilerMode:=CodeToolBoss.GetCompilerModeForDirectory(ExtractFilePath(Filename));
+    if CompilerMode in [cmDELPHI,cmTP] then
+      Result:=lshDelphi
+    else
+      Result:=lshFreePascal;
   end;
 end;
 

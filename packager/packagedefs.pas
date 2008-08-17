@@ -524,9 +524,9 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
     procedure PackageIDChanged;
-    procedure SourceDirectoriesChanged;
-    procedure OutputDirectoryChanged;
-    procedure CustomDefinesChanged;
+    procedure SourceDirectoriesChanged;// a source directory was added/deleted
+    procedure OutputDirectoryChanged;// the path or the defines of the output dir changed
+    procedure CustomDefinesChanged;// the defines of the source dirs changed
     procedure AllChanged;
   public
     property LazPackage: TLazPackage read FLazPackage;
@@ -4152,7 +4152,7 @@ begin
   if (not LazPackage.NeedsDefineTemplates) or (not Active) then exit;
 
   // check if something has changed
-  NewCustomOptions:=LazPackage.CompilerOptions.GetCustomOptions;
+  NewCustomOptions:=LazPackage.CompilerOptions.GetOptionsForCTDefines;
   if FLastCustomOptions=NewCustomOptions then exit;
 
   FLastCustomOptions:=NewCustomOptions;
