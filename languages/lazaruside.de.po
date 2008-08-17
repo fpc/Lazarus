@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-07-12 13:21+0100\n"
+"PO-Revision-Date: 2008-08-17 21:59+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -30,7 +30,7 @@ msgstr " Der Taste \"%s\" ist bereits \"%s\" zugewiesen."
 
 #: lazarusidestrconsts:listheoutputdirectoryshouldbeaseparatedirectoryandnot
 msgid " The output directory should be a separate directory and not contain any source files."
-msgstr ""
+msgstr "Das Ausgabeverzeichnis sollte ein eigenes Verzeichnis sein und keine Quelldateien enthalten."
 
 #: lazarusidestrconsts:srkmconflicw
 msgid " conflicts with "
@@ -66,7 +66,7 @@ msgstr "%s Verzeichnis"
 
 #: lazarusidestrconsts:lisdoesnotexists
 msgid "%s does not exists: %s"
-msgstr ""
+msgstr "%s nicht verfügbar: %s"
 
 #: lazarusidestrconsts:lislddoesnothaveanyvalidlazdocpathunabletocreatethefpdo
 msgid "%s does not have any valid LazDoc path.%sUnable to create the fpdoc file for %s"
@@ -374,11 +374,11 @@ msgstr "(Filter)"
 
 #: lazarusidestrconsts:lisfilter2
 msgid "(filter)"
-msgstr ""
+msgstr "(Filter)"
 
 #: lazarusidestrconsts:liscodehelpnoinheriteddescriptionfound
 msgid "(no inherited description found)"
-msgstr ""
+msgstr "(keine abgeleitete Beschreibung gefunden)"
 
 #: lazarusidestrconsts:dlgbaknosubdirectory
 msgid "(no subdirectory)"
@@ -386,7 +386,7 @@ msgstr "(kein Unterverzeichnis)"
 
 #: lazarusidestrconsts:liscodehelpnodocumentation
 msgid "(none)"
-msgstr ""
+msgstr "(keiner)"
 
 #: lazarusidestrconsts:listmunknownmacro
 msgid "(unknown macro: %s)"
@@ -774,11 +774,11 @@ msgstr "ALT-Taste aktiviert Spaltenmodus"
 
 #: lazarusidestrconsts:lisalternativekey
 msgid "Alternative key"
-msgstr ""
+msgstr "Alternative Taste"
 
 #: lazarusidestrconsts:lisalternativekeyor2keysequence
 msgid "Alternative key (or 2 key sequence)"
-msgstr ""
+msgstr "Alternative Taste (oder 2-Tasten-Kombination)"
 
 #: lazarusidestrconsts:srkmalternkey
 msgid "Alternative key (or 2 keys combination)"
@@ -794,7 +794,7 @@ msgstr "Immer einen Build durchführen (selbst dann, wenn nichts geändert wurde
 
 #: lazarusidestrconsts:dlgalwaysvisiblecursor
 msgid "Always visible cursor"
-msgstr ""
+msgstr "Ständig sichtbarer Cursor"
 
 #: lazarusidestrconsts:lisa2pambiguousancestortype
 msgid "Ambiguous Ancestor Type"
@@ -1462,7 +1462,7 @@ msgstr "Anderen Dateinamen auswählen"
 
 #: lazarusidestrconsts:lischooseakey
 msgid "Choose a key ..."
-msgstr ""
+msgstr "Taste auswählen..."
 
 #: lazarusidestrconsts:dlgchscodetempl
 msgid "Choose code template file (*.dci)"
@@ -1594,7 +1594,7 @@ msgstr "Leeren"
 
 #: lazarusidestrconsts:liscleardirectory
 msgid "Clear Directory?"
-msgstr ""
+msgstr "Verzeichnis leeren?"
 
 #: lazarusidestrconsts:lispckeditcleardependencydefaultfilename
 msgid "Clear dependency filename"
@@ -1642,7 +1642,7 @@ msgstr "Projekt schließen"
 
 #: lazarusidestrconsts:srvk_cmd
 msgid "Cmd"
-msgstr ""
+msgstr "Befehl"
 
 #: lazarusidestrconsts:dlgcodegeneration
 msgid "Code"
@@ -2362,7 +2362,7 @@ msgstr "Cursor-Zeile im aktuellem Editor"
 
 #: lazarusidestrconsts:dlgcursorskipsselection
 msgid "Cursor skips selection"
-msgstr ""
+msgstr "Cursor überspringt Auswahl"
 
 #: lazarusidestrconsts:lispckoptscustom
 msgid "Custom"
@@ -2598,7 +2598,7 @@ msgstr "Alte Datei %s%s%s löschen?"
 
 #: lazarusidestrconsts:lisdeleteoldfile2
 msgid "Delete old file?"
-msgstr ""
+msgstr "Alte Datei löschen?"
 
 #: lazarusidestrconsts:lispkgmangdeleteoldpackagefile2
 msgid "Delete old package file %s%s%s?"
@@ -2934,7 +2934,7 @@ msgstr "Benutzerdefinierte Scanner (%s)"
 
 #: lazarusidestrconsts:srkmeditforcmd
 msgid "Edit keys of command"
-msgstr ""
+msgstr "Taste für Befehl bearbeiten"
 
 #: lazarusidestrconsts:lispvueditvirtualunit
 msgid "Edit virtual unit"
@@ -3226,7 +3226,7 @@ msgstr "Ereignis-Log"
 
 #: lazarusidestrconsts:liseverynthlinenumber
 msgid "Every n-th line number:"
-msgstr ""
+msgstr "Jede n-te Zeile:"
 
 #: lazarusidestrconsts:liscodehelpexampletag
 msgid "Example"
@@ -3474,7 +3474,7 @@ msgstr "Datei bereits im Package"
 
 #: lazarusidestrconsts:lisfileextensionofprograms
 msgid "File extension of programs"
-msgstr ""
+msgstr "Dateiendung des Programms"
 
 #: lazarusidestrconsts:dlgfileexts
 msgid "File extensions"
@@ -3662,7 +3662,7 @@ msgstr "Inkrementelle Suche"
 
 #: lazarusidestrconsts:lisfindkeycombination
 msgid "Find key combination"
-msgstr ""
+msgstr "Tastenkombination suchen"
 
 #: lazarusidestrconsts:srkmecfindnext
 msgid "Find next"
@@ -4390,7 +4390,7 @@ msgstr "Vor Methoden"
 
 #: lazarusidestrconsts:lisinordertocreateacleancopyoftheprojectpackageallfil
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
-msgstr ""
+msgstr "Um eine saubere Kopie des Projekts oder Packages zu erhalten werden alle Dateien im folgenden Verzeichnis gelöscht, der gesamte Inhalt geht verloren.%s%sAlle Dateien in %s%s% löschen?"
 
 #: lazarusidestrconsts:lispckoptsinclude
 msgid "Include"
@@ -4966,7 +4966,7 @@ msgstr "Ungültiger Projektdateiname"
 
 #: lazarusidestrconsts:lisinvalidpublishingdirectory
 msgid "Invalid publishing Directory"
-msgstr ""
+msgstr "Ungültiges Ausgabeverzeichnis"
 
 #: lazarusidestrconsts:lisccoinvalidsearchpath
 msgid "Invalid search path"
@@ -4994,7 +4994,7 @@ msgstr "Ungültige Version"
 
 #: lazarusidestrconsts:dlgedinvert
 msgid "Invert"
-msgstr ""
+msgstr "Umkehren"
 
 #: lazarusidestrconsts:ueminvertassignment
 msgid "Invert Assignment"
@@ -5086,7 +5086,7 @@ msgstr "Sichere Variablen in Registern halten"
 
 #: lazarusidestrconsts:dlgkeepcursorx
 msgid "Keep cursor X position"
-msgstr ""
+msgstr "X-Position des Cursors beibehalten"
 
 #: lazarusidestrconsts:liscldirkeepfilesmatchingfilter
 msgid "Keep files matching filter"
@@ -5110,7 +5110,7 @@ msgstr "Taste"
 
 #: lazarusidestrconsts:liskeyor2keysequence
 msgid "Key (or 2 key sequence)"
-msgstr ""
+msgstr "Taste (oder 2-Tasten-Kombination)"
 
 #: lazarusidestrconsts:srkmkey
 msgid "Key (or 2 keys combination)"
@@ -5406,7 +5406,7 @@ msgstr "Linker-Stil:"
 
 #: lazarusidestrconsts:lislink
 msgid "Link:"
-msgstr ""
+msgstr "Link:"
 
 #: lazarusidestrconsts:lispckoptslinker
 msgid "Linker"
@@ -5598,7 +5598,7 @@ msgstr "Nachrichten ..."
 
 #: lazarusidestrconsts:srvk_meta
 msgid "Meta"
-msgstr ""
+msgstr "Meta"
 
 #: lazarusidestrconsts:lismethodclassnotfound
 msgid "Method class not found"
@@ -5702,7 +5702,7 @@ msgstr "Rechte Maustaste"
 
 #: lazarusidestrconsts:dlgmouselinks
 msgid "Mouse links"
-msgstr "Maus links"
+msgstr "Maus-Verknüpfungen"
 
 #: lazarusidestrconsts:lismenueditormovedown
 msgid "Move Down (or right)"
@@ -6178,7 +6178,7 @@ msgstr "Objektinspektorbefehle"
 
 #: lazarusidestrconsts:dlgedoff
 msgid "Off"
-msgstr ""
+msgstr "Aus"
 
 #: lazarusidestrconsts:lisokbtn
 msgid "Ok"
@@ -6194,7 +6194,7 @@ msgstr "Alte Klasse"
 
 #: lazarusidestrconsts:dlgedon
 msgid "On"
-msgstr ""
+msgstr "An"
 
 #: lazarusidestrconsts:lisbfonbuildprojectexecutethebuildfilecommandinstead
 msgid "On build project execute the Build File command instead"
@@ -6766,7 +6766,7 @@ msgstr "Programm anhalten"
 
 #: lazarusidestrconsts:dlgpersistentcursor
 msgid "Persistent cursor"
-msgstr ""
+msgstr "Persistenter Cursor"
 
 #: lazarusidestrconsts:lisccochecktestdir
 msgid "Please check the Test directory under %sEnvironment -> Environment Options -> Files -> Directory for building test projects"
@@ -7058,7 +7058,7 @@ msgstr "Eigenschaftenvervollständigung"
 
 #: lazarusidestrconsts:dlgpropnamecolor
 msgid "Property name"
-msgstr "Name der Property"
+msgstr "Name der Eigenschaft"
 
 #: lazarusidestrconsts:lisprotected
 msgid "Protected"
@@ -7542,7 +7542,7 @@ msgstr "Farbe des rechten Rands"
 
 #: lazarusidestrconsts:dlgrightmousemovescursor
 msgid "Right mouse moves cursor"
-msgstr ""
+msgstr "Rechte Maus bewegt den Cursor"
 
 #: lazarusidestrconsts:lisrightsides
 msgid "Right sides"
@@ -8206,7 +8206,7 @@ msgstr "Kurzbeschreibung von"
 
 #: lazarusidestrconsts:lisshort
 msgid "Short:"
-msgstr ""
+msgstr "Kurz:"
 
 #: lazarusidestrconsts:lisa2pshortenorexpandfilename
 msgid "Shorten or expand filename"
@@ -8354,7 +8354,7 @@ msgstr "Allgemeine Informationen anzeigen"
 
 #: lazarusidestrconsts:lispldshowgloballinks
 msgid "Show global links"
-msgstr "Zeige globale Links"
+msgstr "Zeige globale Verknüpfungen"
 
 #: lazarusidestrconsts:dlgqshowgrid
 msgid "Show grid"
@@ -8418,7 +8418,7 @@ msgstr "Verwendete Dateien anzeigen"
 
 #: lazarusidestrconsts:lispldshowuserlinks
 msgid "Show user links"
-msgstr "Zeige benutzerdefinierte Links"
+msgstr "Zeige benutzerdefinierte Verknüpfungen"
 
 #: lazarusidestrconsts:lisshrinktosmal
 msgid "Shrink to smallest"
@@ -8546,7 +8546,7 @@ msgstr "Das Quellverzeichnis %s%s%s ist nicht vorhanden."
 
 #: lazarusidestrconsts:lissourcedirectoryanddestinationdirectoryarethesamema
 msgid "Source directory %s%s%s%sand destination directory %s%s%s%sare the same.%s%sMaybe you misunderstand this feature.%sIt will clean/recreate the destination directory%sand copies the package/project into it."
-msgstr ""
+msgstr "Quellverzeichnis %s%s%s%sund Zielverzeichnis %s%s%s%ssind identisch.%s%sSie haben vielleicht diese Funktion falsch verstanden.%sSie reinigt bzw. legt das Zielverzeichnis neu an%sund kopiert das Package/Projekt dorthin."
 
 #: lazarusidestrconsts:lissourcemodified
 msgid "Source modified"
@@ -8726,7 +8726,7 @@ msgstr "Erfolg..."
 
 #: lazarusidestrconsts:srvk_super
 msgid "Super"
-msgstr ""
+msgstr "Super"
 
 #: lazarusidestrconsts:lisa2pswitchpaths
 msgid "Switch Paths"
@@ -8746,7 +8746,7 @@ msgstr "Kennung angehängt (.pp~)"
 
 #: lazarusidestrconsts:dlgsmbfront
 msgid "Symbol in front (.~pp)"
-msgstr "Kennung davor (*.~pp)"
+msgstr "Kennung vorangestellt (*.~pp)"
 
 #: lazarusidestrconsts:lissynedit
 msgid "SynEdit"
@@ -8962,7 +8962,7 @@ msgstr "Das %s Projektverzeichnis,%sdas die .dpr- und dpk-Datei enthält."
 
 #: lazarusidestrconsts:listhelaunchingapplicationbundledoesnotexists
 msgid "The Application Bundle %s%sneeded for execution does not exist or is not executable.%sDo you want to create one?%s%sSee Project -> Project Options -> Application for settings."
-msgstr "Das Anwendungspaket %s%sdas für die Ausführung nötig ist fehlt oder ist nicht ausführbar.%sWollen Sie es anlegen?%s%sDie Einstellungen finden Sie unter Projekt -> Projektoptionen -> Anwendung."
+msgstr "Das Anwendungspaket %s%sdas für die Ausführung nötig ist fehlt oder ist nicht ausführbar.%sWollen Sie es anlegen?%s%sDie Einstellungen finden Sie unter Projekt -> Projekteinstellungen -> Anwendung."
 
 #: lazarusidestrconsts:lispkgsysthefclfreepascalcomponentlibraryprovidesthebase
 msgid "The FCL - FreePascal Component Library provides the base classes for object pascal."
@@ -9150,7 +9150,7 @@ msgstr "Die Abhängigkeit %s%s%s wurde nicht gefunden.%sBitte wählen Sie ein vo
 
 #: lazarusidestrconsts:listhedestinationdirectorydoesnotexistpleasecheckthep
 msgid "The destination directory %s%s%s does not exist.%sPlease check the project target file name Menu > Project > Project Options."
-msgstr ""
+msgstr "Es gibt das Zielverzeichnis %s%s%s nicht.%sBitte prüfen Sie den Namen des Projektziels im Menü Projekt > Projekteinstellungen."
 
 #: lazarusidestrconsts:listhedestinationdirectorydoesnotexist
 msgid "The destination directory%s%s%s%s does not exist."
@@ -9274,7 +9274,7 @@ msgstr "Die Hostapplikation %s%s%s ist nicht ausführbar"
 
 #: lazarusidestrconsts:listhekeyisalreadyassignedtoremovetheoldassignmentand
 msgid "The key %s%sis already assigned to %s.%s%sRemove the old assignment and assign the key to the new function%s%s?"
-msgstr ""
+msgstr "Die Taste %s%sist bereits %s zugewiesen.%s%sDie alte Zuweisung entfernen und vergeben der Taste die neue Funktion%s%s zuordnen?"
 
 #: lazarusidestrconsts:listhelaunchingapplicationdoesnotexistsorisnotexecuta
 msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
@@ -9310,19 +9310,19 @@ msgstr "Die neue Unit ist noch nicht im Unit-Suchpfad.%sVerzeichnis hinzufügen 
 
 #: lazarusidestrconsts:listheoutputdirectoryofislistedintheincludesearchpath
 msgid "The output directory of %s is listed in the include search path of %s."
-msgstr ""
+msgstr "Das Ausgabeverzeichnis von %s ist im Include-Pfad von %s aufgeführt."
 
 #: lazarusidestrconsts:listheoutputdirectoryofislistedintheinheritedincludes
 msgid "The output directory of %s is listed in the inherited include search path of %s."
-msgstr ""
+msgstr "Das Ausgabeverzeichnis von %s ist im abgeleiteten Include-Pfad von %s aufgeführt."
 
 #: lazarusidestrconsts:listheoutputdirectoryofislistedintheinheritedunitsear
 msgid "The output directory of %s is listed in the inherited unit search path of %s."
-msgstr ""
+msgstr "Das Ausgabeverzeichnis von %s ist im abgeleiteten Unit-Suchpfad von %s aufgeführt."
 
 #: lazarusidestrconsts:listheoutputdirectoryofislistedintheunitsearchpathof
 msgid "The output directory of %s is listed in the unit search path of %s."
-msgstr ""
+msgstr "Das Ausgabeverzeichnis von %s ist im Unit-Suchpfad von %s aufgeführt."
 
 #: lazarusidestrconsts:lispkgmangthepackageisaruntimeonlypackageruntimeonlypackages
 msgid "The package %s is a runtime only package.%sRuntime only packages can not be installed in the IDE."
@@ -9482,7 +9482,7 @@ msgstr "Der Unit-Name %s%s%s%sund der Dateiname %s%s%s unterscheiden sich."
 
 #: lazarusidestrconsts:listheunitsearchpathofcontainsthesourcedirectoryofpac
 msgid "The unit search path of %s%s%s contains the source directory %s%s%s of package %s"
-msgstr ""
+msgstr "Der Unitsuchpfad von %s%s%s entält das Quellverzeichnis %s%s%s des Packages %s"
 
 #: lazarusidestrconsts:lisa2ptheunitnamealreadyexistsinthepackage
 msgid "The unitname %s%s%s already exists in the package:%s%s"
@@ -10114,7 +10114,7 @@ msgstr "Die Variable im Quelltext kann nicht umbenannt werden."
 
 #: lazarusidestrconsts:lisunabletorun
 msgid "Unable to run"
-msgstr ""
+msgstr "Kann nicht starten"
 
 #: lazarusidestrconsts:lisexttoolunabletorunthetool
 msgid "Unable to run the tool %s%s%s:%s%s"
@@ -10698,7 +10698,7 @@ msgstr "Projekt-Frames anzeigen"
 
 #: lazarusidestrconsts:liskmviewprojectoptions
 msgid "View project options"
-msgstr "Projektoptionen anzeigen"
+msgstr "Projekteinstellungen anzeigen"
 
 #: lazarusidestrconsts:liskmviewprojectsource
 msgid "View project source"
