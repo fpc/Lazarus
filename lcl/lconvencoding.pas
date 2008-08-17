@@ -25,10 +25,11 @@ unit LConvEncoding;
 
 interface
 
+{$IFDEF UNIX}{$IFNDEF VER2_2_2}{$DEFINE HasIconvEnc}{$ENDIF}{$ENDIF}
+
 uses
   SysUtils, Classes, dos, LCLProc
-  {$IFDEF UNIX},iconvenc{$ENDIF};
-  
+  {$IFDEF HasIconvEnc},iconvenc{$ENDIF};
 const
   EncodingUTF8 = 'utf8';
   EncodingAnsi = 'ansi';
@@ -4535,7 +4536,7 @@ function ConvertEncoding(const s, FromEncoding, ToEncoding: string): string;
 var
   AFrom, ATo, SysEnc : String;
   Encoded : Boolean;
-  {$ifdef Unix}
+  {$ifdef HasIconvEnc}
   Dummy: String;
   {$endif}
 begin
@@ -4721,7 +4722,7 @@ begin
   end;
 
   Result:=s;
-  {$ifdef Unix}
+  {$ifdef HasIconvEnc}
   try
     if not IconvLibFound and not InitIconv(Dummy) then
     begin
