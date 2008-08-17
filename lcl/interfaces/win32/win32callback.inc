@@ -249,6 +249,7 @@ var
   NMHdr: PNMHdr absolute LParam; // used by WM_NOTIFY
   TmpSize: TSize; // used by WM_MEASUREITEM
   Info: TComboboxInfo;
+  OrgCharCode: word; // used in WM_CHAR handling
 
   function ShowHideTabPage(NotebookHandle: HWnd; Showing: boolean): integer;
   var
@@ -1255,6 +1256,7 @@ begin
             CharCode := Word(Char(WideChar(WParam)))
           else
             CharCode := Word(WParam);
+          OrgCharCode := CharCode;
           Result := 0;
           Assert(False,Format('WM_CHAR KeyData= %d CharCode= %d ',[KeyData,CharCode]));
         end;
@@ -2403,7 +2405,7 @@ begin
         // if charcode was modified by LCL, convert ansi char
         // to unicode char, if not change was made WParam has
         // the right unicode char so just use it.
-        if (LMChar.Result=1) then
+        if (LMChar.Result=1) or (OrgCharCode<>LMChar.CharCode) then
           WParam := Word(WideChar(Char(LMChar.CharCode)));
       end else
       {$ENDIF}
