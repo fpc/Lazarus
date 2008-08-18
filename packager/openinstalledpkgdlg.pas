@@ -41,28 +41,26 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Buttons, ComCtrls, StdCtrls,
   FileCtrl, LResources, Dialogs, LCLProc,
-  PackageDefs, LazarusIDEStrConsts, IDEWindowIntf, PackageSystem;
+  PackageDefs, LazarusIDEStrConsts, IDEWindowIntf, PackageSystem, ExtCtrls;
 
 type
 
   { TOpenInstalledPackagesDlg }
 
-  TOpenInstalledPackagesDlg = class(TCustomForm)
+  TOpenInstalledPackagesDlg = class(TForm)
+    BtnPanel: TPanel;
     PkgListView: TListView;
     HintMemo: TMemo;
     OpenButton: TButton;
     CancelButton: TButton;
+    procedure FormCreate(Sender: TObject);
     procedure OpenButtonClick(Sender: TObject);
-    procedure OpenInstalledPackagesDlgResize(Sender: TObject);
     procedure PkgListViewDblClick(Sender: TObject);
     procedure PkgListViewSelectItem(Sender: TObject; Item: TListItem;
       Selected: Boolean);
   private
-    procedure SetupComponents;
     function PkgStateToString(APackage: TLazPackage): string;
   public
-    constructor Create(TheOwner: TComponent); override;
-    destructor Destroy; override;
     procedure UpdateSelection;
     procedure UpdatePackageList;
     function GetSelectedPackage: TLazPackage;
@@ -85,30 +83,6 @@ begin
 end;
 
 { TOpenInstalledPackagesDlg }
-
-procedure TOpenInstalledPackagesDlg.OpenInstalledPackagesDlgResize(
-  Sender: TObject);
-var
-  x: Integer;
-  y: Integer;
-  w: Integer;
-begin
-  x:=5;
-  y:=5;
-  w:=ClientWidth-2*x;
-  with PkgListView do
-    SetBounds(x,y,w,Parent.ClientHeight-130);
-  inc(y,PkgListView.Height+5);
-
-  with HintMemo do
-    SetBounds(x,y,w,Parent.ClientHeight-y-40);
-
-  with OpenButton do
-    SetBounds(Parent.ClientWidth-180,Parent.ClientHeight-Height-5,80,Height);
-  
-  with CancelButton do
-    SetBounds(Parent.ClientWidth-90,Parent.ClientHeight-Height-5,80,Height);
-end;
 
 procedure TOpenInstalledPackagesDlg.PkgListViewDblClick(Sender: TObject);
 begin
@@ -157,14 +131,14 @@ begin
   ModalResult:=mrOk;
 end;
 
-procedure TOpenInstalledPackagesDlg.SetupComponents;
+procedure TOpenInstalledPackagesDlg.FormCreate(Sender: TObject);
 var
   NewColumn: TListColumn;
 begin
-  PkgListView:=TListView.Create(Self);
+  Caption:=lisOIPOpenLoadedPackage;
+  IDEDialogLayoutList.ApplyLayout(Self,500,350);
+
   with PkgListView do begin
-    Name:='PkgListView';
-    Parent:=Self;
     ViewStyle:=vsReport;
     NewColumn:=Columns.Add;
     NewColumn.Caption:=lisOIPPackageName;
@@ -175,36 +149,10 @@ begin
     NewColumn:=Columns.Add;
     NewColumn.Caption:=lisOIPState;
     NewColumn.Width:=300;
-    OnSelectItem:=@PkgListViewSelectItem;
-    OnDblClick:=@PkgListViewDblClick;
   end;
-  
-  HintMemo:=TMemo.Create(Self);
-  with HintMemo do begin
-    Name:='HintMemo';
-    Parent:=Self;
-    WordWrap:=true;
-    ReadOnly:=true;
-    ScrollBars:=ssAutoBoth;
-  end;
-  
-  OpenButton:=TButton.Create(Self);
-  with OpenButton do begin
-    Name:='OpenButton';
-    Parent:=Self;
-    Caption:=lisMenuOpen;
-    OnClick:=@OpenButtonClick;
-    Default:=true;
-  end;
-  
-  CancelButton:=TButton.Create(Self);
-  with CancelButton do begin
-    Name:='CancelButton';
-    Parent:=Self;
-    Caption:=dlgCancel;
-    ModalResult:=mrCancel;
-    Cancel:=true;
-  end;
+
+  OpenButton.Caption:=lisMenuOpen;
+  CancelButton.Caption:=dlgCancel;
 end;
 
 function TOpenInstalledPackagesDlg.PkgStateToString(APackage: TLazPackage
@@ -231,23 +179,6 @@ begin
   pitDynamic: AddState(lisOIPautoInstallDynamic);
   end;
   if APackage.ReadOnly then AddState(lisOIPreadonly);
-end;
-
-constructor TOpenInstalledPackagesDlg.Create(TheOwner: TComponent);
-begin
-  inherited Create(TheOwner);
-  Name:='OpenInstalledPackagesDlg';
-  Caption:=lisOIPOpenLoadedPackage;
-  SetupComponents;
-  OnResize:=@OpenInstalledPackagesDlgResize;
-  Position:=poScreenCenter;
-  IDEDialogLayoutList.ApplyLayout(Self,500,350);
-  OnResize(Self);
-end;
-
-destructor TOpenInstalledPackagesDlg.Destroy;
-begin
-  inherited Destroy;
 end;
 
 procedure TOpenInstalledPackagesDlg.UpdatePackageList;
@@ -286,6 +217,9 @@ begin
   if LI=nil then exit;
   Result:=TLazPackage(LI.Data);
 end;
+
+initialization
+  {$I openinstalledpkgdlg.lrs}
 
 end.
 
