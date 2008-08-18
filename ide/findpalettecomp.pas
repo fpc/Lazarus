@@ -39,7 +39,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, Buttons, FormEditingIntf,
+  StdCtrls, Buttons, FormEditingIntf, db,
   LazarusIDEStrConsts, ComponentReg, PackageDefs, ExtCtrls;
 
 type

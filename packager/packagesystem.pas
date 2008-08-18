@@ -1258,7 +1258,7 @@ begin
   with Result do begin
     AutoCreated:=true;
     Name:='FCL';
-    Filename:=SetDirSeparators('$(FPCSrcDir)/fcl/');
+    Filename:=SetDirSeparators('$(FPCSrcDir)/');
     Version.SetValues(1,0,0,0);
     Author:='FPC team';
     License:='LGPL-2';
@@ -1275,11 +1275,11 @@ begin
       '$(LazarusDir)/packager/units/$(TargetCPU)-$(TargetOS)');
 
     // add registering units
-    AddFile(SetDirSeparators('db/db.pp'),'DB',pftUnit,[],cpBase);
-    AddFile(SetDirSeparators('inc/process.pp'),'Process',pftUnit,[],cpBase);
-    AddFile(SetDirSeparators('inc/simpleipc.pp'),'SimpleIPC',pftUnit,[],cpBase);
-    AddFile(SetDirSeparators('xml/xmlcfg.pp'),'XMLCfg',pftUnit,[],cpBase);
-    AddFile(SetDirSeparators('inc/eventlog.pp'),'EventLog',pftUnit,[],cpBase);
+    AddFile(SetDirSeparators('packages/fcl-db/src/base/db.pas'),'DB',pftUnit,[],cpBase);
+    AddFile(SetDirSeparators('packages/fcl-process/src/process.pp'),'Process',pftUnit,[],cpBase);
+    AddFile(SetDirSeparators('packages/fcl-process/src/simpleipc.pp'),'SimpleIPC',pftUnit,[],cpBase);
+    AddFile(SetDirSeparators('packages/fcl-xml/src/xmlcfg.pp'),'XMLCfg',pftUnit,[],cpBase);
+    AddFile(SetDirSeparators('packages/fcl-base/src/eventlog.pp'),'EventLog',pftUnit,[],cpBase);
 
     // use the packager/units/lazaruspackageintf.o file as indicator,
     // if FCL has been recompiled
