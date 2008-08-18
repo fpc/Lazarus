@@ -1093,7 +1093,7 @@ begin
       try
         DestFS.CopyFrom(SrcFS,SrcFS.Size);
         if PreserveTime then
-          FileSetDate(DestFS.Handle, FileGetDate(SrcFS.Handle));
+          FileSetDate(DestFilename, FileGetDate(SrcFS.Handle));
       finally
         DestFS.Free;
       end;
