@@ -6113,13 +6113,18 @@ begin
       debugLn('TfrObjectInspector.HeaderMDown()');
       {$ENDIF}
       fPanelHeader.Cursor:=crSize;
-      fPt:=Point(x,y);
+      // get absolute mouse position (X,Y can not be used, because they
+      // are relative to what is moving)
+      fPt:=Mouse.CursorPos;
+      //DebugLn(['TfrObjectInspector.HeaderMDown ',dbgs(fPt)]);
     end;
   end;
 end;
 
 procedure TfrObjectInspector.HeaderMMove(Sender: TObject;
   Shift: TShiftState; X, Y: Integer);
+var
+  NewPt: TPoint;
 begin
   if fDown then
   begin
@@ -6128,10 +6133,13 @@ begin
     {$ENDIF}
 
     Case fPanelHeader.Cursor of
-      crSize : begin
-                 Top :=Top+(Y-fPt.Y);
-                 Left:=Left+(X-fPt.X);
-               end;
+      crSize :
+        begin
+          NewPt:=Mouse.CursorPos;
+          //DebugLn(['TfrObjectInspector.HeaderMDown ',dbgs(fPt),' New=',dbgs(NewPt)]);
+          SetBounds(Left+NewPt.X-fPt.X,Top+NewPt.Y-fPt.Y,Width,Height);
+          fPt:=NewPt;
+        end;
     end;
   end
 end;
