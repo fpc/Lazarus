@@ -820,8 +820,8 @@ var
   // Some defaults are set here incase we didn't find them
 type
   TModifier = record
-    Mask: Cardinal;    // if UseValue is set, the modifier is set when the masked state matches the value
-    Value: Cardinal;   // otherwise any nonzero value will match
+    Mask: TGdkModifierType;    // if UseValue is set, the modifier is set when the masked state matches the value
+    Value: TGdkModifierType;   // otherwise any nonzero value will match
     UseValue: Boolean;
   end;
 

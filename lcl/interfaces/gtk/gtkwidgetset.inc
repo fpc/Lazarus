@@ -1589,7 +1589,7 @@ begin
       BitSize := longint(SizeOf(Byte))
                  *(longint(biSizeImage) div biHeight)
                  *longint(NumScans + StartScan);
-    if MemSize(Bits) < PtrInt(BitSize)
+    if MemSize(Bits) < PtrUInt(BitSize)
     then begin
       DebugLn('WARNING: [TGtkWidgetSet.InternalGetDIBits] not enough memory allocated for Bits!');
       exit;
