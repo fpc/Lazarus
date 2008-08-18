@@ -4775,27 +4775,53 @@ procedure TSourceNotebook.LoadFindInFilesHistory(ADialog: TLazFindInFilesDialog)
     if AComboBox.Items.Count>0 then
       AComboBox.ItemIndex := 0;
   end;
-  
-begin
-  if Assigned(ADialog) then
+
+  procedure AddFileToComboBox(AComboBox: TComboBox; const Filename: string);
+  var
+    i: Integer;
   begin
-    with ADialog, InputHistories do
-    begin
-      //DebugLn('TSourceNotebook.LoadFindInFilesHistory ',dbgsName(TextToFindComboBox),' ',dbgsName(FindHistory));
-      TextToFindComboBox.Items.Assign(FindHistory);
-      ReplaceTextComboBox.Items.Assign(ReplaceHistory);
-      if not EditorOpts.FindTextAtCursor then begin
-        if TextToFindComboBox.Items.Count>0 then begin
-          //debugln('TSourceNotebook.LoadFindInFilesHistory A TextToFindComboBox.Text=',TextToFindComboBox.Text);
-          TextToFindComboBox.ItemIndex:=0;
-          TextToFindComboBox.SelectAll;
-          //debugln('TSourceNotebook.LoadFindInFilesHistory B TextToFindComboBox.Text=',TextToFindComboBox.Text);
-        end;
+    if Filename='' then exit;
+    for i:=0 to AComboBox.Items.Count-1 do begin
+      if CompareFilenames(Filename,AComboBox.Items[i])=0 then begin
+        // move to front (but not top, top should be the last used directory)
+        if i>2 then
+          AComboBox.Items.Move(i,1);
+        exit;
       end;
-      AssignToComboBox(DirectoryComboBox, FindInFilesPathHistory);
-      AssignToComboBox(FileMaskComboBox, FindInFilesMaskHistory);
-      Options:=FindInFilesSearchOptions;
     end;
+    // insert in front (but not top, top should be the last used directory)
+    if AComboBox.Items.Count>0 then
+      i:=1
+    else
+      i:=0;
+    AComboBox.Items.Insert(i,Filename);
+  end;
+  
+var
+  SrcEdit: TSourceEditor;
+begin
+  if not Assigned(ADialog) then exit;
+  SrcEdit:=GetActiveSE;
+  with ADialog, InputHistories do
+  begin
+    //DebugLn('TSourceNotebook.LoadFindInFilesHistory ',dbgsName(TextToFindComboBox),' ',dbgsName(FindHistory));
+    TextToFindComboBox.Items.Assign(FindHistory);
+    ReplaceTextComboBox.Items.Assign(ReplaceHistory);
+    if not EditorOpts.FindTextAtCursor then begin
+      if TextToFindComboBox.Items.Count>0 then begin
+        //debugln('TSourceNotebook.LoadFindInFilesHistory A TextToFindComboBox.Text=',TextToFindComboBox.Text);
+        TextToFindComboBox.ItemIndex:=0;
+        TextToFindComboBox.SelectAll;
+        //debugln('TSourceNotebook.LoadFindInFilesHistory B TextToFindComboBox.Text=',TextToFindComboBox.Text);
+      end;
+    end;
+    // show last used directories and directory of current file
+    AssignToComboBox(DirectoryComboBox, FindInFilesPathHistory);
+    if (SrcEdit<>nil) and (FilenameIsAbsolute(SrcEdit.FileName)) then
+      AddFileToComboBox(DirectoryComboBox, ExtractFilePath(SrcEdit.FileName));
+    // show last used file masks
+    AssignToComboBox(FileMaskComboBox, FindInFilesMaskHistory);
+    Options:=FindInFilesSearchOptions;
   end;
 end;
 
