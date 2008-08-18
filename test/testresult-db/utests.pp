@@ -63,6 +63,7 @@ Type
     Function  GetSingleTon(Const Qry : String) : String;
     Function GetOSName(ID : String) : String;
     Function GetCPUName(ID : String) : String;
+    Function GetWidgetSetName(ID : String) : String;
     Function GetFPCVersionName(ID : String) : String;
     Function GetLazVersionName(ID : String) : String;
     Function GetTestFileName(ID : String) : String;
@@ -163,12 +164,15 @@ begin
   FLazVersion:=RequestVariables['lazversion'];
   if Length(FLazVersion) = 0 then
     FFpcVersion:=RequestVariables['TESTLAZVERSION'];
-  FOS:=RequestVariables['os'];
-  if Length(FOS) = 0 then
-    FOS:=RequestVariables['TESTOS'];
   FCPU:=RequestVariables['cpu'];
   if Length(FCPU) = 0 then
     FCPU:=RequestVariables['TESTCPU'];
+  FOS:=RequestVariables['os'];
+  if Length(FOS) = 0 then
+    FOS:=RequestVariables['TESTOS'];
+  FWidgetSet:=RequestVariables['widgetset'];
+  if Length(FWidgetSet) = 0 then
+    FWidgetSet:=RequestVariables['TESTWIDGETSET'];
   FRunID:=RequestVariables['run1id'];
   if Length(FRunID) = 0 then
     FRunID:=RequestVariables['TESTRUN'];
@@ -348,7 +352,7 @@ begin
       CellStart;
         Write('Widget set');
       CellNext;
-        ComboBoxFromQuery('wigsetset','SELECT TW_ID,TW_NAME FROM TESTWIDGETSET ORDER BY TW_NAME',FWidgetSet);
+        ComboBoxFromQuery('widgetset','SELECT TW_ID,TW_NAME FROM TESTWIDGETSET ORDER BY TW_NAME',FWidgetSet);
       CellEnd;
     RowNext;
       CellStart;
@@ -455,16 +459,20 @@ end;
 Procedure TTestSuite.ShowRunOverview;
 Const
   SOverview = 'SELECT TU_ID as ID,TU_DATE as Date,TC_NAME as CPU,TO_NAME as OS,'+
-               'TFV_VERSION as Version,COUNT(TR_ID) as Count,'+
+               'TW_NAME as `Widget Set`,'+
+               'TFV_VERSION as `FPC Version`, TLV_VERSION as `Lazarus Version`,'+
+               ' COUNT(TR_ID) as Count,'+
                '(TU_TESTCOUNT - TU_FAILURECOUNT - TU_ERRORCOUNT) AS OK,'+
                '(TU_FAILURECOUNT + TU_ERRORCOUNT) as Failed,'+
                'TU_TESTCOUNT as Total,'+
                'TU_SUBMITTER as Submitter, TU_MACHINE as Machine, TU_COMMENT as Comment '+
-              'FROM TESTRESULTS,TESTRUN,TESTCPU,TESTOS,TESTFPCVERSION '+
+              'FROM TESTRESULTS,TESTRUN,TESTCPU,TESTOS,TESTWIDGETSET,TESTFPCVERSION,TESTLAZVERSION '+
               'WHERE '+
                '(TC_ID=TU_CPU_FK) AND '+
                '(TO_ID=TU_OS_FK) AND '+
+               '(TW_ID=TU_WS_FK) AND '+
                '(TFV_ID=TU_FPC_VERSION_FK) AND '+
+               '(TLV_ID=TU_LAZ_VERSION_FK) AND '+
                '(TR_TESTRUN_FK=TU_ID) '+
                '%s '+
               'GROUP BY TU_ID '+
@@ -481,6 +489,8 @@ begin
      S:=S+' AND (TU_CPU_FK='+FCPU+')';
    if (FOS<>'') and (GetOSName(FOS)<>'All') then
      S:=S+' AND (TU_OS_FK='+FOS+')';
+   if (FWidgetSet<>'') and (GetWidgetSetName(FWidgetSet)<>'All') then
+     S:=S+' AND (TU_WS_FK='+FWidgetSet+')';
    If (FFpcVersion<>'') and (GetFPCVersionName(FFpcVersion)<>'All')  then
      S:=S+' AND (TU_FPC_VERSION_FK='+FFpcVersion+')';
    If (FLazVersion<>'') and (GetLazVersionName(FLazVersion)<>'All')  then
@@ -544,6 +554,12 @@ begin
     Result:=GetSingleTon('SELECT TC_NAME FROM TESTCPU WHERE TC_ID='+ID);
 end;
 
+function TTestSuite.GetWidgetSetName(ID: String): String;
+begin
+  if (ID<>'') then
+    Result:=GetSingleTon('SELECT TW_NAME FROM TESTWIDGETSET WHERE TW_ID='+ID);
+end;
+
 Function TTestSuite.GetFPCVersionName(ID : String) : String;
 
 begin
@@ -560,12 +576,13 @@ end;
 Function TTestSuite.ShowRunData : Boolean;
 
 Const
-  SGetRunData = 'SELECT TU_ID,TU_DATE,TC_NAME,TO_NAME,' +
+  SGetRunData = 'SELECT TU_ID,TU_DATE,TC_NAME,TO_NAME,TW_NAME,' +
                 'TU_SUBMITTER,TU_MACHINE,TU_COMMENT,TFV_VERSION,TLV_VERSION '+
                 ' FROM TESTRUN,TESTCPU,TESTOS,TESTFPCVERSION,TESTLAZVERSION,TESTWIDGETSET '+
                 'WHERE '+
                 ' (TC_ID=TU_CPU_FK) AND '+
                 ' (TO_ID=TU_OS_FK) AND '+
+                ' (TW_ID=TU_WS_FK) AND '+
                 ' (TFV_ID=TU_FPC_VERSION_FK) AND '+
                 ' (TLV_ID=TU_LAZ_VERSION_FK) AND '+
                 ' (TW_ID=TU_WS_FK) AND '+
@@ -606,6 +623,15 @@ begin
             CellEnd;
           RowNext;
             CellStart;
+              Write('Processor:');
+            CellNext;
+              Write(Q1.FieldByName('TC_NAME').AsString);
+            CellNext;
+              if Q2 <> nil then
+                Write(Q2.FieldByName('TC_NAME').AsString);
+            CellEnd;
+          RowNext;
+            CellStart;
               Write('Operating system:');
             CellNext;
               Write(Q1.FieldByName('TO_NAME').AsString);
@@ -615,12 +641,12 @@ begin
             CellEnd;
           RowNext;
             CellStart;
-              Write('Processor:');
+              Write('Widget set:');
             CellNext;
-              Write(Q1.FieldByName('TC_NAME').AsString);
+              Write(Q1.FieldByName('TW_NAME').AsString);
             CellNext;
               if Q2 <> nil then
-                Write(Q2.FieldByName('TC_NAME').AsString);
+                Write(Q2.FieldByName('TW_NAME').AsString);
             CellEnd;
           RowNext;
             CellStart;
