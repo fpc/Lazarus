@@ -48,6 +48,8 @@ procedure TLazTestRunner.AppendLongOpts;
 begin
   inherited;
   LongOpts.Add('compiler:');
+  LongOpts.Add('machine:');
+  LongOpts.Add('submitter:');
 end;
 
 procedure TLazTestRunner.ParseOptions;
