@@ -1,0 +1,164 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <PathDelim Value="\"/>
+    <Version Value="6"/>
+    <General>
+      <MainUnit Value="0"/>
+      <TargetFileExt Value=".exe"/>
+      <ActiveEditorIndexAtStart Value="0"/>
+    </General>
+    <VersionInfo>
+      <ProjectVersion Value=""/>
+      <Language Value=""/>
+      <CharSet Value=""/>
+    </VersionInfo>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <Units Count="2">
+      <Unit0>
+        <Filename Value="proctestsuitediff.pp"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="proctestsuitediff"/>
+        <CursorPos X="77" Y="9"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="createdb.sql"/>
+        <CursorPos X="65" Y="53"/>
+        <TopLine Value="49"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+        <SyntaxHighlighter Value="SQL"/>
+      </Unit1>
+    </Units>
+    <JumpHistory Count="11" HistoryIndex="10">
+      <Position1>
+        <Filename Value="proctestsuitediff.pp"/>
+        <Caret Line="1" Column="27" TopLine="1"/>
+      </Position1>
+      <Position2>
+        <Filename Value="proctestsuitediff.pp"/>
+        <Caret Line="193" Column="16" TopLine="174"/>
+      </Position2>
+      <Position3>
+        <Filename Value="proctestsuitediff.pp"/>
+        <Caret Line="214" Column="15" TopLine="195"/>
+      </Position3>
+      <Position4>
+        <Filename Value="proctestsuitediff.pp"/>
+        <Caret Line="101" Column="10" TopLine="82"/>
+      </Position4>
+      <Position5>
+        <Filename Value="proctestsuitediff.pp"/>
+        <Caret Line="191" Column="13" TopLine="171"/>
+      </Position5>
+      <Position6>
+        <Filename Value="proctestsuitediff.pp"/>
+        <Caret Line="205" Column="16" TopLine="187"/>
+      </Position6>
+      <Position7>
+        <Filename Value="proctestsuitediff.pp"/>
+        <Caret Line="200" Column="25" TopLine="187"/>
+      </Position7>
+      <Position8>
+        <Filename Value="proctestsuitediff.pp"/>
+        <Caret Line="38" Column="13" TopLine="7"/>
+      </Position8>
+      <Position9>
+        <Filename Value="proctestsuitediff.pp"/>
+        <Caret Line="82" Column="5" TopLine="63"/>
+      </Position9>
+      <Position10>
+        <Filename Value="proctestsuitediff.pp"/>
+        <Caret Line="57" Column="101" TopLine="38"/>
+      </Position10>
+      <Position11>
+        <Filename Value="proctestsuitediff.pp"/>
+        <Caret Line="184" Column="37" TopLine="159"/>
+      </Position11>
+    </JumpHistory>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="5"/>
+    <PathDelim Value="\"/>
+    <CodeGeneration>
+      <Generate Value="Faster"/>
+    </CodeGeneration>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <BreakPoints Count="11">
+      <Item1>
+        <Source Value="..\..\ide\compileroptions.pp"/>
+        <InitialEnabled Value="False"/>
+        <Line Value="1695"/>
+      </Item1>
+      <Item2>
+        <Source Value="..\..\ide\ideprocs.pp"/>
+        <Line Value="1396"/>
+      </Item2>
+      <Item3>
+        <Source Value="..\..\ide\compileroptionsdlg.pp"/>
+        <Line Value="1656"/>
+      </Item3>
+      <Item4>
+        <Source Value="..\..\lcl\include\fileutil.inc"/>
+        <InitialEnabled Value="False"/>
+        <Line Value="210"/>
+      </Item4>
+      <Item5>
+        <Source Value="..\..\ide\condef.pas"/>
+        <Line Value="148"/>
+      </Item5>
+      <Item6>
+        <Source Value="..\..\lcl\include\treeview.inc"/>
+        <Line Value="3949"/>
+      </Item6>
+      <Item7>
+        <Source Value="..\..\components\synedit\synedit.pp"/>
+        <Line Value="6322"/>
+      </Item7>
+      <Item8>
+        <Source Value="..\..\components\synedit\synedit.pp"/>
+        <Line Value="2189"/>
+      </Item8>
+      <Item9>
+        <Source Value="..\..\ide\editoroptions.pp"/>
+        <Line Value="3621"/>
+      </Item9>
+      <Item10>
+        <Source Value="..\..\ide\main.pp"/>
+        <Line Value="3257"/>
+      </Item10>
+      <Item11>
+        <Source Value="..\..\ide\main.pp"/>
+        <Line Value="3256"/>
+      </Item11>
+    </BreakPoints>
+    <Watches Count="2">
+      <Item1>
+        <Expression Value="MainUnitInfo.FSource.FSource"/>
+      </Item1>
+      <Item2>
+        <Expression Value="FOnCompare"/>
+      </Item2>
+    </Watches>
+  </Debugging>
+</CONFIG>
