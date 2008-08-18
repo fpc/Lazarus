@@ -67,6 +67,8 @@ type
                                 var Abort: boolean): string;
     function MacroFuncTargetOS(const Param: string; const Data: PtrInt;
                                var Abort: boolean): string;
+    function MacroFuncFPCVer(const Param: string; const Data: PtrInt;
+                             var Abort: boolean): string;
     function MacroFuncParams(const Param: string; const Data: PtrInt;
                              var Abort: boolean): string;
     function MacroFuncProjFile(const Param: string; const Data: PtrInt;
@@ -222,6 +224,8 @@ begin
                     lisTargetCPU,@MacroFuncTargetCPU,[]));
   GlobalMacroList.Add(TTransferMacro.Create('TargetOS','',
                     lisTargetOS,@MacroFuncTargetOS,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('FPCVer','',
+                    lisFPCVersionEG222, @MacroFuncFPCVer, []));
   GlobalMacroList.Add(TTransferMacro.Create('Params','',
                     lisCommandLineParamsOfProgram,@MacroFuncParams,[]));
   GlobalMacroList.Add(TTransferMacro.Create('ProjFile','',
@@ -1073,6 +1077,20 @@ begin
     Result:='%(OS_TARGET)'
   else
     Result:=GetTargetOS(true);
+end;
+
+function TBuildManager.MacroFuncFPCVer(const Param: string; const Data: PtrInt;
+  var Abort: boolean): string;
+var
+  FPCVersion, FPCRelease, FPCPatch: integer;
+begin
+  Result:={$I version.inc};
+  if CodeToolBoss<>nil then begin
+    CodeToolBoss.GetFPCVersionForDirectory('',FPCVersion,FPCRelease,FPCPatch);
+    if FPCVersion<>0 then begin
+      Result:=IntToStr(FPCVersion)+'.'+IntToStr(FPCRelease)+'.'+IntToStr(FPCPatch);
+    end;
+  end;
 end;
 
 function TBuildManager.MacroFuncParams(const Param: string; const Data: PtrInt;
