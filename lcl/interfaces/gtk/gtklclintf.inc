@@ -670,7 +670,9 @@ begin
       Bitmap := GdiMask^.GDIBitmapObject;
       RawImage_AddMask(ARawImage, Bitmap, ARect);
       //DbgDumpBitmap(Bitmap, 'RawImage_FromBitmap - mask');
-    end;
+    end
+    else
+      ARawImage.Description.MaskBitsPerPixel := 0;
 
     if not Result
     then DebugLn('WARNING: [TGtkWidgetSet.RawImage_FromBitmap] unable to GetRawImageFromGdkWindow Image');
