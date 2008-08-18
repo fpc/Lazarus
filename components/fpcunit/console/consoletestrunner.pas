@@ -76,6 +76,7 @@ type
   TProgressWriter= class(TNoRefCountObject, ITestListener)
   private
     FSuccess: boolean;
+    procedure WriteChar(c: char);
   public
     destructor Destroy; override;
 
@@ -88,6 +89,13 @@ type
     procedure EndTestSuite(ATestSuite: TTestSuite);
   end;
 
+procedure TProgressWriter.WriteChar(c: char);
+begin
+  write(c);
+  // flush output, so that we see the char immediately, even it is written to file
+  Flush(output);
+end;
+
 destructor TProgressWriter.Destroy;
 begin
   // on descruction, just write the missing line ending
@@ -98,13 +106,13 @@ end;
 procedure TProgressWriter.AddFailure(ATest: TTest; AFailure: TTestFailure);
 begin
   FSuccess := false;
-  write('F');
+  writechar('F');
 end;
 
 procedure TProgressWriter.AddError(ATest: TTest; AError: TTestFailure);
 begin
   FSuccess := false;
-  write('E');
+  writechar('E');
 end;
 
 procedure TProgressWriter.StartTest(ATest: TTest);
@@ -115,7 +123,7 @@ end;
 procedure TProgressWriter.EndTest(ATest: TTest);
 begin
   if FSuccess then
-    write('.');
+    writechar('.');
 end;
 
 procedure TProgressWriter.StartTestSuite(ATestSuite: TTestSuite);
