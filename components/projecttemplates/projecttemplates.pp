@@ -204,7 +204,7 @@ begin
   FTemplateDir:=IncludeTrailingPathDelimiter(ATemplateDir);
   D:=FTemplateDir;
   try
-    If FindFirst(D+'*',faDirectory,Info)=0 then
+    If FindFirst(D+AllFilesMask,faDirectory,Info)=0 then
       Repeat
         If ((Info.Attr and faDirectory)<>0)
            and not ((Info.Name='.') or (Info.Name='..') or (Info.Name='')) then
@@ -391,7 +391,7 @@ Var
   Info : TSearchRec;
   
 begin
-  If FindFirst(Dir+'*',0,Info)=0 then
+  If FindFirst(Dir+AllFilesMask,0,Info)=0 then
     try
       repeat
         if (info.name<>'description.txt') and (info.name<>'project.ini') then
@@ -401,8 +401,8 @@ begin
       FindClose(Info);
     end;
   if Recurse then
-    If (FindFirst(Dir+'*',0,Info)<>0) then
-      try
+    If (FindFirst(Dir+AllFilesMask,0,Info)=0) then
+      try[A
         repeat
           if ((Info.attr and faDirectory)<>0) and
             (Info.Name<>'.') and (info.Name<>'..') and (Info.Name<>'') then
@@ -425,7 +425,7 @@ begin
   D2:=IncludeTrailingPathDelimiter(DestDir);
   If not ForceDirectories(D2) then
     Raise ETemplateError.CreateFmt(SErrCouldNotCreateDir,[D2]);
-  If FindFirst(D1+'*',0,Info)=0 then
+  If FindFirst(D1+AllFilesMask,0,Info)=0 then
     try
       repeat
         if (info.name<>'description.txt')
@@ -436,7 +436,7 @@ begin
       FindClose(Info);
     end;
   if Recurse then
-    If (FindFirst(D1+'*',0,Info)<>0) then
+    If (FindFirst(D1+AllFilesmask,0,Info)<>0) then
       try
         repeat
           if ((Info.attr and faDirectory)<>0) and
