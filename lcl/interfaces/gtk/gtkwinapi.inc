@@ -4956,7 +4956,7 @@ var
   winx, winy: Integer;
   xmask: Cardinal;
 begin
-  Result := False;
+  Result := true;
   if (not MousePositionValid) or (Abs(MousePositionTime-Now)>1/864000) then
   begin
     // querying the X cursor is expensive (especially on network connections)
@@ -4968,7 +4968,6 @@ begin
       dpy := gdk_display;
       XQueryPointer(dpy, RootWindow(dpy, DefaultScreen(dpy)), @root, @child,
                           @MousePosition.X,@MousePosition.Y,@winx,@winy,@xmask);
-      Result := True;
     {$IFDEF DebugGDKTraps}
     finally
       EndGDKErrorTrap;
