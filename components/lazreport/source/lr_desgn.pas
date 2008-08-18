@@ -3849,8 +3849,7 @@ begin
     LinePanel.Parent := Self;
     with (Sender as TControl) do
       p := Self.ScreenToClient(Parent.ClientToScreen(Point(Left, Top)));
-    LinePanel.Left := p.X;
-    LinePanel.Top := p.Y + 26;
+    LinePanel.SetBounds(p.X,p.Y + 26,LinePanel.Width,LinePanel.Height);
   end;
   LinePanel.Visible := not LinePanel.Visible;
 end;
@@ -3906,8 +3905,7 @@ begin
     ColorSelector.Visible := not ColorSelector.Visible
   else
   begin
-    ColorSelector.Left := p.X;
-    ColorSelector.Top := p.Y + 26;
+    with ColorSelector do SetBounds(p.X,p.Y + 26,Width,Height);
     ColorSelector.Visible := True;
   end;
   ClrButton := Sender as TSpeedButton;
