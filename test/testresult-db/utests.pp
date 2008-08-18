@@ -14,6 +14,9 @@ const
   ViewVCURL='http://svn.freepascal.org/cgi-bin/viewvc.cgi/trunk/tests/';
 
 Type
+
+  { TTestSuite }
+
   TTestSuite = Class(TCgiApplication)
   Private
     FHTMLWriter : THtmlWriter;
@@ -60,7 +63,8 @@ Type
     Function  GetSingleTon(Const Qry : String) : String;
     Function GetOSName(ID : String) : String;
     Function GetCPUName(ID : String) : String;
-    Function GetVersionName(ID : String) : String;
+    Function GetFPCVersionName(ID : String) : String;
+    Function GetLazVersionName(ID : String) : String;
     Function GetTestFileName(ID : String) : String;
     Function InitCGIVars : Integer;
     Procedure DoRun; override;
@@ -475,10 +479,12 @@ begin
    S:='';
    If (FCPU<>'') and (GetCPUName(FCPU)<>'All') then
      S:=S+' AND (TU_CPU_FK='+FCPU+')';
-   If (FFpcVersion<>'') and (GetVersionName(FFpcVersion)<>'All')  then
-     S:=S+' AND (TU_VERSION_FK='+FFpcVersion+')';
    if (FOS<>'') and (GetOSName(FOS)<>'All') then
      S:=S+' AND (TU_OS_FK='+FOS+')';
+   If (FFpcVersion<>'') and (GetFPCVersionName(FFpcVersion)<>'All')  then
+     S:=S+' AND (TU_FPC_VERSION_FK='+FFpcVersion+')';
+   If (FLazVersion<>'') and (GetLazVersionName(FLazVersion)<>'All')  then
+     S:=S+' AND (TU_LAZ_VERSION_FK='+FLazVersion+')';
    If (Round(FDate)<>0) then
      S:=S+' AND (TU_DATE="'+FormatDateTime('YYYY/MM/DD',FDate)+'")';
    If FOnlyFailed then
@@ -538,24 +544,31 @@ begin
     Result:=GetSingleTon('SELECT TC_NAME FROM TESTCPU WHERE TC_ID='+ID);
 end;
 
-Function TTestSuite.GetVersionName(ID : String) : String;
+Function TTestSuite.GetFPCVersionName(ID : String) : String;
 
 begin
   if (ID<>'') then
     Result:=GetSingleton('SELECT TFV_VERSION FROM TESTFPCVERSION WHERE TFV_ID='+ID);
 end;
 
+function TTestSuite.GetLazVersionName(ID: String): String;
+begin
+  if (ID<>'') then
+    Result:=GetSingleton('SELECT TLV_VERSION FROM TESTLAZVERSION WHERE TLV_ID='+ID);
+end;
+
 Function TTestSuite.ShowRunData : Boolean;
 
 Const
   SGetRunData = 'SELECT TU_ID,TU_DATE,TC_NAME,TO_NAME,' +
-                'TU_SUBMITTER,TU_MACHINE,TU_COMMENT,TFV_VERSION '+
-                ' FROM TESTRUN,TESTCPU,TESTOS,TESTFPCVERSION,TESTLAZVERSION '+
+                'TU_SUBMITTER,TU_MACHINE,TU_COMMENT,TFV_VERSION,TLV_VERSION '+
+                ' FROM TESTRUN,TESTCPU,TESTOS,TESTFPCVERSION,TESTLAZVERSION,TESTWIDGETSET '+
                 'WHERE '+
                 ' (TC_ID=TU_CPU_FK) AND '+
                 ' (TO_ID=TU_OS_FK) AND '+
                 ' (TFV_ID=TU_FPC_VERSION_FK) AND '+
                 ' (TLV_ID=TU_LAZ_VERSION_FK) AND '+
+                ' (TW_ID=TU_WS_FK) AND '+
                 ' (TU_ID=%s)';
 
 
@@ -611,12 +624,21 @@ begin
             CellEnd;
           RowNext;
             CellStart;
-              Write('Version:');
+              Write('FPC Version:');
             CellNext;
               Write(Q1.FieldByNAme('TFV_VERSION').AsString);
             CellNext;
               if Q2 <> nil then
                 Write(Q2.FieldByNAme('TFV_VERSION').AsString);
+            CellEnd;
+          RowNext;
+            CellStart;
+              Write('Lazarus Version:');
+            CellNext;
+              Write(Q1.FieldByNAme('TLV_VERSION').AsString);
+            CellNext;
+              if Q2 <> nil then
+                Write(Q2.FieldByNAme('TLV_VERSION').AsString);
             CellEnd;
           RowNext;
             CellStart;
