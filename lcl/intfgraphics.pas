@@ -254,8 +254,8 @@ type
     procedure CopyPixels(ASource: TFPCustomImage; XDst: Integer = 0; YDst: Integer = 0;
                          AlphaMask: Boolean = False; AlphaTreshold: Word = 0); virtual;
     procedure AlphaFromMask(AKeepAlpha: Boolean = True);
-    procedure GetXYDataPostion(x, y: integer; out Position: TRawImagePosition);
-    procedure GetXYMaskPostion(x, y: integer; out Position: TRawImagePosition);
+    procedure GetXYDataPosition(x, y: integer; out Position: TRawImagePosition);
+    procedure GetXYMaskPosition(x, y: integer; out Position: TRawImagePosition);
     function  GetDataLineStart(y: integer): Pointer;// similar to Delphi TBitmap.ScanLine. Only works with byte aligned lines.
     procedure CreateData; virtual;
     function  HasTransparency: boolean; virtual;
@@ -1659,7 +1659,7 @@ procedure TLazIntfImage.GetColor_Generic(x, y: integer; out Value: TFPColor);
 var
   Position: TRawImagePosition;
 begin
-  GetXYDataPostion(x,y,Position);
+  GetXYDataPosition(x,y,Position);
 
   if FRawImage.Description.PaletteColorCount = 0
   then begin
@@ -1683,7 +1683,7 @@ begin
     Avalue := False;
   end
   else begin
-    GetXYMaskPostion(x,y,Position);
+    GetXYMaskPosition(x,y,Position);
     FRawimage.ReadMask(Position, AValue);
   end;
 end;
@@ -1692,7 +1692,7 @@ procedure TLazIntfImage.SetColor_Generic(x, y: integer; const Value: TFPColor);
 var
   Position: TRawImagePosition;
 begin
-  GetXYDataPostion(x,y,Position);
+  GetXYDataPosition(x,y,Position);
 
   if FRawImage.Description.PaletteColorCount = 0
   then begin
@@ -1710,7 +1710,7 @@ var
 begin
   if Desc.MaskBitsPerPixel = 0 then Exit;
   
-  GetXYMaskPostion(x,y,Position);
+  GetXYMaskPosition(x,y,Position);
   FRawImage.WriteMask(Position, AValue);
 end;
 
@@ -1720,7 +1720,7 @@ var
   Desc: TRawImageDescription absolute FRawImage.Description;
   Position: TRawImagePosition;
 begin
-  GetXYDataPostion(x,y,Position);
+  GetXYDataPosition(x,y,Position);
   FReadRawImageBits(FRawImage.Data, Position, Desc.RedPrec, Desc.RedShift, Value.Red);
   FReadRawImageBits(FRawImage.Data, Position, Desc.GreenPrec, Desc.GreenShift, Value.Green);
   FReadRawImageBits(FRawImage.Data, Position, Desc.BluePrec, Desc.BlueShift, Value.Blue);
@@ -1732,7 +1732,7 @@ var
   Desc: TRawImageDescription absolute FRawImage.Description;
   Position: TRawImagePosition;
 begin
-  GetXYDataPostion(x,y,Position);
+  GetXYDataPosition(x,y,Position);
   FReadRawImageBits(FRawImage.Data, Position, Desc.RedPrec, Desc.RedShift, Value.Red);
   FReadRawImageBits(FRawImage.Data, Position, Desc.GreenPrec, Desc.GreenShift, Value.Green);
   FReadRawImageBits(FRawImage.Data, Position, Desc.BluePrec, Desc.BlueShift, Value.Blue);
@@ -1745,7 +1745,7 @@ var
   Desc: TRawImageDescription absolute FRawImage.Description;
   Position: TRawImagePosition;
 begin
-  GetXYDataPostion(x,y,Position);
+  GetXYDataPosition(x,y,Position);
   FReadRawImageBits(FRawImage.Data, Position, Desc.RedPrec, Desc.RedShift, Value.Red);
   Value.Green := Value.Red;
   Value.Blue := Value.Red;
@@ -2342,7 +2342,7 @@ procedure TLazIntfImage.GetColor_NULL(x, y: integer; out Value: TFPColor);
 //var
 //  Position: TRawImagePosition;
 begin
-//  GetXYDataPostion(x,y,Position);
+//  GetXYDataPosition(x,y,Position);
   Value.Red:=0;
   Value.Green:=0;
   Value.Blue:=0;
@@ -2354,7 +2354,7 @@ var
   Desc: TRawImageDescription absolute FRawImage.Description;
   Position: TRawImagePosition;
 begin
-  GetXYDataPostion(x,y,Position);
+  GetXYDataPosition(x,y,Position);
   FWriteRawImageBits(FRawImage.Data, Position, Desc.RedPrec,Desc.RedShift, Value.Red);
   FWriteRawImageBits(FRawImage.Data, Position, Desc.GreenPrec, Desc.GreenShift, Value.Green);
   FWriteRawImageBits(FRawImage.Data, Position, Desc.BluePrec, Desc.BlueShift, Value.Blue);
@@ -2366,7 +2366,7 @@ var
   Desc: TRawImageDescription absolute FRawImage.Description;
   Position: TRawImagePosition;
 begin
-  GetXYDataPostion(x,y,Position);
+  GetXYDataPosition(x,y,Position);
   FWriteRawImageBits(FRawImage.Data, Position, Desc.RedPrec, Desc.RedShift, Value.Red);
   FWriteRawImageBits(FRawImage.Data, Position, Desc.GreenPrec, Desc.GreenShift, Value.Green);
   FWriteRawImageBits(FRawImage.Data, Position, Desc.BluePrec, Desc.BlueShift, Value.Blue);
@@ -2378,7 +2378,7 @@ var
   Desc: TRawImageDescription absolute FRawImage.Description;
   Position: TRawImagePosition;
 begin
-  GetXYDataPostion(x,y,Position);
+  GetXYDataPosition(x,y,Position);
   FWriteRawImageBits(FRawImage.Data, Position, Desc.RedPrec, Desc.RedShift, Value.Red);
 end;
 
@@ -3107,12 +3107,12 @@ begin
   Result:=true;
 end;
 
-procedure TLazIntfImage.GetXYDataPostion(x, y: integer; out Position: TRawImagePosition);
+procedure TLazIntfImage.GetXYDataPosition(x, y: integer; out Position: TRawImagePosition);
 begin
   Position := FLineStarts^.GetPosition(x, y);
 end;
 
-procedure TLazIntfImage.GetXYMaskPostion(x, y: integer; out Position: TRawImagePosition);
+procedure TLazIntfImage.GetXYMaskPosition(x, y: integer; out Position: TRawImagePosition);
 begin
   Position := FMaskLineStarts^.GetPosition(x, y);
 end;
