@@ -3,79 +3,91 @@ object FindPaletteComponentDlg: TFindPaletteComponentDlg
   Height = 300
   Top = 140
   Width = 400
-  HorzScrollBar.Page = 399
-  VertScrollBar.Page = 299
   ActiveControl = PatternEdit
   Caption = 'FindPaletteComponentDlg'
   ClientHeight = 300
   ClientWidth = 400
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  LCLVersion = '0.9.25'
   object SearchPatternGroupBox: TGroupBox
-    Left = 10
+    Left = 6
     Height = 55
-    Top = 5
-    Width = 380
-    Anchors = [akTop, akLeft, akRight]
+    Top = 6
+    Width = 388
+    Align = alTop
+    BorderSpacing.Around = 6
     Caption = 'SearchPatternGroupBox'
     ClientHeight = 36
-    ClientWidth = 376
+    ClientWidth = 384
     TabOrder = 0
     object PatternEdit: TEdit
       Left = 8
       Height = 23
       Top = 4
-      Width = 357
+      Width = 365
       Anchors = [akTop, akLeft, akRight]
       OnChange = PatternEditChange
       TabOrder = 0
       Text = 'PatternEdit'
     end
   end
-  object SelectButton: TButton
-    AnchorSideRight.Control = CancelButton
-    Left = 176
-    Height = 29
-    Top = 257
-    Width = 95
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Right = 15
-    Caption = 'SelectButton'
-    ModalResult = 1
-    TabOrder = 1
-  end
-  object CancelButton: TButton
-    Left = 286
-    Height = 29
-    Top = 257
-    Width = 98
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    Cancel = True
-    Caption = 'CancelButton'
-    ModalResult = 2
-    TabOrder = 2
-  end
   object ComponentsGroupBox: TGroupBox
-    Left = 10
-    Height = 180
-    Top = 65
-    Width = 380
-    Anchors = [akTop, akLeft, akRight, akBottom]
+    Left = 6
+    Height = 186
+    Top = 67
+    Width = 388
+    Align = alClient
+    BorderSpacing.Around = 6
     Caption = 'ComponentsGroupBox'
-    ClientHeight = 161
-    ClientWidth = 376
-    TabOrder = 3
+    ClientHeight = 167
+    ClientWidth = 384
+    TabOrder = 1
     object ComponentsListBox: TListBox
-      Height = 161
-      Width = 376
+      Height = 167
+      Width = 384
       Align = alClient
       OnDblClick = ComponentsListBoxDblClick
       OnDrawItem = ComponentsListBoxDrawItem
       Style = lbOwnerDrawFixed
       TabOrder = 0
       TopIndex = -1
+    end
+  end
+  object BtnPanel: TPanel
+    Height = 41
+    Top = 259
+    Width = 400
+    Align = alBottom
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 41
+    ClientWidth = 400
+    TabOrder = 2
+    object CancelButton: TButton
+      Left = 296
+      Height = 29
+      Top = 6
+      Width = 98
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Cancel = True
+      Caption = 'CancelButton'
+      ModalResult = 2
+      TabOrder = 0
+    end
+    object SelectButton: TButton
+      Left = 195
+      Height = 29
+      Top = 6
+      Width = 95
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'SelectButton'
+      ModalResult = 1
+      TabOrder = 1
     end
   end
 end

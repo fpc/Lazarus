@@ -40,7 +40,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   StdCtrls, Buttons, FormEditingIntf,
-  LazarusIDEStrConsts, ComponentReg, PackageDefs;
+  LazarusIDEStrConsts, ComponentReg, PackageDefs, ExtCtrls;
 
 type
 
@@ -49,6 +49,7 @@ type
   TFindPaletteComponentDlg = class(TForm)
     ComponentsGroupBox: TGroupBox;
     ComponentsListBox: TListBox;
+    BtnPanel: TPanel;
     SelectButton: TButton;
     CancelButton: TButton;
     PatternEdit: TEdit;
