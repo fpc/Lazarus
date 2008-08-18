@@ -52,6 +52,7 @@ type
     OkButton: TButton;
     HasRegisterProcCheckBox: TCheckBox;
     FileTypeRadioGroup: TRadioGroup;
+    BtnPanel: TPanel;
     UnitNameEdit: TEdit;
     FileNameEdit: TEdit;
     FileGroupBox: TGroupBox;
