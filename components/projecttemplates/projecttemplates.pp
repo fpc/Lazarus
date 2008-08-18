@@ -402,7 +402,7 @@ begin
     end;
   if Recurse then
     If (FindFirst(Dir+AllFilesMask,0,Info)=0) then
-      try[A
+      try
         repeat
           if ((Info.attr and faDirectory)<>0) and
             (Info.Name<>'.') and (info.Name<>'..') and (Info.Name<>'') then

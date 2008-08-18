@@ -10,15 +10,15 @@ msgstr ""
 "Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: frmtemplatevariables:sdescription
+#: frmtemplatevariables.sdescription
 msgid "Description"
 msgstr "Aprašas"
 
-#: frmtemplatevariables:svalue
+#: frmtemplatevariables.svalue
 msgid "Value"
 msgstr "Vertė"
 
-#: frmtemplatevariables:svariable
+#: frmtemplatevariables.svariable
 msgid "Variable"
 msgstr "Kintamasis"
 

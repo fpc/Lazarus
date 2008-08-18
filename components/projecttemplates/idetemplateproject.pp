@@ -20,7 +20,7 @@ type
     FVariables : TStrings;
     Function ShowOptionsDialog : TModalResult;
   public
-    constructor Create(ATemplate : TProjectTemplate);
+    constructor Create(ATemplate : TProjectTemplate); overload;
     destructor destroy; override;
     Function DoInitDescriptor : TModalResult; override;
     function GetLocalizedName: string; override;

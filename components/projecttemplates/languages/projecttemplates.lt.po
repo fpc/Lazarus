@@ -10,15 +10,15 @@ msgstr ""
 "Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: projecttemplates:serrcouldnotcreatedir
+#: projecttemplates.serrcouldnotcreatedir
 msgid "Could not create directory \"%s\""
 msgstr "Nepavyko sukurti katalogo „%s“"
 
-#: projecttemplates:serrfailedtocopyfile
+#: projecttemplates.serrfailedtocopyfile
 msgid "Failed to copy file \"%s\" to \"%s\""
 msgstr "Nepavyko failą „%s“ kopijuoti į „%s“"
 
-#: projecttemplates:serrnosuchtemplate
+#: projecttemplates.serrnosuchtemplate
 msgid "\"%s\": No such template."
 msgstr "„%s“: nėra tokio šablono."
 
