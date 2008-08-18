@@ -25,7 +25,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  PropEdits, Componenteditors, StdCtrls, ComCtrls, ObjInspStrConsts;
+  PropEdits, Componenteditors, StdCtrls, ComCtrls, ObjInspStrConsts, ExtCtrls;
 
 type
 
@@ -52,6 +52,7 @@ type
     LabelSelectedIndex: TLabel;
     LabelStateIndex: TLabel;
     OpenDialog1: TOpenDialog;
+    BtnPanel: TPanel;
     SaveDialog1: TSaveDialog;
     TreeView1: TTreeView;
     procedure BtnNewItemClick(Sender: TObject);
