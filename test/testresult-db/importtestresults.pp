@@ -454,21 +454,22 @@ procedure ProcessTestListing;
   procedure ProcessTest(ATestElement: TDOMElement; APath: string);
   var
     Name, FullName: string;
-    TestResult: string;
+    TestResult, TestLog: string;
     TS: TTestStatus;
     ID: LongInt;
     i: Integer;
   begin
     Name := ATestElement.GetAttribute('Name');
     TestResult := ATestElement.GetAttribute('Result');
+    TestLog := '';
     Verbose(V_NORMAL,'Analysing result for test '+Name);
-    for i := 0 to ATestElement.Attributes.Length-1 do
-      Verbose(V_NORMAL,ATestElement.Attributes[i].NodeName+ '=' + ATestElement.Attributes[i].NodeValue);
     FullName := APath + '|' + Name;
     ID := RequireTestID(FullName);
     TS:=GetTestStatus(TestResult);
     Verbose(V_Debug,'Test result: '+TestResult+' TestStatus: '+IntToStr(ord(TS)));
-    AddTestResult(ID,TestRunID,Ord(TS),TestOK[TS],TestSkipped[TS],'No log yet');
+    if TS=stFailed then
+      TestLog := ATestElement.FindNode('Message').TextContent;
+    AddTestResult(ID,TestRunID,Ord(TS),TestOK[TS],TestSkipped[TS],TestLog);
   end;
 
   procedure ProcessNodes(AParentNode: TDomNode; APath: string);

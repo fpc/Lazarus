@@ -80,7 +80,6 @@ Type
     Procedure ShowRunOverview;
     Procedure CreateRunPie;
     Function  ShowRunData : Boolean;
-
   end;
 
 implementation
@@ -857,6 +856,14 @@ Var
   FieldName,FieldValue,
   Log,Source : String;
   Res : Boolean;
+  function MyEscapeHTML(const AText: string): string;
+  begin
+    // replace by a more sensitive method.
+    Result:=StringReplace(AText,'&','&amp;',[rfReplaceAll]);
+    Result:=StringReplace(Result,'<','&lt;',[rfReplaceAll]);
+    Result:=StringReplace(Result,'>','&gt;',[rfReplaceAll]);
+    Result:=StringReplace(Result,#10,'<BR>',[rfreplaceAll]);
+  end;
 begin
   ConnectToDB;
   ContentType:='text/html';
@@ -999,7 +1006,7 @@ begin
                     Write('Log of '+FRunId+':');
                     HeaderEnd(2);
                     PreformatStart;
-                    system.Write(Log);
+                    system.Write(MyEscapeHTML(Log));
                     system.flush(output);
                     PreformatEnd;
                   end;
