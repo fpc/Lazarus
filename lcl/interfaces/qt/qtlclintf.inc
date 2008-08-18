@@ -374,16 +374,83 @@ end;
   Describes the inner format utilized by Qt + the specific information for this image
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.RawImage_DescriptionFromBitmap(ABitmap: HBITMAP; out ADesc: TRawImageDescription): Boolean;
+const
+  QImageFormatToDepth: array[QImageFormat] of integer =
+  (
+ { QImageFormat_Invalid              } 0,
+ { QImageFormat_Mono                 } 1,
+ { QImageFormat_MonoLSB              } 1,
+ { QImageFormat_Indexed8             } 8,
+ { QImageFormat_RGB32                } 24,
+ { QImageFormat_ARGB32               } 32,
+ { QImageFormat_ARGB32_Premultiplied } 32,
+ { QImageFormat_RGB16                } 16,
+ { QImageNImageFormats               } 0
+  );
 var
   Image: TQtImage absolute ABitmap;
 begin
   Result := CheckBitmap(ABitmap, 'RawImage_DescriptionFromBitmap');
   if not Result then Exit;
 
-  FillStandardDescription(ADesc);
-
+  //FillStandardDescription(ADesc);
+  ADesc.Init;
   ADesc.Width := Image.Width;
   ADesc.Height := Image.Height;
+
+  ADesc.BitOrder := riboReversedBits;
+  ADesc.ByteOrder := riboLSBFirst;
+  ADesc.LineOrder := riloTopToBottom;
+  ADesc.LineEnd := rileDWordBoundary;
+
+  ADesc.Depth := QImageFormatToDepth[Image.getFormat];
+  ADesc.BitsPerPixel := ADesc.Depth;
+  if ADesc.BitsPerPixel = 24 then
+    ADesc.BitsPerPixel := 32;
+
+  ADesc.Format := ricfRGBA;
+  case ADesc.Depth of
+    1, 8:
+      begin
+        ADesc.Format := ricfGray;
+
+        ADesc.RedPrec := ADesc.BitsPerPixel;
+      end;
+    16:
+      begin
+        ADesc.Depth := 15;
+
+        ADesc.RedPrec := 5;
+        ADesc.GreenPrec := 5;
+        ADesc.BluePrec := 5;
+
+        ADesc.RedShift := 10;
+        ADesc.GreenShift := 5;
+        ADesc.BlueShift := 0;
+      end;
+    24:
+      begin
+        ADesc.RedPrec := 8;
+        ADesc.GreenPrec := 8;
+        ADesc.BluePrec := 8;
+
+        ADesc.RedShift := 16;
+        ADesc.GreenShift := 8;
+        ADesc.BlueShift := 0;
+      end;
+    32:
+      begin
+        ADesc.AlphaPrec := 8;
+        ADesc.RedPrec := 8;
+        ADesc.GreenPrec := 8;
+        ADesc.BluePrec := 8;
+
+        ADesc.AlphaShift := 24;
+        ADesc.RedShift := 16;
+        ADesc.GreenShift := 8;
+        ADesc.BlueShift := 0;
+      end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -426,10 +493,9 @@ begin
   if not CheckBitmap(ABitmap, 'RawImage_FromBitmap') then Exit;
   if (AMask <> 0) and not CheckBitmap(AMask, 'RawImage_FromBitmap (mask)') then Exit;
 
-
   ARawImage.Init;
-  FillStandardDescription(ARawImage.Description);
-  
+  RawImage_DescriptionFromBitmap(ABitmap, Desc);
+
   if ARect = nil
   then begin
     Width := Image.Width;
@@ -442,7 +508,6 @@ begin
     Height := R.Bottom - R.Top;
   end;
   
-
   if (Width = Image.Width) and (Height = Image.Height)
   then begin
     WorkImage := Image;
@@ -467,14 +532,17 @@ begin
   ARawImage.DataSize := WorkImage.numBytes;
   ReAllocMem(ARawImage.Data, ARawImage.DataSize);
   if ARawImage.DataSize > 0 then
-     Move(WorkImage.bits^, ARawImage.Data^, ARawImage.DataSize);
+    Move(WorkImage.bits^, ARawImage.Data^, ARawImage.DataSize);
 
   if WorkMask <> nil
   then begin
+    Desc.MaskLineEnd := rileDWordBoundary;
+    Desc.MaskBitOrder := riboReversedBits;
+    Desc.MaskBitsPerPixel := 1;
     ARawImage.MaskSize := WorkMask.numBytes;
     ReAllocMem(ARawImage.Mask, ARawImage.MaskSize);
     if ARawImage.MaskSize > 0 then
-       Move(WorkMask.bits^, ARawImage.Mask^, ARawImage.MaskSize);
+      Move(WorkMask.bits^, ARawImage.Mask^, ARawImage.MaskSize);
   end;
   
   if WorkImage <> Image then

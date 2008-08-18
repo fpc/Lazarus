@@ -254,6 +254,7 @@ procedure DbgOutThreadLog(const Msg: string); overload;
 procedure DebuglnThreadLog(const Msg: string); overload;
 procedure DebuglnThreadLog(Args: array of const); overload;
 procedure DebuglnThreadLog; overload;
+procedure DbgSaveData(FileName: String; AData: PChar; ADataSize: PtrUInt);
 
 procedure CloseDebugOutput;
 
@@ -2090,6 +2091,15 @@ end;
 procedure DebuglnThreadLog;
 begin
   DebuglnThreadLog('');
+end;
+
+procedure DbgSaveData(FileName: String; AData: PChar; ADataSize: PtrUInt);
+var
+  S: TStream;
+begin
+  S := TFileStream.Create(FileName, fmCreate);
+  S.Write(AData^, ADataSize);
+  S.Free;
 end;
 
 function StripLN(const ALine: String): String;

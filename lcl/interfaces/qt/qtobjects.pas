@@ -124,6 +124,7 @@ type
     function numBytes: Integer;
     function bytesPerLine: Integer;
     procedure invertPixels(InvertMode: QImageInvertMode = QImageInvertRgb);
+    function getFormat: QImageFormat;
   end;
 
   { TQtFont }
@@ -1020,6 +1021,11 @@ end;
 procedure TQtImage.invertPixels(InvertMode: QImageInvertMode = QImageInvertRgb);
 begin
   QImage_invertPixels(Handle, InvertMode);
+end;
+
+function TQtImage.getFormat: QImageFormat;
+begin
+  Result := QImage_format(Handle);
 end;
 
 { TQtFont }
