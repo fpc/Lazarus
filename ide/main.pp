@@ -11340,7 +11340,9 @@ begin
   end;
 
   AlreadySearchedPaths:='';
-  BaseDir:=AppendPathDelim(TrimFilename(BaseDirectory));
+  BaseDir:=BaseDirectory;
+  GlobalMacroList.SubstituteStr(BaseDir);
+  BaseDir:=AppendPathDelim(TrimFilename(BaseDir));
 
   // search file in base directory
   Result:=TrimFilename(BaseDir+AFilename);
