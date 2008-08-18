@@ -178,12 +178,6 @@ begin
   if Find('iexplore.exe',Browser) then exit;
 end;
 
-procedure LazConfSubstituteMacros(var s: string);
-begin
-  if Assigned(LazConfMacroFunc) then
-    LazConfMacroFunc(s);
-end;
-
 {---------------------------------------------------------------------------
   procedure InternalInit;
  ---------------------------------------------------------------------------}

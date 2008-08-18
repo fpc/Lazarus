@@ -136,6 +136,12 @@ implementation
 
 {$I lazconf.inc}
 
+procedure LazConfSubstituteMacros(var s: string);
+begin
+  if Assigned(LazConfMacroFunc) then
+    LazConfMacroFunc(s);
+end;
+
 {---------------------------------------------------------------------------
   function CreateCompilerTestPascalFilename: string;
  ---------------------------------------------------------------------------}
