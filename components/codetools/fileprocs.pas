@@ -124,6 +124,10 @@ function MinimizeSearchPath(const SearchPath: string): string;
 function FindPathInSearchPath(APath: PChar; APathLen: integer;
                               SearchPath: PChar; SearchPathLen: integer): PChar;
 
+// FPC
+function ReadNextFPCParameter(const CmdLine: string; var Position: integer;
+    out StartPos: integer): boolean;
+
 type
   TCTPascalExtType = (petNone, petPAS, petPP, petP);
 
@@ -1427,6 +1431,30 @@ begin
     end;
     StartPos:=NextStartPos+1;
   end;
+end;
+
+function ReadNextFPCParameter(const CmdLine: string; var Position: integer; out
+  StartPos: integer): boolean;
+begin
+  StartPos:=Position;
+  while (StartPos<=length(CmdLine)) and (CmdLine[StartPos] in [' ',#9,#10,#13]) do
+    inc(StartPos);
+  Position:=StartPos;
+  while (Position<=length(CmdLine)) do begin
+    case CmdLine[Position] of
+    ' ',#9,#10,#13: break;
+    '''':
+      repeat
+        inc(Position);
+      until (Position>length(CmdLine)) or (CmdLine[Position]='''');
+    '"':
+      repeat
+        inc(Position);
+      until (Position>length(CmdLine)) or (CmdLine[Position]='''');
+    end;
+    inc(Position);
+  end;
+  Result:=StartPos<=length(CmdLine);
 end;
 
 function SearchFileInDir(const Filename, BaseDirectory: string;

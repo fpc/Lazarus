@@ -4750,18 +4750,6 @@ end;
 function TDefinePool.CreateFPCCommandLineDefines(const Name, CmdLine: string;
   RecursiveDefines: boolean; Owner: TObject; AlwaysCreate: boolean): TDefineTemplate;
 
-  function ReadNextParam(LastEndPos: integer;
-    var StartPos, EndPos: integer): boolean;
-  begin
-    StartPos:=LastEndPos;
-    while (StartPos<=length(CmdLine)) and (CmdLine[StartPos] in [' ',#9]) do
-      inc(StartPos);
-    EndPos:=StartPos;
-    while (EndPos<=length(CmdLine)) and (not (CmdLine[EndPos] in [' ',#9])) do
-      inc(EndPos);
-    Result:=StartPos<=length(CmdLine);
-  end;
-  
   procedure CreateMainTemplate;
   begin
     if Result=nil then
@@ -4826,7 +4814,7 @@ begin
     CreateMainTemplate;
   EndPos:=1;
   CompilerMode:='';
-  while ReadNextParam(EndPos,StartPos,EndPos) do begin
+  while ReadNextFPCParameter(CmdLine,EndPos,StartPos) do begin
     if (StartPos<length(CmdLine)) and (CmdLine[StartPos]='-') then begin
       // a parameter
       case CmdLine[StartPos+1] of

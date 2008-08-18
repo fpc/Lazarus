@@ -2655,12 +2655,29 @@ end;
 function TLazPackageGraph.ExtractCompilerParamsForBuildAll(
   const CompParams: string): string;
 { Some compiler flags require a clean build -B, because the compiler
-  does not recompile update some ppu.
+  does not recompile/update some ppu itself.
   Remove all flags that do not require build all:
-  -l -F* -B -e -i -o -s -v* }
+  -l -F -B -e -i -o -s -v }
+var
+  EndPos: Integer;
+  StartPos: integer;
 begin
   Result:=CompParams;
-
+  EndPos:=1;
+  while ReadNextFPCParameter(Result,EndPos,StartPos) do begin
+    if (Result[StartPos]='-') and (StartPos<length(Result)) then begin
+      case Result[StartPos+1] of
+      'l','F','B','e','i','o','s','v':
+        begin
+          while (StartPos>1) and (Result[StartPos-1] in [' ',#9]) do
+            dec(StartPos);
+          DebugLn(['TLazPackageGraph.ExtractCompilerParamsForBuildAll Removing: ',copy(Result,StartPos,EndPos-StartPos)]);
+          System.Delete(Result,StartPos,EndPos-StartPos);
+          EndPos:=StartPos;
+        end;
+      end;
+    end;
+  end;
 end;
 
 function TLazPackageGraph.CheckIfPackageNeedsCompilation(APackage: TLazPackage;
@@ -2681,7 +2698,8 @@ begin
   if APackage.AutoUpdate=pupManually then exit(mrNo);
   
   if (APackage.LastCompilerFilename<>CompilerFilename)
-  or (APackage.LastCompilerParams<>CompilerParams)
+  or (ExtractCompilerParamsForBuildAll(APackage.LastCompilerParams)
+      <>ExtractCompilerParamsForBuildAll(CompilerParams))
   or ((APackage.LastCompilerFileDate>0)
       and FileExistsCached(CompilerFilename)
       and (FileAge(CompilerFilename)<>APackage.LastCompilerFileDate))
@@ -2723,7 +2741,9 @@ begin
     DebugLn('  File="',CompilerFilename,'"');
     exit(mrYes);
   end;
-  if CompilerParams<>APackage.LastCompilerParams then begin
+  if ExtractCompilerParamsForBuildAll(CompilerParams)
+    <>ExtractCompilerParamsForBuildAll(APackage.LastCompilerParams)
+  then begin
     DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  Compiler params changed for ',APackage.IDAsString);
     DebugLn('  Old="',APackage.LastCompilerParams,'"');
     DebugLn('  Now="',CompilerParams,'"');
