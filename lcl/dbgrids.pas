@@ -63,7 +63,8 @@ type
     dgCancelOnExit,                     // Ya
     dgMultiselect,                      // Ya
     dgHeaderHotTracking,
-    dgHeaderPushedLook
+    dgHeaderPushedLook,
+    dgPersistentMultiSelect
   );
   TDbGridOptions = set of TDbGridOption;
 
@@ -1696,6 +1697,9 @@ var
     N: Integer;
     CurBookmark: TBookmarkStr;
   begin
+    if dgPersistentMultiSelect in Options then
+      exit;
+
     if (ssShift in Shift) then begin
 
       CurBookmark := FDatalink.DataSet.Bookmark;
@@ -2784,7 +2788,7 @@ end;
 
 procedure TCustomDBGrid.ClearSelection(selCurrent:boolean=false);
 begin
-  if (dgMultiSelect in Options) then begin
+  if [dgMultiSelect,dgPersistentMultiSelect]*Options=[dgMultiSelect] then begin
     if SelectedRows.Count>0 then
       SelectedRows.Clear;
     if SelCurrent then
