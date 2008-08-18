@@ -31,6 +31,9 @@ type
   { TLazTestRunner }
 
   TLazTestRunner = class(TTestRunner)
+  private
+    FSubmitter: string;
+    FMachine: string;
   protected
     procedure AppendLongOpts; override;
     procedure ParseOptions; override;
@@ -52,11 +55,17 @@ begin
   inherited ParseOptions;
   if HasOption('compiler') then
     Compiler := GetOptionValue('compiler');
+  if HasOption('submitter') then
+    FSubmitter := GetOptionValue('submitter');
+  if HasOption('machine') then
+    FMachine := GetOptionValue('machine');
 end;
 
 procedure TLazTestRunner.WriteCustomHelp;
 begin
   writeln('  --compiler=<ppcxxx>       use ppcxxx to build test projects');
+  writeln('  --submitter=SubmitterName name to be stored as sumbitter of the test results');
+  writeln('  --machine=MachineName     name of the machine to be stored with the test results');
 end;
 
 procedure TLazTestRunner.ExtendXmlDocument(Doc: TXMLDocument);
@@ -78,6 +87,8 @@ begin
   AddElement('FPCVersion', {$I %FPCVERSION%});
   AddElement('LazVersion', lcl_version);
   AddElement('WidgetSet', LCLPlatformDirNames[WidgetSet.LCLPlatform]);
+  AddElement('Submitter', FSubmitter);
+  AddElement('Machine', FMachine);
   Doc.FirstChild.AppendChild(env);
 end;
 
