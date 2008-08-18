@@ -20,6 +20,7 @@ unit teststr;
 interface
 
 const
+  error = 'Error';
   failed = 'Failed';
   success = 'OK';
   skipped = 'Ignored';

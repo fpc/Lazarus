@@ -29,6 +29,7 @@ Type
   TTestStatus = (
   stOK,
   stFailed,
+  stError,
   stIgnored
   );
 
@@ -40,24 +41,28 @@ Const
   TestOK : Array[TTestStatus] of Boolean = (
     True,  // stOK
     False, // stFailed
+    False, // stError
     False  // stIgnored
   );
 
   TestSkipped : Array[TTestStatus] of Boolean = (
     False,  // stOK
     False, // stFailed
+    False, // stError
     True  // stIgnored
   );
 
   StatusText : Array[TTestStatus] of String = (
     success,
     failed,
+    error,
     skipped
   );
 
   SQLField : Array[TTestStatus] of String = (
     'TU_OK',
     'TU_FAILED',
+    'TU_ERROR',
     'TU_SKIPPED'
   );
 

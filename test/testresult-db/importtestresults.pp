@@ -457,7 +457,6 @@ procedure ProcessTestListing;
     TestResult, TestLog: string;
     TS: TTestStatus;
     ID: LongInt;
-    i: Integer;
   begin
     Name := ATestElement.GetAttribute('Name');
     TestResult := ATestElement.GetAttribute('Result');
@@ -467,7 +466,7 @@ procedure ProcessTestListing;
     ID := RequireTestID(FullName);
     TS:=GetTestStatus(TestResult);
     Verbose(V_Debug,'Test result: '+TestResult+' TestStatus: '+IntToStr(ord(TS)));
-    if TS=stFailed then
+    if TS in [stFailed, stError] then
       TestLog := ATestElement.FindNode('Message').TextContent;
     AddTestResult(ID,TestRunID,Ord(TS),TestOK[TS],TestSkipped[TS],TestLog);
   end;
