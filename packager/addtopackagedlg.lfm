@@ -1,0 +1,754 @@
+object AddToPackageDlg: TAddToPackageDlg
+  Left = 390
+  Height = 300
+  Top = 362
+  Width = 500
+  ActiveControl = NoteBook
+  Caption = 'Add to package'
+  ClientHeight = 300
+  ClientWidth = 500
+  KeyPreview = True
+  OnClose = AddToPackageDlgClose
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnKeyDown = AddToPackageDlgKeyDown
+  Position = poScreenCenter
+  LCLVersion = '0.9.25'
+  object NoteBook: TNotebook
+    Height = 300
+    Width = 500
+    Align = alClient
+    PageIndex = 1
+    TabOrder = 0
+    object NewFilePage: TPage
+      Caption = 'New File'
+      ClientWidth = 498
+      ClientHeight = 273
+      OnResize = NewFilePageResize
+      object NewFileTreeView: TTreeView
+        AnchorSideBottom.Control = NewFileOkButton
+        Height = 218
+        Width = 249
+        Align = alLeft
+        BorderSpacing.Bottom = 5
+        DefaultItemHeight = 19
+        TabOrder = 0
+        OnClick = NewFileTreeViewClick
+        OnDblClick = NewFileTreeViewDblClick
+        OnSelectionChanged = NewFileTreeViewSelectionChanged
+      end
+      object NewFileDescriptionGroupBox: TGroupBox
+        AnchorSideLeft.Control = NewFileTreeView
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = NewFileOkButton
+        Left = 249
+        Height = 218
+        Width = 249
+        Align = alClient
+        BorderSpacing.Bottom = 5
+        Caption = 'NewFileDescriptionGroupBox'
+        ClientHeight = 199
+        ClientWidth = 245
+        TabOrder = 1
+        object NewFileHelpLabel: TLabel
+          Height = 199
+          Width = 245
+          Align = alClient
+          Caption = 'NewFileHelpLabel'
+          ParentColor = False
+          WordWrap = True
+        end
+      end
+      object NewFileBtnPanel: TPanel
+        Height = 50
+        Top = 223
+        Width = 498
+        Align = alBottom
+        BevelOuter = bvNone
+        ClientHeight = 50
+        ClientWidth = 498
+        TabOrder = 2
+        object NewFileOkButton: TButton
+          AnchorSideBottom.Side = asrBottom
+          Left = 222
+          Height = 38
+          Top = 6
+          Width = 119
+          Align = alRight
+          Anchors = [akBottom]
+          AutoSize = True
+          BorderSpacing.Around = 6
+          Caption = 'NewFileOkButton'
+          Enabled = False
+          OnClick = NewFileOkButtonClick
+          TabOrder = 0
+        end
+        object NewFileCancelButton: TButton
+          AnchorSideLeft.Side = asrBottom
+          Left = 347
+          Height = 38
+          Top = 6
+          Width = 145
+          Align = alRight
+          AutoSize = True
+          BorderSpacing.Around = 6
+          Caption = 'NewFileCancelButton'
+          ModalResult = 2
+          TabOrder = 1
+        end
+      end
+    end
+    object AddUnitPage: TPage
+      Caption = 'Add Unit'
+      ClientWidth = 498
+      ClientHeight = 273
+      object AddUnitFilenameLabel: TLabel
+        AnchorSideTop.Control = AddUnitFilenameEdit
+        AnchorSideTop.Side = asrCenter
+        Left = 5
+        Height = 20
+        Top = 8
+        Width = 143
+        Caption = 'AddUnitFilenameLabel'
+        ParentColor = False
+      end
+      object AddUnitSrcNameLabel: TLabel
+        AnchorSideTop.Control = AddUnitSrcNameEdit
+        AnchorSideTop.Side = asrCenter
+        Left = 5
+        Height = 20
+        Top = 41
+        Width = 146
+        Caption = 'AddUnitSrcNameLabel'
+        ParentColor = False
+      end
+      object AddUnitFilenameEdit: TEdit
+        AnchorSideLeft.Control = AddUnitFilenameLabel
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideRight.Control = AddUnitFileBrowseButton
+        Left = 148
+        Height = 27
+        Top = 5
+        Width = 292
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = True
+        TabOrder = 0
+        Text = 'AddUnitFilenameEdit'
+      end
+      object AddUnitFileBrowseButton: TButton
+        AnchorSideRight.Control = AddUnitFileShortenButton
+        Left = 440
+        Height = 29
+        Top = 5
+        Width = 24
+        Anchors = [akTop, akRight]
+        AutoSize = True
+        Caption = '...'
+        OnClick = AddUnitFileBrowseButtonClick
+        TabOrder = 1
+      end
+      object AddUnitFileShortenButton: TButton
+        AnchorSideRight.Control = AddUnitPage
+        AnchorSideRight.Side = asrBottom
+        Left = 464
+        Height = 29
+        Top = 5
+        Width = 34
+        Anchors = [akTop, akRight]
+        AutoSize = True
+        Caption = '<>'
+        OnClick = AddUnitFileShortenButtonClick
+        TabOrder = 2
+      end
+      object AddUnitSrcNameEdit: TEdit
+        AnchorSideLeft.Control = AddUnitSrcNameLabel
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = AddUnitFilenameEdit
+        AnchorSideTop.Side = asrBottom
+        Left = 151
+        Height = 27
+        Top = 38
+        Width = 156
+        AutoSize = True
+        BorderSpacing.Top = 6
+        TabOrder = 3
+        Text = 'AddUnitSrcNameEdit'
+      end
+      object AddUnitHasRegisterCheckBox: TCheckBox
+        AnchorSideTop.Control = AddUnitSrcNameEdit
+        AnchorSideTop.Side = asrBottom
+        Left = 5
+        Height = 22
+        Top = 71
+        Width = 214
+        BorderSpacing.Around = 6
+        Caption = 'AddUnitHasRegisterCheckBox'
+        TabOrder = 4
+      end
+      object AddUnitIsVirtualCheckBox: TCheckBox
+        AnchorSideLeft.Control = AddUnitHasRegisterCheckBox
+        AnchorSideTop.Control = AddUnitHasRegisterCheckBox
+        AnchorSideTop.Side = asrBottom
+        Left = 5
+        Height = 22
+        Top = 99
+        Width = 189
+        BorderSpacing.Top = 6
+        Caption = 'AddUnitIsVirtualCheckBox'
+        OnClick = AddUnitIsVirtualCheckBoxClick
+        TabOrder = 5
+      end
+      object AddSecondaryFilesCheckBox: TCheckBox
+        AnchorSideLeft.Control = AddUnitHasRegisterCheckBox
+        AnchorSideTop.Control = AddUnitIsVirtualCheckBox
+        AnchorSideTop.Side = asrBottom
+        Left = 5
+        Height = 22
+        Top = 127
+        Width = 207
+        BorderSpacing.Top = 6
+        Caption = 'AddSecondaryFilesCheckBox'
+        Checked = True
+        State = cbChecked
+        TabOrder = 6
+      end
+      object AddUnitUpdateButton: TButton
+        AnchorSideLeft.Control = AddUnitHasRegisterCheckBox
+        AnchorSideTop.Control = AddSecondaryFilesCheckBox
+        AnchorSideTop.Side = asrBottom
+        Left = 5
+        Height = 29
+        Top = 155
+        Width = 153
+        AutoSize = True
+        BorderSpacing.Top = 6
+        Caption = 'AddUnitUpdateButton'
+        OnClick = AddUnitUpdateButtonClick
+        TabOrder = 7
+      end
+      object AddUnitButton: TButton
+        AnchorSideLeft.Control = AddUnitHasRegisterCheckBox
+        AnchorSideTop.Control = AddUnitUpdateButton
+        AnchorSideTop.Side = asrBottom
+        Left = 5
+        Height = 29
+        Top = 209
+        Width = 106
+        AutoSize = True
+        BorderSpacing.Top = 25
+        Caption = 'AddUnitButton'
+        OnClick = AddUnitButtonClick
+        TabOrder = 8
+      end
+      object CancelAddUnitButton: TButton
+        AnchorSideLeft.Control = AddUnitButton
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = AddUnitButton
+        Left = 121
+        Height = 29
+        Top = 209
+        Width = 149
+        AutoSize = True
+        BorderSpacing.Left = 10
+        Caption = 'CancelAddUnitButton'
+        OnClick = CancelAddUnitButtonClick
+        TabOrder = 9
+      end
+    end
+    object NewComponentPage: TPage
+      Caption = 'New Component'
+      ClientWidth = 498
+      ClientHeight = 273
+      object AncestorTypeLabel: TLabel
+        AnchorSideTop.Control = AncestorComboBox
+        AnchorSideTop.Side = asrCenter
+        Left = 5
+        Height = 20
+        Top = 9
+        Width = 120
+        Caption = 'AncestorTypeLabel'
+        ParentColor = False
+      end
+      object ClassNameLabel: TLabel
+        AnchorSideTop.Control = ClassNameEdit
+        AnchorSideTop.Side = asrCenter
+        Left = 5
+        Height = 20
+        Top = 43
+        Width = 108
+        Caption = 'ClassNameLabel'
+        ParentColor = False
+      end
+      object PalettePageLabel: TLabel
+        AnchorSideTop.Control = PalettePageCombobox
+        AnchorSideTop.Side = asrCenter
+        Left = 5
+        Height = 20
+        Top = 77
+        Width = 110
+        Caption = 'PalettePageLabel'
+        ParentColor = False
+      end
+      object ComponentUnitFileLabel: TLabel
+        AnchorSideTop.Control = ComponentUnitFileEdit
+        AnchorSideTop.Side = asrCenter
+        Left = 5
+        Height = 20
+        Top = 111
+        Width = 156
+        Caption = 'ComponentUnitFileLabel'
+        ParentColor = False
+      end
+      object ComponentUnitNameLabel: TLabel
+        AnchorSideTop.Control = ComponentUnitNameEdit
+        AnchorSideTop.Side = asrCenter
+        Left = 5
+        Height = 20
+        Top = 144
+        Width = 175
+        Caption = 'ComponentUnitNameLabel'
+        ParentColor = False
+      end
+      object AncestorComboBox: TComboBox
+        AnchorSideLeft.Control = AncestorTypeLabel
+        AnchorSideLeft.Side = asrBottom
+        Left = 125
+        Height = 29
+        Top = 5
+        Width = 200
+        AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+        MaxLength = 0
+        OnCloseUp = AncestorComboBoxCloseUp
+        TabOrder = 0
+        Text = 'AncestorComboBox'
+      end
+      object AncestorShowAllCheckBox: TCheckBox
+        AnchorSideLeft.Control = AncestorComboBox
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = AncestorComboBox
+        AnchorSideTop.Side = asrCenter
+        Left = 325
+        Height = 22
+        Top = 8
+        Width = 193
+        Caption = 'AncestorShowAllCheckBox'
+        Checked = True
+        OnClick = AncestorShowAllCheckBoxClick
+        State = cbChecked
+        TabOrder = 1
+      end
+      object ClassNameEdit: TEdit
+        AnchorSideLeft.Control = ClassNameLabel
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = AncestorComboBox
+        AnchorSideTop.Side = asrBottom
+        Left = 113
+        Height = 27
+        Top = 40
+        Width = 200
+        AutoSize = True
+        BorderSpacing.Top = 6
+        OnChange = ClassNameEditChange
+        TabOrder = 2
+        Text = 'ClassNameEdit'
+      end
+      object PalettePageCombobox: TComboBox
+        AnchorSideLeft.Control = PalettePageLabel
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = ClassNameEdit
+        AnchorSideTop.Side = asrBottom
+        Left = 115
+        Height = 29
+        Top = 73
+        Width = 200
+        AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+        BorderSpacing.Top = 6
+        MaxLength = 0
+        TabOrder = 3
+        Text = 'PalettePageCombobox'
+      end
+      object ComponentUnitFileEdit: TEdit
+        AnchorSideLeft.Control = ComponentUnitFileLabel
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = PalettePageCombobox
+        AnchorSideTop.Side = asrBottom
+        Left = 161
+        Height = 27
+        Top = 108
+        Width = 129
+        AutoSize = True
+        BorderSpacing.Top = 6
+        TabOrder = 4
+        Text = 'ComponentUnitFileEdit'
+      end
+      object ComponentUnitFileBrowseButton: TButton
+        AnchorSideLeft.Control = ComponentUnitFileEdit
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = ComponentUnitFileEdit
+        AnchorSideTop.Side = asrCenter
+        Left = 290
+        Height = 29
+        Hint = 'Save file dialog'
+        Top = 107
+        Width = 24
+        AutoSize = True
+        Caption = '...'
+        OnClick = ComponentUnitFileBrowseButtonClick
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 5
+      end
+      object ComponentUnitFileShortenButton: TButton
+        AnchorSideLeft.Control = ComponentUnitFileBrowseButton
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = ComponentUnitFileEdit
+        AnchorSideTop.Side = asrCenter
+        Left = 314
+        Height = 29
+        Hint = 'Shorten or expand filename'
+        Top = 107
+        Width = 34
+        AutoSize = True
+        Caption = '<>'
+        OnClick = ComponentUnitFileShortenButtonClick
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 6
+      end
+      object ComponentUnitNameEdit: TEdit
+        AnchorSideLeft.Control = ComponentUnitNameLabel
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = ComponentUnitFileEdit
+        AnchorSideTop.Side = asrBottom
+        Left = 180
+        Height = 27
+        Top = 141
+        Width = 156
+        AutoSize = True
+        BorderSpacing.Top = 6
+        TabOrder = 7
+        Text = 'ComponentUnitNameEdit'
+      end
+      object NewComponentButton: TButton
+        AnchorSideTop.Control = ComponentUnitNameEdit
+        AnchorSideTop.Side = asrBottom
+        Left = 5
+        Height = 29
+        Top = 193
+        Width = 157
+        AutoSize = True
+        BorderSpacing.Top = 25
+        Caption = 'NewComponentButton'
+        OnClick = NewComponentButtonClick
+        TabOrder = 8
+      end
+      object CancelNewComponentButton: TButton
+        AnchorSideLeft.Control = NewComponentButton
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = NewComponentButton
+        Left = 168
+        Height = 29
+        Top = 193
+        Width = 200
+        AutoSize = True
+        BorderSpacing.Left = 6
+        Caption = 'CancelNewComponentButton'
+        OnClick = CancelNewComponentButtonClick
+        TabOrder = 9
+      end
+    end
+    object NewRequirementPage: TPage
+      Caption = 'New Requirement'
+      ClientWidth = 498
+      ClientHeight = 273
+      object DependPkgNameLabel: TLabel
+        AnchorSideTop.Control = DependPkgNameComboBox
+        AnchorSideTop.Side = asrCenter
+        Left = 5
+        Height = 20
+        Top = 9
+        Width = 147
+        Caption = 'DependPkgNameLabel'
+        ParentColor = False
+      end
+      object DependMinVersionLabel: TLabel
+        AnchorSideTop.Control = DependMinVersionEdit
+        AnchorSideTop.Side = asrCenter
+        Left = 5
+        Height = 20
+        Top = 43
+        Width = 154
+        Caption = 'DependMinVersionLabel'
+        ParentColor = False
+      end
+      object DependMaxVersionLabel: TLabel
+        AnchorSideTop.Control = DependMaxVersionEdit
+        AnchorSideTop.Side = asrCenter
+        Left = 5
+        Height = 20
+        Top = 76
+        Width = 158
+        Caption = 'DependMaxVersionLabel'
+        ParentColor = False
+      end
+      object DependPkgNameComboBox: TComboBox
+        AnchorSideLeft.Control = DependPkgNameLabel
+        AnchorSideLeft.Side = asrBottom
+        Left = 152
+        Height = 29
+        Top = 5
+        Width = 215
+        AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+        MaxLength = 0
+        TabOrder = 0
+        Text = 'DependPkgNameComboBox'
+      end
+      object DependMinVersionEdit: TEdit
+        AnchorSideLeft.Control = DependMinVersionLabel
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = DependPkgNameComboBox
+        AnchorSideTop.Side = asrBottom
+        Left = 159
+        Height = 27
+        Top = 40
+        Width = 100
+        AutoSize = True
+        BorderSpacing.Top = 6
+        TabOrder = 1
+        Text = 'DependMinVersionEdit'
+      end
+      object DependMaxVersionEdit: TEdit
+        AnchorSideLeft.Control = DependMaxVersionLabel
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = DependMinVersionEdit
+        AnchorSideTop.Side = asrBottom
+        Left = 163
+        Height = 27
+        Top = 73
+        Width = 100
+        AutoSize = True
+        BorderSpacing.Top = 6
+        TabOrder = 2
+        Text = 'DependMaxVersionEdit'
+      end
+      object NewDependButton: TButton
+        AnchorSideTop.Control = DependMaxVersionEdit
+        AnchorSideTop.Side = asrBottom
+        Left = 5
+        Height = 29
+        Top = 125
+        Width = 132
+        AutoSize = True
+        BorderSpacing.Top = 25
+        Caption = 'NewDependButton'
+        OnClick = NewDependButtonClick
+        TabOrder = 3
+      end
+      object CancelDependButton: TButton
+        AnchorSideLeft.Control = NewDependButton
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = NewDependButton
+        Left = 143
+        Height = 29
+        Top = 125
+        Width = 148
+        AutoSize = True
+        BorderSpacing.Left = 6
+        Caption = 'CancelDependButton'
+        ModalResult = 2
+        TabOrder = 4
+      end
+    end
+    object AddFilePage: TPage
+      Caption = 'Add File'
+      ClientWidth = 498
+      ClientHeight = 273
+      object AddFilenameLabel: TLabel
+        AnchorSideTop.Control = AddFilenameEdit
+        AnchorSideTop.Side = asrCenter
+        Left = 5
+        Height = 20
+        Top = 8
+        Width = 117
+        Caption = 'AddFilenameLabel'
+        ParentColor = False
+      end
+      object AddFilenameEdit: TEdit
+        AnchorSideLeft.Control = AddFilenameLabel
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideRight.Control = AddFileBrowseButton
+        Left = 122
+        Height = 27
+        Top = 5
+        Width = 318
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = True
+        TabOrder = 0
+        Text = 'AddFilenameEdit'
+      end
+      object AddFileBrowseButton: TButton
+        AnchorSideRight.Control = AddFileShortenButton
+        Left = 440
+        Height = 29
+        Top = 5
+        Width = 24
+        Anchors = [akTop, akRight]
+        AutoSize = True
+        Caption = '...'
+        OnClick = AddFileBrowseButtonClick
+        TabOrder = 1
+      end
+      object AddFileShortenButton: TButton
+        AnchorSideRight.Control = AddFilePage
+        AnchorSideRight.Side = asrBottom
+        Left = 464
+        Height = 29
+        Top = 5
+        Width = 34
+        Anchors = [akTop, akRight]
+        AutoSize = True
+        Caption = '<>'
+        OnClick = AddFileShortenButtonClick
+        TabOrder = 2
+      end
+      object AddFileTypeRadioGroup: TRadioGroup
+        AnchorSideTop.Control = AddFilenameEdit
+        AnchorSideTop.Side = asrBottom
+        Left = 5
+        Height = 30
+        Top = 38
+        Width = 100
+        AutoFill = True
+        AutoSize = True
+        BorderSpacing.Top = 6
+        Caption = 'AddFileTypeRadioGroup'
+        ChildSizing.LeftRightSpacing = 6
+        ChildSizing.TopBottomSpacing = 6
+        ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+        ChildSizing.EnlargeVertical = crsHomogenousChildResize
+        ChildSizing.ShrinkHorizontal = crsScaleChilds
+        ChildSizing.ShrinkVertical = crsScaleChilds
+        ChildSizing.Layout = cclLeftToRightThenTopToBottom
+        ChildSizing.ControlsPerLine = 1
+        Constraints.MinHeight = 30
+        Constraints.MinWidth = 100
+        TabOrder = 3
+      end
+      object AddFileButton: TButton
+        AnchorSideTop.Control = AddFileTypeRadioGroup
+        AnchorSideTop.Side = asrBottom
+        Left = 5
+        Height = 29
+        Top = 93
+        Width = 100
+        AutoSize = True
+        BorderSpacing.Top = 25
+        Caption = 'AddFileButton'
+        OnClick = AddFileButtonClick
+        TabOrder = 4
+      end
+      object CancelAddFileButton: TButton
+        AnchorSideLeft.Control = AddFileButton
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = AddFileButton
+        Left = 111
+        Height = 29
+        Top = 93
+        Width = 143
+        AutoSize = True
+        BorderSpacing.Left = 6
+        Caption = 'CancelAddFileButton'
+        OnClick = CancelAddFileButtonClick
+        TabOrder = 5
+      end
+    end
+    object AddFilesPage: TPage
+      Caption = 'Add Files'
+      ClientWidth = 498
+      ClientHeight = 273
+      object FilesListView: TListView
+        AnchorSideBottom.Control = FilesBrowseButton
+        Height = 227
+        Width = 498
+        Align = alClient
+        BorderSpacing.Bottom = 5
+        Columns = <        
+          item
+            Caption = 'Filename'
+            Width = 200
+          end        
+          item
+            Caption = 'Type'
+            Width = 280
+          end>
+        MultiSelect = True
+        TabOrder = 0
+        ViewStyle = vsReport
+      end
+      object AddFilesBtnPanel: TPanel
+        Height = 41
+        Top = 232
+        Width = 498
+        Align = alBottom
+        AutoSize = True
+        BevelOuter = bvNone
+        ClientHeight = 41
+        ClientWidth = 498
+        TabOrder = 1
+        object FilesBrowseButton: TButton
+          AnchorSideBottom.Side = asrBottom
+          Left = 6
+          Height = 29
+          Top = 6
+          Width = 128
+          Align = alLeft
+          AutoSize = True
+          BorderSpacing.Around = 6
+          Caption = 'FilesBrowseButton'
+          OnClick = FilesBrowseButtonClick
+          TabOrder = 0
+        end
+        object FilesShortenButton: TButton
+          AnchorSideLeft.Side = asrBottom
+          Left = 140
+          Height = 29
+          Top = 6
+          Width = 133
+          Align = alLeft
+          AutoSize = True
+          BorderSpacing.Around = 6
+          Caption = 'FilesShortenButton'
+          OnClick = FilesShortenButtonClick
+          TabOrder = 1
+        end
+        object FilesDeleteButton: TButton
+          AnchorSideLeft.Side = asrBottom
+          Left = 279
+          Height = 29
+          Top = 6
+          Width = 124
+          Align = alLeft
+          AutoSize = True
+          BorderSpacing.Around = 6
+          Caption = 'FilesDeleteButton'
+          OnClick = FilesDeleteButtonClick
+          TabOrder = 2
+        end
+        object FilesAddButton: TButton
+          AnchorSideLeft.Side = asrBottom
+          Left = 409
+          Height = 29
+          Top = 6
+          Width = 107
+          Align = alLeft
+          AutoSize = True
+          BorderSpacing.Around = 6
+          Caption = 'FilesAddButton'
+          OnClick = FilesAddButtonClick
+          TabOrder = 3
+        end
+      end
+    end
+  end
+end

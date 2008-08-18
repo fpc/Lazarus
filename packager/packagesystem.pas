@@ -2671,7 +2671,7 @@ begin
         begin
           while (StartPos>1) and (Result[StartPos-1] in [' ',#9]) do
             dec(StartPos);
-          DebugLn(['TLazPackageGraph.ExtractCompilerParamsForBuildAll Removing: ',copy(Result,StartPos,EndPos-StartPos)]);
+          //DebugLn(['TLazPackageGraph.ExtractCompilerParamsForBuildAll Removing: ',copy(Result,StartPos,EndPos-StartPos)]);
           System.Delete(Result,StartPos,EndPos-StartPos);
           EndPos:=StartPos;
         end;

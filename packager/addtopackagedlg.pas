@@ -82,12 +82,12 @@ type
   TAddToPackageDlg = class(TForm)
     // notebook
     NoteBook: TNoteBook;
+    NewFilePage: TPage;
     AddUnitPage: TPage;
+    NewComponentPage: TPage;
+    NewRequirementPage: TPage;
     AddFilePage: TPage;
     AddFilesPage: TPage;
-    NewComponentPage: TPage;
-    NewDependPage: TPage;
-    NewFilePage: TPage;
     // new file page
     NewFileTreeView: TTreeView;
     NewFileDescriptionGroupBox: TGroupBox;
@@ -146,9 +146,10 @@ type
     FilesShortenButton: TButton;
     FilesDeleteButton: TButton;
     FilesAddButton: TButton;
+    NewFileBtnPanel: TPanel;
+    AddFilesBtnPanel: TPanel;
     procedure AddFileBrowseButtonClick(Sender: TObject);
     procedure AddFileButtonClick(Sender: TObject);
-    procedure AddFilePageResize(Sender: TObject);
     procedure AddFileShortenButtonClick(Sender: TObject);
     procedure AddToPackageDlgClose(Sender: TObject;
                                    var CloseAction: TCloseAction);
@@ -158,7 +159,6 @@ type
     procedure AddUnitFileBrowseButtonClick(Sender: TObject);
     procedure AddUnitFileShortenButtonClick(Sender: TObject);
     procedure AddUnitIsVirtualCheckBoxClick(Sender: TObject);
-    procedure AddUnitPageResize(Sender: TObject);
     procedure AddUnitUpdateButtonClick(Sender: TObject);
     procedure AncestorComboBoxCloseUp(Sender: TObject);
     procedure AncestorShowAllCheckBoxClick(Sender: TObject);
@@ -168,15 +168,14 @@ type
     procedure ClassNameEditChange(Sender: TObject);
     procedure ComponentUnitFileBrowseButtonClick(Sender: TObject);
     procedure ComponentUnitFileShortenButtonClick(Sender: TObject);
-    procedure AddFilesPageResize(Sender: TObject);
     procedure FilesAddButtonClick(Sender: TObject);
     procedure FilesBrowseButtonClick(Sender: TObject);
     procedure FilesDeleteButtonClick(Sender: TObject);
     procedure FilesShortenButtonClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
     procedure NewComponentButtonClick(Sender: TObject);
-    procedure NewComponentPageResize(Sender: TObject);
     procedure NewDependButtonClick(Sender: TObject);
-    procedure NewDependPageResize(Sender: TObject);
     procedure NewFileOkButtonClick(Sender: TObject);
     procedure NewFilePageResize(Sender: TObject);
     procedure NewFileTreeViewClick(Sender: TObject);
@@ -192,8 +191,8 @@ type
     fPackages: TAVLTree;// tree of  TLazPackage or TPackageLink
     procedure SetLazPackage(const AValue: TLazPackage);
     procedure SetupComponents;
-    procedure SetupAddUnitPage;
     procedure SetupNewFilePage;
+    procedure SetupAddUnitPage;
     procedure SetupNewComponentPage;
     procedure SetupAddDependencyPage;
     procedure SetupAddFilePage;
@@ -208,8 +207,6 @@ type
     procedure FillNewFileTreeView;
   public
     Params: TAddToPkgResult;
-    constructor Create(TheOwner: TComponent); override;
-    destructor Destroy; override;
     procedure UpdateAvailableAncestorTypes;
     procedure UpdateAvailablePageNames;
     procedure UpdateAvailableDependencyNames;
@@ -243,9 +240,9 @@ var
   AddDlg: TAddToPackageDlg;
 begin
   AddDlg:=TAddToPackageDlg.Create(nil);
-  AddDlg.LazPackage:=Pkg;
   AddDlg.OnGetIDEFileInfo:=OnGetIDEFileInfo;
   AddDlg.OnGetUnitRegisterInfo:=OnGetUnitRegisterInfo;
+  AddDlg.LazPackage:=Pkg;
   Result:=AddDlg.ShowModal;
   if Result=mrOk then begin
     Params:=AddDlg.Params;
@@ -501,53 +498,11 @@ begin
     ModalResult:=mrCancel;
 end;
 
-procedure TAddToPackageDlg.AddFilePageResize(Sender: TObject);
-var
-  x: Integer;
-  y: Integer;
-  w: Integer;
-begin
-  x:=5;
-  y:=5;
-  with AddFilenameLabel do
-    SetBounds(x,y+2,100,Height);
-  inc(x,AddFilenameLabel.Width+5);
-
-  w:=AddFilenameEdit.Height;
-  with AddFilenameEdit do
-    SetBounds(x,y,Parent.ClientWidth-x-2-w-2-w-5,Height);
-  inc(x,AddFilenameEdit.Width+2);
-
-  with AddFileBrowseButton do
-    SetBounds(x,y,w,w);
-  inc(x,w+2);
-  with AddFileShortenButton do
-    SetBounds(x,y,w,w);
-  x:=5;
-  y:=AddFilenameEdit.Top+AddFilenameEdit.Height+5;
-
-  with AddFileTypeRadioGroup do begin
-    SetBounds(x,y,Parent.ClientWidth-2*x,140);
-    inc(y,Height+20);
-  end;
-
-  with AddFileButton do
-    SetBounds(x,y,80,Height);
-  inc(x,AddFileButton.Width+10);
-
-  with CancelAddFileButton do
-    SetBounds(x,y,80,Height);
-end;
-
 procedure TAddToPackageDlg.AddFileShortenButtonClick(Sender: TObject);
 begin
   if lisA2PchooseAnExistingFile=AddFilenameEdit.Text then exit;
   AddFilenameEdit.Text:=
     SwitchRelativeAbsoluteFilename(AddFilenameEdit.Text);
-end;
-
-procedure TAddToPackageDlg.AddFilesPageResize(Sender: TObject);
-begin
 end;
 
 procedure TAddToPackageDlg.AddFileBrowseButtonClick(Sender: TObject);
@@ -674,46 +629,6 @@ begin
   AddUnitFileShortenButton.Enabled:=not VirtualFile;
   AddUnitUpdateButton.Enabled:=not VirtualFile;
   AddSecondaryFilesCheckBox.Enabled:=not VirtualFile;
-end;
-
-procedure TAddToPackageDlg.AddUnitPageResize(Sender: TObject);
-var
-  x: Integer;
-  y: Integer;
-  w: Integer;
-begin
-  x:=5;
-  y:=5;
-  with AddUnitFilenameLabel do
-    SetBounds(x,y+2,100,Height);
-  inc(x,AddUnitFilenameLabel.Width+5);
-
-  w:=AddUnitFilenameEdit.Height;
-  with AddUnitFilenameEdit do
-    SetBounds(x,y,Parent.ClientWidth-x-2*w-2-2-5,Height);
-  inc(x,AddUnitFilenameEdit.Width+2);
-
-  with AddUnitFileBrowseButton do
-    SetBounds(x,y,w,w);
-  inc(x,w+2);
-  with AddUnitFileShortenButton do
-    SetBounds(x,y,w,w);
-
-  x:=5;
-  y:=AddUnitFilenameEdit.Top+AddUnitFilenameEdit.Height+5;
-
-  with AddUnitSrcNameLabel do
-    SetBounds(x,y+2,100,Height);
-  inc(x,AddUnitSrcNameLabel.Width+5);
-
-  with AddUnitSrcNameEdit do
-    SetBounds(x,y,100,Height);
-  inc(y,AddUnitSrcNameEdit.Height+5);
-  x:=5;
-
-  with AddUnitHasRegisterCheckBox do
-    SetBounds(x,y,Parent.ClientWidth-2*x,Height);
-  inc(y,AddUnitHasRegisterCheckBox.Height+5);
 end;
 
 procedure TAddToPackageDlg.AddUnitUpdateButtonClick(Sender: TObject);
@@ -958,6 +873,23 @@ begin
   end;
 end;
 
+procedure TAddToPackageDlg.FormCreate(Sender: TObject);
+begin
+  Caption:=lisA2PAddToPackage;
+  fPkgComponents:=TAVLTree.Create(@CompareIDEComponentByClassName);
+  fPackages:=TAVLTree.Create(@CompareLazPackageID);
+  Params:=TAddToPkgResult.Create;
+  IDEDialogLayoutList.ApplyLayout(Self,500,300);
+  SetupComponents;
+end;
+
+procedure TAddToPackageDlg.FormDestroy(Sender: TObject);
+begin
+  FreeAndNil(fPkgComponents);
+  FreeAndNil(fPackages);
+  FreeAndNil(Params);
+end;
+
 procedure TAddToPackageDlg.NewComponentButtonClick(Sender: TObject);
 var
   PkgFile: TPkgFile;
@@ -1075,80 +1007,6 @@ begin
   ModalResult:=mrOk;
 end;
 
-procedure TAddToPackageDlg.NewComponentPageResize(Sender: TObject);
-var
-  x: Integer;
-  y: Integer;
-  w: Integer;
-begin
-  x:=5;
-  y:=5;
-  
-  with AncestorTypeLabel do
-    SetBounds(x,y+2,100,Height);
-  inc(x,AncestorTypeLabel.Width+5);
-
-  with AncestorComboBox do
-    SetBounds(x,y,200,Height);
-  inc(x,AncestorComboBox.Width+5);
-    
-  with AncestorShowAllCheckBox do
-    SetBounds(x,y,100,Height);
-  x:=5;
-  inc(y,AncestorComboBox.Height+5);
-
-  with ClassNameLabel do
-    SetBounds(x,y+2,100,Height);
-  inc(x,ClassNameLabel.Width+5);
-
-  with ClassNameEdit do
-    SetBounds(x,y,200,Height);
-  x:=5;
-  inc(y,ClassNameEdit.Height+5);
-
-  with PalettePageLabel do
-    SetBounds(x,y+2,100,Height);
-  inc(x,PalettePageLabel.Width+5);
-
-  with PalettePageCombobox do
-    SetBounds(x,y,200,Height);
-  x:=5;
-  inc(y,PalettePageCombobox.Height+5);
-
-  with ComponentUnitFileLabel do
-    SetBounds(x,y+2,100,Height);
-  inc(x,ComponentUnitFileLabel.Width+5);
-
-  w:=ComponentUnitFileEdit.Height;
-  with ComponentUnitFileEdit do
-    SetBounds(x,y,Parent.ClientWidth-x-2-w-2-w-5,Height);
-  inc(x,ComponentUnitFileEdit.Width+2);
-
-  with ComponentUnitFileBrowseButton do
-    SetBounds(x,y,w,w);
-  inc(x,w+2);
-  with ComponentUnitFileShortenButton do
-    SetBounds(x,y,w,w);
-  x:=5;
-  inc(y,ComponentUnitFileEdit.Height+5);
-
-  with ComponentUnitNameLabel do
-    SetBounds(x,y+2,100,Height);
-  inc(x,ComponentUnitNameLabel.Width+5);
-
-  with ComponentUnitNameEdit do
-    SetBounds(x,y,100,Height);
-  inc(y,ComponentUnitNameEdit.Height+15);
-  x:=5;
-
-  with NewComponentButton do
-    SetBounds(x,y,80,Height);
-  inc(x,NewComponentButton.Width+10);
-
-  with CancelNewComponentButton do
-    SetBounds(x,y,80,Height);
-end;
-
 procedure TAddToPackageDlg.NewDependButtonClick(Sender: TObject);
 var
   NewDependency: TPkgDependency;
@@ -1194,43 +1052,6 @@ begin
   finally
     NewDependency.Free;
   end;
-end;
-
-procedure TAddToPackageDlg.NewDependPageResize(Sender: TObject);
-var
-  x: Integer;
-  y: Integer;
-begin
-  x:=5;
-  y:=5;
-  
-  with DependPkgNameLabel do
-    SetBounds(x,y+3,110,Height);
-
-  with DependPkgNameComboBox do
-    SetBounds(x+DependPkgNameLabel.Width+5,y,150,Height);
-  inc(y,DependPkgNameComboBox.Height+5);
-
-  with DependMinVersionLabel do
-    SetBounds(x,y+3,170,Height);
-
-  with DependMinVersionEdit do
-    SetBounds(x+DependMinVersionLabel.Width+5,y,100,Height);
-  inc(y,DependMinVersionEdit.Height+5);
-
-  with DependMaxVersionLabel do
-    SetBounds(x,y+3,DependMinVersionLabel.Width,Height);
-
-  with DependMaxVersionEdit do
-    SetBounds(x+DependMaxVersionLabel.Width+5,y,
-              DependMinVersionEdit.Width,Height);
-  inc(y,DependMaxVersionEdit.Height+20);
-
-  with NewDependButton do
-    SetBounds(x,y,80,Height);
-
-  with CancelDependButton do
-    SetBounds(x+NewDependButton.Width+10,y,80,Height);
 end;
 
 procedure TAddToPackageDlg.NewFileOkButtonClick(Sender: TObject);
@@ -1294,31 +1115,13 @@ end;
 
 procedure TAddToPackageDlg.SetupComponents;
 begin
-  NoteBook:=TNoteBook.Create(Self);
-  with NoteBook do begin
-    Name:='NoteBook';
-    Parent:=Self;
-    Pages.Add(lisA2PNewFile);
-    NewFilePage:=Page[Pages.Count-1];
-    Pages.Add(lisA2PAddUnit);
-    AddUnitPage:=Page[Pages.Count-1];
-    Pages.Add(lisA2PNewComponent);
-    NewComponentPage:=Page[Pages.Count-1];
-    Pages.Add(lisProjAddNewRequirement);
-    NewDependPage:=Page[Pages.Count-1];
-    Pages.Add(lisA2PAddFile);
-    AddFilePage:=Page[Pages.Count-1];
-    Pages.Add(lisA2PAddFiles);
-    AddFilesPage:=Page[Pages.Count-1];
-    PageIndex:=0;
-    Align:=alClient;
-  end;
-  
-  AddUnitPage.OnResize:=@AddUnitPageResize;
-  NewComponentPage.OnResize:=@NewComponentPageResize;
-  NewDependPage.OnResize:=@NewDependPageResize;
-  AddFilePage.OnResize:=@AddFilePageResize;
-  AddFilesPage.OnResize:=@AddFilesPageResize;
+  NewFilePage.Caption:=lisA2PNewFile;
+  AddUnitPage.Caption:=lisA2PAddUnit;
+  NewComponentPage.Caption:=lisA2PNewComponent;
+  NewRequirementPage.Caption:=lisProjAddNewRequirement;
+  AddFilePage.Caption:=lisA2PAddFile;
+  AddFilesPage.Caption:=lisA2PAddFiles;
+  NoteBook.PageIndex:=0;
 
   SetupAddUnitPage;
   SetupNewFilePage;
@@ -1330,173 +1133,71 @@ end;
 
 procedure TAddToPackageDlg.SetupAddUnitPage;
 begin
-  AddUnitFilenameLabel:=TLabel.Create(Self);
   with AddUnitFilenameLabel do begin
-    Name:='AddUnitFilenameLabel';
-    Parent:=AddUnitPage;
     Caption:=lisA2PUnitFileName;
   end;
 
-  AddUnitFilenameEdit:=TEdit.Create(Self);
   with AddUnitFilenameEdit do begin
-    Name:='AddUnitFilenameEdit';
-    Parent:=AddUnitPage;
     Text:=lisA2PchooseAnExistingFile;
   end;
 
-  AddUnitFileBrowseButton:=TButton.Create(Self);
   with AddUnitFileBrowseButton do begin
-    Name:='AddUnitFileBrowseButton';
-    Parent:=AddUnitPage;
     Caption:='...';
-    OnClick:=@AddUnitFileBrowseButtonClick;
-    AutoSize:=true;
   end;
 
-  AddUnitFileShortenButton:=TButton.Create(Self);
   with AddUnitFileShortenButton do begin
-    Name:='AddUnitFileShortenButton';
-    Parent:=AddUnitPage;
     Caption:='<>';
-    OnClick:=@AddUnitFileShortenButtonClick;
-    AutoSize:=true;
   end;
 
-  AddUnitSrcNameLabel:=TLabel.Create(Self);
   with AddUnitSrcNameLabel do begin
-    Name:='AddUnitSrcNameLabel';
-    Parent:=AddUnitPage;
     Caption:=lisAF2PUnitName;
   end;
 
-  AddUnitSrcNameEdit:=TEdit.Create(Self);
   with AddUnitSrcNameEdit do begin
-    Name:='AddUnitSrcNameEdit';
-    Parent:=AddUnitPage;
     Text:='';
   end;
 
-  AddUnitHasRegisterCheckBox:=TCheckBox.Create(Self);
   with AddUnitHasRegisterCheckBox do begin
-    Name:='AddUnitHasRegisterCheckBox';
-    Parent:=AddUnitPage;
     Caption:=lisAF2PHasRegisterProcedure;
   end;
 
-  AddUnitIsVirtualCheckBox:=TCheckBox.Create(Self);
   with AddUnitIsVirtualCheckBox do begin
-    Name:='AddUnitIsVirtualCheckBox';
-    Parent:=AddUnitPage;
     Caption:=lisAF2PIsVirtualUnit;
-    OnClick:=@AddUnitIsVirtualCheckBoxClick;
-    AnchorParallel(akLeft,0,AddUnitHasRegisterCheckBox);
-    AnchorToNeighbour(akTop,5,AddUnitHasRegisterCheckBox);
   end;
 
-  AddSecondaryFilesCheckBox:=TCheckBox.Create(Self);
   with AddSecondaryFilesCheckBox do begin
-    Name:='AddSecondaryFilesCheckBox';
-    Parent:=AddUnitPage;
     Caption:=lisA2PAddLFMLRSFilesIfTheyExist;
-    Checked:=true;
-    AnchorParallel(akLeft,0,AddUnitHasRegisterCheckBox);
-    AnchorToNeighbour(akTop,5,AddUnitIsVirtualCheckBox);
   end;
 
-  AddUnitUpdateButton:=TButton.Create(Self);
   with AddUnitUpdateButton do begin
-    Name:='AddUnitUpdateButton';
-    Parent:=AddUnitPage;
     Caption:=lisA2PUpdateUnitNameAndHasRegisterProcedure;
-    OnClick:=@AddUnitUpdateButtonClick;
-    AutoSize:=true;
-    AnchorParallel(akLeft,0,AddUnitHasRegisterCheckBox);
-    AnchorToNeighbour(akTop,5,AddSecondaryFilesCheckBox);
-    AutoSize:=true;
   end;
 
-  AddUnitButton:=TButton.Create(Self);
   with AddUnitButton do begin
-    Name:='AddUnitButton';
-    Parent:=AddUnitPage;
     Caption:=lisA2PAddUnit;
-    OnClick:=@AddUnitButtonClick;
-    AutoSize:=true;
-    AnchorParallel(akLeft,0,AddUnitHasRegisterCheckBox);
-    AnchorToNeighbour(akTop,25,AddUnitUpdateButton);
-    AutoSize:=true;
   end;
 
-  CancelAddUnitButton:=TButton.Create(Self);
   with CancelAddUnitButton do begin
-    Name:='CancelAddUnitButton';
-    Parent:=AddUnitPage;
     Caption:=dlgCancel;
-    OnClick:=@CancelAddUnitButtonClick;
-    AutoSize:=true;
-    AnchorToNeighbour(akLeft,10,AddUnitButton);
-    AnchorParallel(akTop,0,AddUnitButton);
-    AutoSize:=true;
   end;
 end;
 
 procedure TAddToPackageDlg.SetupNewFilePage;
 begin
-  NewFilePage.OnResize:=@NewFilePageResize;
-
-  NewFileTreeView:=TTreeView.Create(Self);
-  with NewFileTreeView do begin
-    Name:='NewUnitTreeView';
-    Parent:=NewFilePage;
-    OnClick:=@NewFileTreeViewClick;
-    OnDblClick:=@NewFileTreeViewDblClick;
-    OnSelectionChanged:=@NewFileTreeViewSelectionChanged;
-  end;
-  
-  NewFileDescriptionGroupBox:=TGroupBox.Create(Self);
   with NewFileDescriptionGroupBox do begin
-    Name:='NewUnitDescriptionGroupBox';
     Caption:=lisToDoLDescription;
-    Parent:=NewFilePage;
-    AnchorToNeighbour(akLeft,0,NewFileTreeView);
-    AnchorParallel(akTop,0,NewFilePage);
-    AnchorParallel(akRight,0,NewFilePage);
   end;
 
-  NewFileHelpLabel:=TLabel.Create(Self);
   with NewFileHelpLabel do begin
-    Name:='NewUnitHelpLabel';
     Caption:='';
-    Align:=alClient;
-    WordWrap:=true;
-    Parent:=NewFileDescriptionGroupBox;
   end;
   
-  NewFileOkButton:=TButton.Create(Self);
   with NewFileOkButton do begin
-    Name:='NewUnitOkButton';
     Caption:=lisA2PCreateNewFile;
-    Anchors:=[akLeft,akBottom];
-    Left:=5;
-    AutoSize:=true;
-    Parent:=NewFilePage;
-    AnchorParallel(akBottom,5,NewFilePage);
-    OnClick:=@NewFileOkButtonClick;
-    Enabled:=false;
   end;
   
-  NewFileTreeView.AnchorToNeighbour(akBottom,5,NewFileOkButton);
-  NewFileDescriptionGroupBox.AnchorToNeighbour(akBottom,5,NewFileOkButton);
-
-  NewFileCancelButton:=TButton.Create(Self);
   with NewFileCancelButton do begin
-    Name:='NewUnitCancelButton';
     Caption:=dlgCancel;
-    AutoSize:=true;
-    Parent:=NewFilePage;
-    AnchorParallel(akTop,0,NewFileOkButton);
-    AnchorToNeighbour(akLeft,10,NewFileOkButton);
-    ModalResult:=mrCancel;
   end;
   
   FillNewFileTreeView;
@@ -1504,188 +1205,103 @@ end;
 
 procedure TAddToPackageDlg.SetupNewComponentPage;
 begin
-  AncestorTypeLabel:=TLabel.Create(Self);
   with AncestorTypeLabel do begin
-    Name:='AncestorTypeLabel';
-    Parent:=NewComponentPage;
     Caption:=lisA2PAncestorType;
   end;
 
-  AncestorComboBox:=TComboBox.Create(Self);
   with AncestorComboBox do begin
-    Name:='AncestorComboBox';
-    Parent:=NewComponentPage;
     Text:='';
-    OnCloseUp:=@AncestorComboBoxCloseUp;
   end;
 
-  AncestorShowAllCheckBox:=TCheckBox.Create(Self);
   with AncestorShowAllCheckBox do begin
-    Name:='AncestorShowAllCheckBox';
-    Parent:=NewComponentPage;
     Text:=lisA2PShowAll;
-    Checked:=true;
-    OnClick:=@AncestorShowAllCheckBoxClick;
   end;
 
-  ClassNameLabel:=TLabel.Create(Self);
   with ClassNameLabel do begin
-    Name:='ClassNameLabel';
-    Parent:=NewComponentPage;
     Caption:=lisA2PNewClassName;
   end;
 
-  ClassNameEdit:=TEdit.Create(Self);
   with ClassNameEdit do begin
-    Name:='ClassNameEdit';
-    Parent:=NewComponentPage;
     Text:='';
-    OnChange:=@ClassNameEditChange;
   end;
 
-  PalettePageLabel:=TLabel.Create(Self);
   with PalettePageLabel do begin
-    Name:='PalettePageLabel';
-    Parent:=NewComponentPage;
     Caption:=lisA2PPalettePage;
   end;
 
-  PalettePageCombobox:=TCombobox.Create(Self);
   with PalettePageCombobox do begin
-    Name:='PalettePageCombobox';
-    Parent:=NewComponentPage;
     Text:='';
   end;
 
-  ComponentUnitFileLabel:=TLabel.Create(Self);
   with ComponentUnitFileLabel do begin
-    Name:='ComponentUnitFileLabel';
-    Parent:=NewComponentPage;
     Caption:=lisA2PUnitFileName2;
   end;
 
-  ComponentUnitFileEdit:=TEdit.Create(Self);
   with ComponentUnitFileEdit do begin
-    Name:='ComponentUnitFileEdit';
-    Parent:=NewComponentPage;
     Text:='';
   end;
 
-  ComponentUnitFileBrowseButton:=TButton.Create(Self);
   with ComponentUnitFileBrowseButton do begin
-    Name:='ComponentUnitFileBrowseButton';
-    Parent:=NewComponentPage;
     Caption:='...';
-    OnClick:=@ComponentUnitFileBrowseButtonClick;
     ShowHint:=true;
     Hint:=lisA2PSaveFileDialog;
-    AutoSize:=true;
   end;
 
-  ComponentUnitFileShortenButton:=TButton.Create(Self);
   with ComponentUnitFileShortenButton do begin
-    Name:='ComponentUnitFileShortenButton';
-    Parent:=NewComponentPage;
     Caption:='<>';
-    OnClick:=@ComponentUnitFileShortenButtonClick;
     ShowHint:=true;
     Hint:=lisA2PShortenOrExpandFilename;
-    AutoSize:=true;
   end;
 
-  ComponentUnitNameLabel:=TLabel.Create(Self);
   with ComponentUnitNameLabel do begin
-    Name:='ComponentUnitNameLabel';
-    Parent:=NewComponentPage;
     Caption:=lisA2PUnitName;
   end;
 
-  ComponentUnitNameEdit:=TEdit.Create(Self);
   with ComponentUnitNameEdit do begin
-    Name:='ComponentUnitNameEdit';
-    Parent:=NewComponentPage;
     Text:='';
   end;
 
-  NewComponentButton:=TButton.Create(Self);
   with NewComponentButton do begin
-    Name:='NewComponentButton';
-    Parent:=NewComponentPage;
     Caption:=lisLazBuildOk;
-    OnClick:=@NewComponentButtonClick;
-    AutoSize:=true;
   end;
 
-  CancelNewComponentButton:=TButton.Create(Self);
   with CancelNewComponentButton do begin
-    Name:='CancelNewComponentButton';
-    Parent:=NewComponentPage;
     Caption:=dlgCancel;
-    OnClick:=@CancelNewComponentButtonClick;
-    AutoSize:=true;
   end;
 end;
 
 procedure TAddToPackageDlg.SetupAddDependencyPage;
 begin
-  DependPkgNameLabel:=TLabel.Create(Self);
   with DependPkgNameLabel do begin
-    Name:='DependPkgNameLabel';
-    Parent:=NewDependPage;
     Caption:=lisProjAddPackageName;
   end;
 
-  DependPkgNameComboBox:=TComboBox.Create(Self);
   with DependPkgNameComboBox do begin
-    Name:='DependPkgNameComboBox';
-    Parent:=NewDependPage;
     Text:='';
   end;
 
-  DependMinVersionLabel:=TLabel.Create(Self);
   with DependMinVersionLabel do begin
-    Name:='DependMinVersionLabel';
-    Parent:=NewDependPage;
     Caption:=lisProjAddMinimumVersionOptional;
   end;
 
-  DependMinVersionEdit:=TEdit.Create(Self);
   with DependMinVersionEdit do begin
-    Name:='DependMinVersionEdit';
-    Parent:=NewDependPage;
     Text:='';
   end;
 
-  DependMaxVersionLabel:=TLabel.Create(Self);
   with DependMaxVersionLabel do begin
-    Name:='DependMaxVersionLabel';
-    Parent:=NewDependPage;
     Caption:=lisProjAddMaximumVersionOptional;
   end;
 
-  DependMaxVersionEdit:=TEdit.Create(Self);
   with DependMaxVersionEdit do begin
-    Name:='DependMaxVersionEdit';
-    Parent:=NewDependPage;
     Text:='';
   end;
 
-  NewDependButton:=TButton.Create(Self);
   with NewDependButton do begin
-    Name:='NewDependButton';
-    Parent:=NewDependPage;
     Caption:=lisLazBuildOk;
-    OnClick:=@NewDependButtonClick;
-    AutoSize:=true;
   end;
 
-  CancelDependButton:=TButton.Create(Self);
   with CancelDependButton do begin
-    Name:='CancelDependButton';
-    Parent:=NewDependPage;
     Caption:=dlgCancel;
-    ModalResult:=mrCancel;
-    AutoSize:=true;
   end;
 end;
 
@@ -1693,45 +1309,27 @@ procedure TAddToPackageDlg.SetupAddFilePage;
 var
   pft: TPkgFileType;
 begin
-  AddFilenameLabel:=TLabel.Create(Self);
   with AddFilenameLabel do begin
-    Name:='AddFilenameLabel';
-    Parent:=AddFilePage;
     Caption:=lisA2PFileName;
   end;
 
-  AddFilenameEdit:=TEdit.Create(Self);
   with AddFilenameEdit do begin
-    Name:='AddFilenameEdit';
-    Parent:=AddFilePage;
     Text:=lisA2PchooseAnExistingFile;
   end;
 
-  AddFileBrowseButton:=TButton.Create(Self);
   with AddFileBrowseButton do begin
-    Name:='AddFileBrowseButton';
-    Parent:=AddFilePage;
     Caption:='...';
-    OnClick:=@AddFileBrowseButtonClick;
-    AutoSize:=true;
   end;
 
-  AddFileShortenButton:=TButton.Create(Self);
   with AddFileShortenButton do begin
-    Name:='AddFileShortenButton';
-    Parent:=AddFilePage;
     Caption:='<>';
-    OnClick:=@AddFileShortenButtonClick;
-    AutoSize:=true;
   end;
 
-  AddFileTypeRadioGroup:=TRadioGroup.Create(Self);
   with AddFileTypeRadioGroup do begin
-    Name:='AddFileTypeRadioGroup';
-    Parent:=AddFilePage;
     Caption:=lisAF2PFileType;
     with Items do begin
       BeginUpdate;
+      Clear;
       for pft:=Low(TPkgFileType) to High(TPkgFileType) do begin
         if pft=pftVirtualUnit then continue;
         Add(GetPkgFileTypeLocalizedName(pft));
@@ -1740,22 +1338,12 @@ begin
     end;
   end;
 
-  AddFileButton:=TButton.Create(Self);
   with AddFileButton do begin
-    Name:='AddFileButton';
-    Parent:=AddFilePage;
     Caption:=lisLazBuildOk;
-    OnClick:=@AddFileButtonClick;
-    AutoSize:=true;
   end;
 
-  CancelAddFileButton:=TButton.Create(Self);
   with CancelAddFileButton do begin
-    Name:='CancelAddFileButton';
-    Parent:=AddFilePage;
     Caption:=dlgCancel;
-    OnClick:=@CancelAddFileButtonClick;
-    AutoSize:=true;
   end;
 end;
 
@@ -1763,66 +1351,29 @@ procedure TAddToPackageDlg.SetupAddFilesPage;
 var
   CurColumn: TListColumn;
 begin
-  FilesListView:=TListView.Create(Self);
   with FilesListView do begin
-    Name:='FilesListView';
-    Parent:=AddFilesPage;
-    MultiSelect:=true;
-    ViewStyle:=vsReport;
-    CurColumn:=Columns.Add;
+    CurColumn:=Columns[0];
     CurColumn.Width:=200;
     CurColumn.Caption:=lisA2PFilename2;
-    CurColumn:=Columns.Add;
+    CurColumn:=Columns[1];
     CurColumn.Caption:=dlgEnvType;
-    Align:=alTop;
   end;
   
-  FilesBrowseButton:=TButton.Create(Self);
   with FilesBrowseButton do begin
-    Name:='FilesBrowseButton';
-    Parent:=AddFilesPage;
     Caption:=lisPathEditBrowse;
-    OnClick:=@FilesBrowseButtonClick;
-    Left:=5;
-    AutoSize:=true;
-    Anchors:=Anchors-[akTop]+[akBottom];
-    AnchorParallel(akBottom,5,Parent);
   end;
   
-  FilesShortenButton:=TButton.Create(Self);
   with FilesShortenButton do begin
-    Name:='FilesShortenButton';
-    Parent:=AddFilesPage;
     Caption:=lisA2PSwitchPaths;
-    OnClick:=@FilesShortenButtonClick;
-    AutoSize:=true;
-    AnchorToNeighbour(akLeft,5,FilesBrowseButton);
-    AnchorParallel(akTop,0,FilesBrowseButton);
   end;
 
-  FilesDeleteButton:=TButton.Create(Self);
   with FilesDeleteButton do begin
-    Name:='FilesDeleteButton';
-    Parent:=AddFilesPage;
     Caption:=dlgEdDelete;
-    OnClick:=@FilesDeleteButtonClick;
-    AutoSize:=true;
-    AnchorToNeighbour(akLeft,5,FilesShortenButton);
-    AnchorParallel(akTop,0,FilesBrowseButton);
   end;
   
-  FilesAddButton:=TButton.Create(Self);
   with FilesAddButton do begin
-    Name:='FilesAddButton';
-    Parent:=AddFilesPage;
     Caption:=lisA2PAddFilesToPackage;
-    OnClick:=@FilesAddButtonClick;
-    AutoSize:=true;
-    AnchorToNeighbour(akLeft,5,FilesDeleteButton);
-    AnchorParallel(akTop,0,FilesBrowseButton);
   end;
-  
-  FilesListView.AnchorToNeighbour(akBottom,5,FilesBrowseButton);
 end;
 
 procedure TAddToPackageDlg.OnIterateComponentClasses(PkgComponent: TPkgComponent
@@ -1964,30 +1515,6 @@ begin
   NewFileTreeView.EndUpdate;
 end;
 
-constructor TAddToPackageDlg.Create(TheOwner: TComponent);
-begin
-  inherited Create(TheOwner);
-  Name:='AddToPackageDlg';
-  Caption:=lisA2PAddToPackage;
-  fPkgComponents:=TAVLTree.Create(@CompareIDEComponentByClassName);
-  fPackages:=TAVLTree.Create(@CompareLazPackageID);
-  Params:=TAddToPkgResult.Create;
-  Position:=poScreenCenter;
-  IDEDialogLayoutList.ApplyLayout(Self,500,300);
-  KeyPreview:=true;
-  OnKeyDown:=@AddToPackageDlgKeyDown;
-  SetupComponents;
-  OnClose:=@AddToPackageDlgClose;
-end;
-
-destructor TAddToPackageDlg.Destroy;
-begin
-  FreeAndNil(fPkgComponents);
-  FreeAndNil(fPackages);
-  FreeAndNil(Params);
-  inherited Destroy;
-end;
-
 procedure TAddToPackageDlg.UpdateAvailableAncestorTypes;
 var
   ANode: TAVLTreeNode;
@@ -2084,6 +1611,9 @@ begin
   FreeThenNil(Next);
   inherited Destroy;
 end;
+
+initialization
+  {$I addtopackagedlg.lrs}
 
 end.
 

@@ -631,6 +631,7 @@ begin
     i:=1;
     repeat
       Result:=Prefix+IntToStr(i);
+      inc(i);
     until FindComponent(Result)=nil;
   end;
 end;
