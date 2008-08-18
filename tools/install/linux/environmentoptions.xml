@@ -5,5 +5,34 @@
     <Debugger Class="TGDBMIDebugger"/>
     <DebuggerFilename Value="/usr/bin/gdb">
     </DebuggerFilename>
+    <LazarusDirectory Value="/usr/lib/lazarus/">
+      <History Count="1">
+        <Item1 Value="/usr/lib/lazarus/"/>
+      </History>
+    </LazarusDirectory>
+    <CompilerFilename Value="/usr/bin/fpc">
+      <History Count="3">
+        <Item1 Value="/usr/local/bin/fpc"/>
+        <Item2 Value="/usr/bin/fpc"/>
+        <Item3 Value="/opt/fpc/fpc"/>
+      </History>
+    </CompilerFilename>
+    <FPCSourceDirectory Value="/usr/share/fpcsrc/%FPCVER%/">
+      <History Count="2">
+        <Item1 Value="/usr/share/fpcsrc/"/>
+        <Item2 Value="/usr/share/fpcsrc/%FPCVER%/"/>
+      </History>
+    </FPCSourceDirectory>
+    <MakeFilename>
+      <History Count="2">
+        <Item2 Value="/usr/bin/make"/>
+      </History>
+    </MakeFilename>
+    <TestBuildDirectory Value="/tmp/">
+      <History Count="2">
+        <Item1 Value="/tmp/"/>
+        <Item2 Value="/var/tmp/"/>
+      </History>
+    </TestBuildDirectory>
   </EnvironmentOptions>
 </CONFIG>
