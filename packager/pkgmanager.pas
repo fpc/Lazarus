@@ -1427,7 +1427,7 @@ begin
                                       EnvironmentOptions.CompilerFilename);
     FPCMakeTool.CmdLineParams:='-q -TAll';
     FPCMakeTool.EnvironmentOverrides.Add(
-                               'FPCDIR='+EnvironmentOptions.FPCSourceDirectory);
+                            'FPCDIR='+EnvironmentOptions.GetFPCSourceDirectory);
 
     // clear old errors
     SourceNotebook.ClearErrorLines;

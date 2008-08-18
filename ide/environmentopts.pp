@@ -192,6 +192,9 @@ type
     FCompilerFilename: string;
     FCompilerFileHistory: TStringList;
     FFPCSourceDirectory: string;
+    FFPCSrcDirParsed: string;
+    FFPCSrcDirParsedValid: boolean;
+    FFPCSrcDirParsedStamp: integer;
     FFPCSourceDirHistory: TStringList;
     FMakeFileName: string;
     FMakeFileHistory: TStringList;
@@ -257,6 +260,7 @@ type
     procedure CreateWindowLayout(const TheFormID: string);
     function IsDebuggerClassDefined: boolean;
     function GetTestBuildDirectory: string;
+    function GetFPCSourceDirectory: string;
 
     // macro functions
     procedure InitMacros(AMacroList: TTransferMacroList);
@@ -1520,6 +1524,18 @@ end;
 function TEnvironmentOptions.GetTestBuildDirectory: string;
 begin
   Result:=AppendPathDelim(TestBuildDirectory);
+end;
+
+function TEnvironmentOptions.GetFPCSourceDirectory: string;
+begin
+  if (not FFPCSrcDirParsedValid) or (FFPCSrcDirParsedStamp<>CompilerParseStamp)
+  then begin
+    FFPCSrcDirParsed:=FFPCSourceDirectory;
+    GlobalMacroList.SubstituteStr(FFPCSrcDirParsed);
+    FFPCSrcDirParsedStamp:=CompilerParseStamp;
+    FFPCSrcDirParsedValid:=true;
+  end;
+  Result:=FFPCSrcDirParsed;
 end;
 
 procedure TEnvironmentOptions.InitMacros(AMacroList: TTransferMacroList);

@@ -47,7 +47,7 @@ uses
   MacroIntf, PackageIntf, LazHelpIntf, ProjectIntf, IDEDialogs, LazIDEIntf,
   // IDE
   LazarusIDEStrConsts, CompilerOptions, IDEProcs, PackageDefs, EnvironmentOpts,
-  PackageSystem, DialogProcs;
+  TransferMacros, PackageSystem, DialogProcs;
 
 type
   TFPDocItem = (

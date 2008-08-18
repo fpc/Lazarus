@@ -11729,7 +11729,7 @@ begin
       'NOTE: Lazarus Source Directory not set!  (see Environment Options)');
   end;
   if (EnvironmentOptions.FPCSourceDirectory='')
-  or not DirPathExists(EnvironmentOptions.FPCSourceDirectory) then begin
+  or not DirPathExists(EnvironmentOptions.GetFPCSourceDirectory) then begin
     DebugLn('');
     DebugLn('NOTE: FPC Source Directory not set! (see Environment Options)');
   end;
@@ -11738,11 +11738,11 @@ begin
   with CodeToolBoss.GlobalValues do begin
     Variables[ExternalMacroStart+'LazarusDir']:=
       EnvironmentOptions.LazarusDirectory;
-    Variables[ExternalMacroStart+'FPCSrcDir']:=
-      EnvironmentOptions.FPCSourceDirectory;
     Variables[ExternalMacroStart+'ProjPath']:=VirtualDirectory;
     Variables[ExternalMacroStart+'LCLWidgetType']:=
       LCLPlatformDirNames[GetDefaultLCLWidgetType];
+    Variables[ExternalMacroStart+'FPCSrcDir']:=
+      EnvironmentOptions.GetFPCSourceDirectory;
   end;
 
   // build DefinePool and Define Tree
@@ -11768,7 +11768,7 @@ begin
                                             EnvironmentOptions.CompilerFilename;
     CompilerUnitLinks:=InputHistories.FPCConfigCache.GetUnitLinks('');
     UnitLinksChanged:=InputHistories.LastFPCUnitLinksNeedsUpdate('',
-                  CompilerUnitSearchPath,EnvironmentOptions.FPCSourceDirectory);
+                  CompilerUnitSearchPath,EnvironmentOptions.GetFPCSourceDirectory);
     ADefTempl:=CreateFPCSrcTemplate(
             CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'FPCSrcDir'],
             CompilerUnitSearchPath,
@@ -11784,7 +11784,7 @@ begin
       InputHistories.SetLastFPCUnitLinks(EnvironmentOptions.CompilerFilename,
                                          '', // default options ''
                                          CompilerUnitSearchPath,
-                                         EnvironmentOptions.FPCSourceDirectory,
+                                         EnvironmentOptions.GetFPCSourceDirectory,
                                          CompilerUnitLinks);
       InputHistories.Save;
     end;

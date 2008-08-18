@@ -120,10 +120,32 @@ type
 var
   GlobalMacroList: TTransferMacroList = nil;
 
+const
+  MaxParseStamp = $7fffffff;
+  MinParseStamp = -$7fffffff;
+  InvalidParseStamp = MinParseStamp-1;
+type
+  TCompilerParseStampIncreasedEvent = procedure of object;
+var
+  CompilerParseStamp: integer; // TimeStamp of base value for macros
+  CompilerParseStampIncreased: TCompilerParseStampIncreasedEvent = nil;
+
+procedure IncreaseCompilerParseStamp;
+
 implementation
 
 var
   IsIdentChar: array[char] of boolean;
+
+procedure IncreaseCompilerParseStamp;
+begin
+  if CompilerParseStamp<MaxParseStamp then
+    inc(CompilerParseStamp)
+  else
+    CompilerParseStamp:=MinParseStamp;
+  if Assigned(CompilerParseStampIncreased) then
+    CompilerParseStampIncreased();
+end;
 
 { TTransferMacro }
 

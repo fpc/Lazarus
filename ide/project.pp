@@ -56,7 +56,7 @@ uses
   W32VersionInfo, W32Manifest,
   // IDE
   LazarusIDEStrConsts, CompilerOptions, CodeToolManager, CodeCache,
-  EditorOptions, IDEProcs, RunParamsOpts, ProjectDefs,
+  TransferMacros, EditorOptions, IDEProcs, RunParamsOpts, ProjectDefs,
   FileReferenceList, EditDefineTree, DefineTemplates, PackageDefs
   ;
 

@@ -41,9 +41,9 @@ uses
   ComCtrls, Buttons, StdCtrls, ExtCtrls,
   Graphics, LResources, FileUtil, Dialogs, Controls, GraphType,
   MacroIntf, ProjectIntf, IDEWindowIntf, IDEContextHelpEdit,
-  PathEditorDlg, LazarusIDEStrConsts, IDEOptionDefs, LazConf, IDEProcs,
-  IDEImagesIntf, ShowCompilerOpts, Project, PackageDefs, CompilerOptions,
-  CheckCompilerOpts;
+  TransferMacros, PathEditorDlg, LazarusIDEStrConsts, IDEOptionDefs, LazConf,
+  IDEProcs, IDEImagesIntf, ShowCompilerOpts, Project, PackageDefs,
+  CompilerOptions, CheckCompilerOpts;
 
 type
   { Compiler options form }

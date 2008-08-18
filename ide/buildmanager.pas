@@ -160,6 +160,11 @@ type
   end;
   PUnitFile = ^TUnitFile;
 
+procedure BMLazConfMacroFunction(var s: string);
+begin
+  GlobalMacroList.SubstituteStr(s);
+end;
+
 function CompareUnitFiles(UnitFile1, UnitFile2: PUnitFile): integer;
 begin
   Result:=CompareIdentifierPtrs(Pointer(UnitFile1^.UnitName),
@@ -197,15 +202,17 @@ end;
 
 destructor TBuildManager.Destroy;
 begin
+  LazConfMacroFunc:=nil;
   OnBackupFileInteractive:=nil;
   FreeAndNil(InputHistories);
-  
+
   inherited Destroy;
   MainBuildBoss:=nil;
 end;
 
 procedure TBuildManager.SetupTransferMacros;
 begin
+  LazConfMacroFunc:=@BMLazConfMacroFunction;
   GlobalMacroList:=TTransferMacroList.Create;
   IDEMacros:=TLazIDEMacros.Create;
   CompilerOptions.OnParseString:=@OnSubstituteCompilerOption;
@@ -517,7 +524,7 @@ begin
         UnitLinksValid:=false;
       end
       else if CompareFilenames(InputHistories.FPCConfigCache.Items[i].FPCSrcDir,
-          EnvironmentOptions.FPCSourceDirectory)<>0
+          EnvironmentOptions.GetFPCSourceDirectory)<>0
       then
         UnitLinksValid:=false;
     end;
@@ -557,7 +564,7 @@ begin
       // save unitlinks
       InputHistories.SetLastFPCUnitLinks(EnvironmentOptions.CompilerFilename,
                                          CurOptions,CompilerUnitSearchPath,
-                                         EnvironmentOptions.FPCSourceDirectory,
+                                         EnvironmentOptions.GetFPCSourceDirectory,
                                          CompilerUnitLinks);
       InputHistories.Save;
     end else begin

@@ -87,7 +87,7 @@ const
   function FindDefaultMakePath: string;
   function FindDefaultFPCSrcDirectory: string;
   function FindDefaultLazarusSrcDirectory: string;
-  function CheckFPCSourceDir(const ADirectory: string): boolean;
+  function CheckFPCSourceDir(ADirectory: string): boolean;
   function CheckLazarusDirectory(const ADirectory: string): boolean;
 
   // create a pascal file, which can be used to test the compiler
@@ -118,6 +118,12 @@ const
   
   // returrns the default browser
   procedure GetDefaultBrowser(var Browser, Params: string);
+
+type
+  TLazConfMacroFunc = procedure(var s: string);
+var
+  LazConfMacroFunc: TLazConfMacroFunc = nil;
+procedure LazConfSubstituteMacros(var s: string);
 
 const
   EmptyLine = LineEnding + LineEnding;
@@ -284,11 +290,12 @@ begin
   Result:=DefineTemplates.GetDefaultCompilerFilename;
 end;
 
-function CheckFPCSourceDir(const ADirectory: string): boolean;
+function CheckFPCSourceDir(ADirectory: string): boolean;
 var
   Dir: String;
 begin
   Result:=false;
+  LazConfSubstituteMacros(ADirectory);
   if DirPathExists(ADirectory) then begin
     Dir:=AppendPathDelim(ADirectory);
     // test on rtl/inc, to prevent a false positive on a fpc compiled units dir

@@ -472,18 +472,12 @@ const LCLWidgetLinkerAddition: array[TLCLPlatform] of string = (
   );
 
 type
-  TCompilerParseStampIncreasedEvent = procedure of object;
   TRunCompilerWithOptions = function(ExtTool: TIDEExternalToolOptions;
                 ACompilerOptions: TBaseCompilerOptions): TModalResult of object;
-
 var
-  CompilerParseStamp: integer; // TimeStamp of base value for macros
   OnParseString: TParseStringEvent = nil;
-  CompilerParseStampIncreased: TCompilerParseStampIncreasedEvent = nil;
-  
   RunCompilerWithOptions: TRunCompilerWithOptions = nil;
 
-procedure IncreaseCompilerParseStamp;
 function ParseString(Options: TParsedCompilerOptions;
                      const UnparsedValue: string;
                      PlatformIndependent: boolean): string;
@@ -512,19 +506,6 @@ implementation
 const
   CompilerOptionsVersion = 5;
   Config_Filename = 'compileroptions.xml';
-  MaxParseStamp = $7fffffff;
-  MinParseStamp = -$7fffffff;
-  InvalidParseStamp = MinParseStamp-1;
-
-procedure IncreaseCompilerParseStamp;
-begin
-  if CompilerParseStamp<MaxParseStamp then
-    inc(CompilerParseStamp)
-  else
-    CompilerParseStamp:=MinParseStamp;
-  if Assigned(CompilerParseStampIncreased) then
-    CompilerParseStampIncreased();
-end;
 
 function ParseString(Options: TParsedCompilerOptions;
   const UnparsedValue: string; PlatformIndependent: boolean): string;

@@ -24,7 +24,10 @@
 }
 
 const
-  DefaultFPCSrcDirs: array[1..14] of string = (
+  DefaultFPCSrcDirs: array[1..15] of string = (
+    // search first for sources with right version
+    '/usr/share/fpcsrc/$(FPCVer)',
+    // then search for global paths
     '/usr/share/fpcsrc',
     '/usr/local/share/fpcsrc',
     '/usr/fpcsrc',
@@ -173,6 +176,12 @@ begin
   if Find('netscape',Browser) then exit;
   if Find('opera',Browser) then exit;
   if Find('iexplore.exe',Browser) then exit;
+end;
+
+procedure LazConfSubstituteMacros(var s: string);
+begin
+  if Assigned(LazConfMacroFunc) then
+    LazConfMacroFunc(s);
 end;
 
 {---------------------------------------------------------------------------
