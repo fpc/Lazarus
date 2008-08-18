@@ -25,13 +25,13 @@
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <Units Count="2">
+    <Units Count="4">
       <Unit0>
         <Filename Value="proctestsuitediff.pp"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="proctestsuitediff"/>
-        <CursorPos X="77" Y="9"/>
-        <TopLine Value="1"/>
+        <CursorPos X="1" Y="210"/>
+        <TopLine Value="182"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="20"/>
         <Loaded Value="True"/>
@@ -40,13 +40,31 @@
         <Filename Value="createdb.sql"/>
         <CursorPos X="65" Y="53"/>
         <TopLine Value="49"/>
-        <EditorIndex Value="1"/>
+        <EditorIndex Value="3"/>
         <UsageCount Value="10"/>
         <Loaded Value="True"/>
         <SyntaxHighlighter Value="SQL"/>
       </Unit1>
+      <Unit2>
+        <Filename Value="..\..\tools\install\rpm\lazarus.spec.template"/>
+        <CursorPos X="28" Y="65"/>
+        <TopLine Value="47"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+        <SyntaxHighlighter Value="None"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="..\..\..\fpc\2.3\rtl\objpas\strutils.pp"/>
+        <UnitName Value="strutils"/>
+        <CursorPos X="18" Y="721"/>
+        <TopLine Value="721"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit3>
     </Units>
-    <JumpHistory Count="11" HistoryIndex="10">
+    <JumpHistory Count="22" HistoryIndex="21">
       <Position1>
         <Filename Value="proctestsuitediff.pp"/>
         <Caret Line="1" Column="27" TopLine="1"/>
@@ -91,6 +109,50 @@
         <Filename Value="proctestsuitediff.pp"/>
         <Caret Line="184" Column="37" TopLine="159"/>
       </Position11>
+      <Position12>
+        <Filename Value="..\..\tools\install\rpm\lazarus.spec.template"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position12>
+      <Position13>
+        <Filename Value="..\..\tools\install\rpm\lazarus.spec.template"/>
+        <Caret Line="87" Column="26" TopLine="58"/>
+      </Position13>
+      <Position14>
+        <Filename Value="..\..\tools\install\rpm\lazarus.spec.template"/>
+        <Caret Line="66" Column="39" TopLine="47"/>
+      </Position14>
+      <Position15>
+        <Filename Value="..\..\tools\install\rpm\lazarus.spec.template"/>
+        <Caret Line="87" Column="26" TopLine="58"/>
+      </Position15>
+      <Position16>
+        <Filename Value="proctestsuitediff.pp"/>
+        <Caret Line="57" Column="150" TopLine="37"/>
+      </Position16>
+      <Position17>
+        <Filename Value="proctestsuitediff.pp"/>
+        <Caret Line="184" Column="23" TopLine="167"/>
+      </Position17>
+      <Position18>
+        <Filename Value="proctestsuitediff.pp"/>
+        <Caret Line="205" Column="21" TopLine="197"/>
+      </Position18>
+      <Position19>
+        <Filename Value="proctestsuitediff.pp"/>
+        <Caret Line="200" Column="24" TopLine="185"/>
+      </Position19>
+      <Position20>
+        <Filename Value="proctestsuitediff.pp"/>
+        <Caret Line="41" Column="21" TopLine="37"/>
+      </Position20>
+      <Position21>
+        <Filename Value="proctestsuitediff.pp"/>
+        <Caret Line="210" Column="19" TopLine="191"/>
+      </Position21>
+      <Position22>
+        <Filename Value="proctestsuitediff.pp"/>
+        <Caret Line="111" Column="15" TopLine="92"/>
+      </Position22>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>

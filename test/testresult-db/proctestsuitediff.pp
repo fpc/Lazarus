@@ -181,7 +181,7 @@ begin
   yesterday := FormatDateTime('YYYY-mm-dd', todaydate-1);
   today := FormatDateTime('YYYY-mm-dd', todaydate);
   lenfailstr := 5;  { Length('FAILS') = column header }
-  dataend := findseparator(datastart, 6);
+  dataend := findseparator(datastart, 8);
   datalen := dataend - datastart + 1;
   { cut time (last 2 fields, ' HH:MM:SS |  XXXX |') }
   houroffset := dataend + 2;
@@ -205,8 +205,8 @@ begin
       dbfailsep := posex('|', curr.line, failoffset);
       curr.dbfail := copy(curr.line, failoffset, dbfailsep-failoffset);
       curr.failset := trim(copy(curr.line, dbfailsep+1, failend-2-dbfailsep));
-      if curr.dbfail <> curr.fail then
-        curr.fail := curr.fail + ' (' + curr.dbfail + ')';
+      //if curr.dbfail <> curr.fail then
+        //curr.fail := curr.fail + ' (' + curr.dbfail + ')';
     end else
     if length(footer) = 0 then
       footer := curr.line;
