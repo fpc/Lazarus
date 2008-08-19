@@ -2660,6 +2660,8 @@ resourcestring
   lisEdtDefsetFPCModeToDELPHI = 'set FPC mode to DELPHI';
   lisEdtDefsetFPCModeToTP = 'set FPC mode to TP';
   lisEdtDefsetFPCModeToGPC = 'set FPC mode to GPC';
+  lisEdtDefsetFPCModeToMacPas = 'set FPC mode to MacPas';
+  lisEdtDefsetFPCModeToFPC = 'set FPC mode to FPC';
   lisEdtDefsetIOCHECKSOn = 'set IOCHECKS on';
   lisEdtDefsetRANGECHECKSOn = 'set RANGECHECKS on';
   lisEdtDefsetOVERFLOWCHECKSOn = 'set OVERFLOWCHECKS on';
@@ -3807,6 +3809,12 @@ resourcestring
     +'sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.'
     +'Identifier';
   lisTitleLeaveEmptyForDefault = 'Title (leave empty for default)';
+  lisSyntaxMode = 'Syntax mode';
+  lisObjectPascalDefault = 'Object Pascal - default';
+  lisDelphi = 'Delphi';
+  lisTurboPascal = 'Turbo Pascal';
+  lisMacPascal = 'Mac Pascal';
+  lisFreePascal = 'Free Pascal';
 
 implementation
 

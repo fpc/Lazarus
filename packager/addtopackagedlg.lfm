@@ -18,7 +18,7 @@ object AddToPackageDlg: TAddToPackageDlg
     Height = 300
     Width = 500
     Align = alClient
-    PageIndex = 5
+    PageIndex = 4
     TabOrder = 0
     object NewFilePage: TPage
       Caption = 'New File'
@@ -630,7 +630,8 @@ object AddToPackageDlg: TAddToPackageDlg
         ChildSizing.ShrinkHorizontal = crsScaleChilds
         ChildSizing.ShrinkVertical = crsScaleChilds
         ChildSizing.Layout = cclLeftToRightThenTopToBottom
-        ChildSizing.ControlsPerLine = 1
+        ChildSizing.ControlsPerLine = 2
+        Columns = 2
         Constraints.MinHeight = 30
         Constraints.MinWidth = 100
         TabOrder = 3

@@ -357,8 +357,8 @@ end;
 
 procedure TActionListEditor.OnRefreshPropertyValues;
   function ValidCategory: Boolean;
-  // spr. czy wszystkie kategorie w ListBox'sie istniej¹ w TActionList
-  // inaczej: czy istnieje kategoria elementu wywoluj¹cego zdarzenie
+  // spr. czy wszystkie kategorie w ListBox'sie istniejÂ¹ w TActionList
+  // inaczej: czy istnieje kategoria elementu wywolujÂ¹cego zdarzenie
   var
     i, j: Integer;
     bool: Boolean;
@@ -420,12 +420,12 @@ begin
         tmpIsActCategory := IsCategory(CurSelect.Category);
         
         if tmpCategory = '' then tmpCategory := cActionListEditorUnknownCategory;
-           // je¿eli nie ma tej kategorii na liscie
+           // jeÂ¿eli nie ma tej kategorii na liscie
         if ((curSelect.Category <> '') and not tmpIsActCategory)
-           // nie wszystkie kategorie z lstCategory istniej¹ w FActionList
+           // nie wszystkie kategorie z lstCategory istniejÂ¹ w FActionList
            // (usuniecie kategorii)
            or not tmpValidCategory
-           // je¿eli kategoria jest inna od oznaczonej
+           // jeÂ¿eli kategoria jest inna od oznaczonej
            // oraz nie jest to kategoria '(All)' ani '(Unknown)'
            or ((tmpCategory <> lstCategory.Items[lstCategory.Items.IndexOf(tmpCategory)])
                and ((lstCategory.Items.IndexOf(cActionListEditorAllCategory) >= 0)
@@ -434,7 +434,7 @@ begin
         then FillCategories;
 
         tmpIndex := lstCategory.Items.IndexOf(tmpCategory);  // ???
-        // s¹ kategorie (nie tylko Unknown) rownie¿ All i inne
+        // sÂ¹ kategorie (nie tylko Unknown) rownieÂ¿ All i inne
         if (lstCategory.Items.Count > 1)
                   // nie istniala nowa kategoria
                   // nie istniala zaznaczona kategoria

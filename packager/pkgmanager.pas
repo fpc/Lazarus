@@ -1308,10 +1308,9 @@ begin
                                                  coptParsedPlatformIndependent);
   CustomOptions:=APackage.CompilerOptions.GetCustomOptions(
                                                  coptParsedPlatformIndependent);
-  if APackage.CompilerOptions.Delphi2Extensions then
-    CustomOptions:=CustomOptions+' -S2';
-  if APackage.CompilerOptions.UseLineInfoUnit then
-    CustomOptions:=CustomOptions+' -gl';
+  s:=APackage.CompilerOptions.GetSyntaxOptionsString;
+  if s<>'' then
+    CustomOptions:=CustomOptions+' '+s;
   // TODO: other options
 
   //DebugLn('TPkgManager.DoWriteMakefile ',APackage.Name,' makefile UnitPath="',UnitPath,'"');

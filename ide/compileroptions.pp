@@ -504,7 +504,7 @@ procedure SaveXMLCompileReasons(const AConfig: TXMLConfig; const APath: String;
 implementation
 
 const
-  CompilerOptionsVersion = 5;
+  CompilerOptionsVersion = 6;
   Config_Filename = 'compileroptions.xml';
 
 function ParseString(Options: TParsedCompilerOptions;
@@ -1070,18 +1070,28 @@ begin
     p:=Path+'Parsing/SyntaxOptions/'
   else
     p:=Path+'SymantecChecking/';
-  Delphi2Extensions := XMLConfigFile.GetValue(p+'D2Extensions/Value', true);
+  if FileVersion<5 then begin
+    if XMLConfigFile.GetValue(p+'D2Extensions/Value', true) then
+      FSyntaxMode:='ObjFPC';
+    if XMLConfigFile.GetValue(p+'TPCompatible/Value', false) then
+      FSyntaxMode:='TP';
+    if XMLConfigFile.GetValue(p+'DelphiCompat/Value', false) then
+      FSyntaxMode:='Delphi';
+    if XMLConfigFile.GetValue(p+'GPCCompat/Value', false) then
+      FSyntaxMode:='GPC';
+  end else begin
+    FSyntaxMode:=XMLConfigFile.GetValue(p+'SyntaxMode/Value', '');
+    if FSyntaxMode='' then
+      FSyntaxMode:='ObjFPC';
+  end;
   CStyleOperators := XMLConfigFile.GetValue(p+'CStyleOperator/Value', true);
   IncludeAssertionCode := XMLConfigFile.GetValue(p+'IncludeAssertionCode/Value', false);
   AllowLabel := XMLConfigFile.GetValue(p+'AllowLabel/Value', true);
   CPPInline := XMLConfigFile.GetValue(p+'CPPInline/Value', true);
   CStyleMacros := XMLConfigFile.GetValue(p+'CStyleMacros/Value', false);
-  TPCompatible := XMLConfigFile.GetValue(p+'TPCompatible/Value', false);
   InitConstructor := XMLConfigFile.GetValue(p+'InitConstructor/Value', false);
   StaticKeyword := XMLConfigFile.GetValue(p+'StaticKeyword/Value', false);
-  DelphiCompat := XMLConfigFile.GetValue(p+'DelphiCompat/Value', false);
   UseAnsiStrings := XMLConfigFile.GetValue(p+'UseAnsiStrings/Value', false);
-  GPCCompat := XMLConfigFile.GetValue(p+'GPCCompat/Value', false);
 
   { CodeGeneration }
   p:=Path+'CodeGeneration/';
@@ -1221,19 +1231,16 @@ begin
   
   { Syntax Options }
   p:=Path+'Parsing/SyntaxOptions/';
-  XMLConfigFile.SetDeleteValue(p+'D2Extensions/Value', Delphi2Extensions,true);
+  XMLConfigFile.SetDeleteValue(p+'SyntaxMode/Value', SyntaxMode,'ObjFPC');
   XMLConfigFile.SetDeleteValue(p+'CStyleOperator/Value', CStyleOperators,true);
   XMLConfigFile.SetDeleteValue(p+'IncludeAssertionCode/Value', IncludeAssertionCode,false);
   XMLConfigFile.SetDeleteValue(p+'AllowLabel/Value', AllowLabel,true);
   XMLConfigFile.SetDeleteValue(p+'CPPInline/Value', CPPInline,true);
   XMLConfigFile.SetDeleteValue(p+'CStyleMacros/Value', CStyleMacros,false);
-  XMLConfigFile.SetDeleteValue(p+'TPCompatible/Value', TPCompatible,false);
   XMLConfigFile.SetDeleteValue(p+'InitConstructor/Value', InitConstructor,false);
   XMLConfigFile.SetDeleteValue(p+'StaticKeyword/Value', StaticKeyword,false);
-  XMLConfigFile.SetDeleteValue(p+'DelphiCompat/Value', DelphiCompat,false);
   XMLConfigFile.SetDeleteValue(p+'UseAnsiStrings/Value', UseAnsiStrings,false);
-  XMLConfigFile.SetDeleteValue(p+'GPCCompat/Value', GPCCompat,false);
-  
+
   { CodeGeneration }
   p:=Path+'CodeGeneration/';
   XMLConfigFile.SetDeleteValue(p+'SmartLinkUnit/Value', SmartLinkUnit,false);
@@ -1731,6 +1738,8 @@ end;
     const MainSourceFilename: string;
     Globals: TGlobalCompilerOptions;
     Flags: TCompilerCmdLineOptions): String;
+
+  Get all the options and create a string that can be passed to the compiler
 ------------------------------------------------------------------------------}
 function TBaseCompilerOptions.MakeOptionsString(
   const MainSourceFilename: string; Globals: TGlobalCompilerOptions;
@@ -1756,147 +1765,210 @@ begin
 
   switches := '';
 
-  { Get all the options and create a string that can be passed to the compiler }
-  
-  { options of fpc 1.1 :
+  { options of fpc 2.2.2 :
 
-  put + after a boolean switch option to enable it, - to disable it
-  -a     the compiler doesn't delete the generated assembler file
-      -al        list sourcecode lines in assembler file
-      -ar        list register allocation/release info in assembler file
-      -at        list temp allocation/release info in assembler file
-  -b     generate browser info
-      -bl        generate local symbol info
-  -B     build all modules
-  -C<x>  code generation options:
-      -CD        create also dynamic library (not supported)
+  Put + after a boolean switch option to enable it, - to disable it
+  -a     The compiler doesn't delete the generated assembler file
+      -al        List sourcecode lines in assembler file
+      -an        List node info in assembler file
+      -ap        Use pipes instead of creating temporary assembler files
+      -ar        List register allocation/release info in assembler file
+      -at        List temp allocation/release info in assembler file
+  -A<x>  Output format:
+      -Adefault  Use default assembler
+      -Aas       Assemble using GNU AS
+      -Anasmcoff COFF (Go32v2) file using Nasm
+      -Anasmelf  ELF32 (Linux) file using Nasm
+      -Anasmwin32Win32 object file using Nasm
+      -AnasmwdosxWin32/WDOSX object file using Nasm
+      -Awasm     Obj file using Wasm (Watcom)
+      -Anasmobj  Obj file using Nasm
+      -Amasm     Obj file using Masm (Microsoft)
+      -Atasm     Obj file using Tasm (Borland)
+      -Aelf      ELF (Linux) using internal writer
+      -Acoff     COFF (Go32v2) using internal writer
+      -Apecoff   PE-COFF (Win32) using internal writer
+  -b     Generate browser info
+      -bl        Generate local symbol info
+  -B     Build all modules
+  -C<x>  Code generation options:
+      -Cc<x>     Set default calling convention to <x>
+      -CD        Create also dynamic library (not supported)
       -Ce        Compilation with emulated floating point opcodes
+      -Cf<x>     Select fpu instruction set to use, see fpc -i for possible values
+      -CF<x>     Minimal floating point constant precision (default, 32, 64)
+      -Cg        Generate PIC code
       -Ch<n>     <n> bytes heap (between 1023 and 67107840)
       -Ci        IO-checking
-      -Cn        omit linking stage
-      -Co        check overflow of integer operations
-      -Cr        range checking
-      -CR        verify object method call validity
-      -Cs<n>     set stack size to <n>
-      -Ct        stack checking
-      -CX        create also smartlinked library
-  -d<x>  defines the symbol <x>
-  -e<x>  set path to executable
-  -E     same as -Cn
-  -F<x>  set file names and paths:
-      -FD<x>     sets the directory where to search for compiler utilities
-      -Fe<x>     redirect error output to <x>
-      -FE<x>     set exe/unit output path to <x>
-      -Fi<x>     adds <x> to include path
-      -Fl<x>     adds <x> to library path
-      -FL<x>     uses <x> as dynamic linker
-      -Fo<x>     adds <x> to object path
-      -Fr<x>     load error message file <x>
-      -Fu<x>     adds <x> to unit path
-      -FU<x>     set unit output path to <x>, overrides -FE
-  -g     generate debugger information:
-      -gg        use gsym
-      -gd        use dbx
-      -gh        use heap trace unit (for memory leak debugging)
-      -gl        use line info unit to show more info for backtraces
-      -gc        generate checks for pointers
-  -i     information
-      -iD        return compiler date
-      -iV        return compiler version
-      -iSO       return compiler OS
-      -iSP       return compiler processor
-      -iTO       return target OS
-      -iTP       return target processor
-  -I<x>  adds <x> to include path
+      -Cn        Omit linking stage
+      -Co        Check overflow of integer operations
+      -CO        Check for possible overflow of integer operations
+      -Cp<x>     Select instruction set, see fpc -i for possible values
+      -CP<x>=<y>  packing settings
+         -CPPACKSET=<y> <y> set allocation: 0, 1 or DEFAULT or NORMAL, 2, 4 and 8
+      -Cr        Range checking
+      -CR        Verify object method call validity
+      -Cs<n>     Set stack size to <n>
+      -Ct        Stack checking
+      -CX        Create also smartlinked library
+  -d<x>  Defines the symbol <x>
+  -D     Generate a DEF file
+      -Dd<x>     Set description to <x>
+      -Dv<x>     Set DLL version to <x>
+  -e<x>  Set path to executable
+  -E     Same as -Cn
+  -fPIC  Same as -Cg
+  -F<x>  Set file names and paths:
+      -Fa<x>[,y] (for a program) load units <x> and [y] before uses is parsed
+      -Fc<x>     Set input codepage to <x>
+      -FC<x>     Set RC compiler binary name to <x>
+      -FD<x>     Set the directory where to search for compiler utilities
+      -Fe<x>     Redirect error output to <x>
+      -Ff<x>     Add <x> to framework path (Darwin only)
+      -FE<x>     Set exe/unit output path to <x>
+      -Fi<x>     Add <x> to include path
+      -Fl<x>     Add <x> to library path
+      -FL<x>     Use <x> as dynamic linker
+      -Fm<x>     Load unicode conversion table from <x>.txt in the compiler dir
+      -Fo<x>     Add <x> to object path
+      -Fr<x>     Load error message file <x>
+      -FR<x>     Set resource (.res) linker to <x>
+      -Fu<x>     Add <x> to unit path
+      -FU<x>     Set unit output path to <x>, overrides -FE
+  -g     Generate debug information (default format for target)
+      -gc        Generate checks for pointers
+      -gh        Use heaptrace unit (for memory leak/corruption debugging)
+      -gl        Use line info unit (show more info with backtraces)
+      -go<x>     Set debug information options
+         -godwarfsets Enable Dwarf set debug information (breaks gdb < 6.5)
+      -gp        Preserve case in stabs symbol names
+      -gs        Generate stabs debug information
+      -gt        Trash local variables (to detect uninitialized uses)
+      -gv        Generates programs traceable with valgrind
+      -gw        Generate dwarf-2 debug information (same as -gw2)
+      -gw2       Generate dwarf-2 debug information
+      -gw3       Generate dwarf-3 debug information
+  -i     Information
+      -iD        Return compiler date
+      -iV        Return short compiler version
+      -iW        Return full compiler version
+      -iSO       Return compiler OS
+      -iSP       Return compiler host processor
+      -iTO       Return target OS
+      -iTP       Return target processor
+  -I<x>  Add <x> to include path
   -k<x>  Pass <x> to the linker
-  -l     write logo
-  -n     don't read the default config file
-  -o<x>  change the name of the executable produced to <x>
-  -pg    generate profile code for gprof (defines FPC_PROFILE)
-  -P     use pipes instead of creating temporary assembler files
-  -S<x>  syntax options:
-      -S2        switch some Delphi 2 extensions on
-      -Sc        supports operators like C (*=,+=,/= and -=)
-      -Sa        include assertion code.
-      -Sd        tries to be Delphi compatible
-      -Se<x>     compiler stops after the <x> errors (default is 1)
-      -Sg        allow LABEL and GOTO
-      -Sh        Use ansistrings
-      -Si        support C++ styled INLINE
-      -Sm        support macros like C (global)
-      -So        tries to be TP/BP 7.0 compatible
-      -Sp        tries to be gpc compatible
-      -Ss        constructor name must be init (destructor must be done)
-      -St        allow static keyword in objects
-  -s     don't call assembler and linker (only with -a)
-      -st        Generate script to link on target
+  -l     Write logo
+  -M<x>  Set language mode to <x>
+      -Mfpc      Free Pascal dialect (default)
+      -Mobjfpc   FPC mode with Object Pascal support
+      -Mdelphi   Delphi 7 compatibility mode
+      -Mtp       TP/BP 7.0 compatibility mode
+      -Mmacpas   Macintosh Pascal dialects compatibility mode
+  -n     Do not read the default config files
+  -N<x>  Node tree optimizations
+      -Nu        Unroll loops
+  -o<x>  Change the name of the executable produced to <x>
+  -O<x>  Optimizations:
+      -O-        Disable optimizations
+      -O1        Level 1 optimizations (quick and debugger friendly)
+      -O2        Level 2 optimizations (-O1 + quick optimizations)
+      -O3        Level 3 optimizations (-O2 + slow optimizations)
+      -Oa<x>=<y> Set alignment
+      -Oo[NO]<x> Enable or disable optimizations, see fpc -i for possible values
+      -Op<x>     Set target cpu for optimizing, see fpc -i for possible values
+      -Os        Optimize for size rather than speed
+  -pg    Generate profile code for gprof (defines FPC_PROFILE)
+  -R<x>  Assembler reading style:
+      -Rdefault  Use default assembler for target
+      -Ratt      Read AT&T style assembler
+      -Rintel    Read Intel style assembler
+  -S<x>  Syntax options:
+      -S2        Same as -Mobjfpc
+      -Sc        Support operators like C (*=,+=,/= and -=)
+      -Sa        Turn on assertions
+      -Sd        Same as -Mdelphi
+      -Se<x>     Error options. <x> is a combination of the following:
+         <n> : Compiler halts after the <n> errors (default is 1)
+         w : Compiler also halts after warnings
+         n : Compiler also halts after notes
+         h : Compiler also halts after hints
+      -Sg        Enable LABEL and GOTO (default in -Mtp and -Mdelphi)
+      -Sh        Use ansistrings by default instead of shortstrings
+      -Si        Turn on inlining of procedures/functions declared as "inline"
+      -Sk        Load fpcylix unit
+      -SI<x>     Set interface style to <x>
+         -SIcom     COM compatible interface (default)
+         -SIcorba   CORBA compatible interface
+      -Sm        Support macros like C (global)
+      -So        Same as -Mtp
+      -Ss        Constructor name must be init (destructor must be done)
+      -St        Allow static keyword in objects
+      -Sx        Enable exception keywords (default in Delphi/ObjFPC modes)
+  -s     Do not call assembler and linker
       -sh        Generate script to link on host
-  -u<x>  undefines the symbol <x>
-  -U     unit options:
-      -Un        don't check the unit name
-      -Ur        generate release unit files
-      -Us        compile a system unit
+      -st        Generate script to link on target
+      -sr        Skip register allocation phase (use with -alr)
+  -T<x>  Target operating system:
+      -Temx      OS/2 via EMX (including EMX/RSX extender)
+      -Tfreebsd  FreeBSD
+      -Tgo32v2   Version 2 of DJ Delorie DOS extender
+      -Tlinux    Linux
+      -Tnetbsd   NetBSD
+      -Tnetware  Novell Netware Module (clib)
+      -Tnetwlibc Novell Netware Module (libc)
+      -Topenbsd  OpenBSD
+      -Tos2      OS/2 / eComStation
+      -Tsunos    SunOS/Solaris
+      -Tsymbian  Symbian OS
+      -Twatcom   Watcom compatible DOS extender
+      -Twdosx    WDOSX DOS extender
+      -Twin32    Windows 32 Bit
+      -Twince    Windows CE
+  -u<x>  Undefines the symbol <x>
+  -U     Unit options:
+      -Un        Do not check where the unit name matches the file name
+      -Ur        Generate release unit files (never automatically recompiled)
+      -Us        Compile a system unit
   -v<x>  Be verbose. <x> is a combination of the following letters:
-      e : Show errors (default)       d : Show debug info
+      e : Show errors (default)       0 : Show nothing (except errors)
       w : Show warnings               u : Show unit info
       n : Show notes                  t : Show tried/used files
-      h : Show hints                  m : Show defined macros
-      i : Show general info           p : Show compiled procedures
-      l : Show linenumbers            c : Show conditionals
-      a : Show everything             0 : Show nothing (except errors)
-      b : Show all procedure          r : Rhide/GCC compatibility mode
-          declarations if an error    x : Executable info (Win32 only)
-          occurs
-  -V     write fpcdebug.txt file with lots of debugging info
-  -X     executable options:
-      -Xc        link with the c library
-      -Xs        strip all symbols from executable
-      -XD        try to link dynamic          (defines FPC_LINK_DYNAMIC)
-      -XS        try to link static (default) (defines FPC_LINK_STATIC)
-      -XX        try to link smart            (defines FPC_LINK_SMART)
+      h : Show hints                  c : Show conditionals
+      i : Show general info           d : Show debug info
+      l : Show linenumbers            r : Rhide/GCC compatibility mode
+      a : Show everything             x : Executable info (Win32 only)
+      b : Write file names messages with full path
+      v : Write fpcdebug.txt with     p : Write tree.log with parse tree
+          lots of debugging info
+  -W<x>  Target-specific options (targets)
+      -Wb        Create a bundle instead of a library (Darwin)
+      -WB        Create a relocatable image (Windows)
+      -WC        Specify console type application (EMX, OS/2, Windows)
+      -WD        Use DEFFILE to export functions of DLL or EXE (Windows)
+      -WF        Specify full-screen type application (EMX, OS/2)
+      -WG        Specify graphic type application (EMX, OS/2, Windows)
+      -WN        Do not generate relocation code, needed for debugging (Windows)
+      -WR        Generate relocation code (Windows)
+  -X     Executable options:
+      -Xc        Pass --shared/-dynamic to the linker (BeOS, Darwin, FreeBSD, Linux)
+      -Xd        Do not use standard library search path (needed for cross compile)
+      -Xe        Use external linker
+      -Xg        Create debuginfo in a separate file and add a debuglink section to executable
+      -XD        Try to link units dynamically      (defines FPC_LINK_DYNAMIC)
+      -Xi        Use internal linker
+      -Xm        Generate link map
+      -XM<x>     Set the name of the 'main' program routine (default is 'main')
+      -XP<x>     Prepend the binutils names with the prefix <x>
+      -Xr<x>     Set library search path to <x> (needed for cross compile) (BeOS, Linux)
+      -XR<x>     Prepend <x> to all linker search paths (BeOS, Darwin, FreeBSD, Linux, Mac OS, Solaris)
+      -Xs        Strip all symbols from executable
+      -XS        Try to link units statically (default, defines FPC_LINK_STATIC)
+      -Xt        Link with static libraries (-static is passed to linker)
+      -XX        Try to smartlink units             (defines FPC_LINK_SMART)
 
-Processor specific options:
-  -A<x>  output format:
-      -Aas       assemble using GNU AS
-      -Anasmcoff coff (Go32v2) file using Nasm
-      -Anasmelf  elf32 (Linux) file using Nasm
-      -Anasmobj  obj file using Nasm
-      -Amasm     obj file using Masm (Microsoft)
-      -Atasm     obj file using Tasm (Borland)
-      -Acoff     coff (Go32v2) using internal writer
-      -Apecoff   pecoff (Win32) using internal writer
-  -R<x>  assembler reading style:
-      -Ratt      read AT&T style assembler
-      -Rintel    read Intel style assembler
-      -Rdirect   copy assembler text directly to assembler file
-  -O<x>  optimizations:
-      -Og        generate smaller code
-      -OG        generate faster code (default)
-      -Or        keep certain variables in registers
-      -Ou        enable uncertain optimizations (see docs)
-      -O1        level 1 optimizations (quick optimizations)
-      -O2        level 2 optimizations (-O1 + slower optimizations)
-      -O3        level 3 optimizations (-O2 repeatedly, max 5 times)
-      -Op<x>     target processor:
-         -Op1  set target processor to 386/486
-         -Op2  set target processor to Pentium/PentiumMMX (tm)
-         -Op3  set target processor to PPro/PII/c6x86/K6 (tm)
-  -T<x>  Target operating system:
-      -TGO32V2   version 2 of DJ Delorie DOS extender
-      -          3*2TWDOSX DOS 32 Bit Extender
-      -TLINUX    Linux
-      -Tnetware  Novell Netware Module (experimental)
-      -TOS2      OS/2 2.x
-      -TSUNOS    SunOS/Solaris
-      -TWin32    Windows 32 Bit
-  -W<x>  Win32 target options
-      -WB<x>     Set Image base to Hexadecimal <x> value
-      -WC        Specify console type application
-      -WD        Use DEFFILE to export functions of DLL or EXE
-      -WF        Specify full-screen type application (OS/2 only)
-      -WG        Specify graphic type application
-      -WN        Do not generate relocation code (necessary for debugging)
-      -WR        Generate relocation code
+  -?     Show this help
+  -h     Shows this help without waiting
   }
   
   
@@ -1910,55 +1982,10 @@ Processor specific options:
     3: switches := switches + '-Rdirect';
   end;
   
-  { Syntax Options
-  
-      -S2        switch some Delphi 2 extensions on
-      -Sc        supports operators like C (*=,+=,/= and -=)
-      -sa        include assertion code.
-      -Sd        tries to be Delphi compatible
-      -Se<x>     compiler stops after the <x> errors (default is 1)
-      -Sg        allow LABEL and GOTO
-      -Sh        Use ansistrings
-      -Si        support C++ styled INLINE
-      -Sm        support macros like C (global)
-      -So        tries to be TP/BP 7.0 compatible
-      -Sp        tries to be gpc compatible
-      -Ss        constructor name must be init (destructor must be done)
-      -St        allow static keyword in objects
-
-  }
-  tempsw := '';
-
-  if (Delphi2Extensions) then
-    tempsw := tempsw + '2';
-  if (CStyleOperators) then
-    tempsw := tempsw + 'c';
-  if (IncludeAssertionCode) then
-    tempsw := tempsw + 'a';
-  if (DelphiCompat) then
-    tempsw := tempsw + 'd';
-  if (AllowLabel) then
-    tempsw := tempsw + 'g';
-  if (UseAnsiStrings) then
-    tempsw := tempsw + 'h';
-  if (CPPInline) then
-    tempsw := tempsw + 'i';
-  if (CStyleMacros) then
-    tempsw := tempsw + 'm';
-  if (TPCompatible) then
-    tempsw := tempsw + 'o';
-  if (GPCCompat) then
-    tempsw := tempsw + 'p';
-  if (InitConstructor) then
-    tempsw := tempsw + 's';
-  if (StaticKeyword) then
-    tempsw := tempsw + 't';
-
-  if (tempsw <> '') then begin
-    tempsw := '-S' + tempsw;
-    switches := switches + ' ' + tempsw;
-  end;
+  // Syntax Options
   tempsw:=GetSyntaxOptionsString;
+  if (tempsw <> '') then
+    switches := switches + ' ' + tempsw;
 
   { TODO: Implement the following switches. They need to be added
           to the dialog. }
@@ -2303,10 +2330,8 @@ var
 begin
   { Syntax Options
    -S<x>  Syntax options:
-      -S2        Same as -Mobjfpc
       -Sc        Support operators like C (*=,+=,/= and -=)
       -Sa        Turn on assertions
-      -Sd        Same as -Mdelphi
       -Se<x>     Error options. <x> is a combination of the following:
          <n> : Compiler halts after the <n> errors (default is 1)
          w : Compiler also halts after warnings
@@ -2320,21 +2345,24 @@ begin
          -SIcom     COM compatible interface (default)
          -SIcorba   CORBA compatible interface
       -Sm        Support macros like C (global)
-      -So        Same as -Mtp
       -Ss        Constructor name must be init (destructor must be done)
       -St        Allow static keyword in objects
       -Sx        Enable exception keywords (default in Delphi/ObjFPC modes)
+
+   -M<x>  Set language mode to <x>
+      -Mfpc      Free Pascal dialect (default)
+      -Mobjfpc   FPC mode with Object Pascal support
+      -Mdelphi   Delphi 7 compatibility mode
+      -Mtp       TP/BP 7.0 compatibility mode
+      -Mmacpas   Macintosh Pascal dialects compatibility mode
+
   }
   tempsw := '';
 
-  if (Delphi2Extensions) then
-    tempsw := tempsw + '2';
   if (CStyleOperators) then
     tempsw := tempsw + 'c';
   if (IncludeAssertionCode) then
     tempsw := tempsw + 'a';
-  if (DelphiCompat) then
-    tempsw := tempsw + 'd';
   if (AllowLabel) then
     tempsw := tempsw + 'g';
   if (UseAnsiStrings) then
@@ -2343,10 +2371,6 @@ begin
     tempsw := tempsw + 'i';
   if (CStyleMacros) then
     tempsw := tempsw + 'm';
-  if (TPCompatible) then
-    tempsw := tempsw + 'o';
-  if (GPCCompat) then
-    tempsw := tempsw + 'p';
   if (InitConstructor) then
     tempsw := tempsw + 's';
   if (StaticKeyword) then
@@ -2356,6 +2380,12 @@ begin
     Result := '-S' + tempsw
   else
     Result:='';
+
+  if SyntaxMode<>'' then begin
+    if Result<>'' then
+      Result:=Result+' ';
+    Result:=Result+'-M'+SyntaxMode;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -2393,20 +2423,17 @@ begin
   fLCLWidgetType := '';
   
   // parsing
+  FSyntaxMode:='ObjFPC';
   fAssemblerStyle := 0;
-  fDelphi2Ext := true;
   fCStyleOp := true;
   fIncludeAssertionCode := false;
   fAllowLabel := true;
   fCPPInline := true;
   fCMacros := false;
-  fTPCompat := false;
   fInitConst := false;
   fStaticKeyword := false;
-  fDelphiCompat := false;
   fUseAnsiStr := false;
-  fGPCCompat := false;
-    
+
   // code generation
   fSmartLinkUnit := false;
   fIOChecks := false;
@@ -2497,19 +2524,16 @@ begin
   DebugPath := CompOpts.DebugPath;
 
   // Parsing
+  FSyntaxMode := CompOpts.FSyntaxMode;
   fAssemblerStyle := CompOpts.fAssemblerStyle;
-  fDelphi2Ext := CompOpts.fDelphi2Ext;
   fCStyleOp := CompOpts.fCStyleOp;
   fIncludeAssertionCode := CompOpts.fIncludeAssertionCode;
   fAllowLabel := CompOpts.fAllowLabel;
   fCPPInline := CompOpts.fCPPInline;
   fCMacros := CompOpts.fCMacros;
-  fTPCompat := CompOpts.fTPCompat;
   fInitConst := CompOpts.fInitConst;
   fStaticKeyword := CompOpts.fStaticKeyword;
-  fDelphiCompat := CompOpts.fDelphiCompat;
   fUseAnsiStr := CompOpts.fUseAnsiStr;
-  fGPCCompat := CompOpts.fGPCCompat;
 
   // Code Generation
   fSmartLinkUnit := CompOpts.SmartLinkUnit;
@@ -2630,19 +2654,16 @@ begin
 
   // parsing
   Tool.Path:='Parsing';
+  Tool.AddDiff('SyntaxMode',FSyntaxMode,CompOpts.FSyntaxMode);
   Tool.AddDiff('AssemblerStyle',fAssemblerStyle,CompOpts.fAssemblerStyle);
-  Tool.AddDiff('Delphi2Ext',fDelphi2Ext,CompOpts.fDelphi2Ext);
   Tool.AddDiff('CStyleOp',fCStyleOp,CompOpts.fCStyleOp);
   Tool.AddDiff('IncludeAssertionCode',fIncludeAssertionCode,CompOpts.fIncludeAssertionCode);
   Tool.AddDiff('AllowLabel',fAllowLabel,CompOpts.fAllowLabel);
   Tool.AddDiff('CPPInline',fCPPInline,CompOpts.fCPPInline);
   Tool.AddDiff('CMacros',fCMacros,CompOpts.fCMacros);
-  Tool.AddDiff('TPCompat',fTPCompat,CompOpts.fTPCompat);
   Tool.AddDiff('InitConst',fInitConst,CompOpts.fInitConst);
   Tool.AddDiff('StaticKeyword',fStaticKeyword,CompOpts.fStaticKeyword);
-  Tool.AddDiff('DelphiCompat',fDelphiCompat,CompOpts.fDelphiCompat);
   Tool.AddDiff('UseAnsiStr',fUseAnsiStr,CompOpts.fUseAnsiStr);
-  Tool.AddDiff('GPCCompat',fGPCCompat,CompOpts.fGPCCompat);
 
   // code generation
   Tool.Path:='Code';

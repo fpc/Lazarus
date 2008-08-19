@@ -92,16 +92,13 @@ type
     fAssemblerStyle: Integer;
 
     // syntax options
-    fDelphi2Ext: Boolean;
+    FSyntaxMode: string;
     fCStyleOp: Boolean;
     fIncludeAssertionCode: Boolean;
-    fDelphiCompat: Boolean;
     fAllowLabel: Boolean;
     fUseAnsiStr: Boolean;
     fCPPInline: Boolean;
     fCMacros: Boolean;
-    fTPCompat: Boolean;
-    fGPCCompat: Boolean;
     fInitConst: Boolean;
     fStaticKeyword: Boolean;
 
@@ -198,18 +195,15 @@ type
     property LCLWidgetType: string read fLCLWidgetType write fLCLWidgetType;
 
     // parsing:
+    property SyntaxMode: string read FSyntaxMode write FSyntaxMode;
     property AssemblerStyle: Integer read fAssemblerStyle write fAssemblerStyle;
-    property Delphi2Extensions: Boolean read fDelphi2Ext write fDelphi2Ext;
     property CStyleOperators: Boolean read fCStyleOp write fCStyleOp;
     property IncludeAssertionCode: Boolean
                          read fIncludeAssertionCode write fIncludeAssertionCode;
-    property DelphiCompat: Boolean read fDelphiCompat write fDelphiCompat;
     property AllowLabel: Boolean read fAllowLabel write fAllowLabel;
     property UseAnsiStrings: Boolean read fUseAnsiStr write fUseAnsiStr;
     property CPPInline: Boolean read fCPPInline write fCPPInline;
     property CStyleMacros: Boolean read fCMacros write fCMacros;
-    property TPCompatible: Boolean read fTPCompat write fTPCompat;
-    property GPCCompat: Boolean read fGPCCompat write fGPCCompat;
     property InitConstructor: Boolean read fInitConst write fInitConst;
     property StaticKeyword: Boolean read fStaticKeyword write fStaticKeyword;
 

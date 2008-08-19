@@ -38,8 +38,9 @@ interface
 
 uses
   Forms, Classes, Math, LCLProc, SysUtils, InterfaceBase,
-  ComCtrls, Buttons, StdCtrls, ExtCtrls,
-  Graphics, LResources, FileUtil, Dialogs, Controls, GraphType,
+  ComCtrls, Buttons, StdCtrls, ExtCtrls, Graphics, LResources, FileUtil,
+  Dialogs, Controls, GraphType,
+  LinkScanner,
   MacroIntf, ProjectIntf, IDEWindowIntf, IDEContextHelpEdit,
   TransferMacros, PathEditorDlg, LazarusIDEStrConsts, IDEOptionDefs, LazConf,
   IDEProcs, IDEImagesIntf, ShowCompilerOpts, Project, PackageDefs,
@@ -95,6 +96,8 @@ type
     ParsingPage: TPage;
     grpAsmStyle: TRadioGroup;
     grpSyntaxOptions: TCheckGroup;
+    grpSyntaxMode: TGroupBox;
+    cmbSyntaxMode: TComboBox;
 
     { Code Generation Controls }
     CodeGenPage: TPage;
@@ -224,8 +227,6 @@ type
     procedure ButtonLoadSaveClick(Sender: TObject);
     procedure ButtonShowOptionsClicked(Sender: TObject);
     procedure FileBrowseBtnClick(Sender: TObject);
-    procedure FormResize(Sender: TObject);
-    procedure grpSyntaxOptionsItemClick(Sender: TObject; Index: integer);
     procedure HelpButtonClick(Sender: TObject);
     procedure InhTreeViewSelectionChanged(Sender: TObject);
     procedure chkCustomConfigFileClick(Sender: TObject);
@@ -277,6 +278,9 @@ type
 var
   TestCompilerOptions: TNotifyEvent = nil;
 
+function SyntaxModeToCaption(const Mode: string): string;
+function CaptionToSyntaxMode(const Caption: string): string;
+
 implementation
 
 type
@@ -285,6 +289,36 @@ type
     Option: TInheritedCompilerOption;
   end;
   PInheritedNodeData = ^TInheritedNodeData;
+
+function SyntaxModeToCaption(const Mode: string): string;
+begin
+  if SysUtils.CompareText(Mode,'ObjFPC')=0 then
+    Result:=lisObjectPascalDefault+' (-Mobjfpc)'
+  else if SysUtils.CompareText(Mode,'Delphi')=0 then
+    Result:=lisDelphi+' (-Mdelphi)'
+  else if SysUtils.CompareText(Mode,'tp')=0 then
+    Result:=lisTurboPascal+' (-Mtp)'
+  else if SysUtils.CompareText(Mode,'fpc')=0 then
+    Result:=lisFreePascal+' (-Mfpc)'
+  else if SysUtils.CompareText(Mode,'macpas')=0 then
+    Result:=lisMacPascal+' (-Mmacpas)'
+  else
+    Result:='';
+end;
+
+function CaptionToSyntaxMode(const Caption: string): string;
+begin
+  if System.Pos('-Mdelphi',Caption)>0 then
+    Result:='Delphi'
+  else if System.Pos('-Mtp',Caption)>0 then
+    Result:='tp'
+  else if System.Pos('-Mmacpas',Caption)>0 then
+    Result:='macpas'
+  else if System.Pos('-Mfpc',Caption)>0 then
+    Result:='fpc'
+  else
+    Result:='ObjFPC';
+end;
 
 {------------------------------------------------------------------------------
   TfrmCompilerOptions Constructor
@@ -425,24 +459,6 @@ begin
   end;
 end;
 
-procedure TfrmCompilerOptions.FormResize(Sender: TObject);
-begin
-end;
-
-procedure TfrmCompilerOptions.grpSyntaxOptionsItemClick(Sender: TObject;
-  Index: integer);
-begin
-  case Index of
-  0,6,9,11:
-    if grpSyntaxOptions.Checked[Index] then begin
-      grpSyntaxOptions.Checked[0]:=Index=0;  // objfpc mode
-      grpSyntaxOptions.Checked[6]:=Index=6;  // tp mode
-      grpSyntaxOptions.Checked[9]:=Index=9;  // delphi mode
-      grpSyntaxOptions.Checked[11]:=Index=11;// gpc mode
-    end;
-  end;
-end;
-
 procedure TfrmCompilerOptions.HelpButtonClick(Sender: TObject);
 begin
   ShowContextHelpForIDE(Self);
@@ -518,19 +534,17 @@ begin
 
     with grpSyntaxOptions do
     begin
-      Checked[0] := Options.Delphi2Extensions;
-      Checked[1] := Options.CStyleOperators;
-      Checked[2] := Options.IncludeAssertionCode;
-      Checked[3] := Options.AllowLabel;
-      Checked[4] := Options.CPPInline;
-      Checked[5] := Options.CStyleMacros;
-      Checked[6] := Options.TPCompatible;
-      Checked[7] := Options.InitConstructor;
-      Checked[8] := Options.StaticKeyword;
-      Checked[9] := Options.DelphiCompat;
-      Checked[10] := Options.UseAnsiStrings;
-      Checked[11] := Options.GPCCompat;
+      Checked[0] := Options.CStyleOperators;
+      Checked[1] := Options.IncludeAssertionCode;
+      Checked[2] := Options.AllowLabel;
+      Checked[3] := Options.CPPInline;
+      Checked[4] := Options.CStyleMacros;
+      Checked[5] := Options.InitConstructor;
+      Checked[6] := Options.StaticKeyword;
+      Checked[7] := Options.UseAnsiStrings;
     end;
+
+    cmbSyntaxMode.Text:=SyntaxModeToCaption(Options.SyntaxMode);
 
     // code generation
     chkSmartLinkUnit.Checked := Options.SmartLinkUnit;
@@ -832,19 +846,17 @@ begin
 
     with grpSyntaxOptions do
     begin
-      Options.Delphi2Extensions := Checked[0];
-      Options.CStyleOperators := Checked[1];
-      Options.IncludeAssertionCode := Checked[2];
-      Options.AllowLabel := Checked[3];
-      Options.CPPInline := Checked[4];
-      Options.CStyleMacros := Checked[5];
-      Options.TPCompatible := Checked[6];
-      Options.InitConstructor := Checked[7];
-      Options.StaticKeyword := Checked[8];
-      Options.DelphiCompat := Checked[9];
-      Options.UseAnsiStrings := Checked[10];
-      Options.GPCCompat := Checked[11];
+      Options.CStyleOperators := Checked[01];
+      Options.IncludeAssertionCode := Checked[1];
+      Options.AllowLabel := Checked[2];
+      Options.CPPInline := Checked[3];
+      Options.CStyleMacros := Checked[4];
+      Options.InitConstructor := Checked[5];
+      Options.StaticKeyword := Checked[6];
+      Options.UseAnsiStrings := Checked[7];
     end;
+
+    Options.SyntaxMode:=CaptionToSyntaxMode(cmbSyntaxMode.Text);
 
     // code generation
     Options.SmartLinkUnit := chkSmartLinkUnit.Checked;
@@ -1133,6 +1145,9 @@ end;
   TfrmCompilerOptions SetupParsingTab
 ------------------------------------------------------------------------------}
 procedure TfrmCompilerOptions.SetupParsingTab(Page: integer);
+var
+  m: TCompilerMode;
+  s: String;
 begin
   MainNoteBook.Page[Page].Caption:= dlgCOParsing;
 
@@ -1153,19 +1168,25 @@ begin
     AutoSize:=true;
     Caption := dlgSyntaxOptions;
 
-    Items.Add(dlgDelphi2Ext+' (-S2)');
     Items.Add(dlgCOCOps+' (-Sc)');
     Items.Add(dlgAssertCode+' (-Sa)');
     Items.Add(dlgLabelGoto+' (-Sg)');
     Items.Add(dlgCppInline+' (-Si)');
     Items.Add(dlgCMacro+' (-Sm)');
-    Items.Add(dlgBP7Cptb+' (-So)');
     Items.Add(dlgInitDoneOnly+' (-Ss)');
     Items.Add(dlgStaticKeyword+' (-St)');
-    Items.Add(dlgDeplhiComp+' (-Sd)');
     Items.Add(dlgCOAnsiStr+' (-Sh)');
-    Items.Add(dlgGPCComp+' (-Sp)');
   end;
+
+  grpSyntaxMode.Caption:=lisSyntaxMode+' (-M)';
+  cmbSyntaxMode.Items.BeginUpdate;
+  cmbSyntaxMode.Items.Clear;
+  for m:=Low(TCompilerMode) to High(TCompilerMode) do begin
+    s:=SyntaxModeToCaption(CompilerModeNames[m]);
+    if s<>'' then
+      cmbSyntaxMode.Items.Add(s);
+  end;
+  cmbSyntaxMode.Items.EndUpdate;
 end;
 
 
