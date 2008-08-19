@@ -379,7 +379,7 @@ end;
 type
   TMenuKeyCap = (mkcBkSp, mkcTab, mkcEsc, mkcEnter, mkcSpace, mkcPgUp,
     mkcPgDn, mkcEnd, mkcHome, mkcLeft, mkcUp, mkcRight, mkcDown, mkcIns,
-    mkcDel, mkcShift, mkcCtrl, mkcAlt);
+    mkcDel, mkcShift, mkcCtrl, mkcAlt, mkcMeta);
 
 const
   SmkcBkSp = 'BkSp';
@@ -400,27 +400,17 @@ const
   SmkcShift = 'Shift+';
   SmkcCtrl = 'Ctrl+';
   SmkcAlt = 'Alt+';
+  SmkcMeta = 'Meta+';
 
   MenuKeyCaps: array[TMenuKeyCap] of string = (
     SmkcBkSp, SmkcTab, SmkcEsc, SmkcEnter, SmkcSpace, SmkcPgUp,
     SmkcPgDn, SmkcEnd, SmkcHome, SmkcLeft, SmkcUp, SmkcRight,
-    SmkcDown, SmkcIns, SmkcDel, SmkcShift, SmkcCtrl, SmkcAlt);
+    SmkcDown, SmkcIns, SmkcDel, SmkcShift, SmkcCtrl, SmkcAlt, SmkcMeta);
 
 function GetSpecialShortCutName(ShortCut: TShortCut): string;
-{var
-  ScanCode: Integer;
-  KeyName: array[0..255] of Char;}
 begin
+  // ToDo
   Result := '';
-  // ToDo:
-  {
-  ScanCode := MapVirtualKey(WordRec(ShortCut).Lo, 0) shl 16;
-  if ScanCode <> 0 then
-  begin
-    GetKeyNameText(ScanCode, KeyName, SizeOf(KeyName));
-    Result := KeyName;
-  end;
-  }
 end;
 
 function CompareDebugLCLItemInfos(Data1, Data2: Pointer): integer;
@@ -480,6 +470,7 @@ begin
     Result := '';
     if ShortCut and scShift <> 0 then Result := Result + MenuKeyCaps[mkcShift];
     if ShortCut and scCtrl <> 0 then Result := Result + MenuKeyCaps[mkcCtrl];
+    if ShortCut and scMeta <> 0 then Result := Result + MenuKeyCaps[mkcMeta];
     if ShortCut and scAlt <> 0 then Result := Result + MenuKeyCaps[mkcAlt];
     Result := Result + Name;
   end
@@ -518,6 +509,8 @@ begin
       Shift := Shift or scCtrl
     else if CompareFront(StartPos, MenuKeyCaps[mkcAlt]) then
       Shift := Shift or scAlt
+    else if CompareFront(StartPos, MenuKeyCaps[mkcMeta]) then
+      Shift := Shift or scMeta
     else
       Break;
   end;
