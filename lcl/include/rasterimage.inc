@@ -537,7 +537,7 @@ procedure TRasterImage.LoadFromIntfImage(IntfImage: TLazIntfImage);
 var
   ImgHandle, ImgMaskHandle: HBitmap;
 begin
-  IntfImage.CreateBitmaps(ImgHandle, ImgMaskHandle);
+  IntfImage.CreateBitmaps(ImgHandle, ImgMaskHandle, not IntfImage.HasMask);
   SetHandles(ImgHandle, ImgMaskHandle);
 end;
 
