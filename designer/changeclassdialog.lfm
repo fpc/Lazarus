@@ -1,126 +1,144 @@
 object ChangeClassDlg: TChangeClassDlg
   Left = 291
-  Height = 298
+  Height = 350
   Top = 163
-  Width = 423
-  HorzScrollBar.Page = 422
-  VertScrollBar.Page = 297
+  Width = 470
   ActiveControl = OldAncestorsListBox
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsToolWindow
   Caption = 'ChangeClassDlg'
-  ClientHeight = 298
-  ClientWidth = 423
+  ClientHeight = 350
+  ClientWidth = 470
   OnCreate = ChangeClassDlgCreate
   LCLVersion = '0.9.25'
   object OldGroupBox: TGroupBox
-    Left = 8
-    Height = 248
-    Top = 8
-    Width = 200
+    Left = 6
+    Height = 290
+    Top = 6
+    Width = 228
+    Align = alClient
+    BorderSpacing.Around = 6
     Caption = 'OldGroupBox'
-    ClientHeight = 230
-    ClientWidth = 196
+    ClientHeight = 271
+    ClientWidth = 224
     TabOrder = 0
     object OldClassLabel: TLabel
       Left = 6
-      Height = 32
+      Height = 20
       Top = 2
-      Width = 185
+      Width = 90
       Caption = 'OldClassLabel'
       ParentColor = False
     end
     object OldAncestorGroupBox: TGroupBox
-      Height = 192
-      Top = 38
-      Width = 196
+      AnchorSideTop.Control = OldClassLabel
+      AnchorSideTop.Side = asrBottom
+      Height = 243
+      Top = 28
+      Width = 224
       Align = alBottom
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Top = 6
       Caption = 'OldAncestorGroupBox'
-      ClientHeight = 174
-      ClientWidth = 192
+      ClientHeight = 224
+      ClientWidth = 220
       TabOrder = 0
       object OldAncestorsListBox: TListBox
-        Height = 174
-        Width = 192
+        Height = 224
+        Width = 220
         Align = alClient
         ClickOnSelChange = False
         TabOrder = 0
+        TopIndex = -1
       end
     end
   end
   object NewGroupBox: TGroupBox
-    Left = 216
-    Height = 248
-    Top = 8
-    Width = 200
+    Left = 240
+    Height = 290
+    Top = 6
+    Width = 224
+    Align = alRight
+    BorderSpacing.Around = 6
     Caption = 'NewGroupBox'
-    ClientHeight = 230
-    ClientWidth = 196
+    ClientHeight = 271
+    ClientWidth = 220
     TabOrder = 1
     object NewClassComboBox: TComboBox
-      Left = 14
-      Height = 21
-      Top = 9
-      Width = 174
+      Left = 6
+      Height = 29
+      Top = 6
+      Width = 208
+      Align = alTop
       AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-      ItemHeight = 13
+      BorderSpacing.Around = 6
       MaxLength = 0
       OnEditingDone = NewClassComboBoxEditingDone
       TabOrder = 0
       Text = 'NewClassComboBox'
     end
     object NewAncestorGroupBox: TGroupBox
-      Height = 192
-      Top = 38
-      Width = 196
-      Align = alBottom
+      Height = 230
+      Top = 41
+      Width = 220
+      Align = alClient
       Caption = 'NewAncestorGroupBox'
-      ClientHeight = 174
-      ClientWidth = 192
+      ClientHeight = 211
+      ClientWidth = 216
       TabOrder = 1
       object NewAncestorsListBox: TListBox
-        Height = 174
-        Width = 192
+        Height = 211
+        Width = 216
         Align = alClient
         ClickOnSelChange = False
         TabOrder = 0
+        TopIndex = -1
       end
     end
   end
-  object OkButton: TBitBtn
-    AnchorSideRight.Control = CancelButton
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 273
-    Height = 26
-    Top = 266
-    Width = 60
-    Anchors = [akRight, akBottom]
+  object BtnPanel: TPanel
+    Height = 48
+    Top = 302
+    Width = 470
+    Align = alBottom
     AutoSize = True
-    BorderSpacing.Around = 6
-    Caption = '&OK'
-    Kind = bkOK
-    ModalResult = 1
-    NumGlyphs = 0
+    BevelOuter = bvNone
+    ClientHeight = 48
+    ClientWidth = 470
     TabOrder = 2
-  end
-  object CancelButton: TBitBtn
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 339
-    Height = 26
-    Top = 266
-    Width = 78
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    Cancel = True
-    Caption = 'Cancel'
-    Kind = bkCancel
-    ModalResult = 2
-    NumGlyphs = 0
-    TabOrder = 3
+    object CancelButton: TBitBtn
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Side = asrBottom
+      Left = 386
+      Height = 36
+      Top = 6
+      Width = 78
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Cancel = True
+      Caption = 'Cancel'
+      Constraints.MinWidth = 75
+      Kind = bkCancel
+      ModalResult = 2
+      NumGlyphs = 0
+      TabOrder = 0
+    end
+    object OkButton: TBitBtn
+      AnchorSideBottom.Side = asrBottom
+      Left = 305
+      Height = 36
+      Top = 6
+      Width = 75
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = '&OK'
+      Constraints.MinWidth = 75
+      Kind = bkOK
+      ModalResult = 1
+      NumGlyphs = 0
+      TabOrder = 1
+    end
   end
 end

@@ -8,7 +8,7 @@ LazarusResources.Add('TAddToPackageDlg','FORMDATA',[
   +'e'#9'OnDestroy'#7#11'FormDestroy'#9'OnKeyDown'#7#22'AddToPackageDlgKeyDown'
   +#8'Position'#7#14'poScreenCenter'#10'LCLVersion'#6#6'0.9.25'#0#9'TNotebook'#8
   +'NoteBook'#6'Height'#3','#1#5'Width'#3#244#1#5'Align'#7#8'alClient'#9'PageIn'
-  +'dex'#2#1#8'TabOrder'#2#0#0#5'TPage'#11'NewFilePage'#7'Caption'#6#8'New File'
+  +'dex'#2#5#8'TabOrder'#2#0#0#5'TPage'#11'NewFilePage'#7'Caption'#6#8'New File'
   +#11'ClientWidth'#3#242#1#12'ClientHeight'#3#17#1#8'OnResize'#7#17'NewFilePag'
   +'eResize'#0#9'TTreeView'#15'NewFileTreeView'#24'AnchorSideBottom.Control'#7
   +#15'NewFileOkButton'#6'Height'#3#218#0#5'Width'#3#249#0#5'Align'#7#6'alLeft'

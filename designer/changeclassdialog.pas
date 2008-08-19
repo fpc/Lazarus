@@ -56,6 +56,7 @@ type
     OldClassLabel: TLabel;
     NewGroupBox: TGroupBox;
     OldGroupBox: TGroupBox;
+    BtnPanel: TPanel;
     procedure ChangeClassDlgCreate(Sender: TObject);
     procedure NewClassComboBoxEditingDone(Sender: TObject);
   private
