@@ -516,6 +516,9 @@ begin
     CurDefinesCompilerFilename:=EnvironmentOptions.CompilerFilename;
     CurDefinesCompilerOptions:=CurOptions;
     CodeToolBoss.DefineTree.ReplaceRootSameNameAddFirst(CompilerTemplate);
+    // the compiler version was updated, update the FPCSrcDir
+    CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'FPCSrcDir']:=
+      EnvironmentOptions.GetFPCSourceDirectory;
     UnitLinksValid:=OnlyIfCompilerChanged
                     and InputHistories.FPCConfigCache.Valid(true);
     if UnitLinksValid then begin
@@ -1091,7 +1094,7 @@ function TBuildManager.MacroFuncFPCVer(const Param: string; const Data: PtrInt;
 var
   FPCVersion, FPCRelease, FPCPatch: integer;
 begin
-  Result:={$I version.inc};
+  Result:={$I %FPCVERSION%};
   if CodeToolBoss<>nil then begin
     CodeToolBoss.GetFPCVersionForDirectory('',FPCVersion,FPCRelease,FPCPatch);
     if FPCVersion<>0 then begin

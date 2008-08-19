@@ -85,8 +85,7 @@ CompilerVersion=`cat $VersionFile | grep ' *version_nr *=.*;' | sed -e 's/[^0-9]
 CompilerRelease=`cat $VersionFile | grep ' *release_nr *=.*;' | sed -e 's/[^0-9]//g'`
 CompilerPatch=`cat $VersionFile | grep ' *patch_nr *=.*;' | sed -e 's/[^-1-9]//g'`
 CompilerVersionStr="$CompilerVersion.$CompilerRelease.$CompilerPatch"
-FPCVersion="$CompilerVersion.$CompilerRelease"
-FPCVersion="$FPCVersion.$CompilerPatch"
+FPCVersion="$CompilerVersion.$CompilerRelease.$CompilerPatch"
 echo " $CompilerVersionStr-$FPCRelease"
 
 #------------------------------------------------------------------------------
@@ -182,7 +181,7 @@ ResourceDir=$CurDir/debian_$PackageName
 DebianInstallDir=$FPCBuildDir/usr
 DebianRulezDir=$FPCBuildDir/DEBIAN/
 DebianDocDir=$FPCBuildDir/usr/share/doc/$PackageName${TARGET_SUFFIX}
-DebianSourceDir=$FPCBuildDir/usr/share/fpcsrc
+DebianSourceDir=$FPCBuildDir/usr/share/fpcsrc/$FPCVersion
 Date=`date --rfc-822`
 
 

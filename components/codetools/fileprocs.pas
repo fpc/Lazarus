@@ -275,6 +275,7 @@ function DbgS(const e: extended; MaxDecimals: integer = 999): string; overload;
 function DbgS(const b: boolean): string; overload;
 function DbgSName(const p: TObject): string; overload;
 function DbgSName(const p: TClass): string; overload;
+function dbgMemRange(P: PByte; Count: integer; Width: integer = 0): string; overload;
 
 function DbgS(const i1,i2,i3,i4: integer): string; overload;
 function DbgStr(const StringWithSpecialChars: string): string;
@@ -2163,6 +2164,42 @@ begin
     Result:='nil'
   else
     Result:=p.ClassName;
+end;
+
+function dbgMemRange(P: PByte; Count: integer; Width: integer): string;
+const
+  HexChars: array[0..15] of char = '0123456789ABCDEF';
+  LineEnd: shortstring = LineEnding;
+var
+  i: Integer;
+  NewLen: Integer;
+  Dest: PChar;
+  Col: Integer;
+  j: Integer;
+begin
+  Result:='';
+  if (p=nil) or (Count<=0) then exit;
+  NewLen:=Count*2;
+  if Width>0 then begin
+    inc(NewLen,(Count div Width)*length(LineEnd));
+  end;
+  SetLength(Result,NewLen);
+  Dest:=PChar(Result);
+  Col:=1;
+  for i:=0 to Count-1 do begin
+    Dest^:=HexChars[PByte(P)[i] shr 4];
+    inc(Dest);
+    Dest^:=HexChars[PByte(P)[i] and $f];
+    inc(Dest);
+    inc(Col);
+    if (Width>0) and (Col>Width) then begin
+      Col:=1;
+      for j:=1 to length(LineEnd) do begin
+        Dest^:=LineEnd[j];
+        inc(Dest);
+      end;
+    end;
+  end;
 end;
 
 function DbgStr(const StringWithSpecialChars: string): string;

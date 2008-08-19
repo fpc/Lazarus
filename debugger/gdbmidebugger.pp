@@ -2974,6 +2974,7 @@ begin
   if AFrameInfo <> nil
   then begin
     Val(AFrameInfo.Values['addr'], addr, e);
+    if e=0 then ;
     func := AFrameInfo.Values['func'];
     filename := AFrameInfo.Values['file'];
     line := AFrameInfo.Values['line'];

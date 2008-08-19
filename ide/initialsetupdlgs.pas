@@ -93,10 +93,14 @@ var
   CurFPCSrcDir: String;
   DefaultFPCSrcDir: String;
   r: integer;
+  Changed: Boolean;
 begin
-  CurFPCSrcDir:=EnvironmentOptions.FPCSourceDirectory;
-  if CurFPCSrcDir='' then
+  CurFPCSrcDir:=EnvironmentOptions.GetFPCSourceDirectory;
+  Changed:=false;
+  if CurFPCSrcDir='' then begin
     CurFPCSrcDir:=FindDefaultFPCSrcDirectory;
+    Changed:=true;
+  end;
   if not CheckFPCSourceDir(CurFPCSrcDir) then begin
     if (not InteractiveSetup)
     or (not FileIsExecutable(EnvironmentOptions.CompilerFilename)) then
@@ -113,8 +117,10 @@ begin
            Format(lisTheCurrentFreePascalSourceDirectoryDoesNotLookCorr, ['"',
              CurFPCSrcDir, '"', #13, #13, '"', DefaultFPCSrcDir, '"', #13]),
            mtWarning,[mbOk,mbIgnore],0);
-        if r=mrOk then
+        if r=mrOk then begin
           CurFPCSrcDir:=DefaultFPCSrcDir;
+          Changed:=true;
+        end;
       end else begin
         MessageDlg(lisInvalidFreePascalSourceDirectory,
            Format(lisTheCurrentFreePascalSourceDirectoryDoesNotLookCorr2, ['"',
@@ -123,7 +129,8 @@ begin
       end;
     end;
   end;
-  EnvironmentOptions.FPCSourceDirectory:=CurFPCSrcDir;
+  if Changed then
+    EnvironmentOptions.FPCSourceDirectory:=CurFPCSrcDir;
 end;
 
 procedure SetupLazarusDirectory(var InteractiveSetup: boolean);

@@ -1010,11 +1010,7 @@ end;
 
 procedure TMainIDE.LoadGlobalOptions;
 // load environment, miscellaneous, editor and codetools options
-var
-  InteractiveSetup: boolean;
 begin
-  InteractiveSetup:=true;
-
   EnvironmentOptions:=TEnvironmentOptions.Create;
   with EnvironmentOptions do begin
     SetLazarusDefaultFilename;
@@ -1026,10 +1022,6 @@ begin
     end;
     TranslateResourceStrings(EnvironmentOptions.LazarusDirectory,
                              EnvironmentOptions.LanguageID);
-
-    SetupCompilerFilename(InteractiveSetup);
-    SetupFPCSourceDirectory(InteractiveSetup);
-    SetupLazarusDirectory(InteractiveSetup);
 
     ExternalTools.OnNeedsOutputFilter:=@OnExtToolNeedsOutputFilter;
     ExternalTools.OnFreeOutputFilter:=@OnExtToolFreeOutputFilter;
@@ -11701,7 +11693,9 @@ var CompilerUnitSearchPath, CompilerUnitLinks: string;
   AFilename: string;
   UnitLinksChanged: boolean;
   TargetOS, TargetProcessor: string;
+  InteractiveSetup: boolean;
 begin
+  InteractiveSetup:=true;
   OpenEditorsOnCodeToolChange:=false;
 
   CodeToolBoss.SourceCache.ExpirationTimeInDays:=365;
@@ -11750,6 +11744,7 @@ begin
   with CodeToolBoss.DefinePool do begin
     // start the compiler and ask for his settings
     TargetOS:='';
+    SetupCompilerFilename(InteractiveSetup);
     TargetProcessor:='';
     MainBuildBoss.CurDefinesCompilerFilename:=EnvironmentOptions.CompilerFilename;
     MainBuildBoss.CurDefinesCompilerOptions:='';
@@ -11762,6 +11757,10 @@ begin
                        TargetOS,TargetProcessor,CodeToolsOpts);
     AddTemplate(ADefTempl,false,
       'NOTE: Could not create Define Template for Free Pascal Compiler');
+    // the compiler version was updated, update the FPCSrcDir
+    SetupFPCSourceDirectory(InteractiveSetup);
+    CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'FPCSrcDir']:=
+      EnvironmentOptions.GetFPCSourceDirectory;
 
     // create compiler macros to simulate the Makefiles of the FPC sources
     InputHistories.FPCConfigCache.CompilerPath:=
@@ -11792,6 +11791,7 @@ begin
       lisNOTECouldNotCreateDefineTemplateForFreePascal);
 
     // create compiler macros for the lazarus sources
+    SetupLazarusDirectory(InteractiveSetup);
     ADefTempl:=CreateLazarusSrcTemplate(
       '$('+ExternalMacroStart+'LazarusDir)',
       '$('+ExternalMacroStart+'LCLWidgetType)',
@@ -11804,7 +11804,6 @@ begin
   AFilename:=AppendPathDelim(GetPrimaryConfigPath)+CodeToolsIncludeLinkFile;
   if FileExists(AFilename) then
     CodeToolBoss.SourceCache.LoadIncludeLinksFromFile(AFilename);
-
 
   with CodeToolBoss do begin
     WriteExceptions:=true;

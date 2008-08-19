@@ -872,6 +872,7 @@ begin
   Result:=0;
   Value:=FElement['value'];
   Val(Value, Back, FloatError);
+  if FloatError=0 then ;
   Result:=Back;
   ReadValue;
   //writeln('TXMLObjectReader.ReadFloat ',Result);
@@ -886,6 +887,7 @@ begin
   Result:=0;
   Value:=FElement['value'];
   Val(Value, Back, FloatError);
+  if FloatError=0 then ;
   Result:=Back;
   ReadValue;
   //writeln('TXMLObjectReader.ReadSingle ',Result);
@@ -900,6 +902,7 @@ begin
   Result:=0;
   Value:=FElement['value'];
   Val(Value, Back, FloatError);
+  if FloatError=0 then ;
   Result:=Back;
   ReadValue;
   //writeln('TXMLObjectReader.ReadCurrency ',Result);
@@ -914,6 +917,7 @@ begin
   Result:=0;
   Value:=FElement['value'];
   Val(Value, Back, FloatError);
+  if FloatError=0 then ;
   Result:=Back;
   ReadValue;
   //writeln('TXMLObjectReader.ReadDate ',Result);
@@ -935,6 +939,7 @@ begin
   Result:=0;
   Value:=FElement['value'];
   Val(Value, Back, FloatError);
+  if FloatError=0 then ;
   Result:=Back;
   ReadValue;
   //writeln('TXMLObjectReader.ReadInt8 ',Result);
@@ -949,6 +954,7 @@ begin
   Result:=0;
   Value:=FElement['value'];
   Val(Value, Back, FloatError);
+  if FloatError=0 then ;
   Result:=Back;
   ReadValue;
   //writeln('TXMLObjectReader.ReadInt16 ',Result);
@@ -963,6 +969,7 @@ begin
   Result:=0;
   Value:=FElement['value'];
   Val(Value, Back, FloatError);
+  if FloatError=0 then ;
   Result:=Back;
   ReadValue;
   //writeln('TXMLObjectReader.ReadInt32 ',Result);
@@ -977,6 +984,7 @@ begin
   Result:=0;
   Value:=FElement['value'];
   Val(Value, Back, FloatError);
+  if FloatError=0 then ;
   Result:=Back;
   ReadValue;
   //writeln('TXMLObjectReader.ReadInt64 ',Result);
