@@ -567,6 +567,9 @@ end;
 function TLFMTree.NextToken: Char;
 begin
   TokenStart:=Parser.SourcePos+1;
+  while (TokenStart<=LFMBuffer.SourceLength)
+  and (LFMBuffer.Source[TokenStart] in [' ',#9,#10,#13]) do
+    inc(TokenStart);
   Result:=Parser.NextToken;
 end;
 
@@ -709,13 +712,13 @@ begin
   if PropertyNode=nil then ;
   // Get name of property
   Parser.CheckToken(toSymbol);
-  PropertyNode.Add(Parser.TokenString,Parser.SourcePos+1);
+  PropertyNode.Add(Parser.TokenString,TokenStart);
   while True do begin
     NextToken;
     if Parser.Token <> '.' then break;
     NextToken;
     Parser.CheckToken(toSymbol);
-    PropertyNode.Add(Parser.TokenString,Parser.SourcePos+1);
+    PropertyNode.Add(Parser.TokenString,TokenStart);
   end;
   Parser.CheckToken('=');
   NextToken;
@@ -744,7 +747,7 @@ begin
     ObjectStartLine:=Parser.SourceLine;
     ObjectNode.Name := '';
     ObjectNode.TypeName := Parser.TokenString;
-    ObjectNode.TypeNamePosition:=Parser.SourcePos+1;
+    ObjectNode.TypeNamePosition:=TokenStart;
     ObjectNode.ChildPos := -1;
     NextToken;
     if Parser.Token = ':' then begin
@@ -753,7 +756,7 @@ begin
       ObjectNode.Name := ObjectNode.TypeName;
       ObjectNode.NamePosition:=ObjectNode.TypeNamePosition;
       ObjectNode.TypeName := Parser.TokenString;
-      ObjectNode.TypeNamePosition:=Parser.SourcePos+1;
+      ObjectNode.TypeNamePosition:=TokenStart;
       NextToken;
       if parser.Token = '[' then begin
         NextToken;
