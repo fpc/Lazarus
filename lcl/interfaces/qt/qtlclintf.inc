@@ -351,10 +351,8 @@ begin
   Result := ABitmap <> 0;
   
   if ASkipMask then Exit;
-  if ARawImage.Mask = nil then Exit;
-  if ARawImage.MaskSize = 0 then Exit;
-  
-  if ARawImage.MaskSize > 0 then
+
+  if (ARawImage.Mask <> nil) and (ARawImage.MaskSize > 0) then
   begin
     NewData := GetMem(ARawImage.MaskSize);
     Move(ARawImage.Mask^, NewData^, ARawImage.MaskSize);

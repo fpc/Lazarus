@@ -892,7 +892,10 @@ begin
   FDataOwner := ADataOwner;
 
   if FData = nil then
-    Handle := QImage_create(width, height, format)
+  begin
+    Handle := QImage_create(width, height, format);
+    QImage_fill(Handle, 0);
+  end
   else
     Handle := QImage_create(FData, width, height, format);
 end;
