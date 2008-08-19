@@ -114,11 +114,6 @@ type
     grpHeapSize: TGroupBox;
     edtHeapSize: TEdit;
 
-    grpGenerate: TGroupBox;
-    radGenNormal: TRadioButton;
-    radGenFaster: TRadioButton;
-    radGenSmaller: TRadioButton;
-
     grpTargetPlatform: TGroupBox;
     lblTargetOS : TLabel;
     TargetOSComboBox: TComboBox;
@@ -128,12 +123,13 @@ type
     TargetProcessorProcComboBox: TComboBox;
 
     grpOptimizations: TGroupBox;
-    chkOptVarsInReg: TCheckBox;
-    chkOptUncertain: TCheckBox;
     radOptLevelNone: TRadioButton;
     radOptLevel1: TRadioButton;
     radOptLevel2: TRadioButton;
     radOptLevel3: TRadioButton;
+    chkOptVarsInReg: TCheckBox;
+    chkOptUncertain: TCheckBox;
+    chkOptSmaller: TCheckBox;
 
     { Linking Controls }
     LinkingPage: TPage;
@@ -593,12 +589,6 @@ begin
     grpHeapSize.Enabled:=EnabledLinkerOpts;
     edtHeapSize.Text := IntToStr(Options.HeapSize);
 
-    case Options.Generate of
-      cgcNormalCode:  radGenNormal.Checked := true;
-      cgcFasterCode:  radGenFaster.Checked := true;
-      cgcSmallerCode: radGenSmaller.Checked := true;
-    end;
-
     i:=TargetOSComboBox.Items.IndexOf(Options.TargetOS);
     if i<0 then i:=0;  // 0 is default
     TargetOSComboBox.ItemIndex:=i;
@@ -612,6 +602,7 @@ begin
 
     chkOptVarsInReg.Checked := Options.VariablesInRegisters;
     chkOptUncertain.Checked := Options.UncertainOptimizations;
+    chkOptSmaller.Checked := Options.SmallerCode;
 
     case Options.OptimizationLevel of
       1: radOptLevel1.Checked := true;
@@ -903,12 +894,6 @@ begin
     else
       Options.HeapSize := hs;
 
-    if (radGenFaster.Checked) then
-      Options.Generate := cgcFasterCode
-    else if (radGenSmaller.Checked) then
-      Options.Generate := cgcSmallerCode
-    else
-      Options.Generate := cgcNormalCode;
 
     NewTargetOS:=TargetOSComboBox.Text;
     if TargetOSComboBox.Items.IndexOf(NewTargetOS)<=0 then
@@ -923,6 +908,7 @@ begin
     Options.TargetProcessor := CaptionToProcessor(TargetProcessorProcComboBox.Text);
     Options.VariablesInRegisters := chkOptVarsInReg.Checked;
     Options.UncertainOptimizations := chkOptUncertain.Checked;
+    Options.SmallerCode := chkOptSmaller.Checked;
 
     if (radOptLevel1.Checked) then
       Options.OptimizationLevel := 1
@@ -1231,11 +1217,6 @@ begin
   grpHeapSize.Caption := dlgHeapSize +' (-Ch):';
   edtHeapSize.Text := '';
 
-  grpGenerate.Caption := dlgCOGenerate;
-  radGenNormal.Caption := dlgCONormal+' (none)';
-  radGenFaster.Caption := dlgCOFast+' (-OG)';
-  radGenSmaller.Caption := dlgCOSmaller+' (-Os)';
-
   grpTargetPlatform.Caption := dlgTargetPlatform;
   lblTargetOS.Caption := dlgTargetOS+' (-T)';
 
@@ -1308,6 +1289,7 @@ begin
   radOptLevel3.Caption := dlgLevel3Opt+' (-O3)';
   chkOptVarsInReg.Caption := dlgCOKeepVarsReg+' (-Or)';
   chkOptUncertain.Caption := dlgUncertOpt+' (-Ou)';
+  chkOptSmaller.Caption := lisSmallerRatherThanFaster+' (-Os)';
 end;
 
 {------------------------------------------------------------------------------
@@ -1776,6 +1758,7 @@ begin
   x:=radOptLevel1.Left+Max(radOptLevel1.Width,radOptLevel2.Width)+6;
   chkOptVarsInReg.Left:=x;
   chkOptUncertain.Left:=x;
+  chkOptSmaller.Left:=x;
 end;
 
 procedure TfrmCompilerOptions.SetReadOnly(const AValue: boolean);

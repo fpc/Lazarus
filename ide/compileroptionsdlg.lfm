@@ -426,76 +426,24 @@ object frmCompilerOptions: TfrmCompilerOptions
           Text = 'edtHeapSize'
         end
       end
-      object grpGenerate: TGroupBox
-        AnchorSideLeft.Control = CodeGenPage
-        AnchorSideTop.Control = grpChecks
-        AnchorSideTop.Side = asrBottom
-        AnchorSideBottom.Control = grpTargetPlatform
-        AnchorSideBottom.Side = asrBottom
-        Left = 6
-        Height = 130
-        Top = 149
-        Width = 136
-        Anchors = [akTop, akLeft, akBottom]
-        AutoSize = True
-        BorderSpacing.Left = 6
-        BorderSpacing.Top = 6
-        BorderSpacing.Right = 6
-        Caption = 'grpGenerate'
-        ClientHeight = 111
-        ClientWidth = 132
-        TabOrder = 3
-        object radGenNormal: TRadioButton
-          Left = 6
-          Height = 22
-          Top = 6
-          Width = 120
-          Align = alTop
-          BorderSpacing.Around = 6
-          Caption = 'radGenNormal'
-          Checked = True
-          State = cbChecked
-          TabOrder = 0
-        end
-        object radGenFaster: TRadioButton
-          Left = 6
-          Height = 22
-          Top = 34
-          Width = 120
-          Align = alTop
-          BorderSpacing.Around = 6
-          Caption = 'radGenFaster'
-          TabOrder = 1
-        end
-        object radGenSmaller: TRadioButton
-          Left = 6
-          Height = 22
-          Top = 62
-          Width = 120
-          Align = alTop
-          BorderSpacing.Around = 6
-          Caption = 'radGenSmaller'
-          TabOrder = 2
-        end
-      end
       object grpTargetPlatform: TGroupBox
-        AnchorSideLeft.Control = grpGenerate
+        AnchorSideLeft.Control = grpChecks
         AnchorSideLeft.Side = asrBottom
-        AnchorSideTop.Control = grpChecks
+        AnchorSideTop.Control = grpHeapSize
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = CodeGenPage
         AnchorSideRight.Side = asrBottom
-        Left = 148
+        Left = 174
         Height = 130
-        Top = 149
-        Width = 513
+        Top = 125
+        Width = 487
         Anchors = [akTop, akLeft, akRight]
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'grpTargetPlatform'
         ClientHeight = 111
-        ClientWidth = 509
-        TabOrder = 4
+        ClientWidth = 483
+        TabOrder = 3
         object lblTargetOS: TLabel
           AnchorSideLeft.Control = grpTargetPlatform
           AnchorSideTop.Control = TargetOSComboBox
@@ -541,7 +489,7 @@ object frmCompilerOptions: TfrmCompilerOptions
           Left = 91
           Height = 29
           Top = 6
-          Width = 412
+          Width = 386
           Anchors = [akTop, akLeft, akRight]
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           BorderSpacing.Left = 6
@@ -560,7 +508,7 @@ object frmCompilerOptions: TfrmCompilerOptions
           Left = 99
           Height = 29
           Top = 41
-          Width = 404
+          Width = 378
           Anchors = [akTop, akLeft, akRight]
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           BorderSpacing.Left = 6
@@ -579,7 +527,7 @@ object frmCompilerOptions: TfrmCompilerOptions
           Left = 163
           Height = 29
           Top = 76
-          Width = 340
+          Width = 314
           Anchors = [akTop, akLeft, akRight]
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           BorderSpacing.Left = 6
@@ -591,22 +539,22 @@ object frmCompilerOptions: TfrmCompilerOptions
       end
       object grpOptimizations: TGroupBox
         AnchorSideLeft.Control = CodeGenPage
-        AnchorSideTop.Control = grpGenerate
+        AnchorSideTop.Control = grpTargetPlatform
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = CodeGenPage
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = CodeGenPage
         AnchorSideBottom.Side = asrBottom
         Left = 6
-        Height = 162
-        Top = 285
+        Height = 186
+        Top = 261
         Width = 655
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Around = 6
         Caption = 'grpOptimizations'
-        ClientHeight = 143
+        ClientHeight = 167
         ClientWidth = 651
-        TabOrder = 5
+        TabOrder = 4
         OnResize = grpOptimizationsResize
         object radOptLevelNone: TRadioButton
           AnchorSideLeft.Control = grpOptimizations
@@ -677,6 +625,14 @@ object frmCompilerOptions: TfrmCompilerOptions
           BorderSpacing.Around = 6
           Caption = 'chkOptUncertain'
           TabOrder = 5
+        end
+        object chkOptSmaller: TCheckBox
+          Left = 205
+          Height = 22
+          Top = 62
+          Width = 118
+          Caption = 'chkOptSmaller'
+          TabOrder = 6
         end
       end
     end

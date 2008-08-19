@@ -3815,6 +3815,7 @@ resourcestring
   lisTurboPascal = 'Turbo Pascal';
   lisMacPascal = 'Mac Pascal';
   lisFreePascal = 'Free Pascal';
+  lisSmallerRatherThanFaster = 'smaller rather than faster';
 
 implementation
 

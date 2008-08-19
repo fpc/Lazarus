@@ -493,9 +493,6 @@ function MergeCustomOptions(const OldOptions, AddOptions: string): string;
 function ConvertSearchPathToCmdLine(const switch, paths: String): String;
 function ConvertOptionsToCmdLine(const Delim, Switch, OptionStr: string): string;
 
-function CompilationGenerateCodeNameToType(
-  const Name: string): TCompilationGenerateCode;
-
 function LoadXMLCompileReasons(const AConfig: TXMLConfig;
   const APath: String; const DefaultReasons: TCompileReasons): TCompileReasons;
 procedure SaveXMLCompileReasons(const AConfig: TXMLConfig; const APath: String;
@@ -504,7 +501,7 @@ procedure SaveXMLCompileReasons(const AConfig: TXMLConfig; const APath: String;
 implementation
 
 const
-  CompilerOptionsVersion = 7;
+  CompilerOptionsVersion = 8;
   Config_Filename = 'compileroptions.xml';
 
 function ParseString(Options: TParsedCompilerOptions;
@@ -740,14 +737,6 @@ begin
     end;
     StartPos:=EndPos+1;
   end;
-end;
-
-function CompilationGenerateCodeNameToType(
-  const Name: string): TCompilationGenerateCode;
-begin
-  for Result:=Low(TCompilationGenerateCode) to High(TCompilationGenerateCode) do
-    if CompareText(Name,CompilationGenerateCodeNames[Result])=0 then exit;
-  Result:=cgcNormalCode;
 end;
 
 function LoadXMLCompileReasons(const AConfig: TXMLConfig; const APath: String;
@@ -1009,21 +998,16 @@ var
     Result:=MinimizeSearchPath(Result);
   end;
 
-  procedure ReadGenerate;
-  var
-    i: Integer;
+  procedure ReadSmaller;
   begin
     if FileVersion<2 then begin
-      i:=XMLConfigFile.GetValue(p+'Generate/Value', 1);
-      if i=1 then
-        Generate:=cgcFasterCode
-      else
-        Generate:=cgcSmallerCode
-    end else begin
-      Generate:=CompilationGenerateCodeNameToType(
-                  XMLConfigFile.GetValue(p+'Generate/Value',
-                                  CompilationGenerateCodeNames[cgcNormalCode]));
-    end;
+      if XMLConfigFile.GetValue(p+'Generate/Value', 1)<>1 then
+        SmallerCode:=true;
+    end else if FileVersion<8 then begin
+      if XMLConfigFile.GetValue(p+'Generate/Value','')='Smaller' then
+        SmallerCode:=true;
+    end else
+      SmallerCode:=XMLConfigFile.GetValue(p+'SmallerCode/Value',false);
   end;
   
   procedure ReadSmartLinkUnit;
@@ -1071,7 +1055,7 @@ begin
     p:=Path+'Parsing/SyntaxOptions/'
   else
     p:=Path+'SymantecChecking/';
-  if FileVersion<5 then begin
+  if FileVersion<6 then begin
     if XMLConfigFile.GetValue(p+'D2Extensions/Value', true) then
       FSyntaxMode:='ObjFPC';
     if XMLConfigFile.GetValue(p+'TPCompatible/Value', false) then
@@ -1104,8 +1088,8 @@ begin
   EmulatedFloatOpcodes := XMLConfigFile.GetValue(p+'EmulateFloatingPointOpCodes/Value', false);
   HeapSize := XMLConfigFile.GetValue(p+'HeapSize/Value', 0);
   VerifyObjMethodCall := XMLConfigFile.GetValue(p+'VerifyObjMethodCallValidity/Value', false);
-  ReadGenerate;
-  if FileVersion<6 then begin
+  ReadSmaller;
+  if FileVersion<7 then begin
     i:=XMLConfigFile.GetValue(p+'TargetProcessor/Value', 0);
     case i of
     1: TargetProcessor:='PENTIUM';
@@ -1260,7 +1244,7 @@ begin
   XMLConfigFile.SetDeleteValue(p+'EmulateFloatingPointOpCodes/Value', EmulatedFloatOpcodes,false);
   XMLConfigFile.SetDeleteValue(p+'HeapSize/Value', HeapSize,0);
   XMLConfigFile.SetDeleteValue(p+'VerifyObjMethodCallValidity/Value', VerifyObjMethodCall,false);
-  XMLConfigFile.SetDeleteValue(p+'Generate/Value', CompilationGenerateCodeNames[Generate],CompilationGenerateCodeNames[cgcNormalCode]);
+  XMLConfigFile.SetDeleteValue(p+'SmallerCode/Value', SmallerCode, false);
   XMLConfigFile.SetDeleteValue(p+'TargetProcessor/Value', TargetProcessor,'');
   XMLConfigFile.SetDeleteValue(p+'TargetCPU/Value', TargetCPU,'');
   XMLConfigFile.SetDeleteValue(p+'Optimizations/VariablesInRegisters/Value', VariablesInRegisters,false);
@@ -2043,12 +2027,8 @@ begin
 
   OptimizeSwitches:='';
 
-  { Generate    G = faster g = smaller  }
-  case (Generate) of
-    cgcNormalCode: ;
-    cgcFasterCode:  OptimizeSwitches := OptimizeSwitches + 'G';
-    cgcSmallerCode:  OptimizeSwitches := OptimizeSwitches + 'g';
-  end;
+  if SmallerCode then
+    OptimizeSwitches := OptimizeSwitches + 's';
 
   { OptimizationLevel     1 = Level 1    2 = Level 2    3 = Level 3 }
   case (OptimizationLevel) of
@@ -2057,13 +2037,16 @@ begin
     3:  OptimizeSwitches := OptimizeSwitches + '3';
   end;
 
-  if (VariablesInRegisters) then
-    OptimizeSwitches := OptimizeSwitches + 'r';
-  if (UncertainOptimizations) then
-    OptimizeSwitches := OptimizeSwitches + 'u';
-
   if OptimizeSwitches<>'' then
     switches := switches + ' -O'+OptimizeSwitches;
+
+  // uncertain
+  if (UncertainOptimizations) then
+    Switches := Switches + ' -OoUNCERTAIN';
+
+  // registers
+  if (VariablesInRegisters) then
+    Switches := Switches + ' -OoREGVAR';
 
   { TargetProcessor }
   if TargetProcessor<>'' then
@@ -2446,7 +2429,7 @@ begin
   fOverflowChecks := false;
   fStackChecks := false;
   fHeapSize := 0;
-  fGenerate := cgcFasterCode;
+  FSmallerCode := false;
   fTargetProc := '';
   fTargetCPU := '';
   fVarsInReg := false;
@@ -2549,7 +2532,7 @@ begin
   FEmulatedFloatOpcodes := CompOpts.fEmulatedFloatOpcodes;
   fHeapSize := CompOpts.fHeapSize;
   fEmulatedFloatOpcodes := CompOpts.fEmulatedFloatOpcodes;
-  fGenerate := CompOpts.fGenerate;
+  FSmallerCode := CompOpts.FSmallerCode;
   fTargetProc := CompOpts.fTargetProc;
   fTargetCPU := CompOpts.fTargetCPU;
   fVarsInReg := CompOpts.fVarsInReg;
@@ -2631,13 +2614,6 @@ procedure TBaseCompilerOptions.CreateDiff(CompOpts: TBaseCompilerOptions;
   Tool: TCompilerDiffTool);
 
   procedure AddDiff(const PropertyName: string;
-    const Old, New: TCompilationGenerateCode);
-  begin
-    if Old=New then exit;
-    Tool.AddDiffItem(PropertyName,CompilationGenerateCodeNames[New]);
-  end;
-
-  procedure AddDiff(const PropertyName: string;
     const Old, New: TCompilationExecutableType);
   begin
     if Old=New then exit;
@@ -2680,7 +2656,7 @@ begin
   Tool.AddDiff('EmulatedFloatOpcodes',FEmulatedFloatOpcodes,CompOpts.FEmulatedFloatOpcodes);
   Tool.AddDiff('HeapSize',fHeapSize,CompOpts.fHeapSize);
   Tool.AddDiff('EmulatedFloatOpcodes',fEmulatedFloatOpcodes,CompOpts.fEmulatedFloatOpcodes);
-       AddDiff('Generate',fGenerate,CompOpts.fGenerate);
+  Tool.AddDiff('SmallerCode',FSmallerCode,CompOpts.FSmallerCode);
   Tool.AddDiff('TargetProc',fTargetProc,CompOpts.fTargetProc);
   Tool.AddDiff('TargetCPU',fTargetCPU,CompOpts.fTargetCPU);
   Tool.AddDiff('VarsInReg',fVarsInReg,CompOpts.fVarsInReg);

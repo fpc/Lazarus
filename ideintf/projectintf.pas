@@ -47,12 +47,6 @@ const
 type
   { TLazCompilerOptions }
   
-  TCompilationGenerateCode = (
-    cgcNormalCode,
-    cgcFasterCode,
-    cgcSmallerCode
-    );
-    
   TCompilationExecutableType = (
     cetProgram,
     cetLibrary
@@ -111,7 +105,7 @@ type
     FEmulatedFloatOpcodes: boolean;
     fHeapSize: LongInt;
     fVerifyObjMethodCall: boolean;
-    fGenerate: TCompilationGenerateCode;
+    FSmallerCode: boolean;
     fTargetProc: string;
     fTargetCPU: string;
     fVarsInReg: Boolean;
@@ -208,17 +202,17 @@ type
     property StaticKeyword: Boolean read fStaticKeyword write fStaticKeyword;
 
     // code generation:
-    property SmartLinkUnit: Boolean read fSmartLinkUnit write fSmartLinkUnit;
     property IOChecks: Boolean read fIOChecks write fIOChecks;
     property RangeChecks: Boolean read fRangeChecks write fRangeChecks;
     property OverflowChecks: Boolean read fOverflowChecks write fOverflowChecks;
     property StackChecks: Boolean read fStackChecks write fStackChecks;
+    property SmartLinkUnit: Boolean read fSmartLinkUnit write fSmartLinkUnit;
     property EmulatedFloatOpcodes: boolean read FEmulatedFloatOpcodes
                                            write FEmulatedFloatOpcodes;
     property HeapSize: Integer read fHeapSize write fHeapSize;
-    property VerifyObjMethodCall: boolean read FEmulatedFloatOpcodes
-                                          write FEmulatedFloatOpcodes;
-    property Generate: TCompilationGenerateCode read fGenerate write fGenerate;
+    property VerifyObjMethodCall: boolean read FVerifyObjMethodCall
+                                          write FVerifyObjMethodCall;
+    property SmallerCode: boolean read FSmallerCode write FSmallerCode;
     property TargetCPU: string read fTargetCPU write SetTargetCPU; // general type
     property TargetProcessor: String read fTargetProc write SetTargetProc; // specific
     property TargetOS: string read fTargetOS write SetTargetOS;
@@ -661,12 +655,6 @@ const
     'InProjectDir',
     'InIDEConfig',
     'None'
-    );
-
-  CompilationGenerateCodeNames: array[TCompilationGenerateCode] of string = (
-    'Normal',
-    'Faster',
-    'Smaller'
     );
 
   CompilationExecutableTypeNames: array[TCompilationExecutableType] of string =(
