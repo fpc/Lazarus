@@ -173,7 +173,9 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TStatusPanel">
-        <short/>
+        <short>
+          <var>TStatusPanel</var> - one of the panels contained in a <var>StatusBar</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -303,7 +305,7 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TStatusPanel.Create">
+      <element name="TStatusPanel.Create" link="#rtl.Classes.TCollectionItem.Create">
         <short/>
         <descr/>
         <errors/>
@@ -314,14 +316,14 @@
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TStatusPanel.Destroy">
+      <element name="TStatusPanel.Destroy" link="#rtl.Classes.TCollectionItem.Destroy">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TStatusPanel.Assign">
+      <element name="TStatusPanel.Assign" link="#rtl.Classes.TPersistent.Assign">
         <short/>
         <descr/>
         <errors/>
@@ -333,7 +335,8 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TStatusPanel.StatusBar">
-        <short/>
+        <short>The <var>StatusBar</var> that contains this <var>StatusPanel</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -344,37 +347,41 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TStatusPanel.Alignment">
-        <short/>
+        <short>
+          <var>Alignment</var> - whether left- or right-justified or centered</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TStatusPanel.Bevel">
-        <short/>
+        <short>The type of <var>Bevel</var> for the display</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TStatusPanel.Style">
-        <short/>
+        <short>
+          <var>Style</var> - whether text or something drawn by the owner</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TStatusPanel.Text">
-        <short/>
+        <short>
+          <var>Text</var> - the string for display in the StatusBar</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TStatusPanel.Width">
-        <short/>
+        <short>The <var>Width</var> of this panel on the StatusBar</short>
         <descr/>
         <seealso/>
       </element>
       <!-- object Visibility: default -->
       <element name="TStatusPanels">
-        <short/>
+        <short>
+          <var>TStatusPanels</var> - the collection of Status Panels in this StatusBar</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -416,7 +423,7 @@
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TStatusPanels.GetOwner">
+      <element name="TStatusPanels.GetOwner" link="#rtl.Classes.TPersistent.GetOwner">
         <short/>
         <descr/>
         <errors/>
@@ -427,7 +434,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TStatusPanels.Update">
+      <element name="TStatusPanels.Update" link="#rtl.Classes.TCollection.Update">
         <short/>
         <descr/>
         <errors/>
@@ -438,7 +445,7 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TStatusPanels.Create">
+      <element name="TStatusPanels.Create" link="#rtl.Classes.TCollection.Create">
         <short/>
         <descr/>
         <errors/>
@@ -449,7 +456,7 @@
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TStatusPanels.Add">
+      <element name="TStatusPanels.Add" link="#rtl.Classes.TCollection.Add">
         <short/>
         <descr/>
         <errors/>
@@ -460,7 +467,7 @@
         <short/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TStatusPanels.Items">
+      <element name="TStatusPanels.Items" link="#rtl.Classes.TCollection.Items">
         <short/>
         <descr/>
         <seealso/>
@@ -471,7 +478,7 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TStatusPanels.StatusBar">
-        <short/>
+        <short>The <var>StatusBar</var> to which this collection of Status Panels belongs</short>
         <descr/>
         <seealso/>
       </element>
@@ -590,7 +597,7 @@
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TStatusBar.Loaded">
+      <element name="TStatusBar.Loaded" link="#rtl.Classes.TComponent.Loaded">
         <short/>
         <descr/>
         <errors/>
@@ -608,7 +615,7 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TStatusBar.Create">
+      <element name="TStatusBar.Create" link="#LCL.Controls.TWinControl.Create">
         <short/>
         <descr/>
         <errors/>
@@ -619,7 +626,7 @@
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TStatusBar.Destroy">
+      <element name="TStatusBar.Destroy" link="#LCL.Controls.TWinControl.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -667,12 +674,12 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TStatusBar.Canvas">
-        <short/>
+        <short>The <var>Canvas</var> where the Panels of the StatusBar are to be Painted</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStatusBar.Action">
+      <element name="TStatusBar.Action" link="#LCL.Controls.TControl.Action">
         <short/>
         <descr/>
         <seealso/>
@@ -709,31 +716,31 @@
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStatusBar.Visible">
+      <element name="TStatusBar.Visible" link="#LCL.Controls.TControl.Visible">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStatusBar.Color">
+      <element name="TStatusBar.Color" link="#LCL.Controls.TControl.Color">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStatusBar.OnDblClick">
+      <element name="TStatusBar.OnDblClick" link="#LCL.Controls.TControl.OnDblClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TStatusBar.OnHint">
-        <short/>
+        <short>Event handler for showing a hint when required</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStatusBar.OnMouseDown">
+      <element name="TStatusBar.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
         <short/>
         <descr/>
         <seealso/>
@@ -868,132 +875,133 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TTabSheet.PageControl">
-        <short/>
+        <short>The <var>PageControl</var> of which this TabSheet is a member</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TTabSheet.TabIndex">
+        <short>
+          <var>TabIndex</var> - the Index value or sequence number of this TabSheet</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TTabSheet.Caption" link="#LCL.Controls.TControl.Caption">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabSheet.Caption">
+      <element name="TTabSheet.ChildSizing" link="#LCL.Controls.TWinControl.ChildSizing">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabSheet.ChildSizing">
+      <element name="TTabSheet.ClientHeight" link="#LCL.Controls.TControl.ClientHeight">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabSheet.ClientHeight">
+      <element name="TTabSheet.ClientWidth" link="#LCL.Controls.TControl.ClientWidth">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabSheet.ClientWidth">
+      <element name="TTabSheet.Enabled" link="#LCL.Controls.TControl.Enabled">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabSheet.Enabled">
+      <element name="TTabSheet.Height" link="#LCL.Controls.TControl.Height">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabSheet.Height">
+      <element name="TTabSheet.ImageIndex" link="#LCL.ExtCtrls.TCustomPage.ImageIndex">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabSheet.ImageIndex">
+      <element name="TTabSheet.Left" link="#LCL.Controls.TControl.Left">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabSheet.Left">
+      <element name="TTabSheet.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabSheet.OnContextPopup">
+      <element name="TTabSheet.OnEnter" link="#LCL.Controls.TWinControl.OnEnter">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabSheet.OnEnter">
+      <element name="TTabSheet.OnExit" link="#LCL.Controls.TWinControl.OnExit">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabSheet.OnExit">
+      <element name="TTabSheet.OnHide" link="#LCL.ExtCtrls.TCustomPage.OnHide">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabSheet.OnHide">
+      <element name="TTabSheet.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabSheet.OnMouseDown">
+      <element name="TTabSheet.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabSheet.OnMouseMove">
+      <element name="TTabSheet.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabSheet.OnMouseUp">
+      <element name="TTabSheet.OnResize" link="#LCL.Controls.TControl.OnResize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabSheet.OnResize">
+      <element name="TTabSheet.OnShow" link="#LCL.ExtCtrls.TCustomPage.OnShow">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabSheet.OnShow">
+      <element name="TTabSheet.PageIndex" link="#LCL.ExtCtrls.TCustomPage.PageIndex">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabSheet.PageIndex">
+      <element name="TTabSheet.ParentFont" link="#LCL.Controls.TControl.ParentFont">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabSheet.ParentFont">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TTabSheet.ParentShowHint">
+      <element name="TTabSheet.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
         <short/>
         <descr/>
         <seealso/>
@@ -1011,25 +1019,25 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabSheet.TabVisible">
+      <element name="TTabSheet.TabVisible" link="#LCL.ExtCtrls.TCustomPage.TabVisible">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabSheet.Top">
+      <element name="TTabSheet.Top" link="#LCL.Controls.TControl.Top">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabSheet.Visible">
+      <element name="TTabSheet.Visible" link="#LCL.Controls.TControl.Visible">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabSheet.Width">
+      <element name="TTabSheet.Width" link="#LCL.Controls.TControl.Width">
         <short/>
         <descr/>
         <seealso/>
@@ -1174,11 +1182,11 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TPageControl.SelectNextPage">
-        <short>
-          <var>SelectNextPage</var> - checking that its Tab is supposed to be visible</short>
         <descr/>
         <errors/>
         <seealso/>
+        <short>
+          <var>SelectNextPage</var> - checking that its tab is visible</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TPageControl.SelectNextPage.GoForward">
@@ -1235,7 +1243,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPageControl.Anchors">
+      <element name="TPageControl.Anchors" link="#LCL.Controls.TControl.Anchors">
         <short/>
         <descr/>
         <seealso/>
@@ -1375,7 +1383,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPageControl.OnMouseUp">
+      <element name="TPageControl.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
         <short/>
         <descr/>
         <seealso/>
@@ -1584,7 +1592,7 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TTabControlStrings.Create">
+      <element name="TTabControlStrings.Create" link="#rtl.System.TObject.Create">
         <short/>
         <descr/>
         <errors/>
@@ -1711,14 +1719,14 @@
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TTabControlStrings.BeginUpdate">
+      <element name="TTabControlStrings.BeginUpdate" link="#rtl.Classes.TStrings.BeginUpdate">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TTabControlStrings.EndUpdate">
+      <element name="TTabControlStrings.EndUpdate" link="#rtl.Classes.TStrings.EndUpdate">
         <short/>
         <descr/>
         <errors/>
@@ -1825,7 +1833,7 @@
         <seealso/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TTabControlNoteBookStrings.Get">
+      <element name="TTabControlNoteBookStrings.Get" link="#rtl.Classes.TStrings.Get">
         <short/>
         <descr/>
         <errors/>
@@ -1840,7 +1848,7 @@
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TTabControlNoteBookStrings.GetCount">
+      <element name="TTabControlNoteBookStrings.GetCount" link="#rtl.Classes.TStrings.GetCount">
         <short/>
         <descr/>
         <errors/>
@@ -1851,7 +1859,7 @@
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TTabControlNoteBookStrings.GetObject">
+      <element name="TTabControlNoteBookStrings.GetObject" link="#rtl.Classes.TStrings.GetObject">
         <short/>
         <descr/>
         <errors/>
@@ -1922,7 +1930,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TTabControlNoteBookStrings.Put">
+      <element name="TTabControlNoteBookStrings.Put" link="#rtl.Classes.TStrings.Put">
         <short/>
         <descr/>
         <errors/>
@@ -1937,7 +1945,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TTabControlNoteBookStrings.PutObject">
+      <element name="TTabControlNoteBookStrings.PutObject" link="#rtl.Classes.TStrings.PutObject">
         <short/>
         <descr/>
         <errors/>
@@ -1974,7 +1982,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TTabControlNoteBookStrings.SetUpdateState">
+      <element name="TTabControlNoteBookStrings.SetUpdateState" link="#rtl.Classes.TStrings.SetUpdateState">
         <short/>
         <descr/>
         <errors/>
@@ -2008,7 +2016,8 @@
       </element>
       <!-- constructor Visibility: public -->
       <element name="TTabControlNoteBookStrings.Create">
-        <short/>
+        <short>
+          <var>Create</var> a new instance of this control</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2018,21 +2027,21 @@
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TTabControlNoteBookStrings.Destroy">
+      <element name="TTabControlNoteBookStrings.Destroy" link="#rtl.Classes.TStrings.Destroy">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TTabControlNoteBookStrings.Clear">
+      <element name="TTabControlNoteBookStrings.Clear" link="#rtl.Classes.TStrings.Clear">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TTabControlNoteBookStrings.Delete">
+      <element name="TTabControlNoteBookStrings.Delete" link="#rtl.Classes.TStrings.Delete">
         <short/>
         <descr/>
         <errors/>
@@ -2043,7 +2052,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TTabControlNoteBookStrings.Insert">
+      <element name="TTabControlNoteBookStrings.Insert" link="#rtl.Classes.TStrings.Insert">
         <short/>
         <descr/>
         <errors/>
@@ -2058,7 +2067,7 @@
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TTabControlNoteBookStrings.GetSize">
+      <element name="TTabControlNoteBookStrings.GetSize" link="#LCL.ComCtrls.TTabControlStrings.GetSize">
         <short/>
         <descr/>
         <errors/>
@@ -2076,7 +2085,7 @@
         <seealso/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TTabControlNoteBookStrings.IndexOfTabAt">
+      <element name="TTabControlNoteBookStrings.IndexOfTabAt" link="#LCL.ComCtrls.TTabControlStrings.IndexOfTabAt">
         <short/>
         <descr/>
         <errors/>
@@ -2511,7 +2520,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomTabControl.Loaded">
+      <element name="TCustomTabControl.Loaded" link="#rtl.Classes.TComponent.Loaded">
         <short/>
         <descr/>
         <errors/>
@@ -2532,7 +2541,7 @@
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomTabControl.Notification">
+      <element name="TCustomTabControl.Notification" link="#rtl.Classes.TComponent.Notification">
         <short/>
         <descr/>
         <errors/>
@@ -2576,7 +2585,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomTabControl.DoSetBounds">
+      <element name="TCustomTabControl.DoSetBounds" link="#LCL.Controls.TControl.DoSetBounds">
         <short/>
         <descr/>
         <errors/>
@@ -2599,7 +2608,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomTabControl.Paint">
+      <element name="TCustomTabControl.Paint" link="#LCL.Controls.TCustomControl.Paint">
         <short/>
         <descr/>
         <errors/>
@@ -3388,9 +3397,10 @@ cdsIndeterminate</descr>
       <!-- object Visibility: default -->
       <element name="TListItem">
         <short>
-          <var>TListItem</var> - the ancestor class for <var>TCustomListView</var> and <var>TListView</var>
+          <var>TListItem</var> - the ancestor class for  the Items in <var>TCustomListView</var> and <var>TListView</var>
         </short>
-        <descr>Most properties are inherited from ancestors, TPersistent and TObject</descr>
+        <descr>Most properties are inherited from ancestors, TPersistent and TObject
+</descr>
         <seealso>
           <link id="#rtl.Classes.TPersistent"/>
           <link id="#rtl.Objects.TObject"/>
@@ -3605,7 +3615,7 @@ cdsIndeterminate</descr>
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TListItem.Assign">
+      <element name="TListItem.Assign" link="#rtl.Classes.TPersistent.Assign">
         <seealso>
           <link id="#rtl.Classes.TPersistent.Assign"/>
         </seealso>
@@ -3616,7 +3626,7 @@ cdsIndeterminate</descr>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TListItem.Create">
-        <short/>
+        <short>Create a new List Item</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3626,7 +3636,7 @@ cdsIndeterminate</descr>
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TListItem.Destroy">
+      <element name="TListItem.Destroy" link="#rtl.Classes.TPersistent.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -3634,14 +3644,15 @@ cdsIndeterminate</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TListItem.Delete">
-        <short/>
+        <short>Remove an Item from the list</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TListItem.MakeVisible">
-        <short/>
+        <short>
+          <var>MakeVisible</var> - render the item visible (if <var>PartialOK</var> is True, only part may be visible)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3684,25 +3695,26 @@ cdsIndeterminate</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TListItem.Owner">
-        <short/>
+        <short>The Owner of the ListItem</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TListItem.Selected">
-        <short/>
+        <short>Whether this Item has been <var>Selected</var> (often denoted by a check-mark)</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TListItem.SubItems">
-        <short/>
+        <short> The list of <var>SubItems</var> associated with this ListItem</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TListItem.SubItemImages">
-        <short/>
+        <short>
+          <var>SubItemImages</var> - the list of Images associated with the SubItems</short>
         <descr/>
         <seealso/>
       </element>
@@ -3793,7 +3805,7 @@ cdsIndeterminate</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TListItems.DefineProperties">
+      <element name="TListItems.DefineProperties" link="#rtl.Classes.TPersistent.DefineProperties">
         <short/>
         <descr/>
         <errors/>
@@ -3831,7 +3843,8 @@ cdsIndeterminate</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TListItems.IndexOf">
-        <short/>
+        <short>Returns the <var>IndexOf</var> the Item specified by <var>AItem</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3868,7 +3881,8 @@ cdsIndeterminate</descr>
       </element>
       <!-- function Visibility: public -->
       <element name="TListItems.Add">
-        <short/>
+        <short>
+          <var>Add</var> an Item to the Collection</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3879,7 +3893,8 @@ cdsIndeterminate</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TListItems.AddItem">
-        <short/>
+        <short>
+          <var>AddItem</var> - add the specified <var>AItem</var> to the collection</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3890,14 +3905,15 @@ cdsIndeterminate</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TListItems.Clear">
-        <short/>
+        <short>
+          <var>Clear</var> - remove all Items from the list</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TListItems.Create">
-        <short/>
+        <short>Create a new instance of the collection</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3907,7 +3923,7 @@ cdsIndeterminate</descr>
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TListItems.Destroy">
+      <element name="TListItems.Destroy" link="#rtl.Classes.TPersistent.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -3915,7 +3931,7 @@ cdsIndeterminate</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TListItems.Delete">
-        <short/>
+        <short>Remove the Item specified by <var>AIndex</var> from the collection</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3941,7 +3957,9 @@ cdsIndeterminate</descr>
       </element>
       <!-- function Visibility: public -->
       <element name="TListItems.Insert">
-        <short/>
+        <short>
+          <var>Insert</var> an item in the list at <var>AIndex</var>, returning the value of the <var>ListItem</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3956,7 +3974,8 @@ cdsIndeterminate</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TListItems.InsertItem">
-        <short/>
+        <short>
+          <var>InsertItem</var> - procedure to insert <var>AItem</var> at position <var>AIndex</var> in the list</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3971,13 +3990,14 @@ cdsIndeterminate</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TListItems.Count">
-        <short/>
+        <short>
+          <var>Count</var> - the number of items in the collection</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TListItems.Item">
-        <short/>
+        <short>An <var>Item</var> in the list, specified by its Index value</short>
         <descr/>
         <seealso/>
       </element>
@@ -3987,7 +4007,8 @@ cdsIndeterminate</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TListItems.Owner">
-        <short/>
+        <short>
+          <var>Owner</var> - the ListView that owns this collection of ListItems</short>
         <descr/>
         <seealso/>
       </element>
@@ -4177,7 +4198,7 @@ cdsIndeterminate</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TListColumn.SetIndex">
+      <element name="TListColumn.SetIndex" link="#rtl.Classes.TCollectionItem.SetIndex">
         <short/>
         <descr/>
         <errors/>
@@ -4188,7 +4209,7 @@ cdsIndeterminate</descr>
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TListColumn.GetDisplayName">
+      <element name="TListColumn.GetDisplayName" link="#rtl.Classes.TCollectionItem.GetDisplayName">
         <short/>
         <descr/>
         <errors/>
@@ -4199,7 +4220,7 @@ cdsIndeterminate</descr>
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TListColumn.Create">
+      <element name="TListColumn.Create" link="#rtl.Classes.TCollectionItem.Create">
         <short/>
         <descr/>
         <errors/>
@@ -4210,14 +4231,14 @@ cdsIndeterminate</descr>
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TListColumn.Destroy">
+      <element name="TListColumn.Destroy" link="#rtl.Classes.TCollectionItem.Destroy">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TListColumn.Assign">
+      <element name="TListColumn.Assign" link="#rtl.Classes.TPersistent.Assign">
         <short/>
         <descr/>
         <errors/>
@@ -4255,7 +4276,8 @@ cdsIndeterminate</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TListColumn.MaxWidth">
-        <short/>
+        <short>
+          <var>MaxWidth</var> - the maximum width for this column</short>
         <descr/>
         <seealso/>
       </element>
@@ -4356,7 +4378,7 @@ cdsIndeterminate</descr>
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TListColumns.Create">
+      <element name="TListColumns.Create" link="#rtl.Classes.TCollection.Create">
         <short/>
         <descr/>
         <errors/>
@@ -4367,14 +4389,14 @@ cdsIndeterminate</descr>
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TListColumns.Destroy">
+      <element name="TListColumns.Destroy" link="#rtl.Classes.TCollection.Destroy">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TListColumns.Add">
+      <element name="TListColumns.Add" link="#rtl.Classes.TCollection.Add">
         <short/>
         <descr/>
         <errors/>
@@ -4399,13 +4421,13 @@ cdsIndeterminate</descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TListColumns.Owner">
+      <element name="TListColumns.Owner" link="#rtl.Classes.TCollection.Owner">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TListColumns.Items">
+      <element name="TListColumns.Items" link="#rtl.Classes.TCollection.Items">
         <short/>
         <descr/>
         <seealso/>
@@ -4415,7 +4437,7 @@ cdsIndeterminate</descr>
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TListColumns.Assign">
+      <element name="TListColumns.Assign" link="#rtl.Classes.TCollection.Assign">
         <short/>
         <descr/>
         <errors/>
@@ -5313,7 +5335,7 @@ cdsIndeterminate</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListView.Delete">
-        <short/>
+        <short>Delete an Item from the List</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5361,7 +5383,7 @@ cdsIndeterminate</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListView.InsertItem">
-        <short/>
+        <short>Insert an Item into the List</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5428,7 +5450,7 @@ cdsIndeterminate</descr>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.AllocBy"/>
       <!-- property Visibility: protected -->
-      <element name="TCustomListView.BorderStyle"/>
+      <element name="TCustomListView.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle"/>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.Columns">
         <short>
@@ -5575,48 +5597,54 @@ cdsIndeterminate</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.OnChange">
-        <short/>
+        <short>
+          <var>OnChange</var> - event handler for a change in the list</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.OnColumnClick">
-        <short/>
+        <short>
+          <var>OnColumnClick</var> - event handler for clicking on a coulmn</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.OnCompare">
-        <short/>
+        <short>
+          <var>OnCompare</var> - event handler for comparing list items</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.OnDeletion">
-        <short/>
+        <short>
+          <var>OnDeletion</var> - event handler for deleting a list item</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.OnInsert">
-        <short/>
+        <short>
+          <var>OnInsert</var> - event handler for inserting list item</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.OnSelectItem">
-        <short/>
+        <short>
+          <var>OnSelectItem</var> - event handler for list item selection</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomListView.Create"/>
+      <element name="TCustomListView.Create" link="#LCL.Controls.TWinControl.Create"/>
       <!-- argument Visibility: default -->
       <element name="TCustomListView.Create.Aowner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomListView.Destroy">
+      <element name="TCustomListView.Destroy" link="#LCL.Controls.TWinControl.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -5673,7 +5701,7 @@ cdsIndeterminate</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.GridLines">
-        <short/>
+        <short>Whether <var>GridLines</var> are to be shown</short>
         <descr/>
         <seealso/>
       </element>
@@ -5710,7 +5738,7 @@ cdsIndeterminate</descr>
           <var>Selected</var> - the current list item that has been selected</short>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomListView.TabStop">
+      <element name="TCustomListView.TabStop" link="#LCL.Controls.TWinControl.TabStop">
         <short/>
         <descr/>
         <seealso/>
@@ -5746,223 +5774,223 @@ cdsIndeterminate</descr>
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.Align">
+      <element name="TListView.Align" link="#LCL.Controls.TControl.Align">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.Anchors">
+      <element name="TListView.Anchors" link="#LCL.Controls.TControl.Anchors">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.BorderSpacing">
+      <element name="TListView.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.BorderWidth">
+      <element name="TListView.BorderWidth" link="#LCL.Controls.TWinControl.BorderWidth">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.Color">
+      <element name="TListView.Color" link="#LCL.Controls.TControl.Color">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.Columns">
+      <element name="TListView.Columns" link="#LCL.ComCtrls.TCustomListView.Columns">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.ColumnClick">
+      <element name="TListView.ColumnClick" link="#LCL.ComCtrls.TCustomListView.ColumnClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.Constraints">
+      <element name="TListView.Constraints" link="#LCL.Controls.TControl.Constraints">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.Enabled">
+      <element name="TListView.Enabled" link="#LCL.Controls.TControl.Enabled">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.Font">
+      <element name="TListView.Font" link="#LCL.Controls.TControl.Font">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.Items">
+      <element name="TListView.Items" link="#LCL.ComCtrls.TCustomListView.Items">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.LargeImages">
+      <element name="TListView.LargeImages" link="#LCL.ComCtrls.TCustomListView.LargeImages">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.MultiSelect">
+      <element name="TListView.MultiSelect" link="#LCL.ComCtrls.TCustomListView.MultiSelect">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.PopupMenu">
+      <element name="TListView.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.RowSelect">
+      <element name="TListView.RowSelect" link="#LCL.ComCtrls.TCustomListView.RowSelect">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.ScrollBars">
+      <element name="TListView.ScrollBars" link="#LCL.ComCtrls.TCustomListView.ScrollBars">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.ShowColumnHeaders">
+      <element name="TListView.ShowColumnHeaders" link="#LCL.ComCtrls.TCustomListView.ShowColumnHeaders">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.SmallImages">
+      <element name="TListView.SmallImages" link="#LCL.ComCtrls.TCustomListView.SmallImages">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.SortColumn">
+      <element name="TListView.SortColumn" link="#LCL.ComCtrls.TCustomListView.SortColumn">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.SortType">
+      <element name="TListView.SortType" link="#LCL.ComCtrls.TCustomListView.SortType">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.StateImages">
+      <element name="TListView.StateImages" link="#LCL.ComCtrls.TCustomListView.StateImages">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.TabStop">
+      <element name="TListView.TabStop" link="#LCL.Controls.TWinControl.TabStop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.Visible">
+      <element name="TListView.Visible" link="#LCL.Controls.TControl.Visible">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.ViewStyle">
+      <element name="TListView.ViewStyle" link="#LCL.ComCtrls.TCustomListView.ViewStyle">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.OnMouseMove">
+      <element name="TListView.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.OnChange">
+      <element name="TListView.OnChange" link="#LCL.ComCtrls.TCustomListView.OnChange">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.OnClick">
+      <element name="TListView.OnClick" link="#LCL.Controls.TControl.OnClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.OnColumnClick">
+      <element name="TListView.OnColumnClick" link="#LCL.ComCtrls.TCustomListView.OnColumnClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.OnCompare">
+      <element name="TListView.OnCompare" link="#LCL.ComCtrls.TCustomListView.OnCompare">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.OnDblClick">
+      <element name="TListView.OnDblClick" link="#LCL.Controls.TControl.OnDblClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.OnMouseDown">
+      <element name="TListView.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.OnMouseUp">
+      <element name="TListView.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.OnKeyPress">
+      <element name="TListView.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.OnKeyUp">
+      <element name="TListView.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.OnKeyDown">
+      <element name="TListView.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.OnDeletion">
+      <element name="TListView.OnDeletion" link="#LCL.ComCtrls.TCustomListView.OnDeletion">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListView.OnSelectItem">
+      <element name="TListView.OnSelectItem" link="#LCL.ComCtrls.TCustomListView.OnSelectItem">
         <short/>
         <descr/>
         <seealso/>
@@ -6184,14 +6212,14 @@ cdsIndeterminate</descr>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomProgressBar.Loaded">
+      <element name="TCustomProgressBar.Loaded" link="#rtl.Classes.TComponent.Loaded">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomProgressBar.Create">
+      <element name="TCustomProgressBar.Create" link="#LCL.Controls.TWinControl.Create">
         <short/>
         <descr/>
         <errors/>
@@ -6203,14 +6231,16 @@ cdsIndeterminate</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomProgressBar.StepIt">
-        <short/>
+        <short>
+          <var>StepIt</var> - move indicator to new position (current position plus Step)</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomProgressBar.StepBy">
-        <short/>
+        <short>
+          <var>StepBy</var> - move indicator by amount specified in Delta</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6221,43 +6251,49 @@ cdsIndeterminate</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomProgressBar.Max">
-        <short/>
+        <short>
+          <var>Max</var> - maximum value for progressbar</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomProgressBar.Min">
-        <short/>
+        <short>
+          <var>Min</var> - minimum value of progressbar</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomProgressBar.Orientation">
-        <short/>
+        <short>
+          <var>Orientation</var> - horizontal or vertical</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomProgressBar.Position">
-        <short/>
+        <short>
+          <var>Position</var> of indicator along progressbar</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomProgressBar.Smooth">
-        <short/>
+        <short>Whether <var>Smooth</var> display (True) or stepped</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomProgressBar.Step">
-        <short/>
+        <short>
+          <var>Step</var> - size of increment for display</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomProgressBar.BarShowText">
-        <short/>
+        <short>
+          <var>BarShowText</var> - some widget sets allow text to be displayed on the bar to indicate its position (eg 32%)</short>
         <descr/>
         <seealso/>
       </element>
@@ -6272,199 +6308,199 @@ cdsIndeterminate</descr>
         </seealso>
       </element>
       <!-- property Visibility: published -->
-      <element name="TProgressBar.Align">
+      <element name="TProgressBar.Align" link="#LCL.Controls.TControl.Align">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TProgressBar.Anchors">
+      <element name="TProgressBar.Anchors" link="#LCL.Controls.TControl.Anchors">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TProgressBar.BorderSpacing">
+      <element name="TProgressBar.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TProgressBar.BorderWidth">
+      <element name="TProgressBar.BorderWidth" link="#LCL.Controls.TWinControl.BorderWidth">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TProgressBar.Constraints">
+      <element name="TProgressBar.Constraints" link="#LCL.Controls.TControl.Constraints">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TProgressBar.DragCursor">
+      <element name="TProgressBar.DragCursor" link="#LCL.Controls.TControl.DragCursor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TProgressBar.DragKind">
+      <element name="TProgressBar.DragKind" link="#LCL.Controls.TControl.DragKind">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TProgressBar.DragMode">
+      <element name="TProgressBar.DragMode" link="#LCL.Controls.TControl.DragMode">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TProgressBar.Enabled">
+      <element name="TProgressBar.Enabled" link="#LCL.Controls.TControl.Enabled">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TProgressBar.Hint">
+      <element name="TProgressBar.Hint" link="#LCL.Controls.TControl.Hint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TProgressBar.Max">
+      <element name="TProgressBar.Max" link="#LCL.ComCtrls.TCustomProgressBar.Max">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TProgressBar.Min">
+      <element name="TProgressBar.Min" link="#LCL.ComCtrls.TCustomProgressBar.Min">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TProgressBar.OnDragDrop">
+      <element name="TProgressBar.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TProgressBar.OnDragOver">
+      <element name="TProgressBar.OnDragOver" link="#LCL.Controls.TControl.OnDragOver">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TProgressBar.OnEndDrag">
+      <element name="TProgressBar.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TProgressBar.OnEnter">
+      <element name="TProgressBar.OnEnter" link="#LCL.Controls.TWinControl.OnEnter">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TProgressBar.OnExit">
+      <element name="TProgressBar.OnExit" link="#LCL.Controls.TWinControl.OnExit">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TProgressBar.OnMouseDown">
+      <element name="TProgressBar.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TProgressBar.OnMouseMove">
+      <element name="TProgressBar.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TProgressBar.OnMouseUp">
+      <element name="TProgressBar.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TProgressBar.OnStartDock">
+      <element name="TProgressBar.OnStartDock" link="#LCL.Controls.TControl.OnStartDock">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TProgressBar.OnStartDrag">
+      <element name="TProgressBar.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TProgressBar.Orientation">
+      <element name="TProgressBar.Orientation" link="#LCL.ComCtrls.TCustomProgressBar.Orientation">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TProgressBar.ParentShowHint">
+      <element name="TProgressBar.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TProgressBar.PopupMenu">
+      <element name="TProgressBar.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TProgressBar.Position">
+      <element name="TProgressBar.Position" link="#LCL.ComCtrls.TCustomProgressBar.Position">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TProgressBar.ShowHint">
+      <element name="TProgressBar.ShowHint" link="#LCL.Controls.TControl.ShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TProgressBar.Smooth">
+      <element name="TProgressBar.Smooth" link="#LCL.ComCtrls.TCustomProgressBar.Smooth">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TProgressBar.Step">
+      <element name="TProgressBar.Step" link="#LCL.ComCtrls.TCustomProgressBar.Step">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TProgressBar.TabOrder">
+      <element name="TProgressBar.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TProgressBar.TabStop">
+      <element name="TProgressBar.TabStop" link="#LCL.Controls.TWinControl.TabStop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TProgressBar.Visible">
+      <element name="TProgressBar.Visible" link="#LCL.Controls.TControl.Visible">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TProgressBar.BarShowText">
+      <element name="TProgressBar.BarShowText" link="#LCL.ComCtrls.TCustomProgressBar.BarShowText">
         <short/>
         <descr/>
         <seealso/>
@@ -6813,7 +6849,8 @@ cdsIndeterminate</descr>
       </element>
       <!-- variable Visibility: protected -->
       <element name="TCustomUpDown.OldKeyDown">
-        <short/>
+        <short>
+          <var>OldKeyDown</var> - the previous (stored) value of the key</short>
         <descr/>
         <seealso/>
       </element>
@@ -6849,7 +6886,7 @@ cdsIndeterminate</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomUpDown.DoOnResize">
+      <element name="TCustomUpDown.DoOnResize" link="#LCL.Controls.TControl.DoOnResize">
         <short/>
         <descr/>
         <errors/>
@@ -6867,7 +6904,7 @@ cdsIndeterminate</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomUpDown.Notification">
+      <element name="TCustomUpDown.Notification" link="#rtl.Classes.TComponent.Notification">
         <short/>
         <descr/>
         <errors/>
@@ -6882,7 +6919,7 @@ cdsIndeterminate</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomUpDown.Click">
+      <element name="TCustomUpDown.Click" link="#LCL.Controls.TControl.Click">
         <short/>
         <descr/>
         <errors/>
@@ -6912,13 +6949,15 @@ cdsIndeterminate</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomUpDown.Min">
-        <short/>
+        <short>
+          <var>Min</var> - least value of controlled variable</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomUpDown.Max">
-        <short/>
+        <short>
+          <var>Max</var> - greatest value of controlled variable</short>
         <descr/>
         <seealso/>
       </element>
@@ -6954,18 +6993,23 @@ cdsIndeterminate</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomUpDown.OnChanging">
-        <short/>
+        <short>
+          <var>OnChanging</var> - event handler for a change in the value of the controlled variable</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomUpDown.OnClick">
-        <short/>
-        <descr/>
+        <short>
+          <var>OnClick</var> - special event handler for a click on up or down button</short>
+        <descr>
+          <printshort/>
+          <p>The event handler must determine whether the [next] or [prev] button was clicked, and therefore whether to increment or decrement the controlled variable and adjust the display</p>
+        </descr>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomUpDown.Create">
+      <element name="TCustomUpDown.Create" link="#LCL.Controls.TCustomControl.Create">
         <short/>
         <descr/>
         <errors/>
@@ -6976,7 +7020,7 @@ cdsIndeterminate</descr>
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomUpDown.Destroy">
+      <element name="TCustomUpDown.Destroy" link="#LCL.Controls.TCustomControl.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -7004,7 +7048,7 @@ cdsIndeterminate</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TUpDown.Anchors">
+      <element name="TUpDown.Anchors" link="#LCL.Controls.TControl.Anchors">
         <short/>
         <descr/>
         <seealso/>
@@ -7022,145 +7066,145 @@ cdsIndeterminate</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TUpDown.BorderSpacing">
+      <element name="TUpDown.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TUpDown.Enabled">
+      <element name="TUpDown.Enabled" link="#LCL.Controls.TControl.Enabled">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TUpDown.Hint">
+      <element name="TUpDown.Hint" link="#LCL.Controls.TControl.Hint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TUpDown.Min">
+      <element name="TUpDown.Min" link="#LCL.ComCtrls.TCustomUpDown.Min">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TUpDown.Max">
+      <element name="TUpDown.Max" link="#LCL.ComCtrls.TCustomUpDown.Max">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TUpDown.Increment">
+      <element name="TUpDown.Increment" link="#LCL.ComCtrls.TCustomUpDown.Increment">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TUpDown.Constraints">
+      <element name="TUpDown.Constraints" link="#LCL.Controls.TControl.Constraints">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TUpDown.Orientation">
+      <element name="TUpDown.Orientation" link="#LCL.ComCtrls.TCustomUpDown.Orientation">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TUpDown.ParentShowHint">
+      <element name="TUpDown.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TUpDown.PopupMenu">
+      <element name="TUpDown.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TUpDown.Position">
+      <element name="TUpDown.Position" link="#LCL.ComCtrls.TCustomUpDown.Position">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TUpDown.ShowHint">
+      <element name="TUpDown.ShowHint" link="#LCL.Controls.TControl.ShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TUpDown.TabOrder">
+      <element name="TUpDown.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TUpDown.TabStop">
+      <element name="TUpDown.TabStop" link="#LCL.Controls.TWinControl.TabStop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TUpDown.Thousands">
+      <element name="TUpDown.Thousands" link="#LCL.ComCtrls.TCustomUpDown.Thousands">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TUpDown.Visible">
+      <element name="TUpDown.Visible" link="#LCL.Controls.TControl.Visible">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TUpDown.Wrap">
+      <element name="TUpDown.Wrap" link="#LCL.ComCtrls.TCustomUpDown.Wrap">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TUpDown.OnChanging">
+      <element name="TUpDown.OnChanging" link="#LCL.ComCtrls.TCustomUpDown.OnChanging">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TUpDown.OnClick">
+      <element name="TUpDown.OnClick" link="#LCL.ComCtrls.TCustomUpDown.OnClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TUpDown.OnEnter">
+      <element name="TUpDown.OnEnter" link="#LCL.Controls.TWinControl.OnEnter">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TUpDown.OnExit">
+      <element name="TUpDown.OnExit" link="#LCL.Controls.TWinControl.OnExit">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TUpDown.OnMouseDown">
+      <element name="TUpDown.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TUpDown.OnMouseMove">
+      <element name="TUpDown.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TUpDown.OnMouseUp">
+      <element name="TUpDown.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
         <short/>
         <descr/>
         <seealso/>
@@ -9423,14 +9467,14 @@ cdsIndeterminate</descr>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomTrackBar.Loaded">
+      <element name="TCustomTrackBar.Loaded" link="#rtl.Classes.TComponent.Loaded">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomTrackBar.Create">
+      <element name="TCustomTrackBar.Create" link="#LCL.Controls.TWinControl.Create">
         <short/>
         <descr/>
         <errors/>
@@ -9501,7 +9545,7 @@ cdsIndeterminate</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCustomTrackBar.TabStop">
+      <element name="TCustomTrackBar.TabStop" link="#LCL.Controls.TWinControl.TabStop">
         <short/>
         <descr/>
         <seealso/>
@@ -9535,25 +9579,25 @@ cdsIndeterminate</descr>
         <example file="comctrls/TrackBarEx.pas"/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.Align">
+      <element name="TTrackBar.Align" link="#LCL.Controls.TControl.Align">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.Anchors">
+      <element name="TTrackBar.Anchors" link="#LCL.Controls.TControl.Anchors">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.BorderSpacing">
+      <element name="TTrackBar.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.Constraints">
+      <element name="TTrackBar.Constraints" link="#LCL.Controls.TControl.Constraints">
         <short/>
         <descr/>
         <seealso/>
@@ -9565,115 +9609,115 @@ cdsIndeterminate</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.DragCursor">
+      <element name="TTrackBar.DragCursor" link="#LCL.Controls.TControl.DragCursor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.DragMode">
+      <element name="TTrackBar.DragMode" link="#LCL.Controls.TControl.DragMode">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.Enabled">
+      <element name="TTrackBar.Enabled" link="#LCL.Controls.TControl.Enabled">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.Frequency">
+      <element name="TTrackBar.Frequency" link="#LCL.ComCtrls.TCustomTrackBar.Frequency">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.Hint">
+      <element name="TTrackBar.Hint" link="#LCL.Controls.TControl.Hint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.LineSize">
+      <element name="TTrackBar.LineSize" link="#LCL.ComCtrls.TCustomTrackBar.LineSize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.Max">
+      <element name="TTrackBar.Max" link="#LCL.ComCtrls.TCustomTrackBar.Max">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.Min">
+      <element name="TTrackBar.Min" link="#LCL.ComCtrls.TCustomTrackBar.Min">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.OnChange">
+      <element name="TTrackBar.OnChange" link="#LCL.ComCtrls.TCustomTrackBar.OnChange">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.OnChangeBounds">
+      <element name="TTrackBar.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.OnClick">
+      <element name="TTrackBar.OnClick" link="#LCL.Controls.TControl.OnClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.OnDragDrop">
+      <element name="TTrackBar.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.OnDragOver">
+      <element name="TTrackBar.OnDragOver" link="#LCL.Controls.TControl.OnDragOver">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.OnEndDrag">
+      <element name="TTrackBar.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.OnEnter">
+      <element name="TTrackBar.OnEnter" link="#LCL.Controls.TWinControl.OnEnter">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.OnExit">
+      <element name="TTrackBar.OnExit" link="#LCL.Controls.TWinControl.OnExit">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.OnMouseDown">
+      <element name="TTrackBar.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.OnMouseEnter">
+      <element name="TTrackBar.OnMouseEnter" link="#LCL.Controls.TControl.OnMouseEnter">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.OnMouseLeave">
+      <element name="TTrackBar.OnMouseLeave" link="#LCL.Controls.TControl.OnMouseLeave">
         <short/>
         <descr/>
         <seealso/>
@@ -9685,49 +9729,49 @@ cdsIndeterminate</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.OnMouseUp">
+      <element name="TTrackBar.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.OnKeyDown">
+      <element name="TTrackBar.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.OnKeyPress">
+      <element name="TTrackBar.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.OnKeyUp">
+      <element name="TTrackBar.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.OnResize">
+      <element name="TTrackBar.OnResize" link="#LCL.Controls.TControl.OnResize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.OnStartDrag">
+      <element name="TTrackBar.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.Orientation">
+      <element name="TTrackBar.Orientation" link="#LCL.ComCtrls.TCustomTrackBar.Orientation">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.PageSize">
+      <element name="TTrackBar.PageSize" link="#LCL.ComCtrls.TCustomTrackBar.PageSize">
         <short/>
         <descr/>
         <seealso/>
@@ -9739,31 +9783,31 @@ cdsIndeterminate</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.ParentShowHint">
+      <element name="TTrackBar.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.PopupMenu">
+      <element name="TTrackBar.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.Position">
+      <element name="TTrackBar.Position" link="#LCL.ComCtrls.TCustomTrackBar.Position">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.ScalePos">
+      <element name="TTrackBar.ScalePos" link="#LCL.ComCtrls.TCustomTrackBar.ScalePos">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.ShowHint">
+      <element name="TTrackBar.ShowHint" link="#LCL.Controls.TControl.ShowHint">
         <short/>
         <descr/>
         <seealso/>
@@ -9775,19 +9819,19 @@ cdsIndeterminate</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.TabOrder">
+      <element name="TTrackBar.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.TabStop">
+      <element name="TTrackBar.TabStop" link="#LCL.Controls.TWinControl.TabStop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.TickMarks">
+      <element name="TTrackBar.TickMarks" link="#LCL.ComCtrls.TCustomTrackBar.TickMarks">
         <short/>
         <descr/>
         <seealso/>
@@ -9799,7 +9843,7 @@ cdsIndeterminate</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.Visible">
+      <element name="TTrackBar.Visible" link="#LCL.Controls.TControl.Visible">
         <short/>
         <descr/>
         <seealso/>
@@ -9910,11 +9954,11 @@ cdsIndeterminate</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="ETreeNodeError">
-        <short>Definition of a error type for errors araising from the code of TTreeView</short>
+        <short>Definition of an exception type for errors arising from the code of TTreeView</short>
       </element>
       <!-- object Visibility: default -->
       <element name="ETreeViewError">
-        <short>Definition of a error type for errors araising from the code of TTreeView</short>
+        <short>Definition of an exception type for errors arising from the code of TTreeView</short>
       </element>
       <!-- constant Visibility: default -->
       <element name="NodeAttachModeNames">
@@ -14078,7 +14122,7 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomTreeView.DoEndDrag">
+      <element name="TCustomTreeView.DoEndDrag" link="#LCL.Controls.TControl.DoEndDrag">
         <short/>
         <descr/>
         <errors/>
@@ -14097,7 +14141,7 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomTreeView.DragOver">
+      <element name="TCustomTreeView.DragOver" link="#LCL.Controls.TControl.DragOver">
         <short/>
         <descr/>
         <errors/>
@@ -14229,7 +14273,7 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomTreeView.KeyDown">
+      <element name="TCustomTreeView.KeyDown" link="#LCL.Controls.TWinControl.KeyDown">
         <short/>
         <descr/>
         <errors/>
@@ -14244,14 +14288,14 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomTreeView.Loaded">
+      <element name="TCustomTreeView.Loaded" link="#rtl.Classes.TComponent.Loaded">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomTreeView.MouseDown">
+      <element name="TCustomTreeView.MouseDown" link="#LCL.Controls.TControl.MouseDown">
         <short/>
         <descr/>
         <errors/>
@@ -14274,7 +14318,7 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomTreeView.MouseMove">
+      <element name="TCustomTreeView.MouseMove" link="#LCL.Controls.TControl.MouseMove">
         <short/>
         <descr/>
         <errors/>
@@ -14293,7 +14337,7 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomTreeView.MouseUp">
+      <element name="TCustomTreeView.MouseUp" link="#LCL.Controls.TControl.MouseUp">
         <short/>
         <descr/>
         <errors/>
@@ -14316,7 +14360,7 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomTreeView.Notification">
+      <element name="TCustomTreeView.Notification" link="#rtl.Classes.TComponent.Notification">
         <short/>
         <descr/>
         <errors/>
@@ -14331,7 +14375,7 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomTreeView.Paint">
+      <element name="TCustomTreeView.Paint" link="#LCL.Controls.TCustomControl.Paint">
         <short/>
         <descr/>
         <errors/>
@@ -14444,7 +14488,7 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomTreeView.Resize">
+      <element name="TCustomTreeView.Resize" link="#LCL.Controls.TControl.Resize">
         <short/>
         <descr/>
         <errors/>
@@ -14457,7 +14501,7 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
-      <element name="TCustomTreeView.BorderStyle">
+      <element name="TCustomTreeView.BorderStyle" link="#LCL.Controls.TCustomControl.BorderStyle">
         <short/>
         <descr/>
         <seealso/>
@@ -14673,7 +14717,7 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomTreeView.Create">
+      <element name="TCustomTreeView.Create" link="#LCL.Controls.TCustomControl.Create">
         <short/>
         <descr/>
         <errors/>
@@ -14684,7 +14728,7 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomTreeView.Destroy">
+      <element name="TCustomTreeView.Destroy" link="#LCL.Controls.TCustomControl.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -14692,7 +14736,7 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomTreeView.AlphaSort">
-        <short/>
+        <short>If True, sort alphabetically</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14962,7 +15006,7 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomTreeView.BorderWidth">
+      <element name="TCustomTreeView.BorderWidth" link="#LCL.Controls.TWinControl.BorderWidth">
         <short/>
         <descr/>
         <seealso/>
@@ -15058,7 +15102,7 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCustomTreeView.TabStop">
+      <element name="TCustomTreeView.TabStop" link="#LCL.Controls.TWinControl.TabStop">
         <short/>
         <descr/>
         <seealso/>
@@ -15730,15 +15774,15 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <short>
           <var>PaintSection</var> - method for painting the current section (specified by Index) of the Header</short>
       </element>
-      <element name="TCustomHeaderControl.Paint"/>
+      <element name="TCustomHeaderControl.Paint" link="#LCL.Controls.TCustomControl.Paint"/>
       <element name="TCustomHeaderControl.GetSectionAt">
         <short>
           <var>GetSectionAt</var> - find the index for the section located at point P</short>
       </element>
-      <element name="TCustomHeaderControl.DblClick"/>
-      <element name="TCustomHeaderControl.Click"/>
-      <element name="TCustomHeaderControl.Destroy"/>
-      <element name="TCustomHeaderControl.Create"/>
+      <element name="TCustomHeaderControl.DblClick" link="#LCL.Controls.TControl.DblClick"/>
+      <element name="TCustomHeaderControl.Click" link="#LCL.Controls.TControl.Click"/>
+      <element name="TCustomHeaderControl.Destroy" link="#LCL.Controls.TCustomControl.Destroy"/>
+      <element name="TCustomHeaderControl.Create" link="#LCL.Controls.TCustomControl.Create"/>
       <element name="TCustomHeaderControl.DragReorder">
         <short>
           <var>DragReorder</var> - find out if the sections are allowed to be re-ordered by dragging</short>
@@ -15775,39 +15819,39 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <short>
           <var>OnSectionSeparatorDblClick</var> - event handler for double-click on the separator between sections</short>
       </element>
-      <element name="THeaderControl.Align"/>
-      <element name="THeaderControl.Anchors"/>
-      <element name="THeaderControl.BiDiMode"/>
-      <element name="THeaderControl.BorderWidth"/>
-      <element name="THeaderControl.DragCursor"/>
-      <element name="THeaderControl.DragKind"/>
-      <element name="THeaderControl.DragMode"/>
-      <element name="THeaderControl.Enabled"/>
-      <element name="THeaderControl.Font"/>
-      <element name="THeaderControl.Images"/>
-      <element name="THeaderControl.Constraints"/>
-      <element name="THeaderControl.Sections"/>
-      <element name="THeaderControl.ShowHint"/>
-      <element name="THeaderControl.ParentBiDiMode"/>
-      <element name="THeaderControl.ParentFont"/>
-      <element name="THeaderControl.ParentShowHint"/>
-      <element name="THeaderControl.PopupMenu"/>
-      <element name="THeaderControl.Visible"/>
-      <element name="THeaderControl.OnContextPopup"/>
-      <element name="THeaderControl.OnCreateSectionClass"/>
-      <element name="THeaderControl.OnDragDrop"/>
-      <element name="THeaderControl.OnDragOver"/>
-      <element name="THeaderControl.OnEndDock"/>
-      <element name="THeaderControl.OnEndDrag"/>
-      <element name="THeaderControl.OnMouseDown"/>
-      <element name="THeaderControl.OnMouseEnter"/>
-      <element name="THeaderControl.OnMouseLeave"/>
-      <element name="THeaderControl.OnMouseMove"/>
-      <element name="THeaderControl.OnMouseUp"/>
-      <element name="THeaderControl.OnResize"/>
-      <element name="THeaderControl.OnSectionClick"/>
-      <element name="THeaderControl.OnSectionResize"/>
-      <element name="THeaderControl.OnSectionTrack"/>
+      <element name="THeaderControl.Align" link="#LCL.Controls.TControl.Align"/>
+      <element name="THeaderControl.Anchors" link="#LCL.Controls.TControl.Anchors"/>
+      <element name="THeaderControl.BiDiMode" link="#LCL.Controls.TControl.BiDiMode"/>
+      <element name="THeaderControl.BorderWidth" link="#LCL.Controls.TWinControl.BorderWidth"/>
+      <element name="THeaderControl.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
+      <element name="THeaderControl.DragKind" link="#LCL.Controls.TControl.DragKind"/>
+      <element name="THeaderControl.DragMode" link="#LCL.Controls.TControl.DragMode"/>
+      <element name="THeaderControl.Enabled" link="#LCL.Controls.TControl.Enabled"/>
+      <element name="THeaderControl.Font" link="#LCL.Controls.TControl.Font"/>
+      <element name="THeaderControl.Images" link="#LCL.ComCtrls.TCustomHeaderControl.Images"/>
+      <element name="THeaderControl.Constraints" link="#LCL.Controls.TControl.Constraints"/>
+      <element name="THeaderControl.Sections" link="#LCL.ComCtrls.TCustomHeaderControl.Sections"/>
+      <element name="THeaderControl.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
+      <element name="THeaderControl.ParentBiDiMode" link="#LCL.Controls.TControl.ParentBiDiMode"/>
+      <element name="THeaderControl.ParentFont" link="#LCL.Controls.TControl.ParentFont"/>
+      <element name="THeaderControl.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint"/>
+      <element name="THeaderControl.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
+      <element name="THeaderControl.Visible" link="#LCL.Controls.TControl.Visible"/>
+      <element name="THeaderControl.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
+      <element name="THeaderControl.OnCreateSectionClass" link="#LCL.ComCtrls.TCustomHeaderControl.OnCreateSectionClass"/>
+      <element name="THeaderControl.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop"/>
+      <element name="THeaderControl.OnDragOver" link="#LCL.Controls.TControl.OnDragOver"/>
+      <element name="THeaderControl.OnEndDock" link="#LCL.Controls.TControl.OnEndDock"/>
+      <element name="THeaderControl.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag"/>
+      <element name="THeaderControl.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown"/>
+      <element name="THeaderControl.OnMouseEnter" link="#LCL.Controls.TControl.OnMouseEnter"/>
+      <element name="THeaderControl.OnMouseLeave" link="#LCL.Controls.TControl.OnMouseLeave"/>
+      <element name="THeaderControl.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove"/>
+      <element name="THeaderControl.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp"/>
+      <element name="THeaderControl.OnResize" link="#LCL.Controls.TControl.OnResize"/>
+      <element name="THeaderControl.OnSectionClick" link="#LCL.ComCtrls.TCustomHeaderControl.OnSectionClick"/>
+      <element name="THeaderControl.OnSectionResize" link="#LCL.ComCtrls.TCustomHeaderControl.OnSectionResize"/>
+      <element name="THeaderControl.OnSectionTrack" link="#LCL.ComCtrls.TCustomHeaderControl.OnSectionTrack"/>
       <element name="TPageControl.OnGetDockCaption"/>
       <element name="TPageControl.OnGetSiteInfo">
         <short>
@@ -15827,10 +15871,10 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
           <var>AddItem</var> - adds a HeaderSection to the Header at the position specified by <var>Index</var>
         </short>
       </element>
-      <element name="THeaderSections.Insert"/>
-      <element name="THeaderSections.Delete"/>
-      <element name="THeaderSections.Create"/>
-      <element name="THeaderSections.Add"/>
+      <element name="THeaderSections.Insert" link="#rtl.Classes.TCollection.Insert"/>
+      <element name="THeaderSections.Delete" link="#rtl.Classes.TCollection.Delete"/>
+      <element name="THeaderSections.Create" link="#rtl.Classes.TCollection.Create"/>
+      <element name="THeaderSections.Add" link="#rtl.Classes.TCollection.Add"/>
       <element name="THeaderSections.Items">
         <short>
           <var>Items</var> - the series of individual HeaderSections in the collection</short>
@@ -15839,8 +15883,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <short>
           <var>THeaderSection</var> - the individual sections of a THeaderControl, each of which can be used to control its own option, selection etc</short>
       </element>
-      <element name="THeaderSection.Create"/>
-      <element name="THeaderSection.Assign"/>
+      <element name="THeaderSection.Create" link="#rtl.Classes.TCollectionItem.Create"/>
+      <element name="THeaderSection.Assign" link="#rtl.Classes.TPersistent.Assign"/>
       <element name="THeaderSection.Left">
         <short>The position of the left boundary of the section</short>
       </element>
@@ -15875,7 +15919,7 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <short>
           <var>OriginalIndex</var> - index which doesn't change when the user reorders the sections</short>
       </element>
-      <element name="TListColumns.Update"/>
+      <element name="TListColumns.Update" link="#rtl.Classes.TCollection.Update"/>
       <element name="TPageControl.DockSite" link="#LCL.Controls.TWinControl.DockSite"/>
       <element name="TPageControl.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
       <element name="TPageControl.DragKind" link="#LCL.Controls.TControl.DragKind"/>
@@ -15890,6 +15934,114 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       <element name="TPageControl.OnStartDock" link="#LCL.Controls.TControl.OnStartDock"/>
       <element name="TPageControl.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
       <element name="TPageControl.OnUnDock" link="#LCL.Controls.TWinControl.OnUnDock"/>
+      <element name="TCustomHeaderControl.OnCreateSectionClass">
+        <short>
+          <var>OnCreateSectionClass</var> - event handler for creating a new section class</short>
+      </element>
+      <element name="TCustomListView.BeginAutoDrag" link="#LCL.Controls.TControl.BeginAutoDrag"/>
+      <element name="TCustomListView.Loaded" link="#rtl.Classes.TComponent.Loaded"/>
+      <element name="TCustomListView.ToolTips">
+        <short>
+          <var>ToolTips</var> - whether Popup tool tips are to be shown</short>
+      </element>
+      <element name="TCustomListView.Clear">
+        <short>
+          <var>Clear</var> - the stringlist</short>
+      </element>
+      <element name="TCustomListView.FindCaption"/>
+      <element name="TCustomListView.GetItemAt">
+        <short>
+          <var>GetItemAt</var> - find the list item at the specified coordinates</short>
+      </element>
+      <element name="TCustomProgressBar.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
+      <element name="TCustomTabControl.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
+      <element name="TCustomTrackBar.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
+      <element name="TCustomTreeView.BeginAutoDrag" link="#LCL.Controls.TControl.BeginAutoDrag"/>
+      <element name="TCustomUpDown.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
+      <element name="THeaderSections.GetOwner" link="#rtl.Classes.TPersistent.GetOwner"/>
+      <element name="THeaderSections.Update" link="#rtl.Classes.TCollection.Update"/>
+      <element name="TSectionTrackState"/>
+      <element name="TListItem.Checked">
+        <short>
+          <var>Checked</var> - if True, a check mark is present beside the item, implying it has been selected</short>
+      </element>
+      <element name="TListItem.Left">
+        <short>The position of the Left side of the list item</short>
+      </element>
+      <element name="TListItem.ListView">
+        <short>The <var>ListView</var> in which this Item is fould</short>
+      </element>
+      <element name="TListItem.Position">
+        <short>The coordinates of the position where the ListItem is located</short>
+      </element>
+      <element name="TListItem.Top">
+        <short>The position of the <var>Top</var> of this ListItem</short>
+      </element>
+      <element name="TListItems.FindCaption"/>
+      <element name="TListView.Checkboxes" link="#LCL.ComCtrls.TCustomListView.Checkboxes"/>
+      <element name="TListView.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
+      <element name="TListView.DragMode" link="#LCL.Controls.TControl.DragMode"/>
+      <element name="TListView.HideSelection">
+        <short>
+          <var>HideSelection</var> - render the selected items invisible</short>
+      </element>
+      <element name="TListView.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint"/>
+      <element name="TListView.ReadOnly" link="#LCL.ComCtrls.TCustomListView.ReadOnly"/>
+      <element name="TListView.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
+      <element name="TListView.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>
+      <element name="TListView.ToolTips" link="#LCL.ComCtrls.TCustomListView.ToolTips"/>
+      <element name="TListView.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
+      <element name="TListView.OnCustomDraw"/>
+      <element name="TListView.OnCustomDrawItem"/>
+      <element name="TListView.OnCustomDrawSubItem"/>
+      <element name="TListView.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop"/>
+      <element name="TListView.OnDragOver" link="#LCL.Controls.TControl.OnDragOver"/>
+      <element name="TListView.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag"/>
+      <element name="TListView.OnResize" link="#LCL.Controls.TControl.OnResize"/>
+      <element name="TListView.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
+      <element name="TProgressBar.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
+      <element name="TStatusBar.BoundsChanged" link="#LCL.Controls.TControl.BoundsChanged"/>
+      <element name="TStatusBar.CalculatePreferredSize" link="#LCL.Controls.TControl.CalculatePreferredSize"/>
+      <element name="TStatusBar.ColorIsStored" link="#LCL.Controls.TControl.ColorIsStored"/>
+      <element name="TStatusBar.CreatePanel"/>
+      <element name="TStatusBar.CreatePanels"/>
+      <element name="TStatusBar.GetPanelClass"/>
+      <element name="TStatusBar.DoSetApplicationHint"/>
+      <element name="TStatusBar.DoHint"/>
+      <element name="TStatusBar.ExecuteAction" link="#rtl.Classes.TComponent.ExecuteAction"/>
+      <element name="TStatusBar.SizeGripEnabled"/>
+      <element name="TStatusBar.Align" link="#LCL.Controls.TControl.Align"/>
+      <element name="TStatusBar.Anchors" link="#LCL.Controls.TControl.Anchors"/>
+      <element name="TStatusBar.AutoHint"/>
+      <element name="TStatusBar.AutoSize" link="#LCL.Controls.TControl.AutoSize"/>
+      <element name="TStatusBar.Constraints" link="#LCL.Controls.TControl.Constraints"/>
+      <element name="TStatusBar.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
+      <element name="TStatusBar.DragKind" link="#LCL.Controls.TControl.DragKind"/>
+      <element name="TStatusBar.DragMode" link="#LCL.Controls.TControl.DragMode"/>
+      <element name="TStatusBar.Enabled" link="#LCL.Controls.TControl.Enabled"/>
+      <element name="TStatusBar.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint"/>
+      <element name="TStatusBar.SizeGrip"/>
+      <element name="TStatusBar.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
+      <element name="TStatusBar.OnClick" link="#LCL.Controls.TControl.OnClick"/>
+      <element name="TStatusBar.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
+      <element name="TStatusBar.OnCreatePanelClass">
+        <short>Event handler for creating a StatusBar Panel class</short>
+      </element>
+      <element name="TStatusBar.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop"/>
+      <element name="TStatusBar.OnDragOver" link="#LCL.Controls.TControl.OnDragOver"/>
+      <element name="TStatusBar.OnEndDock" link="#LCL.Controls.TControl.OnEndDock"/>
+      <element name="TStatusBar.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag"/>
+      <element name="TStatusBar.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove"/>
+      <element name="TStatusBar.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp"/>
+      <element name="TStatusBar.OnResize" link="#LCL.Controls.TControl.OnResize"/>
+      <element name="TStatusBar.OnStartDock" link="#LCL.Controls.TControl.OnStartDock"/>
+      <element name="TStatusBar.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
+      <element name="TTabSheet.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop"/>
+      <element name="TTabSheet.OnDragOver" link="#LCL.Controls.TControl.OnDragOver"/>
+      <element name="TTabSheet.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag"/>
+      <element name="TTabSheet.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
+      <element name="TTrackBar.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
+      <element name="TUpDown.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
     </module>
     <!-- ComCtrls -->
   </package>

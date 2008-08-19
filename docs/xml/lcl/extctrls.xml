@@ -438,7 +438,7 @@
         <seealso/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TNBPages.Get">
+      <element name="TNBPages.Get" link="#rtl.Classes.TStrings.Get">
         <short/>
         <descr/>
         <errors/>
@@ -453,7 +453,7 @@
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TNBPages.GetCount">
+      <element name="TNBPages.GetCount" link="#rtl.Classes.TStrings.GetCount">
         <short/>
         <descr/>
         <errors/>
@@ -464,7 +464,7 @@
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TNBPages.GetObject">
+      <element name="TNBPages.GetObject" link="#rtl.Classes.TStrings.GetObject">
         <short/>
         <descr/>
         <errors/>
@@ -479,7 +479,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TNBPages.Put">
+      <element name="TNBPages.Put" link="#rtl.Classes.TStrings.Put">
         <short/>
         <descr/>
         <errors/>
@@ -495,7 +495,7 @@
       </element>
       <!-- constructor Visibility: public -->
       <element name="TNBPages.Create">
-        <short/>
+        <short>Create a new instance of this control with specified page list and notebook</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -509,14 +509,14 @@
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TNBPages.Clear">
+      <element name="TNBPages.Clear" link="#rtl.Classes.TStrings.Clear">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TNBPages.Delete">
+      <element name="TNBPages.Delete" link="#rtl.Classes.TStrings.Delete">
         <short/>
         <descr/>
         <errors/>
@@ -527,7 +527,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TNBPages.Insert">
+      <element name="TNBPages.Insert" link="#rtl.Classes.TStrings.Insert">
         <short/>
         <descr/>
         <errors/>
@@ -542,7 +542,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TNBPages.Move">
+      <element name="TNBPages.Move" link="#rtl.Classes.TStrings.Move">
         <short/>
         <descr/>
         <errors/>
@@ -1872,14 +1872,14 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TIdleTimer.Loaded">
+      <element name="TIdleTimer.Loaded" link="#rtl.Classes.TComponent.Loaded">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TIdleTimer.Create">
+      <element name="TIdleTimer.Create" link="#rtl.Classes.TComponent.Create">
         <short/>
         <descr/>
         <errors/>
@@ -1890,7 +1890,7 @@
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TIdleTimer.Destroy">
+      <element name="TIdleTimer.Destroy" link="#rtl.Classes.TComponent.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -1898,19 +1898,22 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TIdleTimer.AutoEnabled">
-        <short/>
+        <short>
+          <var>AutoEnabled</var> - if True, Timer is automatically enabled</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TIdleTimer.AutoEndEvent">
-        <short/>
+        <short>
+          <var>AutoEndEvent</var> - the event that causes the automatic end of the timer</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TIdleTimer.AutoStartEvent">
-        <short/>
+        <short>
+          <var>AutoStartEvent</var> - the event that triggers autostart (either idle time-out or user input)</short>
         <descr/>
         <seealso/>
       </element>
@@ -2017,7 +2020,7 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TShape.Create">
+      <element name="TShape.Create" link="#LCL.Controls.TGraphicControl.Create">
         <short/>
         <descr/>
         <errors/>
@@ -2028,14 +2031,14 @@
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TShape.Destroy">
+      <element name="TShape.Destroy" link="#LCL.Controls.TGraphicControl.Destroy">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TShape.Paint">
+      <element name="TShape.Paint" link="#LCL.Controls.TGraphicControl.Paint">
         <short/>
         <descr/>
         <errors/>
@@ -2043,7 +2046,8 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TShape.StyleChanged">
-        <short/>
+        <short>
+          <var>StyleChanged</var> - method for handling change of style by Sender</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2053,19 +2057,19 @@
         <short/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TShape.Align">
+      <element name="TShape.Align" link="#LCL.Controls.TControl.Align">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TShape.Anchors">
+      <element name="TShape.Anchors" link="#LCL.Controls.TControl.Anchors">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TShape.BorderSpacing">
+      <element name="TShape.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
         <short/>
         <descr/>
         <seealso/>
@@ -2075,37 +2079,37 @@
         <short>The Brush to be used for colouring this shape</short>
       </element>
       <!-- property Visibility: published -->
-      <element name="TShape.Constraints">
+      <element name="TShape.Constraints" link="#LCL.Controls.TControl.Constraints">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TShape.DragCursor">
+      <element name="TShape.DragCursor" link="#LCL.Controls.TControl.DragCursor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TShape.DragKind">
+      <element name="TShape.DragKind" link="#LCL.Controls.TControl.DragKind">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TShape.DragMode">
+      <element name="TShape.DragMode" link="#LCL.Controls.TControl.DragMode">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TShape.Enabled">
+      <element name="TShape.Enabled" link="#LCL.Controls.TControl.Enabled">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TShape.ParentShowHint">
+      <element name="TShape.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
         <short/>
         <descr/>
         <seealso/>
@@ -2115,31 +2119,31 @@
         <short>The Pen to be ussed for drawing this shape</short>
       </element>
       <!-- property Visibility: published -->
-      <element name="TShape.OnChangeBounds">
+      <element name="TShape.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TShape.OnMouseDown">
+      <element name="TShape.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TShape.OnMouseMove">
+      <element name="TShape.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TShape.OnMouseUp">
+      <element name="TShape.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TShape.OnResize">
+      <element name="TShape.OnResize" link="#LCL.Controls.TControl.OnResize">
         <short/>
         <descr/>
         <seealso/>
@@ -2160,13 +2164,13 @@
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TShape.ShowHint">
+      <element name="TShape.ShowHint" link="#LCL.Controls.TControl.ShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TShape.Visible">
+      <element name="TShape.Visible" link="#LCL.Controls.TControl.Visible">
         <short/>
         <descr/>
         <seealso/>
@@ -2294,7 +2298,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomSplitter.MouseEnter">
+      <element name="TCustomSplitter.MouseEnter" link="#LCL.Controls.TControl.MouseEnter">
         <short/>
         <descr/>
         <errors/>
@@ -2431,7 +2435,9 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSplitter.StartSplitterMove">
-        <short/>
+        <short>
+          <var>StartSplitterMove</var> - method for starting movement of the splitter, given the mouse position <var>MouseXY</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2445,7 +2451,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomSplitter.MouseDown">
+      <element name="TCustomSplitter.MouseDown" link="#LCL.Controls.TControl.MouseDown">
         <short/>
         <descr/>
         <errors/>
@@ -2468,7 +2474,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomSplitter.MouseMove">
+      <element name="TCustomSplitter.MouseMove" link="#LCL.Controls.TControl.MouseMove">
         <short/>
         <descr/>
         <errors/>
@@ -2487,7 +2493,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomSplitter.MouseUp">
+      <element name="TCustomSplitter.MouseUp" link="#LCL.Controls.TControl.MouseUp">
         <short/>
         <descr/>
         <errors/>
@@ -2521,7 +2527,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomSplitter.SetAlign">
+      <element name="TCustomSplitter.SetAlign" link="#LCL.Controls.TControl.SetAlign">
         <short/>
         <descr/>
         <errors/>
@@ -2532,7 +2538,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomSplitter.SetAnchors">
+      <element name="TCustomSplitter.SetAnchors" link="#LCL.Controls.TControl.SetAnchors">
         <short/>
         <descr/>
         <errors/>
@@ -2565,14 +2571,14 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomSplitter.Paint">
+      <element name="TCustomSplitter.Paint" link="#LCL.Controls.TCustomControl.Paint">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomSplitter.Create">
+      <element name="TCustomSplitter.Create" link="#LCL.Controls.TCustomControl.Create">
         <short/>
         <descr/>
         <errors/>
@@ -2583,7 +2589,7 @@
         <short/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomSplitter.Align">
+      <element name="TCustomSplitter.Align" link="#LCL.Controls.TControl.Align">
         <short/>
         <descr/>
         <seealso/>
@@ -2620,7 +2626,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomSplitter.Cursor">
+      <element name="TCustomSplitter.Cursor" link="#LCL.Controls.TControl.Cursor">
         <short/>
         <descr/>
         <seealso/>
@@ -2669,121 +2675,121 @@
         </seealso>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSplitter.Align">
+      <element name="TSplitter.Align" link="#LCL.Controls.TControl.Align">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSplitter.Anchors">
+      <element name="TSplitter.Anchors" link="#LCL.Controls.TControl.Anchors">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSplitter.AutoSnap">
+      <element name="TSplitter.AutoSnap" link="#LCL.ExtCtrls.TCustomSplitter.AutoSnap">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSplitter.Beveled">
+      <element name="TSplitter.Beveled" link="#LCL.ExtCtrls.TCustomSplitter.Beveled">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSplitter.Color">
+      <element name="TSplitter.Color" link="#LCL.Controls.TControl.Color">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSplitter.Constraints">
+      <element name="TSplitter.Constraints" link="#LCL.Controls.TControl.Constraints">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSplitter.Cursor">
+      <element name="TSplitter.Cursor" link="#LCL.Controls.TControl.Cursor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSplitter.Height">
+      <element name="TSplitter.Height" link="#LCL.Controls.TControl.Height">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSplitter.MinSize">
+      <element name="TSplitter.MinSize" link="#LCL.ExtCtrls.TCustomSplitter.MinSize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSplitter.ParentColor">
+      <element name="TSplitter.ParentColor" link="#LCL.Controls.TControl.ParentColor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSplitter.ParentShowHint">
+      <element name="TSplitter.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSplitter.ResizeStyle">
+      <element name="TSplitter.ResizeStyle" link="#LCL.ExtCtrls.TCustomSplitter.ResizeStyle">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSplitter.ShowHint">
+      <element name="TSplitter.ShowHint" link="#LCL.Controls.TControl.ShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSplitter.Visible">
+      <element name="TSplitter.Visible" link="#LCL.Controls.TControl.Visible">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSplitter.Width">
+      <element name="TSplitter.Width" link="#LCL.Controls.TControl.Width">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSplitter.OnCanResize">
+      <element name="TSplitter.OnCanResize" link="#LCL.ExtCtrls.TCustomSplitter.OnCanResize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSplitter.OnChangeBounds">
+      <element name="TSplitter.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSplitter.OnMoved">
+      <element name="TSplitter.OnMoved" link="#LCL.ExtCtrls.TCustomSplitter.OnMoved">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSplitter.PopupMenu">
+      <element name="TSplitter.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSplitter.ResizeAnchor">
+      <element name="TSplitter.ResizeAnchor" link="#LCL.ExtCtrls.TCustomSplitter.ResizeAnchor">
         <short/>
         <descr/>
         <seealso/>
@@ -2807,14 +2813,14 @@
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TPaintBox.Paint">
+      <element name="TPaintBox.Paint" link="#LCL.Controls.TGraphicControl.Paint">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TPaintBox.Create">
+      <element name="TPaintBox.Create" link="#LCL.Controls.TGraphicControl.Create">
         <short/>
         <descr/>
         <errors/>
@@ -2825,151 +2831,151 @@
         <short/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TPaintBox.Canvas">
+      <element name="TPaintBox.Canvas" link="#LCL.Controls.TGraphicControl.Canvas">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPaintBox.Align">
+      <element name="TPaintBox.Align" link="#LCL.Controls.TControl.Align">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPaintBox.Anchors">
+      <element name="TPaintBox.Anchors" link="#LCL.Controls.TControl.Anchors">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPaintBox.BorderSpacing">
+      <element name="TPaintBox.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPaintBox.Color">
+      <element name="TPaintBox.Color" link="#LCL.Controls.TControl.Color">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPaintBox.Constraints">
+      <element name="TPaintBox.Constraints" link="#LCL.Controls.TControl.Constraints">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPaintBox.Enabled">
+      <element name="TPaintBox.Enabled" link="#LCL.Controls.TControl.Enabled">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPaintBox.Font">
+      <element name="TPaintBox.Font" link="#LCL.Controls.TControl.Font">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPaintBox.Hint">
+      <element name="TPaintBox.Hint" link="#LCL.Controls.TControl.Hint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPaintBox.ParentColor">
+      <element name="TPaintBox.ParentColor" link="#LCL.Controls.TControl.ParentColor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPaintBox.ParentFont">
+      <element name="TPaintBox.ParentFont" link="#LCL.Controls.TControl.ParentFont">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPaintBox.ParentShowHint">
+      <element name="TPaintBox.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPaintBox.PopupMenu">
+      <element name="TPaintBox.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPaintBox.ShowHint">
+      <element name="TPaintBox.ShowHint" link="#LCL.Controls.TControl.ShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPaintBox.Visible">
+      <element name="TPaintBox.Visible" link="#LCL.Controls.TControl.Visible">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPaintBox.OnChangeBounds">
+      <element name="TPaintBox.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPaintBox.OnClick">
+      <element name="TPaintBox.OnClick" link="#LCL.Controls.TControl.OnClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPaintBox.OnDblClick">
+      <element name="TPaintBox.OnDblClick" link="#LCL.Controls.TControl.OnDblClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPaintBox.OnMouseDown">
+      <element name="TPaintBox.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPaintBox.OnMouseMove">
+      <element name="TPaintBox.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPaintBox.OnMouseUp">
+      <element name="TPaintBox.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPaintBox.OnMouseEnter">
+      <element name="TPaintBox.OnMouseEnter" link="#LCL.Controls.TControl.OnMouseEnter">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPaintBox.OnMouseLeave">
+      <element name="TPaintBox.OnMouseLeave" link="#LCL.Controls.TControl.OnMouseLeave">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPaintBox.OnPaint">
+      <element name="TPaintBox.OnPaint" link="#LCL.Controls.TGraphicControl.OnPaint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPaintBox.OnResize">
+      <element name="TPaintBox.OnResize" link="#LCL.Controls.TControl.OnResize">
         <short/>
         <descr/>
         <seealso/>
@@ -3800,7 +3806,7 @@ requiring the user to select one af a set of alternatives</p>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomRadioGroup.ReadState" link="#lcl.Classes.TComponent.ReadState">
+      <element name="TCustomRadioGroup.ReadState" link="#rtl.Classes.TComponent.ReadState">
         <short/>
         <descr/>
         <errors/>
@@ -3895,7 +3901,7 @@ requiring the user to select one af a set of alternatives</p>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomRadioGroup.Create">
+      <element name="TCustomRadioGroup.Create" link="#LCL.Controls.TWinControl.Create">
         <short/>
         <descr/>
         <errors/>
@@ -3906,7 +3912,7 @@ requiring the user to select one af a set of alternatives</p>
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomRadioGroup.Destroy">
+      <element name="TCustomRadioGroup.Destroy" link="#LCL.Controls.TWinControl.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -3914,7 +3920,8 @@ requiring the user to select one af a set of alternatives</p>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomRadioGroup.CanModify">
-        <short/>
+        <short>
+          <var>CanModify</var> - if True, modification of the RadioGroup is permitted</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3988,7 +3995,7 @@ requiring the user to select one af a set of alternatives</p>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioGroup.Caption" link="#LCL.Controls.TControl.Caption">
+      <element name="TRadioGroup.Caption">
         <short>
           <var>Caption </var>- the text string appearing above the whole RadioGroup box</short>
       </element>
@@ -6596,7 +6603,7 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TShape.GetControlClassDefaultSize">
+      <element name="TShape.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize">
         <short/>
         <descr/>
         <errors/>
@@ -6607,37 +6614,37 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
         <short/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TShape.OnDragDrop">
+      <element name="TShape.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TShape.OnDragOver">
+      <element name="TShape.OnDragOver" link="#LCL.Controls.TControl.OnDragOver">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TShape.OnEndDrag">
+      <element name="TShape.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TShape.OnPaint">
+      <element name="TShape.OnPaint" link="#LCL.Controls.TGraphicControl.OnPaint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TShape.OnStartDrag">
+      <element name="TShape.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TPaintBox.GetControlClassDefaultSize">
+      <element name="TPaintBox.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize">
         <short/>
         <descr/>
         <errors/>
@@ -6648,55 +6655,55 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
         <short/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPaintBox.DragCursor">
+      <element name="TPaintBox.DragCursor" link="#LCL.Controls.TControl.DragCursor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPaintBox.DragMode">
+      <element name="TPaintBox.DragMode" link="#LCL.Controls.TControl.DragMode">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPaintBox.OnDragDrop">
+      <element name="TPaintBox.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPaintBox.OnDragOver">
+      <element name="TPaintBox.OnDragOver" link="#LCL.Controls.TControl.OnDragOver">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPaintBox.OnEndDrag">
+      <element name="TPaintBox.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPaintBox.OnMouseWheel">
+      <element name="TPaintBox.OnMouseWheel" link="#LCL.Controls.TControl.OnMouseWheel">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPaintBox.OnMouseWheelDown">
+      <element name="TPaintBox.OnMouseWheelDown" link="#LCL.Controls.TControl.OnMouseWheelDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPaintBox.OnMouseWheelUp">
+      <element name="TPaintBox.OnMouseWheelUp" link="#LCL.Controls.TControl.OnMouseWheelUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPaintBox.OnStartDrag">
+      <element name="TPaintBox.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag">
         <short/>
         <descr/>
         <seealso/>
@@ -6944,7 +6951,7 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomRadioGroup.Loaded" link="#lcl.Classes.TComponent.Loaded">
+      <element name="TCustomRadioGroup.Loaded" link="#rtl.Classes.TComponent.Loaded">
         <short/>
         <descr/>
         <errors/>

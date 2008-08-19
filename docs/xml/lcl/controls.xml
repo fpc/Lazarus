@@ -10142,7 +10142,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       <!-- property Visibility: public -->
       <element name="TWinControl.BorderWidth">
         <short>Property to determine width of the window's border</short>
-        <descr>// properties which are supported by all descendants<br/><br/>Either reads a flag to find the width or sets the width. <br/>Default is set to zero.</descr>
+        <descr>// properties which are supported by all descendants<br/>
+          <br/>Either reads a flag to find the width or sets the width. <br/>Default is set to zero.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.BoundsLockCount">
@@ -14942,6 +14943,18 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <element name="TDockZone.Height">
         <short>The height of this control</short>
+      </element>
+      <element name="TControl.OnMouseWheel">
+        <short>
+          <var>OnMouseWheel</var> - event handler for a movement of the mouse wheel</short>
+      </element>
+      <element name="TControl.OnMouseWheelDown">
+        <short>
+          <var>OnMouseWheelDown</var> - event handler for downward movement of mouse wheel</short>
+      </element>
+      <element name="TControl.OnMouseWheelUp">
+        <short>
+          <var>OnMouseWheelUp</var> - event handler for upward movement of mouse wheel</short>
       </element>
     </module>
     <!-- Controls -->
