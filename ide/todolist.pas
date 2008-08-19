@@ -388,7 +388,7 @@ begin
   tbOptions.Hint  :=  lisToDoListOptions;
 
   tbOptions.Caption:=dlgFROpts;
-  tbPrint.Caption:=srVK_PRINT;
+  tbPrint.Caption:=lisPrint;
   tbRefresh.Caption:=dlgUnitDepRefresh;
   tbGoto.Caption:=lisToDoGoto;
 

@@ -938,6 +938,7 @@ resourcestring
   dlgProjFiles = 'Project files';
   dlgEnvType = 'Type';
   dlgEnvNone = 'None';
+  lisLeft = 'Left';
   dlgSmbFront = 'Symbol in front (.~pp)';
   lisNoBackupFiles = 'No backup files';
   dlgSmbBehind = 'Symbol behind (.pp~)';
@@ -1565,6 +1566,7 @@ resourcestring
   lisFRForwardSearch = 'Forwar&d search';
   lisFRBackwardSearch = '&Backward search';
   dlgUpWord = 'Up';
+  lisRight = 'Right';
   dlgDownWord = 'Down';
   dlgReplaceAll = 'Replace &All';
   
@@ -1778,6 +1780,7 @@ resourcestring
   srkmecBlockIndent           = 'Indent block';
   srkmecBlockUnindent         = 'Unindent block';
   srkmecShiftTab              = 'Shift Tab';
+  lisTab = 'Tab';
   srkmecMatchBracket          = 'Go to matching bracket';
   srkmecNormalSelect          = 'Normal selection mode';
   srkmecColumnSelect          = 'Column selection mode';
@@ -1959,62 +1962,6 @@ resourcestring
   // help menu
   srkmecunknown                   = 'unknown editor command';
    
-  //Key strings
-  //TODO: remove, they are moved to IntfStrConsts
-  srVK_UNKNOWN    = 'Unknown';
-  srVK_LBUTTON    = 'Mouse Button Left';
-  srVK_RBUTTON    = 'Mouse Button Right';
-  //srVK_CANCEL     = 'Cancel'; = dlgCancel
-  srVK_MBUTTON    = 'Mouse Button Middle';
-  srVK_BACK       = 'Backspace';
-  srVK_TAB        = 'Tab';
-  srVK_CLEAR      = 'Clear';
-  srVK_RETURN     = 'Return';
-  srVK_SHIFT      = 'Shift';
-  srVK_CONTROL    = 'Control';
-  srVK_SUPER      = 'Super';
-  srVK_META       = 'Meta';
-  srVK_CMD        = 'Cmd';
-  srVK_MENU       = 'Menu';
-  srVK_PAUSE      = 'Pause key';
-  srVK_CAPITAL    = 'Capital';
-  srVK_KANA       = 'Kana';
-  srVK_JUNJA      = 'Junja';
-  srVK_FINAL      = 'Final';
-  srVK_HANJA      = 'Hanja';
-  srVK_ESCAPE     = 'Escape';
-  srVK_CONVERT    = 'Convert';
-  srVK_NONCONVERT = 'Nonconvert';
-  srVK_ACCEPT     = 'Accept';
-  srVK_MODECHANGE = 'Mode Change';
-  srVK_SPACE      = 'Space key';
-  srVK_PRIOR      = 'Prior';
-  srVK_NEXT       = 'Next';
-  srVK_END        = 'End';
-  srVK_HOME       = 'Home';
-  srVK_LEFT       = 'Left';
-  srVK_UP         = 'Up';
-  srVK_RIGHT      = 'Right';
-  //srVK_DOWN       = 'Down'; = dlgdownword
-  //srVK_SELECT     = 'Select'; = lismenuselect
-  srVK_PRINT      = 'Print';
-  srVK_EXECUTE    = 'Execute';
-  srVK_SNAPSHOT   = 'Snapshot';
-  srVK_INSERT     = 'Insert';
-  //srVK_DELETE     = 'Delete'; dlgeddelete
-  srVK_HELP       = 'Help';
-  lisMissingIdentifiers = 'Missing identifiers';
-  srVK_LWIN       = 'left windows key';
-  srVK_RWIN       = 'right windows key';
-  srVK_APPS       = 'application key';
-  srVK_NUMPAD     = 'Numpad %d';
-  srVK_NUMLOCK    = 'Numlock';
-  srVK_SCROLL     = 'Scroll';
-  srVK_IRREGULAR  = 'Irregular ';
-  srVK_NONE       = 'none';
-  srkm_Alt        = 'Alt';
-  srkm_Ctrl       = 'Ctrl';
-
   // Category
   srkmCatCursorMoving   = 'Cursor moving commands';
   srkmCatSelection      = 'Text selection commands';
@@ -2098,6 +2045,7 @@ resourcestring
   dlgUnitDepCaption     = 'Unit dependencies';
   dlgUnitDepBrowse      = 'Open';
   dlgUnitDepRefresh     = 'Refresh';
+  lisPrint = 'Print';
   lisToDoGoto = 'Goto';
   
   // Doc Editor
@@ -3852,7 +3800,14 @@ resourcestring
   lisTheUnitSearchPathOfContainsTheSourceDirectoryOfPac = 'The unit search '
     +'path of %s%s%s contains the source directory %s%s%s of package %s';
   lisFPCVersionEG222 = 'FPC Version (e.g. 2.2.2)';
-  
+  lisMissingIdentifiers = 'Missing identifiers';
+  lisChooseAFPDocLink = 'Choose a FPDoc link';
+  lisLinkTarget = 'Link target';
+  lisExamplesIdentifierTMyEnumEnumUnitnameIdentifierPac = 'Examples:%'
+    +'sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.'
+    +'Identifier';
+  lisTitleLeaveEmptyForDefault = 'Title (leave empty for default)';
+
 implementation
 
 end.

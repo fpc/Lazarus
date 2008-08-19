@@ -1111,7 +1111,7 @@ begin
   MoveFilePathUpBitBtn.Caption:=dlgUpWord;
   MoveFilePathDownBitBtn.Caption:=dlgDownWord;
   DeleteFilePathBitBtn.Caption:=dlgEdDelete;
-  InsertFilePathBitBtn.Caption:=srVK_INSERT;
+  InsertFilePathBitBtn.Caption:=lisEdtExtToolInsert;
 end;
 
 function TCodeToolsDefinesEditor.CreateSeperator : TMenuItem;

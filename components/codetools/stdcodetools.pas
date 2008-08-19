@@ -3056,6 +3056,10 @@ function TStandardCodeTool.GatherResourceStringSections(
       //DebugLn('TStandardCodeTool.GatherResourceStringSections Uses ',GetAtom(UnitNameAtom));
       // open the unit
       NewCodeTool:=OpenCodeToolForUnit(UnitNameAtom,InAtom,false);
+      if NewCodeTool=nil then begin
+        MoveCursorToAtomPos(UnitNameAtom);
+        RaiseException(Format(ctsSourceOfUnitNotFound, [GetAtom]));
+      end;
       NewCodeTool.BuildTree(true);
       // search all resource string sections in the interface
       ANode:=NewCodeTool.FindInterfaceNode;

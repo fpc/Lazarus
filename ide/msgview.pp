@@ -229,7 +229,7 @@ begin
   Path := MessagesMenuRoot.Name;
   MsgQuickFixIDEMenuSection := RegisterIDEMenuSection(Path, 'Quick Fix');
   MsgClearIDEMenuCommand :=
-    RegisterIDEMenuCommand(Path, 'Clear', srVK_CLEAR);
+    RegisterIDEMenuCommand(Path, 'Clear', lisUIDClear);
   MsgCopyIDEMenuCommand := RegisterIDEMenuCommand(Path, 'Copy selected',
     lisCopySelectedMessagesToClipboard);
   MsgCopyAllIDEMenuCommand := RegisterIDEMenuCommand(Path, 'Copy all',
@@ -238,7 +238,7 @@ begin
     'Copy all, including hidden messages',
     lisCopyAllAndHiddenMessagesToClipboard);
   MsgHelpIDEMenuCommand := RegisterIDEMenuCommand(Path, 'Help',
-    srVK_HELP);
+    lisPckEditHelp);
   MsgSaveAllToFileIDEMenuCommand :=
     RegisterIDEMenuCommand(Path, 'Copy selected',
     lisSaveAllMessagesToFile);

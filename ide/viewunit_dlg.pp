@@ -151,7 +151,7 @@ begin
   IDEDialogLayoutList.ApplyLayout(Self,450,300);
   btnOK.Caption := lisOkBtn;
   btnCancel.Caption := dlgCancel;
-  HelpButton.Caption := srVK_HELP;
+  HelpButton.Caption := lisPckEditHelp;
   MultiSelectCheckBox.Caption := dlgMultiSelect;
 end;
 

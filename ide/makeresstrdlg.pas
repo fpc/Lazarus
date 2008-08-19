@@ -304,7 +304,7 @@ begin
   // ok+cancel buttons
   OkButton.Caption:=lisLazBuildOk;
   CancelButton.Caption:=dlgCancel;
-  HelpButton.Caption:=srVK_HELP;
+  HelpButton.Caption:=lisPckEditHelp;
 end;
 
 constructor TMakeResStrDialog.Create(TheOwner: TComponent);

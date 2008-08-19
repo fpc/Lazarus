@@ -36,7 +36,7 @@ uses
   Forms, Classes, SysUtils, Buttons, LResources, StdCtrls, Controls,
   Dialogs, StringHashList, ExtCtrls,
   SynEditKeyCmds, Laz_XMLCfg,
-  IDECommands, LazarusIDEStrConsts;
+  PropEdits, IDECommands, LazarusIDEStrConsts;
 
 type
   TKeyMapScheme = (
@@ -137,15 +137,12 @@ type
     property RelationCount:integer read GetRelationCount;
   end;
 
-function KeyAndShiftStateToEditorKeyString(
-                                    Key: word; ShiftState: TShiftState): String;
 function KeyAndShiftStateToEditorKeyString(const Key: TIDEShortCut): String;
 function FindKeymapConflicts(Keymap: TKeyCommandRelationList;
                       Protocol: TStrings; out Index1, Index2: integer): integer;
 function EditorCommandToDescriptionString(cmd: word): String;
 function EditorCommandLocalizedName(cmd: word;
                                     const DefaultName: string): string;
-function EditorKeyStringToVKCode(const s: string): word;
 
 procedure GetDefaultKeyForCommand(Command: word;
                                   out TheKeyA, TheKeyB: TIDEShortCut);
@@ -157,11 +154,6 @@ function KeySchemeNameToSchemeType(const SchemeName: string): TKeyMapScheme;
 
 function ShiftStateToStr(Shift: TShiftState): string;
 function KeyValuesToStr(const ShortcutA, ShortcutB: TIDEShortCut): string;
-function EditorKeyStringIsIrregular(const s: string): boolean;
-
-const
-  UnknownVKPrefix = 'Word(''';
-  UnknownVKPostfix = ''')';
 
 implementation
 
@@ -169,38 +161,12 @@ implementation
 const
   KeyMappingFormatVersion = 5;
 
-  VirtualKeyStrings: TStringHashList = nil;
-
 function EditorCommandLocalizedName(cmd: word;
   const DefaultName: string): string;
 begin
   Result:=EditorCommandToDescriptionString(cmd);
   if Result=srkmecunknown then
     Result:=DefaultName;
-end;
-
-function EditorKeyStringToVKCode(const s: string): word;
-var
-  i: PtrInt;
-  Data: Pointer;
-begin
-  Result:=VK_UNKNOWN;
-  //debugln('EditorKeyStringToVKCode A "',s,'"');
-  if EditorKeyStringIsIrregular(s) then begin
-    Result:=word(StrToIntDef(copy(s,7,length(s)-8),VK_UNKNOWN));
-    exit;
-  end;
-  if (s<>'none') and (s<>'') then begin
-    if VirtualKeyStrings=nil then begin
-      VirtualKeyStrings:=TStringHashList.Create(true);
-      for i:=1 to 300 do
-        VirtualKeyStrings.Add(KeyAndShiftStateToEditorKeyString(word(i),[]), Pointer(i));
-    end;
-  end else
-    exit;
-  Data:=VirtualKeyStrings.Data[s];
-  if Data<>nil then
-    Result:=word(PtrUInt(Data));
 end;
 
 procedure GetDefaultKeyForCommand(Command: word;
@@ -1392,22 +1358,12 @@ begin
           IntToStr(ShortcutB.Key2) + ',' + ShiftStateToStr(ShortcutB.Shift2);
 end;
 
-function EditorKeyStringIsIrregular(const s: string): boolean;
-begin
-  if (length(UnknownVKPrefix)<length(s))
-  and (AnsiStrLComp(PChar(s),PChar(UnknownVKPrefix),length(UnknownVKPrefix))=0)
-  then
-    Result:=true
-  else
-    Result:=false;
-end;
-
 function EditorCommandToDescriptionString(cmd: word): String;
 begin
   case cmd of
     ecNone                    : Result:= dlgEnvNone;
-    ecLeft                    : Result:= srvk_left;
-    ecRight                   : Result:= srvk_right;
+    ecLeft                    : Result:= lisLeft;
+    ecRight                   : Result:= lisRight;
     ecUp                      : Result:= dlgUpWord;
     ecDown                    : Result:= dlgDownWord;
     ecWordLeft                : Result:= srkmecWordLeft;
@@ -1467,7 +1423,7 @@ begin
     ecToggleMode              : Result:= srkmecToggleMode;
     ecBlockIndent             : Result:= srkmecBlockIndent;
     ecBlockUnindent           : Result:= srkmecBlockUnindent;
-    ecTab                     : Result:= srVK_TAB;
+    ecTab                     : Result:= lisTab;
     ecShiftTab                : Result:= srkmecShiftTab;
     ecMatchBracket            : Result:= srkmecMatchBracket;
     ecNormalSelect            : Result:= srkmecNormalSelect;
@@ -1767,134 +1723,11 @@ begin
   end;
 end;
 
-function KeyAndShiftStateToEditorKeyString(
-  Key: word; ShiftState: TShiftState): string;
-var
-  p: integer;
-
-  procedure AddStr(const s: string);
-  begin
-    if s <> '' then
-    begin
-      inc(p);
-      Result := Result + s;
-    end;
-  end;
-
-  procedure AddAttribute(const s: string);
-  begin
-    if p > 0 then
-      AddStr('+');
-    AddStr(s);
-  end;
-
-  procedure AddAttributes;
-  begin
-    if ssCtrl in ShiftState then AddAttribute(srkm_Ctrl);
-    if ssAlt in ShiftState then AddAttribute(srkm_Alt);
-    if ssShift in ShiftState then AddAttribute(srVK_SHIFT);
-    if ssMeta in ShiftState then
-      {$IFDEF LCLcarbon}
-      AddAttribute(srVK_CMD);
-      {$ELSE}
-      AddAttribute(srVK_SHIFT);
-      {$ENDIF}
-    if ssSuper in ShiftState then AddAttribute(srVK_SUPER);
-  end;
-
-  // Tricky routine. This only works for western languages
-  // TODO: This should be replaces by the winapi VKtoChar functions
-  //
-  procedure AddKey;
-  begin
-    if p>0 then  AddStr(' ');
-
-    case Key of
-      VK_UNKNOWN    :AddStr(srVK_UNKNOWN);
-      VK_LBUTTON    :AddStr(srVK_LBUTTON);
-      VK_RBUTTON    :AddStr(srVK_RBUTTON);
-      VK_CANCEL     :AddStr(dlgCancel);
-      VK_MBUTTON    :AddStr(srVK_MBUTTON);
-      VK_BACK       :AddStr(srVK_BACK);
-      VK_TAB        :AddStr(srVK_TAB);
-      VK_CLEAR      :AddStr(srVK_CLEAR);
-      VK_RETURN     :AddStr(srVK_RETURN);
-      VK_SHIFT      :AddStr(srVK_SHIFT);
-      VK_CONTROL    :AddStr(srVK_CONTROL);
-      VK_MENU       :AddStr(srVK_MENU);
-      VK_PAUSE      :AddStr(srVK_PAUSE);
-      VK_CAPITAL    :AddStr(srVK_CAPITAL);
-      VK_KANA       :AddStr(srVK_KANA);
-    //  VK_HANGUL     :AddStr('Hangul');
-      VK_JUNJA      :AddStr(srVK_JUNJA);
-      VK_FINAL      :AddStr(srVK_FINAL);
-      VK_HANJA      :AddStr(srVK_HANJA );
-    //  VK_KANJI      :AddStr('Kanji');
-      VK_ESCAPE     :AddStr(srVK_ESCAPE);
-      VK_CONVERT    :AddStr(srVK_CONVERT);
-      VK_NONCONVERT :AddStr(srVK_NONCONVERT);
-      VK_ACCEPT     :AddStr(srVK_ACCEPT);
-      VK_MODECHANGE :AddStr(srVK_MODECHANGE);
-      VK_SPACE      :AddStr(srVK_SPACE);
-      VK_PRIOR      :AddStr(srVK_PRIOR);
-      VK_NEXT       :AddStr(srVK_NEXT);
-      VK_END        :AddStr(srVK_END);
-      VK_HOME       :AddStr(srVK_HOME);
-      VK_LEFT       :AddStr(srVK_LEFT);
-      VK_UP         :AddStr(srVK_UP);
-      VK_RIGHT      :AddStr(srVK_RIGHT);
-      VK_DOWN       :AddStr(dlgdownword);
-      VK_SELECT     :AddStr(lismenuselect);
-      VK_PRINT      :AddStr(srVK_PRINT);
-      VK_EXECUTE    :AddStr(srVK_EXECUTE);
-      VK_SNAPSHOT   :AddStr(srVK_SNAPSHOT);
-      VK_INSERT     :AddStr(srVK_INSERT);
-      VK_DELETE     :AddStr(dlgeddelete);
-      VK_HELP       :AddStr(srVK_HELP);
-      VK_0..VK_9    :AddStr(IntToStr(Key-VK_0));
-      VK_A..VK_Z    :AddStr(chr(ord('A')+Key-VK_A));
-      VK_LWIN       :AddStr(srVK_LWIN);
-      VK_RWIN       :AddStr(srVK_RWIN);
-      VK_APPS       :AddStr(srVK_APPS);
-      VK_NUMPAD0..VK_NUMPAD9:  AddStr(Format(srVK_NUMPAD,[Key-VK_NUMPAD0]));
-      VK_MULTIPLY   :AddStr('*');
-      VK_ADD        :AddStr('+');
-      VK_SEPARATOR  :AddStr('|');
-      VK_SUBTRACT   :AddStr('-');
-      VK_DECIMAL    :AddStr('.');
-      VK_DIVIDE     :AddStr('/');
-      VK_F1..VK_F24 : AddStr('F'+IntToStr(Key-VK_F1+1));
-      VK_NUMLOCK    :AddStr(srVK_NUMLOCK);
-      VK_SCROLL     :AddStr(srVK_SCROLL);
-//    VK_EQUAL      :AddStr('=');
-//    VK_COMMA      :AddStr(',');
-//    VK_POINT      :AddStr('.');
-//    VK_SLASH      :AddStr('/');
-//    VK_AT         :AddStr('@');
-    else
-      AddStr(UnknownVKPrefix);
-      AddStr(IntToStr(Key));
-      AddStr(UnknownVKPostfix);
-    end;
-  end;
-
-  procedure AddAttributesAndKey;
-  begin
-    AddAttributes;
-    AddKey;
-  end;
-
-begin
-  Result := '';
-  p := 0;
-  AddAttributesAndKey;
-end;
-
 function KeyAndShiftStateToEditorKeyString(const Key:  TIDEShortCut): String;
 begin
-  Result := KeyAndShiftStateToEditorKeyString(Key.Key1, Key.Shift1);
+  Result := KeyAndShiftStateToKeyString(Key.Key1, Key.Shift1);
   if (Key.Key2<>VK_UNKNOWN) then
-    Result := Result + ', ' + KeyAndShiftStateToEditorKeyString(Key.Key2, Key.Shift2);
+    Result := Result + ', ' + KeyAndShiftStateToKeyString(Key.Key2, Key.Shift2);
 end;
 
 { TKeyCommandRelation }
@@ -2978,13 +2811,6 @@ begin
   FDescription:=ADescription;
   FScope:=TheScope;
 end;
-
-
-//------------------------------------------------------------------------------
-
-finalization
-  VirtualKeyStrings.Free;
-  VirtualKeyStrings:=nil;
 
 end.
 

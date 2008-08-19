@@ -149,7 +149,7 @@ begin
   NameEdit.Text:=MiscellaneousOptions.ExtractProcName;
   MissingIdentifiersGroupBox.Caption:=lisMissingIdentifiers;
   
-  HelpButton.Caption:=srVK_HELP;
+  HelpButton.Caption:=lisPckEditHelp;
   OkButton.Caption:=lisExtract;
   CancelButton.Caption:=dlgCancel;
 end;

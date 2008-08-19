@@ -171,7 +171,7 @@ begin
   AddBtn.Caption := liswlAdd;
   AddInverse.Caption := rsAddInverse;
   RemoveBtn.Caption := rsRemove;
-  OkBtn.Caption := srVK_INSERT;
+  OkBtn.Caption := 'Insert';
   CancelButton.Caption := dlgCancel;
   
   try

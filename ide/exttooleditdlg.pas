@@ -45,7 +45,7 @@ uses
   Classes, SysUtils, LCLType, Controls, Forms, Buttons, StdCtrls, ComCtrls,
   Dialogs, LResources, ExtCtrls, LCLProc,
   IDEMsgIntf, IDEExternToolIntf,
-  KeyMapping, KeyMapShortCutDlg, TransferMacros, LazarusIDEStrConsts,
+  PropEdits, KeyMapShortCutDlg, TransferMacros, LazarusIDEStrConsts,
   EditMsgScannersDlg;
 
 type

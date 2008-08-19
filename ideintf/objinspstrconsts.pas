@@ -314,6 +314,8 @@ resourcestring
   ois0Lines0Chars = '0 lines, 0 chars';
   oisInvalidPropertyValue = 'Invalid property value';
   oisNone = '(none)';
+  oisSelectShortCut = 'Select short cut';
+  srGrabKey = 'Grab key';
   oisComponentNameIsNotAValidIdentifier = 'Component name %s%s%s is not a '
     +'valid identifier';
   oisLoadImageDialog = 'Load Image Dialog';
@@ -362,6 +364,61 @@ resourcestring
   peFilterName = 'Filter name';
   peFilter = 'Filter';
   
+  //Key strings
+  srVK_UNKNOWN    = 'Unknown';
+  srVK_LBUTTON    = 'Mouse Button Left';
+  srVK_RBUTTON    = 'Mouse Button Right';
+  //srVK_CANCEL     = 'Cancel'; = dlgCancel
+  srVK_MBUTTON    = 'Mouse Button Middle';
+  srVK_BACK       = 'Backspace';
+  srVK_TAB        = 'Tab';
+  srVK_CLEAR      = 'Clear';
+  srVK_RETURN     = 'Return';
+  srVK_SHIFT      = 'Shift';
+  srVK_CONTROL    = 'Control';
+  srVK_SUPER      = 'Super';
+  srVK_META       = 'Meta';
+  srVK_CMD        = 'Cmd';
+  srVK_MENU       = 'Menu';
+  srVK_PAUSE      = 'Pause key';
+  srVK_CAPITAL    = 'Capital';
+  srVK_KANA       = 'Kana';
+  srVK_JUNJA      = 'Junja';
+  srVK_FINAL      = 'Final';
+  srVK_HANJA      = 'Hanja';
+  srVK_ESCAPE     = 'Escape';
+  srVK_CONVERT    = 'Convert';
+  srVK_NONCONVERT = 'Nonconvert';
+  srVK_ACCEPT     = 'Accept';
+  srVK_MODECHANGE = 'Mode Change';
+  srVK_SPACE      = 'Space key';
+  srVK_PRIOR      = 'Prior';
+  srVK_NEXT       = 'Next';
+  srVK_END        = 'End';
+  srVK_HOME       = 'Home';
+  srVK_LEFT       = 'Left';
+  srVK_UP         = 'Up';
+  srVK_RIGHT      = 'Right';
+  //srVK_DOWN       = 'Down'; = dlgdownword
+  //srVK_SELECT     = 'Select'; = lismenuselect
+  srVK_PRINT      = 'Print';
+  srSelect = 'Select';
+  srVK_EXECUTE    = 'Execute';
+  srVK_SNAPSHOT   = 'Snapshot';
+  srVK_INSERT     = 'Insert';
+  //srVK_DELETE     = 'Delete'; dlgeddelete
+  srVK_HELP       = 'Help';
+  srVK_LWIN       = 'left windows key';
+  srVK_RWIN       = 'right windows key';
+  srVK_APPS       = 'application key';
+  srVK_NUMPAD     = 'Numpad %d';
+  srVK_NUMLOCK    = 'Numlock';
+  srVK_SCROLL     = 'Scroll';
+  srVK_IRREGULAR  = 'Irregular ';
+  srVK_NONE       = 'none';
+  srkm_Alt        = 'Alt';
+  srkm_Ctrl       = 'Ctrl';
+
 implementation
 
 end.

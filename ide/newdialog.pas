@@ -345,7 +345,7 @@ begin
   DescriptionLabel.Caption := '';
   OkButton.Caption := lisLazBuildOk;
   CancelButton.Caption := dlgCancel;
-  HelpButton.Caption := srVK_HELP;
+  HelpButton.Caption := lisPckEditHelp;
   DefaultControl := OkButton;
   CancelControl  := CancelButton;
 end;

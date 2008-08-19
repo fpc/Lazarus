@@ -55,6 +55,7 @@ ResourceString
   ctsStrExpectedButAtomFound = '%s expected, but %s found';
   ctsPositionNotInSource = 'Position not in source';
   ctsInvalidClassName = 'invalid class name=%s%s%s';
+  ctsSourceOfUnitNotFound = 'source of unit not found: %s';
   ctsclassNotFound = 'class %s%s%s not found';
   ctsinvalidClassName2 = 'invalid class name %s%s%s';
   ctsinvalidVariableName = 'invalid variable name %s%s%s';

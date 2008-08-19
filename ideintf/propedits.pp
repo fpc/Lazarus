@@ -35,7 +35,7 @@ interface
 uses
   Classes, TypInfo, SysUtils, LResources,
   FPCAdds, // for StrToQWord in older fpc versions
-  LCLProc, Forms, Controls, GraphType,
+  LCLProc, Forms, Controls, GraphType, StringHashList, ButtonPanel,
   Graphics, StdCtrls, Buttons, ComCtrls, Menus, LCLType, ExtCtrls, LCLIntf,
   Dialogs, Grids, EditBtn, PropertyStorage, TextTools, FrmSelectProps,
   StringsPropEditDlg, ColumnDlg, FileUtil, ObjInspStrConsts, IDEImagesIntf;
@@ -702,6 +702,7 @@ type
 
   TShortCutPropertyEditor = class(TOrdinalPropertyEditor)
   public
+    procedure Edit; override;
     function GetAttributes: TPropertyAttributes; override;
     function OrdValueToVisualValue(OrdValue: longint): string; override;
     procedure GetValues(Proc: TGetStrProc); override;
@@ -1414,11 +1415,119 @@ type
 
 //==============================================================================
 
+const
+  UnknownVKPrefix = 'Word(''';
+  UnknownVKPostfix = ''')';
+function KeyAndShiftStateToKeyString(Key: word; ShiftState: TShiftState): String;
+function KeyStringIsIrregular(const s: string): boolean;
+function KeyStringToVKCode(const s: string): word;
 
 type
   TStringsPropEditorDlg = class(TStringsPropEditorFrm)
   public
     Editor: TPropertyEditor;
+  end;
+
+  { TCustomShortCutGrabBox }
+
+  TCustomShortCutGrabBox = class(TCustomPanel)
+  private
+    FAllowedShifts: TShiftState;
+    FGrabButton: TButton;
+    FKey: Word;
+    FKeyComboBox: TComboBox;
+    FShiftButtons: TShiftState;
+    FShiftState: TShiftState;
+    FCheckBoxes: array[TShiftStateEnum] of TCheckBox;
+    FGrabForm: TForm;
+    function GetShiftCheckBox(Shift: TShiftStateEnum): TCheckBox;
+    procedure SetAllowedShifts(const AValue: TShiftState);
+    procedure SetKey(const AValue: Word);
+    procedure SetShiftButtons(const AValue: TShiftState);
+    procedure SetShiftState(const AValue: TShiftState);
+    procedure OnGrabButtonClick(Sender: TObject);
+    procedure OnShitCheckBoxClick(Sender: TObject);
+    procedure OnGrabFormKeyDown(Sender: TObject; var AKey: Word;
+      AShift: TShiftState);
+    procedure OnKeyComboboxEditingDone(Sender: TObject);
+  protected
+    procedure Loaded; override;
+    procedure UpdateShiftButons;
+    procedure Notification(AComponent: TComponent; Operation: TOperation);
+           override;
+    function ShiftToStr(s: TShiftStateEnum): string;
+  public
+    constructor Create(TheOwner: TComponent); override;
+    function GetDefaultShiftButtons: TShiftState;
+    property ShiftState: TShiftState read FShiftState write SetShiftState;
+    property Key: Word read FKey write SetKey;
+    property ShiftButtons: TShiftState read FShiftButtons write SetShiftButtons;
+    property AllowedShifts: TShiftState read FAllowedShifts write SetAllowedShifts;
+    property KeyComboBox: TComboBox read FKeyComboBox;
+    property GrabButton: TButton read FGrabButton;
+    property ShiftCheckBox[Shift: TShiftStateEnum]: TCheckBox read GetShiftCheckBox;
+  end;
+
+
+  { TShortCutGrabBox }
+
+  TShortCutGrabBox = class(TCustomShortCutGrabBox)
+  published
+    property Align;
+    property Alignment;
+    property AllowedShifts;
+    property Anchors;
+    property AutoSize;
+    property BevelInner;
+    property BevelOuter;
+    property BevelWidth;
+    property BorderSpacing;
+    property BorderStyle;
+    property BorderWidth;
+    property Caption;
+    property ChildSizing;
+    property ClientHeight;
+    property ClientWidth;
+    property Color;
+    property Constraints;
+    property DockSite;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property Enabled;
+    property Font;
+    property FullRepaint;
+    property Key;
+    property OnClick;
+    property OnDblClick;
+    property OnDockDrop;
+    property OnDockOver;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDock;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnGetDockCaption;
+    property OnGetSiteInfo;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnResize;
+    property OnStartDock;
+    property OnStartDrag;
+    property OnUnDock;
+    property ParentColor;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShiftButtons;
+    property ShiftState;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property UseDockManager default True;
+    property Visible;
   end;
 
 //==============================================================================
@@ -1486,8 +1595,9 @@ procedure EditCollection(AComponent: TComponent; ACollection: TCollection; AProp
 implementation
 
 
-const
+var
   ListPropertyEditors: TList = nil;
+  VirtualKeyStrings: TStringHashList = nil;
 
 procedure RegisterListPropertyEditor(AnEditor: TListPropertyEditor);
 begin
@@ -4708,9 +4818,49 @@ const
     VK_BACK or scAlt,
     VK_BACK or scShift or scAlt);
 
+procedure TShortCutPropertyEditor.Edit;
+var
+  Box: TShortCutGrabBox;
+  OldValue, NewValue: TShortCut;
+  OldKey: Word;
+  OldShift: TShiftState;
+  Dlg: TForm;
+  BtnPanel: TButtonPanel;
+begin
+  try
+    Dlg:=TForm.Create(nil);
+    Dlg.Caption:=oisSelectShortCut;
+    Dlg.Position:=poScreenCenter;
+    Dlg.Constraints.MinWidth:=350;
+    Dlg.Constraints.MinHeight:=30;
+
+    Box:=TShortCutGrabBox.Create(Dlg);
+    Box.Parent:=Dlg;
+    Box.Align:=alClient;
+    OldValue := TShortCut(GetOrdValue);
+    ShortCutToKey(OldValue,OldKey,OldShift);
+    Box.ShiftState:=OldShift;
+    Box.Key:=OldKey;
+
+    BtnPanel:=TButtonPanel.Create(Dlg);
+    BtnPanel.Parent:=Dlg;
+    BtnPanel.Align:=alBottom;
+    BtnPanel.ShowButtons:=[pbOk,pbCancel];
+
+    Dlg.AutoSize:=true;
+    if Dlg.ShowModal=mrOk then begin
+      NewValue:=ShortCut(Box.Key,Box.ShiftState);
+      if OldValue<>NewValue then
+        SetOrdValue(NewValue);
+    end;
+  finally
+    Dlg.Free;
+  end;
+end;
+
 function TShortCutPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paMultiSelect, paValueList, paRevertable, paHasDefaultValue];
+  Result := [paMultiSelect,paValueList,paRevertable,paHasDefaultValue,paDialog];
 end;
 
 function TShortCutPropertyEditor.OrdValueToVisualValue(OrdValue: longint
@@ -6219,6 +6369,162 @@ begin
   end;
 end;
 
+function KeyAndShiftStateToKeyString(Key: word; ShiftState: TShiftState
+  ): String;
+var
+  p: integer;
+
+  procedure AddStr(const s: string);
+  begin
+    if s <> '' then
+    begin
+      inc(p);
+      Result := Result + s;
+    end;
+  end;
+
+  procedure AddAttribute(const s: string);
+  begin
+    if p > 0 then
+      AddStr('+');
+    AddStr(s);
+  end;
+
+  procedure AddAttributes;
+  begin
+    if ssCtrl in ShiftState then AddAttribute(srkm_Ctrl);
+    if ssAlt in ShiftState then AddAttribute(srkm_Alt);
+    if ssShift in ShiftState then AddAttribute(srVK_SHIFT);
+    if ssMeta in ShiftState then
+      {$IFDEF LCLcarbon}
+      AddAttribute(srVK_CMD);
+      {$ELSE}
+      AddAttribute(srVK_SHIFT);
+      {$ENDIF}
+    if ssSuper in ShiftState then AddAttribute(srVK_SUPER);
+  end;
+
+  // Tricky routine. This only works for western languages
+  // TODO: This should be replaces by the winapi VKtoChar functions
+  //
+  procedure AddKey;
+  begin
+    if p>0 then  AddStr(' ');
+
+    case Key of
+      VK_UNKNOWN    :AddStr(srVK_UNKNOWN);
+      VK_LBUTTON    :AddStr(srVK_LBUTTON);
+      VK_RBUTTON    :AddStr(srVK_RBUTTON);
+      VK_CANCEL     :AddStr(oiStdActDataSetCancel1Hint);
+      VK_MBUTTON    :AddStr(srVK_MBUTTON);
+      VK_BACK       :AddStr(srVK_BACK);
+      VK_TAB        :AddStr(srVK_TAB);
+      VK_CLEAR      :AddStr(srVK_CLEAR);
+      VK_RETURN     :AddStr(srVK_RETURN);
+      VK_SHIFT      :AddStr(srVK_SHIFT);
+      VK_CONTROL    :AddStr(srVK_CONTROL);
+      VK_MENU       :AddStr(srVK_MENU);
+      VK_PAUSE      :AddStr(srVK_PAUSE);
+      VK_CAPITAL    :AddStr(srVK_CAPITAL);
+      VK_KANA       :AddStr(srVK_KANA);
+    //  VK_HANGUL     :AddStr('Hangul');
+      VK_JUNJA      :AddStr(srVK_JUNJA);
+      VK_FINAL      :AddStr(srVK_FINAL);
+      VK_HANJA      :AddStr(srVK_HANJA );
+    //  VK_KANJI      :AddStr('Kanji');
+      VK_ESCAPE     :AddStr(srVK_ESCAPE);
+      VK_CONVERT    :AddStr(srVK_CONVERT);
+      VK_NONCONVERT :AddStr(srVK_NONCONVERT);
+      VK_ACCEPT     :AddStr(srVK_ACCEPT);
+      VK_MODECHANGE :AddStr(srVK_MODECHANGE);
+      VK_SPACE      :AddStr(srVK_SPACE);
+      VK_PRIOR      :AddStr(srVK_PRIOR);
+      VK_NEXT       :AddStr(srVK_NEXT);
+      VK_END        :AddStr(srVK_END);
+      VK_HOME       :AddStr(srVK_HOME);
+      VK_LEFT       :AddStr(srVK_LEFT);
+      VK_UP         :AddStr(srVK_UP);
+      VK_RIGHT      :AddStr(srVK_RIGHT);
+      VK_DOWN       : AddStr(clbDown);
+      VK_SELECT     : AddStr(srSelect);
+      VK_PRINT      :AddStr(srVK_PRINT);
+      VK_EXECUTE    :AddStr(srVK_EXECUTE);
+      VK_SNAPSHOT   :AddStr(srVK_SNAPSHOT);
+      VK_INSERT     :AddStr(srVK_INSERT);
+      VK_DELETE     : AddStr(oisDelete);
+      VK_HELP       :AddStr(srVK_HELP);
+      VK_0..VK_9    :AddStr(IntToStr(Key-VK_0));
+      VK_A..VK_Z    :AddStr(chr(ord('A')+Key-VK_A));
+      VK_LWIN       :AddStr(srVK_LWIN);
+      VK_RWIN       :AddStr(srVK_RWIN);
+      VK_APPS       :AddStr(srVK_APPS);
+      VK_NUMPAD0..VK_NUMPAD9:  AddStr(Format(srVK_NUMPAD,[Key-VK_NUMPAD0]));
+      VK_MULTIPLY   :AddStr('*');
+      VK_ADD        :AddStr('+');
+      VK_SEPARATOR  :AddStr('|');
+      VK_SUBTRACT   :AddStr('-');
+      VK_DECIMAL    :AddStr('.');
+      VK_DIVIDE     :AddStr('/');
+      VK_F1..VK_F24 : AddStr('F'+IntToStr(Key-VK_F1+1));
+      VK_NUMLOCK    :AddStr(srVK_NUMLOCK);
+      VK_SCROLL     :AddStr(srVK_SCROLL);
+//    VK_EQUAL      :AddStr('=');
+//    VK_COMMA      :AddStr(',');
+//    VK_POINT      :AddStr('.');
+//    VK_SLASH      :AddStr('/');
+//    VK_AT         :AddStr('@');
+    else
+      AddStr(UnknownVKPrefix);
+      AddStr(IntToStr(Key));
+      AddStr(UnknownVKPostfix);
+    end;
+  end;
+
+  procedure AddAttributesAndKey;
+  begin
+    AddAttributes;
+    AddKey;
+  end;
+
+begin
+  Result := '';
+  p := 0;
+  AddAttributesAndKey;
+end;
+
+function KeyStringIsIrregular(const s: string): boolean;
+begin
+  if (length(UnknownVKPrefix)<length(s))
+  and (AnsiStrLComp(PChar(s),PChar(UnknownVKPrefix),length(UnknownVKPrefix))=0)
+  then
+    Result:=true
+  else
+    Result:=false;
+end;
+
+function KeyStringToVKCode(const s: string): word;
+var
+  i: PtrInt;
+  Data: Pointer;
+begin
+  Result:=VK_UNKNOWN;
+  if KeyStringIsIrregular(s) then begin
+    Result:=word(StrToIntDef(copy(s,7,length(s)-8),VK_UNKNOWN));
+    exit;
+  end;
+  if (s<>'none') and (s<>'') then begin
+    if VirtualKeyStrings=nil then begin
+      VirtualKeyStrings:=TStringHashList.Create(true);
+      for i:=1 to 255 do
+        VirtualKeyStrings.Add(KeyAndShiftStateToKeyString(word(i),[]), Pointer(i));
+    end;
+  end else
+    exit;
+  Data:=VirtualKeyStrings.Data[s];
+  if Data<>nil then
+    Result:=word(PtrUInt(Data));
+end;
+
 function GetClassUnitName(Value: TClass): string;
 var
   TheTypeInfo: PTypeInfo;
@@ -6364,6 +6670,7 @@ begin
   PropertyClassList:=nil;
 
   FreeAndNil(ListPropertyEditors);
+  FreeAndNil(VirtualKeyStrings);
 
   // XXX workaround for buggy typeinfo function
   DummyClassForPropTypes.Free;
@@ -6409,6 +6716,251 @@ begin
   Notebook:=TCustomNotebook(AComponent);
   for i:=0 to Notebook.PageList.Count-1 do
     Proc(TComponent(Notebook.PageList[i]).Name);
+end;
+
+{ TCustomShortCutGrabBox }
+
+procedure TCustomShortCutGrabBox.SetKey(const AValue: Word);
+var
+  s: String;
+  i: LongInt;
+begin
+  if FKey=AValue then exit;
+  FKey:=AValue;
+  s:=KeyAndShiftStateToKeyString(FKey,[]);
+  i:=KeyComboBox.Items.IndexOf(s);
+  if i>=0 then
+    KeyComboBox.ItemIndex:=i
+  else if KeyStringIsIrregular(s) then begin
+    KeyComboBox.Items.Add(s);
+    KeyComboBox.ItemIndex:=KeyComboBox.Items.IndexOf(s);
+  end else
+    KeyComboBox.ItemIndex:=0;
+end;
+
+procedure TCustomShortCutGrabBox.OnGrabButtonClick(Sender: TObject);
+begin
+  FGrabForm:=TForm.Create(Self);
+  FGrabForm.KeyPreview:=true;
+  FGrabForm.Position:=poDesktopCenter;
+  FGrabForm.OnKeyDown:=@OnGrabFormKeyDown;
+  FGrabForm.Caption:='Press a key ...';
+  with TLabel.Create(Self) do begin
+    Caption:='Press a key ...';
+    BorderSpacing.Around:=25;
+    Parent:=FGrabForm;
+  end;
+  FGrabForm.AutoSize:=true;
+  FGrabForm.ShowModal;
+  FreeAndNil(FGrabForm);
+end;
+
+procedure TCustomShortCutGrabBox.OnShitCheckBoxClick(Sender: TObject);
+var
+  s: TShiftStateEnum;
+begin
+  for s:=Low(TShiftStateEnum) to High(TShiftStateEnum) do
+    if FCheckBoxes[s]=Sender then
+      if FCheckBoxes[s].Checked then
+        Include(FShiftState,s)
+      else
+        Exclude(FShiftState,s);
+end;
+
+procedure TCustomShortCutGrabBox.OnGrabFormKeyDown(Sender: TObject;
+  var AKey: Word; AShift: TShiftState);
+begin
+  //DebugLn(['TCustomShortCutGrabBox.OnGrabFormKeyDown ',AKey,' ',dbgs(AShift)]);
+  if not (AKey in [VK_CONTROL, VK_LCONTROL, VK_RCONTROL,
+             VK_SHIFT, VK_LSHIFT, VK_RSHIFT,
+             VK_MENU, VK_LMENU, VK_RMENU,
+             VK_LWIN, VK_RWIN,
+             VK_UNKNOWN, VK_UNDEFINED])
+  then begin
+    Key:=AKey;
+    ShiftState:=AShift;
+    FGrabForm.ModalResult:=mrOk;
+  end;
+end;
+
+procedure TCustomShortCutGrabBox.OnKeyComboboxEditingDone(Sender: TObject);
+begin
+  Key:=KeyStringToVKCode(KeyComboBox.Text);
+end;
+
+function TCustomShortCutGrabBox.GetShiftCheckBox(Shift: TShiftStateEnum
+  ): TCheckBox;
+begin
+  Result:=FCheckBoxes[Shift];
+end;
+
+procedure TCustomShortCutGrabBox.SetAllowedShifts(const AValue: TShiftState);
+begin
+  if FAllowedShifts=AValue then exit;
+  FAllowedShifts:=AValue;
+  ShiftState:=ShiftState*FAllowedShifts;
+end;
+
+procedure TCustomShortCutGrabBox.SetShiftButtons(const AValue: TShiftState);
+begin
+  if FShiftButtons=AValue then exit;
+  FShiftButtons:=AValue;
+  UpdateShiftButons;
+end;
+
+procedure TCustomShortCutGrabBox.SetShiftState(const AValue: TShiftState);
+var
+  s: TShiftStateEnum;
+begin
+  if FShiftState=AValue then exit;
+  FShiftState:=AValue;
+  for s:=low(TShiftStateEnum) to High(TShiftStateEnum) do
+    if FCheckBoxes[s]<>nil then
+      FCheckBoxes[s].Checked:=s in FShiftState;
+end;
+
+procedure TCustomShortCutGrabBox.Loaded;
+begin
+  inherited Loaded;
+  UpdateShiftButons;
+end;
+
+procedure TCustomShortCutGrabBox.UpdateShiftButons;
+var
+  s: TShiftStateEnum;
+  LastCheckBox: TCheckBox;
+begin
+  if [csLoading,csDestroying]*ComponentState<>[] then exit;
+  LastCheckBox:=nil;
+  DisableAlign;
+  try
+    for s:=low(TShiftStateEnum) to High(TShiftStateEnum) do begin
+      if s in FShiftButtons then begin
+        if FCheckBoxes[s]=nil then begin
+          FCheckBoxes[s]:=TCheckBox.Create(Self);
+          with FCheckBoxes[s] do begin
+            Name:='CheckBox'+ShiftToStr(s);
+            Caption:=ShiftToStr(s);
+            AutoSize:=true;
+            Checked:=s in FShiftState;
+            if LastCheckBox<>nil then
+              AnchorToNeighbour(akLeft,6,LastCheckBox)
+            else
+              AnchorParallel(akLeft,0,Self);
+            AnchorParallel(akTop,0,Self);
+            AnchorParallel(akBottom,0,Self);
+            Parent:=Self;
+            OnClick:=@OnShitCheckBoxClick;
+          end;
+        end;
+        LastCheckBox:=FCheckBoxes[s];
+      end else begin
+        FreeAndNil(FCheckBoxes[s]);
+      end;
+    end;
+    if LastCheckBox<>nil then
+      FKeyComboBox.AnchorToNeighbour(akLeft,6,LastCheckBox)
+    else
+      FKeyComboBox.AnchorParallel(akLeft,0,Self);
+  finally
+    EnableAlign;
+  end;
+end;
+
+procedure TCustomShortCutGrabBox.Notification(AComponent: TComponent;
+  Operation: TOperation);
+var
+  s: TShiftStateEnum;
+begin
+  inherited Notification(AComponent, Operation);
+  if Operation=opRemove then begin
+    if AComponent=FGrabButton then
+      FGrabButton:=nil;
+    if AComponent=FKeyComboBox then
+      FKeyComboBox:=nil;
+    if AComponent=FGrabForm then
+      FGrabForm:=nil;
+    for s:=Low(TShiftStateEnum) to High(TShiftStateEnum) do
+      if FCheckBoxes[s]=AComponent then begin
+        FCheckBoxes[s]:=nil;
+        Exclude(FShiftButtons,s);
+      end;
+  end;
+end;
+
+function TCustomShortCutGrabBox.ShiftToStr(s: TShiftStateEnum): string;
+begin
+  case s of
+  ssShift: Result:='Shift';
+  ssAlt: Result:='Alt';
+  ssCtrl: Result:='Ctrl';
+  ssMeta: Result:='Meta';
+  ssSuper: Result:='Super';
+  ssHyper: {$IFDEF Darwin}
+           Result:='Cmd';
+           {$ELSE}
+           Result:='Hyper';
+           {$ENDIF}
+  ssAltGr: Result:='AltGr';
+  ssCaps: Result:='Caps';
+  ssNum: Result:='Numlock';
+  ssScroll: Result:='Scroll';
+  else Result:='Modifier'+IntToStr(ord(s));
+  end;
+end;
+
+constructor TCustomShortCutGrabBox.Create(TheOwner: TComponent);
+var
+  i: Integer;
+  s: String;
+begin
+  inherited Create(TheOwner);
+
+  FAllowedShifts:=[ssShift, ssAlt, ssCtrl,
+    ssMeta, ssSuper, ssHyper, ssAltGr,
+    ssCaps, ssNum, ssScroll];
+
+  FGrabButton:=TButton.Create(Self);
+  with FGrabButton do begin
+    Name:='GrabButton';
+    Caption:=srGrabKey;
+    Align:=alRight;
+    AutoSize:=true;
+    Parent:=Self;
+    OnClick:=@OnGrabButtonClick;
+  end;
+
+  FKeyComboBox:=TComboBox.Create(Self);
+  with FKeyComboBox do begin
+    Name:='FKeyComboBox';
+    AutoSize:=true;
+    Items.BeginUpdate;
+    for i:=1 to 145 do begin
+      s := KeyAndShiftStateToKeyString(i, []);
+      if not KeyStringIsIrregular(s) then
+        Items.Add(s);
+    end;
+    Items.EndUpdate;
+    OnEditingDone:=@OnKeyComboboxEditingDone;
+    Parent:=Self;
+    AnchorToNeighbour(akRight,6,FGrabButton);
+    AnchorVerticalCenterTo(FGrabButton);
+  end;
+
+  BevelOuter:=bvNone;
+  ShiftButtons:=GetDefaultShiftButtons;
+  ShiftState:=[];
+  Key:=VK_UNKNOWN;
+  KeyComboBox.Text:=KeyAndShiftStateToKeyString(Key,[]);
+end;
+
+function TCustomShortCutGrabBox.GetDefaultShiftButtons: TShiftState;
+begin
+  {$IFDEF Darwin}
+  Result:=[ssCtrl,ssShift,ssAlt,ssMeta];
+  {$ELSE}
+  Result:=[ssCtrl,ssShift,ssAlt];
+  {$ENDIF}
 end;
 
 initialization

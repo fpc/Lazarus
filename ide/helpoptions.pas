@@ -141,7 +141,7 @@ begin
   Caption:=lisHlpOptsHelpOptions;
   OkButton.Caption:=lisLazBuildOk;
   CancelButton.Caption:=dlgCancel;
-  HelpButton.Caption:=srVK_HELP;
+  HelpButton.Caption:=lisPckEditHelp;
   GeneralPage.Caption:=lisMenuInsertGeneral;
   FPCDocHTMLLabel.Caption:=lisHOFPCDocHTMLPath;
   ViewersPage.Caption:=lisHlpOptsViewers;

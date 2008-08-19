@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls, ButtonPanel;
+  StdCtrls, ButtonPanel, LazarusIDEStrConsts;
 
 type
 
@@ -74,17 +74,14 @@ end;
 
 procedure TFPDocLinkEditorDlg.FormCreate(Sender: TObject);
 begin
-  Caption:='Choose a FPDoc link';
-  LinkLabel.Caption:='Link target';
-  LinkLabel.Hint:='Examples:'#13
-                 +'Identifier'#13
-                 +'TMyEnum.Enum'#13
-                 +'Unitname.Identifier'#13
-                 +'#PackageName.UnitName.Identifier';
-  TitleLabel.Caption:='Title (leave empty for default)';
-  ButtonPanel1.OKButton.Caption:='Ok';
-  ButtonPanel1.CancelButton.Caption:='Cancel';
-  ButtonPanel1.HelpButton.Caption:='Help';
+  Caption:=lisChooseAFPDocLink;
+  LinkLabel.Caption:=lisLinkTarget;
+  LinkLabel.Hint:=Format(lisExamplesIdentifierTMyEnumEnumUnitnameIdentifierPac,
+    [#13, #13, #13, #13]);
+  TitleLabel.Caption:=lisTitleLeaveEmptyForDefault;
+  ButtonPanel1.OKButton.Caption:=lisOkBtn;
+  ButtonPanel1.CancelButton.Caption:=dlgCancel;
+  ButtonPanel1.HelpButton.Caption:=lisPckEditHelp;
   
   LinkEdit.Text:='';
   TitleEdit.Text:='';
