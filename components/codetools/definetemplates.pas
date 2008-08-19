@@ -4848,10 +4848,18 @@ begin
           end;
         end;
 
+      'M':
+        begin
+          // syntax
+          inc(StartPos,2);
+          CompilerMode:=copy(CmdLine,StartPos,EndPos-StartPos);
+        end;
+
       end;
     end;
   end;
   if CompilerMode<>'' then begin
+    AddDefineUndefine('FPC_FPC',SysUtils.CompareText(CompilerMode,'FPC')=0);
     AddDefineUndefine('FPC_ObjFPC',SysUtils.CompareText(CompilerMode,'ObjFPC')=0);
     AddDefineUndefine('FPC_Delphi',SysUtils.CompareText(CompilerMode,'Delphi')=0);
     AddDefineUndefine('FPC_TP',SysUtils.CompareText(CompilerMode,'TP')=0);
