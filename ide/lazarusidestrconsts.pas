@@ -3816,6 +3816,7 @@ resourcestring
   lisMacPascal = 'Mac Pascal';
   lisFreePascal = 'Free Pascal';
   lisSmallerRatherThanFaster = 'smaller rather than faster';
+  lisVerifyMethodCalls = 'Verify method calls';
 
 implementation
 

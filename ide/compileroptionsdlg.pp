@@ -110,6 +110,7 @@ type
     chkChecksRange: TCheckBox;
     chkChecksOverflow: TCheckBox;
     chkChecksStack: TCheckBox;
+    chkVerifyObjMethodCall: TCheckBox;
 
     grpHeapSize: TGroupBox;
     edtHeapSize: TEdit;
@@ -585,6 +586,7 @@ begin
     chkChecksRange.Checked := Options.RangeChecks;
     chkChecksOverflow.Checked := Options.OverflowChecks;
     chkChecksStack.Checked := Options.StackChecks;
+    chkVerifyObjMethodCall.Checked := Options.VerifyObjMethodCall;
 
     grpHeapSize.Enabled:=EnabledLinkerOpts;
     edtHeapSize.Text := IntToStr(Options.HeapSize);
@@ -887,6 +889,7 @@ begin
     Options.RangeChecks := chkChecksRange.Checked;
     Options.OverflowChecks := chkChecksOverflow.Checked;
     Options.StackChecks := chkChecksStack.Checked;
+    Options.VerifyObjMethodCall := chkVerifyObjMethodCall.Checked;
 
     Val(edtHeapSize.Text, hs, code);
     if (code <> 0) then
@@ -1213,6 +1216,7 @@ begin
   chkChecksRange.Caption := dlgCORange+' (-Cr)';
   chkChecksOverflow.Caption := dlgCOOverflow+' (-Co)';
   chkChecksStack.Caption := dlgCOStack+' (-Ct)';
+  chkVerifyObjMethodCall.Caption := lisVerifyMethodCalls+' (-CR)';
 
   grpHeapSize.Caption := dlgHeapSize +' (-Ch):';
   edtHeapSize.Text := '';
