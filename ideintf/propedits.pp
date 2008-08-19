@@ -4833,6 +4833,8 @@ begin
     Dlg.Position:=poScreenCenter;
     Dlg.Constraints.MinWidth:=350;
     Dlg.Constraints.MinHeight:=30;
+    Dlg.Width:=350;
+    Dlg.Height:=120;
 
     Box:=TShortCutGrabBox.Create(Dlg);
     Box.Parent:=Dlg;
@@ -6750,6 +6752,8 @@ begin
     BorderSpacing.Around:=25;
     Parent:=FGrabForm;
   end;
+  FGrabForm.Width:=200;
+  FGrabForm.Height:=50;
   FGrabForm.AutoSize:=true;
   FGrabForm.ShowModal;
   FreeAndNil(FGrabForm);
