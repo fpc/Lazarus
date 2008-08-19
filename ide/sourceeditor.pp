@@ -1986,7 +1986,7 @@ procedure TSourceEditor.InsertTodo;
 Var
   aTodoItem: TTodoItem;
 begin
-  DebugLn(['TSourceEditor.InsertTodo ']);
+  //DebugLn(['TSourceEditor.InsertTodo ']);
   if ReadOnly then Exit;
   aTodoItem := ExecuteTodoDialog;
   try
@@ -5090,6 +5090,7 @@ var
   ms: TMemoryStream; 
   NewWidth, NewHeight: integer;
 begin
+  if csDestroying in ComponentState then exit;
   if FHintWindow<>nil then
     FHintWindow.Visible:=false;
   if FHintWindow=nil then
