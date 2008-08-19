@@ -698,7 +698,7 @@ object AddToPackageDlg: TAddToPackageDlg
         TabOrder = 1
         object FilesBrowseButton: TButton
           AnchorSideBottom.Side = asrBottom
-          Left = 6
+          Left = 281
           Height = 29
           Top = 6
           Width = 128
@@ -709,35 +709,9 @@ object AddToPackageDlg: TAddToPackageDlg
           OnClick = FilesBrowseButtonClick
           TabOrder = 0
         end
-        object FilesShortenButton: TButton
-          AnchorSideLeft.Side = asrBottom
-          Left = 140
-          Height = 29
-          Top = 6
-          Width = 133
-          Align = alLeft
-          AutoSize = True
-          BorderSpacing.Around = 6
-          Caption = 'FilesShortenButton'
-          OnClick = FilesShortenButtonClick
-          TabOrder = 1
-        end
-        object FilesDeleteButton: TButton
-          AnchorSideLeft.Side = asrBottom
-          Left = 279
-          Height = 29
-          Top = 6
-          Width = 124
-          Align = alLeft
-          AutoSize = True
-          BorderSpacing.Around = 6
-          Caption = 'FilesDeleteButton'
-          OnClick = FilesDeleteButtonClick
-          TabOrder = 2
-        end
         object FilesAddButton: TButton
           AnchorSideLeft.Side = asrBottom
-          Left = 409
+          Left = 415
           Height = 29
           Top = 6
           Width = 107
@@ -746,6 +720,32 @@ object AddToPackageDlg: TAddToPackageDlg
           BorderSpacing.Around = 6
           Caption = 'FilesAddButton'
           OnClick = FilesAddButtonClick
+          TabOrder = 1
+        end
+        object FilesShortenButton: TBitBtn
+          AnchorSideLeft.Side = asrBottom
+          Left = 139
+          Height = 29
+          Top = 6
+          Width = 136
+          Align = alLeft
+          AutoSize = True
+          BorderSpacing.Around = 6
+          Caption = 'FilesShortenButton'
+          NumGlyphs = 0
+          TabOrder = 2
+        end
+        object FilesDeleteButton: TBitBtn
+          AnchorSideLeft.Side = asrBottom
+          Left = 6
+          Height = 29
+          Top = 6
+          Width = 127
+          Align = alLeft
+          AutoSize = True
+          BorderSpacing.Around = 6
+          Caption = 'FilesDeleteButton'
+          NumGlyphs = 0
           TabOrder = 3
         end
       end

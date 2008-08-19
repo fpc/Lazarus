@@ -80,6 +80,8 @@ type
   { TAddToPackageDlg }
 
   TAddToPackageDlg = class(TForm)
+    FilesDeleteButton: TBitBtn;
+    FilesShortenButton: TBitBtn;
     // notebook
     NoteBook: TNoteBook;
     NewFilePage: TPage;
@@ -143,8 +145,6 @@ type
     // add files page
     FilesListView: TListView;
     FilesBrowseButton: TButton;
-    FilesShortenButton: TButton;
-    FilesDeleteButton: TButton;
     FilesAddButton: TButton;
     NewFileBtnPanel: TPanel;
     AddFilesBtnPanel: TPanel;
