@@ -1249,7 +1249,7 @@ resourcestring
   dlgCONormal = 'Normal Code';
   dlgCOFast = 'Faster Code';
   dlgCOSmaller = 'Smaller Code';
-  dlgTargetProc = 'Target i386';
+  dlgTargetProc = 'Target processor';
   dlgTargetPlatform = 'Target Platform:';
   dlgOptimiz = 'Optimizations:';
   dlgCOKeepVarsReg = 'Keep certain variables in registers';

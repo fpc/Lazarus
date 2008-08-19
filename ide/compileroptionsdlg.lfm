@@ -19,7 +19,7 @@ object frmCompilerOptions: TfrmCompilerOptions
     Width = 669
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    PageIndex = 1
+    PageIndex = 2
     TabOrder = 0
     object PathPage: TPage
       Caption = 'PathPage'
@@ -498,10 +498,11 @@ object frmCompilerOptions: TfrmCompilerOptions
         TabOrder = 4
         object lblTargetOS: TLabel
           AnchorSideLeft.Control = grpTargetPlatform
-          AnchorSideTop.Control = grpTargetPlatform
+          AnchorSideTop.Control = TargetOSComboBox
+          AnchorSideTop.Side = asrCenter
           Left = 6
           Height = 20
-          Top = 6
+          Top = 10
           Width = 73
           BorderSpacing.Around = 6
           Caption = 'lblTargetOS'
@@ -509,26 +510,26 @@ object frmCompilerOptions: TfrmCompilerOptions
         end
         object lblTargetCPU: TLabel
           AnchorSideLeft.Control = grpTargetPlatform
-          AnchorSideTop.Control = TargetOSComboBox
-          AnchorSideTop.Side = asrBottom
+          AnchorSideTop.Control = TargetCPUComboBox
+          AnchorSideTop.Side = asrCenter
           Left = 6
           Height = 20
-          Top = 41
+          Top = 45
           Width = 81
           BorderSpacing.Around = 6
           Caption = 'lblTargetCPU'
           ParentColor = False
         end
-        object lblTargeti386Proc: TLabel
+        object lblTargetProcessorProc: TLabel
           AnchorSideLeft.Control = grpTargetPlatform
-          AnchorSideTop.Control = TargetCPUComboBox
-          AnchorSideTop.Side = asrBottom
+          AnchorSideTop.Control = TargetProcessorProcComboBox
+          AnchorSideTop.Side = asrCenter
           Left = 6
           Height = 20
-          Top = 76
-          Width = 109
+          Top = 80
+          Width = 145
           BorderSpacing.Around = 6
-          Caption = 'lblTargeti386Proc'
+          Caption = 'lblTargetProcessorProc'
           ParentColor = False
         end
         object TargetOSComboBox: TComboBox
@@ -565,28 +566,27 @@ object frmCompilerOptions: TfrmCompilerOptions
           BorderSpacing.Left = 6
           BorderSpacing.Around = 6
           MaxLength = 0
-          OnChange = TargetCPUComboBoxChange
           TabOrder = 1
           Text = 'TargetCPUComboBox'
         end
-        object Targeti386ProcComboBox: TComboBox
-          AnchorSideLeft.Control = lblTargeti386Proc
+        object TargetProcessorProcComboBox: TComboBox
+          AnchorSideLeft.Control = lblTargetProcessorProc
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = TargetCPUComboBox
           AnchorSideTop.Side = asrBottom
           AnchorSideRight.Control = grpTargetPlatform
           AnchorSideRight.Side = asrBottom
-          Left = 127
+          Left = 163
           Height = 29
           Top = 76
-          Width = 376
+          Width = 340
           Anchors = [akTop, akLeft, akRight]
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           BorderSpacing.Left = 6
           BorderSpacing.Around = 6
           MaxLength = 0
           TabOrder = 2
-          Text = 'Targeti386ProcComboBox'
+          Text = 'TargetProcessorProcComboBox'
         end
       end
       object grpOptimizations: TGroupBox

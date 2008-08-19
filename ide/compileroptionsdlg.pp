@@ -124,8 +124,8 @@ type
     TargetOSComboBox: TComboBox;
     lblTargetCPU : TLabel;
     TargetCPUComboBox: TComboBox;
-    lblTargeti386Proc : TLabel;
-    Targeti386ProcComboBox: TComboBox;
+    lblTargetProcessorProc : TLabel;
+    TargetProcessorProcComboBox: TComboBox;
 
     grpOptimizations: TGroupBox;
     chkOptVarsInReg: TCheckBox;
@@ -234,7 +234,6 @@ type
     procedure PathEditBtnExecuted(Sender: TObject);
     procedure frmCompilerOptionsClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure grpOptimizationsResize(Sender: TObject);
-    procedure TargetCPUComboBoxChange(Sender: TObject);
   private
     procedure SetupSearchPathsTab(Page: integer);
     procedure SetupParsingTab(Page: integer);
@@ -257,7 +256,6 @@ type
     procedure SetReadOnly(const AValue: boolean);
     procedure UpdateInheritedTab;
     procedure ClearInheritedTree;
-    procedure UpdateI386Settings;
   public
     CompilerOpts: TBaseCompilerOptions;
 
@@ -280,6 +278,8 @@ var
 
 function SyntaxModeToCaption(const Mode: string): string;
 function CaptionToSyntaxMode(const Caption: string): string;
+function ProcessorToCaption(const Processor: string): string;
+function CaptionToProcessor(const Caption: string): string;
 
 implementation
 
@@ -318,6 +318,42 @@ begin
     Result:='fpc'
   else
     Result:='ObjFPC';
+end;
+
+function ProcessorToCaption(const Processor: string): string;
+begin
+  if SysUtils.CompareText(Processor,'386')=0 then
+    Result:='386/486'+' (-Op386)'
+  else if SysUtils.CompareText(Processor,'pentium')=0 then
+    Result:='Pentium/Pentium MMX (-OpPENTIUM)'
+  else if SysUtils.CompareText(Processor,'pentium2')=0 then
+    Result:='Pentium Pro/Pentium II/C6x86/K6 (-OpPENTIUM2)'
+  else if SysUtils.CompareText(Processor,'pentium3')=0 then
+    Result:='Pentium III (-OpPENTIUM3)'
+  else if SysUtils.CompareText(Processor,'pentium4')=0 then
+    Result:='Pentium IV (-OpPENTIUM4)'
+  else if SysUtils.CompareText(Processor,'pentiumm')=0 then
+    Result:='Pentium M (-OpPENTIUMM)'
+  else
+    Result:='('+rsiwpDefault+')';
+end;
+
+function CaptionToProcessor(const Caption: string): string;
+begin
+  if System.Pos('-Op386',Caption)>0 then
+    Result:='386'
+  else if System.Pos('-OpPENTIUM',Caption)>0 then
+    Result:='pentium'
+  else if System.Pos('-OpPENTIUM2',Caption)>0 then
+    Result:='pentium2'
+  else if System.Pos('-OpPENTIUM3',Caption)>0 then
+    Result:='pentium3'
+  else if System.Pos('-OpPENTIUM4',Caption)>0 then
+    Result:='pentium4'
+  else if System.Pos('-OpPENTIUMM',Caption)>0 then
+    Result:='pentiumm'
+  else
+    Result:='';
 end;
 
 {------------------------------------------------------------------------------
@@ -572,12 +608,7 @@ begin
     TargetCPUComboBox.ItemIndex:=i;
     TargetCPUComboBox.Text:=Options.TargetCPU;
 
-    case Options.TargetProcessor of
-      1..3: Targeti386ProcComboBox.ItemIndex:=Options.TargetProcessor;
-    else
-      Targeti386ProcComboBox.ItemIndex := 0;
-    end;
-    UpdateI386Settings;
+    TargetProcessorProcComboBox.Text:=ProcessorToCaption(Options.TargetProcessor);
 
     chkOptVarsInReg.Checked := Options.VariablesInRegisters;
     chkOptUncertain.Checked := Options.UncertainOptimizations;
@@ -889,7 +920,7 @@ begin
       NewTargetCPU:='';
     Options.TargetCPU:=NewTargetCPU;
 
-    Options.TargetProcessor := Targeti386ProcComboBox.ItemIndex;
+    Options.TargetProcessor := CaptionToProcessor(TargetProcessorProcComboBox.Text);
     Options.VariablesInRegisters := chkOptVarsInReg.Checked;
     Options.UncertainOptimizations := chkOptUncertain.Checked;
 
@@ -1131,16 +1162,6 @@ begin
   InhTreeView.EndUpdate;
 end;
 
-procedure TfrmCompilerOptions.UpdateI386Settings;
-var
-  EnableI386: Boolean;
-begin
-  EnableI386:=(CompareText(TargetCPUComboBox.Text,'i386')=0)
-         or ((TargetCPUComboBox.ItemIndex<=0) and (GetDefaultTargetCPU='i386'));
-  Targeti386ProcComboBox.Enabled:=EnableI386;
-  lblTargeti386Proc.Enabled:=EnableI386;
-end;
-
 {------------------------------------------------------------------------------
   TfrmCompilerOptions SetupParsingTab
 ------------------------------------------------------------------------------}
@@ -1213,7 +1234,7 @@ begin
   grpGenerate.Caption := dlgCOGenerate;
   radGenNormal.Caption := dlgCONormal+' (none)';
   radGenFaster.Caption := dlgCOFast+' (-OG)';
-  radGenSmaller.Caption := dlgCOSmaller+' (-Og)';
+  radGenSmaller.Caption := dlgCOSmaller+' (-Os)';
 
   grpTargetPlatform.Caption := dlgTargetPlatform;
   lblTargetOS.Caption := dlgTargetOS+' (-T)';
@@ -1264,14 +1285,18 @@ begin
     ItemIndex:=0;
   end;
 
-  lblTargeti386Proc.Caption := dlgTargetProc;
+  lblTargetProcessorProc.Caption := dlgTargetProc;
 
-  with Targeti386ProcComboBox do begin
+  with TargetProcessorProcComboBox do begin
     with Items do begin
-      Add('('+rsiwpDefault+')');
-      Add('386/486 (-Op1)');
-      Add('Pentium/Pentium MMX (-Op2)');
-      Add('Pentium Pro/Pentium II/C6x86/K6 (-Op3)');
+      Clear;
+      Add(ProcessorToCaption(''));
+      Add(ProcessorToCaption('386'));
+      Add(ProcessorToCaption('Pentium'));
+      Add(ProcessorToCaption('Pentium2'));
+      Add(ProcessorToCaption('Pentium3'));
+      Add(ProcessorToCaption('Pentium4'));
+      Add(ProcessorToCaption('PentiumM'));
     end;
     ItemIndex:=0;
   end;
@@ -1751,11 +1776,6 @@ begin
   x:=radOptLevel1.Left+Max(radOptLevel1.Width,radOptLevel2.Width)+6;
   chkOptVarsInReg.Left:=x;
   chkOptUncertain.Left:=x;
-end;
-
-procedure TfrmCompilerOptions.TargetCPUComboBoxChange(Sender: TObject);
-begin
-  UpdateI386Settings;
 end;
 
 procedure TfrmCompilerOptions.SetReadOnly(const AValue: boolean);

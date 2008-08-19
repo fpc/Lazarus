@@ -112,7 +112,7 @@ type
     fHeapSize: LongInt;
     fVerifyObjMethodCall: boolean;
     fGenerate: TCompilationGenerateCode;
-    fTargetProc: Integer;
+    fTargetProc: string;
     fTargetCPU: string;
     fVarsInReg: Boolean;
     fUncertainOpt: Boolean;
@@ -174,7 +174,7 @@ type
     procedure SetSrcPath(const AValue: string); virtual; abstract;
     procedure SetDebugPath(const AValue: string); virtual; abstract;
     procedure SetTargetCPU(const AValue: string); virtual; abstract;
-    procedure SetTargetProc(const AValue: Integer); virtual; abstract;
+    procedure SetTargetProc(const AValue: string); virtual; abstract;
     procedure SetTargetOS(const AValue: string); virtual; abstract;
     procedure SetModified(const AValue: boolean); virtual; abstract;
   public
@@ -220,7 +220,7 @@ type
                                           write FEmulatedFloatOpcodes;
     property Generate: TCompilationGenerateCode read fGenerate write fGenerate;
     property TargetCPU: string read fTargetCPU write SetTargetCPU; // general type
-    property TargetProcessor: Integer read fTargetProc write SetTargetProc; // specific
+    property TargetProcessor: String read fTargetProc write SetTargetProc; // specific
     property TargetOS: string read fTargetOS write SetTargetOS;
     property VariablesInRegisters: Boolean read fVarsInReg write fVarsInReg;
     property UncertainOptimizations: Boolean read fUncertainOpt write fUncertainOpt;

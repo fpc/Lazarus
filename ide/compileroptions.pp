@@ -292,7 +292,7 @@ type
     procedure SetSrcPath(const AValue: string); override;
     procedure SetDebugPath(const AValue: string); override;
     procedure SetTargetCPU(const AValue: string); override;
-    procedure SetTargetProc(const AValue: Integer); override;
+    procedure SetTargetProc(const AValue: string); override;
     procedure SetTargetOS(const AValue: string); override;
     procedure SetModified(const AValue: boolean); override;
   protected
@@ -504,7 +504,7 @@ procedure SaveXMLCompileReasons(const AConfig: TXMLConfig; const APath: String;
 implementation
 
 const
-  CompilerOptionsVersion = 6;
+  CompilerOptionsVersion = 7;
   Config_Filename = 'compileroptions.xml';
 
 function ParseString(Options: TParsedCompilerOptions;
@@ -909,7 +909,7 @@ begin
   IncreaseCompilerParseStamp;
 end;
 
-procedure TBaseCompilerOptions.SetTargetProc(const AValue: Integer);
+procedure TBaseCompilerOptions.SetTargetProc(const AValue: string);
 begin
   if fTargetProc=AValue then exit;
   fTargetProc:=AValue;
@@ -996,6 +996,7 @@ var
   p: String;
   PathDelimChanged: boolean;
   FileVersion: Integer;
+  i: LongInt;
   
   function f(const Filename: string): string;
   begin
@@ -1104,7 +1105,15 @@ begin
   HeapSize := XMLConfigFile.GetValue(p+'HeapSize/Value', 0);
   VerifyObjMethodCall := XMLConfigFile.GetValue(p+'VerifyObjMethodCallValidity/Value', false);
   ReadGenerate;
-  TargetProcessor := XMLConfigFile.GetValue(p+'TargetProcessor/Value', 0);
+  if FileVersion<6 then begin
+    i:=XMLConfigFile.GetValue(p+'TargetProcessor/Value', 0);
+    case i of
+    1: TargetProcessor:='PENTIUM';
+    2: TargetProcessor:='PENTIUM2';
+    3: TargetProcessor:='PENTIUM3';
+    end;
+  end else
+    TargetProcessor := XMLConfigFile.GetValue(p+'TargetProcessor/Value', '');
   TargetCPU := XMLConfigFile.GetValue(p+'TargetCPU/Value', '');
   VariablesInRegisters := XMLConfigFile.GetValue(p+'Optimizations/VariablesInRegisters/Value', false);
   UncertainOptimizations := XMLConfigFile.GetValue(p+'Optimizations/UncertainOptimizations/Value', false);
@@ -1252,7 +1261,7 @@ begin
   XMLConfigFile.SetDeleteValue(p+'HeapSize/Value', HeapSize,0);
   XMLConfigFile.SetDeleteValue(p+'VerifyObjMethodCallValidity/Value', VerifyObjMethodCall,false);
   XMLConfigFile.SetDeleteValue(p+'Generate/Value', CompilationGenerateCodeNames[Generate],CompilationGenerateCodeNames[cgcNormalCode]);
-  XMLConfigFile.SetDeleteValue(p+'TargetProcessor/Value', TargetProcessor,0);
+  XMLConfigFile.SetDeleteValue(p+'TargetProcessor/Value', TargetProcessor,'');
   XMLConfigFile.SetDeleteValue(p+'TargetCPU/Value', TargetCPU,'');
   XMLConfigFile.SetDeleteValue(p+'Optimizations/VariablesInRegisters/Value', VariablesInRegisters,false);
   XMLConfigFile.SetDeleteValue(p+'Optimizations/UncertainOptimizations/Value', UncertainOptimizations,false);
@@ -2053,16 +2062,12 @@ begin
   if (UncertainOptimizations) then
     OptimizeSwitches := OptimizeSwitches + 'u';
 
-  { TargetProcessor }
-  case (TargetProcessor) of
-    0:                            ; // use default
-    1:  OptimizeSwitches := OptimizeSwitches + 'p1';  // 386/486
-    2:  OptimizeSwitches := OptimizeSwitches + 'p2';  // Pentium/Pentium MMX
-    3:  OptimizeSwitches := OptimizeSwitches + 'p3';  // PentiumPro/PII/K6
-  end;
-
   if OptimizeSwitches<>'' then
     switches := switches + ' -O'+OptimizeSwitches;
+
+  { TargetProcessor }
+  if TargetProcessor<>'' then
+    Switches:=Switches+' -Op'+UpperCase(TargetProcessor);
 
   { Target OS
        GO32V1 = DOS and version 1 of the DJ DELORIE extender (no longer maintained).
@@ -2442,7 +2447,7 @@ begin
   fStackChecks := false;
   fHeapSize := 0;
   fGenerate := cgcFasterCode;
-  fTargetProc := 0;
+  fTargetProc := '';
   fTargetCPU := '';
   fVarsInReg := false;
   fUncertainOpt := false;
