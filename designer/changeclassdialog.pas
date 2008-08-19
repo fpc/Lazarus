@@ -175,6 +175,9 @@ var
     end;
     ComponentStream.Position:=0;
     LFMBuffer.LoadFromStream(ComponentStream);
+    debugln('ChangePersistentClass-Before-Checking--------------------------------------------');
+    debugln(LFMBuffer.Source);
+    debugln('ChangePersistentClass-Before-Checking-------------------------------------------');
     if not CodeToolBoss.CheckLFM(UnitCode,LFMBuffer,LFMTree,false,false) then
     begin
       debugln('ChangePersistentClass-Before--------------------------------------------');

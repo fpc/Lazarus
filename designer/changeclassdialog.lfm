@@ -70,7 +70,8 @@ object ChangeClassDlg: TChangeClassDlg
       Top = 6
       Width = 208
       Align = alTop
-      AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+      AutoComplete = True
+      AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
       BorderSpacing.Around = 6
       MaxLength = 0
       OnEditingDone = NewClassComboBoxEditingDone
