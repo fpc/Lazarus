@@ -19,7 +19,7 @@ object frmCompilerOptions: TfrmCompilerOptions
     Width = 669
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    PageIndex = 2
+    PageIndex = 3
     TabOrder = 0
     object PathPage: TPage
       Caption = 'PathPage'
@@ -360,45 +360,45 @@ object frmCompilerOptions: TfrmCompilerOptions
         TabOrder = 1
         object chkChecksIO: TCheckBox
           Left = 6
-          Height = 22
+          Height = 21
           Top = 6
-          Width = 173
+          Width = 172
           BorderSpacing.Around = 6
           Caption = 'chkChecksIO'
           TabOrder = 0
         end
         object chkChecksRange: TCheckBox
           Left = 6
-          Height = 22
-          Top = 34
-          Width = 173
+          Height = 21
+          Top = 33
+          Width = 172
           BorderSpacing.Around = 6
           Caption = 'chkChecksRange'
           TabOrder = 1
         end
         object chkChecksOverflow: TCheckBox
           Left = 6
-          Height = 22
-          Top = 62
-          Width = 173
+          Height = 21
+          Top = 60
+          Width = 172
           BorderSpacing.Around = 6
           Caption = 'chkChecksOverflow'
           TabOrder = 2
         end
         object chkChecksStack: TCheckBox
           Left = 6
-          Height = 22
-          Top = 90
-          Width = 173
+          Height = 21
+          Top = 87
+          Width = 172
           BorderSpacing.Around = 6
           Caption = 'chkChecksStack'
           TabOrder = 3
         end
         object chkVerifyObjMethodCall: TCheckBox
           Left = 6
-          Height = 22
-          Top = 118
-          Width = 173
+          Height = 21
+          Top = 114
+          Width = 172
           Caption = 'chkVerifyObjMethodCall'
           TabOrder = 4
         end
@@ -649,7 +649,7 @@ object frmCompilerOptions: TfrmCompilerOptions
       object grpLinkLibraries: TGroupBox
         Left = 6
         Height = 53
-        Top = 233
+        Top = 205
         Width = 655
         Align = alTop
         AutoSize = True
@@ -672,7 +672,7 @@ object frmCompilerOptions: TfrmCompilerOptions
       object TargetSpecificsGrpBox: TGroupBox
         Left = 6
         Height = 53
-        Top = 292
+        Top = 264
         Width = 655
         Align = alTop
         AutoSize = True
@@ -695,7 +695,7 @@ object frmCompilerOptions: TfrmCompilerOptions
       object grpOptions: TGroupBox
         Left = 6
         Height = 82
-        Top = 351
+        Top = 323
         Width = 655
         Align = alTop
         AutoSize = True
@@ -727,14 +727,14 @@ object frmCompilerOptions: TfrmCompilerOptions
       end
       object grpDebugging: TGroupBox
         Left = 6
-        Height = 221
+        Height = 193
         Top = 6
         Width = 655
         Align = alTop
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'grpDebugging'
-        ClientHeight = 202
+        ClientHeight = 174
         ClientWidth = 651
         TabOrder = 3
         object chkDebugGDB: TCheckBox
@@ -747,65 +747,55 @@ object frmCompilerOptions: TfrmCompilerOptions
           Caption = 'chkDebugGDB'
           TabOrder = 0
         end
-        object chkDebugDBX: TCheckBox
+        object chkUseLineInfoUnit: TCheckBox
           Left = 6
           Height = 22
           Top = 34
           Width = 639
           Align = alTop
           BorderSpacing.Around = 6
-          Caption = 'chkDebugDBX'
+          Caption = 'chkUseLineInfoUnit'
           TabOrder = 1
         end
-        object chkUseLineInfoUnit: TCheckBox
+        object chkUseHeaptrc: TCheckBox
           Left = 6
           Height = 22
           Top = 62
           Width = 639
           Align = alTop
           BorderSpacing.Around = 6
-          Caption = 'chkUseLineInfoUnit'
+          Caption = 'chkUseHeaptrc'
           TabOrder = 2
         end
-        object chkUseHeaptrc: TCheckBox
+        object chkUseValgrind: TCheckBox
           Left = 6
           Height = 22
           Top = 90
           Width = 639
           Align = alTop
           BorderSpacing.Around = 6
-          Caption = 'chkUseHeaptrc'
+          Caption = 'chkUseValgrind'
           TabOrder = 3
         end
-        object chkUseValgrind: TCheckBox
+        object chkGenGProfCode: TCheckBox
           Left = 6
           Height = 22
           Top = 118
           Width = 639
           Align = alTop
           BorderSpacing.Around = 6
-          Caption = 'chkUseValgrind'
+          Caption = 'chkGenGProfCode'
           TabOrder = 4
         end
-        object chkGenGProfCode: TCheckBox
+        object chkSymbolsStrip: TCheckBox
           Left = 6
           Height = 22
           Top = 146
           Width = 639
           Align = alTop
           BorderSpacing.Around = 6
-          Caption = 'chkGenGProfCode'
-          TabOrder = 5
-        end
-        object chkSymbolsStrip: TCheckBox
-          Left = 6
-          Height = 22
-          Top = 174
-          Width = 639
-          Align = alTop
-          BorderSpacing.Around = 6
           Caption = 'chkSymbolsStrip'
-          TabOrder = 6
+          TabOrder = 5
         end
       end
     end

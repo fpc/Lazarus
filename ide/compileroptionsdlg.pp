@@ -136,7 +136,6 @@ type
     LinkingPage: TPage;
     grpDebugging: TGroupBox;
     chkDebugGDB: TCheckBox;
-    chkDebugDBX: TCheckBox;
     chkUseLineInfoUnit: TCheckBox;
     chkUseHeaptrc: TCheckBox;
     chkUseValgrind: TCheckBox;
@@ -616,7 +615,6 @@ begin
 
     // linking
     chkDebugGDB.Checked := Options.GenerateDebugInfo;
-    chkDebugDBX.Checked := Options.GenerateDebugDBX;
     chkUseLineInfoUnit.Checked := Options.UseLineInfoUnit;
     chkUseHeaptrc.Checked := Options.UseHeaptrc;
     chkUseValgrind.Checked := Options.UseValgrind;
@@ -924,7 +922,6 @@ begin
 
     // linking
     Options.GenerateDebugInfo := chkDebugGDB.Checked;
-    Options.GenerateDebugDBX := chkDebugDBX.Checked;
     Options.UseLineInfoUnit := chkUseLineInfoUnit.Checked;
     Options.UseHeaptrc := chkUseHeaptrc.Checked;
     Options.UseValgrind := chkUseValgrind.Checked;
@@ -1310,7 +1307,6 @@ begin
   end;
 
   chkDebugGDB.Caption := dlgCOGDB+' (-g)';
-  chkDebugDBX.Caption := dlgCODBX+' (-gd)';
   chkUseLineInfoUnit.Caption := dlgLNumsBct+' (-gl)';
   chkUseHeaptrc.Caption := dlgCOHeaptrc+' (-gh)';
   chkUseValgrind.Caption := dlgCOValgrind+' (-gv)';

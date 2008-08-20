@@ -1107,7 +1107,6 @@ begin
   { Linking }
   p:=Path+'Linking/';
   GenerateDebugInfo := XMLConfigFile.GetValue(p+'Debugging/GenerateDebugInfo/Value', false);
-  GenerateDebugDBX := XMLConfigFile.GetValue(p+'Debugging/GenerateDebugDBX/Value', false);
   UseLineInfoUnit := XMLConfigFile.GetValue(p+'Debugging/UseLineInfoUnit/Value', true);
   UseHeaptrc := XMLConfigFile.GetValue(p+'Debugging/UseHeaptrc/Value', false);
   UseValgrind := XMLConfigFile.GetValue(p+'Debugging/UseValgrind/Value', false);
@@ -1255,7 +1254,6 @@ begin
   { Linking }
   p:=Path+'Linking/';
   XMLConfigFile.SetDeleteValue(p+'Debugging/GenerateDebugInfo/Value', GenerateDebugInfo,false);
-  XMLConfigFile.SetDeleteValue(p+'Debugging/GenerateDebugDBX/Value', GenerateDebugDBX,false);
   XMLConfigFile.SetDeleteValue(p+'Debugging/UseLineInfoUnit/Value', UseLineInfoUnit,true);
   XMLConfigFile.SetDeleteValue(p+'Debugging/UseHeaptrc/Value', UseHeaptrc,false);
   XMLConfigFile.SetDeleteValue(p+'Debugging/UseValgrind/Value', UseValgrind,false);
@@ -2076,10 +2074,6 @@ begin
   if (GenerateDebugInfo) then
     switches := switches + ' -g';
 
-  { Debug Info for DBX }
-  if (GenerateDebugDBX) then
-    switches := switches + ' -gd';
-
   { Line Numbers in Run-time Error Backtraces - Use LineInfo Unit }
   if (UseLineInfoUnit) then
     switches := switches + ' -gl';
@@ -2439,7 +2433,6 @@ begin
     
   // linking
   fGenDebugInfo := false;
-  fGenDebugDBX := false;
   fUseLineInfoUnit := true;
   fUseHeaptrc := false;
   fUseValgrind := false;
@@ -2542,7 +2535,6 @@ begin
 
   // Linking
   fGenDebugInfo := CompOpts.fGenDebugInfo;
-  fGenDebugDBX := CompOpts.fGenDebugDBX;
   fUseLineInfoUnit := CompOpts.fUseLineInfoUnit;
   fUseHeaptrc := CompOpts.fUseHeaptrc;
   fUseValgrind := CompOpts.fUseValgrind;
@@ -2667,7 +2659,6 @@ begin
   // linking
   Tool.Path:='Linking';
   Tool.AddDiff('GenDebugInfo',fGenDebugInfo,CompOpts.fGenDebugInfo);
-  Tool.AddDiff('GenDebugDBX',fGenDebugDBX,CompOpts.fGenDebugDBX);
   Tool.AddDiff('UseLineInfoUnit',fUseLineInfoUnit,CompOpts.fUseLineInfoUnit);
   Tool.AddDiff('UseHeaptrc',fUseHeaptrc,CompOpts.fUseHeaptrc);
   Tool.AddDiff('UseValgrind',fUseValgrind,CompOpts.fUseValgrind);

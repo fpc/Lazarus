@@ -115,7 +115,6 @@ type
 
     // Linking:
     fGenDebugInfo: Boolean;
-    fGenDebugDBX: Boolean;
     fUseLineInfoUnit: Boolean;
     fUseHeaptrc: Boolean;
     fUseValgrind: Boolean;
@@ -222,7 +221,6 @@ type
 
     // linking:
     property GenerateDebugInfo: Boolean read fGenDebugInfo write fGenDebugInfo;
-    property GenerateDebugDBX: Boolean read fGenDebugDBX write fGenDebugDBX;
     property UseLineInfoUnit: Boolean read fUseLineInfoUnit write fUseLineInfoUnit;
     property UseHeaptrc: Boolean read fUseHeaptrc write fUseHeaptrc;
     property UseValgrind: Boolean read fUseValgrind write fUseValgrind;
