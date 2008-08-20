@@ -44,15 +44,16 @@ uses
   Controls, GTKProc, GtkDef;
 
 { $Define VerboseCaret}
+{$IF not (defined(GTK1) or defined(VER2_2))}
+{$DEFINE Has_gtk_draw_insertion_cursor}
+{$ENDIF}
 
 type
   PGTKAPIWidget = ^TGTKAPIWidget;
   TGTKAPIWidget = record
     // ! the ScrolledWindow must be the first attribute of this record !
     ScrolledWindow: TGTKScrolledWindow;
-{$if defined(win32) and defined(gtk2)}
     Reserved1: Word; // workaround gtk2 win32 fpc bug: SizeOf(TGTKScrolledWindow) is less than in real
-{$ifend}
     Frame: PGtkFrame;
     Client: PGtkWidget;
   end;
@@ -746,7 +747,7 @@ var
   WidgetStyle: PGTKStyle;
   HasFocus: boolean;
   WidgetIsPainting: Boolean;
-{$IFNDEF GTK1}
+{$IFDEF Has_gtk_draw_insertion_cursor}
   location: TGdkRectangle;
 {$ENDIF}
 
@@ -894,7 +895,7 @@ begin
         and (Width>0)
         and (Height>0)
         then begin
-          {$ifndef GTK1}
+          {$IFDEF Has_gtk_draw_insertion_cursor}
           if Width <= 3 then
           begin
             location.x := X;
@@ -905,8 +906,8 @@ begin
                GTK_TEXT_DIR_LTR, false);
           end
           else
-          {$endif}
-          DrawCursor(Pixmap, X, Y, Width, Height);
+          {$ENDIF}
+            DrawCursor(Pixmap, X, Y, Width, Height);
         end else
           DebugLn('***: Draw Caret failed: Client=',DbgS(Client),
             ' X='+dbgs(X)+' Y='+dbgs(Y)+' W='+dbgs(Width)+' H='+dbgs(Height),
