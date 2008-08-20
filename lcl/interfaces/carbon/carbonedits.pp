@@ -35,7 +35,7 @@ uses
   MacOSAll,
 {$endif}
  // LCL
-  LMessages, LCLMessageGlue, LCLProc, LCLType, Graphics, Controls, StdCtrls,
+  LMessages, LCLMessageGlue, LCLProc, LCLType, Graphics, Controls, StdCtrls, ExtCtrls,
   Spin,
  // widgetset
   WSControls, WSLCLClasses, WSProc,
@@ -78,6 +78,10 @@ type
     FItemIndex: Integer;
     FReadOnly: Boolean;
     FPopupMenu: MenuRef;
+    FTimer: TTimer;
+    FLastDroppedDown: Boolean;
+    procedure DropDownTimer(Sender: TObject);
+    // there is no drop down nor close up event in Carbon, we must check it with timer
   protected
     procedure RegisterEvents; override;
     procedure CreateWidget(const AParams: TCreateParams); override;
@@ -90,6 +94,7 @@ type
     procedure ValueChanged; override;
     procedure FocusSet; override;
     procedure FocusKilled; override;
+    procedure TextDidChange; override;
   public
     function GetText(var S: String): Boolean; override;
     function SetBounds(const ARect: TRect): Boolean; override;
@@ -102,6 +107,7 @@ type
     procedure Remove(AIndex: Integer);
     
     function DropDown(ADropDown: Boolean): Boolean;
+    function IsDroppedDown: Boolean;
   end;
   
   { TCarbonCustomEdit }
@@ -521,6 +527,55 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Name: CarbonComboBox_MenuOpening
+  Handles combo box menu open event
+ ------------------------------------------------------------------------------}
+function CarbonComboBox_MenuOpening(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+begin
+  {$IFDEF VerboseControlEvent}
+    DebugLn('CarbonComboBox_MenuOpening: ', DbgSName(AWidget.LCLObject));
+  {$ENDIF}
+
+  Result := CallNextEventHandler(ANextHandler, AEvent);
+
+  LCLSendDropDownMsg(AWidget.LCLObject);
+end;
+
+{------------------------------------------------------------------------------
+  Name: CarbonComboBox_MenuClosed
+  Handles combo box menu closed event
+ ------------------------------------------------------------------------------}
+function CarbonComboBox_MenuClosed(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+begin
+  {$IFDEF VerboseControlEvent}
+    DebugLn('CarbonComboBox_MenuClosed: ', DbgSName(AWidget.LCLObject));
+  {$ENDIF}
+
+  Result := CallNextEventHandler(ANextHandler, AEvent);
+
+  LCLSendCloseUpMsg(AWidget.LCLObject);
+end;
+
+procedure TCarbonComboBox.DropDownTimer(Sender: TObject);
+var
+  D: Boolean;
+begin
+  D := IsDroppedDown;
+  if D <> FLastDroppedDown then
+  begin
+    FLastDroppedDown := D;
+    if FLastDroppedDown then
+      LCLSendDropDownMsg(LCLObject)
+    else
+      LCLSendCloseUpMsg(LCLObject);
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Method:  TCarbonComboBox.RegisterEvents
 
   Registers event handlers for combo box
@@ -546,8 +601,10 @@ end;
 procedure TCarbonComboBox.CreateWidget(const AParams: TCreateParams);
 var
   CFString: CFStringRef;
+  TmpSpec: EventTypeSpec;
 begin
   FReadOnly := (LCLObject as TCustomComboBox).ReadOnly;
+  FLastDroppedDown := False;
   
   if FReadOnly then
   begin
@@ -559,6 +616,16 @@ begin
       
     OSError(CreateNewMenu(0, kMenuAttrAutoDisable, FPopupMenu),
       Self, SCreateWidget, 'CreateNewMenu');
+      
+    TmpSpec := MakeEventSpec(kEventClassMenu, kEventMenuOpening);
+    InstallMenuEventHandler(FPopupMenu,
+      RegisterEventHandler(@CarbonComboBox_MenuOpening),
+      1, @TmpSpec, Pointer(Self), nil);
+      
+    TmpSpec := MakeEventSpec(kEventClassMenu, kEventMenuClosed);
+    InstallMenuEventHandler(FPopupMenu,
+      RegisterEventHandler(@CarbonComboBox_MenuClosed),
+      1, @TmpSpec, Pointer(Self), nil);
         
     OSError(
       SetControlData(ControlRef(Widget), kControlEntireControl,
@@ -579,6 +646,11 @@ begin
     finally
       FreeCFString(CFString);
     end;
+    
+    FreeAndNil(FTimer);
+    FTimer := TTimer.Create(LCLObject);
+    FTimer.Interval := 200;
+    FTimer.OnTimer := @DropDownTimer;
   end;
   
   FItemIndex := -1;
@@ -662,7 +734,7 @@ procedure TCarbonComboBox.FocusSet;
 begin
   inherited;
   // emulate DropDown event here
-  LCLSendDropDownMsg(LCLObject);
+  //LCLSendDropDownMsg(LCLObject);
 end;
 
 {------------------------------------------------------------------------------
@@ -674,7 +746,20 @@ procedure TCarbonComboBox.FocusKilled;
 begin
   inherited;
   // emulate CloseUp event here
-  LCLSendCloseUpMsg(LCLObject);
+  //LCLSendCloseUpMsg(LCLObject);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonComboBox.TextDidChange
+
+  Text changed event handler
+ ------------------------------------------------------------------------------}
+procedure TCarbonComboBox.TextDidChange;
+begin
+  inherited TextDidChange;
+  
+  // TComboBox needs LM_CHANGED message type
+  SendSimpleMessage(LCLObject, LM_CHANGED);
 end;
 
 {------------------------------------------------------------------------------
@@ -842,6 +927,11 @@ begin
     'DropDown', 'HIComboBoxSetListVisible') then Exit;
 
   Result := True;
+end;
+
+function TCarbonComboBox.IsDroppedDown: Boolean;
+begin
+  Result := HIComboBoxIsListVisible(ControlRef(Widget));
 end;
 
 { TCarbonCustomEdit }

@@ -578,7 +578,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonWidget.BoundsChanged
+  Method:  TCarbonWidget.ControlAdded
 
   Notifies about control added
  ------------------------------------------------------------------------------}

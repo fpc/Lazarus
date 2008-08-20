@@ -798,6 +798,7 @@ end;
 procedure TCarbonCustomControl.ScrollTo(const ANewOrigin: HIPoint);
 var
   ScrollMsg: TLMScroll;
+  I: Integer;
 begin
   {$IFDEF VerboseScroll}
     DebugLn('TCarbonCustomControl.ScrollTo ' + LCLObject.Name + ' Origin: ' +
@@ -831,6 +832,16 @@ begin
   end;
   DeliverMessage(LCLObject, ScrollMsg);
   
+  // force update all child views - BUG in OS X
+  for I := 0 to LCLObject.ControlCount - 1 do
+    if (LCLObject.Controls[I] is TWinControl) and
+      (LCLObject.Controls[I] as TWinControl).HandleAllocated and
+      TCarbonWidget((LCLObject.Controls[I] as TWinControl).Handle).IsVisible then
+    begin
+      TCarbonWidget((LCLObject.Controls[I] as TWinControl).Handle).ShowHide(False);
+      TCarbonWidget((LCLObject.Controls[I] as TWinControl).Handle).ShowHide(True);
+    end;
+
   // scroll bars can change client rect - update it
   UpdateLCLClientRect;
   
