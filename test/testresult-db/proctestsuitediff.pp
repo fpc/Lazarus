@@ -6,7 +6,7 @@ uses
 
 const
   runhour = 8;      { cut-off hour that distinguishes yesterday and today }
-  urlprefix = 'http://fpcfos64.freepascal.org/laztestsuite/chi-bin/testsuite.cgi?';
+  urlprefix = 'http://fpcfos64.freepascal.org/laztestsuite/cgi-bin/testsuite.cgi?';
 
 function getdate(line: string): string;
 begin

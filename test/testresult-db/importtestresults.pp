@@ -297,6 +297,19 @@ var
     Verbose(V_Debug,format('Environment: retrieved %s=%s', [Name, Result]));
   end;
 
+  function TryGetEnvValue(const Name, Default: string): string;
+  var
+    Node: TDomNode;
+  begin
+    Result:=Default;
+    Node := EnvNode.FindNode(Name);
+    if not assigned(Node) then
+      Verbose(V_DEBUG,'No environment element for '+Name)
+    else
+      Result := Node.TextContent;
+    Verbose(V_Debug,format('Environment: retrieved %s=%s', [Name, Result]));
+  end;
+
   function GetDate: TDateTime;
   var
     Node: TDomNode;
@@ -339,6 +352,9 @@ begin
     Verbose(V_Error,'NO ID for fpc version "'+TestLazVersion+'" found.');
 
   TestDate := GetDate;
+
+  Submitter:=TryGetEnvValue('Submitter', Submitter);
+  Machine:=TryGetEnvValue('Machine', Machine);
 
   If (Round(TestDate)=0) then
     Testdate:=Now;

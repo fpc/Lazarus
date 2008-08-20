@@ -27,4 +27,4 @@ FROM TESTRUN LEFT JOIN (TESTCPU) ON (TU_CPU_FK=TC_ID) LEFT JOIN (TESTOS) ON (TU_
 WHERE (DATE_SUB(CURDATE(), INTERVAL 2 DAY)<=DATE(TU_DATE)) AND TR_OK<>"+" AND TR_SKIP<>"+"
 GROUP BY TU_ID
 ORDER BY LAZVERSION, FPCVERSION, OS, CPU, WIDGETSET, TESTER, MACHINE, COMMENT, DATE;' | tee mysql-output | $PROCTESTSUITEDIFF >> tests_mail
-#/usr/sbin/sendmail -f ${MAILFROM} ${MAILTO} < tests_mail >/dev/null 2>&1
+/usr/sbin/sendmail -f ${MAILFROM} ${MAILTO} < tests_mail >/dev/null 2>&1
