@@ -168,7 +168,6 @@ type
     procedure SetScrollBars(const AValue: TScrollStyle);
   protected
     function GetFrame(Index: Integer): ControlRef; override;
-    function GetForceEmbedInScrollView: Boolean; override;
     procedure CreateWidget(const AParams: TCreateParams); override;
     procedure DestroyWidget; override;
   public
@@ -1340,14 +1339,6 @@ begin
   Result := FScrollView;
 end;
 
-{------------------------------------------------------------------------------
-  Method:  TCarbonMemo.GetForceEmbedInScrollView
-  Returns: Whether use scroll view even if no scroll bars are needed
- ------------------------------------------------------------------------------}
-function TCarbonMemo.GetForceEmbedInScrollView: Boolean;
-begin
-  Result := True;
-end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonMemo.CreateWidget
