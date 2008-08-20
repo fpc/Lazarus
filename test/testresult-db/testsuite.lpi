@@ -25,6 +25,11 @@
         <FormatVersion Value="1"/>
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
+      <environment>
+        <UserOverrides Count="1">
+          <Variable0 Name="action" Value="2"/>
+        </UserOverrides>
+      </environment>
     </RunParams>
     <Units Count="2">
       <Unit0>
@@ -40,15 +45,13 @@
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="5"/>
+    <Version Value="8"/>
     <PathDelim Value="\"/>
     <Target>
       <Filename Value="testsuite.cgi"/>
     </Target>
-    <CodeGeneration>
-      <Generate Value="Faster"/>
-    </CodeGeneration>
     <Other>
+      <CustomOptions Value="-XLAfreetype-6=freetype6"/>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>

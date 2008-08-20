@@ -749,6 +749,7 @@ Var
   Qry : String;
   Q : TSQLQuery;
   FL : String;
+  DelayedResponse: TMemoryStream;
 
 begin
   ConnectToDB;
@@ -765,25 +766,6 @@ begin
     HeaderEnd(2);
     If ShowRunData then
       begin
-      HeaderStart(2);
-      Write('Detailed test run results:');
-
-      FL:='';
-      If FOnlyFailed or FNoSkipped then
-        begin
-        FL:='';
-        If FOnlyFailed then
-          FL:='successful';
-        if FNoSkipped then
-          begin
-          If (FL<>'') then
-            FL:=FL+' and ';
-          FL:=FL+'skipped';
-          end;
-        Write(' ('+FL+' tests are hidden)');
-        end;
-      HeaderEnd(2);
-      ParaGraphStart;
       S:='SELECT T_ID as Id,T_NAME as Filename,TR_SKIP as Skipped'
         +',TR_OK as OK,TR_RESULT as Result'
         +' FROM TESTRESULTS,TESTS'
@@ -800,6 +782,7 @@ begin
         Writeln('Query : '+Qry);
         Flush(stdout);
       end;
+      DelayedResponse := TMemoryStream.Create;
       FRunCount:=0;
       FRunSkipCount:=0;
       FRunFailedCount:=0;
@@ -824,7 +807,7 @@ begin
                 TableColumns.ColumnByNAme('Result').OnGetCellContents:=
                   @FormatTestResult;
                 //(TableColumns.Items[0] as TTableColumn).ActionURL:=ALink;
-                CreateTable(Response);
+                CreateTable(DelayedResponse);
               Finally
                 Free;
               end;
@@ -840,6 +823,28 @@ begin
         ParaGraphStart;
         TagStart('IMG',Format('Src="'+TestsuiteCGIURL+'?action=2&pietotal=%d&piefailed=%d&pieskipped=%d"',[FRunCount,FRunFailedCount,FRunSkipCount]));
         end;
+      HeaderStart(2);
+      Write('Detailed test run results:');
+
+      FL:='';
+      If FOnlyFailed or FNoSkipped then
+        begin
+        FL:='';
+        If FOnlyFailed then
+          FL:='successful';
+        if FNoSkipped then
+          begin
+          If (FL<>'') then
+            FL:=FL+' and ';
+          FL:=FL+'skipped';
+          end;
+        Write(' ('+FL+' tests are hidden)');
+        end;
+      HeaderEnd(2);
+      ParaGraphStart;
+      DelayedResponse.Position:=0;
+      Response.CopyFrom(DelayedResponse, DelayedResponse.Size);
+      DelayedResponse.Free;
       end
     else
       Write('No data for test run with ID: '+FRunID);
