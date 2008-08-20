@@ -237,18 +237,22 @@ LazarusResources.Add('TAddToPackageDlg','FORMDATA',[
   +'eight'#2')'#3'Top'#3#232#0#5'Width'#3#242#1#5'Align'#7#8'alBottom'#8'AutoSi'
   +'ze'#9#10'BevelOuter'#7#6'bvNone'#12'ClientHeight'#2')'#11'ClientWidth'#3#242
   +#1#8'TabOrder'#2#1#0#7'TButton'#17'FilesBrowseButton'#21'AnchorSideBottom.Si'
-  +'de'#7#9'asrBottom'#4'Left'#3#25#1#6'Height'#2#29#3'Top'#2#6#5'Width'#3#128#0
-  +#5'Align'#7#6'alLeft'#8'AutoSize'#9#20'BorderSpacing.Around'#2#6#7'Caption'#6
+  +'de'#7#9'asrBottom'#4'Left'#2#6#6'Height'#2#29#3'Top'#2#6#5'Width'#3#128#0#5
+  +'Align'#7#6'alLeft'#8'AutoSize'#9#20'BorderSpacing.Around'#2#6#7'Caption'#6
   +#17'FilesBrowseButton'#7'OnClick'#7#22'FilesBrowseButtonClick'#8'TabOrder'#2
   +#0#0#0#7'TButton'#14'FilesAddButton'#19'AnchorSideLeft.Side'#7#9'asrBottom'#4
-  +'Left'#3#159#1#6'Height'#2#29#3'Top'#2#6#5'Width'#2'k'#5'Align'#7#6'alLeft'#8
+  +'Left'#3#242#1#6'Height'#2#29#3'Top'#2#6#5'Width'#2'k'#5'Align'#7#6'alLeft'#8
   +'AutoSize'#9#20'BorderSpacing.Around'#2#6#7'Caption'#6#14'FilesAddButton'#7
   +'OnClick'#7#19'FilesAddButtonClick'#8'TabOrder'#2#1#0#0#7'TBitBtn'#18'FilesS'
-  +'hortenButton'#19'AnchorSideLeft.Side'#7#9'asrBottom'#4'Left'#3#139#0#6'Heig'
-  +'ht'#2#29#3'Top'#2#6#5'Width'#3#136#0#5'Align'#7#6'alLeft'#8'AutoSize'#9#20
-  +'BorderSpacing.Around'#2#6#7'Caption'#6#18'FilesShortenButton'#9'NumGlyphs'#2
+  +'hortenButton'#19'AnchorSideLeft.Side'#7#9'asrBottom'#4'Left'#3'{'#1#6'Heigh'
+  +'t'#2#29#3'Top'#2#6#5'Width'#3#136#0#5'Align'#7#6'alLeft'#8'AutoSize'#9#20'B'
+  +'orderSpacing.Around'#2#6#7'Caption'#6#18'FilesShortenButton'#9'NumGlyphs'#2
   +#0#8'TabOrder'#2#2#0#0#7'TBitBtn'#17'FilesDeleteButton'#19'AnchorSideLeft.Si'
-  +'de'#7#9'asrBottom'#4'Left'#2#6#6'Height'#2#29#3'Top'#2#6#5'Width'#2''#5'Al'
-  +'ign'#7#6'alLeft'#8'AutoSize'#9#20'BorderSpacing.Around'#2#6#7'Caption'#6#17
-  +'FilesDeleteButton'#9'NumGlyphs'#2#0#8'TabOrder'#2#3#0#0#0#0#0#0
+  +'de'#7#9'asrBottom'#4'Left'#3#246#0#6'Height'#2#29#3'Top'#2#6#5'Width'#2''#5
+  +'Align'#7#6'alLeft'#8'AutoSize'#9#20'BorderSpacing.Around'#2#6#7'Caption'#6
+  +#17'FilesDeleteButton'#9'NumGlyphs'#2#0#8'TabOrder'#2#3#0#0#7'TButton'#14'Fi'
+  +'lesDirButton'#4'Left'#3#140#0#6'Height'#2#29#3'Top'#2#6#5'Width'#2'd'#5'Ali'
+  +'gn'#7#6'alLeft'#8'AutoSize'#9#20'BorderSpacing.Around'#2#6#7'Caption'#6#14
+  +'FilesDirButton'#7'OnClick'#7#19'FilesDirButtonClick'#8'TabOrder'#2#4#0#0#0#0
+  +#0#0
 ]);

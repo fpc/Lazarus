@@ -699,7 +699,7 @@ object AddToPackageDlg: TAddToPackageDlg
         TabOrder = 1
         object FilesBrowseButton: TButton
           AnchorSideBottom.Side = asrBottom
-          Left = 281
+          Left = 6
           Height = 29
           Top = 6
           Width = 128
@@ -712,7 +712,7 @@ object AddToPackageDlg: TAddToPackageDlg
         end
         object FilesAddButton: TButton
           AnchorSideLeft.Side = asrBottom
-          Left = 415
+          Left = 498
           Height = 29
           Top = 6
           Width = 107
@@ -725,7 +725,7 @@ object AddToPackageDlg: TAddToPackageDlg
         end
         object FilesShortenButton: TBitBtn
           AnchorSideLeft.Side = asrBottom
-          Left = 139
+          Left = 379
           Height = 29
           Top = 6
           Width = 136
@@ -738,7 +738,7 @@ object AddToPackageDlg: TAddToPackageDlg
         end
         object FilesDeleteButton: TBitBtn
           AnchorSideLeft.Side = asrBottom
-          Left = 6
+          Left = 246
           Height = 29
           Top = 6
           Width = 127
@@ -748,6 +748,18 @@ object AddToPackageDlg: TAddToPackageDlg
           Caption = 'FilesDeleteButton'
           NumGlyphs = 0
           TabOrder = 3
+        end
+        object FilesDirButton: TButton
+          Left = 140
+          Height = 29
+          Top = 6
+          Width = 100
+          Align = alLeft
+          AutoSize = True
+          BorderSpacing.Around = 6
+          Caption = 'FilesDirButton'
+          OnClick = FilesDirButtonClick
+          TabOrder = 4
         end
       end
     end

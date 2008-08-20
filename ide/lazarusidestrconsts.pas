@@ -3817,6 +3817,10 @@ resourcestring
   lisFreePascal = 'Free Pascal';
   lisSmallerRatherThanFaster = 'smaller rather than faster';
   lisVerifyMethodCalls = 'Verify method calls';
+  lisToggleShowingFilenamesWithFullPathOrWithRelativePa = 'Toggle showing '
+    +'filenames with full path or with relative path';
+  lisDeleteSelectedFiles = 'Delete selected files';
+  lisAddDirectory = 'Add directory';
 
 implementation
 

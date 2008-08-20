@@ -141,11 +141,12 @@ type
     AddFileButton: TButton;
     CancelAddFileButton: TButton;
     // add files page
+    FilesAddButton: TButton;
+    FilesDirButton: TButton;
     FilesDeleteButton: TBitBtn;
     FilesShortenButton: TBitBtn;
     FilesListView: TListView;
     FilesBrowseButton: TButton;
-    FilesAddButton: TButton;
     NewFileBtnPanel: TPanel;
     AddFilesBtnPanel: TPanel;
     procedure AddFileBrowseButtonClick(Sender: TObject);
@@ -171,6 +172,7 @@ type
     procedure FilesAddButtonClick(Sender: TObject);
     procedure FilesBrowseButtonClick(Sender: TObject);
     procedure FilesDeleteButtonClick(Sender: TObject);
+    procedure FilesDirButtonClick(Sender: TObject);
     procedure FilesShortenButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -853,6 +855,11 @@ begin
       FilesListView.Items.Delete(i);
 end;
 
+procedure TAddToPackageDlg.FilesDirButtonClick(Sender: TObject);
+begin
+
+end;
+
 procedure TAddToPackageDlg.FilesShortenButtonClick(Sender: TObject);
 var
   SwitchToAbsolute: Boolean;
@@ -1359,16 +1366,22 @@ begin
     CurColumn.Caption:=dlgEnvType;
   end;
   
-  with FilesBrowseButton do begin
-    Caption:=lisPathEditBrowse;
-  end;
-  
+  FilesBrowseButton.Caption:=lisPathEditBrowse;
+  FilesDirButton.Caption:=lisAddDirectory;
+  {$IFNDEF EnableA2PDirectoryButton}
+  FilesDirButton.Visible:=false;
+  {$ENDIF}
+
   with FilesShortenButton do begin
     Caption:=lisA2PSwitchPaths;
+    ShowHint:=true;
+    Hint:=lisToggleShowingFilenamesWithFullPathOrWithRelativePa;
   end;
 
   with FilesDeleteButton do begin
     Caption:=dlgEdDelete;
+    ShowHint:=true;
+    Hint:=lisDeleteSelectedFiles;
   end;
   
   with FilesAddButton do begin
