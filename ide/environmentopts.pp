@@ -650,6 +650,8 @@ type
     function CheckLazarusDir: boolean;
     function IsFPCSourceDir: boolean;
     function CheckTestDir: boolean;
+    function LangIDToCaption(const LangID: string): string;
+    function CaptionToLangID(const ACaption: string): string;
   published
     property OnSaveEnvironmentSettings: TOnSaveEnvironmentSettings
       read FOnSaveEnvironmentSettings write FOnSaveEnvironmentSettings;
@@ -1734,24 +1736,24 @@ procedure TEnvironmentOptionsDialog.SetupDesktopPage(Page: integer);
 var
   i: Integer;
   LangID: String;
+  sl: TStringList;
 begin
   NoteBook.Page[Page].Caption := dlgDesktop;
   
   // language
   LanguageGroupBox.Caption:=dlgEnvLanguage;
 
-  with LanguageComboBox.Items do begin
-    BeginUpdate;
-    for i:=0 to LazarusTranslations.Count-1 do begin
-      LangID:=LazarusTranslations[i].ID;
-      if LangID='' then
-        //No [] if automatic
-        Add(GetLazarusLanguageLocalizedName(LangID))
-      else
-        Add(GetLazarusLanguageLocalizedName(LangID)+' ['+LangID+']');
-    end;
-    EndUpdate;
+  // languages: first the automatic, then sorted the rest
+  sl:=TStringList.Create;
+  for i:=0 to LazarusTranslations.Count-1 do begin
+    LangID:=LazarusTranslations[i].ID;
+    if LangID<>'' then
+      sl.Add(LangIDToCaption(LangID));
   end;
+  sl.Sort;
+  sl.Insert(0,GetLazarusLanguageLocalizedName(''));
+  LanguageComboBox.Items.Assign(sl);
+  sl.Free;
 
   // auto save
   AutoSaveGroupBox.Caption:=dlgAutoSave;
@@ -2323,8 +2325,8 @@ var i: integer;
 begin
   with AnEnvironmentOptions do begin
     // language
-    LanguageComboBox.ItemIndex:=LazarusTranslations.IndexOf(LanguageID);
-    //debugln('TEnvironmentOptionsDialog.ReadSettings LanguageComboBox.ItemIndex=',dbgs(LanguageComboBox.ItemIndex),' LanguageID="',LanguageID,'"');
+    LanguageComboBox.Text:=LangIDToCaption(LanguageID);
+    //debugln('TEnvironmentOptionsDialog.ReadSettings LanguageComboBox.ItemIndex=',dbgs(LanguageComboBox.ItemIndex),' LanguageID="',LanguageID,'" LanguageComboBox.Text="',LanguageComboBox.Text,'"');
 
     // auto save
     AutoSaveEditorFilesCheckBox.Checked:=AutoSaveEditorFiles;
@@ -2475,10 +2477,8 @@ procedure TEnvironmentOptionsDialog.WriteSettings(
 begin
   with AnEnvironmentOptions do begin
     // language
-    if (LanguageComboBox.ItemIndex>=0)
-    and (LanguageComboBox.ItemIndex<LazarusTranslations.Count) then
-      LanguageID:=LazarusTranslations[LanguageComboBox.ItemIndex].ID;
-    //debugln('TEnvironmentOptionsDialog.WriteSettings A LanguageID="',LanguageID,'" LanguageComboBox.ItemIndex=',dbgs(LanguageComboBox.ItemIndex),' ',dbgs(LanguageComboBox.HandleAllocated));
+    LanguageID:=CaptionToLangID(LanguageComboBox.Text);
+    //debugln('TEnvironmentOptionsDialog.WriteSettings A LanguageID="',LanguageID,'" LanguageComboBox.ItemIndex=',dbgs(LanguageComboBox.ItemIndex),' LanguageComboBox.Text=',LanguageComboBox.Text);
 
     // auto save
     AutoSaveEditorFiles:=AutoSaveEditorFilesCheckBox.Checked;
@@ -2710,6 +2710,28 @@ begin
   Result:=SimpleDirectoryCheck(FOldTestDir,NewTestDir,
                                lisEnvOptDlgTestDirNotFoundMsg,StopChecking);
   if (not Result) or StopChecking then exit;
+end;
+
+function TEnvironmentOptionsDialog.LangIDToCaption(const LangID: string
+  ): string;
+begin
+  if LangID<>'' then
+    Result:=GetLazarusLanguageLocalizedName(LangID)+' ['+LangID+']'
+  else
+    //No [] if automatic
+    Result:=GetLazarusLanguageLocalizedName(LangID);
+end;
+
+function TEnvironmentOptionsDialog.CaptionToLangID(const ACaption: string
+  ): string;
+var
+  i: Integer;
+begin
+  for i:=0 to LazarusTranslations.Count-1 do begin
+    Result:=LazarusTranslations[i].ID;
+    if ACaption=LangIDToCaption(Result) then exit;
+  end;
+  Result:='';
 end;
 
 function TEnvironmentOptionsDialog.CheckValues: boolean;
