@@ -3301,7 +3301,8 @@ end;
 
 function TDBGCallStack.InternalGetEntry(AIndex: Integer): TCallStackEntry;
 begin
-  if FEntries.GetData(AIndex, Result) then Exit(nil);
+  Result := nil;
+  if FEntries.GetData(AIndex, Result) then Exit;
 
   Result := CreateStackEntry(AIndex);
   if Result = nil then Exit;
