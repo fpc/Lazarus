@@ -46,68 +46,10 @@ type
   
 implementation
 
-const
-  // Maximal number of bytes read from stream
-  READ_BYTES = 2048;
-  // Maximal run time for a test program
-  TIME_OUT = 30;
-
 var
-  BufferedOutput: TMemoryStream; // a global variable is not nice, but it works.
+ // a global variable to pass information between tests is not nice, but it works
+  RunOutput: TStringList;
   
-procedure ReadOutput(AProcess:TProcess);
-var
-  BytesRead: Integer;
-  n: Integer;
-  EndTime: TDateTime;
-begin
-  BytesRead := 0;
-  BufferedOutput.Clear;
-  EndTime := Now + TIME_OUT / (24 * 60 * 60);
-  while AProcess.Running and (Now<EndTime) do
-  begin
-    // make sure we have room
-    BufferedOutput.SetSize(BytesRead + READ_BYTES);
-
-    // try reading it
-    {$IFNDEF VER2_0}
-    if AProcess.Output.NumBytesAvailable>0 then begin
-      n := AProcess.Output.Read((BufferedOutput.Memory + BytesRead)^, READ_BYTES);
-      Inc(BytesRead, n)
-    end
-    else
-      // no data, wait 100 ms
-      Sleep(100);
-    {$ELSE}
-    n := AProcess.Output.Read((BufferedOutput.Memory + BytesRead)^, READ_BYTES);
-    if n>0 then
-      Inc(BytesRead, n)
-    else
-      // no data, wait 100 ms
-      Sleep(100);
-    {$ENDIF}
-  end;
-  // read last part
-  repeat
-    // make sure we have room
-    BufferedOutput.SetSize(BytesRead + READ_BYTES);
-    // try reading it
-    {$IFNDEF VER2_0}
-    if AProcess.Output.NumBytesAvailable>0 then begin
-      n := AProcess.Output.Read((BufferedOutput.Memory + BytesRead)^, READ_BYTES);
-      Inc(BytesRead, n);
-    end
-    else
-      n := 0;
-    {$ELSE}
-    n := AProcess.Output.Read((BufferedOutput.Memory + BytesRead)^, READ_BYTES);
-    if n>0 then
-      Inc(BytesRead, n);
-    {$ENDIF}
-  until n <= 0;
-  BufferedOutput.SetSize(BytesRead);
-end;
-
 function FindProjectFile(APath: string):string;
 var
   SearchRec: TSearchRec;
@@ -159,6 +101,7 @@ procedure TBugTestCase.RunTestApp;
 var
   TestProcess : TProcess;
   ExeName: string;
+  OutputLines: TStringList;
 begin
   ExeName := ChangeFileExt(FProjectFile, GetExeExt);
   AssertTrue(ExeName + 'does not exist.', FileExists(ExeName));
@@ -168,7 +111,12 @@ begin
     TestProcess.Options := [poUsePipes];
     TestProcess.Execute;
     try
-      ReadOutput(TestProcess);
+      OutputLines := ReadOutput(TestProcess);
+      try
+        RunOutput.Assign(OutputLines);
+      finally
+        OutputLines.Free;
+      end;
       AssertFalse('TestProcess did not auto-terminate', TestProcess.Running);
     finally
       TestProcess.Terminate(0);
@@ -193,9 +141,8 @@ begin
   try
     ExpectedLines := TStringList.Create;
     ExpectedLines.LoadFromFile(ExpectedFileName);
-    BufferedOutput.Position := 0;
     ActualLines  := TStringList.Create;
-    ActualLines.LoadFromStream(BufferedOutput);
+    ActualLines.Assign(RunOutput);
     MinLineCount := min(ExpectedLines.Count, ActualLines.Count);
     for i := 0 to MinLineCount - 1 do begin
       AssertEquals('Output difference on line '+IntToStr(i+1),
@@ -253,9 +200,9 @@ end;
 
 initialization
   GatherTests;
-  BufferedOutput := TMemoryStream.Create;
+  RunOutput := TStringList.Create;
   
 finalization
-  FreeAndNil(BufferedOutput);
+  FreeAndNil(RunOutput);
 end.
 

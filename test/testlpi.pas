@@ -132,15 +132,17 @@ procedure TLpkTest.TestCompile;
 var
   LazBuildPath: string;
   LazBuild: TProcess;
+  OutputLines: TStrings;
 begin
   LazBuildPath := LazarusDir + 'lazbuild' + GetExeExt;
   AssertTrue(LazBuildPath + ' does not exist', FileExists(LazBuildPath));
   LazBuild := TProcess.Create(nil);
+  OutputLines := nil;
   try
     {$IFDEF windows}
-    LazBuild.Options := [poNewConsole];
+    LazBuild.Options := [poNewConsole, poUsePipes];
     {$ELSE}
-    LazBuild.Options := [poNoConsole];
+    LazBuild.Options := [poNoConsole, poUsePipes];
     {$ENDIF}
     LazBuild.ShowWindow := swoHIDE;
     LazBuild.CommandLine := LazBuildPath;
@@ -149,10 +151,14 @@ begin
     LazBuild.CommandLine := LazBuild.CommandLine + ' -B ' + FPath;
     LazBuild.CurrentDirectory := ExtractFileDir(FPath);
     LazBuild.Execute;
+    OutputLines := ReadOutput(LazBuild);
     LazBuild.WaitOnExit;
-    AssertEquals('Compilation failed: ExitCode', 0, LazBuild.ExitStatus);
+    if LazBuild.ExitStatus<>0 then
+      Fail(format('Compilation failed: ExitCode=%d%s%s',
+        [LazBuild.ExitStatus, LineEnding, OutputLines.Text]));
   finally
     LazBuild.Free;
+    OutputLines.Free;
   end;
 end;
 
