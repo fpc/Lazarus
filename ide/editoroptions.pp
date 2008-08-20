@@ -534,16 +534,11 @@ type
   { TEditorOptionsForm }
 
   TEditorOptionsForm = class(TForm)
-    KeyMappingFindKeyButton: TButton;
-    KeyMappingFilterEdit: TEdit;
-    ForeGroundLabel: TLabel;
-    BackGroundLabel: TLabel;
-    EditorOptionsGroupBox: TCheckGroup;
-
     MainNoteBook: TNoteBook;
     ImageList:    TImageList;
 
     // general options
+    EditorOptionsGroupBox: TCheckGroup;
     GeneralPage: TPage;
     DisplayPage: TPage;
     KeymappingPage: TPage;
@@ -603,6 +598,8 @@ type
     KeyMappingHelpLabel: TLabel;
     KeyMappingTreeView: TTreeView;
     KeyMappingConsistencyCheckButton: TButton;
+    KeyMappingFindKeyButton: TButton;
+    KeyMappingFilterEdit: TEdit;
 
     // Color options
     LanguageComboBox: TComboBox;
@@ -626,6 +623,8 @@ type
     SetAttributeToDefaultButton: TButton;
     SetAllAttributesToDefaultButton: TButton;
     ColorPreview: TPreviewEditor;
+    ForeGroundLabel: TLabel;
+    BackGroundLabel: TLabel;
 
     // Code Tools options
     AutomaticFeaturesGroupBox: TGroupBox;
@@ -662,9 +661,11 @@ type
     procedure FontDialogApplyClicked(Sender: TObject);
     procedure EditorFontComboBoxEditingDone(Sender: TObject);
     procedure EditorFontButtonClick(Sender: TObject);
+    procedure KeyMappingFilterEditExit(Sender: TObject);
     procedure RightMarginColorButtonColorChanged(Sender: TObject);
 
     // key mapping
+    procedure KeyMappingFilterEditEnter(Sender: TObject);
     procedure KeyMappingFilterEditChange(Sender: TObject);
     procedure KeyMappingChooseSchemeButtonClick(Sender: TObject);
     procedure KeyMappingTreeViewMouseUp(Sender: TObject;
@@ -2871,6 +2872,18 @@ begin
   finally
     FontDialog.Free;
   end;
+end;
+
+procedure TEditorOptionsForm.KeyMappingFilterEditExit(Sender: TObject);
+begin
+  if KeyMappingFilterEdit.Text='' then
+    KeyMappingFilterEdit.Text:=lisFilter2;
+end;
+
+procedure TEditorOptionsForm.KeyMappingFilterEditEnter(Sender: TObject);
+begin
+  if KeyMappingFilterEdit.Text=lisFilter2 then
+    KeyMappingFilterEdit.Text:='';
 end;
 
 procedure TEditorOptionsForm.KeyMappingFilterEditChange(Sender: TObject);

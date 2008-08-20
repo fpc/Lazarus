@@ -18,12 +18,12 @@ object EditorOptionsForm: TEditorOptionsForm
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Bottom = 6
-    PageIndex = 1
+    PageIndex = 2
     TabOrder = 0
     object GeneralPage: TPage
       Caption = 'GeneralPage'
       ClientWidth = 552
-      ClientHeight = 509
+      ClientHeight = 503
       object BlockIndentLabel: TLabel
         AnchorSideLeft.Control = BlockIndentComboBox
         AnchorSideLeft.Side = asrBottom
@@ -31,7 +31,7 @@ object EditorOptionsForm: TEditorOptionsForm
         AnchorSideBottom.Side = asrCenter
         Left = 112
         Height = 14
-        Top = 431
+        Top = 425
         Width = 82
         Anchors = [akLeft, akBottom]
         BorderSpacing.Around = 6
@@ -45,7 +45,7 @@ object EditorOptionsForm: TEditorOptionsForm
         AnchorSideBottom.Side = asrCenter
         Left = 112
         Height = 14
-        Top = 458
+        Top = 452
         Width = 72
         Anchors = [akLeft, akBottom]
         BorderSpacing.Around = 6
@@ -59,7 +59,7 @@ object EditorOptionsForm: TEditorOptionsForm
         AnchorSideBottom.Side = asrCenter
         Left = 112
         Height = 14
-        Top = 485
+        Top = 479
         Width = 77
         Anchors = [akLeft, akBottom]
         BorderSpacing.Around = 6
@@ -70,7 +70,7 @@ object EditorOptionsForm: TEditorOptionsForm
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = BlockIndentLabel
         Left = 6
-        Height = 413
+        Height = 407
         Top = 6
         Width = 540
         Align = alTop
@@ -96,7 +96,7 @@ object EditorOptionsForm: TEditorOptionsForm
         AnchorSideBottom.Control = UndoLimitComboBox
         Left = 6
         Height = 21
-        Top = 428
+        Top = 422
         Width = 100
         Anchors = [akLeft, akBottom]
         AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
@@ -117,7 +117,7 @@ object EditorOptionsForm: TEditorOptionsForm
         AnchorSideBottom.Control = TabWidthsComboBox
         Left = 6
         Height = 21
-        Top = 455
+        Top = 449
         Width = 100
         Anchors = [akLeft, akBottom]
         AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
@@ -138,7 +138,7 @@ object EditorOptionsForm: TEditorOptionsForm
         AnchorSideBottom.Side = asrBottom
         Left = 6
         Height = 21
-        Top = 482
+        Top = 476
         Width = 100
         Anchors = [akLeft, akBottom]
         AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
@@ -780,13 +780,13 @@ object EditorOptionsForm: TEditorOptionsForm
     object KeymappingPage: TPage
       Caption = 'KeymappingPage'
       ClientWidth = 552
-      ClientHeight = 509
+      ClientHeight = 503
       object KeyMappingHelpLabel: TLabel
         AnchorSideTop.Control = KeymappingPage
         Left = 8
-        Height = 14
+        Height = 20
         Top = 6
-        Width = 105
+        Width = 140
         BorderSpacing.Left = 6
         BorderSpacing.Top = 6
         BorderSpacing.Right = 6
@@ -799,9 +799,9 @@ object EditorOptionsForm: TEditorOptionsForm
         AnchorSideBottom.Control = KeymappingPage
         AnchorSideBottom.Side = asrBottom
         Left = 6
-        Height = 23
-        Top = 480
-        Width = 189
+        Height = 29
+        Top = 468
+        Width = 232
         Anchors = [akLeft, akBottom]
         AutoSize = True
         BorderSpacing.Around = 6
@@ -815,10 +815,10 @@ object EditorOptionsForm: TEditorOptionsForm
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = KeymappingPage
         AnchorSideBottom.Side = asrBottom
-        Left = 343
-        Height = 23
-        Top = 480
-        Width = 203
+        Left = 299
+        Height = 29
+        Top = 468
+        Width = 247
         Anchors = [akRight, akBottom]
         AutoSize = True
         BorderSpacing.Around = 6
@@ -834,12 +834,12 @@ object EditorOptionsForm: TEditorOptionsForm
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = KeyMappingFindKeyButton
         Left = 6
-        Height = 397
-        Top = 48
+        Height = 362
+        Top = 65
         Width = 540
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Around = 6
-        DefaultItemHeight = 23
+        DefaultItemHeight = 21
         Images = ImageList
         ReadOnly = True
         RowSelect = True
@@ -854,13 +854,15 @@ object EditorOptionsForm: TEditorOptionsForm
         AnchorSideRight.Control = KeymappingPage
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 16
-        Top = 26
+        Height = 27
+        Top = 32
         Width = 540
         Anchors = [akTop, akLeft, akRight]
         AutoSize = True
         BorderSpacing.Around = 6
         OnChange = KeyMappingFilterEditChange
+        OnEnter = KeyMappingFilterEditEnter
+        OnExit = KeyMappingFilterEditExit
         TabOrder = 3
         Text = 'KeyMappingFilterEdit'
       end
@@ -869,9 +871,9 @@ object EditorOptionsForm: TEditorOptionsForm
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = KeyMappingChooseSchemeButton
         Left = 6
-        Height = 23
-        Top = 451
-        Width = 154
+        Height = 29
+        Top = 433
+        Width = 178
         Anchors = [akLeft, akBottom]
         AutoSize = True
         BorderSpacing.Around = 6
@@ -883,7 +885,7 @@ object EditorOptionsForm: TEditorOptionsForm
     object ColorPage: TPage
       Caption = 'ColorPage'
       ClientWidth = 552
-      ClientHeight = 509
+      ClientHeight = 503
       object LanguageLabel: TLabel
         Left = 214
         Height = 14
@@ -961,7 +963,7 @@ object EditorOptionsForm: TEditorOptionsForm
       end
       object ColorPreview: TSynEdit
         Left = 4
-        Height = 127
+        Height = 121
         Top = 378
         Width = 544
         Align = alBottom
@@ -1350,7 +1352,7 @@ object EditorOptionsForm: TEditorOptionsForm
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Around = 6
         Caption = 'Attributes'
-        ClientHeight = 214
+        ClientHeight = 199
         ClientWidth = 330
         TabOrder = 7
         object ForeGroundLabel: TLabel
@@ -1426,7 +1428,7 @@ object EditorOptionsForm: TEditorOptionsForm
         object TextUnderlinePanel: TPanel
           Left = 6
           Height = 19
-          Top = 139
+          Top = 124
           Width = 318
           Align = alBottom
           AutoSize = True
@@ -1492,7 +1494,7 @@ object EditorOptionsForm: TEditorOptionsForm
         object TextBoldPanel: TPanel
           Left = 6
           Height = 19
-          Top = 164
+          Top = 149
           Width = 318
           Align = alBottom
           AutoSize = True
@@ -1558,7 +1560,7 @@ object EditorOptionsForm: TEditorOptionsForm
         object TextItalicPanel: TPanel
           Left = 6
           Height = 19
-          Top = 189
+          Top = 174
           Width = 318
           Align = alBottom
           AutoSize = True
@@ -1626,16 +1628,16 @@ object EditorOptionsForm: TEditorOptionsForm
     object CodetoolsPage: TPage
       Caption = 'CodetoolsPage'
       ClientWidth = 552
-      ClientHeight = 509
+      ClientHeight = 503
       object AutomaticFeaturesGroupBox: TGroupBox
         Left = 6
-        Height = 497
+        Height = 491
         Top = 6
         Width = 540
         Align = alClient
         BorderSpacing.Around = 6
         Caption = 'AutomaticFeaturesGroupBox'
-        ClientHeight = 493
+        ClientHeight = 472
         ClientWidth = 536
         TabOrder = 0
         object AutoDelayLabel: TLabel
@@ -1735,7 +1737,7 @@ object EditorOptionsForm: TEditorOptionsForm
     object CodeFolding: TPage
       Caption = 'CodeFolding'
       ClientWidth = 552
-      ClientHeight = 509
+      ClientHeight = 503
       object lblDividerDrawLevel: TLabel
         Left = 6
         Height = 14
