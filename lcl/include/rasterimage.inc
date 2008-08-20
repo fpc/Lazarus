@@ -60,9 +60,9 @@ begin
       else UpdateHandles(0, 0);
     end;
 
-    FTransparent := SrcImage.Transparent;
-    FTransparentMode := SrcImage.TransparentMode;
-    FTransparentColor := SrcImage.TransparentColor;
+    FTransparent := SrcImage.FTransparent;
+    FTransparentMode := SrcImage.FTransparentMode;
+    FTransparentColor := SrcImage.FTransparentColor;
 
     // -> check if already shared
     if SrcImage.FSharedImage <> FSharedImage
@@ -388,9 +388,12 @@ end;
 
 procedure TRasterImage.SetTransparentColor(AValue: TColor);
 begin
-  if TransparentColor = AValue then exit;
+  if FTransparentColor = AValue then exit;
   FTransparentColor := AValue;
-  if TransparentMode <> tmFixed then Exit;
+
+  if AValue = clDefault
+  then FTransparentMode := tmAuto
+  else FTransparentMode := tmFixed;
 
   CreateMask;
 end;
@@ -471,6 +474,13 @@ begin
   if p = nil
   then Result.Init
   else Result := p^;
+end;
+
+function TRasterImage.GetTransparentColor: TColor;
+begin
+  if FTransparentColor = clDefault
+  then Result := RequestTransparentColor
+  else Result := FTransparentColor;
 end;
 
 procedure TRasterImage.GetSupportedSourceMimeTypes(List: TStrings);
@@ -673,8 +683,8 @@ begin
   if (Width = 0)
   or (Height = 0)
   or (AColor = clNone)
-  or (  (TransparentMode = tmFixed)
-    and (TransparentColor = clNone)
+  or (  (FTransparentMode = tmFixed)
+    and (FTransparentColor = clNone)
     and (AColor = clDefault)
   )
   then begin
@@ -702,8 +712,8 @@ begin
 
     if AColor = clDefault
     then begin
-      if (TransparentMode = tmFixed) and (TransparentColor <> clDefault)
-      then TransColor := ColorToRGB(TransparentColor)
+      if (FTransparentMode = tmFixed) and (FTransparentColor <> clDefault)
+      then TransColor := ColorToRGB(FTransparentColor)
       else TransColor := FPColorToTColor(IntfImage.Colors[0, stopy]);
     end
     else TransColor := ColorToRGB(AColor);
@@ -834,6 +844,26 @@ begin
   SaveToStream(Stream);
 end;
 
+function TRasterImage.RequestTransparentColor: TColor;
+var
+  RawImagePtr: PRawImage;
+  IntfImage: TLazIntfImage;
+begin
+  // if RawImage exits then use it to get pixel overwise get it from the canvas
+  RawImagePtr := GetRawImagePtr;
+  if RawImagePtr <> nil then
+  begin
+    IntfImage := TLazIntfImage.Create(RawImagePtr^, False);
+    try
+      Result := FPColorToTColor(IntfImage.Colors[0, Height - 1]);
+    finally
+      IntfImage.Free;
+    end;
+  end
+  else
+    Result := Canvas.GetPixel(0, Height - 1);
+end;
+
 procedure TRasterImage.SetWidth(AWidth: Integer);
 begin
   SetSize(AWidth, Height);
@@ -848,7 +878,10 @@ procedure TRasterImage.SetTransparentMode(AValue: TTransparentMode);
 begin
   if AValue = TransparentMode then exit;
   FTransparentMode := AValue;
-  CreateMask;
+
+  if AValue = tmAuto
+  then TransparentColor := clDefault
+  else TransparentColor := RequestTransparentColor;
 end;
 
 // included by graphics.pp

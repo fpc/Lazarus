@@ -1124,6 +1124,7 @@ type
     procedure FreeCanvasContext;
     function  GetCanvas: TCanvas;
     function  GetRawImage: TRawImage;
+    function GetTransparentColor: TColor;
     procedure SetTransparentColor(AValue: TColor);
   protected
     FSharedImage: TSharedRasterImage;
@@ -1166,6 +1167,7 @@ type
     procedure SetPixelFormat(AValue: TPixelFormat); virtual; abstract;
     procedure WriteData(Stream: TStream); override;
     procedure WriteStream(AStream: TMemoryStream); virtual; abstract;
+    function RequestTransparentColor: TColor;
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -1201,7 +1203,7 @@ type
     property PixelFormat: TPixelFormat read GetPixelFormat write SetPixelFormat default pfDevice;
     property RawImage: TRawImage read GetRawImage; // be carefull with this, modify only within a begin/endupdate
     // property ScanLine[Row: Integer]: Pointer; -> Use TLazIntfImage for such things
-    property TransparentColor: TColor read FTransparentColor
+    property TransparentColor: TColor read GetTransparentColor
                                       write SetTransparentColor default clDefault;
     property TransparentMode: TTransparentMode read FTransparentMode
                                         write SetTransparentMode default tmAuto;
