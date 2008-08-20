@@ -15,14 +15,19 @@ var
 { TPageSetupDialog }
 
 function TPageSetupDialog.Execute: Boolean;
+var
+  PgDlg: QPageSetupDialogH;
 begin
   Result := False;
-  // TODO: set and get paper margins, title - wait for bindings update (Den)
   if not Assigned(Printer) then Exit;
   if Printer.Printers.Count <= 0 then Exit;
-  raise Printers.EPrinter.Create('Qt: TPageSetupDialog() under construction !');
+  PgDlg := QPageSetupDialog_create(QtDefaultPrinter.Handle, nil);
+  try
+    Result := QPageSetupDialog_exec(PgDlg) = Ord(QDialogAccepted);
+  finally
+    QPageSetupDialog_destroy(PgDlg);
+  end;
 end;
-
 
 { TPrinterSetupDialog }
 
