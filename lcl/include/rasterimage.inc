@@ -433,8 +433,7 @@ begin
   UnshareImage(False);
   if ASize = 0
   then begin
-    FreeSaveStream;
-    SetSize(0, 0);
+    Clear;
     Exit;
   end;
 
