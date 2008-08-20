@@ -741,24 +741,49 @@ procedure GTKAPIWidgetClient_DrawCaret(Client: PGTKAPIWidgetClient; CalledByTime
      Blinking makes it more complicated, because a Hide triggers an OnPaint,
      which triggers in synedit code HideCaret+ShowCaret.
 }
-{$IFDEF GTK1}
-const
-  GC_STATE: array[Boolean] of TGtkStateType =
- (
-   GTK_STATE_INSENSITIVE,
-   GTK_STATE_NORMAL
- );
-{$ENDIF}
 var
   Widget: PGTKWidget;
   WidgetStyle: PGTKStyle;
   HasFocus: boolean;
   WidgetIsPainting: Boolean;
-{$IFDEF GTK1}
-  ForeGroundGC: PGdkGC;
-{$ELSE}
+{$IFNDEF GTK1}
   location: TGdkRectangle;
 {$ENDIF}
+
+  procedure DrawCursor(Pixmap: PGdkPixmap; X, Y, Width, Height: Integer);
+  const
+    GC_STATE: array[Boolean] of TGtkStateType =
+   (
+     GTK_STATE_INSENSITIVE,
+     GTK_STATE_NORMAL
+   );
+  var
+    ForeGroundGC: PGdkGC;
+  begin
+    // set draw function to xor
+    ForeGroundGC := WidgetStyle^.fg_gc[GC_STATE[PtrUInt(Pixmap) <> 1]];
+    //gdk_gc_get_values(ForeGroundGC,@ForeGroundGCValues);
+    //OldGdkFunction:=ForeGroundGCValues.thefunction;
+    {$IFDEF VerboseCaret}
+    DebugLn(['GTKAPIWidgetClient_DrawCaret Real Draw ',X,',',Y]);
+    {$ENDIF}
+    gdk_gc_set_function(ForeGroundGC,GDK_invert);
+    try
+      // draw the caret
+      //DebugLn('DRAWING');
+      gdk_draw_rectangle(
+        Widget^.Window,
+        ForeGroundGC,
+        1,
+        X, Y-1,  // Y-1 for Delphi compatibility
+        Width, Height
+      );
+    finally
+      // restore draw function
+      gdk_gc_set_function(ForeGroundGC, GDK_COPY);
+    end;
+  end;
+
 begin
   if Client = nil then
   begin
@@ -869,37 +894,19 @@ begin
         and (Width>0)
         and (Height>0)
         then begin
-          {$ifdef GTK1}
-          // set draw function to xor
-          ForeGroundGC:=WidgetStyle^.fg_gc[GC_STATE[PtrUInt(Pixmap) <> 1]];
-          //gdk_gc_get_values(ForeGroundGC,@ForeGroundGCValues);
-          //OldGdkFunction:=ForeGroundGCValues.thefunction;
-          {$IFDEF VerboseCaret}
-          DebugLn(['GTKAPIWidgetClient_DrawCaret Real Draw ',X,',',Y]);
-          {$ENDIF}
-          gdk_gc_set_function(ForeGroundGC,GDK_invert);
-          try
-            // draw the caret
-            //DebugLn('DRAWING');
-            gdk_draw_rectangle(
-              Widget^.Window,
-              ForeGroundGC,
-              1,
-              X, Y-1,  // Y-1 for Delphi compatibility
-              Width, Height
-            );
-          finally
-            // restore draw function
-            gdk_gc_set_function(ForeGroundGC,GDK_COPY);
-          end;
-          {$ELSE}
-          location.x := X;
-          location.y := Y - 1;
-          location.width := 0;
-          location.height := Height;
-          gtk_draw_insertion_cursor(Widget, Widget^.Window, nil, @location, true,
-             GTK_TEXT_DIR_LTR, false);
-          {$ENDIF}
+          {$ifndef GTK1}
+          if Width <= 3 then
+          begin
+            location.x := X;
+            location.y := Y - 1;
+            location.width := 0;
+            location.height := Height;
+            gtk_draw_insertion_cursor(Widget, Widget^.Window, nil, @location, PtrUInt(Pixmap) <> 1,
+               GTK_TEXT_DIR_LTR, false);
+          end
+          else
+          {$endif}
+          DrawCursor(Pixmap, X, Y, Width, Height);
         end else
           DebugLn('***: Draw Caret failed: Client=',DbgS(Client),
             ' X='+dbgs(X)+' Y='+dbgs(Y)+' W='+dbgs(Width)+' H='+dbgs(Height),
