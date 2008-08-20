@@ -12,7 +12,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -39,11 +39,7 @@ uses
   // rtl+ftl
   Types, Classes, SysUtils, Math, FPCAdds,
   // carbon bindings
-{$ifdef ver2_2_0}
-  FPCMacOSAll,
-{$else}
   MacOSAll,
-{$endif}
   // Cocoa bindings
   {$ifdef CarbonUseCocoa}
     foundation, appkit,
@@ -53,7 +49,7 @@ uses
   // widgetset
   CarbonGDIObjects,
   {$ifdef DebugBitmaps}
-   CarbonDebug,
+    CarbonDebug,
   {$endif}
   glgrab,
   // LCL

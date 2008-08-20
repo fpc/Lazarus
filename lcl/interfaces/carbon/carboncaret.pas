@@ -33,11 +33,7 @@ interface
 
 uses
   // Bindings
-{$ifdef ver2_2_0}
-  FPCMacOSAll,
-{$else}
   MacOSAll,
-{$endif}
   // Free Pascal
   Classes, SysUtils, Types,
   // Widgetset

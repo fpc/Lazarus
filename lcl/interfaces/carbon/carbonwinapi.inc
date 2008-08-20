@@ -1160,7 +1160,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.GetCursorPos(var lpPoint: TPoint): Boolean;
 var
-  Pt: {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.Point;
+  Pt: MacOSAll.Point;
 begin
   Result := False;
   
@@ -1606,7 +1606,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.GetSysColor(NIndex: Integer): DWORD;
 var
-  C: {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.RGBColor;
+  C: MacOSAll.RGBColor;
   Depth: SInt16;
   R: OSStatus;
 begin
@@ -3216,8 +3216,8 @@ var
   Window: WindowRef;
   Control: ControlRef;
   WindowPart: WindowPartCode;
-  P: {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.Point;
-  R: {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.Rect;
+  P: MacOSAll.Point;
+  R: MacOSAll.Rect;
 begin
   Result := 0;
 

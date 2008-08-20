@@ -29,11 +29,7 @@ uses
  // rtl+ftl
   Types, Classes, SysUtils, Math, Contnrs,
  // carbon bindings
-{$ifdef ver2_2_0}
-  FPCMacOSAll,
-{$else}
   MacOSAll,
-{$endif}
  // LCL
   LMessages, LCLMessageGlue, LCLProc, LCLType, Graphics, Controls, StdCtrls, ExtCtrls,
   Spin,
@@ -611,7 +607,7 @@ begin
     if OSError(
       CreatePopupButtonControl(GetTopParentWindow,
         ParamsToCarbonRect(AParams), nil, -12345, False, 0, popupTitleLeftJust,
-        {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.Normal, Widget),
+        Normal, Widget),
       Self, SCreateWidget, 'CreatePopupButtonControl')then RaiseCreateWidgetError(LCLObject);
       
     OSError(CreateNewMenu(0, kMenuAttrAutoDisable, FPopupMenu),
@@ -1362,7 +1358,7 @@ end;
 procedure TCarbonMemo.CreateWidget(const AParams: TCreateParams);
 var
   Control: ControlRef;
-  Options: {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.OptionBits;
+  Options: OptionBits;
   R: HIRect;
 begin
   Options := kTXNMonostyledTextMask or kOutputTextInUnicodeEncodingMask;

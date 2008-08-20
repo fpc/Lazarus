@@ -31,11 +31,7 @@ unit CarbonDebug;
 interface 
 
 uses
-{$ifdef ver2_2_0}
-  FPCMacOSAll,
-{$else}
   MacOSAll,
-{$endif}
   sysutils, CarbonUtils;
 
 procedure DbgDumpImage(AImage: CGImageRef; ATitle: String = ''; AWidth: Integer = -1; AHeight: Integer = -1);

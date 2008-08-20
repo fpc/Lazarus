@@ -35,11 +35,7 @@ interface
 
 uses
   // libs
-{$ifdef ver2_2_0}
-  FPCMacOSAll,
-{$else}
   MacOSAll,
-{$endif}
   // wdgetset
   WSLCLClasses, LCLClasses,
   // LCL + RTL
@@ -154,7 +150,7 @@ type
   TEventInt = packed record
     case Integer of
     1: (Chars: array[0..4] of Char);
-    2: (Int: {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.UInt32);
+    2: (Int: UInt32);
   end;
   
 const

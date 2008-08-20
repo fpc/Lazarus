@@ -32,11 +32,7 @@ uses
  // rtl+ftl
   Types, Classes, SysUtils, Math, Contnrs,
  // carbon bindings
-{$ifdef ver2_2_0}
-  FPCMacOSAll,
-{$else}
   MacOSAll,
-{$endif}
  // widgetset
   WSControls, WSLCLClasses, WSProc,
  // LCL Carbon

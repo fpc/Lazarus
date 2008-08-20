@@ -26,11 +26,7 @@ interface
 #import <OpenGL/OpenGL.h>
 #import <OpenGL/gl.h>}
 uses
-{$ifdef ver2_2_0}
-  FPCMacOSAll,
-{$else}
   MacOSAll,
-{$endif}
   GL, OpenGL;
   
 function grabViaOpenGL(display: CGDirectDisplayID; srcRect: CGRect): CGImageRef;

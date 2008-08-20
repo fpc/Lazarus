@@ -29,11 +29,7 @@ uses
  // rtl+ftl
   Types, Classes, SysUtils, Math, Contnrs,
  // carbon bindings
-{$ifdef ver2_2_0}
-  FPCMacOSAll,
-{$else}
   MacOSAll,
-{$endif}
   CarbonUtils,
  // widgetset
   WSControls, WSLCLClasses, WSProc,
@@ -572,7 +568,7 @@ end;
 procedure TCarbonMenu.SetBitmap(const ABitmap: TBitmap);
 var
   IconType: Byte;
-  AHandle: {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.Handle;
+  AHandle: MacOSAll.Handle;
   CGImage: CGImageRef;
 const
   SName = 'SetBitmap';
@@ -714,9 +710,9 @@ begin
   if FParentMenu = nil then Exit;
   
   if LCLMenuItem.Default then
-    Style := {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.bold
+    Style := MacOSAll.bold
   else
-    Style := {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.normal;
+    Style := MacOSAll.normal;
 
   SetItemStyle(FParentMenu.Menu, GetIndex + 1, Style);
 end;

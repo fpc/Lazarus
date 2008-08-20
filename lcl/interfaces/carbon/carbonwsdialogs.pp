@@ -31,14 +31,7 @@ interface
 
 uses
   // libs
-  {$ifdef ver2_2_0}
-  FPCMacOSAll,
-  {$else}
   MacOSAll,
-  {$endif}
-  {$IFDEF VER2_0}
-  FontPanel, // will be removed
-  {$ENDIF}
   // LCL
   Classes, SysUtils, Controls, Dialogs, LCLType, LCLProc, Masks, Graphics,
   // widgetset
@@ -516,11 +509,11 @@ begin
   begin
     //DebugLn('Style: ' + DbgS(Style));
     FontDialog.Font.Style := [];
-    if (Style and {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.bold) > 0 then
+    if (Style and MacOSAll.bold) > 0 then
       FontDialog.Font.Style := FontDialog.Font.Style + [fsBold];
-    if (Style and {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.italic) > 0 then
+    if (Style and MacOSAll.italic) > 0 then
       FontDialog.Font.Style := FontDialog.Font.Style + [fsItalic];
-    if (Style and {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.underline) > 0 then
+    if (Style and MacOSAll.underline) > 0 then
       FontDialog.Font.Style := FontDialog.Font.Style + [fsUnderline];
   end;
   
@@ -629,7 +622,7 @@ begin
     CarbonWidgetSet.SetMainMenuEnabled(False);
 
     FontDialog := AFontDialog;
-    {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.ShowWindow(Dialog);
+    MacOSAll.ShowWindow(Dialog);
 
     // show font panel
     if not FPIsFontPanelVisible then

@@ -31,11 +31,7 @@ interface
 
 uses
   // libs
-{$ifdef ver2_2_0}
-  FPCMacOSAll,
-{$else}
   MacOSAll,
-{$endif}
   // LCL
   Classes, Controls, ComCtrls, StdCtrls, LCLType, LCLProc, Graphics, Math, ImgList,
   // widgetset

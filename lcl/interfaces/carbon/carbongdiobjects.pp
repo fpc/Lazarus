@@ -29,11 +29,7 @@ uses
  // rtl+ftl
   Types, Classes, SysUtils, Math,
  // carbon bindings
-{$ifdef ver2_2_0}
-  FPCMacOSAll,
-{$else}
   MacOSAll,
-{$endif}
  // LCL
   LCLProc, LCLType, GraphType, Graphics, Controls, Forms,
  // LCL Carbon
@@ -173,7 +169,7 @@ type
 
   TCarbonBrush = class(TCarbonColorObject)
   private
-    FCGPattern: CGPatternRef; // TODO
+    //FCGPattern: CGPatternRef; // TODO
   public
     constructor Create(AGlobal: Boolean); // create default brush
     constructor Create(ALogBrush: TLogBrush);

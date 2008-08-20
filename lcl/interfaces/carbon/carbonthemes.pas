@@ -15,11 +15,7 @@ uses
   // rtl
   Types, Classes, SysUtils,
   // carbon bindings
-{$ifdef ver2_2_0}
-  FPCMacOSAll,
-{$else}
   MacOSAll,
-{$endif}
   // lcl
   LCLType, LCLProc, LCLIntf, Graphics, Themes, TmSchema,
   // widgetset
@@ -69,8 +65,8 @@ function TCarbonThemeServices.GetDrawState(Details: TThemedElementDetails): Them
 	kThemeStateUnavailable = 7;
 	kThemeStateUnavailableInactive = 8;
 
-	kThemeStatePressedUp = 2;    { draw with up pressed     (increment/decrement buttons) }
-	kThemeStatePressedDown = 3;     { draw with down pressed (increment/decrement buttons) }
+	kThemeStatePressedUp = 2;     draw with up pressed     (increment/decrement buttons)
+	kThemeStatePressedDown = 3;      draw with down pressed (increment/decrement buttons)
 
 }
 begin

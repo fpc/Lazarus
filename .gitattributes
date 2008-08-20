@@ -3097,7 +3097,6 @@ lcl/include/wincontrol.inc svneol=native#text/pascal
 lcl/inipropstorage.pas svneol=native#text/pascal
 lcl/interfacebase.pp svneol=native#text/pascal
 lcl/interfaces/LAYOUT.txt svneol=native#text/plain
-lcl/interfaces/carbon/FontPanel.pas svneol=native#text/pascal
 lcl/interfaces/carbon/README.txt svneol=native#text/plain
 lcl/interfaces/carbon/carbonbars.pp svneol=native#text/pascal
 lcl/interfaces/carbon/carbonbuttons.pp svneol=native#text/pascal

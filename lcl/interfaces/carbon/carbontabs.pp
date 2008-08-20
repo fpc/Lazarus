@@ -29,11 +29,7 @@ uses
  // rtl+ftl
   Types, Classes, SysUtils, Math, Contnrs,
  // carbon bindings
-{$ifdef ver2_2_0}
-  FPCMacOSAll,
-{$else}
   MacOSAll,
-{$endif}
  // widgetset
   WSControls, WSLCLClasses, WSProc,
  // LCL Carbon
@@ -741,14 +737,14 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonTabsControl.GetClientRect(var ARect: TRect): Boolean;
 var
-  AClientRect: {$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.Rect;
+  AClientRect: MacOSAll.Rect;
 begin
   Result := False;
   
   //DebugLn('TCarbonTabsControl.GetClientRect');
 
   if OSError(GetControlData(ControlRef(Widget), kControlEntireControl,
-      kControlTabContentRectTag, SizeOf({$ifdef ver2_2_0}FPCMacOSAll{$else}MacOSAll{$endif}.Rect), @AClientRect, nil),
+      kControlTabContentRectTag, SizeOf(MacOSAll.Rect), @AClientRect, nil),
     Self, 'GetClientRect', 'GetControlData') then Exit;
 
   ARect := CarbonRectToRect(AClientRect);

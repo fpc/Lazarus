@@ -7,8 +7,8 @@
 		</issue>
 		<issue name="TWidgetSet">
 			<short>Keyboard</short>
-			<descr>* Apple Command key is mapped to ssCtrl per [http://developer.apple.com/documentation/UserExperience/Conceptual/OSXHIGuidelines/index.html Apple Guidelines]
-* Apple Control key is mapped to ssMeta
+			<descr>* Apple Command key is mapped to ssMeta
+* Apple Control key is mapped to ssCtrl
 * Apple Option key is mapped to its inscription, i.e. ssAlt
 * Virtual key codes mapping is not reliable (depends on keyboard language layout!)</descr>
 		</issue>
@@ -73,12 +73,6 @@ After obtaining a CGImageRef, the next step to implement the RawImage_fromDevice
 		<issue name="TComboBox.Height">
 			<short>Combo box height is constrined</short>
 			<descr>It's impossible to set an arbitrary height to a TComboBox under Carbon. Use AutoSize to make sure the size is good on all platforms.</descr>
-		</issue>
-		<issue name="TComboBox.OnDropDown">
-			<short>Combo box OnDropDown event is called when set focus</short>
-		</issue>
-		<issue name="TComboBox.OnCloseUp">
-			<short>Combo box OnCloseUp event is called when released focus</short>
 		</issue>
 		<issue name="TComboBox.DroppedDown">
 			<short>Combo box DroppedDown property does not show drop down list when style is csDropDownList</short>
