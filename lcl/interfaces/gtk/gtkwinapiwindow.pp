@@ -37,16 +37,14 @@ interface
 uses
   SysUtils, LCLProc,
   {$IFDEF gtk2}
-  glib2, gdk2pixbuf, gdk2, gtk2,
+  GtkExtra, glib2, gdk2pixbuf, gdk2, gtk2,
   {$ELSE}
   glib, gdk, gtk, gdkpixbuf,
   {$ENDIF}
   Controls, GTKProc, GtkDef;
 
 { $Define VerboseCaret}
-{$IF not (defined(GTK1) or defined(VER2_2))}
-{$DEFINE Has_gtk_draw_insertion_cursor}
-{$ENDIF}
+{$IFNDEF GTK1}{$DEFINE Has_gtk_draw_insertion_cursor}{$ENDIF}
 
 type
   PGTKAPIWidget = ^TGTKAPIWidget;
