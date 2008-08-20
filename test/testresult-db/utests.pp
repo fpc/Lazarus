@@ -1325,7 +1325,7 @@ Var
 
 begin
   ftFont.InitEngine;
-  FontMgr.SearchPath:='/usr/lib/X11/fonts/truetype';
+  FontMgr.SearchPath:='/usr/share/fonts/liberation';
   I:=TFPMemoryImage.Create(320,320);
   try
     If FRunCount=0 Then
@@ -1391,7 +1391,7 @@ begin
   F:=TFreeTypeFont.Create;
   With F do
     begin
-    Name:='arial';
+    Name:='LiberationSans-Regular';
     FontIndex:=0;
     Size:=12;
     FPColor:=colred;
