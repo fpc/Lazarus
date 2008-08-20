@@ -403,24 +403,23 @@ begin
       Exit;
     end;
 
-
     // create mask
+
+    {$IFDEF VerboseRawImage}
+    DebugLn('TGtkWidgetSet.CreateBitmapFromRawImage creating mask .. ');
+    {$ENDIF}
+
     if ARawImage.IsMasked(False)
-    then begin
-      {$IFDEF VerboseRawImage}
-      DebugLn('TGtkWidgetSet.CreateBitmapFromRawImage creating mask .. ');
-      {$ENDIF}
+    then Drawable := gdk_bitmap_create_from_data(nil, ImgMask, ImgWidth, ImgHeight)
+    else Drawable := gdk_pixmap_new(nil, ImgWidth, ImgHeight, 1);
 
-      Drawable := gdk_bitmap_create_from_data(nil, ImgMask, ImgWidth, ImgHeight);
+    GdiMaskObject := NewGDIObject(gdiBitmap);
+    GdiMaskObject^.Depth := 1;
+    GdiMaskObject^.GDIBitmapType := gbBitmap;
+    GdiMaskObject^.GDIBitmapObject := Drawable;
 
-      GdiMaskObject := NewGDIObject(gdiBitmap);
-      GdiMaskObject^.Depth := 1;
-      GdiMaskObject^.GDIBitmapType := gbBitmap;
-      GdiMaskObject^.GDIBitmapObject := Drawable;
+    //DbgDumpBitmap(Drawable, 'CreateBitmaps - Mask');
 
-      //DbgDumpBitmap(Drawable, 'CreateBitmaps - Mask');
-    end;
-    
     Result := true;
   except
     DeleteObject(ABitmap);
