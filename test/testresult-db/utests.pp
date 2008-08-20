@@ -1372,14 +1372,14 @@ Var
     DX,Dy : Integer;
 
   begin
-    DX:=Round(R*Cos(A1));
-    DY:=Round(R*Sin(A1));
+    DX:=Round(R*Cos(AStart));
+    DY:=Round(R*Sin(AStart));
     Cnv.Line(X,Y,X+DX,Y-DY);
-    DX:=Round(Ra*Cos(A2));
-    DY:=Round(Ra*Sin(A2));
+    DX:=Round(Ra*Cos(AStop));
+    DY:=Round(Ra*Sin(AStop));
     Cnv.Line(X,Y,X+DX,Y-Dy);
-    DX:=Round(R/2*Cos((A1+A2)/2));
-    DY:=Round(R/2*Sin((A1+A2)/2));
+    DX:=Round(R/2*Cos((AStart+AStop)/2));
+    DY:=Round(R/2*Sin((AStart+AStop)/2));
     Cnv.Brush.FpColor:=Col;
     Cnv.FloodFill(X+DX,Y-DY);
   end;
@@ -1396,7 +1396,11 @@ begin
   F:=TFreeTypeFont.Create;
   With F do
     begin
+    {$IFDEF windows}
+    Name:='arial';
+    {$ELSE}
     Name:='LiberationSans-Regular';
+    {$ENDIF}
     FontIndex:=0;
     Size:=12;
     FPColor:=colred;
@@ -1419,47 +1423,35 @@ begin
   FH:=CNV.GetTextHeight('A');
   If FH=0 then
     FH:=14; // 3 * 14;
-  Inc(FH,3);
+  Inc(FH,4);
   R.Top:=FH*4;
   R.Left:=0;
-  R.Bottom:=H;
-  CR:=H-(FH*4);
+  R.Bottom:=H-1;
+  CR:=H-R.Top;
   If W>CR then
     R.Right:=CR
   else
     R.Right:=W;
   Ra:=CR div 2;
-  // Writeln('Setting pen color');
-  Cnv.Pen.FPColor:=colBlack;
-  // Writeln('Palette size : ',Img.Palette.Count);
-  // Writeln('Setting brush style');
-  cnv.brush.FPColor:=colRed;
-//  cnv.pen.width:=1;
-  // Writeln('Drawing ellipse');
-  Cnv.Ellipse(R);
-  // Writeln('Setting text');
-  // Writeln('Palette size : ',Img.Palette.Count);
 
-  cnv.font.FPColor:=colred;
-  Inc(FH,4);
+  Cnv.Pen.FPColor:=colBlack;
+  Cnv.Ellipse(R);
+
   FR:=Failed/Total;
   SR:=Skipped/Total;
   PR:=1-(FR+SR);
+  cnv.font.FPColor:=colred;
   Cnv.Textout(1,FH,Format('%d Failed (%3.1f%%)',[Failed,Fr*100]));
-  // Writeln('Palette size : ',Img.Palette.Count);
   cnv.font.FPColor:=colYellow;
   Cnv.Textout(1,FH*2,Format('%d Skipped (%3.1f%%)',[Skipped,SR*100]));
+  cnv.font.FPColor:=colGreen;
+  Cnv.Textout(1,FH*3,Format('%d Passed (%3.1f%%)',[Total-Skipped-Failed,PR*100]));
+
   A1:=(Pi*2*(failed/total));
+  AddPie(Ra,R.Top+Ra,Ra,0,A1,ColRed);
   A2:=A1+(Pi*2*(Skipped/Total));
   AddPie(Ra,R.Top+Ra,Ra,A1,A2,ColYellow);
-  cnv.font.FPColor:=colGreen;
-  // Writeln('Palette size : ',Img.Palette.Count);
-  A1:=A2;
-  A2:=A1+(Pi*2*((Total-(Skipped+Failed))/Total));
-  Cnv.Textout(1,FH*3,Format('%d Passed (%3.1f%%',[Total-Skipped-Failed,PR*100]));
-  AddPie(Ra,R.Top+Ra,Ra,A1,A2,ColGreen);
-  // Writeln('Palette size : ',Img.Palette.Count);
-  // Writeln('All done');
+  AddPie(Ra,R.Top+Ra,Ra,A2,Pi*2,ColGreen);
 end;
 
 
