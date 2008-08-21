@@ -1658,7 +1658,7 @@ begin
     fRightMargin :=
       XMLConfig.GetValue('EditorOptions/Display/RightMargin', 80);
     fRightMarginColor :=
-      XMLConfig.GetValue('EditorOptions/Display/VisibleRightMarginColor'
+      XMLConfig.GetValue('EditorOptions/Display/RightMarginColor'
       , clBtnFace);
     fEditorFont  :=
       XMLConfig.GetValue('EditorOptions/Display/EditorFont', SynDefaultFontName);
