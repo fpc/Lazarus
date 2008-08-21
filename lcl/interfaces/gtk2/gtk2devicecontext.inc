@@ -46,7 +46,7 @@ var
   WidgetCont: PPangoContext;
   NewMatrix: TPangoMatrix;
   OldMatrix: PPangoMatrix;
-  renderer: PPangoRenderer;
+  renderer: PGdkPangoRenderer;
   AFont: PGdiObject;
   
   procedure SetColors(AFGColor, ABGColor: PGdkColor); inline;
@@ -81,7 +81,7 @@ begin
 
     pango_context_set_matrix(WidgetCont, @NewMatrix);
     pango_layout_context_changed(AFont^.GDIFontObject);
-    pango_renderer_draw_layout(renderer, AFont^.GDIFontObject, X, Y);
+    pango_renderer_draw_layout(PPangoRenderer(renderer), AFont^.GDIFontObject, X, Y);
 
     //now reset
     pango_context_set_matrix(WidgetCont, OldMatrix);

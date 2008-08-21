@@ -25,18 +25,10 @@ uses
   {$endif}
   Pango;
 
-
-// still needed ??
-{$ifdef windows}
-procedure gdk_window_copy_area(Dest: PGDKWindow; GC: PGDKGC;
-  DestX, DestY: Longint; SRC: PGDKWindow; XSRC, YSRC, Width, Height: Longint);
-{$endif}
-
-
 const
   gdkdll = gdklib;
 
-// missing declarations in fpc 2.0
+// missing declarations in fpc 2.2
 const
    GTK_CELL_RENDERER_FOCUSED = 1 shl 4;
 
@@ -51,10 +43,20 @@ function gdk_x11_image_get_ximage(image:PGdkImage):PXImage;cdecl;external gdklib
 
 procedure laz_gdk_gc_set_dashes(gc:PGdkGC; dash_offset:gint;
   dashlist:Pgint8; n:gint); cdecl; external gdkdll name 'gdk_gc_set_dashes';
-
 // - - - - - - - - - pango extras - - - - - - - - -
 type
   PPPangoAttrList = ^PPangoAttrList;
+// pango 1.16
+  PPangoGravity = ^TPangoGravity;
+  TPangoGravity = (
+    PANGO_GRAVITY_SOUTH,
+    PANGO_GRAVITY_EAST,
+    PANGO_GRAVITY_NORTH,
+    PANGO_GRAVITY_WEST,
+    PANGO_GRAVITY_AUTO
+  );
+
+// ----------------- this pango symbols can be removed after fpc 2.2.4
 // pango 1.6
   PPangoMatrix = ^TPangoMatrix;
   TPangoMatrix = record
@@ -76,16 +78,10 @@ type
     PANGO_RENDER_PART_STRIKETHROUGH
   );
 
-// pango 1.16
-  PPangoGravity = ^TPangoGravity;
-  TPangoGravity = (
-    PANGO_GRAVITY_SOUTH,
-    PANGO_GRAVITY_EAST,
-    PANGO_GRAVITY_NORTH,
-    PANGO_GRAVITY_WEST,
-    PANGO_GRAVITY_AUTO
-  );
-  
+procedure pango_renderer_draw_layout(renderer: PPangoRenderer; layout: PPangoLayout; x, y: Integer); cdecl; external pangolib;
+
+// ------------------end of symbold to remove --------------------------
+
 function pango_context_get_gravity(Context: PPangoContext): TPangoGravity; cdecl; external pangolib;
 procedure pango_context_set_base_gravity(Context: PPangoContext; gravity: TPangoGravity); cdecl; external pangolib;
 
@@ -99,8 +95,6 @@ procedure pango_font_description_set_gravity(desc: PPangoFontDescription; gravit
 
 function pango_attr_gravity_new(gravity: TPangoGravity): PPangoAttribute; cdecl; external pangolib;
 
-procedure pango_renderer_draw_layout(renderer: PPangoRenderer; layout: PPangoLayout; x, y: Integer); cdecl; external pangolib;
-
 function pango_version_check(required_major, required_minor, required_micro: integer): PChar; cdecl; external pangolib;
 
 {$if defined(VER2_0) or defined(VER2_2_0)}
@@ -109,9 +103,7 @@ function pango_layout_get_font_description(layout:PPangoLayout):PPangoFontDescri
 
 // - - - - - - - - - gtk extras - - - - - - - - -
 
-procedure gtk_im_context_get_preedit_string_laz(context:PGtkIMContext; str:PPgchar; attrs:PPPangoAttrList; cursor_pos:Pgint); cdecl; external gtklib name 'gtk_im_context_get_preedit_string';
-function gdk_event_new(_type: TGdkEventType): PGdkEvent; cdecl; external gdklib;
-
+// ----------------- this gtk symbols can be removed after fpc 2.2.4
 // gtk 2.2
 function gtk_tree_path_new_from_indices(first_index: gint): PGtkTreePath; cdecl; varargs; external gtklib name 'gtk_tree_path_new_from_indices';
 
@@ -146,13 +138,18 @@ function gtk_cell_view_get_type:TGtkType; cdecl; external gtklib;
 function gtk_cell_view_get_model(cell_view: PGtkCellView): PGtkTreeModel;
 function gtk_cell_view_get_displayed_row(cell_view: PGtkCellView): PGtkTreePath; cdecl; external gtklib name 'gtk_cell_view_get_displayed_row';
 procedure gtk_file_chooser_set_show_hidden(chooser: PGtkFileChooser; show_hidden: gboolean); cdecl; external gtklib name 'gtk_file_chooser_set_show_hidden';
+// ------------------end of symbold to remove --------------------------
+
+procedure gtk_im_context_get_preedit_string_laz(context:PGtkIMContext; str:PPgchar; attrs:PPPangoAttrList; cursor_pos:Pgint); cdecl; external gtklib name 'gtk_im_context_get_preedit_string';
 
 // - - - - - - - - - gdk extras - - - - - - - - -
 
+// ----------------- this gdk symbols can be removed after fpc 2.2.4
 type
   PGdkPangoRenderer = pointer;
-  
 // gdk 2.2
+function gdk_event_new(_type: TGdkEventType): PGdkEvent; cdecl; external gdklib;
+
 procedure gdk_display_get_pointer(display : PGdkDisplay; screen :PGdkScreen; x :Pgint; y : Pgint; mask : PGdkModifierType); cdecl; external gdklib;
 function gdk_display_get_default:PGdkDisplay; cdecl; external gdklib;
 
@@ -171,6 +168,7 @@ function gdk_pango_renderer_get_default(screen: PGdkScreen): PPangoRenderer; cde
 procedure gdk_pango_renderer_set_drawable(gdk_renderer: PGdkPangoRenderer; drawable: PGdkDrawable); cdecl; external gdklib;
 procedure gdk_pango_renderer_set_gc(gdk_renderer: PGdkPangoRenderer; gc: PGdkGC); cdecl; external gdklib;
 procedure gdk_pango_renderer_set_override_color(gdk_renderer: PGdkPangoRenderer; part: TPangoRenderPart; color: PGdkColor); cdecl; external gdklib;
+// ------------------end of symbold to remove --------------------------
 
 {$ifdef GTK_2_8}
 // gdk 2.8
@@ -191,7 +189,3 @@ procedure gtk_menu_bar_set_pack_direction(menubar : PGtkMenuBar; pack_dir : TGtk
 {$ifdef GTK_2_10}
 function gdk_screen_is_composited(screen: PGdkScreen): gboolean; cdecl; external gdklib;
 {$endif}
-{ for future use
-function gdk_display_supports_cursor_alpha(display: PGdkDisplay): gBoolean; cdecl; external gdklib;
-function gdk_display_supports_cursor_color(display: PGdkDisplay): gBoolean; cdecl; external gdklib;
-}
