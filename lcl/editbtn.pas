@@ -312,8 +312,8 @@ type
   
   { TDateEdit }
 
-  TAcceptDateEvent = procedure (Sender : TObject; Var ADate : TDateTime;
-    Var AcceptDate: Boolean) of Object;
+  TAcceptDateEvent = procedure (Sender : TObject; var ADate : TDateTime;
+    var AcceptDate: Boolean) of object;
   TCustomDateEvent = procedure (Sender : TObject; var ADate : string) of object;
 
   { TDateEdit }
@@ -397,7 +397,7 @@ type
   
   { TCalcEdit }
   
-  TAcceptValueEvent = procedure(Sender: TObject; var AValue: Double; var Action: Boolean) of Object;
+  TAcceptValueEvent = procedure(Sender: TObject; var AValue: Double; var Action: Boolean) of object;
   TCalcEdit = class(TCustomEditButton)
   private
     FDialogTitle: String;
@@ -1002,11 +1002,7 @@ end;
 
 function TCalcEdit.GetAsFloat: Double;
 begin
-  try
-    Result:=StrToDouble(Trim(Text));
-  except
-    Result:=0.0;
-  end;
+  Result := StrToFloatDef(Trim(Text), 0.0);
 end;
 
 function TCalcEdit.GetAsInteger: Integer;

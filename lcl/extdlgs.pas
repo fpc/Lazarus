@@ -604,12 +604,10 @@ type
     property Color default clBtnFace;
   end;
 
-constructor TCalculatorPanel.CreateLayout(AOwner: TComponent;
-  ALayout: TCalculatorLayout);
-
+constructor TCalculatorPanel.CreateLayout(AOwner: TComponent; ALayout: TCalculatorLayout);
 var
   I: TCalcBtnKind;
-
+  Bitmap: TCustomBitmap;
 begin
   inherited Create(AOwner);
   ParentColor:=False;
@@ -623,49 +621,51 @@ begin
   ParentColor:=True;
   ParentCtl3D:=True;
   for I:=cbNum0 to cbCancel do
-    begin
+  begin
     if BtnPos[ALayout, I].X > 0 then
       with CreateCalcBtn(Self, I, @BtnClick, ALayout) do
-        begin
+      begin
         if ALayout = clNormal then
-          begin
+        begin
           if (Kind in [cbBck, cbClr]) then
             Width:=44;
           if (Kind in [cbSgn..cbCancel]) then
             if (BtnGlyphs[ALayout,Kind]<>'') then
-              begin
+            begin
               Caption:='';
-              Glyph.LoadFromLazarusResource(BtnGlyphs[ALayout,Kind]);
-              end;
-          end
+              Bitmap := CreateBitmapFromLazarusResource(BtnGlyphs[ALayout,Kind]);
+              Glyph.Assign(Bitmap);
+              Bitmap.Free;
+            end;
+        end
         else
-          begin
+        begin
           if Kind in [cbEql] then Width:=44;
-          end;
         end;
-    end;
+      end;
+  end;
   if ALayout = clNormal then
-    begin
+  begin
     { Memory panel }
     FMemoryPanel:=TPanel.Create(Self);
     with FMemoryPanel do
-      begin
+    begin
       SetBounds(6, 7, 34, 20);
       BevelInner:=bvLowered;
       BevelOuter:=bvNone;
       ParentColor:=True;
       Parent:=Self;
-      end;
+    end;
     FMemoryLabel:=TLabel.Create(Self);
     with FMemoryLabel do
-      begin
+    begin
       SetBounds(3, 3, 26, 14);
       Alignment:=taCenter;
       AutoSize:=False;
       Parent:=FMemoryPanel;
       Font.Style:=[];
-      end;
     end;
+  end;
   FText:='0';
   FMemory:=0.0;
   FPrecision:=DefCalcPrecision;
@@ -1091,37 +1091,37 @@ begin
   { MainPanel }
   FMainPanel:=TPanel.Create(Self);
   with FMainPanel do
-    begin
+  begin
     Align:=alClient;
     Parent:=Self;
     BevelOuter:=bvLowered;
     ParentColor:=True;
-    end;
+  end;
   { DisplayPanel }
   FDisplayPanel:=TPanel.Create(Self);
   with FDisplayPanel do
-    begin
+  begin
     SetBounds(6, 6, 230, 23);
     Parent:=FMainPanel;
     BevelOuter:=bvLowered;
     Color:=clWhite;
     Ctl3D:=False;
     Font:=Self.Font;
-    end;
+  end;
   FDisplayLabel:=TLabel.Create(Self);
   with FDisplayLabel do
-    begin
+  begin
     AutoSize:=False;
     Alignment:=taRightJustify;
     SetBounds(5, 2, 217, 15);
     Parent:=FDisplayPanel;
     Caption:='0';
     Font.Color:=clBlack;
-    end;
+  end;
   { CalcPanel }
   FCalcPanel:=TCalculatorPanel.CreateLayout(Self, ALayout);
   with TCalculatorPanel(FCalcPanel) do
-    begin
+  begin
     Align:=alBottom;
     Top:=17;
     Anchors:=[akLeft,akRight,AkBottom];
@@ -1131,7 +1131,7 @@ begin
     OnCalcKey:=@Self.CalcKey;
     OnDisplayChange:=@Self.DisplayChange;
     FControl:=FDisplayLabel;
-    end;
+  end;
 end;
 
 
