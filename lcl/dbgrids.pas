@@ -743,8 +743,12 @@ begin
   if aDataSet=nil then DebugLn('nil)')
   else DebugLn(aDataSet.Name,')');
   {$endif}
+  if EditorMode then
+    EditorMode := False;
   LayoutChanged;
   UpdateActive;
+  if (dgAlwaysShowEditor in Options) then
+    EditorMode := true;
 end;
 
 procedure TCustomDBGrid.OnDataSetOpen(aDataSet: TDataSet);
