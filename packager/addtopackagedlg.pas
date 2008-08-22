@@ -42,7 +42,8 @@ uses
   ExtCtrls, Dialogs, FileUtil, ComCtrls, AVL_Tree, LCLProc,
   NewItemIntf, ProjectIntf,
   LazarusIDEStrConsts, IDEWindowIntf, InputHistory, CodeToolManager, IDEDefs,
-  IDEProcs, EnvironmentOpts, PackageSystem, PackageDefs, ComponentReg;
+  IDEProcs, EnvironmentOpts, PackageSystem, PackageDefs, ComponentReg,
+  AddDirToPkgDlg;
   
 type
   TAddToPkgType = (
@@ -207,6 +208,7 @@ type
     procedure UpdateAddFileInfo;
     function SwitchRelativeAbsoluteFilename(const Filename: string): string;
     procedure FillNewFileTreeView;
+    function FindFileInFilesList(AFilename: string): Integer;
   public
     Params: TAddToPkgResult;
     procedure UpdateAvailableAncestorTypes;
@@ -832,11 +834,13 @@ begin
       for i:=0 to OpenDialog.Files.Count-1 do begin
         AFilename:=CleanAndExpandFilename(OpenDialog.Files[i]);
         if FileExists(AFilename) then begin
-          LazPackage.ShortenFilename(AFilename,true);
-          NewListItem:=FilesListView.Items.Add;
-          NewListItem.Caption:=AFilename;
-          NewPgkFileType:=FileNameToPkgFileType(AFilename);
-          NewListItem.SubItems.Add(GetPkgFileTypeLocalizedName(NewPgkFileType));
+          if FindFileInFilesList(AFilename)<0 then begin
+            LazPackage.ShortenFilename(AFilename,true);
+            NewListItem:=FilesListView.Items.Add;
+            NewListItem.Caption:=AFilename;
+            NewPgkFileType:=FileNameToPkgFileType(AFilename);
+            NewListItem.SubItems.Add(GetPkgFileTypeLocalizedName(NewPgkFileType));
+          end;
         end;
       end;
     end;
@@ -856,8 +860,29 @@ begin
 end;
 
 procedure TAddToPackageDlg.FilesDirButtonClick(Sender: TObject);
+var
+  i: Integer;
+  Files: TStrings;
+  AFilename: string;
+  NewListItem: TListItem;
+  NewPgkFileType: TPkgFileType;
 begin
-
+  Files:=nil;
+  try
+    if ShowAddDirToPkgDialog(LazPackage,Files)<>mrOk then exit;
+    for i:=0 to Files.Count-1 do begin
+      AFilename:=Files[i];
+      if FindFileInFilesList(AFilename)<0 then begin
+        LazPackage.ShortenFilename(AFilename,true);
+        NewListItem:=FilesListView.Items.Add;
+        NewListItem.Caption:=AFilename;
+        NewPgkFileType:=FileNameToPkgFileType(AFilename);
+        NewListItem.SubItems.Add(GetPkgFileTypeLocalizedName(NewPgkFileType));
+      end;
+    end;
+  finally
+    Files.Free;
+  end;
 end;
 
 procedure TAddToPackageDlg.FilesShortenButtonClick(Sender: TObject);
@@ -1526,6 +1551,27 @@ begin
   end;
   NewParentNode.Expand(true);
   NewFileTreeView.EndUpdate;
+end;
+
+function TAddToPackageDlg.FindFileInFilesList(AFilename: string): Integer;
+var
+  i: Integer;
+  Item: TListItem;
+  OtherFilename: String;
+begin
+  if not FilenameIsAbsolute(AFilename) then
+    LazPackage.LongenFilename(AFilename);
+  for i:=0 to FilesListView.Items.Count-1 do begin
+    Item:=FilesListView.Items[i];
+    OtherFilename:=Item.Caption;
+    if not FilenameIsAbsolute(OtherFilename) then
+      LazPackage.LongenFilename(OtherFilename);
+    if CompareFilenames(AFilename,OtherFilename)=0 then begin
+      Result:=i;
+      exit;
+    end;
+  end;
+  Result:=-1;
 end;
 
 procedure TAddToPackageDlg.UpdateAvailableAncestorTypes;

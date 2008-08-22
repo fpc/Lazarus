@@ -1028,6 +1028,7 @@ resourcestring
   lisEnvOptDlgInvalidDebuggerFilenameMsg =
     'The debugger file "%s" is not an executable.';
   lisEnvOptDlgDirectoryNotFound = 'Directory not found';
+  lisTheDirectoryWasNotFound = 'The directory %s was not found.';
   lisInstallationFailed = 'Installation failed';
   lisPkgMangThePackageFailedToCompileRemoveItFromTheInstallati = 'The package %'
     +'s%s%s failed to compile.%sRemove it from the installation list?';
@@ -1530,6 +1531,10 @@ resourcestring
   lisShowUnits = 'Show units';
   lisShowIdentifiers = 'Show identifiers';
   lisFilter = 'Filter';
+  lisRegularExpression = 'Regular expression';
+  lisInvalidFilter = 'Invalid filter';
+  lisInvalidExpression = 'Invalid expression:%s%s%s%s';
+  lisExcludeFilter2 = 'Exclude filter';
   lisPrivate = 'Private';
   lisProtected = 'Protected';
   lisEMDPublic = 'Public';
@@ -3821,6 +3826,7 @@ resourcestring
     +'filenames with full path or with relative path';
   lisDeleteSelectedFiles = 'Delete selected files';
   lisAddDirectory = 'Add directory';
+  lisAddFilesOfDirectory = 'Add files of directory';
 
 implementation
 
