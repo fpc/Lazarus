@@ -4,7 +4,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-07-12 13:24+0100\n"
+"PO-Revision-Date: 2008-08-17 17:40+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -470,19 +470,19 @@ msgstr "Symbol"
 
 #: lclstrconsts:rsiconnocurrent
 msgid "Icon has no current image"
-msgstr ""
+msgstr "Icon besitzt kein gültiges Bild"
 
 #: lclstrconsts:rsiconimageempty
 msgid "Icon image cannot be empty"
-msgstr ""
+msgstr "Icon-Bild darf nicht leer sein"
 
 #: lclstrconsts:rsiconimageformat
 msgid "Icon image must have the same format"
-msgstr ""
+msgstr "Icon-Bild muß das gleiche Format haben"
 
 #: lclstrconsts:rsiconimagesize
 msgid "Icon image must have the same size"
-msgstr ""
+msgstr "Icon-Bild muß die gleiche Größe haben"
 
 #: lclstrconsts:rsindexoutofrange
 msgid "Index Out of range Cell[Col=%d Row=%d]"

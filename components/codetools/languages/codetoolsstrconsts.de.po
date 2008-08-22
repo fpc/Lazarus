@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-08-31 14:36+0100\n"
+"PO-Revision-Date: 2008-08-17 17:38+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -130,11 +130,11 @@ msgstr "Angeben"
 
 #: codetoolsstrconsts:ctsdefinelcl
 msgid "Define LCL"
-msgstr ""
+msgstr "LCL festlegen"
 
 #: codetoolsstrconsts:ctsdefinelclwidgetset
 msgid "Define LCLwidgetset, e.g. LCLgtk"
-msgstr ""
+msgstr "LCL-Widgetset definieren, z.B. LCLgtk"
 
 #: codetoolsstrconsts:ctsdefinemacroname
 msgid "Define Macro %s"
@@ -450,7 +450,7 @@ msgstr "Default-Parameter erwartet aber %s gefunden"
 
 #: codetoolsstrconsts:ctsdefaultpropertynotfound
 msgid "default property not found"
-msgstr ""
+msgstr "voreingestellte Property nicht gefunden"
 
 #: codetoolsstrconsts:ctsdefaultspecifierredefined
 msgid "default specifier redefined"
@@ -554,7 +554,7 @@ msgstr "Implementationsknoten nicht gefunden"
 
 #: codetoolsstrconsts:ctsincludedirectoriesplusdirs
 msgid "include directories: %s"
-msgstr ""
+msgstr "Verzeichnisse einbinden: %s"
 
 #: codetoolsstrconsts:ctsincludefilenotfound
 msgid "include file not found \"%s\""

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-07-12 13:23+0100\n"
+"PO-Revision-Date: 2008-08-17 17:39+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -481,7 +481,7 @@ msgstr "Feldliste ist nicht verfügbar, kann nicht auf Duplikate prüfen"
 
 #: objinspstrconsts:fesfltitle
 msgid "FieldDefs"
-msgstr ""
+msgstr "Felddefinitionen"
 
 #: objinspstrconsts:cactionlisteditorfilecategory
 msgid "File"
@@ -489,11 +489,11 @@ msgstr "Datei"
 
 #: objinspstrconsts:pefilter
 msgid "Filter"
-msgstr ""
+msgstr "Filter"
 
 #: objinspstrconsts:pefiltername
 msgid "Filter name"
-msgstr ""
+msgstr "Filter-Name"
 
 #: objinspstrconsts:oistdactsearchfindhint
 msgid "Find"
