@@ -114,9 +114,8 @@ type
   end;
   
   { TAutoSizeCtrlData
-    This class is used by the auto size algorithm, to
-      1. compute the preferred size of a control given the preferred sizes of
-         its childs.
+    This class is used by the auto size algorithm, to compute the preferred
+      size of a control given the preferred sizes of its childs.
     Hints about the algorithm:
       First it builds a graph of dependencies. That means, for every side
       (Left,Top,Right,Bottom) of each child control the anchor control and
@@ -126,7 +125,6 @@ type
       right to the parent and top to either the parent or another alTop control.
       Then it searches for circles and other invalid combinations and repairs
       them.
-      
     }
     
   TAutoSizeCtrlData = class;
@@ -279,8 +277,13 @@ var
       alBottom: AlignBoundaryControls[akBottom]:=ChildData;
       alLeft: AlignBoundaryControls[akLeft]:=ChildData;
       alRight: AlignBoundaryControls[akRight]:=ChildData;
-      alClient: AlignBoundaryControls[akLeft]:=ChildData;
+      alClient: ; // Delphi compatibility: multiple alClient controls overlap
       end;
+      {DebugLn(['DoAlign AlignBoundaryControls:',
+        ' Left=',DbgSName(AlignBoundaryControls[akLeft].Control),
+        ' Top=',DbgSName(AlignBoundaryControls[akTop].Control),
+        ' Right=',DbgSName(AlignBoundaryControls[akRight].Control),
+        ' Bottom=',DbgSName(AlignBoundaryControls[akBottom].Control)  ]);}
     end;
   end;
   
@@ -561,6 +564,35 @@ type
         end;
         ChildData.Sides[Side].Distance[Direction]:=NewDist;
         ChildData.Sides[Side].DistanceState[Direction]:=assdfValid;
+
+        if (OppositeSide in CurAnchors)
+        and ((Direction=assddLeftTop) <> (Side in [akLeft,akTop])) then begin
+          // the opposite side is anchored too
+          // use the maximum of both anchors
+          Result:=ComputePosition(ChildData,OppositeSide,Direction);
+          if Result<>crSuccess then begin
+            //DebugLn(['ComputePosition (side anchored) FAILED computing opposite side: ',DbgSName(Child),' - ',DbgSName(SiblingData.Control),' Side=',dbgs(Side),' ',AutoSizeSideDistDirectionNames[Direction]]);
+            exit;
+          end;
+          case ChildData.Sides[OppositeSide].DistanceState[Direction] of
+          assdfValid:
+            begin
+              // opposite side +- preferred size
+              NewDist:=ChildData.Sides[OppositeSide].Distance[Direction];
+              if Side in [akLeft,akRight] then
+                CurSize:=ChildData.PreferredSize[asboHorizontal]
+              else
+                CurSize:=ChildData.PreferredSize[asboVertical];
+              inc(NewDist,CurSize);
+              // check if opposite side need a bigger distance
+              if ChildData.Sides[Side].Distance[Direction]<NewDist then
+                ChildData.Sides[Side].Distance[Direction]:=NewDist;
+            end;
+          assdfUncomputable: ; // no problem, there is already a value
+          else
+            raise Exception.Create('TAutoSizeCtrlData.ComputePositions.ComputePosition assdfValid,assdfUncomputable');
+          end;
+        end;
       end;
     end else if (OppositeSide in CurAnchors)
     and ((Direction=assddLeftTop) <> (Side in [akLeft,akTop])) then begin
@@ -569,7 +601,7 @@ type
       // => compute the opposite side first
       Result:=ComputePosition(ChildData,OppositeSide,Direction);
       if Result<>crSuccess then begin
-        //DebugLn(['ComputePosition FAILED computing opposite side: ',DbgSName(Child),' - ',DbgSName(SiblingData.Control),' Side=',dbgs(Side),' ',AutoSizeSideDistDirectionNames[Direction]]);
+        //DebugLn(['ComputePosition (side not anchored) FAILED computing opposite side: ',DbgSName(Child),' - ',DbgSName(SiblingData.Control),' Side=',dbgs(Side),' ',AutoSizeSideDistDirectionNames[Direction]]);
         exit;
       end;
       case ChildData.Sides[OppositeSide].DistanceState[Direction] of
