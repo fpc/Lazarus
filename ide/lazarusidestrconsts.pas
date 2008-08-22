@@ -2642,7 +2642,7 @@ resourcestring
     +'name Menu > Project > Project Options.';
   lisTheWorkingDirectoryDoesNotExistPleaseCheckTheWorki = 'The working '
     +'directory %s%s%s does not exist.%sPlease check the working directory in '
-    +'Menu > Project > Run parameters.';
+    +'Menu > Run > Run parameters.';
   lisPleaseOpenAUnitBeforeRun = 'Please open a unit before run.';
   
   // disk diff dialog
