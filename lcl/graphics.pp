@@ -1130,7 +1130,7 @@ type
     FSharedImage: TSharedRasterImage;
     function  CanShareImage(AClass: TSharedRasterImageClass): Boolean; virtual;
     procedure Changed(Sender: TObject); override;
-    function  CreateDefaultBitmapHandle(const ADesc: TRawImageDescription): HBITMAP; virtual; abstract;
+    function  CreateDefaultBitmapHandle(const ADesc: TRawImageDescription): HBITMAP; virtual;
     procedure Draw(DestCanvas: TCanvas; const DestRect: TRect); override;
     function GetEmpty: Boolean; override;
     function GetHandle: THandle;

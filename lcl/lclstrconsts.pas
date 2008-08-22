@@ -27,7 +27,7 @@ unit LCLStrConsts;
 
 interface
 
-ResourceString
+resourceString
   // common Delphi strings
   SNoMDIForm = 'No MDI form present.';
 
@@ -200,6 +200,11 @@ ResourceString
   rsIconImageSize = 'Icon image must have the same size';
   rsIconNoCurrent = 'Icon has no current image';
   rsIconImageFormat = 'Icon image must have the same format';
+  rsIconImageFormatChange = 'Cannot change format of icon image';
+  rsIconImageSizeChange = 'Cannot change size of icon image';
+  rsRasterImageUpdateAll = 'Cannot begin update all when canvas only update in progress';
+  rsRasterImageEndUpdate = 'Endupdate while no update in progress';
+  rsRasterImageSaveInUpdate = 'Cannot save image wile update in progress';
   rsNoWidgetSet = 'No widgetset object. '
     +'Please check if the unit "interfaces" was added to the programs uses clause.';
   rsPressOkToIgnoreAndRiskDataCorruptionPressCancelToK = '%s%sPress Ok to '

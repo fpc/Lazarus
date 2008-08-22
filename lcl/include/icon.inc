@@ -793,7 +793,7 @@ end;
 
 procedure TCustomIcon.SetPixelFormat(AValue: TPixelFormat);
 begin
-  raise EInvalidGraphicOperation.Create('Cannot change format of icon image');
+  raise EInvalidGraphicOperation.Create(rsIconImageFormatChange);
 end;
 
 procedure TCustomIcon.SetTransparent(Value: Boolean);
@@ -803,7 +803,7 @@ end;
 
 procedure TCustomIcon.SetSize(AWidth, AHeight: integer);
 begin
-  raise EInvalidGraphicOperation.Create('Cannot change size of icon image');
+  raise EInvalidGraphicOperation.Create(rsIconImageSizeChange);
 end;
 
 procedure TCustomIcon.UnshareImage(CopyContent: boolean);

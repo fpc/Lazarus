@@ -149,7 +149,7 @@ begin
     // if we are updating all, then requesting a canvas only won't change it
     // if we are updating canvas only, then requesting all is an error
     if FUpdateCanvasOnly and not ACanvasOnly
-    then raise EInvalidGraphicOperation.Create('cannot begin update all when canvas only update in progress');
+    then raise EInvalidGraphicOperation.Create(rsRasterImageUpdateAll);
   end;
 
   Inc(FUpdateCount);
@@ -276,7 +276,7 @@ end;
 procedure TRasterImage.EndUpdate;
 begin
   if FUpdatecount = 0
-  then raise EInvalidGraphicOperation.Create('Endupdate while no update in progress');
+  then raise EInvalidGraphicOperation.Create(rsRasterImageEndUpdate);
   
   Dec(FUpdatecount);
   if FUpdatecount > 0 then Exit;
@@ -407,6 +407,12 @@ begin
   then FreeSaveStream;
 
   inherited Changed(Sender);
+end;
+
+function TRasterImage.CreateDefaultBitmapHandle(
+  const ADesc: TRawImageDescription): HBITMAP;
+begin
+  Result := 0;
 end;
 
 procedure TRasterImage.CanvasChanging(Sender: TObject);
@@ -647,7 +653,7 @@ var
   WorkStream: TMemoryStream;
 begin
   if FUpdateCount > 0
-  then raise EInvalidGraphicOperation.Create('Cannot save image wile update in progress');
+  then raise EInvalidGraphicOperation.Create(rsRasterImageSaveInUpdate);
 
 
   if FSharedImage.SaveStream <> nil then Exit;

@@ -944,7 +944,7 @@ var
         if Sig = '%P' then
           bmp := TPortableNetworkGraphic.Create
         else
-          raise EInvalidGraphicOperation.Create('TCustomImageList.ReadData Invalid stream format');
+          raise EInvalidGraphicOperation.Create(rsInvalidStreamFormat);
         AStream.Position := AStream.Position - 2;
       end;
       bmp.LoadFromStream(AStream, Size);
