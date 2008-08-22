@@ -416,6 +416,7 @@ type
     procedure Loaded; override;
     procedure MoveSelection; override;
     procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure PrepareCanvas(aCol,aRow: Integer; aState:TGridDrawState); override;
     procedure RemoveAutomaticColumns;
     procedure SelectEditor; override;
@@ -2042,6 +2043,14 @@ begin
   {$IfDef dbgGrid} DebugLn('DBGrid.MouseDown END'); {$Endif}
 end;
 
+procedure TCustomDBGrid.MouseMove(Shift: TShiftState; X, Y: Integer);
+begin
+  if fGridState=gsSelecting then
+    exit
+  else
+    inherited MouseMove(Shift, X, Y);
+end;
+
 procedure TCustomDBGrid.PrepareCanvas(aCol, aRow: Integer;
   aState: TGridDrawState);
 begin
@@ -2658,7 +2667,7 @@ begin
     dgAlwaysShowSelection];
 
   inherited Options :=
-    [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect,
+    [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine,
      goSmoothScroll, goColMoving, goTabs, goEditing, goDrawFocusSelected,
      goColSizing ];
 
