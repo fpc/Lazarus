@@ -2988,6 +2988,7 @@ begin
       if (APackage.POOutputDirectory<>'') then begin
         Result:=ConvertPackageRSTFiles(APackage);
         if Result<>mrOk then begin
+          IDEMessagesWindow.AddMsg('Error: updating po files failed for package '+APackage.IDAsString,APackage.Directory,-1);
           DebugLn('TLazPackageGraph.CompilePackage ConvertPackageRSTFiles failed: ',APackage.IDAsString);
           exit;
         end;
@@ -2998,6 +2999,7 @@ begin
         Result:=APackage.CompilerOptions.ExecuteAfter.Execute(
                                   APackage.Directory,'Executing command after');
         if Result<>mrOk then begin
+          IDEMessagesWindow.AddMsg('Error: running ''compile after'' tool failed for package '+APackage.IDAsString,APackage.Directory,-1);
           DebugLn(['TLazPackageGraph.CompilePackage ExecuteAfter failed: ',APackage.IDAsString]);
           exit;
         end;
@@ -3033,26 +3035,32 @@ function TLazPackageGraph.ConvertPackageRSTFiles(APackage: TLazPackage
   ): TModalResult;
 var
   PkgOutputDirectory: String;
-  RSTOutputDirectory: String;
+  POOutputDirectory: String;
 begin
   Result:=mrOK;
   if (APackage.POOutputDirectory='') then exit;// nothing to do
-  RSTOutputDirectory:=AppendPathDelim(APackage.GetPOOutDirectory);
+  POOutputDirectory:=AppendPathDelim(APackage.GetPOOutDirectory);
 
   // create output directory if not exists
-  if not DirectoryExists(RSTOutputDirectory) then
-    ForceDirectory(RSTOutputDirectory);
+  if not DirectoryExists(POOutputDirectory) then begin
+    Result:=ForceDirectoryInteractive(POOutputDirectory,[mbRetry,mbIgnore]);
+    if Result<>mrOk then begin
+      if Result=mrIgnore then Result:=mrOk;
+      DebugLn(['TLazPackageGraph.ConvertPackageRSTFiles unable to create directory ',POOutputDirectory]);
+      exit;
+    end;
+  end;
   
   // find all .rst files in package output directory
-  if not DirectoryIsWritableCached(RSTOutputDirectory) then begin
+  if not DirectoryIsWritableCached(POOutputDirectory) then begin
     // this package is read only
-    DebugLn(['TLazPackageGraph.ConvertPackageRSTFiles skipping read only directory '+RSTOutputDirectory]);
+    DebugLn(['TLazPackageGraph.ConvertPackageRSTFiles skipping read only directory '+POOutputDirectory]);
     exit(mrOK);
   end;
 
   PkgOutputDirectory:=AppendPathDelim(APackage.GetOutputDirectory);
-  if not ConvertRSTFiles(PkgOutputDirectory,RSTOutputDirectory, APackage.Name+'.po') then begin
-    DebugLn(['TLazPackageGraph.ConvertPackageRSTFiles FAILED: PkgOutputDirectory=',PkgOutputDirectory,' RSTOutputDirectory=',RSTOutputDirectory]);
+  if not ConvertRSTFiles(PkgOutputDirectory,POOutputDirectory, APackage.Name+'.po') then begin
+    DebugLn(['TLazPackageGraph.ConvertPackageRSTFiles FAILED: PkgOutputDirectory=',PkgOutputDirectory,' RSTOutputDirectory=',POOutputDirectory]);
     exit(mrCancel);
   end;
   Result:=mrOK;
