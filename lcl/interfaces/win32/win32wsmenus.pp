@@ -612,7 +612,7 @@ begin
     AddToChangedMenus(TCustomForm(lMenu.Parent).Handle);
 end;
 
-function ChangeMenuFlag(const AMenuItem: TMenuItem; Flag: Integer; Value: boolean): boolean;
+function ChangeMenuFlag(const AMenuItem: TMenuItem; Flag: Cardinal; Value: boolean): boolean;
 var
   MenuInfo: MENUITEMINFO;
 begin

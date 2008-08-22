@@ -316,6 +316,7 @@ type
 
     procedure getBrushOrigin(retval: PPoint);
     function getClipping: Boolean;
+    function getCompositionMode: QPainterCompositionMode;
     procedure getPenPos(retval: PPoint);
     function getWorldMatrix: QMatrixH;
     procedure setBrushOrigin(x, y: Integer);
@@ -332,6 +333,7 @@ type
     function SetBkMode(BkMode: Integer): Integer;
     function getDeviceSize: TPoint;
     function getRegionType(ARegion: QRegionH): integer;
+    procedure setCompositionMode(mode: QPainterCompositionMode);
     function getClipRegion: TQtRegion;
     procedure setClipping(const AValue: Boolean);
     procedure setClipRegion(ARegion: QRegionH; AOperation: QtClipOperation = QtReplaceClip);
@@ -2073,6 +2075,11 @@ begin
   Result := QPainter_hasClipping(Widget);
 end;
 
+function TQtDeviceContext.getCompositionMode: QPainterCompositionMode;
+begin
+  Result := QPainter_compositionMode(Widget);
+end;
+
 procedure TQtDeviceContext.getPenPos(retval: PPoint);
 begin
   retval^.x := FPenPos.x;
@@ -2332,6 +2339,11 @@ begin
   except
     Result := ERROR;
   end;
+end;
+
+procedure TQtDeviceContext.setCompositionMode(mode: QPainterCompositionMode);
+begin
+  QPainter_setCompositionMode(Widget, mode);
 end;
 
 {------------------------------------------------------------------------------

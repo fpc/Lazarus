@@ -113,7 +113,7 @@ procedure AddToChangedMenus(Window: HWnd);
 procedure RedrawMenus;
 function MeasureText(const AWinControl: TWinControl; Text: string; var Width, Height: integer): boolean;
 function GetControlText(AHandle: HWND): string;
-procedure SetMenuFlag(const Menu:HMenu; Flag: Integer; Value: boolean);
+procedure SetMenuFlag(const Menu:HMenu; Flag: Cardinal; Value: boolean);
 
 procedure FillRawImageDescriptionColors(var ADesc: TRawImageDescription);
 procedure FillRawImageDescription(const ABitmapInfo: Windows.TBitmap; out ADesc: TRawImageDescription);
@@ -1222,7 +1222,7 @@ end;
   Change the menu flags for handle of TMenuItem or TMenu,
   added for BidiMode Menus
  ------------------------------------------------------------------------------}
-procedure SetMenuFlag(const Menu:HMenu; Flag: Integer; Value: boolean);
+procedure SetMenuFlag(const Menu:HMenu; Flag: Cardinal; Value: boolean);
 var
   MenuInfo: MENUITEMINFO;
   MenuItemInfoSize: DWORD;

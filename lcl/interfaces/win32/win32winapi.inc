@@ -161,27 +161,39 @@ var
     WParam: Windows.WParam;
     ScrollMsg, ScrollBar: dword;
     ScrollOffset: integer;
+    Pos: TPoint;
   begin
     if not TWinControl(Sender).HandleAllocated then
       exit;
 
-    with TLMessage(Message) do begin
+    with TLMessage(Message) do
+    begin
       Result := CallDefaultWindowProc(Handle, Msg, WParam, LParam);
       // Windows handled it, so exit here.
       if Result<>0 then exit;
     end;
-
 
     // send scroll message
     FillChar(ScrollInfo, sizeof(ScrollInfo), #0);
     ScrollInfo.cbSize := sizeof(ScrollInfo);
     ScrollInfo.fMask := SIF_PAGE or SIF_POS or SIF_RANGE;
     // if mouse is over horizontal scrollbar, scroll horizontally
+
+    // why coords are client? - they must be screen
+    with TLMMouseEvent(Message) do
+    begin
+      Pos.X := X;
+      Pos.Y := Y;
+    end;
+    ClientToScreen(Handle, Pos);
+    WParam := Windows.WParam(PointToSmallPoint(Pos));
+
     if Windows.SendMessage(Handle, WM_NCHITTEST, 0, WParam) = HTHSCROLL then
     begin
       ScrollBar := SB_HORZ;
       ScrollMsg := WM_HSCROLL;
-    end else begin
+    end else
+    begin
       ScrollBar := SB_VERT;
       ScrollMsg := WM_VSCROLL;
     end;
