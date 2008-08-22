@@ -44,7 +44,9 @@ uses
   Controls, GTKProc, GtkDef;
 
 { $Define VerboseCaret}
-{$IFNDEF GTK1}{$DEFINE Has_gtk_draw_insertion_cursor}{$ENDIF}
+// the gtk has a function to draw the cursor, but it does not support xor
+// so it does not work with synedit and twilight hightlighter settings
+{$IFNDEF GTK1}{off $DEFINE Has_gtk_draw_insertion_cursor}{$ENDIF}
 
 type
   PGTKAPIWidget = ^TGTKAPIWidget;
