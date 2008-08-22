@@ -364,6 +364,25 @@ begin
     DefaultDockImage(ANewRect);
 end;
 
+procedure TWin32WidgetSet.DrawGrid(DC: HDC; const R: TRect; DX, DY: Integer);
+var
+  x, y: integer;
+  ALogPen: TLogPen;
+begin
+  GetObject(GetCurrentObject(DC, OBJ_PEN), SizeOf(ALogPen), @ALogPen);
+  x := R.Left;
+  while x <= R.Right do
+  begin
+    y := R.Top;
+    while y <= R.Bottom do
+    begin
+      SetPixel(DC, X, Y, ALogPen.lopnColor);
+      Inc(y, DY);
+    end;
+    Inc(x, DX);
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Function: GetAcceleratorString
   Params: AVKey:
