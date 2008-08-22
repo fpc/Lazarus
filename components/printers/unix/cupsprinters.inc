@@ -1,3 +1,7 @@
+{$IFDEF DebugCUPS}
+{$DEFINE LogPrintoutFile}
+{$ENDIF}
+
 {**************************************************************
 Implementation for cupsprinter
 ***************************************************************}
@@ -761,6 +765,9 @@ begin
     {$ENDIF}
   end;
   Result:=fCachedOrientation;
+  {$IFDEF DebugCUPS}
+  DebugLn('DoGetOrientation: result=%d',[ord(Result)]);
+  {$ENDIF}
 end;
 
 procedure TCUPSPrinter.DoSetOrientation(aValue: TPrinterOrientation);
@@ -779,6 +786,9 @@ begin
          SetOptionsOfPrinter;
 
     St:=IntToStr(Ord(aValue)+3);
+    {$IFDEF DebugCUPS}
+    DebugLn('Orientation-Requested=%s',[st]);
+    {$ENDIF}
     cupsAddOption('orientation-requested',St);
   end;
 end;
