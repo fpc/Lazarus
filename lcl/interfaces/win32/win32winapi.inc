@@ -1132,8 +1132,7 @@ begin
   // the length of utf8 vs Wide/Ansi the strings differ, so recalc.
   if UnicodeEnabledOS then
   begin
-    // TODO: use the real number of chars (and not the lenght)
-    W := Utf8Decode(S);
+    W := Utf8Decode(s);
     Result := Windows.DrawTextW(DC, PWideChar(W), Length(W), @Rect, Flags);
   end
   else
