@@ -261,10 +261,12 @@ begin
             BasePOFile.UpdateStrings(InputLines, stRst);
 
         except
-          E := EPOFileError.Create('');
-          E.ResFileName:=FileName;
-          E.POFileName:=POFileName;
-          raise E;
+          on Ex: Exception do begin
+            E := EPOFileError.Create(Ex.Message);
+            E.ResFileName:=FileName;
+            E.POFileName:=POFileName;
+            raise E;
+          end;
         end;
         
     end;
@@ -282,10 +284,12 @@ begin
         try
           POFile.SaveToFile(InputLines[i]);
         except
-          E := EPOFileError.Create('');
-          E.ResFileName:=InputLines[i];
-          E.POFileName:=POFileName;
-          raise E;
+          on Ex: Exception do begin
+            E := EPOFileError.Create(Ex.Message);
+            E.ResFileName:=InputLines[i];
+            E.POFileName:=POFileName;
+            raise E;
+          end;
         end;
       finally
         POFile.Free;
@@ -732,7 +736,7 @@ begin
           while (p<=n)and(Line[p] in ['0'..'9']) do
             inc(p);
           UStr := UStr + Chr(StrToInt(copy(Line, j, p-j)));
-        until (Line[p]<>'#') or (p>=n);
+        until (p>n) or (Line[p]<>'#');
         // transfer valid UTF-8 segments to result string
         // and re-encode back the rest
         while Ustr<>'' do begin
