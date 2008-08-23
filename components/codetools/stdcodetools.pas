@@ -4340,7 +4340,7 @@ var
   begin
     if AComponent=nil then exit;
     {$IFDEF VerboseDanglingComponentEvents}
-    //debugln('TStandardCodeTool.FindDanglingComponentEvents Checking ',DbgSName(AComponent));
+    debugln('TStandardCodeTool.FindDanglingComponentEvents Checking ',DbgSName(AComponent));
     {$ENDIF}
     // read all properties and remove doubles
     TypeInfo:=AComponent.ClassInfo;
@@ -4353,14 +4353,14 @@ var
       CurCount:=PWord(PropInfo)^;
       inc(PtrUInt(PropInfo),SizeOf(Word));
       {$IFDEF VerboseDanglingComponentEvents}
-      //debugln('    UnitName=',TypeData^.UnitName,' Type=',TypeInfo^.Name,' CurPropCount=',dbgs(CurCount));
+      debugln('    UnitName=',TypeData^.UnitName,' Type=',TypeInfo^.Name,' CurPropCount=',dbgs(CurCount));
       {$ENDIF}
       // read properties
       while CurCount>0 do begin
         // point PropInfo to next propinfo record.
         // Located at Name[Length(Name)+1] !
         {$IFDEF VerboseDanglingComponentEvents}
-        //debugln('      Property ',PropInfo^.Name,' Type=',PropInfo^.PropType^.Name);
+        debugln('      Property ',PropInfo^.Name,' Type=',PropInfo^.PropType^.Name);
         {$ENDIF}
         PropType:=PropInfo^.PropType;
         if PropType^.Kind=tkMethod then begin
