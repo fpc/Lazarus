@@ -446,6 +446,7 @@ begin
       if LineLen>0 then
         DoTextOut(TxtPt.X, TxtPt.Y, LineStart, LineLen);
       inc(TxtPt.Y, LineHeight);
+      //writeln('TGtk2WidgetSet.ExtTextOut ',LineHeight,' ',DevCtx.DCTextMetric.TextMetric.tmAscent,' ',DevCtx.DCTextMetric.TextMetric.tmDescent);
       LineStart := LineEnd + 1; // skip #13
       if (LineStart<StrEnd) and (LineStart^ in [#10,#13])
       and (LineStart^ <> LineEnd^) then

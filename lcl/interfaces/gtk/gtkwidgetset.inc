@@ -4656,6 +4656,7 @@ const
 var
   UseFont : TGtkIntfFont;
   CachedFont: TGtkFontCacheItem;
+  IsDefault: Boolean;
   {$IFDEF Gtk1}
   AvgTxtLen: Integer;
   Width: LongInt;
@@ -4677,10 +4678,12 @@ begin
     UseFont:=GetGtkFont(TGtkDeviceContext(DC));
     FillChar(DCTextMetric, SizeOf(DCTextMetric), 0);
     CachedFont:=FontCache.FindGTKFont(UseFont);
-    if (CachedFont=nil) and (UseFont <> GetDefaultGtkFont(false)) then begin
+    IsDefault:=UseFont = GetDefaultGtkFont(false);
+    if (CachedFont=nil) and (not IsDefault) then begin
       DebugLn(['TGtkWidgetSet.UpdateDCTextMetric no CachedFont UseFont=',dbgs(UseFont)]);
       DumpStack;
     end;
+    //DebugLn(['TGtkWidgetSet.UpdateDCTextMetric IsDefault=',UseFont = GetDefaultGtkFont(false)]);
     
     if (CachedFont<>nil) and (CachedFont.MetricsValid) then begin
       DCTextMetric.lBearing:=CachedFont.lBearing;
@@ -4737,12 +4740,15 @@ begin
       if APangoLanguage=nil then
         DebugLn(['TGtkWidgetSet.UpdateDCTextMetric WARNING: no pango language']);
       // get pango font description (e.g. 'sans 12')
-      if CachedFont<>nil then begin
+      APangoFontDescription := nil;
+      if (not IsDefault) and (CachedFont<>nil) then begin
         Desc:=FontCache.FindADescriptor(UseFont);
         if Desc<>nil then
           APangoFontDescription := Desc.PangoFontDescription;
-        //DebugLn(['TGtkWidgetSet.UpdateDCTextMetric CachedFont Desc.PangoFontDescription=',GetPangoDescriptionReport(APangoFontDescription)]);
+        //DebugLn(['TGtkWidgetSet.UpdateDCTextMetric CachedFont Desc.PangoFontDescription=',GetPangoDescriptionReport(APangoFontDescription),' Desc.LongFontName=',Desc.LongFontName]);
       end;
+      if APangoFontDescription=nil then
+        APangoFontDescription:=pango_context_get_font_description(APangoContext);
       if APangoFontDescription=nil then
         APangoFontDescription:=GetDefaultFontDesc(false);
       if APangoFontDescription=nil then
