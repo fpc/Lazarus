@@ -53,7 +53,26 @@ uses
 {$ENDIF}
   mysql50conn,
   propedits,
+  sqlstringspropertyeditordlg,
+  controls,
+  forms,
   LazarusPackageIntf;
+
+Type
+  { TSQLStringsPropertyEditor }
+
+  TSQLStringsPropertyEditor = class(TClassPropertyEditor)
+  public
+    procedure Edit; override;
+    function CreateDlg(s: TStrings): TSQLStringsPropertyEditorDlg; virtual;
+    function GetAttributes: TPropertyAttributes; override;
+  end;
+
+  TSQLFirebirdFileNamePropertyEditor=class(TFileNamePropertyEditor)
+  protected
+    function GetFilter: String; override;
+    function GetInitialDirectory: string; override;
+  end;
 
 procedure Register;
 
@@ -85,17 +104,12 @@ begin
                               TIBConnection]);
 end;
 
-Type
-  TSQLFirebirdFileNamePropertyEditor=class(TFileNamePropertyEditor)
-  protected
-    function GetFilter: String; override;
-    function GetInitialDirectory: string; override;
-  end;
 
 Resourcestring
   SFireBirdDatabases = 'Firebird databases';
   SInterbaseDatabases = 'Interbase databases';
-  
+  SSQLStringsPropertyEditorDlgTitle = 'Editing %s';
+
 { TDbfFileNamePropertyEditor }
 
 function TSQLFirebirdFileNamePropertyEditor.GetFilter: String;
@@ -111,11 +125,59 @@ begin
   Result:= ExtractFilePath(Result);
 end;
 
+{ TSQLStringsPropertyEditor }
+
+//-------------------------------------//
+procedure TSQLStringsPropertyEditor.Edit;
+var
+  TheDialog:TSQLStringsPropertyEditorDlg;
+  Strings  :TStrings;
+  Query    :TSQLQuery;
+begin
+  Strings := TStrings(GetObjectValue);
+
+  TheDialog := CreateDlg(Strings);
+  try
+    TheDialog.Caption := Format(SSQLStringsPropertyEditorDlgTitle, [GetPropInfo^.Name]);
+    if(GetComponent(0) is TSQLQuery)then
+      begin
+      Query := (GetComponent(0) as TSQLQuery);
+      TheDialog.Connection  := (Query.DataBase as TSQLConnection);
+      TheDialog.Transaction := (Query.Transaction as TSQLTransaction);
+      end;
+    if(TheDialog.ShowModal = mrOK)then
+      begin
+      Strings.Text := TheDialog.SQLEditor.Text;
+      Modified;
+      end;
+
+  finally
+    FreeAndNil(TheDialog);
+  end;
+end;
+
+//------------------------------------------------------------------------------------//
+function TSQLStringsPropertyEditor.CreateDlg(s: TStrings): TSQLStringsPropertyEditorDlg;
+begin
+  Result := TSQLStringsPropertyEditorDlg.Create(Application);
+  Result.SQLEditor.Text := s.Text;
+end;
+
+//------------------------------------------------------------------//
+function TSQLStringsPropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paMultiSelect, paDialog, paRevertable, paReadOnly];
+end;
+
 
 procedure Register;
 begin
   RegisterPropertyEditor(TypeInfo(AnsiString),
     TIBConnection, 'DatabaseName', TSQLFirebirdFileNamePropertyEditor);
+  RegisterPropertyEditor(TStrings.ClassInfo, TSQLQuery, 'SQL'      , TSQLStringsPropertyEditor);
+  RegisterPropertyEditor(TStrings.ClassInfo, TSQLQuery, 'InsertSQL', TSQLStringsPropertyEditor);
+  RegisterPropertyEditor(TStrings.ClassInfo, TSQLQuery, 'DeleteSQL', TSQLStringsPropertyEditor);
+  RegisterPropertyEditor(TStrings.ClassInfo, TSQLQuery, 'UpdateSQL', TSQLStringsPropertyEditor);
 
   RegisterUnit('sqldb',@RegisterUnitSQLdb);
 end;

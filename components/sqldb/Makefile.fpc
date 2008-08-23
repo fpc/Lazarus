@@ -1,16 +1,16 @@
 #   File generated automatically by Lazarus Package Manager
 #
-#   Makefile.fpc for SQLDBLaz 1.0
+#   Makefile.fpc for SQLDBLaz 1.0.1
 #
-#   This file was generated on 20-6-2008
+#   This file was generated on 23/08/08
 
 [package]
 name=sqldblaz
-version=1.0
+version=1.0.1
 
 [compiler]
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
-unitdir=../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)/ ../../packager/units/$(CPU_TARGET)-$(OS_TARGET)/ ./
+unitdir=../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/ ../synedit/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)/ ../../packager/units/$(CPU_TARGET)-$(OS_TARGET)/ ./
 includedir=./
 options=-dLCL -dLCL$(LCL_PLATFORM) -S2 -gl
 
