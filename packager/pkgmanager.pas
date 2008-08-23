@@ -1298,6 +1298,17 @@ begin
   Result:=mrCancel;
   PathDelimNeedsReplace:=PathDelim<>'/';
 
+  MakefileFPCFilename:=AppendPathDelim(APackage.Directory)+'Makefile.fpc';
+  if not DirectoryIsWritableCached(APackage.Directory) then begin
+    // the Makefile.fpc is only needed for custom building
+    // if the package directory is not writable, then the user don't want to
+    // custom build
+    // => silently skip
+    DebugLn(['TPkgManager.DoWriteMakefile Skipping, because package directory is not writable: ',APackage.Directory]);
+    Result:=mrOk;
+    exit;
+  end;
+
   SrcFilename:=APackage.GetSrcFilename;
   MainUnitName:=lowercase(ExtractFileNameOnly((SrcFilename)));
   UnitPath:=APackage.CompilerOptions.GetUnitPath(true,
@@ -1383,8 +1394,6 @@ begin
   
   //DebugLn('TPkgManager.DoWriteMakefile [',s,']');
 
-  MakefileFPCFilename:=AppendPathDelim(APackage.Directory)+'Makefile.fpc';
-  
   CodeBuffer:=CodeToolBoss.LoadFile(MakefileFPCFilename,true,true);
   if CodeBuffer=nil then begin
     CodeBuffer:=CodeToolBoss.CreateFile(MakefileFPCFilename);
