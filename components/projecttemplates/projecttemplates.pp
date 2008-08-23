@@ -83,7 +83,7 @@ Const
   KeyDescription = 'Description';
   KeyRecurse     = 'Recurse';
   KeyExclude     = 'Exclude';
-  varprefixstr   = '__';     	// subtitution pattern is "__varname__"
+  varprefixstr   = '__';     // subtitution pattern is "__varname__"
   varpostfixstr  = '__';     
 
 

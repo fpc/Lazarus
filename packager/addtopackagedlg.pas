@@ -1393,9 +1393,6 @@ begin
   
   FilesBrowseButton.Caption:=lisPathEditBrowse;
   FilesDirButton.Caption:=lisAddDirectory;
-  {$IFNDEF EnableA2PDirectoryButton}
-  FilesDirButton.Visible:=false;
-  {$ENDIF}
 
   with FilesShortenButton do begin
     Caption:=lisA2PSwitchPaths;
