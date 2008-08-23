@@ -17,14 +17,17 @@ type
     FDirectory: String;
     FExclude: String;
     FName: String;
+    FProjectFile: String;
     FRecurse: Boolean;
     FFiles : TStrings;
     FVariables: TStrings;
+    function DefaultFileSubstitutes(AFileName: String): string;
     function GetFileCount: Integer;
     function GetFileName(FileIndex : Integer): String;
     procedure SetVariables(const AValue: TStrings);
     procedure GetFileList(Const Dir : String);
   Protected
+    Function SpecialFile(Const AName : String) : Boolean;
     procedure InitFromDir(Const DirName : String);
     procedure CopyAndSubstituteDir(Const SrcDir,DestDir : String; Values : TStrings);
     procedure CopyAndSubstituteFile(Const SrcFN,DestFN : String; Values : Tstrings);
@@ -44,6 +47,7 @@ type
     Property Directory : String Read FDirectory;
     Property Description : String Read FDescription Write FDescription;
     Property Variables : TStrings Read FVariables Write SetVariables;
+    Property ProjectFile : String Read FProjectFile;
     Property Author : String Read FAuthor;
     Property Recurse : Boolean Read FRecurse;
     Property Exclude : String Read FExclude;
@@ -83,7 +87,8 @@ Const
   KeyDescription = 'Description';
   KeyRecurse     = 'Recurse';
   KeyExclude     = 'Exclude';
-  varprefixstr   = '__';     // subtitution pattern is "__varname__"
+  KeyProjectFile = 'ProjectFile';
+  varprefixstr   = '__';     	// subtitution pattern is "__varname__"
   varpostfixstr  = '__';     
 
 
@@ -238,6 +243,7 @@ begin
   inherited Create(ACollection);
   FVariables:=TStringList.Create;
   FFiles:=TStringList.Create;
+  FProjectFile:='project' // Do not localize
 end;
 
 
@@ -280,6 +286,7 @@ begin
       begin
       With TMemInifile.Create(FN) do
         try
+          FProjectFile:=ReadString(SProject,KeyProjectFile,FProjectFile);
           FName:=ReadString(SProject,KeyName,DirName);
           FAuthor:=ReadString(SProject,KeyAuthor,'');
           FDescription:=ReadString(SProject,KeyDescription,'');
@@ -350,10 +357,19 @@ begin
     end;
 end;
 
+function TProjectTemplate.DefaultFileSubstitutes(AFileName : String) : string;
+
+begin
+  Result:=AFileName;
+  If SameFileName(ChangeFileExt(ExtractFileName(Result),''),ProjectFile) then
+    Result:=ExtractFilePath(Result)+VarPrefixStr+'ProjName'+varpostfixstr+ExtractFileExt(Result);
+end;
+
 function TProjectTemplate.TargetFileName(FN: String; Values: TStrings): String;
 
 begin
   Result:=ExtractRelativePath(Directory,FN);
+  Result:=DefaultFileSubstitutes(Result);
   Result:=SubstituteString(Result,Values);
 end;
 
@@ -394,7 +410,7 @@ begin
   If FindFirst(Dir+AllFilesMask,0,Info)=0 then
     try
       repeat
-        if (info.name<>'description.txt') and (info.name<>'project.ini') then
+        if Not SpecialFile(info.name) then
           FFiles.Add(Dir+Info.Name);
        Until (FindNext(Info)<>0);
     finally
@@ -413,12 +429,18 @@ begin
       end;
 end;
 
+function TProjectTemplate.SpecialFile(const AName: String): Boolean;
+begin
+  Result:=SameFileName(AName,'description.txt') or SameFileName(AName,'project.ini');
+end;
+
 
 procedure TProjectTemplate.CopyAndSubstituteDir(Const SrcDir,DestDir : String; Values: Tstrings);
 
 Var
   D1,D2 : String;
   Info : TSearchRec;
+  N : String;
 
 begin
   D1:=IncludeTrailingPathDelimiter(SrcDir);
@@ -428,9 +450,13 @@ begin
   If FindFirst(D1+AllFilesMask,0,Info)=0 then
     try
       repeat
-        if (info.name<>'description.txt')
-         and (info.name<>'project.ini') then
-           CopyAndSubstituteFile(D1+Info.Name,D2+SubstituteString(Info.Name,Values),Values);
+        N:=Info.Name;
+        if Not SpecialFile(N) then
+           begin
+           // Anything that has projectfile as a name, is also substituted
+           N:=DefaultFileSubstitutes(N);
+           CopyAndSubstituteFile(D1+Info.Name,D2+SubstituteString(N,Values),Values);
+           end;
        Until (FindNext(Info)<>0);
     finally
       FindClose(Info);

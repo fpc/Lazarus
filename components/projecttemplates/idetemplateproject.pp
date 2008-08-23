@@ -297,6 +297,7 @@ begin
       If B then
         begin
         FN:=FProjectDirectory+FTemplate.TargetFileName(FN,FVariables);
+        Writeln('Project file',FN);
         AFile:=AProject.CreateProjectFile(FN);
         AFile.IsPartOfProject:=true;
         AProject.AddFile(AFile,Not B);

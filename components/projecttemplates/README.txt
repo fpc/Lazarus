@@ -5,15 +5,17 @@ Installing this package in the IDE adds a category to the 'File-New' dialog:
 
 It also adds a 'New project from Template' menu item to the 'File' menu, as
 well as a 'project template options' menu under the 'Tools' menu.
+This menu item is visible only if the templates directory (see next paragraph)
+exists and contains at least one template subdirectory.
 
-In the 'Project template options', a directory can be selected. This project
+In the 'Project template options', a directory can be selected. This directory
 should contain a subdirectory per template. Each template directory contains
 a template for a project: A collection of files which will be copied and
 used as a new project.
 
 During the copy, the package will scan the file/directory names and the 
-contents of the files for variable substitution: $(VARNAME) will be 
-replaced by the value of a variable $(VARNAME).
+contents of the files for variable substitution: __VARNAME__ will be 
+replaced by the value of a variable VARNAME
 
 By default, the engine knows 2 variables:
 ProjDir  : The directory where the new project will be created.
@@ -34,6 +36,14 @@ The 'project.ini' file can contain a second section, called 'Project', which
 can contain some info about the project. The following keywords can be found
 there:
 
+ProjectFile
+  Any file that has a name equal to this (no extension) is treated specially, 
+  it is renamed to the project name. That is 
+  ProjectFile=example
+  will replace example.lpi example.lpr and example.cfg with the name given
+  by the user. By default, the value of ProjectFile is assumed to be 'project'.
+  (note that the .ini file is not copied)
+ 
 Name
   Name of the template 
 Author
@@ -47,4 +57,4 @@ Exclude
   Comma separated list of filename extensions which should not be searched
   for keyword subsitution.
 
-The Name,Author and description will be presented in the 'File-New' dialog.
+The Name and description will be presented in the 'File-New' dialog.

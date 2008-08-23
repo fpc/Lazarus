@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for ProjTemplates 1.0
 #
-#   This file was generated on 20-8-08
+#   This file was generated on 23/08/08
 
 [package]
 name=projtemplates
@@ -12,7 +12,7 @@ version=1.0
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
 unitdir=../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)/ ../../packager/units/$(CPU_TARGET)-$(OS_TARGET)/ ./
 includedir=./
-options=-dLCL -dLCL$(LCL_PLATFORM) -Scgi -MObjFPC
+options=-dLCL -dLCL$(LCL_PLATFORM) -S2 -gl
 
 [target]
 units=projtemplates.pas

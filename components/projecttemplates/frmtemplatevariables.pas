@@ -49,6 +49,7 @@ ResourceString
   SVariable    = 'Variable';
   SValue       = 'Value';
   SDescription = 'Description';
+  SNoAdditionalVars = 'This project has no additional variables.';
   
 
 { TProjectVariablesForm }
@@ -86,15 +87,23 @@ Var
   
 begin
   FVariables:=AValue;
-  SGVariables.RowCount:=FVariables.Count+1;
-  For I:=1 to FVariables.Count do
+  If (FVariables.Count=0) then
     begin
-    V:='';
-    N:='';
-    FVariables.GetNameValue(I-1,N,V);
-    SGVariables.Cells[0,I]:=N;
-    SGVariables.Cells[1,I]:='';
-    SGVariables.Cells[2,I]:=V;
+    SGVariables.Enabled:=False;
+    PDescription.Caption:=SNoAdditionalVars;
+    end
+  else
+    begin
+    SGVariables.RowCount:=FVariables.Count+1;
+    For I:=1 to FVariables.Count do
+      begin
+      V:='';
+      N:='';
+      FVariables.GetNameValue(I-1,N,V);
+      SGVariables.Cells[0,I]:=N;
+      SGVariables.Cells[1,I]:='';
+      SGVariables.Cells[2,I]:=V;
+      end;
     end;
 end;
 
