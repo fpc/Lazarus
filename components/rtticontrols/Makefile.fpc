@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for RunTimeTypeInfoControls 0.1
 #
-#   This file was generated on 20-6-2008
+#   This file was generated on 23-8-08
 
 [package]
 name=runtimetypeinfocontrols
@@ -12,7 +12,7 @@ version=0.1
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
 unitdir=../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)/ ../../packager/units/$(CPU_TARGET)-$(OS_TARGET)/ ./
 includedir=./
-options=-dLCL -dLCL$(LCL_PLATFORM) -S2 -gl
+options=-dLCL -dLCL$(LCL_PLATFORM) -Scgi -MObjFPC
 
 [target]
 units=runtimetypeinfocontrols.pas
