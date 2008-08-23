@@ -56,8 +56,6 @@ type
   end;
 
 implementation
-uses SynEdit;
-
 
 { TSynEditMarkupBracket }
 
