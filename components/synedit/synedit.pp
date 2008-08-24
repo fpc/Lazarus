@@ -480,10 +480,10 @@ type
     fOnProcessCommand: TProcessCommandEvent;
     fOnProcessUserCommand: TProcessCommandEvent;
     fOnReplaceText: TReplaceTextEvent;
-    fOnSpecialLineColors: TSpecialLineColorsEvent;// needed, because bug fpc 10451
+    fOnSpecialLineColors: TSpecialLineColorsEvent;// needed, because bug fpc 11926
     fOnStatusChange: TStatusChangeEvent;
     {$IFDEF SYN_LAZARUS}
-    FOnSpecialLineMarkup: TSpecialLineMarkupEvent;// needed, because bug fpc 10451
+    FOnSpecialLineMarkup: TSpecialLineMarkupEvent;// needed, because bug fpc 11926
     FOnClickLink: TMouseEvent;
     {$ENDIF}
 
