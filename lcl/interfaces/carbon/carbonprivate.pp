@@ -1233,7 +1233,7 @@ begin
     begin
       if I >= FPanels.Count then // create new panel
       begin
-        Panel := TPanel.Create(LCLObject);
+        Panel := TPanel.Create(nil);
         Panel.Visible := False;
         
         Panel.Height := LCLObject.Height;

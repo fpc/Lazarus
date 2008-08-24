@@ -643,7 +643,7 @@ begin
     end;
     
     FreeAndNil(FTimer);
-    FTimer := TTimer.Create(LCLObject);
+    FTimer := TTimer.Create(nil);
     FTimer.Interval := 200;
     FTimer.OnTimer := @DropDownTimer;
   end;
@@ -662,6 +662,8 @@ end;
 procedure TCarbonComboBox.DestroyWidget;
 begin
   if FReadOnly then DisposeMenu(FPopupMenu);
+  if FTimer.Enabled then DropDownTimer(nil);
+  FTimer.Free;
 
   inherited DestroyWidget;
 end;
