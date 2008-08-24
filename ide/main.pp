@@ -4622,6 +4622,10 @@ var
   LRTFilename: String;
   AncestorUnit: TUnitInfo;
   Ancestor: TComponent;
+  HasI18N: Boolean;
+  UnitOwners: TFPList;
+  APackage: TLazPackage;
+  i: Integer;
 begin
   Result:=mrCancel;
 
@@ -4656,16 +4660,27 @@ begin
     Writer:=nil;
     DestroyDriver:=false;
     Grubber:=nil;
+    UnitOwners:=nil;
     try
+      UnitOwners:=PkgBoss.GetOwnersOfUnit(AnUnitInfo.Filename);
       Result:=mrOk;
       repeat
         try
           BinCompStream.Position:=0;
           Writer:=CreateLRSWriter(BinCompStream,DestroyDriver);
           //used to save lrt files
-          if AnUnitInfo.Project.EnableI18N then begin
-            Grubber:=TLRTGrubber.Create(Writer);
+          HasI18N:=AnUnitInfo.IsPartOfProject and AnUnitInfo.Project.EnableI18N;
+          if (not HasI18N) and (UnitOwners<>nil) then begin
+            for i:=0 to UnitOwners.Count-1 do begin
+              if TObject(UnitOwners[i]) is TLazPackage then begin
+                APackage:=TLazPackage(UnitOwners[i]);
+                if APackage.EnableI18N then
+                  HasI18N:=true;
+              end;
+            end;
           end;
+          if HasI18N then
+            Grubber:=TLRTGrubber.Create(Writer);
           {$IFNDEF DisableFakeMethods}
           Writer.OnWriteMethodProperty:=@FormEditor1.WriteMethodPropertyEvent;
           {$ENDIF}
@@ -4842,10 +4857,11 @@ begin
 
     finally
       try
-        BinCompStream.Free;
+        FreeAndNil(BinCompStream);
         if DestroyDriver and (Writer<>nil) then Writer.Driver.Free;
-        Writer.Free;
-        Grubber.Free;
+        FreeAndNil(Writer);
+        FreeAndNil(Grubber);
+        FreeAndNil(UnitOwners);
       except
         on E: Exception do begin
           debugln('TMainIDE.SaveFileResources Error cleaning up: ',E.Message);
