@@ -3,8 +3,6 @@ object ObjectInspectorDlg: TObjectInspectorDlg
   Height = 669
   Top = 175
   Width = 275
-  HorzScrollBar.Page = 274
-  VertScrollBar.Page = 668
   Caption = 'ObjectInspectorDlg'
   ClientHeight = 669
   ClientWidth = 275
@@ -13,8 +11,8 @@ object ObjectInspectorDlg: TObjectInspectorDlg
   PopupMenu = MainPopupMenu
   LCLVersion = '0.9.25'
   object StatusBar: TStatusBar
-    Height = 20
-    Top = 649
+    Height = 23
+    Top = 646
     Width = 275
     Panels = <    
       item
