@@ -123,6 +123,10 @@ begin
     ExecuteToolButton.Visible := False;
     end;
   SQLHighlighter.SQLDIalect:=D;
+  SQLHighlighter.Enabled:=True;
+{$ifdef unix}
+  SQLEditor.Font.Name:='-adobe-courier-medium-r-normal-*-8-*-*-*-m-*-iso10646-1';
+{$endif}
 end;
 
 
