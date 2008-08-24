@@ -480,9 +480,10 @@ type
     fOnProcessCommand: TProcessCommandEvent;
     fOnProcessUserCommand: TProcessCommandEvent;
     fOnReplaceText: TReplaceTextEvent;
-    {$IFNDEF SYN_LAZARUS}fOnSpecialLineColors: TSpecialLineColorsEvent;{$ENDIF}
+    fOnSpecialLineColors: TSpecialLineColorsEvent;// needed, because bug fpc 10451
     fOnStatusChange: TStatusChangeEvent;
     {$IFDEF SYN_LAZARUS}
+    FOnSpecialLineMarkup: TSpecialLineMarkupEvent;// needed, because bug fpc 10451
     FOnClickLink: TMouseEvent;
     {$ENDIF}
 
@@ -510,8 +511,6 @@ type
     function GetHighlightAllColor : TSynSelectedColor;
     function GetIncrementColor : TSynSelectedColor;
     function GetSelectedColor : TSynSelectedColor;
-    function GetSpecialLineColors : TSpecialLineColorsEvent;
-    function GetSpecialLineMarkup : TSpecialLineMarkupEvent;
     function GetBracketMatchColor : TSynSelectedColor;
     function GetMouseLinkColor : TSynSelectedColor;
     procedure SetSelectedColor(const AValue : TSynSelectedColor);
@@ -979,14 +978,14 @@ type
       write fOnReplaceText;
     {$IFDEF SYN_LAZARUS}
     property OnSpecialLineColors: TSpecialLineColorsEvent
-      read GetSpecialLineColors write SetSpecialLineColors;  deprecated;
+      read FOnSpecialLineColors write SetSpecialLineColors;  deprecated;
     {$ELSE}
     property OnSpecialLineColors: TSpecialLineColorsEvent
       read fOnSpecialLineColors write fOnSpecialLineColors;
     {$ENDIF}
     {$IFDEF SYN_LAZARUS}
     property OnSpecialLineMarkup: TSpecialLineMarkupEvent
-      read GetSpecialLineMarkup write SetSpecialLineMarkup;
+      read FOnSpecialLineMarkup write SetSpecialLineMarkup;
     {$ENDIF}
     property OnStatusChange: TStatusChangeEvent
       read fOnStatusChange write fOnStatusChange;
@@ -1776,24 +1775,15 @@ begin
   fMarkupSelection.MarkupInfoSeletion.Assign(AValue);
 end;
 
-function TCustomSynEdit.GetSpecialLineColors : TSpecialLineColorsEvent;
-begin
-  Result := fMarkupSpecialLine.OnSpecialLineColors;
-end;
-
 procedure TCustomSynEdit.SetSpecialLineColors(const AValue : TSpecialLineColorsEvent);
 begin
+  fOnSpecialLineColors:=AValue;
   fMarkupSpecialLine.OnSpecialLineColors := AValue;
-end;
-
-
-function TCustomSynEdit.GetSpecialLineMarkup : TSpecialLineMarkupEvent;
-begin
-  Result := fMarkupSpecialLine.OnSpecialLineMarkup;
 end;
 
 procedure TCustomSynEdit.SetSpecialLineMarkup(const AValue : TSpecialLineMarkupEvent);
 begin
+  FOnSpecialLineMarkup:=AValue;
   fMarkupSpecialLine.OnSpecialLineMarkup := AValue;
 end;
 
