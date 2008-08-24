@@ -50,7 +50,7 @@ uses
   QSynEditHighlighter,
   {$ELSE}
   {$IFDEF SYN_LAZARUS}
-  LCLIntf, LCLType,
+  LCLProc, LCLIntf, LCLType,
   {$ELSE}
   Windows, Registry, Messages,
   {$ENDIF}
@@ -233,7 +233,7 @@ end;  { SpaceProc }
 procedure TSynTeXSyn.TextProc;
 begin
   fTokenID:=tkText;
-  inc(Run);
+  inc(Run,UTF8CharacterLength(@fLine[Run]));
 end;  { TextProc }
 
 procedure TSynTeXSyn.LFProc;
