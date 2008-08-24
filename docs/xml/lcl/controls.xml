@@ -9399,14 +9399,16 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.DoEnter">
-        <short/>
+        <short>
+          <var>DoEnter</var> - perform the action for the <var>OnEnter</var> event handleer</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.DoExit">
-        <short/>
+        <short>
+          <var>DoExit</var> - perform the action for the <var>OnExit</var> event handler</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9686,7 +9688,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.KeyPress">
-        <short/>
+        <short>
+          <var>KeyPress</var> - simulates the action of pressing the specified key</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9901,8 +9904,24 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.CreateParams">
-        <short/>
-        <descr/>
+        <short>
+          <var>CreateParams</var> - create parameters for this windowed class</short>
+        <descr>
+          <printshort/>
+          <p>Definition of parameters:</p>
+          <pre>TCreateParams = record
+    Caption: PChar;
+    Style: Cardinal;
+    ExStyle: Cardinal;
+    X, Y: Integer;
+    Width, Height: Integer;
+    WndParent: HWnd;
+    Param: Pointer;
+    WindowClass: TWndClass;
+    WinClassName: array[0..63] of Char; 
+End;
+</pre>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -9912,7 +9931,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.CreateWnd">
-        <short/>
+        <short>Creates the Window</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9926,7 +9945,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.DestroyWnd">
-        <short/>
+        <short>
+          <var>DestroyWnd</var> - destroy the window for this control</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9958,8 +9978,12 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.InitializeWnd">
-        <short/>
-        <descr/>
+        <short>
+          <var>InitializeWnd</var> - initialise the window for this control</short>
+        <descr>
+          <printshort/>
+          <p>Gets called after the Handle is created and before the child handles are created</p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -10135,7 +10159,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- property Visibility: protected -->
       <element name="TWinControl.OnGetSiteInfo">
-        <short/>
+        <short>
+          <var>OnGetSiteInfo</var> - event handler for finding out information about the (docking) site</short>
         <descr/>
         <seealso/>
       </element>
