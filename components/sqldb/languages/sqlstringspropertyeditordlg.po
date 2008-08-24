@@ -1,0 +1,11 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: sqlstringspropertyeditordlg.sresulttabcaption
+msgid "Results"
+msgstr ""
+
+#: sqlstringspropertyeditordlg.ssqltabcaption
+msgid "SQL Code"
+msgstr ""
+

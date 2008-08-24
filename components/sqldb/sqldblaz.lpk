@@ -4,13 +4,10 @@
     <Name Value="SQLDBLaz"/>
     <Author Value="Joost van der Sluis"/>
     <CompilerOptions>
-      <Version Value="5"/>
+      <Version Value="8"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
       </SearchPaths>
-      <CodeGeneration>
-        <Generate Value="Faster"/>
-      </CodeGeneration>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
         <CreateMakefileOnBuild Value="True"/>
@@ -46,6 +43,10 @@
         <UnitName Value="SQLStringsPropertyEditorDlg"/>
       </Item5>
     </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">
       <Item1>
