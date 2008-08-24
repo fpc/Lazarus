@@ -186,7 +186,7 @@ var
       Pos.Y := Y;
     end;
     ClientToScreen(Handle, Pos);
-    WParam := Windows.WParam(PointToSmallPoint(Pos));
+    WParam := Windows.WParam(Longint(PointToSmallPoint(Pos)));
 
     if Windows.SendMessage(Handle, WM_NCHITTEST, 0, WParam) = HTHSCROLL then
     begin
