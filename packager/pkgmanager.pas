@@ -2182,7 +2182,6 @@ begin
   PackageGraph.OpenDependency(ADependency);
   if (ADependency.RequiredPackage<>nil)
   and (not ADependency.RequiredPackage.AutoCreated)
-  and (ADependency.RequiredPackage.PackageType in [lptRunTime,lptRunAndDesignTime])
   and ADependency.RequiredPackage.AddToProjectUsesSection
   then begin
     AddUnitToProjectMainUsesSection(AProject,ADependency.PackageName,'');
