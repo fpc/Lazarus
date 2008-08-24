@@ -261,11 +261,6 @@ begin
   SaveToStream(Stream);
 end;
 
-function TGraphic.GetTransparent: Boolean;
-begin
-  Result := FTransparent;
-end;
-
 function TGraphic.LazarusResourceTypeValid(const AResourceType: string): boolean;
 begin
   Result := False;
@@ -277,14 +272,6 @@ begin
     Changed(Self)
   else
     FModified := False;
-end;
-
-procedure TGraphic.SetTransparent(Value: Boolean);
-begin
-  if Value <> FTransparent then begin
-    FTransparent := Value;
-    Changed(Self);
-  end;
 end;
 
 // included by graphics.pp

@@ -5805,6 +5805,7 @@ var
   AImageList: TCustomImageList;
   FreeImageList: Boolean;
   AImageIndex: Integer;
+  ItemBmp: TBitmap;
 begin
   if (MenuItem=nil) then
     exit;
@@ -5845,9 +5846,13 @@ begin
   if AImageList = nil then
   begin
     AImageList := TImageList.Create(nil);
-    AImageList.Width := LCLMenuItem.Bitmap.Width; // maybe height to prevent too wide bitmaps?
-    AImageList.Height := LCLMenuItem.Bitmap.Height;
-    AImageIndex := AImageList.Add(LCLMenuItem.Bitmap, nil);
+    // prevent multiple calls to GetBitmap;
+    ItemBmp := LCLMenuItem.Bitmap;
+    AImageList.Width := ItemBmp.Width; // maybe height to prevent too wide bitmaps?
+    AImageList.Height := ItemBmp.Height;
+    if ItemBmp.Masked
+    then AImageIndex := AImageList.AddMasked(ItemBmp, ItemBmp.TransparentColor)
+    else AImageIndex := AImageList.Add(ItemBmp, nil);
     FreeImageList := True;
   end
   else

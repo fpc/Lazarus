@@ -107,10 +107,9 @@ end;
 
 procedure TCustomBitmap.MaskHandleNeeded;
 begin
-  if FMaskHandle <> 0 then exit;
-  // not now, breaks alpha images, since they report themselves as transparent
-  // while no mask is needed
-  // CreateMask;
+  if FMaskHandle <> 0 then Exit;
+  if Masked
+  then CreateMask;
 end;
 
 function TCustomBitmap.PaletteAllocated: boolean;
@@ -229,7 +228,7 @@ procedure TCustomBitmap.SetMonochrome(AValue: Boolean);
 begin
   if Monochrome = AValue then exit;
   if not AValue then Exit;
-  
+
   if AValue
   then PixelFormat := pf1bit
   else PixelFormat := pfDevice;
@@ -299,19 +298,6 @@ end;
 procedure TCustomBitmap.UpdatePixelFormat;
 begin
   FPixelFormat := TSharedCustomBitmap(FSharedImage).GetPixelFormat;
-end;
-
-function TCustomBitmap.GetTransparent: Boolean;
-begin
-  {$IFDEF VerboseLCLTodos}{$note add better check for transparency }{$ENDIF}
-  // MWE: now tharansparency is set when a maskhandle is assigned, the user can
-  // override this by setting it to false, so no mask is used,
-  // however this meganism ignores the possible alpha channel, so for now 32bit
-  // bitmaps are considered transparent
-  // todos:
-  //  check for device transparency
-  //  check for transparency through palette etc.
-  Result := (FPixelFormat = pf32bit) or inherited GetTransparent;
 end;
 
 function TCustomBitmap.GetMonochrome: Boolean;

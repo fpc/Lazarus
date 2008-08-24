@@ -44,7 +44,6 @@ uses
   LCLStrConsts, LCLType, LCLProc, LMessages, LCLIntf, LResources, LCLResCache,
   GraphType, IcnsTypes, GraphMath, InterfaceBase, WSReferences;
 
-
 type
   PColor = ^TColor;
   TColor = TGraphicsColor;
@@ -673,7 +672,6 @@ type
   TGraphic = class(TPersistent)
   private
     FModified: Boolean;
-    FTransparent: Boolean;
     FOnChange: TNotifyEvent;
     FOnProgress: TProgressEvent;
     FPaletteModified: Boolean;
@@ -686,7 +684,7 @@ type
     function GetHeight: Integer; virtual; abstract;
     function GetMimeType: string; virtual;
     function GetPalette: HPALETTE; virtual;
-    function GetTransparent: Boolean; virtual;
+    function GetTransparent: Boolean; virtual; abstract;
     function GetWidth: Integer; virtual; abstract;
     procedure Progress(Sender: TObject; Stage: TProgressStage;
       PercentDone: Byte;  RedrawNow: Boolean; const R: TRect;
@@ -697,7 +695,7 @@ type
     procedure ReadData(Stream: TStream); virtual; // used by Filer
     procedure SetHeight(Value: Integer); virtual; abstract;
     procedure SetPalette(Value: HPALETTE); virtual;
-    procedure SetTransparent(Value: Boolean); virtual;
+    procedure SetTransparent(Value: Boolean); virtual; abstract;
     procedure SetWidth(Value: Integer); virtual; abstract;
     procedure SetModified(Value: Boolean);
     procedure WriteData(Stream: TStream); virtual; // used by filer
@@ -1117,6 +1115,7 @@ type
     FTransparentMode: TTransparentMode;
     FUpdateCount: Integer;
     FUpdateCanvasOnly: Boolean;
+    FMasked: Boolean;
 
     procedure CanvasChanging(Sender: TObject);
     procedure CreateCanvas;
@@ -1124,7 +1123,7 @@ type
     procedure FreeCanvasContext;
     function  GetCanvas: TCanvas;
     function  GetRawImage: TRawImage;
-    function GetTransparentColor: TColor;
+    function  GetTransparentColor: TColor;
     procedure SetTransparentColor(AValue: TColor);
   protected
     FSharedImage: TSharedRasterImage;
@@ -1135,6 +1134,7 @@ type
     function GetEmpty: Boolean; override;
     function GetHandle: THandle;
     function GetBitmapHandle: HBITMAP; virtual; abstract;
+    function GetMasked: Boolean; virtual;
     function GetMaskHandle: HBITMAP; virtual; abstract;
     function GetMimeType: string; override;
     function GetPixelFormat: TPixelFormat; virtual; abstract;
@@ -1152,7 +1152,9 @@ type
     function  InternalReleaseMaskHandle: HBITMAP; virtual; abstract;
     function  InternalReleasePalette: HPALETTE; virtual; abstract;
     procedure SetBitmapHandle(AValue: HBITMAP);
+    procedure SetMasked(AValue: Boolean); virtual;
     procedure SetMaskHandle(AValue: HBITMAP);
+    procedure SetTransparent(AValue: Boolean); override;
     procedure UnshareImage(CopyContent: boolean); virtual; abstract;
     function  UpdateHandles(ABitmap, AMask: HBITMAP): Boolean; virtual; abstract; // called when handles are created from rawimage (true when handle changed)
     procedure SaveStreamNeeded;
@@ -1167,7 +1169,7 @@ type
     procedure SetPixelFormat(AValue: TPixelFormat); virtual; abstract;
     procedure WriteData(Stream: TStream); override;
     procedure WriteStream(AStream: TMemoryStream); virtual; abstract;
-    function RequestTransparentColor: TColor;
+    function  RequestTransparentColor: TColor;
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -1199,6 +1201,7 @@ type
     property Canvas: TCanvas read GetCanvas;
     function HandleAllocated: boolean;
     property BitmapHandle: HBITMAP read GetBitmapHandle write SetBitmapHandle;
+    property Masked: Boolean read GetMasked write SetMasked;
     property MaskHandle: HBITMAP read GetMaskHandle write SetMaskHandle;
     property PixelFormat: TPixelFormat read GetPixelFormat write SetPixelFormat default pfDevice;
     property RawImage: TRawImage read GetRawImage; // be carefull with this, modify only within a begin/endupdate
@@ -1260,7 +1263,6 @@ type
     function GetPixelFormat: TPixelFormat; override;
     function GetRawImagePtr: PRawImage; override;
     function GetRawImageDescriptionPtr: PRawImageDescription; override;
-    function GetTransparent: Boolean; override;
     procedure HandleNeeded; override;
     function InternalReleaseBitmapHandle: HBITMAP; override;
     function InternalReleaseMaskHandle: HBITMAP; override;
@@ -1464,6 +1466,7 @@ type
     procedure PaletteNeeded; override;
     function GetIndex(AFormat: TPixelFormat; AHeight, AWidth: Word): Integer;
     function GetBitmapHandle: HBITMAP; override;
+    function GetMasked: Boolean; override;
     function GetMaskHandle: HBITMAP; override;
     function GetPalette: HPALETTE; override;
     function GetPixelFormat: TPixelFormat; override;
@@ -1477,6 +1480,7 @@ type
     function InternalReleasePalette: HPALETTE; override;
     procedure ReadData(Stream: TStream); override;
     procedure ReadStream(AStream: TMemoryStream; ASize: Longint); override;
+    procedure SetMasked(AValue: Boolean); override;
     procedure SetPixelFormat(AValue: TPixelFormat); override;
     procedure SetTransparent(Value: Boolean); override;
     procedure UnshareImage(CopyContent: boolean); override;

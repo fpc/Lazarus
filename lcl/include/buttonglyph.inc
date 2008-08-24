@@ -23,6 +23,7 @@ type
   private
     FOwner: TButtonGlyph;
   protected
+    procedure SetMasked(AValue: Boolean); override;
     procedure SetTransparent(AValue: Boolean); override;
   public
     procedure Assign(ASource: TPersistent); override;
@@ -42,6 +43,14 @@ begin
   FOwner := AOwner;
   inherited Create;
   inherited SetTransparent(True);
+end;
+
+procedure TGlyphBitmap.SetMasked(AValue: Boolean);
+begin
+  if (FOwner = nil)
+  or (FOwner.FTransparentMode = gtmGlyph)
+  then inherited SetMasked(AValue)
+  else inherited SetMasked(FOwner.FTransparentMode = gtmTransparent);
 end;
 
 procedure TGlyphBitmap.SetTransparent(AValue: Boolean);

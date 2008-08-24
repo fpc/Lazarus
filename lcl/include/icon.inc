@@ -429,6 +429,12 @@ begin
   Result := TSharedIcon(FSharedImage).GetIndex(AFormat, AHeight, AWidth);
 end;
 
+function TCustomIcon.GetMasked: Boolean;
+begin
+  // per definition an icon is maked, but maybe we should make it settable for alpha images
+  Result := True;
+end;
+
 function TCustomIcon.GetMaskHandle: HBITMAP;
 begin
   if FCurrent = -1
@@ -736,6 +742,11 @@ end;
 procedure TCustomIcon.SetHandles(ABitmap, AMask: HBITMAP);
 begin
   {$IFDEF VerboseLCLTodos}{$note Implement me (or raise exception)}{$ENDIF}
+end;
+
+procedure TCustomIcon.SetMasked(AValue: Boolean);
+begin
+  // nothing
 end;
 
 function TCustomIcon.GetBestApplicationIndex: Integer;

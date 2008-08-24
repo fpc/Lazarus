@@ -60,9 +60,9 @@ begin
       else UpdateHandles(0, 0);
     end;
 
-    FTransparent := SrcImage.FTransparent;
     FTransparentMode := SrcImage.FTransparentMode;
     FTransparentColor := SrcImage.FTransparentColor;
+    FMasked := SrcImage.FMasked;
 
     // -> check if already shared
     if SrcImage.FSharedImage <> FSharedImage
@@ -258,7 +258,7 @@ begin
   BitmapHandleNeeded;
   if not BitmapHandleAllocated then Exit;
 
-  if Transparent then
+  if Masked then
     UseMaskHandle:=MaskHandle
   else
     UseMaskHandle:=0;
@@ -501,16 +501,21 @@ begin
 end;
 
 function TRasterImage.GetTransparent: Boolean;
+var
+  Desc: PRawImageDescription;
 begin
-  {$IFDEF VerboseLCLTodos}{$note add better check for transparency}{$ENDIF}
-  // MWE: now tharansparency is set when a maskhandle is assigned, the user can
-  // override this by setting it to false, so no mask is used,
-  // however this meganism ignores the possible alpha channel, so for now 32bit
-  // bitmaps are considered transparent
-  // todos:
-  //  check for device transparency
-  //  check for transparency through palette etc.
-  Result := FTransparent;
+  if Masked
+  then begin
+    // postpone description generation since we know we are transparent here
+    Result := True
+  end
+  else begin
+    Desc := GetRawImageDescriptionPtr;
+    Result := (Desc <> nil)
+          and (Desc^.Format <> ricfNone)
+          and (Desc^.AlphaPrec > 0);
+    //TODO:  check for transparency through palette etc.
+  end;
 end;
 
 function TRasterImage.GetWidth: Integer;
@@ -623,6 +628,32 @@ begin
   if BitmapHandleAllocated
   then SetHandles(BitmapHandle, AValue)
   else SetHandles(0, AValue);
+end;
+
+procedure TRasterImage.SetMasked(AValue: Boolean);
+begin
+  if AValue = Masked then Exit;
+
+  FMasked := AValue;
+  Changed(Self);
+end;
+
+procedure TRasterImage.SetTransparentMode(AValue: TTransparentMode);
+begin
+  if AValue = TransparentMode then exit;
+  FTransparentMode := AValue;
+
+  if AValue = tmAuto
+  then TransparentColor := clDefault
+  else TransparentColor := RequestTransparentColor;
+end;
+
+procedure TRasterImage.SetTransparent(AValue: Boolean);
+begin
+  if AValue = Transparent then Exit;
+
+  // some delphi compatibility, we can only change transparency through the mask.
+  Masked := AValue;
 end;
 
 // release handles without freeing them
@@ -756,6 +787,11 @@ begin
   else Result := Desc^.Height;
 end;
 
+function TRasterImage.GetMasked: Boolean;
+begin
+  Result := FMasked;
+end;
+
 class function TRasterImage.GetSharedImageClass: TSharedRasterImageClass;
 begin
   Result := TSharedRasterImage;
@@ -877,16 +913,6 @@ end;
 procedure TRasterImage.SetHeight(AHeight: Integer);
 begin
   SetSize(Width, AHeight);
-end;
-
-procedure TRasterImage.SetTransparentMode(AValue: TTransparentMode);
-begin
-  if AValue = TransparentMode then exit;
-  FTransparentMode := AValue;
-
-  if AValue = tmAuto
-  then TransparentColor := clDefault
-  else TransparentColor := RequestTransparentColor;
 end;
 
 // included by graphics.pp
