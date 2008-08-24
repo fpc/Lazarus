@@ -624,8 +624,8 @@ type
     procedure CancelButtonClick(Sender: TObject);
     procedure SaveDesktopSettingsToFileButtonClick(Sender: TObject);
     procedure LoadDesktopSettingsFromFileButtonClick(Sender: TObject);
-    procedure WindowPositionsListBoxMouseUp(Sender:TObject;
-       Button:TMouseButton;  Shift:TShiftState;  X,Y:integer);
+    procedure WindowPositionsListBoxSelectionChange(Sender: TObject;
+      User: boolean);
   private
     FOnLoadEnvironmentSettings: TOnLoadEnvironmentSettings;
     FOnSaveEnvironmentSettings: TOnSaveEnvironmentSettings;
@@ -2635,10 +2635,11 @@ begin
   OIAutoShowCheckBox.Caption := lisAutoShowObjectInspector;
 end;
 
-procedure TEnvironmentOptionsDialog.WindowPositionsListBoxMouseUp(
-  Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: integer);
+procedure TEnvironmentOptionsDialog.WindowPositionsListBoxSelectionChange(
+  Sender: TObject; User: boolean);
 begin
-  SetWindowPositionsItem(WindowPositionsListBox.ItemIndex);
+  if User then
+    SetWindowPositionsItem(WindowPositionsListBox.ItemIndex);
 end;
 
 procedure TEnvironmentOptionsDialog.SetWindowPositionsItem(Index: integer);
