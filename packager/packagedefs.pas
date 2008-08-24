@@ -590,6 +590,7 @@ type
 
   TLazPackage = class(TLazPackageID)
   private
+    FAddToProjectUsesSection: boolean;
     FAuthor: string;
     FAutoCreated: boolean;
     FAutoInstall: TPackageInstallType;
@@ -645,6 +646,7 @@ type
     function GetFileCount: integer;
     function GetFiles(Index: integer): TPkgFile;
     function GetModified: boolean;
+    procedure SetAddToProjectUsesSection(const AValue: boolean);
     procedure SetAuthor(const AValue: string);
     procedure SetAutoCreated(const AValue: boolean);
     procedure SetAutoIncrementVersionOnBuild(const AValue: boolean);
@@ -774,6 +776,8 @@ type
     // ID
     procedure ChangeID(const NewName: string; NewVersion: TPkgVersion);
   public
+    property AddToProjectUsesSection: boolean read FAddToProjectUsesSection
+                                              write SetAddToProjectUsesSection;
     property Author: string read FAuthor write SetAuthor;
     property AutoCreated: boolean read FAutoCreated write SetAutoCreated;
     property AutoIncrementVersionOnBuild: boolean
@@ -2228,6 +2232,13 @@ begin
   Result:=lpfModified in FFlags;
 end;
 
+procedure TLazPackage.SetAddToProjectUsesSection(const AValue: boolean);
+begin
+  if FAddToProjectUsesSection=AValue then exit;
+  FAddToProjectUsesSection:=AValue;
+  Modified:=true;
+end;
+
 procedure TLazPackage.SetAuthor(const AValue: string);
 begin
   if FAuthor=AValue then exit;
@@ -2501,6 +2512,7 @@ begin
   // break and free required dependencies
   while FFirstRequiredDependency<>nil do
     DeleteRequiredDependency(FFirstRequiredDependency);
+  FAddToProjectUsesSection:=true;
   FAuthor:='';
   FAutoInstall:=pitNope;
   for i:=FComponents.Count-1 downto 0 do Components[i].Free;
@@ -2636,6 +2648,7 @@ begin
   Name:=XMLConfig.GetValue(Path+'Name/Value','');
   FPackageType:=LazPackageTypeIdentToType(XMLConfig.GetValue(Path+'Type/Value',
                                           LazPackageTypeIdents[lptRunTime]));
+  FAddToProjectUsesSection:=XMLConfig.GetValue(Path+'AddToProjectUsesSection/Value',true);
   FAuthor:=XMLConfig.GetValue(Path+'Author/Value','');
   FAutoUpdate:=NameToAutoUpdatePolicy(
                                 XMLConfig.GetValue(Path+'AutoUpdate/Value',''));
@@ -2705,6 +2718,8 @@ begin
   XMLConfig.SetValue(Path+'Version',LazPkgXMLFileVersion);
   XMLConfig.SetDeleteValue(Path+'PathDelim/Value',PathDelim,'/');
   XMLConfig.SetDeleteValue(Path+'Name/Value',FName,'');
+  XMLConfig.SetDeleteValue(Path+'AddToProjectUsesSection/Value',
+                           FAddToProjectUsesSection,true);
   XMLConfig.SetDeleteValue(Path+'Author/Value',FAuthor,'');
   XMLConfig.SetDeleteValue(Path+'AutoUpdate/Value',AutoUpdateNames[FAutoUpdate],
                            AutoUpdateNames[pupAsNeeded]);

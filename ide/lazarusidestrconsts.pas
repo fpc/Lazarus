@@ -919,6 +919,7 @@ resourcestring
   dlgAutoSave = 'Auto save';
   dlgEdFiles = 'Editor files';
   dlgEnvProject = 'Project';
+  podAddPackageUnitToUsesSection = 'Add package unit to uses section';
   lisCodeBrowser = 'Code browser';
   dlgIntvInSec = 'Interval in secs';
   dlgDesktopFiles = 'Desktop files';

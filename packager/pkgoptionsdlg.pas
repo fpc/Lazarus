@@ -50,7 +50,9 @@ type
 
   TPackageOptionsDialog = class(TForm)
     AdditionalInfoButton: TButton;
+    AddPackageUnitToProjectCheckBox: TCheckBox;
     EnableI18NCheckBox: TCheckBox;
+    ProjectGroupBox: TGroupBox;
     I18NGroupBox: TGroupBox;
     ProvidesGroupBox: TGroupBox;
     LazDocGroupBox: TGroupBox;
@@ -110,6 +112,7 @@ type
     LazDocPathButton: TPathEditorButton;
 
     procedure EnableI18NCheckBoxChange(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure POOutputDirectoryButtonClick(Sender: TObject);
     procedure PackageOptionsDialogClose(Sender: TObject;
@@ -262,6 +265,11 @@ begin
   I18NGroupBox.Enabled := EnableI18NCheckBox.Checked;
 end;
 
+procedure TPackageOptionsDialog.FormCreate(Sender: TObject);
+begin
+
+end;
+
 procedure TPackageOptionsDialog.OkButtonClick(Sender: TObject);
 var
   NewPackageType: TLazPackageType;
@@ -336,7 +344,8 @@ begin
     LinkerOptions:=LinkerOptionsMemo.Text;
     CustomOptions:=CustomOptionsMemo.Text;
   end;
-  
+  LazPackage.AddToProjectUsesSection:=AddPackageUnitToProjectCheckBox.Checked;
+
   // IDE integration page
   case UpdateRadioGroup.ItemIndex of
   2: LazPackage.AutoUpdate:=pupManually;
@@ -413,7 +422,6 @@ begin
   EnableI18NCheckBox.Caption:=rsEnableI18n;
   I18NGroupBox.Caption:=rsI18nOptions;
   PoOutDirlabel.Caption:=rsPOOutputDirectory;
-  
 end;
 
 procedure TPackageOptionsDialog.SetupIDEPage;
@@ -514,6 +522,8 @@ begin
     OnExecuted:=@PathEditBtnExecuted;
   end;
 
+  ProjectGroupBox.Caption:=dlgEnvProject;
+  AddPackageUnitToProjectCheckBox.Caption:=podAddPackageUnitToUsesSection;
 end;
 
 procedure TPackageOptionsDialog.ReadOptionsFromPackage;
@@ -550,7 +560,8 @@ begin
     LinkerOptionsMemo.Text:=LinkerOptions;
     CustomOptionsMemo.Text:=CustomOptions;
   end;
-  
+  AddPackageUnitToProjectCheckBox.Checked:=LazPackage.AddToProjectUsesSection;
+
   // IDE integration
   LazDocPathEdit.Text:=LazPackage.LazDocPaths;
 
