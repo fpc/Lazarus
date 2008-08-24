@@ -16,16 +16,13 @@ unit LConvEncoding;
 
 {$mode objfpc}{$H+}
 //As iconv is Linux command, there is no sense in Windows
-{$IFDEF MSWindows}
-{$DEFINE WINDOWS}
-{$ENDIF}
 {$IFDEF WINDOWS}
 {$WARNING Windows/Wine/ReactOS locale conversion is not fully supported yet. Sorry.}
 {$ENDIF}
 
 interface
 
-{$IFDEF UNIX}{$IFNDEF VER2_2_2}{$DEFINE HasIconvEnc}{$ENDIF}{$ENDIF}
+{$IFDEF UNIX}{$IF not defined(VER2_2_0) and not defined(VER2_2_2)}{$DEFINE HasIconvEnc}{$ENDIF}{$ENDIF}
 
 uses
   SysUtils, Classes, dos, LCLProc
