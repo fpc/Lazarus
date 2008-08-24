@@ -3064,6 +3064,7 @@ begin
   // HintTimer
   FHintTimer := TTimer.Create(Self);
   with FHintTimer do begin
+    Name:=Self.Name+'_HintTimer';
     Interval := 1000;
     Enabled := False;
     OnTimer := @HintTimer;
@@ -3072,6 +3073,7 @@ begin
   // HintWindow
   FHintWindow := THintWindow.Create(Self);
   with FHintWindow do begin
+    Name:=Self.Name+'_HintWindow';
     Visible := False;
     Caption := '';
     HideInterval := 4000;
@@ -5133,6 +5135,7 @@ end;
 
 procedure TSourceNotebook.HideHint;
 begin
+  //DebugLn(['TSourceNotebook.HideHint ']);
   if FHintTimer<>nil then
     FHintTimer.Enabled:=false;
   if SourceCompletionTimer<>nil then
@@ -6233,6 +6236,7 @@ Procedure TSourceNotebook.EditorMouseMove(Sender: TObject; Shift: TShiftstate;
   X,Y: Integer);
 begin
   // restart hint timer
+  //DebugLn(['TSourceNotebook.EditorMouseMove ']);
   FHintTimer.Enabled := False;
   FHintTimer.Enabled := (EditorOpts.AutoToolTipSymbTools or
                          EditorOpts.AutoToolTipExprEval)
@@ -6243,8 +6247,8 @@ procedure TSourceNotebook.EditorMouseWheel(Sender: TObject; Shift: TShiftState;
   WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
 begin
   // restart hint timer
+  //DebugLn(['TSourceNotebook.EditorMouseWheel ']);
   HideHint;
-  FHintTimer.Enabled := False;
   FHintTimer.Enabled := (EditorOpts.AutoToolTipSymbTools or
                          EditorOpts.AutoToolTipExprEval) and Visible;
   //handled:=true; //The scrooling is not done: it's not handled! See TWinControl.DoMouseWheel
@@ -6261,6 +6265,7 @@ var
   MousePos: TPoint;
   AControl: TControl;
 begin
+  //DebugLn(['TSourceNotebook.HintTimer ']);
   FHintTimer.Enabled := False;
   MousePos := Mouse.CursorPos;
   AControl:=FindLCLControl(MousePos);

@@ -26,7 +26,7 @@ unit CustomTimer;
 interface
 
 uses
-  Classes, SysUtils, LCLStrConsts, LCLType, InterfaceBase;
+  Classes, SysUtils, LCLProc, LCLStrConsts, LCLType, InterfaceBase;
 
 type
 
@@ -106,6 +106,7 @@ end;
 procedure TCustomTimer.KillTimer;
 begin
   if FTimerHandle <> cIdNoTimer then begin
+    //DebugLn(['TCustomTimer.KillTimer ',dbgsName(Self)]);
     WidgetSet.DestroyTimer(FTimerHandle);
     FTimerHandle := cIdNoTimer;
     if Assigned(OnStopTimer) then OnStopTimer(Self);
@@ -129,8 +130,9 @@ procedure TCustomTimer.UpdateTimer;
 begin
   KillTimer;
   if (FEnabled) and (FInterval > 0)
-  and (([csDesigning,csLoading]*ComponentState=[]))
+  and (([csDesigning,csLoading,csDestroying]*ComponentState=[]))
   and Assigned (FOnTimer) then begin
+    //DebugLn(['TCustomTimer.UpdateTimer ',dbgsName(Self),' WidgetSet.CreateTimer']);
     FTimerHandle := WidgetSet.CreateTimer(FInterval, @Timer);
     if FTimerHandle=0 then begin
       FTimerHandle:=cIdNoTimer;
@@ -148,6 +150,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomTimer.Timer;
 begin
+  {$IFDEF VerboseTimer}
+  DebugLn(['TCustomTimer.Timer ',dbgsName(Self),' ',FEnabled,' ',FInterval]);
+  {$ENDIF}
   if (FEnabled) and (FInterval > 0) then
     DoOnTimer;
 end;

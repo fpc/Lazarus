@@ -1091,6 +1091,7 @@ begin
   // (Posting the message via queue
   //  has the risk of getting out of sync with the gtk)
   NotifyApplicationUserInput(Msg.Msg);
+  //DebugLn(['DeliverMouseMoveMessage ',dbgsName(AWinControl)]);
   DeliverMessage(AWinControl, Msg);
 end;
 
@@ -2152,6 +2153,7 @@ begin
     if TimerInfo^.TimerFunc <> nil
     then begin
       // Call users timer function
+      //DebugLn(['gtkTimerCB ']);
       TimerInfo^.TimerFunc;
       Result:=GdkTrue; // timer will go on
     end

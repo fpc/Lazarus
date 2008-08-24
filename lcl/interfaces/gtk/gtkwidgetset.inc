@@ -1416,9 +1416,10 @@ begin
     Result := 0
   else begin
     New(TimerInfo);
+    FillByte(TimerInfo^,SizeOf(TGtkITimerinfo),0);
     TimerInfo^.TimerFunc := TimerFunc;
     {$IFDEF VerboseTimer}
-    DebugLn('TGtkWidgetSet.SetTimer %p CurTimerCount=%d OldTimerCount=%d', [TimerInfo, FTimerData.Count, FOldTimerData.Count]);
+    DebugLn(['TGtkWidgetSet.CreateTimer Interval=',dbgs(Interval)]);
     {$ENDIF}
     Result:= gtk_timeout_add(Interval, @gtkTimerCB, TimerInfo);
     if Result = 0 then
@@ -1452,7 +1453,7 @@ begin
     if (TimerInfo^.TimerHandle=guint(TimerHandle)) then
     begin
       {$IFDEF VerboseTimer}
-      DebugLn('TGtkWidgetSet.KillTimer TimerInfo=',DbgS(TimerInfo),' TimerHandle=',TimerHandle,' CurTimerCount=',FTimerData.Count,' OldTimerCount=',FOldTimerData.Count);
+      DebugLn(['TGtkWidgetSet.DestroyTimer TimerInfo=',DbgS(TimerInfo),' TimerHandle=',TimerInfo^.TimerHandle]);
       {$ENDIF}
       gtk_timeout_remove(TimerInfo^.TimerHandle);
       FTimerData.Delete(n);
