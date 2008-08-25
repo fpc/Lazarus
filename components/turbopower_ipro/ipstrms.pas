@@ -46,6 +46,7 @@ uses
   LCLType,
   GraphType,
   LCLIntf,
+  FileUtil,
   {$ELSE}
   Windows,
   {$ENDIF}

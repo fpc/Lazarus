@@ -59,6 +59,7 @@ uses
   LMessages,
   LCLMemManager,
   Translations,
+  FileUtil,
   {$ELSE}
   Windows,
   {$ENDIF}

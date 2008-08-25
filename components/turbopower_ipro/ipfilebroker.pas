@@ -32,7 +32,7 @@ unit Ipfilebroker;
 interface
 
 {$IFDEF IP_LAZARUS}
-uses Classes, SysUtils, LResources, Graphics, LCLProc,
+uses Classes, SysUtils, LResources, Graphics, LCLProc, FileUtil,
      ipconst, iputils, iphtml, ipmsg;
 {$ELSE}
 uses
