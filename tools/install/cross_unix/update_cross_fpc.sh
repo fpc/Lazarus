@@ -308,8 +308,8 @@ if [ $BuildCrossFPC = "yes" ]; then
     #debugging: head -n 40 buildcrosssnapshot.sh
 
     # build the cross fpc
-    echo "building cross fpc for target $Target in $BuildRoot/bintuils/cross/destination/"
-    echo "see logs in $BuildRoot/bintuils/cross/logs/"
+    echo "building cross fpc for target $Target in $BuildRoot/binutils/cross/destination/"
+    echo "see logs in $BuildRoot/binutils/cross/logs/"
     sh buildcrosssnapshot.sh
   done
 fi
