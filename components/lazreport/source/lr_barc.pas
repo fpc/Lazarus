@@ -606,7 +606,7 @@ constructor TfrBarCodeObject.Create(aOwner: TComponent);
 begin
   inherited Create(aOwner);
   
-  if not assigned(frBarCodeForm) and not (csDesigning in ComponentState) then
+  if not assigned(frBarCodeForm) {and not (csDesigning in ComponentState)} then
   begin
     frBarCodeForm := TfrBarCodeForm.Create(nil);
     frRegisterObject(TfrBarCodeView, frBarCodeForm.Image1.Picture.Bitmap,

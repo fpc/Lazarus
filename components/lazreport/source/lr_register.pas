@@ -8,6 +8,7 @@ uses
   Classes, SysUtils, LResources,
   LR_Const,
   LR_Class,
+  LR_Desgn,
   LR_Barc,
   LR_DBSet,
   LR_DSet,
@@ -47,7 +48,7 @@ begin
      TfrBarCodeObject,TfrRoundRectObject,TfrShapeObject,
      TfrCheckBoxObject,TfrCompositeReport,TfrUserDataset,
      TfrTextExport,TfrHTMExport,TfrCSVExport,
-     TfrPrintGrid]);
+     TfrPrintGrid,TfrDesigner]);
   RegisterComponentEditor(TfrReport, TfrRepEditor);
 end;
 

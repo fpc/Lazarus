@@ -98,11 +98,16 @@ end;
 constructor TfrCheckBoxView.Create;
 begin
   inherited Create;
-  Typ := gtAddIn;
-  FrameWidth := 2;
-  Frames:=frAllFrames;
-  Checked:=True;
-  BaseName := 'Check';
+  BeginUpdate;
+  try
+    Typ := gtAddIn;
+    FrameWidth := 2;
+    Frames:=frAllFrames;
+    Checked:=True;
+    BaseName := 'Check';
+  Finally
+    EndUpdate;
+  end;
 end;
 
 procedure TfrCheckBoxView.Draw(aCanvas: TCanvas);
@@ -182,7 +187,7 @@ constructor TfrCheckBoxObject.Create(aOwner: TComponent);
 begin
   inherited Create(aOwner);
   
-  if not assigned(lrBMPCheckBox) and not (csDesigning in ComponentState) then
+  if not assigned(lrBMPCheckBox) {and not (csDesigning in ComponentState)} then
   begin
     lrBMPCheckBox := TbitMap.Create;
     lrBMPCheckBox.LoadFromLazarusResource('fr_checkbox');

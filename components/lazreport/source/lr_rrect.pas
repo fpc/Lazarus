@@ -435,40 +435,40 @@ end;
 (********************************************************)
 constructor TfrRoundRectView.Create;
 begin
-  inherited Create;
-  DebugLn('TfrRoundRectView.Create');
-  //Initialization
-  Typ      := gtAddIn;
-  Frames   := frAllFrames;
-  BaseName := 'RoundRect';
-
-  //Default values
-  fCadre.SGradian:=False;
-  fCadre.GradStyle:=gsHorizontal;
-  fCadre.SdColor := clGray;
-  fCadre.wShadow := 6;
-  fCadre.sCurve := True;
-  fCadre.wCurve := 10;
+  inherited;
+  BeginUpdate;
+  try
+    //Initialization
+    Typ      := gtAddIn;
+    Frames   := frAllFrames;
+    BaseName := 'RoundRect';
+    //Default values
+    fCadre.SGradian:=False;
+    fCadre.GradStyle:=gsHorizontal;
+    fCadre.SdColor := clGray;
+    fCadre.wShadow := 6;
+    fCadre.sCurve := True;
+    fCadre.wCurve := 10;
+  finally
+    Endupdate;
+  end;
 end;
 
 procedure TfrRoundRectView.Assign(From: TfrView);
 begin
   inherited Assign(From);
-  DebugLn('TfrRoundRectView.Assign');
   fCadre := TfrRoundRectView(From).fCadre;
 end;
 
 procedure TfrRoundRectView.LoadFromStream(Stream: TStream);
 begin
   inherited LoadFromStream(Stream);
-  DebugLn('TfrRoundRectView.LoadFromStream');
   Stream.Read(fCadre, SizeOf(fCadre));
 end;
 
 procedure TfrRoundRectView.SaveToStream(Stream: TStream);
 begin
   inherited SaveToStream(Stream);
-  DebugLn('TfrRoundRectView.SaveToStream(');
   Stream.Write(fCadre, SizeOf(fCadre));
 end;
 
@@ -501,8 +501,6 @@ end;
 procedure TfrRoundRectView.CalcGaps;
 begin
   inherited CalcGaps;
-  DebugLn('TfrRoundRectView.CalcGaps');
-  
   // Zone de text (MEMO)
   Drect.Left := DRect.Left + (fCadre.wCurve div 4);
   DRect.Top := DRect.Top + (fCadre.wCurve div 4);
@@ -518,10 +516,8 @@ var
   OldDRect: TRect;
   OldFill: TColor;
 begin
-  DebugLn(sysutils.format('TfrRoundRectView.ShowBackGround docmode=%d, fCadre.wShadow =%d',[DocMode,fCadre.wShadow]));
   // prevent screen garbage in designer
   if (DocMode <> dmDesigning) or fCadre.SGradian then Exit;
-  DebugLn('TfrRoundRectView.ShowBackGround');
   BeginUpdate;
   try
     OldDRect := DRect;
@@ -559,7 +555,6 @@ var
 
 begin
   if DisableDrawing then Exit;
-  DebugLn('TfrRoundRectView.ShowFrame');
   with Canvas do
   begin
     if fCadre.SGradian then
@@ -919,7 +914,7 @@ constructor TfrRoundRectObject.Create(aOwner: TComponent);
 begin
   inherited Create(aOwner);
   
-  if not assigned(frRoundRectForm) and not (csDesigning in ComponentState) then
+  if not assigned(frRoundRectForm) {and not (csDesigning in ComponentState)} then
   begin
     frRoundRectForm := TfrRoundRectForm.Create(nil);
     frRegisterObject(TfrRoundRectView, frRoundRectForm.Image1.Picture.Bitmap,

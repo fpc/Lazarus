@@ -287,6 +287,7 @@ type
     property Width: double read GetWidth write SetWidth;
     property Height: double read GetHeight write SetHeight;
   end;
+  TfrViewClass = Class of TFRView;
 
   TfrStretcheable = class(TfrView)
   protected
@@ -1043,7 +1044,7 @@ type
 
 
 function frCreateObject(Typ: Byte; const ClassName: String): TfrView;
-procedure frRegisterObject(ClassRef: TClass; ButtonBmp: TBitmap;
+procedure frRegisterObject(ClassRef: TFRViewClass; ButtonBmp: TBitmap;
   const ButtonHint: String; EditorForm: TfrObjEditorForm);
 procedure frRegisterExportFilter(ClassRef: TClass;
   const FilterDesc, FilterExt: String);
@@ -1073,7 +1074,7 @@ type
   end;
 
   TfrAddInObjectInfo = record
-    ClassRef: TClass;
+    ClassRef: TfrViewClass;
     EditorForm: TfrObjEditorForm;
     ButtonBmp: TBitmap;
     ButtonHint: String;
@@ -1246,8 +1247,8 @@ begin
 
           if frAddIns[i].ClassRef.ClassName = ClassName then
           begin
-            Result := TfrView(frAddIns[i].ClassRef.NewInstance);
-            Result.Create;
+            Result := frAddIns[i].ClassRef.Create;
+//            Result.Create;
             Result.Typ := gtAddIn;
             break;
           end;
@@ -1268,7 +1269,7 @@ begin
   end;
 end;
 
-procedure frRegisterObject(ClassRef: TClass; ButtonBmp: TBitmap;
+procedure frRegisterObject(ClassRef: TfrViewClass; ButtonBmp: TBitmap;
   const ButtonHint: String; EditorForm: TfrObjEditorForm);
 begin
   frAddIns[frAddInsCount].ClassRef := ClassRef;

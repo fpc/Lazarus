@@ -213,7 +213,7 @@ constructor TfrShapeObject.Create(aOwner: TComponent);
 begin
   inherited Create(aOwner);
   
-  if not assigned(frShapeForm) and not (csDesigning in ComponentState) then
+  if not assigned(frShapeForm) {and not (csDesigning in ComponentState)} then
   begin
     frShapeForm:=TfrShapeForm.Create(nil);
     frRegisterObject(TfrShapeView, frShapeForm.Image1.Picture.Bitmap,
