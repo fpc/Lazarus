@@ -462,6 +462,7 @@ begin
   else
     OpenDialog:=TSelectDirectoryDialog.Create(Self);
   try
+    DefaultFilename:='';
     if Sender=btnCompiler then begin
       OpenDialog.Title:=Format(lisBrowseForCompiler, [GetDefaultCompilerFilename
         ]);
@@ -469,13 +470,14 @@ begin
       OpenDialog.Options:=OpenDialog.Options+[ofFileMustExist];
     end else if Sender=btnUnitOutputDir then begin
       OpenDialog.Title:=lisUnitOutputDirectory;
-      DefaultFilename:='';
       OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
     end else
       exit;
     OpenDialog.Filename:=ExtractFilename(DefaultFilename);
     if DefaultFilename<>'' then
-      OpenDialog.InitialDir:=ExtractFilePath(DefaultFilename);
+      OpenDialog.InitialDir:=ExtractFilePath(DefaultFilename)
+    else
+      OpenDialog.InitialDir:=CompilerOpts.BaseDirectory;
     if OpenDialog.Execute then begin
       NewFilename:=TrimFilename(OpenDialog.Filename);
       if CompilerOpts<>nil then

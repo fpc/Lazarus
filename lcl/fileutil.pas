@@ -176,6 +176,19 @@ procedure SetNeedRTLAnsi(NewValue: boolean);
 function UTF8ToSys(const s: string): string;// as UTF8ToAnsi but more independent of widestringmanager
 function SysToUTF8(const s: string): string;// as AnsiToUTF8 but more independent of widestringmanager
 
+function FileExistsUTF8(const Filename: string): boolean;
+function FileAgeUTF8(const FileName: string): Longint;
+function DirectoryExistsUTF8(const Directory: string): Boolean;
+function FindFirstUTF8(const Path: string; Attr: Longint; out Rslt: TSearchRec): Longint;
+function FindNextUTF8(var Rslt: TSearchRec): Longint;
+procedure FindCloseUTF8(var F: TSearchrec);
+function FileSetDateUTF8(const FileName: String; Age: Longint): Longint;
+function FileGetAttrUTF8(const FileName: String): Longint;
+function FileSetAttrUTF8(const Filename: String; Attr: longint): Longint;
+function DeleteFileUTF8(const FileName: String): Boolean;
+function RenameFileUTF8(const OldName, NewName: String): Boolean;
+function FileSearchUTF8(const Name, DirList : String): String;
+function FileIsReadOnlyUTF8(const FileName: String): Boolean;
 
 implementation
 
@@ -250,6 +263,84 @@ begin
     Result:=s
   else
     Result:=AnsiToUTF8(s);
+end;
+
+function FileExistsUTF8(const Filename: string): boolean;
+begin
+  Result:=SysUtils.FileExists(UTF8ToSys(Filename));
+end;
+
+function FileAgeUTF8(const FileName: String): Longint;
+begin
+  Result:=SysUtils.FileAge(UTF8ToSys(Filename));
+end;
+
+function DirectoryExistsUTF8(const Directory: string): Boolean;
+begin
+  Result:=SysUtils.DirectoryExists(UTF8ToSys(Directory));
+end;
+
+function FindFirstUTF8(const Path: string; Attr: Longint; out Rslt: TSearchRec
+  ): Longint;
+begin
+  Result:=SysUtils.FindFirst(UTF8ToSys(Path),Attr,Rslt);
+  Rslt.Name:=SysToUTF8(Rslt.Name);
+  {$IFDEF Unix}
+  Rslt.PathOnly:=SysToUTF8(Rslt.PathOnly);
+  {$ENDIF}
+end;
+
+function FindNextUTF8(var Rslt: TSearchRec): Longint;
+begin
+  Rslt.Name:=UTF8ToSys(Rslt.Name);
+  {$IFDEF Unix}
+  Rslt.PathOnly:=UTF8ToSys(Rslt.PathOnly);
+  {$ENDIF}
+  Result:=SysUtils.FindNext(Rslt);
+  Rslt.Name:=SysToUTF8(Rslt.Name);
+  {$IFDEF Unix}
+  Rslt.PathOnly:=SysToUTF8(Rslt.PathOnly);
+  {$ENDIF}
+end;
+
+procedure FindCloseUTF8(var F: TSearchrec);
+begin
+  SysUtils.FindClose(F);
+end;
+
+function FileSetDateUTF8(const FileName: String; Age: Longint): Longint;
+begin
+  Result:=SysUtils.FileSetDate(UTF8ToSys(Filename),Age);
+end;
+
+function FileGetAttrUTF8(const FileName: String): Longint;
+begin
+  Result:=SysUtils.FileGetAttr(UTF8ToSys(Filename));
+end;
+
+function FileSetAttrUTF8(const Filename: String; Attr: longint): Longint;
+begin
+  Result:=SysUtils.FileSetAttr(UTF8ToSys(Filename),Attr);
+end;
+
+function DeleteFileUTF8(const FileName: String): Boolean;
+begin
+  Result:=SysUtils.DeleteFile(UTF8ToSys(Filename));
+end;
+
+function RenameFileUTF8(const OldName, NewName: String): Boolean;
+begin
+  Result:=SysUtils.RenameFile(UTF8ToSys(OldName),UTF8ToSys(NewName));
+end;
+
+function FileSearchUTF8(const Name, DirList: String): String;
+begin
+  Result:=SysUtils.FileSearch(UTF8ToSys(Name),UTF8ToSys(DirList));
+end;
+
+function FileIsReadOnlyUTF8(const FileName: String): Boolean;
+begin
+  Result:=SysUtils.FileIsReadOnly(UTF8ToSys(Filename));
 end;
 
 {$I fileutil.inc}
