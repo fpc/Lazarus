@@ -50,7 +50,7 @@ interface
 
 {$IFDEF USECLOCALE}
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, FileUtil,
   {$info if compiler can't find clocale unit, you probably are using old 2.2.1 or 2.3.1 version, please upgrade}
   CLocale;
 {$ENDIF}

@@ -17,7 +17,7 @@ unit SqliteComponentEditor;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Dialogs, StdCtrls,
+  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Dialogs, StdCtrls,
   Buttons, customsqliteds, ComponentEditors, LazarusPackageIntf, LazIdeIntf;
 
 type

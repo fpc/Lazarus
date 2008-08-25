@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for Printer4Lazarus 0.5
 #
-#   This file was generated on 20-6-2008
+#   This file was generated on 26-8-08
 
 [package]
 name=printer4lazarus
@@ -12,7 +12,7 @@ version=0.5
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
 unitdir=unix/ win32/ carbon/ qt/ ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)/ ../../packager/units/$(CPU_TARGET)-$(OS_TARGET)/ ./
 includedir=unix/ win32/ carbon/ qt/ ./
-options=-dUseCache  -dNativePrint -dLCL -dLCL$(LCL_PLATFORM) -S2 -gl
+options=-dUseCache -dNativePrint -dLCL -dLCL$(LCL_PLATFORM) -Scgi -MObjFPC
 
 [target]
 units=printer4lazarus.pas

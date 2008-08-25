@@ -18,7 +18,7 @@ interface
 {.$Define StdOI} // External Standard Object inspector (Jesus)
 
 uses
-  Classes, SysUtils, LResources,LMessages,
+  Classes, SysUtils, FileUtil, LResources, LMessages,
   Forms, Controls, Graphics, Dialogs,ComCtrls,
   ExtCtrls, Buttons, StdCtrls,Menus,
 
