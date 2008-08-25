@@ -3271,7 +3271,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomListBox.BeginAutoDrag">
+      <element name="TCustomListBox.BeginAutoDrag" link="#LCL.Controls.TControl.BeginAutoDrag">
         <short/>
         <descr/>
         <errors/>
@@ -3392,28 +3392,28 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomListBox.Loaded">
+      <element name="TCustomListBox.Loaded" link="Classes.TComponent.Loaded">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomListBox.InitializeWnd">
+      <element name="TCustomListBox.InitializeWnd" link="#LCL.Controls.TWinControl.InitializeWnd">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomListBox.FinalizeWnd">
+      <element name="TCustomListBox.FinalizeWnd" link="#LCL.Controls.TWinControl.FinalizeWnd">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomListBox.GetControlClassDefaultSize">
+      <element name="TCustomListBox.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize">
         <short/>
         <descr/>
         <errors/>
@@ -3644,8 +3644,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomListBox.Create">
-        <short>Create a new instance of the Window Control</short>
+      <element name="TCustomListBox.Create" link="#LCL.Controls.TWinControl.Create">
         <descr/>
         <errors/>
         <seealso/>
@@ -3655,8 +3654,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomListBox.Destroy">
-        <short>Destroy this instance of the Window Control, and return the resources used</short>
+      <element name="TCustomListBox.Destroy" link="#LCL.Controls.TWinControl.Destroy">
         <descr/>
         <errors/>
         <seealso/>
@@ -3753,7 +3751,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomListBox.MakeCurrentVisible">
-        <short/>
+        <short>
+          <var>MakeCurrentVisible</var> - makes the current item visible</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3795,15 +3794,13 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomListBox.Click">
-        <short>Procedure to emulate the onClick event handler</short>
+      <element name="TCustomListBox.Click" link="#LCL.Controls.TControl.Click">
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomListBox.Align">
-        <short>Used to align the control in one of four directions.</short>
+      <element name="TCustomListBox.Align" link="#LCL.Controls.TControl.Align">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Either reads a flag containing alignment instructions (<var>FAlign</var>) or writes alignment instructions (<var>SetAlign</var>)</p>
@@ -3812,8 +3809,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomListBox.Anchors">
-        <short>The set of anchor definitions for this control</short>
+      <element name="TCustomListBox.Anchors" link="#LCL.Controls.TControl.Anchors">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determines how the control is to be anchored to its client or parent conrol</p>
@@ -3823,9 +3819,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomListBox.BorderStyle">
-        <short>
-          <var>BorderStyle</var> - none, or single</short>
+      <element name="TCustomListBox.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle">
         <descr/>
         <seealso/>
       </element>
@@ -3854,8 +3848,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
  - the number of vertical columns in which the <var>Items</var> are arranged</short>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomListBox.Constraints">
-        <short>Determine <var>Constraints</var> (max and min height and width) for this control</short>
+      <element name="TCustomListBox.Constraints" link="#LCL.Controls.TControl.Constraints">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determine <var>Constraints</var> (max and min height and width) for this control; reads the size constraints or stores new ones.</p>
@@ -3865,12 +3858,12 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <!-- property Visibility: public -->
       <element name="TCustomListBox.Count">
         <short>
-          <var>Count</var>
-
-
-
- - the number of entries in the list of <var>Items</var>
+          <var>Count</var> - the number of entries in the list of <var>Items</var>
         </short>
+        <descr>
+          <printshort/>
+          <p>For Delphi compatability</p>
+        </descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListBox.ExtendedSelect">
@@ -3882,8 +3875,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
  - boolean. Whether extended selection is allowed. Default True</short>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomListBox.Font">
-        <short>The <var>Font</var> to be used for text in this control</short>
+      <element name="TCustomListBox.Font" link="#LCL.Controls.TControl.Font">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Reads a flag to see what font should be used, or sets a flag to store it. If stored, sets a flag to say so</p>
@@ -3945,8 +3937,7 @@ typically has a different color from the other items.</descr>
   - allows more than one Item from the list to be selected at a time, by pressing the CTRL or SHIFT key while selecting</short>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomListBox.OnChangeBounds">
-        <short>Event handler for a change in bounds of the control</short>
+      <element name="TCustomListBox.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Reads or Writes flag if bounds are changed</p>
@@ -3954,8 +3945,7 @@ typically has a different color from the other items.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomListBox.OnClick">
-        <short>Event Handler for mouse click</short>
+      <element name="TCustomListBox.OnClick" link="#LCL.Controls.TControl.OnClick">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <var>ActionList</var>
@@ -3965,8 +3955,7 @@ typically has a different color from the other items.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomListBox.OnDblClick">
-        <short>Event Handle for mouse double-click</short>
+      <element name="TCustomListBox.OnDblClick" link="#LCL.Controls.TControl.OnDblClick">
         <descr>
           <p>Double-clicking is much more common in a Windows environment than in Unix or Linux, where single-clicking is the default method for selecting an object. However, in all environments there could be valid use for a double-click, and a method should be supplied if appropriate.</p>
         </descr>
@@ -3991,23 +3980,17 @@ typically has a different color from the other items.</descr>
         </descr>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomListBox.OnEnter">
-        <short>
-          <var>OnEnter</var> - event handler for when the mouse enters the control, and the control receives focus</short>
+      <element name="TCustomListBox.OnEnter" link="#LCL.Controls.TWinControl.OnEnter">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomListBox.OnExit">
-        <short>
-          <var>OnExit</var> - event handler for when the mouse leaves the control and it loses focus</short>
+      <element name="TCustomListBox.OnExit" link="#LCL.Controls.TWinControl.OnExit">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomListBox.OnKeyDown">
-        <short>
-          <var>OnKeyDown</var> - event handler for instance when key is down while control has focus</short>
+      <element name="TCustomListBox.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown">
         <descr>
           <p>
             <var>OnKeyDown</var>
@@ -4017,8 +4000,7 @@ typically has a different color from the other items.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomListBox.OnKeyPress">
-        <short>OnKeyPress - event controller for a key being pressed while the control has focus</short>
+      <element name="TCustomListBox.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress">
         <descr>
           <p>
             <var>OnKeyPress</var>
@@ -4028,9 +4010,7 @@ typically has a different color from the other items.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomListBox.OnKeyUp">
-        <short>
-          <var>OnKeyUp</var>  - event handler for instance when a key is up (not pressed) while the control has focus</short>
+      <element name="TCustomListBox.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp">
         <descr>
           <p>
             <var>OnKeyUp</var>
@@ -4040,65 +4020,38 @@ typically has a different color from the other items.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomListBox.OnMouseDown">
-        <short>Event handler for when a mouse button is pressed down</short>
+      <element name="TCustomListBox.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomListBox.OnMouseMove">
-        <short>Event handler for mouse movement within the current control</short>
+      <element name="TCustomListBox.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomListBox.OnMouseUp">
-        <short>Event handler for when the mouse button is released, ie "up"</short>
+      <element name="TCustomListBox.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomListBox.OnMouseEnter">
-        <short>Event handler for when the mouse enters the area of the current control</short>
+      <element name="TCustomListBox.OnMouseEnter" link="#LCL.Controls.TControl.OnMouseEnter">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomListBox.OnMouseLeave">
-        <short>Event handler for when the mouse leaves the area of the current control</short>
+      <element name="TCustomListBox.OnMouseLeave" link="#LCL.Controls.TControl.OnMouseLeave">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomListBox.OnMouseWheel">
-        <short>
-          <var>OnMouseWheel </var>
-
-
-
- - event handler for movement of the scroll-wheel on the mouse</short>
-      </element>
+      <element name="TCustomListBox.OnMouseWheel" link="#LCL.Controls.TControl.OnMouseWheel"/>
       <!-- property Visibility: public -->
-      <element name="TCustomListBox.OnMouseWheelDown">
-        <short>
-          <var>OnMouseWheelDown</var>
-
-
-
- - event handler for downwards scrolling movement of the mouse wheel</short>
-      </element>
+      <element name="TCustomListBox.OnMouseWheelDown" link="#LCL.Controls.TControl.OnMouseWheelDown"/>
       <!-- property Visibility: public -->
-      <element name="TCustomListBox.OnMouseWheelUp">
-        <short>
-          <var>OnMouseWheelUp</var>
-
-
-
- - event handler for upward scrolling movement of the mouse wheel</short>
-      </element>
+      <element name="TCustomListBox.OnMouseWheelUp" link="#LCL.Controls.TControl.OnMouseWheelUp"/>
       <!-- property Visibility: public -->
-      <element name="TCustomListBox.OnResize">
-        <short>Event Handler for resize of control</short>
+      <element name="TCustomListBox.OnResize" link="#LCL.Controls.TControl.OnResize">
         <descr>// standard properties, which should be supported by all descendants<br/>
 Reads or Writes flag if control is re-sized.
 </descr>
@@ -4114,22 +4067,17 @@ Reads or Writes flag if control is re-sized.
  - event handler for changing the <var>Item</var> selected</short>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomListBox.ParentFont">
-        <short>
-          <var>ParentFont </var>- should the control use the same font as the parent? Default is true</short>
+      <element name="TCustomListBox.ParentFont" link="#LCL.Controls.TControl.ParentFont">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomListBox.ParentShowHint">
-        <short>
-          <var>ParentShowHint </var>- does the control adopt the same hinting behaviour as its parent? Default is true</short>
+      <element name="TCustomListBox.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomListBox.PopupMenu">
-        <short>PopupMenu - a context-sensitive menu that pops up when the right mouse button is clicked over this control</short>
+      <element name="TCustomListBox.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
         <descr>// standard properties, which should be supported by all descendants<br/>
  Reads the details of the pop-up menu, or stores them.<br/>
 Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPopupMenu</link>
@@ -4156,8 +4104,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <short/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomListBox.ShowHint">
-        <short>Flag to determine: Is hint to be displayed for this control?</short>
+      <element name="TCustomListBox.ShowHint" link="#LCL.Controls.TControl.ShowHint">
         <descr>// standard properties, which should be supported by all descendants<br/>
 Reads flag or writes one to determine if a hint is to be shown when mouse hovers over this control. If value is stored, a storage flag is set. Display of the actual hint is controlled by OnShowHint
 </descr>
@@ -4182,16 +4129,13 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
 of List Box - normal, owner-draw fixed, or owner-draw variable</short>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomListBox.TabOrder">
-        <short>The place this control occupies in the list of tabs</short>
+      <element name="TCustomListBox.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
         <descr>Reads or writes information in flag; default is -1
 </descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomListBox.TabStop">
-        <short>
-          <var>TabStop</var> - determines if the user can tab to a control.</short>
+      <element name="TCustomListBox.TabStop" link="#LCL.Controls.TWinControl.TabStop">
         <descr>
           <p>Reads or writes boolean flag; default is False</p>
           <p>Use the TabStop to allow or disallow access to the control using the Tab key.</p>
@@ -4207,9 +4151,7 @@ of List Box - normal, owner-draw fixed, or owner-draw variable</short>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomListBox.Visible">
-        <short>
-          <var>Visible</var> - can the control be seen?</short>
+      <element name="TCustomListBox.Visible" link="#LCL.Controls.TControl.Visible">
         <descr>
           <pre>The Visible property represents the ability to see a visual control. 
           If Visible is True the control is shown, otherwise it is hidden.
@@ -4243,8 +4185,7 @@ of List Box - normal, owner-draw fixed, or owner-draw variable</short>
         </seealso>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.Align">
-        <short>Used to align the control in one of four directions.</short>
+      <element name="TListBox.Align" link="#LCL.Controls.TControl.Align">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Either reads a flag containing alignment instructions (<var>FAlign</var>) or writes alignment instructions (<var>SetAlign</var>)</p>
@@ -4253,8 +4194,7 @@ of List Box - normal, owner-draw fixed, or owner-draw variable</short>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.Anchors">
-        <short>The set of anchor definitions for this control</short>
+      <element name="TListBox.Anchors" link="#LCL.Controls.TControl.Anchors">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determines how the control is to be anchored to its client or parent conrol</p>
@@ -4264,16 +4204,13 @@ of List Box - normal, owner-draw fixed, or owner-draw variable</short>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.BidiMode">
-        <short>
-          <var>TControlBiDiMode</var> - enabling bi-directional writing</short>
+      <element name="TListBox.BidiMode" link="#LCL.Controls.TControl.BiDiMode">
         <descr>Allows Languages such as Arabic and Hebrew to be used
 </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.BorderSpacing">
-        <short>Determines the border spacing for this control</short>
+      <element name="TListBox.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determines the border spacing for this control</p>
@@ -4284,21 +4221,17 @@ of List Box - normal, owner-draw fixed, or owner-draw variable</short>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.BorderStyle">
-        <short>
-          <var>BorderStyle</var> - none, or single</short>
+      <element name="TListBox.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.ClickOnSelChange">
-        <short>Performs Click procedure when the selection is changed (which usually puts the selected item into the edit box)</short>
+      <element name="TListBox.ClickOnSelChange" link="#LCL.StdCtrls.TCustomListBox.ClickOnSelChange">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.Color">
-        <short>Determine the colour for the current control</short>
+      <element name="TListBox.Color" link="#LCL.Controls.TControl.Color">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Reads the value for colour, or stores the value, and sets a flag if the colour is stored.</p>
@@ -4307,15 +4240,12 @@ of List Box - normal, owner-draw fixed, or owner-draw variable</short>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.Columns">
-        <short>
-          <var>Columns</var> - the number of vertical columns in which the <var>Items</var> are arranged</short>
+      <element name="TListBox.Columns" link="#LCL.StdCtrls.TCustomListBox.Columns">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.Constraints">
-        <short>Determine <var>Constraints</var> (max and min height and width) for this control</short>
+      <element name="TListBox.Constraints" link="#LCL.Controls.TControl.Constraints">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determine <var>Constraints</var> (max and min height and width) for this control; reads the size constraints or stores new ones.</p>
@@ -4323,29 +4253,22 @@ of List Box - normal, owner-draw fixed, or owner-draw variable</short>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.DragCursor">
-        <short>
-          <var>DragCursor </var>- the style of cursor to be used during the Drag process</short>
+      <element name="TListBox.DragCursor" link="#LCL.Controls.TControl.DragCursor">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.DragMode">
-        <short>
-          <var>DragMode </var>- whether manual or automatic</short>
+      <element name="TListBox.DragMode" link="#LCL.Controls.TControl.DragMode">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.ExtendedSelect">
-        <short>
-          <var>ExtendedSelect</var> - boolean. Whether extended selection is allowed. Default True</short>
+      <element name="TListBox.ExtendedSelect" link="#LCL.StdCtrls.TCustomListBox.ExtendedSelect">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.Enabled">
-        <short>Whether the control is <var>Enabled</var>. If not, it usually appears 'greyed-out'</short>
+      <element name="TListBox.Enabled" link="#LCL.Controls.TControl.Enabled">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Whether the control is <var>Enabled</var>. If not, it usually appears 'greyed-out'</p>
@@ -4354,8 +4277,7 @@ of List Box - normal, owner-draw fixed, or owner-draw variable</short>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.Font">
-        <short>The <var>Font</var> to be used for text in this control</short>
+      <element name="TListBox.Font" link="#LCL.Controls.TControl.Font">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Reads a flag to see what font should be used, or sets a flag to store it. If stored, sets a flag to say so</p>
@@ -4365,36 +4287,27 @@ of List Box - normal, owner-draw fixed, or owner-draw variable</short>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.IntegralHeight">
-        <short>not implemented</short>
+      <element name="TListBox.IntegralHeight" link="#LCL.StdCtrls.TCustomListBox.IntegralHeight">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.Items">
-        <short>
-          <var>Items </var>- an array of strings representing the list of entries</short>
+      <element name="TListBox.Items" link="#LCL.StdCtrls.TCustomListBox.Items">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.ItemHeight">
-        <short>
-          <var>ItemHeight </var>- the height of the individual <var>Items</var>
-        </short>
+      <element name="TListBox.ItemHeight" link="#LCL.StdCtrls.TCustomListBox.ItemHeight">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.MultiSelect">
-        <short>
-          <var>MultiSelect</var>  - allows more than one Item from the list to be selected at a time, by pressing the CTRL or SHIFT key while selecting</short>
+      <element name="TListBox.MultiSelect" link="#LCL.StdCtrls.TCustomListBox.MultiSelect">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.OnChangeBounds">
-        <short>Event handler for a change in bounds of the control</short>
+      <element name="TListBox.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Reads or Writes flag if bounds are changed</p>
@@ -4402,8 +4315,7 @@ of List Box - normal, owner-draw fixed, or owner-draw variable</short>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.OnClick">
-        <short>Event Handler for mouse click</short>
+      <element name="TListBox.OnClick" link="#LCL.Controls.TControl.OnClick">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <var>ActionList</var>
@@ -4413,29 +4325,24 @@ of List Box - normal, owner-draw fixed, or owner-draw variable</short>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.OnDblClick">
-        <short>Event Handle for mouse double-click</short>
+      <element name="TListBox.OnDblClick" link="#LCL.Controls.TControl.OnDblClick">
         <descr>
           <p>Double-clicking is much more common in a Windows environment than in Unix or Linux, where single-clicking is the default method for selecting an object. However, in all environments there could be valid use for a double-click, and a method should be supplied if appropriate.</p>
         </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.OnDragDrop">
-        <short>Event handler for the Drag-Drop manoeuvre</short>
+      <element name="TListBox.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.OnDragOver">
-        <short>Event handler for the case when a control is dragged over another control</short>
+      <element name="TListBox.OnDragOver" link="#LCL.Controls.TControl.OnDragOver">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.OnDrawItem">
-        <short>
-          <var>OnDrawItem</var> - event handler for drawing an Item</short>
+      <element name="TListBox.OnDrawItem" link="#LCL.StdCtrls.TCustomListBox.OnDrawItem">
         <descr>
           <p>
             <var>OnDrawItem</var>
@@ -4448,28 +4355,22 @@ of List Box - normal, owner-draw fixed, or owner-draw variable</short>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.OnEnter">
-        <short>
-          <var>OnEnter</var> - event handler for when the mouse enters the control, and the control receives focus</short>
+      <element name="TListBox.OnEnter" link="#LCL.Controls.TWinControl.OnEnter">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.OnEndDrag">
-        <short>Event handler for the end of a dragging process</short>
+      <element name="TListBox.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.OnExit">
-        <short>
-          <var>OnExit</var> - event handler for when the mouse leaves the control and it loses focus</short>
+      <element name="TListBox.OnExit" link="#LCL.Controls.TWinControl.OnExit">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.OnKeyPress">
-        <short>OnKeyPress - event controller for a key being pressed while the control has focus</short>
+      <element name="TListBox.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress">
         <descr>
           <p>
             <var>OnKeyPress</var>
@@ -4479,9 +4380,7 @@ of List Box - normal, owner-draw fixed, or owner-draw variable</short>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.OnKeyDown">
-        <short>
-          <var>OnKeyDown</var> - event handler for instance when key is down while control has focus</short>
+      <element name="TListBox.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown">
         <descr>
           <p>
             <var>OnKeyDown</var>
@@ -4491,9 +4390,7 @@ of List Box - normal, owner-draw fixed, or owner-draw variable</short>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.OnKeyUp">
-        <short>
-          <var>OnKeyUp</var>  - event handler for instance when a key is up (not pressed) while the control has focus</short>
+      <element name="TListBox.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp">
         <descr>
           <p>
             <var>OnKeyUp</var>
@@ -4503,74 +4400,59 @@ of List Box - normal, owner-draw fixed, or owner-draw variable</short>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.OnMouseMove">
-        <short>Event handler for mouse movement within the current control</short>
+      <element name="TListBox.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.OnMouseDown">
-        <short>Event handler for when a mouse button is pressed down</short>
+      <element name="TListBox.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.OnMouseUp">
-        <short>Event handler for when the mouse button is released, ie "up"</short>
+      <element name="TListBox.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.OnMouseEnter">
-        <short>Event handler for when the mouse enters the area of the current control</short>
+      <element name="TListBox.OnMouseEnter" link="#LCL.Controls.TControl.OnMouseEnter">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.OnMouseLeave">
-        <short>Event handler for when the mouse leaves the area of the current control</short>
+      <element name="TListBox.OnMouseLeave" link="#LCL.Controls.TControl.OnMouseLeave">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.OnMouseWheel">
-        <short>
-          <var>OnMouseWheel </var> - event handler for movement of the scroll-wheel on the mouse</short>
+      <element name="TListBox.OnMouseWheel" link="#LCL.Controls.TControl.OnMouseWheel">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.OnMouseWheelDown">
-        <short>
-          <var>OnMouseWheelDown</var> - event handler for downwards scrolling movement of the mouse wheel</short>
+      <element name="TListBox.OnMouseWheelDown" link="#LCL.Controls.TControl.OnMouseWheelDown">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.OnMouseWheelUp">
-        <short>
-          <var>OnMouseWheelUp</var> - event handler for upward scrolling movement of the mouse wheel</short>
+      <element name="TListBox.OnMouseWheelUp" link="#LCL.Controls.TControl.OnMouseWheelUp">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.OnResize">
-        <short>Event Handler for resize of control</short>
+      <element name="TListBox.OnResize" link="#LCL.Controls.TControl.OnResize">
         <descr>// standard properties, which should be supported by all descendants<br/>
 Reads or Writes flag if control is re-sized.
 </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.OnSelectionChange">
-        <short>
-          <var>OnSelectionChange</var> - event handler for changing the <var>Item</var> selected</short>
+      <element name="TListBox.OnSelectionChange" link="#LCL.StdCtrls.TCustomListBox.OnSelectionChange">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.OnShowHint">
-        <short>Event Handler when a hint needs to be shown</short>
+      <element name="TListBox.OnShowHint" link="#LCL.Controls.TControl.OnShowHint">
         <descr>// standard properties, which should be supported by all descendants<br/>
 Reads or Writes a flag when a hint (a small pop-up box, appearing when the mouse hovers over an object) is to be shown
 </descr>
@@ -4597,15 +4479,12 @@ Reads or Writes a flag when a hint (a small pop-up box, appearing when the mouse
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.ParentFont">
-        <short>
-          <var>ParentFont </var>- should the control use the same font as the parent? Default is true</short>
+      <element name="TListBox.ParentFont" link="#LCL.Controls.TControl.ParentFont">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.PopupMenu">
-        <short>PopupMenu - a context-sensitive menu that pops up when the right mouse button is clicked over this control</short>
+      <element name="TListBox.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
         <descr>// standard properties, which should be supported by all descendants<br/>
  Reads the details of the pop-up menu, or stores them.<br/>
 Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPopupMenu</link>
@@ -4613,38 +4492,30 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.ShowHint">
-        <short>Flag to determine: Is hint to be displayed for this control?</short>
+      <element name="TListBox.ShowHint" link="#LCL.Controls.TControl.ShowHint">
         <descr>// standard properties, which should be supported by all descendants<br/>
 Reads flag or writes one to determine if a hint is to be shown when mouse hovers over this control. If value is stored, a storage flag is set. Display of the actual hint is controlled by OnShowHint
 </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.Sorted">
-        <short>
-          <var>Sorted</var>  - whether the selected <var>Items</var>  in the list have been arranged in alphabetical order</short>
+      <element name="TListBox.Sorted" link="#LCL.StdCtrls.TCustomListBox.Sorted">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.Style">
-        <short>
-          <var>Style </var>of List Box - normal, owner-draw fixed, or owner-draw variable</short>
+      <element name="TListBox.Style" link="#LCL.StdCtrls.TCustomListBox.Style">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.TabOrder">
-        <short>The place this control occupies in the list of tabs</short>
+      <element name="TListBox.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
         <descr>Reads or writes information in flag; default is -1
 </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.TabStop">
-        <short>
-          <var>TabStop</var> - determines if the user can tab to a control.</short>
+      <element name="TListBox.TabStop" link="#LCL.Controls.TWinControl.TabStop">
         <descr>
           <p>Reads or writes boolean flag; default is False</p>
           <p>Use the TabStop to allow or disallow access to the control using the Tab key.</p>
@@ -4653,16 +4524,12 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.TopIndex">
-        <short>
-          <var>Topindex </var>- the highest value of Index in this list</short>
+      <element name="TListBox.TopIndex" link="#LCL.StdCtrls.TCustomListBox.TopIndex">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TListBox.Visible">
-        <short>
-          <var>Visible</var> - can the control be seen?</short>
+      <element name="TListBox.Visible" link="#LCL.Controls.TControl.Visible">
         <descr>
           <pre>The Visible property represents the ability to see a visual control. 
           If Visible is True the control is shown, otherwise it is hidden.
@@ -4853,9 +4720,7 @@ Indicates how text is displayed in a text editing control.</p>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomEdit.CalculatePreferredSize">
-        <short>
-          <var>CalculatePreferredSize</var>   - find default/preferred height and width</short>
+      <element name="TCustomEdit.CalculatePreferredSize" link="#LCL.Controls.TControl.CalculatePreferredSize">
         <descr>
           <p>
             <var>CalculatePreferredSize</var>
@@ -4890,14 +4755,14 @@ Indicates how text is displayed in a text editing control.</p>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomEdit.CreateWnd">
+      <element name="TCustomEdit.CreateWnd" link="#LCL.Controls.TWinControl.CreateWnd">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomEdit.TextChanged">
+      <element name="TCustomEdit.TextChanged" link="#LCL.Controls.TControl.TextChanged">
         <short/>
         <descr/>
         <errors/>
@@ -4905,20 +4770,21 @@ Indicates how text is displayed in a text editing control.</p>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomEdit.Change">
+        <short>
+          <var>Change</var> - software emulation of the <var>OnChange</var> event</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomEdit.DoEnter" link="#LCL.Controls.TWinControl.DoEnter">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomEdit.DoEnter">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomEdit.DoExit">
+      <element name="TCustomEdit.DoExit" link="#LCL.Controls.TWinControl.DoExit">
         <short/>
         <descr/>
         <errors/>
@@ -5002,7 +4868,7 @@ Indicates how text is displayed in a text editing control.</p>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomEdit.RealSetText">
+      <element name="TCustomEdit.RealSetText" link="#LCL.Controls.TControl.RealSetText">
         <short/>
         <descr/>
         <errors/>
@@ -5028,7 +4894,7 @@ Indicates how text is displayed in a text editing control.</p>
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomEdit.GetControlClassDefaultSize">
+      <element name="TCustomEdit.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize">
         <short/>
         <descr/>
         <errors/>
@@ -5039,7 +4905,7 @@ Indicates how text is displayed in a text editing control.</p>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomEdit.KeyUp">
+      <element name="TCustomEdit.KeyUp" link="#LCL.Controls.TWinControl.KeyUp">
         <short/>
         <descr/>
         <errors/>
@@ -5065,7 +4931,7 @@ Indicates how text is displayed in a text editing control.</p>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomEdit.MouseUp">
+      <element name="TCustomEdit.MouseUp" link="#LCL.Controls.TControl.MouseUp">
         <short/>
         <descr/>
         <errors/>
@@ -5110,8 +4976,7 @@ Indicates how text is displayed in a text editing control.</p>
         </descr>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomEdit.Create">
-        <short>Create a new instance of the Window Control</short>
+      <element name="TCustomEdit.Create" link="#LCL.Controls.TWinControl.Create">
         <descr/>
         <errors/>
         <seealso/>
@@ -5175,20 +5040,14 @@ Indicates how text is displayed in a text editing control.</p>
 - put a copy of the clipboard contents at the current writing position</short>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomEdit.BorderStyle">
-        <short>
-          <var>BorderStyle</var> - none, or single</short>
+      <element name="TCustomEdit.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.CharCase">
         <short>
-          <var>TEditCharCase</var>
-
-
-
-  - rules for what case to use (upper or lower) to display text</short>
+          <var>CharCase</var>  - rules for what case to use (upper or lower) to display text</short>
         <descr>
           <p>Indicates how text is displayed in a text editing control in the following ways:</p>
           <ul>
@@ -5247,8 +5106,7 @@ Indicates how text is displayed in a text editing control.</p>
         </descr>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomEdit.PopupMenu">
-        <short>PopupMenu - a context-sensitive menu that pops up when the right mouse button is clicked over this control</short>
+      <element name="TCustomEdit.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
         <descr>// standard properties, which should be supported by all descendants<br/>
  Reads the details of the pop-up menu, or stores them.<br/>
 Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPopupMenu</link>
@@ -5292,16 +5150,13 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
 : the string within the edit control that has been selected for editing</short>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomEdit.TabOrder">
-        <short>The place this control occupies in the list of tabs</short>
+      <element name="TCustomEdit.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
         <descr>Reads or writes information in flag; default is -1
 </descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomEdit.TabStop">
-        <short>
-          <var>TabStop</var> - determines if the user can tab to a control.</short>
+      <element name="TCustomEdit.TabStop" link="#LCL.Controls.TWinControl.TabStop">
         <descr>
           <p>Reads or writes boolean flag; default is False</p>
           <p>Use the TabStop to allow or disallow access to the control using the Tab key.</p>
@@ -5336,9 +5191,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         </descr>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TMemoScrollbar.GetHorzScrollBar">
-        <short>
-          <var>GetHorzScrollBar</var> - find the position and properties of the horizontal scroll bar</short>
+      <element name="TMemoScrollbar.GetHorzScrollBar" link="#LCL.Forms.TControlScrollBar.GetHorzScrollBar">
         <descr/>
         <errors/>
         <seealso/>
@@ -5348,9 +5201,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TMemoScrollbar.GetVertScrollBar">
-        <short>
-          <var>GetVertScrollBar</var> - find the position and properties of the vertical scroll bar</short>
+      <element name="TMemoScrollbar.GetVertScrollBar" link="#LCL.Forms.TControlScrollBar.GetVertScrollBar">
         <descr/>
         <errors/>
         <seealso/>
@@ -5360,8 +5211,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <short/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TMemoScrollbar.Increment">
-        <short>The size of the scrolling increment</short>
+      <element name="TMemoScrollbar.Increment" link="#LCL.Forms.TControlScrollBar.Increment">
         <descr>The amount by which the scroll indicator moves if the triangle at either end of the bar is selected.<br/>
 
 Read or write a flag to determine the increment, an integer with a default value of 8 (pixels)
@@ -5369,44 +5219,38 @@ Read or write a flag to determine the increment, an integer with a default value
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TMemoScrollbar.Page">
-        <short>The size of the paging increment for scrolling</short>
+      <element name="TMemoScrollbar.Page" link="#LCL.Forms.TControlScrollBar.Page">
         <descr>The amount by which the scroll indicator moves if the cursor selects the scroll bar above, below or on either side of the scroll indicator. <br/>
 Reads or writes a flag to determine paging increment; default value is 80 pixels
 </descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TMemoScrollbar.Smooth">
-        <short>Determine whether smooth scrolling is to be implemented</short>
+      <element name="TMemoScrollbar.Smooth" link="#LCL.Forms.TControlScrollBar.Smooth">
         <descr>Reads or writes a flag to determine smooth scrolling, and sets a flag is the scrolling status is stored
 </descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TMemoScrollbar.Position">
-        <short>Position of the scroll bar</short>
+      <element name="TMemoScrollbar.Position" link="#LCL.Forms.TControlScrollBar.Position">
         <descr>Reads or writes a flag with the position; default is zero
 </descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TMemoScrollbar.Range">
-        <short>The range (extent) of the scroll bar</short>
+      <element name="TMemoScrollbar.Range" link="#LCL.Forms.TControlScrollBar.Range">
         <descr>Reads or writes a flag to determine the range; default is zero
 </descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TMemoScrollbar.Size">
-        <short>Determine the size of the scroll bar</short>
+      <element name="TMemoScrollbar.Size" link="#LCL.Forms.TControlScrollBar.Size">
         <descr>Reads or writes a flag to determine the size; by default the size is not stored
 </descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TMemoScrollbar.Visible">
-        <short>Is the scroll bar visible?</short>
+      <element name="TMemoScrollbar.Visible" link="#LCL.Forms.TControlScrollBar.Visible">
         <descr>Reads or writes flag to determine visibility, and sets a flag if the property is stored
 </descr>
         <seealso/>
@@ -5517,7 +5361,7 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
         <seealso/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomMemo.RealGetText">
+      <element name="TCustomMemo.RealGetText" link="#LCL.Controls.TControl.RealGetText">
         <short/>
         <descr/>
         <errors/>
@@ -5528,7 +5372,7 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomMemo.RealSetText">
+      <element name="TCustomMemo.RealSetText" link="#LCL.Controls.TControl.RealSetText">
         <short/>
         <descr/>
         <errors/>
@@ -5631,7 +5475,7 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomMemo.Loaded">
+      <element name="TCustomMemo.Loaded" link="Classes.TComponent.Loaded">
         <short/>
         <descr/>
         <errors/>
@@ -5675,7 +5519,7 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomMemo.GetControlClassDefaultSize">
+      <element name="TCustomMemo.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize">
         <short/>
         <descr/>
         <errors/>
@@ -5686,9 +5530,9 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomMemo.Create">
-        <short>Create</short>
-        <descr>Create the Custom memo widget</descr>
+      <element name="TCustomMemo.Create" link="#LCL.Controls.TWinControl.Create">
+        <descr>Create the Custom memo widget
+</descr>
         <errors/>
         <seealso/>
       </element>
@@ -5697,9 +5541,9 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomMemo.Destroy">
-        <short>Destroy</short>
-        <descr>Destroy the CustomMemo widget when you have finished with it</descr>
+      <element name="TCustomMemo.Destroy" link="#LCL.Controls.TWinControl.Destroy">
+        <descr>Destroy the CustomMemo widget when you have finished with it
+</descr>
         <errors/>
         <seealso/>
       </element>
@@ -5787,17 +5631,14 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
         </seealso>
       </element>
       <!-- property Visibility: public -->
-      <element name="TEdit.AutoSelected">
-        <short>
-          <var>AutoSelected</var>: if True, indicates that the edit control has just performed an <var>AutoSelect</var> operation</short>
+      <element name="TEdit.AutoSelected" link="#LCL.StdCtrls.TCustomEdit.AutoSelected">
         <descr>
           <p>If True, indicates that the edit control has just performed an <var>AutoSelect</var> operation so that subsequent mouse-clicks and keystrokes proceed normally without selecting the text.</p>
           <p>False is set when the edit control loses focus.</p>
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.Action">
-        <short>The action to be associated with this control</short>
+      <element name="TEdit.Action" link="#LCL.Controls.TControl.Action">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>The (default) action to be associated with this control</p>
@@ -5805,8 +5646,7 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.Align">
-        <short>Used to align the control in one of four directions.</short>
+      <element name="TEdit.Align" link="#LCL.Controls.TControl.Align">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Either reads a flag containing alignment instructions (<var>FAlign</var>) or writes alignment instructions (<var>SetAlign</var>)</p>
@@ -5814,8 +5654,7 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.Anchors">
-        <short>The set of anchor definitions for this control</short>
+      <element name="TEdit.Anchors" link="#LCL.Controls.TControl.Anchors">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determines how the control is to be anchored to its client or parent conrol</p>
@@ -5824,8 +5663,7 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.AutoSize">
-        <short>Whether auto-size is to be used</short>
+      <element name="TEdit.AutoSize" link="#LCL.Controls.TControl.AutoSize">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>AutoSize permits the size of a control to be adjusted automatically, for example a button can become bigger or smaller to accommodate a longer or shorter caption.</p>
@@ -5834,18 +5672,15 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.AutoSelect"/>
+      <element name="TEdit.AutoSelect" link="#LCL.StdCtrls.TCustomEdit.AutoSelect"/>
       <!-- property Visibility: published -->
-      <element name="TEdit.BidiMode">
-        <short>
-          <var>TControlBiDiMode</var> - enabling bi-directional writing</short>
+      <element name="TEdit.BidiMode" link="#LCL.Controls.TControl.BiDiMode">
         <descr>Allows Languages such as Arabic and Hebrew to be used
 </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.BorderSpacing">
-        <short>Determines the border spacing for this control</short>
+      <element name="TEdit.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determines the border spacing for this control</p>
@@ -5856,8 +5691,7 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.Color">
-        <short>Determine the colour for the current control</short>
+      <element name="TEdit.Color" link="#LCL.Controls.TControl.Color">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Reads the value for colour, or stores the value, and sets a flag if the colour is stored.</p>
@@ -5866,17 +5700,14 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.Constraints">
-        <short>Determine <var>Constraints</var> (max and min height and width) for this control</short>
+      <element name="TEdit.Constraints" link="#LCL.Controls.TControl.Constraints">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determine <var>Constraints</var> (max and min height and width) for this control; reads the size constraints or stores new ones.</p>
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.CharCase">
-        <short>
-          <var>TEditCharCase</var>  - rules for what case to use (upper or lower) to display text</short>
+      <element name="TEdit.CharCase" link="#LCL.StdCtrls.TCustomEdit.CharCase">
         <descr>
           <p>Indicates how text is displayed in a text editing control in the following ways:</p>
           <ul>
@@ -5888,29 +5719,22 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.DragCursor">
-        <short>
-          <var>DragCursor </var>- the style of cursor to be used during the Drag process</short>
+      <element name="TEdit.DragCursor" link="#LCL.Controls.TControl.DragCursor">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.DragMode">
-        <short>
-          <var>DragMode </var>- whether manual or automatic</short>
+      <element name="TEdit.DragMode" link="#LCL.Controls.TControl.DragMode">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.EchoMode">
-        <short>
-          <var>EchoMode </var>- how to echo keypresses on screen: normal (returning the actual character for that key), all upper or lower case, or a masking character as used in entering passwords</short>
+      <element name="TEdit.EchoMode" link="#LCL.StdCtrls.TCustomEdit.EchoMode">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.Enabled">
-        <short>Whether the control is <var>Enabled</var>. If not, it usually appears 'greyed-out'</short>
+      <element name="TEdit.Enabled" link="#LCL.Controls.TControl.Enabled">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Whether the control is <var>Enabled</var>. If not, it usually appears 'greyed-out'</p>
@@ -5918,8 +5742,7 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.Font">
-        <short>The <var>Font</var> to be used for text in this control</short>
+      <element name="TEdit.Font" link="#LCL.Controls.TControl.Font">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Reads a flag to see what font should be used, or sets a flag to store it. If stored, sets a flag to say so</p>
@@ -5929,34 +5752,26 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.MaxLength">
-        <short>
-          <var>MaxLength</var>: maximum length allowed for text string</short>
+      <element name="TEdit.MaxLength" link="#LCL.StdCtrls.TCustomEdit.MaxLength">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.ParentBidiMode">
-        <short>
-          <var>ParentBiDiMode</var> - does the control follow the BiDiMode settings of its parent?</short>
+      <element name="TEdit.ParentBidiMode" link="#LCL.Controls.TControl.ParentBiDiMode">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.OnChange">
-        <short>OnChange - event handler for any change in text</short>
-      </element>
+      <element name="TEdit.OnChange" link="#LCL.StdCtrls.TCustomEdit.OnChange"/>
       <!-- property Visibility: published -->
-      <element name="TEdit.OnChangeBounds">
-        <short>Event handler for a change in bounds of the control</short>
+      <element name="TEdit.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Reads or Writes flag if bounds are changed</p>
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.OnClick">
-        <short>Event Handler for mouse click</short>
+      <element name="TEdit.OnClick" link="#LCL.Controls.TControl.OnClick">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <var>ActionList</var>
@@ -5965,51 +5780,38 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.OnDblClick">
-        <short>Event Handle for mouse double-click</short>
+      <element name="TEdit.OnDblClick" link="#LCL.Controls.TControl.OnDblClick">
         <descr>
           <p>Double-clicking is much more common in a Windows environment than in Unix or Linux, where single-clicking is the default method for selecting an object. However, in all environments there could be valid use for a double-click, and a method should be supplied if appropriate.</p>
         </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.OnDragDrop">
-        <short>Event handler for the Drag-Drop manoeuvre</short>
+      <element name="TEdit.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.OnDragOver">
-        <short>Event handler for the case when a control is dragged over another control</short>
+      <element name="TEdit.OnDragOver" link="#LCL.Controls.TControl.OnDragOver">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.OnEditingDone">
-        <short>Event handler when editing is done</short>
+      <element name="TEdit.OnEditingDone" link="#LCL.Controls.TControl.OnEditingDone">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.OnEndDrag">
-        <short>Event handler for the end of a dragging process</short>
+      <element name="TEdit.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.OnEnter">
-        <short>
-          <var>OnEnter</var> - event handler for when the mouse enters the control, and the control receives focus</short>
-      </element>
+      <element name="TEdit.OnEnter" link="#LCL.Controls.TWinControl.OnEnter"/>
       <!-- property Visibility: published -->
-      <element name="TEdit.OnExit">
-        <short>
-          <var>OnExit</var> - event handler for when the mouse leaves the control and it loses focus</short>
-      </element>
+      <element name="TEdit.OnExit" link="#LCL.Controls.TWinControl.OnExit"/>
       <!-- property Visibility: published -->
-      <element name="TEdit.OnKeyDown">
-        <short>
-          <var>OnKeyDown</var> - event handler for instance when key is down while control has focus</short>
+      <element name="TEdit.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown">
         <descr>
           <p>
             <var>OnKeyDown</var>
@@ -6018,8 +5820,7 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.OnKeyPress">
-        <short>OnKeyPress - event controller for a key being pressed while the control has focus</short>
+      <element name="TEdit.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress">
         <descr>
           <p>
             <var>OnKeyPress</var>
@@ -6028,9 +5829,7 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.OnKeyUp">
-        <short>
-          <var>OnKeyUp</var>  - event handler for instance when a key is up (not pressed) while the control has focus</short>
+      <element name="TEdit.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp">
         <descr>
           <p>
             <var>OnKeyUp</var>
@@ -6039,48 +5838,34 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.OnMouseDown">
-        <short>Event handler for when a mouse button is pressed down</short>
-      </element>
+      <element name="TEdit.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown"/>
       <!-- property Visibility: published -->
-      <element name="TEdit.OnMouseMove">
-        <short>Event handler for mouse movement within the current control</short>
-      </element>
+      <element name="TEdit.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove"/>
       <!-- property Visibility: published -->
-      <element name="TEdit.OnMouseUp">
-        <short>Event handler for when the mouse button is released, ie "up"</short>
-      </element>
+      <element name="TEdit.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp"/>
       <!-- property Visibility: published -->
-      <element name="TEdit.OnResize">
-        <short>Event Handler for resize of control</short>
+      <element name="TEdit.OnResize" link="#LCL.Controls.TControl.OnResize">
         <descr>// standard properties, which should be supported by all descendants<br/>
 Reads or Writes flag if control is re-sized.
 </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.OnStartDrag">
-        <short>Event handler for start of dragging process</short>
+      <element name="TEdit.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.ParentFont">
-        <short>
-          <var>ParentFont </var>- should the control use the same font as the parent? Default is true</short>
+      <element name="TEdit.ParentFont" link="#LCL.Controls.TControl.ParentFont">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.ParentShowHint">
-        <short>
-          <var>ParentShowHint </var>- does the control adopt the same hinting behaviour as its parent? Default is true</short>
+      <element name="TEdit.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.PasswordChar">
-        <short>
-          <var>PasswordChar</var>: the character which appears in the Edit box replacing and masking the actual character typed</short>
+      <element name="TEdit.PasswordChar" link="#LCL.StdCtrls.TCustomEdit.PasswordChar">
         <descr>
           <p>
             <var>PasswordChar</var>
@@ -6093,29 +5878,22 @@ Reads or Writes flag if control is re-sized.
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.PopupMenu">
-        <short>PopupMenu - a context-sensitive menu that pops up when the right mouse button is clicked over this control</short>
+      <element name="TEdit.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
         <descr>// standard properties, which should be supported by all descendants<br/>
  Reads the details of the pop-up menu, or stores them.<br/>
 Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPopupMenu</link>
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.ReadOnly">
-        <short>
-          <var>ReadOnly </var>- the contents of the edit box may only be read, not written or erased</short>
-      </element>
+      <element name="TEdit.ReadOnly" link="#LCL.StdCtrls.TCustomEdit.ReadOnly"/>
       <!-- property Visibility: published -->
-      <element name="TEdit.ShowHint">
-        <short>Flag to determine: Is hint to be displayed for this control?</short>
+      <element name="TEdit.ShowHint" link="#LCL.Controls.TControl.ShowHint">
         <descr>// standard properties, which should be supported by all descendants<br/>
 Reads flag or writes one to determine if a hint is to be shown when mouse hovers over this control. If value is stored, a storage flag is set. Display of the actual hint is controlled by OnShowHint
 </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.TabStop">
-        <short>
-          <var>TabStop</var> - determines if the user can tab to a control.</short>
+      <element name="TEdit.TabStop" link="#LCL.Controls.TWinControl.TabStop">
         <descr>
           <p>Reads or writes boolean flag; default is False</p>
           <p>Use the TabStop to allow or disallow access to the control using the Tab key.</p>
@@ -6124,16 +5902,13 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.TabOrder">
-        <short>The place this control occupies in the list of tabs</short>
+      <element name="TEdit.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
         <descr>Reads or writes information in flag; default is -1
 </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.Text">
-        <short>
-          <var>Text</var>: the character string contained in the Edit Box</short>
+      <element name="TEdit.Text" link="#LCL.StdCtrls.TCustomEdit.Text">
         <descr>
           <var>Text</var>
 
@@ -6143,9 +5918,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
 </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.Visible">
-        <short>
-          <var>Visible</var> - can the control be seen?</short>
+      <element name="TEdit.Visible" link="#LCL.Controls.TControl.Visible">
         <descr>
           <pre>The Visible property represents the ability to see a visual control. 
           If Visible is True the control is shown, otherwise it is hidden.
@@ -6176,8 +5949,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         </seealso>
       </element>
       <!-- property Visibility: published -->
-      <element name="TMemo.Align">
-        <short>Used to align the control in one of four directions.</short>
+      <element name="TMemo.Align" link="#LCL.Controls.TControl.Align">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Either reads a flag containing alignment instructions (<var>FAlign</var>) or writes alignment instructions (<var>SetAlign</var>)</p>
@@ -6186,15 +5958,12 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TMemo.Alignment">
-        <short>
-          <var>Alignment </var> - whether text is centered, left- or right-justified</short>
+      <element name="TMemo.Alignment" link="#LCL.StdCtrls.TCustomMemo.Alignment">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TMemo.Anchors">
-        <short>The set of anchor definitions for this control</short>
+      <element name="TMemo.Anchors" link="#LCL.Controls.TControl.Anchors">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determines how the control is to be anchored to its client or parent conrol</p>
@@ -6204,16 +5973,13 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TMemo.BidiMode">
-        <short>
-          <var>TControlBiDiMode</var> - enabling bi-directional writing</short>
+      <element name="TMemo.BidiMode" link="#LCL.Controls.TControl.BiDiMode">
         <descr>Allows Languages such as Arabic and Hebrew to be used
 </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TMemo.BorderSpacing">
-        <short>Determines the border spacing for this control</short>
+      <element name="TMemo.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determines the border spacing for this control</p>
@@ -6224,8 +5990,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TMemo.Color">
-        <short>Determine the colour for the current control</short>
+      <element name="TMemo.Color" link="#LCL.Controls.TControl.Color">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Reads the value for colour, or stores the value, and sets a flag if the colour is stored.</p>
@@ -6234,8 +5999,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TMemo.Constraints">
-        <short>Determine <var>Constraints</var> (max and min height and width) for this control</short>
+      <element name="TMemo.Constraints" link="#LCL.Controls.TControl.Constraints">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determine <var>Constraints</var> (max and min height and width) for this control; reads the size constraints or stores new ones.</p>
@@ -6243,22 +6007,17 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TMemo.DragCursor">
-        <short>
-          <var>DragCursor </var>- the style of cursor to be used during the Drag process</short>
+      <element name="TMemo.DragCursor" link="#LCL.Controls.TControl.DragCursor">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TMemo.DragMode">
-        <short>
-          <var>DragMode </var>- whether manual or automatic</short>
+      <element name="TMemo.DragMode" link="#LCL.Controls.TControl.DragMode">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TMemo.Enabled">
-        <short>Whether the control is <var>Enabled</var>. If not, it usually appears 'greyed-out'</short>
+      <element name="TMemo.Enabled" link="#LCL.Controls.TControl.Enabled">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Whether the control is <var>Enabled</var>. If not, it usually appears 'greyed-out'</p>
@@ -6267,8 +6026,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TMemo.Font">
-        <short>The <var>Font</var> to be used for text in this control</short>
+      <element name="TMemo.Font" link="#LCL.Controls.TControl.Font">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Reads a flag to see what font should be used, or sets a flag to store it. If stored, sets a flag to say so</p>
@@ -6278,9 +6036,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TMemo.Lines">
-        <short>
-          <var>Lines</var> : an array of strings (single lines of characters) which contains the text held or being entered in the Memo</short>
+      <element name="TMemo.Lines" link="#LCL.StdCtrls.TCustomMemo.Lines">
         <descr>
           <var>Lines</var>
 
@@ -6290,28 +6046,22 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
 </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TMemo.MaxLength">
-        <short>
-          <var>MaxLength</var>: maximum length allowed for text string</short>
+      <element name="TMemo.MaxLength" link="#LCL.StdCtrls.TCustomEdit.MaxLength">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TMemo.ParentBidiMode">
-        <short>
-          <var>ParentBiDiMode</var> - does the control follow the BiDiMode settings of its parent?</short>
+      <element name="TMemo.ParentBidiMode" link="#LCL.Controls.TControl.ParentBiDiMode">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TMemo.OnChange">
-        <short>OnChange - event handler for any change in text</short>
+      <element name="TMemo.OnChange" link="#LCL.StdCtrls.TCustomEdit.OnChange">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TMemo.OnClick">
-        <short>Event Handler for mouse click</short>
+      <element name="TMemo.OnClick" link="#LCL.Controls.TControl.OnClick">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <var>ActionList</var>
@@ -6321,55 +6071,44 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TMemo.OnDblClick">
-        <short>Event Handle for mouse double-click</short>
+      <element name="TMemo.OnDblClick" link="#LCL.Controls.TControl.OnDblClick">
         <descr>
           <p>Double-clicking is much more common in a Windows environment than in Unix or Linux, where single-clicking is the default method for selecting an object. However, in all environments there could be valid use for a double-click, and a method should be supplied if appropriate.</p>
         </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TMemo.OnDragDrop">
-        <short>Event handler for the Drag-Drop manoeuvre</short>
+      <element name="TMemo.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TMemo.OnDragOver">
-        <short>Event handler for the case when a control is dragged over another control</short>
+      <element name="TMemo.OnDragOver" link="#LCL.Controls.TControl.OnDragOver">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TMemo.OnEditingDone">
-        <short>Event handler when editing is done</short>
+      <element name="TMemo.OnEditingDone" link="#LCL.Controls.TControl.OnEditingDone">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TMemo.OnEndDrag">
-        <short>Event handler for the end of a dragging process</short>
+      <element name="TMemo.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TMemo.OnEnter">
-        <short>
-          <var>OnEnter</var> - event handler for when the mouse enters the control, and the control receives focus</short>
+      <element name="TMemo.OnEnter" link="#LCL.Controls.TWinControl.OnEnter">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TMemo.OnExit">
-        <short>
-          <var>OnExit</var> - event handler for when the mouse leaves the control and it loses focus</short>
+      <element name="TMemo.OnExit" link="#LCL.Controls.TWinControl.OnExit">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TMemo.OnKeyDown">
-        <short>
-          <var>OnKeyDown</var> - event handler for instance when key is down while control has focus</short>
+      <element name="TMemo.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown">
         <descr>
           <p>
             <var>OnKeyDown</var>
@@ -6379,8 +6118,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TMemo.OnKeyPress">
-        <short>OnKeyPress - event controller for a key being pressed while the control has focus</short>
+      <element name="TMemo.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress">
         <descr>
           <p>
             <var>OnKeyPress</var>
@@ -6390,9 +6128,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TMemo.OnKeyUp">
-        <short>
-          <var>OnKeyUp</var>  - event handler for instance when a key is up (not pressed) while the control has focus</short>
+      <element name="TMemo.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp">
         <descr>
           <p>
             <var>OnKeyUp</var>
@@ -6402,51 +6138,42 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TMemo.OnMouseDown">
-        <short>Event handler for when a mouse button is pressed down</short>
+      <element name="TMemo.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TMemo.OnMouseUp">
-        <short>Event handler for when the mouse button is released, ie "up"</short>
+      <element name="TMemo.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TMemo.OnMouseMove">
-        <short>Event handler for mouse movement within the current control</short>
+      <element name="TMemo.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TMemo.OnMouseEnter">
-        <short>Event handler for when the mouse enters the area of the current control</short>
+      <element name="TMemo.OnMouseEnter" link="#LCL.Controls.TControl.OnMouseEnter">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TMemo.OnMouseLeave">
-        <short>Event handler for when the mouse leaves the area of the current control</short>
+      <element name="TMemo.OnMouseLeave" link="#LCL.Controls.TControl.OnMouseLeave">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TMemo.OnStartDrag">
-        <short>Event handler for start of dragging process</short>
+      <element name="TMemo.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TMemo.ParentFont">
-        <short>
-          <var>ParentFont </var>- should the control use the same font as the parent? Default is true</short>
+      <element name="TMemo.ParentFont" link="#LCL.Controls.TControl.ParentFont">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TMemo.PopupMenu">
-        <short>PopupMenu - a context-sensitive menu that pops up when the right mouse button is clicked over this control</short>
+      <element name="TMemo.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
         <descr>// standard properties, which should be supported by all descendants<br/>
  Reads the details of the pop-up menu, or stores them.<br/>
 Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPopupMenu</link>
@@ -6454,29 +6181,23 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TMemo.ReadOnly">
-        <short>
-          <var>ReadOnly </var>- the contents of the edit box may only be read, not written or erased</short>
+      <element name="TMemo.ReadOnly" link="#LCL.StdCtrls.TCustomEdit.ReadOnly">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TMemo.ScrollBars">
-        <short>Whether the <var>Memo </var>has <var>ScrollBars</var> - none, horizontal or vertical or both, or automatically placed if needed</short>
+      <element name="TMemo.ScrollBars" link="#LCL.StdCtrls.TCustomMemo.ScrollBars">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TMemo.TabOrder">
-        <short>The place this control occupies in the list of tabs</short>
+      <element name="TMemo.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
         <descr>Reads or writes information in flag; default is -1
 </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TMemo.TabStop">
-        <short>
-          <var>TabStop</var> - determines if the user can tab to a control.</short>
+      <element name="TMemo.TabStop" link="#LCL.Controls.TWinControl.TabStop">
         <descr>
           <p>Reads or writes boolean flag; default is False</p>
           <p>Use the TabStop to allow or disallow access to the control using the Tab key.</p>
@@ -6485,9 +6206,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TMemo.Visible">
-        <short>
-          <var>Visible</var> - can the control be seen?</short>
+      <element name="TMemo.Visible" link="#LCL.Controls.TControl.Visible">
         <descr>
           <pre>The Visible property represents the ability to see a visual control. 
           If Visible is True the control is shown, otherwise it is hidden.
@@ -6498,20 +6217,17 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TMemo.WantReturns">
-        <short>Whether Return characters are required to be included in the memo</short>
+      <element name="TMemo.WantReturns" link="#LCL.StdCtrls.TCustomMemo.WantReturns">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TMemo.WantTabs">
-        <short>Whether Tab characters are required to be retained in the Memo</short>
+      <element name="TMemo.WantTabs" link="#LCL.StdCtrls.TCustomMemo.WantTabs">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TMemo.WordWrap">
-        <short>Is <var>WordWrap</var> enabled, allowing long words to be carried on to the next line?</short>
+      <element name="TMemo.WordWrap" link="#LCL.StdCtrls.TCustomMemo.WordWrap">
         <descr>Word Wrap: a logical flag to show whether or not word-wrap is enabled, ie if a word is close to the end of a line and is going to be too long for the line, it is wrapped down to the next line
 </descr>
         <seealso/>
@@ -6609,7 +6325,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomStaticText.RealSetText">
+      <element name="TCustomStaticText.RealSetText" link="#LCL.Controls.TControl.RealSetText">
         <short/>
         <descr/>
         <errors/>
@@ -6620,7 +6336,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomStaticText.Notification">
+      <element name="TCustomStaticText.Notification" link="#rtl.Classes.TComponent.Notification">
         <short/>
         <descr/>
         <errors/>
@@ -6672,7 +6388,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomStaticText.GetControlClassDefaultSize">
+      <element name="TCustomStaticText.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize">
         <short/>
         <descr/>
         <errors/>
@@ -6683,8 +6399,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomStaticText.Create">
-        <short>Create a new instance of the Window Control</short>
+      <element name="TCustomStaticText.Create" link="#LCL.Controls.TWinControl.Create">
         <descr/>
         <errors/>
         <seealso/>
@@ -6703,15 +6418,14 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
  - whether text is centered, left- or right-justified</short>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomStaticText.BorderStyle">
-        <short>
-          <var>BorderStyle</var> - none, or single</short>
+      <element name="TCustomStaticText.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomStaticText.FocusControl">
-        <short/>
+        <short>
+          <var>FocusControl</var> - the control that currently receives focus</short>
         <descr/>
         <seealso/>
       </element>
@@ -6755,8 +6469,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         </seealso>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.Align">
-        <short>Used to align the control in one of four directions.</short>
+      <element name="TStaticText.Align" link="#LCL.Controls.TControl.Align">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Either reads a flag containing alignment instructions (<var>FAlign</var>) or writes alignment instructions (<var>SetAlign</var>)</p>
@@ -6765,15 +6478,12 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.Alignment">
-        <short>
-          <var>Alignment </var> - whether text is centered, left- or right-justified</short>
+      <element name="TStaticText.Alignment" link="#LCL.StdCtrls.TCustomStaticText.Alignment">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.Anchors">
-        <short>The set of anchor definitions for this control</short>
+      <element name="TStaticText.Anchors" link="#LCL.Controls.TControl.Anchors">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determines how the control is to be anchored to its client or parent conrol</p>
@@ -6783,8 +6493,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.AutoSize">
-        <short>Whether auto-size is to be used</short>
+      <element name="TStaticText.AutoSize" link="#LCL.Controls.TControl.AutoSize">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>AutoSize permits the size of a control to be adjusted automatically, for example a button can become bigger or smaller to accommodate a longer or shorter caption.</p>
@@ -6793,16 +6502,13 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.BidiMode">
-        <short>
-          <var>TControlBiDiMode</var> - enabling bi-directional writing</short>
+      <element name="TStaticText.BidiMode" link="#LCL.Controls.TControl.BiDiMode">
         <descr>Allows Languages such as Arabic and Hebrew to be used
 </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.BorderSpacing">
-        <short>Determines the border spacing for this control</short>
+      <element name="TStaticText.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determines the border spacing for this control</p>
@@ -6813,16 +6519,12 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.BorderStyle">
-        <short>
-          <var>BorderStyle</var> - none, or single</short>
+      <element name="TStaticText.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.Caption">
-        <short>
-          <var>Caption</var> - the text-string appearing on the Control, usually used to identify its function</short>
+      <element name="TStaticText.Caption" link="#LCL.Controls.TControl.Caption">
         <descr>
           <p>Gets caption as a text-string (<var>GetText</var>), or stores the new caption (<var>SetText</var>). Shows flag if caption is stored (<var>IsCaptionStored</var>).</p>
           <p>By default, the <var>Caption</var> appears the same as the control <var>Name</var> in the Object Inspector, 
@@ -6836,8 +6538,7 @@ introduced. These functions interface with the LCLInterface. </p>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.Color">
-        <short>Determine the colour for the current control</short>
+      <element name="TStaticText.Color" link="#LCL.Controls.TControl.Color">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Reads the value for colour, or stores the value, and sets a flag if the colour is stored.</p>
@@ -6846,8 +6547,7 @@ introduced. These functions interface with the LCLInterface. </p>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.Constraints">
-        <short>Determine <var>Constraints</var> (max and min height and width) for this control</short>
+      <element name="TStaticText.Constraints" link="#LCL.Controls.TControl.Constraints">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determine <var>Constraints</var> (max and min height and width) for this control; reads the size constraints or stores new ones.</p>
@@ -6855,149 +6555,145 @@ introduced. These functions interface with the LCLInterface. </p>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.DragCursor">
-        <short>
-          <var>DragCursor </var>- the style of cursor to be used during the Drag process</short>
+      <element name="TStaticText.DragCursor" link="#LCL.Controls.TControl.DragCursor">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.DragMode">
-        <short>
-          <var>DragMode </var>- whether manual or automatic</short>
+      <element name="TStaticText.DragMode" link="#LCL.Controls.TControl.DragMode">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.FocusControl">
+      <element name="TStaticText.FocusControl" link="#LCL.StdCtrls.TCustomStaticText.FocusControl">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.Font">
+      <element name="TStaticText.Font" link="#LCL.Controls.TControl.Font">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.OnChangeBounds">
+      <element name="TStaticText.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.OnClick">
-        <short>On Click - Action</short>
-        <descr>On Click - Action to be taken when the mouse button is clicked with the cursor over this control. User-defined Procedure</descr>
+      <element name="TStaticText.OnClick" link="#LCL.Controls.TControl.OnClick">
+        <descr>On Click - Action to be taken when the mouse button is clicked with the cursor over this control. User-defined Procedure
+</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.OnDblClick">
-        <short>On Double-click - Action</short>
-        <descr>On Double-click - Action to be taken when the mouse button is double-clicked while the cursor is over the control. User-defined Procedure</descr>
+      <element name="TStaticText.OnDblClick" link="#LCL.Controls.TControl.OnDblClick">
+        <descr>On Double-click - Action to be taken when the mouse button is double-clicked while the cursor is over the control. User-defined Procedure
+</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.OnDragDrop">
+      <element name="TStaticText.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.OnDragOver">
+      <element name="TStaticText.OnDragOver" link="#LCL.Controls.TControl.OnDragOver">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.OnEndDrag">
+      <element name="TStaticText.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.OnMouseDown">
-        <short>On Mouse Down - Action</short>
-        <descr>On Mouse Down - Action to be taken when the mouse button is down while the cursor is over this control. User-defined Procedure</descr>
+      <element name="TStaticText.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
+        <descr>On Mouse Down - Action to be taken when the mouse button is down while the cursor is over this control. User-defined Procedure
+</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.OnMouseEnter">
-        <short>On Mouse Entry - Action</short>
-        <descr>On Mouse Entry - Action to be taken when the mouse cursor enters the bounds of this control. User-defined Procedure</descr>
+      <element name="TStaticText.OnMouseEnter" link="#LCL.Controls.TControl.OnMouseEnter">
+        <descr>On Mouse Entry - Action to be taken when the mouse cursor enters the bounds of this control. User-defined Procedure
+</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.OnMouseLeave">
-        <short>On Mouse Leaving - Action</short>
-        <descr>On Mouse Leaving - Action to be taken when the mouse cursor leaves the boundaries of this control. User-defined Procedure.</descr>
+      <element name="TStaticText.OnMouseLeave" link="#LCL.Controls.TControl.OnMouseLeave">
+        <descr>On Mouse Leaving - Action to be taken when the mouse cursor leaves the boundaries of this control. User-defined Procedure.
+</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.OnMouseMove">
-        <short>On Mouse Movement - Action</short>
-        <descr>On Mouse Movement - Action to be taken if the mouse cursor moves within the bounds of this control. User-defined Procedure</descr>
+      <element name="TStaticText.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
+        <descr>On Mouse Movement - Action to be taken if the mouse cursor moves within the bounds of this control. User-defined Procedure
+</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.OnMouseUp">
-        <short>On Mouse Up - Action</short>
-        <descr>On Mouse Up - Action to be taken if the mouse button is up while the cursor is over this control. </descr>
+      <element name="TStaticText.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
+        <descr>On Mouse Up - Action to be taken if the mouse button is up while the cursor is over this control.
+</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.OnResize">
-        <short>On Resize - Action</short>
-        <descr>On Resize - Action to be taken when the control is resized. Might include re-alignment of text or selection of a different font size etc. User-defined Procedure</descr>
+      <element name="TStaticText.OnResize" link="#LCL.Controls.TControl.OnResize">
+        <descr>On Resize - Action to be taken when the control is resized. Might include re-alignment of text or selection of a different font size etc. User-defined Procedure
+</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.OnStartDrag">
+      <element name="TStaticText.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.ParentBidiMode">
+      <element name="TStaticText.ParentBidiMode" link="#LCL.Controls.TControl.ParentBiDiMode">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.ParentColor">
+      <element name="TStaticText.ParentColor" link="#LCL.Controls.TControl.ParentColor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.ParentFont">
+      <element name="TStaticText.ParentFont" link="#LCL.Controls.TControl.ParentFont">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.ShowAccelChar">
+      <element name="TStaticText.ShowAccelChar" link="#LCL.StdCtrls.TCustomStaticText.ShowAccelChar">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.TabOrder">
+      <element name="TStaticText.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.TabStop">
+      <element name="TStaticText.TabStop" link="#LCL.Controls.TWinControl.TabStop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.Visible">
-        <short>Visible</short>
-        <descr>Visible - determines whether or not the control can be seen</descr>
+      <element name="TStaticText.Visible" link="#LCL.Controls.TControl.Visible">
+        <descr>Visible - determines whether or not the control can be seen
+</descr>
         <seealso/>
       </element>
       <!-- object Visibility: default -->
@@ -7085,13 +6781,7 @@ introduced. These functions interface with the LCLInterface. </p>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TButtonControl.Click">
-        <short>
-          <var>Click </var>
-
-
-
-- the procedure which allows programmatic simulation of a mouse click</short>
+      <element name="TButtonControl.Click" link="#LCL.Controls.TControl.Click">
         <descr>
           <p>
             <var>Click </var>
@@ -7103,7 +6793,7 @@ introduced. These functions interface with the LCLInterface. </p>
         </descr>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TButtonControl.ColorIsStored">
+      <element name="TButtonControl.ColorIsStored" link="#LCL.Controls.TControl.ColorIsStored">
         <short/>
         <descr/>
         <errors/>
@@ -7114,8 +6804,7 @@ introduced. These functions interface with the LCLInterface. </p>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TButtonControl.Loaded">
-        <short>Called when the component has finished loading.</short>
+      <element name="TButtonControl.Loaded" link="#rtl.Classes.TComponent.Loaded">
         <descr>
           <p>
             <var>Loaded</var> is called by the streaming system when a root
@@ -7143,13 +6832,15 @@ is done automatically by the streaming system.
       </element>
       <!-- property Visibility: protected -->
       <element name="TButtonControl.ClicksDisabled">
-        <short/>
+        <short>
+          <var>ClicksDisabled</var> - if True, clicks are disabled for this button control</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TButtonControl.UseOnChange">
-        <short/>
+        <short>
+          <var>UseOnChange</var> - if true, this control is to be used if any change occurs</short>
         <descr/>
         <seealso/>
       </element>
@@ -7163,8 +6854,7 @@ is done automatically by the streaming system.
 - event handler for any change in properties of the control</short>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TButtonControl.Create">
-        <short>Create a new instance of the Window Control</short>
+      <element name="TButtonControl.Create" link="#LCL.Controls.TWinControl.Create">
         <descr/>
         <errors/>
         <seealso/>
@@ -7340,9 +7030,7 @@ is done automatically by the streaming system.
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomButton.Click">
-        <short>
-          <var>Click </var>- the procedure which allows programmatic simulation of a mouse click</short>
+      <element name="TCustomButton.Click" link="#LCL.Controls.TControl.Click">
         <descr>
           <p>
             <var>Click </var>
@@ -7356,14 +7044,14 @@ is done automatically by the streaming system.
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomButton.CreateWnd">
+      <element name="TCustomButton.CreateWnd" link="#LCL.Controls.TWinControl.CreateWnd">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomButton.ControlKeyDown">
+      <element name="TCustomButton.ControlKeyDown" link="#LCL.Controls.TWinControl.ControlKeyDown">
         <short/>
         <descr/>
         <errors/>
@@ -7378,7 +7066,7 @@ is done automatically by the streaming system.
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomButton.ControlKeyUp">
+      <element name="TCustomButton.ControlKeyUp" link="#LCL.Controls.TWinControl.ControlKeyUp">
         <short/>
         <descr/>
         <errors/>
@@ -7393,7 +7081,7 @@ is done automatically by the streaming system.
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomButton.SetParent">
+      <element name="TCustomButton.SetParent" link="#LCL.Controls.TControl.SetParent">
         <short/>
         <descr/>
         <errors/>
@@ -7434,7 +7122,7 @@ is done automatically by the streaming system.
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomButton.GetControlClassDefaultSize">
+      <element name="TCustomButton.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize">
         <short/>
         <descr/>
         <errors/>
@@ -7445,20 +7133,20 @@ is done automatically by the streaming system.
         <short/>
       </element>
       <!-- property Visibility: protected -->
-      <element name="TCustomButton.ParentColor">
+      <element name="TCustomButton.ParentColor" link="#LCL.Controls.TControl.ParentColor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomButton.TextChanged">
+      <element name="TCustomButton.TextChanged" link="#LCL.Controls.TControl.TextChanged">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomButton.UseRightToLeftAlignment">
+      <element name="TCustomButton.UseRightToLeftAlignment" link="#LCL.Controls.TControl.UseRightToLeftAlignment">
         <short/>
         <descr/>
         <errors/>
@@ -7470,14 +7158,16 @@ is done automatically by the streaming system.
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomButton.WSSetDefault">
-        <short/>
+        <short>
+          <var>WSSetDefault</var> - writes the default widget set to local variable</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomButton.WSSetText">
-        <short/>
+        <short>
+          <var>WSSetText</var> - writes the text name of the widget set to a local variable</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7487,9 +7177,9 @@ is done automatically by the streaming system.
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomButton.Create">
-        <short>Creates a new instance of the TCustomButton class</short>
-        <descr>If you drop a component on the form editor you don´t need to add code to explicitly create it. The component is automatically created together with the the form, and destroyed when the form is destroyed.</descr>
+      <element name="TCustomButton.Create" link="#LCL.Controls.TWinControl.Create">
+        <descr>If you drop a component on the form editor you don´t need to add code to explicitly create it. The component is automatically created together with the the form, and destroyed when the form is destroyed.
+</descr>
         <errors/>
         <seealso/>
       </element>
@@ -7498,23 +7188,19 @@ is done automatically by the streaming system.
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomButton.ExecuteDefaultAction">
-        <short>Performs the action associated with the button if it is the Default button</short>
+      <element name="TCustomButton.ExecuteDefaultAction" link="#LCL.Controls.TControl.ExecuteDefaultAction">
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomButton.ExecuteCancelAction">
-        <short>Performs the action associated with the button if it is a Cancel button or if 'Escape' was pressed</short>
+      <element name="TCustomButton.ExecuteCancelAction" link="#LCL.Controls.TControl.ExecuteCancelAction">
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomButton.ActiveDefaultControlChanged">
-        <short>The active default control has changed to <var>NewControl</var>
-        </short>
+      <element name="TCustomButton.ActiveDefaultControlChanged" link="#LCL.Controls.TControl.ActiveDefaultControlChanged">
         <descr/>
         <errors/>
         <seealso/>
@@ -7524,8 +7210,7 @@ is done automatically by the streaming system.
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomButton.UpdateRolesForForm">
-        <short>Update the roles for this form; see whether there have been any changes in its role</short>
+      <element name="TCustomButton.UpdateRolesForForm" link="#LCL.Controls.TControl.UpdateRolesForForm">
         <descr/>
         <errors/>
         <seealso/>
@@ -7555,14 +7240,12 @@ is done automatically by the streaming system.
         </descr>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomButton.Color">
-        <short>What Colour is the button? (default is the same as all other button faces)</short>
+      <element name="TCustomButton.Color" link="#LCL.Controls.TControl.Color">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomButton.TabStop">
-        <short>Is the Button included in the TabStop list? (default setting is True)</short>
+      <element name="TCustomButton.TabStop" link="#LCL.Controls.TWinControl.TabStop">
         <descr/>
         <seealso/>
       </element>
@@ -7588,15 +7271,14 @@ is done automatically by the streaming system.
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TButton.Click">
-        <short>Click, calling this method will invoke the OnClick event of the button</short>
-        <descr>If you want to programmatically Click on a button you can call its Click method. This will have the same effect as a user clicking on the button.</descr>
+      <element name="TButton.Click" link="#LCL.Controls.TControl.Click">
+        <descr>If you want to programmatically Click on a button you can call its Click method. This will have the same effect as a user clicking on the button.
+</descr>
         <errors/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.Action">
-        <short>The action to be associated with this control</short>
+      <element name="TButton.Action" link="#LCL.Controls.TControl.Action">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>The (default) action to be associated with this control</p>
@@ -7604,8 +7286,7 @@ is done automatically by the streaming system.
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.Align">
-        <short>Used to align the control in one of four directions.</short>
+      <element name="TButton.Align" link="#LCL.Controls.TControl.Align">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Either reads a flag containing alignment instructions (<var>FAlign</var>) or writes alignment instructions (<var>SetAlign</var>)</p>
@@ -7613,8 +7294,7 @@ is done automatically by the streaming system.
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.Anchors">
-        <short>The set of anchor definitions for this control</short>
+      <element name="TButton.Anchors" link="#LCL.Controls.TControl.Anchors">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determines how the control is to be anchored to its client or parent conrol</p>
@@ -7623,8 +7303,7 @@ is done automatically by the streaming system.
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.AutoSize">
-        <short>Whether auto-size is to be used</short>
+      <element name="TButton.AutoSize" link="#LCL.Controls.TControl.AutoSize">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>AutoSize permits the size of a control to be adjusted automatically, for example a button can become bigger or smaller to accommodate a longer or shorter caption.</p>
@@ -7632,16 +7311,13 @@ is done automatically by the streaming system.
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.BidiMode">
-        <short>
-          <var>TControlBiDiMode</var> - enabling bi-directional writing</short>
+      <element name="TButton.BidiMode" link="#LCL.Controls.TControl.BiDiMode">
         <descr>Allows Languages such as Arabic and Hebrew to be used
 </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.BorderSpacing">
-        <short>Determines the border spacing for this control</short>
+      <element name="TButton.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determines the border spacing for this control</p>
@@ -7651,16 +7327,13 @@ is done automatically by the streaming system.
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.Cancel">
-        <short>Is this the Cancel button? (default setting is False)</short>
+      <element name="TButton.Cancel" link="#LCL.StdCtrls.TCustomButton.Cancel">
         <descr>
           <p>Setting this property to true, will have the effect that when the user hits ESC this button is Clicked, even if the button does not have focus. Usually the Button which reacts to ESC sets the ModalResult of the form to mrCancel.</p>
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.Caption">
-        <short>
-          <var>Caption</var> - the text-string appearing on the Control, usually used to identify its function</short>
+      <element name="TButton.Caption" link="#LCL.Controls.TControl.Caption">
         <descr>
           <p>Gets caption as a text-string (<var>GetText</var>), or stores the new caption (<var>SetText</var>). Shows flag if caption is stored (<var>IsCaptionStored</var>).</p>
           <p>By default, the <var>Caption</var> appears the same as the control <var>Name</var> in the Object Inspector, 
@@ -7674,14 +7347,12 @@ introduced. These functions interface with the LCLInterface. </p>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.Color">
-        <short>What Colour is the button? (default is the same as all other button faces)</short>
+      <element name="TButton.Color" link="#LCL.Controls.TControl.Color">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.Constraints">
-        <short>Determine <var>Constraints</var> (max and min height and width) for this control</short>
+      <element name="TButton.Constraints" link="#LCL.Controls.TControl.Constraints">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determine <var>Constraints</var> (max and min height and width) for this control; reads the size constraints or stores new ones.</p>
@@ -7689,29 +7360,23 @@ introduced. These functions interface with the LCLInterface. </p>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.Default">
-        <short>Is this the Default button? (default setting is False)</short>
+      <element name="TButton.Default" link="#LCL.StdCtrls.TCustomButton.Default">
         <descr>
           <p>Defines if a button is the <var>Default</var> on a form. That is, pressing ENTER will execute its onClick method, whether the control has focus or not!</p>
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.DragCursor">
-        <short>
-          <var>DragCursor </var>- the style of cursor to be used during the Drag process</short>
+      <element name="TButton.DragCursor" link="#LCL.Controls.TControl.DragCursor">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.DragMode">
-        <short>
-          <var>DragMode </var>- whether manual or automatic</short>
+      <element name="TButton.DragMode" link="#LCL.Controls.TControl.DragMode">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.Enabled">
-        <short>Whether the control is <var>Enabled</var>. If not, it usually appears 'greyed-out'</short>
+      <element name="TButton.Enabled" link="#LCL.Controls.TControl.Enabled">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Whether the control is <var>Enabled</var>. If not, it usually appears 'greyed-out'</p>
@@ -7719,8 +7384,7 @@ introduced. These functions interface with the LCLInterface. </p>
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.Font">
-        <short>The <var>Font</var> to be used for text in this control</short>
+      <element name="TButton.Font" link="#LCL.Controls.TControl.Font">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Reads a flag to see what font should be used, or sets a flag to store it. If stored, sets a flag to say so</p>
@@ -7730,21 +7394,17 @@ introduced. These functions interface with the LCLInterface. </p>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.ParentBidiMode">
-        <short>
-          <var>ParentBiDiMode</var> - does the control follow the BiDiMode settings of its parent?</short>
+      <element name="TButton.ParentBidiMode" link="#LCL.Controls.TControl.ParentBiDiMode">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.ModalResult">
-        <short>Is a Modal Result awaited? (default is false)</short>
+      <element name="TButton.ModalResult" link="#LCL.StdCtrls.TCustomButton.ModalResult">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.OnChangeBounds">
-        <short>Event handler for a change in bounds of the control</short>
+      <element name="TButton.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Reads or Writes flag if bounds are changed</p>
@@ -7752,47 +7412,35 @@ introduced. These functions interface with the LCLInterface. </p>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.OnClick">
+      <element name="TButton.OnClick" link="#LCL.Controls.TControl.OnClick">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <var>ActionList</var>
           </p>
           <p>Reads or writes a flag if  a mouse click is detected, and sets a flag if a value is stored.</p>
         </descr>
-        <short>Event Handler for mouse click</short>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.OnDragDrop">
-        <short>Event handler for the Drag-Drop manoeuvre</short>
+      <element name="TButton.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.OnDragOver">
-        <short>Event handler for the case when a control is dragged over another control</short>
+      <element name="TButton.OnDragOver" link="#LCL.Controls.TControl.OnDragOver">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.OnEndDrag">
-        <short>Event handler for the end of a dragging process</short>
+      <element name="TButton.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.OnEnter">
-        <short>
-          <var>OnEnter</var> - event handler for when the mouse enters the control, and the control receives focus</short>
-      </element>
+      <element name="TButton.OnEnter" link="#LCL.Controls.TWinControl.OnEnter"/>
       <!-- property Visibility: published -->
-      <element name="TButton.OnExit">
-        <short>
-          <var>OnExit</var> - event handler for when the mouse leaves the control and it loses focus</short>
-      </element>
+      <element name="TButton.OnExit" link="#LCL.Controls.TWinControl.OnExit"/>
       <!-- property Visibility: published -->
-      <element name="TButton.OnKeyDown">
-        <short>
-          <var>OnKeyDown</var> - event handler for instance when key is down while control has focus</short>
+      <element name="TButton.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown">
         <descr>
           <p>
             <var>OnKeyDown</var>
@@ -7802,8 +7450,7 @@ introduced. These functions interface with the LCLInterface. </p>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.OnKeyPress">
-        <short>OnKeyPress - event controller for a key being pressed while the control has focus</short>
+      <element name="TButton.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress">
         <descr>
           <p>
             <var>OnKeyPress</var>
@@ -7813,9 +7460,7 @@ introduced. These functions interface with the LCLInterface. </p>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.OnKeyUp">
-        <short>
-          <var>OnKeyUp</var>  - event handler for instance when a key is up (not pressed) while the control has focus</short>
+      <element name="TButton.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp">
         <descr>
           <p>
             <var>OnKeyUp</var>
@@ -7825,66 +7470,54 @@ introduced. These functions interface with the LCLInterface. </p>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.OnMouseDown">
-        <short>Event handler for when a mouse button is pressed down</short>
+      <element name="TButton.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.OnMouseEnter">
-        <short>Event handler for when the mouse enters the area of the current control</short>
+      <element name="TButton.OnMouseEnter" link="#LCL.Controls.TControl.OnMouseEnter">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.OnMouseLeave">
-        <short>Event handler for when the mouse leaves the area of the current control</short>
+      <element name="TButton.OnMouseLeave" link="#LCL.Controls.TControl.OnMouseLeave">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.OnMouseMove">
-        <short>Event handler for mouse movement within the current control</short>
+      <element name="TButton.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.OnMouseUp">
-        <short>Event handler for when the mouse button is released, ie "up"</short>
+      <element name="TButton.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.OnResize">
-        <short>Event Handler for resize of control</short>
+      <element name="TButton.OnResize" link="#LCL.Controls.TControl.OnResize">
         <descr>// standard properties, which should be supported by all descendants<br/>
 Reads or Writes flag if control is re-sized.
 </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.OnStartDrag">
-        <short>Event handler for start of dragging process</short>
+      <element name="TButton.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.ParentFont">
-        <short>
-          <var>ParentFont </var>- should the control use the same font as the parent? Default is true</short>
+      <element name="TButton.ParentFont" link="#LCL.Controls.TControl.ParentFont">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.ParentShowHint">
-        <short>
-          <var>ParentShowHint </var>- does the control adopt the same hinting behaviour as its parent? Default is true</short>
+      <element name="TButton.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.PopupMenu">
-        <short>PopupMenu - a context-sensitive menu that pops up when the right mouse button is clicked over this control</short>
+      <element name="TButton.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
         <descr>// standard properties, which should be supported by all descendants<br/>
  Reads the details of the pop-up menu, or stores them.<br/>
 Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPopupMenu</link>
@@ -7892,27 +7525,21 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.ShowHint">
-        <short>Flag to determine: Is hint to be displayed for this control?</short>
+      <element name="TButton.ShowHint" link="#LCL.Controls.TControl.ShowHint">
         <descr>// standard properties, which should be supported by all descendants<br/>
 Reads flag or writes one to determine if a hint is to be shown when mouse hovers over this control. If value is stored, a storage flag is set. Display of the actual hint is controlled by OnShowHint
 </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.TabOrder">
-        <short>The place this control occupies in the list of tabs</short>
+      <element name="TButton.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
         <descr>Reads or writes information in flag; default is -1
 </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.TabStop">
-        <short>Is the Button included in the TabStop list? (default setting is True)</short>
-      </element>
+      <element name="TButton.TabStop" link="#LCL.Controls.TWinControl.TabStop"/>
       <!-- property Visibility: published -->
-      <element name="TButton.Visible">
-        <short>
-          <var>Visible</var> - can the control be seen?</short>
+      <element name="TButton.Visible" link="#LCL.Controls.TControl.Visible">
         <descr>
           <pre>The Visible property represents the ability to see a visual control. 
           If Visible is True the control is shown, otherwise it is hidden.
@@ -8015,9 +7642,7 @@ is the ancestor of all check-box components.</short>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomCheckBox.Click">
-        <short>
-          <var>Click </var>- the procedure which allows programmatic simulation of a mouse click</short>
+      <element name="TCustomCheckBox.Click" link="#LCL.Controls.TControl.Click">
         <descr>
           <p>
             <var>Click </var>
@@ -8042,14 +7667,14 @@ is the ancestor of all check-box components.</short>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomCheckBox.TextChanged">
+      <element name="TCustomCheckBox.TextChanged" link="#LCL.Controls.TControl.TextChanged">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomCheckBox.InitializeWnd">
+      <element name="TCustomCheckBox.InitializeWnd" link="#LCL.Controls.TWinControl.InitializeWnd">
         <short/>
         <descr/>
         <errors/>
@@ -8057,7 +7682,8 @@ is the ancestor of all check-box components.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomCheckBox.Toggle">
-        <short/>
+        <short>
+          <var>Toggle</var> - method to alternate between checked and unchecked states on successive activations</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8100,7 +7726,7 @@ is the ancestor of all check-box components.</short>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomCheckBox.RealSetText">
+      <element name="TCustomCheckBox.RealSetText" link="#LCL.Controls.TControl.RealSetText">
         <short/>
         <descr/>
         <errors/>
@@ -8118,7 +7744,7 @@ is the ancestor of all check-box components.</short>
         <seealso/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomCheckBox.GetControlClassDefaultSize">
+      <element name="TCustomCheckBox.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize">
         <short/>
         <descr/>
         <errors/>
@@ -8129,14 +7755,14 @@ is the ancestor of all check-box components.</short>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomCheckBox.Loaded">
+      <element name="TCustomCheckBox.Loaded" link="#rtl.Classes.TComponent.Loaded">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomCheckBox.WSSetText">
+      <element name="TCustomCheckBox.WSSetText" link="#LCL.Controls.TWinControl.WSSetText">
         <short/>
         <descr/>
         <errors/>
@@ -8147,7 +7773,7 @@ is the ancestor of all check-box components.</short>
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomCheckBox.Create">
+      <element name="TCustomCheckBox.Create" link="#LCL.Controls.TWinControl.Create">
         <short/>
         <descr/>
         <errors/>
@@ -8158,7 +7784,7 @@ is the ancestor of all check-box components.</short>
         <short/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomCheckBox.AutoSize">
+      <element name="TCustomCheckBox.AutoSize" link="#LCL.Controls.TControl.AutoSize">
         <short/>
         <descr/>
         <seealso/>
@@ -8180,20 +7806,20 @@ is the ancestor of all check-box components.</short>
         <example file="stdctrls/tcustomcheckbox_allowgrayed.pas"/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomCheckBox.TabStop">
-        <short>Is the control in the sequence of controls accessed by successive presses of the Tab key?</short>
+      <element name="TCustomCheckBox.TabStop" link="#LCL.Controls.TWinControl.TabStop">
         <descr>Use the TabStop to allow or disallow access to the control using the Tab key.
 
-If the TabStop is True, the control is in the tab order. If TabStop is False, the control is not in the tab order and the user can't press the Tab key to move to the control.</descr>
+If the TabStop is True, the control is in the tab order. If TabStop is False, the control is not in the tab order and the user can't press the Tab key to move to the control.
+</descr>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomCheckBox.UseOnChange">
+      <element name="TCustomCheckBox.UseOnChange" link="#LCL.StdCtrls.TButtonControl.UseOnChange">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomCheckBox.OnChange">
+      <element name="TCustomCheckBox.OnChange" link="#LCL.StdCtrls.TButtonControl.OnChange">
         <short/>
         <descr/>
         <seealso/>
@@ -8219,140 +7845,133 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         </seealso>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.Action"/>
+      <element name="TCheckBox.Action" link="#LCL.Controls.TControl.Action"/>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.Align"/>
+      <element name="TCheckBox.Align" link="#LCL.Controls.TControl.Align"/>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.AllowGrayed"/>
+      <element name="TCheckBox.AllowGrayed" link="#LCL.StdCtrls.TCustomCheckBox.AllowGrayed"/>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.Anchors"/>
+      <element name="TCheckBox.Anchors" link="#LCL.Controls.TControl.Anchors"/>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.AutoSize">
+      <element name="TCheckBox.AutoSize" link="#LCL.Controls.TControl.AutoSize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.BidiMode">
+      <element name="TCheckBox.BidiMode" link="#LCL.Controls.TControl.BiDiMode">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.BorderSpacing">
+      <element name="TCheckBox.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.Caption"/>
+      <element name="TCheckBox.Caption" link="#LCL.Controls.TControl.Caption"/>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.Checked">
-        <short>
-          <var>Checked</var>
-
-
-
- - shows whether or not the box has been checked (ie selected)</short>
-      </element>
+      <element name="TCheckBox.Checked" link="#LCL.StdCtrls.TButtonControl.Checked"/>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.Color">
+      <element name="TCheckBox.Color" link="#LCL.Controls.TControl.Color">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.Constraints"/>
+      <element name="TCheckBox.Constraints" link="#LCL.Controls.TControl.Constraints"/>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.DragCursor">
+      <element name="TCheckBox.DragCursor" link="#LCL.Controls.TControl.DragCursor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.DragKind">
+      <element name="TCheckBox.DragKind" link="#LCL.Controls.TControl.DragKind">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.DragMode">
+      <element name="TCheckBox.DragMode" link="#LCL.Controls.TControl.DragMode">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.Enabled"/>
+      <element name="TCheckBox.Enabled" link="#LCL.Controls.TControl.Enabled"/>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.Font">
+      <element name="TCheckBox.Font" link="#LCL.Controls.TControl.Font">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.Hint"/>
+      <element name="TCheckBox.Hint" link="#LCL.Controls.TControl.Hint"/>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.OnChange"/>
+      <element name="TCheckBox.OnChange" link="#LCL.StdCtrls.TButtonControl.OnChange"/>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.OnChangeBounds"/>
+      <element name="TCheckBox.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds"/>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.OnClick"/>
+      <element name="TCheckBox.OnClick" link="#LCL.Controls.TControl.OnClick"/>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.OnDragDrop">
+      <element name="TCheckBox.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.OnDragOver">
+      <element name="TCheckBox.OnDragOver" link="#LCL.Controls.TControl.OnDragOver">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.OnEditingDone">
+      <element name="TCheckBox.OnEditingDone" link="#LCL.Controls.TControl.OnEditingDone">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.OnEndDrag">
+      <element name="TCheckBox.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.OnEnter"/>
+      <element name="TCheckBox.OnEnter" link="#LCL.Controls.TWinControl.OnEnter"/>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.OnExit"/>
+      <element name="TCheckBox.OnExit" link="#LCL.Controls.TWinControl.OnExit"/>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.OnMouseDown"/>
+      <element name="TCheckBox.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown"/>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.OnMouseEnter">
+      <element name="TCheckBox.OnMouseEnter" link="#LCL.Controls.TControl.OnMouseEnter">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.OnMouseLeave">
+      <element name="TCheckBox.OnMouseLeave" link="#LCL.Controls.TControl.OnMouseLeave">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.OnMouseMove"/>
+      <element name="TCheckBox.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove"/>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.OnMouseUp"/>
+      <element name="TCheckBox.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp"/>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.OnResize"/>
+      <element name="TCheckBox.OnResize" link="#LCL.Controls.TControl.OnResize"/>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.OnStartDrag">
+      <element name="TCheckBox.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.ParentColor">
+      <element name="TCheckBox.ParentColor" link="#LCL.Controls.TControl.ParentColor">
         <short/>
         <descr/>
         <seealso/>
@@ -8364,47 +7983,47 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.ParentShowHint">
+      <element name="TCheckBox.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.ParentBidiMode">
+      <element name="TCheckBox.ParentBidiMode" link="#LCL.Controls.TControl.ParentBiDiMode">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.PopupMenu"/>
+      <element name="TCheckBox.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.ShowHint"/>
+      <element name="TCheckBox.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.State">
+      <element name="TCheckBox.State" link="#LCL.StdCtrls.TCustomCheckBox.State">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.TabOrder">
+      <element name="TCheckBox.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.TabStop">
+      <element name="TCheckBox.TabStop" link="#LCL.Controls.TWinControl.TabStop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.UseOnChange">
+      <element name="TCheckBox.UseOnChange" link="#LCL.StdCtrls.TButtonControl.UseOnChange">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.Visible"/>
+      <element name="TCheckBox.Visible" link="#LCL.Controls.TControl.Visible"/>
       <!-- object Visibility: default -->
       <element name="TToggleBox">
         <short>
@@ -8438,16 +8057,14 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <short/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToggleBox.AllowGrayed">
-        <short>Determines whether the check box can be in a "grayed" state.</short>
+      <element name="TToggleBox.AllowGrayed" link="#LCL.StdCtrls.TCustomCheckBox.AllowGrayed">
         <descr>
           <p>If <var>AllowGrayed</var> is set to True, the check box has three possible states: checked, unchecked and grayed. If <var>AllowGrayed</var> is set to False, the check box has only two possible states: checked and unchecked.</p>
         </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToggleBox.Anchors">
-        <short>The set of anchor definitions for this control</short>
+      <element name="TToggleBox.Anchors" link="#LCL.Controls.TControl.Anchors">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determines how the control is to be anchored to its client or parent conrol</p>
@@ -8457,8 +8074,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToggleBox.AutoSize">
-        <short>Whether auto-size is to be used</short>
+      <element name="TToggleBox.AutoSize" link="#LCL.Controls.TControl.AutoSize">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>AutoSize permits the size of a control to be adjusted automatically, for example a button can become bigger or smaller to accommodate a longer or shorter caption.</p>
@@ -8467,163 +8083,163 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToggleBox.BorderSpacing">
+      <element name="TToggleBox.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToggleBox.Caption">
+      <element name="TToggleBox.Caption" link="#LCL.Controls.TControl.Caption">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToggleBox.Checked">
+      <element name="TToggleBox.Checked" link="#LCL.StdCtrls.TButtonControl.Checked">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToggleBox.DragCursor">
+      <element name="TToggleBox.DragCursor" link="#LCL.Controls.TControl.DragCursor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToggleBox.DragKind">
+      <element name="TToggleBox.DragKind" link="#LCL.Controls.TControl.DragKind">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToggleBox.DragMode">
+      <element name="TToggleBox.DragMode" link="#LCL.Controls.TControl.DragMode">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToggleBox.Enabled">
+      <element name="TToggleBox.Enabled" link="#LCL.Controls.TControl.Enabled">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToggleBox.Hint">
+      <element name="TToggleBox.Hint" link="#LCL.Controls.TControl.Hint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToggleBox.OnChange">
+      <element name="TToggleBox.OnChange" link="#LCL.StdCtrls.TButtonControl.OnChange">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToggleBox.OnClick">
+      <element name="TToggleBox.OnClick" link="#LCL.Controls.TControl.OnClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToggleBox.OnDragDrop">
+      <element name="TToggleBox.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToggleBox.OnDragOver">
+      <element name="TToggleBox.OnDragOver" link="#LCL.Controls.TControl.OnDragOver">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToggleBox.OnEndDrag">
+      <element name="TToggleBox.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToggleBox.OnEnter">
+      <element name="TToggleBox.OnEnter" link="#LCL.Controls.TWinControl.OnEnter">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToggleBox.OnExit">
+      <element name="TToggleBox.OnExit" link="#LCL.Controls.TWinControl.OnExit">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToggleBox.OnMouseDown">
+      <element name="TToggleBox.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToggleBox.OnMouseMove">
+      <element name="TToggleBox.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToggleBox.OnMouseUp">
+      <element name="TToggleBox.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToggleBox.OnStartDrag">
+      <element name="TToggleBox.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToggleBox.ParentShowHint">
+      <element name="TToggleBox.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToggleBox.PopupMenu">
+      <element name="TToggleBox.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToggleBox.ShowHint">
+      <element name="TToggleBox.ShowHint" link="#LCL.Controls.TControl.ShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToggleBox.State">
+      <element name="TToggleBox.State" link="#LCL.StdCtrls.TCustomCheckBox.State">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToggleBox.TabOrder">
+      <element name="TToggleBox.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToggleBox.TabStop">
+      <element name="TToggleBox.TabStop" link="#LCL.Controls.TWinControl.TabStop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToggleBox.UseOnChange">
+      <element name="TToggleBox.UseOnChange" link="#LCL.StdCtrls.TButtonControl.UseOnChange">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToggleBox.Visible">
+      <element name="TToggleBox.Visible" link="#LCL.Controls.TControl.Visible">
         <short/>
         <descr/>
         <seealso/>
@@ -8682,7 +8298,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TRadioButton.RealSetText">
+      <element name="TRadioButton.RealSetText" link="#LCL.Controls.TControl.RealSetText">
         <short/>
         <descr/>
         <errors/>
@@ -8700,7 +8316,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TRadioButton.Create">
+      <element name="TRadioButton.Create" link="#LCL.Controls.TWinControl.Create">
         <short/>
         <descr/>
         <errors/>
@@ -8711,241 +8327,241 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <short/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioButton.Align">
+      <element name="TRadioButton.Align" link="#LCL.Controls.TControl.Align">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioButton.AllowGrayed">
+      <element name="TRadioButton.AllowGrayed" link="#LCL.StdCtrls.TCustomCheckBox.AllowGrayed">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioButton.Anchors">
+      <element name="TRadioButton.Anchors" link="#LCL.Controls.TControl.Anchors">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioButton.AutoSize">
+      <element name="TRadioButton.AutoSize" link="#LCL.Controls.TControl.AutoSize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioButton.BidiMode">
+      <element name="TRadioButton.BidiMode" link="#LCL.Controls.TControl.BiDiMode">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioButton.BorderSpacing">
+      <element name="TRadioButton.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioButton.Caption">
+      <element name="TRadioButton.Caption" link="#LCL.Controls.TControl.Caption">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioButton.Checked">
+      <element name="TRadioButton.Checked" link="#LCL.StdCtrls.TButtonControl.Checked">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioButton.Constraints">
+      <element name="TRadioButton.Constraints" link="#LCL.Controls.TControl.Constraints">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioButton.DragCursor">
+      <element name="TRadioButton.DragCursor" link="#LCL.Controls.TControl.DragCursor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioButton.DragKind">
+      <element name="TRadioButton.DragKind" link="#LCL.Controls.TControl.DragKind">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioButton.DragMode">
+      <element name="TRadioButton.DragMode" link="#LCL.Controls.TControl.DragMode">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioButton.Enabled">
+      <element name="TRadioButton.Enabled" link="#LCL.Controls.TControl.Enabled">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioButton.Font">
+      <element name="TRadioButton.Font" link="#LCL.Controls.TControl.Font">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioButton.Hint">
+      <element name="TRadioButton.Hint" link="#LCL.Controls.TControl.Hint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioButton.OnChange">
+      <element name="TRadioButton.OnChange" link="#LCL.StdCtrls.TButtonControl.OnChange">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioButton.OnChangeBounds">
+      <element name="TRadioButton.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioButton.OnClick">
+      <element name="TRadioButton.OnClick" link="#LCL.Controls.TControl.OnClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioButton.OnDragDrop">
+      <element name="TRadioButton.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioButton.OnDragOver">
+      <element name="TRadioButton.OnDragOver" link="#LCL.Controls.TControl.OnDragOver">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioButton.OnEndDrag">
+      <element name="TRadioButton.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioButton.OnEnter">
+      <element name="TRadioButton.OnEnter" link="#LCL.Controls.TWinControl.OnEnter">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioButton.OnExit">
+      <element name="TRadioButton.OnExit" link="#LCL.Controls.TWinControl.OnExit">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioButton.OnMouseDown">
+      <element name="TRadioButton.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioButton.OnMouseEnter">
+      <element name="TRadioButton.OnMouseEnter" link="#LCL.Controls.TControl.OnMouseEnter">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioButton.OnMouseLeave">
+      <element name="TRadioButton.OnMouseLeave" link="#LCL.Controls.TControl.OnMouseLeave">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioButton.OnMouseMove">
+      <element name="TRadioButton.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioButton.OnMouseUp">
+      <element name="TRadioButton.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioButton.OnResize">
+      <element name="TRadioButton.OnResize" link="#LCL.Controls.TControl.OnResize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioButton.OnStartDrag">
+      <element name="TRadioButton.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioButton.ParentBidiMode">
+      <element name="TRadioButton.ParentBidiMode" link="#LCL.Controls.TControl.ParentBiDiMode">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioButton.ParentFont">
+      <element name="TRadioButton.ParentFont" link="#LCL.Controls.TControl.ParentFont">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioButton.ParentShowHint">
+      <element name="TRadioButton.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioButton.PopupMenu">
+      <element name="TRadioButton.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioButton.ShowHint">
+      <element name="TRadioButton.ShowHint" link="#LCL.Controls.TControl.ShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioButton.State">
+      <element name="TRadioButton.State" link="#LCL.StdCtrls.TCustomCheckBox.State">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioButton.TabOrder">
+      <element name="TRadioButton.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioButton.TabStop">
+      <element name="TRadioButton.TabStop" link="#LCL.Controls.TWinControl.TabStop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioButton.UseOnChange">
+      <element name="TRadioButton.UseOnChange" link="#LCL.StdCtrls.TButtonControl.UseOnChange">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioButton.Visible">
+      <element name="TRadioButton.Visible" link="#LCL.Controls.TControl.Visible">
         <short/>
         <descr/>
         <seealso/>
@@ -9013,7 +8629,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomLabel.CanTab">
+      <element name="TCustomLabel.CanTab" link="#LCL.Controls.TControl.CanTab">
         <short/>
         <descr/>
         <errors/>
@@ -9065,7 +8681,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomLabel.DoAutoSize">
+      <element name="TCustomLabel.DoAutoSize" link="#LCL.Controls.TControl.DoAutoSize">
         <short/>
         <descr/>
         <errors/>
@@ -9087,14 +8703,14 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomLabel.TextChanged">
+      <element name="TCustomLabel.TextChanged" link="#LCL.Controls.TControl.TextChanged">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomLabel.Resize">
+      <element name="TCustomLabel.Resize" link="#LCL.Controls.TControl.Resize">
         <short/>
         <descr/>
         <errors/>
@@ -9112,7 +8728,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomLabel.GetControlClassDefaultSize">
+      <element name="TCustomLabel.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize">
         <short/>
         <descr/>
         <errors/>
@@ -9134,7 +8750,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomLabel.Notification">
+      <element name="TCustomLabel.Notification" link="#rtl.Classes.TComponent.Notification">
         <short/>
         <descr/>
         <errors/>
@@ -9270,7 +8886,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomLabel.Loaded">
+      <element name="TCustomLabel.Loaded" link="#rtl.Classes.TComponent.Loaded">
         <short>Called when the component has finished loading.</short>
         <descr>
           <p>
@@ -9370,8 +8986,7 @@ is done automatically by the streaming system.
 - boolean. If True, font size is adjusted for optimal fill of available space</short>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomLabel.Create">
-        <short>Create a new instance of a Graphic Control</short>
+      <element name="TCustomLabel.Create" link="#LCL.Controls.TGraphicControl.Create">
         <descr/>
         <errors/>
         <seealso/>
@@ -9388,7 +9003,7 @@ is done automatically by the streaming system.
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomLabel.CalculatePreferredSize">
+      <element name="TCustomLabel.CalculatePreferredSize" link="#LCL.Controls.TControl.CalculatePreferredSize">
         <short/>
         <descr/>
         <errors/>
@@ -9435,8 +9050,7 @@ is done automatically by the streaming system.
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TCustomLabel.ColorIsStored">
-        <short>Colour is stored</short>
+      <element name="TCustomLabel.ColorIsStored" link="#LCL.Controls.TControl.ColorIsStored">
         <descr/>
         <errors/>
         <seealso/>
@@ -9457,16 +9071,14 @@ is done automatically by the streaming system.
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomLabel.Paint">
-        <short>Virtual <var>Paint</var> method called in response to paint requests.</short>
+      <element name="TCustomLabel.Paint" link="#LCL.Controls.TGraphicControl.Paint">
         <descr>Virtual <var>Paint</var> method called in response to paint requests received by the parent control.
 </descr>
         <errors/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomLabel.AutoSize">
-        <short>Whether auto-size is to be used</short>
+      <element name="TCustomLabel.AutoSize" link="#LCL.Controls.TControl.AutoSize">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>AutoSize permits the size of a control to be adjusted automatically, for example a button can become bigger or smaller to accommodate a longer or shorter caption.</p>
@@ -9475,8 +9087,7 @@ is done automatically by the streaming system.
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomLabel.Color">
-        <short>Determine the colour for the current control</short>
+      <element name="TCustomLabel.Color" link="#LCL.Controls.TControl.Color">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Reads the value for colour, or stores the value, and sets a flag if the colour is stored.</p>
@@ -9497,8 +9108,7 @@ is done automatically by the streaming system.
         </seealso>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.Align">
-        <short>Used to align the control in one of four directions.</short>
+      <element name="TLabel.Align" link="#LCL.Controls.TControl.Align">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Either reads a flag containing alignment instructions (<var>FAlign</var>) or writes alignment instructions (<var>SetAlign</var>)</p>
@@ -9506,15 +9116,12 @@ is done automatically by the streaming system.
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.Alignment">
-        <short>
-          <var>Alignment </var>- whether text is centered, left- or right-justified</short>
+      <element name="TLabel.Alignment" link="#LCL.StdCtrls.TCustomLabel.Alignment">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.Anchors">
-        <short>The set of anchor definitions for this control</short>
+      <element name="TLabel.Anchors" link="#LCL.Controls.TControl.Anchors">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determines how the control is to be anchored to its client or parent conrol</p>
@@ -9523,8 +9130,7 @@ is done automatically by the streaming system.
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.AutoSize">
-        <short>Whether auto-size is to be used</short>
+      <element name="TLabel.AutoSize" link="#LCL.Controls.TControl.AutoSize">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>AutoSize permits the size of a control to be adjusted automatically, for example a button can become bigger or smaller to accommodate a longer or shorter caption.</p>
@@ -9533,16 +9139,13 @@ is done automatically by the streaming system.
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.BidiMode">
-        <short>
-          <var>TControlBiDiMode</var> - enabling bi-directional writing</short>
+      <element name="TLabel.BidiMode" link="#LCL.Controls.TControl.BiDiMode">
         <descr>Allows Languages such as Arabic and Hebrew to be used
 </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.BorderSpacing">
-        <short>Determines the border spacing for this control</short>
+      <element name="TLabel.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determines the border spacing for this control</p>
@@ -9553,9 +9156,7 @@ is done automatically by the streaming system.
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.Caption">
-        <short>
-          <var>Caption</var> - the text-string appearing on the Control, usually used to identify its function</short>
+      <element name="TLabel.Caption" link="#LCL.Controls.TControl.Caption">
         <descr>
           <p>Gets caption as a text-string (<var>GetText</var>), or stores the new caption (<var>SetText</var>). Shows flag if caption is stored (<var>IsCaptionStored</var>).</p>
           <p>By default, the <var>Caption</var> appears the same as the control <var>Name</var> in the Object Inspector, 
@@ -9568,8 +9169,7 @@ introduced. These functions interface with the LCLInterface. </p>
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.Color">
-        <short>Determine the colour for the current control</short>
+      <element name="TLabel.Color" link="#LCL.Controls.TControl.Color">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Reads the value for colour, or stores the value, and sets a flag if the colour is stored.</p>
@@ -9578,30 +9178,24 @@ introduced. These functions interface with the LCLInterface. </p>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.Constraints">
-        <short>Determine <var>Constraints</var> (max and min height and width) for this control</short>
+      <element name="TLabel.Constraints" link="#LCL.Controls.TControl.Constraints">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determine <var>Constraints</var> (max and min height and width) for this control; reads the size constraints or stores new ones.</p>
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.DragCursor">
-        <short>
-          <var>DragCursor </var>- the style of cursor to be used during the Drag process</short>
+      <element name="TLabel.DragCursor" link="#LCL.Controls.TControl.DragCursor">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.DragMode">
-        <short>
-          <var>DragMode </var>- whether manual or automatic</short>
+      <element name="TLabel.DragMode" link="#LCL.Controls.TControl.DragMode">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.Enabled">
-        <short>Whether the control is <var>Enabled</var>. If not, it usually appears 'greyed-out'</short>
+      <element name="TLabel.Enabled" link="#LCL.Controls.TControl.Enabled">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Whether the control is <var>Enabled</var>. If not, it usually appears 'greyed-out'</p>
@@ -9610,15 +9204,12 @@ introduced. These functions interface with the LCLInterface. </p>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.FocusControl">
-        <short>
-          <var>FocusControl</var> - whether this control has focus</short>
+      <element name="TLabel.FocusControl" link="#LCL.StdCtrls.TCustomLabel.FocusControl">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.Font">
-        <short>The <var>Font</var> to be used for text in this control</short>
+      <element name="TLabel.Font" link="#LCL.Controls.TControl.Font">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Reads a flag to see what font should be used, or sets a flag to store it. If stored, sets a flag to say so</p>
@@ -9628,43 +9219,34 @@ introduced. These functions interface with the LCLInterface. </p>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.Layout">
+      <element name="TLabel.Layout" link="#LCL.StdCtrls.TCustomLabel.Layout">
         <short>
           <var>Layout</var> - How the Text is to be laid out in the text rectangle: at the Bottom, Centre or Top</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.ParentBidiMode">
-        <short>
-          <var>ParentBiDiMode</var> - does the control follow the BiDiMode settings of its parent?</short>
+      <element name="TLabel.ParentBidiMode" link="#LCL.Controls.TControl.ParentBiDiMode">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.ParentColor">
-        <short>
-          <var>ParentColor</var> - should the control have the same colour as the parent? Default is true</short>
+      <element name="TLabel.ParentColor" link="#LCL.Controls.TControl.ParentColor">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.ParentFont">
-        <short>
-          <var>ParentFont </var>- should the control use the same font as the parent? Default is true</short>
+      <element name="TLabel.ParentFont" link="#LCL.Controls.TControl.ParentFont">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.ParentShowHint">
-        <short>
-          <var>ParentShowHint </var>- does the control adopt the same hinting behaviour as its parent? Default is true</short>
+      <element name="TLabel.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.PopupMenu">
-        <short>PopupMenu - a context-sensitive menu that pops up when the right mouse button is clicked over this control</short>
+      <element name="TLabel.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
         <descr>// standard properties, which should be supported by all descendants<br/>
  Reads the details of the pop-up menu, or stores them.<br/>
 Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPopupMenu</link>
@@ -9672,9 +9254,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.ShowAccelChar">
-        <short>
-          <var>ShowAccelChar</var> - underline the character in the label that acts as an accelerator with a shortcut key</short>
+      <element name="TLabel.ShowAccelChar" link="#LCL.StdCtrls.TCustomLabel.ShowAccelChar">
         <descr>
           <p>
             <var>ShowAccelChar</var>
@@ -9687,24 +9267,19 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.ShowHint">
-        <short>Flag to determine: Is hint to be displayed for this control?</short>
+      <element name="TLabel.ShowHint" link="#LCL.Controls.TControl.ShowHint">
         <descr>// standard properties, which should be supported by all descendants<br/>
 Reads flag or writes one to determine if a hint is to be shown when mouse hovers over this control. If value is stored, a storage flag is set. Display of the actual hint is controlled by OnShowHint
 </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.Transparent">
-        <short>
-          <var>Transparent </var>- whether the viewer can see through the control. Default True</short>
+      <element name="TLabel.Transparent" link="#LCL.StdCtrls.TCustomLabel.Transparent">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.Visible">
-        <short>
-          <var>Visible</var> - can the control be seen?</short>
+      <element name="TLabel.Visible" link="#LCL.Controls.TControl.Visible">
         <descr>
           <pre>The Visible property represents the ability to see a visual control. 
           If Visible is True the control is shown, otherwise it is hidden.
@@ -9714,9 +9289,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.WordWrap">
-        <short>
-          <var>WordWrap</var> - whether a word is to be wrapped to the next line if the text is about to become too long for the width available</short>
+      <element name="TLabel.WordWrap" link="#LCL.StdCtrls.TCustomLabel.WordWrap">
         <descr>
           <p>
             <var>WordWrap</var>
@@ -9728,8 +9301,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.OnClick">
-        <short>Event Handler for mouse click</short>
+      <element name="TLabel.OnClick" link="#LCL.Controls.TControl.OnClick">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <var>ActionList</var>
@@ -9738,75 +9310,56 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.OnDblClick">
-        <short>Event Handle for mouse double-click</short>
+      <element name="TLabel.OnDblClick" link="#LCL.Controls.TControl.OnDblClick">
         <descr>
           <p>Double-clicking is much more common in a Windows environment than in Unix or Linux, where single-clicking is the default method for selecting an object. However, in all environments there could be valid use for a double-click, and a method should be supplied if appropriate.</p>
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.OnDragDrop">
-        <short>Event handler for the Drag-Drop manoeuvre</short>
+      <element name="TLabel.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.OnDragOver">
-        <short>Event handler for the case when a control is dragged over another control</short>
+      <element name="TLabel.OnDragOver" link="#LCL.Controls.TControl.OnDragOver">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.OnEndDrag">
-        <short>Event handler for the end of a dragging process</short>
+      <element name="TLabel.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.OnMouseDown">
-        <short>Event handler for when a mouse button is pressed down</short>
-      </element>
+      <element name="TLabel.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown"/>
       <!-- property Visibility: published -->
-      <element name="TLabel.OnMouseMove">
-        <short>Event handler for mouse movement within the current control</short>
-      </element>
+      <element name="TLabel.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove"/>
       <!-- property Visibility: published -->
-      <element name="TLabel.OnMouseUp">
-        <short>Event handler for when the mouse button is released, ie "up"</short>
-      </element>
+      <element name="TLabel.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp"/>
       <!-- property Visibility: published -->
-      <element name="TLabel.OnMouseEnter">
-        <short>Event handler for when the mouse enters the area of the current control</short>
-      </element>
+      <element name="TLabel.OnMouseEnter" link="#LCL.Controls.TControl.OnMouseEnter"/>
       <!-- property Visibility: published -->
-      <element name="TLabel.OnMouseLeave">
-        <short>Event handler for when the mouse leaves the area of the current control</short>
-      </element>
+      <element name="TLabel.OnMouseLeave" link="#LCL.Controls.TControl.OnMouseLeave"/>
       <!-- property Visibility: published -->
-      <element name="TLabel.OnChangeBounds">
-        <short>Event handler for a change in bounds of the control</short>
+      <element name="TLabel.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Reads or Writes flag if bounds are changed</p>
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.OnResize">
-        <short>Event Handler for resize of control</short>
+      <element name="TLabel.OnResize" link="#LCL.Controls.TControl.OnResize">
         <descr>// standard properties, which should be supported by all descendants<br/>
 Reads or Writes flag if control is re-sized.
 </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.OnStartDrag">
-        <short>Event handler for start of dragging process</short>
+      <element name="TLabel.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.OptimalFill">
-        <short>
-          <var>OptimalFill </var>- boolean. If True, font size is adjusted for optimal fill of available space</short>
+      <element name="TLabel.OptimalFill" link="#LCL.StdCtrls.TCustomLabel.OptimalFill">
         <descr/>
         <seealso/>
       </element>
@@ -10068,6 +9621,37 @@ Reads or Writes flag if control is re-sized.
       </element>
       <element name="TGroupBox.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
       <element name="TComboBox.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
+      <element name="TCustomListBox.SelectAll">
+        <short>
+          <var>SelectAll</var> - select all items in list</short>
+      </element>
+      <element name="TListBox.DragKind" link="#LCL.Controls.TControl.DragKind"/>
+      <element name="TListBox.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
+      <element name="TCustomEdit.Undo">
+        <short>
+          <var>Undo</var> the last edit action</short>
+      </element>
+      <element name="TCustomEdit.CanUndo">
+        <short>
+          <var>CanUndo</var> - if True, the <var>Undo</var> action is permitted</short>
+      </element>
+      <element name="TCustomEdit.CaretPos">
+        <short>
+          <var>CaretPos</var> - the position of the Caret indicator in the text</short>
+      </element>
+      <element name="TEdit.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
+      <element name="TMemo.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
+      <element name="TMemo.OnMouseWheel" link="#LCL.Controls.TControl.OnMouseWheel"/>
+      <element name="TMemo.OnMouseWheelDown" link="#LCL.Controls.TControl.OnMouseWheelDown"/>
+      <element name="TMemo.OnMouseWheelUp" link="#LCL.Controls.TControl.OnMouseWheelUp"/>
+      <element name="TStaticText.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
+      <element name="TButton.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
+      <element name="TCheckBox.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
+      <element name="TCheckBox.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress"/>
+      <element name="TCheckBox.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown"/>
+      <element name="TCheckBox.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp"/>
+      <element name="TRadioButton.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
+      <element name="TLabel.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
     </module>
     <!-- StdCtrls -->
   </package>

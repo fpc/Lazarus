@@ -715,7 +715,8 @@ This is an ancestor class for many form types and classes of windowed controls</
       </element>
       <!-- function Visibility: public -->
       <element name="TControlScrollBar.GetHorzScrollBar">
-        <short>Find out details about the horizontal scroll bar</short>
+        <short>
+          <var>GetHorzScrollBar</var> - find the position and properties of the horizontal scroll bar</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -726,7 +727,8 @@ This is an ancestor class for many form types and classes of windowed controls</
       </element>
       <!-- function Visibility: public -->
       <element name="TControlScrollBar.GetVertScrollBar">
-        <short>Find out details of the vertical scroll bar</short>
+        <short>
+          <var>GetVertScrollBar</var> - find the position and properties of the vertical scroll bar</short>
         <descr/>
         <errors/>
         <seealso/>

@@ -6000,7 +6000,8 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TControl.CanTab">
-        <short/>
+        <short>
+          <var>CanTab</var> - if True, the Tab key can be used to navigate to this control</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9611,7 +9612,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.ControlKeyDown">
-        <short/>
+        <short>
+          <var>ControlKeyDown</var> - contains the set of special keys (shift, control, alt, meta) that are pressed</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9626,7 +9628,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.ControlKeyUp">
-        <short/>
+        <short>
+          <var>ControlKeyUp</var> - contains the set of special keys (shift, control, alt, meta) that are not pressed ('up')</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10274,15 +10277,12 @@ End;
         <descr>Reads or writes information in flag; default is -1</descr>
       </element>
       <!-- property Visibility: public -->
-      <element name="TWinControl.TabStop">
-        <short>
-          <var>TabStop</var>
- - determines if the user can tab to a control.</short>
-        <descr>
-          <p>Reads or writes boolean flag; default is False</p>
-          <p>Use the TabStop to allow or disallow access to the control using the Tab key.</p>
-          <p>If <var>TabStop</var> is True, the control is in the tab order. If <var>TabStop</var> is False, the control is not in the tab order and the user can't use the Tab key to move to the control.</p>
-        </descr>
+      <element name="TWinControl.TabStop" link="#LCL.Controls.TWinControl.TabStop">
+        <short>Is the control in the sequence of controls accessed by successive presses of the Tab key?</short>
+        <descr>Use the TabStop to allow or disallow access to the control using the Tab key.
+
+If the TabStop is True, the control is in the tab order. If TabStop is False, the control is not in the tab order and the user can't press the Tab key to move to the control.
+</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.OnDockDrop">
@@ -14440,7 +14440,8 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.FinalizeWnd">
-        <short/>
+        <short>
+          <var>FinalizeWnd</var> -  getting ready to remove windoe (gets called before the Handle is destroyed)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14469,7 +14470,8 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.WSSetText">
-        <short/>
+        <short>
+          <var>WSSetText</var> - writes the name of the current widget set to a local variable</short>
         <descr/>
         <errors/>
         <seealso/>
