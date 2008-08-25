@@ -421,9 +421,9 @@ begin
   PrivateShareList:=PGdkGLContextPrivate(sharelist);
   if (sharelist<>nil) then
     glxcontext := glXCreateContext(dpy, vi, PrivateShareList^.glxcontext,
-                                   direct{$ifndef ver2_0}=1{$endif})
+                                   direct)
   else
-    glxcontext := glXCreateContext(dpy, vi, nil, direct{$ifndef ver2_0}=1{$endif});
+    glxcontext := glXCreateContext(dpy, vi, nil, direct);
 
   XFree(vi);
   if (glxcontext = nil) then exit;
