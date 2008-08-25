@@ -125,6 +125,8 @@ procedure UpdateDetailView(OpenDialog: TOpenDialog);
 
 implementation
 
+{$I gtkdefines.inc}
+
 {-------------------------------------------------------------------------------
   procedure UpdateDetailView
   Params: OpenDialog: TOpenDialog
@@ -1049,13 +1051,14 @@ begin
   Widget := gtk_file_chooser_dialog_new(PChar(FileDialog.Title), nil, Action,
     PChar(GTK_STOCK_CANCEL), [GTK_RESPONSE_CANCEL, PChar(Button1), GTK_RESPONSE_OK, nil]);
 
-(*gtk 2.8
+  {$ifdef GTK_2_8}
   if FileDialog is TSaveDialog then
   begin
     gtk_file_chooser_set_do_overwrite_confirmation(Widget,
-      ofOverwritePrompt in TOpenDialog(theDialog).Options);
+      ofOverwritePrompt in TOpenDialog(FileDialog).Options);
   end;
-*)
+  {$endif}
+
   if FileDialog.InitialDir <> '' then
     gtk_file_chooser_set_current_folder(Widget, Pgchar(FileDialog.InitialDir));
 

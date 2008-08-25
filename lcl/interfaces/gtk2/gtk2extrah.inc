@@ -185,6 +185,7 @@ const
   GTK_PACK_DIRECTION_BTT = 3;
 
 procedure gtk_menu_bar_set_pack_direction(menubar : PGtkMenuBar; pack_dir : TGtkPackDirection); cdecl; external gtklib;
+procedure gtk_file_chooser_set_do_overwrite_confirmation(chooser:PGtkFileChooser; do_overwrite_confirmation:gboolean);  cdecl; external gtklib;
 {$endif}
 {$ifdef GTK_2_10}
 function gdk_screen_is_composited(screen: PGdkScreen): gboolean; cdecl; external gdklib;
