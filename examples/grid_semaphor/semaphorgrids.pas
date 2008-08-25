@@ -63,8 +63,8 @@ unit SemaphorGrids;
 interface
 
 uses
-  Classes, SysUtils, LResources, LCLProc, LCLIntf, LCLType, Forms, Controls,
-  Graphics, Dialogs, Grids;
+  Classes, SysUtils, FileUtil, LResources, LCLProc, LCLIntf, LCLType, Forms,
+  Controls, Graphics, Dialogs, Grids;
 
 const
   SemaphorMarker='S_M_0_1';
