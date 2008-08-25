@@ -2775,7 +2775,7 @@ begin
       w2:=ord(p[1]);
       if (w2>=$DC00) then begin
         // is 2 word character
-        Result:=(w1-$D800) shl 10 + (w2-$DC00);
+        Result:=(w1-$D800) shl 10 + (w2-$DC00) + $10000;
         CharLen:=2;
       end else begin
         // invalid character
@@ -2794,7 +2794,7 @@ begin
   if u<$D800 then
     Result:=widechar(u)
   else
-    Result:=widechar($D800+(u shr 10))+widechar($DC00+(u and $3ff));
+    Result:=widechar($D800+((u - $10000) shr 10))+widechar($DC00+((u - $10000) and $3ff));
 end;
 
 {------------------------------------------------------------------------------
@@ -2948,16 +2948,10 @@ begin
               Dest[DestI] := WideChar(W);
               Inc(DestI);
             end
-            else // to double wide char UTF-16 char
-            begin
-              Dest[DestI] := WideChar($D800 or (W shr 10));
-              Inc(DestI);
-              if DestI >= DestWideCharCount then Break;
-              Dest[DestI] := WideChar($DC00 or (W and %0000001111111111));
-              Inc(DestI);
-            end;
+            else // invalid UTF-16 character, assume double byte UTF-8 char
+              if InvalidCharError(2) then Exit(trInvalidChar);
           end
-          else // invalid character, assume single byte UTF-8 char
+          else // invalid character, assume double byte UTF-8 char
             if InvalidCharError(2) then Exit(trInvalidChar);
         end
         else
@@ -2975,13 +2969,13 @@ begin
             C := ((B1 and %00011111) shl 18) or ((B2 and %00111111) shl 12)
               or ((B3 and %00111111) shl 6)  or (B4 and %00111111);
             // to double wide char UTF-16 char
-            Dest[DestI] := WideChar($D800 or (C shr 10));
+            Dest[DestI] := WideChar($D800 or ((C - $10000) shr 10));
             Inc(DestI);
             if DestI >= DestWideCharCount then Break;
-            Dest[DestI] := WideChar($DC00 or (C and %0000001111111111));
+            Dest[DestI] := WideChar($DC00 or ((C - $10000) and %0000001111111111));
             Inc(DestI);
           end
-          else // invalid character, assume single byte UTF-8 char
+          else // invalid character, assume triple byte UTF-8 char
             if InvalidCharError(3) then Exit(trInvalidChar);
         end;
       end;
@@ -3128,37 +3122,20 @@ begin
       begin
         if (W2 and $FC00) = $DC00 then
         begin
-          C := (W1 - $D800) shl 10 + (W2 - $DC00);
-          if C >= $D800 then
-          begin
-            if C < $010000 then // to triple byte UTF-8 char
-            begin
-              Dest[DestI] := Char(%11100000 or ((C and $F000) shr 12));
-              Inc(DestI);
-              if DestI >= DestCharCount then Break;
-              Dest[DestI] := Char(%10000000 or ((C and %111111000000) shr 6));
-              Inc(DestI);
-              if DestI >= DestCharCount then Break;
-              Dest[DestI] := Char(%10000000 or (C and %111111));
-              Inc(DestI);
-            end
-            else
-            begin // to 4 byte UTF-8 char
-              Dest[DestI] := Char(%11110000 or (C shr 18));
-              Inc(DestI);
-              if DestI >= DestCharCount then Break;
-              Dest[DestI] := Char(%10000000 or ((C and $3F000) shr 12));
-              Inc(DestI);
-              if DestI >= DestCharCount then Break;
-              Dest[DestI] := Char(%10000000 or ((C and %111111000000) shr 6));
-              Inc(DestI);
-              if DestI >= DestCharCount then Break;
-              Dest[DestI] := Char(%10000000 or (C and %111111));
-              Inc(DestI);
-            end;
-          end
-          else // invalid character, assume single wide char UTF-16 char
-            if InvalidCharError(1) then Exit(trInvalidChar);
+          C := (W1 - $D800) shl 10 + (W2 - $DC00) + $10000;
+
+          // to 4 byte UTF-8 char
+          Dest[DestI] := Char(%11110000 or (C shr 18));
+          Inc(DestI);
+          if DestI >= DestCharCount then Break;
+          Dest[DestI] := Char(%10000000 or ((C and $3F000) shr 12));
+          Inc(DestI);
+          if DestI >= DestCharCount then Break;
+          Dest[DestI] := Char(%10000000 or ((C and %111111000000) shr 6));
+          Inc(DestI);
+          if DestI >= DestCharCount then Break;
+          Dest[DestI] := Char(%10000000 or (C and %111111));
+          Inc(DestI);
         end
         else // invalid character, assume single wide char UTF-16 char
           if InvalidCharError(1) then Exit(trInvalidChar);
