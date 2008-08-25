@@ -635,13 +635,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.Insert(AIndex: Integer; AImage, AMask: TCustomBitmap);
 var
-  img, msk: THandle;
+  msk: THandle;
 begin
   if AImage = nil then Exit;
   
-  // original stream can contain mask. it will be applied when we call BitmapHandleNeeded
-  // if we will not apply that mask - we can get some noise.
-  img := AImage.Handle;
   if AMask = nil
   then begin
     if AImage.Masked
@@ -650,7 +647,7 @@ begin
   end
   else msk := AMask.Handle;
   
-  InternalInsert(AIndex, img, msk, AImage.Width, AImage.Height);
+  InternalInsert(AIndex, AImage.Handle, msk, AImage.Width, AImage.Height);
 end;
 
 {------------------------------------------------------------------------------
