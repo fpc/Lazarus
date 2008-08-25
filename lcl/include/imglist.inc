@@ -639,15 +639,12 @@ var
 begin
   if AImage = nil then Exit;
   
-  // Paul: dont optimize. We need to call HandleNeeded before checking of maskhandle
-  // mwe: we should use MaskHandle without checking, but since TRasterImage only
-  //      has a Transparent property and no Masked property, masks would also get
-  //      generated for alpha images. Therefore we re rely now on the fact that a
-  //      "native" mask handle is generated when a bitmaphandle is created.
+  // original stream can contain mask. it will be applied when we call BitmapHandleNeeded
+  // if we will not apply that mask - we can get some noise.
   img := AImage.Handle;
   if AMask = nil
   then begin
-    if AImage.MaskHandleAllocated
+    if AImage.Masked
     then msk := AImage.MaskHandle
     else msk := 0;
   end

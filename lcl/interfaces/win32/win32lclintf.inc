@@ -596,14 +596,14 @@ begin
   else
     ABitmap := Windows.CreateBitmap(ADesc.Width, ADesc.Height, 1, 1, ARawImage.Data);
     
-  //DbgDumpBitmap(ABitmap, 'CreateBitmaps - Image');
+  DbgDumpBitmap(ABitmap, 'CreateBitmaps - Image');
   if ASkipMask then Exit(True);
 
   AMask := Windows.CreateBitmap(ADesc.Width, ADesc.Height, 1, 1, ARawImage.Mask);
   if AMask = 0 then  
     DebugLn('Windows.CreateBitmap returns 0. Reason = ' + GetLastErrorText(Windows.GetLastError));
   Result := AMask <> 0;
-  //DbgDumpBitmap(AMask, 'CreateBitmaps - Mask');
+  DbgDumpBitmap(AMask, 'CreateBitmaps - Mask');
 end;
 
 {------------------------------------------------------------------------------

@@ -395,7 +395,9 @@ begin
   then FTransparentMode := tmAuto
   else FTransparentMode := tmFixed;
 
-  CreateMask;
+  if MaskHandleAllocated
+  then MaskHandle := 0
+  else Changed(Self);
 end;
 
 procedure TRasterImage.Changed(Sender: TObject);
@@ -916,4 +918,5 @@ begin
 end;
 
 // included by graphics.pp
+
 
