@@ -28,8 +28,8 @@ unit GuiTestRunner;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  Buttons, ComCtrls, ActnList, Menus, Clipbrd, StdCtrls,
+  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  ExtCtrls, Buttons, ComCtrls, ActnList, Menus, Clipbrd, StdCtrls,
   testdecorator,
 {$IFDEF VER2_0}
   xmlreporter,
