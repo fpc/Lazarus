@@ -54,13 +54,13 @@ function FindProjectFile(APath: string):string;
 var
   SearchRec: TSearchRec;
 begin
-  if FindFirst(AppendPathDelim(APath)+'*.lpi', faAnyFile, SearchRec)=0 then begin
+  if FindFirstUTF8(AppendPathDelim(APath)+'*.lpi', faAnyFile, SearchRec)=0 then begin
     repeat
       if ExtractFileExt(SearchRec.Name)='.lpi' then
         Result := SearchRec.Name;
-    until (Length(Result)>0) or (FindNext(SearchRec)<>0);
+    until (Length(Result)>0) or (FindNextUTF8(SearchRec)<>0);
   end;
-  FindClose(SearchRec);
+  FindCloseUTF8(SearchRec);
   if length(Result)>0 then
     Result := AppendPathDelim(APath) + Result;
 end;
@@ -70,12 +70,13 @@ var
   LazBuildPath: string;
   LazBuild: TProcess;
   LazarusDir: String;
+  CmdLine: string;
 begin
   AssertTrue('Project file '+ FProjectFile + ' does not exist',
-    FileExists(FProjectFile));
-  LazarusDir := ExpandFileName(ExtractFilePath(ParamStr(0)) + '../');
+    FileExistsUTF8(FProjectFile));
+  LazarusDir := ExpandFileName(ExtractFilePath(ParamStrUTF8(0)) + '../');
   LazBuildPath := LazarusDir + 'lazbuild' + GetExeExt;
-  AssertTrue(LazBuildPath + ' does not exist', FileExists(LazBuildPath));
+  AssertTrue(LazBuildPath + ' does not exist', FileExistsUTF8(LazBuildPath));
   LazBuild := TProcess.Create(nil);
   try
     {$IFDEF windows}
@@ -84,11 +85,13 @@ begin
     LazBuild.Options := [poNoConsole];
     {$ENDIF}
     LazBuild.ShowWindow := swoHIDE;
-    LazBuild.CommandLine := LazBuildPath;
+    CmdLine:=LazBuildPath;
+    CmdLine := LazBuildPath;
     if Compiler<>'' then
-      LazBuild.CommandLine := LazBuild.CommandLine + ' --compiler='+Compiler;
-    LazBuild.CommandLine := LazBuild.CommandLine + ' ' + FProjectFile;
-    LazBuild.CurrentDirectory := FPath;
+      CmdLine := CmdLine + ' --compiler='+Compiler;
+    CmdLine:=CmdLine + ' ' + FProjectFile;
+    LazBuild.CommandLine := UTF8ToSys(CmdLine);
+    LazBuild.CurrentDirectory := UTF8ToSys(FPath);
     LazBuild.Execute;
     LazBuild.WaitOnExit;
     AssertEquals('Compilation failed: ExitCode', 0, LazBuild.ExitStatus);
@@ -104,10 +107,10 @@ var
   OutputLines: TStringList;
 begin
   ExeName := ChangeFileExt(FProjectFile, GetExeExt);
-  AssertTrue(ExeName + 'does not exist.', FileExists(ExeName));
+  AssertTrue(ExeName + 'does not exist.', FileExistsUTF8(ExeName));
   TestProcess := TProcess.Create(nil);
   try
-    TestProcess.CommandLine := ExeName + ' --runtest';
+    TestProcess.CommandLine := UTF8ToSys(ExeName + ' --runtest');
     TestProcess.Options := [poUsePipes];
     TestProcess.Execute;
     try
@@ -135,12 +138,12 @@ var
   i: integer;
 begin
   ExpectedFileName := AppendPathDelim(FPath) + 'expected.txt';
-  AssertTrue('File missing: '+ExpectedFileName, FileExists(ExpectedFileName));
+  AssertTrue('File missing: '+ExpectedFileName, FileExistsUTF8(ExpectedFileName));
   ExpectedLines := nil;
   ActualLines := nil;
   try
     ExpectedLines := TStringList.Create;
-    ExpectedLines.LoadFromFile(ExpectedFileName);
+    ExpectedLines.LoadFromFile(UTF8ToSys(ExpectedFileName));
     ActualLines  := TStringList.Create;
     ActualLines.Assign(RunOutput);
     MinLineCount := min(ExpectedLines.Count, ActualLines.Count);
@@ -185,8 +188,8 @@ var
   ProgPath: string;
   SearchRec: TSearchRec;
 begin
-  ProgPath := ExtractFilePath(ParamStr(0)) + 'bugs' + pathdelim;
-  if FindFirst(ProgPath+'*', faAnyFile, SearchRec)=0 then
+  ProgPath := ExtractFilePath(ParamStrUTF8(0)) + 'bugs' + pathdelim;
+  if FindFirstUTF8(ProgPath+'*', faAnyFile, SearchRec)=0 then
     repeat
       if (SearchRec.Attr and (faDirectory + faHidden)=faDirectory) and
          (SearchRec.Name<>'.') and (SearchRec.Name<>'..') and
@@ -194,8 +197,8 @@ begin
       then
         BugsTestSuite.AddTest(
           TBugTestCase.CreateSuite(ProgPath+SearchRec.Name));
-    until FindNext(SearchRec)<>0;
-  FindClose(SearchRec);
+    until FindNextUTF8(SearchRec)<>0;
+  FindCloseUTF8(SearchRec);
 end;
 
 initialization

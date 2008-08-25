@@ -118,7 +118,7 @@ begin
   SynEdit1.Highlighter:=PascalHighligher;
  
   if ParamCount > 0 then
-    LoadText(ParamStr(1))
+    LoadText(ParamStrUTF8(1))
   else
     LoadDefaultText;
   OnResize(nil);

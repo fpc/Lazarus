@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, BuildLazDialog, CodeToolsStructs, TextTools,
-  Laz_XMLCfg, LazConf,
+  FileUtil, Laz_XMLCfg, LazConf,
   IDEProcs;
 
 type
@@ -176,7 +176,7 @@ begin
   if fFilename='' then begin
     ConfFileName:=SetDirSeparators(GetPrimaryConfigPath+'/'+MiscOptsFilename);
     CopySecondaryConfigFile(MiscOptsFilename);
-    if (not FileExists(ConfFileName)) then begin
+    if (not FileExistsUTF8(ConfFileName)) then begin
       DebugLn('NOTE: miscellaneous options file not found - using defaults');
     end;
     FFilename:=ConfFilename;

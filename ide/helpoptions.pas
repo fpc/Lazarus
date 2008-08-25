@@ -36,7 +36,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, Buttons, ExtCtrls, IDEContextHelpEdit,
+  FileUtil, StdCtrls, Buttons, ExtCtrls, IDEContextHelpEdit,
   ObjectInspector, LazHelpIntf, IDEWindowIntf, IDEDialogs, Laz_XMLCfg,
   LazConf, LazarusIDEStrConsts, IDEProcs, IDEOptionDefs;
 
@@ -421,7 +421,7 @@ begin
   ConfFileName:=SetDirSeparators(
                              GetPrimaryConfigPath+'/'+DefaultHelpOptsFile);
   CopySecondaryConfigFile(DefaultHelpOptsFile);
-  if (not FileExists(ConfFileName)) then begin
+  if (not FileExistsUTF8(ConfFileName)) then begin
     DebugLn('NOTE: help options config file not found - using defaults');
   end;
   FFilename:=ConfFilename;

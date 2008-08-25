@@ -218,7 +218,7 @@ end;
 
 procedure TfrmTodo.SaveDialog1Show(Sender: TObject);
 begin
- SaveDialog1.InitialDir:=GetCurrentDir;
+ SaveDialog1.InitialDir:=GetCurrentDirUTF8;
 end;
 
 procedure TfrmTodo.ToolButton1Click(Sender: TObject);
@@ -504,7 +504,7 @@ begin
     CommaList.Add(s);
     i:=i+1;
    end;
-   CommaList.SaveToFile(SaveDialog1.FileName);
+   CommaList.SaveToFile(UTF8ToSys(SaveDialog1.FileName));
   finally
    CommaList.Clear;
    CommaList.Free;
@@ -538,7 +538,7 @@ begin
     
     // Find an '.todo' file of the main source
     St:=ChangeFileExt(MainSourceFilename,'.todo');
-    if FileExists(St) then
+    if FileExistsUTF8(St) then
       ScanFile(St);
 
     // Scan main source file

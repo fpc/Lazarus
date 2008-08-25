@@ -957,7 +957,7 @@ var
 begin
   ConfFileName:=SetDirSeparators(GetPrimaryConfigPath+'/'+EnvOptsConfFileName);
   CopySecondaryConfigFile(EnvOptsConfFileName);
-  if (not FileExists(ConfFileName)) then begin
+  if (not FileExistsUTF8(ConfFileName)) then begin
     DebugLn('Note: environment config file not found - using defaults');
   end;
   Filename:=ConfFilename;
@@ -1615,7 +1615,7 @@ end;
 function TEnvironmentOptions.FileHasChangedOnDisk: boolean;
 begin
   Result:=FFileHasChangedOnDisk
-      or ((FFilename<>'') and (FFileAge<>0) and (FileAge(FFilename)<>FFileAge));
+      or ((FFilename<>'') and (FFileAge<>0) and (FileAgeUTF8(FFilename)<>FFileAge));
   FFileHasChangedOnDisk:=Result;
 end;
 
@@ -1639,7 +1639,7 @@ procedure TEnvironmentOptions.FileUpdated;
 begin
   FFileHasChangedOnDisk:=false;
   if FFilename<>'' then
-    FFileAge:=FileAge(FFilename)
+    FFileAge:=FileAgeUTF8(FFilename)
   else
     FFileAge:=0;
 end;

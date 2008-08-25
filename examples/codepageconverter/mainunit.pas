@@ -133,12 +133,12 @@ var tmp:tstringlist;
        cpout:=tstringlist.create;
        try
          try
-           cpin.LoadFromFile(origpath+combobox1.text);
+           cpin.LoadFromFile(UTF8ToSys(origpath+combobox1.text));
          except
            ok:=false;
          end;
          try
-           cpout.LoadFromFile(origpath+combobox2.text);
+           cpout.LoadFromFile(UTF8ToSys(origpath+combobox2.text));
          except
            ok:=false;
          end;
@@ -177,12 +177,12 @@ var tmp:tstringlist;
        cpout:=tstringlist.create;
        try
          try
-           cpin.LoadFromFile(origpath+combobox1.text);
+           cpin.LoadFromFile(UTF8ToSys(origpath+combobox1.text));
          except
           ok:=false;
          end;
          try
-           cpout.LoadFromFile(origpath+combobox2.text);
+           cpout.LoadFromFile(UTF8ToSys(origpath+combobox2.text));
          except
            ok:=false;
          end;
@@ -221,7 +221,7 @@ begin
     begin
       ok:=true;
       try
-        tmp.LoadFromFile(FileListBox1.Directory+FileListBox1.Items[i]);
+        tmp.LoadFromFile(UTF8ToSys(FileListBox1.Directory+FileListBox1.Items[i]));
       except
         ok:=false;
       end;
@@ -233,7 +233,7 @@ begin
           begin
             ok:=true;
             try
-              tmp.SaveToFile(FileListBox1.Directory+FileListBox1.Items[i]);
+              tmp.SaveToFile(UTF8ToSys(FileListBox1.Directory+FileListBox1.Items[i]));
             except ok:=false; end;
           end;
         end else
@@ -242,7 +242,7 @@ begin
           begin
             ok:=true;
             try
-              tmp.SaveToFile(FileListBox1.Directory+FileListBox1.Items[i]);
+              tmp.SaveToFile(UTF8ToSys(FileListBox1.Directory+FileListBox1.Items[i]));
             except ok:=false; end;
           end;
         end;
@@ -261,12 +261,12 @@ end;
 
 procedure TLazConverterForm.Form1Show(Sender: TObject);
 begin
-  if paramcount<>0 then edit1.text:=paramstr(1) else edit1.text:='';
+  if paramcount<>0 then edit1.text:=ParamStrUTF8(1) else edit1.text:='';
   try
-    ComboBox1.items.LoadFromFile(origpath+'codepages.ini');
+    ComboBox1.items.LoadFromFile(UTF8ToSys(origpath+'codepages.ini'));
   except end;
   try
-    ComboBox2.items.LoadFromFile(origpath+'codepages.ini');
+    ComboBox2.items.LoadFromFile(UTF8ToSys(origpath+'codepages.ini'));
   except end;
   ComboBox1.text:='';
   ComboBox2.text:='';

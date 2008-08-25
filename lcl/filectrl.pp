@@ -241,8 +241,8 @@ begin
   Clear;
   if FileType <> [] then
   begin
-    if SysUtils.FindFirst(
-      IncludeTrailingPathDelimiter(Utf8ToAnsi(FDirectory))+AllDirectoryEntriesMask,
+    if FindFirstUTF8(
+      IncludeTrailingPathDelimiter(FDirectory)+AllDirectoryEntriesMask,
       FileTypeToFileAttribute(FileType), Info) = 0
     then
       repeat
@@ -251,13 +251,13 @@ begin
           if (ftNormal in FileType) or ((Info.Attr and AttrNotNormal) > 0) then
           begin
             if (Info.Attr and faDirectory) > 0 then
-              Items.Add('['+AnsiToUtf8(Info.Name)+']')
+              Items.Add('['+Info.Name+']')
             else
-              Items.Add(AnsiToUtf8(Info.Name));
+              Items.Add(Info.Name);
           end;
         end;
-      until SysUtils.FindNext(Info) <> 0;
-    SysUtils.FindClose(Info);
+      until FindNextUTF8(Info) <> 0;
+    FindCloseUTF8(Info);
   end;
 
   UpdateSelectedFileName;
@@ -378,8 +378,8 @@ begin
   //Initializes the FileType property.
   FFileType := [ftNormal];
   //Initializes the Directory and Drive properties to the current directory.
-  CurrentDir := GetCurrentDir;
-  FDirectory := AnsiToUtf8(CurrentDir);
+  CurrentDir := GetCurrentDirUTF8;
+  FDirectory := CurrentDir;
   FileDrive := ExtractFileDrive(CurrentDir);
   if FileDrive<>'' then
     FDrive:=FileDrive[1]

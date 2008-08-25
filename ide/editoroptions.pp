@@ -37,7 +37,7 @@ uses
   // RTL, FCL
   Classes, SysUtils,
   // LCL
-  Buttons, ComCtrls, Controls, Dialogs, ExtCtrls, Forms, Graphics,
+  Buttons, ComCtrls, Controls, Dialogs, ExtCtrls, Forms, Graphics, FileUtil,
   GraphType, LCLIntf, LCLProc, LCLType, LResources, StdCtrls, Spin,
   // synedit
   SynEdit, SynEditAutoComplete, SynEditHighlighter, SynEditKeyCmds,
@@ -1509,7 +1509,7 @@ begin
     EditOptsConfFileName);
   CopySecondaryConfigFile(EditOptsConfFileName);
   try
-    if (not FileExists(ConfFileName)) then
+    if (not FileExistsUTF8(ConfFileName)) then
     begin
       DebugLn('NOTE: editor options config file not found - using defaults');
       XMLConfig := TXMLConfig.CreateClean(ConfFileName);
@@ -1549,13 +1549,13 @@ begin
   // Code Tools options
   fCodeTemplateFileName := SetDirSeparators(GetPrimaryConfigPath + '/lazarus.dci');
   CopySecondaryConfigFile('lazarus.dci');
-  if not FileExists(fCodeTemplateFileName) then
+  if not FileExistsUTF8(fCodeTemplateFileName) then
   begin
     res := LazarusResources.Find('lazarus_dci_file');
     if (res <> Nil) and (res.Value <> '') and (res.ValueType = 'DCI') then
       try
         InvalidateFileStateCache;
-        fs := TFileStream.Create(fCodeTemplateFileName, fmCreate);
+        fs := TFileStream.Create(UTF8ToSys(fCodeTemplateFileName), fmCreate);
         try
           fs.Write(res.Value[1], length(res.Value));
         finally

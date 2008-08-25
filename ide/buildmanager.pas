@@ -585,7 +585,7 @@ function TBuildManager.CheckAmbiguousSources(const AFilename: string;
 
   function DeleteAmbiguousFile(const AmbiguousFilename: string): TModalResult;
   begin
-    if not DeleteFile(AmbiguousFilename) then begin
+    if not DeleteFileUTF8(AmbiguousFilename) then begin
       Result:=IDEMessageDialog(lisErrorDeletingFile,
        Format(lisUnableToDeleteAmbiguousFile, ['"', AmbiguousFilename, '"']),
        mtError,[mbOk,mbAbort]);
@@ -598,7 +598,7 @@ function TBuildManager.CheckAmbiguousSources(const AFilename: string;
     NewFilename: string;
   begin
     NewFilename:=AmbiguousFilename+'.ambiguous';
-    if not RenameFile(AmbiguousFilename,NewFilename) then
+    if not RenameFileUTF8(AmbiguousFilename,NewFilename) then
     begin
       Result:=IDEMessageDialog(lisErrorRenamingFile,
        Format(lisUnableToRenameAmbiguousFileTo, ['"', AmbiguousFilename, '"',
@@ -622,7 +622,7 @@ function TBuildManager.CheckAmbiguousSources(const AFilename: string;
   begin
     Result:=mrOk;
     if CompareFilenames(AFilename,AmbiguousFilename)=0 then exit;
-    if not FileExists(AmbiguousFilename) then exit;
+    if not FileExistsUTF8(AmbiguousFilename) then exit;
     if Compiling then begin
       Result:=AddCompileWarning(AmbiguousFilename);
       exit;
@@ -691,7 +691,7 @@ begin
     in [afaAsk,afaAutoDelete,afaAutoRename]
   then begin
     ADirectory:=AppendPathDelim(ExtractFilePath(Filename));
-    if SysUtils.FindFirst(ADirectory+GetAllFilesMask,faAnyFile,FileInfo)=0 then
+    if FindFirstUTF8(ADirectory+GetAllFilesMask,faAnyFile,FileInfo)=0 then
     begin
       ShortFilename:=ExtractFileName(Filename);
       IsPascalUnit:=FilenameIsPascalUnit(ShortFilename);
@@ -717,7 +717,7 @@ begin
         end;
         if EnvironmentOptions.AmbiguousFileAction in [afaAutoDelete,afaAsk]
         then begin
-          if not DeleteFile(CurFilename) then begin
+          if not DeleteFileUTF8(CurFilename) then begin
             IDEMessageDialog(lisDeleteFileFailed,
               Format(lisPkgMangUnableToDeleteFile, ['"', CurFilename, '"']),
               mtError,[mbOk]);
@@ -728,9 +728,9 @@ begin
           if Result=mrABort then exit;
           Result:=mrOk;
         end;
-      until SysUtils.FindNext(FileInfo)<>0;
+      until FindNextUTF8(FileInfo)<>0;
     end;
-    FindClose(FileInfo);
+    FindCloseUTF8(FileInfo);
   end;
 end;
 
@@ -797,7 +797,7 @@ begin
         CurDir:=AppendPathDelim(TrimFilename(copy(
                                              UnitPath,StartPos,EndPos-StartPos)));
         FileInfoNeedClose:=true;
-        if SysUtils.FindFirst(CurDir+GetAllFilesMask,faAnyFile,FileInfo)=0 then begin
+        if FindFirstUTF8(CurDir+GetAllFilesMask,faAnyFile,FileInfo)=0 then begin
           IgnoreAll:=false;
           repeat
             if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
@@ -840,15 +840,15 @@ begin
             AnUnitFile^.UnitName:=CurUnitName;
             AnUnitFile^.Filename:=CurFilename;
             CurUnitTree.Add(AnUnitFile);
-          until SysUtils.FindNext(FileInfo)<>0;
+          until FindNextUTF8(FileInfo)<>0;
         end;
-        FindClose(FileInfo);
+        FindCloseUTF8(FileInfo);
         FileInfoNeedClose:=false;
       end;
     end;
   finally
     // clean up
-    if FileInfoNeedClose then FindClose(FileInfo);
+    if FileInfoNeedClose then FindCloseUTF8(FileInfo);
     FreeUnitTree(SourceUnitTree);
     FreeUnitTree(CompiledUnitTree);
   end;
@@ -864,7 +864,7 @@ var BackupFilename, CounterFilename: string;
   IsPartOfProject: boolean;
 begin
   Result:=mrOk;
-  if not (FileExists(Filename)) then exit;
+  if not (FileExistsUTF8(Filename)) then exit;
   IsPartOfProject:=(Project1<>nil)
                   and (Project1.FindFile(Filename,[pfsfOnlyProjectFiles])<>nil);
   if IsPartOfProject then
@@ -881,7 +881,7 @@ begin
     SubDir:=FilePath+BackupInfo.SubDirectory;
     repeat
       if not DirPathExists(SubDir) then begin
-        if not CreateDir(SubDir) then begin
+        if not CreateDirUTF8(SubDir) then begin
           Result:=IDEMessageDialog('Warning',
                    Format(lisUnableToCreateBackupDirectory, ['"',SubDir, '"'])
                    ,mtWarning,[mbAbort,mbRetry,mbIgnore]);
@@ -910,8 +910,8 @@ begin
       BackupFilename:=FilePath+BackupFilename;
     // remove old backup file
     repeat
-      if FileExists(BackupFilename) then begin
-        if not DeleteFile(BackupFilename) then begin
+      if FileExistsUTF8(BackupFilename) then begin
+        if not DeleteFileUTF8(BackupFilename) then begin
           ACaption:=lisDeleteFileFailed;
           AText:=Format(lisUnableToRemoveOldBackupFile, ['"', BackupFilename,
             '"']);
@@ -931,20 +931,20 @@ begin
     if BackupInfo.MaxCounter<=0 then begin
       // search first non existing backup filename
       i:=1;
-      while FileExists(BackupFilename+IntToStr(i)) do inc(i);
+      while FileExistsUTF8(BackupFilename+IntToStr(i)) do inc(i);
       BackupFilename:=BackupFilename+IntToStr(i);
     end else begin
       // rename all backup files (increase number)
       i:=1;
-      while FileExists(BackupFilename+IntToStr(i))
+      while FileExistsUTF8(BackupFilename+IntToStr(i))
       and (i<=BackupInfo.MaxCounter) do inc(i);
       if i>BackupInfo.MaxCounter then begin
         dec(i);
         CounterFilename:=BackupFilename+IntToStr(BackupInfo.MaxCounter);
         // remove old backup file
         repeat
-          if FileExists(CounterFilename) then begin
-            if not DeleteFile(CounterFilename) then begin
+          if FileExistsUTF8(CounterFilename) then begin
+            if not DeleteFileUTF8(CounterFilename) then begin
               ACaption:=lisDeleteFileFailed;
               AText:=Format(lisUnableToRemoveOldBackupFile, ['"',
                 CounterFilename, '"']);
@@ -960,7 +960,7 @@ begin
       dec(i);
       while i>=1 do begin
         repeat
-          if not RenameFile(BackupFilename+IntToStr(i),
+          if not RenameFileUTF8(BackupFilename+IntToStr(i),
              BackupFilename+IntToStr(i+1)) then
           begin
             ACaption:=lisRenameFileFailed;
@@ -1002,11 +1002,11 @@ begin
   LFMFilename:=ChangeFileExt(LRSFilename,'.lfm');
   if LRSFilename=LFMFilename then exit;
   // check if there is a .lfm file
-  if not FileExists(LFMFilename) then exit;
+  if not FileExistsUTF8(LFMFilename) then exit;
   // check if .lrs file is newer than .lfm file
-  if FileExists(LRSFilename) and (FileAge(LFMFilename)<=FileAge(LRSFilename))
+  if FileExistsUTF8(LRSFilename) and (FileAgeUTF8(LFMFilename)<=FileAgeUTF8(LRSFilename))
   then exit;
-  debugln('TBuildManager.UpdateLRSFromLFM ',LRSFilename,' LFMAge=',dbgs(FileAge(LFMFilename)),' LRSAge=',dbgs(FileAge(LRSFilename)));
+  debugln('TBuildManager.UpdateLRSFromLFM ',LRSFilename,' LFMAge=',dbgs(FileAgeUTF8(LFMFilename)),' LRSAge=',dbgs(FileAgeUTF8(LRSFilename)));
   // the .lrs file does not exist, or is older than the .lfm file
   // -> update .lrs file
   Result:=ConvertLFMToLRSFileInteractive(LFMFilename,LRSFilename);

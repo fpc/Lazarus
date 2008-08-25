@@ -64,9 +64,9 @@ end;
 procedure TConfigIDEDataDictForm.CheckData;
 
 begin
-  If (FEDD.FileName='') or not (FileExists(FEDD.FileName)) then
+  If (FEDD.FileName='') or not (FileExistsUTF8(FEDD.FileName)) then
     Raise Exception.Create(SErrSelectExe);
-  If (DEDD.Text='') or not (DirectoryExists(DEDD.Text)) then
+  If (DEDD.Text='') or not (DirectoryExistsUTF8(DEDD.Text)) then
     Raise Exception.Create(SErrSelectDir)
 end;
 

@@ -127,7 +127,7 @@ begin
     // load in and parse the source
     try
       MyFile.Clear;
-      MyFile.LoadFromFile(DlgLoad.Filename);
+      MyFile.LoadFromFile(UTF8ToSys(DlgLoad.Filename));
     except
       MessageDlg('Error loading unit: '+DlgLoad.Filename,mtError,[mbCancel],0);
       exit;
@@ -195,7 +195,7 @@ begin
   MakeUses;
   MakeRegister;
   try
-    MyFile.SaveToFile(FLazPath+'components/custom/customidecomps.pas');
+    MyFile.SaveToFile(UTF8ToSys(FLazPath+'components/custom/customidecomps.pas'));
   except
     MessageDlg('Error saving customidecomps.pas!',mtError,[mbCancel],0);
     exit;
@@ -230,7 +230,7 @@ begin
   RegisterFilename:=
     AppendPathDelim(FLazPath)+'components/custom/customidecomps.pas';
   try
-    MyFile.LoadFromFile(RegisterFilename);
+    MyFile.LoadFromFile(UTF8ToSys(RegisterFilename));
   except
     on E: Exception do begin
       if messagedlg('Error loading '+RegisterFilename+': '+E.Message+#13#10+
@@ -255,7 +255,7 @@ begin
       MyFile.Clear;
       exit;
     end;
-    MyFile.SaveToFile(ChangeFileExt(RegisterFilename,'.orig'));
+    MyFile.SaveToFile(UTF8ToSys(ChangeFileExt(RegisterFilename,'.orig')));
   end;
   
   // okay got a good file here...

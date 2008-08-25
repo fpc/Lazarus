@@ -1050,8 +1050,8 @@ AStream: TFileStream;
 AChm: TChmReader;
 AIndex: Integer;
 begin
-  if not FileExists(AFileName) then exit;
-  AStream := TFileStream.Create(AFileName, fmOpenRead);
+  if not FileExistsUTF8(AFileName) then exit;
+  AStream := TFileStream.Create(UTF8ToSys(AFileName), fmOpenRead);
   AChm := TChmReader.Create(AStream, True);
   AIndex := AddObject(AFileName, AChm);
   fLastChm := AChm;
@@ -1074,7 +1074,7 @@ begin
   end;
   if not Result then begin
     AFileName := ExtractFilePath(FileName[0])+AFileName;
-    if FileExists(AFileName) and (ExtractFileExt(AFileName) = '.chm') then OpenNewFile(AFileName);
+    if FileExistsUTF8(AFileName) and (ExtractFileExt(AFileName) = '.chm') then OpenNewFile(AFileName);
     Result := True;
   end;
 end;

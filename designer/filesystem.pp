@@ -39,18 +39,18 @@ uses
 type
 
 {  TFileSystem
-   FileAge -- Returns the date/time of the file in a longint.
+   FileAgeUTF8 -- Returns the date/time of the file in a longint.
 
    GetFileStream -- Creates and returns a TStream for the Filename
                     passed into it.
 
-   RenameFile -- Renames a file.  Returns TRUE is successful
+   RenameFileUTF8 -- Renames a file.  Returns TRUE is successful
 
    IsReadOnly -- Returns TRUE if file is READONLY.
 
-   DeleteFile -- Returns TRUE if successful;
+   DeleteFileUTF8 -- Returns TRUE if successful;
 
-   FileExists -- Returns TRUE if the file exists
+   FileExistsUTF8 -- Returns TRUE if the file exists
 
    GetBackupFileName -- Returns a string which represents the backup name for
                         the filename passed into the function.  It uses the
@@ -62,12 +62,12 @@ type
     FileStream : TFileStream;
    public
     constructor Create;
-    Function FileAge(const Filename : TFilename) : Longint; override;
+    Function FileAgeUTF8(const Filename : TFilename) : Longint; override;
     Function GetFileStream(const Filename : TFilename; Mode : Integer): TStream; override;
-    Function RenameFile(const Oldname, Newname : TFilename): Boolean; override;
+    Function RenameFileUTF8(const Oldname, Newname : TFilename): Boolean; override;
     Function IsReadOnly(const Filename : TFilename): Boolean; override;
-    Function DeleteFile(const Filename : TFilename): Boolean; override;
-    Function FileExists(const Filename : TFilename) : Boolean; override;
+    Function DeleteFileUTF8(const Filename : TFilename): Boolean; override;
+    Function FileExistsUTF8(const Filename : TFilename) : Boolean; override;
     Function GetBackupFileName(const Filename : TFilename): TFilename; override;
   end;
 
@@ -80,7 +80,7 @@ Begin
 
 end;
 
-Function TFileSystem.FileAge(const Filename : TFilename) : Longint;
+Function TFileSystem.FileAgeUTF8(const Filename : TFilename) : Longint;
 Begin
 
 end;
@@ -91,11 +91,11 @@ if Assigned(FileStream) then
   Begin
 
   end;
-FFileStream := TFIleStream.Create(FileName,Mode);
+FFileStream := TFileStream.Create(UTF8ToSys(FileName),Mode);
 Result := FFileStream;
 end;
 
-Function TFileSystem.RenameFile(const Oldname, Newname : TFilename): Boolean;
+Function TFileSystem.RenameFileUTF8(const Oldname, Newname : TFilename): Boolean;
 Begin
 
 end;
@@ -105,12 +105,12 @@ Begin
 
 end;
 
-Function TFileSystem.DeleteFile(const Filename : TFilename): Boolean;
+Function TFileSystem.DeleteFileUTF8(const Filename : TFilename): Boolean;
 Begin
 
 end;
 
-Function TFileSystem.FileExists(const Filename : TFilename) : Boolean;
+Function TFileSystem.FileExistsUTF8(const Filename : TFilename) : Boolean;
 Begin
 
 end;

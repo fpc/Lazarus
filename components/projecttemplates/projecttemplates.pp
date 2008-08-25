@@ -209,7 +209,7 @@ begin
   FTemplateDir:=IncludeTrailingPathDelimiter(ATemplateDir);
   D:=FTemplateDir;
   try
-    If FindFirst(D+AllFilesMask,faDirectory,Info)=0 then
+    If FindFirstUTF8(D+AllFilesMask,faDirectory,Info)=0 then
       Repeat
         If ((Info.Attr and faDirectory)<>0)
            and not ((Info.Name='.') or (Info.Name='..') or (Info.Name='')) then
@@ -219,9 +219,9 @@ begin
             if (name='') or (directory='')    // skip invalid template folders 
                then delete(count-1);          // this prevents IDE hanging 
             end;
-      Until FindNext(Info)<>0;
+      Until FindNextUTF8(Info)<>0;
   finally
-    FindClose(Info);
+    FindCloseUTF8(Info);
   end;
 end;
 
@@ -282,7 +282,7 @@ begin
   L:=TStringList.Create;
   Try
     FN:=FDirectory+'project.ini';
-    If FileExists(FN) then
+    If FileExistsUTF8(FN) then
       begin
       With TMemInifile.Create(FN) do
         try
@@ -300,9 +300,9 @@ begin
         end;
       end;
     FN:=Directory+'description.txt';
-    If FileExists(FN) then
+    If FileExistsUTF8(FN) then
       begin
-      L.LoadFromFile(FN);
+      L.LoadFromFile(UTF8ToSys(FN));
       FDescription:=L.Text;
       end;
     GetFileList(FDirectory);
@@ -345,14 +345,14 @@ Var
   I   : Integer;
   
 begin
-  If not ForceDirectories(BaseDir) then
+  If not ForceDirectoriesUTF8(BaseDir) then
     Raise ETemplateError.CreateFmt(SErrCouldNotCreateDir,[BaseDir]);
   For I:=0 to FileCount-1 do
     begin
     RFN:=ExtractRelativePath(Directory,FileNames[i]);
     RFN:=SubstituteString(ExtractFilePath(RFN),Values);
     If (RFN<>'') Then
-      If not ForceDirectories(BaseDir+RFN) then
+      If not ForceDirectoriesUTF8(BaseDir+RFN) then
         Raise ETemplateError.CreateFmt(SErrCouldNotCreateDir,[BaseDir+RFN]);
     end;
 end;
@@ -394,7 +394,7 @@ begin
     L:=TstringList.Create;
     try
       CreateFile(SrcFN,L,Values);
-      L.SaveToFile(DestFN);
+      L.SaveToFile(UTF8ToSys(DestFN));
     Finally
       L.Free;
     end;
@@ -407,25 +407,25 @@ Var
   Info : TSearchRec;
   
 begin
-  If FindFirst(Dir+AllFilesMask,0,Info)=0 then
+  If FindFirstUTF8(Dir+AllFilesMask,0,Info)=0 then
     try
       repeat
         if Not SpecialFile(info.name) then
           FFiles.Add(Dir+Info.Name);
-       Until (FindNext(Info)<>0);
+       Until (FindNextUTF8(Info)<>0);
     finally
-      FindClose(Info);
+      FindCloseUTF8(Info);
     end;
   if Recurse then
-    If (FindFirst(Dir+AllFilesMask,0,Info)=0) then
+    If (FindFirstUTF8(Dir+AllFilesMask,0,Info)=0) then
       try
         repeat
           if ((Info.attr and faDirectory)<>0) and
             (Info.Name<>'.') and (info.Name<>'..') and (Info.Name<>'') then
          GetFileList(Dir+Info.Name+PathSeparator);
-        until FindNext(Info)<>0;
+        until FindNextUTF8(Info)<>0;
       finally
-        FindClose(Info);
+        FindCloseUTF8(Info);
       end;
 end;
 
@@ -445,9 +445,9 @@ Var
 begin
   D1:=IncludeTrailingPathDelimiter(SrcDir);
   D2:=IncludeTrailingPathDelimiter(DestDir);
-  If not ForceDirectories(D2) then
+  If not ForceDirectoriesUTF8(D2) then
     Raise ETemplateError.CreateFmt(SErrCouldNotCreateDir,[D2]);
-  If FindFirst(D1+AllFilesMask,0,Info)=0 then
+  If FindFirstUTF8(D1+AllFilesMask,0,Info)=0 then
     try
       repeat
         N:=Info.Name;
@@ -457,21 +457,21 @@ begin
            N:=DefaultFileSubstitutes(N);
            CopyAndSubstituteFile(D1+Info.Name,D2+SubstituteString(N,Values),Values);
            end;
-       Until (FindNext(Info)<>0);
+       Until (FindNextUTF8(Info)<>0);
     finally
-      FindClose(Info);
+      FindCloseUTF8(Info);
     end;
   if Recurse then
-    If (FindFirst(D1+AllFilesmask,0,Info)<>0) then
+    If (FindFirstUTF8(D1+AllFilesmask,0,Info)<>0) then
       try
         repeat
           if ((Info.attr and faDirectory)<>0) and
             (Info.Name<>'.') and (info.Name<>'..') and (Info.Name<>'')
           then
             CopyAndSubstituteDir(D1+Info.Name,D2+SubstituteString(Info.Name,Values),Values);
-        until FindNext(Info)<>0;
+        until FindNextUTF8(Info)<>0;
       finally
-        FindClose(Info);
+        FindCloseUTF8(Info);
       end;
 end;
 

@@ -1051,7 +1051,7 @@ constructor TFPDocFile.Create(const FileName: String);
 var
   F: TFileStream;
 begin
-  F := TFileStream.Create(FileName, fmOpenRead);
+  F := TFileStream.Create(UTF8ToSys(FileName), fmOpenRead);
   try
     Create(F);
   finally

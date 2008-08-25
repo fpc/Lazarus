@@ -34,7 +34,7 @@ unit W32Manifest;
 interface
 
 uses
-  Classes, SysUtils, Process, LCLProc, Controls, Forms,
+  Classes, SysUtils, FileUtil, Process, LCLProc, Controls, Forms,
   CodeToolManager, CodeCache, CodeAtom, LazConf, LResources;
    
 type
@@ -111,7 +111,7 @@ var
 begin
   Result := False;
   try
-    Stream := TFileStream.Create(rcFileName, fmCreate);
+    Stream := TFileStream.Create(UTF8ToSys(rcFileName), fmCreate);
     Stream.Write(sManifest[1], length(sManifest));
     Result := True;
   finally

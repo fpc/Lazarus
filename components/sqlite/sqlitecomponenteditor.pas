@@ -135,7 +135,7 @@ begin
     try
       // In case Filename is a relative one, change dir to project dir
       // so the datafile will be created in the right place
-      OldDir:=GetCurrentDir;
+      OldDir:=GetCurrentDirUTF8;
       if ExtractFilePath (LazarusIDE.ActiveProject.MainFile.FileName) <> '' then
         ChDir(ExtractFilePath (LazarusIDE.ActiveProject.MainFile.FileName));
       Dataset:=ADataset;

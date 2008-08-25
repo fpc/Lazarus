@@ -37,7 +37,7 @@ unit DBGrids;
 interface
 
 uses
-  Classes, SysUtils, DB,
+  Classes, SysUtils, FileUtil, DB,
   LCLStrConsts, LCLIntf, LCLProc, LCLType, LMessages, LResources,
   Controls, StdCtrls, Graphics, Grids, Dialogs, Themes;
 
@@ -2563,7 +2563,7 @@ begin
       exit;
     end else
     }
-      AChar := UTF8ToAnsi(AChar);
+      AChar := UTF8ToSys(AChar);
   end else
   if Length(AChar)=0 then
     exit;

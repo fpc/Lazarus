@@ -176,6 +176,7 @@ procedure SetNeedRTLAnsi(NewValue: boolean);
 function UTF8ToSys(const s: string): string;// as UTF8ToAnsi but more independent of widestringmanager
 function SysToUTF8(const s: string): string;// as AnsiToUTF8 but more independent of widestringmanager
 
+// file operations
 function FileExistsUTF8(const Filename: string): boolean;
 function FileAgeUTF8(const FileName: string): Longint;
 function DirectoryExistsUTF8(const Directory: string): Boolean;
@@ -194,6 +195,11 @@ function SetCurrentDirUTF8(const NewDir: String): Boolean;
 function CreateDirUTF8(const NewDir: String): Boolean;
 function RemoveDirUTF8(const Dir: String): Boolean;
 function ForceDirectoriesUTF8(const Dir: string): Boolean;
+
+// environment
+function ParamStrUTF8(Param: Integer): string;
+function GetEnvironmentStringUTF8(Index : Integer): String;
+function GetEnvironmentVariableUTF8(const EnvVar: String): String;
 
 implementation
 

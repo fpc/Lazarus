@@ -136,7 +136,7 @@ begin
   Result:='';
   sl:=TStringList.Create;
   try
-    sl.LoadFromFile(CommentFile);
+    sl.LoadFromFile(UTF8ToSys(CommentFile));
     ParseFPCMessagesFile(sl,Msg,Result);
     if ExtractText and (Result<>'') then begin
       p:=1;
@@ -375,7 +375,7 @@ begin
       Filename:=Filename+FPCTranslationFile
     else
       Filename:=Filename+'errore.msg';
-    if FileExists(Filename) then begin
+    if FileExistsUTF8(Filename) then begin
       FoundComment:=FindFPCMessageComment(Filename,AMessage,true);
       if FoundComment<>'' then begin
         Result:=shrSuccess;

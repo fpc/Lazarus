@@ -823,7 +823,7 @@ function TStandardCodeTool.FixUsedUnitCaseInUsesSection(
     end;
     CurFilename:=ExtractFilename(AFilename);
     Result:='';
-    if SysUtils.FindFirst(AppendPathDelim(CurDir)+FileMask,
+    if FindFirstUTF8(AppendPathDelim(CurDir)+FileMask,
                           faAnyFile,FileInfo)=0 then
     begin
       repeat
@@ -836,9 +836,9 @@ function TStandardCodeTool.FixUsedUnitCaseInUsesSection(
           if (Result='') or (FileInfo.Name=CurFilename) then
             Result:=FileInfo.Name;
         end;
-      until SysUtils.FindNext(FileInfo)<>0;
+      until FindNextUTF8(FileInfo)<>0;
     end;
-    SysUtils.FindClose(FileInfo);
+    FindCloseUTF8(FileInfo);
   end;
   
 var

@@ -167,7 +167,7 @@ end;
 
 procedure TfrmMain.accExportToTextExecute(Sender: TObject);
 begin
-  TheReport.LoadFromFile(ExtractFilePath(ParamStr(0))+'salida.lrf');
+  TheReport.LoadFromFile(ExtractFilePath(ParamStrUTF8(0))+'salida.lrf');
   if TheReport.PrepareReport then
     ShowMessage(cerNotImplemented)
     //TheReport.ExportTo(TfrTextExportFilter, 'salida.txt')
@@ -177,7 +177,7 @@ end;
 
 procedure TfrmMain.accExportToHtmlExecute(Sender: TObject);
 begin
-  TheReport.LoadFromFile(ExtractFilePath(ParamStr(0))+'salida.lrf');
+  TheReport.LoadFromFile(ExtractFilePath(ParamStrUTF8(0))+'salida.lrf');
   if TheReport.PrepareReport then begin
     TheReport.ExportTo(TfrHTMExportFilter, 'salida.html');
     ShowMessage(cerNotImplemented);
@@ -187,7 +187,7 @@ end;
 
 procedure TfrmMain.accExportToCSVExecute(Sender: TObject);
 begin
-  TheReport.LoadFromFile(ExtractFilePath(ParamStr(0))+'salida.lrf');
+  TheReport.LoadFromFile(ExtractFilePath(ParamStrUTF8(0))+'salida.lrf');
   if TheReport.PrepareReport then begin
     TheReport.ExportTo(TfrCSVExportFilter, 'salida.csv');
   end else
@@ -283,8 +283,8 @@ begin
     comboIndex.Items.Add(Dbf1.Indexes[i].Name);
   SetIndex('');
   
-  if fileexists(ExtractFilePath(ParamStr(0))+'salida.lrf') then
-    OpenReport(ExtractFilePath(ParamStr(0))+'salida.lrf');
+  if FileExistsUTF8(ExtractFilePath(ParamStrUTF8(0))+'salida.lrf') then
+    OpenReport(ExtractFilePath(ParamStrUTF8(0))+'salida.lrf');
 end;
 
 procedure TfrmMain.SetIndex(const aIndexName: string);

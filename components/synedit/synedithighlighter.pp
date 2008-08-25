@@ -40,7 +40,7 @@ uses
 {$ELSE}
   Graphics,
   {$IFDEF SYN_LAZARUS}
-  LCLProc, LCLIntf, LCLType, AvgLvlTree,
+  FileUtil, LCLProc, LCLIntf, LCLType, AvgLvlTree,
   {$ELSE}
   Windows,
   {$ENDIF}
@@ -1050,7 +1050,7 @@ function TSynCustomHighlighter.LoadFromFile(AFileName : String): boolean;       
 VAR AIni : TIniFile;
     i : Integer;
 begin
-  AIni := TIniFile.Create(AFileName);
+  AIni := TIniFile.Create(UTF8ToSys(AFileName));
   try
     with AIni do
     begin
@@ -1067,7 +1067,7 @@ function TSynCustomHighlighter.SaveToFile(AFileName : String): boolean;         
 var AIni : TIniFile;
     i: integer;
 begin
-  AIni := TIniFile.Create(AFileName);
+  AIni := TIniFile.Create(UTF8ToSys(AFileName));
   try
     with AIni do
     begin

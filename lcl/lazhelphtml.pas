@@ -190,9 +190,9 @@ begin
       end;
     end;
     if (URLType='file') and (not URLFilenameIsAbsolute(URLPath)) then
-      URLPath:=FilenameToURLPath(TrimFilename(GetCurrentDir+PathDelim))+URLPath;
+      URLPath:=FilenameToURLPath(TrimFilename(GetCurrentDirUTF8+PathDelim))+URLPath;
     
-    if (URLType='file') and (not FileExists(URLPath)) then begin
+    if (URLType='file') and (not FileExistsUTF8(URLPath)) then begin
       Result:=shrContextNotFound;
       ErrMsg:=Format(hhsHelpTheHelpDatabaseWasUnableToFindFile, ['"', ID,
         '"', '"', URLPath, '"']);
@@ -339,7 +339,7 @@ begin
       ErrMsg:=hhsHelpNoHTMLBrowserFound;
     exit;
   end;
-  if (not FileExists(CommandLine)) then begin
+  if (not FileExistsUTF8(CommandLine)) then begin
     ErrMsg:=Format(hhsHelpBrowserNotFound, ['"', CommandLine, '"']);
     exit;
   end;
@@ -368,7 +368,7 @@ begin
   try
     BrowserProcess:=TProcess.Create(nil);
     try
-      BrowserProcess.CommandLine:=CommandLine;
+      BrowserProcess.CommandLine:=UTF8ToSys(CommandLine);
       BrowserProcess.Execute;
     finally
       BrowserProcess.Free;
@@ -390,7 +390,7 @@ procedure THTMLBrowserHelpViewer.FindDefaultBrowser(var Browser,
     Filename: String;
   begin
     Filename:=SearchFileInPath(ShortFilename+GetExeExt,'',
-                      SysUtils.GetEnvironmentVariable('PATH'),PathSeparator,
+                      GetEnvironmentVariableUTF8('PATH'),PathSeparator,
                       [sffDontSearchInBasePath]);
     Result:=Filename<>'';
     if Result then begin
@@ -407,7 +407,7 @@ begin
   if FDefaultBrowser='' then begin
     {$IFDEF MSWindows}
     FDefaultBrowser:= SearchFileInPath('rundll32.exe','',
-                             SysUtils.GetEnvironmentVariable('PATH'),';',
+                             GetEnvironmentVariableUTF8('PATH'),';',
                              [sffDontSearchInBasePath]);
     FDefaultBrowserParams:='url.dll,FileProtocolHandler %s';
     {$ENDIF}

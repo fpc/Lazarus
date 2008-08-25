@@ -58,7 +58,7 @@ unit SynHighlighterAny;
 interface
 
 uses
-  SysUtils, Classes, Controls, Graphics, Registry,
+  SysUtils, Classes, FileUtil, Controls, Graphics, Registry,
   SynEditTypes, SynEditHighlighter;
 
 type
@@ -1105,10 +1105,10 @@ var
   end;
 
 begin
-  if fileexists(aFile) then
+  if FileExistsUTF8(aFile) then
   begin
     HL:=self;
-    fUserData.LoadFromFile(aFile);
+    fUserData.LoadFromFile(UTF8ToSys(aFile));
     hini:=fUserData;
     // attributes
     ReadAttribute(HL.Commentattri,'Comment');

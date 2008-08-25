@@ -655,7 +655,7 @@ var
   i: Integer;
 begin
   DebugLn(['TPPUGroups.AddFPCGroups ',FPCPPUBaseDir]);
-  if SysUtils.FindFirst(AppendPathDelim(FPCPPUBaseDir)+FileMask,faAnyFile,FileInfo)=0
+  if FindFirstUTF8(AppendPathDelim(FPCPPUBaseDir)+FileMask,faAnyFile,FileInfo)=0
   then begin
     repeat
       // check if special file
@@ -671,9 +671,9 @@ begin
         if (not IsValidIdent(Groupname)) then continue;
         AddFPCGroup(GroupName,AppendPathDelim(FPCPPUBaseDir)+FileInfo.Name);
       end;
-    until SysUtils.FindNext(FileInfo)<>0;
+    until FindNextUTF8(FileInfo)<>0;
   end;
-  SysUtils.FindClose(FileInfo);
+  FindCloseUTF8(FileInfo);
 end;
 
 procedure TPPUGroups.AddFPCGroup(const BaseGroupname, Directory: string);
@@ -687,7 +687,7 @@ var
 begin
   //DebugLn(['TPPUGroups.AddFPCGroup ',Groupname,' ',Directory]);
   Group:=nil;
-  if SysUtils.FindFirst(AppendPathDelim(Directory)+FileMask,faAnyFile,FileInfo)=0
+  if FindFirstUTF8(AppendPathDelim(Directory)+FileMask,faAnyFile,FileInfo)=0
   then begin
     repeat
       // check if special file
@@ -727,9 +727,9 @@ begin
       Group:=AddGroup(GroupName);
       Member:=Group.AddMember(UnitName);
       Member.PPUFilename:=Filename;
-    until SysUtils.FindNext(FileInfo)<>0;
+    until FindNextUTF8(FileInfo)<>0;
   end;
-  SysUtils.FindClose(FileInfo);
+  FindCloseUTF8(FileInfo);
 end;
 
 function TPPUGroups.FindGroupWithName(const AName: string): TPPUGroup;

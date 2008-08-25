@@ -968,13 +968,13 @@ begin
   Result:=mrCancel;
   if not FileExistsCached(Filename) then exit;
   ClearCIncludes;
-  FCIncludesFileAge:=FileAge(Filename);
+  FCIncludesFileAge:=FileAgeUTF8(Filename);
   FCIncludesValid:=true;
   //DebugLn(['TH2PasFile.ReadCIncludes Filename="',Filename,'"']);
   try
     sl:=TStringList.Create;
     try
-      sl.LoadFromFile(Filename);
+      sl.LoadFromFile(UTF8ToSys(Filename));
       for i:=0 to sl.Count-1 do begin
         if not REMatches(sl[i],'^#include "(.+)"') then continue;
         SrcFilename:=Trim(REVar(1));
@@ -1006,7 +1006,7 @@ begin
   FCIncludesValid:=false;
   if Project=nil then exit;
   if (not FileExistsCached(Filename)) then exit;
-  if FileAge(Filename)>FCIncludesFileAge then exit;
+  if FileAgeUTF8(Filename)>FCIncludesFileAge then exit;
   FCIncludesValid:=true;
   Result:=true;
 end;
@@ -1532,7 +1532,7 @@ begin
   if List=nil then exit;
   for i:=0 to List.Count-1 do begin
     NewFilename:=CleanAndExpandFilename(List[i]);
-    if (NewFilename='') or (not FileExists(NewFilename)) then exit;
+    if (NewFilename='') or (not FileExistsUTF8(NewFilename)) then exit;
     if CHeaderFileWithFilename(NewFilename)<>nil then exit;
     NewFile:=TH2PasFile.Create;
     NewFile.Project:=Self;
@@ -1929,7 +1929,7 @@ var
 
   procedure CloseOrRevertEditorFile(const Filename: string);
   begin
-    if FileExists(Filename) then
+    if FileExistsUTF8(Filename) then
       LazarusIDE.DoRevertEditorFile(Filename)
     else
       LazarusIDE.DoCloseEditorFile(Filename,[cfQuiet]);
@@ -2063,8 +2063,8 @@ begin
     TextConverter.Filename:=OutputFilename;// save
     
     // clean up
-    if FileExists(TempCHeaderFilename) then
-      DeleteFile(TempCHeaderFilename);
+    if FileExistsUTF8(TempCHeaderFilename) then
+      DeleteFileUTF8(TempCHeaderFilename);
   finally
     TextConverter.Free;
     if (LazarusIDE<>nil) then begin
@@ -2213,7 +2213,7 @@ begin
       DebugLn(['TH2PasConverter.MergeIncludeFiles merging file '
          ,'"'+IncludeFile.Filename+'"'+' into "'+TextConverter.Filename+'"']);
       try
-        fs:=TFileStream.Create(IncludeFile.Filename,fmOpenRead);
+        fs:=TFileStream.Create(UTF8ToSys(IncludeFile.Filename),fmOpenRead);
         try
           SetLength(s,fs.Size);
           if s<>'' then begin

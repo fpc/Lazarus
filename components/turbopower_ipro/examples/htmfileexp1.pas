@@ -117,7 +117,7 @@ begin
     then  nURL := NetToDOSPath(URL)
     else  nURL := URL;
     FN := Concat (FN, nURL);
-    if FileExists(FN) then begin
+    if FileExistsUTF8(FN) then begin
       if Picture = nil then begin
         Picture := TPicture.Create;
         PicCreated := True;

@@ -220,7 +220,7 @@ end;
 procedure TDiffDlg.SaveDiffButtonClick(Sender: TObject);
 begin
   if dlgSave.Execute then
-    DiffSynEdit.Lines.SaveToFile(dlgSave.FileName);
+    DiffSynEdit.Lines.SaveToFile(UTF8ToSys(dlgSave.FileName));
 end;
 
 procedure TDiffDlg.Text1ComboboxChange(Sender: TObject);
@@ -292,7 +292,7 @@ begin
     if Text1.ID = -1 then
       begin
         dat := TStringList.Create;
-        dat.LoadFromFile(Text1.Name);
+        dat.LoadFromFile(UTF8ToSys(Text1.Name));
         Text1Src := dat.Text;
         dat.Free;
       end
@@ -304,7 +304,7 @@ begin
     if Text2.ID = -1 then
       begin
         dat := TStringList.Create;
-        dat.LoadFromFile(Text2.Name);
+        dat.LoadFromFile(UTF8ToSys(Text2.Name));
         Text2Src := dat.Text;
         dat.Free;
       end

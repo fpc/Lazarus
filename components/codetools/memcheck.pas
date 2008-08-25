@@ -1271,7 +1271,7 @@ begin
 {$I+}
    useownfile:=true;
    for i:=0 to Paramcount do
-     write(ownfile,paramstr(i),' ');
+     write(ownfile,ParamStr(i),' ');
    writeln(ownfile);
 end;
 

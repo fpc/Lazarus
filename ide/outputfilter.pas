@@ -268,8 +268,8 @@ begin
   FScanLine:=TOFScanLine.Create(Self);
   
   //debugln('TOutputFilter.Execute A CurrentDirectory="',TheProcess.CurrentDirectory,'"');
-  fCurrentDirectory:=TrimFilename(fProcess.CurrentDirectory);
-  if fCurrentDirectory='' then fCurrentDirectory:=GetCurrentDir;
+  fCurrentDirectory:=TrimFilename(SysToUTF8(fProcess.CurrentDirectory));
+  if fCurrentDirectory='' then fCurrentDirectory:=GetCurrentDirUTF8;
   fCurrentDirectory:=AppendPathDelim(fCurrentDirectory);
   SetLength(Buf,BufSize);
 
@@ -573,10 +573,10 @@ var i, j, FilenameEndPos: integer;
             FullFilename:=LastFile;
           if (ofoMakeFilenamesAbsolute in Options)
           and (not FilenameIsAbsolute(LastFile)) then begin
-            if FileExists(FullFilename) then
+            if FileExistsUTF8(FullFilename) then
               LastFile:=FullFilename;
           end;
-          if FileExists(FullFilename) then begin
+          if FileExistsUTF8(FullFilename) then begin
             CurrentMessageParts.Values['Filename']:=FullFilename;
             NewLine:=LastFile+'(1,1) '+NewLine;
           end;
@@ -922,7 +922,7 @@ begin
         AbsFilename:=Filename;
       end else begin
         AbsFilename:=TrimFilename(fCurrentDirectory+Filename);
-        if not FileExists(AbsFilename) then begin
+        if not FileExistsUTF8(AbsFilename) then begin
           AbsFilename:='';
         end;
       end;
@@ -1166,7 +1166,7 @@ begin
         continue;
       // new directory start a search
       Result:=FullDir+ShortIncFilename;
-      if FileExists(Result) then begin
+      if FileExistsUTF8(Result) then begin
         // file found in search dir
         Result:=CleanAndExpandFilename(Result);
         exit;

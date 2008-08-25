@@ -39,7 +39,7 @@ unit CmdLineDebugger;
 interface
 
 uses
-  Classes, Process, Debugger, LCLProc, Forms, LazConf, DBGUtils;
+  Classes, Process, FileUtil, Debugger, LCLProc, Forms, LazConf, DBGUtils;
 
 type
   TCmdLineDebugger = class(TDebugger)
@@ -213,12 +213,12 @@ begin
   if FDbgProcess = nil
   then begin
     FDbgProcess := TProcess.Create(nil);
-    FDbgProcess.CommandLine := ExternalDebugger + ' ' + AOptions;
+    FDbgProcess.CommandLine := UTF8ToSys(ExternalDebugger + ' ' + AOptions);
     // TODO: under win9x and winMe should be created with console,
     // otherwise no break can be sent.
     FDbgProcess.Options:= [poUsePipes, poNoConsole, poStdErrToOutPut, poNewProcessGroup];
     FDbgProcess.ShowWindow := swoNone;
-    FDbgProcess.Environment := DebuggerEnvironment;
+    AssignUTF8ListToAnsi(DebuggerEnvironment,FDbgProcess.Environment);
   end;
   if not FDbgProcess.Running 
   then begin
@@ -227,21 +227,6 @@ begin
   end;
   Result := FDbgProcess.Running;
 end;
-
-(*
-function TCmdLineDebugger.CreateTargetProcess(const AName:String): Boolean;
-begin
-  // TODO: Better cleanup
-  FTargetProcess.Free;
-  FTargetProcess := TProcess.Create(nil);
-  FTargetProcess.CommandLine := AName;
-  FTargetProcess.Options:= [poUsePipes, poNoConsole, poRunSuspended, poStdErrToOutPut];
-  FTargetProcess.ShowWindow := swoNone;
-  FTargetProcess.Execute;
-  WriteLN('[TCmdLineDebugger] Target PID = ', FTargetProcess.Handle);
-  Result := FTargetProcess.Running;  
-end;
-*)
 
 destructor TCmdLineDebugger.Destroy;
 begin

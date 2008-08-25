@@ -38,7 +38,7 @@ unit PkgOptionsDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Buttons, LResources,
+  Classes, SysUtils, FileUtil, LCLProc, Forms, Controls, Buttons, LResources,
   ExtCtrls, StdCtrls, Spin, Dialogs, PathEditorDlg, IDEProcs, IDEWindowIntf,
   IDEDialogs, MacroIntf,
   LazarusIDEStrConsts, BrokenDependenciesDlg, PackageDefs, PackageSystem,
@@ -223,7 +223,7 @@ begin
       if CurDir<>'' then begin
         IDEMacros.SubstituteMacros(CurDir);
         LazPackage.LongenFilename(CurDir);
-        if not FileExists(CurDir) then begin
+        if not FileExistsUTF8(CurDir) then begin
           DlgResult:=QuestionDlg('Directory not found',
             'Directory "'+CurDir+'" not found.',
             mtError,[mrIgnore,mrYes,'Remove from search path',mrCancel],0);

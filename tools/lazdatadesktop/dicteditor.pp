@@ -669,7 +669,7 @@ end;
 
 procedure TDataDictEditor.LoadFromFile(AFileName: String);
 begin
-  FDD.LoadFromFile(AFileName);
+  FDD.LoadFromFile(UTF8ToSys(AFileName));
   ShowDictionary;
   SetCaption;
 end;

@@ -168,7 +168,7 @@ begin
         try
           FGenerator.GenerateCode(L);
           If (FFileName<>'') then
-            L.SaveToFile(FFileName);
+            L.SaveToFile(UTF8ToSys(FFileName));
           If ShowResult then
             ShowCode(L);
         finally

@@ -29,7 +29,7 @@ implementation
 
 procedure TForm2.FormShow(Sender: TObject);
 begin
-  memo1.lines.LoadFromFile('notes.txt');
+  memo1.lines.LoadFromFile(UTF8ToSys('notes.txt'));
 end;
 
 initialization

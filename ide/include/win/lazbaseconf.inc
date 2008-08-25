@@ -65,7 +65,7 @@ end;
  ---------------------------------------------------------------------------}
 procedure CreatePrimaryConfigPath;
 begin
-  CreateDir(GetPrimaryConfigPath);
+  CreateDirUTF8(GetPrimaryConfigPath);
 end;
 
 {---------------------------------------------------------------------------
@@ -89,13 +89,13 @@ begin
   Result := SearchFileInPath(GetDefaultCompilerFilename,
              format('%sfpc\%s\bin\%s',
                [AppendPathDelim(ProgramDirectory), DefaultFPCVersion, DefaultFPCTarget]),
-             SysUtils.GetEnvironmentVariable('PATH'),';',
+             GetEnvironmentVariableUTF8('PATH'),';',
              []);
   if Result <> '' then exit;
   Result := DefaultDrive + AppendPathDelim(ProgramDirectory) +
     format('fpc\%s\bin\%s\%s',
     [DefaultFPCVersion, DefaultFPCTarget, GetDefaultCompilerFilename]);
-  if not FileExists(Result) then Result:='';
+  if not FileExistsUTF8(Result) then Result:='';
 end;
 
 function FindDefaultMakePath: string;
@@ -103,7 +103,7 @@ begin
   Result := SearchFileInPath('make.exe',
              format('%sfpc\%s\bin\%s',
                [AppendPathDelim(ProgramDirectory), DefaultFPCVersion, DefaultFPCTarget]),
-             SysUtils.GetEnvironmentVariable('PATH'),';',
+             GetEnvironmentVariableUTF8('PATH'),';',
                             []);
 end;
 
@@ -155,7 +155,7 @@ end;
 procedure GetDefaultBrowser(var Browser, Params: string);
 begin
   Browser:= SearchFileInPath('rundll32.exe','',
-                           SysUtils.GetEnvironmentVariable('PATH'),';',
+                           GetEnvironmentVariableUTF8('PATH'),';',
                            [sffDontSearchInBasePath]);
   Params:='url.dll,FileProtocolHandler %s';
 end;

@@ -24,7 +24,7 @@ uses
 
   LCLType,LCLIntf,LCLProc,GraphType,Printers,
 
-  ObjectInspector,PropEdits,TypInfo,
+  ObjectInspector, PropEdits,TypInfo,
   
   LR_Class, LR_Color,LR_Edit;
 
@@ -4572,7 +4572,7 @@ begin
     Filter := sFormFile + ' (*.frf)|*.frf|' +
               sLazFormFile + ' (*.lrf)|*.lrf' +
               '';
-    InitialDir:=ExtractFilePath(ParamStr(0));
+    InitialDir:=ExtractFilePath(ParamStrUTF8(0));
     FileName := CurDocName;
     FilterIndex := 2;
     if Execute then
@@ -4610,7 +4610,7 @@ begin
               sTemplFile + ' (*.frt)|*.frt|' +
               sLazFormFile + ' (*.lrf)|*.lrf' +
               '';
-    InitialDir:=ExtractFilePath(ParamStr(0));
+    InitialDir:=ExtractFilePath(ParamStrUTF8(0));
     FileName := CurDocName;
     FilterIndex := 3;
     if Execute then

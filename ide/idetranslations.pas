@@ -152,7 +152,7 @@ begin
   // search existing translations
   SearchMask:=AppendPathDelim(LazarusDir)+'languages'+PathDelim+'lazaruside.*.po';
   //writeln('CollectTranslations ',SearchMask);
-  if SysUtils.FindFirst(SearchMask,faAnyFile,FileInfo)=0
+  if FindFirstUTF8(SearchMask,faAnyFile,FileInfo)=0
   then begin
     repeat
       if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
@@ -165,9 +165,9 @@ begin
         //writeln('CollectTranslations ID=',ID);
         LazarusTranslations.Add(ID);
       end;
-    until SysUtils.FindNext(FileInfo)<>0;
+    until FindNextUTF8(FileInfo)<>0;
   end;
-  SysUtils.FindClose(FileInfo);
+  FindCloseUTF8(FileInfo);
 end;
 
 {.$define SinglePOFile}
@@ -210,7 +210,7 @@ begin
   OutputFilename:=PODirectory+POFilename;
   {$endif}
   
-  if SysUtils.FindFirst(RSTDirectory+'*.rst',faAnyFile,FileInfo)=0
+  if FindFirstUTF8(RSTDirectory+'*.rst',faAnyFile,FileInfo)=0
   then
   try
     FileList:=TStringList.Create;
@@ -227,8 +227,8 @@ begin
       {$endif}
 
       //DebugLn(['ConvertPackageRSTFiles RSTFilename=',RSTFilename,' OutputFilename=',OutputFilename]);
-      if (not FileExists(OutputFilename))
-      or (FileAge(RSTFilename)>FileAge(OutputFilename)) then
+      if (not FileExistsUTF8(OutputFilename))
+      or (FileAgeUTF8(RSTFilename)>FileAgeUTF8(OutputFilename)) then
       begin
         FileList.Add(RSTFilename);
         {$ifndef SinglePOFile}
@@ -237,7 +237,7 @@ begin
           exit;
         {$endif}
       end;
-    until SysUtils.FindNext(FileInfo)<>0;
+    until FindNextUTF8(FileInfo)<>0;
     
     {$ifdef SinglePOFile}
     UpdateList;
@@ -246,7 +246,7 @@ begin
   finally
     if FileList<>nil then
       FileList.Free;
-    SysUtils.FindClose(FileInfo);
+    FindCloseUTF8(FileInfo);
   end;
 
 end;

@@ -662,7 +662,7 @@ var s: string;
 begin
   Result:=true;
   try
-    fs:=TFileStream.Create(Filename, fmOpenRead);
+    fs:=TFileStream.Create(UTF8ToSys(Filename), fmOpenRead);
     try
       SetLength(s,fs.Size);
       if s<>'' then
@@ -700,7 +700,7 @@ begin
     InvalidateFileStateCache;
     // keep filename case on disk
     TheFilename:=FindDiskFilename(Filename);
-    fs:=TFileStream.Create(TheFilename, fmCreate);
+    fs:=TFileStream.Create(UTF8ToSys(TheFilename), fmCreate);
     try
       s:=Source;
       EncodeSaving(Filename,s);

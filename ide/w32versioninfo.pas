@@ -37,7 +37,7 @@ unit W32VersionInfo;
 interface
 
 uses
-  Classes, SysUtils, Process, LCLProc, Controls, Forms,
+  Classes, SysUtils, Process, LCLProc, Controls, Forms, FileUtil,
   CodeToolManager, CodeCache, LazConf;
    
 type
@@ -328,7 +328,7 @@ begin
                                  IntToStr(MajorRevNr) + '.' +
                                  IntToStr(MinorRevNr) + '.' +
                                  IntToStr(BuildNr);
-      if (FileExists(rcFilename)) then // we found an existing .rc file
+      if (FileExistsUTF8(rcFilename)) then // we found an existing .rc file
         RewriteRCFile
       else
       begin
@@ -359,7 +359,7 @@ end;
 procedure TProjectVersionInfo.BackupRCFile;
 begin
   //BackupFileInteractive(rcFilename);
-   if (FileExists(rcFilename + '.bak')) then
+   if (FileExistsUTF8(rcFilename + '.bak')) then
       begin
          { a previous .bak file exists, so erase it }
          AssignFile(rcInFile, rcFilename + '.bak');

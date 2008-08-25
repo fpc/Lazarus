@@ -61,14 +61,14 @@ begin
   else
     Path := frTemplateDir + DirectorySeparator;
   LB1.Items.Clear;
-  R := FindFirst(Path + '*.frt', faAnyFile, SearchRec);
+  R := FindFirstUTF8(Path + '*.frt', faAnyFile, SearchRec);
   while R = 0 do
   begin
     if (SearchRec.Attr and faDirectory) = 0 then
       LB1.Items.Add(ChangeFileExt(SearchRec.Name, ''));
-    R := FindNext(SearchRec);
+    R := FindNextUTF8(SearchRec);
   end;
-  FindClose(SearchRec);
+  FindCloseUTF8(SearchRec);
   Memo1.Lines.Clear;
   Image1.Picture.Clear;
   Button1.Enabled := False;

@@ -122,8 +122,8 @@ begin
   Result:=false;
   if ParamCount<1 then exit;
   for i:=1 to ParamCount do begin
-    Filename:=ParamStr(1);
-    if not FileExists(Filename) then begin
+    Filename:=ParamStrUTF8(1);
+    if not FileExistsUTF8(Filename) then begin
       writeln('ERROR: file not found: ',FileName);
       exit;
     end;
@@ -234,7 +234,7 @@ begin
   // read source .po file
   //writeln(Prefix,'Loading ',Filename,' ...');
   SrcFile:=TStringList.Create;
-  SrcFile.LoadFromFile(Filename);
+  SrcFile.LoadFromFile(UTF8ToSys(Filename));
   
   if (SrcFile.Count>0) and (copy(SrcFile[0],1,3)=UTF8FileHeader) then begin
     Result.UTF8Header:=copy(SrcFile[0],1,3);
@@ -288,14 +288,14 @@ begin
   if (PoFile.UTF8Header<>'') and (DestFile.Count>0) then
     DestFile[0]:=PoFile.UTF8Header+DestFile[0];
   Save:=true;
-  if FileExists(Filename) then begin
+  if FileExistsUTF8(Filename) then begin
     OldDestFile:=TStringList.Create;
-    OldDestFile.LoadFromFile(Filename);
+    OldDestFile.LoadFromFile(UTF8ToSys(Filename));
     if OldDestFile.Text=DestFile.Text then Save:=false;
     OldDestFile.Free;
   end;
   if Save then
-    DestFile.SaveToFile(Filename);
+    DestFile.SaveToFile(UTF8ToSys(Filename));
   DestFile.Free;
 end;
 
@@ -313,7 +313,7 @@ begin
   Name:=ExtractFilename(Filename);
   Ext:=ExtractFileExt(Filename);
   NameOnly:=LeftStr(Name,length(Name)-length(Ext));
-  if SysUtils.FindFirst(Path+GetAllFilesMask,faAnyFile,FileInfo)=0 then begin
+  if SysUtils.FindFirstUTF8(Path+GetAllFilesMask,faAnyFile,FileInfo)=0 then begin
     repeat
       if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
       or (CompareFilenames(FileInfo.Name,Name)=0) then continue;
@@ -323,9 +323,9 @@ begin
       then
         continue;
       Result.Add(Path+FileInfo.Name);
-    until SysUtils.FindNext(FileInfo)<>0;
+    until SysUtils.FindNextUTF8(FileInfo)<>0;
   end;
-  SysUtils.FindClose(FileInfo);
+  SysUtils.FindCloseUTF8(FileInfo);
 end;
 
 procedure MergePoTrees(SrcTree, DestTree: TAVLTree);
@@ -406,7 +406,7 @@ begin
   Prefix:='';
   Files:=nil;
   if not ParamsValid then begin
-    writeln('Usage: ',ExtractFileName(ParamStr(0))
+    writeln('Usage: ',ExtractFileName(ParamStrUTF8(0))
        ,' filename1.po [filename2.po ... filenameN.po]');
     exit;
   end else begin

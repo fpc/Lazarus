@@ -158,7 +158,7 @@ begin
   {$IFDEF NoUTF8Translations}
   Result:=s;
   {$ELSE}
-  Result:=Utf8ToAnsi(s);
+  Result:=UTF8ToSys(s);
   {$ENDIF}
 end;
 
@@ -207,7 +207,7 @@ begin
   Name:=ExtractFilename(Filename);
   Ext:=ExtractFileExt(Filename);
   NameOnly:=LeftStr(Name,length(Name)-length(Ext));
-  if SysUtils.FindFirst(Path+GetAllFilesMask,faAnyFile,FileInfo)=0 then begin
+  if FindFirstUTF8(Path+GetAllFilesMask,faAnyFile,FileInfo)=0 then begin
     repeat
       if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
       or (CompareFilenames(FileInfo.Name,Name)=0) then continue;
@@ -217,9 +217,9 @@ begin
       then
         continue;
       Result.Add(Path+FileInfo.Name);
-    until SysUtils.FindNext(FileInfo)<>0;
+    until FindNextUTF8(FileInfo)<>0;
   end;
-  SysUtils.FindClose(FileInfo);
+  FindCloseUTF8(FileInfo);
 end;
 
 function UpdatePOFile(Files: TStrings; const POFilename: string): boolean;
@@ -238,7 +238,7 @@ begin
   InputLines := TStringList.Create;
   try
     // Read base po items
-    if FileExists(POFilename) then
+    if FileExistsUTF8(POFilename) then
       BasePOFile := TPOFile.Create(POFilename, true)
     else
       BasePOFile := TPOFile.Create;
@@ -253,7 +253,7 @@ begin
         
         try
           InputLines.Clear;
-          InputLines.LoadFromFile(FileName);
+          InputLines.LoadFromFile(UTF8ToSys(FileName));
 
           if CompareFileExt(Filename,'.lrt')=0 then
             BasePOFile.UpdateStrings(InputLines, stLrt)
@@ -328,7 +328,7 @@ var
 begin
   Result:=false;
   //debugln('TranslateUnitResourceStrings) ResUnitName="',ResUnitName,'" AFilename="',AFilename,'"');
-  if (ResUnitName='') or (AFilename='') or (not FileExists(AFilename)) then
+  if (ResUnitName='') or (AFilename='') or (not FileExistsUTF8(AFilename)) then
     exit;
   try
     po := nil;
@@ -433,7 +433,7 @@ constructor TPOFile.Create(const AFilename: String; Full:boolean=False);
 var
   f: TStream;
 begin
-  f := TFileStream.Create(AFilename, fmOpenRead);
+  f := TFileStream.Create(UTF8ToSys(AFilename), fmOpenRead);
   try
     Self.Create(f, Full);
     if FHeader=nil then
@@ -841,10 +841,10 @@ begin
     for j:=0 to Fitems.Count-1 do
       WriteItem(TPOFileItem(FItems[j]));
       
-    //if not DirectoryExists(ExtractFileDir(AFilename)) then
-    //  ForceDirectories(ExtractFileDir(AFilename));
+    //if not DirectoryExistsUTF8(ExtractFileDir(AFilename)) then
+    //  ForceDirectoriesUTF8(ExtractFileDir(AFilename));
       
-    OutLst.SaveToFile(AFilename);
+    OutLst.SaveToFile(UTF8ToSys(AFilename));
     
   finally
     OutLst.Free;

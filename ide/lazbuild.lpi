@@ -48,7 +48,7 @@
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="5"/>
+    <Version Value="8"/>
     <Target>
       <Filename Value="../lazbuild"/>
     </Target>
@@ -57,9 +57,6 @@
       <OtherUnitFiles Value="../designer/;../packager/;../components/codetools/units/$(TargetCPU)-$(TargetOS)/"/>
       <UnitOutputDirectory Value="../units/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
-    <CodeGeneration>
-      <Generate Value="Faster"/>
-    </CodeGeneration>
     <Other>
       <CompilerPath Value="$(CompPath)"/>
     </Other>

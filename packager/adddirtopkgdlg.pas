@@ -194,7 +194,7 @@ function TAddDirToPkgDialog.GatherFiles(Directory: string;
         Format(lisTheDirectoryWasNotFound, [CurDir]), mtError, [mbCancel], 0);
       exit;
     end;
-    if SysUtils.FindFirst(CurDir+GetAllFilesMask,faAnyFile,FileInfo)=0 then begin
+    if FindFirstUTF8(CurDir+GetAllFilesMask,faAnyFile,FileInfo)=0 then begin
       repeat
         // check if special file
         if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
@@ -206,9 +206,9 @@ function TAddDirToPkgDialog.GatherFiles(Directory: string;
           if FileCanBeAdded(CurFilename) then
             Files.Add(CurFilename);
         end;
-      until SysUtils.FindNext(FileInfo)<>0;
+      until FindNextUTF8(FileInfo)<>0;
     end;
-    SysUtils.FindClose(FileInfo);
+    FindCloseUTF8(FileInfo);
 
     Result:=true;
   end;

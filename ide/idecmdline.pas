@@ -74,7 +74,7 @@ var
 begin
   IDEPid := 0;
   for i := 1 to ParamCount do begin
-    Param := ParamStr(i);
+    Param := ParamStrUTF8(i);
     if Param=LazarusDebugOpt then begin
       aCmdLineParams.Add('--debug-log=' +
                          AppendPathDelim(GetPrimaryConfigPath) + 'debug.log');
@@ -91,7 +91,7 @@ begin
     else
       begin
         // Do not add file to the parameter list
-        if not (Copy(Param,1,1) = '-') and (FileExists(ExpandFileName(Param))) then
+        if not (Copy(Param,1,1) = '-') and (FileExistsUTF8(ExpandFileName(Param))) then
           begin
             DebugLn('%s is a file', [Param]);
             continue;
@@ -125,15 +125,15 @@ end;
 function IsHelpRequested (index : Integer = 1) : Boolean;
 begin
   Result := (ParamCount>=index) and
-            ((CompareText (ParamStr(index), '--help') = 0) or
-             (CompareText (ParamStr(index), '-help')  = 0) or
-             (CompareText (ParamStr(index), '-?')     = 0) or
-             (CompareText (ParamStr(index), '-h')     = 0));
+            ((CompareText (ParamStrUTF8(index), '--help') = 0) or
+             (CompareText (ParamStrUTF8(index), '-help')  = 0) or
+             (CompareText (ParamStrUTF8(index), '-?')     = 0) or
+             (CompareText (ParamStrUTF8(index), '-h')     = 0));
 end;
 
 function ParamIsOption(ParamIndex : integer; const Option : string) : boolean;
 begin
-  Result:=CompareText(ParamStr(ParamIndex),Option) = 0;
+  Result:=CompareText(ParamStrUTF8(ParamIndex),Option) = 0;
 end;
 
 function ParamIsOptionPlusValue(ParamIndex : integer;
@@ -141,7 +141,7 @@ function ParamIsOptionPlusValue(ParamIndex : integer;
 var
   p : String;
 begin
- p      := ParamStr(ParamIndex);
+ p      := ParamStrUTF8(ParamIndex);
  Result := CompareText(LeftStr(p, length(Option)), Option) = 0;
  if Result then
    AValue := copy(p, length(Option) + 1, length(p))
@@ -159,7 +159,7 @@ var
 begin
   for i:= 1 to ParamCount do
     begin
-      //DebugLn(['TMainIDE.ParseCmdLineOptions ',i,' "',ParamStr(i),'"']);
+      //DebugLn(['TMainIDE.ParseCmdLineOptions ',i,' "',ParamStrUTF8(i),'"']);
       if ParamIsOptionPlusValue(i, PrimaryConfPathOptLong, AValue) then
         begin
           SetPrimaryConfigPath(AValue);
@@ -200,7 +200,7 @@ begin
   Result := nil;
   for i := 1 to ParamCount do
    begin
-     Filename := ParamStr(i);
+     Filename := ParamStrUTF8(i);
      if (Filename = '') or (Filename[1] = '-') then
        break;
      if Result = nil then
@@ -211,7 +211,7 @@ end;
 
 function GetLazarusDirectory : String;
 begin
-  Result := ExtractFileDir(ParamStr(0));
+  Result := ExtractFileDir(ParamStrUTF8(0));
 end;
 
 end.

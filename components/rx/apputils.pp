@@ -337,7 +337,7 @@ procedure SaveFormPlacement(Form: TForm; const IniFileName: string);
 var
   IniFile: TInifile;
 begin
-  IniFile := TIniFile.Create(IniFileName);
+  IniFile := TIniFile.Create(UTF8ToSys(IniFileName));
   try
     WriteFormPlacement(Form, IniFile, Form.ClassName);
   finally
@@ -420,7 +420,7 @@ procedure RestoreFormPlacement(Form: TForm; const IniFileName: string);
 var
   IniFile: TIniFile;
 begin
-  IniFile := TIniFile.Create(IniFileName);
+  IniFile := TIniFile.Create(UTF8ToSys(IniFileName));
   try
     ReadFormPlacement(Form, IniFile, Form.ClassName, True, True);
   finally
@@ -436,7 +436,7 @@ begin
   Result := '';
   for I := 0 to MaxInt do begin
     CurrentName := Format(FileNameMask, [I]);
-    if not FileExists(IncludeTrailingPathDelimiter(Path) + CurrentName) then
+    if not FileExistsUTF8(IncludeTrailingPathDelimiter(Path) + CurrentName) then
       begin
       Result := CurrentName;
       Exit;

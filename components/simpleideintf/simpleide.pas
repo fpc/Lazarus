@@ -147,7 +147,7 @@ function TLazyTextConverterToolClasses.GetTempFilename: string;
 var
   BaseDir: String;
 begin
-  BaseDir:=GetCurrentDir;
+  BaseDir:=GetCurrentDirUTF8;
   Result:=FileProcs.GetTempFilename(BaseDir,'convert_');
 end;
 

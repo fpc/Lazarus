@@ -1,6 +1,6 @@
-{  This file was automatically created by Lazarus. Do not edit!
-  This source is only used to compile and install
-  the package GTK2Interface 0.0.
+{ Diese Datei wurde automatisch von Lazarus erzeugt. Sie darf nicht bearbeitet 
+  werden!
+  Dieser Quelltext dient nur dem Übersetzen und Installieren des Packages.
  }
 
 unit GTK2Interface; 
@@ -8,8 +8,8 @@ unit GTK2Interface;
 interface
 
 uses
-  Gtk2Int, Interfaces, GTKDef, GTKGlobals, GtkInt, GtkMsgQueue, GTKProc, 
-    GTKWinapiWindow, LazarusPackageIntf; 
+  Gtk2Int, Interfaces, GtkDef, GTKGlobals, GtkInt, GtkMsgQueue, GTKProc, 
+  GTKWinapiWindow, LazarusPackageIntf;
 
 implementation
 

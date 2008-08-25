@@ -303,6 +303,7 @@ function UTF8Pos(const SearchForText, SearchInText: string): integer;
 function UTF8Copy(const s: string; StartCharIndex, CharCount: integer): string;
 function FindInvalidUTF8Character(p: PChar; Count: integer;
                                   StopOnNonASCII: Boolean = false): integer;
+procedure AssignUTF8ListToAnsi(UTF8List, AnsiList: TStrings);
 
 function UTF16CharacterLength(p: PWideChar): integer;
 function UTF16Length(const s: widestring): integer;
@@ -1279,15 +1280,15 @@ var
     Result := '';
     // first try to find the log file name in the command line parameters
     for i:= 1 to Paramcount do begin
-      if copy(ParamStr(i),1, DebugLogStartLength)=DebugLogStart then begin
-        Result := copy(ParamStr(i), DebugLogStartLength+1,
-                   Length(ParamStr(i))-DebugLogStartLength);
+      if copy(ParamStrUTF8(i),1, DebugLogStartLength)=DebugLogStart then begin
+        Result := copy(ParamStrUTF8(i), DebugLogStartLength+1,
+                   Length(ParamStrUTF8(i))-DebugLogStartLength);
       end;
     end;
     // if not found yet, then try to find in the environment variables
     if (length(result)=0) then begin
-      EnvVarName:= ChangeFileExt(ExtractFileName(Paramstr(0)),'') + '_debuglog';
-      Result := GetEnvironmentVariable(EnvVarName);
+      EnvVarName:= ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'') + '_debuglog';
+      Result := GetEnvironmentVariableUTF8(EnvVarName);
     end;
     if (length(result)>0) then
       Result := ExpandFileName(Result);
@@ -1301,7 +1302,7 @@ begin
     new(DebugText);
     try
       Assign(DebugText^, DebugFileName);
-      if FileExists(DebugFileName) then
+      if FileExistsUTF8(DebugFileName) then
         Append(DebugText^)
       else
         Rewrite(DebugText^);
@@ -2026,10 +2027,10 @@ var
 begin
   PID:=PtrInt(GetThreadID);
   Filename:='Log'+IntToStr(PID);
-  if FileExists(Filename) then
-    fs:=TFileStream.Create(Filename,fmOpenWrite)
+  if FileExistsUTF8(Filename) then
+    fs:=TFileStream.Create(UTF8ToSys(Filename),fmOpenWrite)
   else
-    fs:=TFileStream.Create(Filename,fmCreate);
+    fs:=TFileStream.Create(UTF8ToSys(Filename),fmCreate);
   fs.Position:=fs.Size;
   fs.Write(Msg[1], length(Msg));
   fs.Free;
@@ -2090,7 +2091,7 @@ procedure DbgSaveData(FileName: String; AData: PChar; ADataSize: PtrUInt);
 var
   S: TStream;
 begin
-  S := TFileStream.Create(FileName, fmCreate);
+  S := TFileStream.Create(UTF8ToSys(FileName), fmCreate);
   S.Write(AData^, ADataSize);
   S.Free;
 end;
@@ -2725,6 +2726,16 @@ begin
   end;
   // ok
   Result:=-1;
+end;
+
+procedure AssignUTF8ListToAnsi(UTF8List, AnsiList: TStrings);
+var
+  i: Integer;
+begin
+  AnsiList.Clear;
+  if UTF8List=nil then exit;
+  for i:=0 to UTF8List.Count-1 do
+    AnsiList.Add(UTF8ToSys(UTF8List[i]));
 end;
 
 function UTF16CharacterLength(p: PWideChar): integer;

@@ -460,15 +460,15 @@ begin
   FListing.TimeStamp:=Pool.TimeStamp;
   if Directory='' then exit;// virtual directory
   
-  // Note: do not add a 'if not DirectoryExists then exit'. This will not
-  // work on automounted directories. You must use FindFirst.
+  // Note: do not add a 'if not DirectoryExistsUTF8 then exit'. This will not
+  // work on automounted directories. You must use FindFirstUTF8.
 
   // read the directory
   WorkingListing:=nil;
   WorkingListingCapacity:=0;
   WorkingListingCount:=0;
   try
-    if SysUtils.FindFirst(Directory+FileMask,faAnyFile,FileInfo)=0 then begin
+    if FindFirstUTF8(Directory+FileMask,faAnyFile,FileInfo)=0 then begin
       repeat
         // check if special file
         if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
@@ -488,9 +488,9 @@ begin
         end;
         WorkingListing[WorkingListingCount]:=FileInfo.Name;
         inc(WorkingListingCount);
-      until SysUtils.FindNext(FileInfo)<>0;
+      until FindNextUTF8(FileInfo)<>0;
     end;
-    SysUtils.FindClose(FileInfo);
+    FindCloseUTF8(FileInfo);
 
     if WorkingListingCount=0 then exit;
 

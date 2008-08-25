@@ -435,7 +435,7 @@ function TLIHProviders.GetStream(const URL: string): TStream;
     fs:=nil;
     ok:=false;
     try
-      fs:=TFileStream.Create(Filename,fmOpenRead);
+      fs:=TFileStream.Create(UTF8ToSys(Filename),fmOpenRead);
       //DebugLn(['OpenFile ',Filename,' ',fs.Size,' ',fs.Position]);
       Stream:=fs;
       ok:=true;
@@ -836,7 +836,7 @@ procedure TIDEHelpManager.UpdateFPCDocsHTMLDirectory;
     if Directory='' then exit(false);
     RefFilename:=AppendPathDelim(TrimFilename(Directory))
                                  +'ref'+PathDelim+'ref.kwd';
-    Result:=FileExists(RefFilename);
+    Result:=FileExistsUTF8(RefFilename);
     //DebugLn(['IsFPCDocsHTMDirectory RefFilename="',RefFilename,'" Result=',Result]);
   end;
   
@@ -862,7 +862,7 @@ procedure TIDEHelpManager.UpdateFPCDocsHTMLDirectory;
     Result:=false;
     DirMask:=TrimFilename(Directory);
     CurDir:=ExtractFilePath(DirMask);
-    if SysUtils.FindFirst(DirMask,faDirectory,FileInfo)=0 then begin
+    if FindFirstUTF8(DirMask,faDirectory,FileInfo)=0 then begin
       repeat
         // skip special files
         if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
@@ -872,9 +872,9 @@ procedure TIDEHelpManager.UpdateFPCDocsHTMLDirectory;
           if TryDirectory(NewDir) then
             exit(true);
         end;
-      until SysUtils.FindNext(FileInfo)<>0;
+      until FindNextUTF8(FileInfo)<>0;
     end;
-    SysUtils.FindClose(FileInfo);
+    FindCloseUTF8(FileInfo);
   end;
   
   function SearchInCommonInstallDir: boolean;
@@ -983,7 +983,7 @@ function TIDEHelpManager.ShowHelpForSourcePosition(const Filename: string;
     RefFilename:=HelpOpts.FPCDocsHTMLDirectory;
     if (RefFilename='') then exit;
     RefFilename:=AppendPathDelim(RefFilename)+'ref'+PathDelim+'ref.kwd';
-    if not FileExists(RefFilename) then begin
+    if not FileExistsUTF8(RefFilename) then begin
       DebugLn(['ShowHelpForFPCKeyWord file not found RefFilename="',RefFilename,'"']);
       exit;
     end;

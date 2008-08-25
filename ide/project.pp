@@ -1436,7 +1436,7 @@ begin
   and FIgnoreFileDateOnDiskValid
   and (FIgnoreFileDateOnDisk=Source.FileDateOnDisk) then
     Result:=false;
-  if (not IsVirtual) and FileExists(Filename) then
+  if (not IsVirtual) and FileExistsUTF8(Filename) then
     FileReadOnly:=not FileIsWritableCached(Filename)
   else
     FileReadOnly:=false;
@@ -1462,7 +1462,7 @@ end;
 function TUnitInfo.NeedsSaveToDisk: boolean;
 begin
   Result:=IsVirtual or Modified or ChangedOnDisk(true)
-          or (not FileExists(Filename));
+          or (not FileExistsUTF8(Filename));
 end;
 
 procedure TUnitInfo.UpdateUsageCount(Min, IfBelowThis, IncIfBelow: extended);
@@ -2554,7 +2554,7 @@ begin
     // load session file (if available)
     if (SessionStorage in [pssInProjectDir,pssInIDEConfig])
     and (CompareFilenames(ProjectInfoFile,ProjectSessionFile)<>0) then begin
-      if FileExists(ProjectSessionFile) then begin
+      if FileExistsUTF8(ProjectSessionFile) then begin
         //DebugLn('TProject.ReadProject loading Session ProjectSessionFile=',ProjectSessionFile);
         try
           xmlconfig := TXMLConfig.Create(ProjectSessionFile);
@@ -2713,7 +2713,7 @@ begin
     if i<UnitCount then begin
       AnUnitInfo:=Units[i];
       if (not AnUnitInfo.IsVirtual) and (i<>MainUnitID) then begin
-        if not FileExists(AnUnitInfo.Filename) then
+        if not FileExistsUTF8(AnUnitInfo.Filename) then
           RemoveUnit(i,RemoveFromUsesSection);
       end;
     end;
@@ -3110,8 +3110,8 @@ var StartPos,EndPos:integer;
   CurPath: string;
   OldDir: string;
 begin
-  OldDir:=GetCurrentDir;
-  SetCurrentDir(ExtractFilePath(InitialDir));
+  OldDir:=GetCurrentDirUTF8;
+  SetCurrentDirUTF8(ExtractFilePath(InitialDir));
   try
     StartPos:=1;
     while StartPos<=length(SearchPaths) do begin
@@ -3123,12 +3123,12 @@ begin
         if CurPath[length(CurPath)]<>PathDelim then
           CurPath:=CurPath+PathDelim;
         Result:=CurPath+Filename;
-        if FileExists(Result) then exit;
+        if FileExistsUTF8(Result) then exit;
       end;
       StartPos:=EndPos+1;
     end;
   finally
-    SetCurrentDir(OldDir);
+    SetCurrentDirUTF8(OldDir);
   end;
   Result:='';
 end;
@@ -3478,7 +3478,7 @@ function TProject.RemoveProjectPathFromFilename(
 var ProjectPath:string;
 begin
   ProjectPath:=ProjectDirectory;
-  if ProjectPath='' then ProjectPath:=GetCurrentDir;
+  if ProjectPath='' then ProjectPath:=GetCurrentDirUTF8;
   Result:=AFilename;
   DoDirSeparators(Result);
   // try making filename relative to project file
@@ -3999,7 +3999,7 @@ begin
   if Assigned(OnGetTestDirectory) then
     OnGetTestDirectory(Self,Result)
   else
-    Result:=GetCurrentDir;
+    Result:=GetCurrentDirUTF8;
 end;
 
 function TProject.GetCompileSourceFilename: string;
@@ -4017,7 +4017,7 @@ var
   CurStateFileAge: Integer;
 begin
   StateFile:=GetStateFilename;
-  if not FileExists(StateFile) then begin
+  if not FileExistsUTF8(StateFile) then begin
     DebugLn('TProject.DoLoadStateFile Statefile not found: ',StateFile);
     StateFlags:=StateFlags-[lpsfStateFileLoaded];
     Result:=mrOk;
@@ -4025,7 +4025,7 @@ begin
   end;
 
   // read the state file
-  CurStateFileAge:=FileAge(StateFile);
+  CurStateFileAge:=FileAgeUTF8(StateFile);
   if (not (lpsfStateFileLoaded in StateFlags))
   or (StateFileDate<>CurStateFileAge) then
   begin
@@ -4068,7 +4068,7 @@ var
 begin
   StateFile:=GetStateFilename;
   try
-    CompilerFileDate:=FileAge(CompilerFilename);
+    CompilerFileDate:=FileAgeUTF8(CompilerFilename);
     XMLConfig:=TXMLConfig.CreateClean(StateFile);
     try
       XMLConfig.SetValue('Compiler/Value',CompilerFilename);
@@ -4082,7 +4082,7 @@ begin
     LastCompilerFilename:=CompilerFilename;
     LastCompilerFileDate:=CompilerFileDate;
     LastCompilerParams:=CompilerParams;
-    StateFileDate:=FileAge(StateFile);
+    StateFileDate:=FileAgeUTF8(StateFile);
     StateFlags:=StateFlags+[lpsfStateFileLoaded];
   except
     on E: Exception do begin

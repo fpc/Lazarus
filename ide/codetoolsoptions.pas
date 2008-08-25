@@ -35,7 +35,7 @@ unit CodeToolsOptions;
 interface
 
 uses
-  Classes, SysUtils, LazConf, Laz_XMLCfg,
+  Classes, SysUtils, LazConf, Laz_XMLCfg, FileUtil,
   LResources, Forms, Controls, Buttons, LclProc, ExtCtrls, StdCtrls, ComCtrls,
   Dialogs, CodeToolManager, DefineTemplates, SourceChanger, SynEdit,
   IDEWindowIntf,
@@ -610,7 +610,7 @@ begin
   ConfFileName:=SetDirSeparators(
                              GetPrimaryConfigPath+'/'+DefaultCodeToolsOptsFile);
   CopySecondaryConfigFile(DefaultCodeToolsOptsFile);
-  if (not FileExists(ConfFileName)) then begin
+  if (not FileExistsUTF8(ConfFileName)) then begin
     debugln(lisCompilerNOTECodetoolsConfigFileNotFoundUsingDefaults);
   end;
   FFilename:=ConfFilename;

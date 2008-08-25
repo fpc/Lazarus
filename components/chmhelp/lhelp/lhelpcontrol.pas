@@ -85,7 +85,7 @@ begin
   fClient.ServerID := NameForServer;
   if not fClient.ServerRunning then begin
     with TProcess.Create(nil) do begin
-      CommandLine := ServerExe + ' --ipcname ' + NameForServer;
+      CommandLine := UTF8ToSys(ServerExe + ' --ipcname ' + NameForServer);
       Execute;
     end;
     // give the server some time to get started

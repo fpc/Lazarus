@@ -297,7 +297,7 @@ begin
     if Result then begin
       Directory:=SelectDirectoryDialog.Filename;
       if (sdPerformCreate in Options) and (not DirPathExists(Directory)) then
-        ForceDirectories(Directory);
+        ForceDirectoriesUTF8(Directory);
     end else
       Directory:='';
   finally

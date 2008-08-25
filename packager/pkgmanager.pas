@@ -815,7 +815,7 @@ function TPkgManager.OnPackageEditorRevertPackage(Sender: TObject;
   APackage: TLazPackage): TModalResult;
 begin
   if APackage.AutoCreated or (not FilenameIsAbsolute(APackage.Filename))
-  or (not FileExists(APackage.Filename)) then
+  or (not FileExistsUTF8(APackage.Filename)) then
     exit(mrCancel);
   Result:=DoOpenPackageFile(APackage.Filename,[pofRevert]);
 end;
@@ -924,7 +924,7 @@ end;
 
 procedure TPkgManager.PackageGraphAddPackage(Pkg: TLazPackage);
 begin
-  if FileExists(Pkg.FileName) then PkgLinks.AddUserLink(Pkg);
+  if FileExistsUTF8(Pkg.FileName) then PkgLinks.AddUserLink(Pkg);
   if PackageGraphExplorer<>nil then
     PackageGraphExplorer.UpdatePackageAdded(Pkg);
 end;
@@ -1005,7 +1005,7 @@ begin
     UpdateEnvironment;
   end else begin
     // open failed
-    if not FileExists(AFilename) then begin
+    if not FileExistsUTF8(AFilename) then begin
       // file does not exist -> delete it from recent file list
       RemoveFromRecentList(AFilename,EnvironmentOptions.RecentPackageFiles);
       UpdateEnvironment;
@@ -1186,7 +1186,7 @@ begin
       
       // check existing file
       if (CompareFilenames(NewFileName,OldPkgFilename)<>0)
-      and FileExists(NewFileName) then begin
+      and FileExistsUTF8(NewFileName) then begin
         Result:=IDEMessageDialog(lisPkgMangReplaceFile,
           Format(lisPkgMangReplaceExistingFile, ['"', NewFilename, '"']),
           mtConfirmation,[mbOk,mbCancel]);
@@ -1213,13 +1213,13 @@ begin
   RenamePackageInProject;
 
   // clean up old package file to reduce ambiguousities
-  if FileExists(OldPkgFilename)
+  if FileExistsUTF8(OldPkgFilename)
   and (CompareFilenames(OldPkgFilename,NewFilename)<>0) then begin
     if IDEMessageDialog(lisPkgMangDeleteOldPackageFile,
       Format(lisPkgMangDeleteOldPackageFile2, ['"', OldPkgFilename, '"']),
       mtConfirmation,[mbOk,mbCancel])=mrOk
     then begin
-      if DeleteFile(OldPkgFilename) then begin
+      if DeleteFileUTF8(OldPkgFilename) then begin
         RemoveFromRecentList(OldPkgFilename,
                              EnvironmentOptions.RecentPackageFiles);
       end else begin
@@ -2006,7 +2006,7 @@ var
     if Language='' then exit;
     FileMask:=Directory+'*.'+Language+'.po';
     //DebugLn(['TranslateWithFileMask APackage=',APackage.IDAsString,' FileMask="',FileMask,'"']);
-    if SysUtils.FindFirst(FileMask,faAnyFile,FileInfo)=0
+    if FindFirstUTF8(FileMask,faAnyFile,FileInfo)=0
     then begin
       repeat
         // check if special file
@@ -2018,9 +2018,9 @@ var
         and not UnitTranslated(CurUnitName) then begin
           TranslateUnit(Directory+FileInfo.Name,CurUnitName);
         end;
-      until SysUtils.FindNext(FileInfo)<>0;
+      until FindNextUTF8(FileInfo)<>0;
     end;
-    SysUtils.FindClose(FileInfo);
+    FindCloseUTF8(FileInfo);
   end;
 
 var
@@ -2398,7 +2398,7 @@ begin
     if (pofRevert in Flags) and (APackage.Editor=nil) then
       OpenEditor:=false;
     
-    if not FileExists(AFilename) then begin
+    if not FileExistsUTF8(AFilename) then begin
       IDEMessageDialog(lisFileNotFound,
         Format(lisPkgMangFileNotFound, ['"', AFilename, '"']),
         mtError,[mbCancel]);
@@ -2485,7 +2485,7 @@ begin
   // check if package needs saving
   if (not (psfSaveAs in Flags))
   and (not APackage.ReadOnly) and (not APackage.Modified)
-  and FileExists(APackage.Filename) then begin
+  and FileExistsUTF8(APackage.Filename) then begin
     Result:=mrOk;
     exit;
   end;
@@ -2533,7 +2533,7 @@ begin
       APackage.LPKSource:=Code;
       PkgLink:=PkgLinks.AddUserLink(APackage);
       if PkgLink<>nil then begin
-        PkgLink.FileDate:=FileDateToDateTime(FileAge(APackage.Filename));
+        PkgLink.FileDate:=FileDateToDateTime(FileAgeUTF8(APackage.Filename));
         PkgLink.FileDateValid:=true;
         PkgLinks.SaveUserLinks;
       end;
@@ -3293,7 +3293,7 @@ begin
   Result:='';
   if (PkgFile.FileType=pftVirtualUnit)
   and (PkgFile.LazPackage<>nil)
-  and (not FileExists(PkgFile.Filename)) then begin
+  and (not FileExistsUTF8(PkgFile.Filename)) then begin
     Result:=MainIDE.FindSourceFile(PkgFile.GetShortFilename(false),
                                      PkgFile.LazPackage.Directory,[]);
   end;
@@ -3414,7 +3414,7 @@ begin
   Filename:=ActiveUnitInfo.Filename;
   
   // check if filename is absolute
-  if ActiveUnitInfo.IsVirtual or (not FileExists(Filename)) then begin
+  if ActiveUnitInfo.IsVirtual or (not FileExistsUTF8(Filename)) then begin
     Result:=IDEMessageDialog(lisPkgMangFileNotSaved,
       lisPkgMangPleaseSaveTheFileBeforeAddingItToAPackage,
       mtWarning,[mbCancel]);
@@ -3710,7 +3710,7 @@ begin
     exit;
   end;
   Filename:=APackage.GetSrcFilename;
-  if (not FilenameIsAbsolute(Filename)) or (not FileExists(Filename)) then begin
+  if (not FilenameIsAbsolute(Filename)) or (not FileExistsUTF8(Filename)) then begin
     IDEMessageDialog(lisCCOErrorCaption, lisPkgMangPleaseSaveThePackageFirst,
       mtError,[mbCancel]);
     exit;

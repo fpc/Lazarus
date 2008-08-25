@@ -403,7 +403,7 @@ procedure TSemaphorGrid.LoadFromFileG(FileName:string;autoadjust:boolean);
 var tabella:TStringList;
 begin
   tabella:=TStringList.Create;
-  tabella.LoadFromFile(Filename);
+  tabella.LoadFromFile(UTF8ToSys(Filename));
   LoadBase(tabella,autoadjust);
   tabella.Free;
 end;
@@ -414,7 +414,7 @@ var tabella:TStringList;
 begin
   tabella:=TStringList.Create;
   SaveBase(tabella,addMarker);
-  tabella.SaveToFile(FileName);
+  tabella.SaveToFile(UTF8ToSys(FileName));
   tabella.Free;
 end;
 

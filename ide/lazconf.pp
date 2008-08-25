@@ -46,7 +46,8 @@ interface
 {$endif}
 
 uses
-  SysUtils, Classes, LCLProc, DefineTemplates, FileUtil, InterfaceBase;
+  SysUtils, Classes, FileUtil, LCLProc, DefineTemplates,
+  InterfaceBase;
 
 const
   LCLPlatformDisplayNames: array[TLCLPlatform] of string = (
@@ -151,10 +152,10 @@ function CreateCompilerTestPascalFilename: string;
   var
     fs: TFileStream;
   begin
-    if FileExists(Filename) then exit(true);
+    if FileExistsUTF8(Filename) then exit(true);
     Result:=false;
     try
-      fs:=TFileStream.Create(Filename,fmCreate);
+      fs:=TFileStream.Create(UTF8ToSys(Filename),fmCreate);
       fs.Free;
       Result:=true;
     except
@@ -176,7 +177,7 @@ begin
     Result:=Executable
   else
     Result:=SearchFileInPath(Executable,'',
-                             SysUtils.GetEnvironmentVariable('PATH'),':',
+                             GetEnvironmentVariableUTF8('PATH'),':',
                              [sffDontSearchInBasePath]);
 end;
 
@@ -229,12 +230,12 @@ var
 begin
   PrimaryFilename:=GetPrimaryConfigPath+PathDelim+AFilename;
   SecondaryFilename:=GetSecondaryConfigPath+PathDelim+AFilename;
-  if (not FileExists(PrimaryFilename))
-  and (FileExists(SecondaryFilename)) then begin
+  if (not FileExistsUTF8(PrimaryFilename))
+  and (FileExistsUTF8(SecondaryFilename)) then begin
     try
-      SrcFS:=TFileStream.Create(SecondaryFilename,fmOpenRead);
+      SrcFS:=TFileStream.Create(UTF8ToSys(SecondaryFilename),fmOpenRead);
       try
-        DestFS:=TFileStream.Create(PrimaryFilename,fmCreate);
+        DestFS:=TFileStream.Create(UTF8ToSys(PrimaryFilename),fmCreate);
         try
           DestFS.CopyFrom(SrcFS,SrcFS.Size);
         finally

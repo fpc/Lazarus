@@ -1777,7 +1777,7 @@ begin
     lbEvents.Items.Add(FileName+' selected');
     EventWatch;
 
-    S := TFileStream.Create(FileName, fmOpenRead);
+    S := TFileStream.Create(UTF8ToSys(FileName), fmOpenRead);
     try
       PixMap1 := TPixMap.Create;
       Pixmap1.TransparentColor := clBtnFace;
@@ -2127,14 +2127,14 @@ begin
   SaveDialog1.FileName := 'Untitled.txt';
   SaveDialog1.Filter := 'TextFiles|*.txt';
   If SaveDialog1.Execute then
-    Memo1.Lines.SaveToFile(SaveDialog1.FileName);
+    Memo1.Lines.SaveToFile(UTF8ToSys(SaveDialog1.FileName));
 
 end;
 procedure TForm1.OpenMemo(Sender : TObject);
 begin
   OpenDialog1.Filter := 'TextFile|*.txt';
   If OpenDialog1.Execute then
-    Memo1.Lines.LoadFromFile(OpenDialog1.FileName);
+    Memo1.Lines.LoadFromFile(UTF8ToSys(OpenDialog1.FileName));
 
 end;
 //++++++++++++++++++++++++++++++++ TProgressBar +++++++++++++++++++++++++++++++++++++

@@ -21,7 +21,7 @@ interface
 
 
 uses
-  Classes, SysUtils, LCLProc, Forms, PropertyStorage, XMLCfg, DOM,
+  Classes, SysUtils, FileUtil, LCLProc, Forms, PropertyStorage, XMLCfg, DOM,
   LazConfigStorage;
 
 type
@@ -139,7 +139,7 @@ begin
     Result:=FFIleName
   else
     {$ifdef unix}
-    Result:=IncludeTrailingPathDelimiter(GetEnvironmentVariable('HOME'))
+    Result:=IncludeTrailingPathDelimiter(GetEnvironmentVariableUTF8('HOME'))
             +'.'+ExtractFileName(Application.ExeName);
 
     {$else}

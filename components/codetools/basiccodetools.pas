@@ -3967,7 +3967,7 @@ var
     //DebugLn('SearchDirectory searching ...');
 
     if not DirPathExists(ADirectory) then exit;
-    if SysUtils.FindFirst(ADirectory+FileMask,faAnyFile,FileInfo)=0 then begin
+    if FindFirstUTF8(ADirectory+FileMask,faAnyFile,FileInfo)=0 then begin
       repeat
         // check if special file
         if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
@@ -3977,9 +3977,9 @@ var
           AddToTreeOfUnitFiles(TreeOfUnitFiles,ADirectory+FileInfo.Name,
                                KeepDoubles);
         end;
-      until SysUtils.FindNext(FileInfo)<>0;
+      until FindNextUTF8(FileInfo)<>0;
     end;
-    SysUtils.FindClose(FileInfo);
+    FindCloseUTF8(FileInfo);
   end;
 
 var

@@ -2888,7 +2888,7 @@ begin
     // -> prepend Package Directory and check if it does not exists yet in
     // the package directory
     LongenFilename(TheFilename);
-    if FileExists(TheFilename) then begin
+    if FileExistsUTF8(TheFilename) then begin
       // the file exists -> this virtual file does not belong to the package
       exit;
     end;
@@ -3151,7 +3151,7 @@ var
     end;
     // create new directory listing
     Result:=TStringList.Create;
-    if SysUtils.FindFirst(AppendPathDelim(ADirectory)+GetAllFilesMask,
+    if FindFirstUTF8(AppendPathDelim(ADirectory)+GetAllFilesMask,
                           faAnyFile,FileInfo)=0
     then begin
       repeat
@@ -3160,9 +3160,9 @@ var
         then continue;
         Result.Add(FileInfo.Name);
         //debugln('AddDirectoryListing ',FileInfo.Name);
-      until SysUtils.FindNext(FileInfo)<>0;
+      until FindNextUTF8(FileInfo)<>0;
     end;
-    SysUtils.FindClose(FileInfo);
+    FindCloseUTF8(FileInfo);
     SrcDirs.AddObject(ADirectory,Result);
   end;
 

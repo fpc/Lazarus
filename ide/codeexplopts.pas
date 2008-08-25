@@ -247,7 +247,7 @@ var
   XMLConfig: TXMLConfig;
   //FileVersion: integer;
 begin
-  if not FileExists(FOptionsFilename) then begin
+  if not FileExistsUTF8(FOptionsFilename) then begin
     Clear;
     exit;
   end;

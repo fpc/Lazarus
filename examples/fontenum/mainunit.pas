@@ -161,7 +161,7 @@ var
   Ini: TInifile;
 begin
   SaveSelection;
-  Ini := TIniFile.Create(ChangeFileExt(Application.ExeName,'.ini'));
+  Ini := TIniFile.Create(UTF8ToSys(ChangeFileExt(Application.ExeName,'.ini')));
   try
     Ini.WriteString('General','CurrentFamily', FCurrentFamily);
     Ini.WriteString('General','CurrentCharset',FCurrentCharset);
@@ -215,7 +215,7 @@ begin
   Add(FCS_ISO_8859_15);
   ResetSampleText;
   
-  Ini := TIniFile.Create(ChangeFileExt(Application.ExeName,'.ini'));
+  Ini := TIniFile.Create(UTF8ToSys(ChangeFileExt(Application.ExeName,'.ini')));
   try
     FCurrentFamily  := Ini.ReadString('General','CurrentFamily', '');
     FCurrentCharset := Ini.ReadString('General','CurrentCharset','');

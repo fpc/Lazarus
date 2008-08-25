@@ -217,26 +217,26 @@ begin
   LBFiles.Items.BeginUpdate;
   Try
     Directory:=IncludeTrailingBackslash(Directory);
-    if FindFirst(Directory+'*.*',0,Info)=0 then
+    if FindFirstUTF8(Directory+'*.*',0,Info)=0 then
       try
         Repeat
           Ext:=ExtractFileExt(Info.Name);
           If Pos(Ext,ImageTypes)<>0 then
             AddFile(Directory+Info.Name,False);
-        until (FindNext(Info)<>0)
+        until (FindNextUTF8(Info)<>0)
       Finally
-        FindClose(Info);
+        FindCloseUTF8(Info);
       end;
     If Recurse then
-      if FindFirst(Directory+'*',faDirectory,Info)=0 then
+      if FindFirstUTF8(Directory+'*',faDirectory,Info)=0 then
         try
           Repeat
           If (Info.Name<>'.') and (Info.Name<>'') and (info.name<>'..') and
              ((Info.Attr and faDirectory)<>0) then
             AddDir(Directory+Info.name,True);
-          until (FindNext(Info)<>0)
+          until (FindNextUTF8(Info)<>0)
         finally
-          FindClose(Info);
+          FindCloseUTF8(Info);
         end;
   Finally
     LBFiles.Items.EndUpdate;
@@ -373,7 +373,7 @@ procedure TMainForm.ProcessCommandLine;
     O : String;
 
   begin
-    O:=Paramstr(Index);
+    O:=ParamStrUTF8(Index);
     Result:=(O='-'+short) or (copy(O,1,Length(Long)+3)=('--'+long+'='));
   end;
 
@@ -383,24 +383,24 @@ procedure TMainForm.ProcessCommandLine;
     P : Integer;
 
   begin
-    if (Length(ParamStr(Index))>1) and (Paramstr(Index)[2]<>'-') then
+    if (Length(ParamStrUTF8(Index))>1) and (ParamStrUTF8(Index)[2]<>'-') then
       begin
       If Index<ParamCount then
         begin
         Inc(Index);
-        Result:=Paramstr(Index);
+        Result:=ParamStrUTF8(Index);
         end
       else
-        DoError(SErrNeedArgument,[Index,ParamStr(Index)]);
+        DoError(SErrNeedArgument,[Index,ParamStrUTF8(Index)]);
       end
-    else If length(ParamStr(Index))>2 then
+    else If length(ParamStrUTF8(Index))>2 then
       begin
-      P:=Pos('=',Paramstr(Index));
+      P:=Pos('=',ParamStrUTF8(Index));
       If (P=0) then
-        DoError(SErrNeedArgument,[Index,ParamStr(Index)])
+        DoError(SErrNeedArgument,[Index,ParamStrUTF8(Index)])
       else
         begin
-        Result:=Paramstr(Index);
+        Result:=ParamStrUTF8(Index);
         Delete(Result,1,P);
         end;
       end;
@@ -421,10 +421,10 @@ begin
       FRecursive:=True
     else
       begin
-      S:=ParamStr(I);
-      If DirectoryExists(S) then
+      S:=ParamStrUTF8(I);
+      If DirectoryExistsUTF8(S) then
         AddDir(ExpandFileName(S),FRecursive)
-      else if FileExists(S) then
+      else if FileExistsUTF8(S) then
         AddFile(ExpandFileName(S),LBFiles.Items.Count=0);
       end;
     end;

@@ -255,18 +255,18 @@ procedure TCodeToolsOptions.InitWithEnvironmentVariables;
 begin
   if FPCPath='' then
     FPCPath:=FindDefaultCompilerFilename;
-  if GetEnvironmentVariable('PP')<>'' then
-    FPCPath:=GetEnvironmentVariable('PP');
-  if GetEnvironmentVariable('FPCDIR')<>'' then
-    FPCSrcDir:=GetEnvironmentVariable('FPCDIR');
-  if GetEnvironmentVariable('LAZARUSDIR')<>'' then
-    LazarusSrcDir:=GetEnvironmentVariable('LAZARUSDIR');
+  if GetEnvironmentVariableUTF8('PP')<>'' then
+    FPCPath:=GetEnvironmentVariableUTF8('PP');
+  if GetEnvironmentVariableUTF8('FPCDIR')<>'' then
+    FPCSrcDir:=GetEnvironmentVariableUTF8('FPCDIR');
+  if GetEnvironmentVariableUTF8('LAZARUSDIR')<>'' then
+    LazarusSrcDir:=GetEnvironmentVariableUTF8('LAZARUSDIR');
 end;
 
 function TCodeToolsOptions.FindDefaultCompilerFilename: string;
 begin
   Result:=SearchFileInPath(GetDefaultCompilerFilename,'',
-                           GetEnvironmentVariable('PATH'),':',ctsfcDefault);
+                           GetEnvironmentVariableUTF8('PATH'),':',ctsfcDefault);
 end;
 
 procedure TCodeToolsOptions.UpdateUnitLinkListValid;

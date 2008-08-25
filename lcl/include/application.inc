@@ -196,7 +196,7 @@ end;
 ------------------------------------------------------------------------------}
 function TApplication.GetExeName: String;
 Begin
-  Result := ParamStr(0);
+  Result := ParamStrUTF8(0);
 end;
 
 {------------------------------------------------------------------------------
@@ -860,6 +860,11 @@ begin
     if i < ComponentCount then 
       Components[i].Free;
   end;
+end;
+
+function TApplication.GetParams(Index: Integer): string;
+begin
+  Result:=ParamStrUTF8(Index);
 end;
 
 {------------------------------------------------------------------------------

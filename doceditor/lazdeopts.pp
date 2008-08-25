@@ -76,12 +76,12 @@ Var
   HomeDir : String;
 
 begin
-  HomeDir:=GetEnvironmentVariable('HOME');
+  HomeDir:=GetEnvironmentVariableUTF8('HOME');
   If (HomeDir<>'') then
     begin
     HomeDir:=IncludeTrailingPathDelimiter(HomeDir)+fpdedir;
-    If not DirectoryExists(HomeDir) then
-      If Not CreateDir(HomeDir) then
+    If not DirectoryExistsUTF8(HomeDir) then
+      If Not CreateDirUTF8(HomeDir) then
         HomeDir:=''
       else
         HomeDir:=HomeDir;  
@@ -94,14 +94,14 @@ end;
 Function GetOptionFileName : String;
 
 begin
-  Result:=ExtractFilePath(Paramstr(0))+DefFileName;  
+  Result:=ExtractFilePath(ParamStrUTF8(0))+DefFileName;  
 end;
 {$endif}
 
 Procedure LoadOptions;
 
 begin
-  With TInifile.Create(GetOptionFileName) do
+  With TInifile.Create(UTF8ToSys(GetOptionFileName)) do
     Try
       SkipEmptyNodes:=ReadBool(SecPrefs,KeySkipEmptyNodes,SkipEmptyNodes);
       ConfirmDelete:=ReadBool(SecPrefs,KeyConfirmDelete,ConfirmDelete);
@@ -121,7 +121,7 @@ end;
 Procedure SaveOptions;
 
 begin
-  With TInifile.Create(GetOptionFileName) do
+  With TInifile.Create(UTF8ToSys(GetOptionFileName)) do
     Try
       WriteBool(SecPrefs,KeySkipEmptyNodes,SkipEmptyNodes);
       WriteBool(SecPrefs,KeyConfirmDelete,ConfirmDelete);

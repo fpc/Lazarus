@@ -81,7 +81,7 @@ end;
  ---------------------------------------------------------------------------}
 procedure CreatePrimaryConfigPath;
 begin
-  CreateDir(GetPrimaryConfigPath);
+  CreateDirUTF8(GetPrimaryConfigPath);
 end;
 
 {---------------------------------------------------------------------------
@@ -160,7 +160,7 @@ procedure GetDefaultBrowser(var Browser, Params: string);
   function Find(const ShortFilename: string; var Filename: string): boolean;
   begin
     Filename:=SearchFileInPath(ShortFilename,'',
-                   SysUtils.GetEnvironmentVariable('PATH'),PathSeparator,[]);
+                           GetEnvironmentVariableUTF8('PATH'),PathSeparator,[]);
     Result:=Filename<>'';
   end;
 

@@ -241,7 +241,7 @@ var
         if assigned(fChangeFolderEvent) then
            fChangeFolderEvent(fullpath,FolderInfo);
 
-        doserror := findfirst(fullpath+sfi,attr,dirq);
+        doserror := FindFirstUTF8(fullpath+sfi,attr,dirq);
 
         while (doserror = 0)and(not fstop) do
         begin
@@ -251,10 +251,10 @@ var
                 fFilesFound.Add( fullpath + dirq.Name ); // drh 4/6/98: Add filename to list of those found thus far
              end;
 
-             doserror := findnext(dirq);
+             doserror := FindNextUTF8(dirq);
              application.processMessages;
         end;
-        FindClose(dirq);// barko
+        FindCloseUTF8(dirq);// barko
 
    end; // showq
 
@@ -263,7 +263,7 @@ var
       dirinfo : TSearchRec;
    begin
         showq(fffDirName, fInfo);
-        dosError := FindFirst(fffDirName+fi, faAnyfile, dirInfo);
+        dosError := FindFirstUTF8(fffDirName+fi, faAnyfile, dirInfo);
 
         while (doserror = 0) and (not fstop) do
         begin
@@ -273,10 +273,10 @@ var
                 if (dirInfo.attr and faDirectory <> 0) and (frec) then
                    ScanLDir(fffdirName+dirinfo.name+delimeter, dirInfo);
 
-             dosError := FindNext(dirInfo);
+             dosError := FindNextUTF8(dirInfo);
              application.ProcessMessages;
         end;
-        findclose(dirInfo); // barko
+        FindCloseUTF8(dirInfo); // barko
 
    end; // ScanLDir
 
@@ -290,9 +290,9 @@ begin    // ScanDir
 
      fPath := Copy(path, 1, length(Path) - 1 );
 
-     FindFirst(fPath, faAnyfile, fInfo);
+     FindFirstUTF8(fPath, faAnyfile, fInfo);
      ScanLDir(Path, fInfo);
-     FindClose(fInfo); // barko
+     FindCloseUTF8(fInfo); // barko
 end; // ScanDir
 
 

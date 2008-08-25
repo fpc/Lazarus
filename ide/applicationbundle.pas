@@ -124,7 +124,7 @@ end;
 
 procedure CreateDirectoryInteractive(const Directory: String);
 begin
-  if not CreateDir(Directory) then
+  if not CreateDirUTF8(Directory) then
     EApplicationBundleException.CreateFmt(rsCreatingDirFailed, [Directory]);
 end;
 
@@ -142,7 +142,7 @@ var
     S := TStringList.Create;
     try
       S.Add(PackageInfoHeader);
-      S.SaveToFile(Path + PackageInfoFileName);
+      S.SaveToFile(UTF8ToSys(Path + PackageInfoFileName));
     finally
       S.Free;
     end;
@@ -163,7 +163,7 @@ begin
 
       // create Info.plist file
       with TApplicationPropertyList.Create(ExtractFileNameOnly(Filename), Title) do
-        SaveToFile(ContentsDir + PropertyListFileName);
+        SaveToFile(UTF8ToSys(ContentsDir + PropertyListFileName));
 
       // create PkgInfo file
       CreatePackageInfoFile(ContentsDir);

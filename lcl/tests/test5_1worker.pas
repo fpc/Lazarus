@@ -33,7 +33,7 @@ begin
     s:=FormatDateTime('NN:SS.ZZZZ',Now);
     writeln(s,' .............................................................');
     s:=s+LineEnding;
-    fs:=TFileStream.Create('worker.log',fmCreate);
+    fs:=TFileStream.Create(UTF8ToSys('worker.log'),fmCreate);
     fs.Position:=fs.Size;
     fs.Write(s[1],length(s));
     fs.Free;

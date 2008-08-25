@@ -804,8 +804,8 @@ begin
   Clear;
   FCompilerPath:=AValue;
   ResolvedFilename:=ReadAllLinks(FCompilerPath,false);
-  if FileExists(ResolvedFilename) then
-    FCompilerAge:=FileAge(ResolvedFilename)
+  if FileExistsUTF8(ResolvedFilename) then
+    FCompilerAge:=FileAgeUTF8(ResolvedFilename)
   else
     FCompilerAge:=-1;
 end;
@@ -899,8 +899,8 @@ begin
   Result:=(FCompilerPath<>'') and (FCompilerAge>=0);
   if Result and CheckCompiler then begin
     ResolvedFilename:=ReadAllLinks(FCompilerPath,false);
-    if FileExists(ResolvedFilename)
-    and (FileAge(ResolvedFilename)=FCompilerAge) then
+    if FileExistsUTF8(ResolvedFilename)
+    and (FileAgeUTF8(ResolvedFilename)=FCompilerAge) then
       exit;
     FCompilerAge:=-1;
     Result:=false;

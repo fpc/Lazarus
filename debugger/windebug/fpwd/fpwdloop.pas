@@ -432,12 +432,12 @@ procedure DebugLoop;
     Write('  [', FormatAddress(sym.Address), '+', a-sym.Address, '] ');
 
     Name := sym.Filename;
-    if not FileExists(Name)
+    if not FileExistsUTF8(Name)
     then begin
       if ExtractFilePath(Name) = ''
       then begin
         Name := IncludeTrailingPathDelimiter(ExtractFilePath(GFileName)) + Name;
-        if not FileExists(Name)
+        if not FileExistsUTF8(Name)
         then Name := '';
       end
       else Name := '';
@@ -451,7 +451,7 @@ procedure DebugLoop;
 
     S := TStringList.Create;
     try
-      S.LoadFromFile(Name);
+      S.LoadFromFile(UTF8ToSys(Name));
       if S.Count < sym.Line
       then WriteLn('Line not found')
       else WriteLn(S[sym.Line - 1]);

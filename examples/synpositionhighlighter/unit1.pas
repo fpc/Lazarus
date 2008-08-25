@@ -37,7 +37,7 @@ implementation
 procedure TForm1.OpenMenuItemClick(Sender: TObject);
 begin
   if not OpenDialog1.Execute then exit;
-  SynEdit1.Lines.LoadFromFile(OpenDialog1.FileName);
+  SynEdit1.Lines.LoadFromFile(UTF8ToSys(OpenDialog1.FileName));
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);

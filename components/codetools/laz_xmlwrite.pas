@@ -22,7 +22,7 @@ unit Laz_XMLWrite;
 
 interface
 
-uses Classes, Laz_DOM;
+uses Classes, Laz_DOM, FileProcs;
 
 procedure WriteXMLFile(doc: TXMLDocument; const AFileName: String); overload;
 procedure WriteXMLFile(doc: TXMLDocument; var AFile: Text); overload;
@@ -482,7 +482,7 @@ begin
   // write first to memory buffer and then as one whole block to file
   WriteXMLMemStream(doc);
   try
-    fs := TFileStream.Create(AFileName, fmCreate);
+    fs := TFileStream.Create(UTF8ToSys(AFileName), fmCreate);
     fs.CopyFrom(Stream,Stream.Size);
     fs.Free;
   finally
@@ -543,7 +543,7 @@ begin
   SetWideStringManager(WideStringManager, OldWideStringManager);
   try
   {$ENDIF}
-    Stream := TFileStream.Create(AFileName, fmCreate);
+    Stream := TFileStream.Create(UTF8ToSys(AFileName), fmCreate);
     wrt := @Stream_Write;
     wrtln := @Stream_WriteLn;
     InitWriter;

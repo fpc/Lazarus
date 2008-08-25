@@ -122,7 +122,7 @@ begin
     exit;
   end;
   repeat
-    if RenameFile(SrcFilename,DestFilename) then begin
+    if RenameFileUTF8(SrcFilename,DestFilename) then begin
       break;
     end else begin
       DlgButtons:=[mbCancel,mbRetry]+ExtraButtons;
@@ -267,7 +267,7 @@ begin
   if sl=nil then
     sl:=TStringList.Create;
   try
-    sl.LoadFromFile(Filename);
+    sl.LoadFromFile(UTF8ToSys(Filename));
     Result:=mrOk;
   except
     on E: Exception do begin
@@ -284,7 +284,7 @@ begin
   if sl=nil then
     sl:=TStringList.Create;
   try
-    sl.SaveToFile(Filename);
+    sl.SaveToFile(UTF8ToSys(Filename));
     Result:=mrOk;
   except
     on E: Exception do begin
@@ -392,7 +392,7 @@ begin
   if not FileExistsCached(AFilename) then begin
     try
       InvalidateFileStateCache;
-      fs:=TFileStream.Create(AFilename,fmCreate);
+      fs:=TFileStream.Create(UTF8ToSys(AFilename),fmCreate);
       fs.Free;
     except
       Result:=IDEMessageDialog(lisUnableToCreateFile,
@@ -420,9 +420,9 @@ begin
   try
     if CheckReadable then begin
       InvalidateFileStateCache;
-      fs:=TFileStream.Create(AFilename,fmOpenWrite)
+      fs:=TFileStream.Create(UTF8ToSys(AFilename),fmOpenWrite)
     end else
-      fs:=TFileStream.Create(AFilename,fmOpenReadWrite);
+      fs:=TFileStream.Create(UTF8ToSys(AFilename),fmOpenReadWrite);
     try
       fs.Position:=fs.Size;
       c := ' ';
@@ -439,7 +439,7 @@ begin
   // check readable
   try
     InvalidateFileStateCache;
-    fs:=TFileStream.Create(AFilename,fmOpenReadWrite);
+    fs:=TFileStream.Create(UTF8ToSys(AFilename),fmOpenReadWrite);
     try
       fs.Position:=fs.Size-1;
       fs.Read(c,1);
@@ -471,7 +471,7 @@ function ChooseSymlink(var Filename: string): TModalResult;
 var
   TargetFilename: String;
 begin
-  if not FileExists(Filename) then exit(mrOk);
+  if not FileExistsUTF8(Filename) then exit(mrOk);
   Result:=mrCancel;
   try
     TargetFilename:=ReadAllLinks(Filename,true);
@@ -507,7 +507,7 @@ begin
     if Directory[i]=PathDelim then begin
       Dir:=copy(Directory,1,i-1);
       if not DirPathExists(Dir) then begin
-        while not CreateDir(Dir) do begin
+        while not CreateDirUTF8(Dir) do begin
           Result:=IDEMessageDialog(lisPkgMangUnableToCreateDirectory,
             Format(lisUnableToCreateDirectory2, ['"', Dir, '"']),
             mtError,ErrorButtons+[mbCancel]);
@@ -525,8 +525,8 @@ function DeleteFileInteractive(const Filename: string;
 begin
   repeat
     Result:=mrOk;
-    if not FileExists(Filename) then exit;
-    if not DeleteFile(Filename) then begin
+    if not FileExistsUTF8(Filename) then exit;
+    if not DeleteFileUTF8(Filename) then begin
       Result:=IDEMessageDialog(lisDeleteFileFailed,
         Format(lisPkgMangUnableToDeleteFile, ['"', Filename, '"']),
         mtError,[mbCancel,mbRetry]);
@@ -542,7 +542,7 @@ var
 begin
   try
     InvalidateFileStateCache;
-    fs:=TFileStream.Create(Filename,fmCreate);
+    fs:=TFileStream.Create(UTF8ToSys(Filename),fmCreate);
     try
       if Content<>'' then
         fs.Write(Content[1],length(Content));

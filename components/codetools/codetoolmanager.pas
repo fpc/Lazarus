@@ -904,7 +904,7 @@ begin
   try
     // To not parse the FPC sources every time, the options are saved to a file.
     DebugLn(['TCodeToolManager.SimpleInit Config=',ConfigFilename]);
-    if FileExists(ConfigFilename) then
+    if FileExistsUTF8(ConfigFilename) then
       Options.LoadFromFile(ConfigFilename);
     // use environment variables
     Options.InitWithEnvironmentVariables;

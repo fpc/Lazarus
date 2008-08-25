@@ -54,7 +54,7 @@ begin
   Result := nil;
   Stream := nil;
   try
-    Stream := TFileStream.Create(AFileName, fmOpenRead or fmShareDenyNone);
+    Stream := TFileStream.Create(UTF8ToSys(AFileName), fmOpenRead or fmShareDenyNone);
     GraphicClass := GetGraphicClassForFileExtension(ExtractFileExt(AFileName));
     if (GraphicClass <> nil) and (GraphicClass.InheritsFrom(TCustomBitmap)) then
     begin
@@ -68,8 +68,8 @@ end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-  AddFile(ExtractFilePath(ParamStr(0)) + 'images\edit-clear.png');
-  AddFile(ExtractFilePath(ParamStr(0)) + 'images\edit-find-replace.png');
+  AddFile(ExtractFilePath(ParamStrUTF8(0)) + 'images\edit-clear.png');
+  AddFile(ExtractFilePath(ParamStrUTF8(0)) + 'images\edit-find-replace.png');
 end;
 
 procedure TForm1.Button1Click(Sender: TObject);

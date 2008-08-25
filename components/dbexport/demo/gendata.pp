@@ -124,10 +124,10 @@ begin
     Randomize;
     FN:=TStringList.Create;
     Try
-      FN.LoadFromFile(FFirstNamesFile);
+      FN.LoadFromFile(UTF8ToSys(FFirstNamesFile));
       LN:=TStringList.Create;
       Try
-        LN.LoadFromFile(FLastNamesFile);
+        LN.LoadFromFile(UTF8ToSys(FLastNamesFile));
         Assign(F,FOutputFile);
         Rewrite(F);
         Try

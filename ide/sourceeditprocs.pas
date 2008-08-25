@@ -627,7 +627,7 @@ begin
   if BaseDir='' then
     BaseDir:=LazarusIDE.GetTestBuildDirectory;
   if BaseDir='' then
-    BaseDir:=GetCurrentDir;
+    BaseDir:=GetCurrentDirUTF8;
   BaseDir:=CleanAndExpandDirectory(BaseDir);
   Result:=FileProcs.GetTempFilename(BaseDir,'convert_');
 end;

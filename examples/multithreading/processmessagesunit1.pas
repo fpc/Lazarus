@@ -82,7 +82,7 @@ begin
   UpdateButton;
   try
     // open a file
-    fs:=TFileStream.Create(Filename,fmOpenRead);
+    fs:=TFileStream.Create(UTF8ToSys(Filename),fmOpenRead);
     try
       SetLength(Buffer,10);
       while true do begin

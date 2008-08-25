@@ -141,7 +141,7 @@ var
 begin
   MonitorConfig := TMonitorConfig.Create;
   try
-    MonitorConfig.Load(ExtractFilePath(ParamStr(0)) + 'monitorconfig.xml');
+    MonitorConfig.Load(ExtractFilePath(ParamStrUTF8(0)) + 'monitorconfig.xml');
     for ServerIdx := 0 to MonitorConfig.ServerCount-1 do
       GetTestRegistry.AddTest(
         CreateFtpServerTestSuite(MonitorConfig.Servers[ServerIdx]));

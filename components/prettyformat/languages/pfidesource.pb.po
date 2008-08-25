@@ -4,15 +4,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: pfidesource:sdescrformatting
+#: pfidesource.sdescrformatting
 msgid "Formatting commands"
 msgstr "Comandos de FormataÃ§Ã£o"
 
-#: pfidesource:sdescrpffile
+#: pfidesource.sdescrpffile
 msgid "Pretty-Format File"
 msgstr "Arquivo Pretty-Format"
 
-#: pfidesource:sdescrpfselection
+#: pfidesource.sdescrpfselection
 msgid "Pretty-Format Selection"
 msgstr "SeleÃ§Ã£o Pretty-Format"
 

@@ -197,12 +197,12 @@ end;
 
 procedure TFormMain.EditDocsChange(Sender: TObject);
 begin
-  if DirectoryExists(EditDocs.Text) then UpdateList;
+  if DirectoryExistsUTF8(EditDocs.Text) then UpdateList;
 end;
 
 procedure TFormMain.EditUnitsChange(Sender: TObject);
 begin
-  if DirectoryExists(EditUnits.Text) then UpdateList;
+  if DirectoryExistsUTF8(EditUnits.Text) then UpdateList;
 end;
 
 procedure TFormMain.FormCreate(Sender: TObject);
@@ -291,7 +291,7 @@ const
    
 begin
   try
-    if not FileExists(AFileName) then
+    if not FileExistsUTF8(AFileName) then
     begin
       RaiseError('Update ' + AFileName + ' failed!');
     end;
@@ -312,9 +312,9 @@ begin
     AErrorList := TStringList.Create;
     M := TMemoryStream.Create;
     try
-      AProcess.CommandLine :=
+      AProcess.CommandLine := UTF8ToSys(
         Format(MakeSkelPath + ' --package="%s" --input="%s -Fi%s"',
-          [EditPackage.Text, AFileName, EditInclude.Directory]);
+          [EditPackage.Text, AFileName, EditInclude.Directory]));
       AProcess.Options := AProcess.Options + [poUsePipes, poNoConsole, poStderrToOutPut];
       AProcess.Execute;
 
@@ -359,7 +359,7 @@ begin
       AStringList.SaveToStream(M);
       M.Position := 0;
       NewDoc := TFPDocFile.Create(M);
-      if FileExists(DocFileName) then OldDoc := TFPDocFile.Create(DocFileName)
+      if FileExistsUTF8(DocFileName) then OldDoc := TFPDocFile.Create(DocFileName)
       else OldDoc := nil;
 
       try
@@ -413,7 +413,7 @@ procedure TFormMain.BackupFile(const AFileName: String);
 var
   BackupFileName: String;
 begin
-  if not FileExists(AFileName) then Exit;
+  if not FileExistsUTF8(AFileName) then Exit;
 
   if BackupList.IndexOf(AFileName) = -1 then
   begin

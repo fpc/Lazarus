@@ -7539,7 +7539,7 @@ begin
     LoadFromXMLFile(fName)
   else
   begin
-    Stream := TFileStream.Create(FName, fmOpenRead);
+    Stream := TFileStream.Create(UTF8ToSys(FName), fmOpenRead);
     LoadFromStream(Stream);
     Stream.Free;
     FileName := FName;
@@ -7580,7 +7580,7 @@ begin
     SaveToXMLFile(fName)
   else
   begin
-    Stream := TFileStream.Create(FName, fmCreate);
+    Stream := TFileStream.Create(UTF8ToSys(FName), fmCreate);
     SaveToStream(Stream);
     Stream.Free;
   end;
@@ -7680,7 +7680,7 @@ procedure TfrReport.LoadPreparedReport(FName: String);
 var
   Stream: TFileStream;
 begin
-  Stream := TFileStream.Create(FName, fmOpenRead);
+  Stream := TFileStream.Create(UTF8ToSys(FName), fmOpenRead);
   EMFPages.LoadFromStream(Stream);
   Stream.Free;
   CanRebuild := False;
@@ -7690,7 +7690,7 @@ procedure TfrReport.SavePreparedReport(FName: String);
 var
   Stream: TFileStream;
 begin
-  Stream := TFileStream.Create(FName, fmCreate);
+  Stream := TFileStream.Create(UTF8ToSys(FName), fmCreate);
   EMFPages.SaveToStream(Stream);
   Stream.Free;
 end;
@@ -7706,7 +7706,7 @@ var
 begin
   fb := TBitmap.Create;
   fm := TStringList.Create;
-  Stream := TFileStream.Create(FName, fmOpenRead);
+  Stream := TFileStream.Create(UTF8ToSys(FName), fmOpenRead);
   if Load then
   begin
     ReadMemo(Stream, fm);
@@ -7736,7 +7736,7 @@ var
   b: Byte;
   pos, lpos: Integer;
 begin
-  Stream := TFileStream.Create(FName, fmCreate);
+  Stream := TFileStream.Create(UTF8ToSys(FName), fmCreate);
   frWriteMemo(Stream, Comm);
   b := 0;
   pos := Stream.Position;
@@ -7978,7 +7978,7 @@ procedure TfrReport.ExportTo(Filter: TClass; aFileName: String);
 var
   s: String;
 begin
-  ExportStream := TFileStream.Create(aFileName, fmCreate);
+  ExportStream := TFileStream.Create(UTF8ToSys(aFileName), fmCreate);
   FCurrentFilter := TfrExportFilter(Filter.NewInstance);
   FCurrentFilter.Create(ExportStream);
   FCurrentFilter.OnBeginDoc;

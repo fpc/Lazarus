@@ -53,7 +53,7 @@ uses SourcePrinter;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-  SynEdit1.Lines.LoadFromFile('main.pas');
+  SynEdit1.Lines.LoadFromFile(UTF8ToSys('main.pas'));
 end;
 
 procedure TForm1.Button1Click(Sender: TObject);

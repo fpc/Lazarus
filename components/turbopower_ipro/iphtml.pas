@@ -3576,7 +3576,7 @@ begin {'Complete boolean eval' must be off}
       if (Index1 >= 32) and (Index1 < 128) then
         Result := Chr(Index1)
       else if (Index1 >= 128) and (Index1<256) then
-        Result := AnsiToUTF8(Chr(Index1));
+        Result := SysToUTF8(Chr(Index1));
   end else
   begin
     Index1 := 0;

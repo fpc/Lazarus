@@ -333,7 +333,7 @@ begin
     if OpenDialog.Execute then begin
       for i:=0 to OpenDialog.Files.Count-1 do begin
         AFilename:=CleanAndExpandFilename(OpenDialog.Files[i]);
-        if FileExists(AFilename) then begin
+        if FileExistsUTF8(AFilename) then begin
           if ADirectory<>'' then
             AFilename:=CreateRelativePath(AFilename,ADirectory);
           NewListItem:=FilesListView.Items.Add;

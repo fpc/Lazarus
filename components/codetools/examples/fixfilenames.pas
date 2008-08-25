@@ -46,7 +46,7 @@ begin
   Options:=TCodeToolsOptions.Create;
 
   // To not parse the FPC sources every time, the options are saved to a file.
-  if FileExists(ConfigFilename) then
+  if FileExistsUTF8(ConfigFilename) then
     Options.LoadFromFile(ConfigFilename);
 
   // setup your paths
@@ -56,7 +56,7 @@ begin
 
   // optional: ProjectDir and TestPascalFile exists only to easily test some
   // things.
-  Options.ProjectDir:=GetCurrentDir+'/scanexamples/';
+  Options.ProjectDir:=GetCurrentDirUTF8+'/scanexamples/';
   Options.TestPascalFile:=Options.ProjectDir+'simpleunit1.pas';
 
   // init the codetools

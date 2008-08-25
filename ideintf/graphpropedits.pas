@@ -23,8 +23,8 @@ interface
 
 uses
   Classes, TypInfo, SysUtils, LCLProc, Forms, Controls, LCLType, GraphType,
-  Graphics, StdCtrls, Buttons, ComCtrls, Menus, ExtCtrls, Dialogs, LCLIntf,
-  ExtDlgs, PropEdits,
+  FileUtil, Graphics, StdCtrls, Buttons, ComCtrls, Menus, ExtCtrls, Dialogs,
+  LCLIntf, ExtDlgs, PropEdits,
   GraphicPropEdit; // defines TGraphicPropertyEditorForm
 
 type
@@ -190,7 +190,7 @@ begin
     begin
       if TheDialog.Preview.Picture.Graphic <> nil then
       begin
-        if TheDialog.Modified and FileExists(TheDialog.FileName) then
+        if TheDialog.Modified and FileExistsUTF8(TheDialog.FileName) then
         begin
           FreeGraphic := AGraphic = nil;
 
@@ -250,7 +250,7 @@ begin
       if TheDialog.Preview.Picture.Graphic <> nil then
       begin
         if TheDialog.FileName <> '' then
-          if FileExists(TheDialog.FileName) then
+          if FileExistsUTF8(TheDialog.FileName) then
           begin
             Picture.LoadFromFile(TheDialog.FileName);
             AddPackage(Picture);

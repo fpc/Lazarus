@@ -36,7 +36,7 @@ interface
 
 uses
   {$IFDEF MEM_CHECK}MemCheck,{$ENDIF}
-  Classes, Laz_DOM, Laz_XMLRead, Laz_XMLWrite;
+  Classes, Laz_DOM, Laz_XMLRead, Laz_XMLWrite, FileProcs;
 
 type
 
@@ -441,7 +441,7 @@ begin
   end;
 
   doc:=nil;
-  if FileExists(AFilename) and (not fDoNotLoad) then
+  if FileExistsUTF8(AFilename) and (not fDoNotLoad) then
     ReadXMLFile(doc,AFilename);
 
   if not Assigned(doc) then

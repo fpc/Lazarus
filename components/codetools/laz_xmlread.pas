@@ -25,7 +25,7 @@ interface
 
 uses
   {$IFDEF MEM_CHECK}MemCheck,{$ENDIF}
-  SysUtils, Classes, Laz_DOM;
+  SysUtils, Classes, Laz_DOM, FileProcs;
 
 type
 
@@ -1414,7 +1414,7 @@ var
   MemStream: TMemoryStream;
 begin
   ADoc := nil;
-  FileStream := TFileStream.Create(AFilename, fmOpenRead);
+  FileStream := TFileStream.Create(UTF8ToSys(AFilename), fmOpenRead);
   if FileStream=nil then exit;
   MemStream := TMemoryStream.Create;
   try
@@ -1485,7 +1485,7 @@ procedure ReadXMLFragment(AParentNode: TDOMNode; const AFilename: String);
 var
   Stream: TStream;
 begin
-  Stream := TFileStream.Create(AFilename, fmOpenRead);
+  Stream := TFileStream.Create(UTF8ToSys(AFilename), fmOpenRead);
   try
     ReadXMLFragment(AParentNode, Stream, AFilename);
   finally
@@ -1556,7 +1556,7 @@ var
   Stream: TStream;
 begin
   ADoc := nil;
-  Stream := TFileStream.Create(AFilename, fmOpenRead);
+  Stream := TFileStream.Create(UTF8ToSys(AFilename), fmOpenRead);
   try
     ReadDTDFile(ADoc, Stream, AFilename);
   finally

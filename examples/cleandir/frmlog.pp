@@ -75,7 +75,7 @@ resourcestring
 procedure TLogForm.BSaveClick(Sender: TObject);
 begin
   If SDLog.execute then
-    LBLog.Items.SaveToFile(SDLog.FileName);
+    LBLog.Items.SaveToFile(UTF8ToSys(SDLog.FileName));
 end;
 
 procedure TLogForm.BCloseClick(Sender: TObject);

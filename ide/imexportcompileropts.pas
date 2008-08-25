@@ -182,7 +182,7 @@ var
   XMLConfig: TXMLConfig;
 begin
   Result:=ValueForReadError;
-  if FileExists(Filename) then
+  if FileExistsUTF8(Filename) then
     try
       XMLConfig:=TXMLConfig.Create(Filename);
       Result:=XMLConfig.GetValue(Path,DefaultValue);
@@ -363,7 +363,7 @@ var
 begin
   if DirPathExists(AFilename) then exit;
   Filename:=AFilename;
-  if FileExists(AFilename) then begin
+  if FileExistsUTF8(AFilename) then begin
     MsgResult:=MessageDlg(lisIECOExportFileExists,
       Format(lisIECOExportFileExistsOpenFileAndReplaceOnlyCompilerOpti, ['"',
         AFilename, '"', #13, #13]),

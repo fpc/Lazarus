@@ -38,8 +38,8 @@ unit ProcessDebugger;
 interface
 
 uses
-  Classes, Process, Debugger, LCLProc, DBGUtils, BaseDebugManager, Dialogs,
-  SysUtils, ProcessList;
+  Classes, SysUtils, FileUtil, Process, Debugger, LCLProc, DBGUtils,
+  BaseDebugManager, Dialogs, ProcessList;
 
 type
 
@@ -113,7 +113,7 @@ begin
 
   FProcess := TDBGProcess.Create(nil);
   try
-    FProcess.CommandLine := FileName + ' ' + Arguments;
+    FProcess.CommandLine := UTF8ToSys(FileName + ' ' + Arguments);
     FProcess.CurrentDirectory := WorkingDir;
     FProcess.Environment.Assign(Environment);
     if ShowConsole

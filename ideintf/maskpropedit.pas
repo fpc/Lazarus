@@ -79,7 +79,7 @@ uses StrUtils;
 
 procedure TMaskEditorForm.LoadSampleMasksButtonClick(Sender: TObject);
 begin
-  OpenDialog1.InitialDir:=ExtractFileDir(ParamStr(0));
+  OpenDialog1.InitialDir:=ExtractFileDir(ParamStrUTF8(0));
   if OpenDialog1.Execute then
     LoadDEMFile(OpenDialog1.FileName);
 end;
@@ -149,9 +149,9 @@ begin
   if LazarusIDE<>nil then
     aDemFile:=LazarusIDE.GetPrimaryConfigPath
   else
-    aDemFile:=ExtractFileDir(ParamStr(0));
+    aDemFile:=ExtractFileDir(ParamStrUTF8(0));
   aDemFile:=CleanAndExpandDirectory(aDemFile)+'maskeditmasks.txt';
-  if FileExists(aDemFile) then
+  if FileExistsUTF8(aDemFile) then
     LoadDEMFile(aDemFile);
 end;
 
@@ -163,7 +163,7 @@ end;
 procedure TMaskEditorForm.LoadDEMFile(AFileName: string);
 begin
   SampleMasksListBox.Items.Clear;
-  SampleMasksListBox.Items.LoadFromFile(AFileName);
+  SampleMasksListBox.Items.LoadFromFile(UTF8ToSys(AFileName));
 end;
 
 procedure TMaskEditorForm.SetEditMask(AValue: string);

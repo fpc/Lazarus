@@ -246,7 +246,7 @@ end;
 
 procedure TGUITestRunner.GUITestRunnerShow(Sender: TObject);
 begin
-  if (ParamStr(1) = '--now') or (ParamStr(1) = '-n') then
+  if (ParamStrUTF8(1) = '--now') or (ParamStrUTF8(1) = '-n') then
     RunExecute(Self);
 end;
 
@@ -259,7 +259,7 @@ end;
 procedure TGUITestRunner.SaveAsToolButtonClick(Sender: TObject);
 begin
   if SaveDialog.Execute then
-    XMLSynEdit.Lines.SaveToFile(SaveDialog.FileName);
+    XMLSynEdit.Lines.SaveToFile(UTF8ToSys(SaveDialog.FileName));
 end;
 
 procedure TGUITestRunner.TestTreeMouseDown(Sender: TOBject;

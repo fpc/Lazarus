@@ -50,7 +50,7 @@ end;
 
 initialization
   {$I unit1.lrs}
-  InTestRun :=  paramstr(1)='--runtest';
+  InTestRun :=  ParamStrUTF8(1)='--runtest';
 
 end.
 

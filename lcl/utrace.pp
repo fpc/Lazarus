@@ -19,7 +19,8 @@ unit UTrace;
 
 interface
 
-uses sysutils;
+uses
+  sysutils, FileUtil;
 
 type
   TAssertErrorAddrType = Pointer;
@@ -45,7 +46,7 @@ begin
       Assign(fileH, TraceFileName);
       {$I-}
       if TraceFileName <> '' then
-         if FileExists(TraceFileName) = False then
+         if FileExistsUTF8(TraceFileName) = False then
          begin
             Rewrite(fileH);
             Close(fileH);

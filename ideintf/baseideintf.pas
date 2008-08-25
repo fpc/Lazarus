@@ -22,7 +22,7 @@ unit BaseIDEIntf;
 interface
 
 uses
-  Classes, SysUtils, LazConfigStorage, Dialogs;
+  Classes, SysUtils, FileUtil, LazConfigStorage, Dialogs;
   
 type
   TGetIDEConfigStorage = function(const Filename: string; LoadFromDisk: Boolean
@@ -46,9 +46,9 @@ Begin
   Result:=TStringList.Create;
   SysVarCount:=GetEnvironmentVariableCount;
   for i:=0 to SysVarCount-1 do begin
-    Variable:=GetEnvironmentString(i+1);
+    Variable:=GetEnvironmentStringUTF8(i+1);
     // On windows some (hidden) envirionment variables can be returned by
-    // GetEnvironmentString. These kind of variables start with a =
+    // GetEnvironmentStringUTF8. These kind of variables start with a =
     if (length(Variable)>0) and (Variable[1]<>'=') then begin
       e:=1;
       while (e<=length(Variable)) and (Variable[e]<>'=') do inc(e);

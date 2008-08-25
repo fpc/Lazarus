@@ -310,7 +310,7 @@ begin
   //DebugLn('TIpFileDataProvider.CanHandle FN="'+FN+'"');
   {$ENDIF}
   ContentType := UpperCase(GetLocalContent(FN));
-  Result := (FileExists(FN)) and ((Pos('TEXT/HTML', ContentType) > 0) or
+  Result := (FileExistsUTF8(FN)) and ((Pos('TEXT/HTML', ContentType) > 0) or
     (Pos('IMAGE/', ContentType) > 0));
   Finalize(FileAddrRec);
 end;
@@ -324,7 +324,7 @@ begin
   Initialize(FileAddrRec);
   IpParseURL(URL, FileAddrRec);
   FN := NetToDosPath(FileAddrRec.Path);
-  Result := FileExists(FN);
+  Result := FileExistsUTF8(FN);
   ContentType := GetLocalContent(FN);
   Finalize(FileAddrRec);
 end;
@@ -339,7 +339,7 @@ begin
   IpParseURL(URL, FileAddrRec);
   FN := NetToDosPath(FileAddrRec.Path);
   Result := TMemoryStream.Create;
-  TMemoryStream(Result).LoadFromFile(FN);
+  TMemoryStream(Result).LoadFromFile(UTF8ToSys(FN));
   FOldURL := URL;
   Finalize(FileAddrRec);
 end;
@@ -355,7 +355,7 @@ begin
   FN := NetToDosPath(FileAddrRec.Path);
   Result := TMemoryStream.Create;
   try
-    TMemoryStream(Result).LoadFromFile(FN);
+    TMemoryStream(Result).LoadFromFile(UTF8ToSys(FN));
   except
     Result.Free;
     Result:=nil;

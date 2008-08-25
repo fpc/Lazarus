@@ -79,7 +79,7 @@ procedure TFpGuiWidgetSet.AppInit(var ScreenInfo: TScreenInfo);
 //  Display: String;
 begin
   // This doesn't hurt. on other playforms than X it just will do nothing
-//  Display := GetEnvironmentVariable('DISPLAY');
+//  Display := GetEnvironmentVariableUTF8('DISPLAY');
   fpgApplication.Initialize;
   //GFApplication.QuitWhenLastWindowCloses := False;
 end;

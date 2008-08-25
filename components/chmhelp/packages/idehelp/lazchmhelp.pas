@@ -120,7 +120,7 @@ FileName: String;
 Url: String;
 begin
   Result:=shrNone;
-  if not FileExists(fHelpEXE) then begin
+  if not FileExistsUTF8(fHelpEXE) then begin
     ErrMsg := 'The program "' + fHelpEXE + '" doesn''t seem to exist!';
     Exit(shrViewerNotFound);
   end;

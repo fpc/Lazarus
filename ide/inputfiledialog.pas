@@ -280,7 +280,7 @@ begin
     if (not (iftDirectory in CurFileFlags)) and DirPathExistsCached(Filename)
     then
       exit;
-    if (not (iftFilename in CurFileFlags)) and FileExists(Filename)
+    if (not (iftFilename in CurFileFlags)) and FileExistsUTF8(Filename)
     and (not DirPathExistsCached(Filename))
     then
       exit;

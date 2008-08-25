@@ -102,15 +102,15 @@ begin
   Result := True;
   
   // Check Empty Path and filename
-  if (Length(ExtractFilePath(AValue))=0) and FileExists(ExampleDir+AValue) then
+  if (Length(ExtractFilePath(AValue))=0) and FileExistsUTF8(ExampleDir+AValue) then
     exit;
   
   // Check partial file path within ExampleDir
-  if FileExists(ExampleDir + AValue) then
+  if FileExistsUTF8(ExampleDir + AValue) then
     exit;
   
   // it might be a full path
-  if FileExists(AValue) and (Pos(ExampleDir, AValue)<>0) then
+  if FileExistsUTF8(AValue) and (Pos(ExampleDir, AValue)<>0) then
     exit;
 
   Result := false;

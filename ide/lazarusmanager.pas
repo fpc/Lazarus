@@ -139,8 +139,8 @@ begin
     FileName + GetExeExt;
   // if no lazarus executable exists in that directory, try the same directory
   // as the startlazarus executable
-  if not FileExists(Result) then
-    Result := AppendPathDelim(ExtractFilePath(ExpandFileName(ParamStr(0)))) +
+  if not FileExistsUTF8(Result) then
+    Result := AppendPathDelim(ExtractFilePath(ExpandFileName(ParamStrUTF8(0)))) +
       FileName + GetExeExt;
 end;
 
@@ -154,25 +154,25 @@ begin
   NewFilename:=AppendPathDelim(Directory)+'lazarus.new'+GetExeExt;
   BackupFilename:=AppendPathDelim(Directory)+'lazarus.old'+GetExeExt;
   CurFilename:=AppendPathDelim(Directory)+'lazarus'+GetExeExt;
-  if FileExists(NewFileName) then
+  if FileExistsUTF8(NewFileName) then
   begin
-    if FileExists(CurFilename) then
+    if FileExistsUTF8(CurFilename) then
     begin
-      if FileExists(BackupFileName) then
-        if not DeleteFile(BackupFileName) then begin
+      if FileExistsUTF8(BackupFileName) then
+        if not DeleteFileUTF8(BackupFileName) then begin
           MessageDlg(format('Can''t delete "%s"'#13'%s', [BackupFileName, SysErrorMessage(GetLastOSError)]),
             mtError, [mbOK], 0);
           Result := mrAbort;
           exit;
         end;
-      if not RenameFile(CurFilename, BackupFileName) then begin
+      if not RenameFileUTF8(CurFilename, BackupFileName) then begin
         MessageDlg(format('Can''t rename "%s" to "%s"'#13'%s', [FLazarusPath, BackupFileName, SysErrorMessage(GetLastOSError)]),
           mtError, [mbOK], 0);
         Result := mrAbort;
         exit;
       end;
     end;
-    if not RenameFile(NewFileName, CurFilename) then begin
+    if not RenameFileUTF8(NewFileName, CurFilename) then begin
       MessageDlg(format('Can''t rename "%s" to "%s"'#13'%s', [NewFileName, FLazarusPath, SysErrorMessage(GetLastOSError)]),
         mtError, [mbOK], 0);
       Result := mrAbort;
@@ -244,8 +244,8 @@ var
 begin
   WaitForLazarus;
   try
-    DefaultDir:=ExtractFilePath(ExpandFileName(ParamStr(0)));
-    if DirectoryExists(DefaultDir) then
+    DefaultDir:=ExtractFilePath(ExpandFileName(ParamStrUTF8(0)));
+    if DirectoryExistsUTF8(DefaultDir) then
       DefaultDir:=ReadAllLinks(DefaultDir,true);
   except
     on E: Exception do begin
@@ -271,10 +271,10 @@ begin
     and (RenameLazarusExecutable(CustomDir)=mrOK) then begin
       DefaultExe:=DefaultDir+'lazarus'+GetExeExt;
       CustomExe:=CustomDir+'lazarus'+GetExeExt;
-      if FileExists(DefaultExe) then begin
-        if FileExists(CustomExe) then begin
+      if FileExistsUTF8(DefaultExe) then begin
+        if FileExistsUTF8(CustomExe) then begin
           // both exist
-          if (FileAge(CustomExe)>=FileAge(DefaultExe)) then begin
+          if (FileAgeUTF8(CustomExe)>=FileAgeUTF8(DefaultExe)) then begin
             // the custom exe is newer or equal => use custom
             // Equal files ages catches the case where the two names refer to the same file on disk
             FLazarusPath:=CustomExe;
@@ -285,11 +285,11 @@ begin
               +#13
               +'The system default executable'#13
               +DefaultExe+#13
-              +'(date: '+DateTimeToStr(FileDateToDateTime(FileAge(DefaultExe)))+')'#13
+              +'(date: '+DateTimeToStr(FileDateToDateTime(FileAgeUTF8(DefaultExe)))+')'#13
               +#13
               +'Or your custom executable'#13
               +CustomExe+#13
-              +'(date: '+DateTimeToStr(FileDateToDateTime(FileAge(CustomExe)))+')'#13
+              +'(date: '+DateTimeToStr(FileDateToDateTime(FileAgeUTF8(CustomExe)))+')'#13
               ,mtConfirmation,
               [mrYes,'Start system default',mrNo,'Start my custom',mrAbort],0
               );
@@ -304,7 +304,7 @@ begin
           FLazarusPath:=DefaultExe;
         end;
       end else begin
-        if FileExists(CustomExe) then begin
+        if FileExistsUTF8(CustomExe) then begin
           // only the custom exists => warn user
           MessageDlg('System default is missing',
             'The system default lazarus executable is missing, but your custom'
@@ -358,7 +358,7 @@ begin
   FProcess := TProcess.Create(nil);
   FProcess.Options := [];
   FProcess.ShowWindow := swoShow;
-  FProcess.CommandLine := LazarusPath + CommandLine;
+  FProcess.CommandLine := UTF8ToSys(LazarusPath + CommandLine);
 end;
 
 destructor TLazarusProcess.Destroy;

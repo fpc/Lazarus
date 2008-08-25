@@ -283,7 +283,7 @@ begin
 
   // check if file exists
   if (FilenameIsAbsolute(AFilename)) then begin
-    if (not FileExists(AFilename)) then begin
+    if (not FileExistsUTF8(AFilename)) then begin
       if AddFileType=d2ptUnit then begin
         MessageDlg(lisFileNotFound,
           Format(lisPkgMangFileNotFound, ['"', AFilename, '"']), mtError, [
@@ -530,7 +530,7 @@ begin
       +'|'+dlgAllFiles+' ('+GetAllFilesMask+')|'+GetAllFilesMask;
     if OpenDialog.Execute then begin
       AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
-      if FileExists(AFilename) then begin
+      if FileExistsUTF8(AFilename) then begin
         LazPackage.ShortenFilename(AFilename,true);
         AddFilenameEdit.Text:=AFilename;
         UpdateAddFileInfo;
@@ -559,7 +559,7 @@ begin
   Params.UnitName:='';
   Params.PkgFileFlags:=[];
 
-  if not FileExists(Params.UnitFilename) then begin
+  if not FileExistsUTF8(Params.UnitFilename) then begin
     MessageDlg(lisFileNotFound,
       Format(lisPkgMangFileNotFound, ['"', Params.UnitFilename, '"']),
       mtError,[mbCancel],0);
@@ -605,7 +605,7 @@ begin
       +'|'+dlgAllFiles+' ('+GetAllFilesMask+')|'+GetAllFilesMask;
     if OpenDialog.Execute then begin
       AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
-      if FileExists(AFilename) then begin
+      if FileExistsUTF8(AFilename) then begin
         LazPackage.ShortenFilename(AFilename,true);
         AddUnitFilenameEdit.Text:=AFilename;
         UpdateAddUnitInfo;
@@ -732,7 +732,7 @@ begin
       end;
       
       // skip not existing files
-      if (not FileExists(Filename)) then begin
+      if (not FileExistsUTF8(Filename)) then begin
         if QuestionDlg(lisFileNotFound,
           Format(lisPkgMangFileNotFound, ['"', Filename, '"']),
           mtError,[mrIgnore,mrCancel],0)<>mrIgnore
@@ -833,7 +833,7 @@ begin
     if OpenDialog.Execute then begin
       for i:=0 to OpenDialog.Files.Count-1 do begin
         AFilename:=CleanAndExpandFilename(OpenDialog.Files[i]);
-        if FileExists(AFilename) then begin
+        if FileExistsUTF8(AFilename) then begin
           if FindFileInFilesList(AFilename)<0 then begin
             LazPackage.ShortenFilename(AFilename,true);
             NewListItem:=FilesListView.Items.Add;

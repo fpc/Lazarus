@@ -612,7 +612,7 @@ begin
     and (fLastIncludeLinkFileChangeStep=fChangeStep)
     and (fLastIncludeLinkFile=AFilename)
     and FileExistsCached(AFilename)
-    and (FileAge(AFilename)=fLastIncludeLinkFileAge)
+    and (FileAgeUTF8(AFilename)=fLastIncludeLinkFileAge)
     then begin
       exit;
     end;
@@ -620,7 +620,7 @@ begin
     try
       Result:=SaveIncludeLinksToXML(XMLConfig,'');
       fLastIncludeLinkFile:=AFilename;
-      fLastIncludeLinkFileAge:=FileAge(AFilename);
+      fLastIncludeLinkFileAge:=FileAgeUTF8(AFilename);
       fLastIncludeLinkFileChangeStep:=fChangeStep;
       fLastIncludeLinkFileValid:=true;
     finally
@@ -640,7 +640,7 @@ begin
     try
       Result:=LoadIncludeLinksFromXML(XMLConfig,'');
       fLastIncludeLinkFile:=AFilename;
-      fLastIncludeLinkFileAge:=FileAge(AFilename);
+      fLastIncludeLinkFileAge:=FileAgeUTF8(AFilename);
       fLastIncludeLinkFileChangeStep:=fChangeStep;
       fLastIncludeLinkFileValid:=true;
     finally
@@ -825,7 +825,7 @@ begin
   end;
   if not IsVirtual then begin
     if CompareFilenames(AFilename,Filename)=0 then begin
-      //DebugLn('****** [TCodeBuffer.LoadFromFile] ',Filename,' FileDateValid=',FileDateValid,' ',FFileDate,',',FileAge(Filename),',',FFileChangeStep,',',ChangeStep,', NeedsUpdate=',FileNeedsUpdate);
+      //DebugLn('****** [TCodeBuffer.LoadFromFile] ',Filename,' FileDateValid=',FileDateValid,' ',FFileDate,',',FileAgeUTF8(Filename),',',FFileChangeStep,',',ChangeStep,', NeedsUpdate=',FileNeedsUpdate);
       if FileNeedsUpdate then begin
         Result:=inherited LoadFromFile(AFilename);
         if Result then MakeFileDateValid;
@@ -936,7 +936,7 @@ procedure TCodeBuffer.MakeFileDateValid;
 begin
   FFileChangeStep:=ChangeStep;
   FLoadDateValid:=true;
-  FLoadDate:=FileAge(Filename);
+  FLoadDate:=FileAgeUTF8(Filename);
 end;
 
 function TCodeBuffer.SourceIsText: boolean;
@@ -955,7 +955,7 @@ end;
 
 function TCodeBuffer.FileDateOnDisk: longint;
 begin
-  Result:=FileAge(Filename);
+  Result:=FileAgeUTF8(Filename);
 end;
 
 function TCodeBuffer.FileNeedsUpdate: boolean;
@@ -973,7 +973,7 @@ function TCodeBuffer.FileOnDiskNeedsUpdate: boolean;
 begin
   if LoadDateValid then
     Result:=Modified or (FFileChangeStep<>ChangeStep)
-            or (not FileExists(Filename))
+            or (not FileExistsUTF8(Filename))
   else
     Result:=false;
 end;

@@ -39,8 +39,8 @@ interface
 uses
   Classes, SysUtils, TypInfo, Math,
   AvgLvlTree, Maps, LCLVersion, LCLStrConsts, LCLType, LCLProc, LCLIntf,
-  InterfaceBase, LResources, GraphType, Graphics, Menus, LMessages, CustomTimer,
-  ActnList, ClipBrd, CustApp, HelpIntfs, LCLClasses, Controls;
+  FileUtil, InterfaceBase, LResources, GraphType, Graphics, Menus, LMessages,
+  CustomTimer, ActnList, ClipBrd, CustApp, HelpIntfs, LCLClasses, Controls;
 
 type
   TProcedure = procedure;
@@ -1056,6 +1056,7 @@ type
     procedure ProcessAsyncCallQueue;
     procedure FreeComponent(Data: PtrInt);
     procedure DoBeforeFinalization;
+    function GetParams(Index: Integer): string; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;

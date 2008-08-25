@@ -157,7 +157,7 @@ begin
   FileDetailLabel := gtk_object_get_data(PGtkObject(OpenDialog.Handle), 'FileDetailLabel');
   if FileDetailLabel = nil then
     Exit;
-  if FileExists(Filename) then
+  if FileExistsUTF8(Filename) then
     Details := GetFileDescription(Filename)
   else
     Details := Format(rsFileInfoFileNotFound, [Filename]);
@@ -445,7 +445,7 @@ var
 
     // maybe file already exists
     if (ofOverwritePrompt in TOpenDialog(theDialog).Options)
-    and FileExists(AFilename) then
+    and FileExistsUTF8(AFilename) then
     begin
       Result := MessageDlg(rsfdOverwriteFile,
                          Format(rsfdFileAlreadyExists,[AFileName]),

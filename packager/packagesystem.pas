@@ -448,13 +448,13 @@ begin
   BeginUpdate(false);
   try
     AFilename:=PkgLink.Filename;
-    if not FileExists(AFilename) then begin
+    if not FileExistsUTF8(AFilename) then begin
       DebugLn('invalid Package Link: file "'+AFilename+'" does not exist.');
       PkgLink.FileDateValid:=false;
       exit;
     end;
     try
-      PkgLink.FileDate:=FileDateToDateTime(FileAge(AFilename));
+      PkgLink.FileDate:=FileDateToDateTime(FileAgeUTF8(AFilename));
       PkgLink.FileDateValid:=true;
       XMLConfig:=TXMLConfig.Create(nil);
       NewPackage:=TLazPackage.Create;
@@ -2517,7 +2517,7 @@ begin
   Result:=mrCancel;
   StateFile:=APackage.GetStateFilename;
   try
-    CompilerFileDate:=FileAge(CompilerFilename);
+    CompilerFileDate:=FileAgeUTF8(CompilerFilename);
     XMLConfig:=TXMLConfig.CreateClean(StateFile);
     try
       XMLConfig.SetValue('Compiler/Value',CompilerFilename);
@@ -2531,7 +2531,7 @@ begin
     APackage.LastCompilerFilename:=CompilerFilename;
     APackage.LastCompilerFileDate:=CompilerFileDate;
     APackage.LastCompilerParams:=CompilerParams;
-    APackage.StateFileDate:=FileAge(StateFile);
+    APackage.StateFileDate:=FileAgeUTF8(StateFile);
     APackage.Flags:=APackage.Flags+[lpfStateFileLoaded];
   except
     on E: Exception do begin
@@ -2554,7 +2554,7 @@ var
   StateFileAge: Integer;
 begin
   StateFile:=APackage.GetStateFilename;
-  if not FileExists(StateFile) then begin
+  if not FileExistsUTF8(StateFile) then begin
     //DebugLn('TLazPackageGraph.LoadPackageCompiledState Statefile not found: ',StateFile);
     APackage.Flags:=APackage.Flags-[lpfStateFileLoaded];
     Result:=mrOk;
@@ -2562,7 +2562,7 @@ begin
   end;
 
   // read the state file
-  StateFileAge:=FileAge(StateFile);
+  StateFileAge:=FileAgeUTF8(StateFile);
   if (not (lpfStateFileLoaded in APackage.Flags))
   or (APackage.StateFileDate<>StateFileAge) then begin
     APackage.Flags:=APackage.Flags-[lpfStateFileLoaded];
@@ -2637,8 +2637,8 @@ begin
       if RequiredPackage.OutputStateFile<>'' then begin
         OtherStateFile:=RequiredPackage.OutputStateFile;
         GlobalMacroList.SubstituteStr(OtherStateFile);
-        if FileExists(OtherStateFile)
-        and (FileAge(OtherStateFile)>StateFileAge) then begin
+        if FileExistsUTF8(OtherStateFile)
+        and (FileAgeUTF8(OtherStateFile)>StateFileAge) then begin
           DebugLn('TPkgManager.CheckCompileNeedDueToDependencies  Required ',
             RequiredPackage.IDAsString,' OtherState file "',OtherStateFile,'"'
             ,' is newer than State file ',GetOwnerID);
@@ -2702,7 +2702,7 @@ begin
       <>ExtractCompilerParamsForBuildAll(CompilerParams))
   or ((APackage.LastCompilerFileDate>0)
       and FileExistsCached(CompilerFilename)
-      and (FileAge(CompilerFilename)<>APackage.LastCompilerFileDate))
+      and (FileAgeUTF8(CompilerFilename)<>APackage.LastCompilerFileDate))
   then
     NeedBuildAllFlag:=true;
 
@@ -2715,10 +2715,10 @@ begin
     exit(mrYes);
   end;
 
-  StateFileAge:=FileAge(StateFilename);
+  StateFileAge:=FileAgeUTF8(StateFilename);
 
   // check main source file
-  if FileExists(SrcFilename) and (StateFileAge<FileAge(SrcFilename)) then
+  if FileExistsUTF8(SrcFilename) and (StateFileAge<FileAgeUTF8(SrcFilename)) then
   begin
     DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  SrcFile outdated ',APackage.IDAsString);
     exit(mrYes);
@@ -2731,12 +2731,12 @@ begin
     DebugLn('  Now="',CompilerFilename,'"');
     exit(mrYes);
   end;
-  if not FileExists(CompilerFilename) then begin
+  if not FileExistsUTF8(CompilerFilename) then begin
     DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  Compiler filename not found for ',APackage.IDAsString);
     DebugLn('  File="',CompilerFilename,'"');
     exit(mrYes);
   end;
-  if FileAge(CompilerFilename)<>APackage.LastCompilerFileDate then begin
+  if FileAgeUTF8(CompilerFilename)<>APackage.LastCompilerFileDate then begin
     DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  Compiler file changed for ',APackage.IDAsString);
     DebugLn('  File="',CompilerFilename,'"');
     exit(mrYes);
@@ -2760,15 +2760,15 @@ begin
   if Result<>mrNo then exit;
 
   // check package files
-  if StateFileAge<FileAge(APackage.Filename) then begin
+  if StateFileAge<FileAgeUTF8(APackage.Filename) then begin
     DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  StateFile older than lpk ',APackage.IDAsString);
     exit(mrYes);
   end;
   for i:=0 to APackage.FileCount-1 do begin
     CurFile:=APackage.Files[i];
-    //debugln('TLazPackageGraph.CheckIfPackageNeedsCompilation  CurFile.Filename="',CurFile.Filename,'" ',FileExists(CurFile.Filename),' ',StateFileAge<FileAge(CurFile.Filename));
-    if FileExists(CurFile.Filename)
-    and (StateFileAge<FileAge(CurFile.Filename)) then begin
+    //debugln('TLazPackageGraph.CheckIfPackageNeedsCompilation  CurFile.Filename="',CurFile.Filename,'" ',FileExistsUTF8(CurFile.Filename),' ',StateFileAge<FileAgeUTF8(CurFile.Filename));
+    if FileExistsUTF8(CurFile.Filename)
+    and (StateFileAge<FileAgeUTF8(CurFile.Filename)) then begin
       DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  Src has changed ',APackage.IDAsString,' ',CurFile.Filename);
       exit(mrYes);
     end;
@@ -2974,7 +2974,7 @@ begin
           if Result<>mrOk then begin
             APackage.LastCompilerFilename:=CompilerFilename;
             APackage.LastCompilerParams:=CompilerParams;
-            APackage.LastCompilerFileDate:=FileAge(CompilerFilename);
+            APackage.LastCompilerFileDate:=FileAgeUTF8(CompilerFilename);
             DebugLn(['TLazPackageGraph.CompilePackage SavePackageCompiledState failed: ',APackage.IDAsString]);
             exit;
           end;
@@ -3042,7 +3042,7 @@ begin
   POOutputDirectory:=AppendPathDelim(APackage.GetPOOutDirectory);
 
   // create output directory if not exists
-  if not DirectoryExists(POOutputDirectory) then begin
+  if not DirectoryExistsUTF8(POOutputDirectory) then begin
     Result:=ForceDirectoryInteractive(POOutputDirectory,[mbRetry,mbIgnore]);
     if Result<>mrOk then begin
       if Result=mrIgnore then Result:=mrOk;
@@ -3090,7 +3090,7 @@ begin
   end;
 
   // delete old Compile State file
-  if FileExists(StateFile) and not DeleteFile(StateFile) then begin
+  if FileExistsUTF8(StateFile) and not DeleteFileUTF8(StateFile) then begin
     Result:=IDEMessageDialog(lisPkgMangUnableToDeleteFilename,
       Format(lisPkgMangUnableToDeleteOldStateFileForPackage, ['"', StateFile,
         '"', #13, APackage.IDAsString]),
@@ -3157,7 +3157,7 @@ var
         Result:=mrOk;
       if Result in [mrYes,mrYesToAll] then begin
         YesToAll:=Result=mrYesToAll;
-        if (not DeleteFile(AmbiguousFilename))
+        if (not DeleteFileUTF8(AmbiguousFilename))
         and (IDEMessageDialog(lisPkgMangDeleteFailed, Format(lisDeletingOfFileFailed,
           ['"', AmbiguousFilename, '"']), mtError, [mbIgnore, mbCancel])
           <>mrIgnore) then

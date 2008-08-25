@@ -506,8 +506,8 @@ Var
 begin
   With CreatePage do
     begin
-    If FileExists(SFileTemplate) then
-      LoadFromFile(SFileTemplate)
+    If FileExistsUTF8(SFileTemplate) then
+      LoadFromFile(UTF8ToSys(SFileTemplate))
     else
       begin
       S:=TStringStream.Create(Template);
@@ -524,10 +524,10 @@ procedure TMainForm.OpenFile(FN: String);
 begin
   IF (FN<>'') then
     begin
-    If FileExists(FN) then
+    If FileExistsUTF8(FN) then
       With CreatePage do
         begin
-        LoadFromFile(FN);
+        LoadFromFile(UTF8ToSys(FN));
         AddToRecent(Fn);
         end;
     end;
@@ -592,8 +592,8 @@ begin
   I:=1;
   While I<=ParamCount do
     begin
-    If FileExists(ParamStr(i)) then
-      OpenFile(Paramstr(I));
+    If FileExistsUTF8(ParamStrUTF8(i)) then
+      OpenFile(ParamStrUTF8(I));
     Inc(I);
     end;
 end;
@@ -605,7 +605,7 @@ Var
 
 begin
   FRecent.Clear;
-  With TInifile.Create(GetoptionFileName) do begin
+  With TInifile.Create(UTF8ToSys(GetoptionFileName)) do begin
     Count:=ReadInteger('Recent','Count',0);
     For I:=1 to Count do begin
       S:=ReadString('Recent','File'+IntToStr(i),'');
@@ -621,7 +621,7 @@ procedure TMainForm.SaveRecent;
 Var
   I : Integer;
 begin
-  With TInifile.Create(GetoptionFileName) do
+  With TInifile.Create(UTF8ToSys(GetoptionFileName)) do
     try
       EraseSection('Recent');
       WriteInteger('Recent','Count',FRecent.Count);
@@ -702,13 +702,13 @@ begin
     DebugLn(cmd);
     With TProcess.Create(Nil) do
       try
-        CommandLine:=cmd;
+        CommandLine:=UTF8ToSys(cmd);
         options:=[poWaitOnExit];
         Execute;
         If (ExitStatus<>0) then
           begin
           DebugLn('error detected ',DbgS(ExitStatus));
-          If FileExists(OutputFile) then
+          If FileExistsUTF8(OutputFile) then
             Result:=MessageDlg(SSkelErrorWithFile,[ExitStatus],mtWarning,mbYesNo,0)=mrYes
           else
             begin
@@ -717,7 +717,7 @@ begin
             end;
           end
         else
-          Result:=FileExists(OutputFile);
+          Result:=FileExistsUTF8(OutputFile);
       finally
         Free;
       end;

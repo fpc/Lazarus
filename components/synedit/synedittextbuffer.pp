@@ -44,7 +44,7 @@ interface
 uses
   Classes, SysUtils,
   {$IFDEF SYN_LAZARUS}
-  LCLProc, FPCAdds, LCLIntf, LCLType,
+  FileUtil, LCLProc, FPCAdds, LCLIntf, LCLType,
   {$ELSE}
   Windows,
   {$ENDIF}
@@ -371,7 +371,7 @@ type
 constructor TSynEditFileReader.Create(const FileName: string);
 begin
   inherited Create;
-  fFiler := TFileStream.Create(FileName, fmOpenRead{ ToDo: or fmShareDenyWrite});
+  fFiler := TFileStream.Create(UTF8ToSys(FileName), fmOpenRead{ ToDo: or fmShareDenyWrite});
   fFileSize := fFiler.Size;
   fFiler.Seek(0, soFromBeginning);
 end;
@@ -462,7 +462,7 @@ type
 constructor TSynEditFileWriter.Create(const FileName: string);
 begin
   inherited Create;
-  fFiler := TFileStream.Create(FileName, fmCreate);
+  fFiler := TFileStream.Create(UTF8ToSys(FileName), fmCreate);
   fFiler.Seek(0, soFromBeginning);
 end;
 

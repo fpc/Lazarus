@@ -213,28 +213,28 @@ var
 begin
   FillChar(IsHandled, 51, 0);
   for  X := 1 to ParamCount do begin
-    if LowerCase(ParamStr(X)) = '--ipcname' then begin
+    if LowerCase(ParamStrUTF8(X)) = '--ipcname' then begin
       IsHandled[X] := True;
       if X < ParamCount then begin
-        fServerName := ParamStr(X+1);
+        fServerName := ParamStrUTF8(X+1);
         IsHandled[X+1] := True;
       end;
     end;
-    if LowerCase(ParamStr(X)) = '--context' then begin
+    if LowerCase(ParamStrUTF8(X)) = '--context' then begin
       IsHandled[X] := True;
       if (X < ParamCount) then
-        if TryStrToInt(ParamStr(X+1), fContext) then
+        if TryStrToInt(ParamStrUTF8(X+1), fContext) then
           IsHandled[X+1] := True;
     end;
   end;
   // Loop through a second time for the url
   for X := 1 to ParamCount do
     if not IsHandled[X] then begin
-      //DoOpenChm(ParamStr(X));
-      if Pos('://', ParamStr(X)) = 0 then
-        OpenURL('file://'+ParamStr(X), fContext)
+      //DoOpenChm(ParamStrUTF8(X));
+      if Pos('://', ParamStrUTF8(X)) = 0 then
+        OpenURL('file://'+ParamStrUTF8(X), fContext)
       else
-        OpenURL(ParamStr(X), fContext);
+        OpenURL(ParamStrUTF8(X), fContext);
       Break;
     end;
   //we reset the context because at this point the file has been loaded and the

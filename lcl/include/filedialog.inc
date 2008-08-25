@@ -56,12 +56,12 @@ end;
 {------------------------------------------------------------------------------}
 function TFileDialog.Execute : boolean;
 begin
-  FOldWorkingDir:=GetCurrentDir;
-  if FInitialDir<>'' then SetCurrentDir(FInitialDir);
+  FOldWorkingDir:=GetCurrentDirUTF8;
+  if FInitialDir<>'' then SetCurrentDirUTF8(FInitialDir);
   try
     Result:=inherited Execute;
   finally
-    SetCurrentDir(FOldWorkingDir);
+    SetCurrentDirUTF8(FOldWorkingDir);
   end;
 end;
 
@@ -155,7 +155,7 @@ var
 begin
   Result:=true;
   if (DefaultExt<>'') and (ExtractFileExt(AFilename)='')
-  and (not FileExists(AFilename)) then begin
+  and (not FileExistsUTF8(AFilename)) then begin
     AFilename:=AFilename+DefaultExt;
   end;
   //ofOverwritePrompt -> is done in the interface
@@ -174,7 +174,7 @@ begin
     exit;
   end;
   if ofNoReadOnlyReturn in Options then begin
-    if FileExists(AFilename) then
+    if FileExistsUTF8(AFilename) then
       Result := FileIsWritable(AFilename)
     else begin { File does not exist - check directory }
       Dir := ExtractFileDir(AFilename);
@@ -193,7 +193,7 @@ end;
 
 function TOpenDialog.CheckFileMustExist(const AFileName: string): boolean;
 begin
-  if not FileExists(Utf8ToAnsi(AFilename)) then begin
+  if not FileExistsUTF8(AFilename) then begin
     Result:=false;
     MessageDlg(rsfdFileMustExist,
                Format(rsfdFileNotExist,[AFileName]),mtError,
@@ -319,7 +319,7 @@ end;
 
 function TSelectDirectoryDialog.CheckFileMustExist(const AFilename: string): boolean;
 begin
-  if not DirPathExists(Utf8ToAnsi(AFilename)) then begin
+  if not DirPathExists(AFilename) then begin
     Result:=false;
     MessageDlg(rsfdDirectoryMustExist,
                Format(rsfdDirectoryNotExist,[AFileName]),mtError,

@@ -3484,22 +3484,22 @@ begin
   gtk_clist_clear(Files);
   { Add all directories }
   Strlist.Add('..'+PathDelim);
-  if FindFirst(AppendPathDelim(Dir)+GetAllFilesMask, faAnyFile and faDirectory,
+  if FindFirstUTF8(AppendPathDelim(Dir)+GetAllFilesMask, faAnyFile and faDirectory,
     Info) = 0
   then begin
     repeat
       if ((Info.Attr and faDirectory) = faDirectory) and (Info.Name <> '.')
       and (Info.Name <> '..') and (Info.Name<>'') then
         StrList.Add(AppendPathDelim(Info.Name));
-    until FindNext(Info) <> 0;
+    until FindNextUTF8(Info) <> 0;
   end;
-  FindClose(Info);
+  FindCloseUTF8(Info);
   AddList(Dirs);
   // add required files
   StrList.Clear;
   CurFileMask:=Mask;
   if CurFileMask='' then CurFileMask:=GetAllFilesMask;
-  if FindFirst(AppendPathDelim(Dir)+GetAllFilesMask, faAnyFile, Info) = 0 then
+  if FindFirstUTF8(AppendPathDelim(Dir)+GetAllFilesMask, faAnyFile, Info) = 0 then
   begin
     repeat
       if ((Info.Attr and faDirectory) <> faDirectory) then begin
@@ -3509,9 +3509,9 @@ begin
           Strlist.Add(Info.Name);
         end;
       end;
-    until FindNext(Info) <> 0;
+    until FindNextUTF8(Info) <> 0;
   end;
-  FindClose(Info);
+  FindCloseUTF8(Info);
   AddList(Files);
   StrList.Free;
   gtk_clist_thaw(Dirs);

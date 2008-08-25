@@ -84,7 +84,7 @@ begin
       end
     else
       begin
-      If (FEDD.FileName='') or not (FileExists(FEDD.FileName)) then
+      If (FEDD.FileName='') or not (FileExistsUTF8(FEDD.FileName)) then
         Raise Exception.Create(SErrSelectFile)
       end;
 end;

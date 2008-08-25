@@ -84,7 +84,7 @@ begin
     FCurrentDir := FCurrentDir + GetAllFilesMask;
 //    debugln('FCurrentDir=' + FCurrentDir);
     try
-      if SysUtils.FindFirst(FCurrentDir, faAnyFile, FileInfo)=0 then
+      if SysUtils.FindFirstUTF8(FCurrentDir, faAnyFile, FileInfo)=0 then
       begin
         repeat
           if FileInfo.Name = '' then
@@ -103,10 +103,10 @@ begin
           //We found at least one non special dir, that's all we need.
           if Result then
             break;
-        until SysUtils.FindNext(FileInfo)<>0;
+        until SysUtils.FindNextUTF8(FileInfo)<>0;
       end;//if
     finally
-      SysUtils.FindClose(FileInfo);
+      SysUtils.FindCloseUTF8(FileInfo);
     end;//Try-Finally
   end;//if
 end;//HasSubDirs
@@ -129,7 +129,7 @@ begin
     i:= length(FCurrentDir);
     FCurrentDir:= Dir + GetAllFilesMask;
     try
-      if SysUtils.FindFirst(FCurrentDir, faAnyFile,FileInfo)=0 then
+      if SysUtils.FindFirstUTF8(FCurrentDir, faAnyFile,FileInfo)=0 then
       begin
         Try
           SortList:= TStringList.Create;
@@ -154,7 +154,7 @@ begin
 
               SortList.Add(FileInfo.Name);
             end;//if
-          until SysUtils.FindNext(FileInfo)<>0;
+          until SysUtils.FindNextUTF8(FileInfo)<>0;
           for i:= 0 to SortList.Count - 1 do
           begin
             NewNode:= TV.Items.AddChild(Node,SortList[i]);
@@ -166,7 +166,7 @@ begin
         end;//Try-Finally
       end;//if
     finally
-      SysUtils.FindClose(FileInfo);
+      SysUtils.FindCloseUTF8(FileInfo);
     end;//Try-Finally
   end;//if
   if Node.Level = 0 then Node.Text := Dir;

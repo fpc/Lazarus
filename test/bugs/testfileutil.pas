@@ -29,9 +29,9 @@ procedure TTestFileUtil.TestFileIsExecutable;
     AssertEquals(AFileName, Expected, FileIsExecutable(AFileName));
   end;
 begin
-  DoTest(ParamStr(0),true);
+  DoTest(ParamStrUTF8(0),true);
   // a directory is not an executable file
-  DoTest(ExtractFileDir(ParamStr(0)), false);
+  DoTest(ExtractFileDir(ParamStrUTF8(0)), false);
 end;
 
 procedure TTestFileUtil.TestExtractFileNameWithoutExt;

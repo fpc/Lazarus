@@ -378,7 +378,7 @@ end;
 procedure TIDETextConverter.ResetFile;
 begin
   if FileIsTemporary then begin
-    DeleteFile(FFilename);
+    DeleteFileUTF8(FFilename);
     // do not change FFileIsTemporary, so that File > Source > File sequences
     // keep the file temporary.
   end;
@@ -419,8 +419,8 @@ begin
           ResetStrings;
         end;
       tctFile:
-        if FileExists(FFilename) then begin
-          fs:=TFileStream.Create(FFilename,fmOpenRead);
+        if FileExistsUTF8(FFilename) then begin
+          fs:=TFileStream.Create(UTF8ToSys(FFilename),fmOpenRead);
           try
             SetLength(FSource,fs.Size);
             fs.Read(FSource[1],length(FSource));
@@ -451,8 +451,8 @@ begin
           FSource:='';
         end;
       tctFile:
-        if FileExists(FFilename) then begin
-          FStrings.LoadFromFile(FFilename);
+        if FileExistsUTF8(FFilename) then begin
+          FStrings.LoadFromFile(UTF8ToSys(FFilename));
           ResetFile;
         end;
       tctCodeBuffer:
@@ -475,7 +475,7 @@ begin
       case FCurrentType of
       tctSource:
         begin
-          fs:=TFileStream.Create(FFilename,fmCreate);
+          fs:=TFileStream.Create(UTF8ToSys(FFilename),fmCreate);
           try
             if FSource<>'' then begin
               fs.Write(FSource[1],length(FSource));
@@ -487,7 +487,7 @@ begin
         end;
       tctStrings:
         if FStrings<>nil then begin
-          FStrings.SaveToFile(FFilename);
+          FStrings.SaveToFile(UTF8ToSys(FFilename));
           ResetStrings;
         end;
       tctCodeBuffer:
@@ -545,11 +545,11 @@ begin
   case CurrentType of
   tctFile:
     if (FFilename<>'') and (FFilename<>TrimmedFilename)
-    and (FileExists(FFilename)) then
-      RenameFile(FFilename,TrimmedFilename);
+    and (FileExistsUTF8(FFilename)) then
+      RenameFileUTF8(FFilename,TrimmedFilename);
   tctSource:
     begin
-      fs:=TFileStream.Create(TrimmedFilename,fmCreate);
+      fs:=TFileStream.Create(UTF8ToSys(TrimmedFilename),fmCreate);
       try
         if FSource<>'' then
           fs.Write(FSource[1],length(FSource));
@@ -559,7 +559,7 @@ begin
     end;
   tctStrings:
     begin
-      fStrings.SaveToFile(TrimmedFilename);
+      fStrings.SaveToFile(UTF8ToSys(TrimmedFilename));
       ResetStrings;
     end;
   tctCodeBuffer:
@@ -692,7 +692,7 @@ begin
       case CurrentType of
       tctSource:
         begin
-          fs:=TFileStream.Create(AFilename,fmOpenRead);
+          fs:=TFileStream.Create(UTF8ToSys(AFilename),fmOpenRead);
           try
             SetLength(FSource,fs.Size);
             if fSource<>'' then
@@ -704,7 +704,7 @@ begin
       tctFile:
         CopyFile(AFilename,FFilename);
       tctStrings:
-        FStrings.LoadFromFile(AFilename);
+        FStrings.LoadFromFile(UTF8ToSys(AFilename));
       end;
       Result:=true;
     except

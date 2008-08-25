@@ -481,7 +481,7 @@ var
   begin
     FileTypeMenuItem:=AddPopupMenuItem(lisAF2PFileType, nil, true);
     VirtualFileExists:=(CurFile.FileType=pftVirtualUnit)
-                       and FileExists(CurFile.Filename);
+                       and FileExistsUTF8(CurFile.Filename);
     for CurPFT:=Low(TPkgFileType) to High(TPkgFileType) do begin
       NewMenuItem:=TMenuItem.Create(Self);
       NewMenuItem.Caption:=GetPkgFileTypeLocalizedName(CurPFT);
@@ -577,7 +577,7 @@ begin
   AddPopupMenuItem(lisMenuSave, @SaveBitBtnClick, SaveBitBtn.Enabled);
   AddPopupMenuItem(lisMenuSaveAs, @SaveAsClick, not LazPackage.AutoCreated);
   AddPopupMenuItem(lisMenuRevert, @RevertClick, (not LazPackage.AutoCreated) and
-                                                FileExists(LazPackage.Filename));
+                                                FileExistsUTF8(LazPackage.Filename));
   AddPopupMenuItem(lisPkgEditPublishPackage, @PublishClick,
                    (not LazPackage.AutoCreated) and (LazPackage.HasDirectory));
   AddPopupMenuItem('-',nil,true);
@@ -982,7 +982,7 @@ procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
     // add lfm file
     if AddParams.AutoAddLFMFile then begin
       NewLFMFilename:=ChangeFileExt(AddParams.UnitFilename,'.lfm');
-      if FileExists(NewLFMFilename)
+      if FileExistsUTF8(NewLFMFilename)
       and (LazPackage.FindPkgFile(NewLFMFilename,true,false)=nil) then
         LazPackage.AddFile(NewLFMFilename,'',pftLFM,[],cpNormal)
       else
@@ -991,7 +991,7 @@ procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
     // add lrs file
     if AddParams.AutoAddLRSFile then begin
       NewLRSFilename:=ChangeFileExt(AddParams.UnitFilename,'.lrs');
-      if FileExists(NewLRSFilename)
+      if FileExistsUTF8(NewLRSFilename)
       and (LazPackage.FindPkgFile(NewLRSFilename,true,false)=nil) then
         LazPackage.AddFile(NewLRSFilename,'',pftLRS,[],cpNormal)
       else
@@ -2160,7 +2160,7 @@ begin
   if fLayouts=nil then fLayouts:=TAVLTree.Create(@CompareLayouts);
   fLayouts.FreeAndClear;
   Filename:=GetLayoutConfigFilename;
-  if not FileExists(Filename) then exit;
+  if not FileExistsUTF8(Filename) then exit;
   try
     XMLConfig:=TXMLConfig.Create(Filename);
   except

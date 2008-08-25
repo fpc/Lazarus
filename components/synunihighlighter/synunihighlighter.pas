@@ -2715,7 +2715,7 @@ var
 begin
   if FileName = '' then
     raise exception.Create('FileName is empty');
-  F:=TFileStream.Create(FileName,fmOpenRead or fmShareDenyWrite);
+  F:=TFileStream.Create(UTF8ToSys(FileName),fmOpenRead or fmShareDenyWrite);
   try
     LoadFromStream( F );
   finally
@@ -2729,7 +2729,7 @@ var
 begin
   if FileName = '' then
     raise exception.Create('FileName is empty');
-  F:=TFileStream.Create(FileName,fmOpenWrite);
+  F:=TFileStream.Create(UTF8ToSys(FileName),fmOpenWrite);
   try
     SaveToStream( F );
   finally

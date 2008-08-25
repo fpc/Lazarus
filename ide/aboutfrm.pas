@@ -162,9 +162,9 @@ begin
   ContributorsFileName:=
     AppendPathDelim(EnvironmentOptions.LazarusDirectory)
     +'docs'+PathDelim+'Contributors.txt';
-  //writeln('TAboutForm.LoadContributors ',FileExists(ContributorsFileName),' ',ContributorsFileName);
-  if FileExists(ContributorsFileName) then
-    ContributorsMemo.Lines.LoadFromFile(ContributorsFileName)
+  //writeln('TAboutForm.LoadContributors ',FileExistsUTF8(ContributorsFileName),' ',ContributorsFileName);
+  if FileExistsUTF8(ContributorsFileName) then
+    ContributorsMemo.Lines.LoadFromFile(UTF8ToSys(ContributorsFileName))
   else
     ContributorsMemo.Text:=lisAboutNoContributors;
 end;
@@ -176,8 +176,8 @@ begin
   AcknowledgementsFileName:=
     AppendPathDelim(EnvironmentOptions.LazarusDirectory)
     +'docs'+PathDelim+'acknowledgements.txt';
-  if FileExists(AcknowledgementsFileName) then
-    AcknowledgementsMemo.Lines.LoadFromFile(AcknowledgementsFileName)
+  if FileExistsUTF8(AcknowledgementsFileName) then
+    AcknowledgementsMemo.Lines.LoadFromFile(UTF8ToSys(AcknowledgementsFileName))
   else
     AcknowledgementsMemo.Text:=lisAboutNoContributors;
 end;

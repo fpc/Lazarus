@@ -20,7 +20,7 @@ unit IniPropStorage;
 interface
 
 uses
-  Classes, SysUtils, Forms, IniFiles, PropertyStorage;
+  Classes, SysUtils, FileUtil, Forms, IniFiles, PropertyStorage;
 
 type
   { TCustomIniPropStorage }
@@ -247,7 +247,7 @@ begin
     Result:=FIniFileName
   else
 {$ifdef unix}
-    Result:=IncludeTrailingPathDelimiter(GetEnvironmentVariable('HOME'))
+    Result:=IncludeTrailingPathDelimiter(GetEnvironmentVariableUTF8('HOME'))
             +'.'+ExtractFileName(Application.ExeName);
 
 {$else}

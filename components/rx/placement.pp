@@ -248,7 +248,7 @@ Function GetDefaultIniName : String;
 
 begin
 {$ifdef unix}
-  Result:=IncludeTrailingPathDelimiter(GetEnvironmentVariable('HOME'))
+  Result:=IncludeTrailingPathDelimiter(GetEnvironmentVariableUTF8('HOME'))
           +'.'+ExtractFileName(Application.ExeName)
 
 {$else}
@@ -583,7 +583,7 @@ procedure TFormPlacement.IniNeeded(ReadOnly: Boolean);
 begin
   if ReadOnly then ;
   if IniFile = nil then
-    FIniFile := TIniFile.Create(IniFileName);
+    FIniFile := TIniFile.Create(UTF8ToSys(IniFileName));
 end;
 
 procedure TFormPlacement.IniFree;

@@ -44,8 +44,8 @@ interface
 
 uses
   Types, Classes, SysUtils, Math, Maps, LCLStrConsts, LCLProc, LCLType, LCLIntf,
-  FPCanvas, Controls, GraphType, Graphics, Forms, DynamicArray, LMessages,
-  XMLCfg, StdCtrls, LResources, MaskEdit, Buttons, Clipbrd, Themes;
+  FileUtil, FPCanvas, Controls, GraphType, Graphics, Forms, DynamicArray,
+  LMessages, XMLCfg, StdCtrls, LResources, MaskEdit, Buttons, Clipbrd, Themes;
 
 const
   //GRIDFILEVERSION = 1; // Original
@@ -6928,7 +6928,7 @@ procedure TCustomGrid.SaveToFile(FileName: string);
 var
   Cfg: TXMLConfig;
 begin
-  if FileExists(FileName) then DeleteFile(FileName);
+  if FileExistsUTF8(FileName) then DeleteFileUTF8(FileName);
 
   Cfg:=TXMLConfig.Create(nil);
   Try
@@ -6983,7 +6983,7 @@ var
   Cfg: TXMLConfig;
   Version: Integer;
 begin
-  if not FileExists(FileName) then
+  if not FileExistsUTF8(FileName) then
     raise Exception.Create(rsGridFileDoesNotExists);
 
   Cfg:=TXMLConfig.Create(nil);

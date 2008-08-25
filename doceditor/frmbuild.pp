@@ -709,7 +709,7 @@ begin
   With TProcess.Create(Self) do
     begin
     Cmd:=BuildCommandLine;
-    CommandLine:=Cmd;
+    CommandLine:=UTF8ToSys(Cmd);
     AddToLog(SUsingCommand+Cmd);
     Options:=[poUsePipes,poNoConsole,poStderrToOutPut];
     Execute;

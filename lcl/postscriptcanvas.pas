@@ -41,8 +41,8 @@ unit PostScriptCanvas;
 interface
 
 uses
-  Classes, SysUtils, Math, Types, Graphics, Forms, GraphMath, GraphType,
-  FPImage, IntfGraphics, Printers, LCLType, LCLIntf;
+  Classes, SysUtils, FileUtil, Math, Types, Graphics, Forms, GraphMath,
+  GraphType, FPImage, IntfGraphics, Printers, LCLType, LCLIntf;
   
 Type
 
@@ -908,7 +908,7 @@ begin
      Lst.AddStrings(fHeader);
      Lst.AddStrings(fDocument);
      
-     Lst.SaveTofile(ExpandFileName(aFileName));
+     Lst.SaveTofile(UTF8ToSys(ExpandFileName(aFileName)));
   finally
     Lst.Free;
   end;

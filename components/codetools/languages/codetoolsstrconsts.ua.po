@@ -4,775 +4,775 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: codetoolsstrconsts:ctsothercompilerdefines
-msgid "%s Compiler Defines"
-msgstr "Параметри компілятора %s"
-
-#: codetoolsstrconsts:ctsnameddirectory
-msgid "%s Directory"
-msgstr "Тека %s"
-
-#: codetoolsstrconsts:ctsnamedproject
-msgid "%s Project"
-msgstr "Проект %s"
-
-#: codetoolsstrconsts:ctsstrexpectedbutatomfound
-msgid "%s expected, but %s found"
-msgstr "очікується %s, але знайдено %s"
-
-#: codetoolsstrconsts:ctsfilehascircularsymlink
-msgid "%s has a circular symbolic link"
-msgstr "%s вміщує циклічне символічне посилання"
-
-#: codetoolsstrconsts:ctsfileisnotexecutable
-msgid "%s is not executable"
-msgstr "%s не є виконуваним файлом"
-
-#: codetoolsstrconsts:ctsawithoutb
-msgid "%s without %s"
-msgstr "%s без %s"
-
-#: codetoolsstrconsts:ctsunknownmainfilename
-msgid "(unknown mainfilename)"
-msgstr "(невідома назва головного файлу)"
-
-#: codetoolsstrconsts:ctsunknownsubdescriptor
-msgid "(unknown subdescriptor %s)"
-msgstr "(Невідомий субдескриптор)"
-
-#: codetoolsstrconsts:ctspointhintprocstartat
-msgid ".  Hint: proc start at "
-msgstr ". Порада: процедура починається з "
-
-#: codetoolsstrconsts:ctspointstartat
-msgid ". start at "
-msgstr ". починається з "
-
-#: codetoolsstrconsts:ctssemicolonafterpropspecmissing
-msgid "; expected after \"%s\" property specifier, but %s found"
-msgstr "; очікується після модифікатора властивості \"%s\", але знайдено %s"
-
-#: codetoolsstrconsts:ctsanonymdefinitionsarenotallowed
-msgid "Anonymous %s definitions are not allowed"
-msgstr ""
-
-#: codetoolsstrconsts:ctscpudirectory
-msgid "CPU directory"
-msgstr "тека CPU"
-
-#: codetoolsstrconsts:ctsclasssnotfound
-msgid "Class %s not found"
-msgstr "Класу %s не знайдено"
-
-#: codetoolsstrconsts:ctscommandlineparameters
-msgid "Command line parameters"
-msgstr "Параметри командного рядка"
-
-#: codetoolsstrconsts:ctscommentendnotfound
-msgid "Comment end not found"
-msgstr "Не знайдено закінчення коментаря"
-
-#: codetoolsstrconsts:ctscompiledsrcpath
-msgid "Compiled SrcPath"
-msgstr "Шлях до кодів, що компілюються"
-
-#: codetoolsstrconsts:ctscompiler
-msgid "Compiler"
-msgstr "Компілятор"
-
-#: codetoolsstrconsts:ctscomponentsdirectory
-msgid "Components Directory"
-msgstr "Тека компонентів"
-
-#: codetoolsstrconsts:ctsconverterdirectory
-msgid "Converter Directory"
-msgstr ""
-
-#: codetoolsstrconsts:ctscustomcomponentsdirectory
-msgid "Custom Components Directory"
-msgstr "Спеціальна тека компонетів"
-
-#: codetoolsstrconsts:ctsdebuggerdirectory
-msgid "Debugger Directory"
-msgstr "Тека налагоджувача"
-
-#: codetoolsstrconsts:ctsdefaultppc386sourceoperatingsystem
-msgid "Default ppc386 source Operating System"
-msgstr "Операційна система для коду за замовчуванням для ppc386"
-
-#: codetoolsstrconsts:ctsdefaultppc386source2operatingsystem
-msgid "Default ppc386 source Operating System 2"
-msgstr "За замовчуванням код Операційної Системи 2 pp386"
-
-#: codetoolsstrconsts:ctsdefaultppc386symbol
-msgid "Default ppc386 symbol"
-msgstr "Символ ppc386 за замовчуванням"
-
-#: codetoolsstrconsts:ctsdefaultppc386targetoperatingsystem
-msgid "Default ppc386 target Operating System"
-msgstr "Операційна система для виконуваного файлу за замовчуванням для ppc386"
-
-#: codetoolsstrconsts:ctsdefaultppc386targetprocessor
-msgid "Default ppc386 target processor"
-msgstr "Процесор для виконуваного файлу за замовчуванням для ppc386"
-
-#: codetoolsstrconsts:ctsdefine
-msgid "Define "
-msgstr "Визначити "
-
-#: codetoolsstrconsts:ctsdefinelcl
-msgid "Define LCL"
-msgstr ""
-
-#: codetoolsstrconsts:ctsdefinelclwidgetset
-msgid "Define LCLwidgetset, e.g. LCLgtk"
-msgstr ""
-
-#: codetoolsstrconsts:ctsdefinemacroname
-msgid "Define Macro %s"
-msgstr "Визначити макрос %s"
-
-#: codetoolsstrconsts:ctsdefinemacrocarbon1
-msgid "Define macro carbon1"
-msgstr "Визначити макрос carbon1"
-
-#: codetoolsstrconsts:ctsdefinemacrogtk1
-msgid "Define macro gtk1"
-msgstr "Визначити макрос gtk1"
-
-#: codetoolsstrconsts:ctsdefinemacrogtk2
-msgid "Define macro gtk2"
-msgstr "Визначити макрос gtk2"
-
-#: codetoolsstrconsts:ctsdefinemacroqt1
-msgid "Define macro qt1"
-msgstr ""
-
-#: codetoolsstrconsts:ctsdefinemacrowince1
-msgid "Define macro wince1"
-msgstr ""
-
-#: codetoolsstrconsts:ctsdefineprocessortype
-msgid "Define processor type"
-msgstr "Визначити тип процесора"
-
-#: codetoolsstrconsts:ctsdefsforlazarussources
-msgid "Definitions for the Lazarus Sources"
-msgstr "Описи кодів Lazarus"
-
-#: codetoolsstrconsts:ctsdesignerdirectory
-msgid "Designer Directory"
-msgstr "Тека проектувальника"
-
-#: codetoolsstrconsts:ctsdesignerunitsdirectory
-msgid "Designer Units"
-msgstr "Модулі проектувальника"
-
-#: codetoolsstrconsts:ctsdoceditordirectory
-msgid "Doc Editor Directory"
-msgstr "Тека редактора документації"
-
-#: codetoolsstrconsts:ctsendofsourcenotfound
-msgid "End of source not found"
-msgstr "Не знайдено кінця коду"
-
-#: codetoolsstrconsts:ctsforward
-msgid "Forward"
-msgstr ""
-
-#: codetoolsstrconsts:ctsforwardclassdefinitionnotresolved
-msgid "Forward class definition not resolved: %s"
-msgstr "Не знайдено опису раніше описаного класу: %s"
-
-#: codetoolsstrconsts:ctsfreepascalcompilerinitialmacros
-msgid "Free Pascal Compiler initial macros"
-msgstr "Макроси ініціалізації компілятора FreePascal"
-
-#: codetoolsstrconsts:ctsfreepascalcomponentlibrary
-msgid "Free Pascal Component Library"
-msgstr "Бібліотека компонентів FreePascal"
-
-#: codetoolsstrconsts:ctsfreepascalsourcedir
-msgid "Free Pascal Source Directory"
-msgstr "Тека кодів FreePascal"
-
-#: codetoolsstrconsts:ctsfreepascalsourcesplusdesc
-msgid "Free Pascal Sources, %s"
-msgstr "Коди FreePascal, %s"
-
-#: codetoolsstrconsts:ctsidedirectory
-msgid "IDE Directory"
-msgstr "Тека IDE"
-
-#: codetoolsstrconsts:ctsideintfdirectory
-msgid "IDEIntf Directory"
-msgstr "Тека інтерфейсу IDE"
-
-#: codetoolsstrconsts:ctsidentifieralreadydefined
-msgid "Identifier %s already defined"
-msgstr "Ідентифікатор %s вже визначений"
-
-#: codetoolsstrconsts:ctsiflclwidgettypeequalsgtk2
-msgid "If LCLWidgetType=gtk2 then"
-msgstr ""
-
-#: codetoolsstrconsts:ctsiftargetosisnotsrcos
-msgid "If TargetOS<>SrcOS"
-msgstr ""
-
-#: codetoolsstrconsts:ctsiftargetosisnotsrcos2
-msgid "If TargetOS<>SrcOS2"
-msgstr ""
-
-#: codetoolsstrconsts:ctsiftargetosisnotwin32
-msgid "If TargetOS<>win32 then"
-msgstr ""
-
-#: codetoolsstrconsts:ctsifdeflinux
-msgid "IfDef Linux"
-msgstr ""
-
-#: codetoolsstrconsts:ctsifdefwindows
-msgid "IfDef Windows"
-msgstr ""
-
-#: codetoolsstrconsts:ctsincludecircledetected
-msgid "Include circle detected"
-msgstr "Знайдене циклічне включення"
-
-#: codetoolsstrconsts:ctsinstalldirectory
-msgid "Install Directory"
-msgstr "Тека встановлення"
-
-#: codetoolsstrconsts:ctsinstallerdirectories
-msgid "Installer directories"
-msgstr "Теки встановлювача"
-
-#: codetoolsstrconsts:ctsjitformdirectory
-msgid "JITForm Directory"
-msgstr "Тека JITForm"
-
-#: codetoolsstrconsts:ctslazarussources
-msgid "Lazarus Sources"
-msgstr "Коди lazarus"
-
-#: codetoolsstrconsts:ctsnesteddefinitionsarenotallowed
-msgid "Nested %s definitions are not allowed"
-msgstr ""
-
-#: codetoolsstrconsts:ctsnestedcommentson
-msgid "Nested Comments On"
-msgstr "Ввімкн. вкладені коментарі"
-
-#: codetoolsstrconsts:ctsnoscanneravailable
-msgid "No scanner available"
-msgstr "Немає доступних 'сканерів'"
-
-#: codetoolsstrconsts:ctsnoscannerfound
-msgid "No scanner found for \"%s\". If this is an include file, please open the main source first."
-msgstr "Не знайдено 'сканера' для \"%s\". Якщо це файл, що включається, то відкрийте спочатку головний код."
-
-#: codetoolsstrconsts:ctspackagedirectories
-msgid "Package directories"
-msgstr "Теки пакунків"
-
-#: codetoolsstrconsts:ctspackagerdirectory
-msgid "Packager Directory"
-msgstr "Тека менеджера пакунків"
-
-#: codetoolsstrconsts:ctspackagerregistrationdirectory
-msgid "Packager Registration Directory"
-msgstr "Тека реєстрації менеджера пакунків"
-
-#: codetoolsstrconsts:ctspackagerunitsdirectory
-msgid "Packager Units Directory"
-msgstr "Тека модулів менеджера пакунків"
-
-#: codetoolsstrconsts:ctspositionnotinsource
-msgid "Position not in source"
-msgstr "Позиція не в прогрмному тексті"
-
-#: codetoolsstrconsts:ctsresetalldefines
-msgid "Reset all defines"
-msgstr "Скинути всі визначення"
-
-#: codetoolsstrconsts:ctsruntimelibrary
-msgid "Runtime library"
-msgstr "Бібліотека часу виконання"
-
-#: codetoolsstrconsts:ctssourcefilenamesforstandardfpcunits
-msgid "Source filenames for the standard fpc units"
-msgstr "Імена файлів кодів для стандартних модулів fpc"
-
-#: codetoolsstrconsts:ctssrcpathinitialization
-msgid "SrcPath Initialization"
-msgstr "Ініціалізація шляхів до текстів програм"
-
-#: codetoolsstrconsts:ctssyntaxerrorinexpr
-msgid "Syntax Error in expression \"%s\""
-msgstr "Помилка синтаксису в виразі \"%s\""
-
-#: codetoolsstrconsts:ctstcodetoolmanagerconsistencycheck
-msgid "TCodeToolManager.ConsistencyCheck=%d"
-msgstr ""
-
-#: codetoolsstrconsts:ctstermnotsimple
-msgid "Term has no simple type"
-msgstr "Визначення не має простого типу"
-
-#: codetoolsstrconsts:ctstoolsdirectory
-msgid "Tools Directory"
-msgstr "Тека інструментів"
-
-#: codetoolsstrconsts:ctsunitpathinitialization
-msgid "UnitPath Initialization"
-msgstr "Ініціалізація шляхів до модулів"
-
-#: codetoolsstrconsts:ctsunknownfunction
-msgid "Unknown function %s"
-msgstr "Невідома функція %s"
-
-#: codetoolsstrconsts:ctsunparsed
-msgid "Unparsed"
-msgstr "Не оброблено"
-
-#: codetoolsstrconsts:ctsutilsdirectories
-msgid "Utils directories"
-msgstr "Теки інструментів"
-
-#: codetoolsstrconsts:ctswidgetdirectory
-msgid "Widget Directory"
-msgstr "Тека елементів інтерфейсу"
-
-#: codetoolsstrconsts:ctswordnotfound
-msgid "\"%s\" not found"
-msgstr "\"%s\" не знайдене"
-
-#: codetoolsstrconsts:ctsclassofdefinitionnotresolved
-msgid "\"class of\" definition not resolved: %s"
-msgstr "Не знайдений раніше згаданий \"class of\": %s"
-
-#: codetoolsstrconsts:ctsendforclassnotfound
-msgid "\"end\" for class/object not found"
-msgstr "не знайдений \"end\" для класу/об'єкту"
-
-#: codetoolsstrconsts:ctsdircomponentdoesnotexistsorisdanglingsymlink
-msgid "a directory component in %s does not exist or is a dangling symlink"
-msgstr "тека компонентів в %s не існує, або вона має пошкоджене посилання"
-
-#: codetoolsstrconsts:ctsdircomponentisnotdir
-msgid "a directory component in %s is not a directory"
-msgstr "тека компонентів в %s не є текою"
-
-#: codetoolsstrconsts:ctsaddsdirtoincludepath
+#: codetoolsstrconsts.ctsaddsdirtoincludepath
 msgid "adds %s to IncPath"
 msgstr ""
 
-#: codetoolsstrconsts:ctsaddsdirtosourcepath
+#: codetoolsstrconsts.ctsaddsdirtosourcepath
 msgid "adds %s to SrcPath"
 msgstr "додає %s до шляху текстів програм"
 
-#: codetoolsstrconsts:ctsanlclproject
-msgid "an LCL project"
-msgstr "проект LCL"
-
-#: codetoolsstrconsts:ctsancestorisnotproperty
+#: codetoolsstrconsts.ctsancestorisnotproperty
 msgid "ancestor of untyped property is not a property"
 msgstr "предок властивості без типу не є властивістю"
 
-#: codetoolsstrconsts:ctsbasetypeofnotfound
+#: codetoolsstrconsts.ctsanlclproject
+msgid "an LCL project"
+msgstr "проект LCL"
+
+#: codetoolsstrconsts.ctsanonymdefinitionsarenotallowed
+msgid "Anonymous %s definitions are not allowed"
+msgstr ""
+
+#: codetoolsstrconsts.ctsawithoutb
+msgid "%s without %s"
+msgstr "%s без %s"
+
+#: codetoolsstrconsts.ctsbasetypeofnotfound
 msgid "base type of \"%s\" not found"
 msgstr "не знайдений основний тип \"%s\""
 
-#: codetoolsstrconsts:ctsbinaryoperator
+#: codetoolsstrconsts.ctsbinaryoperator
 msgid "binary operator"
 msgstr "бінарний оператор"
 
-#: codetoolsstrconsts:ctsbracketnotfound
-msgid "bracket %s not found"
-msgstr "не знайдена дужка %s"
-
-#: codetoolsstrconsts:ctsbracketcloseexpectedbutatomfound
+#: codetoolsstrconsts.ctsbracketcloseexpectedbutatomfound
 msgid "bracket close expected, but %s found"
 msgstr "очікується закриваюча дужка, але знайдено %s"
 
-#: codetoolsstrconsts:ctsbracketopenexpectedbutatomfound
+#: codetoolsstrconsts.ctsbracketnotfound
+msgid "bracket %s not found"
+msgstr "не знайдена дужка %s"
+
+#: codetoolsstrconsts.ctsbracketopenexpectedbutatomfound
 msgid "bracket open expected, but %s found"
 msgstr "очікується відкриваюча дужка, але знайдено %s"
 
-#: codetoolsstrconsts:ctscircleindefinitions
+#: codetoolsstrconsts.ctscircleindefinitions
 msgid "circle in definitions"
 msgstr "цикл у визначеннях"
 
-#: codetoolsstrconsts:ctsclassnotfound
-msgid "class %s%s%s not found"
-msgstr "не знайдений клас %s%s%s"
-
-#: codetoolsstrconsts:ctsclassidentifierexpected
+#: codetoolsstrconsts.ctsclassidentifierexpected
 msgid "class identifier expected"
 msgstr "очікується ідентифікатор класу"
 
-#: codetoolsstrconsts:ctsclassnodewithoutparentnode
+#: codetoolsstrconsts.ctsclassnodewithoutparentnode
 msgid "class node without parent node"
 msgstr "опис класу без предка"
 
-#: codetoolsstrconsts:ctsclasswithoutname
+#: codetoolsstrconsts.ctsclassnotfound
+msgid "class %s%s%s not found"
+msgstr "не знайдений клас %s%s%s"
+
+#: codetoolsstrconsts.ctsclassofdefinitionnotresolved
+msgid "\"class of\" definition not resolved: %s"
+msgstr "Не знайдений раніше згаданий \"class of\": %s"
+
+#: codetoolsstrconsts.ctsclasssnotfound
+msgid "Class %s not found"
+msgstr "Класу %s не знайдено"
+
+#: codetoolsstrconsts.ctsclasswithoutname
 msgid "class without name"
 msgstr "клас без імені"
 
-#: codetoolsstrconsts:ctsconstant
+#: codetoolsstrconsts.ctscommandlineparameters
+msgid "Command line parameters"
+msgstr "Параметри командного рядка"
+
+#: codetoolsstrconsts.ctscommentendnotfound
+msgid "Comment end not found"
+msgstr "Не знайдено закінчення коментаря"
+
+#: codetoolsstrconsts.ctscompiledsrcpath
+msgid "Compiled SrcPath"
+msgstr "Шлях до кодів, що компілюються"
+
+#: codetoolsstrconsts.ctscompiler
+msgid "Compiler"
+msgstr "Компілятор"
+
+#: codetoolsstrconsts.ctscomponentsdirectory
+msgid "Components Directory"
+msgstr "Тека компонентів"
+
+#: codetoolsstrconsts.ctsconstant
 msgid "constant"
 msgstr "константа"
 
-#: codetoolsstrconsts:ctscursorposoutsideofcode
+#: codetoolsstrconsts.ctsconverterdirectory
+msgid "Converter Directory"
+msgstr ""
+
+#: codetoolsstrconsts.ctscpudirectory
+msgid "CPU directory"
+msgstr "тека CPU"
+
+#: codetoolsstrconsts.ctscursorposoutsideofcode
 msgid "cursor pos outside of code"
 msgstr "позиція курсора поза кодом"
 
-#: codetoolsstrconsts:ctsdefaultclassancestortobjectnotfound
+#: codetoolsstrconsts.ctscustomcomponentsdirectory
+msgid "Custom Components Directory"
+msgstr "Спеціальна тека компонетів"
+
+#: codetoolsstrconsts.ctsdebuggerdirectory
+msgid "Debugger Directory"
+msgstr "Тека налагоджувача"
+
+#: codetoolsstrconsts.ctsdefaultclassancestortobjectnotfound
 msgid "default class ancestor TObject not found"
 msgstr "не знайдений клас-предок за замовчуванням TObject"
 
-#: codetoolsstrconsts:ctsdefaultinterfaceancestoriinterfacenotfound
+#: codetoolsstrconsts.ctsdefaultinterfaceancestoriinterfacenotfound
 msgid "default interface ancestor IInterface not found"
 msgstr "не знайдений інтерфейс-предок за замовчуванням IInterface"
 
-#: codetoolsstrconsts:ctsdefaultparameterexpectedbutatomfound
+#: codetoolsstrconsts.ctsdefaultparameterexpectedbutatomfound
 msgid "default parameter expected, but %s found"
 msgstr "очікується параметр за замовчуванням, але знайдено %s"
 
-#: codetoolsstrconsts:ctsdefaultpropertynotfound
-msgid "default property not found"
-msgstr ""
+#: codetoolsstrconsts.ctsdefaultppc386source2operatingsystem
+msgid "Default ppc386 source Operating System 2"
+msgstr "За замовчуванням код Операційної Системи 2 pp386"
 
-#: codetoolsstrconsts:ctsdefaultspecifierredefined
+#: codetoolsstrconsts.ctsdefaultppc386sourceoperatingsystem
+msgid "Default ppc386 source Operating System"
+msgstr "Операційна система для коду за замовчуванням для ppc386"
+
+#: codetoolsstrconsts.ctsdefaultppc386symbol
+msgid "Default ppc386 symbol"
+msgstr "Символ ppc386 за замовчуванням"
+
+#: codetoolsstrconsts.ctsdefaultppc386targetoperatingsystem
+msgid "Default ppc386 target Operating System"
+msgstr "Операційна система для виконуваного файлу за замовчуванням для ppc386"
+
+#: codetoolsstrconsts.ctsdefaultppc386targetprocessor
+msgid "Default ppc386 target processor"
+msgstr "Процесор для виконуваного файлу за замовчуванням для ppc386"
+
+#: codetoolsstrconsts.ctsdefaultspecifierredefined
 msgid "default specifier redefined"
 msgstr "модифікатор за замовчуванням перевизначений"
 
-#: codetoolsstrconsts:ctsduplicateidentifier
+#: codetoolsstrconsts.ctsdefine
+msgid "Define "
+msgstr "Визначити "
+
+#: codetoolsstrconsts.ctsdefinelcl
+msgid "Define LCL"
+msgstr ""
+
+#: codetoolsstrconsts.ctsdefinelclwidgetset
+msgid "Define LCLwidgetset, e.g. LCLgtk"
+msgstr ""
+
+#: codetoolsstrconsts.ctsdefinemacrocarbon1
+msgid "Define macro carbon1"
+msgstr "Визначити макрос carbon1"
+
+#: codetoolsstrconsts.ctsdefinemacrogtk1
+msgid "Define macro gtk1"
+msgstr "Визначити макрос gtk1"
+
+#: codetoolsstrconsts.ctsdefinemacrogtk2
+msgid "Define macro gtk2"
+msgstr "Визначити макрос gtk2"
+
+#: codetoolsstrconsts.ctsdefinemacroname
+msgid "Define Macro %s"
+msgstr "Визначити макрос %s"
+
+#: codetoolsstrconsts.ctsdefinemacroqt1
+msgid "Define macro qt1"
+msgstr ""
+
+#: codetoolsstrconsts.ctsdefinemacrowince1
+msgid "Define macro wince1"
+msgstr ""
+
+#: codetoolsstrconsts.ctsdefineprocessortype
+msgid "Define processor type"
+msgstr "Визначити тип процесора"
+
+#: codetoolsstrconsts.ctsdefsforlazarussources
+msgid "Definitions for the Lazarus Sources"
+msgstr "Описи кодів Lazarus"
+
+#: codetoolsstrconsts.ctsdesignerdirectory
+msgid "Designer Directory"
+msgstr "Тека проектувальника"
+
+#: codetoolsstrconsts.ctsdesignerunitsdirectory
+msgid "Designer Units"
+msgstr "Модулі проектувальника"
+
+#: codetoolsstrconsts.ctsdircomponentdoesnotexistsorisdanglingsymlink
+msgid "a directory component in %s does not exist or is a dangling symlink"
+msgstr "тека компонентів в %s не існує, або вона має пошкоджене посилання"
+
+#: codetoolsstrconsts.ctsdircomponentisnotdir
+msgid "a directory component in %s is not a directory"
+msgstr "тека компонентів в %s не є текою"
+
+#: codetoolsstrconsts.ctsdoceditordirectory
+msgid "Doc Editor Directory"
+msgstr "Тека редактора документації"
+
+#: codetoolsstrconsts.ctsduplicateidentifier
 msgid "duplicate identifier: %s"
 msgstr "дублюється ідентифікатор: %s"
 
-#: codetoolsstrconsts:ctselse
+#: codetoolsstrconsts.ctselse
 msgid "else"
 msgstr "інакше"
 
-#: codetoolsstrconsts:ctsfpdocsystemon
-msgid "enable FPDocSystem"
-msgstr ""
+#: codetoolsstrconsts.ctsendforclassnotfound
+msgid "\"end\" for class/object not found"
+msgstr "не знайдений \"end\" для класу/об'єкту"
 
-#: codetoolsstrconsts:ctsendforrecordnotfound
+#: codetoolsstrconsts.ctsendforrecordnotfound
 msgid "end for record not found"
 msgstr "не знайдений кінець запису"
 
-#: codetoolsstrconsts:ctserrorduringcreationofnewprocbodies
-msgid "error during creation of new proc bodies"
-msgstr "помилка при створенні нових тіл процедур"
-
-#: codetoolsstrconsts:ctserrorduringinsertingnewclassparts
-msgid "error during inserting new class parts"
-msgstr "помилка при вставці нових частин класу"
-
-#: codetoolsstrconsts:ctserrorduringinsertingnewusessection
-msgid "error during inserting new units to the main uses section"
-msgstr ""
-
-#: codetoolsstrconsts:ctserrorindirectiveexpression
-msgid "error in directive expression"
-msgstr "помилка у виразі директиви"
-
-#: codetoolsstrconsts:ctserrorinparamlist
-msgid "error in paramlist"
-msgstr "помилка в списку параметрів"
-
-#: codetoolsstrconsts:ctsexecuteaccessdeniedforfile
-msgid "execute access denied for %s"
-msgstr "немає доступу до виконання %s"
-
-#: codetoolsstrconsts:ctsendofsourceexpectedbutatomfound
+#: codetoolsstrconsts.ctsendofsourceexpectedbutatomfound
 msgid "expected end., but %s found"
 msgstr "очікується end., а знайдено %s"
 
-#: codetoolsstrconsts:ctsexportsclauseonlyallowedinlibraries
+#: codetoolsstrconsts.ctsendofsourcenotfound
+msgid "End of source not found"
+msgstr "Не знайдено кінця коду"
+
+#: codetoolsstrconsts.ctserrorduringcreationofnewprocbodies
+msgid "error during creation of new proc bodies"
+msgstr "помилка при створенні нових тіл процедур"
+
+#: codetoolsstrconsts.ctserrorduringinsertingnewclassparts
+msgid "error during inserting new class parts"
+msgstr "помилка при вставці нових частин класу"
+
+#: codetoolsstrconsts.ctserrorduringinsertingnewusessection
+msgid "error during inserting new units to the main uses section"
+msgstr ""
+
+#: codetoolsstrconsts.ctserrorindirectiveexpression
+msgid "error in directive expression"
+msgstr "помилка у виразі директиви"
+
+#: codetoolsstrconsts.ctserrorinparamlist
+msgid "error in paramlist"
+msgstr "помилка в списку параметрів"
+
+#: codetoolsstrconsts.ctsexecuteaccessdeniedforfile
+msgid "execute access denied for %s"
+msgstr "немає доступу до виконання %s"
+
+#: codetoolsstrconsts.ctsexportsclauseonlyallowedinlibraries
 msgid "exports clause only allowed in libraries"
 msgstr "експортований оператор дозволяється лише в бібліотеках"
 
-#: codetoolsstrconsts:ctsexprtypemustbeclassorrecord
+#: codetoolsstrconsts.ctsexprtypemustbeclassorrecord
 msgid "expression type must be class or record type"
 msgstr "тип виразу має бути об'єктом або записом"
 
-#: codetoolsstrconsts:ctsfiledoesnotexists
+#: codetoolsstrconsts.ctsfiledoesnotexists
 msgid "file \"%s\" does not exist"
 msgstr "файл \"%s\" не існує"
 
-#: codetoolsstrconsts:ctsfileisreadonly
+#: codetoolsstrconsts.ctsfilehascircularsymlink
+msgid "%s has a circular symbolic link"
+msgstr "%s вміщує циклічне символічне посилання"
+
+#: codetoolsstrconsts.ctsfileisnotexecutable
+msgid "%s is not executable"
+msgstr "%s не є виконуваним файлом"
+
+#: codetoolsstrconsts.ctsfileisreadonly
 msgid "file is read only"
 msgstr "файл тільки для читання"
 
-#: codetoolsstrconsts:ctsgenericidentifier
+#: codetoolsstrconsts.ctsforward
+msgid "Forward"
+msgstr ""
+
+#: codetoolsstrconsts.ctsforwardclassdefinitionnotresolved
+msgid "Forward class definition not resolved: %s"
+msgstr "Не знайдено опису раніше описаного класу: %s"
+
+#: codetoolsstrconsts.ctsfpdocsystemon
+msgid "enable FPDocSystem"
+msgstr ""
+
+#: codetoolsstrconsts.ctsfreepascalcompilerinitialmacros
+msgid "Free Pascal Compiler initial macros"
+msgstr "Макроси ініціалізації компілятора FreePascal"
+
+#: codetoolsstrconsts.ctsfreepascalcomponentlibrary
+msgid "Free Pascal Component Library"
+msgstr "Бібліотека компонентів FreePascal"
+
+#: codetoolsstrconsts.ctsfreepascalsourcedir
+msgid "Free Pascal Source Directory"
+msgstr "Тека кодів FreePascal"
+
+#: codetoolsstrconsts.ctsfreepascalsourcesplusdesc
+msgid "Free Pascal Sources, %s"
+msgstr "Коди FreePascal, %s"
+
+#: codetoolsstrconsts.ctsgenericidentifier
 msgid "generic identifier"
 msgstr ""
 
-#: codetoolsstrconsts:ctsgtk2intfdirectory
+#: codetoolsstrconsts.ctsgtk2intfdirectory
 msgid "gtk2 interface directory"
 msgstr "тека інтерфейсу gtk2"
 
-#: codetoolsstrconsts:ctsidentifier
-msgid "identifier"
-msgstr "ідентифікатор"
+#: codetoolsstrconsts.ctsidedirectory
+msgid "IDE Directory"
+msgstr "Тека IDE"
 
-#: codetoolsstrconsts:ctsidentexpectedbutatomfound
+#: codetoolsstrconsts.ctsideintfdirectory
+msgid "IDEIntf Directory"
+msgstr "Тека інтерфейсу IDE"
+
+#: codetoolsstrconsts.ctsidentexpectedbutatomfound
 msgid "identifier expected, but %s found"
 msgstr "очікується ідентифікатор, але знайдений %s"
 
-#: codetoolsstrconsts:ctsidentexpectedbutkeywordfound
-msgid "identifier expected, but keyword %s found"
-msgstr "очікується ідентифікатор, але знайдене ключове слово %s"
-
-#: codetoolsstrconsts:ctsidentifiernotfound
-msgid "identifier not found: %s"
-msgstr "не знайдений ідентифікатор: %s"
-
-#: codetoolsstrconsts:ctsillegalcircleinusedunits
-msgid "illegal circle using unit: %s"
-msgstr "неправильне циклічне використання модуля: %s"
-
-#: codetoolsstrconsts:ctsillegalqualifier
-msgid "illegal qualifier %s found"
-msgstr "знайдений некоректний визначник %s"
-
-#: codetoolsstrconsts:ctsimplementationnodenotfound
-msgid "implementation node not found"
-msgstr "слово implementation не знайдене"
-
-#: codetoolsstrconsts:ctsincludedirectoriesplusdirs
-msgid "include directories: %s"
-msgstr ""
-
-#: codetoolsstrconsts:ctsincludefilenotfound
-msgid "include file not found \"%s\""
-msgstr "не знайдний файл включення \"%s\""
-
-#: codetoolsstrconsts:ctsincompatibletypesgotexpected
-msgid "incompatibles types: expected \"%s\" but got \"%s\""
-msgstr "несумісні типи: очікувалось \"%s\", але одержано \"%s\""
-
-#: codetoolsstrconsts:ctsindexparameterexpectedbutatomfound
-msgid "index parameter expected, but %s found"
-msgstr "очікується індексний параметр, але знайдено %s"
-
-#: codetoolsstrconsts:ctsindexspecifierredefined
-msgid "index specifier redefined"
-msgstr "перевизначений модифікатор індексу"
-
-#: codetoolsstrconsts:ctsinheritedkeywordonlyallowedinmethods
-msgid "inherited keyword only allowed in methods"
-msgstr "ключове слово inherited (успадковане) дозволене тільки в методах"
-
-#: codetoolsstrconsts:ctsinsufficientmemory
-msgid "insufficient memory"
-msgstr "недостатньо пам'яті"
-
-#: codetoolsstrconsts:ctsintfdirectory
-msgid "interface directory"
-msgstr "тека інтерфейсу"
-
-#: codetoolsstrconsts:ctsinterfacesectionnotfound
-msgid "interface section not found"
-msgstr "не знайдений розділ описів (interface)"
-
-#: codetoolsstrconsts:ctsinvalidclassname2
-msgid "invalid class name %s%s%s"
-msgstr "неправильне ім'я класу %s%s%s"
-
-#: codetoolsstrconsts:ctsinvalidclassname
-msgid "invalid class name=%s%s%s"
-msgstr "неправильне ім'я класу=%s%s%s"
-
-#: codetoolsstrconsts:ctsinvalidflagvaluefordirective
-msgid "invalid flag value \"%s\" for directive %s"
-msgstr "неправильне значення прапорця \"%s\" для директиви %s"
-
-#: codetoolsstrconsts:ctsinvalidmode
-msgid "invalid mode \"%s\""
-msgstr "неправильний режим \"%s\""
-
-#: codetoolsstrconsts:ctsinvalidsubrange
-msgid "invalid subrange"
-msgstr "неправильний піддіапазон"
-
-#: codetoolsstrconsts:ctsinvalidtype
-msgid "invalid type"
-msgstr "неправильний тип"
-
-#: codetoolsstrconsts:ctsinvalidvariablename
-msgid "invalid variable name %s%s%s"
-msgstr "неправильне ім'я змінної %s%s%s"
-
-#: codetoolsstrconsts:ctsinvalidvariabletype
-msgid "invalid variable type %s%s%s"
-msgstr "неправильний тип змінної %s%s%s"
-
-#: codetoolsstrconsts:ctskeyword
-msgid "keyword"
-msgstr "ключове слово"
-
-#: codetoolsstrconsts:ctskeywordexampleexpectedbutatomfound
-msgid "keyword (e.g. %s) expected, but %s found"
-msgstr "очікується ключове слово (напр., %s), але знайдене %s"
-
-#: codetoolsstrconsts:ctskeywordin
-msgid "keyword \"in\""
-msgstr "ключове слово \"in\""
-
-#: codetoolsstrconsts:ctslazarusmaindirectory
-msgid "lazarus main directory"
-msgstr "головна тека lazarus"
-
-#: codetoolsstrconsts:ctsmethodname
-msgid "method name"
-msgstr "ім'я методу"
-
-#: codetoolsstrconsts:ctsmethodtypedefinitionnotfound
-msgid "method type definition not found"
-msgstr "не знайдений опис типу методу"
-
-#: codetoolsstrconsts:ctsmissingpointafterend
-msgid "missing . after end"
-msgstr "немає крапки (.) після end"
-
-#: codetoolsstrconsts:ctsmissingenumlist
-msgid "missing enum list"
-msgstr "відсутній список перерахування"
-
-#: codetoolsstrconsts:ctsmissingtypeidentifier
-msgid "missing type identifier"
-msgstr "відсутній ідентифікатор типу"
-
-#: codetoolsstrconsts:ctsnewprocbodynotfound
-msgid "new proc body not found"
-msgstr "не знайдене тіло нової процедури"
-
-#: codetoolsstrconsts:ctsnocontextnodefoundatcursor
-msgid "no context node found at cursor"
-msgstr "не знайдений контекстний елемент біля курсору"
-
-#: codetoolsstrconsts:ctsnopascalcodefound
-msgid "no pascal code found (first token is %s)"
-msgstr "не знайдений код паскаля (перший елемент - %s)"
-
-#: codetoolsstrconsts:ctsnonodefoundatcursor
-msgid "no pascal node found at cursor (i.e. in unparsed code)"
-msgstr "не знайдені записи паскаля біля курсору (тобто в досліджуваному коді)"
-
-#: codetoolsstrconsts:ctsnodefaultspecifierdefinedtwice
-msgid "nodefault specifier defined twice"
-msgstr "модифікатор nodefault двічи визначений"
-
-#: codetoolsstrconsts:ctsoldmethodnotfound
-msgid "old method not found: %s"
-msgstr "не знайдений старий метод: %s"
-
-#: codetoolsstrconsts:ctsprocedureorfunction
-msgid "procedure or function"
-msgstr "процедура або функція"
-
-#: codetoolsstrconsts:ctsprocessorspecific
-msgid "processor specific"
-msgstr "специфічний для процесора"
-
-#: codetoolsstrconsts:ctspropertyspecifieralreadydefined
-msgid "property specifier already defined: %s"
-msgstr "модифікатор властивості вже визначений: %s"
-
-#: codetoolsstrconsts:ctsproperttypeexpectedbutatomfound
-msgid "property type expected, but %s found"
-msgstr "очікується тип властивості, але знайдено %s"
-
-#: codetoolsstrconsts:ctsqualifierexpectedbutatomfound
-msgid "qualifier expected but %s found"
-msgstr "очікувалось посилання, але знайдено %s"
-
-#: codetoolsstrconsts:ctssemicolonnotfound
-msgid "semicolon not found"
-msgstr "не знайдена крапка з комою"
-
-#: codetoolsstrconsts:ctssetsincpathto
-msgid "sets IncPath to %s"
-msgstr "встановлює шляхи включених файлів в %s"
-
-#: codetoolsstrconsts:ctssetssrcpathto
-msgid "sets SrcPath to %s"
-msgstr "встановлює шляхи кодів в %s"
-
-#: codetoolsstrconsts:ctssourceisnotunit
-msgid "source is not unit"
-msgstr "код не є модулем"
-
-#: codetoolsstrconsts:ctssourcenotfoundunit
-msgid "source not found: unit %s"
-msgstr "текст програми не знайдений: модуль %s"
-
-#: codetoolsstrconsts:ctssrcpathforcompiledunits
-msgid "src path for compiled units"
-msgstr "шлях до текстів програм зібраних модулів"
-
-#: codetoolsstrconsts:ctsstringconstant
-msgid "string constant"
-msgstr "рядкова константа"
-
-#: codetoolsstrconsts:ctstypeidentifier
-msgid "type identifier"
-msgstr "ідентифікатор типу"
-
-#: codetoolsstrconsts:ctstypesectionofclassnotfound
-msgid "type section of class not found"
-msgstr "не знайдена секція типу класу"
-
-#: codetoolsstrconsts:ctsunabletoapplychanges
-msgid "unable to apply changes"
-msgstr "неможливо застосувати зміни"
-
-#: codetoolsstrconsts:ctsunabletocompleteproperty
-msgid "unable to complete property"
-msgstr "не можу завершити властивість"
-
-#: codetoolsstrconsts:ctsidentexpectedbuteoffound
+#: codetoolsstrconsts.ctsidentexpectedbuteoffound
 msgid "unexpected end of file (identifier expected)"
 msgstr "неочікуваний кінець файла (очікується ідентифікатор)"
 
-#: codetoolsstrconsts:ctsunexpectedendofsource
+#: codetoolsstrconsts.ctsidentexpectedbutkeywordfound
+msgid "identifier expected, but keyword %s found"
+msgstr "очікується ідентифікатор, але знайдене ключове слово %s"
+
+#: codetoolsstrconsts.ctsidentifier
+msgid "identifier"
+msgstr "ідентифікатор"
+
+#: codetoolsstrconsts.ctsidentifieralreadydefined
+msgid "Identifier %s already defined"
+msgstr "Ідентифікатор %s вже визначений"
+
+#: codetoolsstrconsts.ctsidentifiernotfound
+msgid "identifier not found: %s"
+msgstr "не знайдений ідентифікатор: %s"
+
+#: codetoolsstrconsts.ctsifdeflinux
+msgid "IfDef Linux"
+msgstr ""
+
+#: codetoolsstrconsts.ctsifdefwindows
+msgid "IfDef Windows"
+msgstr ""
+
+#: codetoolsstrconsts.ctsiflclwidgettypeequalsgtk2
+msgid "If LCLWidgetType=gtk2 then"
+msgstr ""
+
+#: codetoolsstrconsts.ctsiftargetosisnotsrcos
+msgid "If TargetOS<>SrcOS"
+msgstr ""
+
+#: codetoolsstrconsts.ctsiftargetosisnotsrcos2
+msgid "If TargetOS<>SrcOS2"
+msgstr ""
+
+#: codetoolsstrconsts.ctsiftargetosisnotwin32
+msgid "If TargetOS<>win32 then"
+msgstr ""
+
+#: codetoolsstrconsts.ctsillegalcircleinusedunits
+msgid "illegal circle using unit: %s"
+msgstr "неправильне циклічне використання модуля: %s"
+
+#: codetoolsstrconsts.ctsillegalqualifier
+msgid "illegal qualifier %s found"
+msgstr "знайдений некоректний визначник %s"
+
+#: codetoolsstrconsts.ctsimplementationnodenotfound
+msgid "implementation node not found"
+msgstr "слово implementation не знайдене"
+
+#: codetoolsstrconsts.ctsincludecircledetected
+msgid "Include circle detected"
+msgstr "Знайдене циклічне включення"
+
+#: codetoolsstrconsts.ctsincludefilenotfound
+msgid "include file not found \"%s\""
+msgstr "не знайдний файл включення \"%s\""
+
+#: codetoolsstrconsts.ctsincompatibletypesgotexpected
+msgid "incompatibles types: expected \"%s\" but got \"%s\""
+msgstr "несумісні типи: очікувалось \"%s\", але одержано \"%s\""
+
+#: codetoolsstrconsts.ctsindexparameterexpectedbutatomfound
+msgid "index parameter expected, but %s found"
+msgstr "очікується індексний параметр, але знайдено %s"
+
+#: codetoolsstrconsts.ctsindexspecifierredefined
+msgid "index specifier redefined"
+msgstr "перевизначений модифікатор індексу"
+
+#: codetoolsstrconsts.ctsinheritedkeywordonlyallowedinmethods
+msgid "inherited keyword only allowed in methods"
+msgstr "ключове слово inherited (успадковане) дозволене тільки в методах"
+
+#: codetoolsstrconsts.ctsinstalldirectory
+msgid "Install Directory"
+msgstr "Тека встановлення"
+
+#: codetoolsstrconsts.ctsinstallerdirectories
+msgid "Installer directories"
+msgstr "Теки встановлювача"
+
+#: codetoolsstrconsts.ctsinsufficientmemory
+msgid "insufficient memory"
+msgstr "недостатньо пам'яті"
+
+#: codetoolsstrconsts.ctsinterfacesectionnotfound
+msgid "interface section not found"
+msgstr "не знайдений розділ описів (interface)"
+
+#: codetoolsstrconsts.ctsintfdirectory
+msgid "interface directory"
+msgstr "тека інтерфейсу"
+
+#: codetoolsstrconsts.ctsinvalidclassname
+msgid "invalid class name=%s%s%s"
+msgstr "неправильне ім'я класу=%s%s%s"
+
+#: codetoolsstrconsts.ctsinvalidclassname2
+msgid "invalid class name %s%s%s"
+msgstr "неправильне ім'я класу %s%s%s"
+
+#: codetoolsstrconsts.ctsinvalidflagvaluefordirective
+msgid "invalid flag value \"%s\" for directive %s"
+msgstr "неправильне значення прапорця \"%s\" для директиви %s"
+
+#: codetoolsstrconsts.ctsinvalidmode
+msgid "invalid mode \"%s\""
+msgstr "неправильний режим \"%s\""
+
+#: codetoolsstrconsts.ctsinvalidsubrange
+msgid "invalid subrange"
+msgstr "неправильний піддіапазон"
+
+#: codetoolsstrconsts.ctsinvalidtype
+msgid "invalid type"
+msgstr "неправильний тип"
+
+#: codetoolsstrconsts.ctsinvalidvariablename
+msgid "invalid variable name %s%s%s"
+msgstr "неправильне ім'я змінної %s%s%s"
+
+#: codetoolsstrconsts.ctsinvalidvariabletype
+msgid "invalid variable type %s%s%s"
+msgstr "неправильний тип змінної %s%s%s"
+
+#: codetoolsstrconsts.ctsjitformdirectory
+msgid "JITForm Directory"
+msgstr "Тека JITForm"
+
+#: codetoolsstrconsts.ctskeyword
+msgid "keyword"
+msgstr "ключове слово"
+
+#: codetoolsstrconsts.ctskeywordexampleexpectedbutatomfound
+msgid "keyword (e.g. %s) expected, but %s found"
+msgstr "очікується ключове слово (напр., %s), але знайдене %s"
+
+#: codetoolsstrconsts.ctskeywordin
+msgid "keyword \"in\""
+msgstr "ключове слово \"in\""
+
+#: codetoolsstrconsts.ctslazarusmaindirectory
+msgid "lazarus main directory"
+msgstr "головна тека lazarus"
+
+#: codetoolsstrconsts.ctslazarussources
+msgid "Lazarus Sources"
+msgstr "Коди lazarus"
+
+#: codetoolsstrconsts.ctsmethodname
+msgid "method name"
+msgstr "ім'я методу"
+
+#: codetoolsstrconsts.ctsmethodtypedefinitionnotfound
+msgid "method type definition not found"
+msgstr "не знайдений опис типу методу"
+
+#: codetoolsstrconsts.ctsmissingenumlist
+msgid "missing enum list"
+msgstr "відсутній список перерахування"
+
+#: codetoolsstrconsts.ctsmissingpointafterend
+msgid "missing . after end"
+msgstr "немає крапки (.) після end"
+
+#: codetoolsstrconsts.ctsmissingtypeidentifier
+msgid "missing type identifier"
+msgstr "відсутній ідентифікатор типу"
+
+#: codetoolsstrconsts.ctsnameddirectory
+msgid "%s Directory"
+msgstr "Тека %s"
+
+#: codetoolsstrconsts.ctsnamedproject
+msgid "%s Project"
+msgstr "Проект %s"
+
+#: codetoolsstrconsts.ctsnestedcommentson
+msgid "Nested Comments On"
+msgstr "Ввімкн. вкладені коментарі"
+
+#: codetoolsstrconsts.ctsnesteddefinitionsarenotallowed
+msgid "Nested %s definitions are not allowed"
+msgstr ""
+
+#: codetoolsstrconsts.ctsnewprocbodynotfound
+msgid "new proc body not found"
+msgstr "не знайдене тіло нової процедури"
+
+#: codetoolsstrconsts.ctsnocontextnodefoundatcursor
+msgid "no context node found at cursor"
+msgstr "не знайдений контекстний елемент біля курсору"
+
+#: codetoolsstrconsts.ctsnodefaultspecifierdefinedtwice
+msgid "nodefault specifier defined twice"
+msgstr "модифікатор nodefault двічи визначений"
+
+#: codetoolsstrconsts.ctsnonodefoundatcursor
+msgid "no pascal node found at cursor (i.e. in unparsed code)"
+msgstr "не знайдені записи паскаля біля курсору (тобто в досліджуваному коді)"
+
+#: codetoolsstrconsts.ctsnopascalcodefound
+msgid "no pascal code found (first token is %s)"
+msgstr "не знайдений код паскаля (перший елемент - %s)"
+
+#: codetoolsstrconsts.ctsnoscanneravailable
+msgid "No scanner available"
+msgstr "Немає доступних 'сканерів'"
+
+#: codetoolsstrconsts.ctsnoscannerfound
+msgid "No scanner found for \"%s\". If this is an include file, please open the main source first."
+msgstr "Не знайдено 'сканера' для \"%s\". Якщо це файл, що включається, то відкрийте спочатку головний код."
+
+#: codetoolsstrconsts.ctsoldmethodnotfound
+msgid "old method not found: %s"
+msgstr "не знайдений старий метод: %s"
+
+#: codetoolsstrconsts.ctsothercompilerdefines
+msgid "%s Compiler Defines"
+msgstr "Параметри компілятора %s"
+
+#: codetoolsstrconsts.ctspackagedirectories
+msgid "Package directories"
+msgstr "Теки пакунків"
+
+#: codetoolsstrconsts.ctspackagerdirectory
+msgid "Packager Directory"
+msgstr "Тека менеджера пакунків"
+
+#: codetoolsstrconsts.ctspackagerregistrationdirectory
+msgid "Packager Registration Directory"
+msgstr "Тека реєстрації менеджера пакунків"
+
+#: codetoolsstrconsts.ctspackagerunitsdirectory
+msgid "Packager Units Directory"
+msgstr "Тека модулів менеджера пакунків"
+
+#: codetoolsstrconsts.ctspointhintprocstartat
+msgid ".  Hint: proc start at "
+msgstr ". Порада: процедура починається з "
+
+#: codetoolsstrconsts.ctspointstartat
+msgid ". start at "
+msgstr ". починається з "
+
+#: codetoolsstrconsts.ctspositionnotinsource
+msgid "Position not in source"
+msgstr "Позиція не в прогрмному тексті"
+
+#: codetoolsstrconsts.ctsprocedureorfunction
+msgid "procedure or function"
+msgstr "процедура або функція"
+
+#: codetoolsstrconsts.ctsprocessorspecific
+msgid "processor specific"
+msgstr "специфічний для процесора"
+
+#: codetoolsstrconsts.ctsproperttypeexpectedbutatomfound
+msgid "property type expected, but %s found"
+msgstr "очікується тип властивості, але знайдено %s"
+
+#: codetoolsstrconsts.ctspropertyspecifieralreadydefined
+msgid "property specifier already defined: %s"
+msgstr "модифікатор властивості вже визначений: %s"
+
+#: codetoolsstrconsts.ctsqualifierexpectedbutatomfound
+msgid "qualifier expected but %s found"
+msgstr "очікувалось посилання, але знайдено %s"
+
+#: codetoolsstrconsts.ctsresetalldefines
+msgid "Reset all defines"
+msgstr "Скинути всі визначення"
+
+#: codetoolsstrconsts.ctsruntimelibrary
+msgid "Runtime library"
+msgstr "Бібліотека часу виконання"
+
+#: codetoolsstrconsts.ctssemicolonafterpropspecmissing
+msgid "; expected after \"%s\" property specifier, but %s found"
+msgstr "; очікується після модифікатора властивості \"%s\", але знайдено %s"
+
+#: codetoolsstrconsts.ctssemicolonnotfound
+msgid "semicolon not found"
+msgstr "не знайдена крапка з комою"
+
+#: codetoolsstrconsts.ctssetsincpathto
+msgid "sets IncPath to %s"
+msgstr "встановлює шляхи включених файлів в %s"
+
+#: codetoolsstrconsts.ctssetssrcpathto
+msgid "sets SrcPath to %s"
+msgstr "встановлює шляхи кодів в %s"
+
+#: codetoolsstrconsts.ctssourcefilenamesforstandardfpcunits
+msgid "Source filenames for the standard fpc units"
+msgstr "Імена файлів кодів для стандартних модулів fpc"
+
+#: codetoolsstrconsts.ctssourceisnotunit
+msgid "source is not unit"
+msgstr "код не є модулем"
+
+#: codetoolsstrconsts.ctssourcenotfoundunit
+msgid "source not found: unit %s"
+msgstr "текст програми не знайдений: модуль %s"
+
+#: codetoolsstrconsts.ctssourceofunitnotfound
+msgid "source of unit not found: %s"
+msgstr ""
+
+#: codetoolsstrconsts.ctssrcpathforcompiledunits
+msgid "src path for compiled units"
+msgstr "шлях до текстів програм зібраних модулів"
+
+#: codetoolsstrconsts.ctssrcpathinitialization
+msgid "SrcPath Initialization"
+msgstr "Ініціалізація шляхів до текстів програм"
+
+#: codetoolsstrconsts.ctsstrexpectedbutatomfound
+msgid "%s expected, but %s found"
+msgstr "очікується %s, але знайдено %s"
+
+#: codetoolsstrconsts.ctsstringconstant
+msgid "string constant"
+msgstr "рядкова константа"
+
+#: codetoolsstrconsts.ctssyntaxerrorinexpr
+msgid "Syntax Error in expression \"%s\""
+msgstr "Помилка синтаксису в виразі \"%s\""
+
+#: codetoolsstrconsts.ctstcodetoolmanagerconsistencycheck
+msgid "TCodeToolManager.ConsistencyCheck=%d"
+msgstr ""
+
+#: codetoolsstrconsts.ctstermnotsimple
+msgid "Term has no simple type"
+msgstr "Визначення не має простого типу"
+
+#: codetoolsstrconsts.ctstoolsdirectory
+msgid "Tools Directory"
+msgstr "Тека інструментів"
+
+#: codetoolsstrconsts.ctstypeidentifier
+msgid "type identifier"
+msgstr "ідентифікатор типу"
+
+#: codetoolsstrconsts.ctstypesectionofclassnotfound
+msgid "type section of class not found"
+msgstr "не знайдена секція типу класу"
+
+#: codetoolsstrconsts.ctsunabletoapplychanges
+msgid "unable to apply changes"
+msgstr "неможливо застосувати зміни"
+
+#: codetoolsstrconsts.ctsunabletocompleteproperty
+msgid "unable to complete property"
+msgstr "не можу завершити властивість"
+
+#: codetoolsstrconsts.ctsundefine
+msgid "Undefine "
+msgstr ""
+
+#: codetoolsstrconsts.ctsunexpectedendofsource
 msgid "unexpected end of source"
 msgstr "неочікуваний кінець коду"
 
-#: codetoolsstrconsts:ctsunexpectedkeyword
+#: codetoolsstrconsts.ctsunexpectedkeyword
 msgid "unexpected keyword \"%s\""
 msgstr "неочікуване ключове слово \"%s\""
 
-#: codetoolsstrconsts:ctsunexpectedkeywordwhilereadingbackwards
-msgid "unexpected keyword \"%s\" found while reading blocks backwards"
-msgstr "знайдене неочікуване ключове слово \"%s\" при читанні блоків в зворотному порядку"
-
-#: codetoolsstrconsts:ctsunexpectedkeywordinasmblock
+#: codetoolsstrconsts.ctsunexpectedkeywordinasmblock
 msgid "unexpected keyword \"%s\" in asm block found"
 msgstr "знайдене неочікуване ключове слово \"%s\" в асемблерному блоці"
 
-#: codetoolsstrconsts:ctsunexpectedkeywordinbeginendblock
+#: codetoolsstrconsts.ctsunexpectedkeywordinbeginendblock
 msgid "unexpected keyword \"%s\" in begin..end found"
 msgstr "знайдене неочікуване ключове слово \"%s\" в операторних дужках (begin...end)"
 
-#: codetoolsstrconsts:ctsunexpectedsubrangeoperatorfound
+#: codetoolsstrconsts.ctsunexpectedkeywordwhilereadingbackwards
+msgid "unexpected keyword \"%s\" found while reading blocks backwards"
+msgstr "знайдене неочікуване ключове слово \"%s\" при читанні блоків в зворотному порядку"
+
+#: codetoolsstrconsts.ctsunexpectedsubrangeoperatorfound
 msgid "unexpected subrange operator '..' found"
 msgstr "знайдений неочікуваний оператор піддіапазону '..'"
 
-#: codetoolsstrconsts:ctsunitnotfound
+#: codetoolsstrconsts.ctsunitnotfound
 msgid "unit not found: %s"
 msgstr "не знайдений модуль: %s"
 
-#: codetoolsstrconsts:ctsunknownsectionkeyword
+#: codetoolsstrconsts.ctsunitpathinitialization
+msgid "UnitPath Initialization"
+msgstr "Ініціалізація шляхів до модулів"
+
+#: codetoolsstrconsts.ctsunknownfunction
+msgid "Unknown function %s"
+msgstr "Невідома функція %s"
+
+#: codetoolsstrconsts.ctsunknownmainfilename
+msgid "(unknown mainfilename)"
+msgstr "(невідома назва головного файлу)"
+
+#: codetoolsstrconsts.ctsunknownsectionkeyword
 msgid "unknown section keyword %s found"
 msgstr "знайдене невідоме ключове слово секції %s"
 
-#: codetoolsstrconsts:ctsusedunitisnotapascalunit
+#: codetoolsstrconsts.ctsunknownsubdescriptor
+msgid "(unknown subdescriptor %s)"
+msgstr "(Невідомий субдескриптор)"
+
+#: codetoolsstrconsts.ctsunparsed
+msgid "Unparsed"
+msgstr "Не оброблено"
+
+#: codetoolsstrconsts.ctsusedunitisnotapascalunit
 msgid "used unit is not a pascal unit"
 msgstr "цей модуль не є паскалівським"
+
+#: codetoolsstrconsts.ctsutilsdirectories
+msgid "Utils directories"
+msgstr "Теки інструментів"
+
+#: codetoolsstrconsts.ctswidgetdirectory
+msgid "Widget Directory"
+msgstr "Тека елементів інтерфейсу"
+
+#: codetoolsstrconsts.ctswordnotfound
+msgid "\"%s\" not found"
+msgstr "\"%s\" не знайдене"
 

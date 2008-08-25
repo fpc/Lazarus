@@ -76,7 +76,7 @@ var
   PicCreated: boolean;
 begin
   try
-    if FileExists(URL) then begin
+    if FileExistsUTF8(URL) then begin
       PicCreated := False;
       if Picture=nil then begin
         Picture:=TPicture.Create;
@@ -109,7 +109,7 @@ var
   NewHTML: TSimpleIpHtml;
 begin
   try
-    fs:=TFileStream.Create(Filename,fmOpenRead);
+    fs:=TFileStream.Create(UTF8ToSys(Filename),fmOpenRead);
     try
       NewHTML:=TSimpleIpHtml.Create; // Beware: Will be freed automatically by IpHtmlPanel1
       NewHTML.OnGetImageX:=@HTMLGetImageX;

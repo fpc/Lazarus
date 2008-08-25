@@ -147,10 +147,10 @@ var
 begin
   Result:=DefaultOIFavouriteProperties.CreateCopy;
   {$IFDEF DebugFavouriteroperties}
-  debugln('LoadOIFavouriteProperties A FileExists(GetOIFavouriteConfigFilename)=',dbgs(FileExists(GetOIFavouriteConfigFilename)));
+  debugln('LoadOIFavouriteProperties A FileExistsUTF8(GetOIFavouriteConfigFilename)=',dbgs(FileExistsUTF8(GetOIFavouriteConfigFilename)));
   Result.WriteDebugReport;
   {$ENDIF}
-  if not FileExists(GetOIFavouriteConfigFilename) then exit;
+  if not FileExistsUTF8(GetOIFavouriteConfigFilename) then exit;
   try
     ConfigStore:=DefaultConfigClass.Create(GetOIFavouriteConfigFilename,true);
     try
@@ -174,9 +174,9 @@ var
 begin
   {$IFDEF DebugFavouriteroperties}
   debugln('SaveOIFavouriteProperties Favourites.Modified=',dbgs(Favourites.Modified),
-    ' FileExists(GetOIFavouriteConfigFilename)=',dbgs(FileExists(GetOIFavouriteConfigFilename)));
+    ' FileExistsUTF8(GetOIFavouriteConfigFilename)=',dbgs(FileExistsUTF8(GetOIFavouriteConfigFilename)));
   {$ENDIF}
-  if (not Favourites.Modified) and FileExists(GetOIFavouriteConfigFilename)
+  if (not Favourites.Modified) and FileExistsUTF8(GetOIFavouriteConfigFilename)
   then
     exit;
   DefaultFavourites:=CreateDefaulTOIFavouriteProperties;

@@ -161,7 +161,7 @@ begin
   FileDetailLabel := gtk_object_get_data(PGtkObject(OpenDialog.Handle), 'FileDetailLabel');
   if FileDetailLabel = nil then
     Exit;
-  if FileExists(Filename) then
+  if FileExistsUTF8(Filename) then
     Details := GetFileDescription(Filename)
   else
     Details := Format(rsFileInfoFileNotFound, [Filename]);
@@ -355,7 +355,7 @@ var
     Result:=true;
     {$IFDEF GTK1}
     // check if entered file are a real directory
-    if DirectoryExists(AFileName) then
+    if DirectoryExistsUTF8(AFileName) then
     begin
       // if only interested in directories, then it's done
       if TheDialog is TSelectDirectoryDialog then
@@ -398,7 +398,7 @@ var
 
     // check if user selected a file while requesting a directory
     if (AFileName<>'') and (TheDialog is TSelectDirectoryDialog) then begin
-      if DirectoryExists(ExtractFilePath(AFileName)) then begin
+      if DirectoryExistsUTF8(ExtractFilePath(AFileName)) then begin
         AFileName:=ExtractFilePath(AFileName);
         result:=true;
         exit;
@@ -408,7 +408,7 @@ var
     {$ENDIF}
     // maybe file already exists
     if (ofOverwritePrompt in TOpenDialog(theDialog).Options)
-    and FileExists(AFilename) then
+    and FileExistsUTF8(AFilename) then
     begin
       Result := MessageDlg(rsfdOverwriteFile,
                          Format(rsfdFileAlreadyExists,[AFileName]),

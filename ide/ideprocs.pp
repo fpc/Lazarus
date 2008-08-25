@@ -291,7 +291,7 @@ var
   FileInfo: TSearchRec;
 begin
   Result:=nil;
-  if SysUtils.FindFirst(AppendPathDelim(Directory)+GetAllFilesMask,
+  if FindFirstUTF8(AppendPathDelim(Directory)+GetAllFilesMask,
                         faAnyFile,FileInfo)=0
   then begin
     repeat
@@ -305,9 +305,9 @@ begin
         if Result=nil then Result:=TStringList.Create;
         Result.Add(FileInfo.Name);
       end;
-    until SysUtils.FindNext(FileInfo)<>0;
+    until FindNextUTF8(FileInfo)<>0;
   end;
-  SysUtils.FindClose(FileInfo);
+  FindCloseUTF8(FileInfo);
 end;
 
 function FilenameIsPascalSource(const Filename: string): boolean;
@@ -333,7 +333,7 @@ var
 begin
   Result:='';
   ADirectory:=ExtractFilePath(Filename);
-  if SysUtils.FindFirst(AppendPathDelim(ADirectory)+GetAllFilesMask,
+  if FindFirstUTF8(AppendPathDelim(ADirectory)+GetAllFilesMask,
                         faAnyFile,FileInfo)=0
   then begin
     ShortFilename:=ExtractFilename(Filename);
@@ -345,9 +345,9 @@ begin
         Result:=FileInfo.Name;
         break;
       end;
-    until SysUtils.FindNext(FileInfo)<>0;
+    until FindNextUTF8(FileInfo)<>0;
   end;
-  SysUtils.FindClose(FileInfo);
+  FindCloseUTF8(FileInfo);
 end;
 
 function CreateNonExistingFilename(const BaseFilename: string): string;
@@ -356,7 +356,7 @@ var
   PreFix: String;
   i: Integer;
 begin
-  if not FileExists(BaseFilename) then begin
+  if not FileExistsUTF8(BaseFilename) then begin
     Result:=BaseFilename;
     exit;
   end;
@@ -366,7 +366,7 @@ begin
   repeat
     inc(i);
     Result:=PreFix+IntToStr(i)+PostFix;
-  until not FileExists(Result);
+  until not FileExistsUTF8(Result);
 end;
 
 function FindFPCTool(const Executable, CompilerFilename: string): string;
@@ -376,7 +376,7 @@ begin
   if Result<>'' then exit;
   Result:=AppendPathDelim(ExtractFilePath(CompilerFilename))+Executable;
   DebugLn('FindFPCTool Try="',Result);
-  if FileExists(Result) then exit;
+  if FileExistsUTF8(Result) then exit;
   Result:='';
 end;
 
@@ -831,7 +831,7 @@ var
   FileInfo: TSearchRec;
 begin
   Result:='';
-  if SysUtils.FindFirst(AppendPathDelim(Directory)+GetAllFilesMask,
+  if FindFirstUTF8(AppendPathDelim(Directory)+GetAllFilesMask,
                         faAnyFile,FileInfo)=0
   then begin
     repeat
@@ -843,9 +843,9 @@ begin
         Result:=AppendPathDelim(Directory)+FileInfo.Name;
         break;
       end;
-    until SysUtils.FindNext(FileInfo)<>0;
+    until FindNextUTF8(FileInfo)<>0;
   end;
-  SysUtils.FindClose(FileInfo);
+  FindCloseUTF8(FileInfo);
 end;
 
 procedure LoadRecentList(XMLConfig: TXMLConfig; List: TStrings;
@@ -1328,7 +1328,7 @@ begin
 
   // store file attributes
   {$IFdef MSWindows}
-  OldAttr:=FileGetAttr(Filename);
+  OldAttr:=FileGetAttrUTF8(Filename);
   {$ELSE}
   FpStat(Filename,OldInfo);
   {$ENDIF}
@@ -1338,7 +1338,7 @@ begin
     // rename old file, create empty new file
   
     // rename file
-    if not RenameFile(Filename,BackupFilename) then exit;
+    if not RenameFileUTF8(Filename,BackupFilename) then exit;
     // create empty file
     FHandle:=FileCreate(FileName);
     FileClose(FHandle);
@@ -1350,7 +1350,7 @@ begin
   
   // restore file attributes
   {$IFdef MSWindows}
-  FileSetAttr(FileName,OldAttr);
+  FileSetAttrUTF8(FileName,OldAttr);
   {$ELSE}
   FpChmod(Filename, OldInfo.st_Mode and (STAT_IRWXO+STAT_IRWXG+STAT_IRWXU
                            +STAT_ISUID+STAT_ISGID+STAT_ISVTX));
@@ -1368,10 +1368,10 @@ function ClearFile(const Filename: string; RaiseOnError: boolean): boolean;
 var
   fs: TFileStream;
 begin
-  if FileExists(Filename) then begin
+  if FileExistsUTF8(Filename) then begin
     try
       InvalidateFileStateCache;
-      fs:=TFileStream.Create(Filename,fmOpenWrite);
+      fs:=TFileStream.Create(UTF8ToSys(Filename),fmOpenWrite);
       fs.Size:=0;
       fs.Free;
     except
@@ -1391,7 +1391,7 @@ var
   Flags: TSearchFileInPathFlags;
 begin
   if FilenameIsAbsolute(Programname) then begin
-    if FileExists(Programname) then
+    if FileExistsUTF8(Programname) then
       Result:=Programname
     else
       Result:='';
@@ -2189,17 +2189,17 @@ end;
 
 function GetCurrentUserName: string;
 begin
-  Result:=GetEnvironmentVariable('USER');
+  Result:=GetEnvironmentVariableUTF8('USER');
 end;
 
 function GetCurrentMailAddress: string;
 begin
-  Result:='<'+GetCurrentUserName+'@'+GetEnvironmentVariable('HOSTNAME')+'>';
+  Result:='<'+GetCurrentUserName+'@'+GetEnvironmentVariableUTF8('HOSTNAME')+'>';
 end;
 
 function GetProgramSearchPath: string;
 begin
-  GetProgramSearchPath := GetEnvironmentVariable('PATH');
+  GetProgramSearchPath := GetEnvironmentVariableUTF8('PATH');
 end;
 
 {------------------------------------------------------------------------------
@@ -2259,7 +2259,7 @@ var
     if not ForceDirectory(CurDestDir)
     and not HandleError(ceCreatingDirectory,CurDestDir,'') then exit;
     
-    if SysUtils.FindFirst(CurSrcDir+GetAllFilesMask,faAnyFile,FileInfo)=0 then begin
+    if FindFirstUTF8(CurSrcDir+GetAllFilesMask,faAnyFile,FileInfo)=0 then begin
       repeat
         // check if special file
         if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
@@ -2288,9 +2288,9 @@ var
           then
             exit;
         end;
-      until SysUtils.FindNext(FileInfo)<>0;
+      until FindNextUTF8(FileInfo)<>0;
     end;
-    SysUtils.FindClose(FileInfo);
+    FindCloseUTF8(FileInfo);
     
     Result:=true;
   end;
@@ -2319,7 +2319,7 @@ begin
   Result:=false;
   try
     InvalidateFileStateCache;
-    fs:=TFileStream.Create(Filename,fmCreate);
+    fs:=TFileStream.Create(UTF8ToSys(Filename),fmCreate);
     fs.Free;
     Result:=true;
   except
@@ -2341,7 +2341,7 @@ begin
   
   // read file attributes
   {$IFdef MSWindows}
-  OldAttr:=FileGetAttr(SrcFilename);
+  OldAttr:=FileGetAttrUTF8(SrcFilename);
   {$ELSE}
   FpStat(SrcFilename,OldInfo);
   {$ENDIF}
@@ -2349,10 +2349,10 @@ begin
   //writeln('CopyFileWithMethods ',SrcFilename,' ',DestFilename);
   // copy file
   try
-    SrcFileStream:=TFileStream.Create(SrcFilename,fmOpenRead);
+    SrcFileStream:=TFileStream.Create(UTF8ToSys(SrcFilename),fmOpenRead);
     try
       InvalidateFileStateCache;
-      DestFileStream:=TFileSTream.Create(DestFilename,fmCreate);
+      DestFileStream:=TFileStream.Create(UTF8ToSys(DestFilename),fmCreate);
       try
         DestFileStream.CopyFrom(SrcFileStream,SrcFileStream.Size);
       finally
@@ -2367,7 +2367,7 @@ begin
   
   // copy file attributes
   {$IFdef MSWindows}
-  FileSetAttr(DestFileName,OldAttr);
+  FileSetAttrUTF8(DestFileName,OldAttr);
   {$ELSE}
   FpChmod(DestFilename, OldInfo.st_Mode and (STAT_IRWXO+STAT_IRWXG+STAT_IRWXU
                            +STAT_ISUID+STAT_ISGID+STAT_ISVTX));

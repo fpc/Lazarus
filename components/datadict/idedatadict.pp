@@ -162,7 +162,7 @@ begin
   FDictName:=AName;
   FFileName:=AFileName;
   If Active then
-    FDataDict.LoadFromFile(FFileName);
+    FDataDict.LoadFromFile(UTF8ToSys(FFileName));
 end;
 
 procedure TIDEDataDictionary.SetActive(const AValue: Boolean);
@@ -282,7 +282,7 @@ begin
     IDEMessagesWindow.BeginBlock(False);
     Try
       IDEMessagesWindow.AddMsg(SLoadingDataDict+SFromfile+FFileName,'',2);
-      FDataDict.LoadFromFile(FFileName);
+      FDataDict.LoadFromFile(UTF8ToSys(FFileName));
     Finally
       IDEMessagesWindow.EndBlock;
     end;

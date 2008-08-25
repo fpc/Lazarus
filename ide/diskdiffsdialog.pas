@@ -109,7 +109,7 @@ function ShowDiskDiffsDialog(AnUnitList, APackageList: TFPList): TModalResult;
       CurUnit:=TUnitInfo(AnUnitList[i]);
       UnitDidNotChange:=false;
       try
-        fs:=TFileStream.Create(CurUnit.Filename,fmOpenRead);
+        fs:=TFileStream.Create(UTF8ToSys(CurUnit.Filename),fmOpenRead);
         try
           if fs.Size=CurUnit.Source.SourceLength then begin
             // size has not changed => load to see difference
@@ -147,7 +147,7 @@ function ShowDiskDiffsDialog(AnUnitList, APackageList: TFPList): TModalResult;
         continue;// this package was not loaded/saved
       try
         CurPackage.SaveToString(CurSource);
-        fs:=TFileStream.Create(CurPackage.Filename,fmOpenRead);
+        fs:=TFileStream.Create(UTF8ToSys(CurPackage.Filename),fmOpenRead);
         try
           if fs.Size=length(CurSource) then begin
             // size has not changed => load to see difference
@@ -296,7 +296,7 @@ begin
       Filename:='';
       Source:='';
     end;
-    fs:=TFileStream.Create(Filename,fmOpenRead);
+    fs:=TFileStream.Create(UTF8ToSys(Filename),fmOpenRead);
     SetLength(Result^.TxtOnDisk,fs.Size);
     if Result^.TxtOnDisk<>'' then
       fs.Read(Result^.TxtOnDisk[1],length(Result^.TxtOnDisk));

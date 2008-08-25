@@ -309,9 +309,9 @@ begin
     end;
   if upper(ClassName[1])<>'T' then exit;
   FileName := TestSrcDir+RelSrcDir+Path+DirectorySeparator+copy(lowercase(ClassName),2,length(classname));
-  if FileExists(FileName+'.pas') then
+  if FileExistsUTF8(FileName+'.pas') then
     FileName := FileName + '.pas'
-  else if FileExists(FileName+'.pp') then
+  else if FileExistsUTF8(FileName+'.pp') then
     FileName := FileName + '.pp'
   else exit;
   
@@ -379,7 +379,7 @@ Var
 
 begin
   Result:=-1;
-  If (FileExists(TestSrcDir+RelSrcDir+Name) and
+  If (FileExistsUTF8(TestSrcDir+RelSrcDir+Name) and
      GetConfig(TestSrcDir+RelSrcDir+Name,Info)) or
      GetUnitTestConfig(Name,Info) or
      GetLazarusTestConfig(Info) then
@@ -466,7 +466,7 @@ Function RequireTestID(Name : String): Integer;
 begin
   Result:=GetTestID(Name);
   If Result=-1 then
-    Result:=AddTest(Name,FileExists(Name));
+    Result:=AddTest(Name,FileExistsUTF8(Name));
   If Result=-1 then
     Verbose(V_WARNING,'Could not find or create entry for test '+Name);
 end;

@@ -117,10 +117,10 @@ begin
   else
     begin
     FConfigFile:=GetAppConfigFile(false,false);
-    If Not FileExists(FConfigFile) then
+    If Not FileExistsUTF8(FConfigFile) then
       begin
       FConfigFile:=GetAppConfigFile(True,false);
-      If Not FileExists(FConfigFile) then
+      If Not FileExistsUTF8(FConfigFile) then
         FConfigFile:='';
       end;
     end;
@@ -276,7 +276,7 @@ procedure TCleanDirsThread.SetupCleaner;
 
 begin
   FCleaner.OnLog:=@Self.DoLog;
-  FCleaner.LoadFromFile(FConfigFile);
+  FCleaner.LoadFromFile(UTF8ToSys(FConfigFile));
   If FCleaner.ScheduleMode=smDaily then
     DoLog(Format(SRunningDailyAt,[TimeToStr(FCleaner.DailyAt)]))
   else

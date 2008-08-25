@@ -59,7 +59,7 @@ uses
   {$IFDEF USE_UTF8BIDI_LCL}
   utf8bidi,
   {$ENDIF}
-  Types, LCLIntf, LCLType,
+  FileUtil, Types, LCLIntf, LCLType,
   {$ELSE}
   Windows, Messages,
   {$ENDIF}
@@ -733,7 +733,7 @@ procedure TCustomSynMacroRecorder.LoadFromFile(aFilename: string);
 var
   F : TFileStream;
 begin
-  F := TFileStream.Create(aFilename, fmOpenRead);
+  F := TFileStream.Create(UTF8ToSys(aFilename), fmOpenRead);
   try
     LoadFromStream(F);
     MacroName := ChangeFileExt(ExtractFileName(aFilename), '');
@@ -746,7 +746,7 @@ procedure TCustomSynMacroRecorder.SaveToFile(aFilename: string);
 var
   F : TFileStream;
 begin
-  F := TFileStream.Create(aFilename, fmCreate);
+  F := TFileStream.Create(UTF8ToSys(aFilename), fmCreate);
   try
     SaveToStream(F);
   finally

@@ -288,7 +288,7 @@ begin
   end;
   
   sl:=TStringList.Create;
-  sl.LoadFromFile(Filename);
+  sl.LoadFromFile(UTF8ToSys(Filename));
   DebugLn('TStreamAsXMLForm.WriteComponents ',sl.Text);
   sl.Free;
 end;
@@ -315,7 +315,7 @@ begin
   end;
   
   sl:=TStringList.Create;
-  sl.LoadFromFile(Filename);
+  sl.LoadFromFile(UTF8ToSys(Filename));
   DebugLn('TStreamAsXMLForm.StreamComponents ',sl.Text);
   sl.Free;
 end;

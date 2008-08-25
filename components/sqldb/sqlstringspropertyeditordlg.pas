@@ -75,7 +75,7 @@ end;
 procedure TSQLStringsPropertyEditorDlg.OpenToolButtonClick(Sender: TObject);
 begin
   if(OpenDialog.Execute)then
-    SQLEditor.Lines.LoadFromFile(OpenDialog.FileName);
+    SQLEditor.Lines.LoadFromFile(UTF8ToSys(OpenDialog.FileName));
 end;
 
 //---------------------------------------------------------------------------//
@@ -134,7 +134,7 @@ end;
 procedure TSQLStringsPropertyEditorDlg.SaveToolButtonClick(Sender: TObject);
 begin
   if(SaveDialog.Execute)then
-    SQLEditor.Lines.SaveToFile(SaveDialog.FileName);
+    SQLEditor.Lines.SaveToFile(UTF8ToSys(SaveDialog.FileName));
 end;
 
 initialization

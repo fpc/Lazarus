@@ -367,9 +367,9 @@ begin
     Tool.EnvironmentOverrides.Values['LANG']:= 'en_US';
     if CompilerPath<>'' then
       Tool.EnvironmentOverrides.Values['PP']:=CompilerPath;
-    if not FileExists(Tool.Filename) then begin
+    if not FileExistsUTF8(Tool.Filename) then begin
       Tool.Filename:=FindDefaultMakePath;
-      if not FileExists(Tool.Filename) then begin
+      if not FileExistsUTF8(Tool.Filename) then begin
         MessageDlg(lisMakeNotFound,
           Format(lisTheProgramMakeWasNotFoundThisToolIsNeededToBuildLa, ['"',
             '"', #13, #13])
@@ -523,7 +523,7 @@ begin
     // check for special IDE config file
     if (blfUseMakeIDECfg in Flags) then begin
       MakeIDECfgFilename:=GetMakeIDEConfigFilename;
-      if (FileExists(MakeIDECfgFilename)) then begin
+      if (FileExistsUTF8(MakeIDECfgFilename)) then begin
         // If a file name contains spaces, a file name whould need to be quoted.
         // Using a single quote is not possible, it is used already in the
         // makefile to group all options in OPT='bla bla'.
@@ -592,7 +592,7 @@ begin
       if OSLocksExecutables and not CrossCompiling then begin
         // Allow for the case where this correspnds to the current executable
         NewTargetFilename:='lazarus'+GetExecutableExt(NewTargetOS);
-        if FileExists(AppendPathDelim(NewTargetDirectory)+NewTargetFilename) then
+        if FileExistsUTF8(AppendPathDelim(NewTargetDirectory)+NewTargetFilename) then
           NewTargetFilename:='lazarus.new'+GetExecutableExt(NewTargetOS)
       end;
     end else begin
@@ -740,7 +740,7 @@ begin
   Filename:=GetMakeIDEConfigFilename;
   try
     InvalidateFileStateCache;
-    fs:=TFileStream.Create(Filename,fmCreate);
+    fs:=TFileStream.Create(UTF8ToSys(Filename),fmCreate);
     try
       if ExtraOptions<>'' then begin
         OptionsAsText:=BreakOptions(ExtraOptions);

@@ -309,7 +309,7 @@ begin
   if (not Macros.SubstituteStr(WorkingDir)) then exit;
   if (not Macros.SubstituteStr(Params)) then exit;
   if not FilenameIsAbsolute(Filename) then begin
-    NewFilename:=FindProgram(Filename,GetCurrentDir,false);
+    NewFilename:=FindProgram(Filename,GetCurrentDirUTF8,false);
     if NewFilename='' then begin
       Result:=MessageDlg(lisExtToolFailedToRunTool,
         Format(lisExtToolUnableToRunTheTool, ['"', Title, '"', #13,
@@ -334,7 +334,7 @@ begin
     try
       CheckIfFileIsExecutable(Filename);
       TheProcess := TOutputFilterProcess.Create(nil);
-      TheProcess.CommandLine := Filename+' '+Params;
+      TheProcess.CommandLine := UTF8ToSys(Filename+' '+Params);
       TheProcess.Options:= [poUsePipes,poStdErrToOutPut];
       TheProcess.ShowWindow := swoHide;
       TheProcess.CurrentDirectory := WorkingDir;

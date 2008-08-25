@@ -125,7 +125,7 @@ resourceString
   rsgtkOptionNoXshm = '--no-xshm             Disable use of the X Shared '
     +'Memory Extension.';
   rsgtkOptionName = '--name programe       Set program name to "progname". '
-    +'If not specified, program name will be set to ParamStr(0).';
+    +'If not specified, program name will be set to ParamStrUTF8(0).';
   rsgtkOptionClass = '--class classname     Following Xt conventions, the '
     +'class of a program is the program name with the initial character '
     +'capitalized. For example, the classname for gimp is "Gimp". If --class '

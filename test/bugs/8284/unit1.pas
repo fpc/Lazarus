@@ -33,7 +33,7 @@ implementation
 
 procedure TForm1.ApplicationProperties1Idle(Sender: TObject; var Done: Boolean);
 begin
-  if ParamStr(1)='--runtest' then begin
+  if ParamStrUTF8(1)='--runtest' then begin
     // button doesn't have parentcolor, but is buttonface
     writeln('Button color: ', ColorToString(Button1.Color));
     // checkbox takes parent color

@@ -89,34 +89,34 @@ var
   S: String;
 begin
   if ParamCount<2 then begin
-    writeln('Usage: ',ExtractFileName(ParamStr(0))
+    writeln('Usage: ',ExtractFileName(ParamStrUTF8(0))
        ,' resourcefilename filename1 [filename2 ... filenameN]');
-    writeln('       ',ExtractFileName(ParamStr(0))
+    writeln('       ',ExtractFileName(ParamStrUTF8(0))
        ,' resourcefilename @filelist');
     exit;
   end;
   FileList:=TStringList.Create;
   try
-    if ParamStr(2)[1] = '@' then
+    if ParamStrUTF8(2)[1] = '@' then
     begin
-      S := ParamStr(2);
+      S := ParamStrUTF8(2);
       Delete(S, 1, 1);
       S := ExpandFileName(S);
-      if not FileExists(S) then 
+      if not FileExistsUTF8(S) then 
       begin
         writeln('ERROR: file list not found: ', S);
         exit;
       end;
-      FileList.LoadFromFile(S);
+      FileList.LoadFromFile(UTF8ToSys(S));
     end
-    else for a:=2 to ParamCount do FileList.Add(ParamStr(a));
+    else for a:=2 to ParamCount do FileList.Add(ParamStrUTF8(a));
     
-    ResourceFilename := ParamStr(1);
+    ResourceFilename := ParamStrUTF8(1);
     FullResourceFilename := ExpandFileName(ResourceFilename);
     // check that all resources exists and are not the destination file
     for a:=0 to FileList.Count-1 do begin
       S := FileList[a]; 
-      if not FileExists(S) 
+      if not FileExistsUTF8(S) 
       then begin
         writeln('ERROR: file not found: ', S);
         exit;
@@ -129,7 +129,7 @@ begin
     end;
   
     try
-      ResFileStream:=TFileStream.Create(ResourceFilename,fmCreate);
+      ResFileStream:=TFileStream.Create(UTF8ToSys(ResourceFilename),fmCreate);
     except
       writeln('ERROR: unable to create file ''', ResourceFilename, '''');
       halt(1);
@@ -140,7 +140,7 @@ begin
         BinFilename:=FileList[a];
         write(BinFilename);
         try
-          BinFileStream:=TFileStream.Create(BinFilename,fmOpenRead);
+          BinFileStream:=TFileStream.Create(UTF8ToSys(BinFilename),fmOpenRead);
           BinMemStream:=TMemoryStream.Create;
           try
             BinMemStream.CopyFrom(BinFileStream,BinFileStream.Size);

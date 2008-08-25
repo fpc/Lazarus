@@ -96,7 +96,7 @@ var
     SvnVersionProcess := TProcess.Create(nil);
     try
       with SvnVersionProcess do begin
-        CommandLine := 'svnversion -n "' + SourceDirectory + '"';
+        CommandLine := UTF8ToSys('svnversion -n "' + SourceDirectory + '"');
         Options := [poUsePipes, poWaitOnExit];
         try
           Execute;
@@ -130,7 +130,7 @@ var
   begin
     Result:=false;
     EntriesFileName:=AppendPathDelim(SourceDirectory)+'.svn'+PathDelim+'entries';
-    if FileExists(EntriesFileName) then begin
+    if FileExistsUTF8(EntriesFileName) then begin
        try
          AssignFile(EntriesText, EntriesFileName);
          Reset(EntriesText);
@@ -160,7 +160,7 @@ var
   begin
     Result:=false;
     EntriesFileName:=AppendPathDelim(SourceDirectory)+'.svn'+PathDelim+'entries';
-    if FileExists(EntriesFileName) then begin
+    if FileExistsUTF8(EntriesFileName) then begin
        try
          ReadXMLFile(EntriesDoc, EntriesFileName);
          try
@@ -184,7 +184,7 @@ var
 begin
   Result:=false;
   SvnDir:= AppendPathDelim(SourceDirectory)+'.svn';
-  if DirectoryExists(SvnDir) then
+  if DirectoryExistsUTF8(SvnDir) then
     Result := GetRevisionFromSvnVersion or GetRevisionFromEntriesTxt
       or GetRevisionFromEntriesXml;
 end;
@@ -206,9 +206,9 @@ var
   Lines: TStringList;
 begin
   Result:=false;
-  if FileExists(RevisionIncFileName) then begin
+  if FileExistsUTF8(RevisionIncFileName) then begin
     Lines := TStringList.Create;
-    Lines.LoadFromFile(RevisionIncFileName);
+    Lines.LoadFromFile(UTF8ToSys(RevisionIncFileName));
     if (Lines.Count=2) and
       (Lines[0]=RevisionIncComment) and
       (copy(Lines[1], 1, length(ConstStart))=ConstStart) then
@@ -236,13 +236,13 @@ procedure TSvn2RevisionApplication.ShowHelp;
   end;
 begin
   writeln;
-  writeln(ParamStr(0));
+  writeln(ParamStrUTF8(0));
   writeln;
-  writeln(ExtractFileBaseName(ParamStr(0)), ' <repository path> <output file> [Options]');
+  writeln(ExtractFileBaseName(ParamStrUTF8(0)), ' <repository path> <output file> [Options]');
   writeln('or');
-  writeln(ExtractFileBaseName(ParamStr(0)), ' [Options] <repository path> <output file>');
+  writeln(ExtractFileBaseName(ParamStrUTF8(0)), ' [Options] <repository path> <output file>');
   writeln('or');
-  writeln(ExtractFileBaseName(ParamStr(0)), ' <repository path> [Options] <output file>');
+  writeln(ExtractFileBaseName(ParamStrUTF8(0)), ' <repository path> [Options] <output file>');
   writeln;
   writeln('Options:');
   writeln(' --o                  Output file');
@@ -270,18 +270,18 @@ begin
   //reset
   Verbose := False;
   ConstName := 'RevisionStr';
-  SourceDirectory:=ChompPathDelim(ExtractFilePath(ParamStr(0)));
+  SourceDirectory:=ChompPathDelim(ExtractFilePath(ParamStrUTF8(0)));
   RevisionIncFileName := ExpandFileName('revision.inc');
 
   //find switchless parameters
   index := 1;
   for i := 1 to ParamCount do
   begin
-    if Copy(ParamStr(i),1,1) <> '-' then
+    if Copy(ParamStrUTF8(i),1,1) <> '-' then
     begin
       case index of
-        1: SourceDirectory:=ChompPathDelim(ParamStr(i));
-        2: RevisionIncFileName := ExpandFileName(ParamStr(i));
+        1: SourceDirectory:=ChompPathDelim(ParamStrUTF8(i));
+        2: RevisionIncFileName := ExpandFileName(ParamStrUTF8(i));
       end;
       Inc(index);
     end;
@@ -310,14 +310,14 @@ begin
   Show('');
 
   //checks
-  if not DirectoryExists(SourceDirectory) then
+  if not DirectoryExistsUTF8(SourceDirectory) then
   begin
     writeln('Error: Source directory "', SourceDirectory, '" doesn''t exist.');
     exit;
   end;
   
   RevisionIncDirName:=ExtractFilePath(ExpandFileName(RevisionIncFileName));
-  if (not UseStdOut) and (not DirectoryExists(RevisionIncDirName)) then begin
+  if (not UseStdOut) and (not DirectoryExistsUTF8(RevisionIncDirName)) then begin
     writeln('Error: Target Directory "', RevisionIncDirName, '" doesn''t exist.');
     exit;
   end;
@@ -333,7 +333,7 @@ end;
 
 function TSvn2RevisionApplication.CanCreateRevisionInc: boolean;
 begin
-  if (FileExists(RevisionIncFileName)) then
+  if (FileExistsUTF8(RevisionIncFileName)) then
     Result:= FileIsWritable(RevisionIncFileName)
   else
     Result := DirectoryIsWritable(RevisionIncDirName);

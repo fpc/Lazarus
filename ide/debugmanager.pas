@@ -1004,7 +1004,7 @@ begin
       if CompareFileNames(ExtractFilenameOnly(SrcFile),
         ExtractFilenameOnly(UserFilename)) = 0
       then begin
-        if FileExists(UserFilename)
+        if FileExistsUTF8(UserFilename)
         then begin
           FUserSourceFiles.Move(n, 0); // move most recent first
           SrcFile := UserFilename;
@@ -1022,7 +1022,7 @@ begin
     end;
   end;
 
-  if ((not FilenameIsAbsolute(SrcFile)) or (not FileExists(SrcFile)))
+  if ((not FilenameIsAbsolute(SrcFile)) or (not FileExistsUTF8(SrcFile)))
   and AskUserIfNotFound
   then begin
 
@@ -1046,7 +1046,7 @@ begin
       finally
         OpenDialog.Free;
       end;
-    until FilenameIsAbsolute(SrcFile) and FileExists(SrcFile);
+    until FilenameIsAbsolute(SrcFile) and FileExistsUTF8(SrcFile);
 
     FUserSourceFiles.Insert(0, SrcFile);
   end;
@@ -1719,7 +1719,7 @@ begin
   begin
     // it is Application Bundle (darwin only)
     
-    if not DirectoryExists(LaunchingApplication) then
+    if not DirectoryExistsUTF8(LaunchingApplication) then
     begin
       if MessageDlg(lisLaunchingApplicationInvalid,
         Format(lisTheLaunchingApplicationBundleDoesNotExists,
@@ -1804,7 +1804,7 @@ begin
 
   Project1.RunParameterOptions.AssignEnvironmentTo(FDebugger.Environment);
   NewWorkingDir:=Project1.RunParameterOptions.WorkingDirectory;
-  if (NewWorkingDir<>'') and (not DirectoryExists(NewWorkingDir)) then begin
+  if (NewWorkingDir<>'') and (not DirectoryExistsUTF8(NewWorkingDir)) then begin
     MessageDlg(lisUnableToRun,
       Format(lisTheWorkingDirectoryDoesNotExistPleaseCheckTheWorki, ['"',
         NewWorkingDir, '"', #13]),
@@ -1813,7 +1813,7 @@ begin
   end;
   if NewWorkingDir='' then begin
     NewWorkingDir:=ExtractFilePath(BuildBoss.GetProjectTargetFilename);
-    if (NewWorkingDir<>'') and (not DirectoryExists(NewWorkingDir)) then begin
+    if (NewWorkingDir<>'') and (not DirectoryExistsUTF8(NewWorkingDir)) then begin
       MessageDlg(lisUnableToRun,
         Format(lisTheDestinationDirectoryDoesNotExistPleaseCheckTheP, ['"',
           NewWorkingDir, '"', #13]),

@@ -173,8 +173,8 @@ begin
   readln(header[1]);
   readln(header[2]);
   if ParamCount >= 3 then
-    todaydate := EncodeDate(StrToInt(ParamStr(1)), StrToInt(ParamStr(2)),
-      StrToInt(ParamStr(3)))
+    todaydate := EncodeDate(StrToInt(ParamStrUTF8(1)), StrToInt(ParamStrUTF8(2)),
+      StrToInt(ParamStrUTF8(3)))
   else
     todaydate := Now;
   twodaysago := FormatDateTime('YYYY-mm-dd', todaydate-2);

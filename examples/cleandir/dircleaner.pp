@@ -271,7 +271,7 @@ begin
    SHGetFolderPath(0,CSIDL_PERSONAL,0,0,@PATH);
    Result:=StrPas(Path);
 {$else}
-   Result:=GetEnvironmentVariable('HOME');
+   Result:=GetEnvironmentVariableUTF8('HOME');
 {$endif}
 end;
 
@@ -663,7 +663,7 @@ Var
   L : TStringList;
 
 begin
-  Result:=Not DirectoryExists(D);
+  Result:=Not DirectoryExistsUTF8(D);
   If Result and LogOnly then
     begin
     If (FCreatedDirs=Nil) then
@@ -693,7 +693,7 @@ begin
       FCreatedDirs.Add(D)
     else
       begin
-      Result:=ForceDirectories(D);
+      Result:=ForceDirectoriesUTF8(D);
       If Not Result then
         begin
         Msg:=Format(SErrCreateDir,[D]);
@@ -717,7 +717,7 @@ begin
   Result:=LogOnly;
   If Result then
     Exit;
-  Result:=DeleteFile(AFileName);
+  Result:=DeleteFileUTF8(AFileName);
   If Not Result then
     begin
     Msg:=Format(SDeleteFailed,[AFileName]);
@@ -743,7 +743,7 @@ begin
     Exit;
   DestFile:=IncludeTrailingPathDelimiter(ADestDir)+ExtractFileName(AFileName)+'.gz';
   Try
-    F1:=TFileStream.Create(AFileName,fmOpenRead);
+    F1:=TFileStream.Create(UTF8ToSys(AFileName),fmOpenRead);
     Try
       F2:=TGZFileStream.Create(DestFile,gzOpenWrite);
       Try
@@ -781,9 +781,9 @@ begin
     Exit;
   DestFile:=IncludeTrailingPathDelimiter(ADestDir)+ExtractFileName(AFileName);
   Try
-    F1:=TFileStream.Create(AFileName,fmOpenRead);
+    F1:=TFileStream.Create(UTF8ToSys(AFileName),fmOpenRead);
     Try
-      F2:=TFileStream.Create(DestFile,fmCreate);
+      F2:=TFileStream.Create(UTF8ToSys(DestFile),fmCreate);
       Try
         F2.CopyFrom(F1,0);
       Finally
@@ -816,7 +816,7 @@ Function TCleanDirs.DoFileAction(F: TFileAction; Const AFileName : String) : Boo
     Result:=F.Compress;
     If Result and (F.MinCompressSize>0) then
       begin
-      Result:=FindFirst(AFileName,faAnyFile,Info)=0;
+      Result:=FindFirstUTF8(AFileName,faAnyFile,Info)=0;
       If Result then
         Result:=Info.Size>(F.MinCompressSize*1024);
       end;
@@ -884,24 +884,24 @@ begin
     Exit;
   LogAction(SCleaningDir,[Dir]);
   Dir:=IncludeTrailingPathDelimiter(Dir);
-  If FindFirst(Dir+'*',faAnyFile and not faDirectory,Info)=0 then
+  If FindFirstUTF8(Dir+'*',faAnyFile and not faDirectory,Info)=0 then
     try
       repeat
         CleanFile(Dir+Info.Name);
-      until (FindNext(Info)<>0);
+      until (FindNextUTF8(Info)<>0);
     finally
-      FindClose(Info);
+      FindCloseUTF8(Info);
     end;
   If Recurse then
-    If FindFirst(Dir+'*',faDirectory,Info)=0 then
+    If FindFirstUTF8(Dir+'*',faDirectory,Info)=0 then
       try
         repeat
         If (Info.Attr=faDirectory) and
            Not ((info.Name='.') or (Info.Name='..')) then
           DoCleanDir(Dir+Info.Name,Recurse);
-        until (FindNext(Info)<>0);
+        until (FindNextUTF8(Info)<>0);
       finally
-        FindClose(Info);
+        FindCloseUTF8(Info);
       end;
 end;
 
@@ -929,7 +929,7 @@ Var
 
 begin
   Dir:=D.Path;
-  If Not DirectoryExists(Dir) then
+  If Not DirectoryExistsUTF8(Dir) then
     begin
     Msg:=format(SNoSuchDir,[Dir]);
     LogAction(Msg);

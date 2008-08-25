@@ -168,7 +168,7 @@ Var
 
 begin
   ClearDocument;
-  F:=TFileStream.Create(FN,fmOpenRead);
+  F:=TFileStream.Create(UTF8ToSys(FN),fmOpenRead);
   Try
     SetFileName(FN);
     ReadXMLFile(FDocument,F);
@@ -204,7 +204,7 @@ begin
   If not Result then
     begin
     BN:=ChangeFileExt(FN,BackupExtension);
-    Result:=RenameFile(FN,BN);
+    Result:=RenameFileUTF8(FN,BN);
     end;
 end;
 
@@ -510,7 +510,7 @@ end;
 function TEditorPage.GetInitialDir: String;
 begin
   result := '';
-  if FileExists(FFileName) then
+  if FileExistsUTF8(FFileName) then
     Result := ExtractFilePath(FFileName);
 end;
 

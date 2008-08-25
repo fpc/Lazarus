@@ -60,7 +60,7 @@ uses
   QClipbrd
 {$ELSE}
 {$IFDEF SYN_LAZARUS}
-  FPCAdds, LCLIntf, LCLType,
+  FileUtil, FPCAdds, LCLIntf, LCLType,
 {$ELSE}
   Windows,
 {$ENDIF}
@@ -500,7 +500,7 @@ end;
 procedure TSynCustomExporter.SaveToFile(const AFileName: string);
 begin
   fBuffer.Position := 0;
-  fBuffer.SaveToFile(AFileName);
+  fBuffer.SaveToFile(UTF8ToSys(AFileName));
 end;
 
 procedure TSynCustomExporter.SaveToStream(AStream: TStream);

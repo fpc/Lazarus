@@ -4,43 +4,43 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: messagecomposer:smessagecomposercaption
-msgid "Message Composer ..."
+#: messagecomposer.rscancel
+msgid "Cancel"
 msgstr ""
 
-#: messagecomposer:smsgcaption
-msgid "The message to be shown"
-msgstr ""
-
-#: messagecomposer:spromptcaption
-msgid "Text asking the user for input"
-msgstr ""
-
-#: messagecomposer:smaskinput
-msgid "Mask Input"
-msgstr ""
-
-#: messagecomposer:ssourcewrapper
-msgid "SOURCE WRAPPER"
-msgstr ""
-
-#: messagecomposer:skindofmessage
-msgid "KIND OF MESSAGE"
-msgstr ""
-
-#: messagecomposer:snotimplementedyet
-msgid "Not Implemented Yet"
-msgstr ""
-
-#: messagecomposer:rstest
-msgid "Test"
-msgstr ""
-
-#: messagecomposer:rsok
+#: messagecomposer.rsok
 msgid "Ok"
 msgstr ""
 
-#: messagecomposer:rscancel
-msgid "Cancel"
+#: messagecomposer.rstest
+msgid "Test"
+msgstr ""
+
+#: messagecomposer.skindofmessage
+msgid "KIND OF MESSAGE"
+msgstr ""
+
+#: messagecomposer.smaskinput
+msgid "Mask Input"
+msgstr ""
+
+#: messagecomposer.smessagecomposercaption
+msgid "Message Composer ..."
+msgstr ""
+
+#: messagecomposer.smsgcaption
+msgid "The message to be shown"
+msgstr ""
+
+#: messagecomposer.snotimplementedyet
+msgid "Not Implemented Yet"
+msgstr ""
+
+#: messagecomposer.spromptcaption
+msgid "Text asking the user for input"
+msgstr ""
+
+#: messagecomposer.ssourcewrapper
+msgid "SOURCE WRAPPER"
 msgstr ""
 

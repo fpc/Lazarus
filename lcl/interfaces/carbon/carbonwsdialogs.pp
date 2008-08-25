@@ -202,7 +202,7 @@ begin
                 SName, 'NavCustomControl', 'FilterIndex');
     
       // Set InitialDir
-      if DirectoryExists(TFileDialog(CallbackUD).InitialDir) then
+      if DirectoryExistsUTF8(TFileDialog(CallbackUD).InitialDir) then
       begin
         //DebugLn('Set InitialDir ' + TFileDialog(CallbackUD).InitialDir);
         CreateCFString(TFileDialog(CallbackUD).InitialDir, DirCFStr);

@@ -195,7 +195,7 @@ begin
   Form3:=nil;
   DockingManager:=TLazDockingManager.Create(Self);
   
-  UseConfig:=FileExists('config.xml');
+  UseConfig:=FileExistsUTF8('config.xml');
   if UseConfig then begin
     Config:=TXMLConfigStorage.Create('config.xml',true);
     DockingManager.LoadFromConfig(Config);

@@ -54,7 +54,7 @@ uses
   Qt, QControls, QGraphics,
   {$ELSE}
   {$IFDEF SYN_LAZARUS}
-  LCLIntf, LCLType,
+  FileUtil, LCLIntf, LCLType,
   {$ELSE}
   Windows, Messages, Registry,
   {$ENDIF}
@@ -168,7 +168,7 @@ begin
   WasText := FALSE;
   AStrings.Clear;
   try
-    Src := TFileStream.Create(AFile, fmOpenRead or fmShareDenyWrite);
+    Src := TFileStream.Create(UTF8ToSys(AFile), fmOpenRead or fmShareDenyWrite);
     try
       Dest := TMemoryStream.Create;
       try
@@ -203,7 +203,7 @@ begin
     try
       AStrings.SaveToStream(Src);
       Src.Seek(0, soFromBeginning);
-      Dest := TFileStream.Create(AFile, fmCreate);
+      Dest := TFileStream.Create(UTF8ToSys(AFile), fmCreate);
       try
         ObjectTextToResource(Src, Dest);
       finally

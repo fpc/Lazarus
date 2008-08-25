@@ -300,7 +300,7 @@ var
   begin
     Result:=false;
     if (not DirPathExists(MainDirectory)) or (Lvl>20) then exit;
-    if SysUtils.FindFirst(MainDirectory+GetAllFilesMask,
+    if FindFirstUTF8(MainDirectory+GetAllFilesMask,
                           faAnyFile,FileInfo)=0
     then begin
       repeat
@@ -318,9 +318,9 @@ var
           if FileMatches(FullFilename) then
             List.Add(FullFilename);
         end;
-      until SysUtils.FindNext(FileInfo)<>0;
+      until FindNextUTF8(FileInfo)<>0;
     end;
-    SysUtils.FindClose(FileInfo);
+    FindCloseUTF8(FileInfo);
     Result:=true;
   end;
   
@@ -413,9 +413,9 @@ begin
   for i:=0 to List.Count-1 do begin
     Filename:=List[i];
     DebugLn('TCleanDirectoryDialog: Deleting file ',Filename);
-    if FileExists(Filename) then begin
+    if FileExistsUTF8(Filename) then begin
       repeat
-        if DeleteFile(Filename) then begin
+        if DeleteFileUTF8(Filename) then begin
           break;
         end else begin
           MsgResult:=MessageDlg(lisErrorDeletingFile,

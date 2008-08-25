@@ -130,10 +130,10 @@ begin
   // Make sure it is a PNG file.
   FN:=ChangeFileExt(FN,'.png');
   FN:=IncludeTrailingPathDelimiter(ImageDir)+FN;
-  If Not FileExists(FN) then
+  If Not FileExistsUTF8(FN) then
     Raise Exception.Create('The requested file "'+OFN+'" does not exist in the image directory');
   AResponse.ContentType:='image/png';
-  F:=TFileStream.Create(FN,fmOpenRead);
+  F:=TFileStream.Create(UTF8ToSys(FN),fmOpenRead);
   Try
     AResponse.ContentStream:=F;
     AResponse.SendContent;

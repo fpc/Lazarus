@@ -129,7 +129,7 @@ Var i      : Integer;
        Stc,S  : String;
        Flag   : Boolean;
    begin
-     if FileExists(aFileName) then
+     if FileExistsUTF8(aFileName) then
      begin
        AssignFile(f,aFileName);
        Reset(f);
@@ -184,10 +184,10 @@ begin
   TFMTAP := LongTimeFormat; //nl_langinfo(T_FMT_AMPM)
 
   //KDE config
-  if DirectoryExists(ExpandFileName('~/.kde/share/config')) then
+  if DirectoryExistsUTF8(ExpandFileName('~/.kde/share/config')) then
   begin
 
-    Lg:=Copy(GetEnvironmentVariable('LANG'),1,2); //Langue
+    Lg:=Copy(GetEnvironmentVariableUTF8('LANG'),1,2); //Langue
     LstKde:=TStringList.Create;
     try
       ReadKdeFileConfig(Format('/usr/share/locale/l10n/%s/entry.desktop',[Lg]),'[KCM Locale]',LstKde);

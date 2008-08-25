@@ -565,12 +565,12 @@ begin
   end else
     TPostscriptPrinterCanvas(Canvas).OutPutFileName:='';
   
-  if not aAborted and FileExists(FOutputFileName) then begin
+  if not aAborted and FileExistsUTF8(FOutputFileName) then begin
     {$IFDEF LogPrintoutFile}
     CopyFile(FOutputFileName, 'printjob'+ExtractFileExt(FOutputFileName));
     {$ENDIF}
     PrintFile(FOutputFileName);
-    DeleteFile(FOutputFilename);
+    DeleteFileUTF8(FOutputFilename);
   end;
 
 end;
@@ -585,7 +585,7 @@ begin
 
   if fcupsPPDName<>'' then
   begin
-    DeleteFile(fcupsPPDName);
+    DeleteFileUTF8(fcupsPPDName);
     fcupsPPDName:='';
   end;
 
@@ -676,7 +676,7 @@ begin
 
       if fcupsPPDName<>'' then
       begin
-        DeleteFile(fcupsPPDName);
+        DeleteFileUTF8(fcupsPPDName);
         fcupsPPDName:='';
       end;
     end;

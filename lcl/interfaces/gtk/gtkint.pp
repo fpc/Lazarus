@@ -69,8 +69,8 @@ uses
   {$endif}
   Math, // after gtk to get the correct Float type
   // LCL
-  Translations, ExtDlgs, Dialogs, Controls, Forms, LCLStrConsts, LMessages,
-  LCLProc, LCLIntf, LCLType, DynHashArray, GraphType, GraphMath,
+  FileUtil, Translations, ExtDlgs, Dialogs, Controls, Forms, LCLStrConsts,
+  LMessages, LCLProc, LCLIntf, LCLType, DynHashArray, GraphType, GraphMath,
   Graphics, Menus, Maps, Themes,
   // widgetset
   GtkDebug,
@@ -351,9 +351,6 @@ uses
 procedure InternalInit;
 var
   c: TClipboardType;
-  {$IFDEF Gtk1}
-  Lang: String;
-  {$ENDIF}
 begin
   gtk_handler_quark := g_quark_from_static_string('gtk-signal-handlers');
 
@@ -376,16 +373,7 @@ begin
 
   // charset encodings
   {$IFDEF Gtk1}
-  Lang := SysUtils.GetEnvironmentVariable('LC_ALL');
-  if Lang = '' then begin
-    Lang := SysUtils.GetEnvironmentVariable('LC_MESSAGES');
-    if Lang = '' then begin
-      Lang := SysUtils.GetEnvironmentVariable('LANG');
-    end;
-  end;
-
-  SystemCharSetIsUTF8:=(System.Pos('UTF8',Lang)>0)
-                        or (System.Pos('UTF-8',Lang)>0);
+  SystemCharSetIsUTF8:=not NeedRTLAnsi;
   {$ENDIF}
 
   CharSetEncodingList := TList.Create;

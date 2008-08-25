@@ -119,9 +119,9 @@ var
 begin
   // single byte to UTF-8
   if ParamCount=0 then
-    raise Exception.Create('Usage: '+ParamStr(0)+' <encoding>');
+    raise Exception.Create('Usage: '+ParamStrUTF8(0)+' <encoding>');
 
-  FromEncoding:=ParamStr(1);
+  FromEncoding:=ParamStrUTF8(1);
   ToEncoding:='UTF-8';
 
   SL:=TStringList.Create;
@@ -130,14 +130,14 @@ begin
     if i<32 then continue;
     Filename1:='test1.txt';
     Filename2:='test2.txt';
-    DeleteFile(Filename1);
-    DeleteFile(Filename2);
+    DeleteFileUTF8(Filename1);
+    DeleteFileUTF8(Filename2);
     SL.Clear;
     SL.Add(chr(i));
-    SL.SaveToFile(Filename1);
+    SL.SaveToFile(UTF8ToSys(Filename1));
     if fpSystem('iconv -f '+FromEncoding+' -t '+ToEncoding+' '+Filename1+' >'+Filename2)=0
     then begin
-      SL.LoadFromFile(Filename2);
+      SL.LoadFromFile(UTF8ToSys(Filename2));
       Table[i]:=SL[0];
       //writeln(i,'=',length(Table[i]));
     end else begin

@@ -1004,11 +1004,11 @@ var
   begin
     //DebugLn(['AddFilesOfDirectory Directory="',Directory,'"']);
     if (not FilenameIsAbsolute(Directory))
-    or (not DirectoryExists(Directory)) then begin
+    or (not DirectoryExistsUTF8(Directory)) then begin
       DebugLn(['AddFilesOfDirectory WARNING: does not exist: "',Directory,'"']);
       exit;
     end;
-    if SysUtils.FindFirst(Directory+FileMask,faAnyFile,FileInfo)=0 then begin
+    if FindFirstUTF8(Directory+FileMask,faAnyFile,FileInfo)=0 then begin
       repeat
         // check if special file
         if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
@@ -1016,9 +1016,9 @@ var
           continue;
         if FilenameIsPascalUnit(FileInfo.Name) then
           AddFile(Directory+FileInfo.Name,ClearIncludedByInfo);
-      until SysUtils.FindNext(FileInfo)<>0;
+      until FindNextUTF8(FileInfo)<>0;
     end;
-    SysUtils.FindClose(FileInfo);
+    FindCloseUTF8(FileInfo);
   end;
   
   procedure AddFilesOfSearchPath(const SrcPath, BaseDir: string;
@@ -1050,7 +1050,7 @@ var
     LazDir: String;
   begin
     LazDir:=AppendPathDelim(EnvironmentOptions.LazarusDirectory);
-    if not DirectoryExists(LazDir) then begin
+    if not DirectoryExistsUTF8(LazDir) then begin
       DebugLn(['AddFilesOfIDE WARNING: lazarus directory not found: "',LazDir,'"']);
       exit;
     end;

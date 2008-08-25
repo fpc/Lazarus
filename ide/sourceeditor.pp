@@ -230,7 +230,7 @@ type
     procedure OnReplace(Sender: TObject; const ASearch, AReplace:
        string; Line, Column: integer; var Action: TSynReplaceAction);
     function DoFindAndReplace: Integer;
-    procedure FindNext;
+    procedure FindNextUTF8;
     procedure FindPrevious;
     procedure FindNextWordOccurrence(DirectionForward: boolean);
     procedure InitGotoDialog;
@@ -1230,7 +1230,7 @@ begin
 end;
 
 {------------------------------F I N D  A G A I N ----------------------------}
-procedure TSourceEditor.FindNext;
+procedure TSourceEditor.FindNextUTF8;
 var
   OldOptions: TSynSearchOptions;
 begin
@@ -1548,7 +1548,7 @@ Begin
     StartFindAndReplace(false);
 
   ecFindNext:
-    FindNext;
+    FindNextUTF8;
 
   ecFindPrevious:
     FindPrevious;
@@ -3019,11 +3019,11 @@ begin
   // code templates
   FCodeTemplateModul:=TSynEditAutoComplete.Create(Self);
   with FCodeTemplateModul do begin
-    if FileExists(EditorOpts.CodeTemplateFilename) then
-      AutoCompleteList.LoadFromFile(EditorOpts.CodeTemplateFilename)
+    if FileExistsUTF8(EditorOpts.CodeTemplateFilename) then
+      AutoCompleteList.LoadFromFile(UTF8ToSys(EditorOpts.CodeTemplateFilename))
     else
-      if FileExists('lazarus.dci') then
-        AutoCompleteList.LoadFromFile('lazarus.dci');
+      if FileExistsUTF8('lazarus.dci') then
+        AutoCompleteList.LoadFromFile(UTF8ToSys('lazarus.dci'));
     IndentToTokenStart:=EditorOpts.CodeTemplateIndentToTokenStart;
     OnTokenNotFound:=@OnCodeTemplateTokenNotFound;
     OnExecuteCompletion:=@OnCodeTemplateExecuteCompletion;
@@ -4072,29 +4072,29 @@ begin
     CurFilename:=ASrcEdit.FileName;
     if (FilenameIsAbsolute(CurFilename)) then begin
       if FilenameIsPascalUnit(CurFilename) then begin
-        if FileExists(ChangeFileExt(CurFilename,'.lfm')) then
+        if FileExistsUTF8(ChangeFileExt(CurFilename,'.lfm')) then
           AddContextPopupMenuItem(Format(lisOpenLfm,
             [ChangeFileExt(ExtractFileName(CurFilename),'.lfm')]),
             true,@OnPopupMenuOpenLFMFile);
-        if FileExists(ChangeFileExt(CurFilename,'.lrs')) then
+        if FileExistsUTF8(ChangeFileExt(CurFilename,'.lrs')) then
           AddContextPopupMenuItem(Format(lisOpenLfm,
             [ChangeFileExt(ExtractFileName(CurFilename),'.lrs')]),
             true,@OnPopupMenuOpenLRSFile);
-        if FileExists(ChangeFileExt(CurFilename,'.s')) then
+        if FileExistsUTF8(ChangeFileExt(CurFilename,'.s')) then
           AddContextPopupMenuItem(Format(lisOpenLfm,
             [ChangeFileExt(ExtractFileName(CurFilename),'.s')]),
             true,@OnPopupMenuOpenSFile);
       end;
       if (CompareFileExt(CurFilename,'.lfm',true)=0) then begin
-        if FileExists(ChangeFileExt(CurFilename,'.pas')) then
+        if FileExistsUTF8(ChangeFileExt(CurFilename,'.pas')) then
           AddContextPopupMenuItem(Format(lisOpenLfm,
             [ChangeFileExt(ExtractFileName(CurFilename),'.pas')]),
             true,@OnPopupMenuOpenPasFile);
-        if FileExists(ChangeFileExt(CurFilename,'.pp')) then
+        if FileExistsUTF8(ChangeFileExt(CurFilename,'.pp')) then
           AddContextPopupMenuItem(Format(lisOpenLfm,
             [ChangeFileExt(ExtractFileName(CurFilename),'.pp')]),
             true,@OnPopupMenuOpenPPFile);
-        if FileExists(ChangeFileExt(CurFilename,'.p')) then
+        if FileExistsUTF8(ChangeFileExt(CurFilename,'.p')) then
           AddContextPopupMenuItem(Format(lisOpenLfm,
             [ChangeFileExt(ExtractFileName(CurFilename),'.p')]),
             true,@OnPopupMenuOpenPFile);
@@ -4753,7 +4753,7 @@ Procedure TSourceNotebook.FindNextClicked(Sender: TObject);
 var TempEditor:TSourceEditor;
 Begin
   TempEditor:=GetActiveSe;
-  if TempEditor <> nil then TempEditor.FindNext;
+  if TempEditor <> nil then TempEditor.FindNextUTF8;
 End;
 
 Procedure TSourceNotebook.FindPreviousClicked(Sender: TObject);
@@ -4857,7 +4857,7 @@ begin
     while AnUnitInfo<>nil do begin
       //Only if file exists on disk.
       if FilenameIsAbsolute(AnUnitInfo.FileName)
-      and FileExists(AnUnitInfo.FileName) then
+      and FileExistsUTF8(AnUnitInfo.FileName) then
         TheFileList.Add(AnUnitInfo.FileName);
       AnUnitInfo:=AnUnitInfo.NextPartOfProject;
     end;
@@ -4926,7 +4926,7 @@ begin
     begin
       //only if file exists on disk
       if FilenameIsAbsolute(Editors[i].FileName) and
-         FileExists(Editors[i].FileName) then
+         FileExistsUTF8(Editors[i].FileName) then
       begin
          TheFileList.Add(Editors[i].FileName);
       end;//if
@@ -6125,11 +6125,11 @@ Begin
 
   // reload code templates
   with CodeTemplateModul do begin
-    if FileExists(EditorOpts.CodeTemplateFilename) then
+    if FileExistsUTF8(EditorOpts.CodeTemplateFilename) then
       AutoCompleteList.LoadFromFile(EditorOpts.CodeTemplateFilename)
     else
-      if FileExists('lazarus.dci') then
-        AutoCompleteList.LoadFromFile('lazarus.dci');
+      if FileExistsUTF8('lazarus.dci') then
+        AutoCompleteList.LoadFromFile(UTF8ToSys('lazarus.dci'));
     IndentToTokenStart:=EditorOpts.CodeTemplateIndentToTokenStart;
   end;
 

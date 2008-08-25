@@ -102,9 +102,9 @@ Function TIDEDataDictCommandHandler.GetDataDesktopBinary : String;
 
 begin
   Result:=DataDesktopBinary;
-  If (Result='') or not FileExists(Result) then
+  If (Result='') or not FileExistsUTF8(Result) then
     begin
-    Result:=FileSearch(LazDataDesktop,GetEnvironmentVariable('PATH'));
+    Result:=FileSearchUTF8(LazDataDesktop,GetEnvironmentVariableUTF8('PATH'));
     If (Result='') then
       if MessageDLG(SErrNoDataDesktopDoSelect,mtInformation,[mbYes,mbNo],0)=mrYes then
         begin
@@ -153,7 +153,7 @@ begin
       FN:=FN+' -f "'+AFileName+'"';
   With TProcess.Create(Nil) do
     try
-      CommandLine:=FN;
+      CommandLine:=UTF8ToSys(FN);
       Execute;
     Finally
       Free;

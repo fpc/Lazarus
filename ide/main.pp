@@ -874,8 +874,8 @@ type
     function DoCheckSyntax: TModalResult;
     procedure DoGoToPascalBlockOtherEnd;
     procedure DoGoToPascalBlockStart;
-    procedure DoJumpToGuessedUnclosedBlock(FindNext: boolean);
-    procedure DoJumpToGuessedMisplacedIFDEF(FindNext: boolean);
+    procedure DoJumpToGuessedUnclosedBlock(FindNextUTF8: boolean);
+    procedure DoJumpToGuessedMisplacedIFDEF(FindNextUTF8: boolean);
 
     procedure DoGotoIncludeDirective;
     procedure SaveIncludeLinks;
@@ -1048,7 +1048,7 @@ begin
   MainBuildBoss.SetupInputHistories;
   ShowCompileDialog:=EnvironmentOptions.ShowCompileDialog;
 
-  CreateDir(GetProjectSessionsConfigPath);
+  CreateDirUTF8(GetProjectSessionsConfigPath);
 end;
 
 constructor TMainIDE.Create(TheOwner: TComponent);
@@ -1795,7 +1795,7 @@ begin
       // only try to load .lpi files, other files are loaded later
       if (CompareFileExt(AProjectFilename,'.lpi',false)=0) then begin
         AProjectFilename:=CleanAndExpandFilename(AProjectFilename);
-        if FileExists(AProjectFilename) then begin
+        if FileExistsUTF8(AProjectFilename) then begin
           CmdLineFiles.Delete(0);
           ProjectLoaded:=(DoOpenProjectFile(AProjectFilename,[])=mrOk);
         end;
@@ -1806,7 +1806,7 @@ begin
     if (not ProjectLoaded)
     and (not SkipAutoLoadingLastProject)
     and (EnvironmentOptions.OpenLastProjectAtStart)
-    and (FileExists(EnvironmentOptions.LastSavedProjectFile)) then begin
+    and (FileExistsUTF8(EnvironmentOptions.LastSavedProjectFile)) then begin
       if (not IDEProtocolOpts.LastProjectLoadingCrashed)
       or AskIfLoadLastFailingProject then begin
         // protocol that the IDE is trying to load the last project and did not
@@ -1864,8 +1864,8 @@ var
 begin
   // delete old remote control file
   Filename:=GetRemoteControlFilename;
-  if FileExists(Filename) then
-    DeleteFile(Filename);
+  if FileExistsUTF8(Filename) then
+    DeleteFileUTF8(Filename);
   // start timer
   FRemoteControlTimer:=TTimer.Create(OwningComponent);
   FRemoteControlTimer.Interval:=500;
@@ -2386,7 +2386,7 @@ begin
     UpdateEnvironment;
   end else begin
     // open failed
-    if not FileExists(AFilename) then begin
+    if not FileExistsUTF8(AFilename) then begin
       // file does not exist -> delete it from recent file list
       EnvironmentOptions.RemoveFromRecentOpenFiles(AFilename);
       UpdateEnvironment;
@@ -3278,7 +3278,7 @@ begin
       AddRecentProjectFileToEnvironment(AFilename);
     end else begin
       // open failed
-      if not FileExists(AFilename) then begin
+      if not FileExistsUTF8(AFilename) then begin
         EnvironmentOptions.RemoveFromRecentProjectFiles(AFilename);
       end else
         AddRecentProjectFileToEnvironment(AFilename);
@@ -3435,7 +3435,7 @@ begin
   
   POFileAgeValid:=false;
   if FileExistsCached(POFilename) then begin
-    POFileAge:=FileAge(POFilename);
+    POFileAge:=FileAgeUTF8(POFilename);
     POFileAgeValid:=true;
   end;
   
@@ -3451,7 +3451,7 @@ begin
         // check .lst file
         LRTFilename:=ChangeFileExt(CurFilename,'.lrt');
         if FileExistsCached(LRTFilename)
-        and ((not POFileAgeValid) or (FileAge(LRTFilename)>POFileAge)) then
+        and ((not POFileAgeValid) or (FileAgeUTF8(LRTFilename)>POFileAge)) then
           Files.Add(LRTFilename);
         // check .rst file
         RSTFilename:=ExtractFileName(ChangeFileExt(CurFilename,'.rst'));
@@ -3466,7 +3466,7 @@ begin
         //DebugLn(['TMainIDE.UpdateProjectPOFile Looking for .rst file ="',RSTFilename,'"']);
 
         if FileExistsCached(RSTFilename)
-        and ((not POFileAgeValid) or (FileAge(RSTFilename)>POFileAge)) then
+        and ((not POFileAgeValid) or (FileAgeUTF8(RSTFilename)>POFileAge)) then
           Files.Add(RSTFilename);
       end;
       AnUnitInfo:=AnUnitInfo.NextPartOfProject;
@@ -3699,7 +3699,7 @@ begin
     if OpenDialog.Execute and (OpenDialog.Files.Count>0) then begin
       for i := 0 to OpenDialog.Files.Count-1 do begin
         AFilename:=CleanAndExpandFilename(OpenDialog.Files.Strings[i]);
-        if FileExists(AFilename)
+        if FileExistsUTF8(AFilename)
         and (DoConvertDelphiUnit(AFilename)=mrAbort) then
           break;
       end;
@@ -3736,7 +3736,7 @@ begin
     end;
     if OpenDialog.Execute then begin
       AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
-      if FileExists(AFilename) then
+      if FileExistsUTF8(AFilename) then
         DoConvertDelphiProject(AFilename);
       UpdateEnvironment;
     end;
@@ -3772,7 +3772,7 @@ begin
     if OpenDialog.Execute then begin
       AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
       //debugln('TMainIDE.mnuToolConvertDelphiProjectClicked A ',AFilename);
-      if FileExists(AFilename) then
+      if FileExistsUTF8(AFilename) then
         DoConvertDelphiPackage(AFilename);
       UpdateEnvironment;
     end;
@@ -4336,7 +4336,7 @@ begin
     // then load the lfm file (without parsing)
     if (not AnUnitInfo.IsVirtual) and (AnUnitInfo.Component<>nil) then begin
       LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lfm');
-      if (FileExists(LFMFilename)) then begin
+      if (FileExistsUTF8(LFMFilename)) then begin
         Result:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText]);
         if not (Result in [mrOk,mrIgnore]) then exit;
       end;
@@ -4546,7 +4546,7 @@ begin
   // check overwrite existing file
   if (AnUnitInfo.IsVirtual
       or (CompareFilenames(NewFilename,AnUnitInfo.Filename)<>0))
-  and FileExists(NewFilename) then begin
+  and FileExistsUTF8(NewFilename) then begin
     ACaption:=lisOverwriteFile;
     AText:=Format(lisAFileAlreadyExistsReplaceIt, ['"', NewFilename, '"', #13]);
     Result:=QuestionDlg(ACaption, AText, mtConfirmation,
@@ -4968,8 +4968,8 @@ begin
   if AnUnitInfo.ComponentName='' then begin
     // unit has no component
     // -> remove lfm file, so that it will not be auto loaded on next open
-    if (FileExists(NewLFMFilename))
-    and (not DeleteFile(NewLFMFilename))
+    if (FileExistsUTF8(NewLFMFilename))
+    and (not DeleteFileUTF8(NewLFMFilename))
     and (MessageDlg(lisPkgMangDeleteFailed, Format(lisDeletingOfFileFailed, [
       '"', NewLFMFilename, '"']), mtError, [mbIgnore, mbCancel], 0)=mrCancel)
       then
@@ -5057,7 +5057,7 @@ begin
   {$ENDIF}
 
   // save new lfm
-  if FilenameIsAbsolute(OldLFMFilename) and FileExists(OldLFMFilename) then
+  if FilenameIsAbsolute(OldLFMFilename) and FileExistsUTF8(OldLFMFilename) then
   begin
     LFMBuf:=CodeToolBoss.LoadFile(OldLFMFilename,false,false);
     if LFMBuf<>nil then begin
@@ -5130,8 +5130,8 @@ begin
         NewFilePath:=AppendPathDelim(ExtractFilePath(NewFilename));
         for i:=0 to AmbiguousFiles.Count-1 do begin
           AmbiguousFilename:=NewFilePath+AmbiguousFiles[i];
-          if (FileExists(AmbiguousFilename))
-          and (not DeleteFile(AmbiguousFilename))
+          if (FileExistsUTF8(AmbiguousFilename))
+          and (not DeleteFileUTF8(AmbiguousFilename))
           and (MessageDlg(lisPkgMangDeleteFailed, Format(lisDeletingOfFileFailed,
             ['"', AmbiguousFilename, '"']), mtError, [mbIgnore, mbCancel], 0)=
             mrCancel) then
@@ -5173,7 +5173,7 @@ begin
 
   // delete old pas, .pp, .ppu
   if (CompareFilenames(NewFilename,OldFilename)<>0)
-  and FilenameIsAbsolute(OldFilename) and FileExists(OldFilename) then begin
+  and FilenameIsAbsolute(OldFilename) and FileExistsUTF8(OldFilename) then begin
     if MessageDlg(lisDeleteOldFile2,
       Format(lisDeleteOldFile, ['"', OldFilename, '"']),
       mtConfirmation,[mbYes,mbNo],0)=mrYes then
@@ -5181,35 +5181,35 @@ begin
       Result:=DeleteFileInteractive(OldFilename,[mbAbort]);
       if Result=mrAbort then exit;
       // delete old lfm
-      if FileExists(NewLFMFilename) then begin
+      if FileExistsUTF8(NewLFMFilename) then begin
         // the new file has a lfm, so it is safe to delete the old
         // (if NewLFMFilename does not exist, it didn't belong to the unit
         //  or there was an error during delete. Never delete files in doubt.)
         OldLFMFilename:=ChangeFileExt(OldFilename,'.lfm');
-        if FileExists(OldLFMFilename) then begin
+        if FileExistsUTF8(OldLFMFilename) then begin
           Result:=DeleteFileInteractive(OldLFMFilename,[mbAbort]);
           if Result=mrAbort then exit;
         end;
       end;
       // delete old lrs
-      if (ResourceCode<>nil) and FileExists(ResourceCode.Filename) then begin
+      if (ResourceCode<>nil) and FileExistsUTF8(ResourceCode.Filename) then begin
         // the new file has a lrs, so it is safe to delete the old
         // (if the new lrs does not exist, it didn't belong to the unit
         //  or there was an error during delete. Never delete files in doubt.)
         OldLRSFilename:=ChangeFileExt(OldFilename,'.lrs');
-        if FileExists(OldLRSFilename) then begin
+        if FileExistsUTF8(OldLRSFilename) then begin
           Result:=DeleteFileInteractive(OldLRSFilename,[mbAbort]);
           if Result=mrAbort then exit;
         end;
       end;
       // delete ppu in source directory
       OldPPUFilename:=ChangeFileExt(OldFilename,'.ppu');
-      if FileExists(OldPPUFilename) then begin
+      if FileExistsUTF8(OldPPUFilename) then begin
         Result:=DeleteFileInteractive(OldPPUFilename,[mbAbort]);
         if Result=mrAbort then exit;
       end;
       OldPPUFilename:=ChangeFileExt(OldPPUFilename,'.o');
-      if FileExists(OldPPUFilename) then begin
+      if FileExistsUTF8(OldPPUFilename) then begin
         Result:=DeleteFileInteractive(OldPPUFilename,[mbAbort]);
         if Result=mrAbort then exit;
       end;
@@ -5227,12 +5227,12 @@ begin
             end;
             if (OutDir<>'') and FilenameIsAbsolute(OutDir) then begin
               OldPPUFilename:=AppendPathDelim(OutDir)+ChangeFileExt(ExtractFilenameOnly(OldFilename),'.ppu');
-              if FileExists(OldPPUFilename) then begin
+              if FileExistsUTF8(OldPPUFilename) then begin
                 Result:=DeleteFileInteractive(OldPPUFilename,[mbAbort]);
                 if Result=mrAbort then exit;
               end;
               OldPPUFilename:=ChangeFileExt(OldPPUFilename,'.o');
-              if FileExists(OldPPUFilename) then begin
+              if FileExistsUTF8(OldPPUFilename) then begin
                 Result:=DeleteFileInteractive(OldPPUFilename,[mbAbort]);
                 if Result=mrAbort then exit;
               end;
@@ -5331,7 +5331,7 @@ begin
         // either this is a lazarus project
         // or it is not yet a lazarus project ;)
         LPIFilename:=ChangeFileExt(AFilename,'.lpi');
-        if FileExists(LPIFilename) then begin
+        if FileExistsUTF8(LPIFilename) then begin
           if QuestionDlg(lisProjectInfoFileDetected,
             Format(lisTheFileSeemsToBeTheProgramFileOfAnExistingLazarusP, [
               AFilename]), mtConfirmation,
@@ -5974,7 +5974,7 @@ var
     // this unit contains the class
     ClassFound:=true;
     LFMFilename:=ChangeFileExt(UnitCode.Filename,'.lfm');
-    if FileExists(LFMFilename) then begin
+    if FileExistsUTF8(LFMFilename) then begin
       UsingFilename:=AnUnitInfo.Filename;
       Project1.ShortenFilename(UsingFilename);
       UsedFilename:=UnitCode.Filename;
@@ -6044,7 +6044,7 @@ var
     
     if not TryWithoutLFM then begin
       LFMFilename:=ChangeFileExt(UnitFilename,'.lfm');
-      if FileExists(LFMFilename) then begin
+      if FileExistsUTF8(LFMFilename) then begin
         // load the lfm file
         TheModalResult:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText]);
         if TheModalResult<>mrOk then begin
@@ -6673,14 +6673,14 @@ begin
   end;
 
   // check if info file or source file already exists
-  if FileExists(NewFilename) then begin
+  if FileExistsUTF8(NewFilename) then begin
     ACaption:=lisOverwriteFile;
     AText:=Format(lisAFileAlreadyExistsReplaceIt, ['"', NewFilename, '"', #13]);
     Result:=MessageDlg(ACaption, AText, mtConfirmation, [mbOk, mbCancel], 0);
     if Result=mrCancel then exit;
   end
   else begin
-    if FileExists(NewProgramFilename) then begin
+    if FileExistsUTF8(NewProgramFilename) then begin
       ACaption:=lisOverwriteFile;
       AText:=Format(lisAFileAlreadyExistsReplaceIt, ['"', NewProgramFilename,
         '"', #13]);
@@ -7122,7 +7122,7 @@ begin
 
   // check if file is writable on disk
   if (not ActiveUnitInfo.IsVirtual)
-  and FileExists(ActiveUnitInfo.Filename) then
+  and FileExistsUTF8(ActiveUnitInfo.Filename) then
     ActiveUnitInfo.FileReadOnly:=not FileIsWritable(ActiveUnitInfo.Filename)
   else
     ActiveUnitInfo.FileReadOnly:=false;
@@ -7432,7 +7432,7 @@ begin
 
   // check for special files
   if ([ofRegularFile,ofRevert,ofProjectLoading]*Flags=[])
-  and FilenameIsAbsolute(AFilename) and FileExists(AFilename) then begin
+  and FilenameIsAbsolute(AFilename) and FileExistsUTF8(AFilename) then begin
     // check if file is a lazarus project (.lpi)
     if (CompareFileExt(AFilename,'.lpi',false)=0) then begin
       if QuestionDlg(lisOpenProject, Format(lisOpenTheProject, [AFilename]),
@@ -7509,7 +7509,7 @@ begin
   try
 
     // check if file exists
-    if FilenameIsAbsolute(AFilename) and (not FileExists(AFilename)) then begin
+    if FilenameIsAbsolute(AFilename) and (not FileExistsUTF8(AFilename)) then begin
       // file does not exist
       if (ofRevert in Flags) then begin
         // revert failed, due to missing file
@@ -7556,7 +7556,7 @@ begin
     end;
 
     // check readonly
-    NewUnitInfo.FileReadOnly:=FileExists(NewUnitInfo.Filename)
+    NewUnitInfo.FileReadOnly:=FileExistsUTF8(NewUnitInfo.Filename)
                               and (not FileIsWritable(NewUnitInfo.Filename));
 
 
@@ -7717,7 +7717,7 @@ begin
           if (AnUnitInfo.Component=nil) then begin
             // load the frame
             LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lfm');
-            if not FileExists(LFMFilename) then begin
+            if not FileExistsUTF8(LFMFilename) then begin
               DebugLn(['TMainIDE.DoSelectFrame file not found: ',LFMFilename]);
               exit;
             end;
@@ -8028,14 +8028,14 @@ var ActiveSrcEdit: TSourceEditor;
           for PasExt:=Low(TPascalExtType) to High(TPascalExtType) do begin
             Ext:=PascalExtension[PasExt];
             FinalFile:=ExpandFileName(CurPath+TempFile+Ext);
-            if FileExists(FinalFile) then begin
+            if FileExistsUTF8(FinalFile) then begin
               FName:=FinalFile;
               exit;
             end;
           end;
         end else begin
           FinalFile:=ExpandFileName(CurPath+TempFile);
-          if FileExists(FinalFile) then begin
+          if FileExistsUTF8(FinalFile) then begin
             FName:=FinalFile;
             exit;
           end;
@@ -8498,7 +8498,7 @@ begin
   Ext:=lowercase(ExtractFileExt(AFilename));
 
   // check if file exists
-  if not FileExists(AFilename) then begin
+  if not FileExistsUTF8(AFilename) then begin
     ACaption:=lisFileNotFound;
     AText:=Format(lisPkgMangFileNotFound, ['"', AFilename, '"']);
     Result:=MessageDlg(ACaption, AText, mtError, [mbAbort], 0);
@@ -8510,7 +8510,7 @@ begin
   if Result<>mrOk then exit;
 
   // if there is a project info file, load that instead
-  if (Ext<>'.lpi') and (FileExists(ChangeFileExt(AFileName,'.lpi'))) then begin
+  if (Ext<>'.lpi') and (FileExistsUTF8(ChangeFileExt(AFileName,'.lpi'))) then begin
     // load instead of program file the project info file
     AFileName:=ChangeFileExt(AFileName,'.lpi');
     Ext:='.lpi';
@@ -8977,7 +8977,7 @@ begin
     and (not AnUnitInfo.IsVirtual) and FilenameIsPascalUnit(AnUnitInfo.Filename)
     then begin
       LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lfm');
-      if FileExists(LFMFilename) then begin
+      if FileExistsUTF8(LFMFilename) then begin
         AnUnitInfo.HasResources:=true;
         AnUnitInfo.ResourceFileName:=ChangeFileExt(LFMFilename,'.lrs');
       end else begin
@@ -9041,7 +9041,7 @@ begin
   or (AProject.LastCompilerParams<>CompilerParams)
   or ((AProject.LastCompilerFileDate>0)
       and FileExistsCached(CompilerFilename)
-      and (FileAge(CompilerFilename)<>AProject.LastCompilerFileDate))
+      and (FileAgeUTF8(CompilerFilename)<>AProject.LastCompilerFileDate))
   then
     NeedBuildAllFlag:=true;
 
@@ -9054,10 +9054,10 @@ begin
     exit(mrYes);
   end;
 
-  StateFileAge:=FileAge(StateFilename);
+  StateFileAge:=FileAgeUTF8(StateFilename);
 
   // check main source file
-  if FileExists(SrcFilename) and (StateFileAge<FileAge(SrcFilename)) then
+  if FileExistsUTF8(SrcFilename) and (StateFileAge<FileAgeUTF8(SrcFilename)) then
   begin
     DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  SrcFile outdated ',AProject.IDAsString);
     exit(mrYes);
@@ -9070,12 +9070,12 @@ begin
     DebugLn('  Now="',CompilerFilename,'"');
     exit(mrYes);
   end;
-  if not FileExists(CompilerFilename) then begin
+  if not FileExistsUTF8(CompilerFilename) then begin
     DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Compiler filename not found for ',AProject.IDAsString);
     DebugLn('  File="',CompilerFilename,'"');
     exit(mrYes);
   end;
-  if FileAge(CompilerFilename)<>AProject.LastCompilerFileDate then begin
+  if FileAgeUTF8(CompilerFilename)<>AProject.LastCompilerFileDate then begin
     DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Compiler file changed for ',AProject.IDAsString);
     DebugLn('  File="',CompilerFilename,'"');
     exit(mrYes);
@@ -9099,8 +9099,8 @@ begin
   // check project files
   AnUnitInfo:=AProject.FirstPartOfProject;
   while AnUnitInfo<>nil do begin
-    if FileExists(AnUnitInfo.Filename)
-    and (StateFileAge<FileAge(AnUnitInfo.Filename)) then begin
+    if FileExistsUTF8(AnUnitInfo.Filename)
+    and (StateFileAge<FileAgeUTF8(AnUnitInfo.Filename)) then begin
       DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Src has changed ',AProject.IDAsString,' ',AnUnitInfo.Filename);
       exit(mrYes);
     end;
@@ -9111,8 +9111,8 @@ begin
   AnUnitInfo:=AProject.FirstUnitWithEditorIndex;
   while AnUnitInfo<>nil do begin
     if (not AnUnitInfo.IsPartOfProject)
-    and FileExists(AnUnitInfo.Filename)
-    and (StateFileAge<FileAge(AnUnitInfo.Filename)) then begin
+    and FileExistsUTF8(AnUnitInfo.Filename)
+    and (StateFileAge<FileAgeUTF8(AnUnitInfo.Filename)) then begin
       DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Src has changed ',AProject.IDAsString,' ',AnUnitInfo.Filename);
       exit(mrYes);
     end;
@@ -9355,7 +9355,7 @@ begin
           // save state, so that next time the project is not compiled clean
           Project1.LastCompilerFilename:=CompilerFilename;
           Project1.LastCompilerParams:=CompilerParams;
-          Project1.LastCompilerFileDate:=FileAge(CompilerFilename);
+          Project1.LastCompilerFileDate:=FileAgeUTF8(CompilerFilename);
           DoJumpToCompilerMessage(-1,true);
           PutExitInfoBuilder(lisInfoBuildError);
           exit;
@@ -9451,7 +9451,7 @@ begin
 
   // Check project build
   ProgramFilename := MainBuildBoss.GetProjectTargetFilename;
-  if not FileExists(ProgramFilename)
+  if not FileExistsUTF8(ProgramFilename)
   then begin
     MessageDlg(lisFileNotFound,
       Format(lisNoProgramFileSFound, ['"', ProgramFilename, '"']),
@@ -9522,36 +9522,36 @@ procedure TMainIDE.DoRestart;
     ExeName         : string;
     Params          : TStrings;
     Dummy           : Integer;
+    CmdLine: string;
   begin
     StartLazProcess := TProcess.Create(nil);
     try
       // TODO: use the target directory, where the new startlazarus is
-      StartLazProcess.CurrentDirectory := GetLazarusDirectory;
+      StartLazProcess.CurrentDirectory := UTF8ToSys(GetLazarusDirectory);
       //DebugLn('Parsing commandLine: ');
       Params := TStringList.Create;
       ParseCommandLine(Params, Dummy);
       //DebugLn('Done parsing CommandLine');
       ExeName := AppendPathDelim(StartLazProcess.CurrentDirectory) +
         'startlazarus' + GetExecutableExt;
-      if not FileExists(ExeName) then begin
+      if not FileExistsUTF8(ExeName) then begin
         IDEMessageDialog('Error',Format(lisCannotFindLazarusStarter,
                             [LineEnding, ExeName]),mtError,[mbCancel]);
         exit;
       end;
       //DebugLn('Setting CommandLine');
-      StartLazProcess.CommandLine := ExeName +
+      CmdLine := ExeName +
          ' --lazarus-pid='+IntToStr(GetProcessID) + ' '                                                   +
          GetCommandLineParameters(Params, False);
 
-      DebugLn('CommandLine 1 : %s', [StartLazProcess.CommandLine]);
+      DebugLn('CommandLine 1 : %s', [CmdLine]);
          
-      if (pos(PrimaryConfPathOptLong, StartLazProcess.CommandLine) = 0) and
-         (pos(PrimaryConfPathOptShort, StartLazProcess.CommandLine) = 0) then
-        StartLazProcess.CommandLine := StartLazProcess.CommandLine +
-                   ' "' + PrimaryConfPathOptLong + GetPrimaryConfigPath+'"';
+      if (pos(PrimaryConfPathOptLong, CmdLine) = 0) and
+         (pos(PrimaryConfPathOptShort, CmdLine) = 0) then
+        CmdLine := CmdLine + ' "' + PrimaryConfPathOptLong + GetPrimaryConfigPath+'"';
                             
-      DebugLn('CommandLine 2 : %s', [StartLazProcess.CommandLine]);
-      
+      DebugLn('CommandLine 2 : %s', [CmdLine]);
+      StartLazProcess.CommandLine := UTF8ToSys(CmdLine);
       StartLazProcess.Execute;
     finally
       FreeAndNil(Params);
@@ -9595,7 +9595,7 @@ procedure TMainIDE.DoExecuteRemoteControl;
         AProjectFilename:=ChangeFileExt(AProjectFilename,'.lpi');
       if (CompareFileExt(AProjectFilename,'.lpi',false)=0) then begin
         AProjectFilename:=CleanAndExpandFilename(AProjectFilename);
-        if FileExists(AProjectFilename) then begin
+        if FileExistsUTF8(AProjectFilename) then begin
           DebugLn(['TMainIDE.DoExecuteRemoteControl.OpenFiles AProjectFilename="',AProjectFilename,'"']);
           Files.Delete(0);
           ProjectLoaded:=(DoOpenProjectFile(AProjectFilename,[])=mrOk);
@@ -9636,7 +9636,7 @@ var
   i: Integer;
 begin
   Filename:=GetRemoteControlFilename;
-  if FileExists(Filename) then begin
+  if FileExistsUTF8(Filename) then begin
     // the control file exists
     if FRemoteControlFileValid then begin
       List:=TStringList.Create;
@@ -9644,12 +9644,12 @@ begin
       try
         // load and delete the file
         try
-          List.LoadFromFile(Filename);
+          List.LoadFromFile(UTF8ToSys(Filename));
         except
           DebugLn(['TMainIDE.DoExecuteRemoteControl reading file failed: ',Filename]);
         end;
-        DeleteFile(Filename);
-        FRemoteControlFileValid:=not FileExists(Filename);
+        DeleteFileUTF8(Filename);
+        FRemoteControlFileValid:=not FileExistsUTF8(Filename);
         // execute
         Files:=TStringList.Create;
         for i:=0 to List.Count-1 do begin
@@ -10145,7 +10145,7 @@ begin
   // try to find the pascal unit
   for i:=Low(PascalFileExt) to High(PascalFileExt) do begin
     UnitFilename:=ChangeFileExt(LFMUnitInfo.Filename,PascalFileExt[i]);
-    if FileExists(UnitFilename) then
+    if FileExistsUTF8(UnitFilename) then
       break
     else
       UnitFilename:='';
@@ -10439,7 +10439,7 @@ var FileStream: TFileStream;
 begin
   repeat
     try
-      FileStream:=TFileStream.Create(AFilename,fmOpenRead);
+      FileStream:=TFileStream.Create(UTF8ToSys(AFilename),fmOpenRead);
       try
         FileStream.Position:=0;
         MemStream.CopyFrom(FileStream,FileStream.Size);
@@ -10617,7 +10617,7 @@ begin
     TempCmd:=CmdAfterExe;
     if not FilenameIsAbsolute(TempCmd) then
       TempCmd:=TrimFilename(AppendPathDelim(Project1.ProjectDirectory)+TempCmd);
-    if FileExists(TempCmd) then begin
+    if FileExistsUTF8(TempCmd) then begin
       CmdAfterExe:=TempCmd;
     end else begin
       TempCmd:=FindDefaultExecutablePath(CmdAfterExe);
@@ -10666,7 +10666,7 @@ begin
   if Options is TPublishProjectOptions then begin
     CurProject:=TProject(TPublishProjectOptions(Options).Owner);
     NewProjectFilename:=DestDir+ExtractFilename(CurProject.ProjectInfoFile);
-    DeleteFile(NewProjectFilename);
+    DeleteFileUTF8(NewProjectFilename);
     Result:=CurProject.WriteProject(CurProject.PublishOptions.WriteFlags
                                    +[pwfSkipDebuggerSettings,pwfSkipJumpPoints],
                                    NewProjectFilename);
@@ -10908,7 +10908,7 @@ begin
     // open in editor
     if (ifsOpenInEditor in NeededFlags) and (AnUnitInfo.EditorIndex>=0) then
       Include(ResultFlags,ifsOpenInEditor);
-  end else if FileExists(AFilename) then begin
+  end else if FileExistsUTF8(AFilename) then begin
     // readonly
     if (ifsReadOnly in NeededFlags) and (not FileIsWritable(AFilename)) then
       Include(ResultFlags,ifsReadOnly);
@@ -10957,7 +10957,7 @@ begin
     if (not FilenameIsAbsolute(Filename)) and (CurDir<>'') then begin
       // the directory was just hidden, re-append it
       NewFilename:=AppendPathDelim(CurDir)+Filename;
-      if FileExists(NewFilename) then
+      if FileExistsUTF8(NewFilename) then
         Filename:=NewFilename;
     end;
 
@@ -11340,7 +11340,7 @@ begin
   writeln('TMainIDE.FindSourceFile Filename="',AFilename,'" BaseDirectory="',BaseDirectory,'"');
   {$ENDIF}
   if FilenameIsAbsolute(AFilename) then begin
-    if FileExists(AFilename) then
+    if FileExistsUTF8(AFilename) then
       Result:=AFilename
     else
       Result:='';
@@ -11357,7 +11357,7 @@ begin
   {$IFDEF VerboseFindSourceFile}
   writeln('TMainIDE.FindSourceFile trying Base "',Result,'"');
   {$ENDIF}
-  if FileExists(Result) then exit;
+  if FileExistsUTF8(Result) then exit;
   MarkPathAsSearched(BaseDir);
 
   // search file in debug path
@@ -11415,7 +11415,7 @@ end;
 function TMainIDE.FileExistsInIDE(const Filename: string;
   SearchFlags: TProjectFileSearchFlags): boolean;
 begin
-  Result:=FileExists(Filename)
+  Result:=FileExistsUTF8(Filename)
           or (Project1.UnitInfoWithFilename(Filename,SearchFlags)<>nil);
 end;
 
@@ -11727,7 +11727,7 @@ begin
     'PROJECT',nil,@CTMacroFunctionProject);
 
   CodeToolsOpts.AssignTo(CodeToolBoss);
-  if (not FileExists(EnvironmentOptions.CompilerFilename)) then begin
+  if (not FileExistsUTF8(EnvironmentOptions.CompilerFilename)) then begin
     DebugLn('');
     DebugLn('NOTE: Compiler Filename not set! (see Environment Options)');
   end;
@@ -11818,7 +11818,7 @@ begin
 
   // load include file relationships
   AFilename:=AppendPathDelim(GetPrimaryConfigPath)+CodeToolsIncludeLinkFile;
-  if FileExists(AFilename) then
+  if FileExistsUTF8(AFilename) then
     CodeToolBoss.SourceCache.LoadIncludeLinksFromFile(AFilename);
 
   with CodeToolBoss do begin
@@ -12353,7 +12353,7 @@ var
       for i:=0 to Options.ExtraFiles.Count-1 do begin
         CurFileMask:=Options.ExtraFiles[i];
         if not GlobalMacroList.SubstituteStr(CurFileMask) then exit;
-        if SysUtils.FindFirst(CurFileMask,faAnyFile,FileInfo)=0
+        if FindFirstUTF8(CurFileMask,faAnyFile,FileInfo)=0
         then begin
           CurDirectory:=AppendPathDelim(ExtractFilePath(CurFileMask));
           if not FilenameIsAbsolute(CurDirectory) then begin
@@ -12368,9 +12368,9 @@ var
             CurFilename:=CurDirectory+FileInfo.Name;
             if FileIsText(CurFilename) then
               Files.Add(CurFilename);
-          until SysUtils.FindNext(FileInfo)<>0;
+          until FindNextUTF8(FileInfo)<>0;
         end;
-        SysUtils.FindClose(FileInfo);
+        FindCloseUTF8(FileInfo);
       end;
     end;
     Result:=mrOk;
@@ -12619,7 +12619,7 @@ begin
     DoJumpToCodeToolBossError;
 end;
 
-procedure TMainIDE.DoJumpToGuessedUnclosedBlock(FindNext: boolean);
+procedure TMainIDE.DoJumpToGuessedUnclosedBlock(FindNextUTF8: boolean);
 var ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   NewSource: TCodeBuffer;
@@ -12630,7 +12630,7 @@ begin
   writeln('');
   writeln('[TMainIDE.DoJumpToGuessedUnclosedBlock] ************');
   {$ENDIF}
-  if FindNext then begin
+  if FindNextUTF8 then begin
     StartX:=ActiveSrcEdit.EditorComponent.CaretX;
     StartY:=ActiveSrcEdit.EditorComponent.CaretY;
   end else begin
@@ -12650,7 +12650,7 @@ begin
   end;
 end;
 
-procedure TMainIDE.DoJumpToGuessedMisplacedIFDEF(FindNext: boolean);
+procedure TMainIDE.DoJumpToGuessedMisplacedIFDEF(FindNextUTF8: boolean);
 var ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   NewSource: TCodeBuffer;
@@ -12661,7 +12661,7 @@ begin
   writeln('');
   writeln('[TMainIDE.DoJumpToGuessedMisplacedIFDEF] ************');
   {$ENDIF}
-  if FindNext then begin
+  if FindNextUTF8 then begin
     StartX:=ActiveSrcEdit.EditorComponent.CaretX;
     StartY:=ActiveSrcEdit.EditorComponent.CaretY;
   end else begin

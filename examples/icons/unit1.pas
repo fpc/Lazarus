@@ -38,13 +38,13 @@ implementation
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
-  Image1.Picture.LoadFromFile(ExtractFilePath(ParamStr(0)) + 'icons' + PathDelim + 'lazarus.ico');
+  Image1.Picture.LoadFromFile(ExtractFilePath(ParamStrUTF8(0)) + 'icons' + PathDelim + 'lazarus.ico');
   UpdateTrackbar;
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
 begin
-  Image1.Picture.LoadFromFile(ExtractFilePath(ParamStr(0)) + 'icons' + PathDelim + 'lazarus.icns');
+  Image1.Picture.LoadFromFile(ExtractFilePath(ParamStrUTF8(0)) + 'icons' + PathDelim + 'lazarus.icns');
   UpdateTrackbar;
 end;
 

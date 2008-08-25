@@ -532,7 +532,7 @@ var
   NameValue: String;
 begin
   MakefileFPC:=TStringList.Create;
-  MakefileFPC.LoadFromFile(Filename);
+  MakefileFPC.LoadFromFile(UTF8ToSys(Filename));
   i:=0;
   while i<MakefileFPC.Count do begin
     Line:=MakefileFPC[i];
@@ -2978,7 +2978,7 @@ begin
     //DebugLn('TDefinePool.CreateFPCTemplate CmdLine="',CmdLine,'"');
 
     TheProcess := TProcess.Create(nil);
-    TheProcess.CommandLine := CmdLine;
+    TheProcess.CommandLine := UTF8ToSys(CmdLine);
     TheProcess.Options:= [poUsePipes, poStdErrToOutPut];
     TheProcess.ShowWindow := swoHide;
     Step:='Running '+CmdLine;
@@ -3022,7 +3022,7 @@ begin
     CmdLine:=CmdLine+' -iTO';
 
     TheProcess := TProcess.Create(nil);
-    TheProcess.CommandLine := CmdLine;
+    TheProcess.CommandLine := UTF8ToSys(CmdLine);
     TheProcess.Options:= [poUsePipes, poStdErrToOutPut];
     TheProcess.ShowWindow := swoHide;
     Step:='Running '+CmdLine;
@@ -3072,7 +3072,7 @@ begin
     if CompilerOptions<>'' then
       CmdLine:=CmdLine+' '+CompilerOptions;
     CmdLine:=CmdLine+' -iTP';
-    TheProcess.CommandLine := CmdLine;
+    TheProcess.CommandLine := UTF8ToSys(CmdLine);
     TheProcess.Options:= [poUsePipes, poStdErrToOutPut];
     TheProcess.ShowWindow := swoHide;
     Step:='Running '+CmdLine;
@@ -3280,7 +3280,7 @@ var
       // read Makefile.fpc to get some hints
       MakeFileFPC:=ADirPath+'Makefile.fpc';
       SubDirs:='';
-      if FileExists(MakeFileFPC) then begin
+      if FileExistsUTF8(MakeFileFPC) then begin
         ParseMakefileFPC(MakeFileFPC,DefaultTargetOS,GlobalSubDirs,TargetSubDirs);
         SubDirs:=GlobalSubDirs;
         if TargetSubDirs<>'' then begin
@@ -3295,7 +3295,7 @@ var
       if System.Pos(AppendPathDelim(FPCSrcDir)+'rtl'+PathDelim,ADirPath)>0 then
         inc(Priority);
       // search sources .pp,.pas
-      if FindFirst(ADirPath+FileMask,faAnyFile,FileInfo)=0 then begin
+      if FindFirstUTF8(ADirPath+FileMask,faAnyFile,FileInfo)=0 then begin
         repeat
           AFilename:=FileInfo.Name;
           if (AFilename='') or (AFilename='.') or (AFilename='..') then
@@ -3446,9 +3446,9 @@ var
               end;
             end;
           end;
-        until FindNext(FileInfo)<>0;
+        until FindNextUTF8(FileInfo)<>0;
       end;
-      FindClose(FileInfo);
+      FindCloseUTF8(FileInfo);
     end;
   
   begin
@@ -3516,7 +3516,7 @@ var
         DebugLn('FindStandardPPUSources Searching ',CurMask,' in ',ADirPath);
         {$ENDIF}
         // search all ppu files in this directory
-        if FindFirst(ADirPath+CurMask,faAnyFile,FileInfo)=0 then begin
+        if FindFirstUTF8(ADirPath+CurMask,faAnyFile,FileInfo)=0 then begin
           repeat
             UnitName:=lowercase(ExtractFileNameOnly(FileInfo.Name));
             {$IFDEF VerboseFPCSrcScan}
@@ -3524,9 +3524,9 @@ var
             {$ENDIF}
             AddFPCSourceLinkForUnit(UnitName);
             if (UnitTree=nil) or (UnitTree.Count=0) then exit;
-          until FindNext(FileInfo)<>0;
+          until FindNextUTF8(FileInfo)<>0;
         end;
-        FindClose(FileInfo);
+        FindCloseUTF8(FileInfo);
       end;
       PathStart:=PathEnd;
     end;

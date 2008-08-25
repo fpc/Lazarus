@@ -353,7 +353,7 @@ begin
   if CurFilename = FPreviewFilename then exit;
 
   FPreviewFilename := CurFilename;
-  FileIsValid := FileExists(FPreviewFilename)
+  FileIsValid := FileExistsUTF8(FPreviewFilename)
                  and (not DirPathExists(FPreviewFilename))
                  and FileIsReadable(FPreviewFilename);
   if FileIsValid then

@@ -720,9 +720,9 @@ begin
   // init SynAutoComplete
   with SynAutoComplete do begin
     s:=EditorOpts.CodeTemplateFileName;
-    if FileExists(s) then
+    if FileExistsUTF8(s) then
       try
-        AutoCompleteList.LoadFromFile(s);
+        AutoCompleteList.LoadFromFile(UTF8ToSys(s));
       except
         DebugLn('NOTE: unable to read code template file ''',s,'''');
       end;
@@ -761,7 +761,7 @@ begin
     repeat
       try
         SynAutoComplete.AutoCompleteList.SaveToFile(
-          EditorOpts.CodeTemplateFileName);
+          UTF8ToSys(EditorOpts.CodeTemplateFileName));
       except
         res:=MessageDlg(' Unable to write code templates to file '''
           +EditorOpts.CodeTemplateFileName+'''! ',mtError

@@ -310,6 +310,7 @@ procedure SetNeedRTLAnsi(NewValue: boolean);
 function UTF8ToSys(const s: string): string;// as UTF8ToAnsi but more independent of widestringmanager
 function SysToUTF8(const s: string): string;// as AnsiToUTF8 but more independent of widestringmanager
 
+// file operations
 function FileExistsUTF8(const Filename: string): boolean;
 function FileAgeUTF8(const FileName: string): Longint;
 function DirectoryExistsUTF8(const Directory: string): Boolean;
@@ -328,6 +329,11 @@ function SetCurrentDirUTF8(const NewDir: String): Boolean;
 function CreateDirUTF8(const NewDir: String): Boolean;
 function RemoveDirUTF8(const Dir: String): Boolean;
 function ForceDirectoriesUTF8(const Dir: string): Boolean;
+
+// environment
+function ParamStrUTF8(Param: Integer): string;
+function GetEnvironmentStringUTF8(Index : Integer): String;
+function GetEnvironmentVariableUTF8(const EnvVar: String): String;
 
 implementation
 
@@ -426,22 +432,13 @@ function FindFirstUTF8(const Path: string; Attr: Longint; out Rslt: TSearchRec
 begin
   Result:=SysUtils.FindFirst(UTF8ToSys(Path),Attr,Rslt);
   Rslt.Name:=SysToUTF8(Rslt.Name);
-  {$IFDEF Unix}
-  Rslt.PathOnly:=SysToUTF8(Rslt.PathOnly);
-  {$ENDIF}
 end;
 
 function FindNextUTF8(var Rslt: TSearchRec): Longint;
 begin
   Rslt.Name:=UTF8ToSys(Rslt.Name);
-  {$IFDEF Unix}
-  Rslt.PathOnly:=UTF8ToSys(Rslt.PathOnly);
-  {$ENDIF}
   Result:=SysUtils.FindNext(Rslt);
   Rslt.Name:=SysToUTF8(Rslt.Name);
-  {$IFDEF Unix}
-  Rslt.PathOnly:=SysToUTF8(Rslt.PathOnly);
-  {$ENDIF}
 end;
 
 procedure FindCloseUTF8(var F: TSearchrec);
@@ -509,6 +506,21 @@ begin
   Result:=SysUtils.ForceDirectories(UTF8ToSys(Dir));
 end;
 
+function ParamStrUTF8(Param: Integer): string;
+begin
+  Result:=SysToUTF8(ObjPas.ParamStr(Param));
+end;
+
+function GetEnvironmentStringUTF8(Index: Integer): String;
+begin
+  Result:=SysToUTF8(SysUtils.GetEnvironmentString(Index));
+end;
+
+function GetEnvironmentVariableUTF8(const EnvVar: String): String;
+begin
+  Result:=SysToUTF8(SysUtils.GetEnvironmentVariable(UTF8ToSys(EnvVar)));
+end;
+
 {-------------------------------------------------------------------------------
   function ClearFile(const Filename: string; RaiseOnError: boolean): boolean;
 -------------------------------------------------------------------------------}
@@ -516,10 +528,10 @@ function ClearFile(const Filename: string; RaiseOnError: boolean): boolean;
 var
   fs: TFileStream;
 begin
-  if FileExists(Filename) then begin
+  if FileExistsUTF8(Filename) then begin
     try
       InvalidateFileStateCache;
-      fs:=TFileStream.Create(Filename,fmOpenWrite);
+      fs:=TFileStream.Create(UTF8ToSys(Filename),fmOpenWrite);
       fs.Size:=0;
       fs.Free;
     except
@@ -542,11 +554,11 @@ begin
   TempFilename:=GetTempFilename(AppendPathDelim(DirectoryName),'tstperm');
   Result:=false;
   try
-    fs:=TFileStream.Create(TempFilename,fmCreate);
+    fs:=TFileStream.Create(UTF8ToSys(TempFilename),fmCreate);
     s:='WriteTest';
     fs.Write(s[1],length(s));
     fs.Free;
-    if not SysUtils.DeleteFile(TempFilename) then
+    if not DeleteFileUTF8(TempFilename) then
       InvalidateFileStateCache;
     Result:=true;
   except
@@ -565,7 +577,7 @@ begin
   i:=1;
   repeat
     Result:=CurPath+CurName+IntToStr(i)+'.tmp';
-    if not FileExists(Result) then exit;
+    if not FileExistsUTF8(Result) then exit;
     inc(i);
   until false;
 end;
@@ -612,7 +624,7 @@ begin
       CurFile:=copy(Result,StartPos,EndPos-StartPos);
       AliasFile:='';
       Ambiguous:=false;
-      if SysUtils.FindFirst(CurDir+FileMask,faAnyFile,FileInfo)=0 then
+      if FindFirstUTF8(CurDir+FileMask,faAnyFile,FileInfo)=0 then
       begin
         repeat
           // check if special file
@@ -636,10 +648,10 @@ begin
               end;
             end;
           end;
-        until SysUtils.FindNext(FileInfo)<>0;
+        until FindNextUTF8(FileInfo)<>0;
       end else
         FileNotFound:=true;
-      SysUtils.FindClose(FileInfo);
+      FindCloseUTF8(FileInfo);
       if FileNotFound then break;
       if (AliasFile<>'') and (not Ambiguous) then begin
         // better filename found -> replace
@@ -719,7 +731,7 @@ var
 {$ENDIF}
 begin
   {$IFDEF WINDOWS}
-  Result:=FileExists(AFilename);
+  Result:=FileExistsUTF8(AFilename);
   {$ELSE}
   // first check AFilename is not a directory and then check if executable
   Result:= (FpStat(AFilename,info)<>-1) and FPS_ISREG(info.st_mode) and
@@ -734,7 +746,7 @@ var AText: string;
 begin
   // TProcess does not report, if a program can not be executed
   // to get good error messages consider the OS
-  if not FileExists(AFilename) then begin
+  if not FileExistsUTF8(AFilename) then begin
     raise Exception.CreateFmt(ctsFileDoesNotExists,[AFilename]);
   end;
   {$IFNDEF MSWindows}
@@ -806,7 +818,7 @@ end;
 
 function DirPathExists(DirectoryName: string): boolean;
 begin
-  Result:=Sysutils.DirectoryExists(ChompPathDelim(DirectoryName));
+  Result:=DirectoryExistsUTF8(ChompPathDelim(DirectoryName));
 end;
 
 function ForceDirectory(DirectoryName: string): boolean;
@@ -820,7 +832,7 @@ begin
     if DirectoryName[i]=PathDelim then begin
       Dir:=copy(DirectoryName,1,i-1);
       if not DirPathExists(Dir) then begin
-        Result:=CreateDir(Dir);
+        Result:=CreateDirUTF8(Dir);
         if not Result then exit;
       end;
     end;
@@ -841,7 +853,7 @@ end;
 function FileIsWritable(const AFilename: string): boolean;
 begin
   {$IFDEF MSWindows}
-  Result:=((FileGetAttr(AFilename) and faReadOnly)=0);
+  Result:=((FileGetAttrUTF8(AFilename) and faReadOnly)=0);
   {$ELSE}
   Result:= BaseUnix.FpAccess(AFilename,BaseUnix.W_OK)=0;
   {$ENDIF}
@@ -856,7 +868,7 @@ var fs: TFileStream;
 begin
   Result:=false;
   try
-    fs:=TFileStream.Create(AFilename,fmOpenRead);
+    fs:=TFileStream.Create(UTF8ToSys(AFilename),fmOpenRead);
     try
       // read the first 1024 bytes
       Len:=1024;
@@ -1299,7 +1311,7 @@ begin
     UpperCaseUnitname:='';
   end;
 
-  if SysUtils.FindFirst(Base+FileMask,faAnyFile,FileInfo)=0 then
+  if FindFirstUTF8(Base+FileMask,faAnyFile,FileInfo)=0 then
   begin
     repeat
       // check if special file
@@ -1339,9 +1351,9 @@ begin
       else
         RaiseNotImplemented;
       end;
-    until SysUtils.FindNext(FileInfo)<>0;
+    until FindNextUTF8(FileInfo)<>0;
   end;
-  SysUtils.FindClose(FileInfo);
+  FindCloseUTF8(FileInfo);
   if Result<>'' then Result:=Base+Result;
 end;
 
@@ -1403,7 +1415,7 @@ begin
     UpperCaseFilename:='';
   end;
   
-  if SysUtils.FindFirst(Base+FileMask,faAnyFile,FileInfo)=0 then
+  if FindFirstUTF8(Base+FileMask,faAnyFile,FileInfo)=0 then
   begin
     repeat
       // check if special file
@@ -1429,9 +1441,9 @@ begin
       else
         RaiseNotImplemented;
       end;
-    until SysUtils.FindNext(FileInfo)<>0;
+    until FindNextUTF8(FileInfo)<>0;
   end;
-  SysUtils.FindClose(FileInfo);
+  FindCloseUTF8(FileInfo);
   if Result<>'' then Result:=Base+Result;
 end;
 
@@ -1695,7 +1707,7 @@ begin
       // search file
       Result:='';
       Base:=FindDiskFilename(Base);
-      if SysUtils.FindFirst(Base+FileMask,faAnyFile,FileInfo)=0 then
+      if FindFirstUTF8(Base+FileMask,faAnyFile,FileInfo)=0 then
       begin
         repeat
           // check if special file
@@ -1712,9 +1724,9 @@ begin
               Result:=FileInfo.Name;
             end;
           end;
-        until SysUtils.FindNext(FileInfo)<>0;
+        until FindNextUTF8(FileInfo)<>0;
       end;
-      SysUtils.FindClose(FileInfo);
+      FindCloseUTF8(FileInfo);
       if Result<>'' then Result:=Base+Result;
     end;
   else
@@ -2674,7 +2686,7 @@ var
 begin
   Result := False;
   if Check(Filename,fsciExists,AFile,Result) then exit;
-  Result:=FileExists(AFile.Filename);
+  Result:=FileExistsUTF8(AFile.Filename);
   SetFlag(AFile,fsciExists,Result);
   {if not Check(Filename,fsciExists,AFile,Result) then begin
     WriteDebugReport;

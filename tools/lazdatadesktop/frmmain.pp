@@ -306,10 +306,10 @@ begin
   FRecentDicts:=TRecentDataDicts.Create(TRecentDataDict);
   FRecentConnections:=TRecentConnections.Create(TRecentConnection);
   FN:=GetAppConfigDir(False);
-  ForceDirectories(FN);
+  ForceDirectoriesUTF8(FN);
   FN:=GetAppConfigFile(False);
-  FRecentDicts.LoadFromFile(FN,'RecentDicts');
-  FRecentConnections.LoadFromFile(FN,'RecentConnections');
+  FRecentDicts.LoadFromFile(UTF8ToSys(FN,'RecentDicts'));
+  FRecentConnections.LoadFromFile(UTF8ToSys(FN,'RecentConnections'));
   ShowRecentDictionaries;
   ShowRecentConnections;
   ShowDDImports;
@@ -352,7 +352,7 @@ begin
   else If HasOption('f','filename') then
     begin
     S:=GetOptionValue('f','filename');
-    If FileExists(S) then
+    If FileExistsUTF8(S) then
       OpenFile(S);
     end
   else If HasOption('c','connection') then
@@ -674,7 +674,7 @@ Var
 begin
   IDir:=PSmain.StoredValue[Sender.ClassName];
   if (IDir='') then
-    IDir:=ExtractFilePath(ParamStr(0));
+    IDir:=ExtractFilePath(ParamStrUTF8(0));
   if SelectDirectory(SSelectDBFDir,IDir,ADir) then
     PSMain.StoredValue[Sender.ClassName]:=ADir
 end;

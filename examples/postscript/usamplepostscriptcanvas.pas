@@ -187,7 +187,7 @@ var
   FName: string;
 begin
   if Sender=nil then ;
-  if FileExists(ExpandFileName('./test1.ps')) then
+  if FileExistsUTF8(ExpandFileName('./test1.ps')) then
   begin
     {$IFDEF MSWINDOWS}
       FName := '"C:\Program Files\Ghostgum\gsview\gsview32" '  + ExpandFileName('./test1.ps');

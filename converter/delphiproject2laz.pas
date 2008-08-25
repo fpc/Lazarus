@@ -255,7 +255,7 @@ begin
         if not FilenameIsAbsolute(CurFilename) then
           CurFilename:=AppendPathDelim(AProject.ProjectDirectory)+CurFilename;
         CurFilename:=TrimFilename(CurFilename);
-        if not FileExists(CurFilename) then begin
+        if not FileExistsUTF8(CurFilename) then begin
           DebugLn('FindAllDelphiProjectUnits file not found: "',CurFilename,'"');
           continue;
         end;
@@ -504,7 +504,7 @@ begin
         if not FilenameIsAbsolute(CurFilename) then
           CurFilename:=AppendPathDelim(APackage.Directory)+CurFilename;
         CurFilename:=TrimFilename(CurFilename);
-        if not FileExists(CurFilename) then begin
+        if not FileExistsUTF8(CurFilename) then begin
           DebugLn('FindAllDelphiPackageUnits file not found: "',CurFilename,'"');
           continue;
         end;
@@ -670,7 +670,7 @@ begin
                                         LazarusUnitFilename,LFMFilename);
   if Result<>mrOk then exit;
   if LFMFilename='' then LFMFilename:=ChangeFileExt(LazarusUnitFilename,'.lfm');
-  HasDFMFile:=FileExists(LFMFilename);
+  HasDFMFile:=FileExistsUTF8(LFMFilename);
   
   // convert .dfm file to .lfm file (without context type checking)
   if HasDFMFile then begin
@@ -756,7 +756,7 @@ function CreateDelphiToLazarusProjectInstance(const LPIFilename: string;
 begin
   DebugLn('CreateDelphiToLazarusProjectInstance LPIFilename="',LPIFilename,'"');
   AProject:=Project1;
-  if FileExists(LPIFilename) then begin
+  if FileExistsUTF8(LPIFilename) then begin
     // there is already a lazarus project -> open it, if not already open
     if CompareFilenames(AProject.ProjectInfoFile,LPIFilename)<>0 then begin
       DebugLn('CreateDelphiToLazarusProject open "',LPIFilename,'"');
@@ -815,7 +815,7 @@ begin
     Result:=StartFilename
   else
     Result:=ChangeFileExt(StartFilename,'.dpr');
-  if not FileExists(Result) then
+  if not FileExistsUTF8(Result) then
     Result:=FindDiskFileCaseInsensitive(StartFilename);
 end;
 
@@ -830,14 +830,14 @@ begin
 
   // read .dof file
   DOFFilename:=FindDelphiDOF(MainSourceFilename);
-  if FileExists(DOFFilename) then begin
+  if FileExistsUTF8(DOFFilename) then begin
     Result:=ExtractOptionsFromDOF(DOFFilename,Project1);
     if Result<>mrOk then exit;
   end;
 
   // read .cfg file
   CFGFilename:=FindDelphiCFG(MainSourceFilename);
-  if FileExists(CFGFilename) then begin
+  if FileExistsUTF8(CFGFilename) then begin
     Result:=ExtractOptionsFromCFG(CFGFilename,Project1);
     if Result<>mrOk then exit;
   end;
@@ -867,7 +867,7 @@ var
 begin
   DebugLn('CreateDelphiToLazarusPackageInstance LPKFilename="',LPKFilename,'"');
   APackage:=nil;
-  if FileExists(LPKFilename) then begin
+  if FileExistsUTF8(LPKFilename) then begin
     // there is already a lazarus package file
     // open the package editor
     DebugLn('CreateDelphiToLazarusPackageInstance OPEN ',LPKFilename);
@@ -919,14 +919,14 @@ var
 begin
   // read .dof file
   DOFFilename:=FindDelphiDOF(APackage.Filename);
-  if FileExists(DOFFilename) then begin
+  if FileExistsUTF8(DOFFilename) then begin
     Result:=ExtractOptionsFromDOF(DOFFilename,APackage);
     if Result<>mrOk then exit;
   end;
 
   // read .cfg file
   CFGFilename:=FindDelphiCFG(APackage.Filename);
-  if FileExists(CFGFilename) then begin
+  if FileExistsUTF8(CFGFilename) then begin
     Result:=ExtractOptionsFromCFG(CFGFilename,APackage);
     if Result<>mrOk then exit;
   end;

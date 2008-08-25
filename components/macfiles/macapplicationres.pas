@@ -95,7 +95,7 @@ procedure CreateMacOSXApplicationResources(const Filename,
       sl.Add('  </array>');
       sl.Add('</dict>');
       sl.Add('</plist>');
-      sl.SaveToFile(PLInfoListFilename);
+      sl.SaveToFile(UTF8ToSys(PLInfoListFilename));
     finally
       sl.Free;
     end;
@@ -110,7 +110,7 @@ procedure CreateMacOSXApplicationResources(const Filename,
     sl:=TStringList.Create;
     try
       sl.Add('APPL????');
-      sl.SaveToFile(PkgInfoFilename);
+      sl.SaveToFile(UTF8ToSys(PkgInfoFilename));
     finally
       sl.Free;
     end;
@@ -137,7 +137,7 @@ procedure CreateMacOSXApplicationResources(const Filename,
       sl.Add('\');
       sl.Add('');
       sl.Add('}');
-      sl.SaveToFile(ReadmeFilename);
+      sl.SaveToFile(UTF8ToSys(ReadmeFilename));
     finally
       sl.Free;
     end;
@@ -186,7 +186,7 @@ end;
 
 procedure CreateDirectoryInteractive(const Directory: string);
 begin
-  if not CreateDir(Directory) then
+  if not CreateDirUTF8(Directory) then
     raise EMacResourceException.Create('creating directory '+Directory+' failed');
 end;
 

@@ -180,13 +180,13 @@ end;
 function FindDFMFileForDelphiUnit(const DelphiFilename: string): string;
 begin
   Result:=ChangeFileExt(DelphiFilename,'.dfm');
-  if FileExists(Result) then exit;
+  if FileExistsUTF8(Result) then exit;
   Result:=ChangeFileExt(DelphiFilename,'.DFM');
-  if FileExists(Result) then exit;
+  if FileExistsUTF8(Result) then exit;
   Result:=ChangeFileExt(DelphiFilename,'.xfm');
-  if FileExists(Result) then exit;
+  if FileExistsUTF8(Result) then exit;
   Result:=ChangeFileExt(DelphiFilename,'.XFM');
-  if FileExists(Result) then exit;
+  if FileExistsUTF8(Result) then exit;
   Result:='';
 end;
 
@@ -205,16 +205,16 @@ begin
     if (DFMFilename<>'') and (CompareFilenames(DFMFilename,LFMFilename)<>0) then
     begin
       LFMFilename:=ConvertDFMToLFMFilename(DFMFilename,not RenameLowercase);
-      if FileExists(LFMFilename) then begin
-        if (FileAge(LFMFilename)>=FileAge(DFMFilename)) then begin
+      if FileExistsUTF8(LFMFilename) then begin
+        if (FileAgeUTF8(LFMFilename)>=FileAgeUTF8(DFMFilename)) then begin
           // .lfm is not older than .dfm -> keep .lfm
           // beware: it could be the same file
         end else begin
           // .lfm is older than .dfm -> remove .lfm
-          DeleteFile(LFMFilename);
+          DeleteFileUTF8(LFMFilename);
         end;
       end;
-      if not FileExists(LFMFilename) then begin
+      if not FileExistsUTF8(LFMFilename) then begin
         // TODO: update project
         Result:=RenameFileWithErrorDialogs(DFMFilename,LFMFilename,[mbAbort]);
         if Result<>mrOK then exit;
@@ -234,7 +234,7 @@ begin
   LFMStream:=TMemoryStream.Create;
   try
     try
-      DFMStream.LoadFromFile(DFMFilename);
+      DFMStream.LoadFromFile(UTF8ToSys(DFMFilename));
     except
       on E: Exception do begin
         Result:=QuestionDlg(lisCodeToolsDefsReadError, Format(
@@ -257,7 +257,7 @@ begin
     // converting dfm file, without renaming unit -> keep case
     LFMFilename:=ConvertDFMToLFMFilename(DFMFilename,true);
     try
-      LFMStream.SaveToFile(LFMFilename);
+      LFMStream.SaveToFile(UTF8ToSys(LFMFilename));
     except
       on E: Exception do begin
         Result:=MessageDlg(lisCodeToolsDefsWriteError,
@@ -431,7 +431,7 @@ begin
                          [lbfCheckIfText,lbfUpdateFromDisk]);
   if Result<>mrOk then exit;
   LFMFilename:=ChangeFileExt(UnitFileName,'.lfm');
-  if FileExists(LFMFilename) then begin
+  if FileExistsUTF8(LFMFilename) then begin
     Result:=LoadCodeBuffer(LFMCode,LFMFilename,
                            [lbfCheckIfText,lbfUpdateFromDisk]);
     if Result<>mrOk then exit;
@@ -467,7 +467,7 @@ end;
 function CreateLPRFileForDPRFile(const DPRFilename, LPRFilename: string;
   out LPRCode: TCodeBuffer): TModalResult;
 begin
-  if not FileExists(LPRFilename) then begin
+  if not FileExistsUTF8(LPRFilename) then begin
     Result:=CopyFileWithErrorDialogs(DPRFilename,LPRFilename,[]);
     if Result<>mrOk then exit;
   end;
@@ -580,7 +580,7 @@ var
   SearchPath: String;
   DebugSourceDirs: String;
 begin
-  if not FileExists(DOFFilename) then exit(mrOk);
+  if not FileExistsUTF8(DOFFilename) then exit(mrOk);
   if AProjPkg is TProject then begin
     AProject:=TProject(AProjPkg);
     APackage:=nil;
@@ -593,7 +593,7 @@ begin
     RaiseGDBException('invalid AProjPkg');
   
   try
-    IniFile:=TIniFile.Create(DOFFilename);
+    IniFile:=TIniFile.Create(UTF8ToSys(DOFFilename));
     try
       // output directory
       if AProject<>nil then begin
@@ -661,7 +661,7 @@ var
   CompOpts: TBaseCompilerOptions;
   APackage: TLazPackage;
 begin
-  if not FileExists(CFGFilename) then exit(mrOk);
+  if not FileExistsUTF8(CFGFilename) then exit(mrOk);
   if AProjPkg is TProject then begin
     AProject:=TProject(AProjPkg);
     CompOpts:=AProject.CompilerOptions;
@@ -673,7 +673,7 @@ begin
   try
     sl:=TStringList.Create;
     try
-      sl.LoadFromFile(CFGFilename);
+      sl.LoadFromFile(UTF8ToSys(CFGFilename));
       for i:=0 to sl.Count-1 do begin
         Line:=sl[i];
         if Line='' then continue;

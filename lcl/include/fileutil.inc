@@ -100,22 +100,13 @@ function FindFirstUTF8(const Path: string; Attr: Longint; out Rslt: TSearchRec
 begin
   Result:=SysUtils.FindFirst(UTF8ToSys(Path),Attr,Rslt);
   Rslt.Name:=SysToUTF8(Rslt.Name);
-  {$IFDEF Unix}
-  Rslt.PathOnly:=SysToUTF8(Rslt.PathOnly);
-  {$ENDIF}
 end;
 
 function FindNextUTF8(var Rslt: TSearchRec): Longint;
 begin
   Rslt.Name:=UTF8ToSys(Rslt.Name);
-  {$IFDEF Unix}
-  Rslt.PathOnly:=UTF8ToSys(Rslt.PathOnly);
-  {$ENDIF}
   Result:=SysUtils.FindNext(Rslt);
   Rslt.Name:=SysToUTF8(Rslt.Name);
-  {$IFDEF Unix}
-  Rslt.PathOnly:=SysToUTF8(Rslt.PathOnly);
-  {$ENDIF}
 end;
 
 procedure FindCloseUTF8(var F: TSearchrec);
@@ -183,6 +174,21 @@ begin
   Result:=SysUtils.ForceDirectories(UTF8ToSys(Dir));
 end;
 
+function ParamStrUTF8(Param: Integer): string;
+begin
+  Result:=SysToUTF8(ObjPas.ParamStr(Param));
+end;
+
+function GetEnvironmentStringUTF8(Index: Integer): String;
+begin
+  Result:=SysToUTF8(SysUtils.GetEnvironmentString(Index));
+end;
+
+function GetEnvironmentVariableUTF8(const EnvVar: String): String;
+begin
+  Result:=SysToUTF8(SysUtils.GetEnvironmentVariable(UTF8ToSys(EnvVar)));
+end;
+
 {------------------------------------------------------------------------------
   DirPathExists
  ------------------------------------------------------------------------------}
@@ -193,7 +199,7 @@ var
 begin
   dirExist := false;
 
-  F := FileGetAttr(ChompPathDelim(FileName));
+  F := FileGetAttrUTF8(ChompPathDelim(FileName));
   if F <> -1 then
     if (F and faDirectory) <> 0 then
       dirExist := true;
@@ -617,7 +623,7 @@ begin
   Result:=false;
   FileReadable:=true;
   try
-    fs:=TFileStream.Create(AFilename,fmOpenRead);
+    fs:=TFileStream.Create(UTF8ToSys(AFilename),fmOpenRead);
     try
       // read the first 1024 bytes
       Len:=1024;
@@ -660,7 +666,7 @@ var
 {$ENDIF}
 begin
   // to get good error messages consider the OS
-  if not FileExists(AFilename) then begin
+  if not FileExistsUTF8(AFilename) then begin
     raise Exception.Create('file "'+AFilename+'" does not exist');
   end;
   {$IFDEF WINDOWS}
@@ -718,7 +724,7 @@ end;
 function FileIsWritable(const AFilename: string): boolean;
 begin
   {$IFDEF WINDOWS}
-  Result:=((FileGetAttr(AFilename) and faReadOnly)=0);
+  Result:=((FileGetAttrUTF8(AFilename) and faReadOnly)=0);
   {$ELSE}
   Result:= BaseUnix.FpAccess(AFilename,BaseUnix.W_OK)=0;
   {$ENDIF}
@@ -728,11 +734,11 @@ function FileSize(const Filename: string): int64;
 var
   FileInfo: TSearchRec;
 begin
-  if SysUtils.FindFirst(Filename,faAnyFile,FileInfo)=0 then begin
+  if FindFirstUTF8(Filename,faAnyFile,FileInfo)=0 then begin
     Result:=FileInfo.Size;
   end else
     Result:=-1;
-  SysUtils.FindClose(FileInfo);
+  FindCloseUTF8(FileInfo);
 end;
 
 {------------------------------------------------------------------------------
@@ -826,7 +832,7 @@ begin
   Result:=Result+rsModified;
   try
     Result:=Result+FormatDateTime('DD/MM/YYYY hh:mm',
-                           FileDateToDateTime(FileAge(AFilename)));
+                           FileDateToDateTime(FileAgeUTF8(AFilename)));
   except
     Result:=Result+'?';
   end;
@@ -914,7 +920,7 @@ var
 {$ENDIF}
 begin
   {$IFDEF WINDOWS}
-  Result:=FileExists(AFilename);
+  Result:=FileExistsUTF8(AFilename);
   {$ELSE}
   // first check AFilename is not a directory and then check if executable
   Result:= (FpStat(AFilename,info)<>-1) and FPS_ISREG(info.st_mode) and
@@ -932,7 +938,7 @@ var AText: string;
 begin
   // TProcess does not report, if a program can not be executed
   // to get good error messages consider the OS
-  if not FileExists(AFilename) then begin
+  if not FileExistsUTF8(AFilename) then begin
     raise Exception.Create('file "'+AFilename+'" does not exist');
   end;
   if DirPathExists(AFilename) then begin
@@ -976,7 +982,7 @@ begin
     if DirectoryName[i]=PathDelim then begin
       Dir:=copy(DirectoryName,1,i-1);
       if not DirPathExists(Dir) then begin
-        Result:=CreateDir(Dir);
+        Result:=CreateDirUTF8(Dir);
         if not Result then exit;
       end;
     end;
@@ -998,7 +1004,7 @@ var
 begin
   Result:=false;
   CurSrcDir:=CleanAndExpandDirectory(DirectoryName);
-  if SysUtils.FindFirst(CurSrcDir+GetAllFilesMask,faAnyFile,FileInfo)=0 then begin
+  if FindFirstUTF8(CurSrcDir+GetAllFilesMask,faAnyFile,FileInfo)=0 then begin
     repeat
       // check if special file
       if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
@@ -1007,12 +1013,12 @@ begin
       if (FileInfo.Attr and faDirectory)>0 then begin
         if not DeleteDirectory(CurFilename,false) then exit;
       end else begin
-        if not SysUtils.DeleteFile(CurFilename) then exit;
+        if not DeleteFileUTF8(CurFilename) then exit;
       end;
-    until SysUtils.FindNext(FileInfo)<>0;
+    until FindNextUTF8(FileInfo)<>0;
   end;
-  SysUtils.FindClose(FileInfo);
-  if (not OnlyChilds) and (not RemoveDir(DirectoryName)) then exit;
+  FindCloseUTF8(FileInfo);
+  if (not OnlyChilds) and (not RemoveDirUTF8(DirectoryName)) then exit;
   Result:=true;
 end;
 
@@ -1023,7 +1029,7 @@ function ProgramDirectory: string;
 var
   Flags: TSearchFileInPathFlags;
 begin
-  Result:=ParamStr(0);
+  Result:=ParamStrUTF8(0);
   if ExtractFilePath(Result)='' then begin
     // program was started via PATH
     {$IFDEF WINDOWS}
@@ -1031,7 +1037,7 @@ begin
     {$ELSE}
     Flags:=[sffDontSearchInBasePath];
     {$ENDIF}
-    Result:=SearchFileInPath(Result,'',SysUtils.GetEnvironmentVariable('PATH'),':',Flags);
+    Result:=SearchFileInPath(Result,'',GetEnvironmentVariableUTF8('PATH'),':',Flags);
   end;
   // resolve links
   Result:=ReadAllLinks(Result,false);
@@ -1048,11 +1054,11 @@ begin
   TempFilename:=GetTempFilename(DirectoryName,'tstperm');
   Result:=false;
   try
-    fs:=TFileStream.Create(TempFilename,fmCreate);
+    fs:=TFileStream.Create(UTF8ToSys(TempFilename),fmCreate);
     s:='WriteTest';
     fs.Write(s[1],length(s));
     fs.Free;
-    SysUtils.DeleteFile(TempFilename);
+    DeleteFileUTF8(TempFilename);
     Result:=true;
   except
   end;
@@ -1253,13 +1259,13 @@ var
   DestFS: TFileStream;
 begin
   try
-    SrcFS:=TFileStream.Create(SrcFilename,fmOpenRead);
+    SrcFS:=TFileStream.Create(UTF8ToSys(SrcFilename),fmOpenRead);
     try
-      DestFS:=TFileStream.Create(DestFilename,fmCreate);
+      DestFS:=TFileStream.Create(UTF8ToSys(DestFilename),fmCreate);
       try
         DestFS.CopyFrom(SrcFS,SrcFS.Size);
         if PreserveTime then
-          FileSetDate(DestFilename, FileGetDate(SrcFS.Handle));
+          FileSetDateUTF8(DestFilename, FileGetDate(SrcFS.Handle));
       finally
         DestFS.Free;
       end;
@@ -1284,7 +1290,7 @@ begin
   i:=1;
   repeat
     Result:=CurPath+IntToStr(i)+'.tmp';
-    if not (FileExists(Result) or DirectoryExists(Result)) then exit;
+    if not (FileExistsUTF8(Result) or DirectoryExistsUTF8(Result)) then exit;
     inc(i);
   until false;
 end;
@@ -1306,7 +1312,7 @@ begin
   end;
   // check if filename absolute
   if FilenameIsAbsolute(Filename) then begin
-    if FileExists(Filename) then begin
+    if FileExistsUTF8(Filename) then begin
       Result:=CleanAndExpandFilename(Filename);
       exit;
     end else begin
@@ -1317,7 +1323,7 @@ begin
   Base:=CleanAndExpandDirectory(BasePath);
   // search in current directory
   if (not (sffDontSearchInBasePath in Flags))
-  and FileExists(Base+Filename) then begin
+  and FileExistsUTF8(Base+Filename) then begin
     Result:=CleanAndExpandFilename(Base+Filename);
     exit;
   end;
@@ -1332,7 +1338,7 @@ begin
       if not FilenameIsAbsolute(CurPath) then
         CurPath:=Base+CurPath;
       Result:=CleanAndExpandFilename(AppendPathDelim(CurPath)+Filename);
-      if FileExists(Result) then exit;
+      if FileExistsUTF8(Result) then exit;
     end;
     StartPos:=p+1;
   end;
@@ -1347,7 +1353,7 @@ function SearchAllFilesInPath(const Filename, BasePath, SearchPath,
     i: Integer;
   begin
     NewFilename:=TrimFilename(NewFilename);
-    if not FileExists(NewFilename) then exit;
+    if not FileExistsUTF8(NewFilename) then exit;
     if Result=nil then begin
       Result:=TStringList.Create;
     end else begin
@@ -1404,7 +1410,7 @@ var
   Ambiguous: Boolean;
 begin
   Result:=Filename;
-  if not FileExists(Filename) then exit;
+  if not FileExistsUTF8(Filename) then exit;
   // check every directory and filename
   StartPos:=1;
   {$IFDEF WINDOWS}
@@ -1430,7 +1436,7 @@ begin
       CurFile:=copy(Result,StartPos,EndPos-StartPos);
       AliasFile:='';
       Ambiguous:=false;
-      if SysUtils.FindFirst(CurDir+GetAllFilesMask,faAnyFile,FileInfo)=0 then
+      if FindFirstUTF8(CurDir+GetAllFilesMask,faAnyFile,FileInfo)=0 then
       begin
         repeat
           // check if special file
@@ -1454,9 +1460,9 @@ begin
               end;
             end;
           end;
-        until SysUtils.FindNext(FileInfo)<>0;
+        until FindNextUTF8(FileInfo)<>0;
       end;
-      SysUtils.FindClose(FileInfo);
+      FindCloseUTF8(FileInfo);
       if (AliasFile<>'') and (not Ambiguous) then begin
         // better filename found -> replace
         Result:=CurDir+AliasFile+copy(Result,EndPos,length(Result));
@@ -1474,7 +1480,7 @@ var
 begin
   Result:='';
   CurDir:=ExtractFilePath(Filename);
-  if SysUtils.FindFirst(CurDir+GetAllFilesMask,faAnyFile, FileInfo)=0 then begin
+  if FindFirstUTF8(CurDir+GetAllFilesMask,faAnyFile, FileInfo)=0 then begin
     ShortFilename:=ExtractFilename(Filename);
     repeat
       // check if special file
@@ -1491,31 +1497,31 @@ begin
         Result:=CurDir+FileInfo.Name;
         // search further
       end;
-    until SysUtils.FindNext(FileInfo)<>0;
+    until FindNextUTF8(FileInfo)<>0;
   end;
-  SysUtils.FindClose(FileInfo);
+  FindCloseUTF8(FileInfo);
 end;
 
 function FindDefaultExecutablePath(const Executable: string): string;
 begin
   if FilenameIsAbsolute(Executable) then begin
     Result:=Executable;
-    if FileExists(Result) then exit;
+    if FileExistsUTF8(Result) then exit;
     {$IFDEF Windows}
     if ExtractFileExt(Result)='' then begin
       Result:=Result+'.exe';
-      if FileExists(Result) then exit;
+      if FileExistsUTF8(Result) then exit;
     end;
     {$ENDIF}
   end else begin
     Result:=SearchFileInPath(Executable,'',
-                             SysUtils.GetEnvironmentVariable('PATH'), PathSeparator,
+                             GetEnvironmentVariableUTF8('PATH'), PathSeparator,
                              [sffDontSearchInBasePath]);
     if Result<>'' then exit;
     {$IFDEF Windows}
     if ExtractFileExt(Executable)='' then begin
       Result:=SearchFileInPath(Executable+'.exe','',
-                               SysUtils.GetEnvironmentVariable('PATH'), PathSeparator,
+                               GetEnvironmentVariableUTF8('PATH'), PathSeparator,
                                [sffDontSearchInBasePath]);
       if Result<>'' then exit;
     end;
@@ -1619,7 +1625,7 @@ var
   begin
     P := APath + AllDirectoryEntriesMask;
 
-    if SysUtils.FindFirst(P, faAnyFile, PathInfo) = 0 then
+    if FindFirstUTF8(P, faAnyFile, PathInfo) = 0 then
     try
       begin
         repeat
@@ -1645,14 +1651,14 @@ var
             DoDirectoryFound;
           end;
 
-        until (SysUtils.FindNext(PathInfo) <> 0) or not FSearching;
+        until (FindNextUTF8(PathInfo) <> 0) or not FSearching;
       end;
     finally
-      SysUtils.FindClose(PathInfo);
+      FindCloseUTF8(PathInfo);
     end;
     
     if ASearchSubDirs or (ALevel > 0) then // search recursively in directories
-      if SysUtils.FindFirst(P, faAnyFile, PathInfo) = 0 then
+      if FindFirstUTF8(P, faAnyFile, PathInfo) = 0 then
       try
         begin
           repeat
@@ -1667,10 +1673,10 @@ var
             
             DoSearch(AppendPathDelim(APath + PathInfo.Name), Succ(ALevel));
             
-          until (SysUtils.FindNext(PathInfo) <> 0);
+          until (FindNextUTF8(PathInfo) <> 0);
         end;
       finally
-        SysUtils.FindClose(PathInfo);
+        FindCloseUTF8(PathInfo);
       end;
   end;
 
@@ -1717,7 +1723,7 @@ var
 begin
   Result:='';
   try
-    fs:=TFileStream.Create(Filename,fmOpenRead);
+    fs:=TFileStream.Create(UTF8ToSys(Filename),fmOpenRead);
     try
       Setlength(Result,fs.Size);
       if Result<>'' then

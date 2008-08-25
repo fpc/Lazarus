@@ -36,7 +36,7 @@ unit LResources;
 interface
 
 uses
-  Classes, SysUtils, Types, RtlConsts,
+  Classes, SysUtils, Types, RtlConsts, FileUtil,
   FPCAdds, TypInfo, DynQueue, LCLType, LCLProc, LCLStrConsts, LazConfigStorage;
 
 {$DEFINE UseLRS}
@@ -1145,7 +1145,7 @@ var
 begin
   Result:=true;
   try
-    LFMFileStream:=TFileStream.Create(LFMfilename,fmOpenRead);
+    LFMFileStream:=TFileStream.Create(UTF8ToSys(LFMfilename),fmOpenRead);
     LFMMemStream:=TMemoryStream.Create;
     LRSMemStream:=TMemoryStream.Create;
     try
@@ -1158,7 +1158,7 @@ begin
       Result:=LFMtoLRSstream(LFMMemStream,LRSMemStream);
       if not Result then exit;
       LRSMemStream.Position:=0;
-      LRSFileStream:=TFileStream.Create(LRSfilename,fmCreate);
+      LRSFileStream:=TFileStream.Create(UTF8ToSys(LRSfilename),fmCreate);
       try
         LRSFileStream.CopyFrom(LRSMemStream,LRSMemStream.Size);
       finally

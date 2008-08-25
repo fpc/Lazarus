@@ -53,8 +53,10 @@ interface
 *)
 
 uses
-  Messages, Graphics, Controls, Forms, LCLProc, Dialogs, StdCtrls, Buttons,
-  IDEProcs, Laz_XMLCfg, SysUtils, Classes, LazarusIDEStrConsts, IDEContextHelpEdit;
+  Classes, SysUtils, Messages, Graphics, Controls, Forms, LCLProc, Dialogs,
+  StdCtrls, Buttons, FileUtil,
+  Laz_XMLCfg,
+  LazarusIDEStrConsts, IDEContextHelpEdit, IDEProcs;
 
 type
 
@@ -263,7 +265,7 @@ begin
   Result:=nil;
   ConfFileName:=SetDirSeparators(GetPrimaryConfigPath+'/condef.xml');
   try
-    if (not FileExists(ConfFileName)) then
+    if (not FileExistsUTF8(ConfFileName)) then
       Result:=TXMLConfig.CreateClean(ConfFileName)
     else
       Result:=TXMLConfig.Create(ConfFileName);

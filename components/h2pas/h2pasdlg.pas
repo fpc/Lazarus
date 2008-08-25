@@ -321,7 +321,7 @@ begin
   
   // create project
   if Converter.AutoOpenLastProject
-  and FileExists(Converter.CurrentProjectFilename) then
+  and FileExistsUTF8(Converter.CurrentProjectFilename) then
     OpenProject(Converter.CurrentProjectFilename,[]);
   if Project=nil then begin
     Converter.Project:=TH2PasProject.Create;
@@ -1234,7 +1234,7 @@ begin
       if ExtractFileExt(NewFilename)='' then
         NewFilename:=NewFilename+'.h2p';
       // warn if overwriting
-      if FileExists(NewFilename) then begin
+      if FileExistsUTF8(NewFilename) then begin
         if QuestionDlg('Replace file?',
           'The file "'+NewFilename+'"'#13
           +'already exists.',
@@ -1269,7 +1269,7 @@ var
 begin
   Result:=mrCancel;
   NewFilename:=ExpandFileName(TrimFilename(Filename));
-  if not FileExists(NewFilename) then begin
+  if not FileExistsUTF8(NewFilename) then begin
     if ofOnlyIfExists in Flags then begin
       MessageDlg('File not found',
         'File not found: "'+NewFilename+'"',mtError,[mbCancel],0);
@@ -1281,7 +1281,7 @@ begin
   if Project=nil then
     Converter.Project:=TH2PasProject.Create;
 
-  if FileExists(NewFilename) then begin
+  if FileExistsUTF8(NewFilename) then begin
     // load
     try
       Converter.LoadProject(NewFilename);

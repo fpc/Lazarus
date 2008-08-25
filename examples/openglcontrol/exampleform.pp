@@ -119,7 +119,7 @@ var FileStream: TFileStream;
 begin
   Result:=TMemoryStream.Create;
   try
-    FileStream:=TFileStream.Create(Filename, fmOpenRead);
+    FileStream:=TFileStream.Create(UTF8ToSys(Filename), fmOpenRead);
     try
       Result.CopyFrom(FileStream,FileStream.Size);
       Result.Position:=0;

@@ -101,7 +101,7 @@ Timer: TTimer;
 begin
   if (fChms <> nil) and fChms.IsAnOpenFile(AFile) then Exit;
   DoCloseChm;
-  if not FileExists(AFile) or DirectoryExists(AFile) then
+  if not FileExistsUTF8(AFile) or DirectoryExistsUTF8(AFile) then
   begin
     Exit;
   end;

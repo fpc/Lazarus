@@ -336,7 +336,7 @@ type
     procedure Expand(ValueToInclude: integer);
     function FindPrevSibling: TArrayNode;
     function FindNextSibling: TArrayNode;
-    function FindNext: TArrayNode;
+    function FindNextUTF8: TArrayNode;
     function FindPrev: TArrayNode;
     function FindFirstChild: TArrayNode;
     function FindLastChild: TArrayNode;
@@ -3309,7 +3309,7 @@ begin
         //DebugLn('TLazReaderXPM.ClearPixelToColorTree A ',DbgS(ArrNode),' ',DbgS(Entry));
         Dispose(Entry);
       end;
-      ArrNode:=ArrNode.FindNext;
+      ArrNode:=ArrNode.FindNextUTF8;
     end;
     FPixelToColorTree.Free;
     FPixelToColorTree:=nil;
@@ -4319,7 +4319,7 @@ begin
   end;
 end;
 
-function TArrayNode.FindNext: TArrayNode;
+function TArrayNode.FindNextUTF8: TArrayNode;
 var
   SiblingNode: TArrayNode;
 begin

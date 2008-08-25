@@ -208,7 +208,7 @@ begin
   // Set the default value for old digests without RelSrcDir to the rtl/compiler
   // testsuite
   RelSrcDir:='tests/';
-  If Not FileExists(FN) Then
+  If Not FileExistsUTF8(FN) Then
     Exit;
   Verbose(V_DEBUG,'Parsing config file: '+FN);
   Assign(F,FN);
@@ -242,7 +242,7 @@ begin
   I:=1;
   While I<=ParamCount do
     begin
-    O:=Paramstr(I);
+    O:=ParamStrUTF8(I);
     Found:=Length(O)=2;
     If Found then
       For co:=low(TConfigOpt) to high(TConfigOpt) do
@@ -264,7 +264,7 @@ begin
       else
         begin
         inc(I);
-        O:=Paramstr(I);
+        O:=ParamStrUTF8(I);
         SetOpt(c,o);
         end;
       end;
@@ -392,7 +392,7 @@ Function GetLog(FN : String) : String;
 
 begin
   FN:=ChangeFileExt(FN,'.log');
-  If FileExists(FN) then
+  If FileExistsUTF8(FN) then
     Result:=GetFileContents(FN)
   else
     Result:='';
@@ -402,7 +402,7 @@ Function GetExecuteLog(FN : String) : String;
 
 begin
   FN:=ChangeFileExt(FN,'.elg');
-  If FileExists(FN) then
+  If FileExistsUTF8(FN) then
     Result:=GetFileContents(FN)
   else
     Result:='';
@@ -519,7 +519,7 @@ procedure ProcessResultsFile(FN: String);
 
 begin
   Verbose(V_Debug,'Start ProcessResultsFile');
-  if not FileExists(FN) then
+  if not FileExistsUTF8(FN) then
     Verbose(V_Error,'Results file "'+ResultsFileName+'" does not exist.');
 
   ReadXMLFile(Doc, FN);

@@ -226,8 +226,8 @@ begin
   For I:=0 to FRequest.Files.Count-1 do
     begin
     FN:=FRequest.Files[I].LocalFileName;
-    If FileExists(FN) then
-      DeleteFile(FN);
+    If FileExistsUTF8(FN) then
+      DeleteFileUTF8(FN);
     end;
 end;
 
@@ -265,7 +265,7 @@ Var
 begin
   List.Clear;
   For I:=1 to cgiVarCount do
-    List.Add(CGIVarNames[i]+'='+GetEnvironmentVariable(CGIVarNames[i]));
+    List.Add(CGIVarNames[i]+'='+GetEnvironmentVariableUTF8(CGIVarNames[i]));
 end;
 
 
@@ -345,7 +345,7 @@ var
   R : String;
 
 begin
-  R:=GetEnvironmentVariable('REQUEST_METHOD');
+  R:=GetEnvironmentVariableUTF8('REQUEST_METHOD');
   if (R='') then
     Raise Exception.Create(SErrNoRequestMethod);
   FRequest.InitFromEnvironment;
@@ -403,7 +403,7 @@ begin
       I.Free;
     end;
     M.Position:=0;
-    With TFileStream.Create('/tmp/query',fmCreate) do
+    With TFileStream.Create(UTF8ToSys('/tmp/query'),fmCreate) do
       try
         CopyFrom(M,0);
         M.Position:=0;
@@ -439,7 +439,7 @@ begin
 {$ifdef CGIDEBUG}
   SendMethodEnter('InitGetVars');
 {$endif}
-  FQueryString:=GetEnvironmentVariable('QUERY_STRING');
+  FQueryString:=GetEnvironmentVariableUTF8('QUERY_STRING');
   If (FQueryString<>'') then
     ProcessQueryString(FQueryString);
 {$ifdef CGIDEBUG}
@@ -516,13 +516,13 @@ end;
 function TCGIRequest.GetCGIVar(Index: integer): String;
 begin
   Case Index of
-   1 : Result:=GetEnvironmentVariable(CGIVarNames[4]); // Property GatewayInterface : String Index 1 Read GetCGIVar;
-   2 : Result:=GetEnvironmentVariable(CGIVarNames[10]); // Property RemoteIdent : String Index 2 read GetCGIVar;
-   3 : Result:=GetEnvironmentVariable(CGIVarNames[11]); // Property RemoteUser : String Index 3 read GetCGIVar;
-   4 : Result:=GetEnvironmentVariable(CGIVarNames[12]); // Property RequestMethod : String Index 4 read GetCGIVar;
-   5 : Result:=GetEnvironmentVariable(CGIVarNames[14]); // Property ServerName : String Index 5 read GetCGIVar;
-   6 : Result:=GetEnvironmentVariable(CGIVarNames[16]); // Property ServerProtocol : String Index 6 read GetCGIVar;
-   7 : Result:=GetEnvironmentVariable(CGIVarNames[17]); // Property ServerSoftware : String Index 7 read GetCGIVar;
+   1 : Result:=GetEnvironmentVariableUTF8(CGIVarNames[4]); // Property GatewayInterface : String Index 1 Read GetCGIVar;
+   2 : Result:=GetEnvironmentVariableUTF8(CGIVarNames[10]); // Property RemoteIdent : String Index 2 read GetCGIVar;
+   3 : Result:=GetEnvironmentVariableUTF8(CGIVarNames[11]); // Property RemoteUser : String Index 3 read GetCGIVar;
+   4 : Result:=GetEnvironmentVariableUTF8(CGIVarNames[12]); // Property RequestMethod : String Index 4 read GetCGIVar;
+   5 : Result:=GetEnvironmentVariableUTF8(CGIVarNames[14]); // Property ServerName : String Index 5 read GetCGIVar;
+   6 : Result:=GetEnvironmentVariableUTF8(CGIVarNames[16]); // Property ServerProtocol : String Index 6 read GetCGIVar;
+   7 : Result:=GetEnvironmentVariableUTF8(CGIVarNames[17]); // Property ServerSoftware : String Index 7 read GetCGIVar;
   end;
 end;
 
@@ -541,7 +541,7 @@ begin
     if (N<>'') then
       begin
       OV:=GetFieldByName(N);
-      V:=GetEnvironmentVariable(CGIVarNames[I]);
+      V:=GetEnvironmentVariableUTF8(CGIVarNames[I]);
       If (OV='') or (V<>'') then
         SetFieldByName(N,V);
       end;
@@ -552,12 +552,12 @@ end;
 Function TCGIRequest.GetFieldValue(Index : Integer) : String;
 begin
   Case Index of
-    25 : Result:=GetEnvironmentVariable(CGIVarNames[5]); // Property PathInfo
-    26 : Result:=GetEnvironmentVariable(CGIVarNames[6]); // Property PathTranslated
-    27 : Result:=GetEnvironmentVariable(CGIVarNames[8]); // Property RemoteAddress
-    28 : Result:=GetEnvironmentVariable(CGIVarNames[9]); // Property RemoteHost
-    29 : Result:=GetEnvironmentVariable(CGIVarNames[13]); // Property ScriptName
-    30 : Result:=GetEnvironmentVariable(CGIVarNames[15]); // Property ServerPort
+    25 : Result:=GetEnvironmentVariableUTF8(CGIVarNames[5]); // Property PathInfo
+    26 : Result:=GetEnvironmentVariableUTF8(CGIVarNames[6]); // Property PathTranslated
+    27 : Result:=GetEnvironmentVariableUTF8(CGIVarNames[8]); // Property RemoteAddress
+    28 : Result:=GetEnvironmentVariableUTF8(CGIVarNames[9]); // Property RemoteHost
+    29 : Result:=GetEnvironmentVariableUTF8(CGIVarNames[13]); // Property ScriptName
+    30 : Result:=GetEnvironmentVariableUTF8(CGIVarNames[15]); // Property ServerPort
   else
     Result:=Inherited GetFieldValue(Index);
   end;

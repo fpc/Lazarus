@@ -31,7 +31,7 @@ function SearchExecutable(const ShortFilename: string; var Filename: string
   ): boolean;
 begin
   Filename:=SearchFileInPath(ShortFilename,'',
-                      SysUtils.GetEnvironmentVariable('PATH'),PathSeparator,[]);
+                      GetEnvironmentVariableUTF8('PATH'),PathSeparator,[]);
   Result:=Filename<>'';
 end;
 
@@ -63,7 +63,7 @@ begin
   end;
   
   DebugLn('TForm1.OpenURL StartScriptFilename=',StartScriptFilename);
-  if not FileExists(StartScriptFilename) then begin
+  if not FileExistsUTF8(StartScriptFilename) then begin
     DebugLn('TForm1.OpenURL unable to find program "',StartScriptFilename,'"');
     MessageDlg('Invalid browser',
            'Unable to find browser "'+StartScriptFilename+'"',
@@ -83,7 +83,7 @@ begin
   try
     TheProcess.Options:= [poUsePipes, poNoConsole, poStdErrToOutput];
     TheProcess.ShowWindow := swoNone;
-    TheProcess.CommandLine:=StartScriptFilename+' '+URL;
+    TheProcess.CommandLine:=UTF8ToSys(StartScriptFilename+' '+URL);
     try
       TheProcess.Execute;
       TheProcess.WaitOnExit;

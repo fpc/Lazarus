@@ -71,11 +71,11 @@ var
   n: Integer;
   S: String;
 begin
-  S := ParamStr(1);
+  S := ParamStrUTF8(1);
   // find the lazarus dir
   if S = ''
   then begin
-    S := ExtractFilePath(ParamStr(0));
+    S := ExtractFilePath(ParamStrUTF8(0));
     n := Pos('apiwizz', S);
     if n <> 0
     then S := Copy(S, 1, n - 7)
@@ -84,7 +84,7 @@ begin
 
   if S = ''
   then begin
-    S := GetCurrentDir;
+    S := GetCurrentDirUTF8;
     n := Pos('apiwizz', S);
     if n <> 0 then S := Copy(S, 1, n - 7);
   end;
@@ -394,7 +394,7 @@ begin
       //--------------------------------
       // open winapih.inc / lclintfh.inc
       //--------------------------------
-      ApiText.LoadFromFile(txtLazarus.text + '/lcl/include/' + FileName + 'h.inc');
+      ApiText.LoadFromFile(UTF8ToSys(txtLazarus.text + '/lcl/include/' + FileName + 'h.inc'));
       Idx := FindInsertPoint(ApiText, 'ps', ProcName, FileName + 'h.inc', True);
       if Idx <> -1
       then begin
@@ -417,12 +417,12 @@ begin
             InsertLines(Idx, ApiText, ProcLines);
           end;
         end;
-        ApiText.SaveToFile(txtLazarus.text + '/lcl/include/' + FileName + 'h.inc');
+        ApiText.SaveToFile(UTF8ToSys(txtLazarus.text + '/lcl/include/' + FileName + 'h.inc'));
       end;
       //------------------------------
       // open winapi.inc / lclintf.inc
       //------------------------------
-      ApiText.LoadFromFile(txtLazarus.text + '/lcl/include/' + FileName + '.inc');
+      ApiText.LoadFromFile(UTF8ToSys(txtLazarus.text + '/lcl/include/' + FileName + '.inc'));
       if rbIndependent.Checked
       then begin
         Idx := FindInsertPoint(ApiText, 'pi', ProcName, FileName + '.inc', False);
@@ -480,7 +480,7 @@ begin
       if Idx <> -1
       then begin
         InsertLines(Idx, ApiText, ProcLines);
-        ApiText.SaveToFile(txtLazarus.text + '/lcl/include/' + FileName + '.inc');
+        ApiText.SaveToFile(UTF8ToSys(txtLazarus.text + '/lcl/include/' + FileName + '.inc'));
       end;
 
       // ++++++++++++++++++++++++++++++ //
@@ -491,7 +491,7 @@ begin
         //------------------------------------------
         // open intfbasewinapi.inc / intfbaselcl.inc
         //------------------------------------------
-        ApiText.LoadFromFile(txtLazarus.text + '/lcl/include/' + IntfBase);
+        ApiText.LoadFromFile(UTF8ToSys(txtLazarus.text + '/lcl/include/' + IntfBase));
         Idx := FindInsertPoint(ApiText, 'ps', ProcName, IntfBase, False);
         if Idx <> -1
         then begin
@@ -514,7 +514,7 @@ begin
             Add('end;');
           end;
           InsertLines(Idx, ApiText, ProcLines);
-          ApiText.SaveToFile(txtLazarus.text + '/lcl/include/' + IntfBase);
+          ApiText.SaveToFile(UTF8ToSys(txtLazarus.text + '/lcl/include/' + IntfBase));
         end;
 
         for PlatformIdx := 0 to cbgLCLPlatform.Items.Count - 1 do
@@ -530,7 +530,7 @@ begin
           //------------------
           // open *winapih.inc
           //------------------
-          ApiText.LoadFromFile(txtLazarus.text + '/lcl/interfaces/' + PlatformDir + '/' + PlatformPrefix + FileName + 'h.inc');
+          ApiText.LoadFromFile(UTF8ToSys(txtLazarus.text + '/lcl/interfaces/' + PlatformDir + '/' + PlatformPrefix + FileName + 'h.inc'));
           Idx := FindInsertPoint(ApiText, 'ps', ProcName, PlatformPrefix + FileName + 'h.inc', True);
           if IDX <> -1
           then begin
@@ -538,13 +538,13 @@ begin
             CreateLeadingCR;
             ProcLines.Add(DeclarationText + '; override;');
             InsertLines(Idx, ApiText, ProcLines);
-            ApiText.SaveToFile(txtLazarus.text + '/lcl/interfaces/' + PlatformDir + '/' + PlatformPrefix + FileName + 'h.inc');
+            ApiText.SaveToFile(UTF8ToSys(txtLazarus.text + '/lcl/interfaces/' + PlatformDir + '/' + PlatformPrefix + FileName + 'h.inc'));
           end;
 
           //-----------------
           // open *winapi.inc
           //-----------------
-          ApiText.LoadFromFile(txtLazarus.text + '/lcl/interfaces/' + PlatformDir + '/' + PlatformPrefix + FileName + '.inc');
+          ApiText.LoadFromFile(UTF8ToSys(txtLazarus.text + '/lcl/interfaces/' + PlatformDir + '/' + PlatformPrefix + FileName + '.inc'));
           Idx := FindInsertPoint(ApiText, 'ps', ProcName, PlatformPrefix + FileName + '.inc', False);
           if Idx <> -1
           then begin
@@ -575,7 +575,7 @@ begin
               Add('end;');
             end;
             InsertLines(Idx, ApiText, ProcLines);
-            ApiText.SaveToFile(txtLazarus.text + '/lcl/interfaces/' + PlatformDir + '/' + PlatformPrefix + FileName + '.inc');
+            ApiText.SaveToFile(UTF8ToSys(txtLazarus.text + '/lcl/interfaces/' + PlatformDir + '/' + PlatformPrefix + FileName + '.inc'));
           end;
         end;
       end;

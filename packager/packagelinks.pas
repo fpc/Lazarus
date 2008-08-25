@@ -393,7 +393,7 @@ begin
   FGlobalLinks.FreeAndClear;
   GlobalLinksDir:=GetGlobalLinkDirectory;
   //debugln('UpdateGlobalLinks A ',GlobalLinksDir);
-  if FindFirst(GlobalLinksDir+'*.lpl', faAnyFile, FileInfo)=0 then begin
+  if FindFirstUTF8(GlobalLinksDir+'*.lpl', faAnyFile, FileInfo)=0 then begin
     PkgVersion:=TPkgVersion.Create;
     repeat
       CurFilename:=GlobalLinksDir+FileInfo.Name;
@@ -407,7 +407,7 @@ begin
       NewFilename:='';
       sl:=TStringList.Create;
       try
-        sl.LoadFromFile(CurFilename);
+        sl.LoadFromFile(UTF8ToSys(CurFilename));
         if sl.Count<=0 then begin
           DebugLn('WARNING: suspicious pkg link file found (content): ',CurFilename);
           continue;
@@ -436,11 +436,11 @@ begin
       else
         NewPkgLink.Free;
       
-    until FindNext(FileInfo)<>0;
+    until FindNextUTF8(FileInfo)<>0;
     //WriteLinkTree(FGlobalLinks);
     if PkgVersion<>nil then PkgVersion.Free;
   end;
-  FindClose(FileInfo);
+  FindCloseUTF8(FileInfo);
 end;
 
 procedure TPackageLinks.UpdateUserLinks;
@@ -461,8 +461,8 @@ begin
 
   // check if file has changed
   ConfigFilename:=GetUserLinkFile;
-  if UserLinkLoadTimeValid and FileExists(ConfigFilename)
-  and (FileAge(ConfigFilename)=UserLinkLoadTime) then
+  if UserLinkLoadTimeValid and FileExistsUTF8(ConfigFilename)
+  and (FileAgeUTF8(ConfigFilename)=UserLinkLoadTime) then
     exit;
   
   // copy system default if needed
@@ -514,7 +514,7 @@ begin
     end;
     XMLConfig.Free;
     
-    UserLinkLoadTime:=FileAge(ConfigFilename);
+    UserLinkLoadTime:=FileAgeUTF8(ConfigFilename);
     UserLinkLoadTimeValid:=true;
   except
     on E: Exception do begin
@@ -586,8 +586,8 @@ begin
   
   // check if file needs saving
   if (not Modified)
-  and UserLinkLoadTimeValid and FileExists(ConfigFilename)
-  and (FileAge(ConfigFilename)=UserLinkLoadTime) then
+  and UserLinkLoadTimeValid and FileExistsUTF8(ConfigFilename)
+  and (FileAgeUTF8(ConfigFilename)=UserLinkLoadTime) then
     exit;
   //DebugLn(['TPackageLinks.SaveUserLinks saving ... ',ConfigFilename]);
 
@@ -621,7 +621,7 @@ begin
     XMLConfig.Flush;
     XMLConfig.Free;
 
-    UserLinkLoadTime:=FileAge(ConfigFilename);
+    UserLinkLoadTime:=FileAgeUTF8(ConfigFilename);
     UserLinkLoadTimeValid:=true;
   except
     on E: Exception do begin
@@ -709,7 +709,7 @@ begin
   while ANode<>nil do begin
     PkgLink:=TPackageLink(ANode.Data);
     //debugln('TPackageLinks.IteratePackagesInTree PkgLink.Filename=',PkgLink.Filename);
-    if (not MustExist) or FileExists(PkgLink.Filename) then
+    if (not MustExist) or FileExistsUTF8(PkgLink.Filename) then
       Event(PkgLink);
     ANode:=LinkTree.FindSuccessor(ANode);
   end;

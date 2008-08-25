@@ -104,7 +104,7 @@ type
     constructor Create;
     destructor Destroy; override;
     function FindAll(const NewText: string): integer;
-    function FindFirst(const NewText: string): Integer;
+    function FindFirstUTF8(const NewText: string): Integer;
     procedure FixResults(First, Delta: integer);
     function Next: Integer;
     {$IFDEF SYN_LAZARUS}
@@ -988,7 +988,7 @@ begin
   // never shrink Capacity
   fResults.Count := 0;
   {$ENDIF}
-  Found := FindFirst(NewText);
+  Found := FindFirstUTF8(NewText);
   while Found > 0 do
   begin
     {$IFDEF SYN_LAZARUS}
@@ -1004,7 +1004,7 @@ begin
   Result := fResults.Count;
 end;
 
-function TSynEditSearch.FindFirst(const NewText: string): Integer;
+function TSynEditSearch.FindFirstUTF8(const NewText: string): Integer;
 begin
   Result := 0;
   fTextLen := Length(NewText);

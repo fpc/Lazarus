@@ -203,7 +203,7 @@ begin
 
   DestroyConnectedWidgetCB:=@DestroyConnectedWidget;
 
-  FRCFilename := ChangeFileExt(ParamStr(0),'.gtkrc');
+  FRCFilename := ChangeFileExt(ParamStrUTF8(0),'.gtkrc');
   FRCFileParsed := false;
 
   // initialize app level gtk engine
@@ -4913,8 +4913,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGtkWidgetSet.CheckRCFilename;
 begin
-  if FRCFileParsed and (FRCFilename<>'') and FileExists(FRCFilename)
-  and (FileAge(FRCFilename)<>FRCFileAge) then
+  if FRCFileParsed and (FRCFilename<>'') and FileExistsUTF8(FRCFilename)
+  and (FileAgeUTF8(FRCFilename)<>FRCFileAge) then
     FRCFileParsed:=false;
 end;
 
@@ -4928,11 +4928,11 @@ end;
 procedure TGtkWidgetSet.ParseRCFile;
 begin
   if (not FRCFileParsed)
-  and (FRCFilename<>'') and FileExists(FRCFilename) then
+  and (FRCFilename<>'') and FileExistsUTF8(FRCFilename) then
   begin
     gtk_rc_parse(PChar(FRCFilename));
     FRCFileParsed:=true;
-    FRCFileAge:=FileAge(FRCFilename);
+    FRCFileAge:=FileAgeUTF8(FRCFilename);
   end;
 end;
 

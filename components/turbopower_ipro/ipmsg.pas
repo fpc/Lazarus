@@ -1342,8 +1342,8 @@ var
 begin
   FBody.FreeStream;
   FileName := GetTemporaryFile(GetTemporaryPath);
-  if FileExists(FileName) then
-    DeleteFile(FileName);
+  if FileExistsUTF8(FileName) then
+    DeleteFileUTF8(FileName);
   Strm := TIpMemMapStream.Create(FileName, False, True);
   Strm.Size := Trunc(AttachmentSize * 1.3695);
   Strm.Open;
@@ -1982,7 +1982,7 @@ var
   FS : TFileStream;
 begin
   if (FBody.Size > 0) then begin
-    FS := TFileStream.Create(OutFile, fmCreate);
+    FS := TFileStream.Create(UTF8ToSys(OutFile), fmCreate);
     try
       ExtractBodyStream(FS);
     finally
@@ -3385,8 +3385,8 @@ begin
   if Size > IpLgAttachSizeBoundry then begin
     MsgStream.FreeStream;
     FileName := GetTemporaryFile(GetTemporaryPath);
-    if FileExists(FileName) then
-      DeleteFile(FileName);
+    if FileExistsUTF8(FileName) then
+      DeleteFileUTF8(FileName);
     Strm := TIpMemMapStream.Create(FileName, False, True);
     Strm.Size := Trunc(Size * 1.5);
     Strm.Open;
@@ -3503,8 +3503,8 @@ begin
   if aStream.Size > IpLgAttachSizeBoundry then begin
     MsgStream.FreeStream;
     FileName := GetTemporaryFile(GetTemporaryPath);
-    if FileExists(FileName) then
-      DeleteFile(FileName);
+    if FileExistsUTF8(FileName) then
+      DeleteFileUTF8(FileName);
     Strm := TIpMemMapStream.Create(FileName, False, True);
     Strm.Size := aStream.Size;
     Strm.Open;
@@ -3579,7 +3579,7 @@ var
 begin
   EncodeMessage;
   Position := 0;
-  FS := TFileStream.Create(aFileName, fmCreate);
+  FS := TFileStream.Create(UTF8ToSys(aFileName), fmCreate);
   try
     FS.CopyFrom(MsgStream, MsgStream.Size);
   finally

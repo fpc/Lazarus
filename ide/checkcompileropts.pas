@@ -275,7 +275,7 @@ begin
 
   // check if there are several compilers in path
   CompilerFiles:=SearchAllFilesInPath(GetDefaultCompilerFilename,'',
-       SysUtils.GetEnvironmentVariable('PATH'),':',[sffDontSearchInBasePath]);
+              GetEnvironmentVariableUTF8('PATH'),':',[sffDontSearchInBasePath]);
   try
     ResolveLinksInFileList(CompilerFiles,false);
     RemoveDoubles(CompilerFiles);
@@ -302,7 +302,7 @@ var
   
   procedure AddFile(const aFilename: string);
   begin
-    if (CfgFiles.IndexOf(aFilename)<0) and FileExists(aFilename) then
+    if (CfgFiles.IndexOf(aFilename)<0) and FileExistsUTF8(aFilename) then
       CfgFiles.Add(aFilename);
   end;
   
@@ -313,7 +313,7 @@ begin
   CfgFiles:=TStringList.Create;
   
   // check $HOME/.fpc.cfg
-  Dir:=SysUtils.GetEnvironmentVariable('HOME');
+  Dir:=GetEnvironmentVariableUTF8('HOME');
   if Dir<>'' then begin
     Filename:=CleanAndExpandDirectory(Dir)+'.fpc.cfg';
     AddFile(Filename);
@@ -338,7 +338,7 @@ begin
   // check /etc/fpc.cfg
   {$IFDEF Unix}
     Dir:=ExtractFilePath(CompilerFilename);
-    Dir:=SysUtils.GetEnvironmentVariable('HOME');
+    Dir:=GetEnvironmentVariableUTF8('HOME');
     if Dir<>'' then begin
       Filename:='/etc/fpc.cfg';
       AddFile(Filename);
@@ -404,7 +404,7 @@ begin
     Result:=RunTool(CompileTool);
     FreeThenNil(CompileTool);
   finally
-    DeleteFile(BogusFilename);
+    DeleteFileUTF8(BogusFilename);
   end;
   
   Result:=mrOk;
@@ -579,10 +579,10 @@ begin
   CmdLine:=CmdLine+ATestPascalFile;
 
   TheProcess := TProcess.Create(nil);
-  TheProcess.CommandLine := CmdLine;
+  TheProcess.CommandLine := UTF8ToSys(CmdLine);
   TheProcess.Options:= [poUsePipes, poStdErrToOutPut];
   TheProcess.ShowWindow := swoHide;
-  TheProcess.CurrentDirectory:=Options.BaseDirectory;
+  TheProcess.CurrentDirectory:=UTF8ToSys(Options.BaseDirectory);
   //DebugLn(['TCheckCompilerOptsDlg.CheckCompilerConfig Options.BaseDirectory=',Options.BaseDirectory]);
   try
     TheProcess.Execute;
@@ -631,7 +631,7 @@ begin
   while p<=length(FPCCfgUnitPath) do begin
     Directory:=CleanAndExpandDirectory(GetNextDirectoryInSearchPath(FPCCfgUnitPath,p));
     if Directory<>'' then begin
-      if SysUtils.FindFirst(Directory+GetAllFilesMask,faAnyFile,FileInfo)=0
+      if FindFirstUTF8(Directory+GetAllFilesMask,faAnyFile,FileInfo)=0
       then begin
         repeat
           // check if special file
@@ -641,9 +641,9 @@ begin
           if CompareFileExt(FileInfo.Name,'.ppu',
             {$IFDEF MSWINDOWS}false{$ELSE}true{$ENDIF})=0 then
             Result.Add(Directory+FileInfo.Name);
-        until SysUtils.FindNext(FileInfo)<>0;
+        until FindNextUTF8(FileInfo)<>0;
       end;
-      SysUtils.FindClose(FileInfo);
+      FindCloseUTF8(FileInfo);
     end;
   end;
 end;
@@ -699,7 +699,7 @@ var
   var
     CurDate: LongInt;
   begin
-    CurDate:=FileAge(aFilename);
+    CurDate:=FileAgeUTF8(aFilename);
     //DebugLn(['CheckFileAge ',aFilename,' ',CurDate]);
     if (CurDate=-1) then exit;
     if (MinPPUDate=-1) or (MinPPUDate>CurDate) then begin
@@ -730,7 +730,7 @@ begin
 
   Result:=mrCancel;
   
-  CompilerDate:=FileAge(CompilerFilename);
+  CompilerDate:=FileAgeUTF8(CompilerFilename);
   if CompilerDate=-1 then begin
     Result:=MessageDlg(lisCCOErrorCaption,Format(lisCCOUnableToGetFileDate,[CompilerFilename]),
       mtError,[mbIgnore,mbAbort],0);
@@ -849,7 +849,7 @@ begin
       if (Directory<>'') and (FilenameIsAbsolute(Directory))
       and (WarnedDirectories.IndexOf(Directory)<0) then begin
         //DebugLn(['TCheckCompilerOptsDlg.CheckFPCUnitPathsContainSources Directory="',Directory,'"']);
-        if SysUtils.FindFirst(Directory+GetAllFilesMask,faAnyFile,FileInfo)=0
+        if FindFirstUTF8(Directory+GetAllFilesMask,faAnyFile,FileInfo)=0
         then begin
           repeat
             // check if special file
@@ -861,9 +861,9 @@ begin
               WarnedDirectories.Add(Directory);
               break;
             end;
-          until SysUtils.FindNext(FileInfo)<>0;
+          until FindNextUTF8(FileInfo)<>0;
         end;
-        SysUtils.FindClose(FileInfo);
+        FindCloseUTF8(FileInfo);
       end;
     end;
   end;
@@ -936,7 +936,7 @@ begin
   try
     // search .ppu and .o files in output directory
     Directory:=AppendPathDelim(OutputDir);
-    if SysUtils.FindFirst(Directory+GetAllFilesMask,faAnyFile,FileInfo)=0 then
+    if FindFirstUTF8(Directory+GetAllFilesMask,faAnyFile,FileInfo)=0 then
     begin
       repeat
         // check if special file
@@ -950,9 +950,9 @@ begin
         then
           continue;
         PPUFiles.Add(Directory+FileInfo.Name);
-      until SysUtils.FindNext(FileInfo)<>0;
+      until FindNextUTF8(FileInfo)<>0;
     end;
-    SysUtils.FindClose(FileInfo);
+    FindCloseUTF8(FileInfo);
 
     // remove all .ppu/.o files with a unit source
     SrcPath:=Options.GetParsedPath(pcosUnitPath,icoNone,false,true);

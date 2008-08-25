@@ -66,7 +66,7 @@ var
   
 procedure InitDirectories;
 begin
-  LazarusDir := ExpandFileName(ExtractFilePath(ParamStr(0)) + '../');
+  LazarusDir := ExpandFileName(ExtractFilePath(ParamStrUTF8(0)) + '../');
   ComponentsDir := SetDirSeparators(LazarusDir + 'components/');
   ExamplesDir := LazarusDir + 'examples' + PathDelim;
   CTExamplesDir := SetDirSeparators(ComponentsDir + 'codetools/examples/');
@@ -101,7 +101,7 @@ class function TLpkTest.CreateSuiteFromDirectory(const AName,
     FileInfo: TSearchRec;
   begin
     SearchMask := ABasePath+ADirectory + '*';
-    if FindFirst(SearchMask,faAnyFile,FileInfo)=0 then begin
+    if FindFirstUTF8(SearchMask,faAnyFile,FileInfo)=0 then begin
       repeat
         // skip special directory entries
         if (FileInfo.Name='.') or (FileInfo.Name='..') then continue;
@@ -111,9 +111,9 @@ class function TLpkTest.CreateSuiteFromDirectory(const AName,
           Result.AddTest(CreateSuiteFromFile(RelativePath, ABasePath+RelativePath))
         else if (FileInfo.Attr and faDirectory=faDirectory) then
           SearchDirectory(AppendPathDelim(RelativePath));
-      until FindNext(FileInfo)<>0;
+      until FindNextUTF8(FileInfo)<>0;
     end;
-    FindClose(FileInfo);
+    FindCloseUTF8(FileInfo);
   end;
   
 begin
@@ -133,9 +133,10 @@ var
   LazBuildPath: string;
   LazBuild: TProcess;
   OutputLines: TStrings;
+  CmdLine: string;
 begin
   LazBuildPath := LazarusDir + 'lazbuild' + GetExeExt;
-  AssertTrue(LazBuildPath + ' does not exist', FileExists(LazBuildPath));
+  AssertTrue(LazBuildPath + ' does not exist', FileExistsUTF8(LazBuildPath));
   LazBuild := TProcess.Create(nil);
   OutputLines := nil;
   try
@@ -145,11 +146,12 @@ begin
     LazBuild.Options := [poNoConsole, poUsePipes];
     {$ENDIF}
     LazBuild.ShowWindow := swoHIDE;
-    LazBuild.CommandLine := LazBuildPath;
+    CmdLine:=LazBuildPath;
     if Compiler<>'' then
-      LazBuild.CommandLine := LazBuild.CommandLine + ' --compiler='+Compiler;
-    LazBuild.CommandLine := LazBuild.CommandLine + ' -B ' + FPath;
-    LazBuild.CurrentDirectory := ExtractFileDir(FPath);
+      CmdLine:=Cmdline + ' --compiler='+Compiler;
+    Cmdline := Cmdline + ' -B ' + FPath;
+    LazBuild.CommandLine := UTF8ToSys(CmdLine);
+    LazBuild.CurrentDirectory := UTF8ToSys(ExtractFileDir(FPath));
     LazBuild.Execute;
     OutputLines := ReadOutput(LazBuild);
     LazBuild.WaitOnExit;
@@ -175,7 +177,7 @@ begin
   Result := inherited CreateSuiteFromFile(AName, APath);
 {$IFDEF win32}
   AhkFileName := GetScriptFileName(APath);
-  if FileExists(AhkFileName) then
+  if FileExistsUTF8(AhkFileName) then
     Result.AddTest(TLpiTest.Create(APath, 'TestRun'));
 {$ELSE}
   {$NOTE scripting is only available on win32}
@@ -187,10 +189,10 @@ var
   ScriptProcess : TProcess;
 begin
   AssertTrue('ScriptEngine "' + ScriptEngine + '" does not exist.',
-    FileExists(ScriptEngine));
+    FileExistsUTF8(ScriptEngine));
   ScriptProcess := TProcess.Create(nil);
   try
-    ScriptProcess.CommandLine := ScriptEngine + ' ' + GetScriptFileName(FPath);
+    ScriptProcess.CommandLine := UTF8ToSys(ScriptEngine + ' ' + GetScriptFileName(FPath));
     ScriptProcess.Execute;
     ScriptProcess.WaitOnExit;
   finally
@@ -204,10 +206,10 @@ var
   ExeName: string;
 begin
   ExeName := ChangeFileExt(FPath, GetExeExt);
-  AssertTrue(ExeName + 'does not exist.', FileExists(ExeName));
+  AssertTrue(ExeName + 'does not exist.', FileExistsUTF8(ExeName));
   TestProcess := TProcess.Create(nil);
   try
-    TestProcess.CommandLine := ExeName;
+    TestProcess.CommandLine := UTF8ToSys(ExeName);
     TestProcess.Execute;
     RunScript;
     TestProcess.WaitOnExit;

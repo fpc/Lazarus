@@ -322,8 +322,8 @@ begin
   CloseFile;
   
   { If map file was temporary then get rid of it. }
-  if mmFileIsTemp and FileExists(mmFileName) then
-    DeleteFile(mmFileName);
+  if mmFileIsTemp and FileExistsUTF8(mmFileName) then
+    DeleteFileUTF8(mmFileName);
 
   inherited;
 end;
@@ -397,7 +397,7 @@ begin
   CheckClosed('Open');
 
   { Are we opening an existing file or creating a new file? }
-  if not FileExists(mmFileName) then
+  if not FileExistsUTF8(mmFileName) then
     CreateMode:= CREATE_ALWAYS
   else
     CreateMode := OPEN_EXISTING;

@@ -573,7 +573,7 @@ function InternetSumOfFile(const FileName : string) : DWORD;
 var
   FileSt : TFileStream;
 begin
-  FileSt := TFileStream.Create(FileName, CrcFileMode);
+  FileSt := TFileStream.Create(UTF8ToSys(FileName), CrcFileMode);
   try
     Result := InternetSumOfStream(FileSt, 0);
   finally
@@ -791,7 +791,7 @@ function MD5SumOfFile(const FileName : string) : string;
 var
   FileSt : TFileStream;
 begin
-  FileSt := TFileStream.Create(FileName, CrcFileMode);
+  FileSt := TFileStream.Create(UTF8ToSys(FileName), CrcFileMode);
   try
     Result := MD5SumOfStream(FileSt);
   finally

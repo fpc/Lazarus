@@ -1088,7 +1088,7 @@ begin
     iDlg.Filter := sUniFileDescription + ' (*.hgl)|*.hgl';
     if not iDlg.Execute then
       Exit;
-    iFile := TFileStream.Create( iDlg.FileName, fmOpenRead or fmShareDenyWrite );
+    iFile := TFileStream.Create( UTF8ToSys(iDlg.FileName), fmOpenRead or fmShareDenyWrite );
     try
       if iRange = h.MainRules then
       begin

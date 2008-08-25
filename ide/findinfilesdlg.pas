@@ -104,10 +104,10 @@ end;
 procedure TLazFindInFilesDialog.DirectoryBrowseClick(Sender: TObject);
 begin
   InitIDEFileDialog(SelectDirectoryDialog);
-  if DirectoryExists(DirectoryComboBox.Text) then
+  if DirectoryExistsUTF8(DirectoryComboBox.Text) then
    SelectDirectoryDialog.InitialDir := DirectoryComboBox.Text
   else
-   SelectDirectoryDialog.InitialDir := GetCurrentDir;
+   SelectDirectoryDialog.InitialDir := GetCurrentDirUTF8;
   if SelectDirectoryDialog.Execute then
     DirectoryComboBox.Text := SelectDirectoryDialog.FileName;
   StoreIDEFileDialog(SelectDirectoryDialog);

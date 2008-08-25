@@ -215,7 +215,7 @@ begin
     WriteCustomHelp;
     writeln;
     writeln('The results can be redirected to an xml file,');
-    writeln('for example: ', ParamStr(0),' --all > results.xml');
+    writeln('for example: ', ParamStrUTF8(0),' --all > results.xml');
   end;
 
   //get the format parameter

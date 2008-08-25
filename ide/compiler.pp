@@ -104,8 +104,8 @@ begin
   DebugLn('TCompiler.Compile WorkingDir="',WorkingDir,'" CompilerFilename="',CompilerFilename,'" CompilerParams="',CompilerParams,'"');
 
   // change working directory
-  OldCurDir:=GetCurrentDir;
-  if not SetCurrentDir(WorkingDir) then begin
+  OldCurDir:=GetCurrentDirUTF8;
+  if not SetCurrentDirUTF8(WorkingDir) then begin
     WriteError('TCompiler.Compile unable to set working directory '+WorkingDir);
     exit;
   end;
@@ -153,7 +153,7 @@ begin
     try
       if TheProcess=nil then
         FTheProcess := TOutputFilterProcess.Create(nil);
-      TheProcess.CommandLine := CmdLine;
+      TheProcess.CommandLine := UTF8ToSys(CmdLine);
       TheProcess.Options:= [poUsePipes, poStdErrToOutput];
       TheProcess.ShowWindow := swoHide;
       Result:=mrOk;
@@ -187,7 +187,7 @@ begin
       end;
     end;
   finally
-    SetCurrentDir(OldCurDir);
+    SetCurrentDirUTF8(OldCurDir);
   end;
   DebugLn('[TCompiler.Compile] end');
 end;

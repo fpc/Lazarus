@@ -1050,10 +1050,10 @@ var
     repeat
       inc(i);
       Filename:='TCustomImageList'+IntToStr(i)+'.stream';
-    until not FileExists(Filename);
+    until not FileExistsUTF8(Filename);
     CurStreamPos := AStream.Position;
     DebugLn('TCustomImageList.ReadData Saving stream to ',Filename);
-    fs:=TFileStream.Create(Filename,fmCreate);
+    fs:=TFileStream.Create(UTF8ToSys(Filename),fmCreate);
     AStream.Position:=StreamPos;
     fs.CopyFrom(AStream,AStream.Size-AStream.Position);
     fs.Free;

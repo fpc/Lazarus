@@ -50,7 +50,7 @@ begin
     If (UnitName<>'') then
       SDCode.FileName:=UnitName+'.pp';
     If Execute then
-      MCode.Lines.SaveToFile(FileName);
+      MCode.Lines.SaveToFile(UTF8ToSys(FileName));
     end;
 end;
 

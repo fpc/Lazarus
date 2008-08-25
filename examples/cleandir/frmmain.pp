@@ -499,7 +499,7 @@ Var
 begin
   D:=TCleanDirs.Create(Self);
   Try
-    D.LoadFromFile(AFileName);
+    D.LoadFromFile(UTF8ToSys(AFileName));
   except
     D.Free;
     Raise;
@@ -511,7 +511,7 @@ end;
 procedure TMainForm.CheckInit;
 
 begin
-  If (Application.ParamCount>0) and FileExists(Application.Params[1]) then
+  If (Application.ParamCount>0) and FileExistsUTF8(Application.Params[1]) then
     LoadFile(Application.Params[1])
   else
     NewConfig;
