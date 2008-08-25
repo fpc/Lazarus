@@ -82,8 +82,13 @@
     <Version Value="8"/>
     <PathDelim Value="\"/>
     <SearchPaths>
-      <OtherUnitFiles Value="bugs\"/>
+      <OtherUnitFiles Value="bugs\;lcltests\"/>
     </SearchPaths>
+    <Parsing>
+      <SyntaxOptions>
+        <CStyleOperator Value="False"/>
+      </SyntaxOptions>
+    </Parsing>
     <Linking>
       <Debugging>
         <UseHeaptrc Value="True"/>

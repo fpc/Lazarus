@@ -29,10 +29,12 @@ uses
 var
   Compiler: string;
   BugsTestSuite: TTestSuite;
+  LCLTestSuite: TTestSuite;
 
 // reads the output from a process and puts it in a memory stream
 function ReadOutput(AProcess:TProcess): TStringList;
 procedure AddToBugsTestSuite(ATest: TTest);
+procedure AddToLCLTestSuite(ATestClass: TClass);
 
 implementation
 
@@ -90,10 +92,17 @@ begin
   BugsTestSuite.AddTest(ATest);
 end;
 
+procedure AddToLCLTestSuite(ATestClass: TClass);
+begin
+  LCLTestSuite.AddTestSuiteFromClass(ATestClass);
+end;
+
 initialization
   GetTestRegistry.TestName := 'All tests';
   BugsTestSuite := TTestSuite.Create('Bugs');
   GetTestRegistry.AddTest(BugsTestSuite);
+  LCLTestSuite := TTestSuite.Create('LCL tests');
+  GetTestRegistry.AddTest(LCLTestSuite);
 
 end.
 

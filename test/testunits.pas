@@ -28,7 +28,9 @@ interface
 
 uses
   TestLpi, BugTestCase,
-  bug8432, testfileutil, testfileproc;
+  bug8432, testfileutil, testfileproc,
+  // lcltests
+  testunicode;
 
 implementation
 

@@ -35,7 +35,7 @@
         <PackageName Value="LCL"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="4">
+    <Units Count="5">
       <Unit0>
         <Filename Value="runtests.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -56,14 +56,24 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="testglobals"/>
       </Unit3>
+      <Unit4>
+        <Filename Value="lcltests\testunicode.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestUnicode"/>
+      </Unit4>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="8"/>
     <PathDelim Value="\"/>
     <SearchPaths>
-      <OtherUnitFiles Value="bugs\"/>
+      <OtherUnitFiles Value="bugs\;lcltests\"/>
     </SearchPaths>
+    <Parsing>
+      <SyntaxOptions>
+        <CStyleOperator Value="False"/>
+      </SyntaxOptions>
+    </Parsing>
     <Linking>
       <Debugging>
         <UseLineInfoUnit Value="False"/>
