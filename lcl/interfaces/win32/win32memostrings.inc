@@ -141,7 +141,7 @@ end;
 
 procedure TWin32MemoStrings.AddStrings(TheStrings: TStrings);
 begin
-  SetTextStr(TStrings(TheStrings).Text);
+  SetTextStr(GetTextStr + TStrings(TheStrings).Text);
 end;
 
 procedure TWin32MemoStrings.Clear;
