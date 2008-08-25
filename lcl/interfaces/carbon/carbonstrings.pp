@@ -76,25 +76,17 @@ type
 
   TCarbonMemoStrings = class(TStrings)
   private
-    FStringList: TStringList; // internal string list
     FOwner: TCarbonMemo;      // Carbon memo control owning strings
-    FExternalChanged: Boolean;// Carbon strings object has changed
-    procedure InternalUpdate;
-    procedure ExternalUpdate;
   protected
     function GetTextStr: string; override;
+    procedure SetTextStr(const Value: string); override;
     function GetCount: Integer; override;
     function Get(Index: Integer): string; override;
   public
     constructor Create(AOwner: TCarbonMemo);
-    destructor Destroy; override;
-    procedure Assign(Source: TPersistent); override;
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
     procedure Insert(Index: Integer; const S: string); override;
-    procedure SetText(TheText: PChar); override;
-
-    procedure ExternalChanged; dynamic;
   public
     property Owner: TCarbonMemo read FOwner;
   end;
@@ -310,41 +302,20 @@ end;
 { TCarbonMemoStrings }
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonMemoStrings.InternalUpdate
-
-  Updates the internal strings from Carbon interface
- ------------------------------------------------------------------------------}
-procedure TCarbonMemoStrings.InternalUpdate;
-var
-  S: String;
-begin
-  S := '';
-  //DebugLn('TCarbonMemoStrings.InternalUpdate');
-  if FOwner.GetText(S) then
-    FStringList.Text := S;
-
-  FExternalChanged := False;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonMemoStrings.ExternalUpdate
-
-  Updates the strings in Carbon interface from internal
- ------------------------------------------------------------------------------}
-procedure TCarbonMemoStrings.ExternalUpdate;
-begin
-  //DebugLn('TCarbonMemoStrings.ExternalUpdate Text: ' + FStringList.Text);
-  FOwner.SetText(FStringList.Text);
-end;
-
-{------------------------------------------------------------------------------
   Method:  TCarbonMemoStrings.GetTextStr
   Returns: Text of Carbon strings
  ------------------------------------------------------------------------------}
 function TCarbonMemoStrings.GetTextStr: string;
 begin
-  if FExternalChanged then InternalUpdate;
-  Result := FStringList.Text;
+  FOwner.GetText(Result);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonMemoStrings.SetTextStr
+ ------------------------------------------------------------------------------}
+procedure TCarbonMemoStrings.SetTextStr(const Value: string);
+begin
+  FOwner.SetText(Value);
 end;
 
 {------------------------------------------------------------------------------
@@ -353,8 +324,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonMemoStrings.GetCount: Integer;
 begin
-  if FExternalChanged then InternalUpdate;
-  Result := FStringList.Count;
+  Result := FOwner.GetLineCount;
 end;
 
 {------------------------------------------------------------------------------
@@ -364,8 +334,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonMemoStrings.Get(Index: Integer): string;
 begin
-  if FExternalChanged then InternalUpdate;
-  Result := FStringList[Index];
+  Result := FOwner.GetLine(Index);
 end;
 
 {------------------------------------------------------------------------------
@@ -377,38 +346,6 @@ end;
 constructor TCarbonMemoStrings.Create(AOwner: TCarbonMemo);
 begin
   FOwner := AOwner;
-  FStringList := TStringList.Create;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonMemoStrings.Destroy
-
-  Releases strings from Carbon memo strings
- ------------------------------------------------------------------------------}
-destructor TCarbonMemoStrings.Destroy;
-begin
-  FStringList.Free;
-
-  inherited Destroy;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonMemoStrings.Assign
-  Params:  Source - Object to assing
-
-  Assings strings object
- ------------------------------------------------------------------------------}
-procedure TCarbonMemoStrings.Assign(Source: TPersistent);
-begin
-  if (Source = Self) or (Source = nil) then Exit;
-  if Source is TStrings then
-  begin
-    FStringList.Clear;
-    FStringList.Text := TStrings(Source).Text;
-    ExternalUpdate;
-  end
-  else
-    inherited Assign(Source);
 end;
 
 {------------------------------------------------------------------------------
@@ -418,8 +355,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonMemoStrings.Clear;
 begin
-  FStringList.Clear;
-  ExternalUpdate;
+  SetTextStr('');
 end;
 
 {------------------------------------------------------------------------------
@@ -430,8 +366,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonMemoStrings.Delete(Index: Integer);
 begin
-  FStringList.Delete(Index);
-  ExternalUpdate;
+  FOwner.DeleteLine(Index);
 end;
 
 {------------------------------------------------------------------------------
@@ -443,30 +378,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonMemoStrings.Insert(Index: Integer; const S: string);
 begin
-  FStringList.Insert(Index, S);
-  ExternalUpdate;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonMemoStrings.SetText
-  Params:  TheText - Text to set
-
-  Sets the text of strings
- ------------------------------------------------------------------------------}
-procedure TCarbonMemoStrings.SetText(TheText: PChar);
-begin
-  FStringList.Text := TheText;
-  ExternalUpdate;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonMemoStrings.ExternalChanged
-
-  Notifies that strings object in Carbon interface has changed
- ------------------------------------------------------------------------------}
-procedure TCarbonMemoStrings.ExternalChanged;
-begin
-  FExternalChanged := True;
+  FOwner.InsertLine(Index, S);
 end;
 
 

@@ -170,6 +170,7 @@ type
     function GetFrame(Index: Integer): ControlRef; override;
     procedure CreateWidget(const AParams: TCreateParams); override;
     procedure DestroyWidget; override;
+    procedure GetLineOffset(AIndex: Integer; out AStart, AEnd: TXNOffset);
   public
     procedure TextDidChange; override;
     function FilterKeyPress(SysKey: Boolean; const Char: TUTF8Char): Boolean; override;
@@ -182,6 +183,11 @@ type
     procedure SetPasswordChar(AChar: Char); override;
     procedure SetReadOnly(AReadOnly: Boolean); override;
     procedure SetWordWrap(AWordWrap: Boolean); virtual;
+  public
+    function GetLineCount: Integer;
+    function GetLine(AIndex: Integer): String;
+    procedure DeleteLine(AIndex: Integer);
+    procedure InsertLine(AIndex: Integer; const S: String);
   public
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars;
   end;
@@ -1386,23 +1392,84 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  TCarbonMemo.GetLineOffset
+  Returns: Offset of specified line
+ ------------------------------------------------------------------------------}
+procedure TCarbonMemo.GetLineOffset(AIndex: Integer; out AStart, AEnd: TXNOffset);
+const
+  SName = 'GetLineOffset';
+var
+  O: TXNObject;
+  W, H: Fixed;
+  P: HIPoint;
+  Line, TextStart, TextEnd: TXNOffset;
+  LineTop, LineBottom: Single;
+begin
+  AStart := 0;
+  AEnd := 0;
+  if AIndex >= GetLineCount then
+  begin
+    AStart := kTXNEndOffset;
+    AEnd := kTXNEndOffset;
+    Exit;
+  end;
+  O := HITextViewGetTXNObject(ControlRef(Widget));
+  if TXNDataSize(O) = 0 then Exit;
+
+  if OSError(TXNGetLineMetrics(O, AIndex, W, H), Self, SName, 'TXNGetLineMetrics') then Exit;
+  if OSError(TXNOffsetToHIPoint(O, 0, P), Self, SName, 'TXNOffsetToHIPoint') then Exit;
+  LineTop := P.y + AIndex * (H / $10000);
+  LineBottom := LineTop + H / $10000;
+
+  // find line offset with bisection
+  TextStart := 0;
+  TextEnd := TXNDataSize(O) div 2;
+  repeat
+    Line := (TextStart + TextEnd) div 2;
+    if OSError(TXNOffsetToHIPoint(O, Line, P), Self, SName, 'TXNOffsetToHIPoint') then Exit;
+    if P.y < LineTop then
+      TextStart := Line + 1
+    else
+      TextEnd := Line;
+      
+    if (P.y >= LineTop) and (P.y < LineBottom) then Break;
+  until TextEnd < TextStart;
+
+  LineTop := P.y;
+
+  // find line start offset
+  AStart := Line;
+  while AStart > 0 do
+  begin
+    if OSError(TXNOffsetToHIPoint(O, AStart - 1, P), Self, SName, 'TXNOffsetToHIPoint') then Exit;
+    if P.y <> LineTop then Break;
+    Dec(AStart);
+  end;
+  
+  // find line end offset
+  AEnd := Line;
+  TextEnd := TXNDataSize(O) div 2;
+  while AEnd < TextEnd do
+  begin
+    if OSError(TXNOffsetToHIPoint(O, AEnd + 1, P), Self, SName, 'TXNOffsetToHIPoint') then Exit;
+    if P.y <> LineTop then Break;
+    Inc(AEnd);
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Method:  TCarbonMemo.TextDidChange
 
   Text changed event handler
  ------------------------------------------------------------------------------}
 procedure TCarbonMemo.TextDidChange;
 var
-  MemoStrings: TCarbonMemoStrings;
   Msg: TLMessage;
 begin
   // limit the text according to MaxLength
   LimitTextLength;
 
   AdaptCharCase;
-
-  // update memo strings
-  MemoStrings := (LCLObject as TCustomMemo).Lines as TCarbonMemoStrings;
-  if MemoStrings <> nil then MemoStrings.ExternalChanged;
 
   FillChar(Msg, SizeOf(Msg), 0);
   Msg.Msg := CM_TEXTCHANGED;
@@ -1564,6 +1631,98 @@ begin
   SetTXNControl(kTXNWordWrapStateTag, Data);
 
   Invalidate;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonMemo.GetLineCount
+  Returns: Memo line count
+ ------------------------------------------------------------------------------}
+function TCarbonMemo.GetLineCount: Integer;
+var
+  C: ItemCount;
+  S: Integer;
+  O: TXNObject;
+begin
+  Result := 0;
+  O := HITextViewGetTXNObject(ControlRef(Widget));
+  if not OSError(TXNGetLineCount(O, C),
+      Self, 'GetLineCount', 'TXNGetLineCount') then
+  begin
+    Result := C;
+    S := TXNDataSize(O);
+    if S = 0 then Dec(Result);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonMemo.GetLine
+  Returns: Memo line text
+ ------------------------------------------------------------------------------}
+function TCarbonMemo.GetLine(AIndex: Integer): String;
+var
+  AStart, AEnd: TXNOffset;
+  Data: Handle;
+  W: WideString;
+begin
+  Result := '';
+
+  GetLineOffset(AIndex, AStart, AEnd);
+  if OSError(TXNGetData(HITextViewGetTXNObject(ControlRef(Widget)), AStart, AEnd, Data), Self, 'GetLine', 'TXNGetData') then Exit;
+  
+  W := PWideChar(Data^);
+
+  Result := UTF16ToUTF8(Copy(W, 0, GetHandleSize(Data) div 2));
+  // remove CRLF
+  if (Result <> '') and (Result[Length(Result)] in [#10, #13]) then
+    Delete(Result, Length(Result), 1);
+  if (Result <> '') and (Result[Length(Result)] in [#10, #13]) then
+    Delete(Result, Length(Result), 1);
+
+  DisposeHandle(Data);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonMemo.DeleteLine
+ ------------------------------------------------------------------------------}
+procedure TCarbonMemo.DeleteLine(AIndex: Integer);
+var
+  AStart, AEnd: TXNOffset;
+begin
+  GetLineOffset(AIndex, AStart, AEnd);
+  if (AIndex > 0) and (AIndex = GetLineCount - 1) then Dec(AStart);
+  
+  OSError(TXNSetData(HITextViewGetTXNObject(ControlRef(Widget)), kTXNUnicodeTextData, nil, 0, AStart, AEnd),
+    Self, 'DeleteLine', 'TXNSetData');
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonMemo.InsertLine
+ ------------------------------------------------------------------------------}
+procedure TCarbonMemo.InsertLine(AIndex: Integer; const S: String);
+var
+  AStart, AEnd: TXNOffset;
+  W: WideString;
+begin
+  if AIndex < 0 then AIndex := 0;
+  W := UTF8ToUTF16(S);
+  
+  if GetLineCount = 0 then
+    AStart := 0
+  else
+  if AIndex < GetLineCount then
+  begin
+    GetLineOffset(AIndex, AStart, AEnd);
+    W := W + #10;
+  end
+  else
+  begin
+    GetLineOffset(GetLineCount - 1, AStart, AEnd);
+    W := #10 + W;
+    AStart := AEnd;
+  end;
+
+  OSError(TXNSetData(HITextViewGetTXNObject(ControlRef(Widget)), kTXNUnicodeTextData, @W[1], Length(W) * 2, AStart, AStart),
+    Self, 'InsertLine', 'TXNSetData');
 end;
 
 {------------------------------------------------------------------------------
