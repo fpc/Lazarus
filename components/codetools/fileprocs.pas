@@ -546,7 +546,7 @@ begin
     s:='WriteTest';
     fs.Write(s[1],length(s));
     fs.Free;
-    if not DeleteFile(TempFilename) then
+    if not SysUtils.DeleteFile(TempFilename) then
       InvalidateFileStateCache;
     Result:=true;
   except
