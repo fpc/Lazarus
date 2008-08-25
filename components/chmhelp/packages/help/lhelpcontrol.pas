@@ -5,7 +5,7 @@ unit LHelpControl;
 interface
 
 uses
-  Classes, SysUtils, SimpleIPC, Process;
+  Classes, SysUtils, FileUtil, SimpleIPC, Process;
 
 type
   TRequestType = (rtFile, rtUrl, rtContext);
@@ -27,12 +27,10 @@ type
 
   TLHelpConnection = class(TObject)
   private
-    fIniqueID: String;
-    fServerString: String;
     fClient: TSimpleIPCClient;
   public
     constructor Create;
-    destructor Destroy;
+    destructor Destroy; override;
     function StartHelpServer(NameForServer: String; ServerEXE: String = ''): Boolean;
     procedure OpenURL(HelpFileName: String; Url: String);
     procedure OpenContext(HelpFileName: String; Context: THelpContext);

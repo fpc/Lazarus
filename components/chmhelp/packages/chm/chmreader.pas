@@ -28,7 +28,7 @@ unit chmreader;
 interface
 
 uses
-  Classes, SysUtils, chmbase, paslzx;
+  Classes, SysUtils, FileUtil, chmbase, paslzx;
   
 type
 

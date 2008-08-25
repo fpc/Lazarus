@@ -5,8 +5,8 @@ unit SQLStringsPropertyEditorDlg;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, SynEdit,
-  ButtonPanel, SynHighlighterSQL, ComCtrls, SQLDb, db, DBGrids;
+  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  SynEdit, ButtonPanel, SynHighlighterSQL, ComCtrls, SQLDb, db, DBGrids;
 
 type
 
