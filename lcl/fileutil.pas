@@ -165,16 +165,92 @@ function CopyFile(const SrcFilename, DestFilename: string): boolean;
 function CopyFile(const SrcFilename, DestFilename: string; PreserveTime: boolean): boolean;
 function GetTempFilename(const Directory, Prefix: string): string;
 
+// basic functions similar to the RTL but working with UTF-8 instead of the
+// system encoding
+
+// AnsiToUTF8 and UTF8ToAnsi need a widestring manager under Linux, BSD, MacOSX
+// but normally these OS use UTF-8 as system encoding so the widestringmanager
+// is not needed.
+function NeedRTLAnsi: boolean;// true if system encoding is not UTF-8
+procedure SetNeedRTLAnsi(NewValue: boolean);
+function UTF8ToSys(const s: string): string;// as UTF8ToAnsi but more independent of widestringmanager
+function SysToUTF8(const s: string): string;// as AnsiToUTF8 but more independent of widestringmanager
+
+
 implementation
 
-{$IFNDEF windows}
 uses
+{$IFDEF windows}
+  Windows;
+{$ELSE}
   Unix, BaseUnix;
 {$ENDIF}
 
 var
   UpChars: array[char] of char;
 
+var
+  FNeedRTLAnsi: boolean = false;
+  FNeedRTLAnsiValid: boolean = false;
+
+function NeedRTLAnsi: boolean;
+{$IFDEF WinCE}
+// CP_UTF8 is missing in the windows unit of the Windows CE RTL
+const
+  CP_UTF8 = 65001;
+{$ENDIF}
+var
+  Lang: String;
+  i: LongInt;
+  Encoding: String;
+begin
+  if FNeedRTLAnsiValid then
+    exit(FNeedRTLAnsi);
+  {$IFDEF Windows}
+  FNeedRTLAnsi:=GetACP<>CP_UTF8;
+  {$ELSE}
+  FNeedRTLAnsi:=false;
+  {$ENDIF}
+  Lang := SysUtils.GetEnvironmentVariable('LC_ALL');
+  if Length(lang) = 0 then
+  begin
+    Lang := SysUtils.GetEnvironmentVariable('LC_MESSAGES');
+    if Length(Lang) = 0 then
+    begin
+      Lang := SysUtils.GetEnvironmentVariable('LANG');
+    end;
+  end;
+  i:=System.Pos('.',Lang);
+  if (i>0) then begin
+    Encoding:=copy(Lang,i+1,length(Lang)-i);
+    FNeedRTLAnsi:=(SysUtils.CompareText(Encoding,'UTF-8')=0)
+              or (SysUtils.CompareText(Encoding,'UTF8')=0);
+  end;
+  FNeedRTLAnsiValid:=true;
+  Result:=FNeedRTLAnsi;
+end;
+
+procedure SetNeedRTLAnsi(NewValue: boolean);
+begin
+  FNeedRTLAnsi:=NewValue;
+  FNeedRTLAnsiValid:=true;
+end;
+
+function UTF8ToSys(const s: string): string;
+begin
+  if NeedRTLAnsi then
+    Result:=s
+  else
+    Result:=UTF8ToAnsi(s);
+end;
+
+function SysToUTF8(const s: string): string;
+begin
+  if NeedRTLAnsi then
+    Result:=s
+  else
+    Result:=AnsiToUTF8(s);
+end;
 
 {$I fileutil.inc}
 
