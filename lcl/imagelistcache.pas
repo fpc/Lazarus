@@ -200,25 +200,33 @@ procedure TImageListCache.RegisterBitmap(AListener: IImageCacheListener; ABitmap
 var
   i, AStart, OldLen: Integer;
   Item: PImageCacheItem;
+  OldOnChange: TNotifyEvent;
 begin
-  RegisterListener(AListener);
-  Item := FItems.GetItemForListener(AListener);
-  if Item = nil then
-  begin
-    Item := FItems.GetNew;
-    Item^.FImageList := GetImageListFor(ABitmap.Width div ABitmapCount, ABitmap.Height);
-    Item^.FListener := AListener;
-  end;
+  OldOnChange := ABitmap.OnChange;
+  ABitmap.OnChange := nil; // prevent further updates
 
-  AStart := Item^.FImageList.Add(ABitmap, nil);
-  AListener.CacheSetImageList(Item^.FImageList);
-  OldLen := Length(Item^.FImageIndexes);
-  SetLength(Item^.FImageIndexes, OldLen + Item^.FImageList.Count - AStart);
-  
-  for i := AStart to Item^.FImageList.Count - 1 do
-  begin
-    Item^.FImageIndexes[OldLen + i - AStart] := i;
-    AListener.CacheSetImageIndex(OldLen + i - AStart, i);
+  try
+    RegisterListener(AListener);
+    Item := FItems.GetItemForListener(AListener);
+    if Item = nil then
+    begin
+      Item := FItems.GetNew;
+      Item^.FImageList := GetImageListFor(ABitmap.Width div ABitmapCount, ABitmap.Height);
+      Item^.FListener := AListener;
+    end;
+
+    AStart := Item^.FImageList.Add(ABitmap, nil);
+    AListener.CacheSetImageList(Item^.FImageList);
+    OldLen := Length(Item^.FImageIndexes);
+    SetLength(Item^.FImageIndexes, OldLen + Item^.FImageList.Count - AStart);
+
+    for i := AStart to Item^.FImageList.Count - 1 do
+    begin
+      Item^.FImageIndexes[OldLen + i - AStart] := i;
+      AListener.CacheSetImageIndex(OldLen + i - AStart, i);
+    end;
+  finally
+    ABitmap.OnChange := OldOnChange;
   end;
 end;
 
@@ -338,4 +346,5 @@ begin
 end;
 
 end.
+
 
