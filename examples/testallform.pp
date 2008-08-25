@@ -40,8 +40,8 @@ interface
 {$ASSERTIONS ON}
 
 
-uses Classes, Forms, Buttons, StdCtrls, Controls, Menus, ExtCtrls,
-     ComCtrls, SysUtils, GraphType, Graphics, Dialogs, Inifiles, Spin, ClipBrd,
+uses Classes, SysUtils, FileUtil, Forms, Buttons, StdCtrls, Controls, Menus,
+     ExtCtrls, ComCtrls, GraphType, Graphics, Dialogs, Inifiles, Spin, ClipBrd,
      LCLIntf, LResources;
 
 type

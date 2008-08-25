@@ -23,8 +23,8 @@ program synedit1;
 {$mode objfpc}{$H+}
 
 uses
-  Interfaces, Classes, SysUtils, Forms, Controls, GraphType, Graphics, SynEdit,
-  SynHighlighterPas;
+  Interfaces, Classes, SysUtils, FileUtil, Forms, Controls, GraphType,
+  Graphics, SynEdit, SynHighlighterPas;
 
 type
   TForm1 = class(TForm)
