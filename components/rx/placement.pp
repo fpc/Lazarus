@@ -14,7 +14,7 @@ unit Placement;
 
 interface
 
-uses Controls, Classes, Forms, IniFiles, Dialogs, RTTIUtils;
+uses Controls, Classes, FileUtil, Forms, IniFiles, Dialogs, RTTIUtils;
 
   
 type

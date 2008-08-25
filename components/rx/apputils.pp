@@ -15,7 +15,7 @@ unit AppUtils;
 interface
 
 uses
-  Classes, Controls, Forms, IniFiles, Grids;
+  Classes, Controls, FileUtil, Forms, IniFiles, Grids;
 
 function GetDefaultSection(Component: TComponent): string;
 procedure GetDefaultIniData(Control: TControl; var IniFileName, Section: string );
