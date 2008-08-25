@@ -1007,7 +1007,7 @@ begin
       if (FileInfo.Attr and faDirectory)>0 then begin
         if not DeleteDirectory(CurFilename,false) then exit;
       end else begin
-        if not DeleteFile(CurFilename) then exit;
+        if not SysUtils.DeleteFile(CurFilename) then exit;
       end;
     until SysUtils.FindNext(FileInfo)<>0;
   end;
@@ -1031,7 +1031,7 @@ begin
     {$ELSE}
     Flags:=[sffDontSearchInBasePath];
     {$ENDIF}
-    Result:=SearchFileInPath(Result,'',GetEnvironmentVariable('PATH'),':',Flags);
+    Result:=SearchFileInPath(Result,'',SysUtils.GetEnvironmentVariable('PATH'),':',Flags);
   end;
   // resolve links
   Result:=ReadAllLinks(Result,false);
@@ -1052,7 +1052,7 @@ begin
     s:='WriteTest';
     fs.Write(s[1],length(s));
     fs.Free;
-    DeleteFile(TempFilename);
+    SysUtils.DeleteFile(TempFilename);
     Result:=true;
   except
   end;
