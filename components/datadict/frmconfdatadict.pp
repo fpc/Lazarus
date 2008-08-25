@@ -5,8 +5,8 @@ unit frmconfdatadict;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, EditBtn,
-  StdCtrls, idedatadict, ButtonPanel;
+  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  EditBtn, StdCtrls, idedatadict, ButtonPanel;
 
 type
 

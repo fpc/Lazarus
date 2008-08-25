@@ -11,7 +11,7 @@ msgstr ""
 "X-Poedit-Language: Polish\n"
 "X-Poedit-Country: POLAND\n"
 
-#: synunireg:sedituni
+#: synunireg.sedituni
 msgid "Edit..."
 msgstr ""
 

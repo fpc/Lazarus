@@ -78,7 +78,7 @@ uses
   GraphType, ////TL Added for TFontStyles
   LCLType,   ////TL Added for vk_* key declarations
 {$ENDIF}
-  Classes,
+  Classes, FileUtil,
   SysUtils,
   SynEdit,
   SynEditHighlighter,

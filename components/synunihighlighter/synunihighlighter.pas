@@ -57,7 +57,7 @@ uses
   ////TL Windows,
   Graphics, Registry,
 {$ENDIF}
-  Classes,
+  Classes, FileUtil,
   SynEditTypes,
   GraphType, ////TL 2003-06-11: Added for TFontStyles
   SynEditHighlighter;

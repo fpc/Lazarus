@@ -5,7 +5,7 @@ unit frmgeneratedcode;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
   SynHighlighterPas, SynMemo, ExtCtrls, StdCtrls;
 
 type

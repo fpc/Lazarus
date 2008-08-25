@@ -20,7 +20,8 @@ uses
   frmconfprojdatadict,
   // Code generator units
   fpddCodegen,
-  fpCodeGenerator
+  fpCodeGenerator,
+  FileUtil
 {$IFNDEF NOSTDCODEGENS}
   ,fpcgSQLConst
   ,fpcgdbcoll

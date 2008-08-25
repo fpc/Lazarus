@@ -11,7 +11,7 @@ msgstr ""
 "X-Poedit-Language: Polish\n"
 "X-Poedit-Country: POLAND\n"
 
-#: synunidesigner:sunifiledescription
+#: synunidesigner.sunifiledescription
 msgid "UniHighlighter Syntax"
 msgstr ""
 
