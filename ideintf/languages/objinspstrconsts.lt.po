@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2008-06-12 22:28+0300\n"
+"PO-Revision-Date: 2008-08-20 20:50+0300\n"
 "Project-Id-Version: objinspstrconsts\n"
-"Language-Team: Lithuanian\n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
 "X-Generator: KBabel 1.11.4\n"
 "MIME-Version: 1.0\n"
 "Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
@@ -488,11 +488,11 @@ msgstr "Failas"
 
 #: objinspstrconsts:pefilter
 msgid "Filter"
-msgstr ""
+msgstr "Filtras"
 
 #: objinspstrconsts:pefiltername
 msgid "Filter name"
-msgstr ""
+msgstr "Filtro pavadinimas"
 
 #: objinspstrconsts:oistdactsearchfindhint
 msgid "Find"
@@ -552,11 +552,11 @@ msgstr "Paveikslai"
 
 #: objinspstrconsts:oisincompatibleidentifier
 msgid "Incompatible Identifier"
-msgstr ""
+msgstr "Nesuderinamas identifikatorius"
 
 #: objinspstrconsts:oisincompatiblemethod
 msgid "Incompatible Method"
-msgstr ""
+msgstr "Nesuderinamas metodas"
 
 #: objinspstrconsts:oisinputmask
 msgid "Input Mask:"
@@ -976,15 +976,15 @@ msgstr "Jau yra toks elementas „%s“. Šį pridėti vistiek?"
 
 #: objinspstrconsts:oistheidentifierisnotamethodpresscanceltoundopressign
 msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr ""
+msgstr "%s%s%s identifikatorius nėra metodas.%sPaspaudus „Atsisakyti“bus grąžinta,%so paspaudus „Ignoruoti“ — bus tęsiama."
 
 #: objinspstrconsts:oisthemethodisincompatibletothiseventpresscanceltound
 msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
-msgstr ""
+msgstr "%s%s%s metodas nėra suderinamas su šiuo įvykiu (%s).%sPaspaudus „Atsisakyti“bus grąžinta,%so paspaudus „Ignoruoti“ — bus tęsiama."
 
 #: objinspstrconsts:oisthemethodisnotpublishedpresscanceltoundopressignor
 msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr ""
+msgstr "%s%s%s metodas nėra paskelbtas.%sPaspaudus „Atsisakyti“bus grąžinta,%so paspaudus „Ignoruoti“ — bus tęsiama."
 
 #: objinspstrconsts:cactionlisteditorpaneltoolbar
 msgid "Toolbar"

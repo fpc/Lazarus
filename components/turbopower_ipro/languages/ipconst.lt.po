@@ -4,9 +4,9 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
-"PO-Revision-Date: 2008-06-13 00:30+0300\n"
+"PO-Revision-Date: 2008-08-20 23:22+0300\n"
 "Project-Id-Version: ipconst\n"
-"Language-Team: Lithuanian\n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
@@ -20,7 +20,7 @@ msgstr "Tikrinamas naujumas (%s)"
 
 #: ipconst.cachedirnotexist
 msgid "Cache directory %s does not exist."
-msgstr "Podėlio katalogas %s neegzistuoja."
+msgstr "Podėlio aplankas %s neegzistuoja."
 
 #: ipconst.cacheretrieving
 msgid "Loading from Cache (%s = %s)"
@@ -153,7 +153,7 @@ msgstr "Klaidingas BinHex simbolis"
 #: ipconst.sbinhexbaddatacrc
 msgctxt "ipconst.sbinhexbaddatacrc"
 msgid "Bad header CRC"
-msgstr ""
+msgstr "Blogas antraštės CRC"
 
 #: ipconst.sbinhexbadformat
 msgid "Invalid BinHex format"
@@ -235,7 +235,7 @@ msgstr "baitų persiųsta"
 #: ipconst.sftpclose
 msgctxt "ipconst.sftpclose"
 msgid "Disconnected"
-msgstr ""
+msgstr "Ryšys nutrauktas"
 
 #: ipconst.sftpcomplete
 msgid "Transfer complete. "
@@ -984,7 +984,7 @@ msgstr "LAST"
 #: ipconst.snntpcmdlist
 msgctxt "ipconst.snntpcmdlist"
 msgid "LIST"
-msgstr ""
+msgstr "LIST"
 
 #: ipconst.snntpcmdlistacttimes
 msgid "LIST ACTIVE.TIMES"
@@ -1037,12 +1037,12 @@ msgstr "POST"
 #: ipconst.snntpcmdquit
 msgctxt "ipconst.snntpcmdquit"
 msgid "QUIT"
-msgstr ""
+msgstr "QUIT"
 
 #: ipconst.snntpcmdstat
 msgctxt "ipconst.snntpcmdstat"
 msgid "STAT"
-msgstr ""
+msgstr "STAT"
 
 #: ipconst.snntpcmdxover
 msgid "XOVER"
@@ -1107,7 +1107,7 @@ msgstr "Gaunama pagrindinė dalis"
 #: ipconst.snsconnect
 msgctxt "ipconst.snsconnect"
 msgid "Connecting"
-msgstr ""
+msgstr "Užmezgamas ryšys"
 
 #: ipconst.snsdate
 msgid "Retrieving server date"
@@ -1176,7 +1176,7 @@ msgstr "Žymimas tolesnis straipsnis"
 #: ipconst.snsnoop
 msgctxt "ipconst.snsnoop"
 msgid "No operation"
-msgstr ""
+msgstr "Operacijos nėra"
 
 #: ipconst.snsover
 msgid "Retrieving overview"
@@ -1198,12 +1198,12 @@ msgstr "Ruošiamasi siųsti straipstį"
 #: ipconst.snsquit
 msgctxt "ipconst.snsquit"
 msgid "Disconnecting"
-msgstr ""
+msgstr "Ryšys nutraukiamas"
 
 #: ipconst.snsspecial
 msgctxt "ipconst.snsspecial"
 msgid "Sending special command"
-msgstr ""
+msgstr "Siunčiama speciali komanda"
 
 #: ipconst.snsstat
 msgid "Retrieving status"
@@ -1220,7 +1220,7 @@ msgstr "Gaunamos naujos naujienos"
 #: ipconst.sntnotask
 msgctxt "ipconst.sntnotask"
 msgid "No task"
-msgstr ""
+msgstr "Užduoties nėra"
 
 #: ipconst.sntpostto
 msgctxt "ipconst.sntpostto"
@@ -1486,7 +1486,7 @@ msgstr "Gaunamas pašto dėžutės sąrašas"
 #: ipconst.spsnoop
 msgctxt "ipconst.spsnoop"
 msgid "No operation"
-msgstr ""
+msgstr "Operacijos nėra"
 
 #: ipconst.spspass
 msgid "Logging on with Password"
@@ -1542,7 +1542,7 @@ msgstr "Gaunamas pašto dėžutės sąrašas"
 #: ipconst.sptlogon
 msgctxt "ipconst.sptlogon"
 msgid "Logging on"
-msgstr ""
+msgstr "Registruojamasi"
 
 #: ipconst.sptnone
 msgctxt "ipconst.sptnone"
@@ -2382,7 +2382,7 @@ msgstr "Jungtis neprijungta"
 
 #: ipconst.swsaenotempty
 msgid "Directory not empty"
-msgstr "Katalogas nėra tuščias"
+msgstr "Aplankas nėra tuščias"
 
 #: ipconst.swsaenotsock
 msgid "Socket operation on nonsocket"

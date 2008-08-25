@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2008-06-12 22:01+0300\n"
+"PO-Revision-Date: 2008-08-20 23:23+0300\n"
 "Project-Id-Version: lazconverter\n"
-"Language-Team: Lithuanian\n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
 "X-Generator: KBabel 1.11.4\n"
 "MIME-Version: 1.0\n"
 "Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
@@ -32,7 +32,7 @@ msgstr "Konvertuoti į:"
 
 #
 msgid "Include subdirectories"
-msgstr "Ir pokatalogiuose"
+msgstr "Ir poaplankiuose"
 
 #
 msgid "Search"
@@ -44,7 +44,7 @@ msgstr "Konvertuoti"
 
 #
 msgid "Directory:"
-msgstr "Katalogas:"
+msgstr "Aplankas:"
 
 #
 msgid "Ready..."

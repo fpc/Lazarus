@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2008-06-13 00:02+0300\n"
+"PO-Revision-Date: 2008-08-20 23:33+0300\n"
 "Project-Id-Version: lclstrconsts\n"
-"Language-Team: Lithuanian\n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
 "X-Generator: KBabel 1.11.4\n"
 "MIME-Version: 1.0\n"
 "Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
@@ -72,7 +72,7 @@ msgstr "&Užverti"
 
 #: lclstrconsts:rsdirectory
 msgid "&Directory"
-msgstr "&Katalogas"
+msgstr "&Aplankas"
 
 #: lclstrconsts:rsmbhelp
 msgid "&Help"
@@ -248,7 +248,7 @@ msgstr "Ctrl"
 
 #: lclstrconsts:rscursor
 msgid "Cursor"
-msgstr ""
+msgstr "Žymeklis"
 
 #: lclstrconsts:rsmtcustom
 msgid "Custom"
@@ -268,7 +268,7 @@ msgstr "Kryptis"
 
 #: lclstrconsts:rsfddirectorymustexist
 msgid "Directory must exist"
-msgstr "Katalogas turi egzistuoti"
+msgstr "Aplankas turi egzistuoti"
 
 #: lclstrconsts:rsdocking
 msgid "Docking"
@@ -280,7 +280,7 @@ msgstr "Down"
 
 #: lclstrconsts:rsduplicateiconformat
 msgid "Duplicate icon format."
-msgstr ""
+msgstr "Piktogramos formatai dubliuojasi."
 
 #: lclstrconsts:sduplicatemenus
 msgid "Duplicate menus"
@@ -468,19 +468,19 @@ msgstr "Piktograma"
 
 #: lclstrconsts:rsiconnocurrent
 msgid "Icon has no current image"
-msgstr ""
+msgstr "Veikiamoji piktograma neturi paveikslėlio"
 
 #: lclstrconsts:rsiconimageempty
 msgid "Icon image cannot be empty"
-msgstr ""
+msgstr "Piktogramos paveikslėlis neturi būti tuščias"
 
 #: lclstrconsts:rsiconimageformat
 msgid "Icon image must have the same format"
-msgstr ""
+msgstr "Piktogramos ir naujasis paveikslėliai turi būti to paties formato"
 
 #: lclstrconsts:rsiconimagesize
 msgid "Icon image must have the same size"
-msgstr ""
+msgstr "Piktogramos ir naujasis paveikslėliai turi būti to paties dydžio"
 
 #: lclstrconsts:rsindexoutofrange
 msgid "Index Out of range Cell[Col=%d Row=%d]"
@@ -644,7 +644,7 @@ msgstr "Numpad %d"
 
 #: lclstrconsts:rsicns
 msgid "OSX Icon Resource"
-msgstr ""
+msgstr "OSX piktogramos resursas"
 
 #: lclstrconsts:rsfdopenfile
 msgid "Open existing file"
@@ -732,7 +732,7 @@ msgstr "Select"
 
 #: lclstrconsts:rsfdselectdirectory
 msgid "Select Directory"
-msgstr "Nurodykit katalogą"
+msgstr "Nurodykit aplanką"
 
 #: lclstrconsts:rspickdate
 msgid "Select a date"
@@ -776,7 +776,7 @@ msgstr "Klaidinga kaukės „%s“ koduotė!"
 
 #: lclstrconsts:rsfddirectorynotexist
 msgid "The directory \"%s\" does not exist."
-msgstr "Katalogas „%s“ neegzistuoja."
+msgstr "Aplankas „%s“ neegzistuoja."
 
 #: lclstrconsts:rsfdfilealreadyexists
 msgid "The file \"%s\" already exists. Overwrite ?"

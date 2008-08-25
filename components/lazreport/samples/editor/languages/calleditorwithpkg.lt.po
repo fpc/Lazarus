@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: calleditorwithpkg\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-06-18 21:45-0600\n"
+"PO-Revision-Date: 2008-08-20 20:03+0300\n"
 "Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
-"Language-Team: Lithuanian\n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -13,12 +13,12 @@ msgstr ""
 
 #: maincalleditor.ceractivereport
 msgid "Active report: %s"
-msgstr ""
+msgstr "Veikiamasis pranešimas: %s"
 
 #: maincalleditor.cerappcaption
 msgctxt "maincalleditor.cerappcaption"
 msgid "LazReport Test Suite"
-msgstr ""
+msgstr "LazReport testavimo paketas"
 
 #: maincalleditor.cereditreport
 msgctxt "maincalleditor.cereditreport"
@@ -27,39 +27,39 @@ msgstr "Keisti pranešimą"
 
 #: maincalleditor.cerhintcloseapp
 msgid "Close application"
-msgstr ""
+msgstr "Baigti darbą programa"
 
 #: maincalleditor.cerhinteditreport
 msgid "Edit active report"
-msgstr ""
+msgstr "Keisti aktyvųjį pranešimą"
 
 #: maincalleditor.cerhintnewreport
 msgid "Create and edit a empty report"
-msgstr ""
+msgstr "Sukurti tuščią pranešimą ir jį keisti"
 
 #: maincalleditor.cerhintopenreport
 msgid "Open an existing report"
-msgstr ""
+msgstr "Atverti esamą pranešimą"
 
 #: maincalleditor.cerhintprevgrid
 msgid "Print preview current DbGrid content"
-msgstr ""
+msgstr "Veikiamojo DbGrid turinio spaudinio peržiūra"
 
 #: maincalleditor.cerhintprevreport
 msgid "Preview active report"
-msgstr ""
+msgstr "Peržiūrėti veikiamąjį pranešimą"
 
 #: maincalleditor.cerhintprnreport
 msgid "Print directly the active report (i.e. without preview)"
-msgstr ""
+msgstr "Spausdinti veikiamąjį pranešimą iškart (t.y. praleidžiant peržiūrą)"
 
 #: maincalleditor.cerindex
 msgid "Index"
-msgstr ""
+msgstr "Rodyklė"
 
 #: maincalleditor.cerindexfields
 msgid "Index Fields: %s"
-msgstr ""
+msgstr "Rodyklės laukai: %s"
 
 #: maincalleditor.cernewreport
 msgid "New report"
@@ -67,7 +67,7 @@ msgstr "Naujas pranešimas"
 
 #: maincalleditor.cernone
 msgid "none"
-msgstr ""
+msgstr "joks"
 
 #: maincalleditor.cernotimplemented
 msgid "This feature is not yet implemented!"
@@ -79,7 +79,7 @@ msgstr "Atverti pranešimą"
 
 #: maincalleditor.ceropenreportfirst
 msgid "Open report first"
-msgstr ""
+msgstr "Pirma atverti pranešimą"
 
 #: maincalleditor.cerpreparefailed
 msgid "PrepareReport Failed!"
@@ -99,7 +99,7 @@ msgstr "Spausdinti pranešimą"
 
 #: TFRMMAIN.ACCCLOSE.CAPTION
 msgid "Close"
-msgstr ""
+msgstr "Užverti"
 
 #: TFRMMAIN.ACCEDITREPORT.CAPTION
 msgctxt "TFRMMAIN.ACCEDITREPORT.CAPTION"
@@ -108,15 +108,15 @@ msgstr "Keisti pranešimą"
 
 #: TFRMMAIN.ACCEXPORTTOCSV.CAPTION
 msgid "Export to CSV"
-msgstr ""
+msgstr "Eksportuoti CSV formatu"
 
 #: TFRMMAIN.ACCEXPORTTOHTML.CAPTION
 msgid "Export to html"
-msgstr ""
+msgstr "Eksportuoti html formatu"
 
 #: TFRMMAIN.ACCEXPORTTOTEXT.CAPTION
 msgid "Export to text"
-msgstr ""
+msgstr "Eksportuoti teksto formatu"
 
 #: TFRMMAIN.ACCNEWREPORT.CAPTION
 msgid "New Report"
@@ -128,30 +128,30 @@ msgstr "Atverti pranešimą"
 
 #: TFRMMAIN.ACCPREVIEWREPORT.CAPTION
 msgid "Preview Report"
-msgstr ""
+msgstr "Peržiūrėti pranešimą"
 
 #: TFRMMAIN.ACCPRINTGRID.CAPTION
 msgid "Print Grid"
-msgstr ""
+msgstr "Spausdinti lentelę"
 
 #: TFRMMAIN.ACCPRINTREPORT.CAPTION
 msgid "Print Report"
-msgstr ""
+msgstr "Spausdinti pranešima"
 
 #: TFRMMAIN.CAPTION
 msgctxt "TFRMMAIN.CAPTION"
 msgid "LazReport Test Suite"
-msgstr ""
+msgstr "LazReport testavimo paketas"
 
 #: TFRMMAIN.MENUITEM1.CAPTION
 msgid "Files"
-msgstr ""
+msgstr "Failai"
 
 #: TFRMMAIN.MENUITEM3.CAPTION
 msgid "Tests"
-msgstr ""
+msgstr "Testai"
 
 #: TFRMMAIN.MENUITEM9.CAPTION
 msgid "Export"
-msgstr ""
+msgstr "Eksportas"
 

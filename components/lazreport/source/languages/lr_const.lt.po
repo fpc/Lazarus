@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
 "Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
-"PO-Revision-Date: 2008-06-13 00:32+0300\n"
+"PO-Revision-Date: 2008-08-20 20:21+0300\n"
 "Project-Id-Version: lr_const\n"
-"Language-Team: Lithuanian\n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
@@ -155,16 +155,16 @@ msgstr "&Kodas"
 #: lr_const.sbarcodeformdbfld
 msgctxt "lr_const.sbarcodeformdbfld"
 msgid "Insert DB field"
-msgstr ""
+msgstr "Įterpti DB lauką"
 
 #: lr_const.sbarcodeformopts
 msgctxt "lr_const.sbarcodeformopts"
 msgid "Options"
-msgstr ""
+msgstr "Parinktys"
 
 #: lr_const.sbarcodeformreadable
 msgid "&Human readable"
-msgstr "Žmogui &suprantama"
+msgstr "&Suprantama žmogui"
 
 #: lr_const.sbarcodeformrotate
 msgid "Rotation"
@@ -201,7 +201,7 @@ msgstr "Atsisakyti"
 #: lr_const.scateg1
 msgctxt "lr_const.scateg1"
 msgid "Text"
-msgstr ""
+msgstr "Tekstas"
 
 #: lr_const.scateg2
 msgid "Number"
@@ -210,12 +210,12 @@ msgstr "Skaičius"
 #: lr_const.scateg3
 msgctxt "lr_const.scateg3"
 msgid "Date"
-msgstr ""
+msgstr "Data"
 
 #: lr_const.scateg4
 msgctxt "lr_const.scateg4"
 msgid "Time"
-msgstr ""
+msgstr "Laikas"
 
 #: lr_const.scateg5
 msgid "Boolean"
@@ -406,7 +406,7 @@ msgstr "Objektas judinamas"
 #: lr_const.sdesoptionsformopt
 msgctxt "lr_const.sdesoptionsformopt"
 msgid "Options"
-msgstr ""
+msgstr "Parinktys"
 
 #: lr_const.sdesoptionsformother
 msgctxt "lr_const.sdesoptionsformother"
@@ -604,7 +604,7 @@ msgstr "&Skirti raidžių lygį"
 #: lr_const.sfindtextcurrentpg
 msgctxt "lr_const.sfindtextcurrentpg"
 msgid "Current &page"
-msgstr ""
+msgstr "Veikiamasis &lapas"
 
 #: lr_const.sfindtextfirstpg
 msgid "&1st page"
@@ -613,7 +613,7 @@ msgstr "Nuo &1-mo lapo"
 #: lr_const.sfindtextoptions
 msgctxt "lr_const.sfindtextoptions"
 msgid "Options"
-msgstr ""
+msgstr "Parinktys"
 
 #: lr_const.sfindtextorg
 msgid "Origin"
@@ -655,7 +655,7 @@ msgstr "Šriftas..."
 #: lr_const.sformat11
 msgctxt "lr_const.sformat11"
 msgid "[None]"
-msgstr ""
+msgstr "[Nieks]"
 
 #: lr_const.sformat21
 msgid "1234,5"
@@ -676,7 +676,7 @@ msgstr "1 234,50"
 #: lr_const.sformat25
 msgctxt "lr_const.sformat25"
 msgid "Custom"
-msgstr ""
+msgstr "Naudotojo"
 
 #: lr_const.sformat31
 msgid "11.15.98"
@@ -697,7 +697,7 @@ msgstr "15 lapkritis 2010"
 #: lr_const.sformat35
 msgctxt "lr_const.sformat35"
 msgid "Custom"
-msgstr ""
+msgstr "Naudotojo"
 
 #: lr_const.sformat41
 msgid "02:43:35"
@@ -718,7 +718,7 @@ msgstr "2:43"
 #: lr_const.sformat45
 msgctxt "lr_const.sformat45"
 msgid "Custom"
-msgstr ""
+msgstr "Naudotojo"
 
 #: lr_const.sformat51
 msgid "0;1"
@@ -739,7 +739,7 @@ msgstr "Netiesa;Tiesa"
 #: lr_const.sformat55
 msgctxt "lr_const.sformat55"
 msgid "Custom"
-msgstr ""
+msgstr "Naudotojo"
 
 #: lr_const.sformfile
 msgid "FastReport form"
@@ -883,7 +883,7 @@ msgstr "Lygiuoti pagal tinklelį"
 #: lr_const.sfrdesignerformhightlight
 msgctxt "lr_const.sfrdesignerformhightlight"
 msgid "Highlight attributes"
-msgstr ""
+msgstr "Paryškinti atributus"
 
 #: lr_const.sfrdesignerforminsband
 msgid "Insert band"
@@ -916,7 +916,7 @@ msgstr "Kairioji kadro linija"
 #: lr_const.sfrdesignerformnewrp
 msgctxt "lr_const.sfrdesignerformnewrp"
 msgid "New report"
-msgstr ""
+msgstr "Naujas pranešimas"
 
 #: lr_const.sfrdesignerformnoframe
 msgid "No frame"
@@ -942,7 +942,7 @@ msgstr "Įdėti"
 #: lr_const.sfrdesignerformpgoption
 msgctxt "lr_const.sfrdesignerformpgoption"
 msgid "Page options"
-msgstr ""
+msgstr "Lapo parinktys"
 
 #: lr_const.sfrdesignerformpreview
 msgid "Preview report"
@@ -951,7 +951,7 @@ msgstr "Pranešimo peržiūra"
 #: lr_const.sfrdesignerformrect
 msgctxt "lr_const.sfrdesignerformrect"
 msgid "Rectangle"
-msgstr ""
+msgstr "Stačiakampis"
 
 #: lr_const.sfrdesignerformredo
 msgid "Redo cancelled action"
@@ -1232,7 +1232,7 @@ msgstr "Grupė"
 #: lr_const.sgroupeditorformcond
 msgctxt "lr_const.sgroupeditorformcond"
 msgid "Condition"
-msgstr ""
+msgstr "Sąlyga"
 
 #: lr_const.shilightformback
 msgid "Background"
@@ -1877,11 +1877,11 @@ msgstr "&Apačioje, mm"
 
 #: lr_const.spgoptformbycolumns
 msgid "By Colum&ns"
-msgstr ""
+msgstr "Pagal &stulpelius"
 
 #: lr_const.spgoptformbyrows
 msgid "By Row&s"
-msgstr ""
+msgstr "Pagal &eilutes"
 
 #: lr_const.spgoptformcapt
 msgctxt "lr_const.spgoptformcapt"
@@ -1910,7 +1910,7 @@ msgstr "&Gulščias"
 
 #: lr_const.spgoptformlayoutorder
 msgid "Layout Order"
-msgstr ""
+msgstr "Išdėstymo būdas"
 
 #: lr_const.spgoptformleft
 msgid "&Left, mm"

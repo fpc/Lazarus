@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2008-06-13 00:34+0300\n"
+"PO-Revision-Date: 2008-08-20 23:19+0300\n"
 "Project-Id-Version: codetoolsstrconsts\n"
-"Language-Team: Lithuanian\n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
 "X-Generator: KBabel 1.11.4\n"
 "Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
 "MIME-Version: 1.0\n"
@@ -16,7 +16,7 @@ msgstr "%s kompiliatoriaus apibrėžtys"
 
 #: codetoolsstrconsts:ctsnameddirectory
 msgid "%s Directory"
-msgstr "%s katalogas"
+msgstr "%s aplankas"
 
 #: codetoolsstrconsts:ctsnamedproject
 msgid "%s Project"
@@ -64,7 +64,7 @@ msgstr "Anoniminės %s apibrėžtys nėra leidžiamos"
 
 #: codetoolsstrconsts:ctscpudirectory
 msgid "CPU directory"
-msgstr "CPU katalogas"
+msgstr "CPU aplankas"
 
 #: codetoolsstrconsts:ctsclasssnotfound
 msgid "Class %s not found"
@@ -88,19 +88,19 @@ msgstr "Kompiliatorius"
 
 #: codetoolsstrconsts:ctscomponentsdirectory
 msgid "Components Directory"
-msgstr "Komponenčių katalogas"
+msgstr "Komponenčių aplankas"
 
 #: codetoolsstrconsts:ctsconverterdirectory
 msgid "Converter Directory"
-msgstr "Konverterio katalogas"
+msgstr "Konverterio aplankas"
 
 #: codetoolsstrconsts:ctscustomcomponentsdirectory
 msgid "Custom Components Directory"
-msgstr "Naudotojo komponenčių katalogas"
+msgstr "Naudotojo komponenčių aplankas"
 
 #: codetoolsstrconsts:ctsdebuggerdirectory
 msgid "Debugger Directory"
-msgstr "Derintuvės katalogas"
+msgstr "Derintuvės aplankas"
 
 #: codetoolsstrconsts:ctsdefaultppc386sourceoperatingsystem
 msgid "Default ppc386 source Operating System"
@@ -128,11 +128,11 @@ msgstr "Apibrėžti "
 
 #: codetoolsstrconsts:ctsdefinelcl
 msgid "Define LCL"
-msgstr ""
+msgstr "Apibrėžti LCL"
 
 #: codetoolsstrconsts:ctsdefinelclwidgetset
 msgid "Define LCLwidgetset, e.g. LCLgtk"
-msgstr ""
+msgstr "Apibrėžti LCLwidgetset, pvz. „LCLgtk“"
 
 #: codetoolsstrconsts:ctsdefinemacroname
 msgid "Define Macro %s"
@@ -140,7 +140,7 @@ msgstr "Apibrėžti makrokomandą %s"
 
 #: codetoolsstrconsts:ctsdefinemacrocarbon1
 msgid "Define macro carbon1"
-msgstr "Apibrėžti makrokomandą carbon1"
+msgstr "Apibrėžti makrokomandą „carbon1“"
 
 #: codetoolsstrconsts:ctsdefinemacrogtk1
 msgid "Define macro gtk1"
@@ -168,7 +168,7 @@ msgstr "Lazarus pirminio kodo apibrėžtys"
 
 #: codetoolsstrconsts:ctsdesignerdirectory
 msgid "Designer Directory"
-msgstr "Konstruktoriaus katalogas"
+msgstr "Konstruktoriaus aplankas"
 
 #: codetoolsstrconsts:ctsdesignerunitsdirectory
 msgid "Designer Units"
@@ -176,7 +176,7 @@ msgstr "Konstruktoriaus moduliai"
 
 #: codetoolsstrconsts:ctsdoceditordirectory
 msgid "Doc Editor Directory"
-msgstr "Dokumentacijos rengyklės katalogas"
+msgstr "Dokumentacijos rengyklės aplankas"
 
 #: codetoolsstrconsts:ctsendofsourcenotfound
 msgid "End of source not found"
@@ -208,11 +208,11 @@ msgstr "FreePascal pirminis kodas, %s"
 
 #: codetoolsstrconsts:ctsidedirectory
 msgid "IDE Directory"
-msgstr "IKA katalogas"
+msgstr "IKA aplankas"
 
 #: codetoolsstrconsts:ctsideintfdirectory
 msgid "IDEIntf Directory"
-msgstr "IDEIntf katalogas"
+msgstr "IDEIntf aplankas"
 
 #: codetoolsstrconsts:ctsidentifieralreadydefined
 msgid "Identifier %s already defined"
@@ -248,15 +248,15 @@ msgstr "Aptiktas įdėjimų žiedas"
 
 #: codetoolsstrconsts:ctsinstalldirectory
 msgid "Install Directory"
-msgstr "Diegimo katalogas"
+msgstr "Diegimo aplankas"
 
 #: codetoolsstrconsts:ctsinstallerdirectories
 msgid "Installer directories"
-msgstr "Diegimo programos katalogai"
+msgstr "Diegimo programos aplankai"
 
 #: codetoolsstrconsts:ctsjitformdirectory
 msgid "JITForm Directory"
-msgstr "JITForm katalogas"
+msgstr "JITForm aplankas"
 
 #: codetoolsstrconsts:ctslazarussources
 msgid "Lazarus Sources"
@@ -280,19 +280,19 @@ msgstr "„%s“ skirtas žvalgytuvas nerastas. Jei tai įdedamasis failas, pirm
 
 #: codetoolsstrconsts:ctspackagedirectories
 msgid "Package directories"
-msgstr "Paketų katalogai"
+msgstr "Paketų aplankai"
 
 #: codetoolsstrconsts:ctspackagerdirectory
 msgid "Packager Directory"
-msgstr "Paketų kūrėjo katalogas"
+msgstr "Paketų kūrėjo aplankas"
 
 #: codetoolsstrconsts:ctspackagerregistrationdirectory
 msgid "Packager Registration Directory"
-msgstr "Paketų kūrėjo registravimo katalogas"
+msgstr "Paketų kūrėjo registravimo aplankas"
 
 #: codetoolsstrconsts:ctspackagerunitsdirectory
 msgid "Packager Units Directory"
-msgstr "Paketų kūrėjo modulių katalogas"
+msgstr "Paketų kūrėjo modulių aplankas"
 
 #: codetoolsstrconsts:ctspositionnotinsource
 msgid "Position not in source"
@@ -328,7 +328,7 @@ msgstr "Termas neturi paprasto tipo"
 
 #: codetoolsstrconsts:ctstoolsdirectory
 msgid "Tools Directory"
-msgstr "Įrankių katalogas"
+msgstr "Įrankių aplankas"
 
 #: codetoolsstrconsts:ctsunitpathinitialization
 msgid "UnitPath Initialization"
@@ -344,11 +344,11 @@ msgstr "Neanalizuotas"
 
 #: codetoolsstrconsts:ctsutilsdirectories
 msgid "Utils directories"
-msgstr "Paslaugų programų katalogai"
+msgstr "Paslaugų programų aplankai"
 
 #: codetoolsstrconsts:ctswidgetdirectory
 msgid "Widget Directory"
-msgstr "Valdiklių katalogas"
+msgstr "Valdiklių aplankas"
 
 #: codetoolsstrconsts:ctswordnotfound
 msgid "\"%s\" not found"
@@ -364,11 +364,11 @@ msgstr "Nerastas klasės/objekto „end“"
 
 #: codetoolsstrconsts:ctsdircomponentdoesnotexistsorisdanglingsymlink
 msgid "a directory component in %s does not exist or is a dangling symlink"
-msgstr "%s esantis katalogo komponentas neegzistuoja arba jis yra betikslis simbolinis saitas"
+msgstr "%s esantis aplanko komponentas neegzistuoja arba jis yra betikslis simbolinis saitas"
 
 #: codetoolsstrconsts:ctsdircomponentisnotdir
 msgid "a directory component in %s is not a directory"
-msgstr "%s esantis katalogo komponentas nėra katalogas"
+msgstr "%s esantis aplanko komponentas nėra aplankas"
 
 #: codetoolsstrconsts:ctsaddsdirtoincludepath
 msgid "adds %s to IncPath"
@@ -448,7 +448,7 @@ msgstr "tikėtasi numatyto parametro, tačiau aptikta %s"
 
 #: codetoolsstrconsts:ctsdefaultpropertynotfound
 msgid "default property not found"
-msgstr ""
+msgstr "nerasta numatytoji savybė"
 
 #: codetoolsstrconsts:ctsdefaultspecifierredefined
 msgid "default specifier redefined"
@@ -520,7 +520,7 @@ msgstr "daugybinis identifikatorius"
 
 #: codetoolsstrconsts:ctsgtk2intfdirectory
 msgid "gtk2 interface directory"
-msgstr "gtk2 interfeiso katalogas"
+msgstr "gtk2 interfeiso aplankas"
 
 #: codetoolsstrconsts:ctsidentifier
 msgid "identifier"
@@ -552,7 +552,7 @@ msgstr "nerastas realizacijos mazgas"
 
 #: codetoolsstrconsts:ctsincludedirectoriesplusdirs
 msgid "include directories: %s"
-msgstr ""
+msgstr "įdedamieji aplankai: %s"
 
 #: codetoolsstrconsts:ctsincludefilenotfound
 msgid "include file not found \"%s\""
@@ -580,7 +580,7 @@ msgstr "trūksta atminties"
 
 #: codetoolsstrconsts:ctsintfdirectory
 msgid "interface directory"
-msgstr "interfeiso katalogas"
+msgstr "interfeiso aplankas"
 
 #: codetoolsstrconsts:ctsinterfacesectionnotfound
 msgid "interface section not found"
@@ -600,7 +600,7 @@ msgstr "klaidinga vėliavėlės reikšmė „%s“ direktyvai %s"
 
 #: codetoolsstrconsts:ctsinvalidmode
 msgid "invalid mode \"%s\""
-msgstr "klaidinga veiksena „%s“"
+msgstr "„%s“ veiksena yra klaidinga"
 
 #: codetoolsstrconsts:ctsinvalidsubrange
 msgid "invalid subrange"
@@ -612,11 +612,11 @@ msgstr "klaidingas tipas"
 
 #: codetoolsstrconsts:ctsinvalidvariablename
 msgid "invalid variable name %s%s%s"
-msgstr "klaidingas kintamojo pavadinimas %s%s%s"
+msgstr "kintamojo pavadinimas %s%s%s yra klaidingas"
 
 #: codetoolsstrconsts:ctsinvalidvariabletype
 msgid "invalid variable type %s%s%s"
-msgstr "klaidingas kintamojo tipas %s%s%s"
+msgstr "kintamojo tipas %s%s%s yra klaidingas"
 
 #: codetoolsstrconsts:ctskeyword
 msgid "keyword"
@@ -632,7 +632,7 @@ msgstr "raktažodis „in“"
 
 #: codetoolsstrconsts:ctslazarusmaindirectory
 msgid "lazarus main directory"
-msgstr "Lazarus pagrindinis katalogas"
+msgstr "Lazarus pagrindinis aplankas"
 
 #: codetoolsstrconsts:ctsmethodname
 msgid "method name"
