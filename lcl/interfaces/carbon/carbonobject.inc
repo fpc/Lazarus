@@ -581,8 +581,8 @@ begin
   ADesc.Init;
 
   ADesc.Format := ricfRGBA;
-  ADesc.Width := ABitmap.Width;
-  ADesc.Height := ABitmap.Height;
+  ADesc.Width := CGImageGetWidth(ABitmap.CGImage);
+  ADesc.Height := CGImageGetHeight(ABitmap.CGImage);
 
   //ADesc.PaletteColorCount := 0;
 
