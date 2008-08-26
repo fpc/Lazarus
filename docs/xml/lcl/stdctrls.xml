@@ -518,7 +518,7 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.Min">
-        <short>the minimum value, for the top of the scroll bar or its left-most extent</short>
+        <short>The minimum value, for the top of the scroll bar or its left-most extent</short>
         <descr/>
         <seealso/>
       </element>
@@ -616,18 +616,13 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBar.BidiMode">
-        <short>
-          <var>BiDiMode</var>
-
- - enabling bi-directional writing</short>
+      <element name="TScrollBar.BidiMode" link="#LCL.Controls.TControl.BiDiMode">
         <descr>Allows Languages such as Arabic and Hebrew to be used
 </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBar.BorderSpacing">
-        <short>Determines the border spacing for this control</short>
+      <element name="TScrollBar.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determines the border spacing for this control</p>
@@ -638,8 +633,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBar.Constraints">
-        <short>Determine <var>Constraints</var> (max and min height and width) for this control</short>
+      <element name="TScrollBar.Constraints" link="#LCL.Controls.TControl.Constraints">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determine <var>Constraints</var> (max and min height and width) for this control; reads the size constraints or stores new ones.</p>
@@ -653,32 +647,23 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBar.DragCursor">
-        <short>
-          <var>DragCursor </var>
-
-- the style of cursor to be used during the Drag process</short>
+      <element name="TScrollBar.DragCursor" link="#LCL.Controls.TControl.DragCursor">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBar.DragKind">
+      <element name="TScrollBar.DragKind" link="#LCL.Controls.TControl.DragKind">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBar.DragMode">
-        <short>
-          <var>DragMode </var>
-
-- whether manual or automatic</short>
+      <element name="TScrollBar.DragMode" link="#LCL.Controls.TControl.DragMode">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBar.Enabled">
-        <short>Whether the control is <var>Enabled</var>. If not, it usually appears 'greyed-out'</short>
+      <element name="TScrollBar.Enabled" link="#LCL.Controls.TControl.Enabled">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Whether the control is <var>Enabled</var>. If not, it usually appears 'greyed-out'</p>
@@ -687,59 +672,30 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBar.Kind">
-        <short>
-          <var>Kind</var>
-
-
-
-
- of scroll bar - whether Horizontal or Vertical</short>
-      </element>
+      <element name="TScrollBar.Kind" link="#LCL.StdCtrls.TCustomScrollBar.Kind"/>
       <!-- property Visibility: published -->
-      <element name="TScrollBar.LargeChange">
-        <short>
-          <var>LargeChange </var>
-
-
-
-
-- the size of the step to be taken by the slider for a large change</short>
+      <element name="TScrollBar.LargeChange" link="#LCL.StdCtrls.TCustomScrollBar.LargeChange">
         <descr>A <var>LargeChange</var> is produced by the user clicking on the blank area above or below the slider; it is rather analogous to the Page Down or Page Up functions of the Keyboard and is typically set up to move the slider and the contents of the page or canvas by a whole paragraph or half a page or a full page.
 </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBar.Max">
-        <short>The maximum value (for bottom of the scroll bar or the right-most extent)</short>
+      <element name="TScrollBar.Max" link="#LCL.StdCtrls.TCustomScrollBar.Max">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBar.Min">
-        <short>the minimum value, for the top of the scroll bar or its left-most extent</short>
+      <element name="TScrollBar.Min" link="#LCL.StdCtrls.TCustomScrollBar.Min">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBar.PageSize">
-        <short>
-          <var>PageSize:</var>
-
-
-
-
- the size of a page - typically used for <var>LargeChange</var>
-        </short>
+      <element name="TScrollBar.PageSize" link="#LCL.StdCtrls.TCustomScrollBar.PageSize">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBar.ParentBidiMode">
-        <short>
-          <var>ParentBiDiMode</var>
-
- - does the control follow the BiDiMode settings of its parent?</short>
+      <element name="TScrollBar.ParentBidiMode" link="#LCL.Controls.TControl.ParentBiDiMode">
         <descr/>
         <seealso/>
       </element>
@@ -750,17 +706,12 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBar.ParentShowHint">
-        <short>
-          <var>ParentShowHint </var>
-
-- does the control adopt the same hinting behaviour as its parent? Default is true</short>
+      <element name="TScrollBar.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBar.PopupMenu">
-        <short>PopupMenu - a context-sensitive menu that pops up when the right mouse button is clicked over this control</short>
+      <element name="TScrollBar.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
         <descr>// standard properties, which should be supported by all descendants<br/>
  Reads the details of the pop-up menu, or stores them.<br/>
 Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPopupMenu</link>
@@ -768,43 +719,35 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBar.Position">
-        <short>The <var>Position</var> of the scroller along the ScrollBar</short>
+      <element name="TScrollBar.Position" link="#LCL.StdCtrls.TCustomScrollBar.Position">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBar.ShowHint">
+      <element name="TScrollBar.ShowHint" link="#LCL.Controls.TControl.ShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBar.SmallChange">
-        <short>SmallChange - the size of the step to be taken by the scroller for a small change</short>
+      <element name="TScrollBar.SmallChange" link="#LCL.StdCtrls.TCustomScrollBar.SmallChange">
         <descr>A small change is produced by the user clicking on one of the triangular tags at either end of the scrollbar. It is rather analogous to the effect of using the up or down arrows on the keyboard, and is typically set to produce a movement of a few pixels or a single line of text
 </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBar.TabOrder">
-        <short>The place this control occupies in the list of tabs</short>
+      <element name="TScrollBar.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
         <descr>Reads or writes information in flag; default is -1
 </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBar.TabStop">
-        <short>Whether the scrollbar can be reached by use of the Tab key - default is True</short>
+      <element name="TScrollBar.TabStop" link="#LCL.Controls.TWinControl.TabStop">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBar.Visible">
-        <short>
-          <var>Visible</var>
-
- - can the control be seen?</short>
+      <element name="TScrollBar.Visible" link="#LCL.Controls.TControl.Visible">
         <descr>
           <pre>The Visible property represents the ability to see a visual control. 
           If Visible is True the control is shown, otherwise it is hidden.
@@ -815,54 +758,39 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBar.OnChange">
+      <element name="TScrollBar.OnChange" link="#LCL.StdCtrls.TCustomScrollBar.OnChange">
         <seealso>
           <link id="TScrollBar.OnScroll"/>
         </seealso>
-        <short>Event handler for any change in position of the slider or other mouse movement or keyboard event associated with the scrollbar</short>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBar.OnDragDrop">
-        <short>Event handler for the Drag-Drop manoeuvre</short>
+      <element name="TScrollBar.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBar.OnDragOver">
+      <element name="TScrollBar.OnDragOver" link="#LCL.Controls.TControl.OnDragOver">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBar.OnEndDrag">
-        <short>Event handler for the end of a dragging process</short>
+      <element name="TScrollBar.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBar.OnEnter">
-        <short>
-          <var>OnEnter</var>
-
- - event handler for when the mouse enters the control, and the control receives focus</short>
+      <element name="TScrollBar.OnEnter" link="#LCL.Controls.TWinControl.OnEnter">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBar.OnExit">
-        <short>
-          <var>OnExit</var>
-
- - event handler for when the mouse leaves the control and it loses focus</short>
+      <element name="TScrollBar.OnExit" link="#LCL.Controls.TWinControl.OnExit">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBar.OnKeyDown">
-        <short>
-          <var>OnKeyDown</var>
-
- - event handler for instance when key is down while control has focus</short>
+      <element name="TScrollBar.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown">
         <descr>
           <p>
             <var>OnKeyDown</var>
@@ -873,8 +801,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBar.OnKeyPress">
-        <short>OnKeyPress - event controller for a key being pressed while the control has focus</short>
+      <element name="TScrollBar.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress">
         <descr>
           <p>
             <var>OnKeyPress</var>
@@ -885,11 +812,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBar.OnKeyUp">
-        <short>
-          <var>OnKeyUp</var>
-
-  - event handler for instance when a key is up (not pressed) while the control has focus</short>
+      <element name="TScrollBar.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp">
         <descr>
           <p>
             <var>OnKeyUp</var>
@@ -900,17 +823,10 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBar.OnScroll">
+      <element name="TScrollBar.OnScroll" link="#LCL.StdCtrls.TCustomScrollBar.OnScroll">
         <seealso>
           <link id="TScrollBar.OnChange"/>
         </seealso>
-        <short>
-          <var>OnScroll</var>
-
-
-
-
-  - Handler for a scrolling event (by mouse, keyboard or program)</short>
         <descr>
           <p>
             <var>OnScroll</var>
@@ -923,8 +839,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBar.OnStartDrag">
-        <short>Event handler for start of dragging process</short>
+      <element name="TScrollBar.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag">
         <descr/>
         <seealso/>
       </element>
@@ -2154,7 +2069,7 @@ False is set when the edit or combobox control loses focus.
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomComboBox.KeyUp">
+      <element name="TCustomComboBox.KeyUp" link="#LCL.Controls.TWinControl.KeyUp">
         <short/>
         <descr/>
         <errors/>
@@ -3336,7 +3251,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TCustomListBox.WMLButtonUp">
+      <element name="TCustomListBox.WMLButtonUp" link="#LCL.Controls.TControl.WMLButtonUp">
         <short/>
         <descr/>
         <errors/>
@@ -3392,7 +3307,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomListBox.Loaded" link="Classes.TComponent.Loaded">
+      <element name="TCustomListBox.Loaded" link="#rtl.Classes.TComponent.Loaded">
         <short/>
         <descr/>
         <errors/>
@@ -5475,7 +5390,7 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomMemo.Loaded" link="Classes.TComponent.Loaded">
+      <element name="TCustomMemo.Loaded" link="#rtl.Classes.TComponent.Loaded">
         <short/>
         <descr/>
         <errors/>
@@ -5493,7 +5408,7 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomMemo.ControlKeyDown">
+      <element name="TCustomMemo.ControlKeyDown" link="#LCL.Controls.TWinControl.ControlKeyDown">
         <short/>
         <descr/>
         <errors/>
@@ -6889,7 +6804,7 @@ is done automatically by the streaming system.
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TButtonActionLink.AssignClient">
+      <element name="TButtonActionLink.AssignClient" link="#rtl.Classes.TBasicActionLink.AssignClient">
         <short/>
         <descr/>
         <errors/>
@@ -6900,7 +6815,7 @@ is done automatically by the streaming system.
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TButtonActionLink.IsCheckedLinked">
+      <element name="TButtonActionLink.IsCheckedLinked" link="#LCL.ActnList.TActionLink.IsCheckedLinked">
         <short/>
         <descr/>
         <errors/>
@@ -6912,7 +6827,8 @@ is done automatically by the streaming system.
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TButtonActionLink.SetChecked">
-        <short/>
+        <short>
+          <var>SetChecked</var> - writes Checked status of button to local variable</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7107,7 +7023,7 @@ is done automatically by the streaming system.
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomButton.ChildClassAllowed">
+      <element name="TCustomButton.ChildClassAllowed" link="#LCL.Controls.TWinControl.ChildClassAllowed">
         <short/>
         <descr/>
         <errors/>
@@ -8046,7 +7962,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         </seealso>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TToggleBox.Create">
+      <element name="TToggleBox.Create" link="#rtl.Classes.TComponent.Create">
         <short>Create a new instance of the Window Control</short>
         <descr/>
         <errors/>
@@ -8656,7 +8572,8 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomLabel.HasMultiLine">
-        <short/>
+        <short>
+          <var>HasMultiLine</var> - returns True if label has multiple lines</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9652,6 +9569,12 @@ Reads or Writes flag if control is re-sized.
       <element name="TCheckBox.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp"/>
       <element name="TRadioButton.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
       <element name="TLabel.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
+      <element name="TScrollBar.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
+      <element name="TCustomListBox.CalculateStandardItemHeight"/>
+      <element name="TCustomEdit.GetCaretPos"/>
+      <element name="TCustomEdit.GetReadOnly"/>
+      <element name="TCustomEdit.SetCaretPos"/>
+      <element name="TCustomMemo.GetCaretPos"/>
     </module>
     <!-- StdCtrls -->
   </package>
