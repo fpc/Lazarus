@@ -667,8 +667,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonComboBox.DestroyWidget;
 begin
-  if FReadOnly then DisposeMenu(FPopupMenu);
-  if FTimer.Enabled then DropDownTimer(nil);
+  if FReadOnly then
+    DisposeMenu(FPopupMenu)
+  else if FTimer.Enabled then
+    DropDownTimer(nil);
   FTimer.Free;
 
   inherited DestroyWidget;
