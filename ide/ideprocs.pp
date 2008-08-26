@@ -1317,7 +1317,7 @@ end;
 -------------------------------------------------------------------------------}
 function BackupFile(const Filename, BackupFilename: string): boolean;
 var
-  FHandle: Integer;
+  FHandle: THandle;
   {$IFdef MSWindows}
   OldAttr: Longint;
   {$ELSE}
