@@ -492,7 +492,7 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomImageList.Create">
+      <element name="TCustomImageList.Create" link="#rtl.Classes.TComponent.Create">
         <short/>
         <descr/>
         <errors/>
@@ -503,7 +503,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomImageList.AssignTo">
+      <element name="TCustomImageList.AssignTo" link="#rtl.Classes.TPersistent.AssignTo">
         <short/>
         <descr/>
         <errors/>
@@ -514,7 +514,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomImageList.Assign">
+      <element name="TCustomImageList.Assign" link="#rtl.Classes.TPersistent.Assign">
         <short/>
         <descr/>
         <errors/>
@@ -731,7 +731,7 @@
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomImageList.Destroy">
+      <element name="TCustomImageList.Destroy" link="#rtl.Classes.TComponent.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -833,7 +833,7 @@
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TCustomImageList.HandleAllocated">
+      <element name="TCustomImageList.HandleAllocated" link="#LCL.LCLClasses.TLCLReferenceComponent.HandleAllocated">
         <short/>
         <descr/>
         <errors/>
@@ -1032,13 +1032,15 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomImageList.Height">
-        <short/>
+        <short>
+          <var>Height</var> of images on list</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomImageList.Width">
-        <short/>
+        <short>
+          <var>Width</var> of images on list</short>
         <descr/>
         <seealso/>
       </element>
@@ -1052,7 +1054,7 @@
       <!-- property Visibility: public -->
       <element name="TCustomImageList.Masked">
         <short>
-          <var>Masked</var> - if True, a mask is applied to th ebitmap</short>
+          <var>Masked</var> - if True, a mask is applied to the bitmap</short>
         <descr/>
         <seealso/>
       </element>

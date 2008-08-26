@@ -647,7 +647,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBar.Ctl3D">
+      <element name="TScrollBar.Ctl3D" link="#LCL.Controls.TControl.Ctl3D">
         <short/>
         <descr/>
         <seealso/>
@@ -744,7 +744,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBar.ParentCtl3D">
+      <element name="TScrollBar.ParentCtl3D" link="#LCL.Controls.TWinControl.ParentCtl3D">
         <short/>
         <descr/>
         <seealso/>
@@ -1061,7 +1061,7 @@ which you should read to find out more about this control
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TGroupBox.Ctl3D">
+      <element name="TGroupBox.Ctl3D" link="#LCL.Controls.TControl.Ctl3D">
         <short/>
         <descr/>
         <seealso/>
@@ -1117,7 +1117,7 @@ which you should read to find out more about this control
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TGroupBox.ParentCtl3D">
+      <element name="TGroupBox.ParentCtl3D" link="#LCL.Controls.TWinControl.ParentCtl3D">
         <short/>
         <descr/>
         <seealso/>
@@ -2766,7 +2766,7 @@ has value -1.</p>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TComboBox.Ctl3D">
+      <element name="TComboBox.Ctl3D" link="#LCL.Controls.TControl.Ctl3D">
         <short/>
         <descr/>
         <seealso/>
@@ -2990,7 +2990,7 @@ has value -1.</p>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TComboBox.ParentCtl3D">
+      <element name="TComboBox.ParentCtl3D" link="#LCL.Controls.TWinControl.ParentCtl3D">
         <short/>
         <descr/>
         <seealso/>
@@ -6373,7 +6373,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomStaticText.DialogChar">
+      <element name="TCustomStaticText.DialogChar" link="#LCL.Controls.TControl.DialogChar">
         <short/>
         <descr/>
         <errors/>
@@ -7092,7 +7092,7 @@ is done automatically by the streaming system.
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomButton.DialogChar">
+      <element name="TCustomButton.DialogChar" link="#LCL.Controls.TControl.DialogChar">
         <short/>
         <descr/>
         <errors/>
@@ -7689,7 +7689,7 @@ is the ancestor of all check-box components.</short>
         <seealso/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomCheckBox.DialogChar">
+      <element name="TCustomCheckBox.DialogChar" link="#LCL.Controls.TControl.DialogChar">
         <short/>
         <descr/>
         <errors/>
@@ -8283,7 +8283,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <example file="extctrls/radiobutton.pas"/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TRadioButton.DialogChar">
+      <element name="TRadioButton.DialogChar" link="#LCL.Controls.TControl.DialogChar">
         <short/>
         <descr/>
         <errors/>
@@ -8688,7 +8688,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <seealso/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomLabel.DialogChar">
+      <element name="TCustomLabel.DialogChar" link="#LCL.Controls.TControl.DialogChar">
         <short/>
         <descr/>
         <errors/>

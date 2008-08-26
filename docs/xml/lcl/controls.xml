@@ -1028,7 +1028,8 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TDragImageList">
-        <short/>
+        <short>
+          <var>TDragImageList</var> - a list of Images to be dragged</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2905,7 +2906,7 @@ mrLast=mrYesToAll=10</descr>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TControlBorderSpacing.Create">
+      <element name="TControlBorderSpacing.Create" link="#rtl.System.TObject.Create">
         <short/>
         <descr/>
         <errors/>
@@ -2916,7 +2917,7 @@ mrLast=mrYesToAll=10</descr>
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TControlBorderSpacing.Assign">
+      <element name="TControlBorderSpacing.Assign" link="#rtl.Classes.TPersistent.Assign">
         <short/>
         <descr/>
         <errors/>
@@ -2927,7 +2928,7 @@ mrLast=mrYesToAll=10</descr>
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TControlBorderSpacing.AssignTo">
+      <element name="TControlBorderSpacing.AssignTo" link="#rtl.Classes.TPersistent.AssignTo">
         <short/>
         <descr/>
         <errors/>
@@ -3142,7 +3143,7 @@ mrLast=mrYesToAll=10</descr>
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TAnchorSide.Create">
+      <element name="TAnchorSide.Create" link="#rtl.System.TObject.Create">
         <short/>
         <descr/>
         <errors/>
@@ -3176,7 +3177,7 @@ mrLast=mrYesToAll=10</descr>
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TAnchorSide.Assign">
+      <element name="TAnchorSide.Assign" link="#rtl.Classes.TPersistent.Assign">
         <short/>
         <descr/>
         <errors/>
@@ -5217,7 +5218,7 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.LMCaptureChanged">
-        <short/>
+        <short>LCL Message when capture method is changed</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5228,7 +5229,7 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.CMEnabledChanged">
-        <short/>
+        <short>Control Message when Enabled status is changed</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5239,7 +5240,7 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.CMHitTest">
-        <short/>
+        <short>Control Message for Hit Test</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5250,7 +5251,7 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.CMMouseEnter">
-        <short/>
+        <short>Control Message for entry of mouse</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5261,7 +5262,7 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.CMMouseLeave">
-        <short/>
+        <short>Control Message for exit of mouse</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5272,7 +5273,7 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.CMHintShow">
-        <short/>
+        <short>Control message for showing a hint</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5283,7 +5284,7 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.CMParentColorChanged">
-        <short/>
+        <short>Control Message for a change in parent colour</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5294,7 +5295,7 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.CMParentShowHintChanged">
-        <short/>
+        <short>Control Message for a change in parent hinting status</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5305,7 +5306,7 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.CMVisibleChanged">
-        <short/>
+        <short>Control Message for a change in visibility</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5713,7 +5714,8 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TControl.DialogChar">
-        <short/>
+        <short>
+          <var>DialogChar</var> - a LCL Key Message; returns True if a Dialog character has an associated message</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5760,7 +5762,7 @@ mrLast=mrYesToAll=10</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TControl.Loaded">
+      <element name="TControl.Loaded" link="#rtl.Classes.TComponent.Loaded">
         <short/>
         <descr/>
         <errors/>
@@ -5778,12 +5780,7 @@ mrLast=mrYesToAll=10</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TControl.AssignTo">
-        <short>
-          <var>AssignTo </var>
-- copies some of its properties to another control (
-          <var>Dest</var>)</short>
-      </element>
+      <element name="TControl.AssignTo" link="#rtl.Classes.TPersistent.AssignTo"/>
       <!-- argument Visibility: default -->
       <element name="TControl.AssignTo.Dest">
         <short/>
@@ -5953,7 +5950,8 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.WndProc">
-        <short/>
+        <short>
+          <var>WndProc</var> - message handler for the procedure of this window</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5978,13 +5976,14 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.CaptureChanged">
-        <short/>
+        <short>
+          <var>CaptureChanged</var> - the method for data capture has changed</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TControl.Notification">
+      <element name="TControl.Notification" link="#rtl.Classes.TComponent.Notification">
         <short/>
         <descr/>
         <errors/>
@@ -6155,7 +6154,8 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.Ctl3D">
-        <short/>
+        <short>
+          <var>Ctl3D</var> - retained for Delphi compatibility; even there it is deprecated</short>
         <descr/>
         <seealso/>
       </element>
@@ -6534,8 +6534,8 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.SetBounds">
-        <short>Sets the boundaries defining the position of the current control</short>
-        <descr>Height, Width, and position of Top Left pixel</descr>
+        <short>
+          <var>SetBounds</var> - set the bounds (top. left, height, width) for the window</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.SetBounds.aLeft">
@@ -6643,10 +6643,7 @@ mrLast=mrYesToAll=10</descr>
         <short>Render the preferred size no longer valid (implies that we will look for another)</short>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TControl.Create">
-        <short>
-          <var>Create</var>
- a new Control - Constructor</short>
+      <element name="TControl.Create" link="#rtl.Classes.TComponent.Create">
         <descr>
           <p>
             <var>Create</var>
@@ -6661,10 +6658,7 @@ mrLast=mrYesToAll=10</descr>
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TControl.Destroy">
-        <short>
-          <var>Destroy</var>
- the Control when you have finished with it</short>
+      <element name="TControl.Destroy" link="#rtl.Classes.TComponent.Destroy">
         <descr>
           <p>
             <var>Destructor</var>
@@ -6758,9 +6752,7 @@ mrLast=mrYesToAll=10</descr>
         <short>Function returns True if colour has been stored</short>
       </element>
       <!-- function Visibility: public -->
-      <element name="TControl.HasParent">
-        <short>This control has a parent</short>
-      </element>
+      <element name="TControl.HasParent" link="#rtl.Classes.TComponent.HasParent"/>
       <!-- function result Visibility: default -->
       <element name="TControl.HasParent.Result">
         <short>Function returns True if there is a parent</short>
@@ -6854,7 +6846,8 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.SetTempCursor">
-        <short>Sets a temporary cursor</short>
+        <short>
+          <var>SetTempCursor</var> - set a temporary cursor</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.SetTempCursor.Value">
@@ -8644,7 +8637,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.AdjustClientRect">
-        <short/>
+        <short>
+          <var>AdjustClientRect</var> - method for adjusting the size and position of the client control</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8655,7 +8649,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.AlignControls">
-        <short/>
+        <short>
+          <var>AlignControls</var> - align the specified control with a given client rectangle</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8670,7 +8665,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- function Visibility: protected -->
       <element name="TWinControl.DoAlignChildControls">
-        <short/>
+        <short>
+          <var>DoAlignChildControls</var> - method for aligning child controls from a list; returns True if successful</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8697,7 +8693,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.DoChildSizingChange">
-        <short/>
+        <short>
+          <var>DoChildSizingChange</var> - method for changing size of a child component</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8707,7 +8704,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TWinControl.CanTab">
+      <element name="TWinControl.CanTab" link="#LCL.Controls.TControl.CanTab">
         <short/>
         <descr/>
         <errors/>
@@ -8778,21 +8775,24 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.ControlsAligned">
-        <short/>
+        <short>
+          <var>ControlsAligned</var> - called by AlignControls after aligning controls</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.DoSendBoundsToInterface">
-        <short/>
+        <short>
+          <var>DoSendBoundsToInterface</var> - sends information about the control's bounds to the interface</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.RealizeBounds">
-        <short/>
+        <short>
+          <var>RealizeBounds</var> - checks for changes and calls DoSendBoundsToInterface</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8820,7 +8820,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TWinControl.DoConstraintsChange">
+      <element name="TWinControl.DoConstraintsChange" link="#LCL.Controls.TControl.DoConstraintsChange">
         <short/>
         <descr/>
         <errors/>
@@ -8831,7 +8831,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TWinControl.DoSetBounds">
+      <element name="TWinControl.DoSetBounds" link="#LCL.Controls.TControl.DoSetBounds">
         <short/>
         <descr/>
         <errors/>
@@ -8854,14 +8854,14 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TWinControl.DoAutoSize">
+      <element name="TWinControl.DoAutoSize" link="#LCL.Controls.TControl.DoAutoSize">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TWinControl.CalculatePreferredSize">
+      <element name="TWinControl.CalculatePreferredSize" link="#LCL.Controls.TControl.CalculatePreferredSize">
         <short/>
         <descr/>
         <errors/>
@@ -8891,7 +8891,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TWinControl.GetChildren">
+      <element name="TWinControl.GetChildren" link="Classes.TComponent.GetChildren">
         <short/>
         <descr/>
         <errors/>
@@ -8907,7 +8907,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- function Visibility: protected -->
       <element name="TWinControl.ChildClassAllowed">
-        <short/>
+        <short>
+          <var>ChildClassAllowed</var> - returns True if the given child class is permitted</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8922,7 +8923,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.PaintControls">
-        <short/>
+        <short>
+          <var>PaintControls</var> - method for painting a series of controls</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8937,7 +8939,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.PaintHandler">
-        <short/>
+        <short>
+          <var>PaintHandler</var> - message handler for painting</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8948,7 +8951,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.PaintWindow">
-        <short/>
+        <short>
+          <var>PaintWindow</var> - method for painting a window</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8959,7 +8963,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.CreateBrush">
-        <short/>
+        <short>
+          <var>CreateBrush</var> - method to create a brush for painting</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9267,7 +9272,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.DockOver">
-        <short/>
+        <short>
+          <var>DockOver</var> - software emulation of the OnDockOver event</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9294,7 +9300,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.DoDockOver">
-        <short/>
+        <short>
+          <var>DoDockOver</var> - perform the DockOver method</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9321,7 +9328,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.DoRemoveDockClient">
-        <short/>
+        <short>
+          <var>DoRemoveDockClient</var> - method for removing a docking client </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9332,7 +9340,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- function Visibility: protected -->
       <element name="TWinControl.DoUnDock">
-        <short/>
+        <short>
+          <var>DoUnDock</var> - software emulation of the <var>OnUnDock</var> evnet</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9351,7 +9360,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.GetSiteInfo">
-        <short/>
+        <short>
+          <var>GetSiteInfo</var> - software emulation of the <var>OnGetSiteInfo </var>event</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9374,7 +9384,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.ReloadDockedControl">
-        <short/>
+        <short>
+          <var>ReloadDockedControl</var> - load the docked control again (it may have become misaligned during other processes)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9389,7 +9400,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- function Visibility: protected -->
       <element name="TWinControl.CreateDockManager">
-        <short/>
+        <short>
+          <var>CreateDockManager</var> - returns a new Dock Manager</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9596,7 +9608,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TWinControl.DialogChar">
+      <element name="TWinControl.DialogChar" link="#LCL.Controls.TControl.DialogChar">
         <short/>
         <descr/>
         <errors/>
@@ -9761,7 +9773,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- function Visibility: protected -->
       <element name="TWinControl.FindNextControl">
-        <short/>
+        <short>
+          <var>FindNextControl</var> - returns the next control on the list; optionally checks if it is a TabStop or a parent control</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9787,7 +9800,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TWinControl.RealGetText">
+      <element name="TWinControl.RealGetText" link="#LCL.Controls.TControl.RealGetText">
         <short/>
         <descr/>
         <errors/>
@@ -9799,7 +9812,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- function Visibility: protected -->
       <element name="TWinControl.GetBorderStyle">
-        <short/>
+        <short>
+          <var>GetBorderStyle</var> - returns the style of the border</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9809,9 +9823,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TWinControl.GetChildsRect">
-        <short>
-          <var>GetChildsRect</var> - find the size of any child component</short>
+      <element name="TWinControl.GetChildsRect" link="#LCL.Controls.TControl.GetChildsRect">
         <descr/>
         <errors/>
         <seealso/>
@@ -9825,7 +9837,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TWinControl.GetClientOrigin">
+      <element name="TWinControl.GetClientOrigin" link="#LCL.Controls.TControl.GetClientOrigin">
         <short/>
         <descr/>
         <errors/>
@@ -9836,7 +9848,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TWinControl.GetClientRect">
+      <element name="TWinControl.GetClientRect" link="#LCL.Controls.TControl.GetClientRect">
         <short/>
         <descr/>
         <errors/>
@@ -9847,7 +9859,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TWinControl.GetControlOrigin">
+      <element name="TWinControl.GetControlOrigin" link="#LCL.Controls.TControl.GetControlOrigin">
         <short/>
         <descr/>
         <errors/>
@@ -9941,7 +9953,8 @@ End;
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.DestroyHandle">
-        <short/>
+        <short>
+          <var>DestroyHandle</var> - removes the handle for this window</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9991,7 +10004,7 @@ End;
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TWinControl.Loaded">
+      <element name="TWinControl.Loaded" link="#rtl.Classes.TComponent.Loaded">
         <short/>
         <descr/>
         <errors/>
@@ -10009,7 +10022,7 @@ End;
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TWinControl.ParentFormHandleInitialized">
+      <element name="TWinControl.ParentFormHandleInitialized" link="#LCL.Controls.TControl.ParentFormHandleInitialized">
         <short/>
         <descr/>
         <errors/>
@@ -10031,7 +10044,7 @@ End;
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TWinControl.RealSetText">
+      <element name="TWinControl.RealSetText" link="#LCL.Controls.TControl.RealSetText">
         <short/>
         <descr/>
         <errors/>
@@ -10053,7 +10066,7 @@ End;
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TWinControl.SendMoveSizeMessages">
+      <element name="TWinControl.SendMoveSizeMessages" link="#LCL.Controls.TControl.SendMoveSizeMessages">
         <short/>
         <descr/>
         <errors/>
@@ -10079,7 +10092,7 @@ End;
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TWinControl.SetColor">
+      <element name="TWinControl.SetColor" link="#LCL.Controls.TControl.SetColor">
         <short/>
         <descr/>
         <errors/>
@@ -10123,7 +10136,7 @@ End;
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TWinControl.Update">
+      <element name="TWinControl.Update" link="#LCL.Controls.TControl.Update">
         <short/>
         <descr/>
         <errors/>
@@ -10277,7 +10290,7 @@ End;
         <descr>Reads or writes information in flag; default is -1</descr>
       </element>
       <!-- property Visibility: public -->
-      <element name="TWinControl.TabStop" link="#LCL.Controls.TWinControl.TabStop">
+      <element name="TWinControl.TabStop">
         <short>Is the control in the sequence of controls accessed by successive presses of the Tab key?</short>
         <descr>Use the TabStop to allow or disallow access to the control using the Tab key.
 
@@ -10374,7 +10387,8 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.ParentCtl3D">
-        <short/>
+        <short>
+          <var>ParentCtl3D</var> - does it inherit Ctl3D properties from parents? (Deprecated)</short>
         <descr/>
         <seealso/>
       </element>
@@ -10404,7 +10418,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <seealso/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TWinControl.AutoSizeDelayed">
+      <element name="TWinControl.AutoSizeDelayed" link="#LCL.Controls.TControl.AutoSizeDelayed">
         <short/>
         <descr/>
         <errors/>
@@ -10547,9 +10561,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TWinControl.SetBounds">
-        <short>
-          <var>SetBounds</var> - set the bounds (top. left, height, width) for the window</short>
+      <element name="TWinControl.SetBounds" link="#LCL.Controls.TControl.SetBounds">
         <descr/>
         <errors/>
         <seealso/>
@@ -10571,8 +10583,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TWinControl.Create">
-        <short>Create a new instance of the Window Control</short>
+      <element name="TWinControl.Create" link="#LCL.Controls.TControl.Create">
         <seealso>
           <link id="#rtl.Classes.TComponent"/>
         </seealso>
@@ -10583,7 +10594,8 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- constructor Visibility: public -->
       <element name="TWinControl.CreateParented">
-        <short/>
+        <short>
+          <var>CreateParented</var> - constructor for a window that is the child of a specified parent</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10594,7 +10606,8 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- function Visibility: public -->
       <element name="TWinControl.CreateParentedControl">
-        <short/>
+        <short>
+          <var>CreateParentedControl</var> - returns a newly created window control that has a specified window as its parent</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10608,9 +10621,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TWinControl.Destroy">
-        <short>Destroy this instance of the Window Control, and return the resources used</short>
-      </element>
+      <element name="TWinControl.Destroy" link="#LCL.Controls.TControl.Destroy"/>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.DockDrop">
         <short>
@@ -10766,7 +10777,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TWinControl.DefaultHandler">
+      <element name="TWinControl.DefaultHandler" link="#rtl.System.TObject.DefaultHandler">
         <short/>
         <descr/>
         <errors/>
@@ -10793,7 +10804,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <seealso/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TWinControl.GetTextLen">
+      <element name="TWinControl.GetTextLen" link="#LCL.Controls.TControl.GetTextLen">
         <short/>
         <descr/>
         <errors/>
@@ -10804,7 +10815,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TWinControl.Invalidate">
+      <element name="TWinControl.Invalidate" link="#LCL.Controls.TControl.Invalidate">
         <short/>
         <descr/>
         <errors/>
@@ -10887,7 +10898,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TWinControl.Repaint">
+      <element name="TWinControl.Repaint" link="#LCL.Controls.TControl.Repaint">
         <short/>
         <descr/>
         <errors/>
@@ -11053,17 +11064,13 @@ need the ability to accept keyboard input or contain other controls. </p>
         <descr>Virtual <var>Paint</var> method called in response to paint requests received by the parent control.</descr>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TGraphicControl.Create">
-        <short>Create a new instance of a Graphic Control</short>
-      </element>
+      <element name="TGraphicControl.Create" link="#LCL.Controls.TControl.Create"/>
       <!-- argument Visibility: default -->
       <element name="TGraphicControl.Create.AOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TGraphicControl.Destroy">
-        <short>Destroy this instance of a graphic control and return its resources</short>
-      </element>
+      <element name="TGraphicControl.Destroy" link="#LCL.Controls.TControl.Destroy"/>
       <!-- property Visibility: public -->
       <element name="TGraphicControl.Canvas">
         <short>A clipping window to the parent canvas.</short>
@@ -11132,17 +11139,13 @@ getting the parent control's Canvas dimensions.</p>
         <short>The Device Context in which to paint</short>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomControl.Create">
-        <short>Create an instance of this control</short>
-      </element>
+      <element name="TCustomControl.Create" link="#LCL.Controls.TControl.Create"/>
       <!-- argument Visibility: default -->
       <element name="TCustomControl.Create.AOwner">
         <short>Owner, ie the component that called this control</short>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomControl.Destroy">
-        <short>Destroy the control and returns its resources</short>
-      </element>
+      <element name="TCustomControl.Destroy" link="#LCL.Controls.TControl.Destroy"/>
       <!-- procedure Visibility: public -->
       <element name="TCustomControl.DestroyComponent">
         <short>If the custom control has been destroyed, free its handle as well</short>
@@ -11161,9 +11164,9 @@ getting the parent control's Canvas dimensions.</p>
         </seealso>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomControl.BorderStyle">
-        <short>The available border styles for this sort of control</short>
-        <descr>Only a restricted series of options is available: none or a single border.</descr>
+      <element name="TCustomControl.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle">
+        <descr>Only a restricted series of options is available: none or a single border.
+</descr>
         <seealso>
           <link id="TBorderStyle"/>
         </seealso>
@@ -12681,7 +12684,8 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- function Visibility: public -->
       <element name="TDragImageList.BeginDrag">
-        <short/>
+        <short>
+          <var>BeginDrag</var> - start the drag process; returns True if successful</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12704,7 +12708,7 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- function Visibility: public -->
       <element name="TDragImageList.DragLock">
-        <short/>
+        <short>DragLock</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12763,7 +12767,7 @@ getting the parent control's Canvas dimensions.</p>
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TDragImageList.GetHotSpot">
+      <element name="TDragImageList.GetHotSpot" link="#LCL.ImgList.TCustomImageList.GetHotSpot">
         <short/>
         <descr/>
         <errors/>
@@ -12859,7 +12863,7 @@ getting the parent control's Canvas dimensions.</p>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TDragObject.Create">
+      <element name="TDragObject.Create" link="System.TObject.Create">
         <short/>
         <descr/>
         <errors/>
@@ -13038,7 +13042,7 @@ getting the parent control's Canvas dimensions.</p>
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TDragManager.Create">
+      <element name="TDragManager.Create" link="#rtl.Classes.TComponent.Create">
         <short/>
         <descr/>
         <errors/>
@@ -13295,7 +13299,7 @@ getting the parent control's Canvas dimensions.</p>
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TAnchorSide.Destroy">
+      <element name="TAnchorSide.Destroy" link="#rtl.Classes.TPersistent.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -13527,7 +13531,7 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.CMTextChanged">
-        <short/>
+        <short>Control Message for a change in the control's text</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14271,7 +14275,8 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.CreateControlAlignList">
-        <short/>
+        <short>
+          <var>CreateControlAlignList</var> - creates a list of the controls that are aligned with the present window control</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14290,7 +14295,8 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.ResizeDelayedAutoSizeChildren">
-        <short/>
+        <short>
+          <var>ResizeDelayedAutoSizeChildren</var> - method for re-sizing children, using autosize delayed</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14359,7 +14365,6 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.DoSendShowHideToInterface">
-        <short/>
         <descr/>
         <errors/>
         <seealso/>
@@ -14391,7 +14396,7 @@ getting the parent control's Canvas dimensions.</p>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TWinControl.DoFloatMsg">
+      <element name="TWinControl.DoFloatMsg" link="#LCL.Controls.TControl.DoFloatMsg">
         <short/>
         <descr/>
         <errors/>
@@ -14403,7 +14408,8 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.DoGetDockCaption">
-        <short/>
+        <short>
+          <var>DoGetDockCaption</var> - find the caption for the docked control</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14433,7 +14439,8 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.SelectFirst">
-        <short/>
+        <short>
+          <var>SelectFirst</var> - select the first control on the list</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14441,7 +14448,7 @@ getting the parent control's Canvas dimensions.</p>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.FinalizeWnd">
         <short>
-          <var>FinalizeWnd</var> -  getting ready to remove windoe (gets called before the Handle is destroyed)</short>
+          <var>FinalizeWnd</var> -  getting ready to remove window (gets called before the Handle is destroyed)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14482,7 +14489,8 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- property Visibility: protected -->
       <element name="TWinControl.OnGetDockCaption">
-        <short/>
+        <short>
+          <var>OnGetDockCaption</var> - event handler to find the caption for the docked control</short>
         <descr/>
         <seealso/>
       </element>
@@ -14491,7 +14499,7 @@ getting the parent control's Canvas dimensions.</p>
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TWinControl.WriteLayoutDebugReport">
+      <element name="TWinControl.WriteLayoutDebugReport" link="#LCL.Controls.TControl.WriteLayoutDebugReport">
         <short/>
         <descr/>
         <errors/>
@@ -14506,9 +14514,7 @@ getting the parent control's Canvas dimensions.</p>
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TWinControl.SetTempCursor">
-        <short>
-          <var>SetTempCursor</var> - set a temporary cursor</short>
+      <element name="TWinControl.SetTempCursor" link="#LCL.Controls.TControl.SetTempCursor">
         <descr/>
         <errors/>
         <seealso/>
@@ -14593,7 +14599,7 @@ getting the parent control's Canvas dimensions.</p>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TGraphicControl.DoOnChangeBounds">
+      <element name="TGraphicControl.DoOnChangeBounds" link="#LCL.Controls.TControl.DoOnChangeBounds">
         <short/>
         <descr/>
         <errors/>
@@ -14622,7 +14628,7 @@ getting the parent control's Canvas dimensions.</p>
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomControl.DestroyWnd">
+      <element name="TCustomControl.DestroyWnd" link="#LCL.Controls.TWinControl.DestroyWnd">
         <short/>
         <descr/>
         <errors/>
@@ -14983,6 +14989,11 @@ getting the parent control's Canvas dimensions.</p>
         <short>
           <var>OnMouseWheelUp</var> - event handler for upward movement of mouse wheel</short>
       </element>
+      <element name="TWinControl.InvalidatePreferredChildSizes">
+        <short>
+          <var>InvalidatePreferredChildSizes</var> - renders the preferred child sizes invalid</short>
+      </element>
+      <element name="TDragObject.AutoCreated"/>
     </module>
     <!-- Controls -->
   </package>
