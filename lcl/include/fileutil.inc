@@ -27,10 +27,12 @@ function NeedRTLAnsi: boolean;
 const
   CP_UTF8 = 65001;
 {$ENDIF}
+{$IFNDEF windows}
 var
   Lang: String;
   i: LongInt;
   Encoding: String;
+{$ENDIF}
 begin
   if FNeedRTLAnsiValid then
     exit(FNeedRTLAnsi);
@@ -38,7 +40,6 @@ begin
   FNeedRTLAnsi:=GetACP<>CP_UTF8;
   {$ELSE}
   FNeedRTLAnsi:=false;
-  {$ENDIF}
   Lang := SysUtils.GetEnvironmentVariable('LC_ALL');
   if Length(lang) = 0 then
   begin
@@ -54,6 +55,7 @@ begin
     FNeedRTLAnsi:=(SysUtils.CompareText(Encoding,'UTF-8')=0)
               or (SysUtils.CompareText(Encoding,'UTF8')=0);
   end;
+  {$ENDIF}
   FNeedRTLAnsiValid:=true;
   Result:=FNeedRTLAnsi;
 end;
@@ -67,17 +69,17 @@ end;
 function UTF8ToSys(const s: string): string;
 begin
   if NeedRTLAnsi then
-    Result:=s
+    Result:=UTF8ToAnsi(s)
   else
-    Result:=UTF8ToAnsi(s);
+    Result:=s;
 end;
 
 function SysToUTF8(const s: string): string;
 begin
   if NeedRTLAnsi then
-    Result:=s
+    Result:=AnsiToUTF8(s)
   else
-    Result:=AnsiToUTF8(s);
+    Result:=s;
 end;
 
 function FileExistsUTF8(const Filename: string): boolean;
