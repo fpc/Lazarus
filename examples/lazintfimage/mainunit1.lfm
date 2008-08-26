@@ -3,22 +3,19 @@ object Form1: TForm1
   Height = 541
   Top = 163
   Width = 498
-  HorzScrollBar.Page = 497
-  VertScrollBar.Page = 540
   ActiveControl = Button1
   Caption = 'Fade in - Example for TLazIntfImage'
   ClientHeight = 541
   ClientWidth = 498
   OnCreate = Form1Create
   OnDestroy = Form1Destroy
-  PixelsPerInch = 96
+  LCLVersion = '0.9.25'
   object Button1: TButton
     Left = 85
     Height = 25
     Top = 466
     Width = 328
     Anchors = [akBottom]
-    
     Caption = 'Fade in'
     OnClick = Button1Click
     TabOrder = 0
@@ -29,7 +26,6 @@ object Form1: TForm1
     Top = 498
     Width = 324
     Anchors = [akBottom]
-    
     Caption = 'Rotate by >>'
     OnClick = Button2Click
     TabOrder = 1
