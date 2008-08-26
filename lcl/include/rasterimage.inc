@@ -175,6 +175,7 @@ var
   SrcImage, DstImage: TLazIntfImage;
   QueryFlags: TRawImageQueryFlags;
   W, H: Integer;
+  SkipMask: Boolean;
 begin
   if BitmapHandleAllocated then exit;
 
@@ -224,13 +225,29 @@ begin
   end;
 
   try
-    if not RawImage_CreateBitmaps(ImagePtr^, ImgHandle, ImgMaskHandle, DevDesc.MaskBitsPerPixel = 0)
+    // we must skip mask creation if
+    // a) we already have mask
+    // b) mask needs to be created another way - using TransparentColor
+    // c) we dont have mask in the description
+    SkipMask := MaskHandleAllocated or
+                (TransparentMode = tmFixed) or
+                (DevDesc.MaskBitsPerPixel = 0);
+    if not RawImage_CreateBitmaps(ImagePtr^, ImgHandle, ImgMaskHandle, SkipMask)
     then begin
       DebugLn('TRasterImage.BitmapHandleNeeded: Unable to create handles, using default');
       // create a default handle
       ImgHandle := CreateDefaultBitmapHandle(DevDesc);
     end;
-    UpdateHandles(ImgHandle, ImgMaskHandle);
+
+    if SkipMask
+    then begin
+      // if we dont have new mask then either use old one or use none
+      if MaskHandleAllocated
+      then UpdateHandles(ImgHandle, MaskHandle)
+      else UpdateHandles(ImgHandle, 0);
+    end
+    else UpdateHandles(ImgHandle, ImgMaskHandle);
+
   finally
     DstImage.Free;
   end;

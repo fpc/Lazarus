@@ -114,35 +114,38 @@ begin
   if FMaskHandle <> 0 then Exit;
   if not Masked then Exit;
 
-  if not BitmapHandleAllocated
-  then BitmapHandleNeeded; // create together with bitmaphandle
-  if FMaskHandle <> 0 then Exit;
+  if TransparentMode = tmAuto then
+  begin
+    if not BitmapHandleAllocated
+    then BitmapHandleNeeded; // create together with bitmaphandle
 
-  ImagePtr := GetRawImagePtr;
-  if ImagePtr^.Description.Format = ricfNone then Exit;
+    if FMaskHandle <> 0 then Exit;
+    ImagePtr := GetRawImagePtr;
+    if ImagePtr^.Description.Format = ricfNone then Exit;
 
-  // check if we have mask data
-  if  (ImagePtr^.Description.MaskBitsPerPixel <> 0)
-  and (ImagePtr^.Mask <> nil)
-  and (ImagePtr^.MaskSize <> 0)
-  then begin
-    // move mask to image data, so we only have to create one handle
-    // (and don't have to think about imahehandle format)
-
-    MaskImage.Description := ImagePtr^.Description.GetDescriptionFromMask;
-    MaskImage.DataSize := ImagePtr^.MaskSize;
-    MaskImage.Data := ImagePtr^.Mask;
-
-    if RawImage_CreateBitmaps(MaskImage, msk, dummy, False)
+    // check if we have mask data
+    if  (ImagePtr^.Description.MaskBitsPerPixel <> 0)
+    and (ImagePtr^.Mask <> nil)
+    and (ImagePtr^.MaskSize <> 0)
     then begin
-      if BitmapHandleAllocated
-      then UpdateHandles(BitmapHandle, msk)
-      else UpdateHandles(0, msk);
-      Exit;
+      // move mask to image data, so we only have to create one handle
+      // (and don't have to think about imahehandle format)
+
+      MaskImage.Description := ImagePtr^.Description.GetDescriptionFromMask;
+      MaskImage.DataSize := ImagePtr^.MaskSize;
+      MaskImage.Data := ImagePtr^.Mask;
+
+      if RawImage_CreateBitmaps(MaskImage, msk, dummy, False)
+      then begin
+        if BitmapHandleAllocated
+        then UpdateHandles(BitmapHandle, msk)
+        else UpdateHandles(0, msk);
+        Exit;
+      end;
     end;
   end;
 
-  // no data, create ourselves
+  // no data or transparent color is set - create ourselves
   CreateMask;
 end;
 

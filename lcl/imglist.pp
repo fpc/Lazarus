@@ -152,6 +152,8 @@ type
 
   public
     constructor Create(AOwner: TComponent); override;
+    constructor CreateSize(AWidth, AHeight: Integer);
+    destructor Destroy; override;
 
     procedure AssignTo(Dest: TPersistent); override;
     procedure Assign(Source: TPersistent); override;
@@ -167,11 +169,7 @@ type
     function AddLazarusResource(const ResourceName: string; MaskColor: TColor = clNone): integer;
     procedure Change;
     procedure Clear;
-    {.$ifdef IMGLIST_KEEP_EXTRA}
-    constructor CreateSize(AWidth, AHeight: Integer);
-    {.$endif}
     procedure Delete(AIndex: Integer);
-    destructor Destroy; override;
     procedure Draw(ACanvas: TCanvas; AX, AY, AIndex: Integer; AEnabled: Boolean = True); overload;
     procedure Draw(ACanvas: TCanvas; AX, AY, AIndex: Integer; ADrawEffect: TGraphicsDrawEffect); overload;
     procedure FillDescription(out ADesc: TRawImageDescription);

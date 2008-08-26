@@ -698,7 +698,7 @@ begin
   then Exit(False);
 
   //DbgDumpBitmap(ABitmap, 'FromBitmap - Image');
-  //DbgDumpBitmap(AMask, 'FromBitmap - Mask');
+  //DbgDumpBitmap(AMask, 'FromMask - Mask');
 
   FillRawImageDescription(WinBmp, ARawImage.Description);
   // if it is not DIB then alpha in bitmaps is not supported => use 0 alpha prec
