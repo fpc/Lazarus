@@ -352,10 +352,11 @@ begin
   if (i<0) or (i>=Items.Count) then
     FFileName := ''
   else begin
-    FFileName := FDirectory+DirectorySeparator+Items[i];
+    FFileName := Items[i];
     if (FFileName<>'')
     and (FFileName[1]='[') and (FFileName[length(FFileName)]=']') then
       FFileName:=copy(FFileName,2,length(FFileName)-2);
+    FFileName:= FDirectory+DirectorySeparator+FFileName;
   end;
   DoChangeFile;
 end;
