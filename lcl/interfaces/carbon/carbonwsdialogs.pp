@@ -33,7 +33,7 @@ uses
   // libs
   MacOSAll,
   // LCL
-  Classes, SysUtils, Controls, Dialogs, LCLType, LCLProc, Masks, Graphics,
+  Classes, SysUtils, FileUtil, Controls, Dialogs, LCLType, LCLProc, Masks, Graphics,
   // widgetset
   WSLCLClasses, WSProc, WSDialogs,
   // LCL Carbon
