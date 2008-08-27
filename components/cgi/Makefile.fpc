@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for cgiLaz 0.1.1
 #
-#   This file was generated on 23-6-2008
+#   This file was generated on 26-8-2008
 
 [package]
 name=cgilaz
@@ -12,7 +12,7 @@ version=0.1.1
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
 unitdir=../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)/ ../../packager/units/$(CPU_TARGET)-$(OS_TARGET)/ ./
 includedir=./
-options=-dLCL -dLCL$(LCL_PLATFORM) -S2 -gl
+options=-dLCL -dLCL$(LCL_PLATFORM) -Scgi -MObjFPC
 
 [target]
 units=cgilaz.pas
