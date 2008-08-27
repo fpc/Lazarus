@@ -217,7 +217,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomPage.DestroyHandle">
+      <element name="TCustomPage.DestroyHandle" link="#LCL.Controls.TWinControl.DestroyHandle">
         <short/>
         <descr/>
         <errors/>
@@ -271,7 +271,7 @@
         <seealso/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomPage.DialogChar">
+      <element name="TCustomPage.DialogChar" link="#LCL.Controls.TControl.DialogChar">
         <short/>
         <descr/>
         <errors/>
@@ -311,11 +311,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomPage.AdjustClientRect">
-        <short>
-          <var>AdjustClientRect</var> - adjust the size of the client rectangle to fit the specified coordinates 
-          <var>ARect</var>
-        </short>
+      <element name="TCustomPage.AdjustClientRect" link="#LCL.Controls.TWinControl.AdjustClientRect">
         <descr/>
         <errors/>
         <seealso/>
@@ -362,10 +358,7 @@
           <var>OnShow</var> - event handler for showing (making visible) this page of a notebook</short>
       </element>
       <!-- function Visibility: public -->
-      <element name="TCustomPage.CanTab">
-        <short>
-          <var>CanTab</var> - if True, this control can be reached by use of the Tab key</short>
-      </element>
+      <element name="TCustomPage.CanTab" link="#LCL.Controls.TControl.CanTab"/>
       <!-- function result Visibility: default -->
       <element name="TCustomPage.CanTab.Result"/>
       <!-- function Visibility: public -->
@@ -1025,7 +1018,7 @@
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomNotebook.CreateWnd">
+      <element name="TCustomNotebook.CreateWnd" link="#LCL.Controls.TWinControl.CreateWnd">
         <short/>
         <descr/>
         <errors/>
@@ -1046,14 +1039,14 @@
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomNotebook.Loaded">
+      <element name="TCustomNotebook.Loaded" link="#rtl.Classes.TComponent.Loaded">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomNotebook.ReadState">
+      <element name="TCustomNotebook.ReadState" link="#rtl.Classes.TComponent.ReadState">
         <short/>
         <descr/>
         <errors/>
@@ -1082,7 +1075,7 @@
         <seealso/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomNotebook.ChildClassAllowed">
+      <element name="TCustomNotebook.ChildClassAllowed" link="#LCL.Controls.TWinControl.ChildClassAllowed">
         <short/>
         <descr/>
         <errors/>
@@ -1149,10 +1142,7 @@
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TCustomNotebook.CanTab">
-        <short>
-          <var>CanTab</var> - if True, this location can be reached by using the Tab key</short>
-      </element>
+      <element name="TCustomNotebook.CanTab" link="#LCL.Controls.TControl.CanTab"/>
       <!-- function result Visibility: default -->
       <element name="TCustomNotebook.CanTab.Result">
         <short/>
@@ -1354,9 +1344,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCustomNotebook.TabStop">
-        <short>
-          <var>TabStop</var> - if True (default condition) this control can be reached using the Tab key</short>
+      <element name="TCustomNotebook.TabStop" link="#LCL.Controls.TWinControl.TabStop">
         <descr/>
         <seealso/>
       </element>
@@ -2116,7 +2104,7 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TShape.Pen">
-        <short>The Pen to be ussed for drawing this shape</short>
+        <short>The Pen to be used for drawing this shape</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TShape.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds">
@@ -3115,7 +3103,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomImage.DoAutoSize">
+      <element name="TCustomImage.DoAutoSize" link="#LCL.Controls.TControl.DoAutoSize">
         <short/>
         <descr/>
         <errors/>
@@ -3485,16 +3473,14 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TBevel.Paint">
-        <short>Virtual <var>Paint</var> method called in response to paint requests.</short>
+      <element name="TBevel.Paint" link="#LCL.Controls.TGraphicControl.Paint">
         <descr>Virtual <var>Paint</var> method called in response to paint requests received by the parent control.
 </descr>
         <errors/>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TBevel.Create">
-        <short>Create a new instance of a Graphic Control</short>
+      <element name="TBevel.Create" link="Classes.TComponent.Create">
         <descr/>
         <errors/>
         <seealso/>
@@ -3504,22 +3490,19 @@
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TBevel.Destroy">
-        <short>Destroy this instance of a graphic control and return its resources</short>
+      <element name="TBevel.Destroy" link="#rtl.Classes.TComponent.Destroy">
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TBevel.Invalidate">
-        <short>Render this control non-valid</short>
+      <element name="TBevel.Invalidate" link="#LCL.Controls.TControl.Invalidate">
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBevel.Align">
-        <short>Used to align the control in one of four directions.</short>
+      <element name="TBevel.Align" link="#LCL.Controls.TControl.Align">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Either reads a flag containing alignment instructions (<var>FAlign</var>) or writes alignment instructions (<var>SetAlign</var>)</p>
@@ -3528,8 +3511,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBevel.Anchors">
-        <short>The set of anchor definitions for this control</short>
+      <element name="TBevel.Anchors" link="#LCL.Controls.TControl.Anchors">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determines how the control is to be anchored to its client or parent conrol</p>
@@ -3539,8 +3521,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBevel.BorderSpacing">
-        <short>Determines the border spacing for this control</short>
+      <element name="TBevel.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determines the border spacing for this control</p>
@@ -3551,8 +3532,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBevel.Constraints">
-        <short>Determine <var>Constraints</var> (max and min height and width) for this control</short>
+      <element name="TBevel.Constraints" link="#LCL.Controls.TControl.Constraints">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determine <var>Constraints</var> (max and min height and width) for this control; reads the size constraints or stores new ones.</p>
@@ -3560,22 +3540,17 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBevel.Height">
-        <short>
-          <var>Height</var> - the vertical dimension of the control</short>
+      <element name="TBevel.Height" link="#LCL.Controls.TControl.Height">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBevel.Left">
-        <short>
-          <var>Left</var> - the coordinate of the left edge of the control</short>
+      <element name="TBevel.Left" link="#LCL.Controls.TControl.Left">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBevel.Name">
-        <short>Name of the component.</short>
+      <element name="TBevel.Name" link="#rtl.Classes.TComponent.Name">
         <descr>
           <var>Name</var> is the name of the component. This name should be a valid
 identifier, i.e. must start with a letter, and can contain only letters,
@@ -3598,9 +3573,7 @@ being raised.
         </seealso>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBevel.Top">
-        <short>
-          <var>Top</var> - the coordinates of the top edge of the control</short>
+      <element name="TBevel.Top" link="#LCL.Controls.TControl.Top">
         <descr/>
         <seealso/>
       </element>
@@ -3613,9 +3586,7 @@ being raised.
         </seealso>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBevel.Visible">
-        <short>
-          <var>Visible</var> - can the control be seen?</short>
+      <element name="TBevel.Visible" link="#LCL.Controls.TControl.Visible">
         <descr>
           <pre>The Visible property represents the ability to see a visual control. 
           If Visible is True the control is shown, otherwise it is hidden.
@@ -3626,15 +3597,12 @@ being raised.
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBevel.Width">
-        <short>
-          <var>Width </var>- the horizontal dimension of the control</short>
+      <element name="TBevel.Width" link="#LCL.Controls.TControl.Width">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBevel.OnChangeBounds">
-        <short>Event handler for a change in bounds of the control</short>
+      <element name="TBevel.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Reads or Writes flag if bounds are changed</p>
@@ -3642,35 +3610,29 @@ being raised.
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBevel.OnResize">
-        <short>Event Handler for resize of control</short>
+      <element name="TBevel.OnResize" link="#LCL.Controls.TControl.OnResize">
         <descr>// standard properties, which should be supported by all descendants<br/>
 Reads or Writes flag if control is re-sized.
 </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBevel.OnMouseDown">
-        <short>Event handler for when a mouse button is pressed down</short>
+      <element name="TBevel.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBevel.OnMouseMove">
-        <short>Event handler for mouse movement within the current control</short>
+      <element name="TBevel.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBevel.OnMouseUp">
-        <short>Event handler for when the mouse button is released, ie "up"</short>
+      <element name="TBevel.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBevel.OnPaint">
-        <short>
-          <var>OnPaint</var> - event handler for request to paint canvas</short>
+      <element name="TBevel.OnPaint" link="#LCL.Controls.TGraphicControl.OnPaint">
         <descr/>
         <seealso/>
       </element>
@@ -4030,7 +3992,7 @@ requiring the user to select one af a set of alternatives</p>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioGroup.Ctl3D">
+      <element name="TRadioGroup.Ctl3D" link="#LCL.Controls.TControl.Ctl3D">
         <short/>
         <descr/>
         <seealso/>
@@ -4137,7 +4099,7 @@ requiring the user to select one af a set of alternatives</p>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TRadioGroup.ParentCtl3D">
+      <element name="TRadioGroup.ParentCtl3D" link="#LCL.Controls.TWinControl.ParentCtl3D">
         <short/>
         <descr/>
         <seealso/>
@@ -4426,7 +4388,7 @@ requiring the user to select one af a set of alternatives</p>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomCheckGroup.Create">
+      <element name="TCustomCheckGroup.Create" link="#rtl.Classes.TComponent.Create">
         <short/>
         <descr/>
         <errors/>
@@ -4437,7 +4399,7 @@ requiring the user to select one af a set of alternatives</p>
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomCheckGroup.Destroy">
+      <element name="TCustomCheckGroup.Destroy" link="#rtl.Classes.TComponent.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -4621,7 +4583,7 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckGroup.Ctl3D">
+      <element name="TCheckGroup.Ctl3D" link="#LCL.Controls.TControl.Ctl3D">
         <short/>
         <descr/>
         <seealso/>
@@ -4727,7 +4689,7 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckGroup.ParentCtl3D">
+      <element name="TCheckGroup.ParentCtl3D" link="#LCL.Controls.TWinControl.ParentCtl3D">
         <short/>
         <descr/>
         <seealso/>
@@ -4821,80 +4783,67 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBoundLabel.Caption">
-        <short>The Caption to be used for this label</short>
+      <element name="TBoundLabel.Caption" link="#LCL.Controls.TControl.Caption">
         <descr>Caption : the caption which will appear on the Bound Label, to identify its function
 </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBoundLabel.Color">
-        <short>The Colour to be used for this label</short>
+      <element name="TBoundLabel.Color" link="#LCL.Controls.TControl.Color">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBoundLabel.Height">
-        <short>The height (vertical dimension) of the label</short>
+      <element name="TBoundLabel.Height" link="#LCL.Controls.TControl.Height">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBoundLabel.Left">
-        <short>The coordinates of the left border</short>
+      <element name="TBoundLabel.Left" link="#LCL.Controls.TControl.Left">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBoundLabel.ParentColor">
-        <short>The colour of the parent - should we stay the same?</short>
+      <element name="TBoundLabel.ParentColor" link="#LCL.Controls.TControl.ParentColor">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBoundLabel.ParentFont">
-        <short>Do we retain the font of the parent?</short>
+      <element name="TBoundLabel.ParentFont" link="#LCL.Controls.TControl.ParentFont">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBoundLabel.ParentShowHint">
-        <short>Do we use the same hinting rules as the parent?</short>
+      <element name="TBoundLabel.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBoundLabel.PopupMenu">
-        <short>A popup menu to be shown if the right mouse button is clicked over this control</short>
+      <element name="TBoundLabel.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBoundLabel.ShowAccelChar">
-        <short>Should accelerator character be displayed (underlined in label)?</short>
+      <element name="TBoundLabel.ShowAccelChar" link="#LCL.StdCtrls.TCustomLabel.ShowAccelChar">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBoundLabel.ShowHint">
-        <short>Should hint be shown?</short>
+      <element name="TBoundLabel.ShowHint" link="#LCL.Controls.TControl.ShowHint">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBoundLabel.Top">
-        <short>Coordinates of the top edge of the label</short>
+      <element name="TBoundLabel.Top" link="#LCL.Controls.TControl.Top">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBoundLabel.Layout">
-        <short>Layout - is text at top, bottom, left or right of allocated rectangle?</short>
+      <element name="TBoundLabel.Layout" link="#LCL.StdCtrls.TCustomLabel.Layout">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBoundLabel.WordWrap">
-        <short>WordWrap - do we wrap to the next line if text is too long to fit on one line?</short>
+      <element name="TBoundLabel.WordWrap" link="#LCL.StdCtrls.TCustomLabel.WordWrap">
         <descr/>
         <seealso/>
       </element>
@@ -4905,32 +4854,27 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBoundLabel.OnClick">
-        <short>Event Handler for mouse click</short>
+      <element name="TBoundLabel.OnClick" link="#LCL.Controls.TControl.OnClick">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBoundLabel.OnDblClick">
-        <short>Event handler for mouse double-click</short>
+      <element name="TBoundLabel.OnDblClick" link="#LCL.Controls.TControl.OnDblClick">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBoundLabel.OnMouseDown">
-        <short>Event handler for mouse button pressed over the label</short>
+      <element name="TBoundLabel.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBoundLabel.OnMouseMove">
-        <short>Event handler for mouse movement within label</short>
+      <element name="TBoundLabel.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBoundLabel.OnMouseUp">
-        <short>Event handler for mouse button being released ('up') within label</short>
+      <element name="TBoundLabel.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
         <descr/>
         <seealso/>
       </element>
@@ -5560,7 +5504,7 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomPanel.AdjustClientRect">
+      <element name="TCustomPanel.AdjustClientRect" link="#LCL.Controls.TWinControl.AdjustClientRect">
         <short/>
         <descr/>
         <errors/>
@@ -5630,7 +5574,7 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomPanel.CMParentColorChanged">
+      <element name="TCustomPanel.CMParentColorChanged" link="#LCL.Controls.TControl.CMParentColorChanged">
         <short/>
         <descr/>
         <errors/>
@@ -5949,15 +5893,9 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.OnEnter">
-        <short>
-          <var>OnEnter</var>  - event handler for mouse entering the control or the control getting focus</short>
-      </element>
+      <element name="TPanel.OnEnter" link="#LCL.Controls.TWinControl.OnEnter"/>
       <!-- property Visibility: published -->
-      <element name="TPanel.OnExit">
-        <short>
-          <var>OnExit </var>- event handler for mouse leaving the control or the control losing focus</short>
-      </element>
+      <element name="TPanel.OnExit" link="#LCL.Controls.TWinControl.OnExit"/>
       <!-- property Visibility: published -->
       <element name="TPanel.OnMouseDown" link="#lcl.Controls.TControl.OnMouseDown">
         <short/>
@@ -6031,16 +5969,12 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.OnGetSiteInfo">
-        <short>
-          <var>OnGetSiteInfo</var> - event handler for getting information about the site</short>
+      <element name="TPanel.OnGetSiteInfo" link="#LCL.Controls.TWinControl.OnGetSiteInfo">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.OnGetDockCaption">
-        <short>
-          <var>OnGetDockCaption</var> - event handler for getting a caption for the docking site</short>
+      <element name="TPanel.OnGetDockCaption" link="#LCL.Controls.TWinControl.OnGetDockCaption">
         <descr/>
         <seealso/>
       </element>
@@ -6091,8 +6025,7 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <short>
           <var>TTrayIcon</var> is a multiplatform System Tray component. It adds an icon to the tray and signifies an application that is inactive but ready to be activated. Under Windows the System tray is usually located on the bottom-right corner of the screen, but it may be elsewhere. On other operating systems this position varies.</short>
       </element>
-      <element name="TCustomTrayIcon.Create">
-        <short>Creates a new instance of the component.</short>
+      <element name="TCustomTrayIcon.Create" link="#rtl.Classes.TComponent.Create">
         <descr>
           <var>Create</var> creates a new instance of a 
           
@@ -6105,8 +6038,7 @@ If
 insert itself in the list of owned components of the owner.
 </descr>
       </element>
-      <element name="TCustomTrayIcon.Destroy">
-        <short>Destroys the instance of the component.</short>
+      <element name="TCustomTrayIcon.Destroy" link="#rtl.Classes.TComponent.Destroy">
         <descr>
           <var>Destroy</var> sends a 
           
@@ -6183,50 +6115,21 @@ After that, the parent's destroy method is called.
       <element name="TCustomTrayIcon.OnPaint">
         <short>Use this to implement custom drawing to the icon. Draw using the canvas property of the icon. Note: Does not work on win32. </short>
       </element>
-      <element name="TTrayIcon.BalloonFlags">
-        <short>The set of kinds of ballon flag that can be displayed (may be None, Info, Warning or Error)</short>
-      </element>
-      <element name="TTrayIcon.BalloonHint">
-        <short>The text to be shown in the hinting balloon</short>
-      </element>
-      <element name="TTrayIcon.BalloonTimeout">
-        <short>The period after which the hinting balloon disappears</short>
-      </element>
-      <element name="TTrayIcon.BalloonTitle">
-        <short>The title to be shown on the hinting balloon</short>
-      </element>
-      <element name="TTrayIcon.PopUpMenu">
-        <short>PopUpMenu - a small menu popup that is displayed when right mouse button is clicked over icon - separate from hint balloon</short>
-      </element>
-      <element name="TTrayIcon.Icon">
-        <short>The Icon or picture that is to be displayed</short>
-      </element>
-      <element name="TTrayIcon.Hint">
-        <short>A simple hint that is shown when the mouse hovers over the icon.</short>
-      </element>
-      <element name="TTrayIcon.Visible">
-        <short>It is set to true when the icon is shown and remains true until Hide is called. Setting <var>Visible</var> has the same effect as calling Hide or Show.</short>
-      </element>
-      <element name="TTrayIcon.OnClick">
-        <short>Event Handler for Mouse Click on Tray Icon</short>
-      </element>
-      <element name="TTrayIcon.OnDblClick">
-        <short>Event handler for mouse double-click</short>
-      </element>
-      <element name="TTrayIcon.OnMouseDown">
-        <short>Event handler if mouse button is pressed down</short>
-      </element>
-      <element name="TTrayIcon.OnMouseUp">
-        <short>Event handler if mouse button is up</short>
-      </element>
-      <element name="TTrayIcon.OnMouseMove">
-        <short>Event handler for mouse movement</short>
-      </element>
-      <element name="TTrayIcon.OnPaint">
-        <short>Use this to implement custom drawing to the icon. Draw using the canvas property of the icon. Note: Does not work on win32. </short>
-      </element>
-      <element name="TBevel.Assign">
-        <short>Assign the contents of one class to another.</short>
+      <element name="TTrayIcon.BalloonFlags" link="#LCL.ExtCtrls.TCustomTrayIcon.BalloonFlags"/>
+      <element name="TTrayIcon.BalloonHint" link="#LCL.ExtCtrls.TCustomTrayIcon.BalloonHint"/>
+      <element name="TTrayIcon.BalloonTimeout" link="#LCL.ExtCtrls.TCustomTrayIcon.BalloonTimeout"/>
+      <element name="TTrayIcon.BalloonTitle" link="#LCL.ExtCtrls.TCustomTrayIcon.BalloonTitle"/>
+      <element name="TTrayIcon.PopUpMenu" link="#LCL.ExtCtrls.TCustomTrayIcon.PopUpMenu"/>
+      <element name="TTrayIcon.Icon" link="#LCL.ExtCtrls.TCustomTrayIcon.Icon"/>
+      <element name="TTrayIcon.Hint" link="#LCL.ExtCtrls.TCustomTrayIcon.Hint"/>
+      <element name="TTrayIcon.Visible" link="#LCL.ExtCtrls.TCustomTrayIcon.Visible"/>
+      <element name="TTrayIcon.OnClick" link="#LCL.ExtCtrls.TCustomTrayIcon.OnClick"/>
+      <element name="TTrayIcon.OnDblClick" link="#LCL.ExtCtrls.TCustomTrayIcon.OnDblClick"/>
+      <element name="TTrayIcon.OnMouseDown" link="#LCL.ExtCtrls.TCustomTrayIcon.OnMouseDown"/>
+      <element name="TTrayIcon.OnMouseUp" link="#LCL.ExtCtrls.TCustomTrayIcon.OnMouseUp"/>
+      <element name="TTrayIcon.OnMouseMove" link="#LCL.ExtCtrls.TCustomTrayIcon.OnMouseMove"/>
+      <element name="TTrayIcon.OnPaint" link="#LCL.ExtCtrls.TCustomTrayIcon.OnPaint"/>
+      <element name="TBevel.Assign" link="#rtl.Classes.TPersistent.Assign">
         <descr>
           <p>
             <var>Assign</var> copies the contents of 
@@ -6263,24 +6166,12 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
           </remark>
         </descr>
       </element>
-      <element name="TBoundLabel.DragCursor">
-        <short>The type of cursor to be used if this control is being dragged</short>
-      </element>
-      <element name="TBoundLabel.DragMode">
-        <short>The mode of dragging to be used</short>
-      </element>
-      <element name="TBoundLabel.OnDragDrop">
-        <short>Event handler for Drag-drop process</short>
-      </element>
-      <element name="TBoundLabel.OnDragOver">
-        <short>Event handler if another control is dragged over current label</short>
-      </element>
-      <element name="TBoundLabel.OnEndDrag">
-        <short>event handler for end of drag manoeuvre</short>
-      </element>
-      <element name="TBoundLabel.OnStartDrag">
-        <short>Event handler for beginning of drag manoeuvre</short>
-      </element>
+      <element name="TBoundLabel.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
+      <element name="TBoundLabel.DragMode" link="#LCL.Controls.TControl.DragMode"/>
+      <element name="TBoundLabel.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop"/>
+      <element name="TBoundLabel.OnDragOver" link="#LCL.Controls.TControl.OnDragOver"/>
+      <element name="TBoundLabel.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag"/>
+      <element name="TBoundLabel.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
       <topic name="Multi-PageControls">
         <short>
           <var>Multi-PageControls</var> - controls that offer a selection of alternative pages for display</short>
@@ -6489,7 +6380,7 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomNotebook.DialogChar">
+      <element name="TCustomNotebook.DialogChar" link="#LCL.Controls.TControl.DialogChar">
         <short/>
         <descr/>
         <errors/>
@@ -6504,7 +6395,7 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomNotebook.GetControlClassDefaultSize">
+      <element name="TCustomNotebook.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize">
         <short/>
         <descr/>
         <errors/>
@@ -6726,7 +6617,7 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomImage.CalculatePreferredSize">
+      <element name="TCustomImage.CalculatePreferredSize" link="#LCL.Controls.TControl.CalculatePreferredSize">
         <short/>
         <descr/>
         <errors/>
@@ -6745,7 +6636,7 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomImage.GetControlClassDefaultSize">
+      <element name="TCustomImage.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize">
         <short/>
         <descr/>
         <errors/>
@@ -6958,7 +6849,7 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomRadioGroup.InitializeWnd">
+      <element name="TCustomRadioGroup.InitializeWnd" link="#LCL.Controls.TWinControl.InitializeWnd">
         <short/>
         <descr/>
         <errors/>
@@ -7313,6 +7204,7 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
       <element name="TCustomTrayIcon.GetPosition.Result">
         <short/>
       </element>
+      <element name="TCustomNotebook.GetCapabilities"/>
     </module>
     <!-- ExtCtrls -->
   </package>
