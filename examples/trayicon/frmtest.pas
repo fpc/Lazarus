@@ -37,7 +37,6 @@ type
   TfrmTrayTest = class(TForm)
     btnShow: TButton;
     btnHide: TButton;
-    btnPaintTest: TButton;
     btnDisplayMessage: TButton;
     chkOnPaintDrawing: TCheckBox;
     MenuItem1: TMenuItem;
@@ -47,17 +46,13 @@ type
     SystrayIcon: TTrayIcon;
     procedure btnShowClick(Sender: TObject);
     procedure btnHideClick(Sender: TObject);
-    procedure btnPaintTestClick(Sender: TObject);
     procedure chkOnPaintDrawingChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
     procedure FormPaint(Sender: TObject);
     procedure HandleClick(Sender: TObject);
   private
     { private declarations }
     pathMedia: string;
-    MyImage: TIcon;
-    procedure DoPaint(Sender: TObject);
   public
     { public declarations }
   end;
@@ -95,24 +90,6 @@ begin
   SystrayIcon.Visible := False;
 end;
 
-procedure TfrmTrayTest.btnPaintTestClick(Sender: TObject);
-var
-  SecondImage: TIcon;
-begin
-  SecondImage := TIcon.Create;
-
-  try
-    SecondImage.Height := 22;
-    SecondImage.Width := 22;
-    {$IFDEF FPC}
-    SecondImage.Canvas.Draw(0, 0, MyImage);
-    {$ENDIF}
-    Canvas.Draw(0, 0, SecondImage);
-  finally
-    SecondImage.Free;
-  end;
-end;
-
 procedure TfrmTrayTest.chkOnPaintDrawingChange(Sender: TObject);
 begin
   Invalidate;
@@ -139,55 +116,45 @@ begin
   CFStringGetPascalString(pathCFStr, @pathStr, 255, CFStringGetSystemEncoding());
   CFRelease(pathRef);
   CFRelease(pathCFStr);
-  
+
   pathMedia := pathStr + BundleResourceFolder;
 {$ENDIF}
-
-{$ifdef Windows}
-  SystrayIcon.Icon.Handle := LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));
-
-//  Loading from a file should also work
-//  SystrayIcon.Icon.LoadFromFile('icon.ico');
-{$else}
-  SystrayIcon.Icon.LoadFromFile(pathMedia + 'icon.ico');
-{$endif}
 
   SystrayIcon.Hint := 'my tool tip';
 
   SystrayIcon.OnClick := HandleClick;
-  
-//  SystrayIcon.OnPaint := DoPaint;
 
   SystrayIcon.PopUpMenu := PopupMenu;
-
-  // Loads the icon
-
-  MyImage := TIcon.Create;
-
-  MyImage.LoadFromFile(pathMedia + 'icon.ico');
-end;
-
-procedure TfrmTrayTest.FormDestroy(Sender: TObject);
-begin
-    MyImage.Free;
 end;
 
 procedure TfrmTrayTest.FormPaint(Sender: TObject);
+var
+  BaseImage, SecondImage: TIcon;
 begin
-  if chkOnPaintDrawing.Checked then btnPaintTestClick(Sender);
+  if chkOnPaintDrawing.Checked then
+  begin
+    BaseImage := TIcon.Create;
+    SecondImage := TIcon.Create;
+    try
+      // Loads the icon
+      BaseImage.LoadFromFile(pathMedia + 'icon.ico');
+
+      SecondImage.Height := 22;
+      SecondImage.Width := 22;
+      {$IFDEF FPC}
+      SecondImage.Canvas.Draw(0, 0, BaseImage);
+      {$ENDIF}
+      Canvas.Draw(0, 0, SecondImage);
+    finally
+      BaseImage.Free;
+      SecondImage.Free;
+    end;
+  end;
 end;
 
 procedure TfrmTrayTest.HandleClick(Sender: TObject);
 begin
   Application.MessageBox('Text', 'Caption', 0);
-end;
-
-procedure TfrmTrayTest.DoPaint(Sender: TObject);
-begin
-  {$IFDEF FPC}
-  SystrayIcon.Canvas.Draw(0, 0, MyImage);
-  {$ENDIF}
-  WriteLn('Paint');
 end;
 
 initialization
