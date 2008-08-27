@@ -109,8 +109,11 @@ end;
 {$ENDIF}
 
 function GetSystemEncoding: string;
-var Lang: string;
-    i: integer;
+{$IFNDEF Windows}
+var
+  Lang: string;
+  i: integer;
+{$ENDIF}
 begin
   if EncodingValid then begin
     Result:=SystemEncoding;
@@ -121,7 +124,6 @@ begin
   Result:=GetWindowsEncoding;
   {$ELSE}
   Result:=EncodingAnsi;
-  {$ENDIF}
 
   lang := GetEnv('LC_ALL');
   if Length(lang) = 0 then
@@ -135,6 +137,7 @@ begin
   i:=pos('.',Lang);
   if (i>0) and (i<=length(Lang)) then
     Result:=copy(Lang,i+1,length(Lang)-i);
+  {$ENDIF}
 
   Result:=NormalizeEncoding(Result);
 
