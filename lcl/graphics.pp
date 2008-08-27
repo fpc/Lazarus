@@ -1329,7 +1329,6 @@ type
   protected
     procedure InitializeReader(AImage: TLazIntfImage; AReader: TFPCustomImageReader); override;
     procedure InitializeWriter(AImage: TLazIntfImage; AWriter: TFPCustomImageWriter); override;
-    procedure FinalizeReader(AReader: TFPCustomImageReader); override;
     class function GetReaderClass: TFPCustomImageReaderClass; override;
     class function GetWriterClass: TFPCustomImageWriterClass; override;
     class function GetSharedImageClass: TSharedRasterImageClass; override;

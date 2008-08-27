@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  IntfGraphics, GraphType, FPImage, LCLType, ExtCtrls, ComCtrls;
+  IntfGraphics, GraphType, FPImage, LCLType, ExtCtrls, ComCtrls, FileUtil;
 
 type
   { TForm1 }

@@ -131,11 +131,12 @@ begin
       // move mask to image data, so we only have to create one handle
       // (and don't have to think about imahehandle format)
 
+      MaskImage.Init;
       MaskImage.Description := ImagePtr^.Description.GetDescriptionFromMask;
       MaskImage.DataSize := ImagePtr^.MaskSize;
       MaskImage.Data := ImagePtr^.Mask;
 
-      if RawImage_CreateBitmaps(MaskImage, msk, dummy, False)
+      if CreateCompatibleBitmaps(MaskImage, msk, dummy, True)
       then begin
         if BitmapHandleAllocated
         then UpdateHandles(BitmapHandle, msk)

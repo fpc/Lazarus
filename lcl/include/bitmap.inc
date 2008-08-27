@@ -34,14 +34,6 @@ end;
 
 { TBitmap }
 
-procedure TBitmap.FinalizeReader(AReader: TFPCustomImageReader);
-begin
-  if TLazReaderBMP(AReader).MaskMode = lrmmAuto
-  then FTransparentColor := FPColorToTColor(TLazReaderBMP(AReader).MaskColor);
-  
-  inherited FinalizeReader(AReader);
-end;
-
 class function TBitmap.GetFileExtensions: string;
 begin
   Result:='bmp';
