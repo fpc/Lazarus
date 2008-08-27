@@ -537,9 +537,6 @@ procedure TCustomIcon.MaskHandleNeeded;
 var
   ImgHandle, dummy: HBITMAP;
 begin
-  // Created by bitmaphandle
-//!!!  BitmapHandleNeeded;
-
   if FCurrent = -1 then Exit;
   if MaskHandleAllocated then exit;
 
@@ -548,6 +545,9 @@ begin
     DebugLn('TCustomIcon.MaskHandleNeeded: Unable to create makshandle');
     Exit;
   end;
+
+  if Dummy <> 0
+  then DeleteObject(Dummy);
 
   if BitmapHandleAllocated
   then UpdateHandles(BitmapHandle, ImgHandle)
