@@ -535,23 +535,28 @@ end;
 
 procedure TCustomIcon.MaskHandleNeeded;
 var
+  ImagePtr: PRawImage;
   ImgHandle, dummy: HBITMAP;
+  MaskImage: TRawImage;
 begin
   if FCurrent = -1 then Exit;
   if MaskHandleAllocated then exit;
 
-  if not CreateCompatibleBitmaps(GetRawImagePtr^, Dummy, ImgHandle)
+  ImagePtr := GetRawImagePtr;
+  if (ImagePtr = nil) or (ImagePtr^.Description.Format = ricfNone) then Exit;
+
+  MaskImage.Init;
+  MaskImage.Description := ImagePtr^.Description.GetDescriptionFromMask;
+  MaskImage.DataSize := ImagePtr^.MaskSize;
+  MaskImage.Data := ImagePtr^.Mask;
+
+  if CreateCompatibleBitmaps(MaskImage, ImgHandle, Dummy, True)
   then begin
-    DebugLn('TCustomIcon.MaskHandleNeeded: Unable to create makshandle');
-    Exit;
-  end;
-
-  if Dummy <> 0
-  then DeleteObject(Dummy);
-
-  if BitmapHandleAllocated
-  then UpdateHandles(BitmapHandle, ImgHandle)
-  else UpdateHandles(0, ImgHandle);
+    if BitmapHandleAllocated
+    then UpdateHandles(BitmapHandle, ImgHandle)
+    else UpdateHandles(0, ImgHandle);
+  end
+  else DebugLn('TCustomIcon.MaskHandleNeeded: Unable to create makshandle');
 end;
 
 function TCustomIcon.PaletteAllocated: boolean;
