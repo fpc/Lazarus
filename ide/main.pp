@@ -7018,7 +7018,7 @@ begin
         LFMCode:=CodeToolBoss.CreateFile(LFMFilename);
         LFMCode.Source:=LFMSourceText;
         //debugln('TMainIDE.DoNewEditorFile A ',LFMFilename);
-        //Result:=DoLoadLFM(NewUnitInfo,LFMCode,[],[]);
+        Result:=DoLoadLFM(NewUnitInfo,LFMCode,[],[]);
         //DebugLn(['TMainIDE.DoNewFile ',dbgsName(NewUnitInfo.Component),' ',dbgsName(NewUnitInfo.Component.ClassParent)]);
       end else begin
         // create a designer form for a form/datamodule/frame
@@ -7067,7 +7067,7 @@ begin
   end;
 
   Result:=mrOk;
-  DebugLn('TMainIDE.DoNewEditorFile end ',NewUnitInfo.Filename);
+  DebugLn('TMainIDE.DoNewEditorFile END ',NewUnitInfo.Filename);
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoNewUnit end');{$ENDIF}
 end;
 

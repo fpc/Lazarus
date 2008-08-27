@@ -234,6 +234,7 @@ begin
         // Set the resource class of the file descriptor
         InhCompItem.ResourceClass := TPersistentClass(AncestorComponent.ClassType);
         InhCompItem.InheritedUnit := AnUnitInfo;
+        //DebugLn(['TNewOtherDialog.OkButtonClick ',InhCompItem.InheritedUnit.Filename,' ',dbgsname(InhCompItem.ResourceClass)]);
       end
       else
       begin
