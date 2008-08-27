@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-08-17 17:38+0100\n"
+"PO-Revision-Date: 2008-08-27 22:35+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -14,11 +14,11 @@ msgstr ""
 
 #: codetoolsstrconsts.ctsaddsdirtoincludepath
 msgid "adds %s to IncPath"
-msgstr "fügt %s zum IncPfad"
+msgstr "fügt dem Include-Pfad %s  hinzu"
 
 #: codetoolsstrconsts.ctsaddsdirtosourcepath
 msgid "adds %s to SrcPath"
-msgstr "fügt %s dem Quellpfad hinzu"
+msgstr "fügt dem Quellpfad %s hinzu"
 
 #: codetoolsstrconsts.ctsancestorisnotproperty
 msgid "ancestor of untyped property is not a property"
@@ -662,7 +662,7 @@ msgstr "Quelltext nicht gefunden: Unit %s"
 
 #: codetoolsstrconsts.ctssourceofunitnotfound
 msgid "source of unit not found: %s"
-msgstr ""
+msgstr "Quelle der Unit nicht gefunden: %s"
 
 #: codetoolsstrconsts.ctssrcpathforcompiledunits
 msgid "src path for compiled units"
@@ -714,7 +714,7 @@ msgstr "kann Eigenschaft nicht ergänzen"
 
 #: codetoolsstrconsts.ctsundefine
 msgid "Undefine "
-msgstr ""
+msgstr "Nicht definiert"
 
 #: codetoolsstrconsts.ctsunexpectedendofsource
 msgid "unexpected end of source"
