@@ -973,7 +973,7 @@ end;
 function TFileDescPascalUnitWithResource.GetInterfaceUsesSection: string;
 begin
   Result:=inherited GetInterfaceUsesSection;
-  Result:=Result+', LResources';
+  Result:=Result+', FileUtil, LResources';
 end;
 
 function TFileDescPascalUnitWithResource.GetInterfaceSource(const Filename,

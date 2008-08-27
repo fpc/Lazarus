@@ -398,7 +398,7 @@ end;
 
 function TFileDescPascalUnitWithForm.GetInterfaceUsesSection: string;
 begin
-  Result:='Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs';
+  Result:='Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs';
 end;
 
 function TFileDescPascalUnitWithForm.GetLocalizedName: string;
@@ -423,7 +423,7 @@ end;
 
 function TFileDescPascalUnitWithDataModule.GetInterfaceUsesSection: string;
 begin
-  Result:='Classes, SysUtils, LResources, Forms, Controls, Dialogs';
+  Result:='Classes, SysUtils, FileUtil, LResources, Forms, Controls, Dialogs';
 end;
 
 function TFileDescPascalUnitWithDataModule.GetLocalizedName: string;
@@ -506,7 +506,7 @@ end;
 
 function TFileDescPascalUnitWithFrame.GetInterfaceUsesSection: string;
 begin
-  Result:='Classes, SysUtils, LResources, Forms';
+  Result:='Classes, SysUtils, FileUtil, LResources, Forms';
 end;
 
 function TFileDescPascalUnitWithFrame.GetLocalizedName: string;
