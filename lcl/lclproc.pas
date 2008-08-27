@@ -1291,7 +1291,7 @@ var
       Result := GetEnvironmentVariableUTF8(EnvVarName);
     end;
     if (length(result)>0) then
-      Result := ExpandFileName(Result);
+      Result := ExpandFileNameUTF8(Result);
   end;
 
 begin

@@ -37,8 +37,8 @@ unit PublishProjectDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, LResources, Buttons, StdCtrls,
-  Dialogs,
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, LResources, Buttons,
+  StdCtrls, Dialogs,
   IDEWindowIntf,
   ProjectDefs, PackageDefs, PublishModule, IDEOptionDefs, InputHistory,
   LazarusIDEStrConsts, ExtCtrls;
@@ -137,7 +137,7 @@ begin
   InputHistories.ApplyFileDialogSettings(SelectDirDialog);
   SelectDirDialog.Title:=lisChooseDirectory;
   if SelectDirDialog.Execute then begin
-    NewDir:=ExpandFilename(SelectDirDialog.Filename);
+    NewDir:=ExpandFileNameUTF8(SelectDirDialog.Filename);
     SeTComboBox(DestDirComboBox,NewDir,20);
   end;
   SelectDirDialog.Free;

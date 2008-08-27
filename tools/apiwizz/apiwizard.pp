@@ -31,8 +31,8 @@ unit APIWizard;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, ExtCtrls;
+  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  StdCtrls, Buttons, ExtCtrls;
 
 type
   TApiWizForm = class(TForm)

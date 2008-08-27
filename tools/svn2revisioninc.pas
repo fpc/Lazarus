@@ -271,7 +271,7 @@ begin
   Verbose := False;
   ConstName := 'RevisionStr';
   SourceDirectory:=ChompPathDelim(ExtractFilePath(ParamStrUTF8(0)));
-  RevisionIncFileName := ExpandFileName('revision.inc');
+  RevisionIncFileName := ExpandFileNameUTF8('revision.inc');
 
   //find switchless parameters
   index := 1;
@@ -281,7 +281,7 @@ begin
     begin
       case index of
         1: SourceDirectory:=ChompPathDelim(ParamStrUTF8(i));
-        2: RevisionIncFileName := ExpandFileName(ParamStrUTF8(i));
+        2: RevisionIncFileName := ExpandFileNameUTF8(ParamStrUTF8(i));
       end;
       Inc(index);
     end;
@@ -316,7 +316,7 @@ begin
     exit;
   end;
   
-  RevisionIncDirName:=ExtractFilePath(ExpandFileName(RevisionIncFileName));
+  RevisionIncDirName:=ExtractFilePath(ExpandFileNameUTF8(RevisionIncFileName));
   if (not UseStdOut) and (not DirectoryExistsUTF8(RevisionIncDirName)) then begin
     writeln('Error: Target Directory "', RevisionIncDirName, '" doesn''t exist.');
     exit;

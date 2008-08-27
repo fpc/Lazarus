@@ -140,7 +140,7 @@ begin
   // if no lazarus executable exists in that directory, try the same directory
   // as the startlazarus executable
   if not FileExistsUTF8(Result) then
-    Result := AppendPathDelim(ExtractFilePath(ExpandFileName(ParamStrUTF8(0)))) +
+    Result := AppendPathDelim(ExtractFilePath(ExpandFileNameUTF8(ParamStrUTF8(0)))) +
       FileName + GetExeExt;
 end;
 
@@ -244,7 +244,7 @@ var
 begin
   WaitForLazarus;
   try
-    DefaultDir:=ExtractFilePath(ExpandFileName(ParamStrUTF8(0)));
+    DefaultDir:=ExtractFilePath(ExpandFileNameUTF8(ParamStrUTF8(0)));
     if DirectoryExistsUTF8(DefaultDir) then
       DefaultDir:=ReadAllLinks(DefaultDir,true);
   except

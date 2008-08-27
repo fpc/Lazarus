@@ -91,7 +91,7 @@ begin
     else
       begin
         // Do not add file to the parameter list
-        if not (Copy(Param,1,1) = '-') and (FileExistsUTF8(ExpandFileName(Param))) then
+        if not (Copy(Param,1,1) = '-') and (FileExistsUTF8(ExpandFileNameUTF8(Param))) then
           begin
             DebugLn('%s is a file', [Param]);
             continue;

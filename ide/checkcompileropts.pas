@@ -520,7 +520,7 @@ var
         if NewPath<>'' then begin
           if not FilenameIsAbsolute(NewPath) then begin
             AddWarning(Format(lisCCORelUnitPathFoundInCfg,[NewPath]));
-            NewPath:=ExpandFileName(NewPath);
+            NewPath:=ExpandFileNameUTF8(NewPath);
           end;
           NewPath:=AppendPathDelim(TrimFilename(NewPath));
           if (CompareFilenames(NewPath,Options.BaseDirectory)<>0)

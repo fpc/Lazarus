@@ -3776,6 +3776,7 @@ tools/apiwizz/apiwizard.pp svneol=native#text/pascal
 tools/apiwizz/apiwizz.lpi svneol=native#text/plain
 tools/apiwizz/apiwizz.pp svneol=native#text/pascal
 tools/check_ide_libs.sh -text svneol=native#application/x-sh
+tools/compile_all.sh svneol=native#text/plain
 tools/convert_po_file_to_utf-8.sh svneol=native#text/plain
 tools/copy_po_files_to_lazarus_sources.sh -text svneol=native#application/x-sh
 tools/delete_non_svn_files.pl svneol=native#text/plain

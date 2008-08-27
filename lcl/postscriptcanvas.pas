@@ -908,7 +908,7 @@ begin
      Lst.AddStrings(fHeader);
      Lst.AddStrings(fDocument);
      
-     Lst.SaveTofile(UTF8ToSys(ExpandFileName(aFileName)));
+     Lst.SaveTofile(UTF8ToSys(ExpandFileNameUTF8(aFileName)));
   finally
     Lst.Free;
   end;
@@ -1304,7 +1304,7 @@ begin
     FHeader[I] := '%%' + Format('Pages: %d', [PageNumber]);
   
   if Trim(fFileName)<>'' then
-    SaveToFile(ExpandFileName(fFileName));
+    SaveToFile(ExpandFileNameUTF8(fFileName));
 end;
 
 procedure TPostScriptPrinterCanvas.NewPage;

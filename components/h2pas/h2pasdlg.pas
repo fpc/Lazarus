@@ -1268,7 +1268,7 @@ var
   NewFilename: String;
 begin
   Result:=mrCancel;
-  NewFilename:=ExpandFileName(TrimFilename(Filename));
+  NewFilename:=ExpandFileNameUTF8(TrimFilename(Filename));
   if not FileExistsUTF8(NewFilename) then begin
     if ofOnlyIfExists in Flags then begin
       MessageDlg('File not found',

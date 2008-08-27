@@ -66,7 +66,7 @@ var
   
 procedure InitDirectories;
 begin
-  LazarusDir := ExpandFileName(ExtractFilePath(ParamStrUTF8(0)) + '../');
+  LazarusDir := ExpandFileNameUTF8(ExtractFilePath(ParamStrUTF8(0)) + '../');
   ComponentsDir := SetDirSeparators(LazarusDir + 'components/');
   ExamplesDir := LazarusDir + 'examples' + PathDelim;
   CTExamplesDir := SetDirSeparators(ComponentsDir + 'codetools/examples/');

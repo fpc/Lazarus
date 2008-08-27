@@ -221,7 +221,7 @@ var PrinterName : string;
 begin
   Result:=-1;
   if not CUPSLibInstalled then Exit;
-  aFileName:=ExpandFileName(aFileName);
+  aFileName:=ExpandFileNameUTF8(aFileName);
 
   if (Printers.Count>0) then
   begin

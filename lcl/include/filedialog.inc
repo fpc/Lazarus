@@ -140,11 +140,11 @@ procedure TOpenDialog.DereferenceLinks;
 var i: integer;
 begin
   if Filename<>'' then
-    Filename:=ExpandFilename(Filename);
+    Filename:=ExpandFileNameUTF8(Filename);
   if Files<>nil then begin
     for i:=0 to Files.Count-1 do begin
       if Files[i]<>'' then
-        Files[i]:=ExpandFilename(Files[i]);
+        Files[i]:=ExpandFileNameUTF8(Files[i]);
     end;
   end;
 end;

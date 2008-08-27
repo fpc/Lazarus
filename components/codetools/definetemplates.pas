@@ -2935,7 +2935,7 @@ var
           Inc(CurPos, 17);
           NewPath:=copy(Line,CurPos,len);
           if not FilenameIsAbsolute(NewPath) then
-            NewPath:=ExpandFileName(NewPath);
+            NewPath:=ExpandFileNameUTF8(NewPath);
           {$IFDEF VerboseFPCSrcScan}
           DebugLn('Using unit path: "',NewPath,'"');
           {$ENDIF}

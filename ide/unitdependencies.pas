@@ -244,7 +244,7 @@ begin
     OpenDialog.Title:=lisOpenFile;
     OpenDialog.Options:=OpenDialog.Options+[ofFileMustExist];
     if OpenDialog.Execute then begin
-      RootFilename:=ExpandFilename(OpenDialog.Filename);
+      RootFilename:=ExpandFileNameUTF8(OpenDialog.Filename);
     end;
     InputHistories.StoreFileDialogSettings(OpenDialog);
   finally
@@ -403,7 +403,7 @@ begin
   end;
   FCommitUnitHistoryListSelectionNeeded:=false;
   if UnitHistoryList.Items.IndexOf(UnitHistoryList.Text)<0 then exit;
-  RootFilename:=ExpandFilename(UnitHistoryList.Text);
+  RootFilename:=ExpandFileNameUTF8(UnitHistoryList.Text);
 end;
 
 procedure TUnitDependenciesView.KeyUp(var Key: Word; Shift: TShiftState);

@@ -133,7 +133,7 @@ begin
 
     Bmp:=TBitMap.Create;
     try
-      Bmp.LoadFromFile(ExpandFileName('../../images/LazarusForm.bmp'));
+      Bmp.LoadFromFile(ExpandFileNameUTF8('../../images/LazarusForm.bmp'));
       DRaw(10,450,BMP);
     finally
       Bmp.Free;
@@ -141,7 +141,7 @@ begin
 
     xpm:=TPixMap.Create;
     try
-      xpm.LoadFromFile(ExpandFileName('../../images/lazarus.xpm'));
+      xpm.LoadFromFile(ExpandFileNameUTF8('../../images/lazarus.xpm'));
       StretchDraw(Rect(10,500,110,600),xpm);
     finally
       xpm.Free;
@@ -187,14 +187,14 @@ var
   FName: string;
 begin
   if Sender=nil then ;
-  if FileExistsUTF8(ExpandFileName('./test1.ps')) then
+  if FileExistsUTF8(ExpandFileNameUTF8('./test1.ps')) then
   begin
     {$IFDEF MSWINDOWS}
-      FName := '"C:\Program Files\Ghostgum\gsview\gsview32" '  + ExpandFileName('./test1.ps');
+      FName := '"C:\Program Files\Ghostgum\gsview\gsview32" '  + ExpandFileNameUTF8('./test1.ps');
       ShellExecute(Handle, 'open', PChar(FName), nil, nil, SW_SHOWNORMAL)
     {$ENDIF}
     {$IFDEF UNIX}
-      Shell(format('kghostview %s',[ExpandFileName('./test1.ps')]));
+      Shell(format('kghostview %s',[ExpandFileNameUTF8('./test1.ps')]));
     {$ENDIF}
   end;
 end;

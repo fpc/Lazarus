@@ -423,9 +423,9 @@ begin
       begin
       S:=ParamStrUTF8(I);
       If DirectoryExistsUTF8(S) then
-        AddDir(ExpandFileName(S),FRecursive)
+        AddDir(ExpandFileNameUTF8(S),FRecursive)
       else if FileExistsUTF8(S) then
-        AddFile(ExpandFileName(S),LBFiles.Items.Count=0);
+        AddFile(ExpandFileNameUTF8(S),LBFiles.Items.Count=0);
       end;
     end;
 end;

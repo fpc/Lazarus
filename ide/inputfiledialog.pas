@@ -276,7 +276,7 @@ begin
   and (Filename<>'') then begin
     if FTransferMacros<>nil then
       Macros.SubstituteStr(Filename);
-    Filename:=ExpandFileName(Filename);
+    Filename:=ExpandFileNameUTF8(Filename);
     if (not (iftDirectory in CurFileFlags)) and DirPathExistsCached(Filename)
     then
       exit;

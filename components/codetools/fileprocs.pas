@@ -314,6 +314,7 @@ function SysToUTF8(const s: string): string;// as AnsiToUTF8 but more independen
 function FileExistsUTF8(const Filename: string): boolean;
 function FileAgeUTF8(const FileName: string): Longint;
 function DirectoryExistsUTF8(const Directory: string): Boolean;
+function ExpandFileNameUTF8(const FileName: string): string;
 function FindFirstUTF8(const Path: string; Attr: Longint; out Rslt: TSearchRec): Longint;
 function FindNextUTF8(var Rslt: TSearchRec): Longint;
 procedure FindCloseUTF8(var F: TSearchrec);
@@ -398,9 +399,17 @@ begin
   FNeedRTLAnsiValid:=true;
 end;
 
+function IsASCII(const s: string): boolean; inline;
+var
+  i: Integer;
+begin
+  for i:=1 to length(s) do if ord(s[i])>127 then exit(false);
+  Result:=true;
+end;
+
 function UTF8ToSys(const s: string): string;
 begin
-  if NeedRTLAnsi then
+  if NeedRTLAnsi and (not IsASCII(s)) then
     Result:=UTF8ToAnsi(s)
   else
     Result:=s;
@@ -408,7 +417,7 @@ end;
 
 function SysToUTF8(const s: string): string;
 begin
-  if NeedRTLAnsi then
+  if NeedRTLAnsi and (not IsASCII(s)) then
     Result:=AnsiToUTF8(s)
   else
     Result:=s;
@@ -427,6 +436,11 @@ end;
 function DirectoryExistsUTF8(const Directory: string): Boolean;
 begin
   Result:=SysUtils.DirectoryExists(UTF8ToSys(Directory));
+end;
+
+function ExpandFileNameUTF8(const FileName: string): string;
+begin
+  Result:=SysToUTF8(SysUtils.ExpandFileName(UTF8ToSys(Filename)));
 end;
 
 function FindFirstUTF8(const Path: string; Attr: Longint; out Rslt: TSearchRec
@@ -573,7 +587,7 @@ var
   CurPath: String;
   CurName: String;
 begin
-  Result:=ExpandFilename(Path);
+  Result:=ExpandFileNameUTF8(Path);
   CurPath:=AppendPathDelim(ExtractFilePath(Result));
   CurName:=Prefix+ExtractFileNameOnly(Result);
   i:=1;
@@ -1086,7 +1100,7 @@ end;
  ------------------------------------------------------------------------------}
 function CleanAndExpandFilename(const Filename: string): string;
 begin
-  Result:=ExpandFilename(TrimFileName(Filename));
+  Result:=ExpandFileNameUTF8(TrimFileName(Filename));
 end;
 
 {------------------------------------------------------------------------------
@@ -1365,7 +1379,7 @@ var
   p, StartPos, l: integer;
   CurPath, Base: string;
 begin
-  Base:=ExpandFilename(AppendPathDelim(BasePath));
+  Base:=ExpandFileNameUTF8(AppendPathDelim(BasePath));
   // search in current directory
   Result:=SearchPascalUnitInDir(AnUnitName,Base,SearchCase);
   if Result<>'' then exit;
@@ -1379,7 +1393,7 @@ begin
     if CurPath<>'' then begin
       if not FilenameIsAbsolute(CurPath) then
         CurPath:=Base+CurPath;
-      CurPath:=ExpandFilename(AppendPathDelim(CurPath));
+      CurPath:=ExpandFileNameUTF8(AppendPathDelim(CurPath));
       Result:=SearchPascalUnitInDir(AnUnitName,CurPath,SearchCase);
       if Result<>'' then exit;
     end;
@@ -1455,7 +1469,7 @@ var
   p, StartPos, l: integer;
   CurPath, Base: string;
 begin
-  Base:=ExpandFilename(AppendPathDelim(BasePath));
+  Base:=ExpandFileNameUTF8(AppendPathDelim(BasePath));
   // search in current directory
   if not FilenameIsAbsolute(Base) then
     Base:='';
@@ -1473,7 +1487,7 @@ begin
     if CurPath<>'' then begin
       if not FilenameIsAbsolute(CurPath) then
         CurPath:=Base+CurPath;
-      CurPath:=ExpandFilename(AppendPathDelim(CurPath));
+      CurPath:=ExpandFileNameUTF8(AppendPathDelim(CurPath));
       if FilenameIsAbsolute(CurPath) then begin
         Result:=SearchPascalFileInDir(ShortFilename,CurPath,SearchCase);
         if Result<>'' then exit;
@@ -1751,7 +1765,7 @@ begin
   if FilenameIsAbsolute(Filename) then begin
     if SearchCase=ctsfcDefault then begin
       if FileExistsCached(Filename) then begin
-        Result:=ExpandFilename(Filename);
+        Result:=ExpandFileNameUTF8(Filename);
       end else begin
         Result:='';
       end;
@@ -1760,7 +1774,7 @@ begin
         ExtractFilePath(BasePath),'',';',SearchCase);
     exit;
   end;
-  Base:=ExpandFilename(AppendPathDelim(BasePath));
+  Base:=ExpandFileNameUTF8(AppendPathDelim(BasePath));
   // search in current directory
   Result:=SearchFileInDir(Filename,Base,SearchCase);
   if Result<>'' then exit;
@@ -1774,7 +1788,7 @@ begin
     if CurPath<>'' then begin
       if not FilenameIsAbsolute(CurPath) then
         CurPath:=Base+CurPath;
-      CurPath:=ExpandFilename(AppendPathDelim(CurPath));
+      CurPath:=ExpandFileNameUTF8(AppendPathDelim(CurPath));
       Result:=SearchFileInDir(Filename,CurPath,SearchCase);
       if Result<>'' then exit;
     end;

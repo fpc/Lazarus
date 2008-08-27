@@ -480,7 +480,7 @@ Var
   Index : Integer;
 
 begin
-  FN:=ExpandFileName(FN);
+  FN:=ExpandFileNameUTF8(FN);
   With FRecent do
     begin
     Index:=IndexOf(FN);

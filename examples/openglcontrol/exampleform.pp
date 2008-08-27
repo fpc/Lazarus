@@ -574,9 +574,9 @@ procedure InitGL;
   begin
     if not LoadglTexImage2DFromBitmapFile(Filename,Image) then begin
       MessageDlg('File not found',
-        'Image file not found: '+ExpandFilename(Filename),
+        'Image file not found: '+ExpandFileNameUTF8(Filename),
         mtError,[mbOk],0);
-      raise Exception.Create('Image file not found: '+ExpandFilename(Filename));
+      raise Exception.Create('Image file not found: '+ExpandFileNameUTF8(Filename));
     end;
   end;
 

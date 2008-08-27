@@ -138,7 +138,7 @@ procedure TCodeToolsOptions.SetFPCPath(const AValue: string);
 var
   NewValue: String;
 begin
-  NewValue:=ExpandFileName(AValue);
+  NewValue:=ExpandFileNameUTF8(AValue);
   if FFPCPath=NewValue then exit;
   FFPCPath:=NewValue;
   FUnitLinkListValid:=false;
@@ -149,7 +149,7 @@ procedure TCodeToolsOptions.SetFPCSrcDir(const AValue: string);
 var
   NewValue: String;
 begin
-  NewValue:=ExpandFileName(AValue);
+  NewValue:=ExpandFileNameUTF8(AValue);
   if FFPCSrcDir=NewValue then exit;
   FFPCSrcDir:=NewValue;
   FUnitLinkListValid:=false;
@@ -168,7 +168,7 @@ procedure TCodeToolsOptions.SetLazarusSrcDir(const AValue: string);
 var
   NewValue: String;
 begin
-  NewValue:=ExpandFileName(AValue);
+  NewValue:=ExpandFileNameUTF8(AValue);
   if FLazarusSrcDir=NewValue then exit;
   FLazarusSrcDir:=NewValue;
   Modified:=true;

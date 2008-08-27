@@ -1374,7 +1374,7 @@ begin
   if fSource<>nil then
     Result:=fSource.IsVirtual
   else
-    Result:=(fFileName<>ExpandFileName(fFileName));
+    Result:=(fFileName<>ExpandFileNameUTF8(fFileName));
 end;
 
 function TUnitInfo.GetDirectory: string;

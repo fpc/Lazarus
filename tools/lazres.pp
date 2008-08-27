@@ -35,7 +35,7 @@ program LazRes;
 
 {$mode objfpc}{$H+}
 
-uses Classes, SysUtils, LResources;
+uses Classes, SysUtils, FileUtil, LResources;
 
 function StreamIsFormInTextFormat(Stream: TMemoryStream): boolean;
 const
@@ -101,7 +101,7 @@ begin
     begin
       S := ParamStrUTF8(2);
       Delete(S, 1, 1);
-      S := ExpandFileName(S);
+      S := ExpandFileNameUTF8(S);
       if not FileExistsUTF8(S) then 
       begin
         writeln('ERROR: file list not found: ', S);
@@ -112,7 +112,7 @@ begin
     else for a:=2 to ParamCount do FileList.Add(ParamStrUTF8(a));
     
     ResourceFilename := ParamStrUTF8(1);
-    FullResourceFilename := ExpandFileName(ResourceFilename);
+    FullResourceFilename := ExpandFileNameUTF8(ResourceFilename);
     // check that all resources exists and are not the destination file
     for a:=0 to FileList.Count-1 do begin
       S := FileList[a]; 
@@ -121,7 +121,7 @@ begin
         writeln('ERROR: file not found: ', S);
         exit;
       end;
-      if ExpandFileName(S) = FullResourceFilename
+      if ExpandFileNameUTF8(S) = FullResourceFilename
       then begin
         writeln('ERROR: resourcefilename = file', a);
         exit;

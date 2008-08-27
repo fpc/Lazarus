@@ -1000,7 +1000,7 @@ procedure TPkgManager.MainIDEitmOpenRecentPackageClicked(Sender: TObject);
 var
   AFilename: string;
 begin
-  AFileName:=ExpandFilename((Sender as TIDEMenuItem).Caption);
+  AFileName:=ExpandFileNameUTF8((Sender as TIDEMenuItem).Caption);
   if DoOpenPackageFile(AFilename,[pofAddToRecent])=mrOk then begin
     UpdateEnvironment;
   end else begin

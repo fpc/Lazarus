@@ -600,7 +600,7 @@ var
       I:=Length(pName);
       while I > 0 do
       begin
-        AFiles.Add(ExpandFileName(StrPas(pName)));
+        AFiles.Add(ExpandFileNameUTF8(StrPas(pName)));
         Inc(pName,Succ(I));
         I:=Length(pName);
       end;
@@ -669,7 +669,7 @@ var
       for I:= Start to Length(SelectedStr) do
         if SelectedStr[I] =  ' ' then
         begin
-          AFiles.Add(ExpandFileName(FolderName+Copy(SelectedStr,Start,I - Start)));
+          AFiles.Add(ExpandFileNameUTF8(FolderName+Copy(SelectedStr,Start,I - Start)));
           Start:=Succ(I);
         end;
     end;

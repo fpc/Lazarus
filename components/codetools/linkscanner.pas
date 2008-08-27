@@ -2516,7 +2516,7 @@ var
 begin
   Path:=ExtractFilePath(AFilename);
   if (Path<>'') and (not FilenameIsAbsolute(Path)) then
-    Path:=ExpandFilename(Path);
+    Path:=ExpandFileNameUTF8(Path);
   FileNameOnly:=ExtractFilename(AFilename);
   Result:=nil;
   Result:=FOnLoadSource(Self,TrimFilename(Path+FileNameOnly),true);

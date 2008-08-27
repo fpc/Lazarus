@@ -143,7 +143,7 @@ implementation
 function expandLocalHtmlFileName (URL : string) : string;
 begin
   if pos ('FILE://', ansiuppercase(URL)) = 0 then
-    result := 'file://'+DOSToNetPath(ExpandFileName(URL))
+    result := 'file://'+DOSToNetPath(ExpandFileNameUTF8(URL))
   else
     result := URL;
 end;

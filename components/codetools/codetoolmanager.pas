@@ -910,9 +910,9 @@ begin
     Options.InitWithEnvironmentVariables;
     // apply defaults
     if Options.FPCSrcDir='' then
-      Options.FPCSrcDir:=ExpandFileName('~/freepascal/fpc');
+      Options.FPCSrcDir:=ExpandFileNameUTF8('~/freepascal/fpc');
     if Options.LazarusSrcDir='' then
-      Options.LazarusSrcDir:=ExpandFileName('~/pascal/lazarus');
+      Options.LazarusSrcDir:=ExpandFileNameUTF8('~/pascal/lazarus');
     DebugLn(['TCodeToolManager.SimpleInit PP=',Options.FPCPath,' FPCDIR=',Options.FPCSrcDir,' LAZARUSDIR=',Options.LazarusSrcDir]);
     // init the codetools
     if not Options.UnitLinkListValid then

@@ -37,7 +37,7 @@ var
   CurClassName: String;
   Node: TCodeTreeNode;
 begin
-  ExpandedFilename:=ExpandFileName('scanexamples/simpleunit1.pas');
+  ExpandedFilename:=ExpandFileNameUTF8('scanexamples/simpleunit1.pas');
   CodeBuf:=CodeToolBoss.LoadFile(ExpandedFilename,true,false);
   if CodeBuf=nil then
     raise Exception.Create('failed loading '+ExpandedFilename);

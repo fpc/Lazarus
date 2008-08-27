@@ -313,7 +313,7 @@ begin
   Name:=ExtractFilename(Filename);
   Ext:=ExtractFileExt(Filename);
   NameOnly:=LeftStr(Name,length(Name)-length(Ext));
-  if SysUtils.FindFirstUTF8(Path+GetAllFilesMask,faAnyFile,FileInfo)=0 then begin
+  if FindFirstUTF8(Path+GetAllFilesMask,faAnyFile,FileInfo)=0 then begin
     repeat
       if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
       or (CompareFilenames(FileInfo.Name,Name)=0) then continue;
@@ -323,9 +323,9 @@ begin
       then
         continue;
       Result.Add(Path+FileInfo.Name);
-    until SysUtils.FindNextUTF8(FileInfo)<>0;
+    until FindNextUTF8(FileInfo)<>0;
   end;
-  SysUtils.FindCloseUTF8(FileInfo);
+  FindCloseUTF8(FileInfo);
 end;
 
 procedure MergePoTrees(SrcTree, DestTree: TAVLTree);

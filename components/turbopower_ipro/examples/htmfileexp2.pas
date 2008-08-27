@@ -266,7 +266,7 @@ begin
     end;
   end
   else begin
-    FN := ExpandFileName(FN);
+    FN := ExpandFileNameUTF8(FN);
     CurrFile := ExtractFileName (FN);
     Path := ExtractFilePath (FN);
     PathChanged := True;

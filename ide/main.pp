@@ -2381,7 +2381,7 @@ procedure TMainIDE.mnuOpenRecentClicked(Sender: TObject);
 var
   AFilename: string;
 begin
-  AFileName:=ExpandFilename((Sender as TIDEMenuItem).Caption);
+  AFileName:=ExpandFileNameUTF8((Sender as TIDEMenuItem).Caption);
   if DoOpenEditorFile(AFilename,-1,[ofAddToRecent])=mrOk then begin
     UpdateEnvironment;
   end else begin
@@ -3245,7 +3245,7 @@ Begin
     OpenDialog.Title:=lisChooseProgramSourcePpPasLpr;
     OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist,ofFileMustExist];
     if OpenDialog.Execute then begin
-      AFilename:=ExpandFilename(OpenDialog.Filename);
+      AFilename:=ExpandFileNameUTF8(OpenDialog.Filename);
       if not FilenameIsPascalSource(AFilename) then begin
         MessageDlg(lisPkgMangInvalidFileExtension,
           lisProgramSourceMustHaveAPascalExtensionLikePasPpOrLp,
@@ -3273,7 +3273,7 @@ var
 begin
   if (Sender is TIDEMenuItem)
   and (TIDEMenuItem(Sender).Section=itmProjectRecentOpen) then begin
-    AFileName:=ExpandFilename(TIDEMenuItem(Sender).Caption);
+    AFileName:=ExpandFileNameUTF8(TIDEMenuItem(Sender).Caption);
     if DoOpenProjectFile(AFilename,[ofAddToRecent])=mrOk then begin
       AddRecentProjectFileToEnvironment(AFilename);
     end else begin
@@ -3292,7 +3292,7 @@ begin
       OpenDialog.Filter := lisLazarusProjectInfoFile+' (*.lpi)|*.lpi|'
                           +lisAllFiles+'|'+GetAllFilesMask;
       if OpenDialog.Execute then begin
-        AFilename:=ExpandFilename(OpenDialog.Filename);
+        AFilename:=ExpandFileNameUTF8(OpenDialog.Filename);
         DoOpenProjectFile(AFilename,[ofAddToRecent]);
       end;
       InputHistories.StoreFileDialogSettings(OpenDialog);
@@ -4466,7 +4466,7 @@ begin
       Result:=mrCancel;
       exit;
     end;
-    NewFilename:=ExpandFilename(SaveDialog.Filename);
+    NewFilename:=ExpandFileNameUTF8(SaveDialog.Filename);
   finally
     InputHistories.StoreFileDialogSettings(SaveDialog);
     SaveDialog.Free;
@@ -6595,9 +6595,9 @@ begin
         Result:=mrCancel;
         exit;
       end;
-      NewFilename:=ExpandFilename(SaveDialog.Filename);
+      NewFilename:=ExpandFileNameUTF8(SaveDialog.Filename);
       if not FilenameIsAbsolute(NewFilename) then
-        RaiseException('TMainIDE.DoShowSaveProjectAsDialog: buggy ExpandFileName');
+        RaiseException('TMainIDE.DoShowSaveProjectAsDialog: buggy ExpandFileNameUTF8');
       NewProgramName:=ExtractFileNameOnly(NewFilename);
 
       // check programname
@@ -7387,7 +7387,7 @@ begin
   // replace macros
   if ofConvertMacros in Flags then begin
     if not GlobalMacroList.SubstituteStr(AFilename) then exit;
-    AFilename:=ExpandFilename(AFilename);
+    AFilename:=ExpandFileNameUTF8(AFilename);
   end;
 
   // revert: use source editor filename
@@ -8027,14 +8027,14 @@ var ActiveSrcEdit: TSourceEditor;
         if ExtractFileExt(TempFile)='' then begin
           for PasExt:=Low(TPascalExtType) to High(TPascalExtType) do begin
             Ext:=PascalExtension[PasExt];
-            FinalFile:=ExpandFileName(CurPath+TempFile+Ext);
+            FinalFile:=ExpandFileNameUTF8(CurPath+TempFile+Ext);
             if FileExistsUTF8(FinalFile) then begin
               FName:=FinalFile;
               exit;
             end;
           end;
         end else begin
-          FinalFile:=ExpandFileName(CurPath+TempFile);
+          FinalFile:=ExpandFileNameUTF8(CurPath+TempFile);
           if FileExistsUTF8(FinalFile) then begin
             FName:=FinalFile;
             exit;
@@ -8491,10 +8491,10 @@ begin
   Result:=mrCancel;
   if ExtractFileNameOnly(AFileName)='' then exit;
   //debugln('TMainIDE.DoOpenProjectFile A1 "'+AFileName+'"');
-  AFilename:=ExpandFileName(TrimFilename(AFilename));
+  AFilename:=ExpandFileNameUTF8(TrimFilename(AFilename));
   //debugln('TMainIDE.DoOpenProjectFile A2 "'+AFileName+'"');
   if not FilenameIsAbsolute(AFilename) then
-    RaiseException('TMainIDE.DoOpenProjectFile: buggy ExpandFileName');
+    RaiseException('TMainIDE.DoOpenProjectFile: buggy ExpandFileNameUTF8');
   Ext:=lowercase(ExtractFileExt(AFilename));
 
   // check if file exists
@@ -8764,7 +8764,7 @@ begin
 
   // switch codetools to new project directory
   CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjPath']:=
-    ExpandFilename(ExtractFilePath(ProgramBuf.Filename));
+    ExpandFileNameUTF8(ExtractFilePath(ProgramBuf.Filename));
 
   // create a new project
   Project1:=CreateProjectObject(NewProjectDesc,ProjectDescriptorProgram);
@@ -10108,7 +10108,7 @@ begin
                          + '|' + dlgAllFiles + '|'+GetAllFilesMask;
     if OpenDialog.Execute and (OpenDialog.Files.Count>0) then begin
       For I := 0 to OpenDialog.Files.Count-1 do begin
-        AFilename:=ExpandFilename(OpenDialog.Files.Strings[i]);
+        AFilename:=ExpandFileNameUTF8(OpenDialog.Files.Strings[i]);
         if ConvertDFMFileToLFMFile(AFilename)=mrAbort then begin
           Result:=mrAbort;
           break;
@@ -13456,7 +13456,7 @@ begin
       // user cancels
       exit;
     end;
-    Filename:=ExpandFilename(SaveDialog.Filename);
+    Filename:=ExpandFileNameUTF8(SaveDialog.Filename);
   finally
     InputHistories.StoreFileDialogSettings(SaveDialog);
     SaveDialog.Free;

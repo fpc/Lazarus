@@ -80,7 +80,7 @@ function origpath:string;
 var tmp:string;
 begin
   tmp:=StrPas(argv[0]);
-  tmp:=ExpandFileName(tmp);
+  tmp:=ExpandFileNameUTF8(tmp);
   tmp:=ExtractFileDir(tmp);
   tmp:=IncludeTrailingPathDelimiter(tmp);
   result:=tmp;

@@ -546,7 +546,7 @@ begin
       begin
       S:=L[i];
       If (LBDescrFiles.Items.IndexOf(S)=-1) and
-         (LBDescrFiles.Items.IndexOf(ExpandFileName(S))=-1) then
+         (LBDescrFiles.Items.IndexOf(ExpandFileNameUTF8(S))=-1) then
         LBDescrFiles.Items.Add(S);
       end;
   Finally

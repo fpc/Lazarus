@@ -51,8 +51,8 @@ begin
 
   // setup your paths
   Options.FPCPath:='/usr/bin/ppc386';
-  Options.FPCSrcDir:=ExpandFileName('~/freepascal/fpc');
-  Options.LazarusSrcDir:=ExpandFileName('~/pascal/lazarus');
+  Options.FPCSrcDir:=ExpandFileNameUTF8('~/freepascal/fpc');
+  Options.LazarusSrcDir:=ExpandFileNameUTF8('~/pascal/lazarus');
 
   // optional: ProjectDir and TestPascalFile exists only to easily test some
   // things.
@@ -68,7 +68,7 @@ begin
   Options.SaveToFile(ConfigFilename);
 
   // load the example unit
-  Filename:=ExpandFileName('scanexamples/brokenfilenames.pas');
+  Filename:=ExpandFileNameUTF8('scanexamples/brokenfilenames.pas');
   Code:=CodeToolBoss.LoadFile(Filename,false,false);
   if Code=nil then
     raise Exception.Create('unable to read '+Filename);

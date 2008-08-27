@@ -184,14 +184,14 @@ begin
   TFMTAP := LongTimeFormat; //nl_langinfo(T_FMT_AMPM)
 
   //KDE config
-  if DirectoryExistsUTF8(ExpandFileName('~/.kde/share/config')) then
+  if DirectoryExistsUTF8(ExpandFileNameUTF8('~/.kde/share/config')) then
   begin
 
     Lg:=Copy(GetEnvironmentVariableUTF8('LANG'),1,2); //Langue
     LstKde:=TStringList.Create;
     try
       ReadKdeFileConfig(Format('/usr/share/locale/l10n/%s/entry.desktop',[Lg]),'[KCM Locale]',LstKde);
-      ReadKdeFileConfig(ExpandFileName('~/.kde/share/config/kdeglobals'),'[Locale]',LstKde);
+      ReadKdeFileConfig(ExpandFileNameUTF8('~/.kde/share/config/kdeglobals'),'[Locale]',LstKde);
 
       St:=ReadKdeConfig('DecimalSymbol',DecimalSeparator);
       DecimalSeparator:=St[1];

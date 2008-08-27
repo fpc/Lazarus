@@ -66,9 +66,17 @@ begin
   FNeedRTLAnsiValid:=true;
 end;
 
+function IsASCII(const s: string): boolean; inline;
+var
+  i: Integer;
+begin
+  for i:=1 to length(s) do if ord(s[i])>127 then exit(false);
+  Result:=true;
+end;
+
 function UTF8ToSys(const s: string): string;
 begin
-  if NeedRTLAnsi then
+  if NeedRTLAnsi and (not IsASCII(s)) then
     Result:=UTF8ToAnsi(s)
   else
     Result:=s;
@@ -76,7 +84,7 @@ end;
 
 function SysToUTF8(const s: string): string;
 begin
-  if NeedRTLAnsi then
+  if NeedRTLAnsi and (not IsASCII(s)) then
     Result:=AnsiToUTF8(s)
   else
     Result:=s;
@@ -95,6 +103,16 @@ end;
 function DirectoryExistsUTF8(const Directory: string): Boolean;
 begin
   Result:=SysUtils.DirectoryExists(UTF8ToSys(Directory));
+end;
+
+function ExpandFileNameUTF8(const FileName: string): string;
+begin
+  Result:=SysToUTF8(SysUtils.ExpandFileName(UTF8ToSys(Filename)));
+end;
+
+function ExpandUNCFileNameUTF8(const FileName: string): string;
+begin
+  Result:=SysToUTF8(SysUtils.ExpandUNCFileName(UTF8ToSys(Filename)));
 end;
 
 function FindFirstUTF8(const Path: string; Attr: Longint; out Rslt: TSearchRec
@@ -883,7 +901,7 @@ begin
       raise EFOpenError.Create(AText);
     end else begin
       if not FilenameIsAbsolute(LinkFilename) then
-        Result:=ExpandFilename(ExtractFilePath(Result)+LinkFilename)
+        Result:=ExpandFileNameUTF8(ExtractFilePath(Result)+LinkFilename)
       else
         Result:=LinkFilename;
     end;
@@ -1044,7 +1062,7 @@ begin
   // resolve links
   Result:=ReadAllLinks(Result,false);
   // extract file path and expand to full name
-  Result:=ExpandFilename(ExtractFilePath(Result));
+  Result:=ExpandFileNameUTF8(ExtractFilePath(Result));
 end;
 
 function DirectoryIsWritable(const DirectoryName: string): boolean;
@@ -1071,7 +1089,7 @@ end;
  ------------------------------------------------------------------------------}
 function CleanAndExpandFilename(const Filename: string): string;
 begin
-  Result:=ExpandFilename(TrimFileName(Filename));
+  Result:=ExpandFileNameUTF8(TrimFileName(Filename));
 end;
 
 {------------------------------------------------------------------------------
@@ -1288,7 +1306,7 @@ var
   i: Integer;
   CurPath: String;
 begin
-  CurPath:=AppendPathDelim(ExpandFilename(Directory))+Prefix;
+  CurPath:=AppendPathDelim(ExpandFileNameUTF8(Directory))+Prefix;
   i:=1;
   repeat
     Result:=CurPath+IntToStr(i)+'.tmp';

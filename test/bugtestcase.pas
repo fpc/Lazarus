@@ -74,7 +74,7 @@ var
 begin
   AssertTrue('Project file '+ FProjectFile + ' does not exist',
     FileExistsUTF8(FProjectFile));
-  LazarusDir := ExpandFileName(ExtractFilePath(ParamStrUTF8(0)) + '../');
+  LazarusDir := ExpandFileNameUTF8(ExtractFilePath(ParamStrUTF8(0)) + '../');
   LazBuildPath := LazarusDir + 'lazbuild' + GetExeExt;
   AssertTrue(LazBuildPath + ' does not exist', FileExistsUTF8(LazBuildPath));
   LazBuild := TProcess.Create(nil);

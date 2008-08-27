@@ -229,7 +229,7 @@ begin
     editFieldName.Enabled:=False;
     comboFieldType.Enabled:=False;
   end;
-  lblFilePath.Caption:='File Path: '+ExpandFileName(DataSet.FileName);
+  lblFilePath.Caption:='File Path: '+ExpandFileNameUTF8(DataSet.FileName);
   label3.caption:='Table Name: '+ DataSet.TableName;
 end;
 
