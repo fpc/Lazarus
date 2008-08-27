@@ -3224,7 +3224,6 @@ end;
  ------------------------------------------------------------------------------}
 function TQtTimer.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
-  BeginEventProcessing;
   Result := False;
 
   if QEvent_type(Event) = QEventTimer then
@@ -3236,7 +3235,6 @@ begin
     if Assigned(FCallbackFunc) then
       FCallbackFunc;
   end;
-  EndEventProcessing;
 end;
 
 { TQtIcon }
