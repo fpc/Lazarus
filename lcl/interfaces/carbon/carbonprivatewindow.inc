@@ -478,46 +478,64 @@ const
     // get untranslated key (key without modifiers)
     OSError(KLGetCurrentKeyboardLayout(KeyboardLayout), SName, 'KLGetCurrentKeyboardLayout');
     OSError(KLGetKeyboardLayoutProperty(KeyboardLayout, kKLuchrData, Layout), SName, 'KLGetKeyboardLayoutProperty');
+
     TextLen:=0;
     DeadKeys:=0;
-    OSError(UCKeyTranslate(Layout^, KeyCode, kUCKeyActionDisplay,
-          0, LMGetKbdType,
-          kUCKeyTranslateNoDeadKeysMask, DeadKeys, 6, TextLen, @WideBuf[1]), SName, 'UCKeyTranslate');
     UTF8VKCharacter:='';
     VKKeyChar:=#0;
     CharLen:=0;
-    if TextLen>0 then begin
-      u:=UTF16CharacterToUnicode(@WideBuf[1],CharLen);
-      if CharLen>0 then begin
-        UTF8VKCharacter:=UnicodeToUTF8(u);
-        if (UTF8VKCharacter<>'') and (ord(Utf8VKCharacter[1])<=127) then //It's (true) ascii.
-          VKKeyChar:=Utf8VKCharacter[1]
-        else //not ascii, get the Mac character.
-          OSError(
-            GetEventParameter(AEvent, kEventParamKeyMacCharCodes, typeChar, nil,
-              Sizeof(VKKeyChar), nil, @VKKeyChar), SName, AGetEvent,
-            'kEventParamKeyMacCharCodes');
+
+    if Layout <> nil then
+    begin
+      OSError(UCKeyTranslate(Layout^, KeyCode, kUCKeyActionDisplay,
+          0, LMGetKbdType,
+          kUCKeyTranslateNoDeadKeysMask, DeadKeys, 6, TextLen, @WideBuf[1]), SName, 'UCKeyTranslate');
+
+      if TextLen>0 then begin
+        u:=UTF16CharacterToUnicode(@WideBuf[1],CharLen);
+        if CharLen>0 then begin
+          UTF8VKCharacter:=UnicodeToUTF8(u);
+          if (UTF8VKCharacter<>'') and (ord(Utf8VKCharacter[1])<=127) then //It's (true) ascii.
+            VKKeyChar:=Utf8VKCharacter[1]
+          else //not ascii, get the Mac character.
+            OSError(
+              GetEventParameter(AEvent, kEventParamKeyMacCharCodes, typeChar, nil,
+                Sizeof(VKKeyChar), nil, @VKKeyChar), SName, AGetEvent,
+              'kEventParamKeyMacCharCodes');
+        end;
       end;
+
+      TextLen := 0;
+
+      if IsSysKey then
+      begin // workaround for Command modifier suppressing shift
+        DeadKeys := 0;
+        OSError(UCKeyTranslate(Layout^, KeyCode, kUCKeyActionDisplay,
+            (GetCurrentEventKeyModifiers and not cmdkey) shr 8, LMGetKbdType,
+            kUCKeyTranslateNoDeadKeysMask, DeadKeys, 6, TextLen, @WideBuf[1]), SName, 'UCKeyTranslate');
+        {$IFDEF VerboseKeyboard}
+        debugln(['TranslateMacKeyCode IsSysKey: TextLen=',TextLen,' CharLen=',CharLen,' UTF8VKCharacter=',UTF8VKCharacter]);
+        {$ENDIF}
+      end;
+    end
+    else
+    begin
+      // uchr style keyboard layouts not always available - fall back to older style
+      OSError(KLGetKeyboardLayoutProperty(KeyboardLayout, kKLKCHRData, Layout), SName, 'KLGetKeyboardLayoutProperty');
+      {$IFDEF VerboseKeyboard}
+       DebugLn('[Keyboard layout] KCHR layout = ', DbgS(Layout));
+      {$ENDIF}
+      VKKeyChar := Char(KeyTranslate(Layout, KeyCode, DeadKeys) and 255);
+      { TODO: workaround for Command modifier suppressing shift? }
     end;
+
     {$IFDEF VerboseKeyboard}
-    debugln(['TranslateMacKeyCode TextLen=',TextLen,' CharLen=',CharLen,' UTF8VKCharacter=',UTF8VKCharacter,' VKKeyChar=',VKKeyChar]);
+    debugln(['TranslateMacKeyCode TextLen=',TextLen,' CharLen=',CharLen,' UTF8VKCharacter=',UTF8VKCharacter,' VKKeyChar=',DbgStr(VKKeyChar)]);
     {$ENDIF}
 
     //printable keys
     //for these keys, send char or UTF8KeyPress
-    TextLen := 0;
-    
-    if IsSysKey then
-    begin // workaround for Command modifier suppressing shift
-      DeadKeys := 0;
-      OSError(UCKeyTranslate(Layout^, KeyCode, kUCKeyActionDisplay,
-          (GetCurrentEventKeyModifiers and not cmdkey) shr 8, LMGetKbdType,
-          kUCKeyTranslateNoDeadKeysMask, DeadKeys, 6, TextLen, @WideBuf[1]), SName, 'UCKeyTranslate');
-      {$IFDEF VerboseKeyboard}
-      debugln(['TranslateMacKeyCode IsSysKey: TextLen=',TextLen,' CharLen=',CharLen,' UTF8VKCharacter=',UTF8VKCharacter]);
-      {$ENDIF}
-    end;
-      
+
     if TextLen = 0 then
     begin
       if OSError(
@@ -542,7 +560,7 @@ const
           'kEventParamKeyMacCharCodes') then Exit;
 
       {$IFDEF VerboseKeyboard}
-      debugln(['TranslateMacKeyCode printable key: TextLen=',TextLen,' UTF8Character=',UTF8Character,' KeyChar=',KeyChar,' VKKeyChar=',VKKeyChar]);
+      debugln(['TranslateMacKeyCode printable key: TextLen=',TextLen,' UTF8Character=',UTF8Character,' KeyChar=',DbgStr(KeyChar),' VKKeyChar=',DbgStr(VKKeyChar)]);
       {$ENDIF}
 
       // the VKKeyCode is independent of the modifier
@@ -596,7 +614,7 @@ const
 
       {$IFDEF VerboseKeyboard}
       DebugLn('[TranslateMacKeyCode] VKKeyCode=', DbgsVKCode(VKKeyCode), ' Utf8="',
-         UTF8Character, '" VKKeyChar="', VKKeyChar, '" KeyChar="',KeyChar,'"' );
+         UTF8Character, '" VKKeyChar="', DbgStr(VKKeyChar), '" KeyChar="',DbgStr(KeyChar),'"' );
       {$ENDIF}
 
       Result := True;
