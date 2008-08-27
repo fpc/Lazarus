@@ -929,11 +929,55 @@ end;
   Params:  IconInfo - pointer to Icon/Cursor Information record
   Returns: handle to a created icon/cursor
 
-  Creates an icon or cursor by color and mask bitmaps and other indo.
+  Creates an icon or cursor by color and mask bitmaps and other info.
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.CreateIconIndirect(IconInfo: PIconInfo): HICON;
+var
+  bmp: Windows.TBitmap;
+  hbm: HBITMAP;
+  SrcDataSize, DataSize: PtrUInt;
+  SrcData, Data: PByte;
+  Res: Boolean;
 begin
+  // if we pass the XOR mask as color then we need to move it at the end of AND mask
+  // correct passed values
+  if (IconInfo^.hbmColor <> 0) and
+     (GetObject(IconInfo^.hbmColor, SizeOf(bmp), @bmp) = SizeOf(bmp)) and
+     (bmp.bmBitsPixel = 1) then
+  begin
+    // we must create one mask bitmap where top part of it is IMAGE and bottom is MASK
+    DataSize := bmp.bmWidthBytes * abs(bmp.bmHeight) shl 1;
+    Data := GetMem(DataSize);
+
+    Res := GetBitmapBytes(bmp, IconInfo^.hbmMask, Rect(0, 0, bmp.bmWidth, bmp.bmHeight), rileWordBoundary, riloTopToBottom, SrcData, SrcDataSize);
+    if Res then
+    begin
+      Move(SrcData^, Data^, SrcDataSize);
+      FreeMem(SrcData);
+    end;
+
+    Res := Res and GetBitmapBytes(bmp, IconInfo^.hbmColor, Rect(0, 0, bmp.bmWidth, bmp.bmHeight), rileWordBoundary, riloTopToBottom, SrcData, SrcDataSize);
+    if Res then
+    begin
+      Move(SrcData^, Data[DataSize shr 1], SrcDataSize);
+      FreeMem(SrcData);
+    end;
+
+    if Res then
+    begin
+      hbm := CreateBitmap(bmp.bmWidth, bmp.bmHeight shl 1, bmp.bmPlanes, 1, Data);
+      IconInfo^.hbmColor := 0;
+      IconInfo^.hbmMask := hbm;
+    end;
+
+    FreeMem(Data);
+  end
+  else
+    hbm := 0;
   Result := Windows.CreateIconIndirect(IconInfo);
+
+  if hbm <> 0 then
+    DeleteObject(hbm);
 end;
 
 function TWin32WidgetSet.CreatePatternBrush(ABitmap: HBITMAP): HBRUSH;
