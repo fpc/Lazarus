@@ -16,7 +16,7 @@
 unit GLCarbonAGLContext;
 
 {$mode objfpc}{$H+}
-{$linkframework agl}
+{$linkframework AGL}
 
 interface
 
