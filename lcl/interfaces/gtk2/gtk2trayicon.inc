@@ -22,6 +22,13 @@
 
 { TGtk2WSCustomTrayIcon }
 
+type
+  TGtk2WSTrayIconHandle = record
+    AImage: PGtkWidget;
+  end;
+
+  PGtk2WSTrayIconHandle = ^TGtk2WSTrayIconHandle;
+
 const
   SYSTEM_TRAY_REQUEST_DOCK   = 0;
   SYSTEM_TRAY_BEGIN_MESSAGE  = 1;
@@ -287,6 +294,8 @@ end;
 *
 *******************************************************************}
 class function TGtk2WSCustomTrayIcon.Hide(const ATrayIcon: TCustomTrayIcon): Boolean;
+var
+  TrayHandle: PGtk2WSTrayIconHandle absolute ATrayIcon.Handle;
 begin
   Result := False;
 
@@ -298,7 +307,11 @@ begin
 
   Tips := nil;
 
-  ATrayIcon.Handle := PtrInt(0);
+  { Free and nil the handle }
+
+  FreeMem(TrayHandle);
+
+  TrayHandle := nil;
 
   Result := True;
 end;
@@ -315,9 +328,11 @@ end;
 *******************************************************************}
 class function TGtk2WSCustomTrayIcon.Show(const ATrayIcon: TCustomTrayIcon): Boolean;
 var
-  AImage: PGtkWidget;
+  TrayHandle: PGtk2WSTrayIconHandle absolute ATrayIcon.Handle;
 begin
   Result := False;
+
+  ATrayIcon.Handle := PtrInt(GetMem(SizeOf(TGtk2WSTrayIconHandle)));
 
   {*******************************************************************
   *  Creates the GtkPlug
@@ -353,24 +368,17 @@ begin
   *  Draws the icon
   *******************************************************************}
 
-  AImage := gtk_image_new_from_pixbuf(PGdkPixbuf(ATrayIcon.Icon.Handle));
+  TrayHandle^.AImage := gtk_image_new_from_pixbuf(PGdkPixbuf(ATrayIcon.Icon.Handle));
 
-  gtk_widget_show(AImage);
+  gtk_widget_show(TrayHandle^.AImage);
 
-  gtk_container_add(GTK_CONTAINER(GtkForm), AImage);
+  gtk_container_add(GTK_CONTAINER(GtkForm), TrayHandle^.AImage);
 
   {*******************************************************************
   *  Now shows the GtkPlug
   *******************************************************************}
 
   gtk_widget_show(GtkForm);
-  
-  {*******************************************************************
-  * We don't use the GtkPlug for anything, but we reuse the image
-  * to update it in InternalUpdate, so we save the image
-  * as the handle
-  *******************************************************************}
-  ATrayIcon.Handle := PtrInt(AImage);
 
   Result := True;
 end;
@@ -388,28 +396,16 @@ end;
 *******************************************************************}
 class procedure TGtk2WSCustomTrayIcon.InternalUpdate(const ATrayIcon: TCustomTrayIcon);
 var
-  AImage: PGtkWidget;
-  AMask: PGdkBitmap;
-  GDIObject: PgdiObject;
+  TrayHandle: PGtk2WSTrayIconHandle absolute ATrayIcon.Handle;
 begin
   // Updates the tooltips
   if Assigned(Tips) then gtk_tooltips_set_tip(GTK_TOOLTIPS(Tips), GtkForm, PChar(ATrayIcon.Hint), '');
 
   // Updates the icon
   
-  AImage := PGtkWidget(ATrayIcon.Handle);
-
-  if AImage <> nil then
+  if (TrayHandle <> nil) and (TrayHandle^.AImage <> nil) then
   begin
-    GDIObject := PgdiObject(ATrayIcon.Icon.Handle);
-
-    AMask := CreateGdkMaskBitmap(
-     GDIObject^.GDIPixmapObject.Mask,
-     GDIObject^.GDIBitmapObject);
-
-    gtk_image_set_from_pixmap(GTK_IMAGE(AImage),GDIObject^.GDIPixmapObject.Image, AMask);
-
-    g_object_unref(AMask);
+    gtk_image_set_from_pixbuf(GTK_IMAGE(TrayHandle^.AImage), PGdkPixbuf(ATrayIcon.Icon.Handle));
   end;
 end;
 
