@@ -534,9 +534,24 @@ begin
 end;
 
 procedure TCustomIcon.MaskHandleNeeded;
+var
+  ImgHandle, dummy: HBITMAP;
 begin
   // Created by bitmaphandle
-  BitmapHandleNeeded;
+//!!!  BitmapHandleNeeded;
+
+  if FCurrent = -1 then Exit;
+  if MaskHandleAllocated then exit;
+
+  if not CreateCompatibleBitmaps(GetRawImagePtr^, Dummy, ImgHandle)
+  then begin
+    DebugLn('TCustomIcon.MaskHandleNeeded: Unable to create makshandle');
+    Exit;
+  end;
+
+  if BitmapHandleAllocated
+  then UpdateHandles(BitmapHandle, ImgHandle)
+  else UpdateHandles(0, ImgHandle);
 end;
 
 function TCustomIcon.PaletteAllocated: boolean;

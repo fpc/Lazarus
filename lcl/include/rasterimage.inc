@@ -170,9 +170,7 @@ procedure TRasterImage.BitmapHandleNeeded;
 var
   ImgHandle, ImgMaskHandle: HBitmap;
   ImagePtr: PRawImage;
-  DevImage: TRawImage;
   DevDesc: TRawImageDescription;
-  SrcImage, DstImage: TLazIntfImage;
   QueryFlags: TRawImageQueryFlags;
   W, H: Integer;
   SkipMask: Boolean;
@@ -180,77 +178,41 @@ begin
   if BitmapHandleAllocated then exit;
 
   ImagePtr := GetRawImagePtr;
+  if ImagePtr = nil then Exit;
+
   ImgMaskHandle := 0;
 
-  // create a device compatible image
-  W := Width;
-  if W < 1 then W := 1;
-  H := Height;
-  if H < 1 then H := 1;
+  // we must skip mask creation if
+  // a) we already have mask
+  // b) mask needs to be created another way - using TransparentColor
+  SkipMask := MaskHandleAllocated
+           or (TransparentMode = tmFixed)
+           or (ImagePtr^.Description.MaskBitsPerPixel = 0);
 
-  if ImagePtr^.Description.Depth = 1
-  then QueryFlags := [riqfMono]
-  else QueryFlags := [riqfRGB];
-  if ImagePtr^.Description.AlphaPrec <> 0
-  then Include(QueryFlags, riqfAlpha);
-  if ImagePtr^.Description.MaskBitsPerPixel <> 0
-  then Include(QueryFlags, riqfMask);
-  QueryDescription(DevDesc, QueryFlags, W, H);
-
-  if DevDesc.IsEqual(ImagePtr^.Description)
+  if not CreateCompatibleBitmaps(ImagePtr^, ImgHandle, ImgMaskHandle, SkipMask)
   then begin
-    // image is compatible, so use it
-    DstImage := nil;
-  end
-  else begin
-    // create compatible copy
-    SrcImage := TLazIntfImage.Create(ImagePtr^, False);
-    DstImage := TLazIntfImage.Create(0, 0);
-    // create mask for alphachannel when device has no alpha support
-    if (DevDesc.AlphaPrec = 0) and (riqfAlpha in QueryFlags)
-    then begin
-      //add mask if not already queried
-      if not (riqfMask in QueryFlags)
-      then QueryDescription(DevDesc, [riqfMask, riqfUpdate]);
-      DstImage.DataDescription := DevDesc;
-      DstImage.CopyPixels(SrcImage, 0, 0, True, $8000);
-    end
-    else begin
-      DstImage.DataDescription := DevDesc;
-      DstImage.CopyPixels(SrcImage);
-    end;
-    SrcImage.Free;
-    DstImage.GetRawImage(DevImage);
-    ImagePtr := @DevImage;
+    DebugLn('TRasterImage.BitmapHandleNeeded: Unable to create handles, using default');
+    // create a default handle
+    W := Width;
+    if W < 1 then W := 1;
+    H := Height;
+    if H < 1 then H := 1;
+
+    if ImagePtr^.Description.Depth = 1
+    then QueryFlags := [riqfMono]
+    else QueryFlags := [riqfRGB];
+    if ImagePtr^.Description.AlphaPrec <> 0
+    then Include(QueryFlags, riqfAlpha);
+    if ImagePtr^.Description.MaskBitsPerPixel <> 0
+    then Include(QueryFlags, riqfMask);
+    QueryDescription(DevDesc, QueryFlags, W, H);
+    ImgHandle := CreateDefaultBitmapHandle(DevDesc);
   end;
 
-  try
-    // we must skip mask creation if
-    // a) we already have mask
-    // b) mask needs to be created another way - using TransparentColor
-    // c) we dont have mask in the description
-    SkipMask := MaskHandleAllocated or
-                (TransparentMode = tmFixed) or
-                (DevDesc.MaskBitsPerPixel = 0);
-    if not RawImage_CreateBitmaps(ImagePtr^, ImgHandle, ImgMaskHandle, SkipMask)
-    then begin
-      DebugLn('TRasterImage.BitmapHandleNeeded: Unable to create handles, using default');
-      // create a default handle
-      ImgHandle := CreateDefaultBitmapHandle(DevDesc);
-    end;
-
-    if SkipMask
-    then begin
-      // if we dont have new mask then either use old one or use none
-      if MaskHandleAllocated
-      then UpdateHandles(ImgHandle, MaskHandle)
-      else UpdateHandles(ImgHandle, 0);
-    end
-    else UpdateHandles(ImgHandle, ImgMaskHandle);
-
-  finally
-    DstImage.Free;
-  end;
+  // if we dont have new mask then either use old one or use none
+  if SkipMask and MaskHandleAllocated
+  then UpdateHandles(ImgHandle, MaskHandle)
+  else UpdateHandles(ImgHandle, ImgMaskHandle);
 end;
 
 function TRasterImage.CanShareImage(AClass: TSharedRasterImageClass): Boolean;

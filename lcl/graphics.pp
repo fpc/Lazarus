@@ -12,7 +12,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -1891,6 +1891,76 @@ begin
   Result.Assign(CB);
   CB.Free;
 end;
+
+//TODO: publish ?? (as RawImage_CreateCompatibleBitmaps)
+function CreateCompatibleBitmaps(const ARawImage: TRawImage; out ABitmap, AMask: HBitmap; ASkipMask: Boolean = False): Boolean;
+var
+  Desc: TRawImageDescription absolute ARawimage.Description;
+
+  ImgHandle, ImgMaskHandle: HBitmap;
+  ImagePtr: PRawImage;
+  DevImage: TRawImage;
+  DevDesc: TRawImageDescription;
+  SrcImage, DstImage: TLazIntfImage;
+  QueryFlags: TRawImageQueryFlags;
+  W, H: Integer;
+begin
+  ImgMaskHandle := 0;
+
+  W := Desc.Width;
+  if W < 1 then W := 1;
+  H := Desc.Height;
+  if H < 1 then H := 1;
+
+  if Desc.Depth = 1
+  then QueryFlags := [riqfMono]
+  else QueryFlags := [riqfRGB];
+  if Desc.AlphaPrec <> 0
+  then Include(QueryFlags, riqfAlpha);
+  if Desc.MaskBitsPerPixel <> 0
+  then Include(QueryFlags, riqfMask);
+  QueryDescription(DevDesc, QueryFlags, W, H);
+
+  if DevDesc.IsEqual(Desc)
+  then begin
+    // image is compatible, so use it
+    DstImage := nil;
+    ImagePtr := @ARawImage;
+  end
+  else begin
+    // create compatible copy
+    SrcImage := TLazIntfImage.Create(ARawImage, False);
+    DstImage := TLazIntfImage.Create(0, 0);
+    // create mask for alphachannel when device has no alpha support
+    if (DevDesc.AlphaPrec = 0) and (riqfAlpha in QueryFlags)
+    then begin
+      //add mask if not already queried
+      if not (riqfMask in QueryFlags)
+      then QueryDescription(DevDesc, [riqfMask, riqfUpdate]);
+      DstImage.DataDescription := DevDesc;
+      DstImage.CopyPixels(SrcImage, 0, 0, True, $8000);
+    end
+    else begin
+      DstImage.DataDescription := DevDesc;
+      DstImage.CopyPixels(SrcImage);
+    end;
+    SrcImage.Free;
+    DstImage.GetRawImage(DevImage);
+    ImagePtr := @DevImage;
+  end;
+
+  try
+    Result := RawImage_CreateBitmaps(ImagePtr^, ImgHandle, ImgMaskHandle, ASkipMask);
+    if not Result then Exit;
+
+    ABitmap := ImgHandle;
+    if not ASkipMask
+    then AMask := ImgMaskHandle;
+  finally
+    DstImage.Free;
+  end;
+end;
+
 
 procedure Register;
 begin
