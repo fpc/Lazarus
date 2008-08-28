@@ -669,6 +669,9 @@ resourcestring
   lisInfoBuildBuild   = 'Build';
   lisInfoBuildComplile = 'Compiling...';
   lisInfoBuildError = 'Error...';
+  lisCreateDirectory = 'Create directory?';
+  lisTheOutputDirectoryIsMissing = 'The output directory %s%s%s is missing.';
+  lisCreateIt = 'Create it';
   lisInfoBuildSuccess = 'Success...';
   lisInfoBuildAbort = 'Aborted...';
   lisInfoBuildCaption = 'Compile Project';

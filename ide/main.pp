@@ -9327,9 +9327,10 @@ begin
     UnitOutputDirectory:=Project1.CompilerOptions.GetUnitOutPath(false);
     if not DirPathExistsCached(UnitOutputDirectory) then begin
       if not FileIsInPath(UnitOutputDirectory,WorkingDir) then begin
-        Result:=IDEQuestionDialog('Create directory?',
-          'The output directory "'+UnitOutputDirectory+'" is missing.',
-          mtConfirmation,[mrYes,'Create it',mrCancel],'');
+        Result:=IDEQuestionDialog(lisCreateDirectory,
+          Format(lisTheOutputDirectoryIsMissing, ['"', UnitOutputDirectory, '"']
+            ),
+          mtConfirmation, [mrYes, lisCreateIt, mrCancel], '');
         if Result<>mrYes then exit;
       end;
       Result:=ForceDirectoryInteractive(UnitOutputDirectory,[mbRetry]);

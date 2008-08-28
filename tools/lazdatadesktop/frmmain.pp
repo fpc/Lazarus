@@ -305,7 +305,7 @@ begin
   RegisterStdFormats;
   FRecentDicts:=TRecentDataDicts.Create(TRecentDataDict);
   FRecentConnections:=TRecentConnections.Create(TRecentConnection);
-  FN:=GetAppConfigDir(False);
+  FN:=GetAppConfigDirUTF8(False);
   ForceDirectoriesUTF8(FN);
   FN:=GetAppConfigFile(False);
   FRecentDicts.LoadFromFile(UTF8ToSys(FN,'RecentDicts'));

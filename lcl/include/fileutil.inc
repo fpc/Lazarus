@@ -209,6 +209,11 @@ begin
   Result:=SysToUTF8(SysUtils.GetEnvironmentVariable(UTF8ToSys(EnvVar)));
 end;
 
+function GetAppConfigDirUTF8(Global: Boolean): string;
+begin
+  Result:=SysToUTF8(SysUtils.GetAppConfigDir(Global));
+end;
+
 {------------------------------------------------------------------------------
   DirPathExists
  ------------------------------------------------------------------------------}

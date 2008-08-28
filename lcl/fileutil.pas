@@ -200,8 +200,9 @@ function ForceDirectoriesUTF8(const Dir: string): Boolean;
 
 // environment
 function ParamStrUTF8(Param: Integer): string;
-function GetEnvironmentStringUTF8(Index : Integer): String;
-function GetEnvironmentVariableUTF8(const EnvVar: String): String;
+function GetEnvironmentStringUTF8(Index: Integer): string;
+function GetEnvironmentVariableUTF8(const EnvVar: string): String;
+function GetAppConfigDirUTF8(Global: Boolean): string;
 
 implementation
 
