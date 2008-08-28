@@ -7,7 +7,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -1093,7 +1093,7 @@ var
   I: Integer;
 begin
   if FStyle <> DefaultTextStyle then
-    OSError(ATSUDisposeStyle(FStyle), Self, SDestroy, SCreateStyle);
+    OSError(ATSUDisposeStyle(FStyle), Self, SDestroy, SDisposeStyle);
   for I := 0 to High(FCachedLayouts) do
     if FCachedLayouts[I] <> nil then FCachedLayouts[I].Release;
 
@@ -1118,8 +1118,8 @@ begin
   Attr := kATSUColorTag;
   A := @C;
   S := SizeOf(C);
-  OSError(ATSUSetAttributes(Style, 1, @Attr, @S, @A), Self, SShowModal,
-    'ATSUSetAttributes', 'kATSUSizeTag');
+  OSError(ATSUSetAttributes(Style, 1, @Attr, @S, @A), Self, SSetColor,
+    'ATSUSetAttributes');
 end;
 
 function TCarbonFont.CreateTextLayout(const Text: String;
@@ -1480,9 +1480,9 @@ constructor TCarbonBitmap.Create(AWidth, AHeight, ADepth, ABitsPerPixel: Integer
   ACopyData: Boolean);
 begin
   inherited Create(False);
-  
+
   FCGImage := nil;
-  
+
   SetInfo(AWidth, AHeight, ADepth, ABitsPerPixel, AAlignment, AType);
   
   if (AData = nil) or ACopyData then
@@ -1499,6 +1499,7 @@ begin
     FData := AData;
     FFreeData := False;
   end;
+
 //DebugLn(Format('TCarbonBitmap.Create %d x %d Data: %d RowSize: %d Size: %d',
 //  [AWidth, AHeight, Integer(AData), DataRowSize, FDataSize]));
 

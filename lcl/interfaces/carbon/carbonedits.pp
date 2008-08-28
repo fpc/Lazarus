@@ -7,7 +7,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -669,9 +669,11 @@ procedure TCarbonComboBox.DestroyWidget;
 begin
   if FReadOnly then
     DisposeMenu(FPopupMenu)
-  else if FTimer.Enabled then
-    DropDownTimer(nil);
-  FTimer.Free;
+  else
+  begin
+    if FTimer.Enabled then DropDownTimer(nil);
+    FTimer.Free;
+  end;
 
   inherited DestroyWidget;
 end;
@@ -1546,35 +1548,45 @@ procedure TCarbonMemo.SetFont(const AFont: TFont);
 var
   Attrs: Array [0..3] of TXNTypeAttributes;
   FontColor: RGBColor;
+  SavedStyle: ATSUStyle;
+const
+  SName = 'SetFont';
 begin
- // font name
- Attrs[0].tag := kATSUFontTag;
- Attrs[0].size := SizeOf(ATSUFontID);
- Attrs[0].data.dataValue := FindCarbonFontID(AFont.Name);
+  // font name
+  Attrs[0].tag := kATSUFontTag;
+  Attrs[0].size := SizeOf(ATSUFontID);
+  Attrs[0].data.dataValue := FindCarbonFontID(AFont.Name);
 
- // font color
- FontColor := ColorToRGBColor(AFont.Color);
- Attrs[1].tag := kTXNQDFontColorAttribute;
- Attrs[1].size := kTXNQDFontColorAttributeSize;
- Attrs[1].data.dataPtr := @FontColor;
+  // font color
+  FontColor := ColorToRGBColor(AFont.Color);
+  Attrs[1].tag := kTXNQDFontColorAttribute;
+  Attrs[1].size := kTXNQDFontColorAttributeSize;
+  Attrs[1].data.dataPtr := @FontColor;
 
- // font size
- Attrs[2].tag := kTXNQDFontSizeAttribute;
- Attrs[2].size := kTXNQDFontSizeAttributeSize;
- Attrs[2].data.dataValue := AFont.Size;
+  // font size
+  Attrs[2].tag := kTXNQDFontSizeAttribute;
+  Attrs[2].size := kTXNQDFontSizeAttributeSize;
+  Attrs[2].data.dataValue := AFont.Size;
 
- TCarbonFont(AFont.Reference.Handle).SetColor(AFont.Color);
+  ATSUCreateAndCopyStyle(TCarbonFont(AFont.Reference.Handle).Style, SavedStyle);
+  try
+    // set font color
+    TCarbonFont(AFont.Reference.Handle).SetColor(AFont.Color);
 
- // font style
- Attrs[3].tag := kTXNATSUIStyle;
- Attrs[3].size := kTXNATSUIStyleSize;
- Attrs[3].data.dataPtr := Pointer(TCarbonFont(AFont.Reference.Handle).Style);
+    // font style
+    Attrs[3].tag := kTXNATSUIStyle;
+    Attrs[3].size := kTXNATSUIStyleSize;
+    Attrs[3].data.dataPtr := Pointer(TCarbonFont(AFont.Reference.Handle).Style);
 
- // apply
- OSError(
-   TXNSetTypeAttributes(HITextViewGetTXNObject(ControlRef(Widget)), 4, @Attrs[0],
-     kTXNStartOffset, kTXNEndOffset),
-   Self, 'SetFont', 'TXNSetTypeAttributes');
+    // apply
+    OSError(
+      TXNSetTypeAttributes(HITextViewGetTXNObject(ControlRef(Widget)), 4, @Attrs[0],
+        kTXNStartOffset, kTXNEndOffset),
+      Self, SName, 'TXNSetTypeAttributes');
+  finally
+    ATSUCopyAttributes(SavedStyle, TCarbonFont(AFont.Reference.Handle).Style);
+    ATSUDisposeStyle(SavedStyle);
+  end;
 
   // invalidate control
   Invalidate;

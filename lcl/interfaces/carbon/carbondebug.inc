@@ -38,7 +38,7 @@
 {off $DEFINE VerboseBounds}      // debug bounding and client rects of LCL vs. intf
 
 {off $DEFINE VerboseWidget}    // Carbon widget
-{off $DEFINE VerboseAppEvent}  // Carbon application event handlers
+{$DEFINE VerboseAppEvent}  // Carbon application event handlers
 {off $DEFINE VerboseControlEvent}  // Carbon control event handlers
 {off $DEFINE VerboseWindowEvent}   // Carbon window event handlers
 {off $DEFINE VerboseCommonEvent}   // Carbon common event handlers

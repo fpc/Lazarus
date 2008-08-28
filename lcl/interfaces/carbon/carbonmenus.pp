@@ -585,10 +585,12 @@ begin
   if ABitmap <> nil then
   begin
     if not CheckBitmap(ABitmap.Handle, SName) then Exit;
+
     IconType := kMenuCGImageRefType;
     CGImage :=
       TCarbonBitmap(ABitmap.Handle).CreateMaskedImage(TCarbonBitmap(ABitmap.MaskHandle));
-    AHandle := Pointer(CGImage);
+    if CGImage <> nil then
+      AHandle := Pointer(CGImage);
   end;
   
   if AHandle = nil then IconType := kMenuNoIcon;
