@@ -4168,8 +4168,17 @@ begin
     WriteLn('*********  TQtWidgetSet.SetFocus INIT focusing ', TQtWidget(hwnd).lclobject.name);
     {$endif}
     result := GetFocus;
-    if Result <> 0 then
+
+    {apply clearFocus only to X11 & Mac,
+     qt win32 doesn't like this}
+    {$IFDEF UNIX}
+    if (Result <> 0) and not
+      ((TQtWidget(Hwnd) is TQtMainWindow) or
+      (TQtWidget(Result) is TQtMainWindow))
+    then
       QWidget_clearFocus(TQtWidget(Result).Widget);
+    {$ENDIF}
+
     TQtWidget(hWnd).setFocus;
     {$ifdef VerboseFocus}
     DebugLn('********* TQtWidgetSet.SetFocus END was %x now is %x',[result,hwnd]);
