@@ -120,6 +120,13 @@ begin
   pathMedia := pathStr + BundleResourceFolder;
 {$ENDIF}
 
+  // Under Windows we get the path of the executable
+{$IFDEF Windows}
+  pathMedia := ExtractFilePath(Application.ExeName);
+{$ENDIF}
+
+  IncludeTrailingBackslash(pathMedia);
+
   SystrayIcon.Hint := 'my tool tip';
 
   SystrayIcon.OnClick := HandleClick;
@@ -139,6 +146,7 @@ begin
       // Loads the icon
       BaseImage.LoadFromFile(pathMedia + 'icon.ico');
 
+//      SecondImage.Add(pf32bit, 22, 22);
       SecondImage.Height := 22;
       SecondImage.Width := 22;
       {$IFDEF FPC}
