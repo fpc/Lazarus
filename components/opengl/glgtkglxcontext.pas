@@ -73,12 +73,12 @@ type
 
 function gdk_gl_query: boolean;
 function gdk_gl_choose_visual(attrlist: Plongint): PGdkVisual;
-function gdk_gl_get_config(visual: PGdkVisual; attrib: longint):longint;
+function gdk_gl_get_config(visual: PGdkVisual; attrib: longint): longint;
 function gdk_gl_context_new(visual: PGdkVisual; attrlist: PlongInt): PGdkGLContext;
 function gdk_gl_context_share_new(visual: PGdkVisual; sharelist: PGdkGLContext;
-                                  direct: Integer; attrlist: plongint): PGdkGLContext;
+                                  direct: TBool; attrlist: plongint): PGdkGLContext;
 function gdk_gl_context_attrlist_share_new(attrlist: Plongint;
-               sharelist: PGdkGLContext; direct: Integer): PGdkGLContext;
+               sharelist: PGdkGLContext; direct: TBool): PGdkGLContext;
 function gdk_gl_context_ref(context: PGdkGLContext): PGdkGLContext;
 procedure gdk_gl_context_unref(context:PGdkGLContext);
 function gdk_gl_make_current(drawable: PGdkDrawable;
@@ -392,11 +392,12 @@ end;
 
 function gdk_gl_context_new(visual: PGdkVisual; attrlist: PlongInt): PGdkGLContext;
 begin
-  Result:=gdk_gl_context_share_new(visual,nil,0,attrlist);
+  Result := gdk_gl_context_share_new(visual, nil,
+    {$IFDEF VER2_2}false{$ELSE}0{$ENDIF}, attrlist);
 end;
 
 function gdk_gl_context_share_new(visual: PGdkVisual; sharelist: PGdkGLContext;
-  direct: integer; attrlist: plongint): PGdkGLContext;
+  direct: TBool; attrlist: plongint): PGdkGLContext;
 var
   dpy: PDisplay;
   vi: PXVisualInfo;
@@ -437,19 +438,19 @@ begin
 end;
 
 function gdk_gl_context_attrlist_share_new(attrlist: Plongint;
-  sharelist: PGdkGLContext; direct: Integer): PGdkGLContext;
+  sharelist: PGdkGLContext; direct: TBool): PGdkGLContext;
 var
   visual: PGdkVisual;
 begin
   {$IFDEF lclgtk2}
   visual :=nil;
-  Result:=gdk_gl_context_share_new(visual, sharelist, direct,attrlist);
+  Result := gdk_gl_context_share_new(visual, sharelist, direct, attrlist);
   {$ELSE}
   visual := gdk_gl_choose_visual(attrlist);
-  if (visual<>nil) then
-    Result:=gdk_gl_context_share_new(visual, sharelist, direct,attrlist)
+  if (visual <> nil) then
+    Result := gdk_gl_context_share_new(visual, sharelist, direct, attrlist)
   else
-    Result:=nil;
+    Result := nil;
   {$ENDIF}
 end;
 
@@ -627,9 +628,9 @@ var
   glcontext: PGdkGLContext;
   gl_area: PGtkGLArea;
 begin
-  Result:=nil;
+  Result := nil;
   //DebugLn(['gtk_gl_area_share_new START']);
-  if (share<>nil) and (not GTK_IS_GL_AREA(share)) then
+  if (share <> nil) and (not GTK_IS_GL_AREA(share)) then
     exit;
   {$IFNDEF MSWindows}
   {$IFDEF lclgtk2}
@@ -641,14 +642,15 @@ begin
   {$ENDIF non MSWindows}
 
   sharelist := nil;
-  if share<>nil then sharelist:=share^.glcontext;
-  glcontext := gdk_gl_context_share_new(visual, sharelist, 1, attrlist);
+  if share <> nil then sharelist := share^.glcontext;
+  glcontext := gdk_gl_context_share_new(visual, sharelist,
+    {$IFDEF VER2_2}true{$ELSE}1{$ENDIF}, attrlist);
   if (glcontext = nil) then exit;
 
   {$IFNDEF MSWindows}
-  if visual<>nil then begin
+  if visual <> nil then begin
     // use colormap and visual suitable for OpenGL rendering
-    gtk_widget_push_colormap(gdk_colormap_new(visual,gtk_TRUE));
+    gtk_widget_push_colormap(gdk_colormap_new(visual, gtk_TRUE));
     gtk_widget_push_visual(visual);
   end;
   {$ENDIF non MSWindows}
