@@ -163,7 +163,7 @@ procedure TCustomForm.IconChanged(Sender: TObject);
 begin
   Icon.OnChange := nil;
 
-  Icon.Current := Icon.GetBestApplicationIndex;
+  Icon.Current := Icon.GetBestIndexForSize(Size(GetSystemMetrics(SM_CXICON), GetSystemMetrics(SM_CYICON)));
   if HandleAllocated then
     TWSCustomFormClass(WidgetSetClass).SetIcon(Self, GetIconHandle);
     

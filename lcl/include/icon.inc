@@ -377,6 +377,7 @@ constructor TCustomIcon.Create;
 begin
   inherited Create;
   FCurrent := -1;
+  FRequestedSize := Size(0, 0);
 end;
 
 procedure TCustomIcon.Delete(Aindex: Integer);
@@ -422,6 +423,11 @@ begin
     BitmapHandleNeeded;
     Result := TIconImage(TSharedIcon(FSharedImage).FImages[FCurrent]).Handle;
   end;
+end;
+
+class function TCustomIcon.GetDefaultSize: TSize;
+begin
+  Result := Size(GetSystemMetrics(SM_CXICON), GetSystemMetrics(SM_CYICON));
 end;
 
 function TCustomIcon.GetIndex(AFormat: TPixelFormat; AHeight, AWidth: Word): Integer;
@@ -569,6 +575,20 @@ begin
   // nothing to do, handled by image itself
 end;
 
+procedure TCustomIcon.CheckRequestedSize;
+begin
+  if (FRequestedSize.cx = 0) and (FRequestedSize.cy = 0) then
+    FRequestedSize := GetDefaultSize;
+
+  // if someone set only height then set width = height
+  if FRequestedSize.cx = 0 then
+    FRequestedSize.cx := FRequestedSize.cy;
+
+  // if someone set only width then set height = width
+  if FRequestedSize.cy = 0 then
+    FRequestedSize.cy := FRequestedSize.cx;
+end;
+
 procedure TCustomIcon.ReadData(Stream: TStream);
 var
   Signature: array [0..3] of Char;
@@ -598,8 +618,6 @@ var
   StreamStart: Int64;
   IconDir: array of TIconDirEntry;
   n: Integer;
-  MaxWidth, MaxHeight, MaxDepth: Word;
-  BestIndex: Word;
   IconImage: TIconImage;
   IntfImage: TLazIntfImage;
   PNGSig: array[0..7] of Byte;
@@ -608,8 +626,6 @@ var
   ImgReader: TFPCustomImageReader;
   LazReader: ILazImageReader;
   RawImg: TRawImage;
-  Depth: Byte;
-
 begin
   StreamStart := AStream.Position;
   AStream.Read(Header, SizeOf(Header));
@@ -633,11 +649,6 @@ begin
   SetLength(IconDir, Header.idCount);
   AStream.Read(IconDir[0], Header.idCount * SizeOf(IconDir[0]));
   
-  // Adjust all entries and find best (atm the order: max width, max height, max depth)
-  MaxWidth := 0;
-  MaxHeight := 0;
-  MaxDepth := 0;
-  BestIndex := 0;
   PNGReader := nil;
   DIBReader := nil;
   IntfImage := nil;
@@ -692,36 +703,6 @@ begin
       else IntfImage.DataDescription := QueryDescription([riqfRGB, riqfAlpha, riqfMask]); // fallback to default
       ImgReader.ImageRead(AStream, IntfImage);
 
-      // update best image index
-      if IntfImage.Height > MaxHeight
-      then begin
-        MaxHeight := IntfImage.Height;
-        BestIndex := n;
-      end;
-
-      if (IntfImage.Height = MaxHeight)
-      and (IntfImage.Width > MaxWidth)
-      then begin
-        MaxWidth := IntfImage.Width;
-        BestIndex := n;
-      end;
-
-      if (IntfImage.Height = MaxHeight)
-      and (IntfImage.Width = MaxWidth)
-      then begin
-        // new icons have bpp in direntry, older not.
-        // So use it only for png (which itself is alway at bpp=32)
-        if (IconDir[n].bWidth = 0) or (IconDir[n].bHeight = 0)
-        then Depth := IconDir[n].wBpp
-        else Depth := IntfImage.DataDescription.Depth;
-
-        if Depth > MaxDepth
-        then begin
-          MaxDepth := Depth;
-          BestIndex := n;
-        end;
-      end;
-
       // Add image
       IntfImage.GetRawImage(RawImg, True);
       // Paul: don't set MaskBitsPerPixel to zero => windows will fail with no mask
@@ -741,7 +722,9 @@ begin
     PNGReader.Free;
     IntfImage.Free;
   end;
-  FCurrent := BestIndex;
+  // Adjust all entries and find best (atm the order: best width, best height, max depth)
+  CheckRequestedSize;
+  FCurrent := GetBestIndexForSize(FRequestedSize);
 end;
 
 procedure TCustomIcon.Remove(AFormat: TPixelFormat; AHeight, AWidth: Word);
@@ -769,21 +752,27 @@ begin
   // nothing
 end;
 
-function TCustomIcon.GetBestApplicationIndex: Integer;
+function TCustomIcon.GetBestIndexForSize(ASize: TSize): Integer;
 var
-  BestCX, BestCY, BestDepth, i, dx, dy, dd: Integer;
+  BestDepth, i, dx, dy, dd: Integer;
   CurRawImage: TRawImage;
   ScreenDC: HDC;
 begin
   Result := -1;
   
-  BestCX := GetSystemMetrics(SM_CXICON);
-  if BestCX = -1 then
-    BestCX := 32;
+  if ASize.cx <= 0 then
+  begin
+    ASize.cx := GetSystemMetrics(SM_CXICON);
+    if ASize.cx = -1 then
+      ASize.cx := 32;
+  end;
 
-  BestCY := GetSystemMetrics(SM_CYICON);
-  if BestCY = -1 then
-    BestCY := 32;
+  if ASize.cy <= 0 then
+  begin
+    ASize.cy := GetSystemMetrics(SM_CYICON);
+    if ASize.cy = -1 then
+      ASize.cy := 32;
+  end;
 
   ScreenDC := GetDC(0);
   BestDepth := GetDeviceCaps(ScreenDC, BITSPIXEL);
@@ -796,21 +785,21 @@ begin
   for i := 0 to Count - 1 do
   begin
     CurRawImage := TIconImage(TSharedIcon(FSharedImage).FImages[i]).FImage;
-    if Abs(BestCX - CurRawImage.Description.Width) < dx then
+    if Abs(ASize.cx - CurRawImage.Description.Width) < dx then
     begin
-      dx := Abs(BestCX - CurRawImage.Description.Width);
+      dx := Abs(ASize.cx - CurRawImage.Description.Width);
       Result := i;
     end
     else
-    if Abs(BestCX - CurRawImage.Description.Width) = dx then
+    if Abs(ASize.cx - CurRawImage.Description.Width) = dx then
     begin
-      if Abs(BestCY - CurRawImage.Description.Height) < dy then
+      if Abs(ASize.cy - CurRawImage.Description.Height) < dy then
       begin
-        dy := Abs(BestCY - CurRawImage.Description.Height);
+        dy := Abs(ASize.cy - CurRawImage.Description.Height);
         Result := i;
       end
       else
-      if Abs(BestCY - CurRawImage.Description.Height) = dy then
+      if Abs(ASize.cy - CurRawImage.Description.Height) = dy then
       begin
         if Abs(BestDepth - CurRawImage.Description.Depth) < dd then
         begin
@@ -834,7 +823,9 @@ end;
 
 procedure TCustomIcon.SetSize(AWidth, AHeight: integer);
 begin
-  raise EInvalidGraphicOperation.Create(rsIconImageSizeChange);
+  if FCurrent <> -1
+  then raise EInvalidGraphicOperation.Create(rsIconImageSizeChange)
+  else FRequestedSize := Size(AWidth, AHeight);
 end;
 
 procedure TCustomIcon.UnshareImage(CopyContent: boolean);

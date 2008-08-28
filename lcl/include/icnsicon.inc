@@ -108,7 +108,6 @@ procedure TIcnsIcon.IcnsProcess;
 
 var
   i, AIndex: integer;
-  IconType: TicnsIconType;
   ImagesForMask: TicnsIconTypes;
   IconImage: TIconImage;
 begin
@@ -128,7 +127,6 @@ begin
     FreeAndNil(FMaskList);
   end;
 
-  IconType := iitNone;
   for i := 0 to FImageList.Count - 1 do
   begin
     // todo: we have no jpeg 2000 reader to decompress their data => skip for now
@@ -141,13 +139,10 @@ begin
       IconImage := GetImagesClass.Create(FImageList[i]^.RawImage);
       Add(IconImage);
     end;
-    if FImageList[i]^.IconType > IconType then
-    begin
-      IconType := FImageList[i]^.IconType;
-      FCurrent := TSharedIcon(FSharedImage).Count - 1;
-    end;
   end;
   FreeAndNil(FImageList);
+  CheckRequestedSize;
+  FCurrent := GetBestIndexForSize(FRequestedSize);
 end;
 
 constructor TIcnsIcon.Create;

@@ -876,7 +876,7 @@ var
 begin
   Icon.OnChange := nil;
   
-  Icon.Current := Icon.GetBestApplicationIndex;
+  Icon.Current := Icon.GetBestIndexForSize(Size(GetSystemMetrics(SM_CXICON), GetSystemMetrics(SM_CYICON)));
   Widgetset.AppSetIcon(GetIconHandle);
   if FFormList<>nil then
     for i :=0 to FFormList.Count - 1 do

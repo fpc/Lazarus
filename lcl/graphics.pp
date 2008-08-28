@@ -1462,10 +1462,13 @@ type
     procedure SetCurrent(const AValue: Integer);
   protected
     FCurrent: Integer;
+    FRequestedSize: TSize;
     procedure MaskHandleNeeded; override;
     procedure PaletteNeeded; override;
+    procedure CheckRequestedSize;
     function GetIndex(AFormat: TPixelFormat; AHeight, AWidth: Word): Integer;
     function GetBitmapHandle: HBITMAP; override;
+    class function GetDefaultSize: TSize; virtual;
     function GetMasked: Boolean; override;
     function GetMaskHandle: HBITMAP; override;
     function GetPalette: HPALETTE; override;
@@ -1504,7 +1507,7 @@ type
     function MaskHandleAllocated: boolean; override;
     function PaletteAllocated: boolean; override;
     procedure SetHandles(ABitmap, AMask: HBITMAP); override;
-    function GetBestApplicationIndex: Integer;
+    function GetBestIndexForSize(ASize: TSize): Integer;
 
     property Current: Integer read FCurrent write SetCurrent;
     property Count: Integer read GetCount;
@@ -1588,6 +1591,7 @@ type
     procedure SetCursorHandle(AValue: HCURSOR);
   protected
     procedure HandleNeeded; override;
+    class function GetDefaultSize: TSize; override;
     class function GetSharedImageClass: TSharedRasterImageClass; override;
   public
     class function GetFileExtensions: string; override;

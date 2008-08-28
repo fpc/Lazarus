@@ -103,4 +103,9 @@ begin
   FSharedImage.FHandle := WidgetSet.CreateIconIndirect(@IconInfo);
 end;
 
+class function TCursorImage.GetDefaultSize: TSize;
+begin
+  Result := Size(GetSystemMetrics(SM_CXCURSOR), GetSystemMetrics(SM_CYCURSOR));
+end;
+
 
