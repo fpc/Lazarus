@@ -4168,6 +4168,8 @@ begin
     WriteLn('*********  TQtWidgetSet.SetFocus INIT focusing ', TQtWidget(hwnd).lclobject.name);
     {$endif}
     result := GetFocus;
+    if Result <> 0 then
+      QWidget_clearFocus(TQtWidget(Result).Widget);
     TQtWidget(hWnd).setFocus;
     {$ifdef VerboseFocus}
     DebugLn('********* TQtWidgetSet.SetFocus END was %x now is %x',[result,hwnd]);
