@@ -9202,6 +9202,7 @@ var
   i: integer;
   VersionInfo: TProjectVersionInfo;
   NeedBuildAllFlag: Boolean;
+  UnitOutputDirectory: String;
 begin
   if Project1.MainUnitInfo=nil then begin
     // this project has not source to compile
@@ -9320,6 +9321,19 @@ begin
           exit;
         end;
       end;
+    end;
+
+    // create output directories
+    UnitOutputDirectory:=Project1.CompilerOptions.GetUnitOutPath(false);
+    if not DirPathExistsCached(UnitOutputDirectory) then begin
+      if not FileIsInPath(UnitOutputDirectory,WorkingDir) then begin
+        Result:=IDEQuestionDialog('Create directory?',
+          'The output directory "'+UnitOutputDirectory+'" is missing.',
+          mtConfirmation,[mrYes,'Create it',mrCancel],'');
+        if Result<>mrYes then exit;
+      end;
+      Result:=ForceDirectoryInteractive(UnitOutputDirectory,[mbRetry]);
+      if Result<>mrOk then exit;
     end;
 
     // execute compilation tool 'Before'
