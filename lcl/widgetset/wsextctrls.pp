@@ -172,7 +172,6 @@ type
     class procedure InternalUpdate(const ATrayIcon: TCustomTrayIcon); virtual;
     class function ShowBalloonHint(const ATrayIcon: TCustomTrayIcon): Boolean; virtual;
     class function GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint; virtual;
-    class function GetCanvas(const ATrayIcon: TCustomTrayIcon): TCanvas; virtual;
   end;
   TWSCustomTrayIconClass = class of TWSCustomTrayIcon;
 
@@ -331,11 +330,6 @@ end;
 class function TWSCustomTrayIcon.GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint;
 begin
   Result := Point(0, 0);
-end;
-
-class function TWSCustomTrayIcon.GetCanvas(const ATrayIcon: TCustomTrayIcon): TCanvas;
-begin
-  Result := ATrayIcon.Icon.Canvas;
 end;
 
 initialization

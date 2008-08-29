@@ -223,22 +223,6 @@ begin
   Result := TWSCustomTrayIconClass(WidgetSetClass).GetPosition(Self);
 end;
 
-{*******************************************************************
-*  TCustomTrayIcon.GetCanvas ()
-*
-*  DESCRIPTION:    Getter method of the Canvas property
-*
-*  PARAMETERS:     None
-*
-*  RETURNS:        The canvas of the underlaying Widgetset component
-*
-*******************************************************************}
-function TCustomTrayIcon.GetCanvas: TCanvas;
-begin
-  //Result := Icon.Canvas;
-  Result := TWSCustomTrayIconClass(WidgetSetClass).GetCanvas(Self);
-end;
-
 procedure TCustomTrayIcon.SetHint(const AValue: string);
 begin
   FHint := AValue;
