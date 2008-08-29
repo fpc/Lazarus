@@ -1,16 +1,13 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="2">
+  <Package Version="3">
     <Name Value="sqlitelaz"/>
     <Author Value="Luiz Américo Pereira Câmara"/>
     <CompilerOptions>
-      <Version Value="5"/>
+      <Version Value="8"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
       </SearchPaths>
-      <CodeGeneration>
-        <Generate Value="Faster"/>
-      </CodeGeneration>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
@@ -18,7 +15,7 @@
     <Description Value="TSqliteDataset class package"/>
     <License Value="LGPL"/>
     <Version Minor="3"/>
-    <Files Count="2">
+    <Files Count="3">
       <Item1>
         <Filename Value="registersqlite.pas"/>
         <HasRegisterProc Value="True"/>
@@ -30,6 +27,11 @@
         <Type Value="Virtual Unit"/>
         <UnitName Value="sqliteds"/>
       </Item2>
+      <Item3>
+        <Filename Value="sqlitecomponenteditor.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="SqliteComponentEditor"/>
+      </Item3>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">

@@ -137,11 +137,11 @@ begin
       // so the datafile will be created in the right place
       OldDir:=GetCurrentDirUTF8;
       if ExtractFilePath (LazarusIDE.ActiveProject.MainFile.FileName) <> '' then
-        ChDir(ExtractFilePath (LazarusIDE.ActiveProject.MainFile.FileName));
+        SetCurrentDirUTF8(ExtractFilePath (LazarusIDE.ActiveProject.MainFile.FileName));
       Dataset:=ADataset;
       ShowModal;
     finally
-      chdir(OldDir);
+      SetCurrentDirUTF8(OldDir);
       Free;
     end;  
   end;    
