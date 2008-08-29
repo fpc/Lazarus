@@ -54,8 +54,8 @@ fi
 TmpDir=/tmp/fpc_patchdir
 if [ "$WithTempDir" = "yes" ]; then
   if [ -d $TmpDir ]; then
-    rm -rf $TmpDir/*
-    rm -r $TmpDir
+    # note: beware of malicious links
+    rm -rf $TmpDir
   fi
   mkdir -p $TmpDir
 
