@@ -272,7 +272,7 @@
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TStatusPanel.GetDisplayName">
+      <element name="TStatusPanel.GetDisplayName" link="#rtl.Classes.TCollectionItem.GetDisplayName">
         <short/>
         <descr/>
         <errors/>
@@ -294,7 +294,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TStatusPanel.SetIndex">
+      <element name="TStatusPanel.SetIndex" link="#rtl.Classes.TCollectionItem.SetIndex">
         <short/>
         <descr/>
         <errors/>
@@ -393,7 +393,7 @@
         <seealso/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TStatusPanels.GetItem">
+      <element name="TStatusPanels.GetItem" link="#rtl.Classes.TCollection.GetItem">
         <short/>
         <descr/>
         <errors/>
@@ -408,7 +408,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TStatusPanels.SetItem">
+      <element name="TStatusPanels.SetItem" link="#rtl.Classes.TCollection.SetItem">
         <short/>
         <descr/>
         <errors/>
@@ -583,14 +583,14 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TStatusBar.CreateWnd">
+      <element name="TStatusBar.CreateWnd" link="#LCL.Controls.TWinControl.CreateWnd">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TStatusBar.DestroyWnd">
+      <element name="TStatusBar.DestroyWnd" link="#LCL.Controls.TWinControl.DestroyWnd">
         <short/>
         <descr/>
         <errors/>
@@ -1874,7 +1874,7 @@
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TTabControlNoteBookStrings.GetTabIndex">
+      <element name="TTabControlNoteBookStrings.GetTabIndex" link="#LCL.ComCtrls.TTabControlStrings.GetTabIndex">
         <short/>
         <descr/>
         <errors/>
@@ -2015,9 +2015,7 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TTabControlNoteBookStrings.Create">
-        <short>
-          <var>Create</var> a new instance of this control</short>
+      <element name="TTabControlNoteBookStrings.Create" link="#rtl.System.TObject.Create">
         <descr/>
         <errors/>
         <seealso/>
@@ -2527,14 +2525,14 @@
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomTabControl.CreateWnd">
+      <element name="TCustomTabControl.CreateWnd" link="#LCL.Controls.TWinControl.CreateWnd">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomTabControl.DestroyHandle">
+      <element name="TCustomTabControl.DestroyHandle" link="#LCL.Controls.TWinControl.DestroyHandle">
         <short/>
         <descr/>
         <errors/>
@@ -2626,7 +2624,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomTabControl.AdjustClientRect">
+      <element name="TCustomTabControl.AdjustClientRect" link="#LCL.Controls.TWinControl.AdjustClientRect">
         <short/>
         <descr/>
         <errors/>
@@ -3625,8 +3623,7 @@ cdsIndeterminate</descr>
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TListItem.Create">
-        <short>Create a new List Item</short>
+      <element name="TListItem.Create" link="#rtl.System.TObject.Create">
         <descr/>
         <errors/>
         <seealso/>
@@ -3707,7 +3704,7 @@ cdsIndeterminate</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TListItem.SubItems">
-        <short> The list of <var>SubItems</var> associated with this ListItem</short>
+        <short>The list of <var>SubItems</var> associated with this ListItem</short>
         <descr/>
         <seealso/>
       </element>
@@ -3912,8 +3909,7 @@ cdsIndeterminate</descr>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TListItems.Create">
-        <short>Create a new instance of the collection</short>
+      <element name="TListItems.Create" link="#rtl.System.TObject.Create">
         <descr/>
         <errors/>
         <seealso/>
@@ -15852,11 +15848,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       <element name="THeaderControl.OnSectionClick" link="#LCL.ComCtrls.TCustomHeaderControl.OnSectionClick"/>
       <element name="THeaderControl.OnSectionResize" link="#LCL.ComCtrls.TCustomHeaderControl.OnSectionResize"/>
       <element name="THeaderControl.OnSectionTrack" link="#LCL.ComCtrls.TCustomHeaderControl.OnSectionTrack"/>
-      <element name="TPageControl.OnGetDockCaption"/>
-      <element name="TPageControl.OnGetSiteInfo">
-        <short>
-          <var>OnGetSiteInfo</var> - event handler for getting information about the current site</short>
-      </element>
+      <element name="TPageControl.OnGetDockCaption" link="#LCL.Controls.TWinControl.OnGetDockCaption"/>
+      <element name="TPageControl.OnGetSiteInfo" link="#LCL.Controls.TWinControl.OnGetSiteInfo"/>
       <element name="TCustomTabControl.IndexOfTabWithCaption">
         <short>
           <var>IndexOfTabWithCaption</var> - returns the index value of the tab that has the specified Caption</short>
@@ -16042,6 +16035,13 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       <element name="TTabSheet.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
       <element name="TTrackBar.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
       <element name="TUpDown.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
+      <element name="TPageControl.DoAddDockClient"/>
+      <element name="TPageControl.DoRemoveDockClient"/>
+      <element name="TPageControl.DoUndockClientMsg"/>
+      <element name="TPageControl.PositionDockRect"/>
+      <element name="TListItem.DisplayRect"/>
+      <element name="TListItem.DisplayRectSubItem"/>
+      <element name="TListItems.WSCreateItems"/>
     </module>
     <!-- ComCtrls -->
   </package>
