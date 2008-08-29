@@ -1813,7 +1813,7 @@ begin
 
   // add include path to config directory
   ConfigDir:=AppendPathDelim(GetPrimaryConfigPath);
-  AddOption(PrepareCmdLineOption('-Fi'+ConfigDir));
+  AddOption(PrepareCmdLineOption('-Fi'+UTF8ToSys(ConfigDir)));
 end;
 
 function TLazPackageGraph.SaveAutoInstallConfig: TModalResult;

@@ -540,7 +540,7 @@ begin
         // fortunately, we don't support a PCP with space on windows for
         // fpc 2.2.0
         if pos(' ',MakeIDECfgFilename)>0 then
-          MakeIDECfgFilename:=ExtractShortPathName(MakeIDECfgFilename);
+          MakeIDECfgFilename:=ExtractShortPathNameUTF8(MakeIDECfgFilename);
         {$ENDIF}
         ExtraOptions:='@'+MakeIDECfgFilename;
         exit;
