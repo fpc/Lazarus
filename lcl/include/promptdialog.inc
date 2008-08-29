@@ -224,6 +224,7 @@ begin
 
   IsSmallDevice := (Screen.Width <= 300);
 
+  AutoScroll:=false;
   OnKeyDown :=@PromptDialogKeyDown;
   //debugln('TPromptDialog.CreateMessageDialog A ButtonCount=',dbgs(ButtonCount));
 
