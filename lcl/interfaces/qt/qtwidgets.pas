@@ -799,6 +799,7 @@ type
     FSignalEntered: QAbstractItemView_hookH;
     FSignalPressed: QAbstractItemView_hookH;
     FSignalViewportEntered: QAbstractItemView_hookH;
+    FAbstractItemViewportEventHook: QObject_hookH;
     function GetOwnerDrawn: Boolean;
     procedure SetOwnerDrawn(const AValue: Boolean);
   public
@@ -811,6 +812,7 @@ type
     procedure signalViewportEntered; cdecl; virtual;
     procedure AttachEvents; override;
     procedure DetachEvents; override;
+    function itemViewViewportEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
  public
     procedure clearSelection;
     function getModel: QAbstractItemModelH;
@@ -953,7 +955,7 @@ type
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
-    
+
     procedure SignalItemPressed(item: QTreeWidgetItemH; column: Integer) cdecl;
     procedure SignalItemClicked(item: QTreeWidgetItemH; column: Integer) cdecl;
     procedure SignalItemDoubleClicked(item: QTreeWidgetItemH; column: Integer) cdecl;
@@ -6220,32 +6222,9 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 procedure TQtListWidget.SignalItemDoubleClicked(item: QListWidgetItemH); cdecl;
-var
-  Msg: TLMMouse;
-  MousePos: TQtPoint;
-  Modifiers: QtKeyboardModifiers;
 begin
-  QCursor_pos(@MousePos);
-  QWidget_mapFromGlobal(Widget, @MousePos, @MousePos);
-  OffsetMousePos(@MousePos);
-  Msg.Keys := 0;
-
-  Modifiers := QApplication_keyboardModifiers();
-  Msg.Keys := QtKeyModifiersToKeyState(Modifiers) or MK_LBUTTON;
-
-  Msg.XPos := SmallInt(MousePos.X);
-  Msg.YPos := SmallInt(MousePos.Y);
-
-  Msg.Msg := LM_LBUTTONDBLCLK;
-  NotifyApplicationUserInput(Msg.Msg);
-  DeliverMessage(Msg);
-  Msg.Msg := LM_PRESSED;
-  DeliverMessage(Msg);
-  Msg.Msg := LM_LBUTTONUP;
-  NotifyApplicationUserInput(Msg.Msg);
-  DeliverMessage(Msg);
-  Msg.Msg := LM_RELEASED;
-  DeliverMessage(Msg);
+  {does nothing at this time wait more featured LCL implementation
+   eg. OnItemDoubleClick}
 end;
 
 {------------------------------------------------------------------------------
@@ -6254,32 +6233,9 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 procedure TQtListWidget.SignalItemClicked(item: QListWidgetItemH); cdecl;
-var
-  Msg: TLMMouse;
-  MousePos: TQtPoint;
-  Modifiers: QtKeyboardModifiers;
 begin
-  QCursor_pos(@MousePos);
-  QWidget_mapFromGlobal(Widget, @MousePos, @MousePos);
-  OffsetMousePos(@MousePos);
-  Msg.Keys := 0;
-
-  Modifiers := QApplication_keyboardModifiers();
-  Msg.Keys := QtKeyModifiersToKeyState(Modifiers) or MK_LBUTTON;
-
-  Msg.XPos := SmallInt(MousePos.X);
-  Msg.YPos := SmallInt(MousePos.Y);
-
-  Msg.Msg := LM_LBUTTONDOWN;
-  NotifyApplicationUserInput(Msg.Msg);
-  DeliverMessage(Msg);
-  Msg.Msg := LM_PRESSED;
-  DeliverMessage(Msg);
-  Msg.Msg := LM_LBUTTONUP;
-  NotifyApplicationUserInput(Msg.Msg);
-  DeliverMessage(Msg);
-  Msg.Msg := LM_RELEASED;
-  DeliverMessage(Msg);
+  {does nothing at this time wait more featured LCL implementation
+   eg. OnItemClick}
 end;
 
 procedure TQtListWidget.ItemDelegatePaint(painter: QPainterH;
@@ -6815,6 +6771,7 @@ begin
 
   QTreeWidget_itemEntered_Event(Method) := @SignalItemEntered;
   QTreeWidget_hook_hook_ItemEntered(FItemEnteredHook, Method);
+
 end;
 
 procedure TQtTreeWidget.DetachEvents;
@@ -6827,7 +6784,7 @@ begin
   QTreeWidget_hook_destroy(FItemSelectionChangedHook);
   QTreeWidget_hook_destroy(FItemPressedHook);
   QTreeWidget_hook_destroy(FItemEnteredHook);
-  
+
   inherited DetachEvents;
 end;
 
@@ -6867,37 +6824,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtTreeWidget.SignalItemClicked(item: QTreeWidgetItemH; column: Integer) cdecl;
 var
-  Msg: TLMMouse;
-  MousePos: TQtPoint;
-  Modifiers: QtKeyboardModifiers;
   MsgN: TLMNotify;
   NMLV: TNMListView;
   R: TRect;
   Pt: TPoint;
 begin
-
-  QCursor_pos(@MousePos);
-  QWidget_mapFromGlobal(Widget, @MousePos, @MousePos);
-  OffsetMousePos(@MousePos);
-  Msg.Keys := 0;
-
-  Modifiers := QApplication_keyboardModifiers();
-  Msg.Keys := QtKeyModifiersToKeyState(Modifiers) or MK_LBUTTON;
-
-  Msg.XPos := SmallInt(MousePos.X);
-  Msg.YPos := SmallInt(MousePos.Y);
-
-  Msg.Msg := LM_LBUTTONDOWN;
-  NotifyApplicationUserInput(Msg.Msg);
-  DeliverMessage(Msg);
-  Msg.Msg := LM_PRESSED;
-  DeliverMessage(Msg);
-  Msg.Msg := LM_LBUTTONUP;
-  NotifyApplicationUserInput(Msg.Msg);
-  DeliverMessage(Msg);
-  Msg.Msg := LM_RELEASED;
-  DeliverMessage(Msg);
-
   // we'll send also which item is clicked ... probably future
   // lcl implementation of OnItemClick.
   FillChar(MsgN, SizeOf(MsgN), #0);
@@ -6939,7 +6870,7 @@ var
 begin
   FillChar(Msg, SizeOf(Msg), #0);
   FillChar(NMLV, SizeOf(NMLV), #0);
-  
+
   Msg.Msg := LM_LBUTTONDBLCLK;
 
   NMLV.hdr.hwndfrom := LCLObject.Handle;
@@ -6953,8 +6884,8 @@ begin
   // LVIF_STATE;
   
   Msg.NMHdr := @NMLV.hdr;
-  
-  DeliverMessage( Msg);
+  {we send dblclick over TQtAbstractItemView.itemViewViewportEventFilter }
+ // DeliverMessage( Msg);
 end;
 
 {------------------------------------------------------------------------------
@@ -8457,6 +8388,10 @@ begin
   QAbstractItemView_viewportEntered_Event(Method) := @SignalViewportEntered;
   QAbstractItemView_hook_hook_viewportEntered(FSignalViewportEntered, Method);
 
+  FAbstractItemViewportEventHook := QObject_hook_create(QAbstractScrollArea_viewport(QAbstractScrollAreaH(Widget)));
+  TEventFilterMethod(Method) := @itemViewViewportEventFilter;
+  QObject_hook_hook_events(FAbstractItemViewportEventHook, Method);
+
 end;
 
 procedure TQtAbstractItemView.DetachEvents;
@@ -8467,7 +8402,24 @@ begin
   QAbstractItemView_hook_destroy(FSignalEntered);
   QAbstractItemView_hook_destroy(FSignalPressed);
   QAbstractItemView_hook_destroy(FSignalViewportEntered);
+  QObject_hook_destroy(FAbstractItemViewportEventHook);
   inherited DetachEvents;
+end;
+
+function TQtAbstractItemView.itemViewViewportEventFilter(Sender: QObjectH;
+  Event: QEventH): Boolean; cdecl;
+begin
+  {we install only mouse events on QAbstractItemView viewport}
+  Result := False;
+  QEvent_accept(Event);
+  if LCLObject <> nil then
+  begin
+    case QEvent_type(Event) of
+      QEventMouseButtonPress,
+      QEventMouseButtonRelease,
+      QEventMouseButtonDblClick: SlotMouse(Sender, Event);
+    end;
+  end;
 end;
 
 procedure TQtAbstractItemView.clearSelection;
