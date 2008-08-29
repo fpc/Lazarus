@@ -35,7 +35,7 @@ program LazRes;
 
 {$mode objfpc}{$H+}
 
-uses Classes, SysUtils, FileUtil, LResources;
+uses Classes, SysUtils, FileUtil, LCLProc, LResources;
 
 function StreamIsFormInTextFormat(Stream: TMemoryStream): boolean;
 const
@@ -75,7 +75,7 @@ begin
     Stream.Position:=0;
   except
     on E: Exception do begin
-      writeln('ERROR: unable to convert Delphi form to text: '+E.Message);
+      debugln('ERROR: unable to convert Delphi form to text: '+E.Message);
     end;
   end;
 end;
@@ -89,9 +89,9 @@ var
   S: String;
 begin
   if ParamCount<2 then begin
-    writeln('Usage: ',ExtractFileName(ParamStrUTF8(0))
+    debugln('Usage: ',ExtractFileName(ParamStrUTF8(0))
        ,' resourcefilename filename1 [filename2 ... filenameN]');
-    writeln('       ',ExtractFileName(ParamStrUTF8(0))
+    debugln('       ',ExtractFileName(ParamStrUTF8(0))
        ,' resourcefilename @filelist');
     exit;
   end;
@@ -104,7 +104,7 @@ begin
       S := ExpandFileNameUTF8(S);
       if not FileExistsUTF8(S) then 
       begin
-        writeln('ERROR: file list not found: ', S);
+        debugln('ERROR: file list not found: ',S);
         exit;
       end;
       FileList.LoadFromFile(UTF8ToSys(S));
@@ -118,12 +118,12 @@ begin
       S := FileList[a]; 
       if not FileExistsUTF8(S) 
       then begin
-        writeln('ERROR: file not found: ', S);
+        debugln('ERROR: file not found: ', S);
         exit;
       end;
       if ExpandFileNameUTF8(S) = FullResourceFilename
       then begin
-        writeln('ERROR: resourcefilename = file', a);
+        debugln(['ERROR: resourcefilename = file', a]);
         exit;
       end;
     end;
@@ -131,14 +131,14 @@ begin
     try
       ResFileStream:=TFileStream.Create(UTF8ToSys(ResourceFilename),fmCreate);
     except
-      writeln('ERROR: unable to create file ''', ResourceFilename, '''');
+      debugln('ERROR: unable to create file ''', ResourceFilename, '''');
       halt(1);
     end;
     ResMemStream:=TMemoryStream.Create;
     try
       for a:=0 to FileList.Count-1 do begin
         BinFilename:=FileList[a];
-        write(BinFilename);
+        dbgout(BinFilename);
         try
           BinFileStream:=TFileStream.Create(UTF8ToSys(BinFilename),fmOpenRead);
           BinMemStream:=TMemoryStream.Create;
@@ -152,10 +152,10 @@ begin
               ConvertFormToText(BinMemStream);
               ResourceName:=FindLFMClassName(BinMemStream);
               if ResourceName='' then begin
-                writeln(' ERROR: no resourcename');
+                debugln(' ERROR: no resourcename');
                 halt(2);
               end;
-              write(' ResourceName=''', ResourceName, ''' Type=''', ResourceType, '''');
+              dbgout(' ResourceName=''', ResourceName, ''' Type=''', ResourceType, '''');
               LFMtoLRSstream(BinMemStream,ResMemStream);
             end 
             else begin
@@ -164,10 +164,10 @@ begin
               ResourceName:=copy(ResourceName,1
                  ,length(ResourceName)-length(BinExt));
               if ResourceName='' then begin
-                writeln(' ERROR: no resourcename');
+                debugln(' ERROR: no resourcename');
                 halt(2);
               end;
-              write(' ResourceName=''', ResourceName, ''' Type=''', ResourceType+'''');
+              dbgout(' ResourceName=''', ResourceName, ''' Type=''', ResourceType+'''');
               BinaryToLazarusResourceCode(BinMemStream,ResMemStream
                  ,ResourceName,ResourceType);
             end;
@@ -176,10 +176,10 @@ begin
             BinMemStream.Free;
           end;
         except
-          writeln('  ERROR: unable to read file ''', BinFilename, '''');
+          debugln('  ERROR: unable to read file ''', BinFilename, '''');
           halt(3);
         end;
-        writeln('');
+        debugln('');
       end;
       ResMemStream.Position:=0;
       ResFileStream.CopyFrom(ResMemStream,ResMemStream.Size);
