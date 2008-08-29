@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="\"/>
+    <PathDelim Value="/"/>
     <Version Value="6"/>
     <General>
       <Flags>
@@ -37,8 +37,8 @@
         <Filename Value="lazres.pp"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="LazRes"/>
-        <CursorPos X="26" Y="113"/>
-        <TopLine Value="82"/>
+        <CursorPos X="10" Y="122"/>
+        <TopLine Value="109"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="21"/>
         <Loaded Value="True"/>
@@ -46,12 +46,10 @@
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="5"/>
-    <PathDelim Value="\"/>
+    <Version Value="8"/>
     <CodeGeneration>
       <HeapSize Value="8000000"/>
-      <Generate Value="Faster"/>
-      <TargetProcessor Value="1"/>
+      <TargetProcessor Value="PENTIUM"/>
     </CodeGeneration>
     <Linking>
       <Debugging>
@@ -60,7 +58,7 @@
     </Linking>
     <Other>
       <ConfigFile>
-        <ConfigFilePath Value=".\fpc.cfg"/>
+        <ConfigFilePath Value="./fpc.cfg"/>
       </ConfigFile>
       <CompilerPath Value="$(CompPath)"/>
     </Other>

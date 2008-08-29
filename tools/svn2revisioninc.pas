@@ -46,7 +46,7 @@ program Svn2RevisionInc;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, CustApp, SysUtils, Process, FileUtil, Dom, XmlRead, GetOpts;
+  Classes, CustApp, SysUtils, Process, LCLProc, FileUtil, Dom, XmlRead, GetOpts;
 
 type
 
@@ -225,7 +225,7 @@ begin
   writeln(RevisionIncText, RevisionIncComment);
   writeln(RevisionIncText, ConstStart, RevisionStr, ''';');
   CloseFile(RevisionIncText);
-  writeln(format('Created %s for revision: %s',
+  debugln(format('Created %s for revision: %s',
     [RevisionIncFileName, RevisionStr]));
 end;
 
@@ -235,28 +235,28 @@ procedure TSvn2RevisionApplication.ShowHelp;
     Result := ChangeFileExt(ExtractFileName(FileName), '');
   end;
 begin
-  writeln;
-  writeln(ParamStrUTF8(0));
-  writeln;
-  writeln(ExtractFileBaseName(ParamStrUTF8(0)), ' <repository path> <output file> [Options]');
-  writeln('or');
-  writeln(ExtractFileBaseName(ParamStrUTF8(0)), ' [Options] <repository path> <output file>');
-  writeln('or');
-  writeln(ExtractFileBaseName(ParamStrUTF8(0)), ' <repository path> [Options] <output file>');
-  writeln;
-  writeln('Options:');
-  writeln(' --o                  Output file');
-  writeln(' --c=<name>           Name of constant (default RevisionStr)');
-  writeln(' --s                  write revision to stdout, do not create inc file');
-  writeln(' --v                  Be more verbose');
-  writeln(' --h                  This help screen');
-  writeln;
-  writeln('Note: <repository path> default current directory');
-  writeln('      <output file> default revision.inc');
-  writeln('      --o overrides <output file>');
-  writeln;
-  writeln('      1st switchless parameter = <repository path>');
-  writeln('      2nd switchless parameter = <output file>');
+  debugln;
+  debugln(ParamStrUTF8(0));
+  debugln;
+  debugln(ExtractFileBaseName(ParamStrUTF8(0)), ' <repository path> <output file> [Options]');
+  debugln('or');
+  debugln(ExtractFileBaseName(ParamStrUTF8(0)), ' [Options] <repository path> <output file>');
+  debugln('or');
+  debugln(ExtractFileBaseName(ParamStrUTF8(0)), ' <repository path> [Options] <output file>');
+  debugln;
+  debugln('Options:');
+  debugln(' --o                  Output file');
+  debugln(' --c=<name>           Name of constant (default RevisionStr)');
+  debugln(' --s                  write revision to stdout, do not create inc file');
+  debugln(' --v                  Be more verbose');
+  debugln(' --h                  This help screen');
+  debugln;
+  debugln('Note: <repository path> default current directory');
+  debugln('      <output file> default revision.inc');
+  debugln('      --o overrides <output file>');
+  debugln;
+  debugln('      1st switchless parameter = <repository path>');
+  debugln('      2nd switchless parameter = <output file>');
   halt(1);
 end;
 
@@ -312,19 +312,19 @@ begin
   //checks
   if not DirectoryExistsUTF8(SourceDirectory) then
   begin
-    writeln('Error: Source directory "', SourceDirectory, '" doesn''t exist.');
+    debugln('Error: Source directory "', SourceDirectory, '" doesn''t exist.');
     exit;
   end;
   
   RevisionIncDirName:=ExtractFilePath(ExpandFileNameUTF8(RevisionIncFileName));
   if (not UseStdOut) and (not DirectoryExistsUTF8(RevisionIncDirName)) then begin
-    writeln('Error: Target Directory "', RevisionIncDirName, '" doesn''t exist.');
+    debugln('Error: Target Directory "', RevisionIncDirName, '" doesn''t exist.');
     exit;
   end;
   
   if ConstName[1] in ['0'..'9'] then
   begin
-    writeln('Error: Invalid constant name ', ConstName, '.');
+    debugln('Error: Invalid constant name ', ConstName, '.');
     exit;
   end;
   
@@ -347,7 +347,7 @@ end;
 procedure TSvn2RevisionApplication.Show(msg: string);
 begin
   if Verbose then
-    Writeln(msg);
+    debugln(msg);
 end;
 
 procedure TSvn2RevisionApplication.Run;
@@ -359,7 +359,7 @@ begin
   
   if UseStdOut then begin
     if FindRevision then
-      writeln(RevisionStr);
+      debugln(RevisionStr);
   end
   else if FindRevision or not IsValidRevisionInc then
     WriteRevisionInc;
