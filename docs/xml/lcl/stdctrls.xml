@@ -1497,6 +1497,12 @@ False is set when the edit or combobox control loses focus.
         <short/>
         <descr/>
         <seealso/>
+      </element
+      <!-- variable Visibility: private -->
+      <element name="TCustomComboBox.FOnGetItems">
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomComboBox.FOnMeasureItem">
@@ -2206,6 +2212,12 @@ False is set when the edit or combobox control loses focus.
 - event handler for when the drop-down list appears</short>
       </element>
       <!-- property Visibility: protected -->
+      <element name="TCustomComboBox.OnGetItems">
+        <short>Event handler when items can be just-in-time populated before showing the drop-down list.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: protected -->
       <element name="TCustomComboBox.OnMeasureItem">
         <short>Event handler when measurement of an item is required</short>
         <descr/>
@@ -2243,6 +2255,13 @@ False is set when the edit or combobox control loses focus.
       </element>
       <!-- destructor Visibility: public -->
       <element name="TCustomComboBox.Destroy" link="#LCL.Controls.TWinControl.Destroy">
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TCustomComboBox.IntfGetItems">
+        <short/>
         <descr/>
         <errors/>
         <seealso/>
@@ -2828,6 +2847,12 @@ has value -1.</p>
       </element>
       <!-- property Visibility: published -->
       <element name="TComboBox.OnExit" link="#LCL.Controls.TWinControl.OnExit">
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TComboBox.OnDropDown">
+        <short/>
         <descr/>
         <seealso/>
       </element>

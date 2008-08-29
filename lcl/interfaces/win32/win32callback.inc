@@ -1369,6 +1369,7 @@ begin
           end
         else if lWinControl is TCustomCombobox then
           case HIWORD(WParam) of
+            CBN_DROPDOWN: (lWinControl as TCustomCombobox).IntfGetItems;
             CBN_EDITCHANGE: LMessage.Msg := LM_CHANGED;
             { CBN_EDITCHANGE is only sent after the user changes the edit box.
               CBN_SELCHANGE is sent when the user changes the text by

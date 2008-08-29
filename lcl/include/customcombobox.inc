@@ -254,6 +254,16 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TCustomComboBox.IntfGetItems
+
+  Called whenever the items can be just-in-time populated.
+ ------------------------------------------------------------------------------}
+procedure TCustomComboBox.IntfGetItems;
+begin
+  if Assigned(FOnGetItems) then FOnGetItems(Self);
+end;
+
+{------------------------------------------------------------------------------
   Method: TCustomComboBox.GetSelText
   Params: ---
   Returns: selected text

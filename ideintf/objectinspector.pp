@@ -403,7 +403,11 @@ type
     procedure ValueComboBoxMouseUp(Sender: TObject; Button: TMouseButton;
                                    Shift: TShiftState; X, Y: Integer);
     procedure ValueComboBoxCloseUp(Sender: TObject);
+  {$IFDEF UseOnGetItems}
+    procedure ValueComboBoxGetItems(Sender: TObject);
+  {$ELSE}
     procedure ValueComboBoxDropDown(Sender: TObject);
+  {$ENDIF}
     procedure ValueButtonClick(Sender: TObject);
     procedure ValueComboBoxDrawItem(Control: TWinControl; Index: Integer;
           ARect: TRect; State: TOwnerDrawState);
@@ -862,7 +866,11 @@ begin
     OnKeyDown:=@ValueComboBoxKeyDown;
     OnKeyUp:=@ValueComboBoxKeyUp;
     OnMouseUp:=@ValueComboBoxMouseUp;
+  {$IFDEF UseOnGetItems}
+    OnGetItems:=@ValueComboBoxGetItems;
+  {$ELSE}
     OnDropDown:=@ValueComboBoxDropDown;
+  {$ENDIF}
     OnCloseUp:=@ValueComboBoxCloseUp;
     OnDrawItem:=@ValueComboBoxDrawItem;
   end;
@@ -2635,7 +2643,11 @@ begin
   SetRowValue;
 end;
 
+{$IFDEF UseOnGetItems}
+procedure TOICustomPropertyGrid.ValueComboBoxGetItems(Sender: TObject);
+{$ELSE}
 procedure TOICustomPropertyGrid.ValueComboBoxDropDown(Sender: TObject);
+{$ENDIF}
 var
   CurRow: TOIPropertyGridRow;
   MaxItemWidth, CurItemWidth, i, Cnt: integer;

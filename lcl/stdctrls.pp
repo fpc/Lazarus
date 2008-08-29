@@ -265,6 +265,7 @@ type
     FOnCloseUp: TNotifyEvent;
     FOnDrawItem: TDrawItemEvent;
     FOnDropDown: TNotifyEvent;
+    FOnGetItems: TNotifyEvent;
     FOnMeasureItem: TMeasureItemEvent;
     FOnSelect: TNotifyEvent;
     FReadOnly: Boolean;
@@ -336,6 +337,7 @@ type
     property OnCloseUp: TNotifyEvent read FOnCloseUp write FOnCloseUp;
     property OnDrawItem: TDrawItemEvent read FOnDrawItem write FOnDrawItem;
     property OnDropDown: TNotifyEvent read FOnDropDown write FOnDropDown;
+    property OnGetItems: TNotifyEvent read FOnGetItems write FOnGetItems;
     property OnMeasureItem: TMeasureItemEvent
       read FOnMeasureItem write FOnMeasureItem;
     property OnSelect: TNotifyEvent read FOnSelect write FOnSelect;
@@ -344,6 +346,7 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    procedure IntfGetItems;
     procedure AddItem(const Item: String; AnObject: TObject); //override;
     procedure AddHistoryItem(const Item: string; MaxHistoryCount: integer;
                              SetAsText, CaseSensitive: boolean);
@@ -422,6 +425,7 @@ type
     property OnEditingDone;
     property OnEnter;
     property OnExit;
+    property OnGetItems;
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
