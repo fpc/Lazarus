@@ -136,26 +136,17 @@ end;
 
 procedure TfrmTrayTest.FormPaint(Sender: TObject);
 var
-  BaseImage, SecondImage: TIcon;
+  BaseImage: TIcon;
 begin
   if chkOnPaintDrawing.Checked then
   begin
     BaseImage := TIcon.Create;
-    SecondImage := TIcon.Create;
     try
       // Loads the icon
       BaseImage.LoadFromFile(pathMedia + 'icon.ico');
-
-//      SecondImage.Add(pf32bit, 22, 22);
-      SecondImage.Height := 22;
-      SecondImage.Width := 22;
-      {$IFDEF FPC}
-      SecondImage.Canvas.Draw(0, 0, BaseImage);
-      {$ENDIF}
-      Canvas.Draw(0, 0, SecondImage);
+      Canvas.Draw(0, 0, BaseImage);
     finally
       BaseImage.Free;
-      SecondImage.Free;
     end;
   end;
 end;
