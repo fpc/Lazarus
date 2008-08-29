@@ -1171,7 +1171,6 @@ type
     procedure WriteData(Stream: TStream); override;
     procedure WriteStream(AStream: TMemoryStream); virtual; abstract;
     function  RequestTransparentColor: TColor;
-    property Canvas: TCanvas read GetCanvas;
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -1200,6 +1199,7 @@ type
     function ReleasePalette: HPALETTE;
     function CreateIntfImage: TLazIntfImage;
   public
+    property Canvas: TCanvas read GetCanvas;
     function HandleAllocated: boolean;
     property BitmapHandle: HBITMAP read GetBitmapHandle write SetBitmapHandle;
     property Masked: Boolean read GetMasked write SetMasked;
@@ -1287,7 +1287,6 @@ type
     procedure SetHandles(ABitmap, AMask: HBITMAP); override;
     procedure SetSize(AWidth, AHeight: integer); override;
 
-    property Canvas;
     property Handle: HBITMAP read GetBitmapHandle write SetBitmapHandle; // for custombitmap handle = bitmaphandle
     property HandleType: TBitmapHandleType read GetHandleType write SetHandleType;
     property Monochrome: Boolean read GetMonochrome write SetMonochrome;

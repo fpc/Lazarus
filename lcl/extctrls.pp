@@ -1112,6 +1112,7 @@ type
     FOnPaint, FOnClick, FOnDblClick: TNotifyEvent;
     FOnMouseDown, FOnMouseUp: TMouseEvent;
     FOnMouseMove: TMouseMoveEvent;
+    function  GetCanvas: TCanvas;
     procedure SetHint(const AValue: string);
     procedure SetIcon(const AValue: TIcon);
     procedure SetVisible(Value: Boolean);
@@ -1132,6 +1133,7 @@ type
     property BalloonHint: string read FBalloonHint write FBalloonHint;
     property BalloonTimeout: Integer read FBalloonTimeout write FBalloonTimeout default 3000;
     property BalloonTitle: string read FBalloonTitle write FBalloonTitle;
+    property Canvas: TCanvas read GetCanvas;
     property PopUpMenu: TPopupMenu read FPopUpMenu write FPopUpMenu;
     property Icon: TIcon read FIcon write SetIcon;
     property Hint: string read FHint write SetHint;

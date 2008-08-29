@@ -230,7 +230,8 @@ var
   SrcDC: hDC;
   DestDC: hDC;
 begin
-  if (DestRect.Right<=DestRect.Left) or (DestRect.Bottom<=DestRect.Top) or Empty
+  if (DestRect.Right<=DestRect.Left) or (DestRect.Bottom<=DestRect.Top)
+  or (Width=0) or (Height=0)
   then Exit;
 
   BitmapHandleNeeded;
