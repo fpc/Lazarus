@@ -6867,16 +6867,43 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtTreeWidget.SignalItemClicked(item: QTreeWidgetItemH; column: Integer) cdecl;
 var
-  Msg: TLMNotify;
+  Msg: TLMMouse;
+  MousePos: TQtPoint;
+  Modifiers: QtKeyboardModifiers;
+  MsgN: TLMNotify;
   NMLV: TNMListView;
   R: TRect;
   Pt: TPoint;
 begin
 
-  FillChar(Msg, SizeOf(Msg), #0);
+  QCursor_pos(@MousePos);
+  QWidget_mapFromGlobal(Widget, @MousePos, @MousePos);
+  OffsetMousePos(@MousePos);
+  Msg.Keys := 0;
+
+  Modifiers := QApplication_keyboardModifiers();
+  Msg.Keys := QtKeyModifiersToKeyState(Modifiers) or MK_LBUTTON;
+
+  Msg.XPos := SmallInt(MousePos.X);
+  Msg.YPos := SmallInt(MousePos.Y);
+
+  Msg.Msg := LM_LBUTTONDOWN;
+  NotifyApplicationUserInput(Msg.Msg);
+  DeliverMessage(Msg);
+  Msg.Msg := LM_PRESSED;
+  DeliverMessage(Msg);
+  Msg.Msg := LM_LBUTTONUP;
+  NotifyApplicationUserInput(Msg.Msg);
+  DeliverMessage(Msg);
+  Msg.Msg := LM_RELEASED;
+  DeliverMessage(Msg);
+
+  // we'll send also which item is clicked ... probably future
+  // lcl implementation of OnItemClick.
+  FillChar(MsgN, SizeOf(MsgN), #0);
   FillChar(NMLV, SizeOf(NMLV), #0);
 
-  Msg.Msg := LM_CLICKED;
+  MsgN.Msg := LM_CLICKED;
 
   NMLV.hdr.hwndfrom := LCLObject.Handle;
   NMLV.hdr.code := NM_CLICK;
@@ -6885,18 +6912,19 @@ begin
 
   NMLV.iSubItem := Column;
   NMLV.uNewState := UINT(NM_CLICK);
-  NMLV.uChanged := LVIS_SELECTED;
+  NMLV.uChanged :=  LVIS_SELECTED;
+
   QTreeWidget_visualItemRect(QTreeWidgetH(Widget), @R, Item);
-  
+
   pt.X := R.Left;
   pt.Y := R.Top;
 
   NMLV.ptAction := pt;
 
-  Msg.NMHdr := @NMLV.hdr;
-  
-  DeliverMessage(Msg);
-  
+  MsgN.NMHdr := @NMLV.hdr;
+
+  DeliverMessage(MsgN);
+
 end;
 
 {------------------------------------------------------------------------------
