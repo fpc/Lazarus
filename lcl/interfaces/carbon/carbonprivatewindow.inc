@@ -475,14 +475,12 @@ const
       exit;
     end;
 
-    {$DEFINE VerboseKeyboard}
     // get untranslated key (key without modifiers)
     OSError(KLGetCurrentKeyboardLayout(KeyboardLayout), SName, 'KLGetCurrentKeyboardLayout');
-    //OSError(KLGetKeyboardLayoutProperty(KeyboardLayout, kKLuchrData, Layout), SName, 'KLGetKeyboardLayoutProperty');
-    OSError(KLGetKeyboardLayoutProperty(KeyboardLayout, kKLKCHRData, Layout), SName, 'KLGetKeyboardLayoutProperty');
-      {$IFDEF VerboseKeyboard}
-       DebugLn('[Keyboard layout] KCHR layout = ', DbgS(Layout));
-      {$ENDIF}
+    OSError(KLGetKeyboardLayoutProperty(KeyboardLayout, kKLuchrData, Layout), SName, 'KLGetKeyboardLayoutProperty');
+    {$IFDEF VerboseKeyboard}
+    DebugLn('[Keyboard layout] UCHR layout = ', DbgS(Layout));
+    {$ENDIF}
 
     TextLen:=0;
     DeadKeys:=0;
