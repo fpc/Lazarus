@@ -18,9 +18,13 @@
 function gtkComboBoxShowAfter(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 var
   Mess : TLMCommand;
+  AComboBox: TCustomComboBox;
 begin
   Result := True;
   EventTrace('ComboBoxShowAfter', data);
+
+  AComboBox:=TObject(Data) as TCustomComboBox;
+  AComboBox.IntfGetItems;
   
   if (Widget=nil) then ;
   FillChar(Mess,SizeOf(Mess),0);
