@@ -4172,7 +4172,7 @@ begin
     {apply clearFocus only to X11 & Mac,
      qt win32 doesn't like this}
     {$IFDEF UNIX}
-    if (Result <> 0) and not
+    if (Result <> 0) and (Result <> hWnd) and not
       ((TQtWidget(Hwnd) is TQtMainWindow) or
       (TQtWidget(Result) is TQtMainWindow))
     then
