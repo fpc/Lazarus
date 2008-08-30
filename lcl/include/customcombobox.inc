@@ -218,6 +218,11 @@ begin
   if Assigned(FOnDropDown) then FOnDropDown(Self);
 end;
 
+procedure TCustomComboBox.GetItems;
+begin
+  if Assigned(FOnGetItems) then FOnGetItems(Self);
+end;
+
 {------------------------------------------------------------------------------
   procedure TCustomComboBox.CloseUp;
 
@@ -260,7 +265,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomComboBox.IntfGetItems;
 begin
-  if Assigned(FOnGetItems) then FOnGetItems(Self);
+  GetItems;
 end;
 
 {------------------------------------------------------------------------------
@@ -733,7 +738,7 @@ begin
   ArrowKeysTraverseList := True;
   TabStop := true;
   ParentColor := false;
-  FAutoCompleteText := [cbactEndOfLineComplete, cbactSearchAscending];
+  FAutoCompleteText := DefaultComboBoxAutoCompleteText;
   FAutoSelect := False;
   FAutoSelected := False;
   FCharCase := ecNormal;

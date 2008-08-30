@@ -233,7 +233,10 @@ type
     cbactSearchAscending//Search Text from top of the list
     );
   TComboBoxAutoCompleteText = set of TComboBoxAutoCompleteTextOption;
+const
+  DefaultComboBoxAutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending];
 
+type
   TComboBoxStyle = (csDropDown, csSimple, csDropDownList, csOwnerDrawFixed,
                     csOwnerDrawVariable);
 
@@ -302,6 +305,7 @@ type
     procedure Change; dynamic;
     procedure Select; dynamic;
     procedure DropDown; dynamic;
+    procedure GetItems; dynamic;
     procedure CloseUp; dynamic;
     procedure AdjustDropDown; virtual;
 
@@ -360,12 +364,13 @@ type
     procedure SelectAll;
     property AutoComplete: boolean read GetAutoComplete write SetAutoComplete;
     property AutoCompleteText: TComboBoxAutoCompleteText
-                           read FAutoCompleteText write FAutoCompleteText;
+                           read FAutoCompleteText write FAutoCompleteText
+                           default DefaultComboBoxAutoCompleteText;
     property AutoDropDown: Boolean
                            read FAutoDropDown write FAutoDropDown default False;
     property AutoSelect: Boolean read FAutoSelect write FAutoSelect default False;
     property AutoSelected: Boolean read FAutoSelected write FAutoSelected;
-    property AutoSize: Boolean read FAutoSize write SetAutoSize default True; // Overrides default value
+    property AutoSize default True; // Overrides default value
     property ArrowKeysTraverseList: Boolean read FArrowKeysTraverseList
                                     write SetArrowKeysTraverseList default True;
     property Canvas: TCanvas read FCanvas;
