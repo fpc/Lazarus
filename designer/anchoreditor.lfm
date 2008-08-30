@@ -1,7 +1,7 @@
 object AnchorDesigner: TAnchorDesigner
-  Left = 93
+  Left = 267
   Height = 297
-  Top = 171
+  Top = 286
   Width = 596
   ActiveControl = LeftBorderSpaceSpinEdit
   Caption = 'AnchorDesigner'
@@ -30,12 +30,12 @@ object AnchorDesigner: TAnchorDesigner
     BorderSpacing.Bottom = 4
     Caption = 'BorderSpaceGroupBox'
     ClientHeight = 147
-    ClientWidth = 204
+    ClientWidth = 206
     TabOrder = 0
     object LeftBorderSpaceSpinEdit: TSpinEdit
       AnchorSideTop.Control = AroundBorderSpaceSpinEdit
       AnchorSideRight.Control = AroundBorderSpaceSpinEdit
-      Left = 10
+      Left = 11
       Height = 20
       Top = 63
       Width = 56
@@ -52,7 +52,7 @@ object AnchorDesigner: TAnchorDesigner
       AnchorSideLeft.Control = AroundBorderSpaceSpinEdit
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = AroundBorderSpaceSpinEdit
-      Left = 138
+      Left = 139
       Height = 20
       Top = 63
       Width = 56
@@ -67,7 +67,7 @@ object AnchorDesigner: TAnchorDesigner
     object TopBorderSpaceSpinEdit: TSpinEdit
       AnchorSideLeft.Control = AroundBorderSpaceSpinEdit
       AnchorSideBottom.Control = AroundBorderSpaceSpinEdit
-      Left = 74
+      Left = 75
       Height = 20
       Top = 31
       Width = 56
@@ -84,7 +84,7 @@ object AnchorDesigner: TAnchorDesigner
       AnchorSideLeft.Control = AroundBorderSpaceSpinEdit
       AnchorSideTop.Control = AroundBorderSpaceSpinEdit
       AnchorSideTop.Side = asrBottom
-      Left = 74
+      Left = 75
       Height = 20
       Top = 95
       Width = 56
@@ -101,7 +101,7 @@ object AnchorDesigner: TAnchorDesigner
       AnchorSideLeft.Side = asrCenter
       AnchorSideTop.Control = BorderSpaceGroupBox
       AnchorSideTop.Side = asrCenter
-      Left = 74
+      Left = 75
       Height = 20
       Top = 63
       Width = 56
@@ -121,13 +121,13 @@ object AnchorDesigner: TAnchorDesigner
     AutoSize = True
     Caption = 'TopGroupBox'
     ClientHeight = 38
-    ClientWidth = 478
+    ClientWidth = 480
     TabOrder = 1
     object TopRefTopSpeedButton: TSpeedButton
       AnchorSideTop.Control = TopRefCenterSpeedButton
       AnchorSideRight.Control = TopRefBottomSpeedButton
       AnchorSideBottom.Side = asrBottom
-      Left = 372
+      Left = 374
       Height = 30
       Width = 30
       Anchors = [akTop, akRight]
@@ -144,7 +144,7 @@ object AnchorDesigner: TAnchorDesigner
       AnchorSideTop.Control = TopRefCenterSpeedButton
       AnchorSideRight.Control = TopRefCenterSpeedButton
       AnchorSideBottom.Side = asrBottom
-      Left = 406
+      Left = 408
       Height = 30
       Width = 30
       Anchors = [akTop, akRight]
@@ -162,7 +162,7 @@ object AnchorDesigner: TAnchorDesigner
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = TopGroupBox
       AnchorSideBottom.Side = asrBottom
-      Left = 440
+      Left = 442
       Height = 30
       Width = 30
       Anchors = [akRight, akBottom]
@@ -181,10 +181,10 @@ object AnchorDesigner: TAnchorDesigner
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = TopRefCenterSpeedButton
       AnchorSideTop.Side = asrCenter
-      Left = 104
-      Height = 25
-      Top = 3
-      Width = 47
+      Left = 99
+      Height = 18
+      Top = 6
+      Width = 43
       BorderSpacing.Left = 16
       Caption = 'Sibling'
       ParentColor = False
@@ -195,7 +195,7 @@ object AnchorDesigner: TAnchorDesigner
       Left = 8
       Height = 22
       Top = 4
-      Width = 80
+      Width = 75
       BorderSpacing.Left = 8
       Caption = 'Enabled'
       OnChange = AnchorEnabledCheckBoxChange
@@ -208,16 +208,16 @@ object AnchorDesigner: TAnchorDesigner
       AnchorSideTop.Control = TopRefCenterSpeedButton
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Control = TopRefTopSpeedButton
-      Left = 155
-      Height = 26
-      Top = 2
-      Width = 205
+      Left = 146
+      Height = 29
+      Top = 1
+      Width = 216
       Anchors = [akTop, akLeft, akRight]
       AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
       BorderSpacing.Left = 4
       BorderSpacing.Right = 12
       MaxLength = 0
-      OnChange = SiblingComboBoxChange
+      OnEditingDone = SiblingComboBoxChange
       ParentShowHint = False
       ShowHint = True
       TabOrder = 1
@@ -233,12 +233,12 @@ object AnchorDesigner: TAnchorDesigner
     AutoSize = True
     Caption = 'BottomGroupBox'
     ClientHeight = 38
-    ClientWidth = 478
+    ClientWidth = 480
     TabOrder = 2
     object BottomRefTopSpeedButton: TSpeedButton
       AnchorSideTop.Control = BottomRefCenterSpeedButton
       AnchorSideRight.Control = BottomRefBottomSpeedButton
-      Left = 372
+      Left = 374
       Height = 30
       Width = 30
       Anchors = [akTop, akRight]
@@ -254,7 +254,7 @@ object AnchorDesigner: TAnchorDesigner
     object BottomRefBottomSpeedButton: TSpeedButton
       AnchorSideTop.Control = BottomRefCenterSpeedButton
       AnchorSideRight.Control = BottomRefCenterSpeedButton
-      Left = 406
+      Left = 408
       Height = 30
       Width = 30
       Anchors = [akTop, akRight]
@@ -272,7 +272,7 @@ object AnchorDesigner: TAnchorDesigner
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = BottomGroupBox
       AnchorSideBottom.Side = asrBottom
-      Left = 440
+      Left = 442
       Height = 30
       Width = 30
       Anchors = [akRight, akBottom]
@@ -291,10 +291,10 @@ object AnchorDesigner: TAnchorDesigner
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = BottomRefCenterSpeedButton
       AnchorSideTop.Side = asrCenter
-      Left = 104
-      Height = 25
-      Top = 3
-      Width = 47
+      Left = 99
+      Height = 18
+      Top = 6
+      Width = 43
       BorderSpacing.Left = 16
       Caption = 'Sibling'
       ParentColor = False
@@ -305,7 +305,7 @@ object AnchorDesigner: TAnchorDesigner
       Left = 8
       Height = 22
       Top = 4
-      Width = 80
+      Width = 75
       BorderSpacing.Left = 8
       Caption = 'Enabled'
       OnChange = AnchorEnabledCheckBoxChange
@@ -318,16 +318,15 @@ object AnchorDesigner: TAnchorDesigner
       AnchorSideTop.Control = BottomRefCenterSpeedButton
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Control = BottomRefTopSpeedButton
-      Left = 155
-      Height = 26
-      Top = 2
-      Width = 205
+      Left = 146
+      Height = 29
+      Top = 1
+      Width = 216
       Anchors = [akTop, akLeft, akRight]
       AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
       BorderSpacing.Left = 4
       BorderSpacing.Right = 12
       MaxLength = 0
-      OnChange = SiblingComboBoxChange
       ParentShowHint = False
       ShowHint = True
       TabOrder = 1
@@ -348,14 +347,14 @@ object AnchorDesigner: TAnchorDesigner
     BorderSpacing.Left = 4
     Caption = 'RightGroupBox'
     ClientHeight = 147
-    ClientWidth = 173
+    ClientWidth = 175
     TabOrder = 3
     object RightRefLeftSpeedButton: TSpeedButton
       AnchorSideTop.Control = RightRefCenterSpeedButton
       AnchorSideRight.Control = RightRefRightSpeedButton
-      Left = 67
+      Left = 69
       Height = 30
-      Top = 98
+      Top = 100
       Width = 30
       Anchors = [akTop, akRight]
       BorderSpacing.Right = 4
@@ -370,9 +369,9 @@ object AnchorDesigner: TAnchorDesigner
     object RightRefRightSpeedButton: TSpeedButton
       AnchorSideTop.Control = RightRefCenterSpeedButton
       AnchorSideRight.Control = RightRefCenterSpeedButton
-      Left = 101
+      Left = 103
       Height = 30
-      Top = 98
+      Top = 100
       Width = 30
       Anchors = [akTop, akRight]
       BorderSpacing.Right = 4
@@ -389,9 +388,9 @@ object AnchorDesigner: TAnchorDesigner
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = RightSiblingComboBox
       AnchorSideRight.Side = asrBottom
-      Left = 135
+      Left = 137
       Height = 30
-      Top = 98
+      Top = 100
       Width = 30
       Anchors = [akTop, akRight]
       BorderSpacing.Top = 12
@@ -408,9 +407,9 @@ object AnchorDesigner: TAnchorDesigner
       AnchorSideTop.Side = asrBottom
       AnchorSideBottom.Control = RightSiblingComboBox
       Left = 8
-      Height = 25
-      Top = 35
-      Width = 47
+      Height = 18
+      Top = 41
+      Width = 43
       Anchors = [akLeft, akBottom]
       BorderSpacing.Top = 2
       Caption = 'Sibling'
@@ -422,8 +421,8 @@ object AnchorDesigner: TAnchorDesigner
       AnchorSideBottom.Control = RightSiblingLabel
       Left = 8
       Height = 22
-      Top = 5
-      Width = 80
+      Top = 11
+      Width = 75
       Anchors = [akLeft, akBottom]
       BorderSpacing.Bottom = 8
       Caption = 'Enabled'
@@ -438,15 +437,15 @@ object AnchorDesigner: TAnchorDesigner
       AnchorSideRight.Control = RightGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 8
-      Height = 26
-      Top = 60
-      Width = 157
+      Height = 29
+      Top = 59
+      Width = 159
       Anchors = [akTop, akLeft, akRight]
       AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
       BorderSpacing.Left = 8
       BorderSpacing.Right = 8
       MaxLength = 0
-      OnChange = SiblingComboBoxChange
+      OnEditingDone = SiblingComboBoxChange
       ParentShowHint = False
       ShowHint = True
       TabOrder = 1
@@ -466,14 +465,14 @@ object AnchorDesigner: TAnchorDesigner
     BorderSpacing.Right = 4
     Caption = 'LeftGroupBox'
     ClientHeight = 147
-    ClientWidth = 175
+    ClientWidth = 177
     TabOrder = 4
     object LeftRefLeftSpeedButton: TSpeedButton
       AnchorSideTop.Control = LeftRefCenterSpeedButton
       AnchorSideRight.Control = LeftRefRightSpeedButton
-      Left = 69
+      Left = 71
       Height = 30
-      Top = 98
+      Top = 100
       Width = 30
       Anchors = [akTop, akRight]
       BorderSpacing.Right = 4
@@ -488,9 +487,9 @@ object AnchorDesigner: TAnchorDesigner
     object LeftRefRightSpeedButton: TSpeedButton
       AnchorSideTop.Control = LeftRefCenterSpeedButton
       AnchorSideRight.Control = LeftRefCenterSpeedButton
-      Left = 103
+      Left = 105
       Height = 30
-      Top = 98
+      Top = 100
       Width = 30
       Anchors = [akTop, akRight]
       BorderSpacing.Right = 4
@@ -506,9 +505,9 @@ object AnchorDesigner: TAnchorDesigner
       AnchorSideTop.Control = LeftSiblingComboBox
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Side = asrBottom
-      Left = 137
+      Left = 139
       Height = 30
-      Top = 98
+      Top = 100
       Width = 30
       Anchors = [akTop, akRight]
       BorderSpacing.Top = 12
@@ -524,9 +523,9 @@ object AnchorDesigner: TAnchorDesigner
       AnchorSideLeft.Control = LeftSiblingComboBox
       AnchorSideBottom.Control = LeftSiblingComboBox
       Left = 8
-      Height = 25
-      Top = 35
-      Width = 47
+      Height = 18
+      Top = 41
+      Width = 43
       Anchors = [akLeft, akBottom]
       BorderSpacing.Top = 2
       Caption = 'Sibling'
@@ -537,8 +536,8 @@ object AnchorDesigner: TAnchorDesigner
       AnchorSideBottom.Control = LeftSiblingLabel
       Left = 8
       Height = 22
-      Top = 5
-      Width = 80
+      Top = 11
+      Width = 75
       Anchors = [akLeft, akBottom]
       BorderSpacing.Bottom = 8
       Caption = 'Enabled'
@@ -553,15 +552,15 @@ object AnchorDesigner: TAnchorDesigner
       AnchorSideRight.Control = LeftGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 8
-      Height = 26
-      Top = 60
-      Width = 159
+      Height = 29
+      Top = 59
+      Width = 161
       Anchors = [akTop, akLeft, akRight]
       AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
       BorderSpacing.Left = 8
       BorderSpacing.Right = 8
       MaxLength = 0
-      OnChange = SiblingComboBoxChange
+      OnEditingDone = SiblingComboBoxChange
       ParentShowHint = False
       ShowHint = True
       TabOrder = 1
