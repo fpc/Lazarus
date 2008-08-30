@@ -5659,13 +5659,6 @@ end;
 procedure TQtComboBox.insertItem(AIndex: Integer; AText: PWideString);
 begin
   QComboBox_insertItem(QComboBoxH(WIdget), AIndex, AText, QVariant_create());
-  if DropList.getVisible then
-  begin
-    BeginUpdate;
-    QComboBox_hidePopup(QComboboxH(Widget));
-    QComboBox_showPopup(QComboboxH(Widget));
-    EndUpdate;
-  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -5783,6 +5776,7 @@ begin
             if Assigned(LineEdit) and TComboBox(LCLObject).AutoSelect then
               LineEdit.selectAll;
           end;
+        TCustomComboBox(LCLObject).IntfGetItems;
       end;
 
       QEventKeyPress,
