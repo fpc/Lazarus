@@ -820,6 +820,7 @@ type
 
     procedure modelIndex(retval: QModelIndexH; row, column: Integer; parent: QModelIndexH = nil);
     function visualRect(Index: QModelIndexH): TRect;
+    procedure SetColor(const Value: PQColor); override;
     procedure setEditTriggers(ATriggers: QAbstractItemViewEditTriggers);
     procedure setSelectionMode(AMode: QAbstractItemViewSelectionMode);
     procedure setSelectionBehavior(ABehavior: QAbstractItemViewSelectionBehavior);
@@ -8467,6 +8468,19 @@ end;
 function TQtAbstractItemView.visualRect(Index: QModelIndexH): TRect;
 begin
   QAbstractItemView_visualRect(QAbstractItemViewH(Widget), @Result, Index);
+end;
+
+procedure TQtAbstractItemView.SetColor(const Value: PQColor);
+var
+  Palette: QPaletteH;
+begin
+  Palette := QPalette_create(QWidget_palette(Widget));
+  try
+    QPalette_setColor(Palette, QPaletteBase, Value);
+    QWidget_setPalette(Widget, Palette);
+  finally
+    QPalette_destroy(Palette);
+  end;
 end;
 
 procedure TQtAbstractItemView.setEditTriggers(
