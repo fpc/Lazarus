@@ -393,8 +393,8 @@ begin
     ' OldModuleName=',OldModuleName,' OldElementName=',OldElementName,
     ' FPDocFilename=',FPDocFilename]);
 
-  CHResult:=CodeHelpBoss.LoadFPDocFile(FPDocFilename,true,false,DocFile,
-                                       CacheWasUsed);
+  CHResult:=CodeHelpBoss.LoadFPDocFile(FPDocFilename,[chofUpdateFromDisk],
+                                       DocFile,CacheWasUsed);
   if CHResult<>chprSuccess then begin
     DebugLn(['GatherReferencesInFPDocFile CodeHelpBoss.LoadFPDocFile failed File=',FPDocFilename]);
     exit(mrCancel);

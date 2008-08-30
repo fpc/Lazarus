@@ -2564,6 +2564,8 @@ resourcestring
   lisLDNoValidLazDocPath = 'No valid LazDoc path';
   lisLDDoesNotHaveAnyValidLazDocPathUnableToCreateTheFpdo = '%s does not have '
     +'any valid LazDoc path.%sUnable to create the fpdoc file for %s';
+  lisErrorReadingXML = 'Error reading XML';
+  lisErrorReadingXmlFile = 'Error reading xml file %s%s%s%s%s';
   lisPkgThisFileIsNotInAnyLoadedPackage = 'This file is not in any loaded '
     +'package.';
   lisProjAddTheDependencyWasNotFound = 'The dependency %s%s%s was not found.%'

@@ -44,7 +44,8 @@ uses
   CodeCache, CacheCodeTools, FileProcs,
   Laz_DOM, Laz_XMLRead, Laz_XMLWrite,
   // IDEIntf
-  MacroIntf, PackageIntf, LazHelpIntf, ProjectIntf, IDEDialogs, LazIDEIntf,
+  IDEMsgIntf, MacroIntf, PackageIntf, LazHelpIntf, ProjectIntf, IDEDialogs,
+  LazIDEIntf,
   // IDE
   LazarusIDEStrConsts, CompilerOptions, IDEProcs, PackageDefs, EnvironmentOpts,
   TransferMacros, PackageSystem, DialogProcs;
@@ -177,6 +178,13 @@ type
     chmhDocChanging,
     chmhDocChanged
     );
+
+  TCodeHelpOpenFileFlag = (
+    chofUpdateFromDisk,
+    chofRevert,
+    chofQuiet
+    );
+  TCodeHelpOpenFileFlags = set of TCodeHelpOpenFileFlag;
     
   TCodeHelpParseResult = (
     chprParsing, // means: done a small step, but not yet finished the job
@@ -211,7 +219,7 @@ type
     
     function FindFPDocFile(const Filename: string): TLazFPDocFile;
     function LoadFPDocFile(const Filename: string;
-                           UpdateFromDisk, Revert: Boolean;
+                           Flags: TCodeHelpOpenFileFlags;
                            out ADocFile: TLazFPDocFile;
                            out CacheWasUsed: boolean): TCodeHelpParseResult;
     function SaveFPDocFile(ADocFile: TLazFPDocFile): TModalResult;
@@ -1033,11 +1041,13 @@ begin
     Result:=nil;
 end;
 
-function TCodeHelpManager.LoadFPDocFile(const Filename: string; UpdateFromDisk,
-  Revert: Boolean; out ADocFile: TLazFPDocFile; out CacheWasUsed: boolean
+function TCodeHelpManager.LoadFPDocFile(const Filename: string;
+  Flags: TCodeHelpOpenFileFlags;
+  out ADocFile: TLazFPDocFile; out CacheWasUsed: boolean
   ): TCodeHelpParseResult;
 var
   MemStream: TMemoryStream;
+  CurFilename: String;
 begin
   Result:=chprFailed;
   CacheWasUsed:=true;
@@ -1048,7 +1058,8 @@ begin
     ADocFile.Filename:=Filename;
     FDocs.Add(ADocFile);
   end;
-  ADocFile.CodeBuffer:=CodeToolBoss.LoadFile(Filename,UpdateFromDisk,Revert);
+  ADocFile.CodeBuffer:=CodeToolBoss.LoadFile(Filename,
+                               chofUpdateFromDisk in Flags,chofRevert in Flags);
   if ADocFile.CodeBuffer=nil then begin
     DebugLn(['TCodeHelpManager.LoadFPDocFile unable to load "',Filename,'"']);
     FreeAndNil(ADocFile.Doc);
@@ -1057,7 +1068,7 @@ begin
   if (ADocFile.Doc<>nil) then begin
     if (ADocFile.ChangeStep=ADocFile.CodeBuffer.ChangeStep) then begin
       // CodeBuffer has not changed
-      if ADocFile.DocModified and Revert then begin
+      if ADocFile.DocModified and (chofRevert in Flags) then begin
         // revert the modifications => rebuild the Doc from the CodeBuffer
       end else begin
         // no update needed
@@ -1076,14 +1087,33 @@ begin
   ADocFile.ChangeStep:=ADocFile.CodeBuffer.ChangeStep;
   ADocFile.DocModified:=false;
   FreeAndNil(ADocFile.Doc);
+  CurFilename:=ADocFile.CodeBuffer.Filename;
 
   MemStream:=TMemoryStream.Create;
   try
     ADocFile.CodeBuffer.SaveToStream(MemStream);
     MemStream.Position:=0;
     Result:=chprFailed;
-    ReadXMLFile(ADocFile.Doc,MemStream,ADocFile.CodeBuffer.Filename);
-    Result:=chprSuccess;
+    try
+      ReadXMLFile(ADocFile.Doc,MemStream,CurFilename);
+      Result:=chprSuccess;
+    except
+      on E: EXMLReadError do begin
+        DebugLn(['TCodeHelpManager.LoadFPDocFile ',E.Message]);
+        if not (chofQuiet in Flags) then begin
+          // for example: Filename(y,x) Error: description
+          IDEMessagesWindow.AddMsg(E.Message,ExtractFilePath(CurFilename),-1);
+        end;
+      end;
+      on E: Exception do begin
+        DebugLn(['TCodeHelpManager.LoadFPDocFile Error reading xml file "'+CurFilename+'" '+E.Message]);
+        if not (chofQuiet in Flags) then begin
+          MessageDlg(lisErrorReadingXML,
+            Format(lisErrorReadingXmlFile, ['"', CurFilename,
+              '"', #13, E.Message]), mtError, [mbCancel], 0);
+        end;
+      end;
+    end;
   finally
     if Result<>chprSuccess then
       FreeAndNil(ADocFile.Doc);
@@ -1512,7 +1542,7 @@ begin
   if (not CacheWasUsed) and (not Complete) then exit(chprParsing);
 
   // load FPDoc file
-  Result:=LoadFPDocFile(FPDocFilename,true,false,FPDocFile,CacheWasUsed);
+  Result:=LoadFPDocFile(FPDocFilename,[chofUpdateFromDisk],FPDocFile,CacheWasUsed);
   if Result<>chprSuccess then exit;
   if (not CacheWasUsed) and (not Complete) then exit(chprParsing);
 
@@ -1658,7 +1688,7 @@ begin
 
       if FPDocFilename<>'' then begin
         // load FPDoc file
-        LoadFPDocFile(FPDocFilename,true,false,CHElement.FPDocFile,
+        LoadFPDocFile(FPDocFilename,[chofUpdateFromDisk],CHElement.FPDocFile,
                       CacheWasUsed);
         if (not CacheWasUsed) and (not Complete) then exit(chprParsing);
       end;
@@ -1885,7 +1915,8 @@ begin
     DebugLn(['TCodeHelpManager.CreateElement FPDocFilename=',FPDocFilename]);
 
     // parse fpdoc file
-    CHResult:=LoadFPDocFile(FPDocFilename,true,false,Element.FPDocFile,CacheWasUsed);
+    CHResult:=LoadFPDocFile(FPDocFilename,[chofUpdateFromDisk],
+                            Element.FPDocFile,CacheWasUsed);
     if CHResult<>chprSuccess then begin
       DebugLn(['TCodeHelpManager.CreateElement unable to load fpdoc file ',FPDocFilename]);
       exit;

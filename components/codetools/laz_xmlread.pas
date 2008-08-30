@@ -273,8 +273,7 @@ begin
     Inc(apos);
   end;
 
-  raise EXMLReadError.Create('In ' + Filename + ' (line ' + IntToStr(y) + ' pos ' +
-    IntToStr(x) + '): ' + descr);
+  raise EXMLReadError.Create(Filename+'('+IntToStr(y)+','+IntToStr(x)+') Error: ' + descr);
 end;
 
 function TXMLReader.SkipWhitespace: Boolean;
