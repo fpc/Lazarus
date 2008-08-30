@@ -464,7 +464,7 @@ Type
     procedure LinkSaveToProperty(Sender: TObject); virtual;
     procedure LinkEditorChanged(Sender: TObject); virtual;
     function LinkTestEditing(Sender: TObject): boolean;
-    procedure DropDown; override;
+    procedure GetItems; override;
     procedure DrawItem(Index: Integer; ARect: TRect; State: TOwnerDrawState); override;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -507,6 +507,7 @@ Type
     property OnEditingDone;
     property OnEnter;
     property OnExit;
+    property OnGetItems;
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
@@ -2352,7 +2353,7 @@ begin
   FLink.AssignCollectedAliasValuesTo(Items);
 end;
 
-procedure TTICustomComboBox.DropDown;
+procedure TTICustomComboBox.GetItems;
 var
   MaxItemWidth: LongInt;
   Cnt: LongInt;
