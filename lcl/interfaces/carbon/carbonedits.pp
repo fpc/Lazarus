@@ -89,7 +89,6 @@ type
     procedure ListItemSelected(AIndex: Integer); virtual;
     procedure ValueChanged; override;
     procedure FocusSet; override;
-    procedure FocusKilled; override;
     procedure TextDidChange; override;
   public
     function GetText(var S: String): Boolean; override;
@@ -740,20 +739,8 @@ end;
 procedure TCarbonComboBox.FocusSet;
 begin
   inherited;
-  // emulate DropDown event here
-  //LCLSendDropDownMsg(LCLObject);
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonComboBox.FocusKilled
-
-  Handles kill focus
- ------------------------------------------------------------------------------}
-procedure TCarbonComboBox.FocusKilled;
-begin
-  inherited;
-  // emulate CloseUp event here
-  //LCLSendCloseUpMsg(LCLObject);
+  // fire OnGetitems
+  (LCLObject as TCustomComboBox).IntfGetItems;
 end;
 
 {------------------------------------------------------------------------------
