@@ -1,11 +1,11 @@
 inherited frDesignerForm: TfrDesignerForm
-  Left = 28
+  Left = 57
   Height = 434
-  Top = 106
+  Top = 112
   Width = 695
   ActiveControl = C3
   Caption = 'Designer'
-  ClientHeight = 414
+  ClientHeight = 409
   ClientWidth = 695
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
@@ -23,8 +23,8 @@ inherited frDesignerForm: TfrDesignerForm
   ShowHint = True
   WindowState = wsMaximized
   object StatusBar1: TStatusBar[0]
-    Height = 23
-    Top = 391
+    Height = 21
+    Top = 388
     Width = 695
     Panels = <    
       item
@@ -1943,13 +1943,11 @@ inherited frDesignerForm: TfrDesignerForm
         object C3: TComboBox
           Tag = 8
           Left = 161
-          Height = 21
+          Height = 27
           Top = 2
           Width = 67
-          AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           Font.Height = -11
           Font.Name = 'MS Sans Serif'
-          ItemHeight = 13
           Items.Strings = (
             '5'
             '6'
@@ -1978,17 +1976,16 @@ inherited frDesignerForm: TfrDesignerForm
         object C2: TComboBox
           Tag = 7
           Left = 1
-          Height = 21
+          Height = 31
           Top = 2
           Width = 155
-          AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           Font.Height = -11
           Font.Name = 'MS Sans Serif'
           ItemHeight = 15
           MaxLength = 0
           OnChange = DoClick
           OnDrawItem = C2DrawItem
-          OnDropDown = C2DropDown
+          OnGetItems = C2GetItems
           Sorted = True
           Style = csOwnerDrawFixed
           TabOrder = 1
@@ -2458,21 +2455,21 @@ inherited frDesignerForm: TfrDesignerForm
     end
   end
   object frDock2: TPanel[2]
-    Height = 308
+    Height = 305
     Top = 83
     Width = 27
     Align = alLeft
-    ClientHeight = 308
+    ClientHeight = 305
     ClientWidth = 27
     FullRepaint = False
     TabOrder = 1
     object Panel4: TPanel
       Left = 1
-      Height = 306
+      Height = 303
       Top = 1
       Width = 25
       Align = alClient
-      ClientHeight = 306
+      ClientHeight = 303
       ClientWidth = 25
       FullRepaint = False
       TabOrder = 0
@@ -2782,11 +2779,11 @@ inherited frDesignerForm: TfrDesignerForm
     end
     object panForDlg: TPanel
       Left = 1
-      Height = 306
+      Height = 303
       Top = 1
       Width = 25
       Align = alClient
-      ClientHeight = 306
+      ClientHeight = 303
       ClientWidth = 25
       FullRepaint = False
       TabOrder = 1
@@ -2854,7 +2851,7 @@ inherited frDesignerForm: TfrDesignerForm
   end
   object Tab1: TTabControl[3]
     Left = 27
-    Height = 308
+    Height = 305
     Top = 83
     Width = 641
     Align = alClient
@@ -2868,7 +2865,7 @@ inherited frDesignerForm: TfrDesignerForm
     TabStop = False
     object ScrollBox1: TScrollBox
       Left = 2
-      Height = 276
+      Height = 273
       Top = 30
       Width = 637
       Align = alClient
@@ -4188,12 +4185,12 @@ inherited frDesignerForm: TfrDesignerForm
   end
   object frDock4: TPanel[4]
     Left = 668
-    Height = 308
+    Height = 305
     Top = 83
     Width = 27
     Align = alRight
     Anchors = [akTop, akRight]
-    ClientHeight = 308
+    ClientHeight = 305
     ClientWidth = 27
     FullRepaint = False
     TabOrder = 3

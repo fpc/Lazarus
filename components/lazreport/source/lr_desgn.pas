@@ -353,7 +353,7 @@ type
     N43: TMenuItem;
     N44: TMenuItem;
     StB1: TSpeedButton;
-    procedure C2DropDown(Sender: TObject);
+    procedure C2GetItems(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word;  Shift: TShiftState);
@@ -2425,7 +2425,7 @@ begin
   N44.OnClick :=      N25.OnClick;
 end;
 
-procedure TfrDesignerForm.C2DropDown(Sender: TObject);
+procedure TfrDesignerForm.C2GetItems(Sender: TObject);
 var
   i: Integer;
 begin
