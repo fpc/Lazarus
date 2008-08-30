@@ -6400,7 +6400,8 @@ begin
   begin
     Widget := PGtkWidget(Handle);
     ARect.TopLeft := GetWidgetOrigin(Widget);
-    ARect.BottomRight := Point(ARect.Left + Widget^.allocation.width, ARect.Top + Widget^.allocation.height);
+    ARect.BottomRight := Point(ARect.Left + Widget^.allocation.width,
+                               ARect.Top + Widget^.allocation.height);
   end;
 end;
 
@@ -6437,8 +6438,8 @@ function TGtkWidgetSet.GetWindowSize(Handle : hwnd;
 begin
   if GtkWidgetIsA(PGtkWidget(Handle),GTK_TYPE_WIDGET) then begin
     Result:=true;
-    Width:=PGtkWidget(Handle)^.Allocation.Width;
-    Height:=PGtkWidget(Handle)^.Allocation.Height;
+    Width:=Max(0,PGtkWidget(Handle)^.Allocation.Width);
+    Height:=Max(0,PGtkWidget(Handle)^.Allocation.Height);
   end else
     Result:=false;
 end;
