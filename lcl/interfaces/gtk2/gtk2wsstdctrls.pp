@@ -1054,6 +1054,7 @@ procedure GtkNotifyCB(AObject: PGObject; pspec: PGParamSpec; WidgetInfo: PWidget
 var
   AValue: TGValue;
   AMenu: PGtkWidget;
+  ComboBox: TCustomComboBox;
 begin
   if pspec^.name = 'popup-shown' then
   begin
@@ -1064,7 +1065,9 @@ begin
       g_idle_add(@GtkPopupCloseUp, WidgetInfo)
     else // in other case it is drop down
     begin
-      LCLSendDropDownMsg(TControl(WidgetInfo^.LCLObject));
+      ComboBox:=WidgetInfo^.LCLObject as TCustomComboBox;
+      ComboBox.IntfGetItems;
+      LCLSendDropDownMsg(ComboBox);
       AMenu := PGtkComboBoxPrivate(PGtkComboBox(WidgetInfo^.CoreWidget)^.priv)^.popup_widget;
       if GTK_IS_MENU(AMenu) then
         gtk_menu_reposition(PGtkMenu(AMenu));
