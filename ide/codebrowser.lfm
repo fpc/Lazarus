@@ -1,10 +1,8 @@
 object CodeBrowserView: TCodeBrowserView
-  Left = 290
+  Left = 295
   Height = 564
-  Top = 189
+  Top = 213
   Width = 634
-  HorzScrollBar.Page = 633
-  VertScrollBar.Page = 563
   ActiveControl = ScopeComboBox
   Caption = 'CodeBrowserView'
   ClientHeight = 564
@@ -12,6 +10,7 @@ object CodeBrowserView: TCodeBrowserView
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  LCLVersion = '0.9.25'
   object ScopeGroupBox: TGroupBox
     Left = 6
     Height = 50
@@ -27,10 +26,9 @@ object CodeBrowserView: TCodeBrowserView
       Left = 3
       Height = 29
       Width = 315
-      AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
       MaxLength = 0
-      OnDropDown = ScopeComboBoxDropDown
       OnEditingDone = ScopeComboBoxEditingDone
+      OnGetItems = ScopeComboBoxGetItems
       TabOrder = 0
       Text = 'ScopeComboBox'
     end

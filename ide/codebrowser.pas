@@ -206,7 +206,7 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure PackageFilterEditEditingDone(Sender: TObject);
     procedure PopupMenu1Popup(Sender: TObject);
-    procedure ScopeComboBoxDropDown(Sender: TObject);
+    procedure ScopeComboBoxGetItems(Sender: TObject);
     procedure ScopeComboBoxEditingDone(Sender: TObject);
     procedure ScopeWithRequiredPackagesCheckBoxChange(Sender: TObject);
     procedure OnIdle(Sender: TObject; var Done: Boolean);
@@ -460,7 +460,7 @@ begin
   end;
 end;
 
-procedure TCodeBrowserView.ScopeComboBoxDropDown(Sender: TObject);
+procedure TCodeBrowserView.ScopeComboBoxGetItems(Sender: TObject);
 begin
   FillScopeComboBox;
 end;
