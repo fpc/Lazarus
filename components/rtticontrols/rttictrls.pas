@@ -2373,7 +2373,7 @@ begin
     end;
     ItemWidth:=MaxItemWidth;
   end;
-  inherited DropDown;
+  inherited GetItems;
 end;
 
 procedure TTICustomComboBox.DrawItem(Index: Integer; ARect: TRect;
