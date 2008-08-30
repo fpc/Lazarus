@@ -336,7 +336,7 @@ type
 
     property ItemHeight: Integer read GetItemHeight write SetItemHeight;
     property ItemWidth: Integer read GetItemWidth write SetItemWidth;
-    property MaxLength: integer read GetMaxLength write SetMaxLength default -1;
+    property MaxLength: integer read GetMaxLength write SetMaxLength default 0;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnCloseUp: TNotifyEvent read FOnCloseUp write FOnCloseUp;
     property OnDrawItem: TDrawItemEvent read FOnDrawItem write FOnDrawItem;
