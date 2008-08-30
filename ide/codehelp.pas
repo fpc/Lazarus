@@ -1082,7 +1082,7 @@ begin
     ADocFile.CodeBuffer.SaveToStream(MemStream);
     MemStream.Position:=0;
     Result:=chprFailed;
-    ReadXMLFile(ADocFile.Doc, MemStream);
+    ReadXMLFile(ADocFile.Doc,MemStream,ADocFile.CodeBuffer.Filename);
     Result:=chprSuccess;
   finally
     if Result<>chprSuccess then
