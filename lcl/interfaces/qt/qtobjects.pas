@@ -2428,9 +2428,21 @@ begin
     finally
       QPixmap_destroy(APixmap);
     end;
-  end
-  else
+  end else
+  begin
+    {TODO: check QImage_convertToFormat() for speed instead of QPixmap creation}
+    {$IFDEF LINUX}
+    APixmap := QPixmap_create();
+    try
+      QPixmap_fromImage(APixmap, Image);
+      QPainter_drawPixmap(Widget, PRect(@LocalRect), APixmap, sourceRect);
+    finally
+      QPixmap_destroy(APixmap);
+    end;
+    {$ELSE}
     QPainter_drawImage(Widget, PRect(@LocalRect), image, sourceRect, flags);
+    {$ENDIF}
+  end;
 end;
 
 {------------------------------------------------------------------------------
