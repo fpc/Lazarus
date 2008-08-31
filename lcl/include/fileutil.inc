@@ -115,6 +115,7 @@ begin
   Result:=SysToUTF8(SysUtils.ExpandUNCFileName(UTF8ToSys(Filename)));
 end;
 
+{$IFNDEF VER2_2_0}
 function ExtractShortPathNameUTF8(const FileName: String): String;
 begin
   // no need to convert the result back to UTF8,
@@ -122,6 +123,7 @@ begin
   // ascii chars, and therefore is also UTF8 encoded
   Result:=SysUtils.ExtractShortPathName(UTF8ToSys(FileName));
 end;
+{$ENDIF}
 
 function FindFirstUTF8(const Path: string; Attr: Longint; out Rslt: TSearchRec
   ): Longint;
