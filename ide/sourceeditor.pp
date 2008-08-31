@@ -3266,12 +3266,12 @@ procedure TSourceNotebook.OnSourceCompletionTimer(Sender: TObject);
     //DebugLn(['CheckStartIdentCompletion Line="',Line,'" LogCaret=',dbgs(LogCaret)]);
     
     // check if last character is a point
-    if (Line='') or (LogCaret.X<1) or (LogCaret.X-1>length(Line))
+    if (Line='') or (LogCaret.X<=1) or (LogCaret.X-1>length(Line))
     or (Line[LogCaret.X-1]<>'.') then
       exit;
 
     // check if range operator '..'
-    if (LogCaret.X>1) and (Line[LogCaret.X-2]='.') then
+    if (LogCaret.X>2) and (Line[LogCaret.X-2]='.') then
       exit; // this is a double point ..
 
     // check if in a string constant
