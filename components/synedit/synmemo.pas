@@ -216,7 +216,7 @@ end;
 function TCustomSynMemo.RowColToCharIndex(RowCol: TPoint): integer;
 var
   i: integer;
-  e: Char;
+  e: string;
   LineEndLen: Integer;
 begin
   Result := 0;
