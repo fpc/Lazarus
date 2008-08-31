@@ -210,6 +210,40 @@ begin
   Result := FPalette
 end;
 
+procedure TIconImage.RawImageNeeded(ADescOnly: Boolean);
+var
+  ImagePtr: PRawImage;
+  Flags: TRawImageQueryFlags;
+begin
+  ImagePtr := @FImage;
+  if ImagePtr^.Description.Format <> ricfNone
+  then begin
+    // description valid
+    if ADescOnly then Exit;
+    if (ImagePtr^.Data <> nil) and (ImagePtr^.DataSize > 0) then Exit;
+    if ImagePtr^.Description.Width = 0 then Exit;  // no data
+    if ImagePtr^.Description.Height = 0 then Exit; // no data
+  end;
+
+  if FHandle <> 0
+  then begin
+    if ADescOnly
+    or not RawImage_FromBitmap(ImagePtr^, FHandle, FMaskHandle)
+    then ImagePtr^.Description := GetDescriptionFromBitmap(FHandle);
+    Exit;
+  end;
+
+  case PixelFormat of
+    pf1bit: Flags := [riqfMono, riqfMask];
+    pf4bit,
+    pf8bit: Flags := [riqfRGB, riqfMask, riqfPalette];
+    pf32bit: Flags := [riqfRGB, riqfMask, riqfAlpha];
+  else
+    Flags := [riqfRGB, riqfMask];
+  end;
+  ImagePtr^.Description := QueryDescription(Flags, Width, Height);
+end;
+
 function TIconImage.ReleaseHandle: HBITMAP;
 begin
   Result := Handle;
@@ -472,14 +506,20 @@ function TCustomIcon.GetRawImagePtr: PRawImage;
 begin
   if FCurrent = -1
   then Result := nil
-  else Result := @TIconImage(TSharedIcon(FSharedImage).FImages[FCurrent]).FImage;
+  else begin
+    TIconImage(TSharedIcon(FSharedImage).FImages[FCurrent]).RawImageNeeded(False);
+    Result := @TIconImage(TSharedIcon(FSharedImage).FImages[FCurrent]).FImage;
+  end;
 end;
 
 function TCustomIcon.GetRawImageDescriptionPtr: PRawImageDescription;
 begin
   if FCurrent = -1
   then Result := nil
-  else Result := @TIconImage(TSharedIcon(FSharedImage).FImages[FCurrent]).FImage.Description;
+  else begin
+    TIconImage(TSharedIcon(FSharedImage).FImages[FCurrent]).RawImageNeeded(True);
+    Result := @TIconImage(TSharedIcon(FSharedImage).FImages[FCurrent]).FImage.Description;
+  end;
 end;
 
 function TCustomIcon.GetTransparent: Boolean;

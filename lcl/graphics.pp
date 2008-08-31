@@ -1424,6 +1424,7 @@ type
     FPalette: HPALETTE;
     function GetPalette: HPALETTE;
   protected
+    procedure RawImageNeeded(ADescOnly: Boolean);
   public
     constructor Create(AFormat: TPixelFormat; AHeight, AWidth: Word);
     constructor Create(const AImage: TRawImage);
