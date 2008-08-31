@@ -50,10 +50,12 @@ end;
 
 procedure TFPImageBitmap.InitializeReader(AImage: TLazIntfImage; AReader: TFPCustomImageReader);
 begin
+  AReader.OnProgress := @Progress;
 end;
 
 procedure TFPImageBitmap.InitializeWriter(AImage: TLazIntfImage; AWriter: TFPCustomImageWriter);
 begin
+  AWriter.OnProgress := @Progress;
 end;
 
 class function TFPImageBitmap.IsFileExtensionSupported(

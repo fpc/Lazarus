@@ -383,9 +383,10 @@ type
     FHeight: Integer;
     FColorCount: Integer;
     FCharsPerPixel: Integer;
-    fXHot: Integer;
-    fYHot: Integer;
+    FXHot: Integer;
+    FYHot: Integer;
     FPixelToColorTree: TArrayNodesTree;
+    FContinue: Boolean;
     FUpdateDescription: Boolean; // If set, update rawimagedescription
     function  GetUpdateDescription: Boolean;
     procedure SetUpdateDescription(AValue: Boolean);
@@ -411,6 +412,7 @@ type
   private
     FNibblesPerSample: word;
     FRightShiftSample: cardinal;
+    FContinue: Boolean;
     procedure SetNibblesPerSample(const AValue: word);
   protected
     procedure InternalWrite(Str: TStream; Img: TFPCustomImage); override;
@@ -450,6 +452,7 @@ type
     FLineBuf: PByte;         // Buffer for 1 scanline. Can be Byte, Word, TColorRGB or TColorRGBA
     FIsRLE: Boolean;         // Is data RLE compressed?
     FUpdateDescription: Boolean; // If set, update rawimagedescription
+    FContinue: Boolean;      // for progress support
 
     procedure FreeBufs;      // Free (and nil) buffers.
     function GetUpdateDescription: Boolean;
@@ -3630,18 +3633,19 @@ var
     x: Integer;
     i: Integer;
     CurColor: TFPColor;
-    ProgressCount: Integer;
-    ContinueReading: Boolean;
     CurEntry: PXPMPixelToColorEntry;
   begin
-    Img.SetSize(FWidth,fHeight);
-    ProgressCount:=10000;
-    for y:=0 to fHeight-1 do begin
+    Img.SetSize(FWidth, FHeight);
+    for y := 0 to FHeight - 1 do
+    begin
+      if not FContinue then
+        Exit;
       ReadNextLine(Line,true);
       ReadPos:=Line.StartPos;
       if Line.EndPos-Line.StartPos<FCharsPerPixel*FWidth then
         RaiseXPMReadError('line too short',ReadPos);
-      for x:=0 to FWidth-1 do begin
+      for x:=0 to FWidth-1 do
+      begin
         //DebugLn('ReadPixels x=',dbgs(x),' y=',dbgs(y),' color="',DbgStr(copy(Src,ReadPos,FCharsPerPixel)),'"');
         for i:=0 to FCharsPerPixel-1 do begin
           IntArray[i]:=ord(Src[ReadPos]);
@@ -3679,17 +3683,7 @@ var
           DbgS(CurColor.Alpha));}
         Img.Colors[x,y]:=CurColor;
       end;
-      if ProgressCount>0 then begin
-        dec(ProgressCount,FWidth);
-      end else begin
-        if Assigned(Img.OnProgress) then begin
-          ContinueReading:=true;
-          Img.OnProgress(Self,FPImage.psRunning,Byte((y*100) div FHeight),
-            true,Rect(0,0,FWidth,y),'reading XPM pixels',ContinueReading);
-          if not ContinueReading then exit;
-        end;
-        ProgressCount:=10000;
-      end;
+      Progress(psRunning, trunc(100.0 * Y / (FHeight - 1)), False, Rect(0, 0, FWidth - 1, y), 'reading XPM pixels', FContinue);
     end;
   end;
   
@@ -3697,6 +3691,9 @@ var
   IntArray: array of Integer;
   Desc: TRawImageDescription;
 begin
+  FContinue := True;
+  Progress(psStarting, 0, False, Rect(0,0,0,0), '', FContinue);
+
   ClearPixelToColorTree;
   Src:=ReadCompleteStreamToString(Str,1024);
   SrcLen:=length(Src);
@@ -3726,6 +3723,8 @@ begin
   end;
   //FPixelToColorTree.ConsistencyCheck;
   ReadPixels(@IntArray[0]);
+
+  Progress(psEnding, 100, false, Rect(0,0,0,0), '', FContinue);
 end;
 
 function TLazReaderXPM.QueryInterface(const iid: TGuid; out obj): longint; stdcall;
@@ -4124,12 +4123,16 @@ var
     // build palette source
     SetLength(s,SrcLen);
     SrcPos:=1;
-    for y:=0 to Img.Height-1 do begin
+    for y:=0 to Img.Height-1 do
+    begin
       WriteToSrc('"');
-      for x:=0 to Img.Width-1 do begin
-        i:=Palette.IndexOf(GetColor(x,y));
+      for x:=0 to Img.Width-1 do
+      begin
+        i := Palette.IndexOf(GetColor(x,y));
         WriteToSrc(PixelStrings[i]);
       end;
+      Progress(psRunning, trunc(100.0 * (y / (Img.Height - 1))),
+           False, Rect(0,0,Img.Width-1,y), 'writing XPM pixels', FContinue);
       if y<Img.Height-1 then
         WriteToSrc('",'+LineEnd)
       else
@@ -4143,6 +4146,9 @@ var
 var
   i: Integer;
 begin
+  FContinue := True;
+  Progress(psStarting, 0, False, Rect(0,0,0,0), '', FContinue);
+
   Palette:=nil;
   PixelStrings:=nil;
   ColorStrings:=nil;
@@ -4163,6 +4169,7 @@ begin
     end;
     Palette.Free;
   end;
+  Progress(psEnding, 100, false, Rect(0,0,0,0), '', FContinue);
 end;
 
 constructor TLazWriterXPM.Create;
@@ -4824,6 +4831,8 @@ procedure TLazReaderDIB.InternalRead(Stream: TStream; Img: TFPCustomImage);
 var
   Desc: TRawImageDescription;
 begin
+  FContinue := True;
+  Progress(psStarting, 0, False, Rect(0,0,0,0), '', FContinue);
   FImage := TheImage as TLazIntfImage;
   InternalReadHead;
   
@@ -4836,6 +4845,7 @@ begin
   end;
   
   InternalReadBody;
+  Progress(psEnding, 100, false, Rect(0,0,0,0), '', FContinue);
 end;
 
 procedure TLazReaderDIB.InternalReadHead;
@@ -4893,6 +4903,12 @@ const
     then FMaskColor := FPalette[FMaskIndex];
   end;
   
+  procedure UpdateProgress(Row: Integer); inline;
+  begin
+    Progress(psRunning, trunc(100.0 * ((TheImage.Height - 1 - Row) / (TheImage.Height - 1))),
+      False, Rect(0, 0, TheImage.Width - 1, TheImage.Height - 1 - Row), 'reading BMP pixels', FContinue);
+  end;
+
 var
   PixelMasks: TPixelMasks;
   Row : Cardinal;
@@ -5009,6 +5025,9 @@ begin
   end;
 
   try
+    if not FContinue then
+      Exit;
+
     Row := TheImage.Height - 1;
     ReadScanLine(Row);
     SaveTransparentColor;
@@ -5018,8 +5037,12 @@ begin
     else
       WriteScanLine(TheImage.Height - 1 - Row);
 
+    UpdateProgress(Row);
+
     while Row > 0 do
     begin
+      if not FContinue then
+        Exit;
       Dec(Row);
       ReadScanLine(Row); // Scanline in LineBuf with Size ReadSize.
 
@@ -5027,6 +5050,8 @@ begin
         WriteScanLine(Row) // upside-down
       else
         WriteScanLine(TheImage.Height - 1 - Row);
+
+      UpdateProgress(Row);
     end;
   finally
     FreeBufs;
@@ -5042,6 +5067,7 @@ constructor TLazReaderDIB.Create;
 begin
   inherited Create;
   FMaskColor := colTransparent;
+  FContinue := True;
 end;
 
 destructor TLazReaderDIB.Destroy;
