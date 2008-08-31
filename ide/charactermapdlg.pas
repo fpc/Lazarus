@@ -115,7 +115,7 @@ begin
   begin
     StringGrid1.MouseToCell(X, Y, Col, Row);
     if Assigned(OnInsertCharacter) then
-      OnInsertCharacter(StringGrid1.Cells[Col, Row][1]);
+      OnInsertCharacter(StringGrid1.Cells[Col, Row]);
   end;
 end;
 
@@ -129,7 +129,7 @@ begin
   begin
     StringGrid1.MouseToCell(X, Y, Col, Row);
     
-    CharOrd := Ord(StringGrid1.Cells[Col, Row][1]);
+    CharOrd := Ord(UTF8ToAnsi(StringGrid1.Cells[Col, Row])[1]);
     CharInfoLabel.Caption := 'Decimal = ' + IntToStr(CharOrd) +
                              ', Hex = $'  + HexStr(CharOrd, 2);
   end
@@ -150,7 +150,7 @@ begin
     begin
       if R = 0 then StringGrid1.Cells[C, R] := Format('%.2d', [Pred(C)])
       else
-        StringGrid1.Cells[C, R] := Chr(Succ(R) * 16 + Pred(C));
+        StringGrid1.Cells[C, R] := AnsiToUTF8(Chr(Succ(R) * 16 + Pred(C)));
     end;
   end;
 end;
