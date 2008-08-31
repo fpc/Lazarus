@@ -1497,7 +1497,7 @@ False is set when the edit or combobox control loses focus.
         <short/>
         <descr/>
         <seealso/>
-      </element
+      </element>
       <!-- variable Visibility: private -->
       <element name="TCustomComboBox.FOnGetItems">
         <short/>
