@@ -9325,7 +9325,8 @@ begin
 
     // create output directories
     UnitOutputDirectory:=Project1.CompilerOptions.GetUnitOutPath(false);
-    if not DirPathExistsCached(UnitOutputDirectory) then begin
+    if (FilenameIsAbsolute(UnitOutputDirectory))
+    and (not DirPathExistsCached(UnitOutputDirectory)) then begin
       if not FileIsInPath(UnitOutputDirectory,WorkingDir) then begin
         Result:=IDEQuestionDialog(lisCreateDirectory,
           Format(lisTheOutputDirectoryIsMissing, ['"', UnitOutputDirectory, '"']
