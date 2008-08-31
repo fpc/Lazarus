@@ -7350,6 +7350,13 @@ begin
 
     if GetThreadID<>MainThreadID then begin
       // awake gtk loop
+      // when the main thread is currently processing messages it will process
+      // fMessageQueue.
+      // But when the main thread is waiting for the next gtk message it will
+      // wait for the next external event before processing fMessageQueue.
+      // A g_idle_add can only be used if glib multithreading has been enabled
+      // ToDo: Find out what we loose when enabling multithreading
+      //       or find another way to wake up the gtk loop
       DebugLn(['TGtkWidgetSet.PostMessage ToDo: wake up gtk']);
     end;
   finally
