@@ -330,6 +330,7 @@ begin
   // size was changed => update HDC and HBITMAP
   FreeCanvasContext;
   SCB.FreeHandle;
+  FreeMaskHandle;
   Changed(Self);
 end;
 
