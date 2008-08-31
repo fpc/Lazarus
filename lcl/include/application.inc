@@ -837,14 +837,18 @@ end;
 procedure TApplication.ProcessAsyncCallQueue;
 var
   lItem: PAsyncCallQueueItem;
+  Event: TDataEvent;
+  Data: PtrInt;
 begin
   // take care: we may be called from within lItem^.Method
   while FAsyncCallQueue <> nil do
   begin
     lItem := FAsyncCallQueue;
     FAsyncCallQueue := lItem^.NextItem;
-    lItem^.Method(lItem^.Data);
+    Event:=lItem^.Method;
+    Data:=lItem^.Data;
     Dispose(lItem);
+    Event(Data);
   end;
   FAsyncCallQueueLast := nil;
 end;

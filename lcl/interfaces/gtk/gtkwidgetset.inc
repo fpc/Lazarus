@@ -381,18 +381,23 @@ begin
   end;
 
   // tidy up the paint messages
-  QueueItem:=FMessageQueue.FirstMessageItem;
-  while (QueueItem<>nil) do begin
-    NextQueueItem := TGtkMessageQueueItem(QueueItem.Next);
-    if QueueItem.IsPaintMessage then
-      fMessageQueue.RemoveMessage(QueueItem,FPMF_All,true);
-    QueueItem := NextQueueItem;
-  end;
+  FMessageQueue.Lock;
+  try
+    QueueItem:=FMessageQueue.FirstMessageItem;
+    while (QueueItem<>nil) do begin
+      NextQueueItem := TGtkMessageQueueItem(QueueItem.Next);
+      if QueueItem.IsPaintMessage then
+        fMessageQueue.RemoveMessage(QueueItem,FPMF_All,true);
+      QueueItem := NextQueueItem;
+    end;
 
-  // warn about unremoved paint messages
-  if fMessageQueue.HasPaintMessages then begin
-    DebugLn(ProcName, Format(rsWarningUnremovedPaintMessages,
-      [IntToStr(fMessageQueue.NumberOfPaintMessages)]));
+    // warn about unremoved paint messages
+    if fMessageQueue.HasPaintMessages then begin
+      DebugLn(ProcName, Format(rsWarningUnremovedPaintMessages,
+        [IntToStr(fMessageQueue.NumberOfPaintMessages)]));
+    end;
+  finally
+    FMessageQueue.UnLock;
   end;
 
   // warn about unreleased DC
@@ -445,14 +450,13 @@ begin
     for GDIType := Low(GDIType) to High(GDIType) do
       if GDITypeCount[GDIType] > 0 then
         DebugLn(ProcName,Format('   %s: %d', [dbgs(GDIType), GDITypeCount[GDIType]]));
-  end;
 
-
-  // tidy up messages
-  if FMessageQueue.Count > 0   then begin
-    DebugLn(ProcName, Format(rsWarningUnreleasedMessagesInQueue,[FMessageQueue.Count]));
-    while FMessageQueue.First<>nil do
-      fMessageQueue.RemoveMessage(fMessageQueue.FirstMessageItem,FPMF_All,true);
+    // tidy up messages
+    if FMessageQueue.Count > 0   then begin
+      DebugLn(ProcName, Format(rsWarningUnreleasedMessagesInQueue,[FMessageQueue.Count]));
+      while FMessageQueue.First<>nil do
+        fMessageQueue.RemoveMessage(fMessageQueue.FirstMessageItem,FPMF_All,true);
+    end;
   end;
 
   // warn about unreleased timers
@@ -513,13 +517,13 @@ begin
   FreeAndNil(FWidgetsWithResizeRequest);
   FreeAndNil(FWidgetsResized);
   FreeAndNil(FFixWidgetsResized);
-  FMessageQueue.Free;
-  FDeviceContexts.Free;
-  FGDIObjects.Free;
+  FreeAndNil(FMessageQueue);
+  FreeAndNil(FDeviceContexts);
+  FreeAndNil(FGDIObjects);
   {$IFDEF Use_KeyStateList}
-  FKeyStateList_.Free;
+  FreeAndNil(FKeyStateList_);
   {$ENDIF}
-  FTimerData.Free;
+  FreeAndNil(FTimerData);
   
   GtkDefDone;
   FreeAndNil(FDCManager);
@@ -1169,38 +1173,46 @@ begin
 
     // then handle our own messages
     while not Application.Terminated do begin
-      // fetch first message
-      vlItem := fMessageQueue.FirstMessageItem;
-      if vlItem = nil then break;
+      fMessageQueue.Lock;
+      try
+        // fetch first message
+        vlItem := fMessageQueue.FirstMessageItem;
+        if vlItem = nil then break;
 
-      // remove message from queue
-      if vlItem.IsPaintMessage then begin
-        //DebugLn(['TGtkWidgetSet.AppProcessMessages Paint: ',DbgSName(GetLCLObject(Pointer(vlItem.Msg^.hwnd)))]);
-        // paint messages are the most expensive messages in the LCL,
-        // therefore they are sent after all other
-        if MovedPaintMessageCount<10 then begin
-          inc(MovedPaintMessageCount);
-          if fMessageQueue.HasNonPaintMessages then begin
-            // there are non paint messages -> move paint message to the end
-            fMessageQueue.MoveToLast(FMessageQueue.First);
-            continue;
+        // remove message from queue
+        if vlItem.IsPaintMessage then begin
+          //DebugLn(['TGtkWidgetSet.AppProcessMessages Paint: ',DbgSName(GetLCLObject(Pointer(vlItem.Msg^.hwnd)))]);
+          // paint messages are the most expensive messages in the LCL,
+          // therefore they are sent after all other
+          if MovedPaintMessageCount<10 then begin
+            inc(MovedPaintMessageCount);
+            if fMessageQueue.HasNonPaintMessages then begin
+              // there are non paint messages -> move paint message to the end
+              fMessageQueue.MoveToLast(FMessageQueue.First);
+              continue;
+            end else begin
+              // there are only paint messages left in the queue
+              // -> check other queues
+              if PendingGtkMessagesExists then break;
+            end;
           end else begin
-            // there are only paint messages left in the queue
-            // -> check other queues
-            if PendingGtkMessagesExists then break;
+            // handle this paint message now
+            MovedPaintMessageCount:=0;
           end;
-        end else begin
-          // handle this paint message now
-          MovedPaintMessageCount:=0;
         end;
+
+        //DebugLn(['TGtkWidgetSet.AppProcessMessages SendMessage: ',DbgSName(GetLCLObject(Pointer(vlItem.Msg^.hwnd)))]);
+        vlMsg:=fMessageQueue.PopFirstMessage;
+      finally
+        fMessageQueue.UnLock;
       end;
 
-      //DebugLn(['TGtkWidgetSet.AppProcessMessages SendMessage: ',DbgSName(GetLCLObject(Pointer(vlItem.Msg^.hwnd)))]);
-      vlMsg:=fMessageQueue.PopFirstMessage;
-
       // Send message
-      with vlMsg^ do SendMessage(hWND, Message, WParam, LParam);
-      Dispose(vlMsg);
+      try
+        with vlMsg^ do SendMessage(hWND, Message, WParam, LParam);
+      finally
+        Dispose(vlMsg);
+      end;
     end;
 
     // proceed until all messages are handled
@@ -3687,13 +3699,18 @@ begin
   DestroyWidget(Widget);
 
   // remove all remaining messages to this widget
-  QueueItem:=FMessageQueue.FirstMessageItem;
-  while (QueueItem<>nil) do begin
-    MsgPtr := QueueItem.Msg;
-    NextItem := TGtkMessagequeueItem(QueueItem.Next);
-    if (PGtkWidget(MsgPtr^.hWnd)=Widget) then
-      fMessageQueue.RemoveMessage(QueueItem,FPMF_All,true);
-    QueueItem := NextItem;
+  fMessageQueue.Lock;
+  try
+    QueueItem:=FMessageQueue.FirstMessageItem;
+    while (QueueItem<>nil) do begin
+      MsgPtr := QueueItem.Msg;
+      NextItem := TGtkMessagequeueItem(QueueItem.Next);
+      if (PGtkWidget(MsgPtr^.hWnd)=Widget) then
+        fMessageQueue.RemoveMessage(QueueItem,FPMF_All,true);
+      QueueItem := NextItem;
+    end;
+  finally
+    fMessageQueue.UnLock;
   end;
 end;
 

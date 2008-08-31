@@ -7055,13 +7055,18 @@ var
 begin
   //TODO Filtering
   DebugLn('Peek !!!' );
-  vlItem := fMessageQueue.FirstMessageItem;
-  Result := vlItem <> nil;
+  fMessageQueue.Lock;
+  try
+    vlItem := fMessageQueue.FirstMessageItem;
+    Result := vlItem <> nil;
 
-  if Result  then begin
-    lpMsg := vlItem.Msg^;
-    if (wRemoveMsg and PM_REMOVE) = PM_REMOVE then
-      fMessageQueue.RemoveMessage(vlItem,FPMF_Internal,true);
+    if Result  then begin
+      lpMsg := vlItem.Msg^;
+      if (wRemoveMsg and PM_REMOVE) = PM_REMOVE then
+        fMessageQueue.RemoveMessage(vlItem,FPMF_Internal,true);
+    end;
+  finally
+    fMessageQueue.UnLock;
   end;
 end;
 
@@ -7314,32 +7319,42 @@ begin
   Result := True;
 
   New(AMessage);
+  FillByte(AMessage^,SizeOf(TMsg),0);
   AMessage^.HWnd := Handle; // this is normally the main gtk widget
   AMessage^.Message := Msg;
   AMessage^.WParam := WParam;
   AMessage^.LParam := LParam;
-//  Message^.Time :=
 
-  if (AMessage^.Message = LM_PAINT) or (AMessage^.Message = LM_GTKPAINT) then
-  begin
-    { Obsolete, because InvalidateRectangle now works.
+  fMessageQueue.Lock;
+  try
+    if (AMessage^.Message = LM_PAINT) or (AMessage^.Message = LM_GTKPAINT) then
+    begin
+      { Obsolete, because InvalidateRectangle now works.
 
-    // paint messages are the most expensive messages in the LCL
-    // A paint message to a control will also repaint all child controls.
-    // -> check if there is already a paint message for one of its parents
-    // if yes, then skip this message
-    if ParentPaintMessageInQueue then begin
-      FinalizePaintTagMsg(AMessage^);
-      exit;
-    end;}
+      // paint messages are the most expensive messages in the LCL
+      // A paint message to a control will also repaint all child controls.
+      // -> check if there is already a paint message for one of its parents
+      // if yes, then skip this message
+      if ParentPaintMessageInQueue then begin
+        FinalizePaintTagMsg(AMessage^);
+        exit;
+      end;}
 
-    // delete old paint message to this widget,
-    // so that the widget repaints only once
+      // delete old paint message to this widget,
+      // so that the widget repaints only once
 
-    CombinePaintMessages(AMessage);
+      CombinePaintMessages(AMessage);
+    end;
+
+    FMessageQueue.AddMessage(AMessage);
+
+    if GetThreadID<>MainThreadID then begin
+      // awake gtk loop
+      DebugLn(['TGtkWidgetSet.PostMessage ToDo: wake up gtk']);
+    end;
+  finally
+    fMessageQueue.UnLock;
   end;
-
-  FMessageQueue.AddMessage(AMessage);
 end;
 
 {------------------------------------------------------------------------------

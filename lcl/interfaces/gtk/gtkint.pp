@@ -86,7 +86,7 @@ type
     FKeyStateList_: TFPList; // Keeps track of which keys are pressed
     FDeviceContexts: TDynHashArray;// hasharray of HDC
     FGDIObjects: TDynHashArray;    // hasharray of PGdiObject
-    FMessageQueue: TGtkMessageQueue;      // queue of PMsg
+    FMessageQueue: TGtkMessageQueue; // queue of PMsg (must be thread safe!)
     WaitingForMessages: boolean;
     MovedPaintMessageCount: integer;// how many paint messages moved to he end of the queue
 

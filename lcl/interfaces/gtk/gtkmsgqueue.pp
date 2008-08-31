@@ -42,9 +42,13 @@ type
     constructor Create;
   end;
 
+  { TGtkMessageQueue }
+
   TGtkMessageQueue=class(TLinkList)
   private
     FPaintMessages: TDynHashArray; // Hash for paint messages
+    FCritSec: TRTLCriticalSection;
+    fLock: integer;
   protected
     function CreateItem : TLinkListItem;override;
     function CalculateHash(ParWnd : Hwnd):integer;
@@ -52,11 +56,13 @@ type
   public
     constructor Create;
     destructor destroy;override;
-    function   FirstMessageItem : TGtkMessageQueueItem;
-    function   LastMessageItem : TGtkMessageQueueItem;
-    function   FirstMessage : PMsg;
-    function   LastMessage : PMsg;
-    procedure  AddMessage(ParMsg : PMsg);
+    procedure  Lock;
+    procedure  UnLock;
+    function   FirstMessageItem: TGtkMessageQueueItem;
+    function   LastMessageItem: TGtkMessageQueueItem;
+    function   FirstMessage: PMsg;
+    function   LastMessage: PMsg;
+    procedure  AddMessage(ParMsg: PMsg);
     procedure  RemoveMessage(ParItem: TGtkMessageQueueItem;
                              ParFinalOnlyInternal: TFinalPaintMessageFlag;
                              DisposeMessage: boolean);
@@ -105,12 +111,28 @@ begin
   inherited Create;
   FPaintMessages := TDynHashArray.Create(-1);
   FPaintMessages.OwnerHashFunction := @HashPaintMessage;
+  InitCriticalSection(FCritSec);
 end;
 
 destructor TGtkMessageQueue.destroy;
 begin
   inherited Destroy;
   fPaintMessages.destroy;
+  DoneCriticalsection(FCritSec);
+end;
+
+procedure TGtkMessageQueue.Lock;
+begin
+  inc(fLock);
+  if fLock=1 then
+    EnterCriticalsection(FCritSec);
+end;
+
+procedure TGtkMessageQueue.UnLock;
+begin
+  dec(fLock);
+  if fLock=0 then
+    LeaveCriticalsection(FCritSec);
 end;
 
 {------------------------------------------------------------------------------
@@ -176,24 +198,44 @@ end;
 
 function TGtkMessageQueue.FirstMessageItem : TGtkMessageQueueItem;
 begin
-  Result :=TGtkMessageQueueItem(First);
+  Lock;
+  try
+    Result :=TGtkMessageQueueItem(First);
+  finally
+    UnLock;
+  end;
 end;
 
 function TGtkMessageQueue.FirstMessage : PMsg;
 begin
   Result := nil;
-  if FirstMessageItem <> nil then  Result := FirstMessageItem.fMsg;
+  Lock;
+  try
+    if FirstMessageItem <> nil then  Result := FirstMessageItem.fMsg;
+  finally
+    UnLock;
+  end;
 end;
 
 function TGtkMessageQueue.LastMessageItem : TGtkMessageQueueItem;
 begin
-  result:= TGtkMessageQueueItem(Last);
+  Lock;
+  try
+    Result:=TGtkMessageQueueItem(Last);
+  finally
+    UnLock;
+  end;
 end;
 
 function TGtkMessageQueue.LastMessage : PMsg;
 begin
-  Result := nil;
-  if LastMessageItem <> nil then   result := LastMessageItem.fMsg;
+  Lock;
+  try
+    Result := nil;
+    if LastMessageItem <> nil then   result := LastMessageItem.fMsg;
+  finally
+    UnLock;
+  end;
 end;
 
 { Remove from queue and destroy message
@@ -202,34 +244,59 @@ end;
 procedure  TGtkMessageQueue.RemoveMessage(ParItem: TGtkMessageQueueItem;
   ParFinalOnlyInternal: TFinalPaintMessageFlag; DisposeMessage: boolean);
 begin
-  if (ParItem.IsPaintMessage) then
-    fPaintMessages.Remove(ParItem);
-  ParItem.DestroyMessage(ParFinalOnlyInternal, DisposeMessage);
-  Delete(ParItem);
+  Lock;
+  try
+    if (ParItem.IsPaintMessage) then
+      fPaintMessages.Remove(ParItem);
+    ParItem.DestroyMessage(ParFinalOnlyInternal, DisposeMessage);
+    Delete(ParItem);
+  finally
+    UnLock;
+  end;
 end;
 
 function TGtkMessageQueue.HasPaintMessages:boolean;
 begin
-  result := fPaintMessages.Count > 0;
+  Lock;
+  try
+    Result := fPaintMessages.Count > 0;
+  finally
+    UnLock;
+  end;
 end;
 
 function TGtkMessageQueue.NumberOfPaintMessages:integer;
 begin
-  result := fPaintMessages.Count;
+  Lock;
+  try
+    Result := fPaintMessages.Count;
+  finally
+    UnLock;
+  end;
 end;
 
 function TGtkMessageQueue.HasNonPaintMessages:boolean;
 begin
-  result := fPaintMessages.Count <> count;
+  Lock;
+  try
+    Result := fPaintMessages.Count <> count;
+  finally
+    UnLock;
+  end;
 end;
 
 function TGtkMessageQueue.PopFirstMessage: PMsg;
 var
   vlItem : TGtkMessageQueueItem;
 begin
-  vlItem := FirstMessageItem;
-  Result := vlItem.Msg;
-  RemoveMessage(vlItem,FPMF_none,false);
+  Lock;
+  try
+    vlItem := FirstMessageItem;
+    Result := vlItem.Msg;
+    RemoveMessage(vlItem,FPMF_none,false);
+  finally
+    UnLock;
+  end;
 end;
 
 end.
