@@ -185,9 +185,10 @@ begin
   // we must skip mask creation if
   // a) we already have mask
   // b) mask needs to be created another way - using TransparentColor
+  // c) there's no mask data
   SkipMask := MaskHandleAllocated
            or (TransparentMode = tmFixed)
-           or (ImagePtr^.Description.MaskBitsPerPixel = 0);
+           or not ImagePtr^.IsMasked(False);
 
   if not CreateCompatibleBitmaps(ImagePtr^, ImgHandle, ImgMaskHandle, SkipMask)
   then begin

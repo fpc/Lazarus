@@ -116,17 +116,14 @@ begin
 
   if TransparentMode = tmAuto then
   begin
-    if not BitmapHandleAllocated
-    then BitmapHandleNeeded; // create together with bitmaphandle
+    BitmapHandleNeeded; // create together with bitmaphandle
 
     if FMaskHandle <> 0 then Exit;
     ImagePtr := GetRawImagePtr;
     if ImagePtr^.Description.Format = ricfNone then Exit;
 
     // check if we have mask data
-    if  (ImagePtr^.Description.MaskBitsPerPixel <> 0)
-    and (ImagePtr^.Mask <> nil)
-    and (ImagePtr^.MaskSize <> 0)
+    if  ImagePtr^.IsMasked(False)
     then begin
       // move mask to image data, so we only have to create one handle
       // (and don't have to think about imahehandle format)
