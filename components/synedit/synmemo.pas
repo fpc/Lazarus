@@ -192,17 +192,21 @@ uses
 function TCustomSynMemo.CharIndexToRowCol(Index: integer): TPoint;
 var
   x, y, Chars: integer;
+  e: string;
+  LineEndLen: Integer;
 begin
   x := 0;
   y := 0;
+  e:=LineEnding;
+  LineEndLen:=length(e);
   Chars := 0;
   while y < Lines.Count do begin
     x := Length(Lines[y]);
-    if Chars + x + 2 > Index then begin
+    if Chars + x + LineEndLen > Index then begin
       x := Index - Chars;
       break;
     end;
-    Inc(Chars, x + 2);
+    Inc(Chars, x + LineEndLen);
     x := 0;
     Inc(y);
   end;
@@ -212,11 +216,15 @@ end;
 function TCustomSynMemo.RowColToCharIndex(RowCol: TPoint): integer;
 var
   i: integer;
+  e: Char;
+  LineEndLen: Integer;
 begin
   Result := 0;
   RowCol.y := Min(Lines.Count, RowCol.y) - 1;
+  e:=LineEnding;
+  LineEndLen:=length(e);
   for i := 0 to RowCol.y - 1 do
-    Result := Result + Length(Lines[i]) + 2;
+    Result := Result + Length(Lines[i]) + LineEndLen;
   Result := Result + RowCol.x;
 end;
 
