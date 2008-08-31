@@ -9922,7 +9922,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <short>
           <var>CreateParams</var> - create parameters for this windowed class</short>
         <descr>
-          <printshort/>
+          <printshort id="TWinControl.CreateParams"/>
           <p>Definition of parameters:</p>
           <pre>TCreateParams = record
     Caption: PChar;
@@ -9997,7 +9997,7 @@ End;
         <short>
           <var>InitializeWnd</var> - initialise the window for this control</short>
         <descr>
-          <printshort/>
+          <printshort id="TWinControl.InitializeWnd"/>
           <p>Gets called after the Handle is created and before the child handles are created</p>
         </descr>
         <errors/>

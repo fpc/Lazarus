@@ -3599,7 +3599,8 @@ cdsIndeterminate</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TListItem.IsEqual">
-        <short/>
+        <short>The current ListItem <var>IsEqual</var> to the item specified in the argument <var>AItem</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3674,7 +3675,8 @@ cdsIndeterminate</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TListItem.DropTarget">
-        <short/>
+        <short>
+          <var>DropTarget</var> - returns True if this is a valid target on the list for dropping</short>
         <descr/>
         <seealso/>
       </element>
@@ -3814,7 +3816,8 @@ cdsIndeterminate</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TListItems.GetCount">
-        <short/>
+        <short>
+          <var>GetCount</var> - find the number of Items in the list</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3825,7 +3828,9 @@ cdsIndeterminate</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TListItems.GetItem">
-        <short/>
+        <short>
+          <var>GetItem</var> returns the <var>ListItem</var> specified by <var>AIndex</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3863,7 +3868,8 @@ cdsIndeterminate</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TListItems.SetItem">
-        <short/>
+        <short>
+          <var>SetItem</var> - writes the Index and content of a given Item to a local variable</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3938,7 +3944,8 @@ cdsIndeterminate</descr>
       </element>
       <!-- function Visibility: public -->
       <element name="TListItems.FindData">
-        <short/>
+        <short>
+          <var>FindData</var> - returns the ListItem associated with the specified datapointer</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4266,7 +4273,7 @@ cdsIndeterminate</descr>
       <!-- property Visibility: published -->
       <element name="TListColumn.ImageIndex">
         <short>
-          <var>MaxWidth</var> - the maximum permissable width for the column</short>
+          <var>ImageIndex</var> - the index value of the image associated with he ListColumn</short>
         <descr/>
         <seealso/>
       </element>
@@ -5293,7 +5300,7 @@ cdsIndeterminate</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomListView.InitializeWnd">
+      <element name="TCustomListView.InitializeWnd" link="#LCL.Controls.TWinControl.InitializeWnd">
         <short/>
         <descr/>
         <errors/>
@@ -5342,7 +5349,7 @@ cdsIndeterminate</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListView.DoDeletion">
-        <short/>
+        <short>Performs the actual deletion</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5353,7 +5360,7 @@ cdsIndeterminate</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListView.DoInsert">
-        <short/>
+        <short>Performs the insertion</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5364,7 +5371,8 @@ cdsIndeterminate</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListView.DoSelectItem">
-        <short/>
+        <short>
+          <var>DoSelectItem</var> - perform item selection</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5412,7 +5420,7 @@ cdsIndeterminate</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListView.ImageChanged">
-        <short/>
+        <short>ImageChanged</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5466,19 +5474,22 @@ cdsIndeterminate</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.DefaultItemHeight">
-        <short/>
+        <short>
+          <var>DefaultItemHeight</var> - sets or reads the default height for an item on the list</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.HideSelection">
-        <short/>
+        <short>
+          <var>HideSelection</var> - if True, the selected item is to be hidden</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.HoverTime">
-        <short/>
+        <short>
+          <var>HoverTime</var> - the time for which the mouse must hover over the item before its help message is displayed</short>
         <descr/>
         <seealso/>
       </element>
@@ -5514,13 +5525,15 @@ cdsIndeterminate</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.OwnerData">
-        <short/>
+        <short>
+          <var>OwnerData</var> - if True, the Owner's data are to be displayed</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.OwnerDraw">
-        <short/>
+        <short>
+          <var>OwnerDraw</var> - if True, the Owner's Draw method is to be used</short>
         <descr/>
         <seealso/>
       </element>
@@ -5553,7 +5566,8 @@ cdsIndeterminate</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.ShowWorkAreas">
-        <short/>
+        <short>
+          <var>ShowWorkAreas</var> - if True, the work areas are to be displayed</short>
         <descr/>
         <seealso/>
       </element>
@@ -7676,7 +7690,7 @@ cdsIndeterminate</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TToolButton.AssignTo">
+      <element name="TToolButton.AssignTo" link="#rtl.Classes.TPersistent.AssignTo">
         <short/>
         <descr/>
         <errors/>
@@ -7701,7 +7715,7 @@ cdsIndeterminate</descr>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TToolButton.MouseDown">
+      <element name="TToolButton.MouseDown" link="#LCL.Controls.TControl.MouseDown">
         <short/>
         <descr/>
         <errors/>
@@ -7724,7 +7738,7 @@ cdsIndeterminate</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TToolButton.MouseMove">
+      <element name="TToolButton.MouseMove" link="#LCL.Controls.TControl.MouseMove">
         <short/>
         <descr/>
         <errors/>
@@ -7743,7 +7757,7 @@ cdsIndeterminate</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TToolButton.MouseUp">
+      <element name="TToolButton.MouseUp" link="#LCL.Controls.TControl.MouseUp">
         <short/>
         <descr/>
         <errors/>
@@ -7766,21 +7780,21 @@ cdsIndeterminate</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TToolButton.MouseEnter">
+      <element name="TToolButton.MouseEnter" link="#LCL.Controls.TControl.MouseEnter">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TToolButton.MouseLeave">
+      <element name="TToolButton.MouseLeave" link="#LCL.Controls.TControl.MouseLeave">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TToolButton.Notification">
+      <element name="TToolButton.Notification" link="#rtl.Classes.TComponent.Notification">
         <short/>
         <descr/>
         <errors/>
@@ -7795,14 +7809,14 @@ cdsIndeterminate</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TToolButton.Paint">
+      <element name="TToolButton.Paint" link="#LCL.Controls.TGraphicControl.Paint">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TToolButton.Loaded">
+      <element name="TToolButton.Loaded" link="#rtl.Classes.TComponent.Loaded">
         <short/>
         <descr/>
         <errors/>
@@ -7845,7 +7859,7 @@ cdsIndeterminate</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TToolButton.SetParent">
+      <element name="TToolButton.SetParent" link="#LCL.Controls.TControl.SetParent">
         <short/>
         <descr/>
         <errors/>
@@ -7897,7 +7911,7 @@ cdsIndeterminate</descr>
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TToolButton.Create">
+      <element name="TToolButton.Create" link="#rtl.Classes.TComponent.Create">
         <short/>
         <descr/>
         <errors/>
@@ -7939,7 +7953,7 @@ cdsIndeterminate</descr>
           <var>Index </var>- the sequence number of the current button in the list of buttons</short>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolButton.Action">
+      <element name="TToolButton.Action" link="#LCL.Controls.TControl.Action">
         <short/>
         <descr/>
         <seealso/>
@@ -7951,13 +7965,13 @@ cdsIndeterminate</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolButton.AutoSize">
+      <element name="TToolButton.AutoSize" link="#LCL.Controls.TControl.AutoSize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolButton.Caption">
+      <element name="TToolButton.Caption" link="#LCL.Controls.TControl.Caption">
         <short/>
         <descr/>
         <seealso/>
@@ -7967,19 +7981,19 @@ cdsIndeterminate</descr>
         <short>Is this button <var>Down</var> (ie has it been selected)? Default false</short>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolButton.DragCursor">
+      <element name="TToolButton.DragCursor" link="#LCL.Controls.TControl.DragCursor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolButton.DragKind">
+      <element name="TToolButton.DragKind" link="#LCL.Controls.TControl.DragKind">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolButton.DragMode">
+      <element name="TToolButton.DragMode" link="#LCL.Controls.TControl.DragMode">
         <short/>
         <descr/>
         <seealso/>
@@ -7993,7 +8007,7 @@ cdsIndeterminate</descr>
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolButton.Enabled">
+      <element name="TToolButton.Enabled" link="#LCL.Controls.TControl.Enabled">
         <short/>
         <descr/>
         <seealso/>
@@ -8007,7 +8021,7 @@ cdsIndeterminate</descr>
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolButton.Height">
+      <element name="TToolButton.Height" link="#LCL.Controls.TControl.Height">
         <short/>
         <descr/>
         <seealso/>
@@ -8036,13 +8050,13 @@ cdsIndeterminate</descr>
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolButton.ParentShowHint">
+      <element name="TToolButton.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolButton.PopupMenu">
+      <element name="TToolButton.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
         <short/>
         <descr/>
         <seealso/>
@@ -8052,7 +8066,7 @@ cdsIndeterminate</descr>
         <short>Has this button been wrapped to the next row?</short>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolButton.ShowHint">
+      <element name="TToolButton.ShowHint" link="#LCL.Controls.TControl.ShowHint">
         <short/>
         <descr/>
         <seealso/>
@@ -8067,63 +8081,63 @@ cdsIndeterminate</descr>
         <example file="comctrls/ttoolbutton.pas"/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolButton.Visible">
+      <element name="TToolButton.Visible" link="#LCL.Controls.TControl.Visible">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolButton.Width"/>
+      <element name="TToolButton.Width" link="#LCL.Controls.TControl.Width"/>
       <!-- property Visibility: published -->
-      <element name="TToolButton.OnClick">
+      <element name="TToolButton.OnClick" link="#LCL.Controls.TControl.OnClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolButton.OnContextPopup">
+      <element name="TToolButton.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolButton.OnDragDrop">
+      <element name="TToolButton.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolButton.OnDragOver">
+      <element name="TToolButton.OnDragOver" link="#LCL.Controls.TControl.OnDragOver">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolButton.OnEndDrag">
+      <element name="TToolButton.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolButton.OnMouseDown">
+      <element name="TToolButton.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolButton.OnMouseMove">
+      <element name="TToolButton.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolButton.OnMouseUp">
+      <element name="TToolButton.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolButton.OnStartDrag">
+      <element name="TToolButton.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag">
         <short/>
         <descr/>
         <seealso/>
@@ -8577,7 +8591,7 @@ cdsIndeterminate</descr>
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TToolBar.CanAutoSize">
+      <element name="TToolBar.CanAutoSize" link="#LCL.Controls.TControl.CanAutoSize">
         <short/>
         <descr/>
         <errors/>
@@ -8622,7 +8636,7 @@ cdsIndeterminate</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TToolBar.CreateParams">
+      <element name="TToolBar.CreateParams" link="#LCL.Controls.TWinControl.CreateParams">
         <short/>
         <descr/>
         <errors/>
@@ -8633,14 +8647,14 @@ cdsIndeterminate</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TToolBar.CreateWnd">
+      <element name="TToolBar.CreateWnd" link="#LCL.Controls.TWinControl.CreateWnd">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TToolBar.ControlsAligned">
+      <element name="TToolBar.ControlsAligned" link="#LCL.Controls.TWinControl.ControlsAligned">
         <short/>
         <descr/>
         <errors/>
@@ -8662,14 +8676,14 @@ cdsIndeterminate</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TToolBar.Loaded">
+      <element name="TToolBar.Loaded" link="#rtl.Classes.TComponent.Loaded">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TToolBar.Notification">
+      <element name="TToolBar.Notification" link="#rtl.Classes.TComponent.Notification">
         <short/>
         <descr/>
         <errors/>
@@ -8725,7 +8739,7 @@ cdsIndeterminate</descr>
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TToolBar.Create">
+      <element name="TToolBar.Create" link="#rtl.Classes.TComponent.Create">
         <short/>
         <descr/>
         <errors/>
@@ -8736,7 +8750,7 @@ cdsIndeterminate</descr>
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TToolBar.Destroy">
+      <element name="TToolBar.Destroy" link="#rtl.Classes.TComponent.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -8768,7 +8782,7 @@ cdsIndeterminate</descr>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TToolBar.Paint">
+      <element name="TToolBar.Paint" link="#LCL.Controls.TCustomControl.Paint">
         <short/>
         <descr/>
         <errors/>
@@ -8791,7 +8805,8 @@ cdsIndeterminate</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TToolBar.ButtonCount">
-        <short/>
+        <short>
+          <var>ButtonCount</var> - the number of buttons on the ToolBar</short>
         <descr/>
         <seealso/>
       </element>
@@ -8814,78 +8829,83 @@ cdsIndeterminate</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TToolBar.ButtonList">
-        <short/>
+        <short>
+          <var>ButtonList</var> - the list of Buttons (as a <var>TList)</var>
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TToolBar.RowCount">
+        <short>
+          <var>RowCount</var> - the number of Rows of Buttons</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TToolBar.Align" link="#LCL.Controls.TControl.Align">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolBar.Align">
+      <element name="TToolBar.AutoSize" link="#LCL.Controls.TControl.AutoSize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolBar.AutoSize">
+      <element name="TToolBar.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolBar.BorderSpacing">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TToolBar.BorderWidth">
+      <element name="TToolBar.BorderWidth" link="#LCL.Controls.TWinControl.BorderWidth">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolBar.ButtonHeight">
-        <short/>
+        <short>
+          <var>ButtonHeight</var> - the height of the buttons</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolBar.ButtonWidth">
+        <short>
+          <var>ButtonWidth</var> - the width of the buttons</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TToolBar.Caption" link="#LCL.Controls.TControl.Caption">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolBar.Caption">
+      <element name="TToolBar.ChildSizing" link="#LCL.Controls.TWinControl.ChildSizing">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolBar.ChildSizing">
+      <element name="TToolBar.Constraints" link="#LCL.Controls.TControl.Constraints">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolBar.Constraints">
+      <element name="TToolBar.Color" link="#LCL.Controls.TControl.Color">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolBar.Color">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TToolBar.Ctl3D">
+      <element name="TToolBar.Ctl3D" link="#LCL.Controls.TControl.Ctl3D">
         <short/>
         <descr/>
         <seealso/>
@@ -8895,43 +8915,46 @@ cdsIndeterminate</descr>
         <short>The Images on the Image List that are NOT selected for display</short>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolBar.DragCursor">
+      <element name="TToolBar.DragCursor" link="#LCL.Controls.TControl.DragCursor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolBar.DragKind">
+      <element name="TToolBar.DragKind" link="#LCL.Controls.TControl.DragKind">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolBar.DragMode">
+      <element name="TToolBar.DragMode" link="#LCL.Controls.TControl.DragMode">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolBar.EdgeBorders">
-        <short/>
+        <short>
+          <var>EdgeBorders</var> - which borders form th eedge</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolBar.EdgeInner">
-        <short/>
+        <short>
+          <var>EdgeInner</var> - this toolbar has an inner edge</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolBar.EdgeOuter">
-        <short/>
+        <short>
+          <var>EdgeOuter</var> - this toolbar has an outer edge</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolBar.Enabled">
+      <element name="TToolBar.Enabled" link="#LCL.Controls.TControl.Enabled">
         <short/>
         <descr/>
         <seealso/>
@@ -8941,13 +8964,13 @@ cdsIndeterminate</descr>
         <short>Should the toolbuttons be displayed Flat (rather than in relief)? Default false</short>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolBar.Font">
+      <element name="TToolBar.Font" link="#LCL.Controls.TControl.Font">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolBar.Height">
+      <element name="TToolBar.Height" link="#LCL.Controls.TControl.Height">
         <short/>
         <descr/>
         <seealso/>
@@ -8970,61 +8993,62 @@ cdsIndeterminate</descr>
         <short>Should the contents of the toolbar be displayed as a <var>List</var>? Default false</short>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolBar.ParentColor">
+      <element name="TToolBar.ParentColor" link="#LCL.Controls.TControl.ParentColor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolBar.ParentFont">
+      <element name="TToolBar.ParentFont" link="#LCL.Controls.TControl.ParentFont">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolBar.ParentShowHint">
+      <element name="TToolBar.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolBar.PopupMenu">
+      <element name="TToolBar.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolBar.ShowCaptions">
+        <short>
+          <var>ShowCaptions</var> - should the captions be shown for the buttons? (Default False)</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TToolBar.ShowHint" link="#LCL.Controls.TControl.ShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolBar.ShowHint">
+      <element name="TToolBar.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolBar.TabOrder">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TToolBar.TabStop">
+      <element name="TToolBar.TabStop" link="#LCL.Controls.TWinControl.TabStop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolBar.Transparent">
-        <short/>
+        <short>Is the ToolBar to be <var>Transparent</var>? Default False</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolBar.Visible">
+      <element name="TToolBar.Visible" link="#LCL.Controls.TControl.Visible">
         <short/>
         <descr/>
         <seealso/>
@@ -9035,97 +9059,97 @@ cdsIndeterminate</descr>
           <var>Wrapable</var> - enables wrapping buttons to the next row if there are too many for the current row</short>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolBar.OnClick">
+      <element name="TToolBar.OnClick" link="#LCL.Controls.TControl.OnClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolBar.OnContextPopup">
+      <element name="TToolBar.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolBar.OnDblClick">
+      <element name="TToolBar.OnDblClick" link="#LCL.Controls.TControl.OnDblClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolBar.OnDragDrop">
+      <element name="TToolBar.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolBar.OnDragOver">
+      <element name="TToolBar.OnDragOver" link="#LCL.Controls.TControl.OnDragOver">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolBar.OnEndDrag">
+      <element name="TToolBar.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolBar.OnEnter">
+      <element name="TToolBar.OnEnter" link="#LCL.Controls.TWinControl.OnEnter">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolBar.OnExit">
+      <element name="TToolBar.OnExit" link="#LCL.Controls.TWinControl.OnExit">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolBar.OnMouseDown">
+      <element name="TToolBar.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolBar.OnMouseMove">
+      <element name="TToolBar.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolBar.OnMouseUp">
+      <element name="TToolBar.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolBar.OnMouseEnter">
+      <element name="TToolBar.OnMouseEnter" link="#LCL.Controls.TControl.OnMouseEnter">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolBar.OnMouseLeave">
+      <element name="TToolBar.OnMouseLeave" link="#LCL.Controls.TControl.OnMouseLeave">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolBar.OnResize">
+      <element name="TToolBar.OnResize" link="#LCL.Controls.TControl.OnResize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolBar.OnChangeBounds">
+      <element name="TToolBar.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolBar.OnStartDrag">
+      <element name="TToolBar.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag">
         <short/>
         <descr/>
         <seealso/>
@@ -9456,7 +9480,7 @@ cdsIndeterminate</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomTrackBar.InitializeWnd">
+      <element name="TCustomTrackBar.InitializeWnd" link="#LCL.Controls.TWinControl.InitializeWnd">
         <short/>
         <descr/>
         <errors/>
@@ -11060,7 +11084,7 @@ Const
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TTreeNode.Create">
+      <element name="TTreeNode.Create" link="#rtl.System.TObject.Create">
         <short/>
         <descr/>
         <errors/>
@@ -11072,7 +11096,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNode.AlphaSort">
-        <short/>
+        <short>
+          <var>AlphaSort</var> - if True, sorted alphabetically</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11082,7 +11107,7 @@ Const
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TTreeNode.Assign">
+      <element name="TTreeNode.Assign" link="#rtl.Classes.TPersistent.Assign">
         <short/>
         <descr/>
         <errors/>
@@ -15970,7 +15995,10 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       <element name="TListItem.Top">
         <short>The position of the <var>Top</var> of this ListItem</short>
       </element>
-      <element name="TListItems.FindCaption"/>
+      <element name="TListItems.FindCaption">
+        <short>
+          <var>FindCaption</var> - returns the ListItem with the specified caption at the given starting place.</short>
+      </element>
       <element name="TListView.Checkboxes" link="#LCL.ComCtrls.TCustomListView.Checkboxes"/>
       <element name="TListView.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
       <element name="TListView.DragMode" link="#LCL.Controls.TControl.DragMode"/>
@@ -16039,9 +16067,45 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       <element name="TPageControl.DoRemoveDockClient"/>
       <element name="TPageControl.DoUndockClientMsg"/>
       <element name="TPageControl.PositionDockRect"/>
-      <element name="TListItem.DisplayRect"/>
-      <element name="TListItem.DisplayRectSubItem"/>
-      <element name="TListItems.WSCreateItems"/>
+      <element name="TListItem.DisplayRect">
+        <short>
+          <var>DisplayRect</var> - returns the coordinates of a rectangle for displaying the current item</short>
+        <descr>
+          <printshort id="TListItem.DisplayRect"/>
+          <p>Display codes can be: <var>drBounds</var>, <var>drIcon</var>, <var>drLabel</var>, <var>drSelectBounds</var>
+          </p>
+        </descr>
+      </element>
+      <element name="TListItem.DisplayRectSubItem">
+        <short>
+          <var>DisplayRectSubItem</var> - returns the coordinates of a display rectangle for a specified sub-item</short>
+        <descr>
+          <printshort id="TListItem.DisplayRectSubItem"/>
+          <p>Display codes can be: <var>drBounds</var>, <var>drIcon</var>, <var>drLabel</var>, <var>drSelectBounds</var>
+          </p>
+        </descr>
+      </element>
+      <element name="TListItems.WSCreateItems">
+        <short>
+          <var>WSCreateItems</var> - instruction to the Widget Set to create Items</short>
+      </element>
+      <element name="TCustomListView.FinalizeWnd" link="#LCL.Controls.TWinControl.FinalizeWnd"/>
+      <element name="TCustomListView.DestroyWnd" link="#LCL.Controls.TWinControl.DestroyWnd"/>
+      <element name="TToolButton.TextChanged" link="#LCL.Controls.TControl.TextChanged"/>
+      <element name="TToolButton.CalculatePreferredSize" link="#LCL.Controls.TControl.CalculatePreferredSize"/>
+      <element name="TToolButton.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
+      <element name="TToolButton.GetButtonDrawDetail"/>
+      <element name="TToolButton.DialogChar" link="#LCL.Controls.TControl.DialogChar"/>
+      <element name="TToolButton.Click" link="#LCL.Controls.TControl.Click"/>
+      <element name="TToolButton.GetPreferredSize" link="#LCL.Controls.TControl.GetPreferredSize"/>
+      <element name="TToolButton.OnEndDock" link="#LCL.Controls.TControl.OnEndDock"/>
+      <element name="TToolButton.OnStartDock" link="#LCL.Controls.TControl.OnStartDock"/>
+      <element name="TToolBar.AdjustClientRect" link="#LCL.Controls.TWinControl.AdjustClientRect"/>
+      <element name="TToolBar.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
+      <element name="TToolBar.CalculatePreferredSize" link="#LCL.Controls.TControl.CalculatePreferredSize"/>
+      <element name="TToolBar.FontChanged"/>
+      <element name="TToolBar.ParentFontChanged"/>
+      <element name="TToolBar.CanFocus" link="#LCL.Controls.TWinControl.CanFocus"/>
     </module>
     <!-- ComCtrls -->
   </package>
