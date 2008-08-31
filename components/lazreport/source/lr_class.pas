@@ -8850,14 +8850,14 @@ begin
     1: dk := dkCount;                                         //Add('COUNT');             {1}
     2: val := DayOf(frParser.Calc(p1));                       //Add('DAYOF');             {2}
     3: val := FormatDateTime(frParser.Calc(p1), frParser.Calc(p2)); //Add('FORMATDATETIME');    {3}
-    4: val := '''' + FormatFloat(frParser.Calc(p1), frParser.Calc(p2)) + ''''; //Add('FORMATFLOAT');       {4}
+    4: val := FormatFloat(frParser.Calc(p1), frParser.Calc(p2)); //Add('FORMATFLOAT');       {4}
 //    5: val := FormatMaskText(frParser.Calc(p1) + ';0; ', frParser.Calc(p2));  //Add('FORMATTEXT');        {5}
     6:begin                                                   //Add('INPUT');             {6}
         s1 := InputBox('', frParser.Calc(p1), frParser.Calc(p2));
-        val := '''' + s1 + '''';
+        val := s1;
       end;
     7:val := Length(frParser.Calc(p1));                       //Add('LENGTH');            {7}
-    8: val := '''' + AnsiLowerCase(frParser.Calc(p1)) + ''''; //Add('LOWERCASE');         {8}
+    8: val := AnsiLowerCase(frParser.Calc(p1)); //Add('LOWERCASE');         {8}
     9: dk := dkMax;                                           //Add('MAX');               {9}
    10:begin                                                   //Add('MAXNUM');            {10}
         v2 := frParser.Calc(p1);
@@ -8880,9 +8880,9 @@ begin
    15:begin                                                   //Add('NAMECASE');          {15}
         s1 := AnsiLowerCase(frParser.Calc(p1));
         if Length(s1) > 0 then
-          val := '''' + AnsiUpperCase(s1[1]) + Copy(s1, 2, Length(s1) - 1) + ''''
+          val := AnsiUpperCase(s1[1]) + Copy(s1, 2, Length(s1) - 1)
         else
-          val := '''' + '''';
+          val := '';
       end;
    16:begin                                                   // Add('POS');               {16}
         S1:=frParser.Calc(p1);
@@ -8896,7 +8896,7 @@ begin
          S1:=frParser.Calc(p1);
          val := Trim(S1);
        end;
-   21: val := '''' + AnsiUpperCase(frParser.Calc(p1)) + ''''; //Add('UPPERCASE');         {21}
+   21: val := AnsiUpperCase(frParser.Calc(p1)); //Add('UPPERCASE');         {21}
    22: val := YearOf(frParser.Calc(p1));                      //Add('YEAROF');            {22}
   end;
   
