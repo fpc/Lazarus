@@ -38,12 +38,12 @@ Implementation
 
 }
 
-function UpdateMemoCursorCB(AStrings: TGtk2MemoStrings): guint; cdecl;
+function UpdateMemoCursorCB(AStrings: TGtk2MemoStrings): gboolean; cdecl;
 var
   TextMark: PGtkTextMark;
   CursorIter: TGtkTextIter;
 begin
-  Result := Ord(False); // destroy this timer
+  Result := gtk_false; // stop this timer
 
   if AStrings.FQueueCursorMove = -1 then
   begin
@@ -198,7 +198,7 @@ begin
   // needed because there is a callback that updates the GtkBuffer
   // internally so that it actually knows where the cursor is
   if FQueueCursorMove = 0 then
-    g_idle_add(TGSourceFunc(@UpdateMemoCursorCB), Pointer(Self));
+    gtk_timeout_add(0,TGSourceFunc(@UpdateMemoCursorCB), Pointer(Self));
   FQueueCursorMove := APosition;
 end;
 

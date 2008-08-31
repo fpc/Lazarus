@@ -1047,7 +1047,7 @@ end;
 function GtkPopupCloseUp(WidgetInfo: Pointer): gboolean; cdecl;
 begin
   LCLSendCloseUpMsg(TControl(PWidgetInfo(WidgetInfo)^.LCLObject));
-  Result := False;
+  Result := gtk_False;// stop the timer
 end;
 
 procedure GtkNotifyCB(AObject: PGObject; pspec: PGParamSpec; WidgetInfo: PWidgetInfo); cdecl;
@@ -1062,7 +1062,7 @@ begin
     g_value_init(@AValue, G_TYPE_BOOLEAN); // initialize for boolean
     g_object_get_property(AObject, pspec^.name, @AValue); // get property value
     if AValue.data[0].v_int = 0 then // if 0 = False then it is close up
-      g_idle_add(@GtkPopupCloseUp, WidgetInfo)
+      gtk_timeout_add(0,@GtkPopupCloseUp, WidgetInfo)
     else // in other case it is drop down
     begin
       ComboBox:=WidgetInfo^.LCLObject as TCustomComboBox;
