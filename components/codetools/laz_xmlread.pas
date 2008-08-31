@@ -32,10 +32,10 @@ type
   EXMLReadError = class(Exception);
 
 
-procedure ReadXMLFile(var ADoc: TXMLDocument; const AFilename: String); overload;
-procedure ReadXMLFile(var ADoc: TXMLDocument; var f: File); overload;
-procedure ReadXMLFile(var ADoc: TXMLDocument; f: TStream); overload;
-procedure ReadXMLFile(var ADoc: TXMLDocument; f: TStream; const AFilename: String); overload;
+procedure ReadXMLFile(out ADoc: TXMLDocument; const AFilename: String); overload;
+procedure ReadXMLFile(out ADoc: TXMLDocument; var f: File); overload;
+procedure ReadXMLFile(out ADoc: TXMLDocument; f: TStream); overload;
+procedure ReadXMLFile(out ADoc: TXMLDocument; f: TStream; const AFilename: String); overload;
 
 procedure ReadXMLFragment(AParentNode: TDOMNode; const AFilename: String); overload;
 procedure ReadXMLFragment(AParentNode: TDOMNode; var f: File); overload;
@@ -373,73 +373,18 @@ begin
   end;
 end;
 
-{$IFDEF FPC}
-  // widestrings ansistring conversion is slow and we only use ansistring anyway
-    {off $DEFINE UsesFPCWidestrings}
-{$ENDIF}
-
-{$IFDEF UsesFPCWidestrings}
-
-procedure SimpleWide2AnsiMove(source:pwidechar;dest:pchar;len:sizeint);
-var
-  i : sizeint;
-begin
-  for i:=1 to len do
-   begin
-     if word(source^)<256 then
-      dest^:=char(word(source^))
-     else
-      dest^:='?';
-     inc(dest);
-     inc(source);
-   end;
-end;
-
-procedure SimpleAnsi2WideMove(source:pchar;dest:pwidechar;len:sizeint);
-var
-  i : sizeint;
-begin
-  for i:=1 to len do
-   begin
-     dest^:=widechar(byte(source^));
-     inc(dest);
-     inc(source);
-   end;
-end;
-
-const
-  WideStringManager: TWideStringManager = (
-    Wide2AnsiMove: @SimpleWide2AnsiMove;
-    Ansi2WideMove: @SimpleAnsi2WideMove
-  );
-
-{$ENDIF}
-
 procedure TXMLReader.ProcessXML(ABuf: PChar; const AFilename: String);    // [1]
-{$IFDEF UsesFPCWidestrings}
-var
-  OldWideStringManager: TWideStringManager;
-{$ENDIF}
 begin
   buf := ABuf;
   BufStart := ABuf;
   Filename := AFilename;
 
-  {$IFDEF UsesFPCWidestrings}
-  SetWideStringManager(WideStringManager, OldWideStringManager);
-  try
-  {$ENDIF}
   doc := TXMLReaderDocument.Create;
   ExpectProlog;
   {$IFDEF MEM_CHECK}CheckHeapWrtMemCnt('TXMLReader.ProcessXML A');{$ENDIF}
   ExpectElement(doc);
   {$IFDEF MEM_CHECK}CheckHeapWrtMemCnt('TXMLReader.ProcessXML B');{$ENDIF}
   ParseMisc(doc);
-  {$IFDEF UsesFPCWidestrings}
-  finally
-    SetWideStringManager(OldWideStringManager);
-  end;
-  {$ENDIF}
 
   // skip end of file characters
   while buf^=#26 do inc(buf);
@@ -449,29 +394,16 @@ begin
 end;
 
 procedure TXMLReader.ProcessFragment(AOwner: TDOMNode; ABuf: PChar; const AFilename: String);
-{$IFDEF UsesFPCWidestrings}
-var
-  OldWideStringManager: TWideStringManager;
-{$ENDIF}
 begin
   buf := ABuf;
   BufStart := ABuf;
   Filename := AFilename;
 
-  {$IFDEF UsesFPCWidestrings}
-  SetWideStringManager(WideStringManager, OldWideStringManager);
-  try
-  {$ENDIF}
-    // do not call SkipWhitespace. They are needed by ParseCharData.
-    while ParseCharData(AOwner) or ParseCDSect(AOwner) or ParsePI or
-      ParseComment(AOwner) or ParseElement(AOwner) or
-      ParseReference(AOwner)
-    do ;
-  {$IFDEF UsesFPCWidestrings}
-  finally
-    SetWideStringManager(OldWideStringManager);
-  end;
-  {$ENDIF}
+  // do not call SkipWhitespace. They are needed by ParseCharData.
+  while ParseCharData(AOwner) or ParseCDSect(AOwner) or ParsePI or
+    ParseComment(AOwner) or ParseElement(AOwner) or
+    ParseReference(AOwner)
+  do ;
 end;
 
 function TXMLReader.CheckName: Boolean;
@@ -1351,7 +1283,7 @@ end;
 
 
 
-procedure ReadXMLFile(var ADoc: TXMLDocument; var f: File);
+procedure ReadXMLFile(out ADoc: TXMLDocument; var f: File);
 var
   reader: TXMLReader;
   buf: PChar;
@@ -1369,8 +1301,8 @@ begin
     Reader := TXMLReader.Create;
     try
       Reader.ProcessXML(buf, TFileRec(f).name);
-      ADoc := TXMLDocument(Reader.doc);
     finally
+      ADoc := TXMLDocument(Reader.doc);
       Reader.Free;
     end;
   finally
@@ -1378,7 +1310,7 @@ begin
   end;
 end;
 
-procedure ReadXMLFile(var ADoc: TXMLDocument; f: TStream; const AFilename: String);
+procedure ReadXMLFile(out ADoc: TXMLDocument; f: TStream; const AFilename: String);
 var
   reader: TXMLReader;
   buf: PChar;
@@ -1393,8 +1325,8 @@ begin
     Reader := TXMLReader.Create;
     try
       Reader.ProcessXML(buf, AFilename);
-      ADoc := TXMLDocument(Reader.doc);
     finally
+      ADoc := TXMLDocument(Reader.doc);
       Reader.Free;
     end;
   finally
@@ -1402,12 +1334,12 @@ begin
   end;
 end;
 
-procedure ReadXMLFile(var ADoc: TXMLDocument; f: TStream);
+procedure ReadXMLFile(out ADoc: TXMLDocument; f: TStream);
 begin
   ReadXMLFile(ADoc, f, '<Stream>');
 end;
 
-procedure ReadXMLFile(var ADoc: TXMLDocument; const AFilename: String);
+procedure ReadXMLFile(out ADoc: TXMLDocument; const AFilename: String);
 var
   FileStream: TFileStream;
   MemStream: TMemoryStream;
