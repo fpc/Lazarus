@@ -115,16 +115,13 @@
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="5"/>
+    <Version Value="8"/>
     <Target>
       <Filename Value="lazdatadesktop"/>
     </Target>
     <SearchPaths>
       <Libraries Value="/opt/gnome/lib/"/>
     </SearchPaths>
-    <CodeGeneration>
-      <Generate Value="Faster"/>
-    </CodeGeneration>
     <Linking>
       <Options>
         <Win32>

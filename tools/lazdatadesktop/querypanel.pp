@@ -25,9 +25,9 @@ unit querypanel;
 interface
 
 uses
-  Classes, SysUtils, DB, fpDatadict, controls, extctrls, stdctrls, comctrls,
-  LResources, LCLType, dialogs, actnlist, datapanel, synedit, synmemo,
-  synhighlightersql;
+  Classes, SysUtils, DB, fpDatadict, FileUtil, Controls, ExtCtrls, StdCtrls,
+  ComCtrls, LResources, LCLType, Dialogs, ActnList, datapanel, SynEdit, SynMemo,
+  SynHighlighterSQL;
   
 Type
 

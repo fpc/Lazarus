@@ -25,8 +25,8 @@ unit frmmain;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Menus,
-  ActnList, StdActns, ComCtrls, dicteditor, fpdatadict, IniPropStorage,
+  Classes, SysUtils, LResources, FileUtil, Forms, Controls, Graphics, Dialogs,
+  Menus, ActnList, StdActns, ComCtrls, dicteditor, fpdatadict, IniPropStorage,
   conneditor, LCLType,
   RTTICtrls, ExtCtrls, StdCtrls, ddfiles;
 
@@ -308,8 +308,8 @@ begin
   FN:=GetAppConfigDirUTF8(False);
   ForceDirectoriesUTF8(FN);
   FN:=GetAppConfigFile(False);
-  FRecentDicts.LoadFromFile(UTF8ToSys(FN,'RecentDicts'));
-  FRecentConnections.LoadFromFile(UTF8ToSys(FN,'RecentConnections'));
+  FRecentDicts.LoadFromFile(UTF8ToSys(FN),'RecentDicts');
+  FRecentConnections.LoadFromFile(UTF8ToSys(FN),'RecentConnections');
   ShowRecentDictionaries;
   ShowRecentConnections;
   ShowDDImports;

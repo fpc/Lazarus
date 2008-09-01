@@ -25,8 +25,8 @@ unit dicteditor;
 interface
 
 uses
-  Classes, SysUtils, fpdatadict, controls, comctrls, stdctrls, extctrls,
-  graphics, imglist, RTTIGrids, lresources;
+  Classes, SysUtils, FileUtil, fpdatadict, Controls, ComCtrls, StdCtrls,
+  ExtCtrls, Graphics, ImgList, RTTIGrids, LResources;
 
 Type
 
