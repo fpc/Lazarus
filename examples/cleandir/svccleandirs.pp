@@ -34,7 +34,7 @@ unit svccleandirs;
 interface
 
 uses
-  Classes, SysUtils, LResources, daemonapp, eventlog, dircleaner;
+  Classes, SysUtils, LResources, daemonapp, eventlog, dircleaner, FileUtil;
 
 type
   { TCleanDirsThread }

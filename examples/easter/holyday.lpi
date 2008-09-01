@@ -1,55 +1,19 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="3"/>
+    <PathDelim Value="/"/>
+    <Version Value="6"/>
     <General>
-      <ProjectType Value="Application"/>
       <Flags>
         <SaveClosedFiles Value="False"/>
         <SaveOnlyProjectUnits Value="True"/>
       </Flags>
       <MainUnit Value="0"/>
-      <ActiveEditorIndexAtStart Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
       <Title Value="holyday"/>
+      <ActiveEditorIndexAtStart Value="0"/>
     </General>
-    <Units Count="3">
-      <Unit0>
-        <CursorPos X="4" Y="14"/>
-        <EditorIndex Value="2"/>
-        <Filename Value="holyday.lpr"/>
-        <IsPartOfProject Value="True"/>
-        <Loaded Value="True"/>
-        <TopLine Value="1"/>
-        <UnitName Value="holyday"/>
-        <UsageCount Value="23"/>
-      </Unit0>
-      <Unit1>
-        <CursorPos X="13" Y="20"/>
-        <EditorIndex Value="0"/>
-        <Filename Value="main.pas"/>
-        <ComponentName Value="Form1"/>
-        <IsPartOfProject Value="True"/>
-        <Loaded Value="True"/>
-        <ResourceFilename Value="main.lrs"/>
-        <TopLine Value="1"/>
-        <UnitName Value="Main"/>
-        <UsageCount Value="23"/>
-      </Unit1>
-      <Unit2>
-        <CursorPos X="23" Y="26"/>
-        <EditorIndex Value="1"/>
-        <Filename Value="about.pas"/>
-        <ComponentName Value="AboutBox"/>
-        <IsPartOfProject Value="True"/>
-        <Loaded Value="True"/>
-        <ResourceFilename Value="about.lrs"/>
-        <TopLine Value="1"/>
-        <UnitName Value="about"/>
-        <UsageCount Value="23"/>
-      </Unit2>
-    </Units>
     <PublishOptions>
       <Version Value="2"/>
       <IgnoreBinaries Value="False"/>
@@ -66,8 +30,45 @@
         <MinVersion Major="1" Valid="True"/>
       </Item1>
     </RequiredPackages>
+    <Units Count="3">
+      <Unit0>
+        <Filename Value="holyday.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="holyday"/>
+        <CursorPos X="4" Y="14"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="23"/>
+        <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="main.pas"/>
+        <ComponentName Value="Form1"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="main.lrs"/>
+        <UnitName Value="Main"/>
+        <CursorPos X="13" Y="20"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="23"/>
+        <Loaded Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="about.pas"/>
+        <ComponentName Value="AboutBox"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="about.lrs"/>
+        <UnitName Value="about"/>
+        <CursorPos X="23" Y="26"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="23"/>
+        <Loaded Value="True"/>
+      </Unit2>
+    </Units>
   </ProjectOptions>
   <CompilerOptions>
+    <Version Value="8"/>
     <SearchPaths>
       <SrcPath Value="$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)/"/>
     </SearchPaths>

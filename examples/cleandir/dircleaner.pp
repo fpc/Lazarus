@@ -34,7 +34,7 @@ unit dircleaner;
 interface
 
 uses
-  Classes, SysUtils, inicol, inifiles;
+  Classes, SysUtils, inicol, IniFiles, FileUtil;
   
 Type
   TSubDir = (sdExtension,sdYear,sdMonth,sdDay,sdDate,sdHour,sdMin,sdTime);

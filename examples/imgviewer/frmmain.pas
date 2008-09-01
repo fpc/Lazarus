@@ -25,7 +25,7 @@ unit frmmain;
 interface
 
 uses
-  LCLIntf,SysUtils, Classes, Graphics, Controls, Forms,
+  LCLIntf,SysUtils, Classes, Graphics, Controls, Forms, FileUtil,
   Dialogs, StdCtrls, ComCtrls, ExtCtrls, ActnList, Menus,
   LResources, LCLType;
 

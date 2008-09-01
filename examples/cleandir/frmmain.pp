@@ -37,8 +37,8 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Menus,
-  ActnList, ComCtrls, ExtDlgs, ExtCtrls, RTTICtrls, StdCtrls, Buttons, dircleaner,
-  RTTIGrids;
+  ActnList, ComCtrls, ExtDlgs, ExtCtrls, RTTICtrls, StdCtrls, Buttons,
+  dircleaner, FileUtil, RTTIGrids;
 
 type
 

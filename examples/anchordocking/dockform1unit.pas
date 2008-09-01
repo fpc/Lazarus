@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  DockForm2Unit, Buttons, Menus, LDockCtrl, XMLPropStorage, StdCtrls;
+  FileUtil, DockForm2Unit, Buttons, Menus, LDockCtrl, XMLPropStorage, StdCtrls;
 
 type
 
