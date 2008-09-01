@@ -118,11 +118,6 @@ end;
 
 uses BaseUnix, TermIO;
 
-procedure Register;
-begin
-  RegisterComponents('System',[TProcessUTF8,TAsyncProcess]);
-end;
-
 function TAsyncProcess.GetNumBytesAvailable: dword;
 begin
   if not (poUsePipes in Options) then
@@ -258,6 +253,11 @@ procedure TProcessUTF8.Execute;
 begin
   UpdateEnvironment;
   inherited Execute;
+end;
+
+procedure Register;
+begin
+  RegisterComponents('System',[TProcessUTF8,TAsyncProcess]);
 end;
 
 end.
