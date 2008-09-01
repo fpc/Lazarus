@@ -9463,14 +9463,16 @@ cdsIndeterminate</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomTrackBar.ApplyChanges">
-        <short/>
+        <short>
+          <var>ApplyChanges</var> - implement any pending changes</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomTrackBar.DoChange">
-        <short/>
+        <short>
+          <var>DoChange</var> - system message to implement changes</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9623,7 +9625,7 @@ cdsIndeterminate</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.Ctl3D">
+      <element name="TTrackBar.Ctl3D" link="#LCL.Controls.TControl.Ctl3D">
         <short/>
         <descr/>
         <seealso/>
@@ -9797,7 +9799,7 @@ cdsIndeterminate</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.ParentCtl3D">
+      <element name="TTrackBar.ParentCtl3D" link="#LCL.Controls.TWinControl.ParentCtl3D">
         <short/>
         <descr/>
         <seealso/>
@@ -9857,7 +9859,7 @@ cdsIndeterminate</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.TickStyle">
+      <element name="TTrackBar.TickStyle" link="#LCL.ComCtrls.TCustomTrackBar.TickStyle">
         <short/>
         <descr/>
         <seealso/>
@@ -11119,7 +11121,8 @@ Const
       </element>
       <!-- procedure Visibility: public -->
       <element name="TTreeNode.Collapse">
-        <short/>
+        <short>
+          <var>Collapse</var> - method for collapsing tree view to show only the main stems. Apply recursively if <var>Recurse</var> is True</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11130,7 +11133,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNode.CustomSort">
-        <short/>
+        <short>
+          <var>CustomSort</var> - if True, the customised sort method specified in <var>SortProc </var>is to be used</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11145,7 +11149,9 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNode.DefaultTreeViewSort">
-        <short/>
+        <short>
+          <var>DefaultTreeViewSort</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14790,7 +14796,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomTreeView.GetHitTestInfoAt">
-        <short/>
+        <short>
+          <var>GetHitTestInfoAt</var> - returns the result of a hit test at the point (X, Y)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14809,7 +14816,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomTreeView.GetNodeAt">
-        <short/>
+        <short>
+          <var>GetNodeAt</var> - returns the TreeNode at position (X. Y)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14881,7 +14889,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomTreeView.IsEditing">
-        <short/>
+        <short>
+          <var>IsEditing</var> - returns True if editing is in progress</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14892,7 +14901,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomTreeView.BeginUpdate">
-        <short/>
+        <short>
+          <var>BeginUpdate</var> - start the updae of the display</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14906,21 +14916,24 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomTreeView.FullCollapse">
-        <short/>
+        <short>
+          <var>FullCollapse</var> - method to collapse the treeview fully, ie show just the root</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomTreeView.FullExpand">
-        <short/>
+        <short>
+          <var>FullExpand</var> - method to expand the treeview fully, and show all the branches</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomTreeView.LoadFromFile">
-        <short/>
+        <short>
+          <var>LoadFromFile</var> - load the data from the specified file</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14931,7 +14944,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomTreeView.LoadFromStream">
-        <short/>
+        <short>
+          <var>LoadFromStream</var> - load data from the specified stream</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14942,7 +14956,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomTreeView.SaveToFile">
-        <short/>
+        <short>
+          <var>SaveToFile</var> - saves the data to the specified file</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14953,7 +14968,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomTreeView.SaveToStream">
-        <short/>
+        <short>
+          <var>SaveToStream</var> - save the data to the specified stream</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14964,7 +14980,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomTreeView.WriteDebugReport">
-        <short/>
+        <short>
+          <var>WriteDebugReport</var> - used for debugging</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14979,21 +14996,24 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomTreeView.LockSelectionChangeEvent">
-        <short/>
+        <short>
+          <var>LockSelectionChangeEvent</var> - if the selection has changed, lock its status</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomTreeView.UnlockSelectionChangeEvent">
-        <short/>
+        <short>
+          <var>UnlockSelectionChangeEvent</var> - unlock a selection to allow it to be changed</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomTreeView.GetFirstMultiSelected">
-        <short/>
+        <short>
+          <var>GetFirstMultiSelected</var> - returns the first node from a multiple selection</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -15004,7 +15024,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomTreeView.SelectionVisible">
-        <short/>
+        <short>
+          <var>SelectionVisible</var> - returns True if a selection is visible</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -15015,14 +15036,16 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomTreeView.MakeSelectionVisible">
-        <short/>
+        <short>
+          <var>MakeSelectionVisible</var> - method for making a selection visible</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomTreeView.BackgroundColor">
-        <short/>
+        <short>
+          <var>BackgroundColor</var> for the treeview</short>
         <descr/>
         <seealso/>
       </element>
@@ -15034,13 +15057,15 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomTreeView.BottomItem">
-        <short/>
+        <short>
+          <var>BottomItem</var> - the last item on the list</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomTreeView.DefaultItemHeight">
-        <short/>
+        <short>
+          <var>DefaultItemHeight</var> - default height for items on the list</short>
         <descr/>
         <seealso/>
       </element>
@@ -15052,73 +15077,83 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomTreeView.ExpandSignType">
-        <short/>
+        <short>
+          <var>ExpandSignType</var> - the symbols to denote whether a list is expanded or collapsed; default is plus or minus</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomTreeView.InsertMarkNode">
-        <short/>
+        <short>
+          <var>InsertMarkNode</var> - place a marker on the specified node</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomTreeView.InsertMarkType">
-        <short/>
+        <short>
+          <var>InsertMarkType</var> - the type of marker to be inserted</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomTreeView.KeepCollapsedNodes">
-        <short/>
+        <short>
+          <var>KeepCollapsedNodes</var> - if True, the collapsed nodes are to be retained</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomTreeView.Options">
-        <short/>
+        <short>The set of <var>Options</var> for displaying the tree view</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomTreeView.ScrollBars">
-        <short/>
+        <short>
+          <var>ScrollBars</var> - the style of scroll bars for the treeview display</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomTreeView.Selected">
-        <short/>
+        <short>The <var>Selected</var> tree nodes</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomTreeView.SelectionColor">
-        <short/>
+        <short>
+          <var>SelectionColor</var> - the colour to be used for the selected nodes, to distinguish them from the others</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomTreeView.SeparatorColor">
-        <short/>
+        <short>
+          <var>SeparatorColor</var> - the colour to be used for separators</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomTreeView.TopItem">
-        <short/>
+        <short>
+          <var>TopItem</var> - the first node on the list</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomTreeView.TreeLineColor">
-        <short/>
+        <short>
+          <var>TreeLineColor</var> - the colour to be used for the lines showing the tree structure</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomTreeView.ExpandSignColor">
-        <short/>
+        <short>
+          <var>ExpandSignColor</var> - the colour to be used for the expand/collapse symbols</short>
         <descr/>
         <seealso/>
       </element>
@@ -15140,110 +15175,112 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         </seealso>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.Align">
+      <element name="TTreeView.Align" link="#LCL.Controls.TControl.Align">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.Anchors">
+      <element name="TTreeView.Anchors" link="#LCL.Controls.TControl.Anchors">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.AutoExpand">
+        <short>
+          <var>AutoExpand</var> - automatically expand the tree when an item is selected</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TTreeView.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.BorderSpacing">
+      <element name="TTreeView.BackgroundColor" link="#LCL.ComCtrls.TCustomTreeView.BackgroundColor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.BackgroundColor">
+      <element name="TTreeView.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.BorderStyle">
+      <element name="TTreeView.BorderWidth" link="#LCL.Controls.TWinControl.BorderWidth">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.BorderWidth">
+      <element name="TTreeView.Color" link="#LCL.Controls.TControl.Color">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.Color">
+      <element name="TTreeView.Ctl3D" link="#LCL.Controls.TControl.Ctl3D">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.Ctl3D">
+      <element name="TTreeView.Constraints" link="#LCL.Controls.TControl.Constraints">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.Constraints">
+      <element name="TTreeView.DefaultItemHeight" link="#LCL.ComCtrls.TCustomTreeView.DefaultItemHeight">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.DefaultItemHeight">
+      <element name="TTreeView.DragKind" link="#LCL.Controls.TControl.DragKind">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.DragKind">
+      <element name="TTreeView.DragCursor" link="#LCL.Controls.TControl.DragCursor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.DragCursor">
+      <element name="TTreeView.DragMode" link="#LCL.Controls.TControl.DragMode">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.DragMode">
+      <element name="TTreeView.Enabled" link="#LCL.Controls.TControl.Enabled">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.Enabled">
+      <element name="TTreeView.ExpandSignType" link="#LCL.ComCtrls.TCustomTreeView.ExpandSignType">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.ExpandSignType">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TTreeView.Font">
+      <element name="TTreeView.Font" link="#LCL.Controls.TControl.Font">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.HideSelection">
-        <short/>
+        <short>
+          <var>HideSelection</var> - the selected items are to be hidden</short>
         <descr/>
         <seealso/>
       </element>
@@ -15259,132 +15296,142 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.Indent">
+        <short>
+          <var>Indent</var> - the amount by which each successive branching level is to be indented</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TTreeView.ParentColor" link="#LCL.Controls.TControl.ParentColor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.ParentColor">
+      <element name="TTreeView.ParentCtl3D" link="#LCL.Controls.TWinControl.ParentCtl3D">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.ParentCtl3D">
+      <element name="TTreeView.ParentFont" link="#LCL.Controls.TControl.ParentFont">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.ParentFont">
+      <element name="TTreeView.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.ParentShowHint">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TTreeView.PopupMenu">
+      <element name="TTreeView.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.ReadOnly">
-        <short/>
+        <short>
+          <var>ReadOnly</var> - the view can only be viewed, not written or modified</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.RightClickSelect">
-        <short/>
+        <short>
+          <var>RightClickSelect</var> - a right-click with the mouse automatically selects the item</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.RowSelect">
+        <short>
+          <var>RowSelect</var> - select a row</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TTreeView.ScrollBars" link="#LCL.ComCtrls.TCustomTreeView.ScrollBars">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.ScrollBars">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TTreeView.SelectionColor">
+      <element name="TTreeView.SelectionColor" link="#LCL.ComCtrls.TCustomTreeView.SelectionColor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.ShowButtons">
-        <short/>
+        <short>
+          <var>ShowButtons</var> - show the toolbuttons on the treeview</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.ShowHint">
+      <element name="TTreeView.ShowHint" link="#LCL.Controls.TControl.ShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.ShowLines">
-        <short/>
+        <short>
+          <var>ShowLines</var> - show the connecting lines of the tree structure</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.ShowRoot">
-        <short/>
+        <short>
+          <var>ShowRoot</var> - show the root element of the tree</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.SortType">
-        <short/>
+        <short>
+          <var>SortType</var> - the type of sorting to be performed</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.StateImages">
+        <short>
+          <var>StateImages</var> - the images used to depict the state of the tree (expanded or collapsed?)</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TTreeView.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.TabOrder">
+      <element name="TTreeView.TabStop" link="#LCL.Controls.TWinControl.TabStop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.TabStop">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TTreeView.Tag">
+      <element name="TTreeView.Tag" link="#rtl.Classes.TComponent.Tag">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.ToolTips">
-        <short/>
+        <short>
+          <var>ToolTips</var> - the popup hints that appear as the mouse hovers over an item</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.Visible">
+      <element name="TTreeView.Visible" link="#LCL.Controls.TControl.Visible">
         <short/>
         <descr/>
         <seealso/>
@@ -15403,42 +15450,47 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.OnChange">
-        <short/>
+        <short>
+          <var>OnChange</var> - event handler for a change in the data</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.OnChanging">
-        <short/>
+        <short>
+          <var>OnChanging</var> - event handler for use during a change in the data</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.OnClick">
+      <element name="TTreeView.OnClick" link="#LCL.Controls.TControl.OnClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.OnCollapsed">
-        <short/>
+        <short>
+          <var>OnCollapsed</var> - event handler when the tree is collapsed</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.OnCollapsing">
-        <short/>
+        <short>
+          <var>OnCollapsing</var> - event handler for use during the collapsing process</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.OnCompare">
-        <short/>
+        <short>
+          <var>OnCompare</var> - event handler for comparing entries</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.OnContextPopup">
+      <element name="TTreeView.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup">
         <short/>
         <descr/>
         <seealso/>
@@ -15462,133 +15514,141 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.OnDblClick">
+      <element name="TTreeView.OnDblClick" link="#LCL.Controls.TControl.OnDblClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.OnDeletion">
+        <short>
+          <var>OnDeletion</var> - event handler for deletion of an item</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TTreeView.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.OnDragDrop">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TTreeView.OnDragOver">
+      <element name="TTreeView.OnDragOver" link="#LCL.Controls.TControl.OnDragOver">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.OnEdited">
-        <short/>
+        <short>
+          <var>OnEdited</var> - event handler when an item has been edited</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.OnEditing">
+        <short>
+          <var>OnEditing</var> - event handler during the editing process</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TTreeView.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.OnEndDrag">
+      <element name="TTreeView.OnEnter" link="#LCL.Controls.TWinControl.OnEnter">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.OnEnter">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TTreeView.OnExit">
+      <element name="TTreeView.OnExit" link="#LCL.Controls.TWinControl.OnExit">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.OnExpanded">
-        <short/>
+        <short>
+          <var>OnExpanded</var> - event handler when the tree has been expanded</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.OnExpanding">
-        <short/>
+        <short>
+          <var>OnExpanding</var> - event handler while the tree is expanding</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.OnGetImageIndex">
-        <short/>
+        <short>
+          <var>OnGetImageIndex</var> - event handler for finding the index of an image</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.OnGetSelectedIndex">
+        <short>
+          <var>OnGetSelectedIndex</var> - event handler for finding the index of a selected item</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TTreeView.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.OnKeyDown">
+      <element name="TTreeView.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.OnKeyPress">
+      <element name="TTreeView.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.OnKeyUp">
+      <element name="TTreeView.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.OnMouseDown">
+      <element name="TTreeView.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.OnMouseMove">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TTreeView.OnMouseUp">
+      <element name="TTreeView.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.OnSelectionChanged">
+        <short>
+          <var>OnSelectionChanged</var> - event handler for a change in the items selected</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TTreeView.Options" link="#LCL.ComCtrls.TCustomTreeView.Options">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.Options">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TTreeView.OnStartDrag">
+      <element name="TTreeView.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag">
         <short/>
         <descr/>
         <seealso/>
@@ -15598,13 +15658,13 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <short>The Items to be displayed in the tree view - ie the actual data</short>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.TreeLineColor">
+      <element name="TTreeView.TreeLineColor" link="#LCL.ComCtrls.TCustomTreeView.TreeLineColor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTreeView.ExpandSignColor">
+      <element name="TTreeView.ExpandSignColor" link="#LCL.ComCtrls.TCustomTreeView.ExpandSignColor">
         <short/>
         <descr/>
         <seealso/>
@@ -16106,6 +16166,72 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       <element name="TToolBar.FontChanged"/>
       <element name="TToolBar.ParentFontChanged"/>
       <element name="TToolBar.CanFocus" link="#LCL.Controls.TWinControl.CanFocus"/>
+      <element name="TCustomTreeView.DefaultTreeViewSort">
+        <short>
+          <var>DefaultTreeViewSort</var> - returns result of string comparison between names of Node1 and Node2</short>
+        <descr>
+          <printshort id="TCustomTreeView.DefaultTreeViewSort"/>
+          <p>
+            <var>DefaultTreeViewSort</var> compares the text of two TreeNodes and returns the following result:
+</p>
+          <dl>
+            <dt>&lt; 0</dt>
+            <dd>if <var>Node1.Text&lt;Node2.Text</var>.</dd>
+            <dt>0</dt>
+            <dd>if <var>Node1.Text=Node2.Text</var>.</dd>
+            <dt>&gt; 0</dt>
+            <dd>if <var>Node1.Text&gt;Node2.Text</var>.</dd>
+          </dl>
+          <p>The comparision takes into account Ansi characters, i.e. it takes
+care of strange accented characters. Contrary to <link id="AnsiCompareText"/>,
+the comparision is case sensitive.
+</p>
+        </descr>
+      </element>
+      <element name="TTreeView.OnShowHint" link="#LCL.Controls.TControl.OnShowHint"/>
+      <element name="TCustomHeaderControl.CreateSection">
+        <short>
+          <var>CreateSection</var> - method for creating a header section</short>
+      </element>
+      <element name="TCustomHeaderControl.CreateSections">
+        <short>
+          <var>CreateSections</var> - method for creating a collection of header sections</short>
+      </element>
+      <element name="TCustomHeaderControl.Notification" link="#rtl.Classes.TComponent.Notification"/>
+      <element name="TCustomHeaderControl.SectionClick">
+        <short>
+          <var>SectionClick</var> - method for emulating the <var>OnSectionClick</var> event</short>
+      </element>
+      <element name="TCustomHeaderControl.SectionResize">
+        <short>
+          <var>SectionResize</var> - method for emulating the <var>OnSectionResize</var> event</short>
+      </element>
+      <element name="TCustomHeaderControl.SectionTrack">
+        <short>
+          <var>SectionTrack</var> - method for emulating the <var>OnSectionTrack</var> event</short>
+      </element>
+      <element name="TCustomHeaderControl.SectionSeparatorDblClick">
+        <short>
+          <var>SectionSeparatorDblClick</var> - method for emulating the <var>OnSectionSeparatorDblClick</var> event</short>
+      </element>
+      <element name="TCustomHeaderControl.SectionEndDrag">
+        <short>
+          <var>SectionEndDrag</var> - method for emulating the <var>OnSectionEndDrag</var> event</short>
+      </element>
+      <element name="TCustomHeaderControl.SectionDrag">
+        <short>
+          <var>SectionDrag</var> - method to emulate the <var>OnSectionDrag </var>event</short>
+      </element>
+      <element name="TCustomHeaderControl.MouseEnter" link="#LCL.Controls.TControl.MouseEnter"/>
+      <element name="TCustomHeaderControl.MouseLeave" link="#LCL.Controls.TControl.MouseLeave"/>
+      <element name="TCustomHeaderControl.MouseDown" link="#LCL.Controls.TControl.MouseDown"/>
+      <element name="TCustomHeaderControl.MouseMove" link="#LCL.Controls.TControl.MouseMove"/>
+      <element name="TCustomHeaderControl.MouseUp" link="#LCL.Controls.TControl.MouseUp"/>
+      <element name="TCustomHeaderControl.UpdateState">
+        <short>
+          <var>UpdateState</var> - bring the state of the control up-to-date</short>
+      </element>
+      <element name="TCustomHeaderControl.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
     </module>
     <!-- ComCtrls -->
   </package>
