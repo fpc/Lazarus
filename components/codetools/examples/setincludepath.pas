@@ -28,7 +28,7 @@ program SetIncludePath;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, CodeToolManager, DefineTemplates;
+  Classes, SysUtils, CodeToolManager, DefineTemplates, FileProcs;
   
 var
   Directory: String;

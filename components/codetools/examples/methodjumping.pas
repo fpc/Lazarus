@@ -28,7 +28,7 @@ program MethodJumping;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, CodeToolManager, CodeCache, CustomCodeTool;
+  Classes, SysUtils, CodeToolManager, CodeCache, CustomCodeTool, FileProcs;
   
 var
   ExpandedFilename: String;

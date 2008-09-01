@@ -29,7 +29,7 @@ program FixFilenames;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, DefineTemplates, CodeToolsConfig,
+  Classes, SysUtils, DefineTemplates, CodeToolsConfig, FileProcs,
   CodeToolsStructs, CodeToolManager, CodeCache;
 
 const

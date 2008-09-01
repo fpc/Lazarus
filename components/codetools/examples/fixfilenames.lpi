@@ -2,7 +2,7 @@
 <CONFIG>
   <ProjectOptions>
     <PathDelim Value="/"/>
-    <Version Value="5"/>
+    <Version Value="6"/>
     <General>
       <Flags>
         <MainUnitHasUsesSectionForAllUnits Value="False"/>
@@ -30,7 +30,7 @@
         <PackageName Value="CodeTools"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="5">
+    <Units Count="4">
       <Unit0>
         <Filename Value="fixfilenames.pas"/>
         <IsPartOfProject Value="True"/>
@@ -49,18 +49,10 @@
         <Filename Value="scanexamples/empty.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit3>
-      <Unit4>
-        <Filename Value="scanexamples/biglettersunit.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="BigLettersUnit"/>
-      </Unit4>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="5"/>
-    <CodeGeneration>
-      <Generate Value="Faster"/>
-    </CodeGeneration>
+    <Version Value="8"/>
     <Other>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
