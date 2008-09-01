@@ -9,15 +9,15 @@ msgstr ""
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: projecttemplates.serrcouldnotcreatedir
+#: projecttemplates:serrcouldnotcreatedir
 msgid "Could not create directory \"%s\""
 msgstr "Impossibile creare la directory \"%s\""
 
-#: projecttemplates.serrfailedtocopyfile
+#: projecttemplates:serrfailedtocopyfile
 msgid "Failed to copy file \"%s\" to \"%s\""
 msgstr "Errore copia del file \"%s\" to \"%s\""
 
-#: projecttemplates.serrnosuchtemplate
+#: projecttemplates:serrnosuchtemplate
 msgid "\"%s\": No such template."
 msgstr "\"%s\": Modello inesistente."
 

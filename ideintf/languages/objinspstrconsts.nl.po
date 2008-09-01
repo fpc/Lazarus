@@ -120,6 +120,10 @@ msgstr "0 regels, 0 letters"
 msgid "1 line, %d chars"
 msgstr "1 regel, %d letters"
 
+#: objinspstrconsts:srvk_accept
+msgid "Accept"
+msgstr ""
+
 #: objinspstrconsts:oisaction
 msgid "Action"
 msgstr "Actie"
@@ -176,6 +180,10 @@ msgstr "Alles"
 msgid "All files"
 msgstr "Alle bestanden"
 
+#: objinspstrconsts:srkm_alt
+msgid "Alt"
+msgstr ""
+
 #: objinspstrconsts:sccstredtapply
 msgid "Apply"
 msgstr "Toepassen"
@@ -192,6 +200,10 @@ msgstr ""
 msgid "Available Action Classes:"
 msgstr "Beschikbare Actie Classe"
 
+#: objinspstrconsts:srvk_back
+msgid "Backspace"
+msgstr ""
+
 #: objinspstrconsts:oisboolean
 msgid "Boolean"
 msgstr "Boolean"
@@ -203,6 +215,10 @@ msgstr "Opsc&honen"
 #: objinspstrconsts:oistdactdatasetcancel1hint
 msgid "Cancel"
 msgstr "Ongedaan maken"
+
+#: objinspstrconsts:srvk_capital
+msgid "Capital"
+msgstr ""
 
 #: objinspstrconsts:rscdcaption
 msgid "Caption"
@@ -256,6 +272,10 @@ msgstr "Opschonen"
 msgid "Clear picture"
 msgstr "Plaatje wissen"
 
+#: objinspstrconsts:srvk_cmd
+msgid "Cmd"
+msgstr ""
+
 #: objinspstrconsts:oistdactcolorselecthint
 msgid "Color Select"
 msgstr "Kleur Selecteren"
@@ -284,6 +304,14 @@ msgstr "Componenten"
 msgid "Confirm delete"
 msgstr "Bevestigen verwijderen"
 
+#: objinspstrconsts:srvk_control
+msgid "Control"
+msgstr ""
+
+#: objinspstrconsts:srvk_convert
+msgid "Convert"
+msgstr ""
+
 #: objinspstrconsts:oistdacteditcopyshorthint
 msgid "Copy"
 msgstr "Copieëer"
@@ -303,6 +331,10 @@ msgstr "Creëer standaard gebeurtenis"
 #: objinspstrconsts:sccsiledtcrop
 msgid "Crop"
 msgstr "Afsnijden"
+
+#: objinspstrconsts:srkm_ctrl
+msgid "Ctrl"
+msgstr ""
 
 #: objinspstrconsts:oistdacteditselectallshortcut
 msgid "Ctrl+A"
@@ -432,6 +464,10 @@ msgstr "Bewerk action list..."
 msgid "Editing"
 msgstr "Bewerken"
 
+#: objinspstrconsts:srvk_end
+msgid "End"
+msgstr ""
+
 #: objinspstrconsts:oisenumeration
 msgid "Enumeration"
 msgstr "Enumeration"
@@ -448,9 +484,17 @@ msgstr "Fout bij het laden van het plaatje"
 msgid "Error loading image %s%s%s:%s%s"
 msgstr "Fout bij het laden van plaatje %s%s%s:%s%s"
 
+#: objinspstrconsts:srvk_escape
+msgid "Escape"
+msgstr ""
+
 #: objinspstrconsts:oisevents
 msgid "Events"
 msgstr "Gebeurtenissen"
+
+#: objinspstrconsts:srvk_execute
+msgid "Execute"
+msgstr ""
 
 #: objinspstrconsts:oistdactfileexithint
 msgid "Exit"
@@ -488,6 +532,10 @@ msgstr ""
 msgid "Filter name"
 msgstr ""
 
+#: objinspstrconsts:srvk_final
+msgid "Final"
+msgstr ""
+
 #: objinspstrconsts:oistdactsearchfindhint
 msgid "Find"
 msgstr ""
@@ -520,6 +568,14 @@ msgstr "Lettertype Selecteren"
 msgid "General widget set restrictions: "
 msgstr ""
 
+#: objinspstrconsts:srgrabkey
+msgid "Grab key"
+msgstr ""
+
+#: objinspstrconsts:srvk_hanja
+msgid "Hanja"
+msgstr ""
+
 #: objinspstrconsts:cactionlisteditorhelpcategory
 msgid "Help"
 msgstr "Help"
@@ -531,6 +587,10 @@ msgstr "Inhoud van de Help"
 #: objinspstrconsts:oistdacthelphelphelphint
 msgid "Help on help"
 msgstr "Help bij help"
+
+#: objinspstrconsts:srvk_home
+msgid "Home"
+msgstr ""
 
 #: objinspstrconsts:sccstredtlabelimageindex
 msgid "Image Index:"
@@ -588,6 +648,10 @@ msgstr ""
 msgid "Invalid property value"
 msgstr "Ongeldige properie waarde"
 
+#: objinspstrconsts:srvk_irregular
+msgid "Irregular "
+msgstr ""
+
 #: objinspstrconsts:fesnofields
 msgid "It was not possible to get the dataset field's list"
 msgstr ""
@@ -606,6 +670,14 @@ msgstr "Onderdelen"
 
 #: objinspstrconsts:oisfinddeclaration
 msgid "Jump to declaration"
+msgstr ""
+
+#: objinspstrconsts:srvk_junja
+msgid "Junja"
+msgstr ""
+
+#: objinspstrconsts:srvk_kana
+msgid "Kana"
 msgstr ""
 
 #: objinspstrconsts:oistdactdatasetlasthint
@@ -640,13 +712,37 @@ msgstr "laad..."
 msgid "Masks..."
 msgstr "Maskers..."
 
+#: objinspstrconsts:srvk_menu
+msgid "Menu"
+msgstr ""
+
+#: objinspstrconsts:srvk_meta
+msgid "Meta"
+msgstr ""
+
 #: objinspstrconsts:oismethod
 msgid "Method"
 msgstr "Methode"
 
+#: objinspstrconsts:srvk_modechange
+msgid "Mode Change"
+msgstr ""
+
 #: objinspstrconsts:clbmodify
 msgid "Modify the Item"
 msgstr "Wijzig het item"
+
+#: objinspstrconsts:srvk_lbutton
+msgid "Mouse Button Left"
+msgstr ""
+
+#: objinspstrconsts:srvk_mbutton
+msgid "Mouse Button Middle"
+msgstr ""
+
+#: objinspstrconsts:srvk_rbutton
+msgid "Mouse Button Right"
+msgstr ""
 
 #: objinspstrconsts:sccsiledtmovedown
 msgid "Move Down"
@@ -704,9 +800,21 @@ msgstr "Nieuw subonderdeel"
 msgid "Next"
 msgstr "Volgende"
 
+#: objinspstrconsts:srvk_nonconvert
+msgid "Nonconvert"
+msgstr ""
+
 #: objinspstrconsts:sccsiledtnone
 msgid "None"
 msgstr "Geen"
+
+#: objinspstrconsts:srvk_numlock
+msgid "Numlock"
+msgstr ""
+
+#: objinspstrconsts:srvk_numpad
+msgid "Numpad %d"
+msgstr ""
 
 #: objinspstrconsts:rscdok
 msgid "OK"
@@ -772,6 +880,10 @@ msgstr "Plakken"
 msgid "Paste components"
 msgstr ""
 
+#: objinspstrconsts:srvk_pause
+msgid "Pause key"
+msgstr ""
+
 #: objinspstrconsts:oispepicture
 msgid "Picture"
 msgstr ""
@@ -783,6 +895,10 @@ msgstr ""
 #: objinspstrconsts:oistdactdatasetposthint
 msgid "Post"
 msgstr "Bewaren"
+
+#: objinspstrconsts:srvk_print
+msgid "Print"
+msgstr ""
 
 #: objinspstrconsts:oistdactdatasetpriorhint
 msgid "Prior"
@@ -814,6 +930,10 @@ msgstr ""
 
 #: objinspstrconsts:oisrestricted
 msgid "Restricted"
+msgstr ""
+
+#: objinspstrconsts:srvk_return
+msgid "Return"
 msgstr ""
 
 #: objinspstrconsts:rscdright
@@ -856,12 +976,20 @@ msgstr "Sla plaatje op"
 msgid "Save..."
 msgstr "Opslaan..."
 
+#: objinspstrconsts:srvk_scroll
+msgid "Scroll"
+msgstr ""
+
 #: objinspstrconsts:cactionlisteditorsearchcategory
 msgid "Search"
 msgstr ""
 
 #: objinspstrconsts:sccshceditsections
 msgid "Sections Editor ..."
+msgstr ""
+
+#: objinspstrconsts:srselect
+msgid "Select"
 msgstr ""
 
 #: objinspstrconsts:oistdacteditselectallheadline
@@ -884,6 +1012,10 @@ msgstr "Alles Selecteren"
 msgid "Select a file"
 msgstr "Selecteer een bestand"
 
+#: objinspstrconsts:oisselectshortcut
+msgid "Select short cut"
+msgstr ""
+
 #: objinspstrconsts:sccsiledtgrprcaption
 msgid "Selected Image"
 msgstr "Geselecteerde afbeelding"
@@ -904,6 +1036,10 @@ msgstr "Zet naar standaardwaarde"
 msgid "Set to default: %s"
 msgstr "Zet naar standaardinstelling: %s"
 
+#: objinspstrconsts:srvk_shift
+msgid "Shift"
+msgstr ""
+
 #: objinspstrconsts:oisshowcomponenttree
 msgid "Show Component Tree"
 msgstr "Laat componenten boom zien"
@@ -916,9 +1052,17 @@ msgstr "Laat tips zien"
 msgid "Show page ..."
 msgstr "Laat pagina zien ..."
 
+#: objinspstrconsts:srvk_snapshot
+msgid "Snapshot"
+msgstr ""
+
 #: objinspstrconsts:oissort
 msgid "Sort"
 msgstr "Sorteren"
+
+#: objinspstrconsts:srvk_space
+msgid "Space key"
+msgstr ""
 
 #: objinspstrconsts:s_splitimage
 msgid "Split image"
@@ -951,6 +1095,14 @@ msgstr "StringGrid Bewerker"
 #: objinspstrconsts:oisstringseditordialog
 msgid "Strings Editor Dialog"
 msgstr "Strings Editor Dialoog"
+
+#: objinspstrconsts:srvk_super
+msgid "Super"
+msgstr ""
+
+#: objinspstrconsts:srvk_tab
+msgid "Tab"
+msgstr ""
 
 #: objinspstrconsts:oistestinput
 msgid "Test Input"
@@ -1031,4 +1183,20 @@ msgstr ""
 #: objinspstrconsts:oisword
 msgid "Word"
 msgstr "Word"
+
+#: objinspstrconsts:srvk_apps
+msgid "application key"
+msgstr ""
+
+#: objinspstrconsts:srvk_lwin
+msgid "left windows key"
+msgstr ""
+
+#: objinspstrconsts:srvk_none
+msgid "none"
+msgstr ""
+
+#: objinspstrconsts:srvk_rwin
+msgid "right windows key"
+msgstr ""
 

@@ -120,6 +120,10 @@ msgstr "0 рядків, 0 символів"
 msgid "1 line, %d chars"
 msgstr ""
 
+#: objinspstrconsts:srvk_accept
+msgid "Accept"
+msgstr ""
+
 #: objinspstrconsts:oisaction
 msgid "Action"
 msgstr "Дія"
@@ -176,6 +180,10 @@ msgstr "Все"
 msgid "All files"
 msgstr ""
 
+#: objinspstrconsts:srkm_alt
+msgid "Alt"
+msgstr ""
+
 #: objinspstrconsts:sccstredtapply
 msgid "Apply"
 msgstr ""
@@ -192,6 +200,10 @@ msgstr ""
 msgid "Available Action Classes:"
 msgstr "Доступні Action Classes:"
 
+#: objinspstrconsts:srvk_back
+msgid "Backspace"
+msgstr ""
+
 #: objinspstrconsts:oisboolean
 msgid "Boolean"
 msgstr "Boolean"
@@ -203,6 +215,10 @@ msgstr "О&чистити"
 #: objinspstrconsts:oistdactdatasetcancel1hint
 msgid "Cancel"
 msgstr "Скасувати"
+
+#: objinspstrconsts:srvk_capital
+msgid "Capital"
+msgstr ""
 
 #: objinspstrconsts:rscdcaption
 msgid "Caption"
@@ -256,6 +272,10 @@ msgstr "Очистити"
 msgid "Clear picture"
 msgstr "Очистити зображення"
 
+#: objinspstrconsts:srvk_cmd
+msgid "Cmd"
+msgstr ""
+
 #: objinspstrconsts:oistdactcolorselecthint
 msgid "Color Select"
 msgstr "Обрати колір"
@@ -284,6 +304,14 @@ msgstr "Компонент"
 msgid "Confirm delete"
 msgstr "Підтвердити видалення"
 
+#: objinspstrconsts:srvk_control
+msgid "Control"
+msgstr ""
+
+#: objinspstrconsts:srvk_convert
+msgid "Convert"
+msgstr ""
+
 #: objinspstrconsts:oistdacteditcopyshorthint
 msgid "Copy"
 msgstr "Копіювати"
@@ -302,6 +330,10 @@ msgstr "Створити подію за замовчуванням"
 
 #: objinspstrconsts:sccsiledtcrop
 msgid "Crop"
+msgstr ""
+
+#: objinspstrconsts:srkm_ctrl
+msgid "Ctrl"
 msgstr ""
 
 #: objinspstrconsts:oistdacteditselectallshortcut
@@ -432,6 +464,10 @@ msgstr "Редагувати список дій..."
 msgid "Editing"
 msgstr ""
 
+#: objinspstrconsts:srvk_end
+msgid "End"
+msgstr ""
+
 #: objinspstrconsts:oisenumeration
 msgid "Enumeration"
 msgstr "Перечислення"
@@ -448,9 +484,17 @@ msgstr "Помилка завантаження зображення"
 msgid "Error loading image %s%s%s:%s%s"
 msgstr "Помилка завантаження зображення %s%s%s:%s%s"
 
+#: objinspstrconsts:srvk_escape
+msgid "Escape"
+msgstr ""
+
 #: objinspstrconsts:oisevents
 msgid "Events"
 msgstr "Події"
+
+#: objinspstrconsts:srvk_execute
+msgid "Execute"
+msgstr ""
 
 #: objinspstrconsts:oistdactfileexithint
 msgid "Exit"
@@ -488,6 +532,10 @@ msgstr ""
 msgid "Filter name"
 msgstr ""
 
+#: objinspstrconsts:srvk_final
+msgid "Final"
+msgstr ""
+
 #: objinspstrconsts:oistdactsearchfindhint
 msgid "Find"
 msgstr ""
@@ -520,6 +568,14 @@ msgstr "Обрати шрифт"
 msgid "General widget set restrictions: "
 msgstr ""
 
+#: objinspstrconsts:srgrabkey
+msgid "Grab key"
+msgstr ""
+
+#: objinspstrconsts:srvk_hanja
+msgid "Hanja"
+msgstr ""
+
 #: objinspstrconsts:cactionlisteditorhelpcategory
 msgid "Help"
 msgstr "Допомога"
@@ -531,6 +587,10 @@ msgstr "Допомога Зміст"
 #: objinspstrconsts:oistdacthelphelphelphint
 msgid "Help on help"
 msgstr "Довідка про допомогу"
+
+#: objinspstrconsts:srvk_home
+msgid "Home"
+msgstr ""
 
 #: objinspstrconsts:sccstredtlabelimageindex
 msgid "Image Index:"
@@ -588,6 +648,10 @@ msgstr ""
 msgid "Invalid property value"
 msgstr "Неправильна величина властивості"
 
+#: objinspstrconsts:srvk_irregular
+msgid "Irregular "
+msgstr ""
+
 #: objinspstrconsts:fesnofields
 msgid "It was not possible to get the dataset field's list"
 msgstr ""
@@ -606,6 +670,14 @@ msgstr ""
 
 #: objinspstrconsts:oisfinddeclaration
 msgid "Jump to declaration"
+msgstr ""
+
+#: objinspstrconsts:srvk_junja
+msgid "Junja"
+msgstr ""
+
+#: objinspstrconsts:srvk_kana
+msgid "Kana"
 msgstr ""
 
 #: objinspstrconsts:oistdactdatasetlasthint
@@ -640,13 +712,37 @@ msgstr ""
 msgid "Masks..."
 msgstr "Маски..."
 
+#: objinspstrconsts:srvk_menu
+msgid "Menu"
+msgstr ""
+
+#: objinspstrconsts:srvk_meta
+msgid "Meta"
+msgstr ""
+
 #: objinspstrconsts:oismethod
 msgid "Method"
 msgstr "Метод"
 
+#: objinspstrconsts:srvk_modechange
+msgid "Mode Change"
+msgstr ""
+
 #: objinspstrconsts:clbmodify
 msgid "Modify the Item"
 msgstr "Змінити пункт"
+
+#: objinspstrconsts:srvk_lbutton
+msgid "Mouse Button Left"
+msgstr ""
+
+#: objinspstrconsts:srvk_mbutton
+msgid "Mouse Button Middle"
+msgstr ""
+
+#: objinspstrconsts:srvk_rbutton
+msgid "Mouse Button Right"
+msgstr ""
 
 #: objinspstrconsts:sccsiledtmovedown
 msgid "Move Down"
@@ -704,8 +800,20 @@ msgstr ""
 msgid "Next"
 msgstr "Наступний"
 
+#: objinspstrconsts:srvk_nonconvert
+msgid "Nonconvert"
+msgstr ""
+
 #: objinspstrconsts:sccsiledtnone
 msgid "None"
+msgstr ""
+
+#: objinspstrconsts:srvk_numlock
+msgid "Numlock"
+msgstr ""
+
+#: objinspstrconsts:srvk_numpad
+msgid "Numpad %d"
 msgstr ""
 
 #: objinspstrconsts:rscdok
@@ -772,6 +880,10 @@ msgstr "Вставити"
 msgid "Paste components"
 msgstr ""
 
+#: objinspstrconsts:srvk_pause
+msgid "Pause key"
+msgstr ""
+
 #: objinspstrconsts:oispepicture
 msgid "Picture"
 msgstr ""
@@ -783,6 +895,10 @@ msgstr ""
 #: objinspstrconsts:oistdactdatasetposthint
 msgid "Post"
 msgstr "Відправити"
+
+#: objinspstrconsts:srvk_print
+msgid "Print"
+msgstr ""
 
 #: objinspstrconsts:oistdactdatasetpriorhint
 msgid "Prior"
@@ -814,6 +930,10 @@ msgstr ""
 
 #: objinspstrconsts:oisrestricted
 msgid "Restricted"
+msgstr ""
+
+#: objinspstrconsts:srvk_return
+msgid "Return"
 msgstr ""
 
 #: objinspstrconsts:rscdright
@@ -856,12 +976,20 @@ msgstr "Зберегти зображення"
 msgid "Save..."
 msgstr ""
 
+#: objinspstrconsts:srvk_scroll
+msgid "Scroll"
+msgstr ""
+
 #: objinspstrconsts:cactionlisteditorsearchcategory
 msgid "Search"
 msgstr ""
 
 #: objinspstrconsts:sccshceditsections
 msgid "Sections Editor ..."
+msgstr ""
+
+#: objinspstrconsts:srselect
+msgid "Select"
 msgstr ""
 
 #: objinspstrconsts:oistdacteditselectallheadline
@@ -884,6 +1012,10 @@ msgstr "Обрати Все"
 msgid "Select a file"
 msgstr "Обрати файл"
 
+#: objinspstrconsts:oisselectshortcut
+msgid "Select short cut"
+msgstr ""
+
 #: objinspstrconsts:sccsiledtgrprcaption
 msgid "Selected Image"
 msgstr ""
@@ -904,6 +1036,10 @@ msgstr "Встановити величину за замовчуванням"
 msgid "Set to default: %s"
 msgstr "Встановити за замовчуванням: %s"
 
+#: objinspstrconsts:srvk_shift
+msgid "Shift"
+msgstr ""
+
 #: objinspstrconsts:oisshowcomponenttree
 msgid "Show Component Tree"
 msgstr "Показати Дерево Компонентів"
@@ -916,9 +1052,17 @@ msgstr "Показати Поради"
 msgid "Show page ..."
 msgstr "Показати 'сторінку'..."
 
+#: objinspstrconsts:srvk_snapshot
+msgid "Snapshot"
+msgstr ""
+
 #: objinspstrconsts:oissort
 msgid "Sort"
 msgstr "Впорядкування"
+
+#: objinspstrconsts:srvk_space
+msgid "Space key"
+msgstr ""
 
 #: objinspstrconsts:s_splitimage
 msgid "Split image"
@@ -951,6 +1095,14 @@ msgstr "Редактор StringGrid"
 #: objinspstrconsts:oisstringseditordialog
 msgid "Strings Editor Dialog"
 msgstr "Редактор рядків"
+
+#: objinspstrconsts:srvk_super
+msgid "Super"
+msgstr ""
+
+#: objinspstrconsts:srvk_tab
+msgid "Tab"
+msgstr ""
 
 #: objinspstrconsts:oistestinput
 msgid "Test Input"
@@ -1030,5 +1182,21 @@ msgstr ""
 
 #: objinspstrconsts:oisword
 msgid "Word"
+msgstr ""
+
+#: objinspstrconsts:srvk_apps
+msgid "application key"
+msgstr ""
+
+#: objinspstrconsts:srvk_lwin
+msgid "left windows key"
+msgstr ""
+
+#: objinspstrconsts:srvk_none
+msgid "none"
+msgstr ""
+
+#: objinspstrconsts:srvk_rwin
+msgid "right windows key"
 msgstr ""
 

@@ -505,7 +505,7 @@ msgstr ""
 msgid "Abstract methods of %s"
 msgstr ""
 
-#: lazarusidestrconsts:srvk_accept
+#: lazarusidestrconsts:lissortselsort
 msgid "Accept"
 msgstr "Accepta"
 
@@ -585,6 +585,10 @@ msgstr "Afegeix un punt de ruptura"
 msgid "Add code template"
 msgstr "Afegeix la plantilla del codi"
 
+#: lazarusidestrconsts:lisadddirectory
+msgid "Add directory"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuaddtoproject
 msgid "Add editor file to Project"
 msgstr "Afegeix el fitxer de l'editor al Projecte"
@@ -604,6 +608,10 @@ msgstr "Afegeix el fitxer al projecte"
 #: lazarusidestrconsts:lisprojaddfiles
 msgid "Add files"
 msgstr "Afegeix els fitxers"
+
+#: lazarusidestrconsts:lisaddfilesofdirectory
+msgid "Add files of directory"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2paddfilestopackage
 msgid "Add files to package"
@@ -628,6 +636,10 @@ msgstr ""
 #: lazarusidestrconsts:lispckoptsaddoptionstodependentpackagesandprojects
 msgid "Add options to dependent packages and projects"
 msgstr "Afegeix les opcions en els paquets i projectes dependents"
+
+#: lazarusidestrconsts:podaddpackageunittousessection
+msgid "Add package unit to uses section"
+msgstr ""
 
 #: lazarusidestrconsts:liscodehelpaddpathbutton
 msgid "Add path"
@@ -761,7 +773,7 @@ msgstr "Permet la recerca per múltiples línies"
 msgid "Alphabetically"
 msgstr "Alfabèticament"
 
-#: lazarusidestrconsts:srkm_alt
+#: lazarusidestrconsts:lisedtexttoolalt
 msgid "Alt"
 msgstr "Alt"
 
@@ -1020,10 +1032,6 @@ msgstr "Enrere u"
 #: lazarusidestrconsts:dlgbackcolor
 msgid "Background"
 msgstr "Rerefons"
-
-#: lazarusidestrconsts:srvk_back
-msgid "Backspace"
-msgstr "Tecla de retrocés"
 
 #: lazarusidestrconsts:dlgenvbckup
 msgid "Backup"
@@ -1293,10 +1301,6 @@ msgstr ""
 msgid "Cannot find lazarus starter:%s%s"
 msgstr "No es pot trobar l'iniciador del Lazarus:%s%s"
 
-#: lazarusidestrconsts:srvk_capital
-msgid "Capital"
-msgstr "Majúscula"
-
 #: lazarusidestrconsts:lisdiffdlgcaseinsensitive
 msgid "Case Insensitive"
 msgstr "No distingeixis entre majúscules i minúscules"
@@ -1449,6 +1453,10 @@ msgstr "Tria un directori del Lazarus"
 msgid "Choose Scheme"
 msgstr "Tria un Esquema"
 
+#: lazarusidestrconsts:lischooseafpdoclink
+msgid "Choose a FPDoc link"
+msgstr ""
+
 #: lazarusidestrconsts:lisoifchooseabaseclassforthefavouriteproperty
 msgid "Choose a base class for the favourite property %s%s%s."
 msgstr ""
@@ -1585,7 +1593,7 @@ msgstr ""
 msgid "Clean+Build"
 msgstr "Neteja i munta"
 
-#: lazarusidestrconsts:srvk_clear
+#: lazarusidestrconsts:lisuidclear
 msgid "Clear"
 msgstr "Neteja"
 
@@ -1635,10 +1643,6 @@ msgstr "Tanca pàgina"
 
 #: lazarusidestrconsts:liskmcloseproject
 msgid "Close project"
-msgstr ""
-
-#: lazarusidestrconsts:srvk_cmd
-msgid "Cmd"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcodegeneration
@@ -2049,10 +2053,6 @@ msgstr "Continua sense carregar la forma"
 msgid "Contributors"
 msgstr ""
 
-#: lazarusidestrconsts:srvk_control
-msgid "Control"
-msgstr "Control"
-
 #: lazarusidestrconsts:liscontrolneedsparent
 msgid "Control needs parent"
 msgstr "El control necessita pare"
@@ -2064,10 +2064,6 @@ msgstr "Opcions de conversió"
 #: lazarusidestrconsts:lisconversionerror
 msgid "Conversion error"
 msgstr "S'ha produït un error de conversió"
-
-#: lazarusidestrconsts:srvk_convert
-msgid "Convert"
-msgstr "Converteix"
 
 #: lazarusidestrconsts:liskmconvertdfmfiletolfm
 msgid "Convert DFM file to LFM"
@@ -2293,8 +2289,16 @@ msgstr ""
 msgid "Create a project first!"
 msgstr "Creeu primer un projecte!"
 
+#: lazarusidestrconsts:liscreatedirectory
+msgid "Create directory?"
+msgstr ""
+
 #: lazarusidestrconsts:liscodehelpcreatebutton
 msgid "Create help item"
+msgstr ""
+
+#: lazarusidestrconsts:liscreateit
+msgid "Create it"
 msgstr ""
 
 #: lazarusidestrconsts:rscreatenewdefine
@@ -2313,7 +2317,7 @@ msgstr ""
 msgid "Creation"
 msgstr "Creació"
 
-#: lazarusidestrconsts:srkm_ctrl
+#: lazarusidestrconsts:lisedtexttoolctrl
 msgid "Ctrl"
 msgstr "Ctrl"
 
@@ -2601,6 +2605,10 @@ msgstr ""
 msgid "Delete old package file %s%s%s?"
 msgstr "Voleu eliminar el fitxer de paquet antic %s%s%s?"
 
+#: lazarusidestrconsts:lisdeleteselectedfiles
+msgid "Delete selected files"
+msgstr ""
+
 #: lazarusidestrconsts:fdmdeleteselection
 msgid "Delete selection"
 msgstr "Elimina la selecció"
@@ -2632,6 +2640,10 @@ msgstr "Elimina tot el text"
 #: lazarusidestrconsts:lisdeletingoffilefailed
 msgid "Deleting of file %s%s%s failed."
 msgstr "Ha fallat l'eliminació del fitxer %s%s%s."
+
+#: lazarusidestrconsts:lisdelphi
+msgid "Delphi"
+msgstr ""
 
 #: lazarusidestrconsts:dlgdelphi2ext
 msgid "Delphi 2 Extensions"
@@ -3029,10 +3041,6 @@ msgstr ""
 msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
 msgstr ""
 
-#: lazarusidestrconsts:srvk_end
-msgid "End"
-msgstr "Final"
-
 #: lazarusidestrconsts:rslanguageenglish
 msgid "English"
 msgstr "Anglès"
@@ -3145,6 +3153,10 @@ msgstr ""
 msgid "Error reading %s%s%s%s%s"
 msgstr "S'ha produït un error mentre es llegia %s%s%s%s%s"
 
+#: lazarusidestrconsts:liserrorreadingxml
+msgid "Error reading XML"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangerrorreadingfile
 msgid "Error reading file"
 msgstr "S'ha produït un error mentre es llegia el fitxer"
@@ -3160,6 +3172,10 @@ msgstr "S'ha produït un error mentre es llegia la llista de paquets des del fit
 #: lazarusidestrconsts:liscodetoolsdefserrorreadingprojectinfofile
 msgid "Error reading project info file %s%s%s%s%s"
 msgstr "S'ha produït un error mentre es llegia el fitxer d'informació del projecte %s%s%s%s%s"
+
+#: lazarusidestrconsts:liserrorreadingxmlfile
+msgid "Error reading xml file %s%s%s%s%s"
+msgstr ""
 
 #: lazarusidestrconsts:liserrorrenamingfile
 msgid "Error renaming file"
@@ -3205,10 +3221,6 @@ msgstr "Errors"
 msgid "Errors:"
 msgstr ""
 
-#: lazarusidestrconsts:srvk_escape
-msgid "Escape"
-msgstr "Escapament"
-
 #: lazarusidestrconsts:liskmevaluatemodify
 msgid "Evaluate/Modify"
 msgstr ""
@@ -3233,13 +3245,17 @@ msgstr "Ejemple"
 msgid "Examples"
 msgstr ""
 
+#: lazarusidestrconsts:lisexamplesidentifiertmyenumenumunitnameidentifierpac
+msgid "Examples:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
+msgstr ""
+
 #: lazarusidestrconsts:lisexcludefilter
 msgid "Exclude Filter"
 msgstr ""
 
-#: lazarusidestrconsts:srvk_execute
-msgid "Execute"
-msgstr "Executa"
+#: lazarusidestrconsts:lisexcludefilter2
+msgid "Exclude filter"
+msgstr ""
 
 #: lazarusidestrconsts:liscoexecuteafter
 msgid "Execute after"
@@ -3380,6 +3396,10 @@ msgstr ""
 #: lazarusidestrconsts:lisfpcsourcedirectoryerror
 msgid "FPC Source Directory error"
 msgstr "S'ha produït un error en el directori del codi font del FPC"
+
+#: lazarusidestrconsts:lisfpcversioneg222
+msgid "FPC Version (e.g. 2.2.2)"
+msgstr ""
 
 #: lazarusidestrconsts:lisfpcversion
 msgid "FPC Version: "
@@ -3585,10 +3605,6 @@ msgstr "Flitra fent coincidir qualsevol part del mètode"
 msgid "Filter by matching with start of method"
 msgstr "Filtra fent coincidir el principi del mètode"
 
-#: lazarusidestrconsts:srvk_final
-msgid "Final"
-msgstr "Final"
-
 #: lazarusidestrconsts:lismenufind
 msgid "Find"
 msgstr "Cerca"
@@ -3783,6 +3799,10 @@ msgstr "Endavant u"
 
 #: lazarusidestrconsts:lisemdfoundemptymethods
 msgid "Found empty methods:"
+msgstr ""
+
+#: lazarusidestrconsts:lisfreepascal
+msgid "Free Pascal"
 msgstr ""
 
 #: lazarusidestrconsts:lisfreepascalcompilernotfound
@@ -4117,10 +4137,6 @@ msgstr "Gestionat pel Depurador"
 msgid "Handled by Program"
 msgstr "Gestionat pel Programa"
 
-#: lazarusidestrconsts:srvk_hanja
-msgid "Hanja"
-msgstr "Hanja"
-
 #: lazarusidestrconsts:lisaf2phasregisterprocedure
 msgid "Has Register procedure"
 msgstr "Té procediment del registre"
@@ -4141,7 +4157,7 @@ msgstr "Hebreu"
 msgid "Height:"
 msgstr "Alçada"
 
-#: lazarusidestrconsts:srvk_help
+#: lazarusidestrconsts:lispckedithelp
 msgid "Help"
 msgstr "Ajuda"
 
@@ -4204,10 +4220,6 @@ msgstr "Suggeriments pels botons ràpids principals (obre, guarda, ...)"
 #: lazarusidestrconsts:lisinfobuildhint
 msgid "Hints:"
 msgstr ""
-
-#: lazarusidestrconsts:srvk_home
-msgid "Home"
-msgstr "Inici"
 
 #: lazarusidestrconsts:dlghomekeyjumpstoneareststart
 msgid "Home key jumps to nearest start"
@@ -4473,7 +4485,7 @@ msgstr "Heretat"
 msgid "Inherited Item"
 msgstr ""
 
-#: lazarusidestrconsts:srvk_insert
+#: lazarusidestrconsts:lisedtexttoolinsert
 msgid "Insert"
 msgstr "Insereix"
 
@@ -4881,6 +4893,10 @@ msgstr "El directori de destinació no és vàlid"
 msgid "Invalid expression.%sHint: The \"Make Resourcestring\" function expects a string constant in a single file. Please select the expression and try again."
 msgstr "L'expressió no és vàlida.%sSuggeriment: La funció de la cadena del recurs espera una constant de cadena en un sol fitxer. Si us plau, seleccioneu l'expressió i torneu-ho a provar."
 
+#: lazarusidestrconsts:lisinvalidexpression
+msgid "Invalid expression:%s%s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2pinvalidfile
 msgid "Invalid file"
 msgstr "El fitxer no és vàlid"
@@ -4892,6 +4908,10 @@ msgstr "L'extensió del fitxer no és vàlida"
 #: lazarusidestrconsts:lisa2pinvalidfilename
 msgid "Invalid filename"
 msgstr "El nom del fitxer no és vàlid"
+
+#: lazarusidestrconsts:lisinvalidfilter
+msgid "Invalid filter"
+msgstr ""
 
 #: lazarusidestrconsts:lisenvoptdlginvalidmakefilename
 msgid "Invalid make filename"
@@ -5001,10 +5021,6 @@ msgstr "Inverteix l'assignació"
 msgid "Invert assignment"
 msgstr "Inverteix l'assignació"
 
-#: lazarusidestrconsts:srvk_irregular
-msgid "Irregular "
-msgstr "Irregular"
-
 #: lazarusidestrconsts:lispkgfiletypeissues
 msgid "Issues xml file"
 msgstr ""
@@ -5064,14 +5080,6 @@ msgstr "Salta a l'error previ"
 #: lazarusidestrconsts:dlgjumpingetc
 msgid "Jumping (e.g. Method Jumping)"
 msgstr "Salt (p.ex. Salta mètodes)"
-
-#: lazarusidestrconsts:srvk_junja
-msgid "Junja"
-msgstr "Junja"
-
-#: lazarusidestrconsts:srvk_kana
-msgid "Kana"
-msgstr "Kana"
 
 #: lazarusidestrconsts:liscldirkeepalltextfiles
 msgid "Keep all text files"
@@ -5301,7 +5309,7 @@ msgstr "Unitat Lazarus"
 msgid "Leave empty for default .po file"
 msgstr "Deixa buit per omissió el fitxer .po"
 
-#: lazarusidestrconsts:srvk_left
+#: lazarusidestrconsts:lisleft
 msgid "Left"
 msgstr "Esquerra"
 
@@ -5401,6 +5409,10 @@ msgstr "Enllaçament intel·ligent"
 msgid "Link Style:"
 msgstr "Estil d'enllaçament"
 
+#: lazarusidestrconsts:lislinktarget
+msgid "Link target"
+msgstr ""
+
 #: lazarusidestrconsts:lislink
 msgid "Link:"
 msgstr ""
@@ -5471,6 +5483,10 @@ msgstr "Minúscules, primera lletra Maj."
 
 #: lazarusidestrconsts:liskmmacosx
 msgid "Mac OS X"
+msgstr ""
+
+#: lazarusidestrconsts:lismacpascal
+msgid "Mac Pascal"
 msgstr ""
 
 #: lazarusidestrconsts:lisedtexttoolmacros
@@ -5581,10 +5597,6 @@ msgstr "Número màxim de comptador"
 msgid "Memory Dump"
 msgstr ""
 
-#: lazarusidestrconsts:srvk_menu
-msgid "Menu"
-msgstr "Menú"
-
 #: lazarusidestrconsts:lismenueditormenueditor
 msgid "Menu Editor"
 msgstr "Editor del menú"
@@ -5592,10 +5604,6 @@ msgstr "Editor del menú"
 #: lazarusidestrconsts:lismenuviewmessages
 msgid "Messages"
 msgstr "Missatges"
-
-#: lazarusidestrconsts:srvk_meta
-msgid "Meta"
-msgstr ""
 
 #: lazarusidestrconsts:lismethodclassnotfound
 msgid "Method class not found"
@@ -5657,10 +5665,6 @@ msgstr ""
 msgid "Mix methods and properties"
 msgstr "Barreja els mètodes i les propietats"
 
-#: lazarusidestrconsts:srvk_modechange
-msgid "Mode Change"
-msgstr "Mode canviar"
-
 #: lazarusidestrconsts:uemodified
 msgid "Modified"
 msgstr "Modificat"
@@ -5684,18 +5688,6 @@ msgstr ""
 #: lazarusidestrconsts:lispckeditmore
 msgid "More ..."
 msgstr "Més ..."
-
-#: lazarusidestrconsts:srvk_lbutton
-msgid "Mouse Button Left"
-msgstr "Botó esquerra del ratolí"
-
-#: lazarusidestrconsts:srvk_mbutton
-msgid "Mouse Button Middle"
-msgstr "Botó central del ratolí"
-
-#: lazarusidestrconsts:srvk_rbutton
-msgid "Mouse Button Right"
-msgstr "Botó dret del ratolí"
 
 #: lazarusidestrconsts:dlgmouselinks
 msgid "Mouse links"
@@ -6001,10 +5993,6 @@ msgstr "Nou paquet"
 msgid "Newline"
 msgstr "Nova línia"
 
-#: lazarusidestrconsts:srvk_next
-msgid "Next"
-msgstr "Següent"
-
 #: lazarusidestrconsts:srkmecnextbookmark
 msgid "Next Bookmark"
 msgstr "Següent Marcador"
@@ -6073,10 +6061,6 @@ msgstr "El node i el seu fill només son vàlids per aquest projecte"
 msgid "Node is readonly"
 msgstr "El node és només de lectura"
 
-#: lazarusidestrconsts:srvk_nonconvert
-msgid "Nonconvert"
-msgstr "No converteixis"
-
 #: lazarusidestrconsts:dlgenvnone
 msgid "None"
 msgstr "Cap"
@@ -6141,14 +6125,6 @@ msgstr "Nota: Els fitxers del projecte son tots els fitxers del directori del pr
 msgid "Number"
 msgstr "Número"
 
-#: lazarusidestrconsts:srvk_numlock
-msgid "Numlock"
-msgstr "Fixació de teclat numèric"
-
-#: lazarusidestrconsts:srvk_numpad
-msgid "Numpad %d"
-msgstr "Teclat numèric %d"
-
 #: lazarusidestrconsts:lisifdok
 msgid "OK"
 msgstr "D'Acord"
@@ -6171,6 +6147,10 @@ msgstr "Inspector dels objectes"
 
 #: lazarusidestrconsts:liskeycatobjinspector
 msgid "Object Inspector commands"
+msgstr ""
+
+#: lazarusidestrconsts:lisobjectpascaldefault
+msgid "Object Pascal - default"
 msgstr ""
 
 #: lazarusidestrconsts:dlgedoff
@@ -6753,10 +6733,6 @@ msgstr "Trajectòries (només de lectura)"
 msgid "Pause"
 msgstr "Pausa"
 
-#: lazarusidestrconsts:srvk_pause
-msgid "Pause key"
-msgstr "Tecla de pausa"
-
 #: lazarusidestrconsts:liskmpauseprogram
 msgid "Pause program"
 msgstr ""
@@ -6857,17 +6833,13 @@ msgstr "Marcador Previ"
 msgid "Previous node can not contain child nodes."
 msgstr "El node anterior no pot contenir nodes fill"
 
-#: lazarusidestrconsts:srvk_print
+#: lazarusidestrconsts:lisprint
 msgid "Print"
 msgstr "Imprimeix"
 
 #: lazarusidestrconsts:listodolistprintlist
 msgid "Print todo items"
 msgstr "Imprimeix elements ToDo"
-
-#: lazarusidestrconsts:srvk_prior
-msgid "Prior"
-msgstr "Anterior"
 
 #: lazarusidestrconsts:listodolpriority
 msgid "Priority"
@@ -7233,6 +7205,10 @@ msgstr "Connectors registrats"
 msgid "Registration Error"
 msgstr "S'ha produït un error de registre"
 
+#: lazarusidestrconsts:lisregularexpression
+msgid "Regular expression"
+msgstr ""
+
 #: lazarusidestrconsts:lisrelativepaths
 msgid "Relative paths"
 msgstr ""
@@ -7493,10 +7469,6 @@ msgstr ""
 msgid "Resume Unhandled"
 msgstr ""
 
-#: lazarusidestrconsts:srvk_return
-msgid "Return"
-msgstr "Retorn"
-
 #: lazarusidestrconsts:lismenurevert
 msgid "Revert"
 msgstr "Reverteix"
@@ -7509,7 +7481,7 @@ msgstr "Ha fallat la reversió"
 msgid "Revert package?"
 msgstr "Voleu revertir el paquet?"
 
-#: lazarusidestrconsts:srvk_right
+#: lazarusidestrconsts:lisright
 msgid "Right"
 msgstr "Dreta"
 
@@ -7816,10 +7788,6 @@ msgstr "Explora a la sortida els missatges de Make"
 #: lazarusidestrconsts:dlgscope
 msgid "Scope"
 msgstr "Abast"
-
-#: lazarusidestrconsts:srvk_scroll
-msgid "Scroll"
-msgstr "Desplaça"
 
 #: lazarusidestrconsts:dlgscrollbyoneless
 msgid "Scroll by one less"
@@ -8185,7 +8153,7 @@ msgstr "Variable de propietat"
 msgid "Set the breakpoint anyway"
 msgstr ""
 
-#: lazarusidestrconsts:srvk_shift
+#: lazarusidestrconsts:lisedtexttoolshift
 msgid "Shift"
 msgstr "Tecla de majúscules"
 
@@ -8489,10 +8457,6 @@ msgstr "Ajusta a les línies de la guia"
 msgid "Snap to grid"
 msgstr "Ajusta a la graella"
 
-#: lazarusidestrconsts:srvk_snapshot
-msgid "Snapshot"
-msgstr "Instantània"
-
 #: lazarusidestrconsts:lisdiskdiffsomefileshavechangedondisk
 msgid "Some files have changed on disk:"
 msgstr "Alguns fitxers han canviat al disc:"
@@ -8568,10 +8532,6 @@ msgstr "Espaiat"
 #: lazarusidestrconsts:lisspaceequally
 msgid "Space equally"
 msgstr "Iguala els espais"
-
-#: lazarusidestrconsts:srvk_space
-msgid "Space key"
-msgstr "Tecla d'espai"
 
 #: lazarusidestrconsts:rslanguagespanish
 msgid "Spanish"
@@ -8721,10 +8681,6 @@ msgstr "Correcte!"
 msgid "Success..."
 msgstr ""
 
-#: lazarusidestrconsts:srvk_super
-msgid "Super"
-msgstr ""
-
 #: lazarusidestrconsts:lisa2pswitchpaths
 msgid "Switch Paths"
 msgstr "Commutar trajectòries"
@@ -8757,6 +8713,10 @@ msgstr "SynEdit - el component editor utilitzat pel Lazarus. http://sourceforge.
 msgid "Syntax check"
 msgstr "Comprova la sintaxi"
 
+#: lazarusidestrconsts:lissyntaxmode
+msgid "Syntax mode"
+msgstr ""
+
 #: lazarusidestrconsts:dlgsyntaxoptions
 msgid "Syntax options"
 msgstr "Opcions de la sintaxi"
@@ -8769,7 +8729,7 @@ msgstr "Variables del sistema"
 msgid "TP/BP 7.0 Compatible"
 msgstr "Compatible amb TP/BP 7.0"
 
-#: lazarusidestrconsts:srvk_tab
+#: lazarusidestrconsts:listab
 msgid "Tab"
 msgstr "Tabulador"
 
@@ -8842,7 +8802,7 @@ msgid "Target filename of project"
 msgstr "Nom del fitxer destinació del projecte"
 
 #: lazarusidestrconsts:dlgtargetproc
-msgid "Target i386"
+msgid "Target processor"
 msgstr ""
 
 #: lazarusidestrconsts:lismenueditortemplatepreview
@@ -9153,6 +9113,10 @@ msgstr ""
 msgid "The destination directory%s%s%s%s does not exist."
 msgstr "No existeix el directori de destinació%s%s%s%s."
 
+#: lazarusidestrconsts:listhedirectorywasnotfound
+msgid "The directory %s was not found."
+msgstr ""
+
 #: lazarusidestrconsts:listhedirectoryisnolongerneededintheunitpathremoveit
 msgid "The directory %s%s%s is no longer needed in the unit path.%sRemove it?"
 msgstr ""
@@ -9303,6 +9267,10 @@ msgstr "El nom \"%s\" no és un identificador vàlid de Pascal"
 
 #: lazarusidestrconsts:listhenewunitisnotyetintheunitsearchpathadddirectory
 msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
+msgstr ""
+
+#: lazarusidestrconsts:listheoutputdirectoryismissing
+msgid "The output directory %s%s%s is missing."
 msgstr ""
 
 #: lazarusidestrconsts:listheoutputdirectoryofislistedintheincludesearchpath
@@ -9498,7 +9466,7 @@ msgid "The unitname is used when the IDE extends uses clauses."
 msgstr ""
 
 #: lazarusidestrconsts:listheworkingdirectorydoesnotexistpleasechecktheworki
-msgid "The working directory %s%s%s does not exist.%sPlease check the working directory in Menu > Project > Run parameters."
+msgid "The working directory %s%s%s does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr ""
 
 #: lazarusidestrconsts:lissamthereareabstractmethodstooverrideselectthemethodsf
@@ -9669,6 +9637,10 @@ msgstr ""
 msgid "Thread"
 msgstr ""
 
+#: lazarusidestrconsts:listitleleaveemptyfordefault
+msgid "Title (leave empty for default)"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtexttooltitleandfilenamerequired
 msgid "Title and Filename required"
 msgstr "Es requereix títol i nom de fitxer"
@@ -9700,6 +9672,10 @@ msgstr ""
 #: lazarusidestrconsts:lismenuviewtoggleformunit
 msgid "Toggle form/unit view"
 msgstr "Canvia visió forma/unitat"
+
+#: lazarusidestrconsts:listoggleshowingfilenameswithfullpathorwithrelativepa
+msgid "Toggle showing filenames with full path or with relative path"
+msgstr ""
 
 #: lazarusidestrconsts:liskmtoggleviewbreakpoints
 msgid "Toggle view Breakpoints"
@@ -9800,6 +9776,10 @@ msgstr "Límits superiors"
 #: lazarusidestrconsts:dlgtrimtrailingspaces
 msgid "Trim trailing spaces"
 msgstr "Suprimeix els espais finals"
+
+#: lazarusidestrconsts:listurbopascal
+msgid "Turbo Pascal"
+msgstr ""
 
 #: lazarusidestrconsts:rslanguageturkish
 msgid "Turkish"
@@ -10385,10 +10365,6 @@ msgstr ""
 msgid "Units..."
 msgstr "Unitats..."
 
-#: lazarusidestrconsts:srvk_unknown
-msgid "Unknown"
-msgstr "Desconegut"
-
 #: lazarusidestrconsts:lispkgmangunsavedpackage
 msgid "Unsaved package"
 msgstr "No s'ha desat el paquet"
@@ -10536,6 +10512,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgverbosity
 msgid "Verbosity during compilation:"
 msgstr "Detall durant la compilació:"
+
+#: lazarusidestrconsts:lisverifymethodcalls
+msgid "Verify method calls"
+msgstr ""
 
 #: lazarusidestrconsts:lisversion
 msgid "Version"
@@ -10925,10 +10905,6 @@ msgstr "afegeix un punt de ruptura"
 msgid "add watch"
 msgstr "afegeix un control"
 
-#: lazarusidestrconsts:srvk_apps
-msgid "application key"
-msgstr "tecla d'aplicació"
-
 #: lazarusidestrconsts:lisoipautoinstalldynamic
 msgid "auto install dynamic"
 msgstr "auto intal·la dinàmicament"
@@ -11073,10 +11049,6 @@ msgstr "el nom del fitxer del compilador no és vàlid"
 msgid "lazarus [options] <project-filename>"
 msgstr "lazarus [opcions] <projecte-nomfitxer>"
 
-#: lazarusidestrconsts:srvk_lwin
-msgid "left windows key"
-msgstr "tecla de finestres esquerres"
-
 #: lazarusidestrconsts:lislibrarypath
 msgid "library path"
 msgstr "trajectòria de les biblioteques"
@@ -11209,10 +11181,6 @@ msgstr "elimina el punt de ruptura"
 msgid "reset debugger"
 msgstr "reinicia el depurador"
 
-#: lazarusidestrconsts:srvk_rwin
-msgid "right windows key"
-msgstr "tecla de finestres dretes"
-
 #: lazarusidestrconsts:srkmecrunfile
 msgid "run file"
 msgstr "executa el fitxer"
@@ -11257,9 +11225,17 @@ msgstr ""
 msgid "set FPC mode to DELPHI"
 msgstr "fica mode FPC a DELPHI"
 
+#: lazarusidestrconsts:lisedtdefsetfpcmodetofpc
+msgid "set FPC mode to FPC"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtdefsetfpcmodetogpc
 msgid "set FPC mode to GPC"
 msgstr "fica mode FPC a GPC"
+
+#: lazarusidestrconsts:lisedtdefsetfpcmodetomacpas
+msgid "set FPC mode to MacPas"
+msgstr ""
 
 #: lazarusidestrconsts:lisedtdefsetfpcmodetotp
 msgid "set FPC mode to TP"
@@ -11276,6 +11252,10 @@ msgstr "activa OVERFLOWCHECKS"
 #: lazarusidestrconsts:lisedtdefsetrangecheckson
 msgid "set RANGECHECKS on"
 msgstr "activa RANGECHECKS"
+
+#: lazarusidestrconsts:lissmallerratherthanfaster
+msgid "smaller rather than faster"
+msgstr ""
 
 #: lazarusidestrconsts:lisautomaticallyonspace
 msgid "space"

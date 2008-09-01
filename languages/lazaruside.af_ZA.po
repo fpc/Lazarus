@@ -507,7 +507,7 @@ msgstr ""
 msgid "Abstract methods of %s"
 msgstr ""
 
-#: lazarusidestrconsts:srvk_accept
+#: lazarusidestrconsts:lissortselsort
 msgid "Accept"
 msgstr "Aanvaar"
 
@@ -587,6 +587,10 @@ msgstr ""
 msgid "Add code template"
 msgstr ""
 
+#: lazarusidestrconsts:lisadddirectory
+msgid "Add directory"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuaddtoproject
 msgid "Add editor file to Project"
 msgstr ""
@@ -605,6 +609,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisprojaddfiles
 msgid "Add files"
+msgstr ""
+
+#: lazarusidestrconsts:lisaddfilesofdirectory
+msgid "Add files of directory"
 msgstr ""
 
 #: lazarusidestrconsts:lisa2paddfilestopackage
@@ -629,6 +637,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispckoptsaddoptionstodependentpackagesandprojects
 msgid "Add options to dependent packages and projects"
+msgstr ""
+
+#: lazarusidestrconsts:podaddpackageunittousessection
+msgid "Add package unit to uses section"
 msgstr ""
 
 #: lazarusidestrconsts:liscodehelpaddpathbutton
@@ -763,7 +775,7 @@ msgstr ""
 msgid "Alphabetically"
 msgstr ""
 
-#: lazarusidestrconsts:srkm_alt
+#: lazarusidestrconsts:lisedtexttoolalt
 msgid "Alt"
 msgstr "Alt"
 
@@ -1021,10 +1033,6 @@ msgstr "Terug een"
 
 #: lazarusidestrconsts:dlgbackcolor
 msgid "Background"
-msgstr ""
-
-#: lazarusidestrconsts:srvk_back
-msgid "Backspace"
 msgstr ""
 
 #: lazarusidestrconsts:dlgenvbckup
@@ -1295,10 +1303,6 @@ msgstr ""
 msgid "Cannot find lazarus starter:%s%s"
 msgstr ""
 
-#: lazarusidestrconsts:srvk_capital
-msgid "Capital"
-msgstr ""
-
 #: lazarusidestrconsts:lisdiffdlgcaseinsensitive
 msgid "Case Insensitive"
 msgstr ""
@@ -1451,6 +1455,10 @@ msgstr ""
 msgid "Choose Scheme"
 msgstr "Kies Skema"
 
+#: lazarusidestrconsts:lischooseafpdoclink
+msgid "Choose a FPDoc link"
+msgstr ""
+
 #: lazarusidestrconsts:lisoifchooseabaseclassforthefavouriteproperty
 msgid "Choose a base class for the favourite property %s%s%s."
 msgstr ""
@@ -1587,7 +1595,7 @@ msgstr ""
 msgid "Clean+Build"
 msgstr ""
 
-#: lazarusidestrconsts:srvk_clear
+#: lazarusidestrconsts:lisuidclear
 msgid "Clear"
 msgstr ""
 
@@ -1637,10 +1645,6 @@ msgstr ""
 
 #: lazarusidestrconsts:liskmcloseproject
 msgid "Close project"
-msgstr ""
-
-#: lazarusidestrconsts:srvk_cmd
-msgid "Cmd"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcodegeneration
@@ -2051,10 +2055,6 @@ msgstr ""
 msgid "Contributors"
 msgstr "Bydraers"
 
-#: lazarusidestrconsts:srvk_control
-msgid "Control"
-msgstr ""
-
 #: lazarusidestrconsts:liscontrolneedsparent
 msgid "Control needs parent"
 msgstr ""
@@ -2065,10 +2065,6 @@ msgstr ""
 
 #: lazarusidestrconsts:lisconversionerror
 msgid "Conversion error"
-msgstr ""
-
-#: lazarusidestrconsts:srvk_convert
-msgid "Convert"
 msgstr ""
 
 #: lazarusidestrconsts:liskmconvertdfmfiletolfm
@@ -2295,8 +2291,16 @@ msgstr ""
 msgid "Create a project first!"
 msgstr ""
 
+#: lazarusidestrconsts:liscreatedirectory
+msgid "Create directory?"
+msgstr ""
+
 #: lazarusidestrconsts:liscodehelpcreatebutton
 msgid "Create help item"
+msgstr ""
+
+#: lazarusidestrconsts:liscreateit
+msgid "Create it"
 msgstr ""
 
 #: lazarusidestrconsts:rscreatenewdefine
@@ -2315,7 +2319,7 @@ msgstr ""
 msgid "Creation"
 msgstr ""
 
-#: lazarusidestrconsts:srkm_ctrl
+#: lazarusidestrconsts:lisedtexttoolctrl
 msgid "Ctrl"
 msgstr "Ctrl"
 
@@ -2603,6 +2607,10 @@ msgstr ""
 msgid "Delete old package file %s%s%s?"
 msgstr ""
 
+#: lazarusidestrconsts:lisdeleteselectedfiles
+msgid "Delete selected files"
+msgstr ""
+
 #: lazarusidestrconsts:fdmdeleteselection
 msgid "Delete selection"
 msgstr ""
@@ -2633,6 +2641,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisdeletingoffilefailed
 msgid "Deleting of file %s%s%s failed."
+msgstr ""
+
+#: lazarusidestrconsts:lisdelphi
+msgid "Delphi"
 msgstr ""
 
 #: lazarusidestrconsts:dlgdelphi2ext
@@ -3031,10 +3043,6 @@ msgstr ""
 msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
 msgstr ""
 
-#: lazarusidestrconsts:srvk_end
-msgid "End"
-msgstr "Einde"
-
 #: lazarusidestrconsts:rslanguageenglish
 msgid "English"
 msgstr "English"
@@ -3147,6 +3155,10 @@ msgstr ""
 msgid "Error reading %s%s%s%s%s"
 msgstr ""
 
+#: lazarusidestrconsts:liserrorreadingxml
+msgid "Error reading XML"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangerrorreadingfile
 msgid "Error reading file"
 msgstr ""
@@ -3161,6 +3173,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefserrorreadingprojectinfofile
 msgid "Error reading project info file %s%s%s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:liserrorreadingxmlfile
+msgid "Error reading xml file %s%s%s%s%s"
 msgstr ""
 
 #: lazarusidestrconsts:liserrorrenamingfile
@@ -3207,10 +3223,6 @@ msgstr ""
 msgid "Errors:"
 msgstr ""
 
-#: lazarusidestrconsts:srvk_escape
-msgid "Escape"
-msgstr ""
-
 #: lazarusidestrconsts:liskmevaluatemodify
 msgid "Evaluate/Modify"
 msgstr ""
@@ -3235,12 +3247,16 @@ msgstr ""
 msgid "Examples"
 msgstr ""
 
+#: lazarusidestrconsts:lisexamplesidentifiertmyenumenumunitnameidentifierpac
+msgid "Examples:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
+msgstr ""
+
 #: lazarusidestrconsts:lisexcludefilter
 msgid "Exclude Filter"
 msgstr ""
 
-#: lazarusidestrconsts:srvk_execute
-msgid "Execute"
+#: lazarusidestrconsts:lisexcludefilter2
+msgid "Exclude filter"
 msgstr ""
 
 #: lazarusidestrconsts:liscoexecuteafter
@@ -3381,6 +3397,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisfpcsourcedirectoryerror
 msgid "FPC Source Directory error"
+msgstr ""
+
+#: lazarusidestrconsts:lisfpcversioneg222
+msgid "FPC Version (e.g. 2.2.2)"
 msgstr ""
 
 #: lazarusidestrconsts:lisfpcversion
@@ -3587,10 +3607,6 @@ msgstr ""
 msgid "Filter by matching with start of method"
 msgstr ""
 
-#: lazarusidestrconsts:srvk_final
-msgid "Final"
-msgstr ""
-
 #: lazarusidestrconsts:lismenufind
 msgid "Find"
 msgstr ""
@@ -3785,6 +3801,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisemdfoundemptymethods
 msgid "Found empty methods:"
+msgstr ""
+
+#: lazarusidestrconsts:lisfreepascal
+msgid "Free Pascal"
 msgstr ""
 
 #: lazarusidestrconsts:lisfreepascalcompilernotfound
@@ -4119,10 +4139,6 @@ msgstr ""
 msgid "Handled by Program"
 msgstr ""
 
-#: lazarusidestrconsts:srvk_hanja
-msgid "Hanja"
-msgstr ""
-
 #: lazarusidestrconsts:lisaf2phasregisterprocedure
 msgid "Has Register procedure"
 msgstr ""
@@ -4143,7 +4159,7 @@ msgstr ""
 msgid "Height:"
 msgstr "Hoogte:"
 
-#: lazarusidestrconsts:srvk_help
+#: lazarusidestrconsts:lispckedithelp
 msgid "Help"
 msgstr "Help"
 
@@ -4206,10 +4222,6 @@ msgstr ""
 #: lazarusidestrconsts:lisinfobuildhint
 msgid "Hints:"
 msgstr ""
-
-#: lazarusidestrconsts:srvk_home
-msgid "Home"
-msgstr "Tuis"
 
 #: lazarusidestrconsts:dlghomekeyjumpstoneareststart
 msgid "Home key jumps to nearest start"
@@ -4475,7 +4487,7 @@ msgstr ""
 msgid "Inherited Item"
 msgstr ""
 
-#: lazarusidestrconsts:srvk_insert
+#: lazarusidestrconsts:lisedtexttoolinsert
 msgid "Insert"
 msgstr "Insit"
 
@@ -4883,6 +4895,10 @@ msgstr ""
 msgid "Invalid expression.%sHint: The \"Make Resourcestring\" function expects a string constant in a single file. Please select the expression and try again."
 msgstr ""
 
+#: lazarusidestrconsts:lisinvalidexpression
+msgid "Invalid expression:%s%s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2pinvalidfile
 msgid "Invalid file"
 msgstr ""
@@ -4893,6 +4909,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisa2pinvalidfilename
 msgid "Invalid filename"
+msgstr ""
+
+#: lazarusidestrconsts:lisinvalidfilter
+msgid "Invalid filter"
 msgstr ""
 
 #: lazarusidestrconsts:lisenvoptdlginvalidmakefilename
@@ -5003,10 +5023,6 @@ msgstr ""
 msgid "Invert assignment"
 msgstr ""
 
-#: lazarusidestrconsts:srvk_irregular
-msgid "Irregular "
-msgstr ""
-
 #: lazarusidestrconsts:lispkgfiletypeissues
 msgid "Issues xml file"
 msgstr ""
@@ -5065,14 +5081,6 @@ msgstr "Spring na vorige vout"
 
 #: lazarusidestrconsts:dlgjumpingetc
 msgid "Jumping (e.g. Method Jumping)"
-msgstr ""
-
-#: lazarusidestrconsts:srvk_junja
-msgid "Junja"
-msgstr ""
-
-#: lazarusidestrconsts:srvk_kana
-msgid "Kana"
 msgstr ""
 
 #: lazarusidestrconsts:liscldirkeepalltextfiles
@@ -5303,7 +5311,7 @@ msgstr ""
 msgid "Leave empty for default .po file"
 msgstr ""
 
-#: lazarusidestrconsts:srvk_left
+#: lazarusidestrconsts:lisleft
 msgid "Left"
 msgstr "Links"
 
@@ -5403,6 +5411,10 @@ msgstr ""
 msgid "Link Style:"
 msgstr ""
 
+#: lazarusidestrconsts:lislinktarget
+msgid "Link target"
+msgstr ""
+
 #: lazarusidestrconsts:lislink
 msgid "Link:"
 msgstr ""
@@ -5473,6 +5485,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liskmmacosx
 msgid "Mac OS X"
+msgstr ""
+
+#: lazarusidestrconsts:lismacpascal
+msgid "Mac Pascal"
 msgstr ""
 
 #: lazarusidestrconsts:lisedtexttoolmacros
@@ -5583,20 +5599,12 @@ msgstr ""
 msgid "Memory Dump"
 msgstr ""
 
-#: lazarusidestrconsts:srvk_menu
-msgid "Menu"
-msgstr ""
-
 #: lazarusidestrconsts:lismenueditormenueditor
 msgid "Menu Editor"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuviewmessages
 msgid "Messages"
-msgstr ""
-
-#: lazarusidestrconsts:srvk_meta
-msgid "Meta"
 msgstr ""
 
 #: lazarusidestrconsts:lismethodclassnotfound
@@ -5659,10 +5667,6 @@ msgstr ""
 msgid "Mix methods and properties"
 msgstr ""
 
-#: lazarusidestrconsts:srvk_modechange
-msgid "Mode Change"
-msgstr ""
-
 #: lazarusidestrconsts:uemodified
 msgid "Modified"
 msgstr ""
@@ -5685,18 +5689,6 @@ msgstr ""
 
 #: lazarusidestrconsts:lispckeditmore
 msgid "More ..."
-msgstr ""
-
-#: lazarusidestrconsts:srvk_lbutton
-msgid "Mouse Button Left"
-msgstr ""
-
-#: lazarusidestrconsts:srvk_mbutton
-msgid "Mouse Button Middle"
-msgstr ""
-
-#: lazarusidestrconsts:srvk_rbutton
-msgid "Mouse Button Right"
 msgstr ""
 
 #: lazarusidestrconsts:dlgmouselinks
@@ -6003,10 +5995,6 @@ msgstr ""
 msgid "Newline"
 msgstr ""
 
-#: lazarusidestrconsts:srvk_next
-msgid "Next"
-msgstr "Volgende"
-
 #: lazarusidestrconsts:srkmecnextbookmark
 msgid "Next Bookmark"
 msgstr ""
@@ -6075,10 +6063,6 @@ msgstr ""
 msgid "Node is readonly"
 msgstr ""
 
-#: lazarusidestrconsts:srvk_nonconvert
-msgid "Nonconvert"
-msgstr ""
-
 #: lazarusidestrconsts:dlgenvnone
 msgid "None"
 msgstr ""
@@ -6143,14 +6127,6 @@ msgstr ""
 msgid "Number"
 msgstr ""
 
-#: lazarusidestrconsts:srvk_numlock
-msgid "Numlock"
-msgstr ""
-
-#: lazarusidestrconsts:srvk_numpad
-msgid "Numpad %d"
-msgstr ""
-
 #: lazarusidestrconsts:lisifdok
 msgid "OK"
 msgstr ""
@@ -6173,6 +6149,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liskeycatobjinspector
 msgid "Object Inspector commands"
+msgstr ""
+
+#: lazarusidestrconsts:lisobjectpascaldefault
+msgid "Object Pascal - default"
 msgstr ""
 
 #: lazarusidestrconsts:dlgedoff
@@ -6755,10 +6735,6 @@ msgstr ""
 msgid "Pause"
 msgstr ""
 
-#: lazarusidestrconsts:srvk_pause
-msgid "Pause key"
-msgstr ""
-
 #: lazarusidestrconsts:liskmpauseprogram
 msgid "Pause program"
 msgstr ""
@@ -6859,17 +6835,13 @@ msgstr ""
 msgid "Previous node can not contain child nodes."
 msgstr ""
 
-#: lazarusidestrconsts:srvk_print
+#: lazarusidestrconsts:lisprint
 msgid "Print"
 msgstr ""
 
 #: lazarusidestrconsts:listodolistprintlist
 msgid "Print todo items"
 msgstr ""
-
-#: lazarusidestrconsts:srvk_prior
-msgid "Prior"
-msgstr "Vorige"
 
 #: lazarusidestrconsts:listodolpriority
 msgid "Priority"
@@ -7235,6 +7207,10 @@ msgstr ""
 msgid "Registration Error"
 msgstr ""
 
+#: lazarusidestrconsts:lisregularexpression
+msgid "Regular expression"
+msgstr ""
+
 #: lazarusidestrconsts:lisrelativepaths
 msgid "Relative paths"
 msgstr ""
@@ -7495,10 +7471,6 @@ msgstr ""
 msgid "Resume Unhandled"
 msgstr ""
 
-#: lazarusidestrconsts:srvk_return
-msgid "Return"
-msgstr ""
-
 #: lazarusidestrconsts:lismenurevert
 msgid "Revert"
 msgstr ""
@@ -7511,7 +7483,7 @@ msgstr ""
 msgid "Revert package?"
 msgstr ""
 
-#: lazarusidestrconsts:srvk_right
+#: lazarusidestrconsts:lisright
 msgid "Right"
 msgstr "Regs"
 
@@ -7817,10 +7789,6 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgscope
 msgid "Scope"
-msgstr ""
-
-#: lazarusidestrconsts:srvk_scroll
-msgid "Scroll"
 msgstr ""
 
 #: lazarusidestrconsts:dlgscrollbyoneless
@@ -8187,7 +8155,7 @@ msgstr ""
 msgid "Set the breakpoint anyway"
 msgstr ""
 
-#: lazarusidestrconsts:srvk_shift
+#: lazarusidestrconsts:lisedtexttoolshift
 msgid "Shift"
 msgstr ""
 
@@ -8491,10 +8459,6 @@ msgstr ""
 msgid "Snap to grid"
 msgstr ""
 
-#: lazarusidestrconsts:srvk_snapshot
-msgid "Snapshot"
-msgstr ""
-
 #: lazarusidestrconsts:lisdiskdiffsomefileshavechangedondisk
 msgid "Some files have changed on disk:"
 msgstr ""
@@ -8570,10 +8534,6 @@ msgstr "Spasie"
 #: lazarusidestrconsts:lisspaceequally
 msgid "Space equally"
 msgstr "Spasieer evereedig"
-
-#: lazarusidestrconsts:srvk_space
-msgid "Space key"
-msgstr "Spasie sluetel"
 
 #: lazarusidestrconsts:rslanguagespanish
 msgid "Spanish"
@@ -8723,10 +8683,6 @@ msgstr "Sukses"
 msgid "Success..."
 msgstr ""
 
-#: lazarusidestrconsts:srvk_super
-msgid "Super"
-msgstr ""
-
 #: lazarusidestrconsts:lisa2pswitchpaths
 msgid "Switch Paths"
 msgstr ""
@@ -8759,6 +8715,10 @@ msgstr "SynEdit - die redigeerder wat in Lazarus gebruik word. http://sourceforg
 msgid "Syntax check"
 msgstr ""
 
+#: lazarusidestrconsts:lissyntaxmode
+msgid "Syntax mode"
+msgstr ""
+
 #: lazarusidestrconsts:dlgsyntaxoptions
 msgid "Syntax options"
 msgstr "Sintaks opsies"
@@ -8771,7 +8731,7 @@ msgstr ""
 msgid "TP/BP 7.0 Compatible"
 msgstr ""
 
-#: lazarusidestrconsts:srvk_tab
+#: lazarusidestrconsts:listab
 msgid "Tab"
 msgstr "Keep"
 
@@ -8844,7 +8804,7 @@ msgid "Target filename of project"
 msgstr ""
 
 #: lazarusidestrconsts:dlgtargetproc
-msgid "Target i386"
+msgid "Target processor"
 msgstr ""
 
 #: lazarusidestrconsts:lismenueditortemplatepreview
@@ -9155,6 +9115,10 @@ msgstr ""
 msgid "The destination directory%s%s%s%s does not exist."
 msgstr ""
 
+#: lazarusidestrconsts:listhedirectorywasnotfound
+msgid "The directory %s was not found."
+msgstr ""
+
 #: lazarusidestrconsts:listhedirectoryisnolongerneededintheunitpathremoveit
 msgid "The directory %s%s%s is no longer needed in the unit path.%sRemove it?"
 msgstr ""
@@ -9305,6 +9269,10 @@ msgstr ""
 
 #: lazarusidestrconsts:listhenewunitisnotyetintheunitsearchpathadddirectory
 msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
+msgstr ""
+
+#: lazarusidestrconsts:listheoutputdirectoryismissing
+msgid "The output directory %s%s%s is missing."
 msgstr ""
 
 #: lazarusidestrconsts:listheoutputdirectoryofislistedintheincludesearchpath
@@ -9500,7 +9468,7 @@ msgid "The unitname is used when the IDE extends uses clauses."
 msgstr ""
 
 #: lazarusidestrconsts:listheworkingdirectorydoesnotexistpleasechecktheworki
-msgid "The working directory %s%s%s does not exist.%sPlease check the working directory in Menu > Project > Run parameters."
+msgid "The working directory %s%s%s does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr ""
 
 #: lazarusidestrconsts:lissamthereareabstractmethodstooverrideselectthemethodsf
@@ -9671,6 +9639,10 @@ msgstr ""
 msgid "Thread"
 msgstr ""
 
+#: lazarusidestrconsts:listitleleaveemptyfordefault
+msgid "Title (leave empty for default)"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtexttooltitleandfilenamerequired
 msgid "Title and Filename required"
 msgstr ""
@@ -9701,6 +9673,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuviewtoggleformunit
 msgid "Toggle form/unit view"
+msgstr ""
+
+#: lazarusidestrconsts:listoggleshowingfilenameswithfullpathorwithrelativepa
+msgid "Toggle showing filenames with full path or with relative path"
 msgstr ""
 
 #: lazarusidestrconsts:liskmtoggleviewbreakpoints
@@ -9801,6 +9777,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgtrimtrailingspaces
 msgid "Trim trailing spaces"
+msgstr ""
+
+#: lazarusidestrconsts:listurbopascal
+msgid "Turbo Pascal"
 msgstr ""
 
 #: lazarusidestrconsts:rslanguageturkish
@@ -10387,10 +10367,6 @@ msgstr ""
 msgid "Units..."
 msgstr ""
 
-#: lazarusidestrconsts:srvk_unknown
-msgid "Unknown"
-msgstr ""
-
 #: lazarusidestrconsts:lispkgmangunsavedpackage
 msgid "Unsaved package"
 msgstr ""
@@ -10537,6 +10513,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgverbosity
 msgid "Verbosity during compilation:"
+msgstr ""
+
+#: lazarusidestrconsts:lisverifymethodcalls
+msgid "Verify method calls"
 msgstr ""
 
 #: lazarusidestrconsts:lisversion
@@ -10927,10 +10907,6 @@ msgstr ""
 msgid "add watch"
 msgstr ""
 
-#: lazarusidestrconsts:srvk_apps
-msgid "application key"
-msgstr ""
-
 #: lazarusidestrconsts:lisoipautoinstalldynamic
 msgid "auto install dynamic"
 msgstr ""
@@ -11075,10 +11051,6 @@ msgstr ""
 msgid "lazarus [options] <project-filename>"
 msgstr ""
 
-#: lazarusidestrconsts:srvk_lwin
-msgid "left windows key"
-msgstr ""
-
 #: lazarusidestrconsts:lislibrarypath
 msgid "library path"
 msgstr ""
@@ -11211,10 +11183,6 @@ msgstr ""
 msgid "reset debugger"
 msgstr ""
 
-#: lazarusidestrconsts:srvk_rwin
-msgid "right windows key"
-msgstr ""
-
 #: lazarusidestrconsts:srkmecrunfile
 msgid "run file"
 msgstr ""
@@ -11259,8 +11227,16 @@ msgstr ""
 msgid "set FPC mode to DELPHI"
 msgstr ""
 
+#: lazarusidestrconsts:lisedtdefsetfpcmodetofpc
+msgid "set FPC mode to FPC"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtdefsetfpcmodetogpc
 msgid "set FPC mode to GPC"
+msgstr ""
+
+#: lazarusidestrconsts:lisedtdefsetfpcmodetomacpas
+msgid "set FPC mode to MacPas"
 msgstr ""
 
 #: lazarusidestrconsts:lisedtdefsetfpcmodetotp
@@ -11277,6 +11253,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisedtdefsetrangecheckson
 msgid "set RANGECHECKS on"
+msgstr ""
+
+#: lazarusidestrconsts:lissmallerratherthanfaster
+msgid "smaller rather than faster"
 msgstr ""
 
 #: lazarusidestrconsts:lisautomaticallyonspace

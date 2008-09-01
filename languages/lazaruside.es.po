@@ -503,7 +503,7 @@ msgstr "Métodos abstractos - todavía no sobrecargados"
 msgid "Abstract methods of %s"
 msgstr "Métodos abstractos de %s"
 
-#: lazarusidestrconsts:srvk_accept
+#: lazarusidestrconsts:lissortselsort
 msgid "Accept"
 msgstr "Aceptar"
 
@@ -583,6 +583,10 @@ msgstr "Añadir breakpoint"
 msgid "Add code template"
 msgstr "Añadir plantilla de código"
 
+#: lazarusidestrconsts:lisadddirectory
+msgid "Add directory"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuaddtoproject
 msgid "Add editor file to Project"
 msgstr "Añadir archivo de editor al Proyecto"
@@ -602,6 +606,10 @@ msgstr "Añadir archivo al proyecto:"
 #: lazarusidestrconsts:lisprojaddfiles
 msgid "Add files"
 msgstr "Añadir archivos"
+
+#: lazarusidestrconsts:lisaddfilesofdirectory
+msgid "Add files of directory"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2paddfilestopackage
 msgid "Add files to package"
@@ -626,6 +634,10 @@ msgstr "Añadir enlace a la herencia"
 #: lazarusidestrconsts:lispckoptsaddoptionstodependentpackagesandprojects
 msgid "Add options to dependent packages and projects"
 msgstr "Añadir opciones a los proyectos y paquetes dependientes"
+
+#: lazarusidestrconsts:podaddpackageunittousessection
+msgid "Add package unit to uses section"
+msgstr ""
 
 #: lazarusidestrconsts:liscodehelpaddpathbutton
 msgid "Add path"
@@ -759,7 +771,7 @@ msgstr "Permitir búsqueda para múltiples líneas"
 msgid "Alphabetically"
 msgstr "Alfabéticamente"
 
-#: lazarusidestrconsts:srkm_alt
+#: lazarusidestrconsts:lisedtexttoolalt
 msgid "Alt"
 msgstr "Alt"
 
@@ -1018,10 +1030,6 @@ msgstr "Retroceder uno"
 #: lazarusidestrconsts:dlgbackcolor
 msgid "Background"
 msgstr "Fondo"
-
-#: lazarusidestrconsts:srvk_back
-msgid "Backspace"
-msgstr "Retroceso"
 
 #: lazarusidestrconsts:dlgenvbckup
 msgid "Backup"
@@ -1291,10 +1299,6 @@ msgstr "No puedo encontrar la lista de Colaboradores"
 msgid "Cannot find lazarus starter:%s%s"
 msgstr "No puedo encontrar el iniciador de Lazarus:%s%s"
 
-#: lazarusidestrconsts:srvk_capital
-msgid "Capital"
-msgstr "Capital"
-
 #: lazarusidestrconsts:lisdiffdlgcaseinsensitive
 msgid "Case Insensitive"
 msgstr "Insensible a mayus/mins"
@@ -1447,6 +1451,10 @@ msgstr "Escoja Directorio de Lazarus"
 msgid "Choose Scheme"
 msgstr "Escoja Esquema"
 
+#: lazarusidestrconsts:lischooseafpdoclink
+msgid "Choose a FPDoc link"
+msgstr ""
+
 #: lazarusidestrconsts:lisoifchooseabaseclassforthefavouriteproperty
 msgid "Choose a base class for the favourite property %s%s%s."
 msgstr "Elija una clase base para la propiedad favorita %s%s%s."
@@ -1583,7 +1591,7 @@ msgstr "¿Limpiar ruta de la unidad?"
 msgid "Clean+Build"
 msgstr "Limpiar+Construir"
 
-#: lazarusidestrconsts:srvk_clear
+#: lazarusidestrconsts:lisuidclear
 msgid "Clear"
 msgstr "Limpiar"
 
@@ -1634,10 +1642,6 @@ msgstr "Cerrar página"
 #: lazarusidestrconsts:liskmcloseproject
 msgid "Close project"
 msgstr "Cerrar proyecto"
-
-#: lazarusidestrconsts:srvk_cmd
-msgid "Cmd"
-msgstr ""
 
 #: lazarusidestrconsts:dlgcodegeneration
 msgid "Code"
@@ -2047,10 +2051,6 @@ msgstr "Continuar sin cargar el formulario"
 msgid "Contributors"
 msgstr "Colaboradores"
 
-#: lazarusidestrconsts:srvk_control
-msgid "Control"
-msgstr "Control"
-
 #: lazarusidestrconsts:liscontrolneedsparent
 msgid "Control needs parent"
 msgstr "El control necesita un padre"
@@ -2062,10 +2062,6 @@ msgstr "Opciones de conversión"
 #: lazarusidestrconsts:lisconversionerror
 msgid "Conversion error"
 msgstr "Error de conversión"
-
-#: lazarusidestrconsts:srvk_convert
-msgid "Convert"
-msgstr "Convertir"
 
 #: lazarusidestrconsts:liskmconvertdfmfiletolfm
 msgid "Convert DFM file to LFM"
@@ -2291,9 +2287,17 @@ msgstr ""
 msgid "Create a project first!"
 msgstr "¡Cree un proyecto primero!"
 
+#: lazarusidestrconsts:liscreatedirectory
+msgid "Create directory?"
+msgstr ""
+
 #: lazarusidestrconsts:liscodehelpcreatebutton
 msgid "Create help item"
 msgstr "Crear un elemento de ayuda"
+
+#: lazarusidestrconsts:liscreateit
+msgid "Create it"
+msgstr ""
 
 #: lazarusidestrconsts:rscreatenewdefine
 msgid "Create new define"
@@ -2311,7 +2315,7 @@ msgstr "Crear un nuevo proyecto"
 msgid "Creation"
 msgstr "Creación"
 
-#: lazarusidestrconsts:srkm_ctrl
+#: lazarusidestrconsts:lisedtexttoolctrl
 msgid "Ctrl"
 msgstr "Ctrl"
 
@@ -2599,6 +2603,10 @@ msgstr ""
 msgid "Delete old package file %s%s%s?"
 msgstr "¿Borrar archivo de paquete viejo %s%s%s?"
 
+#: lazarusidestrconsts:lisdeleteselectedfiles
+msgid "Delete selected files"
+msgstr ""
+
 #: lazarusidestrconsts:fdmdeleteselection
 msgid "Delete selection"
 msgstr "Borrar selección"
@@ -2630,6 +2638,10 @@ msgstr "Borrar texto entero"
 #: lazarusidestrconsts:lisdeletingoffilefailed
 msgid "Deleting of file %s%s%s failed."
 msgstr "Falló el borrado del archivo %s%s%s"
+
+#: lazarusidestrconsts:lisdelphi
+msgid "Delphi"
+msgstr ""
 
 #: lazarusidestrconsts:dlgdelphi2ext
 msgid "Delphi 2 Extensions"
@@ -3027,10 +3039,6 @@ msgstr ""
 msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
 msgstr ""
 
-#: lazarusidestrconsts:srvk_end
-msgid "End"
-msgstr "Fin"
-
 #: lazarusidestrconsts:rslanguageenglish
 msgid "English"
 msgstr "Inglés"
@@ -3143,6 +3151,10 @@ msgstr "Error analizando la flujo lfm del componente"
 msgid "Error reading %s%s%s%s%s"
 msgstr "Error leyendo %s%s%s%s%s"
 
+#: lazarusidestrconsts:liserrorreadingxml
+msgid "Error reading XML"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangerrorreadingfile
 msgid "Error reading file"
 msgstr "Error leyendo archivo"
@@ -3158,6 +3170,10 @@ msgstr "Error al leer lista de paquetes del archivo%s%s%s%s"
 #: lazarusidestrconsts:liscodetoolsdefserrorreadingprojectinfofile
 msgid "Error reading project info file %s%s%s%s%s"
 msgstr "Error leyendo archivo de información del proyecto %s%s%s%s%s"
+
+#: lazarusidestrconsts:liserrorreadingxmlfile
+msgid "Error reading xml file %s%s%s%s%s"
+msgstr ""
 
 #: lazarusidestrconsts:liserrorrenamingfile
 msgid "Error renaming file"
@@ -3203,10 +3219,6 @@ msgstr "Errores"
 msgid "Errors:"
 msgstr ""
 
-#: lazarusidestrconsts:srvk_escape
-msgid "Escape"
-msgstr "Escape"
-
 #: lazarusidestrconsts:liskmevaluatemodify
 msgid "Evaluate/Modify"
 msgstr "Evaluar/Modificar"
@@ -3231,13 +3243,17 @@ msgstr "Ejemplo"
 msgid "Examples"
 msgstr "Ejemplos"
 
+#: lazarusidestrconsts:lisexamplesidentifiertmyenumenumunitnameidentifierpac
+msgid "Examples:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
+msgstr ""
+
 #: lazarusidestrconsts:lisexcludefilter
 msgid "Exclude Filter"
 msgstr "Excluir filtro"
 
-#: lazarusidestrconsts:srvk_execute
-msgid "Execute"
-msgstr "Ejecutar"
+#: lazarusidestrconsts:lisexcludefilter2
+msgid "Exclude filter"
+msgstr ""
 
 #: lazarusidestrconsts:liscoexecuteafter
 msgid "Execute after"
@@ -3378,6 +3394,10 @@ msgstr "Directorios de las fuentes SVN de FPC"
 #: lazarusidestrconsts:lisfpcsourcedirectoryerror
 msgid "FPC Source Directory error"
 msgstr "Error del directorio de las fuentes de FPC"
+
+#: lazarusidestrconsts:lisfpcversioneg222
+msgid "FPC Version (e.g. 2.2.2)"
+msgstr ""
 
 #: lazarusidestrconsts:lisfpcversion
 msgid "FPC Version: "
@@ -3583,10 +3603,6 @@ msgstr "Filtrar por cualquier coincidencia en el método"
 msgid "Filter by matching with start of method"
 msgstr "Filtar por coincidencia en el comienzo del método"
 
-#: lazarusidestrconsts:srvk_final
-msgid "Final"
-msgstr "Final"
-
 #: lazarusidestrconsts:lismenufind
 msgid "Find"
 msgstr "Buscar"
@@ -3781,6 +3797,10 @@ msgstr "Avanzar uno"
 
 #: lazarusidestrconsts:lisemdfoundemptymethods
 msgid "Found empty methods:"
+msgstr ""
+
+#: lazarusidestrconsts:lisfreepascal
+msgid "Free Pascal"
 msgstr ""
 
 #: lazarusidestrconsts:lisfreepascalcompilernotfound
@@ -4115,10 +4135,6 @@ msgstr "Gestionado por el depurador"
 msgid "Handled by Program"
 msgstr "Gestionado por programa"
 
-#: lazarusidestrconsts:srvk_hanja
-msgid "Hanja"
-msgstr "Hanja"
-
 #: lazarusidestrconsts:lisaf2phasregisterprocedure
 msgid "Has Register procedure"
 msgstr "Tiene procedimiento de registro"
@@ -4139,7 +4155,7 @@ msgstr "Hebreo"
 msgid "Height:"
 msgstr "Altura"
 
-#: lazarusidestrconsts:srvk_help
+#: lazarusidestrconsts:lispckedithelp
 msgid "Help"
 msgstr "Ayuda"
 
@@ -4202,10 +4218,6 @@ msgstr "Sugerencias para los accesos rápidos principales (abrir, guardar, ...)"
 #: lazarusidestrconsts:lisinfobuildhint
 msgid "Hints:"
 msgstr ""
-
-#: lazarusidestrconsts:srvk_home
-msgid "Home"
-msgstr "Inicio"
 
 #: lazarusidestrconsts:dlghomekeyjumpstoneareststart
 msgid "Home key jumps to nearest start"
@@ -4471,7 +4483,7 @@ msgstr "Heredado"
 msgid "Inherited Item"
 msgstr ""
 
-#: lazarusidestrconsts:srvk_insert
+#: lazarusidestrconsts:lisedtexttoolinsert
 msgid "Insert"
 msgstr "Insertar"
 
@@ -4879,6 +4891,10 @@ msgstr "Directorio destino inválido"
 msgid "Invalid expression.%sHint: The \"Make Resourcestring\" function expects a string constant in a single file. Please select the expression and try again."
 msgstr "Expresión inválida.%Sugerencia: La función Resourcestring de Make espera una constante de cadena en un único archivo. Por favor seleccione la expresión e inténtelo de nuevo."
 
+#: lazarusidestrconsts:lisinvalidexpression
+msgid "Invalid expression:%s%s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2pinvalidfile
 msgid "Invalid file"
 msgstr "Archivo inválido"
@@ -4890,6 +4906,10 @@ msgstr "Extensión de archivo inválida"
 #: lazarusidestrconsts:lisa2pinvalidfilename
 msgid "Invalid filename"
 msgstr "Nombre de archivo inválido"
+
+#: lazarusidestrconsts:lisinvalidfilter
+msgid "Invalid filter"
+msgstr ""
 
 #: lazarusidestrconsts:lisenvoptdlginvalidmakefilename
 msgid "Invalid make filename"
@@ -4999,10 +5019,6 @@ msgstr "Invertir tarea"
 msgid "Invert assignment"
 msgstr "Invertir tarea"
 
-#: lazarusidestrconsts:srvk_irregular
-msgid "Irregular "
-msgstr "Irregular "
-
 #: lazarusidestrconsts:lispkgfiletypeissues
 msgid "Issues xml file"
 msgstr ""
@@ -5062,14 +5078,6 @@ msgstr "Saltar a error previo"
 #: lazarusidestrconsts:dlgjumpingetc
 msgid "Jumping (e.g. Method Jumping)"
 msgstr "Saltando (por ejemplo, Saltando métodos)"
-
-#: lazarusidestrconsts:srvk_junja
-msgid "Junja"
-msgstr "Junja"
-
-#: lazarusidestrconsts:srvk_kana
-msgid "Kana"
-msgstr "Kana"
 
 #: lazarusidestrconsts:liscldirkeepalltextfiles
 msgid "Keep all text files"
@@ -5299,7 +5307,7 @@ msgstr "Unidad de Lazarus"
 msgid "Leave empty for default .po file"
 msgstr "Dejar vacío para el fichero .po por defecto"
 
-#: lazarusidestrconsts:srvk_left
+#: lazarusidestrconsts:lisleft
 msgid "Left"
 msgstr "Izquierda"
 
@@ -5399,6 +5407,10 @@ msgstr "Enlazar pequeña"
 msgid "Link Style:"
 msgstr "Estilo de enlazado:"
 
+#: lazarusidestrconsts:lislinktarget
+msgid "Link target"
+msgstr ""
+
 #: lazarusidestrconsts:lislink
 msgid "Link:"
 msgstr ""
@@ -5470,6 +5482,10 @@ msgstr "Minúsculas, primera letra en mayúsculas"
 #: lazarusidestrconsts:liskmmacosx
 msgid "Mac OS X"
 msgstr "Mac OS X"
+
+#: lazarusidestrconsts:lismacpascal
+msgid "Mac Pascal"
+msgstr ""
 
 #: lazarusidestrconsts:lisedtexttoolmacros
 msgid "Macros"
@@ -5579,10 +5595,6 @@ msgstr "Contador máximo"
 msgid "Memory Dump"
 msgstr ""
 
-#: lazarusidestrconsts:srvk_menu
-msgid "Menu"
-msgstr "Menú"
-
 #: lazarusidestrconsts:lismenueditormenueditor
 msgid "Menu Editor"
 msgstr "Editor de Menú"
@@ -5590,10 +5602,6 @@ msgstr "Editor de Menú"
 #: lazarusidestrconsts:lismenuviewmessages
 msgid "Messages"
 msgstr "Mensajes"
-
-#: lazarusidestrconsts:srvk_meta
-msgid "Meta"
-msgstr ""
 
 #: lazarusidestrconsts:lismethodclassnotfound
 msgid "Method class not found"
@@ -5655,10 +5663,6 @@ msgstr "Unidad desaparecida"
 msgid "Mix methods and properties"
 msgstr "Mezclar métodos y propiedades"
 
-#: lazarusidestrconsts:srvk_modechange
-msgid "Mode Change"
-msgstr "Cambiar Modo"
-
 #: lazarusidestrconsts:uemodified
 msgid "Modified"
 msgstr "Modificado"
@@ -5682,18 +5686,6 @@ msgstr ""
 #: lazarusidestrconsts:lispckeditmore
 msgid "More ..."
 msgstr "Más ..."
-
-#: lazarusidestrconsts:srvk_lbutton
-msgid "Mouse Button Left"
-msgstr "Botón izquierdo del ratón"
-
-#: lazarusidestrconsts:srvk_mbutton
-msgid "Mouse Button Middle"
-msgstr "Botón central del ratón"
-
-#: lazarusidestrconsts:srvk_rbutton
-msgid "Mouse Button Right"
-msgstr "Botón derecho del ratón"
 
 #: lazarusidestrconsts:dlgmouselinks
 msgid "Mouse links"
@@ -5999,10 +5991,6 @@ msgstr "Nuevo paquete"
 msgid "Newline"
 msgstr "Nueva línea"
 
-#: lazarusidestrconsts:srvk_next
-msgid "Next"
-msgstr "Siguiente"
-
 #: lazarusidestrconsts:srkmecnextbookmark
 msgid "Next Bookmark"
 msgstr "Siguiente marcador"
@@ -6071,10 +6059,6 @@ msgstr "El nodo y sus hijos son válidos sólo para este proyecto"
 msgid "Node is readonly"
 msgstr "El nodo es de sólo-lectura"
 
-#: lazarusidestrconsts:srvk_nonconvert
-msgid "Nonconvert"
-msgstr "No convertir"
-
 #: lazarusidestrconsts:dlgenvnone
 msgid "None"
 msgstr "Nada"
@@ -6139,14 +6123,6 @@ msgstr "Notas: Los Archivos del proyecto son todos los archivos en el directorio
 msgid "Number"
 msgstr "Número"
 
-#: lazarusidestrconsts:srvk_numlock
-msgid "Numlock"
-msgstr "BloqNum"
-
-#: lazarusidestrconsts:srvk_numpad
-msgid "Numpad %d"
-msgstr "NumPad %d"
-
 #: lazarusidestrconsts:lisifdok
 msgid "OK"
 msgstr "Aceptar"
@@ -6170,6 +6146,10 @@ msgstr "Inspector de Objetos"
 #: lazarusidestrconsts:liskeycatobjinspector
 msgid "Object Inspector commands"
 msgstr "Comandos del Inspector de Objetos"
+
+#: lazarusidestrconsts:lisobjectpascaldefault
+msgid "Object Pascal - default"
+msgstr ""
 
 #: lazarusidestrconsts:dlgedoff
 msgid "Off"
@@ -6751,10 +6731,6 @@ msgstr "Rutas (sólo lectura)"
 msgid "Pause"
 msgstr "Pausar"
 
-#: lazarusidestrconsts:srvk_pause
-msgid "Pause key"
-msgstr "Tecla de pausa"
-
 #: lazarusidestrconsts:liskmpauseprogram
 msgid "Pause program"
 msgstr "Pausar programa"
@@ -6855,17 +6831,13 @@ msgstr "Anterior marcador"
 msgid "Previous node can not contain child nodes."
 msgstr "El nodo previo no puede contener nodos hijo."
 
-#: lazarusidestrconsts:srvk_print
+#: lazarusidestrconsts:lisprint
 msgid "Print"
 msgstr "Imprimir"
 
 #: lazarusidestrconsts:listodolistprintlist
 msgid "Print todo items"
 msgstr "Imprimir elementos Para-Hacer"
-
-#: lazarusidestrconsts:srvk_prior
-msgid "Prior"
-msgstr "Anterior"
 
 #: lazarusidestrconsts:listodolpriority
 msgid "Priority"
@@ -7231,6 +7203,10 @@ msgstr "Registrar complementos"
 msgid "Registration Error"
 msgstr "Error de Registro"
 
+#: lazarusidestrconsts:lisregularexpression
+msgid "Regular expression"
+msgstr ""
+
 #: lazarusidestrconsts:lisrelativepaths
 msgid "Relative paths"
 msgstr "Rutas relativas"
@@ -7491,10 +7467,6 @@ msgstr "Continuar controlado"
 msgid "Resume Unhandled"
 msgstr "Continuar sin controlar"
 
-#: lazarusidestrconsts:srvk_return
-msgid "Return"
-msgstr "Retorno"
-
 #: lazarusidestrconsts:lismenurevert
 msgid "Revert"
 msgstr "Deshacer"
@@ -7507,7 +7479,7 @@ msgstr "Fallo al revertir"
 msgid "Revert package?"
 msgstr "¿Revertir paquete?"
 
-#: lazarusidestrconsts:srvk_right
+#: lazarusidestrconsts:lisright
 msgid "Right"
 msgstr "Derecha"
 
@@ -7814,10 +7786,6 @@ msgstr "Escanear salida de mensajes de make"
 #: lazarusidestrconsts:dlgscope
 msgid "Scope"
 msgstr "Alcance"
-
-#: lazarusidestrconsts:srvk_scroll
-msgid "Scroll"
-msgstr "Desplazamiento"
 
 #: lazarusidestrconsts:dlgscrollbyoneless
 msgid "Scroll by one less"
@@ -8183,7 +8151,7 @@ msgstr "Fijar propiedad Variable"
 msgid "Set the breakpoint anyway"
 msgstr "Establecer el punto de ruptura de todas maneras"
 
-#: lazarusidestrconsts:srvk_shift
+#: lazarusidestrconsts:lisedtexttoolshift
 msgid "Shift"
 msgstr "Shift"
 
@@ -8487,10 +8455,6 @@ msgstr "Ajustar a líneas guía"
 msgid "Snap to grid"
 msgstr "Ajustar a rejilla"
 
-#: lazarusidestrconsts:srvk_snapshot
-msgid "Snapshot"
-msgstr "Captura"
-
 #: lazarusidestrconsts:lisdiskdiffsomefileshavechangedondisk
 msgid "Some files have changed on disk:"
 msgstr "Algunos archivos han cambiado en el disco:"
@@ -8566,10 +8530,6 @@ msgstr "Espacio"
 #: lazarusidestrconsts:lisspaceequally
 msgid "Space equally"
 msgstr "Igualar espacio"
-
-#: lazarusidestrconsts:srvk_space
-msgid "Space key"
-msgstr "Tecla espacio"
 
 #: lazarusidestrconsts:rslanguagespanish
 msgid "Spanish"
@@ -8719,10 +8679,6 @@ msgstr "Éxito"
 msgid "Success..."
 msgstr ""
 
-#: lazarusidestrconsts:srvk_super
-msgid "Super"
-msgstr ""
-
 #: lazarusidestrconsts:lisa2pswitchpaths
 msgid "Switch Paths"
 msgstr "Escoger Rutas"
@@ -8755,6 +8711,10 @@ msgstr "SynEdit - El componente editor usado por Lazarus. http://sourceforge.net
 msgid "Syntax check"
 msgstr "Verificar sintaxis"
 
+#: lazarusidestrconsts:lissyntaxmode
+msgid "Syntax mode"
+msgstr ""
+
 #: lazarusidestrconsts:dlgsyntaxoptions
 msgid "Syntax options"
 msgstr "Opciones de sintaxis"
@@ -8767,7 +8727,7 @@ msgstr "Variables del sistema"
 msgid "TP/BP 7.0 Compatible"
 msgstr "Compatible TP/BP 7.0"
 
-#: lazarusidestrconsts:srvk_tab
+#: lazarusidestrconsts:listab
 msgid "Tab"
 msgstr "Tab"
 
@@ -8840,8 +8800,8 @@ msgid "Target filename of project"
 msgstr "Nombre del archivo objetivo del proyecto"
 
 #: lazarusidestrconsts:dlgtargetproc
-msgid "Target i386"
-msgstr "Objetivo i386"
+msgid "Target processor"
+msgstr ""
 
 #: lazarusidestrconsts:lismenueditortemplatepreview
 msgid "Template Preview"
@@ -9151,6 +9111,10 @@ msgstr ""
 msgid "The destination directory%s%s%s%s does not exist."
 msgstr "El directorio de destino%s%s%s%s no existe."
 
+#: lazarusidestrconsts:listhedirectorywasnotfound
+msgid "The directory %s was not found."
+msgstr ""
+
 #: lazarusidestrconsts:listhedirectoryisnolongerneededintheunitpathremoveit
 msgid "The directory %s%s%s is no longer needed in the unit path.%sRemove it?"
 msgstr "El directorio %s%s%s no se necesitará mas en la ruta de la unidad.%s¿Eliminarlo?"
@@ -9302,6 +9266,10 @@ msgstr "El nombre \"%s\" no es un identificador válido de Pascal."
 #: lazarusidestrconsts:listhenewunitisnotyetintheunitsearchpathadddirectory
 msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
 msgstr "La nueva unidad no está todavía en la ruta de búsqueda de unidad.%s¿Añadir directorio %s?"
+
+#: lazarusidestrconsts:listheoutputdirectoryismissing
+msgid "The output directory %s%s%s is missing."
+msgstr ""
 
 #: lazarusidestrconsts:listheoutputdirectoryofislistedintheincludesearchpath
 msgid "The output directory of %s is listed in the include search path of %s."
@@ -9496,7 +9464,7 @@ msgid "The unitname is used when the IDE extends uses clauses."
 msgstr "El nombre de unidad se usa cuando el IDE extiende la cláusula uses."
 
 #: lazarusidestrconsts:listheworkingdirectorydoesnotexistpleasechecktheworki
-msgid "The working directory %s%s%s does not exist.%sPlease check the working directory in Menu > Project > Run parameters."
+msgid "The working directory %s%s%s does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr ""
 
 #: lazarusidestrconsts:lissamthereareabstractmethodstooverrideselectthemethodsf
@@ -9667,6 +9635,10 @@ msgstr "Pasará esto:%s%s%s¿Continuar?"
 msgid "Thread"
 msgstr "Hilo"
 
+#: lazarusidestrconsts:listitleleaveemptyfordefault
+msgid "Title (leave empty for default)"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtexttooltitleandfilenamerequired
 msgid "Title and Filename required"
 msgstr "Título y Nombre de archivo requerido"
@@ -9698,6 +9670,10 @@ msgstr "Cambiar entre Unidad y Formulario"
 #: lazarusidestrconsts:lismenuviewtoggleformunit
 msgid "Toggle form/unit view"
 msgstr "Cambiar vista Formulario/Unidad"
+
+#: lazarusidestrconsts:listoggleshowingfilenameswithfullpathorwithrelativepa
+msgid "Toggle showing filenames with full path or with relative path"
+msgstr ""
 
 #: lazarusidestrconsts:liskmtoggleviewbreakpoints
 msgid "Toggle view Breakpoints"
@@ -9798,6 +9774,10 @@ msgstr "Topes"
 #: lazarusidestrconsts:dlgtrimtrailingspaces
 msgid "Trim trailing spaces"
 msgstr "Quitar espacios sobrantes"
+
+#: lazarusidestrconsts:listurbopascal
+msgid "Turbo Pascal"
+msgstr ""
 
 #: lazarusidestrconsts:rslanguageturkish
 msgid "Turkish"
@@ -10383,10 +10363,6 @@ msgstr "Unidades no encontradas"
 msgid "Units..."
 msgstr "Unidades..."
 
-#: lazarusidestrconsts:srvk_unknown
-msgid "Unknown"
-msgstr "Desconocido"
-
 #: lazarusidestrconsts:lispkgmangunsavedpackage
 msgid "Unsaved package"
 msgstr "Paquete sin guardar"
@@ -10534,6 +10510,10 @@ msgstr "Variables"
 #: lazarusidestrconsts:dlgverbosity
 msgid "Verbosity during compilation:"
 msgstr "Detalles durante la compilación:"
+
+#: lazarusidestrconsts:lisverifymethodcalls
+msgid "Verify method calls"
+msgstr ""
 
 #: lazarusidestrconsts:lisversion
 msgid "Version"
@@ -10923,10 +10903,6 @@ msgstr "añadir punto de ruptura"
 msgid "add watch"
 msgstr "añadir vigilante"
 
-#: lazarusidestrconsts:srvk_apps
-msgid "application key"
-msgstr "tecla de aplicación"
-
 #: lazarusidestrconsts:lisoipautoinstalldynamic
 msgid "auto install dynamic"
 msgstr "instalar automáticamente dinámicos"
@@ -11071,10 +11047,6 @@ msgstr "Nombre de compilador inválido"
 msgid "lazarus [options] <project-filename>"
 msgstr "lazarus [opciones] <nombre-proyecto>"
 
-#: lazarusidestrconsts:srvk_lwin
-msgid "left windows key"
-msgstr "tecla de windows izquierda"
-
 #: lazarusidestrconsts:lislibrarypath
 msgid "library path"
 msgstr "ruta de biblioteca"
@@ -11207,10 +11179,6 @@ msgstr "quitar punto de ruptura"
 msgid "reset debugger"
 msgstr "reiniciar depurador"
 
-#: lazarusidestrconsts:srvk_rwin
-msgid "right windows key"
-msgstr "Tecla de ventanas derecha"
-
 #: lazarusidestrconsts:srkmecrunfile
 msgid "run file"
 msgstr "ejecutar archivo"
@@ -11255,9 +11223,17 @@ msgstr "directorio secundario de configuración, donde Lazarus busca las plantil
 msgid "set FPC mode to DELPHI"
 msgstr "establecer modo FPC a DELPHI"
 
+#: lazarusidestrconsts:lisedtdefsetfpcmodetofpc
+msgid "set FPC mode to FPC"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtdefsetfpcmodetogpc
 msgid "set FPC mode to GPC"
 msgstr "establecer modo FPC a GPC"
+
+#: lazarusidestrconsts:lisedtdefsetfpcmodetomacpas
+msgid "set FPC mode to MacPas"
+msgstr ""
 
 #: lazarusidestrconsts:lisedtdefsetfpcmodetotp
 msgid "set FPC mode to TP"
@@ -11274,6 +11250,10 @@ msgstr "activar OVERFLOWCHECKS"
 #: lazarusidestrconsts:lisedtdefsetrangecheckson
 msgid "set RANGECHECKS on"
 msgstr "activar RANGECHECKS"
+
+#: lazarusidestrconsts:lissmallerratherthanfaster
+msgid "smaller rather than faster"
+msgstr ""
 
 #: lazarusidestrconsts:lisautomaticallyonspace
 msgid "space"

@@ -137,8 +137,8 @@ msgid "--lcl-no-transient    Do not set transient order for modal forms"
 msgstr "--lcl-no-transient    Non impostare l'ordine transiente per form modali"
 
 #: lclstrconsts:rsgtkoptionname
-msgid "--name programe       Set program name to \"progname\". If not specified, program name will be set to ParamStr(0)."
-msgstr "--name nomeprogramma       Imposta il nome programma a \"nomeprogramma\". Se non viene specificato, il nome del programma verrà impostato a ParamStr(0)."
+msgid "--name programe       Set program name to \"progname\". If not specified, program name will be set to ParamStrUTF8(0)."
+msgstr ""
 
 #: lclstrconsts:rsgtkoptionnoxshm
 msgid "--no-xshm             Disable use of the X Shared Memory Extension."
@@ -204,9 +204,25 @@ msgstr "Impossibile spostare il focus"
 msgid "Cancel"
 msgstr "Annulla"
 
+#: lclstrconsts:rsrasterimageupdateall
+msgid "Cannot begin update all when canvas only update in progress"
+msgstr ""
+
+#: lclstrconsts:rsiconimageformatchange
+msgid "Cannot change format of icon image"
+msgstr ""
+
+#: lclstrconsts:rsiconimagesizechange
+msgid "Cannot change size of icon image"
+msgstr ""
+
 #: lclstrconsts:scannotfocus
 msgid "Cannot focus a disabled or invisible window"
 msgstr "Impossibile spostare il focus su una finestra disabilitata o invisibile"
+
+#: lclstrconsts:rsrasterimagesaveinupdate
+msgid "Cannot save image wile update in progress"
+msgstr ""
 
 #: lclstrconsts:rscanvasdoesnotallowdrawing
 msgid "Canvas does not allow drawing"
@@ -291,6 +307,10 @@ msgstr "Errore nell'LCL:"
 #: lclstrconsts:ifsvk_end
 msgid "End"
 msgstr "Fine"
+
+#: lclstrconsts:rsrasterimageendupdate
+msgid "Endupdate while no update in progress"
+msgstr ""
 
 #: lclstrconsts:rsmterror
 msgid "Error"

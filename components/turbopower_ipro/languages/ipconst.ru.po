@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-07-02 03:43+0300\n"
+"PO-Revision-Date: 2008-09-01 00:34+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -1175,7 +1175,7 @@ msgstr "Выбор следующей статьи"
 #: ipconst.snsnoop
 msgctxt "ipconst.snsnoop"
 msgid "No operation"
-msgstr ""
+msgstr "Нет текущих операций"
 
 #: ipconst.snsover
 msgid "Retrieving overview"

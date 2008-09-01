@@ -128,6 +128,10 @@ msgstr "0 ligne, 0 caractère"
 msgid "1 line, %d chars"
 msgstr "1 ligne, %d caractères"
 
+#: objinspstrconsts:srvk_accept
+msgid "Accept"
+msgstr ""
+
 #: objinspstrconsts:oisaction
 msgid "Action"
 msgstr "Action"
@@ -184,6 +188,10 @@ msgstr "Tous"
 msgid "All files"
 msgstr "Tous les fichiers"
 
+#: objinspstrconsts:srkm_alt
+msgid "Alt"
+msgstr ""
+
 #: objinspstrconsts:sccstredtapply
 msgid "Apply"
 msgstr "Appliquer"
@@ -200,6 +208,10 @@ msgstr "Taille automatique"
 msgid "Available Action Classes:"
 msgstr "Classes disponibles d'action :"
 
+#: objinspstrconsts:srvk_back
+msgid "Backspace"
+msgstr ""
+
 #: objinspstrconsts:oisboolean
 msgid "Boolean"
 msgstr "Booléen"
@@ -211,6 +223,10 @@ msgstr "&Effacer"
 #: objinspstrconsts:oistdactdatasetcancel1hint
 msgid "Cancel"
 msgstr "Annuler"
+
+#: objinspstrconsts:srvk_capital
+msgid "Capital"
+msgstr ""
 
 #: objinspstrconsts:rscdcaption
 msgid "Caption"
@@ -264,6 +280,10 @@ msgstr "Effacer"
 msgid "Clear picture"
 msgstr "Effacer l'image"
 
+#: objinspstrconsts:srvk_cmd
+msgid "Cmd"
+msgstr ""
+
 #: objinspstrconsts:oistdactcolorselecthint
 msgid "Color Select"
 msgstr "Choisir une couleur"
@@ -292,6 +312,14 @@ msgstr "Composants"
 msgid "Confirm delete"
 msgstr "Confirmez la suppression"
 
+#: objinspstrconsts:srvk_control
+msgid "Control"
+msgstr ""
+
+#: objinspstrconsts:srvk_convert
+msgid "Convert"
+msgstr ""
+
 #: objinspstrconsts:oistdacteditcopyshorthint
 msgid "Copy"
 msgstr "Copier"
@@ -311,6 +339,10 @@ msgstr "Création d'un évènement par défaut"
 #: objinspstrconsts:sccsiledtcrop
 msgid "Crop"
 msgstr "Rogner"
+
+#: objinspstrconsts:srkm_ctrl
+msgid "Ctrl"
+msgstr ""
 
 #: objinspstrconsts:oistdacteditselectallshortcut
 msgid "Ctrl+A"
@@ -440,6 +472,10 @@ msgstr "Editez la liste d'actions..."
 msgid "Editing"
 msgstr "Edition"
 
+#: objinspstrconsts:srvk_end
+msgid "End"
+msgstr ""
+
 #: objinspstrconsts:oisenumeration
 msgid "Enumeration"
 msgstr "Enumération"
@@ -456,9 +492,17 @@ msgstr "Erreur au chargement de l'image"
 msgid "Error loading image %s%s%s:%s%s"
 msgstr "Erreur au chargement de l'image %s%s%s:%s%s"
 
+#: objinspstrconsts:srvk_escape
+msgid "Escape"
+msgstr ""
+
 #: objinspstrconsts:oisevents
 msgid "Events"
 msgstr "Evènements"
+
+#: objinspstrconsts:srvk_execute
+msgid "Execute"
+msgstr ""
 
 #: objinspstrconsts:oistdactfileexithint
 msgid "Exit"
@@ -496,6 +540,10 @@ msgstr ""
 msgid "Filter name"
 msgstr ""
 
+#: objinspstrconsts:srvk_final
+msgid "Final"
+msgstr ""
+
 #: objinspstrconsts:oistdactsearchfindhint
 msgid "Find"
 msgstr ""
@@ -528,6 +576,14 @@ msgstr "Choisir une fonte"
 msgid "General widget set restrictions: "
 msgstr "Restrictions générales des Widgets"
 
+#: objinspstrconsts:srgrabkey
+msgid "Grab key"
+msgstr ""
+
+#: objinspstrconsts:srvk_hanja
+msgid "Hanja"
+msgstr ""
+
 #: objinspstrconsts:cactionlisteditorhelpcategory
 msgid "Help"
 msgstr "Aide"
@@ -539,6 +595,10 @@ msgstr "Table des matières d'aide"
 #: objinspstrconsts:oistdacthelphelphelphint
 msgid "Help on help"
 msgstr "Aide sur l'aide"
+
+#: objinspstrconsts:srvk_home
+msgid "Home"
+msgstr ""
 
 #: objinspstrconsts:sccstredtlabelimageindex
 msgid "Image Index:"
@@ -596,6 +656,10 @@ msgstr "Valeur numérique incorrecte"
 msgid "Invalid property value"
 msgstr "Valeur de propriété incorrecte"
 
+#: objinspstrconsts:srvk_irregular
+msgid "Irregular "
+msgstr ""
+
 #: objinspstrconsts:fesnofields
 msgid "It was not possible to get the dataset field's list"
 msgstr "Impossible d'obtenir les données de la liste de champs"
@@ -615,6 +679,14 @@ msgstr "Eléments"
 #: objinspstrconsts:oisfinddeclaration
 msgid "Jump to declaration"
 msgstr "Aller à la déclaration"
+
+#: objinspstrconsts:srvk_junja
+msgid "Junja"
+msgstr ""
+
+#: objinspstrconsts:srvk_kana
+msgid "Kana"
+msgstr ""
 
 #: objinspstrconsts:oistdactdatasetlasthint
 msgid "Last"
@@ -648,13 +720,37 @@ msgstr "Charger..."
 msgid "Masks..."
 msgstr "Masques…"
 
+#: objinspstrconsts:srvk_menu
+msgid "Menu"
+msgstr ""
+
+#: objinspstrconsts:srvk_meta
+msgid "Meta"
+msgstr ""
+
 #: objinspstrconsts:oismethod
 msgid "Method"
 msgstr "Méthode"
 
+#: objinspstrconsts:srvk_modechange
+msgid "Mode Change"
+msgstr ""
+
 #: objinspstrconsts:clbmodify
 msgid "Modify the Item"
 msgstr "Modifier l'élément"
+
+#: objinspstrconsts:srvk_lbutton
+msgid "Mouse Button Left"
+msgstr ""
+
+#: objinspstrconsts:srvk_mbutton
+msgid "Mouse Button Middle"
+msgstr ""
+
+#: objinspstrconsts:srvk_rbutton
+msgid "Mouse Button Right"
+msgstr ""
 
 #: objinspstrconsts:sccsiledtmovedown
 msgid "Move Down"
@@ -712,9 +808,21 @@ msgstr "Nouveau sous-élément "
 msgid "Next"
 msgstr "Suivant"
 
+#: objinspstrconsts:srvk_nonconvert
+msgid "Nonconvert"
+msgstr ""
+
 #: objinspstrconsts:sccsiledtnone
 msgid "None"
 msgstr "Aucun"
+
+#: objinspstrconsts:srvk_numlock
+msgid "Numlock"
+msgstr ""
+
+#: objinspstrconsts:srvk_numpad
+msgid "Numpad %d"
+msgstr ""
 
 #: objinspstrconsts:rscdok
 msgid "OK"
@@ -780,6 +888,10 @@ msgstr "Coller"
 msgid "Paste components"
 msgstr "Coller les composants"
 
+#: objinspstrconsts:srvk_pause
+msgid "Pause key"
+msgstr ""
+
 #: objinspstrconsts:oispepicture
 msgid "Picture"
 msgstr "Image"
@@ -791,6 +903,10 @@ msgstr "Le popup désactive/active des éléments"
 #: objinspstrconsts:oistdactdatasetposthint
 msgid "Post"
 msgstr "Poster"
+
+#: objinspstrconsts:srvk_print
+msgid "Print"
+msgstr ""
 
 #: objinspstrconsts:oistdactdatasetpriorhint
 msgid "Prior"
@@ -823,6 +939,10 @@ msgstr ""
 #: objinspstrconsts:oisrestricted
 msgid "Restricted"
 msgstr "Restrictions"
+
+#: objinspstrconsts:srvk_return
+msgid "Return"
+msgstr ""
 
 #: objinspstrconsts:rscdright
 msgid "Right"
@@ -864,12 +984,20 @@ msgstr "Enregistrer l'image"
 msgid "Save..."
 msgstr "Enregistrer..."
 
+#: objinspstrconsts:srvk_scroll
+msgid "Scroll"
+msgstr ""
+
 #: objinspstrconsts:cactionlisteditorsearchcategory
 msgid "Search"
 msgstr ""
 
 #: objinspstrconsts:sccshceditsections
 msgid "Sections Editor ..."
+msgstr ""
+
+#: objinspstrconsts:srselect
+msgid "Select"
 msgstr ""
 
 #: objinspstrconsts:oistdacteditselectallheadline
@@ -892,6 +1020,10 @@ msgstr "Tout sélectionner"
 msgid "Select a file"
 msgstr "Choisissez un fichier"
 
+#: objinspstrconsts:oisselectshortcut
+msgid "Select short cut"
+msgstr ""
+
 #: objinspstrconsts:sccsiledtgrprcaption
 msgid "Selected Image"
 msgstr "Image sélectionné:"
@@ -912,6 +1044,10 @@ msgstr "Mis à  la valeur par défaut"
 msgid "Set to default: %s"
 msgstr "Mis à  la valeur par défaut: %s"
 
+#: objinspstrconsts:srvk_shift
+msgid "Shift"
+msgstr ""
+
 #: objinspstrconsts:oisshowcomponenttree
 msgid "Show Component Tree"
 msgstr "Afficher l'arbre du composant"
@@ -924,9 +1060,17 @@ msgstr "Afficher les conseils"
 msgid "Show page ..."
 msgstr "Afficher la page..."
 
+#: objinspstrconsts:srvk_snapshot
+msgid "Snapshot"
+msgstr ""
+
 #: objinspstrconsts:oissort
 msgid "Sort"
 msgstr "Trier"
+
+#: objinspstrconsts:srvk_space
+msgid "Space key"
+msgstr ""
 
 #: objinspstrconsts:s_splitimage
 msgid "Split image"
@@ -959,6 +1103,14 @@ msgstr "Editeur de tableau"
 #: objinspstrconsts:oisstringseditordialog
 msgid "Strings Editor Dialog"
 msgstr "Dialogue d'éditeur de chaînes"
+
+#: objinspstrconsts:srvk_super
+msgid "Super"
+msgstr ""
+
+#: objinspstrconsts:srvk_tab
+msgid "Tab"
+msgstr ""
 
 #: objinspstrconsts:oistestinput
 msgid "Test Input"
@@ -1039,4 +1191,20 @@ msgstr "Largeur"
 #: objinspstrconsts:oisword
 msgid "Word"
 msgstr "Mot"
+
+#: objinspstrconsts:srvk_apps
+msgid "application key"
+msgstr ""
+
+#: objinspstrconsts:srvk_lwin
+msgid "left windows key"
+msgstr ""
+
+#: objinspstrconsts:srvk_none
+msgid "none"
+msgstr ""
+
+#: objinspstrconsts:srvk_rwin
+msgid "right windows key"
+msgstr ""
 

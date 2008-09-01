@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-08-13 17:29+0300\n"
+"PO-Revision-Date: 2008-09-01 01:50+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -125,6 +125,10 @@ msgstr "0 строк, 0 символов"
 msgid "1 line, %d chars"
 msgstr "1 строка, %d символов"
 
+#: objinspstrconsts:srvk_accept
+msgid "Accept"
+msgstr "Принять"
+
 #: objinspstrconsts:oisaction
 msgid "Action"
 msgstr "Действие"
@@ -181,6 +185,10 @@ msgstr "Все"
 msgid "All files"
 msgstr "Все файлы"
 
+#: objinspstrconsts:srkm_alt
+msgid "Alt"
+msgstr "Alt"
+
 #: objinspstrconsts:sccstredtapply
 msgid "Apply"
 msgstr "Применить"
@@ -197,6 +205,10 @@ msgstr "Авторазмер"
 msgid "Available Action Classes:"
 msgstr "Доступные классы действий:"
 
+#: objinspstrconsts:srvk_back
+msgid "Backspace"
+msgstr "Забой"
+
 #: objinspstrconsts:oisboolean
 msgid "Boolean"
 msgstr "Boolean"
@@ -208,6 +220,10 @@ msgstr "О&чистить"
 #: objinspstrconsts:oistdactdatasetcancel1hint
 msgid "Cancel"
 msgstr "Отмена"
+
+#: objinspstrconsts:srvk_capital
+msgid "Capital"
+msgstr "Прописные"
 
 #: objinspstrconsts:rscdcaption
 msgid "Caption"
@@ -261,6 +277,10 @@ msgstr "Очистить"
 msgid "Clear picture"
 msgstr "Очистить изображение"
 
+#: objinspstrconsts:srvk_cmd
+msgid "Cmd"
+msgstr "Cmd"
+
 #: objinspstrconsts:oistdactcolorselecthint
 msgid "Color Select"
 msgstr "Выбор цвета"
@@ -289,6 +309,14 @@ msgstr "Компоненты"
 msgid "Confirm delete"
 msgstr "Подтвердить удаление"
 
+#: objinspstrconsts:srvk_control
+msgid "Control"
+msgstr "Control"
+
+#: objinspstrconsts:srvk_convert
+msgid "Convert"
+msgstr "Convert"
+
 #: objinspstrconsts:oistdacteditcopyshorthint
 msgid "Copy"
 msgstr "Копировать"
@@ -308,6 +336,10 @@ msgstr "Создать событие по умолчанию"
 #: objinspstrconsts:sccsiledtcrop
 msgid "Crop"
 msgstr "Обрезать"
+
+#: objinspstrconsts:srkm_ctrl
+msgid "Ctrl"
+msgstr "Ctrl"
 
 #: objinspstrconsts:oistdacteditselectallshortcut
 msgid "Ctrl+A"
@@ -437,6 +469,10 @@ msgstr "Правка списка действий..."
 msgid "Editing"
 msgstr "Редактирование"
 
+#: objinspstrconsts:srvk_end
+msgid "End"
+msgstr "End"
+
 #: objinspstrconsts:oisenumeration
 msgid "Enumeration"
 msgstr "Перечисление"
@@ -453,9 +489,17 @@ msgstr "Ошибка загрузки изображения"
 msgid "Error loading image %s%s%s:%s%s"
 msgstr "Ошибка загрузки изображения %s%s%s:%s%s"
 
+#: objinspstrconsts:srvk_escape
+msgid "Escape"
+msgstr "Escape"
+
 #: objinspstrconsts:oisevents
 msgid "Events"
 msgstr "События"
+
+#: objinspstrconsts:srvk_execute
+msgid "Execute"
+msgstr "Выполнить"
 
 #: objinspstrconsts:oistdactfileexithint
 msgid "Exit"
@@ -493,6 +537,10 @@ msgstr "Фильтр"
 msgid "Filter name"
 msgstr "Имя фильтра"
 
+#: objinspstrconsts:srvk_final
+msgid "Final"
+msgstr "Final"
+
 #: objinspstrconsts:oistdactsearchfindhint
 msgid "Find"
 msgstr "Найти"
@@ -525,6 +573,14 @@ msgstr "Выбор шрифта"
 msgid "General widget set restrictions: "
 msgstr "Ограничения библиотеки виджетов в целом: "
 
+#: objinspstrconsts:srgrabkey
+msgid "Grab key"
+msgstr "Захватить клавишу"
+
+#: objinspstrconsts:srvk_hanja
+msgid "Hanja"
+msgstr "Ханчча"
+
 #: objinspstrconsts:cactionlisteditorhelpcategory
 msgid "Help"
 msgstr "Справка"
@@ -536,6 +592,10 @@ msgstr "Содержание справки"
 #: objinspstrconsts:oistdacthelphelphelphint
 msgid "Help on help"
 msgstr "Справка по справке"
+
+#: objinspstrconsts:srvk_home
+msgid "Home"
+msgstr "Home"
 
 #: objinspstrconsts:sccstredtlabelimageindex
 msgid "Image Index:"
@@ -593,6 +653,10 @@ msgstr "Неверное численное значение"
 msgid "Invalid property value"
 msgstr "Неверное значение свойства"
 
+#: objinspstrconsts:srvk_irregular
+msgid "Irregular "
+msgstr "Нерегулярный "
+
 #: objinspstrconsts:fesnofields
 msgid "It was not possible to get the dataset field's list"
 msgstr "Не удалось получить список полей набора данных"
@@ -612,6 +676,14 @@ msgstr "Элементы"
 #: objinspstrconsts:oisfinddeclaration
 msgid "Jump to declaration"
 msgstr "Перейти к объявлению"
+
+#: objinspstrconsts:srvk_junja
+msgid "Junja"
+msgstr "Джанджа"
+
+#: objinspstrconsts:srvk_kana
+msgid "Kana"
+msgstr "Кана"
 
 #: objinspstrconsts:oistdactdatasetlasthint
 msgid "Last"
@@ -645,13 +717,37 @@ msgstr "Загрузить..."
 msgid "Masks..."
 msgstr "Маски..."
 
+#: objinspstrconsts:srvk_menu
+msgid "Menu"
+msgstr "Меню"
+
+#: objinspstrconsts:srvk_meta
+msgid "Meta"
+msgstr "Meta"
+
 #: objinspstrconsts:oismethod
 msgid "Method"
 msgstr "Метод"
 
+#: objinspstrconsts:srvk_modechange
+msgid "Mode Change"
+msgstr "Изменение режима"
+
 #: objinspstrconsts:clbmodify
 msgid "Modify the Item"
 msgstr "Изменить элемент"
+
+#: objinspstrconsts:srvk_lbutton
+msgid "Mouse Button Left"
+msgstr "Левая клавиша мыши"
+
+#: objinspstrconsts:srvk_mbutton
+msgid "Mouse Button Middle"
+msgstr "Средняя клавиша мыши"
+
+#: objinspstrconsts:srvk_rbutton
+msgid "Mouse Button Right"
+msgstr "Правая клавиша мыши"
 
 #: objinspstrconsts:sccsiledtmovedown
 msgid "Move Down"
@@ -709,9 +805,21 @@ msgstr "Новый подэлемент"
 msgid "Next"
 msgstr "Следующий"
 
+#: objinspstrconsts:srvk_nonconvert
+msgid "Nonconvert"
+msgstr "Nonconvert"
+
 #: objinspstrconsts:sccsiledtnone
 msgid "None"
 msgstr "Нет"
+
+#: objinspstrconsts:srvk_numlock
+msgid "Numlock"
+msgstr "Numlock"
+
+#: objinspstrconsts:srvk_numpad
+msgid "Numpad %d"
+msgstr "%d цифровой клавиатуры"
 
 #: objinspstrconsts:rscdok
 msgid "OK"
@@ -777,6 +885,10 @@ msgstr "Вставить"
 msgid "Paste components"
 msgstr "Вставить компоненты"
 
+#: objinspstrconsts:srvk_pause
+msgid "Pause key"
+msgstr "Клавиша Pause"
+
 #: objinspstrconsts:oispepicture
 msgid "Picture"
 msgstr "Изображение"
@@ -788,6 +900,10 @@ msgstr "Всплывающее меню включения/отключения 
 #: objinspstrconsts:oistdactdatasetposthint
 msgid "Post"
 msgstr "Отправить"
+
+#: objinspstrconsts:srvk_print
+msgid "Print"
+msgstr "Печать"
 
 #: objinspstrconsts:oistdactdatasetpriorhint
 msgid "Prior"
@@ -820,6 +936,10 @@ msgstr "Заменить"
 #: objinspstrconsts:oisrestricted
 msgid "Restricted"
 msgstr "Ограничения"
+
+#: objinspstrconsts:srvk_return
+msgid "Return"
+msgstr "Ввод"
 
 #: objinspstrconsts:rscdright
 msgid "Right"
@@ -861,6 +981,10 @@ msgstr "Сохранить изображение"
 msgid "Save..."
 msgstr "Сохранить..."
 
+#: objinspstrconsts:srvk_scroll
+msgid "Scroll"
+msgstr "ScrollLock"
+
 #: objinspstrconsts:cactionlisteditorsearchcategory
 msgid "Search"
 msgstr "Найти"
@@ -868,6 +992,10 @@ msgstr "Найти"
 #: objinspstrconsts:sccshceditsections
 msgid "Sections Editor ..."
 msgstr "Редактор секций..."
+
+#: objinspstrconsts:srselect
+msgid "Select"
+msgstr "Выбрать"
 
 #: objinspstrconsts:oistdacteditselectallheadline
 msgid "Select &All"
@@ -889,6 +1017,10 @@ msgstr "Выделить все"
 msgid "Select a file"
 msgstr "Выберите файл"
 
+#: objinspstrconsts:oisselectshortcut
+msgid "Select short cut"
+msgstr "Выбор комбинации клавиш"
+
 #: objinspstrconsts:sccsiledtgrprcaption
 msgid "Selected Image"
 msgstr "Выбранное изображение"
@@ -909,6 +1041,10 @@ msgstr "Установить в значение по умолчанию"
 msgid "Set to default: %s"
 msgstr "Установить по умолчанию: %s"
 
+#: objinspstrconsts:srvk_shift
+msgid "Shift"
+msgstr "Shift"
+
 #: objinspstrconsts:oisshowcomponenttree
 msgid "Show Component Tree"
 msgstr "Показывать дерево компонентов"
@@ -921,9 +1057,17 @@ msgstr "Показывать подсказки"
 msgid "Show page ..."
 msgstr "Показать страницу"
 
+#: objinspstrconsts:srvk_snapshot
+msgid "Snapshot"
+msgstr "Срез исходного кода"
+
 #: objinspstrconsts:oissort
 msgid "Sort"
 msgstr "Сортировка"
+
+#: objinspstrconsts:srvk_space
+msgid "Space key"
+msgstr "Пробел"
 
 #: objinspstrconsts:s_splitimage
 msgid "Split image"
@@ -956,6 +1100,14 @@ msgstr "Редактор StringGrid"
 #: objinspstrconsts:oisstringseditordialog
 msgid "Strings Editor Dialog"
 msgstr "Диалог ввода строк"
+
+#: objinspstrconsts:srvk_super
+msgid "Super"
+msgstr "Super"
+
+#: objinspstrconsts:srvk_tab
+msgid "Tab"
+msgstr "ТАБ"
 
 #: objinspstrconsts:oistestinput
 msgid "Test Input"
@@ -1036,4 +1188,20 @@ msgstr "Ширина"
 #: objinspstrconsts:oisword
 msgid "Word"
 msgstr "Word"
+
+#: objinspstrconsts:srvk_apps
+msgid "application key"
+msgstr "клавиша application"
+
+#: objinspstrconsts:srvk_lwin
+msgid "left windows key"
+msgstr "левая клавиша windows"
+
+#: objinspstrconsts:srvk_none
+msgid "none"
+msgstr "нет"
+
+#: objinspstrconsts:srvk_rwin
+msgid "right windows key"
+msgstr "правая клавиша windows"
 

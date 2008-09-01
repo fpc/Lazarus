@@ -505,7 +505,7 @@ msgstr ""
 msgid "Abstract methods of %s"
 msgstr ""
 
-#: lazarusidestrconsts:srvk_accept
+#: lazarusidestrconsts:lissortselsort
 msgid "Accept"
 msgstr "Terima"
 
@@ -585,6 +585,10 @@ msgstr "Tambah breakpoint"
 msgid "Add code template"
 msgstr "Tambah template kode"
 
+#: lazarusidestrconsts:lisadddirectory
+msgid "Add directory"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuaddtoproject
 msgid "Add editor file to Project"
 msgstr "Tambah file editor ke Proyek"
@@ -604,6 +608,10 @@ msgstr "Tambah file ke proyek:"
 #: lazarusidestrconsts:lisprojaddfiles
 msgid "Add files"
 msgstr "Tambah file"
+
+#: lazarusidestrconsts:lisaddfilesofdirectory
+msgid "Add files of directory"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2paddfilestopackage
 msgid "Add files to package"
@@ -628,6 +636,10 @@ msgstr ""
 #: lazarusidestrconsts:lispckoptsaddoptionstodependentpackagesandprojects
 msgid "Add options to dependent packages and projects"
 msgstr "Tambah opsi untuk paket dependen dan proyek"
+
+#: lazarusidestrconsts:podaddpackageunittousessection
+msgid "Add package unit to uses section"
+msgstr ""
 
 #: lazarusidestrconsts:liscodehelpaddpathbutton
 msgid "Add path"
@@ -761,7 +773,7 @@ msgstr "Ijinkan pencarian untuk multipel baris"
 msgid "Alphabetically"
 msgstr "Secara alfabetik"
 
-#: lazarusidestrconsts:srkm_alt
+#: lazarusidestrconsts:lisedtexttoolalt
 msgid "Alt"
 msgstr "Alt"
 
@@ -1020,10 +1032,6 @@ msgstr "Mundur satu"
 #: lazarusidestrconsts:dlgbackcolor
 msgid "Background"
 msgstr "Latar belakang"
-
-#: lazarusidestrconsts:srvk_back
-msgid "Backspace"
-msgstr "Backspace"
 
 #: lazarusidestrconsts:dlgenvbckup
 msgid "Backup"
@@ -1293,10 +1301,6 @@ msgstr "Tidak menemukan daftar kontributor."
 msgid "Cannot find lazarus starter:%s%s"
 msgstr "Tidak bisas menemukan starter lazarus:%s%s"
 
-#: lazarusidestrconsts:srvk_capital
-msgid "Capital"
-msgstr "Kapital"
-
 #: lazarusidestrconsts:lisdiffdlgcaseinsensitive
 msgid "Case Insensitive"
 msgstr "Huruf Diabaikan"
@@ -1449,6 +1453,10 @@ msgstr "Pilih Direktori Lazarus"
 msgid "Choose Scheme"
 msgstr "Pilih Skema"
 
+#: lazarusidestrconsts:lischooseafpdoclink
+msgid "Choose a FPDoc link"
+msgstr ""
+
 #: lazarusidestrconsts:lisoifchooseabaseclassforthefavouriteproperty
 msgid "Choose a base class for the favourite property %s%s%s."
 msgstr "Pilih dasar kelas untuk properti favorit %s%s%s."
@@ -1585,7 +1593,7 @@ msgstr "bersihkan path unit?"
 msgid "Clean+Build"
 msgstr "Bersihkan+Bangun"
 
-#: lazarusidestrconsts:srvk_clear
+#: lazarusidestrconsts:lisuidclear
 msgid "Clear"
 msgstr "Clear"
 
@@ -1636,10 +1644,6 @@ msgstr "Tutup halaman"
 #: lazarusidestrconsts:liskmcloseproject
 msgid "Close project"
 msgstr "Tutup proyek"
-
-#: lazarusidestrconsts:srvk_cmd
-msgid "Cmd"
-msgstr ""
 
 #: lazarusidestrconsts:dlgcodegeneration
 msgid "Code"
@@ -2049,10 +2053,6 @@ msgstr "Lanjutkan tanpa pengambilan form"
 msgid "Contributors"
 msgstr "Kontributor"
 
-#: lazarusidestrconsts:srvk_control
-msgid "Control"
-msgstr "Control"
-
 #: lazarusidestrconsts:liscontrolneedsparent
 msgid "Control needs parent"
 msgstr "Kontrol membutuhkan leluhurnya"
@@ -2064,10 +2064,6 @@ msgstr "Opsi Konversi"
 #: lazarusidestrconsts:lisconversionerror
 msgid "Conversion error"
 msgstr "Konversi salah"
-
-#: lazarusidestrconsts:srvk_convert
-msgid "Convert"
-msgstr "Konversi"
 
 #: lazarusidestrconsts:liskmconvertdfmfiletolfm
 msgid "Convert DFM file to LFM"
@@ -2293,8 +2289,16 @@ msgstr ""
 msgid "Create a project first!"
 msgstr "Buat proyek dulu!"
 
+#: lazarusidestrconsts:liscreatedirectory
+msgid "Create directory?"
+msgstr ""
+
 #: lazarusidestrconsts:liscodehelpcreatebutton
 msgid "Create help item"
+msgstr ""
+
+#: lazarusidestrconsts:liscreateit
+msgid "Create it"
 msgstr ""
 
 #: lazarusidestrconsts:rscreatenewdefine
@@ -2313,7 +2317,7 @@ msgstr "Buat proyek baru"
 msgid "Creation"
 msgstr "Pembuatan"
 
-#: lazarusidestrconsts:srkm_ctrl
+#: lazarusidestrconsts:lisedtexttoolctrl
 msgid "Ctrl"
 msgstr "Ctrl"
 
@@ -2601,6 +2605,10 @@ msgstr ""
 msgid "Delete old package file %s%s%s?"
 msgstr "Hapus file paket %s%s%s?"
 
+#: lazarusidestrconsts:lisdeleteselectedfiles
+msgid "Delete selected files"
+msgstr ""
+
 #: lazarusidestrconsts:fdmdeleteselection
 msgid "Delete selection"
 msgstr "Penilihan penghapusan"
@@ -2632,6 +2640,10 @@ msgstr "Hapus seluruh teks"
 #: lazarusidestrconsts:lisdeletingoffilefailed
 msgid "Deleting of file %s%s%s failed."
 msgstr "Penghapusan file %s%s%s gagal."
+
+#: lazarusidestrconsts:lisdelphi
+msgid "Delphi"
+msgstr ""
 
 #: lazarusidestrconsts:dlgdelphi2ext
 msgid "Delphi 2 Extensions"
@@ -3029,10 +3041,6 @@ msgstr ""
 msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
 msgstr ""
 
-#: lazarusidestrconsts:srvk_end
-msgid "End"
-msgstr "End"
-
 #: lazarusidestrconsts:rslanguageenglish
 msgid "English"
 msgstr "Inggris"
@@ -3145,6 +3153,10 @@ msgstr "Pemindaian aliran komponen lfm salah."
 msgid "Error reading %s%s%s%s%s"
 msgstr "Kesalahan pembacaan %s%s%s%s%s"
 
+#: lazarusidestrconsts:liserrorreadingxml
+msgid "Error reading XML"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangerrorreadingfile
 msgid "Error reading file"
 msgstr "Kesalahan pembacaan file"
@@ -3160,6 +3172,10 @@ msgstr "Pembacaan daftar paket salah dari file %s%s%s%s%s"
 #: lazarusidestrconsts:liscodetoolsdefserrorreadingprojectinfofile
 msgid "Error reading project info file %s%s%s%s%s"
 msgstr "Kesalahan pembacaan file info proyek %s%s%s%s%s"
+
+#: lazarusidestrconsts:liserrorreadingxmlfile
+msgid "Error reading xml file %s%s%s%s%s"
+msgstr ""
 
 #: lazarusidestrconsts:liserrorrenamingfile
 msgid "Error renaming file"
@@ -3205,10 +3221,6 @@ msgstr "Salah"
 msgid "Errors:"
 msgstr ""
 
-#: lazarusidestrconsts:srvk_escape
-msgid "Escape"
-msgstr "Escape"
-
 #: lazarusidestrconsts:liskmevaluatemodify
 msgid "Evaluate/Modify"
 msgstr "Evaluasi/Ubah"
@@ -3233,13 +3245,17 @@ msgstr "Contoh"
 msgid "Examples"
 msgstr "Contoh"
 
+#: lazarusidestrconsts:lisexamplesidentifiertmyenumenumunitnameidentifierpac
+msgid "Examples:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
+msgstr ""
+
 #: lazarusidestrconsts:lisexcludefilter
 msgid "Exclude Filter"
 msgstr "Filter Kekecualian"
 
-#: lazarusidestrconsts:srvk_execute
-msgid "Execute"
-msgstr "Eksekusi"
+#: lazarusidestrconsts:lisexcludefilter2
+msgid "Exclude filter"
+msgstr ""
 
 #: lazarusidestrconsts:liscoexecuteafter
 msgid "Execute after"
@@ -3380,6 +3396,10 @@ msgstr "Direktori sumber FPC SVN"
 #: lazarusidestrconsts:lisfpcsourcedirectoryerror
 msgid "FPC Source Directory error"
 msgstr "Direktori Sumber FPC salah"
+
+#: lazarusidestrconsts:lisfpcversioneg222
+msgid "FPC Version (e.g. 2.2.2)"
+msgstr ""
 
 #: lazarusidestrconsts:lisfpcversion
 msgid "FPC Version: "
@@ -3585,10 +3605,6 @@ msgstr "Filter menyamai setiap bagian dari method"
 msgid "Filter by matching with start of method"
 msgstr "Filter menyamai setiap awal dari method"
 
-#: lazarusidestrconsts:srvk_final
-msgid "Final"
-msgstr "Final"
-
 #: lazarusidestrconsts:lismenufind
 msgid "Find"
 msgstr "Cari"
@@ -3783,6 +3799,10 @@ msgstr "Maju satu"
 
 #: lazarusidestrconsts:lisemdfoundemptymethods
 msgid "Found empty methods:"
+msgstr ""
+
+#: lazarusidestrconsts:lisfreepascal
+msgid "Free Pascal"
 msgstr ""
 
 #: lazarusidestrconsts:lisfreepascalcompilernotfound
@@ -4117,10 +4137,6 @@ msgstr "Ditangani oleh Debugger"
 msgid "Handled by Program"
 msgstr "Ditangani oleh Program"
 
-#: lazarusidestrconsts:srvk_hanja
-msgid "Hanja"
-msgstr "Hanja"
-
 #: lazarusidestrconsts:lisaf2phasregisterprocedure
 msgid "Has Register procedure"
 msgstr "Mempunyai prosedur Register"
@@ -4141,7 +4157,7 @@ msgstr "Hebrew"
 msgid "Height:"
 msgstr "Tinggi:"
 
-#: lazarusidestrconsts:srvk_help
+#: lazarusidestrconsts:lispckedithelp
 msgid "Help"
 msgstr "Panduan"
 
@@ -4204,10 +4220,6 @@ msgstr "Petunjuk untuk tombol cepat utama (buka, simpan, ...)"
 #: lazarusidestrconsts:lisinfobuildhint
 msgid "Hints:"
 msgstr ""
-
-#: lazarusidestrconsts:srvk_home
-msgid "Home"
-msgstr "Home"
 
 #: lazarusidestrconsts:dlghomekeyjumpstoneareststart
 msgid "Home key jumps to nearest start"
@@ -4473,7 +4485,7 @@ msgstr "Diturunkan"
 msgid "Inherited Item"
 msgstr ""
 
-#: lazarusidestrconsts:srvk_insert
+#: lazarusidestrconsts:lisedtexttoolinsert
 msgid "Insert"
 msgstr "Insert"
 
@@ -4881,6 +4893,10 @@ msgstr "Direktori tujuan tidak benar"
 msgid "Invalid expression.%sHint: The \"Make Resourcestring\" function expects a string constant in a single file. Please select the expression and try again."
 msgstr "Ekspresi tidak benar.%sPetunjuk: Fungsi Make Resourcestring mengharapkan konstan string dalam file tunggal. Silahkan pilih ekspresi dan coba lagi."
 
+#: lazarusidestrconsts:lisinvalidexpression
+msgid "Invalid expression:%s%s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2pinvalidfile
 msgid "Invalid file"
 msgstr "File tidak benar"
@@ -4892,6 +4908,10 @@ msgstr "Ekstensi file tidak benar"
 #: lazarusidestrconsts:lisa2pinvalidfilename
 msgid "Invalid filename"
 msgstr "Nama file tidak benar"
+
+#: lazarusidestrconsts:lisinvalidfilter
+msgid "Invalid filter"
+msgstr ""
 
 #: lazarusidestrconsts:lisenvoptdlginvalidmakefilename
 msgid "Invalid make filename"
@@ -5001,10 +5021,6 @@ msgstr "Balikkan Penempatan"
 msgid "Invert assignment"
 msgstr "Balikkan penempatan"
 
-#: lazarusidestrconsts:srvk_irregular
-msgid "Irregular "
-msgstr "Irregular "
-
 #: lazarusidestrconsts:lispkgfiletypeissues
 msgid "Issues xml file"
 msgstr ""
@@ -5064,14 +5080,6 @@ msgstr "Lompat ke kesalahan sebelumnya"
 #: lazarusidestrconsts:dlgjumpingetc
 msgid "Jumping (e.g. Method Jumping)"
 msgstr "Lompatan (contoh Lompatan Metode)"
-
-#: lazarusidestrconsts:srvk_junja
-msgid "Junja"
-msgstr "Junja"
-
-#: lazarusidestrconsts:srvk_kana
-msgid "Kana"
-msgstr "Kana"
 
 #: lazarusidestrconsts:liscldirkeepalltextfiles
 msgid "Keep all text files"
@@ -5301,7 +5309,7 @@ msgstr "Unit Lazarus"
 msgid "Leave empty for default .po file"
 msgstr "Biarkan kosong untuk default file .po"
 
-#: lazarusidestrconsts:srvk_left
+#: lazarusidestrconsts:lisleft
 msgid "Left"
 msgstr "Left"
 
@@ -5401,6 +5409,10 @@ msgstr "Link Pintar"
 msgid "Link Style:"
 msgstr "Gaya Link:"
 
+#: lazarusidestrconsts:lislinktarget
+msgid "Link target"
+msgstr ""
+
 #: lazarusidestrconsts:lislink
 msgid "Link:"
 msgstr ""
@@ -5471,6 +5483,10 @@ msgstr "Huruf kecil, huruf pertama besar"
 
 #: lazarusidestrconsts:liskmmacosx
 msgid "Mac OS X"
+msgstr ""
+
+#: lazarusidestrconsts:lismacpascal
+msgid "Mac Pascal"
 msgstr ""
 
 #: lazarusidestrconsts:lisedtexttoolmacros
@@ -5581,10 +5597,6 @@ msgstr "Penghitung maksimum"
 msgid "Memory Dump"
 msgstr ""
 
-#: lazarusidestrconsts:srvk_menu
-msgid "Menu"
-msgstr "Menu"
-
 #: lazarusidestrconsts:lismenueditormenueditor
 msgid "Menu Editor"
 msgstr "Editor Menu"
@@ -5592,10 +5604,6 @@ msgstr "Editor Menu"
 #: lazarusidestrconsts:lismenuviewmessages
 msgid "Messages"
 msgstr "Pesan"
-
-#: lazarusidestrconsts:srvk_meta
-msgid "Meta"
-msgstr ""
 
 #: lazarusidestrconsts:lismethodclassnotfound
 msgid "Method class not found"
@@ -5657,10 +5665,6 @@ msgstr ""
 msgid "Mix methods and properties"
 msgstr "Campur metode dan properti"
 
-#: lazarusidestrconsts:srvk_modechange
-msgid "Mode Change"
-msgstr "Mode Berubah"
-
 #: lazarusidestrconsts:uemodified
 msgid "Modified"
 msgstr "Dimodifikasi"
@@ -5684,18 +5688,6 @@ msgstr ""
 #: lazarusidestrconsts:lispckeditmore
 msgid "More ..."
 msgstr "Selengkapnya ..."
-
-#: lazarusidestrconsts:srvk_lbutton
-msgid "Mouse Button Left"
-msgstr "Tombol Mouse Kiri"
-
-#: lazarusidestrconsts:srvk_mbutton
-msgid "Mouse Button Middle"
-msgstr "Tombol Mouse Tengah"
-
-#: lazarusidestrconsts:srvk_rbutton
-msgid "Mouse Button Right"
-msgstr "Tombol Mouse Kanan"
 
 #: lazarusidestrconsts:dlgmouselinks
 msgid "Mouse links"
@@ -6001,10 +5993,6 @@ msgstr "PaketBaru"
 msgid "Newline"
 msgstr "Baris baru"
 
-#: lazarusidestrconsts:srvk_next
-msgid "Next"
-msgstr "Berikutnya"
-
 #: lazarusidestrconsts:srkmecnextbookmark
 msgid "Next Bookmark"
 msgstr "Penanda berikutnya"
@@ -6073,10 +6061,6 @@ msgstr "Node dan anaknya hanya berlaku untuk proyek ini"
 msgid "Node is readonly"
 msgstr "Node hanya-baca"
 
-#: lazarusidestrconsts:srvk_nonconvert
-msgid "Nonconvert"
-msgstr "Bukan konversi"
-
 #: lazarusidestrconsts:dlgenvnone
 msgid "None"
 msgstr "Tidak ada"
@@ -6141,14 +6125,6 @@ msgstr "Catatan: File Proyek adalah semua file dalam direktori proyek"
 msgid "Number"
 msgstr "Nomor"
 
-#: lazarusidestrconsts:srvk_numlock
-msgid "Numlock"
-msgstr "Numlock"
-
-#: lazarusidestrconsts:srvk_numpad
-msgid "Numpad %d"
-msgstr "Numpad %d"
-
 #: lazarusidestrconsts:lisifdok
 msgid "OK"
 msgstr "OK"
@@ -6172,6 +6148,10 @@ msgstr "Inspektor Obyek"
 #: lazarusidestrconsts:liskeycatobjinspector
 msgid "Object Inspector commands"
 msgstr "Perintah Inspektor Objek"
+
+#: lazarusidestrconsts:lisobjectpascaldefault
+msgid "Object Pascal - default"
+msgstr ""
 
 #: lazarusidestrconsts:dlgedoff
 msgid "Off"
@@ -6753,10 +6733,6 @@ msgstr "Path (Hanya Baca)"
 msgid "Pause"
 msgstr "Istirahat"
 
-#: lazarusidestrconsts:srvk_pause
-msgid "Pause key"
-msgstr "Kunci Pause"
-
 #: lazarusidestrconsts:liskmpauseprogram
 msgid "Pause program"
 msgstr "Istirahatkan program"
@@ -6857,17 +6833,13 @@ msgstr "Penanda sebelumnya"
 msgid "Previous node can not contain child nodes."
 msgstr "Node sebelumnya tidak bisa berisi anak node."
 
-#: lazarusidestrconsts:srvk_print
+#: lazarusidestrconsts:lisprint
 msgid "Print"
 msgstr "Cetak"
 
 #: lazarusidestrconsts:listodolistprintlist
 msgid "Print todo items"
 msgstr "Cetak item todo"
-
-#: lazarusidestrconsts:srvk_prior
-msgid "Prior"
-msgstr "Sebelumnya"
 
 #: lazarusidestrconsts:listodolpriority
 msgid "Priority"
@@ -7233,6 +7205,10 @@ msgstr "Plugins terdaftar"
 msgid "Registration Error"
 msgstr "Registrasi Salah"
 
+#: lazarusidestrconsts:lisregularexpression
+msgid "Regular expression"
+msgstr ""
+
 #: lazarusidestrconsts:lisrelativepaths
 msgid "Relative paths"
 msgstr "Path relatif"
@@ -7493,10 +7469,6 @@ msgstr "Jalankan lagi yang Ditangani"
 msgid "Resume Unhandled"
 msgstr "Jalankan lagi yang Tidak ditangani"
 
-#: lazarusidestrconsts:srvk_return
-msgid "Return"
-msgstr "Return"
-
 #: lazarusidestrconsts:lismenurevert
 msgid "Revert"
 msgstr "Kembalikan"
@@ -7509,7 +7481,7 @@ msgstr "Pengembalian gagal"
 msgid "Revert package?"
 msgstr "Kembalikan paket?"
 
-#: lazarusidestrconsts:srvk_right
+#: lazarusidestrconsts:lisright
 msgid "Right"
 msgstr "Right"
 
@@ -7816,10 +7788,6 @@ msgstr "Pindai output untuk pesan make"
 #: lazarusidestrconsts:dlgscope
 msgid "Scope"
 msgstr "Cakupan"
-
-#: lazarusidestrconsts:srvk_scroll
-msgid "Scroll"
-msgstr "Gulung"
 
 #: lazarusidestrconsts:dlgscrollbyoneless
 msgid "Scroll by one less"
@@ -8185,7 +8153,7 @@ msgstr "Set property Variable"
 msgid "Set the breakpoint anyway"
 msgstr "Tetap set titikpisah"
 
-#: lazarusidestrconsts:srvk_shift
+#: lazarusidestrconsts:lisedtexttoolshift
 msgid "Shift"
 msgstr "Shift"
 
@@ -8489,10 +8457,6 @@ msgstr "Menempel ke Garis Pemandu"
 msgid "Snap to grid"
 msgstr "Menempel ke grid"
 
-#: lazarusidestrconsts:srvk_snapshot
-msgid "Snapshot"
-msgstr "Snapshot"
-
 #: lazarusidestrconsts:lisdiskdiffsomefileshavechangedondisk
 msgid "Some files have changed on disk:"
 msgstr "Beberapa file telah berubah pada disk:"
@@ -8568,10 +8532,6 @@ msgstr "Spasi"
 #: lazarusidestrconsts:lisspaceequally
 msgid "Space equally"
 msgstr "Spasi secara sama"
-
-#: lazarusidestrconsts:srvk_space
-msgid "Space key"
-msgstr "Kunci spasi"
 
 #: lazarusidestrconsts:rslanguagespanish
 msgid "Spanish"
@@ -8721,10 +8681,6 @@ msgstr "Sukses"
 msgid "Success..."
 msgstr ""
 
-#: lazarusidestrconsts:srvk_super
-msgid "Super"
-msgstr ""
-
 #: lazarusidestrconsts:lisa2pswitchpaths
 msgid "Switch Paths"
 msgstr "Tukar Path"
@@ -8757,6 +8713,10 @@ msgstr "SynEdit - komponen editor yang digunakan oleh Lazarus. http://sourceforg
 msgid "Syntax check"
 msgstr "Pemeriksaan Sintaks"
 
+#: lazarusidestrconsts:lissyntaxmode
+msgid "Syntax mode"
+msgstr ""
+
 #: lazarusidestrconsts:dlgsyntaxoptions
 msgid "Syntax options"
 msgstr "Opsi sintaks"
@@ -8769,7 +8729,7 @@ msgstr "Variabel sistem"
 msgid "TP/BP 7.0 Compatible"
 msgstr "Kompatibel TP/BP 7.0"
 
-#: lazarusidestrconsts:srvk_tab
+#: lazarusidestrconsts:listab
 msgid "Tab"
 msgstr "Tab"
 
@@ -8842,8 +8802,8 @@ msgid "Target filename of project"
 msgstr "Nama file target dari proyek"
 
 #: lazarusidestrconsts:dlgtargetproc
-msgid "Target i386"
-msgstr "Target i386"
+msgid "Target processor"
+msgstr ""
 
 #: lazarusidestrconsts:lismenueditortemplatepreview
 msgid "Template Preview"
@@ -9153,6 +9113,10 @@ msgstr ""
 msgid "The destination directory%s%s%s%s does not exist."
 msgstr "Direktori tujuan %s%s%s%s tidak ada."
 
+#: lazarusidestrconsts:listhedirectorywasnotfound
+msgid "The directory %s was not found."
+msgstr ""
+
 #: lazarusidestrconsts:listhedirectoryisnolongerneededintheunitpathremoveit
 msgid "The directory %s%s%s is no longer needed in the unit path.%sRemove it?"
 msgstr "Direktori %s%s%s tidak dibutuhkan lagi dalam path unit.%sHapus?"
@@ -9303,6 +9267,10 @@ msgstr "Nama \"%s\" bukan pengenal pascal yang benar."
 
 #: lazarusidestrconsts:listhenewunitisnotyetintheunitsearchpathadddirectory
 msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
+msgstr ""
+
+#: lazarusidestrconsts:listheoutputdirectoryismissing
+msgid "The output directory %s%s%s is missing."
 msgstr ""
 
 #: lazarusidestrconsts:listheoutputdirectoryofislistedintheincludesearchpath
@@ -9498,7 +9466,7 @@ msgid "The unitname is used when the IDE extends uses clauses."
 msgstr "Nama unit digunakan ketika IDE melebarkan klausul uses."
 
 #: lazarusidestrconsts:listheworkingdirectorydoesnotexistpleasechecktheworki
-msgid "The working directory %s%s%s does not exist.%sPlease check the working directory in Menu > Project > Run parameters."
+msgid "The working directory %s%s%s does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr ""
 
 #: lazarusidestrconsts:lissamthereareabstractmethodstooverrideselectthemethodsf
@@ -9669,6 +9637,10 @@ msgstr ""
 msgid "Thread"
 msgstr "Thread"
 
+#: lazarusidestrconsts:listitleleaveemptyfordefault
+msgid "Title (leave empty for default)"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtexttooltitleandfilenamerequired
 msgid "Title and Filename required"
 msgstr "Dibutuhkan Nama file dan Judul"
@@ -9700,6 +9672,10 @@ msgstr "Toggle antara Unit dan Form"
 #: lazarusidestrconsts:lismenuviewtoggleformunit
 msgid "Toggle form/unit view"
 msgstr "Toggle tampilan form/unit"
+
+#: lazarusidestrconsts:listoggleshowingfilenameswithfullpathorwithrelativepa
+msgid "Toggle showing filenames with full path or with relative path"
+msgstr ""
 
 #: lazarusidestrconsts:liskmtoggleviewbreakpoints
 msgid "Toggle view Breakpoints"
@@ -9800,6 +9776,10 @@ msgstr "Atas"
 #: lazarusidestrconsts:dlgtrimtrailingspaces
 msgid "Trim trailing spaces"
 msgstr "Hapus sisa spasi"
+
+#: lazarusidestrconsts:listurbopascal
+msgid "Turbo Pascal"
+msgstr ""
 
 #: lazarusidestrconsts:rslanguageturkish
 msgid "Turkish"
@@ -10385,10 +10365,6 @@ msgstr "Unit tidak ditemukan"
 msgid "Units..."
 msgstr "Units..."
 
-#: lazarusidestrconsts:srvk_unknown
-msgid "Unknown"
-msgstr "Tidak dikenal"
-
 #: lazarusidestrconsts:lispkgmangunsavedpackage
 msgid "Unsaved package"
 msgstr "Paket tidak disimpan"
@@ -10536,6 +10512,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgverbosity
 msgid "Verbosity during compilation:"
 msgstr "Perlihatkan selama kompilasi:"
+
+#: lazarusidestrconsts:lisverifymethodcalls
+msgid "Verify method calls"
+msgstr ""
 
 #: lazarusidestrconsts:lisversion
 msgid "Version"
@@ -10925,10 +10905,6 @@ msgstr "tambah break point"
 msgid "add watch"
 msgstr "tambah pengawasan"
 
-#: lazarusidestrconsts:srvk_apps
-msgid "application key"
-msgstr "kunci aplikasi"
-
 #: lazarusidestrconsts:lisoipautoinstalldynamic
 msgid "auto install dynamic"
 msgstr "otomatis menginstalasi dinamis"
@@ -11073,10 +11049,6 @@ msgstr "Nama file Kompilator tidak benar"
 msgid "lazarus [options] <project-filename>"
 msgstr "lazarus [opsi] <namafile-proyek>"
 
-#: lazarusidestrconsts:srvk_lwin
-msgid "left windows key"
-msgstr "kunci jendela kiri"
-
 #: lazarusidestrconsts:lislibrarypath
 msgid "library path"
 msgstr "path pustaka"
@@ -11209,10 +11181,6 @@ msgstr "hapus break point"
 msgid "reset debugger"
 msgstr "reset debugger"
 
-#: lazarusidestrconsts:srvk_rwin
-msgid "right windows key"
-msgstr "kunci jendela kanan"
-
 #: lazarusidestrconsts:srkmecrunfile
 msgid "run file"
 msgstr "jalankan file"
@@ -11257,9 +11225,17 @@ msgstr "direktori konfig kedua, dimana Lazarus mencari file template konfig. Def
 msgid "set FPC mode to DELPHI"
 msgstr "set mode  FPC ke DELPHI"
 
+#: lazarusidestrconsts:lisedtdefsetfpcmodetofpc
+msgid "set FPC mode to FPC"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtdefsetfpcmodetogpc
 msgid "set FPC mode to GPC"
 msgstr "set mode FPC ke GPC"
+
+#: lazarusidestrconsts:lisedtdefsetfpcmodetomacpas
+msgid "set FPC mode to MacPas"
+msgstr ""
 
 #: lazarusidestrconsts:lisedtdefsetfpcmodetotp
 msgid "set FPC mode to TP"
@@ -11276,6 +11252,10 @@ msgstr "set OVERFLOWCHECKS on"
 #: lazarusidestrconsts:lisedtdefsetrangecheckson
 msgid "set RANGECHECKS on"
 msgstr "set RANGECHECKS on"
+
+#: lazarusidestrconsts:lissmallerratherthanfaster
+msgid "smaller rather than faster"
+msgstr ""
 
 #: lazarusidestrconsts:lisautomaticallyonspace
 msgid "space"
