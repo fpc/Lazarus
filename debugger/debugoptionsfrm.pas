@@ -166,7 +166,6 @@ procedure TDebuggerOptionsForm.FetchDebuggerClass;
 var
   n: PtrInt;
   DbgClass, CurClass: TDebuggerClass;
-  S: String;
   List: TStringList;
 begin
   List := TStringList.Create;
@@ -190,6 +189,22 @@ begin
   then SetComboBoxText(cmbDebuggerType, '(none)')
   else SetComboBoxText(cmbDebuggerType, FCurDebuggerClass.Caption);
 
+  txtAdditionalPath.Text:=EnvironmentOptions.DebuggerSearchPath;
+end;
+
+procedure TDebuggerOptionsForm.FetchDebuggerGeneralOptions;
+begin
+  // IMPORTANT if more items are added the indexes must be updated here!
+  gcbDebuggerGeneralOptions.Checked[0] := EnvironmentOptions.DebuggerShowStopMessage;
+end;
+
+procedure TDebuggerOptionsForm.FetchDebuggerSpecificOptions;
+var
+  S: String;
+  i: Integer;
+  Filename: string;
+  NewFilename: string;
+begin
   with cmbDebuggerPath.Items do begin
     BeginUpdate;
     Assign(EnvironmentOptions.DebuggerFileHistory);
@@ -205,20 +220,24 @@ begin
     end;
     EndUpdate;
   end;
-    
-  FOldDebuggerPathAndParams:=EnvironmentOptions.DebuggerFilename;
-  SetComboBoxText(cmbDebuggerPath,FOldDebuggerPathAndParams,20);
-  txtAdditionalPath.Text:=EnvironmentOptions.DebuggerSearchPath;
-end;
 
-procedure TDebuggerOptionsForm.FetchDebuggerGeneralOptions;
-begin
-  // IMPORTANT if more items are added the indexes must be updated here!
-  gcbDebuggerGeneralOptions.Checked[0] := EnvironmentOptions.DebuggerShowStopMessage;
-end;
+  Filename:=cmbDebuggerPath.Text;
+  if Filename='' then begin
+    for i:=0 to cmbDebuggerPath.Items.Count-1 do begin
+      NewFilename:=cmbDebuggerPath.Items[i];
+      if FileExistsCached(NewFilename) then begin
+        Filename:=NewFilename;
+        break;
+      end;
+      NewFilename:=FindDefaultExecutablePath(ExtractFileName(Filename));
+      if NewFilename<>'' then begin
+        Filename:=NewFilename;
+        break;
+      end;
+    end;
+  end;
+  SetComboBoxText(cmbDebuggerPath,Filename,20);
 
-procedure TDebuggerOptionsForm.FetchDebuggerSpecificOptions;
-begin
   PropertyGrid.Selection.Clear;
   if FCurDebuggerClass<>nil then begin
     PropertyGrid.Selection.Add(FCurDebuggerClass.GetProperties);
@@ -460,6 +479,8 @@ begin
     RowSpacing := 4;
   end;
 
+  FOldDebuggerPathAndParams:=EnvironmentOptions.DebuggerFilename;
+  cmbDebuggerPath.Text:=FOldDebuggerPathAndParams;
   FetchDebuggerClass;
   FetchDebuggerGeneralOptions;
 

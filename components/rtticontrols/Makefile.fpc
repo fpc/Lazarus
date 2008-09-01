@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for RunTimeTypeInfoControls 0.1
 #
-#   This file was generated on 23-8-08
+#   This file was generated on 30-8-08
 
 [package]
 name=runtimetypeinfocontrols
