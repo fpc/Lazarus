@@ -7,14 +7,17 @@ interface
 uses
   // Libs
   Windows,
-  {$ifndef Win32}oleauto,{$endif}
+  {$ifdef win32}
+  win32compat,
+  {$else}
+  oleauto, aygshell,
+  {$endif}
   // compatibility
-  {$ifdef Win32}win32compat,{$endif}
   // RTL, LCL
   Classes, LMessages, LCLType, LCLProc, Controls, Forms, Menus,
   WinCEExtra, GraphType;
   
-Type
+type
   TEventType = (etNotify, etKey, etKeyPress, etMouseWheel, etMouseUpDown);
 
   PWindowInfo = ^TWindowInfo;
@@ -1246,28 +1249,23 @@ end;
  -----------------------------------------------------------------------------}
 function DisableWindowsProc(Window: HWND; Data: LParam): LongBool; {$ifdef Win32}stdcall;{$else}cdecl;{$endif}
 var
-//  Buffer: array[0..15] of WideChar;
   DisableWindowsInfo: PDisableWindowsInfo absolute Data;
 begin
-  Result:=true;
+  Result := True;
 
   // Only disable windows from our application
   if DisableWindowsInfo^.ProcessID <> GetWindowThreadProcessId(Window, nil) then
     Exit;
 
-  // Don't disable the current window form
-  if Window = DisableWindowsInfo^.NewModalWindow then exit;
+  // Don't disable the current window form or menu of that form
+  if (Window = DisableWindowsInfo^.NewModalWindow)
+{$ifndef Win32}
+     or (Window = SHFindMenuBar(DisableWindowsInfo^.NewModalWindow))
+{$endif} then Exit;
 
-  // Don't disable any ComboBox listboxes
-{
-   This causes a crash when exiting the dialog under arm-wince
-   All disabled windows will be enabled again, so it shouldn't be
-   a big problem to disable the ComboBox listboxes.
-   
-  if (GetClassNameW(Window, @Buffer, sizeof(Buffer))<sizeof(Buffer))
-    and (WideCompareText(widestring(@Buffer), 'ComboLBox')=0) then exit;}
-
-  if not IsWindowVisible(Window) or not IsWindowEnabled(Window) then exit;
+  if not IsWindowVisible(Window) or
+     not IsWindowEnabled(Window) then
+    Exit;
 
   DisableWindowsInfo^.DisabledWindowList.Add(Pointer(Window));
   EnableWindow(Window, False);

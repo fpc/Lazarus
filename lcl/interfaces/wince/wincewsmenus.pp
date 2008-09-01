@@ -204,13 +204,15 @@ begin
   hasLMenu := false;
   hasRMenu := false;
   FillChar(mi, SizeOf(mi), 0);
-  with mi do begin
+  with mi do
+  begin
     cbSize:=SizeOf(mi);
     fMask:=MIIM_SUBMENU or MIIM_TYPE or MIIM_ID or MIIM_STATE;
     dwTypeData:=@buf;
   end;
 
-  if Menu <> 0 then begin
+  if Menu <> 0 then
+  begin
     if GetMenuItemInfo(Menu, 0, True, mi) then//does it have left menu?
       hasLMenu := True;
     if GetMenuItemInfo(Menu, 1, True, mi) then//does it have right menu?
@@ -220,12 +222,13 @@ begin
   GetWindowRect(Wnd, BR);
   mbi.hwndMB:=SHFindMenuBar(Wnd);
   FillChar(mbi, SizeOf(mbi), 0);
-  with mbi do begin
-    cbSize:=SizeOf(mbi);
-    hwndParent:=Wnd;
-    dwFlags:=SHCMBF_HMENU;
-    nToolBarId:=MenuBarIDS[hasLMenu,hasRMenu];
-    hInstRes:=HINSTANCE;
+  with mbi do
+  begin
+    cbSize := SizeOf(mbi);
+    hwndParent := Wnd;
+    dwFlags := SHCMBF_HMENU;
+    nToolBarId := MenuBarIDS[hasLMenu,hasRMenu];
+    hInstRes := HINSTANCE;
   end;
 
   {if found a menubar check if it matches number of buttons of previous menubar...}
@@ -295,7 +298,7 @@ begin
     end;
   end;
 
- GetWindowRect(mbi.hwndMB, R);
+  GetWindowRect(mbi.hwndMB, R);
 //  if BR.Bottom > R.Top then
 //    SetWindowPos(wnd, 0, 0, 0, BR.Right - BR.Left, R.Top - BR.Top, SWP_NOZORDER or SWP_NOREPOSITION or SWP_NOMOVE);
 
@@ -431,7 +434,7 @@ var
   Index, fstate, cmd: integer;
 begin
   ParentMenuHandle := AMenuItem.Parent.Handle;
-  
+
   FillChar(MenuInfo, SizeOf(MenuInfo), 0);
 
   {Following part fixes the case when an item is added in runtime

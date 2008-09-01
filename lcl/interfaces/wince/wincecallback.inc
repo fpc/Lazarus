@@ -14,7 +14,7 @@
  *****************************************************************************
 }
 type
-TWinControlAccess = class(TWinControl);
+  TWinControlAccess = class(TWinControl);
 
 {*************************************************************}
 {            callback routines                                }
@@ -253,7 +253,7 @@ Var
       Result := PopupMenu.FindItem(LOWORD(WParam), fkCommand);
     end;
     {$ifndef win32}
-    if Result=nil then //if Result is still nil, process main menu
+    if Result = nil then //if Result is still nil, process main menu
     begin
       MainMenuHandle := SHFindMenuBar(Window);
       // roozbeh : this is the only way we have
@@ -1063,69 +1063,64 @@ begin
       end
       else
       begin
-
-      { Handles other reasons for WM_COMMAND }
-      if Hi(WParam) < 2 then //1 for accelerator 0 for menu
-        TargetObject := GetMenuItemObject else // menuitem or shortcut
-        TargetObject := nil;
-      if TargetObject is TMenuItem then
-      begin
-        if (Hi(WParam) = 0) or (Hi(WParam) = 1) then
+        { Handles other reasons for WM_COMMAND }
+        if Hi(WParam) < 2 then //1 for accelerator 0 for menu
+          TargetObject := GetMenuItemObject else // menuitem or shortcut
+          TargetObject := nil;
+        if TargetObject is TMenuItem then
         begin
           LMessage.Msg := LM_ACTIVATE;
           TargetObject.Dispatch(LMessage);
-        end;
-        lWinControl := nil;
-      end else
-      begin
-        lWinControl := GetWindowInfo(LParam)^.WinControl;
-        // buddy controls use 'awincontrol' to designate associated wincontrol
-        if lWinControl = nil then
-          lWinControl := GetWindowInfo(LParam)^.AWinControl;
-        if lWinControl is TCustomButton then
-          case Hi(WParam) of
-            BN_CLICKED:   LMessage.Msg := LM_CLICKED;
-            BN_KILLFOCUS: LMessage.Msg := LM_EXIT;
-          end
-        else if (lWinControl is TCustomEdit) then
-          case Hi(WParam) of
-            EN_CHANGE: LMessage.Msg := CM_TEXTCHANGED;
-          end
-{        else if (lWinControl is TCustomFloatSpinEdit) then
-          case Hi(WParam) of
-            EN_CHANGE: HandleSpinEditChange(TCustomFloatSpinEdit(lWinControl));
-          end}
-        else if (lWinControl is TCustomMemo) then
-          case Hi(WParam) of
-            // multiline edit doesn't send EN_CHANGE, so use EN_UPDATE
-            EN_UPDATE: LMessage.Msg := CM_TEXTCHANGED;
-          end
-        else if (lWinControl is TCustomListBox) then
-          case Hi(WParam) of
-            LBN_SELCHANGE:  LMessage.Msg := LM_SELCHANGE;
-          end
-        else if lWinControl is TCustomCombobox then
-          case Hi(WParam) of
-            CBN_EDITCHANGE: LMessage.Msg := LM_CHANGED;
-            { CBN_EDITCHANGE is only sent after the user changes the edit box.
-              CBN_SELCHANGE is sent when the user changes the text by
-              selecting in the list, but before text is actually changed.
-              itemindex is updated, so set text manually }
-            CBN_SELCHANGE: begin
-              UpdateComboBoxText(TCustomComboBox(lWinControl));
-              LMessage.Msg := LM_SELCHANGE;
+          lWinControl := nil;
+        end else
+        begin
+          lWinControl := GetWindowInfo(LParam)^.WinControl;
+          // buddy controls use 'awincontrol' to designate associated wincontrol
+          if lWinControl = nil then
+            lWinControl := GetWindowInfo(LParam)^.AWinControl;
+          if lWinControl is TCustomButton then
+            case Hi(WParam) of
+              BN_CLICKED:   LMessage.Msg := LM_CLICKED;
+              BN_KILLFOCUS: LMessage.Msg := LM_EXIT;
+            end
+          else if (lWinControl is TCustomEdit) then
+            case Hi(WParam) of
+              EN_CHANGE: LMessage.Msg := CM_TEXTCHANGED;
+            end
+  {        else if (lWinControl is TCustomFloatSpinEdit) then
+            case Hi(WParam) of
+              EN_CHANGE: HandleSpinEditChange(TCustomFloatSpinEdit(lWinControl));
+            end}
+          else if (lWinControl is TCustomMemo) then
+            case Hi(WParam) of
+              // multiline edit doesn't send EN_CHANGE, so use EN_UPDATE
+              EN_UPDATE: LMessage.Msg := CM_TEXTCHANGED;
+            end
+          else if (lWinControl is TCustomListBox) then
+            case Hi(WParam) of
+              LBN_SELCHANGE:  LMessage.Msg := LM_SELCHANGE;
+            end
+          else if lWinControl is TCustomCombobox then
+            case Hi(WParam) of
+              CBN_EDITCHANGE: LMessage.Msg := LM_CHANGED;
+              { CBN_EDITCHANGE is only sent after the user changes the edit box.
+                CBN_SELCHANGE is sent when the user changes the text by
+                selecting in the list, but before text is actually changed.
+                itemindex is updated, so set text manually }
+              CBN_SELCHANGE: begin
+                UpdateComboBoxText(TCustomComboBox(lWinControl));
+                LMessage.Msg := LM_SELCHANGE;
+              end;
+              { closeup message is sent before text is actually changed... *sigh*
+                itemindex is updated, so set text manually }
+              CBN_CLOSEUP:
+                UpdateComboBoxText(TCustomComboBox(lWinControl));
             end;
-            { closeup message is sent before text is actually changed... *sigh*
-              itemindex is updated, so set text manually }
-            CBN_CLOSEUP:
-              UpdateComboBoxText(TCustomComboBox(lWinControl));
-          end;
-      end;
+        end;
 
-      // no specific message found? try send a general msg
-      if (LMessage.Msg = LM_NULL) and (lWinControl <> nil) then
-        lWinControl.Perform(CN_COMMAND, WParam, LParam);
-
+        // no specific message found? try send a general msg
+        if (LMessage.Msg = LM_NULL) and (lWinControl <> nil) then
+          lWinControl.Perform(CN_COMMAND, WParam, LParam);
       end;
     end;
 {
