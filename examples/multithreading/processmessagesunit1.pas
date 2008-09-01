@@ -29,7 +29,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  ComCtrls;
+  ComCtrls, FileUtil;
 
 type
 

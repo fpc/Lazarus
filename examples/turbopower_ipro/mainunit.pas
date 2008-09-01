@@ -11,7 +11,7 @@ uses
   {$ifdef UsePreview}
   OsPrinters,
   {$endif}
-  IpHtml, ExtCtrls, StdCtrls;
+  FileUtil, IpHtml, ExtCtrls, StdCtrls;
 
 type
   TSimpleIpHtml = class(TIpHtml)

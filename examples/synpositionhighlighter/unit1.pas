@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, SynEdit,
-  StdCtrls, Menus, SynHighlighterPosition, SynEditHighlighter;
+  FileUtil, StdCtrls, Menus, SynHighlighterPosition, SynEditHighlighter;
 
 type
 

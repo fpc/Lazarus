@@ -5,8 +5,8 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, GraphType, Dialogs, ExtCtrls,
-  StdCtrls, ExtDlgs;
+  Classes, SysUtils, LResources, Forms, Controls, Graphics, GraphType, Dialogs,
+  ExtCtrls, FileUtil, StdCtrls, ExtDlgs;
 
 type
 

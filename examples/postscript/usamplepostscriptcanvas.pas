@@ -11,8 +11,8 @@ uses
   {$IFDEF UNIX}
     Unix,
   {$ENDIF}
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  PostScriptCanvas;
+  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  Buttons, PostScriptCanvas;
 
 type
   TForm1 = class(TForm)

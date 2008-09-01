@@ -6,6 +6,7 @@
     <General>
       <SessionStorage Value="InIDEConfig"/>
       <MainUnit Value="0"/>
+      <IconPath Value="./"/>
       <TargetFileExt Value=""/>
     </General>
     <VersionInfo>
@@ -49,10 +50,7 @@
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="5"/>
-    <CodeGeneration>
-      <Generate Value="Faster"/>
-    </CodeGeneration>
+    <Version Value="8"/>
     <Linking>
       <Options>
         <Win32>

@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs,
   LCLType, LCLIntf, StdCtrls, Buttons, LCLProc, ComCtrls, ExtCtrls, Grids,
-  IniFiles;
+  FileUtil, IniFiles;
 
 type
 
