@@ -2888,6 +2888,7 @@ end;
 
 destructor TQtPrinter.Destroy;
 begin
+  endDoc;
   if FHandle <> nil then
     QPrinter_destroy(FHandle);
   inherited Destroy;
