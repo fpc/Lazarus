@@ -125,6 +125,8 @@ type
 var
   LazConfMacroFunc: TLazConfMacroFunc = nil;
 procedure LazConfSubstituteMacros(var s: string);
+procedure AddFilenameToList(List: TStrings; const Filename: string;
+  SkipEmpty: boolean = true);
 
 const
   EmptyLine = LineEnding + LineEnding;
@@ -136,6 +138,17 @@ const
 implementation
 
 {$I lazconf.inc}
+
+procedure AddFilenameToList(List: TStrings; const Filename: string;
+  SkipEmpty: boolean);
+var
+  i: Integer;
+begin
+  if SkipEmpty and (Filename='') then exit;
+  for i:=0 to List.Count-1 do
+    if CompareFilenames(List[i],Filename)=0 then exit;
+  List.Add(Filename);
+end;
 
 procedure LazConfSubstituteMacros(var s: string);
 begin

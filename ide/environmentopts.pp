@@ -1938,12 +1938,6 @@ begin
 
   CompilerPathGroupBox.Caption:=Format(dlgFpcPath,[GetDefaultCompilerFilename]);
 
-  with CompilerPathComboBox do begin
-    Items.BeginUpdate;
-    GetDefaultCompilerFilenames(Items);
-    Items.EndUpdate;
-  end;
-
   FPCSourceDirGroupBox.Caption:=dlgFpcSrcPath;
 
   MakePathGroupBox.Caption:=dlgMakePath;
@@ -2398,7 +2392,15 @@ begin
     LazarusDirComboBox.Items.Assign(LazarusDirHistory);
     FOldLazarusDir:=LazarusDirectory;
     SetComboBoxText(LazarusDirComboBox,LazarusDirectory,MaxComboBoxCount);
-    CompilerPathComboBox.Items.Assign(CompilerFileHistory);
+    with CompilerPathComboBox do begin
+      Items.BeginUpdate;
+      Items.Assign(CompilerFileHistory);
+      AddFilenameToList(Items,FindDefaultCompilerPath);
+      AddFilenameToList(Items,FindDefaultExecutablePath('fpc'+GetExecutableExt));
+      GetDefaultCompilerFilenames(Items);
+      Items.EndUpdate;
+    end;
+
     FOldCompilerFilename:=CompilerFilename;
     SetComboBoxText(CompilerPathComboBox,CompilerFilename,MaxComboBoxCount);
     FPCSourceDirComboBox.Items.Assign(FPCSourceDirHistory);

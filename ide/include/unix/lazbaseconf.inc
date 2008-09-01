@@ -139,20 +139,20 @@ end;
 
 procedure GetDefaultCompilerFilenames(List: TStrings);
 begin
-  List.Add('/usr/local/bin/'+GetDefaultCompilerFilename);
-  List.Add('/usr/bin/'+GetDefaultCompilerFilename);
-  List.Add('/opt/fpc/'+GetDefaultCompilerFilename);
+  AddFilenameToList(List,'/usr/local/bin/'+GetDefaultCompilerFilename);
+  AddFilenameToList(List,'/usr/bin/'+GetDefaultCompilerFilename);
+  AddFilenameToList(List,'/opt/fpc/'+GetDefaultCompilerFilename);
 end;
 
 procedure GetDefaultMakeFilenames(List: TStrings);
 begin
-  List.Add('/usr/bin/make');
+  AddFilenameToList(List,'/usr/bin/make');
 end;
 
 procedure GetDefaultTestBuildDirs(List: TStrings);
 begin
-  List.Add('/tmp/');
-  List.Add('/var/tmp/');
+  AddFilenameToList(List,'/tmp/');
+  AddFilenameToList(List,'/var/tmp/');
 end;
 
 procedure GetDefaultBrowser(var Browser, Params: string);
