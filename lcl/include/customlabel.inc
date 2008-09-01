@@ -165,7 +165,7 @@ end;
 
 procedure TCustomLabel.TextChanged;
 begin
-  Invalidate;
+  invalidate;
   InvalidatePreferredSize;
   if (Parent<>nil) and Parent.AutoSize then
     Parent.AdjustSize;

@@ -19,7 +19,6 @@
 //  {$C+}
 //  {$DEFINE ASSERT_IS_ON}
 {$ENDIF}
-
 type
   TWinControlAccess = class(TWinControl);
   TCustomListViewAccess = class(TCustomListView);
@@ -1546,10 +1545,10 @@ begin
         end;
         
       // disable child windows of for example groupboxes, but not of forms
-      if assigned(lWinControl) and not (lWinControl is TCustomForm) then
+      if Assigned(lWinControl) and not (lWinControl is TCustomForm) then
         EnableChildWindows(lWinControl, WParam<>0);
 
-      If (lWinControl is TCustomFloatSpinEdit) then
+      if (lWinControl is TCustomFloatSpinEdit) then
         EnableFloatSpinEditBuddy(Window, WParam<>0);
       // ugly hack to give bitbtns a nice look
       // When no theming active, the internal image needs to be

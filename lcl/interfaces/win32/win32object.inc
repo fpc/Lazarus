@@ -110,10 +110,16 @@ begin
   //      Common controls only need to be initialized when used
   //      So they are initialized in the CreateHandle for common controls
   InitCommonControls;
-  ICC.dwSize := SizeOf(TINITCOMMONCONTROLSEX);
-  ICC.dwICC := ICC_DATE_CLASSES;
   if InitCommonControlsEx <> nil then
+  begin
+    ICC.dwSize := SizeOf(TINITCOMMONCONTROLSEX);
+
+    ICC.dwICC := ICC_DATE_CLASSES;
     InitCommonControlsEx(@ICC);
+
+    ICC.dwICC := ICC_UPDOWN_CLASS;
+    InitCommonControlsEx(@ICC);
+  end;
 
   // Create parent of all windows, 'button on taskbar'
   {$ifdef WindowsUnicodeSupport}
