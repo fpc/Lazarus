@@ -9,4 +9,6 @@ set -x
 
 find . -name '*.lpk' -exec $LazBuild {} \+
 
+find . -name '*.lpi' -exec $LazBuild {} \+
+
 #end.

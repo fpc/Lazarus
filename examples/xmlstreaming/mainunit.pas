@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, Laz_XMLStreaming, Laz_DOM, Laz_XMLCfg, Buttons, TypInfo;
+  FileUtil, StdCtrls, Laz_XMLStreaming, Laz_DOM, Laz_XMLCfg, Buttons, TypInfo;
 
 type
   TMyEnum = (myEnum1, myEnum2, myEnum3);

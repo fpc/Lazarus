@@ -27,7 +27,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls, Buttons, ComCtrls, Menus
+  FileUtil, StdCtrls, Buttons, ComCtrls, Menus
   {$IFDEF TRANSLATESTRING}, DefaultTranslator{$ENDIF}, FileCtrl;
 
 type
