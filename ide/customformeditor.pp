@@ -2390,6 +2390,8 @@ begin
     Result:=AClassName;
     if (length(Result)>1) and (Result[1]='T') then
       Result:=RightStr(Result,length(Result)-1);
+    if Result[length(Result)] in ['0'..'9'] then
+      Result:=Result+'_';
     Result:=Result+IntToStr(i);
     while (j>=0)
     and (CompareText(Result,OwnerComponent.Components[j].Name)<>0) do
