@@ -3,7 +3,7 @@
 AddFile('actnlist.pas','ActnList',pftUnit,[pffHasRegisterProc],cpBase);
 AddFile('alllclunits.pp','AllLCLUnits',pftUnit,[],cpBase);
 AddFile('arrow.pp','Arrow',pftUnit,[pffHasRegisterProc],cpBase);
-AddFile('asyncprocess.pp','AsyncProcess',pftUnit,[],cpBase);
+AddFile('asyncprocess.pp','AsyncProcess',pftUnit,[pffHasRegisterProc],cpBase);
 AddFile('avglvltree.pas','AvgLvlTree',pftUnit,[],cpBase);
 AddFile('buttonpanel.pas','ButtonPanel',pftUnit,[pffHasRegisterProc],cpBase);
 AddFile('buttons.pp','Buttons',pftUnit,[pffHasRegisterProc],cpBase);

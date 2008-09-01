@@ -21,8 +21,8 @@
 unit AllLCLUnits;
 
 { At least 2.0.2 is required }
-{$if defined(ver1) or (defined(ver2_0) and (fpc_patch<2))}
-  {$fatal Lazarus requires at least FPC 2.0.2}
+{$if defined(ver1) or (defined(ver2) and (fpc_release<2))}
+  {$fatal Lazarus requires at least FPC 2.2.0}
 {$endif}
 {$mode objfpc}{$H+}
 
@@ -37,21 +37,21 @@ uses
   FPCAdds, LazLinkedList, DynHashArray, LCLMemManager, AvgLvlTree, DynQueue,
   StringHashList, ExtendedStrings, DynamicArray, UTrace, TextStrings,
   // base types and base functions
-  LCLProc, LCLType, LCLResCache, GraphMath, GraphType, GraphUtil, FileCtrl, 
+  LCLProc, LCLType, LCLResCache, GraphMath, GraphType, GraphUtil,
   LMessages, LResources, LConvEncoding, FileUtil, Translations, 
   LazConfigStorage,
   // the interface base
   InterfaceBase,
   IntfGraphics,
   // components and functions
-  LCLClasses, AsyncProcess, Maps, HelpIntfs, LazHelpIntf, LazHelpHTML,
+  LCLClasses, AsyncProcess, FileCtrl, Maps, HelpIntfs, LazHelpIntf, LazHelpHTML,
   StdActns, Buttons, Extctrls, Calendar, Clipbrd, Forms, LCLIntf, Spin,
   Comctrls, Graphics, StdCtrls, Arrow, Controls, ImgList, Menus, Toolwin,
   Dialogs, Messages, ActnList, Grids, MaskEdit, ButtonPanel,
   Printers, PostScriptPrinter, PostScriptCanvas, CheckLst, PairSplitter,
   ExtDlgs, DBCtrls, DBGrids, DBActns, EditBtn, ExtGraphics, ColorBox,
   PropertyStorage, IniPropStorage, XMLPropStorage, Chart, LDockTree, LDockCtrl,
-  CalendarPopup, Themes, popupnotifier,
+  CalendarPopup, Themes, PopupNotifier,
   LCLMessageGlue,
   RubberBand,
   // widgetset skeleton

@@ -47,7 +47,7 @@ Begin
   SysVarCount:=GetEnvironmentVariableCount;
   for i:=0 to SysVarCount-1 do begin
     Variable:=GetEnvironmentStringUTF8(i+1);
-    // On windows some (hidden) envirionment variables can be returned by
+    // On windows some (hidden) environment variables can be returned by
     // GetEnvironmentStringUTF8. These kind of variables start with a =
     if (length(Variable)>0) and (Variable[1]<>'=') then begin
       e:=1;

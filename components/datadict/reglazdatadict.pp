@@ -10,7 +10,7 @@ interface
 
 uses
   // General units
-  Classes, SysUtils, Process, DB, Typinfo,
+  Classes, SysUtils, Process, AsyncProcess, DB, Typinfo,
   // IDE interface
   MenuIntf, propedits, lresources,
   // Data dict units
@@ -152,9 +152,9 @@ begin
       FN:=FN+' '+AFileName
     else
       FN:=FN+' -f "'+AFileName+'"';
-  With TProcess.Create(Nil) do
+  With TProcessUTF8.Create(Nil) do
     try
-      CommandLine:=UTF8ToSys(FN);
+      CommandLine:=FN;
       Execute;
     Finally
       Free;

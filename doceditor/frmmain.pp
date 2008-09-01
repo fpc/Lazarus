@@ -28,7 +28,8 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  Menus, ActnList, ExtCtrls, ComCtrls, StdCtrls, pgeditor, process, fpdeutil;
+  Menus, ActnList, ExtCtrls, ComCtrls, StdCtrls, pgeditor,
+  process, AsyncProcess, fpdeutil;
 
 type
   TNodeType = (ntFile,ntPackage,ntModule,ntElement,ntTopic);
@@ -700,9 +701,9 @@ begin
     If DisableArguments then
       cmd:=cmd+' --disable-arguments';
     DebugLn(cmd);
-    With TProcess.Create(Nil) do
+    With TProcessUTF8.Create(Nil) do
       try
-        CommandLine:=UTF8ToSys(cmd);
+        CommandLine:=cmd;
         options:=[poWaitOnExit];
         Execute;
         If (ExitStatus<>0) then

@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  FileUtil, Buttons, Process, ExtCtrls;
+  FileUtil, AsyncProcess, Buttons, Process, ExtCtrls;
 
 type
   { TForm1 }
@@ -48,7 +48,7 @@ end;
 
 procedure TForm1.OpenURL(const URL: string);
 var
-  TheProcess: TProcess;
+  TheProcess: TProcessUTF8;
   BrowserFilename: string;
   StartScriptFilename: string;
   BrowserName: string;
@@ -79,11 +79,11 @@ begin
   end;
 
   
-  TheProcess:=TProcess.Create(nil);
+  TheProcess:=TProcessUTF8.Create(nil);
   try
     TheProcess.Options:= [poUsePipes, poNoConsole, poStdErrToOutput];
     TheProcess.ShowWindow := swoNone;
-    TheProcess.CommandLine:=UTF8ToSys(StartScriptFilename+' '+URL);
+    TheProcess.CommandLine:=StartScriptFilename+' '+URL;
     try
       TheProcess.Execute;
       TheProcess.WaitOnExit;

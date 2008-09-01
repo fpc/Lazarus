@@ -39,7 +39,7 @@ unit Compiler;
 interface
 
 uses
-  Classes, SysUtils, Process, LCLProc, Forms, Controls, FileUtil,
+  Classes, SysUtils, Process, AsyncProcess, LCLProc, Forms, Controls, FileUtil,
   LazarusIDEStrConsts, CompilerOptions, Project, OutputFilter;
 
 type
@@ -52,7 +52,7 @@ type
   private
     FOnCmdLineCreate : TOnCmdLineCreate;
     FOutputFilter: TOutputFilter;
-    FTheProcess: TProcess;
+    FTheProcess: TProcessUTF8;
   public
     constructor Create;
     destructor Destroy; override;
@@ -63,7 +63,7 @@ type
     property OnCommandLineCreate: TOnCmdLineCreate read FOnCmdLineCreate
                                                    write FOnCmdLineCreate;
     property OutputFilter: TOutputFilter read FOutputFilter write FOutputFilter;
-    property TheProcess: TProcess read FTheProcess;
+    property TheProcess: TProcessUTF8 read FTheProcess;
   end;
 
 
@@ -153,7 +153,7 @@ begin
     try
       if TheProcess=nil then
         FTheProcess := TOutputFilterProcess.Create(nil);
-      TheProcess.CommandLine := UTF8ToSys(CmdLine);
+      TheProcess.CommandLine := CmdLine;
       TheProcess.Options:= [poUsePipes, poStdErrToOutput];
       TheProcess.ShowWindow := swoHide;
       Result:=mrOk;

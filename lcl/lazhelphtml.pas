@@ -22,8 +22,8 @@ unit LazHelpHTML;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Process, FileUtil, LazConfigStorage,
-  LCLStrConsts, HelpIntfs, LazHelpIntf;
+  Classes, SysUtils, LCLProc, Forms, Process, FileUtil, AsyncProcess,
+  LazConfigStorage, LCLStrConsts, HelpIntfs, LazHelpIntf;
   
 type
   { THTMLHelpDatabase
@@ -311,7 +311,7 @@ function THTMLBrowserHelpViewer.ShowNode(Node: THelpNode; var ErrMsg: string
 var
   Params: String;
   URLMacroPos: LongInt;
-  BrowserProcess: TProcess;
+  BrowserProcess: TProcessUTF8;
   CommandLine: String;
 begin
   Result:=shrViewerError;
@@ -366,9 +366,9 @@ begin
 
   // run
   try
-    BrowserProcess:=TProcess.Create(nil);
+    BrowserProcess:=TProcessUTF8.Create(nil);
     try
-      BrowserProcess.CommandLine:=UTF8ToSys(CommandLine);
+      BrowserProcess.CommandLine:=CommandLine;
       BrowserProcess.Execute;
     finally
       BrowserProcess.Free;
@@ -418,8 +418,8 @@ begin
   end;
   if FDefaultBrowser='' then begin
     // Then search in path. Prefer open source ;)
-    if Find('htmlview')
-    or Find('xdg-open')
+    if Find('xdg-open')  // Portland OSDL/FreeDesktop standard on Linux
+    or Find('htmlview')  // some redhat systems
     or Find('firefox')
     or Find('mozilla')
     or Find('galeon')
@@ -427,7 +427,7 @@ begin
     or Find('safari')
     or Find('netscape')
     or Find('opera')
-    or Find('iexplore') then ;
+    or Find('iexplore') then ;// some windows systems
   end;
   Browser:=FDefaultBrowser;
   Params:=FDefaultBrowserParams;

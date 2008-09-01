@@ -29,7 +29,7 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs,
   FPDocFiles, StdCtrls, ComCtrls, FileUtil, ExtCtrls,
-  LCLIntf, LCLType, LCLProc, Process, EditBtn, Laz_XMLCfg;
+  LCLIntf, LCLType, LCLProc, Process, AsyncProcess, EditBtn, Laz_XMLCfg;
 
 type
 
@@ -281,7 +281,7 @@ procedure TFormMain.UpdateFile(const AFileName: String);
 var
   DocFileName: String;
   MakeSkelPath: String;
-  AProcess: TProcess;
+  AProcess: TProcessUTF8;
   AStringList, AErrorList: TStringList;
   M: TMemoryStream;
   N, BytesRead: LongInt;
@@ -307,14 +307,14 @@ begin
 
     WriteStatus('Updating ' + AFileName);
 
-    AProcess := TProcess.Create(nil);
+    AProcess := TProcessUTF8.Create(nil);
     AStringList := TStringList.Create;
     AErrorList := TStringList.Create;
     M := TMemoryStream.Create;
     try
-      AProcess.CommandLine := UTF8ToSys(
+      AProcess.CommandLine :=
         Format(MakeSkelPath + ' --package="%s" --input="%s -Fi%s"',
-          [EditPackage.Text, AFileName, EditInclude.Directory]));
+          [EditPackage.Text, AFileName, EditInclude.Directory]);
       AProcess.Options := AProcess.Options + [poUsePipes, poNoConsole, poStderrToOutPut];
       AProcess.Execute;
 

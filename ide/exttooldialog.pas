@@ -39,8 +39,8 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, Process, LCLType, LCLProc, Controls, Forms, Buttons,
-  StdCtrls, ComCtrls, Dialogs, LResources, ExtCtrls,
+  Classes, SysUtils, Process, AsyncProcess, LCLType, LCLProc, Controls, Forms,
+  Buttons, StdCtrls, ComCtrls, Dialogs, LResources, ExtCtrls,
   LazConfigStorage, FileUtil,
   IDEExternToolIntf, IDEImagesIntf,
   ExtToolEditDlg, IDECommands, KeyMapping, TransferMacros, IDEProcs,
@@ -294,7 +294,7 @@ function TExternalToolList.Run(ExtTool: TIDEExternalToolOptions;
   Macros: TTransferMacroList; TheOutputFilter: TOutputFilter;
   CompilerOptions: TBaseCompilerOptions): TModalResult;
 var WorkingDir, Filename, Params, CmdLine, Title: string;
-  TheProcess: TProcess;
+  TheProcess: TProcessUTF8;
   Abort, ErrorOccurred: boolean;
   NewFilename: String;
 begin
@@ -334,7 +334,7 @@ begin
     try
       CheckIfFileIsExecutable(Filename);
       TheProcess := TOutputFilterProcess.Create(nil);
-      TheProcess.CommandLine := UTF8ToSys(Filename+' '+Params);
+      TheProcess.CommandLine := Filename+' '+Params;
       TheProcess.Options:= [poUsePipes,poStdErrToOutPut];
       TheProcess.ShowWindow := swoHide;
       TheProcess.CurrentDirectory := WorkingDir;

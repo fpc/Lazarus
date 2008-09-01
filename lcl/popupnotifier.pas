@@ -16,7 +16,7 @@
 
  This unit contains the TPopupNotifier visual component.
 }
-unit popupnotifier;
+unit PopupNotifier;
 
 interface
 

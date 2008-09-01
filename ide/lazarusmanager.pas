@@ -81,7 +81,7 @@ uses
 {$IFDEF unix}
   BaseUnix,
 {$ENDIF}
-  Classes, SysUtils, Process,
+  Classes, SysUtils, Process, AsyncProcess,
   LCLProc, FileUtil, Forms, Controls, Dialogs,
   LazConf, Splash;
   
@@ -89,7 +89,7 @@ type
   TLazarusProcess = class
   private
     FOnStart: TNotifyEvent;
-    FProcess: TProcess;
+    FProcess: TProcessUTF8;
     FWantsRestart: boolean;
   public
     constructor Create(const LazarusPath: string; const CommandLine: string);
@@ -355,10 +355,10 @@ end;
 constructor TLazarusProcess.Create(const LazarusPath: string;
   const CommandLine: string);
 begin
-  FProcess := TProcess.Create(nil);
+  FProcess := TProcessUTF8.Create(nil);
   FProcess.Options := [];
   FProcess.ShowWindow := swoShow;
-  FProcess.CommandLine := UTF8ToSys(LazarusPath + CommandLine);
+  FProcess.CommandLine := LazarusPath + CommandLine;
 end;
 
 destructor TLazarusProcess.Destroy;

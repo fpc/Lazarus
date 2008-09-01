@@ -46,7 +46,8 @@ program Svn2RevisionInc;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, CustApp, SysUtils, Process, LCLProc, FileUtil, Dom, XmlRead, GetOpts;
+  Classes, CustApp, SysUtils, Process, AsyncProcess, LCLProc, FileUtil,
+  Dom, XmlRead, GetOpts;
 
 type
 
@@ -88,15 +89,15 @@ var
   SvnDir: string;
   function GetRevisionFromSvnVersion : boolean;
   var
-    SvnVersionProcess: TProcess;
+    SvnVersionProcess: TProcessUTF8;
     Buffer: string;
     n: LongInt;
   begin
     Result:=false;
-    SvnVersionProcess := TProcess.Create(nil);
+    SvnVersionProcess := TProcessUTF8.Create(nil);
     try
       with SvnVersionProcess do begin
-        CommandLine := UTF8ToSys('svnversion -n "' + SourceDirectory + '"');
+        CommandLine := 'svnversion -n "' + SourceDirectory + '"';
         Options := [poUsePipes, poWaitOnExit];
         try
           Execute;

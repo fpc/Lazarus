@@ -1067,9 +1067,9 @@ begin
   if Widgetset.LCLCapability(lcAsyncProcess) = 1 then
     TOutputFilterProcess := TAsyncProcess
   else
-    TOutputFilterProcess := TProcess;
+    TOutputFilterProcess := TProcessUTF8;
   {$ELSE}
-  TOutputFilterProcess := TProcess;
+  TOutputFilterProcess := TProcessUTF8;
   {$ENDIF}
 
   MainBuildBoss:=TBuildManager.Create;
@@ -9534,16 +9534,16 @@ procedure TMainIDE.DoRestart;
 
   procedure StartStarter;
   var
-    StartLazProcess : TProcess;
+    StartLazProcess : TProcessUTF8;
     ExeName         : string;
     Params          : TStrings;
     Dummy           : Integer;
     CmdLine: string;
   begin
-    StartLazProcess := TProcess.Create(nil);
+    StartLazProcess := TProcessUTF8.Create(nil);
     try
       // TODO: use the target directory, where the new startlazarus is
-      StartLazProcess.CurrentDirectory := UTF8ToSys(GetLazarusDirectory);
+      StartLazProcess.CurrentDirectory := GetLazarusDirectory;
       //DebugLn('Parsing commandLine: ');
       Params := TStringList.Create;
       ParseCommandLine(Params, Dummy);
@@ -9567,7 +9567,7 @@ procedure TMainIDE.DoRestart;
         CmdLine := CmdLine + ' "' + PrimaryConfPathOptLong + GetPrimaryConfigPath+'"';
                             
       DebugLn('CommandLine 2 : %s', [CmdLine]);
-      StartLazProcess.CommandLine := UTF8ToSys(CmdLine);
+      StartLazProcess.CommandLine := CmdLine;
       StartLazProcess.Execute;
     finally
       FreeAndNil(Params);

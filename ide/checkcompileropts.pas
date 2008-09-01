@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc,  LResources, Forms, Controls, Graphics, Dialogs,
-  FileUtil, Clipbrd, StdCtrls, Buttons, Process, Menus, ExtCtrls,
+  FileUtil, Clipbrd, StdCtrls, Buttons, Process, AsyncProcess, Menus, ExtCtrls,
   // codetools
   KeywordFuncLists, CodeToolManager, FileProcs,
   // IDEIntf
@@ -540,7 +540,7 @@ var
   TargetOS: String;
   TargetCPU: String;
   OutputLine: String;
-  TheProcess: TProcess;
+  TheProcess: TProcessUTF8;
   OutLen: Integer;
   LineStart: integer;
   i: Integer;
@@ -578,11 +578,11 @@ begin
     CmdLine:=CmdLine+CurCompilerOptions+' ';
   CmdLine:=CmdLine+ATestPascalFile;
 
-  TheProcess := TProcess.Create(nil);
-  TheProcess.CommandLine := UTF8ToSys(CmdLine);
+  TheProcess := TProcessUTF8.Create(nil);
+  TheProcess.CommandLine := CmdLine;
   TheProcess.Options:= [poUsePipes, poStdErrToOutPut];
   TheProcess.ShowWindow := swoHide;
-  TheProcess.CurrentDirectory:=UTF8ToSys(Options.BaseDirectory);
+  TheProcess.CurrentDirectory:=Options.BaseDirectory;
   //DebugLn(['TCheckCompilerOptsDlg.CheckCompilerConfig Options.BaseDirectory=',Options.BaseDirectory]);
   try
     TheProcess.Execute;

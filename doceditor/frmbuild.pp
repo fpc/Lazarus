@@ -28,7 +28,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, ComCtrls, EditBtn, ExtCtrls, ActnList, Grids, Process;
+  Buttons, ComCtrls, EditBtn, ExtCtrls, ActnList, Grids, Process, AsyncProcess;
 
 type
   { TBuildForm }
@@ -706,10 +706,10 @@ begin
   PCOptions.ActivePage:=TSBuild;
   OldBuf:='';
   Buf[BufSize]:=#0;
-  With TProcess.Create(Self) do
+  With TProcessUTF8.Create(Self) do
     begin
     Cmd:=BuildCommandLine;
-    CommandLine:=UTF8ToSys(Cmd);
+    CommandLine:=Cmd;
     AddToLog(SUsingCommand+Cmd);
     Options:=[poUsePipes,poNoConsole,poStderrToOutPut];
     Execute;

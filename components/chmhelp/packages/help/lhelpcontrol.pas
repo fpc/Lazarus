@@ -5,7 +5,7 @@ unit LHelpControl;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, SimpleIPC, Process;
+  Classes, SysUtils, FileUtil, SimpleIPC, Process, AsyncProcess;
 
 type
   TRequestType = (rtFile, rtUrl, rtContext);
@@ -65,8 +65,8 @@ begin
   fClient.Active := False;
   fClient.ServerID := NameForServer;
   if not fClient.ServerRunning then begin
-    with TProcess.Create(nil) do begin
-      CommandLine := UTF8ToSys(ServerExe + ' --ipcname ' + NameForServer);
+    with TProcessUTF8.Create(nil) do begin
+      CommandLine := ServerExe + ' --ipcname ' + NameForServer;
       Execute;
     end;
     // give the server some time to get started

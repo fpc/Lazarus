@@ -127,7 +127,7 @@ type
     fLastOutputTime: TDateTime;
     fLastSearchedShortIncFilename: string;
     fLastSearchedIncFilename: string;
-    fProcess: TProcess;
+    fProcess: TProcessUTF8;
     FAsyncOutput: TDynamicDataQueue;
     FScanners: TFPList; // list of TIDEMsgScanner
     FTool: TIDEExternalToolOptions;
@@ -147,7 +147,7 @@ type
   public
     ErrorExists: boolean;
     Aborted: boolean;
-    function Execute(TheProcess: TProcess; aCaller: TObject = nil;
+    function Execute(TheProcess: TProcessUTF8; aCaller: TObject = nil;
                      aTool: TIDEExternalToolOptions = nil): boolean;
     function GetSourcePosition(const Line: string; var Filename:string;
       var CaretXY: TPoint; var MsgType: TErrorType): boolean;
@@ -199,7 +199,7 @@ type
   end;
 
 type
-  TProcessClass = class of TProcess;
+  TProcessClass = class of TProcessUTF8;
 
 var
   TOutputFilterProcess: TProcessClass = nil;
@@ -249,7 +249,7 @@ begin
   fLastSearchedIncFilename:='';
 end;
 
-function TOutputFilter.Execute(TheProcess: TProcess; aCaller: TObject;
+function TOutputFilter.Execute(TheProcess: TProcessUTF8; aCaller: TObject;
   aTool: TIDEExternalToolOptions): boolean;
 const
   BufSize = 4096;
@@ -268,7 +268,7 @@ begin
   FScanLine:=TOFScanLine.Create(Self);
   
   //debugln('TOutputFilter.Execute A CurrentDirectory="',TheProcess.CurrentDirectory,'"');
-  fCurrentDirectory:=TrimFilename(SysToUTF8(fProcess.CurrentDirectory));
+  fCurrentDirectory:=TrimFilename(fProcess.CurrentDirectory);
   if fCurrentDirectory='' then fCurrentDirectory:=GetCurrentDirUTF8;
   fCurrentDirectory:=AppendPathDelim(fCurrentDirectory);
   SetLength(Buf,BufSize);

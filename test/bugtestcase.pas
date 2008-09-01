@@ -23,8 +23,8 @@ unit BugTestCase;
 interface
 
 uses
-  Classes, SysUtils, Math, process, fileutil, fpcunit, testregistry,
-  TestGlobals;
+  Classes, SysUtils, Math, process, FileUtil, AsyncProcess, fpcunit,
+  testregistry, TestGlobals;
 
 type
 
@@ -68,7 +68,7 @@ end;
 procedure TBugTestCase.Compile;
 var
   LazBuildPath: string;
-  LazBuild: TProcess;
+  LazBuild: TProcessUTF8;
   LazarusDir: String;
   CmdLine: string;
 begin
@@ -77,7 +77,7 @@ begin
   LazarusDir := ExpandFileNameUTF8(ExtractFilePath(ParamStrUTF8(0)) + '../');
   LazBuildPath := LazarusDir + 'lazbuild' + GetExeExt;
   AssertTrue(LazBuildPath + ' does not exist', FileExistsUTF8(LazBuildPath));
-  LazBuild := TProcess.Create(nil);
+  LazBuild := TProcessUTF8.Create(nil);
   try
     {$IFDEF windows}
     LazBuild.Options := [poNewConsole];
@@ -90,8 +90,8 @@ begin
     if Compiler<>'' then
       CmdLine := CmdLine + ' --compiler='+Compiler;
     CmdLine:=CmdLine + ' ' + FProjectFile;
-    LazBuild.CommandLine := UTF8ToSys(CmdLine);
-    LazBuild.CurrentDirectory := UTF8ToSys(FPath);
+    LazBuild.CommandLine := CmdLine;
+    LazBuild.CurrentDirectory := FPath;
     LazBuild.Execute;
     LazBuild.WaitOnExit;
     AssertEquals('Compilation failed: ExitCode', 0, LazBuild.ExitStatus);
@@ -102,15 +102,15 @@ end;
 
 procedure TBugTestCase.RunTestApp;
 var
-  TestProcess : TProcess;
+  TestProcess : TProcessUTF8;
   ExeName: string;
   OutputLines: TStringList;
 begin
   ExeName := ChangeFileExt(FProjectFile, GetExeExt);
   AssertTrue(ExeName + 'does not exist.', FileExistsUTF8(ExeName));
-  TestProcess := TProcess.Create(nil);
+  TestProcess := TProcessUTF8.Create(nil);
   try
-    TestProcess.CommandLine := UTF8ToSys(ExeName + ' --runtest');
+    TestProcess.CommandLine := ExeName + ' --runtest';
     TestProcess.Options := [poUsePipes];
     TestProcess.Execute;
     try

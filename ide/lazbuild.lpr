@@ -30,7 +30,7 @@ program lazbuild;
 
 uses
   Classes, SysUtils, CustApp, LCLProc, Dialogs, Forms, Controls, FileUtil,
-  Process,
+  Process, AsyncProcess,
   // codetools
   CodeToolManager, DefineTemplates, Laz_XMLCfg,
   // IDEIntf
@@ -938,7 +938,7 @@ constructor TLazBuildApplication.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   SetupDialogs;
-  TOutputFilterProcess:=TProcess;
+  TOutputFilterProcess:=TProcessUTF8;
   Files:=TStringList.Create;
   RunExternalTool := @OnRunExternalTool;
 end;

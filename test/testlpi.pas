@@ -23,7 +23,8 @@ unit TestLpi;
 interface
 
 uses
-  Classes, SysUtils, strutils, fpcunit, testregistry, process, FileUtil,
+  Classes, SysUtils, strutils, fpcunit, testregistry, process, AsyncProcess,
+  FileUtil,
   TestGlobals;
 
 type
@@ -131,13 +132,13 @@ end;
 procedure TLpkTest.TestCompile;
 var
   LazBuildPath: string;
-  LazBuild: TProcess;
+  LazBuild: TProcessUTF8;
   OutputLines: TStrings;
   CmdLine: string;
 begin
   LazBuildPath := LazarusDir + 'lazbuild' + GetExeExt;
   AssertTrue(LazBuildPath + ' does not exist', FileExistsUTF8(LazBuildPath));
-  LazBuild := TProcess.Create(nil);
+  LazBuild := TProcessUTF8.Create(nil);
   OutputLines := nil;
   try
     {$IFDEF windows}
@@ -150,8 +151,8 @@ begin
     if Compiler<>'' then
       CmdLine:=Cmdline + ' --compiler='+Compiler;
     Cmdline := Cmdline + ' -B ' + FPath;
-    LazBuild.CommandLine := UTF8ToSys(CmdLine);
-    LazBuild.CurrentDirectory := UTF8ToSys(ExtractFileDir(FPath));
+    LazBuild.CommandLine := CmdLine;
+    LazBuild.CurrentDirectory := ExtractFileDir(FPath);
     LazBuild.Execute;
     OutputLines := ReadOutput(LazBuild);
     LazBuild.WaitOnExit;
@@ -186,13 +187,13 @@ end;
 
 procedure TLpiTest.RunScript;
 var
-  ScriptProcess : TProcess;
+  ScriptProcess : TProcessUTF8;
 begin
   AssertTrue('ScriptEngine "' + ScriptEngine + '" does not exist.',
     FileExistsUTF8(ScriptEngine));
-  ScriptProcess := TProcess.Create(nil);
+  ScriptProcess := TProcessUTF8.Create(nil);
   try
-    ScriptProcess.CommandLine := UTF8ToSys(ScriptEngine + ' ' + GetScriptFileName(FPath));
+    ScriptProcess.CommandLine := ScriptEngine + ' ' + GetScriptFileName(FPath);
     ScriptProcess.Execute;
     ScriptProcess.WaitOnExit;
   finally
@@ -202,14 +203,14 @@ end;
 
 procedure TLpiTest.TestRun;
 var
-  TestProcess : TProcess;
+  TestProcess : TProcessUTF8;
   ExeName: string;
 begin
   ExeName := ChangeFileExt(FPath, GetExeExt);
   AssertTrue(ExeName + 'does not exist.', FileExistsUTF8(ExeName));
-  TestProcess := TProcess.Create(nil);
+  TestProcess := TProcessUTF8.Create(nil);
   try
-    TestProcess.CommandLine := UTF8ToSys(ExeName);
+    TestProcess.CommandLine := ExeName;
     TestProcess.Execute;
     RunScript;
     TestProcess.WaitOnExit;
