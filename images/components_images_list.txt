@@ -72,6 +72,8 @@ components/tpanel.png
 components/tpicture.png
 components/tpopupmenu.png
 components/tprocess.png
+components/tasyncprocess.png
+components/tprocessutf8.png
 components/tprogressbar.png
 components/tradiobutton.png
 components/tradiogroup.png

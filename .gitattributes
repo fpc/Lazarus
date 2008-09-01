@@ -2455,6 +2455,7 @@ images/components/default.png -text svneol=unset#image/png
 images/components/tactionlist.png -text svneol=unset#image/png
 images/components/tapplicationproperties.png -text svneol=unset#image/png
 images/components/tarrow.png -text svneol=unset#image/png
+images/components/tasyncprocess.png -text
 images/components/tbarchart.png -text svneol=unset#image/png
 images/components/tbevel.png -text svneol=unset#image/png
 images/components/tbitbtn.png -text svneol=unset#image/png
@@ -2526,6 +2527,7 @@ images/components/tpicture.png -text svneol=unset#image/png
 images/components/tpopupmenu.png -text svneol=unset#image/png
 images/components/tpopupnotifier.png -text svneol=unset#image/png
 images/components/tprocess.png -text svneol=unset#image/png
+images/components/tprocessutf8.png -text
 images/components/tprogressbar.png -text svneol=unset#image/png
 images/components/tradiobutton.png -text svneol=unset#image/png
 images/components/tradiogroup.png -text svneol=unset#image/png
