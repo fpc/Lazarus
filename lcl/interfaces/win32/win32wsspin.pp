@@ -82,7 +82,6 @@ implementation
 
 uses
   SysUtils;
-
 { TWin32WSCustomFloatSpinEdit }
 
 function GetBuddyWindow(AHandle: HWND): HWND;
@@ -96,7 +95,8 @@ var
   BuddyWindow: HWND;
 begin
   Result := WindowProc(Window, Msg, WParam, LParam);
-  if Msg = WM_SETFOCUS then begin
+  if Msg = WM_SETFOCUS then
+  begin
     BuddyWindow := GetBuddyWindow(Window);
     Windows.SetFocus(BuddyWindow);
     // don't select text in edit, if user clicked on the up down and the edit
@@ -142,7 +142,7 @@ begin
   with Params do
   begin
     SubClassWndProc := @SpinWindowProc;
-    Buddy := CreateWindowEx(WS_EX_CLIENTEDGE, 'EDIT', StrCaption,
+    Buddy := CreateWindowEx(WS_EX_CLIENTEDGE, @EditClsName[0], StrCaption,
       Flags or ES_AUTOHSCROLL, Left, Top, Width, Height, Parent, HMENU(nil), HInstance, nil);
     Window := CreateUpDownControl(Flags or DWORD(WS_BORDER or UDS_ALIGNRIGHT or UDS_ARROWKEYS),
       0, 0,       // pos -  ignored for buddy
@@ -167,14 +167,27 @@ class procedure TWin32WSCustomFloatSpinEdit.AdaptBounds(const AWinControl: TWinC
   var Left, Top, Width, Height: integer; var SuppressMove: boolean);
 var
   WinHandle, BuddyHandle: HWND;
+  R: TRect;
+  WindowWidth: Integer;
 begin
+
   WinHandle := AWinControl.Handle;
+{
   // detach from buddy first
   BuddyHandle := Windows.SendMessage(WinHandle, UDM_SETBUDDY, 0, 0);
   MoveWindow(BuddyHandle, Left, Top, Width, Height, True);
   // reattach
   Windows.SendMessage(WinHandle, UDM_SETBUDDY, BuddyHandle, 0);
-  SuppressMove := true;
+}
+  BuddyHandle := Windows.SendMessage(WinHandle, UDM_GETBUDDY, 0, 0);
+
+  GetWindowRect(WinHandle, @R);
+  WindowWidth := R.Right - R.Left;
+
+  MoveWindow(BuddyHandle, Left, Top, Width - WindowWidth + 2, Height, True);
+  MoveWindow(WinHandle, Left + Width - WindowWidth, Top, WindowWidth, Height, True);
+
+  SuppressMove := True;
 end;
 
 class function TWin32WSCustomFloatSpinEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
