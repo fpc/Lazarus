@@ -29,7 +29,7 @@ type
     const Section: string; Index: Integer; const RecentName: string;
     UserData: Longint) of object;
   TClickMenuEvent = procedure (Sender: TObject; const RecentName,
-    ACaption: string; UserData: Longint) of object;
+    ACaption: string; UserData: PtrInt) of object;
 
   TAccelDelimiter = (adTab, adSpace);
   TRecentMode = (rmInsert, rmAppend);
@@ -81,7 +81,7 @@ type
       const RecentName: string; UserData: Longint); dynamic;
     procedure GetItemData(var Caption: string; var ShortCut: TShortCut;
       UserData: Longint); dynamic;
-    procedure DoClick(const RecentName, Caption: string; UserData: Longint); dynamic;
+    procedure DoClick(const RecentName, Caption: string; UserData: PtrInt); dynamic;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -186,7 +186,7 @@ begin
   if Assigned(FOnGetItem) then FOnGetItem(Self, Caption, ShortCut, UserData);
 end;
 
-procedure TMRUManager.DoClick(const RecentName, Caption: string; UserData: Longint);
+procedure TMRUManager.DoClick(const RecentName, Caption: string; UserData: PtrInt);
 begin
   if Assigned(FOnClick) then FOnClick(Self, RecentName, Caption, UserData);
 end;
@@ -199,7 +199,7 @@ begin
     I := TMenuItem(Sender).Tag;
     if (I >= 0) and (I < FList.Count) then
       try
-        DoClick(FList[I], TMenuItem(Sender).Caption, Longint(FList.Objects[I]));
+        DoClick(FList[I], TMenuItem(Sender).Caption, PtrInt(FList.Objects[I]));
       finally
         if RemoveOnSelect then Remove(FList[I]);
       end;
