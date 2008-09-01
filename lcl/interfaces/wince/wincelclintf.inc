@@ -69,43 +69,40 @@ end;
 
  ------------------------------------------------------------------------------}
 function TWinceWidgetSet.RawImage_CreateBitmaps(const ARawImage: TRawImage; out ABitmap, AMask: HBitmap; ASkipMask: Boolean): Boolean;
-
-  function GetMask(APrec, AShift: Byte): Cardinal;
-  begin
-    Result := ($FFFFFFFF shr (32-APrec)) shl AShift;
-  end;
-
 var
   ADesc: TRawImageDescription absolute ARawImage.Description;
   DC: HDC;
-  Info: record
-    Header: Windows.TBitmapInfoHeader;
-    Colors: array[0..3] of Cardinal; // reserve extra color for colormasks
-  end;
   BitsPtr: Pointer;
-  DataSize: Integer;
+  DataSize: PtrUInt;
 begin
-  DC := Windows.GetDC(0);
+  Result := False;
   AMask := 0;
-  ABitmap := CreateDIBSectionFromDescription(DC, ADesc, BitsPtr);
-  //DbgDumpBitmap(ABitmap, 'CreateBitmaps - Image');
-  Windows.ReleaseDC(0, DC);
 
-  Result := ABitmap <> 0;
-  if not Result then Exit;
-  if BitsPtr = nil then Exit;
+  if not ((ADesc.BitsPerPixel = 1) and (ADesc.LineEnd = rileWordBoundary)) then
+  begin
+    DC := Windows.GetDC(0);
+    AMask := 0;
+    ABitmap := CreateDIBSectionFromDescription(DC, ADesc, BitsPtr);
+    //DbgDumpBitmap(ABitmap, 'CreateBitmaps - Image');
+    Windows.ReleaseDC(0, DC);
 
-  // copy the image data
-  DataSize := BytesPerLine(ADesc.Width, ADesc.BitsPerPixel) * ADesc.Height;
-  if DataSize > ARawImage.DataSize
-  then DataSize := ARawImage.DataSize;
-  Move(ARawImage.Data^, BitsPtr^, DataSize);
+    Result := ABitmap <> 0;
+    if not Result then Exit;
+    if BitsPtr = nil then Exit;
 
-  if ASkipMask then Exit;
-  if ARawImage.Mask = nil then Exit;
-  if ARawImage.MaskSize = 0 then Exit;
+    // copy the image data
+    DataSize := BytesPerLine(ADesc.Width, ADesc.BitsPerPixel) * ADesc.Height;
+    if DataSize > ARawImage.DataSize
+    then DataSize := ARawImage.DataSize;
+    Move(ARawImage.Data^, BitsPtr^, DataSize);
+  end
+  else
+    ABitmap := Windows.CreateBitmap(ADesc.Width, ADesc.Height, 1, 1, ARawImage.Data);
+
+  if ASkipMask then Exit(True);
 
   AMask := Windows.CreateBitmap(ADesc.Width, ADesc.Height, 1, 1, ARawImage.Mask);
+  //DbgDumpBitmap(ABitmap, 'CreateBitmaps - Mask');
   Result := AMask <> 0;
 end;
 
@@ -223,6 +220,7 @@ begin
     if not Result then exit;
 
     Result := GetBitmapBytes(AMask, R, ARawImage.Description.MaskLineEnd, ARawImage.Mask, ARawImage.MaskSize);
+    //DebugLn(Format('AMask = %d, MaskSize = %d, Mask = %d, Result = %s', [AMask, ARawImage.MaskSize, PtrUInt(ARawImage.Mask), BoolToStr(Result)]));
   end
   else begin
     ARawImage.Description.MaskBitsPerPixel := 0;;
@@ -310,10 +308,47 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-//function TWinceWidgetSet.RawImage_QueryDescription(AFlags: TRawImageQueryFlags; var ADesc: TRawImageDescription): Boolean;
-//begin
-//  // override only when queried formats are different from screen description
-//end;
+function TWinceWidgetSet.RawImage_QueryDescription(AFlags: TRawImageQueryFlags; var ADesc: TRawImageDescription): Boolean;
+begin
+  if riqfAlpha in AFlags
+  then begin
+    //always return rgba description
+    if not (riqfUpdate in AFlags)
+    then ADesc.Init;
+
+    ADesc.Format := ricfRGBA;
+    ADesc.Depth := 32;
+    ADesc.BitOrder := riboReversedBits;
+    ADesc.ByteOrder := riboLSBFirst;
+    ADesc.LineOrder := riloTopToBottom;
+    ADesc.LineEnd := rileDWordBoundary;
+    ADesc.BitsPerPixel := 32;
+
+    ADesc.AlphaPrec := 8;
+    ADesc.AlphaShift := 24;
+
+    if riqfRGB in AFlags
+    then begin
+      ADesc.RedPrec := 8;
+      ADesc.GreenPrec := 8;
+      ADesc.BluePrec := 8;
+      ADesc.RedShift := 16;
+      ADesc.GreenShift := 8;
+      ADesc.BlueShift := 0;
+    end;
+    
+    AFlags := AFlags - [riqfRGB, riqfAlpha, riqfUpdate];
+    if AFlags = [] then Exit(True);
+    
+    // continue with default
+    Include(AFlags, riqfUpdate);
+  end;
+
+  Result := inherited RawImage_QueryDescription(AFlags, ADesc);
+  // reduce mem
+  if Result and (ADesc.Depth = 24) 
+  then ADesc.BitsPerPixel := 24;
+end;
 
 procedure TWinCEWidgetSet.RemoveEventHandler(var AHandler: PEventHandler);
 var

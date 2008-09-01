@@ -101,8 +101,6 @@ type
   
   // Some temp rework defines, for old functionality both need so be set
 
-  {.$define IMGLIST_KEEP_EXTRA}   // Not needed for Delphi compat.
-
   TDrawingStyle = (dsFocus, dsSelected, dsNormal, dsTransparent);
   TImageType = (itImage, itMask);
 

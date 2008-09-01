@@ -60,7 +60,7 @@ function DeliverMessage(const Target: Pointer; var Message): Integer;
 function DeliverMessage(const Target: TObject; var Message: TLMessage): Integer;
 function ObjectToHWND(Const AObject: TObject): HWND;
 
-function BytesPerLine(nWidth, nBitsPerPixel: Integer): Integer;
+function BytesPerLine(nWidth, nBitsPerPixel: Integer): PtrUInt;
 function CreateDIBSectionFromDescription(ADC: HDC; const ADesc: TRawImageDescription; out ABitsPtr: Pointer): HBITMAP;
 procedure FillRawImageDescriptionColors(var ADesc: TRawImageDescription);
 procedure FillRawImageDescription(const ABitmapInfo: Windows.TBitmap; out ADesc: TRawImageDescription);
@@ -614,7 +614,7 @@ Begin
     Assert (False, 'Trace:[ObjectToHWND]****** Warning: handle = 0 *******');
 end;
 
-function BytesPerLine(nWidth, nBitsPerPixel: Integer): Integer;
+function BytesPerLine(nWidth, nBitsPerPixel: Integer): PtrUInt;
 begin
   Result := ((nWidth * nBitsPerPixel + 31) and (not 31) ) div 8;
 end;
@@ -724,7 +724,9 @@ begin
   Info.Header.biClrImportant := 0;
   Info.Header.biSizeImage := BytesPerLine(Info.Header.biWidth, Info.Header.biBitCount) * ADesc.Height;
   // CE only supports bitfields
-  Info.Header.biCompression := BI_BITFIELDS;
+  if ADesc.BitsPerPixel > 8
+  then Info.Header.biCompression := BI_BITFIELDS
+  else Info.Header.biCompression := BI_RGB;
 
   // when 24bpp, CE only supports B8G8R8 encoding
   // TODO: check the description
@@ -739,10 +741,45 @@ begin
   //DbgDumpBitmap(Result, 'CreateDIBSectionFromDescription - Image');
 end;
 
+function CreateDIBSectionFromDDB(ASource: HBitmap; out ABitsPtr: Pointer): HBitmap;
+var
+  ADC, SrcDC, DstDC: HDC;
+  ADesc: TRawImageDescription;
+  SrcOldBm, DstOldBm: HBitmap;
+begin
+  Result := 0;
+
+  // get source bitmap description
+  if not RawImage_DescriptionFromBitmap(ASource, ADesc) then
+    Exit;
+
+  // create apropriate dib section
+  ADC := GetDC(0);
+  Result := CreateDIBSectionFromDescription(ADC, ADesc, ABitsPtr);
+  ReleaseDC(0, ADC);
+
+  if Result = 0 then
+    Exit;
+
+  // copy source bitmap into destination
+  SrcDC := CreateCompatibleDC(0);
+  SrcOldBm := SelectObject(SrcDC, ASource);
+  DstDC := CreateCompatibleDC(0);
+  DstOldBm := SelectObject(DstDC, Result);
+  Windows.BitBlt(DstDC, 0, 0, ADesc.Width, ADesc.Height, SrcDC, 0, 0, SRCCOPY);
+  SelectObject(SrcDC, SrcOldBm);
+  SelectObject(DstDC, DstOldBm);
+  DeleteDC(SrcDC);
+  DeleteDC(DstDC);
+end;
+
 function GetBitmapBytes(ABitmap: HBITMAP; const ARect: TRect; ALineEnd: TRawImageLineEnd; var AData: Pointer; var ADataSize: PtrUInt): Boolean;
 var
   Section: Windows.TDIBSection;
+  DIBCopy: HBitmap;
+  DIBData: Pointer;
 begin
+  Result := False;
   // first try if the bitmap is created as section
   if (Windows.GetObject(ABitmap, SizeOf(Section), @Section) > 0) and (Section.dsBm.bmBits <> nil)
   then begin
@@ -753,9 +790,18 @@ begin
   
   // bitmap is not a section, retrieve only bitmap
   if Windows.GetObject(ABitmap, SizeOf(Section.dsBm), @Section) = 0
-  then Exit(False);
+  then Exit;
 
-  {$note TODO: create copy bitmap to section and use bits}
+  DIBCopy := CreateDIBSectionFromDDB(ABitmap, DIBData);
+  if DIBCopy = 0 then
+    Exit;
+  if (Windows.GetObject(DIBCopy, SizeOf(Section), @Section) > 0) and (Section.dsBm.bmBits <> nil)
+  then begin
+    with Section.dsBm do
+      Result := CopyImageData(bmWidth, bmHeight, bmWidthBytes, bmBitsPixel, bmBits, ARect, riloTopToBottom, riloTopToBottom, ALineEnd, AData, ADataSize);
+  end;
+
+  DeleteObject(DIBCopy);
 
   Result := True;
 end;

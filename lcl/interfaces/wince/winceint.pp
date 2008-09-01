@@ -26,7 +26,7 @@ unit WinCEInt;
 
 {$mode objfpc}{$H+}
 
-Interface
+interface
 
 { At least FPC 2.2.1 is required if the architecture is ARM
   FPC 2.0 or inferior isn't checked because it can't compile for wince }
@@ -48,12 +48,15 @@ Interface
   When editing this unit list, be sure to keep Windows listed first to ensure
   successful compilation.
 }
-Uses
+uses
   // Compatibility
-  {$ifdef Win32}win32compat,{$endif}
+  {$ifdef Win32}
+    win32compat,
+  {$else}
+    aygshell,
+  {$endif}
   // Libs
   Windows,
-  {$ifndef win32}aygshell,{$endif}
   // RTL, LCL
   Classes, ComCtrls, Controls, Buttons, Dialogs, DynHashArray,
   ExtCtrls, Forms, GraphMath, GraphType, InterfaceBase, LCLIntf, LCLType,
