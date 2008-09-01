@@ -1037,11 +1037,7 @@ type
     class procedure SetProperties(const AProperties: TDebuggerProperties); // Set the current properties
 
   public
-    constructor Create(const AExternalDebugger: String); virtual; {Virtual constructor makes no sense}
-                        //MWE: there will be a day that they do make sense :-)
-                        // MG: there will be a day that they do make troubles :)
-                        //MWE: do they ?
-                        //MWE: Now they do make sense !
+    constructor Create(const AExternalDebugger: String); virtual;
     destructor Destroy; override;
 
     procedure Init; virtual;                         // Initializes the debugger
