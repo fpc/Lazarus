@@ -10,7 +10,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -498,6 +498,8 @@ type
   protected
     procedure InternalRead(Stream: TStream; Img: TFPCustomImage); override;
   end;
+
+
 
   { TLazReaderPNG }
 
@@ -3247,6 +3249,7 @@ procedure TLazIntfImage.CopyPixels(ASource: TFPCustomImage; XDst, YDst: Integer;
                                    AlphaMask: Boolean; AlphaTreshold: Word);
 var
   SrcImg: TLazIntfImage absolute ASource;
+  SrcHasMask: Boolean;
   x, y, xStop, yStop: Integer;
   c: TFPColor;
 begin
@@ -3275,10 +3278,15 @@ begin
   Dec(xStop);
   Dec(yStop);
 
-  if ASource is TLazIntfImage then
+  if  (FRawImage.Description.MaskBitsPerPixel > 0)
+  and (ASource is TLazIntfImage)
+  then begin
+    SrcHasMask := SrcImg.FRawImage.Description.MaskBitsPerPixel > 0;
+
     for y:=0 to yStop do
       for x:=0 to xStop do
-        Masked[x+XDst,y+YDst] := SrcImg.Masked[x,y];
+        Masked[x+XDst,y+YDst] := SrcHasMask and SrcImg.Masked[x,y];
+  end;
 
   for y:=0 to yStop do
     for x:=0 to xStop do
