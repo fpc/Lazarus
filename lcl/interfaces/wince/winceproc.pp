@@ -731,11 +731,18 @@ begin
   then Info.Header.biCompression := BI_BITFIELDS
   else Info.Header.biCompression := BI_RGB;
 
-  // when 24bpp, CE only supports B8G8R8 encoding
-  // TODO: check the description
-  Info.Colors[0] := GetMask(ADesc.RedPrec, ADesc.RedShift);
-  Info.Colors[1] := GetMask(ADesc.GreenPrec, ADesc.GreenShift);
-  Info.Colors[2] := GetMask(ADesc.BluePrec, ADesc.BlueShift);
+  if ADesc.BitsPerPixel = 1
+  then begin
+    // mono bitmap: first color is black, second is white
+    Info.Colors[1] := $FFFFFFFF;
+  end
+  else begin
+    // when 24bpp, CE only supports B8G8R8 encoding
+    // TODO: check the description
+    Info.Colors[0] := GetMask(ADesc.RedPrec, ADesc.RedShift);
+    Info.Colors[1] := GetMask(ADesc.GreenPrec, ADesc.GreenShift);
+    Info.Colors[2] := GetMask(ADesc.BluePrec, ADesc.BlueShift);
+  end;
 
   // Use createDIBSection, since only devicedepth bitmaps can be selected into a DC
   // when they are created with createDIBitmap
