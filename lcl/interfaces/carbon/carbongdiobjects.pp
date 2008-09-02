@@ -254,6 +254,7 @@ type
     procedure UpdateImage;
     procedure UpdateInfo;
     function CreateSubImage(const ARect: TRect): CGImageRef;
+    function CreateMaskImage(const ARect: TRect): CGImageRef;
     function CreateMaskedImage(AMask: TCarbonBitmap): CGImageRef;
     function CreateMaskedImage(AMask: TCarbonBitmap; const ARect: TRect): CGImageRef;
     procedure AddMask(AMask: TCarbonBitmap);
@@ -1622,6 +1623,26 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  TCarbonBitmap.CreateMaskImage
+  Returns: New mask image ref to portion of image data according to the rect
+ ------------------------------------------------------------------------------}
+function TCarbonBitmap.CreateMaskImage(const ARect: TRect): CGImageRef;
+var
+  CGDataProvider: CGDataProviderRef;
+  Mask: CGImageRef;
+begin
+  CGDataProvider := CGDataProviderCreateWithData(nil, FData, FDataSize, nil);
+  try
+    Mask := CGImageMaskCreate(FWidth, FHeight, FBitsPerPixel,
+      FBitsPerPixel, FBytesPerRow, CGDataProvider, nil, 0);
+    Result := CGImageCreateWithImageInRect(Mask, RectToCGRect(ARect));
+  finally
+    CGDataProviderRelease(CGDataProvider);
+    CGImageRelease(Mask);
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Method:  TCarbonBitmap.CreateMaskedImage
   Returns: New image ref to masked image data
  ------------------------------------------------------------------------------}
@@ -1645,7 +1666,7 @@ begin
   if (AMask <> nil) and (AMask.CGImage <> nil) then
   begin
     CGSubImage := CreateSubImage(ARect);
-    CGSubMaskImage := AMask.CreateSubImage(ARect);
+    CGSubMaskImage := AMask.CreateMaskImage(ARect);
     try
       Result := CGImageCreateWithMask(CGSubImage, CGSubMaskImage);
     finally

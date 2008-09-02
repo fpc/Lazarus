@@ -697,7 +697,12 @@ begin
 
   Result := True;
   
-  if AMask = nil then Exit;
+  if AMask = nil then
+  begin
+    ARawImage.Description.MaskBitsPerPixel := 0;
+    Exit;
+  end;
+
   if AMask.Depth > 1
   then begin
     DebugLn('[WARNING] RawImage_FromCarbonBitmap: AMask.Depth > 1');

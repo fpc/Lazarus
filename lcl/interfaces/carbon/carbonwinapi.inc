@@ -392,6 +392,58 @@ begin
   Result := HFONT(TCarbonFont.Create(LogFont, LongFontName));
 end;
 
+function Create32BitAlphaBitmap(ABitmap, AMask: TCarbonBitmap): TCarbonBitmap;
+var
+  ARawImage: TRawImage;
+  Desc: TRawImageDescription absolute ARawimage.Description;
+
+  ImgHandle, ImgMaskHandle: HBitmap;
+  ImagePtr: PRawImage;
+  DevImage: TRawImage;
+  DevDesc: TRawImageDescription;
+  SrcImage, DstImage: TLazIntfImage;
+  W, H: Integer;
+begin
+  Result := nil;
+
+  if not RawImage_FromBitmap(ARawImage, HBITMAP(ABitmap), HBITMAP(AMask)) then
+    Exit;
+
+  ImgMaskHandle := 0;
+
+  W := Desc.Width;
+  if W < 1 then W := 1;
+  H := Desc.Height;
+  if H < 1 then H := 1;
+
+  QueryDescription(DevDesc, [riqfRGB, riqfAlpha], W, H);
+
+  if DevDesc.IsEqual(Desc)
+  then begin
+    // image is compatible, so use it
+    DstImage := nil;
+    ImagePtr := @ARawImage;
+  end
+  else begin
+    // create compatible copy
+    SrcImage := TLazIntfImage.Create(ARawImage, False);
+    DstImage := TLazIntfImage.Create(0, 0);
+    DstImage.DataDescription := DevDesc;
+    DstImage.CopyPixels(SrcImage);
+    SrcImage.Free;
+    DstImage.GetRawImage(DevImage);
+    ImagePtr := @DevImage;
+  end;
+
+  try
+    if not RawImage_CreateBitmaps(ImagePtr^, ImgHandle, ImgMaskHandle, True) then Exit;
+
+    Result := TCarbonBitmap(ImgHandle);
+  finally
+    DstImage.Free;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method:  CreateIconIndirect
   Params:  IconInfo - Icon/Cursor info as in win32
@@ -410,15 +462,19 @@ begin
   Result := 0;
   if IconInfo^.hbmColor = 0 then
     Exit;
+
+  ABitmap := Create32BitAlphaBitmap(TCarbonBitmap(IconInfo^.hbmColor), TCarbonBitmap(IconInfo^.hbmMask));
   
   if IconInfo^.fIcon then
   begin
-    ABitmap := TCarbonBitmap.Create(TCarbonBitmap(IconInfo^.hbmColor));
-    ABitmap.AddMask(TCarbonBitmap(IconInfo^.hbmMask));
     Result := HICON(ABitmap)
   end
   else
+  begin
+    IconInfo^.hbmColor := HBITMAP(ABitmap);
+    IconInfo^.hbmMask := 0;
     Result := HICON(TCarbonCursor.CreateFromInfo(IconInfo));
+  end;
 end;
 
 function TCarbonWidgetSet.CreatePalette(const LogPalette: TLogPalette
