@@ -421,6 +421,7 @@ type
     procedure setText(const W: WideString); override;
     procedure setMenuBar(AMenuBar: QMenuBarH);
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
+    function IsMdiChild: Boolean;
     procedure OffsetMousePos(APoint: PQtPoint); override;
     procedure SlotWindowStateChange; cdecl;
     procedure setShowInTaskBar(AValue: Boolean);
@@ -1598,16 +1599,13 @@ begin
       QEventWindowDeactivate: SlotActivateWindow(False);
       QEventShowToParent:
       begin
-        if (LCLObject is TCustomForm) then
+        if (Self is TQtMainWindow) and (TQtMainWindow(Self).IsMdiChild) then
         begin
-          if TCustomForm(LCLObject).FormStyle = fsMDIChild then
+          if not TCustomForm(LCLObject).Active then
           begin
-            if not TCustomForm(LCLObject).Active then
-            begin
-              SlotActivateWindow(True);
-              Result := True;
-              QEvent_ignore(Event);
-            end;
+            SlotActivateWindow(True);
+            Result := True;
+            QEvent_ignore(Event);
           end;
         end;
       end;
@@ -2285,7 +2283,10 @@ begin
     WriteLn('TQtWidget.SlotMove');
   {$endif}
 
-  if not QEvent_spontaneous(Event) then
+  if not QEvent_spontaneous(Event) or
+    (not QEvent_spontaneous(Event) and
+    (Self is TQtMainWindow) and not
+    (TQtMainWindow(Self).IsMdiChild)) then
     Exit;
 
   FillChar(Msg, SizeOf(Msg), #0);
@@ -3753,8 +3754,7 @@ begin
   end
   else
   begin
-    if (LCLObject is TCustomForm) and (TCustomForm(LCLObject).FormStyle = fsMDIChild) and
-        not (csDesigning in LCLObject.ComponentState) then
+    if IsMdiChild then
     begin
 
       if TQtMainWindow(Application.MainForm.Handle).MDIAreaHandle = nil then
@@ -3793,8 +3793,7 @@ begin
     QLayout_setContentsMargins(LayoutWidget, 0, 0, 0, 0);
 
     {we must fix mouse events in QMDISubWindow by adding FCentralWidget as it''s widget }
-    if (LCLObject is TCustomForm) and (TCustomForm(LCLObject).FormStyle = fsMDIChild) and
-        not (csDesigning in LCLObject.ComponentState) then
+    if IsMdiChild then
       QMdiSubWindow_setWidget(QMdiSubWindowH(Result), FCentralWidget);
       
     QLayout_addWidget(LayoutWidget, FCentralWidget);
@@ -3863,10 +3862,16 @@ begin
   EndEventProcessing;
 end;
 
+function TQtMainWindow.IsMdiChild: Boolean;
+begin
+  Result := (LCLObject <> nil) and not
+    (csDesigning in LCLObject.ComponentState) and
+    (TCustomForm(LCLObject).FormStyle = fsMDIChild);
+end;
+
 procedure TQtMainWindow.OffsetMousePos(APoint: PQtPoint);
 begin
-  if (LCLObject <> nil) and
-     (TCustomForm(LCLObject).FormStyle <> fsMdiChild) then
+  if not IsMdiChild then
     inherited OffsetMousePos(APoint);
 end;
 
