@@ -2283,10 +2283,10 @@ begin
     WriteLn('TQtWidget.SlotMove');
   {$endif}
 
-  if not QEvent_spontaneous(Event) or
+  if not QEvent_spontaneous(Event) and
     (not QEvent_spontaneous(Event) and
     (Self is TQtMainWindow) and not
-    (TQtMainWindow(Self).IsMdiChild)) then
+    TQtMainWindow(Self).IsMdiChild) then
     Exit;
 
   FillChar(Msg, SizeOf(Msg), #0);
