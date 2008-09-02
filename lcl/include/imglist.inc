@@ -156,7 +156,7 @@ begin
   Bmp := CreateBitmapFromLazarusResource(ResourceName);
   if MaskColor <> clNone then
   begin
-    Bmp.Mask(MaskColor);
+    Bmp.TransparentColor := MaskColor;
     Bmp.Transparent := True;
   end;
   Result := Add(Bmp, nil);
