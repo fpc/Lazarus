@@ -2238,11 +2238,21 @@ procedure TQtWidget.SlotMouseWheel(Sender: QObjectH; Event: QEventH); cdecl;
 var
   Msg: TLMMouseEvent;
   MousePos: TQtPoint;
+  Modifiers: QtKeyboardModifiers;
+  ModifierState: PtrInt;
 begin
   FillChar(Msg, SizeOf(Msg), #0);
 
   MousePos := QWheelEvent_Pos(QWheelEventH(Event))^;
   OffsetMousePos(@MousePos);
+
+  Modifiers := QInputEvent_modifiers(QInputEventH(Event));
+  Msg.State := [];
+  ModifierState := QtKeyModifiersToKeyState(Modifiers);
+  if (ModifierState and MK_SHIFT) <> 0 then
+    Msg.State := [ssShift];
+  if (ModifierState and MK_CONTROL) <> 0 then
+    Msg.State := [ssCtrl] + Msg.State;
 
   LastMouse.Widget := Sender;
   LastMouse.MousePos := MousePos;
@@ -2256,6 +2266,13 @@ begin
   
   NotifyApplicationUserInput(Msg.Msg);
   DeliverMessage(Msg);
+
+  {propagate mousewheel to parent if our sender is TPanel,
+   fixes problem with mousewheel scroll with lazreport}
+  if not (csDesigning in LCLObject.ComponentState) and
+    (LCLObject is TPanel) and
+    Assigned(LCLObject.Parent) then
+      TQtWidget(LCLObject.Parent.Handle).DeliverMessage(Msg);
 end;
 
 procedure TQtWidget.SlotMove(Event: QEventH); cdecl;
