@@ -130,7 +130,7 @@ var
   AnAdjustment: PGtkAdjustment;
   wHandle: HWND;
   SpinWidget: PGtkSpinButton;
-  AMin, AMax: Double;
+  AMin, AMax: gFloat;
 begin
   //DebugLn(['TGtkWSCustomFloatSpinEdit.UpdateControl ',dbgsName(ACustomFloatSpinEdit)]);
   wHandle := ACustomFloatSpinEdit.Handle;
@@ -143,8 +143,8 @@ begin
   end
   else
   begin
-    AMin := -MaxDouble;
-    AMax := MaxDouble;
+    AMin := -MaxSingle;
+    AMax := MaxSingle;
   end;
   
   AnAdjustment:=gtk_spin_button_get_adjustment(SpinWidget);
