@@ -615,7 +615,7 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TStatusBar.Create" link="#LCL.Controls.TWinControl.Create">
+      <element name="TStatusBar.Create" link="#rtl.Classes.TComponent.Create">
         <short/>
         <descr/>
         <errors/>
@@ -626,7 +626,7 @@
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TStatusBar.Destroy" link="#LCL.Controls.TWinControl.Destroy">
+      <element name="TStatusBar.Destroy" link="#rtl.Classes.TComponent.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -634,7 +634,8 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TStatusBar.InvalidatePanel">
-        <short/>
+        <short>
+          <var>InvalidatePanel</var> - renders the panel with specified index non-valid</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -649,21 +650,24 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TStatusBar.BeginUpdate">
-        <short/>
+        <short>
+          <var>BeginUpdate</var> - starts the update process</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TStatusBar.EndUpdate">
-        <short/>
+        <short>
+          <var>EndUpdate</var> - finishes the update process</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
       <element name="TStatusBar.UpdatingStatusBar">
-        <short/>
+        <short>
+          <var>UpdatingStatusBar</var> - returns True if the status bar is being updated</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -856,7 +860,7 @@
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TTabSheet.Create" link="#LCL.Controls.TWinControl.Create">
+      <element name="TTabSheet.Create" link="#rtl.Classes.TComponent.Create">
         <short/>
         <descr/>
         <errors/>
@@ -867,7 +871,7 @@
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TTabSheet.Destroy" link="#LCL.Controls.TWinControl.Destroy">
+      <element name="TTabSheet.Destroy" link="#rtl.Classes.TComponent.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -1146,7 +1150,7 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TPageControl.Create" link="#LCL.Controls.TWinControl.Create">
+      <element name="TPageControl.Create" link="#rtl.Classes.TComponent.Create">
         <short/>
         <descr/>
         <errors/>
@@ -1182,7 +1186,12 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TPageControl.SelectNextPage">
-        <descr/>
+        <descr>
+          <printshort id="TPageControl.SelectNextPage"/>
+          <p>If GoForward is True, goes to next (higher index) page;</p>
+          <p>if False, goes to previous (lower index)</p>
+          <p>If <var>CheckTabVisible</var> is True, will only move if the tab is visible</p>
+        </descr>
         <errors/>
         <seealso/>
         <short>
@@ -2452,7 +2461,8 @@
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomTabControl.CanChange">
-        <short/>
+        <short>
+          <var>CanChange</var> - returns True if the control can be changed</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2463,7 +2473,8 @@
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomTabControl.CanShowTab">
-        <short/>
+        <short>
+          <var>CanShowTab</var> - returns True if the specified (indexed) Tab can be shown</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2478,14 +2489,16 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomTabControl.Change">
-        <short/>
+        <short>
+          <var>Change</var> - software emulation of the <var>OnChange</var> event</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomTabControl.DrawTab">
-        <short/>
+        <short>
+          <var>DrawTab</var> - software emulation of the <var>OnDrawTab </var>event</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2504,7 +2517,8 @@
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomTabControl.GetImageIndex">
-        <short/>
+        <short>
+          <var>GetImageIndex</var> - software emulation of the <var>OnGetImageIndex</var> event</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2555,7 +2569,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomTabControl.SetTabIndex">
-        <short/>
+        <short>
+          <var>SetTabIndex</var> - set the index of the current tab to the specified value</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2566,14 +2581,16 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomTabControl.UpdateTabImages">
-        <short/>
+        <short>
+          <var>UpdateTabImages</var> - bring the images of the tabs up to date</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomTabControl.ImageListChange">
-        <short/>
+        <short>
+          <var>ImageListChange</var> - method for signalling a change to the image list</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2614,7 +2631,8 @@
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomTabControl.GetDisplayRectWithBorder">
-        <short/>
+        <short>
+          <var>GetDisplayRectWithBorder</var> - returns the coordinates of the display rectangle with a border around it</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2762,7 +2780,7 @@
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomTabControl.Create" link="#LCL.Controls.TCustomControl.Create">
+      <element name="TCustomTabControl.Create" link="#rtl.Classes.TComponent.Create">
         <short/>
         <descr/>
         <errors/>
@@ -2773,7 +2791,7 @@
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomTabControl.Destroy" link="#LCL.Controls.TCustomControl.Destroy">
+      <element name="TCustomTabControl.Destroy" link="#rtl.Classes.TComponent.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -3271,15 +3289,23 @@
       <element name="TCustomDrawStateFlag">
         <short>Set to define the DrawState</short>
         <descr>TCustomDrawStateFlag consists of the following constants:<br/>
-cdsSelected,<br/> 
-cdsGrayed,<br/> 
-cdsDisabled,<br/> 
+cdsSelected,<br/>
+ 
+cdsGrayed,<br/>
+ 
+cdsDisabled,<br/>
+ 
 cdsChecked,<br/>
-cdsFocused,<br/> 
-cdsDefault,<br/> 
-cdsHot,<br/> 
-cdsMarked,<br/> 
-cdsIndeterminate</descr>
+cdsFocused,<br/>
+ 
+cdsDefault,<br/>
+ 
+cdsHot,<br/>
+ 
+cdsMarked,<br/>
+ 
+cdsIndeterminate
+</descr>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TCustomDrawStateFlag.cdsSelected">
@@ -5279,7 +5305,8 @@ cdsIndeterminate</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListView.ItemDeleted">
-        <short/>
+        <short>
+          <var>ItemDeleted</var> - the specified listitem is removed from the list</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5290,7 +5317,8 @@ cdsIndeterminate</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListView.ItemInserted">
-        <short/>
+        <short>
+          <var>ItemInserted</var> - the specified item is inserted into the list</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5420,7 +5448,8 @@ cdsIndeterminate</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListView.ImageChanged">
-        <short>ImageChanged</short>
+        <short>
+          <var>ImageChanged</var> - procedure to signal that an image has chnaged</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5648,22 +5677,28 @@ cdsIndeterminate</descr>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomListView.Create" link="#LCL.Controls.TWinControl.Create"/>
+      <element name="TCustomListView.Create" link="#rtl.Classes.TComponent.Create"/>
       <!-- argument Visibility: default -->
       <element name="TCustomListView.Create.Aowner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomListView.Destroy" link="#LCL.Controls.TWinControl.Destroy">
+      <element name="TCustomListView.Destroy" link="#rtl.Classes.TComponent.Destroy">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomListView.BeginUpdate"/>
+      <element name="TCustomListView.BeginUpdate">
+        <short>
+          <var>BeginUpdate</var> - start updating the list view</short>
+      </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomListView.EndUpdate"/>
+      <element name="TCustomListView.EndUpdate">
+        <short>
+          <var>EndUpdate</var> - finish updating the list view</short>
+      </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.BoundingRect">
         <short>
@@ -5701,7 +5736,7 @@ cdsIndeterminate</descr>
       <!-- property Visibility: public -->
       <element name="TCustomListView.FlatScrollBars">
         <short>
-          <var>FlatScrollBars </var>- whether the scroll bars are to be displayed flat</short>
+          <var>FlatScrollBars </var>- whether the scroll bars are to be displayed flat (default False)</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.FullDrag">
@@ -6215,7 +6250,7 @@ cdsIndeterminate</descr>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomProgressBar.InitializeWnd">
+      <element name="TCustomProgressBar.InitializeWnd" link="#LCL.Controls.TWinControl.InitializeWnd">
         <short/>
         <descr/>
         <errors/>
@@ -6229,7 +6264,7 @@ cdsIndeterminate</descr>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomProgressBar.Create" link="#LCL.Controls.TWinControl.Create">
+      <element name="TCustomProgressBar.Create" link="#rtl.Classes.TComponent.Create">
         <short/>
         <descr/>
         <errors/>
@@ -6904,7 +6939,8 @@ cdsIndeterminate</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomUpDown.CanChange">
-        <short/>
+        <short>
+          <var>CanChange</var> - if True, control can be changed</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6947,13 +6983,15 @@ cdsIndeterminate</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomUpDown.ArrowKeys">
-        <short/>
+        <short>
+          <var>ArrowKeys</var> - if True, the control can be operated by the keyboard's arrow keys, which would simulate a click on the Next or Previous button</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomUpDown.Associate">
-        <short/>
+        <short>
+          <var>Associate</var> - the associated control whose properties (controlled variable) are to be changed by the UpDown control</short>
         <descr/>
         <seealso/>
       </element>
@@ -7019,7 +7057,7 @@ cdsIndeterminate</descr>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomUpDown.Create" link="#LCL.Controls.TCustomControl.Create">
+      <element name="TCustomUpDown.Create" link="#rtl.Classes.TComponent.Create">
         <short/>
         <descr/>
         <errors/>
@@ -7030,7 +7068,7 @@ cdsIndeterminate</descr>
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomUpDown.Destroy" link="#LCL.Controls.TCustomControl.Destroy">
+      <element name="TCustomUpDown.Destroy" link="#rtl.Classes.TComponent.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -7064,13 +7102,13 @@ cdsIndeterminate</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TUpDown.Associate">
+      <element name="TUpDown.Associate" link="#LCL.ComCtrls.TCustomUpDown.Associate">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TUpDown.ArrowKeys">
+      <element name="TUpDown.ArrowKeys" link="#LCL.ComCtrls.TCustomUpDown.ArrowKeys">
         <short/>
         <descr/>
         <seealso/>
@@ -9496,7 +9534,7 @@ cdsIndeterminate</descr>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomTrackBar.Create" link="#LCL.Controls.TWinControl.Create">
+      <element name="TCustomTrackBar.Create" link="#rtl.Classes.TComponent.Create">
         <short/>
         <descr/>
         <errors/>
@@ -9745,7 +9783,7 @@ cdsIndeterminate</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTrackBar.OnMouseMove">
+      <element name="TTrackBar.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
         <short/>
         <descr/>
         <seealso/>
@@ -13819,7 +13857,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomTreeView.CanChange">
-        <short/>
+        <short>
+          <var>CanChange</var> - returns True if a given TreeNode can be changed</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13834,7 +13873,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomTreeView.CanCollapse">
-        <short/>
+        <short>
+          <var>CanCollapse</var> returns True if a given  TreeNode is able to be collapsed</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13849,7 +13889,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomTreeView.CanEdit">
-        <short/>
+        <short>
+          <var>CanEdit</var> - returns True if a Given TreeNode is allowed to be edited</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13864,7 +13905,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomTreeView.CanExpand">
-        <short/>
+        <short>
+          <var>CanExpand</var> - returns True if the specified TreeNode can be expanded</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13879,7 +13921,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomTreeView.CreateNode">
-        <short/>
+        <short>
+          <var>CreateNode</var> - creates a new node in a TreeView and returns its content</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13890,10 +13933,16 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomTreeView.CustomDraw">
-        <short/>
-        <descr/>
+        <short>
+          <var>CustomDraw</var> - returns True if Custom Drawing is proceeding in the specified Rectangle</short>
+        <descr>
+          <printshort id="TCustomTreeView.CustomDraw"/>
+          <p>Stage indicates whether PrePaint, PostPaint, PreErase or PostErase</p>
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.Graphics.Progress">Progress</link>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="TCustomTreeView.CustomDraw.Result">
@@ -13909,8 +13958,15 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomTreeView.CustomDrawItem">
-        <short/>
-        <descr/>
+        <short>
+          <var>CustomDrawItem</var> - returns True if Custom Image drawing is proceeding at the specified TreeNode</short>
+        <descr>
+          <printshort id="TCustomTreeView.CustomDrawItem"/>
+          <p>State denotes one of <var>Selected, Grayed, Disabled, Checked, Focused, Default, Hot, Marked or Indeterminate</var>
+          </p>
+          <p>Stage indicates whether PrePaint, PostPaint, PreErase or PostErase</p>
+          <p>If <var>PaintImages</var> is True, Images should be painted as well as text</p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -13935,7 +13991,7 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomTreeView.GetDragImages">
+      <element name="TCustomTreeView.GetDragImages" link="#LCL.Controls.TControl.GetDragImages">
         <short/>
         <descr/>
         <errors/>
@@ -13947,7 +14003,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomTreeView.GetMaxLvl">
-        <short/>
+        <short>
+          <var>GetMaxLvl</var> - returns the maximum level of branching of the tree structure</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14092,7 +14149,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomTreeView.Change">
-        <short/>
+        <short>
+          <var>Change</var> - software emulation of the <var>OnChange</var> event</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14103,7 +14161,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomTreeView.Collapse">
-        <short/>
+        <short>
+          <var>Collapse</var> - software emulation of the <var>OnCollapsed</var> event</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14113,7 +14172,7 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomTreeView.CreateParams">
+      <element name="TCustomTreeView.CreateParams" link="#LCL.Controls.TWinControl.CreateParams">
         <short/>
         <descr/>
         <errors/>
@@ -14124,7 +14183,7 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomTreeView.CreateWnd">
+      <element name="TCustomTreeView.CreateWnd" link="#LCL.Controls.TWinControl.CreateWnd">
         <short/>
         <descr/>
         <errors/>
@@ -14132,7 +14191,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomTreeView.Delete">
-        <short/>
+        <short>
+          <var>Delete</var> - remove the specified node from the tree structure (software emulation of the <var>OnDeletion</var> event)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14142,7 +14202,7 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomTreeView.DestroyWnd">
+      <element name="TCustomTreeView.DestroyWnd" link="#LCL.Controls.TWinControl.DestroyWnd">
         <short/>
         <descr/>
         <errors/>
@@ -14196,14 +14256,16 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomTreeView.DoPaint">
-        <short/>
+        <short>
+          <var>DoPaint</var> - perform the actual painting</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomTreeView.DoPaintNode">
-        <short/>
+        <short>
+          <var>DoPaintNode</var> - perform the actual painting of the specified node</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14275,21 +14337,21 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomTreeView.InitializeWnd">
+      <element name="TCustomTreeView.InitializeWnd" link="#LCL.Controls.TWinControl.InitializeWnd">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomTreeView.Invalidate">
+      <element name="TCustomTreeView.Invalidate" link="#LCL.Controls.TControl.Invalidate">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomTreeView.EraseBackground">
+      <element name="TCustomTreeView.EraseBackground" link="#LCL.Controls.TWinControl.EraseBackground">
         <short/>
         <descr/>
         <errors/>
@@ -14438,7 +14500,7 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomTreeView.WndProc">
+      <element name="TCustomTreeView.WndProc" link="#LCL.Controls.TControl.WndProc">
         <short/>
         <descr/>
         <errors/>
@@ -14523,7 +14585,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.AutoExpand">
-        <short/>
+        <short>
+          <var>AutoExpand</var> - if True, the tree structure is automatically expanded when a node is selected</short>
         <descr/>
         <seealso/>
       </element>
@@ -14535,7 +14598,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.HideSelection">
-        <short/>
+        <short>
+          <var>HideSelection</var> - if True, the selected part of the tree is to be hidden</short>
         <descr/>
         <seealso/>
       </element>
@@ -14547,19 +14611,22 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.Images">
-        <short/>
+        <short>
+          <var>Images</var> - the ImageList to be used in association with the list of TreeNodes</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.Indent">
-        <short/>
+        <short>
+          <var>Indent</var> - the amount by which each successive level of branching is to be indented in the tree structure</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.Items">
-        <short/>
+        <short>
+          <var>Items</var> - the collection of TreeNodes that comprise the TreeView</short>
         <descr/>
         <seealso/>
       </element>
@@ -14577,31 +14644,36 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.OnChange">
-        <short/>
+        <short>
+          <var>OnChange</var> - specialised event handler for a change in the TreeView</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.OnChanging">
-        <short/>
+        <short>
+          <var>OnChanging</var> - specialised event handler while TreeView is being changed</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.OnCollapsed">
-        <short/>
+        <short>
+          <var>OnCollapsed</var> - specialised event handler when part of the tree is collapsed</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.OnCollapsing">
-        <short/>
+        <short>
+          <var>OnCollapsing</var> - specialised event handler while part of the tree is being collapsed</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.OnCompare">
-        <short/>
+        <short>
+          <var>OnCompare</var> - specialised event handler for comparisons within the TreeView</short>
         <descr/>
         <seealso/>
       </element>
@@ -14625,31 +14697,36 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.OnDeletion">
-        <short/>
+        <short>
+          <var>OnDeletion</var> - specialised event handler for deletion of node(s) from the tree</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.OnEdited">
-        <short/>
+        <short>
+          <var>OnEdited</var> - specialised event handler when the TreeView has been edited</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.OnEditing">
-        <short/>
+        <short>
+          <var>OnEditing</var> - specialised event handler while a TreeView is being edited</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.OnExpanded">
-        <short/>
+        <short>
+          <var>OnExpanded</var> - specialised event handler when a TreeView has been expanded</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.OnExpanding">
-        <short/>
+        <short>
+          <var>OnExpanding</var> - specialised event handler while a TreeView is being expanded</short>
         <descr/>
         <seealso/>
       </element>
@@ -14673,13 +14750,15 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.ReadOnly">
-        <short/>
+        <short>
+          <var>ReadOnly</var> - if True, the TreeView can only be observed, and not Written to or changed. Default False</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.RightClickSelect">
-        <short/>
+        <short>
+          <var>RightClickSelect</var> - if True, a Right Click selects an Item. Default False</short>
         <descr/>
         <seealso/>
       </element>
@@ -14727,7 +14806,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.SortType">
-        <short/>
+        <short>
+          <var>SortType</var> - the way the items are to be sorted: None, by Data, by Text or Both</short>
         <descr/>
         <seealso/>
       </element>
@@ -14739,12 +14819,13 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.ToolTips">
-        <short/>
+        <short>
+          <var>ToolTips</var> - if True (default), pop-up tool tips are to be shown</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomTreeView.Create" link="#LCL.Controls.TCustomControl.Create">
+      <element name="TCustomTreeView.Create" link="#rtl.Classes.TComponent.Create">
         <short/>
         <descr/>
         <errors/>
@@ -14755,7 +14836,7 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomTreeView.Destroy" link="#LCL.Controls.TCustomControl.Destroy">
+      <element name="TCustomTreeView.Destroy" link="#rtl.Classes.TComponent.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -14781,7 +14862,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomTreeView.CustomSort">
-        <short/>
+        <short>
+          <var>CustomSort</var> - if True, an external sorting method specified by <var>SortProc</var> is to be used</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14902,14 +14984,15 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       <!-- procedure Visibility: public -->
       <element name="TCustomTreeView.BeginUpdate">
         <short>
-          <var>BeginUpdate</var> - start the updae of the display</short>
+          <var>BeginUpdate</var> - start the update of the display</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomTreeView.EndUpdate">
-        <short/>
+        <short>
+          <var>EndUpdate</var> finishes updating the display</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -15106,7 +15189,27 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       <!-- property Visibility: public -->
       <element name="TCustomTreeView.Options">
         <short>The set of <var>Options</var> for displaying the tree view</short>
-        <descr/>
+        <descr>
+          <printshort id="TCustomTreeView.Options"/>
+          <p>List of available options:</p>
+          <pre>tvoAllowMultiselect,
+    tvoAutoExpand,
+    tvoAutoInsertMark,
+    tvoAutoItemHeight,
+    tvoHideSelection,
+    tvoHotTrack,
+    tvoKeepCollapsedNodes,
+    tvoReadOnly,
+    tvoRightClickSelect,
+    tvoRowSelect,
+    tvoShowButtons,
+    tvoShowLines,
+    tvoShowRoot,
+    tvoShowSeparators,
+    tvoToolTips,
+    tvoNoDoubleClickExpand
+</pre>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
@@ -15862,8 +15965,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <element name="TCustomHeaderControl.DblClick" link="#LCL.Controls.TControl.DblClick"/>
       <element name="TCustomHeaderControl.Click" link="#LCL.Controls.TControl.Click"/>
-      <element name="TCustomHeaderControl.Destroy" link="#LCL.Controls.TCustomControl.Destroy"/>
-      <element name="TCustomHeaderControl.Create" link="#LCL.Controls.TCustomControl.Create"/>
+      <element name="TCustomHeaderControl.Destroy" link="#rtl.Classes.TComponent.Destroy"/>
+      <element name="TCustomHeaderControl.Create" link="#rtl.Classes.TComponent.Create"/>
       <element name="TCustomHeaderControl.DragReorder">
         <short>
           <var>DragReorder</var> - find out if the sections are allowed to be re-ordered by dragging</short>
@@ -16026,10 +16129,22 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <short>
           <var>Clear</var> - the stringlist</short>
       </element>
-      <element name="TCustomListView.FindCaption"/>
+      <element name="TCustomListView.FindCaption">
+        <short>
+          <var>FindCaption</var>- search for and return the list item that contains the nominated caption</short>
+        <descr>
+          <printshort id="TCustomListView.FindCaption"/>
+          <p>Starting from item with <var>StartIndex</var>
+          </p>
+          <var>Looking for the string <var>Value</var>
+          </var>
+          <p>
+            <var>Partial, Inclusive, Wrap, PartStart</var>: Boolean arguments allowing matches with part of the string, permitting the string to wrap over a line, etc</p>
+        </descr>
+      </element>
       <element name="TCustomListView.GetItemAt">
         <short>
-          <var>GetItemAt</var> - find the list item at the specified coordinates</short>
+          <var>GetItemAt</var> - find and return the list item at the specified coordinates</short>
       </element>
       <element name="TCustomProgressBar.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
       <element name="TCustomTabControl.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
@@ -16093,7 +16208,10 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       <element name="TStatusBar.SizeGripEnabled"/>
       <element name="TStatusBar.Align" link="#LCL.Controls.TControl.Align"/>
       <element name="TStatusBar.Anchors" link="#LCL.Controls.TControl.Anchors"/>
-      <element name="TStatusBar.AutoHint"/>
+      <element name="TStatusBar.AutoHint">
+        <short>
+          <var>AutoHint</var> - if True, a hint is automatically shown when mouse hovers over status bar. Default False</short>
+      </element>
       <element name="TStatusBar.AutoSize" link="#LCL.Controls.TControl.AutoSize"/>
       <element name="TStatusBar.Constraints" link="#LCL.Controls.TControl.Constraints"/>
       <element name="TStatusBar.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
@@ -16232,6 +16350,10 @@ the comparision is case sensitive.
           <var>UpdateState</var> - bring the state of the control up-to-date</short>
       </element>
       <element name="TCustomHeaderControl.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
+      <element name="TCustomTreeView.DoDragMsg">
+        <short>
+          <var>DoDragMsg</var> generates system message to indicate object and position for dragging and returns Result of action</short>
+      </element>
     </module>
     <!-- ComCtrls -->
   </package>
