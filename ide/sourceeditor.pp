@@ -5545,6 +5545,8 @@ Begin
      ActEdit.EditorComponent.CaretX,ActEdit.EditorComponent.CaretY);
   (SrcEditSubMenuSetBookmarks[Value] as TIDEMenuCommand).Checked := true;
   TIDEMenuCommand(SrcEditSubMenuGotoBookmarks[Value]).Checked:=true;
+  if Project1<>nil then
+    Project1.SessionModified:=true;
 end;
 
 procedure TSourceNotebook.BookMarkSetFree;
