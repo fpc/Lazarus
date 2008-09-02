@@ -217,6 +217,13 @@ type
     pfCustom
     );
 
+const
+  PIXELFORMAT_BPP: array[TPixelFormat] of Byte = (
+    0, 1, 4, 8, 15, 16, 24, 32, 0
+  );
+
+
+type
   TTransparentMode = (
     tmAuto,
     tmFixed
@@ -1477,6 +1484,7 @@ type
     function GetRawImagePtr: PRawImage; override;
     function GetRawImageDescriptionPtr: PRawImageDescription; override;
     function GetTransparent: Boolean; override;
+    class function GetTypeID: Word; virtual;
     class function GetSharedImageClass: TSharedRasterImageClass; override;
     procedure HandleNeeded; override;
     function InternalReleaseBitmapHandle: HBITMAP; override;
@@ -1521,6 +1529,7 @@ type
     function  GetIconHandle: HICON;
     procedure SetIconHandle(const AValue: HICON);
   protected
+    class function GetTypeID: Word; override;
     procedure HandleNeeded; override;
   public
     function ReleaseHandle: HICON;
@@ -1594,6 +1603,7 @@ type
     procedure HandleNeeded; override;
     class function GetDefaultSize: TSize; override;
     class function GetSharedImageClass: TSharedRasterImageClass; override;
+    class function GetTypeID: Word; override;
   public
     class function GetFileExtensions: string; override;
     function LazarusResourceTypeValid(const ResourceType: string): boolean; override;

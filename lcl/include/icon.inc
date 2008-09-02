@@ -527,6 +527,11 @@ begin
   Result := True;
 end;
 
+class function TCustomIcon.GetTypeID: Word;
+begin
+  Result := 0;
+end;
+
 class function TCustomIcon.GetSharedImageClass: TSharedRasterImageClass;
 begin
   Result := TSharedIcon;
@@ -943,8 +948,200 @@ begin
 end;
 
 procedure TCustomIcon.WriteStream(AStream: TMemoryStream);
+  procedure GetMaskData(ARawImg: TRawImage; AMskPtr: Pointer; AMskSize, AWidth, AHeight: Cardinal);
+  var
+    SrcRawImg, DstRawImg: TRawImage;
+    SrcDesc: TRawImageDescription absolute SrcRawImg.Description;
+    DstDesc: TRawImageDescription absolute DstRawImg.Description;
+    SrcImage, DstImage: TLazIntfImage;
+  begin
+
+    SrcRawImg.Init;
+    SrcRawImg.Description := ARawImg.Description.GetDescriptionFromMask;
+    SrcRawImg.Data := ARawImg.Mask;
+    SrcRawImg.DataSize := ARawImg.MaskSize;
+
+    DstRawImg.Init;
+    DstRawImg.Data := AMskPtr;
+    DstRawImg.DataSize := AMskSize;
+
+    DstDesc.Format := ricfGray;
+    DstDesc.Width := AWidth;
+    DstDesc.Height := AHeight;
+    DstDesc.Depth := 1;
+    DstDesc.BitOrder := riboReversedBits;
+    DstDesc.ByteOrder := riboLSBFirst;
+    DstDesc.LineOrder := riloBottomToTop;
+    DstDesc.LineEnd := rileDWordBoundary;
+    DstDesc.BitsPerPixel := 1;
+    DstDesc.RedPrec := 1;
+    DstDesc.RedShift := 0;
+
+    if SrcDesc.IsEqual(DstDesc)
+    then begin
+      Move(ARawImg.Mask^, AMskPtr^, ARawImg.MaskSize);
+      Exit;
+    end;
+
+    SrcImage := TLazIntfImage.Create(SrcRawImg, False);
+    DstImage := TLazIntfImage.Create(DstRawImg, False);
+    DstImage.CopyPixels(SrcImage);
+
+    SrcImage.Free;
+    DstImage.Free;
+  end;
+
+var
+  Header: TIconHeader;
+  StreamStart: Int64;
+  IconDir: array of TIconDirEntry;
+  n, i: Integer;
+  ImageCount: Word;
+  Color: TColor;
+  IconImage: TIconImage;
+  IntfImage: TLazIntfImage;
+  PNGSig: array[0..7] of Byte;
+  PNGWriter: TFPWriterPNG;
+  BMPWriter: TFPWriterBMP;
+  BmpPtr: PByte;
+  MskPtr: PByte;
+  MskSize: Cardinal;
+  MemStream: TMemoryStream;
+  RawImg: TRawImage;
 begin
-  {$IFDEF VerboseLCLTodos}{$note implement me}{$ENDIF}
+  ImageCount := TSharedIcon(FSharedImage).Count;
+  StreamStart := AStream.Position;
+
+  Header.idReserved := 0;
+  Header.idType := NtoLE(GetTypeID);
+  Header.idCount := LEtoN(ImageCount);
+  AStream.Write(Header, SizeOf(Header));
+
+  if ImageCount = 0 then Exit;
+
+  SetLength(IconDir, ImageCount);
+  FillChar(IconDir[0], ImageCount * SizeOf(IconDir[0]), 0);
+
+  // write empty dirlist first, so the images can be written after it.
+  // we'll update it later
+  AStream.Write(IconDir[0], ImageCount * SizeOf(IconDir[0]));
+
+  PNGWriter := nil;
+  BMPWriter := nil;
+  MemStream := nil;
+  IntfImage := nil;
+  try
+    for n := 0 to ImageCount - 1 do
+    begin
+      IconImage := TIconImage(TSharedIcon(FSharedImage).FImages[n]);
+      RawImg := IconImage.FImage;
+
+      // set offset
+      IconDir[n].dwImageOffset := NtoLE(DWord(AStream.Position - StreamStart));
+
+      // create or reset intfimage
+      if IntfImage = nil
+      then IntfImage := TLazIntfImage.Create(RawImg, False)
+      else IntfImage.SetRawImage(RawImg, False);
+
+      // user temp mem stream for storage.
+      if MemStream = nil
+      then MemStream := TMemoryStream.Create
+      else MemStream.Position := 0;
+
+      // write image data
+      if (IconImage.Width >= 255) or (IconImage.Height >= 255)
+      then begin
+        // PNG or DIB image
+        // Vista icons are PNG in this case, but there exist also "old style" icons
+        // with DIB image, we use PNG
+        // (dir.width and dir.height stay 0 in this case)
+
+        if PNGWriter = nil
+        then begin
+          PNGWriter := TFPWriterPNG.Create;
+          PNGWriter.Indexed := False;
+          PNGWriter.WordSized := False;
+        end;
+        PNGWriter.GrayScale := RawImg.Description.Format = ricfGray;
+        PNGWriter.UseAlpha  := RawImg.Description.AlphaPrec > 0;
+        PNGWriter.ImageWrite(MemStream, IntfImage);
+
+        IconDir[n].wBpp := NtoLE(Word(RawImg.Description.BitsPerPixel));
+        IconDir[n].dwBytesInRes := NtoLE(DWord(MemStream.Position));
+
+        MemStream.SaveToStream(AStream);
+      end
+      else begin
+        // DIB image
+        IconDir[n].bHeight := IconImage.Height;
+        IconDir[n].bWidth := IconImage.Width;
+
+        // since there is no DIB writer, write a BMP to a temp stream and skip the file header
+
+        if BMPWriter = nil
+        then begin
+          BMPWriter := TFPWriterBMP.Create;
+          BMPWriter.RLECompress := False;
+        end;
+        case IconImage.PixelFormat of
+          pfDevice: BMPWriter.BitsPerPixel := QueryDescription([riqfRGB]).BitsPerPixel;
+          pfCustom: BMPWriter.BitsPerPixel := RawImg.Description.BitsPerPixel;
+        else
+          BMPWriter.BitsPerPixel := PIXELFORMAT_BPP[IconImage.PixelFormat];
+        end;
+
+        BMPWriter.ImageWrite(MemStream, IntfImage);
+        // adjust BMP data so it is a IconDIB
+        BmpPtr := PByte(MemStream.Memory) + SizeOf(TBitMapFileHeader);
+        // double the height to accommodate the mask
+        PBitMapInfoHeader(BmpPtr)^.biHeight := NtoLE(LEtoN(PBitMapInfoHeader(BmpPtr)^.biHeight) * 2);
+
+        // write mask.
+        // align to dword
+        MskSize := (((IconImage.Width + 31) shr 5) shl 2) * IconImage.Height;
+        // alloc "buffer"
+        if MemStream.Size < MemStream.Position + MskSize
+        then begin
+          MemStream.Size := MemStream.Position + MskSize;
+          // reallocation, recalculate bmpptr
+          BmpPtr := PByte(MemStream.Memory) + SizeOf(TBitMapFileHeader);
+        end;
+        MskPtr := PByte(MemStream.Memory) + MemStream.Position;
+        MemStream.Seek(MskSize, soCurrent);
+
+        if (RawImg.Mask = nil)
+        or (RawImg.MaskSize = 0)
+        then FillChar(MskPtr^, MskSize, 0)
+        else GetMaskData(RawImg, MskPtr, MskSize, IconImage.Width, IconImage.Height);
+
+        // write
+        AStream.WriteBuffer(BmpPtr^, MemStream.Position - SizeOf(TBitMapFileHeader));
+
+        IconDir[n].dwBytesInRes := NtoLE(DWord(MemStream.Position - SizeOf(TBitMapFileHeader)));
+        IconDir[n].wBpp := NtoLE(Word(BMPWriter.BitsPerPixel));
+      end;
+
+
+      if IconImage is TCursorImageImage
+      then begin
+        IconDir[n].wXHotSpot := NtoLE(Word(TCursorImageImage(IconImage).HotSpot.X));
+        IconDir[n].wYHotSpot := NtoLE(Word(TCursorImageImage(IconImage).HotSpot.Y));
+      end
+      else begin
+        IconDir[n].wPlanes := NtoLE(Word(1));
+      end;
+    end;
+  finally
+    PNGWriter.Free;
+    BMPWriter.Free;
+    MemStream.Free;
+    IntfImage.Free;
+  end;
+
+  // update directory
+  AStream.Seek(StreamStart + SizeOf(Header), soBeginning);
+  AStream.Write(IconDir[0], ImageCount * SizeOf(IconDir[0]));
 end;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -954,6 +1151,11 @@ end;
 function TIcon.GetIconHandle: HICON;
 begin
   Result := GetHandle;
+end;
+
+class function TIcon.GetTypeID: Word;
+begin
+  Result := 1; //icon
 end;
 
 function TIcon.ReleaseHandle: HICON;

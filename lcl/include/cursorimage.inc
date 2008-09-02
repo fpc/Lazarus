@@ -48,6 +48,11 @@ begin
   Result := TSharedCursorImage;
 end;
 
+class function TCursorImage.GetTypeID: Word;
+begin
+  Result := 2;
+end;
+
 function TCursorImage.LazarusResourceTypeValid(const ResourceType: string): boolean;
 var
   ResType: String;
