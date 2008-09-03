@@ -504,8 +504,6 @@ end;
 
 function CreateSymlinkInteractive(const LinkFilename, TargetFilename: string;
   ErrorButtons: TMsgDlgButtons): TModalResult;
-var i: integer;
-  Dir: string;
 begin
   {$IFDEF Unix}
   if FpReadLink(LinkFilename)=TargetFilename then exit(mrOk);
