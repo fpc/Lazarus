@@ -529,12 +529,12 @@ end;
 
   Creates a copy of the index'th image.
  ------------------------------------------------------------------------------}
-procedure TCustomImageList.GetBitmap(Index: Integer; Image: TBitmap);
+procedure TCustomImageList.GetBitmap(Index: Integer; Image: TCustomBitmap);
 begin
   GetBitmap(Index, Image, gdeNormal);
 end;
 
-procedure TCustomImageList.GetBitmap(Index: Integer; Image: TBitmap;
+procedure TCustomImageList.GetBitmap(Index: Integer; Image: TCustomBitmap;
   AEffect: TGraphicsDrawEffect);
 var
   RawImg: TRawImage;
@@ -547,7 +547,7 @@ begin
   
   RawImg.PerformEffect(AEffect, True);
 
-  if not RawImage_CreateBitmaps(RawImg, ImgHandle, MskHandle, True)
+  if not CreateCompatibleBitmaps(RawImg, ImgHandle, MskHandle, True)
   then begin
     // bummer, the widgetset doesn't support our 32bit format, try device
     ListImg := TLazIntfImage.Create(RawImg, False);

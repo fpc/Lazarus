@@ -1726,6 +1726,8 @@ function CreateBitmapFromLazarusResource(const AName: String; AMinimumClass: TCu
 function CreateBitmapFromLazarusResource(AHandle: TLResource): TCustomBitmap;
 function CreateBitmapFromLazarusResource(AHandle: TLResource; AMinimumClass: TCustomBitmapClass): TCustomBitmap;
 
+function CreateCompatibleBitmaps(const ARawImage: TRawImage; out ABitmap, AMask: HBitmap; ASkipMask: Boolean = False): Boolean;
+
 
 var
   { Stores information about the current screen

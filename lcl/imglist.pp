@@ -171,8 +171,8 @@ type
     procedure Draw(ACanvas: TCanvas; AX, AY, AIndex: Integer; AEnabled: Boolean = True); overload;
     procedure Draw(ACanvas: TCanvas; AX, AY, AIndex: Integer; ADrawEffect: TGraphicsDrawEffect); overload;
     procedure FillDescription(out ADesc: TRawImageDescription);
-    procedure GetBitmap(Index: Integer; Image: TBitmap); overload;
-    procedure GetBitmap(Index: Integer; Image: TBitmap; AEffect: TGraphicsDrawEffect); overload;
+    procedure GetBitmap(Index: Integer; Image: TCustomBitmap); overload;
+    procedure GetBitmap(Index: Integer; Image: TCustomBitmap; AEffect: TGraphicsDrawEffect); overload;
     procedure GetRawImage(Index: Integer; out Image: TRawImage);
     function GetHotSpot: TPoint; virtual;
 
