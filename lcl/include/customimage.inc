@@ -123,7 +123,7 @@ procedure TCustomImage.SetTransparent(Value : Boolean);
 begin
   if FTransparent=Value then exit;
   FTransparent := Value;
-  if (FPicture.Graphic.Transparent <> FTransparent)
+  if (FPicture.Graphic <> nil) and (FPicture.Graphic.Transparent <> FTransparent)
   then FPicture.Graphic.Transparent := FTransparent
   else PictureChanged(Self);
 end;
