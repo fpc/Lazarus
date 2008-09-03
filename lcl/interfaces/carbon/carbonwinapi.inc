@@ -464,7 +464,7 @@ begin
     Exit;
 
   ABitmap := Create32BitAlphaBitmap(TCarbonBitmap(IconInfo^.hbmColor), TCarbonBitmap(IconInfo^.hbmMask));
-  
+
   if IconInfo^.fIcon then
   begin
     Result := HICON(ABitmap)

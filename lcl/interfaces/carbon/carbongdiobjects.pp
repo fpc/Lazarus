@@ -260,6 +260,7 @@ type
     procedure AddMask(AMask: TCarbonBitmap);
   public
     property BitsPerComponent: Integer read GetBitsPerComponent;
+    property BitmapType: TCarbonBitmapType read FType;
     property BytesPerRow: Integer read FBytesPerRow;
     property CGImage: CGImageRef read FCGImage write SetCGImage;
     property ColorSpace: CGColorSpaceRef read GetColorSpace;

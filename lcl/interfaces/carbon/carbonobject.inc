@@ -580,7 +580,12 @@ var
 begin
   ADesc.Init;
 
-  ADesc.Format := ricfRGBA;
+  case ABitmap.BitmapType of
+    cbtMono, cbtGray: ADesc.Format := ricfGray;
+  else
+    ADesc.Format := ricfRGBA;
+  end;
+
   ADesc.Width := CGImageGetWidth(ABitmap.CGImage);
   ADesc.Height := CGImageGetHeight(ABitmap.CGImage);
 
@@ -613,6 +618,9 @@ begin
     ADesc.GreenPrec := Prec;
     ADesc.BluePrec := Prec;
   end;
+
+  // gray or mono
+  if ADesc.Format = ricfGray then Exit;
 
   // alpha
   case AlphaInfo of
@@ -722,7 +730,11 @@ begin
   Result := False;
 
   if ADesc.Format = ricfGray
-  then bmpType := cbtGray
+  then
+  begin
+    if ADesc.Depth = 1 then bmpType := cbtMono
+    else bmpType := cbtGray;
+  end
   else if ADesc.Depth = 1
   then bmpType := cbtMono
   else if ADesc.AlphaPrec <> 0

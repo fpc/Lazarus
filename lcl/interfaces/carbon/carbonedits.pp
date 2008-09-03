@@ -304,7 +304,7 @@ end;
 function TCarbonControlWithEdit.GetPreferredSize: TPoint;
 begin
   Result := inherited GetPreferredSize;
-  Result.X := 0; // don not autosize width of edit like controls
+  Result.X := 0; // do not autosize width of edit like controls
 end;
 
 {------------------------------------------------------------------------------
@@ -703,7 +703,7 @@ end;
  ------------------------------------------------------------------------------}
 class function TCarbonComboBox.GetValidEvents: TCarbonControlEvents;
 begin
-  Result := [cceValueChanged];
+  Result := inherited GetValidEvents + [cceValueChanged];
 end;
 
 {------------------------------------------------------------------------------
