@@ -8,7 +8,7 @@
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
       <Title Value="Test cursors"/>
-      <ActiveEditorIndexAtStart Value="1"/>
+      <ActiveEditorIndexAtStart Value="3"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -30,44 +30,312 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="2">
+    <Units Count="22">
       <Unit0>
         <Filename Value="project1.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="project1"/>
-        <CursorPos X="18" Y="13"/>
+        <CursorPos X="3" Y="6"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="1"/>
-        <UsageCount Value="95"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="106"/>
       </Unit0>
       <Unit1>
         <Filename Value="unit1.pas"/>
         <ComponentName Value="Form1"/>
         <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <ResourceFilename Value="unit1.lrs"/>
         <UnitName Value="Unit1"/>
-        <CursorPos X="13" Y="45"/>
-        <TopLine Value="39"/>
+        <CursorPos X="3" Y="56"/>
+        <TopLine Value="44"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="95"/>
+        <UsageCount Value="106"/>
         <Loaded Value="True"/>
       </Unit1>
+      <Unit2>
+        <Filename Value="../../lcl/interfaces/carbon/carbongdiobjects.pp"/>
+        <UnitName Value="CarbonGDIObjects"/>
+        <CursorPos X="30" Y="262"/>
+        <TopLine Value="249"/>
+        <EditorIndex Value="5"/>
+        <UsageCount Value="14"/>
+        <Loaded Value="True"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="/usr/local/share/fpcsrc/packages/univint/src/MacOSAll.pas"/>
+        <UnitName Value="MacOSAll"/>
+        <CursorPos X="9" Y="87987"/>
+        <TopLine Value="87974"/>
+        <EditorIndex Value="6"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="../../lcl/graphics.pp"/>
+        <UnitName Value="Graphics"/>
+        <CursorPos X="47" Y="1926"/>
+        <TopLine Value="1912"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="14"/>
+        <Loaded Value="True"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="../../lcl/include/graphic.inc"/>
+        <CursorPos X="3" Y="169"/>
+        <TopLine Value="164"/>
+        <UsageCount Value="10"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="../../lcl/include/cursorimage.inc"/>
+        <CursorPos X="28" Y="101"/>
+        <TopLine Value="89"/>
+        <UsageCount Value="10"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="../../lcl/interfaces/carbon/carbonwinapi.inc"/>
+        <CursorPos X="49" Y="479"/>
+        <TopLine Value="460"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="13"/>
+        <Loaded Value="True"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="../../lcl/interfaces/carbon/carbonobject.inc"/>
+        <CursorPos X="34" Y="835"/>
+        <TopLine Value="801"/>
+        <EditorIndex Value="7"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="../../lcl/include/lclintf.inc"/>
+        <CursorPos X="34" Y="170"/>
+        <TopLine Value="159"/>
+        <UsageCount Value="10"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="../../lcl/include/lclintfh.inc"/>
+        <CursorPos X="35" Y="121"/>
+        <TopLine Value="108"/>
+        <UsageCount Value="10"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="../../lcl/interfaces/carbon/carbonlclintf.inc"/>
+        <CursorPos X="38" Y="574"/>
+        <TopLine Value="566"/>
+        <UsageCount Value="10"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="../../lcl/include/custombitmap.inc"/>
+        <CursorPos X="29" Y="131"/>
+        <TopLine Value="133"/>
+        <UsageCount Value="10"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="../../lcl/include/icon.inc"/>
+        <CursorPos X="63" Y="743"/>
+        <TopLine Value="732"/>
+        <UsageCount Value="10"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="../../lcl/graphtype.pp"/>
+        <UnitName Value="GraphType"/>
+        <CursorPos X="12" Y="103"/>
+        <TopLine Value="94"/>
+        <UsageCount Value="11"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="../../lcl/interfaces/carbon/carbonint.pas"/>
+        <UnitName Value="CarbonInt"/>
+        <CursorPos X="8" Y="51"/>
+        <TopLine Value="42"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="13"/>
+        <Loaded Value="True"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="../../lcl/intfgraphics.pas"/>
+        <UnitName Value="IntfGraphics"/>
+        <CursorPos X="14" Y="277"/>
+        <TopLine Value="264"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="../../lcl/interfaces/carbon/carbonwinapih.inc"/>
+        <CursorPos X="21" Y="61"/>
+        <TopLine Value="47"/>
+        <UsageCount Value="10"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="../../lcl/interfaces/carbon/carbongdiobjects.pp copy"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="None"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="../../lcl/interfaces/carbon/carbondef.pp"/>
+        <UnitName Value="CarbonDef"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="160"/>
+        <UsageCount Value="10"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="../../lcl/interfaces/carbon/carbonproc.pp"/>
+        <UnitName Value="CarbonProc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="137"/>
+        <UsageCount Value="10"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="../../lcl/interfaces/carbon/carbondebug.pp"/>
+        <UnitName Value="CarbonDebug"/>
+        <CursorPos X="11" Y="120"/>
+        <TopLine Value="146"/>
+        <UsageCount Value="10"/>
+      </Unit21>
     </Units>
-    <JumpHistory Count="1" HistoryIndex="0">
+    <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="project1.lpr"/>
-        <Caret Line="15" Column="15" TopLine="1"/>
+        <Filename Value="../../lcl/intfgraphics.pas"/>
+        <Caret Line="3297" Column="1" TopLine="3284"/>
       </Position1>
+      <Position2>
+        <Filename Value="../../lcl/intfgraphics.pas"/>
+        <Caret Line="3298" Column="1" TopLine="3285"/>
+      </Position2>
+      <Position3>
+        <Filename Value="../../lcl/intfgraphics.pas"/>
+        <Caret Line="3299" Column="1" TopLine="3286"/>
+      </Position3>
+      <Position4>
+        <Filename Value="../../lcl/intfgraphics.pas"/>
+        <Caret Line="3301" Column="1" TopLine="3288"/>
+      </Position4>
+      <Position5>
+        <Filename Value="../../lcl/intfgraphics.pas"/>
+        <Caret Line="3303" Column="46" TopLine="3288"/>
+      </Position5>
+      <Position6>
+        <Filename Value="../../lcl/interfaces/carbon/carbonwinapi.inc"/>
+        <Caret Line="432" Column="1" TopLine="419"/>
+      </Position6>
+      <Position7>
+        <Filename Value="../../lcl/intfgraphics.pas"/>
+        <Caret Line="3260" Column="1" TopLine="3247"/>
+      </Position7>
+      <Position8>
+        <Filename Value="../../lcl/intfgraphics.pas"/>
+        <Caret Line="3261" Column="1" TopLine="3248"/>
+      </Position8>
+      <Position9>
+        <Filename Value="../../lcl/intfgraphics.pas"/>
+        <Caret Line="3272" Column="1" TopLine="3259"/>
+      </Position9>
+      <Position10>
+        <Filename Value="../../lcl/intfgraphics.pas"/>
+        <Caret Line="3273" Column="1" TopLine="3260"/>
+      </Position10>
+      <Position11>
+        <Filename Value="../../lcl/intfgraphics.pas"/>
+        <Caret Line="3275" Column="1" TopLine="3262"/>
+      </Position11>
+      <Position12>
+        <Filename Value="../../lcl/intfgraphics.pas"/>
+        <Caret Line="3276" Column="1" TopLine="3263"/>
+      </Position12>
+      <Position13>
+        <Filename Value="../../lcl/intfgraphics.pas"/>
+        <Caret Line="3278" Column="1" TopLine="3265"/>
+      </Position13>
+      <Position14>
+        <Filename Value="../../lcl/intfgraphics.pas"/>
+        <Caret Line="3279" Column="1" TopLine="3266"/>
+      </Position14>
+      <Position15>
+        <Filename Value="../../lcl/intfgraphics.pas"/>
+        <Caret Line="3281" Column="1" TopLine="3268"/>
+      </Position15>
+      <Position16>
+        <Filename Value="../../lcl/intfgraphics.pas"/>
+        <Caret Line="3282" Column="1" TopLine="3269"/>
+      </Position16>
+      <Position17>
+        <Filename Value="../../lcl/intfgraphics.pas"/>
+        <Caret Line="3286" Column="1" TopLine="3273"/>
+      </Position17>
+      <Position18>
+        <Filename Value="../../lcl/intfgraphics.pas"/>
+        <Caret Line="3294" Column="1" TopLine="3281"/>
+      </Position18>
+      <Position19>
+        <Filename Value="../../lcl/intfgraphics.pas"/>
+        <Caret Line="3295" Column="1" TopLine="3282"/>
+      </Position19>
+      <Position20>
+        <Filename Value="../../lcl/intfgraphics.pas"/>
+        <Caret Line="3297" Column="1" TopLine="3284"/>
+      </Position20>
+      <Position21>
+        <Filename Value="../../lcl/intfgraphics.pas"/>
+        <Caret Line="3298" Column="1" TopLine="3285"/>
+      </Position21>
+      <Position22>
+        <Filename Value="../../lcl/intfgraphics.pas"/>
+        <Caret Line="3299" Column="1" TopLine="3286"/>
+      </Position22>
+      <Position23>
+        <Filename Value="../../lcl/intfgraphics.pas"/>
+        <Caret Line="3301" Column="1" TopLine="3288"/>
+      </Position23>
+      <Position24>
+        <Filename Value="../../lcl/intfgraphics.pas"/>
+        <Caret Line="3302" Column="1" TopLine="3289"/>
+      </Position24>
+      <Position25>
+        <Filename Value="../../lcl/intfgraphics.pas"/>
+        <Caret Line="3297" Column="1" TopLine="3284"/>
+      </Position25>
+      <Position26>
+        <Filename Value="../../lcl/intfgraphics.pas"/>
+        <Caret Line="3298" Column="1" TopLine="3285"/>
+      </Position26>
+      <Position27>
+        <Filename Value="../../lcl/intfgraphics.pas"/>
+        <Caret Line="3299" Column="1" TopLine="3286"/>
+      </Position27>
+      <Position28>
+        <Filename Value="../../lcl/intfgraphics.pas"/>
+        <Caret Line="3301" Column="1" TopLine="3288"/>
+      </Position28>
+      <Position29>
+        <Filename Value="../../lcl/intfgraphics.pas"/>
+        <Caret Line="3302" Column="1" TopLine="3289"/>
+      </Position29>
+      <Position30>
+        <Filename Value="../../lcl/intfgraphics.pas"/>
+        <Caret Line="3309" Column="13" TopLine="3288"/>
+      </Position30>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="5"/>
+    <Version Value="8"/>
     <SearchPaths>
       <SrcPath Value="$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)/"/>
     </SearchPaths>
+    <Parsing>
+      <SyntaxOptions>
+        <CStyleOperator Value="False"/>
+      </SyntaxOptions>
+    </Parsing>
     <CodeGeneration>
-      <Generate Value="Faster"/>
+      <Checks>
+        <IOChecks Value="True"/>
+        <RangeChecks Value="True"/>
+        <OverflowChecks Value="True"/>
+      </Checks>
     </CodeGeneration>
     <Linking>
       <Debugging>

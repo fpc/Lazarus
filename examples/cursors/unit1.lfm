@@ -3,21 +3,21 @@ object Form1: TForm1
   Height = 255
   Top = 299
   Width = 297
-  HorzScrollBar.Page = 296
-  VertScrollBar.Page = 254
   ActiveControl = Button1
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsToolWindow
   Caption = 'Cursor test'
+  ClientHeight = 255
+  ClientWidth = 297
   OnCreate = FormCreate
+  LCLVersion = '0.9.25'
   object Label1: TLabel
     Cursor = crHelp
     Left = 16
-    Height = 13
+    Height = 18
     Top = 7
-    Width = 157
+    Width = 182
     Caption = 'Move mouse at this buttons:'
-    Color = clNone
     ParentColor = False
   end
   object Bevel1: TBevel
@@ -29,11 +29,10 @@ object Form1: TForm1
   object Label2: TLabel
     Cursor = crHelp
     Left = 16
-    Height = 13
+    Height = 18
     Top = 144
-    Width = 209
+    Width = 245
     Caption = 'Drag cursor test: drag buttons into list'
-    Color = clNone
     ParentColor = False
   end
   object Button1: TButton

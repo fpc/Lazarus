@@ -3249,7 +3249,7 @@ procedure TLazIntfImage.CopyPixels(ASource: TFPCustomImage; XDst, YDst: Integer;
                                    AlphaMask: Boolean; AlphaTreshold: Word);
 var
   SrcImg: TLazIntfImage absolute ASource;
-  SrcHasMask: Boolean;
+  SrcHasMask, DstHasMask: Boolean;
   x, y, xStop, yStop: Integer;
   c: TFPColor;
 begin
@@ -3278,11 +3278,16 @@ begin
   Dec(xStop);
   Dec(yStop);
 
-  if  (FRawImage.Description.MaskBitsPerPixel > 0)
+  if ASource is TLazIntfImage then
+    SrcHasMask := SrcImg.FRawImage.Description.MaskBitsPerPixel > 0
+  else
+    SrcHasMask := False;
+
+  DstHasMask := FRawImage.Description.MaskBitsPerPixel > 0;
+
+  if DstHasMask
   and (ASource is TLazIntfImage)
   then begin
-    SrcHasMask := SrcImg.FRawImage.Description.MaskBitsPerPixel > 0;
-
     for y:=0 to yStop do
       for x:=0 to xStop do
         Masked[x+XDst,y+YDst] := SrcHasMask and SrcImg.Masked[x,y];
@@ -3292,9 +3297,16 @@ begin
     for x:=0 to xStop do
     begin
       c := ASource.Colors[x,y];
+
+      if not DstHasMask and SrcHasMask then // copy mask to alpha channel
+        if SrcImg.Masked[x,y] then
+          c.alpha := 0
+        else
+          c.alpha := $FFFF;
+
       Colors[x+XDst,y+YDst] := c;
-      if AlphaMask and (c.alpha < AlphaTreshold)
-      then Masked[x+XDst,y+YDst] := True;
+      if AlphaMask and (c.alpha < AlphaTreshold) then
+        Masked[x+XDst,y+YDst] := True;
     end;
 
 end;
