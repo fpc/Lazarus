@@ -3298,11 +3298,9 @@ begin
     begin
       c := ASource.Colors[x,y];
 
-      if not DstHasMask and SrcHasMask then // copy mask to alpha channel
+      if not DstHasMask and SrcHasMask and (c.alpha = $FFFF) then // copy mask to alpha channel
         if SrcImg.Masked[x,y] then
-          c.alpha := 0
-        else
-          c.alpha := $FFFF;
+          c.alpha := 0;
 
       Colors[x+XDst,y+YDst] := c;
       if AlphaMask and (c.alpha < AlphaTreshold) then
