@@ -66,8 +66,9 @@ end;
 procedure TCustomImage.SetPicture(const AValue: TPicture);
 begin
   if FPicture=AValue then exit;
-  FPicture.Assign(AValue); //the OnChange of the picture gets called and
-                           // notifies this TCustomImage that something changed.
+  //the OnChange of the picture gets called and
+  // notifies this TCustomImage that something changed.
+  FPicture.Assign(AValue);
 end;
 
 procedure TCustomImage.DoAutoSize;
@@ -104,10 +105,8 @@ begin
     if (NewWidth>100000) or (NewHeight>100000) then
       OutOfBounds;
 
-    if (NewWidth<>Width) or (NewHeight<>Height)
-    then begin
+    if (NewWidth<>Width) or (NewHeight<>Height) then
       SetBounds(Left, Top, NewWidth, NewHeight);
-    end;
   finally
     EndAutoSizing;
   end;
@@ -124,8 +123,7 @@ procedure TCustomImage.SetTransparent(Value : Boolean);
 begin
   if FTransparent=Value then exit;
   FTransparent := Value;
-  if  (FPicture.Graphic is TBitmap)
-  and (FPicture.Graphic.Transparent <> FTransparent)
+  if (FPicture.Graphic.Transparent <> FTransparent)
   then FPicture.Graphic.Transparent := FTransparent
   else PictureChanged(Self);
 end;
@@ -153,10 +151,9 @@ begin
       InvalidatePreferredSize;
       AdjustSize;
     end;
-    if FTransparent
-    then Picture.Graphic.Transparent := True;
+    Picture.Graphic.Transparent := FTransparent;
   end;
-  Invalidate;
+  invalidate;
 end;
 
 function TCustomImage.DestRect: TRect;
@@ -228,7 +225,6 @@ procedure TCustomImage.Paint;
 var
   R: TRect;
   C: TCanvas;
-  BackgroundColor: Integer;
 begin
   // detect loop
   if FUseParentCanvas then exit;
@@ -239,23 +235,8 @@ begin
   if Picture.Graphic = nil
   then Exit;
 
-  if Picture.Graphic.Transparent and not Transparent
-  then begin
-    if Picture.Graphic is TBitmap
-    then BackgroundColor := TBitmap(Picture.Graphic).TransparentColor
-    else BackgroundColor := clWhite;
-  end
-  else begin
-    BackgroundColor := clNone;
-  end;
-
   C := inherited Canvas;
   R := DestRect;
-  if BackgroundColor <> clNone
-  then begin
-    C.Brush.Color := BackgroundColor;
-    C.FillRect(R);
-  end;
   C.StretchDraw(R, Picture.Graphic);
 
   try
