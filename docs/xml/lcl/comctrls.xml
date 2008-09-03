@@ -1331,7 +1331,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPageControl.TabStop" link="#LCL.ExtCtrls.TCustomNotebook.TabStop">
+      <element name="TPageControl.TabStop" link="#LCL.Controls.TWinControl.TabStop">
         <short/>
         <descr/>
         <seealso/>
@@ -7327,13 +7327,14 @@ cdsIndeterminate
       </element>
       <!-- object Visibility: default -->
       <element name="TToolButtonActionLink">
-        <short/>
+        <short>
+          <var>TToolButtonActionLink</var> - links a ToolButton on the ToolBar to an Action on an ActionList</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TToolButtonActionLink.AssignClient">
+      <element name="TToolButtonActionLink.AssignClient" link="#rtl.Classes.TBasicActionLink.AssignClient">
         <short/>
         <descr/>
         <errors/>
@@ -7344,7 +7345,7 @@ cdsIndeterminate
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TToolButtonActionLink.IsCheckedLinked">
+      <element name="TToolButtonActionLink.IsCheckedLinked" link="#LCL.ActnList.TActionLink.IsCheckedLinked">
         <short/>
         <descr/>
         <errors/>
@@ -7355,7 +7356,7 @@ cdsIndeterminate
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TToolButtonActionLink.IsImageIndexLinked">
+      <element name="TToolButtonActionLink.IsImageIndexLinked" link="#LCL.ActnList.TActionLink.IsImageIndexLinked">
         <short/>
         <descr/>
         <errors/>
@@ -7367,7 +7368,8 @@ cdsIndeterminate
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TToolButtonActionLink.SetChecked">
-        <short/>
+        <short>
+          <var>SetChecked</var> - stores the Checked status (True or False)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7378,7 +7380,8 @@ cdsIndeterminate
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TToolButtonActionLink.SetImageIndex">
-        <short/>
+        <short>
+          <var>SetImageIndex</var> - stores the index value of the associated image</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7686,13 +7689,15 @@ cdsIndeterminate
       </element>
       <!-- variable Visibility: protected -->
       <element name="TToolButton.FToolBar">
-        <short/>
+        <short>
+          <var>FToolBar</var> - local variable indicating in which toolbar this button lives</short>
         <descr/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TToolButton.CopyPropertiesFromMenuItem">
-        <short/>
+        <short>
+          <var>CopyPropertiesFromMenuItem</var> - method for copying the properties of the corresponding Menu Item, to ensure that ToolButton and MenuItem produce the same behaviour</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7703,7 +7708,8 @@ cdsIndeterminate
       </element>
       <!-- function Visibility: protected -->
       <element name="TToolButton.GetActionLinkClass">
-        <short/>
+        <short>
+          <var>GetActionLinkClass</var> - returns the Class of the ActionLink for this ToolButton</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7714,7 +7720,8 @@ cdsIndeterminate
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TToolButton.ActionChange">
-        <short/>
+        <short>
+          <var>ActionChange</var> -  a method for changing the action associated with the Button</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7740,14 +7747,16 @@ cdsIndeterminate
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TToolButton.BeginUpdate">
-        <short/>
+        <short>
+          <var>BeginUpdate</var> - start the update process</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TToolButton.EndUpdate">
-        <short/>
+        <short>
+          <var>EndUpdate</var> - finish the update process</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7862,14 +7871,16 @@ cdsIndeterminate
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TToolButton.RefreshControl">
-        <short/>
+        <short>
+          <var>RefreshControl</var> - refreshes the drawing of the tool, in case changes have been made</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TToolButton.SetToolBar">
-        <short/>
+        <short>
+          <var>SetToolBar</var> - records the existence of a new toolbar</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7880,7 +7891,8 @@ cdsIndeterminate
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TToolButton.UpdateControl">
-        <short/>
+        <short>
+          <var>UpdateControl</var> - brings the control up to date</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7909,14 +7921,16 @@ cdsIndeterminate
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TToolButton.UpdateVisibleToolbar">
-        <short/>
+        <short>
+          <var>UpdateVisibleToolbar</var> - updates just the visible part of the toolbar</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: protected -->
       <element name="TToolButton.GroupAllUpAllowed">
-        <short/>
+        <short>
+          <var>GroupAllUpAllowed</var> - returns True if all buttons in a group are allowed to ne 'Up'</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7961,7 +7975,8 @@ cdsIndeterminate
       </element>
       <!-- function Visibility: public -->
       <element name="TToolButton.CheckMenuDropdown">
-        <short/>
+        <short>
+          <var>CheckMenuDropdown</var> - returns True if there is a  checked dropdown menu</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7972,7 +7987,8 @@ cdsIndeterminate
       </element>
       <!-- procedure Visibility: public -->
       <element name="TToolButton.GetCurrentIcon">
-        <short/>
+        <short>
+          <var>GetCurrentIcon</var> - finds the icon for the current button</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7998,7 +8014,8 @@ cdsIndeterminate
       </element>
       <!-- property Visibility: published -->
       <element name="TToolButton.AllowAllUp">
-        <short/>
+        <short>
+          <var>AllowAllUp</var> - if True, all buttons are allowed to be 'Up' at the same time. Default False</short>
         <descr/>
         <seealso/>
       </element>
@@ -8071,7 +8088,8 @@ cdsIndeterminate
       </element>
       <!-- property Visibility: published -->
       <element name="TToolButton.Indeterminate">
-        <short/>
+        <short>
+          <var>Indeterminate</var> - if True, this button is in an unspecified state. Default False</short>
         <descr/>
         <seealso/>
       </element>
@@ -8649,7 +8667,8 @@ cdsIndeterminate
       </element>
       <!-- function Visibility: protected -->
       <element name="TToolBar.CheckMenuDropdown">
-        <short/>
+        <short>
+          <var>CheckMenuDropdown</var> - returns True if there is a  checked dropdown menu</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8664,7 +8683,8 @@ cdsIndeterminate
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TToolBar.ClickButton">
-        <short/>
+        <short>
+          <var>ClickButton</var> - software emulation of the <var>OnClick</var> event</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8700,7 +8720,8 @@ cdsIndeterminate
       </element>
       <!-- function Visibility: protected -->
       <element name="TToolBar.FindButtonFromAccel">
-        <short/>
+        <short>
+          <var>FindButtonFromAccel</var> - returns the Button corresponding to the specified accelerator key</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8737,7 +8758,8 @@ cdsIndeterminate
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TToolBar.RepositionButton">
-        <short/>
+        <short>
+          <var>RepositionButton</var> - method for re-positioning a button</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8748,7 +8770,8 @@ cdsIndeterminate
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TToolBar.RepositionButtons">
-        <short/>
+        <short>
+          <var>RepositionButtons</var> - method for re-positioning several buttons</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8759,7 +8782,8 @@ cdsIndeterminate
       </element>
       <!-- function Visibility: protected -->
       <element name="TToolBar.WrapButtons">
-        <short/>
+        <short>
+          <var>WrapButtons</var> - returns True if changing to NewHeight and NewWidth causes wrapping of buttons</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8807,14 +8831,16 @@ cdsIndeterminate
       </element>
       <!-- procedure Visibility: public -->
       <element name="TToolBar.BeginUpdate">
-        <short/>
+        <short>
+          <var>BeginUpdate</var> - starts the update process</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TToolBar.EndUpdate">
-        <short/>
+        <short>
+          <var>EndUpdate</var> - finishes the update process</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8828,7 +8854,8 @@ cdsIndeterminate
       </element>
       <!-- procedure Visibility: public -->
       <element name="TToolBar.SetButtonSize">
-        <short/>
+        <short>
+          <var>SetButtonSize</var> - stores new values for height and width</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -16272,7 +16299,10 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       <element name="TToolButton.TextChanged" link="#LCL.Controls.TControl.TextChanged"/>
       <element name="TToolButton.CalculatePreferredSize" link="#LCL.Controls.TControl.CalculatePreferredSize"/>
       <element name="TToolButton.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
-      <element name="TToolButton.GetButtonDrawDetail"/>
+      <element name="TToolButton.GetButtonDrawDetail">
+        <short>
+          <var>GetButtonDrawDetail</var> - find theme information for Windows XP inplementations</short>
+      </element>
       <element name="TToolButton.DialogChar" link="#LCL.Controls.TControl.DialogChar"/>
       <element name="TToolButton.Click" link="#LCL.Controls.TControl.Click"/>
       <element name="TToolButton.GetPreferredSize" link="#LCL.Controls.TControl.GetPreferredSize"/>
@@ -16281,8 +16311,14 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       <element name="TToolBar.AdjustClientRect" link="#LCL.Controls.TWinControl.AdjustClientRect"/>
       <element name="TToolBar.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
       <element name="TToolBar.CalculatePreferredSize" link="#LCL.Controls.TControl.CalculatePreferredSize"/>
-      <element name="TToolBar.FontChanged"/>
-      <element name="TToolBar.ParentFontChanged"/>
+      <element name="TToolBar.FontChanged">
+        <short>
+          <var>FontChanged</var> - method to cope with change in font</short>
+      </element>
+      <element name="TToolBar.ParentFontChanged">
+        <short>
+          <var>ParentFontChanged</var> - method for coping with change in parent font</short>
+      </element>
       <element name="TToolBar.CanFocus" link="#LCL.Controls.TWinControl.CanFocus"/>
       <element name="TCustomTreeView.DefaultTreeViewSort">
         <short>
