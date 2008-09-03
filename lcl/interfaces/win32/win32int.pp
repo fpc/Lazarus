@@ -267,7 +267,7 @@ uses
 // Win32WSDirSel,
 // Win32WSEditBtn,
  Win32WSExtCtrls,
-// Win32WSExtDlgs,
+ Win32WSExtDlgs,
 // Win32WSFileCtrl,
  Win32WSForms,
  Win32WSGrids,

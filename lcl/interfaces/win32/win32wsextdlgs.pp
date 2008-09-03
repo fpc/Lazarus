@@ -33,9 +33,9 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-//  ExtDlgs,
+  ExtDlgs,
 ////////////////////////////////////////////////////
-  WSExtDlgs, WSLCLClasses;
+  WSExtDlgs, WSLCLClasses, Win32WSDialogs;
 
 type
 
@@ -65,7 +65,7 @@ type
 
   { TWin32WSSavePictureDialog }
 
-  TWin32WSSavePictureDialog = class(TWSSavePictureDialog)
+  TWin32WSSavePictureDialog = class(TWin32WSSaveDialog)
   private
   protected
   public
@@ -117,7 +117,7 @@ initialization
 //  RegisterWSComponent(TPreviewFileControl, TWin32WSPreviewFileControl);
 //  RegisterWSComponent(TPreviewFileDialog, TWin32WSPreviewFileDialog);
 //  RegisterWSComponent(TOpenPictureDialog, TWin32WSOpenPictureDialog);
-//  RegisterWSComponent(TSavePictureDialog, TWin32WSSavePictureDialog);
+  RegisterWSComponent(TSavePictureDialog, TWin32WSSaveDialog);
 //  RegisterWSComponent(TCalculatorDialog, TWin32WSCalculatorDialog);
 //  RegisterWSComponent(TCalculatorForm, TWin32WSCalculatorForm);
 //  RegisterWSComponent(TCalendarDialogForm, TWin32WSCalendarDialogForm);
