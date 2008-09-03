@@ -3833,6 +3833,8 @@ resourcestring
   lisDeleteSelectedFiles = 'Delete selected files';
   lisAddDirectory = 'Add directory';
   lisAddFilesOfDirectory = 'Add files of directory';
+  lisUnableToCreateLinkWithTarget = 'Unable to create link %s%s%s with '
+    +'target %s%s%s';
 
 implementation
 

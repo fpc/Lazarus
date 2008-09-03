@@ -37,7 +37,8 @@ uses
 {$IFDEF UNIX}
   BaseUnix,
 {$ENDIF}
-  Classes, SysUtils, FileUtil;
+  Classes, SysUtils, FileUtil, Forms, Controls, Dialogs,
+  DialogProcs;
 
 type
   EApplicationBundleException = Exception;
@@ -49,8 +50,8 @@ type
     constructor Create(const ExeName: String; Title: String = ''; const Version: String = '0.1');
   end;
 
-procedure CreateApplicationBundle(const Filename: String; Title: String = '');
-procedure CreateSymbolicLink(const Filename: String);
+function CreateApplicationBundle(const Filename: String; Title: String = ''; Recreate: boolean = false): TModalResult;
+function CreateAppBundleSymbolicLink(const Filename: String; Recreate: boolean = false): TModalResult;
   
 const
   ApplicationBundleExt = '.app';
@@ -122,60 +123,47 @@ begin
   Add('</plist>');
 end;
 
-procedure CreateDirectoryInteractive(const Directory: String);
-begin
-  if not CreateDirUTF8(Directory) then
-    EApplicationBundleException.CreateFmt(rsCreatingDirFailed, [Directory]);
-end;
-
-procedure CreateApplicationBundle(const Filename: String; Title: String);
+function CreateApplicationBundle(const Filename: String; Title: String;
+  Recreate: boolean): TModalResult;
 var
   AppBundleDir: String;
   ContentsDir: String;
   MacOSDir: String;
   ResourcesDir: String;
-  
-  procedure CreatePackageInfoFile(const Path: String);
-  var
-    S: TStringList;
-  begin
-    S := TStringList.Create;
-    try
-      S.Add(PackageInfoHeader);
-      S.SaveToFile(UTF8ToSys(Path + PackageInfoFileName));
-    finally
-      S.Free;
-    end;
-  end;
-  
+  sl: TStringList;
 begin
   AppBundleDir := ExtractFileNameWithoutExt(Filename) + ApplicationBundleExt + PathDelim;
-  // create 'applicationname.app/' directory
-  CreateDirectoryInteractive(AppBundleDir);
-  begin
-    // create 'applicationname.app/Contents/' directory
-    ContentsDir := AppBundleDir + ContentsDirName + PathDelim;
-    CreateDirectoryInteractive(ContentsDir);
-    begin
-      // create 'applicationname.app/Contents/MacOS/' directory
-      MacOSDir := ContentsDir + MacOSDirName + PathDelim;
-      CreateDirectoryInteractive(MacOSDir);
+  if not Recreate and DirectoryExistsUTF8(AppBundleDir) then exit(mrOk);
 
-      // create Info.plist file
-      with TApplicationPropertyList.Create(ExtractFileNameOnly(Filename), Title) do
-        SaveToFile(UTF8ToSys(ContentsDir + PropertyListFileName));
+  // create 'applicationname.app/Contents/MacOS/' directory
+  ContentsDir := AppBundleDir + ContentsDirName + PathDelim;
+  MacOSDir := ContentsDir + MacOSDirName + PathDelim;
+  Result:=ForceDirectoryInteractive(MacOSDir,[mbIgnore,mbRetry]);
+  if Result<>mrOk then exit;
 
-      // create PkgInfo file
-      CreatePackageInfoFile(ContentsDir);
+  // create Info.plist file
+  sl:=TApplicationPropertyList.Create(ExtractFileNameOnly(Filename), Title);
+  Result:=SaveStringListToFile(ContentsDir + PropertyListFileName,'Info.plist part of Application bundle',sl);
+  sl.Free;
+  if Result<>mrOk then exit;
 
-      // create 'applicationname.app/Contents/Resources/' directory
-      ResourcesDir:=ContentsDir + ResourcesDirName + PathDelim;
-      CreateDirectoryInteractive(ResourcesDir);
-    end;
-  end;
+  // create PkgInfo file
+  sl:=TStringList.Create;
+  sl.Add(PackageInfoHeader);
+  Result:=SaveStringListToFile(ContentsDir+PackageInfoFileName,'PkgInfo part of Application bundle',sl);
+  sl.Free;
+  if Result<>mrOk then exit;
+
+  // create 'applicationname.app/Contents/Resources/' directory
+  ResourcesDir:=ContentsDir + ResourcesDirName + PathDelim;
+  Result:=ForceDirectoryInteractive(ResourcesDir,[mbIgnore,mbRetry]);
+  if Result<>mrOk then exit;
+
+  Result:=mrOk;
 end;
 
-procedure CreateSymbolicLink(const Filename: String);
+function CreateAppBundleSymbolicLink(const Filename: String;
+  Recreate: boolean): TModalResult;
 {$IFDEF UNIX}
 var
   ShortExeName: String;
@@ -186,14 +174,11 @@ begin
   ShortExeName := ExtractFileNameOnly(Filename);
   LinkFilename := ExtractFileNameWithoutExt(Filename) + ApplicationBundleExt + PathDelim +
     ContentsDirName + PathDelim + MacOSDirName + PathDelim + ShortExeName;
-  if FPSymLink(PChar('..' + PathDelim + '..' + PathDelim + '..' + PathDelim + ShortExeName),
-    PChar(LinkFilename)) <> 0 then
-    raise EApplicationBundleException.CreateFmt(rsCreatingSymLinkFailed, [LinkFilename]);
+  if (not Recreate) and (FileExistsUTF8(LinkFilename)) then exit(mrOk);
+  Result:=CreateSymlinkInteractive(LinkFilename,'..' + PathDelim + '..' + PathDelim + '..' + PathDelim + ShortExeName,[mbIgnore,mbRetry]);
   {$ELSE}
-    raise EApplicationBundleException.Create(rsCreatingSymLinkNotSupported);
+  Result:=mrIgnore;
   {$ENDIF}
 end;
-
-
 
 end.

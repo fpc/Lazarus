@@ -88,6 +88,8 @@ function CheckCreatingFile(const AFilename: string;
 function CheckFileIsWritable(const Filename: string;
                              ErrorButtons: TMsgDlgButtons): TModalResult;
 function ChooseSymlink(var Filename: string): TModalResult;
+function CreateSymlinkInteractive(const LinkFilename, TargetFilename: string;
+                                  ErrorButtons: TMsgDlgButtons): TModalResult;
 function ForceDirectoryInteractive(Directory: string;
                                    ErrorButtons: TMsgDlgButtons): TModalResult;
 function DeleteFileInteractive(const Filename: string;
@@ -103,6 +105,11 @@ function JumpToCodetoolErrorAndAskToAbort(Ask: boolean): TModalResult;
 procedure NotImplementedDialog(const Feature: string);
 
 implementation
+
+{$IFDEF Unix}
+uses
+  baseunix;
+{$ENDIF}
 
 function BackupFileInteractive(const Filename: string): TModalResult;
 begin
@@ -493,6 +500,25 @@ begin
         E.Message,mtError,[mbCancel],0);
     end;
   end;
+end;
+
+function CreateSymlinkInteractive(const LinkFilename, TargetFilename: string;
+  ErrorButtons: TMsgDlgButtons): TModalResult;
+var i: integer;
+  Dir: string;
+begin
+  {$IFDEF Unix}
+  if FpReadLink(LinkFilename)=TargetFilename then exit(mrOk);
+  while FPSymLink(PChar(TargetFilename),PChar(LinkFilename)) <> 0 do begin
+    Result:=IDEMessageDialog(lisCodeToolsDefsWriteError, Format(
+      lisUnableToCreateLinkWithTarget, ['"',
+      LinkFilename, '"', '"', TargetFilename, '"']),
+      mtError,ErrorButtons+[mbCancel],'');
+    if Result<>mrRetry then exit;
+  end;
+  {$ELSE}
+  Result:=mrIgnore;
+  {$ENDIF}
 end;
 
 function ForceDirectoryInteractive(Directory: string;

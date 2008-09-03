@@ -48,26 +48,16 @@ type
   { TProjectOptionsDialog }
 
   TProjectOptionsDialog = class(TForm)
-    CreateAppBundleButton: TButton;
-    EnableI18NCheckBox: TCheckBox;
-    I18NGroupBox: TGroupBox;
-    PanelOtherLabels: TPanel;
-    PODBtnPanel: TPanel;
-    PoOutDirLabel: TLabel;
-
     Notebook: TNotebook;
     ApplicationPage: TPage;
     FormsPage: TPage;
     MiscPage: TPage;
     LazDocPage: TPage;
-    i18nPage: TPage;
-    POOutDirButton: TButton;
-    POOutDirEdit: TEdit;
     SavePage: TPage;
-    UseAppBundleCheckBox: TCheckBox;
-    UseXPManifestCheckBox: TCheckBox;
     VersionInfoPage: TPage;
+    i18nPage: TPage;
 
+    // General
     AppSettingsGroupBox: TGroupBox;
     OutputSettingsGroupBox: TGroupBox;
     SelectDirectoryDialog: TSelectDirectoryDialog;
@@ -75,6 +65,10 @@ type
     TitleEdit: TEdit;
     TargetFileLabel: TLabel;
     TargetFileEdit: TEdit;
+    PanelOtherLabels: TPanel;
+    CreateAppBundleButton: TButton;
+    UseAppBundleCheckBox: TCheckBox;
+    UseXPManifestCheckBox: TCheckBox;
 
     // Forms
     FormsAutoCreatedLabel: TLabel;
@@ -133,6 +127,14 @@ type
     DescriptionLabel: TLabel;
     CopyrightLabel: TLabel;
     AdditionalInfoForm: TVersionInfoAdditinalInfoForm;
+
+    // i18n
+    POOutDirButton: TButton;
+    POOutDirEdit: TEdit;
+    EnableI18NCheckBox: TCheckBox;
+    I18NGroupBox: TGroupBox;
+    PODBtnPanel: TPanel;
+    PoOutDirLabel: TLabel;
 
     // buttons at bottom
     HelpButton: TBitBtn;
@@ -211,19 +213,14 @@ var
 begin
   Result := False;
   if AProject.MainUnitInfo = nil then Exit;
-  try
-    if AProject.IsVirtual then
-      TargetExeName := EnvironmentOptions.GetTestBuildDirectory + ExtractFilename(AProject.MainUnitInfo.Filename)
-    else
-      TargetExeName := AProject.CompilerOptions.CreateTargetFilename(AProject.MainFilename);
+  if AProject.IsVirtual then
+    TargetExeName := EnvironmentOptions.GetTestBuildDirectory + ExtractFilename(AProject.MainUnitInfo.Filename)
+  else
+    TargetExeName := AProject.CompilerOptions.CreateTargetFilename(AProject.MainFilename);
 
-    CreateApplicationBundle(TargetExeName, AProject.Title);
-    CreateSymbolicLink(TargetExeName);
-    Result := True;
-  except
-    on E: Exception do
-      MessageDlg(lisABCreationFailed + E.Message, mtError, [mbCancel], 0);
-  end;
+  if not (CreateApplicationBundle(TargetExeName, AProject.Title,true) in [mrOk,mrIgnore]) then exit;
+  if not (CreateAppBundleSymbolicLink(TargetExeName,true) in [mrOk,mrIgnore]) then exit;
+  Result := True;
 end;
 
 function ProjectSessionStorageToLocalizedName(s: TProjectSessionStorage
