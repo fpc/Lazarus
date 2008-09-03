@@ -42,7 +42,17 @@ type
   TFPCMemStreamSeekType = integer;
   PCharZ = Pointer;
 
+{$ifdef Windows}
+{$define CaseInsensitiveFilenames}
+{$endif}
+{$IF defined(CaseInsensitiveFilenames) or defined(darwin)}
+{$DEFINE NotLiteralFilenames}
+{$ENDIF}
+
 const
+  FilenamesCaseSensitive = {$IFDEF CaseInsensitiveFilenames}false{$ELSE}true{$ENDIF};// lower and upper letters are treated the same
+  FilenamesLiteral = {$IFDEF NotLiteralFilenames}false{$ELSE}true{$ENDIF};// file names can be compared using = string operator
+
   SpecialChar = '#'; // used to use PathDelim, e.g. #\
   {$IFDEF MSWindows}
   FileMask = '*.*';
@@ -51,9 +61,6 @@ const
   FileMask = '*';
   ExeExt = '';
   {$ENDIF}
-  {$ifdef MSWindows}
-  {$define CaseInsensitiveFilenames}
-  {$endif}
 
 type
   TCTSearchFileCase = (
@@ -63,6 +70,7 @@ type
     );
 
 function CompareFilenames(const Filename1, Filename2: string): integer;
+function CompareFilenamesIgnoreCase(const Filename1, Filename2: string): integer;
 function CompareFileExt(const Filename, Ext: string;
                         CaseSensitive: boolean): integer;
 function DirPathExists(DirectoryName: string): boolean;
@@ -97,6 +105,9 @@ function FilenameIsMatching(const Mask, Filename: string;
                             MatchExactly: boolean): boolean;
 function GetFilenameOnDisk(const AFilename: string): string;
 function FindDiskFilename(const Filename: string): string;
+{$IFDEF darwin}
+function GetDarwinSystemFilename(Filename: string): string;
+{$ENDIF}
 
 function CompareAnsiStringFilenames(Data1, data2: Pointer): integer;
 function CompareFilenameOnly(Filename: PChar; FilenameLen: integer;
@@ -343,6 +354,9 @@ uses
 {$IFDEF MSWindows}
   Windows;
 {$ELSE}
+  {$IFDEF darwin}
+  MacOSAll,
+  {$ENDIF}
   Unix, BaseUnix;
 {$ENDIF}
 
@@ -647,7 +661,7 @@ begin
           if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
           then
             continue;
-          if CompareText(FileInfo.Name,CurFile)=0 then begin
+          if CompareFilenamesIgnoreCase(FileInfo.Name,CurFile)=0 then begin
             //writeln('FindDiskFilename ',FileInfo.Name,' ',CurFile);
             if FileInfo.Name=CurFile then begin
               // file found, has already the correct name
@@ -677,6 +691,24 @@ begin
     StartPos:=EndPos+1;
   until StartPos>length(Result);
 end;
+
+{$IFDEF darwin}
+function GetDarwinSystemFilename(Filename: string): string;
+var
+  s: CFStringRef;
+  l: CFIndex;
+begin
+  if Filename='' then exit('');
+  s:=CFStringCreateWithCString(nil,Pointer(Filename),kCFStringEncodingUTF8);
+  l:=CFStringGetMaximumSizeOfFileSystemRepresentation(s);
+  SetLength(Result,l);
+  if Result<>'' then begin
+    CFStringGetFileSystemRepresentation(s,@Result[1],length(Result));
+    SetLength(Result,StrLen(PChar(Result)));
+  end;
+  CFRelease(s);
+end;
+{$ENDIF}
 
 function CompareAnsiStringFilenames(Data1, data2: Pointer): integer;
 var
@@ -731,12 +763,47 @@ begin
 end;
 
 function CompareFilenames(const Filename1, Filename2: string): integer;
+{$IFDEF darwin}
+var
+  F1: CFStringRef;
+  F2: CFStringRef;
+{$ENDIF}
 begin
-  {$IFDEF CaseInsensitiveFilenames}
-  Result:=CompareText(Filename1, Filename2);
+  {$IFDEF darwin}
+  if Filename1=Filename2 then exit(0);
+  if (Filename1='') or (Filename2='') then
+    exit(length(Filename2)-length(Filename1));
+  F1:=CFStringCreateWithCString(nil,Pointer(Filename1),kCFStringEncodingUTF8);
+  F2:=CFStringCreateWithCString(nil,Pointer(Filename2),kCFStringEncodingUTF8);
+  Result:=CFStringCompare(F1,F2,kCFCompareNonliteral);
+  CFRelease(F1);
+  CFRelease(F2);
   {$ELSE}
-  //debugln(['CompareFilenames F1="',length(Filename1),'" F2="',length(Filename2),'"']);
-  Result:=CompareStr(Filename1, Filename2);
+    {$IFDEF CaseInsensitiveFilenames}
+    Result:=AnsiCompareText(Filename1, Filename2);
+    {$ELSE}
+    Result:=CompareStr(Filename1, Filename2);
+    {$ENDIF}
+  {$ENDIF}
+end;
+
+function CompareFilenamesIgnoreCase(const Filename1, Filename2: string
+  ): integer;
+{$IFDEF darwin}
+var
+  F1: CFStringRef;
+  F2: CFStringRef;
+{$ENDIF}
+begin
+  {$IFDEF darwin}
+  if Filename1=Filename2 then exit(0);
+  F1:=CFStringCreateWithCString(nil,Pointer(Filename1),kCFStringEncodingUTF8);
+  F2:=CFStringCreateWithCString(nil,Pointer(Filename2),kCFStringEncodingUTF8);
+  Result:=CFStringCompare(F1,F2,kCFCompareNonliteral+kCFCompareCaseInsensitive);
+  CFRelease(F1);
+  CFRelease(F2);
+  {$ELSE}
+  Result:=AnsiCompareText(Filename1, Filename2);
   {$ENDIF}
 end;
 
@@ -827,8 +894,12 @@ end;
 function GetFilenameOnDisk(const AFilename: string): string;
 begin
   Result:=AFilename;
-  {$IFDEF CaseInsensitiveFilenames}
-  Result:=FindDiskFilename(Result);
+  {$IFDEF darwin}
+  Result:=GetDarwinSystemFilename(Result);
+  {$ELSE}
+    {$IF defined(CaseInsensitiveFilenames) or (NotLiteralFilenames)}
+    Result:=FindDiskFilename(Result);
+    {$ENDIF}
   {$ENDIF}
 end;
 
@@ -1123,6 +1194,10 @@ var
   ResultPos: Integer;
   i: Integer;
   FileNameRestLen: Integer;
+  CmpBaseDirectory: String;
+  CmpFilename: String;
+  p: Integer;
+  DirCount: Integer;
 begin
   Result:=Filename;
   if (BaseDirectory='') or (Filename='') then exit;
@@ -1134,55 +1209,69 @@ begin
   then
     exit;
   {$ENDIF}
+  CmpBaseDirectory:=BaseDirectory;
+  CmpFilename:=Filename;
+  {$IFDEF darwin}
+  CmpBaseDirectory:=GetDarwinSystemFilename(CmpBaseDirectory);
+  CmpFilename:=GetDarwinSystemFilename(CmpFilename);
+  {$ENDIF}
+  {$IFDEF CaseInsensitiveFilenames}
+  CmpBaseDirectory:=AnsiUpperCaseFileName(CmpBaseDirectory);
+  CmpFilename:=AnsiUpperCaseFileName(CmpFilename);
+  {$ENDIF}
 
-  FileNameLength:=length(Filename);
-  BaseDirLen:=length(BaseDirectory);
+  FileNameLength:=length(CmpFilename);
+  if CmpFilename[FileNameLength]=PathDelim then
+    dec(FileNameLength);
+  BaseDirLen:=length(CmpBaseDirectory);
+  if CmpBaseDirectory[BaseDirLen]=PathDelim then
+    dec(BaseDirLen);
+  if BaseDirLen=0 then exit;
 
   // skip matching directories
   MinLen:=FileNameLength;
   if MinLen>BaseDirLen then MinLen:=BaseDirLen;
-  SamePos:=1;
-  while (SamePos<=MinLen) do begin
-    {$IFDEF CaseInsensitiveFilenames}
-    if AnsiStrLIComp(@FileName[SamePos],@BaseDirectory[SamePos],1)=0
-    {$ELSE}
-    if FileName[SamePos]=BaseDirectory[SamePos]
-    {$ENDIF}
-    then
-      inc(SamePos)
-    else
-      break;
+  p:=1;
+  DirCount:=0;
+  while (p<=MinLen) and (CmpFileName[p]=CmpBaseDirectory[p]) do
+  begin
+    if CmpFilename[p]=PathDelim then
+      inc(DirCount);
+    inc(p);
   end;
-  if (SamePos>MinLen)
-  and (((SamePos<=BaseDirLen) and (BaseDirectory[SamePos]=PathDelim))
-    or ((SamePos<=FileNameLength) and (Filename[SamePos]=PathDelim))
-    or (BaseDirLen=FileNameLength))
-  then begin
-    // Filename lies in BaseDirectory
-    // or Filename is parent directory of BaseDirectory
-    // or Filename is BaseDirectory
-  end else begin
-    // difference found -> step back to path delimiter
-    repeat
-      dec(SamePos);
-      if (SamePos<1) then exit;
-    until (FileName[SamePos]=PathDelim);
-  end;
-  if (SamePos=1) and (Filename[1]=PathDelim) then exit;
+  if ((p>BaseDirLen) or (CmpBaseDirectory[p]=PathDelim))
+  and ((p>FileNameLength) or (CmpFilename[p]=PathDelim)) then
+    inc(DirCount);
+  if DirCount=0 then exit;
 
   // calculate needed up directories
-  UpDirCount:=0;
-  BaseDirPos:=SamePos+1;
+  BaseDirLen:=length(BaseDirectory);
+  UpDirCount:=-DirCount;
+  BaseDirPos:=1;
   while (BaseDirPos<=BaseDirLen) do begin
     if (BaseDirectory[BaseDirPos]=PathDelim) then
       inc(UpDirCount);
     inc(BaseDirPos);
   end;
-  if (SamePos<BaseDirLen) and (BaseDirectory[BaseDirLen]<>PathDelim) then
+  if (BaseDirLen>0) and (BaseDirectory[BaseDirLen]<>PathDelim) then
     inc(UpDirCount);
 
   // create relative filename
-  FileNameRestLen:=FileNameLength-SamePos;
+  SamePos:=1;
+  p:=0;
+  FileNameLength:=length(Filename);
+  while (SamePos<=FileNameLength) do begin
+    if (Filename[SamePos]=PathDelim) then begin
+      inc(p);
+      if p>=DirCount then begin
+        inc(SamePos);
+        break;
+      end;
+    end;
+    inc(SamePos);
+  end;
+  FileNameRestLen:=FileNameLength-SamePos+1;
+  //writeln('DirCount=',DirCount,' UpDirCount=',UpDirCount,' FileNameRestLen=',FileNameRestLen,' SamePos=',SamePos);
   SetLength(Result,3*UpDirCount+FileNameRestLen);
   ResultPos:=1;
   for i:=1 to UpDirCount do begin
@@ -1192,11 +1281,7 @@ begin
     inc(ResultPos,3);
   end;
   if FileNameRestLen>0 then
-    Move(Filename[SamePos+1],Result[ResultPos],FileNameRestLen);
-
-  // use '.' for an Filename=BaseDirectory
-  if UsePointDirectory and (Result='') and (Filename<>'') then
-    Result:='.';
+    System.Move(Filename[SamePos],Result[ResultPos],FileNameRestLen);
 end;
 
 {------------------------------------------------------------------------------
@@ -1449,7 +1534,7 @@ begin
           Result:=FileInfo.Name;
 
       ctsfcAllCase:
-        if CompareText(ShortFilename,FileInfo.Name)=0 then begin
+        if CompareFilenamesIgnoreCase(ShortFilename,FileInfo.Name)=0 then begin
           Result:=FileInfo.Name;
           if ShortFilename=FileInfo.Name then break;
         end;
@@ -1730,7 +1815,7 @@ begin
           if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
           then
             continue;
-          if CompareText(FileInfo.Name,ShortFile)=0 then begin
+          if CompareFilenamesIgnoreCase(FileInfo.Name,ShortFile)=0 then begin
             if FileInfo.Name=ShortFile then begin
               // file found, with correct name
               Result:=FileInfo.Name;

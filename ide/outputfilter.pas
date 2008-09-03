@@ -287,6 +287,7 @@ begin
     and (not CreateScanners(Tool.Scanners)) then
       exit;
 
+    debugln(['TOutputFilter.Execute ',dbgsname(fProcess)]);
     if fProcess is TAsyncProcess then begin
       TheAsyncProcess:=TAsyncProcess(fProcess);
       TheAsyncProcess.OnReadData:=@OnAsyncReadData;

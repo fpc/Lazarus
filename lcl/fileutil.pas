@@ -32,12 +32,18 @@ uses
 {$ifdef Windows}
 {$define CaseInsensitiveFilenames}
 {$endif}
+{$IF defined(CaseInsensitiveFilenames) or defined(darwin)}
+{$DEFINE NotLiteralFilenames}
+{$ENDIF}
 
 const
   UTF8FileHeader = #$ef#$bb#$bf;
+  FilenamesCaseSensitive = {$IFDEF CaseInsensitiveFilenames}false{$ELSE}true{$ENDIF};// lower and upper letters are treated the same
+  FilenamesLiteral = {$IFDEF NotLiteralFilenames}false{$ELSE}true{$ENDIF};// file names can be compared using = string operator
 
 // file attributes and states
 function CompareFilenames(const Filename1, Filename2: string): integer;
+function CompareFilenamesIgnoreCase(const Filename1, Filename2: string): integer;
 function CompareFilenames(const Filename1, Filename2: string;
                           ResolveLinks: boolean): integer;
 function CompareFilenames(Filename1: PChar; Len1: integer;
@@ -106,6 +112,9 @@ function SearchAllFilesInPath(const Filename, BasePath, SearchPath,
 function FindDiskFilename(const Filename: string): string;
 function FindDiskFileCaseInsensitive(const Filename: string): string;
 function FindDefaultExecutablePath(const Executable: string): string;
+{$IFDEF darwin}
+function GetDarwinSystemFilename(Filename: string): string;
+{$ENDIF}
 
 type
 
@@ -213,6 +222,9 @@ uses
 {$IFDEF windows}
   Windows;
 {$ELSE}
+  {$IFDEF darwin}
+  MacOSAll,
+  {$ENDIF}
   Unix, BaseUnix;
 {$ENDIF}
 

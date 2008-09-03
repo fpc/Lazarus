@@ -40,6 +40,9 @@ uses
 {$ifdef MSWindows}
 {$define CaseInsensitiveFilenames}
 {$endif}
+{$IF defined(CaseInsensitiveFilenames) or defined(darwin)}
+{$DEFINE NotLiteralFilenames}
+{$ENDIF}
 
 type
   TCTDirCacheString = (
