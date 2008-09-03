@@ -60,6 +60,7 @@ type
     BtnMoveUp: TButton;
     BtnMoveDown: TButton;
     BtnSave: TButton;
+    btnSaveAll: TButton;
     ColorBoxTransparent: TColorBox;
     GroupBoxL: TGroupBox;
     GroupBoxR: TGroupBox;
@@ -75,6 +76,7 @@ type
     procedure BtnClearClick(Sender: TObject);
     procedure BtnDeleteClick(Sender: TObject);
     procedure BtnMoveUpClick(Sender: TObject);
+    procedure btnSaveAllClick(Sender: TObject);
     procedure BtnSaveClick(Sender: TObject);
     procedure ColorBoxTransparentClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -90,6 +92,7 @@ type
     ColorStrings: TSTrings;
     procedure FillColorBoxTransparent;
     procedure AddItemToColorBox(const s: string);
+    procedure SavePicture(Picture: TPicture);
   public
     procedure LoadFromImageList(AImageList: TImageList);
     procedure SaveToImageList;
@@ -190,6 +193,7 @@ begin
   BtnMoveUp.Caption := sccsILEdtMoveUp;
   BtnMoveDown.Caption := sccsILEdtMoveDown;
   BtnSave.Caption := sccsILEdtSave;
+  BtnSaveAll.Caption := sccsILEdtSaveAll;
 
   LabelTransparent.Caption := sccsILEdtransparentColor;
 
@@ -290,24 +294,49 @@ begin
   end;
 end;
 
+procedure TImageListEditorDlg.SavePicture(Picture: TPicture);
+var
+  FileName, Ext: String;
+begin
+  if SaveDialog.Execute then
+  begin
+    FileName := SaveDialog.FileName;
+    if ExtractFileExt(FileName) = '' then
+    begin
+      Ext := SaveDialog.GetFilterExt;
+      if Ext <> '' then
+        FileName := FileName + '.' + Ext;
+    end;
+    Picture.SaveToFile(FileName);
+  end;
+end;
+
+procedure TImageListEditorDlg.btnSaveAllClick(Sender: TObject);
+var
+  Picture: TPicture;
+begin
+  if (ImageList.Count > 0) then
+  begin
+    Picture := TPicture.Create;
+    try
+      ImageList.GetFullBitmap(Picture.Bitmap);
+      SavePicture(Picture);
+    finally
+      Picture.Free;
+    end;
+  end;
+end;
+
 procedure TImageListEditorDlg.BtnSaveClick(Sender: TObject);
 var
   Picture: TPicture;
-  FileName, Ext: String;
 begin
-  if Assigned(TreeView.Selected) and SaveDialog.Execute then
+  if Assigned(TreeView.Selected) then
   begin
     Picture := TPicture.Create;
     try
       ImageList.GetBitmap(TreeView.Selected.ImageIndex, Picture.Bitmap);
-      FileName := SaveDialog.FileName;
-      if ExtractFileExt(FileName) = '' then
-      begin
-        Ext := SaveDialog.GetFilterExt;
-        if Ext <> '' then
-          FileName := FileName + '.' + Ext;
-      end;
-      Picture.SaveToFile(FileName);
+      SavePicture(Picture);
     finally
       Picture.Free;
     end;

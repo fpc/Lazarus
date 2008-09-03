@@ -124,6 +124,7 @@ resourcestring
   sccsILEdtMoveUp      = 'Move Up';
   sccsILEdtMoveDown    = 'Move Down';
   sccsILEdtSave        = 'Save...';
+  sccsILEdtSaveAll     = 'Save All...';
   sccsILEdtransparentColor = 'Transparent Color:';
   sccsILEdtAdjustment  = 'Adjustment';
   sccsILEdtNone        = 'None';
