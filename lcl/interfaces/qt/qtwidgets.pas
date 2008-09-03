@@ -185,6 +185,8 @@ type
     procedure setAttribute(const Attr: QtWidgetAttribute; const TurnOn: Boolean = True);
     procedure setBackgroundRole(const ARole: QPaletteColorRole);
     procedure setColor(const Value: PQColor); virtual;
+    function getContextMenuPolicy: QtContextMenuPolicy; virtual;
+    procedure setContextMenuPolicy(const AValue: QtContextMenuPolicy); virtual;
     procedure setCursor(const ACursor: QCursorH); virtual;
     procedure setEnabled(p1: Boolean);
     procedure setFocus;
@@ -568,8 +570,9 @@ type
 
   { TQtTextEdit }
 
-  TQtTextEdit = class(TQtAbstractScrollArea, IQtEdit)
+  TQtTextEdit = class(TQtWidget, IQtEdit)
   private
+    FViewportEventHook: QObject_hookH;
     FTextChangedHook: QTextEdit_hookH;
     FUndoAvailableHook: QTextEdit_hookH;
     FUndoAvailable: Boolean;
@@ -598,8 +601,12 @@ type
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
+    function viewportEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+    function getContextMenuPolicy: QtContextMenuPolicy; override;
+    procedure setContextMenuPolicy(const AValue: QtContextMenuPolicy); override;
     procedure SignalTextChanged; cdecl;
     procedure SignalUndoAvailable(b: Boolean); cdecl;
+    procedure setScrollStyle(AScrollStyle: TScrollStyle);
   end;
 
   { TQtTabWidget }
@@ -1312,6 +1319,8 @@ begin
 end;
 
 procedure TQtWidget.InitializeWidget;
+var
+  QtEdit: IQtEdit;
 begin
   // Creates the widget
   Widget := CreateWidget(FParams);
@@ -1344,6 +1353,10 @@ begin
     else
       setFocusPolicy(QtNoFocus);
   end;
+
+  // Set context menus to custom so LCL can better handle our popup menus
+  if Supports(Self, IQtEdit, QtEdit) then
+    setContextMenuPolicy(QtCustomContextMenu);
 
   // Set mouse move messages policy
   QWidget_setMouseTracking(Widget, True);
@@ -2428,13 +2441,33 @@ var
   Msg: TLMMouse;
   Modifiers: QtKeyboardModifiers;
   MousePos: TQtPoint;
+  QtEdit: IQtEdit;
 begin
-  {$note fix for #11796, only OI is a black sheep}
-  if Assigned(LCLObject.PopupMenu) then
+
+  if Supports(Self, IQtEdit, QtEdit) then
   begin
-    if (Self is TQtComboBox) and (TQtComboBox(Self).FLineEdit <> nil) then
-      QWidget_setContextMenuPolicy(TQtComboBox(Self).FLineEdit.Widget, QtNoContextMenu);
-    QWidget_setContextMenuPolicy(Widget, QtNoContextMenu);
+    if Assigned(LCLObject.PopupMenu) then
+    begin
+      if getContextMenuPolicy <> QtCustomContextMenu then
+        setContextMenuPolicy(QtCustomContextMenu);
+    end else
+    {we must ask parent because of OI, don't know yet how to solve this.
+     it's bit tricky when we have TPanel->TEdit and popup is assigned to
+     TPanel. TEdit will show TPanel's popup instead of it's default.}
+    if Assigned(LCLObject.Parent) and
+      Assigned(LCLObject.Parent.PopupMenu) and not
+      (Self is TQtTextEdit) then
+    begin
+        if getContextMenuPolicy <> QtCustomContextMenu then
+          setContextMenuPolicy(QtCustomContextMenu);
+    end else
+    begin
+      {revert to default if widget supports defaultcontextmenu }
+      if getContextMenuPolicy <> QtDefaultContextMenu then
+        setContextMenuPolicy(QtDefaultContextMenu);
+      if Self is TQtTextEdit then
+        exit;
+    end;
   end;
 
   FillChar(Msg, SizeOf(Msg), #0);
@@ -2513,6 +2546,16 @@ begin
   finally
     QPalette_destroy(Palette);
   end;
+end;
+
+function TQtWidget.getContextMenuPolicy: QtContextMenuPolicy;
+begin
+  Result := QWidget_contextMenuPolicy(Widget);
+end;
+
+procedure TQtWidget.setContextMenuPolicy(const AValue: QtContextMenuPolicy);
+begin
+  QWidget_setContextMenuPolicy(Widget, AValue);
 end;
 
 {------------------------------------------------------------------------------
@@ -5048,6 +5091,7 @@ begin
   {$endif}
 
   Result := QTextEdit_create();
+  QWidget_setAttribute(Result, QtWA_NoMousePropagation);
   FKeysToEat := [];
   FUndoAvailable := False;
 end;
@@ -5204,19 +5248,50 @@ begin
 
   FTextChangedHook := QTextEdit_hook_create(Widget);
   FUndoAvailableHook := QTextEdit_hook_create(Widget);
-  {TODO: BUG CopyUnicodeToPWideString() segfaults while calling SetLength()
-   workaround: add try..except around SetLength() }
+
   QTextEdit_textChanged_Event(Method) := @SignalTextChanged;
   QTextEdit_hook_hook_textChanged(FTextChangedHook, Method);
   
   QTextEdit_undoAvailable_Event(Method) := @SignalUndoAvailable;
   QTextEdit_hook_hook_undoAvailable(FUndoAvailableHook, Method);
+
+  FViewportEventHook := QObject_hook_create(QAbstractScrollArea_viewport(QTextEditH(Widget)));
+  TEventFilterMethod(Method) := @viewportEventFilter;
+  QObject_hook_hook_events(FViewportEventHook, Method);
+
 end;
 
 procedure TQtTextEdit.DetachEvents;
 begin
+  QObject_hook_destroy(FViewportEventHook);
   inherited DetachEvents;
   QTextEdit_hook_destroy(FTextChangedHook);
+end;
+
+function TQtTextEdit.viewportEventFilter(Sender: QObjectH; Event: QEventH
+  ): Boolean; cdecl;
+begin
+  Result := False;
+  QEvent_accept(Event);
+  case QEvent_type(Event) of
+    QEventContextMenu: SlotContextMenu(Sender, Event);
+  end;
+end;
+
+function TQtTextEdit.getContextMenuPolicy: QtContextMenuPolicy;
+var
+  w: QWidgetH;
+begin
+  w := QAbstractScrollArea_viewport(QAbstractScrollAreaH(Widget));
+  Result := QWidget_contextMenuPolicy(w)
+end;
+
+procedure TQtTextEdit.setContextMenuPolicy(const AValue: QtContextMenuPolicy);
+var
+  w: QWidgetH;
+begin
+  w := QAbstractScrollArea_viewport(QAbstractScrollAreaH(Widget));
+  QWidget_setContextMenuPolicy(w, AValue);
 end;
 
 {------------------------------------------------------------------------------
@@ -5238,6 +5313,46 @@ end;
 procedure TQtTextEdit.SignalUndoAvailable(b: Boolean); cdecl;
 begin
   FUndoAvailable := b;
+end;
+
+procedure TQtTextEdit.setScrollStyle(AScrollStyle: TScrollStyle);
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQTextEdit.setScrollStyle');
+  {$endif}
+  case AScrollStyle of
+    ssNone:
+    begin
+      QAbstractScrollArea_setVerticalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAlwaysOff);
+      QAbstractScrollArea_setHorizontalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAlwaysOff);
+    end;
+    ssHorizontal:
+    begin
+      QAbstractScrollArea_setHorizontalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAlwaysOn);
+    end;
+    ssVertical:
+    begin
+     QAbstractScrollArea_setVerticalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAlwaysOn);
+    end;
+    ssBoth:
+    begin
+      QAbstractScrollArea_setVerticalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAlwaysOn);
+      QAbstractScrollArea_setHorizontalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAlwaysOn);
+    end;
+    ssAutoHorizontal:
+    begin
+      QAbstractScrollArea_setHorizontalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAsNeeded);
+    end;
+    ssAutoVertical:
+    begin
+      QAbstractScrollArea_setVerticalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAsNeeded);
+    end;
+    ssAutoBoth:
+    begin
+      QAbstractScrollArea_setHorizontalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAsNeeded);
+      QAbstractScrollArea_setVerticalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAsNeeded);
+    end;
+  end;
 end;
 
 { TQtTabWidget }
@@ -5545,6 +5660,7 @@ begin
   if FDropList = nil then
   begin
     FDropList := TQtListWidget.CreateFrom(LCLObject, QComboBox_view(QComboBoxH(Widget)));
+    FDropList.setAttribute(QtWA_NoMousePropagation, False);
     FDropList.OwnerDrawn := OwnerDrawn;
   end;
   Result := FDropList;
@@ -6182,6 +6298,7 @@ function TQtListWidget.CreateWidget(const AParams: TCreateParams): QWidgetH;
 begin
   Result := QListWidget_create();
   FDisableSelectionChange := False;
+  QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
 
 procedure TQtListWidget.AttachEvents;
@@ -6579,6 +6696,7 @@ begin
   {$endif}
   Result := QTreeWidget_create();
   FHeader := nil;
+  QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
 
 {------------------------------------------------------------------------------
