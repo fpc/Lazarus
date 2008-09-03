@@ -897,7 +897,7 @@ begin
   {$IFDEF darwin}
   Result:=GetDarwinSystemFilename(Result);
   {$ELSE}
-    {$IF defined(CaseInsensitiveFilenames) or (NotLiteralFilenames)}
+    {$IFDEF NotLiteralFilenames}
     Result:=FindDiskFilename(Result);
     {$ENDIF}
   {$ENDIF}
