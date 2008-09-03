@@ -293,18 +293,25 @@ end;
 procedure TImageListEditorDlg.BtnSaveClick(Sender: TObject);
 var
   Picture: TPicture;
+  FileName, Ext: String;
 begin
-  if Assigned(TreeView.Selected) then
-    if SaveDialog.Execute then
-    begin
-      Picture := TPicture.Create;
-      try
-        ImageList.GetBitmap(TreeView.Selected.ImageIndex, Picture.Bitmap);
-        Picture.SaveToFile(SaveDialog.FileName);
-      finally
-        Picture.Free;
+  if Assigned(TreeView.Selected) and SaveDialog.Execute then
+  begin
+    Picture := TPicture.Create;
+    try
+      ImageList.GetBitmap(TreeView.Selected.ImageIndex, Picture.Bitmap);
+      FileName := SaveDialog.FileName;
+      if ExtractFileExt(FileName) = '' then
+      begin
+        Ext := SaveDialog.GetFilterExt;
+        if Ext <> '' then
+          FileName := FileName + '.' + Ext;
       end;
+      Picture.SaveToFile(FileName);
+    finally
+      Picture.Free;
     end;
+  end;
 end;
 
 procedure TImageListEditorDlg.ColorBoxTransparentClick(Sender: TObject);

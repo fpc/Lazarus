@@ -3,8 +3,6 @@ object ImageListEditorDlg: TImageListEditorDlg
   Height = 379
   Top = 191
   Width = 616
-  HorzScrollBar.Page = 615
-  VertScrollBar.Page = 378
   ActiveControl = BtnOK
   BorderIcons = [biSystemMenu, biHelp]
   Caption = 'ImagesList Editor'
@@ -15,6 +13,7 @@ object ImageListEditorDlg: TImageListEditorDlg
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
+  LCLVersion = '0.9.25'
   object GroupBoxR: TGroupBox
     Left = 375
     Height = 313
@@ -23,13 +22,13 @@ object ImageListEditorDlg: TImageListEditorDlg
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Selected Image'
-    ClientHeight = 294
+    ClientHeight = 295
     ClientWidth = 231
     TabOrder = 5
     object LabelTransparent: TLabel
       Left = 110
       Height = 20
-      Top = 182
+      Top = 183
       Width = 117
       Anchors = [akLeft, akBottom]
       BorderSpacing.Around = 6
@@ -45,11 +44,9 @@ object ImageListEditorDlg: TImageListEditorDlg
     end
     object Preview: TScrollBox
       Left = 6
-      Height = 146
+      Height = 147
       Top = 32
       Width = 218
-      HorzScrollBar.Page = 217
-      VertScrollBar.Page = 145
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
       Color = clGrayText
@@ -60,7 +57,7 @@ object ImageListEditorDlg: TImageListEditorDlg
     object RadioGroup: TRadioGroup
       Left = 6
       Height = 105
-      Top = 184
+      Top = 185
       Width = 96
       Anchors = [akLeft, akBottom]
       AutoFill = True
@@ -74,7 +71,7 @@ object ImageListEditorDlg: TImageListEditorDlg
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
-      ClientHeight = 86
+      ClientHeight = 87
       ClientWidth = 92
       Enabled = False
       ItemIndex = 0
@@ -89,12 +86,12 @@ object ImageListEditorDlg: TImageListEditorDlg
     end
     object ColorBoxTransparent: TColorBox
       Left = 110
-      Height = 24
-      Top = 209
+      Height = 22
+      Top = 212
       Width = 96
       Anchors = [akLeft, akBottom]
-      AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
       Enabled = False
+      ItemHeight = 16
       ItemIndex = 13
       Items.Strings = (
         'clBlack'
@@ -211,7 +208,7 @@ object ImageListEditorDlg: TImageListEditorDlg
         'clSkyBlue'
         'clMedGray'
       )
-      MaxLength = 0
+      MaxLength = -1
       Palette = cpFull
       Selected = clFuchsia
       TabOrder = 2
@@ -280,17 +277,17 @@ object ImageListEditorDlg: TImageListEditorDlg
     Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Images'
-    ClientHeight = 294
+    ClientHeight = 295
     ClientWidth = 360
     TabOrder = 4
     object TreeView: TTreeView
       Left = 6
-      Height = 283
+      Height = 284
       Top = 6
       Width = 186
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
-      DefaultItemHeight = 19
+      DefaultItemHeight = 16
       HideSelection = False
       Images = ImageList
       RowSelect = True
@@ -377,7 +374,6 @@ object ImageListEditorDlg: TImageListEditorDlg
     top = 246
   end
   object OpenDialog: TOpenPictureDialog
-    Title = 'Open existing file'
     FilterIndex = 0
     Options = [ofAllowMultiSelect, ofFileMustExist, ofEnableSizing, ofViewDetail, ofAutoPreview]
     left = 216
@@ -385,7 +381,6 @@ object ImageListEditorDlg: TImageListEditorDlg
   end
   object SaveDialog: TSavePictureDialog
     Title = 'Save file as'
-    Filter = 'Pixmap (*.xpm)|*.xpm'
     FilterIndex = 0
     Options = [ofEnableSizing, ofViewDetail, ofAutoPreview]
     left = 252
