@@ -63,8 +63,8 @@ type
     ctdusUnitNormal, // e.g. unitname (case depends on OS) -> filename
     ctdusUnitCaseInsensitive, // unitname case insensitive -> filename
     ctdusInFilenameNormal, // unit 'in' filename -> filename
-    ctdusInFilenameCaseInsenstive, // unit 'in' filename case insensitive -> filename
-    ctdusUnitFileNormal, // unitname.ext -> filename
+    ctdusInFilenameCaseInsensitive, // unit 'in' filename case insensitive -> filename
+    ctdusUnitFileNormal, // unitname.ext (case depends on OS) -> filename
     ctdusUnitFileCaseInsensitive // unitname.ext case insensitive -> filename
     );
 
@@ -73,7 +73,7 @@ const
                           ctdusInFilenameNormal,
                           ctdusUnitFileNormal];
   ctdusCaseInsensitive = [ctdusUnitCaseInsensitive,
-                          ctdusInFilenameCaseInsenstive,
+                          ctdusInFilenameCaseInsensitive,
                           ctdusUnitFileCaseInsensitive];
 
 type
@@ -557,11 +557,14 @@ var
 begin
   Files:=FUnitSources[UnitSrc].Files;
   if Files=nil then begin
-    Files:=TStringToStringTree.Create({$IFDEF CaseInsensitiveFilenames}
-                                      false
-                                      {$ELSE}
-                                      UnitSrc in ctdusCaseNormal
-                                      {$ENDIF});
+    case UnitSrc of
+    ctdusUnitNormal:               Files:=TStringToStringTree.Create(FilenamesCaseSensitive);
+    ctdusUnitCaseInsensitive:      Files:=TStringToStringTree.Create(false);
+    ctdusInFilenameNormal:         Files:=TFilenameToStringTree.Create(false);
+    ctdusInFilenameCaseInsensitive:Files:=TFilenameToStringTree.Create(true);
+    ctdusUnitFileNormal:           Files:=TFilenameToStringTree.Create(false);
+    ctdusUnitFileCaseInsensitive:  Files:=TFilenameToStringTree.Create(true);
+    end;
     FUnitSources[UnitSrc].Files:=Files;
   end;
   Files[Search]:=Filename;
@@ -832,7 +835,7 @@ begin
     // uses IN parameter
     InFilename:=TrimFilename(SetDirSeparators(InFilename));
     if AnyCase then
-      UnitSrc:=ctdusInFilenameCaseInsenstive
+      UnitSrc:=ctdusInFilenameCaseInsensitive
     else
       UnitSrc:=ctdusInFilenameNormal;
     if GetUnitSourceCacheValue(UnitSrc,InFilename,Result) then begin

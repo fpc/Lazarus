@@ -107,8 +107,10 @@ type
 
   TStringToStringTree = class
   private
+    FCompareKeyItemFunc: TListSortCompare;
     FTree: TAVLTree;// tree of TStringToStringTreeItem
     FCaseSensitive: boolean;
+    function GetCompareItemsFunc: TListSortCompare;
     function GetStrings(const s: string): string;
     procedure SetStrings(const s: string; const AValue: string);
     function FindNode(const s: string): TAVLTreeNode;
@@ -125,12 +127,30 @@ type
     property CaseSensitive: boolean read FCaseSensitive;
     property Tree: TAVLTree read FTree;
     procedure WriteDebugReport;
+    property CompareItemsFunc: TListSortCompare read GetCompareItemsFunc;
+    property CompareKeyItemFunc: TListSortCompare read FCompareKeyItemFunc;
+    procedure SetCompareFuncs(
+            const NewCompareItemsFunc, NewCompareKeyItemFunc: TListSortCompare);
+  end;
+
+  { TFilenameToStringTree }
+
+  TFilenameToStringTree = class(TStringToStringTree)
+  public
+    constructor Create(CaseInsensitive: boolean);
   end;
   
 function CompareStringToStringItems(Data1, Data2: Pointer): integer;
-function CompareStringToStringItemsI(Data1, Data2: Pointer): integer;
 function CompareStringAndStringToStringTreeItem(Key, Data: Pointer): integer;
+
+function CompareStringToStringItemsI(Data1, Data2: Pointer): integer;
 function CompareStringAndStringToStringTreeItemI(Key, Data: Pointer): integer;
+
+function CompareFilenameToStringItems(Data1, Data2: Pointer): integer;
+function CompareFilenameAndFilenameToStringTreeItem(Key, Data: Pointer): integer;
+
+function CompareFilenameToStringItemsI(Data1, Data2: Pointer): integer;
+function CompareFilenameAndFilenameToStringTreeItemI(Key, Data: Pointer): integer;
 
 
 implementation
@@ -147,6 +167,12 @@ begin
                       PStringToStringTreeItem(Data2)^.Name);
 end;
 
+function CompareFilenameToStringItems(Data1, Data2: Pointer): integer;
+begin
+  Result:=CompareFilenames(PStringToStringTreeItem(Data1)^.Name,
+                           PStringToStringTreeItem(Data2)^.Name);
+end;
+
 function CompareStringAndStringToStringTreeItem(Key, Data: Pointer): integer;
 begin
   Result:=CompareStr(String(Key),PStringToStringTreeItem(Data)^.Name);
@@ -155,6 +181,25 @@ end;
 function CompareStringAndStringToStringTreeItemI(Key, Data: Pointer): integer;
 begin
   Result:=CompareText(String(Key),PStringToStringTreeItem(Data)^.Name);
+end;
+
+function CompareFilenameAndFilenameToStringTreeItem(Key, Data: Pointer
+  ): integer;
+begin
+  Result:=CompareFilenames(String(Key),PStringToStringTreeItem(Data)^.Name);
+end;
+
+function CompareFilenameToStringItemsI(Data1, Data2: Pointer): integer;
+begin
+  Result:=CompareFilenamesIgnoreCase(PStringToStringTreeItem(Data1)^.Name,
+                                     PStringToStringTreeItem(Data2)^.Name);
+end;
+
+function CompareFilenameAndFilenameToStringTreeItemI(Key, Data: Pointer
+  ): integer;
+begin
+  Result:=CompareFilenamesIgnoreCase(String(Key),
+                                     PStringToStringTreeItem(Data)^.Name);
 end;
 
 { TCodeXYPositions }
@@ -322,6 +367,11 @@ begin
     Result:=''
 end;
 
+function TStringToStringTree.GetCompareItemsFunc: TListSortCompare;
+begin
+  Result:=Tree.OnCompare;
+end;
+
 procedure TStringToStringTree.SetStrings(const s: string; const AValue: string);
 var
   Node: TAVLTreeNode;
@@ -340,19 +390,19 @@ end;
 
 function TStringToStringTree.FindNode(const s: string): TAVLTreeNode;
 begin
-  if CaseSensitive then
-    Result:=FTree.FindKey(Pointer(s),@CompareStringAndStringToStringTreeItem)
-  else
-    Result:=FTree.FindKey(Pointer(s),@CompareStringAndStringToStringTreeItemI);
+  Result:=FTree.FindKey(Pointer(s),FCompareKeyItemFunc)
 end;
 
 constructor TStringToStringTree.Create(TheCaseSensitive: boolean);
 begin
   FCaseSensitive:=TheCaseSensitive;
-  if CaseSensitive then
-    FTree:=TAVLTree.Create(@CompareStringToStringItems)
-  else
+  if CaseSensitive then begin
+    FCompareKeyItemFunc:=@CompareStringAndStringToStringTreeItem;
+    FTree:=TAVLTree.Create(@CompareStringToStringItems);
+  end else begin
+    FCompareKeyItemFunc:=@CompareStringAndStringToStringTreeItemI;
     FTree:=TAVLTree.Create(@CompareStringToStringItemsI);
+  end;
 end;
 
 destructor TStringToStringTree.Destroy;
@@ -439,6 +489,26 @@ begin
     DebugLn([Item^.Name,'=',Item^.Value]);
     Node:=Tree.FindSuccessor(Node);
   end;
+end;
+
+procedure TStringToStringTree.SetCompareFuncs(const NewCompareItemsFunc,
+  NewCompareKeyItemFunc: TListSortCompare);
+begin
+  FCompareKeyItemFunc:=NewCompareKeyItemFunc;
+  Tree.OnCompare:=NewCompareItemsFunc;
+end;
+
+{ TFilenameToStringTree }
+
+constructor TFilenameToStringTree.Create(CaseInsensitive: boolean);
+begin
+  inherited Create(true);
+  if CaseInsensitive then
+    SetCompareFuncs(@CompareFilenameToStringItemsI,
+                    @CompareFilenameAndFilenameToStringTreeItemI)
+  else
+    SetCompareFuncs(@CompareFilenameToStringItems,
+                    @CompareFilenameAndFilenameToStringTreeItem);
 end;
 
 end.
