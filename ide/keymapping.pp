@@ -146,6 +146,8 @@ function EditorCommandLocalizedName(cmd: word;
 
 procedure GetDefaultKeyForCommand(Command: word;
                                   out TheKeyA, TheKeyB: TIDEShortCut);
+procedure GetDefaultKeyForWindowsScheme(Command: word;
+                                  out TheKeyA, TheKeyB: TIDEShortCut);
 procedure GetDefaultKeyForClassicScheme(Command: word;
                                         var TheKeyA, TheKeyB: TIDEShortCut);
 procedure GetDefaultKeyForMacOSXScheme(Command: word;
@@ -169,7 +171,17 @@ begin
     Result:=DefaultName;
 end;
 
-procedure GetDefaultKeyForCommand(Command: word;
+procedure GetDefaultKeyForCommand(Command: word; out TheKeyA,
+  TheKeyB: TIDEShortCut);
+begin
+  {$IFDEF LCLCarbon}
+  GetDefaultKeyForMacOSXScheme(Command,TheKeyA,TheKeyB);
+  {$ELSE}
+  GetDefaultKeyForWindowsScheme(Command,TheKeyA,TheKeyB);
+  {$ENDIF}
+end;
+
+procedure GetDefaultKeyForWindowsScheme(Command: word;
   out TheKeyA, TheKeyB: TIDEShortCut);
 
   procedure SetResult(NewKeyA: word; NewShiftA: TShiftState;
@@ -523,7 +535,7 @@ procedure GetDefaultKeyForClassicScheme(Command: word;
   end;
 
 begin
-  GetDefaultKeyForCommand(Command,TheKeyA,TheKeyB);
+  GetDefaultKeyForWindowsScheme(Command,TheKeyA,TheKeyB);
 
   case Command of
   // moving
