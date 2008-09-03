@@ -374,12 +374,15 @@ begin
 end;
 
 procedure TPicture.ForceType(GraphicType: TGraphicClass);
+var
+  NewGraphic: TGraphic;
 begin
   if not (FGraphic is GraphicType) then
   begin
+    NewGraphic := GraphicType.Create;
+    NewGraphic.Assign(FGraphic);
     FGraphic.Free;
-    FGraphic := nil;
-    FGraphic := GraphicType.Create;
+    FGraphic := NewGraphic;
     FGraphic.OnChange := @Changed;
     FGraphic.OnProgress := @Progress;
     Changed(Self);

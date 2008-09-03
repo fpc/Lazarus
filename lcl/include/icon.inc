@@ -995,12 +995,10 @@ var
   Header: TIconHeader;
   StreamStart: Int64;
   IconDir: array of TIconDirEntry;
-  n, i: Integer;
+  n: Integer;
   ImageCount: Word;
-  Color: TColor;
   IconImage: TIconImage;
   IntfImage: TLazIntfImage;
-  PNGSig: array[0..7] of Byte;
   PNGWriter: TFPWriterPNG;
   BMPWriter: TFPWriterBMP;
   BmpPtr: PByte;
