@@ -534,6 +534,36 @@ begin
   GetBitmap(Index, Image, gdeNormal);
 end;
 
+procedure TCustomImageList.GetFullBitmap(Image: TCustomBitmap; AEffect: TGraphicsDrawEffect = gdeNormal);
+var
+  RawImg: TRawImage;
+  ListImg, DeviceImg: TLazIntfImage;
+  ImgHandle, MskHandle: HBitmap;
+begin
+  if (FCount = 0) or (Image = nil) then Exit;
+
+  GetFullRawImage(RawImg);
+
+  RawImg.PerformEffect(AEffect, True);
+
+  MskHandle := 0;
+  if not CreateCompatibleBitmaps(RawImg, ImgHandle, MskHandle, True)
+  then begin
+    // bummer, the widgetset doesn't support our 32bit format, try device
+    ListImg := TLazIntfImage.Create(RawImg, False);
+    DeviceImg := TLazIntfImage.Create(0, 0);
+    DeviceImg.DataDescription := GetDescriptionFromDevice(0, Width, Height * Count);
+    DeviceImg.CopyPixels(ListImg);
+    DeviceImg.GetRawImage(RawImg);
+    RawImage_CreateBitmaps(RawImg, ImgHandle, MskHandle);
+    DeviceImg.Free;
+    ListImg.Free;
+  end;
+  Image.SetHandles(ImgHandle, MskHandle);
+
+  RawImg.FreeData;
+end;
+
 procedure TCustomImageList.GetBitmap(Index: Integer; Image: TCustomBitmap;
   AEffect: TGraphicsDrawEffect);
 var
@@ -565,13 +595,25 @@ begin
   RawImg.FreeData;
 end;
 
+procedure TCustomImageList.GetFullRawImage(out Image: TRawImage);
+begin
+  Image.Init;
+
+  if (FCount = 0) then Exit;
+  FillDescription(Image.Description);
+  Image.Description.Height := Height * Count;
+  Image.DataSize := Width * Height * Count * SizeOf(FData[0]);
+  Image.Data := PByte(FData);
+end;
+
 procedure TCustomImageList.GetRawImage(Index: Integer; out Image: TRawImage);
 begin
+  Image.Init;
+
   if (FCount = 0) then Exit;
   CheckIndex(Index);
-  Image.Init;
   FillDescription(Image.Description);
-  Image.DataSize := FWidth * FHeight * SizeOF(FData[0]);
+  Image.DataSize := FWidth * FHeight * SizeOf(FData[0]);
   Image.Data := @FData[Index * FWidth * FHeight];
 end;
 

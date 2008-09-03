@@ -173,6 +173,8 @@ type
     procedure FillDescription(out ADesc: TRawImageDescription);
     procedure GetBitmap(Index: Integer; Image: TCustomBitmap); overload;
     procedure GetBitmap(Index: Integer; Image: TCustomBitmap; AEffect: TGraphicsDrawEffect); overload;
+    procedure GetFullBitmap(Image: TCustomBitmap; AEffect: TGraphicsDrawEffect = gdeNormal);
+    procedure GetFullRawImage(out Image: TRawImage);
     procedure GetRawImage(Index: Integer; out Image: TRawImage);
     function GetHotSpot: TPoint; virtual;
 
