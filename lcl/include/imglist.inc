@@ -547,6 +547,7 @@ begin
   
   RawImg.PerformEffect(AEffect, True);
 
+  MskHandle := 0;
   if not CreateCompatibleBitmaps(RawImg, ImgHandle, MskHandle, True)
   then begin
     // bummer, the widgetset doesn't support our 32bit format, try device

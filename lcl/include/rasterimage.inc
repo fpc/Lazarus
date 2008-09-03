@@ -668,7 +668,6 @@ begin
   if FUpdateCount > 0
   then raise EInvalidGraphicOperation.Create(rsRasterImageSaveInUpdate);
 
-
   if FSharedImage.SaveStream <> nil then Exit;
   
   WorkStream := TMemoryStream.Create;
