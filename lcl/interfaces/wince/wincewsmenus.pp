@@ -244,6 +244,8 @@ begin
     end;
   end;
 
+  //DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log', 'menu bar window = ' + IntToStr(mbi.hwndMB));
+
   while SendMessage(mbi.hwndMB, TB_DELETEBUTTON, 0, 0) <> 0 do ;
 
   with mi do

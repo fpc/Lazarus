@@ -1245,6 +1245,48 @@ begin
     Result := @DefaultWindowInfo;
 end;
 
+function WndClassName(Wnd: HWND): String; inline;
+var
+  winClassName: array[0..19] of widechar;
+begin
+  GetClassName(Wnd, @winClassName, 20);
+  Result := winClassName;
+end;
+
+function IsAlienWindow(Wnd: HWND): Boolean;
+
+const
+  // list window class names is taken here:
+  // http://www.pocketpcdn.com/print/articles/?&atb.set(c_id)=51&atb.set(a_id)=7165&atb.perform(details)=
+  AlienWindowClasses: array[0..7] of String =
+  (
+    'menu_worker',        // can be also found by SHFindMenuBar
+    'MS_SOFTKEY_CE_1.0',  // google about that one. as I understand it related to bottom menu too
+    'Default Ime',
+    'Ime',
+    'static',
+    'OLEAUT32',
+    'FAKEIMEUI',
+    'tooltips_class32'
+  );
+
+var
+  i: integer;
+  WndName: String;
+begin
+  WndName := WndClassName(Wnd);
+  Result := False;
+  for i := Low(AlienWindowClasses) to High(AlienWindowClasses) do
+    if WndName = AlienWindowClasses[i] then
+      Exit(True);
+end;
+
+{procedure LogWindow(Window: HWND);
+begin
+  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+    'Window = ' + IntToStr(Window) + ' ClassName = ' + WndClassName(Window) + ' Thread id = ' + IntToStr(GetWindowThreadProcessId(Window, nil)));
+end;}
+
 {-----------------------------------------------------------------------------
   Function: DisableWindowsProc
   Params: Window - handle of toplevel windows to be disabled
@@ -1265,16 +1307,16 @@ begin
     Exit;
 
   // Don't disable the current window form or menu of that form
-  if (Window = DisableWindowsInfo^.NewModalWindow)
-{$ifndef Win32}
-     or (Window = SHFindMenuBar(DisableWindowsInfo^.NewModalWindow))
-{$endif} then Exit;
+  if (Window = DisableWindowsInfo^.NewModalWindow) then
+    Exit;
 
   if not IsWindowVisible(Window) or
-     not IsWindowEnabled(Window) then
+     not IsWindowEnabled(Window) or
+     IsAlienWindow(Window) then
     Exit;
 
   DisableWindowsInfo^.DisabledWindowList.Add(Pointer(Window));
+  //LogWindow(Window);
   EnableWindow(Window, False);
 end;
 
@@ -1287,7 +1329,7 @@ var
   WindowInfo: PWindowInfo;
 begin
   // prevent recursive calling when the AppHandle window is disabled
-  If InDisableApplicationWindows then exit;
+  if InDisableApplicationWindows then exit;
   InDisableApplicationWindows := True;
   
   New(DisableWindowsInfo);

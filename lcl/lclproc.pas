@@ -255,6 +255,7 @@ procedure DebuglnThreadLog(const Msg: string); overload;
 procedure DebuglnThreadLog(Args: array of const); overload;
 procedure DebuglnThreadLog; overload;
 procedure DbgSaveData(FileName: String; AData: PChar; ADataSize: PtrUInt);
+procedure DbgAppendToFile(FileName, S: String);
 
 procedure CloseDebugOutput;
 
@@ -2094,6 +2095,20 @@ begin
   S := TFileStream.Create(UTF8ToSys(FileName), fmCreate);
   S.Write(AData^, ADataSize);
   S.Free;
+end;
+
+procedure DbgAppendToFile(FileName, S: String);
+var
+  F: TextFile;
+begin
+  AssignFile(F, FileName);
+  {$I-}
+  Append(F);
+  if IOResult <> 0 then
+    Rewrite(F);
+  {$I+}
+  WriteLn(F, S);
+  CloseFile(F);
 end;
 
 function StripLN(const ALine: String): String;
