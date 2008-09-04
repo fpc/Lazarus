@@ -401,9 +401,7 @@ end;
 procedure TQtComboStrings.Put(Index: Integer; const S: string);
 begin
   inherited Put(Index, S);
-
-  FOwner.removeItem(Index);
-  FOwner.insertItem(Index, S);
+  FOwner.setItemText(Index, S);
 end;
 
 procedure TQtComboStrings.InsertItem(Index: Integer; const S: string);

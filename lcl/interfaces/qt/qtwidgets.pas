@@ -695,6 +695,7 @@ type
     procedure setCurrentIndex(index: Integer);
     procedure setMaxVisibleItems(ACount: Integer);
     procedure setEditable(const AValue: Boolean);
+    procedure setItemText(AIndex: Integer; AText: String);
     procedure setText(const W: WideString); override;
     procedure removeItem(AIndex: Integer);
     
@@ -5831,6 +5832,18 @@ begin
     LineEdit.setFocusPolicy(getFocusPolicy);
     setText(FText);
   end;
+end;
+
+procedure TQtComboBox.setItemText(AIndex: Integer; AText: String);
+var
+  Str: WideString;
+begin
+  if (AIndex >= 0) and (AIndex < QComboBox_count(QComboBoxH(Widget))) then
+  begin
+    Str := GetUTF8String(AText);
+    QComboBox_setItemText(QComboBoxH(Widget), AIndex, @Str);
+  end else
+    insertItem(AIndex, AText);
 end;
 
 procedure TQtComboBox.setText(const W: WideString);
