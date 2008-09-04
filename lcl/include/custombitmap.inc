@@ -39,6 +39,12 @@ begin
   inherited Changed(Sender);
 end;
 
+procedure TCustomBitmap.Clear;
+begin
+  FPixelFormat := pfDevice;
+  inherited Clear;
+end;
+
 constructor TCustomBitmap.Create;
 begin
   inherited Create;
@@ -126,7 +132,7 @@ begin
     if  ImagePtr^.IsMasked(False)
     then begin
       // move mask to image data, so we only have to create one handle
-      // (and don't have to think about imahehandle format)
+      // (and don't have to think about imagehandle format)
 
       MaskImage.Init;
       MaskImage.Description := ImagePtr^.Description.GetDescriptionFromMask;
@@ -182,6 +188,7 @@ begin
       if ADescOnly
       or not RawImage_FromBitmap(ImagePtr^, FSharedImage.FHandle, FMaskHandle)
       then ImagePtr^.Description := GetDescriptionFromBitmap(FSharedImage.FHandle);
+      FPixelFormatNeedsUpdate := True;
       Exit;
     end;
   
@@ -189,7 +196,8 @@ begin
     // ImagePtr^.Description := GetDescriptionFromDevice(0, ImagePtr^.Description.Width, ImagePtr^.Description.Height);
     // use query to get a default description without alpha, since alpha drawing
     // is not yet supported (unless asked for)
-    case PixelFormat of
+    // use var and not pixelformat property since it requires a rawimagedescription (which we are creating)
+    case FPixelFormat of
       pf1bit: Flags := [riqfMono, riqfMask];
       pf4bit,
       pf8bit: Flags := [riqfRGB, riqfMask, riqfPalette];
@@ -198,6 +206,8 @@ begin
       Flags := [riqfRGB, riqfMask];
     end;
     ImagePtr^.Description := QueryDescription(Flags, ImagePtr^.Description.Width, ImagePtr^.Description.Height);
+    // atleast for now let pixelformat reflect the created description
+    FPixelFormatNeedsUpdate := True;
     Exit;
   end;
   
@@ -206,6 +216,7 @@ begin
   try
     OnChange := nil;
     LoadFromStream(FSharedImage.FSaveStream);
+    FPixelFormatNeedsUpdate := True;
   finally
     OnChange := OldChangeEvent;
   end;
@@ -333,7 +344,9 @@ end;
 
 procedure TCustomBitmap.UpdatePixelFormat;
 begin
+  RawimageNeeded(True);
   FPixelFormat := TSharedCustomBitmap(FSharedImage).GetPixelFormat;
+  FPixelFormatNeedsUpdate := False;
 end;
 
 function TCustomBitmap.GetMonochrome: Boolean;
@@ -413,7 +426,10 @@ begin
   end;
 
   if UpdateHandles(ABitmap, AMask)
-  then Changed(Self);
+  then begin
+    FPixelFormatNeedsUpdate := True;
+    Changed(Self);
+  end;
 end;
 
 procedure TCustomBitmap.SetHandle(AValue: THandle);
@@ -446,6 +462,8 @@ end;
 
 function TCustomBitmap.GetPixelFormat: TPixelFormat;
 begin
+  if FPixelFormatNeedsUpdate
+  then UpdatePixelFormat;
   Result := FPixelFormat;
 end;
 

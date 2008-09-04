@@ -129,6 +129,7 @@ begin
     SCB.FHasMask := IntfImg.HasMask;
     if not SCB.FHasMask
     then SCB.FImage.Description.MaskBitsPerPixel := 0;
+    FPixelFormatNeedsUpdate := True;
   finally
     LazReader := nil;
     IntfImg.Free;

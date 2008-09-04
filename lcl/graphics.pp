@@ -1251,6 +1251,7 @@ type
   TCustomBitmap = class(TRasterImage)
   private
     FPixelFormat: TPixelFormat;
+    FPixelFormatNeedsUpdate: Boolean;
     FMaskHandle: HBITMAP; // mask is not part of the image, so not shared
     function GetHandleType: TBitmapHandleType;
     function GetMonochrome: Boolean;
@@ -1284,6 +1285,7 @@ type
     constructor Create; override;
     destructor Destroy; override;
 
+    procedure Clear; override;
     function GetResourceType: TResourceType; override;
     function LazarusResourceTypeValid(const ResourceType: string): Boolean; override;
     function BitmapHandleAllocated: boolean; override;

@@ -75,6 +75,8 @@ end;
 
 function TSharedCustomBitmap.GetPixelFormat: TPixelFormat;
 begin
+  if FImage.Description.Format = ricfNone then Exit(pfDevice);
+
   case FImage.Description.Depth of
      1: Exit(pf1Bit);
      4: Exit(pf4Bit);

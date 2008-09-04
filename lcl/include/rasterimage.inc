@@ -157,13 +157,12 @@ end;
 
 procedure TRasterImage.Clear;
 begin
-  if not Empty then
-  begin
-    FreeSaveStream;
-    SetSize(0, 0);
-    if FUpdateCount = 0
-    then Changed(Self);
-  end;
+  if Empty then Exit;
+
+  FreeSaveStream;
+  SetSize(0, 0);
+  if FUpdateCount = 0
+  then Changed(Self);
 end;
 
 procedure TRasterImage.BitmapHandleNeeded;

@@ -332,6 +332,7 @@ procedure TCustomIcon.AssignImage(ASource: TRasterImage);
 var
   Image, NewImage: TIconImage;
   RawImg: PRawImage;
+  RawMsk: TRawImage;
 begin
   if FCurrent = -1
   then raise EInvalidGraphicOperation.Create(rsIconNoCurrent);
@@ -356,18 +357,43 @@ begin
   try
     NewImage.FImage.Description := RawImg^.Description;
 
+    // image
     NewImage.FImage.DataSize := RawImg^.DataSize;
     if NewImage.FImage.DataSize > 0
     then begin
       NewImage.FImage.Data := GetMem(NewImage.FImage.DataSize);
       Move(RawImg^.Data^, NewImage.FImage.Data^, NewImage.FImage.DataSize);
     end;
-    NewImage.FImage.MaskSize := RawImg^.MaskSize;
-    if NewImage.FImage.MaskSize > 0
+
+    // mask
+    // in theory, it should not matter if a HBITMAP was created as bitmap or as mask
+    // since there is a description problem in gtk, create both (we cannot create mask only)
+    // todo: fix gtk
+    if ASource.MaskHandleAllocated
+    and RawImage_FromBitmap(RawMsk, ASource.MaskHandle, ASource.MaskHandle)
     then begin
-      NewImage.FImage.Mask := GetMem(NewImage.FImage.MaskSize);
-      Move(RawImg^.Mask^, NewImage.FImage.Mask^, NewImage.FImage.MaskSize);
+      NewImage.FImage.MaskSize := RawMsk.MaskSize;
+      if NewImage.FImage.MaskSize > 0
+      then begin
+        NewImage.FImage.Mask := GetMem(NewImage.FImage.MaskSize);
+        Move(RawMsk.Mask^, NewImage.FImage.Mask^, NewImage.FImage.MaskSize);
+
+        // prevent cleanup
+        RawMsk.MaskSize := 0;
+        RawMsk.Mask := nil;
+      end;
+      RawMsk.FreeData;
+    end
+    else begin
+      NewImage.FImage.MaskSize := RawImg^.MaskSize;
+      if NewImage.FImage.MaskSize > 0
+      then begin
+        NewImage.FImage.Mask := GetMem(NewImage.FImage.MaskSize);
+        Move(RawImg^.Mask^, NewImage.FImage.Mask^, NewImage.FImage.MaskSize);
+      end;
     end;
+
+    // palette
     NewImage.FImage.PaletteSize := RawImg^.PaletteSize;
     if NewImage.FImage.PaletteSize > 0
     then begin
@@ -948,26 +974,29 @@ begin
 end;
 
 procedure TCustomIcon.WriteStream(AStream: TMemoryStream);
-  procedure GetMaskData(ARawImg: TRawImage; AMskPtr: Pointer; AMskSize, AWidth, AHeight: Cardinal);
+  procedure GetMaskData(ARawImg: TRawImage; AIconImage: TIconImage; AMskPtr: Pointer; AMskSize: Cardinal);
   var
     SrcRawImg, DstRawImg: TRawImage;
     SrcDesc: TRawImageDescription absolute SrcRawImg.Description;
     DstDesc: TRawImageDescription absolute DstRawImg.Description;
     SrcImage, DstImage: TLazIntfImage;
   begin
-
-    SrcRawImg.Init;
-    SrcRawImg.Description := ARawImg.Description.GetDescriptionFromMask;
-    SrcRawImg.Data := ARawImg.Mask;
-    SrcRawImg.DataSize := ARawImg.MaskSize;
+    if (AIconImage.MaskHandle = 0)
+    or not RawImage_FromBitmap(SrcRawImg, AIconImage.MaskHandle, 0)
+    then begin
+      SrcRawImg.Init;
+      SrcRawImg.Description := ARawImg.Description.GetDescriptionFromMask;
+      SrcRawImg.Data := ARawImg.Mask;
+      SrcRawImg.DataSize := ARawImg.MaskSize;
+    end;
 
     DstRawImg.Init;
     DstRawImg.Data := AMskPtr;
     DstRawImg.DataSize := AMskSize;
 
     DstDesc.Format := ricfGray;
-    DstDesc.Width := AWidth;
-    DstDesc.Height := AHeight;
+    DstDesc.Width := AIconImage.Width;
+    DstDesc.Height := AIconImage.Height;
     DstDesc.Depth := 1;
     DstDesc.BitOrder := riboReversedBits;
     DstDesc.ByteOrder := riboLSBFirst;
@@ -1111,7 +1140,7 @@ begin
         if (RawImg.Mask = nil)
         or (RawImg.MaskSize = 0)
         then FillChar(MskPtr^, MskSize, 0)
-        else GetMaskData(RawImg, MskPtr, MskSize, IconImage.Width, IconImage.Height);
+        else GetMaskData(RawImg, IconImage, MskPtr, MskSize);
 
         // write
         AStream.WriteBuffer(BmpPtr^, MemStream.Position - SizeOf(TBitMapFileHeader));
