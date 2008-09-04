@@ -1356,7 +1356,10 @@ begin
 
   // Set context menus to custom so LCL can better handle our popup menus
   if Supports(Self, IQtEdit, QtEdit) then
+  begin
     setContextMenuPolicy(QtCustomContextMenu);
+    setAttribute(QtWA_NoMousePropagation, True);
+  end;
 
   // Set mouse move messages policy
   QWidget_setMouseTracking(Widget, True);
@@ -2451,21 +2454,10 @@ begin
       if getContextMenuPolicy <> QtCustomContextMenu then
         setContextMenuPolicy(QtCustomContextMenu);
     end else
-    {we must ask parent because of OI, don't know yet how to solve this.
-     it's bit tricky when we have TPanel->TEdit and popup is assigned to
-     TPanel. TEdit will show TPanel's popup instead of it's default.}
-    if Assigned(LCLObject.Parent) and
-      Assigned(LCLObject.Parent.PopupMenu) and not
-      (Self is TQtTextEdit) then
-    begin
-        if getContextMenuPolicy <> QtCustomContextMenu then
-          setContextMenuPolicy(QtCustomContextMenu);
-    end else
     begin
       {revert to default if widget supports defaultcontextmenu }
       if getContextMenuPolicy <> QtDefaultContextMenu then
         setContextMenuPolicy(QtDefaultContextMenu);
-      if Self is TQtTextEdit then
         exit;
     end;
   end;
@@ -5089,9 +5081,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtTextEdit.Create');
   {$endif}
-
   Result := QTextEdit_create();
-  QWidget_setAttribute(Result, QtWA_NoMousePropagation);
   FKeysToEat := [];
   FUndoAvailable := False;
 end;
