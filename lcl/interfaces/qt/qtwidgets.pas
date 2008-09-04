@@ -5875,12 +5875,12 @@ var
   str: WideString;
 begin
   BeginEventProcessing;
+
+  Result := False;
+  QEvent_accept(Event);
+
   if (FDropList <> nil) and (Sender = FDropList.Widget) then
   begin
-    Result := False;
-
-    QEvent_accept(Event);
-    
     case QEvent_type(Event) of
       QEventShow: SlotDropListVisibility(True);
       QEventHide:
@@ -5923,7 +5923,6 @@ begin
           if TCustomComboBox(LCLObject).Items.IndexOf(Str) < 0 then
             TCustomComboBox(LCLObject).AddItem(Str, nil);
         end;
-        QEvent_accept(Event);
       	Result := SlotKey(Sender, Event);
       end;
       else
