@@ -999,6 +999,16 @@ begin
 end;
 
 procedure TMainIDEBase.UpdateWindowMenu;
+
+  function GetMenuItem(Index: Integer): TIDEMenuItem; inline;
+  begin
+    if mnuWindow.Count > Index then
+      Result := mnuWindow.Items[Index]
+    else
+      Result := RegisterIDEMenuCommand(mnuWindow.GetPath,
+                                          'Window'+IntToStr(Index),'');
+  end;
+
 var
   WindowsList: TFPList;
   i, ItemCount: Integer;
@@ -1028,13 +1038,9 @@ begin
   
   // create menuitems
   ItemCount := WindowsList.Count;
-  for i:=0 to WindowsList.Count-1 do begin
-    if mnuWindow.Count>i then
-      CurMenuItem:=mnuWindow.Items[i]
-    else
-      CurMenuItem:=RegisterIDEMenuCommand(mnuWindow.GetPath,
-                                          'Window'+IntToStr(i),'');
-
+  for i:=0 to WindowsList.Count-1 do 
+  begin
+    CurMenuItem := GetMenuItem(i);
     CurMenuItem.Caption:=TCustomForm(WindowsList[i]).Caption;
     CurMenuItem.MenuItem.Checked := Screen.ActiveCustomForm = TCustomForm(WindowsList[i]);
     CurMenuItem.OnClick:=@mnuWindowItemClick;
@@ -1042,31 +1048,25 @@ begin
 
   //create source page menuitems
 
-  if (SourceNotebook<>nil) and (SourceNotebook.Notebook<>nil) and not (nbcPageListPopup in SourceNotebook.Notebook.GetCapabilities) then begin
-    if mnuWindow.Count > ItemCount then
-      CurMenuItem := mnuWindow.Items[ItemCount]
-     else
-      CurMenuItem:=RegisterIDEMenuCommand(mnuWindow.GetPath,
-                                          'Window'+IntToStr(ItemCount),'');
+  if (SourceNotebook<>nil) and (SourceNotebook.Notebook<>nil) and not (nbcPageListPopup in SourceNotebook.Notebook.GetCapabilities) then 
+  begin
+    CurMenuItem := GetMenuItem(ItemCount);
     CurMenuItem.OnClick:=nil;
     CurMenuItem.Caption:='-';
-    ItemCount:=ItemCount+1;
-    for i:=0 to SourceNotebook.EditorCount-1 do begin
-      if mnuWindow.Count>i+ItemCount then
-        CurMenuItem:=mnuWindow.Items[i+ItemCount]
-      else
-        CurMenuItem:=RegisterIDEMenuCommand(mnuWindow.GetPath,
-                                            'Window'+IntToStr(i+ItemCount),'');
+    inc(ItemCount);
 
+    for i := 0 to SourceNotebook.EditorCount-1 do 
+    begin
+      CurMenuItem := GetMenuItem(ItemCount);
       CurMenuItem.Caption:=SourceNotebook.Editors[i].PageName;
       CurMenuItem.MenuItem.Checked := SourceNotebook.ActiveEditor = SourceNotebook.Editors[i] ;
       CurMenuItem.OnClick:=@mnuWindowSourceItemClick;
-      CurMenuItem.Tag:=i;
+      CurMenuItem.Tag := i;
+      inc(ItemCount);
     end;
-    ItemCount := ItemCount + SourceNotebook.EditorCount;
   end;
   // remove unused menuitems
-  while mnuWindow.Count>ItemCount do
+  while mnuWindow.Count > ItemCount do
     mnuWindow.Items[mnuWindow.Count-1].Free;
 
     // clean up
