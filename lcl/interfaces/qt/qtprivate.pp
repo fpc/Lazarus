@@ -455,10 +455,7 @@ begin
   inherited Sort;
 
   for I := 0 to Count - 1 do
-  begin
-    FOwner.removeItem(I);
-    FOwner.insertItem(I, Strings[I]);
-  end;
+    FOwner.setItemText(I, Strings[I]);
 end;
 
 { TQtListStrings }
@@ -520,10 +517,7 @@ begin
   inherited Sort;
 
   for I := 0 to Count - 1 do
-  begin
-    FOwner.removeItem(I);
-    FOwner.insertItem(I, Strings[I]);
-  end;
+    FOwner.setItemText(I, Strings[I]);
 end;
 
 end.
