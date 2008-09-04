@@ -68,7 +68,7 @@ begin
   HTMLControl:=TIPLazHtmlControl.Create(Owner);
   Result:=HTMLControl;
   if Provider=nil then
-    Provider:=CreateIDEHTMLProvider(Owner);
+    Provider:=CreateIDEHTMLProvider(HTMLControl);
   Provider.ControlIntf:=HTMLControl;
   HTMLControl.Provider:=Provider;
 end;
