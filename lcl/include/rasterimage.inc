@@ -252,7 +252,7 @@ begin
   DestCanvas.Changed;
 end;
 
-procedure TRasterImage.EndUpdate;
+procedure TRasterImage.EndUpdate(AStreamIsValid: Boolean = False);
 begin
   if FUpdatecount = 0
   then raise EInvalidGraphicOperation.Create(rsRasterImageEndUpdate);
@@ -262,7 +262,8 @@ begin
 
   if not FUpdateCanvasOnly
   then FreeCanvasContext;
-  FreeSaveStream;
+  if not AStreamIsValid
+  then FreeSaveStream;
   Changed(Self);
 end;
 
@@ -417,12 +418,11 @@ var
   WorkStream: TMemoryStream;
   OldPos, NewSize: Int64;
 begin
+  BeginUpdate;
   UnshareImage(False);
+  Clear; // clear old saved stream, allocated handles, etc
   if ASize = 0
-  then begin
-    Clear;
-    Exit;
-  end;
+  then Exit;
 
   WorkStream := nil;
   try
@@ -431,7 +431,6 @@ begin
     OldPos := AStream.Position;
     WorkStream.CopyFrom(AStream, ASize);
     WorkStream.Position := 0;
-    FreeSaveStream;
     ReadStream(WorkStream, ASize);
     NewSize := WorkStream.Position;
     if NewSize < ASize
@@ -448,8 +447,7 @@ begin
     // if something went wrong, free the workstream
     WorkStream.Free;
   end;
-  if FUpdateCount = 0
-  then Changed(Self);
+  EndUpdate(True);
 end;
 
 function TRasterImage.GetRawImage: TRawImage;

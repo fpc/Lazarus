@@ -934,7 +934,7 @@ end;
 function TWin32WidgetSet.CreateIconIndirect(IconInfo: PIconInfo): HICON;
 var
   bmp: Windows.TBitmap;
-  hbm: HBITMAP;
+  hbm1, hbm2: HBITMAP;
   SrcDataSize, DataSize: PtrUInt;
   SrcData, Data: PByte;
   Res: Boolean;
@@ -965,19 +965,31 @@ begin
 
     if Res then
     begin
-      hbm := CreateBitmap(bmp.bmWidth, bmp.bmHeight shl 1, bmp.bmPlanes, 1, Data);
+      hbm1 := CreateBitmap(bmp.bmWidth, bmp.bmHeight shl 1, bmp.bmPlanes, 1, Data);
       IconInfo^.hbmColor := 0;
-      IconInfo^.hbmMask := hbm;
+      IconInfo^.hbmMask := hbm1;
     end;
 
     FreeMem(Data);
   end
   else
-    hbm := 0;
+    hbm1 := 0;
+
+  if (IconInfo^.hbmMask = 0) and (IconInfo^.hbmColor <> 0) and (GetObject(IconInfo^.hbmColor, SizeOf(bmp), @bmp) = SizeOf(bmp)) then
+  begin
+    hbm2 := CreateBitmap(bmp.bmWidth, bmp.bmHeight, bmp.bmPlanes, 1, nil);
+    IconInfo^.hbmMask := hbm2;
+  end
+  else
+    hbm2 := 0;
+
   Result := Windows.CreateIconIndirect(IconInfo);
 
-  if hbm <> 0 then
-    DeleteObject(hbm);
+  if hbm1 <> 0 then
+    DeleteObject(hbm1);
+
+  if hbm2 <> 0 then
+    DeleteObject(hbm2);
 end;
 
 function TWin32WidgetSet.CreatePatternBrush(ABitmap: HBITMAP): HBRUSH;

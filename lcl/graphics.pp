@@ -1184,7 +1184,7 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure Clear; override;
     procedure BeginUpdate(ACanvasOnly: Boolean = False);
-    procedure EndUpdate;
+    procedure EndUpdate(AStreamIsValid: Boolean = False);
     procedure FreeImage;
     function BitmapHandleAllocated: boolean; virtual; abstract;
     function MaskHandleAllocated: boolean; virtual; abstract;

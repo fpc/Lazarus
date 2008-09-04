@@ -311,12 +311,14 @@ begin
   else
   if Source is TRasterImage
   then begin
+    BeginUpdate;
     Clear;
     
     with TRasterImage(Source) do
       Self.Add(PixelFormat, Height, Width);
 
     AssignImage(TRasterImage(Source));
+    EndUpdate;
     Exit;
   end;
 
@@ -620,7 +622,10 @@ begin
   if MaskHandleAllocated then exit;
 
   ImagePtr := GetRawImagePtr;
-  if (ImagePtr = nil) or (ImagePtr^.Description.Format = ricfNone) then Exit;
+  if (ImagePtr = nil) or
+     (ImagePtr^.Description.Format = ricfNone) or
+     (ImagePtr^.Description.MaskBitsPerPixel = 0) then
+     Exit;
 
   MaskImage.Init;
   MaskImage.Description := ImagePtr^.Description.GetDescriptionFromMask;
@@ -1203,8 +1208,8 @@ begin
   if FSharedImage.FHandle <> 0 then Exit;
 
   IconInfo.fIcon := True;
-  IconInfo.hbmMask := MaskHandle;
   IconInfo.hbmColor := BitmapHandle;
+  IconInfo.hbmMask := MaskHandle;
   FSharedImage.FHandle := WidgetSet.CreateIconIndirect(@IconInfo);
 end;
 
