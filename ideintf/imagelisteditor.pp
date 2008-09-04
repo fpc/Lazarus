@@ -304,6 +304,8 @@ begin
     if ExtractFileExt(FileName) = '' then
     begin
       Ext := SaveDialog.GetFilterExt;
+      if Ext = '' then
+        Ext := 'bmp';
       if Ext <> '' then
         FileName := FileName + '.' + Ext;
     end;
