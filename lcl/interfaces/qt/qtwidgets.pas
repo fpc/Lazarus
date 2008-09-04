@@ -4958,8 +4958,6 @@ begin
   inherited AttachEvents;
 
   FTextChanged := QLineEdit_hook_create(Widget);
-  {TODO: BUG CopyUnicodeToPWideString() segfaults while calling SetLength()
-   workaround: add try..except around SetLength() }
   QLineEdit_textChanged_Event(Method) := @SignalTextChanged;
   QLineEdit_hook_hook_textChanged(FTextChanged, Method);
 end;
@@ -5265,6 +5263,10 @@ begin
   QEvent_accept(Event);
   case QEvent_type(Event) of
     QEventContextMenu: SlotContextMenu(Sender, Event);
+    QEventMouseButtonPress,
+    QEventMouseButtonRelease,
+    QEventMouseButtonDblClick: SlotMouse(Sender, Event);
+    QEventMouseMove: SlotMouseMove(Event);
   end;
 end;
 
