@@ -83,14 +83,24 @@ resourcestring
 { TEdtTbConfigForm }
 
 procedure TEdtTbConfigForm.FormCreate(Sender: TObject);
+
+  procedure LoadImageToBtn(ImageName: String; Btn: TBitBtn); inline;
+  var
+    B: TCustomBitmap;
+  begin
+     B := CreateBitmapFromLazarusResource(ImageName);
+     Btn.Glyph.Assign(B);
+     B.Free;
+  end;
+
 begin
   inherited;
   pnlButtons.Color := clBtnFace;
   // load button images
-  btnRemove.Glyph.LoadFromLazarusResource('arrowleft_blue16');
-  btnAdd.Glyph.LoadFromLazarusResource('arrowright_blue16');
-  btnMoveUp.Glyph.LoadFromLazarusResource('arrowup_blue16');
-  btnMoveDown.Glyph.LoadFromLazarusResource('arrowdown_blue16');
+  LoadImageToBtn('arrowleft_blue16', btnRemove);
+  LoadImageToBtn('arrowright_blue16', btnAdd);
+  LoadImageToBtn('arrowup_blue16', btnMoveUp);
+  LoadImageToBtn('arrowdown_blue16', btnMoveDown);
 
   TV.Images := IDEImages.Images_16;
   SetupCaptions;
