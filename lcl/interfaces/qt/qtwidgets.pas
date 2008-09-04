@@ -7529,9 +7529,13 @@ end;
   Callback for menu item click
  ------------------------------------------------------------------------------}
 procedure TQtMenu.SlotTriggered(checked: Boolean); cdecl;
+var
+  Msg: TLMessage;
 begin
-  if Assigned(FMenuItem) and Assigned(FMenuItem.OnClick) then
-    FMenuItem.OnClick(FMenuItem);
+  FillChar(Msg, SizeOf(Msg), 0);
+  Msg.msg := LM_ACTIVATE;
+  if Assigned(FMenuItem) then
+    FMenuItem.Dispatch(Msg);
 end;
 
 function TQtMenu.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
