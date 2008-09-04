@@ -1511,6 +1511,8 @@ begin
       NodeName:=Tool.ExtractPropName(CodeNode,false);
     ctnProcedure:
       NodeName:=Tool.ExtractProcName(CodeNode,[]);
+    ctnEnumIdentifier:
+      NodeName:=GetIdentifier(@Tool.Src[CodeNode.StartPos]);
     else NodeName:='';
     end;
     if NodeName<>'' then begin
