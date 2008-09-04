@@ -140,9 +140,6 @@ begin
   //DebugLn('[TCustomListBox.FinalizeWnd] A ',FItems.ClassName);
   // create internal item list
   if Assigned(FItems) then begin;
-    // make sure the items are not reordered (needed for ItemIndex and attributes)
-    TWSCustomListBoxClass(WidgetSetClass).SetSorted(Self, FItems, false);
-
     NewStrings:= TExtendedStringList.Create(GetCachedDataSize);
 
     // copy items (text+objects) from the interface items list
