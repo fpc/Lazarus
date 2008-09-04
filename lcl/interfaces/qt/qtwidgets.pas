@@ -5651,9 +5651,11 @@ function TQtComboBox.GetDropList: TQtListWidget;
 begin
   if FDropList = nil then
   begin
-    FDropList := TQtListWidget.CreateFrom(LCLObject, QComboBox_view(QComboBoxH(Widget)));
+    FDropList := TQtListWidget.CreateFrom(LCLObject, QListWidget_create());
     FDropList.setAttribute(QtWA_NoMousePropagation, False);
     FDropList.OwnerDrawn := OwnerDrawn;
+    QComboBox_setModel(QComboBoxH(Widget), FDropList.getModel);
+    QComboBox_setView(QComboBoxH(Widget), QListWidgetH(FDropList.Widget));
   end;
   Result := FDropList;
 end;
