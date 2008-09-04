@@ -871,6 +871,7 @@ type
     procedure insertItem(AIndex: Integer; AText: String); overload;
     procedure insertItem(AIndex: Integer; AText: PWideString); overload;
     procedure setCurrentRow(row: Integer);
+    procedure setItemText(AIndex: Integer; AText: String);
     procedure scrollToItem(row: integer; hint: QAbstractItemViewScrollHint);
     procedure removeItem(AIndex: Integer);
   end;
@@ -6503,6 +6504,19 @@ begin
   if (getSelectionMode <> QAbstractItemViewSingleSelection) and (row < 0) then
     row := 0;
   QListWidget_setCurrentRow(QListWidgetH(Widget), row);
+end;
+
+procedure TQtListWidget.setItemText(AIndex: Integer; AText: String);
+var
+  Item: QListWidgetItemH;
+  Str: WideString;
+begin
+  Str := GetUTF8String(AText);
+  Item := QListWidget_item(QListWidgetH(Widget), AIndex);
+  if Item <> nil then
+    QListWidgetItem_setText(Item, @Str)
+  else
+    insertItem(AIndex, @Str);
 end;
 
 procedure TQtListWidget.scrollToItem(row: integer;

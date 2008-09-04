@@ -468,9 +468,7 @@ end;
 procedure TQtListStrings.Put(Index: Integer; const S: string);
 begin
   inherited Put(Index, S);
-
-  FOwner.removeItem(Index);
-  FOwner.insertItem(Index, S);
+  FOwner.setItemText(Index, S);
 end;
 
 procedure TQtListStrings.InsertItem(Index: Integer; const S: string);
