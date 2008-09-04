@@ -156,6 +156,7 @@ type
     procedure ShowMinimized;
     procedure ShowMaximized;
     function getActionByIndex(AIndex: Integer): QActionH;
+    function getAutoFillBackground: Boolean;
     function getClientBounds: TRect; virtual;
     function getClientOffset: TPoint; virtual;
     function getEnabled: Boolean;
@@ -1360,6 +1361,11 @@ begin
     setContextMenuPolicy(QtCustomContextMenu);
     setAttribute(QtWA_NoMousePropagation, True);
   end;
+
+  if (csDesigning in LCLObject.ComponentState) and not
+     (Self is TQtMainWindow) and not
+     getAutoFillBackground then
+    setAutoFillBackground(False);
 
   // Set mouse move messages policy
   QWidget_setMouseTracking(Widget, True);
@@ -2656,6 +2662,11 @@ begin
     Result := QActionH(ActionList[AIndex])
   else
     Result := nil;
+end;
+
+function TQtWidget.getAutoFillBackground: Boolean;
+begin
+  Result := QWidget_autoFillBackground(Widget);
 end;
 
 function TQtWidget.getEnabled: Boolean;
