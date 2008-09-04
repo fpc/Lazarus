@@ -139,7 +139,7 @@ begin
     GetItemIndex;
   //DebugLn('[TCustomListBox.FinalizeWnd] A ',FItems.ClassName);
   // create internal item list
-  if Assigned(FItems) then begin;
+  if Assigned(FItems) then begin
     NewStrings:= TExtendedStringList.Create(GetCachedDataSize);
 
     // copy items (text+objects) from the interface items list

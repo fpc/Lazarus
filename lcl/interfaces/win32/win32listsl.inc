@@ -93,11 +93,12 @@ End;
 
  ------------------------------------------------------------------------------}
 procedure TWin32ListStringList.Sort;
-Begin
+begin
   // The win api doesn't allow to change the sort on the fly,
   // so is needed to recreate the window
-  RecreateWnd(FSender);
-End;
+  if not (csDestroyingHandle in FSender.ControlState) then
+    RecreateWnd(FSender);
+end;
 
 
 {------------------------------------------------------------------------------
