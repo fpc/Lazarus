@@ -60,10 +60,11 @@ type
     function GetSelectedProps: String;
     procedure SetPropComponent(const AValue: TComponent);
     procedure SetSelectedProps(const AValue: String);
-    Procedure ShowComponents;
-    Procedure ShowProperties(C : TComponent);
-    Procedure AddSelectedProperties;
-    Procedure DeleteSelectedProperties;
+    procedure ShowComponents;
+    procedure ShowProperties(C : TComponent);
+    function GetSelectedComponent: TComponent;
+    procedure AddSelectedProperties;
+    procedure DeleteSelectedProperties;
   public
     Property PropertyComponent : TComponent Read FPropComponent Write SetPropComponent;
     Property SelectedProperties : String Read GetSelectedProps Write SetSelectedProps;
@@ -87,16 +88,8 @@ end;
 
 procedure TSelectPropertiesForm.LBComponentsSelectionChange(Sender: TObject;
   User: boolean);
-var
-  C : TComponent;
 begin
-  //debugln('TSelectPropertiesForm.LBComponentsSelectionChange');
-  With Sender as TListBox do
-    if ItemIndex=-1 then
-      C:=Nil
-    else
-      C:=Items.Objects[ItemIndex] as TComponent;
-  ShowProperties(C);
+  ShowProperties(GetSelectedComponent);
 end;
 
 procedure TSelectPropertiesForm.LBPropertiesClick(Sender: TObject);
@@ -204,6 +197,7 @@ begin
     end;
   If LBComponents.Items.Count>0 then
     LBComponents.ItemIndex:=0;
+  ShowProperties(GetSelectedComponent);
 end;
 
 procedure TSelectPropertiesForm.ShowProperties(C : TComponent);
@@ -213,7 +207,7 @@ var
   N,S : String;
   P : PPropInfo;
 begin
-  //debugln('TSelectPropertiesForm.ShowProperties ',dbgsName(C));
+  debugln('TSelectPropertiesForm.ShowProperties ',dbgsName(C));
   With LBProperties do
     try
       Items.BeginUpdate;
@@ -239,6 +233,21 @@ begin
     Finally
       Items.EndUpdate;
     end;
+end;
+
+function TSelectPropertiesForm.GetSelectedComponent: TComponent;
+var
+  CurName: string;
+begin
+  Result:=nil;
+  if LBComponents.ItemIndex>=0 then begin
+    CurName:=LBComponents.Items[LBComponents.ItemIndex];
+    if SysUtils.CompareText(CurName,FPropComponent.Name)=0 then
+      Result:=FPropComponent
+    else
+      Result:=FPropComponent.FindComponent(CurName);
+    DebugLn(['TSelectPropertiesForm.GetSelectedComponent ItemIndex=',LBComponents.ItemIndex,' CurName=',CurName,' Result=',DbgSName(Result)]);
+  end;
 end;
 
 procedure TSelectPropertiesForm.AddSelectedProperties;
