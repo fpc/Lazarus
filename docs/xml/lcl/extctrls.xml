@@ -107,7 +107,7 @@
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TPageFlag.pfAdded">
-        <short/>
+        <short>Internal flag set after page handle was connected to the notebook handle</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TPageFlag.pfRemoving">
