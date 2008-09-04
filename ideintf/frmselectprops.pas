@@ -207,7 +207,7 @@ var
   N,S : String;
   P : PPropInfo;
 begin
-  debugln('TSelectPropertiesForm.ShowProperties ',dbgsName(C));
+  //debugln('TSelectPropertiesForm.ShowProperties ',dbgsName(C));
   With LBProperties do
     try
       Items.BeginUpdate;
@@ -246,7 +246,7 @@ begin
       Result:=FPropComponent
     else
       Result:=FPropComponent.FindComponent(CurName);
-    DebugLn(['TSelectPropertiesForm.GetSelectedComponent ItemIndex=',LBComponents.ItemIndex,' CurName=',CurName,' Result=',DbgSName(Result)]);
+    //DebugLn(['TSelectPropertiesForm.GetSelectedComponent ItemIndex=',LBComponents.ItemIndex,' CurName=',CurName,' Result=',DbgSName(Result)]);
   end;
 end;
 

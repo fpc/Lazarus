@@ -99,8 +99,12 @@ begin
   // fetch the interface item list
   NewStrings := TWSCustomListBoxClass(WidgetSetClass).GetStrings(Self);
   // copy the items (text+objects)
-  NewStrings.Assign(Items);
   OldItems := FItems as TExtendedStringList;
+  OldItems.Sorted:=false;// make sure the items are not reordered (needed for ItemIndex and attributes)
+  NewStrings.Assign(Items);
+
+  //for i:=0 to Fitems.Count-1 do
+  //  DebugLn(['TCustomListBox.InitializeWnd ',i,' New=',NewStrings[i],' ',DbgSName(NewStrings.Objects[i]),' Old=',Items[i],' ',dbgsname(Items.Objects[i])]);
 
   // new item list is the interface item list
   FItems:= NewStrings;
@@ -115,26 +119,30 @@ begin
 
   // free old items
   OldItems.Free;
+  TWSCustomListBoxClass(WidgetSetClass).SetSorted(Self, FItems, FSorted);
   UnlockSelectionChange;
   //DebugLn('[TCustomListBox.InitializeWnd] END ',FItems.ClassName);
 end;
 
-{------------------------------------------------------------------------------}
-{ procedure TCustomListBox.FinalizeWnd                                       }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+ procedure TCustomListBox.FinalizeWnd
+------------------------------------------------------------------------------}
 procedure TCustomListBox.FinalizeWnd;
 var
   NewStrings : TExtendedStringList;
   i, Cnt: integer;
 begin
   LockSelectionChange;
-  
+
   // save ItemIndex on destroy handle
   if ([csDestroying,csLoading]*ComponentState=[]) then
     GetItemIndex;
   //DebugLn('[TCustomListBox.FinalizeWnd] A ',FItems.ClassName);
   // create internal item list
   if Assigned(FItems) then begin;
+    // make sure the items are not reordered (needed for ItemIndex and attributes)
+    TWSCustomListBoxClass(WidgetSetClass).SetSorted(Self, FItems, false);
+
     NewStrings:= TExtendedStringList.Create(GetCachedDataSize);
 
     // copy items (text+objects) from the interface items list
@@ -147,6 +155,7 @@ begin
     // free the interface items list
     FItems.Free;
     // new item list is the internal item list
+    NewStrings.Sorted:=FSorted;
     FItems:= NewStrings;
     FCacheValid := True;
     //DebugLn('[TCustomListBox.FinalizeWnd] B ',FItems.ClassName);
@@ -223,10 +232,13 @@ end;
 ------------------------------------------------------------------------------}
 procedure TCustomListBox.UpdateSorted;
 begin
-  if not HandleAllocated then exit;
-  LockSelectionChange;
-  TWSCustomListBoxClass(WidgetSetClass).SetSorted(Self, FItems, FSorted);
-  UnlockSelectionChange;
+  if HandleAllocated then begin
+    LockSelectionChange;
+    TWSCustomListBoxClass(WidgetSetClass).SetSorted(Self, FItems, FSorted);
+    UnlockSelectionChange;
+  end else begin
+    TExtendedStringList(FItems).Sorted:=true;
+  end;
 end;
 
 {------------------------------------------------------------------------------

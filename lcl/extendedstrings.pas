@@ -30,7 +30,7 @@ unit ExtendedStrings;
 interface
 
 uses
-  Classes, SysUtils; 
+  Classes, SysUtils;
   
 type
   TExtStringsOption = (
