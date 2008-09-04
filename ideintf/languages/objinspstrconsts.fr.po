@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-03-20 14:39+0100\n"
+"PO-Revision-Date: 2008-09-02 16:02+0100\n"
 "Last-Translator: Laurent Jacques <wile64@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -46,7 +46,7 @@ msgstr "&Edition"
 
 #: objinspstrconsts:oistdactsearchfindheadline
 msgid "&Find..."
-msgstr ""
+msgstr "&Chercher..."
 
 #: objinspstrconsts:oistdactdatasetfirstheadline
 msgid "&First"
@@ -94,7 +94,7 @@ msgstr "&Rafraîchir"
 
 #: objinspstrconsts:oistdactsearchreplaceheadline
 msgid "&Replace"
-msgstr ""
+msgstr "&Remplacer"
 
 #: objinspstrconsts:oissave
 msgid "&Save"
@@ -130,7 +130,7 @@ msgstr "1 ligne, %d caractères"
 
 #: objinspstrconsts:srvk_accept
 msgid "Accept"
-msgstr ""
+msgstr "Accepter"
 
 #: objinspstrconsts:oisaction
 msgid "Action"
@@ -190,7 +190,7 @@ msgstr "Tous les fichiers"
 
 #: objinspstrconsts:srkm_alt
 msgid "Alt"
-msgstr ""
+msgstr "Alt"
 
 #: objinspstrconsts:sccstredtapply
 msgid "Apply"
@@ -210,7 +210,7 @@ msgstr "Classes disponibles d'action :"
 
 #: objinspstrconsts:srvk_back
 msgid "Backspace"
-msgstr ""
+msgstr "Retour arrière"
 
 #: objinspstrconsts:oisboolean
 msgid "Boolean"
@@ -226,7 +226,7 @@ msgstr "Annuler"
 
 #: objinspstrconsts:srvk_capital
 msgid "Capital"
-msgstr ""
+msgstr "Majuscule"
 
 #: objinspstrconsts:rscdcaption
 msgid "Caption"
@@ -282,7 +282,7 @@ msgstr "Effacer l'image"
 
 #: objinspstrconsts:srvk_cmd
 msgid "Cmd"
-msgstr ""
+msgstr "Cmd"
 
 #: objinspstrconsts:oistdactcolorselecthint
 msgid "Color Select"
@@ -294,7 +294,7 @@ msgstr "Editeur de colonne"
 
 #: objinspstrconsts:cgcolumns
 msgid "Columns:"
-msgstr ""
+msgstr "Colonnes :"
 
 #: objinspstrconsts:oiscomponentnameisnotavalididentifier
 msgid "Component name %s%s%s is not a valid identifier"
@@ -314,11 +314,11 @@ msgstr "Confirmez la suppression"
 
 #: objinspstrconsts:srvk_control
 msgid "Control"
-msgstr ""
+msgstr "Contrôle"
 
 #: objinspstrconsts:srvk_convert
 msgid "Convert"
-msgstr ""
+msgstr "Convertir"
 
 #: objinspstrconsts:oistdacteditcopyshorthint
 msgid "Copy"
@@ -342,7 +342,7 @@ msgstr "Rogner"
 
 #: objinspstrconsts:srkm_ctrl
 msgid "Ctrl"
-msgstr ""
+msgstr "Ctrl"
 
 #: objinspstrconsts:oistdacteditselectallshortcut
 msgid "Ctrl+A"
@@ -354,7 +354,7 @@ msgstr "Ctrl+C"
 
 #: objinspstrconsts:oistdactsearchfindshortcut
 msgid "Ctrl+F"
-msgstr ""
+msgstr "Ctrl+F"
 
 #: objinspstrconsts:oistdactfileopenshortcut
 msgid "Ctrl+O"
@@ -418,7 +418,7 @@ msgstr "Supprimer une Tabulation"
 
 #: objinspstrconsts:clbdeletehint
 msgid "Delete the Item"
-msgstr ""
+msgstr "Supprimer l'élément"
 
 #: objinspstrconsts:clbdeletequest
 msgid "Delete the Item %d \"%s\"?"
@@ -446,7 +446,7 @@ msgstr "Editer"
 
 #: objinspstrconsts:sccslvcoledt
 msgid "Edit Columns ..."
-msgstr ""
+msgstr "Editer les colonnes"
 
 #: objinspstrconsts:fesfetitle
 msgid "Edit Fields"
@@ -474,7 +474,7 @@ msgstr "Edition"
 
 #: objinspstrconsts:srvk_end
 msgid "End"
-msgstr ""
+msgstr "Fin"
 
 #: objinspstrconsts:oisenumeration
 msgid "Enumeration"
@@ -494,7 +494,7 @@ msgstr "Erreur au chargement de l'image %s%s%s:%s%s"
 
 #: objinspstrconsts:srvk_escape
 msgid "Escape"
-msgstr ""
+msgstr "Echap"
 
 #: objinspstrconsts:oisevents
 msgid "Events"
@@ -502,7 +502,7 @@ msgstr "Evènements"
 
 #: objinspstrconsts:srvk_execute
 msgid "Execute"
-msgstr ""
+msgstr "Exécuter"
 
 #: objinspstrconsts:oistdactfileexithint
 msgid "Exit"
@@ -510,11 +510,11 @@ msgstr "Quitter"
 
 #: objinspstrconsts:oistdactsearchfindfirstheadline
 msgid "F&ind First"
-msgstr ""
+msgstr "Chercher la &premiere occurrence"
 
 #: objinspstrconsts:oistdactsearchfindnextshortcut
 msgid "F3"
-msgstr ""
+msgstr "F3"
 
 #: objinspstrconsts:oisfavorites
 msgid "Favorites"
@@ -534,31 +534,31 @@ msgstr "Fichier"
 
 #: objinspstrconsts:pefilter
 msgid "Filter"
-msgstr ""
+msgstr "Filtre"
 
 #: objinspstrconsts:pefiltername
 msgid "Filter name"
-msgstr ""
+msgstr "Filtrer par nom"
 
 #: objinspstrconsts:srvk_final
 msgid "Final"
-msgstr ""
+msgstr "Fin"
 
 #: objinspstrconsts:oistdactsearchfindhint
 msgid "Find"
-msgstr ""
+msgstr "Chercher"
 
 #: objinspstrconsts:oistdactsearchfindnextheadline
 msgid "Find &Next"
-msgstr ""
+msgstr "Chercher l'occurrence &suivante"
 
 #: objinspstrconsts:oistdactsearchfindfirsthint
 msgid "Find first"
-msgstr ""
+msgstr "Chercher la premiere occurrence"
 
 #: objinspstrconsts:oistdactsearchfindnexthint
 msgid "Find next"
-msgstr ""
+msgstr "Chercher l'occurence suivante"
 
 #: objinspstrconsts:oistdactdatasetfirsthint
 msgid "First"
@@ -578,11 +578,11 @@ msgstr "Restrictions générales des Widgets"
 
 #: objinspstrconsts:srgrabkey
 msgid "Grab key"
-msgstr ""
+msgstr "Touche d'accroche"
 
 #: objinspstrconsts:srvk_hanja
 msgid "Hanja"
-msgstr ""
+msgstr "Hanja"
 
 #: objinspstrconsts:cactionlisteditorhelpcategory
 msgid "Help"
@@ -598,7 +598,7 @@ msgstr "Aide sur l'aide"
 
 #: objinspstrconsts:srvk_home
 msgid "Home"
-msgstr ""
+msgstr "Début"
 
 #: objinspstrconsts:sccstredtlabelimageindex
 msgid "Image Index:"
@@ -614,11 +614,11 @@ msgstr "Images"
 
 #: objinspstrconsts:oisincompatibleidentifier
 msgid "Incompatible Identifier"
-msgstr ""
+msgstr "Identificateur incompatible"
 
 #: objinspstrconsts:oisincompatiblemethod
 msgid "Incompatible Method"
-msgstr ""
+msgstr "Méthode incompatible"
 
 #: objinspstrconsts:oisinputmask
 msgid "Input Mask:"
@@ -658,7 +658,7 @@ msgstr "Valeur de propriété incorrecte"
 
 #: objinspstrconsts:srvk_irregular
 msgid "Irregular "
-msgstr ""
+msgstr "Irrégulière"
 
 #: objinspstrconsts:fesnofields
 msgid "It was not possible to get the dataset field's list"
@@ -682,11 +682,11 @@ msgstr "Aller à la déclaration"
 
 #: objinspstrconsts:srvk_junja
 msgid "Junja"
-msgstr ""
+msgstr "Junja"
 
 #: objinspstrconsts:srvk_kana
 msgid "Kana"
-msgstr ""
+msgstr "Kana"
 
 #: objinspstrconsts:oistdactdatasetlasthint
 msgid "Last"
@@ -722,11 +722,11 @@ msgstr "Masques…"
 
 #: objinspstrconsts:srvk_menu
 msgid "Menu"
-msgstr ""
+msgstr "Menu"
 
 #: objinspstrconsts:srvk_meta
 msgid "Meta"
-msgstr ""
+msgstr "Meta"
 
 #: objinspstrconsts:oismethod
 msgid "Method"
@@ -734,7 +734,7 @@ msgstr "Méthode"
 
 #: objinspstrconsts:srvk_modechange
 msgid "Mode Change"
-msgstr ""
+msgstr "Changement de mode"
 
 #: objinspstrconsts:clbmodify
 msgid "Modify the Item"
@@ -742,15 +742,15 @@ msgstr "Modifier l'élément"
 
 #: objinspstrconsts:srvk_lbutton
 msgid "Mouse Button Left"
-msgstr ""
+msgstr "Bouton gauche"
 
 #: objinspstrconsts:srvk_mbutton
 msgid "Mouse Button Middle"
-msgstr ""
+msgstr "Bouton central"
 
 #: objinspstrconsts:srvk_rbutton
 msgid "Mouse Button Right"
-msgstr ""
+msgstr "Bouton droit"
 
 #: objinspstrconsts:sccsiledtmovedown
 msgid "Move Down"
@@ -810,7 +810,7 @@ msgstr "Suivant"
 
 #: objinspstrconsts:srvk_nonconvert
 msgid "Nonconvert"
-msgstr ""
+msgstr "Non converti"
 
 #: objinspstrconsts:sccsiledtnone
 msgid "None"
@@ -818,11 +818,11 @@ msgstr "Aucun"
 
 #: objinspstrconsts:srvk_numlock
 msgid "Numlock"
-msgstr ""
+msgstr "Verr Num"
 
 #: objinspstrconsts:srvk_numpad
 msgid "Numpad %d"
-msgstr ""
+msgstr "%d pavé num"
 
 #: objinspstrconsts:rscdok
 msgid "OK"
@@ -858,11 +858,11 @@ msgstr "Ouvrir un fichier de masques (*.dem)"
 
 #: objinspstrconsts:oistdactfileopenwithhint
 msgid "Open with"
-msgstr ""
+msgstr "Ouviri avec "
 
 #: objinspstrconsts:oistdactfileopenwithheadline
 msgid "Open with..."
-msgstr ""
+msgstr "Ouvrir avec ..."
 
 #: objinspstrconsts:oisoptions
 msgid "Options"
@@ -878,7 +878,7 @@ msgstr "Descriptions du panneau"
 
 #: objinspstrconsts:sccssbeditpanels
 msgid "Panels Editor ..."
-msgstr ""
+msgstr "Editeur de panels"
 
 #: objinspstrconsts:oistdacteditpasteshorthint
 msgid "Paste"
@@ -890,7 +890,7 @@ msgstr "Coller les composants"
 
 #: objinspstrconsts:srvk_pause
 msgid "Pause key"
-msgstr ""
+msgstr "Touche pause"
 
 #: objinspstrconsts:oispepicture
 msgid "Picture"
@@ -906,7 +906,7 @@ msgstr "Poster"
 
 #: objinspstrconsts:srvk_print
 msgid "Print"
-msgstr ""
+msgstr "Imprimer"
 
 #: objinspstrconsts:oistdactdatasetpriorhint
 msgid "Prior"
@@ -934,7 +934,7 @@ msgstr "Retirer des favories"
 
 #: objinspstrconsts:oistdactsearchreplacehint
 msgid "Replace"
-msgstr ""
+msgstr "Remplacer"
 
 #: objinspstrconsts:oisrestricted
 msgid "Restricted"
@@ -942,7 +942,7 @@ msgstr "Restrictions"
 
 #: objinspstrconsts:srvk_return
 msgid "Return"
-msgstr ""
+msgstr "Entrée"
 
 #: objinspstrconsts:rscdright
 msgid "Right"
@@ -986,19 +986,19 @@ msgstr "Enregistrer..."
 
 #: objinspstrconsts:srvk_scroll
 msgid "Scroll"
-msgstr ""
+msgstr "Défilement"
 
 #: objinspstrconsts:cactionlisteditorsearchcategory
 msgid "Search"
-msgstr ""
+msgstr "&Chercher"
 
 #: objinspstrconsts:sccshceditsections
 msgid "Sections Editor ..."
-msgstr ""
+msgstr "Editeur de sections"
 
 #: objinspstrconsts:srselect
 msgid "Select"
-msgstr ""
+msgstr "Sélectionner"
 
 #: objinspstrconsts:oistdacteditselectallheadline
 msgid "Select &All"
@@ -1022,7 +1022,7 @@ msgstr "Choisissez un fichier"
 
 #: objinspstrconsts:oisselectshortcut
 msgid "Select short cut"
-msgstr ""
+msgstr "Sélectionnez raccourci"
 
 #: objinspstrconsts:sccsiledtgrprcaption
 msgid "Selected Image"
@@ -1046,7 +1046,7 @@ msgstr "Mis à  la valeur par défaut: %s"
 
 #: objinspstrconsts:srvk_shift
 msgid "Shift"
-msgstr ""
+msgstr "Shift"
 
 #: objinspstrconsts:oisshowcomponenttree
 msgid "Show Component Tree"
@@ -1062,7 +1062,7 @@ msgstr "Afficher la page..."
 
 #: objinspstrconsts:srvk_snapshot
 msgid "Snapshot"
-msgstr ""
+msgstr "Impression d'écran"
 
 #: objinspstrconsts:oissort
 msgid "Sort"
@@ -1070,7 +1070,7 @@ msgstr "Trier"
 
 #: objinspstrconsts:srvk_space
 msgid "Space key"
-msgstr ""
+msgstr "Barre d'espace"
 
 #: objinspstrconsts:s_splitimage
 msgid "Split image"
@@ -1106,11 +1106,11 @@ msgstr "Dialogue d'éditeur de chaînes"
 
 #: objinspstrconsts:srvk_super
 msgid "Super"
-msgstr ""
+msgstr "Super"
 
 #: objinspstrconsts:srvk_tab
 msgid "Tab"
-msgstr ""
+msgstr "Tab"
 
 #: objinspstrconsts:oistestinput
 msgid "Test Input"
@@ -1130,15 +1130,15 @@ msgstr "L'élément \"%s\" est déjà énuméré. L'ajouter quand même ?"
 
 #: objinspstrconsts:oistheidentifierisnotamethodpresscanceltoundopressign
 msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr ""
+msgstr "L'identificateur %s%s%s n'est pas une méthode.%s Appuyez sur Annuler pour annuler, appuyez sur %s Ignorer pour le forcer."
 
 #: objinspstrconsts:oisthemethodisincompatibletothiseventpresscanceltound
 msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
-msgstr ""
+msgstr "La méthode %s%s%s est incompatible avec cet événement (%s). %s Appuyez sur Annuler pour annuler, %s Appuyer sur Ignorer pour la forcer."
 
 #: objinspstrconsts:oisthemethodisnotpublishedpresscanceltoundopressignor
 msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr ""
+msgstr "La méthode %s%s%s n'est pas publié.%s Appuyer sur Annuler pour annuler, appuyez sur %s Ignorer et la forcer."
 
 #: objinspstrconsts:cactionlisteditorpaneltoolbar
 msgid "Toolbar"
@@ -1194,17 +1194,17 @@ msgstr "Mot"
 
 #: objinspstrconsts:srvk_apps
 msgid "application key"
-msgstr ""
+msgstr "Touche application"
 
 #: objinspstrconsts:srvk_lwin
 msgid "left windows key"
-msgstr ""
+msgstr "Touche Windows gauche"
 
 #: objinspstrconsts:srvk_none
 msgid "none"
-msgstr ""
+msgstr "Aucun"
 
 #: objinspstrconsts:srvk_rwin
 msgid "right windows key"
-msgstr ""
+msgstr "Touche Windows droite"
 

@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: Laurent Jacques <wile64@gmail.com>\n"
-"PO-Revision-Date: 2008-03-12 22:19+0100\n"
+"PO-Revision-Date: 2008-09-04 11:40+0100\n"
 "Language-Team: Laurent Jacques <wile64@gmail.com>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -141,7 +141,7 @@ msgstr "--lcl-no-transient    Ne mettez pas d'ordre transitoire pour les formes 
 
 #: lclstrconsts:rsgtkoptionname
 msgid "--name programe       Set program name to \"progname\". If not specified, program name will be set to ParamStrUTF8(0)."
-msgstr ""
+msgstr "--name programme       Ensemble pour le nom du programme \"progname\". Si non spécifiée, le nom du programme sera fixée à ParamStrUTF8 (0)."
 
 #: lclstrconsts:rsgtkoptionnoxshm
 msgid "--no-xshm             Disable use of the X Shared Memory Extension."
@@ -213,11 +213,11 @@ msgstr ""
 
 #: lclstrconsts:rsiconimageformatchange
 msgid "Cannot change format of icon image"
-msgstr ""
+msgstr "Impossible de modifier le format d'image de l'icône"
 
 #: lclstrconsts:rsiconimagesizechange
 msgid "Cannot change size of icon image"
-msgstr ""
+msgstr "Impossible de modifier la taille d'image de l'icône"
 
 #: lclstrconsts:scannotfocus
 msgid "Cannot focus a disabled or invisible window"
@@ -225,7 +225,7 @@ msgstr "Impossible de focaliser une fenêtre invisible ou désactive"
 
 #: lclstrconsts:rsrasterimagesaveinupdate
 msgid "Cannot save image wile update in progress"
-msgstr ""
+msgstr "Impossible d'enregister l'image tant que la mise à jour est en cours"
 
 #: lclstrconsts:rscanvasdoesnotallowdrawing
 msgid "Canvas does not allow drawing"
@@ -265,7 +265,7 @@ msgstr "Ctrl"
 
 #: lclstrconsts:rscursor
 msgid "Cursor"
-msgstr ""
+msgstr "Curseur"
 
 #: lclstrconsts:rsmtcustom
 msgid "Custom"
@@ -297,11 +297,11 @@ msgstr "Bas"
 
 #: lclstrconsts:rsduplicateiconformat
 msgid "Duplicate icon format."
-msgstr ""
+msgstr "Format icône Dupliquer."
 
 #: lclstrconsts:sduplicatemenus
 msgid "Duplicate menus"
-msgstr "Menus doublons"
+msgstr "Doublons de Menus"
 
 #: lclstrconsts:rserrorinlcl
 msgid "ERROR in LCL: "
@@ -489,19 +489,19 @@ msgstr "Icône"
 
 #: lclstrconsts:rsiconnocurrent
 msgid "Icon has no current image"
-msgstr ""
+msgstr "L'icône n'a pas d'image"
 
 #: lclstrconsts:rsiconimageempty
 msgid "Icon image cannot be empty"
-msgstr ""
+msgstr "L'image icône ne peut pas être vide"
 
 #: lclstrconsts:rsiconimageformat
 msgid "Icon image must have the same format"
-msgstr ""
+msgstr "L'image d'icône doit avoir le même format"
 
 #: lclstrconsts:rsiconimagesize
 msgid "Icon image must have the same size"
-msgstr ""
+msgstr "L'image d'icône doit avoir la même taille"
 
 #: lclstrconsts:rsindexoutofrange
 msgid "Index Out of range Cell[Col=%d Row=%d]"
@@ -545,7 +545,7 @@ msgstr "Déréférencement d'action non valide"
 
 #: lclstrconsts:sparinvalidfloat
 msgid "Invalid floating point number: %s"
-msgstr ""
+msgstr "Nombre à virgule flottante non valide : %s"
 
 #: lclstrconsts:sinvalidimagesize
 msgid "Invalid image size"
@@ -553,7 +553,7 @@ msgstr "Taille d'image non valide"
 
 #: lclstrconsts:sparinvalidinteger
 msgid "Invalid integer number: %s"
-msgstr ""
+msgstr "Nombre entier non valide : %s"
 
 #: lclstrconsts:rsinvalidpropertyvalue
 msgid "Invalid property value"
@@ -665,7 +665,7 @@ msgstr "%d pav num."
 
 #: lclstrconsts:rsicns
 msgid "OSX Icon Resource"
-msgstr ""
+msgstr "Osx icône ressource"
 
 #: lclstrconsts:rsfdopenfile
 msgid "Open existing file"
@@ -861,7 +861,7 @@ msgstr ""
 
 #: lclstrconsts:sparunterminatedstring
 msgid "Unterminated string"
-msgstr ""
+msgstr "Chaîne non terminé"
 
 #: lclstrconsts:ifsvk_up
 msgid "Up"
