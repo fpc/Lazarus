@@ -8561,10 +8561,6 @@ msgstr ""
 msgid "Start with a new project"
 msgstr ""
 
-#: lazarusidestrconsts:lisstarter
-msgid "Starter"
-msgstr ""
-
 #: lazarusidestrconsts:lisoipstate
 msgid "State"
 msgstr ""
@@ -8763,10 +8759,6 @@ msgstr ""
 
 #: lazarusidestrconsts:listargetcpu
 msgid "Target CPU"
-msgstr ""
-
-#: lazarusidestrconsts:dlgtargetcpufamily
-msgid "Target CPU family"
 msgstr ""
 
 #: lazarusidestrconsts:lislazbuildtargetcpu

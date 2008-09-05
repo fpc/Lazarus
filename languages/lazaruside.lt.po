@@ -8562,10 +8562,6 @@ msgstr "Standartinis žinyno meniu"
 msgid "Start with a new project"
 msgstr "Startuti su nauju projektu"
 
-#: lazarusidestrconsts:lisstarter
-msgid "Starter"
-msgstr "Paleidimo programa"
-
 #: lazarusidestrconsts:lisoipstate
 msgid "State"
 msgstr "Būsena"
@@ -8765,10 +8761,6 @@ msgstr "Paskyra"
 #: lazarusidestrconsts:listargetcpu
 msgid "Target CPU"
 msgstr "Skirtas procesoriui"
-
-#: lazarusidestrconsts:dlgtargetcpufamily
-msgid "Target CPU family"
-msgstr ""
 
 #: lazarusidestrconsts:lislazbuildtargetcpu
 msgid "Target CPU:"

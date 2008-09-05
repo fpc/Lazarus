@@ -8564,10 +8564,6 @@ msgstr "标准的帮助菜单"
 msgid "Start with a new project"
 msgstr "以新的工程开始"
 
-#: lazarusidestrconsts:lisstarter
-msgid "Starter"
-msgstr "Starter"
-
 #: lazarusidestrconsts:lisoipstate
 msgid "State"
 msgstr "状态"
@@ -8767,10 +8763,6 @@ msgstr "目标"
 #: lazarusidestrconsts:listargetcpu
 msgid "Target CPU"
 msgstr "目标 CPU"
-
-#: lazarusidestrconsts:dlgtargetcpufamily
-msgid "Target CPU family"
-msgstr ""
 
 #: lazarusidestrconsts:lislazbuildtargetcpu
 msgid "Target CPU:"

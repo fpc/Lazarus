@@ -3836,8 +3836,8 @@ msgstr ""
 msgid "Target OS"
 msgstr ""
 
-#: lazarusidestrconsts:dlgtargetcpufamily
-msgid "Target CPU family"
+#: lazarusidestrconsts:dlgtargetcpu
+msgid "Target CPU"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcodebugging
@@ -6634,10 +6634,6 @@ msgstr ""
 
 #: lazarusidestrconsts:liside
 msgid "IDE"
-msgstr ""
-
-#: lazarusidestrconsts:lisstarter
-msgid "Starter"
 msgstr ""
 
 #: lazarusidestrconsts:lisexamples

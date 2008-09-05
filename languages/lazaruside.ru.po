@@ -8561,10 +8561,6 @@ msgstr "Стандартное меню Справка"
 msgid "Start with a new project"
 msgstr "При запуске начинать новый проект"
 
-#: lazarusidestrconsts:lisstarter
-msgid "Starter"
-msgstr "Пускатель"
-
 #: lazarusidestrconsts:lisoipstate
 msgid "State"
 msgstr "Состояние"
@@ -8764,10 +8760,6 @@ msgstr "Цель"
 #: lazarusidestrconsts:listargetcpu
 msgid "Target CPU"
 msgstr "Семейство процессоров:"
-
-#: lazarusidestrconsts:dlgtargetcpufamily
-msgid "Target CPU family"
-msgstr ""
 
 #: lazarusidestrconsts:lislazbuildtargetcpu
 msgid "Target CPU:"

@@ -8559,10 +8559,6 @@ msgstr "Menú de Ayuda estándar"
 msgid "Start with a new project"
 msgstr "Empezar con un proyecto nuevo"
 
-#: lazarusidestrconsts:lisstarter
-msgid "Starter"
-msgstr "Iniciador"
-
 #: lazarusidestrconsts:lisoipstate
 msgid "State"
 msgstr "Estado"
@@ -8762,10 +8758,6 @@ msgstr "Objetivo"
 #: lazarusidestrconsts:listargetcpu
 msgid "Target CPU"
 msgstr "CPU objetivo"
-
-#: lazarusidestrconsts:dlgtargetcpufamily
-msgid "Target CPU family"
-msgstr ""
 
 #: lazarusidestrconsts:lislazbuildtargetcpu
 msgid "Target CPU:"

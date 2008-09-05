@@ -8560,10 +8560,6 @@ msgstr "標準ヘルプメニュー"
 msgid "Start with a new project"
 msgstr "新プロジェクトで開始"
 
-#: lazarusidestrconsts:lisstarter
-msgid "Starter"
-msgstr "スタータ"
-
 #: lazarusidestrconsts:lisoipstate
 msgid "State"
 msgstr "状態"
@@ -8763,10 +8759,6 @@ msgstr "ターゲット"
 #: lazarusidestrconsts:listargetcpu
 msgid "Target CPU"
 msgstr "対象CPU"
-
-#: lazarusidestrconsts:dlgtargetcpufamily
-msgid "Target CPU family"
-msgstr ""
 
 #: lazarusidestrconsts:lislazbuildtargetcpu
 msgid "Target CPU:"

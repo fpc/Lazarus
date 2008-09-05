@@ -8564,10 +8564,6 @@ msgstr "Štandardné menu Pomoc"
 msgid "Start with a new project"
 msgstr "Začať nový projekt"
 
-#: lazarusidestrconsts:lisstarter
-msgid "Starter"
-msgstr "Štartér"
-
 #: lazarusidestrconsts:lisoipstate
 msgid "State"
 msgstr "Stav"
@@ -8767,10 +8763,6 @@ msgstr "Cieľ"
 #: lazarusidestrconsts:listargetcpu
 msgid "Target CPU"
 msgstr "Cieľový CPU"
-
-#: lazarusidestrconsts:dlgtargetcpufamily
-msgid "Target CPU family"
-msgstr ""
 
 #: lazarusidestrconsts:lislazbuildtargetcpu
 msgid "Target CPU:"

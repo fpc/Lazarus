@@ -8561,10 +8561,6 @@ msgstr "Menú d'ajuda normalitzat"
 msgid "Start with a new project"
 msgstr "Inicia amb un nou projecte"
 
-#: lazarusidestrconsts:lisstarter
-msgid "Starter"
-msgstr ""
-
 #: lazarusidestrconsts:lisoipstate
 msgid "State"
 msgstr "Estat"
@@ -8764,10 +8760,6 @@ msgstr ""
 #: lazarusidestrconsts:listargetcpu
 msgid "Target CPU"
 msgstr "CPU destinació"
-
-#: lazarusidestrconsts:dlgtargetcpufamily
-msgid "Target CPU family"
-msgstr ""
 
 #: lazarusidestrconsts:lislazbuildtargetcpu
 msgid "Target CPU:"
