@@ -850,10 +850,11 @@ type
 
   TQtListWidget = class(TQtListView)
   private
+    FCurrentItemChangeHook: QListWidget_hookH;
     FSelectionChangeHook: QListWidget_hookH;
     FItemDoubleClickedHook: QListWidget_hookH;
     FItemClickedHook: QListWidget_hookH;
-    FDisableSelectionChange: Boolean;
+    FItemTextChangedHook: QListWidget_hookH;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
@@ -862,9 +863,11 @@ type
     procedure AttachEvents; override;
     procedure DetachEvents; override;
     
-    procedure SlotSelectionChange(current: QListWidgetItemH; previous: QListWidgetItemH); cdecl;
-    procedure SignalItemDoubleClicked(item: QListWidgetItemH); cdecl;
-    procedure SignalItemClicked(item: QListWidgetItemH); cdecl;
+    procedure signalCurrentItemChange(current: QListWidgetItemH; previous: QListWidgetItemH); cdecl;
+    procedure signalItemDoubleClicked(item: QListWidgetItemH); cdecl;
+    procedure signalItemClicked(item: QListWidgetItemH); cdecl;
+    procedure signalItemTextChanged(ANewText: PWideString); cdecl;
+    procedure signalSelectionChanged(); cdecl;
     procedure ItemDelegatePaint(painter: QPainterH; option: QStyleOptionViewItemH; index: QModelIndexH); cdecl; override;
   public
     function currentRow: Integer;
@@ -5837,11 +5840,25 @@ end;
 procedure TQtComboBox.setItemText(AIndex: Integer; AText: String);
 var
   Str: WideString;
+  item: QListWidgetItemH;
+  R: TRect;
 begin
   if (AIndex >= 0) and (AIndex < QComboBox_count(QComboBoxH(Widget))) then
   begin
     Str := GetUTF8String(AText);
     QComboBox_setItemText(QComboBoxH(Widget), AIndex, @Str);
+    {we must update our custom delegate}
+    if (FDropList <> nil) and
+       (FDropList.getVisible) and
+       (FDropList.OwnerDrawn) then
+    begin
+      Item := QListWidget_item(QListWidgetH(FDropList.Widget), AIndex);
+      if Item <> nil then
+      begin
+        QListWidget_visualItemRect(QListWidgetH(FDropList.Widget), @R, item);
+        QWidget_update(QAbstractScrollArea_viewport(QAbstractScrollAreaH(FDropList.Widget)), @R);
+      end;
+    end;
   end else
     insertItem(AIndex, AText);
 end;
@@ -6315,7 +6332,6 @@ end;
 function TQtListWidget.CreateWidget(const AParams: TCreateParams): QWidgetH;
 begin
   Result := QListWidget_create();
-  FDisableSelectionChange := False;
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
 
@@ -6326,27 +6342,49 @@ begin
   inherited AttachEvents;
   
   FSelectionChangeHook := QListWidget_hook_create(Widget);
+  FCurrentItemChangeHook := QListWidget_hook_create(Widget);
   FItemDoubleClickedHook := QListWidget_hook_create(Widget);
   FItemClickedHook := QListWidget_hook_create(Widget);
+  FItemTextChangedHook := QListWidget_hook_create(Widget);
 
   // OnSelectionChange event
-  QListWidget_currentItemChanged_Event(Method) := @SlotSelectionChange;
-  QListWidget_hook_hook_currentItemChanged(FSelectionChangeHook, Method);
+  QListWidget_itemSelectionChanged_Event(Method) := @signalSelectionChanged;
+  QListWidget_hook_hook_itemSelectionChanged(FSelectionChangeHook, Method);
 
-  QListWidget_itemDoubleClicked_Event(Method) := @SignalItemDoubleClicked;
+  QListWidget_currentItemChanged_Event(Method) := @signalCurrentItemChange;
+  QListWidget_hook_hook_currentItemChanged(FCurrentItemChangeHook, Method);
+
+  QListWidget_itemDoubleClicked_Event(Method) := @signalItemDoubleClicked;
   QListWidget_hook_hook_ItemDoubleClicked(FItemDoubleClickedHook, Method);
 
-  QListWidget_itemClicked_Event(Method) := @SignalItemClicked;
+  QListWidget_itemClicked_Event(Method) := @signalItemClicked;
   QListWidget_hook_hook_ItemClicked(FItemClickedHook, Method);
+
+  QListWidget_currentTextChanged_Event(Method) := @signalItemTextChanged;
+  QListWidget_hook_hook_currentTextChanged(FItemTextChangedHook, Method);
 end;
 
 procedure TQtListWidget.DetachEvents;
 begin
   QListWidget_hook_destroy(FSelectionChangeHook);
+  QListWidget_hook_destroy(FCurrentItemChangeHook);
   QListWidget_hook_destroy(FItemDoubleClickedHook);
   QListWidget_hook_destroy(FItemClickedHook);
+  QListWidget_hook_destroy(FItemTextChangedHook);
 
   inherited DetachEvents;
+end;
+
+procedure TQtListWidget.signalCurrentItemChange(current: QListWidgetItemH;
+  previous: QListWidgetItemH); cdecl;
+var
+  Msg: TLMessage;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtListWidget.signalCurrentItemChange ');
+  {$endif}
+  if (previous = nil) and (current <> nil) and not QListWidgetItem_isSelected(current) then
+    QListWidgetItem_setSelected(current, True);
 end;
 
 {------------------------------------------------------------------------------
@@ -6354,15 +6392,16 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TQtListWidget.SlotSelectionChange(current: QListWidgetItemH;
-  previous: QListWidgetItemH); cdecl;
+
+procedure TQtListWidget.signalSelectionChanged(); cdecl;
 var
   Msg: TLMessage;
 begin
-  if FDisableSelectionChange then
-    Exit;
-  FillChar(Msg, SizeOf(Msg), #0);
+  {$ifdef VerboseQt}
+    WriteLn('TQtListWidget.signalSelectionChange');
+  {$endif}
 
+  FillChar(Msg, SizeOf(Msg), #0);
   Msg.Msg := LM_SELCHANGE;
 
   DeliverMessage(Msg);
@@ -6373,7 +6412,7 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TQtListWidget.SignalItemDoubleClicked(item: QListWidgetItemH); cdecl;
+procedure TQtListWidget.signalItemDoubleClicked(item: QListWidgetItemH); cdecl;
 begin
   {does nothing at this time wait more featured LCL implementation
    eg. OnItemDoubleClick}
@@ -6384,7 +6423,7 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TQtListWidget.SignalItemClicked(item: QListWidgetItemH); cdecl;
+procedure TQtListWidget.signalItemClicked(item: QListWidgetItemH); cdecl;
 var
   Msg: TLMMouse;
   MousePos: TQtPoint;
@@ -6414,8 +6453,18 @@ begin
 
   Msg.Msg := LM_RELEASED;
   DeliverMessage(Msg);
-  {does nothing at this time wait more featured LCL implementation
-   eg. OnItemClick}
+end;
+
+procedure TQtListWidget.signalItemTextChanged(ANewText: PWideString); cdecl;
+var
+  Msg: TLMessage;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtListWidget.signalItemTextChanged');
+  {$endif}
+  FillChar(Msg, SizeOf(Msg), #0);
+  Msg.Msg := CM_TEXTCHANGED;
+  DeliverMessage(Msg);
 end;
 
 procedure TQtListWidget.ItemDelegatePaint(painter: QPainterH;
@@ -6498,13 +6547,6 @@ begin
   if LCLObject is TCustomCheckListBox then
     QListWidgetItem_setCheckState(Item, QtUnChecked);
   QListWidget_insertItem(QListWidgetH(Widget), AIndex, Item);
-
-  if QListWidget_count(QListWidgetH(Widget)) = 1 then
-  begin
-    FDisableSelectionChange := True;
-    setCurrentRow(-1);
-    FDisableSelectionChange := False;
-  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -6523,12 +6565,20 @@ procedure TQtListWidget.setItemText(AIndex: Integer; AText: String);
 var
   Item: QListWidgetItemH;
   Str: WideString;
+  R: TRect;
 begin
   Str := GetUTF8String(AText);
-  Item := QListWidget_item(QListWidgetH(Widget), AIndex);
-  if Item <> nil then
-    QListWidgetItem_setText(Item, @Str)
-  else
+  if (AIndex >= 0) and (AIndex < QListWidget_count(QListWidgetH(Widget))) then
+  begin
+    Item := QListWidget_item(QListWidgetH(Widget), AIndex);
+    QListWidgetItem_setText(Item, @Str);
+    {we must update our custom delegate}
+    if OwnerDrawn then
+    begin
+      QListWidget_visualItemRect(QListWidgetH(Widget), @R, item);
+      QWidget_update(QAbstractScrollArea_viewport(QAbstractScrollAreaH(Widget)), @R);
+    end;
+  end else
     insertItem(AIndex, @Str);
 end;
 
