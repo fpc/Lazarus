@@ -114,7 +114,7 @@ begin
   FProcess := TDBGProcess.Create(nil);
   try
     FProcess.CommandLine := UTF8ToSys(FileName + ' ' + Arguments);
-    FProcess.CurrentDirectory := WorkingDir;
+    FProcess.CurrentDirectory := UTF8ToSys(WorkingDir);
     FProcess.Environment.Assign(Environment);
     if ShowConsole
     then FProcess.Options:= [poNewConsole]
