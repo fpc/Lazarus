@@ -11215,9 +11215,25 @@ Const
       <!-- function Visibility: public -->
       <element name="TTreeNode.DefaultTreeViewSort">
         <short>
-          <var>DefaultTreeViewSort</var>
-        </short>
-        <descr/>
+          <var>DefaultTreeViewSort</var> - returns result of string comparison between names of Node1 and Node2</short>
+        <descr>
+          <printshort id="TTreeNode.DefaultTreeViewSort"/>
+          <p>
+            <var>DefaultTreeViewSort</var> compares the text of two TreeNodes and returns the following result:
+</p>
+          <dl>
+            <dt>&lt; 0</dt>
+            <dd>if <var>Node1.Text&lt;Node2.Text</var>.</dd>
+            <dt>0</dt>
+            <dd>if <var>Node1.Text=Node2.Text</var>.</dd>
+            <dt>&gt; 0</dt>
+            <dd>if <var>Node1.Text&gt;Node2.Text</var>.</dd>
+          </dl>
+          <p>The comparision takes into account Ansi characters, i.e. it takes
+care of strange accented characters. Contrary to <link id="AnsiCompareText"/>,
+the comparision is case sensitive.
+</p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -11235,20 +11251,22 @@ Const
       </element>
       <!-- procedure Visibility: public -->
       <element name="TTreeNode.Delete">
-        <short/>
+        <short>
+          <var>Delete</var> the curent TreeNode</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TTreeNode.DeleteChildren">
-        <short/>
+        <short>
+          <var>DeleteChildren</var> - remove the descendent Nodes in the tree structure</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TTreeNode.Destroy">
+      <element name="TTreeNode.Destroy" link="#rtl.Classes.TPersistent.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -11256,10 +11274,11 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNode.DisplayExpandSignLeft">
-        <short/>
         <descr/>
         <errors/>
         <seealso/>
+        <short>
+          <var>DisplayExpandSignLeft</var> - returns the position of the left edge of the expand sign</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TTreeNode.DisplayExpandSignLeft.Result">
@@ -11267,10 +11286,11 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNode.DisplayExpandSignRect">
-        <short/>
         <descr/>
         <errors/>
         <seealso/>
+        <short>
+          <var>DisplayExpandSignRect</var> - returns the coordinates of the rectangle within which the expand sign are displayed</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TTreeNode.DisplayExpandSignRect.Result">
@@ -11278,10 +11298,11 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNode.DisplayExpandSignRight">
-        <short/>
         <descr/>
         <errors/>
         <seealso/>
+        <short>
+          <var>DisplayExpandSignRight</var> - returns the position of the right edge of the expand sign (ie takes into account the width of the icon etc)</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TTreeNode.DisplayExpandSignRight.Result">
@@ -11289,7 +11310,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNode.DisplayIconLeft">
-        <short/>
+        <short>
+          <var>DisplayIconLeft</var> - returns the position of the actual icon for the expand sign (usually 1 pixel greater than <var>DisplayExpandSignLeft</var>)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11300,7 +11322,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNode.DisplayRect">
-        <short/>
+        <short>
+          <var>DisplayRect</var> - returns the coordinates of the rectangle containing the current entry; if <var>TextOnly </var>is True, returns the coordinates for the text</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11315,7 +11338,7 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNode.DisplayStateIconLeft">
-        <short/>
+        <short>DisplayRect</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11326,7 +11349,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNode.DisplayTextLeft">
-        <short/>
+        <short>
+          <var>DisplayTextLeft</var> - returns the position of the left edge of the text</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11337,7 +11361,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNode.DisplayTextRight">
-        <short/>
+        <short>
+          <var>DisplayTextRight</var> - returns the position of the right edge of the text</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11348,7 +11373,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNode.EditText">
-        <short/>
+        <short>
+          <var>EditText</var> (currently set False - to be implemented)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11359,7 +11385,8 @@ Const
       </element>
       <!-- procedure Visibility: public -->
       <element name="TTreeNode.EndEdit">
-        <short/>
+        <short>
+          <var>EndEdit</var> (to be implemented)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11370,7 +11397,8 @@ Const
       </element>
       <!-- procedure Visibility: public -->
       <element name="TTreeNode.Expand">
-        <short/>
+        <short>
+          <var>Expand</var> - method for expanding the current node. If Recurse is True, also expand all descendent nodes</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11381,14 +11409,16 @@ Const
       </element>
       <!-- procedure Visibility: public -->
       <element name="TTreeNode.ExpandParents">
-        <short/>
+        <short>
+          <var>ExpandParents</var> - apply expansion to the parents of the current node</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNode.Bottom">
-        <short/>
+        <short>
+          <var>Bottom</var> - returns the position of the displayed tree structure (whether or not it is expanded)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11399,7 +11429,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNode.BottomExpanded">
-        <short/>
+        <short>
+          <var>BottomExpanded</var> - returns the position of the bottom of the fully expanded tree structure</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11410,7 +11441,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNode.GetParentNodeOfAbsoluteLevel">
-        <short/>
+        <short>
+          <var>GetParentNodeOfAbsoluteLevel</var> - returns the parent of all nodes at this absolute level</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11425,7 +11457,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNode.GetFirstChild">
-        <short/>
+        <short>
+          <var>GetFirstChild</var> - returns the first child node of this parent</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11436,7 +11469,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNode.GetHandle">
-        <short/>
+        <short>
+          <var>GetHandle</var> - returns the operating system Handle for the current node</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11447,7 +11481,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNode.GetLastSibling">
-        <short/>
+        <short>
+          <var>GetLastSibling</var> - returns the last node at the same level as the current node</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11458,7 +11493,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNode.GetLastChild">
-        <short/>
+        <short>
+          <var>GetLastChild</var> - returns the last child node of this parent</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11469,7 +11505,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNode.GetLastSubChild">
-        <short/>
+        <short>
+          <var>GetLastSubChild</var> - returns the last sub-child node of this parent</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11480,7 +11517,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNode.GetNext">
-        <short/>
+        <short>
+          <var>GetNext</var> - returns the next node in the list</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11491,7 +11529,9 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNode.GetNextChild">
-        <short/>
+        <short>
+          <var>GetNextChild</var> - returns the next child node of the parent specified by <var>AValue</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11506,7 +11546,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNode.GetNextExpanded">
-        <short/>
+        <short>
+          <var>GetNextExpanded</var> - returns the next expanded node</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11517,7 +11558,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNode.GetNextMultiSelected">
-        <short/>
+        <short>
+          <var>GetNextMultiSelected</var> - returns the next node in a multiselection</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11528,7 +11570,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNode.GetNextSibling">
-        <short/>
+        <short>
+          <var>GetNextSibling</var> - returns the next node in the same level as the current node</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11539,7 +11582,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNode.GetNextVisible">
-        <short/>
+        <short>
+          <var>GetNextVisible</var> - returns the next visible (ie not hidden) node</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11550,7 +11594,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNode.GetPrev">
-        <short/>
+        <short>
+          <var>GetPrev</var> - returns the previous node in the list</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11561,7 +11606,9 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNode.GetPrevChild">
-        <short/>
+        <short>
+          <var>GetPrevChild</var> - returns the previous child node of the parent specified by <var>AValue</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11576,7 +11623,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNode.GetPrevExpanded">
-        <short/>
+        <short>
+          <var>GetPrevExpanded</var> - returns the previous expanded node</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11587,7 +11635,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNode.GetPrevMultiSelected">
-        <short/>
+        <short>
+          <var>GetPrevMultiSelected</var> - returns the previous node in a multi-selection</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11598,7 +11647,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNode.GetPrevSibling">
-        <short/>
+        <short>
+          <var>GetPrevSibling</var> - returns the previous node in the same level as the current node</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11609,7 +11659,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNode.GetPrevVisible">
-        <short/>
+        <short>
+          <var>GetPrevVisible</var> - returns the previous visible (not hidden) node</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11620,7 +11671,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNode.HasAsParent">
-        <short/>
+        <short>
+          <var>HasAsParent</var> - returns True if the node specified by <var>AValue </var>has a parent</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11635,7 +11687,9 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNode.IndexOf">
-        <short/>
+        <short>
+          <var>IndexOf</var> - returns the index of the node specified by <var>AValue</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11650,7 +11704,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNode.IndexOfText">
-        <short/>
+        <short>
+          <var>IndexOfText</var> - returns the index of the node containing the specified Text string</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11665,7 +11720,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNode.FindNode">
-        <short/>
+        <short>
+          <var>FindNode</var> - returns the node containing the specified text string</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11680,15 +11736,27 @@ Const
       </element>
       <!-- procedure Visibility: public -->
       <element name="TTreeNode.MakeVisible">
-        <short/>
+        <short>
+          <var>MakeVisible</var> - method for rendering a node visible</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TTreeNode.MoveTo">
-        <short/>
-        <descr/>
+        <short>
+          <var>MoveTo</var> - method for relocating a node to the specified <var>Destination</var> using the specified mode of attachment</short>
+        <descr>
+          <printshort id="TTreeNode.MoveTo"/>
+          <p>Definition of the modes of attachment:</p>
+          <pre>naAdd,           // add as last sibling of Destination
+    naAddFirst,      // add as first sibling of Destination
+    naAddChild,      // add as last child of Destination
+    naAddChildFirst, // add as first child of Destination
+    naInsert,        // insert in front of Destination
+    naInsertBehind   // insert behind Destination
+</pre>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -11702,28 +11770,32 @@ Const
       </element>
       <!-- procedure Visibility: public -->
       <element name="TTreeNode.MultiSelectGroup">
-        <short/>
+        <short>
+          <var>MultiSelectGroup</var> - method for multi-selecting a group of nodes</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TTreeNode.Update">
-        <short/>
+        <short>
+          <var>Update</var> the contents and appearance of the curent node</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TTreeNode.ConsistencyCheck">
-        <short/>
+        <short>
+          <var>ConsistencyCheck</var> - makes sure all references to and from the node are consistent</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TTreeNode.WriteDebugReport">
-        <short/>
+        <short>
+          <var>WriteDebugReport</var> - for debugging. If <var>Recurse</var> is True, report for all descendants as well</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11738,96 +11810,114 @@ Const
       </element>
       <!-- property Visibility: public -->
       <element name="TTreeNode.AbsoluteIndex">
-        <short/>
+        <short>
+          <var>AbsoluteIndex</var> - the absolute index of the current node, ie without taking into account the level of ancestry</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TTreeNode.Count">
-        <short/>
+        <short>
+          <var>Count</var> - the number of nodes</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TTreeNode.Cut">
-        <short/>
+        <short>
+          <var>Cut</var> - whether the node has been Cut</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TTreeNode.Data">
-        <descr>Property of type pointer used to store custom data in a node.</descr>
+        <descr>Property of type pointer used to store custom data in a node.
+</descr>
         <example file="comctrls/ttreenode_data.pas"/>
+        <short>
+          <var>Data</var> - pointer to th eNode's data</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TTreeNode.Deleting">
-        <short/>
+        <short>
+          <var>Deleting</var> - if True, the node is being deleted</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TTreeNode.Focused">
-        <short/>
+        <short>
+          <var>Focused</var> - if True, the node has received focus</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TTreeNode.DropTarget">
-        <short/>
+        <short>
+          <var>DropTarget</var> - if True, the current node is a target for a drop process</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TTreeNode.Expanded">
-        <short/>
+        <short>
+          <var>Expanded</var> - if True, the node has been expanded</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TTreeNode.Handle">
-        <short/>
+        <short>
+          <var>Handle</var> - the operating system handle for this node</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TTreeNode.HasChildren">
-        <short/>
+        <short>
+          <var>HasChildren</var> - if true, this node has descendent nodes</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TTreeNode.Height">
-        <short/>
+        <short>The <var>Height</var> of the current node<var/>
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TTreeNode.ImageIndex">
-        <short/>
+        <short>
+          <var>ImageIndex</var> - the index of the image associated with the current node. Default -1 if no image</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TTreeNode.Index">
-        <short/>
+        <short>The <var>Index</var> value of the current node<var/>
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TTreeNode.IsVisible">
-        <short/>
+        <short>
+          <var>IsVisible</var> - if True, the current node is visible (not hidden)</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TTreeNode.IsFullHeightVisible">
-        <short/>
+        <short>
+          <var>IsFullHeightVisible</var> - if True, the full height of the TreeNode is visible within the display window</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TTreeNode.Items">
-        <short/>
+        <short>
+          <var>Items</var> - the index of the current node within the list of items</short>
         <descr/>
         <seealso/>
       </element>
@@ -11837,79 +11927,89 @@ Const
       </element>
       <!-- property Visibility: public -->
       <element name="TTreeNode.Level">
-        <short/>
+        <short>The <var>Level</var> of descendance of indentation of the current node</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TTreeNode.MultiSelected">
-        <short/>
+        <short>
+          <var>MultiSelected</var> - if True, several nodes have been selected simultaneously (eg using the Shift or Ctrl key while selecting)</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TTreeNode.OverlayIndex">
-        <short/>
+        <short>
+          <var>OverlayIndex</var> - the index of the overlay</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TTreeNode.Owner">
-        <short/>
+        <short>The <var>Owner</var> control of the current TreeNode</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TTreeNode.Parent">
-        <short/>
+        <short>The <var>Parent</var> of the current node</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TTreeNode.Selected">
-        <short/>
+        <short>
+          <var>Selected</var> - if True, the current node has been selected</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TTreeNode.SelectedIndex">
-        <short/>
+        <short>
+          <var>SelectedIndex</var> - the index of the current node if selected: default - if not selected</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TTreeNode.SubTreeCount">
-        <short/>
+        <short>
+          <var>SubTreeCount</var> -  the number of sub-trees</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TTreeNode.StateIndex">
-        <short/>
-        <descr/>
+        <short>
+          <var>StateIndex</var> the index of the state (within an enumerated type)</short>
+        <descr>
+          <printshort id="TTreeNode.StateIndex"/>
+          <p>Definition of enumerated type NodeState:</p>
+          <p>nsCut, nsDropHilited, nsFocused, nsSelected, nsMultiSelected, nsExpanded, nsHasChildren, nsInTree, nsDeleting, nsBound</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TTreeNode.Text">
-        <short/>
+        <short>The <var>Text</var> string of the current node</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TTreeNode.TreeNodes">
-        <short/>
+        <short>the collection of  <var>TreeNodes</var>  to which this node belongs</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TTreeNode.TreeView">
-        <short/>
+        <short>The <var>TreeView</var> to which this node belongs</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TTreeNode.Top">
-        <short/>
+        <short>The position of the <var>Top</var> of the current node</short>
         <descr/>
         <seealso/>
       </element>
@@ -12173,7 +12273,8 @@ Const
       </element>
       <!-- function Visibility: protected -->
       <element name="TTreeNodes.InternalAddObject">
-        <short/>
+        <short>
+          <var>InternalAddObject</var> - method for adding text of data within the structure of the current node; returns the value of the new updated node</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12199,7 +12300,7 @@ Const
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TTreeNodes.DefineProperties">
+      <element name="TTreeNodes.DefineProperties" link="#rtl.Classes.TPersistent.DefineProperties">
         <short/>
         <descr/>
         <errors/>
@@ -12211,7 +12312,8 @@ Const
       </element>
       <!-- function Visibility: protected -->
       <element name="TTreeNodes.GetCount">
-        <short/>
+        <short>
+          <var>GetCount</var> - returns the number of nodes in the collection</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12222,7 +12324,8 @@ Const
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TTreeNodes.SetItem">
-        <short/>
+        <short>
+          <var>SetItem</var> - method for recording details of specified node</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12237,7 +12340,8 @@ Const
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TTreeNodes.SetUpdateState">
-        <short/>
+        <short>
+          <var>SetUpdateState</var> - records status of update process</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12247,7 +12351,7 @@ Const
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TTreeNodes.Create">
+      <element name="TTreeNodes.Create" link="#rtl.System.TObject.Create">
         <short/>
         <descr/>
         <errors/>
@@ -12258,7 +12362,7 @@ Const
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TTreeNodes.Destroy">
+      <element name="TTreeNodes.Destroy" link="#rtl.Classes.TPersistent.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -12266,7 +12370,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNodes.Add">
-        <short/>
+        <short>
+          <var>Add</var> - adds a sibling node with specified text string, and returns the new node</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12285,7 +12390,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNodes.AddChild">
-        <short/>
+        <short>
+          <var>AddChild</var> - adds a child node with specified text to the parent node, and returns the new node</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12304,7 +12410,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNodes.AddChildFirst">
-        <short/>
+        <short>
+          <var>AddChildFirst</var> - adds a node with specified text as the first child of the parent node, and returns the new node</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12323,7 +12430,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNodes.AddChildObject">
-        <short/>
+        <short>
+          <var>AddChildObject</var> - adds a child node with specified text and data-pointer to the parent node and returns the new node</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12346,7 +12454,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNodes.AddChildObjectFirst">
-        <short/>
+        <short>
+          <var>AddChildObjectFirst</var> - adds a node with specified text and data as the first child of the parent node, and returns the new node</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12369,7 +12478,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNodes.AddFirst">
-        <short/>
+        <short>
+          <var>AddFirst</var> - adds a node with specified text as the first node in the same level as <var>SiblingNode.</var> and returns the new node</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12388,7 +12498,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNodes.AddObject">
-        <short/>
+        <short>
+          <var>AddObject</var> - adds a node with specified text and data-pointer in the same level as <var>SiblingNode.</var> and returns the new node</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12411,7 +12522,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNodes.AddObjectFirst">
-        <short/>
+        <short>
+          <var>AddObjectFirst</var> - adds a node with specified text and data-pointer as the first node in the same level as <var>SiblingNode.</var> and returns the new node</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12433,7 +12545,7 @@ Const
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TTreeNodes.Assign">
+      <element name="TTreeNodes.Assign" link="#rtl.Classes.TPersistent.Assign">
         <short/>
         <descr/>
         <errors/>
@@ -12445,28 +12557,32 @@ Const
       </element>
       <!-- procedure Visibility: public -->
       <element name="TTreeNodes.BeginUpdate">
-        <short/>
+        <short>
+          <var>BeginUpdate</var> - start the update process</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TTreeNodes.Clear">
-        <short/>
+        <short>
+          <var>Clear</var> the current node</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TTreeNodes.ClearMultiSelection">
-        <short/>
+        <short>
+          <var>ClearMultiSelection</var> - clears a series of nodes in a multi-selection (provided the selection has not already been cleared)</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNodes.IsMultiSelection">
-        <short/>
+        <short>
+          <var>IsMultiSelection</var> - returns True if this node is part if a multi-selection</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12477,7 +12593,8 @@ Const
       </element>
       <!-- procedure Visibility: public -->
       <element name="TTreeNodes.Delete">
-        <short/>
+        <short>
+          <var>Delete</var> this node</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12488,14 +12605,16 @@ Const
       </element>
       <!-- procedure Visibility: public -->
       <element name="TTreeNodes.EndUpdate">
-        <short/>
+        <short>
+          <var>EndUpdate</var> - finish the update process</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNodes.GetFirstNode">
-        <short/>
+        <short>
+          <var>GetFirstNode</var> - returns the first node in the collection</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12506,7 +12625,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNodes.GetLastNode">
-        <short/>
+        <short>
+          <var>GetLastNode</var> - last top level node</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12517,7 +12637,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNodes.GetLastSubNode">
-        <short/>
+        <short>
+          <var>GetLastSubNode</var> - absolute last node</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12528,7 +12649,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNodes.GetLastExpandedSubNode">
-        <short/>
+        <short>
+          <var>GetLastExpandedSubNode</var> - absolute last node</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12539,7 +12661,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNodes.FindTopLvlNode">
-        <short/>
+        <short>
+          <var>FindTopLvlNode</var> - returns a top level node containing the specified text string</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12554,7 +12677,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNodes.Insert">
-        <short/>
+        <short>
+          <var>Insert</var> a node with the specified text just before the specified Next node, and returns the new node</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12573,7 +12697,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNodes.InsertObject">
-        <short/>
+        <short>
+          <var>InsertObject</var> - inserts a new node with specified text and data just before the specified Next node, and returns the new node</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12596,7 +12721,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNodes.InsertBehind">
-        <short/>
+        <short>
+          <var>InsertBehind</var> - inserts a new node with specified text just behind specified Previous node, and returns the new node</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12615,7 +12741,8 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNodes.InsertObjectBehind">
-        <short/>
+        <short>
+          <var>InsertObjectBehind</var> - inserts a new node with specified text and data-pointer just behind specified Previous node, and returns the new node</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12638,14 +12765,16 @@ Const
       </element>
       <!-- procedure Visibility: public -->
       <element name="TTreeNodes.ConsistencyCheck">
-        <short/>
+        <short>
+          <var>ConsistencyCheck</var> - makes sure all references to and from the nodes are consistent</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TTreeNodes.WriteDebugReport">
-        <short/>
+        <short>
+          <var>WriteDebugReport</var> - for debugging</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12660,7 +12789,8 @@ Const
       </element>
       <!-- property Visibility: public -->
       <element name="TTreeNodes.Count">
-        <short/>
+        <short>
+          <var>Count</var> - the number of nodes in the collection</short>
         <descr/>
         <seealso/>
       </element>
@@ -12676,25 +12806,29 @@ Const
       </element>
       <!-- property Visibility: public -->
       <element name="TTreeNodes.KeepCollapsedNodes">
-        <short/>
+        <short>
+          <var>KeepCollapsedNodes</var> - if True, preserves the nodes that have been collapsed</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TTreeNodes.Owner">
-        <short/>
+        <short>
+          <var>Owner</var> - the TTreeView that owns the collection of nodes</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TTreeNodes.TopLvlCount">
-        <short/>
+        <short>
+          <var>TopLvlCount</var> - the number of nodes at the top level of the tree structure</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TTreeNodes.TopLvlItems">
-        <short/>
+        <short>
+          <var>TopLvlItems</var> - the list of nodes at the top level of the tree structure</short>
         <descr/>
         <seealso/>
       </element>
@@ -15801,8 +15935,19 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TTreeNodeExpandedState">
-        <short/>
-        <descr/>
+        <short>
+          <var>TTreeNodeExpandedState</var> - class to store and restore the expanded state of a TTreeView. The nodes are identified by their Text property. </short>
+        <descr>
+          <printshort id="TTreeNodeExpandedState"/>
+          <p>Usage example:</p>
+          <pre>// save old expanded state
+      OldExpanded:=TTreeNodeExpandedState.Create(ATreeView);
+      ... change a lot of nodes ...
+      // restore old expanded state
+      OldExpanded.Apply(ATreeView);
+      OldExpanded.Free; 
+</pre>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -15820,7 +15965,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- constructor Visibility: default -->
       <element name="TTreeNodeExpandedState.Create">
-        <short/>
+        <short>
+          <var>Create</var> - constructor for the First Node</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -15831,7 +15977,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- constructor Visibility: default -->
       <element name="TTreeNodeExpandedState.Create">
-        <short/>
+        <short>
+          <var>Create</var> - constructor for the rest of the tree structure</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -15841,7 +15988,7 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
         <short/>
       </element>
       <!-- destructor Visibility: default -->
-      <element name="TTreeNodeExpandedState.Destroy">
+      <element name="TTreeNodeExpandedState.Destroy" link="#rtl.System.TObject.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -15849,14 +15996,16 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- procedure Visibility: default -->
       <element name="TTreeNodeExpandedState.Clear">
-        <short/>
+        <short>
+          <var>Clear</var> the nodes from the tree structure</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="TTreeNodeExpandedState.CreateChildNodes">
-        <short/>
+        <short>
+          <var>CreateChildNodes</var> - constructor for the offspring nodes</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -15867,7 +16016,9 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- procedure Visibility: default -->
       <element name="TTreeNodeExpandedState.Apply">
-        <short/>
+        <short>
+          <var>Apply</var> - begin reconstructing the tree structure by inserting the first node
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -15878,7 +16029,7 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- procedure Visibility: default -->
       <element name="TTreeNodeExpandedState.Apply">
-        <short/>
+        <short><var>Apply</var> - continue reconstructing the tree structure by adding the remaining nodes in succession</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -16389,6 +16540,29 @@ the comparision is case sensitive.
       <element name="TCustomTreeView.DoDragMsg">
         <short>
           <var>DoDragMsg</var> generates system message to indicate object and position for dragging and returns Result of action</short>
+      </element>
+      <element name="TTreeNode.GetTextPath">
+        <short>
+          <var>GetTextPath</var> - returns a string containing the path to the current node</short>
+      </element>
+      <element name="TTreeNodes.SelectOnlyThis.Node">
+        <short>Select Only This Node</short>
+      </element>
+      <element name="TTreeNodes.FindNodeWithText">
+        <short>
+          <var>FindNodeWithText</var> - returns a node containing the specified text string</short>
+      </element>
+      <element name="TTreeNodes.FindNodeWithData">
+        <short>
+          <var>FindNodeWithData</var> - returns a node containing the specified data pointer</short>
+      </element>
+      <element name="TTreeNodes.SortTopLevelNodes">
+        <short>
+          <var>SortTopLevelNodes</var> - sorts the top level nodes, using the specified comparison method</short>
+      </element>
+      <element name="TTreeNodes.Item">
+        <short>
+          <var>Item</var> - finds the node corresponding to the given index </short>
       </element>
     </module>
     <!-- ComCtrls -->
