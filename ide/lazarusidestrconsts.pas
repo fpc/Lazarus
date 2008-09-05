@@ -1264,7 +1264,7 @@ resourcestring
   dlgLevel2Opt = 'Level 2 (Level 1 + quick optimizations)';
   dlgLevel3Opt = 'Level 3 (Level 2 + slow optimizations)';
   dlgTargetOS = 'Target OS';
-  dlgTargetCPU = 'Target CPU';
+  dlgTargetCPUFamily = 'Target CPU family';
   dlgCODebugging = 'Debugging:';
   dlgCOGDB = 'Generate Debugging Info For GDB (Slows Compiling)';
   dlgCODBX = 'Generate Debugging Info For DBX (Slows Compiling)';

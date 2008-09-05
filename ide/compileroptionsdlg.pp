@@ -1254,7 +1254,7 @@ begin
     ItemIndex:=0;
   end;
 
-  lblTargetCPU.Caption :=dlgTargetCPU+' (-P)';
+  lblTargetCPU.Caption :=dlgTargetCPUFamily+' (-P)';
 
   with TargetCPUComboBox do begin
     with Items do begin
