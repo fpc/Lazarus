@@ -3,10 +3,11 @@ object Form1: TForm1
   Height = 300
   Top = 175
   Width = 400
-  HorzScrollBar.Page = 399
-  VertScrollBar.Page = 299
   Caption = 'Form1'
+  ClientHeight = 300
+  ClientWidth = 400
   OnCreate = FormCreate
+  LCLVersion = '0.9.25'
   object PairSplitter1: TPairSplitter
     Left = 102
     Height = 90
@@ -14,8 +15,11 @@ object Form1: TForm1
     Width = 218
     Position = 106
     object PairSplitterSide1: TPairSplitterSide
+      Cursor = crArrow
       Height = 90
       Width = 106
+      ClientWidth = 106
+      ClientHeight = 90
       object Button2: TButton
         Left = 20
         Height = 25
@@ -28,9 +32,12 @@ object Form1: TForm1
       end
     end
     object PairSplitterSide2: TPairSplitterSide
-      Left = 112
+      Cursor = crArrow
+      Left = 111
       Height = 90
-      Width = 106
+      Width = 107
+      ClientWidth = 107
+      ClientHeight = 90
       object Button3: TButton
         Left = 27
         Height = 25

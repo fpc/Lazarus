@@ -52,21 +52,21 @@ end;
 
 procedure TForm1.ApplicationProperties1Idle(Sender: TObject; var Done: Boolean);
 var
-  Side1Width, Side2Width : integer;
+  SplitterWidth : integer;
 begin
-  if ParamStr(1)='--runtest' then begin
-    Side1Width := PairSplitterSide1.Width;
-    Side2Width := PairSplitterSide2.Width;
-    writeln(format('Side 1: %d, Side 2: %d',
-              [PairSplitterSide1.Width, PairSplitterSide2.Width]));
+  if (ParamStr(1)='--runtest') then begin
+    SplitterWidth := PairSplitterSide2.Width -
+      (PairSplitterSide1.Left + PairSplitterSide1.Width);
+    writeln(format('Side 1: %d, Splitter + Side 2: %d',
+              [PairSplitterSide1.Width, SplitterWidth + PairSplitterSide2.Width]));
     // splitter is working, so descreasing width of Side1 should increase Side2
     Button2Click(nil);
-    writeln(format('Side 1: %d, Side 2: %d',
-              [PairSplitterSide1.Width, PairSplitterSide2.Width]));
+    writeln(format('Side 1: %d, Splitter + Side 2: %d',
+              [PairSplitterSide1.Width, SplitterWidth + PairSplitterSide2.Width]));
     // increase width again
     Button3Click(nil);
-    writeln(format('Side 1: %d, Side 2: %d',
-              [PairSplitterSide1.Width, PairSplitterSide2.Width]));
+    writeln(format('Side 1: %d, Splitter + Side 2: %d',
+              [PairSplitterSide1.Width, SplitterWidth + PairSplitterSide2.Width]));
     Close;
   end;
 end;
