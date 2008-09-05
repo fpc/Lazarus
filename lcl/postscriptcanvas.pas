@@ -73,6 +73,7 @@ Type
     procedure ClearBuffer;
     procedure Write(Lst : TStringList); overload;
     procedure WriteComment(const St : string);
+    procedure WriteOrientation;
     
     procedure TranslateCoord(Var X,Y : Integer);
     procedure SetPosition(X,Y : Integer);
@@ -553,6 +554,14 @@ begin
   fDocument.Add('%'+St);
 end;
 
+procedure TPostScriptPrinterCanvas.WriteOrientation;
+begin
+  if Printer.Orientation=poLandscape then
+  begin
+    Write(format('%d 0 translate 90 rotate',[PageHeight]));
+  end;
+end;
+
 //Convert an TCanvas Y point to PostScript Y point
 //The TCanvas origine is corner Left,Top and PostScript is Left,Bottom
 //Modify X and Y for use Left and Top margin
@@ -932,6 +941,8 @@ begin
   WriteHeader('%%'+Format('Creator: Lazarus PostScriptCanvas for %s',[Application.ExeName]));
   WriteHeader('%%'+Format('Title: %s',[Title]));
   WriteHeader('%%CreationDate: '+DateTimeToStr(Now));
+  if Printer.Orientation=poLandscape then
+    WriteHeader('%%Orientation: Landscape');
   WriteHeader('%%Pages: (atend)');
   WriteHeader('%%PageResources: (atend)');
   WriteHeader('%%PageOrder: Ascend');
@@ -1286,6 +1297,8 @@ begin
   WriteHeader('%%EndSetup');
   WriteHeader('%%====================== END SETUP =========================');
   WriteHeader('');
+  WriteOrientation;
+  WriteHeader('');
 end;
 
 procedure TPostScriptPrinterCanvas.EndDoc;
@@ -1314,7 +1327,6 @@ begin
   Write('stroke');
   Write('showpage');
   Write('%%'+Format('Page: %d %d',[PageNumber, PageNumber]));
-  
   write('newpath');
   
   // after showpage, font holds an invalid font dictionary
