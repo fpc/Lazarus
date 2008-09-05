@@ -3701,7 +3701,7 @@ var
           DbgS(CurColor.Alpha));}
         Img.Colors[x,y]:=CurColor;
       end;
-      Progress(psRunning, trunc(100.0 * Y / (FHeight - 1)), False, Rect(0, 0, FWidth - 1, y), 'reading XPM pixels', FContinue);
+      Progress(psRunning, trunc(100.0 * (Y + 1) / FHeight), False, Rect(0, 0, FWidth - 1, y), 'reading XPM pixels', FContinue);
     end;
   end;
   
@@ -4149,7 +4149,7 @@ var
         i := Palette.IndexOf(GetColor(x,y));
         WriteToSrc(PixelStrings[i]);
       end;
-      Progress(psRunning, trunc(100.0 * (y / (Img.Height - 1))),
+      Progress(psRunning, trunc(100.0 * ((y + 1) / Img.Height)),
            False, Rect(0,0,Img.Width-1,y), 'writing XPM pixels', FContinue);
       if y<Img.Height-1 then
         WriteToSrc('",'+LineEnd)
@@ -4923,7 +4923,7 @@ const
   
   procedure UpdateProgress(Row: Integer); inline;
   begin
-    Progress(psRunning, trunc(100.0 * ((TheImage.Height - 1 - Row) / (TheImage.Height - 1))),
+    Progress(psRunning, trunc(100.0 * ((TheImage.Height - Row) / TheImage.Height)),
       False, Rect(0, 0, TheImage.Width - 1, TheImage.Height - 1 - Row), 'reading BMP pixels', FContinue);
   end;
 
