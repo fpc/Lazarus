@@ -17,10 +17,6 @@ unit regdbexport;
 
 {$mode objfpc}{$H+}
 
-{$IF defined(VER2_0) or defined(VER2_1) or defined(VER2_2)}
-{$ERROR this package requires at least FPC version 2.3.1}
-{$ENDIF}
-
 interface
 
 uses
