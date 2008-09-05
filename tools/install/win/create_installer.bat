@@ -59,6 +59,8 @@ FOR /F %%L IN ('%FPCBINDIR%\gdate.exe +%%Y%%m%%d') DO SET DATESTAMP=%%L
 SET BUILDDRIVE=%BUILDDIR:~,2%
 SET CP=%FPCBINDIR%\cp.exe
 FOR /F "delims='" %%F IN (%LAZSVNDIR%\ide\version.inc) DO set LAZVERSION=%%F
+FOR /F %%F IN ('svnversion.exe %LAZSVNDIR%') DO set LAZREVISION=%%F
+
 
 ECHO Starting at: > %LOGFILE%
 %FPCBINDIR%\gdate >> %LOGFILE%
@@ -98,8 +100,8 @@ if not exist %BUILDDIR%\startlazarus.exe goto END
 if exist %GDBDIR% %SVN% export %GDBDIR% %BUILDDIR%\mingw
 
 :: create the installer
-SET OutputFileName=lazarus-%LAZVERSION%-fpc-%FPCFULLVERSION%-%DATESTAMP%-%FPCTARGETOS%
-if not [%IDE_WIDGETSET%]==[win32] SET OutputFileName=lazarus-%IDE_WIDGETSET%-%LAZVERSION%-fpc-%FPCFULLVERSION%-%DATESTAMP%-%FPCTARGETOS%
+SET OutputFileName=lazarus-%LAZVERSION%-%LAZREVISION%-fpc-%FPCFULLVERSION%-%DATESTAMP%-%FPCTARGETOS%
+if not [%IDE_WIDGETSET%]==[win32] SET OutputFileName=lazarus-%IDE_WIDGETSET%-%LAZVERSION%-%LAZREVISION%-fpc-%FPCFULLVERSION%-%DATESTAMP%-%FPCTARGETOS%
 %ISCC% lazarus.iss >> installer.log
 
 :: do not delete build dir, if installer failed.
