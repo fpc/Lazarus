@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Dialogs, LazConf, DBGUtils, Debugger,
-  CmdLineDebugger, GDBTypeInfo, 
+  FileUtil, CmdLineDebugger, GDBTypeInfo, 
 {$IFdef MSWindows}
   Windows,
 {$ENDIF}
@@ -702,7 +702,7 @@ begin
   ClearBreakpoint(FRunErrorBreakID);
 
 
-  S := ConvertToGDBPath(FileName); 
+  S := ConvertToGDBPath(UTF8ToSys(FileName)); 
   if not ExecuteCommand('-file-exec-and-symbols %s', [S], [cfIgnoreError], R) then Exit;
   if  (R.State = dsError)
   and (FileName <> '')
@@ -2409,7 +2409,7 @@ begin
     // otherwise on second run within the same gdb session the workingdir
     // is set to c:\windows
     ExecuteCommand('-environment-cd %s', ['.'], [cfIgnoreError]);
-    ExecuteCommand('-environment-cd %s', [ConvertToGDBPath(WorkingDir)], []);
+    ExecuteCommand('-environment-cd %s', [ConvertToGDBPath(UTF8ToSys(WorkingDir))], []);
   end;
 
   FTargetFlags := [tfHasSymbols]; // Set until proven otherwise
