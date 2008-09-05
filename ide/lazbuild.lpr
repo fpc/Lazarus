@@ -403,7 +403,7 @@ begin
       // always build the IDE
       CurItem.MakeMode:=mmBuild
     else
-      // these are goodies (starter, examples)
+      // these are goodies (examples)
       CurItem.MakeMode:=mmNone;
   end;
 

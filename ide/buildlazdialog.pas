@@ -118,7 +118,6 @@ type
     FItemJITForm: TBuildLazarusItem;
     FItemLCL: TBuildLazarusItem;
     FItemPkgReg: TBuildLazarusItem;
-    FItemStarter: TBuildLazarusItem;
     FItemSynEdit: TBuildLazarusItem;
     FExtraOptions: string;
     FRestartAfterBuild: boolean;
@@ -162,7 +161,6 @@ type
     property ItemIDEIntf: TBuildLazarusItem read FItemIDEIntf;
     property ItemJITForm: TBuildLazarusItem read FItemJITForm;
     property ItemIDE: TBuildLazarusItem read FItemIDE;
-    property ItemStarter: TBuildLazarusItem read FItemStarter;
     property ItemExamples: TBuildLazarusItem read FItemExamples;
     property Advanced: boolean read FAdvanced write FAdvanced;
     property CleanAll: boolean read FCleanAll write FCleanAll;
@@ -1376,7 +1374,6 @@ begin
   FItemIDEIntf:=nil;
   FItemJITForm:=nil;
   FItemIDE:=nil;
-  FItemStarter:=nil;
   FItemExamples:=nil;
 end;
 
@@ -1418,12 +1415,6 @@ begin
   FItemIDE.Commands[mmBuild]:='ide';
   FItemIDE.Commands[mmCleanBuild]:='cleanide ide';
   FItems.Add(FItemIDE);
-
-  // Starter
-  FItemStarter:=TBuildLazarusItem.Create('Starter',lisStarter,'',mmNone);
-  FItemStarter.Commands[mmBuild]:='starter';
-  FItemStarter.Commands[mmCleanBuild]:='starter';
-  FItems.Add(FItemStarter);
 
   // Examples
   FItemExamples:=TBuildLazarusItem.Create(
@@ -1555,7 +1546,6 @@ begin
   FItemIDEIntf:=FindName('IDEIntf');
   FItemJITForm:=FindName('JITForm');
   FItemIDE:=FindName('IDE');
-  FItemStarter:=FindName('Starter');
   FItemExamples:=FindName('Examples');
 end;
 

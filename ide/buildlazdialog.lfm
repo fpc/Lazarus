@@ -3,8 +3,6 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
   Height = 542
   Top = 132
   Width = 489
-  HorzScrollBar.Page = 488
-  VertScrollBar.Page = 541
   ActiveControl = CompileButton
   BorderIcons = [biSystemMenu]
   Caption = 'ConfigureBuildLazarusDlg'
@@ -16,27 +14,28 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
   OnDestroy = FormDestroy
   OnShow = FormShow
   Position = poScreenCenter
+  LCLVersion = '0.9.25'
   object CBLDBtnPanel: TPanel
     AnchorSideLeft.Control = Notebook
     AnchorSideTop.Control = Notebook
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Notebook
     AnchorSideRight.Side = asrBottom
-    Height = 41
-    Top = 501
+    Height = 35
+    Top = 507
     Width = 489
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 41
+    ClientHeight = 35
     ClientWidth = 489
     TabOrder = 0
     object CompileButton: TButton
       AnchorSideBottom.Side = asrBottom
-      Left = 253
-      Height = 29
+      Left = 259
+      Height = 23
       Top = 6
-      Width = 64
+      Width = 63
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
@@ -46,10 +45,10 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
     end
     object SaveSettingsButton: TButton
       AnchorSideBottom.Side = asrBottom
-      Left = 323
-      Height = 29
+      Left = 328
+      Height = 23
       Top = 6
-      Width = 99
+      Width = 91
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
@@ -59,10 +58,10 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
     end
     object CancelButton: TButton
       AnchorSideRight.Side = asrBottom
-      Left = 428
-      Height = 29
+      Left = 425
+      Height = 23
       Top = 6
-      Width = 55
+      Width = 58
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
@@ -78,7 +77,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = CBLDBtnPanel
-    Height = 501
+    Height = 507
     Width = 489
     Anchors = [akTop, akLeft, akRight, akBottom]
     OnEnter = NotebookPageChanged
@@ -88,16 +87,16 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
     object QuickBuildOptionsPage: TPage
       AnchorSideBottom.Side = asrBottom
       Caption = 'QuickBuildOptions'
-      ClientWidth = 485
-      ClientHeight = 470
+      ClientWidth = 481
+      ClientHeight = 481
       object QuickLCLInterfaceComboLabel: TLabel
         AnchorSideLeft.Control = QuickBuildOptionsRadioGroup
         AnchorSideLeft.Side = asrBottom
         AnchorSideRight.Side = asrBottom
         Left = 286
-        Height = 20
+        Height = 14
         Top = 44
-        Width = 195
+        Width = 147
         BorderSpacing.Right = 24
         Caption = 'QuickLCLInterfaceComboLabel'
         ParentColor = False
@@ -107,9 +106,9 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
         AnchorSideRight.Control = QuickBuildOptionsPage
         AnchorSideRight.Side = asrBottom
         Left = 286
-        Height = 20
+        Height = 14
         Top = 84
-        Width = 40
+        Width = 33
         BorderSpacing.Right = 24
         Caption = 'Target'
         ParentColor = False
@@ -118,9 +117,9 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
         AnchorSideLeft.Control = QuickLCLInterfaceComboLabel
         AnchorSideRight.Side = asrBottom
         Left = 286
-        Height = 20
+        Height = 14
         Top = 132
-        Width = 22
+        Width = 18
         BorderSpacing.Right = 24
         Caption = 'IDE'
         ParentColor = False
@@ -128,15 +127,14 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
       object AppLCLInterfaceComboBox: TComboBox
         AnchorSideRight.Control = QuickBuildOptionsPage
         AnchorSideRight.Side = asrBottom
-        Left = 361
-        Height = 25
+        Left = 357
+        Height = 21
         Top = 76
         Width = 100
         Anchors = [akTop, akRight]
-        AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
         BorderSpacing.Right = 24
         Enabled = False
-        MaxLength = 0
+        ItemHeight = 13
         OnChange = AppLCLInterfaceComboBoxChange
         TabOrder = 0
         Text = '(none)'
@@ -144,15 +142,14 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
       object IDELCLInterfaceComboBox: TComboBox
         AnchorSideRight.Control = QuickBuildOptionsPage
         AnchorSideRight.Side = asrBottom
-        Left = 361
-        Height = 25
+        Left = 357
+        Height = 21
         Top = 124
         Width = 100
         Anchors = [akTop, akRight]
-        AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
         BorderSpacing.Right = 24
         Enabled = False
-        MaxLength = 0
+        ItemHeight = 13
         OnChange = AppLCLInterfaceComboBoxChange
         TabOrder = 1
         Text = '(none)'
@@ -174,7 +171,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
         ChildSizing.ShrinkVertical = crsScaleChilds
         ChildSizing.Layout = cclLeftToRightThenTopToBottom
         ChildSizing.ControlsPerLine = 1
-        ClientHeight = 245
+        ClientHeight = 246
         ClientWidth = 252
         ItemIndex = 5
         Items.Strings = (
@@ -354,8 +351,6 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
         Top = 344
         Width = 295
         Anchors = [akTop, akLeft, akRight, akBottom]
-        AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-        MaxLength = 0
         TabOrder = 6
       end
       object TargetCPUComboBox: TComboBox
@@ -369,9 +364,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
         Top = 375
         Width = 295
         Anchors = [akTop, akLeft, akRight]
-        AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
         BorderSpacing.Top = 6
-        MaxLength = 0
         TabOrder = 7
       end
       object TargetDirectoryButton: TButton

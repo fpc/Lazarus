@@ -2075,7 +2075,6 @@ resourcestring
   lisJITForm = 'JIT Form';
   lisPkgReg = 'Package Registration';
   lisIDE = 'IDE';
-  lisStarter = 'Starter';
   lisExamples = 'Examples';
   lisConfigureBuildLazarus = 'Configure %sBuild Lazarus%s';
   lisLazBuildCleanAll = 'Clean all';
