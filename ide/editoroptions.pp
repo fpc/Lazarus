@@ -269,7 +269,7 @@ const
 
 
 const
-  EditorOptsFormatVersion = 3;
+  EditorOptsFormatVersion = 4;
 
   LazSyntaxHighlighterClasses: array[TLazSyntaxHighlighter] of
     TCustomSynClass =
@@ -1582,8 +1582,10 @@ var
   SynEditOptName: String;
   i: Integer;
   SynEditOpt2: TSynEditorOption2;
+  FileVersion: LongInt;
 begin
   try
+    FileVersion:=XMLConfig.GetValue('EditorOptions/Version', 0);
 
     // general options
     for SynEditOpt := Low(TSynEditorOption) to High(TSynEditorOption) do
@@ -1643,10 +1645,17 @@ begin
       XMLConfig.GetValue('EditorOptions/Display/VisibleRightMargin', True);
     fVisibleGutter :=
       XMLConfig.GetValue('EditorOptions/Display/VisibleGutter', True);
-    fShowLineNumbers :=
-      XMLConfig.GetValue('EditorOptions/Display/ShowLineNumbers', False);
-    fShowOnlyLineNumbersMultiplesOf :=
-      XMLConfig.GetValue('EditorOptions/Display/ShowOnlyLineNumbersMultiplesOf', 5);
+    if (FileVersion>0) and (FileVersion<4) then begin
+      fShowLineNumbers :=
+        XMLConfig.GetValue('EditorOptions/Display/ShowLineNumbers', False);
+      fShowOnlyLineNumbersMultiplesOf :=
+        XMLConfig.GetValue('EditorOptions/Display/ShowOnlyLineNumbersMultiplesOf', 1);
+    end else begin
+      fShowLineNumbers :=
+        XMLConfig.GetValue('EditorOptions/Display/ShowLineNumbers', True);
+      fShowOnlyLineNumbersMultiplesOf :=
+        XMLConfig.GetValue('EditorOptions/Display/ShowOnlyLineNumbersMultiplesOf', 5);
+    end;
     fGutterColor :=
       XMLConfig.GetValue('EditorOptions/Display/GutterColor', clBtnFace);
     fGutterWidth :=
@@ -1780,7 +1789,7 @@ begin
     XMLConfig.SetDeleteValue('EditorOptions/Display/VisibleGutter',
       fVisibleGutter, True);
     XMLConfig.SetDeleteValue('EditorOptions/Display/ShowLineNumbers',
-      fShowLineNumbers, False);
+      fShowLineNumbers, True);
     XMLConfig.SetDeleteValue('EditorOptions/Display/ShowOnlyLineNumbersMultiplesOf',
       fShowOnlyLineNumbersMultiplesOf, 5);
     XMLConfig.SetDeleteValue('EditorOptions/Display/GutterColor',
