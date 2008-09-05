@@ -70,6 +70,7 @@ var
   LazBuildPath: string;
   LazBuild: TProcessUTF8;
   LazarusDir: String;
+  ExeFile: string;
   CmdLine: string;
 begin
   AssertTrue('Project file '+ FProjectFile + ' does not exist',
@@ -77,6 +78,9 @@ begin
   LazarusDir := ExpandFileNameUTF8(ExtractFilePath(ParamStrUTF8(0)) + '../');
   LazBuildPath := LazarusDir + 'lazbuild' + GetExeExt;
   AssertTrue(LazBuildPath + ' does not exist', FileExistsUTF8(LazBuildPath));
+  ExeFile := ChangeFileExt(FPath,GetExeExt);
+  if FileExistsUTF8(ExeFile) then
+    DeleteFileUTF8(ExeFile);
   LazBuild := TProcessUTF8.Create(nil);
   try
     {$IFDEF windows}
