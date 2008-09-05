@@ -1369,6 +1369,7 @@ begin
 
   if (csDesigning in LCLObject.ComponentState) and not
      (Self is TQtMainWindow) and
+     HasPaint and
      getAutoFillBackground then
     setAutoFillBackground(False);
 
