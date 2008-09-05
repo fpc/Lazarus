@@ -1472,8 +1472,8 @@ var
   QtDC: TQtDeviceContext;
 begin
   // copied from gtk winapi
-  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
-    WriteLn('***** [WinAPI TQtWidgetSet.ExtSelectClipRGN] possible wrong implementation ');
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI TQtWidgetSet.ExtSelectClipRGN] possible wrong implementation !');
   {$endif}
   If not IsValidDC(DC) then
   begin
@@ -2328,8 +2328,8 @@ function TQtWidgetSet.GetRgnBox(RGN : HRGN; lpRect : PRect) : Longint;
 var
   R: TRect;
 begin
-  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
-    WriteLn('***** [WinAPI TQtWidgetSet.GetRgnBox] possible wrong implementation ');
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI TQtWidgetSet.GetRgnBox] possible wrong implementation !');
   {$endif}
   Result := SIMPLEREGION;
   If lpRect <> nil then
@@ -3348,9 +3348,9 @@ const
 var
   i : Integer;
 begin
-//  {$ifdef VerboseQtWinAPI}
+  {$ifdef VerboseQtWinAPI}
     WriteLn('***** [WinAPI TQtWidgetSet.GradientFill] ');
-//  {$endif}
+  {$endif}
 
   //Currently Alpha blending is ignored... Ideas anyone?
   Result := (Meshes <> nil) and (NumMeshes >= 1) and (NumVertices >= 2)
@@ -3411,7 +3411,7 @@ var
   IntersectRgn, Rgn: QRegionH;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('***** [WinAPI TQtWidgetSet.IntersectClipRect] ');
+    WriteLn('[WinAPI TQtWidgetSet.IntersectClipRect] ');
   {$endif}
   Result := ERROR;
   if not IsValidDC(DC) then exit;
