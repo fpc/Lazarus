@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-08-17 17:39+0100\n"
+"PO-Revision-Date: 2008-09-03 22:40+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -129,7 +129,7 @@ msgstr "1 Zeile, %d Zeichen"
 
 #: objinspstrconsts:srvk_accept
 msgid "Accept"
-msgstr ""
+msgstr "Übernehmen"
 
 #: objinspstrconsts:oisaction
 msgid "Action"
@@ -189,7 +189,7 @@ msgstr "Alle Dateien"
 
 #: objinspstrconsts:srkm_alt
 msgid "Alt"
-msgstr ""
+msgstr "Alt"
 
 #: objinspstrconsts:sccstredtapply
 msgid "Apply"
@@ -209,7 +209,7 @@ msgstr "Verfügbare Action-Klassen:"
 
 #: objinspstrconsts:srvk_back
 msgid "Backspace"
-msgstr ""
+msgstr "Rückschritt"
 
 #: objinspstrconsts:oisboolean
 msgid "Boolean"
@@ -225,7 +225,7 @@ msgstr "Abbrechen"
 
 #: objinspstrconsts:srvk_capital
 msgid "Capital"
-msgstr ""
+msgstr "Groß"
 
 #: objinspstrconsts:rscdcaption
 msgid "Caption"
@@ -313,11 +313,11 @@ msgstr "Löschen bestätigen"
 
 #: objinspstrconsts:srvk_control
 msgid "Control"
-msgstr ""
+msgstr "Steuerung"
 
 #: objinspstrconsts:srvk_convert
 msgid "Convert"
-msgstr ""
+msgstr "Umwandlung"
 
 #: objinspstrconsts:oistdacteditcopyshorthint
 msgid "Copy"
@@ -341,7 +341,7 @@ msgstr "Ausschneiden"
 
 #: objinspstrconsts:srkm_ctrl
 msgid "Ctrl"
-msgstr ""
+msgstr "Strg"
 
 #: objinspstrconsts:oistdacteditselectallshortcut
 msgid "Ctrl+A"
@@ -473,7 +473,7 @@ msgstr "Bearbeitung"
 
 #: objinspstrconsts:srvk_end
 msgid "End"
-msgstr ""
+msgstr "Ende"
 
 #: objinspstrconsts:oisenumeration
 msgid "Enumeration"
@@ -493,7 +493,7 @@ msgstr "Fehler beim Laden des Bilds %s%s%s:%s%s"
 
 #: objinspstrconsts:srvk_escape
 msgid "Escape"
-msgstr ""
+msgstr "Esc"
 
 #: objinspstrconsts:oisevents
 msgid "Events"
@@ -501,7 +501,7 @@ msgstr "Ereignisse"
 
 #: objinspstrconsts:srvk_execute
 msgid "Execute"
-msgstr ""
+msgstr "Ausführen"
 
 #: objinspstrconsts:oistdactfileexithint
 msgid "Exit"
@@ -577,11 +577,11 @@ msgstr "Allgem. Beschränkungen durch d. Widget-Set:"
 
 #: objinspstrconsts:srgrabkey
 msgid "Grab key"
-msgstr ""
+msgstr "Taste fangen"
 
 #: objinspstrconsts:srvk_hanja
 msgid "Hanja"
-msgstr ""
+msgstr "Hanja"
 
 #: objinspstrconsts:cactionlisteditorhelpcategory
 msgid "Help"
@@ -597,7 +597,7 @@ msgstr "Hilfe zur Hilfe"
 
 #: objinspstrconsts:srvk_home
 msgid "Home"
-msgstr ""
+msgstr "Pos1"
 
 #: objinspstrconsts:sccstredtlabelimageindex
 msgid "Image Index:"
@@ -657,7 +657,7 @@ msgstr "Ungültiger Eigenschaftswert"
 
 #: objinspstrconsts:srvk_irregular
 msgid "Irregular "
-msgstr ""
+msgstr "Unregelmäßig"
 
 #: objinspstrconsts:fesnofields
 msgid "It was not possible to get the dataset field's list"
@@ -681,11 +681,11 @@ msgstr "Sprung zur Deklaration"
 
 #: objinspstrconsts:srvk_junja
 msgid "Junja"
-msgstr ""
+msgstr "Junja"
 
 #: objinspstrconsts:srvk_kana
 msgid "Kana"
-msgstr ""
+msgstr "Kana"
 
 #: objinspstrconsts:oistdactdatasetlasthint
 msgid "Last"
@@ -721,11 +721,11 @@ msgstr "Masken..."
 
 #: objinspstrconsts:srvk_menu
 msgid "Menu"
-msgstr ""
+msgstr "Menü"
 
 #: objinspstrconsts:srvk_meta
 msgid "Meta"
-msgstr ""
+msgstr "Meta"
 
 #: objinspstrconsts:oismethod
 msgid "Method"
@@ -733,7 +733,7 @@ msgstr "Methode"
 
 #: objinspstrconsts:srvk_modechange
 msgid "Mode Change"
-msgstr ""
+msgstr "Moduswechsel"
 
 #: objinspstrconsts:clbmodify
 msgid "Modify the Item"
@@ -741,15 +741,15 @@ msgstr "Eintrag ändern"
 
 #: objinspstrconsts:srvk_lbutton
 msgid "Mouse Button Left"
-msgstr ""
+msgstr "Maustaste links"
 
 #: objinspstrconsts:srvk_mbutton
 msgid "Mouse Button Middle"
-msgstr ""
+msgstr "Maustaste Mitte"
 
 #: objinspstrconsts:srvk_rbutton
 msgid "Mouse Button Right"
-msgstr ""
+msgstr "Maustaste rechts"
 
 #: objinspstrconsts:sccsiledtmovedown
 msgid "Move Down"
@@ -817,11 +817,11 @@ msgstr "Keiner"
 
 #: objinspstrconsts:srvk_numlock
 msgid "Numlock"
-msgstr ""
+msgstr "NumLock"
 
 #: objinspstrconsts:srvk_numpad
 msgid "Numpad %d"
-msgstr ""
+msgstr "Zahlenblock %d"
 
 #: objinspstrconsts:rscdok
 msgid "OK"
@@ -889,7 +889,7 @@ msgstr "Komponenten einfügen"
 
 #: objinspstrconsts:srvk_pause
 msgid "Pause key"
-msgstr ""
+msgstr "Pause-Taste"
 
 #: objinspstrconsts:oispepicture
 msgid "Picture"
@@ -905,7 +905,7 @@ msgstr "Senden"
 
 #: objinspstrconsts:srvk_print
 msgid "Print"
-msgstr ""
+msgstr "Druck"
 
 #: objinspstrconsts:oistdactdatasetpriorhint
 msgid "Prior"
@@ -941,7 +941,7 @@ msgstr "Bedingte Eigenschaften"
 
 #: objinspstrconsts:srvk_return
 msgid "Return"
-msgstr ""
+msgstr "Eingabe"
 
 #: objinspstrconsts:rscdright
 msgid "Right"
@@ -985,7 +985,7 @@ msgstr "Sichern..."
 
 #: objinspstrconsts:srvk_scroll
 msgid "Scroll"
-msgstr ""
+msgstr "Rollen"
 
 #: objinspstrconsts:cactionlisteditorsearchcategory
 msgid "Search"
@@ -997,7 +997,7 @@ msgstr "Sections-Editor .."
 
 #: objinspstrconsts:srselect
 msgid "Select"
-msgstr ""
+msgstr "Auswahl"
 
 #: objinspstrconsts:oistdacteditselectallheadline
 msgid "Select &All"
@@ -1021,7 +1021,7 @@ msgstr "Datei auswählen"
 
 #: objinspstrconsts:oisselectshortcut
 msgid "Select short cut"
-msgstr ""
+msgstr "Kürzel auswählen"
 
 #: objinspstrconsts:sccsiledtgrprcaption
 msgid "Selected Image"
@@ -1045,7 +1045,7 @@ msgstr "Auf Voreinstellung %s setzen"
 
 #: objinspstrconsts:srvk_shift
 msgid "Shift"
-msgstr ""
+msgstr "Umsch"
 
 #: objinspstrconsts:oisshowcomponenttree
 msgid "Show Component Tree"
@@ -1061,7 +1061,7 @@ msgstr "Seite anzeigen ..."
 
 #: objinspstrconsts:srvk_snapshot
 msgid "Snapshot"
-msgstr ""
+msgstr "Schnappschuß"
 
 #: objinspstrconsts:oissort
 msgid "Sort"
@@ -1069,7 +1069,7 @@ msgstr "Sortieren"
 
 #: objinspstrconsts:srvk_space
 msgid "Space key"
-msgstr ""
+msgstr "Leertaste"
 
 #: objinspstrconsts:s_splitimage
 msgid "Split image"
@@ -1109,7 +1109,7 @@ msgstr ""
 
 #: objinspstrconsts:srvk_tab
 msgid "Tab"
-msgstr ""
+msgstr "Tab"
 
 #: objinspstrconsts:oistestinput
 msgid "Test Input"
@@ -1193,17 +1193,17 @@ msgstr "Word"
 
 #: objinspstrconsts:srvk_apps
 msgid "application key"
-msgstr ""
+msgstr "Anwendungstaste"
 
 #: objinspstrconsts:srvk_lwin
 msgid "left windows key"
-msgstr ""
+msgstr "Linke Windows-Taste"
 
 #: objinspstrconsts:srvk_none
 msgid "none"
-msgstr ""
+msgstr "keine"
 
 #: objinspstrconsts:srvk_rwin
 msgid "right windows key"
-msgstr ""
+msgstr "Rechte Windows-Taste"
 

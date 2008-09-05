@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-08-17 21:59+0100\n"
+"PO-Revision-Date: 2008-09-03 22:33+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -590,7 +590,7 @@ msgstr "Codevorlage hinzufügen"
 
 #: lazarusidestrconsts:lisadddirectory
 msgid "Add directory"
-msgstr ""
+msgstr "Ordner zufügen"
 
 #: lazarusidestrconsts:lismenuaddtoproject
 msgid "Add editor file to Project"
@@ -614,7 +614,7 @@ msgstr "Dateien hinzufügen"
 
 #: lazarusidestrconsts:lisaddfilesofdirectory
 msgid "Add files of directory"
-msgstr ""
+msgstr "Verzeichnis Dateien zufügen"
 
 #: lazarusidestrconsts:lisa2paddfilestopackage
 msgid "Add files to package"
@@ -642,7 +642,7 @@ msgstr "Neue Einstellungen für abhängige Packages und Projekte"
 
 #: lazarusidestrconsts:podaddpackageunittousessection
 msgid "Add package unit to uses section"
-msgstr ""
+msgstr "Package-Unit zur Uses-Sektion zufügen"
 
 #: lazarusidestrconsts:liscodehelpaddpathbutton
 msgid "Add path"
@@ -1458,7 +1458,7 @@ msgstr "Schema auswählen"
 
 #: lazarusidestrconsts:lischooseafpdoclink
 msgid "Choose a FPDoc link"
-msgstr ""
+msgstr "FPDoc-Link wählen"
 
 #: lazarusidestrconsts:lisoifchooseabaseclassforthefavouriteproperty
 msgid "Choose a base class for the favourite property %s%s%s."
@@ -2294,7 +2294,7 @@ msgstr "Erzeugen Sie zuerst ein Projekt!"
 
 #: lazarusidestrconsts:liscreatedirectory
 msgid "Create directory?"
-msgstr ""
+msgstr "Verzeichnis anlegen?"
 
 #: lazarusidestrconsts:liscodehelpcreatebutton
 msgid "Create help item"
@@ -2302,7 +2302,7 @@ msgstr "Hilfepunkt erzeugen"
 
 #: lazarusidestrconsts:liscreateit
 msgid "Create it"
-msgstr ""
+msgstr "Anlegen"
 
 #: lazarusidestrconsts:rscreatenewdefine
 msgid "Create new define"
@@ -2610,7 +2610,7 @@ msgstr "Alte Package-Datei %s%s%s löschen?"
 
 #: lazarusidestrconsts:lisdeleteselectedfiles
 msgid "Delete selected files"
-msgstr ""
+msgstr "Gewählte Dateien löschen"
 
 #: lazarusidestrconsts:fdmdeleteselection
 msgid "Delete selection"
@@ -2646,7 +2646,7 @@ msgstr "Löschen der Datei %s%s%s ist fehlgeschlagen."
 
 #: lazarusidestrconsts:lisdelphi
 msgid "Delphi"
-msgstr ""
+msgstr "Delphi"
 
 #: lazarusidestrconsts:dlgdelphi2ext
 msgid "Delphi 2 Extensions"
@@ -3158,7 +3158,7 @@ msgstr "Fehler beim Lesen von %s%s%s%s%s"
 
 #: lazarusidestrconsts:liserrorreadingxml
 msgid "Error reading XML"
-msgstr ""
+msgstr "Fehler beim XML-Lesen"
 
 #: lazarusidestrconsts:lispkgmangerrorreadingfile
 msgid "Error reading file"
@@ -3178,7 +3178,7 @@ msgstr "Fehler beim Lesen der Projektinfo-Datei %s%s%s%s%s"
 
 #: lazarusidestrconsts:liserrorreadingxmlfile
 msgid "Error reading xml file %s%s%s%s%s"
-msgstr ""
+msgstr "Fehler beim Lesen der XML-Datei %s%s%s%s%s"
 
 #: lazarusidestrconsts:liserrorrenamingfile
 msgid "Error renaming file"
@@ -3250,7 +3250,7 @@ msgstr "Beispiele"
 
 #: lazarusidestrconsts:lisexamplesidentifiertmyenumenumunitnameidentifierpac
 msgid "Examples:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
-msgstr ""
+msgstr "Beispiele:%sBezeichner%sTMyEnum.Enum%sUnitname.Bezeichner%s#PackageName.UnitName.Bezeichner"
 
 #: lazarusidestrconsts:lisexcludefilter
 msgid "Exclude Filter"
@@ -3258,7 +3258,7 @@ msgstr "Ausschließender Filter"
 
 #: lazarusidestrconsts:lisexcludefilter2
 msgid "Exclude filter"
-msgstr ""
+msgstr "Filter ausschließen"
 
 #: lazarusidestrconsts:liscoexecuteafter
 msgid "Execute after"
@@ -3402,7 +3402,7 @@ msgstr "FPC-Quelltextverzeichnis-Fehler"
 
 #: lazarusidestrconsts:lisfpcversioneg222
 msgid "FPC Version (e.g. 2.2.2)"
-msgstr ""
+msgstr "FPC-Version (z.B. 2.2.2)"
 
 #: lazarusidestrconsts:lisfpcversion
 msgid "FPC Version: "
@@ -3806,7 +3806,7 @@ msgstr "Leere Methoden gefunden:"
 
 #: lazarusidestrconsts:lisfreepascal
 msgid "Free Pascal"
-msgstr ""
+msgstr "Free Pascal"
 
 #: lazarusidestrconsts:lisfreepascalcompilernotfound
 msgid "Free Pascal Compiler not found"
@@ -4898,7 +4898,7 @@ msgstr "Ungültiger Ausdruck.%sHinweis: Das \"Make\" für Ressourcenstrings erwa
 
 #: lazarusidestrconsts:lisinvalidexpression
 msgid "Invalid expression:%s%s%s%s"
-msgstr ""
+msgstr "Ungültiger Ausdruck:%s%s%s%s"
 
 #: lazarusidestrconsts:lisa2pinvalidfile
 msgid "Invalid file"
@@ -4914,7 +4914,7 @@ msgstr "Ungültiger Dateiname"
 
 #: lazarusidestrconsts:lisinvalidfilter
 msgid "Invalid filter"
-msgstr ""
+msgstr "Ungültiger Filter"
 
 #: lazarusidestrconsts:lisenvoptdlginvalidmakefilename
 msgid "Invalid make filename"
@@ -5414,7 +5414,7 @@ msgstr "Linker-Stil:"
 
 #: lazarusidestrconsts:lislinktarget
 msgid "Link target"
-msgstr ""
+msgstr "Link-Ziel"
 
 #: lazarusidestrconsts:lislink
 msgid "Link:"
@@ -5490,7 +5490,7 @@ msgstr "Mac OS X"
 
 #: lazarusidestrconsts:lismacpascal
 msgid "Mac Pascal"
-msgstr ""
+msgstr "Mac-Pascal"
 
 #: lazarusidestrconsts:lisedtexttoolmacros
 msgid "Macros"
@@ -6154,7 +6154,7 @@ msgstr "Objektinspektorbefehle"
 
 #: lazarusidestrconsts:lisobjectpascaldefault
 msgid "Object Pascal - default"
-msgstr ""
+msgstr "Object Pascal - Voreinst."
 
 #: lazarusidestrconsts:dlgedoff
 msgid "Off"
@@ -7210,7 +7210,7 @@ msgstr "Registrierungsfehler"
 
 #: lazarusidestrconsts:lisregularexpression
 msgid "Regular expression"
-msgstr ""
+msgstr "Regulärer Ausdruck"
 
 #: lazarusidestrconsts:lisrelativepaths
 msgid "Relative paths"
@@ -8718,7 +8718,7 @@ msgstr "Syntaxüberprüfung"
 
 #: lazarusidestrconsts:lissyntaxmode
 msgid "Syntax mode"
-msgstr ""
+msgstr "Syntax-Modus"
 
 #: lazarusidestrconsts:dlgsyntaxoptions
 msgid "Syntax options"
@@ -8806,7 +8806,7 @@ msgstr "Zieldateiname des Projekts"
 
 #: lazarusidestrconsts:dlgtargetproc
 msgid "Target processor"
-msgstr ""
+msgstr "Zielprozessor"
 
 #: lazarusidestrconsts:lismenueditortemplatepreview
 msgid "Template Preview"
@@ -9118,7 +9118,7 @@ msgstr "Das Zielverzeichnis%s%s%s%s ist nicht vorhanden."
 
 #: lazarusidestrconsts:listhedirectorywasnotfound
 msgid "The directory %s was not found."
-msgstr ""
+msgstr "Das Verzeichnis %s wurde nicht gefunden."
 
 #: lazarusidestrconsts:listhedirectoryisnolongerneededintheunitpathremoveit
 msgid "The directory %s%s%s is no longer needed in the unit path.%sRemove it?"
@@ -9274,7 +9274,7 @@ msgstr "Die neue Unit ist noch nicht im Unit-Suchpfad.%sVerzeichnis hinzufügen 
 
 #: lazarusidestrconsts:listheoutputdirectoryismissing
 msgid "The output directory %s%s%s is missing."
-msgstr ""
+msgstr "Das Ausgabeverzeichnis %s%s%s fehlt."
 
 #: lazarusidestrconsts:listheoutputdirectoryofislistedintheincludesearchpath
 msgid "The output directory of %s is listed in the include search path of %s."
@@ -9470,7 +9470,7 @@ msgstr "Der Unit-Name wird beim Erweitern der Uses-Klausel von der IDE verwendet
 
 #: lazarusidestrconsts:listheworkingdirectorydoesnotexistpleasechecktheworki
 msgid "The working directory %s%s%s does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
-msgstr ""
+msgstr "Das Arbeitsverzeichnis %s%s%s fehlt.%sBitte prüfen Sie das Arbeitsverzeichnis im Menü Start > Startparameter"
 
 #: lazarusidestrconsts:lissamthereareabstractmethodstooverrideselectthemethodsf
 msgid "There are %s abstract methods to override.%sSelect the methods for which stubs should be created:"
@@ -9642,7 +9642,7 @@ msgstr "Thread"
 
 #: lazarusidestrconsts:listitleleaveemptyfordefault
 msgid "Title (leave empty for default)"
-msgstr ""
+msgstr "Titel (für Voreinstellung leerlassen)"
 
 #: lazarusidestrconsts:lisedtexttooltitleandfilenamerequired
 msgid "Title and Filename required"
@@ -9678,7 +9678,7 @@ msgstr "Formular-/Unit-Ansicht umschalten"
 
 #: lazarusidestrconsts:listoggleshowingfilenameswithfullpathorwithrelativepa
 msgid "Toggle showing filenames with full path or with relative path"
-msgstr ""
+msgstr "Umschalten der Anzeige der Dateinamen zwischen voller/relativer Pfad"
 
 #: lazarusidestrconsts:liskmtoggleviewbreakpoints
 msgid "Toggle view Breakpoints"
@@ -9782,7 +9782,7 @@ msgstr "Zurechtschneiden überflüssiger Leerzeichen"
 
 #: lazarusidestrconsts:listurbopascal
 msgid "Turbo Pascal"
-msgstr ""
+msgstr "Turbo Pascal"
 
 #: lazarusidestrconsts:rslanguageturkish
 msgid "Turkish"
@@ -10518,7 +10518,7 @@ msgstr "Kompilationsausgaben:"
 
 #: lazarusidestrconsts:lisverifymethodcalls
 msgid "Verify method calls"
-msgstr ""
+msgstr "Methodenaufrufe prüfen"
 
 #: lazarusidestrconsts:lisversion
 msgid "Version"
@@ -11230,7 +11230,7 @@ msgstr "Delphi-Kompatibilitätsmodus setzen"
 
 #: lazarusidestrconsts:lisedtdefsetfpcmodetofpc
 msgid "set FPC mode to FPC"
-msgstr ""
+msgstr "FPC-Modus auf FPC setzen"
 
 #: lazarusidestrconsts:lisedtdefsetfpcmodetogpc
 msgid "set FPC mode to GPC"
@@ -11238,7 +11238,7 @@ msgstr "GPC-Kompatibilitätsmodus setzen"
 
 #: lazarusidestrconsts:lisedtdefsetfpcmodetomacpas
 msgid "set FPC mode to MacPas"
-msgstr ""
+msgstr "FPC-Modus auf MacPas setzen"
 
 #: lazarusidestrconsts:lisedtdefsetfpcmodetotp
 msgid "set FPC mode to TP"
@@ -11258,7 +11258,7 @@ msgstr "Bereichsprüfungen (RANGECHECK) aktivieren"
 
 #: lazarusidestrconsts:lissmallerratherthanfaster
 msgid "smaller rather than faster"
-msgstr ""
+msgstr "lieber kleiner als schneller"
 
 #: lazarusidestrconsts:lisautomaticallyonspace
 msgid "space"
