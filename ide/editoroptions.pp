@@ -335,8 +335,6 @@ type
     function SampleLineToAddAttr(Line: Integer): TAdditionalHilightAttribute;
   end;
 
-  { list of TEditOptLanguageInfo }
-
   { TEditOptLangList }
 
   TEditOptLangList = class(TList)
@@ -357,9 +355,7 @@ type
   end;
 
 
-  { Editor Options object used to hold the editor options }
-
-{ TEditorOptions }
+  { TEditorOptions - Editor Options object used to hold the editor options }
 
   TEditorOptions = class(TPersistent)
   private
@@ -1650,7 +1646,7 @@ begin
     fShowLineNumbers :=
       XMLConfig.GetValue('EditorOptions/Display/ShowLineNumbers', False);
     fShowOnlyLineNumbersMultiplesOf :=
-      XMLConfig.GetValue('EditorOptions/Display/ShowOnlyLineNumbersMultiplesOf', 1);
+      XMLConfig.GetValue('EditorOptions/Display/ShowOnlyLineNumbersMultiplesOf', 5);
     fGutterColor :=
       XMLConfig.GetValue('EditorOptions/Display/GutterColor', clBtnFace);
     fGutterWidth :=
@@ -1786,7 +1782,7 @@ begin
     XMLConfig.SetDeleteValue('EditorOptions/Display/ShowLineNumbers',
       fShowLineNumbers, False);
     XMLConfig.SetDeleteValue('EditorOptions/Display/ShowOnlyLineNumbersMultiplesOf',
-      fShowOnlyLineNumbersMultiplesOf, 1);
+      fShowOnlyLineNumbersMultiplesOf, 5);
     XMLConfig.SetDeleteValue('EditorOptions/Display/GutterColor',
       fGutterColor, clBtnFace);
     XMLConfig.SetDeleteValue('EditorOptions/Display/GutterWidth',
