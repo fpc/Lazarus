@@ -49,7 +49,7 @@ end;
 
 procedure TForm1.ApplicationProperties1Idle(Sender: TObject; var Done: Boolean);
 begin
-  if ParamStrUTF8(1)='--runtest' then begin
+  if ParamStr(1)='--runtest' then begin
     DebugLn(FloatSpinEdit1.Caption);
     DebugLn(Label1.Caption);
     DebugLn(FloatSpinEdit2.Caption);

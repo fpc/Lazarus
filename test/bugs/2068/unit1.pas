@@ -35,7 +35,7 @@ implementation
 
 procedure TForm1.ApplicationProperties1Idle(Sender: TObject; var Done: Boolean);
 begin
-  if ParamStrUTF8(1)='--runtest' then begin
+  if ParamStr(1)='--runtest' then begin
     writeln(Debugger.Text);
     Close;
   end;

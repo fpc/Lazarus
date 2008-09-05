@@ -54,7 +54,7 @@ procedure TForm1.ApplicationProperties1Idle(Sender: TObject; var Done: Boolean);
 var
   Side1Width, Side2Width : integer;
 begin
-  if ParamStrUTF8(1)='--runtest' then begin
+  if ParamStr(1)='--runtest' then begin
     Side1Width := PairSplitterSide1.Width;
     Side2Width := PairSplitterSide2.Width;
     writeln(format('Side 1: %d, Side 2: %d',
