@@ -8377,9 +8377,20 @@ end;
 
 procedure TfrReport.SetPrinterTo(PrnName: String);
 begin
+  {$ifdef dbgPrinter}
+  DebugLn('TfrReport.SetPrinterTo PrnName=%s PrintToDefault=%d PrnExist?=%d PrnIndex=%d PrinterIndex=%d Name=%s',
+    [prnName, Ord(PrintToDefault), Ord(Prn.Printers.IndexOf(PrnName)>=0),
+     prn.PrinterIndex, Prn.Printer.PrinterIndex, prn.Printer.Printers[prn.Printer.PrinterIndex]]);
+  {$endif}
   if not PrintToDefault then
+  begin
     if Prn.Printers.IndexOf(PrnName) <> -1 then
-      Prn.PrinterIndex := Prn.Printers.IndexOf(PrnName);
+      Prn.PrinterIndex := Prn.Printers.IndexOf(PrnName)
+    else
+    if Prn.Printers.Count>0 then
+      Prn.PrinterIndex := 0 // either the system default or
+                            // own virtual default printer
+  end;
 end;
 
 procedure TfrReport.SetReportAutor(const AValue: string);
@@ -8440,6 +8451,10 @@ function TfrReport.ChangePrinter(OldIndex, NewIndex: Integer): Boolean;
 begin
   Result := True;
   try
+    {$ifdef dbgPrinter}
+    DebugLn('TfrReport.ChangePrinter CurIndex=%d OldIndex=%d NewIndex=%d',
+      [Prn.PrinterIndex,OldIndex,NewIndex]);
+    {$endif}
     Prn.PrinterIndex := NewIndex;
     Prn.PaperSize := -1;
     ChangePages;
