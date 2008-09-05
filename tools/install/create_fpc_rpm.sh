@@ -51,10 +51,9 @@ fi
 #------------------------------------------------------------------------------
 
 # create a temporary copy of the fpc sources to patch it
-TmpDir=/tmp/fpc_patchdir
+TmpDir=~/tmp/fpc_patchdir
 if [ "$WithTempDir" = "yes" ]; then
   if [ -d $TmpDir ]; then
-    # note: beware of malicious links
     rm -rf $TmpDir
   fi
   mkdir -p $TmpDir

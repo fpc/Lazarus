@@ -8,7 +8,7 @@ set -e
 
 # try to compile a program
 echo Testing fpc ...
-TmpDir=/tmp/fpc
+TmpDir=~/tmp/fpc
 rm -rf $TmpDir
 mkdir -p $TmpDir
 TestPas=$TmpDir/test.pas

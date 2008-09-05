@@ -32,6 +32,7 @@ BUILDDIR=~/tmp/build
 FPCBUILDDIR=$BUILDDIR/fpc
 INSTALLDIR=~/tmp/fpc
 INSTALLFPCDIR=~/fpc
+TRASHDIR=~/tmp/trash
 
 PPCARCH=ppcppc
 CREATECROSSPPC=0
@@ -88,16 +89,14 @@ FPCARCH=`$COMPILER -iSP`
 
 # clean installdir: since I am not root and the install dir can contain files owned by root 
 # created by a previous freeze, I just move it out of the way
-if [ ! -d /tmp/`whoami`/trash ] ; then
-  mkdir -p /tmp/`whoami`/trash
-fi
+mkdir -p $TRASHDIR
 
 set +e
 rm -rf $INSTALLDIR
 set -e
 
 if [ -d $INSTALLDIR ]; then
-  mv $INSTALLDIR /tmp/`whoami`/trash/
+  mv $INSTALLDIR $TRASHDIR
 fi
 mkdir -p $INSTALLDIR
 make install PP=$COMPILER INSTALL_PREFIX=$INSTALLDIR

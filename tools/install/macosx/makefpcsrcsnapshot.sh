@@ -51,10 +51,8 @@ PACKPROJ=fpcsrc.packproj.template
 
 # clean installdir: since I am not root and the install dir can contain files owned by root 
 # created by a previous freeze, I just move it out of the way
-TRASHDIR=/tmp/`whoami`/trash
-if [ ! -d $TRASHDIR ] ; then
-  mkdir -p $TRASHDIR
-fi
+TRASHDIR=~/tmp/trash
+mkdir -p $TRASHDIR
 if [ -d $INSTALLDIR ] ; then
   mv $INSTALLDIR $TRASHDIR/fpcsrc-`date +%Y%m%d%H%M%S`
 fi

@@ -3,6 +3,8 @@
 set -x
 set -e
 
+TmpDir=~/tmp
+
 #------------------------------------------------------------------------------
 # parse parameters
 #------------------------------------------------------------------------------
@@ -52,17 +54,15 @@ ARCH=`rpm --eval "%{_arch}"`
 #------------------------------------------------------------------------------
 
 # create a temporary copy of the fpc sources to patch it
-TmpDir=/tmp/`whoami`/fpc
-rm -rf $TmpDir
-if [ ! -d /tmp/`whoami` ]; then
-  mkdir -p /tmp/`whoami`
-fi
+TmpFPCDir=$TmpDir/fpc
+rm -rf $TmpFPCDir
+mkdir -p $TmpDir
 
 echo "extracting FPC from local svn ..."
-svn export $FPCSrcDir $TmpDir
+svn export $FPCSrcDir $TmpFPCDir
 
 # retrieve the version information
-VersionFile="$TmpDir/compiler/version.pas"
+VersionFile="$TmpFPCDir/compiler/version.pas"
 CompilerVersion=`cat $VersionFile | grep ' *version_nr *=.*;' | sed -e 's/[^0-9]//g'`
 CompilerRelease=`cat $VersionFile | grep ' *release_nr *=.*;' | sed -e 's/[^0-9]//g'`
 CompilerPatch=`cat $VersionFile | grep ' *patch_nr *=.*;' | sed -e 's/[^0-9]//g'`
@@ -71,15 +71,15 @@ CompilerVersionStr="$CompilerVersion.$CompilerRelease.$CompilerPatch"
 LazVersion="$CompilerVersion.$CompilerRelease.$CompilerPatch$CompilerMinorPatch"
 
 # set version numbers in all Makefiles
-perl replace_in_files.pl -sR -f '=\d.\d.\d' -r =$LazVersion -m 'Makefile(.fpc)?' $TmpDir/*
+perl replace_in_files.pl -sR -f '=\d.\d.\d' -r =$LazVersion -m 'Makefile(.fpc)?' $TmpFPCDir/*
 
 # create a source tar.gz
-cd $TmpDir/..
+cd $TmpDir
 tar -czf $RPMDIR/SOURCES/fpc-$LazVersion-$LazRelease.source.tar.gz fpc
 
 # remove the tempdir
 cd -
-rm -rf $TmpDir
+rm -rf $TmpFPCDir
 
 SpecFileTemplate=rpm/fpc.spec.template
 SpecFile=$RPMDIR/SPECS/fpc.spec

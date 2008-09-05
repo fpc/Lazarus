@@ -32,21 +32,15 @@ if [ ! -d $FPCSrcDir/compiler ]; then
   exit -1
 fi
 
-TmpBaseDir=/tmp
+TmpBaseDir=~/tmp
 TmpDir=$TmpBaseDir/fpc
 
 rm -rf $TmpDir
-if [ -d $FPCSrcDir/CVS ]; then
-  ppc386 -Fu../../lcl/units/i386/linux cvsexportlocal.pas
-  echo "extracting FPC from local cvs ..."
-  ./cvsexportlocal $FPCSrcDir $TmpDir
+if [ -d $FPCSrcDir/.svn ]; then
+  echo "extracting FPC from local svn ..."
+  svn export $FPCSrcDir $TmpDir
 else
-  if [ -d $FPCSrcDir/.svn ]; then
-    echo "extracting FPC from local svn ..."
-    svn export $FPCSrcDir $TmpDir
-  else
-    cp -a $FPCSrcDir $TmpDir
-  fi
+  cp -a $FPCSrcDir $TmpDir
 fi
 
 if [ $RenameSmart = "yes" ]; then

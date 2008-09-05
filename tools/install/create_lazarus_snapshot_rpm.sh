@@ -45,8 +45,7 @@ if [ ! -f $FPCRPM ]; then
   exit
 fi
 
-User=`whoami`
-TmpFPCDir=/tmp/$User/fpc
+TmpFPCDir=~/tmp/fpc
 if [ -e $TmpFPCDir ]; then
   rm -rf $TmpFPCDir
 fi 
@@ -63,27 +62,28 @@ export FPC
 FPCDIR=$TmpFPCDir/usr/$LIB/fpc/$FPCVersion
 export FPCDIR
 cd -
+rm -rf $TmpFPCDir
 
 # create a temporary copy of the lazarus sources for packaging
 LazVersion=$(./get_lazarus_version.sh)
 LazRelease=`echo $FPCRPM | sed -e 's/-/_/g'`
-TmpDir=/tmp/`whoami`/lazarus
+TmpDir=~/tmp/lazarus
 
-rm -rf $TmpDir
+rm -rf $TmpLazDir
 echo "extracting Lazarus source from local svn ..."
-svn export $LazSrcDir $TmpDir
+svn export $LazSrcDir $TmpLazDir
 if [ ! -e ../svn2revisioninc ]; then
   make -C ../.. tools OPT="-n @$FPCCfg"
 fi
-../svn2revisioninc $LazSrcDir $TmpDir/ide/revision.inc
+../svn2revisioninc $LazSrcDir $TmpLazDir/ide/revision.inc
 
 # create a source tar.gz
-cd $TmpDir/..
+cd $TmpLazDir/..
 tar -czf $RPMDIR/SOURCES/lazarus-$LazVersion-$Date.tar.gz lazarus
 
 # remove the tempdir
 cd -
-rm -rf $TmpDir
+rm -rf $TmpLazDir
 
 # create spec file
 SpecFile=$RPMDIR/SPECS/lazarus-$LazVersion-$Date.spec
@@ -96,8 +96,6 @@ cat rpm/lazarus.spec.template | \
 
 # build rpm
 rpmbuild --target $ARCH -ba $SpecFile --nodeps
-
-rm -rf $TmpFpcDir
 
 # end.
 

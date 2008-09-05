@@ -55,10 +55,8 @@ cd -
 
 # clean builddir: since I am not root and the install dir can contain files owned by root 
 # created by a previous freeze, I just move it out of the way
-TRASHDIR=/tmp/`whoami`/trash
-if [ ! -d $TRASHDIR ] ; then
-  mkdir -p $TRASHDIR
-fi
+TRASHDIR=~/tmp/trash
+mkdir -p $TRASHDIR
 if [ -d $BUILDDIR ] ; then
   mv $BUILDDIR $TRASHDIR/lazbuild-`date +%Y%m%d%H%M%S`
 fi

@@ -54,10 +54,12 @@ cat rpm/fpc-src.spec | \
   > $SpecFile
   
 # copy custom rpm scripts
-cp smart_strip.sh /tmp/smart_strip.sh
-chmod a+x /tmp/smart_strip.sh
-cp do_nothing.sh /tmp/do_nothing.sh
-chmod a+x /tmp/do_nothing.sh
+TmpDir=~/tmp
+mkdir -p $TmpDir
+cp smart_strip.sh $TmpDir/smart_strip.sh
+chmod a+x $TmpDir/smart_strip.sh
+cp do_nothing.sh $TmpDir/do_nothing.sh
+chmod a+x $TmpDir/do_nothing.sh
 
 # build rpm
 rpmbuild -ba $SpecFile || rpm -ba $SpecFile

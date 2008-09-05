@@ -24,7 +24,6 @@ LazVersion=$(./get_lazarus_version.sh)
 LazRelease='0' # $(echo $FPCRPM | sed -e 's/-/_/g')
 Src=lazarus-$LazVersion-$LazRelease.tar.gz
 SrcTGZ=$(./rpm/get_rpm_source_dir.sh)/SOURCES/$Src
-TmpDir=/tmp/lazarus$LazVersion
 SpecFile=rpm/lazarus-$LazVersion-$LazRelease.spec
 
 Arch=$(rpm --eval "%{_arch}")

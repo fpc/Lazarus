@@ -20,24 +20,28 @@ if [ "x$OutputFile" = "x" ]; then
   exit
 fi
 
+TmpDir=~/tmp
+TmpFPCDir=$TmpDir/fpc
+FPCTGZ=$TmpDir/fpc.tgz
 if [ "x$Download" = "xyes" ]; then
   echo "downloading fpc svn ..."
-  cd /tmp
-  rm -rf /tmp/fpc
-  svn export http://svn.freepascal.org/svn/fpc/trunk fpc
+  rm -rf $TmpFPCDir
+  mkdir -p $TmpDir
+  cd $TmpDir
+  svn export http://svn.freepascal.org/svn/fpc/trunk $TmpFPCDir
   cd -
 else
   echo "extracting fpc from local svn ..."
-  rm -rf /tmp/fpc
-  svn export $SourceDir /tmp/fpc
+  rm -rf $TmpFPCDir
+  svn export $SourceDir $TmpFPCDir
 fi
 
-cd /tmp
+cd $TmpDir
 echo "packing ..."
-tar cvzf /tmp/fpc.tgz fpc
+tar cvzf $FPCTGZ fpc
 cd -
-mv /tmp/fpc.tgz $OutputFile
-rm -rf /tmp/fpc
+mv $FPCTGZ $OutputFile
+rm -rf $TmpFPCDir
 
 # end.
 

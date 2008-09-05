@@ -5,6 +5,7 @@ set -e
 
 OutputFile=$1
 Usage="$0 [download] outputfilename"
+TmpDir=~/tmp
 
 Download=no
 if [ "x$1" = "xdownload" ]; then
@@ -17,29 +18,32 @@ if [ "x$OutputFile" = "x" ]; then
   exit
 fi
 
+TmpLazDir=$TmpDir/lazarus
+rm -rf $TmpLazDir
 if [ "x$Download" = "xyes" ]; then
   echo "downloading lazarus svn ..."
-  cd /tmp
-  rm -rf /tmp/lazarus
-  svn export http://svn.freepascal.org/svn/lazarus/trunk lazarus
+  mkdir -p $TmpLazDir
+  cd $TmpDir
+  svn export http://svn.freepascal.org/svn/lazarus/trunk $TmpLazDir
   cd -
 else
   echo "extracting lazarus from local svn ..."
   SourceDir=$(pwd | sed -e 's#lazarus[_0-9]*/tools.*$#lazarus#')
-  rm -rf /tmp/lazarus
-  svn export $SourceDir /tmp/lazarus
+  cd $TmpDir
+  svn export $SourceDir $TmpLazDir
+  cd -
 fi
 
 # add ide/revision.inc
-Revision=$(svnversion /tmp/lazarus)
-echo "const RevisionStr = '$Revision';" > /tmp/lazarus/ide/revision.inc
+Revision=$(svnversion $TmpLazDir)
+echo "const RevisionStr = '$Revision';" > $TmpLazDir/ide/revision.inc
 
-cd /tmp
+cd $TmpDir
 echo "packing ..."
 tar cvzf lazarus.tgz lazarus
 cd -
-mv /tmp/lazarus.tgz $OutputFile
-rm -rf /tmp/lazarus
+mv $TmpDir/lazarus.tgz $OutputFile
+rm -rf $TmpLazDir
 
 # end.
 
