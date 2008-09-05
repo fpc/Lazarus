@@ -709,20 +709,21 @@ end;
 procedure TCustomImageList.InsertMasked(Index: Integer; AImage: TCustomBitmap;
   MaskColor: TColor);
 var
-  AMask: TBitmap;
+  Bmp: TBitmap;
 begin
   if AImage = nil then Exit;
 
-  AMask := TBitmap.Create;
-  with AMask do
+  Bmp := TBitmap.Create;
+  with Bmp do
   begin
-    Height := AImage.Height;
-    Width := AImage.Width;
     Assign(AImage);
-    Mask(MaskColor);
+    TransparentColor := MaskColor;
+    Transparent := True;
   end;
-  InternalInsert(Index, AImage.Handle, AMask.MaskHandle, AImage.Width, AImage.Height);
-  AMask.Free;
+  if Bmp.Masked
+  then InternalInsert(Index, Bmp.Handle, Bmp.MaskHandle, Bmp.Width, Bmp.Height)
+  else InternalInsert(Index, Bmp.Handle, 0, Bmp.Width, Bmp.Height);
+  Bmp.Free;
 end;
 
 {------------------------------------------------------------------------------
@@ -1223,21 +1224,22 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.ReplaceMasked(Index: Integer; NewImage: TCustomBitmap; MaskColor: TColor);
 var
-  AMask: TBitmap;
+  Bmp: TBitmap;
 begin
   if NewImage = nil then Exit;
 
-  AMask := TBitmap.Create;
-  with AMask do
+  Bmp := TBitmap.Create;
+  with Bmp do
   begin
-    Height := NewImage.Height;
-    Width := NewImage.Width;
     Assign(NewImage);
-    Mask(MaskColor);
+    TransparentColor := MaskColor;
+    Transparent := True;
   end;
 
-  InternalReplace(Index, NewImage.Handle, AMask.Handle);
-  AMask.Free;
+  if Bmp.Masked
+  then InternalReplace(Index, Bmp.Handle, Bmp.MaskHandle)
+  else InternalReplace(Index, Bmp.Handle, 0);
+  Bmp.Free;
 end;
 
 {------------------------------------------------------------------------------
