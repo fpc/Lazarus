@@ -364,6 +364,10 @@ msgstr ""
 msgid "Save..."
 msgstr ""
 
+#: objinspstrconsts:sccsiledtsaveall
+msgid "Save All..."
+msgstr ""
+
 #: objinspstrconsts:sccsiledtransparentcolor
 msgid "Transparent Color:"
 msgstr ""

@@ -222,8 +222,8 @@ msgid "Cannot focus a disabled or invisible window"
 msgstr "Нельзя дать фокус отключённому или невидимому окну"
 
 #: lclstrconsts:rsrasterimagesaveinupdate
-msgid "Cannot save image wile update in progress"
-msgstr "Невозможно сохранить изображение во время процесса обновления"
+msgid "Cannot save image while update in progress"
+msgstr ""
 
 #: lclstrconsts:rscanvasdoesnotallowdrawing
 msgid "Canvas does not allow drawing"

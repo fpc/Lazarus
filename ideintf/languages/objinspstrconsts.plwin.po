@@ -957,6 +957,10 @@ msgstr ""
 msgid "Save &As..."
 msgstr ""
 
+#: objinspstrconsts:sccsiledtsaveall
+msgid "Save All..."
+msgstr ""
+
 #: objinspstrconsts:oistdactfilesaveashint
 msgid "Save As"
 msgstr ""

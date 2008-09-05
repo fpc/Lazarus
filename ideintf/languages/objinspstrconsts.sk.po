@@ -959,6 +959,10 @@ msgstr "Uložiť"
 msgid "Save &As..."
 msgstr "Uložiť &ako..."
 
+#: objinspstrconsts:sccsiledtsaveall
+msgid "Save All..."
+msgstr ""
+
 #: objinspstrconsts:oistdactfilesaveashint
 msgid "Save As"
 msgstr "Uložiť ako"

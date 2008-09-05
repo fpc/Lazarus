@@ -960,6 +960,10 @@ msgstr "Enregistrer"
 msgid "Save &As..."
 msgstr "Enregistrer &sous..."
 
+#: objinspstrconsts:sccsiledtsaveall
+msgid "Save All..."
+msgstr ""
+
 #: objinspstrconsts:oistdactfilesaveashint
 msgid "Save As"
 msgstr "Enregistrer sous"

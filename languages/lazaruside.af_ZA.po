@@ -8767,6 +8767,10 @@ msgstr ""
 msgid "Target CPU"
 msgstr ""
 
+#: lazarusidestrconsts:dlgtargetcpufamily
+msgid "Target CPU family"
+msgstr ""
+
 #: lazarusidestrconsts:lislazbuildtargetcpu
 msgid "Target CPU:"
 msgstr ""
@@ -9913,6 +9917,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisunabletocreatefile3
 msgid "Unable to create file%s%s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletocreatelinkwithtarget
+msgid "Unable to create link %s%s%s with target %s%s%s"
 msgstr ""
 
 #: lazarusidestrconsts:lisunabletocreatenewmethodpleasefixtheerrorshownin

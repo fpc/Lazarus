@@ -958,6 +958,10 @@ msgstr "Įrašyti"
 msgid "Save &As..."
 msgstr "Įrašyti &kaip..."
 
+#: objinspstrconsts:sccsiledtsaveall
+msgid "Save All..."
+msgstr ""
+
 #: objinspstrconsts:oistdactfilesaveashint
 msgid "Save As"
 msgstr "Įrašyti taip"

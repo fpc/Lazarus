@@ -4,15 +4,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: projecttemplates.serrcouldnotcreatedir
+#: projecttemplates:serrnosuchtemplate
+msgid "\"%s\": No such template."
+msgstr ""
+
+#: projecttemplates:serrcouldnotcreatedir
 msgid "Could not create directory \"%s\""
 msgstr ""
 
-#: projecttemplates.serrfailedtocopyfile
+#: projecttemplates:serrfailedtocopyfile
 msgid "Failed to copy file \"%s\" to \"%s\""
-msgstr ""
-
-#: projecttemplates.serrnosuchtemplate
-msgid "\"%s\": No such template."
 msgstr ""
 

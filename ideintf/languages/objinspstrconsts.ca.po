@@ -957,6 +957,10 @@ msgstr "Desar"
 msgid "Save &As..."
 msgstr "&Anomena i desa.."
 
+#: objinspstrconsts:sccsiledtsaveall
+msgid "Save All..."
+msgstr ""
+
 #: objinspstrconsts:oistdactfilesaveashint
 msgid "Save As"
 msgstr "Anomena i desa"

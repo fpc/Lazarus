@@ -9,11 +9,11 @@ msgstr ""
 "Last-Translator: javivf <javivf@gmail.com>\n"
 "Language-Team: \n"
 
-#: idetemplateproject.snewfromtemplate
+#: idetemplateproject:snewfromtemplate
 msgid "New project from template"
 msgstr "Nuevo proyecto desde plantilla"
 
-#: idetemplateproject.sprojecttemplatesettings
+#: idetemplateproject:sprojecttemplatesettings
 msgid "Project templates options"
 msgstr "Opciones de las plantillas del proyecto"
 

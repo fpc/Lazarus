@@ -952,6 +952,10 @@ msgstr "Opslaan"
 msgid "Save &As..."
 msgstr "Opslaan &Als..."
 
+#: objinspstrconsts:sccsiledtsaveall
+msgid "Save All..."
+msgstr ""
+
 #: objinspstrconsts:oistdactfilesaveashint
 msgid "Save As"
 msgstr "Opslaan als"

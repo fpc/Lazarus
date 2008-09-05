@@ -8765,6 +8765,10 @@ msgstr "Цель"
 msgid "Target CPU"
 msgstr "Семейство процессоров:"
 
+#: lazarusidestrconsts:dlgtargetcpufamily
+msgid "Target CPU family"
+msgstr ""
+
 #: lazarusidestrconsts:lislazbuildtargetcpu
 msgid "Target CPU:"
 msgstr "Целевой CPU:"
@@ -9912,6 +9916,10 @@ msgstr "Невозможно создать файл %s%s%s."
 #: lazarusidestrconsts:lisunabletocreatefile3
 msgid "Unable to create file%s%s%s%s"
 msgstr "Невозможно создать файл %s%s%s%s"
+
+#: lazarusidestrconsts:lisunabletocreatelinkwithtarget
+msgid "Unable to create link %s%s%s with target %s%s%s"
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletocreatenewmethodpleasefixtheerrorshownin
 msgid "Unable to create new method. Please fix the error shown in the message window."

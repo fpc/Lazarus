@@ -12,43 +12,43 @@ msgstr ""
 "X-Poedit-Country: GERMANY\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: messagecomposer.rscancel
+#: messagecomposer:rscancel
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: messagecomposer.rsok
-msgid "Ok"
-msgstr "OK"
-
-#: messagecomposer.rstest
-msgid "Test"
-msgstr "Test"
-
-#: messagecomposer.skindofmessage
+#: messagecomposer:skindofmessage
 msgid "KIND OF MESSAGE"
 msgstr ""
 
-#: messagecomposer.smaskinput
+#: messagecomposer:smaskinput
 msgid "Mask Input"
 msgstr "Maskeneingabe"
 
-#: messagecomposer.smessagecomposercaption
+#: messagecomposer:smessagecomposercaption
 msgid "Message Composer ..."
 msgstr "Message-Composer ..."
 
-#: messagecomposer.smsgcaption
-msgid "The message to be shown"
-msgstr "Die anzuzeigende Meldung"
-
-#: messagecomposer.snotimplementedyet
+#: messagecomposer:snotimplementedyet
 msgid "Not Implemented Yet"
 msgstr "Noch nicht implementiert"
 
-#: messagecomposer.spromptcaption
+#: messagecomposer:rsok
+msgid "Ok"
+msgstr "OK"
+
+#: messagecomposer:ssourcewrapper
+msgid "SOURCE WRAPPER"
+msgstr ""
+
+#: messagecomposer:rstest
+msgid "Test"
+msgstr "Test"
+
+#: messagecomposer:spromptcaption
 msgid "Text asking the user for input"
 msgstr "Text um nach einer Eingabe zu fragen"
 
-#: messagecomposer.ssourcewrapper
-msgid "SOURCE WRAPPER"
-msgstr ""
+#: messagecomposer:smsgcaption
+msgid "The message to be shown"
+msgstr "Die anzuzeigende Meldung"
 

@@ -222,7 +222,7 @@ msgid "Cannot focus a disabled or invisible window"
 msgstr "Nie mo¿na ustawiæ ogniska na wy³±czone lub niewidzialne okno"
 
 #: lclstrconsts:rsrasterimagesaveinupdate
-msgid "Cannot save image wile update in progress"
+msgid "Cannot save image while update in progress"
 msgstr ""
 
 #: lclstrconsts:rscanvasdoesnotallowdrawing

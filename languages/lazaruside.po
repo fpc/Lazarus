@@ -3836,8 +3836,8 @@ msgstr ""
 msgid "Target OS"
 msgstr ""
 
-#: lazarusidestrconsts:dlgtargetcpu
-msgid "Target CPU"
+#: lazarusidestrconsts:dlgtargetcpufamily
+msgid "Target CPU family"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcodebugging
@@ -11730,5 +11730,9 @@ msgstr ""
 
 #: lazarusidestrconsts:lisaddfilesofdirectory
 msgid "Add files of directory"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletocreatelinkwithtarget
+msgid "Unable to create link %s%s%s with target %s%s%s"
 msgstr ""
 
