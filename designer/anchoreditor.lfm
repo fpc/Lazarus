@@ -213,10 +213,8 @@ object AnchorDesigner: TAnchorDesigner
       Top = 1
       Width = 216
       Anchors = [akTop, akLeft, akRight]
-      AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
       BorderSpacing.Left = 4
       BorderSpacing.Right = 12
-      MaxLength = 0
       OnEditingDone = SiblingComboBoxChange
       ParentShowHint = False
       ShowHint = True
@@ -323,10 +321,9 @@ object AnchorDesigner: TAnchorDesigner
       Top = 1
       Width = 216
       Anchors = [akTop, akLeft, akRight]
-      AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
       BorderSpacing.Left = 4
       BorderSpacing.Right = 12
-      MaxLength = 0
+      OnEditingDone = SiblingComboBoxChange
       ParentShowHint = False
       ShowHint = True
       TabOrder = 1
@@ -441,10 +438,8 @@ object AnchorDesigner: TAnchorDesigner
       Top = 59
       Width = 159
       Anchors = [akTop, akLeft, akRight]
-      AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
       BorderSpacing.Left = 8
       BorderSpacing.Right = 8
-      MaxLength = 0
       OnEditingDone = SiblingComboBoxChange
       ParentShowHint = False
       ShowHint = True
@@ -556,10 +551,8 @@ object AnchorDesigner: TAnchorDesigner
       Top = 59
       Width = 161
       Anchors = [akTop, akLeft, akRight]
-      AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
       BorderSpacing.Left = 8
       BorderSpacing.Right = 8
-      MaxLength = 0
       OnEditingDone = SiblingComboBoxChange
       ParentShowHint = False
       ShowHint = True
