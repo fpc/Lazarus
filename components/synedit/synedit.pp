@@ -8099,7 +8099,7 @@ begin
               repeat
                 Dec(BackCounter);
                 Temp := Lines[BackCounter];
-                SpaceCount2 := LeftSpaces(Temp);
+                SpaceCount2 := LeftSpaces(Temp,true);
               until (BackCounter = 0) or (Temp <> '');
             end;
             Lines.Insert(CaretY, '');
