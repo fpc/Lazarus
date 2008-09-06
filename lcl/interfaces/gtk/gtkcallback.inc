@@ -1167,7 +1167,7 @@ begin
   end else begin
     // stop the signal, so that the widget does not auto react
     g_signal_stop_emission_by_name(PGTKObject(Widget),'motion-notify-event');
-    Result:=not CallBackDefaultReturn;
+    Result:=CallBackDefaultReturn;
   end;
 
   DeliverMouseMoveMessage(Widget,Event,TWinControl(Data));
@@ -1197,7 +1197,6 @@ begin
 
   // stop the signal, so that it is not sent to the parent widgets
   g_signal_stop_emission_by_name(PGTKObject(Widget),'motion-notify-event');
-  Result:=not CallBackDefaultReturn;
 
   UpdateMouseCaptureControl;
 
@@ -1544,7 +1543,6 @@ begin
       // stop the signal, so that the widget does not auto react
       //DebugLn(['gtkMouseBtnPress stop signal']);
       g_signal_stop_emission_by_name(PGTKObject(Widget),'button-press-event');
-      Result := not CallBackDefaultReturn;
     end;
   end;
   //debugln('[gtkMouseBtnPress] calling DeliverMouseDownMessage Result=',dbgs(Result));
@@ -1577,7 +1575,6 @@ begin
 
   // stop the signal, so that it is not sent to the parent widgets
   g_signal_stop_emission_by_name(PGTKObject(Widget),'button-press-event');
-  Result:=not CallBackDefaultReturn;
 
   if (csDesigning in TComponent(Data).ComponentState) then exit;
   if ControlGetsMouseDownBefore(TControl(Data),Widget) then exit;
@@ -1722,7 +1719,6 @@ begin
     and (not (TControl(Data) is TCustomTabControl))
     then begin
       g_signal_stop_emission_by_name(PGTKObject(Widget),'button-release-event');
-      Result := not CallBackDefaultReturn;
     end;
   end;
 
@@ -1751,7 +1747,6 @@ begin
 
   // stop the signal, so that it is not sent to the parent widgets
   g_signal_stop_emission_by_name(PGTKObject(Widget),'button-release-event');
-  Result:=not CallBackDefaultReturn;
 
   ResetDefaultIMContext;
   UpdateMouseCaptureControl;
@@ -1803,7 +1798,6 @@ begin
   if csDesigning in TControl(Data).ComponentState then begin
     // stop the signal, so that the widget does not auto react
     g_signal_stop_emission_by_name(PGTKObject(Widget),'enter');
-    Result:=not CallBackDefaultReturn;
   end;
 
   Mess.msg := CM_MOUSEENTER;
@@ -1823,7 +1817,6 @@ begin
   if csDesigning in TControl(Data).ComponentState then begin
     // stop the signal, so that the widget does not auto react
     g_signal_stop_emission_by_name(PGTKObject(Widget),'leave');
-    Result:=not CallBackDefaultReturn;
   end;
 
   Mess.msg := CM_MOUSELEAVE;
@@ -2196,7 +2189,6 @@ begin
   if csDesigning in TControl(Data).ComponentState then begin
     // stop the signal, so that the widget does not auto react
     g_signal_stop_emission_by_name(PGTKObject(Widget),'focus-in-event');
-    Result:=not CallBackDefaultReturn;
   end;
 
   MessI.msg := LM_Enter;
@@ -2218,7 +2210,6 @@ begin
   if csDesigning in TControl(Data).ComponentState then begin
     // stop the signal, so that the widget does not auto react
     g_signal_stop_emission_by_name(PGTKObject(Widget),'focus-out-event');
-    Result:=not CallBackDefaultReturn;
   end;
 
   MessI.msg := LM_Exit;
