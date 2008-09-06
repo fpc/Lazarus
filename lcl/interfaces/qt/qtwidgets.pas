@@ -1153,20 +1153,19 @@ type
 
   TQtCalendar = class(TQtWidget)
   private
+    FMouseDoubleClicked: Boolean;
+    FCalViewportEventHook: QObject_hookH;
     FClickedHook: QCalendarWidget_hookH;
     FActivatedHook: QCalendarWidget_hookH;
     FSelectionChangedHook: QCalendarWidget_hookH;
     FCurrentPageChangedHook: QCalendarWidget_hookH;
-    FChildren: TList;
-    FChildrenHooks: TList;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
-    procedure DestroyWidget; override;
-    function ChildEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
   public
     AYear, AMonth, ADay: Word;
     procedure AttachEvents; override;
     procedure DetachEvents; override;
+    function calViewportEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 
     procedure SignalActivated(ADate: QDateH); cdecl;
     procedure SignalClicked(ADate: QDateH); cdecl;
@@ -8256,30 +8255,13 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 function TQtCalendar.CreateWidget(const AParams: TCreateParams):QWidgetH;
-var
-  Children: TIntArray;
-  AnObject: QObjectH;
-  i: integer;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtCalendar.Create');
   {$endif}
+  FMouseDoubleClicked := False;
   Result := QCalendarWidget_create();
-  FChildren := TList.Create;
-  QObject_children(Result, @Children);
-  for i := 0 to High(Children) do
-  begin
-    AnObject := QObjectH(Children[i]);
-    if QObject_isWidgetType(AnObject) then
-      FChildren.Add(AnObject);
-  end;
-end;
-
-procedure TQtCalendar.DestroyWidget;
-begin
-  FChildren.Free;
-  inherited DestroyWidget;
 end;
 
 procedure TQtCalendar.AttachEvents;
@@ -8287,12 +8269,11 @@ var
   Method: TMethod;
   Hook: QObject_hookH;
   i: integer;
+  Children: TIntArray;
+  AnObject: QObjectH;
 begin
   inherited AttachEvents;
   
-  // calendar itself eats some events so we will never get DoubleClick event
-  // this should be somehow solved since CalendarPopup expects DoubleClick from calendar widget
-
   FClickedHook := QCalendarWidget_hook_create(Widget);
   FActivatedHook := QCalendarWidget_hook_create(Widget);
   FSelectionChangedHook := QCalendarWidget_hook_create(Widget);
@@ -8309,15 +8290,23 @@ begin
 
   QCalendarWidget_currentPageChanged_Event(Method) := @SignalCurrentPageChanged;
   QCalendarWidget_hook_hook_currentPageChanged(FCurrentPageChangedHook, Method);
-  
-  FChildrenHooks := TList.Create;
-  for i := 0 to FChildren.Count - 1 do
+
+  QObject_children(Widget, @Children);
+  for i := 0 to High(Children) do
   begin
-    Hook := QObject_hook_create(QObjectH(FChildren[i]));
-    TEventFilterMethod(Method) := @ChildEventFilter;
-    QObject_hook_hook_events(Hook, Method);
-    FChildrenHooks.Add(Hook);
+    AnObject := QObjectH(Children[i]);
+    if QObject_isWidgetType(AnObject) then
+    begin
+      {do not localize !!}
+      if QObject_inherits(AnObject,'QAbstractScrollArea') then
+      begin
+        FCalViewportEventHook := QObject_hook_create(QAbstractScrollArea_viewport(QAbstractScrollAreaH(AnObject)));
+        TEventFilterMethod(Method) := @calViewportEventFilter;
+        QObject_hook_hook_events(FCalViewportEventHook, Method);
+      end;
+    end;
   end;
+
 end;
 
 procedure TQtCalendar.DetachEvents;
@@ -8325,32 +8314,31 @@ var
   i: integer;
   Hook: QObject_hookH;
 begin
+  QObject_hook_destroy(FCalViewportEventHook);
   QCalendarWidget_hook_destroy(FClickedHook);
   QCalendarWidget_hook_destroy(FActivatedHook);
   QCalendarWidget_hook_destroy(FSelectionChangedHook);
   QCalendarWidget_hook_destroy(FCurrentPageChangedHook);
-
-  if FChildrenHooks <> nil then
-  begin
-    for i := 0 to FChildrenHooks.Count - 1 do
-    begin
-      Hook := QObject_hookH(FChildrenHooks[i]);
-      QObject_hook_destroy(Hook);
-    end;
-    FreeAndNil(FChildrenHooks);
-  end;
   inherited DetachEvents;
 end;
 
-function TQtCalendar.ChildEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+function TQtCalendar.calViewportEventFilter(Sender: QObjectH; Event: QEventH
+  ): Boolean; cdecl;
 begin
+  {we install only mouse events on QCalendar viewport}
   Result := False;
-
-  case QEvent_type(Event) of
-    QEventMouseButtonPress,
-    QEventMouseButtonRelease,
-    QEventMouseButtonDblClick:
-      debugln(['mouse event: ', QEvent_type(Event)]);
+  QEvent_accept(Event);
+  if (LCLObject <> nil) then
+  begin
+    case QEvent_type(Event) of
+      QEventMouseButtonPress,
+      QEventMouseButtonRelease: SlotMouse(Sender, Event);
+      QEventMouseButtonDblClick:
+      begin
+        FMouseDoubleClicked := True;
+        SlotMouse(Sender, Event);
+      end;
+    end;
   end;
 end;
 
@@ -8362,18 +8350,36 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtCalendar.SignalActivated(ADate: QDateH); cdecl;
 var
-  Msg: TLMessage;
+  DMsg: TLMessage;
   y,m,d: Integer;
+  Msg: TLMMouse;
+  MousePos: TQtPoint;
+  Modifiers: QtKeyboardModifiers;
+  Event: QKeyEventH;
 begin
-  {this one triggers if we press RETURN on selected date
-   shell we send KeyDown here ?!?}
-  FillChar(Msg, SizeOf(Msg), #0);
+  {$IFDEF VerboseQt}
+  writeln('TQtCalendar.signalActivated ');
+  {$ENDIF}
+
+  {avoid OnAcceptDate() to trigger twice if doubleclicked
+   via FMouseDoubleClicked, also send Key events when item
+   activated (only Key_Return & Key_Enter activates)}
+  if not FMouseDoubleClicked then
+  begin
+    Event := QKeyEvent_create(QEventKeyPress, QtKey_Return, QtNoModifier);
+    QCoreApplication_postEvent(Widget, Event);
+    Event := QKeyEvent_create(QEventKeyRelease, QtKey_Return, QtNoModifier);
+    QCoreApplication_postEvent(Widget, Event);
+  end else
+    FMouseDoubleClicked := False;
+
+  FillChar(DMsg, SizeOf(DMsg), #0);
   Msg.Msg := LM_DAYCHANGED;
   y := QDate_year(ADate);
   m := QDate_month(ADate);
   d := QDate_day(ADate);
   if (y <> aYear) or (m <> aMonth) or (d <> aDay) then
-    DeliverMessage(Msg);
+    DeliverMessage(DMsg);
 end;
 
 {------------------------------------------------------------------------------
@@ -8387,7 +8393,9 @@ var
   Msg: TLMessage;
   y, m, d: Integer;
 begin
-  //writeln('TQtCalendar.signalClicked');
+  {$IFDEF VerboseQt}
+  writeln('TQtCalendar.signalClicked');
+  {$ENDIF}
   FillChar(Msg, SizeOf(Msg), #0);
   Msg.Msg := LM_DAYCHANGED;
   y := QDate_year(ADate);
@@ -8410,9 +8418,11 @@ procedure TQtCalendar.SignalSelectionChanged; cdecl;
 var
   Msg: TLMessage;
 begin
-//  writeln('TQtCalendar.SignalSelectionChanged');
+  {$IFDEF VerboseQt}
+  writeln('TQtCalendar.SignalSelectionChanged');
+  {$ENDIF}
   FillChar(Msg, SizeOf(Msg), #0);
-  Msg.Msg := LM_DAYCHANGED;
+  Msg.Msg := LM_SELCHANGE;
   DeliverMessage(Msg);
 end;
 
@@ -8425,11 +8435,13 @@ end;
    with pure Qt C++ app this works ok, but via bindings get
    impossible year & month values ...
  ------------------------------------------------------------------------------}
-procedure TQtCalendar.SignalCurrentPageChanged(p1, p2: Integer); cdecl;
+procedure TQtCalendar.signalCurrentPageChanged(p1, p2: Integer); cdecl;
 var
   Msg: TLMessage;
 begin
-  // writeln('TQtCalendar.SignalCurrentPageChanged p1=',p1,' p2=',p2);
+  {$IFDEF VerboseQt}
+  writeln('TQtCalendar.SignalCurrentPageChanged p1=',p1,' p2=',p2);
+  {$ENDIF}
   FillChar(Msg, SizeOf(Msg), #0);
   if AYear <> p1 then
   begin
