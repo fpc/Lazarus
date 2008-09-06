@@ -482,21 +482,24 @@ begin
 end;
 
 procedure TCustomComboBox.KeyUp(var Key: Word; Shift: TShiftState);
-var iSelStart: Integer;
-    sCompleteText, sPrefixText, sResultText: string;
+var
+  iSelStart: Integer; // byte position
+  sCompleteText, sPrefixText, sResultText: string;
 begin
  inherited KeyUp(Key, Shift);
  if ((cbactEnabled in FAutoCompleteText) and (Style <> csDropDownList)) then
   begin
    //Only happens with alpha-numeric keys and return key and editable Style
    if (IsEditableTextKey(Key) or (Key = VK_RETURN) or (ssShift in Shift)) then
-    begin
+   begin
      if (Key = VK_RETURN) then
-      SelectAll else
-      begin
+       SelectAll
+     else begin
        iSelStart := SelStart;//Capture original cursor position
        //End of line completion
-       if ((iSelStart < Length(Text)) and (cbactEndOfLineComplete in FAutoCompleteText)) then Exit;
+       if ((iSelStart < Length(Text))
+       and (cbactEndOfLineComplete in FAutoCompleteText)) then
+         Exit;
        sPrefixText := LeftStr(Text, iSelStart);
        sCompleteText := GetCompleteText(Text, iSelStart,
                                         (cbactSearchCaseSensitive in FAutoCompleteText),

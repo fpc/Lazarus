@@ -378,8 +378,8 @@ type
     property Items: TStrings read FItems write SetItems;
     property ItemIndex: integer read GetItemIndex write SetItemIndex default -1;
     property ReadOnly: Boolean read FReadOnly write SetReadOnly stored IsReadOnlyStored;
-    property SelLength: integer read GetSelLength write SetSelLength;
-    property SelStart: integer read GetSelStart write SetSelStart;
+    property SelLength: integer read GetSelLength write SetSelLength;// byte length
+    property SelStart: integer read GetSelStart write SetSelStart;// byte position
     property SelText: String read GetSelText write SetSelText;
     property Style: TComboBoxStyle read FStyle write SetStyle;
     property Text;
