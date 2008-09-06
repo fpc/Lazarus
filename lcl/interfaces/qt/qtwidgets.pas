@@ -3029,9 +3029,9 @@ begin
     QtKey_ScrollLock: Result := VK_SCROLL;
     QtKey_F1..QtKey_F24: Result := VK_F1 + (AKey - QtKey_F1);
     QtKey_F25..
-    QtKey_F35,
-    QtKey_Super_L,
-    QtKey_Super_R: Result := VK_UNKNOWN;
+    QtKey_F35: Result := VK_UNKNOWN;
+    QtKey_Super_L: Result := VK_LWIN;
+    QtKey_Super_R: Result := VK_RWIN;
     QtKey_Menu: Result := VK_MENU;
     QtKey_Hyper_L,
     QtKey_Hyper_R: Result := VK_UNKNOWN;
