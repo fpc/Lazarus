@@ -3847,6 +3847,7 @@ tools/install/macosx/lazarus.packproj.template svneol=native#text/plain
 tools/install/macosx/makefpcsnapshot.sh svneol=native#text/plain
 tools/install/macosx/makefpcsrcsnapshot.sh svneol=native#text/plain
 tools/install/macosx/makelazsnapshot.sh svneol=native#text/plain
+tools/install/macosx/uninstall.sh svneol=native#text/plain
 tools/install/patches/fpc-fixes_2_2.patch svneol=native#text/plain
 tools/install/patches/readme.txt svneol=native#text/plain
 tools/install/replace_in_files.pl -text svneol=native#application/x-perl

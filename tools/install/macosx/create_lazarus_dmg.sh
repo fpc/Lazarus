@@ -1,10 +1,32 @@
 #!/usr/bin/env bash
+#
+# This script requires an installed 'Iceberg'
+#
+# Usage:
+#
+#  Build a lazarus dmg:
+#   ./create_lazarus_dmg.sh
+#
+# This will setup a lazarus package in ~/tmp/buildlaz
+# run 'freeze' of Iceberg and create the dmg.
+#
+# To edit the Iceberg configuration 'lazarus.packproj', run
+#   ./create_lazarus_dmg.sh edit
+# This will create ~/tmp/buildlaz/lazarus.packproj. Open the file with Iceberg.
+# When changed, save the file. Copy it back to the lazarus sources:
+# cp ~/tmp/buildlaz/lazarus.packproj <lazarus>/tools/install/macosx/lazarus_release.packproj.template
+#
+# The script will replace the following in the lazarus.packproj:
+#   _LAZVERSION_ with $LazVersion
+#   _DATESTAMP_ with $DATESTAMP
+#   18273645 with $LAZMAJORVERSION
+#   45362718 with $LAZMINORVERSION
 
 set -e
 set -x
 
 HDIUTIL=/usr/bin/hdiutil
-UPDATELIST=~/tmp/updatelist
+#UPDATELIST=~/tmp/updatelist
 
 LazVersionPostfix=
 if [ "$1" = "append-revision" ]; then
@@ -21,7 +43,7 @@ if [ "$1" = "edit" ]; then
   shift
 fi
 
-#PPCARCH=ppcppc
+PPCARCH=ppcppc
 ARCH=$(uname -p)
 if [ "$ARCH" = "i386" ]; then
   PPCARCH=ppc386
@@ -57,13 +79,15 @@ LazVersion=$(./get_lazarus_version.sh)
 cd -
 LazRelease='0'
 # Iceberg only supports a major and a minor version number
+# convert 1.2.3 => 1.23
 LAZMAJORVERSION=$(echo $LazVersion | sed -e 's/\..*//')
-LAZMINORVERSION=$(echo $LazVersion | sed -e 's/[^.]*\.//' -e 's/\..*//')
+LAZMINORVERSION=$(echo $LazVersion | sed -e 's/[^.]*\.//' -e 's/\.//')
 
 COMPILER=$PP
 if [ -z "$COMPILER" ]; then
   COMPILER=$(which fpc)
 fi
+FPCARCH=$($COMPILER -iSP)
 #~/fpc/bin/$PPCARCH
 #CROSSCOMPILER=~/fpc/bin/fpc
 FPCVERSION=$($COMPILER -iV)
@@ -118,13 +142,22 @@ strip lazbuild
 # create symlinks
 mkdir -p $ROOTDIR/usr/bin
 cd $ROOTDIR/usr/bin
-ln -s /Developer/lazarus/lazarus.app/Contents/MacOS/lazarus lazarus
-ln -s /Developer/lazarus/lazarus.app/Contents/MacOS/startlazarus startlazarus
+#does not work: ln -s /Developer/lazarus/lazarus.app/Contents/MacOS/lazarus lazarus
+#does not work: ln -s /Developer/lazarus/lazarus.app/Contents/MacOS/startlazarus startlazarus
 ln -s /Developer/lazarus/lazbuild lazbuild
 find $BUILDDIR -name '.svn' -exec rm -rf {} \; || true
 find $BUILDDIR -name '.DS_Store' -exec rm -rf {} \; || true
 mkdir -p $ROOTDIR/Applications
 ln -s /Developer/lazarus/lazarus.app $ROOTDIR/Applications/Lazarus.app
+cp $TEMPLATEDIR/uninstall.sh $ROOTDIR/Developer/lazarus/
+
+# fix permissions
+# everyone can read, group can write
+find $BUILDDIR -exec chown a+r,g+w
+# what is executable should be executable by everyone
+find $BUILDDIR -perm +o+x -exec chown a+x
+# everyone can access directories
+find $BUILDDIR -type d -exec chmod a+x {} \;
 
 # create etc
 mkdir -p $ROOTDIR/etc/lazarus
@@ -157,9 +190,7 @@ cat $PACKPROJTEMPLATE | sed \
 
 # build package
 cd $BUILDDIR
-#$FREEZE -v $PACKPROJ
-
-exit 0
+$FREEZE -v $PACKPROJ
 
 DMGFILE=~/tmp/lazarus-$LazVersion$LazVersionPostfix-$DATESTAMP-$FPCARCH-macosx.dmg
 rm -rf $DMGFILE
@@ -167,6 +198,7 @@ rm -rf $DMGFILE
 $HDIUTIL create -anyowners -volname lazarus-$LAZVERSION$LazVersionPostfix \
   -imagekey zlib-level=9 -format UDZO -srcfolder $BUILDDIR/build $DMGFILE
 
+set +x
 echo The new dmg file is $DMGFile
 
 #end.
