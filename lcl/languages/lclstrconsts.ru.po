@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-09-01 01:34+0300\n"
+"PO-Revision-Date: 2008-09-05 21:48+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -223,7 +223,7 @@ msgstr "Нельзя дать фокус отключённому или нев�
 
 #: lclstrconsts:rsrasterimagesaveinupdate
 msgid "Cannot save image while update in progress"
-msgstr ""
+msgstr "Невозможно сохранить изображение во время обновления"
 
 #: lclstrconsts:rscanvasdoesnotallowdrawing
 msgid "Canvas does not allow drawing"

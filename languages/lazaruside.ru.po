@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-09-01 01:22+0300\n"
+"PO-Revision-Date: 2008-09-05 21:47+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -8561,6 +8561,10 @@ msgstr "Стандартное меню Справка"
 msgid "Start with a new project"
 msgstr "При запуске начинать новый проект"
 
+#: lazarusidestrconsts:lisstarter
+msgid "Starter"
+msgstr "Пускатель"
+
 #: lazarusidestrconsts:lisoipstate
 msgid "State"
 msgstr "Состояние"
@@ -8760,6 +8764,10 @@ msgstr "Цель"
 #: lazarusidestrconsts:listargetcpu
 msgid "Target CPU"
 msgstr "Семейство процессоров:"
+
+#: lazarusidestrconsts:dlgtargetcpufamily
+msgid "Target CPU family"
+msgstr "Целевое семейство процессоров"
 
 #: lazarusidestrconsts:lislazbuildtargetcpu
 msgid "Target CPU:"
@@ -9911,7 +9919,7 @@ msgstr "Невозможно создать файл %s%s%s%s"
 
 #: lazarusidestrconsts:lisunabletocreatelinkwithtarget
 msgid "Unable to create link %s%s%s with target %s%s%s"
-msgstr ""
+msgstr "Невозможно создать ссылку %s%s%s с объектом %s%s%s"
 
 #: lazarusidestrconsts:lisunabletocreatenewmethodpleasefixtheerrorshownin
 msgid "Unable to create new method. Please fix the error shown in the message window."

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-09-01 01:50+0300\n"
+"PO-Revision-Date: 2008-09-05 21:50+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -959,7 +959,7 @@ msgstr "Сохранить &как..."
 
 #: objinspstrconsts:sccsiledtsaveall
 msgid "Save All..."
-msgstr ""
+msgstr "Сохранить все..."
 
 #: objinspstrconsts:oistdactfilesaveashint
 msgid "Save As"
