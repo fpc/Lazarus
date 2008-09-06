@@ -2467,7 +2467,7 @@ begin
   KeyMapNameFilter:='';
   KeyMapKeyFilter:=CleanIDEShortCut;
 
-  IDEDialogLayoutList.ApplyLayout(Self, 480, 480);
+  IDEDialogLayoutList.ApplyLayout(Self, Width,Height);
 
   SetupGeneralPage(0);
   SetupDisplayPage(1);

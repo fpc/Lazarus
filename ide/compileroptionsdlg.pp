@@ -364,7 +364,7 @@ begin
     inherited Create(TheOwner);
     Caption := dlgCompilerOptions;
 
-    IDEDialogLayoutList.ApplyLayout(Self,550,450);
+    IDEDialogLayoutList.ApplyLayout(Self,Width,Height);
 
     ImageIndexPackage := IDEImages.LoadImage(16, 'item_package');
     ImageIndexRequired := IDEImages.LoadImage(16, 'pkg_required');
