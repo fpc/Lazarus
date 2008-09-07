@@ -974,7 +974,7 @@ msgstr "Automaattinen tallennus"
 
 #: lazarusidestrconsts:lisautoshowobjectinspector
 msgid "Auto show Object Inspector"
-msgstr ""
+msgstr "Näytetään automaattisesti komponenttimuokkain"
 
 #: lazarusidestrconsts:dlgautocreateforms
 msgid "Auto-create forms:"
@@ -2014,7 +2014,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisconsoleapplication
 msgid "Console application"
-msgstr ""
+msgstr "Komentorivisovellus"
 
 #: lazarusidestrconsts:lisceconstants
 msgid "Constants"
@@ -2594,7 +2594,7 @@ msgstr "Poistetaanko %s%s%s-niminen vanha fiedosto?"
 
 #: lazarusidestrconsts:lisdeleteoldfile2
 msgid "Delete old file?"
-msgstr ""
+msgstr "Poistetaanko vanha tiedosto?"
 
 #: lazarusidestrconsts:lispkgmangdeleteoldpackagefile2
 msgid "Delete old package file %s%s%s?"
@@ -2738,7 +2738,7 @@ msgstr "Suunta"
 
 #: lazarusidestrconsts:lisdirectives
 msgid "Directives"
-msgstr ""
+msgstr "Ohjeet kääntäjälle"
 
 #: lazarusidestrconsts:liscodetoolsdefsinsertbehinddirectory
 msgid "Directory"
@@ -3962,11 +3962,11 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecnexteditor
 msgid "Go to next editor"
-msgstr ""
+msgstr "Mene seuraavalle välilehdelle"
 
 #: lazarusidestrconsts:srkmecpreveditor
 msgid "Go to prior editor"
-msgstr ""
+msgstr "Mene edelliselle välilehdelle"
 
 #: lazarusidestrconsts:liskmgotosourceeditor1
 msgid "Go to source editor 1"
@@ -7246,7 +7246,7 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecremoveemptymethods
 msgid "Remove empty methods"
-msgstr ""
+msgstr "Poista tyhjät metodit"
 
 #: lazarusidestrconsts:lispckeditremovefile
 msgid "Remove file"
@@ -8358,7 +8358,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisshowspecialcharacters
 msgid "Show special characters"
-msgstr ""
+msgstr "Tuo esille erikoismerkit (kuten välilyönnit pisteinä, kelpaattomat merkit kysymysmerkkeinä)"
 
 #: lazarusidestrconsts:dlgshowsummary
 msgid "Show summary"
@@ -8430,7 +8430,7 @@ msgstr ""
 
 #: lazarusidestrconsts:rslanguageslovak
 msgid "Slovak"
-msgstr ""
+msgstr "Slovakki"
 
 #: lazarusidestrconsts:dlgcosmaller
 msgid "Smaller Code"
@@ -8486,7 +8486,7 @@ msgstr "Lähdekoodi editori"
 
 #: lazarusidestrconsts:srkmcatsrcnotebook
 msgid "Source Notebook commands"
-msgstr ""
+msgstr "Lähdekoodieditorin komennot"
 
 #: lazarusidestrconsts:lissourceanddestinationarethesame
 msgid "Source and Destination are the same:%s%s"
@@ -9310,7 +9310,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthepackageismarkedforinstallationbutcannotbefound
 msgid "The package %s%s%s is marked for installation, but can not be found.%sRemove dependency from the installation list of packages?"
-msgstr ""
+msgstr "Komponenttipaketti %s%s%s oli merkitty asennettavaksi mutta sitä ei löydetty. Poistetaanko tämä riippuvuus komponettipakettien asennusluettelosta?"
 
 #: lazarusidestrconsts:lispkgmangthepackagewasmarkedforinstallationcurrentlylazarus
 msgid "The package %s%s%s was marked for installation.%sCurrently lazarus only supports static linked packages. The real installation needs rebuilding and restarting of lazarus.%s%sDo you want to rebuild Lazarus now?"
@@ -10602,7 +10602,7 @@ msgstr "Näytä käännösyksikön (Unit) riippuvuudet"
 
 #: lazarusidestrconsts:liskmviewunitinfo
 msgid "View Unit Info"
-msgstr ""
+msgstr "Näytä käännösyksikön (Unit) tietoja"
 
 #: lazarusidestrconsts:lismenuviewunitinfo
 msgid "View Unit Information"
@@ -10654,7 +10654,7 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmcatviewmenu
 msgid "View menu commands"
-msgstr ""
+msgstr "Näytä valikon komennot"
 
 #: lazarusidestrconsts:srkmectogglemessages
 msgid "View messages"
@@ -10986,7 +10986,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisfreepascalprogramusingtcustomapplicationtoeasilych
 msgid "freepascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program file is automatically maintained by lazarus."
-msgstr ""
+msgstr "FreePascal ohjelma joka käyttää TCustomApplication luokkaa. Sillä on helppo tarkastaa komentoriviltä annetut parametrit ja poikkeukset. Ohjelman tekoa hallitaan Lazaruksella."
 
 #: lazarusidestrconsts:lisreportingbugurl
 msgid "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
