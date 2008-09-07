@@ -316,8 +316,9 @@ begin
           if ANode<>nil then
             s:=' = '+IdentItem.Tool.ExtractNode(ANode,[])
           else begin
-            s:=IdentItem.Tool.ExtractCode(ItemNode.StartPos+length(s),
-                                          ItemNode.EndPos,[]);
+            s:=IdentItem.Tool.ExtractCode(ItemNode.StartPos
+                            +GetIdentLen(@IdentItem.Tool.Src[ItemNode.StartPos]),
+                            ItemNode.EndPos,[]);
           end;
           s:=copy(s,1,50);
         end;
