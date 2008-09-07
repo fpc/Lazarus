@@ -154,7 +154,7 @@ cp $TEMPLATEDIR/uninstall.sh $ROOTDIR/Developer/lazarus/
 
 # create /Applications/Lazarus.app for startlazarus
 mkdir -p $ROOTDIR/Applications
-cp -R /Developer/lazarus/lazarus.app $ROOTDIR/Applications/Lazarus.app
+cp -R $LAZBUILDDIR/lazarus.app $ROOTDIR/Applications/Lazarus.app
 cd $ROOTDIR/Applications/Lazarus.app/Contents/MacOS/
 rm -f lazarus startlazarus
 ln -s /Developer/lazarus/startlazarus lazarus
