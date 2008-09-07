@@ -88,8 +88,6 @@ if [ -z "$COMPILER" ]; then
   COMPILER=$(which fpc)
 fi
 FPCARCH=$($COMPILER -iSP)
-#~/fpc/bin/$PPCARCH
-#CROSSCOMPILER=~/fpc/bin/fpc
 FPCVERSION=$($COMPILER -iV)
 BUILDDIR=~/tmp/buildlaz
 ROOTDIR=$BUILDDIR/Root
@@ -115,9 +113,6 @@ if [ ! -e tools/svn2revisioninc ]; then
   make tools PP=$COMPILER
 fi
 ./tools/svn2revisioninc $LAZSOURCEDIR ide/revision.inc
-
-
-#export FPCDIR=~/fpc/lib/fpc/$FPCVERSION
 
 make bigide PP=$COMPILER USESVN2REVISIONINC=0
 make lazbuilder PP=$COMPILER
@@ -147,8 +142,6 @@ find $BUILDDIR -name '.DS_Store' -exec rm -rf {} \; || true
 # create symlinks
 mkdir -p $ROOTDIR/usr/bin
 cd $ROOTDIR/usr/bin
-#does not work: ln -s /Developer/lazarus/lazarus.app/Contents/MacOS/lazarus lazarus
-#does not work: ln -s /Developer/lazarus/lazarus.app/Contents/MacOS/startlazarus startlazarus
 ln -s /Developer/lazarus/lazbuild lazbuild
 cp $TEMPLATEDIR/uninstall.sh $ROOTDIR/Developer/lazarus/
 

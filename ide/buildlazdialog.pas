@@ -45,11 +45,11 @@ uses
   Graphics, GraphType, StdCtrls, ExtCtrls, Buttons, FileUtil, Dialogs,
   LResources,  Laz_XMLCfg, InterfaceBase, Themes, ComCtrls,
   LazarusIDEStrConsts, TransferMacros, LazConf, IDEProcs, DialogProcs,
-  IDEWindowIntf, InputHistory, ExtToolDialog, ExtToolEditDlg,
+  IDEWindowIntf, IDEMsgIntf, InputHistory, ExtToolDialog, ExtToolEditDlg,
   {$IFDEF win32}
   EnvironmentOpts, CodeToolManager, // added for windres workaround
   {$ENDIF}
-  CompilerOptions;
+  ApplicationBundle, CompilerOptions;
 
 type
 
@@ -507,6 +507,8 @@ var
   NewTargetOS: String;
   NewTargetCPU: String;
   CrossCompiling: Boolean;
+  CurTargetFilename: String;
+  BundleDir: String;
 begin
   Result:=mrOk;
   CurItem:=Options.Items[ItemIndex];
@@ -588,7 +590,7 @@ begin
       Result:=ForceDirectoryInteractive(NewTargetDirectory,[]);
       if Result<>mrOk then exit;
       if OSLocksExecutables and not CrossCompiling then begin
-        // Allow for the case where this correspnds to the current executable
+        // Allow for the case where this corresponds to the current executable
         NewTargetFilename:='lazarus'+GetExecutableExt(NewTargetOS);
         if FileExistsUTF8(AppendPathDelim(NewTargetDirectory)+NewTargetFilename) then
           NewTargetFilename:='lazarus.new'+GetExecutableExt(NewTargetOS)
@@ -643,6 +645,36 @@ begin
           // lazarus dir is not valid (probably someone is experimenting)
           // -> just compile to current directory
           NewTargetDirectory:='';
+        end;
+      end;
+    end;
+
+    // create apple bundle if needed
+    //debugln(['CreateBuildLazarusOptions NewTargetDirectory=',NewTargetDirectory]);
+    if (Options.LCLPlatform in [lpCarbon,lpCocoa])
+    and (NewTargetDirectory<>'')
+    and (DirectoryIsWritableCached(NewTargetDirectory)) then begin
+      CurTargetFilename:=NewTargetFilename;
+      if CurTargetFilename='' then
+        CurTargetFilename:='lazarus'+GetExecutableExt(NewTargetOS);
+      if not FilenameIsAbsolute(CurTargetFilename) then
+        CurTargetFilename:=NewTargetDirectory+PathDelim+CurTargetFilename;
+      BundleDir:=ChangeFileExt(CurTargetFilename,'.app');
+      //debugln(['CreateBuildLazarusOptions checking bundle ',BundleDir]);
+      if not FileExistsCached(BundleDir) then begin
+        //debugln(['CreateBuildLazarusOptions CurTargetFilename=',CurTargetFilename]);
+        Result:=CreateApplicationBundle(CurTargetFilename, 'Lazarus');
+        if not (Result in [mrOk,mrIgnore]) then begin
+          debugln(['CreateBuildLazarusOptions CreateApplicationBundle failed']);
+          IDEMessagesWindow.AddMsg('Error: failed to create application bundle '+BundleDir,NewTargetDirectory,-1);
+          exit;
+        end;
+        //debugln(['CreateBuildLazarusOptions BundleDir exists: ',FileExists(BundleDir)]);
+        Result:=CreateAppBundleSymbolicLink(CurTargetFilename);
+        if not (Result in [mrOk,mrIgnore]) then begin
+          debugln(['CreateBuildLazarusOptions CreateAppBundleSymbolicLink failed']);
+          IDEMessagesWindow.AddMsg('Error: failed to create application bundle symlink to '+CurTargetFilename,NewTargetDirectory,-1);
+          exit;
         end;
       end;
     end;
