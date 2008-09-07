@@ -241,10 +241,14 @@ var
   DefaultExe: String;
   CustomExe: String;
   MsgResult: TModalResult;
+  StartPath: String;
 begin
   WaitForLazarus;
   try
-    DefaultDir:=ExtractFilePath(ExpandFileNameUTF8(ParamStrUTF8(0)));
+    StartPath:=ExpandFileNameUTF8(ParamStrUTF8(0));
+    if FileIsSymlink(StartPath) then
+      StartPath:=ReadAllLinks(StartPath,true);
+    DefaultDir:=ExtractFilePath(StartPath);
     if DirectoryExistsUTF8(DefaultDir) then
       DefaultDir:=ReadAllLinks(DefaultDir,true);
   except

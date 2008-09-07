@@ -50,7 +50,7 @@ function GetCommandLineParameters(aCmdLineParams : TStrings;
 function IsHelpRequested (index : Integer = 1) : Boolean;
 function ParamIsOption(ParamIndex : integer; const Option : string) : boolean;
 function ParamIsOptionPlusValue(ParamIndex : integer;
-            const Option : string; var AValue : string) : boolean;
+            const Option : string; out AValue : string) : boolean;
 
 procedure SetParamOptions(var SkipAutoLoadingLastProject,
                               StartedByStartLazarus,
@@ -137,7 +137,7 @@ begin
 end;
 
 function ParamIsOptionPlusValue(ParamIndex : integer;
-    const Option : string; var AValue : string) : boolean;
+    const Option : string; out AValue : string) : boolean;
 var
   p : String;
 begin
