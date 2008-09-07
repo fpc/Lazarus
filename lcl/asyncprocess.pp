@@ -25,12 +25,6 @@ unit AsyncProcess;
 
 {$mode objfpc}{$H+}
 
-{$IF defined(VER2_0_2) and defined(win32)}
-// FPC <= 2.0.2 compatibility code
-// WINDOWS define was added after FPC 2.0.2
-  {$define WINDOWS}
-{$endif}
-
 interface
 
 uses
@@ -96,42 +90,13 @@ procedure Register;
 
 implementation
 
-{$ifdef WINDOWS}
-
-uses Windows;
-
 function TAsyncProcess.GetNumBytesAvailable: dword;
 begin
-{$ifdef wince}
-  // Windows CE doesn´t have the API function PeekNamedPipe
-  Result := 0;
-{$else}
   if not (poUsePipes in Options) then
     Result := 0
   else
-  if not PeekNamedPipe(Output.Handle, nil, 0, nil, @Result, nil) then
-    Result := 0;
-{$endif}
+    Result := Output.NumBytesAvailable;
 end;
-
-{$else below for not Windows}
-
-uses BaseUnix, TermIO;
-
-function TAsyncProcess.GetNumBytesAvailable: dword;
-begin
-  if not (poUsePipes in Options) then
-    Result := 0
-  else begin
-    // FIONREAD -> bytes available for reading without blocking
-    // FIONSPACE -> bytes available for writing without blocking
-    //   does not work on all platforms (not defined on linux e.g.)
-    if fpioctl(Output.Handle, FIONREAD, @Result)<0 then
-      Result := 0;
-  end;
-end;
-
-{$endif}
 
 destructor TAsyncProcess.Destroy;
 begin
