@@ -2536,20 +2536,12 @@ has value -1.</p>
       <!-- property Visibility: public -->
       <element name="TCustomComboBox.SelLength">
         <short>
-          <var>SelLength </var>
-
-
-
-- the length of the text that has been selected</short>
+          <var>SelLength </var>- the length of the text that has been selected in bytes</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomComboBox.SelStart">
         <short>
-          <var>SelStart </var>
-
-
-
-- the starting position of the text that has been selected</short>
+          <var>SelStart </var>- if text is selected this is the starting position otherwise the cursor position in bytes starting at 0</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomComboBox.SelText">
