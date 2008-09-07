@@ -35,7 +35,7 @@
         <PackageName Value="LCL"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="3">
+    <Units Count="2">
       <Unit0>
         <Filename Value="startlazarus.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -45,11 +45,6 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="LazarusManager"/>
       </Unit1>
-      <Unit2>
-        <Filename Value="lremotecontrol.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="LRemoteControl"/>
-      </Unit2>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
