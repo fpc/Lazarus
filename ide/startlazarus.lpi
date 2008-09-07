@@ -53,7 +53,7 @@
       <Filename Value="../startlazarus$(ExeExt)"/>
     </Target>
     <SearchPaths>
-      <IncludeFiles Value="include/$(TargetOS)/;include/$(SrcOS)/"/>
+      <IncludeFiles Value="include/;include/$(TargetOS)/;include/$(SrcOS)/"/>
       <OtherUnitFiles Value="../designer/;../packager/;../components/codetools/units/$(TargetCPU)-$(TargetOS)/"/>
       <UnitOutputDirectory Value="../units/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>

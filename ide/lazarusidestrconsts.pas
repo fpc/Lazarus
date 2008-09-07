@@ -101,6 +101,7 @@ resourcestring
   lisCOVarious = '%s (various)';
   lisTargetCPU = 'Target CPU';
   lisTargetOS = 'Target OS';
+  lisSrcOS = 'Src OS';
   lisCommandLineParamsOfProgram = 'Command line parameters of program';
   lisPromptForValue = 'Prompt for value';
   lisProjectFilename = 'Project filename';

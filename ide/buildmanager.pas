@@ -67,6 +67,8 @@ type
                                 var Abort: boolean): string;
     function MacroFuncTargetOS(const Param: string; const Data: PtrInt;
                                var Abort: boolean): string;
+    function MacroFuncSrcOS(const Param: string; const Data: PtrInt;
+                            var Abort: boolean): string;
     function MacroFuncFPCVer(const Param: string; const Data: PtrInt;
                              var Abort: boolean): string;
     function MacroFuncParams(const Param: string; const Data: PtrInt;
@@ -231,6 +233,8 @@ begin
                     lisTargetCPU,@MacroFuncTargetCPU,[]));
   GlobalMacroList.Add(TTransferMacro.Create('TargetOS','',
                     lisTargetOS,@MacroFuncTargetOS,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('SrcOS','',
+                    lisSrcOS,@MacroFuncSrcOS,[]));
   GlobalMacroList.Add(TTransferMacro.Create('FPCVer','',
                     lisFPCVersionEG222, @MacroFuncFPCVer, []));
   GlobalMacroList.Add(TTransferMacro.Create('Params','',
@@ -1087,6 +1091,15 @@ begin
     Result:='%(OS_TARGET)'
   else
     Result:=GetTargetOS(true);
+end;
+
+function TBuildManager.MacroFuncSrcOS(const Param: string; const Data: PtrInt;
+  var Abort: boolean): string;
+begin
+  if Data=CompilerOptionMacroPlatformIndependent then
+    Result:='%(OS_TARGET)'
+  else
+    Result:=GetDefaultSrcOSForTargetOS(GetTargetOS(true));
 end;
 
 function TBuildManager.MacroFuncFPCVer(const Param: string; const Data: PtrInt;
