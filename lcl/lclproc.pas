@@ -294,9 +294,9 @@ function UTF8ToDoubleByte(UTF8Str: PChar; Len: integer; DBStr: PByte): integer;
 function UTF8FindNearestCharStart(UTF8Str: PChar; Len: integer;
                                   BytePos: integer): integer;
 // find the n-th UTF8 character, ignoring BIDI
-function UTF8CharStart(UTF8Str: PChar; Len, Index: integer): PChar;
+function UTF8CharStart(UTF8Str: PChar; Len, CharIndex: integer): PChar;
 // find the byte index of the n-th UTF8 character, ignoring BIDI (byte len of substr)
-function UTF8CharToByteIndex(UTF8Str: PChar; Len, Index: integer): Integer;
+function UTF8CharToByteIndex(UTF8Str: PChar; Len, CharIndex: integer): Integer;
 procedure UTF8FixBroken(P: PChar);
 function UTF8CharacterStrictLength(P: PChar): integer;
 function UTF8CStringToUTF8String(SourceStart: PChar; SourceLen: SizeInt) : string;
@@ -542,12 +542,13 @@ function GetCompleteText(sText: string; iSelStart: Integer;
     begin
       ResultText := sCompareText;
       Result := True;
-    end;//End if (sTempText = sPrefix)
-  end;//End function IsSamePrefix
+    end;
+  end;
 
 var i: Integer;
     sPrefixText: string;
 begin
+  //DebugLn(['GetCompleteText sText=',sText,' iSelStart=',iSelStart,' bCaseSensitive=',bCaseSensitive,' bSearchAscending=',bSearchAscending,' slTextList.Count=',slTextList.Count]);
   Result := sText;//Default to return original text if no identical text are found
   if (sText = '') then Exit;//Everything is compatible with nothing, Exit.
   if (iSelStart = 0) then Exit;//Cursor at beginning
@@ -563,7 +564,7 @@ begin
   begin
     for i:=slTextList.Count-1 downto 0 do
       if IsSamePrefix(slTextList[i], sPrefixText, iSelStart, Result) then Break;
-  end;//End if bSearchAscending
+  end;
 end;
 
 function IsEditableTextKey(Key: Word): Boolean;
@@ -2475,32 +2476,32 @@ begin
 end;
 
 { Len is the length in bytes of UTF8Str
-  Index is the position of the desired char, in chars
+  CharIndex is the position of the desired char, in chars
 
   This function is similar to UTF8FindNearestCharStart
 }
-function UTF8CharStart(UTF8Str: PChar; Len, Index: integer): PChar;
+function UTF8CharStart(UTF8Str: PChar; Len, CharIndex: integer): PChar;
 var
   CharLen: LongInt;
 begin
   Result:=UTF8Str;
   if Result<>nil then begin
-    while (Index>0) and (Len>0) do begin
+    while (CharIndex>0) and (Len>0) do begin
       CharLen:=UTF8CharacterLength(Result);
       dec(Len,CharLen);
-      dec(Index);
+      dec(CharIndex);
       inc(Result,CharLen);
     end;
-    if (Index>0) or (Len<0) then
+    if (CharIndex>0) or (Len<0) then
       Result:=nil;
   end;
 end;
 
-function UTF8CharToByteIndex(UTF8Str : PChar; Len, Index : integer) : Integer;
+function UTF8CharToByteIndex(UTF8Str : PChar; Len, CharIndex : integer) : Integer;
 var
   p: PChar;
 begin
-  p := UTF8CharStart(UTF8Str, Len, Index);
+  p := UTF8CharStart(UTF8Str, Len, CharIndex);
   if p = nil
   then Result := -1
   else Result := p - UTF8Str;

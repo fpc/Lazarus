@@ -331,6 +331,7 @@ type
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: char); override;
+    procedure UTF8KeyPress(var UTF8Key: TUTF8Char); override;
     procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X, Y: Integer); override;
     function SelectItem(const AnItem: String): Boolean;
 
