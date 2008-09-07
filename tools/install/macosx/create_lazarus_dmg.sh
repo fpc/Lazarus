@@ -147,15 +147,15 @@ cd $ROOTDIR/usr/bin
 ln -s /Developer/lazarus/lazbuild lazbuild
 find $BUILDDIR -name '.svn' -exec rm -rf {} \; || true
 find $BUILDDIR -name '.DS_Store' -exec rm -rf {} \; || true
-mkdir -p $ROOTDIR/Applications
-ln -s /Developer/lazarus/lazarus.app $ROOTDIR/Applications/Lazarus.app
+mkdir -p $ROOTDIR/Applications/Lazarus.app
+ln -s /Developer/lazarus/lazarus.app/Contents $ROOTDIR/Applications/Lazarus.app/Contents
 cp $TEMPLATEDIR/uninstall.sh $ROOTDIR/Developer/lazarus/
 
 # fix permissions
 # everyone can read, group can write
-find $BUILDDIR -exec chown a+r,g+w
+find $BUILDDIR -exec chmod a+r,g+w {} \;
 # what is executable should be executable by everyone
-find $BUILDDIR -perm +o+x -exec chown a+x
+find $BUILDDIR -perm +o+x -exec chmod a+x {} \;
 # everyone can access directories
 find $BUILDDIR -type d -exec chmod a+x {} \;
 
@@ -195,11 +195,11 @@ $FREEZE -v $PACKPROJ
 DMGFILE=~/tmp/lazarus-$LazVersion$LazVersionPostfix-$DATESTAMP-$FPCARCH-macosx.dmg
 rm -rf $DMGFILE
 
-$HDIUTIL create -anyowners -volname lazarus-$LAZVERSION$LazVersionPostfix \
+$HDIUTIL create -anyowners -volname lazarus-$LazVersion$LazVersionPostfix \
   -imagekey zlib-level=9 -format UDZO -srcfolder $BUILDDIR/build $DMGFILE
 
 set +x
-echo The new dmg file is $DMGFile
+echo The new dmg file is $DMGFILE
 
 #end.
 
