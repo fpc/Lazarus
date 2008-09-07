@@ -324,6 +324,12 @@ begin
           break;
         end;
       end;
+      {$IFDEF LCLCarbon}
+      if FileExists(FLazarusPath+'.app') then begin
+        // start the bundle instead
+        FLazarusPath:=FLazarusPath+'.app/Contents/MacOS/'+ExtractFileName(FLazarusPath);
+      end;
+      {$ENDIF}
 
       DebugLn(['TLazarusManager.Run starting ',FLazarusPath,' ...']);
       if not Assigned(FCmdLineParams) then

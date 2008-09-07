@@ -126,18 +126,23 @@ make lazbuilder PP=$COMPILER
 make LCL_PLATFORM=gtk PP=$COMPILER lcl
 make LCL_PLATFORM=gtk2 OPT="-dUseX" PP=$COMPILER lcl
 
-# cross compilation units?
+# cross compile units?
 if [ -n "$CROSSCOMPILER" ]; then
   make lcl CPU_TARGET=powerpc PP=$CROSSCOMPILER
   make lcl CPU_TARGET=powerpc LCL_PLATFORM=gtk PP=$CROSSCOMPILER
   make lcl CPU_TARGET=powerpc LCL_PLATFORM=gtk2 OPT="-dUseX" PP=$CROSSCOMPILER
   make -C components/synedit CPU_TARGET=powerpc PP=$CROSSCOMPILER
+  make -C components/codetools CPU_TARGET=powerpc PP=$CROSSCOMPILER
   make -C packager/registration CPU_TARGET=powerpc PP=$CROSSCOMPILER
+  make -C ideintf CPU_TARGET=powerpc PP=$CROSSCOMPILER
 fi
 
+# clean up
 strip lazarus
 strip startlazarus
 strip lazbuild
+find $BUILDDIR -name '.svn' -exec rm -rf {} \; || true
+find $BUILDDIR -name '.DS_Store' -exec rm -rf {} \; || true
 
 # create symlinks
 mkdir -p $ROOTDIR/usr/bin
@@ -145,11 +150,14 @@ cd $ROOTDIR/usr/bin
 #does not work: ln -s /Developer/lazarus/lazarus.app/Contents/MacOS/lazarus lazarus
 #does not work: ln -s /Developer/lazarus/lazarus.app/Contents/MacOS/startlazarus startlazarus
 ln -s /Developer/lazarus/lazbuild lazbuild
-find $BUILDDIR -name '.svn' -exec rm -rf {} \; || true
-find $BUILDDIR -name '.DS_Store' -exec rm -rf {} \; || true
-mkdir -p $ROOTDIR/Applications/Lazarus.app
-ln -s /Developer/lazarus/lazarus.app/Contents $ROOTDIR/Applications/Lazarus.app/Contents
 cp $TEMPLATEDIR/uninstall.sh $ROOTDIR/Developer/lazarus/
+
+# create /Applications/Lazarus.app for startlazarus
+mkdir -p $ROOTDIR/Applications
+cp -R /Developer/lazarus/lazarus.app $ROOTDIR/Applications/Lazarus.app
+cd $ROOTDIR/Applications/Lazarus.app/Contents/MacOS/
+rm -f lazarus startlazarus
+ln -s /Developer/lazarus/startlazarus lazarus
 
 # fix permissions
 # everyone can read, group can write
