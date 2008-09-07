@@ -169,11 +169,25 @@ end;
   Constructor for the class.
  ------------------------------------------------------------------------------}
 constructor TGtkWidgetSet.Create;
+{$IFDEF EnabledGtkThreading}
+var
+  TM: TThreadManager;
+{$ENDIF}
 begin
   if ClassType = TGtkWidgetSet
   then raise EInvalidOperation.Create('Cannot create the base gtkwidgetset, use gtk1 or gtk2 instead');
 
   inherited Create;
+
+  {$IFDEF EnabledGtkThreading}
+  if {$IFDEF Win32}true{$ELSE}GetThreadManager(TM) and Assigned(TM.InitManager){$ENDIF}
+  then begin
+    g_thread_init(nil);
+    gdk_threads_init;
+    gdk_threads_enter;
+    fMultiThreadingEnabled:=true;
+  end;
+  {$ENDIF}
 
   // DCs, GDIObjects
   FDeviceContexts := TDynHashArray.Create(-1);
@@ -533,6 +547,13 @@ begin
 
   GTKWidgetSet := nil;
   WakeMainThread := nil;
+
+  {$IFDEF EnabledGtkThreading}
+  if MultiThreadingEnabled then begin
+    gdk_threads_leave;
+    fMultiThreadingEnabled:=false;
+  end;
+  {$ENDIF}
 
   inherited Destroy;
 end;

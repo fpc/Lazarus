@@ -82,6 +82,8 @@ type
   { TGTKWidgetSet }
 
   TGTKWidgetSet = class(TWidgetSet)
+  private
+    FMultiThreadingEnabled: boolean;
   protected
     FKeyStateList_: TFPList; // Keeps track of which keys are pressed
     FDeviceContexts: TDynHashArray;// hasharray of HDC
@@ -293,6 +295,7 @@ type
 
   public
     property RCFilename: string read FRCFilename write SetRCFilename;
+    property MultiThreadingEnabled: boolean read FMultiThreadingEnabled;
   end;
 
 {$I gtklistslh.inc}

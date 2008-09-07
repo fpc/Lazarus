@@ -7232,6 +7232,11 @@ begin
   FreeMem(PointArray);
 end;
 
+function DummyFuncToWakeUpGtkLoop(Data: gPointer): gboolean; cdecl;
+begin
+  Result:=CallBackDefaultReturn;
+end;
+
 {------------------------------------------------------------------------------
   Function: PostMessage
   Params: Handle:
@@ -7357,7 +7362,11 @@ begin
       // A g_idle_add can only be used if glib multithreading has been enabled
       // ToDo: Find out what we loose when enabling multithreading
       //       or find another way to wake up the gtk loop
+      {$IFDEF EnabledGtkThreading}
+      g_idle_add_full(G_PRIORITY_DEFAULT,TGSourceFunc(@DummyFuncToWakeUpGtkLoop),nil,nil);
+      {$ELSE}
       DebugLn(['TGtkWidgetSet.PostMessage ToDo: wake up gtk']);
+      {$ENDIF}
     end;
   finally
     fMessageQueue.UnLock;

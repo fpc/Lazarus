@@ -84,4 +84,6 @@
 {$endif}
 
 
-
+{$IFDEF Gtk2}
+{$DEFINE EnabledGtkThreading}
+{$ENDIF}
