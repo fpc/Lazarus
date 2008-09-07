@@ -640,7 +640,7 @@ begin
     CreateCFString(AParams.Caption, CFString);
     try
       if OSError(HIComboBoxCreate(ParamsToHIRect(AParams), CFString, nil, nil,
-          kHIComboBoxAutoSizeListAttribute, Widget),
+          kHIComboBoxAutoSizeListAttribute or kHIComboBoxAutoDisclosureAttribute, Widget),
         Self, SCreateWidget, 'HIComboBoxCreate')then RaiseCreateWidgetError(LCLObject);
 
     finally
@@ -719,6 +719,11 @@ begin
     FItemIndex := AIndex;
     LCLSendSelectionChangedMsg(LCLObject);
   end;
+
+  // force hide drop-down list and notification
+  DropDownTimer(Self);
+  DropDown(False);
+  DropDownTimer(Self);
 end;
 
 {------------------------------------------------------------------------------
