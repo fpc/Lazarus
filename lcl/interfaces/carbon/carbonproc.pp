@@ -695,10 +695,13 @@ var
   I: Integer;
 begin
   SetLength(StrArray, S.Count);
-  
+
   for I := 0 to S.Count - 1 do CreateCFString(S[I], StrArray[I]);
   
-  Result := CFArrayCreate(nil, @StrArray[0], Length(StrArray), nil);
+  if S.Count > 0 then
+    Result := CFArrayCreate(nil, @StrArray[0], Length(StrArray), nil)
+  else
+    Result := CFArrayCreate(nil, nil, 0, nil);
 end;
 
 {------------------------------------------------------------------------------
