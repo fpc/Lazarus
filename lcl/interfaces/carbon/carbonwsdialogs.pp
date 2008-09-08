@@ -196,7 +196,7 @@ begin
       // set initial filter index
       MenuSpec.version := kNavMenuItemSpecVersion;
       MenuSpec.menuCreator := kExtensionFolderType;
-      MenuSpec.menuType := FilterIndex;
+      MenuSpec.menuType := OSType(FilterIndex);
       MenuSpec.menuItemName := '';
       OSError(NavCustomControl(CallBackParms^.context, kNavCtlSelectCustomType, @MenuSpec),
                 SName, 'NavCustomControl', 'FilterIndex');
