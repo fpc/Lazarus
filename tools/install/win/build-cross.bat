@@ -118,6 +118,7 @@ del %INSTALL_BINDIR%\fpc.cfg
 
 cd %OLDCURDIR%
 FOR /F "delims='" %%F IN (%LAZSVNDIR%\ide\version.inc) DO set LAZVERSION=%%F
+FOR /F %%F IN ('svnversion.exe %LAZSVNDIR%') DO set LAZREVISION=%%F
 %ISCC% lazarus-cross.iss 
 
 SET CPU_TARGET=
