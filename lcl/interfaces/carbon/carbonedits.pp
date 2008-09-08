@@ -719,11 +719,6 @@ begin
     FItemIndex := AIndex;
     LCLSendSelectionChangedMsg(LCLObject);
   end;
-
-  // force hide drop-down list and notification
-  DropDownTimer(Self);
-  DropDown(False);
-  DropDownTimer(Self);
 end;
 
 {------------------------------------------------------------------------------
