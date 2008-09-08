@@ -302,6 +302,10 @@ function UTF8CharacterStrictLength(P: PChar): integer;
 function UTF8CStringToUTF8String(SourceStart: PChar; SourceLen: SizeInt) : string;
 function UTF8Pos(const SearchForText, SearchInText: string): integer;
 function UTF8Copy(const s: string; StartCharIndex, CharCount: integer): string;
+procedure UTF8Delete(var s: String; StartCharIndex, CharCount: integer);
+procedure UTF8Insert(const source: String; var s: string; StartCharIndex: integer);
+function UTF8LowerCase(const s: String): String;
+function UTF8UpperCase(const s: String): String;
 function FindInvalidUTF8Character(p: PChar; Count: integer;
                                   StopOnNonASCII: Boolean = false): integer;
 procedure AssignUTF8ListToAnsi(UTF8List, AnsiList: TStrings);
@@ -533,11 +537,13 @@ function GetCompleteText(sText: string; iSelStart: Integer;
 
   function IsSamePrefix(sCompareText, sPrefix: string; iStart: Integer;
     var ResultText: string): Boolean;
-  var sTempText: string;
+  var
+    sTempText: string;
   begin
     Result := False;
-    sTempText := LeftStr(sCompareText, iStart);
-    if not bCaseSensitive then sTempText := UpperCase(sTempText);
+    sTempText := UTF8Copy(sCompareText, 1, iStart);
+    if not bCaseSensitive then
+      sTempText := UTF8UpperCase(sTempText);
     if (sTempText = sPrefix) then
     begin
       ResultText := sCompareText;
@@ -545,25 +551,28 @@ function GetCompleteText(sText: string; iSelStart: Integer;
     end;
   end;
 
-var i: Integer;
-    sPrefixText: string;
+var
+  i: Integer;
+  sPrefixText: string;
 begin
   //DebugLn(['GetCompleteText sText=',sText,' iSelStart=',iSelStart,' bCaseSensitive=',bCaseSensitive,' bSearchAscending=',bSearchAscending,' slTextList.Count=',slTextList.Count]);
   Result := sText;//Default to return original text if no identical text are found
   if (sText = '') then Exit;//Everything is compatible with nothing, Exit.
   if (iSelStart = 0) then Exit;//Cursor at beginning
   if (slTextList.Count = 0) then Exit;//No text list to search for idtenticals, Exit.
-  sPrefixText := LeftStr(sText, iSelStart);//Get text from beginning to cursor position.
+  sPrefixText := UTF8Copy(sText, 1, iSelStart);//Get text from beginning to cursor position.
   if not bCaseSensitive then
-    sPrefixText := UpperCase(sPrefixText);
+    sPrefixText := UTF8UpperCase(sPrefixText);
   if bSearchAscending then
   begin
-    for i:=0 to slTextList.Count-1 do
-      if IsSamePrefix(slTextList[i], sPrefixText, iSelStart, Result) then Break;
+    for i := 0 to slTextList.Count - 1 do
+      if IsSamePrefix(slTextList[i], sPrefixText, iSelStart, Result) then
+        break;
   end else
   begin
-    for i:=slTextList.Count-1 downto 0 do
-      if IsSamePrefix(slTextList[i], sPrefixText, iSelStart, Result) then Break;
+    for i := slTextList.Count - 1 downto 0 do
+      if IsSamePrefix(slTextList[i], sPrefixText, iSelStart, Result) then
+        break;
   end;
 end;
 
@@ -2682,6 +2691,43 @@ begin
     else
       Result:=copy(s,StartBytePos-PChar(s)+1,EndBytePos-StartBytePos);
   end;
+end;
+
+procedure UTF8Delete(var s: String; StartCharIndex, CharCount: integer);
+var
+  StartBytePos: PChar;
+  EndBytePos: PChar;
+  MaxBytes: PtrInt;
+begin
+  StartBytePos:=UTF8CharStart(PChar(s),length(s),StartCharIndex-1);
+  if StartBytePos <> nil then
+  begin
+    MaxBytes:=PtrInt(PChar(s)+length(s)-StartBytePos);
+    EndBytePos:=UTF8CharStart(StartBytePos,MaxBytes,CharCount);
+    if EndBytePos=nil then
+      Delete(s,StartBytePos-PChar(s)+1,MaxBytes)
+    else
+      Delete(s,StartBytePos-PChar(s)+1,EndBytePos-StartBytePos);
+  end;
+end;
+
+procedure UTF8Insert(const source: String; var s: string; StartCharIndex: integer);
+var
+  StartBytePos: PChar;
+begin
+  StartBytePos:=UTF8CharStart(PChar(s),length(s),StartCharIndex-1);
+  if StartBytePos <> nil then
+    Insert(source, s, StartBytePos-PChar(s)+1);
+end;
+
+function UTF8LowerCase(const s: String): String;
+begin
+  Result := UTF8Encode(WideLowerCase(UTF8Decode(s)));
+end;
+
+function UTF8UpperCase(const s: String): String;
+begin
+  Result := UTF8Encode(WideUpperCase(UTF8Decode(s)));
 end;
 
 function FindInvalidUTF8Character(p: PChar; Count: integer;

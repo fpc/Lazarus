@@ -483,7 +483,7 @@ end;
 
 procedure TCustomComboBox.KeyUp(var Key: Word; Shift: TShiftState);
 var
-  iSelStart: Integer; // byte position
+  iSelStart: Integer; // char position
   sCompleteText, sPrefixText, sResultText: string;
 begin
   inherited KeyUp(Key, Shift);
@@ -510,10 +510,10 @@ begin
       iSelStart := SelStart;//Capture original cursor position
       //DebugLn(['TCustomComboBox.UTF8KeyPress SelStart=',SelStart,' Text=',Text]);
       //End of line completion
-      if ((iSelStart < Length(Text))
-      and (cbactEndOfLineComplete in FAutoCompleteText)) then
+      if ((iSelStart < UTF8Length(Text)) and
+         (cbactEndOfLineComplete in FAutoCompleteText)) then
         Exit;
-      sPrefixText := LeftStr(Text, iSelStart);
+      sPrefixText := UTF8Copy(Text, 1, iSelStart);
       sCompleteText := GetCompleteText(Text, iSelStart,
                                        (cbactSearchCaseSensitive in FAutoCompleteText),
                                        (cbactSearchAscending in FAutoCompleteText), Items);
@@ -524,12 +524,12 @@ begin
         if ((cbactEndOfLineComplete in FAutoCompleteText) and
             (cbactRetainPrefixCase in FAutoCompleteText)) then
         begin//Retain Prefix Character cases
-          Delete(sResultText, 1, iSelStart);
-          Insert(sPrefixText, sResultText, 1);
+          UTF8Delete(sResultText, 1, iSelStart);
+          UTF8Insert(sPrefixText, sResultText, 1);
         end;
         Text := sResultText;
         SelStart := iSelStart;
-        SelLength := Length(Text);
+        SelLength := UTF8Length(Text);
       end;
     end;
   end;
@@ -539,8 +539,8 @@ procedure TCustomComboBox.KeyPress(var Key: char);
 begin
   //Convert character cases if FCharCase is not ecNormalCase
   case FCharCase of
-  ecLowerCase: Key := lowerCase(Key);
-  ecUpperCase: Key := upCase(Key);
+    ecLowerCase: Key := lowerCase(Key);
+    ecUpperCase: Key := upCase(Key);
   end;
   inherited KeyPress(Key);
 end;
@@ -549,8 +549,8 @@ procedure TCustomComboBox.UTF8KeyPress(var UTF8Key: TUTF8Char);
 begin
   //Convert character cases if FCharCase is not ecNormalCase
   case FCharCase of
-  ecLowerCase: UTF8Key := AnsiLowerCase(UTF8Key);
-  ecUpperCase: UTF8Key := AnsiUpperCase(UTF8Key);
+    ecLowerCase: UTF8Key := AnsiLowerCase(UTF8Key);
+    ecUpperCase: UTF8Key := AnsiUpperCase(UTF8Key);
   end;
   inherited UTF8KeyPress(UTF8Key);
 end;

@@ -1224,14 +1224,10 @@ begin
   // if the combo is an editable ...
   Entry := GetComboBoxEntry(WidgetInfo^.CoreWidget);
   if Entry<>nil then begin
-    // Note: gtk begins at 0, LCL at 1
-    if gtk_editable_get_selection_bounds(PGtkEditable(Entry), @AStart, @AEnd) = gtk_true then
-      Result := Min(AStart,AEnd)
+    if gtk_editable_get_selection_bounds(PGtkEditable(Entry), @AStart, @AEnd) = False then
+      Result := gtk_editable_get_position(PGtkEditable(Entry))
     else
-      Result := gtk_editable_get_position(PGtkEditable(Entry));
-    //DebugLn(['TGtk2WSCustomComboBox.GetSelStart CharStart=',Result]);
-    Result:=UTF8CharToByteIndex(gtk_entry_get_text(Entry),High(integer),Result+1)-1;
-    //DebugLn(['TGtk2WSCustomComboBox.GetSelStart ',dbgsName(ACustomComboBox),' AText=',gtk_entry_get_text(Entry),' Result=',Result]);
+      Result := Min(AStart, AEnd);
   end;
 end;
 
@@ -1241,7 +1237,6 @@ var
   WidgetInfo: PWidgetInfo;
   Entry: PGtkEntry;
   AStart, AEnd: gint;
-  AText: Pgchar;
 begin
   Result := 0;
   WidgetInfo := GetWidgetInfo(Pointer(ACustomComboBox.Handle));
@@ -1249,16 +1244,9 @@ begin
   // if the combo is an editable ...
   Entry := GetComboBoxEntry(WidgetInfo^.CoreWidget);
   if Entry<>nil then begin
-    if gtk_editable_get_selection_bounds(PGtkEditable(Entry), @AStart, @AEnd) = gtk_true then
-    begin
-      MakeMinMax(AStart,AEnd);
-      AText:=gtk_editable_get_chars(PGtkEditable(Entry),AStart,AEnd);
-      Result:=UTF8Length(AText,(AEnd-AStart)*4);
-      g_free(AText);
-    end
-    else
-      Result := 0;
-    DebugLn(['TGtk2WSCustomComboBox.GetSelLength ',dbgsName(ACustomComboBox),' AText=',gtk_entry_get_text(Entry),' Result=',Result]);
+    if gtk_editable_get_selection_bounds(PGtkEditable(Entry), @AStart, @AEnd) = False then
+      Exit(gtk_editable_get_position(PGtkEditable(Entry)));
+    Result := ABS(AStart - AEnd);
   end;
 end;
 
@@ -1325,16 +1313,13 @@ class procedure TGtk2WSCustomComboBox.SetSelStart(
 var
   WidgetInfo: PWidgetInfo;
   Entry: PGtkEntry;
-  AText: Pgchar;
 begin
   WidgetInfo := GetWidgetInfo(Pointer(ACustomComboBox.Handle));
   
   Entry := GetComboBoxEntry(WidgetInfo^.CoreWidget);
   if Entry<>nil then begin
     //gtk_entry_select_region(Entry, NewStart, NewStart);
-    AText:=gtk_entry_get_text(Entry);
-    //DebugLn(['TGtk2WSCustomComboBox.SetSelStart ',dbgsName(ACustomComboBox),' AText=',AText,' NewStart=',NewStart,' UTF8Start=',UTF8Length(AText,NewStart-1)]);
-    gtk_editable_set_position(PGtkEditable(Entry), UTF8Length(AText,NewStart));
+    gtk_editable_set_position(PGtkEditable(Entry), NewStart);
   end;
 end;
 
@@ -1343,27 +1328,14 @@ class procedure TGtk2WSCustomComboBox.SetSelLength(
 var
   WidgetInfo: PWidgetInfo;
   Entry: PGtkEntry;
-  AStart, AEnd: gint;// starts at 0
-  ByteStart: LongInt;// starts at 0
-  AText: Pgchar;
-  NewCharLength: LongInt;
+  Start: Integer;
 begin
   WidgetInfo := GetWidgetInfo(Pointer(ACustomComboBox.Handle));
 
   Entry := GetComboBoxEntry(WidgetInfo^.CoreWidget);
   if Entry<>nil then begin
-    if gtk_editable_get_selection_bounds(PGtkEditable(Entry), @AStart, @AEnd) = gtk_true then
-      MakeMinMax(AStart,AEnd)
-    else
-      AStart := gtk_editable_get_position(PGtkEditable(Entry));
-    AText:=gtk_entry_get_text(Entry);
-    NewCharLength:=NewLength;
-    if (NewCharLength>0) and (AText<>nil) then begin
-      ByteStart:=UTF8CharToByteIndex(AText,High(integer),AStart+1)-1;
-      NewCharLength:=UTF8Length(@AText[ByteStart],NewLength);
-    end;
-    //DebugLn(['TGtk2WSCustomComboBox.SetSelLength ',dbgsName(ACustomComboBox),' AText=',AText,' CharStart=',AStart,' ByteStart=',ByteStart,' NewLength=',NewLength,' NewCharLength=',NewCharLength]);
-    gtk_editable_select_region(PGtkEditable(Entry), AStart, AStart + NewCharLength);
+    Start := GetSelStart(ACustomComboBox);
+    gtk_editable_select_region(PGtkEditable(Entry), Start, Start + NewLength);
   end;
 end;
 
