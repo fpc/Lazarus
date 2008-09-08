@@ -295,9 +295,7 @@ begin
   if (AIndex <> -1) and (AValue.Images <> nil) then
     AValue.Images.GetBitmap(AIndex, AGlyph, AEffect);
   // check if an image is needed
-  if (AGlyph.Handle = 0)
-  or (AGlyph.Width = 0)
-  or (AGlyph.Height = 0)
+  if AGlyph.Empty
   then begin
     if BitBtnInfo^.ImageWidget <> nil
     then begin
