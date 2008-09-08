@@ -279,7 +279,7 @@ function TCustomComboBox.GetSelText: string;
 begin
   //debugln('TCustomComboBox.GetSelText ');
   if FStyle in [csDropDown, csSimple] then
-    Result:= Copy(Text, SelStart + 1, SelLength)
+    Result:= UTF8Copy(Text, SelStart + 1, SelLength)
   else
     Result:= '';
 end;
@@ -297,14 +297,16 @@ var
   OldSelStart: integer;
 begin
   //debugln('TCustomComboBox.SetSelText ',Val);
-  if FStyle in [csDropDown, csSimple] then begin
-    OldText:=Text;
-    OldSelStart:=SelStart;
-    NewText:=LeftStr(OldText,OldSelStart)+Val
-               +RightStr(OldText,length(OldText)-SelStart-SelLength);
-    Text:=NewText;
-    SelStart:=OldSelStart;
-    SelLength:=length(Val);
+  if FStyle in [csDropDown, csSimple] then
+  begin
+    OldText := Text;
+    OldSelStart := SelStart;
+    NewText := UTF8Copy(OldText, 1, OldSelStart) +
+               Val +
+               UTF8Copy(OldText, UTF8Length(OldText) - SelStart - SelLength, MaxInt);
+    Text := NewText;
+    SelStart := OldSelStart;
+    SelLength := UTF8Length(Val);
   end;
 end;
 
@@ -318,8 +320,8 @@ end;
 function TCustomComboBox.GetSelStart : integer;
 begin
   if HandleAllocated then
-    fSelStart:=TWSCustomComboBoxClass(WidgetSetClass).GetSelStart(Self);
-  Result:=fSelStart;
+    FSelStart := TWSCustomComboBoxClass(WidgetSetClass).GetSelStart(Self);
+  Result := FSelStart;
 end;
 
 {------------------------------------------------------------------------------
@@ -331,7 +333,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomComboBox.SetSelStart(Val : integer);
 begin
-  fSelStart:=Val;
+  FSelStart := Val;
   if HandleAllocated then
     TWSCustomComboBoxClass(WidgetSetClass).SetSelStart(Self, Val);
 end;
@@ -346,8 +348,8 @@ end;
 function TCustomComboBox.GetSelLength : integer;
 begin
   if HandleAllocated then
-    fSelLength := TWSCustomComboBoxClass(WidgetSetClass).GetSelLength(Self);
-  Result:=fSelLength;
+    FSelLength := TWSCustomComboBoxClass(WidgetSetClass).GetSelLength(Self);
+  Result := FSelLength;
 end;
 
 {------------------------------------------------------------------------------
@@ -359,7 +361,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomComboBox.SetSelLength(Val : integer);
 begin
-  fSelLength:=Val;
+  FSelLength := Val;
   if HandleAllocated then
     TWSCustomComboBoxClass(WidgetSetClass).SetSelLength(Self, Val);
 end;
@@ -376,11 +378,13 @@ var
   CurText: String;
 begin
   //debugln('TCustomComboBox.SelectAll ');
-  if (FStyle in [csDropDown, csSimple]) then begin
-    CurText:=Text;
-    if (CurText <> '') then begin
+  if (FStyle in [csDropDown, csSimple]) then
+  begin
+    CurText := Text;
+    if (CurText <> '') then
+    begin
       SetSelStart(0);
-      SetSelLength(Length(CurText));
+      SetSelLength(UTF8Length(CurText));
     end;
   end;
 end;
@@ -539,8 +543,8 @@ procedure TCustomComboBox.KeyPress(var Key: char);
 begin
   //Convert character cases if FCharCase is not ecNormalCase
   case FCharCase of
-    ecLowerCase: Key := lowerCase(Key);
-    ecUpperCase: Key := upCase(Key);
+    ecLowerCase: Key := LowerCase(Key);
+    ecUpperCase: Key := UpCase(Key);
   end;
   inherited KeyPress(Key);
 end;
@@ -562,10 +566,10 @@ begin
   //AutoSelect when left mouse is clicked for the 1st time after having focus
   if (Button = mbLeft) then
   begin
-   if (FAutoSelect and not FAutoSelected) then
+    if (FAutoSelect and not FAutoSelected) then
     begin
-     SelectAll;
-     if (SelText = Text) then FAutoSelected := True;
+      SelectAll;
+      if (SelText = Text) then FAutoSelected := True;
     end;
   end;
 end;

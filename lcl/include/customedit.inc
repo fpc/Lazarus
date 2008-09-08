@@ -81,7 +81,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomEdit.GetSelText : string;
 begin
-  Result := Copy(Text, SelStart + 1, SelLength)
+  Result := UTF8Copy(Text, SelStart + 1, SelLength)
 end;
 
 {------------------------------------------------------------------------------
@@ -112,11 +112,12 @@ var
   OldPos: Integer;
 begin
   OldPos := SelStart;
-  OldText:=Text;
-  NewText:=LeftStr(OldText,SelStart)+Val
-             +RightStr(OldText,length(OldText)-SelStart-SelLength);
-  Text:=NewText;
-  SelStart := OldPos + Length(Val);
+  OldText := Text;
+  NewText := UTF8Copy(OldText, 1, SelStart) +
+             Val +
+             UTF8Copy(OldText, UTF8Length(OldText) - SelStart - SelLength, MaxInt);
+  Text := NewText;
+  SelStart := OldPos + UTF8Length(Val);
 end;
 
 {------------------------------------------------------------------------------
@@ -185,9 +186,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomEdit.SelectAll;
 begin
-  if Text <> '' then begin
+  if Text <> '' then
+  begin
     SetSelStart(0);
-    SetSelLength(Length(Text));
+    SetSelLength(UTF8Length(Text));
   end;
 end;
 
@@ -368,7 +370,7 @@ end;
 procedure TCustomEdit.RealSetText(const Value: TCaption);
 begin
   if (MaxLength > 0) and (Length(Value) > MaxLength) then
-    inherited RealSetText(Copy(Value, 1, MaxLength))
+    inherited RealSetText(UTF8Copy(Value, 1, MaxLength))
   else
     inherited RealSetText(Value);
 end;
