@@ -2400,6 +2400,8 @@ var
   LocalRect: TRect;
   APixmap, ATemp: QPixmapH;
   AMask: QBitmapH;
+  ScaledImage: QImageH;
+  W, H: Integer;
 begin
   {$ifdef VerboseQt}
   Write('TQtDeviceContext.drawImage() ');
@@ -2430,18 +2432,26 @@ begin
     end;
   end else
   begin
-    {TODO: check QImage_convertToFormat() for speed instead of QPixmap creation}
-    {$IFDEF LINUX}
-    APixmap := QPixmap_create();
-    try
-      QPixmap_fromImage(APixmap, Image);
-      QPainter_drawPixmap(Widget, PRect(@LocalRect), APixmap, sourceRect);
-    finally
-      QPixmap_destroy(APixmap);
-    end;
-    {$ELSE}
-    QPainter_drawImage(Widget, PRect(@LocalRect), image, sourceRect, flags);
-    {$ENDIF}
+    {$noet possible qt4 bug with RGB32 images.}
+    {we must scale image , since we can get strange results with RGB32 images.
+     Look at #11713 linux & win screenshoots.
+     This is better and faster then conversion to pixmap or to ARGB32}
+    if not EqualRect(LocalRect, sourceRect^) then
+    begin
+      ScaledImage := QImage_create();
+      try
+        W := LocalRect.Right - LocalRect.Left;
+        H := LocalRect.Bottom - LocalRect.Top;
+        QImage_scaled(Image, ScaledImage, W, H);
+        {if w & h <= 0 then copy = null image - avoid asserts from qpainter}
+        if not QImage_isNull(ScaledImage) then
+          QPainter_drawImage(Widget, LocalRect.Left, LocalRect.Top,
+            ScaledImage, 0, 0, W, H);
+      finally
+        QImage_destroy(ScaledImage);
+      end;
+    end else
+      QPainter_drawImage(Widget, PRect(@LocalRect), image, sourceRect, flags);
   end;
 end;
 
