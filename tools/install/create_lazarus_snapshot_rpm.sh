@@ -45,6 +45,7 @@ if [ ! -f $FPCRPM ]; then
   exit
 fi
 
+# extract the fpc snapshot, so we don't need to install it
 TmpFPCDir=~/tmp/fpc
 if [ -e $TmpFPCDir ]; then
   rm -rf $TmpFPCDir
@@ -62,12 +63,11 @@ export FPC
 FPCDIR=$TmpFPCDir/usr/$LIB/fpc/$FPCVersion
 export FPCDIR
 cd -
-rm -rf $TmpFPCDir
 
 # create a temporary copy of the lazarus sources for packaging
 LazVersion=$(./get_lazarus_version.sh)
 LazRelease=`echo $FPCRPM | sed -e 's/-/_/g'`
-TmpDir=~/tmp/lazarus
+TmpLazDir=~/tmp/lazarus
 
 rm -rf $TmpLazDir
 echo "extracting Lazarus source from local svn ..."
@@ -96,6 +96,10 @@ cat rpm/lazarus.spec.template | \
 
 # build rpm
 rpmbuild --target $ARCH -ba $SpecFile --nodeps
+
+# remove the temp fpc dir
+rm -rf $TmpFPCDir
+
 
 # end.
 
