@@ -3844,6 +3844,7 @@ tools/install/macosx/fpc_installer_info.zip -text svneol=unset#application/zip
 tools/install/macosx/fpcsrc-release.packproj.template svneol=native#text/plain
 tools/install/macosx/fpcsrc.packproj.template svneol=native#text/plain
 tools/install/macosx/lazarus.packproj.template svneol=native#text/plain
+tools/install/macosx/lazarus_release.packproj.template svneol=native#text/plain
 tools/install/macosx/makefpcsnapshot.sh svneol=native#text/plain
 tools/install/macosx/makefpcsrcsnapshot.sh svneol=native#text/plain
 tools/install/macosx/makelazsnapshot.sh svneol=native#text/plain
