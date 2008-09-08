@@ -6402,7 +6402,7 @@ var
       {$IFDEF LCLcarbon}
       AddAttribute(srVK_CMD);
       {$ELSE}
-      AddAttribute(srVK_SHIFT);
+      AddAttribute(srVK_META);
       {$ENDIF}
     if ssSuper in ShiftState then AddAttribute(srVK_SUPER);
   end;
