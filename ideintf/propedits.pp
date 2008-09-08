@@ -1452,6 +1452,7 @@ type
     procedure OnKeyComboboxEditingDone(Sender: TObject);
   protected
     procedure Loaded; override;
+    procedure RealSetText(const Value: TCaption); override;
     procedure UpdateShiftButons;
     procedure Notification(AComponent: TComponent; Operation: TOperation);
            override;
@@ -6827,6 +6828,11 @@ procedure TCustomShortCutGrabBox.Loaded;
 begin
   inherited Loaded;
   UpdateShiftButons;
+end;
+
+procedure TCustomShortCutGrabBox.RealSetText(const Value: TCaption);
+begin
+  // do not allow to set caption
 end;
 
 procedure TCustomShortCutGrabBox.UpdateShiftButons;
