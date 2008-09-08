@@ -1,15 +1,14 @@
 <?xml version="1.0"?>
 <CONFIG>
   <Package Version="3">
+    <PathDelim Value="\"/>
     <Name Value="chmpkg"/>
     <CompilerOptions>
-      <Version Value="5"/>
+      <Version Value="8"/>
+      <PathDelim Value="\"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\$(LCLWidgetType)"/>
       </SearchPaths>
-      <CodeGeneration>
-        <Generate Value="Faster"/>
-      </CodeGeneration>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
@@ -20,14 +19,17 @@
     <Files Count="3">
       <Item1>
         <Filename Value="chmbase.pas"/>
+        <Type Value="Virtual Unit"/>
         <UnitName Value="chmbase"/>
       </Item1>
       <Item2>
         <Filename Value="chmreader.pas"/>
+        <Type Value="Virtual Unit"/>
         <UnitName Value="chmreader"/>
       </Item2>
       <Item3>
         <Filename Value="paslzx.pas"/>
+        <Type Value="Virtual Unit"/>
         <UnitName Value="paslzx"/>
       </Item3>
     </Files>
@@ -42,10 +44,11 @@
       </Item2>
     </RequiredPkgs>
     <UsageOptions>
-      <UnitPath Value="$(PkgOutDir)/"/>
+      <UnitPath Value="$(PkgOutDir)\"/>
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>
+      <DestinationDirectory Value="$(TestDir)\publishedpackage\"/>
       <IgnoreBinaries Value="False"/>
     </PublishOptions>
   </Package>
