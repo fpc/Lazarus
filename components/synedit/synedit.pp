@@ -219,7 +219,7 @@ type
     eoDoubleClickSelectsLine,  // Select line on double click
     eoHideRightMargin,         // Hides the right margin line
     eoPersistentCaret,         // Do not hide caret when focus lost
-    eoShowCtrlMouseLinks,      // Pressing Ctrl will highlight the word under the mouse cursor
+    eoShowCtrlMouseLinks,      // Pressing Ctrl (SYNEDIT_LINK_MODIFIER) will highlight the word under the mouse cursor
     eoAutoIndentOnPaste,       // Indent text inserted from clipboard
     eoSpacesToTabs             // Converts space characters to tabs and spaces
     {$ENDIF}
@@ -253,6 +253,8 @@ const
   {$IFDEF SYN_LAZARUS}
   SYNEDIT_DEFAULT_OPTIONS2 = [
     ];
+
+  SYNEDIT_LINK_MODIFIER = {$IFDEF LCLcarbon}ssMeta{$ELSE}ssCtrl{$ENDIF};
   {$ENDIF}
 
 type
@@ -2253,7 +2255,7 @@ begin
   {$ENDIF}
   inherited;
   {$IFDEF SYN_LAZARUS}
-  if fLastControlIsPressed<>(GetKeyShiftState=[ssCtrl]) then
+  if fLastControlIsPressed<>(GetKeyShiftState=[SYNEDIT_LINK_MODIFIER]) then
     UpdateCtrlMouse;
   {$ENDIF}
   Data := nil;
@@ -2285,7 +2287,7 @@ begin
     ,' Shift=',ssShift in Shift,' Ctrl=',ssCtrl in Shift,' Alt=',ssAlt in Shift);
   {$ENDIF}
   inherited KeyUp(Key, Shift);
-  if fLastControlIsPressed<>(GetKeyShiftState=[ssCtrl]) then
+  if fLastControlIsPressed<>(GetKeyShiftState=[SYNEDIT_LINK_MODIFIER]) then
     UpdateCtrlMouse;
 end;
 {$ENDIF}
@@ -2514,7 +2516,7 @@ begin
     and (Y >= 0)
     and (Y < ClientHeight{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF})
   then begin
-    if (Cursor <> crHandPoint) or (not (ssCtrl in Shift)) then
+    if (Cursor <> crHandPoint) or (not (SYNEDIT_LINK_MODIFIER in Shift)) then
       Cursor := crIBeam;
   end
   else
@@ -2741,7 +2743,7 @@ begin
   {$IFDEF SYN_LAZARUS}
     if (eoShowCtrlMouseLinks in Options)
     and not(wasDragging)
-    and (Button=mbLeft) and (ssCtrl in Shift)
+    and (Button=mbLeft) and (SYNEDIT_LINK_MODIFIER in Shift)
     and assigned(FOnClickLink)
     then begin
       FOnClickLink(Self, Button, Shift, X,Y);;
@@ -6884,7 +6886,7 @@ procedure TCustomSynEdit.UpdateCtrlMouse;
 var
   NewY, NewX1, NewX2: integer;
 begin
-  fLastControlIsPressed:=(GetKeyShiftState=[ssCtrl]);
+  fLastControlIsPressed:=(GetKeyShiftState=[SYNEDIT_LINK_MODIFIER]);
   if (eoShowCtrlMouseLinks in Options) and fLastControlIsPressed
   and (fLastMouseCaret.X>0) and (fLastMouseCaret.Y>0) then begin
     // show link

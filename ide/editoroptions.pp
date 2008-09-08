@@ -450,7 +450,7 @@ type
     property SynEditOptions2: TSynEditorOptions2
       read fSynEditOptions2 write fSynEditOptions2 default SynEditDefaultOptions2;
     property CtrlMouseLinks: Boolean
-      read fCtrlMouseLinks write fCtrlMouseLinks;
+      read fCtrlMouseLinks write fCtrlMouseLinks;// ctrl = SYNEDIT_LINK_MODIFIER
     property ShowTabCloseButtons: Boolean
       read fShowTabCloseButtons write fShowTabCloseButtons;
     property UndoAfterSave: Boolean read fUndoAfterSave
