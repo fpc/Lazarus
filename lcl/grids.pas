@@ -2198,6 +2198,13 @@ begin
   if IsColumn then begin
     AddDel(FCols, NewValue);
     FGCache.AccumWidth.Count:=NewValue;
+    // calc initial accumulated widths of new columns
+    OldCount := OldValue;
+    while (OldValue>0) and (OldCount<NewValue) do begin
+      FGCache.AccumWidth[OldCount] :=
+        FGCache.AccumWidth[OldCount-1] + GetColWidths(OldCount);
+      Inc(OldCount);
+    end;
     OldCount:=RowCount;
     if (OldValue=0)and(NewValue>=0) then begin
       FTopLeft.X:=FFixedCols;
@@ -2217,6 +2224,13 @@ begin
   end else begin
     AddDel(FRows, NewValue);
     FGCache.AccumHeight.Count:=NewValue;
+    // calc initial accumulated heights of new rows
+    OldCount := OldValue;
+    while (OldValue>0) and (OldCount<NewValue) do begin
+      FGCache.AccumHeight[OldCount] :=
+        FGCache.AccumHeight[OldCount-1] + GetRowHeights(OldCount);
+      Inc(OldCount);
+    end;
     OldCount:=ColCount;
     if (OldValue=0)and(NewValue>=0) then begin
       FTopleft.Y:=FFixedRows;
