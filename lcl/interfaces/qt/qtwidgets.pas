@@ -4699,7 +4699,6 @@ function TQtScrollBar.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 var
   QtWidget: TQtWidget;
   AParent: TWinControl;
-  w: QWidgetH;
 begin
   beginEventProcessing;
 
@@ -6377,8 +6376,6 @@ end;
 
 procedure TQtListWidget.signalCurrentItemChange(current: QListWidgetItemH;
   previous: QListWidgetItemH); cdecl;
-var
-  Msg: TLMessage;
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtListWidget.signalCurrentItemChange ');
@@ -6798,8 +6795,6 @@ begin
 end;
 
 function TQtTreeWidget.getHeader: TQtHeaderView;
-var
-  AParams: TCreateParams;
 begin
   {while designing TQtHeaderView is a no-no}
   if not (csDesigning in LCLObject.ComponentState) and (FHeader = nil) then
@@ -6812,8 +6807,6 @@ begin
 end;
 
 function TQtTreeWidget.getMaxColSize(ACol: Integer): Integer;
-var
-  Size: TSize;
 begin
   {$note QSizeH implementation missing for this}
   Result := MAXINT -1;
@@ -8267,7 +8260,6 @@ end;
 procedure TQtCalendar.AttachEvents;
 var
   Method: TMethod;
-  Hook: QObject_hookH;
   i: integer;
   Children: TIntArray;
   AnObject: QObjectH;
@@ -8310,9 +8302,6 @@ begin
 end;
 
 procedure TQtCalendar.DetachEvents;
-var
-  i: integer;
-  Hook: QObject_hookH;
 begin
   QObject_hook_destroy(FCalViewportEventHook);
   QCalendarWidget_hook_destroy(FClickedHook);
@@ -8350,11 +8339,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtCalendar.SignalActivated(ADate: QDateH); cdecl;
 var
-  DMsg: TLMessage;
   y,m,d: Integer;
   Msg: TLMMouse;
-  MousePos: TQtPoint;
-  Modifiers: QtKeyboardModifiers;
   Event: QKeyEventH;
 begin
   {$IFDEF VerboseQt}
@@ -8373,13 +8359,13 @@ begin
   end else
     FMouseDoubleClicked := False;
 
-  FillChar(DMsg, SizeOf(DMsg), #0);
+  FillChar(Msg, SizeOf(Msg), #0);
   Msg.Msg := LM_DAYCHANGED;
   y := QDate_year(ADate);
   m := QDate_month(ADate);
   d := QDate_day(ADate);
   if (y <> aYear) or (m <> aMonth) or (d <> aDay) then
-    DeliverMessage(DMsg);
+    DeliverMessage(Msg);
 end;
 
 {------------------------------------------------------------------------------

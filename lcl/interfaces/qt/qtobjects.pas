@@ -1036,8 +1036,6 @@ end;
 { TQtFont }
 
 function TQtFont.GetMetrics: TQtFontMetrics;
-var
-  QtAppFont: QFontH;
 begin
   if FMetrics = nil then
   begin
@@ -1224,8 +1222,6 @@ begin
 end;
 
 procedure TQtFont.family(retval: PWideString);
-var
-  QtAppFont: QFontH;
 begin
   if Widget = nil then
     QFont_family(getDefaultFont, retval)
@@ -2432,7 +2428,7 @@ begin
     end;
   end else
   begin
-    {$noet possible qt4 bug with RGB32 images.}
+    {$note possible qt4 bug with RGB32 images.}
     {we must scale image , since we can get strange results with RGB32 images.
      Look at #11713 linux & win screenshoots.
      This is better and faster then conversion to pixmap or to ARGB32}
@@ -2693,7 +2689,6 @@ end;
 
 function TQtClipboard.IsClipboardChanged: Boolean;
 var
-  ClipBord: TClipboard;
   TempMimeData: QMimeDataH;
   Str: WideString;
   Str2: WideString;
