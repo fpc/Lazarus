@@ -511,13 +511,6 @@ begin
       end;
   end;
 
-  {if (ilcfStartIsLValue in IdentList.ContextFlags)
-  and (not IdentItem.HasChilds)
-  and IdentItem.CanBeAssigned
-  then begin
-    Result:=Result+' := ';
-    CursorAtEnd:=false;
-  end;}
   if CursorAtEnd then ;
 
   // add assignment operator :=
@@ -548,7 +541,14 @@ begin
     or (IdentItem.GetDesc=ctnProcedure)
     then begin
       Result:=Result+';';
-      inc(CursorToLeft);
+      if (CursorToLeft=0) and (IdentItem.GetDesc=ctnProcedure)
+      and (not IdentItem.IsFunction) then begin
+        // a procedure call without paramters
+        // put cursor behind semicolon
+      end else begin
+        // keep cursor in front of semicolon
+        inc(CursorToLeft);
+      end;
     end;
   end;
 
