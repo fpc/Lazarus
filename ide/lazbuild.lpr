@@ -953,6 +953,7 @@ begin
   FreeThenNil(TheOutputFilter);
   FreeThenNil(GlobalMacroList);
   FreeThenNil(IDEMacros);
+  FreeThenNil(MiscellaneousOptions);
   FreeThenNil(EnvironmentOptions);
   FreeThenNil(MainBuildBoss);
 
