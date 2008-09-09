@@ -561,10 +561,10 @@ type
     FUseParentCanvas: boolean;
     function  GetCanvas: TCanvas;
     procedure SetPicture(const AValue: TPicture);
-    procedure SetCenter(Value : Boolean);
+    procedure SetCenter(const AValue : Boolean);
     procedure SetProportional(const AValue: Boolean);
-    procedure SetStretch(Value : Boolean);
-    procedure SetTransparent(Value : Boolean);
+    procedure SetStretch(const AValue : Boolean);
+    procedure SetTransparent(const AValue : Boolean);
   protected
     procedure PictureChanged(Sender : TObject); virtual;
     function DestRect: TRect; virtual;
@@ -575,7 +575,7 @@ type
     procedure DoAutoSize; override;
     procedure Paint; override;
   public
-    constructor Create(TheOwner: TComponent); override;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property Canvas: TCanvas read GetCanvas;
   public
@@ -589,9 +589,9 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    property Stretch: Boolean read FStretch write SetStretch;
-    property Transparent: Boolean read FTransparent write SetTransparent default false;
-    property Proportional: Boolean read FProportional write SetProportional default false;
+    property Stretch: Boolean read FStretch write SetStretch default False;
+    property Transparent: Boolean read FTransparent write SetTransparent default False;
+    property Proportional: Boolean read FProportional write SetProportional default False;
   end;
 
 

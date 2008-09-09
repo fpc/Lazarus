@@ -16,18 +16,19 @@
  *****************************************************************************
 }
 
-constructor TCustomImage.Create(TheOwner: TComponent);
+constructor TCustomImage.Create(AOwner: TComponent);
 begin
-  inherited Create(TheOwner);
+  inherited Create(AOwner);
   ControlStyle:= [csCaptureMouse, csClickEvents, csDoubleClicks];
   AutoSize := False;
   FCenter := False;
+  FProportional := False;
   FStretch := False;
   FTransparent := False;
   FPicture := TPicture.Create;
   FPicture.OnChange := @PictureChanged;
-  FUseParentCanvas := false;
-  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
+  FUseParentCanvas := False;
+  SetInitialBounds(0, 0, GetControlClassDefaultSize.X, GetControlClassDefaultSize.Y);
 end;
 
 destructor TCustomImage.Destroy;
@@ -112,33 +113,33 @@ begin
   end;
 end;
 
-procedure TCustomImage.SetStretch(Value : Boolean);
+procedure TCustomImage.SetStretch(const AValue : Boolean);
 begin
-  if FStretch=Value then exit;
-  FStretch := Value;
+  if FStretch = AValue then exit;
+  FStretch := AValue;
   PictureChanged(Self);
 end;
 
-procedure TCustomImage.SetTransparent(Value : Boolean);
+procedure TCustomImage.SetTransparent(const AValue : Boolean);
 begin
-  if FTransparent=Value then exit;
-  FTransparent := Value;
+  if FTransparent = AValue then exit;
+  FTransparent := AValue;
   if (FPicture.Graphic <> nil) and (FPicture.Graphic.Transparent <> FTransparent)
   then FPicture.Graphic.Transparent := FTransparent
   else PictureChanged(Self);
 end;
 
-procedure TCustomImage.SetCenter(Value : Boolean);
+procedure TCustomImage.SetCenter(const AValue : Boolean);
 begin
-  if FCenter=Value then exit;
-  FCenter := Value;
+  if FCenter = AValue then exit;
+  FCenter := AValue;
   PictureChanged(Self);
 end;
 
 procedure TCustomImage.SetProportional(const AValue: Boolean);
 begin
-  if FProportional=AValue then exit;
-  FProportional:=AValue;
+  if FProportional = AValue then exit;
+  FProportional := AValue;
   PictureChanged(Self);
 end;
 
