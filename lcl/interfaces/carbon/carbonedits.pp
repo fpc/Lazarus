@@ -1692,7 +1692,10 @@ var
   AStart, AEnd: TXNOffset;
 begin
   GetLineOffset(AIndex, AStart, AEnd);
-  if (AIndex > 0) and (AIndex = GetLineCount - 1) then Dec(AStart);
+  // remove line end
+  if (AIndex = 0) and (GetLineCount > 1) then Inc(AEnd)
+  else
+    if AIndex > 0 then Dec(AStart);
   
   OSError(TXNSetData(HITextViewGetTXNObject(ControlRef(Widget)), kTXNUnicodeTextData, nil, 0, AStart, AEnd),
     Self, 'DeleteLine', 'TXNSetData');
