@@ -113,9 +113,9 @@ var
 begin
   OldPos := SelStart;
   OldText := Text;
-  NewText := UTF8Copy(OldText, 1, SelStart) +
+  NewText := UTF8Copy(OldText, 1, OldPos) +
              Val +
-             UTF8Copy(OldText, UTF8Length(OldText) - SelStart - SelLength, MaxInt);
+             UTF8Copy(OldText, OldPos + SelLength + 1, MaxInt);
   Text := NewText;
   SelStart := OldPos + UTF8Length(Val);
 end;

@@ -303,7 +303,7 @@ begin
     OldSelStart := SelStart;
     NewText := UTF8Copy(OldText, 1, OldSelStart) +
                Val +
-               UTF8Copy(OldText, UTF8Length(OldText) - SelStart - SelLength, MaxInt);
+               UTF8Copy(OldText, OldSelStart + SelLength + 1, MaxInt);
     Text := NewText;
     SelStart := OldSelStart;
     SelLength := UTF8Length(Val);
