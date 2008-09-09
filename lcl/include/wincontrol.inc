@@ -5475,6 +5475,7 @@ begin
     Include(FWinControlFlags,wcfReAlignNeeded);
     exit;
   end;
+  Exclude(FWinControlFlags,wcfReAlignNeeded);// avoid calling after rekursive EnableAlign
   {$IFDEF VerboseAutoSize}
   DebugLn('TWinControl.ReAlign A',Name,':',ClassName,' ', Dbgs(BoundsRect));
   {$ENDIF}
@@ -5482,7 +5483,7 @@ begin
   {$IFDEF VerboseAutoSize}
   DebugLn('TWinControl.ReAlign B',Name,':',ClassName,' ', Dbgs(BoundsRect));
   {$ENDIF}
-  Exclude(FWinControlFlags,wcfReAlignNeeded);
+  Exclude(FWinControlFlags,wcfReAlignNeeded);// done
 end;
 
 {------------------------------------------------------------------------------

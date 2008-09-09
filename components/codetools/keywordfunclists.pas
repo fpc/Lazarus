@@ -104,6 +104,7 @@ var
   IsKeyWordProcedureBracketSpecifier,
   IsKeyWordSection,
   IsKeyWordInConstAllowed,
+  AllKeyWords,
   WordIsKeyWord,
   WordIsDelphiKeyWord,
   IsWordBuiltInFunc,
@@ -941,8 +942,6 @@ begin
     Add('NOT',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('OBJECT',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('OF',{$ifdef FPC}@{$endif}AllwaysTrue);
-    //Add('OPERATOR',{$ifdef FPC}@{$endif}AllwaysTrue); // not for Delphi
-    //Add('ON',{$ifdef FPC}@{$endif}AllwaysTrue); // not for Delphi
     Add('OR',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('PACKED',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('PROCEDURE',{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -968,7 +967,18 @@ begin
     Add('WITH',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('XOR',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
-  
+
+  AllKeyWords:=TKeyWordFunctionList.Create;
+  KeyWordLists.Add(AllKeyWords);
+  AllKeyWords.Add(WordIsKeyWord);
+  with AllKeyWords do begin
+    Add('END',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('PROPERTY',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('GENERIC',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('ON',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('OUT',{$ifdef FPC}@{$endif}AllwaysTrue);
+  end;
+
   IsWordBuiltInFunc:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(IsWordBuiltInFunc);
   with IsWordBuiltInFunc do begin

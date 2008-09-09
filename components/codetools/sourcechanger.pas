@@ -985,7 +985,7 @@ begin
 
   // beautify identifier
   if IsIdentStartChar[NewAtom[1]] then begin
-    if WordIsKeyWord.DoItCaseInsensitive(NewAtom) then
+    if AllKeyWords.DoItCaseInsensitive(NewAtom) then
       NewAtom:=BeautifyWord(NewAtom,KeyWordPolicy)
     else
       NewAtom:=BeautifyWord(NewAtom,IdentifierPolicy);
