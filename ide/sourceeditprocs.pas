@@ -454,7 +454,8 @@ begin
   
     icvProcWithParams:
       // add brackets for parameter lists
-      if (not IdentList.StartUpAtomBehindIs('('))
+      if (AddChar='')
+      and (not IdentList.StartUpAtomBehindIs('('))
       and (not IdentList.StartUpAtomInFrontIs('@')) then begin
         Result:=Result+'()';
         inc(CursorToLeft);
@@ -463,7 +464,8 @@ begin
 
     icvIndexedProp:
       // add brackets for parameter lists
-      if (not IdentList.StartUpAtomBehindIs('[')) then begin
+      if (AddChar='')
+      and (not IdentList.StartUpAtomBehindIs('[')) then begin
         Result:=Result+'[]';
         inc(CursorToLeft);
         CursorAtEnd:=false;
@@ -471,7 +473,8 @@ begin
       
     icvCompleteProcDeclaration:
       // create complete procedure declaration
-      if (not (IdentList.StartAtomBehind.Flag
+      if (AddChar='')
+      and (not (IdentList.StartAtomBehind.Flag
                in [cafEdgedBracketOpen,cafRoundBracketOpen]))
       and (IdentItem.Node<>nil) then begin
         ProcHeadFlags:=[phpWithStart,phpWithVarModifiers,phpWithParameterNames,
@@ -519,6 +522,7 @@ begin
 
   // add assignment operator :=
   if (CursorToLeft=0)
+  and (AddChar='')
   and (ilcfStartIsLValue in  IdentList.ContextFlags)
   and (not IdentItem.HasChilds)
   and (not IdentList.StartUpAtomBehindIs(':='))
