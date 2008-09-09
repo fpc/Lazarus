@@ -977,7 +977,6 @@ type
     //
     function PointsToUnits(x: Integer): Double;  virtual; abstract;
     function UnitsToPoints(x: Double): Integer;  virtual; abstract;
-    procedure MoveObjects(dx, dy: Integer; aResize: Boolean); virtual; abstract;
   end;
 
   TfrDataManager = class(TObject)
@@ -2092,23 +2091,21 @@ begin
 end;
 
 procedure TfrView.SetHeight(const AValue: Double);
-var
-  tmp: Integer;
 begin
   if frDesigner<>nil then begin
-    tmp := frDesigner.UnitsToPoints(AValue);
-    frDesigner.MoveObjects(0,tmp-dy,true);
+    BeforeChange;
+    dy := frDesigner.UnitsToPoints(AValue);
+    AfterChange;
   end else
     dy := round(Avalue);
 end;
 
 procedure TfrView.SetLeft(const AValue: Double);
-var
-  tmp: Integer;
 begin
   if frDesigner<>nil then begin
-    tmp := frDesigner.UnitsToPoints(AValue);
-    frDesigner.MoveObjects(tmp-x, 0, false);
+    BeforeChange;
+    x := frDesigner.UnitsToPoints(AValue);
+    AfterChange;
   end else
     x := round(AValue);
 end;
@@ -2124,23 +2121,21 @@ begin
 end;
 
 procedure TfrView.SetTop(const AValue: Double);
-var
-  tmp: Integer;
 begin
   if frDesigner<>nil then begin
-    tmp := frDesigner.UnitsToPoints(AValue);
-    frDesigner.MoveObjects(0, tmp-y, false);
+    BeforeChange;
+    y := frDesigner.UnitsToPoints(AValue);
+    AfterChange;
   end else
     y := round(AValue);
 end;
 
 procedure TfrView.SetWidth(const AValue: Double);
-var
-  tmp: Integer;
 begin
   if frDesigner<>nil then begin
-    tmp := frDesigner.UnitsToPoints(AValue);
-    frDesigner.MoveObjects(tmp-dx, 0, true);
+    BeforeChange;
+    dx := frDesigner.UnitsToPoints(AValue);
+    AfterChange;
   end else
     dx := round(AValue);
 end;

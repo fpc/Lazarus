@@ -534,7 +534,7 @@ type
     procedure OnModify(sender: TObject);
     function PointsToUnits(x: Integer): Double;  override;
     function UnitsToPoints(x: Double): Integer;  override;
-    procedure MoveObjects(dx, dy: Integer; aResize: Boolean); override;
+    procedure MoveObjects(dx, dy: Integer; aResize: Boolean);
 
     property CurDocName: String read FCurDocName write SetCurDocName;
     property CurPage: Integer read FCurPage write SetCurPage;
