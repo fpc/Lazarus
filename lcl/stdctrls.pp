@@ -245,7 +245,7 @@ type
   TDrawItemEvent = procedure(Control: TWinControl; Index: Integer;
                              ARect: TRect; State: TOwnerDrawState) of object;
   TMeasureItemEvent = procedure(Control: TWinControl; Index: Integer;
-                                var Height: Integer) of object;
+                                var AHeight: Integer) of object;
 
   { TCustomComboBox }
 
