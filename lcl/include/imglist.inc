@@ -835,7 +835,7 @@ begin
   RawImg.Init;
   FillDescription(RawImg.Description);
   Result := @FData[AIndex * FWidth * FHeight];
-  RawImg.DataSize := FWidth * FHeight * SizeOF(FData[0]);
+  RawImg.DataSize := FWidth * FHeight * SizeOf(FData[0]);
   RawImg.Data := PByte(Result);
   if not SrcHasAlpha
   then begin

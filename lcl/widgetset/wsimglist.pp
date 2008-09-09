@@ -40,7 +40,7 @@ interface
 //    the uses clause of the XXXintf.pp
 ////////////////////////////////////////////////////
 uses
-  Classes, Contnrs, GraphType, Graphics, IntfGraphics, ImgList, LCLType, LCLIntf,
+  Classes, GraphType, Graphics, IntfGraphics, ImgList, LCLType, LCLIntf,
   WSLCLClasses, WSProc, WSReferences;
 
 type
@@ -70,9 +70,12 @@ type
 
   { TDefaultImageListImplementor }
 
-  TDefaultImageListImplementor = class(TObjectList)
+  // Dont use TObjectList due to a bug in it
+  TDefaultImageListImplementor = class(TList)
   private
     FList: TCustomImageList;
+  protected
+    procedure Notify(Ptr: Pointer; Action: TListNotification); override;
   public
     constructor Create(AList: TCustomImageList); reintroduce;
     procedure Draw(AIndex: Integer; ACanvas: TCanvas; ABounds: TRect; ADrawEffect: TGraphicsDrawEffect; AStyle: TDrawingStyle);
@@ -80,9 +83,17 @@ type
 
 { TDefaultImageListImplementor }
 
+procedure TDefaultImageListImplementor.Notify(Ptr: Pointer;
+  Action: TListNotification);
+begin
+  if Action = lnDeleted then
+    TBitmap(Ptr).Free;
+  inherited Notify(Ptr, Action);
+end;
+
 constructor TDefaultImageListImplementor.Create(AList: TCustomImageList);
 begin
-  inherited Create(True);
+  inherited Create;
   FList := AList;
 end;
 
