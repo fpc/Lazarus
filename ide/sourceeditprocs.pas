@@ -419,7 +419,7 @@ begin
   ValueType:=icvIdentifier;
   Index:=aCompletion.Position;
   IdentList:=CodeToolBoss.IdentifierList;
-  CanAddSemicolon:=CodeToolsOpts.IdentComplAddSemicolon;
+  CanAddSemicolon:=CodeToolsOpts.IdentComplAddSemicolon and (AddChar<>';');
 
   IdentItem:=IdentList.FilteredItems[Index];
   if IdentItem=nil then exit;
