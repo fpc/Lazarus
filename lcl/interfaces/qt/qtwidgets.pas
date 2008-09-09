@@ -542,8 +542,7 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
-    FSelStart: Integer;
-    FSelLength: Integer;
+    function getCursorPosition: Integer;
     function getMaxLength: Integer;
     function getSelectedText: WideString;
     function getSelectionStart: Integer;
@@ -554,6 +553,7 @@ type
     function hasSelectedText: Boolean;
     procedure selectAll;
     procedure setColor(const Value: PQColor); override;
+    procedure setCursorPosition(const AValue: Integer);
     procedure setEchoMode(const AMode: QLineEditEchoMode);
     procedure setInputMask(const AMask: WideString);
     procedure setMaxLength(const ALength: Integer);
@@ -663,9 +663,6 @@ type
     // parts
     FLineEdit: TQtLineEdit;
     FDropList: TQtListWidget;
-    // used to store values if no selection
-    FSelStart: Integer;
-    FSelLength: Integer;
     function GetDropList: TQtListWidget;
     function GetLineEdit: TQtLineEdit;
     procedure SetOwnerDrawn(const AValue: Boolean);
@@ -720,9 +717,6 @@ type
     FEditingFinishedHook: QAbstractSpinBox_hookH;
     // parts
     FLineEdit: QLineEditH;
-    // used to store values if no selection
-    FSelStart: Integer;
-    FSelLength: Integer;
     function GetLineEdit: QLineEditH;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
@@ -4910,6 +4904,11 @@ begin
   Result := QLineEdit_create();
 end;
 
+function TQtLineEdit.getCursorPosition: Integer;
+begin
+  Result := QLineEdit_cursorPosition(QLineEditH(Widget));
+end;
+
 function TQtLineEdit.getMaxLength: Integer;
 begin
   Result := QLineEdit_maxLength(QLineEditH(Widget));
@@ -4925,7 +4924,7 @@ begin
   if hasSelectedText then
     Result := QLineEdit_selectionStart(QLineEditH(Widget))
   else
-    Result := FSelStart;
+    Result := getCursorPosition;
 end;
 
 function TQtLineEdit.getSelectionLength: Integer;
@@ -4938,7 +4937,7 @@ begin
     Result := Length(W);
   end
   else
-    Result := FSelLength;
+    Result := 0;
 end;
 
 function TQtLineEdit.getText: WideString;
@@ -5032,6 +5031,11 @@ begin
   end;
 end;
 
+procedure TQtLineEdit.setCursorPosition(const AValue: Integer);
+begin
+  QLineEdit_setCursorPosition(QLineEditH(Widget), AValue);
+end;
+
 procedure TQtLineEdit.setEchoMode(const AMode: QLineEditEchoMode);
 begin
   QLineEdit_setEchoMode(QLineEditH(Widget), AMode);
@@ -5054,10 +5058,13 @@ end;
 
 procedure TQtLineEdit.setSelection(const AStart, ALength: Integer);
 begin
-  FSelStart := AStart;
-  FSelLength := ALength;
   if AStart >= 0 then
-    QLineEdit_setSelection(QLineEditH(Widget), AStart, ALength);
+  begin
+    if ALength > 0 then
+      QLineEdit_setSelection(QLineEditH(Widget), AStart, ALength)
+    else
+      setCursorPosition(AStart);
+  end;
 end;
 
 procedure TQtLineEdit.setText(const AText: WideString);
@@ -5682,6 +5689,8 @@ begin
     WriteLn('TQtComboBox.Create');
   {$endif}
   Result := QComboBox_create();
+  // disable AutoCompletion. LCL has its own
+  QComboBox_setAutoCompletion(QComboboxH(Result), False);
   FLineEdit := nil;
   FOwnerDrawn := False;
 end;
@@ -5696,18 +5705,18 @@ end;
 
 function TQtComboBox.getSelectionStart: Integer;
 begin
-  if (LineEdit <> nil) and LineEdit.hasSelectedText then
+  if (LineEdit <> nil) then
     Result := LineEdit.getSelectionStart
   else
-    Result := FSelStart;
+    Result := 0;
 end;
 
 function TQtComboBox.getSelectionLength: Integer;
 begin
-  if (LineEdit <> nil) and LineEdit.hasSelectedText then
+  if (LineEdit <> nil) then
     Result := LineEdit.getSelectionLength
   else
-    Result := FSelLength;
+    Result := 0;
 end;
 
 function TQtComboBox.isUndoAvailable: Boolean;
@@ -5737,8 +5746,6 @@ end;
 
 procedure TQtComboBox.setSelection(const AStart, ALength: Integer);
 begin
-  FSelStart := AStart;
-  FSelLength := ALength;
   if LineEdit <> nil then
     LineEdit.setSelection(AStart, ALength);
 end;
@@ -6073,10 +6080,15 @@ end;
 
 function TQtAbstractSpinBox.getSelectionStart: Integer;
 begin
-  if (LineEdit <> nil) and QLineEdit_hasSelectedText(LineEdit) then
-    Result := QLineEdit_selectionStart(LineEdit)
+  if (LineEdit <> nil) then
+  begin
+    if QLineEdit_hasSelectedText(LineEdit) then
+      Result := QLineEdit_selectionStart(LineEdit)
+    else
+      Result := QLineEdit_cursorPosition(LineEdit);
+  end
   else
-    Result := FSelStart;
+    Result := 0;
 end;
 
 function TQtAbstractSpinBox.getSelectionLength: Integer;
@@ -6089,7 +6101,7 @@ begin
     Result := Length(W);
   end
   else
-    Result := FSelLength;
+    Result := 0;
 end;
 
 function TQtAbstractSpinBox.isUndoAvailable: Boolean;
@@ -6114,10 +6126,13 @@ end;
 
 procedure TQtAbstractSpinBox.setSelection(const AStart, ALength: Integer);
 begin
-  FSelStart := AStart;
-  FSelLength := ALength;
-  if LineEdit <> nil then
-    QLineEdit_setSelection(LineEdit, AStart, ALength);
+  if (LineEdit <> nil) and (AStart >= 0) then
+  begin
+    if ALength > 0 then
+      QLineEdit_setSelection(LineEdit, AStart, ALength)
+    else
+      QLineEdit_setCursorPosition(LineEdit, AStart);
+  end;
 end;
 
 procedure TQtAbstractSpinBox.Undo;

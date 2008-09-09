@@ -87,6 +87,10 @@ type
     class function GetMaxLength(const ACustomComboBox: TCustomComboBox): integer; override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
       var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
+    class function GetSelStart(const ACustomComboBox: TCustomComboBox): integer; override;
+    class function GetSelLength(const ACustomComboBox: TCustomComboBox): integer; override;
+    class procedure SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer); override;
+    class procedure SetSelLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
 
     class procedure SetArrowKeysTraverseList(const ACustomComboBox: TCustomComboBox;
       NewTraverseList: boolean); override;
@@ -1233,6 +1237,66 @@ begin
   // The correct behavior for the LCL is not forcing any specific value for
   // TComboBox.Width, so we set it to zero to signal that here
   PreferredWidth := 0;
+end;
+
+class function TQtWSCustomComboBox.GetSelStart(const ACustomComboBox: TCustomComboBox): integer;
+var
+  Widget: TQtWidget;
+  QtEdit: IQtEdit;
+begin
+  Result := 0;
+  if not WSCheckHandleAllocated(ACustomComboBox, 'GetSelStart') then
+    Exit;
+
+  Widget := TQtWidget(ACustomComboBox.Handle);
+  if Supports(Widget, IQtEdit, QtEdit) then
+    Result := QtEdit.getSelectionStart;
+end;
+
+class function TQtWSCustomComboBox.GetSelLength(const ACustomComboBox: TCustomComboBox): integer;
+var
+  Widget: TQtWidget;
+  QtEdit: IQtEdit;
+begin
+  Result := 0;
+  if not WSCheckHandleAllocated(ACustomComboBox, 'GetSelLength') then
+    Exit;
+
+  Widget := TQtWidget(ACustomComboBox.Handle);
+  if Supports(Widget, IQtEdit, QtEdit) then
+    Result := QtEdit.getSelectionLength;
+end;
+
+class procedure TQtWSCustomComboBox.SetSelStart(const ACustomComboBox: TCustomComboBox;
+   NewStart: integer);
+var
+  Widget: TQtWidget;
+  QtEdit: IQtEdit;
+  ALength: Integer;
+begin
+  if not WSCheckHandleAllocated(ACustomComboBox, 'SetSelStart') then
+    Exit;
+
+  Widget := TQtWidget(ACustomComboBox.Handle);
+  ALength := GetSelLength(ACustomComboBox);
+  if Supports(Widget, IQtEdit, QtEdit) then
+    QtEdit.setSelection(NewStart, ALength);
+end;
+
+class procedure TQtWSCustomComboBox.SetSelLength(
+  const ACustomComboBox: TCustomComboBox; NewLength: integer);
+var
+  Widget: TQtWidget;
+  QtEdit: IQtEdit;
+  AStart: Integer;
+begin
+  if not WSCheckHandleAllocated(ACustomComboBox, 'SetSelLength') then
+    Exit;
+
+  Widget := TQtWidget(ACustomComboBox.Handle);
+  AStart := GetSelStart(ACustomComboBox);
+  if Supports(Widget, IQtEdit, QtEdit) then
+    QtEdit.setSelection(AStart, NewLength);
 end;
 
 class procedure TQtWSCustomComboBox.SetArrowKeysTraverseList(
