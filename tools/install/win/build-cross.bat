@@ -41,9 +41,13 @@ SET OLDCURDRIVE=%CD:~,2%
 SET FPCBINDIR=%FPCSVNDIR%\install\binw32
 FOR /F %%L IN ('%FPCBINDIR%\gdate.exe +%%Y%%m%%d') DO SET DATESTAMP=%%L
 SET FPCFULLTARGET=%TARGETCPU%-%TARGETOS%
+FOR /F %%F IN ('svnversion.exe %LAZSVNDIR%') DO set LAZREVISION=%%F
 
 SET TIMESTAMP=%date:~9,4%%date:~6,2%%date:~3,2%-%time:~,2%%time:~3,2%%time:~6,2%
 SET MAKEEXE=%FPCBINDIR%\make.exe
+
+:: set path to make sure the right tools are used
+SET OLDPATH=%PATH%
 PATH=%FPCBINDIR%
 cd %FPCSVNDIR%\fpcsrc
 
@@ -118,13 +122,13 @@ del %INSTALL_BINDIR%\fpc.cfg
 
 cd %OLDCURDIR%
 FOR /F "delims='" %%F IN (%LAZSVNDIR%\ide\version.inc) DO set LAZVERSION=%%F
-FOR /F %%F IN ('svnversion.exe %LAZSVNDIR%') DO set LAZREVISION=%%F
 %ISCC% lazarus-cross.iss 
 
 SET CPU_TARGET=
 SET OS_TARGET=
 SET CROSSBINDIR=
 SET BINUTILSPREFIX=
+SET PATH=%OLDPATH%
 
 goto STOP
 
