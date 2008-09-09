@@ -6,7 +6,7 @@ set -e
 #------------------------------------------------------------------------------
 # parse parameters
 #------------------------------------------------------------------------------
-Usage="Usage: $0 <LazarusSrcDir> <FPCFullVersion>"
+Usage="Usage: $0 <LazarusSrcDir> <FPCFullVersion>  [append-revision]"
 
 LazSrcDir=$1
 shift
@@ -32,7 +32,13 @@ if [ "x$FpcFullVersion" = "x" ]; then
   exit -1
 fi
 
-
+if [ "$1" = "append-revision" ]; then
+  LazVersionPostfix=$(./get_svn_revision_number.sh .)
+  if [ -n "$LazVersionPostfix" ]; then
+    LazVersionPostfix=.$LazVersionPostfix
+  fi
+  shift
+fi
 
 Date=`date +%Y%m%d`
 # get fpc snapshot rpm
@@ -65,7 +71,7 @@ export FPCDIR
 cd -
 
 # create a temporary copy of the lazarus sources for packaging
-LazVersion=$(./get_lazarus_version.sh)
+LazVersion=$(./get_lazarus_version.sh)$LazVersionPostfix
 LazRelease=`echo $FPCRPM | sed -e 's/-/_/g'`
 TmpLazDir=~/tmp/lazarus
 
