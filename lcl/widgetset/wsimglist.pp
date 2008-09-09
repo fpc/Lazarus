@@ -70,7 +70,7 @@ type
 
   { TDefaultImageListImplementor }
 
-  // Dont use TObjectList due to a bug in it
+  // Dont use TObjectList due to a bug in it (fixed in fpc > 2.2.2)
   TDefaultImageListImplementor = class(TList)
   private
     FList: TCustomImageList;
