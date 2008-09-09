@@ -718,6 +718,8 @@ begin
   begin
     FItemIndex := AIndex;
     LCLSendSelectionChangedMsg(LCLObject);
+    // Fire OnChange event
+    LCLSendChangedMsg(LCLObject);
   end;
 end;
 
