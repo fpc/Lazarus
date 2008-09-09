@@ -518,7 +518,8 @@ begin
   if CursorAtEnd then ;
 
   // add assignment operator :=
-  if (ilcfStartIsLValue in  IdentList.ContextFlags)
+  if (CursorToLeft=0)
+  and (ilcfStartIsLValue in  IdentList.ContextFlags)
   and (not IdentItem.HasChilds)
   and (not IdentList.StartUpAtomBehindIs(':='))
   and (IdentItem.CanBeAssigned)
