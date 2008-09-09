@@ -30,7 +30,7 @@ program lazbuild;
 
 uses
   Classes, SysUtils, CustApp, LCLProc, Dialogs, Forms, Controls, FileUtil,
-  Process, AsyncProcess,
+  InterfaceBase, Process, AsyncProcess,
   // codetools
   CodeToolManager, DefineTemplates, Laz_XMLCfg,
   // IDEIntf
@@ -1106,15 +1106,15 @@ begin
   writeln('');
   writeln('lazbuild [options] <project or package-filename>');
   writeln('');
-  writeln('Options:');
+  writeln(lisEdtExtToolParameters);
   writeln('');
   writeln('--help or -?              ', listhisHelpMessage);
   writeln('');
-  writeln('-B or --build-all         ','build all files of project/package');
-  writeln('-r or --recursive         ','apply build flags (-B) to dependencies too');
-  writeln('-d or --skip-dependencies ','do not compile dependencies');
-  writeln('--build-ide=<options>     ','build IDE with packages');
-  writeln('-v or --version           ','show version and exit');
+  writeln('-B or --build-all         ', lisBuildAllFilesOfProjectPackageIDE);
+  writeln('-r or --recursive         ', lisApplyBuildFlagsBToDependenciesToo);
+  writeln('-d or --skip-dependencies ', lisDoNotCompileDependencies);
+  writeln('--build-ide=<options>     ', lisBuildIDEWithPackages);
+  writeln('-v or --version           ', lisShowVersionAndExit);
   writeln('');
   writeln(PrimaryConfPathOptLong,'<path>');
   writeln('or ',PrimaryConfPathOptShort,'<path>');
@@ -1128,20 +1128,27 @@ begin
   writeln('');
   writeln('--operating-system=<operating-system>');
   writeln('or --os=<operating-system>');
-  writeln(BreakString(space+'override the project operating system. e.g. win32 linux.',
+  writeln(BreakString(Format(
+    lisOverrideTheProjectOperatingSystemEGWin32LinuxDefau, [space,
+    LazConf.GetDefaultTargetOS]),
                       75, 22));
   writeln('');
   writeln('--widgetset=<widgetset>');
   writeln('or --ws=<widgetset>');
-  writeln(BreakString(space+'override the project widgetset. e.g. gtk gtk2 qt win32 carbon.',
+  writeln(BreakString(Format(
+    lisOverrideTheProjectWidgetsetEGGtkGtk2QtWin32CarbonD, [space,
+    LCLPlatformDirNames[LazConf.GetDefaultLCLWidgetType]]) ,
                       75, 22));
   writeln('');
   writeln('--cpu=<cpu>');
-  writeln(BreakString(space+'override the project cpu. e.g. i386 x86_64 powerpc powerpc_64 etc.',
+  writeln(BreakString(Format(
+    lisOverrideTheProjectCpuEGI386X86_64PowerpcPowerpc_64, [space,
+    LazConf.GetDefaultTargetCPU]),
                       75, 22));
   writeln('');
   writeln('--compiler=<ppcXXX>');
-  writeln(BreakString(space+'override the default compiler. e.g. ppc386 ppcx64 ppcppc etc.',
+  writeln(BreakString(Format(
+    lisOverrideTheDefaultCompilerEGPpc386Ppcx64PpcppcEtcD, [space]),
                       75, 22));
   writeln('');
   writeln(LanguageOpt);

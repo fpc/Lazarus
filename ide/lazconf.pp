@@ -203,7 +203,7 @@ begin
     Result:= lpWin32;
     {$ENDIF}
     {$IFDEF darwin}{$DEFINE WidgetSetDefined}
-    Result:= lpCarbon;;
+    Result:= lpCarbon;
     {$ENDIF}
     {$IFNDEF WidgetSetDefined}
     Result:= lpGtk;

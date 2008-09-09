@@ -9613,13 +9613,13 @@ begin
   rc.Right := XML.GetValue(Path+'Margins/Right/Value', 0); // TODO chk
   rc.Bottom := XML.GetValue(Path+'Margins/Bottom/Value', 0); // TODO chk
   Margins.AsRect := rc;
-  RestoreProperty('Orientation',XML.GetValue(Path+'Orientation/Value','poPortrait'));
+  RestoreProperty('Orientation',XML.GetValue(Path+'Orientation/Value',''));
 
   UseMargins := XML.GetValue(Path+'UseMargins/Value', True); // TODO chk
   PrintToPrevPage := XML.GetValue(Path+'PrintToPrevPage/Value', True); // TODO chk
   ColCount := XML.GetValue(Path+'ColCount/Value', 1); // TODO chk
   ColGap := XML.GetValue(Path+'ColGap/Value', 0);
-  RestoreProperty('LayoutOrder',XML.GetValue(Path+'LayoutOrder/Value','loColumns'));
+  RestoreProperty('LayoutOrder',XML.GetValue(Path+'LayoutOrder/Value',''));
   ChangePaper(pgSize, Width, Height, Orientation);
 end;
 
