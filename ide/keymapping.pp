@@ -42,7 +42,8 @@ type
   TKeyMapScheme = (
     kmsLazarus,
     kmsClassic,
-    kmsMacOSX,
+    kmsMacOSXApple,
+    kmsMacOSXLaz,
     kmsCustom
     );
 
@@ -151,6 +152,8 @@ procedure GetDefaultKeyForWindowsScheme(Command: word;
 procedure GetDefaultKeyForClassicScheme(Command: word;
                                         var TheKeyA, TheKeyB: TIDEShortCut);
 procedure GetDefaultKeyForMacOSXScheme(Command: word;
+                                       var TheKeyA, TheKeyB: TIDEShortCut);
+procedure GetDefaultKeyForMacOSXLazScheme(Command: word;
                                        var TheKeyA, TheKeyB: TIDEShortCut);
 function KeySchemeNameToSchemeType(const SchemeName: string): TKeyMapScheme;
 
@@ -1338,14 +1341,49 @@ begin
   end;
 end;
 
+procedure GetDefaultKeyForMacOSXLazScheme(Command: word; var TheKeyA, TheKeyB: TIDEShortCut);
+
+  procedure SetResult(NewKeyA: word; NewShiftA: TShiftState;
+    NewKeyB: word; NewShiftB: TShiftState);
+  begin
+    TheKeyA:=IDEShortCut(NewKeyA, NewShiftA, VK_UNKNOWN, []);
+    TheKeyB:=IDEShortCut(NewKeyB, NewShiftB, VK_UNKNOWN, []);
+  end;
+
+  procedure SetResult2(
+    NewKey1A: word; NewShift1A: TShiftState;
+    NewKey1B: word; NewShift1B: TShiftState;
+    NewKey2A: word; NewShift2A: TShiftState;
+    NewKey2B: word; NewShift2B: TShiftState);
+  begin
+    TheKeyA:=IDEShortCut(NewKey1A,NewShift1A,NewKey1B,NewShift1B);
+    TheKeyB:=IDEShortCut(NewKey2A,NewShift2A,NewKey2B,NewShift2B);
+  end;
+
+begin
+  { First default to standard Mac OS X scheme }
+  GetDefaultKeyForMacOSXScheme(Command, TheKeyA, TheKeyB);
+
+  { Now override some entries }
+  case Command of
+  // moving
+  ecLineStart: SetResult(VK_HOME, [],VK_UNKNOWN,[]);
+  ecLineEnd: SetResult(VK_END, [],VK_UNKNOWN,[]);
+  ecEditorTop: SetResult(VK_UP,[ssMeta],VK_UNKNOWN,[]);
+  ecEditorBottom: SetResult(VK_DOWN,[ssMeta],VK_UNKNOWN,[]);
+  end;
+end;
+
 function KeySchemeNameToSchemeType(const SchemeName: string): TKeyMapScheme;
 begin
   if (SchemeName='') or (CompareText(SchemeName,'Default')=0) then
     Result:=kmsLazarus
   else if (CompareText(SchemeName,'Classic')=0) then
     Result:=kmsClassic
-  else if (CompareText(SchemeName,'Mac OS X')=0) then
-    Result:=kmsMacOSX
+  else if (CompareText(SchemeName,'Mac OS X (Apple style)')=0) then
+    Result:=kmsMacOSXApple
+  else if (CompareText(SchemeName,'Mac OS X (Lazarus style)')=0) then
+    Result:=kmsMacOSXLaz
   else
     Result:=kmsCustom;
 end;
@@ -2620,7 +2658,8 @@ begin
     kmsLazarus: GetDefaultKeyForCommand(CurRelation.Command,TheKeyA,TheKeyB);
     kmsClassic: GetDefaultKeyForClassicScheme(CurRelation.Command,
                                               TheKeyA,TheKeyB);
-    kmsMacOSX: GetDefaultKeyForMacOSXScheme(CurRelation.Command,TheKeyA,TheKeyB);
+    kmsMacOSXApple: GetDefaultKeyForMacOSXScheme(CurRelation.Command,TheKeyA,TheKeyB);
+    kmsMacOSXLaz: GetDefaultKeyForMacOSXLazScheme(CurRelation.Command,TheKeyA,TheKeyB);
     kmsCustom: ;
     end;
     CurRelation.ShortcutA:=TheKeyA;

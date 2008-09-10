@@ -889,7 +889,8 @@ resourcestring
   dlgCancel = 'Cancel';
   lisSAMSelectNone = 'Select none';
   lisKMClassic = 'Classic';
-  lisKMMacOSX = 'Mac OS X';
+  lisKMMacOSXApple = 'Mac OS X (Apple style)';
+  lisKMMacOSXLaz = 'Mac OS X (Lazarus style)';
   lisPEFilename = 'Filename:';
   lisPEUnitname = 'Unitname:';
   lisPVUTheUnitnameIsUsedWhenTheIDEExtendsUsesClauses = 'The unitname is used '

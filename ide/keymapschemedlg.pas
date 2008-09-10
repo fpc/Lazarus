@@ -78,8 +78,9 @@ end;
 function TChooseKeySchemeDlg.GetKeymapScheme: string;
 begin
   case SchemeRadiogroup.ItemIndex of
-  1: Result:=lisKMClassic;
-  2: Result:=lisKMMacOSX;
+   1: Result:=lisKMClassic;
+   2: Result:=lisKMMacOSXApple;
+   3: Result:=lisKMMacOSXLaz;
   else Result:='';
   end;
 end;

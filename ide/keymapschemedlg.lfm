@@ -3,14 +3,13 @@ object ChooseKeySchemeDlg: TChooseKeySchemeDlg
   Height = 219
   Top = 307
   Width = 400
-  HorzScrollBar.Page = 399
-  VertScrollBar.Page = 218
   ActiveControl = OkButton
   Caption = 'ChooseKeySchemeDlg'
   ClientHeight = 219
   ClientWidth = 400
   OnCreate = ChooseKeySchemeDlgCREATE
   Position = poScreenCenter
+  LCLVersion = '0.9.25'
   object NoteLabel: TLabel
     Left = 8
     Height = 44
@@ -58,13 +57,14 @@ object ChooseKeySchemeDlg: TChooseKeySchemeDlg
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 98
-    ClientWidth = 380
+    ClientHeight = 94
+    ClientWidth = 376
     ItemIndex = 0
     Items.Strings = (
       'Default (Lazarus)'
       'Classic (TP)'
-      'Mac OS X'
+      'Mac OS X (Apple style)'
+      'Mac OS X (Lazarus style)'
     )
     TabOrder = 1
   end
