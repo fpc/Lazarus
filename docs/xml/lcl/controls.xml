@@ -10341,7 +10341,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
             <var>OnKeyPress</var>
  - event controller for a key being pressed while the control has focus</p>
           <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key needs to become pressed while the control has focus; with <var>OnKeyDown</var>  the key may have already been down when the control received focus.</p>
-          <p>Note: we recomend you to use OnUTF8KeyPress to prevent data lost. National chars are converted from UTF8 to the system encoding in OnKeyPressEvent. This can cause a data lost if symbol cannot be converted. OnUTF8KeyPress does not perform this convertion.</p>
+          <p>Note: we recommend you to use OnUTF8KeyPress to prevent data lost. National chars are converted from UTF8 to the system encoding in OnKeyPressEvent. This can cause a data lost if symbol cannot be converted. OnUTF8KeyPress does not perform this convertion.</p>
         </descr>
       </element>
       <!-- property Visibility: public -->
@@ -10384,8 +10384,9 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       <element name="TWinControl.OnUTF8KeyPress">
         <short>UTF8KeyPress - event controller for a key being pressed while the control has focus.</short>
         <descr>
-          <p><var>OnUTF8KeyPress</var> - event controller for a key being pressed while the control has focus</p>
-          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyPress">OnKeyDown</link> in that the char does not converts to the system encoding</p>          
+          <p>
+            <var>OnUTF8KeyPress</var> - event controller for a key being pressed while the control has focus</p>
+          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyPress">OnKeyDown</link> in that the char does not converts to the system encoding</p>
         </descr>
         <seealso/>
       </element>
