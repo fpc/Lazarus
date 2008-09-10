@@ -1367,10 +1367,14 @@ begin
   { Now override some entries }
   case Command of
   // moving
-  ecLineStart: SetResult(VK_HOME, [],VK_UNKNOWN,[]);
-  ecLineEnd: SetResult(VK_END, [],VK_UNKNOWN,[]);
+  ecLineStart: SetResult(VK_HOME, [],VK_LEFT,[ssMeta]);
+  ecLineEnd: SetResult(VK_END, [],VK_RIGHT,[ssMeta]);
   ecEditorTop: SetResult(VK_UP,[ssMeta],VK_UNKNOWN,[]);
   ecEditorBottom: SetResult(VK_DOWN,[ssMeta],VK_UNKNOWN,[]);
+
+  // selection
+  ecSelEditorTop: SetResult(VK_HOME, [ssShift,ssCtrl],VK_UNKNOWN,[]);
+  ecSelEditorBottom: SetResult(VK_END, [ssShift,ssCtrl],VK_UNKNOWN,[]);
   end;
 end;
 
