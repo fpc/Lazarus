@@ -357,14 +357,18 @@ var
   BStart, BStop: Byte;
   RDiff, GDiff, BDiff: Integer;
   Count, I: Integer;
-
 begin
+  if ADirection = gdVertical then
+    Count := ARect.Bottom - ARect.Top
+  else
+    Count := ARect.Right - ARect.Left;
+
+  if Count = 0 then
+    Exit;
+
   RedGreenBlue(ColorToRGB(AStart), RStart, GStart, BStart);
   RedGreenBlue(ColorToRGB(AStop),  RStop,  GStop,  BStop);
 
-  if ADirection = gdVertical then Count := ARect.Bottom - ARect.Top
-                             else Count := ARect.Right - ARect.Left;
-                             
   RDiff := RStop - RStart;
   GDiff := GStop - GStart;
   BDiff := BStop - BStart;
