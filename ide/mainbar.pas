@@ -297,6 +297,7 @@ type
         itmToolConvertDelphiProject: TIDEMenuCommand;
         itmToolConvertDelphiPackage: TIDEMenuCommand;
         itmToolConvertDFMtoLFM: TIDEMenuCommand;
+        itmToolConvertEncoding: TIDEMenuCommand;
       //itmBuildingLazarus: TIDEMenuSection;
         itmToolBuildLazarus: TIDEMenuCommand;
         itmToolConfigureBuildLazarus: TIDEMenuCommand;

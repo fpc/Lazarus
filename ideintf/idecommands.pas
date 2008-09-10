@@ -129,15 +129,16 @@ const
   ecConvertDelphiUnit       = ecFirstLazarus + 108;
   ecConvertDelphiProject    = ecFirstLazarus + 109;
   ecConvertDelphiPackage    = ecFirstLazarus + 110;
-  ecMakeResourceString      = ecFirstLazarus + 111;
-  ecDiff                    = ecFirstLazarus + 112;
-  ecExtractProc             = ecFirstLazarus + 113;
-  ecFindIdentifierRefs      = ecFirstLazarus + 114;
-  ecRenameIdentifier        = ecFirstLazarus + 115;
-  ecInvertAssignment        = ecFirstLazarus + 116;
-  ecShowCodeContext         = ecFirstLazarus + 117;
-  ecShowAbstractMethods     = ecFirstLazarus + 118;
-  ecRemoveEmptyMethods      = ecFirstLazarus + 119;
+  ecConvertEncoding         = ecFirstLazarus + 111;
+  ecMakeResourceString      = ecFirstLazarus + 112;
+  ecDiff                    = ecFirstLazarus + 113;
+  ecExtractProc             = ecFirstLazarus + 114;
+  ecFindIdentifierRefs      = ecFirstLazarus + 115;
+  ecRenameIdentifier        = ecFirstLazarus + 116;
+  ecInvertAssignment        = ecFirstLazarus + 117;
+  ecShowCodeContext         = ecFirstLazarus + 118;
+  ecShowAbstractMethods     = ecFirstLazarus + 119;
+  ecRemoveEmptyMethods      = ecFirstLazarus + 120;
 
   // file menu
   ecNew                     = ecFirstLazarus + 201;

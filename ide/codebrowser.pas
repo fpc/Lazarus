@@ -731,7 +731,7 @@ procedure TCodeBrowserView.WorkGatherPackages;
   begin
     List:=nil;
     try
-      PackageGraph.GetAllRequiredPackages(Project1.FirstRequiredDependency,List);
+      PackageGraph.GetAllRequiredPackages(FirstDependency,List);
       if (List=nil) then exit;
       for i:=0 to List.Count-1 do begin
         if TObject(List[i]) is TLazPackage then

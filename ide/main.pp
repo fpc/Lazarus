@@ -117,7 +117,7 @@ uses
   CodeToolsDefines, DiffDialog, DiskDiffsDialog, UnitInfoDlg, EditorOptions,
   SourceEditProcs, MsgQuickFixes, ViewUnit_dlg,
   // converter
-  DelphiUnit2Laz, DelphiProject2Laz, LazXMLForms,
+  ChgEncodingDlg, DelphiUnit2Laz, DelphiProject2Laz, LazXMLForms,
   // rest of the ide
   Splash, IDEDefs, LazarusIDEStrConsts, LazConf, MsgView, SearchResultView,
   CodeTemplatesDlg, CodeBrowser,
@@ -305,6 +305,7 @@ type
     procedure mnuToolConvertDelphiUnitClicked(Sender: TObject);
     procedure mnuToolConvertDelphiProjectClicked(Sender: TObject);
     procedure mnuToolConvertDelphiPackageClicked(Sender: TObject);
+    procedure mnuToolConvertEncodingClicked(Sender: TObject);
     procedure mnuToolBuildLazarusClicked(Sender: TObject);
     procedure mnuToolConfigBuildLazClicked(Sender: TObject);
     procedure mnuCustomExtToolClick(Sender: TObject);
@@ -760,14 +761,6 @@ type
     // edit menu
     procedure DoCommand(EditorCommand: integer); override;
     procedure DoSourceEditorCommand(EditorCommand: integer);
-    procedure DoInsertGUID;
-
-    // Delphi conversion
-    function DoConvertDFMtoLFM: TModalResult;
-    function DoCheckLFMInEditor: TModalResult;
-    function DoConvertDelphiUnit(const DelphiFilename: string): TModalResult;
-    function DoConvertDelphiProject(const DelphiFilename: string): TModalResult;
-    function DoConvertDelphiPackage(const DelphiFilename: string): TModalResult;
     procedure UpdateCustomToolsInMenu;
 
     // external tools
@@ -887,6 +880,14 @@ type
     function DoMakeResourceString: TModalResult;
     function DoDiff: TModalResult;
     function DoFindInFiles: TModalResult;
+    procedure DoInsertGUID;
+
+    // conversion
+    function DoConvertDFMtoLFM: TModalResult;
+    function DoCheckLFMInEditor: TModalResult;
+    function DoConvertDelphiUnit(const DelphiFilename: string): TModalResult;
+    function DoConvertDelphiProject(const DelphiFilename: string): TModalResult;
+    function DoConvertDelphiPackage(const DelphiFilename: string): TModalResult;
 
     // message view
     function DoJumpToCompilerMessage(Index:integer;
@@ -2213,6 +2214,7 @@ begin
     itmToolConvertDelphiUnit.OnClick := @mnuToolConvertDelphiUnitClicked;
     itmToolConvertDelphiProject.OnClick := @mnuToolConvertDelphiProjectClicked;
     itmToolConvertDelphiPackage.OnClick := @mnuToolConvertDelphiPackageClicked;
+    itmToolConvertEncoding.OnClick := @mnuToolConvertEncodingClicked;
     itmToolBuildLazarus.OnClick := @mnuToolBuildLazarusClicked;
     itmToolConfigureBuildLazarus.OnClick := @mnuToolConfigBuildLazClicked;
   end;
@@ -3780,6 +3782,11 @@ begin
   finally
     OpenDialog.Free;
   end;
+end;
+
+procedure TMainIDE.mnuToolConvertEncodingClicked(Sender: TObject);
+begin
+  ShowConvertEncodingDlg;
 end;
 
 procedure TMainIDE.mnuToolBuildLazarusClicked(Sender: TObject);

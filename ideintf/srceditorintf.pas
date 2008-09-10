@@ -52,6 +52,7 @@ type
     function GetFileName: string; virtual; abstract;
     function GetLines: TStrings; virtual; abstract;
     function GetLineText: string; virtual; abstract;
+    function GetModified: Boolean; virtual; abstract;
     function GetReadOnly: Boolean; virtual; abstract;
     function GetSelection: string; virtual; abstract;
     function GetSelEnd: Integer; virtual; abstract;
@@ -64,6 +65,7 @@ type
     procedure SetCursorTextXY(const AValue: TPoint); virtual; abstract;
     procedure SetLines(const AValue: TStrings); virtual; abstract;
     procedure SetLineText(const AValue: string); virtual; abstract;
+    procedure SetModified(const NewValue: Boolean); virtual; abstract;
     procedure SetReadOnly(const AValue: Boolean); virtual; abstract;
     procedure SetSelection(const AValue: string); virtual; abstract;
     procedure SetSelEnd(const AValue: Integer); virtual; abstract;
@@ -131,6 +133,7 @@ type
     property SelStart: Integer read GetSelStart write SetSelStart;
     property SourceText: string read GetSourceText write SetSourceText;// the whole file
     property TopLine: Integer read GetTopLine write SetTopLine;// first visible line
+    property Modified: Boolean read GetModified write SetModified;
   end;
 
   { TSourceEditorWindowInterface }

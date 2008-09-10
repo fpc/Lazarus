@@ -720,6 +720,7 @@ begin
     CreateMenuItem(ParentMI,itmToolConvertDelphiProject,'itmToolConvertDelphiProject',lisMenuConvertDelphiProject);
     CreateMenuItem(ParentMI,itmToolConvertDelphiPackage,'itmToolConvertDelphiPackage',lisMenuConvertDelphiPackage);
     CreateMenuItem(ParentMI,itmToolConvertDFMtoLFM,'itmToolConvertDFMtoLFM',lisMenuConvertDFMtoLFM,'menu_tool_dfm_to_lfm');
+    CreateMenuItem(ParentMI,itmToolConvertEncoding,'itmToolConvertEncoding',lisMenuConvertEncoding);
 
     CreateMenuSeparatorSection(mnuTools,itmBuildingLazarus,'itmBuildingLazarus');
     ParentMI:=itmBuildingLazarus;
@@ -967,6 +968,7 @@ begin
     itmToolConvertDelphiUnit.Command:=GetCommand(ecConvertDelphiUnit);
     itmToolConvertDelphiProject.Command:=GetCommand(ecConvertDelphiProject);
     itmToolConvertDelphiPackage.Command:=GetCommand(ecConvertDelphiPackage);
+    itmToolConvertEncoding.Command:=GetCommand(ecConvertEncoding);
     itmToolBuildLazarus.Command:=GetCommand(ecBuildLazarus);
     itmToolConfigureBuildLazarus.Command:=GetCommand(ecConfigBuildLazarus);
 

@@ -142,26 +142,26 @@ type
 
     FSourceNoteBook: TSourceNotebook;
 
-    Procedure EditorMouseMoved(Sender: TObject; Shift: TShiftState; X,Y:Integer);
-    Procedure EditorMouseDown(Sender: TObject; Button: TMouseButton;
+    procedure EditorMouseMoved(Sender: TObject; Shift: TShiftState; X,Y:Integer);
+    procedure EditorMouseDown(Sender: TObject; Button: TMouseButton;
           Shift: TShiftState; X,Y: Integer);
-    Procedure EditorClickLink(Sender: TObject; Button: TMouseButton;
+    procedure EditorClickLink(Sender: TObject; Button: TMouseButton;
           Shift: TShiftState; X,Y: Integer);
     procedure EditorMouseWheel(Sender: TObject; Shift: TShiftState;
          WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
-    Procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    Procedure EditorStatusChanged(Sender: TObject; Changes: TSynStatusChanges);
+    procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure EditorStatusChanged(Sender: TObject; Changes: TSynStatusChanges);
     procedure SetCodeBuffer(NewCodeBuffer: TCodeBuffer);
-    Function GetSource: TStrings;
+    function GetSource: TStrings;
     procedure SetPageName(const AValue: string);
     procedure UpdatePageName;
-    Procedure SetSource(Value: TStrings);
-    Function GetCurrentCursorXLine: Integer;
-    Procedure SetCurrentCursorXLine(num : Integer);
-    Function GetCurrentCursorYLine: Integer;
-    Procedure SetCurrentCursorYLine(num: Integer);
-    Function GetModified: Boolean;
-    procedure SetModified(NewValue:boolean);
+    procedure SetSource(Value: TStrings);
+    function GetCurrentCursorXLine: Integer;
+    procedure SetCurrentCursorXLine(num : Integer);
+    function GetCurrentCursorYLine: Integer;
+    procedure SetCurrentCursorYLine(num: Integer);
+    function GetModified: Boolean; override;
+    procedure SetModified(const NewValue:boolean); override;
     Function GetInsertMode: Boolean;
     procedure SetCodeTemplates(NewCodeTemplates: TSynEditAutoComplete);
     procedure SetPopupMenu(NewPopupMenu: TPopupMenu);
@@ -349,7 +349,6 @@ type
     property ErrorLine: integer read FErrorLine write SetErrorLine;
     property ExecutionLine: integer read FExecutionLine write SetExecutionLine;
     property InsertMode: Boolean read GetInsertmode;
-    property Modified: Boolean read GetModified write SetModified;
     property OnAfterClose: TNotifyEvent read FOnAfterClose write FOnAfterClose;
     property OnBeforeClose: TNotifyEvent read FOnBeforeClose
                                           write FOnBeforeClose;
@@ -2539,7 +2538,7 @@ Begin
   Result := FEditor.Modified or FModified;
 end;
 
-procedure TSourceEditor.SetModified(NewValue:boolean);
+procedure TSourceEditor.SetModified(const NewValue:boolean);
 var
   OldModified: Boolean;
 begin
@@ -3887,7 +3886,7 @@ begin
       // the ansi encoding is shown as 'ansi (system encoding)' -> cut
       NewEncoding:=EncodingAnsi;
     end;
-    DebugLn(['TSourceNotebook.EncodingClicked ',NewEncoding]);
+    DebugLn(['TSourceNotebook.EncodingClicked NewEncoding=',NewEncoding]);
     if SrcEdit.CodeBuffer<>nil then begin
       OldEncoding:=NormalizeEncoding(SrcEdit.CodeBuffer.DiskEncoding);
       if OldEncoding='' then
@@ -3895,23 +3894,33 @@ begin
       if NewEncoding<>SrcEdit.CodeBuffer.DiskEncoding then begin
         DebugLn(['TSourceNotebook.EncodingClicked Old=',OldEncoding,' New=',NewEncoding]);
         if SrcEdit.ReadOnly then begin
-          CurResult:=IDEQuestionDialog(lisChangeEncoding,
-            Format(lisEncodingOfFileOnDiskIsNewEncodingIs, ['"',
-              SrcEdit.CodeBuffer.Filename, '"', #13, OldEncoding, NewEncoding]),
-            mtConfirmation, [mrOk, lisReopenWithAnotherEncoding, mrCancel], '');
+          if SrcEdit.CodeBuffer.IsVirtual then
+            CurResult:=mrCancel
+          else
+            CurResult:=IDEQuestionDialog(lisChangeEncoding,
+              Format(lisEncodingOfFileOnDiskIsNewEncodingIs, ['"',
+                SrcEdit.CodeBuffer.Filename, '"', #13, OldEncoding, NewEncoding]),
+              mtConfirmation, [mrOk, lisReopenWithAnotherEncoding, mrCancel], '');
         end else begin
-          CurResult:=IDEQuestionDialog(lisChangeEncoding,
-            Format(lisEncodingOfFileOnDiskIsNewEncodingIs2, ['"',
-              SrcEdit.CodeBuffer.Filename, '"', #13, OldEncoding, NewEncoding]),
-            mtConfirmation, [mrYes, lisChangeFile, mrOk,
-              lisReopenWithAnotherEncoding, mrCancel], '');
+          if SrcEdit.CodeBuffer.IsVirtual then
+            CurResult:=IDEQuestionDialog(lisChangeEncoding,
+              Format(lisEncodingOfFileOnDiskIsNewEncodingIs, ['"',
+                SrcEdit.CodeBuffer.Filename, '"', #13, OldEncoding, NewEncoding]),
+              mtConfirmation, [mrYes, lisChangeFile, mrCancel], '')
+          else
+            CurResult:=IDEQuestionDialog(lisChangeEncoding,
+              Format(lisEncodingOfFileOnDiskIsNewEncodingIs2, ['"',
+                SrcEdit.CodeBuffer.Filename, '"', #13, OldEncoding, NewEncoding]),
+              mtConfirmation, [mrYes, lisChangeFile, mrOk,
+                lisReopenWithAnotherEncoding, mrCancel], '');
         end;
         if CurResult=mrYes then begin
           // change file
           SrcEdit.CodeBuffer.DiskEncoding:=NewEncoding;
           SrcEdit.Modified:=true;
-          DebugLn(['TSourceNotebook.EncodingClicked ',SrcEdit.CodeBuffer.DiskEncoding]);
-          if LazarusIDE.DoSaveEditorFile(SrcEdit.PageIndex,[])<>mrOk then begin
+          DebugLn(['TSourceNotebook.EncodingClicked Change file to ',SrcEdit.CodeBuffer.DiskEncoding]);
+          if (not SrcEdit.CodeBuffer.IsVirtual)
+          and (LazarusIDE.DoSaveEditorFile(SrcEdit.PageIndex,[])<>mrOk) then begin
             DebugLn(['TSourceNotebook.EncodingClicked LazarusIDE.DoSaveEditorFile failed']);
           end;
         end else if CurResult=mrOK then begin

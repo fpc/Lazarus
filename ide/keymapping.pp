@@ -360,6 +360,7 @@ begin
   ecConvertDelphiUnit: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecConvertDelphiProject: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecConvertDelphiPackage: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecConvertEncoding: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecFindProcedureDefinition: SetResult(VK_UP,[ssShift,SSCtrl],VK_UNKNOWN,[]);
   ecFindProcedureMethod: SetResult(VK_DOWN,[ssShift,SSCtrl],VK_UNKNOWN,[]);
   ecFindDeclaration: SetResult(VK_UP,[ssAlt],VK_UNKNOWN,[]);
@@ -682,9 +683,10 @@ begin
   ecGuessMisplacedIFDEF: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecConvertDFM2LFM: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecCheckLFM: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecConvertDelphiUnit: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecConvertDelphiProject: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecConvertDelphiPackage: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecConvertDelphiUnit: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecConvertDelphiProject: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecConvertDelphiPackage: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecConvertEncoding: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecFindProcedureDefinition: SetResult(VK_UP,[ssShift,SSCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecFindProcedureMethod: SetResult(VK_DOWN,[ssShift,SSCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecFindDeclaration: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1189,6 +1191,7 @@ begin
   ecConvertDelphiUnit: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecConvertDelphiProject: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecConvertDelphiPackage: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecConvertEncoding: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecFindProcedureDefinition: SetResult(VK_UP,[ssShift,SSCtrl],VK_UNKNOWN,[]);
   ecFindProcedureMethod: SetResult(VK_DOWN,[ssShift,SSCtrl],VK_UNKNOWN,[]);
   ecFindDeclaration: SetResult(VK_UP,[ssAlt],VK_UNKNOWN,[]);
@@ -1618,6 +1621,7 @@ begin
     ecConvertDelphiUnit       : Result:= lisMenuConvertDelphiUnit;
     ecConvertDelphiProject    : Result:= lisMenuConvertDelphiProject;
     ecConvertDelphiPackage    : Result:= lisMenuConvertDelphiPackage;
+    ecConvertEncoding         : Result:= lisMenuConvertEncoding;
     ecFindDeclaration         : Result:= srkmecFindDeclaration;
     ecFindBlockOtherEnd       : Result:= srkmecFindBlockOtherEnd;
     ecFindBlockStart          : Result:= srkmecFindBlockStart;
@@ -2200,6 +2204,8 @@ begin
     lisKMConvertDelphiProjectToLazarusProject, ecConvertDelphiProject);
   AddDefault(C, 'Convert Delphi package to Lazarus package',
     lisKMConvertDelphiPackageToLazarusPackage, ecConvertDelphiPackage);
+  AddDefault(C, 'Convert encoding',
+    lisConvertEncodingOfProjectsPackages, ecConvertEncoding);
 
   // environment menu
   C:=Categories[AddCategory('EnvironmentMenu',srkmCatEnvMenu,nil)];

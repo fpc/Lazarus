@@ -365,6 +365,7 @@ resourcestring
   lisMenuConvertDelphiUnit = 'Convert Delphi unit to Lazarus unit ...';
   lisMenuConvertDelphiProject = 'Convert Delphi project to Lazarus project ...';
   lisMenuConvertDelphiPackage = 'Convert Delphi package to Lazarus package ...';
+  lisMenuConvertEncoding = 'Convert encoding of projects/packages ...';
   lisMenuBuildLazarus = 'Build Lazarus';
   lisMenuConfigureBuildLazarus = 'Configure "Build Lazarus" ...';
   
@@ -2016,6 +2017,8 @@ resourcestring
   srkmCatEnvMenu        = 'Environment menu commands';
   lisKMConvertDelphiPackageToLazarusPackage = 'Convert Delphi package to '
     +'Lazarus package';
+  lisConvertEncodingOfProjectsPackages =
+    'Convert encoding of projects/packages';
   srkmCarHelpMenu       = 'Help menu commands';
   lisKeyCatDesigner     = 'Designer commands';
   lisKMCopySelectedComponentsToClipboard = 'Copy selected Components to '
