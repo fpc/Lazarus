@@ -46,7 +46,7 @@ const
   // RECEIVED from the interface, here are no defines
   // of messages send to the interface
   //-------------
-  LM_USER           = $400; // MWE: changed from $100 to $400 since they were in the windows range
+  LM_USER           = $400; // standard WM_USER value
   WM_USER           = LM_USER;
 
   // reserve some space for LM_USER messages
