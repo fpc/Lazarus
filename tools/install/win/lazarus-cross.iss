@@ -2,7 +2,7 @@
 EnableISX=true
 [Defines]
 #define AppVersion GetEnv('LazVersion')
-#define AppVersion GetEnv('LazRevision')
+#define LazRevision GetEnv('LazRevision')
 #define FPCVersion GetEnv('FPCVersion')
 #define FPCFullVersion GetEnv('FPCFullVersion')
 #define FPCSourceOS GetEnv('FPCSourceOS')
