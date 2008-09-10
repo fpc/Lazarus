@@ -60,6 +60,14 @@ begin
   Result := winClassName;
 end;
 
+function WndText(Wnd: HWND): String; inline;
+var
+  winText: array[0..255] of char;
+begin
+  GetWindowText(Wnd, @winText, 256);
+  Result := winText;
+end;
+
 {------------------------------------------------------------------------------
  Function: CallDefaultWindowProc
  Params: Window - The window that receives a message
@@ -1827,8 +1835,11 @@ begin
           Result := SendMessage(TargetWindow, WM_MOUSEWHEEL, WParam, LParam);
           InMouseWheelRedirection := false;
           exit;
-        end;
-
+        end
+        else
+        if TargetWindow <> Window then
+          exit;
+        //DebugLn('get WM_MOUSEWHEEL ', WndClassName(TargetWindow), ' ',WndText(TargetWindow));
         // the mousewheel message is for us
         Msg := LM_MOUSEWHEEL;
         Windows.ScreenToClient(TargetWindow, P);
