@@ -2058,6 +2058,7 @@ type
     procedure InsertControl(AControl: TControl; InsertAt: TAlign;
                             DropControl: TControl); override;
     procedure LoadFromStream(SrcStream: TStream); override;
+    procedure MouseMessage(var Message: TLMessage); override;
     procedure PositionDockRect(AClient, DropCtl: TControl; DropAlign: TAlign;
                                var DockRect: TRect); override;
     procedure RemoveControl(AControl: TControl); override;

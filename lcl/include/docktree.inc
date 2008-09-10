@@ -99,6 +99,11 @@ begin
   // ToDo
 end;
 
+procedure TDockTree.MouseMessage(var Message: TLMessage);
+begin
+  // ToDo
+end;
+
 procedure TDockTree.PaintDockFrame(ACanvas: TCanvas; AControl: TControl;
   const ARect: TRect);
 begin
