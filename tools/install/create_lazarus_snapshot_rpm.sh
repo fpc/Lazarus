@@ -32,8 +32,9 @@ if [ "x$FpcFullVersion" = "x" ]; then
   exit -1
 fi
 
+cd $(dirname $0)
 if [ "$1" = "append-revision" ]; then
-  LazVersionPostfix=$(./get_svn_revision_number.sh .)
+  LazVersionPostfix=$(./get_svn_revision_number.sh $LazSrcDir)
   if [ -n "$LazVersionPostfix" ]; then
     LazVersionPostfix=.$LazVersionPostfix
   fi
