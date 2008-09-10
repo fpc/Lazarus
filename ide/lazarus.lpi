@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="\"/>
+    <PathDelim Value="/"/>
     <Version Value="6"/>
     <General>
       <Flags>
@@ -24,7 +24,7 @@
       <local>
         <FormatVersion Value="1"/>
         <CommandLineParams Value="--no-splash-screen"/>
-        <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
     <RequiredPackages Count="4">
@@ -48,7 +48,7 @@
         <UnitName Value="Lazarus"/>
       </Unit0>
       <Unit1>
-        <Filename Value="..\debugger\gdbmidebugger.pp"/>
+        <Filename Value="../debugger/gdbmidebugger.pp"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="GDBMIDebugger"/>
       </Unit1>
@@ -56,12 +56,11 @@
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="8"/>
-    <PathDelim Value="\"/>
     <Target>
       <Filename Value="../lazarus"/>
     </Target>
     <SearchPaths>
-      <UnitOutputDirectory Value="$(LazarusDir)\units\$(TargetCPU)-$(TargetOS)"/>
+      <UnitOutputDirectory Value="$(LazarusDir)/units/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Other>
       <CompilerPath Value="$(CompPath)"/>

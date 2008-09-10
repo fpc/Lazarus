@@ -50,6 +50,9 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
+  {$IFDEF Unix}
+  clocale,
+  {$ENDIF}
   Interfaces,
   Forms, LCLProc,
   Splash,
