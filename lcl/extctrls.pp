@@ -775,6 +775,7 @@ type
     property OnMouseUp;
     property OnResize;
     property OnStartDrag;
+    property OnUTF8KeyPress;
     property ParentFont;
     property ParentColor;
     property ParentCtl3D;
@@ -868,6 +869,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
+    property OnUTF8KeyPress;
     property ParentFont;
     property ParentColor;
     property ParentCtl3D;
@@ -990,6 +992,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
+    property OnUTF8KeyPress;
   end;
 
 

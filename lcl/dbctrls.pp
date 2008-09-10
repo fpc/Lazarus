@@ -205,6 +205,7 @@ Type
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
+    property OnUTF8KeyPress;
   end;
 
 
@@ -328,6 +329,7 @@ Type
     property OnMouseUp;
     property OnResize;
     property OnStartDrag;
+    property OnUTF8KeyPress;
     property ParentShowHint;
     property ShowHint;
     property Sorted;
@@ -550,6 +552,7 @@ Type
     property OnMouseUp;
     property OnSelect;
     property OnStartDrag;
+    property OnUTF8KeyPress;
     property ParentCtl3D;
     property ParentColor;
     property ParentFont;
@@ -622,6 +625,7 @@ Type
     property OnKeyPress;
     property OnKeyUp;
     property OnStartDrag;
+    property OnUTF8KeyPress;
     property ParentFont;
     property PopupMenu;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
@@ -683,6 +687,7 @@ Type
     property OnMouseUp;
     property OnResize;
     property OnStartDrag;
+    property OnUTF8KeyPress;
     property ParentColor;
     property ParentCtl3D;
     property ParentFont;

@@ -1128,6 +1128,7 @@ type
     property OnResize;
     property OnSelectItem;
     property OnStartDrag;
+    property OnUTF8KeyPress;
   end;
 
   TProgressBarOrientation = (pbHorizontal, pbVertical, pbRightToLeft, pbTopDown);
@@ -1719,6 +1720,7 @@ type
     property OnKeyUp;
     property OnResize;
     property OnStartDrag;
+    property OnUTF8KeyPress;
     property Orientation;
     property PageSize;
     property ParentCtl3D;
@@ -2520,6 +2522,7 @@ type
     property OnShowHint;
     //property OnStartDock;
     property OnStartDrag;
+    property OnUTF8KeyPress;
     property Options;
     property Items;
     property TreeLineColor;

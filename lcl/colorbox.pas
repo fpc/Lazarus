@@ -105,6 +105,7 @@ type
     property OnMouseUp;
     property OnStartDrag;
     property OnSelect;
+    property OnUTF8KeyPress;
   end;
 
   { TColorListBox }
@@ -176,6 +177,7 @@ type
     property OnSelectionChange;
     property OnShowHint;
     property OnStartDrag;
+    property OnUTF8KeyPress;
   end;
 
 procedure Register;

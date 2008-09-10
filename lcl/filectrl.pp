@@ -121,6 +121,7 @@ Type
     property OnMouseWheelUp;
     property OnResize;
     property OnStartDrag;
+    property OnUTF8KeyPress;
     property ParentShowHint;
     property ParentFont;
     property PopupMenu;

@@ -154,6 +154,7 @@ type
     property OnKeyUp;
     property OnScroll;
     property OnStartDrag;
+    property OnUTF8KeyPress;
   end;
 
 
@@ -222,6 +223,7 @@ type
     property OnStartDock;
     property OnStartDrag;
     property OnUnDock;
+    property OnUTF8KeyPress;
   end;
 
   { TCustomComboBox }
@@ -441,6 +443,7 @@ type
     property OnMouseUp;
     property OnStartDrag;
     property OnSelect;
+    property OnUTF8KeyPress;
     property ParentBidiMode;
     property ParentColor;
     property ParentCtl3D;
@@ -581,6 +584,7 @@ type
     property OnResize;
     property OnSelectionChange: TSelectionChangeEvent read FOnSelectionChange
                                                       write FOnSelectionChange;
+    property OnUTF8KeyPress;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -645,6 +649,7 @@ type
     property OnSelectionChange;
     property OnShowHint;
     property OnStartDrag;
+    property OnUTF8KeyPress;
     property ParentBidiMode;
     property ParentShowHint;
     property ParentFont;
@@ -850,6 +855,7 @@ type
     property OnMouseUp;
     property OnResize;
     property OnStartDrag;
+    property OnUTF8KeyPress;
     property ParentFont;
     property ParentShowHint;
     property PasswordChar;
@@ -902,6 +908,7 @@ type
     property OnMouseWheelDown;
     property OnMouseWheelUp;
     property OnStartDrag;
+    property OnUTF8KeyPress;
     property ParentBidiMode;
     property ParentFont;
     property PopupMenu;
@@ -1113,6 +1120,7 @@ type
     property OnMouseUp;
     property OnResize;
     property OnStartDrag;
+    property OnUTF8KeyPress;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -1202,6 +1210,7 @@ type
     property OnMouseUp;
     property OnResize;
     property OnStartDrag;
+    property OnUTF8KeyPress;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -1284,6 +1293,7 @@ type
     property OnMouseDown;
     property OnMouseUp;
     property OnMouseMove;
+    property OnUTF8KeyPress;
     property Visible;
     property Caption;
     property Enabled;

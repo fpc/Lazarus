@@ -122,6 +122,7 @@ Type
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
+    property OnUTF8KeyPress;
     property OnYearChanged;
     property PopupMenu;
     property ReadOnly;

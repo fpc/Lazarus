@@ -117,6 +117,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
+    property OnUTF8KeyPress;
     property ShowButtons;
     property ShowGlyphs;
     property Visible;

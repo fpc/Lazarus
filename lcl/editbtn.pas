@@ -133,6 +133,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
+    property OnUTF8KeyPress;
     property ParentColor;
     property ParentCtl3D;
     property ParentFont;
@@ -233,6 +234,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
+    property OnUTF8KeyPress;
   end;
   
   
@@ -307,6 +309,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
+    property OnUTF8KeyPress;
   end;
   
   
@@ -384,6 +387,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
+    property OnUTF8KeyPress;
     property ParentFont;
     property ParentShowHint;
     property PasswordChar;
@@ -470,6 +474,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
+    property OnUTF8KeyPress;
   end;
 
 var

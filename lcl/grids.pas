@@ -1145,9 +1145,14 @@ type
     property OnColRowInserted: TGridOperationEvent read FOnColRowInserted write FOnColRowInserted;
     property OnColRowMoved: TgridOperationEvent read FOnColRowMoved write FOnColRowMoved;
     property OnCompareCells;
+    property OnContextPopup;
     property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
     property OnDrawCell;
     property OnEditButtonClick;
+    property OnEndDock;
+    property OnEndDrag;
     property OnEnter;
     property OnExit;
     property OnGetEditMask: TGetEditEvent read FOnGetEditMask write FOnGetEditMask;
@@ -1168,17 +1173,10 @@ type
     property OnSelection;
     property OnSelectCell: TOnSelectCellEvent read FOnSelectCell write FOnSelectCell;
     property OnSetEditText: TSetEditEvent read FOnSetEditText write FOnSetEditText;
-    property OnTopleftChanged;
-
-{
-    property OnContextPopup;
-    property OnDragDrop;
-    property OnDragOver;
-    property OnEndDock;
-    property OnEndDrag;
     property OnStartDock;
     property OnStartDrag;
-}
+    property OnTopleftChanged;
+    property OnUTF8KeyPress;
   end;
 
 
@@ -1219,9 +1217,9 @@ type
     property HeaderPushZones;
     property Options;
     //property ParentBiDiMode;
-    //property ParentColor;
+    property ParentColor;
     //property ParentCtl3D; // Deprecated
-    //property ParentFont;
+    property ParentFont;
     property ParentShowHint;
     property PopupMenu;
     property RowCount;
@@ -1269,13 +1267,14 @@ type
     property OnSelectCell;
     property OnSetEditText;
     property OnTopleftChanged;
-    //property OnContextPopup;
+    property OnContextPopup;
     property OnDragDrop;
     property OnDragOver;
     property OnEndDock;
     property OnEndDrag;
     property OnStartDock;
     property OnStartDrag;
+    property OnUTF8KeyPress;
   end;
 
   TCustomStringGrid = class;
@@ -1407,9 +1406,9 @@ type
     property HeaderPushZones;
     property Options;
     //property ParentBiDiMode;
-    //property ParentColor;
+    property ParentColor;
     //property ParentCtl3D; // Deprecated
-    //property ParentFont;
+    property ParentFont;
     property ParentShowHint;
     property PopupMenu;
     property RowCount;
@@ -1466,10 +1465,8 @@ type
     property OnStartDock;
     property OnStartDrag;
     property OnTopLeftChanged;
-
-{
+    property OnUTF8KeyPress;
     property OnContextPopup;
-}
   end;
 
 

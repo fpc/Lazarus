@@ -128,6 +128,7 @@ type
     property OnResize;
     property OnShowHint;
     property OnStartDrag;
+    property OnUTF8KeyPress;
     property ParentBidiMode;
     property ParentFont;
     property ParentShowHint;

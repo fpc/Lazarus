@@ -207,6 +207,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
+    property OnUTF8KeyPress;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;

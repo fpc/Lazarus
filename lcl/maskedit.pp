@@ -173,6 +173,7 @@ type
     property OnMouseUp;
     property OnStartDock;
     property OnStartDrag;
+    property OnUTF8KeyPress;
 
     property EditMask;
     property isMasked;
