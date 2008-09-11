@@ -818,7 +818,7 @@ type
     procedure signalViewportEntered; cdecl; virtual;
     procedure AttachEvents; override;
     procedure DetachEvents; override;
-    function itemViewViewportEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+    function itemViewViewportEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; virtual;
  public
     procedure clearSelection;
     function getModel: QAbstractItemModelH;
@@ -858,7 +858,8 @@ type
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
-    
+    function itemViewViewportEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
+
     procedure signalCurrentItemChange(current: QListWidgetItemH; previous: QListWidgetItemH); cdecl;
     procedure signalItemDoubleClicked(item: QListWidgetItemH); cdecl;
     procedure signalItemClicked(item: QListWidgetItemH); cdecl;
@@ -6391,6 +6392,51 @@ begin
   inherited DetachEvents;
 end;
 
+function TQtListWidget.itemViewViewportEventFilter(Sender: QObjectH;
+  Event: QEventH): Boolean; cdecl;
+var
+  NewEvent: QMouseEventH;
+begin
+  Result := False;
+  QEvent_accept(Event);
+  if (LCLObject <> nil) then
+  begin
+    case QEvent_type(Event) of
+      QEventMouseButtonPress,
+      QEventMouseButtonRelease,
+      QEventMouseButtonDblClick:
+      begin
+        {$note possible qt bug with QListView mouse events !}
+        if (QEvent_type(Event) = QEventMouseButtonRelease) then
+        begin
+          if QEvent_spontaneous(Event) then
+            SlotMouse(Sender, Event)
+          else
+          begin
+            {we sent non spontaneous event below so kill it}
+            Result := True;
+            QEvent_ignore(Event);
+          end;
+        end else
+          SlotMouse(Sender, Event);
+
+        {listwidget item never sends an QEventMouseButtonRelease,
+         i'll check this with trolltech. zeljko}
+        if (QEvent_type(Event) = QEventMouseButtonPress) and
+          (QEvent_spontaneous(Event)) then
+        begin
+          {create missing mouse release}
+          NewEvent := QMouseEvent_create(QEventMouseButtonRelease, QMouseEvent_pos(QMouseEventH(Event)),
+            QMouseEvent_globalpos(QMouseEventH(Event)),QMouseEvent_button(QMouseEventH(Event)),
+            QMouseEvent_buttons(QMouseEventH(Event)),QApplication_keyboardModifiers());
+          {post event with high priority}
+          QCoreApplication_postEvent(Sender, NewEvent, 1);
+        end        ;
+      end;
+    end;
+  end;
+end;
+
 procedure TQtListWidget.signalCurrentItemChange(current: QListWidgetItemH;
   previous: QListWidgetItemH); cdecl;
 begin
@@ -6438,35 +6484,9 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 procedure TQtListWidget.signalItemClicked(item: QListWidgetItemH); cdecl;
-var
-  Msg: TLMMouse;
-  MousePos: TQtPoint;
-  Modifiers: QtKeyboardModifiers;
 begin
-  if not (LCLObject is TCustomCheckListBox) then
-    exit;
-  QCursor_pos(@MousePos);
-  QWidget_mapFromGlobal(Widget, @MousePos, @MousePos);
-	OffsetMousePos(@MousePos);
-	Msg.Keys := 0;
-  Modifiers := QApplication_keyboardModifiers();
-  Msg.Keys := QtKeyModifiersToKeyState(Modifiers) or MK_LBUTTON;
-
-  Msg.XPos := SmallInt(MousePos.X);
-  Msg.YPos := SmallInt(MousePos.Y);
-
-  Msg.Msg := LM_LBUTTONDOWN;
-  NotifyApplicationUserInput(Msg.Msg);
-  DeliverMessage(Msg);
-  Msg.Msg := LM_PRESSED;
-  DeliverMessage(Msg);
-
-  Msg.Msg := LM_LBUTTONUP;
-  NotifyApplicationUserInput(Msg.Msg);
-  DeliverMessage(Msg);
-
-  Msg.Msg := LM_RELEASED;
-  DeliverMessage(Msg);
+  {does nothing at this time wait more featured LCL implementation
+   eg. OnItemClick}
 end;
 
 procedure TQtListWidget.signalItemTextChanged(ANewText: PWideString); cdecl;
@@ -8701,8 +8721,7 @@ begin
   {we install only mouse events on QAbstractItemView viewport}
   Result := False;
   QEvent_accept(Event);
-  if (LCLObject <> nil)
-  and not (LCLObject is TCustomCheckListBox) then
+  if (LCLObject <> nil) then
   begin
     case QEvent_type(Event) of
       QEventMouseButtonPress,
