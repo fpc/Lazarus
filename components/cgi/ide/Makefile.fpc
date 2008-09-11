@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for CGILazIDE 0.0
 #
-#   This file was generated on 23-6-2008
+#   This file was generated on 11-9-2008
 
 [package]
 name=cgilazide
@@ -12,7 +12,7 @@ version=0.0
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
 unitdir=../lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)/ ../../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)/ ../../../packager/units/$(CPU_TARGET)-$(OS_TARGET)/ ./
 includedir=./
-options=-dLCL -dLCL$(LCL_PLATFORM) -S2 -gl
+options=-dLCL -dLCL$(LCL_PLATFORM) -Scgi -MObjFPC
 
 [target]
 units=cgilazide.pas
