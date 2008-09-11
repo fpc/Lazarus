@@ -586,10 +586,9 @@ resourcestring
   lisBackupFileFailed = 'Backup file failed';
   lisUnableToBackupFileTo = 'Unable to backup file %s%s%s to %s%s%s!';
   lisFileNotLowercase = 'File not lowercase';
-  lisTheUnitIsNotLowercaseTheFreePascalCompiler10XNeeds = 'The unit %s%s%s is '
-    +'not lowercase.%sThe FreePascal compiler 1.0.x needs lowercase '
-    +'filenames. If you do not use the fpc 1.0.x to compile this unit, you '
-    +'can ignore this message.%s%sRename file?';
+  lisTheUnitIsNotLowercaseTheFreePascalCompiler = 'The unit filename %s%s%s is '
+    +'not lowercase.%sThe FreePascal compiler does not search for all cases.'
+    +' It is recommended to use lowercase filename.%s%sRename file lowercase?';
   lisDeleteAmbiguousFile = 'Delete ambiguous file?';
   lisAmbiguousFileFoundThisFileCanBeMistakenWithDelete = 'Ambiguous file '
     +'found: %s%s%s%sThis file can be mistaken with %s%s%s%s%sDelete the '
@@ -3855,6 +3854,7 @@ resourcestring
   lisOverrideTheDefaultCompilerEGPpc386Ppcx64PpcppcEtcD = '%soverride the '
     +'default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in '
     +'environmentoptions.xml';
+  lisNo = 'No';
 
 implementation
 

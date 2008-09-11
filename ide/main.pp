@@ -1447,7 +1447,7 @@ begin
     if SomethingOfProjectIsModified then begin
       MsgResult:=QuestionDlg(lisProjectChanged,
         Format(lisSaveChangesToProject, [Project1.Title]), mtConfirmation,
-        [mrYes, lisMenuSave, mrNo, lisDiscardChanges,
+        [mrYes, lisMenuSave, mrNoToAll, lisDiscardChanges,
          mrAbort, lisDoNotCloseTheIDE],
         0);
       case MsgResult of
@@ -1767,7 +1767,7 @@ procedure TMainIDE.SetupStartProject;
     Result:=QuestionDlg(lisOpenProject2,
       Format(lisAnErrorOccuredAtLastStartupWhileLoadingLoadThisPro, [
         EnvironmentOptions.LastSavedProjectFile, #13, #13]), mtWarning,
-        [mrYes, lisOpenProjectAgain, mrNo, lisStartWithANewProject], 0)=
+        [mrYes, lisOpenProjectAgain, mrNoToAll, lisStartWithANewProject], 0)=
           mrYes;
   end;
 
@@ -3318,7 +3318,7 @@ begin
   if SomethingOfProjectIsModified then begin
     DlgResult:=QuestionDlg(lisProjectChanged,
       Format(lisSaveChangesToProject, [Project1.Title]), mtConfirmation,
-      [mrYes, lisMenuSave, mrNo, lisDiscardChanges,
+      [mrYes, lisMenuSave, mrNoToAll, lisDiscardChanges,
        mrAbort, lisDoNotCloseTheProject],
       0);
     case DlgResult of
@@ -3792,7 +3792,7 @@ end;
 procedure TMainIDE.mnuToolBuildLazarusClicked(Sender: TObject);
 begin
   if MiscellaneousOptions.BuildLazOpts.ConfirmBuild then
-    if MessageDlg(lisConfirmLazarusRebuild, mtConfirmation, mbYesNo, 0)=mrNo then
+    if MessageDlg(lisConfirmLazarusRebuild, mtConfirmation, mbYesNo, 0)<>mrYes then
       exit;
   DoBuildLazarus([]);
 end;
@@ -4539,7 +4539,7 @@ begin
         Result:=QuestionDlg(lisRenameFile,
              Format(lisThisLooksLikeAPascalFileItIsRecommendedToUseLowerC, [
                #13, #13]),
-          mtWarning, [mrYes, lisRenameToLowercase, mrNo, lisKeepName], 0);
+          mtWarning, [mrYes, lisRenameToLowercase, mrNoToAll, lisKeepName], 0);
         if Result=mrYes then
           NewFileName:=ExtractFilePath(NewFilename)+lowercase(FileWithoutPath);
         Result:=mrOk;
@@ -7443,7 +7443,7 @@ begin
     // check if file is a lazarus project (.lpi)
     if (CompareFileExt(AFilename,'.lpi',false)=0) then begin
       if QuestionDlg(lisOpenProject, Format(lisOpenTheProject, [AFilename]),
-        mtConfirmation, [mrYes, lisOpenProject2, mrNo, lisOpenAsXmlFile], 0)=
+        mtConfirmation, [mrYes, lisOpenProject2, mrNoToAll, lisOpenAsXmlFile], 0)=
           mrYes
       then begin
         Result:=DoOpenProjectFile(AFilename,[ofAddToRecent]);
@@ -7455,7 +7455,7 @@ begin
     if (CompareFileExt(AFilename,'.lpk',false)=0) then begin
       if QuestionDlg(lisOpenPackage,
         Format(lisOpenThePackage, [AFilename]), mtConfirmation,
-        [mrYes, lisCompPalOpenPackage, mrNo, lisOpenAsXmlFile], 0)=mrYes
+        [mrYes, lisCompPalOpenPackage, mrNoToAll, lisOpenAsXmlFile], 0)=mrYes
       then begin
         Result:=PkgBoss.DoOpenPackageFile(AFilename,[pofAddToRecent]);
         exit;
@@ -8481,13 +8481,14 @@ var
 begin
   // close the old project
   if SomethingOfProjectIsModified then begin
-    case MessageDlg(lisProjectChanged, Format(lisSaveChangesToProject, [Project1.Title]),
-      mtconfirmation,[mbYes, mbNo, mbCancel],0) of
+    case IDEQuestionDialog(lisProjectChanged,
+      Format(lisSaveChangesToProject, [Project1.Title]),
+      mtconfirmation, [mrYes, mrNoToAll, lisNo, mbCancel], '')
+    of
       mrYes: if DoSaveProject([])=mrAbort then begin
           Result:=mrAbort;
           exit;
         end;
-      mrNo:;//nothing;
       mrCancel:exit;
     end;
   end;
@@ -10324,10 +10325,9 @@ function TMainIDE.PrepareForCompile: TModalResult;
 begin
   Result:=mrOk;
   if ToolStatus=itDebugger then begin
-    Result:=MessageDlg(lisStopDebugging2,
+    Result:=IDEQuestionDialog(lisStopDebugging2,
       lisStopCurrentDebuggingAndRebuildProject,
-      mtConfirmation,[mbYes,mbNo,mbAbort],0);
-    if Result=mrNo then Result:=mrCancel;
+      mtConfirmation,[mrYes,mrCancel,lisNo,mrAbort],'');
     if Result<>mrYes then exit;
 
     Result:=DebugBoss.DoStopProject;
@@ -10518,11 +10518,10 @@ begin
 
   // rename unit
   if AskUser then begin
-    Result:=MessageDlg(lisFileNotLowercase,
-      Format(lisTheUnitIsNotLowercaseTheFreePascalCompiler10XNeeds, ['"',
+    Result:=IDEQuestionDialog(lisFileNotLowercase,
+      Format(lisTheUnitIsNotLowercaseTheFreePascalCompiler, ['"',
         OldFilename, '"', #13, #13, #13]),
-      mtConfirmation,[mbYes,mbNo,mbAbort],0);
-    if Result=mrNo then Result:=mrIgnore;
+      mtConfirmation,[mrYes,mrIgnore,lisNo,mrAbort],'');
     if Result<>mrYes then exit;
   end;
   NewUnitName:=AnUnitInfo.UnitName;
@@ -13121,16 +13120,16 @@ begin
   GetDesignerUnit(ADesigner,ASrcEdit,AnUnitInfo);
   if AnUnitInfo.NeedsSaveToDisk
   then begin
-    case MessageDlg(lisSaveChanges,
+    case IDEQuestionDialog(lisSaveChanges,
                     Format(lisSaveFileBeforeClosingForm, ['"',
                       AnUnitInfo.Filename, '"', #13, '"',
                       ADesigner.LookupRoot.Name, '"']),
-                   mtConfirmation,[mbYes,mbNo,mbCancel],0) of
+                   mtConfirmation,[mrYes,mrNoToAll,lisNo,mrCancel],'') of
       mrYes: begin
         if DoSaveEditorFile(AnUnitInfo.EditorIndex,[sfCheckAmbiguousFiles])<>mrOk
         then Exit;
       end;
-      mrNo:;
+      mrNoToAll:;
     else
       Exit;
     end;
