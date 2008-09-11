@@ -162,6 +162,7 @@ resourcestring
   lisMenuSaveAs = 'Save As ...';
   lisMenuSaveAll = 'Save All';
   lisMenuClose = 'Close';
+  lisConvert = 'Convert';
   lisPLDOnlyExistingFiles = 'Only existing files';
   lisPLDShowGlobalLinks = 'Show global links';
   lisPLDShowUserLinks = 'Show user links';
@@ -924,6 +925,13 @@ resourcestring
   dlgAutoSave = 'Auto save';
   dlgEdFiles = 'Editor files';
   dlgEnvProject = 'Project';
+  lisNumberOfFilesToConvert = 'Number of files to convert: %s';
+  lisConvertEncoding = 'Convert encoding';
+  lisConvertProjectOrPackage = 'Convert project or package';
+  lisNewEncoding = 'New encoding:';
+  lisFileFilter = 'File filter';
+  lisFilesInASCIIOrUTF8Encoding = 'Files in ASCII or UTF-8 encoding';
+  lisFilesNotInASCIINorUTF8Encoding = 'Files not in ASCII nor UTF-8 encoding';
   podAddPackageUnitToUsesSection = 'Add package unit to uses section';
   lisCodeBrowser = 'Code browser';
   dlgIntvInSec = 'Interval in secs';
@@ -1538,6 +1546,7 @@ resourcestring
   lisShowIdentifiers = 'Show identifiers';
   lisFilter = 'Filter';
   lisRegularExpression = 'Regular expression';
+  lisUpdatePreview = 'Update preview';
   lisInvalidFilter = 'Invalid filter';
   lisInvalidExpression = 'Invalid expression:%s%s%s%s';
   lisExcludeFilter2 = 'Exclude filter';

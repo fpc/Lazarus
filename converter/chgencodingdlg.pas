@@ -93,24 +93,24 @@ var
 begin
   IDEDialogLayoutList.ApplyLayout(Self);
 
-  Caption:='Convert encoding';
+  Caption:=lisConvertEncoding;
 
-  ScopeGroupBox.Caption:='Convert project or package';
-  NewEncodingLabel.Caption:='New encoding:';
-  FilesGroupBox.Caption:='File filter';
-  UTF8FilesCheckBox.Caption:='Files in ASCII or UTF-8 encoding';
-  NonUTF8FilesCheckBox.Caption:='Files not in ASCII nor UTF-8 encoding';
-  FileFilterLabel.Caption:='Filter';
-  RegExprCheckBox.Caption:='Regular expression';
+  ScopeGroupBox.Caption:=lisConvertProjectOrPackage;
+  NewEncodingLabel.Caption:=lisNewEncoding;
+  FilesGroupBox.Caption:=lisFileFilter;
+  UTF8FilesCheckBox.Caption:=lisFilesInASCIIOrUTF8Encoding;
+  NonUTF8FilesCheckBox.Caption:=lisFilesNotInASCIINorUTF8Encoding;
+  FileFilterLabel.Caption:=lisFilter;
+  RegExprCheckBox.Caption:=lisRegularExpression;
 
-  PreviewButton.Caption:='Update preview';
-  CloseButton.Caption:='Close';
-  ApplyButton.Caption:='Convert';
+  PreviewButton.Caption:=lisUpdatePreview;
+  CloseButton.Caption:=lisMenuClose;
+  ApplyButton.Caption:=lisConvert;
 
-  PreviewGroupBox.Caption:='Preview';
-  PreviewListView.Column[0].Caption:='Files';
+  PreviewGroupBox.Caption:=dlgWRDPreview;
+  PreviewListView.Column[0].Caption:=dlgEnvFiles;
   PreviewListView.Column[0].Width:=350;
-  PreviewListView.Column[1].Caption:='Encoding';
+  PreviewListView.Column[1].Caption:=uemEncoding;
 
   // get possible encodings
   List:=TStringList.Create;
@@ -354,7 +354,8 @@ begin
       Node:=Files.Tree.FindSuccessor(Node);
     end;
     PreviewListView.EndUpdate;
-    PreviewGroupBox.Caption:='Number of files to convert: '+IntToStr(PreviewListView.Items.Count);
+    PreviewGroupBox.Caption:=Format(lisNumberOfFilesToConvert, [IntToStr(
+      PreviewListView.Items.Count)]);
   finally
     Files.Free;
   end;
