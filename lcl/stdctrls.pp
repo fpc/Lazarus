@@ -1402,7 +1402,7 @@ type
   { TCustomLabel }
 
   TCustomLabel = class(TGraphicControl)
-  Private
+  private
     FAlignment: TAlignment;
     FFocusControl: TWinControl;
     FOptimalFill: Boolean;
