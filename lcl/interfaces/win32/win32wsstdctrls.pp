@@ -1469,7 +1469,8 @@ begin
     iconHeight := GetSystemMetrics(SM_CYMENUCHECK);
     if iconHeight > PreferredHeight then
       PreferredHeight := iconHeight;
-    if WithThemeSpace then begin
+    if WithThemeSpace then
+    begin
       Inc(PreferredWidth, 6);
       Inc(PreferredHeight, 6);
     end;

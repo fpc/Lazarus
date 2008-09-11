@@ -468,7 +468,7 @@ begin
 end;
 
 class procedure TWin32WSWinControl.SetText(const AWinControl: TWinControl; const AText: string);
-Begin
+begin
   if not WSCheckHandleAllocated(AWincontrol, 'SetText') then Exit;
 
 {$ifdef WindowsUnicodeSupport}
@@ -478,7 +478,7 @@ Begin
 {$else}
   Windows.SetWindowText(AWinControl.Handle, PChar(AText));
 {$endif}
-End;
+end;
 
 class procedure TWin32WSWinControl.SetCursor(const AWinControl: TWinControl;
   const ACursor: HCursor);
