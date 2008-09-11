@@ -34,17 +34,22 @@ unit DBGOutputForm;
 interface
 
 uses
-  Classes, Graphics, Controls, Forms, Dialogs, LResources,
+  Classes, Graphics, Controls, Forms, Dialogs, LResources, Clipbrd,
   Buttons, StdCtrls, Menus, DebuggerDlg;
 
 type
+
+  { TDbgOutputForm }
+
   TDbgOutputForm = class(TDebuggerDlg)
+    popCopyAll: TMenuItem;
     txtOutput: TMemo;
     mnuPopup: TPopupMenu;
     popClear: TMenuItem;
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure popClearClick(Sender: TObject);
+    procedure popCopyAllClick(Sender: TObject);
   private
   protected
     procedure Loaded; override;
@@ -101,6 +106,11 @@ end;
 procedure TDbgOutputForm.popClearClick(Sender: TObject);
 begin
   Clear;
+end;
+
+procedure TDbgOutputForm.popCopyAllClick(Sender: TObject);
+begin
+  Clipboard.AsText := txtOutput.Text;
 end;
 
 initialization

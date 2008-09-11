@@ -1376,6 +1376,8 @@ begin
   ecEditorBottom: SetResult(VK_DOWN,[ssMeta],VK_UNKNOWN,[]);
 
   // selection
+  ecSelLineStart: SetResult(VK_HOME, [ssShift],VK_LEFT,[ssMeta,ssShift]);
+  ecSelLineEnd: SetResult(VK_END, [ssShift],VK_RIGHT,[ssMeta,ssShift]);
   ecSelEditorTop: SetResult(VK_HOME, [ssShift,ssCtrl],VK_UNKNOWN,[]);
   ecSelEditorBottom: SetResult(VK_END, [ssShift,ssCtrl],VK_UNKNOWN,[]);
   end;

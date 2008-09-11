@@ -1,29 +1,30 @@
-object DbgOutputForm: TDbgOutputForm
+inherited DbgOutputForm: TDbgOutputForm
+  Left = 108
+  Height = 200
+  Top = 140
+  Width = 400
   Caption = 'Debug output'
   ClientHeight = 200
   ClientWidth = 400
   OnClose = FormClose
   OnCreate = FormCreate
-  HorzScrollBar.Page = 401
-  VertScrollBar.Page = 201
-  Left = 108
-  Height = 200
-  Top = 140
-  Width = 400
-  object txtOutput: TMemo
-    Align = alClient
-    PopupMenu = mnuPopup
-    PopupMenu = mnuPopup
-    TabOrder = 0
+  object txtOutput: TMemo[0]
     Height = 200
     Width = 400
+    Align = alClient
+    PopupMenu = mnuPopup
+    TabOrder = 0
   end
-  object mnuPopup: TPopupMenu
-    left = 400
+  object mnuPopup: TPopupMenu[1]
+    left = 336
     top = 96
     object popClear: TMenuItem
       Caption = '&Clear'
       OnClick = popClearClick
+    end
+    object popCopyAll: TMenuItem
+      Caption = 'Copy all output to clipboard'
+      OnClick = popCopyAllClick
     end
   end
 end
