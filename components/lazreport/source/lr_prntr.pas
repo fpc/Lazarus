@@ -801,8 +801,13 @@ begin
     Writeln('PaperSize is ',PaperSize);
     {$Endif}
     
-    PaperWidth:=fPrinter.PageWidth;
-    PaperHeight:=fPrinter.PageHeight;
+    try
+      PaperWidth:=fPrinter.PageWidth;
+      PaperHeight:=fPrinter.PageHeight;
+    finally
+      PaperWidth:=1;
+      PaperHeight:=1;
+    end;
   end;
   {$ifdef DbgPrinter}
   WriteLn('TfrPrinter.GetSettings FIN: PrinterChanged: ', PrinterChanged);
@@ -1099,9 +1104,12 @@ begin
     FPrinters.Assign(FPrinter.Printers);
     FPrinterIndex := FPrinter.PrinterIndex;
   end;
-  GetSettings;
-  FPrinters.Add(sDefaultPrinter);
-  FDefaultPrinter := FPrinters.Count - 1;
+  try
+    GetSettings;
+  finally
+    FPrinters.Add(sDefaultPrinter);
+    FDefaultPrinter := FPrinters.Count - 1;
+  end;
 end;
 
 {
@@ -1123,8 +1131,13 @@ end;
 
 initialization
   Prn := TfrPrinter.Create;
-  Prn.Printer:=Printer;
-  //ExportLista;
+  try
+    Prn.Printer:=Printer;
+  except
+    on E: Exception do begin
+      debugln('lazreport: unit lr_prntr: ',E.Message);
+    end;
+  end;
 
 finalization
   Prn.Free;
