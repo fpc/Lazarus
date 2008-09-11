@@ -60,7 +60,7 @@ end;
 {-----------------------------------------------}
 function TCanvas.GetClipRect: TRect;
 begin
-  If GetClipBox(FHandle, @Result) = ERROR then
+  if GetClipBox(FHandle, @Result) = ERROR then
     Result := Rect(0,0,2000,2000);{Just in Case}
 end;
 

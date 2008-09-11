@@ -337,6 +337,7 @@ begin
   ClipRegion:=nil;
   FillChar(CurrentTextColor,SizeOf(CurrentTextColor),0);
   FillChar(CurrentBackColor,SizeOf(CurrentBackColor),0);
+  FillChar(PaintRectangle, SizeOf(PaintRectangle), 0);
 
   SelectedColors:=dcscCustom;
   SavedContext:=nil;
