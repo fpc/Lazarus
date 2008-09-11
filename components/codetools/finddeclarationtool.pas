@@ -1324,6 +1324,7 @@ begin
       if (fsfFindMainDeclaration in SearchSmartFlags)
       and CleanPosIsDeclarationIdentifier(CleanCursorPos,CursorNode)
       then begin
+        //DebugLn(['TFindDeclarationTool.FindDeclaration CleanPosIsDeclarationIdentifier']);
         NewTool:=Self;
         NewNode:=CursorNode;
         CleanCursorPos:=GetIdentStartPosition(Src,CleanCursorPos);
@@ -1340,6 +1341,7 @@ begin
     and IsIncludeDirectiveAtPos(CleanCursorPos,CleanPosInFront,NewPos.Code)
     then begin
       // include directive
+      //DebugLn(['TFindDeclarationTool.FindDeclaration IsIncludeDirectiveAtPos']);
       NewPos.X:=1;
       NewPos.Y:=1;
       NewTopLine:=1;
@@ -1357,6 +1359,7 @@ begin
     if (not IsDirtySrcValid)
     and (CursorNode.Desc=ctnUsesSection) then begin
       // in uses section
+      //DebugLn(['TFindDeclarationTool.FindDeclaration IsUsesSection']);
       Result:=FindDeclarationInUsesSection(CursorNode,CleanCursorPos,
                                            NewPos,NewTopLine);
       NewNode:=nil;
@@ -2027,8 +2030,10 @@ begin
   SrcLink:=Scanner.Links[LinkIndex+1];
   if (SrcLink.Code=nil) or (SrcLink.Code=Scanner.Links[LinkIndex].Code) then
     exit;
+  //DebugLn(['TFindDeclarationTool.IsIncludeDirectiveAtPos CleanPos=',CleanPos,' CleanCodePosInFront=',CleanCodePosInFront,' ',copy(Src,CleanCodePosInFront,10)]);
   if CleanPosIsInComment(CleanPos,CleanCodePosInFront,CommentStart,CommentEnd)
   and (CommentEnd=SrcLink.CleanedPos) then begin
+    //DebugLn(['TFindDeclarationTool.IsIncludeDirectiveAtPos CommentStart=',CommentStart,' CommentEnd=',CommentEnd,' ',copy(Src,CommentStart,CommentEnd-CommentStart)]);
     IncludeCode:=TCodeBuffer(SrcLink.Code);
     Result:=true;
     exit;

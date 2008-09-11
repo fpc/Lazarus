@@ -750,8 +750,7 @@ type
                                      read FOnAddJumpPoint write FOnAddJumpPoint;
     property OnCloseClicked: TOnCloseSrcEditor
                                      read FOnCloseClicked write FOnCloseClicked;
-    property OnClickLink: TMouseEvent
-                                       read FOnClickLink write FOnClickLink;
+    property OnClickLink: TMouseEvent read FOnClickLink write FOnClickLink;
     property OnDeleteLastJumpPoint: TNotifyEvent
                        read FOnDeleteLastJumpPoint write FOnDeleteLastJumpPoint;
     property OnEditorVisibleChanged: TNotifyEvent
@@ -2667,7 +2666,7 @@ end;
 procedure TSourceEditor.EditorClickLink(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  DebugLn(['TSourceEditor.EditorClickLink ']);
+  DebugLn(['TSourceEditor.EditorClickLink ',X,',',Y]);
   if Assigned(OnClickLink) then
     OnClickLink(Sender, Button, Shift, X,Y);
 end;
