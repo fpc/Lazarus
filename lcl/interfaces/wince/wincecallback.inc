@@ -677,14 +677,10 @@ Var
           capfAllowWinControls, capfHasScrollOffset]);
         if lControl = nil then
           lControl := lWinControl;
-        if lControl.Cursor <> crDefault then
-          ACursor := lControl.Cursor;
+        ACursor := lControl.Cursor;
       end;
-      if ACursor <> crDefault then
-      begin
-        Windows.SetCursor(Screen.Cursors[ACursor]);
-        LMessage.Result := 1;
-      end;
+      Windows.SetCursor(Screen.Cursors[ACursor]);
+      LMessage.Result := 1;
     end;
     if LMessage.Result = 0 then
     begin
