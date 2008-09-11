@@ -327,13 +327,20 @@ var
   OldWidget, NewWidget: TQtWidget;
   Msg: TLMessage;
 begin
-  //WriteLn('old: ', PtrUInt(old), ' new: ', PtrUInt(now));
+  // WriteLn('old: ', PtrUInt(old), ' new: ', PtrUInt(now));
   OldWidget := GetFirstQtObjectFromWidgetH(old);
   NewWidget := GetFirstQtObjectFromWidgetH(now);
 
   if OldWidget = NewWidget then
     Exit;
-    
+
+  {Applies to all TQtWidgets which have "subwidgets" created
+   by CreateFrom() eg. comboBox.}
+  if (OldWidget <> nil) and
+     (NewWidget <> nil) and
+     (OldWidget.LCLObject = NewWidget.LCLObject) then
+    exit;
+
   FillChar(Msg, SizeOf(Msg), 0);
   if OldWidget <> nil then
   begin
