@@ -6463,8 +6463,8 @@ begin
 
   FillChar(Msg, SizeOf(Msg), #0);
   Msg.Msg := LM_SELCHANGE;
-
-  DeliverMessage(Msg);
+  if QListWidget_currentItem(QListWidgetH(Widget)) <> nil then
+    DeliverMessage(Msg);
 end;
 
 {------------------------------------------------------------------------------
