@@ -384,7 +384,10 @@ begin
   BuildLazOptions:=MiscellaneousOptions.BuildLazOpts;
   BuildLazOptions.TargetOS:=OSOverride;
   BuildLazOptions.TargetCPU:=CPUOverride;
-  BuildLazOptions.TargetPlatform:=DirNameToLCLPlatform(WidgetSetOverride);
+  if WidgetSetOverride<>'' then
+    BuildLazOptions.TargetPlatform:=DirNameToLCLPlatform(WidgetSetOverride)
+  else
+    BuildLazOptions.TargetPlatform:=GetDefaultLCLWidgetType;
   BuildLazOptions.LCLPlatform:=BuildLazOptions.TargetPlatform;
   BuildLazOptions.IDEPlatform:=BuildLazOptions.TargetPlatform;
   BuildLazOptions.ExtraOptions:=BuildIDEOptions;
