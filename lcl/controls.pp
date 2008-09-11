@@ -1092,8 +1092,8 @@ type
     property DragKind: TDragKind read FDragKind write FDragKind default dkDrag;
     property DragMode: TDragMode read fDragMode write SetDragMode default dmManual;
     property MouseCapture: Boolean read GetMouseCapture write SetMouseCapture;
-    property ParentColor: Boolean read FParentColor write SetParentColor default true;
-    property ParentFont: Boolean  read FParentFont write SetParentFont;
+    property ParentColor: Boolean read FParentColor write SetParentColor default True;
+    property ParentFont: Boolean  read FParentFont write SetParentFont default True;
     property ParentShowHint: Boolean read FParentShowHint write SetParentShowHint default True;
     property SessionProperties: string read FSessionProperties write FSessionProperties;
     property Text: TCaption read GetText write SetText;

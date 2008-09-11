@@ -843,9 +843,9 @@ end;
 ------------------------------------------------------------------------------}
 function TControl.ColorIsStored: boolean;
 begin
-  Result:=(Color<>clWindow);
-  if Result and ParentColor and (Parent<>nil) then
-    Result:=false;
+  Result := (Color <> clWindow);
+  if Result and ParentColor and (Parent <> nil) then
+    Result := False;
 end;
 
 {------------------------------------------------------------------------------
@@ -3845,8 +3845,9 @@ begin
   FCaptureMouseButtons := [mbLeft];
   FColor := clWindow;
   FVisible := true;
-  FParentShowHint := True;
   FParentColor := True;
+  FParentFont := True;
+  FParentShowHint := True;
   FWindowProc := @WndProc;
   FCursor := crDefault;
   FFont := TFont.Create;
