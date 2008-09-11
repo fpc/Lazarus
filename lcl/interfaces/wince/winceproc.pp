@@ -1453,7 +1453,7 @@ begin
 {$ifdef Win32}
   Result := atDefault;//atDesktop;
 {$else}
-  if SystemParametersInfo(SPI_GETPLATFORMTYPE, sizeof(buf), @buf, 0) then
+  if Windows.SystemParametersInfo(SPI_GETPLATFORMTYPE, sizeof(buf), @buf, 0) then
   begin
     if WideStrCmp(@buf, 'PocketPC') = 0 then
       Result := atPDA

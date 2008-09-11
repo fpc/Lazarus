@@ -140,7 +140,7 @@ var
   buf: array[0..255] of WideChar;
 begin
   Result := false;
-  if SystemParametersInfo(SPI_GETPLATFORMTYPE,sizeof(buf),@buf,0) then
+  if Windows.SystemParametersInfo(SPI_GETPLATFORMTYPE,sizeof(buf),@buf,0) then
   begin
     if WStrCmp(@buf,PWideChar('SmartPhone')) = 0  then
       Result := true
