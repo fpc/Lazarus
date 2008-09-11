@@ -262,7 +262,7 @@ begin
   if BitmapBits = nil then
   begin
     if BitCount = 24 then BitCount := 32;
-    if BitCount = 1 then BitCount := 8;
+    // if BitCount = 1 then BitCount := 8;
   end;
   
   case BitCount of
