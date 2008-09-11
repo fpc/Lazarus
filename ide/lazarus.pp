@@ -50,7 +50,7 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  {$IFDEF Unix}
+  {$IF defined(Unix) and not defined(VER2_2_0) and not defined(VER2_2_2)}
   clocale,
   {$ENDIF}
   Interfaces,
