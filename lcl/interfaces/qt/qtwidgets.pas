@@ -333,6 +333,8 @@ type
     procedure setViewport(const AViewPort: QWidgetH);
     procedure setVerticalScrollBar(AScrollBar: TQtScrollBar);
     procedure setVisible(visible: Boolean); override;
+    procedure Update(ARect: PRect = nil); override;
+    procedure Repaint(ARect: PRect = nil); override;
     procedure viewportNeeded;
     procedure viewportDelete;
   end;
@@ -8073,6 +8075,32 @@ begin
   inherited setVisible(visible);
   if FViewPortWidget <> nil then
     FViewPortWidget.setVisible(visible);
+end;
+
+procedure TQtAbstractScrollArea.Update(ARect: PRect);
+var
+  P: TPoint;
+begin
+  if ARect <> nil then
+  begin
+    P := getClientOffset;
+    OffsetRect(ARect^, -P.X , -P.Y);
+    QWidget_update(viewport.Widget, ARect);
+  end else
+    QWidget_update(viewport.Widget);
+end;
+
+procedure TQtAbstractScrollArea.Repaint(ARect: PRect);
+var
+  P: TPoint;
+begin
+  if ARect <> nil then
+  begin
+    P := getClientOffset;
+    OffsetRect(ARect^, -P.X , -P.Y);
+    QWidget_repaint(viewport.Widget, ARect);
+  end else
+    QWidget_repaint(viewport.Widget);
 end;
 
 {------------------------------------------------------------------------------
