@@ -8,7 +8,6 @@
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
       <Title Value="HtmFileExplorer1"/>
-      <ActiveEditorIndexAtStart Value="3"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -43,9 +42,7 @@
         <IsPartOfProject Value="True"/>
         <CursorPos X="18" Y="8"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="0"/>
         <UsageCount Value="20"/>
-        <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="htmfileexp1.pas"/>
@@ -56,58 +53,23 @@
         <UnitName Value="HtmFileExp1"/>
         <CursorPos X="19" Y="286"/>
         <TopLine Value="254"/>
-        <EditorIndex Value="1"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="..\..\..\lcl\include\graphic.inc"/>
         <CursorPos X="48" Y="255"/>
         <TopLine Value="235"/>
-        <EditorIndex Value="2"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
       </Unit2>
       <Unit3>
         <Filename Value="..\iphtml.pas"/>
         <UnitName Value="IpHtml"/>
-        <CursorPos X="45" Y="7958"/>
-        <TopLine Value="7933"/>
-        <EditorIndex Value="3"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
       </Unit3>
     </Units>
-    <JumpHistory Count="7" HistoryIndex="6">
-      <Position1>
-        <Filename Value="htmfileexp1.pas"/>
-        <Caret Line="6" Column="1" TopLine="1"/>
-      </Position1>
-      <Position2>
-        <Filename Value="htmfileexp1.pas"/>
-        <Caret Line="116" Column="22" TopLine="98"/>
-      </Position2>
-      <Position3>
-        <Filename Value="htmfileexp1.pas"/>
-        <Caret Line="23" Column="39" TopLine="1"/>
-      </Position3>
-      <Position4>
-        <Filename Value="htmfileexp1.pas"/>
-        <Caret Line="286" Column="19" TopLine="254"/>
-      </Position4>
-      <Position5>
-        <Filename Value="..\..\..\lcl\include\graphic.inc"/>
-        <Caret Line="255" Column="48" TopLine="235"/>
-      </Position5>
-      <Position6>
-        <Filename Value="..\iphtml.pas"/>
-        <Caret Line="7959" Column="1" TopLine="7937"/>
-      </Position6>
-      <Position7>
-        <Filename Value="..\iphtml.pas"/>
-        <Caret Line="7958" Column="14" TopLine="7940"/>
-      </Position7>
-    </JumpHistory>
+    <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="8"/>
