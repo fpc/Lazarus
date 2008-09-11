@@ -487,30 +487,34 @@ var   CommaList     : TStringList;
       
 
 begin
- SaveDialog1.FileName:='TodoList_'+FormatDateTime('YYYY_MM_DD',now);
- if SaveDialog1.Execute then
- begin
-  CommaList:=TStringList.Create;
-  try
-   CommaList.Add('Done,Description,Priority,Module,Line,Owner,Category');
-   i:=0;
-   while i<lvTodo.Items.Count do
-   begin
-    todoItm:=TTodoItem(lvTodo.Items[i].Data);
-    if todoItm.Done then s:='X,' else s:=' ,';
-    t:=DelChars(todoItm.Text,',');{Strip any commas that can cause a faulty csv file}
-    s:=s+t+','+IntToStr(todoItm.Priority)+','+todoItm.Filename+
-       ','+IntToStr(todoItm.LineNumber)+','+todoItm.Owner+','+todoItm.Category;
-    CommaList.Add(s);
-    i:=i+1;
-   end;
-   CommaList.SaveToFile(UTF8ToSys(SaveDialog1.FileName));
-  finally
-   CommaList.Clear;
-   CommaList.Free;
-  end;
- end
- else MessageDlg('Warning','Filename is: '+SaveDialog1.FileName,mtWarning,[mbClose],0);
+  SaveDialog1.FileName:='TodoList_'+FormatDateTime('YYYY_MM_DD',now);
+  if SaveDialog1.Execute then
+  begin
+    CommaList:=TStringList.Create;
+    try
+      CommaList.Add('Done,Description,Priority,Module,Line,Owner,Category');
+      i:=0;
+      while i<lvTodo.Items.Count do
+      begin
+        todoItm:=TTodoItem(lvTodo.Items[i].Data);
+        if todoItm.Done then
+          s:='X,'
+        else
+          s:=' ,';
+        t:=DelChars(todoItm.Text,',');{Strip any commas that can cause a faulty csv file}
+        s:=s+t+','+IntToStr(todoItm.Priority)+','+todoItm.Filename+
+           ','+IntToStr(todoItm.LineNumber)+','+todoItm.Owner+','+todoItm.Category;
+        CommaList.Add(s);
+        i:=i+1;
+      end;
+      CommaList.SaveToFile(UTF8ToSys(SaveDialog1.FileName));
+    finally
+      CommaList.Clear;
+      CommaList.Free;
+    end;
+  end
+  else
+    MessageDlg('Warning','Filename is: '+SaveDialog1.FileName,mtWarning,[mbClose],0);
 end;
 
 procedure TfrmTodo.acRefreshExecute(Sender: TObject);
@@ -526,7 +530,7 @@ var
 begin
   if fBuild then Exit;
 
-  //DebugLn(['TfrmTodo.acRefreshExecute MainSourceFilename=',MainSourceFilename]);
+  DebugLn(['TfrmTodo.acRefreshExecute MainSourceFilename=',MainSourceFilename]);
 
   Screen.Cursor:=crHourGlass;
   Owners:=nil;
@@ -644,7 +648,6 @@ var
 begin
   DebugLn(['TfrmTodo.ScanFile ',aFileName]);
   ExpandedFilename:=TrimFilename(aFileName);
-  if not FilenameIsPascalUnit(ExpandedFilename) then exit;
 
   Code:=CodeToolBoss.LoadFile(ExpandedFilename,true,false);
   if Code=nil then exit;
