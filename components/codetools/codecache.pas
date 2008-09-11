@@ -673,14 +673,14 @@ var
         DebugLn('TCodeCache.SaveIncludeLinksToXML ',
           Index,' ',ALink.IncludeFilename,
           ' LastTimeUsed=',FormatDateTime('ddddd', ALink.LastTimeUsed),
-          ' CurTime=',FormatDateTime('ddddd',CurTime),
+          ' CurTime=',DateToNormalStr('ddddd',CurTime),
           ' DiffTime=',DiffTime,
           ' ExpirationTime=',ExpirationTime);}
       APath:=XMLPath+'IncludeLinks/Link'+IntToStr(Index)+'/';
       XMLConfig.SetValue(APath+'IncludeFilename/Value',ALink.IncludeFilename);
       XMLConfig.SetValue(APath+'IncludedByFilename/Value',ALink.IncludedByFile);
       XMLConfig.SetValue(APath+'LastTimeUsed/Value',
-                                   FormatDateTime('ddddd', ALink.LastTimeUsed));
+                                   DateToCfgStr(ALink.LastTimeUsed));
       inc(Index);
     end;
     SaveLinkTree(ANode.Right);
@@ -720,7 +720,7 @@ begin
     CurrDateStr:=DateToStr(CurrDate);
     for i:=0 to LinkCnt-1 do begin
       APath:=XMLPath+'IncludeLinks/Link'+IntToStr(i)+'/';
-      if not TryStrToDate(XMLConfig.GetValue(APath+'LastTimeUsed/Value',
+      if not CfgStrToDate(XMLConfig.GetValue(APath+'LastTimeUsed/Value',
            CurrDateStr),LastTimeUsed)
       then
         LastTimeUsed:=CurrDate;

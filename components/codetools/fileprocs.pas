@@ -250,6 +250,10 @@ function FindNextDelimitedItem(const List: string; Delimiter: char;
                                var Position: integer; FindItem: string): string;
 function AVLTreeHasDoubles(Tree: TAVLTree): TAVLTreeNode;
 
+const DateAsCfgStrFormat='YYYYMMDD';
+function DateToCfgStr(const Date: TDateTime): string;
+function CfgStrToDate(const s: string; var Date: TDateTime): boolean;
+
 // debugging
 procedure DebugLn(Args: array of const);
 procedure DebugLn(const S: String; Args: array of const);// similar to Format(s,Args)
@@ -2254,6 +2258,44 @@ begin
     Next:=Tree.FindSuccessor(Result);
     if (Next<>nil) and (Tree.OnCompare(Result.Data,Next.Data)=0) then exit;
     Result:=Next;
+  end;
+end;
+
+function DateToCfgStr(const Date: TDateTime): string;
+begin
+  try
+    Result:=FormatDateTime(DateAsCfgStrFormat,Date);
+  except
+    Result:='';
+  end;
+  //debugln('DateToCfgStr "',Result,'"');
+end;
+
+function CfgStrToDate(const s: string; var Date: TDateTime): boolean;
+var
+  i: Integer;
+  Year, Month, Day: word;
+begin
+  //debugln('CfgStrToDate "',s,'"');
+  Result:=true;
+  if length(s)<>length(DateAsCfgStrFormat) then begin
+    Result:=false;
+    exit;
+  end;
+  try
+    Year:=0;
+    Month:=0;
+    Day:=0;
+    for i:=1 to length(DateAsCfgStrFormat) do begin
+      case DateAsCfgStrFormat[i] of
+      'Y': Year:=Year*10+ord(s[i])-ord('0');
+      'M': Month:=Month*10+ord(s[i])-ord('0');
+      'D': Day:=Day*10+ord(s[i])-ord('0');
+      end;
+    end;
+    Date:=EncodeDate(Year,Month,Day);
+  except
+    Result:=false;
   end;
 end;
 
