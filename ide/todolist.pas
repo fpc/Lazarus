@@ -275,7 +275,7 @@ const
   end;
 
 begin
-
+  //DebugLn(['TfrmTodo.CreateToDoItem aFileName=',aFileName,' LineNumber=',LineNumber]);
   Result := nil;
   
   ParsingString:= Trim(TokenString);
@@ -527,6 +527,8 @@ var
   CurPackage: TLazPackage;
   CurProjFile: TLazProjectFile;
   CurPkgFile: TPkgFile;
+  Node: TAvgLvlTreeNode;
+  CurFile: TTLScannedFile;
 begin
   if fBuild then Exit;
 
@@ -536,8 +538,9 @@ begin
   Owners:=nil;
   try
     fBuild:=True;
+    CodeToolBoss.ActivateWriteLock;
     lvTodo.Items.Clear;
-    
+
     if MainSourceFilename='' then exit;
     
     // Find an '.todo' file of the main source
@@ -589,7 +592,7 @@ begin
       for i:=0 to CurProject.FileCount-1 do begin
         CurProjFile:=CurProject.Files[i];
         if CurProjFile.IsPartOfProject
-        and FilenameIsPascalUnit(CurProjFile.Filename)then
+        and FilenameIsPascalUnit(CurProjFile.Filename) then
           ScanFile(CurProjFile.Filename);
       end;
     end;
@@ -603,7 +606,16 @@ begin
           ScanFile(CurPkgFile.Filename);
       end;
     end;
+
+    Node:=fScannedFiles.FindLowest;
+    while Node<>nil do begin
+      CurFile:=TTLScannedFile(Node.Data);
+      for i:=0 to CurFile.Count-1 do
+        AddListItem(CurFile[i]);
+      Node:=fScannedFiles.FindSuccessor(Node);
+    end;
   finally
+    CodeToolBoss.DeactivateWriteLock;
     Owners.Free;
     Screen.Cursor:=crDefault;
     fBuild:=False;
@@ -616,6 +628,7 @@ var
 begin
   if Assigned(aTodoItem) then
   begin
+    //DebugLn(['TfrmTodo.AddListItem ',aTodoItem.Filename,' ',aTodoItem.LineNumber]);
     aListitem := lvTodo.Items.Add;
     aListitem.Data := aTodoItem;
     if aTodoItem.Done then
@@ -644,9 +657,8 @@ var
   CommentEnd: LongInt;
   CommentStr: String;
   CodeXYPosition: TCodeXYPosition;
-  i: Integer;
 begin
-  DebugLn(['TfrmTodo.ScanFile ',aFileName]);
+  //DebugLn(['TfrmTodo.ScanFile ',aFileName]);
   ExpandedFilename:=TrimFilename(aFileName);
 
   Code:=CodeToolBoss.LoadFile(ExpandedFilename,true,false);
@@ -657,52 +669,48 @@ begin
   AVLNode:=fScannedFiles.FindKey(Pointer(Tool.MainFilename),
                                  @CompareAnsiStringWithTLScannedFile);
   CurFile:=nil;
-  try
-    if AVLNode<>nil then begin
-      CurFile:=TTLScannedFile(AVLNode.Data);
-      // Abort if this file has already been scanned and has not changed
-      if CurFile.CodeChangeStep=Tool.Scanner.ChangeStep then exit;
-    end;
-
-    // Add file name to list of scanned files
-    if CurFile=nil then begin
-      CurFile:=TTLScannedFile.Create;
-      CurFile.Filename:=Tool.MainFilename;
-      fScannedFiles.Add(CurFile);
-    end;
-    // save ChangeStep
-    CurFile.CodeChangeStep:=Tool.Scanner.ChangeStep;
-    // clear old items
-    CurFile.Clear;
-
-    // Display file name being processed
-    //StatusBar.SimpleText := aFileName;
-    //StatusBar.Repaint;
-
-    Src:=Tool.Src;
-    p:=1;
-    NestedComment:=CodeToolBoss.GetNestedCommentsFlagForFile(Code.Filename);
-    repeat
-      p:=FindNextComment(Src,p);
-      if p>length(Src) then break;
-      CommentEnd:=FindCommentEnd(Src,p,NestedComment);
-      Tool.CleanPosToCaret(p,CodeXYPosition);
-      CommentStr:=copy(Src,p,CommentEnd-p);
-      //DebugLn(['TfrmTodo.LoadFile CommentStr="',CommentStr,'"']);
-      if Src[p]='/' then
-        CreateToDoItem(CurFile,CodeXYPosition.Code.Filename, '//', '', CommentStr, CodeXYPosition.Y)
-      else if Src[p]='{' then
-        CreateToDoItem(CurFile,CodeXYPosition.Code.Filename, '{', '}', CommentStr, CodeXYPosition.Y)
-      else if Src[p]='(' then
-        CreateToDoItem(CurFile,CodeXYPosition.Code.Filename, '(*', '*)', CommentStr, CodeXYPosition.Y);
-      p:=CommentEnd;
-    until false;
-  finally
-    if (CurFile<>nil) then begin
-      for i:=0 to CurFile.Count-1 do
-        AddListItem(CurFile[i]);
-    end;
+  //DebugLn(['TfrmTodo.ScanFile ',Tool.MainFilename,' AVLNode=',AVLNode<>nil]);
+  if AVLNode<>nil then begin
+    CurFile:=TTLScannedFile(AVLNode.Data);
+    // Abort if this file has already been scanned and has not changed
+    if CurFile.CodeChangeStep=Tool.Scanner.ChangeStep then exit;
   end;
+  //DebugLn(['TfrmTodo.ScanFile SCANNING ... ']);
+
+  // Add file name to list of scanned files
+  if CurFile=nil then begin
+    CurFile:=TTLScannedFile.Create;
+    CurFile.Filename:=Tool.MainFilename;
+    fScannedFiles.Add(CurFile);
+  end;
+  // save ChangeStep
+  CurFile.CodeChangeStep:=Tool.Scanner.ChangeStep;
+  //DebugLn(['TfrmTodo.ScanFile saved ChangeStep ',CurFile.CodeChangeStep,' ',Tool.Scanner.ChangeStep]);
+  // clear old items
+  CurFile.Clear;
+
+  // Display file name being processed
+  //StatusBar.SimpleText := aFileName;
+  //StatusBar.Repaint;
+
+  Src:=Tool.Src;
+  p:=1;
+  NestedComment:=CodeToolBoss.GetNestedCommentsFlagForFile(Code.Filename);
+  repeat
+    p:=FindNextComment(Src,p);
+    if p>length(Src) then break;
+    CommentEnd:=FindCommentEnd(Src,p,NestedComment);
+    Tool.CleanPosToCaret(p,CodeXYPosition);
+    CommentStr:=copy(Src,p,CommentEnd-p);
+    //DebugLn(['TfrmTodo.ScanFile CommentStr="',CommentStr,'"']);
+    if Src[p]='/' then
+      CreateToDoItem(CurFile,CodeXYPosition.Code.Filename, '//', '', CommentStr, CodeXYPosition.Y)
+    else if Src[p]='{' then
+      CreateToDoItem(CurFile,CodeXYPosition.Code.Filename, '{', '}', CommentStr, CodeXYPosition.Y)
+    else if Src[p]='(' then
+      CreateToDoItem(CurFile,CodeXYPosition.Code.Filename, '(*', '*)', CommentStr, CodeXYPosition.Y);
+    p:=CommentEnd;
+  until false;
 end;
 
 { TTodoItem }
