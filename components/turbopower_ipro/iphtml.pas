@@ -7897,7 +7897,7 @@ end;
 
 constructor TIpHtml.Create;
 var
-  TmpBitmap : TBitmap;
+  TmpBitmap: TGraphic;
 begin
   inherited Create;
   PropACache := TList.Create;
@@ -7944,21 +7944,20 @@ begin
   {$ENDIF}
   NameList := TStringList.Create;
   DefaultImage := TPicture.Create;
-  TmpBitmap := TBitmap.Create;
+  TmpBitmap := nil;
   try
     {$IFNDEF IP_LAZARUS}
-    TmpBitmap.LoadFromResourceName (HInstance, 'DEFAULTIMAGE'); //JMN
+    TmpBitmap := TBitmap.Create;
+    TBitmap(TmpBitmap).LoadFromResourceName (HInstance, 'DEFAULTIMAGE'); //JMN
     (**
     TmpBitmap.LoadFromResourceName(FindClassHInstance(                      {!!.06}
       TIpHTMLCustomPanel), 'DEFAULTIMAGE');
     **)
-    DefaultImage.Graphic := TmpBitmap;
     {$ELSE}
-    if LazarusResources.Find('DEFAULTIMAGE')<>nil then begin
-      TmpBitmap.LoadFromLazarusResource('DEFAULTIMAGE');
-      DefaultImage.Graphic := TmpBitmap;
-    end;
+    if LazarusResources.Find('DEFAULTIMAGE')<>nil then
+      TmpBitmap := CreateBitmapFromLazarusResource('DEFAULTIMAGE');
     {$ENDIF}
+    DefaultImage.Graphic := TmpBitmap;
   finally
     TmpBitmap.Free;
   end;

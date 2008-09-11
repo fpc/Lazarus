@@ -3,7 +3,6 @@ unit HtmFileExp1;
 {$mode objfpc}{$H+}
 
 {.$define UsePreview}
-{$define UseJPEG}
 {$IFDEF LCL}
 {$DEFINE IP_LAZARUS}
 {$ENDIF}
@@ -13,9 +12,6 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
   {$IFDEF IP_LAZARUS}
-    {$ifdef UseJPEG}
-    LazJpeg,
-    {$endif}
     {$ifdef UsePreview}
     OsPrinters,
     {$endif}
@@ -24,7 +20,7 @@ uses
     JPeg,
     ImageDLLLoader, PNGLoader, LinarBitmap, //from ImageFileLib of Michael Vinther: http://www.logicnet.dk/lib/
   {$ENDIF}
-  IpHtml, ExtCtrls, StdCtrls;
+  IpHtml, ExtCtrls, StdCtrls, FileUtil;
 
 type
   TSimpleIpHtml = class(TIpHtml)
