@@ -8,8 +8,8 @@ uses
   Classes, SysUtils, Math,
   LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   StdCtrls, Buttons, ComCtrls, ExtCtrls, FileUtil, AVGLvlTree,
-  SynEdit, DefineTemplates, ExprEval,
-  LazarusIDEStrConsts, InputHistory, IDEWindowIntf, CodeToolsOptions;
+  SynEdit, DefineTemplates, ExprEval, IDEWindowIntf, EditorOptions,
+  LazarusIDEStrConsts, InputHistory, CodeToolsOptions;
 
 type
   TCodeToolsDefinesNodeValues = class
@@ -394,6 +394,9 @@ begin
   TemplatesSplitter.SetSplitterPosition(
          Max(20,Min(TemplatesGroupBox.ClientHeight-50,
                     CodeToolsOpts.DefinesPreviewTemplSplitterPos)));
+
+  EditorOpts.GetSynEditSettings(ValueSynedit);
+  ValueSynedit.Gutter.Visible:=false;
 end;
 
 procedure TCodeToolsDefinesDialog.CodeToolsDefinesDialogCLOSE(Sender: TObject;

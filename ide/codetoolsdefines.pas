@@ -50,7 +50,7 @@ uses
   CodeToolManager, DefineTemplates,
   IDEWindowIntf,
   LazarusIDEStrConsts, CodeToolsOptions, CodeToolsDefPreview, TransferMacros,
-  InputFileDialog, IDEOptionDefs, LazConf, IDEProcs;
+  EditorOptions, InputFileDialog, IDEOptionDefs, LazConf, IDEProcs;
 
 type
 
@@ -1483,6 +1483,11 @@ begin
          Max(20,Min(ClientHeight-100,CodeToolsOpts.DefinesEditMainSplitterTop)));
 
   FDefineTree:=TDefineTree.Create;
+
+  EditorOpts.GetSynEditSettings(ValueAsTextSynEdit);
+  ValueAsTextSynEdit.Gutter.Visible:=false;
+  EditorOpts.GetSynEditSettings(ValueAsFilePathsSynEdit);
+  ValueAsFilePathsSynEdit.Gutter.Visible:=false;
 end;
 
 destructor TCodeToolsDefinesEditor.Destroy;

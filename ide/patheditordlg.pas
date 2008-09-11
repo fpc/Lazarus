@@ -154,6 +154,12 @@ begin
 
   OKBitBtn.Caption:=lisOkBtn;
   CancelBitBtn.Caption:=dlgCancel;
+
+  PathEdit.Font.BeginUpdate;
+  PathEdit.Font.Name:=SynDefaultFontName;
+  PathEdit.Font.Height:=SynDefaultFontHeight;
+  PathEdit.Font.Pitch:=SynDefaultFontPitch;
+  PathEdit.Font.EndUpdate;
 end;
 
 procedure TPathEditorDialog.FormResize(Sender: TObject);

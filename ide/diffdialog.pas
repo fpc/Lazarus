@@ -273,6 +273,9 @@ begin
                  +'|'+lisLazarusProjectSource+' (*.lpr)|*.lpr';
   dlgSave.Title:=lisSaveFileAs;
   dlgSave.Filter:=dlgAllFiles+' ('+GetAllFilesMask+')|'+GetAllFilesMask;
+
+  // diff
+  EditorOpts.GetSynEditSettings(DiffSynEdit);
 end;
 
 procedure TDiffDlg.UpdateDiff;

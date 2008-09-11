@@ -37,8 +37,7 @@ uses
   CodeToolsStructs, CodeAtom, CodeCache, CodeToolManager, PascalParserTool,
   CodeTree,
   SrcEditorIntf, LazIDEIntf, PropEdits,
-  Project,
-  LazarusIDEStrConsts;
+  Project, LazarusIDEStrConsts, EditorOptions;
 
 type
 
@@ -159,6 +158,8 @@ begin
   
   ButtonPanel1.OKButton.OnClick:=@OKButtonClick;
   ButtonPanel1.OKButton.Caption:=lisEMDRemoveMethods;
+
+  EditorOpts.GetSynEditSettings(MethodsSynEdit);
 end;
 
 procedure TEmptyMethodsDialog.OKButtonClick(Sender: TObject);

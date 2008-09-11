@@ -36,7 +36,8 @@ uses
   Classes, SysUtils, LCLProc, Forms, Controls, Buttons, StdCtrls,
   LResources, SynEdit, LCLType, ComCtrls, ExtCtrls,
   FileProcs, CodeToolManager, CodeCache, Laz_XMLCfg, Laz_XMLWrite,
-  Project, DiffPatch, LazarusIDEStrConsts, EnvironmentOpts, PackageDefs;
+  Project, DiffPatch, LazarusIDEStrConsts, EnvironmentOpts, EditorOptions,
+  PackageDefs;
 
 type
   PDiffItem = ^TDiffItem;
@@ -332,6 +333,7 @@ begin
   inherited Create(TheOwner);
 
   Caption:=lisDiskDiffSomeFilesHaveChangedOnDisk;
+  EditorOpts.GetSynEditSettings(DiffSynEdit);
   DiffSynEdit.Lines.Text:=lisDiskDiffClickOnOneOfTheAboveItemsToSeeTheDiff;
   RevertAllButton.Caption:=lisDiskDiffRevertAll;
   IgnoreDiskChangesButton.Caption:=lisDiskDiffIgnoreDiskChanges;
