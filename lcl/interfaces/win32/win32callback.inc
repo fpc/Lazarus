@@ -1101,7 +1101,7 @@ var
     UTF8Char: TUTF8Char;
   begin
     Result := false;
-    UTF8Char := UTF8Encode(WideChar(AChar));
+    UTF8Char := UTF8Encode(widestring(WideChar(AChar)));
     lWinControl := WindowInfo^.WinControl;
     if Assigned(lWinControl) then
     begin

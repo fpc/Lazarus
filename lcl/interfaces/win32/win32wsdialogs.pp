@@ -557,20 +557,20 @@ var
       I:=Length(PWideName);
       if I < OpenFile^.nFileOffset then
       begin
-        DirName := AppendPathDelim(UTF8Encode(PWideName));
+        DirName := AppendPathDelim(UTF8Encode(widestring(PWideName)));
         Inc(PWideName, Succ(I));
         I:=Length(PWideName);
         while I > 0 do
         begin
           // Don't use expand filename here, it expands directories using
           // system encoding, not UTF-8
-          AFiles.Add(DirName + Utf8Encode(PWideName));
+          AFiles.Add(DirName + Utf8Encode(widestring(PWideName)));
           Inc(PWideName,Succ(I));
           I:=Length(PWideName);
         end;
       end
       else
-        AFiles.Add(Utf8Encode(PWideName));
+        AFiles.Add(Utf8Encode(widestring(PWideName)));
     end
     else
     begin
@@ -653,7 +653,7 @@ var
   begin
     {$ifdef WindowsUnicodeSupport}
        if UnicodeEnabledOS then
-         SelectedStr:=UTF8Encode(PWideChar(OpenFile^.lpStrFile))
+         SelectedStr:=UTF8Encode(widestring(PWideChar(OpenFile^.lpStrFile)))
        else
          SelectedStr:=AnsiToUtf8(OpenFile^.lpStrFile);
     {$else}
@@ -935,7 +935,7 @@ begin
     begin
       SHGetPathFromIDListW(iidl, BufferW);
       CoTaskMemFree(iidl);
-      TSelectDirectoryDialog(ACommonDialog).FileName := UTF8Encode(BufferW);
+      TSelectDirectoryDialog(ACommonDialog).FileName := UTF8Encode(widestring(BufferW));
     end;
   end
   else begin
