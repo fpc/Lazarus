@@ -435,10 +435,10 @@ begin
   begin
    FCharCase := eccCharCase;
    case FCharCase of
-    ecUpperCase: Text := UpperCase(Text);
-    ecLowerCase: Text := Lowercase(Text);
-    end;//End case
-  end;//End if (FCharCase <> eccCharCase)
+     ecUpperCase: Text := UTF8UpperCase(Text);
+     ecLowerCase: Text := UTF8Lowercase(Text);
+    end;
+  end;
 end;
 
 procedure TCustomComboBox.KeyDown(var Key: Word; Shift: TShiftState);
@@ -553,8 +553,8 @@ procedure TCustomComboBox.UTF8KeyPress(var UTF8Key: TUTF8Char);
 begin
   //Convert character cases if FCharCase is not ecNormalCase
   case FCharCase of
-    ecLowerCase: UTF8Key := AnsiLowerCase(UTF8Key);
-    ecUpperCase: UTF8Key := AnsiUpperCase(UTF8Key);
+    ecLowerCase: UTF8Key := UTF8LowerCase(UTF8Key);
+    ecUpperCase: UTF8Key := UTF8UpperCase(UTF8Key);
   end;
   inherited UTF8KeyPress(UTF8Key);
 end;

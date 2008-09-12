@@ -1868,9 +1868,11 @@ begin
   KeyMsg.KeyData := QtKeyModifiersToKeyState(Modifiers);
 
   {$ifdef windows}
-    ACharCode := QKeyEvent_nativeVirtualKey(QKeyEventH(Event));
-    KeyMsg.CharCode := ACharCode;
+    //ACharCode := QKeyEvent_nativeVirtualKey(QKeyEventH(Event));
+    //KeyMsg.CharCode := ACharCode;
   // todo: VK to Win_VK for other os too
+    WriteLn(QKeyEvent_nativeVirtualKey(QKeyEventH(Event)));
+    WriteLn(QKeyEvent_nativeScanCode(QKeyEventH(Event)));
   {$endif}
 
   // Loads the UTF-8 character associated with the keypress, if any

@@ -280,10 +280,10 @@ begin
     // update interface, it might do the case conversion itself.
     if HandleAllocated then
       TWSCustomEditClass(WidgetSetClass).SetCharCase(Self, Value);
-    if FCharCase = ecUpperCase then
-      Text := Uppercase(Text)
-    else if FCharCase = ecLowerCase then
-      Text := Lowercase(Text);
+    case FCharCase of
+      ecUpperCase: Text := UTF8UpperCase(Text);
+      ecLowerCase: Text := UTF8LowerCase(Text);
+    end;
   end;
 end;
 
@@ -444,13 +444,13 @@ begin
   //check to see if the charcase should affect the text.
   if FCharCase = ecUppercase then
   begin
-    Temp := Uppercase(Text);
+    Temp := UTF8UpperCase(Text);
     if Temp <> Text then Text := Temp;
   end
   else
   if FCharCase = ecLowercase then
   begin
-    Temp := Lowercase(Text);
+    Temp := UTF8LowerCase(Text);
     if Temp <> Text then Text := Temp;
   end;
 
