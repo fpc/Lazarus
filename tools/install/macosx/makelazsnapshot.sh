@@ -49,5 +49,5 @@ DMGFILE=~/tmp/lazarus-$LazVersion-$DATESTAMP-$FPCARCH-macosx.dmg
 
 if [ -e $DMGFILE ]; then
 #update lazarus snapshot web page
-  echo "$DMGFILE lazarus-*-*-$FPCARCH-macosx.dmg " >> $UPDATELIST
+  echo "$DMGFILE 'lazarus-*-*-$FPCARCH-macosx.dmg' " >> $UPDATELIST
 fi
