@@ -95,7 +95,7 @@ const
   {$DEFINE SynDefaultFont}
   {$ENDIF}
   {$IFDEF LCLcarbon}
-  SynDefaultFontName = 'Courier'; // Note: carbon is case sensitive
+  SynDefaultFontName = 'Monaco'; // Note: carbon is case sensitive
   SynDefaultFontHeight = 12;
   {$DEFINE SynDefaultFont}
   {$ENDIF}
