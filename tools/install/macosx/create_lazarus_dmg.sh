@@ -94,7 +94,7 @@ ROOTDIR=$BUILDDIR/Root
 LAZBUILDDIR=$ROOTDIR/Developer/lazarus
 DATESTAMP=$(date +%Y%m%d)
 TEMPLATEDIR=$LAZSOURCEDIR/tools/install/macosx
-PACKPROJTEMPLATE=$TEMPLATEDIR/lazarus_release.packproj.template
+PACKPROJTEMPLATE=$TEMPLATEDIR/lazarus.packproj.template
 PACKPROJ=$BUILDDIR/lazarus.packproj
 
 # copy sources
