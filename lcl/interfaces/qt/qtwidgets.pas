@@ -1845,6 +1845,7 @@ var
   Modifiers: QtKeyboardModifiers;
   IsSysKey: Boolean;
   Text: WideString;
+  UTF8Text: String; // use to prevent 3 time convertion from WideString to utf8 string
   UTF8Char: TUTF8Char;
   ACharCode: Word;
   AChar: Char;
@@ -1857,6 +1858,7 @@ begin
   Result := True;
   FillChar(KeyMsg, SizeOf(KeyMsg), #0);
   FillChar(CharMsg, SizeOf(CharMsg), #0);
+  UTF8Text := '';
   UTF8Char := '';
   AChar := #0;
 
@@ -1928,7 +1930,8 @@ begin
 
   if (QEvent_type(Event) = QEventKeyPress) and (Length(Text) <> 0) then
   begin
-    UTF8Char := TUTF8Char(Text);
+    UTF8Text := UTF8Encode(Text);
+    UTF8Char := UTF8Text;
   {$ifdef VerboseQt}
     WriteLn('sending char ', UTF8Char);
   {$endif}
@@ -1976,11 +1979,11 @@ begin
   end;
   
   // check if data was changed during key handling
-  if (KeyMsg.CharCode <> ACharCode) or (UTF8Char <> TUTF8Char(Text)) or (Word(AChar) <> CharMsg.CharCode) then
+  if (KeyMsg.CharCode <> ACharCode) or (UTF8Char <> UTF8Text) or (Word(AChar) <> CharMsg.CharCode) then
   begin
     // data was changed
-    if UTF8Char <> TUTF8Char(Text) then
-      Text := Utf8Char
+    if UTF8Char <> UTF8Text then
+      Text := UTF8Decode(Utf8Char)
     else
     if Word(AChar) <> CharMsg.CharCode then
       Text := Char(CharMsg.CharCode);
