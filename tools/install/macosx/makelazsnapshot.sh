@@ -33,93 +33,19 @@ if [ ! -e "$FREEZE" ]; then
   echo "Cannot find freeze"
 fi
 
+export FPC=~/fpc/bin/fpc
+
 LAZSOURCEDIR=~/src/lazsource
+$SVN up $LAZSOURCEDIR
+cd $LAZSOURCEDIR/tools/install/macosx
+./create_lazarus_dmg.sh append-revision
 
-COMPILER=~/fpc/bin/$PPCARCH
-CROSSCOMPILER=~/fpc/bin/fpc
-FPCVERSION=`$COMPILER -iV`
-BUILDDIR=~/tmp/buildlaz
-LAZBUILDDIR=$BUILDDIR/lazarus
-DATESTAMP=`date +%Y%m%d`
-PACKPROJ=lazarus.packproj
-TEMPLATEDIR=$LAZSOURCEDIR/tools/install/macosx
-
-
-# copy sources
-cd $LAZSOURCEDIR
-$SVN update
-
-cd $LAZSOURCEDIR/tools/install
-LAZVERSION=`./get_lazarus_version.sh`
+cd ..
+LazVersion=$(./get_lazarus_version.sh).$(./get_svn_revision_number.sh .)
 cd -
-
-# clean builddir: since I am not root and the install dir can contain files owned by root 
-# created by a previous freeze, I just move it out of the way
-TRASHDIR=~/tmp/trash
-mkdir -p $TRASHDIR
-if [ -d $BUILDDIR ] ; then
-  mv $BUILDDIR $TRASHDIR/lazbuild-`date +%Y%m%d%H%M%S`
-fi
-
-
-mkdir -p $BUILDDIR
-$SVN export $LAZSOURCEDIR $LAZBUILDDIR
-if [ ! -e tools/svn2revisioninc ]; then
-  make tools PP=$COMPILER
-fi
-tools/svn2revisioninc $LAZSOURCEDIR $LAZBUILDDIR/ide/revision.inc
-
-cd $LAZBUILDDIR
-
-export FPCDIR=~/fpc/lib/fpc/$FPCVERSION
-
-make bigide PP=$COMPILER USESVN2REVISIONINC=0
-make lazbuilder PP=$COMPILER
-
-# make non-default LCL platforms
-make lcl LCL_PLATFORM=gtk PP=$COMPILER
-make lcl LCL_PLATFORM=gtk2 OPT="-dUseX" PP=$COMPILER
-
-# cross compilation units?
-if [ "$ARCH" == "i386" ]; then
-  make lcl CPU_TARGET=powerpc PP=$CROSSCOMPILER
-  make lcl CPU_TARGET=powerpc LCL_PLATFORM=gtk PP=$CROSSCOMPILER
-  make lcl CPU_TARGET=powerpc LCL_PLATFORM=gtk2 OPT="-dUseX" PP=$CROSSCOMPILER
-  make -C components/synedit CPU_TARGET=powerpc PP=$CROSSCOMPILER
-  make -C packager/registration CPU_TARGET=powerpc PP=$CROSSCOMPILER
-fi
-
-strip lazarus
-strip startlazarus
-strip lazbuild
-
-# create symlinks
-mkdir -p $BUILDDIR/bin
-cd $BUILDDIR/bin
-ln -s ../share/lazarus/lazarus lazarus
-ln -s ../share/lazarus/startlazarus startlazarus
-ln -s ../share/lazarus/lazbuild lazbuild
-
-# fill in packproj template.
-OLDIFS=$IFS
-IFS=.
-LAZMAJORVERSION=`set $LAZVERSION;  echo $1`
-LAZMINORVERSION=`set $LAZVERSION;  echo $2$3`
-FPCARCH=`$COMPILER -iSP`
-IFS=$OLDIFS
-sed -e "s|_LAZARUSDIR_|$LAZBUILDDIR|g" -e "s|_LAZVERSION_|$LAZVERSION|g" \
-  -e "s|_DATESTAMP_|$DATESTAMP|g" -e s/_LAZMAJORVERSION_/$LAZMAJORVERSION/g \
-  -e s/_LAZMINORVERSION_/$LAZMINORVERSION/g \
-  $TEMPLATEDIR/$PACKPROJ.template  > $BUILDDIR/$PACKPROJ
-
-# build package
-$FREEZE -v $BUILDDIR/$PACKPROJ
-
-DMGFILE=~/pkg/lazarus-$LAZVERSION-$DATESTAMP-$FPCARCH-macosx.dmg
-rm -rf $DMGFILE
-
-$HDIUTIL create -anyowners -volname lazarus-$LAZVERSION -imagekey zlib-level=9 \
-  -format UDZO -srcfolder $BUILDDIR/build $DMGFILE
+DATESTAMP=$(date +%Y%m%d)
+FPCARCH=$($FPC -iSP)
+DMGFILE=~/tmp/lazarus-$LazVersion-$DATESTAMP-$FPCARCH-macosx.dmg
 
 if [ -e $DMGFILE ]; then
 #update lazarus snapshot web page
