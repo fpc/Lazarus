@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, Math, TypInfo, Types, FPCAdds, AvgLvlTree, FileUtil,
-  LCLStrConsts, LCLType, WSReferences{$ifdef unix}, cwstrings{$endif};
+  LCLStrConsts, LCLType, WSReferences{$ifdef unix}, cwstring{$endif};
 
 type
   { TMethodList - array of TMethod }
