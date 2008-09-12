@@ -307,7 +307,6 @@ procedure UTF8Delete(var s: String; StartCharIndex, CharCount: integer);
 procedure UTF8Insert(const source: String; var s: string; StartCharIndex: integer);
 function UTF8LowerCase(const s: String): String;
 function UTF8UpperCase(const s: String): String;
-function UnicodeLowercase(u: cardinal): cardinal;
 function UTF8LowerCaseNew(const s: String): String;
 function FindInvalidUTF8Character(p: PChar; Count: integer;
                                   StopOnNonASCII: Boolean = false): integer;
@@ -362,7 +361,7 @@ var
   i: Integer;
 begin
   for i:=Low(UnicodeLower00C0_2CE2) to High(UnicodeLower00C0_2CE2) do
-    UnicodeLower00C0_2CE2[i]:=i+32;
+    UnicodeLower00C0_2CE2[i]:=i;
   for i:=Low($00C0) to High($00DE) do
     UnicodeLower00C0_2CE2[i]:=i+32;
   UnicodeLower00C0_2CE2[$00D7]:=$00D7;
