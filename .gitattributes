@@ -2437,21 +2437,33 @@ images/codeexplorer/ce_unit.png -text
 images/codeexplorer/ce_variable.png -text
 images/codeexplorer/show_category.png -text
 images/codeexplorer/show_source.png -text
+images/codetoolsdefines/block_22x22.png -text
 images/codetoolsdefines/block_22x22.xpm -text svneol=native#image/x-xpixmap
 images/codetoolsdefines/ctdefinestate_auto_22x22.xpm -text svneol=native#image/x-xpixmap
 images/codetoolsdefines/ctdefinestate_autoproj_22x22.xpm -text svneol=native#image/x-xpixmap
 images/codetoolsdefines/ctdefinestate_none_22x22.xpm -text svneol=native#image/x-xpixmap
 images/codetoolsdefines/ctdefinestate_projspec_22x22.xpm -text svneol=native#image/x-xpixmap
+images/codetoolsdefines/define_22x22.png -text
 images/codetoolsdefines/define_22x22.xpm -text svneol=native#image/x-xpixmap
+images/codetoolsdefines/definerecurse_22x22.png -text
 images/codetoolsdefines/definerecurse_22x22.xpm -text svneol=native#image/x-xpixmap
+images/codetoolsdefines/directory_22x22.png -text
 images/codetoolsdefines/directory_22x22.xpm -text svneol=native#image/x-xpixmap
+images/codetoolsdefines/else_22x22.png -text
 images/codetoolsdefines/else_22x22.xpm -text svneol=native#image/x-xpixmap
+images/codetoolsdefines/elseif_22x22.png -text
 images/codetoolsdefines/elseif_22x22.xpm -text svneol=native#image/x-xpixmap
+images/codetoolsdefines/if_22x22.png -text
 images/codetoolsdefines/if_22x22.xpm -text svneol=native#image/x-xpixmap
+images/codetoolsdefines/ifdef_22x22.png -text
 images/codetoolsdefines/ifdef_22x22.xpm -text svneol=native#image/x-xpixmap
+images/codetoolsdefines/ifndef_22x22.png -text
 images/codetoolsdefines/ifndef_22x22.xpm -text svneol=native#image/x-xpixmap
+images/codetoolsdefines/undefine_22x22.png -text
 images/codetoolsdefines/undefine_22x22.xpm -text svneol=native#image/x-xpixmap
+images/codetoolsdefines/undefineall_22x22.png -text
 images/codetoolsdefines/undefineall_22x22.xpm -text svneol=native#image/x-xpixmap
+images/codetoolsdefines/undefinerecurse_22x22.png -text
 images/codetoolsdefines/undefinerecurse_22x22.xpm -text svneol=native#image/x-xpixmap
 images/components/default.png -text svneol=unset#image/png
 images/components/tactionlist.png -text svneol=unset#image/png
