@@ -2970,7 +2970,6 @@ lcl/include/buttoncontrol.inc svneol=native#text/pascal
 lcl/include/buttonglyph.inc svneol=native#text/pascal
 lcl/include/buttons.inc svneol=native#text/pascal
 lcl/include/canvas.inc svneol=native#text/pascal
-lcl/include/checkbox.inc svneol=native#text/pascal
 lcl/include/clipbrd.inc svneol=native#text/pascal
 lcl/include/colorbutton.inc svneol=native#text/pascal
 lcl/include/colordialog.inc svneol=native#text/pascal

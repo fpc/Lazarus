@@ -24,7 +24,6 @@
 unit StdCtrls;
 
 {$mode objfpc}{$H+}
-{off $Define NewCheckBox}
 
 interface
 
@@ -1169,7 +1168,6 @@ type
     property OnChange;
   end;
 
-{$IFNDef NewCheckBox}
   // Normal checkbox
   TCheckBox = class(TCustomCheckBox)
   published
@@ -1223,87 +1221,6 @@ type
     property UseOnChange;
     property Visible;
   end;
-{$Else NewCheckBox}
-  // new checkbox
-  TCBAlignment = (alLeftJustify, alRightJustify);
-
-  TCheckBoxStyle = (cbsSystem, cbsCrissCross, cbsCheck);
-
-  TCheckBox = class(TCustomControl)
-  private
-    FAllowGrayed,
-    FWordWrap,
-    FAttachTextToBox: Boolean;
-    FAlignment: TCBAlignment;
-    FState : TCheckBoxState;
-    FCheckBoxStyle: TCheckBoxStyle;
-    FMouseIsDragging,
-    FMouseInControl: Boolean;
-  protected
-    procedure DoAutoSize; override;
-    procedure SetAlignment(Value: TCBAlignment);
-    procedure SetState(Value: TCheckBoxState);
-
-    function GetChecked: Boolean;
-    procedure SetChecked(Value: Boolean);
-    procedure SetCheckBoxStyle(Value: TCheckBoxStyle);
-    procedure SetAttachTextToBox(Value: Boolean);
-
-    procedure CMMouseEnter(var Message: TLMMouse); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Message: TLMMouse); message CM_MOUSELEAVE;
-    procedure WMMouseDown(var Message: TLMMouseEvent); message LM_LBUTTONDOWN;
-    procedure WMMouseUp(var Message: TLMMouseEvent); message LM_LBUTTONUP;
-    procedure WMKeyDown(var Message: TLMKeyDown); message LM_KeyDown;
-    procedure WMKeyUp(var Message: TLMKeyUp); message LM_KeyUp;
-  public
-    procedure Paint; override;
-    procedure PaintCheck(var PaintRect: TRect);
-    procedure PaintText(var PaintRect: TRect);
-
-    constructor Create(AOwner: TComponent); override;
-    function CheckBoxRect: TRect;
-    procedure Click; override;
-
-    property MouseInControl: Boolean read FMouseInControl;
-    property MouseIsDragging: Boolean read FMouseIsDragging;
-  published
-    property Alignment: TCBAlignment read FAlignment write SetAlignment;
-    Property AllowGrayed: Boolean read FAllowGrayed write FAllowGrayed;
-    Property Checked: Boolean read GetChecked write SetChecked;
-    property State: TCheckBoxState read FState write SetState;
-    property CheckBoxStyle: TCheckBoxStyle read FCheckBoxStyle write SetCheckBoxStyle;
-    property AttachToBox: Boolean read FAttachTextToBox write SetAttachTextToBox default True;
-
-    property Align;
-    property AutoSize;
-    property WordWrap: Boolean read FWordWrap write FWordWrap;
-    property TabStop;
-
-    property Anchors;
-    property Constraints;
-    property Hint;
-    property Font;
-    property OnClick;
-    property OnDblClick;
-    property OnEnter;
-    property OnExit;
-    property OnKeyDown;
-    property OnKeyUp;
-    property OnKeyPress;
-    property OnMouseDown;
-    property OnMouseUp;
-    property OnMouseMove;
-    property OnUTF8KeyPress;
-    property Visible;
-    property Caption;
-    property Enabled;
-    property ShowHint;
-    property ParentFont;
-    property ParentShowHint;
-    property TabOrder;
-  end;
-{$EndIf NewCheckBox}
-
 
   { TToggleBox }
 
@@ -1560,8 +1477,6 @@ end;
 
 {$I buttoncontrol.inc}
 {$I buttons.inc}
-
-{$I checkbox.inc}
 
 {$I radiobutton.inc}
 {$I togglebox.inc}
