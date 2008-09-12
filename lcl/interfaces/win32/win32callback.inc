@@ -807,13 +807,17 @@ var
       begin
         // statictext controls do not get WM_SETCURSOR messages...
         lControl := lWinControl.ControlAtPos(P, [capfOnlyClientAreas,
-          capfAllowWinControls, capfHasScrollOffset]);
+          capfAllowWinControls, capfHasScrollOffset, capfRecursive]);
         if lControl = nil then
           lControl := lWinControl;
         ACursor := lControl.Cursor;
       end;
-      Windows.SetCursor(Screen.Cursors[ACursor]);
-      LMessage.Result := 1;
+      if ACursor <> crDefault then
+      begin
+        // DebugLn('Set cursor. Control = ', LControl.Name, ' cur = ',ACursor);
+        Windows.SetCursor(Screen.Cursors[ACursor]);
+        LMessage.Result := 1;
+      end;
     end;
     if LMessage.Result = 0 then
     begin
@@ -821,7 +825,7 @@ var
       LMessage.WParam := WParam;
       LMessage.LParam := LParam;
     end;
-    WinProcess := false;
+    WinProcess := False;
   end;
 
   procedure HandleSysCommand;
