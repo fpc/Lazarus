@@ -185,6 +185,7 @@ type
     function maxWidth: Integer;
     procedure boundingRect(retval: PRect; r: PRect; flags: Integer; text: PWideString; tabstops: Integer = 0; tabarray: PInteger = nil);
     function charWidth(str: WideString; pos: Integer): Integer;
+    function averageCharWidth: Integer;
   end;
 
   { TQtBrush }
@@ -1294,6 +1295,11 @@ end;
 function TQtFontMetrics.charWidth(str: WideString; pos: Integer): Integer;
 begin
   Result := QFontMetrics_charWidth(Widget, @str, pos);
+end;
+
+function TQtFontMetrics.averageCharWidth: Integer;
+begin
+  Result := QFontMetrics_averageCharWidth(Widget);
 end;
 
 { TQtBrush }
