@@ -628,11 +628,11 @@ begin
   LogP.lopnColor := GetTextColor(DC);
   P := SelectObject(DC, CreatePenIndirect(LogP));
 
-  For I := 0 to Lines.Count - 1 do begin
+  for I := 0 to Lines.Count - 1 do begin
     {Set vertical position for line}
     aTop := theRect.Top + I*TM.tmHeight;
 
-    If (aTop >= Rect.Top) and (aTop <= Rect.Bottom - TM.tmHeight)
+    if (aTop >= Rect.Top) and (aTop <= Rect.Bottom)
     then begin
       AStr := Lines[I];
 
