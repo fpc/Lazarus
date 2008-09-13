@@ -105,6 +105,7 @@ var
   ListImg, DeviceImg: TLazIntfImage;
   ImgHandle, MskHandle: HBitmap;
 begin
+  if (AIndex < 0) or (AIndex >= Count) then Exit;
   if ADrawEffect = gdeNormal then
   begin
     ABitmap := TBitmap(Items[AIndex]);

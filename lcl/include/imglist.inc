@@ -468,7 +468,7 @@ end;
 procedure TCustomImageList.Draw(ACanvas: TCanvas; AX, AY, AIndex: Integer;
   ADrawEffect: TGraphicsDrawEffect);
 begin
-  if (FCount = 0) or (AIndex >= FCount) then Exit;
+  if (AIndex < 0) or (AIndex >= FCount) then Exit;
 
   ReferenceNeeded;
   TWSCustomImageListClass(WidgetSetClass).Draw(Self, AIndex, ACanvas, Rect(AX, AY, FWidth, FHeight),
