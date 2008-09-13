@@ -2008,6 +2008,10 @@ var
   Msg: TGridMessage;
 begin
   if FEditor=AValue then exit;
+
+  if (FEditor<>nil) and FEditor.Visible then
+    EditorHide;
+
   FEditor:=AValue;
   if FEditor<>nil then begin
 
@@ -5546,8 +5550,16 @@ begin
   MoveSelection;
   SelectEditor;
 
-  if (FEditor<>nil) and EditorAlwaysShown then
+  if (FEditor<>nil) and EditorAlwaysShown then begin
+    // if editor visibility was changed on BeforeMoveSelection or MoveSelection
+    // make sure editor will be updated.
+    // TODO: cell coords of last time editor was visible
+    //       could help here too, if they are not the same as the
+    //       current cell, editor should be hidden first too.
+    if FEditor.Visible then
+      EditorHide;
     EditorShow(true);
+  end;
 
   {$IfDef dbgGrid}DebugLn(' MoveExtend END FCol= ',IntToStr(FCol), ' FRow= ',IntToStr(FRow));{$Endif}
 end;
