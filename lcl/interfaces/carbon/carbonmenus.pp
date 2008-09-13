@@ -683,6 +683,9 @@ begin
   begin
     OSError(SetMenuItemCommandKey(FParentMenu.Menu, Index + 1, True, 0),
       Self, SName, SSetCmdKey);
+    // unset virtual key short cut
+    OSError(ChangeMenuItemAttributes(FParentMenu.Menu, Index + 1, 0, kMenuItemAttrUseVirtualKey),
+      Self, Sname, SChangeMenuItemAttrs);
     OSError(SetMenuItemCommandKey(FParentMenu.Menu, Index + 1, False, Key),
       Self, SName, SSetCmdKey);
   end
@@ -695,6 +698,9 @@ begin
     
     OSError(SetMenuItemCommandKey(FParentMenu.Menu, Index + 1, False, 0),
       Self, SName, SSetCmdKey, 'virtual');
+    // set virtual key short cut
+    OSError(ChangeMenuItemAttributes(FParentMenu.Menu, Index + 1, kMenuItemAttrUseVirtualKey, 0),
+      Self, Sname, SChangeMenuItemAttrs);
     OSError(SetMenuItemCommandKey(FParentMenu.Menu, Index + 1, True, MacKey),
       Self, SName, SSetCmdKey, 'virtual');
   end;
