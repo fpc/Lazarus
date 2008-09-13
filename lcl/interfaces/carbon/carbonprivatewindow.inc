@@ -1584,7 +1584,7 @@ const
 begin
   Result := False;
   
-  DebugLn('TCarbonWindow.Show ' + DbgS(AShow));
+  //DebugLn('TCarbonWindow.Show ' + DbgS(AShow));
 
   case AShow of
   SW_SHOWNORMAL, SW_SHOWMAXIMIZED:
