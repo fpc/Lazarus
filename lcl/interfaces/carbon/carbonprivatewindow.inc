@@ -62,6 +62,7 @@ var
                           // or the rootcontrol if none found
   Widget: TCarbonWidget;  // the widget specific to the mouse event
                           // or the window's widgetinfo if none found
+  Postpone: Boolean;
 const
   SName = 'CarbonWindow_MouseProc';
                                 
@@ -153,6 +154,8 @@ const
     Msg^.Keys := GetCarbonMsgKeyState;
     
     CarbonWidgetSet.SetCaptureWidget(HWND(Widget));
+
+    if ClickCount > 1 then Postpone := True;
   end;
 
   procedure HandleMouseUpEvent(var AMsg);
@@ -244,6 +247,7 @@ var
   ViewPart: HIViewPartCode;
 begin
   Result := EventNotHandledErr;
+  Postpone := False;
   
   // check window part code
   Part := inContent;
@@ -284,15 +288,24 @@ begin
     Exit(EventNotHandledErr);
   end;
   
-  // Msg is set in the Appropriate HandleMousexxx procedure
-  NotifyApplicationUserInput(Msg.Message.Msg);
-  if DeliverMessage(Widget.LCLObject, Msg) = 0 then
+  if Postpone then
   begin
-    Result := EventNotHandledErr;
+    PostponedDown := True;
+    PostponedDownMsg := TLMMouse(Msg.Message);
+    Result := CallNextEventHandler(ANextHandler, AEvent);
   end
-  else  // the LCL does not want the event propagated
-    Result := noErr;
-  
+  else
+  begin
+    // Msg is set in the Appropriate HandleMousexxx procedure
+    NotifyApplicationUserInput(Msg.Message.Msg);
+    if DeliverMessage(Widget.LCLObject, Msg) = 0 then
+    begin
+      Result := EventNotHandledErr;
+    end
+    else  // the LCL does not want the event propagated
+      Result := noErr;
+  end;
+
   // interactive design
   if (Widget is TCarbonDesignWindow) and (GetCarbonMouseButton(AEvent) = 1) and
     (EventKind = kEventMouseDown) then

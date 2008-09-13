@@ -336,6 +336,10 @@ var PrevKeyModifiers: UInt32 = 0;
 // Stores mouse up message to be fired on control hit after value is updated
 var SavedMouseUpMsg: TLMMouse;
 
+// Stores multi click mouse down message to be fired after handling standard event
+var PostponedDownMsg: TLMMouse;
+var PostponedDown: Boolean;
+
 // Stores last mouse pos to call mouse move only when it really has changed
 var LastMousePos: TPoint;
 

@@ -165,6 +165,13 @@ begin
       nil, SizeOf(ActionUPP), nil, @OldActionUPP), SName, SGetEvent,
     SControlAction) then Exit;
 
+  if PostponedDown then
+  begin
+    PostponedDown := False;
+    NotifyApplicationUserInput(PostponedDownMsg.Msg);
+    DeliverMessage(AWidget.LCLObject, PostponedDownMsg);
+  end;
+
   MouseButton := GetCarbonMouseButton(AEvent);
 
   ActionUPP := NewControlActionUPP(@CarbonCommon_TrackProgress);
