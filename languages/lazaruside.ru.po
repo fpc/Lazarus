@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-09-05 21:47+0300\n"
+"PO-Revision-Date: 2008-09-13 15:48+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -176,6 +176,22 @@ msgstr "%sЭтот пакет был создан автоматически"
 #: lazarusidestrconsts:lisnone
 msgid "%snone"
 msgstr "%sнет"
+
+#: lazarusidestrconsts:lisoverridethedefaultcompileregppc386ppcx64ppcppcetcd
+msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in environmentoptions.xml"
+msgstr "%sпереопределить компилятор по умолчанию, например, ppc386 ppcx64 ppcppc и т. д. Значение по умолчанию хранится в environmentoptions.xml"
+
+#: lazarusidestrconsts:lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
+msgid "%soverride the project cpu. e.g. i386 x86_64 powerpc powerpc_64 etc. default: %s"
+msgstr "%sпереопределить целевое семейство процессоров проекта, например, i386 x86_64 powerpc powerpc_64 и т. д. Значение по умолчанию: %s"
+
+#: lazarusidestrconsts:lisoverridetheprojectoperatingsystemegwin32linuxdefau
+msgid "%soverride the project operating system. e.g. win32 linux. default: %s"
+msgstr "%sпереопределить операционную систему проекта, например, win32 linux. Значение по умолчанию: %s"
+
+#: lazarusidestrconsts:lisoverridetheprojectwidgetseteggtkgtk2qtwin32carbond
+msgid "%soverride the project widgetset. e.g. gtk gtk2 qt win32 carbon. default: %s"
+msgstr "%sпереопределить библиотеку виджетов проекта, например, gtk gtk2 qt win32 carbon. Значение по умолчанию: %s"
 
 #: lazarusidestrconsts:liswladd
 msgid "&Add"
@@ -2065,6 +2081,10 @@ msgstr "Параметры преобразований"
 msgid "Conversion error"
 msgstr "Ошибка преобразования"
 
+#: lazarusidestrconsts:lisconvert
+msgid "Convert"
+msgstr "Преобразовать"
+
 #: lazarusidestrconsts:liskmconvertdfmfiletolfm
 msgid "Convert DFM file to LFM"
 msgstr "Преобразовать файл DFM в LFM"
@@ -2101,9 +2121,25 @@ msgstr "Преобразовать модуль Delphi в модуль Lazarus"
 msgid "Convert Delphi unit to Lazarus unit ..."
 msgstr "Преобразовать модуль Delphi в Lazarus ..."
 
+#: lazarusidestrconsts:lisconvertencoding
+msgid "Convert encoding"
+msgstr "Преобразование кодировки"
+
+#: lazarusidestrconsts:lisconvertencodingofprojectspackages
+msgid "Convert encoding of projects/packages"
+msgstr "Преобразовать кодировку проектов/пакетов"
+
+#: lazarusidestrconsts:lismenuconvertencoding
+msgid "Convert encoding of projects/packages ..."
+msgstr "Преобразовать кодировку проектов/пакетов ..."
+
 #: lazarusidestrconsts:liscodetoolsdefsconvertnode
 msgid "Convert node"
 msgstr "Преобразовать элемент"
+
+#: lazarusidestrconsts:lisconvertprojectorpackage
+msgid "Convert project or package"
+msgstr "Преобразование проекта либо пакета"
 
 #: lazarusidestrconsts:srkmecselectiontabs2spaces
 msgid "Convert tabs to spaces in selection"
@@ -3497,6 +3533,10 @@ msgstr "Расширение файла программы"
 msgid "File extensions"
 msgstr "Расширения файлов"
 
+#: lazarusidestrconsts:lisfilefilter
+msgid "File filter"
+msgstr "Фильтр файлов"
+
 #: lazarusidestrconsts:lispkgmangfileisalreadyinpackage
 msgid "File is already in package"
 msgstr "Файл уже есть в пакете"
@@ -3592,6 +3632,14 @@ msgstr "Имя файла: %s"
 #: lazarusidestrconsts:dlgenvfiles
 msgid "Files"
 msgstr "Файлы"
+
+#: lazarusidestrconsts:lisfilesinasciiorutf8encoding
+msgid "Files in ASCII or UTF-8 encoding"
+msgstr "Файлы в кодировке ASCII либо UTF-8"
+
+#: lazarusidestrconsts:lisfilesnotinasciinorutf8encoding
+msgid "Files not in ASCII nor UTF-8 encoding"
+msgstr "Файлы не в кодировке ASCII и не в UTF-8"
 
 #: lazarusidestrconsts:lisfilter
 msgid "Filter"
@@ -5481,9 +5529,13 @@ msgstr "Нижний регистр выделения"
 msgid "Lowercase, first letter up"
 msgstr "Только 1я буква заглавная"
 
-#: lazarusidestrconsts:liskmmacosx
-msgid "Mac OS X"
-msgstr "Mac OS X"
+#: lazarusidestrconsts:liskmmacosxapple
+msgid "Mac OS X (Apple style)"
+msgstr "Mac OS X (стиль Apple)"
+
+#: lazarusidestrconsts:liskmmacosxlaz
+msgid "Mac OS X (Lazarus style)"
+msgstr "Mac OS X (стиль Lazarus)"
 
 #: lazarusidestrconsts:lismacpascal
 msgid "Mac Pascal"
@@ -5961,6 +6013,10 @@ msgstr "Создать модуль"
 msgid "New class name:"
 msgstr "Новое имя класса:"
 
+#: lazarusidestrconsts:lisnewencoding
+msgid "New encoding:"
+msgstr "Новая кодировка:"
+
 #: lazarusidestrconsts:liskmnewpackage
 msgid "New package"
 msgstr "Новый пакет"
@@ -5996,6 +6052,10 @@ msgstr "Новая строка"
 #: lazarusidestrconsts:srkmecnextbookmark
 msgid "Next Bookmark"
 msgstr "Следующая закладка"
+
+#: lazarusidestrconsts:lisno
+msgid "No"
+msgstr "Нет"
 
 #: lazarusidestrconsts:lisnoresourcestringsectionfound
 msgid "No ResourceString Section found"
@@ -6124,6 +6184,10 @@ msgstr "Внимание, файлы проекта - все файлы в ег�
 #: lazarusidestrconsts:liscodetoolsoptsnumber
 msgid "Number"
 msgstr "Число"
+
+#: lazarusidestrconsts:lisnumberoffilestoconvert
+msgid "Number of files to convert: %s"
+msgstr "Количество преобразуемых файлов: %s"
 
 #: lazarusidestrconsts:lisifdok
 msgid "OK"
@@ -6959,15 +7023,15 @@ msgstr "Путь к исходному коду проекта"
 
 #: lazarusidestrconsts:lisedtdefprojectsrcpath
 msgid "Project SrcPath"
-msgstr "Путь исх. проекта"
+msgstr "Путь к исходному коду проекта"
 
 #: lazarusidestrconsts:lisprojectunitpath
 msgid "Project Unit Path"
-msgstr "Путь модулей проекта"
+msgstr "Путь к модулям проекта"
 
 #: lazarusidestrconsts:lisedtdefprojectunitpath
 msgid "Project UnitPath"
-msgstr "Путь модулей проекта"
+msgstr "Путь к модулям проекта"
 
 #: lazarusidestrconsts:lisprojectwizard
 msgid "Project Wizard"
@@ -8541,6 +8605,10 @@ msgstr "Испанский"
 msgid "Src"
 msgstr "Исх"
 
+#: lazarusidestrconsts:lissrcos
+msgid "Src OS"
+msgstr "Исходная ОС"
+
 #: lazarusidestrconsts:dlgcostack
 msgid "Stack"
 msgstr "Стека"
@@ -8560,10 +8628,6 @@ msgstr "Стандартное меню Справка"
 #: lazarusidestrconsts:lisstartwithanewproject
 msgid "Start with a new project"
 msgstr "При запуске начинать новый проект"
-
-#: lazarusidestrconsts:lisstarter
-msgid "Starter"
-msgstr "Пускатель"
 
 #: lazarusidestrconsts:lisoipstate
 msgid "State"
@@ -9417,9 +9481,9 @@ msgstr "Модулем %s не владеет ни один из пакетов 
 msgid "The unit %s%s%s already exists.%sIgnore will force the renaming,%sCancel will cancel the saving of this source and%sAbort will abort the whole saving."
 msgstr "Модуль %s%s%s уже есть. Пропуск приведёт к переименованию,%sОтмена отменить сохранение этого файла, а%sПрервать - отменит сохранение вообще."
 
-#: lazarusidestrconsts:listheunitisnotlowercasethefreepascalcompiler10xneeds
-msgid "The unit %s%s%s is not lowercase.%sThe FreePascal compiler 1.0.x needs lowercase filenames. If you do not use the fpc 1.0.x to compile this unit, you can ignore this message.%s%sRename file?"
-msgstr "Модуль %s%s%s не в нижнем регистре.%sКомпилятор FreePascal 1.0.x требует имена в нижнем регистре. Если Вы не используете fpc 1.0.x для сборки этого модуля, можно игнорировать это сообщение.%s%sПереименовать файл?"
+#: lazarusidestrconsts:listheunitisnotlowercasethefreepascalcompiler
+msgid "The unit filename %s%s%s is not lowercase.%sThe FreePascal compiler does not search for all cases. It is recommended to use lowercase filename.%s%sRename file lowercase?"
+msgstr "Имя файла %s%s%s модуля не в нижнем регистре.%sКомпилятор FreePascal не проводит поиск для всех вариантов. Рекомендуется использовать имя в нижнем регистре.%s%sПереименовать файл в нижний регистр?"
 
 #: lazarusidestrconsts:listheunititselfhasalreadythenamepascalidentifiersmus
 msgid "The unit itself has already the name %s%s%s. Pascal identifiers must be unique."
@@ -10385,6 +10449,10 @@ msgstr "Вверх"
 msgid "Update"
 msgstr "Обновить"
 
+#: lazarusidestrconsts:lisupdatepreview
+msgid "Update preview"
+msgstr "Обновить предпросмотр"
+
 #: lazarusidestrconsts:lispckoptsupdaterebuild
 msgid "Update/Rebuild"
 msgstr "Обновление и пересборка"
@@ -10913,6 +10981,10 @@ msgstr "добавить точку останова"
 msgid "add watch"
 msgstr "добавить наблюдение"
 
+#: lazarusidestrconsts:lisapplybuildflagsbtodependenciestoo
+msgid "apply build flags (-B) to dependencies too"
+msgstr "использовать флаг сборки (-B) также для зависимостей"
+
 #: lazarusidestrconsts:lisoipautoinstalldynamic
 msgid "auto install dynamic"
 msgstr "автоустановить динамически"
@@ -10925,9 +10997,17 @@ msgstr "автоустановить статически"
 msgid "begins"
 msgstr "начинается"
 
+#: lazarusidestrconsts:lisbuildidewithpackages
+msgid "build IDE with packages"
+msgstr "собрать IDE с пакетами"
+
 #: lazarusidestrconsts:srkmecbuildall
 msgid "build all files of program/project"
 msgstr "собрать все файлы программы/проекта"
+
+#: lazarusidestrconsts:lisbuildallfilesofprojectpackageide
+msgid "build all files of project/package/IDE"
+msgstr "собрать все файлы проекта/пакета/IDE"
 
 #: lazarusidestrconsts:srkmecbuildfile
 msgid "build file"
@@ -10980,6 +11060,10 @@ msgstr "по умолчанию (%s)"
 #: lazarusidestrconsts:lisautomaticallyremovecharacter
 msgid "do not add character"
 msgstr "не добавлять сам символ"
+
+#: lazarusidestrconsts:lisdonotcompiledependencies
+msgid "do not compile dependencies"
+msgstr "не собирать зависимости"
 
 #: lazarusidestrconsts:lisccoenglishmessagefilemissing
 msgid "english message file for fpc is missing:components/codetools/fpc.errore.msg"
@@ -11260,6 +11344,10 @@ msgstr "Включить OVERFLOWCHECKS"
 #: lazarusidestrconsts:lisedtdefsetrangecheckson
 msgid "set RANGECHECKS on"
 msgstr "Включить RANGECHECKS"
+
+#: lazarusidestrconsts:lisshowversionandexit
+msgid "show version and exit"
+msgstr "показать версию и выйти"
 
 #: lazarusidestrconsts:lissmallerratherthanfaster
 msgid "smaller rather than faster"
