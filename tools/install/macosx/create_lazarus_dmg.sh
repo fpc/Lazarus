@@ -140,8 +140,8 @@ find $BUILDDIR -name '.svn' -exec rm -rf {} \; || true
 find $BUILDDIR -name '.DS_Store' -exec rm -rf {} \; || true
 
 # create symlinks
-mkdir -p $ROOTDIR/usr/bin
-cd $ROOTDIR/usr/bin
+mkdir -p $ROOTDIR/usr/local/bin
+cd $ROOTDIR/usr/local/bin
 ln -s /Developer/lazarus/lazbuild lazbuild
 cp $TEMPLATEDIR/uninstall.sh $ROOTDIR/Developer/lazarus/
 

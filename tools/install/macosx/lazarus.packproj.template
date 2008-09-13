@@ -444,24 +444,7 @@
 							<array>
 								<dict>
 									<key>Children</key>
-									<array>
-										<dict>
-											<key>Children</key>
-											<array/>
-											<key>GID</key>
-											<integer>0</integer>
-											<key>Path</key>
-											<string>Root/usr/bin/lazbuild</string>
-											<key>Path Type</key>
-											<integer>2</integer>
-											<key>Privileges</key>
-											<integer>493</integer>
-											<key>Type</key>
-											<integer>3</integer>
-											<key>UID</key>
-											<integer>0</integer>
-										</dict>
-									</array>
+									<array/>
 									<key>GID</key>
 									<integer>0</integer>
 									<key>Path</key>
@@ -525,7 +508,24 @@
 								</dict>
 								<dict>
 									<key>Children</key>
-									<array/>
+									<array>
+										<dict>
+											<key>Children</key>
+											<array/>
+											<key>GID</key>
+											<integer>0</integer>
+											<key>Path</key>
+											<string>Root/usr/local/bin</string>
+											<key>Path Type</key>
+											<integer>2</integer>
+											<key>Privileges</key>
+											<integer>509</integer>
+											<key>Type</key>
+											<integer>3</integer>
+											<key>UID</key>
+											<integer>0</integer>
+										</dict>
+									</array>
 									<key>GID</key>
 									<integer>0</integer>
 									<key>Path</key>
