@@ -200,7 +200,7 @@ function TCarbonClipboard.FormatToMimeType(FormatID: TClipboardFormat): String;
 var
   S: CFStringRef;
 begin
-  if (FormatID > 0) and (FormatID < FFormats.Count) then
+  if (FormatID > 0) and (FormatID < TClipboardFormat(FFormats.Count)) then
   begin
     S := UTTypeCopyPreferredTagWithClass(CFStringRef(FFormats[FormatID]), kUTTagClassMIMEType);
     try
@@ -256,7 +256,7 @@ const
 begin
   Result := False;
   
-  if not ((FormatID > 0) and (FormatID < FFormats.Count)) then
+  if not ((FormatID > 0) and (FormatID < TClipboardFormat(FFormats.Count))) then
   begin
     DebugLn('TCarbonClipboard.GetData Error: Invalid Format ' + DbgS(FormatID) + ' specified!');
     Exit;
@@ -442,7 +442,7 @@ function TCarbonClipboard.GetOwnerShip(ClipboardType: TClipboardType;
 
     for I := 0 to FormatCount - 1 do
     begin
-      if not ((Formats[I] > 0) and (Formats[I] < FFormats.Count)) then
+      if not ((Formats[I] > 0) and (Formats[I] < TClipboardFormat(FFormats.Count))) then
       begin
         DebugLn('TCarbonClipboard.GetOwnerShip Error: Invalid Format ' + DbgS(Formats[I]) + ' specified!');
         Continue;

@@ -469,7 +469,7 @@ begin
   if ACarbonDataBrowser = nil then Exit;
   ALCLDataBrowser := ACarbonDataBrowser.LCLObject;
 
-  if (ID < 1) or (ID > ACarbonDataBrowser.GetItemsCount) then
+  if (ID < 1) or (ID > DataBrowserItemId(ACarbonDataBrowser.GetItemsCount)) then
   begin
     Result := errDataBrowserItemNotFound;
     Exit;
@@ -512,7 +512,7 @@ begin
     else
       begin
         if (PropID >= CaptionPropertyID) and
-          (PropID <= CaptionPropertyID + ACarbonDataBrowser.FColumns.Count) then
+          (PropID <= CaptionPropertyID + DataBrowserPropertyID(ACarbonDataBrowser.FColumns.Count)) then
         begin
           if PropID = CaptionPropertyID then
             SubIndex := 0
@@ -549,7 +549,7 @@ begin
   ACarbonDataBrowser := TCarbonDataBrowser(GetCarbonControl(AControl));
   if ACarbonDataBrowser = nil then Exit;
   
-  if (ID < 1) or (ID > ACarbonDataBrowser.GetItemsCount) then Exit;
+  if (ID < 1) or (ID > DataBrowserItemId(ACarbonDataBrowser.GetItemsCount)) then Exit;
 
   case AMessage of
     kDataBrowserItemSelected:

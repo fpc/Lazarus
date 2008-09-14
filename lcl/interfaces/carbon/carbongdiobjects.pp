@@ -1748,7 +1748,7 @@ begin
 
   FPixmapHandle := PixMapHandle(NewHandleClear(SizeOf(PixMap)));
   // tell that this is pixmap (bit 15 := 1)
-  FPixmapHandle^^.rowBytes := ABitmap.BytesPerRow or $8000;
+  FPixmapHandle^^.rowBytes := SInt16(ABitmap.BytesPerRow or $8000);
   FPixmapHandle^^.bounds := B;
   FPixmapHandle^^.pmVersion := 0;
   FPixmapHandle^^.packType := 0;
@@ -1791,7 +1791,6 @@ begin
   FPixmapHandle := PixMapHandle(NewHandleClear(SizeOf(PixMap)));
   FPixmapHandle^^.baseAddr := nil;
   FPixmapHandle^^.bounds := Bounds;
-  // tell that this is pixmap (bit 15 := 1)
   FPixmapHandle^^.pmVersion := 0;
   FPixmapHandle^^.packType := 0;
   FPixmapHandle^^.packSize := 0;
@@ -1802,7 +1801,8 @@ begin
   FPixmapHandle^^.cmpCount := ABitmap.Depth div FPixmapHandle^^.cmpSize;  // $AARRGGBB
   FPixmapHandle^^.pixelSize := ABitmap.FBitsPerPixel; // depth
   rowBytes := FPixmapHandle^^.Bounds.right * (FPixmapHandle^^.pixelSize shr 3);
-  FPixmapHandle^^.rowBytes := rowBytes or $8000;
+  // tell that this is pixmap (bit 15 := 1)
+  FPixmapHandle^^.rowBytes := SInt16(rowBytes or $8000);
   FPixmapHandle^^.pmTable := nil;
 
   // create cursor handle
@@ -1842,11 +1842,11 @@ begin
       Inc(SrcPtr, 4);
     end;
  {$IFDEF ENDIAN_BIG}
-    FQDColorCursorHandle^^.crsrMask[i] := RowMask;
-    FQDColorCursorHandle^^.crsr1Data[i] := RowData;
+    FQDColorCursorHandle^^.crsrMask[i] := SInt16(RowMask);
+    FQDColorCursorHandle^^.crsr1Data[i] := SInt16(RowData);
  {$ELSE}
-    FQDColorCursorHandle^^.crsrMask[i] := CFSwapInt16(RowMask);
-    FQDColorCursorHandle^^.crsr1Data[i] := CFSwapInt16(RowData);
+    FQDColorCursorHandle^^.crsrMask[i] := SInt16(CFSwapInt16(RowMask));
+    FQDColorCursorHandle^^.crsr1Data[i] := SInt16(CFSwapInt16(RowData));
  {$ENDIF}
     Inc(SrcRowPtr, ABitmap.BytesPerRow);
     Inc(DstRowPtr, rowBytes);
