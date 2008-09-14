@@ -110,6 +110,7 @@ function CGRectToRect(const ARect: CGRect): TRect;
 function ParamsToHIRect(const AParams: TCreateParams): HIRect;
 function CarbonRectToRect(const ARect: MacOSAll.Rect): TRect;
 function HIRectToCarbonRect(const ARect: HIRect): MacOSAll.Rect;
+function SortRect(const ARect: TRect): TRect;
 
 function PointToHIPoint(const APoint: TPoint): HIPoint;
 function PointToHISize(const APoint: TPoint): HISize;
@@ -940,6 +941,31 @@ begin
     Result.Top := Floor(ARect.origin.y);
     Result.Right := Ceil(ARect.origin.x + ARect.size.width);
     Result.Bottom := Ceil(ARect.origin.y + ARect.size.height);
+  end;
+end;
+
+function SortRect(const ARect: TRect): TRect;
+begin
+  if ARect.Left <= ARect.Right then
+  begin
+    Result.Left := ARect.Left;
+    Result.Right := ARect.Right;
+  end
+  else
+  begin
+    Result.Left := ARect.Right;
+    Result.Right := ARect.Left;
+  end;
+
+  if ARect.Top <= ARect.Bottom then
+  begin
+    Result.Top := ARect.Top;
+    Result.Bottom := ARect.Bottom;
+  end
+  else
+  begin
+    Result.Top := ARect.Bottom;
+    Result.Bottom := ARect.Top;
   end;
 end;
 

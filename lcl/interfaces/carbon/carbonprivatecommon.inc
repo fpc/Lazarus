@@ -272,7 +272,7 @@ begin
     begin
       GlobalToLocal(ALocation);
 
-      if OSError(HandleControlSetCursor(Control, ALocation, AModifiers, ACursorWasSet),
+      if OSError(HandleControlSetCursor(Control, ALocation, EventModifiers(AModifiers), ACursorWasSet),
         SName, 'HandleControlSetCursor') then ACursorWasSet := False;
     end;
     

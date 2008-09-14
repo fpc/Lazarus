@@ -688,7 +688,7 @@ begin
     Exit;
   end;
   
-  ARect := CarbonRectToRect(BoundsRect);
+  ARect := SortRect(CarbonRectToRect(BoundsRect));
   Result := True;
 end;
 
