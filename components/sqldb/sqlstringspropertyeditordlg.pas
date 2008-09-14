@@ -125,7 +125,9 @@ begin
   SQLHighlighter.SQLDIalect:=D;
   SQLHighlighter.Enabled:=True;
 {$ifdef unix}
+  {$ifndef darwin}
   SQLEditor.Font.Name:='-adobe-courier-medium-r-normal-*-8-*-*-*-m-*-iso10646-1';
+  {$endif}
 {$endif}
 end;
 

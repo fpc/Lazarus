@@ -7,6 +7,7 @@ object SQLStringsPropertyEditorDlg: TSQLStringsPropertyEditorDlg
   ClientHeight = 357
   ClientWidth = 494
   OnShow = FormShow
+  ParentFont = False
   Position = poDesktopCenter
   LCLVersion = '0.9.25'
   object ButtonsPanel: TButtonPanel
@@ -66,17 +67,18 @@ object SQLStringsPropertyEditorDlg: TSQLStringsPropertyEditorDlg
     TabIndex = 0
     TabOrder = 2
     object EditorTabSheet: TTabSheet
-      ClientHeight = 255
-      ClientWidth = 490
+      ClientHeight = 246
+      ClientWidth = 488
       object SQLEditor: TSynEdit
-        Height = 255
-        Width = 490
+        Height = 246
+        Width = 488
         Align = alClient
         Font.Height = -16
-        Font.Name = 'courier'
         Font.Pitch = fpFixed
         ParentColor = False
+        ParentFont = False
         TabOrder = 0
+        BookMarkOptions.OnChange = nil
         Highlighter = SQLHighlighter
         Keystrokes = <        
           item
@@ -399,6 +401,7 @@ object SQLStringsPropertyEditorDlg: TSQLStringsPropertyEditorDlg
             Command = 250
             ShortCut = 24642
           end>
+        SelectedColor.OnChange = nil
       end
     end
     object ResultTabSheet: TTabSheet
