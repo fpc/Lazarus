@@ -4300,7 +4300,8 @@ var
       if (ScrollInfo.nPos > ScrollBar.getMax) then
         ScrollInfo.nPos := ScrollBar.getMax;
 
-      ScrollBar.setValue(ScrollInfo.nPos);
+      if (ScrollInfo.FMask and SIF_UPDATEPOLICY) = 0 then
+        ScrollBar.setValue(ScrollInfo.nPos);
     end;
 
     if (ScrollInfo.FMask and SIF_TRACKPOS) <> 0 then
