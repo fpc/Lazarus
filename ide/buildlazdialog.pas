@@ -185,9 +185,11 @@ type
   { TConfigureBuildLazarusDlg }
 
   TConfigureBuildLazarusDlg = class(TForm)
+    CancelButton: TBitBtn;
+    CompileButton: TBitBtn;
     Panel2: TPanel;
+    SaveSettingsButton: TBitBtn;
     TargetDirectoryButton: TButton;
-    CancelButton: TButton;
     AppLCLInterfaceComboBox: TComboBox;
     IDELCLInterfaceComboBox: TComboBox;
     QuickLCLInterfaceComboLabel: TLabel;
@@ -213,8 +215,6 @@ type
     AdvancedBuildOptionsPage: TPage;
     CBLDBtnPanel: TPanel;
     LCLInterfaceRadioGroup: TRadioGroup;
-    SaveSettingsButton: TButton;
-    CompileButton: TButton;
     procedure AppLCLInterfaceComboBoxChange(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
     procedure CompileButtonClick(Sender: TObject);

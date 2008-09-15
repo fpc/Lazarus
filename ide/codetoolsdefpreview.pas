@@ -25,7 +25,7 @@ type
   { TCodeToolsDefinesDialog }
 
   TCodeToolsDefinesDialog = class(TForm)
-    CloseButton: TButton;
+    CloseButton: TBitBtn;
     DirectoryBrowseButton: TButton;
     DirectoryCombobox: TComboBox;
     DirectoryGroupbox: TGroupBox;

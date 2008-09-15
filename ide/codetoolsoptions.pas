@@ -172,9 +172,11 @@ type
   { TCodeToolsOptsDlg }
 
   TCodeToolsOptsDlg = class(TForm)
+    CancelButton: TBitBtn;
     Notebook: TNotebook;
     GeneralPage: TPage;
     CodeCreationPage: TPage;
+    OKButton: TBitBtn;
     WordsPoliciesPage: TPage;
     LineSplittingPage: TPage;
     SpaceNotCosmosPage: TPage;
@@ -230,9 +232,6 @@ type
     ICAddSemicolonCheckBox: TCheckBox;
     ICAddAssignOperatorCheckBox: TCheckBox;
 
-    // buttons at bottom
-    OkButton: TButton;
-    CancelButton: TButton;
     
     procedure FormCreate(Sender: TObject);
     procedure FormResize(Sender: TObject);

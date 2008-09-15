@@ -79,15 +79,14 @@ type
   { TDiffDlg }
   
   TDiffDlg = class(TForm)
+    CloseButton: TBitBtn;
     DiffSynEdit: TSynEdit;
+    OpenInEditorButton: TBitBtn;
+    SaveDiffButton: TBitBtn;
     Text1FileOpenButton: TButton;
     dlgSave: TSaveDialog;
     dlgOpen: TOpenDialog;
 
-    //buttons
-    SaveDiffButton: TButton;
-    OpenInEditorButton: TButton;
-    CloseButton: TButton;
     Text2FileOpenButton: TButton;
 
     // text 1

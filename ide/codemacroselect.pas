@@ -39,12 +39,12 @@ type
   { TCodeMacroSelectDlg }
 
   TCodeMacroSelectDlg = class(TForm)
+    CancelButton: TBitBtn;
+    OkButton: TBitBtn;
     ParameterEdit: TEdit;
     ParameterGroupBox: TGroupBox;
     MacrosListBox: TListBox;
     DescriptionMemo: TMemo;
-    OkButton: TButton;
-    CancelButton: TButton;
     MacrosGroupBox: TGroupBox;
     DescriptionGroupBox: TGroupBox;
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);

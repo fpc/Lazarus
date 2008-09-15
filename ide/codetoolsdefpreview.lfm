@@ -10,24 +10,24 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
   OnClose = CodeToolsDefinesDialogCLOSE
   OnCreate = CodeToolsDefinesDialogCREATE
   OnDestroy = FormDestroy
+  ParentFont = False
   LCLVersion = '0.9.25'
   object DirectoryGroupbox: TGroupBox
     Height = 48
     Width = 502
     Align = alTop
     Caption = 'DirectoryGroupbox'
-    ClientHeight = 29
+    ClientHeight = 30
     ClientWidth = 498
     ParentCtl3D = False
     TabOrder = 0
     OnResize = DirectoryGroupboxRESIZE
     object DirectoryCombobox: TComboBox
       Left = 6
-      Height = 29
+      Height = 21
       Top = 1
       Width = 360
-      AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-      MaxLength = 0
+      ItemHeight = 13
       OnChange = DirectoryComboboxCHANGE
       ParentCtl3D = False
       TabOrder = 0
@@ -60,22 +60,24 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
     Align = alBottom
     Anchors = [akLeft, akBottom]
     Caption = 'Value'
-    ClientHeight = 83
+    ClientHeight = 84
     ClientWidth = 498
     ParentCtl3D = False
     TabOrder = 2
     object ValueSynedit: TSynEdit
-      Height = 83
+      Height = 84
       Width = 498
       Align = alClient
       Font.Height = -15
       Font.Name = 'courier'
+      Font.Pitch = fpFixed
       ParentColor = False
       ParentCtl3D = False
+      ParentFont = False
       TabOrder = 0
       BookMarkOptions.Xoffset = -18
+      BookMarkOptions.OnChange = nil
       Gutter.Visible = False
-      Gutter.CodeFoldingWidth = 14
       Keystrokes = <      
         item
           Command = 3
@@ -402,6 +404,7 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
       )
       Options = [eoAutoIndent, eoDragDropEditing, eoScrollPastEol, eoShowScrollHint, eoSmartTabs, eoTabsToSpaces, eoTrimTrailingSpaces, eoBracketHighlight, eoShowCtrlMouseLinks]
       ReadOnly = True
+      SelectedColor.OnChange = nil
     end
   end
   object MainSplitter: TSplitter
@@ -417,14 +420,14 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
     Width = 202
     Align = alClient
     Caption = 'TemplatesGroupBox'
-    ClientHeight = 236
+    ClientHeight = 237
     ClientWidth = 198
     TabOrder = 3
     object ParsedTemplatesTreeView: TTreeView
       Height = 122
       Width = 198
       Align = alTop
-      DefaultItemHeight = 19
+      DefaultItemHeight = 15
       TabOrder = 0
       OnSelectionChanged = ParsedTemplatesTreeViewSelectionChanged
     end
@@ -437,7 +440,7 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
       ResizeAnchor = akTop
     end
     object TemplatesMemo: TMemo
-      Height = 109
+      Height = 110
       Top = 127
       Width = 198
       Align = alClient
@@ -456,19 +459,56 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
     ClientHeight = 45
     ClientWidth = 502
     TabOrder = 5
-    object CloseButton: TButton
+    object CloseButton: TBitBtn
       AnchorSideRight.Control = CloseButtonPanel
       AnchorSideRight.Side = asrBottom
-      Left = 406
-      Height = 29
-      Top = 9
-      Width = 90
+      Left = 393
+      Height = 26
+      Top = 12
+      Width = 103
       Anchors = [akRight, akBottom]
       AutoSize = True
       BorderSpacing.Right = 6
       BorderSpacing.Bottom = 4
       Caption = 'CloseButton'
+      Glyph.Data = {
+        36040000424D3604000000000000360000002800000010000000100000000100
+        2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00B7B7
+        B7FFAEAEAEFF3071A9FF2C6EA6FF286BA3FF2468A0FF21669EFF1D639BFF1A61
+        99FF175F97FF145C94FF115B93FF6C6C6CFF6C6C6CFFFFFFFF00FFFFFF00FFFF
+        FF00FFFFFF003675ADFF86B6D8FF83B3D7FF81B2D6FF7DAFD5FF7BADD4FF79AB
+        D3FF76AAD2FF74A8D1FF155D95FFFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF003C79B1FF8BB9DAFF66A2CEFF62A0CDFF5F9DCBFF5B9AC9FF5897
+        C8FF5495C7FF77ABD3FF196098FFFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00427DB5FF8FBDDCFF6CA7D0FF67A4CFFF64A1CDFF609ECCFF5C9B
+        CAFF5999C9FF7BADD4FF1E649CFFFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF004882BAFF93C0DDFF71ABD2FF6DA8D1FF69A5CFFF66A2CEFF629F
+        CCFF5E9CCBFF7FB0D5FF23679FFFFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF004E86BEFF98C3DFFF77AFD5FF73ACD3FF6FA9D2FF6BA7D0FF5BB7
+        E3FF54C2EDFF81B4D7FF286BA3FFFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00538AC2FF9CC6E1FF7CB3D7FF79B1D5FF75ADD4FF71ABD2FF5FBA
+        E4FF4BD4FFFF7CBBE0FF2E6FA7FFFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00598EC6FFA0C9E3FF82B8D9FF7EB5D8FF7AB2D6FF77AFD5FF73AC
+        D3FF6DABD4FF8CBADAFF3373ABFFFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF005E91C9FFA4CCE4FF87BBDBFF84B9DAFF80B6D8FF7CB3D7FF79B0
+        D5FF74ADD4FF8FBDDCFF3977AFFFFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF006395CDFFA8CFE5FF8CBFDDFF88BDDCFF85BADBFF81B7D9FF7EB4
+        D7FF7AB2D6FF94C1DDFF3F7CB4FFFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF006798D0FFABD1E7FF90C2DFFF8DC0DEFF8ABEDCFF87BBDBFF83B8
+        DAFF80B6D8FF99C4E0FF4580B8FFFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF006B9BD3FFAED4E8FFABD3E8FFAAD1E7FFA8CFE5FFA5CDE4FFA2CB
+        E4FFA0C9E2FF9DC7E1FF4B84BCFFFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF006E9DD5FF6C9BD3FF699AD2FF6697CFFF6395CDFF6093CBFF5C90
+        C8FF598EC6FF558BC3FF5188C0FFFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
+      }
       ModalResult = 2
+      NumGlyphs = 0
       TabOrder = 0
     end
   end

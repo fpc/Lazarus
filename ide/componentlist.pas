@@ -49,7 +49,7 @@ type
   { TComponentListForm }
 
   TComponentListForm = class(TForm)
-    CloseButton: TButton;
+    CloseButton: TBitBtn;
     LabelSearch: TLabel;
     ListboxComponents: TListBox;
     PageControl: TPageControl;
