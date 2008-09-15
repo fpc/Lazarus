@@ -1210,7 +1210,7 @@ begin
   if Flags and DT_SINGLELINE <> 0 then
     F := F or QtTextSingleLine;
 
-  if Flags and DT_NOPREFIX <> 0 then
+  if Flags and DT_NOPREFIX = 0 then
     F := F or QtTextShowMnemonic;
 
   if Flags and DT_NOCLIP <> 0 then
