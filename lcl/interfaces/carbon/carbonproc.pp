@@ -682,7 +682,10 @@ begin
   if AString = nil then Exit;
   S := CFStringToStr(AString, Encoding);
   
-  Result := CFDataCreate(nil, @S[1], Length(S));
+  if Length(S) > 0 then
+    Result := CFDataCreate(nil, @S[1], Length(S))
+  else
+    Result := CFDataCreate(nil, nil, 0);
 end;
 
 {------------------------------------------------------------------------------
