@@ -913,7 +913,7 @@ type
     property BorderStyle:TBorderStyle read FGridBorderStyle write SetBorderStyle default bsSingle;
     property BorderColor: TColor read FBorderColor write SetBorderColor default cl3DDKShadow;
     property Col: Integer read FCol write SetCol;
-    property ColCount: Integer read GetColCount write SetColCount;
+    property ColCount: Integer read GetColCount write SetColCount default 5;
     property Columns: TGridColumns read GetColumns write SetColumns stored IsColumnsStored;
     property ColWidths[aCol: Integer]: Integer read GetColWidths write SetColWidths;
     property DefaultColWidth: Integer read FDefColWidth write SetDefColWidth default DEFCOLWIDTH;
@@ -4467,7 +4467,9 @@ begin
         InternalSetColCount( FixedCols + Columns.VisibleCount )
       else
         VisualChange;
-    end;
+    end else
+    if not (csLoading in ComponentState) then
+      ColCount := FixedCols;
   end else begin
     aCol := Columns.IndexOf(AColumn);
     if ACol>=0 then begin
