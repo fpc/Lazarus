@@ -1266,7 +1266,7 @@ begin
     dec(BaseDirLen);
   if BaseDirLen=0 then exit;
 
-  // skip matching directories
+  // count shared directories
   MinLen:=FileNameLength;
   if MinLen>BaseDirLen then MinLen:=BaseDirLen;
   p:=1;
@@ -1281,6 +1281,7 @@ begin
   and ((p>FileNameLength) or (CmpFilename[p]=PathDelim)) then
     inc(DirCount);
   if DirCount=0 then exit;
+  if FilenameIsAbsolute(BaseDirectory) and (DirCount=1) then exit;
 
   // calculate needed up directories
   BaseDirLen:=length(BaseDirectory);
