@@ -3024,7 +3024,11 @@ begin
     TM.tmDescent := QtFontMetrics.descent;
     TM.tmInternalLeading := QtFontMetrics.leading;
     TM.tmExternalLeading := 0;
+    {$IFDEF DARWIN}
+    TM.tmAveCharWidth := QtFontMetrics.charWidth('x',0);
+    {$ELSE}
     TM.tmAveCharWidth := QtFontMetrics.averageCharWidth;
+    {$ENDIF}
     TM.tmMaxCharWidth := QtFontMetrics.maxWidth;
     TM.tmWeight := QtDC.font.getWeight;
     TM.tmOverhang := 0;
