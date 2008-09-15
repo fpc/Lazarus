@@ -85,5 +85,6 @@
 
 
 {$IFDEF Gtk2}
-{$DEFINE EnabledGtkThreading}
+// see http://bugs.freepascal.org/view.php?id=12145
+{off $DEFINE EnabledGtkThreading}
 {$ENDIF}
