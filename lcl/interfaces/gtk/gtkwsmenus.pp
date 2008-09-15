@@ -385,7 +385,7 @@ end;
 function gtkWSPopupMenuDeactivate(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 begin
   Include(PWidgetInfo(Data)^.Flags, wwiValidQueuedEvent);
-  gtk_timeout_add(0,TGtkfunction(@gtkWSPopupDelayedClose), data);
+  g_idle_add(@gtkWSPopupDelayedClose, data);
   Result := CallBackDefaultReturn;
 end;
 
