@@ -8,7 +8,7 @@
 @DPATCH@
 Index: Makefile.fpc
 ===================================================================
---- lazarus/Makefile.fpc	(révision 15506)
+--- lazarus~/Makefile.fpc	(révision 16588)
 +++ lazarus/Makefile.fpc	(copie de travail)
 @@ -11,7 +11,7 @@
  
@@ -23,8 +23,8 @@ Index: Makefile.fpc
  
  #-----------------------------------------------------------------------------
  [rules]
--.PHONY: lcl components packager/registration ideintf packager bigidecomponents ide idepkg idebig bigide starter lazbuilder tools all clean cleanide purge examples install
-+.PHONY: lcl components packager/registration ideintf packager bigidecomponents idepkg idebig bigide starter lazbuilder all clean cleanide purge examples install
+-.PHONY: lcl components packager/registration ideintf packager bigidecomponents ide idepkg idebig bigide starter lazbuilder tools all clean cleanide purge examples install lazbuild
++.PHONY: lcl components packager/registration ideintf packager bigidecomponents idepkg idebig bigide starter lazbuilder all clean cleanide purge examples install lazbuild
  
  #-----------------------------------------------------------------------------
 -ide: 
@@ -34,7 +34,7 @@ Index: Makefile.fpc
  idepkg:
  	$(MAKE) -C ide idepkg
  
-@@ -75,7 +71,6 @@
+@@ -76,7 +72,6 @@
  
  #-----------------------------------------------------------------------------
  tools: lcl components
@@ -42,11 +42,12 @@ Index: Makefile.fpc
  	
  #-----------------------------------------------------------------------------
  examples: lcl components
-@@ -127,7 +122,7 @@
+@@ -128,7 +123,7 @@
  	ln -sf $(LAZARUS_INSTALL_DIR)/lazarus $(INSTALL_PREFIX)/bin/lazarus-ide
  	ln -sf $(LAZARUS_INSTALL_DIR)/startlazarus $(INSTALL_PREFIX)/bin/startlazarus
  	ln -sf $(LAZARUS_INSTALL_DIR)/lazbuild $(INSTALL_PREFIX)/bin/lazbuild
 -	cat $(LAZARUS_INSTALL_DIR)/docs/lazbuild.1 | gzip > $(INSTALL_MAN_DIR)/man1/lazbuild.1.gz
 +	cat $(LAZARUS_INSTALL_DIR)/install/man/man1/lazbuild.1 | gzip > $(INSTALL_MAN_DIR)/man1/lazbuild.1.gz
  endif
+ 
  

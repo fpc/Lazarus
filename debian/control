@@ -4,10 +4,8 @@ Priority: optional
 Maintainer: Carlos Laviola <claviola@debian.org>
 Uploaders: Torsten Werner <twerner@debian.org>, Mazen Neifer <mazen@freeapscal.org>
 Standards-Version: 3.7.3
-Build-Depends: debhelper (>= 5), dpatch, fp-compiler (>= 2.2.0-dfsg1-8), fp-units-base,
- fp-units-db, fp-units-fcl, fp-units-gfx, fp-units-gtk, fp-units-gtk2,
- fp-units-i386 [i386], fp-units-misc, fp-units-net, fp-units-rtl, fp-utils,
- imagemagick, libgdk-pixbuf-dev, fpc-source (>= 2.2.0-dfsg1-8)
+Build-Depends: debhelper (>= 5), dpatch, fpc (>= 2.2.2-3), fpc-source (>= 2.2.2-3), 
+ fp-units-i386 [i386], imagemagick, libgdk-pixbuf-dev
 Vcs-Svn: https://bollin.googlecode.com/svn/lazarus/trunk
 Vcs-Browser: http://bollin.googlecode.com/svn/lazarus/trunk
 Homepage: http://www.lazarus.freepascal.org
@@ -54,7 +52,7 @@ Description: Rapid Application Development (RAD) tool for Free Pascal
 Package: lazarus-ide
 Architecture: i386 powerpc sparc amd64 arm
 Pre-Depends: dpkg (>= 1.10.24)
-Depends: ${shlibs:Depends}, fp-compiler (>= 2.2.0-dfsg1-8), fp-units-base, fp-units-rtl,
+Depends: ${shlibs:Depends}, fp-compiler (>= 2.2.2-3), fp-units-base, fp-units-rtl,
  fp-units-fcl, fp-units-gtk, libgtk1.2-dev, libgdk-pixbuf-dev,
  ${fpc-abi:Depends}, lazarus-src
 Recommends: fp-units-db, fp-units-gfx, fp-units-gnome1, fp-units-misc,
