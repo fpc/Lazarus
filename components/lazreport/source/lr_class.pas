@@ -5888,11 +5888,18 @@ begin
 end;
 
 procedure TfrPage.FormPage;
+type
+  TBookRecord = record
+    Dataset: TfrDataset;
+    Bookmark: Pointer;
+  end;
 var
   BndStack: Array[1..MAXBNDS * 3] of TfrBand;
   MaxLevel, BndStackTop: Integer;
   i, sfPage            : Integer;
   HasGroups            : Boolean;
+  DetailCount          : Integer;
+  BooksBkUp            : array of TBookRecord;
   
   procedure AddToStack(b: TfrBand);
   begin
@@ -5901,6 +5908,41 @@ var
       Inc(BndStackTop);
       BndStack[BndStackTop] := b;
     end;
+  end;
+
+  procedure BackupBookmark(b: TfrBand);
+  var
+    n: Integer;
+  begin
+    n := Length(BooksBkUp);
+    SetLength(BooksBkUp, n+1);
+    BooksBkUp[n].Dataset := b.Dataset;
+    BooksBkUp[n].Bookmark := b.Dataset.GetBookmark;
+    if b.Typ in [btDetailData,btSubDetailData] then
+      inc(DetailCount);
+  end;
+
+  procedure RestoreBookmarks;
+  var
+    n: Integer;
+  begin
+    for n:=0 to Length(BooksBkUp)-1 do
+    with BooksBkUp[n] do begin
+      Dataset.GotoBookMark(Bookmark);
+      Dataset.FreeBookMark(Bookmark);
+      if DetailCount=0 then
+        Dataset.EnableControls;
+    end;
+    SetLength(BooksBkUp, 0);
+  end;
+
+  procedure DisableControls;
+  var
+    n: Integer;
+  begin
+    if DetailCount=0 then
+    for n:=0 to Length(BooksBkUp)-1 do
+      BooksBkUp[n].Dataset.DisableControls;
   end;
 
   procedure ShowStack;
@@ -5944,10 +5986,12 @@ var
     b := Bands[Bnds[Level, bpData]];
     while (b <> nil) and (b.Dataset <> nil) do
     begin
-      BM:=b.DataSet.GetBookMark;
-      b.DataSet.DisableControls;
       try
         b.DataSet.First;
+
+        //if Level<>1 then begin
+        //  b.Dataset.Refresh;
+        //end;
 
         if Mode = pmBuildList then
           AddRecord(b, rtFirst)
@@ -6043,9 +6087,6 @@ var
             Dec(BndStackTop);
         end;
       finally
-        b.DataSet.GotoBookMark(BM);
-        b.DataSet.FreeBookMark(BM);
-        b.DataSet.EnableControls;
       end;
       b := b.Next;
     end;
@@ -6107,16 +6148,23 @@ begin
   end;
 
   BndStackTop := 0;
+  SetLength(BooksBkUp, 0);
+  DetailCount := 0;
   for i := 1 to MAXBNDS do
   begin
     if BandExists(Bands[Bnds[i, bpData]]) then
+    begin
       MaxLevel := i;
+      BackupBookmark(Bands[Bnds[i, bpData]]);
+    end;
   end;
   HasGroups := Bands[btGroupHeader].Objects.Count > 0;
   {$IFDEF DebugLR}
   DebugLn('%sMaxLevel=%d doing DoLoop(1)',[sspc,MaxLevel]);
   {$ENDIF}
+  DisableControls;
   DoLoop(1);
+  RestoreBookmarks; // this also enablecontrols
   if Mode = pmNormal then
   begin
     if not RowsLayout then

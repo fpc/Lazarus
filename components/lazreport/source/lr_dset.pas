@@ -38,6 +38,7 @@ type
     procedure Exit; virtual;
     procedure First; virtual;
     procedure Next; virtual;
+    procedure Refresh; virtual;
 
     function GetBookMark : Pointer; virtual;
     procedure GotoBookMark(BM : Pointer); virtual;
@@ -92,6 +93,10 @@ procedure TfrDataSet.Next;
 begin
   Inc(FRecNo);
   if Assigned(FOnNext) then FOnNext(Self);
+end;
+
+procedure TfrDataset.Refresh;
+begin
 end;
 
 function TfrDataset.GetBookMark: Pointer;

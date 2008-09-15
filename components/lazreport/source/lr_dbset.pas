@@ -42,6 +42,7 @@ type
     procedure Exit; override;
     procedure First; override;
     procedure Next; override;
+    procedure Refresh; override;
     procedure Open;
     procedure Close;
     function Eof: Boolean; override;
@@ -195,6 +196,12 @@ begin
   end;
   GetDataSet.Next;
   inherited Next;
+end;
+
+procedure TfrDBDataSet.Refresh;
+begin
+  if GetDataset<>nil then
+    GetDataset.Refresh;
 end;
 
 function TfrDBDataSet.Eof: Boolean;
