@@ -307,7 +307,9 @@ procedure UTF8Delete(var s: String; StartCharIndex, CharCount: integer);
 procedure UTF8Insert(const source: String; var s: string; StartCharIndex: integer);
 function UTF8LowerCase(const s: String): String;
 function UTF8UpperCase(const s: String): String;
+{$ifdef NewLowerCase}
 function UTF8LowerCaseNew(const s: String): String;
+{$endif}
 function FindInvalidUTF8Character(p: PChar; Count: integer;
                                   StopOnNonASCII: Boolean = false): integer;
 procedure AssignUTF8ListToAnsi(UTF8List, AnsiList: TStrings);
@@ -353,6 +355,7 @@ var
   DebugText: ^Text;
   LineInfoCache: TAvgLvlTree = nil;
 
+{$ifdef NewLowerCase}
 var
   UnicodeLower00C0_00DE: array[$00C0..$00DE] of word;
   UnicodeLower0100_024E: array[$0100..$024E] of word;
@@ -1043,6 +1046,7 @@ begin
   UnicodeLower2C60_2CE2[$2CE0]:=$2CE1;
   UnicodeLower2C60_2CE2[$2CE2]:=$2CE3;
 end;
+{$endif NewLowerCase}
 
 function DeleteAmpersands(var Str : String) : Longint;
 // Replace all &x with x
@@ -3427,6 +3431,7 @@ begin
   Result := UTF8Encode(WideUpperCase(UTF8Decode(s)));
 end;
 
+{$ifdef NewLowerCase}
 function UnicodeLowercase(u: cardinal): cardinal;
 begin
   if u<$00C0 then begin
@@ -3523,11 +3528,13 @@ begin
   i:=1;
   while i<=length(Result) do begin
     case Result[i] of
+    { First ASCII chars }
     'A'..'Z':
       begin
         Result[i]:=chr(ord(Result[i])+32);
         inc(i);
       end;
+    { Now chars with multiple bytes }
     #192..#240:
       begin
         OldCode:=UTF8CharacterToUnicode(@Result[i],CharLen);
@@ -3551,6 +3558,7 @@ begin
     end;
   end;
 end;
+{$endif NewLowerCase}
 
 function FindInvalidUTF8Character(p: PChar; Count: integer;
   StopOnNonASCII: Boolean): integer;
@@ -4301,7 +4309,9 @@ initialization
   {$IFDEF DebugLCLComponents}
   DebugLCLComponents:=TDebugLCLItems.Create('LCLComponents');
   {$ENDIF}
+  {$ifdef NewLowerCase}
   InitUnicodeTables;
+  {$endif NewLowerCase}
 finalization
   InterfaceInitializationHandlers.Free;
   InterfaceInitializationHandlers:=nil;
