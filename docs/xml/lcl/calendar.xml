@@ -283,10 +283,7 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomCalendar.Create">
-        <short>
-          <var>Create</var> - constructor for a new instance of <var>TCustomCalendar</var>
-        </short>
+      <element name="TCustomCalendar.Create" link="#rtl.Classes.TComponent.Create">
         <descr/>
         <errors/>
         <seealso/>
@@ -296,21 +293,21 @@
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomCalendar.Destroy">
+      <element name="TCustomCalendar.Destroy" link="#rtl.Classes.TComponent.Destroy">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomCalendar.Loaded">
+      <element name="TCustomCalendar.Loaded" link="#rtl.Classes.TComponent.Loaded">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomCalendar.InitializeWnd">
+      <element name="TCustomCalendar.InitializeWnd" link="#LCL.Controls.TWinControl.InitializeWnd">
         <short/>
         <descr/>
         <errors/>
@@ -324,7 +321,7 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomCalendar.DateTime">
-        <short>the composite <var>DateTime</var> value returned by the control</short>
+        <short>The composite <var>DateTime</var> value returned by the control</short>
         <descr/>
         <seealso/>
       </element>
@@ -384,169 +381,169 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalendar.Align">
+      <element name="TCalendar.Align" link="#LCL.Controls.TControl.Align">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalendar.Anchors">
+      <element name="TCalendar.Anchors" link="#LCL.Controls.TControl.Anchors">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalendar.BorderSpacing">
+      <element name="TCalendar.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalendar.Constraints">
+      <element name="TCalendar.Constraints" link="#LCL.Controls.TControl.Constraints">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalendar.Date">
+      <element name="TCalendar.Date" link="#LCL.Calendar.TCustomCalendar.Date">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalendar.DateTime">
+      <element name="TCalendar.DateTime" link="#LCL.Calendar.TCustomCalendar.DateTime">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalendar.DisplaySettings">
+      <element name="TCalendar.DisplaySettings" link="#LCL.Calendar.TCustomCalendar.DisplaySettings">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalendar.OnChange">
+      <element name="TCalendar.OnChange" link="#LCL.Calendar.TCustomCalendar.OnChange">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalendar.OnChangeBounds">
+      <element name="TCalendar.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalendar.OnClick">
+      <element name="TCalendar.OnClick" link="#LCL.Controls.TControl.OnClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalendar.OnDayChanged">
+      <element name="TCalendar.OnDayChanged" link="#LCL.Calendar.TCustomCalendar.OnDayChanged">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalendar.OnEnter">
+      <element name="TCalendar.OnEnter" link="#LCL.Controls.TWinControl.OnEnter">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalendar.OnExit">
+      <element name="TCalendar.OnExit" link="#LCL.Controls.TWinControl.OnExit">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalendar.OnKeyDown">
+      <element name="TCalendar.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalendar.OnKeyPress">
+      <element name="TCalendar.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalendar.OnKeyUp">
+      <element name="TCalendar.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalendar.OnMonthChanged">
+      <element name="TCalendar.OnMonthChanged" link="#LCL.Calendar.TCustomCalendar.OnMonthChanged">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalendar.OnMouseDown">
+      <element name="TCalendar.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalendar.OnMouseEnter">
+      <element name="TCalendar.OnMouseEnter" link="#LCL.Controls.TControl.OnMouseEnter">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalendar.OnMouseLeave">
+      <element name="TCalendar.OnMouseLeave" link="#LCL.Controls.TControl.OnMouseLeave">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalendar.OnMouseMove">
+      <element name="TCalendar.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalendar.OnMouseUp">
+      <element name="TCalendar.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalendar.OnResize">
+      <element name="TCalendar.OnResize" link="#LCL.Controls.TControl.OnResize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalendar.OnYearChanged">
+      <element name="TCalendar.OnYearChanged" link="#LCL.Calendar.TCustomCalendar.OnYearChanged">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalendar.PopupMenu">
+      <element name="TCalendar.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalendar.ReadOnly">
+      <element name="TCalendar.ReadOnly" link="#LCL.Calendar.TCustomCalendar.ReadOnly">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalendar.Tabstop">
+      <element name="TCalendar.Tabstop" link="#LCL.Controls.TWinControl.TabStop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalendar.Visible">
+      <element name="TCalendar.Visible" link="#LCL.Controls.TControl.Visible">
         <short/>
         <descr/>
         <seealso/>
@@ -558,6 +555,9 @@
         <errors/>
         <seealso/>
       </element>
+      <element name="TCustomCalendar.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
+      <element name="TCalendar.OnDblClick" link="#LCL.Controls.TControl.OnDblClick"/>
+      <element name="TCalendar.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
     </module>
     <!-- Calendar -->
   </package>

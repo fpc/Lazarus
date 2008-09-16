@@ -158,10 +158,7 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomCheckListBox.Create">
-        <short>
-          <var>Create</var> a new instance of <var>TCustomCheckListBox</var>
-        </short>
+      <element name="TCustomCheckListBox.Create" link="#rtl.Classes.TComponent.Create">
         <descr/>
         <errors/>
         <seealso/>
@@ -191,176 +188,175 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckListBox.Align">
+      <element name="TCheckListBox.Align" link="#LCL.Controls.TControl.Align">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckListBox.Anchors">
+      <element name="TCheckListBox.Anchors" link="#LCL.Controls.TControl.Anchors">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckListBox.BorderSpacing">
+      <element name="TCheckListBox.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckListBox.BorderStyle">
+      <element name="TCheckListBox.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckListBox.Constraints">
+      <element name="TCheckListBox.Constraints" link="#LCL.Controls.TControl.Constraints">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckListBox.ExtendedSelect">
+      <element name="TCheckListBox.ExtendedSelect" link="#LCL.StdCtrls.TCustomListBox.ExtendedSelect">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckListBox.Items">
+      <element name="TCheckListBox.Items" link="#LCL.StdCtrls.TCustomListBox.Items">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckListBox.ItemHeight">
+      <element name="TCheckListBox.ItemHeight" link="#LCL.StdCtrls.TCustomListBox.ItemHeight">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckListBox.MultiSelect">
-        <short>Allows multiple selected list items.</short>
+      <element name="TCheckListBox.MultiSelect" link="#LCL.StdCtrls.TCustomListBox.MultiSelect">
         <seealso>
           <link id="StdCtrls"/>
         </seealso>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckListBox.OnClick">
+      <element name="TCheckListBox.OnClick" link="#LCL.Controls.TControl.OnClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckListBox.OnDblClick">
+      <element name="TCheckListBox.OnDblClick" link="#LCL.Controls.TControl.OnDblClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckListBox.OnDrawItem">
+      <element name="TCheckListBox.OnDrawItem" link="#LCL.StdCtrls.TCustomListBox.OnDrawItem">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckListBox.OnEnter">
+      <element name="TCheckListBox.OnEnter" link="#LCL.Controls.TWinControl.OnEnter">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckListBox.OnExit">
+      <element name="TCheckListBox.OnExit" link="#LCL.Controls.TWinControl.OnExit">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckListBox.OnKeyPress">
+      <element name="TCheckListBox.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckListBox.OnKeyDown">
+      <element name="TCheckListBox.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckListBox.OnKeyUp">
+      <element name="TCheckListBox.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckListBox.OnMouseMove">
+      <element name="TCheckListBox.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckListBox.OnMouseDown">
+      <element name="TCheckListBox.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckListBox.OnMouseUp">
+      <element name="TCheckListBox.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckListBox.OnResize">
+      <element name="TCheckListBox.OnResize" link="#LCL.Controls.TControl.OnResize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckListBox.ParentShowHint">
+      <element name="TCheckListBox.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckListBox.ShowHint">
+      <element name="TCheckListBox.ShowHint" link="#LCL.Controls.TControl.ShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckListBox.Sorted">
+      <element name="TCheckListBox.Sorted" link="#LCL.StdCtrls.TCustomListBox.Sorted">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckListBox.Style">
+      <element name="TCheckListBox.Style" link="#LCL.StdCtrls.TCustomListBox.Style">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckListBox.TabOrder">
+      <element name="TCheckListBox.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckListBox.TabStop">
+      <element name="TCheckListBox.TabStop" link="#LCL.Controls.TWinControl.TabStop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckListBox.TopIndex">
+      <element name="TCheckListBox.TopIndex" link="#LCL.StdCtrls.TCustomListBox.TopIndex">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckListBox.Visible">
+      <element name="TCheckListBox.Visible" link="#LCL.Controls.TControl.Visible">
         <short/>
         <descr/>
         <seealso/>
@@ -383,7 +379,7 @@
       <element name="TCustomCheckListBox.State">
         <short>The <var>State</var> of the box with the specified index - checked, unchecked or greyed</short>
       </element>
-      <element name="TCustomCheckListBox.Count"/>
+      <element name="TCustomCheckListBox.Count" link="#LCL.StdCtrls.TCustomListBox.Count"/>
       <element name="TCustomCheckListBox.OnClickCheck">
         <short>
           <var>OnClickCheck</var> - event handler for a mouse click on the CheckBox</short>
@@ -392,6 +388,52 @@
         <short>
           <var>OnItemClick</var> - event handler for a mouse click on the data item associated with the checkbox</short>
       </element>
+      <element name="TCustomCheckListBox.DefineProperties" link="#rtl.Classes.TComponent.DefineProperties"/>
+      <element name="TCustomCheckListBox.ReadData">
+        <short>
+          <var>ReadData</var> from a stream</short>
+      </element>
+      <element name="TCustomCheckListBox.WriteData">
+        <short>
+          <var>WriteData</var> to a stream</short>
+      </element>
+      <element name="TCustomCheckListBox.ClickCheck">
+        <short>
+          <var>ClickCheck</var> - software emulator of <var>OnClickCheck</var> event</short>
+      </element>
+      <element name="TCustomCheckListBox.ItemClick">
+        <short>
+          <var>ItemClick</var> - software emulation of <var>OnItemClick</var> event</short>
+      </element>
+      <element name="TCustomCheckListBox.MeasureItem" link="#LCL.StdCtrls.TCustomListBox.MeasureItem"/>
+      <element name="TCustomCheckListBox.ItemEnabled"/>
+      <element name="TCheckListBox.AllowGrayed" link="#LCL.CheckLst.TCustomCheckListBox.AllowGrayed"/>
+      <element name="TCheckListBox.BidiMode" link="#LCL.Controls.TControl.BiDiMode"/>
+      <element name="TCheckListBox.Color" link="#LCL.Controls.TControl.Color"/>
+      <element name="TCheckListBox.Columns" link="#LCL.StdCtrls.TCustomListBox.Columns"/>
+      <element name="TCheckListBox.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
+      <element name="TCheckListBox.DragMode" link="#LCL.Controls.TControl.DragMode"/>
+      <element name="TCheckListBox.Enabled" link="#LCL.Controls.TControl.Enabled"/>
+      <element name="TCheckListBox.Font" link="#LCL.Controls.TControl.Font"/>
+      <element name="TCheckListBox.IntegralHeight" link="#LCL.StdCtrls.TCustomListBox.IntegralHeight"/>
+      <element name="TCheckListBox.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds"/>
+      <element name="TCheckListBox.OnClickCheck" link="#LCL.CheckLst.TCustomCheckListBox.OnClickCheck"/>
+      <element name="TCheckListBox.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
+      <element name="TCheckListBox.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop"/>
+      <element name="TCheckListBox.OnDragOver" link="#LCL.Controls.TControl.OnDragOver"/>
+      <element name="TCheckListBox.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag"/>
+      <element name="TCheckListBox.OnItemClick" link="#LCL.CheckLst.TCustomCheckListBox.OnItemClick"/>
+      <element name="TCheckListBox.OnMouseEnter" link="#LCL.Controls.TControl.OnMouseEnter"/>
+      <element name="TCheckListBox.OnMouseLeave" link="#LCL.Controls.TControl.OnMouseLeave"/>
+      <element name="TCheckListBox.OnMouseWheel" link="#LCL.Controls.TControl.OnMouseWheel"/>
+      <element name="TCheckListBox.OnMouseWheelDown" link="#LCL.Controls.TControl.OnMouseWheelDown"/>
+      <element name="TCheckListBox.OnMouseWheelUp" link="#LCL.Controls.TControl.OnMouseWheelUp"/>
+      <element name="TCheckListBox.OnShowHint" link="#LCL.Controls.TControl.OnShowHint"/>
+      <element name="TCheckListBox.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
+      <element name="TCheckListBox.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
+      <element name="TCheckListBox.ParentBidiMode" link="#LCL.Controls.TControl.ParentBiDiMode"/>
+      <element name="TCheckListBox.ParentFont" link="#LCL.Controls.TControl.ParentFont"/>
+      <element name="TCheckListBox.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
     </module>
     <!-- CheckLst -->
   </package>

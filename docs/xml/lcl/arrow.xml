@@ -1,426 +1,298 @@
-<?xml version="1.0" encoding="ISO8859-1"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
-<package name="lcl">
-
-<!--
+  <package name="lcl">
+    <!--
   ====================================================================
     Arrow
   ====================================================================
 -->
-
-<module name="Arrow">
-<short></short>
-<descr>
-</descr>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="SysUtils">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Classes">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LCLType">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Controls">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="lMessages">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration type Visibility: default -->
-<element name="TArrowType">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TArrowType.atUp">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TArrowType.atDown">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TArrowType.atLeft">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TArrowType.atRight">
-<short></short>
-</element>
-
-<!-- enumeration type Visibility: default -->
-<element name="TShadowType">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TShadowType.stNone">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TShadowType.stIn">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TShadowType.stOut">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TShadowType.stEtchedIn">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TShadowType.stEtchedOut">
-<short></short>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TArrow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TArrow.FArrowType">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TArrow.FShadowType">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TArrow.GetShadowType">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TArrow.GetShadowType.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TArrow.SetShadowType">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TArrow.SetShadowType.AValue">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TArrow.GetArrowType">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TArrow.GetArrowType.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TArrow.SetArrowType">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TArrow.SetArrowType.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TArrow.SetProps">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TArrow.Paint">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TArrow.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TArrow.Create.AOwner">
-<short></short>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TArrow.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TArrow.Loaded">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TArrow.InitializeWnd">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TArrow.Align">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TArrow.Anchors">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TArrow.ArrowType">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TArrow.BorderSpacing">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TArrow.ShadowType">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TArrow.Visible">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TArrow.OnClick">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TArrow.OnMouseMove">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TArrow.OnMouseDown">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TArrow.OnMouseUp">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TArrow.OnChangeBounds">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TArrow.OnResize">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TArrow.OnContextPopup">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TArrow.PopupMenu">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="Register">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-</module> <!-- Arrow -->
-</package>
+    <module name="Arrow">
+      <short>Defines the Arrow symbol widely used in Forms</short>
+      <descr/>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="SysUtils">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Classes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LCLType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Controls">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="lMessages">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TArrowType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TArrowType.atUp">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TArrowType.atDown">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TArrowType.atLeft">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TArrowType.atRight">
+        <short/>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TShadowType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TShadowType.stNone">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TShadowType.stIn">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TShadowType.stOut">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TShadowType.stEtchedIn">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TShadowType.stEtchedOut">
+        <short/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TArrow">
+        <short>
+          <var>TArrow</var> - an arrow symbol widely used in forms</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TArrow.FArrowType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TArrow.FShadowType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TArrow.GetShadowType">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TArrow.GetShadowType.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TArrow.SetShadowType">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TArrow.SetShadowType.AValue">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TArrow.GetArrowType">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TArrow.GetArrowType.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TArrow.SetArrowType">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TArrow.SetArrowType.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TArrow.SetProps">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TArrow.Paint" link="#LCL.Controls.TCustomControl.Paint">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TArrow.Create" link="#rtl.Classes.TComponent.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TArrow.Create.AOwner">
+        <short/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TArrow.Destroy" link="#rtl.Classes.TComponent.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TArrow.Loaded" link="#rtl.Classes.TComponent.Loaded">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TArrow.InitializeWnd" link="#LCL.Controls.TWinControl.InitializeWnd">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TArrow.Align" link="#LCL.Controls.TControl.Align">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TArrow.Anchors" link="#LCL.Controls.TControl.Anchors">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TArrow.ArrowType">
+        <short>
+          <var>ArrowType</var> - pointing up, down, left or right</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TArrow.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TArrow.ShadowType">
+        <short>
+          <var>ShadowType</var> - the type of shadowing: None, In, Out, EtchedIn, EtchedOut</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TArrow.Visible" link="#LCL.Controls.TControl.Visible">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TArrow.OnClick" link="#LCL.Controls.TControl.OnClick">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TArrow.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TArrow.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TArrow.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TArrow.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TArrow.OnResize" link="#LCL.Controls.TControl.OnResize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TArrow.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TArrow.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="Register">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TArrow.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
+      <element name="TArrow.OnDblClick" link="#LCL.Controls.TControl.OnDblClick"/>
+    </module>
+    <!-- Arrow -->
+  </package>
 </fpdoc-descriptions>

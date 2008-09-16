@@ -414,9 +414,7 @@
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TClipboard.AddFormat">
-        <short>
-          <var>AddFormat</var> - add data to the supported formats. Returns True when operation has proceeded correctly</short>
+      <element name="TClipboard.AddFormat" link="#LCL.Clipbrd.TClipboard.AddFormat">
         <descr/>
         <errors/>
         <seealso/>
@@ -457,9 +455,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TClipboard.Assign">
-        <short>
-          <var>Assign</var> - add the data from the source to the clipboard with the specified Format ID</short>
+      <element name="TClipboard.Assign" link="#rtl.Classes.TPersistent.Assign">
         <descr/>
         <errors/>
         <seealso/>
@@ -469,9 +465,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TClipboard.AssignTo">
-        <short>
-          <var>AssignTo</var> - add the data from the clipboard to the specified destination</short>
+      <element name="TClipboard.AssignTo" link="#rtl.Classes.TPersistent.AssignTo">
         <descr/>
         <errors/>
         <seealso/>
@@ -517,9 +511,7 @@
           <var>AClipboardType</var> - optional argument specifying type of clipboard to be created</short>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TClipboard.Destroy">
-        <short>
-          <var>Destroy</var> - destructor: remove this instance of clipboard</short>
+      <element name="TClipboard.Destroy" link="#rtl.Classes.TPersistent.Destroy">
         <descr/>
         <errors/>
         <seealso/>
@@ -751,7 +743,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TClipboard.SetTextBuf">
+      <element name="TClipboard.SetTextBuf" link="#rtl.System.SetTextBuf">
         <short/>
         <descr/>
         <errors/>

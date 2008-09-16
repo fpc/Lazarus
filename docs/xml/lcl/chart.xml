@@ -129,7 +129,7 @@
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomBarChart.Create">
+      <element name="TCustomBarChart.Create" link="#rtl.Classes.TComponent.Create">
         <short/>
         <descr/>
         <errors/>
@@ -140,7 +140,7 @@
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomBarChart.Destroy">
+      <element name="TCustomBarChart.Destroy" link="#rtl.Classes.TComponent.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -180,7 +180,8 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomBarChart.GetBar">
-        <short/>
+        <short>
+          <var>GetBar</var> - collect the data for one of the bars</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -207,21 +208,23 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomBarChart.BeginUpdate">
-        <short/>
+        <short>
+          <var>BeginUpdate</var> - start updating</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomBarChart.EndUpdate">
-        <short/>
+        <short>
+          <var>EndUpdate</var> - finish updating</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomBarChart.Depth">
-        <short/>
+        <short>The <var>Depth</var> of the bars in the chart</short>
         <descr/>
         <seealso/>
       </element>
@@ -239,91 +242,91 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.Align">
+      <element name="TBarChart.Align" link="#LCL.Controls.TControl.Align">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.Alignment">
+      <element name="TBarChart.Alignment" link="#LCL.ExtCtrls.TCustomPanel.Alignment">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.Anchors">
+      <element name="TBarChart.Anchors" link="#LCL.Controls.TControl.Anchors">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.AutoSize">
+      <element name="TBarChart.AutoSize" link="#LCL.Controls.TControl.AutoSize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.BorderSpacing">
+      <element name="TBarChart.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.BevelInner">
+      <element name="TBarChart.BevelInner" link="#LCL.ExtCtrls.TCustomPanel.BevelInner">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.BevelOuter">
+      <element name="TBarChart.BevelOuter" link="#LCL.ExtCtrls.TCustomPanel.BevelOuter">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.BevelWidth">
+      <element name="TBarChart.BevelWidth" link="#LCL.ExtCtrls.TCustomPanel.BevelWidth">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.BorderWidth">
+      <element name="TBarChart.BorderWidth" link="#LCL.Controls.TWinControl.BorderWidth">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.BorderStyle">
+      <element name="TBarChart.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.Caption">
+      <element name="TBarChart.Caption" link="#LCL.Controls.TControl.Caption">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.ClientHeight">
+      <element name="TBarChart.ClientHeight" link="#LCL.Controls.TControl.ClientHeight">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.ClientWidth">
+      <element name="TBarChart.ClientWidth" link="#LCL.Controls.TControl.ClientWidth">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.Color">
+      <element name="TBarChart.Color" link="#LCL.Controls.TControl.Color">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.Constraints">
+      <element name="TBarChart.Constraints" link="#LCL.Controls.TControl.Constraints">
         <short/>
         <descr/>
         <seealso/>
@@ -335,145 +338,145 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.DragMode">
+      <element name="TBarChart.DragMode" link="#LCL.Controls.TControl.DragMode">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.Enabled">
+      <element name="TBarChart.Enabled" link="#LCL.Controls.TControl.Enabled">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.Font">
+      <element name="TBarChart.Font" link="#LCL.Controls.TControl.Font">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.FullRepaint">
+      <element name="TBarChart.FullRepaint" link="#LCL.ExtCtrls.TCustomPanel.FullRepaint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.ParentColor">
+      <element name="TBarChart.ParentColor" link="#LCL.Controls.TControl.ParentColor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.ParentFont">
+      <element name="TBarChart.ParentFont" link="#LCL.Controls.TControl.ParentFont">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.ParentShowHint">
+      <element name="TBarChart.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.PopupMenu">
+      <element name="TBarChart.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.ShowHint">
+      <element name="TBarChart.ShowHint" link="#LCL.Controls.TControl.ShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.TabOrder">
+      <element name="TBarChart.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.TabStop">
+      <element name="TBarChart.TabStop" link="#LCL.Controls.TWinControl.TabStop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.Visible">
+      <element name="TBarChart.Visible" link="#LCL.Controls.TControl.Visible">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.OnClick">
+      <element name="TBarChart.OnClick" link="#LCL.Controls.TControl.OnClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.OnDblClick">
+      <element name="TBarChart.OnDblClick" link="#LCL.Controls.TControl.OnDblClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.OnDragDrop">
+      <element name="TBarChart.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.OnDragOver">
+      <element name="TBarChart.OnDragOver" link="#LCL.Controls.TControl.OnDragOver">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.OnEndDrag">
+      <element name="TBarChart.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.OnEnter">
+      <element name="TBarChart.OnEnter" link="#LCL.Controls.TWinControl.OnEnter">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.OnExit">
+      <element name="TBarChart.OnExit" link="#LCL.Controls.TWinControl.OnExit">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.OnMouseDown">
+      <element name="TBarChart.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.OnMouseMove">
+      <element name="TBarChart.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.OnMouseUp">
+      <element name="TBarChart.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.OnResize">
+      <element name="TBarChart.OnResize" link="#LCL.Controls.TControl.OnResize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.OnStartDrag">
+      <element name="TBarChart.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag">
         <short/>
         <descr/>
         <seealso/>
@@ -499,7 +502,7 @@
         <short>
           <var>TBarChartItems</var> - the collection of items defining the bars in this barchart</short>
       </element>
-      <element name="TBarChartItems.Create"/>
+      <element name="TBarChartItems.Create" link="#rtl.Classes.TCollection.Create"/>
       <element name="TCustomBarChart.Bars">
         <short>
           <var>Bars</var> - the collection of bars that comprise the BarChart</short>
@@ -507,6 +510,11 @@
       <element name="TCustomBarChart.LabelPosition">
         <short>
           <var>LabelPosition</var> - left, centered or right</short>
+      </element>
+      <element name="TCustomBarChart.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
+      <element name="TCustomBarChart.UpdateBarChart">
+        <short>
+          <var>UpdateBarChart</var> - fill in any new information</short>
       </element>
     </module>
     <!-- Chart -->

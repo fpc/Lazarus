@@ -47,7 +47,8 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TContainedAction">
-        <short/>
+        <short>
+          <var>TContainedAction</var> - parent class for <var>TCustomAction</var>; defines some properties especially relationships with parents</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -120,7 +121,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TContainedAction.ReadState">
+      <element name="TContainedAction.ReadState" link="#rtl.Classes.TComponent.ReadState">
         <short/>
         <descr/>
         <errors/>
@@ -131,7 +132,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TContainedAction.SetParentComponent">
+      <element name="TContainedAction.SetParentComponent" link="#rtl.Classes.TComponent.SetParentComponent">
         <short/>
         <descr/>
         <errors/>
@@ -149,8 +150,7 @@
         <seealso/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TContainedAction.Destroy">
-        <short>Deallocates an object</short>
+      <element name="TContainedAction.Destroy" link="#rtl.Classes.TBasicAction.Destroy">
         <descr>If you call Destroy for an object witch hasn´t being initialized yet it will generate an error. Always use the Free method to deallocate objects, because it verifies if object variable doesn´t contain the value nil.
 
 Take the following precautions when creating your own Destroy method:
@@ -161,12 +161,13 @@ Take the following precautions when creating your own Destroy method:
 
 * An exception may be raised on the constructor in case there is not enought memory to create an object, or something else goes wrong. If the exception is not handled inside the constructor, the object will be only partially built. In this case Destroy will be called, so your destructor must check if the resources were really allocated before disposing of them.
 
-* Remember to call Free for all objects created on the constructor.</descr>
+* Remember to call Free for all objects created on the constructor.
+</descr>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TContainedAction.Execute">
+      <element name="TContainedAction.Execute" link="#rtl.Classes.TBasicAction.Execute">
         <short/>
         <descr/>
         <errors/>
@@ -177,7 +178,7 @@ Take the following precautions when creating your own Destroy method:
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TContainedAction.GetParentComponent">
+      <element name="TContainedAction.GetParentComponent" link="#rtl.Classes.TComponent.GetParentComponent">
         <short/>
         <descr/>
         <errors/>
@@ -188,7 +189,7 @@ Take the following precautions when creating your own Destroy method:
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TContainedAction.HasParent">
+      <element name="TContainedAction.HasParent" link="#rtl.Classes.TComponent.HasParent">
         <short/>
         <descr/>
         <errors/>
@@ -199,7 +200,7 @@ Take the following precautions when creating your own Destroy method:
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TContainedAction.Update">
+      <element name="TContainedAction.Update" link="#rtl.Classes.TBasicAction.Update">
         <short/>
         <descr/>
         <errors/>
@@ -211,19 +212,19 @@ Take the following precautions when creating your own Destroy method:
       </element>
       <!-- property Visibility: public -->
       <element name="TContainedAction.ActionList">
-        <short/>
+        <short>The <var>ActionList</var> in which this action is contained</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TContainedAction.Index">
-        <short/>
+        <short>The <var>Index</var> of this action in the list of actions</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TContainedAction.Category">
-        <short/>
+        <short>The <var>Category</var> of this action</short>
         <descr/>
         <seealso/>
       </element>
@@ -389,7 +390,8 @@ Take the following precautions when creating your own Destroy method:
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomActionList.AddAction">
-        <short/>
+        <short>
+          <var>AddAction</var> - adds an action to the list</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -400,7 +402,8 @@ Take the following precautions when creating your own Destroy method:
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomActionList.RemoveAction">
-        <short/>
+        <short>
+          <var>RemoveAction</var> - removes an action from the list</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -411,13 +414,14 @@ Take the following precautions when creating your own Destroy method:
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomActionList.Change">
-        <short/>
+        <short>
+          <var>Change</var> the action</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomActionList.GetChildren">
+      <element name="TCustomActionList.GetChildren" link="#rtl.Classes.TComponent.GetChildren">
         <short/>
         <descr/>
         <errors/>
@@ -432,7 +436,7 @@ Take the following precautions when creating your own Destroy method:
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomActionList.Notification">
+      <element name="TCustomActionList.Notification" link="#rtl.Classes.TComponent.Notification">
         <short/>
         <descr/>
         <errors/>
@@ -447,7 +451,7 @@ Take the following precautions when creating your own Destroy method:
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomActionList.SetChildOrder">
+      <element name="TCustomActionList.SetChildOrder" link="#rtl.Classes.TComponent.SetChildOrder">
         <short/>
         <descr/>
         <errors/>
@@ -463,7 +467,8 @@ Take the following precautions when creating your own Destroy method:
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomActionList.SetImages">
-        <short/>
+        <short>
+          <var>SetImages</var> - stores a list of images</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -474,34 +479,33 @@ Take the following precautions when creating your own Destroy method:
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomActionList.OnChange">
-        <short/>
+        <short>
+          <var>OnChange</var> - event handler for a change in the action</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomActionList.OnExecute">
-        <short/>
+        <short>
+          <var>OnExecute</var> - event handler for execution of the action</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomActionList.OnUpdate">
-        <short/>
+        <short>
+          <var>OnUpdate</var> - event handler for updating the action</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomActionList.Create">
-        <short>
-          <var>Create </var>a new instance of the <var>TCustomActionList </var>class</short>
-      </element>
+      <element name="TCustomActionList.Create" link="#rtl.Classes.TComponent.Create"/>
       <!-- argument Visibility: default -->
       <element name="TCustomActionList.Create.AOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomActionList.Destroy">
-        <short>Destroys the instance of the component.</short>
+      <element name="TCustomActionList.Destroy" link="#rtl.Classes.TComponent.Destroy">
         <descr>
           <var>Destroy</var> sends a <var>opRemove</var> notification to all components 
 in the free-notification list. After that, all owned components are
@@ -512,8 +516,7 @@ After that, the parent's destroy method is called.
 </descr>
       </element>
       <!-- function Visibility: public -->
-      <element name="TCustomActionList.ExecuteAction">
-        <short>Standard action execution method.</short>
+      <element name="TCustomActionList.ExecuteAction" link="#rtl.Classes.TComponent.ExecuteAction">
         <descr>
           <var>ExecuteAction</var> checks whether <var>Action</var> handles the
 current component, and if yes, calls the <var>ExecuteAction</var> method,
@@ -532,8 +535,7 @@ action handles the current component.
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TCustomActionList.UpdateAction">
-        <short>Updates the state of an action.</short>
+      <element name="TCustomActionList.UpdateAction" link="#rtl.Classes.TComponent.UpdateAction">
         <descr>
           <var>UpdateAction</var> checks whether <var>Action</var> handles the
 current component, and if yes, calls the <var>UpdateTarget</var> method,
@@ -626,32 +628,27 @@ action handles the current component.
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TActionList.Images">
-        <short>The <var>Images</var> from an <var>ImageList</var> to be associated with the actions, eg in a Menu display</short>
+      <element name="TActionList.Images" link="#LCL.ActnList.TCustomActionList.Images">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TActionList.State">
-        <short>State of the action : Normal, Suspended or SuspendedEnabled</short>
+      <element name="TActionList.State" link="#LCL.ActnList.TCustomActionList.State">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TActionList.OnChange">
-        <short>Event handler for change in action list</short>
+      <element name="TActionList.OnChange" link="#LCL.ActnList.TCustomActionList.OnChange">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TActionList.OnExecute">
-        <short>Event handler for executing action</short>
+      <element name="TActionList.OnExecute" link="#LCL.ActnList.TCustomActionList.OnExecute">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TActionList.OnUpdate">
-        <short>Event handler for updating action list</short>
+      <element name="TActionList.OnUpdate" link="#LCL.ActnList.TCustomActionList.OnUpdate">
         <descr/>
         <seealso/>
       </element>
@@ -679,7 +676,7 @@ action handles the current component.
       </element>
       <!-- function Visibility: public -->
       <element name="TShortCutList.Add">
-        <short>Add a shortcut to the list</short>
+        <short>Add a shortcut to the list; implements the <link id="TStrings.Add"/> function</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1025,8 +1022,7 @@ action handles the current component.
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomAction.AssignTo">
-        <short>Generic assignment function.</short>
+      <element name="TCustomAction.AssignTo" link="#rtl.Classes.TPersistent.AssignTo">
         <descr>
           <p>
             <var>AssignTo</var> is the generic function to assign the class' contents to 
@@ -1057,7 +1053,7 @@ execution will end up at the <var>TPersistent</var> implementation of
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomAction.SetName">
+      <element name="TCustomAction.SetName" link="#rtl.Classes.TComponent.SetName">
         <short/>
         <descr/>
         <errors/>
@@ -1069,7 +1065,8 @@ execution will end up at the <var>TPersistent</var> implementation of
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomAction.HandleShortCut">
-        <short/>
+        <short>
+          <var>HandleShortCut</var> - returns True if there is a short cut associated with the handle</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1080,24 +1077,19 @@ execution will end up at the <var>TPersistent</var> implementation of
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomAction.SavedEnabledState">
-        <short/>
+        <short>
+          <var>SavedEnabledState</var> - if True, the Enabled state has been saved</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomAction.Create">
-        <short>
-          <var>Create</var> a new instance of the <var>TCustomAction</var> class</short>
-      </element>
+      <element name="TCustomAction.Create" link="#rtl.Classes.TBasicAction.Create"/>
       <!-- argument Visibility: default -->
       <element name="TCustomAction.Create.AOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomAction.Destroy">
-        <short>
-          <var>Destroy </var>- Deallocates an object</short>
-      </element>
+      <element name="TCustomAction.Destroy" link="#rtl.Classes.TBasicAction.Destroy"/>
       <!-- function Visibility: public -->
       <element name="TCustomAction.DoHint">
         <short>
@@ -1113,10 +1105,7 @@ execution will end up at the <var>TPersistent</var> implementation of
           <var>HintStr</var> - the text-string for display as a hint</short>
       </element>
       <!-- function Visibility: public -->
-      <element name="TCustomAction.Execute">
-        <short>
-          <var>Execute</var> - method to determine if action is to be performed</short>
-      </element>
+      <element name="TCustomAction.Execute" link="#rtl.Classes.TBasicAction.Execute"/>
       <!-- function result Visibility: default -->
       <element name="TCustomAction.Execute.Result">
         <short>True if action is to be performed</short>
@@ -1209,85 +1198,63 @@ execution will end up at the <var>TPersistent</var> implementation of
         </seealso>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TAction.Create">
-        <short>
-          <var>Create</var> a new instance of the <var>TCustomAction</var> class</short>
-      </element>
+      <element name="TAction.Create" link="#rtl.Classes.TBasicAction.Create"/>
       <!-- argument Visibility: default -->
       <element name="TAction.Create.AOwner">
         <short/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TAction.AutoCheck">
-        <short>
-          <var>AutoCheck</var> - whether the control (eg a CheckBox) is to be automatically checked</short>
+      <element name="TAction.AutoCheck" link="#LCL.ActnList.TCustomAction.AutoCheck">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TAction.Caption">
-        <short>The <var>Caption</var> to be used if this action is associated with a visible component</short>
+      <element name="TAction.Caption" link="#LCL.ActnList.TCustomAction.Caption">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TAction.Checked">
-        <short>Whether the CheckBox associated with the action is <var>Checked</var> (default False)</short>
+      <element name="TAction.Checked" link="#LCL.ActnList.TCustomAction.Checked">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TAction.Enabled">
-        <short>
-          <var>Enabled</var> - whether this action is able to be used (default True)</short>
+      <element name="TAction.Enabled" link="#LCL.ActnList.TCustomAction.Enabled">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TAction.GroupIndex">
-        <short>
-          <var>GroupIndex </var>- Index of the action within its group</short>
+      <element name="TAction.GroupIndex" link="#LCL.ActnList.TCustomAction.GroupIndex">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TAction.HelpContext">
-        <short>
-          <var>HelpContext </var>- the index for a context-based help message</short>
+      <element name="TAction.HelpContext" link="#LCL.ActnList.TCustomAction.HelpContext">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TAction.HelpKeyword">
-        <short>
-          <var>HelpKeyWord </var>- the keyword of a context-based help message</short>
+      <element name="TAction.HelpKeyword" link="#LCL.ActnList.TCustomAction.HelpKeyword">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TAction.HelpType">
-        <short>
-          <var>HelpType</var> - the sort of help message to be offered: default Context-based</short>
+      <element name="TAction.HelpType" link="#LCL.ActnList.TCustomAction.HelpType">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TAction.Hint">
-        <short>
-          <var>Hint</var> - a pop-up message that appears when the mouse hovers over an object</short>
+      <element name="TAction.Hint" link="#LCL.ActnList.TCustomAction.Hint">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TAction.ImageIndex">
-        <short>
-          <var>ImageIndex </var>- the index number of the image to be associated with this action</short>
+      <element name="TAction.ImageIndex" link="#LCL.ActnList.TCustomAction.ImageIndex">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TAction.OnExecute">
-        <short>Event triggered when the action executes.</short>
+      <element name="TAction.OnExecute" link="#rtl.Classes.TBasicAction.OnExecute">
         <descr>
           <p>
             <var>OnExecute</var> is the event triggered when the action is activated
@@ -1306,15 +1273,12 @@ normal task if the <var>OnExecute</var> handler was called.
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TAction.OnHint">
-        <short>
-          <var>OnHint</var> - action to be taken when a hint is required</short>
+      <element name="TAction.OnHint" link="#LCL.ActnList.TCustomAction.OnHint">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TAction.OnUpdate">
-        <short>Event trigged when the application is idle.</short>
+      <element name="TAction.OnUpdate" link="#rtl.Classes.TBasicAction.OnUpdate">
         <descr>
           <var>OnUpdate</var> is the event triggered when the application is idle, and
 the action is being updated. The <var>OnUpdate</var> event can be used to
@@ -1324,22 +1288,18 @@ executed at this point in time.
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TAction.SecondaryShortCuts">
-        <short>
-          <var>SecondaryShortCuts</var> - a stringlist containing shortcuts</short>
+      <element name="TAction.SecondaryShortCuts" link="#LCL.ActnList.TCustomAction.SecondaryShortCuts">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TAction.ShortCut">
+      <element name="TAction.ShortCut" link="#LCL.ActnList.TCustomAction.ShortCut">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TAction.Visible">
-        <short>
-          <var>Visible</var> - is this action visible? (default True)</short>
+      <element name="TAction.Visible" link="#LCL.ActnList.TCustomAction.Visible">
         <descr/>
         <seealso/>
       </element>
@@ -1753,9 +1713,7 @@ executed at this point in time.
       <element name="TCustomActionList.IsShortCut">
         <short>This action is associated with a shortcut</short>
       </element>
-      <element name="TAction.DisableIfNoHandler">
-        <short>Disable this action if no handler is found</short>
-      </element>
+      <element name="TAction.DisableIfNoHandler" link="#LCL.ActnList.TCustomAction.DisableIfNoHandler"/>
     </module>
     <!-- ActnList -->
   </package>

@@ -139,9 +139,9 @@
           <var>KillTimer</var> - kills the current timer object</short>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomTimer.Loaded"/>
+      <element name="TCustomTimer.Loaded" link="#rtl.Classes.TComponent.Loaded"/>
       <!-- constructor Visibility: public -->
-      <element name="TCustomTimer.Create">
+      <element name="TCustomTimer.Create" link="#rtl.Classes.TComponent.Create">
         <short/>
         <descr/>
         <errors/>
@@ -152,7 +152,7 @@
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomTimer.Destroy">
+      <element name="TCustomTimer.Destroy" link="#rtl.Classes.TComponent.Destroy">
         <short/>
         <descr/>
         <errors/>

@@ -124,7 +124,7 @@
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TPanelBitBtn.Create">
+      <element name="TPanelBitBtn.Create" link="#LCL.Buttons.TCustomBitBtn.Create">
         <short/>
         <descr/>
         <errors/>
@@ -135,31 +135,31 @@
         <short/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanelBitBtn.Caption">
+      <element name="TPanelBitBtn.Caption" link="#LCL.Controls.TControl.Caption">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanelBitBtn.Enabled">
+      <element name="TPanelBitBtn.Enabled" link="#LCL.Controls.TControl.Enabled">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanelBitBtn.Font">
+      <element name="TPanelBitBtn.Font" link="#LCL.Controls.TControl.Font">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanelBitBtn.Glyph">
+      <element name="TPanelBitBtn.Glyph" link="#LCL.Buttons.TCustomBitBtn.Glyph">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanelBitBtn.OnClick">
+      <element name="TPanelBitBtn.OnClick" link="#LCL.Controls.TControl.OnClick">
         <short/>
         <descr/>
         <seealso/>
@@ -337,7 +337,7 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomButtonPanel.Create">
+      <element name="TCustomButtonPanel.Create" link="#rtl.Classes.TComponent.Create">
         <short/>
         <descr/>
         <errors/>
@@ -348,7 +348,7 @@
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomButtonPanel.Destroy">
+      <element name="TCustomButtonPanel.Destroy" link="#rtl.Classes.TComponent.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -497,139 +497,139 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.Align">
+      <element name="TButtonPanel.Align" link="#LCL.Controls.TControl.Align">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.Anchors">
+      <element name="TButtonPanel.Anchors" link="#LCL.Controls.TControl.Anchors">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.OKButton">
+      <element name="TButtonPanel.OKButton" link="#LCL.ButtonPanel.TCustomButtonPanel.OKButton">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.HelpButton">
+      <element name="TButtonPanel.HelpButton" link="#LCL.ButtonPanel.TCustomButtonPanel.HelpButton">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.CloseButton">
+      <element name="TButtonPanel.CloseButton" link="#LCL.ButtonPanel.TCustomButtonPanel.CloseButton">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.CancelButton">
+      <element name="TButtonPanel.CancelButton" link="#LCL.ButtonPanel.TCustomButtonPanel.CancelButton">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.ButtonOrder">
+      <element name="TButtonPanel.ButtonOrder" link="#LCL.ButtonPanel.TCustomButtonPanel.ButtonOrder">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.TabOrder">
+      <element name="TButtonPanel.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.DefaultButton">
+      <element name="TButtonPanel.DefaultButton" link="#LCL.ButtonPanel.TCustomButtonPanel.DefaultButton">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.OnClick">
+      <element name="TButtonPanel.OnClick" link="#LCL.Controls.TControl.OnClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.OnDblClick">
+      <element name="TButtonPanel.OnDblClick" link="#LCL.Controls.TControl.OnDblClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.OnDragDrop">
+      <element name="TButtonPanel.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.OnEnter">
+      <element name="TButtonPanel.OnEnter" link="#LCL.Controls.TWinControl.OnEnter">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.OnExit">
+      <element name="TButtonPanel.OnExit" link="#LCL.Controls.TWinControl.OnExit">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.OnKeyDown">
+      <element name="TButtonPanel.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.OnKeyPress">
+      <element name="TButtonPanel.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.OnKeyUp">
+      <element name="TButtonPanel.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.OnMouseDown">
+      <element name="TButtonPanel.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.OnMouseMove">
+      <element name="TButtonPanel.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.OnMouseUp">
+      <element name="TButtonPanel.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.OnResize">
+      <element name="TButtonPanel.OnResize" link="#LCL.Controls.TControl.OnResize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.ShowButtons">
+      <element name="TButtonPanel.ShowButtons" link="#LCL.ButtonPanel.TCustomButtonPanel.ShowButtons">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.ShowGlyphs">
+      <element name="TButtonPanel.ShowGlyphs" link="#LCL.ButtonPanel.TCustomButtonPanel.ShowGlyphs">
         <short/>
         <descr/>
         <seealso/>
@@ -641,6 +641,11 @@
         <errors/>
         <seealso/>
       </element>
+      <element name="TCustomButtonPanel.Loaded" link="#rtl.Classes.TComponent.Loaded"/>
+      <element name="TCustomButtonPanel.Notification" link="#rtl.Classes.TComponent.Notification"/>
+      <element name="TButtonPanel.AutoSize" link="#LCL.Controls.TControl.AutoSize"/>
+      <element name="TButtonPanel.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
+      <element name="TButtonPanel.Visible" link="#LCL.Controls.TControl.Visible"/>
     </module>
     <!-- ButtonPanel -->
   </package>

@@ -152,9 +152,9 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TColorBox.SetStyle">
-        <short>Write specifier for the setstyle property</short>
-        <descr>Use SetStyle to prevent the style to be changed to anything else than csOwnerDrawFixed.</descr>
+      <element name="TColorBox.SetStyle" link="#LCL.StdCtrls.TCustomComboBox.SetStyle">
+        <descr>Use SetStyle to prevent the style to be changed to anything else than csOwnerDrawFixed.
+</descr>
         <errors/>
         <seealso/>
       </element>
@@ -163,8 +163,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TColorBox.DrawItem">
-        <short>Method that draws a color item in the colorbox</short>
+      <element name="TColorBox.DrawItem" link="#LCL.StdCtrls.TCustomComboBox.DrawItem">
         <descr>Use DrawItem to customdraw an item in the ColorBox. A color preview is drawn and the item rectangle is made smaller and given to the inherited method to draw the corresponding text. The Brush color and Pen color where changed and reset to their original values.
 </descr>
         <errors/>
@@ -183,9 +182,9 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TColorBox.Create">
-        <short>Constructor for colorbox</short>
-        <descr>Use Create to create an instance of TColorBox and initialize all properties and variables.</descr>
+      <element name="TColorBox.Create" link="#rtl.Classes.TComponent.Create">
+        <descr>Use Create to create an instance of TColorBox and initialize all properties and variables.
+</descr>
         <errors/>
         <seealso/>
       </element>
@@ -220,102 +219,102 @@
         <short/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.Align">
+      <element name="TColorBox.Align" link="#LCL.Controls.TControl.Align">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.Anchors">
+      <element name="TColorBox.Anchors" link="#LCL.Controls.TControl.Anchors">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.ArrowKeysTraverseList">
+      <element name="TColorBox.ArrowKeysTraverseList" link="#LCL.StdCtrls.TCustomComboBox.ArrowKeysTraverseList">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.AutoComplete">
+      <element name="TColorBox.AutoComplete" link="#LCL.StdCtrls.TCustomComboBox.AutoComplete">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.AutoCompleteText">
+      <element name="TColorBox.AutoCompleteText" link="#LCL.StdCtrls.TCustomComboBox.AutoCompleteText">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.AutoDropDown">
+      <element name="TColorBox.AutoDropDown" link="#LCL.StdCtrls.TCustomComboBox.AutoDropDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.AutoSize">
+      <element name="TColorBox.AutoSize" link="#LCL.Controls.TControl.AutoSize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.BorderSpacing">
+      <element name="TColorBox.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.Color">
+      <element name="TColorBox.Color" link="#LCL.Controls.TControl.Color">
         <short>
           <var>Color</var> - this is the colour for the display of the actual control, not the colour selected from the list</short>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.Ctl3D">
+      <element name="TColorBox.Ctl3D" link="#LCL.Controls.TControl.Ctl3D">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.DragMode">
+      <element name="TColorBox.DragMode" link="#LCL.Controls.TControl.DragMode">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.DragCursor">
+      <element name="TColorBox.DragCursor" link="#LCL.Controls.TControl.DragCursor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.DropDownCount">
+      <element name="TColorBox.DropDownCount" link="#LCL.StdCtrls.TCustomComboBox.DropDownCount">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.Enabled">
+      <element name="TColorBox.Enabled" link="#LCL.Controls.TControl.Enabled">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.Font">
+      <element name="TColorBox.Font" link="#LCL.Controls.TControl.Font">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.ItemHeight">
+      <element name="TColorBox.ItemHeight" link="#LCL.StdCtrls.TCustomComboBox.ItemHeight">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.ItemIndex">
+      <element name="TColorBox.ItemIndex" link="#LCL.StdCtrls.TCustomComboBox.ItemIndex">
         <short/>
         <descr/>
         <seealso/>
@@ -327,13 +326,13 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.ItemWidth">
+      <element name="TColorBox.ItemWidth" link="#LCL.StdCtrls.TCustomComboBox.ItemWidth">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.MaxLength">
+      <element name="TColorBox.MaxLength" link="#LCL.StdCtrls.TCustomComboBox.MaxLength">
         <short/>
         <descr/>
         <seealso/>
@@ -345,37 +344,37 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.ParentColor">
+      <element name="TColorBox.ParentColor" link="#LCL.Controls.TControl.ParentColor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.ParentCtl3D">
+      <element name="TColorBox.ParentCtl3D" link="#LCL.Controls.TWinControl.ParentCtl3D">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.ParentFont">
+      <element name="TColorBox.ParentFont" link="#LCL.Controls.TControl.ParentFont">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.ParentShowHint">
+      <element name="TColorBox.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.PopupMenu">
+      <element name="TColorBox.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.ReadOnly">
+      <element name="TColorBox.ReadOnly" link="#LCL.StdCtrls.TCustomComboBox.ReadOnly">
         <short/>
         <descr/>
         <seealso/>
@@ -385,169 +384,169 @@
         <short>The colour that has been <var>Selected</var> from the list</short>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.ShowHint">
+      <element name="TColorBox.ShowHint" link="#LCL.Controls.TControl.ShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.Sorted">
+      <element name="TColorBox.Sorted" link="#LCL.StdCtrls.TCustomComboBox.Sorted">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.TabOrder">
+      <element name="TColorBox.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.TabStop">
+      <element name="TColorBox.TabStop" link="#LCL.Controls.TWinControl.TabStop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.Text">
+      <element name="TColorBox.Text" link="#LCL.StdCtrls.TCustomComboBox.Text">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.Visible">
+      <element name="TColorBox.Visible" link="#LCL.Controls.TControl.Visible">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.OnChange">
+      <element name="TColorBox.OnChange" link="#LCL.StdCtrls.TCustomComboBox.OnChange">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.OnChangeBounds">
+      <element name="TColorBox.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.OnClick">
+      <element name="TColorBox.OnClick" link="#LCL.Controls.TControl.OnClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.OnCloseUp">
+      <element name="TColorBox.OnCloseUp" link="#LCL.StdCtrls.TCustomComboBox.OnCloseUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.OnDblClick">
+      <element name="TColorBox.OnDblClick" link="#LCL.Controls.TControl.OnDblClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.OnDragDrop">
+      <element name="TColorBox.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.OnDragOver">
+      <element name="TColorBox.OnDragOver" link="#LCL.Controls.TControl.OnDragOver">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.OnDrawItem">
+      <element name="TColorBox.OnDrawItem" link="#LCL.StdCtrls.TCustomComboBox.OnDrawItem">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.OnDropDown">
+      <element name="TColorBox.OnDropDown" link="#LCL.StdCtrls.TCustomComboBox.OnDropDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.OnEditingDone">
+      <element name="TColorBox.OnEditingDone" link="#LCL.Controls.TControl.OnEditingDone">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.OnEndDrag">
+      <element name="TColorBox.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.OnEnter">
+      <element name="TColorBox.OnEnter" link="#LCL.Controls.TWinControl.OnEnter">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.OnExit">
+      <element name="TColorBox.OnExit" link="#LCL.Controls.TWinControl.OnExit">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.OnKeyDown">
+      <element name="TColorBox.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.OnKeyPress">
+      <element name="TColorBox.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.OnKeyUp">
+      <element name="TColorBox.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.OnMeasureItem">
+      <element name="TColorBox.OnMeasureItem" link="#LCL.StdCtrls.TCustomComboBox.OnMeasureItem">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.OnMouseDown">
+      <element name="TColorBox.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.OnMouseMove">
+      <element name="TColorBox.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.OnMouseUp">
+      <element name="TColorBox.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.OnStartDrag">
+      <element name="TColorBox.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorBox.OnSelect">
+      <element name="TColorBox.OnSelect" link="#LCL.StdCtrls.TCustomComboBox.OnSelect">
         <short/>
         <descr/>
         <seealso/>
@@ -642,7 +641,7 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TColorListBox.Create">
+      <element name="TColorListBox.Create" link="#rtl.Classes.TComponent.Create">
         <short/>
         <descr/>
         <errors/>
@@ -654,7 +653,8 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TColorListBox.SetColorList">
-        <short/>
+        <short>
+          <var>SetColorList</var> - stores the list of colours</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -673,31 +673,31 @@
         <short>The colour that has been <var>Selected</var> from the list</short>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.Align">
+      <element name="TColorListBox.Align" link="#LCL.Controls.TControl.Align">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.Anchors">
+      <element name="TColorListBox.Anchors" link="#LCL.Controls.TControl.Anchors">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.BorderSpacing">
+      <element name="TColorListBox.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.BorderStyle">
+      <element name="TColorListBox.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.ClickOnSelChange">
+      <element name="TColorListBox.ClickOnSelChange" link="#LCL.StdCtrls.TCustomListBox.ClickOnSelChange">
         <short/>
         <descr/>
         <seealso/>
@@ -705,118 +705,118 @@
       <!-- property Visibility: published -->
       <element name="TColorListBox.Color">
         <short>
-          <var>Color</var> - this is the colour for the display of the actual control, not the colour selected from the list</short>
+          <var>Color</var> - Determine the colour for the display of the actual control, not the colour selected from the list</short>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.Constraints">
+      <element name="TColorListBox.Constraints" link="#LCL.Controls.TControl.Constraints">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.DragCursor">
+      <element name="TColorListBox.DragCursor" link="#LCL.Controls.TControl.DragCursor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.DragMode">
+      <element name="TColorListBox.DragMode" link="#LCL.Controls.TControl.DragMode">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.Enabled">
+      <element name="TColorListBox.Enabled" link="#LCL.Controls.TControl.Enabled">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.ExtendedSelect">
+      <element name="TColorListBox.ExtendedSelect" link="#LCL.StdCtrls.TCustomListBox.ExtendedSelect">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.Font">
+      <element name="TColorListBox.Font" link="#LCL.Controls.TControl.Font">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.IntegralHeight">
+      <element name="TColorListBox.IntegralHeight" link="#LCL.StdCtrls.TCustomListBox.IntegralHeight">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.ItemHeight">
+      <element name="TColorListBox.ItemHeight" link="#LCL.StdCtrls.TCustomListBox.ItemHeight">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.Items">
+      <element name="TColorListBox.Items" link="#LCL.StdCtrls.TCustomListBox.Items">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.MultiSelect">
+      <element name="TColorListBox.MultiSelect" link="#LCL.StdCtrls.TCustomListBox.MultiSelect">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TColorListBox.Palette">
+        <short>The <var>Palette</var> of colours from which selection is to be made</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorListBox.ParentColor" link="#LCL.Controls.TControl.ParentColor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.ParentColor">
+      <element name="TColorListBox.ParentFont" link="#LCL.Controls.TControl.ParentFont">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.ParentFont">
+      <element name="TColorListBox.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.ParentShowHint">
+      <element name="TColorListBox.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.PopupMenu">
+      <element name="TColorListBox.ShowHint" link="#LCL.Controls.TControl.ShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.ShowHint">
+      <element name="TColorListBox.Sorted" link="#LCL.StdCtrls.TCustomListBox.Sorted">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.Sorted">
+      <element name="TColorListBox.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.TabOrder">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.TabStop">
+      <element name="TColorListBox.TabStop" link="#LCL.Controls.TWinControl.TabStop">
         <short/>
         <descr/>
         <seealso/>
@@ -828,151 +828,151 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.Visible">
+      <element name="TColorListBox.Visible" link="#LCL.Controls.TControl.Visible">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.OnChangeBounds">
+      <element name="TColorListBox.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.OnClick">
+      <element name="TColorListBox.OnClick" link="#LCL.Controls.TControl.OnClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.OnDblClick">
+      <element name="TColorListBox.OnDblClick" link="#LCL.Controls.TControl.OnDblClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.OnDragDrop">
+      <element name="TColorListBox.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.OnDragOver">
+      <element name="TColorListBox.OnDragOver" link="#LCL.Controls.TControl.OnDragOver">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.OnDrawItem">
+      <element name="TColorListBox.OnDrawItem" link="#LCL.StdCtrls.TCustomListBox.OnDrawItem">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.OnEndDrag">
+      <element name="TColorListBox.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.OnEnter">
+      <element name="TColorListBox.OnEnter" link="#LCL.Controls.TWinControl.OnEnter">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.OnExit">
+      <element name="TColorListBox.OnExit" link="#LCL.Controls.TWinControl.OnExit">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.OnKeyDown">
+      <element name="TColorListBox.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.OnKeyPress">
+      <element name="TColorListBox.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.OnKeyUp">
+      <element name="TColorListBox.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.OnMouseDown">
+      <element name="TColorListBox.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.OnMouseEnter">
+      <element name="TColorListBox.OnMouseEnter" link="#LCL.Controls.TControl.OnMouseEnter">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.OnMouseLeave">
+      <element name="TColorListBox.OnMouseLeave" link="#LCL.Controls.TControl.OnMouseLeave">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.OnMouseMove">
+      <element name="TColorListBox.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.OnMouseUp">
+      <element name="TColorListBox.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.OnMouseWheel">
+      <element name="TColorListBox.OnMouseWheel" link="#LCL.Controls.TControl.OnMouseWheel">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.OnMouseWheelDown">
+      <element name="TColorListBox.OnMouseWheelDown" link="#LCL.Controls.TControl.OnMouseWheelDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.OnMouseWheelUp">
+      <element name="TColorListBox.OnMouseWheelUp" link="#LCL.Controls.TControl.OnMouseWheelUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.OnResize">
+      <element name="TColorListBox.OnResize" link="#LCL.Controls.TControl.OnResize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.OnSelectionChange">
+      <element name="TColorListBox.OnSelectionChange" link="#LCL.StdCtrls.TCustomListBox.OnSelectionChange">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.OnShowHint">
+      <element name="TColorListBox.OnShowHint" link="#LCL.Controls.TControl.OnShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorListBox.OnStartDrag">
+      <element name="TColorListBox.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag">
         <short/>
         <descr/>
         <seealso/>
@@ -984,6 +984,8 @@
         <errors/>
         <seealso/>
       </element>
+      <element name="TColorBox.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
+      <element name="TColorListBox.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
     </module>
     <!-- ColorBox -->
   </package>
