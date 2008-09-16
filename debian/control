@@ -16,13 +16,13 @@ Pre-Depends: dpkg (>= 1.10.24)
 Depends: lazarus-ide, lazarus-src, lazarus-doc
 Recommends: fpc, fpc-source
 Suggests: fp-utils, fp-docs
-Description: Rapid Application Development (RAD) tool for Free Pascal
- Lazarus are the class libraries for Free Pascal that emulate Delphi.
- Free Pascal is a GPL'd compiler that runs on Linux, Win32, OS/2, 68K
- and other OS's. Free Pascal is designed to be able to understand and
- compile programs written with the Delphi syntax, which is object-oriented.
- Lazarus is the part of the missing puzzle that will allow you to develop
- Delphi-like programs in all of the above platforms.
+Description: Lazarus is an IDE to create (graphical and console) applications
+ with Free Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler
+ that runs on Windows, Linux, Mac OS X, FreeBSD and more.
+ .
+ Lazarus is the missing part of the puzzle that will allow you to develop
+ programs for all of the above platforms in a Delphi like environment.
+ The IDE is a RAD tool that includes a form designer.
  .
  Unlike Java's "write once, run anywhere" motto, Lazarus and Free Pascal
  strive for "write once, compile anywhere". Since the exact same compiler
@@ -32,19 +32,33 @@ Description: Rapid Application Development (RAD) tool for Free Pascal
  In short, Lazarus is a free RAD tool for Free Pascal using its Lazarus 
  Component Library (LCL).
  .
- This IDE will eventually reach Delphi's full functionality.
+ This is a meta-package depending on all packages need to have a typical
+ Lazarus installation.
+ .
+ Official: http://sourceforge.net/projects/lazarus/
+ .
+ Tutorials: http://lazarus-ccr.sourceforge.net
+
 
 Package: lazarus-src
 Section: devel
 Architecture: all
 Pre-Depends: dpkg (>= 1.10.24)
-Description: Rapid Application Development (RAD) tool for Free Pascal
- Lazarus are the class libraries for Free Pascal that emulate Delphi.
- Free Pascal is a GPL'd compiler that runs on Linux, Win32, OS/2, 68K
- and other OS's. Free Pascal is designed to be able to understand and
- compile programs written with the Delphi syntax, which is object-oriented.
- Lazarus is the part of the missing puzzle that will allow you to develop
- Delphi-like programs in all of the above platforms.
+Description: Lazarus is an IDE to create (graphical and console) applications
+ with Free Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler
+ that runs on Windows, Linux, Mac OS X, FreeBSD and more.
+ .
+ Lazarus is the missing part of the puzzle that will allow you to develop
+ programs for all of the above platforms in a Delphi like environment.
+ The IDE is a RAD tool that includes a form designer.
+ .
+ Unlike Java's "write once, run anywhere" motto, Lazarus and Free Pascal
+ strive for "write once, compile anywhere". Since the exact same compiler
+ is available on all of the above platforms you don't need to do any recoding
+ to produce identical products for different platforms.
+ .
+ In short, Lazarus is a free RAD tool for Free Pascal using its Lazarus 
+ Component Library (LCL).
  .
  This package contains lazarus source code necessary for the IDE code tool to
  run (retrieving declarations and navigating in code).
@@ -58,26 +72,42 @@ Depends: ${shlibs:Depends}, fp-compiler (>= 2.2.2-3), fp-units-base, fp-units-rt
 Recommends: fp-units-db, fp-units-gfx, fp-units-gnome1, fp-units-misc,
  fp-units-net, fpc-source, gdb
 Suggests: fp-utils
-Description: Rapid Application Development (RAD) tool for Free Pascal
- Lazarus are the class libraries for Free Pascal that emulate Delphi.
- Free Pascal is a GPL'd compiler that runs on Linux, Win32, OS/2, 68K
- and other OS's. Free Pascal is designed to be able to understand and
- compile programs written with the Delphi syntax, which is object-oriented.
- Lazarus is the part of the missing puzzle that will allow you to develop
- Delphi-like programs in all of the above platforms.
+Description: Lazarus is an IDE to create (graphical and console) applications
+ with Free Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler
+ that runs on Windows, Linux, Mac OS X, FreeBSD and more.
+ .
+ Lazarus is the missing part of the puzzle that will allow you to develop
+ programs for all of the above platforms in a Delphi like environment.
+ The IDE is a RAD tool that includes a form designer.
+ .
+ Unlike Java's "write once, run anywhere" motto, Lazarus and Free Pascal
+ strive for "write once, compile anywhere". Since the exact same compiler
+ is available on all of the above platforms you don't need to do any recoding
+ to produce identical products for different platforms.
+ .
+ In short, Lazarus is a free RAD tool for Free Pascal using its Lazarus 
+ Component Library (LCL).
  .
  This package contains the lazarus IDE, LCL and components.
 
 Package: lazarus-doc
 Section: doc
 Architecture: all
-Description: Rapid Application Development (RAD) tool for Free Pascal
- Lazarus are the class libraries for Free Pascal that emulate Delphi.
- Free Pascal is a GPL'd compiler that runs on Linux, Win32, OS/2, 68K
- and other OS's. Free Pascal is designed to be able to understand and
- compile programs written with the Delphi syntax, which is object-oriented.
- Lazarus is the part of the missing puzzle that will allow you to develop
- Delphi-like programs in all of the above platforms.
+Description: Lazarus is an IDE to create (graphical and console) applications
+ with Free Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler
+ that runs on Windows, Linux, Mac OS X, FreeBSD and more.
+ .
+ Lazarus is the missing part of the puzzle that will allow you to develop
+ programs for all of the above platforms in a Delphi like environment.
+ The IDE is a RAD tool that includes a form designer.
+ .
+ Unlike Java's "write once, run anywhere" motto, Lazarus and Free Pascal
+ strive for "write once, compile anywhere". Since the exact same compiler
+ is available on all of the above platforms you don't need to do any recoding
+ to produce identical products for different platforms.
+ .
+ In short, Lazarus is a free RAD tool for Free Pascal using its Lazarus 
+ Component Library (LCL).
  .
  This package contain documentation of the lazarus IDE and components. It can
  be viewed separately with any HTML browser or used by the IDE to as an
