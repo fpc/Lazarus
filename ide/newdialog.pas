@@ -138,13 +138,13 @@ type
   { TNewOtherDialog }
 
   TNewOtherDialog = class(TForm)
-    HelpButton: TButton;
+    CancelButton: TBitBtn;
     DescriptionGroupBox: TGroupBox;
     DescriptionLabel: TLabel;
+    HelpButton: TBitBtn;
     ItemsTreeView: TTreeView;
     InheritableComponentsListView: TListView;
-    OkButton: TButton;
-    CancelButton: TButton;
+    OkButton: TBitBtn;
     Panel1: TPanel;
     Splitter1: TSplitter;
     procedure HelpButtonClick(Sender: TObject);

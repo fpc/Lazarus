@@ -43,8 +43,8 @@ type
   { TShowCompilerOptionsDlg }
 
   TShowCompilerOptionsDlg = class(TForm)
+    OkButton: TBitBtn;
     RelativePathsCheckBox: TCheckBox;
-    OkButton: TBUTTON;
     CmdLineGroupbox: TGROUPBOX;
     CmdLineMemo: TMEMO;
     procedure FormCreate(Sender: TObject);

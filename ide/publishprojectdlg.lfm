@@ -9,6 +9,7 @@ object PublishProjectDialog: TPublishProjectDialog
   ClientHeight = 531
   ClientWidth = 484
   OnCreate = FormCreate
+  ParentFont = False
   Position = poScreenCenter
   LCLVersion = '0.9.25'
   object DestDirGroupBox: TGroupBox
@@ -19,14 +20,14 @@ object PublishProjectDialog: TPublishProjectDialog
     Align = alTop
     BorderSpacing.Around = 6
     Caption = 'Destination directory'
-    ClientHeight = 92
+    ClientHeight = 93
     ClientWidth = 468
     ParentCtl3D = False
     TabOrder = 0
     OnResize = DestDirGroupBoxRESIZE
     object CommandAfterLabel: TLabel
       Left = 6
-      Height = 20
+      Height = 14
       Top = 33
       Width = 442
       Anchors = [akTop, akLeft, akRight]
@@ -35,12 +36,11 @@ object PublishProjectDialog: TPublishProjectDialog
     end
     object DestDirComboBox: TComboBox
       Left = 6
-      Height = 29
+      Height = 21
       Top = 1
       Width = 406
       Anchors = [akTop, akLeft, akRight]
-      AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-      MaxLength = 0
+      ItemHeight = 13
       ParentCtl3D = False
       TabOrder = 0
       Text = 'DestDirComboBox'
@@ -48,10 +48,10 @@ object PublishProjectDialog: TPublishProjectDialog
     object BrowseDestDirBitBtn: TBitBtn
       AnchorSideBottom.Control = DestDirComboBox
       AnchorSideBottom.Side = asrBottom
-      Left = 423
-      Height = 29
+      Left = 412
+      Height = 21
       Top = 1
-      Width = 27
+      Width = 38
       Anchors = [akTop, akRight, akBottom]
       AutoSize = True
       Caption = '...'
@@ -61,12 +61,11 @@ object PublishProjectDialog: TPublishProjectDialog
     end
     object CommandAfterCombobox: TComboBox
       Left = 6
-      Height = 29
+      Height = 21
       Top = 58
       Width = 444
       Anchors = [akTop, akLeft, akRight]
-      AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-      MaxLength = 0
+      ItemHeight = 13
       ParentCtl3D = False
       TabOrder = 2
       Text = 'CommandAfterCombobox'
@@ -74,20 +73,20 @@ object PublishProjectDialog: TPublishProjectDialog
   end
   object FilesGroupbox: TGroupBox
     Left = 6
-    Height = 53
+    Height = 49
     Top = 123
     Width = 472
     Align = alTop
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'Files'
-    ClientHeight = 34
+    ClientHeight = 31
     ClientWidth = 468
     ParentCtl3D = False
     TabOrder = 1
     object IgnoreBinariesCheckbox: TCheckBox
       Left = 6
-      Height = 22
+      Height = 19
       Top = 6
       Width = 456
       Align = alTop
@@ -99,20 +98,20 @@ object PublishProjectDialog: TPublishProjectDialog
   end
   object ProjectInfoGroupbox: TGroupBox
     Left = 6
-    Height = 81
-    Top = 370
+    Height = 74
+    Top = 366
     Width = 472
     Align = alTop
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'Project Information'
-    ClientHeight = 62
+    ClientHeight = 56
     ClientWidth = 468
     ParentCtl3D = False
     TabOrder = 4
     object SaveClosedEditorFilesInfoCheckbox: TCheckBox
       Left = 6
-      Height = 22
+      Height = 19
       Top = 6
       Width = 456
       Align = alTop
@@ -123,8 +122,8 @@ object PublishProjectDialog: TPublishProjectDialog
     end
     object SaveEditorInfoOfNonProjectFilesCheckbox: TCheckBox
       Left = 6
-      Height = 22
-      Top = 34
+      Height = 19
+      Top = 31
       Width = 456
       Align = alTop
       AllowGrayed = True
@@ -136,30 +135,30 @@ object PublishProjectDialog: TPublishProjectDialog
   object IncludeFilterGroupbox: TGroupBox
     Left = 6
     Height = 88
-    Top = 182
+    Top = 178
     Width = 472
     Align = alTop
     BorderSpacing.Around = 6
     Caption = 'Include Filter'
-    ClientHeight = 69
+    ClientHeight = 70
     ClientWidth = 468
     ParentCtl3D = False
     TabOrder = 2
     TabStop = True
     object UseIncludeFilterCheckbox: TCheckBox
       Left = 6
-      Height = 22
+      Height = 19
       Top = 1
-      Width = 132
+      Width = 109
       AllowGrayed = True
       Caption = 'Use Include Filter'
       TabOrder = 0
     end
     object IncFilterSimpleSyntaxCheckbox: TCheckBox
       Left = 199
-      Height = 22
+      Height = 19
       Top = 1
-      Width = 116
+      Width = 93
       AllowGrayed = True
       Caption = 'Simple Syntax'
       ParentShowHint = False
@@ -168,12 +167,11 @@ object PublishProjectDialog: TPublishProjectDialog
     end
     object IncludeFilterCombobox: TComboBox
       Left = 6
-      Height = 29
+      Height = 21
       Top = 33
       Width = 444
       Anchors = [akTop, akLeft, akRight]
-      AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-      MaxLength = 0
+      ItemHeight = 13
       ParentCtl3D = False
       TabOrder = 2
       Text = 'IncludeFilterCombobox'
@@ -182,30 +180,30 @@ object PublishProjectDialog: TPublishProjectDialog
   object ExcludeFilterGroupbox: TGroupBox
     Left = 6
     Height = 88
-    Top = 276
+    Top = 272
     Width = 472
     Align = alTop
     BorderSpacing.Around = 6
     Caption = 'Exclude Filter'
-    ClientHeight = 69
+    ClientHeight = 70
     ClientWidth = 468
     ParentCtl3D = False
     TabOrder = 3
     TabStop = True
     object UseExcludeFilterCheckbox: TCheckBox
       Left = 6
-      Height = 22
+      Height = 19
       Top = 1
-      Width = 136
+      Width = 111
       AllowGrayed = True
       Caption = 'Use Exclude Filter'
       TabOrder = 0
     end
     object ExcFilterSimpleSyntaxCheckbox: TCheckBox
       Left = 199
-      Height = 22
+      Height = 19
       Top = 1
-      Width = 116
+      Width = 93
       AllowGrayed = True
       Caption = 'Simple Syntax'
       ParentShowHint = False
@@ -214,47 +212,33 @@ object PublishProjectDialog: TPublishProjectDialog
     end
     object ExcludeFilterCombobox: TComboBox
       Left = 6
-      Height = 29
+      Height = 21
       Top = 33
       Width = 446
       Anchors = [akTop, akLeft, akRight]
-      AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-      MaxLength = 0
+      ItemHeight = 13
       ParentCtl3D = False
       TabOrder = 2
       Text = 'ExcludeFilterCombobox'
     end
   end
   object BtnPanel: TPanel
-    Height = 48
-    Top = 483
+    Height = 38
+    Top = 493
     Width = 484
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 48
+    ClientHeight = 38
     ClientWidth = 484
     TabOrder = 5
-    object SaveSettingsButton: TButton
-      AnchorSideBottom.Side = asrBottom
-      Left = 6
-      Height = 36
-      Top = 6
-      Width = 99
-      Align = alLeft
-      AutoSize = True
-      BorderSpacing.Around = 6
-      Caption = 'Save settings'
-      OnClick = SaveSettingsButtonCLICK
-      TabOrder = 0
-    end
     object CancelButton: TBitBtn
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
-      Left = 400
-      Height = 36
+      Left = 401
+      Height = 26
       Top = 6
-      Width = 78
+      Width = 77
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
@@ -263,14 +247,14 @@ object PublishProjectDialog: TPublishProjectDialog
       Kind = bkCancel
       ModalResult = 2
       NumGlyphs = 0
-      TabOrder = 1
+      TabOrder = 0
     end
     object OkButton: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = 337
-      Height = 36
+      Left = 336
+      Height = 26
       Top = 6
-      Width = 57
+      Width = 59
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
@@ -280,6 +264,56 @@ object PublishProjectDialog: TPublishProjectDialog
       ModalResult = 1
       NumGlyphs = 0
       OnClick = OkButtonCLICK
+      TabOrder = 1
+    end
+    object SaveSettingsButton: TBitBtn
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 26
+      Top = 6
+      Width = 110
+      Align = alLeft
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'Save settings'
+      Glyph.Data = {
+        36040000424D3604000000000000360000002800000010000000100000000100
+        2000000000000004000064000000640000000000000000000000BA6A368FB969
+        35B5B86935EEB76835FFB56835FFB46734FFB26634FFB06533FFAE6433FFAC63
+        32FFAA6232FFA96132FFA86031FFA76031FEA66031F1A86131C4BA6A35DEEBC6
+        ADFFEAC5ADFFFEFBF8FFFEFBF8FFFEFBF8FFFEFBF8FFFEFBF8FFFEFBF8FFFEFB
+        F8FFFEFBF8FFFEFBF8FFFEFBF8FFC89A7CFFC79879FFA76031EDBA6B37FEEDCA
+        B3FFE0A27AFFFEFAF7FF62C088FF62C088FF62C088FF62C088FF62C088FF62C0
+        88FF62C088FF62C088FFFDF9F6FFCA8D65FFC99B7CFFA76031FEBB6C38FFEECC
+        B6FFE1A27AFFFEFAF7FFBFDCC2FFBFDCC2FFBFDCC2FFBFDCC2FFBFDCC2FFBFDC
+        C2FFBFDCC2FFBFDCC2FFFDF9F6FFCD9068FFCC9E81FFA86132FFBB6B38FFEFCE
+        B8FFE1A279FFFEFAF7FF62C088FF62C088FF62C088FF62C088FF62C088FF62C0
+        88FF62C088FF62C088FFFDF9F6FFCF936AFFCEA384FFAA6132FFBA6A36FFEFD0
+        BBFFE2A27AFFFEFBF8FFFEFBF8FFFEFBF8FFFEFBF8FFFEFBF8FFFEFBF8FFFEFB
+        F8FFFEFBF8FFFEFBF8FFFEFBF8FFD3966DFFD2A78AFFAB6232FFBB6A36FFF0D2
+        BEFFE2A37AFFE2A37AFFE1A37AFFE2A37BFFE1A37BFFE0A178FFDE9F77FFDD9F
+        76FFDC9D74FFD99B72FFD89971FFD69970FFD5AB8EFFAD6333FFBB6A36FFF2D5
+        C2FFE3A37AFFE3A37AFFE2A37BFFE2A37BFFE2A47BFFE1A279FFE0A178FFDEA0
+        77FFDE9E75FFDC9D74FFDA9B73FFD99B73FFDAB095FFAF6433FFBB6A36FFF2D8
+        C5FFE3A47BFFE3A37AFFE3A47AFFE2A47BFFE2A37BFFE1A37BFFE1A279FFDFA0
+        77FFDE9F76FFDD9E74FFDB9C72FFDC9D74FFDDB59AFFB16534FFBB6B36FFF4D9
+        C7FFE6A67DFFC88C64FFC98D65FFC98E67FFCB926CFFCB926DFFCA9069FFC88C
+        65FFC88C64FFC88C64FFC88C64FFDA9C74FFE1BA9FFFB36634FFBB6B36FEF4DC
+        C9FFE7A77DFFF9ECE1FFF9ECE1FFF9EDE3FFFCF4EEFFFDFAF7FFFDF7F3FFFAED
+        E5FFF7E7DBFFF7E5D9FFF6E5D8FFDEA077FFE4BEA4FFB46734FFBC6B36FAF5DD
+        CCFFE7A87EFFFAF0E8FFFAF0E8FFC98D66FFFAF0E9FFFDF8F3FFFEFAF8FFFCF4
+        EFFFF9E9DFFFF7E7DBFFF7E5D9FFE0A278FFE7C2A9FFB66835FFBC6B36F0F6DF
+        D0FFE8A87EFFFCF6F1FFFCF6F1FFC88C64FFFAF1E9FFFBF4EEFFFDFAF7FFFDF9
+        F6FFFAF0E8FFF8E8DDFFF7E6DBFFE1A37AFFEFD5C3FFB76935FEBC6B36D8F6DF
+        D1FFE9AA80FFFEFAF6FFFDFAF6FFC88C64FFFBF3EEFFFBF1EAFFFCF6F2FFFEFB
+        F8FFFCF6F1FFF9ECE2FFF8E7DBFFEED0BAFFECD0BDFFBB703EF8BC6B369BF6E0
+        D1FFF7E0D1FFFEFBF8FFFEFBF7FFFDF9F6FFFCF5F0FFFAF0EAFFFBF2EDFFFDF9
+        F6FFFDFAF7FFFBF1EBFFF8E9DFFEECD0BDFBC9895EECB5693563BC6B3671BC6B
+        3690BC6B36CCBC6B36EEBC6B36FABB6B36FEBB6B36FFBB6A36FFBB6A36FFBC6C
+        39FFBD6E3BFFBB6D3AFFBB6B38EFBB703ECBB6693554FFFFFF00
+      }
+      NumGlyphs = 0
+      OnClick = SaveSettingsButtonCLICK
       TabOrder = 2
     end
   end

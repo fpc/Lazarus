@@ -111,7 +111,9 @@ type
   { TRunParamsOptsDlg }
 
   TRunParamsOptsDlg = class(TForm)
+    CancelButton: TBitBtn;
     CmdLineParametersComboBox: TComboBox;
+    OkButton: TBitBtn;
     UseDisplayCheckBox: TCheckBox;
     DisplayEdit: TEdit;
     DisplayGroupBox: TGroupBox;
@@ -136,8 +138,6 @@ type
     Notebook: TNotebook;
     GeneralPage:    TPage;
     EnvVarsPage:    TPage;
-    OkButton: TButton;
-    CancelButton: TButton;
     procedure EnvVarsPageResize(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure HostApplicationBrowseBtnClick(Sender: TObject);

@@ -45,13 +45,13 @@ type
   { TVersionInfoAdditinalInfoForm }
 
   TVersionInfoAdditinalInfoForm = class(TForm)
-    OKButton: TButton;
+    CancelButton: TBitBtn;
     AdditionalInfoGroupBox: TGroupBox;
-    CancelButton: TButton;
     CommentsEdit: TEdit;
     CompanyEdit: TEdit;
     InternalNameEdit: TEdit;
     LegalTrademarksEdit: TEdit;
+    OKButton: TBitBtn;
     OriginalFileNameEdit: TEdit;
     ProductNameEdit: TEdit;
     ProductVersionEdit: TEdit;

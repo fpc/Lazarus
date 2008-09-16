@@ -46,7 +46,7 @@ type
   { TSearchForm }
 
   TSearchForm = class(TForm)
-    btnCancel: TBUTTON;
+    btnCancel: TBitBtn;
     MatchesLabel: TLABEL;
     SearchingLabel: TLABEL;
     SearchTextLabel: TLABEL;

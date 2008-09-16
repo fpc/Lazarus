@@ -61,6 +61,7 @@ type
     IncludeFilterCombobox: TComboBox;
     IncFilterSimpleSyntaxCheckbox: TCheckBox;
     BtnPanel: TPanel;
+    SaveSettingsButton: TBitBtn;
     UseIncludeFilterCheckbox: TCheckBox;
     IncludeFilterGroupbox: TGroupBox;
 
@@ -73,7 +74,6 @@ type
     SaveEditorInfoOfNonProjectFilesCheckbox: TCheckBox;
     SaveClosedEditorFilesInfoCheckbox: TCheckBox;
 
-    SaveSettingsButton: TButton;
     procedure BrowseDestDirBitBtnCLICK(Sender: TObject);
     procedure DestDirGroupBoxRESIZE(Sender: TObject);
     procedure FormCreate(Sender: TObject);

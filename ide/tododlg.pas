@@ -31,13 +31,15 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ExtCtrls,
-  TodoList, LazarusIDEStrConsts;
+  TodoList, LazarusIDEStrConsts, Buttons;
 
 type
 
   { TTodoDialog }
 
   TTodoDialog = class(TForm)
+    CancelButton: TBitBtn;
+    OkButton: TBitBtn;
     OwnerEdit: TEdit;
     CategoryEdit: TEdit;
     CategoryLabel: TLabel;
@@ -45,8 +47,6 @@ type
     PriorityEdit: TEdit;
     PriorityLabel: TLabel;
     OwnerLabel: TLabel;
-    OkButton: TButton;
-    CancelButton: TButton;
     TodoLabel: TLabel;
     TodoMemo: TMemo;
     procedure FormCreate(Sender: TObject);
