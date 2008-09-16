@@ -370,6 +370,7 @@ type
     function getIconSize: TSize;
     function getText: WideString; override;
     procedure setColor(const Value: PQColor); override;
+    procedure setTextColor(const Value: PQColor); override;
     procedure setIcon(AIcon: QIconH);
     procedure setIconSize(Size: PSize);
     procedure setShortcut(AShortcut: TShortcut);
@@ -555,6 +556,7 @@ type
     function hasSelectedText: Boolean;
     procedure selectAll;
     procedure setColor(const Value: PQColor); override;
+    procedure setTextColor(const Value: PQColor); override;
     procedure setCursorPosition(const AValue: Integer);
     procedure setEchoMode(const AMode: QLineEditEchoMode);
     procedure setInputMask(const AMask: WideString);
@@ -593,6 +595,7 @@ type
     function isUndoAvailable: Boolean;
     procedure setAlignment(const AAlignment: QtAlignment);
     procedure setColor(const Value: PQColor); override;
+    procedure setTextColor(const Value: PQColor); override;
     procedure setEchoMode(const AMode: QLineEditEchoMode);
     procedure setLineWrapMode(const AMode: QTextEditLineWrapMode);
     procedure setMaxLength(const ALength: Integer);
@@ -684,6 +687,7 @@ type
     FList: TStrings;
     destructor Destroy; override;
     procedure SetColor(const Value: PQColor); override;
+    procedure setTextColor(const Value: PQColor); override;
     function currentIndex: Integer;
     function getEditable: Boolean;
     function getMaxVisibleItems: Integer;
@@ -743,6 +747,8 @@ type
     procedure setReadOnly(const r: Boolean);
     procedure setValue(const v: Double); virtual; abstract;
     procedure setText(const W: WideString); override;
+    procedure SetColor(const Value: PQColor); override;
+    procedure setTextColor(const Value: PQColor); override;
 
     property LineEdit: QLineEditH read GetLineEdit;
   public
@@ -826,7 +832,6 @@ type
 
     procedure modelIndex(retval: QModelIndexH; row, column: Integer; parent: QModelIndexH = nil);
     function visualRect(Index: QModelIndexH): TRect;
-    procedure SetColor(const Value: PQColor); override;
     procedure setEditTriggers(ATriggers: QAbstractItemViewEditTriggers);
     procedure setSelectionMode(AMode: QAbstractItemViewSelectionMode);
     procedure setSelectionBehavior(ABehavior: QAbstractItemViewSelectionBehavior);
@@ -999,7 +1004,6 @@ type
     function getViewPort: QWidgetH;
     function getClientBounds: TRect; override;
     procedure grabMouse; override;
-    procedure setColor(const Value: PQColor); override;
     procedure setVisible(visible: Boolean); override;
     function getGridStyle: QtPenStyle;
     procedure setGridStyle(ANewStyle: QtPenStyle);
@@ -2576,7 +2580,7 @@ var
 begin
   Palette := QPalette_create(QWidget_palette(Widget));
   try
-    QPalette_setColor(Palette, QPaletteText, Value);
+    QPalette_setColor(Palette, QPaletteWindowText, Value);
     QWidget_setPalette(Widget, Palette);
   finally
     QPalette_destroy(Palette);
@@ -3492,6 +3496,19 @@ begin
   end;
 end;
 
+procedure TQtAbstractButton.setTextColor(const Value: PQColor);
+var
+  Palette: QPaletteH;
+begin
+  Palette := QPalette_create(QWidget_palette(Widget));
+  try
+    QPalette_setColor(Palette, QPaletteButtonText, Value);
+    QWidget_setPalette(Widget, Palette);
+  finally
+    QPalette_destroy(Palette);
+  end;
+end;
+
 procedure TQtAbstractButton.setIcon(AIcon: QIconH);
 begin
   QAbstractButton_setIcon(QAbstractButtonH(Widget), AIcon);
@@ -4391,7 +4408,7 @@ var
 begin
   Palette := QPalette_create(QWidget_palette(Widget));
   try
-    QPalette_setColor(Palette, QPaletteForeground, Value);
+    QPalette_setColor(Palette, QPaletteWindowText, Value);
     QWidget_setPalette(Widget, Palette);
   finally
     QPalette_destroy(Palette);
@@ -5039,6 +5056,19 @@ begin
   end;
 end;
 
+procedure TQtLineEdit.setTextColor(const Value: PQColor);
+var
+  Palette: QPaletteH;
+begin
+  Palette := QPalette_create(QWidget_palette(Widget));
+  try
+    QPalette_setColor(Palette, QPaletteText, Value);
+    QWidget_setPalette(Widget, Palette);
+  finally
+    QPalette_destroy(Palette);
+  end;
+end;
+
 procedure TQtLineEdit.setCursorPosition(const AValue: Integer);
 begin
   QLineEdit_setCursorPosition(QLineEditH(Widget), AValue);
@@ -5179,6 +5209,19 @@ begin
   Palette := QPalette_create(QWidget_palette(Widget));
   try
     QPalette_setColor(Palette, QPaletteBase, Value);
+    QWidget_setPalette(Widget, Palette);
+  finally
+    QPalette_destroy(Palette);
+  end;
+end;
+
+procedure TQtTextEdit.setTextColor(const Value: PQColor);
+var
+  Palette: QPaletteH;
+begin
+  Palette := QPalette_create(QWidget_palette(Widget));
+  try
+    QPalette_setColor(Palette, QPaletteText, Value);
     QWidget_setPalette(Widget, Palette);
   finally
     QPalette_destroy(Palette);
@@ -5777,8 +5820,29 @@ begin
 end;
 
 procedure TQtComboBox.SetColor(const Value: PQColor);
+var
+  Palette: QPaletteH;
 begin
-  inherited SetColor(Value);
+  Palette := QPalette_create(QWidget_palette(Widget));
+  try
+    QPalette_setColor(Palette, QPaletteBase, Value);
+    QWidget_setPalette(Widget, Palette);
+  finally
+    QPalette_destroy(Palette);
+  end;
+end;
+
+procedure TQtComboBox.setTextColor(const Value: PQColor);
+var
+  Palette: QPaletteH;
+begin
+  Palette := QPalette_create(QWidget_palette(Widget));
+  try
+    QPalette_setColor(Palette, QPaletteText, Value);
+    QWidget_setPalette(Widget, Palette);
+  finally
+    QPalette_destroy(Palette);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -6185,6 +6249,32 @@ procedure TQtAbstractSpinBox.setText(const W: WideString);
 begin
   if (LineEdit <> nil) then
     QLineEdit_setText(LineEdit, @W)
+end;
+
+procedure TQtAbstractSpinBox.SetColor(const Value: PQColor);
+var
+  Palette: QPaletteH;
+begin
+  Palette := QPalette_create(QWidget_palette(Widget));
+  try
+    QPalette_setColor(Palette, QPaletteBase, Value);
+    QWidget_setPalette(Widget, Palette);
+  finally
+    QPalette_destroy(Palette);
+  end;
+end;
+
+procedure TQtAbstractSpinBox.setTextColor(const Value: PQColor);
+var
+  Palette: QPaletteH;
+begin
+  Palette := QPalette_create(QWidget_palette(Widget));
+  try
+    QPalette_setColor(Palette, QPaletteText, Value);
+    QWidget_setPalette(Widget, Palette);
+  finally
+    QPalette_destroy(Palette);
+  end;
 end;
 
 procedure TQtAbstractSpinBox.AttachEvents;
@@ -7369,22 +7459,6 @@ begin
   Result := FHorizontalHeader;
 end;
 
-procedure TQtTableView.setColor(const Value: PQColor);
-var
-  Palette: QPaletteH;
-begin
-  {$ifdef VerboseQt}
-    WriteLn('TQtTableView.setColor');
-  {$endif}
-  Palette := QPalette_create(QWidget_palette(Widget));
-  try
-    QPalette_setColor(Palette, QPaletteWindow, Value);
-    QWidget_setPalette(Widget, Palette);
-  finally
-    QPalette_destroy(Palette);
-  end;
-end;
-
 procedure TQtTableView.setVisible(visible: Boolean);
 begin
   QWidget_setVisible(Widget, visible);
@@ -8008,10 +8082,10 @@ procedure TQtAbstractScrollArea.setColor(const Value: PQColor);
 var
   Palette: QPaletteH;
 begin
-  Palette := QPalette_create(QWidget_palette(Widget));
+  Palette := QPalette_create(QWidget_palette(viewport.Widget));
   try
-    QPalette_setColor(Palette, QPaletteBase, Value);
-    QWidget_setPalette(Widget, Palette);
+    QPalette_setColor(Palette, QPaletteWindow, Value);
+    QWidget_setPalette(viewport.Widget, Palette);
   finally
     QPalette_destroy(Palette);
   end;
@@ -8051,10 +8125,10 @@ procedure TQtAbstractScrollArea.setTextColor(const Value: PQColor);
 var
   Palette: QPaletteH;
 begin
-  Palette := QPalette_create(QWidget_palette(Widget));
+  Palette := QPalette_create(QWidget_palette(viewport.Widget));
   try
-    QPalette_setColor(Palette, QPaletteText, Value);
-    QWidget_setPalette(Widget, Palette);
+    QPalette_setColor(Palette, QPaletteWindowText, Value);
+    QWidget_setPalette(viewport.Widget, Palette);
   finally
     QPalette_destroy(Palette);
   end;
@@ -8619,6 +8693,7 @@ begin
   if ((not AValue) and (FNewDelegate <> nil)) then
   begin
     QAbstractItemView_setItemDelegate(QAbstractItemViewH(Widget), FOldDelegate);
+    {$note some times raises av here, deep check of qt source for this destroy}
     QLCLItemDelegate_destroy(FNewDelegate);
     FNewDelegate := nil;
   end;
@@ -8759,19 +8834,6 @@ end;
 function TQtAbstractItemView.visualRect(Index: QModelIndexH): TRect;
 begin
   QAbstractItemView_visualRect(QAbstractItemViewH(Widget), @Result, Index);
-end;
-
-procedure TQtAbstractItemView.SetColor(const Value: PQColor);
-var
-  Palette: QPaletteH;
-begin
-  Palette := QPalette_create(QWidget_palette(Widget));
-  try
-    QPalette_setColor(Palette, QPaletteBase, Value);
-    QWidget_setPalette(Widget, Palette);
-  finally
-    QPalette_destroy(Palette);
-  end;
 end;
 
 procedure TQtAbstractItemView.setEditTriggers(
