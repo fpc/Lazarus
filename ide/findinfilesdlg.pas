@@ -31,6 +31,8 @@ type
   { TLazFindInFilesDialog }
 
   TLazFindInFilesDialog = class(TForm)
+    CancelButton: TBitBtn;
+    OKButton: TBitBtn;
     ReplaceCheckBox: TCheckBox;
     ReplaceTextComboBox: TComboBox;
     IncludeSubDirsCheckBox: TCheckBox;
@@ -39,8 +41,6 @@ type
     DirectoryComboBox: TComboBox;
     DirectoryLabel: TLabel;
     FileMaskLabel: TLabel;
-    OKButton: TButton;
-    CancelButton: TButton;
     DirectoryOptionsGroupBox: TGroupBox;
     OptionsCheckGroupBox: TCheckGroup;
     SelectDirectoryDialog: TSelectDirectoryDialog;

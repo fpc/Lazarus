@@ -455,10 +455,12 @@ type
   { TEnvironmentOptionsDialog }
 
   TEnvironmentOptionsDialog = class(TForm)
+    CancelButton: TBitBtn;
     NoteBook: TNoteBook;
     FilesPage: TPage;
     DesktopPage: TPage;
     EODBtnPanel: TPanel;
+    OkButton: TBitBtn;
     WindowsPage: TPage;
     FormEditorPage: TPage;
     ObjectInspectorPage: TPage;
@@ -608,9 +610,6 @@ type
     CharCaseFileActionRadioGroup: TRadioGroup;
     AmbiguousFileActionRadioGroup: TRadioGroup;
 
-    // buttons at bottom
-    OkButton: TButton;
-    CancelButton: TButton;
     
     procedure BakTypeRadioGroupClick(Sender: TObject);
     procedure FilesButtonClick(Sender: TObject);

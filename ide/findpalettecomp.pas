@@ -47,13 +47,13 @@ type
   { TFindPaletteComponentDlg }
 
   TFindPaletteComponentDlg = class(TForm)
+    CancelButton: TBitBtn;
     ComponentsGroupBox: TGroupBox;
     ComponentsListBox: TListBox;
     BtnPanel: TPanel;
-    SelectButton: TButton;
-    CancelButton: TButton;
     PatternEdit: TEdit;
     SearchPatternGroupBox: TGroupBox;
+    SelectButton: TBitBtn;
     procedure ComponentsListBoxDblClick(Sender: TObject);
     procedure ComponentsListBoxDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; State: TOwnerDrawState);

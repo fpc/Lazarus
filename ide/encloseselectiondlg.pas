@@ -54,8 +54,8 @@ type
   { TEncloseSelectionDialog }
 
   TEncloseSelectionDialog = class(TForm)
-    btnCancel: TButton;
-    btnOk: TButton;
+    btnCancel: TBitBtn;
+    btnOk: TBitBtn;
     TypeRadiogroup: TRADIOGROUP;
     procedure EncloseSelectionDialogCREATE(Sender: TObject);
     procedure EncloseSelectionDialogResize(Sender: TObject);

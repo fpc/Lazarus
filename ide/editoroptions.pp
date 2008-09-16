@@ -530,6 +530,7 @@ type
   { TEditorOptionsForm }
 
   TEditorOptionsForm = class(TForm)
+    CancelButton: TBitBtn;
     MainNoteBook: TNoteBook;
     ImageList:    TImageList;
 
@@ -544,6 +545,7 @@ type
     BlockIndentLabel: TLabel;
     CodeFolding: TPage;
     BtnPanel: TPanel;
+    OkButton: TBitBtn;
     TextBoldRadioOn : TRadioButton;
     TextBoldRadioOff : TRadioButton;
     TextBoldRadioInvert : TRadioButton;
@@ -639,9 +641,6 @@ type
     lblDividerDrawLevel: TLabel;
     edDividerDrawLevel: TSpinEdit;
 
-    // buttons at bottom
-    OkButton: TButton;
-    CancelButton: TButton;
 
     // general
     procedure ColorElementListBoxClick(Sender: TObject);
