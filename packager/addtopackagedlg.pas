@@ -81,6 +81,17 @@ type
   { TAddToPackageDlg }
 
   TAddToPackageDlg = class(TForm)
+    AddFileButton: TBitBtn;
+    AddUnitButton: TBitBtn;
+    AddUnitUpdateButton: TBitBtn;
+    CancelAddFileButton: TBitBtn;
+    CancelAddUnitButton: TBitBtn;
+    CancelDependButton: TBitBtn;
+    CancelNewComponentButton: TBitBtn;
+    NewComponentButton: TBitBtn;
+    NewDependButton: TBitBtn;
+    NewFileCancelButton: TBitBtn;
+    NewFileOkButton: TBitBtn;
     // notebook
     NoteBook: TNoteBook;
     NewFilePage: TPage;
@@ -93,8 +104,6 @@ type
     NewFileTreeView: TTreeView;
     NewFileDescriptionGroupBox: TGroupBox;
     NewFileHelpLabel: TLabel;
-    NewFileOkButton: TButton;
-    NewFileCancelButton: TButton;
     // add unit page
     AddUnitFilenameLabel: TLabel;
     AddUnitFilenameEdit: TEdit;
@@ -105,9 +114,6 @@ type
     AddUnitHasRegisterCheckBox: TCheckBox;
     AddUnitIsVirtualCheckBox: TCheckBox;
     AddSecondaryFilesCheckBox: TCheckBox;
-    AddUnitUpdateButton: TButton;
-    AddUnitButton: TButton;
-    CancelAddUnitButton: TButton;
     // new component page
     AncestorTypeLabel: TLabel;
     AncestorComboBox: TComboBox;
@@ -122,8 +128,6 @@ type
     ComponentUnitFileShortenButton: TButton;
     ComponentUnitNameLabel: TLabel;
     ComponentUnitNameEdit: TEdit;
-    NewComponentButton: TButton;
-    CancelNewComponentButton: TButton;
     // new required package
     DependPkgNameLabel: TLabel;
     DependPkgNameComboBox: TComboBox;
@@ -131,16 +135,12 @@ type
     DependMinVersionEdit: TEdit;
     DependMaxVersionLabel: TLabel;
     DependMaxVersionEdit: TEdit;
-    NewDependButton: TButton;
-    CancelDependButton: TButton;
     // add file page
     AddFilenameLabel: TLabel;
     AddFilenameEdit: TEdit;
     AddFileBrowseButton: TButton;
     AddFileShortenButton: TButton;
     AddFileTypeRadioGroup: TRadioGroup;
-    AddFileButton: TButton;
-    CancelAddFileButton: TButton;
     // add files page
     FilesAddButton: TButton;
     FilesDirButton: TButton;

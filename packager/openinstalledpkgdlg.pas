@@ -49,10 +49,10 @@ type
 
   TOpenInstalledPackagesDlg = class(TForm)
     BtnPanel: TPanel;
+    CancelButton: TBitBtn;
+    OpenButton: TBitBtn;
     PkgListView: TListView;
     HintMemo: TMemo;
-    OpenButton: TButton;
-    CancelButton: TButton;
     procedure FormCreate(Sender: TObject);
     procedure OpenButtonClick(Sender: TObject);
     procedure PkgListViewDblClick(Sender: TObject);

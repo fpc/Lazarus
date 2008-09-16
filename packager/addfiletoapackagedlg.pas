@@ -48,11 +48,11 @@ type
   { TAddFileToAPackageDialog }
 
   TAddFileToAPackageDialog = class(TForm)
-    CancelButton: TButton;
-    OkButton: TButton;
+    CancelButton: TBitBtn;
     HasRegisterProcCheckBox: TCheckBox;
     FileTypeRadioGroup: TRadioGroup;
     BtnPanel: TPanel;
+    OkButton: TBitBtn;
     UnitNameEdit: TEdit;
     FileNameEdit: TEdit;
     FileGroupBox: TGroupBox;

@@ -40,11 +40,14 @@ Type
   end;
 
 type
+
+  { TFrmComponentMan }
+
   TFrmComponentMan = class(TForm)
     BtnCancel: TBITBTN;
     Bitbtn2: TBITBTN;
-    Button1: TBUTTON;
-    BtnRemove: TBUTTON;
+    BtnRemove: TBitBtn;
+    Button1: TBitBtn;
     DlgLoad: TOPENDIALOG;
     TxtPage: TEDIT;
     Label1: TLABEL;

@@ -42,13 +42,16 @@ uses
   StdCtrls, FileUtil, LazarusIDEStrConsts, PackageDefs;
 
 type
+
+  { TEditVirtualUnitDialog }
+
   TEditVirtualUnitDialog = class(TForm)
+    CancelButton: TBitBtn;
     FilenameEdit: TEdit;
+    OkButton: TBitBtn;
     UnitnameEdit: TEdit;
     FilenameLabel: TLabel;
     UnitnameLabel: TLabel;
-    OkButton: TButton;
-    CancelButton: TButton;
     procedure EditVirtualUnitDialogCreate(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
   private

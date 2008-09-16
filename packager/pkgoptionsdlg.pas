@@ -51,7 +51,9 @@ type
   TPackageOptionsDialog = class(TForm)
     AdditionalInfoButton: TButton;
     AddPackageUnitToProjectCheckBox: TCheckBox;
+    CancelButton: TBitBtn;
     EnableI18NCheckBox: TCheckBox;
+    OKButton: TBitBtn;
     ProjectGroupBox: TGroupBox;
     I18NGroupBox: TGroupBox;
     ProvidesGroupBox: TGroupBox;
@@ -72,7 +74,6 @@ type
     VersionGroupBox: TGroupBox;
     DescriptionGroupBox: TGroupBox;
     AuthorGroupBox: TGroupBox;
-    CancelButton: TButton;
     AddPathsGroupBox: TGroupBox;
     CopyrightEdit: TEdit;
     CopyrightLabel: TLabel;
@@ -92,7 +93,6 @@ type
     AuthorEdit: TEdit;
     UnitPathLabel: TLabel;
     Notebook: TNotebook;
-    OKButton: TButton;
     UnitPathEdit: TEdit;
     PoOutDirLabel: TLabel;
     IncludePathLabel: TLabel;
