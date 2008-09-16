@@ -33,9 +33,9 @@ type
   { TFPDocSelectInheritedDlg }
 
   TFPDocSelectInheritedDlg = class(TForm)
-    OkButton: TButton;
-    CancelButton: TButton;
+    CancelButton: TBitBtn;
     InheritedComboBox: TComboBox;
+    OkButton: TBitBtn;
     procedure FormCreate(Sender: TObject);
   end;
 

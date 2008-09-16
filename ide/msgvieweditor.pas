@@ -59,13 +59,13 @@ type
   { TMsgViewEditorDlg }
 
   TMsgViewEditorDlg = class(TForm)
-    AddNewSetButton: TButton;
     ActiveFilterSetGroupBox: TGroupBox;
+    AddNewSetButton: TBitBtn;
+    CancelButton: TBitBtn;
+    DeleteSetButton: TBitBtn;
+    OkButton: TBitBtn;
+    RenameSetButton: TBitBtn;
     RulesListView: TListView;
-    OkButton: TButton;
-    CancelButton: TButton;
-    RenameSetButton: TButton;
-    DeleteSetButton: TButton;
     FilterSetGroupBox: TGroupBox;
     FilterSetsListBox: TListBox;
     procedure AddNewSetButtonClick(Sender: TObject);

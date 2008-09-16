@@ -39,9 +39,9 @@ type
   { TChooseKeySchemeDlg }
 
   TChooseKeySchemeDlg = class(TForm)
-    OkButton: TBUTTON;
-    CancelButton: TBUTTON;
+    CancelButton: TBitBtn;
     NoteLabel: TLABEL;
+    OkButton: TBitBtn;
     SchemeRadiogroup: TRADIOGROUP;
     procedure ChooseKeySchemeDlgCREATE(Sender: TObject);
   private

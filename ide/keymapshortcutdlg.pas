@@ -34,7 +34,7 @@ uses
   Classes, SysUtils, LResources, LCLProc, Forms, Controls, Graphics, Dialogs,
   ExtCtrls, StdCtrls, LCLType,
   PropEdits, IDECommands, IDEWindowIntf,
-  KeyMapping, LazarusIDEStrConsts;
+  KeyMapping, LazarusIDEStrConsts, Buttons;
 
 type
 
@@ -42,10 +42,10 @@ type
 
   TShortCutDialog = class(TForm)
     BtnPanel: TPanel;
+    CancelButton: TBitBtn;
+    OkButton: TBitBtn;
     PrimaryGroupBox: TGroupBox;
     SecondaryGroupBox: TGroupBox;
-    OkButton: TButton;
-    CancelButton: TButton;
     procedure CancelButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);

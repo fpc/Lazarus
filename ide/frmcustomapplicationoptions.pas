@@ -6,15 +6,15 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls;
+  ExtCtrls, Buttons;
 
 type
 
   { TCustomApplicationOptionsForm }
 
   TCustomApplicationOptionsForm = class(TForm)
-    BCancel: TButton;
-    BOK: TButton;
+    BCancel: TBitBtn;
+    BOK: TBitBtn;
     CGOptions: TCheckGroup;
     EClassName: TEdit;
     ETitle: TEdit;
