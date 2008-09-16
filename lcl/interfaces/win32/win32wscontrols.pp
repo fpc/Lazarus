@@ -281,7 +281,7 @@ begin
         lhFont := GetStockObject(DEFAULT_GUI_FONT)
       else
         lhFont := AWinControl.Font.Reference.Handle;
-      Windows.SendMessage(Buddy, WM_SETFONT, lhFont, 0);
+      Windows.SendMessage(Buddy, WM_SETFONT, WPARAM(lhFont), 0);
     end
     else
       BuddyWindowInfo := nil;
