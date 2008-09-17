@@ -35,6 +35,7 @@ object DiffDlg: TDiffDlg
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
       ItemHeight = 13
+      MaxLength = -1
       OnChange = Text1ComboboxChange
       TabOrder = 0
       Text = 'Text1Combobox'
@@ -85,6 +86,7 @@ object DiffDlg: TDiffDlg
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
       ItemHeight = 13
+      MaxLength = -1
       OnChange = Text2ComboboxChange
       TabOrder = 0
       Text = 'Text2Combobox'
@@ -155,7 +157,6 @@ object DiffDlg: TDiffDlg
     ParentFont = False
     TabOrder = 3
     BookMarkOptions.Xoffset = -18
-    BookMarkOptions.OnChange = nil
     Gutter.Visible = False
     Keystrokes = <    
       item
@@ -481,14 +482,12 @@ object DiffDlg: TDiffDlg
     Lines.Strings = (
       'DiffSynEdit'
     )
-    SelectedColor.OnChange = nil
   end
   object SaveDiffButton: TBitBtn
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
+    AnchorSideRight.Control = CloseButton
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 503
+    Left = 394
     Height = 26
     Top = 465
     Width = 89
@@ -540,7 +539,7 @@ object DiffDlg: TDiffDlg
     AnchorSideRight.Control = SaveDiffButton
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 356
+    Left = 247
     Height = 26
     Top = 465
     Width = 141
@@ -589,10 +588,11 @@ object DiffDlg: TDiffDlg
     TabOrder = 5
   end
   object CloseButton: TBitBtn
-    AnchorSideRight.Control = OpenInEditorButton
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 247
+    Left = 489
     Height = 26
     Top = 465
     Width = 103
