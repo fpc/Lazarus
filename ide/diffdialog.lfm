@@ -1,12 +1,12 @@
 object DiffDlg: TDiffDlg
   Left = 298
-  Height = 497
+  Height = 505
   Top = 132
   Width = 598
   HelpType = htKeyword
   BorderIcons = [biSystemMenu]
   Caption = 'Diff dialog'
-  ClientHeight = 497
+  ClientHeight = 505
   ClientWidth = 598
   OnCreate = FormCreate
   ParentFont = False
@@ -28,14 +28,18 @@ object DiffDlg: TDiffDlg
     ClientWidth = 582
     TabOrder = 0
     object Text1Combobox: TComboBox
+      AnchorSideLeft.Control = Text1GroupBox
+      AnchorSideTop.Control = Text1GroupBox
+      AnchorSideRight.Control = Text1FileOpenButton
       Left = 6
       Height = 21
       Top = 6
-      Width = 490
+      Width = 532
       Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Around = 6
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
       ItemHeight = 13
-      MaxLength = -1
       OnChange = Text1ComboboxChange
       TabOrder = 0
       Text = 'Text1Combobox'
@@ -56,11 +60,17 @@ object DiffDlg: TDiffDlg
       TabOrder = 1
     end
     object Text1FileOpenButton: TButton
-      Left = 501
-      Height = 25
+      AnchorSideTop.Control = Text1Combobox
+      AnchorSideRight.Control = Text1GroupBox
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = Text1Combobox
+      AnchorSideBottom.Side = asrBottom
+      Left = 544
+      Height = 21
       Top = 6
-      Width = 75
-      Anchors = [akTop, akRight]
+      Width = 32
+      Anchors = [akTop, akRight, akBottom]
+      BorderSpacing.Right = 6
       Caption = 'Text1FileOpenButton'
       OnClick = FileOpenClick
       TabOrder = 2
@@ -79,19 +89,24 @@ object DiffDlg: TDiffDlg
     ClientWidth = 582
     TabOrder = 1
     object Text2Combobox: TComboBox
+      AnchorSideLeft.Control = Text2GroupBox
+      AnchorSideTop.Control = Text2GroupBox
+      AnchorSideRight.Control = Text2FileOpenButton
       Left = 6
       Height = 21
       Top = 6
-      Width = 490
+      Width = 532
       Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Around = 6
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
       ItemHeight = 13
-      MaxLength = -1
       OnChange = Text2ComboboxChange
       TabOrder = 0
       Text = 'Text2Combobox'
     end
     object Text2OnlySelectionCheckBox: TCheckBox
+      AnchorSideLeft.Control = Text2Combobox
       AnchorSideTop.Control = Text2Combobox
       AnchorSideTop.Side = asrBottom
       Left = 6
@@ -106,11 +121,17 @@ object DiffDlg: TDiffDlg
       TabOrder = 1
     end
     object Text2FileOpenButton: TButton
-      Left = 501
-      Height = 25
+      AnchorSideTop.Control = Text2Combobox
+      AnchorSideRight.Control = Text2GroupBox
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = Text2Combobox
+      AnchorSideBottom.Side = asrBottom
+      Left = 544
+      Height = 21
       Top = 6
-      Width = 75
-      Anchors = [akTop, akRight]
+      Width = 32
+      Anchors = [akTop, akRight, akBottom]
+      BorderSpacing.Right = 6
       Caption = 'Text2FileOpenButton'
       OnClick = FileOpenClick
       TabOrder = 2
@@ -122,11 +143,12 @@ object DiffDlg: TDiffDlg
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = CloseButton
     Left = 6
-    Height = 85
-    Top = 371
+    Height = 109
+    Top = 358
     Width = 586
-    Anchors = [akLeft, akRight, akBottom]
+    Anchors = [akTop, akLeft, akRight, akBottom]
     AutoFill = True
     BorderSpacing.Around = 6
     Caption = 'OptionsGroupBox'
@@ -142,8 +164,12 @@ object DiffDlg: TDiffDlg
     TabOrder = 2
   end
   object DiffSynEdit: TSynEdit
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Text2GroupBox
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 195
+    Height = 182
     Top = 170
     Width = 586
     Align = alTop
@@ -157,6 +183,7 @@ object DiffDlg: TDiffDlg
     ParentFont = False
     TabOrder = 3
     BookMarkOptions.Xoffset = -18
+    BookMarkOptions.OnChange = nil
     Gutter.Visible = False
     Keystrokes = <    
       item
@@ -482,6 +509,7 @@ object DiffDlg: TDiffDlg
     Lines.Strings = (
       'DiffSynEdit'
     )
+    SelectedColor.OnChange = nil
   end
   object SaveDiffButton: TBitBtn
     AnchorSideRight.Control = CloseButton
@@ -489,7 +517,7 @@ object DiffDlg: TDiffDlg
     AnchorSideBottom.Side = asrBottom
     Left = 394
     Height = 26
-    Top = 465
+    Top = 473
     Width = 89
     Anchors = [akRight, akBottom]
     AutoSize = True
@@ -541,7 +569,7 @@ object DiffDlg: TDiffDlg
     AnchorSideBottom.Side = asrBottom
     Left = 247
     Height = 26
-    Top = 465
+    Top = 473
     Width = 141
     Anchors = [akRight, akBottom]
     AutoSize = True
@@ -594,7 +622,7 @@ object DiffDlg: TDiffDlg
     AnchorSideBottom.Side = asrBottom
     Left = 489
     Height = 26
-    Top = 465
+    Top = 473
     Width = 103
     Anchors = [akRight, akBottom]
     AutoSize = True
@@ -642,7 +670,6 @@ object DiffDlg: TDiffDlg
     TabOrder = 6
   end
   object dlgSave: TSaveDialog
-    Title = 'Save file as'
     DefaultExt = '.diff'
     Filter = 'diff|*.diff|any file|*.*'
     FilterIndex = 0
@@ -650,7 +677,6 @@ object DiffDlg: TDiffDlg
     top = 48
   end
   object dlgOpen: TOpenDialog
-    Title = 'Open existing file'
     DefaultExt = '.pas'
     Filter = 'pascal files|*.pas;*.pp|any file|*.*'
     FilterIndex = 0
