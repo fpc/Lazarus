@@ -537,7 +537,7 @@ begin
   Color := ColorToRGB(AWinControl.Color);
   
   // Fill QColor
-  QColor_setRgb(QColorH(@QColor),Red(Color),Green(Color),Blue(Color));
+  QColor_fromRgb(@QColor,Red(Color),Green(Color),Blue(Color));
 
   // Set color of the widget to QColor
   TQtWidget(AWinControl.Handle).SetColor(@QColor);
@@ -580,7 +580,7 @@ begin
   if AFont.Color = CLR_INVALID then exit;
 
   Color := ColorToRGB(AFont.Color);
-  QColor_setRgb(QColorH(@QColor),Red(Color),Green(Color),Blue(Color));
+  QColor_fromRgb(@QColor,Red(Color),Green(Color),Blue(Color));
   TQtWidget(AWinControl.Handle).SetTextColor(@QColor);
 end;
 

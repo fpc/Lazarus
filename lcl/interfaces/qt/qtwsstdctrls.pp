@@ -1004,7 +1004,7 @@ begin
   Color:=ColorToRGB(AWinControl.Color);
 
   // Fill QColor
-  QColor_setRgb(QColorH(@QColor),Red(Color),Green(Color),Blue(Color));
+  QColor_fromRgb(@QColor,Red(Color),Green(Color),Blue(Color));
 
   // Set color of the widget to QColor
   TQtAbstractButton(AWinControl.Handle).SetColor(@QColor);

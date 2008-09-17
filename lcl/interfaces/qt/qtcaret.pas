@@ -408,7 +408,7 @@ begin
     end;
     Result := QPixmap_create(FWidth, FHeight);
     try
-      QColor_setRgb(QColorH(@QC),Red(AColor),Green(AColor),Blue(AColor));
+      QColor_fromRgb(@QC,Red(AColor),Green(AColor),Blue(AColor));
       QPixmap_fill(Result, @QC);
     except
       QPixmap_destroy(Result);
