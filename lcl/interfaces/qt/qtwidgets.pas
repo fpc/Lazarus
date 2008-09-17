@@ -2838,7 +2838,8 @@ begin
   // so better to look for current Capture widget to release it instead of pass Widget as argument
   AGrabWidget := QWidget_mouseGrabber();
   //DebugLn(['releasing current grab: ', dbgs(AGrabWidget)]);
-  QWidget_releaseMouse(AGrabWidget);
+  if AGrabWidget <> nil then
+    QWidget_releaseMouse(AGrabWidget);
 end;
 
 procedure TQtWidget.scroll(dx, dy: integer);
