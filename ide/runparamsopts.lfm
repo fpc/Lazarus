@@ -15,7 +15,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
     Width = 500
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    PageIndex = 1
+    PageIndex = 0
     TabOrder = 0
     object GeneralPage: TPage
       Caption = 'GeneralPage'
@@ -24,7 +24,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
       object DisplayGroupBox: TGroupBox
         Left = 6
         Height = 78
-        Top = 208
+        Top = 204
         Width = 480
         Align = alTop
         AutoSize = True
@@ -60,7 +60,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
       object CmdLineParametersGroupBox: TGroupBox
         Left = 6
         Height = 51
-        Top = 69
+        Top = 65
         Width = 480
         Align = alTop
         AutoSize = True
@@ -77,6 +77,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           Align = alTop
           BorderSpacing.Around = 6
           ItemHeight = 13
+          MaxLength = -1
           TabOrder = 0
           Text = 'CmdLineParametersComboBox'
         end
@@ -84,7 +85,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
       object UseLaunchingApplicationGroupBox: TGroupBox
         Left = 6
         Height = 76
-        Top = 126
+        Top = 122
         Width = 480
         Align = alTop
         AutoSize = True
@@ -114,20 +115,21 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           Align = alTop
           BorderSpacing.Around = 6
           ItemHeight = 13
+          MaxLength = -1
           TabOrder = 1
           Text = 'UseLaunchingApplicationComboBox'
         end
       end
       object HostApplicationGroupBox: TGroupBox
         Left = 6
-        Height = 57
+        Height = 53
         Top = 6
         Width = 480
         Align = alTop
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'HostApplicationGroupBox'
-        ClientHeight = 39
+        ClientHeight = 35
         ClientWidth = 476
         TabOrder = 2
         object HostApplicationBrowseBtn: TButton
@@ -137,7 +139,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           AnchorSideBottom.Control = HostApplicationEdit
           AnchorSideBottom.Side = asrBottom
           Left = 319
-          Height = 27
+          Height = 23
           Top = 6
           Width = 151
           Anchors = [akTop, akRight, akBottom]
@@ -154,7 +156,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           AnchorSideTop.Control = HostApplicationGroupBox
           AnchorSideRight.Control = HostApplicationBrowseBtn
           Left = 6
-          Height = 27
+          Height = 23
           Top = 6
           Width = 307
           Anchors = [akTop, akLeft, akRight]
@@ -167,7 +169,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
       object WorkingDirectoryGroupBox: TGroupBox
         Left = 6
         Height = 53
-        Top = 292
+        Top = 288
         Width = 480
         Align = alTop
         AutoSize = True
@@ -205,6 +207,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 6
           ItemHeight = 13
+          MaxLength = -1
           TabOrder = 1
           Text = 'WorkingDirectoryComboBox'
         end
