@@ -367,6 +367,7 @@ type
     property AxisVisible: boolean read FAxisVisible write SetAxisVisible default True;
 
     property Align;
+    property Anchors;
     property Color;
     property DragCursor;
     property DragMode;
