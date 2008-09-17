@@ -582,7 +582,7 @@ begin
   AHandle := nil;
   CGImage := nil;
   
-  if ABitmap <> nil then
+  if (ABitmap <> nil) and (ABitmap.Width > 0) and (ABitmap.Height > 0) then
   begin
     if not CheckBitmap(ABitmap.Handle, SName) then Exit;
 

@@ -408,7 +408,7 @@ begin
   ContentInfo.contentType := kControlContentCGImageRef;
   ContentInfo.imageRef := nil;
   
-  if AGlyph <> nil then
+  if (AGlyph <> nil) and (AGlyph.Width > 0) and (AGlyph.Height > 0) then
   begin
     if TObject(AGlyph.Handle) is TCarbonBitmap then
     begin
@@ -433,6 +433,8 @@ begin
   finally
     CGImageRelease(ContentInfo.imageRef);
   end;
+
+  SetLayout((LCLObject as TCustomBitBtn).Layout);
 end;
 
 {------------------------------------------------------------------------------
@@ -445,12 +447,18 @@ procedure TCarbonBitBtn.SetLayout(ALayout: TButtonLayout);
 var
   Placement: ControlButtonTextPlacement;
 begin
-  case ALayout of
-    blGlyphLeft  : Placement := kControlBevelButtonPlaceToRightOfGraphic;
-    blGlyphRight : Placement := kControlBevelButtonPlaceToLeftOfGraphic;
-    blGlyphTop   : Placement := kControlBevelButtonPlaceBelowGraphic;
-    blGlyphBottom: Placement := kControlBevelButtonPlaceAboveGraphic;
-  end;
+  with (LCLObject as TCustomBitBtn) do
+  if (Glyph <> nil) and (Glyph.Width > 0) and (Glyph.Height > 0) then
+  begin
+    case ALayout of
+      blGlyphLeft  : Placement := kControlBevelButtonPlaceToRightOfGraphic;
+      blGlyphRight : Placement := kControlBevelButtonPlaceToLeftOfGraphic;
+      blGlyphTop   : Placement := kControlBevelButtonPlaceBelowGraphic;
+      blGlyphBottom: Placement := kControlBevelButtonPlaceAboveGraphic;
+    end;
+  end
+  else // if Glyph is empty, then align center
+    Placement := kControlBevelButtonPlaceNormally;
 
   OSError(SetBevelButtonTextPlacement(ControlRef(Widget), Placement),
     Self, 'SetLayout', 'SetBevelButtonTextPlacement');
