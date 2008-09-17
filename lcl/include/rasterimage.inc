@@ -869,6 +869,12 @@ var
   IntfImage: TLazIntfImage;
 begin
   // if RawImage exits then use it to get pixel overwise get it from the canvas
+  if Empty then
+  begin
+    Result := clNone;
+    Exit;
+  end;
+
   RawImagePtr := GetRawImagePtr;
   if RawImagePtr <> nil then
   begin
