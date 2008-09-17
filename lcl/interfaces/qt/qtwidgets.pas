@@ -824,6 +824,9 @@ type
     procedure signalViewportEntered; cdecl; virtual;
     procedure AttachEvents; override;
     procedure DetachEvents; override;
+    procedure SetColor(const Value: PQColor); override;
+    procedure setTextColor(const Value: PQColor); override;
+
     function itemViewViewportEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; virtual;
  public
     procedure clearSelection;
@@ -8793,6 +8796,32 @@ begin
   QAbstractItemView_hook_destroy(FSignalViewportEntered);
   QObject_hook_destroy(FAbstractItemViewportEventHook);
   inherited DetachEvents;
+end;
+
+procedure TQtAbstractItemView.SetColor(const Value: PQColor);
+var
+  Palette: QPaletteH;
+begin
+  Palette := QPalette_create(QWidget_palette(Widget));
+  try
+    QPalette_setColor(Palette, QPaletteBase, Value);
+    QWidget_setPalette(Widget, Palette);
+  finally
+    QPalette_destroy(Palette);
+  end;
+end;
+
+procedure TQtAbstractItemView.setTextColor(const Value: PQColor);
+var
+  Palette: QPaletteH;
+begin
+  Palette := QPalette_create(QWidget_palette(Widget));
+  try
+    QPalette_setColor(Palette, QPaletteText, Value);
+    QWidget_setPalette(Widget, Palette);
+  finally
+    QPalette_destroy(Palette);
+  end;
 end;
 
 function TQtAbstractItemView.itemViewViewportEventFilter(Sender: QObjectH;

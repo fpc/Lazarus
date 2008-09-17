@@ -2236,15 +2236,7 @@ end;
 
 procedure ColorRefToTQColor(const AColorRef: TColorRef; var AColor:TQColor);
 begin
-  AColor.r:=(AColorRef and $ff);
-  AColor.r:=AColor.r+(AColor.r shl 8);
-  AColor.g:=(AColorRef and $ff00);
-  AColor.g:=AColor.g+(AColor.g shr 8);
-  AColor.b:=(AColorRef and $ff0000) shr 8;
-  AColor.b:=AColor.b+(AColor.b shr 8);
-  AColor.ColorSpec := Ord(QColorRGB);
-  AColor.Alpha := 65535;
-  AColor.Pad := 0;
+  QColor_fromRgb(@AColor, Red(AColorRef),Green(AColorRef),Blue(AColorRef));
 end;
 
 procedure DebugRegion(const msg: string; Rgn: QRegionH);
