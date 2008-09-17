@@ -54,15 +54,15 @@ type
     AddToInstallButton: TButton;
     AvailableListBox: TListBox;
     AvailablePkgGroupBox: TGroupBox;
-    CancelButton: TButton;
+    CancelButton: TBitBtn;
     ExportButton: TButton;
     PkgInfoMemo: TMemo;
     PkgInfoGroupBox: TGroupBox;
     ImportButton: TButton;
-    SaveAndRebuildButton: TButton;
+    SaveAndExitButton: TBitBtn;
     InstallListBox: TListBox;
     InstallPkgGroupBox: TGroupBox;
-    SaveAndExitButton: TButton;
+    SaveAndRebuildButton: TBitBtn;
     UninstallButton: TButton;
     procedure AddToInstallButtonClick(Sender: TObject);
     procedure AvailableListBoxDblClick(Sender: TObject);
