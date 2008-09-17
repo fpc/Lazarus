@@ -2756,6 +2756,7 @@ images/packages/pkg_removedrequired.png -text svneol=unset#image/png
 images/packages/pkg_required.png -text svneol=unset#image/png
 images/packages/pkg_text.png -text svneol=unset#image/png
 images/packages/pkg_unit.png -text svneol=unset#image/png
+images/powered-by.svg -text svneol=unset#image/svg%2Bxml
 images/powered_by.png -text svneol=unset#image/png
 images/propertygrid/issue_carbon.png -text svneol=unset#image/png
 images/propertygrid/issue_fpgui.png -text svneol=unset#image/png
