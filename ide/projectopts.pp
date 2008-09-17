@@ -48,6 +48,10 @@ type
   { TProjectOptionsDialog }
 
   TProjectOptionsDialog = class(TForm)
+    FormsAddToAutoCreatedFormsBtn: TSpeedButton;
+    FormsMoveAutoCreatedFormsDownBtn: TSpeedButton;
+    FormsMoveAutoCreatedFormUpBtn: TSpeedButton;
+    FormsRemoveFromAutoCreatedFormsBtn: TSpeedButton;
     Notebook: TNotebook;
     ApplicationPage: TPage;
     FormsPage: TPage;
@@ -75,12 +79,8 @@ type
     FormsAutoCreatedListBox: TListBox;
     FormsAvailFormsLabel: TLabel;
     FormsAvailFormsListBox: TListBox;
-    FormsAddToAutoCreatedFormsBtn: TArrow;
-    FormsRemoveFromAutoCreatedFormsBtn: TArrow;
-    FormsMoveAutoCreatedFormUpBtn: TArrow;
     FormsMoveAutoCreatedFormDownBtn: TArrow;
     FormsAutoCreateNewFormsCheckBox: TCheckBox;
-    FormsMoveAutoCreatedFormsDownBtn: TArrow;
 
     // Misc
     MainUnitIsPascalSourceCheckBox: TCheckBox;
