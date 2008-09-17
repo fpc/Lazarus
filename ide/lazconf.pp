@@ -55,7 +55,7 @@ const
       'gtk 2 (beta)',
       'win32/win64',
       'wince (beta)',
-      'carbon (alpha)',
+      'carbon (beta)',
       'qt (beta)',
       'fpGUI (pre-alpha)',
       'NoGUI (pre-alpha)',
