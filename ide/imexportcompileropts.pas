@@ -43,13 +43,15 @@ type
     iecorExport
     );
 
+  { TImExportCompOptsDlg }
+
   TImExportCompOptsDlg = class(TForm)
+    CancelButton: TBitBtn;
+    OpenButton: TBitBtn;
+    SaveButton: TBitBtn;
     SaveToRecentButton: TBUTTON;
     OpenRecentButton: TBUTTON;
     RecentListbox: TLISTBOX;
-    SaveButton: TBUTTON;
-    OpenButton: TBUTTON;
-    CancelButton: TBUTTON;
     OpenRecentGroupbox: TGROUPBOX;
     procedure ImExportCompOptsDlgCLOSE(Sender: TObject;
                                        var CloseAction: TCloseAction);
