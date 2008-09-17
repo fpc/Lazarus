@@ -8135,14 +8135,15 @@ end;
 
 procedure TCustomStringGrid.DoCutToClipboard;
 begin
-  doCopyToClipboard;
-  //if not GridReadOnly then
-  Clean(Selection, []);
+  if goEditing in Options then begin
+    doCopyToClipboard;
+    Clean(Selection, []);
+  end;
 end;
 
 procedure TCustomStringGrid.DoPasteFromClipboard;
 begin
-  if Clipboard.HasFormat(CF_TEXT) then begin
+  if (goEditing in Options) and Clipboard.HasFormat(CF_TEXT) then begin
     SelectionSetText(Clipboard.AsText);
   end;
 end;
