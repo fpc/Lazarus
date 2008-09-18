@@ -5031,7 +5031,9 @@ begin
         begin
           // it would be better if we have AutoSelect published from TCustomEdit
           // then TMaskEdit also belongs here.
-          if ((LCLObject is TEdit) and (TEdit(LCLObject).AutoSelect)) then
+          if ((LCLObject is TEdit) and
+             (getEnabled) and
+             (TEdit(LCLObject).AutoSelect)) then
             QLineEdit_selectAll(QLineEditH(Widget));
         end;
       end;
@@ -6030,7 +6032,9 @@ begin
             [QtTabFocusReason,QtBacktabFocusReason,QtActiveWindowFocusReason,
              QtShortcutFocusReason, QtOtherFocusReason] then
           begin
-            if Assigned(LineEdit) and TComboBox(LCLObject).AutoSelect then
+            if Assigned(LineEdit) and
+               LineEdit.getEnabled and
+               TComboBox(LCLObject).AutoSelect then
               LineEdit.selectAll;
           end;
         TCustomComboBox(LCLObject).IntfGetItems;
