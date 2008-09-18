@@ -155,15 +155,7 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.FontCanUTF8(Font: HFont): Boolean;
 begin
-  {$ifdef windows}
-  {$ifdef WindowsUnicodeSupport}
-    Result := True;
-  {$else}
-    Result := False;
-  {$endif}
-  {$else}
-    Result := IsValidGDIObject(Font);
-  {$endif}
+  Result := IsValidGDIObject(Font);
 end;
 
 {------------------------------------------------------------------------------
