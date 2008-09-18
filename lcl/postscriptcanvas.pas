@@ -556,7 +556,7 @@ end;
 
 procedure TPostScriptPrinterCanvas.WriteOrientation;
 begin
-  if Printer.Orientation=poLandscape then
+  if (Printer<>nil) and (Printer.Orientation=poLandscape) then
   begin
     Write(format('%d 0 translate 90 rotate',[PageHeight]));
   end;
@@ -783,12 +783,13 @@ var
   CurColor   : TFPColor;
   St         : String;
 begin
-  if (SrcGraph is TBitMap) then
+  if (SrcGraph is TRasterImage) then
   begin
     SrcIntfImg:=TLazIntfImage.Create(0,0);
     Lst.BeginUpdate;
     Try
-      SrcIntfImg.LoadFromBitmap(TBitMap(SrcGraph).Handle,TBitMap(SrcGraph).MaskHandle);
+      SrcIntfImg.LoadFromBitmap(TRasterImage(SrcGraph).BitmapHandle,
+                                TRasterImage(SrcGraph).MaskHandle);
       St:='';
       for py:=0 to SrcIntfImg.Height-1 do
       begin
@@ -941,7 +942,7 @@ begin
   WriteHeader('%%'+Format('Creator: Lazarus PostScriptCanvas for %s',[Application.ExeName]));
   WriteHeader('%%'+Format('Title: %s',[Title]));
   WriteHeader('%%CreationDate: '+DateTimeToStr(Now));
-  if Printer.Orientation=poLandscape then
+  if (Printer<>nil) and (Printer.Orientation=poLandscape) then
     WriteHeader('%%Orientation: Landscape');
   WriteHeader('%%Pages: (atend)');
   WriteHeader('%%PageResources: (atend)');

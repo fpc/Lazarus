@@ -39,6 +39,7 @@ var
     Pt1: Array[0..3] of TPoint;
     Bmp : TBitMap;
     Xpm : TPixMap;
+    png : TPortableNetworkGraphic;
 begin
   if Sender=nil then ;
   With TPostscriptCanvas.Create do
@@ -141,10 +142,18 @@ begin
 
     xpm:=TPixMap.Create;
     try
-      xpm.LoadFromFile(ExpandFileNameUTF8('../../images/lazarus.xpm'));
-      StretchDraw(Rect(10,500,110,600),xpm);
+      xpm.LoadFromFile(ExpandFileNameUTF8('../../images/vase_trans.xpm'));
+      StretchDraw(bounds(10, 590, round(xpm.Width*0.60),round(xpm.height*0.60)),xpm);
     finally
       xpm.Free;
+    end;
+
+    png := TPortableNetworkGraphic.Create;
+    try
+      png.LoadFromFile('../../images/splash_logo.png');
+      StretchDraw(bounds(190, 590, round(png.Width*0.60),round(png.height*0.60)),png);
+    finally
+      png.Free;
     end;
 
     NewPage;
