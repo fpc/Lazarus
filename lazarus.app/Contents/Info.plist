@@ -15,7 +15,7 @@
   <key>CFBundlePackageType</key>
   <string>APPL</string>
   <key>CFBundleSignature</key>
-  <string>lazi</string>
+  <string>laza</string>
   <key>CFBundleShortVersionString</key>
   <string>Lazarus IDE v0.9.25 beta</string>
   <key>CFBundleVersion</key>
