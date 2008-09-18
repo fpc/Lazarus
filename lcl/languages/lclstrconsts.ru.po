@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-09-05 21:48+0300\n"
+"PO-Revision-Date: 2008-09-18 02:44+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -771,7 +771,7 @@ msgstr "Shift"
 
 #: lclstrconsts:ifsvk_snapshot
 msgid "Snapshot"
-msgstr "Срез исходного кода"
+msgstr "Snapshot"
 
 #: lclstrconsts:ifsvk_space
 msgid "Space key"
