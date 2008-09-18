@@ -29,7 +29,7 @@ FOR /F %%L IN ('%SOURCE_DIR%\compiler\utils\fpc.exe -PB') DO SET COMPILER=%SOURC
 FOR /F %%L IN ('%COMPILER% -iV') DO SET FPCVERSION=%%L
 FOR /F %%L IN ('%COMPILER% -iW') DO SET FPCFULLVERSION=%%L
 
-MAKEEXE% rtl packages PP=%COMPILER% OPT="-Ur -CX" >> %LOGFILE%
+%MAKEEXE% rtl packages PP=%COMPILER% OPT="-Ur -CX" >> %LOGFILE%
 
 %MAKEEXE% utils PP=%COMPILER% OPT="-CX -XX -Xs" DATA2INC=%SOURCE_DIR%\utils\data2inc >> %LOGFILE%
 
