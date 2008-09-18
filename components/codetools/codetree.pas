@@ -312,6 +312,7 @@ var
 //-----------------------------------------------------------------------------
 // useful functions
 function NodeDescriptionAsString(Desc: TCodeTreeNodeDesc): string;
+procedure WriteNodeExtTree(Tree: TAVLTree);
 function FindCodeTreeNodeExt(Tree: TAVLTree; const Txt: string
                              ): TCodeTreeNodeExtension;
 function FindCodeTreeNodeExtAVLNode(Tree: TAVLTree; const Txt: string
@@ -435,6 +436,27 @@ begin
 
   else
     Result:='invalid descriptor ('+IntToStr(Desc)+')';
+  end;
+end;
+
+procedure WriteNodeExtTree(Tree: TAVLTree);
+var
+  Node: TAVLTreeNode;
+  NodeExt: TCodeTreeNodeExtension;
+begin
+  if Tree=nil then begin
+    DebugLn(['WriteNodeExtTree Tree=nil']);
+    exit;
+  end;
+  DebugLn(['WriteNodeExtTree ']);
+  Node:=Tree.FindLowest;
+  while Node<>nil do begin
+    NodeExt:=TCodeTreeNodeExtension(Node.Data);
+    if NodeExt=nil then
+      DebugLn(['  NodeExt=nil'])
+    else
+      NodeExt.WriteDebugReport;
+    Node:=Tree.FindSuccessor(Node);
   end;
 end;
 
@@ -927,6 +949,13 @@ end;
 procedure TCodeTreeNodeExtension.WriteDebugReport;
 begin
   // nothing special
+  DbgOut('  ');
+  if Node<>nil then
+    DbgOut('Node=',NodeDescriptionAsString(Node.Desc))
+  else
+    DbgOut('Node=nil');
+  DbgOut(' Position=',dbgs(Position),' Txt="'+Txt+'" ExtTxt1="'+ExtTxt1+'" ExtTxt2="'+ExtTxt2+'" ExtTxt3="'+ExtTxt3+'"');
+  debugln;
 end;
 
 { TCodeTreeNodeMemManager }

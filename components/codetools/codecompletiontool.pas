@@ -5549,6 +5549,7 @@ var
         FirstExistingProcBody:=ANode;
       if ANode.StartPos>LastExistingProcBody.StartPos then
         LastExistingProcBody:=ANode;
+      //DebugLn(['FindTopMostAndBottomMostProcBodies ',TCodeTreeNodeExtension(ExistingNode.Data).Txt]);
       ExistingNode:=ProcBodyNodes.FindSuccessor(ExistingNode);
     end;
   end;
@@ -5690,7 +5691,7 @@ begin
     
     {AnAVLNode:=ClassProcs.FindLowest;
     while AnAVLNode<>nil do begin
-      DebugLn(' AAA ',TCodeTreeNodeExtension(AnAVLNode.Data).Txt);
+      DebugLn(' Existing proc headers: ',TCodeTreeNodeExtension(AnAVLNode.Data).Txt);
       AnAVLNode:=ClassProcs.FindSuccessor(AnAVLNode);
     end;}
     
@@ -5752,7 +5753,7 @@ begin
         ANodeExt:=TCodeTreeNodeExtension(MissingNode.Data);
         CreateCodeForMissingProcBody(ANodeExt);
         InsertProcBody(ANodeExt);
-        MissingNode:=ProcBodyNodes.FindPrecessor(MissingNode);
+        MissingNode:=ClassProcs.FindPrecessor(MissingNode);
       end;
       
     end else begin
@@ -5771,9 +5772,10 @@ begin
       MissingNode:=ClassProcs.FindHighest;
       NearestNodeValid:=false;
       while (MissingNode<>nil) do begin
+        ANodeExt:=TCodeTreeNodeExtension(MissingNode.Data);
         ExistingNode:=ProcBodyNodes.Find(MissingNode.Data);
+        //DebugLn(['TCodeCompletionCodeTool.CreateMissingProcBodies ANodeExt.Txt=',ANodeExt.Txt,' ExistingNode=',ExistingNode<>nil]);
         if ExistingNode=nil then begin
-          ANodeExt:=TCodeTreeNodeExtension(MissingNode.Data);
           // MissingNode does not have a body -> insert proc body
           case MethodInsertPolicy of
           mipAlphabetically:
@@ -5841,7 +5843,7 @@ begin
           CreateCodeForMissingProcBody(ANodeExt);
           InsertProcBody(ANodeExt);
         end;
-        MissingNode:=ProcBodyNodes.FindPrecessor(MissingNode);
+        MissingNode:=ClassProcs.FindPrecessor(MissingNode);
       end;
     end;
     Result:=true;

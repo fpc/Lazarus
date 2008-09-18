@@ -2503,13 +2503,10 @@ function CompareTextIgnoringSpace(Txt1: PChar; Len1: integer;
    A;    A      -1
 }
 var P1, P2: integer;
-  InIdentifier: boolean;
 begin
   P1:=0;
   P2:=0;
-  InIdentifier:=false;
   while (P1<Len1) and (P2<Len2) do begin
-    //DebugLn('CompareTextIgnoringSpace P1=',dbgs(P1),' P2=',dbgs(P2));
     if (CaseSensitive and (Txt1[P1]=Txt2[P2]))
     or ((not CaseSensitive) and (UpChars[Txt1[P1]]=UpChars[Txt2[P2]])) then
     begin
@@ -2517,7 +2514,8 @@ begin
       inc(P2);
     end else begin
       // different chars found
-      if InIdentifier and (IsIdentChar[Txt1[P1]] xor IsIdentChar[Txt2[P2]]) then begin
+      if (P1>0) and (IsIdentChar[Txt1[P1-1]])
+      and (IsIdentChar[Txt1[P1]] xor IsIdentChar[Txt2[P2]]) then begin
         // one identifier is longer than the other
         if IsIdentChar[Txt1[P1]] then
           // identifier in Txt1 is longer than in Txt2
@@ -2552,7 +2550,6 @@ begin
         exit;
       end;
     end;
-    InIdentifier:=IsIdentChar[Txt1[P1]];
   end;
   // one text was totally read -> check the rest of the other one
   // skip spaces
