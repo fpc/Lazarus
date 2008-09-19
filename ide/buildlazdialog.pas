@@ -880,6 +880,9 @@ begin
 
   IDEDialogLayoutList.ApplyLayout(Self, 500, 500);
 
+  CompileButton.LoadGlyphFromLazarusResource('menu_build');
+  SaveSettingsButton.LoadGlyphFromLazarusResource('menu_save');
+  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
   Load(FOptions);
 end;
 

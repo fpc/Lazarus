@@ -559,6 +559,10 @@ begin
   AlwaysCompileFirstCheckbox.Caption:=lisBFAlwaysBuildBeforeRun;
   RunWorkDirGroupbox.Caption:=lisBFWorkingDirectoryLeaveEmptyForFilePath2;
   RunCommandGroupbox.Caption:=lisBFRunCommand;
+
+  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
+  OKButton.LoadGlyphFromLazarusResource('btn_ok');
+  HelpButton.LoadGlyphFromLazarusResource('btn_help');
 end;
 
 procedure TBuildFileDialog.BuildBrowseWorkDirButtonCLICK(Sender: TObject);

@@ -65,8 +65,8 @@ type
     // add file page
     AddFileLabel: TLabel;
     AddFileListBox: TListBox;
-    AddFileButton: TButton;
-    CancelAddFileButton: TButton;
+    AddFileButton: TBitBtn;
+    CancelAddFileButton: TBitBtn;
     // new required package
     DependPkgNameLabel: TLabel;
     DependPkgNameComboBox: TComboBox;
@@ -74,8 +74,8 @@ type
     DependMinVersionEdit: TEdit;
     DependMaxVersionLabel: TLabel;
     DependMaxVersionEdit: TEdit;
-    NewDependButton: TButton;
-    CancelDependButton: TButton;
+    NewDependButton: TBitBtn;
+    CancelDependButton: TBitBtn;
     // add files page
     FilesListView: TListView;
     FilesBrowseButton: TButton;
@@ -385,6 +385,11 @@ end;
 procedure TAddToProjectDialog.SetupComponents;
 begin
   NoteBook.PageIndex:=0;
+
+  AddFileButton.LoadGlyphFromLazarusResource('btn_ok');
+  CancelAddFileButton.LoadGlyphFromLazarusResource('btn_cancel');
+  CancelDependButton.LoadGlyphFromLazarusResource('btn_cancel');
+  NewDependButton.LoadGlyphFromLazarusResource('btn_ok');
 
   SetupAddEditorFilePage(0);
   SetupAddRequirementPage(1);

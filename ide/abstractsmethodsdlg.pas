@@ -163,6 +163,9 @@ begin
   SelectNoneButton.Caption:=lisSAMSelectNone;
   SelectAllButton.Caption:=lisMenuSelectAll;
   MethodsGroupBox.Caption:=lisSAMAbstractMethodsNotYetOverridden;
+  CancelBitBtn.LoadGlyphFromLazarusResource('btn_cancel');
+  AddFirstBitBtn.LoadGlyphFromLazarusResource('btn_ok');
+  AddAllBitBtn.LoadGlyphFromLazarusResource('btn_all');
 end;
 
 procedure TAbstractMethodsDialog.AddFirstBitBtnClick(Sender: TObject);

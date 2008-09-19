@@ -147,6 +147,7 @@ begin
   LoadContributors;
   LoadAcknowledgements;
   CloseButton.Caption:=lisClose;
+  CloseButton.LoadGlyphFromLazarusResource('btn_close');
 end;
 
 procedure TAboutForm.miVerToClipboardClick(Sender: TObject);
