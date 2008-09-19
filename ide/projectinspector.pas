@@ -64,13 +64,13 @@ type
   { TProjectInspectorForm }
 
   TProjectInspectorForm = class(TForm)
-    OpenBitBtn: TBitBtn;
-    AddBitBtn: TBitBtn;
-    RemoveBitBtn: TBitBtn;
-    OptionsBitBtn: TBitBtn;
+    AddBitBtn: TSpeedButton;
+    OpenBitBtn: TSpeedButton;
     ItemsTreeView: TTreeView;
     ItemsPopupMenu: TPopupMenu;
     ControlDocker: TLazControlDocker;
+    OptionsBitBtn: TSpeedButton;
+    RemoveBitBtn: TSpeedButton;
     procedure AddBitBtnClick(Sender: TObject);
     procedure ItemsPopupMenuPopup(Sender: TObject);
     procedure ItemsTreeViewDblClick(Sender: TObject);
@@ -427,6 +427,11 @@ begin
   ImageIndexRegisterUnit := IDEImages.LoadImage(16, 'pkg_registerunit');
   ImageIndexText := IDEImages.LoadImage(16, 'pkg_text');
   ImageIndexBinary := IDEImages.LoadImage(16, 'pkg_binary');
+
+  OpenBitBtn.LoadGlyphFromLazarusResource('open');
+  AddBitBtn.LoadGlyphFromLazarusResource('add');
+  RemoveBitBtn.LoadGlyphFromLazarusResource('delete');
+  OptionsBitBtn.LoadGlyphFromLazarusResource('menu_environment_options');
 
   OpenBitBtn.Caption:=lisMenuOpen;
   AddBitBtn.Caption:=lisCodeTemplAdd;
