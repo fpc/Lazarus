@@ -2434,9 +2434,16 @@ begin
 
     if not EqualRect(LocalRect, sourceRect^) and
       (QImage_format(Image) = QImageFormat_RGB32) then
-        QImage_convertToFormat(Image, Image, QImageFormat_ARGB32);
-
-    QPainter_drawImage(Widget, PRect(@LocalRect), image, sourceRect, flags);
+    begin
+      ScaledImage := QImage_create();
+      try
+        QImage_convertToFormat(Image, ScaledImage, QImageFormat_ARGB32);
+        QPainter_drawImage(Widget, PRect(@LocalRect), ScaledImage, sourceRect, flags);
+      finally
+        QImage_destroy(ScaledImage);
+      end;
+    end else
+      QPainter_drawImage(Widget, PRect(@LocalRect), image, sourceRect, flags);
   end;
 end;
 
