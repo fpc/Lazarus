@@ -24,7 +24,6 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
     ClientWidth = 498
     ParentCtl3D = False
     TabOrder = 0
-    OnResize = DirectoryGroupboxRESIZE
     object DirectoryCombobox: TComboBox
       AnchorSideLeft.Control = DirectoryGroupbox
       AnchorSideTop.Control = DirectoryGroupbox
@@ -36,7 +35,6 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
       BorderSpacing.Left = 5
       BorderSpacing.Right = 5
       ItemHeight = 13
-      MaxLength = -1
       OnChange = DirectoryComboboxCHANGE
       ParentCtl3D = False
       TabOrder = 0
@@ -91,6 +89,7 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
       ParentFont = False
       TabOrder = 0
       BookMarkOptions.Xoffset = -18
+      BookMarkOptions.OnChange = nil
       Gutter.Visible = False
       Keystrokes = <      
         item
@@ -418,6 +417,7 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
       )
       Options = [eoAutoIndent, eoDragDropEditing, eoScrollPastEol, eoShowScrollHint, eoSmartTabs, eoTabsToSpaces, eoTrimTrailingSpaces, eoBracketHighlight, eoShowCtrlMouseLinks]
       ReadOnly = True
+      SelectedColor.OnChange = nil
     end
   end
   object MainSplitter: TSplitter

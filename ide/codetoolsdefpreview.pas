@@ -43,7 +43,6 @@ type
     procedure CodeToolsDefinesDialogCREATE(Sender: TObject);
     procedure DirectoryBrowseButtonCLICK(Sender: TObject);
     procedure DirectoryComboboxCHANGE(Sender: TObject);
-    procedure DirectoryGroupboxRESIZE(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure ParsedTemplatesTreeViewSelectionChanged(Sender: TObject);
     procedure ValuesListviewSELECTITEM(Sender: TObject; Item: TListItem;
@@ -161,17 +160,6 @@ begin
 end;
 
 { TCodeToolsDefinesDialog }
-
-procedure TCodeToolsDefinesDialog.DirectoryGroupboxRESIZE(Sender: TObject);
-var
-  x: Integer;
-begin
-  with DirectoryCombobox do
-    SetBounds(0,0,Parent.ClientWidth-30,Height);
-  x:=DirectoryCombobox.Width;
-  with DirectoryBrowseButton do
-    SetBounds(x,0,Parent.ClientWidth-x,DirectoryCombobox.Height);
-end;
 
 procedure TCodeToolsDefinesDialog.FormDestroy(Sender: TObject);
 begin
