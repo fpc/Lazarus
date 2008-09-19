@@ -39,7 +39,7 @@ uses
   Arrow, Buttons, StdCtrls, SysUtils, LCLProc, Classes, CodeToolManager,
   Controls, Dialogs, LCLIntf, LResources, ExtCtrls, Forms, Graphics, Spin,
   FileUtil, IDEContextHelpEdit, EnvironmentOpts,
-  IDEWindowIntf, ProjectIntf, IDEDialogs,
+  IDEWindowIntf, IDEImagesIntf, ProjectIntf, IDEDialogs,
   IDEOptionDefs, LazarusIDEStrConsts, Project, IDEProcs, W32VersionInfo,
   VersionInfoAdditionalInfo, W32Manifest, ApplicationBundle;
 
@@ -318,6 +318,10 @@ begin
   FormsAutoCreatedLabel.Caption := dlgAutoCreateForms;
   FormsAvailFormsLabel.Caption := dlgAvailableForms;
   FormsAutoCreateNewFormsCheckBox.Caption := dlgAutoCreateNewForms;
+  FormsMoveAutoCreatedFormUpBtn.LoadGlyphFromLazarusResource('arrow_up');
+  FormsMoveAutoCreatedFormsDownBtn.LoadGlyphFromLazarusResource('arrow_down');
+  FormsAddToAutoCreatedFormsBtn.LoadGlyphFromLazarusResource('arrow_left');
+  FormsRemoveFromAutoCreatedFormsBtn.LoadGlyphFromLazarusResource('arrow_right');
 end;
 
 procedure TProjectOptionsDialog.SetupMiscPage(PageIndex: Integer);
