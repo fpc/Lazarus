@@ -1774,7 +1774,19 @@ end;
 
 function TCarbonWidgetSet.GetTextColor(DC: HDC): TColorRef;
 begin
-  Result:=inherited GetTextColor(DC);
+  Result := clNone;
+
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetTextColor DC: ' + DbgS(HDC));
+  {$ENDIF}
+
+  if not CheckDC(DC, 'GetTextColor') then Exit;
+
+  Result := TCarbonDeviceContext(DC).TextColor;
+
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetTextColor Result: ' + DbgS(Result));
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
