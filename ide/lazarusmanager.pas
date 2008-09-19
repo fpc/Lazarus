@@ -160,20 +160,23 @@ begin
     begin
       if FileExistsUTF8(BackupFileName) then
         if not DeleteFileUTF8(BackupFileName) then begin
-          MessageDlg(format('Can''t delete "%s"'#13'%s', [BackupFileName, SysErrorMessage(GetLastOSError)]),
+          MessageDlg(format('Can''t delete "%s"'#13'%s',
+            [BackupFileName, SysErrorMessageUTF8(GetLastOSError)]),
             mtError, [mbOK], 0);
           Result := mrAbort;
           exit;
         end;
       if not RenameFileUTF8(CurFilename, BackupFileName) then begin
-        MessageDlg(format('Can''t rename "%s" to "%s"'#13'%s', [FLazarusPath, BackupFileName, SysErrorMessage(GetLastOSError)]),
+        MessageDlg(format('Can''t rename "%s" to "%s"'#13'%s',
+          [FLazarusPath, BackupFileName, SysErrorMessageUTF8(GetLastOSError)]),
           mtError, [mbOK], 0);
         Result := mrAbort;
         exit;
       end;
     end;
     if not RenameFileUTF8(NewFileName, CurFilename) then begin
-      MessageDlg(format('Can''t rename "%s" to "%s"'#13'%s', [NewFileName, FLazarusPath, SysErrorMessage(GetLastOSError)]),
+      MessageDlg(format('Can''t rename "%s" to "%s"'#13'%s',
+        [NewFileName, FLazarusPath, SysErrorMessageUTF8(GetLastOSError)]),
         mtError, [mbOK], 0);
       Result := mrAbort;
       exit;
