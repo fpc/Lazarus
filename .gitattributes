@@ -2438,18 +2438,18 @@ images/codeexplorer/ce_unit.png -text
 images/codeexplorer/ce_variable.png -text
 images/codeexplorer/show_category.png -text
 images/codeexplorer/show_source.png -text
-images/codetoolsdefines/da_block.png -text
-images/codetoolsdefines/da_define.png -text
-images/codetoolsdefines/da_definerecurse.png -text
-images/codetoolsdefines/da_directory.png -text
-images/codetoolsdefines/da_else.png -text
-images/codetoolsdefines/da_elseif.png -text
-images/codetoolsdefines/da_if.png -text
-images/codetoolsdefines/da_ifdef.png -text
-images/codetoolsdefines/da_ifndef.png -text
-images/codetoolsdefines/da_undefine.png -text
-images/codetoolsdefines/da_undefineall.png -text
-images/codetoolsdefines/da_undefinerecurse.png -text
+images/codetoolsdefines/da_block.png -text svneol=unset#image/png
+images/codetoolsdefines/da_define.png -text svneol=unset#image/png
+images/codetoolsdefines/da_definerecurse.png -text svneol=unset#image/png
+images/codetoolsdefines/da_directory.png -text svneol=unset#image/png
+images/codetoolsdefines/da_else.png -text svneol=unset#image/png
+images/codetoolsdefines/da_elseif.png -text svneol=unset#image/png
+images/codetoolsdefines/da_if.png -text svneol=unset#image/png
+images/codetoolsdefines/da_ifdef.png -text svneol=unset#image/png
+images/codetoolsdefines/da_ifndef.png -text svneol=unset#image/png
+images/codetoolsdefines/da_undefine.png -text svneol=unset#image/png
+images/codetoolsdefines/da_undefineall.png -text svneol=unset#image/png
+images/codetoolsdefines/da_undefinerecurse.png -text svneol=unset#image/png
 images/components/default.png -text svneol=unset#image/png
 images/components/tactionlist.png -text svneol=unset#image/png
 images/components/tapplicationproperties.png -text svneol=unset#image/png
