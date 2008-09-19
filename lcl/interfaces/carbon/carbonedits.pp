@@ -1353,7 +1353,9 @@ var
   Options: OptionBits;
   R: HIRect;
 begin
-  Options := kTXNMonostyledTextMask or kOutputTextInUnicodeEncodingMask;
+  Options := kTXNMonostyledTextMask // disable more font styles
+    or kTXNDontDrawSelectionWhenInactiveMask // hide selection, when inactive
+    or kOutputTextInUnicodeEncodingMask;
 
   R := ParamsToHIRect(AParams);
   if OSError(HITextViewCreate(@R, 0, Options, Control),
