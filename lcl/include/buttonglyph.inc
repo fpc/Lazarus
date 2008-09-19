@@ -16,7 +16,6 @@
 }
 
 type
-
   { TGlyphBitmap }
 
   TGlyphBitmap = class(TBitmap)

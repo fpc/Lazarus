@@ -55,6 +55,11 @@ Begin
   inherited Click;
 End;
 
+procedure TCustomBitBtn.LoadGlyphFromLazarusResource(const AName: String);
+begin
+  Buttons.LoadGlyphFromLazarusResource(FButtonGlyph, AName);
+end;
+
 function TCustomBitBtn.GetGlyph : TBitmap;
 Begin
   Result := FButtonGlyph.Glyph;

@@ -163,6 +163,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure Click; override;
+    procedure LoadGlyphFromLazarusResource(const AName: String);
   public
     property Glyph: TBitmap read GetGlyph write SetGlyph stored IsGlyphStored;
     property NumGlyphs: Integer read GetNumGlyphs write SetNumGlyphs default 1;
@@ -384,6 +385,7 @@ var
   GetDefaultBitBtnGlyph: TGetDefaultBitBtnGlyph = nil;
 
 function GetLCLDefaultBtnGlyph(Kind: TBitBtnKind): TGraphic;
+procedure LoadGlyphFromLazarusResource(AGlyph: TButtonGlyph; const AName: String);
 
 procedure Register;
 
@@ -426,6 +428,40 @@ begin
   if BitBtnResNames[Kind] = '' then
     Exit;
   Result := CreateBitmapFromLazarusResource(BitBtnResNames[Kind]);
+end;
+
+procedure LoadGlyphFromLazarusResource(AGlyph: TButtonGlyph; const AName: String);
+var
+  C: TCustomBitmap;
+  B: TBitmap;
+begin
+  if AName = '' then
+    C := nil
+  else
+    C := CreateBitmapFromLazarusResource(AName);
+
+  if C = nil
+  then begin
+    AGlyph.Glyph := nil;
+    Exit;
+  end;
+  B := nil;
+  try
+    if AGlyph.Glyph <> nil
+    then begin
+      AGlyph.Glyph.Assign(C);
+      Exit;
+    end;
+
+    // unfortunately a Glyph doesn't support a custom bitmap yet.
+    // So we need a Bitmap helper
+    B := TBitmap.Create;
+    B.Assign(C);
+    AGlyph.Glyph := B;
+  finally
+    B.Free;
+    C.Free;
+  end;
 end;
 
 procedure Register;
