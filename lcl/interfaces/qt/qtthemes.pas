@@ -272,6 +272,11 @@ begin
     Result := Result or QStyleState_NoChange;
     
   // specific states
+  {when toolbar = flat, toolbar buttons should be flat too.}
+  if (Details.Element = teToolBar) and
+     (Details.Part = TP_BUTTON) and
+     (Details.State = TS_NORMAL) then
+    Result := QStyleState_AutoRaise;
 
   // define orientations
   if ((Details.Element = teRebar) and (Details.Part = RP_GRIPPER)) or
