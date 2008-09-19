@@ -216,6 +216,9 @@ function GetEnvironmentStringUTF8(Index: Integer): string;
 function GetEnvironmentVariableUTF8(const EnvVar: string): String;
 function GetAppConfigDirUTF8(Global: Boolean): string;
 
+// other
+function SysErrorMessageUTF8(ErrorCode: Integer): String;
+
 implementation
 
 uses
