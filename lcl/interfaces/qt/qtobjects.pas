@@ -2426,26 +2426,17 @@ begin
     end;
   end else
   begin
-    {$note possible qt4 bug with RGB32 images.}
-    {we must scale image , since we can get strange results with RGB32 images.
-     Look at #11713 linux & win screenshoots.
-     This is better and faster then conversion to pixmap or to ARGB32}
-    if not EqualRect(LocalRect, sourceRect^) then
-    begin
-      ScaledImage := QImage_create();
-      try
-        W := LocalRect.Right - LocalRect.Left;
-        H := LocalRect.Bottom - LocalRect.Top;
-        QImage_scaled(Image, ScaledImage, W, H);
-        {if w & h <= 0 then copy = null image - avoid asserts from qpainter}
-        if not QImage_isNull(ScaledImage) then
-          QPainter_drawImage(Widget, LocalRect.Left, LocalRect.Top,
-            ScaledImage, 0, 0, W, H);
-      finally
-        QImage_destroy(ScaledImage);
-      end;
-    end else
-      QPainter_drawImage(Widget, PRect(@LocalRect), image, sourceRect, flags);
+    {$note workaround - possible qt4 bug with QPainter & RGB32 images.}
+    {Workaround: we must convert image to ARGB32 , since we can get strange
+     results with RGB32 images on Linux and Win32 if DstRect <> sourceRect.
+     Explanation: Look at #11713 linux & win screenshoots.
+     Note: This is slower operation than QImage_scaled() we used before.}
+
+    if not EqualRect(LocalRect, sourceRect^) and
+      (QImage_format(Image) = QImageFormat_RGB32) then
+        QImage_convertToFormat(Image, Image, QImageFormat_ARGB32);
+
+    QPainter_drawImage(Widget, PRect(@LocalRect), image, sourceRect, flags);
   end;
 end;
 
