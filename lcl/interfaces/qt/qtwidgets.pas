@@ -8721,10 +8721,10 @@ begin
   if ((not AValue) and (FNewDelegate <> nil)) then
   begin
     {$note this call avoid sporadic AVs with QLCLItemDelegate_destroy(FNewDelegate).}
-    {TODO : check this statement for Mac and Win32}
-    {$IFDEF LINUX}
+    {howto reproduce: comment next code line, recompile laz, and then in oi click
+     in first field eg. Action (TForm), now push kbd down arrow let it pass all properties,
+     you'll have crash at Constraints property.}
     FNewDelegate := QLCLItemDelegateH(QAbstractItemView_itemDelegate(QAbstractItemViewH(Widget)));
-    {$ENDIF}
     QAbstractItemView_setItemDelegate(QAbstractItemViewH(Widget), FOldDelegate);
     QLCLItemDelegate_destroy(FNewDelegate);
     FNewDelegate := nil;
