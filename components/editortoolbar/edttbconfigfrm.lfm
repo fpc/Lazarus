@@ -3,18 +3,19 @@ object EdtTbConfigForm: TEdtTbConfigForm
   Height = 330
   Top = 200
   Width = 651
-  HorzScrollBar.Page = 650
-  VertScrollBar.Page = 329
   ActiveControl = btnOK
   Caption = 'EdtTbConfigForm'
+  ClientHeight = 330
+  ClientWidth = 651
   OnCreate = FormCreate
+  ParentFont = False
+  LCLVersion = '0.9.25'
   object lblMenuTree: TLabel
     Left = 16
     Height = 17
     Top = 10
     Width = 89
     Caption = 'lblMenuTree'
-    Color = clNone
     ParentColor = False
   end
   object lblToolbar: TLabel
@@ -23,8 +24,43 @@ object EdtTbConfigForm: TEdtTbConfigForm
     Top = 10
     Width = 70
     Caption = 'lblToolbar'
-    Color = clNone
     ParentColor = False
+  end
+  object btnRemove: TSpeedButton
+    Left = 432
+    Height = 26
+    Top = 74
+    Width = 22
+    Color = clBtnFace
+    NumGlyphs = 0
+    OnClick = btnRemoveClick
+  end
+  object btnAdd: TSpeedButton
+    Left = 432
+    Height = 26
+    Top = 99
+    Width = 22
+    Color = clBtnFace
+    NumGlyphs = 0
+    OnClick = btnAddClick
+  end
+  object btnMoveUp: TSpeedButton
+    Left = 432
+    Height = 26
+    Top = 157
+    Width = 22
+    Color = clBtnFace
+    NumGlyphs = 0
+    OnClick = btnMoveUpClick
+  end
+  object btnMoveDown: TSpeedButton
+    Left = 432
+    Height = 26
+    Top = 182
+    Width = 22
+    Color = clBtnFace
+    NumGlyphs = 0
+    OnClick = btnMoveDownClick
   end
   object pnlButtons: TPanel
     Height = 42
@@ -32,6 +68,8 @@ object EdtTbConfigForm: TEdtTbConfigForm
     Width = 651
     Align = alBottom
     BevelOuter = bvNone
+    ClientHeight = 42
+    ClientWidth = 651
     Color = clGreen
     ParentColor = False
     TabOrder = 0
@@ -107,49 +145,14 @@ object EdtTbConfigForm: TEdtTbConfigForm
     TabOrder = 2
     TopIndex = -1
   end
-  object btnRemove: TBitBtn
-    Left = 432
-    Height = 26
-    Top = 74
-    Width = 22
-    NumGlyphs = 0
-    OnClick = btnRemoveClick
-    TabOrder = 3
-  end
-  object btnAdd: TBitBtn
-    Left = 432
-    Height = 26
-    Top = 99
-    Width = 22
-    NumGlyphs = 0
-    OnClick = btnAddClick
-    TabOrder = 4
-  end
-  object btnMoveUp: TBitBtn
-    Left = 432
-    Height = 26
-    Top = 157
-    Width = 22
-    NumGlyphs = 0
-    OnClick = btnMoveUpClick
-    TabOrder = 5
-  end
-  object btnMoveDown: TBitBtn
-    Left = 432
-    Height = 26
-    Top = 182
-    Width = 22
-    NumGlyphs = 0
-    OnClick = btnMoveDownClick
-    TabOrder = 6
-  end
   object TV: TTreeView
     Left = 16
     Height = 253
     Top = 28
     Width = 392
     DefaultItemHeight = 18
-    TabOrder = 7
+    ScrollBars = ssAutoBoth
+    TabOrder = 3
     OnChange = TVChange
   end
 end

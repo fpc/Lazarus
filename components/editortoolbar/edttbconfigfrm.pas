@@ -29,13 +29,13 @@ uses
 type
   TEdtTbConfigForm = class(TForm)
     Bevel1: TBevel;
-    btnRemove: TBitBtn;
-    btnAdd: TBitBtn;
-    btnMoveUp: TBitBtn;
-    btnMoveDown: TBitBtn;
+    btnAdd: TSpeedButton;
+    btnMoveDown: TSpeedButton;
+    btnMoveUp: TSpeedButton;
     btnOK: TButton;
     btnCancel: TButton;
     btnAddDivider: TButton;
+    btnRemove: TSpeedButton;
     lblMenuTree: TLabel;
     lblToolbar: TLabel;
     lbToolbar: TListBox;
@@ -83,24 +83,15 @@ resourcestring
 { TEdtTbConfigForm }
 
 procedure TEdtTbConfigForm.FormCreate(Sender: TObject);
-
-  procedure LoadImageToBtn(ImageName: String; Btn: TBitBtn); inline;
-  var
-    B: TCustomBitmap;
-  begin
-     B := CreateBitmapFromLazarusResource(ImageName);
-     Btn.Glyph.Assign(B);
-     B.Free;
-  end;
-
 begin
   inherited;
   pnlButtons.Color := clBtnFace;
+
   // load button images
-  LoadImageToBtn('arrowleft_blue16', btnRemove);
-  LoadImageToBtn('arrowright_blue16', btnAdd);
-  LoadImageToBtn('arrowup_blue16', btnMoveUp);
-  LoadImageToBtn('arrowdown_blue16', btnMoveDown);
+  btnRemove.LoadGlyphFromLazarusResource('arrow_left');
+  btnAdd.LoadGlyphFromLazarusResource('arrow_right');
+  btnMoveUp.LoadGlyphFromLazarusResource('arrow_up');
+  btnMoveDown.LoadGlyphFromLazarusResource('arrow_down');
 
   TV.Images := IDEImages.Images_16;
   SetupCaptions;
@@ -254,6 +245,7 @@ var
 begin
   n := TV.Items.AddChild(ParentNode, Format('%s', [Item.Caption]));
   n.ImageIndex := Item.ImageIndex;
+  n.SelectedIndex := Item.ImageIndex;
   n.Data := Item;
   if Item is TIDEMenuSection then
   begin
