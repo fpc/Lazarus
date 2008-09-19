@@ -13,6 +13,9 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
   ParentFont = False
   LCLVersion = '0.9.25'
   object DirectoryGroupbox: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
     Height = 48
     Width = 502
     Align = alTop
@@ -23,21 +26,33 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
     TabOrder = 0
     OnResize = DirectoryGroupboxRESIZE
     object DirectoryCombobox: TComboBox
-      Left = 6
+      AnchorSideLeft.Control = DirectoryGroupbox
+      AnchorSideTop.Control = DirectoryGroupbox
+      AnchorSideRight.Control = DirectoryBrowseButton
+      Left = 5
       Height = 21
-      Top = 1
-      Width = 360
+      Width = 452
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 5
+      BorderSpacing.Right = 5
       ItemHeight = 13
+      MaxLength = -1
       OnChange = DirectoryComboboxCHANGE
       ParentCtl3D = False
       TabOrder = 0
       Text = 'DirectoryCombobox'
     end
     object DirectoryBrowseButton: TButton
-      Left = 375
-      Height = 26
-      Top = 1
+      AnchorSideTop.Control = DirectoryCombobox
+      AnchorSideRight.Control = DirectoryGroupbox
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = DirectoryCombobox
+      AnchorSideBottom.Side = asrBottom
+      Left = 462
+      Height = 21
       Width = 31
+      Anchors = [akTop, akRight, akBottom]
+      BorderSpacing.Right = 5
       Caption = '...'
       OnClick = DirectoryBrowseButtonCLICK
       TabOrder = 1
@@ -76,7 +91,6 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
       ParentFont = False
       TabOrder = 0
       BookMarkOptions.Xoffset = -18
-      BookMarkOptions.OnChange = nil
       Gutter.Visible = False
       Keystrokes = <      
         item
@@ -404,7 +418,6 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
       )
       Options = [eoAutoIndent, eoDragDropEditing, eoScrollPastEol, eoShowScrollHint, eoSmartTabs, eoTabsToSpaces, eoTrimTrailingSpaces, eoBracketHighlight, eoShowCtrlMouseLinks]
       ReadOnly = True
-      SelectedColor.OnChange = nil
     end
   end
   object MainSplitter: TSplitter

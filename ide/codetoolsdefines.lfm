@@ -6,13 +6,14 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
   ActiveControl = DefineTreeView
   BorderStyle = bsSizeToolWin
   Caption = 'CodeToolsDefinesEditor'
-  ClientHeight = 475
+  ClientHeight = 480
   ClientWidth = 544
   KeyPreview = True
   Menu = MainMenu
   OnClose = FormClose
   OnKeyDown = CodeToolsDefinesEditorKeyDown
   OnKeyUp = CodeToolsDefinesEditorKeyUp
+  ParentFont = False
   Position = poScreenCenter
   LCLVersion = '0.9.25'
   object DefineTreeView: TTreeView
@@ -22,44 +23,42 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
     Width = 532
     Align = alTop
     BorderSpacing.Around = 6
-    DefaultItemHeight = 22
-    Images = TheImageList
-    StateImages = TheImageList
+    DefaultItemHeight = 15
     TabOrder = 0
     OnSelectionChanged = DefineTreeViewSelectionChanged
   end
   object SelectedItemGroupBox: TGroupBox
     Left = 6
-    Height = 325
+    Height = 330
     Top = 144
     Width = 532
     Align = alClient
     BorderSpacing.Around = 6
     Caption = 'SelectedItemGroupBox'
-    ClientHeight = 306
+    ClientHeight = 312
     ClientWidth = 528
     TabOrder = 1
     object NameLabel: TLabel
       Left = 10
-      Height = 20
+      Height = 14
       Top = 26
-      Width = 74
+      Width = 53
       BorderSpacing.Right = 6
       Caption = 'NameLabel'
       ParentColor = False
     end
     object DescriptionLabel: TLabel
       Left = 10
-      Height = 20
+      Height = 14
       Top = 53
-      Width = 107
+      Width = 79
       BorderSpacing.Right = 6
       Caption = 'DescriptionLabel'
       ParentColor = False
     end
     object TypeLabel: TLabel
       Left = 6
-      Height = 20
+      Height = 14
       Top = 6
       Width = 516
       Align = alTop
@@ -69,16 +68,16 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
     end
     object VariableLabel: TLabel
       Left = 10
-      Height = 20
+      Height = 14
       Top = 78
-      Width = 86
+      Width = 64
       BorderSpacing.Right = 6
       Caption = 'VariableLabel'
       ParentColor = False
     end
     object ValueNoteBook: TNotebook
       Left = 6
-      Height = 194
+      Height = 200
       Top = 106
       Width = 516
       Align = alBottom
@@ -89,20 +88,367 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
       TabOrder = 0
       object ValueAsTextPage: TPage
         Caption = 'ValueAsTextPage'
-        ClientWidth = 512
-        ClientHeight = 163
+        ClientWidth = 508
+        ClientHeight = 174
         object ValueAsTextSynEdit: TSynEdit
-          Height = 163
-          Width = 512
+          Height = 174
+          Width = 508
           Align = alClient
           Font.Height = -16
           Font.Name = 'courier'
+          Font.Pitch = fpFixed
           ParentColor = False
+          ParentFont = False
+          TabOrder = 0
+          BookMarkOptions.Xoffset = -18
+          Gutter.Visible = False
+          Keystrokes = <          
+            item
+              Command = 3
+              ShortCut = 38
+            end          
+            item
+              Command = 103
+              ShortCut = 8230
+            end          
+            item
+              Command = 211
+              ShortCut = 16422
+            end          
+            item
+              Command = 4
+              ShortCut = 40
+            end          
+            item
+              Command = 104
+              ShortCut = 8232
+            end          
+            item
+              Command = 212
+              ShortCut = 16424
+            end          
+            item
+              Command = 1
+              ShortCut = 37
+            end          
+            item
+              Command = 101
+              ShortCut = 8229
+            end          
+            item
+              Command = 5
+              ShortCut = 16421
+            end          
+            item
+              Command = 105
+              ShortCut = 24613
+            end          
+            item
+              Command = 2
+              ShortCut = 39
+            end          
+            item
+              Command = 102
+              ShortCut = 8231
+            end          
+            item
+              Command = 6
+              ShortCut = 16423
+            end          
+            item
+              Command = 106
+              ShortCut = 24615
+            end          
+            item
+              Command = 10
+              ShortCut = 34
+            end          
+            item
+              Command = 110
+              ShortCut = 8226
+            end          
+            item
+              Command = 14
+              ShortCut = 16418
+            end          
+            item
+              Command = 114
+              ShortCut = 24610
+            end          
+            item
+              Command = 9
+              ShortCut = 33
+            end          
+            item
+              Command = 109
+              ShortCut = 8225
+            end          
+            item
+              Command = 13
+              ShortCut = 16417
+            end          
+            item
+              Command = 113
+              ShortCut = 24609
+            end          
+            item
+              Command = 7
+              ShortCut = 36
+            end          
+            item
+              Command = 107
+              ShortCut = 8228
+            end          
+            item
+              Command = 15
+              ShortCut = 16420
+            end          
+            item
+              Command = 115
+              ShortCut = 24612
+            end          
+            item
+              Command = 8
+              ShortCut = 35
+            end          
+            item
+              Command = 108
+              ShortCut = 8227
+            end          
+            item
+              Command = 16
+              ShortCut = 16419
+            end          
+            item
+              Command = 116
+              ShortCut = 24611
+            end          
+            item
+              Command = 223
+              ShortCut = 45
+            end          
+            item
+              Command = 201
+              ShortCut = 16429
+            end          
+            item
+              Command = 604
+              ShortCut = 8237
+            end          
+            item
+              Command = 502
+              ShortCut = 46
+            end          
+            item
+              Command = 603
+              ShortCut = 8238
+            end          
+            item
+              Command = 501
+              ShortCut = 8
+            end          
+            item
+              Command = 501
+              ShortCut = 8200
+            end          
+            item
+              Command = 504
+              ShortCut = 16392
+            end          
+            item
+              Command = 601
+              ShortCut = 32776
+            end          
+            item
+              Command = 602
+              ShortCut = 40968
+            end          
+            item
+              Command = 509
+              ShortCut = 13
+            end          
+            item
+              Command = 199
+              ShortCut = 16449
+            end          
+            item
+              Command = 201
+              ShortCut = 16451
+            end          
+            item
+              Command = 610
+              ShortCut = 24649
+            end          
+            item
+              Command = 509
+              ShortCut = 16461
+            end          
+            item
+              Command = 510
+              ShortCut = 16462
+            end          
+            item
+              Command = 503
+              ShortCut = 16468
+            end          
+            item
+              Command = 611
+              ShortCut = 24661
+            end          
+            item
+              Command = 604
+              ShortCut = 16470
+            end          
+            item
+              Command = 603
+              ShortCut = 16472
+            end          
+            item
+              Command = 507
+              ShortCut = 16473
+            end          
+            item
+              Command = 506
+              ShortCut = 24665
+            end          
+            item
+              Command = 601
+              ShortCut = 16474
+            end          
+            item
+              Command = 602
+              ShortCut = 24666
+            end          
+            item
+              Command = 301
+              ShortCut = 16432
+            end          
+            item
+              Command = 302
+              ShortCut = 16433
+            end          
+            item
+              Command = 303
+              ShortCut = 16434
+            end          
+            item
+              Command = 304
+              ShortCut = 16435
+            end          
+            item
+              Command = 305
+              ShortCut = 16436
+            end          
+            item
+              Command = 306
+              ShortCut = 16437
+            end          
+            item
+              Command = 307
+              ShortCut = 16438
+            end          
+            item
+              Command = 308
+              ShortCut = 16439
+            end          
+            item
+              Command = 309
+              ShortCut = 16440
+            end          
+            item
+              Command = 310
+              ShortCut = 16441
+            end          
+            item
+              Command = 351
+              ShortCut = 24624
+            end          
+            item
+              Command = 352
+              ShortCut = 24625
+            end          
+            item
+              Command = 353
+              ShortCut = 24626
+            end          
+            item
+              Command = 354
+              ShortCut = 24627
+            end          
+            item
+              Command = 355
+              ShortCut = 24628
+            end          
+            item
+              Command = 356
+              ShortCut = 24629
+            end          
+            item
+              Command = 357
+              ShortCut = 24630
+            end          
+            item
+              Command = 358
+              ShortCut = 24631
+            end          
+            item
+              Command = 359
+              ShortCut = 24632
+            end          
+            item
+              Command = 360
+              ShortCut = 24633
+            end          
+            item
+              Command = 231
+              ShortCut = 24654
+            end          
+            item
+              Command = 232
+              ShortCut = 24643
+            end          
+            item
+              Command = 233
+              ShortCut = 24652
+            end          
+            item
+              Command = 612
+              ShortCut = 9
+            end          
+            item
+              Command = 613
+              ShortCut = 8201
+            end          
+            item
+              Command = 250
+              ShortCut = 24642
+            end>
+          Lines.Strings = (
+            'ValueAsTextSynEdit'
+          )
+          Options = [eoDragDropEditing, eoHalfPageScroll, eoScrollByOneLess, eoScrollPastEol, eoSmartTabs, eoTabsToSpaces, eoTrimTrailingSpaces, eoBracketHighlight, eoHideRightMargin]
+        end
+      end
+      object ValueAsPathsPage: TPage
+        Caption = 'ValueAsPathsPage'
+        ClientWidth = 512
+        ClientHeight = 166
+        object ValueAsFilePathsSynEdit: TSynEdit
+          AnchorSideRight.Control = DeleteFilePathBitBtn
+          Height = 166
+          Width = 424
+          Align = alLeft
+          BorderSpacing.Right = 6
+          Anchors = [akTop, akLeft, akRight, akBottom]
+          Font.Height = -16
+          Font.Name = 'courier'
+          Font.Pitch = fpFixed
+          ParentColor = False
+          ParentFont = False
           TabOrder = 0
           BookMarkOptions.Xoffset = -18
           BookMarkOptions.OnChange = nil
           Gutter.Visible = False
-          Gutter.CodeFoldingWidth = 14
           Keystrokes = <          
             item
               Command = 3
@@ -430,351 +776,6 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
           Options = [eoDragDropEditing, eoHalfPageScroll, eoScrollByOneLess, eoScrollPastEol, eoSmartTabs, eoTabsToSpaces, eoTrimTrailingSpaces, eoBracketHighlight, eoHideRightMargin]
           SelectedColor.OnChange = nil
         end
-      end
-      object ValueAsPathsPage: TPage
-        Caption = 'ValueAsPathsPage'
-        ClientWidth = 512
-        ClientHeight = 166
-        object ValueAsFilePathsSynEdit: TSynEdit
-          AnchorSideRight.Control = DeleteFilePathBitBtn
-          Height = 166
-          Width = 424
-          Align = alLeft
-          BorderSpacing.Right = 6
-          Anchors = [akTop, akLeft, akRight, akBottom]
-          Font.Height = -16
-          Font.Name = 'courier'
-          ParentColor = False
-          TabOrder = 0
-          BookMarkOptions.Xoffset = -18
-          Gutter.Visible = False
-          Gutter.CodeFoldingWidth = 14
-          Keystrokes = <          
-            item
-              Command = 3
-              ShortCut = 38
-            end          
-            item
-              Command = 103
-              ShortCut = 8230
-            end          
-            item
-              Command = 211
-              ShortCut = 16422
-            end          
-            item
-              Command = 4
-              ShortCut = 40
-            end          
-            item
-              Command = 104
-              ShortCut = 8232
-            end          
-            item
-              Command = 212
-              ShortCut = 16424
-            end          
-            item
-              Command = 1
-              ShortCut = 37
-            end          
-            item
-              Command = 101
-              ShortCut = 8229
-            end          
-            item
-              Command = 5
-              ShortCut = 16421
-            end          
-            item
-              Command = 105
-              ShortCut = 24613
-            end          
-            item
-              Command = 2
-              ShortCut = 39
-            end          
-            item
-              Command = 102
-              ShortCut = 8231
-            end          
-            item
-              Command = 6
-              ShortCut = 16423
-            end          
-            item
-              Command = 106
-              ShortCut = 24615
-            end          
-            item
-              Command = 10
-              ShortCut = 34
-            end          
-            item
-              Command = 110
-              ShortCut = 8226
-            end          
-            item
-              Command = 14
-              ShortCut = 16418
-            end          
-            item
-              Command = 114
-              ShortCut = 24610
-            end          
-            item
-              Command = 9
-              ShortCut = 33
-            end          
-            item
-              Command = 109
-              ShortCut = 8225
-            end          
-            item
-              Command = 13
-              ShortCut = 16417
-            end          
-            item
-              Command = 113
-              ShortCut = 24609
-            end          
-            item
-              Command = 7
-              ShortCut = 36
-            end          
-            item
-              Command = 107
-              ShortCut = 8228
-            end          
-            item
-              Command = 15
-              ShortCut = 16420
-            end          
-            item
-              Command = 115
-              ShortCut = 24612
-            end          
-            item
-              Command = 8
-              ShortCut = 35
-            end          
-            item
-              Command = 108
-              ShortCut = 8227
-            end          
-            item
-              Command = 16
-              ShortCut = 16419
-            end          
-            item
-              Command = 116
-              ShortCut = 24611
-            end          
-            item
-              Command = 223
-              ShortCut = 45
-            end          
-            item
-              Command = 201
-              ShortCut = 16429
-            end          
-            item
-              Command = 604
-              ShortCut = 8237
-            end          
-            item
-              Command = 502
-              ShortCut = 46
-            end          
-            item
-              Command = 603
-              ShortCut = 8238
-            end          
-            item
-              Command = 501
-              ShortCut = 8
-            end          
-            item
-              Command = 501
-              ShortCut = 8200
-            end          
-            item
-              Command = 504
-              ShortCut = 16392
-            end          
-            item
-              Command = 601
-              ShortCut = 32776
-            end          
-            item
-              Command = 602
-              ShortCut = 40968
-            end          
-            item
-              Command = 509
-              ShortCut = 13
-            end          
-            item
-              Command = 199
-              ShortCut = 16449
-            end          
-            item
-              Command = 201
-              ShortCut = 16451
-            end          
-            item
-              Command = 610
-              ShortCut = 24649
-            end          
-            item
-              Command = 509
-              ShortCut = 16461
-            end          
-            item
-              Command = 510
-              ShortCut = 16462
-            end          
-            item
-              Command = 503
-              ShortCut = 16468
-            end          
-            item
-              Command = 611
-              ShortCut = 24661
-            end          
-            item
-              Command = 604
-              ShortCut = 16470
-            end          
-            item
-              Command = 603
-              ShortCut = 16472
-            end          
-            item
-              Command = 507
-              ShortCut = 16473
-            end          
-            item
-              Command = 506
-              ShortCut = 24665
-            end          
-            item
-              Command = 601
-              ShortCut = 16474
-            end          
-            item
-              Command = 602
-              ShortCut = 24666
-            end          
-            item
-              Command = 301
-              ShortCut = 16432
-            end          
-            item
-              Command = 302
-              ShortCut = 16433
-            end          
-            item
-              Command = 303
-              ShortCut = 16434
-            end          
-            item
-              Command = 304
-              ShortCut = 16435
-            end          
-            item
-              Command = 305
-              ShortCut = 16436
-            end          
-            item
-              Command = 306
-              ShortCut = 16437
-            end          
-            item
-              Command = 307
-              ShortCut = 16438
-            end          
-            item
-              Command = 308
-              ShortCut = 16439
-            end          
-            item
-              Command = 309
-              ShortCut = 16440
-            end          
-            item
-              Command = 310
-              ShortCut = 16441
-            end          
-            item
-              Command = 351
-              ShortCut = 24624
-            end          
-            item
-              Command = 352
-              ShortCut = 24625
-            end          
-            item
-              Command = 353
-              ShortCut = 24626
-            end          
-            item
-              Command = 354
-              ShortCut = 24627
-            end          
-            item
-              Command = 355
-              ShortCut = 24628
-            end          
-            item
-              Command = 356
-              ShortCut = 24629
-            end          
-            item
-              Command = 357
-              ShortCut = 24630
-            end          
-            item
-              Command = 358
-              ShortCut = 24631
-            end          
-            item
-              Command = 359
-              ShortCut = 24632
-            end          
-            item
-              Command = 360
-              ShortCut = 24633
-            end          
-            item
-              Command = 231
-              ShortCut = 24654
-            end          
-            item
-              Command = 232
-              ShortCut = 24643
-            end          
-            item
-              Command = 233
-              ShortCut = 24652
-            end          
-            item
-              Command = 612
-              ShortCut = 9
-            end          
-            item
-              Command = 613
-              ShortCut = 8201
-            end          
-            item
-              Command = 250
-              ShortCut = 24642
-            end>
-          Lines.Strings = (
-            'ValueAsTextSynEdit'
-          )
-          Options = [eoDragDropEditing, eoHalfPageScroll, eoScrollByOneLess, eoScrollPastEol, eoSmartTabs, eoTabsToSpaces, eoTrimTrailingSpaces, eoBracketHighlight, eoHideRightMargin]
-        end
         object MoveFilePathUpBitBtn: TBitBtn
           Left = 430
           Height = 30
@@ -858,983 +859,6 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
     Width = 544
     Align = alTop
     ResizeAnchor = akTop
-  end
-  object TheImageList: TImageList
-    Height = 22
-    Width = 22
-    left = 46
-    top = 33
-    Bitmap = {
-      4C69100000001600000016000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFF9F9FFFFD9D9FFFFD9D9FFFFF9F9FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFF5F5F5FFC7C7C7FFC7C7C7FFCDCDF6FF5656
-      FFFF4949FFFF9B9BFFFFC5C5FFFFEDEDFFFFFDFDFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFC9C9C9FF3C3C3CFF373737FF9595D4FF2828FFFF0E0EFFFF1D1D
-      FFFF3232FFFF6767FFFF8484FFFFA6A6FFFFD0D0FFFFF8F8FFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFCECE
-      CEFF3E3E3EFF1D1D1DFF7E7EC3FF2424FFFF1010FFFF0D0DFFFF0F0FFFFF0707
-      FFFF0000FFFF1515FFFF3333FFFF8989FFFFAEAEFFFFE5E5FFFFFCFCFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFEFEFFF6C6C6CFF0808
-      08FF6666B0FF1B1BFFFF0808FFFF0000FFFF0E0EFFFF2424FFFF3D3DFFFF2525
-      FFFF0404FFFF1414FFFF1A1AFFFF5B5BFFFFA6A6FFFFF1F1FFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFDFDFDFF7E7E7EFF000000FF5C5CA7FF1D1D
-      FFFF1515FFFF2828FFFF3030FFFF1313FFFF1212FFFF1F1FFFFF2A2AFFFF3F3F
-      FFFF1616FFFF1212FFFF1E1EFFFFB3B3FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFF868686FF060606FF6464A4FF2222FFFF0303FFFF0404
-      FFFF2828FFFF3737FFFF2D2DFFFF1919FFFF0D0DFFFF1515FFFF1111FFFF2E2E
-      FFFF3030FFFFBFBFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFF868686FF060606FF6C6C9DFF2929FFFF0101FFFF0202FFFF0707FFFF0000
-      FFFF1616FFFF2929FFFF4242FFFF4444FFFF0D0DFFFF0909FFFF3E3EFFFFD2D2
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF818181FF0000
-      00FF7C7C86FF9696FFFF1A1AFFFF0404FFFF0808FFFF0808FFFF0808FFFF0707
-      FFFF0404FFFF1A1AFFFF2020FFFF2626FFFF5E5EFFFFDBDBFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF868686FF060606FF868686FFF4F4
-      FFFFC0C0FFFF8B8BFFFF7979FFFF3232FFFF1313FFFF0505FFFF0404FFFF0A0A
-      FFFF0404FFFF0A0AFFFF3333FFFFCACAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFF858585FF060606FF868686FFFFFFFFFFFFFFFFFFFFFF
-      FFFFF7F7FFFFCCCCFFFFA9A9FFFF8383FFFF4747FFFF1616FFFF0000FFFF0606
-      FFFF2323FFFFBCBCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8F8
-      F8FF767676FF000000FF858585FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFAFAFFFFDDDDFFFFABABFFFF6B6BFFFF4343FFFF6E6EFFFFE0E0
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE6E6E6FF5F5F5FFF0F0F
-      0FFF989898FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFF6F6FFFFDBDBFFFFE4E4FFFFFBFBFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3E3FF585858FF101010FF9A9A9AFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFE1E1E1FF585858FF0A0A0AFF979797FFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3
-      E3FF595959FF101010FF9A9A9AFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3E3FF585858FF1010
-      10FF9A9A9AFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3E3FF5D5D5DFF0C0C0CFF9B9B9BFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFEFEFEFFF888888FF2F2F2FFFBCBCBCFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFCFC
-      FCFFE8E8E8FFC9C9C9FFF5F5F5FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF9F9FFFFD9D9FFFFD9D9FFFFF9F9
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5F5
-      F5FFC7C7C7FFC7C7C7FFCDCDF6FF5656FFFF4949FFFF9B9BFFFFC5C5FFFFEDED
-      FFFFFDFDFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFC9C9C9FF3C3C3CFF3737
-      37FF9595D4FF2828FFFF0E0EFFFF1D1DFFFF3232FFFF6767FFFF8484FFFFA6A6
-      FFFFD0D0FFFFF8F8FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFCECECEFF3E3E3EFF1D1D1DFF7E7EC3FF2424
-      FFFF1010FFFF0D0DFFFF0F0FFFFF0707FFFF0000FFFF1515FFFF3333FFFF8989
-      FFFFAEAEFFFFE5E5FFFFFCFCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFEFEFEFFF6C6C6CFF080808FF6666B0FF1B1BFFFF0808FFFF0000
-      FFFF0E0EFFFF2424FFFF3D3DFFFF2525FFFF0404FFFF1414FFFF1A1AFFFF5B5B
-      FFFFA6A6FFFFF1F1FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFDFD
-      FDFF7E7E7EFF000000FF5C5CA7FF1D1DFFFF1515FFFF2828FFFF3030FFFF1313
-      FFFF1212FFFF1F1FFFFF2A2AFFFF3F3FFFFF1616FFFF1212FFFF1E1EFFFFB3B3
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF868686FF0606
-      06FF6464A4FF2222FFFF0303FFFF0404FFFF2828FFFF3737FFFF2D2DFFFF1919
-      FFFF0D0DFFFF1515FFFF1111FFFF2E2EFFFF3030FFFFBFBFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF868686FF060606FF6C6C9DFF2929
-      FFFF0101FFFF0202FFFF0707FFFF0000FFFF1616FFFF2929FFFF4242FFFF4444
-      FFFF0D0DFFFF0909FFFF3E3EFFFFD2D2FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFF818181FF000000FF7C7C86FF9696FFFF1A1AFFFF0404
-      FFFF0808FFFF0808FFFF0808FFFF0707FFFF0404FFFF1A1AFFFF2020FFFF2626
-      FFFF5E5EFFFFDBDBFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFF868686FF060606FF868686FFF4F4FFFFC0C0FFFF8B8BFFFF7979FFFF3232
-      FFFF1313FFFF0505FFFF0404FFFF0A0AFFFF0404FFFF0A0AFFFF3333FFFFCACA
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF858585FF0606
-      06FF868686FFFFFFFFFFFFFFFFFFFFFFFFFFF7F7FFFFCCCCFFFFA9A9FFFF8383
-      FFFF4747FFFF1616FFFF0000FFFF0606FFFF2323FFFFBCBCFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFF8F8F8FF767676FF000000FF858585FFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFAFAFFFFDDDDFFFFABAB
-      FFFF6B6BFFFF4343FFFF6E6EFFFFE0E0FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFE6E6E6FF5F5F5FFF0F0F0FFF989898FFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF6F6FFFFDBDB
-      FFFFE4E4FFFFFBFBFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3
-      E3FF585858FF101010FF9A9A9AFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE1E1E1FF585858FF0A0A
-      0AFF979797FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000
-      00FFFFFFFFFFFFFFFFFF0FCFFFFF0FCFFFFF0FCFFFFF0FCFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3E3FF595959FF101010FF9A9A9AFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FF000000FF0000
-      00FF0FCFFFFF0FCFFFFF0FCFFFFF0FCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFE3E3E3FF585858FF101010FF9A9A9AFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FFFFFFFFFFFFFFFFFF0FCFFFFF0FCF
-      FFFF0FCFFFFF0FCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3
-      E3FF5D5D5DFF0C0C0CFF9B9B9BFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFEFEFFF888888FF2F2F
-      2FFFBCBCBCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000
-      00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFCFCFCFFE8E8E8FFC9C9C9FFF5F5F5FFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FFFFFFFFFFFFFF
-      FFFF0FCFFFFF0FCFFFFF0FCFFFFF0FCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FF000000FF000000FF0FCFFFFF0FCF
-      FFFF0FCFFFFF0FCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0FCFFFFF0FCFFFFF0FCFFFFF0FCF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFF9F9FFFFD9D9FFFFD9D9FFFFF9F9FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFF5F5F5FFC7C7C7FFC7C7C7FFCDCDF6FF5656
-      FFFF4949FFFF9B9BFFFFC5C5FFFFEDEDFFFFFDFDFFFFFFFFFFFFFFFFFFFFF27F
-      6DFFEA2304FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFCFA6A0FF8B3022FF373737FF9595D4FF2828FFFF0E0EFFFF1D1D
-      FFFF3232FFFF6767FFFF8484FFFFA6A6FFFFDE7176FFEA2304FFEE543CFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFBD9D4FFEA2304FFEA23
-      04FFEA2304FFEA2304FFE72509FFC42333FF2912E1FF0D0DFFFF0F0FFFFF0707
-      FFFF0000FFFF4D18BCFFE92304FFDD3024FFAEAEFFFFE5E5FFFFFCFCFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFEF9F9FFFBD9D4FFEFEFEFFF6C6C6CFF440F
-      06FFD92B18FFE52209FFE92204FFD31F1CFF3711CFFF2424FFFF413CF9FFE523
-      09FFDB2113FF1414FFFF1A1AFFFF5B5BFFFFA6A6FFFFF1F1FFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFDFDFDFF7E7E7EFF000000FF5C5CA7FF1D1D
-      FFFF891C75FFE3230BFFE92304FFA11D58FFB91F3CFFE92204FF4029E1FF3F3F
-      FFFF1616FFFF1212FFFF1E1EFFFFB3B3FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFF868686FF060606FF6464A4FF2222FFFF0303FFFF0404
-      FFFFBE243CFFE92304FFE92304FFA31F58FF0D0DFFFF1515FFFF1111FFFF2E2E
-      FFFF3030FFFFBFBFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFF868686FF060606FF6C6C9DFF2929FFFF0101FFFF0202FFFF0707FFFFDD20
-      11FFE92204FFD92319FF4541F9FF4444FFFF0D0DFFFF0909FFFF3E3EFFFFD2D2
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF818181FF0000
-      00FF7C7C86FF9696FFFF1A1AFFFF0404FFFF771582FFEA2304FFB01B43FFE622
-      07FFD5201AFF1A1AFFFF2020FFFF2626FFFF5E5EFFFFDBDBFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF868686FF060606FF868686FFF4F4
-      FFFFC0C0FFFF8D88F9FFE6250AFFD5241FFF1313FFFF5E109CFFE92204FFCD1F
-      24FF0404FFFF0A0AFFFF3333FFFFCACAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFF858585FF060606FF868686FFFFFFFFFFFFFFFFFFEB36
-      1AFFEA2304FFCFB8E1FFA9A9FFFF8383FFFF9F3376FFE92204FFB51B3CFF0606
-      FFFF2323FFFFBCBCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8F8
-      F8FF767676FF000000FF858585FFFEF9F9FFEB3519FFEA2304FFF6A89CFFFFFF
-      FFFFFFFFFFFFFAFAFFFFDDDDFFFFCF5C6DFFEA2304FF953382FF6E6EFFFFE0E0
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE6E6E6FF5F5F5FFF0F0F
-      0FFF999594FFEA2A0CFFEA2506FFF6A89CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFEB4229FFE92405FFE4CDE1FFFBFBFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3E3FF585858FF4A150CFFE82506FFEA28
-      09FFF9C4BCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFEF9F9FFEA2708FFEB3519FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFE1E1E1FFA73B2AFFE92204FFE42A0DFFFCE5E1FFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF492
-      82FFEA2304FFF49282FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFCE5E1FFE935
-      19FFE92304FFCD2005FF9A9A9AFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEB2F12FFEB32
-      15FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEA2C0EFFE92506FFA23C2DFF1010
-      10FF9A9A9AFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFBD5CFFFF59A8BFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFEF5E47FFE4BEB9FF5D5D5DFF0C0C0CFF9B9B9BFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFEFEFEFFF888888FF2F2F2FFFBCBCBCFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFCFC
-      FCFFE8E8E8FFC9C9C9FFF5F5F5FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF9F9FFFFD9D9FFFFD9D9FFFFF9F9
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5F5
-      F5FFC7C7C7FFC7C7C7FFCDCDF6FF5656FFFF4949FFFF9B9BFFFFC5C5FFFFEDED
-      FFFFFDFDFFFFFFFFFFFFFFFFFFFFF27F6DFFEA2304FFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFCFA6A0FF8B3022FF3737
-      37FF9595D4FF2828FFFF0E0EFFFF1D1DFFFF3232FFFF6767FFFF8484FFFFA6A6
-      FFFFDE7176FFEA2304FFEE543CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFBD9D4FFEA2304FFEA2304FFEA2304FFEA2304FFE72509FFC423
-      33FF2912E1FF0D0DFFFF0F0FFFFF0707FFFF0000FFFF4D18BCFFE92304FFDD30
-      24FFAEAEFFFFE5E5FFFFFCFCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEF9
-      F9FFFBD9D4FFEFEFEFFF6C6C6CFF440F06FFD92B18FFE52209FFE92204FFD31F
-      1CFF3711CFFF2424FFFF413CF9FFE52309FFDB2113FF1414FFFF1A1AFFFF5B5B
-      FFFFA6A6FFFFF1F1FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFDFD
-      FDFF7E7E7EFF000000FF5C5CA7FF1D1DFFFF891C75FFE3230BFFE92304FFA11D
-      58FFB91F3CFFE92204FF4029E1FF3F3FFFFF1616FFFF1212FFFF1E1EFFFFB3B3
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF868686FF0606
-      06FF6464A4FF2222FFFF0303FFFF0404FFFFBE243CFFE92304FFE92304FFA31F
-      58FF0D0DFFFF1515FFFF1111FFFF2E2EFFFF3030FFFFBFBFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF868686FF060606FF6C6C9DFF2929
-      FFFF0101FFFF0202FFFF0707FFFFDD2011FFE92204FFD92319FF4541F9FF4444
-      FFFF0D0DFFFF0909FFFF3E3EFFFFD2D2FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFF818181FF000000FF7C7C86FF9696FFFF1A1AFFFF0404
-      FFFF771582FFEA2304FFB01B43FFE62207FFD5201AFF1A1AFFFF2020FFFF2626
-      FFFF5E5EFFFFDBDBFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFF868686FF060606FF868686FFF4F4FFFFC0C0FFFF8D88F9FFE6250AFFD524
-      1FFF1313FFFF5E109CFFE92204FFCD1F24FF0404FFFF0A0AFFFF3333FFFFCACA
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF858585FF0606
-      06FF868686FFFFFFFFFFFFFFFFFFEB361AFFEA2304FFCFB8E1FFA9A9FFFF8383
-      FFFF9F3376FFE92204FFB51B3CFF0606FFFF2323FFFFBCBCFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFF8F8F8FF767676FF000000FF858585FFFEF9
-      F9FFEB3519FFEA2304FFF6A89CFFFFFFFFFFFFFFFFFFFAFAFFFFDDDDFFFFCF5C
-      6DFFEA2304FF953382FF6E6EFFFFE0E0FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFE6E6E6FF5F5F5FFF0F0F0FFF999594FFEA2A0CFFEA2506FFF6A8
-      9CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEB4229FFE924
-      05FFE4CDE1FFFBFBFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3
-      E3FF585858FF4A150CFFE82506FFEA2809FFF9C4BCFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFF000000FFFFFFFFFFFFFFFFFFFFFFFFFFEA2708FFEB3519FFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE1E1E1FFA73B2AFFE922
-      04FFE42A0DFFFCE5E1FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000
-      00FFFFFFFFFFFFFFFFFF0FCFFFFFF49282FFEA2304FFF49282FFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFCE5E1FFE93519FFE92304FFCD2005FF9A9A9AFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FF000000FF0000
-      00FF0FCFFFFF0FCFFFFFEB2F12FFEB3215FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFEA2C0EFFE92506FFA23C2DFF101010FF9A9A9AFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FFFFFFFFFFFFFFFFFF0FCFFFFF0FCF
-      FFFFFBD5CFFFF59A8BFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEF5E47FFE4BE
-      B9FF5D5D5DFF0C0C0CFF9B9B9BFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFEFEFFF888888FF2F2F
-      2FFFBCBCBCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000
-      00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFCFCFCFFE8E8E8FFC9C9C9FFF5F5F5FFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FFFFFFFFFFFFFF
-      FFFF0FCFFFFF0FCFFFFF0FCFFFFF0FCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FF000000FF000000FF0FCFFFFF0FCF
-      FFFF0FCFFFFF0FCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0FCFFFFF0FCFFFFF0FCFFFFF0FCF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFE5E5EBFFB0B0FEFFBCBCFFFFFDFDFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFA3A3A3FF555566FF4343F2FF1F1FFFFF4343FFFF6B6BFFFFABABFFFFE4E4
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEE7
-      E2FFF73B15FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFBEBEBEFF3535
-      49FF963076FF4C17BDFF1919FFFF2424FFFF2323FFFF4040FFFF9292FFFFFFFF
-      FFFFFFFFFFFFE5E5EBFFB0B0FEFFBCBCFFFFFDFDFFFFF96345FFF7320AFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFD2D2D2FF353547FFD4312FFFF631
-      0AFFEA3018FF3922E2FF2222FFFF1A1AFFFF4444FFFFE8E8FFFFA3A3A3FF5555
-      66FF4343F2FF1F1FFFFF4343FFFFF23312FFF03D21FFE4E4FFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFD2D2D2FF3A3A40FF6767E0FF521DBDFFF1300FFFF631
-      0AFF9C2970FF1A1AFFFF5959FFFFFFFFFFFFBEBEBEFF353549FF2F2FEAFF0E0E
-      FFFF7B2493FFF73109FF5C27BDFF4040FFFF9292FFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFD3D3D3FF404040FFD6D6DEFFD2D2FFFFA19CF9FFDA3836FFF73109FFE12D
-      1FFF413DF9FFEAEAFFFFD2D2D2FF353547FF2F2FE6FF130EF9FFF3310EFFD92F
-      2BFF2222FFFF1A1AFFFF4444FFFFE8E8FFFFFFFFFFFFFFFFFFFFC1C1C1FF3E3E
-      3EFFE0E0E0FFFFFFFFFFFFFFFFFFFFFFFFFFED8C85FFF5330EFFF43613FFFDD8
-      D1FFD2D2D2FF3A3A40FF6767E0FFD62D2DFFF5310BFF2B14E2FF1F1FFFFF1A1A
-      FFFF5959FFFFFFFFFFFFFFFFFFFFFFFFFFFFB3B3B3FF414141FFE3E3E3FFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFDD8D1FFF7360FFFF7360FFFDAB5ADFF4040
-      40FFE97662FFF73109FFC2749FFF5959FFFF2323FFFF0606FFFF3D3DFFFFEAEA
-      FFFFFFFFFFFFFFFFFFFFB3B3B3FF424242FFE3E3E3FFFFFFFFFFE5E5EBFFB0B0
-      FEFFBCBCFFFFFBFBFFFFFDD8D1FFF73913FFF7320AFFC83416FFF7320AFFF95F
-      40FFFFFFFFFFFFFFFFFFE4E4FFFFA8A8FFFFA9A9FFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFB8B8B8FF494949FFE5E5E5FFA3A3A3FF555566FF4343F2FF1F1FFFFF4343
-      FFFF6B6BFFFFADA8F9FFF54626FFF73109FFF53E19FFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE7E7E7FFB3B3
-      B3FFFFFFFFFFBEBEBEFF353549FF2F2FEAFF0E0EFFFF1919FFFF2424FFFF5C27
-      BDFFF3310EFFF6320CFFF7320AFFFA8770FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFD2D2
-      D2FF353547FF2F2FE6FF0D0DFFFF2424FFFF4823D1FFF4310DFFEF3012FF4844
-      F9FFF45A40FFF73109FFFA8770FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFD2D2D2FF3A3A40FF6767
-      E0FF1616FFFF130EF9FFF5310BFFE93018FF1F1BF9FF5959FFFFFFFFFFFFF95F
-      40FFF73109FFFA7358FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFD3D3D3FF404040FFD6D6DEFFE1939FFFF633
-      0DFFF3320FFF2823F9FF0606FFFF3D3DFFFFE9E9FFFFFFFFFFFFFA7358FFF731
-      09FFFA8169FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFC1C1C1FF3E3E3EFFE4BFB8FFF7350EFFF73B15FFFFFAF9FFE4E4
-      FFFFA8A8FFFFA9A9FFFFFFFFFFFFFFFFFFFFFFFFFFFFFA8169FFF73109FFF857
-      36FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFB3B3
-      B3FF633E36FFF7340CFFF73812FFFFFAF9FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFA8770FFF73109FFFA765CFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFC59086FFF4310AFFF637
-      10FFFEE7E2FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFF96A4DFFFA755AFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFF33913FFF2320BFFE7D0CBFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFEAC8C2FFB5B0AFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF7F7
-      F7FFDBDBDBFFD4D4D4FFDBDBDBFFF7F7F7FFFEFEFEFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFF7F7F7FFDBDBDBFFBBBEBFFF576669FF3E50
-      54FF566569FFBABDBEFFDADADAFFF7F7F7FFFEFEFEFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF7F7
-      F7FFDBDBDBFFBBBEBFFF576669FF446269FF5BAABEFF61BCD3FF5CABBEFF4462
-      69FF566669FFBABDBEFFDADADAFFF7F7F7FFFEFEFEFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFF7F7F7FFDBDBDBFFBBBEBFFF576669FF4462
-      69FF5BAABEFF64C2DAFF70DBF6FF73E1FDFF71DBF7FF65C3DBFF5CABBFFF4462
-      69FF566669FFBABDBEFFDADADAFFF7F7F7FFFEFEFEFFFFFFFFFFFFFFFFFFF7F7
-      F7FFDBDBDBFFBBBEBFFF576669FF446269FF5BAABEFF64C2DAFF70DBF6FF74E2
-      FEFF74E2FEFF74E2FEFF74E2FEFF74E2FEFF71DBF7FF65C3DBFF5CABBFFF4462
-      69FF566669FFC1C4C5FFF7F7F7FFFFFFFFFFF7F7F7FFC2C5C6FF576669FF4462
-      69FF5BAABEFF64C2DAFF70DBF6FF74E2FEFF74E2FEFF74E2FEFF75E3FFFF75E3
-      FFFF75E3FFFF75E3FFFF74E2FEFF74E2FEFF6DD5F0FF54A4B8FF488695FF535F
-      62FFDBDBDBFFFFFFFFFFDBDBDBFF535F62FF488695FF54A3B7FF6DD5EFFF74E1
-      FDFF74E2FEFF74E2FEFF75E3FFFF75E3FFFF75E3FFFF75E3FFFF75E3FFFF75E3
-      FFFF71DCF7FF64C3DBFF54A9BFFF205A69FF103B46FF2D3538FFD4D4D4FFFFFF
-      FFFFD4D4D4FF2E3537FF113842FF205664FF54A8BDFF64C2DAFF71DCF7FF74E2
-      FEFF75E3FFFF75E3FFFF75E3FFFF75E3FFFF71DCF7FF64C3DBFF54A9BFFF205A
-      69FF105769FF0399BEFF008DB0FF2A464DFFD4D4D4FFFFFFFFFFD4D4D4FF2B43
-      4AFF04809FFF078AACFF115262FF205866FF54A8BDFF64C2DAFF71DCF7FF74E2
-      FEFF71DCF7FF64C3DBFF54A9BFFF205A69FF105769FF0399BEFF00AFDAFF00C5
-      F6FF00A9D4FF2A4C54FFD4D4D4FFFFFFFFFFD4D4D4FF2B4850FF0499BEFF04B1
-      DDFF059EC5FF078BACFF115262FF205866FF54A8BDFF60BCD3FF54A9BEFF205A
-      69FF105769FF0399BEFF00AFDAFF00C5F6FF00CBFEFF00CBFEFF00AAD4FF2A4C
-      54FFD4D4D4FFFFFFFFFFD4D4D4FF2B4950FF0599BFFF05B7E4FF05B7E4FF05B2
-      DDFF059EC5FF078BACFF114D5CFF133037FF0F5162FF0399BEFF00AFDAFF00C5
-      F6FF00CBFEFF00CBFEFF00CBFEFF00CCFFFF00AAD4FF2A4C54FFD4D4D4FFFFFF
-      FFFFD4D4D4FF2B4950FF0599BFFF05B7E4FF06B8E5FF05B7E4FF05B7E4FF05B2
-      DDFF0484A5FF003543FF0093B7FF00C5F6FF00CBFEFF00CBFEFF00CBFEFF00CC
-      FFFF00CCFFFF00CCFFFF00AAD4FF2A4C54FFD4D4D4FFFFFFFFFFD4D4D4FF2B49
-      50FF0599BFFF05B7E4FF06B8E5FF06B8E5FF06B8E5FF05B7E4FF0498BEFF0040
-      50FF00A9D4FF00CBFEFF00CBFEFF00CCFFFF00CCFFFF00CCFFFF00CCFFFF00CC
-      FFFF00AAD4FF2A4C54FFD4D4D4FFFFFFFFFFD4D4D4FF2B4950FF0599BFFF05B7
-      E4FF06B8E5FF06B8E5FF06B8E5FF06B8E5FF0599BFFF014050FF00AAD4FF00CB
-      FEFF00CCFFFF00CCFFFF00CCFFFF00CCFFFF00C6F7FF00AFDBFF0694B8FF4662
-      69FFDBDBDBFFFFFFFFFFDBDBDBFF475F66FF0B86A6FF059DC4FF05B2DEFF05B7
-      E4FF06B8E5FF06B8E5FF0599BFFF014050FF00AAD4FF00CBFEFF00CCFFFF00CC
-      FFFF00C6F7FF00AFDBFF069ABFFF225B69FF456269FFBEC4C5FFF7F7F7FFFFFF
-      FFFFF7F7F7FFBFC4C5FF475F66FF255562FF0B8BACFF059DC4FF05B2DEFF05B7
-      E4FF0599BFFF014050FF00AAD4FF00CBFEFF00C6F7FF00AFDBFF069ABFFF225B
-      69FF456269FFB7BDBEFFDADADAFFF7F7F7FFFEFEFEFFFFFFFFFFFEFEFEFFF7F7
-      F7FFDBDBDBFFB8BDBEFF475F66FF255562FF0B8BACFF059DC4FF0494B8FF0140
-      50FF00A4CDFF00AFDAFF069ABFFF225B69FF456269FFB7BDBEFFDADADAFFF6F6
-      F6FFFEFEFEFFFEFEFEFFFEFEFEFFFFFFFFFFFFFFFFFFFEFEFEFFFEFEFEFFF7F7
-      F7FFDBDBDBFFB8BDBEFF475F66FF255562FF0A728CFF003542FF067E9BFF225B
-      68FF456269FFB7BDBEFFDADADAFFF6F6F6FFFEFEFEFFFEFEFEFFFEFEFEFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFEFEFFFEFEFEFFF7F7
-      F7FFDBDBDBFFB8BDBEFF475A5FFF2A3537FF465C62FFB7BDBEFFDADADAFFF6F6
-      F6FFFEFEFEFFFEFEFEFFFEFEFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFEFEFFFEFEFEFFF7F7
-      F7FFDBDBDBFFD4D4D4FFDADADAFFF6F6F6FFFEFEFEFFFEFEFEFFFEFEFEFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFEFEFFFEFEFEFFFEFE
-      FEFFFEFEFEFFFEFEFEFFFEFEFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFF474A48FF545554FFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFF697877FFBDC8C2FFABB0B0FF3D3D3DFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFF171817FFFFFFFFFFFFFFFFFFFFFFFFFF4B4B4BFF8E8E8EFFFFFFFFFF656E
-      69FFA5C2BDFFB3CCC8FFC5D0D0FF696C6AFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF555A57FFC7CA
-      C8FF202020FFFFFFFFFF676767FFF2F2F2FFA7A7A7FF505D5CFF8DA5A1FFA4BD
-      B9FFA5C2BDFF4E6965FF151816FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF4A5957FFAEC5C1FFCBD6D5FF4A46
-      4BFF3C3C3CFFDFDFDFFFF4F4F4FFC7C8C7FF606767FF5F706EFF98B1AFFF93AC
-      AAFF909797FF1D1D1DFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFF313A3AFF95ACA9FFABC6C2FFCBD8D7FFAFAFAFFF8788
-      87FFC1C1C1FFF2F2F2FFDCDCDCFF898C8AFF525F5EFF859C98FFB3C8C5FFBFC8
-      C8FF505050FF0B0B0BFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFF839A96FFA5C2BDFFA5C2BDFFB9D0CCFFDADDDBFFA29FA1FF9393
-      93FFE5E5E5FFF1F1F1FFC3C4C3FF626A6BFF617471FFA1BAB6FFC9D8D6FF9D9E
-      9DFF232323FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF535C
-      57FFA5C2BDFFA5C2BDFFA5C2BDFFAAC3C0FFC7D8D6FFC4C5C4FF717271FFC4C5
-      C4FFF4F4F4FFE9E9E9FF8D908EFF444F4EFF89A09EFFAEC7C3FFBFCECCFF5358
-      58FF050605FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF424744FFA5C2BDFFA5C2
-      BDFFA5C2BDFFA5C2BDFFA5C2BDFFB7CECAFFCAD3D3FF989998FF9FA09FFFE7E8
-      E7FFEEEEEEFFCACDCBFF5B6665FF768987FFA0BBB7FFB7CCC9FF7E8989FF1013
-      11FFFFFFFFFFFFFFFFFFFFFFFFFF3C413EFFA4BDB9FFA5C2BDFFA5C2BDFFA5C2
-      BDFFA5C2BDFFA5C2BDFFADC6C2FFC6CFCAFFAEAFAEFF878887FFBABABAFFEDED
-      EDFFDEE0E1FF464B48FF79908FFF98B3B1FF758E8AFF273332FFFFFFFFFFFFFF
-      FFFFFFFFFFFF252A27FF8FA8A4FFA5C2BDFFA5C2BDFFA5C2BDFFA5C2BDFFA5C2
-      BDFFA5C2BDFFAAC3C0FFBBD0CDFFC3C8C5FF626764FF9E9F9EFFC6C6C6FF3F42
-      40FF687977FF819693FF4C6967FF0C0F0DFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFF718482FFA5C2BDFFA5C2BDFFA5C2BDFFA5C2BDFFA5C2BDFFA5C2BDFFA5C2
-      BDFFA5C2BDFFA8C3BFFF597672FF5B5C5BFF9B9C9BFF2F3230FF687977FF8398
-      95FF314C4BFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF343B37FF869D
-      9AFFA4C1BCFFA5C2BDFFA5C2BDFFA5C2BDFFA5C2BDFFA5C2BDFFA5C2BDFFA5C2
-      BDFF658481FF464746FF8E8E8EFF323533FF6A7D7AFF779491FF253836FFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF35403AFF819C9AFFA2BF
-      BAFFA5C2BDFFA5C2BDFFA5C2BDFFA5C2BDFFA5C2BDFFA5C2BDFF708F8CFF2D32
-      2FFF7B7C7BFF3C4747FF6E8382FF63827FFF1C2929FFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF2A3938FF6B8885FFA2BFBAFFA5C2
-      BDFFA5C2BDFFA5C2BDFFA5C2BDFFA5C2BDFF749390FF303D3DFF535353FF4E5D
-      5CFF748986FF3F5A56FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFF1D2A2AFF536C68FF99B4AFFFA4C1BEFFA5C2
-      BDFFA5C2BDFFA5C2BDFF7C9996FF30413FFF393A39FF596665FF647F7BFF192C
-      2BFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFF46615FFF819E99FF9FBEB8FFA5C2BDFFA5C2
-      BDFF84A19EFF364F4DFF101110FF586B68FF405955FF010201FF000000FF0000
-      00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFF3A534FFF638680FF92AFAAFFA4BFBAFF8CA9A4FF3C5B
-      58FF121513FF4B5C5AFF162323FF000000FF000000FF000000FF000000FFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFF324744FF476A66FF769793FF84A39FFF4B6866FF252A27FF2839
-      38FF000000FF000000FF000000FF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFF343B37FF3D5A55FF4D7471FF4A6561FF202522FF080B09FF000000FF0000
-      00FF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFF384F4CFF121714FF070807FF000000FF000000FFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFE3E3E3FF727272FF555555FF555555FF393939FF393939FF8E8E8EFFE3E3
-      E3FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3E3FF1D1D1DFFAAAA
-      AAFFFFFFFFFFFFFFFFFFFFFFFFFFC7C7C7FF1D1D1DFF1D1D1DFFAAAAAAFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFF1D1D1DFF393939FFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFF8E8E8EFF000000FF1D1D1DFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFAAAAAAFF000000FF1D1D1DFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFF000000FF000000FFAAAAAAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFC7C7C7FF0000
-      00FF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000
-      00FF000000FFAAAAAAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFC7C7C7FFC7C7C7FFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8E8E8EFF000000FF000000FFE3E3
-      E3FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFC7C7C7FF1D1D1DFF000000FF727272FFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF727272FF0000
-      00FF1D1D1DFF8E8E8EFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFF1D1D1DFF393939FFC7C7C7FFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFAAAAAAFF1D1D1DFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFAAAAAAFF7272
-      72FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFC7C7C7FFC7C7C7FFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3
-      E3FF1D1D1DFF1D1D1DFFE3E3E3FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFAAAAAAFF000000FF0000
-      00FFAAAAAAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF727272FF727272FFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFF9F9FFFFD9D9FFFFD9D9FFFFF9F9FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFF5F5F5FFC7C7C7FFC7C7C7FFCDCDF6FF5656
-      FFFF4949FFFF9B9BFFFFC5C5FFFFEDEDFFFFFDFDFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFC9C9C9FF3C3C3CFF373737FF9595D4FF2828FFFF0E0EFFFF1D1D
-      FFFF3232FFFF6767FFFF8484FFFFA6A6FFFFD0D0FFFFF8F8FFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFCECE
-      CEFF3E3E3EFF1D1D1DFF7E7EC3FF2424FFFF1010FFFF0D0DFFFF0F0FFFFF0707
-      FFFF0000FFFF1515FFFF3333FFFF8989FFFFAEAEFFFFE5E5FFFFFCFCFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFEFEFFF6C6C6CFF0808
-      08FF6666B0FF1B1BFFFF0808FFFF0000E3FF060672FF0C0C55FF141455FF0808
-      39FF010139FF0B0B8EFF1717E3FF5B5BFFFFA6A6FFFFF1F1FFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFDFDFDFF7E7E7EFF000000FF5C5CA7FF1D1D
-      FFFF1313E3FF05051DFF2020AAFF1313FFFF1212FFFF1F1FFFFF2121C7FF0707
-      1DFF03031DFF0C0CAAFF1E1EFFFFB3B3FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFF868686FF060606FF6464A4FF2222FFFF00001DFF0101
-      39FF2828FFFF3737FFFF2D2DFFFF1919FFFF0D0DFFFF0C0C8EFF000000FF0505
-      1DFF3030FFFFBFBFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFF868686FF060606FF6C6C9DFF1B1BAAFF000000FF00001DFF0707FFFF0000
-      FFFF1616FFFF2929FFFF4242FFFF4444FFFF000000FF000000FF2929AAFFD2D2
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF818181FF0000
-      00FF7C7C86FF7575C7FF000000FF000000FF0808FFFF0808FFFF0808FFFF0707
-      FFFF0404FFFF1A1AFFFF000000FF000000FF3F3FAAFFDBDBFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF868686FF060606FF868686FFF4F4
-      FFFF9696C7FF6C6CC7FF7979FFFF3232FFFF1313FFFF0505FFFF0404FFFF0606
-      8EFF000000FF000000FF2D2DE3FFCACAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFF858585FF060606FF868686FFFFFFFFFFFFFFFFFFFFFF
-      FFFFF7F7FFFFCCCCFFFFA9A9FFFF8383FFFF3737C7FF03031DFF000000FF0303
-      72FF2323FFFFBCBCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8F8
-      F8FF767676FF000000FF858585FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFF707072FF000000FF13131DFF3C3C8EFF4343FFFF6E6EFFFFE0E0
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE6E6E6FF5F5F5FFF0F0F
-      0FFF989898FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF1D1D1DFF3939
-      39FFC7C7C7FFFFFFFFFFF6F6FFFFDBDBFFFFE4E4FFFFFBFBFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3E3FF585858FF101010FF9A9A9AFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFAAAAAAFF1D1D1DFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFE1E1E1FF585858FF0A0A0AFF979797FFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFAAAAAAFF727272FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3
-      E3FF595959FF101010FF9A9A9AFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFC7C7
-      C7FFC7C7C7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3E3FF585858FF1010
-      10FF9A9A9AFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3E3FF5D5D5DFF0C0C0CFF9B9B9BFFFFFF
-      FFFFFFFFFFFFFFFFFFFFE3E3E3FF1D1D1DFF1D1D1DFFE3E3E3FFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFEFEFEFFF888888FF2F2F2FFFBCBCBCFFFFFFFFFFFFFFFFFFFFFF
-      FFFFAAAAAAFF000000FF000000FFAAAAAAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFCFC
-      FCFFE8E8E8FFC9C9C9FFF5F5F5FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF7272
-      72FF727272FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF9F9FFFFD9D9FFFFD9D9FFFFF9F9
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5F5
-      F5FFC7C7C7FFC7C7C7FFCDCDF6FF5656FFFF4949FFFF9B9BFFFFC5C5FFFFEDED
-      FFFFFDFDFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFC9C9C9FF3C3C3CFF3737
-      37FF9595D4FF2828FFFF0E0EFFFF1D1DFFFF3232FFFF6767FFFF8484FFFFA6A6
-      FFFFD0D0FFFFF8F8FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFCECECEFF3E3E3EFF1D1D1DFF7E7EC3FF2424
-      FFFF1010FFFF0D0DFFFF070772FF030372FF0000FFFF1515FFFF3333FFFF8989
-      FFFFAEAEFFFFE5E5FFFFFCFCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFEFEFEFFF6C6C6CFF080808FF6666B0FF1B1BFFFF0808FFFF0000
-      AAFF000000FF000000FF2929AAFF2525FFFF0404FFFF1414FFFF1A1AFFFF5B5B
-      FFFFA6A6FFFFF1F1FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFDFD
-      FDFF7E7E7EFF000000FF5C5CA7FF1D1DFFFF1515FFFF2424E3FF05051DFF0202
-      1DFF1010E3FF1F1FFFFF2A2AFFFF3F3FFFFF1616FFFF1212FFFF1E1EFFFFB3B3
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF868686FF0606
-      06FF6464A4FF2222FFFF0303FFFF0404FFFF2828FFFF3737FFFF2D2DFFFF1919
-      FFFF0D0DFFFF1515FFFF1111FFFF2E2EFFFF3030FFFFBFBFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF868686FF060606FF6C6C9DFF2929
-      FFFF0101FFFF0202FFFF0505C7FF0000C7FF1616FFFF2929FFFF4242FFFF4444
-      FFFF0D0DFFFF0909FFFF3E3EFFFFD2D2FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFF818181FF000000FF7C7C86FF9696FFFF1A1AFFFF0404
-      FFFF0505AAFF040472FF0808FFFF0707FFFF0404FFFF1A1AFFFF2020FFFF2626
-      FFFF5E5EFFFFDBDBFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFF868686FF060606FF868686FFF4F4FFFFC0C0FFFF8B8BFFFF5151AAFF0606
-      1DFF1313FFFF0505FFFF0404FFFF0A0AFFFF0404FFFF0A0AFFFF3333FFFFCACA
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF858585FF0606
-      06FF868686FFFFFFFFFFFFFFFFFFFFFFFFFFF7F7FFFF17171DFF262639FF6666
-      C7FF4747FFFF1616FFFF0000FFFF0606FFFF2323FFFFBCBCFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFF8F8F8FF767676FF000000FF858585FFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF727272FF000000FF19191DFF5F5F
-      8EFF6B6BFFFF4343FFFF6E6EFFFFE0E0FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFE6E6E6FF5F5F5FFF0F0F0FFF989898FFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFC7C7C7FF1D1D1DFF000000FF6E6E72FFDBDB
-      FFFFE4E4FFFFFBFBFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3
-      E3FF585858FF101010FF9A9A9AFFC7C7C7FFC7C7C7FFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFF8E8E8EFF000000FF000000FFE3E3E3FFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE1E1E1FF585858FF0A0A
-      0AFF767676FF000000FF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFF000000FF000000FFAAAAAAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3E3FF595959FF101010FF676767FF0000
-      00FF1D1D1DFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000
-      00FF000000FFAAAAAAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFE3E3E3FF585858FF101010FF9A9A9AFF1D1D1DFF393939FFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8E8E8EFF000000FF1D1D1DFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3
-      E3FF5D5D5DFF0C0C0CFF9B9B9BFFE3E3E3FF1D1D1DFFAAAAAAFFFFFFFFFFFFFF
-      FFFFFFFFFFFFC7C7C7FF1D1D1DFF1D1D1DFFAAAAAAFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFEFEFFF888888FF2F2F
-      2FFFBCBCBCFFFFFFFFFFE3E3E3FF727272FF555555FF555555FF393939FF3939
-      39FF8E8E8EFFE3E3E3FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFCFCFCFFE8E8E8FFC9C9C9FFF5F5F5FFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFF555555FF000000FFAAAAAAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFC7C7C7FF555555FF555555FF555555FF1D1D1DFF555555FFAAAAAAFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFAAAAAAFF0000
-      00FF000000FF555555FFFFFFFFFFFFFFFFFFFFFFFFFFAAAAAAFF1D1D1DFFE3E3
-      E3FFFFFFFFFFFFFFFFFFFFFFFFFF8E8E8EFF000000FF393939FFE3E3E3FFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFAAAAAAFF000000FF000000FF5555
-      55FFFFFFFFFFFFFFFFFFC7C7C7FF000000FF8E8E8EFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFF393939FF000000FF727272FFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFAAAAAAFF000000FF000000FF555555FFFFFFFFFFFFFF
-      FFFF555555FF000000FF727272FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFAAAAAAFF000000FF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFF000000FF000000FF8E8E8EFFFFFFFFFFFFFFFFFF727272FF0000
-      00FF555555FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFAAAAAAFF0000
-      00FF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF1D1D
-      1DFF000000FFAAAAAAFFFFFFFFFFFFFFFFFFFFFFFFFFAAAAAAFFE3E3E3FFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF393939FF000000FF393939FFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF555555FF000000FFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFF8E8E8EFF000000FF000000FFC7C7C7FFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFF555555FF1D1D1DFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3E3FF393939FF0000
-      00FF393939FFC7C7C7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFAAAAAAFF555555FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFC7C7C7FF000000FF727272FFE3E3E3FFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFAAAA
-      AAFF555555FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFF555555FF727272FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFAAAAAAFF555555FFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF555555FFC7C7
-      C7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFC7C7C7FF8E8E8EFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8E8E8EFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3E3FF1D1D
-      1DFF1D1D1DFFE3E3E3FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFAAAA
-      AAFF000000FF555555FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFAAAAAAFF000000FF000000FFAAAA
-      AAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF555555FF000000FF0000
-      00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFF727272FF727272FFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3E3FF555555FFAAAAAAFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFF555555FF000000FFAAAAAAFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFAAAA
-      AAFF000000FF000000FF555555FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFAAAAAAFF000000FF0000
-      00FF555555FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFAAAAAAFF000000FF000000FF555555FFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFF000000FF000000FF8E8E8EFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFF1D1D1DFF000000FFAAAAAAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF555555FF0000
-      00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF555555FF1D1D1DFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFAAAAAAFF555555FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFAAAAAAFF555555FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFAAAAAAFF5555
-      55FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFC7C7C7FF8E8E8EFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3
-      E3FF1D1D1DFF1D1D1DFFE3E3E3FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFAAAAAAFF000000FF0000
-      00FFAAAAAAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF727272FF727272FFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF292C
-      29FF292C29FF292C29FF292C29FF292C29FF292C29FF292C29FF292C29FF292C
-      29FF292C29FF292C29FF292C29FF292C29FF292C29FF292C29FFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF292C29FFF6F2F6FFDEDADEFFD5D6
-      D5FFCDCECDFFCDCACDFFC5C2C5FFBDBEBDFFB4B6B4FFACAEACFFA4A5A4FFA4A1
-      A4FFA4A1A4FFA4A1A4FFDEDADEFF626162FF000000FFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFF292C29FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFAFFFFFFFAFFFFF6F6F6FFF6F6F6FFF6F2F6FFEEEEEEFFEEEEEEFFEEEA
-      EEFF737173FF626162FF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF292C
-      29FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFAFFFFF6F6F6FFF6F2F6FFEEEE
-      EEFFEEEAEEFFE6E6E6FFDEDEDEFFD5D6D5FFCDCECDFFCDC6CDFF737173FF6261
-      62FF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF292C29FFFFFFFFFFFFFF
-      FFFF737152FF737562FF73756AFF737562FF737152FF737141FF736D31FF7369
-      20FF6A6510FF6A6500FFEEEAEEFFC5C6C5FF737173FF626162FF000000FFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFF292C29FFFFFFFFFFFFFFFFFF73715AFFEEEA
-      DEFFFFFFFFFFEEEADEFFDEDABDFFCDC694FFBDB273FFA49D52FF948D29FF7B71
-      08FFEEEAEEFFC5C6C5FF737173FF626162FF000000FFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFF292C29FFFFFFFFFFF6F6F6FF737152FFE6E2CDFFEEEADEFFE6E2
-      CDFFD5D6B4FFC5C294FFB4B273FFA49D4AFF948929FF736D08FFEEEAEEFFC5C2
-      C5FF737173FF626162FF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF292C
-      29FFFFFAFFFFF6F2F6FF73714AFFD5D6B4FFDEDABDFFD5D6B4FFCDCA9CFFBDBA
-      83FFACAA62FF9C9941FF8B8520FF736900FFEEEAEEFFC5C2C5FF737173FF6261
-      62FF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF292C29FFFFFAFFFFEEEE
-      EEFF736D39FFC5C294FFCDC694FFC5C294FFBDBA83FFB4AE6AFFA49D52FF948D
-      31FF837D10FF6A6500FFE6E6E6FFC5C2C5FF737173FF626162FF000000FFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFF292C29FFF6F6F6FFE6E6E6FF736D31FFB4B2
-      73FFBDB273FFB4B273FFACAA62FFA49D52FF9C9139FF8B8120FF7B7100FF6259
-      00FFE6E6E6FFC5C2C5FF737173FF626162FF000000FFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFF292C29FFF6F2F6FFE6E2E6FF736920FF94914AFF9C914AFF9491
-      4AFF948D41FF8B8531FF837918FF736908FF625D00FF524C00FFE6E6E6FFC5C2
-      C5FF737173FF626162FF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF292C
-      29FFF6F2F6FFDEDADEFFEEEEEEFFEEEEEEFFEEEEEEFFEEEAEEFFEEEAEEFFEEEA
-      EEFFEEEAEEFFE6E6E6FFE6E6E6FFE6E6E6FFC5C2C5FFC5C2C5FF737173FF8385
-      83FFDEDADEFF292C29FFFFFFFFFFFFFFFFFFFFFFFFFF292C29FFEEEEEEFFD5D2
-      D5FFCDCECDFFCDCECDFFCDCACDFFCDCACDFFC5C6C5FFC5C6C5FFC5C2C5FFC5C2
-      C5FFC5C2C5FFC5C2C5FFC5C2C5FFC5C2C5FF838183FFEEEAEEFF4A4C4AFF0000
-      00FFFFFFFFFFFFFFFFFF292C29FFF6F6F6FF838183FF838183FF4A4C4AFF5A5D
-      5AFF6A696AFF6A6D6AFF6A6D6AFF6A6D6AFF6A6D6AFF6A696AFF5A5D5AFF5250
-      52FF4A4C4AFF4A4C4AFFF6F6F6FF737173FF4A4C4AFF000000FFFFFFFFFFFFFF
-      FFFF292C29FFEEEEEEFFE6E6E6FFE6E6E6FFE6E6E6FFE6E6E6FFE6E6E6FFE6E6
-      E6FFE6E6E6FFE6E6E6FFE6E6E6FFE6E6E6FFE6E6E6FFE6E6E6FFE6E6E6FFE6E6
-      E6FFACAAACFF737173FF4A4C4AFF000000FFFFFFFFFFFFFFFFFF292C29FFE6E6
-      E6FFBDBEBDFFBDBEBDFFBDBEBDFFBDBEBDFFBDBEBDFFBDBEBDFFBDBEBDFFBDBE
-      BDFFBDBEBDFF4A4C4AFF4A4C4AFF4A4C4AFF4A4C4AFFBDBEBDFF949594FF7371
-      73FF4A4C4AFF000000FFFFFFFFFFFFFFFFFF292C29FFDEDADEFFA4A1A4FFA4A1
-      A4FFA4A1A4FFA4A1A4FFA4A1A4FFA4A1A4FFA4A1A4FFA4A1A4FFA4A1A4FFDEDA
-      DEFFDEDADEFFDEDADEFFDEDADEFFA4A1A4FF838183FF737173FF000000FFFFFF
-      FFFFFFFFFFFFFFFFFFFF292C29FFD5D2D5FF8B8D8BFF8B8D8BFF8B8D8BFF8B8D
-      8BFF8B8D8BFF8B8D8BFF8B8D8BFF8B8D8BFF8B8D8BFF8B8D8BFF8B8D8BFF8B8D
-      8BFF8B8D8BFF8B8D8BFF737173FF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFF292C29FF292C29FF292C29FF292C29FF292C29FF292C29FF292C
-      29FF292C29FF292C29FF292C29FF292C29FF292C29FF292C29FF292C29FF292C
-      29FF292C29FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FF000000FF0000
-      00FF000000FF000000FF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FF07E2FFFF07E2FFFF07E2FFFF07E2
-      FFFF07E2FFFF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFF000000FF07E2FFFF07E2FFFF07E2FFFF07E2FFFF07E2FFFF0000
-      00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFF000000FF07E2FFFF07E2FFFF07E2FFFF07E2FFFF07E2FFFF000000FFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FF07E2
-      FFFF07E2FFFF07E2FFFF07E2FFFF07E2FFFF000000FFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FF07E2FFFF07E2
-      FFFF07E2FFFF07E2FFFF07E2FFFF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FF000000FF000000FF000000FF0000
-      00FF000000FF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFF000000FF000000FF0096BCFF0096BCFF0096BCFF0096BCFF000000FF0000
-      00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FF005068FF0000
-      00FF0096BCFF0096BCFF0096BCFF000000FF00C5EDFF000000FFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFF000000FF005068FF005068FF000000FF0096BCFF0096
-      BCFF000000FF00C5EDFF00C5EDFF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000
-      00FF000000FF000000FF000000FF000000FF000000FF000000FF00C5EDFF00C5
-      EDFF00C5EDFF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FF07E2FFFF07E2
-      FFFF07E2FFFF07E2FFFF07E2FFFF000000FF00C5EDFF00C5EDFF00C5EDFF0000
-      00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FF07E2FFFF07E2FFFF07E2FFFF07E2
-      FFFF07E2FFFF000000FF00C5EDFF00C5EDFF00C5EDFF000000FFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFF000000FF07E2FFFF07E2FFFF07E2FFFF07E2FFFF07E2FFFF0000
-      00FF00C5EDFF00C5EDFF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000
-      00FF07E2FFFF07E2FFFF07E2FFFF07E2FFFF07E2FFFF000000FF00C5EDFF0000
-      00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FF07E2FFFF07E2
-      FFFF07E2FFFF07E2FFFF07E2FFFF000000FF000000FFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FF000000FF000000FF000000FF0000
-      00FF000000FF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3
-      E3FF797A79FF585A58FF555855FF545654FF525352FF4F514FFF4C4F4CFF494C
-      49FF494B49FF494B49FF505250FF7A7B7AFFEEEEEEFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE3E3E3FF949694FFE2E1E2FFEEED
-      EEFFE9EAE9FFE7E6E7FFE3DFE3FFDBDBDBFFD4D5D4FFCECDCEFFCBCACBFFCBC8
-      CBFF959295FF313031FFBFBFBFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFCACACAFF949694FFFFFFFFFFF8F8F6FFF8F6F7FFF3F2
-      F2FFF0ECEEFFEAE8E7FFE5E4E1FFDBDAD6FFD5D6D2FFD4D0D4FF6F6D6FFF3130
-      31FFBFBFBFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFCACACAFF949694FFFFFFFFFF7D7B62FF9D9D91FF9B9C8DFF93916EFF8D87
-      51FF847C35FF756F13FFAFA978FF000000FF000000FF000000FF000000FF0000
-      00FF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFCACACAFF9496
-      94FFFBFBFBFF918E75FFEFECE0FFECE9DAFFD5D3AFFFC0BB84FFA9A257FF8D84
-      21FFB2AC7BFF000000FF07E2FFFF07E2FFFF07E2FFFF07E2FFFF07E2FFFF0000
-      00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFCACACAFF949394FFF8F4F8FF8C8A
-      64FFDAD8B9FFD8D7B7FFC9C697FFB5B273FFA09D49FF857E18FFB0A977FF0000
-      00FF07E2FFFF07E2FFFF07E2FFFF07E2FFFF07E2FFFF000000FFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFCACACAFF929292FFEFEEEFFF86814AFFC3BD88FFC1BD
-      88FFB5B171FFA8A055FF958D32FF7A7308FFA7A373FFCDCBCDFF000000FF07E2
-      FFFF07E2FFFF07E2FFFF07E2FFFF07E2FFFF000000FFFFFFFFFFFFFFFFFFFFFF
-      FFFFCACACAFF909090FFEAE7EAFF7E7733FFA49D59FFA29D59FF9B9549FF9088
-      31FF807616FF665F00FF9F9B73FFCDCBCDFF000000FF07E2FFFF07E2FFFF07E2
-      FFFF07E2FFFF07E2FFFF000000FFFFFFFFFFFFFFFFFFFFFFFFFFC9CAC9FF8F8F
-      8FFFE3E0E3FFDDDCD4FFE0DFD8FFE0DCD8FFDEDAD5FFDDD9D2FFD7D4CBFFD2D1
-      C9FFCDCBC9FFC6C3C6FF7C7B7CFF000000FF07E2FFFF07E2FFFF07E2FFFF07E2
-      FFFF07E2FFFF000000FFFFFFFFFFFFFFFFFF9B9D9BFFA0A1A0FFB6B4B6FF9899
-      98FFA0A0A0FFA3A2A3FF9FA19FFF9F9F9FFF9F9D9FFF979697FF939193FF9190
-      91FFB5B3B5FF000000FF000000FF000000FF000000FF000000FF000000FF0000
-      00FFFFFFFFFFFFFFFFFF5B5D5BFFDCDBDCFFC7C6C7FFB6B7B6FFBCBDBCFFBFBF
-      BFFFBFC0BFFFBFC0BFFFBFBFBFFFB9BAB9FFB6B6B6FFB5B5B5FF000000FF0000
-      00FF0096BCFF0096BCFF0096BCFF0096BCFF000000FF000000FFFFFFFFFFFFFF
-      FFFF585A58FFCFCFCFFFBABABAFFBABABAFFBABABAFFBABABAFFBABABAFFBABA
-      BAFF848484FF717271FF717271FF000000FF005068FF000000FF0096BCFF0096
-      BCFF0096BCFF000000FF00C5EDFF000000FFFFFFFFFFFFFFFFFF555755FFB9B7
-      B9FF989898FF989898FF989898FF989898FF989898FF989898FFAFAEAFFFB7B6
-      B7FF000000FF005068FF005068FF000000FF0096BCFF0096BCFF000000FF00C5
-      EDFF00C5EDFF000000FFFFFFFFFFFFFFFFFFABACABFF4D4F4DFF434643FF4346
-      43FF434643FF434643FF434643FF434643FF434643FF000000FF000000FF0000
-      00FF000000FF000000FF000000FF000000FF00C5EDFF00C5EDFF00C5EDFF0000
-      00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FF07E2FFFF07E2FFFF07E2FFFF07E2
-      FFFF07E2FFFF000000FF00C5EDFF00C5EDFF00C5EDFF000000FFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFF000000FF07E2FFFF07E2FFFF07E2FFFF07E2FFFF07E2FFFF0000
-      00FF00C5EDFF00C5EDFF00C5EDFF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000
-      00FF07E2FFFF07E2FFFF07E2FFFF07E2FFFF07E2FFFF000000FF00C5EDFF00C5
-      EDFF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FF07E2FFFF07E2
-      FFFF07E2FFFF07E2FFFF07E2FFFF000000FF00C5EDFF000000FFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FF07E2FFFF07E2FFFF07E2FFFF07E2
-      FFFF07E2FFFF000000FF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFF000000FF000000FF000000FF000000FF000000FF000000FF0000
-      00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFF
-    }
   end
   object MainMenu: TMainMenu
     left = 46

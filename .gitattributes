@@ -2417,6 +2417,7 @@ images/actions/edit.png -text svneol=unset#image/png
 images/actions/open.png -text svneol=unset#image/png
 images/actions/paste.png -text svneol=unset#image/png
 images/actions/refresh.png -text svneol=unset#image/png
+images/actions/wand.png -text svneol=unset#image/png
 images/bookmark.lrs svneol=native#text/pascal
 images/bookmark.sh svneol=native#text/plain
 images/bookmark_list.txt svneol=native#text/plain
@@ -2437,34 +2438,18 @@ images/codeexplorer/ce_unit.png -text
 images/codeexplorer/ce_variable.png -text
 images/codeexplorer/show_category.png -text
 images/codeexplorer/show_source.png -text
-images/codetoolsdefines/block_22x22.png -text
-images/codetoolsdefines/block_22x22.xpm -text svneol=native#image/x-xpixmap
-images/codetoolsdefines/ctdefinestate_auto_22x22.xpm -text svneol=native#image/x-xpixmap
-images/codetoolsdefines/ctdefinestate_autoproj_22x22.xpm -text svneol=native#image/x-xpixmap
-images/codetoolsdefines/ctdefinestate_none_22x22.xpm -text svneol=native#image/x-xpixmap
-images/codetoolsdefines/ctdefinestate_projspec_22x22.xpm -text svneol=native#image/x-xpixmap
-images/codetoolsdefines/define_22x22.png -text
-images/codetoolsdefines/define_22x22.xpm -text svneol=native#image/x-xpixmap
-images/codetoolsdefines/definerecurse_22x22.png -text
-images/codetoolsdefines/definerecurse_22x22.xpm -text svneol=native#image/x-xpixmap
-images/codetoolsdefines/directory_22x22.png -text
-images/codetoolsdefines/directory_22x22.xpm -text svneol=native#image/x-xpixmap
-images/codetoolsdefines/else_22x22.png -text
-images/codetoolsdefines/else_22x22.xpm -text svneol=native#image/x-xpixmap
-images/codetoolsdefines/elseif_22x22.png -text
-images/codetoolsdefines/elseif_22x22.xpm -text svneol=native#image/x-xpixmap
-images/codetoolsdefines/if_22x22.png -text
-images/codetoolsdefines/if_22x22.xpm -text svneol=native#image/x-xpixmap
-images/codetoolsdefines/ifdef_22x22.png -text
-images/codetoolsdefines/ifdef_22x22.xpm -text svneol=native#image/x-xpixmap
-images/codetoolsdefines/ifndef_22x22.png -text
-images/codetoolsdefines/ifndef_22x22.xpm -text svneol=native#image/x-xpixmap
-images/codetoolsdefines/undefine_22x22.png -text
-images/codetoolsdefines/undefine_22x22.xpm -text svneol=native#image/x-xpixmap
-images/codetoolsdefines/undefineall_22x22.png -text
-images/codetoolsdefines/undefineall_22x22.xpm -text svneol=native#image/x-xpixmap
-images/codetoolsdefines/undefinerecurse_22x22.png -text
-images/codetoolsdefines/undefinerecurse_22x22.xpm -text svneol=native#image/x-xpixmap
+images/codetoolsdefines/da_block.png -text
+images/codetoolsdefines/da_define.png -text
+images/codetoolsdefines/da_definerecurse.png -text
+images/codetoolsdefines/da_directory.png -text
+images/codetoolsdefines/da_else.png -text
+images/codetoolsdefines/da_elseif.png -text
+images/codetoolsdefines/da_if.png -text
+images/codetoolsdefines/da_ifdef.png -text
+images/codetoolsdefines/da_ifndef.png -text
+images/codetoolsdefines/da_undefine.png -text
+images/codetoolsdefines/da_undefineall.png -text
+images/codetoolsdefines/da_undefinerecurse.png -text
 images/components/default.png -text svneol=unset#image/png
 images/components/tactionlist.png -text svneol=unset#image/png
 images/components/tapplicationproperties.png -text svneol=unset#image/png
