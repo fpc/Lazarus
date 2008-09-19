@@ -2650,21 +2650,37 @@ end;
 procedure TQtWidget.Show;
 begin
   QWidget_show(Widget);
+  {$IFDEF LINUX}
+  if QWidget_isWindow(Widget) then
+    QtX11WaitForWindowManager(Widget);
+  {$ENDIF}  
 end;
 
 procedure TQtWidget.ShowNormal;
 begin
   QWidget_showNormal(Widget);
+  {$IFDEF LINUX}
+  if QWidget_isWindow(Widget) then
+    QtX11WaitForWindowManager(Widget);
+  {$ENDIF}  
 end;
 
 procedure TQtWidget.ShowMinimized;
 begin
   QWidget_showMinimized(Widget);
+  {$IFDEF LINUX}
+  if QWidget_isWindow(Widget) then
+    QtX11WaitForWindowManager(Widget);
+  {$ENDIF}
 end;
 
 procedure TQtWidget.ShowMaximized;
 begin
   QWidget_showMaximized(Widget);
+  {$IFDEF LINUX}
+  if QWidget_isWindow(Widget) then
+    QtX11WaitForWindowManager(Widget);
+  {$ENDIF}  
 end;
 
 function TQtWidget.getActionByIndex(AIndex: Integer): QActionH;
@@ -2916,6 +2932,10 @@ end;
 procedure TQtWidget.setVisible(visible: Boolean);
 begin
   QWidget_setVisible(Widget, visible);
+  {$IFDEF LINUX}
+  if Visible and QWidget_isWindow(Widget) then
+    QtX11WaitForWindowManager(Widget);
+  {$ENDIF}  
 end;
 
 function TQtWidget.windowModality: QtWindowModality;
@@ -8700,8 +8720,12 @@ begin
   else
   if ((not AValue) and (FNewDelegate <> nil)) then
   begin
+    {$note this call avoid sporadic AVs with QLCLItemDelegate_destroy(FNewDelegate).}
+    {TODO : check this statement for Mac and Win32}
+    {$IFDEF LINUX}
+    FNewDelegate := QLCLItemDelegateH(QAbstractItemView_itemDelegate(QAbstractItemViewH(Widget)));
+    {$ENDIF}
     QAbstractItemView_setItemDelegate(QAbstractItemViewH(Widget), FOldDelegate);
-    {$note some times raises av here, deep check of qt source for this destroy}
     QLCLItemDelegate_destroy(FNewDelegate);
     FNewDelegate := nil;
   end;
