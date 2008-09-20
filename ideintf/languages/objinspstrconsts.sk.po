@@ -1,8 +1,10 @@
+# translation of objinspstrconsts.po to Slovenský
+# Slavko <slavino@slavino.sk>, 2008.
 msgid ""
 msgstr ""
 "Project-Id-Version: objinspstrconsts\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-07-17 21:53+0200\n"
+"PO-Revision-Date: 2008-09-20 11:58+0200\n"
 "Last-Translator: Slavko <slavino@slavino.sk>\n"
 "Language-Team: Slovenský <sk@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -129,11 +131,11 @@ msgstr "1 riadok, %d znakov"
 
 #: objinspstrconsts:srvk_accept
 msgid "Accept"
-msgstr ""
+msgstr "Priajť"
 
 #: objinspstrconsts:oisaction
 msgid "Action"
-msgstr "Čnnosť"
+msgstr "Činnosť"
 
 #: objinspstrconsts:oisactionlisteditor
 msgid "Action List Editor"
@@ -189,7 +191,7 @@ msgstr "Všetky súbory"
 
 #: objinspstrconsts:srkm_alt
 msgid "Alt"
-msgstr ""
+msgstr "Alt"
 
 #: objinspstrconsts:sccstredtapply
 msgid "Apply"
@@ -209,7 +211,7 @@ msgstr "Dostupné akčné triedy:"
 
 #: objinspstrconsts:srvk_back
 msgid "Backspace"
-msgstr ""
+msgstr "Backspace"
 
 #: objinspstrconsts:oisboolean
 msgid "Boolean"
@@ -225,7 +227,7 @@ msgstr "Zrušiť"
 
 #: objinspstrconsts:srvk_capital
 msgid "Capital"
-msgstr ""
+msgstr "Verzálka"
 
 #: objinspstrconsts:rscdcaption
 msgid "Caption"
@@ -281,7 +283,7 @@ msgstr "Vyčistiť obrázok"
 
 #: objinspstrconsts:srvk_cmd
 msgid "Cmd"
-msgstr ""
+msgstr "Príkaz"
 
 #: objinspstrconsts:oistdactcolorselecthint
 msgid "Color Select"
@@ -313,11 +315,11 @@ msgstr "Podtvrdiť zmazanie"
 
 #: objinspstrconsts:srvk_control
 msgid "Control"
-msgstr ""
+msgstr "Control"
 
 #: objinspstrconsts:srvk_convert
 msgid "Convert"
-msgstr ""
+msgstr "Konvertovať"
 
 #: objinspstrconsts:oistdacteditcopyshorthint
 msgid "Copy"
@@ -341,7 +343,7 @@ msgstr "Orezať"
 
 #: objinspstrconsts:srkm_ctrl
 msgid "Ctrl"
-msgstr ""
+msgstr "Ctrl"
 
 #: objinspstrconsts:oistdacteditselectallshortcut
 msgid "Ctrl+A"
@@ -473,7 +475,7 @@ msgstr "Editácia"
 
 #: objinspstrconsts:srvk_end
 msgid "End"
-msgstr ""
+msgstr "Koniec"
 
 #: objinspstrconsts:oisenumeration
 msgid "Enumeration"
@@ -493,7 +495,7 @@ msgstr "Chyba pri načítaní obrázka %s%s%s:%s%s"
 
 #: objinspstrconsts:srvk_escape
 msgid "Escape"
-msgstr ""
+msgstr "Esc"
 
 #: objinspstrconsts:oisevents
 msgid "Events"
@@ -501,7 +503,7 @@ msgstr "Udalosti"
 
 #: objinspstrconsts:srvk_execute
 msgid "Execute"
-msgstr ""
+msgstr "Spustiť"
 
 #: objinspstrconsts:oistdactfileexithint
 msgid "Exit"
@@ -533,15 +535,15 @@ msgstr "Súbor"
 
 #: objinspstrconsts:pefilter
 msgid "Filter"
-msgstr ""
+msgstr "Filter"
 
 #: objinspstrconsts:pefiltername
 msgid "Filter name"
-msgstr ""
+msgstr "Meno filtra"
 
 #: objinspstrconsts:srvk_final
 msgid "Final"
-msgstr ""
+msgstr "Final"
 
 #: objinspstrconsts:oistdactsearchfindhint
 msgid "Find"
@@ -577,11 +579,11 @@ msgstr "Všeobecné obmedzenia WidgetSetu"
 
 #: objinspstrconsts:srgrabkey
 msgid "Grab key"
-msgstr ""
+msgstr "Zachytávací kláves"
 
 #: objinspstrconsts:srvk_hanja
 msgid "Hanja"
-msgstr ""
+msgstr "Hanja"
 
 #: objinspstrconsts:cactionlisteditorhelpcategory
 msgid "Help"
@@ -597,7 +599,7 @@ msgstr "Ako používať Pomocníka"
 
 #: objinspstrconsts:srvk_home
 msgid "Home"
-msgstr ""
+msgstr "Home"
 
 #: objinspstrconsts:sccstredtlabelimageindex
 msgid "Image Index:"
@@ -657,7 +659,7 @@ msgstr "Neplatná hodnota vlastnosti"
 
 #: objinspstrconsts:srvk_irregular
 msgid "Irregular "
-msgstr ""
+msgstr "Neplatný"
 
 #: objinspstrconsts:fesnofields
 msgid "It was not possible to get the dataset field's list"
@@ -681,11 +683,11 @@ msgstr "Skočiť na deklaráciu"
 
 #: objinspstrconsts:srvk_junja
 msgid "Junja"
-msgstr ""
+msgstr "Junja"
 
 #: objinspstrconsts:srvk_kana
 msgid "Kana"
-msgstr ""
+msgstr "Kana"
 
 #: objinspstrconsts:oistdactdatasetlasthint
 msgid "Last"
@@ -721,11 +723,11 @@ msgstr "Masky..."
 
 #: objinspstrconsts:srvk_menu
 msgid "Menu"
-msgstr ""
+msgstr "Menu"
 
 #: objinspstrconsts:srvk_meta
 msgid "Meta"
-msgstr ""
+msgstr "Meta"
 
 #: objinspstrconsts:oismethod
 msgid "Method"
@@ -733,7 +735,7 @@ msgstr "Metóda"
 
 #: objinspstrconsts:srvk_modechange
 msgid "Mode Change"
-msgstr ""
+msgstr "Zmena módu"
 
 #: objinspstrconsts:clbmodify
 msgid "Modify the Item"
@@ -741,15 +743,15 @@ msgstr "Modifikovať položku"
 
 #: objinspstrconsts:srvk_lbutton
 msgid "Mouse Button Left"
-msgstr ""
+msgstr "Ľavé tlač. myši"
 
 #: objinspstrconsts:srvk_mbutton
 msgid "Mouse Button Middle"
-msgstr ""
+msgstr "Stredné tlač. myši"
 
 #: objinspstrconsts:srvk_rbutton
 msgid "Mouse Button Right"
-msgstr ""
+msgstr "Pravé tlač. myši"
 
 #: objinspstrconsts:sccsiledtmovedown
 msgid "Move Down"
@@ -809,7 +811,7 @@ msgstr "Ďalší"
 
 #: objinspstrconsts:srvk_nonconvert
 msgid "Nonconvert"
-msgstr ""
+msgstr "Nekonvertovať"
 
 #: objinspstrconsts:sccsiledtnone
 msgid "None"
@@ -817,11 +819,11 @@ msgstr "Žiadny"
 
 #: objinspstrconsts:srvk_numlock
 msgid "Numlock"
-msgstr ""
+msgstr "Numlock"
 
 #: objinspstrconsts:srvk_numpad
 msgid "Numpad %d"
-msgstr ""
+msgstr "Num. kláv. %d"
 
 #: objinspstrconsts:rscdok
 msgid "OK"
@@ -889,7 +891,7 @@ msgstr "Prilepiť komponenty"
 
 #: objinspstrconsts:srvk_pause
 msgid "Pause key"
-msgstr ""
+msgstr "Pause"
 
 #: objinspstrconsts:oispepicture
 msgid "Picture"
@@ -905,7 +907,7 @@ msgstr "Poslať"
 
 #: objinspstrconsts:srvk_print
 msgid "Print"
-msgstr ""
+msgstr "Tlačiť"
 
 #: objinspstrconsts:oistdactdatasetpriorhint
 msgid "Prior"
@@ -937,11 +939,11 @@ msgstr "Nahradiť"
 
 #: objinspstrconsts:oisrestricted
 msgid "Restricted"
-msgstr "Restricted"
+msgstr "Obmedzenia"
 
 #: objinspstrconsts:srvk_return
 msgid "Return"
-msgstr ""
+msgstr "Return"
 
 #: objinspstrconsts:rscdright
 msgid "Right"
@@ -961,7 +963,7 @@ msgstr "Uložiť &ako..."
 
 #: objinspstrconsts:sccsiledtsaveall
 msgid "Save All..."
-msgstr ""
+msgstr "Uložiť všetko..."
 
 #: objinspstrconsts:oistdactfilesaveashint
 msgid "Save As"
@@ -989,7 +991,7 @@ msgstr "Uložiť..."
 
 #: objinspstrconsts:srvk_scroll
 msgid "Scroll"
-msgstr ""
+msgstr "Posunúť"
 
 #: objinspstrconsts:cactionlisteditorsearchcategory
 msgid "Search"
@@ -1001,7 +1003,7 @@ msgstr "Editor sekcií .."
 
 #: objinspstrconsts:srselect
 msgid "Select"
-msgstr ""
+msgstr "Zvoliť"
 
 #: objinspstrconsts:oistdacteditselectallheadline
 msgid "Select &All"
@@ -1025,7 +1027,7 @@ msgstr "Vybrať súbor"
 
 #: objinspstrconsts:oisselectshortcut
 msgid "Select short cut"
-msgstr ""
+msgstr "Zvoliť skratku"
 
 #: objinspstrconsts:sccsiledtgrprcaption
 msgid "Selected Image"
@@ -1049,7 +1051,7 @@ msgstr "Nastaviť na predvolené: %s"
 
 #: objinspstrconsts:srvk_shift
 msgid "Shift"
-msgstr ""
+msgstr "Shift"
 
 #: objinspstrconsts:oisshowcomponenttree
 msgid "Show Component Tree"
@@ -1065,7 +1067,7 @@ msgstr "Zobraziť stránku..."
 
 #: objinspstrconsts:srvk_snapshot
 msgid "Snapshot"
-msgstr ""
+msgstr "Snímok"
 
 #: objinspstrconsts:oissort
 msgid "Sort"
@@ -1073,7 +1075,7 @@ msgstr "Zoradiť"
 
 #: objinspstrconsts:srvk_space
 msgid "Space key"
-msgstr ""
+msgstr "Medzerník"
 
 #: objinspstrconsts:s_splitimage
 msgid "Split image"
@@ -1109,11 +1111,11 @@ msgstr "Dialóg Editor reťazcov"
 
 #: objinspstrconsts:srvk_super
 msgid "Super"
-msgstr ""
+msgstr "Super"
 
 #: objinspstrconsts:srvk_tab
 msgid "Tab"
-msgstr ""
+msgstr "Tabulátor"
 
 #: objinspstrconsts:oistestinput
 msgid "Test Input"
@@ -1197,17 +1199,17 @@ msgstr "Slovo"
 
 #: objinspstrconsts:srvk_apps
 msgid "application key"
-msgstr ""
+msgstr "kláves Menu"
 
 #: objinspstrconsts:srvk_lwin
 msgid "left windows key"
-msgstr ""
+msgstr "ľavý Win kláves"
 
 #: objinspstrconsts:srvk_none
 msgid "none"
-msgstr ""
+msgstr "nič"
 
 #: objinspstrconsts:srvk_rwin
 msgid "right windows key"
-msgstr ""
+msgstr "pravý Win kláves"
 
