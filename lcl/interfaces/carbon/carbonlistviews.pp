@@ -250,6 +250,8 @@ procedure TCarbonListColumn.SetHeaderWidth(AWidth: Integer);
 begin
   OSError(SetDataBrowserTableViewNamedColumnWidth(FOwner.Widget, PropertyID, AWidth),
     Self, 'SetHeaderWidth', 'SetDataBrowserTableViewNamedColumnWidth');
+
+  FOwner.CheckNeedsScrollBars;
 end;
 
 function TCarbonListColumn.PropertyID: DataBrowserPropertyID;
@@ -314,6 +316,8 @@ procedure TCarbonListColumn.Remove;
 begin
   OSError(RemoveDataBrowserTableViewColumn(FOwner.Widget, FDesc.propertyDesc.propertyID),
     Self, 'Remove', 'RemoveDataBrowserTableViewColumn');
+
+  FOwner.CheckNeedsScrollBars;
 end;
 
 procedure TCarbonListColumn.ReCreate;
@@ -752,25 +756,45 @@ end;
 
 procedure TCarbonDataBrowser.CheckNeedsScrollBars;
 var
-  Horz, Vert: Boolean;
+  ShowHorz, ShowVert, Horz, Vert: Boolean;
   R, C: TRect;
+  SX, SY: UInt32;
+const
+  SName = 'SetScrollBars';
 begin
   GetClientRect(C);
   R := GetItemsRect;
   
-  Horz := (FScrollBars in [ssHorizontal, ssBoth]) or
-    ((FScrollBars in [ssAutoHorizontal, ssAutoBoth]) and ((C.Right - C.Left) < (R.Right - R.Left)));
-  Vert := (FScrollBars in [ssVertical, ssBoth]) or
-    ((FScrollBars in [ssAutoVertical, ssAutoBoth]) and ((C.Bottom - C.Top) < (R.Bottom - R.Top)));
+  Horz := (C.Right - C.Left) < (R.Right - R.Left);
+  Vert := (C.Bottom - C.Top) < (R.Bottom - R.Top);
+  ShowHorz := (FScrollBars in [ssHorizontal, ssBoth]) or
+    ((FScrollBars in [ssAutoHorizontal, ssAutoBoth]) and Horz);
+  ShowVert := (FScrollBars in [ssVertical, ssBoth]) or
+    ((FScrollBars in [ssAutoVertical, ssAutoBoth]) and Vert);
 
-  OSError(SetDataBrowserHasScrollBars(Widget, Horz, Vert),
-    Self, 'SetScrollBars', 'SetDataBrowserHasScrollBars');
+  OSError(GetDataBrowserScrollPosition(Widget, SY, SX), // !!! top, left
+    Self, SName, 'GetDataBrowserScrollPosition');
+
+  OSError(SetDataBrowserHasScrollBars(Widget, ShowHorz, ShowVert),
+    Self, SName, 'SetDataBrowserHasScrollBars');
+
+  // adjust scroll pos
+  if not Horz then SX := 0
+  else
+    if SX > UInt32(R.Right - (C.Right - C.Left)) then
+      SX := UInt32(R.Right - (C.Right - C.Left));
+
+  if not Vert then SY := 0
+  else
+    if SY > UInt32(R.Bottom - (C.Bottom - C.Top)) then
+      SY := UInt32(R.Bottom - (C.Bottom - C.Top));
+
+  OSError(SetDataBrowserScrollPosition(Widget, SY, SX), // !!! top, left
+    Self, SName, 'SetDataBrowserScrollPosition');
 end;
 
 procedure TCarbonDataBrowser.UpdateItems;
 begin
-  CheckNeedsScrollBars;
-
   // removes all and adds new count of items starting with index 1
   OSError(RemoveDataBrowserItems(Widget, kDataBrowserNoItem, 0, nil, kDataBrowserItemNoProperty),
     Self, 'UpdateItems', 'RemoveDataBrowserItems');
@@ -778,6 +802,8 @@ begin
   if GetItemsCount <> 0 then
     OSError(AddDataBrowserItems(Widget, kDataBrowserNoItem, GetItemsCount, nil, kDataBrowserItemNoProperty),
       Self, 'UpdateItems', 'AddDataBrowserItems');
+
+  CheckNeedsScrollBars;
 end;
 
 procedure TCarbonDataBrowser.ClearItems;
@@ -786,6 +812,8 @@ begin
   
   OSError(RemoveDataBrowserItems(Widget, kDataBrowserNoItem, 0, nil, kDataBrowserItemNoProperty),
     Self, 'ClearItems', 'RemoveDataBrowserItems');
+
+  CheckNeedsScrollBars;
 end;
 
 function TCarbonDataBrowser.GetItemChecked(AIndex: Integer): Boolean;
@@ -1098,6 +1126,8 @@ begin
     else
       TCarbonListColumn(FColumns[I]).SetVisible(False);
   end;
+
+  CheckNeedsScrollBars;
 end;
 
 procedure TCarbonDataBrowser.ShowCheckboxes(AShow: Boolean);
@@ -1108,6 +1138,8 @@ begin
   end
   else
     FreeAndNil(FCheckListColumn);
+
+  CheckNeedsScrollBars;
 end;
 
 procedure TCarbonDataBrowser.ShowItem(AIndex: Integer; Partial: Boolean);
@@ -1128,6 +1160,8 @@ begin
 
   OSError(SetDataBrowserListViewHeaderBtnHeight(Widget, H),
     Self, 'ShowColumnHeaders', 'SetDataBrowserListViewHeaderBtnHeight');
+
+  CheckNeedsScrollBars;
 end;
 
 function TCarbonDataBrowser.GetColumn(AIndex: Integer): TCarbonListColumn;
