@@ -226,15 +226,27 @@ var
   ButtonDrawInfo: HIThemeButtonDrawInfo;
   LabelRect: HIRect;
 begin
-  if Details.Part = TP_BUTTON then
+  if Details.Part in [TP_BUTTON, TP_DROPDOWNBUTTON, TP_SPLITBUTTON, TP_SPLITBUTTONDROPDOWN] then
   begin
     ButtonDrawInfo.version := 0;
     ButtonDrawInfo.State := GetDrawState(Details);
-    ButtonDrawInfo.kind := kThemeBevelButtonSmall;
-    if IsChecked(Details) then
-      ButtonDrawInfo.value := kThemeButtonOn
+    case Details.Part of
+      TP_BUTTON, TP_SPLITBUTTON: ButtonDrawInfo.kind := kThemeBevelButtonSmall;
+      TP_DROPDOWNBUTTON: ButtonDrawInfo.kind := kThemePopupButtonSmall;
+      TP_SPLITBUTTONDROPDOWN: ButtonDrawInfo.kind := kThemeDisclosureButton;
+    end;
+
+    if Details.Part = TP_SPLITBUTTONDROPDOWN then
+    begin
+      ButtonDrawInfo.value := kThemeDisclosureDown;
+    end
     else
-      ButtonDrawInfo.value := kThemeButtonOff;
+    begin
+      if IsChecked(Details) then
+        ButtonDrawInfo.value := kThemeButtonOn
+      else
+        ButtonDrawInfo.value := kThemeButtonOff;
+    end;
     ButtonDrawInfo.adornment := kThemeAdornmentNone;
 
     LabelRect := RectToCGRect(R);
