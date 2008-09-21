@@ -2616,7 +2616,7 @@ begin
     COLOR_WINDOWFRAME             : Result:=GetColor(QPaletteActive,   QPaletteShadow);
     COLOR_MENUTEXT                : Result:=GetColor(QPaletteActive,   QPaletteWindowText);
     COLOR_WINDOWTEXT              : Result:=GetColor(QPaletteActive,   QPaletteWindowText);
-    COLOR_CAPTIONTEXT             : Result:=GetColor(QPaletteActive,   QPaletteText);
+    COLOR_CAPTIONTEXT             : Result:=GetColor(QPaletteActive,   QPaletteHighlightedText);
     COLOR_ACTIVEBORDER            : Result:=GetColor(QPaletteActive,   QPaletteWindow);
     COLOR_INACTIVEBORDER          : Result:=GetColor(QPaletteInactive, QPaletteWindow);
     COLOR_APPWORKSPACE            : Result:=GetColor(QPaletteActive,   QPaletteWindow);
