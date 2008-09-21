@@ -274,7 +274,6 @@ begin
   // specific states
   {when toolbar = flat, toolbar buttons should be flat too.}
   if (Details.Element = teToolBar) and
-     (Details.Part = TP_BUTTON) and
      (Details.State = TS_NORMAL) then
     Result := QStyleState_AutoRaise;
 
