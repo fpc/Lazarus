@@ -129,7 +129,7 @@ type
     function GetClientRect(var ARect: TRect): Boolean; override;
     procedure DrawItem(AIndex: Integer; AState: DataBrowserItemState); virtual; abstract;
     procedure CheckChanged(AIndex: Integer; AChecked: Boolean); dynamic;
-    procedure SelectionChanged(AIndex: Integer; ASelect: Boolean); dynamic; abstract;
+    procedure SelectionChanged(AIndex: Integer; ASelect: Boolean); dynamic;
     procedure FocusedChanged(AIndex: Integer); dynamic; abstract;
   public
     procedure CheckNeedsScrollBars;
@@ -558,12 +558,10 @@ begin
   case AMessage of
     kDataBrowserItemSelected:
       begin
-        ACarbonDataBrowser.SetItemIndexQuiet(ID - 1);
         ACarbonDataBrowser.SelectionChanged(ID - 1, True);
       end;
     kDataBrowserItemDeselected:
       begin
-        if ACarbonDataBrowser.GetSelCount = 0 then ACarbonDataBrowser.SetItemIndexQuiet(-1);
         ACarbonDataBrowser.SelectionChanged(ID - 1, False);
       end;
     kDataBrowserSelectionSetChanged: // the selection order has changed
@@ -752,6 +750,12 @@ end;
 procedure TCarbonDataBrowser.CheckChanged(AIndex: Integer; AChecked: Boolean);
 begin
   SetItemChecked(AIndex, AChecked);
+end;
+
+procedure TCarbonDataBrowser.SelectionChanged(AIndex: Integer; ASelect: Boolean);
+begin
+  if ASelect and (AIndex <> FItemIndex) and SetItemIndexQuiet(AIndex) then
+    FocusedChanged(AIndex);
 end;
 
 procedure TCarbonDataBrowser.CheckNeedsScrollBars;
@@ -1017,7 +1021,6 @@ begin
   if SetItemIndexQuiet(AItemIndex) then
   begin
     SelectItem(AItemIndex, True);
-    FocusedChanged(AItemIndex);
   end;
 end;
 
@@ -1085,7 +1088,7 @@ begin
   Flags := kDataBrowserCmdTogglesSelection;
   if not AMultiSelect then
     Flags := Flags or kDataBrowserSelectOnlyOne or kDataBrowserResetSelection;
-  if not AExtendedSelect then
+  if AExtendedSelect then
     Flags := Flags or kDataBrowserAlwaysExtendSelection;
   
   OSError(
@@ -1302,6 +1305,7 @@ var
   Msg: TLMNotify;
   NMLV: TNMListView;
 begin
+  inherited;
   //DebugLn('TCarbonListView.SelectionChanged Index: ' + DbgS(AIndex) + ' Select: ' +  DbgS(ASelect));
   
   FillChar(Msg, SizeOf(Msg), #0);
@@ -1411,12 +1415,13 @@ end;
 
 procedure TCarbonListBox.SelectionChanged(AIndex: Integer; ASelect: Boolean);
 begin
-  LCLSendSelectionChangedMsg(LCLObject);
+  // handled in focus changed
+  inherited;
 end;
 
 procedure TCarbonListBox.FocusedChanged(AIndex: Integer);
 begin
-  // handled in selection changed
+  LCLSendSelectionChangedMsg(LCLObject);
 end;
 
 { TCarbonCheckListBox }
