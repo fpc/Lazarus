@@ -38,7 +38,7 @@ unit registersqldb;
 interface
 
 uses
-  Classes, SysUtils, LResources, sqldb, ibconnection, odbcconn,
+  Classes, SysUtils, LResources, db, sqldb, ibconnection, odbcconn,
 {$IFDEF HASPQCONNECTION}
   pqconnection,
 {$ENDIF}
@@ -61,10 +61,12 @@ uses
 Type
   { TSQLStringsPropertyEditor }
 
-  TSQLStringsPropertyEditor = class(TClassPropertyEditor)
+  TSQLStringsPropertyEditor = class(TStringsPropertyEditor)
+  private
+    procedure EditSQL;
   public
     procedure Edit; override;
-    function CreateDlg(s: TStrings): TSQLStringsPropertyEditorDlg; virtual;
+    function CreateEnhancedDlg(s: TStrings): TSQLStringsPropertyEditorDlg; virtual;
     function GetAttributes: TPropertyAttributes; override;
   end;
 
@@ -127,8 +129,7 @@ end;
 
 { TSQLStringsPropertyEditor }
 
-//-------------------------------------//
-procedure TSQLStringsPropertyEditor.Edit;
+procedure TSQLStringsPropertyEditor.EditSQL;
 var
   TheDialog:TSQLStringsPropertyEditorDlg;
   Strings  :TStrings;
@@ -136,7 +137,7 @@ var
 begin
   Strings := TStrings(GetObjectValue);
 
-  TheDialog := CreateDlg(Strings);
+  TheDialog := CreateEnhancedDlg(Strings);
   try
     TheDialog.Caption := Format(SSQLStringsPropertyEditorDlgTitle, [GetPropInfo^.Name]);
     if(GetComponent(0) is TSQLQuery)then
@@ -156,8 +157,20 @@ begin
   end;
 end;
 
+procedure TSQLStringsPropertyEditor.Edit;
+begin
+  try
+    EditSQL;
+  except
+    on E:EDatabaseError do
+    begin
+      inherited Edit;
+    end;
+  end;
+end;
+
 //------------------------------------------------------------------------------------//
-function TSQLStringsPropertyEditor.CreateDlg(s: TStrings): TSQLStringsPropertyEditorDlg;
+function TSQLStringsPropertyEditor.CreateEnhancedDlg(s: TStrings): TSQLStringsPropertyEditorDlg;
 begin
   Result := TSQLStringsPropertyEditorDlg.Create(Application);
   Result.SQLEditor.Text := s.Text;
