@@ -3864,6 +3864,7 @@ resourcestring
     +'default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in '
     +'environmentoptions.xml';
   lisNo = 'No';
+  rsOk = 'ok';
 
 implementation
 

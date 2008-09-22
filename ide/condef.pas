@@ -173,9 +173,12 @@ begin
   AddBtn.Caption := liswlAdd;
   AddInverse.Caption := rsAddInverse;
   RemoveBtn.Caption := rsRemove;
-  OkBtn.Caption := 'Insert';
+  OkBtn.Caption := lisEdtExtToolInsert;
   CancelButton.Caption := dlgCancel;
-  
+  HelpButton.Caption:= lisPckEditHelp;
+  OkBtn.LoadGlyphFromLazarusResource('btn_ok');
+  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
+  HelpButton.LoadGlyphFromLazarusResource('btn_help');
   try
     XMLConfig:=CreateXMLConfig;
     try

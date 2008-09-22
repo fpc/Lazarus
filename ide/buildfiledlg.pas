@@ -560,6 +560,9 @@ begin
   RunWorkDirGroupbox.Caption:=lisBFWorkingDirectoryLeaveEmptyForFilePath2;
   RunCommandGroupbox.Caption:=lisBFRunCommand;
 
+  CancelButton.Caption:= dlgCancel;
+  OKButton.Caption:= rsOk;
+  HelpButton:= lisPckEditHelp;
   CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
   OKButton.LoadGlyphFromLazarusResource('btn_ok');
   HelpButton.LoadGlyphFromLazarusResource('btn_help');

@@ -19,12 +19,12 @@ object BuildFileDialog: TBuildFileDialog
     Height = 380
     Width = 451
     Align = alClient
-    PageIndex = 1
+    PageIndex = 0
     TabOrder = 0
     object GeneralPage: TPage
       Caption = 'Options'
       ClientWidth = 443
-      ClientHeight = 353
+      ClientHeight = 354
       object WhenFileIsActiveGroupbox: TGroupBox
         Left = 6
         Height = 74
@@ -63,7 +63,7 @@ object BuildFileDialog: TBuildFileDialog
     object BuildPage: TPage
       Caption = 'Build'
       ClientWidth = 443
-      ClientHeight = 354
+      ClientHeight = 353
       object BuildCommandGroupbox: TGroupBox
         Left = 6
         Height = 80
@@ -72,8 +72,8 @@ object BuildFileDialog: TBuildFileDialog
         Align = alTop
         BorderSpacing.Around = 6
         Caption = 'Build Command'
-        ClientHeight = 62
-        ClientWidth = 427
+        ClientHeight = 80
+        ClientWidth = 431
         ParentCtl3D = False
         TabOrder = 0
         object BuildCommandMemo: TMemo
@@ -118,8 +118,8 @@ object BuildFileDialog: TBuildFileDialog
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'Working directory (Leave empty for file path)'
-        ClientHeight = 37
-        ClientWidth = 427
+        ClientHeight = 55
+        ClientWidth = 431
         ParentCtl3D = False
         TabOrder = 3
         object BuildWorkDirCombobox: TComboBox
@@ -133,6 +133,7 @@ object BuildFileDialog: TBuildFileDialog
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 6
           ItemHeight = 13
+          MaxLength = -1
           ParentCtl3D = False
           TabOrder = 0
           Text = 'BuildWorkDirCombobox'
@@ -175,8 +176,8 @@ object BuildFileDialog: TBuildFileDialog
         Align = alTop
         BorderSpacing.Around = 6
         Caption = 'Run Command'
-        ClientHeight = 80
-        ClientWidth = 427
+        ClientHeight = 98
+        ClientWidth = 431
         ParentCtl3D = False
         TabOrder = 1
         object RunCommandMemo: TMemo
@@ -201,8 +202,8 @@ object BuildFileDialog: TBuildFileDialog
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'Working Directory (Leave empty for file path)'
-        ClientHeight = 35
-        ClientWidth = 427
+        ClientHeight = 53
+        ClientWidth = 431
         ParentCtl3D = False
         TabOrder = 2
         object RunWorkDirCombobox: TComboBox
@@ -216,6 +217,7 @@ object BuildFileDialog: TBuildFileDialog
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 6
           ItemHeight = 13
+          MaxLength = -1
           ParentCtl3D = False
           TabOrder = 0
           Text = 'RunWorkDirCombobox'

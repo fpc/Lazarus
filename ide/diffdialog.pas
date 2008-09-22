@@ -261,7 +261,10 @@ begin
   CloseButton.Caption:=lisMenuClose;
   OpenInEditorButton.Caption:=lisDiffDlgOpenDiffInEditor;
   SaveDiffButton.Caption:=lisSave;
-  
+  CloseButton.LoadGlyphFromLazarusResource('btn_close');
+  OpenInEditorButton.LoadGlyphFromLazarusResource('open');
+  SaveDiffButton.LoadGlyphFromLazarusResource('menu_save');
+
   // dialogs
   dlgOpen.Title:=lisOpenExistingFile;
   dlgOpen.Filter:=dlgAllFiles+' ('+GetAllFilesMask+')|'+GetAllFilesMask

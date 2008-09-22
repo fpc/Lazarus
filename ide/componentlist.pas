@@ -100,6 +100,7 @@ begin
   LabelSearch.Caption := lisMenuFind;
   Caption := lisCmpLstComponents;
   CloseButton.Caption := lisClose;
+  CloseButton.LoadGlyphFromLazarusResource('btn_close');
   TabSheetListBox.Caption := lisCmpLstList;
   TabSheetPaletteTree.Caption := lisCmpLstPalette;
   TabSheetInheritance.Caption := lisCmpLstInheritance;
