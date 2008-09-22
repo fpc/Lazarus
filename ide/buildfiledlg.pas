@@ -562,7 +562,7 @@ begin
 
   CancelButton.Caption:= dlgCancel;
   OKButton.Caption:= rsOk;
-  HelpButton:= lisPckEditHelp;
+  HelpButton.Caption:= lisPckEditHelp;
   CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
   OKButton.LoadGlyphFromLazarusResource('btn_ok');
   HelpButton.LoadGlyphFromLazarusResource('btn_help');
