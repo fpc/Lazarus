@@ -48,14 +48,14 @@ type
   { TCheckLFMDialog }
 
   TCheckLFMDialog = class(TForm)
-    CancelButton: TButton;
+    CancelButton: TBitBtn;
     ErrorsGroupBox: TGroupBox;
     ErrorsListBox: TListBox;
     NoteLabel: TLabel;
     LFMGroupBox: TGroupBox;
     LFMSynEdit: TSynEdit;
     BtnPanel: TPanel;
-    RemoveAllButton: TButton;
+    RemoveAllButton: TBitBtn;
     SynLFMSyn1: TSynLFMSyn;
     procedure ErrorsListBoxClick(Sender: TObject);
     procedure LFMSynEditSpecialLineMarkup(Sender: TObject; Line: integer;
@@ -557,10 +557,11 @@ procedure TCheckLFMDialog.SetupComponents;
 begin
   NoteLabel.Caption:=lisTheLFMLazarusFormFileContainsInvalidPropertiesThis;
   CancelButton.Caption:=dlgCancel;
+  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
   ErrorsGroupBox.Caption:=lisErrors;
   LFMGroupBox.Caption:=lisLFMFile;
   RemoveAllButton.Caption:=lisRemoveAllInvalidProperties;
-  
+  RemoveAllButton.LoadGlyphFromLazarusResource('delete');
   EditorOpts.GetHighlighterSettings(SynLFMSyn1);
   EditorOpts.GetSynEditSettings(LFMSynEdit);
 end;

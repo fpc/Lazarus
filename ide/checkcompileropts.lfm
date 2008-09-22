@@ -3,18 +3,18 @@ object CheckCompilerOptsDlg: TCheckCompilerOptsDlg
   Height = 307
   Top = 220
   Width = 624
-  HorzScrollBar.Page = 623
-  VertScrollBar.Page = 306
   ActiveControl = OutputListbox
   BorderIcons = [biSystemMenu]
   Caption = 'CheckCompilerOptsDlg'
   ClientHeight = 307
   ClientWidth = 624
+  ParentFont = False
   Position = poScreenCenter
+  LCLVersion = '0.9.25'
   object OutputGroupBox: TGroupBox
     AnchorSideBottom.Control = CloseButton1
     Left = 6
-    Height = 151
+    Height = 154
     Top = 116
     Width = 612
     Align = alTop
@@ -23,13 +23,13 @@ object CheckCompilerOptsDlg: TCheckCompilerOptsDlg
     BorderSpacing.Right = 6
     BorderSpacing.Bottom = 6
     Caption = 'Output'
-    ClientHeight = 133
+    ClientHeight = 136
     ClientWidth = 608
     ParentCtl3D = False
     TabOrder = 0
     object OutputListbox: TListBox
       Left = 6
-      Height = 121
+      Height = 124
       Top = 6
       Width = 596
       Align = alClient
@@ -68,10 +68,10 @@ object CheckCompilerOptsDlg: TCheckCompilerOptsDlg
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 545
-    Height = 28
-    Top = 273
-    Width = 73
+    Left = 543
+    Height = 25
+    Top = 276
+    Width = 75
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6

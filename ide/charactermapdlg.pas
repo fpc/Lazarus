@@ -88,7 +88,7 @@ begin
   Caption := lisCharacterMap;
   CharactersGroupbox.Caption := lisCharacterMap;
   CloseButton.Caption := lisClose;
-
+  CloseButton.LoadGlyphFromLazarusResource('btn_close');
   //EnvironmentOptions.IDEWindowLayoutList.Apply(Self, Name);
   FillCharMap;
 end;

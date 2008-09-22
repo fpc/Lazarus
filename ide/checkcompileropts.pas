@@ -1113,6 +1113,7 @@ begin
   Application.AddOnIdleHandler(@ApplicationOnIdle,true);
   Caption:=dlgCCOCaption;
   CloseButton1.Caption:=lisClose;
+  CloseButton1.LoadGlyphFromLazarusResource('btn_close');
   TestGroupbox.Caption:=dlgCCOTest;
   OutputGroupBox.Caption:=dlgCCOResults;
   CopyOutputMenuItem.Caption:=lisCCOCopyOutputToCliboard;

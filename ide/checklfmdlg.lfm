@@ -8,9 +8,10 @@ object CheckLFMDialog: TCheckLFMDialog
   ClientHeight = 580
   ClientWidth = 552
   OnCreate = CheckLFMDialogCreate
+  ParentFont = False
   LCLVersion = '0.9.25'
   object NoteLabel: TLabel
-    Height = 20
+    Height = 14
     Width = 552
     Align = alTop
     Caption = 'NoteLabel'
@@ -18,17 +19,17 @@ object CheckLFMDialog: TCheckLFMDialog
     WordWrap = True
   end
   object LFMGroupBox: TGroupBox
-    Height = 415
-    Top = 20
+    Height = 427
+    Top = 14
     Width = 552
     Align = alClient
     Caption = 'LFM file'
-    ClientHeight = 396
+    ClientHeight = 409
     ClientWidth = 548
     ParentCtl3D = False
     TabOrder = 0
     object LFMSynEdit: TSynEdit
-      Height = 396
+      Height = 409
       Width = 548
       Align = alClient
       Font.Height = -15
@@ -36,7 +37,9 @@ object CheckLFMDialog: TCheckLFMDialog
       Font.Pitch = fpFixed
       ParentColor = False
       ParentCtl3D = False
+      ParentFont = False
       TabOrder = 0
+      BookMarkOptions.OnChange = nil
       Highlighter = SynLFMSyn1
       Keystrokes = <      
         item
@@ -362,59 +365,61 @@ object CheckLFMDialog: TCheckLFMDialog
       Lines.Strings = (
         'LFMSynEdit'
       )
+      SelectedColor.OnChange = nil
       OnSpecialLineMarkup = LFMSynEditSpecialLineMarkup
     end
   end
   object ErrorsGroupBox: TGroupBox
     Height = 104
-    Top = 435
+    Top = 441
     Width = 552
     Align = alBottom
     Caption = 'Errors'
-    ClientHeight = 85
+    ClientHeight = 86
     ClientWidth = 548
     ParentCtl3D = False
     TabOrder = 1
     object ErrorsListBox: TListBox
-      Height = 85
+      Height = 86
       Width = 548
       Align = alClient
       OnClick = ErrorsListBoxClick
       TabOrder = 0
-      TopIndex = -1
     end
   end
   object BtnPanel: TPanel
-    Height = 41
-    Top = 539
+    Height = 35
+    Top = 545
     Width = 552
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 41
+    ClientHeight = 35
     ClientWidth = 552
     TabOrder = 2
-    object CancelButton: TButton
-      Left = 491
-      Height = 29
+    object CancelButton: TBitBtn
+      Left = 488
+      Height = 23
       Top = 6
-      Width = 55
+      Width = 58
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'Cancel'
       ModalResult = 2
+      NumGlyphs = 0
       TabOrder = 0
     end
-    object RemoveAllButton: TButton
-      Left = 291
-      Height = 29
+    object RemoveAllButton: TBitBtn
+      Left = 319
+      Height = 23
       Top = 6
-      Width = 194
+      Width = 163
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'Remove all invalid properties'
+      NumGlyphs = 0
       OnClick = RemoveAllButtonClick
       TabOrder = 1
     end
