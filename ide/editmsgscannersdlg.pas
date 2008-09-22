@@ -28,7 +28,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  ButtonPanel, StdCtrls, ExtCtrls, Buttons,
+  ButtonPanel, StdCtrls, ExtCtrls, Buttons, LazarusIDEStrConsts,
   IDEMsgIntf;
 
 type
@@ -90,11 +90,14 @@ procedure TEditMsgScannersDialog.FormCreate(Sender: TObject);
 begin
   FScanners:=TStringList.Create;
   
-  AvailableGroupBox.Caption:='Available scanners';
-  ScannersGroupBox.Caption:='Scanners';
-  AddSpeedButton.Hint:='Add';
-  RemoveSpeedButton.Hint:='Remove';
-  
+  AvailableGroupBox.Caption:=rsAvailableScanners;
+  ScannersGroupBox.Caption:=rsScanners;
+  AddSpeedButton.Hint:=lisCodeTemplAdd;
+  RemoveSpeedButton.Hint:=lisExtToolRemove;
+
+  AddSpeedButton.LoadGlyphFromLazarusResource('arrow_left');
+  RemoveSpeedButton.LoadGlyphFromLazarusResource('arrow_right');
+
   FillAvailableListbox;
 end;
 

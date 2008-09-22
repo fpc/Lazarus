@@ -1831,7 +1831,11 @@ procedure TEditorOptionsFormNew.SetupButtonBar;
 begin
   btnOk.Caption := lisOk;
   btnCancel.Caption := dlgCancel;
-
+  HelpButton.Caption:= lisPckEditHelp;
+  btnOk.LoadGlyphFromLazarusResource('btn_ok');
+  btnCancel.LoadGlyphFromLazarusResource('btn_cancel');
+  HelpButton.LoadGlyphFromLazarusResource('btn_help');
+  ClearFilterButton.LoadGlyphFromLazarusResource('btn_cancel');
   CancelControl := btnCancel;
 end;
 

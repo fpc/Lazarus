@@ -4025,10 +4025,10 @@ end;
 procedure TEditorOptionsForm.SetupButtonBar;
 begin
   CancelButton.Caption := dlgCancel;
-
   CancelControl := CancelButton;
-
   OkButton.Caption := lisOk;
+  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
+  OkButton.LoadGlyphFromLazarusResource('btn_ok');
 end;
 
 procedure TEditorOptionsForm.OkButtonClick(Sender: TObject);

@@ -407,6 +407,8 @@ begin
   Caption:=lisEncloseSelection;
   btnOk.Caption:=lisEnclose;
   btnCancel.Caption:=dlgCancel;
+  btnOk.LoadGlyphFromLazarusResource('btn_ok');
+  btnCancel.LoadGlyphFromLazarusResource('btn_cancel');
   TypeRadiogroup.Caption:=lisChooseStructureToEncloseSelection;
   with TypeRadiogroup.Items do begin
     BeginUpdate;

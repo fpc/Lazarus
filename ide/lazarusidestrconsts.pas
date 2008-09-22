@@ -3865,6 +3865,8 @@ resourcestring
     +'environmentoptions.xml';
   lisNo = 'No';
   rsOk = 'ok';
+  rsScanners = 'Scanners';
+  rsAvailableScanners = 'Available scanners';
 
 implementation
 
