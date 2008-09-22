@@ -88,6 +88,8 @@ begin
   DescriptionGroupBox.Caption:=lisToDoLDescription;
   OkButton.Caption:=lisCTInsertMacro;
   CancelButton.Caption:=dlgCancel;
+  OkButton.LoadGlyphFromLazarusResource('btn_ok');
+  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
   ParameterGroupBox.Caption:=lisCMParameter;
   ParameterEdit.Text:='';
   

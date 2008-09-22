@@ -392,6 +392,8 @@ begin
   Caption:=lisCEOCodeExplorer;
   OkButton.Caption:=dlgButApply;
   CancelButton.Caption:=dlgCancel;
+  OkButton.LoadGlyphFromLazarusResource('btn_ok');
+  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
   UpdatePage.Caption:=lisCEOUpdate;
   RefreshRadioGroup.Caption:=lisCEORefreshAutomatically;
   with RefreshRadioGroup do begin

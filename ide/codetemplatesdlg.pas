@@ -693,6 +693,8 @@ begin
   CancelButton.Caption:=dlgCancel;
   TemplatesGroupBox.Caption:=lisCTDTemplates;
   OkButton.Caption:=lisLazBuildOk;
+  OkButton.LoadGlyphFromLazarusResource('btn_ok');
+  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
   FilenameGroupBox.Caption:=lisToDoLFile;
   UseMacrosCheckBox.Caption:=lisEnableMacros;
   InsertMacroButton.Caption:=lisCTInsertMacro;

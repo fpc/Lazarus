@@ -1067,6 +1067,8 @@ begin
     SetupLineSplittingPage(3);
     SetupSpacePage(4);
     SetupIdentifierCompletionPage(5);
+    CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
+    OkButton.LoadGlyphFromLazarusResource('btn_ok');
 
     with CancelButton do
       Caption:=dlgCancel;

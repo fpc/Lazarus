@@ -357,7 +357,7 @@ begin
   
   DirectoryGroupbox.Caption:=lisCodeToolsDefsInsertBehindDirectory;
   CloseButton.Caption:=lisMenuClose;
-  
+  CloseButton.LoadGlyphFromLazarusResource('btn_close');
   DirectoryCombobox.Items.Assign(
     InputHistories.HistoryLists.GetList(hlCodeToolsDirectories,true));
   if DirectoryCombobox.Items.Count>0 then

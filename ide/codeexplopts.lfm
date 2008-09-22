@@ -3,8 +3,6 @@ object CodeExplorerDlg: TCodeExplorerDlg
   Height = 340
   Top = 170
   Width = 321
-  HorzScrollBar.Page = 320
-  VertScrollBar.Page = 339
   ActiveControl = MainNotebook
   BorderStyle = bsSizeToolWin
   Caption = 'CodeExplorerDlg'
@@ -12,9 +10,11 @@ object CodeExplorerDlg: TCodeExplorerDlg
   ClientWidth = 321
   OnCreate = CodeExplorerDlgCreate
   OnDestroy = CodeExplorerDlgDestroy
+  ParentFont = False
   Position = poScreenCenter
+  LCLVersion = '0.9.25'
   object MainNotebook: TNotebook
-    Height = 292
+    Height = 305
     Width = 321
     Align = alClient
     PageIndex = 1
@@ -40,8 +40,8 @@ object CodeExplorerDlg: TCodeExplorerDlg
         ChildSizing.ShrinkVertical = crsScaleChilds
         ChildSizing.Layout = cclLeftToRightThenTopToBottom
         ChildSizing.ControlsPerLine = 1
-        ClientHeight = 125
-        ClientWidth = 301
+        ClientHeight = 144
+        ClientWidth = 305
         Items.Strings = (
           'Manual'
           'SwitchPage'
@@ -81,8 +81,8 @@ object CodeExplorerDlg: TCodeExplorerDlg
         ChildSizing.ShrinkVertical = crsScaleChilds
         ChildSizing.Layout = cclLeftToRightThenTopToBottom
         ChildSizing.ControlsPerLine = 2
-        ClientHeight = 24
-        ClientWidth = 301
+        ClientHeight = 43
+        ClientWidth = 305
         Columns = 2
         ItemIndex = 0
         Items.Strings = (
@@ -94,11 +94,11 @@ object CodeExplorerDlg: TCodeExplorerDlg
     end
     object CategoryPage: TPage
       Caption = 'CategoryPage'
-      ClientWidth = 317
-      ClientHeight = 261
+      ClientWidth = 313
+      ClientHeight = 279
       object CategoriesCheckGroup: TCheckGroup
-        Height = 261
-        Width = 317
+        Height = 279
+        Width = 313
         Align = alClient
         AutoFill = True
         Caption = 'CategoriesCheckGroup'
@@ -115,20 +115,20 @@ object CodeExplorerDlg: TCodeExplorerDlg
     end
   end
   object BtnPanel: TPanel
-    Height = 48
-    Top = 292
+    Height = 35
+    Top = 305
     Width = 321
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 48
+    ClientHeight = 35
     ClientWidth = 321
     TabOrder = 1
     object OkButton: TBitBtn
-      Left = 174
-      Height = 36
+      Left = 211
+      Height = 23
       Top = 6
-      Width = 57
+      Width = 40
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
@@ -141,10 +141,10 @@ object CodeExplorerDlg: TCodeExplorerDlg
       TabOrder = 0
     end
     object CancelButton: TBitBtn
-      Left = 237
-      Height = 36
+      Left = 257
+      Height = 23
       Top = 6
-      Width = 78
+      Width = 58
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6

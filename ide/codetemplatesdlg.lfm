@@ -3,8 +3,6 @@ object CodeTemplateDialog: TCodeTemplateDialog
   Height = 542
   Top = 122
   Width = 497
-  HorzScrollBar.Page = 496
-  VertScrollBar.Page = 541
   ActiveControl = FilenameEdit
   BorderIcons = [biSystemMenu]
   Caption = 'CodeTemplateDialog'
@@ -12,6 +10,8 @@ object CodeTemplateDialog: TCodeTemplateDialog
   ClientWidth = 497
   OnClose = FormClose
   OnCreate = FormCreate
+  ParentFont = False
+  LCLVersion = '0.9.25'
   object FilenameGroupBox: TGroupBox
     Left = 6
     Height = 51
@@ -20,7 +20,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
     Align = alTop
     BorderSpacing.Around = 6
     Caption = 'FilenameGroupBox'
-    ClientHeight = 32
+    ClientHeight = 33
     ClientWidth = 481
     TabOrder = 0
     object FilenameEdit: TEdit
@@ -59,7 +59,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
     Align = alTop
     BorderSpacing.Around = 6
     Caption = 'TemplatesGroupBox'
-    ClientHeight = 148
+    ClientHeight = 149
     ClientWidth = 481
     TabOrder = 1
     object TemplateListBox: TListBox
@@ -69,7 +69,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AnchorSideBottom.Control = TemplatesGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 136
+      Height = 137
       Top = 6
       Width = 315
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -79,7 +79,6 @@ object CodeTemplateDialog: TCodeTemplateDialog
       BorderSpacing.Bottom = 6
       OnSelectionChange = TemplateListBoxSelectionChange
       TabOrder = 0
-      TopIndex = -1
     end
     object AddButton: TButton
       AnchorSideTop.Control = TemplateListBox
@@ -135,20 +134,20 @@ object CodeTemplateDialog: TCodeTemplateDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = BtnPanel
     Left = 6
-    Height = 252
+    Height = 265
     Top = 236
     Width = 485
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'EditTemplateGroupBox'
-    ClientHeight = 233
+    ClientHeight = 247
     ClientWidth = 481
     TabOrder = 2
     object UseMacrosCheckBox: TCheckBox
       Left = 6
-      Height = 22
+      Height = 19
       Top = 6
-      Width = 158
+      Width = 125
       BorderSpacing.Bottom = 7
       Caption = 'UseMacrosCheckBox'
       TabOrder = 0
@@ -159,10 +158,10 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AnchorSideTop.Control = UseMacrosCheckBox
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Side = asrBottom
-      Left = 164
-      Height = 29
-      Top = 3
-      Width = 130
+      Left = 131
+      Height = 23
+      Top = 4
+      Width = 116
       AutoSize = True
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
@@ -178,16 +177,18 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AnchorSideBottom.Control = EditTemplateGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 153
-      Top = 74
+      Height = 172
+      Top = 69
       Width = 469
       BorderSpacing.Around = 6
       Anchors = [akTop, akLeft, akRight, akBottom]
       Font.Height = -14
       Font.Name = 'courier'
+      Font.Pitch = fpFixed
       ParentColor = False
+      ParentFont = False
       TabOrder = 1
-      Gutter.CodeFoldingWidth = 14
+      BookMarkOptions.OnChange = nil
       Keystrokes = <      
         item
           Command = 3
@@ -512,7 +513,6 @@ object CodeTemplateDialog: TCodeTemplateDialog
       Lines.Strings = (
         'TemplateSynEdit'
       )
-      SelectedColor.OnChange = nil
     end
     object AutoOnOptionsCheckGroup: TCheckGroup
       AnchorSideLeft.Control = EditTemplateGroupBox
@@ -522,7 +522,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AnchorSideRight.Side = asrBottom
       Left = 6
       Height = 30
-      Top = 38
+      Top = 33
       Width = 469
       Anchors = [akTop, akLeft, akRight]
       AutoFill = True
@@ -543,19 +543,19 @@ object CodeTemplateDialog: TCodeTemplateDialog
     end
   end
   object BtnPanel: TPanel
-    Height = 48
-    Top = 494
+    Height = 35
+    Top = 507
     Width = 497
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 48
+    ClientHeight = 35
     ClientWidth = 497
     TabOrder = 3
     object OkButton: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = 332
-      Height = 36
+      Left = 335
+      Height = 23
       Top = 6
       Width = 75
       Align = alRight
@@ -573,10 +573,10 @@ object CodeTemplateDialog: TCodeTemplateDialog
     object CancelButton: TBitBtn
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
-      Left = 413
-      Height = 36
+      Left = 416
+      Height = 23
       Top = 6
-      Width = 78
+      Width = 75
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
