@@ -3,8 +3,6 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
   Height = 468
   Top = 160
   Width = 452
-  HorzScrollBar.Page = 451
-  VertScrollBar.Page = 467
   ActiveControl = CurrentListBox
   BorderStyle = bsSizeToolWin
   Caption = 'FindRenameIdentifierDialog'
@@ -12,7 +10,9 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
   ClientWidth = 452
   OnClose = FindRenameIdentifierDialogClose
   OnCreate = FindRenameIdentifierDialogCreate
+  ParentFont = False
   Position = poScreenCenter
+  LCLVersion = '0.9.25'
   object CurrentGroupBox: TGroupBox
     Left = 6
     Height = 79
@@ -144,21 +144,7 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
       end
     end
   end
-  object FindOrRenameButton: TButton
-    AnchorSideRight.Control = CancelButton
-    Left = 220
-    Height = 23
-    Top = 439
-    Width = 128
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Right = 8
-    Caption = 'FindOrRenameButton'
-    Default = True
-    OnClick = FindOrRenameButtonClick
-    TabOrder = 3
-  end
-  object CancelButton: TButton
+  object CancelButton: TBitBtn
     Left = 356
     Height = 23
     Top = 439
@@ -167,6 +153,20 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
     AutoSize = True
     Caption = 'CancelButton'
     ModalResult = 2
+    NumGlyphs = 0
+    TabOrder = 3
+  end
+  object FindOrRenameButton: TBitBtn
+    Left = 219
+    Height = 23
+    Top = 439
+    Width = 129
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Right = 8
+    Caption = 'FindOrRenameButton'
+    Default = True
+    NumGlyphs = 0
     TabOrder = 4
   end
 end

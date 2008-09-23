@@ -263,6 +263,8 @@ begin
     
   OKButton.Caption:=lisOkBtn;
   CancelButton.Caption:=dlgCancel;
+  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
+  OKButton.LoadGlyphFromLazarusResource('btn_ok');
 
   fOptions:=TExternalToolOptions.Create;
 end;

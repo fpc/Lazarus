@@ -92,6 +92,9 @@ begin
   ComponentsGroupBox.Caption:=lisFPComponents;
   SelectButton.Caption:=lisMenuSelect;
   CancelButton.Caption:=dlgCancel;
+  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
+  SelectButton.LoadGlyphFromLazarusResource('btn_ok');
+
   PatternEdit.Text:='';
   SearchPatternGroupBox.Caption:=lisMenuFind;
   ComponentsListBox.ItemHeight:=ComponentPaletteImageHeight + 2;

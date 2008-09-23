@@ -39,13 +39,16 @@ uses
   InputHistory, SearchResultView, CodeHelp;
 
 type
+
+  { TFindRenameIdentifierDialog }
+
   TFindRenameIdentifierDialog = class(TForm)
-    CancelButton: TButton;
+    CancelButton: TBitBtn;
     CurrentGroupBox: TGroupBox;
     CurrentListBox: TListBox;
     ExtraFilesEdit: TEdit;
     ExtraFilesGroupBox: TGroupBox;
-    FindOrRenameButton: TButton;
+    FindOrRenameButton: TBitBtn;
     NewEdit: TEdit;
     NewGroupBox: TGroupBox;
     RenameCheckBox: TCheckBox;
@@ -437,6 +440,8 @@ begin
   CurrentGroupBox.Caption:=lisCodeToolsOptsIdentifier;
   ExtraFilesGroupBox.Caption:=lisFRIAdditionalFilesToSearchEGPathPasPath2Pp;
   FindOrRenameButton.Caption:=lisFRIFindReferences;
+  FindOrRenameButton.LoadGlyphFromLazarusResource('btn_ok');
+  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
   NewGroupBox.Caption:=lisFRIRenameTo;
   RenameCheckBox.Caption:=lisFRIRename;
   ScopeCommentsCheckBox.Caption:=lisFRISearchInCommentsToo;

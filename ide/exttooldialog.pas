@@ -517,6 +517,8 @@ begin
   MoveDownButton.Caption:=lisExtToolMoveDown;
   OkButton.Caption:=lisLazBuildOk;
   CancelButton.Caption:=dlgCancel;
+  OkButton.LoadGlyphFromLazarusResource('btn_ok');
+  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
 
   AddButton.ImageIndex := IDEImages.LoadImage(16, 'add');
   RemoveButton.ImageIndex := IDEImages.LoadImage(16, 'delete');

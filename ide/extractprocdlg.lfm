@@ -3,8 +3,6 @@ object ExtractProcDialog: TExtractProcDialog
   Height = 355
   Top = 374
   Width = 425
-  HorzScrollBar.Page = 424
-  VertScrollBar.Page = 354
   ActiveControl = NameEdit
   BorderIcons = [biSystemMenu]
   Caption = 'ExtractProcDialog'
@@ -12,10 +10,12 @@ object ExtractProcDialog: TExtractProcDialog
   ClientWidth = 425
   OnClose = ExtractProcDialogClose
   OnCreate = ExtractProcDialogCREATE
+  ParentFont = False
+  LCLVersion = '0.9.25'
   object TypeRadiogroup: TRadioGroup
     AnchorSideBottom.Control = NameGroupbox
     Left = 6
-    Height = 171
+    Height = 182
     Top = 6
     Width = 413
     Align = alClient
@@ -40,8 +40,8 @@ object ExtractProcDialog: TExtractProcDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = CancelButton
     Left = 6
-    Height = 54
-    Top = 183
+    Height = 53
+    Top = 194
     Width = 413
     Align = alBottom
     AutoSize = True
@@ -63,22 +63,22 @@ object ExtractProcDialog: TExtractProcDialog
     end
   end
   object BtnPanel: TPanel
-    Height = 48
-    Top = 307
+    Height = 38
+    Top = 317
     Width = 425
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 48
+    ClientHeight = 38
     ClientWidth = 425
     TabOrder = 2
     object CancelButton: TBitBtn
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
-      Left = 341
-      Height = 36
+      Left = 344
+      Height = 26
       Top = 6
-      Width = 78
+      Width = 75
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
@@ -93,8 +93,8 @@ object ExtractProcDialog: TExtractProcDialog
     end
     object OkButton: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = 260
-      Height = 36
+      Left = 263
+      Height = 26
       Top = 6
       Width = 75
       Align = alRight
@@ -113,7 +113,7 @@ object ExtractProcDialog: TExtractProcDialog
     object HelpButton: TBitBtn
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 36
+      Height = 26
       Top = 6
       Width = 75
       Align = alLeft
@@ -131,20 +131,19 @@ object ExtractProcDialog: TExtractProcDialog
   object MissingIdentifiersGroupBox: TGroupBox
     Left = 6
     Height = 58
-    Top = 243
+    Top = 253
     Width = 413
     Align = alBottom
     BorderSpacing.Around = 6
     Caption = 'MissingIdentifiersGroupBox'
-    ClientHeight = 39
+    ClientHeight = 40
     ClientWidth = 409
     TabOrder = 3
     object MissingIdentifiersListBox: TListBox
-      Height = 39
+      Height = 40
       Width = 409
       Align = alClient
       TabOrder = 0
-      TopIndex = -1
     end
   end
 end

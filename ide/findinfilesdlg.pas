@@ -145,7 +145,9 @@ begin
 
   OkButton.Caption := lisLazBuildOk;
   CancelButton.Caption := dlgCancel;
-  
+  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
+  OkButton.LoadGlyphFromLazarusResource('btn_ok');
+
   ReplaceCheckBox.Enabled:=true;
 
   UpdateReplaceCheck;

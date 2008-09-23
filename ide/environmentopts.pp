@@ -1724,6 +1724,9 @@ begin
 
   CancelButton.Caption:=dlgCancel;
   CancelControl:=CancelButton;
+  OkButton.Caption:= lisOkBtn;
+  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
+  OkButton.LoadGlyphFromLazarusResource('btn_ok');
 end;
 
 destructor TEnvironmentOptionsDialog.Destroy;
