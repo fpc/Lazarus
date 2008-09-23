@@ -3867,6 +3867,18 @@ resourcestring
   rsOk = 'ok';
   rsScanners = 'Scanners';
   rsAvailableScanners = 'Available scanners';
+  rsSelectAnInheritedEntry = 'Select an inherited entry';
+
+  // New console application dialog (CustomApplicationOptionsForm.pas)
+  lisApplicationClassName = '&Application class name';
+  lisTitle = '&Title';
+  lisCodeGenerationOptions = 'Code generation options';
+  lisUsageMessageHOption = 'Usage message (-h option)';
+  lisStopOnException = 'Stop on exception';
+  lisConstructorCode = 'Constructor code';
+  lisDestructorCode = 'Destructor code';
+  lisCheckOptions = 'Check options';
+  lisNewConsoleApplication = 'New console application';
 
 implementation
 

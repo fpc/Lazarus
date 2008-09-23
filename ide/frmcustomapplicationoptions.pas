@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, Buttons;
+  ExtCtrls, Buttons, LazarusIDEStrConsts;
 
 type
 
@@ -68,9 +68,26 @@ procedure TCustomApplicationOptionsForm.FormCreate(Sender: TObject);
 var
   i: Integer;
 begin
+  Caption:= lisNewConsoleApplication;
+  LEClassName.Caption:= lisApplicationClassName;
+  LETitle.Caption:= lisTitle;
+  CGOptions.Caption:= lisCodeGenerationOptions;
+  CGOptions.Items.Clear;
+  CGOptions.Items.Add(lisUsageMessageHOption);
+  CGOptions.Items.Add(lisStopOnException);
+  CGOptions.Items.Add(lisConstructorCode);
+  CGOptions.Items.Add(lisDestructorCode);
+  CGOptions.Items.Add(lisCheckOptions);
+
   // set all defaults to true
   for i:=0 to CGOptions.Items.Count-1 do
-    CGOptions.Checked[i]:=true;
+    CGOptions.Checked[i]:= true;
+
+  BOK.Caption:= lisOkBtn;
+  BCancel.Caption:= dlgCancel;
+
+  BOK.LoadGlyphFromLazarusResource('btn_ok');
+  BCancel.LoadGlyphFromLazarusResource('btn_cancel');
 end;
 
 function TCustomApplicationOptionsForm.GetBool(Index: integer): Boolean;
