@@ -1371,6 +1371,7 @@ begin
     Add('TRUE'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('WIDECHAR'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('WIDESTRING' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('UNICODESTRING',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LONGWORD'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('WORD'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LONGINT'    ,{$ifdef FPC}@{$endif}AllwaysTrue);

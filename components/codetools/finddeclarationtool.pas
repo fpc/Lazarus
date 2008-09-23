@@ -251,6 +251,7 @@ type
     xtAnsiString,  // ansistring
     xtShortString, // shortstring
     xtWideString,  // widestring
+    xtUnicodeString,// unicodestring
     xtPChar,       // pchar
     xtPointer,     // pointer
     xtFile,        // file
@@ -295,6 +296,7 @@ const
     'AnsiString',
     'ShortString',
     'WideString',
+    'UnicodeString',
     'PChar',
     'Pointer',
     'File',
@@ -324,7 +326,7 @@ const
   xtAllRealTypes = [xtReal, xtConstReal, xtSingle, xtDouble, xtExtended,
                     xtCurrency, xtComp];
   xtAllStringTypes = [xtConstString, xtShortString, xtString, xtAnsiString];
-  xtAllWideStringTypes = [xtConstString, xtWideString];
+  xtAllWideStringTypes = [xtConstString, xtWideString, xtUnicodeString];
   xtAllPointerTypes = [xtPointer, xtNil];
 
   xtAllStringCompatibleTypes = xtAllStringTypes+[xtChar];
@@ -898,6 +900,8 @@ begin
     Result:=xtAnsiString
   else if CompareIdentifiers(Identifier,'WIDESTRING')=0 then
     Result:=xtWideString
+  else if CompareIdentifiers(Identifier,'UNICODESTRING')=0 then
+    Result:=xtUnicodeString
   else if CompareIdentifiers(Identifier,'INT64')=0 then
     Result:=xtInt64
   else if CompareIdentifiers(Identifier,'CARDINAL')=0 then
@@ -5717,7 +5721,7 @@ var
           ExprType.Desc:=xtChar;
           ExprType.Context.Node:=nil;
           exit;
-        end else if UpAtomIs('WIDESTRING') then begin
+        end else if UpAtomIs('WIDESTRING') or UpAtomIs('UNICODESTRING') then begin
           ExprType.Desc:=xtWideChar;
           ExprType.Context.Node:=nil;
           exit;
