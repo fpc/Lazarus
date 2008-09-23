@@ -109,7 +109,7 @@ type
     procedure SetAntialiasing(AValue: Boolean);
     function DrawCGImage(X, Y, Width, Height: Integer; CGImage: CGImageRef): Boolean;
   public
-    procedure DrawFocusRect(const ARect: TRect);
+    procedure DrawFocusRect(ARect: TRect);
     procedure DrawGrid(const ARect: TRect; DX, DY: Integer);
     
     procedure Ellipse(X1, Y1, X2, Y2: Integer);
@@ -694,8 +694,15 @@ end;
 
   Draws a focus rectangle
  ------------------------------------------------------------------------------}
-procedure TCarbonDeviceContext.DrawFocusRect(const ARect: TRect);
+procedure TCarbonDeviceContext.DrawFocusRect(ARect: TRect);
+var
+  AOutSet: SInt32;
 begin
+  // LCL thinks that focus cannot be drawn outside focus rects, but carbon do that
+  // => correct rect
+  OSError(GetThemeMetric(kThemeMetricFocusRectOutset, AOutSet),
+    Self, 'DrawFocusRect', 'GetThemeMetric');
+  InflateRect(ARect, -AOutSet, -AOutSet);
   OSError(
     HIThemeDrawFocusRect(RectToCGRect(ARect), True, CGContext, kHIThemeOrientationNormal),
     Self, 'DrawFocusRect', 'HIThemeDrawFocusRect');
