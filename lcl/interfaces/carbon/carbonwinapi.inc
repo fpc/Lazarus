@@ -1718,6 +1718,10 @@ begin
   COLOR_BACKGROUND,
   COLOR_WINDOW, COLOR_FORM:
     R := GetThemeBrushAsColor(kThemeBrushDocumentWindowBackground, Depth, True, C);
+  COLOR_ACTIVECAPTION:
+    R := GetThemeBrushAsColor(kThemeBrushAlternatePrimaryHighlightColor, Depth, True, C);
+  COLOR_INACTIVECAPTION:
+    R := GetThemeBrushAsColor(kThemeBrushSecondaryHighlightColor, Depth, True, C);
   else
     DebugLn('TCarbonWidgetSet.GetSysColor TODO ', DbgS(NIndex));
   end;
