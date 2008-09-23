@@ -172,6 +172,9 @@ begin
 
   ReplaceAllButton.Caption:=dlgReplaceAll;
   CancelButton.Caption:=dlgCancel;
+  ReplaceAllButton.LoadGlyphFromLazarusResource('btn_all');
+  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
+  OKButton.LoadGlyphFromLazarusResource('btn_ok');
 
   fReplaceAllClickedLast:=false;
 end;

@@ -1,0 +1,6 @@
+lazdoc/formatbold.png
+lazdoc/formatitalic.png
+lazdoc/formatunderline.png
+lazdoc/insertcodetag.png
+lazdoc/insertremark.png
+lazdoc/insertvartag.png

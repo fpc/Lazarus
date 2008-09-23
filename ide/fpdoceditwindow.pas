@@ -290,6 +290,13 @@ begin
   {$IFDEF EnableIDEDocking}
   ControlDocker.Manager:=LazarusIDE.DockingManager;
   {$ENDIF}
+
+  BoldFormatButton.LoadGlyphFromLazarusResource('formatbold');
+  UnderlineFormatButton.LoadGlyphFromLazarusResource('formatunderline');
+  ItalicFormatButton.LoadGlyphFromLazarusResource('formatitalic');
+  InsertVarTagButton.LoadGlyphFromLazarusResource('insertvartag');
+  InsertCodeTagButton.LoadGlyphFromLazarusResource('insertcodetag');
+  InsertRemarkButton.LoadGlyphFromLazarusResource('insertremark');
 end;
 
 procedure TFPDocEditor.FormDestroy(Sender: TObject);
@@ -1196,6 +1203,7 @@ begin
 end;
 
 initialization
+  {$I lazdoc.lrs}
   {$I fpdoceditwindow.lrs}
 
 end.
