@@ -409,11 +409,18 @@ begin
         if (CurItem<>Options.ItemIDE) then
           CurMakeMode:=mmNone;
       end;
-      if (CurItem=Options.ItemIDE)
-      and (blfWithoutCompilingIDE in Flags)
-      and (blfWithoutLinkingIDE in Flags)
-      then
-        CurMakeMode:=mmNone;
+      if (CurItem=Options.ItemIDE) then
+      begin
+        if (blfWithoutCompilingIDE in Flags) and (blfWithoutLinkingIDE in Flags)
+        then
+          CurMakeMode:=mmNone
+        // build the IDE when blfOnlyIDE is set, eg. when installing packages
+        // even if that build node is disabled in configure build lazarus dialog
+        else if (blfOnlyIDE in Flags) then
+            CurMakeMode := mmBuild;
+     end;
+
+
 
       if CurMakeMode=mmNone then continue;
       
