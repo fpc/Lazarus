@@ -147,16 +147,18 @@ end;
 
 procedure TContextHelpEditorDlg.FormCreate(Sender: TObject);
 begin
-  Caption:='Edit context help';
+  Caption:=lisEditContextHelp;
   
-  TestButton.Caption:='Test';
-  CreateHelpNodeForControlButton.Caption:='Create Help node';
-  NodeHasHelpCheckBox.Caption:='Has Help';
-  NodePathLabel.Caption:='Path';
-  NodeNameLabel.Caption:='Name';
-  NodesGroupBox.Caption:='Help entries';
-  OkBitBtn.Caption:='Ok';
-  CancelBitBtn.Caption:='Cancel';
+  TestButton.Caption:=dlgCCOTest;
+  CreateHelpNodeForControlButton.Caption:=lisCreateHelpNode;
+  NodeHasHelpCheckBox.Caption:=lisHasHelp;
+  NodePathLabel.Caption:=lisPath;
+  NodeNameLabel.Caption:=lisDebugOptionsFrmName;
+  NodesGroupBox.Caption:=lisHelpEntries;
+  OkBitBtn.Caption:=lisOkBtn;
+  CancelBitBtn.Caption:=dlgCancel;
+  OkBitBtn.LoadGlyphFromLazarusResource('btn_ok');
+  CancelBitBtn.LoadGlyphFromLazarusResource('btn_cancel');
 
   IDEDialogLayoutList.ApplyLayout(Self, 600, 450);
 
@@ -233,7 +235,7 @@ begin
     WindowControlsGroupBox.Caption:=dbgsName(IDEWindow);
     WindowControlsGroupBox.Enabled:=true;
   end else begin
-    WindowControlsGroupBox.Caption:='No IDE window selected';
+    WindowControlsGroupBox.Caption:=lisNoIDEWindowSelected;
     WindowControlsGroupBox.Enabled:=false;
   end;
 end;
@@ -296,7 +298,7 @@ begin
     NodeHasHelpCheckBox.Checked:=HelpNode.HasHelp;
     HelpNodePropertiesGroupBox.Enabled:=true;
   end else begin
-    HelpNodePropertiesGroupBox.Caption:='no node selected';
+    HelpNodePropertiesGroupBox.Caption:=lisNoNodeSelected;
     HelpNodePropertiesGroupBox.Enabled:=false;
   end;
 end;

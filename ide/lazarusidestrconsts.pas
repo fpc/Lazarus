@@ -3880,6 +3880,15 @@ resourcestring
   lisCheckOptions = 'Check options';
   lisNewConsoleApplication = 'New console application';
 
+  // Edit context help dialog (IDEContextHelpEdit.pas)
+  lisHelpEntries = 'Help entries';
+  lisPath = 'Path';
+  lisHasHelp = 'Has Help';
+  lisCreateHelpNode = 'Create Help node';
+  lisEditContextHelp = 'Edit context help';
+  lisNoNodeSelected = 'no node selected';
+  lisNoIDEWindowSelected = 'No IDE window selected';
+
 implementation
 
 end.

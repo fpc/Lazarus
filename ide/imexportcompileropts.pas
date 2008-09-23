@@ -231,7 +231,9 @@ begin
   SaveButton.Caption:=lisIECOSaveToFile;
   OpenButton.Caption:=lisIECOLoadFromFile;
   CancelButton.Caption:=dlgCancel;
-  
+  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
+  OpenButton.LoadGlyphFromLazarusResource('open');
+  SaveButton.LoadGlyphFromLazarusResource('menu_save');
   LoadRecentList;
 end;
 

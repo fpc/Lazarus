@@ -1,56 +1,61 @@
 object HelpSelectorDialog: THelpSelectorDialog
   Left = 328
-  Height = 300
+  Height = 283
   Top = 414
   Width = 500
-  HorzScrollBar.Page = 499
-  VertScrollBar.Page = 299
   Caption = 'HelpSelectorDialog'
-  ClientHeight = 300
+  ClientHeight = 283
   ClientWidth = 500
   OnClose = HelpSelectorDialogClose
+  ParentFont = False
   Position = poScreenCenter
+  LCLVersion = '0.9.25'
   object NodesGroupBox: TGroupBox
     AnchorSideBottom.Control = CancelButton
     Left = 6
-    Height = 250
+    Height = 236
     Top = 6
     Width = 488
     Align = alClient
     BorderSpacing.Around = 6
     Caption = 'NodesGroupBox'
-    ClientHeight = 231
+    ClientHeight = 218
     ClientWidth = 484
     TabOrder = 0
     object NodesListBox: TListBox
       Left = 6
-      Height = 219
+      Height = 206
       Top = 6
       Width = 472
       Align = alClient
       BorderSpacing.Around = 6
       OnDblClick = NodesListBoxDblClick
       TabOrder = 0
-      TopIndex = -1
     end
   end
   object BtnPanel: TPanel
-    Height = 38
-    Top = 262
+    Height = 35
+    Top = 248
     Width = 500
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 38
+    ClientHeight = 35
     ClientWidth = 500
     TabOrder = 1
     object OKButton: TBitBtn
-      Left = 327
-      Height = 38
+      AnchorSideTop.Control = BtnPanel
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = CancelButton
+      AnchorSideBottom.Control = BtnPanel
+      AnchorSideBottom.Side = asrBottom
+      Left = 338
+      Height = 23
+      Top = 6
       Width = 75
-      Align = alRight
+      Anchors = [akRight, akBottom]
       AutoSize = True
-      BorderSpacing.Right = 6
+      BorderSpacing.Around = 6
       Caption = '&OK'
       Constraints.MinWidth = 75
       Default = True
@@ -60,13 +65,19 @@ object HelpSelectorDialog: THelpSelectorDialog
       TabOrder = 0
     end
     object CancelButton: TBitBtn
+      AnchorSideTop.Control = BtnPanel
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = BtnPanel
       AnchorSideRight.Side = asrBottom
-      Left = 408
-      Height = 38
-      Width = 86
-      Align = alRight
+      AnchorSideBottom.Control = BtnPanel
+      AnchorSideBottom.Side = asrBottom
+      Left = 419
+      Height = 23
+      Top = 6
+      Width = 75
+      Anchors = [akRight, akBottom]
       AutoSize = True
-      BorderSpacing.Right = 6
+      BorderSpacing.Around = 6
       Caption = 'Cancel'
       Constraints.MinWidth = 75
       Kind = bkCancel

@@ -573,6 +573,8 @@ begin
   NodesGroupBox.Caption:=lisSelectAHelpItem;
   OkButton.Caption:=lisLazBuildOk;
   CancelButton.Caption:=dlgCancel;
+  OkButton.LoadGlyphFromLazarusResource('btn_ok');
+  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
 end;
 
 { TIDEHelpDatabases }
