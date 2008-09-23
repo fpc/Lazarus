@@ -93,6 +93,8 @@ begin
     CmdLine := LazBuildPath;
     if Compiler<>'' then
       CmdLine := CmdLine + ' --compiler='+Compiler;
+    if PrimaryConfigPath<>'' then
+      CmdLine := CmdLine + ' --pcp='+PrimaryConfigPath;
     CmdLine:=CmdLine + ' ' + FProjectFile;
     LazBuild.CommandLine := CmdLine;
     LazBuild.CurrentDirectory := FPath;

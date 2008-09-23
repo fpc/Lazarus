@@ -28,6 +28,7 @@ uses
 
 var
   Compiler: string;
+  PrimaryConfigPath: string;
   BugsTestSuite: TTestSuite;
   LCLTestSuite: TTestSuite;
 

@@ -150,6 +150,8 @@ begin
     CmdLine:=LazBuildPath;
     if Compiler<>'' then
       CmdLine:=Cmdline + ' --compiler='+Compiler;
+    if PrimaryConfigPath<>'' then
+      CmdLine := CmdLine + ' --pcp='+PrimaryConfigPath;
     Cmdline := Cmdline + ' -B ' + FPath;
     LazBuild.CommandLine := CmdLine;
     LazBuild.CurrentDirectory := ExtractFileDir(FPath);

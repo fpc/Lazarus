@@ -48,6 +48,7 @@ procedure TLazTestRunner.AppendLongOpts;
 begin
   inherited;
   LongOpts.Add('compiler:');
+  LongOpts.Add('pcp:');
   LongOpts.Add('machine:');
   LongOpts.Add('submitter:');
 end;
@@ -57,6 +58,8 @@ begin
   inherited ParseOptions;
   if HasOption('compiler') then
     Compiler := GetOptionValue('compiler');
+  if HasOption('pcp') then
+    PrimaryConfigPath := GetOptionValue('pcp');
   if HasOption('submitter') then
     FSubmitter := GetOptionValue('submitter');
   if HasOption('machine') then
@@ -65,9 +68,10 @@ end;
 
 procedure TLazTestRunner.WriteCustomHelp;
 begin
-  writeln('  --compiler=<ppcxxx>       use ppcxxx to build test projects');
-  writeln('  --submitter=SubmitterName name to be stored as sumbitter of the test results');
-  writeln('  --machine=MachineName     name of the machine to be stored with the test results');
+  writeln('  --compiler=<ppcxxx>           use ppcxxx to build test projects');
+  writeln('  --pcp=<primarty-config-path>  pass primarty-config-path to lazbuild');
+  writeln('  --submitter=SubmitterName     name of sumbitter of the test results');
+  writeln('  --machine=MachineName         name of the machine the test runs on');
 end;
 
 procedure TLazTestRunner.ExtendXmlDocument(Doc: TXMLDocument);
