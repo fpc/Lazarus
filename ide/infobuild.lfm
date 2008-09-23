@@ -15,6 +15,7 @@ object FInfoCompile: TFInfoCompile
   ClientWidth = 430
   FormStyle = fsStayOnTop
   OnCreate = FormCreate
+  ParentFont = False
   Position = poScreenCenter
   LCLVersion = '0.9.25'
   object PInfo: TPanel
@@ -28,6 +29,7 @@ object FInfoCompile: TFInfoCompile
     BorderStyle = bsSingle
     Caption = 'PInfo'
     Font.Style = [fsBold]
+    ParentFont = False
     TabOrder = 0
   end
   object BClose: TBitBtn
@@ -99,6 +101,7 @@ object FInfoCompile: TFInfoCompile
       Caption = '0'
       Font.Color = clBlue
       ParentColor = False
+      ParentFont = False
     end
     object LInfoHint: TLabel
       Left = 6
@@ -126,6 +129,7 @@ object FInfoCompile: TFInfoCompile
       Caption = '0'
       Font.Color = clGreen
       ParentColor = False
+      ParentFont = False
     end
     object LInfoError: TLabel
       Left = 112
@@ -145,6 +149,7 @@ object FInfoCompile: TFInfoCompile
       Caption = '0'
       Font.Color = clRed
       ParentColor = False
+      ParentFont = False
     end
     object LInfoNote: TLabel
       Left = 112
@@ -164,6 +169,7 @@ object FInfoCompile: TFInfoCompile
       Caption = '0'
       Font.Color = clBlack
       ParentColor = False
+      ParentFont = False
     end
   end
   object Panel2: TPanel

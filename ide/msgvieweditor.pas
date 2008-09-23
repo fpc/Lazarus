@@ -32,7 +32,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, ComCtrls;
+  Buttons, ComCtrls, LazarusIDEStrConsts;
 
 type
   { TMessageFilterRule }
@@ -86,13 +86,20 @@ implementation
 
 procedure TMsgViewEditorDlg.MsgViewEditorDlgCreate(Sender: TObject);
 begin
-  AddNewSetButton.Caption:='Add new set';
-  ActiveFilterSetGroupBox.Caption:='Active Filter';
-  OkButton.Caption:='Ok';
-  CancelButton.Caption:='Cancel';
-  RenameSetButton.Caption:='Rename';
-  DeleteSetButton.Caption:='Delete';
-  FilterSetGroupBox.Caption:='Filter Sets';
+  Caption:= lisMessagesEditor;
+  AddNewSetButton.Caption:=lisAddNewSet;
+  ActiveFilterSetGroupBox.Caption:=lisActiveFilter;
+  OkButton.Caption:=lisOkBtn;
+  CancelButton.Caption:=dlgCancel;
+  RenameSetButton.Caption:=lisFRIRename;
+  DeleteSetButton.Caption:=dlgEdDelete;
+  FilterSetGroupBox.Caption:=lisFilterSets;
+
+  OkButton.LoadGlyphFromLazarusResource('btn_ok');
+  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
+  AddNewSetButton.LoadGlyphFromLazarusResource('add');
+  DeleteSetButton.LoadGlyphFromLazarusResource('delete');
+  RenameSetButton.LoadGlyphFromLazarusResource('edit');
 end;
 
 procedure TMsgViewEditorDlg.DeleteSetButtonClick(Sender: TObject);

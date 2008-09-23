@@ -131,6 +131,8 @@ begin
   Caption := srkmEditForCmd;
   OkButton.Caption:=lisOkBtn;
   CancelButton.Caption:=dlgCancel;
+  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
+  OkButton.LoadGlyphFromLazarusResource('btn_ok');
 
   IDEDialogLayoutList.ApplyLayout(Self, 480, 480);
 

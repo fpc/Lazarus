@@ -73,6 +73,8 @@ begin
   SchemeRadiogroup.Caption:=lisKMKeymappingScheme;
   OkButton.Caption:=lisOkBtn;
   CancelButton.Caption:=dlgCancel;
+  OkButton.LoadGlyphFromLazarusResource('btn_ok');
+  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
 end;
 
 function TChooseKeySchemeDlg.GetKeymapScheme: string;

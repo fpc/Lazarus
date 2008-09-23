@@ -118,6 +118,7 @@ begin
   Caption              := lisInfoBuildCaption;
 
   ToAbort              := True;
+  BClose.LoadGlyphFromLazarusResource('btn_ok');
 
   SetProjectName('');
   SetStatus('');

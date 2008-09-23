@@ -305,6 +305,9 @@ begin
   OkButton.Caption:=lisLazBuildOk;
   CancelButton.Caption:=dlgCancel;
   HelpButton.Caption:=lisPckEditHelp;
+  OkButton.LoadGlyphFromLazarusResource('btn_ok');
+  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
+  HelpButton.LoadGlyphFromLazarusResource('btn_help');
 end;
 
 constructor TMakeResStrDialog.Create(TheOwner: TComponent);

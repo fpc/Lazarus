@@ -3889,6 +3889,12 @@ resourcestring
   lisNoNodeSelected = 'no node selected';
   lisNoIDEWindowSelected = 'No IDE window selected';
 
+  // Messages Editor dialog (MsgViewEditor.pas)
+  lisAddNewSet = 'Add new set';
+  lisActiveFilter = 'Active Filter';
+  lisFilterSets = 'Filter Sets';
+  lisMessagesEditor = 'Messages Editor';
+
 implementation
 
 end.
