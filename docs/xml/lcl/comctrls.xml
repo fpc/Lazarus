@@ -1187,7 +1187,7 @@
       <!-- procedure Visibility: public -->
       <element name="TPageControl.SelectNextPage">
         <descr>
-          <printshort id="TPageControl.SelectNextPage"/>
+         
           <p>If GoForward is True, goes to next (higher index) page;</p>
           <p>if False, goes to previous (lower index)</p>
           <p>If <var>CheckTabVisible</var> is True, will only move if the tab is visible</p>

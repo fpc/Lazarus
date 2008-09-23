@@ -1191,7 +1191,7 @@ execution will end up at the <var>TPersistent</var> implementation of
           <p>
             <var>TAction</var> is the basic action object used on the LCL.</p>
           <p>It redeclares many properties inherited from TCustomAction on the public section, but does not add any new features. For more details look at the See Also section for TCustomAction.</p>
-          <var>The properties of each Action can be modified at design time in the Object Inspector</var>
+          <p>The properties of each Action can be modified at design time in the Object Inspector</p>
         </descr>
         <seealso>
           <link id="TCustomAction"/>
