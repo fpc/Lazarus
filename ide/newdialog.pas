@@ -349,6 +349,10 @@ begin
   HelpButton.Caption := lisPckEditHelp;
   DefaultControl := OkButton;
   CancelControl  := CancelButton;
+
+  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
+  OkButton.LoadGlyphFromLazarusResource('btn_ok');
+  HelpButton.LoadGlyphFromLazarusResource('btn_help');
 end;
 
 procedure TNewOtherDialog.UpdateDescription;

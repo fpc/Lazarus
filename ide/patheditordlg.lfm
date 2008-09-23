@@ -11,6 +11,7 @@ object PathEditorDialog: TPathEditorDialog
   Constraints.MinWidth = 500
   OnCreate = FormCreate
   OnResize = FormResize
+  ParentFont = False
   Position = poScreenCenter
   LCLVersion = '0.9.25'
   object PathGroupBox: TGroupBox
@@ -27,7 +28,7 @@ object PathEditorDialog: TPathEditorDialog
     BorderSpacing.Top = 6
     BorderSpacing.Right = 6
     Caption = 'PathGroupBox'
-    ClientHeight = 175
+    ClientHeight = 176
     ClientWidth = 484
     TabOrder = 0
     object PathEdit: TSynEdit
@@ -35,20 +36,20 @@ object PathEditorDialog: TPathEditorDialog
       AnchorSideTop.Control = PathGroupBox
       AnchorSideRight.Control = PathGroupBox
       AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Control = MoveUpButton
       Left = 6
-      Height = 128
+      Height = 129
       Top = 6
       Width = 472
       BorderSpacing.Around = 6
       Anchors = [akTop, akLeft, akRight, akBottom]
       Font.Height = -16
       Font.Name = 'courier'
+      Font.Pitch = fpFixed
       ParentColor = False
+      ParentFont = False
       TabOrder = 0
       BookMarkOptions.Xoffset = -18
       Gutter.Visible = False
-      Gutter.CodeFoldingWidth = 14
       Keystrokes = <      
         item
           Command = 3
@@ -375,66 +376,67 @@ object PathEditorDialog: TPathEditorDialog
       )
       Options = [eoDragDropEditing, eoHalfPageScroll, eoScrollByOneLess, eoScrollPastEol, eoSmartTabs, eoTabsToSpaces, eoTrimTrailingSpaces, eoBracketHighlight, eoHideRightMargin]
     end
-    object MoveUpButton: TButton
+    object MoveUpButton: TBitBtn
       AnchorSideLeft.Control = PathGroupBox
       AnchorSideBottom.Control = PathGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 29
-      Top = 140
-      Width = 107
-      Anchors = [akLeft, akBottom]
-      AutoSize = True
-      BorderSpacing.Around = 6
-      Caption = 'MoveUpButton'
-      OnClick = MoveUpButtonClick
-      TabOrder = 1
-    end
-    object MoveDownButton: TButton
-      AnchorSideLeft.Control = MoveUpButton
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideBottom.Control = PathGroupBox
-      AnchorSideBottom.Side = asrBottom
-      Left = 119
-      Height = 29
-      Top = 140
-      Width = 124
-      Anchors = [akLeft, akBottom]
-      AutoSize = True
-      BorderSpacing.Around = 6
-      Caption = 'MoveDownButton'
-      OnClick = MoveDownButtonClick
-      TabOrder = 2
-    end
-    object BrowseButton: TButton
-      AnchorSideLeft.Control = MoveDownButton
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideBottom.Control = PathGroupBox
-      AnchorSideBottom.Side = asrBottom
-      Left = 249
-      Height = 29
-      Top = 140
-      Width = 101
-      Anchors = [akLeft, akBottom]
-      AutoSize = True
-      BorderSpacing.Around = 6
-      Caption = 'BrowseButton'
-      OnClick = BrowseButtonClick
-      TabOrder = 3
-    end
-    object DeleteButton: TButton
-      AnchorSideLeft.Control = BrowseButton
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideBottom.Control = PathGroupBox
-      AnchorSideBottom.Side = asrBottom
-      Left = 356
-      Height = 29
-      Top = 140
+      Height = 23
+      Top = 147
       Width = 97
       Anchors = [akLeft, akBottom]
       AutoSize = True
       BorderSpacing.Around = 6
+      Caption = 'MoveUpButton'
+      NumGlyphs = 0
+      OnClick = MoveUpButtonClick
+      TabOrder = 1
+    end
+    object MoveDownButton: TBitBtn
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideBottom.Control = PathGroupBox
+      AnchorSideBottom.Side = asrBottom
+      Left = 119
+      Height = 23
+      Top = 147
+      Width = 111
+      Anchors = [akLeft, akBottom]
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'MoveDownButton'
+      NumGlyphs = 0
+      OnClick = MoveDownButtonClick
+      TabOrder = 2
+    end
+    object BrowseButton: TBitBtn
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideBottom.Control = PathGroupBox
+      AnchorSideBottom.Side = asrBottom
+      Left = 249
+      Height = 23
+      Top = 147
+      Width = 93
+      Anchors = [akLeft, akBottom]
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'BrowseButton'
+      NumGlyphs = 0
+      OnClick = BrowseButtonClick
+      TabOrder = 3
+    end
+    object DeleteButton: TBitBtn
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideBottom.Control = PathGroupBox
+      AnchorSideBottom.Side = asrBottom
+      Left = 356
+      Height = 23
+      Top = 147
+      Width = 89
+      Anchors = [akLeft, akBottom]
+      AutoSize = True
+      BorderSpacing.Around = 6
       Caption = 'DeleteButton'
+      NumGlyphs = 0
       OnClick = DeleteButtonClick
       TabOrder = 4
     end
@@ -447,13 +449,13 @@ object PathEditorDialog: TPathEditorDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = OKBitBtn
     Left = 6
-    Height = 152
+    Height = 159
     Top = 206
     Width = 488
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'TemplateGroupBox'
-    ClientHeight = 133
+    ClientHeight = 141
     ClientWidth = 484
     TabOrder = 1
     object TemplatesListBox: TListBox
@@ -461,9 +463,8 @@ object PathEditorDialog: TPathEditorDialog
       AnchorSideTop.Control = TemplateGroupBox
       AnchorSideRight.Control = TemplateGroupBox
       AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Control = AddTemplateButton
       Left = 6
-      Height = 86
+      Height = 94
       Top = 6
       Width = 472
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -471,20 +472,20 @@ object PathEditorDialog: TPathEditorDialog
       MultiSelect = True
       OnDblClick = TemplatesListBoxDblClick
       TabOrder = 0
-      TopIndex = -1
     end
-    object AddTemplateButton: TButton
+    object AddTemplateButton: TBitBtn
       AnchorSideLeft.Control = TemplateGroupBox
       AnchorSideBottom.Control = TemplateGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 29
-      Top = 98
-      Width = 138
+      Height = 23
+      Top = 112
+      Width = 121
       Anchors = [akLeft, akBottom]
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'AddTemplateButton'
+      NumGlyphs = 0
       OnClick = AddTemplateButtonClick
       TabOrder = 1
     end
@@ -493,11 +494,12 @@ object PathEditorDialog: TPathEditorDialog
     AnchorSideRight.Control = CancelBitBtn
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 308
-    Height = 30
-    Top = 364
-    Width = 90
+    Left = 400
+    Height = 23
+    Top = 371
+    Width = 36
     Anchors = [akRight, akBottom]
+    AutoSize = True
     BorderSpacing.Around = 6
     Caption = '&ОК'
     Default = True
@@ -511,11 +513,12 @@ object PathEditorDialog: TPathEditorDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 404
-    Height = 30
-    Top = 364
-    Width = 90
+    Left = 442
+    Height = 23
+    Top = 371
+    Width = 52
     Anchors = [akRight, akBottom]
+    AutoSize = True
     BorderSpacing.Around = 6
     Cancel = True
     Caption = 'Отмена'

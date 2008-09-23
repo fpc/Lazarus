@@ -36,15 +36,15 @@ type
   { TPathEditorDialog }
 
   TPathEditorDialog = class(TForm)
-    AddTemplateButton: TButton;
+    AddTemplateButton: TBitBtn;
+    BrowseButton: TBitBtn;
+    DeleteButton: TBitBtn;
+    MoveDownButton: TBitBtn;
+    MoveUpButton: TBitBtn;
     OKBitBtn: TBitBtn;
     CancelBitBtn: TBitBtn;
     TemplatesListBox: TListBox;
     TemplateGroupBox: TGroupBox;
-    MoveUpButton: TButton;
-    MoveDownButton: TButton;
-    BrowseButton: TButton;
-    DeleteButton: TButton;
     PathGroupBox: TGroupBox;
     PathEdit: TSynEdit;
     BrowseDialog: TSelectDirectoryDialog;
@@ -154,6 +154,12 @@ begin
 
   OKBitBtn.Caption:=lisOkBtn;
   CancelBitBtn.Caption:=dlgCancel;
+  OKBitBtn.LoadGlyphFromLazarusResource('btn_ok');
+  CancelBitBtn.LoadGlyphFromLazarusResource('btn_cancel');
+  AddTemplateButton.LoadGlyphFromLazarusResource('add');
+  MoveUpButton.LoadGlyphFromLazarusResource('arrow_up');
+  MoveDownButton.LoadGlyphFromLazarusResource('arrow_down');
+  DeleteButton.LoadGlyphFromLazarusResource('delete');
 
   PathEdit.Font.BeginUpdate;
   PathEdit.Font.Name:=SynDefaultFontName;

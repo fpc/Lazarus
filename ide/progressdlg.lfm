@@ -1,47 +1,45 @@
 object IDEProgressDialog: TIDEProgressDialog
-  ActiveControl = AbortButton
+  Left = 286
+  Height = 132
+  Top = 202
+  Width = 400
   Caption = 'IDEProgressDialog'
   ClientHeight = 132
   ClientWidth = 400
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  PixelsPerInch = 112
+  ParentFont = False
   Position = poScreenCenter
-  HorzScrollBar.Page = 399
-  VertScrollBar.Page = 131
-  Left = 286
-  Height = 132
-  Top = 202
-  Width = 400
+  LCLVersion = '0.9.25'
   object DescriptionLabel: TLabel
-    Anchors = [akTop]
-    AutoSize = False
-    Caption = 'DescriptionLabel'
-    Color = clNone
-    ParentColor = False
-    WordWrap = True
     Left = 152
     Height = 13
     Top = 16
     Width = 95
-  end
-  object AbortButton: TButton
-    Anchors = [akBottom]
-    
-    Caption = 'AbortButton'
-    ModalResult = 3
-    TabOrder = 0
-    Left = 130
-    Height = 33
-    Top = 92
-    Width = 139
+    Anchors = [akTop]
+    AutoSize = False
+    Caption = 'DescriptionLabel'
+    ParentColor = False
+    WordWrap = True
   end
   object ProgressBar: TProgressBar
-    Anchors = [akTop]
-    Max = 100
     Left = 15
     Height = 20
     Top = 64
     Width = 370
+    Anchors = [akTop]
+    Max = 100
+    TabOrder = 0
+  end
+  object AbortButton: TBitBtn
+    Left = 130
+    Height = 33
+    Top = 92
+    Width = 139
+    Anchors = [akBottom]
+    Caption = 'AbortButton'
+    ModalResult = 3
+    NumGlyphs = 0
+    TabOrder = 1
   end
 end

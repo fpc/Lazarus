@@ -38,7 +38,7 @@ type
   { TIDEProgressDialog }
 
   TIDEProgressDialog = class(TForm)
-    AbortButton: TButton;
+    AbortButton: TBitBtn;
     DescriptionLabel: TLabel;
     ProgressBar: TProgressBar;
     procedure FormCreate(Sender: TObject);
@@ -130,7 +130,8 @@ begin
   Caption:=lisPDProgress;
   DescriptionLabel.Caption:='...';
   AbortButton.Caption:=lisPDAbort;
-  
+  AbortButton.LoadGlyphFromLazarusResource('btn_cancel');
+
   Application.AddOnIdleHandler(@ApplicationIdle);
 end;
 

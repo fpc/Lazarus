@@ -48,10 +48,14 @@ type
   { TProjectOptionsDialog }
 
   TProjectOptionsDialog = class(TForm)
+    AdditionalInfoButton: TBitBtn;
+    CreateAppBundleButton: TBitBtn;
     FormsAddToAutoCreatedFormsBtn: TSpeedButton;
     FormsMoveAutoCreatedFormsDownBtn: TSpeedButton;
     FormsMoveAutoCreatedFormUpBtn: TSpeedButton;
     FormsRemoveFromAutoCreatedFormsBtn: TSpeedButton;
+    LazDocAddPathButton: TBitBtn;
+    LazDocDeletePathButton: TBitBtn;
     Notebook: TNotebook;
     ApplicationPage: TPage;
     FormsPage: TPage;
@@ -70,7 +74,6 @@ type
     TargetFileLabel: TLabel;
     TargetFileEdit: TEdit;
     PanelOtherLabels: TPanel;
-    CreateAppBundleButton: TButton;
     UseAppBundleCheckBox: TCheckBox;
     UseXPManifestCheckBox: TCheckBox;
 
@@ -93,8 +96,6 @@ type
     // Lazdoc settings
     LazDocBrowseButton: TButton;
     LazDocPathEdit: TEdit;
-    LazDocDeletePathButton: TButton;
-    LazDocAddPathButton: TButton;
     LazDocPathsGroupBox: TGroupBox;
     LazDocListBox: TListBox;
 
@@ -121,7 +122,6 @@ type
     LanguageSelectionComboBox: TComboBox;
     CharacterSetComboBox: TComboBox;
     OtherInfoGroupBox: TGroupBox;
-    AdditionalInfoButton: TButton;
     DescriptionEdit: TEdit;
     CopyrightEdit: TEdit;
     DescriptionLabel: TLabel;
@@ -256,6 +256,10 @@ begin
   CancelButton.Caption:=dlgCancel;
   HelpButton.Caption:=lisMenuHelp;
 
+  OKButton.LoadGlyphFromLazarusResource('btn_ok');
+  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
+  HelpButton.LoadGlyphFromLazarusResource('btn_help');
+
   NoteBook.PageIndex := 0;
 
   SetupApplicationPage(0);
@@ -284,6 +288,7 @@ begin
   UseXPManifestCheckBox.Caption := dlgPOUseManifest;
   UseXPManifestCheckBox.Checked := False;
   CreateAppBundleButton.Caption := dlgPOCreateAppBundle;
+  CreateAppBundleButton.LoadGlyphFromLazarusResource('pkg_compile');
 end;
 
 procedure TProjectOptionsDialog.SetupLazDocPage(PageIndex: Integer);
@@ -293,6 +298,8 @@ begin
   LazDocPathsGroupBox.Caption := lisCodeHelpPathsGroupBox;
   LazDocAddPathButton.Caption := lisCodeHelpAddPathButton;
   LazDocDeletePathButton.Caption := lisCodeHelpDeletePathButton;
+  LazDocDeletePathButton.LoadGlyphFromLazarusResource('delete');
+  LazDocAddPathButton.LoadGlyphFromLazarusResource('add');
 
   LazDocPathEdit.Clear;
 end;
@@ -353,6 +360,7 @@ begin
   DescriptionLabel.Caption := lisCodeToolsDefsDescription;
   CopyrightLabel.Caption := rsCopyright;
   AdditionalInfoButton.Caption := rsAdditionalInfo;
+  AdditionalInfoButton.LoadGlyphFromLazarusResource('add');
 end;
 
 procedure TProjectOptionsDialog.SetupI18NPage(PageIndex: Integer);
