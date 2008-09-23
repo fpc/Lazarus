@@ -6820,8 +6820,6 @@ var
   FromY: Integer;
   ToX: Integer;
   ToY: Integer;
-  CurValues: TGdkGCValues;
-  AdjustAttrib: Boolean;
 begin
   Assert(False, Format('trace:> [TGtkWidgetSet.LineTo] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
 
@@ -6840,26 +6838,9 @@ begin
   ToY:=Y+DCOrigin.Y;
   
   {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-  gdk_gc_get_values(DevCtx.GC, @CurValues);
-
-  // LineTo should not paint the last point
-  // this works under gtk only with line_width=0
-  // => set linewidth to 0 and GDK_CAP_NOT_LAST
-  AdjustAttrib := (CurValues.line_width = 1)
-               or (CurValues.cap_style <> GDK_CAP_NOT_LAST);
-  if AdjustAttrib
-  then begin
-    gdk_gc_set_line_attributes(DevCtx.GC, 0, CurValues.line_style,
-                               GDK_CAP_NOT_LAST, CurValues.join_style);
-  end;
-
+  DevCtx.SetLineSkipLastPoint;
   gdk_draw_line(DevCtx.Drawable, DevCtx.GC, FromX, FromY, ToX, ToY);
-
-  if AdjustAttrib
-  then begin
-    gdk_gc_set_line_attributes(DevCtx.GC, CurValues.line_width, CurValues.line_style,
-                               CurValues.cap_style, CurValues.join_style);
-  end;
+  DevCtx.UnsetLineSkipLastPoint;
   {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
 
   DevCtx.PenPos:= Point(X, Y);
@@ -7225,7 +7206,9 @@ begin
   if Result and not DevCtx.IsNullPen
   then begin
     {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
+    DevCtx.SetLineSkipLastPoint;
     gdk_draw_lines(DevCtx.Drawable, DevCtx.GC, PointArray, NumPts);
+    DevCtx.UnsetLineSkipLastPoint;
     {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
   end;
 

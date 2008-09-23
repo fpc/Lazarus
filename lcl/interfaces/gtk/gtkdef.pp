@@ -284,6 +284,8 @@ type
     FSelectedColors: TDevContextSelectedColorsType;
 
     FOwnedGDIObjects: array[TGDIType] of PGdiObject;
+    FLineSkipLastPoint: Boolean;
+    FCurValues: TGdkGCValues;
 
     function GetGDIObjects(ID: TGDIType): PGdiObject;
     function GetOffset: TPoint;
@@ -341,6 +343,8 @@ type
     function HasGC: Boolean;
     procedure ResetGCClipping;
 
+    procedure SetLineSkipLastPoint;
+    procedure UnsetLineSkipLastPoint;
 
     // origins
     property Origin: TPoint read FOrigin write FOrigin;
