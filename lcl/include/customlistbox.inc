@@ -234,7 +234,7 @@ begin
     TWSCustomListBoxClass(WidgetSetClass).SetSorted(Self, FItems, FSorted);
     UnlockSelectionChange;
   end else begin
-    TExtendedStringList(FItems).Sorted:=true;
+    TExtendedStringList(FItems).Sorted:=FSorted;
   end;
 end;
 
