@@ -399,8 +399,8 @@ begin
   inc(x,w);
 
   // fifth column of buttons
-  HelpBitBtn.SetBounds(x,y1,ClientWidth-x,h);
-  MoreBitBtn.SetBounds(x,y2,ClientWidth-x,h);
+  HelpBitBtn.SetBounds(x,y1,ClientWidth-x - 1,h);
+  MoreBitBtn.SetBounds(x,y2,ClientWidth-x - 1,h);
 
   FilePropsGroupBox.Height:=120;
 end;
@@ -1300,12 +1300,6 @@ begin
 end;
 
 procedure TPackageEditorForm.SetupComponents;
-  
-  procedure LoadBitBtnGlyph(ABitBtn: TBitBtn; const ResName: string);
-  begin
-    ABitBtn.Glyph.LoadFromLazarusResource(ResName);
-  end;
-
 begin
   ImageIndexFiles := IDEImages.LoadImage(16, 'pkg_files');
   ImageIndexRemovedFiles := IDEImages.LoadImage(16, 'pkg_removedfiles');
