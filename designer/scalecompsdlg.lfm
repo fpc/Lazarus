@@ -3,14 +3,13 @@ object ScaleComponentsDialog: TScaleComponentsDialog
   Height = 82
   Top = 698
   Width = 258
-  HorzScrollBar.Page = 257
-  VertScrollBar.Page = 81
   ActiveControl = OKButton
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsToolWindow
   Caption = 'ScaleComponentsDialog'
   ClientHeight = 82
   ClientWidth = 258
+  ParentFont = False
   Position = poScreenCenter
   LCLVersion = '0.9.25'
   object PercentLabel: TLabel
@@ -41,10 +40,10 @@ object ScaleComponentsDialog: TScaleComponentsDialog
     AnchorSideRight.Control = CancelButton
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 108
-    Height = 26
-    Top = 50
-    Width = 60
+    Left = 148
+    Height = 23
+    Top = 53
+    Width = 40
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Right = 6
@@ -61,10 +60,10 @@ object ScaleComponentsDialog: TScaleComponentsDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 174
-    Height = 26
-    Top = 50
-    Width = 78
+    Left = 194
+    Height = 23
+    Top = 53
+    Width = 58
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Right = 6

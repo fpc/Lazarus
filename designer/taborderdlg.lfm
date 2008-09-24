@@ -3,8 +3,6 @@ object TabOrderDialog: TTabOrderDialog
   Height = 387
   Top = 167
   Width = 310
-  HorzScrollBar.Page = 309
-  VertScrollBar.Page = 386
   ActiveControl = ItemTreeview
   BorderStyle = bsSizeToolWin
   Caption = 'TabOrderDialog'
@@ -12,12 +10,36 @@ object TabOrderDialog: TTabOrderDialog
   ClientWidth = 310
   OnClose = TabOrderDialogCLOSE
   OnCreate = TabOrderDialogCREATE
+  ParentFont = False
   Position = poScreenCenter
   LCLVersion = '0.9.25'
+  object ArrowUp: TSpeedButton
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 279
+    Height = 25
+    Top = 120
+    Width = 25
+    Anchors = [akTop, akRight]
+    BorderSpacing.Around = 6
+    Color = clBtnFace
+    NumGlyphs = 0
+  end
+  object ArrowDown: TSpeedButton
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 279
+    Height = 25
+    Top = 176
+    Width = 25
+    Anchors = [akTop, akRight]
+    BorderSpacing.Around = 6
+    Color = clBtnFace
+    NumGlyphs = 0
+  end
   object ItemTreeview: TTreeView
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
-    AnchorSideRight.Control = ArrowDown
     AnchorSideBottom.Control = ShowOldValuesCheckbox
     Left = 6
     Height = 318
@@ -38,7 +60,7 @@ object TabOrderDialog: TTabOrderDialog
     Left = 6
     Height = 19
     Top = 330
-    Width = 149
+    Width = 146
     Anchors = [akLeft, akBottom]
     BorderSpacing.Around = 6
     Caption = 'ShowOldValuesCheckbox'
@@ -49,10 +71,10 @@ object TabOrderDialog: TTabOrderDialog
     AnchorSideRight.Control = CancelButton
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 160
+    Left = 162
     Height = 26
     Top = 355
-    Width = 60
+    Width = 59
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
@@ -68,10 +90,10 @@ object TabOrderDialog: TTabOrderDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 226
+    Left = 227
     Height = 26
     Top = 355
-    Width = 78
+    Width = 77
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
@@ -81,29 +103,5 @@ object TabOrderDialog: TTabOrderDialog
     ModalResult = 2
     NumGlyphs = 0
     TabOrder = 3
-  end
-  object ArrowUp: TArrow
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    Left = 279
-    Height = 25
-    Top = 120
-    Width = 25
-    Anchors = [akTop, akRight]
-    ArrowType = atUp
-    BorderSpacing.Around = 6
-    OnClick = UpSpeedbuttonCLICK
-  end
-  object ArrowDown: TArrow
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    Left = 279
-    Height = 25
-    Top = 176
-    Width = 25
-    Anchors = [akTop, akRight]
-    ArrowType = atDown
-    BorderSpacing.Around = 6
-    OnClick = DownSpeedbuttonCLICK
   end
 end

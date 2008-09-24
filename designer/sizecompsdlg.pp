@@ -119,6 +119,9 @@ begin
   HeightEdit.Text:='';
 
   OkButton.Caption:=lisOkBtn;
+  CancelButton.Caption:= dlgCancel;
+  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
+  OkButton.LoadGlyphFromLazarusResource('btn_ok');
 end;
 
 initialization

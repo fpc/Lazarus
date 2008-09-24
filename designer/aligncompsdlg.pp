@@ -117,6 +117,8 @@ begin
 
   OkButton.Caption:=dlgButApply;
   CancelButton.Caption:=dlgCancel;
+  OkButton.LoadGlyphFromLazarusResource('btn_ok');
+  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
 end;
 
 initialization

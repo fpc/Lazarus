@@ -9,17 +9,18 @@ object ChgEncodingDialog: TChgEncodingDialog
   ClientWidth = 509
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  ParentFont = False
   LCLVersion = '0.9.25'
   object FilesGroupBox: TGroupBox
     Left = 6
-    Height = 163
-    Top = 72
+    Height = 141
+    Top = 63
     Width = 497
     Align = alTop
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'FilesGroupBox'
-    ClientHeight = 144
+    ClientHeight = 123
     ClientWidth = 493
     TabOrder = 0
     object FileFilterLabel: TLabel
@@ -27,9 +28,9 @@ object ChgEncodingDialog: TChgEncodingDialog
       AnchorSideTop.Control = NonUTF8FilesCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 18
-      Top = 71
-      Width = 85
+      Height = 14
+      Top = 65
+      Width = 66
       BorderSpacing.Left = 6
       BorderSpacing.Top = 15
       BorderSpacing.Bottom = 2
@@ -40,9 +41,9 @@ object ChgEncodingDialog: TChgEncodingDialog
       AnchorSideLeft.Control = FilesGroupBox
       AnchorSideTop.Control = FilesGroupBox
       Left = 6
-      Height = 22
+      Height = 19
       Top = 6
-      Width = 146
+      Width = 119
       BorderSpacing.Around = 6
       Caption = 'UTF8FilesCheckBox'
       Checked = True
@@ -54,9 +55,9 @@ object ChgEncodingDialog: TChgEncodingDialog
       AnchorSideTop.Control = UTF8FilesCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 22
-      Top = 34
-      Width = 172
+      Height = 19
+      Top = 31
+      Width = 138
       BorderSpacing.Around = 6
       Caption = 'NonUTF8FilesCheckBox'
       Checked = True
@@ -68,9 +69,9 @@ object ChgEncodingDialog: TChgEncodingDialog
       AnchorSideTop.Control = FileFilterCombobox
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 22
-      Top = 122
-      Width = 138
+      Height = 19
+      Top = 104
+      Width = 114
       BorderSpacing.Left = 6
       BorderSpacing.Top = 2
       Caption = 'RegExprCheckBox'
@@ -83,76 +84,87 @@ object ChgEncodingDialog: TChgEncodingDialog
       AnchorSideRight.Control = FilesGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 29
-      Top = 91
+      Height = 21
+      Top = 81
       Width = 481
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Right = 6
+      ItemHeight = 13
+      MaxLength = -1
       TabOrder = 3
       Text = 'FileFilterCombobox'
     end
   end
   object BtnPanel: TPanel
-    Height = 41
-    Top = 438
+    Height = 35
+    Top = 444
     Width = 509
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 41
+    ClientHeight = 35
     ClientWidth = 509
     TabOrder = 1
-    object ApplyButton: TButton
-      Left = 317
-      Height = 29
+    object CloseButton: TBitBtn
+      AnchorSideRight.Control = BtnPanel
+      AnchorSideBottom.Control = BtnPanel
+      Left = 419
+      Height = 23
       Top = 6
-      Width = 90
-      Align = alRight
-      AutoSize = True
-      BorderSpacing.Around = 6
-      Caption = 'ApplyButton'
-      Constraints.MinWidth = 75
-      OnClick = ApplyButtonClick
-      TabOrder = 0
-    end
-    object CloseButton: TButton
-      Left = 413
-      Height = 29
-      Top = 6
-      Width = 90
+      Width = 84
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'CloseButton'
       Constraints.MinWidth = 75
       ModalResult = 1
+      NumGlyphs = 0
+      TabOrder = 0
+    end
+    object ApplyButton: TBitBtn
+      AnchorSideRight.Control = CloseButton
+      AnchorSideBottom.Control = BtnPanel
+      Left = 328
+      Height = 23
+      Top = 6
+      Width = 85
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'ApplyButton'
+      Constraints.MinWidth = 75
+      NumGlyphs = 0
+      OnClick = ApplyButtonClick
       TabOrder = 1
     end
-    object PreviewButton: TButton
-      Left = 208
-      Height = 29
+    object PreviewButton: TBitBtn
+      AnchorSideRight.Control = ApplyButton
+      AnchorSideBottom.Control = BtnPanel
+      Left = 226
+      Height = 23
       Top = 6
-      Width = 103
+      Width = 96
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'PreviewButton'
       Constraints.MinWidth = 75
+      NumGlyphs = 0
       OnClick = PreviewButtonClick
       TabOrder = 2
     end
   end
   object ScopeGroupBox: TGroupBox
     Left = 6
-    Height = 60
+    Height = 51
     Top = 6
     Width = 497
     Align = alTop
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'ScopeGroupBox'
-    ClientHeight = 41
+    ClientHeight = 33
     ClientWidth = 493
     TabOrder = 2
     object NewEncodingLabel: TLabel
@@ -160,10 +172,10 @@ object ChgEncodingDialog: TChgEncodingDialog
       AnchorSideTop.Control = NewEncodingComboBox
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Control = NewEncodingComboBox
-      Left = 240
-      Height = 18
-      Top = 11
-      Width = 120
+      Left = 270
+      Height = 14
+      Top = 9
+      Width = 90
       Anchors = [akTop, akRight]
       BorderSpacing.Left = 15
       Caption = 'NewEncodingLabel'
@@ -174,11 +186,13 @@ object ChgEncodingDialog: TChgEncodingDialog
       AnchorSideTop.Control = ScopeGroupBox
       AnchorSideRight.Control = NewEncodingLabel
       Left = 6
-      Height = 29
+      Height = 21
       Top = 6
-      Width = 219
+      Width = 249
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
+      ItemHeight = 13
+      MaxLength = -1
       TabOrder = 0
       Text = 'OwnerComboBox'
     end
@@ -187,30 +201,32 @@ object ChgEncodingDialog: TChgEncodingDialog
       AnchorSideRight.Control = ScopeGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 360
-      Height = 29
+      Height = 21
       Top = 6
       Width = 127
       Anchors = [akTop, akRight]
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
       BorderSpacing.Bottom = 6
+      ItemHeight = 13
+      MaxLength = -1
       TabOrder = 1
       Text = 'NewEncodingComboBox'
     end
   end
   object PreviewGroupBox: TGroupBox
     Left = 6
-    Height = 191
-    Top = 241
+    Height = 228
+    Top = 210
     Width = 497
     Align = alClient
     BorderSpacing.Around = 6
     Caption = 'PreviewGroupBox'
-    ClientHeight = 172
+    ClientHeight = 210
     ClientWidth = 493
     TabOrder = 3
     object PreviewListView: TListView
-      Height = 172
+      Height = 210
       Width = 493
       Align = alClient
       Columns = <      

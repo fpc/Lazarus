@@ -3,19 +3,19 @@ object AlignComponentsDialog: TAlignComponentsDialog
   Height = 238
   Top = 325
   Width = 400
-  HorzScrollBar.Page = 399
-  VertScrollBar.Page = 237
   ActiveControl = OKButton
   BorderStyle = bsSizeToolWin
   Caption = 'AlignComponentsDialog'
   ClientHeight = 238
   ClientWidth = 400
   OnResize = FormResize
+  ParentFont = False
   Position = poScreenCenter
+  LCLVersion = '0.9.25'
   object HorizontalRadioGroup: TRadioGroup
     AnchorSideBottom.Control = ACDBtnPanel
     Left = 6
-    Height = 176
+    Height = 191
     Top = 6
     Width = 191
     Anchors = [akTop, akLeft, akBottom]
@@ -35,7 +35,7 @@ object AlignComponentsDialog: TAlignComponentsDialog
   object VerticalRadioGroup: TRadioGroup
     AnchorSideBottom.Control = ACDBtnPanel
     Left = 203
-    Height = 176
+    Height = 191
     Top = 6
     Width = 191
     Anchors = [akTop, akRight, akBottom]
@@ -53,23 +53,21 @@ object AlignComponentsDialog: TAlignComponentsDialog
     TabOrder = 1
   end
   object ACDBtnPanel: TPanel
-    Height = 50
-    Top = 188
+    Height = 35
+    Top = 203
     Width = 400
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 50
+    ClientHeight = 35
     ClientWidth = 400
     TabOrder = 2
     object OKButton: TBitBtn
-      AnchorSideRight.Control = CancelButton
-      Left = 227
-      Height = 38
+      Left = 238
+      Height = 23
       Top = 6
       Width = 75
       Align = alRight
-      Anchors = [akRight, akBottom]
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = '&OK'
@@ -82,10 +80,10 @@ object AlignComponentsDialog: TAlignComponentsDialog
     end
     object CancelButton: TBitBtn
       AnchorSideRight.Side = asrBottom
-      Left = 308
-      Height = 38
+      Left = 319
+      Height = 23
       Top = 6
-      Width = 86
+      Width = 75
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6

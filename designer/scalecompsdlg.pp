@@ -66,13 +66,15 @@ constructor TScaleComponentsDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
-  Caption:='Scale';
+  Caption:=fdmScaleWord;
 
   ScaleLabel.Caption:=lisScalingFactor;
   PercentLabel.Caption:='%';
 
   OkButton.Caption:=dlgButApply;
   CancelButton.Caption:=dlgCancel;
+  OkButton.LoadGlyphFromLazarusResource('btn_ok');
+  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
 end;
 
 initialization

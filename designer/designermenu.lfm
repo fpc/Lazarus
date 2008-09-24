@@ -3,8 +3,6 @@ object TemplateMenuForm: TTemplateMenuForm
   Height = 240
   Top = 199
   Width = 520
-  HorzScrollBar.Page = 519
-  VertScrollBar.Page = 239
   Caption = 'TemplateMenuForm'
   ClientHeight = 240
   ClientWidth = 520
@@ -12,7 +10,9 @@ object TemplateMenuForm: TTemplateMenuForm
   Constraints.MinWidth = 350
   OnCreate = FormCreate
   OnResize = FormResize
+  ParentFont = False
   Position = poScreenCenter
+  LCLVersion = '0.9.25'
   object Label_template_description: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -43,7 +43,7 @@ object TemplateMenuForm: TTemplateMenuForm
     AnchorSideBottom.Control = ListBoxView
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 176
+    Height = 179
     Top = 26
     Width = 244
     Anchors = [akTop, akLeft, akBottom]
@@ -61,7 +61,7 @@ object TemplateMenuForm: TTemplateMenuForm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = CancelBitBtn
     Left = 262
-    Height = 176
+    Height = 179
     Top = 26
     Width = 252
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -77,7 +77,7 @@ object TemplateMenuForm: TTemplateMenuForm
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 23
-    Top = 208
+    Top = 211
     Width = 244
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
@@ -89,10 +89,10 @@ object TemplateMenuForm: TTemplateMenuForm
     AnchorSideRight.Control = CancelBitBtn
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 364
-    Height = 26
-    Top = 208
-    Width = 60
+    Left = 420
+    Height = 23
+    Top = 211
+    Width = 36
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Right = 6
@@ -110,10 +110,10 @@ object TemplateMenuForm: TTemplateMenuForm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 430
-    Height = 26
-    Top = 208
-    Width = 84
+    Left = 462
+    Height = 23
+    Top = 211
+    Width = 52
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6

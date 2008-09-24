@@ -2010,6 +2010,8 @@ begin
   
   OKBitBtn.Caption:=lisOkBtn;
   CancelBitBtn.Caption:=dlgCancel;
+  OKBitBtn.LoadGlyphFromLazarusResource('btn_ok');
+  CancelBitBtn.LoadGlyphFromLazarusResource('btn_cancel');
 
   // Templates from menutemplates.xml
   i:=1;

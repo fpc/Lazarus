@@ -37,24 +37,24 @@ uses
   CodeCache, CodeToolsStructs, CodeToolManager, AVL_Tree,
   // IDE
   IDEProcs, CodeBrowser, PackageDefs, PackageSystem, Project,
-  LazarusIDEStrConsts;
+  LazarusIDEStrConsts, Buttons;
 
 type
 
   { TChgEncodingDialog }
 
   TChgEncodingDialog = class(TForm)
+    ApplyButton: TBitBtn;
     BtnPanel: TPanel;
+    CloseButton: TBitBtn;
     NewEncodingComboBox: TComboBox;
     FileFilterCombobox: TComboBox;
     NewEncodingLabel: TLabel;
-    PreviewButton: TButton;
+    PreviewButton: TBitBtn;
     PreviewListView: TListView;
-    CloseButton: TButton;
     PreviewGroupBox: TGroupBox;
     OwnerComboBox: TComboBox;
     ScopeGroupBox: TGroupBox;
-    ApplyButton: TButton;
     RegExprCheckBox: TCheckBox;
     FileFilterLabel: TLabel;
     NonUTF8FilesCheckBox: TCheckBox;
@@ -106,6 +106,9 @@ begin
   PreviewButton.Caption:=lisUpdatePreview;
   CloseButton.Caption:=lisMenuClose;
   ApplyButton.Caption:=lisConvert;
+  PreviewButton.LoadGlyphFromLazarusResource('refresh');
+  CloseButton.LoadGlyphFromLazarusResource('btn_close');
+  ApplyButton.LoadGlyphFromLazarusResource('btn_ok');
 
   PreviewGroupBox.Caption:=dlgWRDPreview;
   PreviewListView.Column[0].Caption:=dlgEnvFiles;

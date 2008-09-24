@@ -40,8 +40,8 @@ type
   { TTabOrderDialog }
 
   TTabOrderDialog = class(TForm)
-    ArrowUp:      TArrow;
-    ArrowDown:    TArrow;
+    ArrowDown: TSpeedButton;
+    ArrowUp: TSpeedButton;
     CancelButton: TBitBtn;
     OkButton:     TBitBtn;
     ShowOldValuesCheckbox: TCheckBox;
@@ -84,6 +84,13 @@ end;
 procedure TTabOrderDialog.TabOrderDialogCREATE(Sender: TObject);
 begin
   ShowOldValuesCheckbox.Caption:=lisShowOldTabOrder;
+  OkButton.Caption:= lisOkBtn;
+  CancelButton.Caption:= dlgCancel;
+
+  OkButton.LoadGlyphFromLazarusResource('btn_ok');
+  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
+  ArrowDown.LoadGlyphFromLazarusResource('arrow_down');
+  ArrowUp.LoadGlyphFromLazarusResource('arrow_up');
 end;
 
 procedure TTabOrderDialog.UpSpeedbuttonCLICK(Sender: TObject);
