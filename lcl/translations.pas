@@ -249,9 +249,9 @@ begin
       Filename:=Files[i];
       if (CompareFileExt(Filename,'.lrt')=0)
       or (CompareFileExt(Filename,'.rst')=0) then
-        //DebugLn(['AddFiles2Po Filename="',Filename,'"']);
-        
         try
+          //DebugLn('');
+          //DebugLn(['AddFiles2Po Filename="',Filename,'"']);
           InputLines.Clear;
           InputLines.LoadFromFile(UTF8ToSys(FileName));
 
@@ -268,7 +268,6 @@ begin
             raise E;
           end;
         end;
-        
     end;
     BasePOFile.SaveToFile(POFilename);
     Result := BasePOFile.Modified;
@@ -391,7 +390,7 @@ end;
 procedure TPOFile.RemoveUntaggedModules;
 var
   Module: string;
-  Item: TPOFileItem;
+  Item,VItem: TPOFileItem;
   i, p: Integer;
 begin
   if FModuleList=nil then
@@ -413,6 +412,12 @@ begin
       
     // this item is not more in updated modules, delete it
     FIdentifierToItem.Remove(Item.Identifier);
+    // delete it also from VarToItem
+    Module := RightStr(Item.Identifier, Length(Item.Identifier)-P);
+    VItem := TPoFileItem(FIdentVarToItem.Data[Module]);
+    if (VItem=Item) then
+      FIdentVarToItem.Remove(Module);
+
     //FOriginalToItem.Remove(Item.Original); // isn't this tricky?
     FItems.Delete(i);
     Item.Free;
@@ -602,13 +607,14 @@ var
   p: Integer;
 begin
   if (not FAllEntries) and (TranslatedValue='') then exit;
-  //debugln('TPOFile.Add Identifier="',Identifier,'" OriginalValue="',OriginalValue,'" TranslatedValue="',TranslatedValue,'"');
   Item:=TPOFileItem.Create(Identifier,OriginalValue,TranslatedValue);
   Item.Comments:=Comments;
   Item.Context:=Context;
   Item.Tag:=FTag;
   FItems.Add(Item);
   
+  //debugln('TPOFile.Add %8x Tag=%d Id="%s" Org="%s" Trn="%s"',
+  //    [ptrint(Item),FTag,Identifier,dbgstr(OriginalValue),dbgstr(TranslatedValue)]);
   FIdentifierToItem.Add(Identifier,Item);
   P := Pos('.', Identifier);
   if P>0 then
@@ -876,6 +882,9 @@ begin
   end;
 
   // try to find PO entry using only variable part identifier
+  {
+  // this needs to be improved as it assumes that variable part identifier
+  // are unique within all project units.
   p := pos('.', Identifier);
   if p>0 then begin
     Item := TPOFileItem(FIdentVarToItem.Data[RightStr(Identifier, Length(Identifier)-P)]);
@@ -893,7 +902,8 @@ begin
       exit;
     end;
   end;
-  
+  }
+
   // try to find po entry based only on it's value
   AContext := '';
   AComment := '';
