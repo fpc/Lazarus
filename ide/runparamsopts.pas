@@ -118,9 +118,9 @@ type
     DisplayEdit: TEdit;
     DisplayGroupBox: TGroupBox;
     HostApplicationBrowseBtn: TButton;
-    UserOverridesAddButton: TButton;
-    UserOverridesEditButton: TButton;
-    UserOverridesDeleteButton: TButton;
+    UserOverridesAddButton: TBitBtn;
+    UserOverridesDeleteButton: TBitBtn;
+    UserOverridesEditButton: TBitBtn;
     WorkingDirectoryBtn: TButton;
     WorkingDirectoryComboBox: TComboBox;
     WorkingDirectoryGroupBox: TGroupBox;
@@ -344,6 +344,8 @@ begin
   OkButton.Caption := lisOkBtn;
   CancelButton.Caption := dlgCancel;
   CancelControl := CancelButton;
+  OkButton.LoadGlyphFromLazarusResource('btn_ok');
+  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
 end;
 
 procedure TRunParamsOptsDlg.SetupNotebook;
@@ -357,6 +359,9 @@ begin
 
   SetupLocalPage;
   SetupEnvironmentPage;
+  UserOverridesAddButton.LoadGlyphFromLazarusResource('add');
+  UserOverridesEditButton.LoadGlyphFromLazarusResource('edit');
+  UserOverridesDeleteButton.LoadGlyphFromLazarusResource('delete');
 end;
 
 procedure TRunParamsOptsDlg.SetupLocalPage;

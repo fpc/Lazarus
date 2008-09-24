@@ -80,6 +80,8 @@ begin
   CategoryLabel.Caption:=listToDoLCategory;
   OkButton.Caption:=lisOkBtn;
   CancelButton.Caption:=dlgCancel;
+  OkButton.LoadGlyphFromLazarusResource('btn_ok');
+  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
 end;
 
 function ExecuteTodoDialog: TTodoItem;

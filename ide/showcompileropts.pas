@@ -93,6 +93,7 @@ begin
   Self.Caption:=dlgCompilerOptions;
   RelativePathsCheckBox.Caption:=lisRelativePaths;
   OKButton.Caption:=lisOkBtn;
+  OKButton.LoadGlyphFromLazarusResource('btn_ok');
 end;
 
 procedure TShowCompilerOptionsDlg.SetCompilerOpts(

@@ -622,6 +622,7 @@ begin
   SearchTextLabel.Caption:=lissSearchText;
   btnCancel.Caption:=dlgCancel;
   Caption:=dlgSearchCaption;
+  btnCancel.LoadGlyphFromLazarusResource('btn_cancel');
 
   fProgress:=TIDESearchInTextProgress.Create;
   FProgress.OnAddMatch:=@OnAddMatch;

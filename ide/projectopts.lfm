@@ -337,8 +337,8 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'LazDocPathsGroupBox'
-        ClientHeight = 167
-        ClientWidth = 453
+        ClientHeight = 149
+        ClientWidth = 449
         TabOrder = 0
         object LazDocListBox: TListBox
           AnchorSideRight.Side = asrBottom
@@ -644,6 +644,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           BorderSpacing.Top = 2
           BorderSpacing.Bottom = 6
           ItemHeight = 13
+          MaxLength = -1
           TabOrder = 0
           Text = 'U.S. English'
         end
@@ -660,6 +661,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           BorderSpacing.Right = 6
           BorderSpacing.Bottom = 6
           ItemHeight = 13
+          MaxLength = -1
           TabOrder = 1
           Text = 'Multilingual'
         end
@@ -757,7 +759,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
     object i18nPage: TPage
       Caption = 'i18n'
       ClientWidth = 465
-      ClientHeight = 369
+      ClientHeight = 368
       object I18NGroupBox: TGroupBox
         AnchorSideLeft.Control = OtherInfoGroupBox
         AnchorSideTop.Control = VersionInfoGroupBox
@@ -772,8 +774,8 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'i18n Options'
-        ClientHeight = 73
-        ClientWidth = 453
+        ClientHeight = 55
+        ClientWidth = 449
         TabOrder = 0
         object PoOutDirLabel: TLabel
           Left = 6

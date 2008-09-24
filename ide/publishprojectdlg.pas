@@ -171,6 +171,9 @@ begin
   OkButton.Caption:=lisLazBuildOk;
   SaveSettingsButton.Caption:=lisSaveSettings;
   CancelButton.Caption:=dlgCancel;
+  OkButton.LoadGlyphFromLazarusResource('btn_ok');
+  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
+  SaveSettingsButton.LoadGlyphFromLazarusResource('menu_save');
 end;
 
 procedure TPublishProjectDialog.OkButtonCLICK(Sender: TObject);
