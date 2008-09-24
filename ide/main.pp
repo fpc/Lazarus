@@ -7289,6 +7289,10 @@ begin
     Result:=mrOk;
   end;
 
+  // free sources
+  if (ActiveUnitInfo.Source<>nil) then
+    ActiveUnitInfo.Source.IsDeleted:=true;
+
   // close form soft (keep it if used by another component)
   CloseUnitComponent(ActiveUnitInfo,[]);
 

@@ -969,7 +969,7 @@ begin
 end;
 
 function TCodeBuffer.FileOnDiskNeedsUpdate: boolean;
-// file on disk needs update, if file is modified or does not exist
+// file on disk needs update, if memory is modified or file does not exist
 begin
   if LoadDateValid then
     Result:=Modified or (FFileChangeStep<>ChangeStep)
