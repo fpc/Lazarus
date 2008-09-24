@@ -3506,9 +3506,7 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.LineTo(DC: HDC; X, Y: Integer): Boolean;
 var
-  PenPos: TPoint;
-  CX: Integer;
-  CY: Integer;
+  PenPos, LastPos: TPoint;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI LineTo]');
@@ -3519,19 +3517,10 @@ begin
   if not IsValidDC(DC) then Exit;
 
   TQtDeviceContext(DC).getPenPos(@PenPos);
-
-  CX := X;
-  CY := Y;
-  
-  if (CX <> PenPos.X) and (CX > 0) and (CX > PenPos.X) then
-    CX := CX - 1;
-  
-  if (CY <> PenPos.Y) and (CY > 0) and (CY > PenPos.Y) then
-    CY := CY - 1;
-  
-  TQtDeviceContext(DC).drawLine(PenPos.X, PenPos.Y, CX, CY);
-
-  MoveToEx(DC, CX, CY, nil);
+  LastPos := Point(X, Y);
+  LastPos := TQtDeviceContext(DC).GetLineLastPixelPos(PenPos, LastPos);
+  TQtDeviceContext(DC).drawLine(PenPos.X, PenPos.Y, LastPos.X, LastPos.Y);
+  MoveToEx(DC, LastPos.X, LastPos.Y, nil);
   
   Result := True;
 end;
@@ -3633,9 +3622,9 @@ begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI Polyline] DC: ', dbghex(DC));
   {$endif}
-  Result := IsValidDC(DC);
+  Result := IsValidDC(DC) and (NumPts > 0);
   if Result then
-    QPainter_drawPolyline(TQtDeviceContext(DC).Widget, PQtPoint(Points), NumPts);
+    TQtDeviceContext(DC).DrawPolyLine(Points, NumPts);
 end;
 
 function TQtWidgetSet.PostMessage(Handle: HWND; Msg: Cardinal; wParam: WParam; lParam: LParam): Boolean;

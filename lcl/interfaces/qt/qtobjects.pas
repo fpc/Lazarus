@@ -292,6 +292,7 @@ type
     procedure DebugClipRect(const msg: string);
     procedure setImage(AImage: TQtImage);
     procedure CorrectCoordinates(var ARect: TRect);
+    function GetLineLastPixelPos(PrevPos, NewPos: TPoint): TPoint;
   public
     { Qt functions }
     
@@ -310,6 +311,7 @@ type
     procedure drawLine(x1: Integer; y1: Integer; x2: Integer; y2: Integer);
     procedure drawEllipse(x: Integer; y: Integer; w: Integer; h: Integer);
     procedure drawPixmap(p: PQtPoint; pm: QPixmapH; sr: PRect);
+    procedure drawPolyLine(P: PPoint; NumPts: Integer);
     procedure eraseRect(ARect: PRect);
     procedure fillRect(ARect: PRect; ABrush: QBrushH); overload;
     procedure fillRect(x, y, w, h: Integer; ABrush: QBrushH); overload;
@@ -1770,6 +1772,23 @@ begin
   if ARect.Bottom > MaxBottom then ARect.Bottom := MaxBottom;}
 end;
 
+function TQtDeviceContext.GetLineLastPixelPos(PrevPos, NewPos: TPoint): TPoint;
+begin
+  Result := NewPos;
+
+  if NewPos.X > PrevPos.X then
+    dec(Result.X)
+  else
+  if NewPos.X < PrevPos.X then
+    inc(Result.X);
+
+  if NewPos.Y > PrevPos.Y then
+    dec(Result.Y)
+  else
+  if NewPos.Y < PrevPos.Y then
+    inc(Result.Y);
+end;
+
 procedure TQtDeviceContext.qDrawPlainRect(x, y, w, h: integer; AColor: PQColor = nil;
   lineWidth: Integer = 1; FillBrush: QBrushH = nil);
 begin
@@ -1998,6 +2017,25 @@ end;
 procedure TQtDeviceContext.drawPixmap(p: PQtPoint; pm: QPixmapH; sr: PRect);
 begin
   QPainter_drawPixmap(Widget, p, pm, sr);
+end;
+
+procedure TQtDeviceContext.drawPolyLine(P: PPoint; NumPts: Integer);
+var
+  QtPoints: PQtPoint;
+  i: integer;
+  LastPoint: TPoint;
+begin
+  GetMem(QtPoints, NumPts * SizeOf(TQtPoint));
+  for i := 0 to NumPts - 2 do
+    QtPoints[i] := QtPoint(P[i].x, P[i].y);
+
+  LastPoint := P[NumPts - 1];
+  if NumPts > 1 then
+    LastPoint := GetLineLastPixelPos(P[NumPts - 2], LastPoint);
+  QtPoints[NumPts - 1] := QtPoint(LastPoint.X, LastPoint.Y);
+
+  QPainter_drawPolyline(Widget, QtPoints, NumPts);
+  FreeMem(QtPoints);
 end;
 
 procedure TQtDeviceContext.eraseRect(ARect: PRect);
