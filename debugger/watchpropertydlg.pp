@@ -48,15 +48,15 @@ type
   { TWatchPropertyDlg }
 
   TWatchPropertyDlg = class(TForm)
+    btnCancel: TBitBtn;
+    btnHelp: TBitBtn;
+    btnOK: TBitBtn;
     lblExpression: TLabel;
     lblRepCount: TLabel;
     lblDigits: TLabel;
     chkEnabled: TCHeckbox;
     chkAllowFunc: TCheckbox;
     rgStyle: TRadioGroup;
-    btnOK: TButton;
-    btnCancel: TButton;
-    btnHelp: TButton;
     txtExpression: TEdit;
     txtRepCount: TEdit;
     txtDigits: TEdit;
@@ -132,7 +132,9 @@ begin
   rgStyle.Items[6]:= lisRecordStruct;
   rgStyle.Items[7]:= dlgAssemblerDefault;
   rgStyle.Items[8]:= lisMemoryDump;
-
+  btnOK.LoadGlyphFromLazarusResource('btn_ok');
+  btnCancel.LoadGlyphFromLazarusResource('btn_cancel');
+  btnHelp.LoadGlyphFromLazarusResource('btn_help');
 end;
 
 destructor TWatchPropertyDlg.destroy;

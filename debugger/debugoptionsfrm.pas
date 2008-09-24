@@ -42,8 +42,12 @@ type
   { TDebuggerOptionsForm }
 
   TDebuggerOptionsForm = class (TForm)
+    cmdExceptionAdd: TBitBtn;
+    cmdExceptionRemove: TBitBtn;
     cmdOK: TBitBtn;
     cmdCancel: TBitBtn;
+    cmdSignalAdd: TBitBtn;
+    cmdSignalRemove: TBitBtn;
     gcbDebuggerGeneralOptions: TCheckGroup;    
     clbExceptions: TCHECKLISTBOX;
     chkMessagesInterface: TCHECKBOX;
@@ -57,10 +61,6 @@ type
     chkMessagesWindow: TCHECKBOX;
     cmdOpenDebuggerPath: TBUTTON;
     cmdOpenAdditionalPath: TBUTTON;
-    cmdExceptionRemove: TBUTTON;
-    cmdExceptionAdd: TBUTTON;
-    cmdSignalRemove: TBUTTON;
-    cmdSignalAdd: TBUTTON;
     chkBreakOnException: TCHECKBOX;
     cmbDebuggerType: TCOMBOBOX;
     cmbDebuggerPath: TCOMBOBOX;
@@ -426,6 +426,8 @@ begin
   bgIgnoreExceptions.Caption := lisDebugOptionsFrmIgnoreTheseExceptions;
   cmdExceptionRemove.Caption := lisExtToolRemove;
   cmdExceptionAdd.Caption := lisCodeTemplAdd;
+  cmdExceptionRemove.LoadGlyphFromLazarusResource('delete');
+  cmdExceptionAdd.LoadGlyphFromLazarusResource('add');
   chkBreakOnException.Caption := lisDebugOptionsFrmBreakOnLazarusExceptions;
   
   pgSignals.Caption := lisDebugOptionsFrmOSExceptions;
@@ -436,6 +438,8 @@ begin
   lvSignals.Column[3].Caption := lisDebugOptionsFrmResume;
   cmdSignalAdd.Caption := lisCodeTemplAdd;
   cmdSignalRemove.Caption := lisExtToolRemove;
+  cmdSignalAdd.LoadGlyphFromLazarusResource('add');
+  cmdSignalRemove.LoadGlyphFromLazarusResource('delete');
 
   mnuHandledByProgram.Caption := lisDebugOptionsFrmHandledByProgram;
   mnuiHandledByDebugger.Caption := lisDebugOptionsFrmHandledByDebugger;
@@ -444,6 +448,8 @@ begin
   
   cmdOK.Caption:=lisOkBtn;
   cmdCancel.Caption:=dlgCancel;
+  cmdOK.LoadGlyphFromLazarusResource('btn_ok');
+  cmdCancel.LoadGlyphFromLazarusResource('btn_cancel');
 
   FCurDebuggerClass := nil;
   

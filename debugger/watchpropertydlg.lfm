@@ -3,34 +3,34 @@ object WatchPropertyDlg: TWatchPropertyDlg
   Height = 206
   Top = 227
   Width = 420
-  HorzScrollBar.Page = 419
-  VertScrollBar.Page = 205
   ActiveControl = chkAllowFunc
   Caption = 'Watch Properties'
   ClientHeight = 206
   ClientWidth = 420
+  ParentFont = False
   Position = poScreenCenter
+  LCLVersion = '0.9.25'
   object lblExpression: TLabel
     Left = 16
-    Height = 20
+    Height = 14
     Top = 14
-    Width = 74
+    Width = 57
     Caption = 'Expression:'
     ParentColor = False
   end
   object lblRepCount: TLabel
     Left = 15
-    Height = 20
+    Height = 14
     Top = 45
-    Width = 91
+    Width = 72
     Caption = 'Repeat Count:'
     ParentColor = False
   end
   object lblDigits: TLabel
     Left = 176
-    Height = 20
+    Height = 14
     Top = 45
-    Width = 41
+    Width = 31
     Caption = 'Digits:'
     ParentColor = False
   end
@@ -54,23 +54,23 @@ object WatchPropertyDlg: TWatchPropertyDlg
     Height = 23
     Top = 39
     Width = 180
-    TabOrder = 5
+    TabOrder = 4
     Text = '0'
   end
   object chkEnabled: TCheckBox
     Left = 15
-    Height = 22
+    Height = 19
     Top = 65
-    Width = 75
+    Width = 64
     AllowGrayed = True
     Caption = 'Enabled'
-    TabOrder = 7
+    TabOrder = 5
   end
   object chkAllowFunc: TCheckBox
     Left = 105
-    Height = 22
+    Height = 19
     Top = 65
-    Width = 147
+    Width = 120
     AllowGrayed = True
     Caption = 'Allow Function Calls'
     TabOrder = 0
@@ -90,7 +90,7 @@ object WatchPropertyDlg: TWatchPropertyDlg
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 3
-    ClientHeight = 59
+    ClientHeight = 60
     ClientWidth = 386
     Columns = 3
     ItemIndex = 7
@@ -107,34 +107,55 @@ object WatchPropertyDlg: TWatchPropertyDlg
     )
     TabOrder = 3
   end
-  object btnOK: TButton
-    Left = 170
-    Height = 25
-    Top = 176
-    Width = 75
-    Caption = 'OK'
-    Default = True
-    ModalResult = 1
-    OnClick = btnOKClick
-    TabOrder = 4
+  object btnHelp: TBitBtn
+    AnchorSideLeft.Control = Owner
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 6
+    Height = 23
+    Top = 177
+    Width = 47
+    Anchors = [akLeft, akBottom]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'Help'
+    NumGlyphs = 0
+    OnClick = btnHelpClick
+    TabOrder = 6
   end
-  object btnCancel: TButton
-    Left = 250
-    Height = 25
-    Top = 176
-    Width = 75
+  object btnCancel: TBitBtn
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 356
+    Height = 23
+    Top = 177
+    Width = 58
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Around = 6
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
-    TabOrder = 6
+    NumGlyphs = 0
+    TabOrder = 7
   end
-  object btnHelp: TButton
-    Left = 330
-    Height = 25
-    Top = 176
-    Width = 75
-    Caption = 'Help'
-    OnClick = btnHelpClick
+  object btnOK: TBitBtn
+    AnchorSideRight.Control = btnCancel
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 310
+    Height = 23
+    Top = 177
+    Width = 40
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'OK'
+    Default = True
+    ModalResult = 1
+    NumGlyphs = 0
     TabOrder = 8
   end
 end
