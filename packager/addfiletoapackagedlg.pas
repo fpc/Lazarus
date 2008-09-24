@@ -121,6 +121,7 @@ var
   PkgID: TLazPackageID;
   APackage: TLazPackage;
   PkgFile: TPkgFile;
+  FileFlags: TPkgFileFlags;
 begin
   PkgID:=TLazPackageID.Create;
   try
@@ -160,7 +161,12 @@ begin
 
     // ok -> add file to package
     APackage.BeginUpdate;
-    APackage.AddFile(Filename,UnitName,FileType,[],cpNormal);
+    FileFlags:=[];
+    if FileType in PkgFileUnitTypes then
+      Include(FileFlags,pffAddToPkgUsesSection);
+    if HasRegisterProc then
+      Include(FileFlags,pffHasRegisterProc);
+    APackage.AddFile(Filename,UnitName,FileType,FileFlags,cpNormal);
     if APackage.Editor<>nil then APackage.Editor.UpdateAll;
     APackage.EndUpdate;
 
