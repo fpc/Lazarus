@@ -77,6 +77,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           Align = alTop
           BorderSpacing.Around = 6
           ItemHeight = 13
+          MaxLength = -1
           TabOrder = 0
           Text = 'CmdLineParametersComboBox'
         end
@@ -114,6 +115,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           Align = alTop
           BorderSpacing.Around = 6
           ItemHeight = 13
+          MaxLength = -1
           TabOrder = 1
           Text = 'UseLaunchingApplicationComboBox'
         end
@@ -205,6 +207,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 6
           ItemHeight = 13
+          MaxLength = -1
           TabOrder = 1
           Text = 'WorkingDirectoryComboBox'
         end
@@ -216,6 +219,9 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
       ClientHeight = 429
       OnResize = EnvVarsPageResize
       object IncludeSystemVariablesCheckBox: TCheckBox
+        AnchorSideLeft.Control = EnvVarsPage
+        AnchorSideBottom.Control = EnvVarsPage
+        AnchorSideBottom.Side = asrBottom
         Left = 6
         Height = 19
         Top = 404
@@ -243,8 +249,13 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         ClientWidth = 476
         TabOrder = 1
         object UserOverridesListView: TListView
+          AnchorSideLeft.Control = UserOverridesGroupBox
+          AnchorSideTop.Control = UserOverridesGroupBox
+          AnchorSideRight.Control = UserOverridesGroupBox
+          AnchorSideRight.Side = asrBottom
+          AnchorSideBottom.Control = UserOverridesAddButton
           Left = 6
-          Height = 107
+          Height = 110
           Top = 6
           Width = 464
           Align = alTop
@@ -267,9 +278,12 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           ViewStyle = vsReport
         end
         object UserOverridesAddButton: TBitBtn
+          AnchorSideLeft.Control = UserOverridesGroupBox
+          AnchorSideBottom.Control = UserOverridesGroupBox
+          AnchorSideBottom.Side = asrBottom
           Left = 6
           Height = 23
-          Top = 119
+          Top = 122
           Width = 146
           Anchors = [akLeft, akBottom]
           AutoSize = True
@@ -280,10 +294,13 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           TabOrder = 1
         end
         object UserOverridesEditButton: TBitBtn
+          AnchorSideLeft.Control = UserOverridesDeleteButton
           AnchorSideLeft.Side = asrBottom
-          Left = 158
+          AnchorSideBottom.Control = UserOverridesGroupBox
+          AnchorSideBottom.Side = asrBottom
+          Left = 322
           Height = 23
-          Top = 119
+          Top = 122
           Width = 145
           Anchors = [akLeft, akBottom]
           AutoSize = True
@@ -294,10 +311,13 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           TabOrder = 2
         end
         object UserOverridesDeleteButton: TBitBtn
+          AnchorSideLeft.Control = UserOverridesAddButton
           AnchorSideLeft.Side = asrBottom
-          Left = 309
+          AnchorSideBottom.Control = UserOverridesGroupBox
+          AnchorSideBottom.Side = asrBottom
+          Left = 158
           Height = 23
-          Top = 119
+          Top = 122
           Width = 158
           Anchors = [akLeft, akBottom]
           AutoSize = True
@@ -322,6 +342,12 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         ClientWidth = 476
         TabOrder = 2
         object SystemVariablesListView: TListView
+          AnchorSideLeft.Control = SystemVariablesGroupBox
+          AnchorSideTop.Control = SystemVariablesGroupBox
+          AnchorSideRight.Control = SystemVariablesGroupBox
+          AnchorSideRight.Side = asrBottom
+          AnchorSideBottom.Control = SystemVariablesGroupBox
+          AnchorSideBottom.Side = asrBottom
           Left = 6
           Height = 187
           Top = 6
