@@ -3627,15 +3627,18 @@ begin
     UpdateTopItem;
     Result := FTopItem;
   end else
-    Result := nil;
+    Result := FTopItem;
 end;
 
 procedure TCustomTreeView.SetTopItem(Value: TTreeNode);
 begin
-  if HandleAllocated and (Value <> nil) then begin
+  if HandleAllocated and (Value <> nil) then
+  begin
     Value.MakeVisible;
     ScrolledTop:=Value.Top;
-  end;
+  end
+  else
+    FTopItem := Value;
 end;
 
 procedure TCustomTreeView.OnChangeTimer(Sender: TObject);
