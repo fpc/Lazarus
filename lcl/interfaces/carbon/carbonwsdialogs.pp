@@ -318,7 +318,8 @@ begin
          
       // Create Save dialog
       if OSError(
-        NavCreatePutFileDialog(@CreationOptions, 0, 0, NavDialogUPP, nil, DialogRef),
+        NavCreatePutFileDialog(@CreationOptions, 0, 0, NavDialogUPP,
+           UnivPtr(FileDialog), DialogRef),
          Self, SShowModal, 'NavCreatePutFileDialog') then Exit;
     end
     else
