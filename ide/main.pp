@@ -8493,7 +8493,9 @@ begin
           Result:=mrAbort;
           exit;
         end;
-      mrCancel:exit;
+      mrNo:
+    else // mrCancel, mrAbort, mrNoToAll ...
+      exit(mrCancel);
     end;
   end;
   {$IFDEF IDE_VERBOSE}
