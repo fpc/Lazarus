@@ -144,7 +144,6 @@ type
     procedure InsertItem(Index: integer; const S: string);
     procedure PutRange(Index: integer; ARange: TSynEditRange);
   protected
-    fLongestLineIndex: integer;                                                 //mh 2000-10-19
     fOnAdded: TStringListIndexEvent;
     fOnCleared: TNotifyEvent;
     fOnDeleted: TStringListIndexEvent;
