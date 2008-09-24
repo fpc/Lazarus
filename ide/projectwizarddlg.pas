@@ -66,16 +66,16 @@ var
 begin
   result:=tpws_closeIDE;
   ProjectWizardDialog:=TProjectWizardDialog.create(nil);
-  with ProjectWizardDialog do begin
-  btnNewProject.caption:=lisPWNewProject;
-  btnOpenProject.caption:=lisPWOpenProject;
-  btnConvertProject.caption:=lisPWConvertProject;
-  btnCloseIDE.caption:=lisQuitLazarus;
-  btnNewProject.LoadGlyphFromLazarusResource('item_project');
-  btnOpenProject.LoadGlyphFromLazarusResource('menu_project_open');
-  btnCloseIDE.LoadGlyphFromLazarusResource('menu_exit');
+  with ProjectWizardDialog do
+  begin
+    btnNewProject.caption:=lisPWNewProject;
+    btnOpenProject.caption:=lisPWOpenProject;
+    btnConvertProject.caption:=lisPWConvertProject;
+    btnCloseIDE.caption:=lisQuitLazarus;
+    btnNewProject.LoadGlyphFromLazarusResource('item_project');
+    btnOpenProject.LoadGlyphFromLazarusResource('menu_project_open');
+    btnCloseIDE.LoadGlyphFromLazarusResource('menu_exit');
   end;
-
 
   try
     if ProjectWizardDialog.showmodal<>mrOk then exit;
