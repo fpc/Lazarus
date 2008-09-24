@@ -3895,6 +3895,16 @@ resourcestring
   lisFilterSets = 'Filter Sets';
   lisMessagesEditor = 'Messages Editor';
 
+  // Additional Information dialog (VersionInfoAdditinalInfo.pas)
+  lisComments = 'Comments:';
+  lisAdditionalInformation = 'Additional Information';
+  lisCompany = 'Company:';
+  lisInternalName = 'Internal Name:';
+  lisLegalTrademarks = 'Legal Trademarks:';
+  lisOriginalFileName = 'Original File Name:';
+  lisProductName = 'Product Name:';
+  lisProductVersion = 'Product Version:';
+
 implementation
 
 end.

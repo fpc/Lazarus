@@ -3,20 +3,20 @@ object UnitInfoDialog: TUnitInfoDialog
   Height = 283
   Top = 251
   Width = 500
-  HorzScrollBar.Page = 499
-  VertScrollBar.Page = 282
   ActiveControl = OkButton
   BorderStyle = bsSizeToolWin
   Caption = 'UnitInfoDialog'
   ClientHeight = 283
   ClientWidth = 500
   OnCreate = FormCreate
+  ParentFont = False
   Position = poScreenCenter
+  LCLVersion = '0.9.25'
   object OkButton: TBitBtn
-    Left = 437
-    Height = 36
-    Top = 234
-    Width = 57
+    Left = 454
+    Height = 23
+    Top = 247
+    Width = 40
     Anchors = [akRight, akBottom]
     AutoSize = True
     Cancel = True
@@ -31,7 +31,7 @@ object UnitInfoDialog: TUnitInfoDialog
   object Notebook: TNotebook
     AnchorSideBottom.Control = OkButton
     Left = 6
-    Height = 222
+    Height = 235
     Top = 6
     Width = 488
     Align = alTop
@@ -52,6 +52,7 @@ object UnitInfoDialog: TUnitInfoDialog
         Caption = 'ULines'
         Font.Style = [fsBold]
         ParentColor = False
+        ParentFont = False
       end
       object OutLines: TLabel
         AnchorSideLeft.Control = ULines
@@ -84,6 +85,7 @@ object UnitInfoDialog: TUnitInfoDialog
         Caption = 'UPath'
         Font.Style = [fsBold]
         ParentColor = False
+        ParentFont = False
       end
       object UIncludedBy: TLabel
         Left = 12
@@ -94,6 +96,7 @@ object UnitInfoDialog: TUnitInfoDialog
         Caption = 'UIncludedBy'
         Font.Style = [fsBold]
         ParentColor = False
+        ParentFont = False
       end
       object OutIncludedBy: TLabel
         AnchorSideLeft.Control = UIncludedBy
@@ -126,6 +129,7 @@ object UnitInfoDialog: TUnitInfoDialog
         Caption = 'USize'
         Font.Style = [fsBold]
         ParentColor = False
+        ParentFont = False
       end
       object UInProject: TLabel
         Left = 12
@@ -136,6 +140,7 @@ object UnitInfoDialog: TUnitInfoDialog
         Caption = 'UInProject'
         Font.Style = [fsBold]
         ParentColor = False
+        ParentFont = False
       end
       object OutInProject: TLabel
         AnchorSideLeft.Control = UInProject
@@ -168,6 +173,7 @@ object UnitInfoDialog: TUnitInfoDialog
         Caption = 'UType'
         Font.Style = [fsBold]
         ParentColor = False
+        ParentFont = False
       end
       object OutName: TLabel
         AnchorSideLeft.Control = UName
@@ -189,6 +195,7 @@ object UnitInfoDialog: TUnitInfoDialog
         Caption = 'UName'
         Font.Style = [fsBold]
         ParentColor = False
+        ParentFont = False
       end
       object ClearIncludedBy: TButton
         AnchorSideTop.Control = UIncludedBy
@@ -221,13 +228,13 @@ object UnitInfoDialog: TUnitInfoDialog
     end
     object IncludePathsPage: TPage
       Caption = 'IncludePathsPage'
-      ClientWidth = 484
-      ClientHeight = 191
+      ClientWidth = 480
+      ClientHeight = 209
       object IncludePathMemo: TMemo
         Left = 6
-        Height = 179
+        Height = 197
         Top = 6
-        Width = 472
+        Width = 468
         Align = alClient
         BorderSpacing.Around = 6
         ReadOnly = True
@@ -257,9 +264,9 @@ object UnitInfoDialog: TUnitInfoDialog
     AnchorSideBottom.Control = OkButton
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 36
-    Top = 234
-    Width = 148
+    Height = 23
+    Top = 247
+    Width = 130
     Anchors = [akTop, akLeft, akBottom]
     AutoSize = True
     Caption = 'CodeToolsDefsButton'
@@ -271,10 +278,10 @@ object UnitInfoDialog: TUnitInfoDialog
     AnchorSideRight.Control = OkButton
     AnchorSideBottom.Control = OkButton
     AnchorSideBottom.Side = asrBottom
-    Left = 240
-    Height = 36
-    Top = 234
-    Width = 187
+    Left = 286
+    Height = 23
+    Top = 247
+    Width = 158
     Anchors = [akTop, akRight, akBottom]
     AutoSize = True
     BorderSpacing.Right = 10

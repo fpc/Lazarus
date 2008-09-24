@@ -153,6 +153,7 @@ begin
   ClearIncludedBy.Caption:=lisUIClearIncludedByReference;
   CodeToolsDefsButton.Caption:=lisUIShowCodeToolsValues;
   GotoIncludeDirectiveButton.Caption:=lisMenuGotoIncludeDirective;
+  OkButton.LoadGlyphFromLazarusResource('btn_ok');
 end;
 
 procedure TUnitInfoDialog.GotoIncludeDirectiveButtonClick(Sender: TObject);

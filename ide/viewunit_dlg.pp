@@ -153,6 +153,9 @@ begin
   btnCancel.Caption := dlgCancel;
   HelpButton.Caption := lisPckEditHelp;
   MultiSelectCheckBox.Caption := dlgMultiSelect;
+  btnOK.LoadGlyphFromLazarusResource('btn_ok');
+  btnCancel.LoadGlyphFromLazarusResource('btn_cancel');
+  HelpButton.LoadGlyphFromLazarusResource('btn_help');
 end;
 
 Procedure TViewUnitDialog.btnOKClick(Sender : TOBject);

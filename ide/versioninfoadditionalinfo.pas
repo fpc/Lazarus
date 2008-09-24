@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  StdCtrls, ExtCtrls, W32VersionInfo;
+  StdCtrls, ExtCtrls, W32VersionInfo, LazarusIDEStrConsts;
 
 type
 
@@ -111,6 +111,20 @@ end;
 constructor TVersionInfoAdditinalInfoForm.Create(TheOwner: TComponent);
 begin
    inherited Create(TheOwner);
+
+   Caption:= lisAdditionalInformation;
+   CancelButton.Caption:= dlgCancel;
+   OKButton.Caption:= lisOkBtn;
+   AdditionalInfoGroupBox.Caption:= lisAdditionalInformation;
+   CommentsLabel.Caption:= lisComments;
+   CompanyLabel.Caption:= lisCompany;
+   InternalNameLabel.Caption:= lisInternalName;
+   LegalTrademarksLabel.Caption:= lisLegalTrademarks;
+   OriginalFileNameLabel.Caption:= lisOriginalFileName;
+   ProductNameLabel.Caption:= lisProductName;
+   ProductVersionLabel.Caption:= lisProductVersion;
+   CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
+   OKButton.LoadGlyphFromLazarusResource('btn_ok');
 end;
 
 initialization

@@ -3,15 +3,15 @@ object UnitDependenciesView: TUnitDependenciesView
   Height = 300
   Top = 355
   Width = 400
-  HorzScrollBar.Page = 399
-  VertScrollBar.Page = 299
   ActiveControl = UnitHistoryList
   Caption = 'UnitDependenciesView'
   ClientHeight = 300
   ClientWidth = 400
   KeyPreview = True
   OnClose = UnitDependenciesViewClose
+  ParentFont = False
   Position = poScreenCenter
+  LCLVersion = '0.9.25'
   object ToolBar: TToolBar
     Height = 48
     Width = 400
@@ -48,10 +48,8 @@ object UnitDependenciesView: TUnitDependenciesView
     Top = 54
     Width = 388
     Align = alTop
-    AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
     BorderSpacing.Around = 6
     ItemHeight = 13
-    MaxLength = 0
     OnEditingDone = UnitHistoryListEditingDone
     TabOrder = 1
     Text = 'UnitHistoryList'
@@ -59,10 +57,10 @@ object UnitDependenciesView: TUnitDependenciesView
   object CloseButton: TBitBtn
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 320
-    Height = 26
-    Top = 268
-    Width = 71
+    Left = 339
+    Height = 23
+    Top = 271
+    Width = 52
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Bottom = 6
@@ -73,7 +71,7 @@ object UnitDependenciesView: TUnitDependenciesView
   end
   object UnitTreeView: TTreeView
     AnchorSideBottom.Control = CloseButton
-    Height = 181
+    Height = 184
     Top = 81
     Width = 400
     Align = alTop
