@@ -84,6 +84,27 @@ begin
   SecondaryConfigPath := NewValue;
 end;
 
+type
+  TGetFileListProc = procedure (List: TStrings);
+
+function FindExecutableInList(GetFileList: TGetFileListProc): string;
+var
+  FileNames: TStrings;
+  i : integer;
+begin
+  FileNames := TStringList.Create;
+  GetFileList(FileNames);
+  try
+    for i := 0 to FileNames.Count -1 do begin
+      Result := FileNames[i];
+      if FileExistsUTF8(Result) then exit;
+    end;
+    Result := '';
+  finally
+    FileNames.Free;
+  end;
+end;
+
 function FindDefaultCompilerPath: string;
 begin
   Result := SearchFileInPath(GetDefaultCompilerFilename,
@@ -95,7 +116,8 @@ begin
   Result := DefaultDrive + AppendPathDelim(ProgramDirectory) +
     format('fpc\%s\bin\%s\%s',
     [DefaultFPCVersion, DefaultFPCTarget, GetDefaultCompilerFilename]);
-  if not FileExistsUTF8(Result) then Result:='';
+  if FileExistsUTF8(Result) then exit;
+  Result := FindExecutableInList(@GetDefaultCompilerFilenames);
 end;
 
 function FindDefaultMakePath: string;
@@ -105,6 +127,8 @@ begin
                [AppendPathDelim(ProgramDirectory), DefaultFPCVersion, DefaultFPCTarget]),
              GetEnvironmentVariableUTF8('PATH'),';',
                             []);
+  if Result <> '' then exit;
+  Result := FindExecutableInList(@GetDefaultMakeFilenames)
 end;
 
 function GetDefaultCompiledUnitExt(FPCVersion, FPCRelease: integer): string;
@@ -131,7 +155,7 @@ end;
 
 procedure GetDefaultCompilerFilenames(List: TStrings);
 begin
-  List.Add(DefaultDrive + format('fpc\%s\bin\%s\%s',
+  List.Add(DefaultDrive + format('\fpc\%s\bin\%s\%s',
     [DefaultFPCVersion, DefaultFPCTarget, GetDefaultCompilerFilename]));
   List.Add(AppendPathDelim(ProgramDirectory) + format('fpc\%s\bin\%s\%s',
     [DefaultFPCVersion, DefaultFPCTarget, GetDefaultCompilerFilename]));
@@ -139,7 +163,7 @@ end;
 
 procedure GetDefaultMakeFilenames(List: TStrings);
 begin
-  List.Add(DefaultDrive + format('fpc\%s\bin\%s\make.exe',
+  List.Add(DefaultDrive + format('\fpc\%s\bin\%s\make.exe',
     [DefaultFPCVersion, DefaultFPCTarget]));
   List.Add(AppendPathDelim(ProgramDirectory) +
     format('fpc\%s\bin\%s\make.exe',[DefaultFPCVersion, DefaultFPCTarget]));
@@ -166,7 +190,7 @@ end;
 procedure InternalInit;
 begin
   DefaultDrive := ExtractFileDrive(ProgramDirectory);
-  DefaultFPCTarget:= {$I %FPCTARGET%};
+  DefaultFPCTarget:= GetDefaultTargetCPU + '-' + GetDefaultTargetOS;
   DefaultFPCVersion:= {$I %FPCVERSION%};
   {$ifndef ver2_2_0}
   // the last part of the path returned by GetAppConfigDir is the application
