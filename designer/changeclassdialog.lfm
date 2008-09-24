@@ -10,110 +10,110 @@ object ChangeClassDlg: TChangeClassDlg
   ClientHeight = 350
   ClientWidth = 470
   OnCreate = ChangeClassDlgCreate
+  ParentFont = False
   LCLVersion = '0.9.25'
   object OldGroupBox: TGroupBox
     Left = 6
-    Height = 290
+    Height = 300
     Top = 6
     Width = 228
     Align = alClient
     BorderSpacing.Around = 6
     Caption = 'OldGroupBox'
-    ClientHeight = 271
+    ClientHeight = 282
     ClientWidth = 224
     TabOrder = 0
     object OldClassLabel: TLabel
       Left = 6
-      Height = 20
+      Height = 14
       Top = 2
-      Width = 90
+      Width = 67
       Caption = 'OldClassLabel'
       ParentColor = False
     end
     object OldAncestorGroupBox: TGroupBox
       AnchorSideTop.Control = OldClassLabel
       AnchorSideTop.Side = asrBottom
-      Height = 243
-      Top = 28
+      Height = 260
+      Top = 22
       Width = 224
       Align = alBottom
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Top = 6
       Caption = 'OldAncestorGroupBox'
-      ClientHeight = 224
+      ClientHeight = 242
       ClientWidth = 220
       TabOrder = 0
       object OldAncestorsListBox: TListBox
-        Height = 224
+        Height = 242
         Width = 220
         Align = alClient
         ClickOnSelChange = False
         TabOrder = 0
-        TopIndex = -1
       end
     end
   end
   object NewGroupBox: TGroupBox
     Left = 240
-    Height = 290
+    Height = 300
     Top = 6
     Width = 224
     Align = alRight
     BorderSpacing.Around = 6
     Caption = 'NewGroupBox'
-    ClientHeight = 271
+    ClientHeight = 282
     ClientWidth = 220
     TabOrder = 1
     object NewClassComboBox: TComboBox
       Left = 6
-      Height = 29
+      Height = 21
       Top = 6
       Width = 208
       Align = alTop
       AutoComplete = True
       AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
       BorderSpacing.Around = 6
-      MaxLength = 0
+      ItemHeight = 13
+      MaxLength = -1
       OnEditingDone = NewClassComboBoxEditingDone
       TabOrder = 0
       Text = 'NewClassComboBox'
     end
     object NewAncestorGroupBox: TGroupBox
-      Height = 230
-      Top = 41
+      Height = 249
+      Top = 33
       Width = 220
       Align = alClient
       Caption = 'NewAncestorGroupBox'
-      ClientHeight = 211
+      ClientHeight = 231
       ClientWidth = 216
       TabOrder = 1
       object NewAncestorsListBox: TListBox
-        Height = 211
+        Height = 231
         Width = 216
         Align = alClient
         ClickOnSelChange = False
         TabOrder = 0
-        TopIndex = -1
       end
     end
   end
   object BtnPanel: TPanel
-    Height = 48
-    Top = 302
+    Height = 38
+    Top = 312
     Width = 470
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 48
+    ClientHeight = 38
     ClientWidth = 470
     TabOrder = 2
     object CancelButton: TBitBtn
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
-      Left = 386
-      Height = 36
+      Left = 389
+      Height = 26
       Top = 6
-      Width = 78
+      Width = 75
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
@@ -127,8 +127,8 @@ object ChangeClassDlg: TChangeClassDlg
     end
     object OkButton: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = 305
-      Height = 36
+      Left = 308
+      Height = 26
       Top = 6
       Width = 75
       Align = alRight

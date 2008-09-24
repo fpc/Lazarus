@@ -307,6 +307,8 @@ begin
   NewAncestorGroupBox.Caption:=lisNewAncestors;
   OkButton.Caption:=lisLazBuildOk;
   CancelButton.Caption:=dlgCancel;
+  OkButton.LoadGlyphFromLazarusResource('btn_ok');
+  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
 end;
 
 procedure TChangeClassDlg.NewClassComboBoxEditingDone(Sender: TObject);
