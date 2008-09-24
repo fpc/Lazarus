@@ -2339,6 +2339,11 @@ begin
       -Mmacpas   Macintosh Pascal dialects compatibility mode
 
   }
+  if SyntaxMode<>'' then
+    Result:='-M'+SyntaxMode
+  else
+    Result:='';
+
   tempsw := '';
 
   if (CStyleOperators) then
@@ -2358,15 +2363,10 @@ begin
   if (StaticKeyword) then
     tempsw := tempsw + 't';
 
-  if (tempsw <> '') then
-    Result := '-S' + tempsw
-  else
-    Result:='';
-
-  if SyntaxMode<>'' then begin
+  if (tempsw <> '') then begin
     if Result<>'' then
       Result:=Result+' ';
-    Result:=Result+'-M'+SyntaxMode;
+    Result := Result+'-S' + tempsw;
   end;
 end;
 
