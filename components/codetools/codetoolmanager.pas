@@ -4690,7 +4690,12 @@ begin
     dec(FWriteLockCount);
     if FWriteLockCount=0 then begin
       // end the write lock
+      if FWriteLockStep<>$7fffffff then
+        inc(FWriteLockStep)
+      else
+        FWriteLockStep:=-$7fffffff;
       SourceCache.GlobalWriteLockIsSet:=false;
+      SourceCache.GlobalWriteLockStep:=FWriteLockStep;
     end;
   end;
   {$IFDEF CTDEBUG}
