@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-09-05 21:44+0300\n"
+"PO-Revision-Date: 2008-09-24 02:31+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -331,7 +331,7 @@ msgstr "Каталог средств пользователя"
 
 #: codetoolsstrconsts:ctsundefine
 msgid "Undefine "
-msgstr "Снять определение"
+msgstr "Снять определение "
 
 #: codetoolsstrconsts:ctsunitpathinitialization
 msgid "UnitPath Initialization"

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-09-18 02:42+0300\n"
+"PO-Revision-Date: 2008-09-25 03:49+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -91,7 +91,7 @@ msgstr "модуль %s в пакете %s%s"
 
 #: lazarusidestrconsts:lisisaninvalidprojectnamepleasechooseanotheregproject
 msgid "%s%s%s is an invalid project name.%sPlease choose another (e.g. project1.lpi)"
-msgstr "%s%s%s - некорректное имя проекта.%s Выберите другое (напр., project1.lpi)"
+msgstr "%s%s%s - некорректное имя проекта.%sВыберите другое (например, project1.lpi)"
 
 #: lazarusidestrconsts:lissvuoisnotavalididentifier
 msgid "%s%s%s is not a valid identifier."
@@ -200,6 +200,10 @@ msgstr "&Добавить"
 #: lazarusidestrconsts:uemaddbreakpoint
 msgid "&Add Breakpoint"
 msgstr "&Добавить точку останова"
+
+#: lazarusidestrconsts:lisapplicationclassname
+msgid "&Application class name"
+msgstr "&Название класса приложения"
 
 #: lazarusidestrconsts:lisfrbackwardsearch
 msgid "&Backward search"
@@ -356,6 +360,10 @@ msgstr "&Точка останова в исходном коде"
 #: lazarusidestrconsts:dlgtexttofing
 msgid "&Text to Find"
 msgstr "&Найти текст"
+
+#: lazarusidestrconsts:listitle
+msgid "&Title"
+msgstr "&Заголовок"
 
 #: lazarusidestrconsts:lismenutools
 msgid "&Tools"
@@ -541,6 +549,10 @@ msgstr "Действие: %s"
 msgid "Activate regular expression syntax for text and replacement (pretty much like perl)"
 msgstr "Активировать синтаксис регулярных выражений для текста и замены (почти как в perl)"
 
+#: lazarusidestrconsts:lisactivefilter
+msgid "Active Filter"
+msgstr "Текущий фильтр"
+
 #: lazarusidestrconsts:liscodetempladd
 msgid "Add"
 msgstr "Добавить"
@@ -649,6 +661,10 @@ msgstr "Добавить ссылку"
 msgid "Add link to inherited"
 msgstr "Добавить ссылку на унаследованное"
 
+#: lazarusidestrconsts:lisaddnewset
+msgid "Add new set"
+msgstr "Добавить новый набор"
+
 #: lazarusidestrconsts:lispckoptsaddoptionstodependentpackagesandprojects
 msgid "Add options to dependent packages and projects"
 msgstr "Добавление параметров к зависимым пакетам и проектам"
@@ -700,6 +716,10 @@ msgstr "Добавить наблюдение..."
 #: lazarusidestrconsts:dlgedadd
 msgid "Add..."
 msgstr "Добавить..."
+
+#: lazarusidestrconsts:lisadditionalinformation
+msgid "Additional Information"
+msgstr "Дополнительная информация"
 
 #: lazarusidestrconsts:dlgadditionalsrcpath
 msgid "Additional Source search path for all projects (.pp;.pas)"
@@ -1037,6 +1057,10 @@ msgstr "Доступные формы:"
 msgid "Available packages"
 msgstr "Доступные пакеты"
 
+#: lazarusidestrconsts:rsavailablescanners
+msgid "Available scanners"
+msgstr "Доступные лексические анализаторы"
+
 #: lazarusidestrconsts:dlgedback
 msgid "Back"
 msgstr "Назад"
@@ -1319,7 +1343,7 @@ msgstr "Невозможно найти пускатель lazarus:%s%s"
 
 #: lazarusidestrconsts:lisdiffdlgcaseinsensitive
 msgid "Case Insensitive"
-msgstr "Нечувствительный к регистру"
+msgstr "Игнорировать регистр"
 
 #: lazarusidestrconsts:rslanguagecatalan
 msgid "Catalan"
@@ -1420,6 +1444,10 @@ msgstr "Проверять изменения на диске при загру�
 #: lazarusidestrconsts:dlgcheckconsistency
 msgid "Check consistency"
 msgstr "Целостность?"
+
+#: lazarusidestrconsts:lischeckoptions
+msgid "Check options"
+msgstr "Проверка параметров"
 
 #: lazarusidestrconsts:dlgccocaption
 msgid "Checking compiler options"
@@ -1611,7 +1639,7 @@ msgstr "Очистить+Собрать"
 
 #: lazarusidestrconsts:lisuidclear
 msgid "Clear"
-msgstr "Clear"
+msgstr "Очистить"
 
 #: lazarusidestrconsts:liscleardirectory
 msgid "Clear Directory?"
@@ -1692,6 +1720,10 @@ msgstr "Браузер кода"
 #: lazarusidestrconsts:dlgusecodefolding
 msgid "Code folding"
 msgstr "Сворачивание кода"
+
+#: lazarusidestrconsts:liscodegenerationoptions
+msgid "Code generation options"
+msgstr "Параметры генерации кода"
 
 #: lazarusidestrconsts:dlgedcodeparams
 msgid "Code parameters"
@@ -1840,6 +1872,14 @@ msgstr "Закомментировать"
 #: lazarusidestrconsts:liscodetemplcomment
 msgid "Comment:"
 msgstr "Комментарий:"
+
+#: lazarusidestrconsts:liscomments
+msgid "Comments:"
+msgstr "Комментарии:"
+
+#: lazarusidestrconsts:liscompany
+msgid "Company:"
+msgstr "Компания:"
 
 #: lazarusidestrconsts:dlgcocompilation
 msgid "Compilation"
@@ -2040,6 +2080,10 @@ msgstr "Консольное приложение"
 #: lazarusidestrconsts:lisceconstants
 msgid "Constants"
 msgstr "Константы"
+
+#: lazarusidestrconsts:lisconstructorcode
+msgid "Constructor code"
+msgstr "Код конструктора"
 
 #: lazarusidestrconsts:dlginitdoneonly
 msgid "Constructor name must be 'init' (destructor must be 'done')"
@@ -2260,6 +2304,10 @@ msgstr "Создать макросы FPC и пути к каталогу про
 #: lazarusidestrconsts:lismenucreatefpdocfiles
 msgid "Create FPDoc files"
 msgstr "Создать файлы FPDoc"
+
+#: lazarusidestrconsts:liscreatehelpnode
+msgid "Create Help node"
+msgstr "Создать элемент справки"
 
 #: lazarusidestrconsts:dlgcocreatemakefile
 msgid "Create Makefile"
@@ -2761,6 +2809,10 @@ msgstr "Каталог назначения"
 msgid "Destination directory %s%s%s is invalid.%sPlease choose a complete path."
 msgstr "Каталог %s%s%s некорркетен.%sВыберите путь к компилятору."
 
+#: lazarusidestrconsts:lisdestructorcode
+msgid "Destructor code"
+msgstr "Код деструктора"
+
 #: lazarusidestrconsts:lismenudiff
 msgid "Diff"
 msgstr "Разница Diff"
@@ -2964,6 +3016,10 @@ msgstr "Редактировать виртуальный модуль"
 #: lazarusidestrconsts:liscodetempleditcodetemplate
 msgid "Edit code template"
 msgstr "Править шаблоны кода"
+
+#: lazarusidestrconsts:liseditcontexthelp
+msgid "Edit context help"
+msgstr "Редактировать контекстную справку"
 
 #: lazarusidestrconsts:lismenueditcontexthelp
 msgid "Edit context sensitive Help"
@@ -3645,6 +3701,10 @@ msgstr "Файлы не в кодировке ASCII и не в UTF-8"
 msgid "Filter"
 msgstr "Фильтр"
 
+#: lazarusidestrconsts:lisfiltersets
+msgid "Filter Sets"
+msgstr "Наборы фильтров"
+
 #: lazarusidestrconsts:lisplistfilterany
 msgid "Filter by matching any part of method"
 msgstr "Фильтровать по любой части метода"
@@ -4185,6 +4245,10 @@ msgstr "Обрабатывается отладчиком"
 msgid "Handled by Program"
 msgstr "Обрабатывается программой"
 
+#: lazarusidestrconsts:lishashelp
+msgid "Has Help"
+msgstr "Имеет справку"
+
 #: lazarusidestrconsts:lisaf2phasregisterprocedure
 msgid "Has Register procedure"
 msgstr "Имеет процедуру Register"
@@ -4212,6 +4276,10 @@ msgstr "Справка"
 #: lazarusidestrconsts:lishlpoptshelpoptions
 msgid "Help Options"
 msgstr "Параметры справки"
+
+#: lazarusidestrconsts:lishelpentries
+msgid "Help entries"
+msgstr "Элементы справки"
 
 #: lazarusidestrconsts:lishfmhelpforfreepascalcompilermessage
 msgid "Help for FreePascal Compiler message"
@@ -4399,7 +4467,7 @@ msgstr "Игнорировать двоичные файлы"
 
 #: lazarusidestrconsts:lisdiffdlgignoreiflineendcharsdiffe
 msgid "Ignore difference in line ends (e.g. #10 = #13#10)"
-msgstr "Игнорировать разные концы строк (напр., #10 = #13#10)"
+msgstr "Игнорировать разные концы строк (например, #10 = #13#10)"
 
 #: lazarusidestrconsts:lisdiskdiffignorediskchanges
 msgid "Ignore disk changes"
@@ -4415,7 +4483,7 @@ msgstr "Игнорировать отсутствующие файлы"
 
 #: lazarusidestrconsts:lisdiffdlgignorespaces
 msgid "Ignore spaces (newline chars not included)"
-msgstr "Игнорировать пробелы (не включая перевод строки)"
+msgstr "Игнорировать пробелы (без учёта символов перевода строки)"
 
 #: lazarusidestrconsts:lisdiffdlgignorespacesatendofline
 msgid "Ignore spaces at end of line"
@@ -4824,6 +4892,10 @@ msgstr "При установке пакета %s автоматически у�
 #: lazarusidestrconsts:lisdebugoptionsfrminterface
 msgid "Interface"
 msgstr "Интерфейс"
+
+#: lazarusidestrconsts:lisinternalname
+msgid "Internal Name:"
+msgstr "Внутреннее имя:"
 
 #: lazarusidestrconsts:listcompilerinternalerror
 msgid "Internal compiler error! (%d)"
@@ -5381,6 +5453,10 @@ msgstr "Равномерно по левым краям"
 msgid "Left:"
 msgstr "Слева:"
 
+#: lazarusidestrconsts:lislegaltrademarks
+msgid "Legal Trademarks:"
+msgstr "Торговые марки:"
+
 #: lazarusidestrconsts:dlglevelnoneopt
 msgid "Level 0 (no extra Optimizations)"
 msgstr "Уровень 0 (без особой оптимизации)"
@@ -5656,6 +5732,10 @@ msgstr "Редактор меню"
 #: lazarusidestrconsts:lismenuviewmessages
 msgid "Messages"
 msgstr "Сообщения"
+
+#: lazarusidestrconsts:lismessageseditor
+msgid "Messages Editor"
+msgstr "Редактор сообщений"
 
 #: lazarusidestrconsts:lismethodclassnotfound
 msgid "Method class not found"
@@ -6013,6 +6093,10 @@ msgstr "Создать модуль"
 msgid "New class name:"
 msgstr "Новое имя класса:"
 
+#: lazarusidestrconsts:lisnewconsoleapplication
+msgid "New console application"
+msgstr "Новое консольное приложение"
+
 #: lazarusidestrconsts:lisnewencoding
 msgid "New encoding:"
 msgstr "Новая кодировка:"
@@ -6056,6 +6140,10 @@ msgstr "Следующая закладка"
 #: lazarusidestrconsts:lisno
 msgid "No"
 msgstr "Нет"
+
+#: lazarusidestrconsts:lisnoidewindowselected
+msgid "No IDE window selected"
+msgstr "Окно IDE не выбрано"
 
 #: lazarusidestrconsts:lisnoresourcestringsectionfound
 msgid "No ResourceString Section found"
@@ -6191,7 +6279,7 @@ msgstr "Количество преобразуемых файлов: %s"
 
 #: lazarusidestrconsts:lisifdok
 msgid "OK"
-msgstr "OK"
+msgstr "ОК"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmosexceptions
 msgid "OS Exceptions"
@@ -6295,7 +6383,7 @@ msgstr "Открыть ..."
 
 #: lazarusidestrconsts:lisdiffdlgopendiffineditor
 msgid "Open Diff in editor"
-msgstr "Откр. Diff в редакторе"
+msgstr "Открыть Diff в редакторе"
 
 #: lazarusidestrconsts:lisopenfile2
 msgid "Open File ..."
@@ -6484,6 +6572,10 @@ msgstr "Порядок"
 #: lazarusidestrconsts:dlgsrorigin
 msgid "Origin"
 msgstr "Начинать"
+
+#: lazarusidestrconsts:lisoriginalfilename
+msgid "Original File Name:"
+msgstr "Первое имя файла:"
 
 #: lazarusidestrconsts:dlgcoother
 msgid "Other"
@@ -6773,6 +6865,10 @@ msgstr "Вставить из буфера в текущую позицию"
 msgid "Paste selected components from clipboard"
 msgstr "Вставить выбранные компоненты из буфера"
 
+#: lazarusidestrconsts:lispath
+msgid "Path"
+msgstr "Путь"
+
 #: lazarusidestrconsts:dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
 msgstr "Редактор путей"
@@ -6927,7 +7023,7 @@ msgstr "Процедура"
 
 #: lazarusidestrconsts:uemprocedurejump
 msgid "Procedure Jump"
-msgstr "Переход к процедуре"
+msgstr "Перейти к процедуре"
 
 #: lazarusidestrconsts:srkmecprocedurelist
 msgid "Procedure List ..."
@@ -6948,6 +7044,14 @@ msgstr "Процедуры"
 #: lazarusidestrconsts:lisdebugoptionsfrmprocess
 msgid "Process"
 msgstr "Процесс"
+
+#: lazarusidestrconsts:lisproductname
+msgid "Product Name:"
+msgstr "Имя продукта:"
+
+#: lazarusidestrconsts:lisproductversion
+msgid "Product Version:"
+msgstr "Версия продукта:"
 
 #: lazarusidestrconsts:lisprogram
 msgid "Program"
@@ -7849,6 +7953,10 @@ msgstr "Поиск сообщений компилятора FreePascal в вы�
 msgid "Scan output for make messages"
 msgstr "Поиск сообщений make в выводе"
 
+#: lazarusidestrconsts:rsscanners
+msgid "Scanners"
+msgstr "Лексические анализаторы"
+
 #: lazarusidestrconsts:dlgscope
 msgid "Scope"
 msgstr "Где"
@@ -8044,6 +8152,10 @@ msgstr "Выберите тип проекта"
 #: lazarusidestrconsts:lismenuselectall
 msgid "Select all"
 msgstr "Выделить все"
+
+#: lazarusidestrconsts:rsselectaninheritedentry
+msgid "Select an inherited entry"
+msgstr "Выбрать унаследованный элемент"
 
 #: lazarusidestrconsts:lismenuselectcodeblock
 msgid "Select code block"
@@ -8672,6 +8784,10 @@ msgstr "Остановить текущую отладку и пересобра
 #: lazarusidestrconsts:lisstopdebugging2
 msgid "Stop debugging?"
 msgstr "Остановить отладку?"
+
+#: lazarusidestrconsts:lisstoponexception
+msgid "Stop on exception"
+msgstr "Останов при исключении"
 
 #: lazarusidestrconsts:liskmstopprogram
 msgid "Stop program"
@@ -10465,6 +10581,10 @@ msgstr "Верхний регистр выделения"
 msgid "Usage"
 msgstr "Использование"
 
+#: lazarusidestrconsts:lisusagemessagehoption
+msgid "Usage message (-h option)"
+msgstr "Сообщение со справкой (параметр -h)"
+
 #: lazarusidestrconsts:dlgcoansistr
 msgid "Use Ansi Strings"
 msgstr "Использовать строки Ansi"
@@ -11197,6 +11317,10 @@ msgstr "класс отсутствует"
 msgid "no fpc.cfg found"
 msgstr "не найден fpc.cfg"
 
+#: lazarusidestrconsts:lisnonodeselected
+msgid "no node selected"
+msgstr "элементов не выбрано"
+
 #: lazarusidestrconsts:lisccononascii
 msgid "non ASCII"
 msgstr "символы не-ASCII"
@@ -11216,6 +11340,10 @@ msgstr "Ничего не выбрано"
 #: lazarusidestrconsts:lisobjectpath
 msgid "object path"
 msgstr "путь объекта"
+
+#: lazarusidestrconsts:rsok
+msgid "ok"
+msgstr "ОК"
 
 #: lazarusidestrconsts:lisold
 msgid "old"
