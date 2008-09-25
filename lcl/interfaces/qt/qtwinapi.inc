@@ -3520,7 +3520,7 @@ begin
   LastPos := Point(X, Y);
   LastPos := TQtDeviceContext(DC).GetLineLastPixelPos(PenPos, LastPos);
   TQtDeviceContext(DC).drawLine(PenPos.X, PenPos.Y, LastPos.X, LastPos.Y);
-  MoveToEx(DC, LastPos.X, LastPos.Y, nil);
+  MoveToEx(DC, X, Y, nil);
   
   Result := True;
 end;
