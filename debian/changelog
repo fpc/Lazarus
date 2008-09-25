@@ -4,6 +4,55 @@ lazarus (0.9.25-0) unstable; urgency=low
 
  -- Mazen Neifer <mazen@freepascal.org>  Fri, 09 May 2008 00:58:40 +0200
 
+lazarus (0.9.24-0-13) unstable; urgency=low
+ 
+  * Fixed linitian error due to initial sources containing debian/files.
+  * Fixed find expression precedence in clean target.
+
+ -- Mazen Neifer <mazen@freepascal.org>  Mon, 31 Aug 2008 16:29:00 +0200
+
+lazarus (0.9.24-0-12) unstable; urgency=low
+ 
+  * User is now able to rebuild the IDE to add his own components.
+    (Closes: #490162)
+  * Removed false warning on read only sources when recompiling end used local
+    copy.
+
+ -- Mazen Neifer <mazen@freepascal.org>  Mon, 25 Aug 2008 17:42:00 +0200
+
+lazarus (0.9.24-0-11) unstable; urgency=low
+
+  * Add patch 07_sh_using_tmp.patch.dpatch to avoid /tmp file vulnerabilities.
+    (Closes: #496377)
+
+ -- Torsten Werner <twerner@debian.org>  Sun, 24 Aug 2008 22:23:18 +0200
+
+lazarus (0.9.24-0-10) unstable; urgency=low
+
+  [ Mazen Neifer ]
+  * Fixed clean target.
+  * Added system wide default configuration file.
+  * Fixed comments in dpatch files.
+  * Fixed compilation error with FPC 2.2.2.
+
+  [ Torsten Werner ]
+  * Built against fpc 2.2.2. (Closes: #495688)
+
+ -- Torsten Werner <twerner@debian.org>  Wed, 20 Aug 2008 01:03:50 +0200
+
+lazarus (0.9.24-0-9) unstable; urgency=low
+
+  [ Torsten Werner ]
+  * Fix email address of Mazen in debian/control.
+
+  [ Mazen Neifer ]
+  * Adapted FPCDIR default value to new fpc-source directory.
+    (Closes: #484195)
+  * Added support of multiple FPC installed releases.
+  * Added verbose option to dpatch.
+
+ -- Mazen Neifer <mazen@freepascal.org>  Thu, 29 May 2008 01:05:28 +0200
+
 lazarus (0.9.24-0-8) unstable; urgency=low
 
   [ Mazen Neifer ]

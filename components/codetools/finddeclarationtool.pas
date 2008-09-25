@@ -7227,7 +7227,7 @@ function TFindDeclarationTool.CheckParameterSyntax(CursorNode: TCodeTreeNode;
           if CheckIdentifierAndParameterList() then exit(true);
         end else begin
           {$IFDEF VerboseCPS}DebugLn('CheckBrackets check bracket open');{$ENDIF}
-          if CheckBrackets then exit(true);
+          if CheckBrackets() then exit(true);
         end;
       end else if CurPos.Flag in [cafRoundBracketClose,cafEdgedBracketClose]
       then begin
@@ -7336,6 +7336,9 @@ function TFindDeclarationTool.CheckParameterSyntax(CursorNode: TCodeTreeNode;
 begin
   {$IFDEF CheckNodeTool}CheckNodeTool(CursorNode);{$ENDIF}
   Result:=false;
+  ParameterAtom:=CleanAtomPosition;
+  ProcNameAtom:=CleanAtomPosition;
+  ParameterIndex:=0;
   //DebugLn('TFindDeclarationTool.CheckParameterSyntax START');
 
   // read code in front to find ProcName and check the syntax
