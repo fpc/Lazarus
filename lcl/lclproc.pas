@@ -3080,6 +3080,7 @@ begin
       end;
     end
     else begin
+      // invalid character
       Result:=ord(p^);
       CharLen:=1;
     end;
