@@ -640,7 +640,6 @@ type
     function indexOf(const AWidget: QWidgetH): integer;
     function insertTab(index: Integer; page: QWidgetH; p2: WideString): Integer; overload;
     function insertTab(index: Integer; page: QWidgetH; icon: QIconH; p2: WideString): Integer; overload;
-    function getClientBounds: TRect; override;
     function getCurrentIndex: Integer;
     function getTabPosition: QTabWidgetTabPosition;
     procedure removeTab(AIndex: Integer);
@@ -5558,26 +5557,6 @@ begin
     Result := QTabWidget_insertTab(QTabWidgetH(Widget), index, page, icon, @p2)
   else
     Result := QTabWidget_insertTab(QTabWidgetH(Widget), index, page, @p2);
-end;
-
-function TQtTabWidget.getClientBounds: TRect;
-var
-  ATabSize: TSize;
-  option: QStyleOptionTabWidgetFrameH;
-begin
-  option := QStyleOptionTabWidgetFrame_create();
-  QStyleOption_initFrom(QStyleOptionH(option), Widget);
-  QStyle_subElementRect(QWidget_style(Widget), @Result, QStyleSE_TabWidgetTabContents, option, Widget);
-  QStyleOptionTabWidgetFrame_destroy(option);
-
-  QWidget_size(TabBar, @ATabSize);
-  case getTabPosition of
-    QTabWidgetNorth: inc(Result.Top, ATabSize.cy);
-    QTabWidgetSouth: dec(Result.Bottom, ATabSize.cy);
-    QTabWidgetWest : inc(Result.Left, ATabSize.cx);
-    QTabWidgetEast : dec(Result.Right, ATabSize.cx);
-  end;
-  //WriteLn(dbgs(Result));
 end;
 
 function TQtTabWidget.getCurrentIndex: Integer;
