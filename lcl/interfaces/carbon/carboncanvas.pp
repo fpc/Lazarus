@@ -119,6 +119,7 @@ type
     procedure Frame(X1, Y1, X2, Y2: Integer);
     procedure Frame3D(var ARect: TRect; const FrameWidth: integer; const Style: TBevelCut);
     function GetClipRect: TRect;
+    function GetLineLastPixelPos(PrevPos, NewPos: TPoint): TPoint;
     function GetPixel(X, Y: Integer): TGraphicsColor; virtual;
     function GetTextExtentPoint(Str: PChar; Count: Integer; var Size: TSize): Boolean;
     function GetTextMetrics(var TM: TTextMetric): Boolean;
@@ -934,6 +935,24 @@ begin
   Result := CGRectToRect(CGContextGetClipBoundingBox(CGContext));
 end;
 
+function TCarbonDeviceContext.GetLineLastPixelPos(PrevPos, NewPos: TPoint
+  ): TPoint;
+begin
+  Result := NewPos;
+
+  if NewPos.X > PrevPos.X then
+    dec(Result.X)
+  else
+  if NewPos.X < PrevPos.X then
+    inc(Result.X);
+
+  if NewPos.Y > PrevPos.Y then
+    dec(Result.Y)
+  else
+  if NewPos.Y < PrevPos.Y then
+    inc(Result.Y);
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCarbonDeviceContext.GetPixel
   Params:  X, Y - Coordinates of pixel
@@ -1213,6 +1232,8 @@ end;
   array
  ------------------------------------------------------------------------------}
 procedure TCarbonDeviceContext.Polyline(Points: PPoint; NumPts: Integer);
+var
+  P: TPoint;
 begin
   if Points = nil then Exit;
   if NumPts < 1 then Exit;
@@ -1221,12 +1242,14 @@ begin
   CGContextMoveToPoint(CGContext, Points^.x + 0.5, Points^.y + 0.5);
   Dec(NumPts);
 
-  while NumPts > 0 do
+  while NumPts > 1 do
   begin
     Inc(Points);
     CGContextAddLineToPoint(CGContext, Points^.x + 0.5, Points^.y + 0.5);
     Dec(NumPts);
   end;
+  P := GetLineLastPixelPos(Points[0], Points[1]);
+  CGContextAddLineToPoint(CGContext, P.x + 0.5, P.y + 0.5);
 
   CGContextStrokePath(CGContext);
 end;
