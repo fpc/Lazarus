@@ -8493,8 +8493,8 @@ begin
           Result:=mrAbort;
           exit;
         end;
-      mrNo:
-    else // mrCancel, mrAbort, mrNoToAll ...
+      mrNo, mrNoToAll:
+    else // mrCancel, mrAbort ...
       exit(mrCancel);
     end;
   end;
