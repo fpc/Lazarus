@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for MacOSFiles 0.0
 #
-#   This file was generated on 26-8-2008
+#   This file was generated on 25-9-2008
 
 [package]
 name=macosfiles
@@ -12,7 +12,7 @@ version=0.0
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
 unitdir=../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)/ ../../packager/units/$(CPU_TARGET)-$(OS_TARGET)/ ./
 includedir=./
-options=-dLCL -dLCL$(LCL_PLATFORM) -Scgi -MObjFPC
+options=-dLCL -dLCL$(LCL_PLATFORM) -MObjFPC -Scgi
 
 [target]
 units=macosfiles.pas
