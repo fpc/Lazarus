@@ -563,19 +563,19 @@ var
   dx,dy, x, y: Integer;
   procedure CenterY;
   begin
-    y := R.Top + (R.Bottom-R.Top) div 2-1;
+    y := R.Top + (R.Bottom-R.Top) div 2;
   end;
   procedure CenterX;
   begin
-    X := R.Left + (R.Right-R.Left) div 2-1;
+    X := R.Left + (R.Right-R.Left) div 2;
   end;
   procedure DrawEdit(clr: Tcolor);
   begin
     Canvas.Pen.Color := clr;
     CenterY;
     CenterX;
-    Canvas.MoveTo(X-2, Y-Dy-1);
-    Canvas.LineTo(X+3, Y-Dy-1);
+    Canvas.MoveTo(X-2, Y-Dy);
+    Canvas.LineTo(X+3, Y-Dy);
     Canvas.MoveTo(X, Y-Dy);
     Canvas.LineTo(X, Y+Dy);
     Canvas.MoveTo(X-2, Y+Dy);
@@ -595,7 +595,7 @@ begin
           Canvas.Polyline([point(x,y-dy),  point(x+dx,y),point(x,y+dy), point(x,y+dy-1)]);
           Canvas.Polyline([point(x,y-dy+1),point(x+dx-1,y),point(x, y+dy-1), point(x,y+dy-2)]);
           CenterX;
-          Dec(X,2);
+          Dec(X,3);
           Canvas.Ellipse(Rect(X-2,Y-2,X+2,Y+2));
         end else
           Canvas.Polygon([point(x,y-dy),point(x+dx,y),point(x, y+dy),point(x,y-dy)]);
