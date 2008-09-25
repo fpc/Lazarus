@@ -2,12 +2,12 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2008-08-20 20:50+0300\n"
+"PO-Revision-Date: 2008-09-21 22:37+0300\n"
 "Project-Id-Version: objinspstrconsts\n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
 "X-Generator: KBabel 1.11.4\n"
 "MIME-Version: 1.0\n"
-"Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
+"Last-Translator: Valdas Jankūnas <zmuogs@gmail.com>\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: objinspstrconsts:oisdlinesdchars
@@ -128,7 +128,7 @@ msgstr "1 eilutė, %d simbolių"
 
 #: objinspstrconsts:srvk_accept
 msgid "Accept"
-msgstr ""
+msgstr "Priimti"
 
 #: objinspstrconsts:oisaction
 msgid "Action"
@@ -188,7 +188,7 @@ msgstr "Visi failai"
 
 #: objinspstrconsts:srkm_alt
 msgid "Alt"
-msgstr ""
+msgstr "Alt"
 
 #: objinspstrconsts:sccstredtapply
 msgid "Apply"
@@ -208,7 +208,7 @@ msgstr "Galimų veiksmų klasės:"
 
 #: objinspstrconsts:srvk_back
 msgid "Backspace"
-msgstr ""
+msgstr "Backspace"
 
 #: objinspstrconsts:oisboolean
 msgid "Boolean"
@@ -224,7 +224,7 @@ msgstr "Atsisakyti"
 
 #: objinspstrconsts:srvk_capital
 msgid "Capital"
-msgstr ""
+msgstr "Capital"
 
 #: objinspstrconsts:rscdcaption
 msgid "Caption"
@@ -280,7 +280,7 @@ msgstr "Išvalyti paveikslą"
 
 #: objinspstrconsts:srvk_cmd
 msgid "Cmd"
-msgstr ""
+msgstr "Cmd"
 
 #: objinspstrconsts:oistdactcolorselecthint
 msgid "Color Select"
@@ -312,11 +312,11 @@ msgstr "Patvirtinimas šalinant"
 
 #: objinspstrconsts:srvk_control
 msgid "Control"
-msgstr ""
+msgstr "Control"
 
 #: objinspstrconsts:srvk_convert
 msgid "Convert"
-msgstr ""
+msgstr "Convert"
 
 #: objinspstrconsts:oistdacteditcopyshorthint
 msgid "Copy"
@@ -340,7 +340,7 @@ msgstr "Apkirtpti"
 
 #: objinspstrconsts:srkm_ctrl
 msgid "Ctrl"
-msgstr ""
+msgstr "Ctrl"
 
 #: objinspstrconsts:oistdacteditselectallshortcut
 msgid "Ctrl+A"
@@ -472,7 +472,7 @@ msgstr "Keičiama"
 
 #: objinspstrconsts:srvk_end
 msgid "End"
-msgstr ""
+msgstr "End"
 
 #: objinspstrconsts:oisenumeration
 msgid "Enumeration"
@@ -492,7 +492,7 @@ msgstr "Įkeliant paveikslą įvyko klaida %s%s%s:%s%s"
 
 #: objinspstrconsts:srvk_escape
 msgid "Escape"
-msgstr ""
+msgstr "Escape"
 
 #: objinspstrconsts:oisevents
 msgid "Events"
@@ -500,7 +500,7 @@ msgstr "Įvykiai"
 
 #: objinspstrconsts:srvk_execute
 msgid "Execute"
-msgstr ""
+msgstr "Execute"
 
 #: objinspstrconsts:oistdactfileexithint
 msgid "Exit"
@@ -540,7 +540,7 @@ msgstr "Filtro pavadinimas"
 
 #: objinspstrconsts:srvk_final
 msgid "Final"
-msgstr ""
+msgstr "Final"
 
 #: objinspstrconsts:oistdactsearchfindhint
 msgid "Find"
@@ -576,11 +576,11 @@ msgstr "Pagrindinių valdiklių apribojimai: "
 
 #: objinspstrconsts:srgrabkey
 msgid "Grab key"
-msgstr ""
+msgstr "Registruoti klavišą"
 
 #: objinspstrconsts:srvk_hanja
 msgid "Hanja"
-msgstr ""
+msgstr "Hanja"
 
 #: objinspstrconsts:cactionlisteditorhelpcategory
 msgid "Help"
@@ -596,7 +596,7 @@ msgstr "Apie žinyną"
 
 #: objinspstrconsts:srvk_home
 msgid "Home"
-msgstr ""
+msgstr "Home"
 
 #: objinspstrconsts:sccstredtlabelimageindex
 msgid "Image Index:"
@@ -656,7 +656,7 @@ msgstr "Klaidinga savybės reikšmė"
 
 #: objinspstrconsts:srvk_irregular
 msgid "Irregular "
-msgstr ""
+msgstr "Irregular "
 
 #: objinspstrconsts:fesnofields
 msgid "It was not possible to get the dataset field's list"
@@ -680,11 +680,11 @@ msgstr "Rodyti kur paskelbta"
 
 #: objinspstrconsts:srvk_junja
 msgid "Junja"
-msgstr ""
+msgstr "Junja"
 
 #: objinspstrconsts:srvk_kana
 msgid "Kana"
-msgstr ""
+msgstr "Kana"
 
 #: objinspstrconsts:oistdactdatasetlasthint
 msgid "Last"
@@ -720,11 +720,11 @@ msgstr "Kaukės..."
 
 #: objinspstrconsts:srvk_menu
 msgid "Menu"
-msgstr ""
+msgstr "Menu"
 
 #: objinspstrconsts:srvk_meta
 msgid "Meta"
-msgstr ""
+msgstr "Meta"
 
 #: objinspstrconsts:oismethod
 msgid "Method"
@@ -732,7 +732,7 @@ msgstr "Metodas"
 
 #: objinspstrconsts:srvk_modechange
 msgid "Mode Change"
-msgstr ""
+msgstr "Mode Change"
 
 #: objinspstrconsts:clbmodify
 msgid "Modify the Item"
@@ -740,15 +740,15 @@ msgstr "Keisti elementą"
 
 #: objinspstrconsts:srvk_lbutton
 msgid "Mouse Button Left"
-msgstr ""
+msgstr "Kairysis pelės klavišas"
 
 #: objinspstrconsts:srvk_mbutton
 msgid "Mouse Button Middle"
-msgstr ""
+msgstr "Vidurinis pelės klavišas"
 
 #: objinspstrconsts:srvk_rbutton
 msgid "Mouse Button Right"
-msgstr ""
+msgstr "Dešinysis pelės klavišas"
 
 #: objinspstrconsts:sccsiledtmovedown
 msgid "Move Down"
@@ -808,7 +808,7 @@ msgstr "Kitas"
 
 #: objinspstrconsts:srvk_nonconvert
 msgid "Nonconvert"
-msgstr ""
+msgstr "Nonconvert"
 
 #: objinspstrconsts:sccsiledtnone
 msgid "None"
@@ -816,11 +816,11 @@ msgstr "Jiokios"
 
 #: objinspstrconsts:srvk_numlock
 msgid "Numlock"
-msgstr ""
+msgstr "Numlock"
 
 #: objinspstrconsts:srvk_numpad
 msgid "Numpad %d"
-msgstr ""
+msgstr "Numpad %d"
 
 #: objinspstrconsts:rscdok
 msgid "OK"
@@ -888,7 +888,7 @@ msgstr "Įterpti komponentą"
 
 #: objinspstrconsts:srvk_pause
 msgid "Pause key"
-msgstr ""
+msgstr "Pause key"
 
 #: objinspstrconsts:oispepicture
 msgid "Picture"
@@ -904,7 +904,7 @@ msgstr "Siūsti"
 
 #: objinspstrconsts:srvk_print
 msgid "Print"
-msgstr ""
+msgstr "Print"
 
 #: objinspstrconsts:oistdactdatasetpriorhint
 msgid "Prior"
@@ -940,7 +940,7 @@ msgstr "Apribota"
 
 #: objinspstrconsts:srvk_return
 msgid "Return"
-msgstr ""
+msgstr "Return"
 
 #: objinspstrconsts:rscdright
 msgid "Right"
@@ -960,7 +960,7 @@ msgstr "Įrašyti &kaip..."
 
 #: objinspstrconsts:sccsiledtsaveall
 msgid "Save All..."
-msgstr ""
+msgstr "Įrašyti visus…"
 
 #: objinspstrconsts:oistdactfilesaveashint
 msgid "Save As"
@@ -988,7 +988,7 @@ msgstr "Įrašyti..."
 
 #: objinspstrconsts:srvk_scroll
 msgid "Scroll"
-msgstr ""
+msgstr "Scroll"
 
 #: objinspstrconsts:cactionlisteditorsearchcategory
 msgid "Search"
@@ -1000,7 +1000,7 @@ msgstr "Antraščių rengyklė..."
 
 #: objinspstrconsts:srselect
 msgid "Select"
-msgstr ""
+msgstr "Pažymėti"
 
 #: objinspstrconsts:oistdacteditselectallheadline
 msgid "Select &All"
@@ -1024,7 +1024,7 @@ msgstr "Išrink failą"
 
 #: objinspstrconsts:oisselectshortcut
 msgid "Select short cut"
-msgstr ""
+msgstr "Parinkite sparčiųjų klavišų derinį"
 
 #: objinspstrconsts:sccsiledtgrprcaption
 msgid "Selected Image"
@@ -1048,7 +1048,7 @@ msgstr "Keisti į numatytą: %s"
 
 #: objinspstrconsts:srvk_shift
 msgid "Shift"
-msgstr ""
+msgstr "Shift"
 
 #: objinspstrconsts:oisshowcomponenttree
 msgid "Show Component Tree"
@@ -1064,7 +1064,7 @@ msgstr "Rodyti lapą..."
 
 #: objinspstrconsts:srvk_snapshot
 msgid "Snapshot"
-msgstr ""
+msgstr "Snapshot"
 
 #: objinspstrconsts:oissort
 msgid "Sort"
@@ -1072,7 +1072,7 @@ msgstr "Rūšiuoti"
 
 #: objinspstrconsts:srvk_space
 msgid "Space key"
-msgstr ""
+msgstr "Tarpo klavišas"
 
 #: objinspstrconsts:s_splitimage
 msgid "Split image"
@@ -1108,11 +1108,11 @@ msgstr "Teksto rengyklė"
 
 #: objinspstrconsts:srvk_super
 msgid "Super"
-msgstr ""
+msgstr "Super"
 
 #: objinspstrconsts:srvk_tab
 msgid "Tab"
-msgstr ""
+msgstr "Tab"
 
 #: objinspstrconsts:oistestinput
 msgid "Test Input"
@@ -1196,17 +1196,17 @@ msgstr "Word tipo sveikasis skaičius"
 
 #: objinspstrconsts:srvk_apps
 msgid "application key"
-msgstr ""
+msgstr "Klavišas „application“"
 
 #: objinspstrconsts:srvk_lwin
 msgid "left windows key"
-msgstr ""
+msgstr "Kairysis „windows“ klavišas"
 
 #: objinspstrconsts:srvk_none
 msgid "none"
-msgstr ""
+msgstr "none"
 
 #: objinspstrconsts:srvk_rwin
 msgid "right windows key"
-msgstr ""
+msgstr "Dešinysis „windows“ klavišas"
 

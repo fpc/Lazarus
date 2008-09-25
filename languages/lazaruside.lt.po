@@ -2,12 +2,12 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2008-08-20 23:54+0300\n"
+"PO-Revision-Date: 2008-09-21 23:28+0300\n"
 "Project-Id-Version: lazaruside\n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
 "X-Generator: KBabel 1.11.4\n"
 "MIME-Version: 1.0\n"
-"Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
+"Last-Translator: Valdas Jankūnas <zmuogs@gmail.com>\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: lazarusidestrconsts:srkmcommand1
@@ -588,7 +588,7 @@ msgstr "Pridėti kodo šabloną"
 
 #: lazarusidestrconsts:lisadddirectory
 msgid "Add directory"
-msgstr ""
+msgstr "Pridėti aplanką"
 
 #: lazarusidestrconsts:lismenuaddtoproject
 msgid "Add editor file to Project"
@@ -612,7 +612,7 @@ msgstr "Pridėti failus"
 
 #: lazarusidestrconsts:lisaddfilesofdirectory
 msgid "Add files of directory"
-msgstr ""
+msgstr "Pridėti aplanko failus"
 
 #: lazarusidestrconsts:lisa2paddfilestopackage
 msgid "Add files to package"
@@ -640,7 +640,7 @@ msgstr "Įdėti parinktis į priklausomus paketus bei projektus"
 
 #: lazarusidestrconsts:podaddpackageunittousessection
 msgid "Add package unit to uses section"
-msgstr ""
+msgstr "Paketo modulį įtraukti į naudojamų modulių sąrašą"
 
 #: lazarusidestrconsts:liscodehelpaddpathbutton
 msgid "Add path"
@@ -1456,7 +1456,7 @@ msgstr "Rinkitės derinį"
 
 #: lazarusidestrconsts:lischooseafpdoclink
 msgid "Choose a FPDoc link"
-msgstr ""
+msgstr "Nurodykite FPDoc saitą"
 
 #: lazarusidestrconsts:lisoifchooseabaseclassforthefavouriteproperty
 msgid "Choose a base class for the favourite property %s%s%s."
@@ -2292,7 +2292,7 @@ msgstr "Pirma sukurkite projektą!"
 
 #: lazarusidestrconsts:liscreatedirectory
 msgid "Create directory?"
-msgstr ""
+msgstr "Kurti aplanką?"
 
 #: lazarusidestrconsts:liscodehelpcreatebutton
 msgid "Create help item"
@@ -2300,7 +2300,7 @@ msgstr "Kurti žinyno elementą"
 
 #: lazarusidestrconsts:liscreateit
 msgid "Create it"
-msgstr ""
+msgstr "Kurti"
 
 #: lazarusidestrconsts:rscreatenewdefine
 msgid "Create new define"
@@ -2608,7 +2608,7 @@ msgstr "Ištrinti seną paketo failą %s%s%s?"
 
 #: lazarusidestrconsts:lisdeleteselectedfiles
 msgid "Delete selected files"
-msgstr ""
+msgstr "Ištrinti pažymėtus failus"
 
 #: lazarusidestrconsts:fdmdeleteselection
 msgid "Delete selection"
@@ -2644,7 +2644,7 @@ msgstr "Nepavyko ištrinti failą %s%s%s."
 
 #: lazarusidestrconsts:lisdelphi
 msgid "Delphi"
-msgstr ""
+msgstr "Delphi"
 
 #: lazarusidestrconsts:dlgdelphi2ext
 msgid "Delphi 2 Extensions"
@@ -2832,11 +2832,11 @@ msgstr "Nelaužti eilutės po:"
 
 #: lazarusidestrconsts:lispkgeditdoyoureallywanttoforgetallchangestopackageand
 msgid "Do you really want to forget all changes to package %s and reload it from file?"
-msgstr "Ar ištikro norite panaikinti visus keitimus pakete %s ir jį įkelti išnaujo?"
+msgstr "Ar ištikro norite panaikinti visus keitimus pakete %s ir jį įkelti iš naujo?"
 
 #: lazarusidestrconsts:lisconfirmlazarusrebuild
 msgid "Do you want to rebuild Lazarus?"
-msgstr "Daryti Lazarus išnaujo?"
+msgstr "Ar Lazarus daryti iš naujo?"
 
 #: lazarusidestrconsts:rsiwpdocked
 msgid "Docked"
@@ -3156,7 +3156,7 @@ msgstr "Įvyko klaida įkeliant %s%s%s%s%s"
 
 #: lazarusidestrconsts:liserrorreadingxml
 msgid "Error reading XML"
-msgstr ""
+msgstr "Klaida skaitant XML"
 
 #: lazarusidestrconsts:lispkgmangerrorreadingfile
 msgid "Error reading file"
@@ -3176,7 +3176,7 @@ msgstr "Įvyko klaida įkeliant informacijos apie projektą failą %s%s%s%s%s"
 
 #: lazarusidestrconsts:liserrorreadingxmlfile
 msgid "Error reading xml file %s%s%s%s%s"
-msgstr ""
+msgstr "Įvyko klaida skaitant XML failą %s%s%s%s%s"
 
 #: lazarusidestrconsts:liserrorrenamingfile
 msgid "Error renaming file"
@@ -3248,7 +3248,7 @@ msgstr "Pavyzdžiai"
 
 #: lazarusidestrconsts:lisexamplesidentifiertmyenumenumunitnameidentifierpac
 msgid "Examples:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
-msgstr ""
+msgstr "Pavyzdžiai:%sIdentifikatorius%sTManoEnum.Enum%sModulioPavadinimas.Identifikatorius%s#PaketoPavadinimas.ModulioPavadinimas.Identifikatorius"
 
 #: lazarusidestrconsts:lisexcludefilter
 msgid "Exclude Filter"
@@ -3256,7 +3256,7 @@ msgstr "Neįtraukimo filtras"
 
 #: lazarusidestrconsts:lisexcludefilter2
 msgid "Exclude filter"
-msgstr ""
+msgstr "Atmetamųjų filtras"
 
 #: lazarusidestrconsts:liscoexecuteafter
 msgid "Execute after"
@@ -3400,7 +3400,7 @@ msgstr "FPC pirminio kodo aplanko klaida"
 
 #: lazarusidestrconsts:lisfpcversioneg222
 msgid "FPC Version (e.g. 2.2.2)"
-msgstr ""
+msgstr "FPC laida (pvz. 2.2.2)"
 
 #: lazarusidestrconsts:lisfpcversion
 msgid "FPC Version: "
@@ -3804,7 +3804,7 @@ msgstr "Rasti tušti metodai:"
 
 #: lazarusidestrconsts:lisfreepascal
 msgid "Free Pascal"
-msgstr ""
+msgstr "Free Pascal"
 
 #: lazarusidestrconsts:lisfreepascalcompilernotfound
 msgid "Free Pascal Compiler not found"
@@ -4896,7 +4896,7 @@ msgstr "Klaidingas reiškinys.%sUžuomina: funkcijai „Kurti resursų eilutę�
 
 #: lazarusidestrconsts:lisinvalidexpression
 msgid "Invalid expression:%s%s%s%s"
-msgstr ""
+msgstr "Klaidingas reiškinys: %s%s%s%s"
 
 #: lazarusidestrconsts:lisa2pinvalidfile
 msgid "Invalid file"
@@ -4912,7 +4912,7 @@ msgstr "Klaidingas failo pavadinimas"
 
 #: lazarusidestrconsts:lisinvalidfilter
 msgid "Invalid filter"
-msgstr ""
+msgstr "Klaidingas filtras"
 
 #: lazarusidestrconsts:lisenvoptdlginvalidmakefilename
 msgid "Invalid make filename"
@@ -5412,7 +5412,7 @@ msgstr "Saistymo stilius:"
 
 #: lazarusidestrconsts:lislinktarget
 msgid "Link target"
-msgstr ""
+msgstr "Saito paskirtis"
 
 #: lazarusidestrconsts:lislink
 msgid "Link:"
@@ -5488,7 +5488,7 @@ msgstr "Mac OS X"
 
 #: lazarusidestrconsts:lismacpascal
 msgid "Mac Pascal"
-msgstr ""
+msgstr "Mac Pascal"
 
 #: lazarusidestrconsts:lisedtexttoolmacros
 msgid "Macros"
@@ -6152,7 +6152,7 @@ msgstr "Objetų inspektoriaus komandos"
 
 #: lazarusidestrconsts:lisobjectpascaldefault
 msgid "Object Pascal - default"
-msgstr ""
+msgstr "Object Pascal - numatyta"
 
 #: lazarusidestrconsts:dlgedoff
 msgid "Off"
@@ -7104,15 +7104,15 @@ msgstr "Rėžį"
 
 #: lazarusidestrconsts:lispckeditreadddependency
 msgid "Re-Add dependency"
-msgstr "Išnaujo talpinti priklausinį"
+msgstr "Iš naujo talpinti priklausinį"
 
 #: lazarusidestrconsts:lispckeditreaddfile
 msgid "Re-Add file"
-msgstr "Išnaujo talpinti failą"
+msgstr "Iš naujo talpinti failą"
 
 #: lazarusidestrconsts:lispckeditrecompilethisandallrequiredpackages
 msgid "Re-Compile this and all required packages?"
-msgstr "Kompiliuoti išnaujo šį ir kitus reikiamus paketus?"
+msgstr "Kompiliuoti iš naujo šį ir kitus reikiamus paketus?"
 
 #: lazarusidestrconsts:lisreaderror
 msgid "Read Error"
@@ -7140,7 +7140,7 @@ msgstr "Tik skaitymui"
 
 #: lazarusidestrconsts:lispkgmangrebuildlazarus
 msgid "Rebuild Lazarus?"
-msgstr "Daryti Lazarus išnaujo?"
+msgstr "Ar Lazarus daryti iš naujo?"
 
 #: lazarusidestrconsts:lisiecorecentfiles
 msgid "Recent files"
@@ -7208,7 +7208,7 @@ msgstr "Klaida registruojant"
 
 #: lazarusidestrconsts:lisregularexpression
 msgid "Regular expression"
-msgstr ""
+msgstr "Reguliarusis reiškinys"
 
 #: lazarusidestrconsts:lisrelativepaths
 msgid "Relative paths"
@@ -7220,7 +7220,7 @@ msgstr "Laida"
 
 #: lazarusidestrconsts:lisdiskdiffrevertall
 msgid "Reload from disk"
-msgstr "Įkelti išnaujo"
+msgstr "Įkelti iš naujo"
 
 #: lazarusidestrconsts:lisexttoolremove
 msgid "Remove"
@@ -7436,7 +7436,7 @@ msgstr "Išteklių eilutės sekcija:"
 
 #: lazarusidestrconsts:lismenurestart
 msgid "Restart"
-msgstr "Startuoti išnaujo"
+msgstr "Startuoti iš naujo"
 
 #: lazarusidestrconsts:lislazbuildrestartafterbuild
 msgid "Restart after successful Build"
@@ -8600,7 +8600,7 @@ msgstr "Po kelių klaidų sustoti:"
 
 #: lazarusidestrconsts:lisstopcurrentdebuggingandrebuildproject
 msgid "Stop current debugging and rebuild project?"
-msgstr "Sustabdyti šiuo metu vykdomą programos derinimą ir daryti projektą išnaujo?"
+msgstr "Sustabdyti šiuo metu vykdomą programos derinimą ir daryti projektą iš naujo?"
 
 #: lazarusidestrconsts:lisstopdebugging2
 msgid "Stop debugging?"
@@ -8712,7 +8712,7 @@ msgstr "Sintaksės patikra"
 
 #: lazarusidestrconsts:lissyntaxmode
 msgid "Syntax mode"
-msgstr ""
+msgstr "Sintaksės veiksena"
 
 #: lazarusidestrconsts:dlgsyntaxoptions
 msgid "Syntax options"
@@ -8800,7 +8800,7 @@ msgstr "Projekto būsimo failo pavadinimas"
 
 #: lazarusidestrconsts:dlgtargetproc
 msgid "Target processor"
-msgstr ""
+msgstr "Skirtas procesoriui"
 
 #: lazarusidestrconsts:lismenueditortemplatepreview
 msgid "Template Preview"
@@ -9112,7 +9112,7 @@ msgstr "Paskirties aplankas%s%s%s%s neegzistuoja."
 
 #: lazarusidestrconsts:listhedirectorywasnotfound
 msgid "The directory %s was not found."
-msgstr ""
+msgstr "Nepavyko rasti aplanko %s."
 
 #: lazarusidestrconsts:listhedirectoryisnolongerneededintheunitpathremoveit
 msgid "The directory %s%s%s is no longer needed in the unit path.%sRemove it?"
@@ -9268,7 +9268,7 @@ msgstr "Naujojo modulio nėra dar nėra modulių paieškos kelyje.%sĮtraukti mo
 
 #: lazarusidestrconsts:listheoutputdirectoryismissing
 msgid "The output directory %s%s%s is missing."
-msgstr ""
+msgstr "Nėra išvesties aplanko %s%s%s."
 
 #: lazarusidestrconsts:listheoutputdirectoryofislistedintheincludesearchpath
 msgid "The output directory of %s is listed in the include search path of %s."
@@ -9320,11 +9320,11 @@ msgstr "Paketas %s%s%s paženklintas kaip diegiamasis, tačiau jo nepavyko rasti
 
 #: lazarusidestrconsts:lispkgmangthepackagewasmarkedforinstallationcurrentlylazarus
 msgid "The package %s%s%s was marked for installation.%sCurrently lazarus only supports static linked packages. The real installation needs rebuilding and restarting of lazarus.%s%sDo you want to rebuild Lazarus now?"
-msgstr "Paketas %s%s%s paženklintas diegimui.%sŠiuo metu Lazarus palaiko tik statiškai saistytus paketus. Tad diegimo procesas yra toks- daryti Lazarus išnaujo ir po to jį startuoti vėl.%s%sDaryti Lazarus iš naujo dabar?"
+msgstr "Paketas %s%s%s paženklintas diegimui.%sŠiuo metu Lazarus palaiko tik statiškai saistytus paketus. Tad diegimo procesas yra toks: daryti Lazarus iš naujo ir po to jį startuoti vėl.%s%sAr Lazarus daryti iš naujo dabar?"
 
 #: lazarusidestrconsts:lispkgmangthepackagewasmarkedcurrentlylazarus
 msgid "The package %s%s%s was marked.%sCurrently lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of lazarus.%s%sDo you want to rebuild Lazarus now?"
-msgstr "Paketas %s%s%s paženklintas.%sŠiuo metu Lazarus palaiko tik statiškai saistytus paketus. Tad išdiegimo procesas yra toks- daryti Lazarus išnaujo ir po to jį startuoti vėl.%s%sDaryti Lazarus išnaujo dabar?"
+msgstr "Paketas %s%s%s paženklintas.%sŠiuo metu Lazarus palaiko tik statiškai saistytus paketus. Tad išdiegimo procesas yra toks: daryti Lazarus iš naujo ir po to jį startuoti vėl.%s%sAr Lazarus daryti iš naujo dabar?"
 
 #: lazarusidestrconsts:listhepackagealreadycontainsaunitwiththisname
 msgid "The package already contains a unit with this name."
@@ -9464,7 +9464,7 @@ msgstr "Modulio pavadinimas naudojamas kai IKA praplečia naudojamų modulių s�
 
 #: lazarusidestrconsts:listheworkingdirectorydoesnotexistpleasechecktheworki
 msgid "The working directory %s%s%s does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
-msgstr ""
+msgstr "Darbinis aplankas %s%s%s neegzistuoja.%sŽviktelėkite į „Startuoti -> Startavimo parametrai…“."
 
 #: lazarusidestrconsts:lissamthereareabstractmethodstooverrideselectthemethodsf
 msgid "There are %s abstract methods to override.%sSelect the methods for which stubs should be created:"
@@ -9636,7 +9636,7 @@ msgstr "Gija"
 
 #: lazarusidestrconsts:listitleleaveemptyfordefault
 msgid "Title (leave empty for default)"
-msgstr ""
+msgstr "Antraštė (palikus tuščią - bus naudojama numatytoji)"
 
 #: lazarusidestrconsts:lisedtexttooltitleandfilenamerequired
 msgid "Title and Filename required"
@@ -9672,7 +9672,7 @@ msgstr "Rodyti formą arba modulį"
 
 #: lazarusidestrconsts:listoggleshowingfilenameswithfullpathorwithrelativepa
 msgid "Toggle showing filenames with full path or with relative path"
-msgstr ""
+msgstr "Failų pavadinimuose rodyti pilnus arba reliatyvius kelius"
 
 #: lazarusidestrconsts:liskmtoggleviewbreakpoints
 msgid "Toggle view Breakpoints"
@@ -9776,7 +9776,7 @@ msgstr "Eilučių galuose pašalinti tarpo simbolius"
 
 #: lazarusidestrconsts:listurbopascal
 msgid "Turbo Pascal"
-msgstr ""
+msgstr "Turbo Pascal"
 
 #: lazarusidestrconsts:rslanguageturkish
 msgid "Turkish"
@@ -9912,7 +9912,7 @@ msgstr "Nepavyko sukurti failą%s%s%s%s"
 
 #: lazarusidestrconsts:lisunabletocreatelinkwithtarget
 msgid "Unable to create link %s%s%s with target %s%s%s"
-msgstr ""
+msgstr "Nepavyko sukurti saito %s%s%s, kurio paskirtis %s%s%s"
 
 #: lazarusidestrconsts:lisunabletocreatenewmethodpleasefixtheerrorshownin
 msgid "Unable to create new method. Please fix the error shown in the message window."
@@ -10516,7 +10516,7 @@ msgstr "Pranešimų gausa kompiliuojant:"
 
 #: lazarusidestrconsts:lisverifymethodcalls
 msgid "Verify method calls"
-msgstr ""
+msgstr "Patikrinti metodų kreiptis"
 
 #: lazarusidestrconsts:lisversion
 msgid "Version"
@@ -11228,7 +11228,7 @@ msgstr "perjungti FPC veikseną į DELPHI"
 
 #: lazarusidestrconsts:lisedtdefsetfpcmodetofpc
 msgid "set FPC mode to FPC"
-msgstr ""
+msgstr "FPC veikseną keisti į FPC"
 
 #: lazarusidestrconsts:lisedtdefsetfpcmodetogpc
 msgid "set FPC mode to GPC"
@@ -11236,7 +11236,7 @@ msgstr "perjungti FPC veikseną į GPC"
 
 #: lazarusidestrconsts:lisedtdefsetfpcmodetomacpas
 msgid "set FPC mode to MacPas"
-msgstr ""
+msgstr "FPC veikseną keisti į MacPas"
 
 #: lazarusidestrconsts:lisedtdefsetfpcmodetotp
 msgid "set FPC mode to TP"
@@ -11256,7 +11256,7 @@ msgstr "Įjungti RANGECHECKS"
 
 #: lazarusidestrconsts:lissmallerratherthanfaster
 msgid "smaller rather than faster"
-msgstr ""
+msgstr "geriau mažesnis nei greitesnis"
 
 #: lazarusidestrconsts:lisautomaticallyonspace
 msgid "space"

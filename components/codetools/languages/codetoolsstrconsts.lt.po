@@ -2,11 +2,11 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2008-08-20 23:19+0300\n"
+"PO-Revision-Date: 2008-09-21 21:56+0300\n"
 "Project-Id-Version: codetoolsstrconsts\n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
 "X-Generator: KBabel 1.11.4\n"
-"Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
+"Last-Translator: Valdas Jankūnas <zmuogs@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
@@ -332,7 +332,7 @@ msgstr "Įrankių aplankas"
 
 #: codetoolsstrconsts:ctsundefine
 msgid "Undefine "
-msgstr ""
+msgstr "Naikinti apibrėžtį "
 
 #: codetoolsstrconsts:ctsunitpathinitialization
 msgid "UnitPath Initialization"
@@ -452,7 +452,7 @@ msgstr "tikėtasi numatyto parametro, tačiau aptikta %s"
 
 #: codetoolsstrconsts:ctsdefaultpropertynotfound
 msgid "default property not found"
-msgstr ""
+msgstr "nerasta numatytoji savybė"
 
 #: codetoolsstrconsts:ctsdefaultspecifierredefined
 msgid "default specifier redefined"
@@ -556,7 +556,7 @@ msgstr "nerastas realizacijos mazgas"
 
 #: codetoolsstrconsts:ctsincludedirectoriesplusdirs
 msgid "include directories: %s"
-msgstr ""
+msgstr "įterpti aplankus: %s"
 
 #: codetoolsstrconsts:ctsincludefilenotfound
 msgid "include file not found \"%s\""
@@ -724,7 +724,7 @@ msgstr "pirminis kodas nerastas: modulis %s"
 
 #: codetoolsstrconsts:ctssourceofunitnotfound
 msgid "source of unit not found: %s"
-msgstr ""
+msgstr "nearastas modulio pirminis kodas: %s"
 
 #: codetoolsstrconsts:ctssrcpathforcompiledunits
 msgid "src path for compiled units"

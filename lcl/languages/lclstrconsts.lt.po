@@ -2,12 +2,12 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2008-08-20 23:33+0300\n"
+"PO-Revision-Date: 2008-09-21 23:37+0300\n"
 "Project-Id-Version: lclstrconsts\n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
 "X-Generator: KBabel 1.11.4\n"
 "MIME-Version: 1.0\n"
-"Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
+"Last-Translator: Valdas Jankūnas <zmuogs@gmail.com>\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: lclstrconsts:rsmodified
@@ -140,7 +140,7 @@ msgstr "--lcl-no-transient     Modalinių formų eilę nedaryti trumpalaikę."
 
 #: lclstrconsts:rsgtkoptionname
 msgid "--name programe       Set program name to \"progname\". If not specified, program name will be set to ParamStrUTF8(0)."
-msgstr ""
+msgstr "--name programa       Programos pavadinimą nustatyti į „programa“. Jei nenurodyta, tai programos pavadinimas bus nustatytas į ParamStrUTF8(0)."
 
 #: lclstrconsts:rsgtkoptionnoxshm
 msgid "--no-xshm             Disable use of the X Shared Memory Extension."
@@ -208,15 +208,15 @@ msgstr "Atsisakyti"
 
 #: lclstrconsts:rsrasterimageupdateall
 msgid "Cannot begin update all when canvas only update in progress"
-msgstr ""
+msgstr "Visko atnaujinti negalima kai atnaujinamas tik „Canvas“"
 
 #: lclstrconsts:rsiconimageformatchange
 msgid "Cannot change format of icon image"
-msgstr ""
+msgstr "Neina pakeisti piktogramos paveikslo formato"
 
 #: lclstrconsts:rsiconimagesizechange
 msgid "Cannot change size of icon image"
-msgstr ""
+msgstr "Neina pakeisti piktogramos paveikslo dydžio"
 
 #: lclstrconsts:scannotfocus
 msgid "Cannot focus a disabled or invisible window"
@@ -224,7 +224,7 @@ msgstr "Neįgalintą arba nematomą langą suaktyvinti negalima"
 
 #: lclstrconsts:rsrasterimagesaveinupdate
 msgid "Cannot save image while update in progress"
-msgstr ""
+msgstr "Neina įrašyti paveikslo, nes jis atnaujinamas"
 
 #: lclstrconsts:rscanvasdoesnotallowdrawing
 msgid "Canvas does not allow drawing"
@@ -312,7 +312,7 @@ msgstr "End"
 
 #: lclstrconsts:rsrasterimageendupdate
 msgid "Endupdate while no update in progress"
-msgstr ""
+msgstr "„Endupdate“, tačiau niekas neatnaujinama"
 
 #: lclstrconsts:rsmterror
 msgid "Error"
