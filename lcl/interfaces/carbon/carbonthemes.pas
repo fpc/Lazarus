@@ -307,13 +307,14 @@ function TCarbonThemeServices.ContentRect(DC: HDC;
   Details: TThemedElementDetails; BoundingRect: TRect): TRect;
 begin
   Result := BoundingRect;
-
+{
   case Details.Element of
     teHeader: Result := DrawHeaderElement(DefaultContext, Details, BoundingRect, nil);
     teButton: Result := DrawButtonElement(DefaultContext, Details, BoundingRect, nil);
     teRebar: Result := DrawRebarElement(DefaultContext, Details, BoundingRect, nil);
     teToolBar: Result := DrawToolBarElement(DefaultContext, Details, BoundingRect, nil);
   end;
+}
 end;
 
 {------------------------------------------------------------------------------

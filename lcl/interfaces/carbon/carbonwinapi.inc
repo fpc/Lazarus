@@ -1751,7 +1751,10 @@ begin
   {$ENDIF}
 
   case NIndex of
-    SM_CYHSCROLL, SM_CXVSCROLL:
+    SM_CXHSCROLL,
+    SM_CYHSCROLL,
+    SM_CXVSCROLL,
+    SM_CYVSCROLL:
       Result := GetCarbonThemeMetric(kThemeMetricScrollBarWidth);
     SM_CXSCREEN,
     SM_CXVIRTUALSCREEN : Result := CGDisplayPixelsWide(CGMainDisplayID);
@@ -1767,6 +1770,10 @@ begin
           Result := 64 else
           Result := 16;
       end;
+    SM_CXHTHUMB:
+      Result := GetCarbonThemeMetric(kThemeMetricScrollBarMinThumbWidth);
+    SM_CYVTHUMB:
+      Result := GetCarbonThemeMetric(kThemeMetricScrollBarMinThumbHeight);
   else
     DebugLn('TCarbonWidgetSet.GetSystemMetrics TODO ', DbgS(NIndex));;
   end;
