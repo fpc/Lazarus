@@ -8115,39 +8115,73 @@ var ActiveSrcEdit: TSourceEditor;
     end;
   end;
 
-var IsIncludeDirective: boolean;
+var
+  IsIncludeDirective: boolean;
+  BaseDir: String;
+  NewFilename: string;
+  Found: Boolean;
+  UnitName: String;
+  InFilename: String;
 begin
   Result:=mrCancel;
   GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
   if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil) then exit;
+  BaseDir:=ExtractFilePath(ActiveUnitInfo.Filename);
 
   // parse filename at cursor
   IsIncludeDirective:=false;
+  Found:=false;
   FName:=GetFilenameAtRowCol(ActiveSrcEdit.EditorComponent.LogicalCaretXY,
                              IsIncludeDirective);
   if FName='' then exit;
 
-  // get searchpath for directory of current file
-  if ActiveUnitInfo.IsVirtual then
-    SPath:='.'
-  else begin
-    if IsIncludeDirective then
-      SPath:='.;'+CodeToolBoss.DefineTree.GetIncludePathForDirectory(
-                            ExtractFilePath(ActiveUnitInfo.Filename))
-    else
-      SPath:='.;'+CodeToolBoss.DefineTree.GetUnitPathForDirectory(
-                            ExtractFilePath(ActiveUnitInfo.Filename))
-             +';'+CodeToolBoss.DefineTree.GetSrcPathForDirectory(
-                            ExtractFilePath(ActiveUnitInfo.Filename));
+  // check if absolute filename
+  if FilenameIsAbsolute(FName) and FileExistsUTF8(FName) then
+    Found:=true;
+
+  if (not Found) and (not FilenameIsAbsolute(FName)) then begin
+    if IsIncludeDirective then begin
+      // search include file
+      SPath:='.;'+CodeToolBoss.DefineTree.GetIncludePathForDirectory(BaseDir);
+      if FindFile(FName,SPath) then
+        Found:=true;
+    end else if FilenameIsPascalSource(FName) or (ExtractFileExt(FName)='') then
+    begin
+      // search pascal unit
+      UnitName:=ExtractFileNameOnly(FName);
+      InFilename:=FName;
+      if ExtractFileExt(FName)='' then InFilename:='';
+      NewFilename:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
+                           BaseDir,UnitName,InFilename,true);
+      if NewFilename<>'' then begin
+        Found:=true;
+        FName:=NewFilename;
+      end;
+    end;
   end;
 
-  // search file in path (search especially for pascal files)
-  if FindFile(FName,SPath) then begin
-    Result:=mrOk;
-    InputHistories.SetFileDialogSettingsInitialDir(ExtractFilePath(FName));
-    if DoOpenEditorFile(FName,-1,[ofAddToRecent])=mrOk then begin
-      // success
+  if (not Found) and (System.Pos('.',FName)>0) and (not IsIncludeDirective) then
+  begin
+    // for example 'SysUtils.CompareText'
+    FName:=ActiveSrcEdit.EditorComponent.GetWordAtRowCol(
+      ActiveSrcEdit.EditorComponent.LogicalCaretXY);
+    if (FName<>'') and IsValidIdent(FName) then begin
+      // search pascal unit
+      UnitName:=FName;
+      InFilename:='';
+      NewFilename:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
+                           BaseDir,UnitName,InFilename,true);
+      if NewFilename<>'' then begin
+        Found:=true;
+        FName:=NewFilename;
+      end;
     end;
+  end;
+
+  if Found then begin
+    // open
+    InputHistories.SetFileDialogSettingsInitialDir(ExtractFilePath(FName));
+    Result:=DoOpenEditorFile(FName,-1,[ofAddToRecent]);
   end;
 end;
 
