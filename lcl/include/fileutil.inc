@@ -842,7 +842,7 @@ begin
   FileInfo.Name:=UTF8ToSys(Filename);
   FileInfo.FindHandle:=Windows.FindFirstFile(PChar(FileInfo.Name),FileInfo.FindData);
   if FileInfo.FindHandle=Windows.Invalid_Handle_value then begin
-    Result:=Windows.GetLastError;
+    Result:=-1;
     exit;
   end;
   Result:=(int64(FileInfo.FindData.nFileSizeHigh) shl 32)+FileInfo.FindData.nFileSizeLow;
