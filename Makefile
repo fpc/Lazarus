@@ -246,7 +246,7 @@ UNITSDIR:=$(wildcard $(FPCDIR)/units/$(OS_TARGET))
 endif
 PACKAGESDIR:=$(wildcard $(FPCDIR) $(FPCDIR)/packages $(FPCDIR)/packages/base $(FPCDIR)/packages/extra)
 override PACKAGE_NAME=lazarus
-override PACKAGE_VERSION=0.9.25
+override PACKAGE_VERSION=0.9.26
 RCPP?=$(strip $(firstword cpp$(SRCEXEEXT)))
 LAZARUS_INSTALL_DIR=$(INSTALL_PREFIX)/share/lazarus
 INSTALL_MAN_DIR=$(INSTALL_PREFIX)/share/man

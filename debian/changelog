@@ -1,8 +1,8 @@
-lazarus (0.9.25-0) unstable; urgency=low
+lazarus (0.9.26-0) unstable; urgency=low
 
-  * Merged debian rules with official debian svn.
+  * New upstream version.
 
- -- Mazen Neifer <mazen@freepascal.org>  Fri, 09 May 2008 00:58:40 +0200
+ -- Mazen Neifer <mazen@freepascal.org>  Thu, 25 Sep 2008 13:47:00 +0200
 
 lazarus (0.9.24-0-13) unstable; urgency=low
  
