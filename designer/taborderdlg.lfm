@@ -12,7 +12,7 @@ object TabOrderDialog: TTabOrderDialog
   OnCreate = TabOrderDialogCREATE
   ParentFont = False
   Position = poScreenCenter
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object ArrowUp: TSpeedButton
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
@@ -24,6 +24,7 @@ object TabOrderDialog: TTabOrderDialog
     BorderSpacing.Around = 6
     Color = clBtnFace
     NumGlyphs = 0
+    OnClick = UpSpeedbuttonCLICK
   end
   object ArrowDown: TSpeedButton
     AnchorSideRight.Control = Owner
@@ -36,6 +37,7 @@ object TabOrderDialog: TTabOrderDialog
     BorderSpacing.Around = 6
     Color = clBtnFace
     NumGlyphs = 0
+    OnClick = DownSpeedbuttonCLICK
   end
   object ItemTreeview: TTreeView
     AnchorSideLeft.Control = Owner
