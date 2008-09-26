@@ -481,17 +481,19 @@ var Buf: TCodeBuffer;
 begin
   Buf:=TCodeBuffer(Code);
   //DebugLn('OnScannerCheckFileOnDisk A ',Buf.Filename,' AutoRev=',Buf.AutoUpdateFromDisk,' WriteLock=',GlobalWriteLockIsSet,' DiskChg=',Buf.FileOnDiskHasChanged);
-  if Buf.AutoRevertFromDisk then begin
+  if Buf.AutoRevertFromDisk or Buf.IsDeleted then begin
     if GlobalWriteLockIsSet then begin
       if GlobalWriteLockStep<>Buf.GlobalWriteLockStepOnLastLoad then begin
         Buf.GlobalWriteLockStepOnLastLoad:=GlobalWriteLockStep;
-        if Buf.FileOnDiskHasChanged then
+        if Buf.FileNeedsUpdate then
           Buf.Revert;
       end;
     end else begin
-      if Buf.FileOnDiskHasChanged then
+      if Buf.FileNeedsUpdate then
         Buf.Revert;
     end;
+  end else begin
+    //DebugLn(['TCodeCache.OnScannerCheckFileOnDisk AutoRevertFromDisk=',Buf.AutoRevertFromDisk,' ',Buf.Filename]);
   end;
   Result:=true;
 end;
@@ -819,7 +821,7 @@ function TCodeBuffer.LoadFromFile(const AFilename: string): boolean;
 begin
   //DebugLn('[TCodeBuffer.LoadFromFile] WriteLock=',WriteLock,' ReadOnly=',ReadOnly,
   //' IsVirtual=',IsVirtual,' Old="',Filename,'" ',CompareFilenames(AFilename,Filename));
-  if (WriteLock>0) or (ReadOnly) then begin
+  if (WriteLock>0) or ReadOnly then begin
     Result:=false;
     exit;
   end;
@@ -831,11 +833,11 @@ begin
         if Result then MakeFileDateValid;
       end else
         Result:=true;
-      if FIsDeleted then FIsDeleted:=not Result;
     end else begin
       Result:=inherited LoadFromFile(AFilename);
       if Result then MakeFileDateValid;
     end;
+    if Result then FIsDeleted:=false;
   end else
     Result:=false;
 end;
@@ -845,8 +847,10 @@ begin
   Result:=inherited SaveToFile(AFilename);
   //DebugLn('TCodeBuffer.SaveToFile ',Filename,' -> ',AFilename,' ',Result);
   if CompareFilenames(AFilename,Filename)=0 then begin
-    if FIsDeleted then FIsDeleted:=not Result;
-    if Result then MakeFileDateValid;
+    if Result then begin
+      FIsDeleted:=false;
+      MakeFileDateValid;
+    end;
   end;
 end;
 
@@ -912,7 +916,7 @@ begin
   if FIsDeleted then begin
     Clear;
     FLoadDateValid:=false;
-    ReadOnly:=false;
+    //DebugLn(['TCodeBuffer.SetIsDeleted ',Filename,' ',FileNeedsUpdate]);
   end;
 end;
 
