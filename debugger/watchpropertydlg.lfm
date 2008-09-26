@@ -9,7 +9,7 @@ object WatchPropertyDlg: TWatchPropertyDlg
   ClientWidth = 420
   ParentFont = False
   Position = poScreenCenter
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object lblExpression: TLabel
     Left = 16
     Height = 14
@@ -156,6 +156,7 @@ object WatchPropertyDlg: TWatchPropertyDlg
     Default = True
     ModalResult = 1
     NumGlyphs = 0
+    OnClick = btnOKClick
     TabOrder = 8
   end
 end
