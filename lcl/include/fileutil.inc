@@ -828,7 +828,7 @@ end;
 function FileSize(const Filename: string): int64;
 {$IFDEF Unix}
 var
-  st      : baseunix.stat;
+  st: baseunix.stat;
 {$ELSE}
 var
   FileInfo: TSearchRec;
@@ -839,11 +839,13 @@ begin
     exit(-1);
   Result:=st.st_size;
   {$ELSE}
-  if FindFirstUTF8(Filename,faAnyFile,FileInfo)=0 then begin
-    Result:=FileInfo.Size;
-  end else
-    Result:=-1;
-  FindCloseUTF8(FileInfo);
+  FileInfo.Name:=UTF8ToSys(Filename);
+  FileInfo.FindHandle:=Windows.FindFirstFile(PChar(FileInfo.Name),FileInfo.FindData);
+  if FileInfo.FindHandle=Windows.Invalid_Handle_value then begin
+    Result:=Windows.GetLastError;
+    exit;
+  end;
+  Result:=(int64(FileInfo.FindData.nFileSizeHigh) shl 32)+FileInfo.FindData.nFileSizeLow;
   {$ENDIF}
 end;
 
