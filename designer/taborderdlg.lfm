@@ -24,6 +24,7 @@ object TabOrderDialog: TTabOrderDialog
     BorderSpacing.Around = 6
     Color = clBtnFace
     NumGlyphs = 0
+    OnClick = UpSpeedbuttonCLICK
   end
   object ArrowDown: TSpeedButton
     AnchorSideRight.Control = Owner
@@ -36,6 +37,7 @@ object TabOrderDialog: TTabOrderDialog
     BorderSpacing.Around = 6
     Color = clBtnFace
     NumGlyphs = 0
+    OnClick = DownSpeedbuttonCLICK
   end
   object ItemTreeview: TTreeView
     AnchorSideLeft.Control = Owner
