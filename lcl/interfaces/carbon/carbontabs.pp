@@ -673,9 +673,11 @@ begin
   Index := GetValue - 1;
   if Index >= 0 then Inc(Index, FFirstIndex);
   
-  //DebugLn('TCarbonTabsControl.ValueChanged Index: ', DbgS(Index),  ' Old ', DbgS(FOldTabIndex));
-  if Index = FOldTabIndex then Exit;
-  FOldTabIndex := Index;
+  //comment
+  //DebugLn('TCarbonTabsControl.ValueChanged Index: ', DbgS(Index),  ' Old ', DbgS(FOldTabIndex), ' Current ', DbgS(FTabIndex));
+  if Index = FTabIndex then Exit;
+  FOldTabIndex := FTabIndex;
+  FTabIndex := Index;
 
   if (Index >= 0) and (Index < FTabs.Count) then
     PIndex := TabIndexToPageIndex(Index)
