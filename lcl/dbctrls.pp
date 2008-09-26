@@ -844,10 +844,29 @@ const
   DefaultDBNavigatorButtons = [nbFirst, nbPrior, nbNext, nbLast,
     nbInsert, nbDelete, nbEdit, nbPost, nbCancel, nbRefresh];
   DBNavButtonResourceName: array[TDBNavButtonType] of string = (
-    'DBNavFirst', 'DBNavPrior', 'DBNavNext', 'DBNavLast',
-    'DBNavInsert', 'DBNavDelete', 'DBNavEdit', 'DBNavPost',
-    'DBNavCancel', 'DBNavRefresh'
+ { nbFirst   } 'DBNavFirst',
+ { nbPrior   } 'DBNavPrior',
+ { nbNext    } 'DBNavNext',
+ { nbLast    } 'DBNavLast',
+ { nbInsert  } 'DBNavInsert',
+ { nbDelete  } 'DBNavDelete',
+ { nbEdit    } 'DBNavEdit',
+ { nbPost    } 'DBNavPost',
+ { nbCancel  } 'DBNavCancel',
+ { nbRefresh } 'DBNavRefresh'
     );
+  DBNavButtonDefaultHint: array[TDBNavButtonType] of string = (
+ { nbFirst   } rsFirstRecordHint,
+ { nbPrior   } rsPriorRecordHint,
+ { nbNext    } rsNextRecordHint,
+ { nbLast    } rsLastRecordHint,
+ { nbInsert  } rsInsertRecordHint,
+ { nbDelete  } rsDeleteRecordHint,
+ { nbEdit    } rsEditRecordHint,
+ { nbPost    } rsPostRecordHint,
+ { nbCancel  } rsCancelRecordHint,
+ { nbRefresh } rsRefreshRecordsHint
+  );
 
 type
 

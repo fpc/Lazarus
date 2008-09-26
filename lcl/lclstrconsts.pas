@@ -80,6 +80,18 @@ resourceString
   
   // DBGrid
   rsDeleteRecord = 'Delete record?';
+
+  // DBCtrls
+  rsFirstRecordHint = 'First';
+  rsPriorRecordHint = 'Prior';
+  rsNextRecordHint = 'Next';
+  rsLastRecordHint = 'Last';
+  rsInsertRecordHint = 'Insert';
+  rsDeleteRecordHint = 'Delete';
+  rsEditRecordHint = 'Edit';
+  rsPostRecordHint = 'Post';
+  rsCancelRecordHint = 'Cancel';
+  rsRefreshRecordsHint = 'Refresh';
   
   // gtk interface
   rsWarningUnremovedPaintMessages = ' WARNING: There are %s unremoved LM_'

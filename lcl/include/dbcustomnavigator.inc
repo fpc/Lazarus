@@ -268,60 +268,40 @@ begin
 
     // update button properties
     CurButton.Flat:=Flat;
-    CurButton.Enabled:=Enabled;
     CurButton.Index:=CurButtonType;
     CurButton.SetBounds(X,Y,W,H);
     CurButton.Visible:=CurButtonType in FVisibleButtons;
     CurButton.OnClick:=@ButtonClickHandler;
     CurButton.Parent:=Self;
     CurButton.ControlStyle := CurButton.ControlStyle + [csNoDesignSelectable];
-    if CurButton.Visible then begin
+    if CurButton.Visible then
+    begin
       inc(ButtonNumber);
       ButtonStartPos:=ButtonEndPos;
     end;
   end;
+  ActiveChanged;
 end;
 
 procedure TDBCustomNavigator.UpdateHints;
-
-  function GetDBNavButtonHint(CurButton: TDBNavButtonType): string;
-  begin
-    case CurButton of
-    // ToDo: convert to resourcestrings
-    nbFirst:   Result:='First';
-    nbPrior:   Result:='Prior';
-    nbNext:    Result:='Next';
-    nbLast:    Result:='Last';
-    nbInsert:  Result:='Insert';
-    nbDelete:  Result:='Delete';
-    nbEdit:    Result:='Edit';
-    nbPost:    Result:='Post';
-    nbCancel:  Result:='Cancel';
-    nbRefresh: Result:='Refresh';
-    else
-      RaiseGDBException('TDBCustomNavigator.InitHints');
-    end;
-  end;
-
 var
   CurButton: TDBNavButtonType;
-  i: Integer;
 begin
-  if (FDefaultHints.Count=0) then begin
-    TStringList(FDefaultHints).OnChange:=nil;
-    for CurButton:=Low(Buttons) to High(Buttons) do
-      FDefaultHints.Add(GetDBNavButtonHint(CurButton));
+  if (FDefaultHints.Count = 0) then
+  begin
+    TStringList(FDefaultHints).OnChange := nil;
+    for CurButton := Low(Buttons) to High(Buttons) do
+      FDefaultHints.Add(DBNavButtonDefaultHint[CurButton]);
     FOriginalHints := FDefaultHints.Text;
-    TStringList(FDefaultHints).OnChange:=@DefaultHintsChanged;
+    TStringList(FDefaultHints).OnChange := @DefaultHintsChanged;
   end;
-  i:=0;
-  for CurButton:=Low(Buttons) to High(Buttons) do begin
-    if FHints.Count>i then
-      Buttons[CurButton].Hint:=FHints[i]
+  for CurButton := Low(Buttons) to High(Buttons) do
+  begin
+    if FHints.Count > Ord(CurButton) then
+      Buttons[CurButton].Hint := FHints[Ord(CurButton)]
     else
-      Buttons[CurButton].Hint:=FDefaultHints[i];
-    Buttons[CurButton].ShowHint:=ShowButtonHints;
-    inc(i);
+      Buttons[CurButton].Hint := FDefaultHints[Ord(CurButton)];
+    Buttons[CurButton].ShowHint := ShowButtonHints;
   end;
 end;
 
