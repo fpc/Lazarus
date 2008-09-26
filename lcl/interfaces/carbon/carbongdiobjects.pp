@@ -39,6 +39,7 @@ uses
   CarbonDef;
 
 type
+  TCarbonBitmap = class;
 
   { TCarbonGDIObject }
 
@@ -169,10 +170,15 @@ type
 
   TCarbonBrush = class(TCarbonColorObject)
   private
-    //FCGPattern: CGPatternRef; // TODO
+    FCGPattern: CGPatternRef;
+    FBitmap: TCarbonBitmap;
+  protected
+    procedure SetHatchStyle(AHatch: PtrInt);
+    procedure SetBitmap(ABitmap: TCarbonBitmap);
   public
     constructor Create(AGlobal: Boolean); // create default brush
     constructor Create(ALogBrush: TLogBrush);
+    destructor Destroy; override;
     procedure Apply(ADC: TCarbonContext; UseROP2: Boolean = True);
   end;
 
@@ -1271,6 +1277,36 @@ end;
 
 { TCarbonBrush }
 
+procedure TCarbonBrush.SetHatchStyle(AHatch: PtrInt);
+begin
+  // todo
+end;
+
+procedure DrawBrushPattern( info: UnivPtr; c: CGContextRef ); MWPascal;
+var
+  ABrush: TCarbonBrush absolute info;
+  AImage: CGImageRef;
+begin
+  AImage := ABrush.FBitmap.CGImage;
+  CGContextDrawImage(c, GetCGRect(0, 0, CGImageGetWidth(AImage), CGImageGetHeight(AImage)),
+    AImage);
+end;
+
+procedure TCarbonBrush.SetBitmap(ABitmap: TCarbonBitmap);
+var
+  AWidth, AHeight: Integer;
+  ACallBacks: CGPatternCallbacks;
+begin
+  AWidth := ABitmap.Width;
+  AHeight := ABitmap.Height;
+  FillChar(ACallBacks, SizeOf(ACallBacks), 0);
+  ACallBacks.drawPattern := @DrawBrushPattern;
+  FBitmap := TCarbonBitmap.Create(ABitmap);
+  FCGPattern := CGPatternCreate (Self, GetCGRect(0, 0, AWidth, AHeight),
+    CGAffineTransformIdentity, AWidth, AHeight, kCGPatternTilingConstantSpacing,
+    1, ACallBacks);
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCarbonBrush.Create
   Params:  AGlobal
@@ -1280,6 +1316,8 @@ end;
 constructor TCarbonBrush.Create(AGlobal: Boolean);
 begin
   inherited Create(clWhite, True, AGlobal);
+  FCGPattern := nil;
+  FBitmap := nil;
 end;
 
 {------------------------------------------------------------------------------
@@ -1290,16 +1328,36 @@ end;
  ------------------------------------------------------------------------------}
 constructor TCarbonBrush.Create(ALogBrush: TLogBrush);
 begin
+  FCGPattern := nil;
+  FBitmap := nil;
   case ALogBrush.lbStyle of
-    BS_SOLID,
-    BS_HATCHED..BS_MONOPATTERN:
-      begin
+    BS_SOLID:
         inherited Create(ColorToRGB(ALogBrush.lbColor), True, False);
-        // TODO: patterns
+    BS_HATCHED:        // Hatched brush.
+      begin
+        inherited Create(ColorToRGB(ALogBrush.lbColor), False, False);
+        SetHatchStyle(ALogBrush.lbHatch);
       end;
+    BS_DIBPATTERN,
+    BS_DIBPATTERN8X8,
+    BS_DIBPATTERNPT,
+    BS_PATTERN,
+    BS_PATTERN8X8:
+      begin
+        inherited Create(ColorToRGB(ALogBrush.lbColor), False, False);
+        SetBitmap(TCarbonBitmap(ALogBrush.lbHatch));
+      end
     else
       inherited Create(ColorToRGB(ALogBrush.lbColor), False, False);
   end;
+end;
+
+destructor TCarbonBrush.Destroy;
+begin
+  if FCGPattern <> nil then
+    CGPatternRelease(FCGPattern);
+  FBitmap.Free;
+  inherited Destroy;
 end;
 
 {------------------------------------------------------------------------------
@@ -1313,6 +1371,7 @@ procedure TCarbonBrush.Apply(ADC: TCarbonContext; UseROP2: Boolean);
 var
   AR, AG, AB, AA: Single;
   AROP2: Integer;
+  APatternSpace: CGColorSpaceRef;
 begin
   if ADC = nil then Exit;
   if ADC.CGContext = nil then Exit;
@@ -1327,7 +1386,16 @@ begin
   else
     CGContextSetBlendMode(ADC.CGContext, kCGBlendModeDifference);
 
-  CGContextSetRGBFillColor(ADC.CGContext, AR, AG, AB, AA);
+  if FCGPattern <> nil then
+  begin
+    APatternSpace := CGColorSpaceCreatePattern(nil);
+    CGContextSetFillColorSpace(ADC.CGContext, APatternSpace);
+    CGColorSpaceRelease(APatternSpace);
+    AA := 1.0;
+    CGContextSetFillPattern(ADC.CGcontext, FCGPattern, @AA);
+  end
+  else
+    CGContextSetRGBFillColor(ADC.CGContext, AR, AG, AB, AA);
 end;
 
 { TCarbonPen }
