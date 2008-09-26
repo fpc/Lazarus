@@ -6,14 +6,15 @@ LazarusResources.Add('TTabOrderDialog','FORMDATA',[
   +'erStyle'#7#13'bsSizeToolWin'#7'Caption'#6#14'TabOrderDialog'#12'ClientHeigh'
   +'t'#3#131#1#11'ClientWidth'#3'6'#1#7'OnClose'#7#19'TabOrderDialogCLOSE'#8'On'
   +'Create'#7#20'TabOrderDialogCREATE'#10'ParentFont'#8#8'Position'#7#14'poScre'
-  +'enCenter'#10'LCLVersion'#6#6'0.9.25'#0#12'TSpeedButton'#7'ArrowUp'#23'Ancho'
+  +'enCenter'#10'LCLVersion'#6#6'0.9.27'#0#12'TSpeedButton'#7'ArrowUp'#23'Ancho'
   +'rSideRight.Control'#7#5'Owner'#20'AnchorSideRight.Side'#7#9'asrBottom'#4'Le'
   +'ft'#3#23#1#6'Height'#2#25#3'Top'#2'x'#5'Width'#2#25#7'Anchors'#11#5'akTop'#7
   +'akRight'#0#20'BorderSpacing.Around'#2#6#5'Color'#7#9'clBtnFace'#9'NumGlyphs'
-  +#2#0#0#0#12'TSpeedButton'#9'ArrowDown'#23'AnchorSideRight.Control'#7#5'Owner'
-  +#20'AnchorSideRight.Side'#7#9'asrBottom'#4'Left'#3#23#1#6'Height'#2#25#3'Top'
-  +#3#176#0#5'Width'#2#25#7'Anchors'#11#5'akTop'#7'akRight'#0#20'BorderSpacing.'
-  +'Around'#2#6#5'Color'#7#9'clBtnFace'#9'NumGlyphs'#2#0#0#0#9'TTreeView'#12'It'
+  +#2#0#7'OnClick'#7#18'UpSpeedbuttonCLICK'#0#0#12'TSpeedButton'#9'ArrowDown'#23
+  +'AnchorSideRight.Control'#7#5'Owner'#20'AnchorSideRight.Side'#7#9'asrBottom'
+  +#4'Left'#3#23#1#6'Height'#2#25#3'Top'#3#176#0#5'Width'#2#25#7'Anchors'#11#5
+  +'akTop'#7'akRight'#0#20'BorderSpacing.Around'#2#6#5'Color'#7#9'clBtnFace'#9
+  +'NumGlyphs'#2#0#7'OnClick'#7#20'DownSpeedbuttonCLICK'#0#0#9'TTreeView'#12'It'
   +'emTreeview'#22'AnchorSideLeft.Control'#7#5'Owner'#21'AnchorSideTop.Control'
   +#7#5'Owner'#24'AnchorSideBottom.Control'#7#21'ShowOldValuesCheckbox'#4'Left'
   +#2#6#6'Height'#3'>'#1#3'Top'#2#6#5'Width'#3#11#1#7'Anchors'#11#5'akTop'#6'ak'
