@@ -72,7 +72,8 @@ type
     procedure EncodeSaving(const AFilename: string; var ASource: string); override;
   public
     constructor Create;
-    destructor Destroy;  override;
+    destructor Destroy; override;
+    procedure Clear; override;
     function ConsistencyCheck: integer; // 0 = ok
     procedure WriteDebugReport;
     function LoadFromFile(const AFilename: string): boolean; override;
@@ -815,6 +816,13 @@ begin
   if Scanner<>nil then Scanner.Free;
   if FCodeCache<>nil then FCodeCache.RemoveCodeBuffer(Self);
   inherited Destroy;
+end;
+
+procedure TCodeBuffer.Clear;
+begin
+  FIsDeleted:=false;
+  FLoadDateValid:=false;
+  inherited Clear;
 end;
 
 function TCodeBuffer.LoadFromFile(const AFilename: string): boolean;
