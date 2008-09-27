@@ -47,6 +47,16 @@ type
     kmsCustom
     );
 
+const
+  KeyMapSchemeNames: array[TKeyMapScheme] of string = (
+    'default',
+    'Classic',
+    'MacOSXApple',
+    'MacOSXLaz',
+    'Custom'
+    );
+
+type
   //---------------------------------------------------------------------------
   // TKeyCommandCategory is used to divide the key commands in handy packets
   TKeyCommandCategory = class(TIDECommandCategory)
@@ -1406,16 +1416,13 @@ end;
 
 function KeySchemeNameToSchemeType(const SchemeName: string): TKeyMapScheme;
 begin
-  if (SchemeName='') or (CompareText(SchemeName,'Default')=0) then
-    Result:=kmsLazarus
-  else if (CompareText(SchemeName,'Classic')=0) then
-    Result:=kmsClassic
-  else if (CompareText(SchemeName,'Mac OS X (Apple style)')=0) then
-    Result:=kmsMacOSXApple
-  else if (CompareText(SchemeName,'Mac OS X (Lazarus style)')=0) then
-    Result:=kmsMacOSXLaz
-  else
-    Result:=kmsCustom;
+  if SchemeName='' then
+    exit(kmsLazarus);
+  for Result:=Low(TKeyMapScheme) to High(TKeyMapScheme) do begin
+    if CompareText(SchemeName,KeyMapSchemeNames[Result])=0 then
+      exit;
+  end;
+  Result:=kmsCustom;
 end;
 
 function ShiftStateToStr(Shift:TShiftState):string;
