@@ -352,7 +352,7 @@ function TCodeCache.CreateFile(const AFilename: string): TCodeBuffer;
 begin
   Result:=FindFile(AFileName);
   if Result<>nil then begin
-    Result.Source:='';
+    Result.Clear;
   end else begin
     Result:=TCodeBuffer.Create;
     Result.FileName:=AFileName;
