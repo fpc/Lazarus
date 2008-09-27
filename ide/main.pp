@@ -4238,6 +4238,7 @@ begin
   end;
 
   NewCodeBuffer:=CodeToolBoss.CreateFile(NewFilename);
+  DebugLn(['TMainIDE.CreateNewCodeBuffer ',NewFilename,' ',NewCodeBuffer.IsDeleted,' ',NewCodeBuffer.Source]);
   if NewCodeBuffer<>nil then
     Result:=mrOk
   else
