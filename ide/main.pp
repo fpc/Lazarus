@@ -7291,12 +7291,12 @@ begin
 
   // free sources
   if (ActiveUnitInfo.Source<>nil) then begin
-    ActiveUnitInfo.Source.IsDeleted:=true;
     if (Project1.MainUnitInfo=ActiveUnitInfo)
     and (not (cfProjectClosing in Flags)) then begin
       // lpr file closed in editor, but project kept open -> revert lpr file
-      Project1.MainUnitInfo.Source.Revert;
-    end;
+      Project1.MainUnitInfo.Revert;
+    end else
+      ActiveUnitInfo.Source.IsDeleted:=true;
   end;
 
   // close form soft (keep it if used by another component)
