@@ -543,7 +543,7 @@ begin
   end;
   
   // then send a LM_SIZE message
-  if Resized then
+  if Resized or ClientResized then
   begin
     LCLSendSizeMsg(LCLObject, WidgetBounds.Right - WidgetBounds.Left,
       WidgetBounds.Bottom - WidgetBounds.Top, Size_SourceIsInterface);

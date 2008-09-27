@@ -58,6 +58,8 @@ type
   protected
     procedure CreateWidget(const AParams: TCreateParams); override;
   public
+    procedure BoundsChanged; override;
+  public
     procedure ApplyChanges; virtual;
   end;
 
@@ -79,6 +81,8 @@ type
   protected
     procedure CreateWidget(const AParams: TCreateParams); override;
   public
+    procedure BoundsChanged; override;
+  public
     procedure ApplyChanges; virtual;
   end;
 
@@ -92,6 +96,7 @@ type
     procedure IndicatorMoved; override;
     procedure DoAction(AControlPart: ControlPartCode); override;
     procedure SetParams; virtual;
+    procedure BoundsChanged; override;
   end;
 
 implementation
@@ -167,6 +172,18 @@ begin
   Widget := Control;
 
   inherited;
+end;
+
+const
+  // values are used from Interface Builder
+  StdProgressBarNormalSize = 19;
+  StdProgressBarSmallSize = 0; // 19
+  StdProgressBarTinySize = 0; // not supported
+
+procedure TCarbonProgressBar.BoundsChanged;
+begin
+  inherited BoundsChanged;
+  SetControlViewStyle(Widget, StdProgressBarTinySize, StdProgressBarSmallSize, StdProgressBarNormalSize, LCLObject.Height > LCLObject.Width);
 end;
 
 {------------------------------------------------------------------------------
@@ -263,6 +280,19 @@ begin
   Widget := Control;
 
   inherited;
+end;
+
+const
+  // values are used from Interface Builder
+  StdTrackBarNormalSize = 16;
+  StdTrackBarSmallSize = 12;
+  StdTrackBarTinySize = 0; //11
+
+procedure TCarbonTrackBar.BoundsChanged;
+begin
+  inherited BoundsChanged;
+  SetControlViewStyle(Widget, StdTrackBarTinySize, StdTrackBarSmallSize, StdTrackBarNormalSize,
+    LCLObject.Height > LCLObject.Width);
 end;
 
 {------------------------------------------------------------------------------
@@ -392,6 +422,18 @@ begin
   SetMaximum(ScrollBar.Max);
   SetValue(ScrollBar.Position);
   SetViewSize(ScrollBar.PageSize);
+end;
+
+const
+  // values are used from Interface Builder
+  StdScrollBarNormalSize = 15;
+  StdScrollBarSmallSize = 0; // 11
+  StdScrollBarTinySize = 0; // not supported
+
+procedure TCarbonScrollBar.BoundsChanged;
+begin
+  inherited BoundsChanged;
+  SetControlViewStyle(Widget, StdScrollBarTinySize, StdScrollBarSmallSize, StdScrollBarNormalSize, LCLObject.Height > LCLObject.Width);
 end;
 
 end.

@@ -57,6 +57,8 @@ type
   TCarbonCheckBox = class(TCarbonCustomCheckBox)
   protected
     procedure CreateWidget(const AParams: TCreateParams); override;
+  public
+    procedure BoundsChanged; override;
   end;
 
   { TCarbonToggleBox }
@@ -73,6 +75,7 @@ type
     procedure CreateWidget(const AParams: TCreateParams); override;
   public
     procedure ValueChanged; override;
+    procedure BoundsChanged; override;
   end;
 
   { TCarbonCustomButton }
@@ -90,6 +93,8 @@ type
   TCarbonButton = class(TCarbonCustomButton)
   protected
     procedure CreateWidget(const AParams: TCreateParams); override;
+  public
+    procedure BoundsChanged; override;
   end;
 
   { TCarbonBitBtn }
@@ -205,6 +210,18 @@ begin
   SetText(AParams.Caption);
 end;
 
+const
+  // values are used from Interface Builder
+  StdCheckBoxNormalSize = 18;
+  StdCheckBoxSmallSize = 12;
+  StdCheckBoxTinySize = 0; // 10
+
+procedure TCarbonCheckBox.BoundsChanged;
+begin
+  inherited BoundsChanged;
+  SetControlViewStyle(Widget, StdCheckBoxTinySize, StdCheckBoxSmallSize, StdCheckBoxNormalSize);
+end;
+
 { TCarbonToggleBox }
 
 {------------------------------------------------------------------------------
@@ -300,6 +317,18 @@ begin
   inherited;
 end;
 
+const
+  // values are used from Interface Builder
+  StdRadioButtonNormalSize = 16;
+  StdRadioButtonSmallSize = 14;
+  StdRadioButtonTinySize = 0; // 10
+
+procedure TCarbonRadioButton.BoundsChanged;
+begin
+  inherited BoundsChanged;
+  SetControlViewStyle(Widget, StdRadioButtonTinySize, StdRadioButtonSmallSize, StdRadioButtonNormalSize);
+end;
+
 { TCarbonCustomButton }
 
 {------------------------------------------------------------------------------
@@ -359,6 +388,18 @@ begin
   inherited;
 
   SetText(AParams.Caption);
+end;
+
+const
+  // values are used from Interface Builder
+  StdButtonNormalSize = 20;
+  StdButtonSmallSize = 17;
+  StdButtonTinySize = 0; // 14
+
+procedure TCarbonButton.BoundsChanged;
+begin
+  inherited BoundsChanged;
+  SetControlViewStyle(Widget, StdButtonTinySize, StdButtonSmallSize, StdButtonNormalSize);
 end;
 
 { TCarbonBitBtn }
