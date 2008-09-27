@@ -871,6 +871,8 @@ function CarbonWindow_ActivateProc(ANextHandler: EventHandlerCallRef;
 var
   Msg: TLMessage;
   EventKind: UInt32;
+  Control: ControlRef;
+  FocusWidget: TCarbonControl;
 begin
   {$IFDEF VerboseWindowEvent}
     DebugLn('CarbonWindow_ActivateProc ', DbgSName(AWidget.LCLObject));
@@ -894,6 +896,20 @@ begin
   end;
   
   DeliverMessage(AWidget.LCLObject, Msg);
+
+  // force set and kill focus of focused control
+  Control := nil;
+  OSError(GetKeyboardFocus(AWidget.Widget, Control), 'CarbonWindow_ActivateProc', SGetKeyboardFocus);
+  if Control <> nil then
+  begin
+    FocusWidget := GetCarbonControl(Control);
+
+    if FocusWidget <> nil then
+      case Msg.msg of
+        LM_ACTIVATE: FocusWidget.FocusSet;
+        LM_DEACTIVATE: FocusWidget.FocusKilled;
+      end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
