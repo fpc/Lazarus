@@ -399,6 +399,7 @@ begin
     NewBuffer.LastIncludedByFile:=FindIncludeLink(AFilename);
   end else begin
     NewBuffer.Source:=OldBuffer.Source;
+    NewBuffer.IsDeleted:=false;
     Result:=NewBuffer.Save;
   end;
   if not Result then exit;

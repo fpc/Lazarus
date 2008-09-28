@@ -310,7 +310,7 @@ begin
     
   lStartPos := StrToInt(lItem.SubItems[3]);
 
-  CodeBuffer := CodeToolBoss.FindFile(MainFilename);
+  CodeBuffer := CodeToolBoss.LoadFile(MainFilename,false,false);
   if CodeBuffer = nil then
     Exit; //==>
 
