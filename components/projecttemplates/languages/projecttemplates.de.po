@@ -9,15 +9,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: projecttemplates:serrcouldnotcreatedir
+#: projecttemplates.serrcouldnotcreatedir
 msgid "Could not create directory \"%s\""
 msgstr "Konnte Verzeichnis \"%s\" nicht anlegen"
 
-#: projecttemplates:serrfailedtocopyfile
+#: projecttemplates.serrfailedtocopyfile
 msgid "Failed to copy file \"%s\" to \"%s\""
 msgstr "Konnte Datei \"%s\" nicht nach \"%s\" kopieren"
 
-#: projecttemplates:serrnosuchtemplate
+#: projecttemplates.serrnosuchtemplate
 msgid "\"%s\": No such template."
 msgstr "\"%s\": Keine solche Schablone"
 

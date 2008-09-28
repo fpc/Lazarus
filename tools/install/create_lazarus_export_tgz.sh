@@ -19,6 +19,7 @@ if [ "x$OutputFile" = "x" ]; then
 fi
 
 TmpLazDir=$TmpDir/lazarus
+mkdir -p $TmpDir
 rm -rf $TmpLazDir
 if [ "x$Download" = "xyes" ]; then
   echo "downloading lazarus svn ..."
