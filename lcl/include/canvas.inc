@@ -129,6 +129,8 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TCanvas.CreateBrush;
+const
+  HatchBrushes = [bsHorizontal, bsVertical, bsFDiagonal, bsBDiagonal, bsCross, bsDiagCross];
 var
   OldHandle: HBRUSH;
 begin
@@ -139,7 +141,9 @@ begin
   if (OldHandle <> HBRUSH(Brush.Reference.Handle)) and (FSavedBrushHandle=0) then
     FSavedBrushHandle := OldHandle;
   Include(FState, csBrushValid);
-  SetBkColor(FHandle, Brush.Color);
+  // dont use color for hatched brushes. windows cannot draw hatches when SetBkColor is called
+  if ([Brush.Style] * HatchBrushes) = [] then
+    SetBkColor(FHandle, Brush.Color);
   if Brush.Style = bsSolid then
     SetBkMode(FHandle, OPAQUE)
   else

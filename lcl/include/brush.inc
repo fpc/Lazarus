@@ -30,7 +30,6 @@ begin
   inherited Create(SizeOf(TLogBrush));
 end;
 
-
 { TBrush }
 
 {------------------------------------------------------------------------------
@@ -142,6 +141,7 @@ begin
 
   FreeReference;
   FReference._lclHandle := TLCLHandle(Value);
+  FInternalUpdateIndex := GraphicsUpdateCount;
   Changed;
 end;
 
