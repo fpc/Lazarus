@@ -111,7 +111,6 @@ type
     FLazarusPID: Integer;
     FCmdLineParams: TStrings;
     FShowSplashOption: boolean;
-    function GetLazarusPath(const FileName: string): string;
     function RenameLazarusExecutable(const Directory: string): TModalResult;
     procedure LazarusProcessStart(Sender: TObject);
     procedure WaitForLazarus;
@@ -130,18 +129,6 @@ destructor TLazarusManager.Destroy;
 begin
   FreeAndNil(FCmdLineParams);
   inherited Destroy;
-end;
-
-function TLazarusManager.GetLazarusPath(const FileName: string) : string;
-begin
-  // first try in the bin dir of the primary config directory
-  Result := AppendPathDelim(GetPrimaryConfigPath) + 'bin' + PathDelim +
-    FileName + GetExeExt;
-  // if no lazarus executable exists in that directory, try the same directory
-  // as the startlazarus executable
-  if not FileExistsUTF8(Result) then
-    Result := AppendPathDelim(ExtractFilePath(ExpandFileNameUTF8(ParamStrUTF8(0)))) +
-      FileName + GetExeExt;
 end;
 
 function TLazarusManager.RenameLazarusExecutable(const Directory: string
