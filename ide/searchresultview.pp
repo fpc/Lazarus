@@ -52,6 +52,7 @@ type
     FFileStartPos: TPoint;
     fMatchStart: integer;
     fMatchLen: integer;
+    FNextInThisLine: TLazSearchMatchPos;
     FShownFilename: string;
     FTheText: string;
   public
@@ -62,6 +63,7 @@ type
     property FileEndPos: TPoint read FFileEndPos write FFileEndPos;
     property TheText: string read FTheText write FTheText;
     property ShownFilename: string read FShownFilename write FShownFilename;
+    property NextInThisLine: TLazSearchMatchPos read FNextInThisLine write FNextInThisLine;
   end;//TLazSearchMatchPos
 
 
@@ -476,6 +478,7 @@ var
   CurrentLB: TLazSearchResultLB;
   SearchPos: TLazSearchMatchPos;
   ShownText: String;
+  LastPos: TLazSearchMatchPos;
 begin
   CurrentLB:=GetListBox(APageIndex);
   if Assigned(CurrentLB) then
@@ -491,6 +494,7 @@ begin
         exit;
       end;
     end;
+
     SearchPos:= TLazSearchMatchPos.Create;
     SearchPos.MatchStart:=MatchStart;
     SearchPos.MatchLen:=MatchLen;
@@ -500,10 +504,21 @@ begin
     SearchPos.TheText:=TheText;
     SearchPos.ShownFilename:=SearchPos.Filename;
     ShownText:=CurrentLB.BeautifyLine(SearchPos);
-    if CurrentLB.UpdateState then
-      CurrentLB.UpdateItems.AddObject(ShownText, SearchPos)
-    else
-      CurrentLB.Items.AddObject(ShownText, SearchPos);
+    LastPos:=nil;
+    if CurrentLB.UpdateState then begin
+      if (CurrentLB.UpdateItems.Count>0) and (CurrentLB.UpdateItems.Objects[CurrentLB.UpdateItems.Count-1] is TLazSearchMatchPos) then
+        LastPos:=TLazSearchMatchPos(CurrentLB.UpdateItems.Objects[CurrentLB.UpdateItems.Count-1]);
+    end else
+      if (CurrentLB.Items.Count>0) and (CurrentLB.Items.Objects[CurrentLB.Items.Count-1] is TLazSearchMatchPos) then
+        LastPos:=TLazSearchMatchPos(CurrentLB.Items.Objects[CurrentLB.Items.Count-1]);
+    if (LastPos<>nil) and (LastPos.Filename=SearchPos.Filename) and
+       (LastPos.FFileStartPos.Y=SearchPos.FFileStartPos.Y) and
+       (LastPos.FFileEndPos.Y=SearchPos.FFileEndPos.Y) then
+      LastPos.NextInThisLine:=SearchPos
+     else if CurrentLB.UpdateState then
+       CurrentLB.UpdateItems.AddObject(ShownText, SearchPos)
+      else
+       CurrentLB.Items.AddObject(ShownText, SearchPos);
     CurrentLB.ShortenPaths;
   end;//if
 end;//AddMatch
@@ -799,14 +814,13 @@ procedure TSearchResultsView.ListboxDrawitem(Control: TWinControl;
                                              Index: Integer; ARect: TRect;
                                              State: TOwnerDrawState);
 var
-  FirstPart: string;
-  BoldPart: string;
-  LastPart: string;
+  CurPart: string;
   TheText: string;
   TheTop: integer;
   MatchObj: TObject;
-  MatchPos: TLazSearchMatchPos;
-  TextEnd: integer;
+  MatchPos,FirstMatchPos: TLazSearchMatchPos;
+
+  TextEnd, DrawnTextLength: integer;
 begin
   With Control as TLazSearchResultLB do
   begin
@@ -819,26 +833,44 @@ begin
 
     if Assigned(MatchPos) then
     begin
+      FirstMatchPos:=MatchPos;
       TheTop:= ARect.Top;
+      TextEnd:=ARect.Left;
+      DrawnTextLength:=0;
 
-      FirstPart:=MatchPos.ShownFilename+' ('+IntToStr(MatchPos.FileStartPos.Y)
-          +','+IntToStr(MatchPos.FileStartPos.X)+') '
-          +SpecialCharsToHex(copy(MatchPos.TheText,1,MatchPos.MatchStart-1));
-      BoldPart:=SpecialCharsToHex(
-                  copy(MatchPos.TheText,MatchPos.MatchStart,MatchPos.MatchLen));
-      LastPart:=SpecialCharsToHex(
-                   copy(MatchPos.TheText, MatchPos.MatchStart+MatchPos.MatchLen,
-                        Length(MatchPos.TheText)));
-      if UTF8Length(BoldPart)>MaxTextLen then
-        BoldPart:=UTF8Copy(BoldPart,1,MaxTextLen)+'...';
-      //DebugLn(['TSearchResultsView.ListboxDrawitem FirstPart="',FirstPart,'" BoldPart="',BoldPart,'" LastPart="',LastPart,'"']);
-      Canvas.TextOut(ARect.Left, TheTop, FirstPart);
-      TextEnd:= ARect.Left + Canvas.TextWidth(FirstPart);
-      Canvas.Font.Style:= Canvas.Font.Style + [fsBold];
-      Canvas.TextOut(TextEnd, TheTop, BoldPart);
-      TextEnd:= TextEnd + Canvas.TextWidth(BoldPart);
-      Canvas.Font.Style:=Canvas.Font.Style - [fsBold];
-      Canvas.TextOut(TextEnd, TheTop, LastPart);
+      CurPart:=MatchPos.ShownFilename+' ('+IntToStr(MatchPos.FileStartPos.Y)
+          +':'+IntToStr(MatchPos.FileStartPos.X);
+      MatchPos:=MatchPos.NextInThisLine;
+      while assigned(MatchPos) do begin
+        CurPart:=CurPart+','+IntToStr(MatchPos.FileStartPos.X);
+        MatchPos:=MatchPos.NextInThisLine;
+      end;
+      CurPart:=CurPart+') ';
+      Canvas.TextOut(TextEnd, TheTop, CurPart);
+      TextEnd:= TextEnd + Canvas.TextWidth(CurPart);
+
+      MatchPos:=FirstMatchPos;
+      while assigned(MatchPos) do begin
+        CurPart:=SpecialCharsToHex(copy(MatchPos.TheText,DrawnTextLength+1,MatchPos.MatchStart-1-DrawnTextLength));
+        DrawnTextLength:=MatchPos.MatchStart-1;
+        Canvas.TextOut(TextEnd, TheTop, CurPart);
+        TextEnd:= TextEnd + Canvas.TextWidth(CurPart);
+
+        CurPart:=SpecialCharsToHex(copy(MatchPos.TheText,DrawnTextLength+1,MatchPos.MatchLen));
+        DrawnTextLength:=DrawnTextLength+MatchPos.MatchLen;
+        if UTF8Length(CurPart)>MaxTextLen then
+          CurPart:=UTF8Copy(CurPart,1,MaxTextLen)+'...';
+        Canvas.Font.Style:= Canvas.Font.Style + [fsBold];
+        Canvas.TextOut(TextEnd, TheTop, CurPart);
+        TextEnd:= TextEnd + Canvas.TextWidth(CurPart);
+        Canvas.Font.Style:= Canvas.Font.Style - [fsBold];
+
+        if MatchPos.NextInThisLine=nil then begin
+          CurPart:=SpecialCharsToHex(copy(MatchPos.TheText, DrawnTextLength+1,Length(MatchPos.TheText)));
+          Canvas.TextOut(TextEnd, TheTop, CurPart);
+        end;
+        MatchPos:=MatchPos.NextInThisLine;
+      end;
     end//if
     else
     begin
