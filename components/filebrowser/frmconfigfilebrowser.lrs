@@ -1,0 +1,23 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TFileBrowserConfigForm','FORMDATA',[
+  'TPF0'#22'TFileBrowserConfigForm'#21'FileBrowserConfigForm'#4'Left'#3'.'#1#6
+  +'Height'#3#200#0#3'Top'#3#184#0#5'Width'#3#144#1#7'Caption'#6#22'Configure f'
+  +'ile browser'#12'ClientHeight'#3#200#0#11'ClientWidth'#3#144#1#6'OnShow'#7#8
+  +'FormShow'#10'LCLVersion'#6#6'0.9.25'#0#12'TButtonPanel'#12'ButtonPanel1'#4
+  +'Left'#2#6#6'Height'#2'.'#3'Top'#3#154#0#5'Width'#3#132#1#5'Align'#7#8'alBot'
+  +'tom'#8'AutoSize'#9#8'TabOrder'#2#0#11'ShowButtons'#11#4'pbOK'#8'pbCancel'#0
+  +#0#0#9'TGroupBox'#10'GBStartDir'#4'Left'#2#6#6'Height'#3#136#0#3'Top'#2#8#5
+  +'Width'#3#130#1#7'Caption'#6#17'Initial directory'#12'ClientHeight'#2's'#11
+  +'ClientWidth'#3'~'#1#8'TabOrder'#2#1#0#14'TDirectoryEdit'#9'DEInitial'#4'Lef'
+  +'t'#2'&'#6'Height'#2#23#3'Top'#2'Y'#5'Width'#3'8'#1#11'ButtonWidth'#2#23#11
+  +'ParentColor'#8#8'TabOrder'#2#0#0#0#12'TRadioButton'#9'RBThisDir'#4'Left'#2
+  +#14#6'Height'#2#24#3'Top'#2'A'#5'Width'#3#205#0#7'Caption'#6#25'Always use t'
+  +'his directory'#7'OnClick'#7#16'SelectInitialDir'#8'TabOrder'#2#1#0#0#12'TRa'
+  +'dioButton'#9'RBLastDir'#4'Left'#2#14#6'Height'#2#24#3'Top'#2'$'#5'Width'#3
+  +#211#0#7'Caption'#6#25'Use last opened directory'#7'OnClick'#7#16'SelectInit'
+  +'ialDir'#8'TabOrder'#2#2#0#0#12'TRadioButton'#15'RBUseProjectDir'#4'Left'#2
+  +#14#6'Height'#2#24#3'Top'#2#9#5'Width'#3#231#0#7'Caption'#6#29'Use current p'
+  +'roject directory'#7'Checked'#9#7'OnClick'#7#16'SelectInitialDir'#5'State'#7
+  +#9'cbChecked'#8'TabOrder'#2#3#0#0#0#0
+]);
