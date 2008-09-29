@@ -1278,7 +1278,7 @@ end;
 
 { TCarbonBrush }
 
-procedure DrawBrushPattern( info: UnivPtr; c: CGContextRef ); MWPascal;
+procedure DrawBitmapPattern(info: UnivPtr; c: CGContextRef); MWPascal;
 var
   ABrush: TCarbonBrush absolute info;
   AImage: CGImageRef;
@@ -1286,6 +1286,22 @@ begin
   AImage := ABrush.FBitmap.CGImage;
   CGContextDrawImage(c, GetCGRect(0, 0, CGImageGetWidth(AImage), CGImageGetHeight(AImage)),
     AImage);
+end;
+
+procedure DrawMaskPattern(info: UnivPtr; c: CGContextRef); MWPascal;
+var
+  ABrush: TCarbonBrush absolute info;
+  AImage: CGImageRef;
+  RGBA: array[0..3] of Single;
+  ARect: CGRect;
+begin
+  AImage := ABrush.FBitmap.CGImage;
+  ARect := GetCGRect(0, 0, CGImageGetWidth(AImage), CGImageGetHeight(AImage));
+  CGContextClipToMask(c, ARect, AImage);
+
+  ABrush.GetRGBA(R2_COPYPEN, RGBA[0], RGBA[1], RGBA[2], RGBA[3]);
+  CGContextSetRGBFillColor(c, RGBA[0], RGBA[1], RGBA[2], RGBA[3]);
+  CGContextFillRect(c, ARect);
 end;
 
 procedure TCarbonBrush.SetHatchStyle(AHatch: PtrInt);
@@ -1305,9 +1321,9 @@ begin
   if AHatch in [HS_HORIZONTAL..HS_DIAGCROSS] then
   begin
     FillChar(ACallBacks, SizeOf(ACallBacks), 0);
-    ACallBacks.drawPattern := @DrawBrushPattern;
+    ACallBacks.drawPattern := @DrawMaskPattern;
     FBitmap := TCarbonBitmap.Create(8, 8, 1, 1, cbaWord, cbtMask, @HATCH_DATA[AHatch]);
-    FColored := True;
+    FColored := False;
     FCGPattern := CGPatternCreate(Self, GetCGRect(0, 0, 8, 8),
       CGAffineTransformIdentity, 8, 8, kCGPatternTilingConstantSpacing,
       Ord(FColored), ACallBacks);
@@ -1322,7 +1338,7 @@ begin
   AWidth := ABitmap.Width;
   AHeight := ABitmap.Height;
   FillChar(ACallBacks, SizeOf(ACallBacks), 0);
-  ACallBacks.drawPattern := @DrawBrushPattern;
+  ACallBacks.drawPattern := @DrawBitmapPattern;
   FBitmap := TCarbonBitmap.Create(ABitmap);
   FColored := True;
   FCGPattern := CGPatternCreate(Self, GetCGRect(0, 0, AWidth, AHeight),
@@ -1358,7 +1374,7 @@ begin
         inherited Create(ColorToRGB(ALogBrush.lbColor), True, False);
     BS_HATCHED:        // Hatched brush.
       begin
-        inherited Create(ColorToRGB(ALogBrush.lbColor), False, False);
+        inherited Create(ColorToRGB(ALogBrush.lbColor), True, False);
         SetHatchStyle(ALogBrush.lbHatch);
       end;
     BS_DIBPATTERN,
@@ -1416,8 +1432,9 @@ begin
     APatternSpace := CGColorSpaceCreatePattern(nil);
     CGContextSetFillColorSpace(ADC.CGContext, APatternSpace);
     CGColorSpaceRelease(APatternSpace);
-    RGBA[3] := 1.0;
-    CGContextSetFillPattern(ADC.CGcontext, FCGPattern, @RGBA[3]);
+    if FColored then
+      RGBA[0] := 1.0;
+    CGContextSetFillPattern(ADC.CGcontext, FCGPattern, @RGBA[0]);
   end
   else
     CGContextSetRGBFillColor(ADC.CGContext, RGBA[0], RGBA[1], RGBA[2], RGBA[3]);
