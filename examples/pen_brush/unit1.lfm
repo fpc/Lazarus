@@ -6,6 +6,8 @@ object Form1: TForm1
   Caption = 'Pen & Brush'
   ClientHeight = 425
   ClientWidth = 400
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
   ParentFont = False
   Position = poScreenCenter
   LCLVersion = '0.9.27'
