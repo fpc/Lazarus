@@ -157,7 +157,7 @@ var
     Brush: HBRUSH;
     Rect: Windows.Rect;
     Details: TThemedElementDetails;
-    OldColor: COLORREF;
+    NewColor, OldColor: COLORREF;
     OldBackColor: COLORREF;
     WideBuffer: widestring;
   begin
@@ -169,10 +169,13 @@ var
       Note: GetSysColorBrush is more efficient then getting the
       color and creating a brush because it uses a buffered brush
     }
-    if Enabled and Selected then
-      Brush := Windows.GetSysColorBrush(COLOR_HIGHLIGHT or SYS_COLOR_INDEX_FLAG)
+    if Selected then
+      NewColor := COLOR_HIGHLIGHT
     else
-      Brush := Windows.GetSysColorBrush(COLOR_WINDOW or SYS_COLOR_INDEX_FLAG);
+      NewColor := COLOR_WINDOW;
+
+    Brush := Windows.GetSysColorBrush(NewColor or SYS_COLOR_INDEX_FLAG)
+
     Rect := Data^.rcItem;
     Windows.FillRect(Data^._HDC, Rect, Brush);
 
@@ -194,21 +197,17 @@ var
       because the LCLIntf version makes sure that SYS_COLOR_INDEX_FLAG
       is added to the constant.
     }
-    if Selected then
-    begin
-      OldColor := Windows.SetTextColor(Data^._HDC, LCLIntf.GetSysColor(COLOR_HIGHLIGHTTEXT));
-      OldBackColor := Windows.SetBkColor(Data^._HDC, LCLIntf.GetSysColor(COLOR_HIGHLIGHT)); // $00D39137
-    end
-    else if not Enabled then
-    begin
-      OldColor := Windows.SetTextColor(Data^._HDC, LCLIntf.GetSysColor(COLOR_GRAYTEXT)); // $00BFBFBF
-      OldBackColor := Windows.SetBkColor(Data^._HDC, LCLIntf.GetSysColor(COLOR_WINDOW)); // $00FFFFFF
-    end
+
+    OldBackColor := Windows.SetBkColor(Data^._HDC, Windows.GetSysColor(NewColor));
+
+    if not Enabled then
+      OldColor := Windows.SetTextColor(Data^._HDC, Windows.GetSysColor(COLOR_GRAYTEXT))
     else
-    begin
-      OldColor := Windows.SetTextColor(Data^._HDC, LCLIntf.GetSysColor(COLOR_WINDOWTEXT));
-      OldBackColor := Windows.SetBkColor(Data^._HDC, LCLIntf.GetSysColor(COLOR_WINDOW)); // $00FFFFFF
-    end;
+    if Selected then
+      OldColor := Windows.SetTextColor(Data^._HDC, Windows.GetSysColor(COLOR_HIGHLIGHTTEXT))
+    else
+      OldColor := Windows.SetTextColor(Data^._HDC, ColorToRGB(CheckListBox.Font.Color));
+
     
     WideBuffer := UTF8Decode(CheckListBox.Items[Data^.ItemID]);
     Windows.DrawTextW(Data^._HDC, PWideChar(WideBuffer), -1,
