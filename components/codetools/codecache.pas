@@ -822,7 +822,7 @@ end;
 
 procedure TCodeBuffer.Clear;
 begin
-  fIsDeleted:=false;
+  FIsDeleted:=false;
   FLoadDateValid:=false;
   inherited Clear;
 end;
