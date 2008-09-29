@@ -62,6 +62,7 @@ var
   bs: TBrushStyle;
   y: integer;
 begin
+  BrushBox.Canvas.Brush.Bitmap := nil;
   y := 15;
   for bs := bsSolid to bsDiagCross do
   begin
