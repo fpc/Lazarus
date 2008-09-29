@@ -516,7 +516,7 @@ var
 begin
   StatusBarWidget:=GetStyleWidget(lgsStatusBar);
   // set size to default
-  gtk_widget_set_usize(StatusBarWidget,-1,-1);
+  gtk_widget_set_size_request(StatusBarWidget, -1, -1);
   // ask default size
   gtk_widget_size_request(StatusBarWidget,@Requisition);
   PreferredHeight:=Requisition.height;
