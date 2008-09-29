@@ -171,6 +171,7 @@ type
   TCarbonBrush = class(TCarbonColorObject)
   private
     FCGPattern: CGPatternRef;
+    FColored: Boolean;
     FBitmap: TCarbonBitmap;
   protected
     procedure SetHatchStyle(AHatch: PtrInt);
@@ -1277,11 +1278,6 @@ end;
 
 { TCarbonBrush }
 
-procedure TCarbonBrush.SetHatchStyle(AHatch: PtrInt);
-begin
-  // todo
-end;
-
 procedure DrawBrushPattern( info: UnivPtr; c: CGContextRef ); MWPascal;
 var
   ABrush: TCarbonBrush absolute info;
@@ -1290,6 +1286,32 @@ begin
   AImage := ABrush.FBitmap.CGImage;
   CGContextDrawImage(c, GetCGRect(0, 0, CGImageGetWidth(AImage), CGImageGetHeight(AImage)),
     AImage);
+end;
+
+procedure TCarbonBrush.SetHatchStyle(AHatch: PtrInt);
+const
+  HATCH_DATA: array[HS_HORIZONTAL..HS_DIAGCROSS] of array[0..7] of Word =
+ (
+ { HS_HORIZONTAL } ($FF, $FF, $FF, $00, $FF, $FF, $FF, $FF),
+ { HS_VERTICAL   } ($F7, $F7, $F7, $F7, $F7, $F7, $F7, $F7),
+ { HS_FDIAGONAL  } ($FE, $FD, $FB, $F7, $EF, $DF, $BF, $7F),
+ { HS_BDIAGONAL  } ($7F, $BF, $DF, $EF, $F7, $FB, $FD, $FE),
+ { HS_CROSS      } ($F7, $F7, $F7, $00, $F7, $F7, $F7, $F7),
+ { HS_DIAGCROSS  } ($7E, $BD, $DB, $E7, $E7, $DB, $BD, $7E)
+  );
+var
+  ACallBacks: CGPatternCallbacks;
+begin
+  if AHatch in [HS_HORIZONTAL..HS_DIAGCROSS] then
+  begin
+    FillChar(ACallBacks, SizeOf(ACallBacks), 0);
+    ACallBacks.drawPattern := @DrawBrushPattern;
+    FBitmap := TCarbonBitmap.Create(8, 8, 1, 1, cbaWord, cbtMask, @HATCH_DATA[AHatch]);
+    FColored := True;
+    FCGPattern := CGPatternCreate(Self, GetCGRect(0, 0, 8, 8),
+      CGAffineTransformIdentity, 8, 8, kCGPatternTilingConstantSpacing,
+      Ord(FColored), ACallBacks);
+  end;
 end;
 
 procedure TCarbonBrush.SetBitmap(ABitmap: TCarbonBitmap);
@@ -1302,9 +1324,10 @@ begin
   FillChar(ACallBacks, SizeOf(ACallBacks), 0);
   ACallBacks.drawPattern := @DrawBrushPattern;
   FBitmap := TCarbonBitmap.Create(ABitmap);
-  FCGPattern := CGPatternCreate (Self, GetCGRect(0, 0, AWidth, AHeight),
+  FColored := True;
+  FCGPattern := CGPatternCreate(Self, GetCGRect(0, 0, AWidth, AHeight),
     CGAffineTransformIdentity, AWidth, AHeight, kCGPatternTilingConstantSpacing,
-    1, ACallBacks);
+    Ord(FColored), ACallBacks);
 end;
 
 {------------------------------------------------------------------------------
@@ -1369,17 +1392,19 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonBrush.Apply(ADC: TCarbonContext; UseROP2: Boolean);
 var
-  AR, AG, AB, AA: Single;
+  RGBA: array[0..3] of Single;
   AROP2: Integer;
   APatternSpace: CGColorSpaceRef;
 begin
   if ADC = nil then Exit;
   if ADC.CGContext = nil then Exit;
 
-  if UseROP2 then AROP2 := (ADC as TCarbonDeviceContext).ROP2
-  else AROP2 := R2_COPYPEN;
+  if UseROP2 then 
+    AROP2 := (ADC as TCarbonDeviceContext).ROP2
+  else 
+    AROP2 := R2_COPYPEN;
 
-  GetRGBA(AROP2, AR, AG, AB, AA);
+  GetRGBA(AROP2, RGBA[0], RGBA[1], RGBA[2], RGBA[3]);
 
   if AROP2 <> R2_NOT then
     CGContextSetBlendMode(ADC.CGContext, kCGBlendModeNormal)
@@ -1391,11 +1416,11 @@ begin
     APatternSpace := CGColorSpaceCreatePattern(nil);
     CGContextSetFillColorSpace(ADC.CGContext, APatternSpace);
     CGColorSpaceRelease(APatternSpace);
-    AA := 1.0;
-    CGContextSetFillPattern(ADC.CGcontext, FCGPattern, @AA);
+    RGBA[3] := 1.0;
+    CGContextSetFillPattern(ADC.CGcontext, FCGPattern, @RGBA[3]);
   end
   else
-    CGContextSetRGBFillColor(ADC.CGContext, AR, AG, AB, AA);
+    CGContextSetRGBFillColor(ADC.CGContext, RGBA[0], RGBA[1], RGBA[2], RGBA[3]);
 end;
 
 { TCarbonPen }
