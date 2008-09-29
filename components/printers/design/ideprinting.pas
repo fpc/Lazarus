@@ -31,10 +31,15 @@ procedure Register;
 implementation
 
 uses
-  MenuIntf, IDECommands, Dialogs, SrcEditorIntf, SourcePrinter;
+  MenuIntf, IDECommands, Controls, Forms, Dialogs, SrcEditorIntf, SourcePrinter;
 
 resourcestring
   SDescrPFSelection = 'Print...';
+  SPrintSources     = 'Print sources';
+  SPrintWhat        = 'What would you like to print ?';
+  SPrintFile        = 'Complete file';
+  SPrintSelection   = 'Selected text';
+
 
 var
   CmdFormatSelection : TIDECommand;
@@ -72,12 +77,36 @@ begin
 end;
 
 procedure PrintFile(Sender: TObject);
+
 var
   sp: TSourcePrinter;
+  L : TStrings;
+  R : TModalResult;
+
 begin
-  sp := TSourcePrinter.Create;
-  sp.Execute(SourceEditorWindow.ActiveEditor.Lines);
-  sp.Free;
+  If Not Assigned(SourceEditorWindow) or Not Assigned(SourceEditorWindow.ActiveEditor) then
+    Exit;
+  If (SourceEditorWindow.ActiveEditor.Selection='') then
+    R:=mrYesToAll
+  else
+    R:=QuestionDlg(SPrintSources,SPrintWhat,mtInformation,[mrYesToAll,SPrintFile,mrYes,SPrintSelection,mrCancel],0);
+  If R=mrCancel then
+    exit;
+  L:=TStringList.Create;
+  try
+    case R of
+      mrYesToAll : L.Assign(SourceEditorWindow.ActiveEditor.Lines);
+      mrYes      : L.Text:=SourceEditorWindow.ActiveEditor.Selection;
+    end;
+    sp := TSourcePrinter.Create;
+    try
+      sp.Execute(L);
+    finally
+      sp.Free;
+    end;
+  finally
+    L.Free;
+  end;
 end;
 
 end.
