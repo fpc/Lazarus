@@ -5336,10 +5336,8 @@ end;
 
 {------------------------------------------------------------------------------
   Function: GetObject
-  Params:  none
-  Returns: Nothing
-
-
+  Params:  GDIObj - handle, BufSize - size of Buf argument, Buf - buffer
+  Returns: Size of buffer
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer;
   function GetObject_Bitmap: Integer;
@@ -5472,14 +5470,15 @@ function TGtkWidgetSet.GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer
   
 var
   GDIObject: PGDIObject absolute GDIObj;
+  ALogPen: PLogPen absolute Buf;
 begin
   Assert(False, 'trace:[TGtkWidgetSet.GetObject]');
   Result := 0;
   if not IsValidGDIObject(GDIObj) then Exit;
   
   case GDIObject^.GDIType of
-    gdiBitmap: Result := GetObject_Bitmap;
-
+    gdiBitmap:
+      Result := GetObject_Bitmap;
     gdiBrush:
       begin
         Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetObject] gdiBrush');
@@ -5504,7 +5503,17 @@ begin
       end;
     gdiPen:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetObject] gdiPen');
+        if Buf = nil then
+          Result := SizeOf(TLogPen)
+        else
+        if BufSize >= SizeOf(TLogPen) then
+        begin
+          ALogPen^.lopnColor := GDIObject^.GDIPenColor.ColorRef;
+          ALogPen^.lopnWidth := Point(GDIObject^.GDIPenWidth, 0);
+          ALogPen^.lopnStyle := GDIObject^.GDIPenStyle;
+        end
+        else
+          Result := 0;
       end;
     gdiRegion:
       begin

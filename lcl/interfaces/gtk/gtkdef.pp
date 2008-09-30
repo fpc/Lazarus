@@ -138,10 +138,10 @@ type
   TGDIColorFlags = set of TGDIColorFlag;
   
   TGDIColor = record
-    ColorRef : TColorRef;    //Color passed - can be a SYSCOLOR or RGB
+    ColorRef: TColorRef;    //Color passed - can be a SYSCOLOR or RGB
     ColorFlags: TGDIColorFlags;
     Color: TGDKColor;       //Actual GDK Color(If any) for use with GC's
-    Colormap : PGDKColormap; //Colormap GDKColor was allocated with
+    Colormap: PGDKColormap; //Colormap GDKColor was allocated with
   end;
   PGDIColor = ^TGDIColor;
 
