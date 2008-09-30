@@ -2214,9 +2214,12 @@ begin
    ------------------------------------------------------------------------------}
   if aObject is TQtFont then
   begin
-    if BufSize = SizeOf(TLogFont) then
+    if Buf = nil then
+      Result := SizeOf(TLogFont)
+    else
+    if BufSize >= SizeOf(TLogFont) then
     begin
-      Result := BufSize;
+      Result := SizeOf(TLogFont);
 
       FillChar(ALogFont^, SizeOf(ALogFont^), 0);
       ALogFont^.lfHeight := AFont.getPixelSize;
@@ -2246,8 +2249,12 @@ begin
   else
   if aObject is TQtPen then
   begin
-    if BufSize = SizeOf(TLogPen) then
+    if Buf = nil then
+      Result := SizeOf(TLogPen)
+    else
+    if BufSize >= SizeOf(TLogPen) then
     begin
+      Result := SizeOf(TLogPen);
       TQColorToColorRef(APen.getColor, ALogPen^.lopnColor);
       if APen.getCosmetic then
         ALogPen^.lopnWidth := Point(0, 0)

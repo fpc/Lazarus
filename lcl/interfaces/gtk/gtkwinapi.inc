@@ -5508,6 +5508,7 @@ begin
         else
         if BufSize >= SizeOf(TLogPen) then
         begin
+          Result := SizeOf(TLogPen);
           ALogPen^.lopnColor := GDIObject^.GDIPenColor.ColorRef;
           ALogPen^.lopnWidth := Point(GDIObject^.GDIPenWidth, 0);
           ALogPen^.lopnStyle := GDIObject^.GDIPenStyle;
