@@ -316,7 +316,7 @@ begin
   //if InvalidateOnChange then DebugLn(['TCustomSpeedButton.UpdateState ',DbgSName(Self),' InvalidateOnChange=',InvalidateOnChange,' StateChange=',FState<>OldState]);
   if InvalidateOnChange and
      (
-       (FState<>OldState) or
+       (FState <> OldState) or
        not ThemedElementDetailsEqual(FLastDrawDetails, GetDrawDetails)
      )
   then
@@ -357,7 +357,7 @@ function TCustomSpeedButton.GetDrawDetails: TThemedElementDetails;
     begin
       if Down then
       begin // checked states
-        if fMouseInControl then
+        if FMouseInControl then
           Result := ttbButtonCheckedHot
         else
           Result := ttbButtonChecked
@@ -471,16 +471,16 @@ end;
 
 function TCustomSpeedButton.DialogChar(var Message: TLMKey): boolean;
 begin
-  Result := false;
+  Result := False;
 
   Assert(Message.Msg = LM_SYSCHAR, '*** Warning: non LM_SYSCHAR passed to TCustomSpeedButton.DialogChar ! ***');
 
-  if not FShowAccelChar then exit;
+  if not FShowAccelChar then Exit;
 
   if IsAccel(Message.CharCode, Caption) then
   begin
-    Result := true;
-    Self.Click;
+    Result := True;
+    Click;
   end else
     Result := inherited DialogChar(Message);
 end;
