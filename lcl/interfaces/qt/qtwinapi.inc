@@ -617,9 +617,7 @@ var
   QtPen: TQtPen;
   color: TQColor;
 begin
-//  Assert(False, 'trace:[TQtWidgetSet.CreatePenIndirect]');
-//   writeln('CreatePenIndirect->');
-  Result := 0;	
+  Result := 0;
   QtPen := TQtPen.Create(True);
   
   with LogPen do
@@ -628,10 +626,9 @@ begin
       PS_SOLID: QtPen.setStyle(QtSolidLine);
       PS_DASH: QtPen.setStyle(QtDashLine);
       PS_DOT: QtPen.setStyle(QtDotLine);
-      PS_DASHDOT:QtPen.setStyle(QtDashDotLine);
-      PS_DASHDOTDOT:QtPen.setStyle(QtDashDotDotLine);
-      PS_USERSTYLE: QtPen.setStyle(QtCustomDashLine);
-      PS_NULL:QtPen.setStyle(QtNoPen);
+      PS_DASHDOT: QtPen.setStyle(QtDashDotLine);
+      PS_DASHDOTDOT: QtPen.setStyle(QtDashDotDotLine);
+      PS_NULL: QtPen.setStyle(QtNoPen);
     else
       QtPen.setStyle(QtSolidLine);
     end;
