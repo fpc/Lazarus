@@ -636,15 +636,20 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TCustomListBox.GetIndexAtY(Y: integer): integer;
+  function TCustomListBox.GetIndexAtXY(X, Y: integer): integer;
 
-  Returns item index at y coordinate (including scrolling)
+  Returns item index at x, y coordinate (including scrolling)
 ------------------------------------------------------------------------------}
+function TCustomListBox.GetIndexAtXY(X, Y: integer): integer;
+begin
+  Result := -1;
+  if (not HandleAllocated) then Exit;
+  Result := TWSCustomListBoxClass(WidgetSetClass).GetIndexAtXY(Self, X, Y);
+end;
+
 function TCustomListBox.GetIndexAtY(Y: integer): integer;
 begin
-  Result:=-1;
-  if (not HandleAllocated) then exit;
-  Result := TWSCustomListBoxClass(WidgetSetClass).GetIndexAtY(Self, Y);
+  Result := GetIndexAtXY(1, Y);
 end;
 
 {------------------------------------------------------------------------------
@@ -671,12 +676,15 @@ end;
 function TCustomListBox.ItemAtPos(const Pos: TPoint; Existing: Boolean
   ): Integer;
 begin
-  Result:=GetIndexAtY(Pos.Y);
-  if Existing then begin
-    if Result>=Items.Count then Result:=-1;
-  end else begin
-    if (Result<0) and (Result>Items.Count) and PtInRect(ClientRect,Pos) then
-      Result:=Items.Count;
+  Result := GetIndexAtXY(Pos.X, Pos.Y);
+  if Existing then
+  begin
+    if Result >= Items.Count then
+      Result := -1;
+  end else
+  begin
+    if (Result < 0) and (Result > Items.Count) and PtInRect(ClientRect, Pos) then
+      Result := Items.Count;
   end;
 end;
 

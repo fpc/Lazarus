@@ -124,7 +124,7 @@ type
   public
   {$IFDEF GTK1}
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-    class function GetIndexAtY(const ACustomListBox: TCustomListBox; y: integer): integer; override;
+    class function GetIndexAtXY(const ACustomListBox: TCustomListBox; X, Y: integer): integer; override;
     class function GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
     class function GetItemRect(const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): boolean; override;
     class function GetSelCount(const ACustomListBox: TCustomListBox): integer; override;
@@ -487,8 +487,8 @@ begin
   TGtkPrivateListClass(WSPrivate).SetCallbacks(Widget, WidgetInfo);
 end;
 
-class function TGtkWSCustomListBox.GetIndexAtY(
-  const ACustomListBox: TCustomListBox; y: integer): integer;
+class function TGtkWSCustomListBox.GetIndexAtXY(
+  const ACustomListBox: TCustomListBox; X, Y: integer): integer;
 var
   ScrolledWindow: PGtkScrolledWindow;
   VertAdj: PGTKAdjustment;
@@ -650,7 +650,7 @@ end;
 
 class function  TGtkWSCustomListBox.GetTopIndex(const ACustomListBox: TCustomListBox): integer;
 begin
-  Result := GetIndexAtY(ACustomListBox, 0);
+  Result := GetIndexAtXY(ACustomListBox, 0, 0);
 end;
 
 class procedure TGtkWSCustomListBox.SelectItem(const ACustomListBox: TCustomListBox;

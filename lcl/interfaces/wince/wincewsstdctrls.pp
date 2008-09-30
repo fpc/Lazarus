@@ -117,7 +117,7 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
-    class function GetIndexAtY(const ACustomListBox: TCustomListBox; y: integer): integer; override;
+    class function GetIndexAtXY(const ACustomListBox: TCustomListBox; X, Y: integer): integer; override;
     class function GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
     class function GetItemRect(const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): boolean; override;
     class function GetSelCount(const ACustomListBox: TCustomListBox): integer; override;
@@ -465,10 +465,10 @@ begin
   Result := Params.Window;
 end;
 
-class function TWinCEWSCustomListBox.GetIndexAtY(
-  const ACustomListBox: TCustomListBox; y: integer): integer;
+class function TWinCEWSCustomListBox.GetIndexAtXY(
+  const ACustomListBox: TCustomListBox; X, Y: integer): integer;
 begin
-  Result := Windows.SendMessage(ACustomListBox.Handle, LB_ITEMFROMPOINT, 0, MakeLParam(0,y));
+  Result := Windows.SendMessage(ACustomListBox.Handle, LB_ITEMFROMPOINT, 0, MakeLParam(X,Y));
   if hi(Result)=0 then
     Result := lo(Result)
   else
