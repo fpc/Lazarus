@@ -622,7 +622,7 @@ begin
   TQtBrush(FStockWhiteBrush).FShared := True;
 
   LogPen.lopnStyle := PS_NULL;
-  LogPen.lopnWidth.X := 1;
+  LogPen.lopnWidth := Point(0, 0); // create cosmetic pens
   LogPen.lopnColor := $FFFFFF;
   FStockNullPen := CreatePenIndirect(LogPen);
   TQtPen(FStockNullPen).FShared := True;
@@ -635,7 +635,7 @@ begin
   FStockBlackPen := CreatePenIndirect(LogPen);
   TQtPen(FStockBlackPen).FShared := True;
 
-  FStockSystemFont := 0;//Styles aren't initialized yet
+  FStockSystemFont := 0; // styles aren't initialized yet
   
   FStockDefaultDC := 0; // app must be initialized
 end;

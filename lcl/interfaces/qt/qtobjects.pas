@@ -212,13 +212,15 @@ type
     constructor Create(CreateHandle: Boolean; Const AShared: Boolean = False); virtual;
     destructor Destroy; override;
   public
-    function Width: Integer;
-    function Style: QtPenStyle;
+    function getWidth: Integer;
+    function getStyle: QtPenStyle;
     function getColor: TQColor;
+    function getCosmetic: Boolean;
     procedure setStyle(AStyle: QtPenStyle);
     procedure setBrush(brush: QBrushH);
     procedure setWidth(p1: Integer);
     procedure setColor(p1: TQColor);
+    procedure setCosmetic(b: Boolean);
   end;
 
 
@@ -1417,6 +1419,16 @@ begin
   inherited Destroy;
 end;
 
+function TQtPen.getWidth: Integer;
+begin
+  Result := QPen_width(Widget);
+end;
+
+function TQtPen.getStyle: QtPenStyle;
+begin
+  Result := QPen_style(Widget);
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtPen.setBrush
   Params:  None
@@ -1448,33 +1460,16 @@ begin
   QPen_setWidth(Widget, p1);
 end;
 
-
-{------------------------------------------------------------------------------
-  Function: TQtPen.Style
-  Params:  None
-  Returns: QPenStyle
- ------------------------------------------------------------------------------}
-function TQtPen.Style: QtPenStyle;
-begin
-  Result := QPen_Style(Widget);
-end;
-
 function TQtPen.getColor: TQColor;
 begin
   QPen_color(Widget, @Result);
 end;
 
-
-{------------------------------------------------------------------------------
-  Function: TQtPen.Width
-  Params:  None
-  Returns: integer , width of current pen
-
- ------------------------------------------------------------------------------}
-function TQtPen.Width: Integer;
+function TQtPen.getCosmetic: Boolean;
 begin
-  Result := QPen_Width(Widget);
+  Result := QPen_isCosmetic(Widget);
 end;
+
 
 {------------------------------------------------------------------------------
   Function: TQtPen.setColor
@@ -1485,6 +1480,11 @@ end;
 procedure TQtPen.setColor(p1: TQColor);
 begin
   QPen_setColor(Widget, @p1);
+end;
+
+procedure TQtPen.setCosmetic(b: Boolean);
+begin
+  QPen_setCosmetic(Widget, b);
 end;
 
 
@@ -2267,9 +2267,9 @@ end;
 
 procedure TQColorToColorRef(const AColor: TQColor; out AColorRef: TColorRef);
 begin
-  AColorRef:=(( AColor.r shr 8) and $FF)
-       or (AColor.g  and $ff00)
-       or ((AColor.b  shl 8) and $ff0000);
+  AColorRef := ((AColor.r shr 8) and $FF) or
+                (AColor.g and $FF00) or
+               ((AColor.b shl 8) and $FF0000);
 end;
 
 procedure ColorRefToTQColor(const AColorRef: TColorRef; var AColor:TQColor);

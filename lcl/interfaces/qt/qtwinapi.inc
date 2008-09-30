@@ -633,7 +633,13 @@ begin
       QtPen.setStyle(QtSolidLine);
     end;
 
-    QtPen.setWidth(lopnWidth.X);
+    if lopnWidth.X <= 0 then
+      QtPen.setCosmetic(True)
+    else
+    begin
+      QtPen.setCosmetic(False);
+      QtPen.setWidth(lopnWidth.X);
+    end;
 
     QPen_Color(QtPen.Widget, @Color);
     ColorRefToTQColor(ColorToRGB(lopnColor), Color);
@@ -2163,11 +2169,24 @@ end;
   Necessary for TBitmap support
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer;
+const
+  QtPenStyleToWinStyleMap: array[QtPenStyle] of UINT =
+  (
+ { QtNoPen          } PS_NULL,
+ { QtSolidLine      } PS_SOLID,
+ { QtDashLine       } PS_DASH,
+ { QtDotLine        } PS_DOT,
+ { QtDashDotLine    } PS_DASHDOT,
+ { QtDashDotDotLine } PS_DASHDOTDOT,
+ { QtCustomDashLine } PS_USERSTYLE
+  );
 var
   aObject: TObject;
   AFont: TQtFont absolute aObject;
+  APen: TQtPen absolute aObject;
   BitmapSection : TDIBSECTION;
   ALogFont: PLogFont absolute Buf;
+  ALogPen: PLogPen absolute Buf;
   {$ifdef VerboseQtWinAPI}
     ObjType: string;
   {$endif}
@@ -2219,6 +2238,22 @@ begin
       ALogFont^.lfStrikeOut := Ord(AFont.getStrikeOut) * High(Byte);
       ALogFont^.lfCharSet := DEFAULT_CHARSET;
       ALogFont^.lfFaceName := UTF8Encode(AFont.getFamily);
+    end;
+  end
+  {------------------------------------------------------------------------------
+    Pen
+   ------------------------------------------------------------------------------}
+  else
+  if aObject is TQtPen then
+  begin
+    if BufSize = SizeOf(TLogPen) then
+    begin
+      TQColorToColorRef(APen.getColor, ALogPen^.lopnColor);
+      if APen.getCosmetic then
+        ALogPen^.lopnWidth := Point(0, 0)
+      else
+        ALogPen^.lopnWidth := Point(APen.getWidth, 0);
+      ALogPen^.lopnStyle := QtPenStyleToWinStyleMap[APen.getStyle];
     end;
   end
   {------------------------------------------------------------------------------
