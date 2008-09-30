@@ -86,13 +86,18 @@ var
   ps: TPenStyle;
   y: integer;
 begin
+  y := 15;
   for ps := psSolid to psDashDotDot do
   begin
-    y := 15 * (Ord(ps) + 1);
     PenBox.Canvas.TextOut(10, y - 7, GetEnumName(TypeInfo(TPenStyle), Ord(ps)));
     PenBox.Canvas.Pen.Style := ps;
     PenBox.Canvas.Line(120, y, PenBox.Width - 10, y);
+    inc(y, 15);
   end;
+  PenBox.Canvas.TextOut(10, y - 7, GetEnumName(TypeInfo(TPenStyle), Ord(psClear)));
+  PenBox.Canvas.Pen.Style := psClear;
+  PenBox.Canvas.Line(120, y, PenBox.Width - 10, y);
+  inc(y, 15);
 end;
 
 initialization

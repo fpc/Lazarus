@@ -1,10 +1,10 @@
 object Form1: TForm1
   Left = 350
-  Height = 425
+  Height = 473
   Top = 215
   Width = 400
   Caption = 'Pen & Brush'
-  ClientHeight = 425
+  ClientHeight = 473
   ClientWidth = 400
   OnCreate = FormCreate
   OnDestroy = FormDestroy
@@ -30,7 +30,7 @@ object Form1: TForm1
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 11
-    Height = 105
+    Height = 153
     Top = 32
     Width = 378
     Anchors = [akTop, akLeft, akRight]
@@ -45,7 +45,7 @@ object Form1: TForm1
     AnchorSideTop.Side = asrBottom
     Left = 11
     Height = 14
-    Top = 148
+    Top = 196
     Width = 43
     BorderSpacing.Left = 11
     BorderSpacing.Top = 11
@@ -60,7 +60,7 @@ object Form1: TForm1
     AnchorSideRight.Side = asrBottom
     Left = 11
     Height = 207
-    Top = 169
+    Top = 217
     Width = 378
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 11
@@ -75,7 +75,7 @@ object Form1: TForm1
     AnchorSideRight.Side = asrBottom
     Left = 307
     Height = 26
-    Top = 387
+    Top = 435
     Width = 82
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
