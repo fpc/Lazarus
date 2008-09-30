@@ -822,7 +822,6 @@ begin
     SGetData, SControlFont);
     
   ID := FindCarbonFontID(AFont.Name);
-  
 
   FontStyle.flags := FontStyle.flags or kControlUseFontMask or kControlUseSizeMask or
     kControlUseFaceMask or kControlUseForeColorMask;

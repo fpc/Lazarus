@@ -172,6 +172,8 @@ type
     function GetSize: TPoint; override;
   public
     constructor Create(AOwner: TCarbonWidget);
+
+    property Owner: TCarbonWidget read FOwner;
   end;
 
   { TCarbonBitmapContext }
