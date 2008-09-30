@@ -959,12 +959,19 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('>>>>>> [TCodeToolManager.LoadFile] ',ExpandedFilename,' Update=',dbgs(UpdateFromDisk),' Revert=',dbgs(Revert));
   {$ENDIF}
+  if (not UpdateFromDisk) and (not Revert) then begin
+    Result:=SourceCache.FindFile(ExpandedFilename);
+    if (Result<>nil) and (not Result.IsDeleted) then exit;
+  end;
   Result:=SourceCache.LoadFile(ExpandedFilename);
   if Result<>nil then begin
     if Revert then
       Result.Revert
-    else if UpdateFromDisk then
+    else if UpdateFromDisk and Result.AutoRevertFromDisk
+    and Result.FileNeedsUpdate then begin
+      //debugln(['TCodeToolManager.LoadFile ',ExpandedFilename,' AutoRevert=',Result.AutoRevertFromDisk,' Modified=',Result.Modified,' NeedLoad=',Result.FileNeedsUpdate]);
       Result.Reload;
+    end;
   end;
 end;
 
