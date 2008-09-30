@@ -148,6 +148,9 @@ type
     function ReadStr: String; override;
     function ReadString(StringType: TValueType): String; override;
     function ReadWideString: WideString; override;
+    {$ifndef VER2_2}
+    function ReadUnicodeString: UnicodeString; override;
+    {$endif}
     procedure SkipComponent(SkipComponentInfos: Boolean); override;
     procedure SkipValue; override;
   public
@@ -210,7 +213,10 @@ type
     procedure WriteSet(Value: LongInt; SetType: Pointer); override;
     procedure WriteString(const Value: String); override;
     procedure WriteWideString(const Value: WideString); override;
-    
+    {$ifndef VER2_2}
+    procedure WriteUnicodeString(const Value: UnicodeString); override;
+    {$endif}
+ 
     property InstanceStack: TStringList read FInstanceStack write FInstanceStack;// list of TPersistent
   end;
   TLRSObjectWriterClass = class of TLRSObjectWriter;
@@ -3840,6 +3846,19 @@ begin
   //debugln('TLRSObjectReader.ReadWideString ',Result);
 end;
 
+{$ifndef VER2_2}
+function TLRSObjectReader.ReadUnicodeString: UnicodeString;
+var
+  i: Integer;
+begin
+  i:=ReadIntegerContent;
+  SetLength(Result, i);
+  if i > 0 then
+    Read(Pointer(@Result[1])^, i*2);
+  //debugln('TLRSObjectReader.ReadWideString ',Result);
+end;
+{$endif}
+
 procedure TLRSObjectReader.SkipComponent(SkipComponentInfos: Boolean);
 var
   Flags: TFilerFlags;
@@ -4367,6 +4386,17 @@ begin
   WriteWideStringContent(Value);
 end;
 
+{$ifndef VER2_2}
+procedure TLRSObjectWriter.WriteUnicodeString(const Value: UnicodeString);
+var
+  i: Integer;
+begin
+  WriteValue(vaUString);
+  i := Length(Value);
+  WriteIntegerContent(i);
+  WriteWideStringContent(Value);
+end;
+{$endif}
 
 { TLRPositionLinks }
 
