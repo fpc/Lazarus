@@ -7289,6 +7289,14 @@ begin
     Result:=mrOk;
   end;
 
+  // close form soft (keep it if used by another component)
+  CloseUnitComponent(ActiveUnitInfo,[]);
+
+  // close source editor
+  SourceNoteBook.CloseFile(PageIndex);
+  MainIDEBar.itmFileClose.Enabled:=SourceNoteBook.Notebook<>nil;
+  MainIDEBar.itmFileCloseAll.Enabled:=MainIDEBar.itmFileClose.Enabled;
+
   // free sources
   if (ActiveUnitInfo.Source<>nil) then begin
     if (Project1.MainUnitInfo=ActiveUnitInfo)
@@ -7298,14 +7306,6 @@ begin
     end else
       ActiveUnitInfo.Source.IsDeleted:=true;
   end;
-
-  // close form soft (keep it if used by another component)
-  CloseUnitComponent(ActiveUnitInfo,[]);
-
-  // close source editor
-  SourceNoteBook.CloseFile(PageIndex);
-  MainIDEBar.itmFileClose.Enabled:=SourceNoteBook.Notebook<>nil;
-  MainIDEBar.itmFileCloseAll.Enabled:=MainIDEBar.itmFileClose.Enabled;
 
   // close file in project
   Project1.CloseEditorIndex(ActiveUnitInfo.EditorIndex);

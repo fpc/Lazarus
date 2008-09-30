@@ -922,12 +922,11 @@ end;
 procedure TCodeBuffer.SetIsDeleted(const NewValue: boolean);
 begin
   if FIsDeleted=NewValue then exit;
-  //debugln(['TCodeBuffer.SetIsDeleted ',Filename,' ',NewValue]);
+  debugln(['TCodeBuffer.SetIsDeleted ',Filename,' ',NewValue]);
   FIsDeleted:=NewValue;
   if FIsDeleted then begin
     Clear;
     FIsDeleted:=true;
-    FLoadDateValid:=false;
     //DebugLn(['TCodeBuffer.SetIsDeleted ',Filename,' ',FileNeedsUpdate]);
   end;
 end;
@@ -975,17 +974,17 @@ begin
 end;
 
 function TCodeBuffer.FileNeedsUpdate: boolean;
-// file needs update, if file is not modified and file on disk has changed
+// file needs update (to be loaded), if file is not modified and file on disk has changed
 begin
+  if Modified then exit(false);
   if LoadDateValid then
-    Result:=(not Modified) and (FFileChangeStep=ChangeStep) 
-             and (FileDateOnDisk<>LoadDate)
+    Result:=(FFileChangeStep=ChangeStep) and (FileDateOnDisk<>LoadDate)
   else
     Result:=true;
 end;
 
 function TCodeBuffer.FileOnDiskNeedsUpdate: boolean;
-// file on disk needs update, if memory is modified or file does not exist
+// file on disk needs update (to be saved), if memory is modified or file does not exist
 begin
   if LoadDateValid then
     Result:=Modified or (FFileChangeStep<>ChangeStep)
