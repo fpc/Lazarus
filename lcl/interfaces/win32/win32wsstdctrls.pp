@@ -545,10 +545,20 @@ class procedure TWin32WSCustomListBox.AdaptBounds(
   var SuppressMove: boolean);
 var
   ColCount: Integer;
+  DW: Integer;
+  ARect: TRect;
 begin
   ColCount := TCustomListBox(AWinControl).Columns;
   if ColCount > 1 then
-    SendMessage(AWinControl.Handle, LB_SETCOLUMNWIDTH, Max(1, Width div ColCount), 0);
+  begin
+    // Listbox has a border and Width argument is a window rect =>
+    // Decrease it by border width
+    Windows.GetClientRect(AWinControl.Handle, ARect);
+    DW := ARect.Right - ARect.Left;
+    Windows.GetWindowRect(AWinControl.Handle, ARect);
+    DW := ARect.Right - ARect.Left - DW;
+    SendMessage(AWinControl.Handle, LB_SETCOLUMNWIDTH, Max(1, (Width - DW) div ColCount), 0);
+  end;
 end;
 
 class function TWin32WSCustomListBox.CreateHandle(const AWinControl: TWinControl;
