@@ -598,6 +598,7 @@ begin
     Error(ErrorBuildFailed,'project has no main unit');
     
   Project1.CompilerOptions.TargetOS:=OSOverride;
+  Project1.CompilerOptions.TargetCPU:=CPUOverride;
   Project1.CompilerOptions.LCLWidgetType:=WidgetSetOverride;
 
   if not SkipDependencies then begin
