@@ -1915,7 +1915,6 @@ function CreateCompatibleBitmaps(const ARawImage: TRawImage; out ABitmap, AMask:
 var
   Desc: TRawImageDescription absolute ARawimage.Description;
 
-  ImgHandle, ImgMaskHandle: HBitmap;
   ImagePtr: PRawImage;
   DevImage: TRawImage;
   DevDesc: TRawImageDescription;
@@ -1923,8 +1922,6 @@ var
   QueryFlags: TRawImageQueryFlags;
   W, H: Integer;
 begin
-  ImgMaskHandle := 0;
-
   W := Desc.Width;
   if W < 1 then W := 1;
   H := Desc.Height;
@@ -1968,12 +1965,7 @@ begin
   end;
 
   try
-    Result := RawImage_CreateBitmaps(ImagePtr^, ImgHandle, ImgMaskHandle, ASkipMask);
-    if not Result then Exit;
-
-    ABitmap := ImgHandle;
-    if not ASkipMask
-    then AMask := ImgMaskHandle;
+    Result := RawImage_CreateBitmaps(ImagePtr^, ABitmap, AMask, ASkipMask);
   finally
     DstImage.Free;
   end;
