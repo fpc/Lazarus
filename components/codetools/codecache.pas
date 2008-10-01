@@ -922,7 +922,7 @@ end;
 procedure TCodeBuffer.SetIsDeleted(const NewValue: boolean);
 begin
   if FIsDeleted=NewValue then exit;
-  debugln(['TCodeBuffer.SetIsDeleted ',Filename,' ',NewValue]);
+  //debugln(['TCodeBuffer.SetIsDeleted ',Filename,' ',NewValue]);
   FIsDeleted:=NewValue;
   if FIsDeleted then begin
     Clear;

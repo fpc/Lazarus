@@ -2378,6 +2378,10 @@ begin
     FEditor.EndUndoBlock;
     FEditor.EndUpdate;
   end else begin
+    {$IFDEF VerboseSrcEditBufClean}
+    debugln(['TSourceEditor.OnCodeBufferChanged clean up ',TCodeBuffer(Sender).FileName,' ',Sender=CodeBuffer,' ',Filename]);
+    DumpStack;
+    {$ENDIF}
     Sender.AssignTo(FEditor.Lines,false);
   end;
 end;
@@ -2420,12 +2424,12 @@ end;
 
 procedure TSourceEditor.DecreaseIgnoreCodeBufferLock;
 begin
-  if FIgnoreCodeBufferLock<=0 then exit;
+  if FIgnoreCodeBufferLock<=0 then raise Exception.Create('unbalanced calls');
   dec(FIgnoreCodeBufferLock);
 end;
 
 procedure TSourceEditor.UpdateCodeBuffer;
-// copy the source from EditorComponent
+// copy the source from EditorComponent to codetools
 begin
   if not FEditor.Modified then exit;
   {$IFDEF IDE_DEBUG}
