@@ -35,7 +35,7 @@
         <PackageName Value="LCL"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="5">
+    <Units Count="7">
       <Unit0>
         <Filename Value="runtests.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -61,6 +61,16 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestUnicode"/>
       </Unit4>
+      <Unit5>
+        <Filename Value="testunits.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="testunits"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="lcltests\testpen.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestPen"/>
+      </Unit6>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
