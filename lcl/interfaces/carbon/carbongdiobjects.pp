@@ -26,7 +26,7 @@ interface
 {$I carbondebug.inc}
 
 uses
- // rtl+ftl
+ // rtl+fcl
   Types, Classes, SysUtils, Math,
  // carbon bindings
   MacOSAll,
@@ -158,6 +158,7 @@ type
   private
     FR, FG, FB: Byte;
     FA: Boolean; // alpha: True - solid, False - clear
+    function GetColorRef: TColorRef;
   public
     constructor Create(const AColor: TColor; ASolid, AGlobal: Boolean);
     procedure SetColor(const AColor: TColor; ASolid: Boolean);
@@ -165,6 +166,7 @@ type
     function CreateCGColor: CGColorRef;
     
     property Solid: Boolean read FA;
+    property ColorRef: TColorRef read GetColorRef;
   end;
 
   { TCarbonBrush }
@@ -1192,6 +1194,11 @@ begin
 end;
 
 { TCarbonColorObject }
+
+function TCarbonColorObject.GetColorRef: TColorRef;
+begin
+  Result := RGBToColor(FR, FG, FB);
+end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonColorObject.Create

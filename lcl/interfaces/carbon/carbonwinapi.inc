@@ -1444,6 +1444,7 @@ var
   AObject: TCarbonGDIObject;
   DIB: TDIBSection;
   Width, Height: Integer;
+  ALogPen: PLogPen absolute Buf;
 begin
   Result := 0;
 
@@ -1502,7 +1503,21 @@ begin
       end;
   end
   else
-    DebugLn('TCarbonWidgetSet.GetObject Font, Brush, Pen TODO');
+  if AObject is TCarbonPen then
+  begin
+    if Buf = nil then
+      Result := SizeOf(TLogPen)
+    else
+    if BufSize = SizeOf(TLogPen) then
+    begin
+      Result := SizeOf(TLogPen);
+      ALogPen^.lopnStyle := TCarbonPen(AObject).Style;
+      ALogPen^.lopnWidth := Types.Point(TCarbonPen(AObject).Width, 0);
+      ALogPen^.lopnColor := TCarbonPen(AObject).ColorRef;
+    end;
+  end
+  else
+    DebugLn('TCarbonWidgetSet.GetObject Font, Brush TODO');
 end;
 
 {------------------------------------------------------------------------------
