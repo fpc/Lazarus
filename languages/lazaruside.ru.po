@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-09-25 03:49+0300\n"
+"PO-Revision-Date: 2008-10-01 02:29+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -5349,6 +5349,10 @@ msgstr "Командная строка для запуска"
 msgid "Lazarus"
 msgstr "Lazarus"
 
+#: lazarusidestrconsts:liskmlazarusdefault
+msgid "Lazarus (default)"
+msgstr "Lazarus (по умолчанию)"
+
 #: lazarusidestrconsts:lislazarusdesktopsettings
 msgid "Lazarus Desktop Settings"
 msgstr "Установки Рабочего Стола Lazarus"
@@ -6259,7 +6263,7 @@ msgstr "Не сейчас"
 
 #: lazarusidestrconsts:liskmnoteallkeyswillbesettothevaluesofthechoosenscheme
 msgid "Note: All keys will be set to the values of the choosen scheme."
-msgstr "Примечание: Значения всех клавиш будут установлены в соответствии с выбранной схемой."
+msgstr "Примечание: значения всех клавиш будут установлены в соответствии с выбранной схемой."
 
 #: lazarusidestrconsts:lisinfobuildnote
 msgid "Notes:"
