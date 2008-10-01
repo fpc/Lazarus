@@ -28,6 +28,16 @@ begin
   FImages := AValue;
 end;
 
+function TCustomHeaderControl.GetSectionFromOriginalIndex(OriginalIndex: Integer): THeaderSection;
+var
+  i: Longint;
+begin
+  Result := nil;
+  for i := 0 to FSections.Count - 1 do
+    if FSections[i].OriginalIndex = OriginalIndex then
+      Exit(FSections[i]);
+end;
+
 procedure TCustomHeaderControl.SetSections(const AValue: THeaderSections);
 begin
   FSections := AValue;
@@ -107,7 +117,7 @@ var
 begin
   Result := -1;
   for i := 0 to Sections.Count - 1 do
-    if (Sections[i].Left <= P.X) and (Sections[i].Right >= P.X) then
+    if Sections[i].Visible and (Sections[i].Left <= P.X) and (Sections[i].Right >= P.X) then
     begin
       Result := i;
       break;
@@ -141,8 +151,7 @@ begin
     FOnSectionTrack(Self, Section, Section.FWidth, State);
 end;
 
-procedure TCustomHeaderControl.SectionSeparatorDblClick(Section: THeaderSection
-  );
+procedure TCustomHeaderControl.SectionSeparatorDblClick(Section: THeaderSection);
 begin
   if Assigned(FOnSectionSeparatorDblClick) then
     FOnSectionSeparatorDblClick(Self, Section);
@@ -364,6 +373,7 @@ var
   Section: THeaderSection;
 begin
   Section := Sections[Index];
+  if not Section.Visible then Exit;
   ARect := FPaintRect;
   ARect.Left := FPaintRect.Left + Section.Left;
   ARect.Right := FPaintRect.Left + Section.Right;
@@ -459,6 +469,14 @@ end;
 
 { THeaderSection }
 
+function THeaderSection.GetWidth: Integer;
+begin
+  if Visible then
+    Result := FWidth
+  else
+    Result := 0;
+end;
+
 function THeaderSection.GetLeft: Integer;
 var
   i: integer;
@@ -530,6 +548,15 @@ begin
   end;
 end;
 
+procedure THeaderSection.SetVisible(const AValue: Boolean);
+begin
+  if FVisible <> AValue then
+  begin
+    FVisible := AValue;
+    Changed(False);
+  end;
+end;
+
 procedure THeaderSection.SetWidth(Value: Integer);
 begin
   if FWidth <> Value then
@@ -565,6 +592,7 @@ begin
   FText := '';
   FAlignment := taLeftJustify;
   FState := hsNormal;
+  FVisible := True;
   FMinWidth := 0;
   FMaxWidth := 10000;
   FOriginalIndex:=ACollection.Count-1;
