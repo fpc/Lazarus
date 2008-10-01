@@ -7663,7 +7663,8 @@ begin
 
       try
         { On root window, we don't allocate a graphics context and so we dont free}
-        if aDC.GC <> nil then begin
+        if aDC.HasGC then
+        begin
           gdk_gc_unref(aDC.GC);
           aDC.GC:=nil;
         end;
@@ -8924,21 +8925,21 @@ begin
 
   if Adjustment = nil then exit;
 
-  Result := Round(Adjustment^.Value);
+  Result := Round(Adjustment^.value);
 
   if (ScrollInfo.fMask and SIF_POS) <> 0
   then begin
-    Adjustment^.Value := ScrollInfo.nPos;
+    Adjustment^.value := ScrollInfo.nPos;
   end;
   if (ScrollInfo.fMask and SIF_RANGE) <> 0
   then begin
-    Adjustment^.Lower := ScrollInfo.nMin;
-    Adjustment^.Upper := ScrollInfo.nMax;
+    Adjustment^.lower := ScrollInfo.nMin;
+    Adjustment^.upper := ScrollInfo.nMax;
   end;
   if (ScrollInfo.fMask and SIF_PAGE) <> 0
   then begin
-    Adjustment^.Page_Size := ScrollInfo.nPage;
-    Adjustment^.Page_Increment := (ScrollInfo.nPage div 6)+1;
+    Adjustment^.page_size := ScrollInfo.nPage;
+    Adjustment^.page_increment := (ScrollInfo.nPage div 6)+1;
   end;
 
   {DebugLn('');
