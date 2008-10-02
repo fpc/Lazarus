@@ -2261,7 +2261,7 @@ begin
   if FDataLink.Active then begin
     aField := GetFieldFromGridColumn(aCol);
     if aField<>nil then begin
-      Result := aField.AsString;
+      Result := aField.Text;
     end;
   end;
 end;

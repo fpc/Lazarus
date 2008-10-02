@@ -2446,17 +2446,15 @@ begin
       end;
       if Assigned(FOnGetNonVisualCompIcon)
       then begin
-        Icon:=nil;
-        FOnGetNonVisualCompIcon(Self,AComponent,Icon);
-        if Icon<>nil then begin
+        Icon := nil;
+        FOnGetNonVisualCompIcon(Self, AComponent, Icon);
+        if Icon <> nil then 
+        begin
           inc(IconRect.Left,(NonVisualCompIconWidth-Icon.Width) div 2);
           inc(IconRect.Top,(NonVisualCompIconWidth-Icon.Height) div 2);
           IconRect.Right:=IconRect.Left+Icon.Width;
           IconRect.Bottom:=IconRect.Top+Icon.Height;
-          StretchMaskBlt(aDDC.Canvas.Handle, IconRect.Left, IconRect.Top,
-            IconRect.Right-IconRect.Left, IconRect.Bottom-IconRect.Top, 
-            Icon.Canvas.Handle, 0, 0, Icon.Width, Icon.Height,
-            Icon.MaskHandle, 0, 0, SRCCOPY);
+          aDDC.Canvas.StretchDraw(IconRect, Icon);
         end;
       end;
       if (ControlSelection.Count>1)

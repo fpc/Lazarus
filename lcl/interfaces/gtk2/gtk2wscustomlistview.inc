@@ -518,11 +518,10 @@ begin
 
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
 
-  if gtk_tree_model_get_n_columns(Widgets^.TreeModel) div 2 < TLVHack(ALV).Columns.Count then begin
-
+  if gtk_tree_model_get_n_columns(Widgets^.TreeModel) div 2 < TLVHack(ALV).Columns.Count then
+  begin
     ReCreateListStore(ALV, PTVWidgets(Widgets^.WidgetInfo^.UserData));
     ReCreateItems(ALV);
-
     GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
   end;
 
@@ -873,9 +872,12 @@ class procedure TGtk2WSCustomListView.ItemSetImage(const ALV: TCustomListView;
 var
   Widgets: PTVWidgets;
   Iter: TGtkTreeIter;
+
   BitImage: TBitmap;
-  GPixBuf: PGDKPixBuf;
-  Drawable: PGdkDrawable;
+  pixbuf: PGDKPixBuf;
+  pixmap: PGdkDrawable;
+  bitmap: PGdkBitmap;
+  Width, Height: integer;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemSetImage')
   then Exit;
@@ -885,24 +887,25 @@ begin
   //Icon
   if not gtk_tree_model_iter_nth_child(Widgets^.TreeModel, @Iter, nil, AIndex) then Exit;
 
-  gpixbuf := nil;
-  if  (TLVHack(ALV).SmallImages <> nil)
-  and (AItem.ImageIndex > -1)
+  pixbuf := nil;
+  if  (TLVHack(ALV).SmallImages <> nil) and (AItem.ImageIndex > -1)
   then begin
     BitImage := TBitmap.Create;
-    TLVHack(ALV).SmallImages.GetBitmap(AItem.ImageIndex, BitImage);
-    case PGDIObject(BitImage.handle)^.GDIBitmapType of
-      gbBitmap: Drawable := PGDIObject(BitImage.handle)^.GDIBitmapObject;
-      gbPixmap: Drawable := PGDIObject(BitImage.handle)^.GDIPixmapObject.Image; {$IFDEF VerboseGtkToDos}{$note TODO add alpha mask}{$ENDIF}
-    else
-      Drawable := nil;
+    try
+      TLVHack(ALV).SmallImages.GetBitmap(AItem.ImageIndex, BitImage);
+      pixmap := PGDIObject(BitImage.Handle)^.GDIPixmapObject.Image;
+      if pixmap <> nil then
+      begin
+        gdk_drawable_get_size(pixmap, @Width, @Height);
+        bitmap := CreateGdkMaskBitmap(BitImage.Handle, 0);
+        pixbuf := CreatePixbufFromImageAndMask(pixmap, 0, 0, Width, Height, nil, Bitmap);
+      end;
+    finally
+      BitImage.Free;
     end;
-    
-    if Drawable <> nil
-    then GPixBuf := CreatePixbufFromDrawable(Drawable, nil, False, 0, 0, 0, 0, -1, -1);
   end;
 
-  gtk_list_store_set(Widgets^.TreeModel, @Iter, [0, gpixbuf, -1]);
+  gtk_list_store_set(Widgets^.TreeModel, @Iter, [0, pixbuf, -1]);
 end;
 
 class procedure TGtk2WSCustomListView.ItemSetState(const ALV: TCustomListView;
@@ -1454,104 +1457,3 @@ begin
 //  inherited SetViewStyle(ALV, Avalue);
 // this one is going to be fun because you have to free the GtkTreeView and Create GtkIconView etc depending on the new style
 end;
-
-{procedure TGtk2WSCustomListView.UpdateProperties(
-  const ACustomListView: TCustomListView);
-var
-  Widgets: TTVWidgets;
-  GtkColumn: PGtkTreeViewColumn;
-  Column: TListColumn;
-  Iter: TGtkTreeIter;
-  Item: TListItem;
-  X, Y: Integer;
-  Count: Integer;
-  BitImage: TBitmap;
-begin
-  if Not(ACustomListView.HandleAllocated) then exit;
-
-  GetCommonTreeViewWidgets(PGtkWidget(ACustomListView.Handle), Widgets);
-  with Widgets^ do begin
-    // set up columns..
-  for X := 0 to ACustomListView.Columns.Count-1 do begin;
-    GtkColumn := gtk_tree_view_get_column(TreeView, X);
-    Column := ACustomListView.Columns.Items[X];
-    // set captions
-    gtk_tree_view_column_set_title(GtkColumn, PChar(Column.Caption));
-    // set column alignment
-    gtk_tree_view_column_set_alignment(GtkColumn, AlignToGtkAlign(Column.Alignment));
-    // set auto sizing
-    case Column.AutoSize of
-      // The gtk2 docs say that GTK_TREE_VIEW_COLUMN_AUTOSIZE is inefficient
-      // for large views, so perhaps this should be
-      // GTK_TREE_VIEW_COLUMN_GROW_ONLY
-      True : gtk_tree_view_column_set_sizing(GtkColumn, GTK_TREE_VIEW_COLUMN_AUTOSIZE);
-      //True : gtk_tree_view_column_set_sizing(GtkColumn, GTK_TREE_VIEW_COLUMN_GROW_ONLY);
-      False: gtk_tree_view_column_set_sizing(GtkColumn, GTK_TREE_VIEW_COLUMN_FIXED);
-    end;
-
-    // set width
-    gtk_tree_view_column_set_fixed_width(GtkColumn, Column.Width+Ord(Column.Width=0));
-    // set Visible
-    gtk_tree_view_column_set_visible(GtkColumn, Column.Visible);
-    // set MinWidth
-    gtk_tree_view_column_set_min_width(GtkColumn,
-                                       Column.MinWidth-Ord(Column.MinWidth=0));
-    // set MaxWidth
-    gtk_tree_view_column_set_max_width(GtkColumn,
-                                       Column.MaxWidth-Ord(Column.MaxWidth=0));
-  end;
-
-  // ViewStyle
-  case ACustomListView.ViewStyle of
-    vsReport:
-      gtk_tree_view_set_headers_visible(TreeView, True);
-    vsList:
-      _set_headers_visible(TreeView, False);
-  end;
-
-  //sorting
-  //TODO
-
-  //multiselect
-  case ACustomListView.MultiSelect of
-    True : gtk_tree_selection_set_mode(TreeSelection, GTK_SELECTION_MULTIPLE);
-    False: gtk_tree_selection_set_mode(TreeSelection, GTK_SELECTION_SINGLE);
-    //GTK_SELECTION_NONE,
-    //GTK_SELECTION_SINGLE,
-    //GTK_SELECTION_BROWSE,
-    //GTK_SELECTION_MULTIPLE
-  end;
-
-  //do items...
-
-  for X := 0 to ACustomListView.Items.Count-1 do begin
-    Item:= ACustomListView.Items.Item[X];
-    if X = 0 then
-      gtk_tree_model_get_iter_first(TreeModel, @Iter)
-    else
-      gtk_tree_model_iter_next(TreeModel, @Iter);
-
-    //do image if one is assigned....
-    if  (ACustomListView.SmallImages <> nil)
-    and (Item.ImageIndex > -1)
-    then
-    begin
-      BitImage := TBitmap.Create;
-      ACustomListView.SmallImages.GetBitmap(Item.ImageIndex,BitImage);
-      // this doesnt seem to be working :(
-      gtk_list_store_set(TreeModel, @Iter,
-            [0 ,PGdkPixmap(PGDIObject(BitImage.handle)^.GDIBitmapObject), -1]);
-    end;
-
-    //Item.Caption
-    gtk_list_store_set(TreeModel, @Iter, [1, PChar(Item.Caption), -1]);
-    Count := ACustomListView.Columns.Count;
-
-    //Item.Subitems
-    for Y := 2 to Count-1 do begin
-      if (Y-2) >= Item.SubItems.Count then Break;
-      gtk_list_store_set(TreeModel, @Iter, [Y, PChar(Item.SubItems.Strings[Y-2]), -1]);
-    end;
-  end;
-  end;
-end;}
