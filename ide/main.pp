@@ -1065,7 +1065,7 @@ begin
   SetupDialogs;
   RunExternalTool:=@OnRunExternalTool;
   {$IFDEF UseAsyncProcess}
-  if Widgetset.LCLCapability(lcAsyncProcess) = 1 then
+  if Widgetset.GetLCLCapability(lcAsyncProcess) = 1 then
     TOutputFilterProcess := TAsyncProcess
   else
     TOutputFilterProcess := TProcessUTF8;
