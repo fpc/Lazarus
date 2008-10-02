@@ -405,14 +405,26 @@ end;
 class function TGtk2WSCustomListBox.GetItemRect(
   const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect
   ): boolean;
+var
+  Widget: PGtkWidget;
+  Column: PGtkTreeViewColumn;
+  Path: PGtkTreePath;
+  AGdkRect: TGdkRectangle;
 begin
   Result := False;
   FillChar(ARect, SizeOf(ARect), 0);
-  case ACustomListBox.fCompStyle of
-  csListBox, csCheckListBox:
-    begin
-      // ToDo
-    end;
+  if not WSCheckHandleAllocated(ACustomListBox, 'GetItemIndex') then
+    Exit;
+  Widget := GetWidgetInfo(Pointer(ACustomListBox.Handle), True)^.CoreWidget;
+  if GtkWidgetIsA(Widget, gtk_tree_view_get_type) and (Index >= 0) then
+  begin
+    Path := gtk_tree_path_new_from_indices(Index, -1);
+    Column := gtk_tree_view_get_column(PGtkTreeView(Widget), 0);
+    FillChar(AGdkRect, SizeOf(AGdkRect), 0);
+    gtk_tree_view_get_cell_area(PGtkTreeView(Widget), Path, Column, @AGdkRect);
+    ARect := Rect(AGdkRect.x, AGdkRect.y, AGdkRect.x + AGdkRect.width, AGdkRect.y + AGdkRect.height);
+    gtk_tree_path_free(Path);
+    Result := True;
   end;
 end;
 
