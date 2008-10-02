@@ -143,7 +143,7 @@ begin
     for i := 0 to Project1.JumpHistory.Count -1 do begin
       jh_item := Project1.JumpHistory.Items[i];
       SrcLine:='';
-      CodeBuf:=CodeToolBoss.FindFile(jh_item.Filename);
+      CodeBuf:=CodeToolBoss.LoadFile(jh_item.Filename,false,False);
       if CodeBuf<>nil then
         SrcLine:=CodeBuf.GetLine(jh_item.CaretXY.Y-1);
       Filename:=jh_item.Filename;

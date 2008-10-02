@@ -1060,7 +1060,7 @@ begin
   case CurrentPage of
   cepCode:
     begin
-      CodeBuffer:=CodeToolBoss.FindFile(CodeFilename);
+      CodeBuffer:=CodeToolBoss.LoadFile(CodeFilename,false,false);
       if CodeBuffer=nil then exit;
       ACodeTool:=nil;
       CodeToolBoss.Explore(CodeBuffer,ACodeTool,false);
@@ -1070,7 +1070,7 @@ begin
     end;
   cepDirectives:
     begin
-      CodeBuffer:=CodeToolBoss.FindFile(DirectivesFilename);
+      CodeBuffer:=CodeToolBoss.LoadFile(DirectivesFilename,false,false);
       if CodeBuffer=nil then exit;
       CodeBuffer.AbsoluteToLineCol(CurNode.StartPos,Caret.Y,Caret.X);
       if Caret.Y<1 then exit;

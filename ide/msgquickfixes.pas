@@ -312,7 +312,7 @@ procedure TQuickFixLinkerUndefinedReference.Execute(const Msg: TIDEMessageLine;
       Error('no main file in project');
       exit;
     end;
-    CodeBuf:=CodeToolBoss.FindFile(CurProject.MainFile.Filename);
+    CodeBuf:=CodeToolBoss.LoadFile(CurProject.MainFile.Filename,true,false);
     if (CodeBuf=nil) then begin
       Error('project main file has no source');
       exit;
