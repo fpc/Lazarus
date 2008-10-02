@@ -507,8 +507,9 @@ begin
       begin
         if Showing then
           FWindowState := wsMinimized;
-        if Application.MainForm = Self then
-          Application.Minimize;
+        if (WidgetSet.GetLCLCapability(lcNeedMininimizeAppWithMainForm) <> 0)
+          and (Application.MainForm = Self) then
+            Application.Minimize;
       end;
       SIZEFULLSCREEN:
         if Showing then

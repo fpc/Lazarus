@@ -99,11 +99,14 @@ type
     procedure AppSetIcon(const AIcon: HICON); override;
     procedure AppSetTitle(const ATitle: string); override;
 
+    function  GetLCLCapability(ACapability: TLCLCapability): PtrUInt; override;
+
     procedure AttachMenuToWindow(AMenuObject: TComponent); override;
     
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
     procedure DCRedraw(CanvasHandle: HDC); override;
+
     procedure SetDesigning(AComponent: TComponent); override;
 
     function  IsHelpKey(Key: Word; Shift: TShiftState): Boolean; override;
