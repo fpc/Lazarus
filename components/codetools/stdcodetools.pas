@@ -3773,12 +3773,41 @@ function TStandardCodeTool.GetPasDocComments(const StartPos: TCodeXYPosition;
     AddCodePosition(ListOfPCodeXYPosition,CodePos);
   end;
 
+  function Scan(StartPos, EndPos: integer): boolean;
+  var
+    p: LongInt;
+  begin
+    // read comments (start in front of node)
+    //DebugLn(['TStandardCodeTool.GetPasDocComments Scan Src=',copy(Src,StartPos,EndPos-StartPos)]);
+    p:=FindLineEndOrCodeInFrontOfPosition(StartPos,true);
+    while p<EndPos do begin
+      p:=FindNextComment(Src,p,EndPos);
+      if p>=EndPos then break;
+      //debugln(['TStandardCodeTool.GetPasDocComments Comment="',copy(Src,p,FindCommentEnd(Src,p,Scanner.NestedComments)-p),'"']);
+      if (p<StartPos) then begin
+        // comment in front of node
+        if not CommentBelongsToPrior(p) then
+          Add(p);
+      end else if (p<EndPos) then begin
+        // comment in the middle
+        Add(p);
+      end else begin
+        // comment behind
+        if CommentBelongsToPrior(p) then
+          Add(p);
+      end;
+      p:=FindCommentEnd(Src,p,Scanner.NestedComments);
+    end;
+    Result:=true;
+  end;
+
 var
   CleanCursorPos: integer;
   ANode: TCodeTreeNode;
   p: LongInt;
   NextNode: TCodeTreeNode;
   EndPos: LongInt;
+  TypeNode: TCodeTreeNode;
 begin
   ListOfPCodeXYPosition:=nil;
   Result:=false;
@@ -3797,31 +3826,28 @@ begin
   and (ANode.Parent<>nil) and (ANode.Parent.Desc=ctnProcedure) then
     ANode:=ANode.Parent;
 
+  // add space behind node to scan range
   NextNode:=ANode.Next;
   if NextNode<>nil then
     EndPos:=NextNode.StartPos
   else
     EndPos:=ANode.EndPos;
 
-  //DebugLn(['TStandardCodeTool.GetPasDocComments ',copy(Src,ANode.StartPos,ANode.EndPos-ANode.StartPos)]);
-  // read comments (start in front of node)
-  p:=FindLineEndOrCodeInFrontOfPosition(ANode.StartPos,true);
-  while p<EndPos do begin
-    p:=FindNextComment(Src,p,EndPos);
-    if p>=EndPos then break;
-    if (p<ANode.StartPos) then begin
-      // comment in front of node
-      if not CommentBelongsToPrior(p) then
-        Add(p);
-    end else if (p<ANode.EndPos) then begin
-      // comment in the middle
-      Add(p);
-    end else begin
-      // comment behind
-      if CommentBelongsToPrior(p) then
-        Add(p);
+  // scan range for comments
+  if not Scan(Anode.StartPos,EndPos) then exit;
+
+  if ANode.Desc in AllIdentifierDefinitions then begin
+    // scan behind type
+    // for example:   i: integer; // comment
+    TypeNode:=FindTypeNodeOfDefinition(ANode);
+    if TypeNode<>nil then begin
+      NextNode:=TypeNode.Next;
+      if NextNode<>nil then
+        EndPos:=NextNode.StartPos
+      else
+        EndPos:=ANode.EndPos;
+      if not Scan(Anode.StartPos,EndPos) then exit;
     end;
-    p:=FindCommentEnd(Src,p,Scanner.NestedComments);
   end;
   Result:=true;
 end;

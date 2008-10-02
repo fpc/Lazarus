@@ -7630,7 +7630,7 @@ end;
 
 procedure TFindDeclarationTool.ValidateToolDependencies;
 begin
-  debugln(['TFindDeclarationTool.ValidateToolDependencies ',MainFilename]);
+  //debugln(['TFindDeclarationTool.ValidateToolDependencies ',MainFilename]);
   inherited ValidateToolDependencies;
   CheckDependsOnNodeCaches;
 end;
