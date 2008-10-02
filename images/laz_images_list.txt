@@ -14,9 +14,11 @@ actions/open.png
 actions/paste.png
 actions/refresh.png
 actions/wand.png
+items/item_character.png
 items/item_filter.png
 items/item_font.png
 items/item_form.png
+items/item_keyboard.png
 items/item_library.png
 items/item_package.png
 items/item_project.png
