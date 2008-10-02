@@ -694,10 +694,10 @@ type
       ExceptionOnNotFound: boolean): TFindDeclarationTool;
     function CheckDirectoryCache: boolean;
   public
-    procedure BuildTree(OnlyInterfaceNeeded: boolean); override;
     destructor Destroy; override;
     procedure ConsistencyCheck; override;
 
+    procedure ValidateToolDependencies; override;
     function FindDeclaration(const CursorPos: TCodeXYPosition;
       out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
     function FindMainDeclaration(const CursorPos: TCodeXYPosition;
@@ -4973,15 +4973,6 @@ begin
   end;
 end;
 
-procedure TFindDeclarationTool.BuildTree(OnlyInterfaceNeeded: boolean);
-begin
-  {$IFDEF MEM_CHECK}CheckHeapWrtMemCnt('TFindDeclarationTool.BuildTree Checking depends ...');{$ENDIF}
-  CheckDependsOnNodeCaches;
-  {$IFDEF MEM_CHECK}CheckHeapWrtMemCnt('TFindDeclarationTool.BuildTree building tree');{$ENDIF}
-  inherited BuildTree(OnlyInterfaceNeeded);
-  {$IFDEF MEM_CHECK}CheckHeapWrtMemCnt('TFindDeclarationTool.BuildTree  tree built');{$ENDIF}
-end;
-
 function TFindDeclarationTool.FindIdentifierInHiddenUsedUnits(
   Params: TFindDeclarationParams): boolean;
 type
@@ -7472,23 +7463,24 @@ var
   ATool: TFindDeclarationTool;
 begin
   Result:=false;
+  //debugln(['TFindDeclarationTool.CheckDependsOnNodeCaches ',MainFilename,' FDependsOnCodeTools=',FDependsOnCodeTools]);
   if (FDependsOnCodeTools=nil) or FCheckingNodeCacheDependencies
   or NodeCacheGlobalWriteLockStepDidNotChange
   then exit;
 
   FCheckingNodeCacheDependencies:=true;
   {$IFDEF ShowCacheDependencies}
-  DebugLn('[TFindDeclarationTool.CheckDependsOnNodeCaches] START ',MainFilename);
+  DebugLn(['[TFindDeclarationTool.CheckDependsOnNodeCaches] START ',MainFilename,' ',FDependsOnCodeTools.Count]);
   {$ENDIF}
   try
     ANode:=FDependsOnCodeTools.FindLowest;
     while ANode<>nil do begin
       ATool:=TFindDeclarationTool(ANode.Data);
-      Result:=ATool.CheckDependsOnNodeCaches;
+      Result:=ATool.UpdateNeeded(true) or ATool.CheckDependsOnNodeCaches;
       if Result then exit;
       ANode:=FDependsOnCodeTools.FindSuccessor(ANode);
     end;
-    Result:=UpdateNeeded(Scanner.ScanTill=lsrInterface);
+    Result:=false;
   finally
     {$IFDEF ShowCacheDependencies}
     DebugLn('[TFindDeclarationTool.CheckDependsOnNodeCaches] Result=',
@@ -7634,6 +7626,13 @@ begin
     if FDependsOnCodeTools.ConsistencyCheck<>0 then
       raise Exception.Create('');
   end;
+end;
+
+procedure TFindDeclarationTool.ValidateToolDependencies;
+begin
+  debugln(['TFindDeclarationTool.ValidateToolDependencies ',MainFilename]);
+  inherited ValidateToolDependencies;
+  CheckDependsOnNodeCaches;
 end;
 
 function TFindDeclarationTool.GetNodeCache(Node: TCodeTreeNode;

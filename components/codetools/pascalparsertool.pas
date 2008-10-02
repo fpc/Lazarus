@@ -211,7 +211,8 @@ type
     ImplementationSectionFound: boolean;
     EndOfSourceFound: boolean;
 
-    procedure BuildTree(OnlyInterfaceNeeded: boolean); virtual;
+    procedure ValidateToolDependencies; virtual;
+    procedure BuildTree(OnlyInterfaceNeeded: boolean);
     procedure BuildTreeAndGetCleanPos(TreeRange: TTreeRange;
         const CursorPos: TCodeXYPosition; out CleanCursorPos: integer;
         BuildTreeFlags: TBuildTreeFlags);
@@ -468,6 +469,7 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('TPascalParserTool.BuildTree A');
   {$ENDIF}
+  ValidateToolDependencies;
   if not UpdateNeeded(OnlyInterfaceNeeded) then begin
     // input is the same as last time -> output is the same
     // -> if there was an error, raise it again
@@ -4021,6 +4023,7 @@ begin
           and (not UpdateNeeded(true)) then begin
             // interface section is already parsed, is still valid and
             // cursor is in this section
+            ValidateToolDependencies;
             exit;
           end;
         end;
@@ -4117,6 +4120,11 @@ begin
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode;
   ReadNextAtom;
+end;
+
+procedure TPascalParserTool.ValidateToolDependencies;
+begin
+
 end;
 
 procedure TPascalParserTool.BuildSubTreeForProcHead(ProcNode: TCodeTreeNode);

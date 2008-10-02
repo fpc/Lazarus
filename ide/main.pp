@@ -7289,16 +7289,6 @@ begin
     Result:=mrOk;
   end;
 
-  // free sources
-  if (ActiveUnitInfo.Source<>nil) then begin
-    ActiveUnitInfo.Source.IsDeleted:=true;
-    if (Project1.MainUnitInfo=ActiveUnitInfo)
-    and (not (cfProjectClosing in Flags)) then begin
-      // lpr file closed in editor, but project kept open -> revert lpr file
-      Project1.MainUnitInfo.Source.Revert;
-    end;
-  end;
-
   // close form soft (keep it if used by another component)
   CloseUnitComponent(ActiveUnitInfo,[]);
 
@@ -7306,6 +7296,16 @@ begin
   SourceNoteBook.CloseFile(PageIndex);
   MainIDEBar.itmFileClose.Enabled:=SourceNoteBook.Notebook<>nil;
   MainIDEBar.itmFileCloseAll.Enabled:=MainIDEBar.itmFileClose.Enabled;
+
+  // free sources
+  if (ActiveUnitInfo.Source<>nil) then begin
+    if (Project1.MainUnitInfo=ActiveUnitInfo)
+    and (not (cfProjectClosing in Flags)) then begin
+      // lpr file closed in editor, but project kept open -> revert lpr file
+      Project1.MainUnitInfo.Source.Revert;
+    end else
+      ActiveUnitInfo.Source.IsDeleted:=true;
+  end;
 
   // close file in project
   Project1.CloseEditorIndex(ActiveUnitInfo.EditorIndex);
@@ -12372,6 +12372,7 @@ begin
     LogCaretXY.X,LogCaretXY.Y,
     NewSource,NewX,NewY,NewTopLine) then
   begin
+    //debugln(['TMainIDE.DoFindDeclarationAtCaret ',NewSource.Filename,' NewX=',Newx,',y=',NewY,' ',NewTopLine]);
     DoJumpToCodePos(ActiveSrcEdit, ActiveUnitInfo,
       NewSource, NewX, NewY, NewTopLine, true);
   end else begin

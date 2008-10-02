@@ -72,7 +72,8 @@ type
     procedure EncodeSaving(const AFilename: string; var ASource: string); override;
   public
     constructor Create;
-    destructor Destroy;  override;
+    destructor Destroy; override;
+    procedure Clear; override;
     function ConsistencyCheck: integer; // 0 = ok
     procedure WriteDebugReport;
     function LoadFromFile(const AFilename: string): boolean; override;
@@ -352,7 +353,7 @@ function TCodeCache.CreateFile(const AFilename: string): TCodeBuffer;
 begin
   Result:=FindFile(AFileName);
   if Result<>nil then begin
-    Result.Source:='';
+    Result.Clear;
   end else begin
     Result:=TCodeBuffer.Create;
     Result.FileName:=AFileName;
@@ -398,6 +399,7 @@ begin
     NewBuffer.LastIncludedByFile:=FindIncludeLink(AFilename);
   end else begin
     NewBuffer.Source:=OldBuffer.Source;
+    NewBuffer.IsDeleted:=false;
     Result:=NewBuffer.Save;
   end;
   if not Result then exit;
@@ -472,6 +474,7 @@ begin
       Result:=LoadFile(AFilename);
   end else
     Result:=LoadFile(AFilename);
+  //debugln(['TCodeCache.OnScannerLoadSource ']);
   if Result<>nil then
     OnScannerCheckFileOnDisk(Result);
 end;
@@ -480,7 +483,7 @@ function TCodeCache.OnScannerCheckFileOnDisk(Code: pointer): boolean;
 var Buf: TCodeBuffer;
 begin
   Buf:=TCodeBuffer(Code);
-  //DebugLn('OnScannerCheckFileOnDisk A ',Buf.Filename,' AutoRev=',Buf.AutoUpdateFromDisk,' WriteLock=',GlobalWriteLockIsSet,' DiskChg=',Buf.FileOnDiskHasChanged);
+  //DebugLn(['OnScannerCheckFileOnDisk A ',Buf.Filename,' AutoRev=',Buf.AutoRevertFromDisk,' WriteLock=',GlobalWriteLockIsSet,' DiskChg=',Buf.FileOnDiskHasChanged,' IsDeleted=',Buf.IsDeleted]);
   if Buf.AutoRevertFromDisk or Buf.IsDeleted then begin
     if GlobalWriteLockIsSet then begin
       if GlobalWriteLockStep<>Buf.GlobalWriteLockStepOnLastLoad then begin
@@ -495,6 +498,7 @@ begin
   end else begin
     //DebugLn(['TCodeCache.OnScannerCheckFileOnDisk AutoRevertFromDisk=',Buf.AutoRevertFromDisk,' ',Buf.Filename]);
   end;
+  //if buf.IsDeleted then debugln(['TCodeCache.OnScannerCheckFileOnDisk ',Buf.Filename,' still deleted']);
   Result:=true;
 end;
 
@@ -817,6 +821,13 @@ begin
   inherited Destroy;
 end;
 
+procedure TCodeBuffer.Clear;
+begin
+  FIsDeleted:=false;
+  FLoadDateValid:=false;
+  inherited Clear;
+end;
+
 function TCodeBuffer.LoadFromFile(const AFilename: string): boolean;
 begin
   //DebugLn('[TCodeBuffer.LoadFromFile] WriteLock=',WriteLock,' ReadOnly=',ReadOnly,
@@ -837,7 +848,7 @@ begin
       Result:=inherited LoadFromFile(AFilename);
       if Result then MakeFileDateValid;
     end;
-    if Result then FIsDeleted:=false;
+    if Result then IsDeleted:=false;
   end else
     Result:=false;
 end;
@@ -848,7 +859,7 @@ begin
   //DebugLn('TCodeBuffer.SaveToFile ',Filename,' -> ',AFilename,' ',Result);
   if CompareFilenames(AFilename,Filename)=0 then begin
     if Result then begin
-      FIsDeleted:=false;
+      IsDeleted:=false;
       MakeFileDateValid;
     end;
   end;
@@ -912,10 +923,11 @@ end;
 procedure TCodeBuffer.SetIsDeleted(const NewValue: boolean);
 begin
   if FIsDeleted=NewValue then exit;
+  debugln(['TCodeBuffer.SetIsDeleted ',Filename,' ',NewValue]);
   FIsDeleted:=NewValue;
   if FIsDeleted then begin
     Clear;
-    FLoadDateValid:=false;
+    FIsDeleted:=true;
     //DebugLn(['TCodeBuffer.SetIsDeleted ',Filename,' ',FileNeedsUpdate]);
   end;
 end;
@@ -963,17 +975,17 @@ begin
 end;
 
 function TCodeBuffer.FileNeedsUpdate: boolean;
-// file needs update, if file is not modified and file on disk has changed
+// file needs update (to be loaded), if file is not modified and file on disk has changed
 begin
+  if Modified then exit(false);
   if LoadDateValid then
-    Result:=(not Modified) and (FFileChangeStep=ChangeStep) 
-             and (FileDateOnDisk<>LoadDate)
+    Result:=(FFileChangeStep=ChangeStep) and (FileDateOnDisk<>LoadDate)
   else
     Result:=true;
 end;
 
 function TCodeBuffer.FileOnDiskNeedsUpdate: boolean;
-// file on disk needs update, if memory is modified or file does not exist
+// file on disk needs update (to be saved), if memory is modified or file does not exist
 begin
   if LoadDateValid then
     Result:=Modified or (FFileChangeStep<>ChangeStep)

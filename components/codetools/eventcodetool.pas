@@ -265,7 +265,6 @@ begin
     DebugLn('[TEventsCodeTool.GetCompatiblePublishedMethods] D');
     {$ENDIF}
     // 1. convert the TypeData to an expression type list
-    CheckDependsOnNodeCaches;
     Params:=TFindDeclarationParams.Create;
     Params.ContextNode:=ClassNode.Parent;
     SearchedExprList:=CreateExprListFromMethodTypeData(TypeData,Params);
@@ -323,7 +322,6 @@ begin
   ActivateGlobalWriteLock;
   Params:=nil;
   try
-    CheckDependsOnNodeCaches;
     Params:=TFindDeclarationParams.Create;
     Params.ContextNode:=ClassNode;
     Params.SetIdentifier(Self,@UpperMethodName[1],nil);
@@ -406,7 +404,6 @@ begin
   try
     // find method type declaration
     TypeName:=ATypeInfo^.Name;
-    CheckDependsOnNodeCaches;
     Params:=TFindDeclarationParams.Create;
     try
       // find method in interface and used units
@@ -479,7 +476,6 @@ begin
   MethodIsPublished:=false;
   ActivateGlobalWriteLock;
   try
-    CheckDependsOnNodeCaches;
     Params:=TFindDeclarationParams.Create;
     try
       // first search a published method definition with same name
@@ -866,7 +862,6 @@ begin
   if TypeData=nil then exit;
   ParamCount:=TypeData^.ParamCount;
   if ParamCount>0 then begin
-    CheckDependsOnNodeCaches;
     Offset:=0;
     
     for i:=0 to ParamCount-1 do begin
