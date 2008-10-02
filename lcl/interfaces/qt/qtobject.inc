@@ -371,6 +371,15 @@ begin
   Result:= lpQT;
 end;
 
+function TQtWidgetSet.GetLCLCapability(ACapability: TLCLCapability): PtrUInt;
+begin
+  case ACapability of
+    lcCanDrawOutsideOnPaint: Result := 0
+  else
+    Result := inherited GetLCLCapability(ACapability);
+  end;
+end;
+
 function TQtWidgetSet.DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor;
 {var
   Color: QColorH;}

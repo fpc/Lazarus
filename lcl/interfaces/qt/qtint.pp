@@ -84,6 +84,7 @@ type
     procedure OnWakeMainThread(Sender: TObject);
   public
     function LCLPlatform: TLCLPlatform; override;
+    function  GetLCLCapability(ACapability: TLCLCapability): PtrUInt; override;
     // Application
     procedure AppInit(var ScreenInfo: TScreenInfo); override;
     procedure AppRun(const ALoop: TApplicationMainLoop); override;
