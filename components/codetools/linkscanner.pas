@@ -1294,7 +1294,7 @@ begin
   LastCleanSrcPos:=SourcePos;
 end;
 
-procedure TLinkScanner.AddSourceChangeStep(ACode: pointer;AChangeStep: integer);
+procedure TLinkScanner.AddSourceChangeStep(ACode: pointer; AChangeStep: integer);
 
   procedure RaiseCodeNil;
   begin
@@ -1412,7 +1412,7 @@ end;
 
 function TLinkScanner.UpdateNeeded(
   Range: TLinkScannerRange; CheckFilesOnDisk: boolean): boolean;
-{ the clean source must be rebuild if
+{ the clean source must be rebuilt if
    1. scanrange changed from only interface to whole source
    2. unit source changed
    3. one of its include files changed
@@ -1424,6 +1424,7 @@ var i: integer;
   GlobalWriteLockIsSet: boolean;
   GlobalWriteLockStep: integer;
   NewInitValuesChangeStep: integer;
+  SrcChange: PSourceChangeStep;
 begin
   Result:=true;
   if FForceUpdateNeeded then exit;
@@ -1459,15 +1460,16 @@ begin
     if CheckFilesOnDisk and Assigned(FOnCheckFileOnDisk) then begin
       // if files changed on disk, reload them
       for i:=0 to FSourceChangeSteps.Count-1 do begin
-        SrcLog:=FOnGetSource(Self,
-                             PSourceChangeStep(FSourceChangeSteps[i])^.Code);
+        SrcChange:=PSourceChangeStep(FSourceChangeSteps[i]);
+        SrcLog:=FOnGetSource(Self,SrcChange^.Code);
         FOnCheckFileOnDisk(SrcLog);
       end;
     end;
     for i:=0 to FSourceChangeSteps.Count-1 do begin
-      SrcLog:=FOnGetSource(Self,PSourceChangeStep(FSourceChangeSteps[i])^.Code);
-      if PSourceChangeStep(FSourceChangeSteps[i])^.ChangeStep<>SrcLog.ChangeStep
-      then exit;
+      SrcChange:=PSourceChangeStep(FSourceChangeSteps[i]);
+      SrcLog:=FOnGetSource(Self,SrcChange^.Code);
+      //debugln(['TLinkScanner.UpdateNeeded ',ExtractFilename(MainFilename),' i=',i,' File=',FOnGetFileName(Self,SrcLog),' Last=',SrcChange^.ChangeStep,' Now=',SrcLog.ChangeStep]);
+      if SrcChange^.ChangeStep<>SrcLog.ChangeStep then exit;
     end;
   end;
   

@@ -12372,6 +12372,7 @@ begin
     LogCaretXY.X,LogCaretXY.Y,
     NewSource,NewX,NewY,NewTopLine) then
   begin
+    //debugln(['TMainIDE.DoFindDeclarationAtCaret ',NewSource.Filename,' NewX=',Newx,',y=',NewY,' ',NewTopLine]);
     DoJumpToCodePos(ActiveSrcEdit, ActiveUnitInfo,
       NewSource, NewX, NewY, NewTopLine, true);
   end else begin
