@@ -360,10 +360,10 @@ var
 begin
   QtScrollBar := TQtScrollBar(AScrollBar.Handle);	
 
-  QtScrollBar.setPageStep(AScrollBar.PageSize);
-  QtScrollBar.setSingleStep((AScrollBar.PageSize div 6) + 1);
+  QtScrollBar.setPageStep(AScrollBar.LargeChange);
+  QtScrollBar.setSingleStep(AScrollBar.SmallChange);
   
-  QtScrollBar.setRange(AScrollBar.Min, AScrollBar.Max);
+  QtScrollBar.setRange(AScrollBar.Min, Max(AScrollBar.Min, AScrollBar.Max - AScrollBar.PageSize));
   
   QtScrollBar.setValue(AScrollBar.Position);
   

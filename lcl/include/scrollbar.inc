@@ -60,7 +60,7 @@ begin
   if not HandleAllocated then RaiseGDBException('TCustomScrollBar.CreateWnd HandleAllocated=false');
   ScrollInfo.cbSize := SizeOf(ScrollInfo);
   ScrollInfo.nMin := FMin;
-  ScrollInfo.nMax := FMax + FPageSize;
+  ScrollInfo.nMax := FMax;
   ScrollInfo.nPage := FPageSize;
   ScrollInfo.fMask := SIF_PAGE or SIF_Range;
   SetScrollInfo(Handle, SB_CTL, ScrollInfo, False);
@@ -115,7 +115,7 @@ begin
     begin
       ScrollInfo.fMask := SIF_PAGE or SIF_Range;
       ScrollInfo.nMin := AMin;
-      ScrollInfo.nMax := AMax + APageSize;
+      ScrollInfo.nMax := AMax;
       ScrollInfo.nPage := APageSize;
       SetScrollInfo(Handle, SB_CTL, ScrollInfo, FPosition = APosition);
     end;
