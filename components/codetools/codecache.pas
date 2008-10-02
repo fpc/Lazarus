@@ -474,6 +474,7 @@ begin
       Result:=LoadFile(AFilename);
   end else
     Result:=LoadFile(AFilename);
+  //debugln(['TCodeCache.OnScannerLoadSource ']);
   if Result<>nil then
     OnScannerCheckFileOnDisk(Result);
 end;
