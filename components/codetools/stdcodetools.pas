@@ -3846,7 +3846,7 @@ begin
         EndPos:=NextNode.StartPos
       else
         EndPos:=ANode.EndPos;
-      if not Scan(Anode.StartPos,EndPos) then exit;
+      if not Scan(TypeNode.EndPos,EndPos) then exit;
     end;
   end;
   Result:=true;
