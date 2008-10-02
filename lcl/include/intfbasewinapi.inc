@@ -1272,6 +1272,9 @@ var
 begin
   Result := False;
 
+  Dec(X2);
+  Dec(Y2);
+
   if X2 < X1 then
   begin
     T := X1;
