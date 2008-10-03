@@ -3804,7 +3804,6 @@ function TStandardCodeTool.GetPasDocComments(const StartPos: TCodeXYPosition;
 var
   CleanCursorPos: integer;
   ANode: TCodeTreeNode;
-  p: LongInt;
   NextNode: TCodeTreeNode;
   EndPos: LongInt;
   TypeNode: TCodeTreeNode;

@@ -650,9 +650,9 @@ begin
     if (NextBrother=nil) and (Parent.LastChild<>Self) then
       raise Exception.Create('');
   end;
-  if (NextBrother<>nil) and (NextBrother.Parent<>Parent) then;
+  if (NextBrother<>nil) and (NextBrother.Parent<>Parent) then
     raise Exception.Create('');
-  if (PriorBrother<>nil) and (PriorBrother.Parent<>Parent) then;
+  if (PriorBrother<>nil) and (PriorBrother.Parent<>Parent) then
     raise Exception.Create('');
   if (FirstChild<>nil) and (FirstChild.Parent<>Self) then
     raise Exception.Create('');
