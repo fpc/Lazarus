@@ -118,7 +118,7 @@ begin
     if E[1] = '.' then System.Delete(E, 1, 1);
     
     for I := Count - 1 downto 0 do
-      with PPicFileFormat(Items[I])^ do
+      with Formats[I]^ do
         if Pos(E, Extension) > 0 then
         begin
           ExtList := Extension;

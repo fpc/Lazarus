@@ -644,6 +644,7 @@ begin
     FreeMem(OpenFile^.lpstrInitialDir);
     FreeMem(OpenFile^.lpStrFile);
     FreeMem(OpenFile^.lpStrTitle);
+    FreeMem(OpenFile^.lpTemplateName);
     FreeMem(OpenFile);
   end;
 end;

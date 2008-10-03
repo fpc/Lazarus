@@ -23,6 +23,7 @@
 unit Win32WSExtDlgs;
 
 {$mode objfpc}{$H+}
+{$I win32defines.inc}
 
 interface
 
@@ -33,9 +34,10 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  ExtDlgs,
+  Windows,
 ////////////////////////////////////////////////////
-  WSExtDlgs, WSLCLClasses, Win32WSDialogs;
+  WSExtDlgs, WSLCLClasses, Win32WSDialogs, Win32Proc,
+  Types, Controls, Dialogs, ExtDlgs;
 
 type
 
@@ -57,10 +59,11 @@ type
 
   { TWin32WSOpenPictureDialog }
 
-  TWin32WSOpenPictureDialog = class(TWSOpenPictureDialog)
+  TWin32WSOpenPictureDialog = class(TWin32WSOpenDialog)
   private
   protected
   public
+    class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
   end;
 
   { TWin32WSSavePictureDialog }
@@ -106,6 +109,84 @@ type
 
 implementation
 
+{$r win32wsextdlgs.res}
+// {$r win32wsextdlgs.rc} windres dont want to comile for some reason
+
+function OpenPictureDialogCallBack(hWnd: Handle; uMsg: UINT; wParam: WPARAM;
+  lParam: LPARAM): UINT; stdcall;
+var
+  OpenFileName: Windows.POPENFILENAME;
+  DialogRec: POpenFileDialogRec;
+  AControl: TPreviewFileControl;
+  stc32Handle: Handle;
+  ARect, ADialogRect: TRect;
+begin
+  Result := OpenFileDialogCallBack(hWnd, uMsg, wParam, lparam);
+  if uMsg = WM_INITDIALOG then
+  begin
+    OpenFileName := Windows.POPENFILENAME(lParam);
+    // Our dialog template contains a special control with ID stc32 which
+    // tells it how our template will be positioned. We need to place our
+    // control at the end of tempate
+    stc32Handle := GetDlgItem(hWnd, 1119);
+    if stc32Handle <> 0 then
+    begin
+      DialogRec := POpenFileDialogRec(OpenFileName^.lCustData);
+      AControl := TPreviewFileDialog(DialogRec^.Dialog).PreviewFileControl;
+      // attach our child to the template window
+      SetParent(AControl.Handle, hWnd);
+
+      GetWindowRect(stc32Handle, ARect);
+      ScreenToClient(hWnd, ARect.TopLeft);
+      ScreenToClient(hWnd, ARect.BottomRight);
+      GetClientRect(hWnd, ADialogRect);
+
+      with ARect do
+      begin
+        Left := Right;
+        Top := 30; // dont know how to get relative coord
+        Right := ADialogRect.Right - 4;
+        Bottom := ADialogRect.Bottom;
+      end;
+
+      AControl.BoundsRect := ARect;
+    end;
+  end;
+end;
+
+procedure AddPreviewControl(const ACommonDialog: TCommonDialog; OFN: LPOPENFILENAME);
+const
+  ResName: WideString = 'LAZ_PIC_DIALOG_TEMPLATE';
+begin
+  if (TPreviewFileDialog(ACommonDialog).PreviewFileControl <> nil) and
+     not (ofOldStyleDialog in TPreviewFileDialog(ACommonDialog).Options) then
+    with OFN^ do
+    begin
+    {$ifdef WindowsUnicodeSupport}
+      if UnicodeEnabledOS then
+      begin
+        lpTemplateName := AllocMem(Length(ResName) * 2 + 2);
+        Move(PChar(ResName)^, lpTemplateName^, Length(ResName) * 2);
+      end
+      else
+    {$endif}
+      begin
+        lpTemplateName := AllocMem(Length(ResName) + 1);
+        Move(PChar(AnsiString(ResName))^, lpTemplateName^, Length(ResName));
+      end;
+      Flags := Flags or OFN_ENABLETEMPLATE;
+      lpfnHook := @OpenPictureDialogCallBack;
+    end;
+end;
+
+{ TWin32WSOpenPictureDialog }
+
+class function TWin32WSOpenPictureDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
+begin
+  Result := inherited CreateHandle(ACommonDialog);
+  AddPreviewControl(ACommonDialog, LPOPENFILENAME(Result));
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -116,7 +197,7 @@ initialization
 ////////////////////////////////////////////////////
 //  RegisterWSComponent(TPreviewFileControl, TWin32WSPreviewFileControl);
 //  RegisterWSComponent(TPreviewFileDialog, TWin32WSPreviewFileDialog);
-//  RegisterWSComponent(TOpenPictureDialog, TWin32WSOpenPictureDialog);
+  RegisterWSComponent(TOpenPictureDialog, TWin32WSOpenPictureDialog);
   RegisterWSComponent(TSavePictureDialog, TWin32WSSaveDialog);
 //  RegisterWSComponent(TCalculatorDialog, TWin32WSCalculatorDialog);
 //  RegisterWSComponent(TCalculatorForm, TWin32WSCalculatorForm);
