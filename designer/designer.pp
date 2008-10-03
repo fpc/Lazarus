@@ -2409,6 +2409,7 @@ begin
     AComponent:=FLookupRoot.Components[i];
     if ComponentIsNonVisual(AComponent) then begin
       Diff:=aDDC.FormOrigin;
+      //DebugLn(['aDDC.FormOrigin - ', Diff.X, ' : ' ,Diff.Y]);
       // non-visual component
       ItemLeftTop:=NonVisualComponentLeftTop(AComponent);
       ItemLeft:=ItemLeftTop.X-Diff.X;
