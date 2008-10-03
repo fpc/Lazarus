@@ -1179,8 +1179,8 @@ begin
         PaintClientGrid(TWinControl(Sender),DDC);
       end;
 
-      if (WidgetSet.GetLCLCapability(lcCanDrawOutsideOnPaint) <> 0)
-        and EnvironmentOptions.DesignerPaintLazy then
+      if (WidgetSet.GetLCLCapability(lcCanDrawOutsideOnPaint) <> 0) and 
+         not EnvironmentOptions.DesignerPaintLazy then
           DoPaintDesignerItems;
     end;
     
