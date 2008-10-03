@@ -890,6 +890,7 @@ resourcestring
   dlgCancel = 'Cancel';
   lisSAMSelectNone = 'Select none';
   lisKMClassic = 'Classic';
+  lisKMLazarusDefault = 'Lazarus (default)';
   lisKMMacOSXApple = 'Mac OS X (Apple style)';
   lisKMMacOSXLaz = 'Mac OS X (Lazarus style)';
   lisPEFilename = 'Filename:';

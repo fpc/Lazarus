@@ -32,7 +32,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, Buttons, LazarusIDEStrConsts;
+  ExtCtrls, Buttons, KeyMapping, LazarusIDEStrConsts;
 
 type
 
@@ -42,25 +42,29 @@ type
     CancelButton: TBitBtn;
     NoteLabel: TLABEL;
     OkButton: TBitBtn;
+    BtnPanel: TPanel;
     SchemeRadiogroup: TRADIOGROUP;
     procedure ChooseKeySchemeDlgCREATE(Sender: TObject);
   private
-  public
     function GetKeymapScheme: string;
+    procedure SetKeymapScheme(const AValue: string);
+  public
+    property KeymapScheme: string read GetKeymapScheme write SetKeymapScheme;// untranslated
   end;
 
-function ShowChooseKeySchemeDialog(out NewScheme: string): TModalResult;
+function ShowChooseKeySchemeDialog(var NewScheme: string): TModalResult;
 
 implementation
 
-function ShowChooseKeySchemeDialog(out NewScheme: string): TModalResult;
+function ShowChooseKeySchemeDialog(var NewScheme: string): TModalResult;
 var
   ChooseKeySchemeDlg: TChooseKeySchemeDlg;
 begin
   ChooseKeySchemeDlg:=TChooseKeySchemeDlg.Create(nil);
+  ChooseKeySchemeDlg.KeymapScheme:=NewScheme;
   Result:=ChooseKeySchemeDlg.ShowModal;
   if Result=mrOk then
-    NewScheme:=ChooseKeySchemeDlg.GetKeymapScheme;
+    NewScheme:=ChooseKeySchemeDlg.KeymapScheme;
   ChooseKeySchemeDlg.Free;
 end;
 
@@ -75,16 +79,42 @@ begin
   CancelButton.Caption:=dlgCancel;
   OkButton.LoadGlyphFromLazarusResource('btn_ok');
   CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
+
+  with SchemeRadiogroup.Items do begin
+    BeginUpdate;
+    Clear;
+    // keep order of TKeyMapScheme
+    Add(lisKMLazarusDefault);
+    Add(lisKMClassic);
+    Add(lisKMMacOSXApple);
+    Add(lisKMMacOSXLaz);
+    // do not add custom
+    EndUpdate;
+  end;
 end;
 
 function TChooseKeySchemeDlg.GetKeymapScheme: string;
 begin
-  case SchemeRadiogroup.ItemIndex of
-   1: Result:=lisKMClassic;
-   2: Result:=lisKMMacOSXApple;
-   3: Result:=lisKMMacOSXLaz;
-  else Result:='';
+  if SchemeRadiogroup.ItemIndex<0 then
+    Result:=KeyMapSchemeNames[kmsLazarus]
+  else if SchemeRadiogroup.ItemIndex<ord(kmsCustom) then
+    Result:=KeyMapSchemeNames[TKeyMapScheme(SchemeRadiogroup.ItemIndex)]
+  else
+    Result:=SchemeRadiogroup.Items[SchemeRadiogroup.ItemIndex];
+end;
+
+procedure TChooseKeySchemeDlg.SetKeymapScheme(const AValue: string);
+var
+  kms: TKeyMapScheme;
+begin
+  kms:=KeySchemeNameToSchemeType(AValue);
+  if kms=kmsCustom then begin
+    if SchemeRadiogroup.Items.Count<=ord(kms) then
+      SchemeRadiogroup.Items.Add(AValue)
+    else
+      SchemeRadiogroup.Items[SchemeRadiogroup.Items.Count-1]:=AValue;
   end;
+  SchemeRadiogroup.ItemIndex:=ord(kms);
 end;
 
 initialization

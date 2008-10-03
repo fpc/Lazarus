@@ -1535,7 +1535,7 @@ begin
   fEditorFontHeight := SynDefaultFontHeight;
 
   // Key Mappings
-  fKeyMappingScheme := 'default';
+  fKeyMappingScheme := KeyMapSchemeNames[kmsLazarus];
   fKeyMap := TKeyCommandRelationList.Create;
 
   // Color options
@@ -1680,7 +1680,7 @@ begin
     // Key Mappings options
     fKeyMappingScheme :=
       XMLConfig.GetValue('EditorOptions/KeyMapping/Scheme',
-      StrToValidXMLName(fKeyMappingScheme));
+      StrToValidXMLName(KeyMapSchemeNames[kmsLazarus]));
     fKeyMap.LoadFromXMLConfig(XMLConfig
       , 'EditorOptions/KeyMapping/' + fKeyMappingScheme + '/');
 
@@ -1811,7 +1811,8 @@ begin
       ,FDoNotWarnForFont, '');
 
     // Key Mappings options
-    XMLConfig.SetValue('EditorOptions/KeyMapping/Scheme', fKeyMappingScheme);
+    XMLConfig.SetDeleteValue('EditorOptions/KeyMapping/Scheme', fKeyMappingScheme,
+       KeyMapSchemeNames[kmsLazarus]);
     fKeyMap.SaveToXMLConfig(
               XMLConfig, 'EditorOptions/KeyMapping/' + fKeyMappingScheme + '/');
 
@@ -2916,8 +2917,10 @@ procedure TEditorOptionsForm.KeyMappingChooseSchemeButtonClick(
 var
   NewScheme: String;
 begin
+  NewScheme:=EditorOpts.KeyMappingScheme;
   if ShowChooseKeySchemeDialog(NewScheme) <> mrOk then
     exit;
+  EditorOpts.KeyMappingScheme:=NewScheme;
   EditingKeyMap.LoadScheme(NewScheme);
   FillKeyMappingTreeView;
 end;

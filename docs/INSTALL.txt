@@ -37,8 +37,11 @@ properly:
 
   Make sure, that you have installed X, gtk1 and gtk1-devel.
 
+  Fedora: yum install gtk+-devel gdk-pixbuf-devel gtk2-devel
+  Ubuntu:
+
   Download and install FreePascal. Either the rpm, tgz or the daily snapshot.
-  You need at least fpc 1.0.10 (1.0.x is the stable version of fpc, the 1.9 is
+  You need at least fpc 2.2.2 (2.2.2 is the stable version of fpc, the 2.3.1 is
   the development version).
 
   To compile lazarus (LCL + IDE) go to your unpacked lazarus source and do:

@@ -861,7 +861,7 @@ end;
 procedure TPOFile.UpdateItem(const Identifier: string; Original: string);
 var
   Item: TPOFileItem;
-  p: Integer;
+//  p: Integer;
   AContext,AComment,ATranslation: string;
 begin
   if FHelperList=nil then

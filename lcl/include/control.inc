@@ -3200,7 +3200,7 @@ begin
   UpdateMouseCursor(Message.XPos,Message.YPos);
   if not (csNoStdEvents in ControlStyle)
   then with Message do
-    MouseMove(KeystoShiftState(Keys), XPos, YPos);
+    MouseMove(KeystoShiftState(Word(Keys)), XPos, YPos);
 end;
 
 {------------------------------------------------------------------------------

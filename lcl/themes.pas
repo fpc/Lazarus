@@ -1757,8 +1757,11 @@ end;
 
 function TThemeServices.ColorToRGB(Color: LongInt; Details: PThemedElementDetails = nil): COLORREF;
 begin
-  if (Color and $80000000 = 0) or (Details = nil) then
+  if (Color and $80000000 = 0) then
     Result := Color
+  else
+  if Details = nil then
+    Result := Graphics.ColorToRGB(Color)
   else
     Result := InternalColorToRGB(Details^, Color);
 end;

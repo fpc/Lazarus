@@ -47,6 +47,16 @@ type
     kmsCustom
     );
 
+const
+  KeyMapSchemeNames: array[TKeyMapScheme] of string = (
+    'default',
+    'Classic',
+    'MacOSXApple',
+    'MacOSXLaz',
+    'Custom'
+    );
+
+type
   //---------------------------------------------------------------------------
   // TKeyCommandCategory is used to divide the key commands in handy packets
   TKeyCommandCategory = class(TIDECommandCategory)
@@ -1380,21 +1390,39 @@ begin
   ecSelLineEnd: SetResult(VK_END, [ssShift],VK_RIGHT,[ssMeta,ssShift]);
   ecSelEditorTop: SetResult(VK_HOME, [ssShift,ssCtrl],VK_UNKNOWN,[]);
   ecSelEditorBottom: SetResult(VK_END, [ssShift,ssCtrl],VK_UNKNOWN,[]);
+
+  // run menu
+  ecBuild: SetResult(VK_F9,[ssCtrl],VK_F9,[ssCtrl,ssMeta]);
+  ecBuildAll: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecQuickCompile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecAbortBuild: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecRun: SetResult(VK_F9,[],VK_F9,[ssMeta]);
+  ecPause: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecStepInto: SetResult(VK_F7,[],VK_F7,[ssMeta]);
+  ecStepOver: SetResult(VK_F8,[],VK_F8,[ssMeta]);
+  ecRunToCursor: SetResult(VK_F4,[],VK_F4,[ssMeta]);
+  ecStopProgram: SetResult(VK_F2,[ssCtrl],VK_F2,[ssCtrl,ssMeta]);
+  ecRemoveBreakPoint: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecCompilerOptions: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecRunParameters: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecBuildFile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecRunFile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecConfigBuildFile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInspect: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecEvaluate: SetResult(VK_F7,[ssCtrl],VK_F7,[ssCtrl,ssMeta]);
+  ecAddWatch: SetResult(VK_F5,[ssCtrl],VK_F5,[ssCtrl,ssMeta]);
   end;
 end;
 
 function KeySchemeNameToSchemeType(const SchemeName: string): TKeyMapScheme;
 begin
-  if (SchemeName='') or (CompareText(SchemeName,'Default')=0) then
-    Result:=kmsLazarus
-  else if (CompareText(SchemeName,'Classic')=0) then
-    Result:=kmsClassic
-  else if (CompareText(SchemeName,'Mac OS X (Apple style)')=0) then
-    Result:=kmsMacOSXApple
-  else if (CompareText(SchemeName,'Mac OS X (Lazarus style)')=0) then
-    Result:=kmsMacOSXLaz
-  else
-    Result:=kmsCustom;
+  if SchemeName='' then
+    exit(kmsLazarus);
+  for Result:=Low(TKeyMapScheme) to High(TKeyMapScheme) do begin
+    if CompareText(SchemeName,KeyMapSchemeNames[Result])=0 then
+      exit;
+  end;
+  Result:=kmsCustom;
 end;
 
 function ShiftStateToStr(Shift:TShiftState):string;
