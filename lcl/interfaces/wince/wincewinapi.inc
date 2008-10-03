@@ -174,7 +174,7 @@ var
     else
       NewColor := COLOR_WINDOW;
 
-    Brush := Windows.GetSysColorBrush(NewColor or SYS_COLOR_INDEX_FLAG)
+    Brush := Windows.GetSysColorBrush(NewColor or SYS_COLOR_INDEX_FLAG);
 
     Rect := Data^.rcItem;
     Windows.FillRect(Data^._HDC, Rect, Brush);
