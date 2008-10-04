@@ -440,6 +440,8 @@ begin
     UpdateFileProperties(OpenFileName);
 
     case OpenFileNotify^.hdr.code of
+      CDN_INITDONE:
+        TOpenDialog(DialogRec^.Dialog).DoShow;
       CDN_SELCHANGE:
         TOpenDialog(DialogRec^.Dialog).DoSelectionChange;
       CDN_FOLDERCHANGE:
