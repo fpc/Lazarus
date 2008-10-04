@@ -36,8 +36,8 @@ uses
 ////////////////////////////////////////////////////
   Windows,
 ////////////////////////////////////////////////////
-  WSExtDlgs, WSLCLClasses, Win32WSDialogs, Win32Proc,
-  Types, Controls, Dialogs, ExtDlgs;
+  WSExtDlgs, WSLCLClasses, Win32WSDialogs, Win32WSControls, Win32Int, Win32Proc,
+  Types, Controls, Dialogs, ExtDlgs, LCLType, Graphics;
 
 type
 
@@ -47,6 +47,8 @@ type
   private
   protected
   public
+    class function CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
   end;
 
   { TWin32WSPreviewFileDialog }
@@ -150,6 +152,7 @@ begin
       end;
 
       AControl.BoundsRect := ARect;
+      AControl.Color := clBtnFace;
     end;
   end;
 end;
@@ -187,6 +190,26 @@ begin
   AddPreviewControl(ACommonDialog, LPOPENFILENAME(Result));
 end;
 
+{ TWin32WSPreviewFileControl }
+
+class function TWin32WSPreviewFileControl.CreateHandle(
+  const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
+var
+  Params: TCreateWindowExParams;
+begin
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, Params);
+  // customization of Params
+  with Params do
+  begin
+    pClassName := @ClsName[0];
+    SubClassWndProc := nil;
+  end;
+  // create window
+  FinishCreateWindow(AWinControl, Params, false);
+  Result := Params.Window;
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -195,7 +218,7 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TPreviewFileControl, TWin32WSPreviewFileControl);
+  RegisterWSComponent(TPreviewFileControl, TWin32WSPreviewFileControl);
 //  RegisterWSComponent(TPreviewFileDialog, TWin32WSPreviewFileDialog);
   RegisterWSComponent(TOpenPictureDialog, TWin32WSOpenPictureDialog);
   RegisterWSComponent(TSavePictureDialog, TWin32WSSaveDialog);
