@@ -195,6 +195,9 @@ begin
       QWidget_setParent(Widget.Widget, QApplication_activeWindow());
       QWidget_setWindowFlags(Widget.Widget, QtDialog);
       {$endif}
+      {$ifdef darwin}
+      QWidget_setWindowFlags(Widget.Widget, QtDialog or QtWindowSystemMenuHint or QtCustomizeWindowHint);
+      {$endif}
       Widget.setWindowModality(QtApplicationModal);
     end;
 
