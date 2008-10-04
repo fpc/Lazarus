@@ -44,7 +44,8 @@ strip lazbuild
 
 %install
 [ %{buildroot} != "/" ] && ( rm -rf %{buildroot} )
-mkdir -p %{buildroot}%{_libdir}/%{name}
+LAZARUSDIR=%{_libdir}/%{name}
+mkdir -p %{buildroot}$LAZARUSDIR
 mkdir -p %{buildroot}%{_bindir}
 mkdir -p %{buildroot}%{_datadir}/pixmaps
 # mkdir -p %{buildroot}%{_datadir}/gnome/apps/Development
@@ -52,18 +53,18 @@ mkdir -p %{buildroot}%{_datadir}/applications
 mkdir -p %{buildroot}%{_datadir}/mime/packages
 mkdir -p %{buildroot}%{_mandir}/man1
 mkdir -p %{buildroot}%{_sysconfdir}/lazarus
-cp -a lazarus/* %{buildroot}%{_libdir}/%{name}/
+cp -a lazarus/* %{buildroot}$LAZARUSDIR/
   install -m 644 lazarus/images/ide_icon48x48.png %{buildroot}%{_datadir}/pixmaps/lazarus.png
   install -m 644 lazarus/install/lazarus.desktop %{buildroot}%{_datadir}/applications/lazarus.desktop
   install -m 644 lazarus/install/lazarus-mime.xml $LazBuildDir%{buildroot}%{_datadir}/mime/packages/lazarus.xml
-ln -sf ../%{_lib}/%{name}/lazarus %{buildroot}%{_bindir}/lazarus-ide
-ln -sf ../%{_lib}/%{name}/startlazarus %{buildroot}%{_bindir}/startlazarus
-ln -sf ../%{_lib}/%{name}/lazbuild %{buildroot}%{_bindir}/lazbuild
+ln -sf $LAZARUSDIR/lazarus %{buildroot}%{_bindir}/lazarus-ide
+ln -sf $LAZARUSDIR/startlazarus %{buildroot}%{_bindir}/startlazarus
+ln -sf $LAZARUSDIR/lazbuild %{buildroot}%{_bindir}/lazbuild
 cat lazarus/install/man/man1/lazbuild.1 | gzip > %{buildroot}%{_mandir}/man1/lazbuild.1.gz
 cat lazarus/install/man/man1/lazarus-ide.1 | gzip > %{buildroot}%{_mandir}/man1/lazarus-ide.1.gz
 cat lazarus/install/man/man1/startlazarus.1 | gzip > %{buildroot}%{_mandir}/man1/startlazarus.1.gz
   install lazarus/tools/install/linux/editoroptions.xml %{buildroot}%{_sysconfdir}/lazarus/editoroptions.xml
-  install lazarus/tools/install/linux/environmentoptions.xml %{buildroot}%{_sysconfdir}/lazarus/environmentoptions.xml
+cat lazarus/tools/install/linux/environmentoptions.xml | sed -e "s#/usr/lib/lazarus/#$LAZARUSDIR/#" > %{buildroot}%{_sysconfdir}/lazarus/environmentoptions.xml
 
 
 %clean
