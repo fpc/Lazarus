@@ -74,6 +74,7 @@ type
   private
   protected
   public
+    class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
   end;
 
   { TWin32WSCalculatorDialog }
@@ -207,6 +208,15 @@ begin
   // create window
   FinishCreateWindow(AWinControl, Params, false);
   Result := Params.Window;
+end;
+
+{ TWin32WSSavePictureDialog }
+
+class function TWin32WSSavePictureDialog.CreateHandle(
+  const ACommonDialog: TCommonDialog): THandle;
+begin
+  Result := inherited CreateHandle(ACommonDialog);
+  AddPreviewControl(ACommonDialog, LPOPENFILENAME(Result));
 end;
 
 initialization
