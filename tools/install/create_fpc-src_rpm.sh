@@ -23,9 +23,7 @@ else
   shift
 fi
 
-#------------------------------------------------------------------------------
-# patching
-#------------------------------------------------------------------------------
+Arch=$(rpm --eval "%{_arch}")
 
 # retrieve the version information
 echo -n "getting FPC version from local svn ..."
@@ -64,7 +62,7 @@ chmod a+x $TmpDir/do_nothing.sh
 # build rpm
 rpmbuild -ba $SpecFile || rpm -ba $SpecFile
 
-echo "The new rpm can be found in $(./rpm/get_rpm_source_dir.sh)/RPMS/i386/fpc-src-$LazVersion-$LazRelease.i386.rpm"
+echo "The new rpm can be found in $(./rpm/get_rpm_source_dir.sh)/RPMS/$Arch/fpc-src-$LazVersion-$LazRelease.$Arch.rpm"
 
 # end.
 
