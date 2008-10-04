@@ -20,8 +20,8 @@ type
   end; 
   
 const
-  Limits: Array [0..8] of Cardinal =
-    (0, $7F, $80, $7FF, $800, $10000, $10FFFF, $1FFFFF, $D7FF);
+  Limits: Array [0..9] of Cardinal =
+    (0, $7F, $80, $7FF, $800, $D7FF, $E000, $FFFF, $10000, $10FFFF);
 
 implementation
 
@@ -34,9 +34,9 @@ var
   SUTF8, S1UTF8: UTF8String;
   SUTF16, S1UTF16, R: WideString;
 begin
-  for U := 0 to $1FFFFF do // test each unicode char
+  for U := 0 to $10FFFF do // test each unicode char
   begin
-    if (U >= $D800) and (U <= $FFFF) then Continue;
+    if (U >= $D800) and (U <= $DFFF) then Continue;
     
     SUTF8 := UnicodeToUTF8(U);
     SUTF16 := UnicodeToUTF16(U);
@@ -71,9 +71,9 @@ var
   SUTF8, S1UTF8, R: UTF8String;
   SUTF16, S1UTF16: WideString;
 begin
-  for U := 0 to $1FFFFF do
+  for U := 0 to $10FFFF do
   begin
-    if (U >= $D800) and (U <= $FFFF) then Continue;
+    if (U >= $D800) and (U <= $DFFF) then Continue;
     
     SUTF8 := UnicodeToUTF8(U);
     SUTF16 := UnicodeToUTF16(U);
@@ -107,6 +107,8 @@ var
 begin
   AssertEquals(0, UTF16CharacterToUnicode(#0, L));
   AssertEquals($D7FF, UTF16CharacterToUnicode(#$D7FF, L));
+  AssertEquals($E000, UTF16CharacterToUnicode(#$E000, L));
+  AssertEquals($FFFF, UTF16CharacterToUnicode(#$FFFF, L));
   AssertEquals($10000, UTF16CharacterToUnicode(#$D800#$DC00, L));
   AssertEquals($10001, UTF16CharacterToUnicode(#$D800#$DC01, L));
   AssertEquals($10FFFD, UTF16CharacterToUnicode(#$DBFF#$DFFD, L));
@@ -116,6 +118,8 @@ procedure TTestUnicode.TestUnicodeToUTF16;
 begin
   AssertEquals(#0, UnicodeToUTF16(0));
   AssertEquals(#$D7FF, UnicodeToUTF16($D7FF));
+  AssertEquals(#$E000, UnicodeToUTF16($E000));
+  AssertEquals(#$FFFF, UnicodeToUTF16($FFFF));
   AssertEquals(#$D800#$DC00, UnicodeToUTF16($10000));
   AssertEquals(#$D800#$DC01, UnicodeToUTF16($10001));
   AssertEquals(#$DBFF#$DFFD, UnicodeToUTF16($10FFFD));
