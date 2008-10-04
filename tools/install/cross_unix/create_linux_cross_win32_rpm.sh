@@ -110,7 +110,7 @@ if [ $BuildCrossWin32RPM = "yes" ]; then
   #----------------------------------------------------------------------------
   # create temporary directory
   #----------------------------------------------------------------------------
-  TmpSrcDir=/tmp/fpc_crosswin32
+  TmpSrcDir=$HOME/tmp/fpc_crosswin32
   echo "create temporary directory $TmpSrcDir ..."
   rm -rf $TmpSrcDir
   mkdir -p $TmpSrcDir
@@ -139,9 +139,7 @@ if [ $BuildCrossWin32RPM = "yes" ]; then
     cd ${BinUtilsDir}
     for binutility in $(ls -B ${BinUtilsPrefix}*); do
       NewName=$(echo $binutility | sed -e "s#^$BinUtilsPrefix##")
-      if [ ! $NewName = "windres" ]; then
-        NewName="fpc-${TargetCPU}-${TargetOS}-$NewName"
-      fi
+      NewName="fpc-${TargetCPU}-${TargetOS}-$NewName"
       cp ${BinUtilsDir}${binutility} ${BinDir}${NewName}
     done
     cd -
@@ -167,7 +165,7 @@ if [ $BuildCrossWin32RPM = "yes" ]; then
   # copy tools (windres)
   #----------------------------------------------------------------------------
   FPCLibDir=lib/fpc/$CompilerVersionStr # !!! no / at end
-  DestDir=$FPCBuildDir/usr/$FPCLibDir
+  DestDir=$TmpSrcDir/$FPCLibDir
   cp -p $BuildRoot/bin/* $DestDir/
 
   #----------------------------------------------------------------------------
