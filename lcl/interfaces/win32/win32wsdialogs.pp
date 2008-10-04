@@ -138,7 +138,7 @@ type
     class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
   end;
 
-function OpenFileDialogCallBack(hWnd: Handle; uMsg: UINT; wParam: WPARAM;
+function OpenFileDialogCallBack(Wnd: HWND; uMsg: UINT; wParam: WPARAM;
   lParam: LPARAM): UINT; stdcall;
 
 implementation
@@ -325,6 +325,44 @@ begin
   Result := 0;
 end;
 
+procedure UpdateStorage(Wnd: HWND; OpenFile: LPOPENFILENAME);
+var
+  FilesSize: SizeInt;
+  FolderSize: SizeInt;
+  DialogRec: POpenFileDialogRec;
+begin
+  DialogRec := POpenFileDialogRec(OpenFile^.lCustData);
+  {$ifdef WindowsUnicodeSupport}
+  if UnicodeEnabledOS then
+  begin
+    FolderSize := CommDlg_OpenSave_GetFolderPathW(GetParent(Wnd), nil, 0);
+    FilesSize := CommDlg_OpenSave_GetSpecW(GetParent(Wnd), nil, 0);
+    SetLength(DialogRec^.UnicodeFolderName, FolderSize - 1);
+    CommDlg_OpenSave_GetFolderPathW(GetParent(Wnd),
+                              PWideChar(DialogRec^.UnicodeFolderName),
+                              FolderSize);
+
+    SetLength(DialogRec^.UnicodeFileNames, FilesSize - 1);
+    CommDlg_OpenSave_GetSpecW(GetParent(Wnd),
+                              PWideChar(DialogRec^.UnicodeFileNames),
+                              FilesSize);
+  end else
+  {$endif}
+  begin
+    FolderSize := CommDlg_OpenSave_GetFolderPath(GetParent(Wnd), nil, 0);
+    FilesSize := CommDlg_OpenSave_GetSpec(GetParent(Wnd), nil, 0);
+    SetLength(DialogRec^.AnsiFolderName, FolderSize - 1);
+    CommDlg_OpenSave_GetFolderPath(GetParent(Wnd),
+                        PChar(DialogRec^.AnsiFolderName),
+                        FolderSize);
+
+    SetLength(DialogRec^.AnsiFileNames, FilesSize - 1);
+    CommDlg_OpenSave_GetSpec(GetParent(Wnd),
+      PChar(DialogRec^.AnsiFileNames),
+      FilesSize);
+  end;
+end;
+
 {Common code for OpenDialog and SaveDialog}
 
 {The API of the multiselect open file dialog is a bit problematic.
@@ -356,7 +394,7 @@ end;
  retrieving the files is used.
 }
 
-function OpenFileDialogCallBack(hWnd: Handle; uMsg: UINT; wParam: WPARAM;
+function OpenFileDialogCallBack(Wnd: HWND; uMsg: UINT; wParam: WPARAM;
   lParam: LPARAM): UINT; stdcall;
 
   procedure Reposition(ADialogWnd: Handle);
@@ -382,88 +420,32 @@ var
   OpenFileNotify: LPOFNOTIFY;
   OpenFileName: Windows.POPENFILENAME;
   DialogRec: POpenFileDialogRec;
-  FilesSize: SizeInt;
-  FolderSize: SizeInt;
 begin
   if uMsg = WM_INITDIALOG then
   begin
     // Windows asks us to initialize dialog. At this moment controls are not
     // arranged and this is that moment when we should set bounds of our dialog
-    Reposition(GetParent(hWnd));
+    Reposition(GetParent(Wnd));
   end
   else
   if uMsg = WM_NOTIFY then
   begin
     OpenFileNotify := LPOFNOTIFY(lParam);
-    if OpenFileNotify <> nil then
-    begin
-      OpenFileName := OpenFileNotify^.lpOFN;
-      DialogRec := POpenFileDialogRec(OpenFileName^.lCustData);
-    end
-    else
-    begin
-      OpenFileName := nil;
-      DialogRec := nil;
-    end;
+    if OpenFileNotify = nil then
+      Exit;
+
+    OpenFileName := OpenFileNotify^.lpOFN;
+    DialogRec := POpenFileDialogRec(OpenFileName^.lCustData);
+    UpdateStorage(Wnd, OpenFileName);
+    UpdateFileProperties(OpenFileName);
 
     case OpenFileNotify^.hdr.code of
       CDN_SELCHANGE:
-        begin
-          // NeededSize is the size that the lpStrFile buffer must have.
-          // the lpstrFile buffer contains the directory and a list of files
-          // for example 'c:\winnt'#0'file1.txt'#0'file2.txt'#0#0.
-          // GetFolderPath returns upper limit for the path, GetSpec for the files.
-          // This is not exact because the GetSpec returns the size for
-          // '"file1.txt" "file2.txt"', so that size will be two chars per filename
-          // more than needed in the lpStrFile buffer.
-          {$ifdef WindowsUnicodeSupport}
-          if UnicodeEnabledOS then
-          begin
-            FolderSize := CommDlg_OpenSave_GetFolderPathW(GetParent(hwnd), nil, 0);
-            FilesSize := CommDlg_OpenSave_GetSpecW(GetParent(hwnd), nil, 0);
-            SetLength(DialogRec^.UnicodeFolderName, FolderSize-1);
-            CommDlg_OpenSave_GetFolderPathW(GetParent(hwnd),
-                                      PWideChar(DialogRec^.UnicodeFolderName),
-                                      FolderSize);
-                                        
-            SetLength(DialogRec^.UnicodeFileNames, FilesSize - 1);
-            CommDlg_OpenSave_GetSpecW(GetParent(hwnd),
-                                      PWideChar(DialogRec^.UnicodeFileNames),
-                                      FilesSize);
-          end else
-          begin
-            FolderSize := CommDlg_OpenSave_GetFolderPath(GetParent(hwnd), nil, 0);
-            FilesSize := CommDlg_OpenSave_GetSpec(GetParent(hwnd), nil, 0);
-            SetLength(DialogRec^.AnsiFolderName, FolderSize-1);
-            CommDlg_OpenSave_GetFolderPath(GetParent(hwnd),
-                                PChar(DialogRec^.AnsiFolderName),
-                                FolderSize);
-
-            SetLength(DialogRec^.AnsiFileNames, FilesSize - 1);
-            CommDlg_OpenSave_GetSpec(GetParent(hwnd),
-              PChar(DialogRec^.AnsiFileNames),
-              FilesSize);
-          end;
-          {$else}
-          FolderSize := CommDlg_OpenSave_GetFolderPath(GetParent(hwnd), nil, 0);
-          FilesSize := CommDlg_OpenSave_GetSpec(GetParent(hwnd), nil, 0);
-          SetLength(DialogRec^.AnsiFolderName, FolderSize-1);
-          CommDlg_OpenSave_GetFolderPath(GetParent(hwnd),
-                              PChar(DialogRec^.AnsiFolderName),
-                              FolderSize);
-
-          SetLength(DialogRec^.AnsiFileNames, FilesSize - 1);
-          CommDlg_OpenSave_GetSpec(GetParent(hwnd),
-             PChar(DialogRec^.AnsiFileNames),
-             FilesSize);
-          {$endif}
-          UpdateFileProperties(OpenFileName);
-          TOpenDialog(DialogRec^.Dialog).DoSelectionChange;
-        end;
+        TOpenDialog(DialogRec^.Dialog).DoSelectionChange;
+      CDN_FOLDERCHANGE:
+        TOpenDialog(DialogRec^.Dialog).DoFolderChange;
       CDN_TYPECHANGE:
-        begin
-          DialogRec^.Dialog.IntfFileTypeChanged(OpenFileNotify^.lpOFN^.nFilterIndex);
-        end;
+        DialogRec^.Dialog.IntfFileTypeChanged(OpenFileNotify^.lpOFN^.nFilterIndex);
     end;
   end;
   Result := 0;
