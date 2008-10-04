@@ -111,8 +111,7 @@ type
 
 implementation
 
-{$r win32wsextdlgs.res}
-// {$r win32wsextdlgs.rc} windres dont want to comile for some reason
+{$r win32wsextdlgs.rc}
 
 function OpenPictureDialogCallBack(hWnd: Handle; uMsg: UINT; wParam: WPARAM;
   lParam: LPARAM): UINT; stdcall;
