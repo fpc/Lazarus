@@ -8088,6 +8088,9 @@ begin
                 CaretY := CaretY + 1;
             end;
           end else begin
+            // current line is empty (len = 0)
+            if fLines.Count = 0 then
+              fLines.Add('');
             // linebreak after end of line
             fUndoList.AddChange(crLineBreak,
               LogCaretXY, LogCaretXY,
