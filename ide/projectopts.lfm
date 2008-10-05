@@ -20,7 +20,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
     Width = 473
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    PageIndex = 0
+    PageIndex = 4
     TabOrder = 0
     object ApplicationPage: TPage
       Caption = 'ApplicationPage'
@@ -435,7 +435,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
     object LazDocPage: TPage
       Caption = 'LazDocPage'
       ClientWidth = 465
-      ClientHeight = 376
+      ClientHeight = 356
       object LazDocPathsGroupBox: TGroupBox
         Left = 6
         Height = 196
@@ -445,8 +445,8 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'LazDocPathsGroupBox'
-        ClientHeight = 196
-        ClientWidth = 453
+        ClientHeight = 178
+        ClientWidth = 449
         TabOrder = 0
         object LazDocListBox: TListBox
           AnchorSideLeft.Control = LazDocPathsGroupBox
@@ -528,7 +528,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
     object SavePage: TPage
       Caption = 'SavePage'
       ClientWidth = 465
-      ClientHeight = 368
+      ClientHeight = 356
       object SaveClosedUnitInfoCheckBox: TCheckBox
         Left = 6
         Height = 19
@@ -562,6 +562,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         Width = 453
         Align = alTop
         AutoFill = True
+        AutoSize = True
         BorderSpacing.Top = 6
         BorderSpacing.Around = 6
         Caption = 'SaveSessionLocationRadioGroup'
@@ -759,6 +760,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           BorderSpacing.Top = 2
           BorderSpacing.Bottom = 6
           ItemHeight = 13
+          MaxLength = -1
           TabOrder = 0
           Text = 'U.S. English'
         end
@@ -775,6 +777,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           BorderSpacing.Right = 6
           BorderSpacing.Bottom = 6
           ItemHeight = 13
+          MaxLength = -1
           TabOrder = 1
           Text = 'Multilingual'
         end
