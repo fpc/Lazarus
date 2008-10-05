@@ -1477,6 +1477,11 @@ resourcestring
   dlgPOUseAppBundle = 'Use Application Bundle for running and debugging (darwin only)';
   dlgPOCreateAppBundle = 'Create Application Bundle';
   dlgPOUseManifest = 'Use manifest file to enable themes (windows only)';
+  dlgPOIcon = 'Icon:';
+  dlgPOLoadIcon = 'Load Icon';
+  dlgPOSaveIcon = 'Save Icon';
+  dlgPOClearIcon = 'Clear Icon';
+
   dlgAutoCreateForms = 'Auto-create forms:';
   dlgAvailableForms = 'Available forms:';
   dlgAutoCreateNewForms = 'When creating new forms, add them to auto-created forms';

@@ -576,7 +576,6 @@ type
     fFirst: array[TUnitInfoList] of TUnitInfo;
     FFirstRemovedDependency: TPkgDependency;
     FFirstRequiredDependency: TPkgDependency;
-    fIconPath: String;
     FJumpHistory: TProjectJumpHistory;
     FLastCompilerFileDate: integer;
     FLastCompilerFilename: string;
@@ -836,7 +835,6 @@ type
     property FirstUnitWithEditorIndex: TUnitInfo read GetFirstUnitWithEditorIndex;
     property FirstUnitWithComponent: TUnitInfo read GetFirstUnitWithComponent;
     property StateFlags: TLazProjectStateFlags read FStateFlags write FStateFlags;
-    property IconPath: String read fIconPath write fIconPath;
     property JumpHistory: TProjectJumpHistory
                                            read FJumpHistory write FJumpHistory;
     property LastCompilerFileDate: integer read FLastCompilerFileDate
@@ -906,7 +904,8 @@ function dbgs(Flags: TUnitInfoFlags): string; overload;
 
 implementation
 
-uses frmcustomapplicationoptions;
+uses
+  frmcustomapplicationoptions;
 
 const
   ProjectInfoFileVersion = 6;
@@ -1867,7 +1866,6 @@ begin
   CompilerOptions.ParsedOpts.InvalidateParseOnChange:=true;
   FDefineTemplates:=TProjectDefineTemplates.Create(Self);
   FFlags:=DefaultProjectFlags;
-  fIconPath := '';
   FJumpHistory:=TProjectJumpHistory.Create;
   FJumpHistory.OnCheckPosition:=@JumpHistoryCheckPosition;
   FJumpHistory.OnLoadSaveFilename:=@OnLoadSaveFilename;
@@ -1883,6 +1881,7 @@ begin
   FRunParameterOptions:=TRunParamsOptions.Create;
   FTargetFileExt := GetExecutableExt;
   Title := '';
+  Icon := '';
   FUnitList := TFPList.Create;  // list of TUnitInfo
   
   FVersionInfo := TProjectVersionInfo.Create;
@@ -2068,9 +2067,9 @@ begin
       xmlconfig.SetDeleteValue(Path+'General/MainUnit/Value', MainUnitID,-1);
       xmlconfig.SetDeleteValue(Path+'General/AutoCreateForms/Value',
                                AutoCreateForms,true);
-      xmlconfig.SetDeleteValue(Path+'General/IconPath/Value',IconPath,'');
       xmlconfig.SetValue(Path+'General/TargetFileExt/Value',TargetFileExt);
       xmlconfig.SetDeleteValue(Path+'General/Title/Value', Title,'');
+      xmlconfig.SetDeleteValue(Path+'General/Icon/Value', Icon, '');
       xmlconfig.SetDeleteValue(Path+'General/UseAppBundle/Value', UseAppBundle, True);
       xmlconfig.SetDeleteValue(Path+'General/UseXPManifest/Value', XPManifest.UseManifest, False);
 
@@ -2468,12 +2467,10 @@ begin
       NewMainUnitID := xmlconfig.GetValue(Path+'General/MainUnit/Value', -1);
       AutoCreateForms := xmlconfig.GetValue(
          Path+'General/AutoCreateForms/Value', true);
-      IconPath := SwitchPathDelims(
-                        xmlconfig.GetValue(Path+'General/IconPath/Value', './'),
-                        fPathDelimChanged);
       TargetFileExt := xmlconfig.GetValue(
          Path+'General/TargetFileExt/Value', GetExecutableExt);
       Title := xmlconfig.GetValue(Path+'General/Title/Value', '');
+      Icon := xmlconfig.GetValue(Path+'General/Icon/Value', '');
       UseAppBundle := xmlconfig.GetValue(Path+'General/UseAppBundle/Value', True);
       XPManifest.UseManifest := xmlconfig.GetValue(Path+'General/UseXPManifest/Value', False);
 
@@ -2747,7 +2744,6 @@ begin
   FBookmarks.Clear;
   FCompilerOptions.Clear;
   FDefineTemplates.Clear;
-  fIconPath := '';
   FJumpHistory.Clear;
   fMainUnitID := -1;
   Modified := false;
@@ -2761,6 +2757,7 @@ begin
   FPublishOptions.Clear;
   FTargetFileExt := GetExecutableExt;
   Title := '';
+  Icon := '';
   EndUpdate;
 end;
 

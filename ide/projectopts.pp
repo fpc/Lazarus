@@ -41,7 +41,7 @@ uses
   FileUtil, IDEContextHelpEdit, EnvironmentOpts,
   IDEWindowIntf, IDEImagesIntf, ProjectIntf, IDEDialogs,
   IDEOptionDefs, LazarusIDEStrConsts, Project, IDEProcs, W32VersionInfo,
-  VersionInfoAdditionalInfo, W32Manifest, ApplicationBundle;
+  VersionInfoAdditionalInfo, W32Manifest, ApplicationBundle, ExtDlgs, base64;
 
 type
 
@@ -49,11 +49,18 @@ type
 
   TProjectOptionsDialog = class(TForm)
     AdditionalInfoButton: TBitBtn;
+    ClearIconButton: TBitBtn;
+    SaveIconButton: TBitBtn;
+    LoadIconButton: TBitBtn;
+    CopyrightLabel: TLabel;
     CreateAppBundleButton: TBitBtn;
+    DescriptionLabel: TLabel;
     FormsAddToAutoCreatedFormsBtn: TSpeedButton;
     FormsMoveAutoCreatedFormsDownBtn: TSpeedButton;
     FormsMoveAutoCreatedFormUpBtn: TSpeedButton;
     FormsRemoveFromAutoCreatedFormsBtn: TSpeedButton;
+    IconLabel: TLabel;
+    IconImage: TImage;
     LazDocAddPathButton: TBitBtn;
     LazDocDeletePathButton: TBitBtn;
     Notebook: TNotebook;
@@ -61,7 +68,11 @@ type
     FormsPage: TPage;
     MiscPage: TPage;
     LazDocPage: TPage;
+    IconPanel: TPanel;
+    OpenPictureDialog1: TOpenPictureDialog;
     SavePage: TPage;
+    SavePictureDialog1: TSavePictureDialog;
+    TitleLabel: TLabel;
     VersionInfoPage: TPage;
     i18nPage: TPage;
 
@@ -69,11 +80,9 @@ type
     AppSettingsGroupBox: TGroupBox;
     OutputSettingsGroupBox: TGroupBox;
     SelectDirectoryDialog: TSelectDirectoryDialog;
-    TitleLabel: TLabel;
     TitleEdit: TEdit;
     TargetFileLabel: TLabel;
     TargetFileEdit: TEdit;
-    PanelOtherLabels: TPanel;
     UseAppBundleCheckBox: TCheckBox;
     UseXPManifestCheckBox: TCheckBox;
 
@@ -124,8 +133,6 @@ type
     OtherInfoGroupBox: TGroupBox;
     DescriptionEdit: TEdit;
     CopyrightEdit: TEdit;
-    DescriptionLabel: TLabel;
-    CopyrightLabel: TLabel;
     AdditionalInfoForm: TVersionInfoAdditinalInfoForm;
 
     // i18n
@@ -142,6 +149,7 @@ type
     OKButton: TBitBtn;
 
     procedure AdditionalInfoButtonClick(Sender: TObject);
+    procedure ClearIconButtonClick(Sender: TObject);
     procedure CreateAppBundleButtonClick(Sender: TObject);
     procedure EnableI18NCheckBoxChange(Sender: TObject);
     procedure FormsPageContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
@@ -150,6 +158,7 @@ type
     procedure LazDocAddPathButtonClick(Sender: TObject);
     procedure LazDocBrowseButtonClick(Sender: TObject);
     procedure LazDocDeletePathButtonClick(Sender: TObject);
+    procedure LoadIconButtonClick(Sender: TObject);
     procedure ProjectOptionsClose(Sender: TObject;
                                   var CloseAction: TCloseAction);
     procedure FormsAddToAutoCreatedFormsBtnClick(Sender: TObject);
@@ -157,6 +166,7 @@ type
     procedure FormsMoveAutoCreatedFormUpBtnClick(Sender: TObject);
     procedure FormsMoveAutoCreatedFormDownBtnClick(Sender: TObject);
     procedure POOutDirButtonClick(Sender: TObject);
+    procedure SaveIconButtonClick(Sender: TObject);
     procedure UseVersionInfoCheckBoxChange(Sender: TObject);
   private
     FProject: TProject;
@@ -180,6 +190,9 @@ type
     function GetProjectTitle: String;
     function SetAutoCreateForms: Boolean;
     function SetProjectTitle: Boolean;
+
+    procedure SetIconFromText(Value: String);
+    function GetIconAsText: String;
   public
     constructor Create(TheOwner: TComponent); override;
     property Project: TProject read FProject write SetProject;
@@ -194,7 +207,6 @@ function LocalizedNameToProjectSessionStorage(
                                        const s: string): TProjectSessionStorage;
 
 implementation
-
 
 function ShowProjectOptionsDialog(AProject: TProject): TModalResult;
 begin
@@ -289,6 +301,15 @@ begin
   UseXPManifestCheckBox.Checked := False;
   CreateAppBundleButton.Caption := dlgPOCreateAppBundle;
   CreateAppBundleButton.LoadGlyphFromLazarusResource('pkg_compile');
+
+  // icon
+  IconLabel.Caption := dlgPOIcon;
+  LoadIconButton.Caption := dlgPOLoadIcon;
+  SaveIconButton.Caption := dlgPOSaveIcon;
+  ClearIconButton.Caption := dlgPOClearIcon;
+  LoadIconButton.LoadGlyphFromLazarusResource('open');
+  SaveIconButton.LoadGlyphFromLazarusResource('menu_save');
+  ClearIconButton.LoadGlyphFromLazarusResource('menu_clean');
 end;
 
 procedure TProjectOptionsDialog.SetupLazDocPage(PageIndex: Integer);
@@ -399,6 +420,7 @@ begin
     UseAppBundleCheckBox.Checked := UseAppBundle;
     UseXPManifestCheckBox.Checked := XPManifest.UseManifest;
     UseVersionInfoCheckBox.Checked := VersionInfo.UseVersionInfo;
+    SetIconFromText(Icon);
   end;
   FillAutoCreateFormsListbox;
   FillAvailFormsListBox;
@@ -471,8 +493,8 @@ var
 begin
   if ModalResult = mrOk then
   begin
-
     Project.Title := TitleEdit.Text;
+    Project.Icon := GetIconAsText;
     Project.TargetFilename := TargetFileEdit.Text;
     Project.UseAppBundle := UseAppBundleCheckBox.Checked;
     Project.XPManifest.UseManifest := UseXPManifestCheckBox.Checked;
@@ -565,6 +587,11 @@ begin
     Project.Modified:=true;
 end;
 
+procedure TProjectOptionsDialog.ClearIconButtonClick(Sender: TObject);
+begin
+  IconImage.Picture.Clear;
+end;
+
 procedure TProjectOptionsDialog.CreateAppBundleButtonClick(Sender: TObject);
 begin
   CreateProjectApplicationBundle(Project);
@@ -585,6 +612,12 @@ procedure TProjectOptionsDialog.LazDocDeletePathButtonClick(Sender: TObject);
 begin
   if (LazDocListBox.ItemIndex >= 0) then
     LazDocListBox.Items.Delete(LazDocListBox.ItemIndex);
+end;
+
+procedure TProjectOptionsDialog.LoadIconButtonClick(Sender: TObject);
+begin
+  if OpenPictureDialog1.Execute then
+    IconImage.Picture.LoadFromFile(OpenPictureDialog1.FileName);
 end;
 
 function TProjectOptionsDialog.GetAutoCreatedFormsList: TStrings;
@@ -816,6 +849,12 @@ begin
   POOutDirEdit.Text:=NewDirectory;
 end;
 
+procedure TProjectOptionsDialog.SaveIconButtonClick(Sender: TObject);
+begin
+  if SavePictureDialog1.Execute then
+    IconImage.Picture.SaveToFile(SavePictureDialog1.FileName);
+end;
+
 procedure TProjectOptionsDialog.UseVersionInfoCheckBoxChange(Sender: TObject);
 begin
   EnableVersionInfo(UseVersionInfoCheckBox.Checked);
@@ -904,6 +943,45 @@ begin
       Result := False;
       exit;
     end;// delete title
+end;
+
+procedure TProjectOptionsDialog.SetIconFromText(Value: String);
+var
+  S: TStringStream;
+  BS: TBase64DecodingStream;
+begin
+  IconImage.Picture.Clear;
+  if Value <> '' then
+  begin
+    S := TStringStream.Create(Value);
+    S.Position := 0;
+    BS := TBase64DecodingStream.Create(S);
+    try
+      IconImage.Picture.Icon.LoadFromStream(BS);
+    except
+      on E: Exception do
+        MessageDlg(E.Message, mtError, [mbOk], 0);
+    end;
+    BS.Free;
+    S.Free;
+  end;
+end;
+
+function TProjectOptionsDialog.GetIconAsText: String;
+var
+  S: TStringStream;
+  BS: TBase64EncodingStream;
+begin
+  Result := '';
+  if not ((IconImage.Picture.Graphic = nil) or IconImage.Picture.Graphic.Empty) then
+  begin
+    S := TStringStream.Create('');
+    BS := TBase64EncodingStream.Create(S);
+    IconImage.Picture.Icon.SaveToStream(BS);
+    BS.Free;
+    Result := S.DataString;
+    S.Free;
+  end;
 end;
 
 initialization

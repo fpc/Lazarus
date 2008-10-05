@@ -531,7 +531,8 @@ type
     fModified: boolean;
     FProjectSessionFile: string;
     FSessionModified: boolean;
-    fTitle: String;
+    FTitle: String;
+    FIcon: String;
     FSessionStorage: TProjectSessionStorage;
     FLazDocPaths: string;
     procedure SetLazDocPaths(const AValue: string);
@@ -542,6 +543,7 @@ type
     function GetMainFileID: Integer; virtual; abstract;
     procedure SetMainFileID(const AValue: Integer); virtual; abstract;
     function GetFiles(Index: integer): TLazProjectFile; virtual; abstract;
+    procedure SetIcon(const AValue: String); virtual;
     procedure SetTitle(const AValue: String); virtual;
     procedure SetFlags(const AValue: TProjectFlags); virtual;
     function GetProjectInfoFile: string; virtual; abstract;
@@ -574,7 +576,8 @@ type
     property Files[Index: integer]: TLazProjectFile read GetFiles;
     property FileCount: integer read GetFileCount;
     property MainFile: TLazProjectFile read GetMainFile;
-    property Title: String read fTitle write SetTitle;
+    property Title: String read FTitle write SetTitle;
+    property Icon: string read FIcon write SetIcon;
     property Flags: TProjectFlags read FFlags write SetFlags;
     property ExecutableType: TProjectExecutableType read FExecutableType
                  write SetExecutableType;// read from MainFile, not saved to lpi
@@ -1067,6 +1070,7 @@ end;
 function TProjectDescriptor.InitProject(AProject: TLazProject): TModalResult;
 begin
   AProject.Title:='project1';
+  // TODO: AProject.Icon := default icon
   AProject.Flags:=Flags;
   Result:=mrOk;
 end;
@@ -1133,8 +1137,15 @@ end;
 
 procedure TLazProject.SetTitle(const AValue: String);
 begin
-  if fTitle=AValue then exit;
-  fTitle:=AValue;
+  if FTitle=AValue then exit;
+  FTitle:=AValue;
+  Modified:=true;
+end;
+
+procedure TLazProject.SetIcon(const AValue: String);
+begin
+  if FIcon=AValue then exit;
+  FIcon:=AValue;
   Modified:=true;
 end;
 
