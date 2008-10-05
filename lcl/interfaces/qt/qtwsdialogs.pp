@@ -287,6 +287,9 @@ var
   FileDialog: TQtFileDialog;
 begin
   FileDialog := TQtFileDialog.Create(ACommonDialog, TQtWSCommonDialog.GetDialogParent(ACommonDialog));
+  {$ifdef darwin}
+  QWidget_setWindowFlags(FileDialog.Widget, QtDialog or QtWindowSystemMenuHint or QtCustomizeWindowHint);
+  {$endif}
   FileDialog.AttachEvents;
   
   Result := THandle(FileDialog);
@@ -389,6 +392,9 @@ var
   FileDialog: TQtFileDialog;
 begin
   FileDialog := TQtFileDialog.Create(ACommonDialog, TQtWSCommonDialog.GetDialogParent(ACommonDialog));
+  {$ifdef darwin}
+  QWidget_setWindowFlags(FileDialog.Widget, QtDialog or QtWindowSystemMenuHint or QtCustomizeWindowHint);
+  {$endif}
   FileDialog.AttachEvents;
 
   Result := THandle(FileDialog);
