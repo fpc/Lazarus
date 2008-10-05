@@ -2626,6 +2626,15 @@ begin
       RaiseCharExpectedButAtomFound(';');
     ReadNextAtom;
   end;
+  if UpAtomIs('STATIC') and (CurNode.Parent<>nil)
+  and (CurNode.Parent.Desc in AllClassSections) then begin
+    // 'static' is allowed for class variables
+    // for example: 'a: char; static;'
+    ReadNextAtom;
+    if CurPos.Flag<>cafSemicolon then
+      RaiseCharExpectedButAtomFound(';');
+    ReadNextAtom;
+  end;
   if (CurNode.Parent.Desc=ctnVarSection)
   and (UpAtomIs('PUBLIC') or UpAtomIs('EXPORT') or UpAtomIs('EXTERNAL')) then
   begin
