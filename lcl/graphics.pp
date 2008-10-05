@@ -1475,6 +1475,7 @@ type
     FRequestedSize: TSize;
     procedure MaskHandleNeeded; override;
     procedure PaletteNeeded; override;
+    function  CanShareImage(AClass: TSharedRasterImageClass): Boolean; override;
     procedure CheckRequestedSize;
     function GetIndex(AFormat: TPixelFormat; AHeight, AWidth: Word): Integer;
     function GetBitmapHandle: HBITMAP; override;
@@ -1557,6 +1558,9 @@ type
     property Items[Index: Integer]: PIcnsRec read GetItem write SetItem; default;
   end;
 
+  TSharedIcnsIcon = class(TSharedIcon)
+  end;
+
   { TIcnsIcon }
 
   TIcnsIcon = class(TCustomIcon)
@@ -1566,6 +1570,7 @@ type
     procedure IcnsAdd(AIconType: TicnsIconType; ARawImage: TRawImage);
     procedure IcnsProcess;
   protected
+    class function GetSharedImageClass: TSharedRasterImageClass; override;
     procedure ReadData(Stream: TStream); override;
     procedure ReadStream(AStream: TMemoryStream; ASize: Longint); override;
     procedure WriteStream(AStream: TMemoryStream); override;
