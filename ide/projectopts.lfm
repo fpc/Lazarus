@@ -350,73 +350,85 @@ object ProjectOptionsDialog: TProjectOptionsDialog
       Caption = 'MiscPage'
       ClientWidth = 465
       ClientHeight = 368
+      object Bevel1: TBevel
+        AnchorSideLeft.Control = MiscPage
+        AnchorSideTop.Control = MainUnitHasTitleStatementCheckBox
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = MiscPage
+        AnchorSideRight.Side = asrBottom
+        Left = 6
+        Height = 3
+        Top = 106
+        Width = 453
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+      end
       object MainUnitHasUsesSectionForAllUnitsCheckBox: TCheckBox
+        AnchorSideLeft.Control = MiscPage
         AnchorSideTop.Control = MainUnitIsPascalSourceCheckBox
         AnchorSideTop.Side = asrBottom
         Left = 6
         Height = 19
         Top = 31
-        Width = 453
-        Align = alTop
+        Width = 241
         BorderSpacing.Around = 6
         Caption = 'MainUnitHasUsesSectionForAllUnitsCheckBox'
         TabOrder = 0
       end
       object MainUnitHasCreateFormStatementsCheckBox: TCheckBox
+        AnchorSideLeft.Control = MiscPage
         AnchorSideTop.Control = MainUnitHasUsesSectionForAllUnitsCheckBox
         AnchorSideTop.Side = asrBottom
         Left = 6
         Height = 19
         Top = 56
-        Width = 453
-        Align = alTop
+        Width = 244
         BorderSpacing.Around = 6
         Caption = 'MainUnitHasCreateFormStatementsCheckBox'
         TabOrder = 1
       end
       object MainUnitIsPascalSourceCheckBox: TCheckBox
+        AnchorSideLeft.Control = MiscPage
+        AnchorSideTop.Control = MiscPage
         Left = 6
         Height = 19
         Top = 6
         Width = 453
-        Align = alTop
         BorderSpacing.Around = 6
         Caption = 'MainUnitIsPascalSourceCheckBox'
         TabOrder = 2
       end
       object MainUnitHasTitleStatementCheckBox: TCheckBox
+        AnchorSideLeft.Control = MiscPage
         AnchorSideTop.Control = MainUnitHasCreateFormStatementsCheckBox
         AnchorSideTop.Side = asrBottom
         Left = 6
         Height = 19
         Top = 81
-        Width = 453
-        Align = alTop
+        Width = 202
         BorderSpacing.Around = 6
         Caption = 'MainUnitHasTitleStatementCheckBox'
         TabOrder = 5
       end
       object RunnableCheckBox: TCheckBox
-        AnchorSideTop.Control = MainUnitHasTitleStatementCheckBox
-        AnchorSideTop.Side = asrBottom
+        AnchorSideLeft.Control = MiscPage
+        AnchorSideTop.Control = Bevel1
         Left = 6
         Height = 19
         Top = 112
-        Width = 453
-        Align = alTop
-        BorderSpacing.Top = 6
+        Width = 118
         BorderSpacing.Around = 6
         Caption = 'RunnableCheckBox'
         TabOrder = 3
       end
       object AlwaysBuildCheckBox: TCheckBox
+        AnchorSideLeft.Control = MiscPage
         AnchorSideTop.Control = RunnableCheckBox
         AnchorSideTop.Side = asrBottom
         Left = 6
         Height = 19
         Top = 137
-        Width = 453
-        Align = alTop
+        Width = 129
         BorderSpacing.Around = 6
         Caption = 'AlwaysBuildCheckBox'
         TabOrder = 4

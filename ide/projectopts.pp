@@ -49,6 +49,7 @@ type
 
   TProjectOptionsDialog = class(TForm)
     AdditionalInfoButton: TBitBtn;
+    Bevel1: TBevel;
     ClearIconButton: TBitBtn;
     SaveIconButton: TBitBtn;
     LoadIconButton: TBitBtn;
