@@ -63,12 +63,12 @@ object ProjectOptionsDialog: TProjectOptionsDialog
         end
         object TitleEdit: TEdit
           AnchorSideLeft.Side = asrBottom
-          Left = 106
+          Left = 116
           Height = 23
           Top = 6
-          Width = 337
+          Width = 327
           Align = alTop
-          BorderSpacing.Left = 100
+          BorderSpacing.Left = 110
           BorderSpacing.Around = 6
           TabOrder = 0
           Text = 'TitleEdit'
@@ -103,11 +103,11 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           AnchorSideLeft.Control = AppSettingsGroupBox
           AnchorSideTop.Control = TitleEdit
           AnchorSideTop.Side = asrBottom
-          Left = 106
+          Left = 116
           Height = 100
           Top = 35
           Width = 100
-          BorderSpacing.Left = 100
+          BorderSpacing.Left = 110
           BorderSpacing.Around = 6
           BevelInner = bvRaised
           BevelOuter = bvLowered
@@ -129,7 +129,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           AnchorSideTop.Control = IconPanel
           AnchorSideBottom.Control = IconPanel
           AnchorSideBottom.Side = asrBottom
-          Left = 212
+          Left = 222
           Height = 23
           Top = 35
           Width = 102
@@ -144,7 +144,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           AnchorSideLeft.Control = LoadIconButton
           AnchorSideTop.Control = LoadIconButton
           AnchorSideTop.Side = asrBottom
-          Left = 212
+          Left = 222
           Height = 23
           Top = 64
           Width = 103
@@ -159,7 +159,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           AnchorSideLeft.Control = SaveIconButton
           AnchorSideTop.Control = SaveIconButton
           AnchorSideTop.Side = asrBottom
-          Left = 212
+          Left = 222
           Height = 23
           Top = 93
           Width = 104
@@ -201,12 +201,12 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           AnchorSideTop.Control = OutputSettingsGroupBox
           AnchorSideRight.Control = OutputSettingsGroupBox
           AnchorSideRight.Side = asrBottom
-          Left = 106
+          Left = 116
           Height = 23
           Top = 6
-          Width = 337
+          Width = 327
           Anchors = [akTop, akLeft, akRight]
-          BorderSpacing.Left = 100
+          BorderSpacing.Left = 110
           BorderSpacing.Around = 6
           TabOrder = 0
           Text = 'TargetFileEdit'
@@ -749,6 +749,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           BorderSpacing.Top = 2
           BorderSpacing.Bottom = 6
           ItemHeight = 13
+          MaxLength = -1
           TabOrder = 0
           Text = 'U.S. English'
         end
@@ -765,6 +766,7 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           BorderSpacing.Right = 6
           BorderSpacing.Bottom = 6
           ItemHeight = 13
+          MaxLength = -1
           TabOrder = 1
           Text = 'Multilingual'
         end
