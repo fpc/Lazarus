@@ -1105,19 +1105,29 @@ var
 begin
   // apply appropriate form style and form border style
   
-  case (LCLObject as TCustomForm).FormStyle of
-  fsStayOnTop, fsSplash:
-    begin
-      NewWindowClass := kFloatingWindowClass;
-      Attributes := 0;
-    end;
-  else
+  if csDesigning in LCLObject.ComponentState then
+  begin
     NewWindowClass := kDocumentWindowClass;
-    Attributes := kWindowInWindowMenuAttribute;
+    Attributes := kWindowInWindowMenuAttribute or
+      GetBorderWindowAttrs(bsSizeable, [biMaximize, biMinimize, biSystemMenu]);
+  end
+  else
+  begin
+    case (LCLObject as TCustomForm).FormStyle of
+    fsStayOnTop, fsSplash:
+      begin
+        NewWindowClass := kFloatingWindowClass;
+        Attributes := 0;
+      end;
+    else
+      NewWindowClass := kDocumentWindowClass;
+      Attributes := kWindowInWindowMenuAttribute;
+    end;
+
+    Attributes := Attributes or
+      GetBorderWindowAttrs((LCLObject as TCustomForm).BorderStyle,
+        (LCLObject as TCustomForm).BorderIcons);
   end;
-  
-  Attributes := Attributes or
-    FormBorderToWindowAttrs((LCLObject as TCustomForm).BorderStyle);
 
   //DebugLn('TCarbonWindow.CreateWidget ' + DbgS(ParamsToCarbonRect(AParams)));
   
@@ -1660,28 +1670,23 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonWindow.SetBorderIcons(ABorderIcons: TBorderIcons);
 var
-  AttrsSet, AttrsClear: WindowAttributes;
+  AttrsSet, AttrsRemove: WindowAttributes;
 begin
-  AttrsSet := 0;
-  AttrsClear := 0;
+  if csDesigning in LCLObject.ComponentState then Exit;
+  BeginUpdate(WindowRef(Widget));
+  try
+    AttrsSet := GetBorderWindowAttrs((LCLObject as TCustomForm).BorderStyle,
+      ABorderIcons);
+    AttrsRemove := (kWindowNoTitleBarAttribute or kWindowCloseBoxAttribute or
+      kWindowCollapseBoxAttribute or kWindowFullZoomAttribute or
+      kWindowResizableAttribute) and (not AttrsSet);
 
-  if (biMinimize in ABorderIcons) and (biSystemMenu in ABorderIcons) then
-    AttrsSet := AttrsSet or kWindowCollapseBoxAttribute
-  else
-    AttrsClear := AttrsClear or kWindowCollapseBoxAttribute;
-
-  if (biMaximize in ABorderIcons) and (biSystemMenu in ABorderIcons) then
-    AttrsSet := AttrsSet or kWindowFullZoomAttribute
-  else
-    AttrsClear := AttrsClear or kWindowFullZoomAttribute;
-
-  if biSystemMenu in ABorderIcons then
-    AttrsSet := AttrsSet or kWindowCloseBoxAttribute
-  else
-    AttrsClear := AttrsClear or kWindowCloseBoxAttribute;
-
-  OSError(ChangeWindowAttributes(WindowRef(Widget), AttrsSet, AttrsClear),
-    Self, 'SetBorderIcons', SChangeWindowAttrs);
+    if OSError(
+      ChangeWindowAttributes(WindowRef(Widget), AttrsSet, AttrsRemove), Self,
+        'SetBorderIcons', SChangeWindowAttrs) then Exit;
+  finally
+    EndUpdate(WindowRef(Widget));
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1694,9 +1699,11 @@ procedure TCarbonWindow.SetFormBorderStyle(AFormBorderStyle: TFormBorderStyle);
 var
   AttrsSet, AttrsRemove: WindowAttributes;
 begin
+  if csDesigning in LCLObject.ComponentState then Exit;
   BeginUpdate(WindowRef(Widget));
   try
-    AttrsSet := FormBorderToWindowAttrs(AFormBorderStyle);
+    AttrsSet := GetBorderWindowAttrs(AFormBorderStyle,
+      (LCLObject as TCustomForm).BorderIcons);
     AttrsRemove := (kWindowNoTitleBarAttribute or kWindowCloseBoxAttribute or
       kWindowCollapseBoxAttribute or kWindowFullZoomAttribute or
       kWindowResizableAttribute) and (not AttrsSet);
