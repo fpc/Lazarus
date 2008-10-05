@@ -109,15 +109,16 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           Width = 100
           BorderSpacing.Left = 100
           BorderSpacing.Around = 6
+          BevelInner = bvRaised
           BevelOuter = bvLowered
           ClientHeight = 100
           ClientWidth = 100
           TabOrder = 3
           object IconImage: TImage
-            Left = 1
-            Height = 98
-            Top = 1
-            Width = 98
+            Left = 2
+            Height = 96
+            Top = 2
+            Width = 96
             Align = alClient
             Center = True
           end
