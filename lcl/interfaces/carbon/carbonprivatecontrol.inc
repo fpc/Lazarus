@@ -751,7 +751,7 @@ begin
   if OSError(HIViewSetFrame(Frames[0], RectToCGRect(ARect)),
     Self, SSetBounds, SViewFrame) then Exit;
   // ensure bounds are send back to LCL once after creation
-  if not BoundsReported then BoundsChanged;
+  BoundsChanged;
   
   Result := True;
 end;
@@ -822,7 +822,6 @@ begin
     SGetData, SControlFont);
     
   ID := FindCarbonFontID(AFont.Name);
-  
 
   FontStyle.flags := FontStyle.flags or kControlUseFontMask or kControlUseSizeMask or
     kControlUseFaceMask or kControlUseForeColorMask;

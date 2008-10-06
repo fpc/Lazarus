@@ -79,6 +79,8 @@ function GetCarbonThemeMetric(Metric: ThemeMetric; DefaultValue: Integer = 0): I
 
 function CreateCustomHIView(const ARect: HIRect): HIViewRef;
 
+procedure SetControlViewStyle(Control: ControlRef; TinySize, SmallSize, NormalSize: Integer; ControlHeight: Boolean = True);
+
 const
   DEFAULT_CFSTRING_ENCODING = kCFStringEncodingUTF8;
 
@@ -583,6 +585,39 @@ begin
     
   OSError(HIViewSetVisible(Result, True), SName, SViewVisible);
   OSError(HIViewSetFrame(Result, ARect), SName, SViewFrame);
+end;
+
+{------------------------------------------------------------------------------
+  Name:    SetControlViewSize
+  Params:  Control - Mac OS Carbon control handle
+           TinySize - if control size, is less or equal to TinySize then
+                      tine size view style is set. The same goes with Small an
+                      NormalSize. If control size is larger than control size,
+                      then view style is set to Auto.
+           SmallSize
+           NormalSize
+           ControlHeight - if Height (default) instead of Width of the control
+             should be measured
+ ------------------------------------------------------------------------------}
+procedure SetControlViewStyle(Control: ControlRef; TinySize, SmallSize,
+  NormalSize: Integer; ControlHeight: Boolean);
+var
+  R: MacOSAlL.Rect;
+  Data: Word;
+  ControlSize: Integer;
+begin
+  FillChar(R, SizeOf(R), 0);
+  GetControlBounds(Control, R);
+  if ControlHeight then ControlSize := R.Bottom - R.Top
+  else ControlSize := R.Right - R.Left;
+
+  if ControlSize > NormalSize then Data := kControlSizeAuto
+  else if ControlSize = NormalSize then Data := kControlSizeNormal
+  else if ControlSize >= SmallSize then Data := kControlSizeSmall
+  else if ControlSize >= TinySize then Data := kControlSizeMini
+  else Data := kControlSizeAuto;
+
+  SetControlData(Control, kControlEntireControl, kControlSizeTag, SizeOf(Data), @Data);
 end;
 
 {------------------------------------------------------------------------------

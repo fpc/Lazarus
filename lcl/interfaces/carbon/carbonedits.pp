@@ -90,6 +90,7 @@ type
     procedure ValueChanged; override;
     procedure FocusSet; override;
     procedure TextDidChange; override;
+    procedure BoundsChanged; override;
   public
     function GetText(var S: String): Boolean; override;
     function SetBounds(const ARect: TRect): Boolean; override;
@@ -152,6 +153,8 @@ type
     FIsPassword: Boolean;
   protected
     procedure CreateWidget(const AParams: TCreateParams); override;
+  public
+    procedure BoundsChanged; override;
   public
     function GetText(var S: String): Boolean; override;
     function SetText(const S: String): Boolean; override;
@@ -758,6 +761,25 @@ begin
   SendSimpleMessage(LCLObject, LM_CHANGED);
 end;
 
+const
+  // values are used from Interface Builder
+  StdComboBoxNormalSize = 20;
+  StdComboBoxSmallSize = 17;
+  StdComboBoxTinySize = 0; // 14
+
+  StdPopupButtonNormalSize = 20;
+  StdPopupButtonSmallSize = 17;
+  StdPopupButtonTinySize = 0; // 16
+
+procedure TCarbonComboBox.BoundsChanged;
+begin
+  inherited BoundsChanged;
+  if FReadOnly then
+    SetControlViewStyle(Widget, StdPopupButtonTinySize, StdPopupButtonSmallSize, StdPopupButtonNormalSize)
+  else
+    SetControlViewStyle(Widget, StdComboBoxTinySize, StdComboBoxSmallSize, StdComboBoxNormalSize);
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCarbonComboBox.GetText
   Params:  S - Text
@@ -1242,6 +1264,18 @@ begin
     
   FIsPassword := Edit.PasswordChar <> #0;
   FMaxLength := Edit.MaxLength;
+end;
+
+const
+  // values are used from Interface Builder
+  StdEditNormalSize = 16;
+  StdEditSmallSize = 13;
+  StdEditTinySize = 0; // 9
+
+procedure TCarbonEdit.BoundsChanged;
+begin
+  inherited BoundsChanged;
+  SetControlViewStyle(Widget, StdEditTinySize, StdEditSmallSize, StdEditNormalSize);
 end;
 
 {------------------------------------------------------------------------------

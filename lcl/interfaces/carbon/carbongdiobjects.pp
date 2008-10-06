@@ -106,6 +106,7 @@ type
   TCarbonTextLayoutBuffer = class(TCarbonTextLayout)
   private
     FLayout: ATSUTextLayout;
+    FWidget: HIViewRef;
     FTextBuffer: WideString;
     FDC: TCarbonContext;
   public
@@ -837,6 +838,7 @@ begin
   end;
   
   FDC := nil;
+  FWidget := nil;
 end;
 
 {------------------------------------------------------------------------------
@@ -851,8 +853,22 @@ var
   DataSize: ByteCount;
   PValue: ATSUAttributeValuePtr;
 begin
-  if FDC = ADC then Exit;
+  // check if must reset layout to new context
+  if FDC = ADC then
+  begin
+    if (ADC is TCarbonControlContext) then
+    begin
+      if FWidget = (ADC as TCarbonControlContext).Owner.Content then Exit;
+    end
+    else
+      if FWidget = nil then Exit;
+  end;
+
   FDC := ADC;
+  if ADC is TCarbonControlContext then
+    FWidget := (ADC as TCarbonControlContext).Owner.Content
+  else
+    FWidget := nil;
 
   // set layout context
   Tag := kATSUCGContextTag;

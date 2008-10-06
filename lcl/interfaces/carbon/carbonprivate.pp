@@ -268,6 +268,8 @@ type
   protected
     procedure CreateWidget(const AParams: TCreateParams); override;
   public
+    procedure BoundsChanged; override;
+  public
     procedure SetAlignment(AAlignment: TAlignment); virtual;
   end;
   
@@ -1319,6 +1321,18 @@ begin
     SetControlData(Control, kControlEntireControl,
       kControlStaticTextIsMultilineTag, SizeOf(Boolean), @MultiLine),
     Self, SCreateWidget, SSetData, 'kControlStaticTextIsMultilineTag');
+end;
+
+const
+  // values are used from Interface Builder
+  StdStaticTextNormalSize = 16;
+  StdStaticTextSmallSize = 13;
+  StdStaticTextTinySize = 0; // 11
+
+procedure TCarbonStaticText.BoundsChanged;
+begin
+  inherited BoundsChanged;
+  SetControlViewStyle(Widget, StdStaticTextTinySize, StdStaticTextSmallSize, StdStaticTextNormalSize);
 end;
 
 {------------------------------------------------------------------------------
