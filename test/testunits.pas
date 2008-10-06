@@ -30,7 +30,7 @@ uses
   TestLpi, BugTestCase,
   bug8432, testfileutil, testfileproc,
   // lcltests
-  testunicode;
+  testunicode, testpen;
 
 implementation
 

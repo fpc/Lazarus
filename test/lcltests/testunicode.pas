@@ -5,7 +5,7 @@ unit TestUnicode;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testregistry, LCLProc, testglobals;
+  Classes, SysUtils, fpcunit, LCLProc, testglobals;
 
 type
 

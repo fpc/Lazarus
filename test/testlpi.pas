@@ -157,7 +157,9 @@ begin
     LazBuild.CurrentDirectory := ExtractFileDir(FPath);
     LazBuild.Execute;
     OutputLines := ReadOutput(LazBuild);
-    LazBuild.WaitOnExit;
+    if LazBuild.Running then begin
+      LazBuild.Terminate(99);
+    end;
     if LazBuild.ExitStatus<>0 then
       Fail(format('Compilation failed: ExitCode=%d%s%s',
         [LazBuild.ExitStatus, LineEnding, {OutputLines.Text}'']));
