@@ -10,7 +10,7 @@ URL: http://www.freepascal.org/
 BuildRoot: %{_tmppath}/fpc-src-build%{version}
 
 %define fpcsrcdir %{_datadir}/fpcsrc
-%define destdir %{buildroot}%{fpcsrcdir}/
+%define destdir %{buildroot}%{fpcsrcdir}/%{version}
 
 # The normal redhat rpm scripts tests every installed file for requirements.
 # We install only sources, so we don't need the requirements.
@@ -18,7 +18,7 @@ AutoReq: 0
 
 # The normal redhat rpm scripts do not recognize properly, what files to strip
 # Hook our own strip command
-%define __strip /tmp/smart_strip.sh
+%define __strip LAZSCRIPTDIR/smart_strip.sh
 
 %description
 The Free Pascal Compiler is a Turbo Pascal 7.0 and Delphi compatible 32bit

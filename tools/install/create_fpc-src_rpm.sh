@@ -23,9 +23,7 @@ else
   shift
 fi
 
-#------------------------------------------------------------------------------
-# patching
-#------------------------------------------------------------------------------
+Arch=$(rpm --eval "%{_arch}")
 
 # retrieve the version information
 echo -n "getting FPC version from local svn ..."
@@ -47,24 +45,24 @@ sh create_fpc_tgz_from_local_dir.sh $FPCSourceDir $FPCTGZ
 
 echo "building fpc-src rpm ..."
 
-# create spec file
-SpecFile=rpm/fpc-src-$LazVersion-$LazRelease.spec
-cat rpm/fpc-src.spec | \
-  sed -e "s/LAZVERSION/$LazVersion/g" -e "s/LAZRELEASE/$LazRelease/" \
-  > $SpecFile
-  
 # copy custom rpm scripts
-TmpDir=~/tmp
+TmpDir=$HOME/tmp
 mkdir -p $TmpDir
 cp smart_strip.sh $TmpDir/smart_strip.sh
 chmod a+x $TmpDir/smart_strip.sh
 cp do_nothing.sh $TmpDir/do_nothing.sh
 chmod a+x $TmpDir/do_nothing.sh
 
+# create spec file
+SpecFile=rpm/fpc-src-$LazVersion-$LazRelease.spec
+cat rpm/fpc-src.spec | \
+  sed -e "s/LAZVERSION/$LazVersion/g" -e "s/LAZRELEASE/$LazRelease/g" -e "s#LAZSCRIPTDIR#$TmpDir#g" \
+  > $SpecFile
+  
 # build rpm
 rpmbuild -ba $SpecFile || rpm -ba $SpecFile
 
-echo "The new rpm can be found in $(./rpm/get_rpm_source_dir.sh)/RPMS/i386/fpc-src-$LazVersion-$LazRelease.i386.rpm"
+echo "The new rpm can be found in $(./rpm/get_rpm_source_dir.sh)/RPMS/$Arch/fpc-src-$LazVersion-$LazRelease.$Arch.rpm"
 
 # end.
 
