@@ -31,7 +31,7 @@ interface
 uses
   // Bindings
   qt4,
-  qtwidgets, qtobjects, qtproc,
+  qtwidgets, qtobjects, qtproc, QtWSControls,
   // LCL
   LMessages, LCLMessageGlue,
   SysUtils, Classes, Controls, Graphics, Forms, StdCtrls, ExtCtrls, LCLType,
@@ -256,11 +256,9 @@ begin
   QtFrame.AttachEvents;
 
   // Set's initial properties
-
-  QtFrame.setFrameShape(QFrameNoFrame);
+  QtFrame.setFrameShape(TBorderStyleToQtFrameShapeMap[TCustomPanel(AWinControl).BorderStyle]);
   
   // Return the Handle
-
   Result := TLCLIntfHandle(QtFrame);
 end;
 

@@ -6742,17 +6742,20 @@ begin
       AChild.FBaseParentClientSize:=LoadedClientSize;
       //DebugLn(['TWinControl.Loaded Self=',DbgSName(Self),' AChild=',AChild,' AChild.FBaseParentClientSize=',dbgs(AChild.FBaseParentClientSize)]);
     end;
-    if HandleAllocated then begin
+    if HandleAllocated then
+    begin
       // Set cached caption
       if GetCachedText(CachedText) then
         WSSetText(CachedText);
       InvalidatePreferredSize;
 
-      if wcfColorChanged in FWinControlFlags then begin
+      if wcfColorChanged in FWinControlFlags then
+      begin
         TWSWinControlClass(WidgetSetClass).SetColor(Self);
         Exclude(FWinControlFlags,wcfColorChanged);
       end;
-      if wcfFontChanged in FWinControlFlags then begin
+      if wcfFontChanged in FWinControlFlags then
+      begin
         TWSWinControlClass(WidgetSetClass).SetFont(Self,Font);
         NotifyControls(CM_PARENTCOLORCHANGED);
         for i := 0 to ControlCount - 1 do

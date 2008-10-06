@@ -634,10 +634,15 @@ var
   WidgetInfo: PWidgetInfo;
   TempWidget: PGtkWidget; // pointer to gtk-widget (local use when neccessary)
 begin
-  // create a fixed widget in a horizontal box
-  // a fixed on a fixed has no z-order
-  Widget := gtk_hbox_new(False, 0);
+  // TPanel control is a area with frame around. Area can have its own color
+
+  // To implement that in gtk we need:
+  // 1. GtkFrame to draw frame around area
+  // 2. GtkFixed to plaace controls and draw color area
+
+  Widget := gtk_frame_new(nil);
   WidgetInfo := CreateWidgetInfo(Widget, AWinControl, AParams);
+  gtk_frame_set_shadow_type(PGtkFrame(Widget), BorderStyleShadowMap[TCustomPanel(AWinControl).BorderStyle]);
   TempWidget := CreateFixedClientWidget;
   gtk_container_add(GTK_CONTAINER(Widget), TempWidget);
   gtk_widget_show(TempWidget);

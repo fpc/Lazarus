@@ -1480,8 +1480,8 @@ type
     wcfReAlignNeeded,
     wcfAligningControls,
     wcfEraseBackground,
-    wcfCreatingHandle,      // Set while constructing the handle of this control
-    wcfInitializing,        // Set while initializing during handle creation
+    wcfCreatingHandle,       // Set while constructing the handle of this control
+    wcfInitializing,         // Set while initializing during handle creation
     wcfCreatingChildHandles, // Set while constructing the handles of the childs
     wcfHandleVisible
     );
