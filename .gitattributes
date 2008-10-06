@@ -507,6 +507,7 @@ components/lazreport/source/addons/pdfexport/lazreportpdfexport.pas svneol=nativ
 components/lazreport/source/addons/pdfexport/lr_e_pdf.pas svneol=native#text/plain
 components/lazreport/source/addons/pdfexport/lr_pdfexp_reg.lrs svneol=native#text/plain
 components/lazreport/source/addons/pdfexport/lr_pdfexp_reg.pas svneol=native#text/plain
+components/lazreport/source/addons/pdfexport/readme.txt svneol=native#text/plain
 components/lazreport/source/addons/pdfexport/tfrtnpdfexport.png -text svneol=unset#image/png
 components/lazreport/source/barcode.pas svneol=native#text/pascal
 components/lazreport/source/fr_pencil.lrs svneol=native#text/plain
