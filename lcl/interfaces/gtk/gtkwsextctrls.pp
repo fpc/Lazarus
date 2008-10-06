@@ -663,19 +663,6 @@ var
   MainWidget: PGtkWidget;
 begin
   if not AWinControl.HandleAllocated then exit;
-{  if  ((csOpaque in AWinControl.ControlStyle)
-  and GtkWidgetIsA(pGtkWidget(AWinControl.handle),GTKAPIWidget_GetType)) then
-    exit;
-}
-  //DebugLn('TGtkWSWinControl.SetColor ',DbgSName(AWinControl));
-{  GtkWidgetSet.SetWidgetColor(pGtkWidget(AWinControl.handle),
-                              AWinControl.font.color, AWinControl.color,
-                              [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,
-                               GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
-}
-//    GtkWidgetSet.setWidgetFont(pGtkWidget(AWinControl.handle),aWinControl.font);
-
-
   MainWidget:=GetFixedWidget(pGtkWidget(AWinControl.handle));
   if MainWidget<>nil then
   GtkWidgetSet.SetWidgetColor(MainWidget,
