@@ -924,14 +924,17 @@ var
     newValue: Double;
   begin
     SpinEdit := TCustomFloatSpinEdit(WindowInfo^.WinControl);
-    
-    NewValue := SpinEdit.GetLimitedValue(
-      WindowInfo^.spinValue + AUpDownMsg^.iDelta * SpinEdit.Increment);
-    WindowInfo^.spinValue := NewValue;
 
-    spinHandle := AUpDownMsg^.hdr.hwndFrom;
-    UpdateFloatSpinEditText(SpinEdit, NewValue);
-    Windows.SendMessage(spinHandle, UDM_SETPOS32, 0, 500);
+    if not SpinEdit.ReadOnly then
+    begin
+      NewValue := SpinEdit.GetLimitedValue(
+        WindowInfo^.spinValue + AUpDownMsg^.iDelta * SpinEdit.Increment);
+      WindowInfo^.spinValue := NewValue;
+
+      spinHandle := AUpDownMsg^.hdr.hwndFrom;
+      UpdateFloatSpinEditText(SpinEdit, NewValue);
+      Windows.SendMessage(spinHandle, UDM_SETPOS32, 0, 500);
+    end;
   end;
 
   procedure SetMinMaxInfo(var MinMaxInfo: TMINMAXINFO);
