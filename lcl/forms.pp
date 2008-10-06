@@ -662,6 +662,7 @@ type
     property OnResize;
     property OnShortCut;
     property OnShow;
+    property OnShowHint;
     property OnStartDock;
     property OnUnDock;
     property OnUTF8KeyPress;

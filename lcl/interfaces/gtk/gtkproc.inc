@@ -6456,7 +6456,11 @@ begin
   Widget := PGtkWidget(AWinControl.Handle);
   // set size to default
   //DebugLn(['GetGTKDefaultWidgetSize ',GetWidgetDebugReport(Widget)]);
-  gtk_widget_set_usize(Widget,-1,-1);
+  {$IFDEF GTK1}
+  gtk_widget_set_usize(Widget, -1, -1); // deprecated in gtk2
+  {$ELSE}
+  gtk_widget_set_size_request(Widget, -1, -1);
+  {$ENDIF}
   // ask default size
   gtk_widget_size_request(Widget,@Requisition);
   PreferredWidth:=Requisition.width;
@@ -6486,7 +6490,11 @@ begin
    ' PreferredWidth=',PreferredWidth,' PreferredHeight=',PreferredHeight,
    ' WithThemeSpace=',WithThemeSpace]);}
   // set new size
-  gtk_widget_set_usize(Widget,AWinControl.Width,AWinControl.Height);
+  {$IFDEF GTK1}
+  gtk_widget_set_usize(Widget, AWinControl.Width, AWinControl.Height);
+  {$ELSE}
+  gtk_widget_set_size_request(Widget, AWinControl.Width, AWinControl.Height);
+  {$ENDIF}
   //debugln('GetGTKDefaultSize PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
 end;
 

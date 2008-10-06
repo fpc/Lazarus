@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="3">
+    <Name Value="idefilebrowser"/>
+    <Author Value="Graeme Geldenhuys"/>
+    <CompilerOptions>
+      <Version Value="8"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Other>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="File browsing window for the Lazarus IDE"/>
+    <License Value="Modified LGPL"/>
+    <Version Minor="1"/>
+    <Files Count="5">
+      <Item1>
+        <Filename Value="frmfilebrowser.lfm"/>
+        <Type Value="LFM"/>
+      </Item1>
+      <Item2>
+        <Filename Value="frmfilebrowser.lrs"/>
+        <Type Value="LRS"/>
+      </Item2>
+      <Item3>
+        <Filename Value="frmfilebrowser.pas"/>
+        <UnitName Value="frmFileBrowser"/>
+      </Item3>
+      <Item4>
+        <Filename Value="regidefilebrowser.pp"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="regidefilebrowser"/>
+      </Item4>
+      <Item5>
+        <Filename Value="frmconfigfilebrowser.pp"/>
+        <UnitName Value="frmconfigfilebrowser"/>
+      </Item5>
+    </Files>
+    <Type Value="DesignTime"/>
+    <RequiredPkgs Count="3">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="IDEIntf"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item3>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)/"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

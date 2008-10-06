@@ -960,10 +960,8 @@ end;
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH;
 const
-  //HATCH_NULL      : array[0..7] of Byte = ($00, $00, $00, $00, $00, $00, $00, $00);
   HATCH_BDIAGONAL : array[0..7] of Byte = ($80, $40, $20, $10, $08, $04, $02, $01);
   HATCH_CROSS     : array[0..7] of Byte = ($08, $08, $08, $FF, $08, $08, $08, $08);
-  {This is too fine for a Cross Hatch ($22, $22, $FF, $22, $22, $22, $FF, $22);}
   HATCH_DIAGCROSS : array[0..7] of Byte = ($81, $42, $24, $18, $18, $24, $42, $81);
   HATCH_FDIAGONAL : array[0..7] of Byte = ($01, $02, $04, $08, $10, $20, $40, $80);
   HATCH_HORIZONTAL: array[0..7] of Byte = ($00, $00, $00, $FF, $00, $00, $00, $00);
@@ -977,7 +975,6 @@ begin
   BeginGDKErrorTrap;
   {$ENDIF}
 
-  //write('CreateBrushIndirect->');
   GObject := NewGDIObject(gdiBrush);
   try
     {$IFDEF DebugGDIBrush}
@@ -987,20 +984,10 @@ begin
     with LogBrush do
     begin
       case lbStyle of
-   //     BS_HOLLOW,         // Hollow brush.
-        BS_NULL:           // Same as BS_HOLLOW.
-          begin
-            //GObject^.GDIBrushFill := GDK_STIPPLED;
-            //GObject^.GDIBrushPixmap :=
-            //  gdk_bitmap_create_from_data(nil, @HATCH_NULL, 8, 8);
-            GObject^.IsNullBrush := True;
-          end;
-
+        BS_NULL {BS_HOLLOW}: // Same as BS_HOLLOW.
+          GObject^.IsNullBrush := True;
         BS_SOLID:          // Solid brush.
-          begin
-            GObject^.GDIBrushFill := GDK_SOLID;
-          end;
-
+          GObject^.GDIBrushFill := GDK_SOLID;
         BS_HATCHED:        // Hatched brush.
           begin
             GObject^.GDIBrushFill := GDK_STIPPLED;
@@ -1071,7 +1058,7 @@ begin
       {$ENDIF}
 
       If not GObject^.IsNullBrush then
-        SetGDIColorRef(GObject^.GDIBrushColor,lbColor);
+        SetGDIColorRef(GObject^.GDIBrushColor, lbColor);
     end;
     Result := HBRUSH(PtrUInt(GObject));
   except

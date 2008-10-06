@@ -111,7 +111,6 @@ type
     FLazarusPID: Integer;
     FCmdLineParams: TStrings;
     FShowSplashOption: boolean;
-    function GetLazarusPath(const FileName: string): string;
     function RenameLazarusExecutable(const Directory: string): TModalResult;
     procedure LazarusProcessStart(Sender: TObject);
     procedure WaitForLazarus;
@@ -130,18 +129,6 @@ destructor TLazarusManager.Destroy;
 begin
   FreeAndNil(FCmdLineParams);
   inherited Destroy;
-end;
-
-function TLazarusManager.GetLazarusPath(const FileName: string) : string;
-begin
-  // first try in the bin dir of the primary config directory
-  Result := AppendPathDelim(GetPrimaryConfigPath) + 'bin' + PathDelim +
-    FileName + GetExeExt;
-  // if no lazarus executable exists in that directory, try the same directory
-  // as the startlazarus executable
-  if not FileExistsUTF8(Result) then
-    Result := AppendPathDelim(ExtractFilePath(ExpandFileNameUTF8(ParamStrUTF8(0)))) +
-      FileName + GetExeExt;
 end;
 
 function TLazarusManager.RenameLazarusExecutable(const Directory: string
@@ -168,7 +155,7 @@ begin
         end;
       if not RenameFileUTF8(CurFilename, BackupFileName) then begin
         MessageDlg(format('Can''t rename "%s" to "%s"'#13'%s',
-          [FLazarusPath, BackupFileName, SysErrorMessageUTF8(GetLastOSError)]),
+          [CurFilename, BackupFileName, SysErrorMessageUTF8(GetLastOSError)]),
           mtError, [mbOK], 0);
         Result := mrAbort;
         exit;
@@ -176,7 +163,7 @@ begin
     end;
     if not RenameFileUTF8(NewFileName, CurFilename) then begin
       MessageDlg(format('Can''t rename "%s" to "%s"'#13'%s',
-        [NewFileName, FLazarusPath, SysErrorMessageUTF8(GetLastOSError)]),
+        [NewFileName, CurFilename, SysErrorMessageUTF8(GetLastOSError)]),
         mtError, [mbOK], 0);
       Result := mrAbort;
       exit;
@@ -275,7 +262,8 @@ begin
       2.2 as lazarus(.exe) (if the executable was writable (non windows))
     }
     if (RenameLazarusExecutable(DefaultDir)=mrOK)
-    and (RenameLazarusExecutable(CustomDir)=mrOK) then begin
+      and (RenameLazarusExecutable(CustomDir)=mrOK) then
+    begin
       DefaultExe:=DefaultDir+'lazarus'+GetExeExt;
       CustomExe:=CustomDir+'lazarus'+GetExeExt;
       if FileExistsUTF8(DefaultExe) then begin

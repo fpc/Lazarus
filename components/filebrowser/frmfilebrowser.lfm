@@ -1,0 +1,68 @@
+object FileBrowserForm: TFileBrowserForm
+  Left = 305
+  Height = 434
+  Top = 466
+  Width = 385
+  Caption = 'File Browser'
+  ClientHeight = 434
+  ClientWidth = 385
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnShow = FormShow
+  LCLVersion = '0.9.25'
+  object FileListBox: TFileListBox
+    Height = 186
+    Top = 248
+    Width = 385
+    Align = alClient
+    Directory = '/home/graemeg'
+    FileType = [ftArchive, ftNormal]
+    OnDblClick = FileListBoxDblClick
+    TabOrder = 0
+  end
+  object TV: TTreeView
+    Height = 201
+    Top = 42
+    Width = 385
+    Align = alTop
+    DefaultItemHeight = 18
+    TabOrder = 1
+    OnExpanded = TVExpanded
+    OnSelectionChanged = TVSelectionChanged
+  end
+  object Panel1: TPanel
+    Height = 42
+    Width = 385
+    Align = alTop
+    BevelOuter = bvNone
+    ClientHeight = 42
+    ClientWidth = 385
+    TabOrder = 2
+    object cbHidden: TCheckBox
+      Left = 200
+      Height = 24
+      Top = 8
+      Width = 154
+      Caption = 'Show hidden files'
+      OnChange = cbHiddenChange
+      TabOrder = 0
+    end
+    object btnConfigure: TButton
+      Left = 8
+      Height = 25
+      Top = 7
+      Width = 90
+      Caption = 'Configure'
+      OnClick = btnConfigureClick
+      TabOrder = 1
+    end
+  end
+  object Splitter1: TSplitter
+    Cursor = crVSplit
+    Height = 5
+    Top = 243
+    Width = 385
+    Align = alTop
+    ResizeAnchor = akTop
+  end
+end

@@ -68,8 +68,8 @@ uses
 Const
   cTodoFlag = '#todo';
   cDoneFlag = '#done';
-  cAltTodoFLag = 'TODO';
-  cAltDoneFLag = 'DONE';
+  cAltTodoFLag = 'todo';
+  cAltDoneFLag = 'done';
 
 type
   TOnOpenFile = procedure(Sender: TObject; const Filename: string;
@@ -287,28 +287,28 @@ begin
   ParsingString := Trim(ParsingString);
 
   // See if it's a TODO or DONE item
-  if (Pos(cTodoFlag, ParsingString) = 1) then
+  if (Pos(cTodoFlag, lowercase(ParsingString)) = 1) then
   begin
     IsDone := False;
     IsAltNotation := False;
   end
   else
   begin
-    if (Pos(cAltTodoFLag, ParsingString) = 1) then
+    if (Pos(cAltTodoFLag, lowercase(ParsingString)) = 1) then
     begin
       IsDone := False;
       IsAltNotation := True;
     end
     else
     begin
-      if (Pos(cDoneFlag, ParsingString) = 1) then
+      if (Pos(cDoneFlag, lowercase(ParsingString)) = 1) then
       begin
         IsDone := True;
         IsAltNotation := False;
       end
       else
       begin
-        if (Pos(cAltDoneFLag, ParsingString) = 1) then
+        if (Pos(cAltDoneFLag, lowercase(ParsingString)) = 1) then
         begin
           IsDone := True;
           IsAltNotation := True;

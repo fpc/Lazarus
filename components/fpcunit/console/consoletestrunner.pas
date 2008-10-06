@@ -35,6 +35,11 @@ const
 type
   TFormat = (fPlain, fLatex, fXML);
 
+var
+  DefaultFormat : TFormat = fXML;
+  DefaultRunAllTests : Boolean = False;
+
+type
   { TTestRunner }
 
   TTestRunner = class(TCustomApplication)
@@ -196,7 +201,7 @@ end;
 
 procedure TTestRunner.ParseOptions;
 begin
-  if HasOption('h', 'help') or (ParamCount = 0) then
+  if HasOption('h', 'help') or ((ParamCount = 0) and not DefaultRunAllTests) then
   begin
     writeln(Title);
     writeln(Version);
@@ -219,13 +224,15 @@ begin
   end;
 
   //get the format parameter
-  FormatParam := fXML;
+  FormatParam := DefaultFormat;
   if HasOption('format') then
   begin
-    if GetOptionValue('format') = 'latex' then
+    if CompareText(GetOptionValue('format'),'latex')=0 then
       FormatParam := fLatex
-    else if GetOptionValue('format') = 'plain' then
-      FormatParam := fPlain;
+    else if CompareText(GetOptionValue('format'),'plain')=0 then
+      FormatParam := fPlain
+    else if CompareText(GetOptionValue('format'),'xml')=0 then
+      FormatParam := fXML;
   end;
 
   ShowProgress := HasOption('p', 'progress');
@@ -314,9 +321,6 @@ begin
     end;
 
   //run the tests
-  if HasOption('a', 'all') then
-    DoTestRun(GetTestRegistry)
-  else
   if HasOption('suite') then
   begin
     S := '';
@@ -327,7 +331,9 @@ begin
     else
       for I := 0 to GetTestRegistry.Tests.count-1 do
         CheckTestRegistry (GetTestregistry[I], S);
-  end;
+  end
+  else if HasOption('a', 'all') or (DefaultRunAllTests and Not HasOption('l','list')) then
+    DoTestRun(GetTestRegistry) ;
   Terminate;
 end;
 
