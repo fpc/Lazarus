@@ -43,8 +43,6 @@ uses
   Themes, Menus{for ShortCut procedures}, LResources, ImageListCache;
 
 type
-  { TButton }
-
   TButtonLayout =
   (
     blGlyphLeft,
@@ -52,6 +50,7 @@ type
     blGlyphTop,
     blGlyphBottom
   );
+
   TButtonState =
   (
     bsUp,       // button is up

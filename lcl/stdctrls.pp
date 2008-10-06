@@ -533,6 +533,7 @@ type
     procedure Click; override; // make it public
     procedure Clear; virtual;
     procedure ClearSelection;
+    function GetIndexAtXY(X, Y: integer): integer;
     function GetIndexAtY(Y: integer): integer;
     function GetSelectedText: string;
     function ItemAtPos(const Pos: TPoint; Existing: Boolean): Integer;

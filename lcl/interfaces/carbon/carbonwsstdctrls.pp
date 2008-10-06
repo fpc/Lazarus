@@ -107,7 +107,7 @@ type
   protected
   public
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-    class function GetIndexAtY(const ACustomListBox: TCustomListBox; y: integer): integer; override;
+    class function GetIndexAtXY(const ACustomListBox: TCustomListBox; X, Y: integer): integer; override;
     class function GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
     class function GetItemRect(const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): boolean; override;
     class function GetSelCount(const ACustomListBox: TCustomListBox): integer; override;
@@ -538,18 +538,19 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonWSCustomListBox.GetIndexAtY
+  Method:  TCarbonWSCustomListBox.GetIndexAtXY
   Params:  ACustomListBox - LCL custom list box
+           X              - X coordinate
            Y              - Y coordinate
   Returns: The list box item at the specified position or -1
  ------------------------------------------------------------------------------}
-class function TCarbonWSCustomListBox.GetIndexAtY(
-  const ACustomListBox: TCustomListBox; y: integer): integer;
+class function TCarbonWSCustomListBox.GetIndexAtXY(
+  const ACustomListBox: TCustomListBox; X, Y: integer): integer;
 begin
   Result := -1;
-  if not CheckHandle(ACustomListBox, Self, 'GetIndexAtY') then Exit;
+  if not CheckHandle(ACustomListBox, Self, 'GetIndexAtXY') then Exit;
 
-  Result := TCarbonListBox(ACustomListBox.Handle).GetItemAt(0, Y);
+  Result := TCarbonListBox(ACustomListBox.Handle).GetItemAt(X, Y);
 end;
 
 {------------------------------------------------------------------------------

@@ -125,6 +125,7 @@ Vincent Beuselinck
 Vincent Snijders
 Wanderlan Santos dos Anjos
 Wojciech Malinowski
+Yuriy Yeroshkin
 Zaenal Mutaqin
 Zaher Dirkey
 Zeljan Rikalo

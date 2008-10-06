@@ -100,7 +100,7 @@ type
   { TWSCustomListBox }
 
   TWSCustomListBox = class(TWSWinControl)
-    class function GetIndexAtY(const ACustomListBox: TCustomListBox; y: integer): integer; virtual;
+    class function GetIndexAtXY(const ACustomListBox: TCustomListBox; X, Y: integer): integer; virtual;
     class function GetItemIndex(const ACustomListBox: TCustomListBox): integer; virtual;
     class function GetItemRect(const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): boolean; virtual;
     class function GetSelCount(const ACustomListBox: TCustomListBox): integer; virtual;
@@ -232,8 +232,8 @@ end;
 
 { TWSCustomListBox }
 
-class function TWSCustomListBox.GetIndexAtY(
-  const ACustomListBox: TCustomListBox; y: integer): integer;
+class function TWSCustomListBox.GetIndexAtXY(
+  const ACustomListBox: TCustomListBox; X, Y: integer): integer;
 begin
   Result := -1;
 end;

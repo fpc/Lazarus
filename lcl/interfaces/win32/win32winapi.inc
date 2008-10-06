@@ -247,7 +247,7 @@ var
     Enabled := CheckListBox.Enabled and CheckListBox.ItemEnabled[Data^.itemID];
 
     // fill the background
-    if Enabled and Selected then
+    if Selected then
       lgBrush.lbColor := Windows.GetSysColor(COLOR_HIGHLIGHT)
     else
       lgBrush.lbColor := ColorToRGB(CheckListBox.Color);
@@ -268,14 +268,14 @@ var
     // draw text
     Rect := Windows.Rect(Data^.rcItem);
     Rect.Left := Rect.Left + Rect.Bottom - Rect.Top + 5;
+    OldBackColor := Windows.SetBkColor(Data^._HDC, lgBrush.lbColor);
     if not Enabled then
       OldColor := Windows.SetTextColor(Data^._HDC, Windows.GetSysColor(COLOR_GRAYTEXT))
     else
     if Selected then
-    begin
-      OldColor := Windows.SetTextColor(Data^._HDC, Windows.GetSysColor(COLOR_HIGHLIGHTTEXT));
-      OldBackColor := Windows.SetBkColor(Data^._HDC, Windows.GetSysColor(COLOR_HIGHLIGHT));
-    end;
+      OldColor := Windows.SetTextColor(Data^._HDC, Windows.GetSysColor(COLOR_HIGHLIGHTTEXT))
+    else
+      OldColor := Windows.SetTextColor(Data^._HDC, ColorToRGB(CheckListBox.Font.Color));
 {$ifdef WindowsUnicodeSupport}
     if UnicodeEnabledOS then
     begin
@@ -293,14 +293,9 @@ var
     Windows.DrawText(Data^._HDC, PChar(CheckListBox.Items[Data^.ItemID]), -1,
       Rect, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
 {$endif}
-    if not Enabled then
-      Windows.SetTextColor(Data^._HDC, OldColor)
-    else
-    if Selected then
-    begin
-      Windows.SetTextColor(Data^._HDC, OldColor);
-      Windows.SetBkColor(Data^._HDC, OldBackColor);
-    end;
+    // restore old colors
+    Windows.SetTextColor(Data^._HDC, OldColor);
+    Windows.SetBkColor(Data^._HDC, OldBackColor);
   end;
 
 begin

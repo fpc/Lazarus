@@ -152,7 +152,7 @@ type
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-    class function GetIndexAtY(const ACustomListBox: TCustomListBox; y: integer): integer; override;
+    class function GetIndexAtXY(const ACustomListBox: TCustomListBox; X, Y: integer): integer; override;
     class function GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
     class function GetItemRect(const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): boolean; override;
     class function GetSelCount(const ACustomListBox: TCustomListBox): integer; override;
@@ -419,7 +419,7 @@ end;
 class function TGtk2WSCustomListBox.GetTopIndex(
   const ACustomListBox: TCustomListBox): integer;
 begin
-  Result := GetIndexAtY(ACustomListBox, 0);
+  Result := GetIndexAtXY(ACustomListBox, 0, 0);
 end;
 
 class procedure TGtk2WSCustomListBox.SelectItem(
@@ -664,15 +664,15 @@ begin
   TGtkWSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
 end;
 
-class function TGtk2WSCustomListBox.GetIndexAtY(
-  const ACustomListBox: TCustomListBox; y: integer): integer;
+class function TGtk2WSCustomListBox.GetIndexAtXY(
+  const ACustomListBox: TCustomListBox; X, Y: integer): integer;
 var
   aTreeView: PGtkTreeView;
   aTreeColumn: PGtkTreeViewColumn;
   aTreePath: PGtkTreePath;
 begin
   Result := -1;
-  if not WSCheckHandleAllocated(ACustomListBox, 'GetIndexAtY') then
+  if not WSCheckHandleAllocated(ACustomListBox, 'GetIndexAtXY') then
     Exit;
   case ACustomListBox.fCompStyle of
   csListBox, csCheckListBox:
