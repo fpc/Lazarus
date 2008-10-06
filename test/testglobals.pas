@@ -43,7 +43,7 @@ const
   // Maximal number of bytes read from stream
   READ_BYTES = 4096;
   // Maximal run time for a test program
-  TIME_OUT = 30;
+  TIME_OUT = 120;
 
 function ReadOutput(AProcess:TProcess): TStringList;
 var
