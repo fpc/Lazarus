@@ -19,7 +19,7 @@ unit lr_e_pdf;
 interface
 
 uses
-    SysUtils, Windows, Messages, Classes, Graphics, Forms, StdCtrls, lr_BarC,
+    SysUtils, Classes, Graphics, Forms, StdCtrls, lr_BarC,
     lr_class, PdfDoc, PdfTypes, PdfFonts, PReport, Dialogs, Controls;
 
 type
