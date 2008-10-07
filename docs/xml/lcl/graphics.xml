@@ -229,11 +229,11 @@
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TFontQuality.fqDraft">
-        <short>Draft font quality</short>
+        <short>Prefer other font features (size, style) against output quality</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TFontQuality.fqProof">
-        <short>Proof font quality</short>
+        <short>Prefer output quality against other font features (size, style)</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TFontQuality.fqNonAntialiased">
@@ -241,7 +241,7 @@
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TFontQuality.fqAntialiased">
-        <short>Force font antialiasing</short>
+        <short>Use font antialiasing</short>
       </element>
       <!-- record type Visibility: default -->
       <element name="TFontData">
