@@ -41,7 +41,7 @@ uses
   FileUtil, IDEContextHelpEdit, EnvironmentOpts,
   IDEWindowIntf, IDEImagesIntf, ProjectIntf, IDEDialogs,
   IDEOptionDefs, LazarusIDEStrConsts, Project, IDEProcs, W32VersionInfo,
-  VersionInfoAdditionalInfo, W32Manifest, ApplicationBundle, ExtDlgs, base64;
+  VersionInfoAdditionalInfo, W32Manifest, ApplicationBundle, ExtDlgs;
 
 type
 

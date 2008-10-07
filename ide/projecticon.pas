@@ -47,6 +47,7 @@ type
     FModified: boolean;
     rcFileName: string;
     icoFileName: string;
+    lrsFileName: string;
     FOnModified: TNotifyEvent;
     procedure SetIconText(const AValue: String);
     procedure SetFileNames(const MainFilename: string);
@@ -61,8 +62,10 @@ type
     procedure SetStream(AStream: TStream);
 
     function CreateRCFile(const MainFilename, TargetOS: string): TModalResult;
+    function CreateLRSFile(const MainFilename, TargetOS: string): TModalResult;
     function CreateIconFile: Boolean;
     function CreateResource: Boolean;
+    function CreateLazarusResource: Boolean;
     function UpdateMainSourceFile(const AFilename: string): TModalResult;
 
     property IconText: String read FIconText write SetIconText;
@@ -127,12 +130,22 @@ end;
 -----------------------------------------------------------------------------}
 function TProjectIcon.CreateRCFile(const MainFilename, TargetOS: string): TModalResult;
 begin
-  // in future we will compile manifest from rc, but now we just add our template
   Result := mrOk;
   SetFileNames(MainFilename);
   if ((TargetOS = 'win32') or (TargetOS = 'wince')) and (IconText <> '') then
   begin
     if not CreateResource then
+      Result := mrCancel;
+  end;
+end;
+
+function TProjectIcon.CreateLRSFile(const MainFilename, TargetOS: string): TModalResult;
+begin
+  Result := mrOk;
+  SetFileNames(MainFilename);
+  if (IconText <> '') then
+  begin
+    if not CreateLazarusResource then
       Result := mrCancel;
   end;
 end;
@@ -174,6 +187,23 @@ begin
   finally
     Stream.Free;
   end;
+end;
+
+function TProjectIcon.CreateLazarusResource: Boolean;
+var
+  ASource, ATarget: TStream;
+begin
+  Result := False;
+  ASource := GetStream;
+  ATarget := nil;
+  try
+    ATarget := TFileStream.Create(UTF8ToSys(lrsFileName), fmCreate);
+    BinaryToLazarusResourceCode(ASource, ATarget, 'MAINICON', 'ICO');
+    Result := True;
+  finally
+    ATarget.Free;
+  end;
+  ASource.Free;
 end;
 
 {-----------------------------------------------------------------------------
@@ -227,6 +257,7 @@ procedure TProjectIcon.SetFileNames(const MainFilename: string);
 begin
   rcFileName := ExtractFilePath(MainFilename) + 'icon.rc';
   icoFileName := ExtractFilePath(MainFilename) + 'icon.ico';
+  lrsFileName := ExtractFilePath(MainFilename) + 'icon.lrs';
 end;
 
 constructor TProjectIcon.Create;

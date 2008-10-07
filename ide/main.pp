@@ -9321,6 +9321,17 @@ begin
         PutExitInfoBuilder(lisInfoBuildError);
         exit;
       end;
+
+      Result := Project1.ProjectIcon.CreateLRSFile(Project1.MainFileName,
+        MainBuildBoss.GetTargetOS(true));
+      for i := 1 to Project1.ProjectIcon.Messages.Count do
+        MessagesView.AddMsg(Format(Project1.ProjectIcon.Messages[i - 1],
+                                    ['"', Project1.ShortDescription, '"']), '' ,-1);
+      if Result <> mrOk then
+      begin
+        PutExitInfoBuilder(lisInfoBuildError);
+        exit;
+      end;
     end else
       VersionInfo:=nil;
 
