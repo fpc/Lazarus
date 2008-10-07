@@ -524,6 +524,9 @@ function TQtWidgetSet.CreateFontIndirectEx(const LogFont: TLogFont; const LongFo
 var
   QtFont: TQtFont;
   FamilyName: string;
+const
+  QStyleStategy: Array [DEFAULT_QUALITY..ANTIALIASED_QUALITY] of QFontStyleStrategy =
+    (QFontPreferDefault, QFontPreferMatch, QFontPreferQuality, QFontNoAntialias, QFontPreferAntialias);
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI CreateFontIndirectEx] FontName: ' + LongFontName);
@@ -567,6 +570,8 @@ begin
       QtFont.setFamily(FamilyName);
     end;
 
+    if (LogFont.lfQuality >= DEFAULT_QUALITY) and (LogFont.lfQuality <= ANTIALIASED_QUALITY) then
+      QtFont.setStyleStrategy(QStyleStategy[LogFont.lfQuality]);
   finally
     Result := HFONT(QtFont);
   end;
@@ -2240,6 +2245,14 @@ begin
       ALogFont^.lfUnderline := Ord(AFont.getUnderline) * High(Byte);
       ALogFont^.lfStrikeOut := Ord(AFont.getStrikeOut) * High(Byte);
       ALogFont^.lfCharSet := DEFAULT_CHARSET;
+      case AFont.getStyleStategy of
+        QFontPreferMatch: ALogFont^.lfQuality := DRAFT_QUALITY;
+        QFontPreferQuality: ALogFont^.lfQuality := PROOF_QUALITY;
+        QFontNoAntialias: ALogFont^.lfQuality := NONANTIALIASED_QUALITY;
+        QFontPreferAntialias: ALogFont^.lfQuality := ANTIALIASED_QUALITY;
+      else
+        ALogFont^.lfQuality := DEFAULT_QUALITY;
+      end;
       ALogFont^.lfFaceName := UTF8Encode(AFont.getFamily);
     end;
   end
