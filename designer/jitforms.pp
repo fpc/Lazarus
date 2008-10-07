@@ -1746,9 +1746,7 @@ begin
   fCurReadChild:=Component;
   fCurReadChildClass:=ComponentClass;
   
-  {$IFDEF EnableTFrame}
   ReadInlineComponent(Component,ComponentClass,Reader.Owner);
-  {$ENDIF}
   //debugln(['[TJITComponentList.ReaderCreateComponent] Class=',ComponentClass.ClassName,' Component=',dbgsName(Component)]);
 end;
 

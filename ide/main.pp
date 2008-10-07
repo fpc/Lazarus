@@ -1141,9 +1141,7 @@ begin
 
   // load installed packages
   PkgBoss.LoadInstalledPackages;
-  {$IFDEF EnableTFrame}
   FormEditor1.RegisterFrame;
-  {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create INSTALLED COMPONENTS');{$ENDIF}
 
   // load package configs
@@ -2003,9 +2001,7 @@ begin
   RegisterProjectFileDescriptor(TFileDescPascalUnit.Create);
   RegisterProjectFileDescriptor(TFileDescPascalUnitWithForm.Create);
   RegisterProjectFileDescriptor(TFileDescPascalUnitWithDataModule.Create);
-{$IFDEF EnableTFrame}
   RegisterProjectFileDescriptor(TFileDescPascalUnitWithFrame.Create);
-{$ENDIF}
   RegisterProjectFileDescriptor(TFileDescSimplePascalProgram.Create);
   RegisterProjectFileDescriptor(TFileDescText.Create);
 
@@ -5513,9 +5509,6 @@ begin
 
       if MissingClasses<>nil then begin
         for i:=MissingClasses.Count-1 downto 0 do begin
-          {$IFNDEF EnableTFrame}
-          if i>=0 then continue;// just skip
-          {$ENDIF}
           NestedClassName:=MissingClasses[i];
           if SysUtils.CompareText(NestedClassName,AncestorType.ClassName)=0 then
           begin
@@ -6278,7 +6271,7 @@ begin
       FLastFormActivated:=nil;
     ComponentStillUsed:=(not (cfCloseDependencies in Flags))
                         and UnitComponentIsUsed(AnUnitInfo,false);
-    {$IFDEF EnableTFrame}
+    {$IFDEF VerboseTFrame}
     DebugLn(['TMainIDE.CloseUnitComponent ',AnUnitInfo.Filename,' ComponentStillUsed=',ComponentStillUsed,' UnitComponentIsUsed=',UnitComponentIsUsed(AnUnitInfo,false),' ',dbgs(AnUnitInfo.Flags),' DepAncestor=',AnUnitInfo.FindUsedByComponentDependency([ucdtAncestor])<>nil,' DepInline=',AnUnitInfo.FindUsedByComponentDependency([ucdtInlineClass])<>nil]);
     {$ENDIF}
     if (OldDesigner=nil) then begin
