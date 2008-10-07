@@ -4070,8 +4070,7 @@ Begin
       ReadSettings(EnvironmentOptions);
     end;
     if EnvironmentOptionsDialog.ShowModal=mrOk then begin
-      ShowCompileDialog:=EnvironmentOptions.ShowCompileDialog;
-    
+
       // invalidate cached substituted macros
       IncreaseCompilerParseStamp;
 
@@ -4079,7 +4078,8 @@ Begin
       OldCompilerFilename:=EnvironmentOptions.CompilerFilename;
       OldLanguage:=EnvironmentOptions.LanguageID;
       EnvironmentOptionsDialog.WriteSettings(EnvironmentOptions);
-      
+      ShowCompileDialog:=EnvironmentOptions.ShowCompileDialog;
+
       UpdateDefaultPascalFileExtensions;
 
       //DebugLn(['TMainIDE.DoShowEnvGeneralOptions OldLanguage=',OldLanguage,' EnvironmentOptions.LanguageID=',EnvironmentOptions.LanguageID]);

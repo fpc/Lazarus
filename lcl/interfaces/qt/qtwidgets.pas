@@ -2650,37 +2650,45 @@ end;
 procedure TQtWidget.Show;
 begin
   QWidget_show(Widget);
+  {$IFNDEF QTOPIA}
   {$IFDEF LINUX}
   if QWidget_isWindow(Widget) then
     QtX11WaitForWindowManager(Widget);
   {$ENDIF}  
+  {$ENDIF}
 end;
 
 procedure TQtWidget.ShowNormal;
 begin
   QWidget_showNormal(Widget);
+  {$IFNDEF QTOPIA}
   {$IFDEF LINUX}
   if QWidget_isWindow(Widget) then
     QtX11WaitForWindowManager(Widget);
   {$ENDIF}  
+  {$ENDIF}
 end;
 
 procedure TQtWidget.ShowMinimized;
 begin
   QWidget_showMinimized(Widget);
+  {$IFNDEF QTOPIA}
   {$IFDEF LINUX}
   if QWidget_isWindow(Widget) then
     QtX11WaitForWindowManager(Widget);
+  {$ENDIF}
   {$ENDIF}
 end;
 
 procedure TQtWidget.ShowMaximized;
 begin
   QWidget_showMaximized(Widget);
+  {$IFNDEF QTOPIA}
   {$IFDEF LINUX}
   if QWidget_isWindow(Widget) then
     QtX11WaitForWindowManager(Widget);
   {$ENDIF}  
+  {$ENDIF}
 end;
 
 function TQtWidget.getActionByIndex(AIndex: Integer): QActionH;
@@ -2932,10 +2940,12 @@ end;
 procedure TQtWidget.setVisible(visible: Boolean);
 begin
   QWidget_setVisible(Widget, visible);
+  {$IFNDEF QTOPIA}
   {$IFDEF LINUX}
   if Visible and QWidget_isWindow(Widget) then
     QtX11WaitForWindowManager(Widget);
   {$ENDIF}  
+  {$ENDIF}
 end;
 
 function TQtWidget.windowModality: QtWindowModality;

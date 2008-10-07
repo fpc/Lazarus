@@ -2575,8 +2575,10 @@ type
     FMaxWidth: Integer;
     FState: THeaderSectionState;
     FText: string;
+    FVisible: Boolean;
     FWidth: Integer;
     FOriginalIndex: Integer;
+    function GetWidth: Integer;
     function GetLeft: Integer;
     function GetRight: Integer;
     procedure SetAlignment(const AValue: TAlignment);
@@ -2584,6 +2586,7 @@ type
     procedure SetMinWidth(AValue: Integer);
     procedure SetState(const AValue: THeaderSectionState);
     procedure SetText(const Value: string);
+    procedure SetVisible(const AValue: Boolean);
     procedure SetWidth(Value: Integer);
     procedure SetImageIndex(const Value: TImageIndex);
     procedure CheckConstraints;
@@ -2599,7 +2602,8 @@ type
     property MaxWidth: Integer read FMaxWidth write SetMaxWidth default 10000;
     property MinWidth: Integer read FMinWidth write SetMinWidth default 0;
     property Text: string read FText write SetText;
-    property Width: Integer read FWidth write SetWidth;
+    property Width: Integer read GetWidth write SetWidth;
+    property Visible: Boolean read FVisible write SetVisible;
     //index which doesn't change when the user reorders the sections
     property OriginalIndex: Integer read FOriginalIndex;
   end;
@@ -2658,6 +2662,7 @@ type
     FOnSectionDrag: TSectionDragEvent;
     FOnSectionEndDrag: TNotifyEvent;
     FOnCreateSectionClass: TCustomHCCreateSectionClassEvent;
+    function GetSectionFromOriginalIndex(OriginalIndex: Integer): THeaderSection;
     procedure SetImages(const AValue: TCustomImageList);
     procedure SetSections(const AValue: THeaderSections);
     procedure UpdateSection(Index: Integer);
@@ -2682,6 +2687,8 @@ type
     procedure UpdateState;
     class function GetControlClassDefaultSize: TPoint; override;
   public
+    property SectionFromOriginalIndex[OriginalIndex: Integer]: THeaderSection read GetSectionFromOriginalIndex;
+
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     

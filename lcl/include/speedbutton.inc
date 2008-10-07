@@ -480,6 +480,8 @@ begin
   if IsAccel(Message.CharCode, Caption) then
   begin
     Result := True;
+    if GroupIndex <> 0 then
+      SetDown(not FDown);
     Click;
   end else
     Result := inherited DialogChar(Message);

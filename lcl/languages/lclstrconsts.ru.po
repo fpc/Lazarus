@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-09-18 02:44+0300\n"
+"PO-Revision-Date: 2008-10-01 02:34+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -269,7 +269,7 @@ msgstr "Курсор"
 msgid "Custom"
 msgstr "Пользовательский"
 
-#: lclstrconsts:ifsvk_delete
+#: lclstrconsts:rsdeleterecordhint
 msgid "Delete"
 msgstr "Удалить"
 
@@ -304,6 +304,10 @@ msgstr "Повторяющиеся меню"
 #: lclstrconsts:rserrorinlcl
 msgid "ERROR in LCL: "
 msgstr "ОШИБКА в LCL:"
+
+#: lclstrconsts:rseditrecordhint
+msgid "Edit"
+msgstr "Редактировать"
 
 #: lclstrconsts:ifsvk_end
 msgid "End"
@@ -380,6 +384,10 @@ msgstr "Найти"
 #: lclstrconsts:rsfindmore
 msgid "Find more"
 msgstr "Найти далее"
+
+#: lclstrconsts:rsfirstrecordhint
+msgid "First"
+msgstr "Первая"
 
 #: lclstrconsts:rsfixedcolstoobig
 msgid "FixedCols can't be >= ColCount"
@@ -509,9 +517,9 @@ msgstr "Индекс вне диапазона Cell[Col=%d Row=%d]"
 msgid "Information"
 msgstr "Сведения"
 
-#: lclstrconsts:ifsvk_insert
+#: lclstrconsts:rsinsertrecordhint
 msgid "Insert"
-msgstr "Insert"
+msgstr "Вставить"
 
 #: lclstrconsts:rsinvaliddate
 msgid "Invalid Date : %s"
@@ -573,6 +581,10 @@ msgstr "Джанджа"
 msgid "Kana"
 msgstr "Кана"
 
+#: lclstrconsts:rslastrecordhint
+msgid "Last"
+msgstr "Последняя"
+
 #: lclstrconsts:ifsvk_left
 msgid "Left"
 msgstr "Стрелка влево"
@@ -613,9 +625,9 @@ msgstr "Средняя клавиша мыши"
 msgid "Mouse Button Right"
 msgstr "Правая клавиша мыши"
 
-#: lclstrconsts:ifsvk_next
+#: lclstrconsts:rsnextrecordhint
 msgid "Next"
-msgstr "Далее"
+msgstr "Следующая"
 
 #: lclstrconsts:hhshelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
 msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
@@ -701,17 +713,25 @@ msgstr "Portable Network Graphic"
 msgid "Portable PixMap"
 msgstr "Portable PixMap"
 
+#: lclstrconsts:rspostrecordhint
+msgid "Post"
+msgstr "Отправить"
+
 #: lclstrconsts:ifsvk_print
 msgid "Print"
 msgstr "Печать"
 
-#: lclstrconsts:ifsvk_prior
+#: lclstrconsts:rspriorrecordhint
 msgid "Prior"
-msgstr "Предыдущий"
+msgstr "Предыдущая"
 
 #: lclstrconsts:rspropertydoesnotexist
 msgid "Property %s does not exist"
 msgstr "Свойство %s не существует"
+
+#: lclstrconsts:rsrefreshrecordshint
+msgid "Refresh"
+msgstr "Обновить"
 
 #: lclstrconsts:rsreplace
 msgid "Replace"

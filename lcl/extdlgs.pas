@@ -1233,6 +1233,7 @@ begin
   DF.Caption:=DialogTitle;
   DF.Position:=DialogPosition;
   DF.BorderStyle:=bsDialog;
+  DF.AutoScroll:=false;
   //DF.AutoSize:=true;
 
   FCalendar:=TCalendar.Create(DF);
