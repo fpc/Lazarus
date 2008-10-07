@@ -2,18 +2,18 @@
 #
 # Author: Mattias Gaertner
 #
-# Usage: ./create_lazarus_deb.sh [gtk2] [append-revision]
+# Usage: ./create_lazarus_deb.sh [gtk1] [append-revision]
 #
 #   Options:
-#     gtk2              compile IDE and programs for gtk2. gtk1 ppu are built too.
+#     gtk1              compile IDE and programs for gtk1 too. gtk2 ppu are still built.
 #     append-revision   append the svn revision to the .deb version
 
 set -x
 set -e
 
 LCLWidgetset=
-if [ "$1" = "gtk2" ]; then
-  LCLWidgetset=gtk2
+if [ "$1" = "gtk1" ]; then
+  LCLWidgetset=gtk
   shift
 fi
 
@@ -27,7 +27,7 @@ if [ "$1" = "append-revision" ]; then
 fi
 
 if [ -n "$1" ]; then
-  echo "Usage: ./create_lazarus_deb.sh [gtk2] [release=svn]"
+  echo "Usage: ./create_lazarus_deb.sh [gtk1] [release=svn]"
   exit
 fi
 
@@ -98,8 +98,8 @@ if [ -n "$FPCCfg" ]; then
 fi
 # build for default platform
 make lcl packager/registration ideintf bigidecomponents PP=$ppcbin OPT="$MAKEOPTS"
-# build gtk2 .ppu
-export LCL_PLATFORM=gtk2
+# build gtk1 .ppu
+export LCL_PLATFORM=gtk
 make lcl packager/registration ideintf bigidecomponents PP=$ppcbin OPT="$MAKEOPTS"
 export LCL_PLATFORM=
 # build IDE
