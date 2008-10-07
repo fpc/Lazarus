@@ -9283,8 +9283,9 @@ begin
     PutInfoBuilderProject(Project1.MainFilename);
     PutInfoBuilderStatus(lisInfoBuildComplile);
 
-    // handle versioninfo
-    if not (pbfSkipLinking in Flags) then begin
+    if not (pbfSkipLinking in Flags) then 
+    begin
+      // handle versioninfo
       VersionInfo := Project1.VersionInfo;
       Result := VersionInfo.CreateRCFile(Project1.MainFilename,
         MainBuildBoss.GetTargetOS(true));
@@ -9297,11 +9298,8 @@ begin
         PutExitInfoBuilder(lisInfoBuildError);
         exit;
       end;
-    end else
-      VersionInfo:=nil;
 
-    // handle manifest
-    if not (pbfSkipLinking in Flags) then begin
+      // handle manifest
       Result := Project1.XPManifest.CreateRCFile(Project1.MainFilename,
         MainBuildBoss.GetTargetOS(true));
       for i := 1 to Project1.XPManifest.Messages.Count do
@@ -9312,7 +9310,20 @@ begin
         PutExitInfoBuilder(lisInfoBuildError);
         exit;
       end;
-    end;
+
+      Result := Project1.ProjectIcon.CreateRCFile(Project1.MainFileName,
+        MainBuildBoss.GetTargetOS(true));
+      for i := 1 to Project1.ProjectIcon.Messages.Count do
+        MessagesView.AddMsg(Format(Project1.ProjectIcon.Messages[i - 1],
+                                    ['"', Project1.ShortDescription, '"']), '' ,-1);
+      if Result <> mrOk then
+      begin
+        PutExitInfoBuilder(lisInfoBuildError);
+        exit;
+      end;
+    end else
+      VersionInfo:=nil;
+
 
     // compile required packages
     if not (pbfDoNotCompileDependencies in Flags) then begin

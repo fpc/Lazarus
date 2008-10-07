@@ -192,8 +192,8 @@ type
     function SetAutoCreateForms: Boolean;
     function SetProjectTitle: Boolean;
 
-    procedure SetIconFromText(Value: String);
-    function GetIconAsText: String;
+    procedure SetIconFromStream(Value: TStream);
+    function GetIconAsStream: TStream;
   public
     constructor Create(TheOwner: TComponent); override;
     property Project: TProject read FProject write SetProject;
@@ -409,6 +409,7 @@ end;
 procedure TProjectOptionsDialog.SetProject(AProject: TProject);
 var
   AFilename: String;
+  AStream: TStream;
 begin
   FProject := AProject;
   if AProject = Nil then
@@ -421,7 +422,12 @@ begin
     UseAppBundleCheckBox.Checked := UseAppBundle;
     UseXPManifestCheckBox.Checked := XPManifest.UseManifest;
     UseVersionInfoCheckBox.Checked := VersionInfo.UseVersionInfo;
-    SetIconFromText(Icon);
+    AStream := ProjectIcon.GetStream;
+    try
+      SetIconFromStream(AStream);
+    finally
+      AStream.Free;
+    end;
   end;
   FillAutoCreateFormsListbox;
   FillAvailFormsListBox;
@@ -482,6 +488,7 @@ procedure TProjectOptionsDialog.ProjectOptionsClose(Sender: TObject;
 var
   NewFlags: TProjectFlags;
   AFilename: String;
+  AStream: TStream;
 
   procedure SetProjectFlag(AFlag: TProjectFlag; AValue: Boolean);
   begin
@@ -495,7 +502,14 @@ begin
   if ModalResult = mrOk then
   begin
     Project.Title := TitleEdit.Text;
-    Project.Icon := GetIconAsText;
+    AStream := GetIconAsStream;
+    try
+      Project.ProjectIcon.SetStream(AStream);
+    finally
+      AStream.Free;
+    end;
+    if Project.ProjectIcon.Modified then
+      Project.ProjectIcon.UpdateMainSourceFile(Project.MainFilename);
     Project.TargetFilename := TargetFileEdit.Text;
     Project.UseAppBundle := UseAppBundleCheckBox.Checked;
     Project.XPManifest.UseManifest := UseXPManifestCheckBox.Checked;
@@ -946,42 +960,26 @@ begin
     end;// delete title
 end;
 
-procedure TProjectOptionsDialog.SetIconFromText(Value: String);
-var
-  S: TStringStream;
-  BS: TBase64DecodingStream;
+procedure TProjectOptionsDialog.SetIconFromStream(Value: TStream);
 begin
   IconImage.Picture.Clear;
-  if Value <> '' then
-  begin
-    S := TStringStream.Create(Value);
-    S.Position := 0;
-    BS := TBase64DecodingStream.Create(S);
+  if Value <> nil then
     try
-      IconImage.Picture.Icon.LoadFromStream(BS);
+      IconImage.Picture.Icon.LoadFromStream(Value);
     except
       on E: Exception do
         MessageDlg(E.Message, mtError, [mbOk], 0);
     end;
-    BS.Free;
-    S.Free;
-  end;
 end;
 
-function TProjectOptionsDialog.GetIconAsText: String;
-var
-  S: TStringStream;
-  BS: TBase64EncodingStream;
+function TProjectOptionsDialog.GetIconAsStream: TStream;
 begin
-  Result := '';
+  Result := nil;
   if not ((IconImage.Picture.Graphic = nil) or IconImage.Picture.Graphic.Empty) then
   begin
-    S := TStringStream.Create('');
-    BS := TBase64EncodingStream.Create(S);
-    IconImage.Picture.Icon.SaveToStream(BS);
-    BS.Free;
-    Result := S.DataString;
-    S.Free;
+    Result := TMemoryStream.Create;
+    IconImage.Picture.Icon.SaveToStream(Result);
+    Result.Position := 0;
   end;
 end;
 

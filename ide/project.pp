@@ -53,7 +53,7 @@ uses
   // IDEIntf
   PropEdits, ProjectIntf, MacroIntf, LazIDEIntf,
   // for .res files
-  W32VersionInfo, W32Manifest,
+  W32VersionInfo, W32Manifest, ProjectIcon,
   // IDE
   LazarusIDEStrConsts, CompilerOptions, CodeToolManager, CodeCache,
   TransferMacros, EditorOptions, IDEProcs, RunParamsOpts, ProjectDefs,
@@ -609,6 +609,7 @@ type
     FUseAppBundle: Boolean;
     FVersionInfo: TProjectVersionInfo;
     FXPManifest: TProjectXPManifest;
+    FProjectIcon: TProjectIcon;
     function GetFirstAutoRevertLockedUnit: TUnitInfo;
     function GetFirstLoadedUnit: TUnitInfo;
     function GetFirstPartOfProject: TUnitInfo;
@@ -637,7 +638,7 @@ type
     procedure UpdateSourceDirectories;
     procedure ClearSourceDirectories;
     procedure SourceDirectoriesChanged(Sender: TObject);
-    procedure VersionInfoModified(Sender: TObject);
+    procedure EmbeddedObjectModified(Sender: TObject);
   protected
     function GetMainFile: TLazProjectFile; override;
     function GetMainFileID: Integer; override;
@@ -875,6 +876,7 @@ type
     
     property VersionInfo: TProjectVersionInfo read FVersionInfo;
     property XPManifest: TProjectXPManifest read FXPManifest;
+    property ProjectIcon: TProjectIcon read FProjectIcon;
     
     property EnableI18N: boolean read FEnableI18N write SetEnableI18N;
     property POOutputDirectory: string read FPOOutputDirectory
@@ -1881,14 +1883,17 @@ begin
   FRunParameterOptions:=TRunParamsOptions.Create;
   FTargetFileExt := GetExecutableExt;
   Title := '';
-  Icon := '';
   FUnitList := TFPList.Create;  // list of TUnitInfo
   
   FVersionInfo := TProjectVersionInfo.Create;
-  FVersionInfo.OnModified:=@VersionInfoModified;
+  FVersionInfo.OnModified := @EmbeddedObjectModified;
   
   FXPManifest := TProjectXPManifest.Create;
   FXPManifest.UseManifest := False;
+  FXPManifest.OnModified := @EmbeddedObjectModified;
+
+  FProjectIcon := TProjectIcon.Create;
+  FProjectIcon.OnModified := @EmbeddedObjectModified;
 end;
 
 {------------------------------------------------------------------------------
@@ -1901,6 +1906,7 @@ begin
   Clear;
   FreeThenNil(FVersionInfo);
   FreeThenNil(FXPManifest);
+  FreeThenNil(FProjectIcon);
   FreeThenNil(FBookmarks);
   FreeThenNil(FUnitList);
   FreeThenNil(FJumpHistory);
@@ -2069,7 +2075,7 @@ begin
                                AutoCreateForms,true);
       xmlconfig.SetValue(Path+'General/TargetFileExt/Value',TargetFileExt);
       xmlconfig.SetDeleteValue(Path+'General/Title/Value', Title,'');
-      xmlconfig.SetDeleteValue(Path+'General/Icon/Value', Icon, '');
+      xmlconfig.SetDeleteValue(Path+'General/Icon/Value', ProjectIcon.IconText, '');
       xmlconfig.SetDeleteValue(Path+'General/UseAppBundle/Value', UseAppBundle, True);
       xmlconfig.SetDeleteValue(Path+'General/UseXPManifest/Value', XPManifest.UseManifest, False);
 
@@ -2470,7 +2476,7 @@ begin
       TargetFileExt := xmlconfig.GetValue(
          Path+'General/TargetFileExt/Value', GetExecutableExt);
       Title := xmlconfig.GetValue(Path+'General/Title/Value', '');
-      Icon := xmlconfig.GetValue(Path+'General/Icon/Value', '');
+      ProjectIcon.IconText := xmlconfig.GetValue(Path+'General/Icon/Value', '');
       UseAppBundle := xmlconfig.GetValue(Path+'General/UseAppBundle/Value', True);
       XPManifest.UseManifest := xmlconfig.GetValue(Path+'General/UseXPManifest/Value', False);
 
@@ -2757,7 +2763,7 @@ begin
   FPublishOptions.Clear;
   FTargetFileExt := GetExecutableExt;
   Title := '';
-  Icon := '';
+  ProjectIcon.IconText := '';
   EndUpdate;
 end;
 
@@ -2863,12 +2869,14 @@ procedure TProject.SetModified(const AValue: boolean);
 begin
   if AValue=Modified then exit;
   inherited SetModified(AValue);
-  if not Modified then begin
-    PublishOptions.Modified:=false;
-    CompilerOptions.Modified:=false;
-    SessionModified:=false;
-    VersionInfo.Modified:=false;
-    XPManifest.Modified:=false;
+  if not Modified then 
+  begin
+    PublishOptions.Modified := False;
+    CompilerOptions.Modified := False;
+    SessionModified := False;
+    VersionInfo.Modified := False;
+    XPManifest.Modified := False;
+    ProjectIcon.Modified := False;
   end;
 end;
 
@@ -3343,10 +3351,16 @@ begin
   Result:=fFirst[uilLoaded];
 end;
 
-procedure TProject.VersionInfoModified(Sender: TObject);
+procedure TProject.EmbeddedObjectModified(Sender: TObject);
 begin
   if VersionInfo.Modified then
-    Modified:=true;
+    Modified := True;
+
+  if XPManifest.Modified then
+    Modified := True;
+
+  if ProjectIcon.Modified then
+    Modified := True;
 end;
 
 function TProject.GetFirstAutoRevertLockedUnit: TUnitInfo;

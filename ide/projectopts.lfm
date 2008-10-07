@@ -759,7 +759,6 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           BorderSpacing.Top = 2
           BorderSpacing.Bottom = 6
           ItemHeight = 13
-          MaxLength = -1
           TabOrder = 0
           Text = 'U.S. English'
         end
@@ -776,7 +775,6 @@ object ProjectOptionsDialog: TProjectOptionsDialog
           BorderSpacing.Right = 6
           BorderSpacing.Bottom = 6
           ItemHeight = 13
-          MaxLength = -1
           TabOrder = 1
           Text = 'Multilingual'
         end

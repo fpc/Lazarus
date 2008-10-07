@@ -2253,6 +2253,7 @@ ide/progressdlg.lrs svneol=native#text/plain
 ide/progressdlg.pas svneol=native#text/plain
 ide/project.pp svneol=native#text/pascal
 ide/projectdefs.pas svneol=native#text/pascal
+ide/projecticon.pas svneol=native#text/pascal
 ide/projectinspector.lfm svneol=native#text/plain
 ide/projectinspector.lrs svneol=native#text/pascal
 ide/projectinspector.pas svneol=native#text/pascal

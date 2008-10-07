@@ -46,8 +46,10 @@ type
     FModified: boolean;
     FUseManifest: boolean;
     rcFilename: string;
+    FOnModified: TNotifyEvent;
     procedure SetUseManifest(const AValue: boolean);
     procedure SetFileNames(const MainFilename: string);
+    procedure SetModified(const AValue: Boolean);
   public
     constructor Create;
     destructor Destroy; override;
@@ -58,7 +60,9 @@ type
 
     property Messages: TStrings read FMessages;
     property UseManifest: boolean read FUseManifest write SetUseManifest;
-    property Modified: boolean read FModified write FModified;
+    property Modified: boolean read FModified write SetModified;
+
+    property OnModified: TNotifyEvent read FOnModified write FOnModified;
   end;
 
 implementation
@@ -110,6 +114,7 @@ var
   Stream: TStream;
 begin
   Result := False;
+  Stream := nil;
   try
     Stream := TFileStream.Create(UTF8ToSys(rcFileName), fmCreate);
     Stream.Write(sManifest[1], length(sManifest));
@@ -123,7 +128,7 @@ procedure TProjectXPManifest.SetUseManifest(const AValue: boolean);
 begin
   if FUseManifest = AValue then exit;
   FUseManifest := AValue;
-  Modified:=true;
+  Modified := True;
 end;
 
 {-----------------------------------------------------------------------------
@@ -141,7 +146,7 @@ begin
   begin
     SetFileNames(AFilename);
     Filename:=ExtractFileName(rcFileName);
-    DebugLn(['TProjectXPManifest.UpdateMainSourceFile ',Filename]);
+    //DebugLn(['TProjectXPManifest.UpdateMainSourceFile ',Filename]);
     if CodeToolBoss.FindResourceDirective(ManifestCodeBuf, 1, 1,
                                NewCode, NewX, NewY,
                                NewTopLine, Filename, false) then
@@ -164,7 +169,7 @@ begin
       end;
     end;
   end;
-  DebugLn(['TProjectXPManifest.UpdateMainSourceFile END ',ManifestCodeBuf.Source]);
+  //DebugLn(['TProjectXPManifest.UpdateMainSourceFile END ',ManifestCodeBuf.Source]);
   Result := mrOk;
 end;
 
@@ -185,6 +190,15 @@ destructor TProjectXPManifest.Destroy;
 begin
   FMessages.Free;
   inherited Destroy;
+end;
+
+procedure TProjectXPManifest.SetModified(const AValue: Boolean);
+begin
+  if FModified = AValue then
+    Exit;
+  FModified := AValue;
+  if Assigned(OnModified) then 
+    OnModified(Self);
 end;
 
 end.
