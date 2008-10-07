@@ -1,6 +1,7 @@
 btn_downarrow.png
 folder.png
 template.png
+LazarusProject.ico
 actions/add.png
 actions/arrow_down.png
 actions/arrow_left.png

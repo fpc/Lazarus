@@ -610,6 +610,7 @@ type
     FVersionInfo: TProjectVersionInfo;
     FXPManifest: TProjectXPManifest;
     FProjectIcon: TProjectIcon;
+    FInModified: Boolean;
     function GetFirstAutoRevertLockedUnit: TUnitInfo;
     function GetFirstLoadedUnit: TUnitInfo;
     function GetFirstPartOfProject: TUnitInfo;
@@ -1861,6 +1862,7 @@ constructor TProject.Create(ProjectDescription: TProjectDescriptor);
 begin
   inherited Create(ProjectDescription);
 
+  FInModified := False;
   fActiveEditorIndexAtStart := -1;
   FAutoCreateForms := true;
   FBookmarks := TProjectBookmarkList.Create;
@@ -2867,7 +2869,11 @@ end;
 
 procedure TProject.SetModified(const AValue: boolean);
 begin
-  if AValue=Modified then exit;
+  // prevent change of modified during this chain
+  if FInModified then
+    Exit;
+  FInModified := True;
+  if AValue = Modified then exit;
   inherited SetModified(AValue);
   if not Modified then 
   begin
@@ -2878,6 +2884,7 @@ begin
     XPManifest.Modified := False;
     ProjectIcon.Modified := False;
   end;
+  FInModified := False;
 end;
 
 procedure TProject.SetSessionModified(const AValue: boolean);

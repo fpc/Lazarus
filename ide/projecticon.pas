@@ -261,10 +261,21 @@ begin
 end;
 
 constructor TProjectIcon.Create;
+var
+  DefaultRes: TLResource;
+  ResStream: TLazarusResourceStream;
 begin
-  // TODO: default icon
   FIconText := '';
   FMessages := TStringList.Create;
+
+  // Load default icon
+  DefaultRes := LazarusResources.Find('LazarusProject', 'ICO');
+  if DefaultRes <> nil then
+  begin
+    ResStream := TLazarusResourceStream.CreateFromHandle(DefaultRes);
+    SetStream(ResStream);
+    ResStream.Free;
+  end;
 end;
 
 destructor TProjectIcon.Destroy;

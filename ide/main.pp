@@ -9283,11 +9283,24 @@ begin
     PutInfoBuilderProject(Project1.MainFilename);
     PutInfoBuilderStatus(lisInfoBuildComplile);
 
+    // clear old error lines
+    SourceNotebook.ClearErrorLines;
+    DoArrangeSourceEditorAndMessageView(false);
+
+    // get main source filename
+    if not Project1.IsVirtual then begin
+      WorkingDir:=Project1.ProjectDirectory;
+      SrcFilename:=CreateRelativePath(Project1.MainUnitInfo.Filename,WorkingDir);
+    end else begin
+      WorkingDir:=GetTestBuildDirectory;
+      SrcFilename:=MainBuildBoss.GetTestUnitFilename(Project1.MainUnitInfo);
+    end;
+
     if not (pbfSkipLinking in Flags) then 
     begin
       // handle versioninfo
       VersionInfo := Project1.VersionInfo;
-      Result := VersionInfo.CreateRCFile(Project1.MainFilename,
+      Result := VersionInfo.CreateRCFile(SrcFilename,
         MainBuildBoss.GetTargetOS(true));
 
       for i := 1 to VersionInfo.VersionInfoMessages.Count do
@@ -9300,7 +9313,7 @@ begin
       end;
 
       // handle manifest
-      Result := Project1.XPManifest.CreateRCFile(Project1.MainFilename,
+      Result := Project1.XPManifest.CreateRCFile(SrcFilename,
         MainBuildBoss.GetTargetOS(true));
       for i := 1 to Project1.XPManifest.Messages.Count do
         MessagesView.AddMsg(Format(Project1.XPManifest.Messages[i - 1],
@@ -9311,7 +9324,7 @@ begin
         exit;
       end;
 
-      Result := Project1.ProjectIcon.CreateRCFile(Project1.MainFileName,
+      Result := Project1.ProjectIcon.CreateRCFile(SrcFilename,
         MainBuildBoss.GetTargetOS(true));
       for i := 1 to Project1.ProjectIcon.Messages.Count do
         MessagesView.AddMsg(Format(Project1.ProjectIcon.Messages[i - 1],
@@ -9322,7 +9335,7 @@ begin
         exit;
       end;
 
-      Result := Project1.ProjectIcon.CreateLRSFile(Project1.MainFileName,
+      Result := Project1.ProjectIcon.CreateLRSFile(SrcFilename,
         MainBuildBoss.GetTargetOS(true));
       for i := 1 to Project1.ProjectIcon.Messages.Count do
         MessagesView.AddMsg(Format(Project1.ProjectIcon.Messages[i - 1],
@@ -9349,22 +9362,8 @@ begin
       end;
     end;
 
-    // clear old error lines
-    SourceNotebook.ClearErrorLines;
-
-    DoArrangeSourceEditorAndMessageView(false);
-
-    // get main source filename
-    if not Project1.IsVirtual then begin
-      WorkingDir:=Project1.ProjectDirectory;
-      SrcFilename:=CreateRelativePath(Project1.MainUnitInfo.Filename,WorkingDir);
-    end else begin
-      WorkingDir:=GetTestBuildDirectory;
-      SrcFilename:=MainBuildBoss.GetTestUnitFilename(Project1.MainUnitInfo);
-    end;
     CompilerFilename:=Project1.GetCompilerFilename;
     //DebugLn(['TMainIDE.DoBuildProject CompilerFilename="',CompilerFilename,'" CompilerPath="',Project1.CompilerOptions.CompilerPath,'"']);
-    
     CompilerParams :=
       Project1.CompilerOptions.MakeOptionsString(SrcFilename,nil,[]) + ' ' +
       PrepareCmdLineOption(SrcFilename);
