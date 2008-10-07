@@ -64,7 +64,7 @@ procedure TProjectResources.SetFileNames(const AWorkingDir, MainFileName: String
 var
   BasePart: String;
 begin
-  BasePart := AWorkingDir + ExtractFileNameWithoutExt(MainFileName);
+  BasePart := AWorkingDir + ExtractFileNameWithoutExt(ExtractFileName(MainFileName));
 
   rcFileName :=  BasePart + '.rc';
   lrsFileName := BasePart + '.lrs';
