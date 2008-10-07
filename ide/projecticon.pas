@@ -123,6 +123,10 @@ var
   AResource: TStream;
 begin
   Result := True;
+
+  if IconText = '' then
+    Exit;
+
   SetFileNames(MainFilename);
 
   AResource := GetStream;
