@@ -19,7 +19,7 @@ else
 ifeq ($(OS_TARGET),darwin)
 LCL_PLATFORM=carbon
 else
-LCL_PLATFORM=gtk
+LCL_PLATFORM=gtk2
 endif
 endif
 endif
