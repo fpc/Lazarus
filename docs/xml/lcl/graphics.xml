@@ -217,6 +217,32 @@
         <descr/>
         <seealso/>
       </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TFontQuality">
+        <short>Output font quality, such as antialiasing</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TFontQuality.fqDefault">
+        <short>Default font quality</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TFontQuality.fqDraft">
+        <short>Draft font quality</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TFontQuality.fqProof">
+        <short>Proof font quality</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TFontQuality.fqNonAntialiased">
+        <short>Disable font antialiasing</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TFontQuality.fqAntialiased">
+        <short>Force font antialiasing</short>
+      </element>
       <!-- record type Visibility: default -->
       <element name="TFontData">
         <short>A <b>record</b> holding <var>Data</var> about the current <var>Font</var>
@@ -246,6 +272,10 @@
       <!-- variable Visibility: default -->
       <element name="TFontData.CharSet">
         <short>The <var>Character Set</var> of the current <var>Font</var> (expresed as an integer)</short>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TFontData.Quality">
+        <short>Output <var>Quality</var> of the current <var>Font</var>, such as antialiasing</short>
       </element>
       <!-- variable Visibility: default -->
       <element name="TFontData.Name">
@@ -1797,6 +1827,12 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.</descr>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
+      <element name="TFont.FQuality">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
       <element name="TFont.FStyle">
         <short/>
         <descr/>
@@ -2068,6 +2104,17 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.</descr>
       <element name="TFont.SetStyle.Value">
         <short/>
       </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TFont.SetQuality">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFont.SetQuality.AValue">
+        <short/>
+      </element>
       <!-- constructor Visibility: public -->
       <element name="TFont.Create">
         <short>
@@ -2215,6 +2262,14 @@ Copies the logfont or source settings to itself
 Reads or writes a flag to determine pitch type</descr>
         <seealso>
           <link id="TFontPitch"/>
+        </seealso>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFont.Quality">
+        <short>Output quality of the <var>Font</var>, such as antialiasing</short>
+        <descr/>
+        <seealso>
+          <link id="TFontQuality"/>
         </seealso>
       </element>
       <!-- property Visibility: published -->
@@ -7498,7 +7553,8 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- object Visibility: default -->
       <element name="TPortableNetworkGraphic">
-        <short><var>TPortableNetworkGraphic</var> - a PNG image</short>
+        <short>
+          <var>TPortableNetworkGraphic</var> - a PNG image</short>
         <descr/>
         <errors/>
         <seealso/>
