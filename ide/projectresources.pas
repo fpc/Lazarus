@@ -75,17 +75,19 @@ begin
   if FInModified then
     Exit;
   FInModified := True;
-  if FModified = AValue then exit;
-  FModified := AValue;
-  if not FModified then
+  if FModified <> AValue then
   begin
-    VersionInfo.Modified := False;
-    XPManifest.Modified := False;
-    ProjectIcon.Modified := False;
+    FModified := AValue;
+    if not FModified then
+    begin
+      VersionInfo.Modified := False;
+      XPManifest.Modified := False;
+      ProjectIcon.Modified := False;
+    end;
+    if Assigned(FOnModified) then
+      OnModified(Self);
   end;
   FInModified := False;
-  if Assigned(FOnModified) then
-    OnModified(Self);
 end;
 
 function TProjectResources.Update(TargetOS: String): Boolean;

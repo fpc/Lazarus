@@ -606,7 +606,6 @@ type
     FUnitList: TFPList;  // list of _all_ units (TUnitInfo)
     FUpdateLock: integer;
     FUseAppBundle: Boolean;
-    FInModified: Boolean;
     FResources: TProjectResources;
     function GetFirstAutoRevertLockedUnit: TUnitInfo;
     function GetFirstLoadedUnit: TUnitInfo;
@@ -1857,7 +1856,6 @@ constructor TProject.Create(ProjectDescription: TProjectDescriptor);
 begin
   inherited Create(ProjectDescription);
 
-  FInModified := False;
   fActiveEditorIndexAtStart := -1;
   FAutoCreateForms := true;
   FBookmarks := TProjectBookmarkList.Create;
@@ -2860,20 +2858,15 @@ end;
 
 procedure TProject.SetModified(const AValue: boolean);
 begin
-  // prevent change of modified during this chain
-  if FInModified then
-    Exit;
-  FInModified := True;
   if AValue = Modified then exit;
   inherited SetModified(AValue);
   if not Modified then 
   begin
     PublishOptions.Modified := False;
     CompilerOptions.Modified := False;
+    Resources.Modified := False;
     SessionModified := False;
-    Resources.Modified := False
   end;
-  FInModified := False;
 end;
 
 procedure TProject.SetSessionModified(const AValue: boolean);
