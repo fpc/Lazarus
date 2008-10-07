@@ -585,7 +585,11 @@ begin
                                  else lfWeight:=FW_NORMAL;
     lfCharSet := Byte(ABaseFont.Charset);
     SetLogFontName(aBaseFont.Name);
+    {$IFDEF SYN_LAZARUS}
+    lfQuality := Byte(aBaseFont.Quality);
+    {$ELSE}
     lfQuality := DEFAULT_QUALITY;
+    {$ENDIF}
     lfOutPrecision := OUT_DEFAULT_PRECIS;
     lfClipPrecision := CLIP_DEFAULT_PRECIS;
     case ABaseFont.Pitch of

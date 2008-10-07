@@ -1128,6 +1128,7 @@ resourcestring
   dlgEditorFontHeight = 'Editor font height';
   dlgExtraCharSpacing = 'Extra char spacing';
   dlgExtraLineSpacing = 'Extra line spacing';
+  dlgDisableAntialiasing = 'Disable anti-aliasing';
   dlgKeyMappingScheme = 'Key Mapping Scheme';
   dlgCheckConsistency = 'Check consistency';
   lisEdOptsChooseScheme = 'Choose Scheme';

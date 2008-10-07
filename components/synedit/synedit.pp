@@ -104,6 +104,7 @@ const
   SynDefaultFontHeight = 12;
   {$ENDIF}
   SynDefaultFontPitch = fpFixed;
+  SynDefaultFontQuality = fqNonAntialiased;
 
 {$ENDIF}
 
@@ -1509,6 +1510,7 @@ begin
   fFontDummy.Name := SynDefaultFontName;
   fFontDummy.Height := SynDefaultFontHeight;
   fFontDummy.Pitch := SynDefaultFontPitch;
+  fFontDummy.Quality := SynDefaultFontQuality;
   fLastMouseCaret := Point(-1,-1);
   fLastCtrlMouseLinkY := -1;
   fLastControlIsPressed := false;
@@ -4859,6 +4861,7 @@ begin
           Size := Value.Size;
           Style := Value.Style;
           {$IFDEF SYN_LAZARUS}
+          Quality := Value.Quality;
           EndUpdate;
           {$ENDIF}
         end;
