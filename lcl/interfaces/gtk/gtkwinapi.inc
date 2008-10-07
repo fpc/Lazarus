@@ -5336,10 +5336,8 @@ end;
 
 {------------------------------------------------------------------------------
   Function: GetObject
-  Params:  none
-  Returns: Nothing
-
-
+  Params:  GDIObj - handle, BufSize - size of Buf argument, Buf - buffer
+  Returns: Size of buffer
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer;
   function GetObject_Bitmap: Integer;
@@ -5472,14 +5470,15 @@ function TGtkWidgetSet.GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer
   
 var
   GDIObject: PGDIObject absolute GDIObj;
+  ALogPen: PLogPen absolute Buf;
 begin
   Assert(False, 'trace:[TGtkWidgetSet.GetObject]');
   Result := 0;
   if not IsValidGDIObject(GDIObj) then Exit;
   
   case GDIObject^.GDIType of
-    gdiBitmap: Result := GetObject_Bitmap;
-
+    gdiBitmap:
+      Result := GetObject_Bitmap;
     gdiBrush:
       begin
         Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetObject] gdiBrush');
@@ -5504,7 +5503,18 @@ begin
       end;
     gdiPen:
       begin
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetObject] gdiPen');
+        if Buf = nil then
+          Result := SizeOf(TLogPen)
+        else
+        if BufSize >= SizeOf(TLogPen) then
+        begin
+          Result := SizeOf(TLogPen);
+          ALogPen^.lopnColor := GDIObject^.GDIPenColor.ColorRef;
+          ALogPen^.lopnWidth := Point(GDIObject^.GDIPenWidth, 0);
+          ALogPen^.lopnStyle := GDIObject^.GDIPenStyle;
+        end
+        else
+          Result := 0;
       end;
     gdiRegion:
       begin
@@ -7653,7 +7663,8 @@ begin
 
       try
         { On root window, we don't allocate a graphics context and so we dont free}
-        if aDC.GC <> nil then begin
+        if aDC.HasGC then
+        begin
           gdk_gc_unref(aDC.GC);
           aDC.GC:=nil;
         end;
@@ -8914,21 +8925,21 @@ begin
 
   if Adjustment = nil then exit;
 
-  Result := Round(Adjustment^.Value);
+  Result := Round(Adjustment^.value);
 
   if (ScrollInfo.fMask and SIF_POS) <> 0
   then begin
-    Adjustment^.Value := ScrollInfo.nPos;
+    Adjustment^.value := ScrollInfo.nPos;
   end;
   if (ScrollInfo.fMask and SIF_RANGE) <> 0
   then begin
-    Adjustment^.Lower := ScrollInfo.nMin;
-    Adjustment^.Upper := ScrollInfo.nMax;
+    Adjustment^.lower := ScrollInfo.nMin;
+    Adjustment^.upper := ScrollInfo.nMax;
   end;
   if (ScrollInfo.fMask and SIF_PAGE) <> 0
   then begin
-    Adjustment^.Page_Size := ScrollInfo.nPage;
-    Adjustment^.Page_Increment := (ScrollInfo.nPage div 6)+1;
+    Adjustment^.page_size := ScrollInfo.nPage;
+    Adjustment^.page_increment := (ScrollInfo.nPage div 6)+1;
   end;
 
   {DebugLn('');

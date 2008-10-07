@@ -781,8 +781,8 @@ const
 begin
 //  if IsNullPen then Exit;
 
-  EnsureGCColor(HDC(Self), dccCurrentBackColor, True, True);//BKColor
-  EnsureGCColor(HDC(Self), dccGDIPenColor, False, False);//Pen Color
+  EnsureGCColor(HDC(Self), dccCurrentBackColor, True, True); // BKColor
+  EnsureGCColor(HDC(Self), dccGDIPenColor, False, False);    // Pen Color
 
   if dcfPenSelected in FFlags then Exit;
   Exclude(FFlags, dcfPenInvalid);
@@ -804,17 +804,15 @@ begin
     {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
     gdk_gc_set_line_attributes(GC, CurrentPen^.GDIPenWidth, GDK_LINE_ON_OFF_DASH, GDK_CAP_NOT_LAST, GDK_JOIN_MITER);
 
-    // Paul Ishenin: I comparet patterns with windows and changed numbers to make them the same
+    // Paul Ishenin: I compared patterns with windows and changed numbers to make them the same
     // but under linux dot is thinner than in windows, so I added os_multiplier to make them the same
-    // in resulting image
+    // in the resulting image
 
     case CurrentPen^.GDIPenStyle of
       PS_DASH:       SetDashes([6*OS_multiplier,2*OS_multiplier]);
       PS_DOT:        SetDashes([1*OS_multiplier,1*OS_multiplier]);
       PS_DASHDOT:    SetDashes([3*OS_multiplier,2*OS_multiplier,1*OS_multiplier,2*OS_multiplier]);
       PS_DASHDOTDOT: SetDashes([3*OS_multiplier,1*OS_multiplier,1*OS_multiplier,1*OS_multiplier,1*OS_multiplier,1*OS_multiplier]);
-      //This is DEADLY!!!
-      //PS_NULL:       gdk_gc_set_dashes(GC, 0, [0,4], 2);
     end;
     {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
   end;

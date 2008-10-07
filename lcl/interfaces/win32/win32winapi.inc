@@ -841,7 +841,7 @@ end;
   The CreateBrushIndirect function creates a logical brush that has the
   specified style, color, and pattern.
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.CreateBrushIndirect(Const LogBrush: TLogBrush): HBRUSH;
+function TWin32WidgetSet.CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH;
 var
   LB: Windows.LogBrush;
 begin

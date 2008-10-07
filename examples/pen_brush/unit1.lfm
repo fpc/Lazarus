@@ -1,0 +1,90 @@
+object Form1: TForm1
+  Left = 350
+  Height = 473
+  Top = 215
+  Width = 400
+  Caption = 'Pen & Brush'
+  ClientHeight = 473
+  ClientWidth = 400
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  ParentFont = False
+  Position = poScreenCenter
+  LCLVersion = '0.9.27'
+  object Label1: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 11
+    Height = 14
+    Top = 11
+    Width = 28
+    BorderSpacing.Left = 11
+    BorderSpacing.Top = 11
+    Caption = 'Pens:'
+    ParentColor = False
+  end
+  object PenBox: TPaintBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Label1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 11
+    Height = 153
+    Top = 32
+    Width = 378
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 11
+    BorderSpacing.Top = 7
+    BorderSpacing.Right = 11
+    OnPaint = PenBoxPaint
+  end
+  object Label2: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = PenBox
+    AnchorSideTop.Side = asrBottom
+    Left = 11
+    Height = 14
+    Top = 196
+    Width = 43
+    BorderSpacing.Left = 11
+    BorderSpacing.Top = 11
+    Caption = 'Brushes:'
+    ParentColor = False
+  end
+  object BrushBox: TPaintBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Label2
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 11
+    Height = 207
+    Top = 217
+    Width = 378
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 11
+    BorderSpacing.Top = 7
+    BorderSpacing.Right = 11
+    OnPaint = BrushBoxPaint
+  end
+  object Button1: TBitBtn
+    AnchorSideTop.Control = BrushBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 307
+    Height = 26
+    Top = 435
+    Width = 82
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Top = 11
+    BorderSpacing.Right = 11
+    Caption = '&Закрыть'
+    Kind = bkClose
+    NumGlyphs = 0
+    OnClick = Button1Click
+    TabOrder = 0
+  end
+end
