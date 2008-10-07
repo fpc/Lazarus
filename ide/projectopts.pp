@@ -420,9 +420,9 @@ begin
     TitleEdit.Text := Title;
     TargetFileEdit.Text := TargetFilename;
     UseAppBundleCheckBox.Checked := UseAppBundle;
-    UseXPManifestCheckBox.Checked := XPManifest.UseManifest;
-    UseVersionInfoCheckBox.Checked := VersionInfo.UseVersionInfo;
-    AStream := ProjectIcon.GetStream;
+    UseXPManifestCheckBox.Checked := Resources.XPManifest.UseManifest;
+    UseVersionInfoCheckBox.Checked := Resources.VersionInfo.UseVersionInfo;
+    AStream := Resources.ProjectIcon.GetStream;
     try
       SetIconFromStream(AStream);
     finally
@@ -462,25 +462,25 @@ begin
 
   
   // VersionInfo
-  VersionSpinEdit.Value := Project.VersionInfo.VersionNr;
-  MajorRevisionSpinEdit.Value := Project.VersionInfo.MajorRevNr;
-  MinorRevisionSpinEdit.Value := Project.VersionInfo.MinorRevNr;
-  BuildEdit.Text := IntToStr(Project.VersionInfo.BuildNr);
+  VersionSpinEdit.Value := Project.Resources.VersionInfo.VersionNr;
+  MajorRevisionSpinEdit.Value := Project.Resources.VersionInfo.MajorRevNr;
+  MinorRevisionSpinEdit.Value := Project.Resources.VersionInfo.MinorRevNr;
+  BuildEdit.Text := IntToStr(Project.Resources.VersionInfo.BuildNr);
   
-  EnableVersionInfo(Project.VersionInfo.UseVersionInfo);
+  EnableVersionInfo(Project.Resources.VersionInfo.UseVersionInfo);
 
-  if Project.VersionInfo.AutoIncrementBuild then
+  if Project.Resources.VersionInfo.AutoIncrementBuild then
     AutomaticallyIncreaseBuildCheckBox.Checked := true;
   LanguageSelectionComboBox.Items.Assign(MSLanguages);
   LanguageSelectionComboBox.ItemIndex :=
-                            MSHexLanguages.IndexOf(Project.VersionInfo.HexLang);
+                            MSHexLanguages.IndexOf(Project.Resources.VersionInfo.HexLang);
   LanguageSelectionComboBox.Sorted := True;
   CharacterSetComboBox.Items.Assign(MSCharacterSets);
   CharacterSetComboBox.ItemIndex :=
-                     MSHexCharacterSets.IndexOf(Project.VersionInfo.HexCharSet);
+                     MSHexCharacterSets.IndexOf(Project.Resources.VersionInfo.HexCharSet);
   CharacterSetComboBox.Sorted := True;
-  DescriptionEdit.Text := Project.VersionInfo.DescriptionString;
-  CopyrightEdit.Text := Project.VersionInfo.CopyrightString;
+  DescriptionEdit.Text := Project.Resources.VersionInfo.DescriptionString;
+  CopyrightEdit.Text := Project.Resources.VersionInfo.CopyrightString;
 end;
 
 procedure TProjectOptionsDialog.ProjectOptionsClose(Sender: TObject;
@@ -504,17 +504,13 @@ begin
     Project.Title := TitleEdit.Text;
     AStream := GetIconAsStream;
     try
-      Project.ProjectIcon.SetStream(AStream);
+      Project.Resources.ProjectIcon.SetStream(AStream);
     finally
       AStream.Free;
     end;
-    if Project.ProjectIcon.Modified then
-      Project.ProjectIcon.UpdateMainSourceFile(Project.MainFilename);
     Project.TargetFilename := TargetFileEdit.Text;
     Project.UseAppBundle := UseAppBundleCheckBox.Checked;
-    Project.XPManifest.UseManifest := UseXPManifestCheckBox.Checked;
-    if Project.XPManifest.Modified then
-      Project.XPManifest.UpdateMainSourceFile(Project.MainFilename);
+    Project.Resources.XPManifest.UseManifest := UseXPManifestCheckBox.Checked;
 
     // flags
     NewFlags := Project.Flags;
@@ -553,18 +549,16 @@ begin
     Project.EnableI18N := EnableI18NCheckBox.Checked;
 
     // VersionInfo
-    Project.VersionInfo.UseVersionInfo:=UseVersionInfoCheckBox.Checked;
-    Project.VersionInfo.AutoIncrementBuild:=AutomaticallyIncreaseBuildCheckBox.Checked;
-    Project.VersionInfo.VersionNr:=VersionSpinEdit.Value;
-    Project.VersionInfo.MajorRevNr:=MajorRevisionSpinEdit.Value;
-    Project.VersionInfo.MinorRevNr:=MinorRevisionSpinEdit.Value;
-    Project.VersionInfo.BuildNr:=StrToIntDef(BuildEdit.Text,Project.VersionInfo.BuildNr);
-    Project.VersionInfo.DescriptionString:=DescriptionEdit.Text;
-    Project.VersionInfo.CopyrightString:=CopyrightEdit.Text;
-    Project.VersionInfo.HexLang:=MSLanguageToHex(LanguageSelectionComboBox.Text);
-    Project.VersionInfo.HexCharSet:=MSCharacterSetToHex(CharacterSetComboBox.Text);
-    if Project.VersionInfo.Modified then
-      Project.VersionInfo.UpdateMainSourceFile(Project.MainFilename);
+    Project.Resources.VersionInfo.UseVersionInfo:=UseVersionInfoCheckBox.Checked;
+    Project.Resources.VersionInfo.AutoIncrementBuild:=AutomaticallyIncreaseBuildCheckBox.Checked;
+    Project.Resources.VersionInfo.VersionNr:=VersionSpinEdit.Value;
+    Project.Resources.VersionInfo.MajorRevNr:=MajorRevisionSpinEdit.Value;
+    Project.Resources.VersionInfo.MinorRevNr:=MinorRevisionSpinEdit.Value;
+    Project.Resources.VersionInfo.BuildNr:=StrToIntDef(BuildEdit.Text,Project.Resources.VersionInfo.BuildNr);
+    Project.Resources.VersionInfo.DescriptionString:=DescriptionEdit.Text;
+    Project.Resources.VersionInfo.CopyrightString:=CopyrightEdit.Text;
+    Project.Resources.VersionInfo.HexLang:=MSLanguageToHex(LanguageSelectionComboBox.Text);
+    Project.Resources.VersionInfo.HexCharSet:=MSCharacterSetToHex(CharacterSetComboBox.Text);
   end;
 
   IDEDialogLayoutList.SaveLayout(Self);
@@ -597,7 +591,7 @@ var
   InfoModified: Boolean;
 begin
   InfoModified:=false;
-  ShowVersionInfoAdditionailInfoForm(Project.VersionInfo,InfoModified);
+  ShowVersionInfoAdditionailInfoForm(Project.Resources.VersionInfo,InfoModified);
   if InfoModified then
     Project.Modified:=true;
 end;

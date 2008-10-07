@@ -35,7 +35,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Process, LCLProc, Controls, Forms,
-  CodeToolManager, CodeCache, CodeAtom, LazConf, LResources, base64;
+  CodeToolManager, CodeCache, CodeAtom, LazConf, LResources, base64,
+  projectresourcesintf;
    
 type
   { TProjectIcon }
@@ -43,11 +44,8 @@ type
   TProjectIcon = class(TObject)
   private
     FIconText: String;
-    FMessages: TStrings;
     FModified: boolean;
-    rcFileName: string;
     icoFileName: string;
-    lrsFileName: string;
     FOnModified: TNotifyEvent;
     procedure SetIconText(const AValue: String);
     procedure SetFileNames(const MainFilename: string);
@@ -56,20 +54,14 @@ type
     function GetAsHex: String;
   public
     constructor Create;
-    destructor Destroy; override;
-    
+
     function GetStream: TStream;
     procedure SetStream(AStream: TStream);
 
-    function CreateRCFile(const MainFilename, TargetOS: string): TModalResult;
-    function CreateLRSFile(const MainFilename, TargetOS: string): TModalResult;
+    function UpdateResources(AResources: TAbstractProjectResources; const MainFilename, TargetOS: string): Boolean;
     function CreateIconFile: Boolean;
-    function CreateResource: Boolean;
-    function CreateLazarusResource: Boolean;
-    function UpdateMainSourceFile(const AFilename: string): TModalResult;
 
     property IconText: String read FIconText write SetIconText;
-    property Messages: TStrings read FMessages;
     property Modified: boolean read FModified write SetModified;
 
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
@@ -125,28 +117,27 @@ begin
   IconText := NewIconText;
 end;
 
-{-----------------------------------------------------------------------------
- TProjectIcon CreateRCFile
------------------------------------------------------------------------------}
-function TProjectIcon.CreateRCFile(const MainFilename, TargetOS: string): TModalResult;
+function TProjectIcon.UpdateResources(AResources: TAbstractProjectResources;
+  const MainFilename, TargetOS: string): Boolean;
+var
+  AResource: TStream;
 begin
-  Result := mrOk;
+  Result := True;
   SetFileNames(MainFilename);
+
+  AResource := GetStream;
+  AResources.AddLazarusResource(AResource, 'MAINICON', 'ICO');
+  AResource.Free;
+
   if ((TargetOS = 'win32') or (TargetOS = 'wince')) and (IconText <> '') then
   begin
-    if not CreateResource then
-      Result := mrCancel;
-  end;
-end;
-
-function TProjectIcon.CreateLRSFile(const MainFilename, TargetOS: string): TModalResult;
-begin
-  Result := mrOk;
-  SetFileNames(MainFilename);
-  if (IconText <> '') then
-  begin
-    if not CreateLazarusResource then
-      Result := mrCancel;
+    // the preferred way is this:
+    // RCIcon := sIcon + #$D#$A + GetAsHex;
+    // but it does not work
+    if CreateIconFile then
+      AResources.AddSystemResource(sIcon + Format(' "%s"', [StringReplace(icoFileName, '\', '\\', [rfReplaceAll])]))
+    else
+      Result := False;
   end;
 end;
 
@@ -167,97 +158,12 @@ begin
   AStream.Free;
 end;
 
-function TProjectIcon.CreateResource: Boolean;
-var
-  Stream: TStream;
-  RCIcon: String;
-begin
-  Result := CreateIconFile;
-  if not Result then
-    Exit;
-  Stream := nil;
-  try
-    Stream := TFileStream.Create(UTF8ToSys(rcFileName), fmCreate);
-    // the preferred way is this:
-    // RCIcon := sIcon + #$D#$A + GetAsHex;
-    // but it does not work
-    RCIcon := sIcon + Format(' "%s"', [StringReplace(icoFileName, '\', '\\', [rfReplaceAll])]);
-    Stream.Write(RCIcon[1], length(RCIcon));
-    Result := True;
-  finally
-    Stream.Free;
-  end;
-end;
-
-function TProjectIcon.CreateLazarusResource: Boolean;
-var
-  ASource, ATarget: TStream;
-begin
-  Result := False;
-  ASource := GetStream;
-  ATarget := nil;
-  try
-    ATarget := TFileStream.Create(UTF8ToSys(lrsFileName), fmCreate);
-    BinaryToLazarusResourceCode(ASource, ATarget, 'MAINICON', 'ICO');
-    Result := True;
-  finally
-    ATarget.Free;
-  end;
-  ASource.Free;
-end;
-
-{-----------------------------------------------------------------------------
- TProjectIcon UpdateMainSourceFile
------------------------------------------------------------------------------}
-function TProjectIcon.UpdateMainSourceFile(const AFilename: string): TModalResult;
-var
-  NewX, NewY, NewTopLine: integer;
-  IconCodeBuf, NewCode: TCodeBuffer;
-  Filename: String;
-begin
-  Result := mrCancel;
-  IconCodeBuf := CodeToolBoss.LoadFile(AFilename,false,false);
-  if IconCodeBuf <> nil then
-  begin
-    SetFileNames(AFilename);
-    Filename:=ExtractFileName(rcFileName);
-    // DebugLn(['TProjectIcon.UpdateMainSourceFile ',Filename]);
-    if CodeToolBoss.FindResourceDirective(IconCodeBuf, 1, 1,
-                               NewCode, NewX, NewY,
-                               NewTopLine, Filename, false) then
-    begin
-      // there is a resource directive in the source
-      if IconText = '' then 
-      begin
-        if not CodeToolBoss.RemoveDirective(NewCode, NewX,NewY,true) then
-        begin
-          Messages.Add('Could not remove "{$R'+ Filename +'"} from main source!');
-          exit;
-        end;
-      end;
-    end else 
-    if IconText <> '' then
-    begin
-      if not CodeToolBoss.AddResourceDirective(IconCodeBuf,
-        Filename,false,'{$IFDEF WINDOWS}{$R '+Filename+'}{$ENDIF}') then
-      begin
-        Messages.Add('Could not add "{$R'+ Filename +'"} to main source!');
-        exit;
-      end;
-    end;
-  end;
-  //DebugLn(['TProjectIcon.UpdateMainSourceFile END ', IconCodeBuf.Source]);
-  Result := mrOk;
-end;
-
 {-----------------------------------------------------------------------------
  TProjectIcon SetFileNames
 -----------------------------------------------------------------------------}
 procedure TProjectIcon.SetFileNames(const MainFilename: string);
 begin
-  rcFileName := ExtractFilePath(MainFilename) + 'icon.rc';
   icoFileName := ExtractFilePath(MainFilename) + 'icon.ico';
-  lrsFileName := ExtractFilePath(MainFilename) + 'icon.lrs';
 end;
 
 constructor TProjectIcon.Create;
@@ -266,7 +172,6 @@ var
   ResStream: TLazarusResourceStream;
 begin
   FIconText := '';
-  FMessages := TStringList.Create;
 
   // Load default icon
   DefaultRes := LazarusResources.Find('LazarusProject', 'ICO');
@@ -276,12 +181,6 @@ begin
     SetStream(ResStream);
     ResStream.Free;
   end;
-end;
-
-destructor TProjectIcon.Destroy;
-begin
-  FMessages.Free;
-  inherited Destroy;
 end;
 
 procedure TProjectIcon.SetIconText(const AValue: String);

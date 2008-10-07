@@ -705,6 +705,7 @@ type
     function DoOpenComponent(const UnitFilename: string; OpenFlags: TOpenFlags;
                              CloseFlags: TCloseFlags;
                              out Component: TComponent): TModalResult; override;
+    function DoSaveAllResources: Boolean;
     function DoSaveAll(Flags: TSaveFlags): TModalResult;
     procedure DoRestart;
     procedure DoExecuteRemoteControl;
@@ -8329,6 +8330,10 @@ begin
     Result:=mrAbort;
     exit;
   end;
+
+  if not DoSaveAllResources then
+    Exit;
+
   SaveSourceEditorChangesToCodeCache(-1);
   SkipSavingMainSource:=false;
 
@@ -9060,6 +9065,7 @@ begin
   {$IFDEF VerboseSaveForBuild}
   DebugLn('TMainIDE.DoSaveForBuild Project1.IsVirtual=',dbgs(Project1.IsVirtual));
   {$ENDIF}
+
   if not Project1.IsVirtual then
     Result:=DoSaveAll([sfCheckAmbiguousFiles])
   else
@@ -9246,8 +9252,6 @@ var
   CompilerFilename: String;
   WorkingDir: String;
   CompilerParams: String;
-  i: integer;
-  VersionInfo: TProjectVersionInfo;
   NeedBuildAllFlag: Boolean;
   UnitOutputDirectory: String;
   TargetExeName: String;
@@ -9288,59 +9292,6 @@ begin
       WorkingDir:=GetTestBuildDirectory;
       SrcFilename:=MainBuildBoss.GetTestUnitFilename(Project1.MainUnitInfo);
     end;
-
-    if not (pbfSkipLinking in Flags) then 
-    begin
-      // handle versioninfo
-      VersionInfo := Project1.VersionInfo;
-      Result := VersionInfo.CreateRCFile(SrcFilename,
-        MainBuildBoss.GetTargetOS(true));
-
-      for i := 1 to VersionInfo.VersionInfoMessages.Count do
-        MessagesView.AddMsg(Format(VersionInfo.VersionInfoMessages[i - 1],
-                                    ['"', Project1.ShortDescription, '"']), '' ,-1);
-      if Result <> mrOk then
-      begin
-        PutExitInfoBuilder(lisInfoBuildError);
-        exit;
-      end;
-
-      // handle manifest
-      Result := Project1.XPManifest.CreateRCFile(SrcFilename,
-        MainBuildBoss.GetTargetOS(true));
-      for i := 1 to Project1.XPManifest.Messages.Count do
-        MessagesView.AddMsg(Format(Project1.XPManifest.Messages[i - 1],
-                                    ['"', Project1.ShortDescription, '"']), '' ,-1);
-      if Result <> mrOk then
-      begin
-        PutExitInfoBuilder(lisInfoBuildError);
-        exit;
-      end;
-
-      Result := Project1.ProjectIcon.CreateRCFile(SrcFilename,
-        MainBuildBoss.GetTargetOS(true));
-      for i := 1 to Project1.ProjectIcon.Messages.Count do
-        MessagesView.AddMsg(Format(Project1.ProjectIcon.Messages[i - 1],
-                                    ['"', Project1.ShortDescription, '"']), '' ,-1);
-      if Result <> mrOk then
-      begin
-        PutExitInfoBuilder(lisInfoBuildError);
-        exit;
-      end;
-
-      Result := Project1.ProjectIcon.CreateLRSFile(SrcFilename,
-        MainBuildBoss.GetTargetOS(true));
-      for i := 1 to Project1.ProjectIcon.Messages.Count do
-        MessagesView.AddMsg(Format(Project1.ProjectIcon.Messages[i - 1],
-                                    ['"', Project1.ShortDescription, '"']), '' ,-1);
-      if Result <> mrOk then
-      begin
-        PutExitInfoBuilder(lisInfoBuildError);
-        exit;
-      end;
-    end else
-      VersionInfo:=nil;
-
 
     // compile required packages
     if not (pbfDoNotCompileDependencies in Flags) then begin
@@ -9590,6 +9541,25 @@ begin
   Result:=(Project1<>nil)
       and (Project1.SomethingModified(true,true)
            or SourceNotebook.SomethingModified);
+end;
+
+function TMainIDE.DoSaveAllResources: Boolean;
+var
+  WorkingDir, SrcFilename: String;
+begin
+  if not Project1.IsVirtual then 
+  begin
+    WorkingDir:=Project1.ProjectDirectory;
+    SrcFilename:=CreateRelativePath(Project1.MainUnitInfo.Filename,WorkingDir);
+  end else 
+  begin
+    WorkingDir:=GetTestBuildDirectory;
+    SrcFilename:=MainBuildBoss.GetTestUnitFilename(Project1.MainUnitInfo);
+  end;
+
+  Result := 
+    Project1.Resources.Regenerate(WorkingDir, SrcFileName, MainBuildBoss.GetTargetOS(true)) and
+    Project1.Resources.UpdateMainSourceFile(Project1.MainFilename);
 end;
 
 function TMainIDE.DoSaveAll(Flags: TSaveFlags): TModalResult;
