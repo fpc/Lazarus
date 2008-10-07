@@ -154,7 +154,10 @@ cat $LazDestDir/install/man/man1/startlazarus.1 | gzip > $LazBuildDir/usr/share/
 
 # default configs
 mkdir -p $LazBuildDir/etc/lazarus
-cp $EtcSrcDir/*.xml $LazBuildDir/etc/lazarus/
+cp $EtcSrcDir/editoroptions.xml $LazBuildDir/etc/lazarus/
+cat $EtcSrcDir/environmentoptions.xml | \
+  sed -e "s#/usr/lib/lazarus/#$LazDestDirInstalled/#" \
+  > $LazBuildDir/etc/lazarus/environmentoptions.xml
 chmod 644 $LazBuildDir/etc/lazarus/*.xml
 
 # fixing permissions
