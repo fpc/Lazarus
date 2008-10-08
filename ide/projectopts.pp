@@ -559,6 +559,8 @@ begin
     Project.Resources.VersionInfo.CopyrightString:=CopyrightEdit.Text;
     Project.Resources.VersionInfo.HexLang:=MSLanguageToHex(LanguageSelectionComboBox.Text);
     Project.Resources.VersionInfo.HexCharSet:=MSCharacterSetToHex(CharacterSetComboBox.Text);
+    if Project.Resources.Modified then
+      Project.Resources.UpdateMainSourceFile(Project.MainFilename);
   end;
 
   IDEDialogLayoutList.SaveLayout(Self);

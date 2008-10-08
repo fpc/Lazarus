@@ -87,7 +87,7 @@ type
     procedure SetUseVersionInfo(const AValue: boolean);
     procedure SetVersionNr(const AValue: integer);
   public
-    function UpdateResources(AResources: TAbstractProjectResources; const MainFilename, TargetOS: string): Boolean;
+    function UpdateResources(AResources: TAbstractProjectResources; const MainFilename: string): Boolean;
 
     property Modified: boolean read FModified write SetModified;
 
@@ -276,7 +276,7 @@ end;
 { VersionInfo }
 
 function TProjectVersionInfo.UpdateResources(AResources: TAbstractProjectResources;
-  const MainFilename, TargetOS: string): Boolean;
+  const MainFilename: string): Boolean;
    { File structure
     A rc file can contain several pieces of information. One of those pieces
     is the version information. The version information is a block of data
@@ -322,57 +322,53 @@ var
   AList: TStringList;
 begin
   Result := True;
-  if (TargetOS = 'win32') then
+  if UseVersionInfo then
   begin
-    // we are building a win32 application
-    if UseVersionInfo then
-    begin
-      // project indicates to use the versioninfo
-      if AutoIncrementBuild then // project indicate to use autoincrementbuild
-        BuildNr := BuildNr + 1;
-      if ProductVersionString = '' then
-         ProductVersionString := IntToStr(VersionNr) + '.' +
-                                 IntToStr(MajorRevNr) + '.' +
-                                 IntToStr(MinorRevNr) + '.' +
-                                 IntToStr(BuildNr);
-      // todo: improve this
-      AList := TStringList.Create;
-      AList.Add('1 VERSIONINFO');
-      AList.Add('FILEVERSION ' + IntToStr(VersionNr) + ',' +
-                                 IntToStr(MajorRevNr) + ',' +
-                                 IntToStr(MinorRevNr) + ',' +
-                                 IntToStr(BuildNr));
-      AList.Add('PRODUCTVERSION ' + StringReplace(ProductVersionString, '.', ',', [rfReplaceAll]));
-      AList.Add('{');
-      AList.Add(' BLOCK "StringFileInfo"');
-      AList.Add(' {');
-      AList.Add('  BLOCK "' + HexLang + HexCharSet + '"');
-      AList.Add('  {');
-      AList.Add('   VALUE "Comments", "' + CommentsString + '\000"');
-      AList.Add('   VALUE "CompanyName", "' + CompanyString + '\000"');
-      AList.Add('   VALUE "FileDescription", "' + DescriptionString + '\000"');
-      AList.Add('   VALUE "FileVersion", "' + IntToStr(VersionNr) + '.' +
-                                              IntToStr(MajorRevNr) + '.' +
-                                              IntToStr(MinorRevNr) + '.' +
-                                              IntToStr(BuildNr) + '\000"');
-      AList.Add('   VALUE "InternalName", "' + InternalNameString + '\000"');
-      AList.Add('   VALUE "LegalCopyright", "' + CopyrightString + '\000"');
-      AList.Add('   VALUE "LegalTrademarks", "' + TrademarksString + '\000"');
-      AList.Add('   VALUE "OriginalFilename", "' + OriginalFilenameString + '\000"');
-      AList.Add('   VALUE "ProductName", "' + ProdNameString + '\000"');
-      AList.Add('   VALUE "ProductVersion", "' +
-                StringReplace(ProductVersionString, ',', '.', [rfReplaceAll]) +
-                '\000"');
-      AList.Add('  }');
-      AList.Add(' }');
-      AList.Add(' BLOCK "VarFileInfo"');
-      AList.Add(' {');
-      AList.Add('  VALUE "Translation", 0x' + HexLang + ', 0x' + HexCharSet);
-      AList.Add(' }');
-      AList.Add('}');
-      AResources.AddSystemResource(AList.Text);
-      AList.Free;
-    end;
+    // project indicates to use the versioninfo
+    if AutoIncrementBuild then // project indicate to use autoincrementbuild
+      BuildNr := BuildNr + 1;
+    if ProductVersionString = '' then
+       ProductVersionString := IntToStr(VersionNr) + '.' +
+                               IntToStr(MajorRevNr) + '.' +
+                               IntToStr(MinorRevNr) + '.' +
+                               IntToStr(BuildNr);
+    // todo: improve this
+    AList := TStringList.Create;
+    AList.Add('1 VERSIONINFO');
+    AList.Add('FILEVERSION ' + IntToStr(VersionNr) + ',' +
+                               IntToStr(MajorRevNr) + ',' +
+                               IntToStr(MinorRevNr) + ',' +
+                               IntToStr(BuildNr));
+    AList.Add('PRODUCTVERSION ' + StringReplace(ProductVersionString, '.', ',', [rfReplaceAll]));
+    AList.Add('{');
+    AList.Add(' BLOCK "StringFileInfo"');
+    AList.Add(' {');
+    AList.Add('  BLOCK "' + HexLang + HexCharSet + '"');
+    AList.Add('  {');
+    AList.Add('   VALUE "Comments", "' + CommentsString + '\000"');
+    AList.Add('   VALUE "CompanyName", "' + CompanyString + '\000"');
+    AList.Add('   VALUE "FileDescription", "' + DescriptionString + '\000"');
+    AList.Add('   VALUE "FileVersion", "' + IntToStr(VersionNr) + '.' +
+                                            IntToStr(MajorRevNr) + '.' +
+                                            IntToStr(MinorRevNr) + '.' +
+                                            IntToStr(BuildNr) + '\000"');
+    AList.Add('   VALUE "InternalName", "' + InternalNameString + '\000"');
+    AList.Add('   VALUE "LegalCopyright", "' + CopyrightString + '\000"');
+    AList.Add('   VALUE "LegalTrademarks", "' + TrademarksString + '\000"');
+    AList.Add('   VALUE "OriginalFilename", "' + OriginalFilenameString + '\000"');
+    AList.Add('   VALUE "ProductName", "' + ProdNameString + '\000"');
+    AList.Add('   VALUE "ProductVersion", "' +
+              StringReplace(ProductVersionString, ',', '.', [rfReplaceAll]) +
+              '\000"');
+    AList.Add('  }');
+    AList.Add(' }');
+    AList.Add(' BLOCK "VarFileInfo"');
+    AList.Add(' {');
+    AList.Add('  VALUE "Translation", 0x' + HexLang + ', 0x' + HexCharSet);
+    AList.Add(' }');
+    AList.Add('}');
+    AResources.AddSystemResource(AList.Text);
+    AList.Free;
   end;
 end;
 

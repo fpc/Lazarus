@@ -48,7 +48,7 @@ type
     procedure SetUseManifest(const AValue: boolean);
     procedure SetModified(const AValue: Boolean);
   public
-    function UpdateResources(AResources: TAbstractProjectResources; const MainFilename, TargetOS: string): Boolean;
+    function UpdateResources(AResources: TAbstractProjectResources; const MainFilename: string): Boolean;
 
     property UseManifest: boolean read FUseManifest write SetUseManifest;
     property Modified: boolean read FModified write SetModified;
@@ -93,10 +93,10 @@ begin
 end;
 
 function TProjectXPManifest.UpdateResources(AResources: TAbstractProjectResources;
-  const MainFilename, TargetOS: string): Boolean;
+  const MainFilename: string): Boolean;
 begin
   Result := True;
-  if (TargetOS = 'win32') and UseManifest then
+  if UseManifest then
     AResources.AddSystemResource(sManifest);
 end;
 

@@ -58,7 +58,7 @@ type
     function GetStream: TStream;
     procedure SetStream(AStream: TStream);
 
-    function UpdateResources(AResources: TAbstractProjectResources; const MainFilename, TargetOS: string): Boolean;
+    function UpdateResources(AResources: TAbstractProjectResources; const MainFilename: string): Boolean;
     function CreateIconFile: Boolean;
 
     property IconText: String read FIconText write SetIconText;
@@ -118,7 +118,7 @@ begin
 end;
 
 function TProjectIcon.UpdateResources(AResources: TAbstractProjectResources;
-  const MainFilename, TargetOS: string): Boolean;
+  const MainFilename: string): Boolean;
 var
   AResource: TStream;
 begin
@@ -133,16 +133,13 @@ begin
   AResources.AddLazarusResource(AResource, 'MAINICON', 'ICO');
   AResource.Free;
 
-  if ((TargetOS = 'win32') or (TargetOS = 'wince')) and (IconText <> '') then
-  begin
-    // the preferred way is this:
-    // RCIcon := sIcon + #$D#$A + GetAsHex;
-    // but it does not work
-    if CreateIconFile then
-      AResources.AddSystemResource(sIcon + Format(' "%s"', [StringReplace(icoFileName, '\', '\\', [rfReplaceAll])]))
-    else
-      Result := False;
-  end;
+  // the preferred way is this:
+  // RCIcon := sIcon + #$D#$A + GetAsHex;
+  // but it does not work
+  if CreateIconFile then
+    AResources.AddSystemResource(sIcon + Format(' "%s"', [StringReplace(icoFileName, '\', '\\', [rfReplaceAll])]))
+  else
+    Result := False;
 end;
 
 function TProjectIcon.CreateIconFile: Boolean;

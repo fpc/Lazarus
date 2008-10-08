@@ -9557,9 +9557,7 @@ begin
     SrcFilename:=MainBuildBoss.GetTestUnitFilename(Project1.MainUnitInfo);
   end;
 
-  Result := 
-    Project1.Resources.Regenerate(WorkingDir, SrcFileName, MainBuildBoss.GetTargetOS(true)) and
-    Project1.Resources.UpdateMainSourceFile(Project1.MainFilename);
+  Result := Project1.Resources.Regenerate(WorkingDir, SrcFileName);
 end;
 
 function TMainIDE.DoSaveAll(Flags: TSaveFlags): TModalResult;

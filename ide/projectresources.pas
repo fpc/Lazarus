@@ -32,7 +32,7 @@ type
 
     procedure SetFileNames(const AWorkingDir, MainFileName: String);
     procedure SetModified(const AValue: Boolean);
-    function Update(TargetOS: String): Boolean;
+    function Update: Boolean;
     procedure EmbeddedObjectModified(Sender: TObject);
   public
     constructor Create;
@@ -42,7 +42,7 @@ type
     procedure AddLazarusResource(AResource: TStream; const ResourceName, ResourceType: String); override;
 
     procedure Clear;
-    function Regenerate(const AWorkingDir, MainFileName, TargetOS: String): Boolean;
+    function Regenerate(const AWorkingDir, MainFileName: String): Boolean;
     function UpdateMainSourceFile(const AFilename: string): Boolean;
 
     function HasSystemResources: Boolean;
@@ -90,21 +90,21 @@ begin
   FInModified := False;
 end;
 
-function TProjectResources.Update(TargetOS: String): Boolean;
+function TProjectResources.Update: Boolean;
 begin
   Clear;
   // handle versioninfo
-  Result := VersionInfo.UpdateResources(Self, rcFileName, TargetOS);
+  Result := VersionInfo.UpdateResources(Self, rcFileName);
   if not Result then
     Exit;
 
   // handle manifest
-  Result := XPManifest.UpdateResources(Self, rcFileName, TargetOS);
+  Result := XPManifest.UpdateResources(Self, rcFileName);
   if not Result then
     Exit;
 
   // handle project icon
-  Result := ProjectIcon.UpdateResources(Self, rcFileName, TargetOS);
+  Result := ProjectIcon.UpdateResources(Self, rcFileName);
 end;
 
 procedure TProjectResources.EmbeddedObjectModified(Sender: TObject);
@@ -165,14 +165,14 @@ begin
   FLazarusResources.Clear;
 end;
 
-function TProjectResources.Regenerate(const AWorkingDir, MainFileName, TargetOS: String): Boolean;
+function TProjectResources.Regenerate(const AWorkingDir, MainFileName: String): Boolean;
 var
   AStream: TStream;
 begin
   Result := False;
   SetFileNames(AWorkingDir, MainFileName);
 
-  if not Update(TargetOS) then
+  if not Update then
     Exit;
 
   AStream := nil;
