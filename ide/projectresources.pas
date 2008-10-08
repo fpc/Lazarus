@@ -40,7 +40,7 @@ uses
   Classes, SysUtils, LCLProc, LResources, FileUtil,
   ProjectResourcesIntf,
   W32VersionInfo, W32Manifest, ProjectIcon,
-  CodeToolManager, CodeCache, CodeAtom;
+  BasicCodeTools, CodeToolManager, CodeCache, CodeAtom;
 
 type
 
@@ -253,7 +253,9 @@ begin
   begin
     SetFileNames('', AFileName);
     Filename := ExtractFileName(rcFileName);
-    debugln(['TProjectResources.UpdateMainSourceFile HasSystemResources=',HasSystemResources,' Filename=',Filename,' HasLazarusResource=',HasLazarusResource]);
+    //debugln(['TProjectResources.UpdateMainSourceFile HasSystemResources=',HasSystemResources,' Filename=',Filename,' HasLazarusResource=',HasLazarusResource]);
+
+    // update {$R filename} directive
     if CodeToolBoss.FindResourceDirective(CodeBuf, 1, 1,
                                NewCode, NewX, NewY,
                                NewTopLine, Filename, false) then
@@ -263,8 +265,8 @@ begin
       begin
         if not CodeToolBoss.RemoveDirective(NewCode, NewX,NewY,true) then
         begin
+          debugln(['TProjectResources.UpdateMainSourceFile failed: removing resource directive']);
           // Messages.Add('Could not remove "{$R'+ Filename +'"} from main source!');
-          Exit;
         end;
       end;
     end
@@ -274,7 +276,38 @@ begin
       if not CodeToolBoss.AddResourceDirective(CodeBuf,
         Filename,false,'{$IFDEF WINDOWS}{$R '+Filename+'}{$ENDIF}') then
       begin
-        // Messages.Add('Could not add "{$R'+ Filename +'"} to main source!');
+        debugln(['TProjectResources.UpdateMainSourceFile failed: adding resource directive']);
+        // Messages.Add('Could not add "{$R '+ Filename +'"} to main source!');
+      end;
+    end;
+
+    // update {$I filename} directive
+    Filename := ExtractFileName(lrsFileName);
+    if CodeToolBoss.FindIncludeDirective(CodeBuf, 1, 1,
+                               NewCode, NewX, NewY,
+                               NewTopLine, Filename, false) then
+    begin
+      // there is a resource directive in the source
+      //debugln(['TProjectResources.UpdateMainSourceFile include directive found']);
+      if not HasLazarusResource then
+      begin
+        if not CodeToolBoss.RemoveDirective(NewCode, NewX,NewY,true) then
+        begin
+          debugln(['TProjectResources.UpdateMainSourceFile removing include directive from main source failed']);
+          // Messages.Add('Could not remove "{$I '+ Filename +'"} from main source!');
+          Exit;
+        end;
+      end;
+    end
+    else
+    if HasLazarusResource then
+    begin
+      //debugln(['TProjectResources.UpdateMainSourceFile include directive not found']);
+      if not CodeToolBoss.AddIncludeDirective(CodeBuf,
+        Filename,'{$IFDEF WINDOWS}{$I '+Filename+'}{$ENDIF}') then
+      begin
+        debugln(['TProjectResources.UpdateMainSourceFile adding include directive to main source failed']);
+        // Messages.Add('Could not add "{$I'+ Filename +'"} to main source!');
         Exit;
       end;
     end;

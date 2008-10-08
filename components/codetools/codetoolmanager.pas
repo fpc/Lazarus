@@ -324,6 +324,11 @@ type
           const Filename: string = ''; SearchInCleanSrc: boolean = true): boolean;
     function AddResourceDirective(Code: TCodeBuffer; const Filename: string;
           SearchInCleanSrc: boolean = true; const NewSrc: string = ''): boolean;
+    function FindIncludeDirective(Code: TCodeBuffer; StartX, StartY: integer;
+          out NewCode: TCodeBuffer; out NewX, NewY, NewTopLine: integer;
+          const Filename: string = ''; SearchInCleanSrc: boolean = true): boolean;
+    function AddIncludeDirective(Code: TCodeBuffer; const Filename: string;
+          const NewSrc: string = ''): boolean;
     function RemoveDirective(Code: TCodeBuffer; NewX, NewY: integer;
           RemoveEmptyIFs: boolean): boolean;
     function FixIncludeFilenames(Code: TCodeBuffer; Recursive: boolean;
@@ -567,7 +572,7 @@ type
     function RenameMainInclude(Code: TCodeBuffer; const NewFilename: string;
           KeepPath: boolean): boolean;
     function RenameIncludeDirective(Code: TCodeBuffer; LinkIndex: integer;
-          const NewFilename: string; KeepPath: boolean): boolean;
+          const NewFilename: string; KeepPath: boolean): boolean;// in cleaned source
     procedure DefaultFindDefinePropertyForContext(Sender: TObject;
                        const ClassContext, AncestorClassContext: TFindContext;
                        LFMNode: TLFMTreeNode;
@@ -2547,6 +2552,80 @@ begin
     except
       on e: Exception do Result:=HandleException(e);
     end;
+  end;
+end;
+
+function TCodeToolManager.FindIncludeDirective(Code: TCodeBuffer; StartX,
+  StartY: integer; out NewCode: TCodeBuffer; out NewX, NewY,
+  NewTopLine: integer; const Filename: string; SearchInCleanSrc: boolean
+  ): boolean;
+var
+  CursorPos: TCodeXYPosition;
+  NewPos: TCodeXYPosition;
+  Tree: TCompilerDirectivesTree;
+  p: integer;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindIncludeDirective A ',Code.Filename);
+  {$ENDIF}
+  NewCode:=nil;
+  NewX:=0;
+  NewY:=0;
+  NewTopLine:=0;
+  if SearchInCleanSrc then begin
+    if not InitCurCodeTool(Code) then exit;
+    CursorPos.X:=StartX;
+    CursorPos.Y:=StartY;
+    CursorPos.Code:=Code;
+    try
+      Result:=FCurCodeTool.FindIncludeDirective(CursorPos,NewPos,NewTopLine,
+                                                Filename);
+      if Result then begin
+        NewX:=NewPos.X;
+        NewY:=NewPos.Y;
+        NewCode:=NewPos.Code;
+      end;
+    except
+      on e: Exception do Result:=HandleException(e);
+    end;
+  end else begin
+    try
+      Tree:=TCompilerDirectivesTree.Create;
+      try
+        Tree.Parse(Code,GetNestedCommentsFlagForFile(Code.Filename));
+        Code.LineColToPosition(StartY,StartX,p);
+        Result:=Tree.NodeStartToCodePos(Tree.FindIncludeDirective(Filename,p),
+                                        CursorPos);
+        NewCode:=CursorPos.Code;
+        NewX:=CursorPos.X;
+        NewY:=CursorPos.Y;
+        NewTopLine:=NewY;
+      finally
+        Tree.Free;
+      end;
+    except
+      on e: Exception do Result:=HandleException(e);
+    end;
+  end;
+end;
+
+function TCodeToolManager.AddIncludeDirective(Code: TCodeBuffer;
+  const Filename: string; const NewSrc: string
+  ): boolean;
+var
+  Tree: TCompilerDirectivesTree;
+  Node: TCodeTreeNode;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.AddIncludeDirective A ',Code.Filename,' Filename=',Filename);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.AddIncludeDirective(Filename,SourceChangeCache,NewSrc);
+  except
+    on e: Exception do Result:=HandleException(e);
   end;
 end;
 
