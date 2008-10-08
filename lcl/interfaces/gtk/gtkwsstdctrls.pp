@@ -437,7 +437,7 @@ begin
     //set properties for the range
     Adjustment := gtk_range_get_adjustment (GTK_RANGE(Pointer(Handle)));
     Adjustment^.lower := Min;
-    Adjustment^.Upper := Max + PageSize;
+    Adjustment^.Upper := Max;
     Adjustment^.Value := Position;
     Adjustment^.step_increment := SmallChange;
     Adjustment^.page_increment := LargeChange;

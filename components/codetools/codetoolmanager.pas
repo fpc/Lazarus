@@ -1593,14 +1593,14 @@ end;
 procedure TCodeToolManager.WriteError;
 begin
   if FWriteExceptions then begin
-    {$IFDEF CTDEBUG}
-    WriteDebugReport(true,false,false,false,false);
-    {$ENDIF}
     DbgOut('### TCodeToolManager.HandleException: "'+ErrorMessage+'"');
     if ErrorLine>0 then DbgOut(' at Line=',DbgS(ErrorLine));
     if ErrorColumn>0 then DbgOut(' Col=',DbgS(ErrorColumn));
     if ErrorCode<>nil then DbgOut(' in "',ErrorCode.Filename,'"');
     DebugLn('');
+    {$IFDEF CTDEBUG}
+    WriteDebugReport(true,false,false,false,false);
+    {$ENDIF}
   end;
 end;
 

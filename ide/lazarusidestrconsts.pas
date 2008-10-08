@@ -2781,7 +2781,7 @@ resourcestring
   lisAmbiguousUnitFound = 'Ambiguous Unit found';
   lisTheFileWasFoundInOneOfTheSourceDirectoriesOfThePac = 'The file %s%s%s%'
     +'swas found in one of the source directories of the package %s and looks '
-    +'like a compiled unit.Compiled units must be in the output directory of '
+    +'like a compiled unit. Compiled units must be in the output directory of '
     +'the package, otherwise other packages can get problems using this '
     +'package.%s%sDelete ambiguous file?';
   lisPkgMangUnableToDeleteFile = 'Unable to delete file %s%s%s.';
@@ -2839,6 +2839,8 @@ resourcestring
   lisOpenPackage2 = 'Open package %s';
   lisPkgMangThePackageNameOfTheFileIsInvalid = 'The package name %s%s%s of%'
     +'sthe file %s%s%s is invalid.';
+  lisLazbuildIsNonInteractiveAbortingNow = '%s%s%s%slazbuild is non '
+    +'interactive, aborting now.';
   lisPkgMangPackageConflicts = 'Package conflicts';
   lisPkgMangThereIsAlreadyAPackageLoadedFromFile = 'There is already a '
     +'package %s%s%s loaded%sfrom file %s%s%s.%sSee Components -> Package '

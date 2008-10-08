@@ -49,7 +49,7 @@ uses
   // codetools
   LinkScanner, CodeToolManager, Laz_XMLCfg,
   // IDEIntf
-  IDECommands, IDEWindowIntf, SrcEditorIntf,
+  IDECommands, IDEWindowIntf, SrcEditorIntf, IDEImagesIntf,
   // IDE
   LazarusIDEStrConsts, IDEOptionDefs, IDEProcs, InputHistory, KeyMapping,
   KeymapSchemeDlg, KeyMapShortCutDlg, LazConf;
@@ -532,7 +532,6 @@ type
   TEditorOptionsForm = class(TForm)
     CancelButton: TBitBtn;
     MainNoteBook: TNoteBook;
-    ImageList:    TImageList;
 
     // general options
     EditorOptionsGroupBox: TCheckGroup;
@@ -783,6 +782,8 @@ function BuildBorlandDCIFile(
 
 implementation
 
+var
+  imgKeyCategory, imgKeyItem: Integer;
 
 const
   ValidAttribChars = ['a'..'z', 'A'..'Z', '_', '0'..'9'];
@@ -3650,7 +3651,7 @@ begin
       end
       else
         NewCategoryNode := Items.AddObject(Nil, CurCategory.Description, CurCategory);
-      NewCategoryNode.ImageIndex := 0;
+      NewCategoryNode.ImageIndex := imgKeyCategory;
       NewCategoryNode.SelectedIndex := NewCategoryNode.ImageIndex;
       ChildNodeIndex:=0;
       for j := 0 to CurCategory.Count - 1 do
@@ -3674,7 +3675,7 @@ begin
         else
           NewKeyNode := Items.AddChildObject(NewCategoryNode,
             ItemCaption, CurKeyRelation);
-        NewKeyNode.ImageIndex := 1;
+        NewKeyNode.ImageIndex := imgKeyItem;
         NewKeyNode.SelectedIndex := NewKeyNode.ImageIndex;
         inc(ChildNodeIndex);
       end;
@@ -3898,6 +3899,9 @@ begin
   KeyMappingHelpLabel.Caption := dlgEdHintCommand;
   KeyMappingFilterEdit.Text:=lisFilter2;
   KeyMappingFindKeyButton.Caption:=lisFindKeyCombination;
+  KeyMappingTreeView.Images := IDEImages.Images_16;
+  imgKeyCategory := IDEImages.LoadImage(16, 'item_keyboard');
+  imgKeyItem := IDEImages.LoadImage(16, 'item_character');
 end;
 
 procedure TEditorOptionsForm.SetupColorPage(Page: Integer);

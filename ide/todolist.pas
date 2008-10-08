@@ -196,6 +196,7 @@ begin
   ToolBar.Images := IDEImages.Images_16;
   acGoto.ImageIndex := IDEImages.LoadImage(16, 'menu_goto_line');
   acRefresh.ImageIndex := IDEImages.LoadImage(16, 'refresh');
+  acExport.ImageIndex := IDEImages.LoadImage(16, 'menu_saveas');
 end;
 
 destructor TfrmTodo.Destroy;
@@ -377,20 +378,20 @@ end;
 
 procedure TfrmTodo.FormCreate(Sender: TObject);
 begin
-  fBuild:=False;
-  fScannedFiles:=TAvgLvlTree.Create(@CompareTLScannedFiles);
+  fBuild := False;
+  fScannedFiles := TAvgLvlTree.Create(@CompareTLScannedFiles);
 
   Caption := lisTodoListCaption;
 
-  acRefresh.Hint  := lisTodolistRefresh;
-  acGoto.Hint  := listodoListGotoLine;
-  tbPrint.Hint   :=listodoListPrintList;
-  tbOptions.Hint  :=  lisToDoListOptions;
+  acRefresh.Hint := lisTodolistRefresh;
+  acGoto.Hint := listodoListGotoLine;
+  tbPrint.Hint := listodoListPrintList;
+  tbOptions.Hint := lisToDoListOptions;
 
-  tbOptions.Caption:=dlgFROpts;
-  tbPrint.Caption:=lisPrint;
-  tbRefresh.Caption:=dlgUnitDepRefresh;
-  tbGoto.Caption:=lisToDoGoto;
+  tbOptions.Caption := dlgFROpts;
+  tbPrint.Caption := lisPrint;
+  tbRefresh.Caption := dlgUnitDepRefresh;
+  tbGoto.Caption := lisToDoGoto;
 
   with lvTodo do
   begin
@@ -512,9 +513,7 @@ begin
       CommaList.Clear;
       CommaList.Free;
     end;
-  end
-  else
-    MessageDlg('Warning','Filename is: '+SaveDialog1.FileName,mtWarning,[mbClose],0);
+  end;
 end;
 
 procedure TfrmTodo.acRefreshExecute(Sender: TObject);

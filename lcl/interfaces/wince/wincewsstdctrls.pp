@@ -333,7 +333,7 @@ var
 begin
   with AScrollBar do
   begin
-    AMax := Max + PageSize - 1;
+    AMax := Max - 1;
     if AMax < Min then AMax := Min;
     if AMax < Max then AMax := Max;
 

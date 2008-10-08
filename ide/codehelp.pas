@@ -1847,7 +1847,7 @@ begin
               then
                 continue;
               CommentStr:=ExtractCommentContent(CommentCode.Source,CommentStart,
-                                                NestedComments,true,true);
+                                                NestedComments,true,true,true);
               if CommentStr<>'' then begin
                 if not ItemAdded then begin
                   AddText(Item.ElementName+LineEnding

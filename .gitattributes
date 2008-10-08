@@ -2619,9 +2619,11 @@ images/folder.png -text
 images/icon-naming-spec.xml svneol=native#text/plain
 images/ide_icon48x48.png -text svneol=unset#image/png
 images/includefile.ico -text svneol=unset#image/x-icon
+images/items/item_character.png -text svneol=unset#image/png
 images/items/item_filter.png -text svneol=unset#image/png
 images/items/item_font.png -text svneol=unset#image/png
 images/items/item_form.png -text svneol=unset#image/png
+images/items/item_keyboard.png -text svneol=unset#image/png
 images/items/item_library.png -text svneol=unset#image/png
 images/items/item_package.png -text svneol=unset#image/png
 images/items/item_project.png -text svneol=unset#image/png

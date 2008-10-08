@@ -3636,7 +3636,7 @@ function UTF16CharacterLength(p: PWideChar): integer;
 // The endianess of the machine will be taken.
 begin
   if p<>nil then begin
-    if ord(p[0])<$D800 then
+    if (ord(p[0]) < $D800) or (ord(p[0]) > $DFFF) then
       Result:=1
     else
       Result:=2;
@@ -3670,7 +3670,7 @@ var
 begin
   if p<>nil then begin
     w1:=ord(p[0]);
-    if w1<$D800 then begin
+    if (w1 < $D800) or (w1 > $DFFF) then begin
       // is 1 word character
       Result:=w1;
       CharLen:=1;
@@ -3695,7 +3695,10 @@ end;
 
 function UnicodeToUTF16(u: cardinal): widestring;
 begin
-  if u<$D800 then
+  // u should be <= $10FFFF to fit into UTF-16
+
+  if u < $10000 then
+    // Note: codepoints $D800 - $DFFF are reserved
     Result:=widechar(u)
   else
     Result:=widechar($D800+((u - $10000) shr 10))+widechar($DC00+((u - $10000) and $3ff));
@@ -3847,7 +3850,7 @@ begin
           if ((B2 and %11000000) = %10000000) and ((B3 and %11000000) = %10000000) then
           begin
             W := ((B1 and %00011111) shl 12) or ((B2 and %00111111) shl 6) or (B3 and %00111111);
-            if W < $D800 then // to single wide char UTF-16 char
+            if (W < $D800) or (W > $DFFF) then // to single wide char UTF-16 char
             begin
               Dest[DestI] := WideChar(W);
               Inc(DestI);
@@ -3985,7 +3988,7 @@ begin
     W1 := Word(Src[SrcI]);
     Inc(SrcI);
 
-    if W1 < $D800 then // single wide char UTF-16 char
+    if (W1 < $D800) or (W1 > $DFFF) then // single wide char UTF-16 char
     begin
       if W1 < $0080 then // to single byte UTF-8 char
       begin

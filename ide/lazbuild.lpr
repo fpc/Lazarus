@@ -265,7 +265,8 @@ function TLazBuildApplication.OnIDEMessageDialog(const aCaption, aMsg: string;
   ): Integer;
 begin
   DumpStack;
-  Error(ErrorBuildFailed,aMsg);
+  Error(ErrorBuildFailed, Format(lisLazbuildIsNonInteractiveAbortingNow, [
+    aCaption, #13, aMsg, #13]));
   Result:=mrCancel;
 end;
 
@@ -274,7 +275,8 @@ function TLazBuildApplication.OnIDEQuestionDialog(const aCaption, aMsg: string;
   ): Integer;
 begin
   DumpStack;
-  Error(ErrorBuildFailed,aMsg);
+  Error(ErrorBuildFailed, Format(lisLazbuildIsNonInteractiveAbortingNow, [
+    aCaption, #13, aMsg, #13]));
   Result:=mrCancel;
 end;
 
@@ -1161,7 +1163,7 @@ end;
 
 procedure TLazBuildApplication.Error(ErrorCode: Byte; const ErrorMsg: string);
 begin
-  writeln('ERROR: ',ErrorMsg);
+  writeln('ERROR: ',LineBreaksToSystemLineBreaks(ErrorMsg));
   Halt(ErrorCode);
 end;
 

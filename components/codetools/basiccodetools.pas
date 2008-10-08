@@ -61,7 +61,8 @@ function CleanCodeFromComments(const DirtyCode: string;
     NestedComments: boolean): string;
 function ExtractCommentContent(const ASource: string; CommentStart: integer;
     NestedComments: boolean;
-    TrimStart: boolean = false; TrimEnd: boolean = false): string;
+    TrimStart: boolean = false; TrimEnd: boolean = false;
+    TrimPasDoc: boolean = false): string;
 function FindMainUnitHint(const ASource: string; out Filename: string): boolean;
 
 // indent
@@ -2787,7 +2788,8 @@ begin
 end;
 
 function ExtractCommentContent(const ASource: string; CommentStart: integer;
-  NestedComments: boolean; TrimStart: boolean; TrimEnd: boolean): string;
+  NestedComments: boolean; TrimStart: boolean; TrimEnd: boolean;
+  TrimPasDoc: boolean): string;
 var
   CommentEnd: LongInt;
   StartPos: LongInt;
@@ -2819,6 +2821,10 @@ begin
       if (ASource[EndPos-1]='*') then
         dec(EndPos);
     end;
+  end;
+  if TrimPasDoc then begin
+    if (StartPos<EndPos) and (ASource[StartPos]='<') then
+      inc(StartPos);
   end;
   if TrimStart then begin
     while (StartPos<EndPos) and (ASource[StartPos] in [' ',#9,#10,#13]) do
