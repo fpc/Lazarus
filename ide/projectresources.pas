@@ -24,9 +24,11 @@
  *                                                                         *
  ***************************************************************************
 
- Abstract:
-
-
+ Abstract: Project Resources - is a list of System and Lazarus resources.
+ Currently it contains:
+   - Version information
+   - XP manifest
+   - Project icon
 }
 unit ProjectResources;
 
@@ -244,6 +246,8 @@ var
   Filename: String;
 begin
   Result := False;
+  if not Update then
+    Exit;
   CodeBuf := CodeToolBoss.LoadFile(AFilename, False, False);
   if CodeBuf <> nil then
   begin
