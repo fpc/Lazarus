@@ -2117,7 +2117,7 @@ begin
   end;
   Result := KeywordsList.Find(LowerCase(AKeyword), i);
   if not Result then exit;
-  m := TPascalCompilerMode(KeywordsList.Objects[i]);
+  m := TPascalCompilerMode(PtrUInt(KeywordsList.Objects[i]));
   case FCompilerMode of
     pcmFPC, pcmObjFPC: ;
     pcmDelphi: Result := m in [pcmTP, pcmDelphi];
