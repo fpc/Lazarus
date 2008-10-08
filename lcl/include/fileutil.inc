@@ -1396,11 +1396,11 @@ begin
       DestFS:=TFileStream.Create(UTF8ToSys(DestFilename),fmCreate);
       try
         DestFS.CopyFrom(SrcFS,SrcFS.Size);
-        if PreserveTime then
-          FileSetDateUTF8(DestFilename, FileGetDate(SrcFS.Handle));
       finally
         DestFS.Free;
       end;
+      if PreserveTime then
+         FileSetDateUTF8(DestFilename, FileGetDate(SrcFS.Handle));
     finally
       SrcFS.Free;
     end;
