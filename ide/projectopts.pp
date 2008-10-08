@@ -559,7 +559,8 @@ begin
     Project.Resources.VersionInfo.CopyrightString:=CopyrightEdit.Text;
     Project.Resources.VersionInfo.HexLang:=MSLanguageToHex(LanguageSelectionComboBox.Text);
     Project.Resources.VersionInfo.HexCharSet:=MSCharacterSetToHex(CharacterSetComboBox.Text);
-    if Project.Resources.Modified then
+    //debugln(['TProjectOptionsDialog.ProjectOptionsClose Project.Resources.Modified=',Project.Resources.Modified]);
+    if Project.Resources.Modified and (Project.MainUnitID>=0) then
       Project.Resources.UpdateMainSourceFile(Project.MainFilename);
   end;
 

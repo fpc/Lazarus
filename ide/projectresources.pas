@@ -1,12 +1,42 @@
-unit projectresources;
+{
+ /***************************************************************************
+                    projectresources.pas  -  Lazarus IDE unit
+                    -----------------------------------------
+
+ ***************************************************************************/
+
+ ***************************************************************************
+ *                                                                         *
+ *   This source is free software; you can redistribute it and/or modify   *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This code is distributed in the hope that it will be useful, but      *
+ *   WITHOUT ANY WARRANTY; without even the implied warranty of            *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU     *
+ *   General Public License for more details.                              *
+ *                                                                         *
+ *   A copy of the GNU General Public License is available on the World    *
+ *   Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also      *
+ *   obtain it by writing to the Free Software Foundation,                 *
+ *   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.        *
+ *                                                                         *
+ ***************************************************************************
+
+ Abstract:
+
+
+}
+unit ProjectResources;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, LResources, FileUtil,
-  projectresourcesintf,
+  Classes, SysUtils, LCLProc, LResources, FileUtil,
+  ProjectResourcesIntf,
   W32VersionInfo, W32Manifest, ProjectIcon,
   CodeToolManager, CodeCache, CodeAtom;
 
@@ -219,6 +249,7 @@ begin
   begin
     SetFileNames('', AFileName);
     Filename := ExtractFileName(rcFileName);
+    debugln(['TProjectResources.UpdateMainSourceFile HasSystemResources=',HasSystemResources,' Filename=',Filename,' HasLazarusResource=',HasLazarusResource]);
     if CodeToolBoss.FindResourceDirective(CodeBuf, 1, 1,
                                NewCode, NewX, NewY,
                                NewTopLine, Filename, false) then

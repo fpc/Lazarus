@@ -36,7 +36,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Process, LCLProc, Controls, Forms,
   CodeToolManager, CodeCache, CodeAtom, LazConf, LResources, base64,
-  projectresourcesintf;
+  ProjectResourcesIntf;
    
 type
   { TProjectIcon }
@@ -124,14 +124,18 @@ var
 begin
   Result := True;
 
+  //debugln(['TProjectIcon.UpdateResources ',IconText = '']);
   if IconText = '' then
     Exit;
 
   SetFileNames(MainFilename);
 
   AResource := GetStream;
-  AResources.AddLazarusResource(AResource, 'MAINICON', 'ICO');
-  AResource.Free;
+  try
+    AResources.AddLazarusResource(AResource, 'MAINICON', 'ICO');
+  finally
+    AResource.Free;
+  end;
 
   // the preferred way is this:
   // RCIcon := sIcon + #$D#$A + GetAsHex;
