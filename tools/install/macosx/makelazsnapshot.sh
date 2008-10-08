@@ -10,6 +10,7 @@ PPCARCH=ppcppc
 ARCH=`uname -p`
 if [ "$ARCH" = "i386" ]; then
   PPCARCH=ppc386
+  export CROSSCOMPILER=~/fpc/bin/ppcppc
 fi
 
 SVN=`which svn`
