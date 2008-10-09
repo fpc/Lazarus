@@ -77,8 +77,8 @@ type
     function Regenerate(const AWorkingDir, MainFileName: String): Boolean;
     function UpdateMainSourceFile(const AFileName: string): Boolean;
 
-    function HasSystemResources: Boolean;
-    function HasLazarusResources: Boolean;
+    function HasSystemResources(CheckLists: Boolean): Boolean;
+    function HasLazarusResources(CheckLists: Boolean): Boolean;
 
     procedure WriteToProjectFile(AConfig: TXMLConfig; Path: String);
     procedure ReadFromProjectFile(AConfig: TXMLConfig; Path: String);
@@ -127,6 +127,7 @@ end;
 
 function TProjectResources.Update: Boolean;
 begin
+  // CheckMode is used only to test whether we have paticular resources
   Clear;
   // handle versioninfo
   Result := VersionInfo.UpdateResources(Self, rcFileName);
@@ -215,7 +216,7 @@ begin
     Exit;
 
   AStream := nil;
-  if HasSystemResources then
+  if HasSystemResources(True) then
   begin
     try
       AStream := TFileStream.Create(UTF8ToSys(rcFileName), fmCreate);
@@ -224,7 +225,7 @@ begin
       AStream.Free;
     end;
   end;
-  if HasLazarusResources then
+  if HasLazarusResources(True) then
   begin
     try
       AStream := TFileStream.Create(UTF8ToSys(lrsFileName), fmCreate);
@@ -236,14 +237,24 @@ begin
   Result := True;
 end;
 
-function TProjectResources.HasSystemResources: Boolean;
+function TProjectResources.HasSystemResources(CheckLists: Boolean): Boolean;
 begin
-  Result := FSystemResources.Count > 0;
+  if CheckLists then
+    Result := FSystemResources.Count > 0
+  else
+    Result := VersionInfo.HasAnySystemResource or
+              XPManifest.HasAnySystemResource or
+              ProjectIcon.HasAnySystemResource;
 end;
 
-function TProjectResources.HasLazarusResources: Boolean;
+function TProjectResources.HasLazarusResources(CheckLists: Boolean): Boolean;
 begin
-  Result := FLazarusResources.Count > 0;
+  if CheckLists then
+    Result := FLazarusResources.Count > 0
+  else
+    Result := VersionInfo.HasAnyLazarusResource or
+              XPManifest.HasAnyLazarusResource or
+              ProjectIcon.HasAnyLazarusResource;
 end;
 
 procedure TProjectResources.WriteToProjectFile(AConfig: TXMLConfig; Path: String);
@@ -310,8 +321,7 @@ var
   NamePos, InPos: integer;
 begin
   Result := True;
-  if not Update then
-    Exit;
+
   CodeBuf := CodeToolBoss.LoadFile(AFilename, False, False);
   if CodeBuf <> nil then
   begin
@@ -322,7 +332,7 @@ begin
     // update LResources uses
     if CodeToolBoss.FindUnitInAllUsesSections(CodeBuf, LazResourcesUnit, NamePos, InPos) then
     begin
-      if not HasLazarusResources then
+      if not HasLazarusResources(False) then
       begin
         if not CodeToolBoss.RemoveUnitFromAllUsesSections(CodeBuf, LazResourcesUnit) then
         begin
@@ -333,7 +343,7 @@ begin
       end;
     end
     else
-    if HasLazarusResources then
+    if HasLazarusResources(False) then
     begin
       if not CodeToolBoss.AddUnitToMainUsesSection(CodeBuf, LazResourcesUnit,'') then
       begin
@@ -349,7 +359,7 @@ begin
                                NewTopLine, Filename, false) then
     begin
       // there is a resource directive in the source
-      if not HasSystemResources then
+      if not HasSystemResources(False) then
       begin
         if not CodeToolBoss.RemoveDirective(NewCode, NewX,NewY,true) then
         begin
@@ -360,7 +370,7 @@ begin
       end;
     end
     else
-    if HasSystemResources then
+    if HasSystemResources(False) then
     begin
       if not CodeToolBoss.AddResourceDirective(CodeBuf,
         Filename,false,'{$IFDEF WINDOWS}{$R '+Filename+'}{$ENDIF}') then
@@ -379,7 +389,7 @@ begin
     begin
       // there is a resource directive in the source
       //debugln(['TProjectResources.UpdateMainSourceFile include directive found']);
-      if not HasLazarusResources then
+      if not HasLazarusResources(False) then
       begin
         if not CodeToolBoss.RemoveDirective(NewCode, NewX,NewY,true) then
         begin
@@ -391,7 +401,7 @@ begin
       end;
     end
     else
-    if HasLazarusResources then
+    if HasLazarusResources(False) then
     begin
       //debugln(['TProjectResources.UpdateMainSourceFile include directive not found']);
       if not CodeToolBoss.AddIncludeDirective(CodeBuf,
