@@ -304,7 +304,7 @@ begin
     begin
       //debugln(['TProjectResources.UpdateMainSourceFile include directive not found']);
       if not CodeToolBoss.AddIncludeDirective(CodeBuf,
-        Filename,'{$IFDEF WINDOWS}{$I '+Filename+'}{$ENDIF}') then
+        Filename,'{$I '+Filename+'}') then
       begin
         debugln(['TProjectResources.UpdateMainSourceFile adding include directive to main source failed']);
         // Messages.Add('Could not add "{$I'+ Filename +'"} to main source!');
