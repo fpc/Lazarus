@@ -60,7 +60,6 @@ type
     LFMNode: TLFMTreeNode;
     const IdentName: string; var IsDefined: boolean) of object;
 
-
   { TStandardCodeTool }
 
   TStandardCodeTool = class(TIdentCompletionTool)
@@ -4877,24 +4876,23 @@ begin
   Result:=false;
   BuildTree(true);
   // find an insert position
-  ANode:=FindImplementationNode;
+  ANode:=FindInitializationNode;
   if ANode<>nil then begin
-    Indent:=GetLineIndent(Src,ANode.StartPos);
-    InsertPos:=ANode.StartPos+length('implementation');
+    Indent:=GetLineIndent(Src,ANode.StartPos)
+            +SourceChangeCache.BeautifyCodeOptions.Indent;
+    InsertPos:=ANode.StartPos+length('initialization');
   end else begin
     ANode:=FindMainBeginEndNode;
     if ANode<>nil then begin
-      Indent:=GetLineIndent(Src,ANode.StartPos);
-      InsertPos:=ANode.StartPos;
+      MoveCursorToNodeStart(ANode);
+      ReadNextAtom;
+      debugln(['TStandardCodeTool.AddIncludeDirective ',GetAtom]);
+      Indent:=GetLineIndent(Src,CurPos.StartPos)
+              +SourceChangeCache.BeautifyCodeOptions.Indent;
+      InsertPos:=CurPos.EndPos;
     end else begin
-      ANode:=FindMainUsesSection;
-      if ANode<>nil then begin
-        Indent:=GetLineIndent(Src,ANode.StartPos);
-        InsertPos:=ANode.StartPos;
-      end else begin
-        Indent:=0;
-        InsertPos:=1;
-      end;
+      debugln(['TStandardCodeTool.AddIncludeDirective ToDo: add initialization / begin..end']);
+      exit;
     end;
   end;
 
@@ -4904,7 +4902,7 @@ begin
     AddSrc:=NewSrc
   else
     AddSrc:=GetIndentStr(Indent)+'{$I '+Filename+'}';
-  if not SourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,
+  if not SourceChangeCache.Replace(gtNewLine,gtNewLine,InsertPos,InsertPos,
     AddSrc) then exit;
   if not SourceChangeCache.Apply then exit;
 
