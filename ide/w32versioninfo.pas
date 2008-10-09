@@ -38,12 +38,12 @@ interface
 
 uses
   Classes, SysUtils, Process, LCLProc, Controls, Forms, FileUtil,
-  CodeToolManager, CodeCache, LazConf, projectresourcesintf;
+  CodeToolManager, CodeCache, LazConf, ProjectResourcesIntf;
    
 type
   { TProjectVersionInfo }
 
-  TProjectVersionInfo = class(TObject)
+  TProjectVersionInfo = class(TAbstractProjectResource)
   private
     FAutoIncrementBuild: boolean;
     FBuildNr: integer;
@@ -56,8 +56,6 @@ type
     FInternalNameString: string;
     FMajorRevNr: integer;
     FMinorRevNr: integer;
-    FModified: boolean;
-    FOnModified: TNotifyEvent;
     FOriginalFilenameString: string;
     FProdNameString: string;
     FProductVersionString: string;
@@ -79,7 +77,6 @@ type
     procedure SetInternalNameString(const AValue: string);
     procedure SetMajorRevNr(const AValue: integer);
     procedure SetMinorRevNr(const AValue: integer);
-    procedure SetModified(const AValue: boolean);
     procedure SetOriginalFilenameString(const AValue: string);
     procedure SetProdNameString(const AValue: string);
     procedure SetProductVersionString(const AValue: string);
@@ -87,9 +84,7 @@ type
     procedure SetUseVersionInfo(const AValue: boolean);
     procedure SetVersionNr(const AValue: integer);
   public
-    function UpdateResources(AResources: TAbstractProjectResources; const MainFilename: string): Boolean;
-
-    property Modified: boolean read FModified write SetModified;
+    function UpdateResources(AResources: TAbstractProjectResources; const MainFilename: string): Boolean; override;
 
     property UseVersionInfo: boolean read FUseVersionInfo write SetUseVersionInfo;
     property AutoIncrementBuild: boolean read FAutoIncrementBuild write SetAutoIncrementBuild;
@@ -108,8 +103,6 @@ type
     property OriginalFilenameString: string read FOriginalFilenameString write SetOriginalFilenameString;
     property ProdNameString: string read FProdNameString write SetProdNameString;
     property ProductVersionString: string read FProductVersionString write SetProductVersionString;
-
-    property OnModified: TNotifyEvent read FOnModified write FOnModified;
   end;
 
 function MSLanguageToHex(const s: string): string;
@@ -471,13 +464,6 @@ begin
   if FMinorRevNr=AValue then exit;
   FMinorRevNr:=AValue;
   Modified:=true;
-end;
-
-procedure TProjectVersionInfo.SetModified(const AValue: boolean);
-begin
-  if FModified=AValue then exit;
-  FModified:=AValue;
-  if Assigned(OnModified) then OnModified(Self);
 end;
 
 procedure TProjectVersionInfo.SetOriginalFilenameString(const AValue: string);

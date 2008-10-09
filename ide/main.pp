@@ -95,7 +95,7 @@ uses
   IDEProtocol,
   // compile
   Compiler, CompilerOptions, CompilerOptionsDlg, CheckCompilerOpts,
-  ApplicationBundle, W32VersionInfo, ImExportCompilerOpts, InfoBuild,
+  ApplicationBundle, ImExportCompilerOpts, InfoBuild,
   // projects
   Project, ProjectDefs, NewProjectDlg, ProjectOpts,
   PublishProjectDlg, ProjectInspector, PackageDefs,

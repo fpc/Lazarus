@@ -37,9 +37,9 @@ unit ProjectResources;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, FileUtil,
+  Classes, SysUtils, LCLProc, LResources, FileUtil, Laz_XMLCfg,
   ProjectResourcesIntf,
-  W32VersionInfo, W32Manifest, ProjectIcon,
+  W32VersionInfo, W32Manifest, ProjectIcon, IDEProcs,
   BasicCodeTools, CodeToolManager, CodeCache, CodeAtom;
 
 type
@@ -67,7 +67,7 @@ type
     function Update: Boolean;
     procedure EmbeddedObjectModified(Sender: TObject);
   public
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
 
     procedure AddSystemResource(const AResource: String); override;
@@ -79,6 +79,9 @@ type
 
     function HasSystemResources: Boolean;
     function HasLazarusResource: Boolean;
+
+    procedure WriteToProjectFile(AConfig: TXMLConfig; Path: String);
+    procedure ReadFromProjectFile(AConfig: TXMLConfig; Path: String);
 
     property VersionInfo: TProjectVersionInfo read FVersionInfo;
     property XPManifest: TProjectXPManifest read FXPManifest;
@@ -149,6 +152,8 @@ end;
 
 constructor TProjectResources.Create;
 begin
+  inherited Create;
+
   FInModified := False;
 
   FSystemResources := TStringList.Create;
@@ -173,6 +178,7 @@ begin
 
   FSystemResources.Free;
   FLazarusResources.Free;
+  FMessages.Free;
 end;
 
 procedure TProjectResources.AddSystemResource(const AResource: String);
@@ -195,6 +201,7 @@ procedure TProjectResources.Clear;
 begin
   FSystemResources.Clear;
   FLazarusResources.Clear;
+  FMessages.Clear;
 end;
 
 function TProjectResources.Regenerate(const AWorkingDir, MainFileName: String): Boolean;
@@ -239,13 +246,67 @@ begin
   Result := FLazarusResources.Count > 0;
 end;
 
+procedure TProjectResources.WriteToProjectFile(AConfig: TXMLConfig; Path: String);
+begin
+  // todo: further split by classes
+  with AConfig do
+  begin
+    SetDeleteValue(Path+'General/Icon/Value', ProjectIcon.IconText, '');
+    SetDeleteValue(Path+'General/UseXPManifest/Value', XPManifest.UseManifest, False);
+    SetDeleteValue(Path+'VersionInfo/UseVersionInfo/Value', VersionInfo.UseVersionInfo,false);
+    SetDeleteValue(Path+'VersionInfo/AutoIncrementBuild/Value', VersionInfo.AutoIncrementBuild,false);
+    SetDeleteValue(Path+'VersionInfo/CurrentVersionNr/Value', VersionInfo.VersionNr,0);
+    SetDeleteValue(Path+'VersionInfo/CurrentMajorRevNr/Value', VersionInfo.MajorRevNr,0);
+    SetDeleteValue(Path+'VersionInfo/CurrentMinorRevNr/Value', VersionInfo.MinorRevNr,0);
+    SetDeleteValue(Path+'VersionInfo/CurrentBuildNr/Value', VersionInfo.BuildNr,0);
+    SetDeleteValue(Path+'VersionInfo/ProjectVersion/Value', VersionInfo.ProductVersionString,'1.0.0.0');
+    SetDeleteValue(Path+'VersionInfo/Language/Value', VersionInfo.HexLang,'0409');
+    SetDeleteValue(Path+'VersionInfo/CharSet/Value', VersionInfo.HexCharSet,'04E4');
+    SetDeleteValue(Path+'VersionInfo/Comments/Value', VersionInfo.CommentsString,'');
+    SetDeleteValue(Path+'VersionInfo/CompanyName/Value', VersionInfo.CompanyString,'');
+    SetDeleteValue(Path+'VersionInfo/FileDescription/Value', VersionInfo.DescriptionString,'');
+    SetDeleteValue(Path+'VersionInfo/InternalName/Value', VersionInfo.InternalNameString,'');
+    SetDeleteValue(Path+'VersionInfo/LegalCopyright/Value', VersionInfo.CopyrightString,'');
+    SetDeleteValue(Path+'VersionInfo/LegalTrademarks/Value', VersionInfo.TrademarksString,'');
+    SetDeleteValue(Path+'VersionInfo/OriginalFilename/Value', VersionInfo.OriginalFilenameString,'');
+    SetDeleteValue(Path+'VersionInfo/ProductName/Value', VersionInfo.ProdNameString,'');
+  end;
+end;
+
+procedure TProjectResources.ReadFromProjectFile(AConfig: TXMLConfig; Path: String);
+begin
+  // todo: further split by classes
+  with AConfig do
+  begin
+    ProjectIcon.IconText := GetValue(Path+'General/Icon/Value', '');
+    XPManifest.UseManifest := GetValue(Path+'General/UseXPManifest/Value', False);
+    VersionInfo.UseVersionInfo := GetValue(Path+'VersionInfo/UseVersionInfo/Value', False);
+    VersionInfo.AutoIncrementBuild := GetValue(Path+'VersionInfo/AutoIncrementBuild/Value', False);
+    VersionInfo.VersionNr := GetValue(Path+'VersionInfo/CurrentVersionNr/Value', 0);
+    VersionInfo.MajorRevNr := GetValue(Path+'VersionInfo/CurrentMajorRevNr/Value', 0);
+    VersionInfo.MinorRevNr := GetValue(Path+'VersionInfo/CurrentMinorRevNr/Value', 0);
+    VersionInfo.BuildNr := GetValue(Path+'VersionInfo/CurrentBuildNr/Value', 0);
+    VersionInfo.ProductVersionString := GetValue(Path+'VersionInfo/ProjectVersion/Value', '1.0.0.0');
+    VersionInfo.HexLang := GetValue(Path+'VersionInfo/Language/Value', '0409');
+    VersionInfo.HexCharSet := GetValue(Path+'VersionInfo/CharSet/Value', '04E4');
+    VersionInfo.CommentsString := LineBreaksToSystemLineBreaks(GetValue(Path+'VersionInfo/Comments/Value', ''));
+    VersionInfo.CompanyString := LineBreaksToSystemLineBreaks(GetValue(Path+'VersionInfo/CompanyName/Value', ''));
+    VersionInfo.DescriptionString := LineBreaksToSystemLineBreaks(GetValue(Path+'VersionInfo/FileDescription/Value', ''));
+    VersionInfo.InternalNameString := LineBreaksToSystemLineBreaks(GetValue(Path+'VersionInfo/InternalName/Value', ''));
+    VersionInfo.CopyrightString := LineBreaksToSystemLineBreaks(GetValue(Path+'VersionInfo/LegalCopyright/Value', ''));
+    VersionInfo.TrademarksString := LineBreaksToSystemLineBreaks(GetValue(Path+'VersionInfo/LegalTrademarks/Value', ''));
+    VersionInfo.OriginalFilenameString := GetValue(Path+'VersionInfo/OriginalFilename/Value', '');
+    VersionInfo.ProdNameString := LineBreaksToSystemLineBreaks(GetValue(Path+'VersionInfo/ProductName/Value', ''));
+  end;
+end;
+
 function TProjectResources.UpdateMainSourceFile(const AFilename: string): Boolean;
 var
   NewX, NewY, NewTopLine: integer;
   CodeBuf, NewCode: TCodeBuffer;
   Filename: String;
 begin
-  Result := False;
+  Result := True;
   if not Update then
     Exit;
   CodeBuf := CodeToolBoss.LoadFile(AFilename, False, False);
@@ -265,8 +326,9 @@ begin
       begin
         if not CodeToolBoss.RemoveDirective(NewCode, NewX,NewY,true) then
         begin
+          Result := False;
+          Messages.Add('Could not remove "{$R'+ Filename +'"} from main source!');
           debugln(['TProjectResources.UpdateMainSourceFile failed: removing resource directive']);
-          // Messages.Add('Could not remove "{$R'+ Filename +'"} from main source!');
         end;
       end;
     end
@@ -276,8 +338,9 @@ begin
       if not CodeToolBoss.AddResourceDirective(CodeBuf,
         Filename,false,'{$IFDEF WINDOWS}{$R '+Filename+'}{$ENDIF}') then
       begin
+        Result := False;
+        Messages.Add('Could not add "{$R '+ Filename +'"} to main source!');
         debugln(['TProjectResources.UpdateMainSourceFile failed: adding resource directive']);
-        // Messages.Add('Could not add "{$R '+ Filename +'"} to main source!');
       end;
     end;
 
@@ -293,8 +356,9 @@ begin
       begin
         if not CodeToolBoss.RemoveDirective(NewCode, NewX,NewY,true) then
         begin
+          Result := False;
+          Messages.Add('Could not remove "{$I '+ Filename +'"} from main source!');
           debugln(['TProjectResources.UpdateMainSourceFile removing include directive from main source failed']);
-          // Messages.Add('Could not remove "{$I '+ Filename +'"} from main source!');
           Exit;
         end;
       end;
@@ -306,13 +370,13 @@ begin
       if not CodeToolBoss.AddIncludeDirective(CodeBuf,
         Filename,'{$I '+Filename+'}') then
       begin
+        Result := False;
+        Messages.Add('Could not add "{$I'+ Filename +'"} to main source!');
         debugln(['TProjectResources.UpdateMainSourceFile adding include directive to main source failed']);
-        // Messages.Add('Could not add "{$I'+ Filename +'"} to main source!');
         Exit;
       end;
     end;
   end;
-  Result := True;
 end;
 
 end.

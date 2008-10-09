@@ -560,8 +560,11 @@ begin
     Project.Resources.VersionInfo.HexLang:=MSLanguageToHex(LanguageSelectionComboBox.Text);
     Project.Resources.VersionInfo.HexCharSet:=MSCharacterSetToHex(CharacterSetComboBox.Text);
     //debugln(['TProjectOptionsDialog.ProjectOptionsClose Project.Resources.Modified=',Project.Resources.Modified]);
-    if Project.Resources.Modified and (Project.MainUnitID>=0) then
-      Project.Resources.UpdateMainSourceFile(Project.MainFilename);
+    if Project.Resources.Modified and (Project.MainUnitID >= 0) then
+    begin
+      if not Project.Resources.UpdateMainSourceFile(Project.MainFilename) then
+        MessageDlg(Project.Resources.Messages.Text, mtWarning, [mbOk], 0);
+    end;
   end;
 
   IDEDialogLayoutList.SaveLayout(Self);

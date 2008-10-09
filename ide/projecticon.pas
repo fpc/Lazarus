@@ -41,30 +41,24 @@ uses
 type
   { TProjectIcon }
 
-  TProjectIcon = class(TObject)
+  TProjectIcon = class(TAbstractProjectResource)
   private
     FIconText: String;
-    FModified: boolean;
     icoFileName: string;
-    FOnModified: TNotifyEvent;
     procedure SetIconText(const AValue: String);
     procedure SetFileNames(const MainFilename: string);
-    procedure SetModified(const AValue: Boolean);
   protected
     function GetAsHex: String;
   public
-    constructor Create;
+    constructor Create; override;
 
     function GetStream: TStream;
     procedure SetStream(AStream: TStream);
 
-    function UpdateResources(AResources: TAbstractProjectResources; const MainFilename: string): Boolean;
+    function UpdateResources(AResources: TAbstractProjectResources; const MainFilename: string): Boolean; override;
     function CreateIconFile: Boolean;
 
     property IconText: String read FIconText write SetIconText;
-    property Modified: boolean read FModified write SetModified;
-
-    property OnModified: TNotifyEvent read FOnModified write FOnModified;
   end;
 
 implementation
@@ -176,6 +170,8 @@ var
   DefaultRes: TLResource;
   ResStream: TLazarusResourceStream;
 begin
+  inherited Create;
+
   FIconText := '';
 
   // Load default icon
@@ -193,15 +189,6 @@ begin
   if FIconText = AValue then Exit;
   FIconText := AValue;
   Modified := True;
-end;
-
-procedure TProjectIcon.SetModified(const AValue: Boolean);
-begin
-  if FModified = AValue then
-    Exit;
-  FModified := AValue;
-  if Assigned(OnModified) then 
-    OnModified(Self);
 end;
 
 function TProjectIcon.GetAsHex: String;

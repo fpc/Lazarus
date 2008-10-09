@@ -40,20 +40,14 @@ uses
 type
   { TProjectXPManifest }
 
-  TProjectXPManifest = class(TObject)
+  TProjectXPManifest = class(TAbstractProjectResource)
   private
-    FModified: boolean;
     FUseManifest: boolean;
-    FOnModified: TNotifyEvent;
     procedure SetUseManifest(const AValue: boolean);
-    procedure SetModified(const AValue: Boolean);
   public
-    function UpdateResources(AResources: TAbstractProjectResources; const MainFilename: string): Boolean;
+    function UpdateResources(AResources: TAbstractProjectResources; const MainFilename: string): Boolean; override;
 
     property UseManifest: boolean read FUseManifest write SetUseManifest;
-    property Modified: boolean read FModified write SetModified;
-
-    property OnModified: TNotifyEvent read FOnModified write FOnModified;
   end;
 
 implementation
@@ -98,15 +92,6 @@ begin
   Result := True;
   if UseManifest then
     AResources.AddSystemResource(sManifest);
-end;
-
-procedure TProjectXPManifest.SetModified(const AValue: Boolean);
-begin
-  if FModified = AValue then
-    Exit;
-  FModified := AValue;
-  if Assigned(OnModified) then 
-    OnModified(Self);
 end;
 
 end.

@@ -2061,9 +2061,7 @@ begin
                                AutoCreateForms,true);
       xmlconfig.SetValue(Path+'General/TargetFileExt/Value',TargetFileExt);
       xmlconfig.SetDeleteValue(Path+'General/Title/Value', Title,'');
-      xmlconfig.SetDeleteValue(Path+'General/Icon/Value', Resources.ProjectIcon.IconText, '');
       xmlconfig.SetDeleteValue(Path+'General/UseAppBundle/Value', UseAppBundle, True);
-      xmlconfig.SetDeleteValue(Path+'General/UseXPManifest/Value', Resources.XPManifest.UseManifest, False);
 
       // lazdoc
       xmlconfig.SetDeleteValue(Path+'LazDoc/Paths',
@@ -2074,27 +2072,8 @@ begin
       xmlconfig.SetDeleteValue(Path+'i18n/OutDir/Value',
                    CreateRelativePath(POOutputDirectory,ProjectDirectory) , '');
 
-      // VersionInfo
-      with Resources do
-      begin
-        xmlconfig.SetDeleteValue(Path+'VersionInfo/UseVersionInfo/Value', VersionInfo.UseVersionInfo,false);
-        xmlconfig.SetDeleteValue(Path+'VersionInfo/AutoIncrementBuild/Value', VersionInfo.AutoIncrementBuild,false);
-        xmlconfig.SetDeleteValue(Path+'VersionInfo/CurrentVersionNr/Value', VersionInfo.VersionNr,0);
-        xmlconfig.SetDeleteValue(Path+'VersionInfo/CurrentMajorRevNr/Value', VersionInfo.MajorRevNr,0);
-        xmlconfig.SetDeleteValue(Path+'VersionInfo/CurrentMinorRevNr/Value', VersionInfo.MinorRevNr,0);
-        xmlconfig.SetDeleteValue(Path+'VersionInfo/CurrentBuildNr/Value', VersionInfo.BuildNr,0);
-        xmlconfig.SetDeleteValue(Path+'VersionInfo/ProjectVersion/Value', VersionInfo.ProductVersionString,'1.0.0.0');
-        xmlconfig.SetDeleteValue(Path+'VersionInfo/Language/Value', VersionInfo.HexLang,'0409');
-        xmlconfig.SetDeleteValue(Path+'VersionInfo/CharSet/Value', VersionInfo.HexCharSet,'04E4');
-        xmlconfig.SetDeleteValue(Path+'VersionInfo/Comments/Value', VersionInfo.CommentsString,'');
-        xmlconfig.SetDeleteValue(Path+'VersionInfo/CompanyName/Value', VersionInfo.CompanyString,'');
-        xmlconfig.SetDeleteValue(Path+'VersionInfo/FileDescription/Value', VersionInfo.DescriptionString,'');
-        xmlconfig.SetDeleteValue(Path+'VersionInfo/InternalName/Value', VersionInfo.InternalNameString,'');
-        xmlconfig.SetDeleteValue(Path+'VersionInfo/LegalCopyright/Value', VersionInfo.CopyrightString,'');
-        xmlconfig.SetDeleteValue(Path+'VersionInfo/LegalTrademarks/Value', VersionInfo.TrademarksString,'');
-        xmlconfig.SetDeleteValue(Path+'VersionInfo/OriginalFilename/Value', VersionInfo.OriginalFilenameString,'');
-        xmlconfig.SetDeleteValue(Path+'VersionInfo/ProductName/Value', VersionInfo.ProdNameString,'');
-      end;
+      // Resources
+      Resources.WriteToProjectFile(xmlconfig, Path);
 
       // save custom data
       SaveStringToStringTree(xmlconfig,CustomData,Path+'CustomData/');
@@ -2465,9 +2444,7 @@ begin
       TargetFileExt := xmlconfig.GetValue(
          Path+'General/TargetFileExt/Value', GetExecutableExt);
       Title := xmlconfig.GetValue(Path+'General/Title/Value', '');
-      Resources.ProjectIcon.IconText := xmlconfig.GetValue(Path+'General/Icon/Value', '');
       UseAppBundle := xmlconfig.GetValue(Path+'General/UseAppBundle/Value', True);
-      Resources.XPManifest.UseManifest := xmlconfig.GetValue(Path+'General/UseXPManifest/Value', False);
 
       // Lazdoc
       LazDocPaths := SwitchPathDelims(xmlconfig.GetValue(Path+'LazDoc/Paths', ''),
@@ -2488,27 +2465,8 @@ begin
       // Load the compiler options
       LoadCompilerOptions(XMLConfig,Path);
 
-      // VersionInfo
-      with Resources do
-      begin
-        VersionInfo.UseVersionInfo := xmlconfig.GetValue(Path+'VersionInfo/UseVersionInfo/Value', False);
-        VersionInfo.AutoIncrementBuild := xmlconfig.GetValue(Path+'VersionInfo/AutoIncrementBuild/Value', False);
-        VersionInfo.VersionNr := xmlconfig.GetValue(Path+'VersionInfo/CurrentVersionNr/Value', 0);
-        VersionInfo.MajorRevNr := xmlconfig.GetValue(Path+'VersionInfo/CurrentMajorRevNr/Value', 0);
-        VersionInfo.MinorRevNr := xmlconfig.GetValue(Path+'VersionInfo/CurrentMinorRevNr/Value', 0);
-        VersionInfo.BuildNr := xmlconfig.GetValue(Path+'VersionInfo/CurrentBuildNr/Value', 0);
-        VersionInfo.ProductVersionString := xmlconfig.GetValue(Path+'VersionInfo/ProjectVersion/Value', '1.0.0.0');
-        VersionInfo.HexLang := xmlconfig.GetValue(Path+'VersionInfo/Language/Value', '0409');
-        VersionInfo.HexCharSet := xmlconfig.GetValue(Path+'VersionInfo/CharSet/Value', '04E4');
-        VersionInfo.CommentsString := LineBreaksToSystemLineBreaks(xmlconfig.GetValue(Path+'VersionInfo/Comments/Value', ''));
-        VersionInfo.CompanyString := LineBreaksToSystemLineBreaks(xmlconfig.GetValue(Path+'VersionInfo/CompanyName/Value', ''));
-        VersionInfo.DescriptionString := LineBreaksToSystemLineBreaks(xmlconfig.GetValue(Path+'VersionInfo/FileDescription/Value', ''));
-        VersionInfo.InternalNameString := LineBreaksToSystemLineBreaks(xmlconfig.GetValue(Path+'VersionInfo/InternalName/Value', ''));
-        VersionInfo.CopyrightString := LineBreaksToSystemLineBreaks(xmlconfig.GetValue(Path+'VersionInfo/LegalCopyright/Value', ''));
-        VersionInfo.TrademarksString := LineBreaksToSystemLineBreaks(xmlconfig.GetValue(Path+'VersionInfo/LegalTrademarks/Value', ''));
-        VersionInfo.OriginalFilenameString := xmlconfig.GetValue(Path+'VersionInfo/OriginalFilename/Value', '');
-        VersionInfo.ProdNameString := LineBreaksToSystemLineBreaks(xmlconfig.GetValue(Path+'VersionInfo/ProductName/Value', ''));
-      end;
+      // Resources
+      Resources.ReadFromProjectFile(xmlconfig, Path);
 
       // load custom data
       LoadStringToStringTree(xmlconfig,CustomData,Path+'CustomData/');
