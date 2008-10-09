@@ -75,10 +75,10 @@ type
 
     procedure Clear;
     function Regenerate(const AWorkingDir, MainFileName: String): Boolean;
-    function UpdateMainSourceFile(const AFilename: string): Boolean;
+    function UpdateMainSourceFile(const AFileName: string): Boolean;
 
     function HasSystemResources: Boolean;
-    function HasLazarusResource: Boolean;
+    function HasLazarusResources: Boolean;
 
     procedure WriteToProjectFile(AConfig: TXMLConfig; Path: String);
     procedure ReadFromProjectFile(AConfig: TXMLConfig; Path: String);
@@ -224,7 +224,7 @@ begin
       AStream.Free;
     end;
   end;
-  if HasLazarusResource then
+  if HasLazarusResources then
   begin
     try
       AStream := TFileStream.Create(UTF8ToSys(lrsFileName), fmCreate);
@@ -241,7 +241,7 @@ begin
   Result := FSystemResources.Count > 0;
 end;
 
-function TProjectResources.HasLazarusResource: Boolean;
+function TProjectResources.HasLazarusResources: Boolean;
 begin
   Result := FLazarusResources.Count > 0;
 end;
@@ -300,11 +300,14 @@ begin
   end;
 end;
 
-function TProjectResources.UpdateMainSourceFile(const AFilename: string): Boolean;
+function TProjectResources.UpdateMainSourceFile(const AFileName: string): Boolean;
+const
+  LazResourcesUnit = 'LResources';
 var
   NewX, NewY, NewTopLine: integer;
   CodeBuf, NewCode: TCodeBuffer;
   Filename: String;
+  NamePos, InPos: integer;
 begin
   Result := True;
   if not Update then
@@ -314,7 +317,31 @@ begin
   begin
     SetFileNames('', AFileName);
     Filename := ExtractFileName(rcFileName);
-    //debugln(['TProjectResources.UpdateMainSourceFile HasSystemResources=',HasSystemResources,' Filename=',Filename,' HasLazarusResource=',HasLazarusResource]);
+    //debugln(['TProjectResources.UpdateMainSourceFile HasSystemResources=',HasSystemResources,' Filename=',Filename,' HasLazarusResources=',HasLazarusResources]);
+
+    // update LResources uses
+    if CodeToolBoss.FindUnitInAllUsesSections(CodeBuf, LazResourcesUnit, NamePos, InPos) then
+    begin
+      if not HasLazarusResources then
+      begin
+        if not CodeToolBoss.RemoveUnitFromAllUsesSections(CodeBuf, LazResourcesUnit) then
+        begin
+          Result := False;
+          Messages.Add('Could not remove "' + LazResourcesUnit + '" from main source!');
+          debugln(['TProjectResources.UpdateMainSourceFile adding LResources to main source failed']);
+        end;
+      end;
+    end
+    else
+    if HasLazarusResources then
+    begin
+      if not CodeToolBoss.AddUnitToMainUsesSection(CodeBuf, LazResourcesUnit,'') then
+      begin
+        Result := False;
+        Messages.Add('Could not add "' + LazResourcesUnit + '" to main source!');
+        debugln(['TProjectResources.UpdateMainSourceFile adding LResources to main source failed']);
+      end;
+    end;
 
     // update {$R filename} directive
     if CodeToolBoss.FindResourceDirective(CodeBuf, 1, 1,
@@ -327,7 +354,7 @@ begin
         if not CodeToolBoss.RemoveDirective(NewCode, NewX,NewY,true) then
         begin
           Result := False;
-          Messages.Add('Could not remove "{$R'+ Filename +'"} from main source!');
+          Messages.Add('Could not remove "{$R '+ Filename +'"} from main source!');
           debugln(['TProjectResources.UpdateMainSourceFile failed: removing resource directive']);
         end;
       end;
@@ -352,7 +379,7 @@ begin
     begin
       // there is a resource directive in the source
       //debugln(['TProjectResources.UpdateMainSourceFile include directive found']);
-      if not HasLazarusResource then
+      if not HasLazarusResources then
       begin
         if not CodeToolBoss.RemoveDirective(NewCode, NewX,NewY,true) then
         begin
@@ -364,14 +391,14 @@ begin
       end;
     end
     else
-    if HasLazarusResource then
+    if HasLazarusResources then
     begin
       //debugln(['TProjectResources.UpdateMainSourceFile include directive not found']);
       if not CodeToolBoss.AddIncludeDirective(CodeBuf,
         Filename,'{$I '+Filename+'}') then
       begin
         Result := False;
-        Messages.Add('Could not add "{$I'+ Filename +'"} to main source!');
+        Messages.Add('Could not add "{$I '+ Filename +'"} to main source!');
         debugln(['TProjectResources.UpdateMainSourceFile adding include directive to main source failed']);
         Exit;
       end;
