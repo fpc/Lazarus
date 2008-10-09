@@ -7,135 +7,190 @@ object VersionInfoAdditinalInfoForm: TVersionInfoAdditinalInfoForm
   Caption = 'Additional Information'
   ClientHeight = 296
   ClientWidth = 395
+  Constraints.MinHeight = 296
+  Constraints.MinWidth = 395
   ParentFont = False
   Position = poOwnerFormCenter
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object AdditionalInfoGroupBox: TGroupBox
-    Left = 8
-    Height = 248
-    Top = 8
-    Width = 376
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = CancelButton
+    Left = 6
+    Height = 253
+    Top = 6
+    Width = 383
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
     Caption = 'Additional Information'
-    ClientHeight = 230
-    ClientWidth = 372
+    ClientHeight = 235
+    ClientWidth = 379
     TabOrder = 0
     object CommentsLabel: TLabel
+      AnchorSideTop.Control = CommentsEdit
+      AnchorSideTop.Side = asrCenter
       Left = 6
-      Height = 17
-      Top = 8
-      Width = 60
+      Height = 14
+      Top = 12
+      Width = 55
       Caption = 'Comments:'
       ParentColor = False
     end
     object CompanyLabel: TLabel
+      AnchorSideTop.Control = CompanyEdit
+      AnchorSideTop.Side = asrCenter
       Left = 6
-      Height = 17
-      Top = 40
-      Width = 54
+      Height = 14
+      Top = 44
+      Width = 50
       Caption = 'Company:'
       ParentColor = False
     end
     object InternalNameLabel: TLabel
+      AnchorSideTop.Control = InternalNameEdit
+      AnchorSideTop.Side = asrCenter
       Left = 6
-      Height = 17
-      Top = 72
-      Width = 78
+      Height = 14
+      Top = 76
+      Width = 73
       Caption = 'Internal Name:'
       ParentColor = False
     end
     object LegalTrademarksLabel: TLabel
+      AnchorSideTop.Control = LegalTrademarksEdit
+      AnchorSideTop.Side = asrCenter
       Left = 6
-      Height = 17
-      Top = 104
-      Width = 95
+      Height = 14
+      Top = 108
+      Width = 89
       Caption = 'Legal Trademarks:'
       ParentColor = False
     end
     object OriginalFileNameLabel: TLabel
+      AnchorSideTop.Control = OriginalFileNameEdit
+      AnchorSideTop.Side = asrCenter
       Left = 6
-      Height = 17
-      Top = 136
-      Width = 101
+      Height = 14
+      Top = 140
+      Width = 90
       Caption = 'Original File Name:'
       ParentColor = False
     end
     object ProductNameLabel: TLabel
+      AnchorSideTop.Control = ProductNameEdit
+      AnchorSideTop.Side = asrCenter
       Left = 6
-      Height = 17
-      Top = 168
-      Width = 80
+      Height = 14
+      Top = 172
+      Width = 72
       Caption = 'Product Name:'
       ParentColor = False
     end
     object ProductVersionLabel: TLabel
+      AnchorSideTop.Control = ProductVersionEdit
+      AnchorSideTop.Side = asrCenter
       Left = 6
-      Height = 17
-      Top = 200
-      Width = 88
+      Height = 14
+      Top = 204
+      Width = 80
       Caption = 'Product Version:'
       ParentColor = False
     end
     object CommentsEdit: TEdit
-      Left = 110
+      AnchorSideRight.Control = AdditionalInfoGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 144
       Height = 23
       Top = 8
-      Width = 256
+      Width = 229
+      Anchors = [akLeft, akRight]
+      BorderSpacing.Right = 6
       TabOrder = 0
     end
     object CompanyEdit: TEdit
-      AnchorSideLeft.Control = CommentsEdit
-      Left = 110
+      AnchorSideRight.Control = AdditionalInfoGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 144
       Height = 23
       Top = 40
-      Width = 256
+      Width = 229
+      Anchors = [akLeft, akRight]
+      BorderSpacing.Right = 6
       TabOrder = 1
     end
     object InternalNameEdit: TEdit
       AnchorSideLeft.Control = CommentsEdit
-      Left = 110
+      AnchorSideRight.Control = AdditionalInfoGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 144
       Height = 23
       Top = 72
-      Width = 256
+      Width = 229
+      Anchors = [akLeft, akRight]
+      BorderSpacing.Right = 6
       TabOrder = 2
     end
     object LegalTrademarksEdit: TEdit
       AnchorSideLeft.Control = CommentsEdit
-      Left = 110
+      AnchorSideRight.Control = AdditionalInfoGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 144
       Height = 23
       Top = 104
-      Width = 256
+      Width = 229
+      Anchors = [akLeft, akRight]
+      BorderSpacing.Right = 6
       TabOrder = 3
     end
     object OriginalFileNameEdit: TEdit
       AnchorSideLeft.Control = CommentsEdit
-      Left = 110
+      AnchorSideRight.Control = AdditionalInfoGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 144
       Height = 23
       Top = 136
-      Width = 256
+      Width = 229
+      Anchors = [akLeft, akRight]
+      BorderSpacing.Right = 6
       TabOrder = 4
     end
     object ProductNameEdit: TEdit
       AnchorSideLeft.Control = CommentsEdit
-      Left = 110
+      AnchorSideRight.Control = AdditionalInfoGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 144
       Height = 23
       Top = 168
-      Width = 256
+      Width = 229
+      Anchors = [akLeft, akRight]
+      BorderSpacing.Right = 6
       TabOrder = 5
     end
     object ProductVersionEdit: TEdit
       AnchorSideLeft.Control = CommentsEdit
-      Left = 110
+      AnchorSideRight.Control = AdditionalInfoGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 144
       Height = 23
       Top = 200
-      Width = 256
+      Width = 229
+      Anchors = [akLeft, akRight]
+      BorderSpacing.Right = 6
       TabOrder = 6
     end
   end
   object CancelButton: TBitBtn
-    Left = 309
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 304
     Height = 25
-    Top = 264
-    Width = 75
+    Top = 265
+    Width = 85
+    Anchors = [akRight, akBottom]
+    BorderSpacing.Around = 6
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
@@ -143,10 +198,15 @@ object VersionInfoAdditinalInfoForm: TVersionInfoAdditinalInfoForm
     TabOrder = 1
   end
   object OKButton: TBitBtn
-    Left = 224
+    AnchorSideTop.Control = CancelButton
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = CancelButton
+    Left = 216
     Height = 25
-    Top = 264
-    Width = 75
+    Top = 265
+    Width = 82
+    Anchors = [akTop, akRight]
+    BorderSpacing.Right = 6
     Caption = 'OK'
     Default = True
     ModalResult = 1

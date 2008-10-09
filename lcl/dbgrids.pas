@@ -1189,7 +1189,7 @@ begin
   if Columns.Enabled then
     result := Columns.VisibleCount
   else
-    if FDataLink.Active then
+    if (dgeAutoColumns in OptionsExtra) and FDataLink.Active then
       for i:=0 to FDataLink.DataSet.FieldCount-1 do begin
         F:= FDataLink.DataSet.Fields[i];
         if (F<>nil) and F.Visible then
@@ -1402,9 +1402,10 @@ begin
   // add as many columns as there are fields in the dataset
   // do this only at runtime.
   if (csDesigning in ComponentState) or not FDatalink.Active or
-    (gsRemovingAutoColumns in FGridStatus) then
+    (gsRemovingAutoColumns in FGridStatus) or
+    not (dgeAutoColumns in OptionsExtra)
+  then
     exit;
-
   Include(FGridStatus, gsAddingAutoColumns);
   try
     for i:=0 to FDataLink.DataSet.FieldCount-1 do begin

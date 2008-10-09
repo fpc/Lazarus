@@ -17,6 +17,7 @@ type
     procedure TestFileIsExecutable;
     procedure TestExtractFileNameWithoutExt;
     procedure TestTrimFileName;
+    procedure TestFileCopyPreserveTime;
   end;
 
 implementation
@@ -61,6 +62,39 @@ begin
   DoTest('c:\LazarusDir\..\dir\','c:\dir\');
 {$endif}
   DoTest('$(LazarusDir)\..\dir\','$(LazarusDir)\..\dir\');
+end;
+
+procedure TTestFileUtil.TestFileCopyPreserveTime;
+// test for issue 11912 and 12317
+var
+  File1, File2: string;
+  Result: boolean;
+  procedure CreateTestFile(FileName: string);
+  var
+    f: text;
+  begin
+    assign(f, Utf8ToAnsi(FileName));
+    rewrite(f);
+    writeln(f, 'TestFileCopyPreserveTime');
+    close(f);
+    FileSetDateUTF8(FileName, 960054793);
+  end;
+
+begin
+  File1 := AnsiToUtf8(SysUtils.GetTempFileName);
+  CreateTestFile(File1);
+  File2 :=  AnsiToUtf8(SysUtils.GetTempFileName);
+  try
+    Result := CopyFile(File1,File2,true);
+    AssertTrue('File copy failed', Result);
+    AssertTrue('Copied file does not exist', FileExistsUTF8(File2));
+    AssertEquals('Time not preserved', FileAgeUTF8(File1), FileAgeUTF8(File2));
+  finally
+    if FileExistsUTF8(File1) then
+      DeleteFileUTF8(File1);
+    if FileExistsUTF8(File2) then
+      DeleteFileUTF8(File2);
+  end;
 end;
 
 initialization

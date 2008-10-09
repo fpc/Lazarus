@@ -4,9 +4,11 @@
     <PathDelim Value="\"/>
     <Version Value="6"/>
     <General>
+      <Flags>
+        <AlwaysBuild Value="False"/>
+      </Flags>
       <SessionStorage Value="InIDEConfig"/>
       <MainUnit Value="0"/>
-      <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
       <Title Value="Run Lazarus tests"/>
     </General>
