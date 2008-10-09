@@ -104,6 +104,11 @@ begin
   then FOwner.ItemInserted(AItem);
 end;
 
+procedure TListItems.BeginUpdate;
+begin
+  // todo:
+end;
+
 {------------------------------------------------------------------------------
    TListItems Clear
 ------------------------------------------------------------------------------}
@@ -119,6 +124,11 @@ procedure TListItems.Delete(const AIndex: Integer);
 begin
   // Don't use GetItem, it updates the cache, which then will become invalid
   TListItem(FItems.Items[AIndex]).Delete;
+end;
+
+procedure TListItems.EndUpdate;
+begin
+  // todo:
 end;
 
 {------------------------------------------------------------------------------}

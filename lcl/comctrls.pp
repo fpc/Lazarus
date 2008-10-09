@@ -739,10 +739,12 @@ type
   public
     function Add: TListItem;
     procedure AddItem(AItem: TListItem);
+    procedure BeginUpdate;
     procedure Clear;
     constructor Create(AOwner : TCustomListView);
     destructor Destroy; override;
     procedure Delete(const AIndex : Integer);
+    procedure EndUpdate;
     function FindCaption(StartIndex: Integer; Value: string;
                      Partial, Inclusive, Wrap: Boolean;
                      PartStart: Boolean = True): TListItem;
