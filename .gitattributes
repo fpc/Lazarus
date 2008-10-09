@@ -653,6 +653,7 @@ components/jcf2/Utils/JcfMiscFunctions.pas svneol=native#text/pascal
 components/jcf2/Utils/JcfUnicode.pas svneol=native#text/pascal
 components/jcf2/Utils/JcfUnicodeFiles.pas svneol=native#text/pascal
 components/jcf2/VersionConsts.pas svneol=native#text/pascal
+components/jcf2/readme.txt svneol=native#text/plain
 components/lazreport/doc/contributors.txt svneol=native#text/plain
 components/lazreport/doc/firststeps.odt -text
 components/lazreport/doc/fr_eng.sxw -text
