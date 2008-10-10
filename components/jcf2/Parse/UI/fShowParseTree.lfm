@@ -3,8 +3,6 @@ object frmShowParseTree: TfrmShowParseTree
   Height = 555
   Top = 116
   Width = 581
-  HorzScrollBar.Page = 580
-  VertScrollBar.Page = 554
   ActiveControl = pcPages
   BorderIcons = [biSystemMenu, biMaximize]
   Caption = 'JCF Parse Tree'
@@ -17,8 +15,9 @@ object frmShowParseTree: TfrmShowParseTree
   OnCreate = FormCreate
   OnKeyUp = FormKeyUp
   OnShow = FormShow
+  ParentFont = False
   Position = poOwnerFormCenter
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object StatusBar1: TStatusBar
     Height = 23
     Top = 532
@@ -37,25 +36,25 @@ object frmShowParseTree: TfrmShowParseTree
     TabOrder = 1
     object lblTreeCount: TLabel
       Left = 11
-      Height = 14
+      Height = 18
       Top = 31
-      Width = 83
+      Width = 115
       Caption = 'Tree has ? nodes'
       ParentColor = False
     end
     object lblTreeDepth: TLabel
       Left = 11
-      Height = 14
+      Height = 18
       Top = 55
-      Width = 123
+      Width = 167
       Caption = 'Tree has max depth of ??'
       ParentColor = False
     end
     object cbShowWhiteSpace: TCheckBox
       Left = 11
-      Height = 19
+      Height = 23
       Top = 5
-      Width = 110
+      Width = 141
       Caption = 'Show whitespace'
       OnClick = cbShowWhiteSpaceClick
       TabOrder = 0
@@ -113,10 +112,10 @@ object frmShowParseTree: TfrmShowParseTree
     TabOrder = 3
     object tsTokens: TTabSheet
       Caption = 'Tokens'
-      ClientHeight = 371
+      ClientHeight = 367
       ClientWidth = 573
       object lvTokens: TListView
-        Height = 371
+        Height = 367
         Width = 573
         Align = alClient
         Columns = <        

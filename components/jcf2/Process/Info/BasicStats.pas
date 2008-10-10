@@ -70,7 +70,7 @@ implementation
 uses
   { delphi }
   SysUtils,
-  JclStrings, JclAnsiStrings,
+  JcfUtils,
   { JCF  }
   SourceToken, Tokens, ParseTreeNode, ParseTreeNodeType, TokenUtils,
   JcfRegistrySettings;
@@ -173,7 +173,7 @@ begin
       Inc(fiCommentTokens);
       fiCommentChars := fiCommentChars + liLen;
 
-      fiLines := fiLines + JclStrings.StrStrCount(lcSourceToken.SourceCode, AnsiLineBreak);
+      fiLines := fiLines + JcfUtils.StrStrCount(lcSourceToken.SourceCode, AnsiLineBreak);
     end;
     ttReturn:
     begin

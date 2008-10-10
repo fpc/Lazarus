@@ -77,7 +77,7 @@ uses
   { delphi }
   SysUtils, Windows,
   { Jcl}
-  JclStrings, JclAnsiStrings, JclSysUtils;
+  JcfUtils;
 
 type
   TRFlagNameData = record
@@ -183,24 +183,24 @@ begin
 
   { all comments without the required prefix are of no import to this code
     if it's not one, then exit without error }
-  lsPrefix := JclStrings.StrLeft(psComment, 6);
+  lsPrefix := JcfUtils.StrLeft(psComment, 6);
   if not (AnsiSameText(lsPrefix, FORMAT_COMMENT_PREFIX)) then
     exit;
 
   // should be a valid jcf flag directive after here
   Result := True;
-  lsRest := Trim(JclStrings.StrRestOf(psComment, 7));
+  lsRest := Trim(JcfUtils.StrRestOf(psComment, 7));
 
   { rest should read <setting>=<state>
     where the setting is one of the format flags, and the state is 'on' or 'off'
   }
-  lsSetting := Trim(JclStrings.StrBefore('=', lsRest));
-  lsState   := Trim(JclStrings.StrAfter('=', lsRest));
+  lsSetting := Trim(JcfUtils.StrBefore('=', lsRest));
+  lsState   := Trim(JcfUtils.StrAfter('=', lsRest));
 
   { is the comment well formed? }
   if (lsSetting = '') or (lsState = '') then
   begin
-    psError := 'Comment ' + JclStrings.StrDoubleQuote(psComment) +
+    psError := 'Comment ' + JcfUtils.StrDoubleQuote(psComment) +
       ' has prefix but cannot be parsed';
     exit;
   end;
@@ -209,10 +209,10 @@ begin
   try
     pbOn := LStrToBoolean(lsState);
   except
-    On EJclConversionError do
+    On EJcfConversionError do
     begin
-      psError := 'In comment ' + JclStrings.StrDoubleQuote(psComment) + ' , ' +
-        ' state ' + JclStrings.StrDoubleQuote(lsState) + ' cannot be parsed to either on or off';
+      psError := 'In comment ' + JcfUtils.StrDoubleQuote(psComment) + ' , ' +
+        ' state ' + JcfUtils.StrDoubleQuote(lsState) + ' cannot be parsed to either on or off';
       exit;
     end
     else
@@ -244,8 +244,8 @@ begin
   if not lbFlagFound then
   begin
     // unknown setting - nothing to do except log a message
-    psError := 'In comment ' + JclStrings.StrDoubleQuote(psComment) + ' , ' +
-      ' setting ' + JclStrings.StrDoubleQuote(lsSetting) + ' is not known';
+    psError := 'In comment ' + JcfUtils.StrDoubleQuote(psComment) + ' , ' +
+      ' setting ' + JcfUtils.StrDoubleQuote(lsSetting) + ' is not known';
     exit;
   end;
 end;

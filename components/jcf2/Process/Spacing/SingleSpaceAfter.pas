@@ -49,8 +49,8 @@ type
 implementation
 
 uses
-  { jcl }
-  JclAnsiStrings,
+  { jcf }
+  JcfUtils,
   { local }
   SourceToken, Tokens, ParseTreeNodeType, JcfSettings,
   FormatFlags, TokenUtils, SettingsTypes;

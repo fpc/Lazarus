@@ -104,8 +104,8 @@ implementation
 uses
  { delphi }
  Forms, SysUtils,
- { jcl }
- JclAnsiStrings, JcfUnicode,
+ { jcf }
+ JcfUtils, JcfUnicode,
  { local }
  JcfRegistrySettings;
 

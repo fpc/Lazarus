@@ -48,9 +48,9 @@ implementation
 
 uses
   { delphi }
-  SysUtils, Windows,
+  SysUtils,
   { jcl }
-  JclStrings, JclAnsiStrings,
+  JcfUtils,
   { local }
   Tokens, SourceToken, SettingsTypes,
   ParseTreeNodeType, JcfSettings, FormatFlags, TokenUtils;
@@ -95,7 +95,7 @@ begin
     ctLower:
       pt.SourceCode := AnsiLowerCase(pt.SourceCode);
     ctMixed:
-      pt.SourceCode := JclStrings.StrSmartCase(pt.SourceCode, []);
+      pt.SourceCode := JcfUtils.StrSmartCase(pt.SourceCode, []);
     ctLeaveAlone: ;
   end;
 end;

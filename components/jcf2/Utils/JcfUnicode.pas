@@ -71,8 +71,9 @@ const
 implementation
 
 uses
-  Classes, SysUtils,
-  JclAnsiStrings;
+  Classes,
+  SysUtils,
+  JcfUtils;
 
 const
   MaxAnsiChar = 127;

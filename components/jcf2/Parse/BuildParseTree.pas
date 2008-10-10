@@ -285,8 +285,7 @@ uses
   { delphi }
   SysUtils, Forms,
   { jcl }
-  JclStrings,
-  JclAnsiStrings,
+  JcfUtils,
   JcfUnicode;
 
 const
@@ -5278,7 +5277,7 @@ begin
   { all kinds of reserved words can sometimes be param names
     thanks to COM and named params
     See LittleTest43.pas }
-  if ( not (lc.TokenType in EXPR_TYPES)) and JclStrings.StrIsAlphaNum(lc.SourceCode) and
+  if ( not (lc.TokenType in EXPR_TYPES)) and JcfUtils.StrIsAlphaNum(lc.SourceCode) and
     ( not IsIdentifierToken(lc, idAllowDirectives)) then
   begin
     { TridenT - test if token is the Reserved word ARRAY

@@ -1,9 +1,9 @@
 unit CommandLineConstants;
 
 interface
-
+{$I JcfGlobal.inc}
 uses
-  JclAnsiStrings,
+  JcfUtils,
   VersionConsts;
 
 const

@@ -157,7 +157,7 @@ uses
   { delphi }
   SysUtils, Windows,
   { jcl }
-  JclStrings, JclAnsiStrings, JclSysUtils,
+  JcfUtils,
   { local}
   JcfMiscFunctions;
 
@@ -256,14 +256,14 @@ end;
 
 procedure TSettingsStreamOutput.OpenSection(const psName: string);
 begin
-  WriteText(JclStrings.StrRepeat('  ', fiOpenSections) + '<' + psName + '>' + AnsiLineBreak);
+  WriteText(JcfUtils.StrRepeat('  ', fiOpenSections) + '<' + psName + '>' + AnsiLineBreak);
   Inc(fiOpenSections);
 end;
 
 procedure TSettingsStreamOutput.CloseSection(const psName: string);
 begin
   Dec(fiOpenSections);
-  WriteText(JclStrings.StrRepeat('  ', fiOpenSections) + '</' + psName + '>' + AnsiLineBreak);
+  WriteText(JcfUtils.StrRepeat('  ', fiOpenSections) + '</' + psName + '>' + AnsiLineBreak);
 end;
 
 
@@ -272,7 +272,7 @@ var
   lsTemp: string;
 begin
   Assert(fcStream <> nil);
-  lsTemp := JclStrings.StrRepeat('  ', fiOpenSections + 1) + '<' + psTagName + '> ' +
+  lsTemp := JcfUtils.StrRepeat('  ', fiOpenSections + 1) + '<' + psTagName + '> ' +
     psValue + ' </' + psTagName + '>' + AnsiLineBreak;
   WriteText(lsTemp);
 end;
@@ -298,7 +298,7 @@ procedure TSettingsStreamOutput.Write(const psTagName: string; const pcValue: TS
 var
   ls: string;
 begin
-  ls := JclStrings.StringsToStr(pcValue, ', ');
+  ls := JcfUtils.StringsToStr(pcValue, ', ');
   Write(psTagName, ls);
 end;
 
@@ -385,8 +385,8 @@ begin
   lsStart := '<' + psTag + '>';
   lsEnd   := '</' + psTag + '>';
 
-  liStart := JclStrings.StrFind(lsStart, fsText, 1);
-  liEnd   := JclStrings.StrFind(lsEnd, fsText, 1);
+  liStart := JcfUtils.StrFind(lsStart, fsText, 1);
+  liEnd   := JcfUtils.StrFind(lsEnd, fsText, 1);
 
   if (liStart > 0) and (liEnd > liStart) then
   begin
@@ -520,7 +520,7 @@ begin
   InternalGetValue(psTag, lsNewText, lbFound);
   if lbFound then
   begin
-    JclStrings.StrToStrings(lsNewText, ',', pcStrings);
+    JcfUtils.StrToStrings(lsNewText, ',', pcStrings);
     TrimStrings(pcStrings);
   end;
 

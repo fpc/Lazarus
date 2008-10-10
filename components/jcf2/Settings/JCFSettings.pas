@@ -135,9 +135,8 @@ implementation
 uses
   { delphi }
   SysUtils, Dialogs, Windows,
-  { jcl }
-  JclStrings,
-  JclAnsiStrings,
+  { jcf }
+  JcfUtils,
   { local }
   JCFSetBase,
   JcfRegistrySettings;
@@ -234,7 +233,7 @@ begin
     // debug ShowMessage('Reading settings from file ' + lsSettingsFileName);
 
     // now we know the file exists - try get settings from it
-    lsText := JclStrings.FileToString(psFileName);
+    lsText := JcfUtils.FileToString(psFileName);
     lcFile := TSettingsInputString.Create(lsText);
     try
       FromStream(lcFile);

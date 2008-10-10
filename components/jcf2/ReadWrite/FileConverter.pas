@@ -113,7 +113,7 @@ implementation
 
 uses
   { delphi }Windows, SysUtils, Dialogs, Controls, Forms,
-  { jcl } JclFileUtils, JclAnsiStrings,
+  { jcf } JcfUtils,
   { local }FileUtils, JcfMiscFunctions, JCFLog,
   JcfRegistrySettings, JcfSettings, JCfUnicodeFiles;
 

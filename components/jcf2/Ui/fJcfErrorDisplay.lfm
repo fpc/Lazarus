@@ -3,8 +3,6 @@ object ExceptionDialog: TExceptionDialog
   Height = 180
   Top = 195
   Width = 420
-  HorzScrollBar.Page = 419
-  VertScrollBar.Page = 179
   BorderIcons = [biSystemMenu]
   Caption = 'JCF Exception'
   ClientHeight = 180
@@ -14,7 +12,8 @@ object ExceptionDialog: TExceptionDialog
   Font.Name = 'Segoe UI'
   OnCreate = FormCreate
   OnResize = FormResize
-  LCLVersion = '0.9.25'
+  ParentFont = False
+  LCLVersion = '0.9.27'
   object btnOk: TButton
     Left = 155
     Height = 34

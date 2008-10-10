@@ -51,7 +51,7 @@ implementation
 
 uses
   SysUtils,
-  JclStrings, JclAnsiStrings,
+  JcfUtils,
   FormatFlags, SourceToken, Tokens, TokenUtils, JcfSettings;
 
 
@@ -74,7 +74,7 @@ begin
     begin
       if FormatSettings.Comments.RemoveEmptyDoubleSlashComments then
       begin
-        lsCommentText := JclStrings.StrAfter('//', lcSourceToken.SourceCode);
+        lsCommentText := JcfUtils.StrAfter('//', lcSourceToken.SourceCode);
         lsCommentText := Trim(lsCommentText);
         if lsCommentText = '' then
           BlankToken(lcSourceToken);
@@ -84,8 +84,8 @@ begin
     begin
       if FormatSettings.Comments.RemoveEmptyCurlyBraceComments then
       begin
-        lsCommentText := JclStrings.StrAfter('{', lcSourceToken.SourceCode);
-        lsCommentText := JclStrings.StrBefore('}', lsCommentText);
+        lsCommentText := JcfUtils.StrAfter('{', lcSourceToken.SourceCode);
+        lsCommentText := JcfUtils.StrBefore('}', lsCommentText);
         lsCommentText := Trim(lsCommentText);
         if lsCommentText = '' then
           BlankToken(lcSourceToken);

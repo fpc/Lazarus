@@ -49,7 +49,7 @@ type
 implementation
 
 uses
-  JclAnsiStrings,
+  JcfUtils,
   JcfMiscFunctions, SourceToken, Tokens;
 
 constructor TVisitSetXY.Create;

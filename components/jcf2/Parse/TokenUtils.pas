@@ -174,8 +174,8 @@ implementation
 uses
   { delphi }
   SysUtils, Windows,
-  { jcl }
-  JclStrings, JclAnsiStrings,
+  { jcf }
+  JcfUtils,
   { local }
   ParseTreeNodeType, Tokens, Nesting,
   JcfSettings, JcfUnicode,
@@ -746,7 +746,7 @@ begin
       Result := (pt.TokenType in DIRECTIVE_IDENTIFIER_NAMES);
     idAny:
       // accept any textual token
-      Result := JclStrings.StrIsAlpha(pt.SourceCode);
+      Result := JcfUtils.StrIsAlpha(pt.SourceCode);
     else
     begin
       Result := False;
@@ -766,7 +766,7 @@ end;
 
 function IsSymbolOperator(const pt: TSourceToken): boolean;
 begin
-  Result := (pt.TokenType in Operators) and (not JclStrings.StrIsAlpha(pt.SourceCode));
+  Result := (pt.TokenType in Operators) and (not JcfUtils.StrIsAlpha(pt.SourceCode));
 end;
 
 function IsClassDirective(const pt: TSourceToken): boolean;

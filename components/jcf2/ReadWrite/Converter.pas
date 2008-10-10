@@ -114,8 +114,7 @@ uses
   { delphi }
   Controls, Forms,
   { JCL }
-  JclStrings,
-  JclAnsiStrings,
+  JcfUtils,
   { local }
   JcfUnicode,
   SourceTokenList, SourceToken,
@@ -125,7 +124,7 @@ uses
 
 function StrInsert(const psSub, psMain: string; const piPos: integer): string;
 begin
-  Result := JclStrings.StrLeft(psMain, piPos - 1) + psSub + JclStrings.StrRestOf(psMain, piPos);
+  Result := JcfUtils.StrLeft(psMain, piPos - 1) + psSub + JcfUtils.StrRestOf(psMain, piPos);
 end;
 
 
@@ -418,9 +417,9 @@ begin
 
 
   { splice }
-  lsNewOutput := JclStrings.StrLeft(fsInputCode, liRealInputStart - 1);
+  lsNewOutput := JcfUtils.StrLeft(fsInputCode, liRealInputStart - 1);
   lsNewOutput := lsNewOutput + Copy(fsOutputCode, liOutputStart, (liOutputEnd - liOutputStart));
-  lsNewOutput := lsNewOutput + JclStrings.StrRestOf(fsInputCode, liRealInputEnd + Length(FORMAT_START) + Length(FORMAT_END));
+  lsNewOutput := lsNewOutput + JcfUtils.StrRestOf(fsInputCode, liRealInputEnd + Length(FORMAT_START) + Length(FORMAT_END));
 
   fsOutputCode := lsNewOutput;
 end;

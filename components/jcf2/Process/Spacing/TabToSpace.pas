@@ -52,13 +52,13 @@ implementation
 
 uses
   SysUtils,
-  JclStrings, JclAnsiStrings,
+  JcfUtils,
   JcfSettings, SourceToken, Tokens, FormatFlags;
 
 constructor TTabToSpace.Create;
 begin
   inherited;
-  fsSpaces    := JclStrings.StrRepeat(AnsiSpace, FormatSettings.Spaces.SpacesPerTab);
+  fsSpaces    := JcfUtils.StrRepeat(AnsiSpace, FormatSettings.Spaces.SpacesPerTab);
   FormatFlags := FormatFlags + [eAddSpace, eRemoveSpace];
 end;
 

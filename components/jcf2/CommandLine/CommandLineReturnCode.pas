@@ -26,7 +26,7 @@ See http://www.gnu.org/licenses/gpl.html
 {*)}
 
 interface
-
+{$I JcfGlobal.inc}
 {
   command line return code
   0 for sucess

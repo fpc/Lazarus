@@ -1,7 +1,7 @@
 unit StatusMessageReceiver;
 
 interface
-
+{$I JcfGlobal.inc}
 uses
   ConvertTypes;
 

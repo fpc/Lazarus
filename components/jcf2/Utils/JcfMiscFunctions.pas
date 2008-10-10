@@ -84,7 +84,7 @@ uses
   { delphi }
   SysUtils, Forms,
   { jcl }
-  JclStrings, JclAnsiStrings, JclFileUtils, JclSysUtils;
+  JcfUtils;
 
 function GetApplicationFolder: string;
 begin
@@ -108,7 +108,7 @@ begin
   // de-localise the string if need be
   if (DecimalSeparator <> '.') and (Pos(DecimalSeparator, s) > 0) then
   begin
-    JclStrings.StrReplace(s, DecimalSeparator, '.');
+    JcfUtils.StrReplace(s, DecimalSeparator, '.');
   end;
 
   Val(s, Result, Code);
@@ -161,14 +161,14 @@ begin
   if not (DirectoryExists(psPath)) and FileExists(psPath) then
   begin
     // must be a file - remove the last bit
-    liPos := JclStrings.StrLastPos(DirDelimiter, psPath);
+    liPos := JcfUtils.StrLastPos(DirDelimiter, psPath);
     if liPos > 0 then
-      psPath := JclStrings.StrLeft(psPath, liPos - 1);
+      psPath := JcfUtils.StrLeft(psPath, liPos - 1);
   end;
 
-  liPos := JclStrings.StrLastPos(DirDelimiter, psPath);
+  liPos := JcfUtils.StrLastPos(DirDelimiter, psPath);
   if liPos > 0 then
-    Result := JclStrings.StrRestOf(psPath, liPos + 1);
+    Result := JcfUtils.StrRestOf(psPath, liPos + 1);
 end;
 
 function SetFileNameExtension(const psFileName, psExt: string): string;
@@ -184,7 +184,7 @@ begin
 
   lsOldExt := ExtractFileExt(psFileName);
   liMainFileNameLength := Length(psFileName) - Length(lsOldExt);
-  Result   := JclStrings.StrLeft(psFileName, liMainFileNameLength);
+  Result   := JcfUtils.StrLeft(psFileName, liMainFileNameLength);
 
   Result := Result + '.' + psExt;
 end;

@@ -49,7 +49,7 @@ type
 implementation
 
 uses
-  JclStrings, JclAnsiStrings,
+  JcfUtils,
   SourceToken, Tokens, ParseTreeNodeType, FormatFlags;
 
 function CommentMustStay(const pc: TSourceToken): boolean;
@@ -58,7 +58,7 @@ var
 begin
   Result := False;
 
-  lsPrefix := JclStrings.StrLeft(pc.SourceCode, 2);
+  lsPrefix := JcfUtils.StrLeft(pc.SourceCode, 2);
   if (lsPrefix = '{$') or (lsPrefix = '{%') then
     Result := True;
 
@@ -75,7 +75,7 @@ begin
 
   // these are also flags
   if ((pc.CommentStyle = eDoubleSlash) and
-    (JclStrings.StrLeft(pc.SourceCode, FORMAT_COMMENT_PREFIX_LEN) = FORMAT_COMMENT_PREFIX)) then
+    (JcfUtils.StrLeft(pc.SourceCode, FORMAT_COMMENT_PREFIX_LEN) = FORMAT_COMMENT_PREFIX)) then
     Result := True;
 
 end;

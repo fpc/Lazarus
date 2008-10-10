@@ -50,7 +50,7 @@ type
 implementation
 
 uses
-  JclAnsiStrings,
+  JcfUtils,
   JcfUnicode,
   SourceToken, Tokens, FormatFlags, TokenUtils, ParseTreeNodeType;
 

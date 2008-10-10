@@ -42,7 +42,11 @@ uses
   Windows, SysUtils, Classes, Controls, Forms,
   ComCtrls, ExtCtrls, StdCtrls, ShellAPI,
   { local }
-  ParseTreeNode;
+  ParseTreeNode
+{$ifdef FPC}
+  , LResources
+{$endif}
+  ;
 
 type
   TfrmShowParseTree = class(TForm)
@@ -85,9 +89,7 @@ procedure ShowParseTree(const pcRoot: TParseTreeNode);
 
 implementation
 
-{$ifdef FPC}
-  {$R *.lfm}
-{$else}
+{$ifndef FPC}
   {$R *.dfm}
 {$endif}
 
@@ -324,5 +326,8 @@ begin
         ShellExecute(Handle, 'open', PChar(Application.HelpFile), nil, nil, SW_SHOWNORMAL);
     end;
 end;
+
+initialization
+  {$I fShowParseTree.lrs}
 
 end.

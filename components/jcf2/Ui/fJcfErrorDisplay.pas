@@ -34,7 +34,11 @@ interface
   that allows the exception text to be copied out }
 
 uses
-  SysUtils, Classes, Controls, Forms, StdCtrls;
+  SysUtils, Classes, Controls, Forms, StdCtrls
+{$IFDEF FPC}
+  ,LResources
+{$ENDIF}
+  ;
 
 type
   TExceptionDialog = class(TForm)
@@ -56,11 +60,9 @@ procedure ShowErrorMessageDialog(const psMessage: string; const psCaption: strin
 
 implementation
 
-uses JclAnsiStrings, ParseError, JcfFontSetFunctions;
+uses JcfUtils, ParseError, JcfFontSetFunctions;
 
-{$ifdef FPC}
-  {$R *.lfm}
-{$else}
+{$ifndef FPC}
   {$R *.dfm}
 {$endif}
 
@@ -165,4 +167,8 @@ begin
   mExceptionMessage.Height := ClientHeight - (btnOk.Height + (PAD * 3));
 end;
 
+initialization
+{$IFDEF FPC}
+  {$I fJcfErrorDisplay.lrs}
+{$ENDIF}
 end.

@@ -72,7 +72,7 @@ uses
   { delphi }
   SysUtils, Windows,
   { jcl }
-  JclStrings, JclAnsiStrings;
+  JcfUtils;
 
 
 constructor TPreProcessorExpressionTokeniser.Create;
@@ -94,7 +94,7 @@ end;
 
 function TPreProcessorExpressionTokeniser.StartsWith(const ps: string): boolean;
 begin
-  Result := AnsiSameText(JclStrings.StrLeft(Rest, Length(ps)), ps);
+  Result := AnsiSameText(JcfUtils.StrLeft(Rest, Length(ps)), ps);
 end;
 
 procedure TPreProcessorExpressionTokeniser.Tokenise;
