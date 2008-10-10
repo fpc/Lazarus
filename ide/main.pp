@@ -8290,6 +8290,10 @@ begin
 
       // rebuild codetools defines
       MainBuildBoss.RescanCompilerDefines(true,true);
+
+      if not Project1.Resources.UpdateMainSourceFile(Project1.MainFilename) then
+        DebugLn('TMainIDE.DoNewProject Project1.Resources.UpdateMainSourceFile failed');
+
       // (i.e. remove old project specific things and create new)
       IncreaseCompilerParseStamp;
       Project1.DefineTemplates.AllChanged;
