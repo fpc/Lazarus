@@ -146,6 +146,7 @@ type
     FWaitHandles: array of HANDLE;
     FWaitHandlers: array of TWaitHandler;
     FWaitPipeHandlers: PPipeEventInfo;
+    FPendingWaitHandlerIndex: Integer;
 
     InitCommonControlsEx: function(ICC: PInitCommonControlsEx): LongBool; stdcall;
 

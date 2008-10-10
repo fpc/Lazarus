@@ -30,6 +30,7 @@
  ------------------------------------------------------------------------------}
 constructor TWin32WidgetSet.Create;
 begin
+  FPendingWaitHandlerIndex := -1;
   inherited Create;
   FTimerData  := TList.Create;
   FMetrics.cbSize := SizeOf(FMetrics);
@@ -281,8 +282,20 @@ var
   AccelTable: HACCEL;
   retVal, index: dword;
   pHandles: Windows.LPHANDLE;
+
+    procedure CallWaitHandler;
+    begin
+      FWaitHandlers[index].OnEvent(FWaitHandlers[index].UserData, 0);
+    end;
+
 begin
   repeat
+    if FPendingWaitHandlerIndex >= 0 then
+    begin
+      index := FPendingWaitHandlerIndex;
+      FPendingWaitHandlerIndex := -1;
+      CallWaitHandler;
+    end;
 {$ifdef DEBUG_ASYNCEVENTS}
     if Length(FWaitHandles) > 0 then
       DebugLn('[ProcessMessages] WaitHandleCount=', IntToStr(FWaitHandleCount),
@@ -297,7 +310,7 @@ begin
     if (WAIT_OBJECT_0 <= retVal) and (retVal < WAIT_OBJECT_0 + FWaitHandleCount) then
     begin
       index := retVal-WAIT_OBJECT_0;
-      FWaitHandlers[index].OnEvent(FWaitHandlers[index].UserData, 0);
+      CallWaitHandler;
     end else
     if retVal = WAIT_OBJECT_0 + FWaitHandleCount then
     begin
@@ -366,7 +379,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWin32WidgetSet.AppWaitMessage;
 var
-  timeout: DWord;
+  retVal, timeout: DWord;
   pHandles: Windows.LPHANDLE;
 begin
   RedrawMenus;
@@ -379,8 +392,10 @@ begin
     pHandles := @FWaitHandles[0]
   else
     pHandles := nil;
-  Windows.MsgWaitForMultipleObjects(FWaitHandleCount, pHandles,
+  retVal := Windows.MsgWaitForMultipleObjects(FWaitHandleCount, pHandles,
     false, timeout, QS_ALLINPUT);
+  if (WAIT_OBJECT_0 <= retVal) and (retVal < WAIT_OBJECT_0 + FWaitHandleCount) then
+    FPendingWaitHandlerIndex := retVal-WAIT_OBJECT_0;
   Assert(False,'Trace:Leave wait message');
 end;
 
