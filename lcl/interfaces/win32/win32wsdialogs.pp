@@ -11,7 +11,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -174,7 +174,7 @@ var
 
   procedure SetFilesPropertyCustomFiles(AFiles:TStrings);
   var
-    i, Start: integer;
+    i, Start, len: integer;
     FolderName: string;
     FileNames: String;
   begin
@@ -194,17 +194,18 @@ var
     FileNames := DialogRec^.AnsiFileNames;
     {$endif}
     FolderName := AppendPathDelim(FolderName);
-    if (Length(FileNames) > 0) and (FileNames[1] = '"') then
+    len := Length(FileNames);
+    if (len > 0) and (FileNames[1] = '"') then
     begin
       Start := 1; // first quote is on pos 1
-      while FileNames[Start] <> #0 do
+      while (start <= len) and (FileNames[Start] <> #0) do
       begin
         i := Start + 1;
         while FileNames[i] <> '"' do
           inc(i);
         AFiles.Add(FolderName + Copy(FileNames, Start + 1, I - Start - 1));
         start := i+1;
-        while (FileNames[Start] <> #0) and (FileNames[start] <> '"') do
+        while (start <= len) and (FileNames[Start] <> #0) and (FileNames[start] <> '"') do
           inc(Start);
       end;
     end
