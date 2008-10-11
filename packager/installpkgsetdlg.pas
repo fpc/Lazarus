@@ -42,7 +42,7 @@ uses
   StdCtrls, Buttons, FileUtil,
   AVL_Tree, Laz_XMLCfg,
   LazarusIDEStrConsts, EnvironmentOpts, InputHistory, LazConf, IDEProcs,
-  PackageDefs, PackageSystem, PackageLinks;
+  PackageDefs, PackageSystem, PackageLinks, IDEContextHelpEdit;
 
 type
   TOnCheckInstallPackageList =
@@ -54,6 +54,7 @@ type
     AddToInstallButton: TButton;
     AvailableListBox: TListBox;
     AvailablePkgGroupBox: TGroupBox;
+    HelpButton: TBitBtn;
     CancelButton: TBitBtn;
     ExportButton: TButton;
     PkgInfoMemo: TMemo;
@@ -68,6 +69,7 @@ type
     procedure AvailableListBoxDblClick(Sender: TObject);
     procedure AvailableListBoxSelectionChange(Sender: TObject; User: boolean);
     procedure ExportButtonClick(Sender: TObject);
+    procedure HelpButtonClick(Sender: TObject);
     procedure ImportButtonClick(Sender: TObject);
     procedure InstallButtonClick(Sender: TObject);
     procedure InstallListBoxDblClick(Sender: TObject);
@@ -154,6 +156,7 @@ begin
   SaveAndRebuildButton.Caption:=lisSaveAndRebuildIDE;
   SaveAndExitButton.Caption:=lisSaveAndExitDialog;
   CancelButton.Caption:=dlgCancel;
+  HelpButton.LoadGlyphFromLazarusResource('btn_help');
 
   fPackages:=TAVLTree.Create(@CompareLazPackageIDNames);
   FNewInstalledPackages:=TFPList.Create;
@@ -201,6 +204,11 @@ begin
   finally
     SaveDialog.Free;
   end;
+end;
+
+procedure TInstallPkgSetDialog.HelpButtonClick(Sender: TObject);
+begin
+  ShowContextHelpForIDE(Self);
 end;
 
 procedure TInstallPkgSetDialog.ImportButtonClick(Sender: TObject);
