@@ -49,7 +49,7 @@ uses
   {$IFDEF win32}
   EnvironmentOpts, CodeToolManager, // added for windres workaround
   {$ENDIF}
-  ApplicationBundle, CompilerOptions;
+  ApplicationBundle, CompilerOptions, IDEContextHelpEdit;
 
 type
 
@@ -185,6 +185,7 @@ type
   { TConfigureBuildLazarusDlg }
 
   TConfigureBuildLazarusDlg = class(TForm)
+    HelpButton: TBitBtn;
     CancelButton: TBitBtn;
     CompileButton: TBitBtn;
     Panel2: TPanel;
@@ -222,6 +223,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure HelpButtonClick(Sender: TObject);
     procedure ItemListHeaderResize(Sender: TObject);
     procedure ItemListHeaderSectionClick(HeaderControl: TCustomHeaderControl;
       Section: THeaderSection);
@@ -890,6 +892,7 @@ begin
   CompileButton.LoadGlyphFromLazarusResource('menu_build');
   SaveSettingsButton.LoadGlyphFromLazarusResource('menu_save');
   CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
+  HelpButton.LoadGlyphFromLazarusResource('btn_help');
   Load(FOptions);
 end;
 
@@ -901,6 +904,11 @@ end;
 procedure TConfigureBuildLazarusDlg.FormShow(Sender: TObject);
 begin
   Advanced := Options.Advanced;
+end;
+
+procedure TConfigureBuildLazarusDlg.HelpButtonClick(Sender: TObject);
+begin
+  ShowContextHelpForIDE(Self);
 end;
 
 procedure TConfigureBuildLazarusDlg.ItemListHeaderResize(Sender: TObject);
