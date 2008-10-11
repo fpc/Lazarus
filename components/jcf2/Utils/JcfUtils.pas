@@ -60,21 +60,11 @@ const
 
   AnsiDoubleQuote = Char('"');
   AnsiSingleQuote = Char('''');
-const
-  // CharType return values
-  C1_UPPER  = $0001; // Uppercase
-  C1_LOWER  = $0002; // Lowercase
-  C1_DIGIT  = $0004; // Decimal digits
-  C1_SPACE  = $0008; // Space characters
-  C1_PUNCT  = $0010; // Punctuation
-  C1_CNTRL  = $0020; // Control characters
-  C1_BLANK  = $0040; // Blank characters
-  C1_XDIGIT = $0080; // Hexadecimal digits
-  C1_ALPHA  = $0100; // Any linguistic character: alphabetic, syllabary, or ideographic
 
+
+function CharIsControl(const C: Char): Boolean;
 function CharIsAlpha(const C: Char): Boolean;
 function CharIsAlphaNum(const C: Char): Boolean;
-function CharIsControl(const C: Char): Boolean;
 function CharIsDigit(const C: Char): Boolean;
 function CharIsReturn(const C: Char): Boolean;
 function CharIsWhiteSpace(const C: Char): Boolean;
@@ -130,34 +120,40 @@ type
 implementation
 
 uses
-{$ifdef windows}
-  Windows
+{$ifdef fpc}
+  Windows, LCLIntf, FileUtil
 {$else}
-  LCLIntf
+  Windows
 {$endif};
 
 function CharIsAlpha(const C: Char): Boolean;
 begin
+  Result := C in ['a'..'z','A'..'Z'];
 end;
 
 function CharIsAlphaNum(const C: Char): Boolean;
 begin
+  Result := CharIsAlpha(C) or CharIsDigit(C);
 end;
 
 function CharIsControl(const C: Char): Boolean;
 begin
+  Result := C <= #31;
 end;
 
 function CharIsDigit(const C: Char): Boolean;
 begin
+  Result := C in ['0'..'9'];
 end;
 
 function CharIsReturn(const C: Char): Boolean;
 begin
+  Result := C in [AnsiLineFeed, AnsiCarriageReturn];
 end;
 
 function CharIsWhiteSpace(const C: Char): Boolean;
 begin
+  Result := C in AnsiWhiteSpace;
 end;
 
 function CharUpper(const C: Char): Char;
@@ -167,11 +163,31 @@ begin
 end;
 
 function StrIsAlpha(const S: string): Boolean;
+var
+  I, L: integer;
 begin
+  L := Length(S);
+  Result := L > 0;
+  for I := 1 to L do
+    if not CharIsAlpha(S[I]) then
+    begin
+      Result := False;
+      break;
+    end;
 end;
 
 function StrIsAlphaNum(const S: string): Boolean;
+var
+  I, L: integer;
 begin
+  L := Length(S);
+  Result := L > 0;
+  for I := 1 to L do
+    if not CharIsAlphaNum(S[I]) then
+    begin
+      Result := False;
+      break;
+    end;
 end;
 
 function StrTrimQuotes(const S: string): string;
@@ -301,11 +317,41 @@ begin
 end;
 
 function GetWindowsTempFolder: string;
+{$ifndef fpc}
+var
+  buf: string;
+{$endif}
 begin
+{$ifdef fpc}
+  Result := GetTempDir;
+{$else}
+  SetLength(buf, MAX_PATH);
+  SetLength(buf, GetTempPath(Length(buf) + SizeOf(char), PChar(buf)));
+  Result:=buf;
+  Result := IncludeTrailingPathDelimiter(Result);
+{$endif}
 end;
 
 function FileGetSize(const FileName: string): Int64;
+{$ifndef fpc}
+var
+  FileInfo: TSearchRec;
+{$endif}
 begin
+{$ifdef fpc}
+  Result := FileUtil.FileSize(FileName);
+{$else}
+  // from LCL FileUtil code
+  FileInfo.Name := Filename;
+  FileInfo.FindHandle := Windows.FindFirstFile(Windows.LPTSTR(FileInfo.Name), FileInfo.FindData);
+  if FileInfo.FindHandle = Windows.Invalid_Handle_value then
+  begin
+    Result:=-1;
+    Exit;
+  end;
+  Result := (int64(FileInfo.FindData.nFileSizeHigh) shl 32) + FileInfo.FindData.nFileSizeLow;
+  Windows.FindClose(FileInfo.FindHandle);
+{$endif}
 end;
 
 procedure ShellExecEx(const FileName: string; const Parameters: string = '');
