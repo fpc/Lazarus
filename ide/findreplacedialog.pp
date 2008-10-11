@@ -40,7 +40,7 @@ interface
 uses
   Classes, Math, SysUtils, LCLProc, LCLType, Controls, StdCtrls, Forms, Buttons,
   ExtCtrls, LResources, Dialogs, SynEditTypes, SynRegExpr, SynEdit,
-  LazarusIdeStrConsts, IDEWindowIntf;
+  LazarusIdeStrConsts, IDEWindowIntf, IDEContextHelpEdit;
 
 type
   TFindDlgComponent = (fdcText, fdcReplace);
@@ -51,6 +51,7 @@ type
 
   TLazFindReplaceDialog = class(TForm)
     BackwardRadioButton: TRadioButton;
+    HelpButton: TBitBtn;
     BtnPanel: TPanel;
     CancelButton: TBitBtn;
     CaseSensitiveCheckBox: TCheckBox;
@@ -75,6 +76,7 @@ type
     WholeWordsOnlyCheckBox: TCheckBox;
     procedure FormChangeBounds(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure HelpButtonClick(Sender: TObject);
     procedure OptionsGroupBoxResize(Sender: TObject);
     procedure ReplaceWithCheckboxChange(Sender: TObject);
     procedure TextToFindComboboxKeyDown(Sender: TObject; var Key: Word;
@@ -175,6 +177,7 @@ begin
   ReplaceAllButton.LoadGlyphFromLazarusResource('btn_all');
   CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
   OKButton.LoadGlyphFromLazarusResource('btn_ok');
+  HelpButton.LoadGlyphFromLazarusResource('btn_help');
 
   fReplaceAllClickedLast:=false;
 end;
@@ -205,6 +208,11 @@ procedure TLazFindReplaceDialog.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
+end;
+
+procedure TLazFindReplaceDialog.HelpButtonClick(Sender: TObject);
+begin
+  ShowContextHelpForIDE(Self);
 end;
 
 procedure TLazFindReplaceDialog.OptionsGroupBoxResize(Sender: TObject);
