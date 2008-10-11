@@ -42,7 +42,7 @@ interface
 uses
   Classes, SysUtils, Math, Forms, Controls, Buttons, StdCtrls, FileUtil,
   LResources, LazarusIDEStrConsts, EditorOptions, IDEWindowIntf,
-  InputHistory, DiffPatch, ExtCtrls, Dialogs, SynEdit;
+  InputHistory, DiffPatch, ExtCtrls, Dialogs, SynEdit, IDEContextHelpEdit;
 
 type
   TOnGetDiffFile = procedure(TextID: integer; OnlySelection: boolean;
@@ -79,6 +79,7 @@ type
   { TDiffDlg }
   
   TDiffDlg = class(TForm)
+    HelpButton: TBitBtn;
     CloseButton: TBitBtn;
     DiffSynEdit: TSynEdit;
     OpenInEditorButton: TBitBtn;
@@ -105,6 +106,7 @@ type
 
     procedure FileOpenClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure HelpButtonClick(Sender: TObject);
     procedure OnChangeFlag(Sender: TObject);
     procedure SaveDiffButtonClick(Sender: TObject);
     procedure Text1ComboboxChange(Sender: TObject);
@@ -216,6 +218,11 @@ begin
 
 end;
 
+procedure TDiffDlg.HelpButtonClick(Sender: TObject);
+begin
+  ShowContextHelpForIDE(Self);
+end;
+
 procedure TDiffDlg.SaveDiffButtonClick(Sender: TObject);
 begin
   if dlgSave.Execute then
@@ -264,6 +271,7 @@ begin
   CloseButton.LoadGlyphFromLazarusResource('btn_close');
   OpenInEditorButton.LoadGlyphFromLazarusResource('open');
   SaveDiffButton.LoadGlyphFromLazarusResource('menu_save');
+  HelpButton.LoadGlyphFromLazarusResource('btn_help');
 
   // dialogs
   dlgOpen.Title:=lisOpenExistingFile;
