@@ -175,7 +175,7 @@ end;
 -----------------------------------------------------------------------------}
 procedure TProjectIcon.SetFileNames(const MainFilename: string);
 begin
-  icoFileName := ExtractFilePath(MainFilename) + 'icon.ico';
+  icoFileName := ExtractFilePath(MainFilename) + ExtractFileNameWithoutExt(ExtractFileName(MainFileName)) + '.ico';
 end;
 
 constructor TProjectIcon.Create;
