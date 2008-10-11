@@ -258,11 +258,27 @@ begin
 end;
 
 function BooleanToStr(B: Boolean): string;
+const
+  BoolToStrMap: array[Boolean] of String =
+  (
+ { false } 'False',
+ { true  } 'True'
+  );
 begin
 end;
 
 function StrToBoolean(const S: string): Boolean;
+var
+  LowerS: String;
 begin
+  LowerS := LowerCase(S);
+  if (LowerS = 'false') or (LowerS = 'no') then
+    Result := False
+  else
+  if (LowerS = 'true') or (LowerS = 'yes') then
+    Result := True
+  else
+    raise EJcfConversionError.Create('Cannot convert string [' + S + '] to boolean');
 end;
 
 
@@ -285,15 +301,37 @@ begin
 end;
 
 function FileToString(const FileName: string): AnsiString;
+var
+  S: TStream;
 begin
+  S := nil;
+  try
+    S := TFileStream.Create(FileName, fmOpenRead or fmShareDenyNone);
+    SetLength(Result, S.Size);
+    S.Read(PAnsiChar(Result)^, S.Size);
+  finally
+    S.Free;
+  end;
 end;
 
 procedure StringToFile(const FileName: string; const Contents: AnsiString);
+var
+  S: TStream;
 begin
+  S := nil;
+  try
+    S := TFileStream.Create(FileName, fmCreate);
+    S.Write(PAnsiChar(Contents)^, Length(Contents));
+  finally
+    S.Free;
+  end;
 end;
 
 function StrFillChar(const C: Char; Count: Integer): string;
 begin
+  SetLength(Result, Count);
+  if Count > 0 then
+    FillChar(Result[1], Count, C);
 end;
 
 function IntToStrZeroPad(Value, Count: Integer): AnsiString;
