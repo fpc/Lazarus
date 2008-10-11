@@ -62,7 +62,7 @@ uses
   SortSelectionDlg, EncloseSelectionDlg, DiffDialog, ConDef, InvertAssignTool,
   SourceEditProcs, SourceMarks, CharacterMapDlg, SearchFrm,
   FPDocHints, FPDocEditWindow,
-  BaseDebugManager, Debugger, MainIntf;
+  BaseDebugManager, Debugger, MainIntf, GotoFrm;
 
 type
   TSourceNotebook = class;
@@ -802,20 +802,6 @@ var
 
   //=============================================================================
 
-{ Goto dialog }
-type
-  TfrmGoto = class(TForm)
-    Label1: TLabel;
-    Edit1: TEdit;
-    ButtonPanel: TPanel;
-    btnOK: TBitbtn;
-    btnCancel: TBitBtn;
-    procedure Edit1KeyDown(Sender: TObject; var Key:Word; Shift:TShiftState);
-  public
-    constructor Create(AOwner: TComponent); override;
-    procedure DoShow; override;
-  end;
-  
 const
   SourceEditorMenuRootName = 'SourceEditor';
 
@@ -6580,109 +6566,6 @@ procedure TSourceNotebook.CloseTabClicked(Sender: TObject);
 begin
   if Assigned(FOnCloseClicked) then
     FOnCloseClicked(Sender,GetKeyState(VK_CONTROL)<0);
-end;
-
-{ TfrmGoto }
-
-constructor TfrmGoto.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-
-  Position := poDesigned;
-  Width := 250;
-  Height := 115;
-  Caption := lisMenuGotoLine;
-  BorderStyle:= bsDialog;
-  ChildSizing.SetGridSpacing(6);
-
-  Label1 := TLabel.Create(Self);
-  with Label1 do
-  begin
-    Name:='Label1';
-    Parent := Self;
-    Left := 6;
-    Top := 6;
-    AnchorParallel(akRight,5,Parent);
-    Caption := lisUEGotoLine;
-  end;
-
-  Edit1 := TEdit.Create(Self);
-  with Edit1 do
-  begin
-    Name:='Edit1';
-    Parent := self;
-    Left := 6;
-    AnchorToNeighbour(akTop,6,Label1);
-    AnchorParallel(akRight,6,Parent);
-    Constraints.MinWidth:=200;
-    Caption := '';
-    OnKeyDown:=@Edit1KeyDown;
-  end;
-  
-  ButtonPanel := TPanel.Create(Self);
-  with ButtonPanel do 
-  begin
-    Name:='ButtonPanel';
-    Align:=alBottom;
-    AnchorToNeighbour(akTop,0,Edit1);
-    AutoSize:=true;
-    BevelOuter:=bvNone;
-    Caption:='';
-    Parent:=Self;
-  end;
-
-  btnCancel := TBitbtn.Create(Self);
-  with btnCancel do
-  begin
-    Name:='btnCancel';
-    AnchorParallel(akTop,0,ButtonPanel);
-    AnchorParallel(akBottom,0,ButtonPanel);
-    AnchorParallel(akRight,6,ButtonPanel);
-    Anchors:=Anchors-[akLeft];
-    Kind := bkCancel;
-    AutoSize:=true;
-    Default:=false;
-    Parent := ButtonPanel;
-  end;
-
-  btnOK := TBitbtn.Create(Self);
-  with btnOK do
-  begin
-    Name:='btnOK';
-    AnchorParallel(akTop,0,ButtonPanel);
-    AnchorParallel(akBottom,0,ButtonPanel);
-    AnchorToNeighbour(akRight,6,btnCancel);
-    Anchors:=Anchors-[akLeft];
-    Kind := bkOK;
-    Default:=true;
-    AutoSize:=true;
-    Parent := ButtonPanel;
-  end;
-
-  AutoSize := True;
-  ActiveControl := Edit1;
-end;
-
-procedure TfrmGoto.DoShow;
-begin
-  Edit1.SelectAll;
-  Edit1.SetFocus;
-  inherited DoShow;
-end;
-
-procedure TfrmGoto.Edit1KeyDown(Sender: TObject; var Key:Word;
-   Shift:TShiftState);
-begin
-  if (Key=VK_RETURN) then
-  begin
-    ModalResult:=mrOk;
-    Key := 0;
-  end;
-  if (Key=VK_ESCAPE) then
-  begin
-    ModalResult:=mrCancel;
-    Key := 0;
-  end;
 end;
 
 { TSynEditPlugin1 }
