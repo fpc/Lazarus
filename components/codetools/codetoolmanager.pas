@@ -2613,9 +2613,6 @@ end;
 function TCodeToolManager.AddIncludeDirective(Code: TCodeBuffer;
   const Filename: string; const NewSrc: string
   ): boolean;
-var
-  Tree: TCompilerDirectivesTree;
-  Node: TCodeTreeNode;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}

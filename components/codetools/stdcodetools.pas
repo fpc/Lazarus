@@ -4821,7 +4821,6 @@ end;
 function TStandardCodeTool.FindIncludeDirective(DoBuildTree: boolean;
   var ACleanPos: integer; const Filename: string): boolean;
 var
-  ParamPos: Integer;
   FilenameStartPos: Integer;
   FilenameEndPos: LongInt;
   CommentStart: integer;
