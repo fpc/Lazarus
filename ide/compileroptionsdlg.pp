@@ -1584,13 +1584,17 @@ procedure TfrmCompilerOptions.SetupButtonBar;
 begin
   // Setup the Button Bar
   btnOK.Caption := lisOkBtn;
+  btnOK.LoadGlyphFromLazarusResource('btn_ok');
   btnCancel.Caption := dlgCancel;
+  btnCancel.LoadGlyphFromLazarusResource('btn_cancel');
   CancelControl:=btnCancel;
   btnShowOptions.Caption := dlgCOShowOptions;
   btnCheck.Caption := lisCompTest;
   btnLoadSave.Hint := dlgCOLoadSave;
   btnLoadSave.Caption := '...';
+  btnLoadSave.LoadGlyphFromLazarusResource('menu_save');
   HelpButton.Caption:=lisPckEditHelp;
+  HelpButton.LoadGlyphFromLazarusResource('btn_help');
 end;
 
 function TfrmCompilerOptions.CheckSearchPath(const Context,
