@@ -614,6 +614,7 @@ components/jcf2/Ui/fAllSettings.dfm svneol=native#text/plain
 components/jcf2/Ui/fAllSettings.pas svneol=native#text/pascal
 components/jcf2/Ui/fJcfErrorDisplay.dfm svneol=native#text/plain
 components/jcf2/Ui/fJcfErrorDisplay.lfm svneol=native#text/plain
+components/jcf2/Ui/fJcfErrorDisplay.lrs svneol=native#text/pascal
 components/jcf2/Ui/fJcfErrorDisplay.pas svneol=native#text/pascal
 components/jcf2/Ui/fRegistrySettings.dfm svneol=native#text/plain
 components/jcf2/Ui/fRegistrySettings.pas svneol=native#text/pascal
