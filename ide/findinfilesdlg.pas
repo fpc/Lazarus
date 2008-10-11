@@ -25,12 +25,13 @@ interface
 uses
   Classes, SysUtils, LCLProc, LCLIntf, Controls, StdCtrls, Forms, Buttons,
   ExtCtrls, LResources, FileUtil, LazarusIDEStrConsts, Dialogs, SynEditTypes,
-  IDEDialogs, IDEWindowIntf, InputHistory;
+  IDEDialogs, IDEWindowIntf, InputHistory, IDEContextHelpEdit;
 
 type
   { TLazFindInFilesDialog }
 
   TLazFindInFilesDialog = class(TForm)
+    HelpButton: TBitBtn;
     CancelButton: TBitBtn;
     OKButton: TBitBtn;
     ReplaceCheckBox: TCheckBox;
@@ -50,6 +51,7 @@ type
     procedure DirectoryBrowseClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
+    procedure HelpButtonClick(Sender: TObject);
     procedure ReplaceCheckBoxChange(Sender: TObject);
     procedure WhereRadioGroupClick(Sender: TObject);
   private
@@ -147,6 +149,7 @@ begin
   CancelButton.Caption := dlgCancel;
   CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
   OkButton.LoadGlyphFromLazarusResource('btn_ok');
+  HelpButton.LoadGlyphFromLazarusResource('btn_help');
 
   ReplaceCheckBox.Enabled:=true;
 
@@ -154,6 +157,11 @@ begin
   DirectoryOptionsGroupBox.Enabled:=WhereRadioGroup.ItemIndex=2;
 
   IDEDialogLayoutList.ApplyLayout(Self);
+end;
+
+procedure TLazFindInFilesDialog.HelpButtonClick(Sender: TObject);
+begin
+  ShowContextHelpForIDE(Self);
 end;
 
 procedure TLazFindInFilesDialog.ReplaceCheckBoxChange(Sender: TObject);
