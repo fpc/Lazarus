@@ -38,7 +38,7 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
   StdCtrls, LCLType, GraphType, LazarusIDEStrConsts, EditorOptions,
-  EnvironmentOpts, Grids;
+  EnvironmentOpts, Grids, IDEContextHelpEdit;
 
 type
   TOnInsertCharacterEvent = procedure (const C: TUTF8Char) of object;
@@ -46,10 +46,12 @@ type
   { TCharacterMapDialog }
 
   TCharacterMapDialog = class(TForm)
+    HelpButton: TBitBtn;
     CharactersGroupbox: TGroupbox;
     CharInfoLabel: TLabel;
     CloseButton: TBitBtn;
     StringGrid1: TStringGrid;
+    procedure HelpButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure CloseButtonClick(Sender: TObject);
@@ -89,8 +91,15 @@ begin
   CharactersGroupbox.Caption := lisCharacterMap;
   CloseButton.Caption := lisClose;
   CloseButton.LoadGlyphFromLazarusResource('btn_close');
+  HelpButton.LoadGlyphFromLazarusResource('btn_help');
   //EnvironmentOptions.IDEWindowLayoutList.Apply(Self, Name);
+  CharInfoLabel.Caption := '-';
   FillCharMap;
+end;
+
+procedure TCharacterMapDialog.HelpButtonClick(Sender: TObject);
+begin
+  ShowContextHelpForIDE(Self);
 end;
 
 procedure TCharacterMapDialog.FormShow(Sender: TObject);
