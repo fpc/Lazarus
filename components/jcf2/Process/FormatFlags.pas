@@ -75,7 +75,7 @@ implementation
 
 uses
   { delphi }
-  SysUtils, Windows,
+  SysUtils,
   { Jcl}
   JcfUtils;
 

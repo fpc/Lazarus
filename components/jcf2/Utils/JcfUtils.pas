@@ -120,12 +120,21 @@ function PathExtractFileNameNoExt(const Path: string): string;
 function GetWindowsTempFolder: string;
 function FileGetSize(const FileName: string): Int64;
 procedure ShellExecEx(const FileName: string; const Parameters: string = '');
+function GetTickCount: DWord;
+function IsMultiByte(const pcChar: WideChar): Boolean;
 
 type
   EJcfConversionError = class(Exception)
   end;
 
 implementation
+
+uses
+{$ifdef windows}
+  Windows
+{$else}
+  LCLIntf
+{$endif};
 
 function CharIsAlpha(const C: Char): Boolean;
 begin
@@ -302,5 +311,25 @@ end;
 procedure ShellExecEx(const FileName: string; const Parameters: string = '');
 begin
 end;
+
+function GetTickCount: DWord;
+begin
+{$ifdef windows}
+  Result := Windows.GetTickCount;
+{$else}
+  Result := LCLIntf.GetTickCount;
+{$endif}
+end;
+
+function IsMultiByte(const pcChar: WideChar): Boolean;
+begin
+{$ifdef windows}
+  Result := IsDBCSLeadByte(Byte(pcChar));
+{$else}
+  Result := False;
+  // TODO: ?
+{$endif}
+end;
+
 
 end.

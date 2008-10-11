@@ -48,7 +48,7 @@ implementation
 
 uses
   { delphi }
-  SysUtils, Windows,
+  SysUtils,
   { local }
   SourceToken, ParseTreeNodeType, ParseTreeNode;
 

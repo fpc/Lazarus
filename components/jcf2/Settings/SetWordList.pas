@@ -71,7 +71,7 @@ implementation
 
 uses
   { delphi }
-  SysUtils, Windows;
+  SysUtils;
 
 const
   REG_ENABLED = 'Enabled';

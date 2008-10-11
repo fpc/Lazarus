@@ -56,7 +56,6 @@ implementation
 uses
   { delphi }
   SysUtils,
-  Windows,
   { JCF }
   JcfUtils,
   { local }

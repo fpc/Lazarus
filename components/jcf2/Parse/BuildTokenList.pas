@@ -35,8 +35,6 @@ unit BuildTokenList;
 interface
 
 uses
-  { delphi }
-  Windows,
   { local }
   Tokens, SourceToken, SourceTokenList;
 
@@ -110,16 +108,12 @@ uses
  JcfRegistrySettings;
 
 
-const
-  codepage_Chinese = 950;
-
 function CheckMultiByte(const pcChar: WideChar): Boolean;
 begin
   Result := False;
 
   if GetRegSettings.CheckMultiByteChars then
-    Result := IsDBCSLeadByte(Byte(pcChar));
-    //Result := IsDBCSLeadByteEx(codepage_Chinese, Byte(pcChar));
+    Result := IsMultiByte(pcChar);
 end;
 
 { TBuildTokenList }

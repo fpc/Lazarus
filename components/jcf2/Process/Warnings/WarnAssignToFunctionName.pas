@@ -65,7 +65,7 @@ implementation
 
 uses
   { delphi }
-  SysUtils, Windows,
+  SysUtils,
   { local }
   ParseTreeNode, ParseTreeNodeType, SourceToken, Tokens, TokenUtils,
   BaseVisitor;

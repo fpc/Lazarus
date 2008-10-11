@@ -173,7 +173,7 @@ implementation
 
 uses
   { delphi }
-  SysUtils, Windows,
+  SysUtils,
   { jcf }
   JcfUtils,
   { local }

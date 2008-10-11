@@ -40,7 +40,7 @@ See http://www.gnu.org/licenses/gpl.html
 interface
 
 uses
-  { delphi }Windows, Registry, Classes,
+  { delphi }Registry, Classes,
   { local }ConvertTypes;
 
 type

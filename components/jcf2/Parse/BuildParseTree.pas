@@ -41,7 +41,7 @@ interface
 
 uses
   { delphi }
-  Windows, Contnrs,
+  Contnrs,
   { local }
   ParseTreeNode,
   ParseTreeNodeType,

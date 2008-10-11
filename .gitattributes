@@ -446,6 +446,7 @@ components/jcf2/Parse/TokenUtils.pas svneol=native#text/pascal
 components/jcf2/Parse/Tokens.pas svneol=native#text/pascal
 components/jcf2/Parse/UI/fShowParseTree.dfm svneol=native#text/plain
 components/jcf2/Parse/UI/fShowParseTree.lfm svneol=native#text/plain
+components/jcf2/Parse/UI/fShowParseTree.lrs svneol=native#text/pascal
 components/jcf2/Parse/UI/fShowParseTree.pas svneol=native#text/pascal
 components/jcf2/Process/Align/AlignAssign.pas svneol=native#text/pascal
 components/jcf2/Process/Align/AlignBase.pas svneol=native#text/pascal

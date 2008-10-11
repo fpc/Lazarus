@@ -459,7 +459,6 @@ implementation
 
 uses
   SysUtils,
-  Windows,
   JcfUtils,
   JcfUnicode;
 

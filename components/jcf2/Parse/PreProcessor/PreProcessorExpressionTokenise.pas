@@ -70,7 +70,7 @@ implementation
 
 uses
   { delphi }
-  SysUtils, Windows,
+  SysUtils, 
   { jcl }
   JcfUtils;
 

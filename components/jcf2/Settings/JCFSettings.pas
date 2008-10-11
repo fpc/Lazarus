@@ -134,7 +134,7 @@ implementation
 
 uses
   { delphi }
-  SysUtils, Dialogs, Windows,
+  SysUtils, Dialogs,
   { jcf }
   JcfUtils,
   { local }

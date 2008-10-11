@@ -6,7 +6,7 @@
     <General>
       <MainUnit Value="0"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="0"/>
+      <ActiveEditorIndexAtStart Value="2"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -30,14 +30,17 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="56">
+    <Units Count="80">
       <Unit0>
         <Filename Value="JCF.lpr"/>
         <IsPartOfProject Value="True"/>
-        <CursorPos X="45" Y="36"/>
-        <TopLine Value="1"/>
+        <CursorPos X="35" Y="111"/>
+        <TopLine Value="100"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="68"/>
+        <UsageCount Value="69"/>
+        <Bookmarks Count="1">
+          <Item0 X="16" Y="102" ID="1"/>
+        </Bookmarks>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
@@ -99,9 +102,9 @@
       <Unit8>
         <Filename Value="..\..\Parse\Tokens.pas"/>
         <UnitName Value="Tokens"/>
-        <CursorPos X="1" Y="464"/>
-        <TopLine Value="446"/>
-        <UsageCount Value="6"/>
+        <CursorPos X="1" Y="462"/>
+        <TopLine Value="448"/>
+        <UsageCount Value="10"/>
       </Unit8>
       <Unit9>
         <Filename Value="..\..\Utils\JcfUnicode.pas"/>
@@ -113,33 +116,33 @@
       <Unit10>
         <Filename Value="..\..\Utils\JcfMiscFunctions.pas"/>
         <UnitName Value="JcfMiscFunctions"/>
-        <CursorPos X="5" Y="87"/>
-        <TopLine Value="64"/>
-        <UsageCount Value="6"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
       </Unit10>
       <Unit11>
         <Filename Value="..\..\Parse\BuildTokenList.pas"/>
         <UnitName Value="BuildTokenList"/>
-        <CursorPos X="10" Y="108"/>
-        <TopLine Value="79"/>
-        <UsageCount Value="6"/>
+        <CursorPos X="68" Y="118"/>
+        <TopLine Value="105"/>
+        <UsageCount Value="10"/>
+        <Bookmarks Count="1">
+          <Item0 X="1" Y="110" ID="1"/>
+        </Bookmarks>
       </Unit11>
       <Unit12>
         <Filename Value="..\..\Settings\JcfRegistrySettings.pas"/>
         <UnitName Value="JCFRegistrySettings"/>
-        <CursorPos X="23" Y="585"/>
-        <TopLine Value="567"/>
-        <UsageCount Value="6"/>
-        <Bookmarks Count="1">
-          <Item0 X="16" Y="525" ID="1"/>
-        </Bookmarks>
+        <CursorPos X="13" Y="43"/>
+        <TopLine Value="29"/>
+        <UsageCount Value="10"/>
       </Unit12>
       <Unit13>
         <Filename Value="..\..\Utils\JcfUtils.pas"/>
         <UnitName Value="JcfUtils"/>
-        <CursorPos X="76" Y="302"/>
-        <TopLine Value="271"/>
-        <UsageCount Value="6"/>
+        <CursorPos X="67" Y="117"/>
+        <TopLine Value="99"/>
+        <UsageCount Value="10"/>
       </Unit13>
       <Unit14>
         <Filename Value="..\..\Settings\SettingsTypes.pas"/>
@@ -151,23 +154,23 @@
       <Unit15>
         <Filename Value="..\..\Parse\TokenUtils.pas"/>
         <UnitName Value="TokenUtils"/>
-        <CursorPos X="8" Y="177"/>
-        <TopLine Value="166"/>
-        <UsageCount Value="6"/>
+        <CursorPos X="13" Y="176"/>
+        <TopLine Value="162"/>
+        <UsageCount Value="10"/>
       </Unit15>
       <Unit16>
         <Filename Value="..\..\Settings\Streams\SettingsStream.pas"/>
         <UnitName Value="SettingsStream"/>
-        <CursorPos X="13" Y="160"/>
-        <TopLine Value="136"/>
-        <UsageCount Value="6"/>
+        <CursorPos X="13" Y="158"/>
+        <TopLine Value="144"/>
+        <UsageCount Value="10"/>
       </Unit16>
       <Unit17>
         <Filename Value="..\..\Settings\SetClarify.pas"/>
         <UnitName Value="SetClarify"/>
-        <CursorPos X="11" Y="75"/>
-        <TopLine Value="42"/>
-        <UsageCount Value="6"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
       </Unit17>
       <Unit18>
         <Filename Value="..\..\Settings\SetReplace.pas"/>
@@ -186,9 +189,9 @@
       <Unit20>
         <Filename Value="..\..\Settings\JCFSettings.pas"/>
         <UnitName Value="JCFSettings"/>
-        <CursorPos X="1" Y="140"/>
-        <TopLine Value="111"/>
-        <UsageCount Value="6"/>
+        <CursorPos X="21" Y="137"/>
+        <TopLine Value="123"/>
+        <UsageCount Value="10"/>
       </Unit20>
       <Unit21>
         <Filename Value="..\..\Parse\AsmKeywords.pas"/>
@@ -200,23 +203,23 @@
       <Unit22>
         <Filename Value="..\..\Parse\BuildParseTree.pas"/>
         <UnitName Value="BuildParseTree"/>
-        <CursorPos X="1" Y="289"/>
-        <TopLine Value="259"/>
-        <UsageCount Value="6"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="28"/>
+        <UsageCount Value="10"/>
       </Unit22>
       <Unit23>
         <Filename Value="..\..\Process\BaseVisitor.pas"/>
         <UnitName Value="BaseVisitor"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="6"/>
+        <UsageCount Value="10"/>
       </Unit23>
       <Unit24>
         <Filename Value="..\..\ReadWrite\Converter.pas"/>
         <UnitName Value="Converter"/>
-        <CursorPos X="40" Y="422"/>
-        <TopLine Value="392"/>
-        <UsageCount Value="6"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="19"/>
+        <UsageCount Value="10"/>
       </Unit24>
       <Unit25>
         <Filename Value="..\..\Utils\JcfFontSetFunctions.pas"/>
@@ -232,26 +235,25 @@
         <ResourceBaseClass Value="Form"/>
         <ResourceFilename Value="..\..\Parse\UI\fShowParseTree.lrs"/>
         <UnitName Value="fShowParseTree"/>
-        <CursorPos X="6" Y="92"/>
-        <TopLine Value="73"/>
-        <UsageCount Value="6"/>
-        <Bookmarks Count="1">
-          <Item0 X="7" Y="331" ID="1"/>
-        </Bookmarks>
+        <CursorPos X="5" Y="36"/>
+        <TopLine Value="22"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
       </Unit26>
       <Unit27>
         <Filename Value="..\..\Process\VisitSetXY.pas"/>
         <UnitName Value="VisitSetXY"/>
-        <CursorPos X="11" Y="52"/>
-        <TopLine Value="34"/>
-        <UsageCount Value="6"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
       </Unit27>
       <Unit28>
         <Filename Value="..\..\Process\FormatFlags.pas"/>
         <UnitName Value="FormatFlags"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="6"/>
+        <CursorPos X="13" Y="78"/>
+        <TopLine Value="82"/>
+        <UsageCount Value="10"/>
       </Unit28>
       <Unit29>
         <Filename Value="..\..\Process\Obfuscate\FixCase.pas"/>
@@ -298,9 +300,9 @@
       <Unit35>
         <Filename Value="..\..\Process\Capitalisation\IdentifierCaps.pas"/>
         <UnitName Value="IdentifierCaps"/>
-        <CursorPos X="11" Y="61"/>
-        <TopLine Value="34"/>
-        <UsageCount Value="6"/>
+        <CursorPos X="1" Y="59"/>
+        <TopLine Value="49"/>
+        <UsageCount Value="10"/>
       </Unit35>
       <Unit36>
         <Filename Value="..\..\Process\Capitalisation\Capitalisation.pas"/>
@@ -389,9 +391,11 @@
       <Unit48>
         <Filename Value="..\..\Parse\PreProcessor\PreProcessorExpressionTokens.pas"/>
         <UnitName Value="PreProcessorExpressionTokens"/>
-        <CursorPos X="22" Y="30"/>
-        <TopLine Value="13"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="3"/>
         <UsageCount Value="30"/>
+        <Loaded Value="True"/>
       </Unit48>
       <Unit49>
         <Filename Value="..\..\Parse\PreProcessor\PreProcessorExpressionTokenise.pas"/>
@@ -403,8 +407,8 @@
       <Unit50>
         <Filename Value="..\..\ReadWrite\FileConverter.pas"/>
         <UnitName Value="FileConverter"/>
-        <CursorPos X="21" Y="116"/>
-        <TopLine Value="91"/>
+        <CursorPos X="75" Y="451"/>
+        <TopLine Value="433"/>
         <UsageCount Value="30"/>
       </Unit50>
       <Unit51>
@@ -421,8 +425,8 @@
         <ResourceBaseClass Value="Form"/>
         <ResourceFilename Value="..\..\Ui\fJcfErrorDisplay.lrs"/>
         <UnitName Value="fJcfErrorDisplay"/>
-        <CursorPos X="14" Y="39"/>
-        <TopLine Value="26"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
         <UsageCount Value="30"/>
       </Unit52>
       <Unit53>
@@ -449,108 +453,290 @@
         <TopLine Value="15"/>
         <UsageCount Value="29"/>
       </Unit55>
+      <Unit56>
+        <Filename Value="..\..\ReadWrite\ConvertTypes.pas"/>
+        <UnitName Value="ConvertTypes"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="76"/>
+        <UsageCount Value="10"/>
+      </Unit56>
+      <Unit57>
+        <Filename Value="..\..\Parse\ParseError.pas"/>
+        <UnitName Value="ParseError"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="16"/>
+        <UsageCount Value="10"/>
+      </Unit57>
+      <Unit58>
+        <Filename Value="..\..\Parse\ParseTreeNode.pas"/>
+        <UnitName Value="ParseTreeNode"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit58>
+      <Unit59>
+        <Filename Value="..\..\Parse\ParseTreeNodeType.pas"/>
+        <UnitName Value="ParseTreeNodeType"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit59>
+      <Unit60>
+        <Filename Value="..\..\Parse\SourceToken.pas"/>
+        <UnitName Value="SourceToken"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit60>
+      <Unit61>
+        <Filename Value="..\..\Parse\SourceTokenList.pas"/>
+        <UnitName Value="SourceTokenList"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit61>
+      <Unit62>
+        <Filename Value="..\..\Utils\FileUtils.pas"/>
+        <UnitName Value="FileUtils"/>
+        <CursorPos X="20" Y="68"/>
+        <TopLine Value="54"/>
+        <UsageCount Value="10"/>
+      </Unit62>
+      <Unit63>
+        <Filename Value="..\..\Utils\JcfLog.pas"/>
+        <UnitName Value="JcfLog"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit63>
+      <Unit64>
+        <Filename Value="..\..\Settings\SetUses.pas"/>
+        <UnitName Value="SetUses"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit64>
+      <Unit65>
+        <Filename Value="..\..\Settings\JCFSetBase.pas"/>
+        <UnitName Value="JCFSetBase"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit65>
+      <Unit66>
+        <Filename Value="..\..\Settings\SetAlign.pas"/>
+        <UnitName Value="SetAlign"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit66>
+      <Unit67>
+        <Filename Value="..\..\Settings\SetCaps.pas"/>
+        <UnitName Value="SetCaps"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit67>
+      <Unit68>
+        <Filename Value="..\..\Settings\SetFile.pas"/>
+        <UnitName Value="SetFile"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit68>
+      <Unit69>
+        <Filename Value="..\..\Settings\SetIndent.pas"/>
+        <UnitName Value="SetIndent"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit69>
+      <Unit70>
+        <Filename Value="..\..\Settings\SetObfuscate.pas"/>
+        <UnitName Value="SetObfuscate"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit70>
+      <Unit71>
+        <Filename Value="..\..\Process\Warnings\WarnUnusedParam.pas"/>
+        <UnitName Value="WarnUnusedParam"/>
+        <CursorPos X="47" Y="174"/>
+        <TopLine Value="166"/>
+        <UsageCount Value="10"/>
+      </Unit71>
+      <Unit72>
+        <Filename Value="..\..\Process\Warnings\WarnDestroy.pas"/>
+        <UnitName Value="WarnDestroy"/>
+        <CursorPos X="12" Y="51"/>
+        <TopLine Value="29"/>
+        <UsageCount Value="10"/>
+      </Unit72>
+      <Unit73>
+        <Filename Value="..\..\Process\Warnings\WarnAssignToFunctionName.pas"/>
+        <UnitName Value="WarnAssignToFunctionName"/>
+        <CursorPos X="45" Y="61"/>
+        <TopLine Value="52"/>
+        <UsageCount Value="10"/>
+      </Unit73>
+      <Unit74>
+        <Filename Value="..\..\Process\Capitalisation\UnitNameCaps.pas"/>
+        <UnitName Value="UnitNameCaps"/>
+        <CursorPos X="13" Y="57"/>
+        <TopLine Value="43"/>
+        <UsageCount Value="10"/>
+      </Unit74>
+      <Unit75>
+        <Filename Value="..\..\Process\Transform\SortUsesData.pas"/>
+        <UnitName Value="SortUsesData"/>
+        <CursorPos X="62" Y="98"/>
+        <TopLine Value="82"/>
+        <UsageCount Value="10"/>
+      </Unit75>
+      <Unit76>
+        <Filename Value="..\..\Process\Capitalisation\SpecificWordCaps.pas"/>
+        <UnitName Value="SpecificWordCaps"/>
+        <CursorPos X="13" Y="57"/>
+        <TopLine Value="43"/>
+        <UsageCount Value="10"/>
+      </Unit76>
+      <Unit77>
+        <Filename Value="..\..\Settings\SetWordList.pas"/>
+        <UnitName Value="SetWordList"/>
+        <CursorPos X="12" Y="74"/>
+        <TopLine Value="60"/>
+        <UsageCount Value="10"/>
+      </Unit77>
+      <Unit78>
+        <Filename Value="..\..\Settings\SetPreProcessor.pas"/>
+        <UnitName Value="SetPreProcessor"/>
+        <CursorPos X="34" Y="101"/>
+        <TopLine Value="87"/>
+        <UsageCount Value="10"/>
+      </Unit78>
+      <Unit79>
+        <Filename Value="..\..\Utils\JCFHelp.pas"/>
+        <UnitName Value="JCFHelp"/>
+        <CursorPos X="71" Y="86"/>
+        <TopLine Value="65"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit79>
     </Units>
-    <JumpHistory Count="25" HistoryIndex="24">
+    <JumpHistory Count="28" HistoryIndex="27">
       <Position1>
         <Filename Value="JCF.lpr"/>
-        <Caret Line="70" Column="8" TopLine="44"/>
+        <Caret Line="123" Column="32" TopLine="109"/>
       </Position1>
       <Position2>
         <Filename Value="JCF.lpr"/>
-        <Caret Line="366" Column="60" TopLine="352"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
       </Position2>
       <Position3>
         <Filename Value="JCF.lpr"/>
-        <Caret Line="327" Column="60" TopLine="292"/>
+        <Caret Line="55" Column="28" TopLine="41"/>
       </Position3>
       <Position4>
         <Filename Value="JCF.lpr"/>
-        <Caret Line="159" Column="14" TopLine="145"/>
+        <Caret Line="56" Column="31" TopLine="42"/>
       </Position4>
       <Position5>
         <Filename Value="JCF.lpr"/>
-        <Caret Line="160" Column="8" TopLine="145"/>
+        <Caret Line="57" Column="44" TopLine="43"/>
       </Position5>
       <Position6>
         <Filename Value="JCF.lpr"/>
-        <Caret Line="161" Column="11" TopLine="145"/>
+        <Caret Line="58" Column="29" TopLine="44"/>
       </Position6>
       <Position7>
         <Filename Value="JCF.lpr"/>
-        <Caret Line="366" Column="67" TopLine="348"/>
+        <Caret Line="59" Column="28" TopLine="45"/>
       </Position7>
       <Position8>
         <Filename Value="JCF.lpr"/>
-        <Caret Line="169" Column="19" TopLine="151"/>
+        <Caret Line="60" Column="31" TopLine="46"/>
       </Position8>
       <Position9>
         <Filename Value="JCF.lpr"/>
-        <Caret Line="205" Column="21" TopLine="187"/>
+        <Caret Line="61" Column="28" TopLine="47"/>
       </Position9>
       <Position10>
         <Filename Value="JCF.lpr"/>
-        <Caret Line="235" Column="25" TopLine="217"/>
+        <Caret Line="62" Column="30" TopLine="48"/>
       </Position10>
       <Position11>
         <Filename Value="JCF.lpr"/>
-        <Caret Line="240" Column="1" TopLine="222"/>
+        <Caret Line="63" Column="33" TopLine="49"/>
       </Position11>
       <Position12>
         <Filename Value="JCF.lpr"/>
-        <Caret Line="31" Column="64" TopLine="13"/>
+        <Caret Line="64" Column="31" TopLine="50"/>
       </Position12>
       <Position13>
         <Filename Value="JCF.lpr"/>
-        <Caret Line="169" Column="19" TopLine="151"/>
+        <Caret Line="65" Column="31" TopLine="51"/>
       </Position13>
       <Position14>
         <Filename Value="JCF.lpr"/>
-        <Caret Line="205" Column="21" TopLine="187"/>
+        <Caret Line="67" Column="13" TopLine="52"/>
       </Position14>
       <Position15>
         <Filename Value="JCF.lpr"/>
-        <Caret Line="235" Column="25" TopLine="217"/>
+        <Caret Line="67" Column="13" TopLine="52"/>
       </Position15>
       <Position16>
         <Filename Value="JCF.lpr"/>
-        <Caret Line="240" Column="25" TopLine="222"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
       </Position16>
       <Position17>
         <Filename Value="JCF.lpr"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Caret Line="129" Column="16" TopLine="115"/>
       </Position17>
       <Position18>
         <Filename Value="JCF.lpr"/>
-        <Caret Line="169" Column="19" TopLine="151"/>
+        <Caret Line="129" Column="16" TopLine="115"/>
       </Position18>
       <Position19>
         <Filename Value="JCF.lpr"/>
-        <Caret Line="205" Column="21" TopLine="187"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
       </Position19>
       <Position20>
         <Filename Value="JCF.lpr"/>
-        <Caret Line="235" Column="25" TopLine="217"/>
+        <Caret Line="124" Column="23" TopLine="110"/>
       </Position20>
       <Position21>
         <Filename Value="JCF.lpr"/>
-        <Caret Line="240" Column="25" TopLine="222"/>
+        <Caret Line="127" Column="5" TopLine="110"/>
       </Position21>
       <Position22>
         <Filename Value="JCF.lpr"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Caret Line="124" Column="52" TopLine="110"/>
       </Position22>
       <Position23>
         <Filename Value="JCF.lpr"/>
-        <Caret Line="169" Column="1" TopLine="151"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
       </Position23>
       <Position24>
         <Filename Value="JCF.lpr"/>
-        <Caret Line="204" Column="1" TopLine="186"/>
+        <Caret Line="54" Column="12" TopLine="40"/>
       </Position24>
       <Position25>
-        <Filename Value="JCF.lpr"/>
-        <Caret Line="233" Column="1" TopLine="215"/>
+        <Filename Value="..\..\Parse\UI\fShowParseTree.pas"/>
+        <Caret Line="98" Column="31" TopLine="76"/>
       </Position25>
+      <Position26>
+        <Filename Value="..\..\Utils\JCFHelp.pas"/>
+        <Caret Line="81" Column="6" TopLine="67"/>
+      </Position26>
+      <Position27>
+        <Filename Value="..\..\Utils\JCFHelp.pas"/>
+        <Caret Line="83" Column="1" TopLine="63"/>
+      </Position27>
+      <Position28>
+        <Filename Value="..\..\Utils\JCFHelp.pas"/>
+        <Caret Line="135" Column="16" TopLine="107"/>
+      </Position28>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>

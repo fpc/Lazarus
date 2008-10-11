@@ -39,14 +39,15 @@ interface
 
 uses
   { delphi }
-  Windows, SysUtils, Classes, Controls, Forms,
-  ComCtrls, ExtCtrls, StdCtrls, ShellAPI,
+  {$ifndef FPC}
+    Windows, ShellAPI,
+  {$else}
+    LCLType, LResources,
+  {$endif}
+  SysUtils, Classes, Controls, Forms,
+  ComCtrls, ExtCtrls, StdCtrls,
   { local }
-  ParseTreeNode
-{$ifdef FPC}
-  , LResources
-{$endif}
-  ;
+  ParseTreeNode;
 
 type
   TfrmShowParseTree = class(TForm)
@@ -318,6 +319,7 @@ end;
 procedure TfrmShowParseTree.FormKeyUp(Sender: TObject; var Key: word;
   Shift: TShiftState);
 begin
+{$ifndef FPC}
   if Key = VK_F1 then
     try
       Application.HelpContext(HELP_MAIN);
@@ -325,9 +327,11 @@ begin
       if FileExists(Application.HelpFile) then
         ShellExecute(Handle, 'open', PChar(Application.HelpFile), nil, nil, SW_SHOWNORMAL);
     end;
+{$endif}
 end;
 
 initialization
+{$IFDEF FPC}
   {$I fShowParseTree.lrs}
-
+{$ENDIF}
 end.
