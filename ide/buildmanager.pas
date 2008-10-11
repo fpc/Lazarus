@@ -1020,14 +1020,18 @@ function TBuildManager.UpdateProjectAutomaticFiles: TModalResult;
 var
   AnUnitInfo: TUnitInfo;
 begin
-  AnUnitInfo:=Project1.FirstPartOfProject;
-  while AnUnitInfo<>nil do begin
-    if AnUnitInfo.HasResources then begin
-      Result:=UpdateLRSFromLFM(AnUnitInfo.ResourceFileName);
-      if Result=mrIgnore then Result:=mrOk;
-      if Result<>mrOk then exit;
+  // update project resource
+  Project1.Resources.Regenerate(Project1.MainFileName);
+  AnUnitInfo := Project1.FirstPartOfProject;
+  while AnUnitInfo<>nil do 
+  begin
+    if AnUnitInfo.HasResources then 
+    begin      
+      Result := UpdateLRSFromLFM(AnUnitInfo.ResourceFileName);
+      if Result = mrIgnore then Result:=mrOk;
+      if Result <> mrOk then exit;
     end;
-    AnUnitInfo:=AnUnitInfo.NextPartOfProject;
+    AnUnitInfo := AnUnitInfo.NextPartOfProject;
   end;
 end;
 

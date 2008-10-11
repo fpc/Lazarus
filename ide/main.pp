@@ -705,7 +705,6 @@ type
     function DoOpenComponent(const UnitFilename: string; OpenFlags: TOpenFlags;
                              CloseFlags: TCloseFlags;
                              out Component: TComponent): TModalResult; override;
-    function DoSaveAllResources: Boolean;
     function DoSaveAll(Flags: TSaveFlags): TModalResult;
     procedure DoRestart;
     procedure DoExecuteRemoteControl;
@@ -8335,9 +8334,6 @@ begin
     exit;
   end;
 
-  if not DoSaveAllResources then
-    Exit;
-
   SaveSourceEditorChangesToCodeCache(-1);
   SkipSavingMainSource:=false;
 
@@ -8408,13 +8404,16 @@ begin
   end;
 
   // save main source
-  if (MainUnitInfo<>nil) and (not (sfDoNotSaveVirtualFiles in flags)) then begin
-    if MainUnitInfo.Loaded then begin
+  if (MainUnitInfo<>nil) and (not (sfDoNotSaveVirtualFiles in flags)) then 
+  begin
+    if MainUnitInfo.Loaded then 
+    begin
       // loaded in source editor
       Result:=DoSaveEditorFile(MainUnitInfo.EditorIndex,
                [sfProjectSaving]+[sfSaveToTestDir,sfCheckAmbiguousFiles]*Flags);
       if Result=mrAbort then exit;
-    end else begin
+    end else 
+    begin
       // not loaded in source editor (hidden)
       if not (sfSaveToTestDir in Flags) then begin
         DestFilename:=MainUnitInfo.Filename;
@@ -8422,13 +8421,18 @@ begin
           SkipSavingMainSource:=true;
       end else
         DestFilename:=MainBuildBoss.GetTestUnitFilename(MainUnitInfo);
-      if (not SkipSavingMainSource) and (MainUnitInfo.Source<>nil) then begin
+      if (not SkipSavingMainSource) and (MainUnitInfo.Source<>nil) then 
+      begin
         Result:=SaveCodeBufferToFile(MainUnitInfo.Source, DestFilename);
         if Result=mrAbort then exit;
       end;
     end;
+    
+    Project1.Resources.Regenerate(DestFileName);
+
     // clear modified flags
-    if not (sfSaveToTestDir in Flags) then begin
+    if not (sfSaveToTestDir in Flags) then 
+    begin
       if (Result=mrOk) then begin
         if MainUnitInfo<>nil then MainUnitInfo.ClearModifieds;
         if MainUnitSrcEdit<>nil then MainUnitSrcEdit.Modified:=false;
@@ -9545,23 +9549,6 @@ begin
   Result:=(Project1<>nil)
       and (Project1.SomethingModified(true,true)
            or SourceNotebook.SomethingModified);
-end;
-
-function TMainIDE.DoSaveAllResources: Boolean;
-var
-  WorkingDir, SrcFilename: String;
-begin
-  if not Project1.IsVirtual then 
-  begin
-    WorkingDir:=Project1.ProjectDirectory;
-    SrcFilename:=CreateRelativePath(Project1.MainUnitInfo.Filename,WorkingDir);
-  end else 
-  begin
-    WorkingDir:=GetTestBuildDirectory;
-    SrcFilename:=MainBuildBoss.GetTestUnitFilename(Project1.MainUnitInfo);
-  end;
-
-  Result := Project1.Resources.Regenerate(WorkingDir, SrcFileName);
 end;
 
 function TMainIDE.DoSaveAll(Flags: TSaveFlags): TModalResult;

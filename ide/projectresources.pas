@@ -37,9 +37,9 @@ unit ProjectResources;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, FileUtil, Laz_XMLCfg,
+  Classes, SysUtils, Controls, LCLProc, LResources, FileUtil, Laz_XMLCfg,
   ProjectResourcesIntf,
-  W32VersionInfo, W32Manifest, ProjectIcon, IDEProcs,
+  W32VersionInfo, W32Manifest, ProjectIcon, IDEProcs, DialogProcs,
   BasicCodeTools, CodeToolManager, CodeCache, CodeAtom;
 
 type
@@ -62,7 +62,7 @@ type
     FXPManifest: TProjectXPManifest;
     FProjectIcon: TProjectIcon;
 
-    procedure SetFileNames(const AWorkingDir, MainFileName: String);
+    procedure SetFileNames(const MainFileName: String);
     procedure SetModified(const AValue: Boolean);
     function Update: Boolean;
     procedure EmbeddedObjectModified(Sender: TObject);
@@ -74,7 +74,7 @@ type
     procedure AddLazarusResource(AResource: TStream; const ResourceName, ResourceType: String); override;
 
     procedure Clear;
-    function Regenerate(const AWorkingDir, MainFileName: String): Boolean;
+    function Regenerate(const MainFileName: String): Boolean;
     function UpdateMainSourceFile(const AFileName: string): Boolean;
 
     function HasSystemResources(CheckLists: Boolean): Boolean;
@@ -95,14 +95,10 @@ implementation
 
 { TProjectResources }
 
-procedure TProjectResources.SetFileNames(const AWorkingDir, MainFileName: String);
-var
-  BasePart: String;
+procedure TProjectResources.SetFileNames(const MainFileName: String);
 begin
-  BasePart := AWorkingDir + ExtractFileNameWithoutExt(ExtractFileName(MainFileName));
-
-  rcFileName :=  BasePart + '.rc';
-  lrsFileName := BasePart + '.lrs';
+  rcFileName := ChangeFileExt(MainFileName, '.rc');
+  lrsFileName := ChangeFileExt(MainFileName, '.lrs');
 end;
 
 procedure TProjectResources.SetModified(const AValue: Boolean);
@@ -205,34 +201,33 @@ begin
   FMessages.Clear;
 end;
 
-function TProjectResources.Regenerate(const AWorkingDir, MainFileName: String): Boolean;
+function TProjectResources.Regenerate(const MainFileName: String): Boolean;
 var
-  AStream: TStream;
+  CodeBuf: TCodeBuffer;
 begin
   Result := False;
-  SetFileNames(AWorkingDir, MainFileName);
+
+  if (MainFileName = '') or not FilenameIsAbsolute(MainFileName) then
+    Exit;
+
+  SetFileNames(MainFileName);
 
   if not Update then
     Exit;
 
-  AStream := nil;
   if HasSystemResources(True) then
   begin
-    try
-      AStream := TFileStream.Create(UTF8ToSys(rcFileName), fmCreate);
-      FSystemResources.SaveToStream(AStream);
-    finally
-      AStream.Free;
-    end;
+    CodeBuf := CodeToolBoss.CreateFile(rcFileName);
+    CodeBuf.Source:= FSystemResources.Text;
+    if SaveCodeBufferToFile(CodeBuf, CodeBuf.Filename) = mrAbort then
+      Exit;
   end;
   if HasLazarusResources(True) then
   begin
-    try
-      AStream := TFileStream.Create(UTF8ToSys(lrsFileName), fmCreate);
-      FLazarusResources.SaveToStream(AStream);
-    finally
-      AStream.Free;
-    end;
+    CodeBuf := CodeToolBoss.CreateFile(lrsFileName);
+    CodeBuf.Source := FLazarusResources.Text;
+    if SaveCodeBufferToFile(CodeBuf, CodeBuf.Filename) = mrAbort then
+      Exit;
   end;
   Result := True;
 end;
@@ -325,7 +320,7 @@ begin
   CodeBuf := CodeToolBoss.LoadFile(AFilename, False, False);
   if CodeBuf <> nil then
   begin
-    SetFileNames('', AFileName);
+    SetFileNames(AFileName);
     Filename := ExtractFileName(rcFileName);
     //debugln(['TProjectResources.UpdateMainSourceFile HasSystemResources=',HasSystemResources,' Filename=',Filename,' HasLazarusResources=',HasLazarusResources]);
 
