@@ -41,13 +41,14 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Buttons, ExtCtrls, StdCtrls,
   LazarusIDEStrConsts, Dialogs, AVL_Tree, FileUtil, IDEProcs, IDEWindowIntf,
-  ComponentReg, PackageDefs, PackageSystem;
+  ComponentReg, PackageDefs, PackageSystem, IDEContextHelpEdit;
 
 type
 
   { TAddFileToAPackageDialog }
 
   TAddFileToAPackageDialog = class(TForm)
+    HelpButton: TBitBtn;
     CancelButton: TBitBtn;
     HasRegisterProcCheckBox: TCheckBox;
     FileTypeRadioGroup: TRadioGroup;
@@ -62,6 +63,7 @@ type
     ShowAllCheckBox: TCheckBox;
     procedure AddFileToAPackageDlgClose(Sender: TObject;
       var CloseAction: TCloseAction);
+    procedure HelpButtonClick(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure PackagesGroupBoxResize(Sender: TObject);
     procedure ShowAllCheckBoxClick(Sender: TObject);
@@ -114,6 +116,11 @@ procedure TAddFileToAPackageDialog.AddFileToAPackageDlgClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
+end;
+
+procedure TAddFileToAPackageDialog.HelpButtonClick(Sender: TObject);
+begin
+  ShowContextHelpForIDE(Self);
 end;
 
 procedure TAddFileToAPackageDialog.OkButtonClick(Sender: TObject);
@@ -199,7 +206,10 @@ begin
   PackagesGroupBox.Caption:=lisAF2PDestinationPackage;
   ShowAllCheckBox.Caption:=lisAF2PShowAll;
   OkButton.Caption:=lisLazBuildOk;
+  OkButton.LoadGlyphFromLazarusResource('btn_ok');
   CancelButton.Caption:=dlgCancel;
+  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
+  HelpButton.LoadGlyphFromLazarusResource('btn_help');
 
   with FileTypeRadioGroup do begin
     Caption:=lisAF2PFileType;
