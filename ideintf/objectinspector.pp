@@ -848,6 +848,9 @@ begin
   ValueComboBox:=TComboBox.Create(Self);
   with ValueComboBox do begin
     Name:='ValueComboBox';
+    Sorted:=true;
+    AutoSelect:=true;
+    AutoComplete:=true;
     Visible:=false;
     Enabled:=false;
     AutoSize:=false;
@@ -2008,6 +2011,8 @@ procedure TOICustomPropertyGrid.HandleStandardKeys(var Key: Word;
               TCustomCombobox(FCurrentEdit).DroppedDown;
   end;
 
+const
+  Page=20;
 var
   Handled: Boolean;
 begin
@@ -2022,8 +2027,20 @@ begin
             SetItemIndexAndFocus(ItemIndex - 1);
 
         VK_DOWN:
-          if (ItemIndex < FRows.Count - 1) then 
+          if (ItemIndex < FRows.Count - 1) then
             SetItemIndexAndFocus(ItemIndex + 1);
+
+        VK_PRIOR:
+          if (ItemIndex > Page)
+          then SetItemIndexAndFocus(ItemIndex - Page)
+          else if (FRows.Count > 0)
+          then SetItemIndexAndFocus(0);
+
+        VK_NEXT:
+          if (ItemIndex < FRows.Count - Page)
+          then SetItemIndexAndFocus(ItemIndex + Page)
+          else if (FRows.Count > 0)
+          then SetItemIndexAndFocus(FRows.Count - 1);
 
         VK_TAB:
           DoTabKey;
@@ -3483,6 +3500,10 @@ begin
 
   // combobox at top (filled with available persistents)
   with AvailPersistentComboBox do begin
+    Sorted:=true;
+    AutoSelect:=true;
+    AutoComplete:=true;
+    DropDownCount := 12;
     Visible:=not FShowComponentTree;
   end;
 
@@ -3835,17 +3856,36 @@ procedure TObjectInspectorDlg.OnGridKeyDown(Sender: TObject; var Key: Word;
 var
   Handled: Boolean;
 begin
-  Handled := False;
-  if Key = VK_TAB then
+  Handled := false;
+
+  //CTRL-[Shift]-TAB will select next or previous notebook tab
+  if Key=VK_TAB then
   begin
-    Handled := True;
     if Shift = [ssCtrl] then
-      ShowNextPage(1)
-    else
-    if Shift = [ssCtrl, ssShift] then
-      ShowNextPage(-1)
-    else
-      Handled := False;
+    begin
+      Handled := true;
+      ShowNextPage(1);
+    end else if Shift = [ssCtrl, ssShift] then
+    begin
+      Handled := true;
+      ShowNextPage(-1);
+    end;
+  end;
+
+  //Allow combobox navigation while it has focus
+  if not Handled
+  then Handled := AvailPersistentComboBox.Focused;
+
+  if not Handled then
+  begin
+    //CTRL-ArrowDown will dropdown the component combobox
+    if (Key=VK_DOWN) and (ssCtrl in Shift) then
+    begin
+      Handled := true;
+      if AvailPersistentComboBox.Canfocus
+      then AvailPersistentComboBox.SetFocus;
+      AvailPersistentComboBox.DroppedDown := true;
+    end;
   end;
 
   if not Handled then
@@ -4365,9 +4405,12 @@ var
   CurGrid: TOICustomPropertyGrid;
 begin
   CurGrid:=GetActivePropertyGrid;
-  if CurGrid<>nil then begin
-    CurGrid.HandleStandardKeys(Key,Shift);
-    if Key=VK_UNKNOWN then exit;
+  //Do not disturb the combobox navigation while it has focus
+  if not AvailPersistentComboBox.DroppedDown then begin
+    if CurGrid<>nil then begin
+      CurGrid.HandleStandardKeys(Key,Shift);
+      if Key=VK_UNKNOWN then exit;
+    end;
   end;
   inherited KeyDown(Key, Shift);
   if (Key<>VK_UNKNOWN) and Assigned(OnRemainingKeyDown) then
