@@ -173,10 +173,19 @@ var
   AOpenDialog: TOpenDialog;
 
   procedure SetFilesPropertyCustomFiles(AFiles:TStrings);
+
+    procedure AddFile(FolderName, FileName: String); inline;
+    begin
+      if ExtractFilePath(FileName) = '' then
+        AFiles.Add(FolderName + FileName)
+      else
+        AFiles.Add(FileName);
+    end;
+
   var
     i, Start, len: integer;
     FolderName: string;
-    FileNames: String;
+    FileNames: string;
   begin
     {$ifdef WindowsUnicodeSupport}
     if UnicodeEnabledOS then
@@ -203,14 +212,14 @@ var
         i := Start + 1;
         while FileNames[i] <> '"' do
           inc(i);
-        AFiles.Add(FolderName + Copy(FileNames, Start + 1, I - Start - 1));
-        start := i+1;
-        while (start <= len) and (FileNames[Start] <> #0) and (FileNames[start] <> '"') do
+        AddFile(FolderName, Copy(FileNames, Start + 1, I - Start - 1));
+        Start := i + 1;
+        while (Start <= len) and (FileNames[Start] <> #0) and (FileNames[Start] <> '"') do
           inc(Start);
       end;
     end
     else
-      AFiles.Add(FolderName + FileNames);
+      AddFile(FolderName, FileNames);
   end;
 
   procedure SetFilesPropertyForOldStyle(AFiles:TStrings);
