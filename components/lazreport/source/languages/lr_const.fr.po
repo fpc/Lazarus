@@ -463,7 +463,7 @@ msgstr "Mineur"
 
 #: lr_const.sdocoptform2pass
 msgid "&Two-pass report"
-msgstr ""
+msgstr "Rapport en deux passes"
 
 #: lr_const.sdocoptformcomments
 msgid "Comments"
