@@ -381,6 +381,7 @@ var
 
 { main program starts here }
 begin
+  Application.Initialize;
   feReturnCode := rcSuccess;
   { read registry }
   GetRegSettings.ReadAll;
