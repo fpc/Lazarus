@@ -228,9 +228,9 @@ begin
     else
       //boDefault
       {$IFDEF UNIX}
-        ButtonOrderCloseOKCancel;
+        ButtonOrderCloseCancelOK;
       {$ELSE}
-      ButtonOrderCloseCancelOK;
+        ButtonOrderCloseOKCancel;
       {$ENDIF}
   end;
 end;
