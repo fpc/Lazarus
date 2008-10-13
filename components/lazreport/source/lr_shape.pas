@@ -47,8 +47,8 @@ type
     procedure Draw(aCanvas: TCanvas); override;
     procedure LoadFromStream(Stream: TStream); override;
     procedure SaveToStream(Stream: TStream); override;
-    procedure LoadFromXML(XML: TXMLConfig; Path: String); override;
-    procedure SaveToXML(XML: TXMLConfig; Path: String); override;
+    procedure LoadFromXML(XML: TLrXMLConfig; Path: String); override;
+    procedure SaveToXML(XML: TLrXMLConfig; Path: String); override;
 
   published
     property FillColor;
@@ -165,14 +165,14 @@ begin
   Stream.Write(ShapeType, 1);
 end;
 
-procedure TfrShapeView.LoadFromXML(XML: TXMLConfig; Path: String);
+procedure TfrShapeView.LoadFromXML(XML: TLrXMLConfig; Path: String);
 begin
   inherited LoadFromXML(XML, Path);
   
   RestoreProperty('ShapeType',XML.GetValue(Path+'ShapeType/Value',''));
 end;
 
-procedure TfrShapeView.SaveToXML(XML: TXMLConfig; Path: String);
+procedure TfrShapeView.SaveToXML(XML: TLrXMLConfig; Path: String);
 begin
   inherited SaveToXML(XML, Path);
 

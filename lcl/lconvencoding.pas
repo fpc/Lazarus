@@ -22,7 +22,9 @@ unit LConvEncoding;
 
 interface
 
+{$IFNDEF DisableIconv}
 {$IFDEF UNIX}{$IF not defined(VER2_2_0) and not defined(VER2_2_2)}{$DEFINE HasIconvEnc}{$ENDIF}{$ENDIF}
+{$ENDIF}
 
 uses
   SysUtils, Classes, dos, LCLProc

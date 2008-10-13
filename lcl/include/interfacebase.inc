@@ -58,8 +58,16 @@ begin
   Debugln('TWidgetSet.AppSetTitle is not implemented by ', ClassName);
 end;
 
-function TWidgetSet.LCLCapability(ACapability: TLCLCapability): PtrUInt;
+function TWidgetSet.GetLCLCapability(ACapability: TLCLCapability): PtrUInt;
 begin
-  Result := 0;
+  case ACapability of
+    lcCanDrawOutsideOnPaint,
+    lcNeedMininimizeAppWithMainForm,
+    lcApplicationTitle,
+    lcFormIcon:
+      Result := 1;
+  else
+    Result := 0;
+  end;
 end;
 

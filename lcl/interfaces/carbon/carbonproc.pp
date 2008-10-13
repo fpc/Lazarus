@@ -35,8 +35,8 @@ interface
 
 uses
   MacOSAll,
-  Classes, Types, LCLType, LCLProc, LCLClasses, LMessages,
-  Controls, SysUtils, Graphics, Math, GraphType;
+  Classes, SysUtils, Types, LCLType, LCLProc, LCLClasses, LMessages,
+  Controls, Forms, Graphics, Math, GraphType;
 
 function OSError(AResult: OSStatus; const AMethodName, ACallName: String;
   const AText: String = ''): Boolean;
@@ -61,7 +61,8 @@ var
 
 function VirtualKeyCodeToMac(AKey: Word): Word;
 
-function FormBorderToWindowAttrs(const AFormBorder: TFormBorderStyle): WindowAttributes;
+function GetBorderWindowAttrs(const ABorderStyle: TFormBorderStyle;
+  const ABorderIcons: TBorderIcons): WindowAttributes;
 
 function GetCarbonMouseButton(AEvent: EventRef): Integer;
 function GetCarbonMsgKeyState: PtrInt;
@@ -317,12 +318,13 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Name:    FormBorderToWindowAttrs
-  Returns: Converts the form border style to Carbon window attributes
+  Name:    GetBorderWindowAttrs
+  Returns: Converts the form border style and icons to Carbon window attributes
  ------------------------------------------------------------------------------}
-function FormBorderToWindowAttrs(const AFormBorder: TFormBorderStyle): WindowAttributes;
+function GetBorderWindowAttrs(const ABorderStyle: TFormBorderStyle;
+  const ABorderIcons: TBorderIcons): WindowAttributes;
 begin
-  case AFormBorder of
+  case ABorderStyle of
   bsNone:
     Result := kWindowNoTitleBarAttribute;
   bsToolWindow, bsSingle:
@@ -338,6 +340,22 @@ begin
   else
     Result := kWindowNoAttributes;
   end;
+
+  if biSystemMenu in ABorderIcons then
+  begin
+    Result := Result or kWindowCloseBoxAttribute;
+    if biMinimize in ABorderIcons then
+      Result := Result or kWindowCollapseBoxAttribute
+    else
+      Result := Result and not kWindowCollapseBoxAttribute;
+    if biMaximize in ABorderIcons then
+      Result := Result or kWindowFullZoomAttribute
+    else
+      Result := Result and not kWindowFullZoomAttribute;
+  end
+  else
+    Result := Result and not (kWindowCloseBoxAttribute or
+      kWindowCollapseBoxAttribute or kWindowFullZoomAttribute);
 end;
 
 {------------------------------------------------------------------------------

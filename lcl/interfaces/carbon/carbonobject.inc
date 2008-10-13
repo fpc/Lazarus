@@ -1056,7 +1056,20 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonWidgetSet.AppSetTitle(const ATitle: string);
 begin
-  // TODO
+  // not supported
+end;
+
+function TCarbonWidgetSet.GetLCLCapability(ACapability: TLCLCapability): PtrUInt;
+begin
+  case ACapability of
+    lcCanDrawOutsideOnPaint,
+    lcNeedMininimizeAppWithMainForm,
+    lcApplicationTitle,
+    lcFormIcon:
+      Result := 0;
+  else
+    Result := inherited;
+  end;
 end;
 
 {------------------------------------------------------------------------------

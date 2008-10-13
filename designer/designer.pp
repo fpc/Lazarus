@@ -35,14 +35,11 @@ interface
 {off $DEFINE VerboseDesigner}
 {off $DEFINE VerboseDesignerDraw}
 
-{$IFDEF LCLCarbon}
-  {$DEFINE CantPaintOnIdle}
-{$ENDIF}
-
 uses
   // FCL + LCL
   Classes, SysUtils, Math, LCLProc, LCLType, LResources, LCLIntf, LMessages,
-  Forms, Controls, GraphType, Graphics, Dialogs, ExtCtrls, Menus, ClipBrd,
+  InterfaceBase, Forms, Controls, GraphType, Graphics, Dialogs, ExtCtrls, Menus,
+  ClipBrd,
   // IDEIntf
   IDEDialogs, PropEdits, ComponentEditors, MenuIntf, IDEImagesIntf,
   // IDE
@@ -1182,10 +1179,9 @@ begin
         PaintClientGrid(TWinControl(Sender),DDC);
       end;
 
-      {$IFNDEF CantPaintOnIdle}
-      if not EnvironmentOptions.DesignerPaintLazy then
-        DoPaintDesignerItems;
-      {$ENDIF}
+      if (WidgetSet.GetLCLCapability(lcCanDrawOutsideOnPaint) <> 0) and 
+         not EnvironmentOptions.DesignerPaintLazy then
+          DoPaintDesignerItems;
     end;
     
     // clean up
@@ -2413,6 +2409,7 @@ begin
     AComponent:=FLookupRoot.Components[i];
     if ComponentIsNonVisual(AComponent) then begin
       Diff:=aDDC.FormOrigin;
+      //DebugLn(['aDDC.FormOrigin - ', Diff.X, ' : ' ,Diff.Y]);
       // non-visual component
       ItemLeftTop:=NonVisualComponentLeftTop(AComponent);
       ItemLeft:=ItemLeftTop.X-Diff.X;
@@ -2466,12 +2463,10 @@ begin
 end;
 
 procedure TDesigner.DrawDesignerItems(OnlyIfNeeded: boolean);
-{$IFNDEF CantPaintOnIdle}
 var
   DesignerDC: HDC;
-{$ENDIF}
 begin
-  {$IFNDEF CantPaintOnIdle}
+  if WidgetSet.GetLCLCapability(lcCanDrawOutsideOnPaint) = 0 then Exit;
   if OnlyIfNeeded and (not (dfNeedPainting in FFlags)) then exit;
   Exclude(FFlags,dfNeedPainting);
 
@@ -2483,7 +2478,6 @@ begin
   DoPaintDesignerItems;
   DDC.Clear;
   ReleaseDesignerDC(Form.Handle,DesignerDC);
-  {$ENDIF}
 end;
 
 procedure TDesigner.CheckFormBounds;

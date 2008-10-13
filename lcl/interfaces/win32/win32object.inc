@@ -418,7 +418,7 @@ begin
   Result:= lpWin32;
 end;
 
-function TWin32WidgetSet.LCLCapability(ACapability: TLCLCapability): PtrUInt;
+function TWin32WidgetSet.GetLCLCapability(ACapability: TLCLCapability): PtrUInt;
 begin
   case ACapability of
     lcAsyncProcess: Result := 1;

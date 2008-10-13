@@ -37,8 +37,12 @@ uses
   Graphics, FormEditingIntf;
 
 type
-  TDesignerDCFlag = (ddcDCOriginValid, ddcFormOriginValid,
-    ddcFormClientOriginValid, ddcSizeValid);
+  TDesignerDCFlag = (
+    ddcDCOriginValid,         // please comment
+    ddcFormOriginValid,       //
+    ddcFormClientOriginValid, //
+    ddcSizeValid              //
+  );
   TDesignerDCFlags = set of TDesignerDCFlag;
 
   TDesignerDeviceContext = class
@@ -356,11 +360,13 @@ function TDesignerDeviceContext.GetFormOrigin: TPoint;
 // returns the DC origin relative to the form client origin
 // For example: The DC of the client area of the form itself will return 0,0
 begin
-  if not (ddcFormOriginValid in FFlags) then begin
-    GetDCOriginRelativeToWindow(FDC,FForm.Handle,FFormOrigin);
-    Include(FFlags,ddcFormOriginValid);
+  if not (ddcFormOriginValid in FFlags) then 
+  begin
+    GetDCOriginRelativeToWindow(FDC, FForm.Handle, FFormOrigin);
+    Include(FFlags, ddcFormOriginValid);
+    // DebugLn(['New origin: ', FFormOrigin.X, ':', FFormOrigin.Y]);
   end;
-  Result:=FFormOrigin;
+  Result := FFormOrigin;
 end;
 
 constructor TDesignerDeviceContext.Create;
@@ -385,25 +391,26 @@ end;
 procedure TDesignerDeviceContext.Clear;
 begin
   Restore;
-  FDC:=0;
-  FFlags:=FFlags-[ddcFormOriginValid,ddcFormClientOriginValid,ddcDCOriginValid,
-                  ddcSizeValid];
+  FDC := 0;
+  FFlags := FFlags - [ddcFormOriginValid, ddcFormClientOriginValid, ddcDCOriginValid, ddcSizeValid];
 end;
 
 procedure TDesignerDeviceContext.Save;
 begin
-  if FSavedDC=0 then begin
-    FSavedDC:=SaveDC(DC);
-    FCanvas.Handle:=FDC;
+  if FSavedDC = 0 then 
+  begin
+    FSavedDC := SaveDC(DC);
+    FCanvas.Handle := FDC;
   end;
 end;
 
 procedure TDesignerDeviceContext.Restore;
 begin
-  if FSavedDC<>0 then begin
-    FCanvas.Handle:=0;
-    RestoreDC(DC,FSavedDC);
-    FSavedDC:=0;
+  if FSavedDC <> 0 then 
+  begin
+    FCanvas.Handle := 0;
+    RestoreDC(DC, FSavedDC);
+    FSavedDC := 0;
   end;
 end;
 
@@ -413,14 +420,14 @@ function TDesignerDeviceContext.RectVisible(ALeft, ATop, ARight,
 var
   ASize: TPoint;
 begin
-  if (ARight<0) or (ABottom<0) then
-    Result:=false
+  if (ARight < 0) or (ABottom < 0) then
+    Result := False
   else begin
-    ASize:=DCSize;
-    if (ALeft>=ASize.X) or (ATop>=ASize.Y) then
-      Result:=false
+    ASize := DCSize;
+    if (ALeft >= ASize.X) or (ATop >= ASize.Y) then
+      Result := False
     else
-      Result:=true;
+      Result := True;
   end;
 end;
 

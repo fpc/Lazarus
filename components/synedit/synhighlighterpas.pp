@@ -57,7 +57,7 @@ uses
   {$ELSE}
   Windows, Messages,
   {$ENDIF}
-  Classes, Registry, Controls, Graphics,
+  Classes, Registry, Controls,
   SynEditTypes, SynEditHighlighter, SynEditTextBuffer;
 
 type
@@ -300,6 +300,7 @@ type
     function GetTokenID: TtkTokenKind;
     function GetTokenKind: integer; override;
     function GetTokenPos: Integer; override;
+    function IsKeyword(const AKeyword: string): boolean; override;
     procedure Next; override;
     procedure ResetRange; override;
     procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: string;
@@ -348,11 +349,54 @@ type
 implementation
 
 uses
-  SynEditStrConst;
-  
+  Graphics, SynEditStrConst;
+
+const
+  RESERVED_WORDS_TP: array [1..54] of String = (
+    'absolute', 'and', 'array', 'asm',
+    'begin',
+    'case', 'const', 'constructor',
+    'destructor', 'div', 'do', 'downto',
+    'else', 'end',
+    'file', 'for', 'function',
+    'goto',
+    'if', 'implementation', 'in', 'inherited', 'inline', 'interface',
+    'label',
+    'mod',
+    'nil', 'not',
+    'object', 'of', 'on', 'operator', 'or',
+    'packed', 'procedure', 'program',
+    'record', 'reintroduce', 'repeat',
+    'self', 'set', 'shl', 'shr', 'string',
+    'then', 'to', 'type',
+    'unit', 'until', 'uses',
+    'var',
+    'while', 'with',
+    'xor'
+  );
+
+  RESERVED_WORDS_DELPHI: array [1..15] of String = (
+    'as',
+    'class',
+    'except', 'exports',
+    'finalization', 'finally',
+    'initialization', 'is',
+    'library',
+    'on', 'out',
+    'property',
+    'raise',
+    'threadvar',
+    'try'
+  );
+
+  RESERVED_WORDS_FPC: array [1..5] of String = (
+    'dispose', 'exit', 'false', 'new', 'true'
+  );
+
 var
   Identifiers: array[#0..#255] of ByteBool;
   mHashTable: array[#0..#255] of Integer;
+  KeywordsList: TStringList;
   {$IFDEF SYN_LAZARUS}
   IsIntegerChar: array[char] of Boolean;
   IsNumberChar: array[char] of Boolean;
@@ -2052,6 +2096,35 @@ function TSynPasSyn.IsFilterStored: boolean;
 begin
   Result := fDefaultFilter <> SYNS_FilterPascal;
 end;
+
+function TSynPasSyn.IsKeyword(const AKeyword: string): boolean;
+// returns true for some common keywords
+// Note: this words are not always keywords (e.g. end), and some keywords are
+// not listed here at all (e.g. static)
+var
+  i: integer;
+  m: TPascalCompilerMode;
+begin
+  if KeywordsList = nil then begin
+    KeywordsList := TStringList.Create;
+    for i := 1 to High(RESERVED_WORDS_TP) do
+      KeywordsList.AddObject(RESERVED_WORDS_TP[i], TObject(pcmTP));
+    for i := 1 to High(RESERVED_WORDS_DELPHI) do
+      KeywordsList.AddObject(RESERVED_WORDS_DELPHI[i], TObject(pcmDelphi));
+    for i := 1 to High(RESERVED_WORDS_FPC) do
+      KeywordsList.AddObject(RESERVED_WORDS_FPC[i], TObject(pcmFPC));
+    KeywordsList.Sorted := true;
+  end;
+  Result := KeywordsList.Find(LowerCase(AKeyword), i);
+  if not Result then exit;
+  m := TPascalCompilerMode(PtrUInt(KeywordsList.Objects[i]));
+  case FCompilerMode of
+    pcmFPC, pcmObjFPC: ;
+    pcmDelphi: Result := m in [pcmTP, pcmDelphi];
+    else Result := m = pcmTP;
+  end;
+end;
+
 {end}                                                                           //mh 2000-10-08
 
 procedure TSynPasSyn.SetD4syntax(const Value: boolean);
@@ -2095,6 +2168,10 @@ initialization
 {$IFNDEF SYN_CPPB_1}
   RegisterPlaceableHighlighter(TSynPasSyn);
 {$ENDIF}
+
+finalization
+  FreeAndNil(KeywordsList);
+
 end.
 
 

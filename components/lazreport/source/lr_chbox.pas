@@ -48,8 +48,8 @@ type
     
     procedure LoadFromStream(Stream: TStream); override;
     procedure SaveToStream(Stream: TStream); override;
-    procedure LoadFromXML(XML: TXMLConfig; Path: String); override;
-    procedure SaveToXML(XML: TXMLConfig; Path: String); override;
+    procedure LoadFromXML(XML: TLrXMLConfig; Path: String); override;
+    procedure SaveToXML(XML: TLrXMLConfig; Path: String); override;
   published
     property Checked : Boolean read fChecked write fChecked;
     property FillColor;
@@ -166,14 +166,14 @@ begin
   Stream.Write(fChecked, SizeOf(fChecked));
 end;
 
-procedure TfrCheckBoxView.LoadFromXML(XML: TXMLConfig; Path: String);
+procedure TfrCheckBoxView.LoadFromXML(XML: TLrXMLConfig; Path: String);
 begin
   inherited LoadFromXML(XML, Path);
   
   RestoreProperty('Checked',XML.GetValue(Path+'Data/Checked/Value',''));
 end;
 
-procedure TfrCheckBoxView.SaveToXML(XML: TXMLConfig; Path: String);
+procedure TfrCheckBoxView.SaveToXML(XML: TLrXMLConfig; Path: String);
 begin
   inherited SaveToXML(XML, Path);
   XML.SetValue(Path+'Data/Checked/Value', GetSaveProperty('Checked'));

@@ -3594,7 +3594,7 @@ begin
       DebugLn('ExternalWindow');
   end;
   {$endif}
-  if EditorMode then
+  if EditorMode and Editor.CanFocus then
     Editor.SetFocus
   else
     inherited WMSetFocus(Message);
@@ -5136,7 +5136,8 @@ begin
   EditorSetValue;
   Editor.Parent:=Self;
   Editor.Visible:=True;
-  Editor.SetFocus;
+  if Editor.CanFocus then
+    Editor.SetFocus;
   InvalidateCell(FCol,FRow,True);
   {$ifdef dbgGrid}DebugLn('grid.DoEditorShow [',Editor.ClassName,'] END');{$endif}
 end;

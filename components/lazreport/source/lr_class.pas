@@ -17,7 +17,7 @@ interface
 uses
   SysUtils, Classes, Controls, FileUtil,
   Forms, StdCtrls, ComCtrls, Dialogs, Menus,
-  Variants, DB,Graphics,Printers,osPrinters,XMLCfg,
+  Variants, DB,Graphics,Printers,osPrinters,XMLConf,
   
   LCLType,LCLIntf,TypInfo,LCLProc,
   SysUtilsAdds,
@@ -134,6 +134,14 @@ type
   
   TfrDialogForm = Class(TForm);
   
+  { TLrXMLConfig }
+
+  TLrXMLConfig = class (TXMLConfig)
+  public
+    procedure SetValue(const APath: string; const AValue: string); overload;
+    function  GetValue(const APath: string; const ADefault: string): string; overload;
+  end;
+
   { TfrObject }
 
   TfrObject = Class(TPersistent)
@@ -165,8 +173,8 @@ type
     
     procedure CreateUniqueName;
 
-    procedure LoadFromXML(XML: TXMLConfig; Path: String); virtual;
-    procedure SaveToXML(XML: TXMLConfig; Path: String); virtual;
+    procedure LoadFromXML(XML: TLrXMLConfig; Path: String); virtual;
+    procedure SaveToXML(XML: TLrXMLConfig; Path: String); virtual;
 
     property Memo   : TfrMemoStrings read fMemo write SetMemo;
     property Script : TfrScriptStrings read fScript write SetScript;
@@ -256,8 +264,8 @@ type
     procedure LoadFromStream(Stream: TStream); virtual;
     procedure SaveToStream(Stream: TStream); virtual;
 
-    procedure LoadFromXML(XML: TXMLConfig; Path: String); override;
-    procedure SaveToXML(XML: TXMLConfig; Path: String); override;
+    procedure LoadFromXML(XML: TLrXMLConfig; Path: String); override;
+    procedure SaveToXML(XML: TLrXMLConfig; Path: String); override;
 
     procedure Resized; virtual;
     procedure DefinePopupMenu(Popup: TPopupMenu); virtual;
@@ -352,9 +360,9 @@ type
     procedure Print(Stream: TStream); override;
     procedure ExportData; override;
     procedure LoadFromStream(Stream: TStream); override;
-    procedure LoadFromXML(XML: TXMLConfig; Path: String); override;
+    procedure LoadFromXML(XML: TLrXMLConfig; Path: String); override;
     procedure SaveToStream(Stream: TStream); override;
-    procedure SaveToXML(XML: TXMLConfig; Path: String); override;
+    procedure SaveToXML(XML: TLrXMLConfig; Path: String); override;
     procedure DefinePopupMenu(Popup: TPopupMenu); override;
 
     procedure MonitorFontChanges;
@@ -398,9 +406,9 @@ type
     procedure Assign(From: TfrView); override;
     
     procedure LoadFromStream(Stream: TStream); override;
-    procedure LoadFromXML(XML: TXMLConfig; Path: String); override;
+    procedure LoadFromXML(XML: TLrXMLConfig; Path: String); override;
     procedure SaveToStream(Stream: TStream); override;
-    procedure SaveToXML(XML: TXMLConfig; Path: String); override;
+    procedure SaveToXML(XML: TLrXMLConfig; Path: String); override;
     
 
     procedure Draw(aCanvas: TCanvas); override;
@@ -428,9 +436,9 @@ type
     procedure Assign(From: TfrView); override;
     procedure Draw(aCanvas: TCanvas); override;
     procedure LoadFromStream(Stream: TStream); override;
-    procedure LoadFromXML(XML: TXMLConfig; Path: String); override;
+    procedure LoadFromXML(XML: TLrXMLConfig; Path: String); override;
     procedure SaveToStream(Stream: TStream); override;
-    procedure SaveToXML(XML: TXMLConfig; Path: String); override;
+    procedure SaveToXML(XML: TLrXMLConfig; Path: String); override;
     procedure DefinePopupMenu(Popup: TPopupMenu); override;
   end;
 
@@ -454,9 +462,9 @@ type
     procedure Assign(From: TfrView); override;
     procedure Draw(aCanvas: TCanvas); override;
     procedure LoadFromStream(Stream: TStream); override;
-    procedure LoadFromXML(XML: TXMLConfig; Path: String); override;
+    procedure LoadFromXML(XML: TLrXMLConfig; Path: String); override;
     procedure SaveToStream(Stream: TStream); override;
-    procedure SaveToXML(XML: TXMLConfig; Path: String); override;
+    procedure SaveToXML(XML: TLrXMLConfig; Path: String); override;
     procedure DefinePopupMenu(Popup: TPopupMenu); override;
     class function GetFilter: string;
   published
@@ -579,9 +587,9 @@ type
     function AddValue: Integer;
     function FindVariable(const s: String): TfrValue;
     procedure ReadBinaryData(Stream: TStream);
-    procedure ReadBinaryDataFromXML(XML: TXMLConfig; Path: String);
+    procedure ReadBinaryDataFromXML(XML: TLrXMLConfig; Path: String);
     procedure WriteBinaryData(Stream: TStream);
-    procedure WriteBinaryDataToXML(XML: TXMLConfig; Path: String);
+    procedure WriteBinaryDataToXML(XML: TLrXMLConfig; Path: String);
     procedure Clear;
 
     property Items: TStringList read FItems write FItems;
@@ -645,8 +653,8 @@ type
     constructor Create(ASize, AWidth, AHeight: Integer; AOr: TPrinterOrientation);
     constructor CreatePage; virtual;
     
-    procedure LoadFromXML(XML: TXMLConfig; Path: String); override;
-    procedure SavetoXML(XML: TXMLConfig; Path: String); override;
+    procedure LoadFromXML(XML: TLrXMLConfig; Path: String); override;
+    procedure SavetoXML(XML: TLrXMLConfig; Path: String); override;
 
     function TopMargin: Integer;
     function BottomMargin: Integer;
@@ -686,8 +694,8 @@ type
 
   TfrPageReport = Class(TfrPage)
   public
-    procedure LoadFromXML(XML: TXMLConfig; Path: String); override;
-    procedure SavetoXML(XML: TXMLConfig; Path: String); override;
+    procedure LoadFromXML(XML: TLrXMLConfig; Path: String); override;
+    procedure SavetoXML(XML: TLrXMLConfig; Path: String); override;
     
     constructor CreatePage; override;
   published
@@ -715,8 +723,8 @@ type
   public
     constructor Create; override;
 
-    procedure LoadFromXML(XML: TXMLConfig; Path: String); override;
-    procedure SavetoXML(XML: TXMLConfig; Path: String); override;
+    procedure LoadFromXML(XML: TLrXMLConfig; Path: String); override;
+    procedure SavetoXML(XML: TLrXMLConfig; Path: String); override;
   published
     property Caption : string read fCaption write fCaption;
   end;
@@ -738,9 +746,9 @@ type
     procedure Add(aClassName : string='TfrPageReport');
     procedure Delete(Index: Integer);
     procedure LoadFromStream(Stream: TStream);
-    procedure LoadFromXML(XML: TXMLConfig; Path: String);
+    procedure LoadFromXML(XML: TLrXMLConfig; Path: String);
     procedure SaveToStream(Stream: TStream);
-    procedure SavetoXML(XML: TXMLConfig; Path: String);
+    procedure SavetoXML(XML: TLrXMLConfig; Path: String);
 
     property Pages[Index: Integer]: TfrPage read GetPages; default;
     property Count: Integer read GetCount;
@@ -766,9 +774,9 @@ type
     procedure Insert(Index: Integer; APage: TfrPage);
     procedure Delete(Index: Integer);
     procedure LoadFromStream(AStream: TStream);
-    procedure LoadFromXML(XML: TXMLConfig; Path: String);
+    procedure LoadFromXML(XML: TLrXMLConfig; Path: String);
     procedure SaveToStream(AStream: TStream);
-    procedure SaveToXML(XML: TXMLConfig; Path: String);
+    procedure SaveToXML(XML: TLrXMLConfig; Path: String);
     property Pages[Index: Integer]: PfrPageInfo read GetPages; default;
     property Count: Integer read GetCount;
   end;
@@ -882,12 +890,12 @@ type
     procedure FillQueryParams;
     // load/save methods
     procedure LoadFromStream(Stream: TStream);
-    procedure LoadFromXML(XML: TXMLConfig; Path: String);
+    procedure LoadFromXML(XML: TLrXMLConfig; Path: String);
     procedure SaveToStream(Stream: TStream);
     procedure LoadFromFile(FName: String);
     procedure LoadFromXMLFile(Fname: String);
     procedure SaveToFile(FName: String);
-    procedure SavetoXML(XML: TXMLConfig; Path: String);
+    procedure SavetoXML(XML: TLrXMLConfig; Path: String);
     procedure SaveToXMLFile(FName: String);
 
     procedure LoadFromDB(Table: TDataSet; DocN: Integer);
@@ -983,9 +991,9 @@ type
   public
     procedure Clear; virtual; abstract;
     procedure LoadFromStream(Stream: TStream); virtual; abstract;
-    procedure LoadFromXML(XML:TXMLConfig; Path: String); virtual; abstract;
+    procedure LoadFromXML(XML:TLrXMLConfig; Path: String); virtual; abstract;
     procedure SaveToStream(Stream: TStream); virtual; abstract;
-    procedure SaveToXML(XML:TXMLConfig; Path: String); virtual; abstract;
+    procedure SaveToXML(XML:TLrXMLConfig; Path: String); virtual; abstract;
     procedure BeforePreparing; virtual; abstract;
     procedure AfterPreparing; virtual; abstract;
     procedure PrepareDataSet(ds: TfrTDataSet); virtual; abstract;
@@ -1061,6 +1069,8 @@ const
     (clWhite, clBlack, clMaroon, clGreen, clOlive, clNavy, clPurple, clTeal,
      clGray, clSilver, clRed, clLime, clYellow, clBlue, clFuchsia, clAqua);
   frAllFrames=[frbLeft, frbTop, frbRight, frbBottom];
+
+  frUnwrapRead: boolean = false; // TODO: remove this for 0.9.28
   
 type
   PfrTextRec = ^TfrTextRec;
@@ -1731,7 +1741,7 @@ begin
   {$ENDIF}
 end;
 
-procedure TfrView.LoadFromXML(XML: TXMLConfig; Path: String);
+procedure TfrView.LoadFromXML(XML: TLrXMLConfig; Path: String);
 var
   S:string;
 begin
@@ -1815,7 +1825,7 @@ begin
   {$ENDIF}
 end;
 
-procedure TfrView.SaveToXML(XML: TXMLConfig; Path: String);
+procedure TfrView.SaveToXML(XML: TLrXMLConfig; Path: String);
 begin
   inherited SaveToXML(XML,Path);
   XML.SetValue(Path+'Typ/Value', frTypeObjectToStr(Typ));
@@ -3012,7 +3022,7 @@ begin
     Flags := Flags or flWordWrap;
 end;
 
-procedure TfrMemoView.LoadFromXML(XML: TXMLConfig; Path: String);
+procedure TfrMemoView.LoadFromXML(XML: TLrXMLConfig; Path: String);
 begin
   inherited LoadFromXML(XML, Path);
 
@@ -3070,7 +3080,7 @@ begin
   end;
 end;
 
-procedure TfrMemoView.SaveToXML(XML: TXMLConfig; Path: String);
+procedure TfrMemoView.SaveToXML(XML: TLrXMLConfig; Path: String);
 begin
   inherited SaveToXML(XML, Path);
   XML.SetValue(Path+'Font/Name/Value', Font.name);
@@ -3347,7 +3357,7 @@ begin
   end;
 end;
 
-procedure TfrBandView.LoadFromXML(XML: TXMLConfig; Path: String);
+procedure TfrBandView.LoadFromXML(XML: TLrXMLConfig; Path: String);
 begin
   inherited LoadFromXML(XML, Path);
   RestoreProperty('BandType',XML.GetValue(Path+'BandType/Value','')); // todo chk
@@ -3367,7 +3377,7 @@ begin
   end;
 end;
 
-procedure TfrBandView.SaveToXML(XML: TXMLConfig; Path: String);
+procedure TfrBandView.SaveToXML(XML: TLrXMLConfig; Path: String);
 begin
   inherited SaveToXML(XML, Path);
   XML.SetValue(Path+'BandType/Value', GetSaveProperty('BandType')); //Ord(FBandType)); // todo: use symbolic values
@@ -3725,7 +3735,7 @@ begin
   Stream.Read(SubPage, 4);
 end;
 
-procedure TfrSubReportView.LoadFromXML(XML: TXMLConfig; Path: String);
+procedure TfrSubReportView.LoadFromXML(XML: TLrXMLConfig; Path: String);
 begin
   inherited LoadFromXML(XML, Path);
   SubPage := XML.GetValue(Path+'SubPage/Value', 0); // todo chk
@@ -3737,7 +3747,7 @@ begin
   Stream.Write(SubPage, 4);
 end;
 
-procedure TfrSubReportView.SaveToXML(XML: TXMLConfig; Path: String);
+procedure TfrSubReportView.SaveToXML(XML: TLrXMLConfig; Path: String);
 begin
   inherited SaveToXML(XML, Path);
   XML.SetValue(Path+'SubPage/Value', SubPage);
@@ -3871,7 +3881,7 @@ const
   pkJPEG = 4;
   pkPNG  = 5;
 
-procedure StreamToXML(XML: TXMLConfig; Path: String; Stream: TStream);
+procedure StreamToXML(XML: TLrXMLConfig; Path: String; Stream: TStream);
 var
   Buf: Array[0..1023] of byte;
   S: String;
@@ -3898,7 +3908,7 @@ begin
   XML.SetValue(Path+'Data/Value', S);
 end;
 
-procedure XMLToStream(XML: TXMLConfig; Path: String; Stream: TStream);
+procedure XMLToStream(XML: TLrXMLConfig; Path: String; Stream: TStream);
 var
   S: String;
   i,Size,cd: integer;
@@ -3934,7 +3944,7 @@ begin
   Stream.Seek(n, soFromBeginning);
 end;
 
-procedure TfrPictureView.LoadFromXML(XML: TXMLConfig; Path: String);
+procedure TfrPictureView.LoadFromXML(XML: TLrXMLConfig; Path: String);
 var
   b: Byte;
   m: TMemoryStream;
@@ -3976,7 +3986,7 @@ begin
   Stream.Seek(0, soFromEnd);
 end;
 
-procedure TfrPictureView.SaveToXML(XML: TXMLConfig; Path: String);
+procedure TfrPictureView.SaveToXML(XML: TLrXMLConfig; Path: String);
 var
   b: Byte;
   n, o: Integer;
@@ -6237,7 +6247,7 @@ begin
   ChangePaper(pgSize, Width, Height, Orientation);
 end;
 
-procedure TfrPage.LoadFromXML(XML: TXMLConfig; Path: String);
+procedure TfrPage.LoadFromXML(XML: TLrXMLConfig; Path: String);
 var
   b:byte;
 begin
@@ -6275,7 +6285,7 @@ begin
   end;
 end;
 
-procedure TfrPage.SavetoXML(XML: TXMLConfig; Path: String);
+procedure TfrPage.SavetoXML(XML: TLrXMLConfig; Path: String);
 begin
   Inherited SavetoXML(XML,Path);
   XML.SetValue(Path+'Width/Value', Width);
@@ -6417,7 +6427,7 @@ begin
   end;
 end;
 
-procedure TfrPages.LoadFromXML(XML: TXMLConfig; Path: String);
+procedure TfrPages.LoadFromXML(XML: TLrXMLConfig; Path: String);
 var
   b: Byte;
   t: TfrView;
@@ -6516,7 +6526,7 @@ begin
   end;
 end;
 
-procedure TfrPages.SavetoXML(XML: TXMLConfig; Path: String);
+procedure TfrPages.SavetoXML(XML: TLrXMLConfig; Path: String);
 var
   b: Byte;
   i, j: Integer;
@@ -6866,7 +6876,7 @@ begin
   until i >= c;
 end;
 
-procedure TfrEMFPages.LoadFromXML(XML: TXMLConfig; Path: String);
+procedure TfrEMFPages.LoadFromXML(XML: TLrXMLConfig; Path: String);
 begin
   // todo
 end;
@@ -6914,7 +6924,7 @@ begin
   until i >= Count;
 end;
 
-procedure TfrEMFPages.SaveToXML(XML: TXMLConfig; Path: String);
+procedure TfrEMFPages.SaveToXML(XML: TLrXMLConfig; Path: String);
 begin
   // Todo
 end;
@@ -6963,7 +6973,7 @@ begin
   end;
 end;
 
-procedure TfrValues.WriteBinaryDataToXML(XML: TXMLConfig; Path: String);
+procedure TfrValues.WriteBinaryDataToXML(XML: TLrXMLConfig; Path: String);
 var
   i: integer;
   aSubPath: String;
@@ -7015,7 +7025,7 @@ begin
   end;
 end;
 
-procedure TfrValues.ReadBinaryDataFromXML(XML: TXMLConfig; Path: String);
+procedure TfrValues.ReadBinaryDataFromXML(XML: TLrXMLConfig; Path: String);
 var
   i,j,n: Integer;
   aSubPath: String;
@@ -7529,7 +7539,7 @@ begin
     MessageDlg(sFRFError,mtError,[mbOk],0);
 end;
 
-procedure TfrReport.LoadFromXML(XML: TXMLConfig; Path: String);
+procedure TfrReport.LoadFromXML(XML: TLrXMLConfig; Path: String);
 begin
   CurReport := Self;
   frVersion := XML.GetValue(Path+'Version/Value', 21);
@@ -7591,12 +7601,12 @@ end;
 
 procedure TfrReport.LoadFromXMLFile(Fname: String);
 var
-  XML: TXMLConfig;
+  XML: TLrXMLConfig;
 begin
   {$IFDEF ver2_0_0}
-  XML := TXMLConfig.Create(FName);
+  XML := TLrXMLConfig.Create(FName);
   {$ELSE}
-  XML := TXMLConfig.Create(nil);
+  XML := TLrXMLConfig.Create(nil);
   XML.Filename := FName;
   {$ENDIF}
   try
@@ -7629,7 +7639,7 @@ begin
   end;
 end;
 
-procedure TfrReport.SavetoXML(XML: TXMLConfig; Path: String);
+procedure TfrReport.SavetoXML(XML: TLrXMLConfig; Path: String);
 begin
   CurReport := Self;
   frVersion := frCurrentVersion;
@@ -7653,12 +7663,12 @@ end;
 
 procedure TfrReport.SaveToXMLFile(FName: String);
 var
-  XML: TXMLConfig;
+  XML: TLrXMLConfig;
 begin
   {$IFDEF ver2_0_0}
-  XML := TXMLConfig.CreateClean(FName);
+  XML := TLrXMLConfig.CreateClean(FName);
   {$ELSE}
-  XML := TXMLConfig.Create(nil);
+  XML := TLrXMLConfig.Create(nil);
   XML.StartEmpty := True;
   XML.Filename := FName;
   {$ENDIF}
@@ -9609,7 +9619,7 @@ begin
   else fName := BaseName + '1';
 end;
 
-procedure TfrObject.LoadFromXML(XML: TXMLConfig; Path: String);
+procedure TfrObject.LoadFromXML(XML: TLrXMLConfig; Path: String);
 begin
   //ClassName not read here.
   Name:=XML.GetValue(Path+'Name/Value','');
@@ -9618,7 +9628,7 @@ begin
   Visible:=XML.GetValue(Path+'Visible/Value', true);
 end;
 
-procedure TfrObject.SaveToXML(XML: TXMLConfig; Path: String);
+procedure TfrObject.SaveToXML(XML: TLrXMLConfig; Path: String);
 begin
   XML.SetValue(Path+'Name/Value', GetSaveProperty('Name'));
   XML.SetValue(Path+'ClassName/Value', self.Classname);
@@ -9643,7 +9653,7 @@ end;
 
 { TfrPageReport }
 
-procedure TfrPageReport.LoadFromXML(XML: TXMLConfig; Path: String);
+procedure TfrPageReport.LoadFromXML(XML: TLrXMLConfig; Path: String);
 var
   Rc   : TRect;
 begin
@@ -9666,7 +9676,7 @@ begin
   ChangePaper(pgSize, Width, Height, Orientation);
 end;
 
-procedure TfrPageReport.SavetoXML(XML: TXMLConfig; Path: String);
+procedure TfrPageReport.SavetoXML(XML: TLrXMLConfig; Path: String);
 var
   Rc   : TRect;
 begin
@@ -9717,18 +9727,39 @@ begin
   PageType:=ptDialog;
 end;
 
-procedure TfrPageDialog.LoadFromXML(XML: TXMLConfig; Path: String);
+procedure TfrPageDialog.LoadFromXML(XML: TLrXMLConfig; Path: String);
 begin
   inherited LoadFromXML(XML, Path);
   
   XML.GetValue(Path+'Caption/Value', '');
 end;
 
-procedure TfrPageDialog.SavetoXML(XML: TXMLConfig; Path: String);
+procedure TfrPageDialog.SavetoXML(XML: TLrXMLConfig; Path: String);
 begin
   inherited SavetoXML(XML, Path);
   
   XML.SetValue(Path+'Caption/Value', Caption);
+end;
+
+{ TLrXMLConfig }
+
+procedure TLrXMLConfig.SetValue(const APath: string; const AValue: string);
+begin
+  inherited SetValue(UTF8Decode(APath), UTF8Decode(AValue));
+end;
+
+function TLrXMLConfig.GetValue(const APath: string; const ADefault: string
+  ): string;
+var
+  wValue: widestring;
+begin
+  if frUnWrapRead then
+    result := inherited GetValue(APath, ADefault)
+  else
+  begin
+    WValue := inherited GetValue(UTF8Decode(APath), UTF8Decode(ADefault));
+    Result := UTF8Encode(WValue);
+  end;
 end;
 
 initialization

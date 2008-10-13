@@ -33,10 +33,9 @@ type
     procedure FormDeactivate(Sender: TObject);
     procedure ValListKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure ValListMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
     procedure FormKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure ValListSelectionChange(Sender: TObject; User: boolean);
   private
     { Private declarations }
     procedure FillValCombo;
@@ -113,18 +112,21 @@ begin
   end;
 end;
 
-procedure TfrFieldsForm.ValListMouseDown(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-begin
-  UpdateDBField;
-  ModalResult := mrOk;
-end;
-
 procedure TfrFieldsForm.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = vk_Escape then
     ModalResult := mrCancel;
+end;
+
+procedure TfrFieldsForm.ValListSelectionChange(Sender: TObject; User: boolean);
+begin
+  if User then
+  begin
+    UpdateDbField;
+    if DBField<>'' then
+      ModalResult := mrOk;
+  end;
 end;
 
 procedure TfrFieldsForm.FormCreate(Sender: TObject);

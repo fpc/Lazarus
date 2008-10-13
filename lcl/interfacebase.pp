@@ -69,7 +69,12 @@ type
   TLCLPlatforms = set of TLCLPlatform;
 
   TLCLCapability = (
-    lcAsyncProcess       // support for async process
+    lcAsyncProcess,          // Support for async process
+    lcCanDrawOutsideOnPaint, // Support for drawing outside OnPaint event of an control
+    lcNeedMininimizeAppWithMainForm,
+                             // When main form is minimized, then minimize also app
+    lcApplicationTitle,      // Can change application title in runtime
+    lcFormIcon               // Forms have icon
   );
 
   { TWidgetSet }
@@ -95,7 +100,7 @@ type
     procedure AppSetTitle(const ATitle: string); virtual;
     
     function  LCLPlatform: TLCLPlatform; virtual; abstract;
-    function  LCLCapability(ACapability: TLCLCapability): PtrUInt; virtual;
+    function  GetLCLCapability(ACapability: TLCLCapability): PtrUInt; virtual;
 
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; virtual; abstract;
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); virtual; abstract;
