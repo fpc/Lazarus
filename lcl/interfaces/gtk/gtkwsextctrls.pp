@@ -637,12 +637,12 @@ begin
   // TPanel control is a area with frame around. Area can have its own color
 
   // To implement that in gtk we need:
-  // 1. GtkFrame to draw frame around area
+  // 1. GtkViewport to draw frame around area
   // 2. GtkFixed to plaace controls and draw color area
 
-  Widget := gtk_frame_new(nil);
+  Widget := gtk_viewport_new(nil, nil);
   WidgetInfo := CreateWidgetInfo(Widget, AWinControl, AParams);
-  gtk_frame_set_shadow_type(PGtkFrame(Widget), BorderStyleShadowMap[TCustomPanel(AWinControl).BorderStyle]);
+  gtk_viewport_set_shadow_type(PGtkViewport(Widget), BorderStyleShadowMap[TCustomPanel(AWinControl).BorderStyle]);
   TempWidget := CreateFixedClientWidget;
   gtk_container_add(GTK_CONTAINER(Widget), TempWidget);
   gtk_widget_show(TempWidget);
