@@ -37,7 +37,7 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
   ExtCtrls, BasicCodeTools, CodeToolManager, SourceChanger,
-  LazarusIDEStrConsts, LazConf, IDEProcs;
+  LazarusIDEStrConsts, LazConf, IDEProcs, ButtonPanel;
 
 type
   TEncloseSelectionType = (
@@ -54,11 +54,9 @@ type
   { TEncloseSelectionDialog }
 
   TEncloseSelectionDialog = class(TForm)
-    btnCancel: TBitBtn;
-    btnOk: TBitBtn;
+    ButtonPanel: TButtonPanel;
     TypeRadiogroup: TRADIOGROUP;
     procedure EncloseSelectionDialogCREATE(Sender: TObject);
-    procedure EncloseSelectionDialogResize(Sender: TObject);
     procedure btnOkClick(Sender: TObject);
   private
   public
@@ -405,10 +403,10 @@ var
   t: TEncloseSelectionType;
 begin
   Caption:=lisEncloseSelection;
-  btnOk.Caption:=lisEnclose;
-  btnCancel.Caption:=dlgCancel;
-  btnOk.LoadGlyphFromLazarusResource('btn_ok');
-  btnCancel.LoadGlyphFromLazarusResource('btn_cancel');
+  ButtonPanel.OKButton.Caption:=lisEnclose;
+  ButtonPanel.OKButton.OnClick := @btnOKClick;
+  ButtonPanel.CancelButton.Caption:=dlgCancel;
+
   TypeRadiogroup.Caption:=lisChooseStructureToEncloseSelection;
   with TypeRadiogroup.Items do begin
     BeginUpdate;
@@ -417,16 +415,6 @@ begin
     EndUpdate;
   end;
   TypeRadiogroup.ItemIndex:=0;
-end;
-
-procedure TEncloseSelectionDialog.EncloseSelectionDialogResize(Sender: TObject);
-var
-  c: Integer;
-begin
-  c:=Width div 2;
-  btnOk.Width:=c-btnOk.Left-15;
-  btnCancel.Left:=c+15;
-  btnCancel.Width:=btnOk.Width;
 end;
 
 procedure TEncloseSelectionDialog.btnOkClick(Sender: TObject);
