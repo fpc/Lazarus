@@ -34,12 +34,12 @@
       <Unit0>
         <Filename Value="JCF.lpr"/>
         <IsPartOfProject Value="True"/>
-        <CursorPos X="27" Y="36"/>
-        <TopLine Value="1"/>
+        <CursorPos X="52" Y="384"/>
+        <TopLine Value="368"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="75"/>
+        <UsageCount Value="79"/>
         <Bookmarks Count="1">
-          <Item0 X="14" Y="158" ID="1"/>
+          <Item0 X="17" Y="397" ID="1"/>
         </Bookmarks>
         <Loaded Value="True"/>
       </Unit0>
@@ -103,9 +103,12 @@
         <Filename Value="..\..\Parse\Tokens.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Tokens"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <CursorPos X="11" Y="416"/>
+        <TopLine Value="398"/>
+        <UsageCount Value="24"/>
+        <Bookmarks Count="1">
+          <Item0 X="35" Y="886" ID="1"/>
+        </Bookmarks>
       </Unit8>
       <Unit9>
         <Filename Value="..\..\Utils\JcfUnicode.pas"/>
@@ -113,15 +116,15 @@
         <UnitName Value="JcfUnicode"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit9>
       <Unit10>
         <Filename Value="..\..\Utils\JcfMiscFunctions.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="JCFMiscFunctions"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <CursorPos X="11" Y="272"/>
+        <TopLine Value="272"/>
+        <UsageCount Value="25"/>
       </Unit10>
       <Unit11>
         <Filename Value="..\..\Parse\BuildTokenList.pas"/>
@@ -129,26 +132,23 @@
         <UnitName Value="BuildTokenList"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit11>
       <Unit12>
         <Filename Value="..\..\Settings\JcfRegistrySettings.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="JCFRegistrySettings"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <CursorPos X="22" Y="245"/>
+        <TopLine Value="226"/>
+        <UsageCount Value="25"/>
       </Unit12>
       <Unit13>
         <Filename Value="..\..\Utils\JcfUtils.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="JcfUtils"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="21"/>
-        <Bookmarks Count="1">
-          <Item0 X="5" Y="250" ID="1"/>
-        </Bookmarks>
+        <CursorPos X="62" Y="510"/>
+        <TopLine Value="489"/>
+        <UsageCount Value="25"/>
       </Unit13>
       <Unit14>
         <Filename Value="..\..\Settings\SettingsTypes.pas"/>
@@ -156,7 +156,7 @@
         <UnitName Value="SettingsTypes"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit14>
       <Unit15>
         <Filename Value="..\..\Parse\TokenUtils.pas"/>
@@ -164,7 +164,7 @@
         <UnitName Value="TokenUtils"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit15>
       <Unit16>
         <Filename Value="..\..\Settings\Streams\SettingsStream.pas"/>
@@ -172,7 +172,7 @@
         <UnitName Value="SettingsStream"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit16>
       <Unit17>
         <Filename Value="..\..\Settings\SetClarify.pas"/>
@@ -180,7 +180,7 @@
         <UnitName Value="SetClarify"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit17>
       <Unit18>
         <Filename Value="..\..\Settings\SetReplace.pas"/>
@@ -188,7 +188,7 @@
         <UnitName Value="SetReplace"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit18>
       <Unit19>
         <Filename Value="..\..\VersionConsts.pas"/>
@@ -196,7 +196,7 @@
         <UnitName Value="VersionConsts"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit19>
       <Unit20>
         <Filename Value="..\..\Settings\JCFSettings.pas"/>
@@ -204,7 +204,7 @@
         <UnitName Value="JCFSettings"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit20>
       <Unit21>
         <Filename Value="..\..\Parse\AsmKeywords.pas"/>
@@ -212,7 +212,7 @@
         <UnitName Value="AsmKeywords"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit21>
       <Unit22>
         <Filename Value="..\..\Parse\BuildParseTree.pas"/>
@@ -220,7 +220,7 @@
         <UnitName Value="BuildParseTree"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit22>
       <Unit23>
         <Filename Value="..\..\Process\BaseVisitor.pas"/>
@@ -228,7 +228,7 @@
         <UnitName Value="BaseVisitor"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit23>
       <Unit24>
         <Filename Value="..\..\ReadWrite\Converter.pas"/>
@@ -236,7 +236,7 @@
         <UnitName Value="Converter"/>
         <CursorPos X="15" Y="7"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit24>
       <Unit25>
         <Filename Value="..\..\Utils\JcfFontSetFunctions.pas"/>
@@ -244,7 +244,7 @@
         <UnitName Value="JcfFontSetFunctions"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit25>
       <Unit26>
         <Filename Value="..\..\Parse\UI\fShowParseTree.pas"/>
@@ -256,7 +256,7 @@
         <UnitName Value="fShowParseTree"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit26>
       <Unit27>
         <Filename Value="..\..\Process\VisitSetXY.pas"/>
@@ -264,7 +264,7 @@
         <UnitName Value="VisitSetXY"/>
         <CursorPos X="80" Y="10"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit27>
       <Unit28>
         <Filename Value="..\..\Process\FormatFlags.pas"/>
@@ -272,7 +272,7 @@
         <UnitName Value="FormatFlags"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit28>
       <Unit29>
         <Filename Value="..\..\Process\Obfuscate\FixCase.pas"/>
@@ -280,7 +280,7 @@
         <UnitName Value="FixCase"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit29>
       <Unit30>
         <Filename Value="..\..\Process\Obfuscate\RemoveComment.pas"/>
@@ -288,7 +288,7 @@
         <UnitName Value="RemoveComment"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit30>
       <Unit31>
         <Filename Value="..\..\Process\Obfuscate\RemoveUnneededWhiteSpace.pas"/>
@@ -296,7 +296,7 @@
         <UnitName Value="RemoveUnneededWhiteSpace"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit31>
       <Unit32>
         <Filename Value="..\..\Process\Obfuscate\RemoveReturn.pas"/>
@@ -304,7 +304,7 @@
         <UnitName Value="RemoveReturn"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit32>
       <Unit33>
         <Filename Value="..\..\Process\Obfuscate\RebreakLines.pas"/>
@@ -312,7 +312,7 @@
         <UnitName Value="RebreakLines"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit33>
       <Unit34>
         <Filename Value="..\..\Process\RemoveEmptyComment.pas"/>
@@ -320,7 +320,7 @@
         <UnitName Value="RemoveEmptyComment"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit34>
       <Unit35>
         <Filename Value="..\..\Process\Capitalisation\IdentifierCaps.pas"/>
@@ -328,7 +328,7 @@
         <UnitName Value="IdentifierCaps"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit35>
       <Unit36>
         <Filename Value="..\..\Process\Capitalisation\Capitalisation.pas"/>
@@ -336,7 +336,7 @@
         <UnitName Value="Capitalisation"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="30"/>
+        <UsageCount Value="34"/>
       </Unit36>
       <Unit37>
         <Filename Value="..\..\Process\Returns\ReturnChars.pas"/>
@@ -344,7 +344,7 @@
         <UnitName Value="ReturnChars"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="30"/>
+        <UsageCount Value="34"/>
       </Unit37>
       <Unit38>
         <Filename Value="..\..\Process\Returns\BlockStyles.pas"/>
@@ -352,7 +352,7 @@
         <UnitName Value="BlockStyles"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="30"/>
+        <UsageCount Value="34"/>
       </Unit38>
       <Unit39>
         <Filename Value="..\..\Process\Spacing\TabToSpace.pas"/>
@@ -360,7 +360,7 @@
         <UnitName Value="TabToSpace"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="30"/>
+        <UsageCount Value="34"/>
       </Unit39>
       <Unit40>
         <Filename Value="..\..\Process\Spacing\SpaceToTab.pas"/>
@@ -368,7 +368,7 @@
         <UnitName Value="SpaceToTab"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="30"/>
+        <UsageCount Value="34"/>
       </Unit40>
       <Unit41>
         <Filename Value="..\..\Process\Spacing\MaxSpaces.pas"/>
@@ -376,7 +376,7 @@
         <UnitName Value="MaxSpaces"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="30"/>
+        <UsageCount Value="34"/>
       </Unit41>
       <Unit42>
         <Filename Value="..\..\Process\Spacing\SingleSpaceBefore.pas"/>
@@ -384,7 +384,7 @@
         <UnitName Value="SingleSpaceBefore"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="31"/>
+        <UsageCount Value="35"/>
       </Unit42>
       <Unit43>
         <Filename Value="..\..\Process\Spacing\SingleSpaceAfter.pas"/>
@@ -392,7 +392,7 @@
         <UnitName Value="SingleSpaceAfter"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="31"/>
+        <UsageCount Value="35"/>
       </Unit43>
       <Unit44>
         <Filename Value="..\..\Process\Spacing\SpaceBeforeColon.pas"/>
@@ -400,7 +400,7 @@
         <UnitName Value="SpaceBeforeColon"/>
         <CursorPos X="39" Y="17"/>
         <TopLine Value="1"/>
-        <UsageCount Value="30"/>
+        <UsageCount Value="34"/>
       </Unit44>
       <Unit45>
         <Filename Value="..\..\Process\Indent\Indenter.pas"/>
@@ -408,7 +408,7 @@
         <UnitName Value="Indenter"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="30"/>
+        <UsageCount Value="34"/>
       </Unit45>
       <Unit46>
         <Filename Value="..\..\Process\Returns\LongLineBreaker.pas"/>
@@ -416,7 +416,7 @@
         <UnitName Value="LongLineBreaker"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="30"/>
+        <UsageCount Value="34"/>
       </Unit46>
       <Unit47>
         <Filename Value="..\..\Process\Info\BasicStats.pas"/>
@@ -424,7 +424,7 @@
         <UnitName Value="BasicStats"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="30"/>
+        <UsageCount Value="34"/>
       </Unit47>
       <Unit48>
         <Filename Value="..\..\Parse\PreProcessor\PreProcessorExpressionTokens.pas"/>
@@ -432,7 +432,7 @@
         <UnitName Value="PreProcessorExpressionTokens"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="30"/>
+        <UsageCount Value="34"/>
       </Unit48>
       <Unit49>
         <Filename Value="..\..\Parse\PreProcessor\PreProcessorExpressionTokenise.pas"/>
@@ -440,7 +440,7 @@
         <UnitName Value="PreProcessorExpressionTokenise"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="30"/>
+        <UsageCount Value="34"/>
       </Unit49>
       <Unit50>
         <Filename Value="..\..\ReadWrite\FileConverter.pas"/>
@@ -448,7 +448,7 @@
         <UnitName Value="FileConverter"/>
         <CursorPos X="24" Y="12"/>
         <TopLine Value="1"/>
-        <UsageCount Value="31"/>
+        <UsageCount Value="35"/>
       </Unit50>
       <Unit51>
         <Filename Value="..\..\Utils\JcfUnicodeFiles.pas"/>
@@ -456,7 +456,7 @@
         <UnitName Value="JcfUnicodeFiles"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="30"/>
+        <UsageCount Value="34"/>
       </Unit51>
       <Unit52>
         <Filename Value="..\..\Ui\fJcfErrorDisplay.pas"/>
@@ -468,7 +468,7 @@
         <UnitName Value="fJcfErrorDisplay"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="30"/>
+        <UsageCount Value="34"/>
       </Unit52>
       <Unit53>
         <Filename Value="..\CommandLineConstants.pas"/>
@@ -476,7 +476,7 @@
         <UnitName Value="CommandLineConstants"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="29"/>
+        <UsageCount Value="33"/>
       </Unit53>
       <Unit54>
         <Filename Value="..\StatusMessageReceiver.pas"/>
@@ -484,7 +484,7 @@
         <UnitName Value="StatusMessageReceiver"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="29"/>
+        <UsageCount Value="33"/>
       </Unit54>
       <Unit55>
         <Filename Value="..\CommandLineReturnCode.pas"/>
@@ -492,7 +492,7 @@
         <UnitName Value="CommandLineReturnCode"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="29"/>
+        <UsageCount Value="33"/>
       </Unit55>
       <Unit56>
         <Filename Value="..\..\ReadWrite\ConvertTypes.pas"/>
@@ -500,7 +500,7 @@
         <UnitName Value="ConvertTypes"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit56>
       <Unit57>
         <Filename Value="..\..\Parse\ParseError.pas"/>
@@ -508,7 +508,7 @@
         <UnitName Value="ParseError"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit57>
       <Unit58>
         <Filename Value="..\..\Parse\ParseTreeNode.pas"/>
@@ -516,7 +516,7 @@
         <UnitName Value="ParseTreeNode"/>
         <CursorPos X="46" Y="21"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit58>
       <Unit59>
         <Filename Value="..\..\Parse\ParseTreeNodeType.pas"/>
@@ -524,15 +524,15 @@
         <UnitName Value="ParseTreeNodeType"/>
         <CursorPos X="37" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit59>
       <Unit60>
         <Filename Value="..\..\Parse\SourceToken.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="SourceToken"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <CursorPos X="13" Y="68"/>
+        <TopLine Value="50"/>
+        <UsageCount Value="25"/>
       </Unit60>
       <Unit61>
         <Filename Value="..\..\Parse\SourceTokenList.pas"/>
@@ -540,7 +540,7 @@
         <UnitName Value="SourceTokenList"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit61>
       <Unit62>
         <Filename Value="..\..\Utils\FileUtils.pas"/>
@@ -548,7 +548,7 @@
         <UnitName Value="FileUtils"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit62>
       <Unit63>
         <Filename Value="..\..\Utils\JcfLog.pas"/>
@@ -556,7 +556,7 @@
         <UnitName Value="JCFLog"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit63>
       <Unit64>
         <Filename Value="..\..\Settings\SetUses.pas"/>
@@ -564,7 +564,7 @@
         <UnitName Value="SetUses"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit64>
       <Unit65>
         <Filename Value="..\..\Settings\JCFSetBase.pas"/>
@@ -572,7 +572,7 @@
         <UnitName Value="JCFSetBase"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit65>
       <Unit66>
         <Filename Value="..\..\Settings\SetAlign.pas"/>
@@ -580,7 +580,7 @@
         <UnitName Value="SetAlign"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit66>
       <Unit67>
         <Filename Value="..\..\Settings\SetCaps.pas"/>
@@ -588,7 +588,7 @@
         <UnitName Value="SetCaps"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit67>
       <Unit68>
         <Filename Value="..\..\Settings\SetFile.pas"/>
@@ -596,7 +596,7 @@
         <UnitName Value="SetFile"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit68>
       <Unit69>
         <Filename Value="..\..\Settings\SetIndent.pas"/>
@@ -604,7 +604,7 @@
         <UnitName Value="SetIndent"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit69>
       <Unit70>
         <Filename Value="..\..\Settings\SetObfuscate.pas"/>
@@ -612,7 +612,7 @@
         <UnitName Value="SetObfuscate"/>
         <CursorPos X="99" Y="2"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit70>
       <Unit71>
         <Filename Value="..\..\Process\Warnings\WarnUnusedParam.pas"/>
@@ -620,7 +620,7 @@
         <UnitName Value="WarnUnusedParam"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit71>
       <Unit72>
         <Filename Value="..\..\Process\Warnings\WarnDestroy.pas"/>
@@ -628,7 +628,7 @@
         <UnitName Value="WarnDestroy"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit72>
       <Unit73>
         <Filename Value="..\..\Process\Warnings\WarnAssignToFunctionName.pas"/>
@@ -636,7 +636,7 @@
         <UnitName Value="WarnAssignToFunctionName"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit73>
       <Unit74>
         <Filename Value="..\..\Process\Capitalisation\UnitNameCaps.pas"/>
@@ -644,7 +644,7 @@
         <UnitName Value="UnitNameCaps"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit74>
       <Unit75>
         <Filename Value="..\..\Process\Transform\SortUsesData.pas"/>
@@ -652,7 +652,7 @@
         <UnitName Value="SortUsesData"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit75>
       <Unit76>
         <Filename Value="..\..\Process\Capitalisation\SpecificWordCaps.pas"/>
@@ -660,7 +660,7 @@
         <UnitName Value="SpecificWordCaps"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit76>
       <Unit77>
         <Filename Value="..\..\Settings\SetWordList.pas"/>
@@ -668,7 +668,7 @@
         <UnitName Value="SetWordList"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit77>
       <Unit78>
         <Filename Value="..\..\Settings\SetPreProcessor.pas"/>
@@ -676,7 +676,7 @@
         <UnitName Value="SetPreprocessor"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit78>
       <Unit79>
         <Filename Value="..\..\Utils\JCFHelp.pas"/>
@@ -684,7 +684,7 @@
         <UnitName Value="JCFHelp"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit79>
       <Unit80>
         <Filename Value="..\..\Settings\SetReturns.pas"/>
@@ -692,7 +692,7 @@
         <UnitName Value="SetReturns"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit80>
       <Unit81>
         <Filename Value="..\..\Settings\SetSpaces.pas"/>
@@ -700,7 +700,7 @@
         <UnitName Value="SetSpaces"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit81>
       <Unit82>
         <Filename Value="..\..\Settings\Streams\RegistrySettings.pas"/>
@@ -708,7 +708,7 @@
         <UnitName Value="RegistrySettings"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit82>
       <Unit83>
         <Filename Value="..\..\Process\Obfuscate\ReduceWhiteSpace.pas"/>
@@ -716,7 +716,7 @@
         <UnitName Value="ReduceWhiteSpace"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit83>
       <Unit84>
         <Filename Value="..\..\Process\Obfuscate\RemoveConsecutiveWhiteSpace.pas"/>
@@ -724,7 +724,7 @@
         <UnitName Value="RemoveConsecutiveWhiteSpace"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit84>
       <Unit85>
         <Filename Value="..\..\Process\Warnings\WarnRealType.pas"/>
@@ -732,7 +732,7 @@
         <UnitName Value="WarnRealType"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit85>
       <Unit86>
         <Filename Value="..\..\Process\Warnings\WarnCaseNoElse.pas"/>
@@ -740,7 +740,7 @@
         <UnitName Value="WarnCaseNoElse"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit86>
       <Unit87>
         <Filename Value="..\..\Process\Warnings\WarnEmptyBlock.pas"/>
@@ -748,7 +748,7 @@
         <UnitName Value="WarnEmptyBlock"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit87>
       <Unit88>
         <Filename Value="..\..\Process\Warnings\Warning.pas"/>
@@ -756,7 +756,7 @@
         <UnitName Value="Warning"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit88>
       <Unit89>
         <Filename Value="..\..\Process\Spacing\NoSpaceBefore.pas"/>
@@ -764,7 +764,7 @@
         <UnitName Value="NoSpaceBefore"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit89>
       <Unit90>
         <Filename Value="..\..\Process\Spacing\NoSpaceAfter.pas"/>
@@ -772,7 +772,7 @@
         <UnitName Value="NoSpaceAfter"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit90>
       <Unit91>
         <Filename Value="..\..\Process\Returns\ReturnAfter.pas"/>
@@ -780,7 +780,7 @@
         <UnitName Value="ReturnAfter"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit91>
       <Unit92>
         <Filename Value="..\..\Process\Nesting.pas"/>
@@ -788,7 +788,7 @@
         <UnitName Value="Nesting"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit92>
       <Unit93>
         <Filename Value="..\..\Process\VisitSetNesting.pas"/>
@@ -796,7 +796,7 @@
         <UnitName Value="VisitSetNesting"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit93>
       <Unit94>
         <Filename Value="..\..\Process\Returns\ReturnBefore.pas"/>
@@ -804,7 +804,7 @@
         <UnitName Value="ReturnBefore"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="25"/>
       </Unit94>
       <Unit95>
         <Filename Value="..\..\Process\Returns\NoReturnAfter.pas"/>
@@ -812,7 +812,7 @@
         <UnitName Value="NoReturnAfter"/>
         <CursorPos X="80" Y="6"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit95>
       <Unit96>
         <Filename Value="..\..\Process\Returns\NoReturnBefore.pas"/>
@@ -820,7 +820,7 @@
         <UnitName Value="NoReturnBefore"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit96>
       <Unit97>
         <Filename Value="..\..\Process\AllProcesses.pas"/>
@@ -828,7 +828,7 @@
         <UnitName Value="AllProcesses"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit97>
       <Unit98>
         <Filename Value="..\..\Process\Obfuscate\RemoveBlankLine.pas"/>
@@ -836,7 +836,7 @@
         <UnitName Value="RemoveBlankLine"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit98>
       <Unit99>
         <Filename Value="..\..\Process\SwitchableVisitor.pas"/>
@@ -844,7 +844,7 @@
         <UnitName Value="SwitchableVisitor"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit99>
       <Unit100>
         <Filename Value="..\..\Process\Returns\PropertyOnOneLine.pas"/>
@@ -852,7 +852,7 @@
         <UnitName Value="PropertyOnOneLine"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit100>
       <Unit101>
         <Filename Value="..\..\Process\VisitStripEmptySpace.pas"/>
@@ -860,7 +860,7 @@
         <UnitName Value="VisitStripEmptySpace"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit101>
       <Unit102>
         <Filename Value="..\..\Process\Returns\RemoveBlankLinesAfterProcHeader.pas"/>
@@ -868,7 +868,7 @@
         <UnitName Value="RemoveBlankLinesAfterProcHeader"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit102>
       <Unit103>
         <Filename Value="..\..\Process\Returns\RemoveBlankLinesInVars.pas"/>
@@ -876,7 +876,7 @@
         <UnitName Value="RemoveBlankLinesInVars"/>
         <CursorPos X="57" Y="14"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit103>
       <Unit104>
         <Filename Value="..\..\Process\Returns\RemoveReturnsBeforeEnd.pas"/>
@@ -884,7 +884,7 @@
         <UnitName Value="RemoveReturnsBeforeEnd"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit104>
       <Unit105>
         <Filename Value="..\..\Process\Returns\RemoveReturnsAfterBegin.pas"/>
@@ -892,7 +892,7 @@
         <UnitName Value="RemoveReturnsAfterBegin"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit105>
       <Unit106>
         <Filename Value="..\..\Utils\IntList.pas"/>
@@ -900,7 +900,7 @@
         <UnitName Value="IntList"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit106>
       <Unit107>
         <Filename Value="..\..\Process\Align\AlignConst.pas"/>
@@ -908,7 +908,7 @@
         <UnitName Value="AlignConst"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit107>
       <Unit108>
         <Filename Value="..\..\Process\Align\AlignBase.pas"/>
@@ -916,7 +916,7 @@
         <UnitName Value="AlignBase"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit108>
       <Unit109>
         <Filename Value="..\..\Process\Align\AlignAssign.pas"/>
@@ -924,7 +924,7 @@
         <UnitName Value="AlignAssign"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit109>
       <Unit110>
         <Filename Value="..\..\Process\Align\AlignVars.pas"/>
@@ -932,7 +932,7 @@
         <UnitName Value="AlignVars"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit110>
       <Unit111>
         <Filename Value="..\..\Process\Align\AlignTypedef.pas"/>
@@ -940,7 +940,7 @@
         <UnitName Value="AlignTypedef"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit111>
       <Unit112>
         <Filename Value="..\..\Process\Align\AlignComment.pas"/>
@@ -948,7 +948,7 @@
         <UnitName Value="AlignComment"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit112>
       <Unit113>
         <Filename Value="..\..\Parse\PreProcessor\PreProcessorExpressionParser.pas"/>
@@ -956,7 +956,7 @@
         <UnitName Value="PreProcessorExpressionParser"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit113>
       <Unit114>
         <Filename Value="..\..\Process\Spacing\RemoveSpaceAtLineEnd.pas"/>
@@ -964,7 +964,7 @@
         <UnitName Value="RemoveSpaceAtLineEnd"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit114>
       <Unit115>
         <Filename Value="..\..\Process\Transform\FindReplace.pas"/>
@@ -972,7 +972,7 @@
         <UnitName Value="FindReplace"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit115>
       <Unit116>
         <Filename Value="..\..\Process\Returns\ReturnsAfterFinalEnd.pas"/>
@@ -980,7 +980,7 @@
         <UnitName Value="ReturnsAfterFinalEnd"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit116>
       <Unit117>
         <Filename Value="..\..\Parse\PreProcessor\PreProcessorParseTree.pas"/>
@@ -988,7 +988,7 @@
         <UnitName Value="PreProcessorParseTree"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit117>
       <Unit118>
         <Filename Value="..\..\Process\Returns\RemoveConsecutiveReturns.pas"/>
@@ -996,7 +996,7 @@
         <UnitName Value="RemoveConsecutiveReturns"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit118>
       <Unit119>
         <Filename Value="..\..\Process\Transform\UsesClauseFindReplace.pas"/>
@@ -1004,7 +1004,7 @@
         <UnitName Value="UsesClauseFindReplace"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit119>
       <Unit120>
         <Filename Value="..\..\Process\Transform\UsesClauseInsert.pas"/>
@@ -1012,7 +1012,7 @@
         <UnitName Value="UsesClauseInsert"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit120>
       <Unit121>
         <Filename Value="..\..\Process\Transform\UsesClauseRemove.pas"/>
@@ -1020,7 +1020,7 @@
         <UnitName Value="UsesClauseRemove"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit121>
       <Unit122>
         <Filename Value="..\..\Settings\SetComments.pas"/>
@@ -1028,7 +1028,7 @@
         <UnitName Value="SetComments"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit122>
       <Unit123>
         <Filename Value="..\..\Process\TreeWalker.pas"/>
@@ -1036,7 +1036,7 @@
         <UnitName Value="TreeWalker"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit123>
       <Unit124>
         <Filename Value="..\..\Process\Transform\AddBlockEndSemicolon.pas"/>
@@ -1044,7 +1044,7 @@
         <UnitName Value="AddBlockEndSemicolon"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit124>
       <Unit125>
         <Filename Value="..\..\Process\Transform\AddBeginEnd.pas"/>
@@ -1052,7 +1052,7 @@
         <UnitName Value="AddBeginEnd"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit125>
       <Unit126>
         <Filename Value="..\..\Settings\SetTransform.pas"/>
@@ -1060,7 +1060,7 @@
         <UnitName Value="SetTransform"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit126>
       <Unit127>
         <Filename Value="..\..\Process\Align\AlignField.pas"/>
@@ -1068,7 +1068,7 @@
         <UnitName Value="AlignField"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit127>
       <Unit128>
         <Filename Value="..\..\Process\Transform\SortUses.pas"/>
@@ -1076,7 +1076,7 @@
         <UnitName Value="SortUses"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit128>
       <Unit129>
         <Filename Value="..\..\Settings\SetAsm.pas"/>
@@ -1084,7 +1084,7 @@
         <UnitName Value="SetAsm"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit129>
       <Unit130>
         <Filename Value="..\..\Process\Returns\RemoveReturnsAfter.pas"/>
@@ -1092,7 +1092,7 @@
         <UnitName Value="RemoveReturnsAfter"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit130>
       <Unit131>
         <Filename Value="..\..\Process\Indent\IndentAsmParam.pas"/>
@@ -1100,17 +1100,91 @@
         <UnitName Value="IndentAsmParam"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="24"/>
       </Unit131>
     </Units>
+    <JumpHistory Count="18" HistoryIndex="17">
+      <Position1>
+        <Filename Value="JCF.lpr"/>
+        <Caret Line="188" Column="16" TopLine="157"/>
+      </Position1>
+      <Position2>
+        <Filename Value="JCF.lpr"/>
+        <Caret Line="96" Column="12" TopLine="73"/>
+      </Position2>
+      <Position3>
+        <Filename Value="JCF.lpr"/>
+        <Caret Line="384" Column="1" TopLine="366"/>
+      </Position3>
+      <Position4>
+        <Filename Value="JCF.lpr"/>
+        <Caret Line="386" Column="1" TopLine="368"/>
+      </Position4>
+      <Position5>
+        <Filename Value="JCF.lpr"/>
+        <Caret Line="388" Column="1" TopLine="370"/>
+      </Position5>
+      <Position6>
+        <Filename Value="JCF.lpr"/>
+        <Caret Line="390" Column="1" TopLine="372"/>
+      </Position6>
+      <Position7>
+        <Filename Value="JCF.lpr"/>
+        <Caret Line="395" Column="1" TopLine="377"/>
+      </Position7>
+      <Position8>
+        <Filename Value="JCF.lpr"/>
+        <Caret Line="397" Column="17" TopLine="378"/>
+      </Position8>
+      <Position9>
+        <Filename Value="JCF.lpr"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position9>
+      <Position10>
+        <Filename Value="JCF.lpr"/>
+        <Caret Line="166" Column="14" TopLine="148"/>
+      </Position10>
+      <Position11>
+        <Filename Value="JCF.lpr"/>
+        <Caret Line="202" Column="16" TopLine="184"/>
+      </Position11>
+      <Position12>
+        <Filename Value="JCF.lpr"/>
+        <Caret Line="307" Column="20" TopLine="289"/>
+      </Position12>
+      <Position13>
+        <Filename Value="JCF.lpr"/>
+        <Caret Line="386" Column="23" TopLine="378"/>
+      </Position13>
+      <Position14>
+        <Filename Value="JCF.lpr"/>
+        <Caret Line="384" Column="1" TopLine="366"/>
+      </Position14>
+      <Position15>
+        <Filename Value="JCF.lpr"/>
+        <Caret Line="384" Column="1" TopLine="366"/>
+      </Position15>
+      <Position16>
+        <Filename Value="JCF.lpr"/>
+        <Caret Line="386" Column="26" TopLine="368"/>
+      </Position16>
+      <Position17>
+        <Filename Value="JCF.lpr"/>
+        <Caret Line="68" Column="3" TopLine="37"/>
+      </Position17>
+      <Position18>
+        <Filename Value="JCF.lpr"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position18>
+    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="8"/>
     <PathDelim Value="\"/>
     <SearchPaths>
       <IncludeFiles Value="..\..\Include\"/>
-      <OtherUnitFiles Value="..\..\Output\"/>
-      <UnitOutputDirectory Value="..\..\Output"/>
+      <OtherUnitFiles Value="..\..\Output\Lazarus\"/>
+      <UnitOutputDirectory Value="..\..\Output\Lazarus"/>
       <SrcPath Value="..\..\Include\"/>
     </SearchPaths>
     <Parsing>

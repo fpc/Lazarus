@@ -98,14 +98,12 @@ function StrToBoolean(const S: string): Boolean;
 
 function StrFind(const Substr, S: string; const Index: Integer = 1): Integer;
 
-procedure StrToStrings(S, Sep: string; const List: TStrings; const AllowEmptyString: Boolean = True);
-function StringsToStr(const List: TStrings; const Sep: string; const AllowEmptyString: Boolean = True): string;
-procedure TrimStrings(const List: TStrings; DeleteIfEmpty: Boolean = True );
+procedure TrimStrings(const List: TStrings; DeleteIfEmpty: Boolean = True);
 
 function FileToString(const FileName: string): AnsiString;
 procedure StringToFile(const FileName: string; const Contents: AnsiString);
 function StrFillChar(const C: Char; Count: Integer): string;
-function IntToStrZeroPad(Value, Count: Integer): AnsiString;
+function IntToStrZeroPad(Value, Count: Integer): String;
 function PathExtractFileNameNoExt(const Path: string): string;
 function GetWindowsTempFolder: string;
 function FileGetSize(const FileName: string): Int64;
@@ -121,7 +119,13 @@ implementation
 
 uses
 {$ifdef fpc}
-  Windows, LCLIntf, FileUtil
+  {$ifdef windows}
+    Windows,
+  {$endif}
+  {$ifdef Unix}
+    Unix,
+  {$endif}
+  LCLIntf, FileUtil
 {$else}
   Windows
 {$endif};
@@ -191,15 +195,44 @@ begin
 end;
 
 function StrTrimQuotes(const S: string): string;
+var
+  C1, C2: Char;
+  L: Integer;
 begin
+  Result := S;
+  L := Length(Result);
+  if L >= 2 then
+  begin
+    C1 := Result[1];
+    C2 := Result[L];
+    if (C1 = C2) and (C1 in [AnsiSingleQuote, AnsiDoubleQuote]) then
+    begin
+      Delete(Result, L, 1);
+      Delete(Result, 1, 1);
+    end;
+  end;
 end;
 
 function StrAfter(const SubStr, S: string): string;
+var
+  P: Integer;
 begin
+  P := StrSearch(SubStr, S, 1);
+  if P > 0 then
+    Result := Copy(S, P + Length(SubStr), Length(S))
+  else
+    Result := '';
 end;
 
 function StrBefore(const SubStr, S: string): string;
+var
+  P: Integer;
 begin
+  P := StrSearch(SubStr, S, 1);
+  if P > 0 then
+    Result := Copy(S, 1, P - 1)
+  else
+    Result := S;
 end;
 
 function StrChopRight(const S: string; N: Integer): string;
@@ -208,7 +241,18 @@ begin
 end;
 
 function StrLastPos(const SubStr, S: string): Integer;
+var
+  NewPos: Integer;
 begin
+  Result := 0;
+  while Result < Length(S) do
+  begin
+    NewPos := StrSearch(SubStr, S, Result + 1);
+    if NewPos > 0 then
+      Result := NewPos
+    else
+      break;
+  end;
 end;
 
 function StrLeft(const S: string; Count: Integer): string;
@@ -228,22 +272,59 @@ end;
 
 function StrDoubleQuote(const S: string): string;
 begin
+  Result := AnsiDoubleQuote + S + AnsiDoubleQuote;
 end;
 
 function StrSmartCase(const S: string; Delimiters: TSysCharSet): string;
+var
+  i: integer;
 begin
+  // if no delimiters passed then use default set
+  if Delimiters = [] then
+    Delimiters := AnsiWhiteSpace;
+  Result := S;
+  for i := 1 to Length(Result) do
+    if (i = 1) or (Result[i - 1] in Delimiters) then
+      Result[i] := UpCase(Result[i]);
 end;
 
 function StrCharCount(const S: string; C: Char): Integer;
+var
+  i: integer;
 begin
+  Result := 0;
+  for i := 1 to Length(S) do
+    if S[i] = C then
+      inc(Result);
 end;
 
 function StrStrCount(const S, SubS: string): Integer;
+var
+  P: integer;
 begin
+  Result := 0;
+  P := 1;
+  while P < Length(S) do
+  begin
+    P := StrSearch(Subs, S, P);
+    if P > 0 then
+    begin
+      inc(Result);
+      inc(P);
+    end
+    else
+      break;
+  end;
 end;
 
 function StrRepeat(const S: string; Count: Integer): string;
 begin
+  Result := '';
+  while Count > 0 do
+  begin
+    Result := Result + S;
+    Dec(Count);
+  end;
 end;
 
 procedure StrReplace(var S: string; const Search, Replace: string; Flags: TReplaceFlags = []);
@@ -254,7 +335,7 @@ end;
 function StrSearch(const Substr, S: string; const Index: Integer = 1): Integer;
 begin
   // Paul: I expect original code was more efficient :) 
-  Result := Pos(SubStr, Copy(S, Index, Length(S)));
+  Result := Pos(SubStr, Copy(S, Index, Length(S))) + Index - 1;
 end;
 
 function BooleanToStr(B: Boolean): string;
@@ -265,6 +346,7 @@ const
  { true  } 'True'
   );
 begin
+  Result := BoolToStrMap[B];
 end;
 
 function StrToBoolean(const S: string): Boolean;
@@ -285,19 +367,20 @@ end;
 function StrFind(const Substr, S: string; const Index: Integer = 1): Integer;
 begin
   // Paul: original code used comparision by char case table
-  Result := StrSearch(LowerCase(S), LowerCase(S), Index);
+  Result := StrSearch(LowerCase(SubStr), LowerCase(S), Index);
 end;
 
-procedure StrToStrings(S, Sep: string; const List: TStrings; const AllowEmptyString: Boolean = True);
+procedure TrimStrings(const List: TStrings; DeleteIfEmpty: Boolean = True);
+var
+  i: integer;
 begin
-end;
-
-function StringsToStr(const List: TStrings; const Sep: string; const AllowEmptyString: Boolean): string;
-begin
-end;
-
-procedure TrimStrings(const List: TStrings; DeleteIfEmpty: Boolean = True );
-begin
+  if List <> nil then
+    for i := List.Count - 1 downto 0 do
+    begin
+      List[i] := Trim(List[i]);
+      if DeleteIfEmpty and (List[i] = '') then
+        List.Delete(i);
+    end;
 end;
 
 function FileToString(const FileName: string): AnsiString;
@@ -334,24 +417,40 @@ begin
     FillChar(Result[1], Count, C);
 end;
 
-function IntToStrZeroPad(Value, Count: Integer): AnsiString;
+function IntToStrZeroPad(Value, Count: Integer): String;
 begin
+  Result := IntToStr(Value);
+  while Length(Result) < Count do
+    Result := '0' + Result;
 end;
 
 function PathRemoveExtension(const Path: string): string;
+var
+  p: Integer;
 begin
+  // from lazarus FileUtil
+  Result := Path;
+  p := Length(Result);
+  while (p>0) do
+  begin
+    case Result[p] of
+      PathDelim: Exit;
+      '.': Result := copy(Result, 1, p-1);
+    end;
+    Dec(p);
+  end;
 end;
 
 function PathExtractFileNameNoExt(const Path: string): string;
 begin
-end;
-
-procedure StrResetLength(var S: string);
-begin
+  Result := PathRemoveExtension(ExtractFileName(Path));
 end;
 
 function PathRemoveSeparator(const Path: string): string;
 begin
+  Result := Path;
+  if (Result <> '') and (Result[Length(Result)] = PathDelim) then
+    Delete(Result, Length(Result), 1);
 end;
 
 function GetWindowsTempFolder: string;
@@ -394,6 +493,12 @@ end;
 
 procedure ShellExecEx(const FileName: string; const Parameters: string = '');
 begin
+  {$ifdef windows}
+    Windows.ShellExecute(0, 'open', PChar(FileName), PChar(Parameters), nil, SW_SHOW);
+  {$endif}
+  {$ifdef unix}
+    Shell(format('%s %s',[FileName, Parameters]));
+  {$endif}
 end;
 
 function GetTickCount: DWord;

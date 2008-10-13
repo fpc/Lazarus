@@ -298,7 +298,7 @@ procedure TSettingsStreamOutput.Write(const psTagName: string; const pcValue: TS
 var
   ls: string;
 begin
-  ls := JcfUtils.StringsToStr(pcValue, ', ');
+  ls := pcValue.CommaText;
   Write(psTagName, ls);
 end;
 
@@ -520,7 +520,7 @@ begin
   InternalGetValue(psTag, lsNewText, lbFound);
   if lbFound then
   begin
-    JcfUtils.StrToStrings(lsNewText, ',', pcStrings);
+    pcStrings.CommaText := lsNewText;
     TrimStrings(pcStrings);
   end;
 
