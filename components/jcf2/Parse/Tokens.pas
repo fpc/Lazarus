@@ -1036,7 +1036,7 @@ begin
       continue;
 
     liItemLen := Length(PreProcessorSymbolData[leLoop]);
-    if AnsiSameText(JcfUtils.StrLeft(psSourceCode, liItemLen), PreProcessorSymbolData[leLoop]) and
+    if AnsiSameText(StrLeft(psSourceCode, liItemLen), PreProcessorSymbolData[leLoop]) and
       ( not WideCharIsAlpha(psSourceCode[liItemLen + 1])) then
     begin
       peSymbolType := leLoop;
@@ -1047,12 +1047,12 @@ begin
   if peSymbolType = ppNone then
     exit;
 
-  psText := JcfUtils.StrRestOf(psSourceCode, Length(PreProcessorSymbolData[peSymbolType]) + 1);
+  psText := StrRestOf(psSourceCode, Length(PreProcessorSymbolData[peSymbolType]) + 1);
 
   if psText <> '' then
   begin
-    if JcfUtils.StrRight(psText, 1) = '}' then
-      psText := JcfUtils.StrChopRight(psText, 1);
+    if StrRight(psText, 1) = '}' then
+      psText := StrChopRight(psText, 1);
 
     psText := Trim(psText);
   end;

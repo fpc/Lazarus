@@ -156,10 +156,8 @@ implementation
 uses
   { delphi }
   SysUtils,
-  { jcl }
-  JcfUtils,
   { local}
-  JcfMiscFunctions;
+  JcfUtils, JcfMiscFunctions;
 
 const
   XML_HEADER = '<?xml version="1.0" ?>' + AnsiLineBreak;
@@ -241,12 +239,11 @@ end;
 // internal used to implement all writes
 procedure TSettingsStreamOutput.WriteText(const psText: string);
 var
-  lp: pchar;
+  lp: PAnsiChar;
 begin
   Assert(fcStream <> nil);
-  lp := pchar(psText);
-  //fcStream.WriteBuffer(lp^, Length(psText)); // Changed for Delphi 2009 support
-  fcStream.WriteBuffer(lp^, Length(psText) * SizeOf(Char));
+  lp := PAnsiChar(AnsiString(psText));
+  fcStream.WriteBuffer(lp^, Length(psText));
 end;
 
 procedure TSettingsStreamOutput.WriteXMLHeader;
@@ -256,14 +253,14 @@ end;
 
 procedure TSettingsStreamOutput.OpenSection(const psName: string);
 begin
-  WriteText(JcfUtils.StrRepeat('  ', fiOpenSections) + '<' + psName + '>' + AnsiLineBreak);
+  WriteText(StrRepeat('  ', fiOpenSections) + '<' + psName + '>' + AnsiLineBreak);
   Inc(fiOpenSections);
 end;
 
 procedure TSettingsStreamOutput.CloseSection(const psName: string);
 begin
   Dec(fiOpenSections);
-  WriteText(JcfUtils.StrRepeat('  ', fiOpenSections) + '</' + psName + '>' + AnsiLineBreak);
+  WriteText(StrRepeat('  ', fiOpenSections) + '</' + psName + '>' + AnsiLineBreak);
 end;
 
 
@@ -272,7 +269,7 @@ var
   lsTemp: string;
 begin
   Assert(fcStream <> nil);
-  lsTemp := JcfUtils.StrRepeat('  ', fiOpenSections + 1) + '<' + psTagName + '> ' +
+  lsTemp := StrRepeat('  ', fiOpenSections + 1) + '<' + psTagName + '> ' +
     psValue + ' </' + psTagName + '>' + AnsiLineBreak;
   WriteText(lsTemp);
 end;
@@ -295,11 +292,8 @@ begin
 end;
 
 procedure TSettingsStreamOutput.Write(const psTagName: string; const pcValue: TStrings);
-var
-  ls: string;
 begin
-  ls := pcValue.CommaText;
-  Write(psTagName, ls);
+  Write(psTagName, pcValue.CommaText);
 end;
 
 {-----------------------------------------------------------------------------
@@ -385,8 +379,8 @@ begin
   lsStart := '<' + psTag + '>';
   lsEnd   := '</' + psTag + '>';
 
-  liStart := JcfUtils.StrFind(lsStart, fsText, 1);
-  liEnd   := JcfUtils.StrFind(lsEnd, fsText, 1);
+  liStart := StrFind(lsStart, fsText, 1);
+  liEnd   := StrFind(lsEnd, fsText, 1);
 
   if (liStart > 0) and (liEnd > liStart) then
   begin

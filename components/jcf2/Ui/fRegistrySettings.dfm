@@ -295,9 +295,7 @@ object fmRegistrySettings: TfmRegistrySettings
       Top = 9
       Width = 92
       Height = 38
-      DoubleBuffered = True
       Kind = bkOK
-      ParentDoubleBuffered = False
       TabOrder = 0
       OnClick = btnOKClick
     end
@@ -306,9 +304,7 @@ object fmRegistrySettings: TfmRegistrySettings
       Top = 9
       Width = 92
       Height = 38
-      DoubleBuffered = True
       Kind = bkCancel
-      ParentDoubleBuffered = False
       TabOrder = 1
       OnClick = btnCancelClick
     end

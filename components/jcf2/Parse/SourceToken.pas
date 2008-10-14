@@ -62,6 +62,7 @@ type
     function DescribePosition: string;
 
     function IsSolid: boolean;
+    function SourceLine: string;
 
     function HasChildNode(const peTokens: TTokenTypeSet): boolean; override;
     function HasChildNode(const peTokens: TTokenTypeSet;
@@ -241,6 +242,29 @@ begin
     Result := 1
   else
     Result := 0;
+end;
+
+function TSourceToken.SourceLine: string;
+var
+  lcLineToken: TSourceToken;
+begin
+
+  // find the start of the line
+  lcLineToken := self;
+
+  while (lcLineToken <> nil) and (lcLineToken.TokenType <> ttReturn) do
+  begin
+    lcLineToken := lcLineToken.PriorToken;
+  end;
+
+  // walk to the end of the line
+  Result := '';
+  repeat
+    Result := Result + lcLineToken.SourceCode;
+    lcLineToken :=  lcLineToken.NextToken;
+
+  until (lcLineToken = nil) or (lcLineToken.TokenType = ttReturn);
+
 end;
 
 function TSourceToken.FirstSolidLeaf: TParseTreeNode;

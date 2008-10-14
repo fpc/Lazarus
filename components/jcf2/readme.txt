@@ -1,2 +1,3 @@
-This directory contains a copy of r676 jcf2 svn tree: https://jedicodeformat.svn.sourceforge.net/svnroot/jedicodeformat/trunk/CodeFormat/Jcf2
-Currently it is not useful for lazarus but we will do step by step adaptation of code to fully integrate jcf2 into Lazarus IDE.
+This directory contains a modified copy of r683 jcf2 svn tree: https://jedicodeformat.svn.sourceforge.net/svnroot/jedicodeformat/trunk/CodeFormat/Jcf2
+
+Only command line utility works currently.
