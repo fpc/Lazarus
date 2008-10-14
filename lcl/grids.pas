@@ -841,10 +841,8 @@ type
     procedure HeaderClick(IsColumn: Boolean; index: Integer); dynamic;
     procedure HeaderSized(IsColumn: Boolean; index: Integer); dynamic;
     procedure InternalSetColCount(ACount: Integer);
-    procedure InvalidateCell(aCol, aRow: Integer); overload;
     procedure InvalidateCell(aCol, aRow: Integer; Redraw: Boolean); overload;
     procedure InvalidateRange(const aRange: TRect);
-    procedure InvalidateCol(ACol: Integer);
     procedure InvalidateFromCol(ACol: Integer);
     procedure InvalidateGrid;
     procedure InvalidateRow(ARow: Integer);
@@ -1000,6 +998,8 @@ type
     procedure EndUpdate(aRefresh: boolean = true);
     procedure EraseBackground(DC: HDC); override;
 
+    procedure InvalidateCell(aCol, aRow: Integer); overload;
+    procedure InvalidateCol(ACol: Integer);
     function  IscellVisible(aCol, aRow: Integer): Boolean;
     procedure LoadFromFile(FileName: string);
     function  MouseCoord(X,Y: Integer): TGridCoord;
