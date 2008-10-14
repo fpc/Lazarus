@@ -1,0 +1,50 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TForm1','FORMDATA',[
+  'TPF0'#6'TForm1'#5'Form1'#4'Left'#2'h'#6'Height'#3'r'#1#3'Top'#3#193#0#5'Widt'
+  +'h'#3'&'#2#11'HelpContext'#2#0#5'Align'#7#6'alNone'#14'AllowDropFiles'#8#10
+  +'AutoScroll'#9#8'AutoSize'#8#11'BorderIcons'#11#12'biSystemMenu'#10'biMinimi'
+  +'ze'#10'biMaximize'#0#11'BorderStyle'#7#10'bsSizeable'#7'Caption'#6#5'Form1'
+  +#28'ChildSizing.LeftRightSpacing'#2#0#28'ChildSizing.TopBottomSpacing'#2#0#29
+  +'ChildSizing.HorizontalSpacing'#2#0#27'ChildSizing.VerticalSpacing'#2#0#27'C'
+  +'hildSizing.ControlsPerLine'#2#0#12'ClientHeight'#3'r'#1#11'ClientWidth'#3'&'
+  +#2#8'DockSite'#8#8'DragKind'#7#6'dkDrag'#8'DragMode'#7#8'dmManual'#7'Enabled'
+  +#9#11'Font.Height'#2#0#10'Font.Style'#11#0#9'FormStyle'#7#8'fsNormal'#14'Par'
+  +'entBiDiMode'#9#10'ParentFont'#8#8'Position'#7#10'poDesigned'#13'ShowInTaskB'
+  +'ar'#7#9'stDefault'#14'UseDockManager'#8#10'LCLVersion'#6#6'0.9.27'#11'Windo'
+  +'wState'#7#8'wsNormal'#0#11'TStringGrid'#4'grid'#4'Left'#2#20#6'Height'#3#4#1
+  +#3'Top'#2'\'#5'Width'#3#0#2#11'HelpContext'#2#0#5'Align'#7#6'alNone'#7'Ancho'
+  +'rs'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#11'AutoAdvance'#7#7'aaRi'
+  +'ght'#8'AutoEdit'#9#15'AutoFillColumns'#8#18'BorderSpacing.Left'#2#0#17'Bord'
+  +'erSpacing.Top'#2#0#19'BorderSpacing.Right'#2#0#20'BorderSpacing.Bottom'#2#0
+  +#20'BorderSpacing.Around'#2#0'!BorderSpacing.CellAlignHorizontal'#7#7'ccaFil'
+  +'l'#31'BorderSpacing.CellAlignVertical'#7#7'ccaFill'#11'BorderStyle'#7#8'bsS'
+  +'ingle'#8'ColCount'#3#255#0#15'DefaultColWidth'#2'Z'#14'DefaultDrawing'#9#10
+  +'DragCursor'#7#6'crDrag'#8'DragKind'#7#6'dkDrag'#8'DragMode'#7#8'dmManual'#7
+  +'Enabled'#9#14'ExtendedSelect'#9#10'FixedColor'#7#9'clBtnFace'#9'FixedCols'#2
+  +#1#9'FixedRows'#2#1#4'Flat'#8#13'GridLineWidth'#2#1#14'HeaderHotZones'#11#11
+  +'gzFixedCols'#0#15'HeaderPushZones'#11#11'gzFixedCols'#0#7'Options'#11#15'go'
+  +'FixedVertLine'#15'goFixedHorzLine'#10'goVertLine'#10'goHorzLine'#13'goRange'
+  +'Select'#0#11'ParentColor'#8#10'ParentFont'#9#14'ParentShowHint'#9#8'RowCoun'
+  +'t'#3#232#3#10'ScrollBars'#7#10'ssAutoBoth'#8'TabOrder'#2#0#7'TabStop'#9#16
+  +'TitleFont.Height'#2#0#15'TitleFont.Style'#11#0#10'TitleStyle'#7#9'tsLazarus'
+  +#14'UseXORFeatures'#8#7'Visible'#9#17'OnBeforeSelection'#7#19'gridBeforeSele'
+  +'ction'#15'OnPrepareCanvas'#7#17'gridPrepareCanvas'#9'ColWidths'#1#2'+'#2'Z'
+  +#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2
+  +'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2
+  +'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2
+  +'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2
+  +'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2
+  +'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2
+  +'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2
+  +'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2
+  +'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2
+  +'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2
+  +'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2
+  +'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2
+  +'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2
+  +'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2
+  +'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2
+  +'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2
+  +'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#0#0#0#0
+]);

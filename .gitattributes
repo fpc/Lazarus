@@ -2176,6 +2176,14 @@ examples/shapedcontrols/unit1.lrs -text svneol=native#test/pascal
 examples/shapedcontrols/unit1.pas -text svneol=native#test/pascal
 examples/speedtest.lpi svneol=native#text/plain
 examples/speedtest.pp svneol=native#text/pascal
+examples/spreadsheet/main.lfm svneol=native#text/plain
+examples/spreadsheet/main.lrs svneol=native#text/plain
+examples/spreadsheet/main.pas svneol=native#text/pascal
+examples/spreadsheet/spreadsheet.ico -text
+examples/spreadsheet/spreadsheet.lpi svneol=native#text/plain
+examples/spreadsheet/spreadsheet.lpr svneol=native#text/pascal
+examples/spreadsheet/spreadsheet.lrs svneol=native#text/plain
+examples/spreadsheet/spreadsheet.rc svneol=native#text/plain
 examples/sprites/playground.lfm svneol=native#text/plain
 examples/sprites/playground.lrs svneol=native#text/pascal
 examples/sprites/playground.pas svneol=native#text/pascal
