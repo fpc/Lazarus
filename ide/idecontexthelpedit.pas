@@ -42,9 +42,7 @@ type
   { TContextHelpEditorDlg }
 
   TContextHelpEditorDlg = class(TForm)
-    CancelBitBtn: TBitBtn;
-    OkBitBtn: TBitBtn;
-    Panel1: TPanel;
+    ButtonPanel: TButtonPanel;
     TestButton: TButton;
     CreateHelpNodeForControlButton: TButton;
     NodeNameEdit: TEdit;
@@ -155,10 +153,8 @@ begin
   NodePathLabel.Caption:=lisPath;
   NodeNameLabel.Caption:=lisDebugOptionsFrmName;
   NodesGroupBox.Caption:=lisHelpEntries;
-  OkBitBtn.Caption:=lisOkBtn;
-  CancelBitBtn.Caption:=dlgCancel;
-  OkBitBtn.LoadGlyphFromLazarusResource('btn_ok');
-  CancelBitBtn.LoadGlyphFromLazarusResource('btn_cancel');
+
+  TranslateButtonPanel(ButtonPanel);
 
   IDEDialogLayoutList.ApplyLayout(Self, 600, 450);
 

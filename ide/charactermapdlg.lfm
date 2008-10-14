@@ -4,7 +4,7 @@ object CharacterMapDialog: TCharacterMapDialog
   Top = 233
   Width = 471
   HelpContext = 0
-  ActiveControl = CloseButton
+  ActiveControl = StringGrid1
   Align = alNone
   AllowDropFiles = False
   AutoScroll = True
@@ -39,13 +39,12 @@ object CharacterMapDialog: TCharacterMapDialog
   object CharInfoLabel: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Side = asrBottom
-    AnchorSideBottom.Control = HelpButton
     Left = 6
     Height = 18
-    Top = 357
-    Width = 88
+    Top = 349
+    Width = 459
     HelpContext = 0
-    Align = alNone
+    Align = alBottom
     Alignment = taLeftJustify
     Anchors = [akLeft, akBottom]
     AutoSize = True
@@ -78,12 +77,11 @@ object CharacterMapDialog: TCharacterMapDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = CharInfoLabel
     Left = 6
-    Height = 345
+    Height = 337
     Top = 6
     Width = 459
     HelpContext = 0
-    Align = alNone
-    Anchors = [akTop, akLeft, akRight, akBottom]
+    Align = alClient
     AutoSize = False
     BorderSpacing.Left = 0
     BorderSpacing.Top = 0
@@ -98,7 +96,7 @@ object CharacterMapDialog: TCharacterMapDialog
     ChildSizing.HorizontalSpacing = 0
     ChildSizing.VerticalSpacing = 0
     ChildSizing.ControlsPerLine = 0
-    ClientHeight = 326
+    ClientHeight = 318
     ClientWidth = 455
     Ctl3D = False
     DockSite = False
@@ -118,7 +116,7 @@ object CharacterMapDialog: TCharacterMapDialog
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 314
+      Height = 306
       Top = 6
       Width = 443
       HelpContext = 0
@@ -167,79 +165,19 @@ object CharacterMapDialog: TCharacterMapDialog
       OnMouseMove = StringGrid1MouseMove
     end
   end
-  object CloseButton: TBitBtn
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 371
-    Height = 34
-    Top = 381
-    Width = 94
-    HelpContext = 0
-    Align = alNone
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Left = 0
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 6
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
-    Cancel = False
-    Caption = '&Закрыть'
-    Default = False
-    Enabled = True
-    Kind = bkClose
-    Layout = blGlyphLeft
-    Margin = -1
-    ModalResult = 0
-    NumGlyphs = 0
-    OnClick = CloseButtonClick
-    ParentFont = True
-    ParentShowHint = True
-    Spacing = 3
-    TabOrder = 1
-    TabStop = True
-    Visible = True
-  end
-  object HelpButton: TBitBtn
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = CharInfoLabel
-    AnchorSideTop.Side = asrBottom
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
+  object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 34
-    Top = 381
-    Width = 66
+    Height = 48
+    Top = 373
+    Width = 459
     HelpContext = 0
-    Align = alNone
-    Anchors = [akLeft, akBottom]
+    Align = alBottom
     AutoSize = True
-    BorderSpacing.Left = 0
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 6
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
-    Cancel = False
-    Caption = '&Help'
-    Default = False
-    Enabled = True
-    Kind = bkHelp
-    Layout = blGlyphLeft
-    Margin = -1
-    ModalResult = 0
-    NumGlyphs = 0
-    OnClick = HelpButtonClick
-    ParentFont = True
-    ParentShowHint = True
-    Spacing = 3
-    TabOrder = 2
-    TabStop = True
+    ButtonOrder = boDefault
+    TabOrder = 1
+    DefaultButton = pbOK
+    ShowButtons = [pbClose, pbHelp]
+    ShowGlyphs = [pbOK, pbCancel, pbClose, pbHelp]
     Visible = True
   end
 end

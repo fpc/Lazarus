@@ -143,7 +143,6 @@ object CodeTemplateDialog: TCodeTemplateDialog
     end
   end
   object TemplatesGroupBox: TGroupBox
-    AnchorSideBottom.Control = CancelButton
     Left = 6
     Height = 167
     Top = 63
@@ -334,14 +333,13 @@ object CodeTemplateDialog: TCodeTemplateDialog
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = BtnPanel
+    AnchorSideBottom.Control = FilenameGroupBox
     Left = 6
-    Height = 250
+    Height = 252
     Top = 236
     Width = 485
     HelpContext = 0
-    Align = alNone
-    Anchors = [akTop, akLeft, akRight, akBottom]
+    Align = alClient
     AutoSize = False
     BorderSpacing.Left = 0
     BorderSpacing.Top = 0
@@ -356,7 +354,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
     ChildSizing.HorizontalSpacing = 0
     ChildSizing.VerticalSpacing = 0
     ChildSizing.ControlsPerLine = 0
-    ClientHeight = 231
+    ClientHeight = 233
     ClientWidth = 481
     Ctl3D = False
     DockSite = False
@@ -448,7 +446,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AnchorSideBottom.Control = EditTemplateGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 151
+      Height = 153
       Top = 74
       Width = 469
       HelpContext = 0
@@ -461,7 +459,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
       BorderSpacing.Around = 6
       BorderSpacing.CellAlignHorizontal = ccaFill
       BorderSpacing.CellAlignVertical = ccaFill
-      Anchors = [akTop, akLeft, akRight, akBottom]
+      Anchors = [akTop, akLeft, akBottom]
       Color = clWhite
       CFDividerDrawLevel = 0
       Ctl3D = False
@@ -477,7 +475,6 @@ object CodeTemplateDialog: TCodeTemplateDialog
       ParentShowHint = True
       TabOrder = 1
       Visible = True
-      BookMarkOptions.OnChange = nil
       BorderStyle = bsSingle
       ExtraCharSpacing = 0
       ExtraLineSpacing = 0
@@ -817,6 +814,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
       RightEdge = 80
       RightEdgeColor = clSilver
       ScrollBars = ssBoth
+      SelectedColor.OnChange = nil
       SelectionMode = smNormal
       TabWidth = 8
       WantTabs = False
@@ -867,146 +865,20 @@ object CodeTemplateDialog: TCodeTemplateDialog
       Visible = True
     end
   end
-  object BtnPanel: TPanel
-    Left = 0
-    Height = 50
-    Top = 492
-    Width = 497
+  object ButtonPanel: TButtonPanel
+    Left = 6
+    Height = 48
+    Top = 494
+    Width = 485
     HelpContext = 0
     Align = alBottom
-    Alignment = taCenter
     AutoSize = True
-    BorderSpacing.Left = 0
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 0
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
-    BevelInner = bvNone
-    BevelOuter = bvNone
-    BevelWidth = 1
-    BorderWidth = 0
-    BorderStyle = bsNone
-    ChildSizing.LeftRightSpacing = 0
-    ChildSizing.TopBottomSpacing = 0
-    ChildSizing.HorizontalSpacing = 0
-    ChildSizing.VerticalSpacing = 0
-    ChildSizing.ControlsPerLine = 0
-    ClientHeight = 46
-    ClientWidth = 493
-    DockSite = False
-    DragCursor = crDrag
-    DragKind = dkDrag
-    DragMode = dmManual
-    Enabled = True
-    FullRepaint = True
-    ParentColor = True
-    ParentFont = True
-    ParentShowHint = True
+    ButtonOrder = boDefault
     TabOrder = 3
-    TabStop = False
+    DefaultButton = pbOK
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+    ShowGlyphs = [pbOK, pbCancel, pbClose, pbHelp]
     Visible = True
-    object OkButton: TBitBtn
-      AnchorSideBottom.Side = asrBottom
-      Left = 326
-      Height = 34
-      Top = 6
-      Width = 75
-      HelpContext = 0
-      Align = alRight
-      AutoSize = True
-      BorderSpacing.Left = 0
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
-      BorderSpacing.Around = 6
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
-      Cancel = False
-      Caption = '&OK'
-      Constraints.MinWidth = 75
-      Default = True
-      Enabled = True
-      Kind = bkOK
-      Layout = blGlyphLeft
-      Margin = -1
-      ModalResult = 1
-      NumGlyphs = 0
-      OnClick = OkButtonClick
-      ParentFont = True
-      ParentShowHint = True
-      Spacing = 3
-      TabOrder = 0
-      TabStop = True
-      Visible = True
-    end
-    object CancelButton: TBitBtn
-      AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Side = asrBottom
-      Left = 407
-      Height = 34
-      Top = 6
-      Width = 80
-      HelpContext = 0
-      Align = alRight
-      AutoSize = True
-      BorderSpacing.Left = 0
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
-      BorderSpacing.Around = 6
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
-      Cancel = True
-      Caption = 'Cancel'
-      Constraints.MinWidth = 75
-      Default = False
-      Enabled = True
-      Kind = bkCancel
-      Layout = blGlyphLeft
-      Margin = -1
-      ModalResult = 2
-      NumGlyphs = 0
-      ParentFont = True
-      ParentShowHint = True
-      Spacing = 3
-      TabOrder = 1
-      TabStop = True
-      Visible = True
-    end
-    object HelpButton: TBitBtn
-      Left = 6
-      Height = 34
-      Top = 6
-      Width = 66
-      HelpContext = 0
-      Align = alLeft
-      AutoSize = True
-      BorderSpacing.Left = 0
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
-      BorderSpacing.Around = 6
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
-      Cancel = False
-      Caption = '&Help'
-      Default = False
-      Enabled = True
-      Kind = bkHelp
-      Layout = blGlyphLeft
-      Margin = -1
-      ModalResult = 0
-      NumGlyphs = 0
-      OnClick = HelpButtonClick
-      ParentFont = True
-      ParentShowHint = True
-      Spacing = 3
-      TabOrder = 2
-      TabStop = True
-      Visible = True
-    end
   end
   object ASynPasSyn: TSynFreePascalSyn
     Enabled = False

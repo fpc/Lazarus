@@ -32,19 +32,18 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, Buttons, KeyMapping, LazarusIDEStrConsts;
+  ExtCtrls, Buttons, KeyMapping, LazarusIDEStrConsts, ButtonPanel;
 
 type
 
   { TChooseKeySchemeDlg }
 
   TChooseKeySchemeDlg = class(TForm)
-    CancelButton: TBitBtn;
+    ButtonPanel: TButtonPanel;
     NoteLabel: TLABEL;
-    OkButton: TBitBtn;
-    BtnPanel: TPanel;
     SchemeRadiogroup: TRADIOGROUP;
     procedure ChooseKeySchemeDlgCREATE(Sender: TObject);
+    procedure HelpButtonClick(Sender: TObject);
   private
     function GetKeymapScheme: string;
     procedure SetKeymapScheme(const AValue: string);
@@ -55,6 +54,8 @@ type
 function ShowChooseKeySchemeDialog(var NewScheme: string): TModalResult;
 
 implementation
+
+uses IDEContextHelpEdit;
 
 function ShowChooseKeySchemeDialog(var NewScheme: string): TModalResult;
 var
@@ -75,10 +76,9 @@ begin
   Caption:=lisKMChooseKeymappingScheme;
   NoteLabel.Caption:=lisKMNoteAllKeysWillBeSetToTheValuesOfTheChoosenScheme;
   SchemeRadiogroup.Caption:=lisKMKeymappingScheme;
-  OkButton.Caption:=lisOkBtn;
-  CancelButton.Caption:=dlgCancel;
-  OkButton.LoadGlyphFromLazarusResource('btn_ok');
-  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
+
+  TranslateButtonPanel(ButtonPanel);
+  ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
 
   with SchemeRadiogroup.Items do begin
     BeginUpdate;
@@ -91,6 +91,11 @@ begin
     // do not add custom
     EndUpdate;
   end;
+end;
+
+procedure TChooseKeySchemeDlg.HelpButtonClick(Sender: TObject);
+begin
+  ShowContextHelpForIDE(Self);
 end;
 
 function TChooseKeySchemeDlg.GetKeymapScheme: string;

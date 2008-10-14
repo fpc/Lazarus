@@ -42,7 +42,7 @@ uses
   IDECommands, TextTools, SrcEditorIntf, MenuIntf, IDEWindowIntf, LazIDEIntf,
   // IDE
   IDEProcs, InputHistory, LazarusIDEStrConsts, EditorOptions, CodeMacroSelect,
-  IDEContextHelpEdit;
+  IDEContextHelpEdit, ButtonPanel;
 
 type
   TAutoCompleteOption = (
@@ -68,12 +68,9 @@ type
     AddButton: TButton;
     ASynPasSyn: TSynFreePascalSyn;
     AutoOnOptionsCheckGroup: TCheckGroup;
-    HelpButton: TBitBtn;
+    ButtonPanel: TButtonPanel;
     EditTemplateGroupBox: TGroupBox;
-    OkButton: TBitBtn;
-    CancelButton: TBitBtn;
     InsertMacroButton: TButton;
-    BtnPanel: TPanel;
     UseMacrosCheckBox: TCheckBox;
     EditButton: TButton;
     DeleteButton: TButton;
@@ -693,12 +690,12 @@ begin
   AddButton.Caption:=lisCodeTemplAdd;
   EditButton.Caption:=lisCodeToolsDefsEdit;
   DeleteButton.Caption:=dlgEdDelete;
-  CancelButton.Caption:=dlgCancel;
   TemplatesGroupBox.Caption:=lisCTDTemplates;
-  OkButton.Caption:=lisLazBuildOk;
-  OkButton.LoadGlyphFromLazarusResource('btn_ok');
-  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
-  HelpButton.LoadGlyphFromLazarusResource('btn_help');
+
+  TranslateButtonPanel(ButtonPanel);
+  ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
+  ButtonPanel.OKButton.OnClick := @OKButtonClick;
+
   FilenameGroupBox.Caption:=lisToDoLFile;
   UseMacrosCheckBox.Caption:=lisEnableMacros;
   InsertMacroButton.Caption:=lisCTInsertMacro;

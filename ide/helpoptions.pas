@@ -38,7 +38,7 @@ uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   FileUtil, StdCtrls, Buttons, ExtCtrls, IDEContextHelpEdit,
   ObjectInspector, LazHelpIntf, IDEWindowIntf, IDEDialogs, Laz_XMLCfg,
-  LazConf, LazarusIDEStrConsts, IDEProcs, IDEOptionDefs;
+  LazConf, LazarusIDEStrConsts, IDEProcs, IDEOptionDefs, ButtonPanel;
 
 type
   { THelpOptions }
@@ -70,8 +70,7 @@ type
   { THelpOptionsDialog }
 
   THelpOptionsDialog = class(TForm)
-    HelpButton: TBitBtn;
-    CancelButton: TBitBtn;
+    ButtonPanel: TButtonPanel;
     FPCDocHTMLBrowseButton: TButton;
     FPCDocHTMLEdit: TEdit;
     FPCDocHTMLLabel: TLabel;
@@ -80,8 +79,6 @@ type
     DataBasesPropsGroupBox: TGroupBox;
     DatabasesListBox: TListBox;
     GeneralPage: TPage;
-    OkButton: TBitBtn;
-    BtnPanel: TPanel;
     ViewerPropsGroupBox: TGroupBox;
     ViewersLabel: TLabel;
     ViewersListBox: TListBox;
@@ -95,7 +92,6 @@ type
       var CloseAction: TCloseAction);
     procedure HelpOptionsDialogCreate(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
-    procedure BtnPanelClick(Sender: TObject);
     procedure ViewersListBoxSelectionChange(Sender: TObject; User: boolean);
   private
   public
@@ -139,9 +135,12 @@ begin
   IDEDialogLayoutList.ApplyLayout(Self,500,300);
 
   Caption:=lisHlpOptsHelpOptions;
-  OkButton.Caption:=lisLazBuildOk;
-  CancelButton.Caption:=dlgCancel;
-  HelpButton.Caption:=lisPckEditHelp;
+
+  TranslateButtonPanel(ButtonPanel);
+  ButtonPanel.OKButton.OnClick := @OKButtonClick;
+  ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
+  ButtonPanel.CancelButton.OnClick := @CancelButtonClick;
+
   GeneralPage.Caption:=lisMenuInsertGeneral;
   FPCDocHTMLLabel.Caption:=lisHOFPCDocHTMLPath;
   ViewersPage.Caption:=lisHlpOptsViewers;
@@ -178,11 +177,6 @@ procedure THelpOptionsDialog.OkButtonClick(Sender: TObject);
 begin
   HelpOpts.FPCDocsHTMLDirectory:=FPCDocHTMLEdit.Text;
   ModalResult:=mrOk;
-end;
-
-procedure THelpOptionsDialog.BtnPanelClick(Sender: TObject);
-begin
-
 end;
 
 procedure THelpOptionsDialog.ViewersListBoxSelectionChange(Sender: TObject;
