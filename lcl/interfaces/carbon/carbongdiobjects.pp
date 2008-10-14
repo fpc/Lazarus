@@ -848,6 +848,10 @@ begin
   
   FDC := nil;
   FWidget := nil;
+
+  // allow font substitution for exotic glyphs
+  OSError(ATSUSetTransientFontMatching(FLayout, True), Self, SCreate,
+    'ATSUSetTransientFontMatching');
 end;
 
 {------------------------------------------------------------------------------
