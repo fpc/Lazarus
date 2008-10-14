@@ -37,6 +37,8 @@ SET TARGETOS=%5
 :: Some internal variables
 SET OLDCURDIR=%CD%
 SET OLDCURDRIVE=%CD:~,2%
+SET BUILDDRIVE=%BUILDDIR:~,2%
+
 
 SET FPCBINDIR=%FPCSVNDIR%\install\binw32
 FOR /F %%L IN ('%FPCBINDIR%\gdate.exe +%%Y%%m%%d') DO SET DATESTAMP=%%L
@@ -90,7 +92,9 @@ copy %COMPILER% %INSTALL_BINDIR%
 %FPCSVNDIR%\fpcsrc\compiler\utils\fpcmkcfg.exe -d "basepath=%INSTALL_BASE%" -o %INSTALL_BINDIR%\fpc.cfg
 SET COMPILER=%INSTALL_BINDIR%\%PPCNAME%
 
+
 %SVN% export %LAZSVNDIR%\lcl %BUILDDIR%\lcl
+%BUILDDRIVE%
 cd %BUILDDIR%\lcl
 %MAKEEXE% FPC=%compiler%
 gmkdir -p %BUILDDIR%\image\lcl\units
@@ -120,6 +124,7 @@ cp -pr %BUILDDIR%\components\synedit\units\%FPCFULLTARGET% %BUILDDIR%\image\comp
 
 del %INSTALL_BINDIR%\fpc.cfg
 
+%OLDCURDRIVE%
 cd %OLDCURDIR%
 FOR /F "delims='" %%F IN (%LAZSVNDIR%\ide\version.inc) DO set LAZVERSION=%%F
 %ISCC% lazarus-cross.iss 
