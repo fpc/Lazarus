@@ -3,13 +3,31 @@ object frPreviewForm: TfrPreviewForm
   Height = 374
   Top = 103
   Width = 412
+  HelpContext = 0
   ActiveControl = ZoomBtn
+  Align = alNone
+  AllowDropFiles = False
+  AutoScroll = True
+  AutoSize = False
+  BorderIcons = [biSystemMenu, biMinimize, biMaximize]
+  BorderStyle = bsSizeable
   Caption = 'Preview'
+  ChildSizing.LeftRightSpacing = 0
+  ChildSizing.TopBottomSpacing = 0
+  ChildSizing.HorizontalSpacing = 0
+  ChildSizing.VerticalSpacing = 0
+  ChildSizing.ControlsPerLine = 0
   ClientHeight = 374
   ClientWidth = 412
+  DockSite = False
+  DragKind = dkDrag
+  DragMode = dmManual
+  Enabled = True
   Font.Color = clBlack
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  FormStyle = fsNormal
   KeyPreview = True
   OnActivate = FormActivate
   OnClose = FormClose
@@ -19,41 +37,131 @@ object frPreviewForm: TfrPreviewForm
   OnKeyDown = FormKeyDown
   OnMouseDown = FormMouseDown
   OnResize = FormResize
+  ParentBiDiMode = True
+  ParentFont = False
+  Position = poDesigned
   ShowHint = True
-  LCLVersion = '0.9.25'
+  ShowInTaskBar = stDefault
+  UseDockManager = False
+  LCLVersion = '0.9.27'
   WindowState = wsMaximized
   object PanTop: TPanel
+    Left = 0
     Height = 28
+    Top = 0
     Width = 412
+    HelpContext = 0
     Align = alTop
+    Alignment = taCenter
+    AutoSize = False
+    BorderSpacing.Left = 0
+    BorderSpacing.Top = 0
+    BorderSpacing.Right = 0
+    BorderSpacing.Bottom = 0
+    BorderSpacing.Around = 0
+    BorderSpacing.CellAlignHorizontal = ccaFill
+    BorderSpacing.CellAlignVertical = ccaFill
+    BevelInner = bvNone
     BevelOuter = bvNone
+    BevelWidth = 1
+    BorderWidth = 0
+    BorderStyle = bsNone
+    ChildSizing.LeftRightSpacing = 0
+    ChildSizing.TopBottomSpacing = 0
+    ChildSizing.HorizontalSpacing = 0
+    ChildSizing.VerticalSpacing = 0
+    ChildSizing.ControlsPerLine = 0
     ClientHeight = 28
     ClientWidth = 412
+    DockSite = False
+    DragCursor = crDrag
+    DragKind = dkDrag
+    DragMode = dmManual
+    Enabled = True
     FullRepaint = False
+    ParentColor = True
+    ParentFont = True
+    ParentShowHint = True
     TabOrder = 0
+    TabStop = False
+    Visible = True
     object Bevel2: TBevel
+      Left = 0
       Height = 2
+      Top = 0
       Width = 412
+      HelpContext = 0
       Align = alTop
+      BorderSpacing.Left = 0
+      BorderSpacing.Top = 0
+      BorderSpacing.Right = 0
+      BorderSpacing.Bottom = 0
+      BorderSpacing.Around = 0
+      BorderSpacing.CellAlignHorizontal = ccaFill
+      BorderSpacing.CellAlignVertical = ccaFill
+      Visible = True
     end
     object Panel1: TPanel
+      Left = 0
       Height = 26
       Top = 2
       Width = 412
+      HelpContext = 0
       Align = alClient
+      Alignment = taCenter
+      AutoSize = False
+      BorderSpacing.Left = 0
+      BorderSpacing.Top = 0
+      BorderSpacing.Right = 0
+      BorderSpacing.Bottom = 0
+      BorderSpacing.Around = 0
+      BorderSpacing.CellAlignHorizontal = ccaFill
+      BorderSpacing.CellAlignVertical = ccaFill
+      BevelInner = bvNone
       BevelOuter = bvNone
+      BevelWidth = 1
+      BorderWidth = 0
+      BorderStyle = bsNone
+      ChildSizing.LeftRightSpacing = 0
+      ChildSizing.TopBottomSpacing = 0
+      ChildSizing.HorizontalSpacing = 0
+      ChildSizing.VerticalSpacing = 0
+      ChildSizing.ControlsPerLine = 0
       ClientHeight = 26
       ClientWidth = 412
+      DockSite = False
+      DragCursor = crDrag
+      DragKind = dkDrag
+      DragMode = dmManual
+      Enabled = True
       FullRepaint = False
+      ParentColor = True
+      ParentFont = True
+      ParentShowHint = True
       TabOrder = 0
+      TabStop = False
+      Visible = True
       object ZoomBtn: TBitBtn
         Tag = 200
         Left = 117
         Height = 26
+        Top = 0
         Width = 78
+        HelpContext = 0
         Align = alLeft
+        AutoSize = False
+        BorderSpacing.Left = 0
+        BorderSpacing.Top = 0
+        BorderSpacing.Right = 0
+        BorderSpacing.Bottom = 0
+        BorderSpacing.Around = 0
         BorderSpacing.InnerBorder = 2
+        BorderSpacing.CellAlignHorizontal = ccaFill
+        BorderSpacing.CellAlignVertical = ccaFill
+        Cancel = False
         Caption = '200%'
+        Default = False
+        Enabled = True
         Glyph.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
           2000000000000004000064000000640000000000000000000000000000000000
@@ -90,17 +198,39 @@ object frPreviewForm: TfrPreviewForm
           0000000000000000000000000000000000000000000000000000000000000000
           0000000000000000000000000000000000000000000000000000
         }
+        Kind = bkCustom
+        Layout = blGlyphLeft
         Margin = 3
+        ModalResult = 0
         NumGlyphs = 0
         OnClick = ZoomBtnClick
+        ParentFont = True
+        ParentShowHint = True
+        Spacing = 3
         TabOrder = 0
+        TabStop = True
+        Visible = True
       end
       object LoadBtn: TBitBtn
         Tag = 201
+        Left = 0
         Height = 26
+        Top = 0
         Width = 26
+        HelpContext = 0
         Align = alLeft
+        AutoSize = False
+        BorderSpacing.Left = 0
+        BorderSpacing.Top = 0
+        BorderSpacing.Right = 0
+        BorderSpacing.Bottom = 0
+        BorderSpacing.Around = 0
         BorderSpacing.InnerBorder = 2
+        BorderSpacing.CellAlignHorizontal = ccaFill
+        BorderSpacing.CellAlignVertical = ccaFill
+        Cancel = False
+        Default = False
+        Enabled = True
         Glyph.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
           2000000000000004000064000000640000000000000000000000000000000000
@@ -137,17 +267,39 @@ object frPreviewForm: TfrPreviewForm
           0000000000000000000000000000000000000000000000000000000000000000
           0000000000000000000000000000000000000000000000000000
         }
+        Kind = bkCustom
+        Layout = blGlyphLeft
+        Margin = -1
+        ModalResult = 0
         NumGlyphs = 0
         OnClick = LoadBtnClick
+        ParentFont = True
+        ParentShowHint = True
+        Spacing = 3
         TabOrder = 1
+        TabStop = True
+        Visible = True
       end
       object SaveBtn: TBitBtn
         Tag = 202
         Left = 26
         Height = 26
+        Top = 0
         Width = 31
+        HelpContext = 0
         Align = alLeft
+        AutoSize = False
+        BorderSpacing.Left = 0
+        BorderSpacing.Top = 0
+        BorderSpacing.Right = 0
+        BorderSpacing.Bottom = 0
+        BorderSpacing.Around = 0
         BorderSpacing.InnerBorder = 2
+        BorderSpacing.CellAlignHorizontal = ccaFill
+        BorderSpacing.CellAlignVertical = ccaFill
+        Cancel = False
+        Default = False
+        Enabled = True
         Glyph.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
           2000000000000004000064000000640000000000000000000000000000000000
@@ -184,17 +336,39 @@ object frPreviewForm: TfrPreviewForm
           0000000000000000000000000000000000000000000000000000000000000000
           0000000000000000000000000000000000000000000000000000
         }
+        Kind = bkCustom
+        Layout = blGlyphLeft
+        Margin = -1
+        ModalResult = 0
         NumGlyphs = 0
         OnClick = SaveBtnClick
+        ParentFont = True
+        ParentShowHint = True
+        Spacing = 3
         TabOrder = 2
+        TabStop = True
+        Visible = True
       end
       object PrintBtn: TBitBtn
         Tag = 203
         Left = 87
         Height = 26
+        Top = 0
         Width = 28
+        HelpContext = 0
         Align = alLeft
+        AutoSize = False
+        BorderSpacing.Left = 0
+        BorderSpacing.Top = 0
+        BorderSpacing.Right = 0
+        BorderSpacing.Bottom = 0
+        BorderSpacing.Around = 0
         BorderSpacing.InnerBorder = 2
+        BorderSpacing.CellAlignHorizontal = ccaFill
+        BorderSpacing.CellAlignVertical = ccaFill
+        Cancel = False
+        Default = False
+        Enabled = True
         Glyph.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
           2000000000000004000064000000640000000000000000000000000000000000
@@ -231,17 +405,39 @@ object frPreviewForm: TfrPreviewForm
           0000000000000000000000000000000000000000000000000000000000000000
           0000000000000000000000000000000000000000000000000000
         }
+        Kind = bkCustom
+        Layout = blGlyphLeft
+        Margin = -1
+        ModalResult = 0
         NumGlyphs = 0
         OnClick = PrintBtnClick
+        ParentFont = True
+        ParentShowHint = True
+        Spacing = 3
         TabOrder = 3
+        TabStop = True
+        Visible = True
       end
       object FindBtn: TBitBtn
         Tag = 204
         Left = 197
         Height = 26
+        Top = 0
         Width = 35
+        HelpContext = 0
         Align = alLeft
+        AutoSize = False
+        BorderSpacing.Left = 0
+        BorderSpacing.Top = 0
+        BorderSpacing.Right = 0
+        BorderSpacing.Bottom = 0
+        BorderSpacing.Around = 0
         BorderSpacing.InnerBorder = 2
+        BorderSpacing.CellAlignHorizontal = ccaFill
+        BorderSpacing.CellAlignVertical = ccaFill
+        Cancel = False
+        Default = False
+        Enabled = True
         Glyph.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
           2000000000000004000064000000640000000000000000000000000000000000
@@ -278,16 +474,38 @@ object frPreviewForm: TfrPreviewForm
           0000000000000000000000000000000000000000000000000000000000000000
           0000000000000000000000000000000000000000000000000000
         }
+        Kind = bkCustom
+        Layout = blGlyphLeft
+        Margin = -1
+        ModalResult = 0
         NumGlyphs = 0
         OnClick = FindBtnClick
+        ParentFont = True
+        ParentShowHint = True
+        Spacing = 3
         TabOrder = 4
+        TabStop = True
+        Visible = True
       end
       object HelpBtn: TBitBtn
         Left = 232
         Height = 26
+        Top = 0
         Width = 37
+        HelpContext = 0
         Align = alLeft
+        AutoSize = False
+        BorderSpacing.Left = 0
+        BorderSpacing.Top = 0
+        BorderSpacing.Right = 0
+        BorderSpacing.Bottom = 0
+        BorderSpacing.Around = 0
         BorderSpacing.InnerBorder = 2
+        BorderSpacing.CellAlignHorizontal = ccaFill
+        BorderSpacing.CellAlignVertical = ccaFill
+        Cancel = False
+        Default = False
+        Enabled = True
         Glyph.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
           2000000000000004000064000000640000000000000000000000000000000000
@@ -324,17 +542,39 @@ object frPreviewForm: TfrPreviewForm
           0000000000000000000000000000000000000000000000000000000000000000
           0000000000000000000000000000000000000000000000000000
         }
+        Kind = bkCustom
+        Layout = blGlyphLeft
+        Margin = -1
+        ModalResult = 0
         NumGlyphs = 0
         OnClick = HelpBtnClick
+        ParentFont = True
+        ParentShowHint = True
+        Spacing = 3
         TabOrder = 5
+        TabStop = True
+        Visible = True
       end
       object ExitBtn: TBitBtn
         Tag = 205
         Left = 57
         Height = 26
+        Top = 0
         Width = 28
+        HelpContext = 0
         Align = alLeft
+        AutoSize = False
+        BorderSpacing.Left = 0
+        BorderSpacing.Top = 0
+        BorderSpacing.Right = 0
+        BorderSpacing.Bottom = 0
+        BorderSpacing.Around = 0
         BorderSpacing.InnerBorder = 2
+        BorderSpacing.CellAlignHorizontal = ccaFill
+        BorderSpacing.CellAlignVertical = ccaFill
+        Cancel = False
+        Default = False
+        Enabled = True
         Glyph.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
           2000000000000004000064000000640000000000000000000000000000000000
@@ -371,57 +611,214 @@ object frPreviewForm: TfrPreviewForm
           0000000000000000000000000000000000000000000000000000000000000000
           0000000000000000000000000000000000000000000000000000
         }
+        Kind = bkCustom
+        Layout = blGlyphLeft
+        Margin = -1
+        ModalResult = 0
         NumGlyphs = 0
         OnClick = ExitBtnClick
+        ParentFont = True
+        ParentShowHint = True
+        Spacing = 3
         TabOrder = 6
+        TabStop = True
+        Visible = True
       end
       object frTBSeparator1: TPanel
         Left = 85
         Height = 26
+        Top = 0
         Width = 2
+        HelpContext = 0
         Align = alLeft
+        Alignment = taCenter
+        AutoSize = False
+        BorderSpacing.Left = 0
+        BorderSpacing.Top = 0
+        BorderSpacing.Right = 0
+        BorderSpacing.Bottom = 0
+        BorderSpacing.Around = 0
+        BorderSpacing.CellAlignHorizontal = ccaFill
+        BorderSpacing.CellAlignVertical = ccaFill
+        BevelInner = bvNone
         BevelOuter = bvLowered
+        BevelWidth = 1
+        BorderWidth = 0
+        BorderStyle = bsNone
+        ChildSizing.LeftRightSpacing = 0
+        ChildSizing.TopBottomSpacing = 0
+        ChildSizing.HorizontalSpacing = 0
+        ChildSizing.VerticalSpacing = 0
+        ChildSizing.ControlsPerLine = 0
+        DockSite = False
+        DragCursor = crDrag
+        DragKind = dkDrag
+        DragMode = dmManual
+        Enabled = True
         FullRepaint = False
+        ParentColor = True
+        ParentFont = True
+        ParentShowHint = True
         TabOrder = 7
+        TabStop = False
+        Visible = True
       end
       object frTBSeparator2: TPanel
         Left = 115
         Height = 26
+        Top = 0
         Width = 2
+        HelpContext = 0
         Align = alLeft
+        Alignment = taCenter
+        AutoSize = False
+        BorderSpacing.Left = 0
+        BorderSpacing.Top = 0
+        BorderSpacing.Right = 0
+        BorderSpacing.Bottom = 0
+        BorderSpacing.Around = 0
+        BorderSpacing.CellAlignHorizontal = ccaFill
+        BorderSpacing.CellAlignVertical = ccaFill
+        BevelInner = bvNone
         BevelOuter = bvLowered
+        BevelWidth = 1
+        BorderWidth = 0
+        BorderStyle = bsNone
+        ChildSizing.LeftRightSpacing = 0
+        ChildSizing.TopBottomSpacing = 0
+        ChildSizing.HorizontalSpacing = 0
+        ChildSizing.VerticalSpacing = 0
+        ChildSizing.ControlsPerLine = 0
+        DockSite = False
+        DragCursor = crDrag
+        DragKind = dkDrag
+        DragMode = dmManual
+        Enabled = True
         FullRepaint = False
+        ParentColor = True
+        ParentFont = True
+        ParentShowHint = True
         TabOrder = 8
+        TabStop = False
+        Visible = True
       end
       object frTBSeparator3: TPanel
         Left = 195
         Height = 26
+        Top = 0
         Width = 2
+        HelpContext = 0
         Align = alLeft
+        Alignment = taCenter
+        AutoSize = False
+        BorderSpacing.Left = 0
+        BorderSpacing.Top = 0
+        BorderSpacing.Right = 0
+        BorderSpacing.Bottom = 0
+        BorderSpacing.Around = 0
+        BorderSpacing.CellAlignHorizontal = ccaFill
+        BorderSpacing.CellAlignVertical = ccaFill
+        BevelInner = bvNone
         BevelOuter = bvLowered
+        BevelWidth = 1
+        BorderWidth = 0
+        BorderStyle = bsNone
+        ChildSizing.LeftRightSpacing = 0
+        ChildSizing.TopBottomSpacing = 0
+        ChildSizing.HorizontalSpacing = 0
+        ChildSizing.VerticalSpacing = 0
+        ChildSizing.ControlsPerLine = 0
+        DockSite = False
+        DragCursor = crDrag
+        DragKind = dkDrag
+        DragMode = dmManual
+        Enabled = True
         FullRepaint = False
+        ParentColor = True
+        ParentFont = True
+        ParentShowHint = True
         TabOrder = 9
+        TabStop = False
+        Visible = True
       end
     end
   end
   object PreviewPanel: TPanel
+    Left = 0
     Height = 346
     Top = 28
     Width = 412
+    HelpContext = 0
     Align = alClient
+    Alignment = taCenter
+    AutoSize = False
+    BorderSpacing.Left = 0
+    BorderSpacing.Top = 0
+    BorderSpacing.Right = 0
+    BorderSpacing.Bottom = 0
+    BorderSpacing.Around = 0
+    BorderSpacing.CellAlignHorizontal = ccaFill
+    BorderSpacing.CellAlignVertical = ccaFill
     BevelInner = bvLowered
     BevelOuter = bvNone
+    BevelWidth = 1
+    BorderWidth = 0
+    BorderStyle = bsNone
+    ChildSizing.LeftRightSpacing = 0
+    ChildSizing.TopBottomSpacing = 0
+    ChildSizing.HorizontalSpacing = 0
+    ChildSizing.VerticalSpacing = 0
+    ChildSizing.ControlsPerLine = 0
     ClientHeight = 346
     ClientWidth = 412
+    DockSite = False
+    DragCursor = crDrag
+    DragKind = dkDrag
+    DragMode = dmManual
+    Enabled = True
     FullRepaint = False
+    ParentColor = True
+    ParentFont = True
+    ParentShowHint = True
     TabOrder = 1
+    TabStop = False
+    Visible = True
     object ScrollBox1: TScrollBox
       Left = 1
       Height = 325
       Top = 1
       Width = 395
+      HelpContext = 0
       Align = alClient
+      AutoSize = False
+      AutoScroll = True
+      BorderSpacing.Left = 0
+      BorderSpacing.Top = 0
+      BorderSpacing.Right = 0
+      BorderSpacing.Bottom = 0
+      BorderSpacing.Around = 0
+      BorderSpacing.CellAlignHorizontal = ccaFill
+      BorderSpacing.CellAlignVertical = ccaFill
+      BorderStyle = bsNone
+      ChildSizing.LeftRightSpacing = 0
+      ChildSizing.TopBottomSpacing = 0
+      ChildSizing.HorizontalSpacing = 0
+      ChildSizing.VerticalSpacing = 0
+      ChildSizing.ControlsPerLine = 0
+      DockSite = False
+      DragCursor = crDrag
+      DragKind = dkDrag
+      DragMode = dmManual
+      Enabled = True
+      Ctl3D = False
+      ParentBiDiMode = True
+      ParentColor = True
+      ParentCtl3D = True
+      ParentFont = True
+      ParentShowHint = True
       TabOrder = 0
+      TabStop = False
+      Visible = True
       OnMouseWheelDown = ScrollBox1MouseWheelDown
       OnMouseWheelUp = ScrollBox1MouseWheelUp
     end
@@ -430,37 +827,115 @@ object frPreviewForm: TfrPreviewForm
       Height = 19
       Top = 326
       Width = 410
+      HelpContext = 0
       Align = alBottom
+      Alignment = taCenter
       Anchors = [akLeft, akBottom]
+      AutoSize = False
+      BorderSpacing.Left = 0
+      BorderSpacing.Top = 0
+      BorderSpacing.Right = 0
+      BorderSpacing.Bottom = 0
+      BorderSpacing.Around = 0
+      BorderSpacing.CellAlignHorizontal = ccaFill
+      BorderSpacing.CellAlignVertical = ccaFill
+      BevelInner = bvNone
       BevelOuter = bvNone
+      BevelWidth = 1
+      BorderWidth = 0
+      BorderStyle = bsNone
+      ChildSizing.LeftRightSpacing = 0
+      ChildSizing.TopBottomSpacing = 0
+      ChildSizing.HorizontalSpacing = 0
+      ChildSizing.VerticalSpacing = 0
+      ChildSizing.ControlsPerLine = 0
       ClientHeight = 19
       ClientWidth = 410
+      DockSite = False
+      DragCursor = crDrag
+      DragKind = dkDrag
+      DragMode = dmManual
+      Enabled = True
       FullRepaint = False
+      ParentColor = True
+      ParentFont = True
+      ParentShowHint = True
       TabOrder = 1
+      TabStop = False
+      Visible = True
       object HScrollBar: TScrollBar
         AnchorSideLeft.Control = LbPanel
         Left = 76
-        Height = 19
+        Height = 15
+        Top = 0
         Width = 318
+        HelpContext = 0
         Align = alClient
         BorderSpacing.Left = 2
+        BorderSpacing.Top = 0
         BorderSpacing.Right = 16
+        BorderSpacing.Bottom = 0
+        BorderSpacing.Around = 0
+        BorderSpacing.CellAlignHorizontal = ccaFill
+        BorderSpacing.CellAlignVertical = ccaFill
         Ctl3D = True
+        DragCursor = crDrag
+        DragKind = dkDrag
+        DragMode = dmManual
+        Enabled = True
+        Kind = sbHorizontal
         LargeChange = 200
         Max = 32000
+        Min = 0
+        PageSize = 0
+        ParentBidiMode = True
         ParentCtl3D = False
+        ParentShowHint = True
         Position = 100
         SmallChange = 10
         TabOrder = 0
+        TabStop = True
+        Visible = True
         OnChange = HScrollBarChange
       end
       object LbPanel: TPanel
+        Left = 0
         Height = 19
+        Top = 0
         Width = 74
+        HelpContext = 0
         Align = alLeft
+        Alignment = taCenter
+        AutoSize = False
+        BorderSpacing.Left = 0
+        BorderSpacing.Top = 0
+        BorderSpacing.Right = 0
+        BorderSpacing.Bottom = 0
+        BorderSpacing.Around = 0
+        BorderSpacing.CellAlignHorizontal = ccaFill
+        BorderSpacing.CellAlignVertical = ccaFill
+        BevelInner = bvNone
         BevelOuter = bvLowered
+        BevelWidth = 1
+        BorderWidth = 0
+        BorderStyle = bsNone
+        ChildSizing.LeftRightSpacing = 0
+        ChildSizing.TopBottomSpacing = 0
+        ChildSizing.HorizontalSpacing = 0
+        ChildSizing.VerticalSpacing = 0
+        ChildSizing.ControlsPerLine = 0
+        DockSite = False
+        DragCursor = crDrag
+        DragKind = dkDrag
+        DragMode = dmManual
+        Enabled = True
         FullRepaint = False
+        ParentColor = True
+        ParentFont = True
+        ParentShowHint = True
         TabOrder = 1
+        TabStop = False
+        Visible = True
       end
     end
     object RPanel: TPanel
@@ -468,20 +943,61 @@ object frPreviewForm: TfrPreviewForm
       Height = 325
       Top = 1
       Width = 15
+      HelpContext = 0
       Align = alRight
+      Alignment = taCenter
       Anchors = [akTop, akRight]
       AutoSize = True
+      BorderSpacing.Left = 0
+      BorderSpacing.Top = 0
+      BorderSpacing.Right = 0
+      BorderSpacing.Bottom = 0
+      BorderSpacing.Around = 0
+      BorderSpacing.CellAlignHorizontal = ccaFill
+      BorderSpacing.CellAlignVertical = ccaFill
+      BevelInner = bvNone
       BevelOuter = bvNone
+      BevelWidth = 1
+      BorderWidth = 0
+      BorderStyle = bsNone
+      ChildSizing.LeftRightSpacing = 0
+      ChildSizing.TopBottomSpacing = 0
+      ChildSizing.HorizontalSpacing = 0
+      ChildSizing.VerticalSpacing = 0
+      ChildSizing.ControlsPerLine = 0
       ClientHeight = 325
       ClientWidth = 15
+      DockSite = False
+      DragCursor = crDrag
+      DragKind = dkDrag
+      DragMode = dmManual
+      Enabled = True
       FullRepaint = False
+      ParentColor = True
+      ParentFont = True
+      ParentShowHint = True
       TabOrder = 2
+      TabStop = False
+      Visible = True
       object PgUp: TSpeedButton
+        Left = 0
         Height = 19
         Top = 287
         Width = 15
+        HelpContext = 0
         Align = alBottom
+        AllowAllUp = False
+        BorderSpacing.Left = 0
+        BorderSpacing.Top = 0
+        BorderSpacing.Right = 0
+        BorderSpacing.Bottom = 0
+        BorderSpacing.Around = 0
+        BorderSpacing.CellAlignHorizontal = ccaFill
+        BorderSpacing.CellAlignVertical = ccaFill
         Color = clBtnFace
+        Down = False
+        Enabled = True
+        Flat = False
         Glyph.Data = {
           76020000424D760200000000000036000000280000000C0000000C0000000100
           2000000000004002000064000000640000000000000000000000000000000000
@@ -504,15 +1020,37 @@ object frPreviewForm: TfrPreviewForm
           0000000000000000000000000000000000000000000000000000000000000000
           0000000000000000000000000000000000000000000000000000
         }
+        GroupIndex = 0
+        Layout = blGlyphLeft
+        Margin = -1
         NumGlyphs = 0
+        Spacing = 4
+        Transparent = True
+        Visible = True
         OnClick = PgUpClick
+        ShowCaption = True
+        ParentFont = True
+        ParentShowHint = True
       end
       object PgDown: TSpeedButton
+        Left = 0
         Height = 19
         Top = 306
         Width = 15
+        HelpContext = 0
         Align = alBottom
+        AllowAllUp = False
+        BorderSpacing.Left = 0
+        BorderSpacing.Top = 0
+        BorderSpacing.Right = 0
+        BorderSpacing.Bottom = 0
+        BorderSpacing.Around = 0
+        BorderSpacing.CellAlignHorizontal = ccaFill
+        BorderSpacing.CellAlignVertical = ccaFill
         Color = clBtnFace
+        Down = False
+        Enabled = True
+        Flat = False
         Glyph.Data = {
           76020000424D760200000000000036000000280000000C0000000C0000000100
           2000000000004002000064000000640000000000000000000000000000000000
@@ -535,20 +1073,50 @@ object frPreviewForm: TfrPreviewForm
           0000000000000000000000000000000000000000000000000000000000000000
           0000000000000000000000000000000000000000000000000000
         }
+        GroupIndex = 0
+        Layout = blGlyphLeft
+        Margin = -1
         NumGlyphs = 0
+        Spacing = 4
+        Transparent = True
+        Visible = True
         OnClick = PgDownClick
+        ShowCaption = True
+        ParentFont = True
+        ParentShowHint = True
       end
       object VScrollBar: TScrollBar
+        Left = 0
         Height = 287
+        Top = 0
         Width = 15
+        HelpContext = 0
         Align = alClient
+        BorderSpacing.Left = 0
+        BorderSpacing.Top = 0
+        BorderSpacing.Right = 0
+        BorderSpacing.Bottom = 0
+        BorderSpacing.Around = 0
+        BorderSpacing.CellAlignHorizontal = ccaFill
+        BorderSpacing.CellAlignVertical = ccaFill
         Ctl3D = True
+        DragCursor = crDrag
+        DragKind = dkDrag
+        DragMode = dmManual
+        Enabled = True
         Kind = sbVertical
         LargeChange = 200
         Max = 32000
+        Min = 0
+        PageSize = 0
+        ParentBidiMode = True
         ParentCtl3D = False
+        ParentShowHint = True
+        Position = 0
         SmallChange = 10
         TabOrder = 0
+        TabStop = True
+        Visible = True
         OnChange = VScrollBarChange
       end
     end
@@ -561,6 +1129,8 @@ object frPreviewForm: TfrPreviewForm
       Caption = '200%'
       GroupIndex = 1
       RadioItem = True
+      RightJustify = False
+      ShowAlwaysCheckable = False
       OnClick = N3Click
     end
     object N1501: TMenuItem
@@ -568,6 +1138,8 @@ object frPreviewForm: TfrPreviewForm
       Caption = '150%'
       GroupIndex = 1
       RadioItem = True
+      RightJustify = False
+      ShowAlwaysCheckable = False
       OnClick = N3Click
     end
     object N1001: TMenuItem
@@ -576,6 +1148,8 @@ object frPreviewForm: TfrPreviewForm
       Checked = True
       GroupIndex = 1
       RadioItem = True
+      RightJustify = False
+      ShowAlwaysCheckable = False
       OnClick = N3Click
     end
     object N751: TMenuItem
@@ -583,6 +1157,8 @@ object frPreviewForm: TfrPreviewForm
       Caption = '75%'
       GroupIndex = 1
       RadioItem = True
+      RightJustify = False
+      ShowAlwaysCheckable = False
       OnClick = N3Click
     end
     object N501: TMenuItem
@@ -590,6 +1166,8 @@ object frPreviewForm: TfrPreviewForm
       Caption = '50%'
       GroupIndex = 1
       RadioItem = True
+      RightJustify = False
+      ShowAlwaysCheckable = False
       OnClick = N3Click
     end
     object N251: TMenuItem
@@ -597,6 +1175,8 @@ object frPreviewForm: TfrPreviewForm
       Caption = '25%'
       GroupIndex = 1
       RadioItem = True
+      RightJustify = False
+      ShowAlwaysCheckable = False
       OnClick = N3Click
     end
     object N101: TMenuItem
@@ -604,6 +1184,8 @@ object frPreviewForm: TfrPreviewForm
       Caption = '10%'
       GroupIndex = 1
       RadioItem = True
+      RightJustify = False
+      ShowAlwaysCheckable = False
       OnClick = N3Click
     end
     object N1: TMenuItem
@@ -611,6 +1193,8 @@ object frPreviewForm: TfrPreviewForm
       Caption = '&Page width'
       GroupIndex = 1
       RadioItem = True
+      RightJustify = False
+      ShowAlwaysCheckable = False
       OnClick = N3Click
     end
     object N2: TMenuItem
@@ -618,6 +1202,8 @@ object frPreviewForm: TfrPreviewForm
       Caption = '&Whole page'
       GroupIndex = 1
       RadioItem = True
+      RightJustify = False
+      ShowAlwaysCheckable = False
       OnClick = N3Click
     end
     object N3: TMenuItem
@@ -625,29 +1211,41 @@ object frPreviewForm: TfrPreviewForm
       Caption = '&Two pages'
       GroupIndex = 1
       RadioItem = True
+      RightJustify = False
+      ShowAlwaysCheckable = False
       OnClick = N3Click
     end
     object N4: TMenuItem
       Caption = '-'
       GroupIndex = 1
+      RightJustify = False
+      ShowAlwaysCheckable = False
     end
     object N5: TMenuItem
       Caption = 'Edit page'
       GroupIndex = 1
+      RightJustify = False
+      ShowAlwaysCheckable = False
       OnClick = EditBtnClick
     end
     object N6: TMenuItem
       Caption = 'Add page'
       GroupIndex = 1
+      RightJustify = False
+      ShowAlwaysCheckable = False
       OnClick = NewPageBtnClick
     end
     object N7: TMenuItem
       Caption = 'Delete page'
       GroupIndex = 1
+      RightJustify = False
+      ShowAlwaysCheckable = False
       OnClick = DelPageBtnClick
     end
   end
   object OpenDialog: TOpenDialog
+    Width = 0
+    Height = 0
     Filter = 'Report file (*.frp)|*.frp'
     FilterIndex = 0
     Options = [ofHideReadOnly]
@@ -655,6 +1253,8 @@ object frPreviewForm: TfrPreviewForm
     top = 99
   end
   object SaveDialog: TSaveDialog
+    Width = 0
+    Height = 0
     Filter = 'Report file (*.frp)|*.frp'
     FilterIndex = 0
     Options = [ofHideReadOnly]
