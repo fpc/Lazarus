@@ -108,8 +108,13 @@ function PathExtractFileNameNoExt(const Path: string): string;
 function GetWindowsTempFolder: string;
 function FileGetSize(const FileName: string): Int64;
 procedure ShellExecEx(const FileName: string; const Parameters: string = '');
-function GetTickCount: DWord;
+function GetTickCount: Cardinal;
 function IsMultiByte(const pcChar: WideChar): Boolean;
+
+function IsWinVista: Boolean;
+function IsWinXP: Boolean;
+function IsWin2k: Boolean;
+function IsWin2003: Boolean;
 
 type
   EJcfConversionError = class(Exception)
@@ -118,16 +123,14 @@ type
 implementation
 
 uses
+{$ifdef MSWINDOWS}
+  Windows, ShellApi
+{$endif}
+{$ifdef Unix}
+  Unix
+{$endif}
 {$ifdef fpc}
-  {$ifdef windows}
-    Windows,
-  {$endif}
-  {$ifdef Unix}
-    Unix,
-  {$endif}
-  LCLIntf, FileUtil
-{$else}
-  Windows
+  , LCLIntf, FileUtil
 {$endif};
 
 function CharIsAlpha(const C: Char): Boolean;
@@ -354,10 +357,10 @@ var
   LowerS: String;
 begin
   LowerS := LowerCase(S);
-  if (LowerS = 'false') or (LowerS = 'no') then
+  if (LowerS = 'false') or (LowerS = 'no') or (LowerS = '0') then
     Result := False
   else
-  if (LowerS = 'true') or (LowerS = 'yes') then
+  if (LowerS = 'true') or (LowerS = 'yes') or (LowerS = '1') then
     Result := True
   else
     raise EJcfConversionError.Create('Cannot convert string [' + S + '] to boolean');
@@ -493,8 +496,8 @@ end;
 
 procedure ShellExecEx(const FileName: string; const Parameters: string = '');
 begin
-  {$ifdef windows}
-    Windows.ShellExecute(0, 'open', PChar(FileName), PChar(Parameters), nil, SW_SHOW);
+  {$ifdef MSWINDOWS}
+    ShellApi.ShellExecute(0, 'open', PChar(FileName), PChar(Parameters), nil, SW_SHOW);
   {$endif}
   {$ifdef unix}
     Shell(format('%s %s',[FileName, Parameters]));
@@ -503,7 +506,7 @@ end;
 
 function GetTickCount: DWord;
 begin
-{$ifdef windows}
+{$ifdef MSWINDOWS}
   Result := Windows.GetTickCount;
 {$else}
   Result := LCLIntf.GetTickCount;
@@ -512,7 +515,7 @@ end;
 
 function IsMultiByte(const pcChar: WideChar): Boolean;
 begin
-{$ifdef windows}
+{$ifdef MSWINDOWS}
   Result := IsDBCSLeadByte(Byte(pcChar));
 {$else}
   Result := False;
@@ -520,5 +523,42 @@ begin
 {$endif}
 end;
 
+function IsWinVista: Boolean;
+begin
+{$IFDEF MSWINDOWS}
+  Result := Win32MajorVersion = 6;
+  // can be also window server 2008
+{$ELSE}
+  Result := False;
+{$ENDIF}
+end;
+
+function IsWinXP: Boolean;
+begin
+{$IFDEF MSWINDOWS}
+  Result := (Win32MajorVersion = 5) and (Win32MinorVersion = 1);
+{$ELSE}
+  Result := False;
+{$ENDIF}
+end;
+
+function IsWin2k: Boolean;
+begin
+{$IFDEF MSWINDOWS}
+  Result := (Win32MajorVersion = 5) and (Win32MinorVersion = 0);
+{$ELSE}
+  Result := False;
+{$ENDIF}
+end;
+
+function IsWin2003: Boolean;
+begin
+{$IFDEF MSWINDOWS}
+  Result := (Win32MajorVersion = 5) and (Win32MinorVersion = 2);
+  // can be also window xp 64 bit
+{$ELSE}
+  Result := False;
+{$ENDIF}
+end;
 
 end.
