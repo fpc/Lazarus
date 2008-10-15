@@ -58,6 +58,10 @@ type
     ContributorsPage:TPage;
     AcknowledgementsPage:TPage;
     procedure AboutFormCreate(Sender:TObject);
+    procedure AcknowledgementsPaintBoxMouseDown(Sender: TObject;
+      Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure AcknowledgementsPaintBoxMouseMove(Sender: TObject;
+      Shift: TShiftState; X, Y: Integer);
     procedure miVerToClipboardClick(Sender: TObject);
     procedure URLLabelMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
@@ -68,15 +72,17 @@ type
     FAcknowledgements: TStrings;
     FBuffer: TBitmap;
     FContributors: TStrings;
-    FEnd: integer;
+    FEndLine: integer;
     FLineHeight: integer;
     FNumLines: integer;
     FOffset: integer;
-    FStart: integer;
+    FStartLine: integer;
     FStepSize: integer;
+    FActiveLine: integer;   //the line over which the mouse hovers
     procedure ResetScrollText;
     procedure LoadContributors;
     procedure LoadAcknowledgements;
+    function ActiveLineIsURL: boolean;
  public
     constructor Create(TheOwner: TComponent); override;
   end;
@@ -163,7 +169,7 @@ begin
   FNumLines := FBuffer.Height div FLineHeight;
 
   FOffset := FBuffer.Height;
-  FStart := 0;
+  FStartLine := 0;
   FStepSize := 1;
 
   Constraints.MinWidth:= 600;
@@ -180,6 +186,32 @@ begin
   LoadContributors;
   LoadAcknowledgements;
   CloseButton.Caption:=lisClose;
+end;
+
+procedure TAboutForm.AcknowledgementsPaintBoxMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  err: string;
+begin
+  if ActiveLineIsURL then
+    if HelpIntfs.ShowHelp(FAcknowledgements[FActiveLine], 'Lazarus', 'text/html', err) <> shrSuccess then
+      ShowMessage(err);
+end;
+
+procedure TAboutForm.AcknowledgementsPaintBoxMouseMove(Sender: TObject;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  //calculate what line is clicked from the mouse position
+  FActiveLine := (Y - FOffset) div FLineHeight;
+  if FActiveLine < 0 then
+    FActiveLine := 0;
+  if FActiveLine >= FAcknowledgements.Count then
+    FActiveLine := FAcknowledgements.Count -1;
+
+  AcknowledgementsPaintbox.Cursor := crDefault;
+
+  if ActiveLineIsURL then
+    AcknowledgementsPaintbox.Cursor := crHandPoint
 end;
 
 procedure TAboutForm.miVerToClipboardClick(Sender: TObject);
@@ -200,12 +232,14 @@ end;
 procedure TAboutForm.URLLabelMouseLeave(Sender: TObject);
 begin
   TLabel(Sender).Font.Style := [];
+  TLabel(Sender).Font.Color := clBlue;
   TLabel(Sender).Cursor := crDefault;
 end;
 
 procedure TAboutForm. URLLabelMouseEnter(Sender: TObject);
 begin
   TLabel(Sender).Font.Style := [fsUnderLine];
+  TLabel(Sender).Font.Color := clRed;
   TLabel(Sender).Cursor := crHandPoint;
 end;
 
@@ -220,17 +254,17 @@ procedure TAboutForm.TimerTimer(Sender: TObject);
     Dec(FOffset, FStepSize);
 
     if FOffSet < 0 then
-      FStart := -FOffset div FLineHeight
+      FStartLine := -FOffset div FLineHeight
     else
-      FStart := 0;
+      FStartLine := 0;
 
-    FEnd := FStart + FNumLines + 1;
-    if FEnd > AText.Count - 1 then
-      FEnd := AText.Count - 1;
+    FEndLine := FStartLine + FNumLines + 1;
+    if FEndLine > AText.Count - 1 then
+      FEndLine := AText.Count - 1;
 
     FBuffer.Canvas.FillRect(Rect(0, 0, FBuffer.Width, FBuffer.Height));
 
-    for i := FEnd downto FStart do
+    for i := FEndLine downto FStartLine do
     begin
       s := Trim(AText[i]);
 
@@ -250,8 +284,16 @@ procedure TAboutForm.TimerTimer(Sender: TObject);
         else
         begin
           //check for url
-          if Pos('http://', s) > 0 then
-            FBuffer.Canvas.Font.Color := clBlue;
+          if Pos('http://', s) = 1 then
+          begin
+            if i = FActiveLine then
+            begin
+              FBuffer.Canvas.Font.Style := [fsUnderline];
+              FBuffer.Canvas.Font.Color := clRed;
+            end
+            else
+              FBuffer.Canvas.Font.Color := clBlue;
+           end;
         end;
 
         w := FBuffer.Canvas.TextWidth(s);
@@ -260,7 +302,7 @@ procedure TAboutForm.TimerTimer(Sender: TObject);
     end;
 
     //start showing the list from the start
-    if FStart > AText.Count - 1 then
+    if FStartLine > AText.Count - 1 then
       FOffset := FBuffer.Height;
 
     ACanvas.Draw(0,0,FBuffer);
@@ -319,6 +361,11 @@ begin
     FAcknowledgements.LoadFromFile(UTF8ToSys(AcknowledgementsFileName))
   else
     FAcknowledgements.Text:=lisAboutNoContributors;
+end;
+
+function TAboutForm.ActiveLineIsURL: boolean;
+begin
+  Result := Pos('http://', FAcknowledgements[FActiveLine]) = 1;
 end;
 
 initialization

@@ -560,6 +560,8 @@ object AboutForm: TAboutForm
         ParentFont = True
         ParentShowHint = True
         Visible = True
+        OnMouseDown = AcknowledgementsPaintBoxMouseDown
+        OnMouseMove = AcknowledgementsPaintBoxMouseMove
       end
     end
     object LogoPage: TPage
@@ -613,7 +615,7 @@ object AboutForm: TAboutForm
     end
   end
   object Timer: TTimer
-    Interval = 15
+    Interval = 30
     OnTimer = TimerTimer
     left = 17
     top = 264
