@@ -46,7 +46,7 @@ uses
   Dialogs, LResources, ExtCtrls, LCLProc,
   IDEMsgIntf, IDEExternToolIntf,
   PropEdits, KeyMapShortCutDlg, TransferMacros, LazarusIDEStrConsts,
-  EditMsgScannersDlg;
+  EditMsgScannersDlg, ButtonPanel;
 
 type
   { TExternalToolOptions }
@@ -67,7 +67,7 @@ type
     the editor dialog for a single external tool}
 
   TExternalToolOptionDlg = class(TForm)
-    BtnPanel: TPanel;
+    ButtonPanel: TButtonPanel;
     ScannersButton: TButton;
     TitleLabel: TLabel;
     TitleEdit: TEdit;
@@ -86,10 +86,9 @@ type
     MacrosGroupbox: TGroupbox;
     MacrosListbox: TListbox;
     MacrosInsertButton: TButton;
-    OKButton: TBitBtn;
-    CancelButton: TBitBtn;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure HelpButtonClick(Sender: TObject);
     procedure MacrosInsertButtonClick(Sender: TObject);
     procedure MacrosListboxClick(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
@@ -120,6 +119,9 @@ function ShowExtToolOptionDlg(TransferMacroList: TTransferMacroList;
   
 implementation
 
+uses
+  IDEContextHelpEdit;
+
 function ShowExtToolOptionDlg(TransferMacroList: TTransferMacroList;
   ExternalToolOptions: TExternalToolOptions):TModalResult;
 var ExternalToolOptionDlg: TExternalToolOptionDlg;
@@ -136,7 +138,6 @@ begin
     ExternalToolOptionDlg.Free;
   end;
 end;
-
 
 { TExternalToolOptionDlg }
 
@@ -261,10 +262,7 @@ begin
   with MacrosInsertButton do
     Caption:=lisCodeTemplAdd;
     
-  OKButton.Caption:=lisOkBtn;
-  CancelButton.Caption:=dlgCancel;
-  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
-  OKButton.LoadGlyphFromLazarusResource('btn_ok');
+  ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
 
   fOptions:=TExternalToolOptions.Create;
 end;
@@ -273,6 +271,11 @@ procedure TExternalToolOptionDlg.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(fOptions);
   FreeAndNil(fScanners);
+end;
+
+procedure TExternalToolOptionDlg.HelpButtonClick(Sender: TObject);
+begin
+  ShowContextHelpForIDE(Self);
 end;
 
 procedure TExternalToolOptionDlg.SetOptions(TheOptions: TExternalToolOptions);

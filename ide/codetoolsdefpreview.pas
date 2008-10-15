@@ -9,7 +9,8 @@ uses
   LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   StdCtrls, Buttons, ComCtrls, ExtCtrls, FileUtil, AVGLvlTree,
   SynEdit, DefineTemplates, ExprEval, IDEWindowIntf, EditorOptions,
-  LazarusIDEStrConsts, InputHistory, CodeToolsOptions;
+  LazarusIDEStrConsts, InputHistory, CodeToolsOptions, ButtonPanel,
+  IDEContextHelpEdit;
 
 type
   TCodeToolsDefinesNodeValues = class
@@ -25,11 +26,11 @@ type
   { TCodeToolsDefinesDialog }
 
   TCodeToolsDefinesDialog = class(TForm)
-    CloseButton: TBitBtn;
+    ButtonPanel: TButtonPanel;
     DirectoryBrowseButton: TButton;
     DirectoryCombobox: TComboBox;
     DirectoryGroupbox: TGroupBox;
-    CloseButtonPanel: TPanel;
+    Splitter1: TSplitter;
     TemplatesMemo: TMemo;
     TemplatesSplitter: TSplitter;
     TemplatesGroupBox: TGroupBox;
@@ -44,6 +45,7 @@ type
     procedure DirectoryBrowseButtonCLICK(Sender: TObject);
     procedure DirectoryComboboxCHANGE(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure HelpButtonClick(Sender: TObject);
     procedure ParsedTemplatesTreeViewSelectionChanged(Sender: TObject);
     procedure ValuesListviewSELECTITEM(Sender: TObject; Item: TListItem;
       Selected: Boolean);
@@ -167,6 +169,11 @@ begin
     FNodeValues.FreeAndClear;
     FreeAndNil(FNodeValues);
   end;
+end;
+
+procedure TCodeToolsDefinesDialog.HelpButtonClick(Sender: TObject);
+begin
+  ShowContextHelpForIDE(Self);
 end;
 
 procedure TCodeToolsDefinesDialog.ParsedTemplatesTreeViewSelectionChanged(
@@ -356,8 +363,7 @@ begin
   ListColumn.Caption:=dlgRunOValue;
   
   DirectoryGroupbox.Caption:=lisCodeToolsDefsInsertBehindDirectory;
-  CloseButton.Caption:=lisMenuClose;
-  CloseButton.LoadGlyphFromLazarusResource('btn_close');
+  ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
   DirectoryCombobox.Items.Assign(
     InputHistories.HistoryLists.GetList(hlCodeToolsDirectories,true));
   if DirectoryCombobox.Items.Count>0 then
