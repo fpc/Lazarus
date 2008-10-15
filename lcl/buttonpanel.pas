@@ -20,7 +20,7 @@ interface
 
 uses
   Buttons, Classes, LCLProc, Controls, Dialogs, ExtCtrls, Forms, Graphics,
-  GraphType, LCLType, SysUtils;
+  GraphType, LCLType, SysUtils, LCLStrConsts;
 
 type
   TButtonOrder  = (boDefault, boCloseCancelOK, boCloseOKCancel);
@@ -401,6 +401,7 @@ begin
     BorderSpacing.Around := 6;
     AutoSize := True;
     Align    := alRight;
+    Caption  := rsMbCancel;
   end;
   FCloseButton := TPanelBitBtn.Create(Self);
   with FCloseButton do
@@ -411,6 +412,7 @@ begin
     BorderSpacing.Around := 6;
     AutoSize := True;
     Align    := alRight;
+    Caption  := rsMbClose;
   end;
   FHelpButton := TPanelBitBtn.Create(Self);
   with FHelpButton do
@@ -421,6 +423,7 @@ begin
     BorderSpacing.Around := 6;
     AutoSize := True;
     Align    := alLeft;
+    Caption  := rsMbHelp;
   end;
   FOKButton := TPanelBitBtn.Create(Self);
   with FOKButton do
@@ -431,6 +434,7 @@ begin
     BorderSpacing.Around := 6;
     AutoSize := True;
     Align    := alRight;
+    Caption  := rsMbOK;
   end;
 
   FCancelGlyph := TBitmap.Create;
