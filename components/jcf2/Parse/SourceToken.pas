@@ -247,21 +247,27 @@ end;
 function TSourceToken.SourceLine: string;
 var
   lcLineToken: TSourceToken;
+  lcPriorToken: TSourceToken;
 begin
-
-  // find the start of the line
+  // find the return at the start of the line
+  // or nil for start of first line
   lcLineToken := self;
+  lcPriorToken := lcLineToken.PriorToken;
 
-  while (lcLineToken <> nil) and (lcLineToken.TokenType <> ttReturn) do
+  while (lcPriorToken <> nil) and (lcPriorToken.TokenType <> ttReturn) do
   begin
-    lcLineToken := lcLineToken.PriorToken;
+    lcLineToken := lcPriorToken;
+    lcPriorToken := lcPriorToken.PriorToken;
   end;
 
   // walk to the end of the line
   Result := '';
   repeat
-    Result := Result + lcLineToken.SourceCode;
-    lcLineToken :=  lcLineToken.NextToken;
+    if (lcLineToken <> nil) and (lcLineToken.TokenType <> ttReturn) then
+    begin
+      Result := Result + lcLineToken.SourceCode;
+      lcLineToken :=  lcLineToken.NextToken;
+    end;
 
   until (lcLineToken = nil) or (lcLineToken.TokenType = ttReturn);
 
