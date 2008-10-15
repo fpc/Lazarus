@@ -19,8 +19,8 @@ LazarusResources.Add('TForm1','FORMDATA',[
   +'erSpacing.Top'#2#0#19'BorderSpacing.Right'#2#0#20'BorderSpacing.Bottom'#2#0
   +#20'BorderSpacing.Around'#2#0'!BorderSpacing.CellAlignHorizontal'#7#7'ccaFil'
   +'l'#31'BorderSpacing.CellAlignVertical'#7#7'ccaFill'#11'BorderStyle'#7#8'bsS'
-  +'ingle'#8'ColCount'#3#255#0#15'DefaultColWidth'#2'Z'#14'DefaultDrawing'#9#10
-  +'DragCursor'#7#6'crDrag'#8'DragKind'#7#6'dkDrag'#8'DragMode'#7#8'dmManual'#7
+  +'ingle'#8'ColCount'#3#1#1#15'DefaultColWidth'#2'Z'#14'DefaultDrawing'#9#10'D'
+  +'ragCursor'#7#6'crDrag'#8'DragKind'#7#6'dkDrag'#8'DragMode'#7#8'dmManual'#7
   +'Enabled'#9#14'ExtendedSelect'#9#10'FixedColor'#7#9'clBtnFace'#9'FixedCols'#2
   +#1#9'FixedRows'#2#1#4'Flat'#8#13'GridLineWidth'#2#1#14'HeaderHotZones'#11#11
   +'gzFixedCols'#0#15'HeaderPushZones'#11#11'gzFixedCols'#0#7'Options'#11#15'go'
@@ -29,8 +29,8 @@ LazarusResources.Add('TForm1','FORMDATA',[
   +'t'#3#232#3#10'ScrollBars'#7#10'ssAutoBoth'#8'TabOrder'#2#0#7'TabStop'#9#16
   +'TitleFont.Height'#2#0#15'TitleFont.Style'#11#0#10'TitleStyle'#7#9'tsLazarus'
   +#14'UseXORFeatures'#8#7'Visible'#9#17'OnBeforeSelection'#7#19'gridBeforeSele'
-  +'ction'#15'OnPrepareCanvas'#7#17'gridPrepareCanvas'#9'ColWidths'#1#2'+'#2'Z'
-  +#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2
+  +'ction'#10'OnDrawCell'#7#12'gridDrawCell'#15'OnPrepareCanvas'#7#17'gridPrepa'
+  +'reCanvas'#9'ColWidths'#1#2'+'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2
   +'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2
   +'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2
   +'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2
@@ -46,5 +46,6 @@ LazarusResources.Add('TForm1','FORMDATA',[
   +'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2
   +'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2
   +'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2
-  +'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#0#0#0#0
+  +'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2
+  +'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#2'Z'#0#0#0#0
 ]);

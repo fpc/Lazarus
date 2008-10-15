@@ -15,10 +15,13 @@ type
   TForm1 = class(TForm)
     grid: TStringGrid;
     procedure gridBeforeSelection(Sender: TObject; aCol, aRow: Integer);
+    procedure gridDrawCell(Sender: TObject; aCol, aRow: Integer; aRect: TRect;
+      aState: TGridDrawState);
     procedure gridPrepareCanvas(sender: TObject; aCol, aRow: Integer;
       aState: TGridDrawState);
   private
     { private declarations }
+    function IndexToAlphaIndex(AIndex: Integer): string;
   public
     { public declarations }
   end; 
@@ -48,6 +51,40 @@ begin
 
 end;
 
+procedure TForm1.gridDrawCell(Sender: TObject; aCol, aRow: Integer;
+  aRect: TRect; aState: TGridDrawState);
+
+  procedure HorizontalCenter;
+  var
+    aTextStyle : TTextStyle;
+  begin
+    aTextStyle := grid.Canvas.TextStyle;
+    aTextStyle.Alignment:=taCenter;
+    grid.Canvas.TextStyle:=aTextStyle;
+  end;
+
+begin
+
+  if gdFixed in aState then
+  begin
+    if (aCol=0) and (aRow>=Grid.FixedRows) then
+    begin
+      HorizontalCenter;
+      grid.Canvas.TextRect(aRect, aRect.Left, aRect.Top, IntToStr(aRow));
+      exit;
+    end else
+    if (aRow=0) and (aCol>=Grid.FixedCols) then
+    begin
+      HorizontalCenter;
+      grid.Canvas.TextRect(aRect, aRect.Left, aRect.Top,
+                                 IndexToAlphaIndex(aCol-Grid.FixedCols));
+      exit;
+    end;
+  end;
+
+  grid.DefaultDrawCell(aCol,aRow,aRect,aState);
+end;
+
 procedure TForm1.gridPrepareCanvas(sender: TObject; aCol, aRow: Integer;
   aState: TGridDrawState);
 begin
@@ -56,6 +93,19 @@ begin
     if (aCol=grid.Col) or (aRow=grid.Row) then
       grid.Canvas.Brush.Color := clInactiveCaption;
   end;
+end;
+
+function TForm1.IndexToAlphaIndex(AIndex: Integer): string;
+var
+  i: Integer;
+begin
+  Result := chr((AIndex mod 26) + ord('A'));
+  i := (AIndex div 26)-1;
+  if i>25 then
+    result := '['+IntToStr(AIndex)+']'
+  else
+  if i>=0 then
+    result := chr(i + ord('A')) + Result;
 end;
 
 initialization
