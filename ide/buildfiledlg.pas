@@ -557,7 +557,6 @@ begin
   RunWorkDirGroupbox.Caption:=lisBFWorkingDirectoryLeaveEmptyForFilePath2;
   RunCommandGroupbox.Caption:=lisBFRunCommand;
 
-  TranslateButtonPanel(ButtonPanel);
   ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
   ButtonPanel.OKButton.OnClick := @OKButtonClick;
 end;

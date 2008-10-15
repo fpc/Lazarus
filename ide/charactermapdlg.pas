@@ -88,7 +88,6 @@ begin
   Caption := lisCharacterMap;
   CharactersGroupbox.Caption := lisCharacterMap;
 
-  TranslateButtonPanel(ButtonPanel);
   ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
   //EnvironmentOptions.IDEWindowLayoutList.Apply(Self, Name);
   CharInfoLabel.Caption := '-';

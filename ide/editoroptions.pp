@@ -4054,7 +4054,6 @@ end;
 
 procedure TEditorOptionsForm.SetupButtonBar;
 begin
-  TranslateButtonPanel(ButtonPanel);
   ButtonPanel.OKButton.OnClick := @OKButtonClick;
   ButtonPanel.CancelButton.OnClick := @CancelButtonClick;
   ButtonPanel.HelpButton.OnClick := @HelpButtonClick;

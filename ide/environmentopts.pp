@@ -1723,7 +1723,6 @@ begin
   SetupNamingPage(6);
   SetupLazDocPage(7);
 
-  TranslateButtonPanel(ButtonPanel);
   ButtonPanel.OKButton.OnClick := @OKButtonClick;
   ButtonPanel.CancelButton.OnClick := @CancelButtonClick;
   ButtonPanel.HelpButton.OnClick := @HelpButtonClick;

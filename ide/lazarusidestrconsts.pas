@@ -3914,16 +3914,6 @@ resourcestring
   lisProductName = 'Product Name:';
   lisProductVersion = 'Product Version:';
 
-procedure TranslateButtonPanel(ButtonPanel: TButtonPanel);
-
 implementation
-
-procedure TranslateButtonPanel(ButtonPanel: TButtonPanel);
-begin
-  ButtonPanel.OKButton.Caption := lisOkBtn;
-  ButtonPanel.CancelButton.Caption := dlgCancel;
-  ButtonPanel.CloseButton.Caption := lisMenuClose;
-  ButtonPanel.HelpButton.Caption := lisPckEditHelp;
-end;
 
 end.

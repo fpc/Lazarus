@@ -1113,7 +1113,6 @@ begin
   inherited Create(TheOwner);
   Application.AddOnIdleHandler(@ApplicationOnIdle,true);
   Caption:=dlgCCOCaption;
-  TranslateButtonPanel(ButtonPanel);
   TestGroupbox.Caption:=dlgCCOTest;
   OutputGroupBox.Caption:=dlgCCOResults;
   CopyOutputMenuItem.Caption:=lisCCOCopyOutputToCliboard;

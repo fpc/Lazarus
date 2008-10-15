@@ -136,7 +136,6 @@ begin
 
   Caption:=lisHlpOptsHelpOptions;
 
-  TranslateButtonPanel(ButtonPanel);
   ButtonPanel.OKButton.OnClick := @OKButtonClick;
   ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
   ButtonPanel.CancelButton.OnClick := @CancelButtonClick;

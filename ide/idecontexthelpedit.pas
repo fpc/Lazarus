@@ -154,8 +154,6 @@ begin
   NodeNameLabel.Caption:=lisDebugOptionsFrmName;
   NodesGroupBox.Caption:=lisHelpEntries;
 
-  TranslateButtonPanel(ButtonPanel);
-
   IDEDialogLayoutList.ApplyLayout(Self, 600, 450);
 
   LoadIDEWindowHelp;

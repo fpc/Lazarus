@@ -1073,7 +1073,6 @@ begin
     SetupSpacePage(4);
     SetupIdentifierCompletionPage(5);
 
-    TranslateButtonPanel(ButtonPanel);
     ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
 
 //  end;

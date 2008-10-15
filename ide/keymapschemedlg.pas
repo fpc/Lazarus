@@ -77,7 +77,6 @@ begin
   NoteLabel.Caption:=lisKMNoteAllKeysWillBeSetToTheValuesOfTheChoosenScheme;
   SchemeRadiogroup.Caption:=lisKMKeymappingScheme;
 
-  TranslateButtonPanel(ButtonPanel);
   ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
 
   with SchemeRadiogroup.Items do begin

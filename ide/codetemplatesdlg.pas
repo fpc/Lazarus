@@ -692,7 +692,6 @@ begin
   DeleteButton.Caption:=dlgEdDelete;
   TemplatesGroupBox.Caption:=lisCTDTemplates;
 
-  TranslateButtonPanel(ButtonPanel);
   ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
   ButtonPanel.OKButton.OnClick := @OKButtonClick;
 
