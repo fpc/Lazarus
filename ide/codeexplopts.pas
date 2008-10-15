@@ -35,8 +35,8 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  Laz_XMLCfg, Buttons, ExtCtrls, FileUtil,
-  LazConf, IDEProcs, LazarusIDEStrConsts, StdCtrls;
+  Laz_XMLCfg, Buttons, ExtCtrls, FileUtil, IDEContextHelpEdit,
+  LazConf, IDEProcs, LazarusIDEStrConsts, StdCtrls, ButtonPanel;
 
 type
   { TCodeExplorerOptions }
@@ -97,18 +97,18 @@ type
   { TCodeExplorerDlg }
 
   TCodeExplorerDlg = class(TForm)
-    CancelButton: TBitBtn;
+    ButtonPanel1: TButtonPanel;
+    ButtonPanel: TButtonPanel;
     CategoriesCheckGroup: TCheckGroup;
     FollowCursorCheckBox: TCheckBox;
     MainNotebook: TNotebook;
     ModeRadioGroup: TRadioGroup;
-    OkButton: TBitBtn;
-    BtnPanel: TPanel;
     CategoryPage: TPage;
     RefreshRadioGroup: TRadioGroup;
     UpdatePage: TPage;
     procedure CodeExplorerDlgCreate(Sender: TObject);
     procedure CodeExplorerDlgDestroy(Sender: TObject);
+    procedure HelpButtonClick(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
   private
     FOptions: TCodeExplorerOptions;
@@ -390,10 +390,10 @@ var
 begin
   FOptions:=TCodeExplorerOptions.Create;
   Caption:=lisCEOCodeExplorer;
-  OkButton.Caption:=dlgButApply;
-  CancelButton.Caption:=dlgCancel;
-  OkButton.LoadGlyphFromLazarusResource('btn_ok');
-  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
+
+  ButtonPanel.OKButton.OnClick := @OKButtonClick;
+  ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
+
   UpdatePage.Caption:=lisCEOUpdate;
   RefreshRadioGroup.Caption:=lisCEORefreshAutomatically;
   with RefreshRadioGroup do begin
@@ -418,6 +418,11 @@ procedure TCodeExplorerDlg.CodeExplorerDlgDestroy(Sender: TObject);
 begin
   FOptions.Free;
   FOptions:=nil;
+end;
+
+procedure TCodeExplorerDlg.HelpButtonClick(Sender: TObject);
+begin
+  ShowContextHelpForIDE(Self);
 end;
 
 initialization
