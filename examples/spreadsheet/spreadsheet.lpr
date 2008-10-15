@@ -1,4 +1,4 @@
-program Project1;
+program spreadsheet;
 
 {$mode objfpc}{$H+}
 
@@ -10,9 +10,10 @@ uses
   Forms
   { you can add units after this }, main, LResources;
 
-{$IFDEF WINDOWS}{$R project1.rc}{$ENDIF}
+{$IFDEF WINDOWS}{$R spreadsheet.rc}{$ENDIF}
 
 begin
+  {$I spreadsheet.lrs}
   Application.Initialize;
   Application.CreateForm(TForm1, Form1);
   Application.Run;
