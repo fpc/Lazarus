@@ -44,7 +44,7 @@ uses
   Forms, StdCtrls, ExtCtrls, FileProcs,
   IDEWindowIntf, IDEImagesIntf, NewItemIntf, PackageIntf, ProjectIntf,
   LazIDEIntf,
-  LazarusIDEStrConsts, IDEContextHelpEdit, Project, MainIntf;
+  LazarusIDEStrConsts, IDEContextHelpEdit, Project, MainIntf, ButtonPanel;
 
 type
   { TNewLazIDEItemCategory }
@@ -138,18 +138,16 @@ type
   { TNewOtherDialog }
 
   TNewOtherDialog = class(TForm)
-    CancelButton: TBitBtn;
+    ButtonPanel: TButtonPanel;
     DescriptionGroupBox: TGroupBox;
     DescriptionLabel: TLabel;
-    HelpButton: TBitBtn;
     ItemsTreeView: TTreeView;
     InheritableComponentsListView: TListView;
-    OkButton: TBitBtn;
     Panel1: TPanel;
     Splitter1: TSplitter;
     procedure HelpButtonClick(Sender: TObject);
     procedure ItemsTreeViewSelectionChanged(Sender: TObject);
-    procedure OkButtonClick(Sender: TObject);
+    procedure OKButtonClick(Sender: TObject);
   private
     ImageIndexFolder: integer;
     ImageIndexTemplate: integer;
@@ -186,7 +184,7 @@ end;
 
 { TNewOtherDialog }
 
-procedure TNewOtherDialog.OkButtonClick(Sender: TObject);
+procedure TNewOtherDialog.OKButtonClick(Sender: TObject);
 var
   AInheritedNode: TListItem;
   ANode: TTreeNode;
@@ -234,7 +232,7 @@ begin
         // Set the resource class of the file descriptor
         InhCompItem.ResourceClass := TPersistentClass(AncestorComponent.ClassType);
         InhCompItem.InheritedUnit := AnUnitInfo;
-        //DebugLn(['TNewOtherDialog.OkButtonClick ',InhCompItem.InheritedUnit.Filename,' ',dbgsname(InhCompItem.ResourceClass)]);
+        //DebugLn(['TNewOtherDialog.OKButtonClick ',InhCompItem.InheritedUnit.Filename,' ',dbgsname(InhCompItem.ResourceClass)]);
       end
       else
       begin
@@ -326,7 +324,7 @@ end;
 
 procedure TNewOtherDialog.ItemsTreeViewSelectionChanged(Sender: TObject);
 begin
-  OkButton.Enabled := (ItemsTreeView.Selected <> nil) and
+  ButtonPanel.OKButton.Enabled := (ItemsTreeView.Selected <> nil) and
     (TObject(ItemsTreeView.Selected.Data) is TNewIDEItemTemplate);
   UpdateDescription;
 end;
@@ -344,15 +342,9 @@ begin
 
   DescriptionGroupBox.Caption := lisToDoLDescription;
   DescriptionLabel.Caption := '';
-  OkButton.Caption := lisLazBuildOk;
-  CancelButton.Caption := dlgCancel;
-  HelpButton.Caption := lisPckEditHelp;
-  DefaultControl := OkButton;
-  CancelControl  := CancelButton;
 
-  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
-  OkButton.LoadGlyphFromLazarusResource('btn_ok');
-  HelpButton.LoadGlyphFromLazarusResource('btn_help');
+  ButtonPanel.OKButton.OnClick := @OKButtonClick;
+  ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
 end;
 
 procedure TNewOtherDialog.UpdateDescription;

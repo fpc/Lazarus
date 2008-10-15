@@ -41,7 +41,8 @@ uses
   FileUtil, IDEContextHelpEdit, EnvironmentOpts,
   IDEWindowIntf, IDEImagesIntf, ProjectIntf, IDEDialogs,
   IDEOptionDefs, LazarusIDEStrConsts, Project, IDEProcs, W32VersionInfo,
-  VersionInfoAdditionalInfo, W32Manifest, ApplicationBundle, ExtDlgs;
+  VersionInfoAdditionalInfo, W32Manifest, ApplicationBundle, ExtDlgs,
+  ButtonPanel;
 
 type
 
@@ -50,6 +51,7 @@ type
   TProjectOptionsDialog = class(TForm)
     AdditionalInfoButton: TBitBtn;
     Bevel1: TBevel;
+    ButtonPanel: TButtonPanel;
     ClearIconButton: TBitBtn;
     SaveIconButton: TBitBtn;
     LoadIconButton: TBitBtn;
@@ -141,13 +143,8 @@ type
     POOutDirEdit: TEdit;
     EnableI18NCheckBox: TCheckBox;
     I18NGroupBox: TGroupBox;
-    PODBtnPanel: TPanel;
     PoOutDirLabel: TLabel;
 
-    // buttons at bottom
-    HelpButton: TBitBtn;
-    CancelButton: TBitBtn;
-    OKButton: TBitBtn;
 
     procedure AdditionalInfoButtonClick(Sender: TObject);
     procedure ClearIconButtonClick(Sender: TObject);
@@ -265,13 +262,8 @@ begin
   inherited Create(TheOwner);
 
   Caption := dlgProjectOptions;
-  OKButton.Caption:=lisOkBtn;
-  CancelButton.Caption:=dlgCancel;
-  HelpButton.Caption:=lisMenuHelp;
 
-  OKButton.LoadGlyphFromLazarusResource('btn_ok');
-  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
-  HelpButton.LoadGlyphFromLazarusResource('btn_help');
+  ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
 
   NoteBook.PageIndex := 0;
 

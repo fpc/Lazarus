@@ -33,93 +33,18 @@ object NewProjectDialog: TNewProjectDialog
   UseDockManager = False
   LCLVersion = '0.9.27'
   WindowState = wsNormal
-  object CancelButton: TBitBtn
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 304
-    Height = 34
-    Top = 200
-    Width = 80
-    HelpContext = 0
-    Align = alNone
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Left = 0
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 6
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
-    Cancel = True
-    Caption = 'Cancel'
-    Default = False
-    Enabled = True
-    Kind = bkCancel
-    Layout = blGlyphLeft
-    Margin = -1
-    ModalResult = 2
-    NumGlyphs = 0
-    OnClick = CancelButtonClick
-    ParentFont = True
-    ParentShowHint = True
-    Spacing = 3
-    TabOrder = 0
-    TabStop = True
-    Visible = True
-  end
-  object CreateButton: TBitBtn
-    AnchorSideRight.Control = CancelButton
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 220
-    Height = 32
-    Top = 202
-    Width = 78
-    HelpContext = 0
-    Align = alNone
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Left = 0
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 6
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
-    Cancel = False
-    Caption = '&Create'
-    Default = True
-    Enabled = True
-    Kind = bkYes
-    Layout = blGlyphLeft
-    Margin = -1
-    ModalResult = 6
-    NumGlyphs = 0
-    OnClick = CreateButtonClick
-    ParentFont = True
-    ParentShowHint = True
-    Spacing = 3
-    TabOrder = 1
-    TabStop = True
-    Visible = True
-  end
   object Panel1: TPanel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = CancelButton
     Left = 6
-    Height = 188
+    Height = 180
     Top = 6
     Width = 378
     HelpContext = 0
-    Align = alNone
+    Align = alClient
     Alignment = taCenter
-    Anchors = [akTop, akLeft, akRight, akBottom]
     AutoSize = False
     BorderSpacing.Left = 0
     BorderSpacing.Top = 0
@@ -138,8 +63,8 @@ object NewProjectDialog: TNewProjectDialog
     ChildSizing.HorizontalSpacing = 0
     ChildSizing.VerticalSpacing = 0
     ChildSizing.ControlsPerLine = 0
-    ClientHeight = 184
-    ClientWidth = 374
+    ClientHeight = 180
+    ClientWidth = 378
     DockSite = False
     DragCursor = crDrag
     DragKind = dkDrag
@@ -149,14 +74,14 @@ object NewProjectDialog: TNewProjectDialog
     ParentColor = True
     ParentFont = True
     ParentShowHint = True
-    TabOrder = 2
+    TabOrder = 0
     TabStop = False
     Visible = True
     object DescriptionGroupBox: TGroupBox
       Left = 170
-      Height = 184
+      Height = 180
       Top = 0
-      Width = 204
+      Width = 208
       HelpContext = 0
       Align = alClient
       AutoSize = False
@@ -173,8 +98,8 @@ object NewProjectDialog: TNewProjectDialog
       ChildSizing.HorizontalSpacing = 0
       ChildSizing.VerticalSpacing = 0
       ChildSizing.ControlsPerLine = 0
-      ClientHeight = 165
-      ClientWidth = 200
+      ClientHeight = 161
+      ClientWidth = 204
       Ctl3D = False
       DockSite = False
       DragCursor = crDrag
@@ -191,9 +116,9 @@ object NewProjectDialog: TNewProjectDialog
       Visible = True
       object HelpLabel: TLabel
         Left = 6
-        Height = 153
+        Height = 149
         Top = 6
-        Width = 188
+        Width = 192
         HelpContext = 0
         Align = alClient
         Alignment = taLeftJustify
@@ -223,7 +148,7 @@ object NewProjectDialog: TNewProjectDialog
     end
     object ListBox: TListBox
       Left = 0
-      Height = 184
+      Height = 180
       Top = 0
       Width = 165
       HelpContext = 0
@@ -247,6 +172,7 @@ object NewProjectDialog: TNewProjectDialog
       IntegralHeight = False
       ItemHeight = 0
       MultiSelect = False
+      OnDblClick = ListBoxDblClick
       ParentBidiMode = True
       ParentShowHint = True
       ParentFont = True
@@ -260,7 +186,7 @@ object NewProjectDialog: TNewProjectDialog
     object Splitter1: TSplitter
       Cursor = crHSplit
       Left = 165
-      Height = 184
+      Height = 180
       Top = 0
       Width = 5
       HelpContext = 0
@@ -275,40 +201,19 @@ object NewProjectDialog: TNewProjectDialog
       Visible = True
     end
   end
-  object HelpButton: TBitBtn
-    AnchorSideLeft.Control = Owner
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
+  object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 34
-    Top = 200
-    Width = 66
+    Height = 48
+    Top = 192
+    Width = 378
     HelpContext = 0
-    Align = alNone
-    Anchors = [akLeft, akBottom]
+    Align = alBottom
     AutoSize = True
-    BorderSpacing.Left = 0
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 6
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
-    Cancel = False
-    Caption = '&Help'
-    Default = False
-    Enabled = True
-    Kind = bkHelp
-    Layout = blGlyphLeft
-    Margin = -1
-    ModalResult = 0
-    NumGlyphs = 0
-    OnClick = HelpButtonClick
-    ParentFont = True
-    ParentShowHint = True
-    Spacing = 3
-    TabOrder = 3
-    TabStop = True
+    ButtonOrder = boDefault
+    TabOrder = 1
+    DefaultButton = pbOK
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+    ShowGlyphs = [pbOK, pbCancel, pbClose, pbHelp]
     Visible = True
   end
 end

@@ -32,24 +32,21 @@ interface
 
 uses
   Classes, SysUtils, Forms, Graphics, Controls, LResources, Project, Buttons,
-  StdCtrls, ProjectIntf, ExtCtrls, LazarusIDEStrConsts, IDEContextHelpEdit;
+  StdCtrls, ProjectIntf, ExtCtrls, LazarusIDEStrConsts, IDEContextHelpEdit,
+  ButtonPanel;
 
 type
 
 { TNewProjectDialog }
 
   TNewProjectDialog = class(TForm)
-    HelpButton: TBitBtn;
-    CreateButton: TBitBtn;
-    CancelButton: TBitBtn;
+    ButtonPanel: TButtonPanel;
     DescriptionGroupBox: TGroupBox;
     HelpLabel: TLabel;
     ListBox: TListBox;
     Panel1: TPanel;
     Splitter1: TSplitter;
     procedure HelpButtonClick(Sender: TObject);
-    procedure CreateButtonClick(Sender:TObject);
-    procedure CancelButtonClick(Sender:TObject);
     procedure ListBoxDblClick(Sender: TObject);
     procedure ListBoxSelectionChange(Sender: TObject; User: boolean);
   private
@@ -126,18 +123,8 @@ begin
     OnSelectionChange:=@ListBoxSelectionChange;
   end;
 
-  CancelButton.Caption:=dlgCancel;
-  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
-  CreateButton.Caption:=lisNPCreate;
-  CreateButton.LoadGlyphFromLazarusResource('btn_ok');
   DescriptionGroupBox.Caption := lisToDoLDescription;
-  HelpButton.LoadGlyphFromLazarusResource('btn_help');
-  HelpLabel.Caption:=lisNPSelectAProjectType;
-end;
-
-procedure TNewProjectDialog.CreateButtonClick(Sender:TObject);
-begin
-  ModalResult:=mrOk;
+  ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
 end;
 
 procedure TNewProjectDialog.HelpButtonClick(Sender: TObject);
@@ -145,15 +132,10 @@ begin
   ShowContextHelpForIDE(Self);
 end;
 
-procedure TNewProjectDialog.CancelButtonClick(Sender:TObject);
-begin
-  ModalResult:=mrCancel;
-end;
-
 procedure TNewProjectDialog.ListBoxDblClick(Sender: TObject);
 begin
-  if ListBox.ItemAtPos(ListBox.ScreenToClient(Mouse.CursorPos),true) >= 0
-  then CreateButtonClick(Self);
+  if ListBox.ItemAtPos(ListBox.ScreenToClient(Mouse.CursorPos),true) >= 0 then
+    ModalResult:=mrOk;
 end;
 
 procedure TNewProjectDialog.ListBoxSelectionChange(Sender: TObject;
