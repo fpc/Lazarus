@@ -35,17 +35,16 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
   WindowState = wsNormal
   object Notebook: TNotebook
     Left = 0
-    Height = 455
+    Height = 447
     Top = 0
     Width = 500
     HelpContext = 0
     TabStop = True
-    Align = alTop
-    Anchors = [akTop, akLeft, akRight, akBottom]
+    Align = alClient
     BorderSpacing.Left = 0
     BorderSpacing.Top = 0
     BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
+    BorderSpacing.Bottom = 6
     BorderSpacing.Around = 0
     BorderSpacing.CellAlignHorizontal = ccaFill
     BorderSpacing.CellAlignVertical = ccaFill
@@ -53,7 +52,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
     DragMode = dmManual
     Enabled = True
     Options = []
-    PageIndex = 0
+    PageIndex = 1
     ParentFont = True
     ShowTabs = True
     TabOrder = 0
@@ -66,7 +65,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
       ChildSizing.VerticalSpacing = 0
       ChildSizing.ControlsPerLine = 0
       ClientWidth = 496
-      ClientHeight = 424
+      ClientHeight = 416
       ImageIndex = -1
       ParentFont = True
       ParentShowHint = True
@@ -604,7 +603,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
       ChildSizing.VerticalSpacing = 0
       ChildSizing.ControlsPerLine = 0
       ClientWidth = 496
-      ClientHeight = 424
+      ClientHeight = 416
       ImageIndex = -1
       OnResize = EnvVarsPageResize
       ParentFont = True
@@ -615,7 +614,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         AnchorSideBottom.Side = asrBottom
         Left = 6
         Height = 22
-        Top = 396
+        Top = 388
         Width = 484
         HelpContext = 0
         Align = alBottom
@@ -651,7 +650,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = IncludeSystemVariablesCheckBox
         Left = 6
-        Height = 161
+        Height = 153
         Top = 229
         Width = 484
         HelpContext = 0
@@ -671,7 +670,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         ChildSizing.HorizontalSpacing = 0
         ChildSizing.VerticalSpacing = 0
         ChildSizing.ControlsPerLine = 0
-        ClientHeight = 142
+        ClientHeight = 134
         ClientWidth = 480
         Ctl3D = False
         DockSite = False
@@ -694,7 +693,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Control = UserOverridesAddButton
           Left = 6
-          Height = 95
+          Height = 87
           Top = 6
           Width = 468
           HelpContext = 0
@@ -745,7 +744,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           AnchorSideBottom.Side = asrBottom
           Left = 6
           Height = 29
-          Top = 107
+          Top = 99
           Width = 174
           HelpContext = 0
           Align = alNone
@@ -782,7 +781,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           AnchorSideBottom.Side = asrBottom
           Left = 383
           Height = 29
-          Top = 107
+          Top = 99
           Width = 173
           HelpContext = 0
           Align = alNone
@@ -819,7 +818,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           AnchorSideBottom.Side = asrBottom
           Left = 186
           Height = 29
-          Top = 107
+          Top = 99
           Width = 191
           HelpContext = 0
           Align = alNone
@@ -944,112 +943,19 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
       end
     end
   end
-  object CancelButton: TBitBtn
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 393
-    Height = 29
-    Top = 466
-    Width = 101
-    HelpContext = 0
-    Align = alNone
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Left = 0
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 6
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
-    Cancel = False
-    Caption = 'CancelButton'
-    Default = False
-    Enabled = True
-    Kind = bkCustom
-    Layout = blGlyphLeft
-    Margin = -1
-    ModalResult = 2
-    NumGlyphs = 0
-    ParentFont = True
-    ParentShowHint = True
-    Spacing = 3
-    TabOrder = 1
-    TabStop = True
-    Visible = True
-  end
-  object OkButton: TBitBtn
-    AnchorSideRight.Control = CancelButton
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 312
-    Height = 29
-    Top = 466
-    Width = 75
-    HelpContext = 0
-    Align = alNone
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Left = 0
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 6
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
-    Cancel = False
-    Caption = 'OkButton'
-    Default = False
-    Enabled = True
-    Kind = bkCustom
-    Layout = blGlyphLeft
-    Margin = -1
-    ModalResult = 0
-    NumGlyphs = 0
-    OnClick = OkButtonClick
-    ParentFont = True
-    ParentShowHint = True
-    Spacing = 3
-    TabOrder = 2
-    TabStop = True
-    Visible = True
-  end
-  object HelpButton: TBitBtn
-    AnchorSideLeft.Control = Owner
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
+  object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 34
-    Top = 461
-    Width = 66
+    Height = 48
+    Top = 453
+    Width = 488
     HelpContext = 0
-    Align = alNone
-    Anchors = [akLeft, akBottom]
+    Align = alBottom
     AutoSize = True
-    BorderSpacing.Left = 0
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
-    BorderSpacing.Around = 6
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
-    Cancel = False
-    Caption = '&Help'
-    Default = False
-    Enabled = True
-    Kind = bkHelp
-    Layout = blGlyphLeft
-    Margin = -1
-    ModalResult = 0
-    NumGlyphs = 0
-    OnClick = HelpButtonClick
-    ParentFont = True
-    ParentShowHint = True
-    Spacing = 3
-    TabOrder = 3
-    TabStop = True
+    ButtonOrder = boDefault
+    TabOrder = 1
+    DefaultButton = pbOK
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+    ShowGlyphs = [pbOK, pbCancel, pbClose, pbHelp]
     Visible = True
   end
 end
