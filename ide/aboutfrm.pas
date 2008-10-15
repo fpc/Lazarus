@@ -27,7 +27,7 @@ interface
 uses
   Classes, SysUtils, FPCAdds, Forms, Controls, Graphics, Dialogs, LResources,
   StdCtrls, Buttons, LazConf, LazarusIDEStrConsts, ExtCtrls, EnvironmentOpts,
-  Clipbrd, FileUtil, Menus;
+  Clipbrd, FileUtil, Menus, HelpIntfs;
 
 type
 
@@ -37,27 +37,47 @@ type
     CloseButton: TBitBtn;
     BuildDateLabel: TLABEL;
     AboutMemo: TMEMO;
+    DocumentationLabel: TLabel;
+    DocumentationURLLabel: TLabel;
     Image1: TImage;
     FPCVersionLabel: TLabel;
     LogoImage: TImage;
     LogoPage: TPage;
     miVerToClipboard: TMenuItem;
+    AcknowledgementsPaintBox: TPaintBox;
+    ContributorsPaintBox: TPaintBox;
+    OfficialLabel: TLabel;
+    OfficialURLLabel: TLabel;
     PlatformLabel: TLabel;
     PopupMenu1: TPopupMenu;
+    Timer: TTimer;
     VersionLabel: TLABEL;
-    ContributorsMemo:TMemo;
-    AcknowledgementsMemo:TMemo;
     RevisionLabel: TLabel;
-    Notebook1:TNotebook;
+    Notebook:TNotebook;
     AboutPage:TPage;
     ContributorsPage:TPage;
     AcknowledgementsPage:TPage;
     procedure AboutFormCreate(Sender:TObject);
     procedure miVerToClipboardClick(Sender: TObject);
+    procedure URLLabelMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure URLLabelMouseEnter(Sender: TObject);
+    procedure URLLabelMouseLeave(Sender: TObject);
+    procedure TimerTimer(Sender: TObject);
   private
+    FAcknowledgements: TStrings;
+    FBuffer: TBitmap;
+    FContributors: TStrings;
+    FEnd: integer;
+    FLineHeight: integer;
+    FNumLines: integer;
+    FOffset: integer;
+    FStart: integer;
+    FStepSize: integer;
+    procedure ResetScrollText;
     procedure LoadContributors;
     procedure LoadAcknowledgements;
-  public
+ public
     constructor Create(TheOwner: TComponent); override;
   end;
 
@@ -119,7 +139,7 @@ const
   end;
 
 begin
-  Notebook1.PageIndex:=0;
+  Notebook.PageIndex:=0;
   Image1.Picture.LoadFromLazarusResource('splash_logo');
   LogoImage.Picture := Image1.Picture;
   Caption:=lisAboutLazarus;
@@ -136,24 +156,140 @@ begin
   LogoPage.Caption:=lisLogo;
   miVerToClipboard.Caption := lisVerToClipboard;
   
+  FBuffer := TBitmap.Create;
+  FBuffer.Width := ContributorsPaintBox.Width;
+  FBuffer.Height := ContributorsPaintBox.Height;
+  FLineHeight := FBuffer.Canvas.TextHeight('X');
+  FNumLines := FBuffer.Height div FLineHeight;
+
+  FOffset := FBuffer.Height;
+  FStart := 0;
+  FStepSize := 1;
+
   Constraints.MinWidth:= 600;
   Constraints.MinHeight:= 300;
 
   AboutMemo.Lines.Text:=
-    Format(lisAboutLazarusMsg,[DoubleLineEnding,DoubleLineEnding,DoubleLineEnding])
-    +DoubleLineEnding
-    +'Official: http://sourceforge.net/projects/lazarus/'+LineEnding
-    +'Tutorials: http://lazarus-ccr.sourceforge.net'+LineEnding;
+    Format(lisAboutLazarusMsg,[DoubleLineEnding,DoubleLineEnding,DoubleLineEnding]);
+
+  OfficialLabel.Caption := 'Official:';
+  OfficialURLLabel.Caption := 'http://lazarus.freepascal.org';
+  DocumentationLabel.Caption := 'Documentation:';
+  DocumentationURLLabel.Caption := 'http://wiki.lazarus.freepascal.org/index.php/Main_Page';
+
   LoadContributors;
   LoadAcknowledgements;
   CloseButton.Caption:=lisClose;
-  CloseButton.LoadGlyphFromLazarusResource('btn_close');
 end;
 
 procedure TAboutForm.miVerToClipboardClick(Sender: TObject);
 begin
   Clipboard.AsText := 'v' + LazarusVersionStr + ' r' + LazarusRevisionStr +
       ' ' + PlatformLabel.Caption;
+end;
+
+procedure TAboutForm.URLLabelMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  err: string;
+begin
+  if HelpIntfs.ShowHelp(TLabel(Sender).Caption, 'Lazarus', 'text/html', err) <> shrSuccess then
+    ShowMessage(err);
+end;
+
+procedure TAboutForm.URLLabelMouseLeave(Sender: TObject);
+begin
+  TLabel(Sender).Font.Style := [];
+  TLabel(Sender).Cursor := crDefault;
+end;
+
+procedure TAboutForm. URLLabelMouseEnter(Sender: TObject);
+begin
+  TLabel(Sender).Font.Style := [fsUnderLine];
+  TLabel(Sender).Cursor := crHandPoint;
+end;
+
+procedure TAboutForm.TimerTimer(Sender: TObject);
+
+  procedure DrawScrollText(ACanvas: TCanvas; AText: TStrings);
+  var
+    w: integer;
+    s: string;
+    i: integer;
+  begin
+    Dec(FOffset, FStepSize);
+
+    if FOffSet < 0 then
+      FStart := -FOffset div FLineHeight
+    else
+      FStart := 0;
+
+    FEnd := FStart + FNumLines + 1;
+    if FEnd > AText.Count - 1 then
+      FEnd := AText.Count - 1;
+
+    FBuffer.Canvas.FillRect(Rect(0, 0, FBuffer.Width, FBuffer.Height));
+
+    for i := FEnd downto FStart do
+    begin
+      s := Trim(AText[i]);
+
+      //reset buffer font
+      FBuffer.Canvas.Font.Style := [];
+      FBuffer.Canvas.Font.Color := clBlack;
+
+      //skip empty lines
+      if Length(s) > 0 then
+      begin
+        //check for bold makeup token
+        if s[1] = '#' then
+        begin
+          s := copy(s, 2, Length(s) - 1);
+          FBuffer.Canvas.Font.Style := [fsBold];
+        end
+        else
+        begin
+          //check for url
+          if Pos('http://', s) > 0 then
+            FBuffer.Canvas.Font.Color := clBlue;
+        end;
+
+        w := FBuffer.Canvas.TextWidth(s);
+        FBuffer.Canvas.TextOut((FBuffer.Width - w) div 2, FOffset + i * FLineHeight, s);
+      end;
+    end;
+
+    //start showing the list from the start
+    if FStart > AText.Count - 1 then
+      FOffset := FBuffer.Height;
+
+    ACanvas.Draw(0,0,FBuffer);
+  end;
+
+begin
+  if NoteBook.ActivePage = lisContributors then
+  begin
+    DrawScrollText(ContributorsPaintBox.Canvas, FContributors);
+    exit;
+  end;
+  if NoteBook.ActivePage = lisAcknowledgements then
+  begin
+    DrawScrollText(AcknowledgementsPaintBox.Canvas, FAcknowledgements);
+    exit;
+  end;
+
+  ResetScrollText;
+end;
+
+procedure TAboutForm.ResetScrollText;
+begin
+  if Assigned(FBuffer) then
+  begin
+    FBuffer.Width := ContributorsPaintBox.Width;
+    FBuffer.Height := ContributorsPaintBox.Height;
+    FNumLines := FBuffer.Height div FLineHeight;
+    FOffset := FBuffer.Height;
+  end;
 end;
 
 procedure TAboutForm.LoadContributors;
@@ -164,10 +300,11 @@ begin
     AppendPathDelim(EnvironmentOptions.LazarusDirectory)
     +'docs'+PathDelim+'Contributors.txt';
   //writeln('TAboutForm.LoadContributors ',FileExistsUTF8(ContributorsFileName),' ',ContributorsFileName);
+  FContributors := TStringList.Create;
   if FileExistsUTF8(ContributorsFileName) then
-    ContributorsMemo.Lines.LoadFromFile(UTF8ToSys(ContributorsFileName))
+    FContributors.LoadFromFile(UTF8ToSys(ContributorsFileName))
   else
-    ContributorsMemo.Text:=lisAboutNoContributors;
+    FContributors.Text:=lisAboutNoContributors;
 end;
 
 procedure TAboutForm.LoadAcknowledgements;
@@ -177,10 +314,11 @@ begin
   AcknowledgementsFileName:=
     AppendPathDelim(EnvironmentOptions.LazarusDirectory)
     +'docs'+PathDelim+'acknowledgements.txt';
+  FAcknowledgements := TStringList.Create;
   if FileExistsUTF8(AcknowledgementsFileName) then
-    AcknowledgementsMemo.Lines.LoadFromFile(UTF8ToSys(AcknowledgementsFileName))
+    FAcknowledgements.LoadFromFile(UTF8ToSys(AcknowledgementsFileName))
   else
-    AcknowledgementsMemo.Text:=lisAboutNoContributors;
+    FAcknowledgements.Text:=lisAboutNoContributors;
 end;
 
 initialization
