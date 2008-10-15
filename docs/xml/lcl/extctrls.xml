@@ -4344,7 +4344,7 @@ requiring the user to select one af a set of alternatives</p>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lcl.Classes.TComponent.DefineProperties">TComponent.DefineProperties</link>
+          <link id="#rtl.Classes.TComponent.DefineProperties">TComponent.DefineProperties</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -4374,7 +4374,7 @@ requiring the user to select one af a set of alternatives</p>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomCheckGroup.Loaded" link="#lcl.Classes.TComponent.Loaded">
+      <element name="TCustomCheckGroup.Loaded" link="#rtl.Classes.TComponent.Loaded">
         <short/>
         <descr/>
         <errors/>
