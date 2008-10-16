@@ -247,11 +247,11 @@ begin
 
   if AForm.Parent <> nil then Exit;
 
-  List := g_list_alloc;
+  List := nil;
   if Small <> 0 then
-    g_list_append(List, PGdkPixbuf(Small));
+    List := g_list_append(List, PGdkPixbuf(Small));
   if Big <> 0 then
-    g_list_append(List, PGdkPixbuf(Big));
+    List := g_list_append(List, PGdkPixbuf(Big));
   gtk_window_set_icon_list(PGtkWindow(AForm.Handle), List);
   g_list_free(List);
 end;
