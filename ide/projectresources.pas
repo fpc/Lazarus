@@ -132,7 +132,6 @@ end;
 
 function TProjectResources.Update: Boolean;
 begin
-  // CheckMode is used only to test whether we have particular resources
   Clear;
   // handle versioninfo
   Result := VersionInfo.UpdateResources(Self, rcFileName);
@@ -380,7 +379,7 @@ begin
     if HasSystemResources(False) then
     begin
       if not CodeToolBoss.AddResourceDirective(CodeBuf,
-        Filename,false,'{$IFDEF WINDOWS}{$R '+Filename+'}{$ENDIF}') then
+        Filename, false, '{$IFDEF WINDOWS}{$R '+Filename+'}{$ENDIF}') then
       begin
         Result := False;
         Messages.Add('Could not add "{$R '+ Filename +'"} to main source!');
@@ -429,20 +428,18 @@ var
   NewX, NewY, NewTopLine: integer;
   CodeBuf, NewCode: TCodeBuffer;
 
-  oldRcFileName, oldLrsFileName: String;
-  newRcFilename: String;
-  newLrsFileName: String;
+  oldRcFileName, oldLrsFileName,
+  newRcFilename, newLrsFileName: String;
 begin
   //DebugLn(['TProjectResources.RenameDirectives CurFileName="',CurFileName,'" NewFileName="',NewFileName,'"']);
   Result := True;
 
   CodeBuf := CodeToolBoss.LoadFile(CurFileName, False, False);
-  if CodeBuf = nil then begin
-    exit;
-  end;
+  if CodeBuf = nil then
+    Exit;
 
-  LastrcFilename:=rcFileName;
-  LastLrsFileName:=lrsFileName;
+  LastRcFilename := rcFileName;
+  LastLrsFileName := lrsFileName;
   try
     SetFileNames(CurFileName);
     oldRcFilename := ExtractFileName(rcFileName);
@@ -470,7 +467,7 @@ begin
         Messages.Add('Could not remove "{$R '+ oldRcFileName +'"} from main source!');
       end;
       if not CodeToolBoss.AddResourceDirective(CodeBuf,
-        RcFileName, false, '{$IFDEF WINDOWS}{$R '+ newRcFileName +'}{$ENDIF}') then
+        newRcFileName, false, '{$IFDEF WINDOWS}{$R '+ newRcFileName +'}{$ENDIF}') then
       begin
         Result := False;
         debugln(['TProjectResources.RenameDirectives failed: adding resource directive']);
@@ -510,10 +507,11 @@ procedure TProjectResources.DeleteResourceBuffers;
   var
     CodeBuf: TCodeBuffer;
   begin
-    if Filename='' then exit;
-    CodeBuf:=CodeToolBoss.FindFile(Filename);
-    if CodeBuf<>nil then
-      CodeBuf.IsDeleted:=true;
+    if Filename = '' then 
+      Exit;
+    CodeBuf := CodeToolBoss.FindFile(Filename);
+    if CodeBuf <> nil then
+      CodeBuf.IsDeleted := true;
   end;
 
 begin
@@ -528,16 +526,16 @@ function TProjectResources.Save: Boolean;
   var
     CodeBuf: TCodeBuffer;
   begin
-    CodeBuf:=CodeToolBoss.FindFile(Filename);
-    if (CodeBuf=nil) or CodeBuf.IsDeleted or CodeBuf.IsVirtual then
-      exit(true);
-    Result:=SaveCodeBuffer(CodeBuf) in [mrOk,mrIgnore];
+    CodeBuf := CodeToolBoss.FindFile(Filename);
+    if (CodeBuf = nil) or CodeBuf.IsDeleted or CodeBuf.IsVirtual then
+      Exit(true);
+    Result := SaveCodeBuffer(CodeBuf) in [mrOk,mrIgnore];
   end;
 
 begin
   Result := False;
-  if not SaveCodeBuf(rcFileName) then exit;
-  if not SaveCodeBuf(lrsFileName) then exit;
+  if not SaveCodeBuf(rcFileName) then Exit;
+  if not SaveCodeBuf(lrsFileName) then Exit;
   Result := True;
 end;
 
@@ -547,13 +545,13 @@ procedure TProjectResources.UpdateCodeBuffers;
   var
     CodeBuf: TCodeBuffer;
   begin
-    CodeBuf:=CodeToolBoss.CreateFile(NewFileName);
-    CodeBuf.Source:=Source;
+    CodeBuf := CodeToolBoss.CreateFile(NewFileName);
+    CodeBuf.Source := Source;
   end;
 
 begin
-  UpdateCodeBuffer(rcFileName,FSystemResources.Text);
-  UpdateCodeBuffer(lrsFileName,FLazarusResources.Text);
+  UpdateCodeBuffer(rcFileName, FSystemResources.Text);
+  UpdateCodeBuffer(lrsFileName, FLazarusResources.Text);
 end;
 
 procedure TProjectResources.DeleteLastCodeBuffers;
@@ -562,18 +560,19 @@ procedure TProjectResources.DeleteLastCodeBuffers;
   var
     CodeBuf: TCodeBuffer;
   begin
-    if (OldFileName<>'') and (OldFilename<>NewFilename) then begin
+    if (OldFileName <> '') and (OldFilename <> NewFilename) then 
+    begin
       // file was renamed => mark old file as deleted
-      CodeBuf:=CodeToolBoss.FindFile(OldFileName);
-      if (CodeBuf<>nil) then
-        CodeBuf.IsDeleted:=true;
-      OldFileName:='';
+      CodeBuf := CodeToolBoss.FindFile(OldFileName);
+      if (CodeBuf <> nil) then
+        CodeBuf.IsDeleted := true;
+      OldFileName := '';
     end;
   end;
 
 begin
-  CleanCodeBuffer(LastrcFilename,rcFileName);
-  CleanCodeBuffer(LastlrsFilename,lrsFileName);
+  CleanCodeBuffer(LastrcFilename, rcFileName);
+  CleanCodeBuffer(LastlrsFilename, lrsFileName);
 end;
 
 end.
