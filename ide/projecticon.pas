@@ -148,9 +148,8 @@ begin
   // RCIcon := sIcon + #$D#$A + GetAsHex;
   // but it does not work
 
-  if CreateIconFile then
+  if not FilenameIsAbsolute(icoFileName) or CreateIconFile then
   begin
-    //IconName := StringReplace(icoFileName, '\', '\\', [rfReplaceAll]);
     IconName := ExtractFileName(icoFileName);
     AResources.AddSystemResource(sIcon + ' "' + IconName + '"');
   end

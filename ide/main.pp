@@ -8296,8 +8296,8 @@ begin
       // rebuild codetools defines
       MainBuildBoss.RescanCompilerDefines(true,true);
 
-      if not Project1.Resources.UpdateMainSourceFile(Project1.MainFilename) then
-        DebugLn('TMainIDE.DoNewProject Project1.Resources.UpdateMainSourceFile failed');
+      if not Project1.Resources.Regenerate(Project1.MainFilename, True, False) then
+        DebugLn('TMainIDE.DoNewProject Project1.Resources.Regenerate failed');
 
       // (i.e. remove old project specific things and create new)
       IncreaseCompilerParseStamp;
@@ -8434,7 +8434,7 @@ begin
       end;
     end;
     
-    Project1.Resources.Regenerate(DestFileName);
+    Project1.Resources.Regenerate(DestFileName, False, True);
 
     // clear modified flags
     if not (sfSaveToTestDir in Flags) then 

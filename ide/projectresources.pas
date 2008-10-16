@@ -61,11 +61,15 @@ type
     FVersionInfo: TProjectVersionInfo;
     FXPManifest: TProjectXPManifest;
     FProjectIcon: TProjectIcon;
+    rcCodeBuf: TCodeBuffer;
+    lrsCodeBuf: TCodeBuffer;
 
     procedure SetFileNames(const MainFileName: String);
     procedure SetModified(const AValue: Boolean);
-    function Update: Boolean;
     procedure EmbeddedObjectModified(Sender: TObject);
+    function Update: Boolean;
+    function UpdateMainSourceFile(const AFileName: string): Boolean;
+    function Save(const MainFileName: String): Boolean;
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -74,8 +78,8 @@ type
     procedure AddLazarusResource(AResource: TStream; const ResourceName, ResourceType: String); override;
 
     procedure Clear;
-    function Regenerate(const MainFileName: String): Boolean;
-    function UpdateMainSourceFile(const AFileName: string): Boolean;
+    function Regenerate(const MainFileName: String; UpdateSource, PerformSave: Boolean): Boolean;
+    function RenameDirectives(const OldFileName, NewFileName: String): Boolean;
 
     function HasSystemResources(CheckLists: Boolean): Boolean;
     function HasLazarusResources(CheckLists: Boolean): Boolean;
@@ -92,6 +96,8 @@ type
   end;
 
 implementation
+const
+  LazResourcesUnit = 'LResources';
 
 { TProjectResources }
 
@@ -153,6 +159,9 @@ begin
 
   FInModified := False;
 
+  rcCodeBuf := nil;
+  lrsCodeBuf := nil;
+
   FSystemResources := TStringList.Create;
   FLazarusResources := TStringList.Create;
 
@@ -176,6 +185,9 @@ begin
   FSystemResources.Free;
   FLazarusResources.Free;
   FMessages.Free;
+
+  rcCodeBuf.Free;
+  lrsCodeBuf.Free;
 end;
 
 procedure TProjectResources.AddSystemResource(const AResource: String);
@@ -201,13 +213,11 @@ begin
   FMessages.Clear;
 end;
 
-function TProjectResources.Regenerate(const MainFileName: String): Boolean;
-var
-  CodeBuf: TCodeBuffer;
+function TProjectResources.Regenerate(const MainFileName: String; UpdateSource, PerformSave: Boolean): Boolean;
 begin
   Result := False;
 
-  if (MainFileName = '') or not FilenameIsAbsolute(MainFileName) then
+  if (MainFileName = '') then
     Exit;
 
   SetFileNames(MainFileName);
@@ -217,18 +227,28 @@ begin
 
   if HasSystemResources(True) then
   begin
-    CodeBuf := CodeToolBoss.CreateFile(rcFileName);
-    CodeBuf.Source:= FSystemResources.Text;
-    if SaveCodeBufferToFile(CodeBuf, CodeBuf.Filename) = mrAbort then
-      Exit;
-  end;
+    if rcCodeBuf = nil then
+      rcCodeBuf := CodeToolBoss.CreateFile(ExtractFileName(rcFileName));
+    rcCodeBuf.Source:= FSystemResources.Text;
+  end
+  else
+    FreeAndNil(rcCodeBuf);
+
   if HasLazarusResources(True) then
   begin
-    CodeBuf := CodeToolBoss.CreateFile(lrsFileName);
-    CodeBuf.Source := FLazarusResources.Text;
-    if SaveCodeBufferToFile(CodeBuf, CodeBuf.Filename) = mrAbort then
+    if lrsCodeBuf = nil then
+      lrsCodeBuf := CodeToolBoss.CreateFile(ExtractFileName(lrsFileName));
+    lrsCodeBuf.Source := FLazarusResources.Text;
+  end
+  else
+    FreeAndNil(lrsCodeBuf);
+
+  if UpdateSource and not UpdateMainSourceFile(MainFileName) then
       Exit;
-  end;
+
+  if PerformSave and not Save(MainFileName) then
+    Exit;
+
   Result := True;
 end;
 
@@ -307,8 +327,6 @@ begin
 end;
 
 function TProjectResources.UpdateMainSourceFile(const AFileName: string): Boolean;
-const
-  LazResourcesUnit = 'LResources';
 var
   NewX, NewY, NewTopLine: integer;
   CodeBuf, NewCode: TCodeBuffer;
@@ -356,7 +374,7 @@ begin
       // there is a resource directive in the source
       if not HasSystemResources(False) then
       begin
-        if not CodeToolBoss.RemoveDirective(NewCode, NewX,NewY,true) then
+        if not CodeToolBoss.RemoveDirective(NewCode, NewX, NewY, true) then
         begin
           Result := False;
           Messages.Add('Could not remove "{$R '+ Filename +'"} from main source!');
@@ -386,7 +404,7 @@ begin
       //debugln(['TProjectResources.UpdateMainSourceFile include directive found']);
       if not HasLazarusResources(False) then
       begin
-        if not CodeToolBoss.RemoveDirective(NewCode, NewX,NewY,true) then
+        if not CodeToolBoss.RemoveDirective(NewCode, NewX, NewY, true) then
         begin
           Result := False;
           Messages.Add('Could not remove "{$I '+ Filename +'"} from main source!');
@@ -409,6 +427,86 @@ begin
       end;
     end;
   end;
+end;
+
+function TProjectResources.RenameDirectives(const OldFileName,
+  NewFileName: String): Boolean;
+var
+  NewX, NewY, NewTopLine: integer;
+  CodeBuf, NewCode: TCodeBuffer;
+
+  oldRcFileName, oldLrsFileName,
+  newRcFileName, newLrsFileName: String;
+begin
+  Result := True;
+
+  CodeBuf := CodeToolBoss.LoadFile(OldFileName, False, False);
+  if CodeBuf <> nil then
+  begin
+    SetFileNames(OldFileName);
+    oldRcFilename := ExtractFileName(rcFileName);
+    oldLrsFileName := ExtractFileName(lrsFileName);
+    SetFileNames(NewFileName);
+    newRcFilename := ExtractFileName(rcFileName);
+    newLrsFileName := ExtractFileName(lrsFileName);
+
+    // update {$R filename} directive
+    if CodeToolBoss.FindResourceDirective(CodeBuf, 1, 1,
+                               NewCode, NewX, NewY,
+                               NewTopLine, oldRcFileName, false) then
+    begin
+      // there is a resource directive in the source
+      if not CodeToolBoss.RemoveDirective(NewCode, NewX, NewY, true) then
+      begin
+        Result := False;
+        Messages.Add('Could not remove "{$R '+ oldRcFileName +'"} from main source!');
+        debugln(['TProjectResources.UpdateMainSourceFile failed: removing resource directive']);
+      end;
+      if not CodeToolBoss.AddResourceDirective(CodeBuf,
+        newRcFileName, false, '{$IFDEF WINDOWS}{$R '+ newRcFileName +'}{$ENDIF}') then
+      begin
+        Result := False;
+        Messages.Add('Could not add "{$R '+ newRcFileName +'"} to main source!');
+        debugln(['TProjectResources.UpdateMainSourceFile failed: adding resource directive']);
+      end;
+    end;
+
+    // update {$I filename} directive
+    if CodeToolBoss.FindIncludeDirective(CodeBuf, 1, 1,
+                               NewCode, NewX, NewY,
+                               NewTopLine, oldLrsFileName, false) then
+    begin
+      // there is a resource directive in the source
+      if not CodeToolBoss.RemoveDirective(NewCode, NewX, NewY, true) then
+      begin
+        Result := False;
+        Messages.Add('Could not remove "{$I '+ oldLrsFileName +'"} from main source!');
+        debugln(['TProjectResources.UpdateMainSourceFile removing include directive from main source failed']);
+        Exit;
+      end;
+      if not CodeToolBoss.AddIncludeDirective(CodeBuf, newLrsFileName, '') then
+      begin
+        Result := False;
+        Messages.Add('Could not add "{$I '+ newLrsFileName +'"} to main source!');
+        debugln(['TProjectResources.UpdateMainSourceFile adding include directive to main source failed']);
+        Exit;
+      end;
+    end
+  end;
+end;
+
+function TProjectResources.Save(const MainFileName: String): Boolean;
+begin
+  if (MainFileName = '') or not FilenameIsAbsolute(MainFileName) then
+    Exit;
+
+  SetFileNames(MainFileName);
+
+  if (rcCodeBuf <> nil) and (SaveCodeBufferToFile(rcCodeBuf, rcFileName) = mrAbort) then
+    Exit;
+
+  if (lrsCodeBuf <> nil) and (SaveCodeBufferToFile(lrsCodeBuf, lrsFileName) = mrAbort) then
+    Exit;
 end;
 
 end.

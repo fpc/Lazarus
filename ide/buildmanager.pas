@@ -1021,7 +1021,7 @@ var
   AnUnitInfo: TUnitInfo;
 begin
   // update project resource
-  Project1.Resources.Regenerate(Project1.MainFileName);
+  Project1.Resources.Regenerate(Project1.MainFileName, False, True);
   AnUnitInfo := Project1.FirstPartOfProject;
   while AnUnitInfo<>nil do 
   begin

@@ -554,7 +554,7 @@ begin
     //debugln(['TProjectOptionsDialog.ProjectOptionsClose Project.Resources.Modified=',Project.Resources.Modified]);
     if Project.Resources.Modified and (Project.MainUnitID >= 0) then
     begin
-      if not Project.Resources.UpdateMainSourceFile(Project.MainFilename) then
+      if not Project.Resources.Regenerate(Project.MainFilename, True, False) then
         MessageDlg(Project.Resources.Messages.Text, mtWarning, [mbOk], 0);
     end;
   end;

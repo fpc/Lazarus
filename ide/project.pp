@@ -4085,11 +4085,13 @@ begin
 end;
 
 procedure TProject.OnUnitNameChange(AnUnitInfo: TUnitInfo;
-  const OldUnitName, NewUnitName: string;  CheckIfAllowed: boolean;
+  const OldUnitName, NewUnitName: string; CheckIfAllowed: boolean;
   var Allowed: boolean);
-var i:integer;
+var
+  i:integer;
 begin
-  if AnUnitInfo.IsPartOfProject then begin
+  if AnUnitInfo.IsPartOfProject then
+  begin
     if CheckIfAllowed then begin
       // check if no other project unit has this name
       for i:=0 to UnitCount-1 do begin
@@ -4101,11 +4103,19 @@ begin
         end;
       end;
     end;
-    if (OldUnitName<>'') and (pfMainUnitHasUsesSectionForAllUnits in Flags) then
+    if (OldUnitName<>'') then
     begin
-      // rename unit in program uses section
-      CodeToolBoss.RenameUsedUnit(MainUnitInfo.Source
-        ,OldUnitName,NewUnitName,'');
+      if (pfMainUnitHasUsesSectionForAllUnits in Flags) then
+      begin
+        // rename unit in program uses section
+        CodeToolBoss.RenameUsedUnit(MainUnitInfo.Source, OldUnitName,
+          NewUnitName, '');
+      end;
+      if MainUnitInfo = AnUnitInfo then
+      begin
+        // we are renaming a project => update resource directives
+        Resources.RenameDirectives(OldUnitName, NewUnitName);
+      end;
     end;
   end;
 end;
