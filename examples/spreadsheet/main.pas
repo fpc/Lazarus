@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  Grids;
+  Grids, Buttons, ComCtrls;
 
 type
 
@@ -14,11 +14,18 @@ type
 
   TForm1 = class(TForm)
     grid: TStringGrid;
+    OpenDialog1: TOpenDialog;
+    SaveDialog1: TSaveDialog;
+    ToolBar1: TToolBar;
+    SaveButton: TToolButton;
+    LoadButton: TToolButton;
     procedure gridBeforeSelection(Sender: TObject; aCol, aRow: Integer);
     procedure gridDrawCell(Sender: TObject; aCol, aRow: Integer; aRect: TRect;
       aState: TGridDrawState);
     procedure gridPrepareCanvas(sender: TObject; aCol, aRow: Integer;
       aState: TGridDrawState);
+    procedure LoadButtonClick(Sender: TObject);
+    procedure SaveButtonClick(Sender: TObject);
   private
     { private declarations }
     function IndexToAlphaIndex(AIndex: Integer): string;
@@ -93,6 +100,18 @@ begin
     if (aCol=grid.Col) or (aRow=grid.Row) then
       grid.Canvas.Brush.Color := clInactiveCaption;
   end;
+end;
+
+procedure TForm1.LoadButtonClick(Sender: TObject);
+begin
+  if OpenDialog1.Execute then
+    grid.LoadFromFile(OpenDialog1.FileName);
+end;
+
+procedure TForm1.SaveButtonClick(Sender: TObject);
+begin
+  if SaveDialog1.Execute then
+    grid.SaveToFile(SaveDialog1.FileName);
 end;
 
 function TForm1.IndexToAlphaIndex(AIndex: Integer): string;
