@@ -1040,10 +1040,10 @@ begin
   OSError(SetFrontProcess(Proc), Self, SName, 'SetFrontProcess');
 end;
 
-procedure TCarbonWidgetSet.AppSetIcon(const AIcon: HICON);
+procedure TCarbonWidgetSet.AppSetIcon(const Small, Big: HICON);
 begin
-  if AIcon <> 0 then
-    SetApplicationDockTileImage(TCarbonBitmap(AIcon).CGImage)
+  if Big <> 0 then
+    SetApplicationDockTileImage(TCarbonBitmap(Big).CGImage)
   else
     RestoreApplicationDockTileImage;
 end;

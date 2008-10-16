@@ -185,7 +185,7 @@ type
     procedure AppProcessMessages; override;
     procedure AppWaitMessage; override;
     procedure AppTerminate; override;
-    procedure AppSetIcon(const AIcon: HICON); override;
+    procedure AppSetIcon(const Small, Big: HICON); override;
     procedure AppSetTitle(const ATitle: string); override;
 
     function  InitHintFont(HintFont: TObject): Boolean; Override;

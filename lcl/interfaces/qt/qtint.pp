@@ -94,7 +94,7 @@ type
     procedure AppMinimize; override;
     procedure AppRestore; override;
     procedure AppBringToFront; override;
-    procedure AppSetIcon(const AIcon: HICON); override;
+    procedure AppSetIcon(const Small, Big: HICON); override;
     procedure AppSetTitle(const ATitle: string); override;
     procedure AttachMenuToWindow(AMenuObject: TComponent); override;
   public

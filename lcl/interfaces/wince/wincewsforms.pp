@@ -87,7 +87,7 @@ type
                                    const ABorderIcons: TBorderIcons); override;
     class procedure SetFormBorderStyle(const AForm: TCustomForm;
                              const AFormBorderStyle: TFormBorderStyle); override;
-    class procedure SetIcon(const AForm: TCustomForm; const AIcon: HICON); override;
+    class procedure SetIcon(const AForm: TCustomForm; const Small, Big: HICON); override;
     class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); override;
     class procedure ShowModal(const ACustomForm: TCustomForm); override;
   end;
@@ -355,7 +355,7 @@ class procedure TWinCEWSCustomForm.SetBorderIcons(const AForm: TCustomForm;
 begin
   UpdateWindowStyle(AForm.Handle, CalcBorderIconsFlags(AForm),
     WS_SYSMENU or WS_MINIMIZEBOX or WS_MAXIMIZEBOX);
-  SetIcon(AForm, 0);
+  SetIcon(AForm, 0, 0);
 end;
 
 class procedure TWinCEWSCustomForm.SetFormBorderStyle(const AForm: TCustomForm;
@@ -408,11 +408,12 @@ begin
     SizeRect.Right - SizeRect.Left, SizeRect.Bottom - SizeRect.Top);
 end;
 
-class procedure TWinCEWSCustomForm.SetIcon(const AForm: TCustomForm; const AIcon: HICON);
+class procedure TWinCEWSCustomForm.SetIcon(const AForm: TCustomForm; const Small, Big: HICON);
 begin
   if not WSCheckHandleAllocated(AForm, 'SetIcon') then
     Exit;
-  SendMessage(AForm.Handle, WM_SETICON, ICON_BIG, LPARAM(AIcon));
+  SendMessage(AForm.Handle, WM_SETICON, ICON_SMALL, LPARAM(Small));
+  SendMessage(AForm.Handle, WM_SETICON, ICON_BIG, LPARAM(Big));
 end;
 
 class procedure TWinCEWSCustomForm.SetShowInTaskbar(const AForm: TCustomForm;

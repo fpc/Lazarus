@@ -217,16 +217,16 @@ begin
     TQtMainWindow(Application.MainForm.Handle).BringToFront;
 end;
 
-procedure TQtWidgetSet.AppSetIcon(const AIcon: HICON);
+procedure TQtWidgetSet.AppSetIcon(const Small, Big: HICON);
 var
   DoDestroyIcon: Boolean;
   Icon: QIconH;
 begin
-  DoDestroyIcon := AIcon = 0;
+  DoDestroyIcon := Big = 0;
   if DoDestroyIcon then
     Icon := QIcon_create()
   else
-    Icon := TQtIcon(AIcon).Handle;
+    Icon := TQtIcon(Big).Handle;
   QApplication_setWindowIcon(Icon);
   if DoDestroyIcon then
     QIcon_destroy(Icon);

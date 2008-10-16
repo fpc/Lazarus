@@ -411,9 +411,10 @@ begin
   Assert(False, 'Trace:TWin32WidgetSet.AppTerminate - Start');
 end;
 
-procedure TWin32WidgetSet.AppSetIcon(const AIcon: HICON);
+procedure TWin32WidgetSet.AppSetIcon(const Small, Big: HICON);
 begin
-  Windows.SendMessage(Win32Widgetset.AppHandle, WM_SETICON, ICON_BIG, LPARAM(AIcon));
+  Windows.SendMessage(Win32Widgetset.AppHandle, WM_SETICON, ICON_SMALL, LPARAM(Small));
+  Windows.SendMessage(Win32Widgetset.AppHandle, WM_SETICON, ICON_BIG, LPARAM(Big));
 end;
 
 procedure TWin32WidgetSet.AppSetTitle(const ATitle: string);
@@ -638,8 +639,11 @@ begin
       if Flags = SW_SHOWMAXIMIZED then
         Windows.SendMessage(Handle, WM_SHOWWINDOW, 1, 0);
     end;
-    if (Sender Is TCustomForm) then
-      SetClassLong(Handle, GCL_HICON, LONG(TCustomForm(Sender).GetIconHandle));
+    if (Sender is TCustomForm) then
+    begin
+      SetClassLong(Handle, GCL_HICONSM, LONG(TCustomForm(Sender).SmallIconHandle));
+      SetClassLong(Handle, GCL_HICON, LONG(TCustomForm(Sender).BigIconHandle));
+    end;
   end
   else
   begin
