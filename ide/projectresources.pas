@@ -460,14 +460,14 @@ begin
       begin
         Result := False;
         Messages.Add('Could not remove "{$R '+ oldRcFileName +'"} from main source!');
-        debugln(['TProjectResources.UpdateMainSourceFile failed: removing resource directive']);
+        debugln(['TProjectResources.RenameDirectives failed: removing resource directive']);
       end;
       if not CodeToolBoss.AddResourceDirective(CodeBuf,
         newRcFileName, false, '{$IFDEF WINDOWS}{$R '+ newRcFileName +'}{$ENDIF}') then
       begin
         Result := False;
         Messages.Add('Could not add "{$R '+ newRcFileName +'"} to main source!');
-        debugln(['TProjectResources.UpdateMainSourceFile failed: adding resource directive']);
+        debugln(['TProjectResources.RenameDirectives failed: adding resource directive']);
       end;
     end;
 
@@ -481,22 +481,23 @@ begin
       begin
         Result := False;
         Messages.Add('Could not remove "{$I '+ oldLrsFileName +'"} from main source!');
-        debugln(['TProjectResources.UpdateMainSourceFile removing include directive from main source failed']);
+        debugln(['TProjectResources.RenameDirectives removing include directive from main source failed']);
         Exit;
       end;
       if not CodeToolBoss.AddIncludeDirective(CodeBuf, newLrsFileName, '') then
       begin
         Result := False;
         Messages.Add('Could not add "{$I '+ newLrsFileName +'"} to main source!');
-        debugln(['TProjectResources.UpdateMainSourceFile adding include directive to main source failed']);
+        debugln(['TProjectResources.RenameDirectives adding include directive to main source failed']);
         Exit;
       end;
-    end
+    end;
   end;
 end;
 
 function TProjectResources.Save(const MainFileName: String): Boolean;
 begin
+  Result := False;
   if (MainFileName = '') or not FilenameIsAbsolute(MainFileName) then
     Exit;
 
@@ -507,6 +508,7 @@ begin
 
   if (lrsCodeBuf <> nil) and (SaveCodeBufferToFile(lrsCodeBuf, lrsFileName) = mrAbort) then
     Exit;
+  Result := True;
 end;
 
 end.
