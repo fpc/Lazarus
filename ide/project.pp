@@ -1299,23 +1299,26 @@ begin
 end;
 
 procedure TUnitInfo.SetUnitName(const NewUnitName:string);
-var Allowed:boolean;
+var
+  Allowed: boolean;
   OldUnitName: String;
 begin
-  if (fUnitName<>NewUnitName) and (NewUnitName<>'') then begin
-    Allowed:=true;
-    OldUnitName:=fUnitName;
-    if OldUnitName='' then
-      OldUnitName:=ExtractFileNameOnly(Filename);
+  if (fUnitName <> NewUnitName) and (NewUnitName <> '') then
+  begin
+    Allowed := true;
+    OldUnitName := fUnitName;
+    if OldUnitName = '' then
+      OldUnitName := ExtractFileNameOnly(Filename);
     if Assigned(FOnUnitNameChange) then
-      FOnUnitNameChange(Self,OldUnitName,NewUnitName,false,Allowed);
+      FOnUnitNameChange(Self, OldUnitName, NewUnitName, false, Allowed);
     // (ignore Allowed)
-    if (fSource<>nil) then begin
+    if (fSource <> nil) then
+    begin
       CodeToolBoss.RenameSource(fSource,NewUnitName);
     end;
-    fUnitName:=NewUnitName;
-    Modified:=true;
-    if (Project<>nil) then Project.UnitModified(Self);
+    fUnitName := NewUnitName;
+    Modified := true;
+    if (Project <> nil) then Project.UnitModified(Self);
   end;
 end;
 

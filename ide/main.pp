@@ -6636,12 +6636,14 @@ begin
         NewFileName:=ExtractFilePath(NewFilename)
                     +lowercase(ExtractFileName(NewFilename));
 
-      if Project1.MainUnitID>=0 then begin
+      if Project1.MainUnitID >= 0 then
+      begin
         // check mainunit filename
         Ext:=ExtractFileExt(Project1.MainUnitInfo.Filename);
         if Ext='' then Ext:='.pas';
         NewProgramFilename:=ChangeFileExt(NewFilename,Ext);
-        if CompareFilenames(NewFilename,NewProgramFilename)=0 then begin
+        if CompareFilenames(NewFilename,NewProgramFilename)=0 then
+        begin
           ACaption:=lisChooseADifferentName;
           AText:=Format(lisTheProjectInfoFileIsEqualToTheProjectMainSource, [
             '"', NewFilename, '"', #13]);
@@ -6673,14 +6675,17 @@ begin
   end;
 
   // check if info file or source file already exists
-  if FileExistsUTF8(NewFilename) then begin
+  if FileExistsUTF8(NewFilename) then
+  begin
     ACaption:=lisOverwriteFile;
     AText:=Format(lisAFileAlreadyExistsReplaceIt, ['"', NewFilename, '"', #13]);
     Result:=MessageDlg(ACaption, AText, mtConfirmation, [mbOk, mbCancel], 0);
     if Result=mrCancel then exit;
   end
-  else begin
-    if FileExistsUTF8(NewProgramFilename) then begin
+  else
+  begin
+    if FileExistsUTF8(NewProgramFilename) then
+    begin
       ACaption:=lisOverwriteFile;
       AText:=Format(lisAFileAlreadyExistsReplaceIt, ['"', NewProgramFilename,
         '"', #13]);
@@ -6689,7 +6694,7 @@ begin
     end;
   end;
   
-  TitleWasDefault:=Project1.TitleIsDefault(true);
+  TitleWasDefault := Project1.TitleIsDefault(true);
 
   // set new project filename
   Project1.ProjectInfoFile:=NewFilename;
@@ -6697,15 +6702,16 @@ begin
   SetRecentProjectFilesMenu;
 
   // change main source
-  if (Project1.MainUnitID>=0) then begin
-    GetMainUnit(MainUnitInfo,MainUnitSrcEdit,true);
+  if (Project1.MainUnitID >= 0) then
+  begin
+    GetMainUnit(MainUnitInfo, MainUnitSrcEdit, true);
     
     // Save old source code, to prevent overwriting it,
     // if the file name didn't actually change.
-    OldSource:=MainUnitInfo.Source.Source;
+    OldSource := MainUnitInfo.Source.Source;
     
     // switch MainUnitInfo.Source to new code
-    NewBuf:=CodeToolBoss.CreateFile(NewProgramFilename);
+    NewBuf := CodeToolBoss.CreateFile(NewProgramFilename);
     if NewBuf=nil then begin
       Result:=MessageDlg(lisErrorCreatingFile, Format(lisUnableToCreateFile3, [
         #13, '"', NewProgramFilename, '"']), mtError, [mbCancel], 0);
