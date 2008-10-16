@@ -4885,7 +4885,7 @@ begin
     if ANode<>nil then begin
       MoveCursorToNodeStart(ANode);
       ReadNextAtom;
-      debugln(['TStandardCodeTool.AddIncludeDirective ',GetAtom]);
+      //debugln(['TStandardCodeTool.AddIncludeDirective ',GetAtom]);
       Indent:=GetLineIndent(Src,CurPos.StartPos)
               +SourceChangeCache.BeautifyCodeOptions.Indent;
       InsertPos:=CurPos.EndPos;

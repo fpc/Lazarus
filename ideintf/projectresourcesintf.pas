@@ -78,7 +78,7 @@ end;
 
 destructor TAbstractProjectResources.Destroy;
 begin
-  FMessages.Free;
+  FreeAndNil(FMessages);
   inherited Destroy;
 end;
 

@@ -6706,6 +6706,12 @@ begin
   begin
     GetMainUnit(MainUnitInfo, MainUnitSrcEdit, true);
     
+    if not Project1.Resources.RenameDirectives(MainUnitInfo.Filename,NewProgramFilename)
+    then begin
+      DebugLn(['TMainIDE.DoShowSaveProjectAsDialog failed renaming directives Old="',MainUnitInfo.Filename,'" New="',NewProgramFilename,'"']);
+      // silently ignore
+    end;
+
     // Save old source code, to prevent overwriting it,
     // if the file name didn't actually change.
     OldSource := MainUnitInfo.Source.Source;
@@ -6729,8 +6735,6 @@ begin
     // change program name
     MainUnitInfo.UnitName:=NewProgramName;
     MainUnitInfo.Modified:=true;
-
-    // TODO: rename resource include directive
 
     // update source notebook page names
     UpdateSourceNames;
@@ -8412,7 +8416,7 @@ begin
   // save main source
   if (MainUnitInfo<>nil) and (not (sfDoNotSaveVirtualFiles in flags)) then 
   begin
-    if MainUnitInfo.Loaded then 
+    if MainUnitInfo.Loaded then
     begin
       // loaded in source editor
       Result:=DoSaveEditorFile(MainUnitInfo.EditorIndex,
@@ -8434,8 +8438,6 @@ begin
       end;
     end;
     
-    Project1.Resources.Regenerate(DestFileName, False, True);
-
     // clear modified flags
     if not (sfSaveToTestDir in Flags) then 
     begin

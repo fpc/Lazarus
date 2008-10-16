@@ -57,19 +57,21 @@ type
 
     rcFileName: String;
     lrsFileName: String;
+    LastrcFilename: String;
+    LastLrsFileName: String;
 
     FVersionInfo: TProjectVersionInfo;
     FXPManifest: TProjectXPManifest;
     FProjectIcon: TProjectIcon;
-    rcCodeBuf: TCodeBuffer;
-    lrsCodeBuf: TCodeBuffer;
 
     procedure SetFileNames(const MainFileName: String);
     procedure SetModified(const AValue: Boolean);
     procedure EmbeddedObjectModified(Sender: TObject);
     function Update: Boolean;
     function UpdateMainSourceFile(const AFileName: string): Boolean;
-    function Save(const MainFileName: String): Boolean;
+    function Save: Boolean;
+    procedure UpdateCodeBuffers;
+    procedure DeleteLastCodeBuffers;
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -79,7 +81,8 @@ type
 
     procedure Clear;
     function Regenerate(const MainFileName: String; UpdateSource, PerformSave: Boolean): Boolean;
-    function RenameDirectives(const OldFileName, NewFileName: String): Boolean;
+    function RenameDirectives(const CurFileName, NewFileName: String): Boolean;
+    procedure DeleteResourceBuffers;
 
     function HasSystemResources(CheckLists: Boolean): Boolean;
     function HasLazarusResources(CheckLists: Boolean): Boolean;
@@ -129,7 +132,7 @@ end;
 
 function TProjectResources.Update: Boolean;
 begin
-  // CheckMode is used only to test whether we have paticular resources
+  // CheckMode is used only to test whether we have particular resources
   Clear;
   // handle versioninfo
   Result := VersionInfo.UpdateResources(Self, rcFileName);
@@ -159,9 +162,6 @@ begin
 
   FInModified := False;
 
-  rcCodeBuf := nil;
-  lrsCodeBuf := nil;
-
   FSystemResources := TStringList.Create;
   FLazarusResources := TStringList.Create;
 
@@ -178,16 +178,16 @@ end;
 
 destructor TProjectResources.Destroy;
 begin
-  FVersionInfo.Free;
-  FXPManifest.Free;
-  FProjectIcon.Free;
+  DeleteResourceBuffers;
 
-  FSystemResources.Free;
-  FLazarusResources.Free;
-  FMessages.Free;
+  FreeAndNil(FVersionInfo);
+  FreeAndNil(FXPManifest);
+  FreeAndNil(FProjectIcon);
 
-  rcCodeBuf.Free;
-  lrsCodeBuf.Free;
+  FreeAndNil(FSystemResources);
+  FreeAndNil(FLazarusResources);
+
+  inherited Destroy;
 end;
 
 procedure TProjectResources.AddSystemResource(const AResource: String);
@@ -213,41 +213,35 @@ begin
   FMessages.Clear;
 end;
 
-function TProjectResources.Regenerate(const MainFileName: String; UpdateSource, PerformSave: Boolean): Boolean;
+function TProjectResources.Regenerate(const MainFileName: String;
+  UpdateSource, PerformSave: Boolean): Boolean;
 begin
+  //DebugLn(['TProjectResources.Regenerate MainFilename=',MainFilename,' UpdateSource=',UpdateSource,' PerformSave=',PerformSave]);
   Result := False;
 
   if (MainFileName = '') then
     Exit;
 
+  // remember old codebuffer filenames
+  LastrcFilename:=rcFileName;
+  LastLrsFileName:=lrsFileName;
   SetFileNames(MainFileName);
 
-  if not Update then
-    Exit;
-
-  if HasSystemResources(True) then
-  begin
-    if rcCodeBuf = nil then
-      rcCodeBuf := CodeToolBoss.CreateFile(ExtractFileName(rcFileName));
-    rcCodeBuf.Source:= FSystemResources.Text;
-  end
-  else
-    FreeAndNil(rcCodeBuf);
-
-  if HasLazarusResources(True) then
-  begin
-    if lrsCodeBuf = nil then
-      lrsCodeBuf := CodeToolBoss.CreateFile(ExtractFileName(lrsFileName));
-    lrsCodeBuf.Source := FLazarusResources.Text;
-  end
-  else
-    FreeAndNil(lrsCodeBuf);
-
-  if UpdateSource and not UpdateMainSourceFile(MainFileName) then
+  try
+    // update resources (FLazarusResources, FSystemResources, ...)
+    if not Update then
+      Exit;
+    // create codebuffers of new .lrs and .rc files
+    UpdateCodeBuffers;
+    // update .lpr file (old and new include files exist, so parsing should work without errors)
+    if UpdateSource and not UpdateMainSourceFile(MainFileName) then
       Exit;
 
-  if PerformSave and not Save(MainFileName) then
-    Exit;
+    if PerformSave and not Save then
+      Exit;
+  finally
+    DeleteLastCodeBuffers;
+  end;
 
   Result := True;
 end;
@@ -429,26 +423,39 @@ begin
   end;
 end;
 
-function TProjectResources.RenameDirectives(const OldFileName,
+function TProjectResources.RenameDirectives(const CurFileName,
   NewFileName: String): Boolean;
 var
   NewX, NewY, NewTopLine: integer;
   CodeBuf, NewCode: TCodeBuffer;
 
-  oldRcFileName, oldLrsFileName,
-  newRcFileName, newLrsFileName: String;
+  oldRcFileName, oldLrsFileName: String;
+  newRcFilename: String;
+  newLrsFileName: String;
 begin
+  //DebugLn(['TProjectResources.RenameDirectives CurFileName="',CurFileName,'" NewFileName="',NewFileName,'"']);
   Result := True;
 
-  CodeBuf := CodeToolBoss.LoadFile(OldFileName, False, False);
-  if CodeBuf <> nil then
-  begin
-    SetFileNames(OldFileName);
+  CodeBuf := CodeToolBoss.LoadFile(CurFileName, False, False);
+  if CodeBuf = nil then begin
+    exit;
+  end;
+
+  LastrcFilename:=rcFileName;
+  LastLrsFileName:=lrsFileName;
+  try
+    SetFileNames(CurFileName);
     oldRcFilename := ExtractFileName(rcFileName);
     oldLrsFileName := ExtractFileName(lrsFileName);
     SetFileNames(NewFileName);
     newRcFilename := ExtractFileName(rcFileName);
     newLrsFileName := ExtractFileName(lrsFileName);
+
+    // update resources (FLazarusResources, FSystemResources, ...)
+    if not Update then
+      Exit;
+    // update codebuffers of new .lrs and .rc files
+    UpdateCodeBuffers;
 
     // update {$R filename} directive
     if CodeToolBoss.FindResourceDirective(CodeBuf, 1, 1,
@@ -459,15 +466,15 @@ begin
       if not CodeToolBoss.RemoveDirective(NewCode, NewX, NewY, true) then
       begin
         Result := False;
-        Messages.Add('Could not remove "{$R '+ oldRcFileName +'"} from main source!');
         debugln(['TProjectResources.RenameDirectives failed: removing resource directive']);
+        Messages.Add('Could not remove "{$R '+ oldRcFileName +'"} from main source!');
       end;
       if not CodeToolBoss.AddResourceDirective(CodeBuf,
-        newRcFileName, false, '{$IFDEF WINDOWS}{$R '+ newRcFileName +'}{$ENDIF}') then
+        RcFileName, false, '{$IFDEF WINDOWS}{$R '+ newRcFileName +'}{$ENDIF}') then
       begin
         Result := False;
-        Messages.Add('Could not add "{$R '+ newRcFileName +'"} to main source!');
         debugln(['TProjectResources.RenameDirectives failed: adding resource directive']);
+        Messages.Add('Could not add "{$R '+ newRcFileName +'"} to main source!');
       end;
     end;
 
@@ -480,35 +487,93 @@ begin
       if not CodeToolBoss.RemoveDirective(NewCode, NewX, NewY, true) then
       begin
         Result := False;
-        Messages.Add('Could not remove "{$I '+ oldLrsFileName +'"} from main source!');
         debugln(['TProjectResources.RenameDirectives removing include directive from main source failed']);
+        Messages.Add('Could not remove "{$I '+ oldLrsFileName +'"} from main source!');
         Exit;
       end;
       if not CodeToolBoss.AddIncludeDirective(CodeBuf, newLrsFileName, '') then
       begin
         Result := False;
-        Messages.Add('Could not add "{$I '+ newLrsFileName +'"} to main source!');
         debugln(['TProjectResources.RenameDirectives adding include directive to main source failed']);
+        Messages.Add('Could not add "{$I '+ newLrsFileName +'"} to main source!');
         Exit;
       end;
     end;
+  finally
+    DeleteLastCodeBuffers;
   end;
 end;
 
-function TProjectResources.Save(const MainFileName: String): Boolean;
+procedure TProjectResources.DeleteResourceBuffers;
+
+  procedure DeleteBuffer(Filename: string);
+  var
+    CodeBuf: TCodeBuffer;
+  begin
+    if Filename='' then exit;
+    CodeBuf:=CodeToolBoss.FindFile(Filename);
+    if CodeBuf<>nil then
+      CodeBuf.IsDeleted:=true;
+  end;
+
+begin
+  DeleteLastCodeBuffers;
+  DeleteBuffer(rcFileName);
+  DeleteBuffer(lrsFileName);
+end;
+
+function TProjectResources.Save: Boolean;
+
+  function SaveCodeBuf(Filename: string): boolean;
+  var
+    CodeBuf: TCodeBuffer;
+  begin
+    CodeBuf:=CodeToolBoss.FindFile(Filename);
+    if (CodeBuf=nil) or CodeBuf.IsDeleted or CodeBuf.IsVirtual then
+      exit(true);
+    Result:=SaveCodeBuffer(CodeBuf) in [mrOk,mrIgnore];
+  end;
+
 begin
   Result := False;
-  if (MainFileName = '') or not FilenameIsAbsolute(MainFileName) then
-    Exit;
-
-  SetFileNames(MainFileName);
-
-  if (rcCodeBuf <> nil) and (SaveCodeBufferToFile(rcCodeBuf, rcFileName) = mrAbort) then
-    Exit;
-
-  if (lrsCodeBuf <> nil) and (SaveCodeBufferToFile(lrsCodeBuf, lrsFileName) = mrAbort) then
-    Exit;
+  if not SaveCodeBuf(rcFileName) then exit;
+  if not SaveCodeBuf(lrsFileName) then exit;
   Result := True;
+end;
+
+procedure TProjectResources.UpdateCodeBuffers;
+
+  procedure UpdateCodeBuffer(NewFilename, Source: string);
+  var
+    CodeBuf: TCodeBuffer;
+  begin
+    CodeBuf:=CodeToolBoss.CreateFile(NewFileName);
+    CodeBuf.Source:=Source;
+  end;
+
+begin
+  UpdateCodeBuffer(rcFileName,FSystemResources.Text);
+  UpdateCodeBuffer(lrsFileName,FLazarusResources.Text);
+end;
+
+procedure TProjectResources.DeleteLastCodeBuffers;
+
+  procedure CleanCodeBuffer(var OldFilename: string; const NewFilename: string);
+  var
+    CodeBuf: TCodeBuffer;
+  begin
+    if (OldFileName<>'') and (OldFilename<>NewFilename) then begin
+      // file was renamed => mark old file as deleted
+      CodeBuf:=CodeToolBoss.FindFile(OldFileName);
+      if (CodeBuf<>nil) then
+        CodeBuf.IsDeleted:=true;
+      OldFileName:='';
+    end;
+  end;
+
+begin
+  CleanCodeBuffer(LastrcFilename,rcFileName);
+  CleanCodeBuffer(LastlrsFilename,lrsFileName);
 end;
 
 end.
