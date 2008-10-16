@@ -127,6 +127,7 @@ function TProjectIcon.UpdateResources(AResources: TAbstractProjectResources;
   const MainFilename: string): Boolean;
 var
   AResource: TStream;
+  IconName: String;
 begin
   Result := True;
 
@@ -148,7 +149,11 @@ begin
   // but it does not work
 
   if CreateIconFile then
-    AResources.AddSystemResource(sIcon + Format(' "%s"', [StringReplace(icoFileName, '\', '\\', [rfReplaceAll])]))
+  begin
+    //IconName := StringReplace(icoFileName, '\', '\\', [rfReplaceAll]);
+    IconName := ExtractFileName(icoFileName);
+    AResources.AddSystemResource(sIcon + ' "' + IconName + '"');
+  end
   else
     Result := False;
 end;
