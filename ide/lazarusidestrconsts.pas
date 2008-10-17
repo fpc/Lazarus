@@ -1013,7 +1013,7 @@ resourcestring
   dlgAmbigWarn = 'Warn on compile';
   dlgIgnoreVerb = 'Ignore';
   dlgBackColor = 'Background';
-  dlgSubPropkColor = 'Subpropertes';
+  dlgSubPropColor = 'SubProperties';
   dlgReferenceColor = 'Reference';
   dlgValueColor = 'Value';
   liswlAdd = '&Add';

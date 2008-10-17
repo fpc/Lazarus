@@ -2632,7 +2632,7 @@ begin
   // object inspector
   ObjectInspectorColorsGroupBox.Caption:=dlgEnvColors;
   OIBackgroundColorLabel.Caption:=dlgBackColor;
-  OISubPropsColorLabel.Caption:=dlgSubPropkColor;
+  OISubPropsColorLabel.Caption:=dlgSubPropColor;
   OIReferencesColorLabel.Caption:=dlgReferenceColor;
   OIValueColorLabel.Caption:=dlgValueColor;
   OIDefaultValueColorLabel.Caption:=dlgDefValueColor;
