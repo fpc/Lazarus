@@ -355,7 +355,6 @@ class procedure TWin32WSCustomForm.SetBorderIcons(const AForm: TCustomForm;
 begin
   UpdateWindowStyle(AForm.Handle, CalcBorderIconsFlags(AForm), 
     WS_SYSMENU or WS_MINIMIZEBOX or WS_MAXIMIZEBOX);
-  SetIcon(AForm, 0, 0);
 end;
 
 class procedure TWin32WSCustomForm.SetFormBorderStyle(const AForm: TCustomForm;

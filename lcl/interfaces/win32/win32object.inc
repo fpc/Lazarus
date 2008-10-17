@@ -641,8 +641,16 @@ begin
     end;
     if (Sender is TCustomForm) then
     begin
-      SetClassLong(Handle, GCL_HICONSM, LONG(TCustomForm(Sender).SmallIconHandle));
-      SetClassLong(Handle, GCL_HICON, LONG(TCustomForm(Sender).BigIconHandle));
+      if TCustomForm(Sender).BorderStyle <> bsDialog then
+      begin
+        SetClassLong(Handle, GCL_HICONSM, LONG(TCustomForm(Sender).SmallIconHandle));
+        SetClassLong(Handle, GCL_HICON, LONG(TCustomForm(Sender).BigIconHandle));
+      end
+      else
+      begin
+        SetClassLong(Handle, GCL_HICONSM, 0);
+        SetClassLong(Handle, GCL_HICON, 0);
+      end;
     end;
   end
   else

@@ -180,7 +180,10 @@ begin
   if HandleAllocated then
   begin
     FreeIconHandles;
-    TWSCustomFormClass(WidgetSetClass).SetIcon(Self, SmallIconHandle, BigIconHandle);
+    if BorderStyle <> bsDialog then
+      TWSCustomFormClass(WidgetSetClass).SetIcon(Self, SmallIconHandle, BigIconHandle)
+    else
+      TWSCustomFormClass(WidgetSetClass).SetIcon(Self, 0, 0);
   end;
 end;
 
@@ -1260,7 +1263,10 @@ begin
   // We can not use inherited SetBorderStyle(NewStyle),
   // because TBorderStyle <> TFormBorderStyle;
   if HandleAllocated then
+  begin
     TWSCustomFormClass(WidgetSetClass).SetFormBorderStyle(Self, NewStyle);
+    TWSCustomFormClass(WidgetSetClass).SetIcon(Self, 0, 0);
+  end;
 end;
 
 {------------------------------------------------------------------------------

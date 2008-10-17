@@ -589,8 +589,19 @@ begin
       if Flags = SW_SHOWMAXIMIZED then
         Windows.SendMessage(Handle, WM_SHOWWINDOW, 1, 0);
     end;
-    if (Sender Is TCustomForm) then
-      SetClassLong(Handle, GCL_HICON, LONG(TCustomForm(Sender).GetIconHandle));
+    if (Sender is TCustomForm) then
+    begin
+      if TCustomForm(Sender).BorderStyle <> bsDialog then
+      begin
+        SetClassLong(Handle, GCL_HICONSM, LONG(TCustomForm(Sender).SmallIconHandle));
+        SetClassLong(Handle, GCL_HICON, LONG(TCustomForm(Sender).BigIconHandle));
+      end
+      else
+      begin
+        SetClassLong(Handle, GCL_HICONSM, 0);
+        SetClassLong(Handle, GCL_HICON, 0);
+      end;
+    end;
   end
   else
   begin
