@@ -2883,6 +2883,10 @@ images/designer/scale.png -text
 images/designer/size.png -text
 images/folder.png -text
 images/icon-naming-spec.xml svneol=native#text/plain
+images/icons/blue.ico -text svneol=unset#image/ico
+images/icons/blue_roundrect.ico -text svneol=unset#image/ico
+images/icons/brown.ico -text svneol=unset#image/ico
+images/icons/transparent.ico -text svneol=unset#image/ico
 images/ide_icon48x48.png -text svneol=unset#image/png
 images/includefile.ico -text svneol=unset#image/x-icon
 images/items/item_character.png -text svneol=unset#image/png
