@@ -29,8 +29,6 @@ type
     FOnModified: TNotifyEvent;
     procedure SetModified(const AValue: boolean);
   public
-    function HasAnyLazarusResource: Boolean; virtual; abstract;
-    function HasAnySystemResource: Boolean; virtual; abstract;
     function UpdateResources(AResources: TAbstractProjectResources; const MainFilename: string): Boolean; virtual; abstract;
 
     constructor Create; virtual;

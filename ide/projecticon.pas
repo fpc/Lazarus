@@ -55,8 +55,6 @@ type
     function GetStream: TStream;
     procedure SetStream(AStream: TStream);
 
-    function HasAnyLazarusResource: Boolean; override;
-    function HasAnySystemResource: Boolean; override;
     function UpdateResources(AResources: TAbstractProjectResources; const MainFilename: string): Boolean; override;
     function CreateIconFile: Boolean;
 
@@ -111,16 +109,6 @@ begin
     S.Free;
   end;
   IconText := NewIconText;
-end;
-
-function TProjectIcon.HasAnyLazarusResource: Boolean;
-begin
-  Result := IconText <> '';
-end;
-
-function TProjectIcon.HasAnySystemResource: Boolean;
-begin
-  Result := IconText <> '';
 end;
 
 function TProjectIcon.UpdateResources(AResources: TAbstractProjectResources;

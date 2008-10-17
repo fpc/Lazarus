@@ -47,8 +47,6 @@ type
   public
     function UpdateResources(AResources: TAbstractProjectResources; const MainFilename: string): Boolean; override;
 
-    function HasAnyLazarusResource: Boolean; override;
-    function HasAnySystemResource: Boolean; override;
     property UseManifest: boolean read FUseManifest write SetUseManifest;
   end;
 
@@ -94,16 +92,6 @@ begin
   Result := True;
   if UseManifest then
     AResources.AddSystemResource(sManifest);
-end;
-
-function TProjectXPManifest.HasAnyLazarusResource: Boolean;
-begin
-  Result := False;
-end;
-
-function TProjectXPManifest.HasAnySystemResource: Boolean;
-begin
-  Result := UseManifest;
 end;
 
 end.

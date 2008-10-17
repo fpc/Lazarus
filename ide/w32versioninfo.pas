@@ -84,8 +84,6 @@ type
     procedure SetUseVersionInfo(const AValue: boolean);
     procedure SetVersionNr(const AValue: integer);
   public
-    function HasAnyLazarusResource: Boolean; override;
-    function HasAnySystemResource: Boolean; override;
     function UpdateResources(AResources: TAbstractProjectResources; const MainFilename: string): Boolean; override;
 
     property UseVersionInfo: boolean read FUseVersionInfo write SetUseVersionInfo;
@@ -511,16 +509,6 @@ begin
   if FVersionNr=AValue then exit;
   FVersionNr:=AValue;
   Modified:=true;
-end;
-
-function TProjectVersionInfo.HasAnyLazarusResource: Boolean;
-begin
-  Result := False;
-end;
-
-function TProjectVersionInfo.HasAnySystemResource: Boolean;
-begin
-  Result := UseVersionInfo;
 end;
 
 finalization
