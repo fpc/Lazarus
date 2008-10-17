@@ -77,9 +77,24 @@ end;
 function UTF8ToSys(const s: string): string;
 begin
   if NeedRTLAnsi and (not IsASCII(s)) then
-    Result:=UTF8ToAnsi(s)
+    Result := UTF8ToAnsi(s)
   else
-    Result:=s;
+    Result := s;
+end;
+
+function UTF8ToConsole(const s: string): string;
+{$ifdef Windows}
+var
+  Dst: PChar;
+{$endif}
+begin
+  Result := UTF8ToSys(s);
+  {$ifdef Windows}
+  Dst := AllocMem((Length(Result) + 1) * SizeOf(Char));
+  if CharToOEM(PChar(Result), Dst) then
+    Result := StrPas(Dst);
+  FreeMem(Dst);
+  {$endif}
 end;
 
 function SysToUTF8(const s: string): string;
