@@ -5,7 +5,7 @@ unit options_oi;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls,
+  Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, Dialogs, Spin,
   ObjectInspector, lazarusidestrconsts;
 
 type
