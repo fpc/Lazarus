@@ -83,13 +83,13 @@ begin
 end;
 
 function UTF8ToConsole(const s: string): string;
-{$ifdef Windows}
+{$ifdef MSWindows}
 var
   Dst: PChar;
 {$endif}
 begin
   Result := UTF8ToSys(s);
-  {$ifdef Windows}
+  {$ifdef MSWindows}
   Dst := AllocMem((Length(Result) + 1) * SizeOf(Char));
   if CharToOEM(PChar(Result), Dst) then
     Result := StrPas(Dst);
