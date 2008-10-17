@@ -2639,7 +2639,7 @@ var
   Node: TCodeTreeNode;
   DiffPos: Integer;
 begin
-  DebugLn(['TCompilerDirectivesTree.Replace ',FromPos,'-',ToPos,' Old="',copy(Src,FromPos,ToPos-FromPos),'" New="',NewSrc,'"']);
+  //DebugLn(['TCompilerDirectivesTree.Replace ',FromPos,'-',ToPos,' Old="',copy(Src,FromPos,ToPos-FromPos),'" New="',NewSrc,'"']);
   IncreaseChangeStep;
   Code.Replace(FromPos,ToPos-FromPos,NewSrc);
   Src:=Code.Source;
