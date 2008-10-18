@@ -1,12 +1,12 @@
 object OIOptionsFrame: TOIOptionsFrame
-  Height = 316
+  Height = 340
   Width = 598
-  ClientHeight = 316
+  ClientHeight = 340
   ClientWidth = 598
   TabOrder = 0
   Visible = False
-  DesignLeft = 154
-  DesignTop = 203
+  DesignLeft = 432
+  DesignTop = 311
   object ObjectInspectorColorsGroupBox: TGroupBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -139,20 +139,22 @@ object OIOptionsFrame: TOIOptionsFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Height = 129
+    Height = 152
     Top = 180
     Width = 598
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 7
     Caption = 'OIMiscGroupBox'
-    ClientHeight = 111
+    ClientHeight = 134
     ClientWidth = 594
     TabOrder = 1
     object OIDefaultItemHeightLabel: TLabel
       AnchorSideLeft.Control = OIMiscGroupBox
+      AnchorSideTop.Control = OIBoldNonDefaultCheckBox
+      AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 14
-      Top = 6
+      Top = 81
       Width = 530
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
@@ -162,11 +164,10 @@ object OIOptionsFrame: TOIOptionsFrame
     end
     object OIShowHintCheckBox: TCheckBox
       AnchorSideLeft.Control = OIMiscGroupBox
-      AnchorSideTop.Control = OIDefaultItemHeightSpinEdit
-      AnchorSideTop.Side = asrBottom
+      AnchorSideTop.Control = OIMiscGroupBox
       Left = 6
       Height = 19
-      Top = 57
+      Top = 6
       Width = 530
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
@@ -180,7 +181,7 @@ object OIOptionsFrame: TOIOptionsFrame
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 25
-      Top = 26
+      Top = 101
       Width = 69
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
@@ -193,12 +194,25 @@ object OIOptionsFrame: TOIOptionsFrame
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 19
-      Top = 82
+      Top = 31
       Width = 134
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       Caption = 'OIAutoShowCheckBox'
       TabOrder = 2
+    end
+    object OIBoldNonDefaultCheckBox: TCheckBox
+      AnchorSideLeft.Control = OIMiscGroupBox
+      AnchorSideTop.Control = OIAutoShowCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 19
+      Top = 56
+      Width = 159
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      Caption = 'OIBoldNonDefaultCheckBox'
+      TabOrder = 3
     end
   end
 end

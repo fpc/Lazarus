@@ -172,6 +172,7 @@ type
     FGridBackgroundColor: TColor;
     FShowHints: boolean;
     FAutoShow: Boolean;
+    FBoldNonDefaultValues: Boolean;
     function FPropertyGridSplitterX(Page: TObjectInspectorPage): integer;
     procedure FPropertyGridSplitterX(Page: TObjectInspectorPage;
       const AValue: integer);
@@ -213,6 +214,7 @@ type
     property ShowHints: boolean read FShowHints
                                 write FShowHints;
     property AutoShow: boolean read FAutoShow write FAutoShow;
+    property BoldNonDefaultValues: boolean read FBoldNonDefaultValues write FBoldNonDefaultValues;
   end;
 
   TOICustomPropertyGrid = class;
@@ -3205,6 +3207,7 @@ begin
   FValueColor:=clMaroon;
   FReferencesColor:= clMaroon;
   FPropertyNameColor:=clWindowText;
+  FBoldNonDefaultValues := True;
 end;
 
 function TOIOptions.Load: boolean;
@@ -3266,6 +3269,8 @@ begin
          Path+'ShowHints',false);
     FAutoShow := ConfigStore.GetValue(
          Path+'AutoShow',true);
+    FBoldNonDefaultValues := ConfigStore.GetValue(
+         Path+'BoldNonDefaultValues',true);
   except
     on E: Exception do begin
       DebugLn('ERROR: TOIOptions.Load: ',E.Message);
@@ -3324,6 +3329,7 @@ begin
     ConfigStore.SetDeleteValue(Path+'ShowHints',FShowHints,
                              false);
     ConfigStore.SetDeleteValue(Path+'AutoShow',FAutoShow, True);
+    ConfigStore.SetDeleteValue(Path+'BoldNonDefaultValues',FBoldNonDefaultValues, True);
   except
     on E: Exception do begin
       DebugLn('ERROR: TOIOptions.Save: ',E.Message);
@@ -3355,8 +3361,9 @@ begin
   FDefaultValueColor:=AnObjInspector.PropertyGrid.DefaultValueFont.Color;
   FPropertyNameColor:=AnObjInspector.PropertyGrid.NameFont.Color;
 
-  FShowHints:=AnObjInspector.PropertyGrid.ShowHint;
-  FAutoShow:=AnObjInspector.AutoShow;
+  FShowHints := AnObjInspector.PropertyGrid.ShowHint;
+  FAutoShow := AnObjInspector.AutoShow;
+  FBoldNonDefaultValues := fsBold in AnObjInspector.PropertyGrid.ValueFont.Style;
 end;
 
 procedure TOIOptions.AssignTo(AnObjInspector: TObjectInspectorDlg);
@@ -3364,26 +3371,34 @@ var
   Page: TObjectInspectorPage;
   Grid: TOICustomPropertyGrid;
 begin
-  if FSaveBounds then begin
+  if FSaveBounds then
+  begin
     AnObjInspector.SetBounds(FLeft,FTop,FWidth,FHeight);
   end;
-  for Page:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do begin
+
+  for Page := Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
+  begin
     Grid:=AnObjInspector.GridControl[Page];
-    if Grid=nil then continue;
-    Grid.PrefferedSplitterX:=FGridSplitterX[Page];
-    Grid.SplitterX:=FGridSplitterX[Page];
-    Grid.BackgroundColor:=FGridBackgroundColor;
-    Grid.SubPropertiesColor:=FSubPropertiesColor;
-    Grid.ReferencesColor:=FReferencesColor;
-    Grid.ValueFont.Color:=FValueColor;
-    Grid.DefaultValueFont.Color:=FDefaultValueColor;
-    Grid.NameFont.Color:=FPropertyNameColor;
-    Grid.ShowHint:=FShowHints;
+    if Grid=nil then
+      Continue;
+    Grid.PrefferedSplitterX := FGridSplitterX[Page];
+    Grid.SplitterX := FGridSplitterX[Page];
+    Grid.BackgroundColor := FGridBackgroundColor;
+    Grid.SubPropertiesColor := FSubPropertiesColor;
+    Grid.ReferencesColor := FReferencesColor;
+    Grid.ValueFont.Color := FValueColor;
+    if FBoldNonDefaultValues then
+      Grid.ValueFont.Style := [fsBold]
+    else
+      Grid.ValueFont.Style := [];
+    Grid.DefaultValueFont.Color := FDefaultValueColor;
+    Grid.NameFont.Color := FPropertyNameColor;
+    Grid.ShowHint := FShowHints;
   end;
-  AnObjInspector.DefaultItemHeight:=FDefaultItemHeight;
-  AnObjInspector.ShowComponentTree:=FShowComponentTree;
-  AnObjInspector.ComponentTreeHeight:=FComponentTreeHeight;
-  AnObjInspector.AutoShow:=AutoShow;
+  AnObjInspector.DefaultItemHeight := FDefaultItemHeight;
+  AnObjInspector.ShowComponentTree := FShowComponentTree;
+  AnObjInspector.ComponentTreeHeight := FComponentTreeHeight;
+  AnObjInspector.AutoShow := AutoShow;
 end;
 
 

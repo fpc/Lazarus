@@ -17,6 +17,7 @@ type
     OIAutoShowCheckBox: TCheckBox;
     OIBackgroundColorButton: TColorButton;
     OIBackgroundColorLabel: TLabel;
+    OIBoldNonDefaultCheckBox: TCheckBox;
     OIDefaultItemHeightLabel: TLabel;
     OIDefaultItemHeightSpinEdit: TSpinEdit;
     OIDefaultValueColorButton: TColorButton;
@@ -60,6 +61,7 @@ begin
   OIDefaultItemHeightLabel.Caption := dlgOIItemHeight;
   OIShowHintCheckBox.Caption := lisShowHintsInObjectInspector;
   OIAutoShowCheckBox.Caption := lisAutoShowObjectInspector;
+  OIBoldNonDefaultCheckBox.Caption := lisBoldNonDefaultObjectInspector;
 end;
 
 function TOIOptionsFrame.GetTitle: String;
@@ -87,6 +89,7 @@ begin
     OIDefaultItemHeightSpinEdit.Value:=ObjectInspectorOptions.DefaultItemHeight;
     OIShowHintCheckBox.Checked := ObjectInspectorOptions.ShowHints;
     OIAutoShowCheckBox.Checked := ObjectInspectorOptions.AutoShow;
+    OIBoldNonDefaultCheckBox.Checked := ObjectInspectorOptions.BoldNonDefaultValues;
   end;
 end;
 
@@ -111,6 +114,7 @@ begin
        RoundToInt(OIDefaultItemHeightSpinEdit.Value);
     ObjectInspectorOptions.ShowHints := OIShowHintCheckBox.Checked;
     ObjectInspectorOptions.AutoShow := OIAutoShowCheckBox.Checked;
+    ObjectInspectorOptions.BoldNonDefaultValues := OIBoldNonDefaultCheckBox.Checked;
   end;
 end;
 
