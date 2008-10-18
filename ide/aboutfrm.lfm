@@ -285,8 +285,9 @@ object AboutForm: TAboutForm
     DragCursor = crDrag
     DragMode = dmManual
     Enabled = True
+    OnPageChanged = NotebookPageChanged
     Options = []
-    PageIndex = 1
+    PageIndex = 2
     ParentFont = True
     ShowTabs = True
     TabOrder = 0
@@ -616,6 +617,7 @@ object AboutForm: TAboutForm
     end
   end
   object Timer: TTimer
+    Enabled = False
     Interval = 30
     OnTimer = TimerTimer
     left = 17

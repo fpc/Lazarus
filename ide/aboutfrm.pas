@@ -64,6 +64,7 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure FormResize(Sender: TObject);
     procedure miVerToClipboardClick(Sender: TObject);
+    procedure NotebookPageChanged(Sender: TObject);
     procedure URLLabelMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure URLLabelMouseEnter(Sender: TObject);
@@ -80,7 +81,6 @@ type
     FStartLine: integer;
     FStepSize: integer;
     FActiveLine: integer;   //the line over which the mouse hovers
-    procedure ResetScrollText;
     procedure LoadContributors;
     procedure LoadAcknowledgements;
     function ActiveLineIsURL: boolean;
@@ -227,6 +227,12 @@ begin
       ' ' + PlatformLabel.Caption;
 end;
 
+procedure TAboutForm.NotebookPageChanged(Sender: TObject);
+begin
+  Timer.Enabled := (NoteBook.ActivePage = lisContributors) or
+                   (NoteBook.ActivePage = lisAcknowledgements);
+end;
+
 procedure TAboutForm.URLLabelMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
@@ -325,19 +331,6 @@ begin
   begin
     DrawScrollText(AcknowledgementsPaintBox.Canvas, FAcknowledgements);
     exit;
-  end;
-
-  ResetScrollText;
-end;
-
-procedure TAboutForm.ResetScrollText;
-begin
-  if Assigned(FBuffer) then
-  begin
-    FBuffer.Width := ContributorsPaintBox.Width;
-    FBuffer.Height := ContributorsPaintBox.Height;
-    FNumLines := FBuffer.Height div FLineHeight;
-    FOffset := FBuffer.Height;
   end;
 end;
 
