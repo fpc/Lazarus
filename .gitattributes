@@ -2321,9 +2321,6 @@ ide/compileroptions.pp svneol=native#text/pascal
 ide/compileroptionsdlg.lfm -text
 ide/compileroptionsdlg.lrs -text
 ide/compileroptionsdlg.pp svneol=native#text/pascal
-ide/compileroptionsdlg_new.lfm -text
-ide/compileroptionsdlg_new.lrs -text
-ide/compileroptionsdlg_new.pp svneol=native#text/pascal
 ide/componentlist.lfm svneol=native#text/pascal
 ide/componentlist.lrs svneol=native#text/pascal
 ide/componentlist.pas svneol=native#text/pascal
@@ -2348,9 +2345,6 @@ ide/editmsgscannersdlg.pas svneol=native#text/plain
 ide/editoroptions.lfm svneol=native#text/plain
 ide/editoroptions.lrs svneol=native#text/pascal
 ide/editoroptions.pp svneol=native#text/pascal
-ide/editoroptions_new.lfm svneol=native#text/plain
-ide/editoroptions_new.lrs svneol=native#text/pascal
-ide/editoroptions_new.pp svneol=native#text/pascal
 ide/emptymethodsdlg.lfm svneol=native#text/plain
 ide/emptymethodsdlg.lrs svneol=native#text/plain
 ide/emptymethodsdlg.pas svneol=native#text/plain
@@ -2360,9 +2354,6 @@ ide/encloseselectiondlg.pas svneol=native#text/pascal
 ide/environmentopts.lfm svneol=native#text/plain
 ide/environmentopts.lrs svneol=native#text/plain
 ide/environmentopts.pp svneol=native#text/pascal
-ide/environmentopts_new.lfm svneol=native#text/plain
-ide/environmentopts_new.lrs svneol=native#text/plain
-ide/environmentopts_new.pp svneol=native#text/pascal
 ide/extractprocdlg.lfm svneol=native#text/plain
 ide/extractprocdlg.lrs svneol=native#text/pascal
 ide/extractprocdlg.pas svneol=native#text/pascal
@@ -2513,9 +2504,6 @@ ide/projectinspector.pas svneol=native#text/pascal
 ide/projectopts.lfm svneol=native#text/plain
 ide/projectopts.lrs svneol=native#text/pascal
 ide/projectopts.pp svneol=native#text/pascal
-ide/projectopts_new.lfm svneol=native#text/plain
-ide/projectopts_new.lrs svneol=native#text/pascal
-ide/projectopts_new.pp svneol=native#text/pascal
 ide/projectresources.pas svneol=native#text/pascal
 ide/projectwizarddlg.lfm svneol=native#text/plain
 ide/projectwizarddlg.lrs svneol=native#text/plain

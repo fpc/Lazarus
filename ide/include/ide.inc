@@ -26,8 +26,6 @@
 
 { $DEFINE IDE_DEBUG}
 
-{off $define EnableNewDialogs}
-
 {$IFDEF VER2_0}
 {$DEFINE DisableFakeMethods}
 {$ENDIF}
@@ -35,6 +33,8 @@
 {$IFNDEF DisableMultiFormProperties}
 {$DEFINE VerboseIDEMultiForm}
 {$ENDIF}
+
+{off $apptype console}
 
 // end.
 
