@@ -1031,6 +1031,7 @@ resourcestring
   lisShowHintsInObjectInspector = 'Show hints in Object Inspector';
   lisAutoShowObjectInspector = 'Auto show Object Inspector';
   lisBoldNonDefaultObjectInspector = 'Bold non default values';
+  lisDrawGridLinesObjectInspector = 'Draw grid lines';
   dlgEnvColors = 'Colors';
   dlgEnvBackupHelpNote =
     'Notes: Project files are all files in the project directory';

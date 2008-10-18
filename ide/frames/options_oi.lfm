@@ -1,12 +1,12 @@
 object OIOptionsFrame: TOIOptionsFrame
-  Height = 340
+  Height = 395
   Width = 598
-  ClientHeight = 340
+  ClientHeight = 395
   ClientWidth = 598
   TabOrder = 0
   Visible = False
-  DesignLeft = 432
-  DesignTop = 311
+  DesignLeft = 361
+  DesignTop = 226
   object ObjectInspectorColorsGroupBox: TGroupBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -139,22 +139,22 @@ object OIOptionsFrame: TOIOptionsFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Height = 152
+    Height = 184
     Top = 180
     Width = 598
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 7
     Caption = 'OIMiscGroupBox'
-    ClientHeight = 134
+    ClientHeight = 166
     ClientWidth = 594
     TabOrder = 1
     object OIDefaultItemHeightLabel: TLabel
       AnchorSideLeft.Control = OIMiscGroupBox
-      AnchorSideTop.Control = OIBoldNonDefaultCheckBox
+      AnchorSideTop.Control = OIDrawGridLinesCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 14
-      Top = 81
+      Top = 106
       Width = 530
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
@@ -168,7 +168,7 @@ object OIOptionsFrame: TOIOptionsFrame
       Left = 6
       Height = 19
       Top = 6
-      Width = 530
+      Width = 144
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
@@ -181,7 +181,7 @@ object OIOptionsFrame: TOIOptionsFrame
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 25
-      Top = 101
+      Top = 126
       Width = 69
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
@@ -213,6 +213,19 @@ object OIOptionsFrame: TOIOptionsFrame
       BorderSpacing.Top = 6
       Caption = 'OIBoldNonDefaultCheckBox'
       TabOrder = 3
+    end
+    object OIDrawGridLinesCheckBox: TCheckBox
+      AnchorSideLeft.Control = OIMiscGroupBox
+      AnchorSideTop.Control = OIBoldNonDefaultCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 19
+      Top = 81
+      Width = 153
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      Caption = 'OIDrawGridLinesCheckBox'
+      TabOrder = 4
     end
   end
 end

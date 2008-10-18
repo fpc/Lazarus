@@ -42,6 +42,7 @@ type
     OIDefaultItemHeightSpinEdit: TSpinEdit;
     OIDefaultValueColorButton: TColorButton;
     OIDefaultValueColorLabel: TLabel;
+    OIDrawGridLinesCheckBox: TCheckBox;
     OIMiscGroupBox: TGroupBox;
     OIPropNameColorButton: TColorButton;
     OIPropNameColorLabel: TLabel;
@@ -81,6 +82,7 @@ begin
   OIShowHintCheckBox.Caption := lisShowHintsInObjectInspector;
   OIAutoShowCheckBox.Caption := lisAutoShowObjectInspector;
   OIBoldNonDefaultCheckBox.Caption := lisBoldNonDefaultObjectInspector;
+  OIDrawGridLinesCheckBox.Caption := lisDrawGridLinesObjectInspector;
 end;
 
 function TOIOptionsFrame.GetTitle: String;
@@ -109,6 +111,7 @@ begin
     OIShowHintCheckBox.Checked := ObjectInspectorOptions.ShowHints;
     OIAutoShowCheckBox.Checked := ObjectInspectorOptions.AutoShow;
     OIBoldNonDefaultCheckBox.Checked := ObjectInspectorOptions.BoldNonDefaultValues;
+    OIDrawGridLinesCheckBox.Checked := ObjectInspectorOptions.DrawGridLines;
   end;
 end;
 
@@ -134,6 +137,7 @@ begin
     ObjectInspectorOptions.ShowHints := OIShowHintCheckBox.Checked;
     ObjectInspectorOptions.AutoShow := OIAutoShowCheckBox.Checked;
     ObjectInspectorOptions.BoldNonDefaultValues := OIBoldNonDefaultCheckBox.Checked;
+    ObjectInspectorOptions.DrawGridLines := OIDrawGridLinesCheckBox.Checked;
   end;
 end;
 
