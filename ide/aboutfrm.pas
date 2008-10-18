@@ -62,6 +62,7 @@ type
       Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure AcknowledgementsPaintBoxMouseMove(Sender: TObject;
       Shift: TShiftState; X, Y: Integer);
+    procedure FormResize(Sender: TObject);
     procedure miVerToClipboardClick(Sender: TObject);
     procedure URLLabelMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
@@ -212,6 +213,12 @@ begin
 
   if ActiveLineIsURL then
     AcknowledgementsPaintbox.Cursor := crHandPoint
+end;
+
+procedure TAboutForm.FormResize(Sender: TObject);
+begin
+  FBuffer.Width := ContributorsPaintBox.Width;
+  FBuffer.Height := ContributorsPaintBox.Height;
 end;
 
 procedure TAboutForm.miVerToClipboardClick(Sender: TObject);

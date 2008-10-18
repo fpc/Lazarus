@@ -27,6 +27,7 @@ object AboutForm: TAboutForm
   Font.Style = []
   FormStyle = fsNormal
   OnCreate = AboutFormCreate
+  OnResize = FormResize
   ParentBiDiMode = True
   ParentFont = False
   PopupMenu = PopupMenu1
@@ -285,7 +286,7 @@ object AboutForm: TAboutForm
     DragMode = dmManual
     Enabled = True
     Options = []
-    PageIndex = 0
+    PageIndex = 1
     ParentFont = True
     ShowTabs = True
     TabOrder = 0
