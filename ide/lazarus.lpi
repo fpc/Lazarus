@@ -11,7 +11,6 @@
       </Flags>
       <SessionStorage Value="InIDEConfig"/>
       <MainUnit Value="0"/>
-      <IconPath Value="./"/>
       <TargetFileExt Value=""/>
       <Title Value="Lazarus"/>
     </General>
@@ -41,7 +40,7 @@
         <PackageName Value="SynEdit"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="2">
+    <Units Count="3">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -52,6 +51,15 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="GDBMIDebugger"/>
       </Unit1>
+      <Unit2>
+        <Filename Value="frames/options_oi.pas"/>
+        <ComponentName Value="OIOptionsFrame"/>
+        <HasResources Value="True"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="frames/options_oi.lrs"/>
+        <UnitName Value="Options_OI"/>
+      </Unit2>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -60,6 +68,7 @@
       <Filename Value="../lazarus"/>
     </Target>
     <SearchPaths>
+      <OtherUnitFiles Value="frames/"/>
       <UnitOutputDirectory Value="$(LazarusDir)/units/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Other>
