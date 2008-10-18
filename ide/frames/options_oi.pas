@@ -5,8 +5,8 @@ unit options_oi;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, Dialogs, Spin,
-  ObjectInspector, lazarusidestrconsts;
+  Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, Dialogs, Spin, LCLProc,
+  ObjectInspector, lazarusidestrconsts, environmentopts;
 
 type
 
@@ -36,6 +36,8 @@ type
   public
     procedure Setup;
     function GetTitle: String;
+    procedure ReadSettings(AOptions: TEnvironmentOptions);
+    procedure WriteSettings(AOptions: TEnvironmentOptions);
   end; 
 
 var
@@ -63,6 +65,53 @@ end;
 function TOIOptionsFrame.GetTitle: String;
 begin
   Result := dlgObjInsp;
+end;
+
+procedure TOIOptionsFrame.ReadSettings(AOptions: TEnvironmentOptions);
+begin
+  with AOptions do
+  begin
+    OIBackgroundColorButton.ButtonColor:=
+       ObjectInspectorOptions.GridBackgroundColor;
+    OISubPropsColorButton.ButtonColor:=
+       ObjectInspectorOptions.SubPropertiesColor;
+    OIReferencesColorButton.ButtonColor:=
+       ObjectInspectorOptions.ReferencesColor;
+    OIValueColorButton.ButtonColor:=
+       ObjectInspectorOptions.ValueColor;
+    OIDefaultValueColorButton.ButtonColor:=
+       ObjectInspectorOptions.DefaultValueColor;
+    OIPropNameColorButton.ButtonColor:=
+       ObjectInspectorOptions.PropertyNameColor;
+
+    OIDefaultItemHeightSpinEdit.Value:=ObjectInspectorOptions.DefaultItemHeight;
+    OIShowHintCheckBox.Checked := ObjectInspectorOptions.ShowHints;
+    OIAutoShowCheckBox.Checked := ObjectInspectorOptions.AutoShow;
+  end;
+end;
+
+procedure TOIOptionsFrame.WriteSettings(AOptions: TEnvironmentOptions);
+begin
+  with AOptions do
+  begin
+    ObjectInspectorOptions.GridBackgroundColor:=
+       OIBackgroundColorButton.ButtonColor;
+    ObjectInspectorOptions.SubPropertiesColor:=
+       OISubPropsColorButton.ButtonColor;
+    ObjectInspectorOptions.ReferencesColor:=
+       OIReferencesColorButton.ButtonColor;
+    ObjectInspectorOptions.ValueColor:=
+       OIValueColorButton.ButtonColor;
+    ObjectInspectorOptions.DefaultValueColor:=
+       OIDefaultValueColorButton.ButtonColor;
+    ObjectInspectorOptions.PropertyNameColor:=
+       OIPropNameColorButton.ButtonColor;
+
+    ObjectInspectorOptions.DefaultItemHeight:=
+       RoundToInt(OIDefaultItemHeightSpinEdit.Value);
+    ObjectInspectorOptions.ShowHints := OIShowHintCheckBox.Checked;
+    ObjectInspectorOptions.AutoShow := OIAutoShowCheckBox.Checked;
+  end;
 end;
 
 initialization

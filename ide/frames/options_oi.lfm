@@ -5,8 +5,8 @@ object OIOptionsFrame: TOIOptionsFrame
   ClientWidth = 598
   TabOrder = 0
   Visible = False
-  DesignLeft = 407
-  DesignTop = 212
+  DesignLeft = 154
+  DesignTop = 203
   object ObjectInspectorColorsGroupBox: TGroupBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
