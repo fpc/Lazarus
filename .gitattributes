@@ -1987,6 +1987,15 @@ examples/gridcelleditor/gridcelleditor.lpr svneol=native#text/plain
 examples/gridcelleditor/unit1.lfm svneol=native#text/plain
 examples/gridcelleditor/unit1.lrs svneol=native#text/plain
 examples/gridcelleditor/unit1.pas svneol=native#text/plain
+examples/gridexamples/title_images/main.lfm svneol=native#text/plain
+examples/gridexamples/title_images/main.lrs svneol=native#text/plain
+examples/gridexamples/title_images/main.pas svneol=native#text/plain
+examples/gridexamples/title_images/title_image_demo.ico -text svneol=unset#image/ico
+examples/gridexamples/title_images/title_image_demo.lpi svneol=native#text/plain
+examples/gridexamples/title_images/title_image_demo.lpr svneol=native#text/plain
+examples/gridexamples/title_images/title_image_demo.lrs svneol=native#text/plain
+examples/gridexamples/title_images/title_image_demo.rc svneol=native#text/plain
+examples/gridexamples/title_images/title_image_demo.res -text
 examples/groupbox.lpi svneol=native#text/plain
 examples/groupbox.pp svneol=native#text/pascal
 examples/groupboxnested.lpi svneol=native#text/plain

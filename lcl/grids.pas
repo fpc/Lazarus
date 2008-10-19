@@ -354,6 +354,7 @@ type
     FAlignment: ^TAlignment;
     FFont: TFont;
     FImageIndex: Integer;
+    FImageLayout: TButtonLayout;
     FIsDefaultTitleFont: boolean;
     FLayout: ^TTextLayout;
     procedure FontChanged(Sender: TObject);
@@ -371,6 +372,7 @@ type
     procedure SetColor(const AValue: TColor);
     procedure SetFont(const AValue: TFont);
     procedure SetImageIndex(const AValue: Integer);
+    procedure SetImageLayout(const AValue: TButtonLayout);
     procedure SetLayout(const AValue: TTextLayout);
     property IsDefaultFont: boolean read FIsDefaultTitleFont;
   protected
@@ -392,6 +394,7 @@ type
     property Color: TColor read GetColor write SetColor stored IsColorStored;
     property Font: TFont read GetFont write SetFont stored IsFontStored;
     property ImageIndex: Integer read FImageIndex write SetImageIndex default 0;
+    property ImageLayout: TButtonLayout read FImageLayout write SetImageLayout default blGlyphRight;
     property Layout: TTextLayout read GetLayout write SetLayout stored IsLayoutStored;
   end;
 
@@ -3086,7 +3089,7 @@ begin
     exit;
   w := TitleImageList.Width;
   h := TitleImageList.Height;
-  rw := ARect.Right - ARect.Left - BORDER * 3;
+  rw := ARect.Right - ARect.Left - BORDER * 2;
   rh := ARect.Bottom - ARect.Top - BORDER * 2;
   if rw < w then begin
     w := rw;
@@ -3096,8 +3099,30 @@ begin
     h := rh;
     needStretch := true;
   end;
-  Dec(ARect.Right, w + BORDER * 2);
-  r.TopLeft := Point(ARect.Right + BORDER, ARect.Top + (rh - h) div 2 + BORDER);
+  case c.Title.ImageLayout of
+    blGlyphRight, blGlyphLeft:
+      r.Top := ARect.Top + (rh - h) div 2 + BORDER;
+    blGlyphTop, blGlyphBottom:
+      r.Left := ARect.Left + (rw - w) div 2 + BORDER;
+  end;
+  case c.Title.ImageLayout of
+    blGlyphRight: begin
+      Dec(ARect.Right, w + BORDER * 2);
+      r.Left := ARect.Right + BORDER;
+    end;
+    blGlyphLeft: begin
+      r.Left := ARect.Left + BORDER;
+      Inc(ARect.Left, w + BORDER * 2);
+    end;
+    blGlyphTop: begin
+      r.Top := ARect.Top + BORDER;
+      Inc(ARect.Top, w + BORDER * 2);
+    end;
+    blGlyphBottom: begin
+      Dec(ARect.Bottom, w + BORDER * 2);
+      r.Top := ARect.Bottom + BORDER;
+    end;
+  end;
   if needStretch then begin
     r.Right := r.Left + w;
     r.Bottom := r.Top + h;
@@ -8557,6 +8582,13 @@ begin
   FColumn.ColumnChanged;
 end;
 
+procedure TGridColumnTitle.SetImageLayout(const AValue: TButtonLayout);
+begin
+  if FImageLayout = AValue then exit;
+  FImageLayout := AValue;
+  FColumn.ColumnChanged;
+end;
+
 procedure TGridColumnTitle.SetLayout(const AValue: TTextLayout);
 begin
   if FLayout = nil then begin
@@ -8613,6 +8645,7 @@ begin
   FFont := TFont.Create;
   FillTitleDefaultFont;
   FFont.OnChange := @FontChanged;
+  FImageLayout := blGlyphRight;
 end;
 
 destructor TGridColumnTitle.Destroy;
@@ -8627,8 +8660,9 @@ end;
 
 function TGridColumnTitle.IsDefault: boolean;
 begin
-  result :=  (FAlignment=nil) and (FColor=nil) and (FCaption=nil) and
-    IsDefaultFont and (FLayout=nil);
+  Result :=  (FAlignment = nil) and (FColor = nil) and (FCaption = nil) and
+    IsDefaultFont and (FLayout = nil) and
+    (FImageIndex = 0) and (FImageLayout = blGlyphRight);
 end;
 
 { TGridColumn }
@@ -8644,7 +8678,7 @@ begin
   if FAlignment=nil then
     Result := GetDefaultAlignment
   else
-    result := FAlignment^;
+    Result := FAlignment^;
 end;
 
 function TGridColumn.GetColor: TColor;
