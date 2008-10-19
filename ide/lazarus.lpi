@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="/"/>
+    <PathDelim Value="\"/>
     <Version Value="6"/>
     <General>
       <Flags>
@@ -16,6 +16,7 @@
     </General>
     <PublishOptions>
       <Version Value="2"/>
+      <DestinationDirectory Value="$(TestDir)\publishedproject\"/>
       <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
       <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
     </PublishOptions>
@@ -23,7 +24,7 @@
       <local>
         <FormatVersion Value="1"/>
         <CommandLineParams Value="--no-splash-screen"/>
-        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+        <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
     <RequiredPackages Count="4">
@@ -40,36 +41,45 @@
         <PackageName Value="SynEdit"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="3">
+    <Units Count="4">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Lazarus"/>
       </Unit0>
       <Unit1>
-        <Filename Value="../debugger/gdbmidebugger.pp"/>
+        <Filename Value="..\debugger\gdbmidebugger.pp"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="GDBMIDebugger"/>
       </Unit1>
       <Unit2>
-        <Filename Value="frames/options_oi.pas"/>
+        <Filename Value="frames\options_oi.pas"/>
         <ComponentName Value="OIOptionsFrame"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <ResourceFilename Value="frames/options_oi.lrs"/>
+        <ResourceFilename Value="frames\options_oi.lrs"/>
         <UnitName Value="Options_OI"/>
       </Unit2>
+      <Unit3>
+        <Filename Value="frames\options_files.pas"/>
+        <ComponentName Value="FilesOptionsFrame"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="frames\options_files.lrs"/>
+        <UnitName Value="options_files"/>
+      </Unit3>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="8"/>
+    <PathDelim Value="\"/>
     <Target>
-      <Filename Value="../lazarus"/>
+      <Filename Value="..\lazarus"/>
     </Target>
     <SearchPaths>
-      <OtherUnitFiles Value="frames/"/>
-      <UnitOutputDirectory Value="$(LazarusDir)/units/$(TargetCPU)-$(TargetOS)"/>
+      <OtherUnitFiles Value="frames\"/>
+      <UnitOutputDirectory Value="$(LazarusDir)\units\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Other>
       <CompilerPath Value="$(CompPath)"/>

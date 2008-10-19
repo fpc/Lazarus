@@ -3581,7 +3581,7 @@ procedure TMainIDE.mnuToolConfigureClicked(Sender: TObject);
 begin
   if ShowExtToolDialog(EnvironmentOptions.ExternalTools,GlobalMacroList)=mrOk then
   begin
-    // save to enviroment options
+    // save to environment options
     SaveDesktopSettings(EnvironmentOptions);
     EnvironmentOptions.Save(false);
     // save shortcuts to editor options

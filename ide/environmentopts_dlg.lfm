@@ -26,319 +26,6 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
     TabOrder = 0
     object FilesPage: TPage
       Caption = 'FilesPage'
-      ClientWidth = 534
-      ClientHeight = 463
-      object MaxRecentOpenFilesLabel: TLabel
-        Left = 6
-        Height = 14
-        Top = 10
-        Width = 127
-        Caption = 'MaxRecentOpenFilesLabel'
-        ParentColor = False
-      end
-      object MaxRecentProjectFilesLabel: TLabel
-        Left = 6
-        Height = 14
-        Top = 58
-        Width = 135
-        Caption = 'MaxRecentProjectFilesLabel'
-        ParentColor = False
-      end
-      object MaxRecentOpenFilesComboBox: TComboBox
-        AnchorSideRight.Control = FilesPage
-        AnchorSideRight.Side = asrBottom
-        Left = 6
-        Height = 21
-        Top = 26
-        Width = 522
-        Anchors = [akTop, akLeft, akRight]
-        BorderSpacing.Right = 6
-        ItemHeight = 13
-        Items.Strings = (
-          '5'
-          '10'
-          '15'
-          '20'
-          '25'
-          '30'
-        )
-        TabOrder = 0
-      end
-      object MaxRecentProjectFilesComboBox: TComboBox
-        AnchorSideRight.Control = FilesPage
-        AnchorSideRight.Side = asrBottom
-        Left = 6
-        Height = 21
-        Top = 74
-        Width = 522
-        Anchors = [akTop, akLeft, akRight]
-        BorderSpacing.Right = 6
-        ItemHeight = 13
-        Items.Strings = (
-          '5'
-          '10'
-          '15'
-          '20'
-          '25'
-          '30'
-        )
-        TabOrder = 1
-      end
-      object OpenLastProjectAtStartCheckBox: TCheckBox
-        AnchorSideTop.Control = MaxRecentProjectFilesComboBox
-        AnchorSideTop.Side = asrBottom
-        AnchorSideRight.Control = FilesPage
-        AnchorSideRight.Side = asrBottom
-        Left = 6
-        Height = 19
-        Top = 95
-        Width = 522
-        Anchors = [akTop, akLeft, akRight]
-        BorderSpacing.Right = 6
-        Caption = 'OpenLastProjectAtStartCheckBox'
-        TabOrder = 8
-      end
-      object ShowCompileDialogCheckBox: TCheckBox
-        AnchorSideTop.Control = OpenLastProjectAtStartCheckBox
-        AnchorSideTop.Side = asrBottom
-        AnchorSideRight.Control = FilesPage
-        AnchorSideRight.Side = asrBottom
-        Left = 6
-        Height = 19
-        Top = 114
-        Width = 522
-        Anchors = [akTop, akLeft, akRight]
-        BorderSpacing.Right = 6
-        Caption = 'ShowCompileDialogCheckBox'
-        TabOrder = 2
-      end
-      object LazarusDirGroupBox: TGroupBox
-        AnchorSideTop.Control = ShowCompileDialogCheckBox
-        AnchorSideTop.Side = asrBottom
-        AnchorSideRight.Control = FilesPage
-        AnchorSideRight.Side = asrBottom
-        Left = 6
-        Height = 54
-        Top = 133
-        Width = 522
-        Anchors = [akTop, akLeft, akRight]
-        BorderSpacing.Right = 6
-        Caption = 'LazarusDirGroupBox'
-        ClientHeight = 36
-        ClientWidth = 518
-        TabOrder = 3
-        object LazarusDirComboBox: TComboBox
-          AnchorSideLeft.Control = LazarusDirGroupBox
-          AnchorSideRight.Control = LazarusDirButton
-          Left = 6
-          Height = 21
-          Top = 3
-          Width = 481
-          Anchors = [akTop, akLeft, akRight]
-          BorderSpacing.Left = 6
-          ItemHeight = 13
-          TabOrder = 0
-          Text = 'LazarusDirComboBox'
-        end
-        object LazarusDirButton: TButton
-          AnchorSideLeft.Control = LazarusDirGroupBox
-          AnchorSideLeft.Side = asrBottom
-          AnchorSideTop.Control = LazarusDirComboBox
-          AnchorSideRight.Control = LazarusDirGroupBox
-          AnchorSideRight.Side = asrBottom
-          AnchorSideBottom.Control = LazarusDirComboBox
-          AnchorSideBottom.Side = asrBottom
-          Left = 487
-          Height = 21
-          Top = 3
-          Width = 25
-          Anchors = [akTop, akRight, akBottom]
-          BorderSpacing.Right = 6
-          Caption = '...'
-          OnClick = DirectoriesButtonClick
-          TabOrder = 1
-        end
-      end
-      object CompilerPathGroupBox: TGroupBox
-        AnchorSideTop.Control = LazarusDirGroupBox
-        AnchorSideTop.Side = asrBottom
-        AnchorSideRight.Control = FilesPage
-        AnchorSideRight.Side = asrBottom
-        Left = 6
-        Height = 54
-        Top = 187
-        Width = 522
-        Anchors = [akTop, akLeft, akRight]
-        BorderSpacing.Right = 6
-        Caption = 'CompilerPathGroupBox'
-        ClientHeight = 36
-        ClientWidth = 518
-        TabOrder = 4
-        object CompilerPathComboBox: TComboBox
-          AnchorSideLeft.Control = CompilerPathGroupBox
-          AnchorSideRight.Control = CompilerPathButton
-          Left = 6
-          Height = 21
-          Top = 3
-          Width = 481
-          Anchors = [akTop, akLeft, akRight]
-          BorderSpacing.Left = 6
-          ItemHeight = 13
-          TabOrder = 0
-          Text = 'CompilerPathComboBox'
-        end
-        object CompilerPathButton: TButton
-          AnchorSideTop.Control = CompilerPathComboBox
-          AnchorSideRight.Control = CompilerPathGroupBox
-          AnchorSideRight.Side = asrBottom
-          AnchorSideBottom.Control = CompilerPathComboBox
-          AnchorSideBottom.Side = asrBottom
-          Left = 487
-          Height = 21
-          Top = 3
-          Width = 25
-          Anchors = [akTop, akRight, akBottom]
-          BorderSpacing.Right = 6
-          Caption = '...'
-          OnClick = FilesButtonClick
-          TabOrder = 1
-        end
-      end
-      object FPCSourceDirGroupBox: TGroupBox
-        AnchorSideTop.Control = CompilerPathGroupBox
-        AnchorSideTop.Side = asrBottom
-        AnchorSideRight.Control = FilesPage
-        AnchorSideRight.Side = asrBottom
-        Left = 6
-        Height = 54
-        Top = 241
-        Width = 522
-        Anchors = [akTop, akLeft, akRight]
-        BorderSpacing.Right = 6
-        Caption = 'FPCSourceDirGroupBox'
-        ClientHeight = 36
-        ClientWidth = 518
-        TabOrder = 5
-        object FPCSourceDirComboBox: TComboBox
-          AnchorSideLeft.Control = FPCSourceDirGroupBox
-          AnchorSideRight.Control = FPCSourceDirButton
-          Left = 6
-          Height = 21
-          Top = 3
-          Width = 481
-          Anchors = [akTop, akLeft, akRight]
-          BorderSpacing.Left = 6
-          ItemHeight = 13
-          TabOrder = 0
-          Text = 'FPCSourceDirComboBox'
-        end
-        object FPCSourceDirButton: TButton
-          AnchorSideTop.Control = FPCSourceDirComboBox
-          AnchorSideRight.Control = FPCSourceDirGroupBox
-          AnchorSideRight.Side = asrBottom
-          AnchorSideBottom.Control = FPCSourceDirComboBox
-          AnchorSideBottom.Side = asrBottom
-          Left = 487
-          Height = 21
-          Top = 3
-          Width = 25
-          Anchors = [akTop, akRight, akBottom]
-          BorderSpacing.Right = 6
-          Caption = '...'
-          OnClick = DirectoriesButtonClick
-          TabOrder = 1
-        end
-      end
-      object MakePathGroupBox: TGroupBox
-        AnchorSideTop.Control = FPCSourceDirGroupBox
-        AnchorSideTop.Side = asrBottom
-        AnchorSideRight.Control = FilesPage
-        AnchorSideRight.Side = asrBottom
-        Left = 6
-        Height = 54
-        Top = 295
-        Width = 522
-        Anchors = [akTop, akLeft, akRight]
-        BorderSpacing.Right = 6
-        Caption = 'MakePathGroupBox'
-        ClientHeight = 36
-        ClientWidth = 518
-        TabOrder = 6
-        object MakePathComboBox: TComboBox
-          AnchorSideLeft.Control = MakePathGroupBox
-          AnchorSideRight.Control = MakePathButton
-          Left = 6
-          Height = 21
-          Top = 3
-          Width = 481
-          Anchors = [akTop, akLeft, akRight]
-          BorderSpacing.Left = 6
-          ItemHeight = 13
-          TabOrder = 0
-          Text = 'MakePathComboBox'
-        end
-        object MakePathButton: TButton
-          AnchorSideTop.Control = MakePathComboBox
-          AnchorSideRight.Control = MakePathGroupBox
-          AnchorSideRight.Side = asrBottom
-          AnchorSideBottom.Control = MakePathComboBox
-          AnchorSideBottom.Side = asrBottom
-          Left = 487
-          Height = 21
-          Top = 3
-          Width = 25
-          Anchors = [akTop, akRight, akBottom]
-          BorderSpacing.Right = 6
-          Caption = '...'
-          OnClick = FilesButtonClick
-          TabOrder = 1
-        end
-      end
-      object TestBuildDirGroupBox: TGroupBox
-        AnchorSideTop.Control = MakePathGroupBox
-        AnchorSideTop.Side = asrBottom
-        AnchorSideRight.Control = FilesPage
-        AnchorSideRight.Side = asrBottom
-        Left = 6
-        Height = 54
-        Top = 349
-        Width = 522
-        Anchors = [akTop, akLeft, akRight]
-        BorderSpacing.Right = 6
-        Caption = 'TestBuildDirGroupBox'
-        ClientHeight = 36
-        ClientWidth = 518
-        TabOrder = 7
-        object TestBuildDirComboBox: TComboBox
-          AnchorSideLeft.Control = TestBuildDirGroupBox
-          AnchorSideRight.Control = TestBuildDirButton
-          Left = 6
-          Height = 21
-          Top = 3
-          Width = 481
-          Anchors = [akTop, akLeft, akRight]
-          BorderSpacing.Left = 6
-          ItemHeight = 13
-          TabOrder = 0
-          Text = 'TestBuildDirComboBox'
-        end
-        object TestBuildDirButton: TButton
-          AnchorSideTop.Control = TestBuildDirComboBox
-          AnchorSideRight.Control = TestBuildDirGroupBox
-          AnchorSideRight.Side = asrBottom
-          AnchorSideBottom.Control = TestBuildDirComboBox
-          AnchorSideBottom.Side = asrBottom
-          Left = 487
-          Height = 21
-          Top = 3
-          Width = 25
-          Anchors = [akTop, akRight, akBottom]
-          BorderSpacing.Right = 6
-          Caption = '...'
-          OnClick = DirectoriesButtonClick
-          TabOrder = 1
-        end
-      end
     end
     object DesktopPage: TPage
       Caption = 'DesktopPage'
@@ -359,8 +46,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         BorderSpacing.Top = 6
         BorderSpacing.Right = 6
         Caption = 'LanguageGroupBox'
-        ClientHeight = 33
-        ClientWidth = 518
+        ClientHeight = 51
+        ClientWidth = 522
         TabOrder = 0
         object LanguageComboBox: TComboBox
           AnchorSideLeft.Control = LanguageGroupBox
@@ -373,6 +60,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 6
           ItemHeight = 13
+          MaxLength = -1
           Style = csDropDownList
           TabOrder = 0
         end
@@ -418,8 +106,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         BorderSpacing.Top = 6
         BorderSpacing.Right = 6
         Caption = 'AutoSaveGroupBox'
-        ClientHeight = 118
-        ClientWidth = 518
+        ClientHeight = 136
+        ClientWidth = 522
         TabOrder = 6
         object AutoSaveIntervalInSecsLabel: TLabel
           Left = 6
@@ -469,6 +157,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
             '300'
             '120'
           )
+          MaxLength = -1
           TabOrder = 2
         end
       end
@@ -487,8 +176,8 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
         BorderSpacing.Top = 6
         BorderSpacing.Right = 6
         Caption = 'DesktopFilesGroupBox'
-        ClientHeight = 79
-        ClientWidth = 518
+        ClientHeight = 97
+        ClientWidth = 522
         TabOrder = 3
         object SaveDesktopSettingsToFileButton: TButton
           AnchorSideLeft.Control = DesktopFilesGroupBox
@@ -731,6 +420,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
             '25'
             '30'
           )
+          MaxLength = -1
           ParentShowHint = False
           ShowHint = True
           TabOrder = 2
@@ -756,6 +446,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
             '25'
             '30'
           )
+          MaxLength = -1
           ParentShowHint = False
           ShowHint = True
           TabOrder = 3
@@ -1225,6 +916,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AutoSelect = True
           BorderSpacing.Around = 6
           ItemHeight = 13
+          MaxLength = -1
           TabOrder = 1
           Text = 'BakProjAddExtComboBox'
         end
@@ -1238,6 +930,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AutoSelect = True
           BorderSpacing.Around = 6
           ItemHeight = 13
+          MaxLength = -1
           TabOrder = 2
           Text = 'BakProjMaxCounterComboBox'
         end
@@ -1251,6 +944,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AutoSelect = True
           BorderSpacing.Around = 6
           ItemHeight = 13
+          MaxLength = -1
           TabOrder = 3
           Text = 'BakProjSubDirComboBox'
         end
@@ -1353,6 +1047,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Width = 100
           BorderSpacing.Around = 6
           ItemHeight = 13
+          MaxLength = -1
           TabOrder = 1
           Text = 'BakOtherAddExtComboBox'
         end
@@ -1365,6 +1060,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Width = 100
           BorderSpacing.Around = 6
           ItemHeight = 13
+          MaxLength = -1
           TabOrder = 2
           Text = 'BakOtherMaxCounterComboBox'
         end
@@ -1377,6 +1073,7 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Width = 100
           BorderSpacing.Around = 6
           ItemHeight = 13
+          MaxLength = -1
           TabOrder = 3
           Text = 'BakOtherSubDirComboBox'
         end

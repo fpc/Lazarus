@@ -40,7 +40,8 @@ uses
   ObjectInspector, IDEWindowIntf,
   LazarusIDEStrConsts, TransferMacros, LazConf, ExtToolDialog, IDEProcs,
   IDEOptionDefs, InputHistory, EditorOptions, IDETranslations, ButtonPanel,
-  EnvironmentOpts, options_oi;
+  EnvironmentOpts,
+  options_oi, options_files;
 
 type
   TOnLoadEnvironmentSettings = procedure (Sender: TObject;
@@ -99,7 +100,6 @@ type
     // messages view
     MsgViewDblClickJumpsCheckBox: TCheckBox;
     MsgViewFocusCheckBox: TCheckBox;
-    ShowCompileDialogCheckBox: TCheckBox;
 
     // window layout
     WindowPositionsGroupBox: TGroupBox;
@@ -143,27 +143,6 @@ type
     RubberbandSelectsGrandChildsCheckBox: TCheckBox;
     DesignerPaintLazyCheckBox: TCheckBox;
 
-    // Files
-    MaxRecentOpenFilesLabel: TLabel;
-    MaxRecentOpenFilesComboBox: TComboBox;
-    MaxRecentProjectFilesLabel: TLabel;
-    MaxRecentProjectFilesComboBox: TComboBox;
-    OpenLastProjectAtStartCheckBox: TCheckBox;
-    LazarusDirGroupBox: TGroupBox;
-    LazarusDirComboBox: TComboBox;
-    LazarusDirButton: TButton;
-    CompilerPathGroupBox: TGroupBox;
-    CompilerPathComboBox: TComboBox;
-    CompilerPathButton: TButton;
-    FPCSourceDirGroupBox: TGroupBox;
-    FPCSourceDirComboBox: TComboBox;
-    FPCSourceDirButton: TButton;
-    MakePathGroupBox: TGroupBox;
-    MakePathComboBox: TComboBox;
-    MakePathButton: TButton;
-    TestBuildDirGroupBox: TGroupBox;
-    TestBuildDirComboBox: TComboBox;
-    TestBuildDirButton: TButton;
 
     // backup
     BackupHelpLabel: TLabel;
@@ -191,8 +170,6 @@ type
 
     
     procedure BakTypeRadioGroupClick(Sender: TObject);
-    procedure FilesButtonClick(Sender: TObject);
-    procedure DirectoriesButtonClick(Sender: TObject);
     procedure FormEditorPageResize(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
     procedure LazDocAddPathButtonClick(Sender: TObject);
@@ -209,12 +186,8 @@ type
     FOnLoadEnvironmentSettings: TOnLoadEnvironmentSettings;
     FOnSaveEnvironmentSettings: TOnSaveEnvironmentSettings;
     FLayouts: TIDEWindowLayoutList;
-    FOldLazarusDir: string;
-    FOldCompilerFilename: string;
-    FOldFPCSourceDir: string;
-    FOldMakeFilename: string;
-    FOldTestDir: string;
     OIOptionsFrame: TOIOptionsFrame;
+    FilesOptionsFrame: TFilesOptionsFrame;
 
     procedure SetCategoryPage(const AValue: TEnvOptsDialogPage);
     procedure SetupFilesPage(Page: integer);
@@ -227,9 +200,6 @@ type
     procedure SetupLazDocPage(Page: integer);
     procedure SetWindowPositionsItem(Index: integer);
     function CheckValues: boolean;
-    function CheckLazarusDir: boolean;
-    function IsFPCSourceDir: boolean;
-    function CheckTestDir: boolean;
     function LangIDToCaption(const LangID: string): string;
     function CaptionToLangID(const ACaption: string): string;
   published
@@ -249,8 +219,6 @@ implementation
 
 uses
   IDEContextHelpEdit;
-
-const MaxComboBoxCount: integer = 20;
 
 { TEnvironmentOptions }
 
@@ -469,46 +437,20 @@ end;
 
 procedure TEnvironmentOptionsDialog.SetupFilesPage(Page: integer);
 begin
-  NoteBook.Page[Page].Caption := dlgEnvFiles;
+  FilesOptionsFrame := TFilesOptionsFrame.Create(Self);
+  FilesOptionsFrame.Parent := FilesPage;
 
-  MaxRecentOpenFilesLabel.Caption:=dlgMaxRecentFiles;
+  FilesOptionsFrame.Anchors := [akLeft, akTop, akRight];
+  FilesOptionsFrame.AnchorSideLeft.Control := FilesPage;
+  FilesOptionsFrame.AnchorSideTop.Control := FilesPage;
+  FilesOptionsFrame.AnchorSideRight.Side := asrBottom;
+  FilesOptionsFrame.AnchorSideRight.Control := FilesPage;
+  FilesOptionsFrame.BorderSpacing.Around := 6;
 
-  MaxRecentProjectFilesLabel.Caption:=dlgMaxRecentProjs;
+  FilesOptionsFrame.Setup;
+  FilesOptionsFrame.Visible := True;
 
-  OpenLastProjectAtStartCheckBox.Caption:=dlgQOpenLastPrj;
-
-  ShowCompileDialogCheckBox.Caption:=dlgQShowCompileDialog;
-
-  LazarusDirGroupBox.Caption:=dlgLazarusDir;
-
-  with LazarusDirComboBox.Items do begin
-    BeginUpdate;
-    Add(ProgramDirectory);
-    EndUpdate;
-  end;
-
-  CompilerPathGroupBox.Caption:=Format(dlgFpcPath,[GetDefaultCompilerFilename]);
-
-  FPCSourceDirGroupBox.Caption:=dlgFpcSrcPath;
-
-  MakePathGroupBox.Caption:=dlgMakePath;
-
-  with MakePathComboBox.Items do begin
-    BeginUpdate;
-    Add('/usr/bin/make');
-    EndUpdate;
-  end;
-
-  TestBuildDirGroupBox.Caption:=dlgTestPrjDir;
-
-  with TestBuildDirComboBox.Items do begin
-    BeginUpdate;
-    Add('/tmp');
-    Add('/var/tmp');
-    Add('c:/tmp');
-    Add('c:/windows/temp');
-    EndUpdate;
-  end;
+  FilesPage.Caption := FilesOptionsFrame.GetTitle;
 end;
 
 procedure TEnvironmentOptionsDialog.SetCategoryPage(
@@ -661,90 +603,6 @@ begin
     BakOtherAddExtLabel.Enabled:=BakOtherAddExtComboBox.Enabled;
     BakOtherMaxCounterComboBox.Enabled:=(i=3);
     BakOtherMaxCounterLabel.EnableD:=BakOtherMaxCounterComboBox.Enabled;
-  end;
-end;
-
-procedure TEnvironmentOptionsDialog.FilesButtonClick(Sender: TObject);
-var
-  OpenDialog: TOpenDialog;
-  AFilename: string;
-begin
-  OpenDialog:=TOpenDialog.Create(nil);
-  try
-    InputHistories.ApplyFileDialogSettings(OpenDialog);
-    OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
-    // set title
-    if Sender=CompilerPathButton then
-      OpenDialog.Title:=
-                      Format(lisChooseCompilerPath,[GetDefaultCompilerFilename])
-    else if Sender=MakePathButton then
-      OpenDialog.Title:=lisChooseMakePath
-    else
-      exit;
-
-    if OpenDialog.Execute then begin
-      AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
-
-      if Sender=CompilerPathButton then begin
-        // check compiler filename
-        SetComboBoxText(CompilerPathComboBox,AFilename);
-        CheckExecutable(FOldCompilerFilename,CompilerPathComboBox.Text,
-          lisEnvOptDlgInvalidCompilerFilename,
-          lisEnvOptDlgInvalidCompilerFilenameMsg);
-      end else if Sender=MakePathButton then begin
-        //check make filename
-        SetComboBoxText(MakePathComboBox,AFilename);
-        CheckExecutable(FOldMakeFilename,MakePathComboBox.Text,
-          lisEnvOptDlgInvalidMakeFilename,
-          lisEnvOptDlgInvalidMakeFilenameMsg);
-      end;
-    end;
-    InputHistories.StoreFileDialogSettings(OpenDialog);
-  finally
-    OpenDialog.Free;
-  end;
-end;
-
-procedure TEnvironmentOptionsDialog.DirectoriesButtonClick(Sender: TObject);
-var
-  OpenDialog: TSelectDirectoryDialog;
-  ADirectoryName: string;
-begin
-  OpenDialog:=TSelectDirectoryDialog.Create(nil);
-  try
-    InputHistories.ApplyFileDialogSettings(OpenDialog);
-    OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
-    // set title
-    if Sender=LazarusDirButton then
-      OpenDialog.Title:=lisChooseLazarusSourceDirectory
-    else if Sender=FPCSourceDirButton then
-      OpenDialog.Title:=lisChooseFPCSourceDir
-    else if Sender=TestBuildDirButton then
-      OpenDialog.Title:=lisChooseTestBuildDir
-    else
-      exit;
-
-    if OpenDialog.Execute then begin
-      ADirectoryName:=CleanAndExpandDirectory(OpenDialog.Filename);
-
-      if Sender=LazarusDirButton then begin
-        // check lazarus directory
-        SetComboBoxText(LazarusDirComboBox,ADirectoryName);
-        CheckLazarusDir;
-      end else if Sender=FPCSourceDirButton then begin
-        // check fpc source directory
-        SetComboBoxText(FPCSourceDirComboBox,ADirectoryName);
-        IsFPCSourceDir;
-      end else if Sender=TestBuildDirButton then begin
-        // check test directory
-        SetComboBoxText(TestBuildDirComboBox,ADirectoryName);
-        CheckTestDir;
-      end;
-
-    end;
-    InputHistories.StoreFileDialogSettings(OpenDialog);
-  finally
-    OpenDialog.Free;
   end;
 end;
 
@@ -931,35 +789,7 @@ begin
     DesignerPaintLazyCheckBox.Checked:=DesignerPaintLazy;
 
     // files
-    LazarusDirComboBox.Items.Assign(LazarusDirHistory);
-    FOldLazarusDir:=LazarusDirectory;
-    SetComboBoxText(LazarusDirComboBox,LazarusDirectory,MaxComboBoxCount);
-    with CompilerPathComboBox do begin
-      Items.BeginUpdate;
-      Items.Assign(CompilerFileHistory);
-      AddFilenameToList(Items,FindDefaultCompilerPath);
-      AddFilenameToList(Items,FindDefaultExecutablePath('fpc'+GetExecutableExt));
-      GetDefaultCompilerFilenames(Items);
-      Items.EndUpdate;
-    end;
-
-    FOldCompilerFilename:=CompilerFilename;
-    SetComboBoxText(CompilerPathComboBox,CompilerFilename,MaxComboBoxCount);
-    FPCSourceDirComboBox.Items.Assign(FPCSourceDirHistory);
-    FOldFPCSourceDir:=FPCSourceDirectory;
-    SetComboBoxText(FPCSourceDirComboBox,FPCSourceDirectory,MaxComboBoxCount);
-    MakePathComboBox.Items.Assign(MakeFileHistory);
-    FOldMakeFilename:=MakeFilename;
-    SetComboBoxText(MakePathComboBox,MakeFilename,MaxComboBoxCount);
-    TestBuildDirComboBox.Items.Assign(TestBuildDirHistory);
-    FOldTestDir:=TestBuildDirectory;
-    SetComboBoxText(TestBuildDirComboBox,TestBuildDirectory,MaxComboBoxCount);
-
-    // recent files and directories
-    SetComboBoxText(MaxRecentOpenFilesComboBox,IntToStr(MaxRecentOpenFiles));
-    SetComboBoxText(MaxRecentProjectFilesComboBox,IntToStr(MaxRecentProjectFiles));
-    OpenLastProjectAtStartCheckBox.Checked:=OpenLastProjectAtStart;
-    ShowCompileDialogCheckBox.Checked:=ShowCompileDialog;
+    FilesOptionsFrame.ReadSettings(AnEnvironmentOptions);
 
     // backup
     with BackupInfoProjectFiles do begin
@@ -1072,24 +902,7 @@ begin
     DesignerPaintLazy:=DesignerPaintLazyCheckBox.Checked;
 
     // files
-    LazarusDirectory:=LazarusDirComboBox.Text;
-    LazarusDirHistory.Assign(LazarusDirComboBox.Items);
-    CompilerFilename:=CompilerPathComboBox.Text;
-    CompilerFileHistory.Assign(CompilerPathComboBox.Items);
-    FPCSourceDirectory:=FPCSourceDirComboBox.Text;
-    FPCSourceDirHistory.Assign(FPCSourceDirComboBox.Items);
-    MakeFilename:=MakePathComboBox.Text;
-    MakeFileHistory.Assign(MakePathComboBox.Items);
-    TestBuildDirHistory.Assign(TestBuildDirComboBox.Items);
-    TestBuildDirectory:=TestBuildDirComboBox.Text;
-
-    // recent files and directories
-    MaxRecentOpenFiles:=StrToIntDef(
-        MaxRecentOpenFilesComboBox.Text,MaxRecentOpenFiles);
-    MaxRecentProjectFiles:=StrToIntDef(
-        MaxRecentProjectFilesComboBox.Text,MaxRecentProjectFiles);
-    OpenLastProjectAtStart:=OpenLastProjectAtStartCheckBox.Checked;
-    ShowCompileDialog := ShowCompileDialogCheckBox.Checked;
+    FilesOptionsFrame.WriteSettings(AnEnvironmentOptions);
 
     // backup
     with BackupInfoProjectFiles do begin
@@ -1190,57 +1003,6 @@ begin
     WindowPositionsBox.Caption:=WindowPositionsListBox.Items[Index];
 end;
 
-function TEnvironmentOptionsDialog.CheckLazarusDir: boolean;
-var
-  NewLazarusDir: string;
-  StopChecking: boolean;
-begin
-  NewLazarusDir:=LazarusDirComboBox.Text;
-  Result:=SimpleDirectoryCheck(FOldLazarusDir,NewLazarusDir,
-                              lisEnvOptDlgLazarusDirNotFoundMsg,StopChecking);
-  if (not Result) or StopChecking then exit;
-
-  // lazarus directory specific tests
-  NewLazarusDir:=AppendPathDelim(NewLazarusDir);
-  if not CheckLazarusDirectory(NewLazarusDir)
-  then begin
-    Result:=(MessageDlg(Format(lisEnvOptDlgInvalidLazarusDir,[NewLazarusDir]),
-               mtWarning,[mbIgnore,mbCancel],0)=mrIgnore);
-    exit;
-  end;
-  Result:=true;
-end;
-
-function TEnvironmentOptionsDialog.IsFPCSourceDir: boolean;
-var
-  NewFPCSrcDir: string;
-  StopChecking: boolean;
-begin
-  NewFPCSrcDir:=FPCSourceDirComboBox.Text;
-  Result:=SimpleDirectoryCheck(FOldFPCSourceDir,NewFPCSrcDir,
-                               lisEnvOptDlgFPCSrcDirNotFoundMsg,StopChecking);
-  if (not Result) or StopChecking then exit;
-
-  // FPC source directory specific tests
-  if not CheckFPCSourceDir(NewFPCSrcDir) then begin
-    Result:=(MessageDlg(Format(lisEnvOptDlgInvalidFPCSrcDir,[NewFPCSrcDir]),
-               mtWarning,[mbIgnore,mbCancel],0)=mrIgnore);
-    exit;
-  end;
-  Result:=true;
-end;
-
-function TEnvironmentOptionsDialog.CheckTestDir: boolean;
-var
-  NewTestDir: string;
-  StopChecking: boolean;
-begin
-  NewTestDir:=TestBuildDirComboBox.Text;
-  Result:=SimpleDirectoryCheck(FOldTestDir,NewTestDir,
-                               lisEnvOptDlgTestDirNotFoundMsg,StopChecking);
-  if (not Result) or StopChecking then exit;
-end;
-
 function TEnvironmentOptionsDialog.LangIDToCaption(const LangID: string
   ): string;
 begin
@@ -1266,21 +1028,8 @@ end;
 function TEnvironmentOptionsDialog.CheckValues: boolean;
 begin
   Result:=false;
-  // check lazarus directory
-  if not CheckLazarusDir then exit;
-  // check compiler filename
-  if not CheckExecutable(FOldCompilerFilename,CompilerPathComboBox.Text,
-    lisEnvOptDlgInvalidCompilerFilename,lisEnvOptDlgInvalidCompilerFilenameMsg)
-  then exit;
-  // check fpc source directory
-  if not IsFPCSourceDir then exit;
-  // check make filename
-  if not CheckExecutable(FOldMakeFilename,MakePathComboBox.Text,
-    lisEnvOptDlgInvalidMakeFilename,lisEnvOptDlgInvalidMakeFilenameMsg)
-  then exit;
-  // check test directory
-  if not CheckTestDir then exit;
-  
+  if not FilesOptionsFrame.Check then
+    Exit;  
   Result:=true;
 end;
 

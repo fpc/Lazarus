@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, Dialogs, Spin, LCLProc,
-  ObjectInspector, lazarusidestrconsts, environmentopts;
+  ObjectInspector, LazarusIDEStrConsts, EnvironmentOpts;
 
 type
 
@@ -55,14 +55,12 @@ type
     OIValueColorLabel: TLabel;
   private
   public
-    procedure Setup;
+    function Check: Boolean;
     function GetTitle: String;
+    procedure Setup;
     procedure ReadSettings(AOptions: TEnvironmentOptions);
     procedure WriteSettings(AOptions: TEnvironmentOptions);
   end; 
-
-var
-  OIOptionsFrame: TOIOptionsFrame;
 
 implementation
 
@@ -83,6 +81,11 @@ begin
   OIAutoShowCheckBox.Caption := lisAutoShowObjectInspector;
   OIBoldNonDefaultCheckBox.Caption := lisBoldNonDefaultObjectInspector;
   OIDrawGridLinesCheckBox.Caption := lisDrawGridLinesObjectInspector;
+end;
+
+function TOIOptionsFrame.Check: Boolean;
+begin
+  Result := True;
 end;
 
 function TOIOptionsFrame.GetTitle: String;

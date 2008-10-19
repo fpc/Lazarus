@@ -460,6 +460,7 @@ procedure SetComboBoxText(AComboBox:TComboBox; const AText:AnsiString;
 const
   DefaultLazDocPath = '$(LazarusDir)/docs/xml/lcl';
   DefaultMsgViewFocus = {$IFDEF Windows}true{$ELSE}false{$ENDIF};
+  MaxComboBoxCount: integer = 20;
   
 implementation
 
