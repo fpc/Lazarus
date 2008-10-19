@@ -5,8 +5,8 @@ object OIOptionsFrame: TOIOptionsFrame
   ClientWidth = 598
   TabOrder = 0
   Visible = False
-  DesignLeft = 361
-  DesignTop = 226
+  DesignLeft = 154
+  DesignTop = 203
   object ObjectInspectorColorsGroupBox: TGroupBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -168,8 +168,7 @@ object OIOptionsFrame: TOIOptionsFrame
       Left = 6
       Height = 19
       Top = 6
-      Width = 144
-      Anchors = [akTop, akLeft, akRight]
+      Width = 130
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       Caption = 'OIShowHintCheckBox'
