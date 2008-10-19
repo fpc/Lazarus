@@ -109,7 +109,7 @@ begin
         Exit;
       end;
       
-      if (lfHeight = 0) and (CompareText(lfFacename, 'default') = 0) then
+      if (lfHeight = 0) and (lfWeight <> FW_BOLD) and (CompareText(lfFacename, 'default') = 0) then
       begin
         // use default font
         {$IFDEF VerboseFonts}
@@ -142,8 +142,20 @@ begin
         FullString:=IntToStr(aSize)
       else
         FullString:='';
-      FullString := AFamily + ' ' + aStyle + ' ' + FullString;
 
+      if aFamily = 'default' then
+      begin
+        CurFont := GetDefaultGtkFont(False);
+        if PANGO_IS_LAYOUT(CurFont) then
+        begin
+          PangoDesc := pango_layout_get_font_description(CurFont);
+          if PangoDesc = nil then
+            PangoDesc := pango_context_get_font_description(pango_layout_get_context(CurFont));
+          aFamily := StrPas(pango_font_description_get_family(PangoDesc));
+        end;
+      end;
+
+      FullString := AFamily + ' ' + aStyle + ' ' + FullString;
       PangoDesc := pango_font_description_from_string(PChar(FullString));
 
       if lfWeight <> FW_DONTCARE then
