@@ -34,13 +34,8 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, LCLProc, Forms, Controls, Buttons, GraphType,
-  Graphics, ExtCtrls, StdCtrls, Spin, FileUtil, LResources, Dialogs,
-  Laz_XMLCfg,
-  ObjectInspector, IDEWindowIntf,
-  LazarusIDEStrConsts, TransferMacros, LazConf, ExtToolDialog, IDEProcs,
-  IDEOptionDefs, InputHistory, EditorOptions, IDETranslations, ButtonPanel,
-  EnvironmentOpts,
+  Classes, SysUtils, Controls, Forms, ExtCtrls, LResources, ButtonPanel, 
+  EnvironmentOpts, LazarusIDEStrConsts, IDEWindowIntf,
   options_files, options_desktop, options_window, options_formed, options_oi,
   options_backup, options_naming, options_fpdoc;
 
