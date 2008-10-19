@@ -956,7 +956,13 @@ var
         vtQWord: AHelp.Add(dbgs(Args[i].VQWord^));
         vtBoolean: AHelp.Add(dbgs(Args[i].vboolean));
         vtExtended: AHelp.Add(dbgs(Args[i].VExtended^));
+{$ifdef FPC_CURRENCY_IS_INT64}
+        // fpc 2.x has troubles in choosing the right dbgs()
+        // so we convert here
+        vtCurrency: AHelp.Add(dbgs(int64(Args[i].vCurrency^)/10000, 4));
+{$else}
         vtCurrency: AHelp.Add(dbgs(Args[i].vCurrency^));
+{$endif}
         vtString: AHelp.Add(Args[i].VString^);
         vtAnsiString: AHelp.Add(AnsiString(Args[i].VAnsiString));
         vtChar: AHelp.Add(Args[i].VChar);
