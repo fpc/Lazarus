@@ -41,7 +41,8 @@ uses
   LazarusIDEStrConsts, TransferMacros, LazConf, ExtToolDialog, IDEProcs,
   IDEOptionDefs, InputHistory, EditorOptions, IDETranslations, ButtonPanel,
   EnvironmentOpts,
-  options_files, options_desktop, options_window, options_formed, options_oi;
+  options_files, options_desktop, options_window, options_formed, options_oi,
+  options_backup, options_naming, options_fpdoc;
 
 type
   { TEnvironmentOptionsDialog: EnvironmentOptionsDialog for environment options }
@@ -72,49 +73,8 @@ type
     BackupPage: TPage;
     NamingPage: TPage;
     LazDocPage: TPage;
-    SelectDirectoryDialog: TSelectDirectoryDialog;
 
-    // lazdoc settings
-    LazDocBrowseButton: TButton;
-    LazDocPathEdit: TEdit;
-    LazDocDeletePathButton: TButton;
-    LazDocAddPathButton: TButton;
-    LazDocPathsGroupBox: TGroupBox;
-    LazDocListBox: TListBox;
-
-
-
-    // backup
-    BackupHelpLabel: TLabel;
-    BackupProjectGroupBox: TGroupBox;
-    BakProjTypeRadioGroup: TRadioGroup;
-    BakProjAddExtLabel: TLabel;
-    BakProjAddExtComboBox: TComboBox;
-    BakProjMaxCounterLabel: TLabel;
-    BakProjMaxCounterComboBox: TComboBox;
-    BakProjSubDirLabel: TLabel;
-    BakProjSubDirComboBox: TComboBox;
-    BackupOtherGroupBox: TGroupBox;
-    BakOtherTypeRadioGroup: TRadioGroup;
-    BakOtherAddExtLabel: TLabel;
-    BakOtherAddExtComboBox: TComboBox;
-    BakOtherMaxCounterLabel: TLabel;
-    BakOtherMaxCounterComboBox: TComboBox;
-    BakOtherSubDirLabel: TLabel;
-    BakOtherSubDirComboBox: TComboBox;
-    
-    // naming conventions
-    PascalFileExtRadiogroup: TRadioGroup;
-    CharCaseFileActionRadioGroup: TRadioGroup;
-    AmbiguousFileActionRadioGroup: TRadioGroup;
-
-    
-    procedure BakTypeRadioGroupClick(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
-    procedure LazDocAddPathButtonClick(Sender: TObject);
-    procedure LazDocBrowseButtonClick(Sender: TObject);
-    procedure LazDocDeletePathButtonClick(Sender: TObject);
-    procedure NotebookChangeBounds(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
   private
@@ -125,6 +85,9 @@ type
     WindowOptionsFrame: TWindowOptionsFrame;
     FormEditorOptionsFrame: TFormEditorOptionsFrame;
     OIOptionsFrame: TOIOptionsFrame;
+    BackupOptionsFrame: TBackupOptionsFrame;
+    NamingOptionsFrame: TNamingOptionsFrame;
+    FpDocOptionsFrame: TFpDocOptionsFrame;
 
     procedure SetupFrame(AFrame: TAbstractOptionsFrame; APage: TPage);
 
@@ -159,20 +122,13 @@ implementation
 uses
   IDEContextHelpEdit;
 
-{ TEnvironmentOptions }
-
-const
-  EnvOptsConfFileName='environmentoptions.xml';
-  BakMaxCounterInfiniteTxt = 'infinite';
-
-
 { TEnvironmentOptionsDialog }
 
 constructor TEnvironmentOptionsDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   IDEDialogLayoutList.ApplyLayout(Self,Width,Height);
-  Caption:=lisMenuGeneralOptions;
+  Caption := lisMenuGeneralOptions;
 
   NoteBook.PageIndex:=0;
 
@@ -204,109 +160,8 @@ end;
 
 procedure TEnvironmentOptionsDialog.SetupBackupPage(Page: integer);
 begin
-  NoteBook.Page[Page].Caption := dlgEnvBckup;
-
-  BackupHelpLabel.Caption:=dlgEnvBackupHelpNote;
-
-  BackupProjectGroupBox.Caption:=dlgProjFiles;
-
-  with BakProjTypeRadioGroup do begin
-    Caption:=dlgEnvType;
-    with Items do begin
-      BeginUpdate;
-      Add(lisNoBackupFiles);
-      Add(dlgSmbFront);
-      Add(dlgSmbBehind);
-      Add(dlgSmbCounter);
-      Add(dlgCustomExt);
-      Add(dlgBckUpSubDir);
-      EndUpdate;
-    end;
-  end;
-
-  BakProjAddExtLabel.Caption:=dlgEdCustomExt;
-
-  with BakProjAddExtComboBox.Items do begin
-    BeginUpdate;
-    Clear;
-    Add('bak');
-    Add('old');
-    EndUpdate;
-  end;
-
-  BakProjMaxCounterLabel.Caption:=dlgMaxCntr;
-
-  with BakProjMaxCounterComboBox.Items do begin
-    BeginUpdate;
-    Clear;
-    Add('1');
-    Add('2');
-    Add('3');
-    Add('5');
-    Add('9');
-    Add(BakMaxCounterInfiniteTxt);
-    EndUpdate;
-  end;
-
-  BakProjSubDirLabel.Caption:=dlgEdBSubDir;
-
-  BakProjSubDirComboBox.Text:='';
-  with BakProjSubDirComboBox.Items do begin
-    BeginUpdate;
-    Clear;
-    Add(dlgBakNoSubDirectory);
-    Add('backup');
-    EndUpdate;
-  end;
-
-  BackupOtherGroupBox.Caption:=dlgEnvOtherFiles;
-
-  with BakOtherTypeRadioGroup do begin
-    Caption:=dlgEnvType;
-    with Items do begin
-      BeginUpdate;
-      Add(lisNoBackupFiles);
-      Add(dlgSmbFront);
-      Add(dlgSmbBehind);
-      Add(dlgSmbCounter);
-      Add(dlgCustomExt);
-      Add(dlgBckUpSubDir);
-      EndUpdate;
-    end;
-  end;
-
-  BakOtherAddExtLabel.Caption:=dlgEdCustomExt;
-
-  with BakOtherAddExtComboBox.Items do begin
-    BeginUpdate;
-    Add('bak');
-    Add('old');
-    EndUpdate;
-  end;
-
-  BakOtherMaxCounterLabel.Caption:=dlgMaxCntr;
-
-  with BakOtherMaxCounterComboBox.Items do begin
-    BeginUpdate;
-    Clear;
-    Add('1');
-    Add('2');
-    Add('3');
-    Add('5');
-    Add('9');
-    Add(BakMaxCounterInfiniteTxt);
-    EndUpdate;
-  end;
-
-  BakOtherSubDirLabel.Caption:=dlgEdBSubDir;
-
-  with BakOtherSubDirComboBox.Items do begin
-    BeginUpdate;
-    Clear;
-    Add(dlgBakNoSubDirectory);
-    Add('backup');
-    EndUpdate;
-  end;
+  BackupOptionsFrame := TBackupOptionsFrame.Create(Self);
+  SetupFrame(BackupOptionsFrame, NoteBook.Page[Page]);
 end;
 
 procedure TEnvironmentOptionsDialog.SetupFrame(AFrame: TAbstractOptionsFrame; APage: TPage);
@@ -360,74 +215,15 @@ begin
 end;
 
 procedure TEnvironmentOptionsDialog.SetupNamingPage(Page: integer);
-var
-  pe: TPascalExtType;
 begin
-  NoteBook.Page[Page].Caption := dlgNaming;
-
-  with PascalFileExtRadiogroup do begin
-    Caption:=dlgPasExt;
-    with Items do begin
-      BeginUpdate;
-      for pe:=Low(TPascalExtType) to High(TPascalExtType) do
-        if pe<>petNone then
-          Add(PascalExtension[pe]);
-      EndUpdate;
-    end;
-    PascalFileExtRadiogroup.Columns:=PascalFileExtRadiogroup.Items.Count;
-  end;
-
-  with CharcaseFileActionRadioGroup do begin
-    Caption:=dlgCharCaseFileAct;
-    with Items do begin
-      BeginUpdate;
-      Add(dlgEnvAsk);
-      Add(dlgAutoRen);
-      Add(dlgnoAutomaticRenaming);
-      EndUpdate;
-    end;
-  end;
-
-  with AmbiguousFileActionRadioGroup do begin
-    Caption:=dlgAmbigFileAct;
-    with Items do begin
-      BeginUpdate;
-      Add(dlgEnvAsk);
-      Add(dlgAutoDel);
-      Add(dlgAutoRen);
-      Add(dlgAmbigWarn);
-      Add(dlgIgnoreVerb);
-      EndUpdate;
-    end;
-  end;
+  NamingOptionsFrame := TNamingOptionsFrame.Create(Self);
+  SetupFrame(NamingOptionsFrame, NoteBook.Page[Page]);
 end;
 
 procedure TEnvironmentOptionsDialog.SetupLazDocPage(Page: integer);
 begin
-  NoteBook.Page[Page].Caption := lisFPDocEditor;
-  
-  LazDocPathsGroupBox.Caption := lisCodeHelpPathsGroupBox;
-  LazDocAddPathButton.Caption := lisCodeHelpAddPathButton;
-  LazDocDeletePathButton.Caption := lisCodeHelpDeletePathButton;
-
-  LazDocPathEdit.Clear;
-end;
-
-procedure TEnvironmentOptionsDialog.BakTypeRadioGroupClick(Sender: TObject);
-var i: integer;
-begin
-  i:=TRadioGroup(Sender).ItemIndex;
-  if Sender=BakProjTypeRadioGroup then begin
-    BakProjAddExtComboBox.Enabled:=(i=4);
-    BakProjAddExtLabel.Enabled:=BakProjAddExtComboBox.Enabled;
-    BakProjMaxCounterComboBox.Enabled:=(i=3);
-    BakProjMaxCounterLabel.EnableD:=BakProjMaxCounterComboBox.Enabled;
-  end else begin
-    BakOtherAddExtComboBox.Enabled:=(i=4);
-    BakOtherAddExtLabel.Enabled:=BakOtherAddExtComboBox.Enabled;
-    BakOtherMaxCounterComboBox.Enabled:=(i=3);
-    BakOtherMaxCounterLabel.EnableD:=BakOtherMaxCounterComboBox.Enabled;
-  end;
+  FpDocOptionsFrame := TFpDocOptionsFrame .Create(Self);
+  SetupFrame(FpDocOptionsFrame, NoteBook.Page[Page]);
 end;
 
 procedure TEnvironmentOptionsDialog.HelpButtonClick(Sender: TObject);
@@ -435,45 +231,21 @@ begin
   ShowContextHelpForIDE(Self);
 end;
 
-procedure TEnvironmentOptionsDialog.LazDocAddPathButtonClick(Sender: TObject);
-begin
-  if LazDocPathEdit.Text <> '' then
-    LazDocListBox.Items.Add(LazDocPathEdit.Text);
-end;
-
-procedure TEnvironmentOptionsDialog.LazDocBrowseButtonClick(Sender: TObject);
-begin
-  if SelectDirectoryDialog.Execute then
-    LazDocPathEdit.Text := SelectDirectoryDialog.FileName;
-end;
-
-procedure TEnvironmentOptionsDialog.LazDocDeletePathButtonClick(Sender: TObject
-  );
-begin
-  LazDocListBox.Items.Delete(LazDocListBox.ItemIndex);
-end;
-
-procedure TEnvironmentOptionsDialog.NotebookChangeBounds(Sender: TObject);
-begin
-
-end;
-
 procedure TEnvironmentOptionsDialog.OkButtonClick(Sender: TObject);
 begin
-  if not CheckValues then exit;
+  if not CheckValues then
+    Exit;
   IDEDialogLayoutList.SaveLayout(Self);
-  ModalResult:=mrOk;
+  ModalResult := mrOk;
 end;
 
 procedure TEnvironmentOptionsDialog.CancelButtonClick(Sender: TObject);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
-  ModalResult:=mrCancel;
+  ModalResult := mrCancel;
 end;
 
 procedure TEnvironmentOptionsDialog.ReadSettings(AnEnvironmentOptions: TEnvironmentOptions);
-var 
-  i: integer;
 begin
   with AnEnvironmentOptions do 
   begin
@@ -492,58 +264,14 @@ begin
     // Form editor
     FormEditorOptionsFrame.ReadSettings(AnEnvironmentOptions);
 
-    // backup
-    with BackupInfoProjectFiles do begin
-      case BackupType of
-       bakNone:          BakProjTypeRadioGroup.ItemIndex:=0;
-       bakSymbolInFront: BakProjTypeRadioGroup.ItemIndex:=1;
-       bakSymbolBehind:  BakProjTypeRadioGroup.ItemIndex:=2;
-       bakCounter:       BakProjTypeRadioGroup.ItemIndex:=3;
-       bakUserDefinedAddExt: BakProjTypeRadioGroup.ItemIndex:=4;
-       bakSameName:      BakProjTypeRadioGroup.ItemIndex:=5;
-      end;
-      SetComboBoxText(BakProjAddExtComboBox,AdditionalExtension);
-      if MaxCounter<=0 then
-        SetComboBoxText(BakProjMaxCounterComboBox,BakMaxCounterInfiniteTxt)
-      else
-        SetComboBoxText(BakProjMaxCounterComboBox,IntToStr(MaxCounter));
-      if SubDirectory<>'' then
-        SetComboBoxText(BakProjSubDirComboBox,SubDirectory)
-      else
-        SetComboBoxText(BakProjSubDirComboBox,dlgBakNoSubDirectory);
-    end;
-    BakTypeRadioGroupClick(BakProjTypeRadioGroup);
-    with BackupInfoOtherFiles do begin
-      case BackupType of
-       bakNone:          BakOtherTypeRadioGroup.ItemIndex:=0;
-       bakSymbolInFront: BakOtherTypeRadioGroup.ItemIndex:=1;
-       bakSymbolBehind:  BakOtherTypeRadioGroup.ItemIndex:=2;
-       bakCounter:       BakOtherTypeRadioGroup.ItemIndex:=3;
-       bakUserDefinedAddExt: BakOtherTypeRadioGroup.ItemIndex:=4;
-       bakSameName:      BakOtherTypeRadioGroup.ItemIndex:=5;
-      end;
-      SetComboBoxText(BakOtherAddExtComboBox,AdditionalExtension);
-      if MaxCounter<=0 then
-        SetComboBoxText(BakOtherMaxCounterComboBox,BakMaxCounterInfiniteTxt)
-      else
-        SetComboBoxText(BakOtherMaxCounterComboBox,IntToStr(MaxCounter));
-      if SubDirectory<>'' then
-        SetComboBoxText(BakOtherSubDirComboBox,SubDirectory)
-      else
-        SetComboBoxText(BakOtherSubDirComboBox,dlgBakNoSubDirectory);
-    end;
-    BakTypeRadioGroupClick(BakOtherTypeRadioGroup);
-    
-    // naming
-    for i:=0 to PascalFileExtRadiogroup.Items.Count-1 do
-      if PascalFileExtRadiogroup.Items[i]=PascalExtension[PascalFileExtension]
-      then PascalFileExtRadiogroup.ItemIndex:=i;
+    // Backup
+    BackupOptionsFrame.ReadSettings(AnEnvironmentOptions);
 
-    CharCaseFileActionRadioGroup.ItemIndex  := ord(CharCaseFileAction);
-    AmbiguousFileActionRadioGroup.ItemIndex := ord(AmbiguousFileAction);
-    
+    // naming
+    NamingOptionsFrame.ReadSettings(AnEnvironmentOptions);
+
     //lazdoc
-    SplitString(LazDocPaths,';',LazDocListBox.Items);
+    FpDocOptionsFrame.ReadSettings(AnEnvironmentOptions);
   end;
 end;
 
@@ -566,57 +294,14 @@ begin
     // Form editor
     FormEditorOptionsFrame.WriteSettings(AnEnvironmentOptions);
 
-    // backup
-    with BackupInfoProjectFiles do begin
-      case BakProjTypeRadioGroup.ItemIndex of
-       0: BackupType:=bakNone;
-       1: BackupType:=bakSymbolInFront;
-       2: BackupType:=bakSymbolBehind;
-       3: BackupType:=bakCounter;
-       4: BackupType:=bakUserDefinedAddExt;
-       5: BackupType:=bakSameName;
-      end;
-      AdditionalExtension:=BakProjAddExtComboBox.Text;
-      if BakProjMaxCounterComboBox.Text=BakMaxCounterInfiniteTxt then
-        MaxCounter:=0
-      else
-        MaxCounter:=StrToIntDef(BakProjMaxCounterComboBox.Text,1);
-      SubDirectory:=BakProjSubDirComboBox.Text;
-      if SubDirectory=dlgBakNoSubDirectory then
-        SubDirectory:='';
-    end;
-    with BackupInfoOtherFiles do begin
-      case BakOtherTypeRadioGroup.ItemIndex of
-       0: BackupType:=bakNone;
-       1: BackupType:=bakSymbolInFront;
-       2: BackupType:=bakSymbolBehind;
-       3: BackupType:=bakCounter;
-       4: BackupType:=bakUserDefinedAddExt;
-       5: BackupType:=bakSameName;
-      end;
-      AdditionalExtension:=BakOtherAddExtComboBox.Text;
-      if BakOtherMaxCounterComboBox.Text=BakMaxCounterInfiniteTxt then
-        MaxCounter:=0
-      else
-        MaxCounter:=StrToIntDef(BakOtherMaxCounterComboBox.Text,1);
-      if BakOtherSubDirComboBox.Text=dlgBakNoSubDirectory then
-        SubDirectory:=''
-      else
-        SubDirectory:=BakOtherSubDirComboBox.Text;
-    end;
-    
+    // Backup
+    BackupOptionsFrame.WriteSettings(AnEnvironmentOptions);
+
     // naming
-    if PascalFileExtRadiogroup.ItemIndex>=0 then
-      PascalFileExtension:=PascalExtToType(
-        PascalFileExtRadiogroup.Items[PascalFileExtRadiogroup.ItemIndex])
-    else
-      PascalFileExtension:=petPAS;
+    NamingOptionsFrame.WriteSettings(AnEnvironmentOptions);
 
     //lazdoc
-    LazDocPaths:=StringListToText(LazDocListBox.Items,';',true);
-
-    CharcaseFileAction  := TCharCaseFileAction(CharcaseFileActionRadioGroup.ItemIndex);
-    AmbiguousFileAction := TAmbiguousFileAction(AmbiguousFileActionRadioGroup.ItemIndex);
+    FpDocOptionsFrame.WriteSettings(AnEnvironmentOptions);
   end;
 end;
 
@@ -628,10 +313,7 @@ end;
 
 function TEnvironmentOptionsDialog.CheckValues: boolean;
 begin
-  Result:=false;
-  if not FilesOptionsFrame.Check then
-    Exit;  
-  Result:=true;
+  Result := FilesOptionsFrame.Check;
 end;
 
 procedure TEnvironmentOptionsDialog.LoadEnvironmentSettings(Sender: TObject;

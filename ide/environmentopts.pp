@@ -485,6 +485,8 @@ const
   DefaultLazDocPath = '$(LazarusDir)/docs/xml/lcl';
   DefaultMsgViewFocus = {$IFDEF Windows}true{$ELSE}false{$ENDIF};
   MaxComboBoxCount: integer = 20;
+  EnvOptsConfFileName = 'environmentoptions.xml';
+  BakMaxCounterInfiniteTxt = 'infinite';
   
 implementation
 
@@ -612,10 +614,6 @@ begin
 end;
 
 { TEnvironmentOptions }
-
-const
-  EnvOptsConfFileName='environmentoptions.xml';
-  BakMaxCounterInfiniteTxt = 'infinite';
 
 constructor TEnvironmentOptions.Create;
 begin

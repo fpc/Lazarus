@@ -41,7 +41,7 @@
         <PackageName Value="SynEdit"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="7">
+    <Units Count="10">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -93,6 +93,30 @@
         <ResourceFilename Value="frames\options_formed.lrs"/>
         <UnitName Value="options_formed"/>
       </Unit6>
+      <Unit7>
+        <Filename Value="frames\options_backup.pas"/>
+        <ComponentName Value="BackupOptionsFrame"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="frames\options_backup.lrs"/>
+        <UnitName Value="options_backup"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="frames\options_naming.pas"/>
+        <ComponentName Value="NamingOptionsFrame"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="frames\options_naming.lrs"/>
+        <UnitName Value="options_naming"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="frames\options_fpdoc.pas"/>
+        <ComponentName Value="FpDocOptionsFrame"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="frames\options_fpdoc.lrs"/>
+        <UnitName Value="options_fpdoc"/>
+      </Unit9>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

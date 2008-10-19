@@ -1,0 +1,280 @@
+inherited BackupOptionsFrame: TBackupOptionsFrame
+  Height = 324
+  Width = 562
+  ClientHeight = 324
+  ClientWidth = 562
+  TabOrder = 0
+  Visible = False
+  DesignLeft = 22
+  DesignTop = 29
+  object BackupHelpLabel: TLabel[0]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Height = 14
+    Width = 81
+    Caption = 'BackupHelpLabel'
+    ParentColor = False
+  end
+  object BackupProjectGroupBox: TGroupBox[1]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = BackupHelpLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Height = 141
+    Top = 20
+    Width = 562
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Top = 6
+    Caption = 'BackupProjectGroupBox'
+    ClientHeight = 123
+    ClientWidth = 558
+    TabOrder = 0
+    object BakProjAddExtLabel: TLabel
+      AnchorSideLeft.Control = BakProjAddExtComboBox
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = BakProjAddExtComboBox
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = BackupProjectGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 112
+      Height = 14
+      Top = 45
+      Width = 440
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 6
+      Caption = 'BakProjAddExtLabel'
+      ParentColor = False
+    end
+    object BakProjMaxCounterLabel: TLabel
+      AnchorSideLeft.Control = BakProjMaxCounterComboBox
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = BakProjMaxCounterComboBox
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = BackupProjectGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 112
+      Height = 14
+      Top = 72
+      Width = 440
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 6
+      Caption = 'BakProjMaxCounterLabel'
+      ParentColor = False
+    end
+    object BakProjSubDirLabel: TLabel
+      AnchorSideLeft.Control = BakProjSubDirComboBox
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = BakProjSubDirComboBox
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = BackupProjectGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 112
+      Height = 14
+      Top = 99
+      Width = 440
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 6
+      Caption = 'BakProjSubDirLabel'
+      ParentColor = False
+    end
+    object BakProjTypeRadioGroup: TRadioGroup
+      AnchorSideRight.Control = BackupProjectGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 30
+      Top = 6
+      Width = 546
+      Anchors = [akTop, akLeft, akRight]
+      AutoFill = True
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'BakProjTypeRadioGroup'
+      ChildSizing.LeftRightSpacing = 6
+      ChildSizing.TopBottomSpacing = 6
+      ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+      ChildSizing.EnlargeVertical = crsHomogenousChildResize
+      ChildSizing.ShrinkHorizontal = crsScaleChilds
+      ChildSizing.ShrinkVertical = crsScaleChilds
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 2
+      Columns = 2
+      Constraints.MinHeight = 30
+      OnClick = BakTypeRadioGroupClick
+      TabOrder = 0
+    end
+    object BakProjAddExtComboBox: TComboBox
+      AnchorSideTop.Control = BakProjTypeRadioGroup
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 21
+      Top = 42
+      Width = 100
+      AutoSelect = True
+      BorderSpacing.Around = 6
+      ItemHeight = 13
+      MaxLength = -1
+      TabOrder = 1
+      Text = 'BakProjAddExtComboBox'
+    end
+    object BakProjMaxCounterComboBox: TComboBox
+      AnchorSideTop.Control = BakProjAddExtComboBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 21
+      Top = 69
+      Width = 100
+      AutoSelect = True
+      BorderSpacing.Around = 6
+      ItemHeight = 13
+      MaxLength = -1
+      TabOrder = 2
+      Text = 'BakProjMaxCounterComboBox'
+    end
+    object BakProjSubDirComboBox: TComboBox
+      AnchorSideTop.Control = BakProjMaxCounterComboBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 21
+      Top = 96
+      Width = 100
+      AutoSelect = True
+      BorderSpacing.Around = 6
+      ItemHeight = 13
+      MaxLength = -1
+      TabOrder = 3
+      Text = 'BakProjSubDirComboBox'
+    end
+  end
+  object BackupOtherGroupBox: TGroupBox[2]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = BackupProjectGroupBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Height = 141
+    Top = 167
+    Width = 562
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Top = 6
+    Caption = 'BackupOtherGroupBox'
+    ClientHeight = 123
+    ClientWidth = 558
+    TabOrder = 1
+    object BakOtherAddExtLabel: TLabel
+      AnchorSideLeft.Control = BakOtherAddExtComboBox
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = BakOtherAddExtComboBox
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = BackupOtherGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 112
+      Height = 14
+      Top = 45
+      Width = 440
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 6
+      Caption = 'BakOtherAddExtLabel'
+      ParentColor = False
+    end
+    object BakOtherMaxCounterLabel: TLabel
+      AnchorSideLeft.Control = BakOtherMaxCounterComboBox
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = BakOtherMaxCounterComboBox
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = BackupOtherGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 112
+      Height = 14
+      Top = 72
+      Width = 440
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 6
+      Caption = 'BakOtherMaxCounterLabel'
+      ParentColor = False
+    end
+    object BakOtherSubDirLabel: TLabel
+      AnchorSideLeft.Control = BakOtherSubDirComboBox
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = BakOtherSubDirComboBox
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = BackupOtherGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 112
+      Height = 14
+      Top = 99
+      Width = 440
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 6
+      Caption = 'BakOtherSubDirLabel'
+      ParentColor = False
+    end
+    object BakOtherTypeRadioGroup: TRadioGroup
+      AnchorSideRight.Control = BackupOtherGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 30
+      Top = 6
+      Width = 546
+      Anchors = [akTop, akLeft, akRight]
+      AutoFill = True
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'BakOtherTypeRadioGroup'
+      ChildSizing.LeftRightSpacing = 6
+      ChildSizing.TopBottomSpacing = 6
+      ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+      ChildSizing.EnlargeVertical = crsHomogenousChildResize
+      ChildSizing.ShrinkHorizontal = crsScaleChilds
+      ChildSizing.ShrinkVertical = crsScaleChilds
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 2
+      Columns = 2
+      Constraints.MinHeight = 30
+      OnClick = BakTypeRadioGroupClick
+      TabOrder = 0
+    end
+    object BakOtherAddExtComboBox: TComboBox
+      AnchorSideTop.Control = BakOtherTypeRadioGroup
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 21
+      Top = 42
+      Width = 100
+      BorderSpacing.Around = 6
+      ItemHeight = 13
+      MaxLength = -1
+      TabOrder = 1
+      Text = 'BakOtherAddExtComboBox'
+    end
+    object BakOtherMaxCounterComboBox: TComboBox
+      AnchorSideTop.Control = BakOtherAddExtComboBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 21
+      Top = 69
+      Width = 100
+      BorderSpacing.Around = 6
+      ItemHeight = 13
+      MaxLength = -1
+      TabOrder = 2
+      Text = 'BakOtherMaxCounterComboBox'
+    end
+    object BakOtherSubDirComboBox: TComboBox
+      AnchorSideTop.Control = BakOtherMaxCounterComboBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 21
+      Top = 96
+      Width = 100
+      BorderSpacing.Around = 6
+      ItemHeight = 13
+      MaxLength = -1
+      TabOrder = 3
+      Text = 'BakOtherSubDirComboBox'
+    end
+  end
+end
