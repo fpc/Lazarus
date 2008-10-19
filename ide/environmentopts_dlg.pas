@@ -41,7 +41,7 @@ uses
   LazarusIDEStrConsts, TransferMacros, LazConf, ExtToolDialog, IDEProcs,
   IDEOptionDefs, InputHistory, EditorOptions, IDETranslations, ButtonPanel,
   EnvironmentOpts,
-  options_files, options_desktop, options_oi;
+  options_files, options_desktop, options_window, options_formed, options_oi;
 
 type
   { TEnvironmentOptionsDialog: EnvironmentOptionsDialog for environment options }
@@ -82,47 +82,6 @@ type
     LazDocPathsGroupBox: TGroupBox;
     LazDocListBox: TListBox;
 
-    // window layout
-    WindowPositionsGroupBox: TGroupBox;
-    WindowPositionsListBox: TListBox;
-    WindowPositionsBox: TIDEWindowSetupLayoutComponent;
-    MinimizeAllOnMinimizeMainCheckBox: TCheckBox;
-    HideIDEOnRunCheckBox: TCheckBox;
-
-    // designer
-    GridGroupBox: TGroupBox;
-    ShowGridCheckBox: TCheckBox;
-    ShowBorderSpaceCheckBox: TCheckBox;
-    GridColorLabel: TLabel;
-    GridColorButton: TColorButton;
-    SnapToGridCheckBox: TCheckBox;
-    GridSizeXLabel: TLabel;
-    GridSizeXComboBox: TComboBox;
-    GridSizeYLabel: TLabel;
-    GridSizeYComboBox: TComboBox;
-    GuideLinesGroupBox: TGroupBox;
-    ShowGuideLinesCheckBox: TCheckBox;
-    SnapToGuideLinesCheckBox: TCheckBox;
-    GuideLineColorLeftTopLabel: TLabel;
-    GuideLineColorLeftTopButton: TColorButton;
-    GuideLineColorRightBottomLabel: TLabel;
-    GuideLineColorRightBottomButton: TColorButton;
-    FormEditMiscGroupBox: TGroupBox;
-    ShowComponentCaptionsCheckBox: TCheckBox;
-    ShowEditorHintsCheckBox: TCheckBox;
-    AutoCreateFormsOnOpenCheckBox: TCheckBox;
-    RightClickSelectsCheckBox: TCheckBox;
-    GrabberColorLabel: TLabel;
-    GrabberColorButton: TColorButton;
-    MarkerColorLabel: TLabel;
-    MarkerColorButton: TColorButton;
-    RubberbandGroupBox: TGroupBox;
-    RubberbandSelectColorLabel: TLabel;
-    RubberbandSelectColorButton: TColorButton;
-    RubberbandCreateColorLabel: TLabel;
-    RubberbandCreateColorButton: TColorButton;
-    RubberbandSelectsGrandChildsCheckBox: TCheckBox;
-    DesignerPaintLazyCheckBox: TCheckBox;
 
 
     // backup
@@ -151,7 +110,6 @@ type
 
     
     procedure BakTypeRadioGroupClick(Sender: TObject);
-    procedure FormEditorPageResize(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
     procedure LazDocAddPathButtonClick(Sender: TObject);
     procedure LazDocBrowseButtonClick(Sender: TObject);
@@ -159,15 +117,14 @@ type
     procedure NotebookChangeBounds(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
-    procedure WindowPositionsListBoxSelectionChange(Sender: TObject;
-      User: boolean);
   private
     FOnLoadEnvironmentSettings: TOnLoadEnvironmentSettings;
     FOnSaveEnvironmentSettings: TOnSaveEnvironmentSettings;
-    FLayouts: TIDEWindowLayoutList;
-    OIOptionsFrame: TOIOptionsFrame;
     FilesOptionsFrame: TFilesOptionsFrame;
     DesktopOptionsFrame: TDesktopOptionsFrame;
+    WindowOptionsFrame: TWindowOptionsFrame;
+    FormEditorOptionsFrame: TFormEditorOptionsFrame;
+    OIOptionsFrame: TOIOptionsFrame;
 
     procedure SetupFrame(AFrame: TAbstractOptionsFrame; APage: TPage);
 
@@ -180,7 +137,6 @@ type
     procedure SetupBackupPage(Page: integer);
     procedure SetupNamingPage(Page: integer);
     procedure SetupLazDocPage(Page: integer);
-    procedure SetWindowPositionsItem(Index: integer);
     function CheckValues: boolean;
 
     procedure LoadEnvironmentSettings(Sender: TObject; AOptions: TEnvironmentOptions);
@@ -237,40 +193,13 @@ end;
 procedure TEnvironmentOptionsDialog.SetupDesktopPage(Page: integer);
 begin
   DesktopOptionsFrame := TDesktopOptionsFrame.Create(Self);
-  SetupFrame(DesktopOptionsFrame, DesktopPage);
+  SetupFrame(DesktopOptionsFrame, NoteBook.Page[Page]);
 end;
 
 procedure TEnvironmentOptionsDialog.SetupWindowsPage(Page: integer);
 begin
-  NoteBook.Page[Page].Caption := dlgWindow;
-
-  // windows
-  MinimizeAllOnMinimizeMainCheckBox.Caption:=dlgMinimizeAllOnMinimizeMain;
-  HideIDEOnRunCheckBox.Caption:=dlgHideIDEOnRun;
-
-  // Window Positions
-  WindowPositionsGroupBox.Caption:=dlgWinPos;
-  with WindowPositionsListBox.Items do begin
-    BeginUpdate;
-    Add(dlgMainMenu);
-    Add(dlgSrcEdit);
-    Add(dlgMsgs);
-    Add(dlgObjInsp);
-    Add(lisMenuProjectInspector);
-    Add(lisCodeExplorer);
-    Add(lisMenuPackageGraph);
-    Add(dlgUnitDepCaption);
-    Add(lisMenuFPDocEditor);
-    EndUpdate;
-  end;
-  WindowPositionsBox:=TIDEWindowSetupLayoutComponent.Create(Self);
-  with WindowPositionsBox do begin
-    Name:='WindowPositionsBox';
-    Parent:=WindowPositionsGroupBox;
-    BorderSpacing.Around:=6;
-    Align:=alBottom;
-    AnchorToNeighbour(akTop,6,WindowPositionsListBox);
-  end;
+  WindowOptionsFrame := TWindowOptionsFrame.Create(Self);
+  SetupFrame(WindowOptionsFrame, NoteBook.Page[Page]);
 end;
 
 procedure TEnvironmentOptionsDialog.SetupBackupPage(Page: integer);
@@ -384,11 +313,13 @@ procedure TEnvironmentOptionsDialog.SetupFrame(AFrame: TAbstractOptionsFrame; AP
 begin
   AFrame.Parent := APage;
 
-  AFrame.Anchors := [akLeft, akTop, akRight];
+  AFrame.Anchors := [akLeft, akTop, akRight, akBottom];
   AFrame.AnchorSideLeft.Control := APage;
   AFrame.AnchorSideTop.Control := APage;
   AFrame.AnchorSideRight.Side := asrBottom;
   AFrame.AnchorSideRight.Control := APage;
+  AFrame.AnchorSideBottom.Side := asrBottom;
+  AFrame.AnchorSideBottom.Control := APage;
   AFrame.BorderSpacing.Around := 6;
 
   AFrame.OnLoadEnvironmentSettings := @LoadEnvironmentSettings;
@@ -403,7 +334,7 @@ end;
 procedure TEnvironmentOptionsDialog.SetupFilesPage(Page: integer);
 begin
   FilesOptionsFrame := TFilesOptionsFrame.Create(Self);
-  SetupFrame(FilesOptionsFrame, FilesPage);
+  SetupFrame(FilesOptionsFrame, NoteBook.Page[Page]);
 end;
 
 procedure TEnvironmentOptionsDialog.SetCategoryPage(const AValue: TEnvOptsDialogPage);
@@ -423,68 +354,9 @@ begin
 end;
 
 procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
-
-  procedure SetupGridGroupBox;
-  begin
-    ShowBorderSpaceCheckBox.Caption:=dlgQShowBorderSpacing;
-    ShowGridCheckBox.Caption:=dlgQShowGrid;
-    GridColorLabel.Caption:=dlgGridColor;
-    SnapToGridCheckBox.Caption:=dlgQSnapToGrid;
-    GridSizeXComboBox.Hint:=dlgGridXHint;
-    GridSizeXLabel.Caption:=dlgGridX;
-    GridSizeYComboBox.Hint:=dlgGridYHint;
-    GridSizeYLabel.Caption:=dlgGridY;
-  end;
-
-  procedure SetupGuideLinesGroupBox;
-  begin
-    ShowGuideLinesCheckBox.Caption:=dlgGuideLines;
-    SnapToGuideLinesCheckBox.Caption:=dlgSnapGuideLines;
-    GuideLineColorLeftTopLabel.Caption:=dlgLeftTopClr;
-    GuideLineColorRightBottomLabel.Caption:=dlgRightBottomClr;
-  end;
-  
-  procedure SetupMiscGroupBox;
-  begin
-    ShowComponentCaptionsCheckBox.Caption:=dlgShowCaps;
-    ShowEditorHintsCheckBox.Caption:=dlgShowEdrHints;
-    AutoCreateFormsOnOpenCheckBox.Caption:=dlgAutoForm;
-    RightClickSelectsCheckBox.Caption:=dlgRightClickSelects;
-    GrabberColorLabel.Caption:=dlgGrabberColor;
-    MarkerColorLabel.Caption:=dlgMarkerColor;
-
-    with DesignerPaintLazyCheckBox do begin
-      Caption:=lisFEPaintDesignerItemsOnIdle;
-      Hint:=lisFEPaintDesignerItemsOnIdleReduceOverheadForSlowCompu;
-    end;
-  end;
-  
-  procedure SetupRubberbandBox;
-  begin
-    RubberbandSelectColorLabel.Caption:=dlgRuberbandSelectionColor;
-    RubberbandCreateColorLabel.Caption:=dlgRuberbandCreationColor;
-    RubberbandSelectsGrandChildsCheckBox.Caption:=dlgRubberbandSelectsGrandChilds;
-  end;
-
 begin
-  // EnvironmentOptionsDialog editor page
-  NoteBook.Page[Page].Caption := dlgFrmEditor;
-
-  GridGroupBox.Caption:=dlgEnvGrid;
-
-  SetupGridGroupBox;
-  
-  GuideLinesGroupBox.Caption:=dlgEnvLGuideLines;
-
-  SetupGuideLinesGroupBox;
-
-  RubberbandGroupBox.Caption:=dlgRubberBandGroup;
-
-  SetupRubberbandBox;
-
-  FormEditMiscGroupBox.Caption:=dlgEnvMisc;
-
-  SetupMiscGroupBox;
+  FormEditorOptionsFrame := TFormEditorOptionsFrame.Create(Self);
+  SetupFrame(FormEditorOptionsFrame, NoteBook.Page[Page]);
 end;
 
 procedure TEnvironmentOptionsDialog.SetupNamingPage(Page: integer);
@@ -558,15 +430,6 @@ begin
   end;
 end;
 
-procedure TEnvironmentOptionsDialog.FormEditorPageResize(Sender: TObject);
-var
-  w: Integer;
-begin
-  w:=((FormEditorPage.ClientWidth-3*5)*5) div 10;
-  GridGroupBox.Width:=w;
-  FormEditMiscGroupBox.Width:=GridGroupBox.Width;
-end;
-
 procedure TEnvironmentOptionsDialog.HelpButtonClick(Sender: TObject);
 begin
   ShowContextHelpForIDE(Self);
@@ -614,44 +477,20 @@ var
 begin
   with AnEnvironmentOptions do 
   begin
+    // Files
+    FilesOptionsFrame.ReadSettings(AnEnvironmentOptions);
+
     // Desktop
     DesktopOptionsFrame.ReadSettings(AnEnvironmentOptions);
 
     // Window
-    FLayouts:=IDEWindowLayoutList;
-    SetWindowPositionsItem(0);
+    WindowOptionsFrame.ReadSettings(AnEnvironmentOptions);
 
     // Object inspector
     OIOptionsFrame.ReadSettings(AnEnvironmentOptions);
 
-    // window minimizing and hiding
-    MinimizeAllOnMinimizeMainCheckBox.Checked:=MinimizeAllOnMinimizeMain;
-    HideIDEOnRunCheckBox.Checked:=HideIDEOnRun;
-
-    // EnvironmentOptionsDialog editor
-    ShowBorderSpaceCheckBox.Checked:=ShowBorderSpacing;
-    ShowGridCheckBox.Checked:=ShowGrid;
-    GridColorButton.ButtonColor:=GridColor;
-    SnapToGridCheckBox.Checked:=SnapToGrid;
-    SetComboBoxText(GridSizeXComboBox,IntToStr(GridSizeX));
-    SetComboBoxText(GridSizeYComboBox,IntToStr(GridSizeY));
-    ShowGuideLinesCheckBox.Checked:=ShowGuideLines;
-    SnapToGuideLinesCheckBox.Checked:=SnapToGuideLines;
-    GuideLineColorLeftTopButton.ButtonColor:=GuideLineColorLeftTop;
-    GuideLineColorRightBottomButton.ButtonColor:=GuideLineColorRightBottom;
-    ShowComponentCaptionsCheckBox.Checked:=ShowComponentCaptions;
-    ShowEditorHintsCheckBox.Checked:=ShowEditorHints;
-    AutoCreateFormsOnOpenCheckBox.Checked:=AutoCreateFormsOnOpen;
-    RightClickSelectsCheckBox.Checked:=RightClickSelects;
-    GrabberColorButton.ButtonColor:=GrabberColor;
-    MarkerColorButton.ButtonColor:=MarkerColor;
-    RubberbandSelectColorButton.ButtonColor:=RubberbandSelectionColor;
-    RubberbandCreateColorButton.ButtonColor:=RubberbandCreationColor;
-    RubberbandSelectsGrandChildsCheckBox.Checked:=RubberbandSelectsGrandChilds;
-    DesignerPaintLazyCheckBox.Checked:=DesignerPaintLazy;
-
-    // files
-    FilesOptionsFrame.ReadSettings(AnEnvironmentOptions);
+    // Form editor
+    FormEditorOptionsFrame.ReadSettings(AnEnvironmentOptions);
 
     // backup
     with BackupInfoProjectFiles do begin
@@ -712,43 +551,20 @@ procedure TEnvironmentOptionsDialog.WriteSettings(AnEnvironmentOptions: TEnviron
 begin
   with AnEnvironmentOptions do 
   begin
+    // Files
+    FilesOptionsFrame.WriteSettings(AnEnvironmentOptions);
+
     // Desktop
     DesktopOptionsFrame.WriteSettings(AnEnvironmentOptions);
 
     // Window
-    WindowPositionsBox.Save;
+    WindowOptionsFrame.WriteSettings(AnEnvironmentOptions);
 
     // Object inspector
     OIOptionsFrame.WriteSettings(AnEnvironmentOptions);
 
-    // window minimizing
-    MinimizeAllOnMinimizeMain:=MinimizeAllOnMinimizeMainCheckBox.Checked;
-    HideIDEOnRun:=HideIDEOnRunCheckBox.Checked;
-
-    // EnvironmentOptionsDialog editor
-    ShowBorderSpacing:=ShowBorderSpaceCheckBox.Checked;
-    ShowGrid:=ShowGridCheckBox.Checked;
-    GridColor:=GridColorButton.ButtonColor;
-    SnapToGrid:=SnapToGridCheckBox.Checked;
-    GridSizeX:=StrToIntDef(GridSizeXComboBox.Text,GridSizeX);
-    GridSizeY:=StrToIntDef(GridSizeYComboBox.Text,GridSizeY);
-    ShowGuideLines:=ShowGuideLinesCheckBox.Checked;
-    SnapToGuideLines:=SnapToGuideLinesCheckBox.Checked;
-    GuideLineColorLeftTop:=GuideLineColorLeftTopButton.ButtonColor;
-    GuideLineColorRightBottom:=GuideLineColorRightBottomButton.ButtonColor;
-    ShowComponentCaptions:=ShowComponentCaptionsCheckBox.Checked;
-    ShowEditorHints:=ShowEditorHintsCheckBox.Checked;
-    AutoCreateFormsOnOpen:=AutoCreateFormsOnOpenCheckBox.Checked;
-    RightClickSelects:=RightClickSelectsCheckBox.Checked;
-    GrabberColor:=GrabberColorButton.ButtonColor;
-    MarkerColor:=MarkerColorButton.ButtonColor;
-    RubberbandSelectionColor:=RubberbandSelectColorButton.ButtonColor;
-    RubberbandCreationColor:=RubberbandCreateColorButton.ButtonColor;
-    RubberbandSelectsGrandChilds:=RubberbandSelectsGrandChildsCheckBox.Checked;
-    DesignerPaintLazy:=DesignerPaintLazyCheckBox.Checked;
-
-    // files
-    FilesOptionsFrame.WriteSettings(AnEnvironmentOptions);
+    // Form editor
+    FormEditorOptionsFrame.WriteSettings(AnEnvironmentOptions);
 
     // backup
     with BackupInfoProjectFiles do begin
@@ -807,34 +623,7 @@ end;
 procedure TEnvironmentOptionsDialog.SetupObjectInspectorPage(Page: integer);
 begin
   OIOptionsFrame := TOIOptionsFrame.Create(Self);
-  SetupFrame(OIOptionsFrame, ObjectInspectorPage);
-end;
-
-procedure TEnvironmentOptionsDialog.WindowPositionsListBoxSelectionChange(
-  Sender: TObject; User: boolean);
-begin
-  if User then
-    SetWindowPositionsItem(WindowPositionsListBox.ItemIndex);
-end;
-
-procedure TEnvironmentOptionsDialog.SetWindowPositionsItem(Index: integer);
-begin
-  if WindowPositionsBox.Layout<>nil then
-    WindowPositionsBox.Save;
-  WindowPositionsListBox.ItemIndex:=Index;
-  case Index of
-  0: WindowPositionsBox.Layout:=FLayouts.ItemByEnum(nmiwMainIDEName);
-  1: WindowPositionsBox.Layout:=FLayouts.ItemByEnum(nmiwSourceNoteBookName);
-  2: WindowPositionsBox.Layout:=FLayouts.ItemByEnum(nmiwMessagesViewName);
-  3: WindowPositionsBox.Layout:=FLayouts.ItemByFormID(DefaultObjectInspectorName);
-  4: WindowPositionsBox.Layout:=FLayouts.ItemByEnum(nmiwProjectInspector);
-  5: WindowPositionsBox.Layout:=FLayouts.ItemByEnum(nmiwCodeExplorerName);
-  6: WindowPositionsBox.Layout:=FLayouts.ItemByEnum(nmiwPkgGraphExplorer);
-  7: WindowPositionsBox.Layout:=FLayouts.ItemByEnum(nmiwUnitDependenciesName);
-  8: WindowPositionsBox.Layout:=FLayouts.ItemByEnum(nmiwFPDocEditorName);
-  end;
-  if Index>=0 then
-    WindowPositionsBox.Caption:=WindowPositionsListBox.Items[Index];
+  SetupFrame(OIOptionsFrame, NoteBook.Page[Page]);
 end;
 
 function TEnvironmentOptionsDialog.CheckValues: boolean;
