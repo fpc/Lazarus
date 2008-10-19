@@ -42,8 +42,9 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, LCLType, Controls, Forms, Buttons, StdCtrls, ComCtrls,
-  Dialogs, LResources, ExtCtrls, LCLProc,
+  Classes, SysUtils, FileUtil,
+  LCLType, Controls, Forms, Buttons, StdCtrls, ComCtrls,
+  Dialogs, LResources, ExtCtrls, LCLProc, ButtonPanel,
   IDEMsgIntf, IDEExternToolIntf,
   PropEdits, KeyMapShortCutDlg, TransferMacros, LazarusIDEStrConsts,
   EditMsgScannersDlg;
@@ -229,7 +230,8 @@ begin
 
   with OpenDialog do begin
     Title:=lisSelectFile;
-    Filter:=lisExePrograms+' (*.exe)|*.exe|'+lisAllFiles+' (*.*)|*.*';
+    Filter:=dlgAllFiles+' ('+GetAllFilesMask+')|'+GetAllFilesMask
+      +'|'+lisExePrograms+' (*.exe)|*.exe';
   end;
 
   ParametersLabel.Caption:=lisEdtExtToolParameters;

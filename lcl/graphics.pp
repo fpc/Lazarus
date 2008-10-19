@@ -56,6 +56,7 @@ type
   TFontStyles = set of TFontStyle;
   TFontStylesbase = set of TFontStyle;
   TFontCharSet = 0..255;
+  TFontQuality = (fqDefault, fqDraft, fqProof, fqNonAntialiased, fqAntialiased);
 
   TFontData = record
     Handle: HFont;
@@ -63,6 +64,7 @@ type
     Pitch: TFontPitch;
     Style: TFontStylesBase;
     CharSet: TFontCharSet;
+    Quality: TFontQuality;
     Name: TFontDataName;
   end;
 
@@ -77,6 +79,7 @@ const
     Pitch: fpDefault;
     Style: [];
     Charset: DEFAULT_CHARSET;
+    Quality: fqDefault;
     Name: 'default'
     );
 
@@ -463,6 +466,7 @@ type
     FIsMonoSpace: boolean;
     FIsMonoSpaceValid: boolean;
     FPitch: TFontPitch;
+    FQuality: TFontQuality;
     FStyle: TFontStylesBase;
     FCharSet: TFontCharSet;
     FPixelsPerInch: Integer;
@@ -503,6 +507,7 @@ type
     procedure SetPitch(Value: TFontPitch);
     procedure SetSize(AValue: integer); override;
     procedure SetStyle(Value: TFontStyles);
+    procedure SetQuality(const AValue: TFontQuality);
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -525,6 +530,7 @@ type
     property Height: Integer read GetHeight write SetHeight;
     property Name: string read GetName write SetName stored IsNameStored;
     property Pitch: TFontPitch read GetPitch write SetPitch default fpDefault;
+    property Quality: TFontQuality read FQuality write SetQuality default fqDefault;
     property Size: Integer read GetSize write SetSize stored false;
     property Style: TFontStyles read GetStyle write SetStyle;
   end;

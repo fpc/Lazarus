@@ -27,7 +27,8 @@ cd -
 # create description file list
 DescrFiles=''
 for unit in $UnitList; do
-  ShortFile=`echo $unit | sed -e 's/\.pp\b//g' -e 's/\.pas\b//g'`
+  ShortFile=${unit%.pp}
+  ShortFile=${ShortFile%.pas}
   DescrFiles="$DescrFiles --descr=../$XMLSrcDir$ShortFile.xml"
 done
 

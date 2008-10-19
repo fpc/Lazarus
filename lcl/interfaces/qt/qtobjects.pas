@@ -150,6 +150,7 @@ type
     function getUnderline: Boolean;
     function getStrikeOut: Boolean;
     function getFamily: WideString;
+    function getStyleStategy: QFontStyleStrategy;
 
     procedure setPointSize(p1: Integer);
     procedure setPixelSize(p1: Integer);
@@ -160,6 +161,7 @@ type
     procedure setStrikeOut(p1: Boolean);
     procedure setRawName(p1: string);
     procedure setFamily(p1: string);
+    procedure setStyleStrategy(s: QFontStyleStrategy);
     procedure family(retval: PWideString);
     function fixedPitch: Boolean;
     
@@ -1183,6 +1185,14 @@ begin
     QFont_family(Widget, @Result);
 end;
 
+function TQtFont.getStyleStategy: QFontStyleStrategy;
+begin
+  if Widget = nil then
+    Result := QFont_styleStrategy(getDefaultFont)
+  else
+    Result := QFont_styleStrategy(Widget);
+end;
+
 procedure TQtFont.setWeight(p1: Integer);
 begin
   QFont_setWeight(Widget, p1);
@@ -1224,6 +1234,11 @@ begin
   Str := GetUtf8String(p1);
 
   QFont_setFamily(Widget, @Str);
+end;
+
+procedure TQtFont.setStyleStrategy(s: QFontStyleStrategy);
+begin
+  QFont_setStyleStrategy(Widget, s);
 end;
 
 procedure TQtFont.family(retval: PWideString);

@@ -98,12 +98,17 @@ const
   VirtualTempDir='TEMPORARYDIRECTORY';
   
   // FPC operating systems and processor types
-  FPCOperatingSystemNames: array[1..21] of shortstring =(
-      'linux', 'freebsd', 'openbsd', 'netbsd',
-      'win32', 'win64', 'wince',
-      'go32v1', 'go32v2',
-      'beos', 'os2', 'amiga', 'atari', 'sunos', 'palmos', 'qnx', 'watcom',
-      'emx', 'darwin', 'wdosx', 'netware'
+  FPCOperatingSystemNames: array[1..28] of shortstring =(
+     'linux',
+     'win32','win64','wince',
+     'darwin','macos',
+     'freebsd','netbsd','openbsd',
+     'go32v2',
+     'os2',
+     'beos','haiku',
+     'amiga','atari','solaris', 'qnx', 'netware','wdosx',
+     'palmos','emx','watcom','morphos','netwlibc',
+     'gba','nds','embedded','symbian'
     );
   FPCOperatingSystemAlternativeNames: array[1..2] of shortstring =(
       'unix', 'win' // see GetDefaultSrcOSForTargetOS
@@ -710,6 +715,7 @@ begin
   or (CompareText(TargetOS,'netbsd')=0)
   or (CompareText(TargetOS,'openbsd')=0)
   or (CompareText(TargetOS,'darwin')=0)
+  or (CompareText(TargetOS,'solaris')=0)
   then
     Result:='unix'
   else

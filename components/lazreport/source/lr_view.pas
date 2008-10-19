@@ -376,6 +376,7 @@ begin
     if Pages[i]^.Visible then
       ExcludeClipRect(Canvas.Handle, r.Left + 1, r.Top + 1, r.Right - 1, r.Bottom - 1);
   end;
+
   with Canvas do
   begin
     Brush.Color := clGray;
@@ -758,13 +759,12 @@ begin
   VScrollBar.Height := RPanel.Height - PgUp.height - PgDown.height;
   if RPanel.Visible then
     HScrollbar.Width := BPanel.Width - HScrollbar.Left - RPanel.Width;
-    
-  maxx := maxx - PBox.Width;
-  maxy := maxy - PBox.Height;
+
   if maxx < 0 then maxx := 0 else Inc(maxx, 10);
   if maxy < 0 then maxy := 0 else Inc(maxy, 10);
   
-  HScrollBar.Max := maxx; VScrollBar.Max := maxy;
+  HScrollBar.Max := maxx;
+  VScrollBar.Max := maxy;
   VScrollBar.PageSize := Scrollbox1.ClientHeight;
   Hscrollbar.PageSize := Scrollbox1.ClientWidth;
   HScrollBar.Enabled := maxx <> 0;
@@ -854,7 +854,12 @@ begin
   OldH := p;
   ofx := -p;
   r := Rect(0, 0, PBox.Width, PBox.Height);
-  ScrollWindow(PBox.Handle, pp, 0, @r, @r);
+  {$IFDEF WIN32}
+  ScrollWindowEx(PBox.Handle, pp, 0, @r, @r, 0, nil, SW_INVALIDATE);
+  UpdateWindow(Pbox.Handle);
+  {$ELSE}
+  PBox.Invalidate;
+  {$ENDIF}
 end;
 
 procedure TfrPreviewForm.FormKeyDown(Sender: TObject; var Key: Word;

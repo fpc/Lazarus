@@ -3729,7 +3729,7 @@ begin
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisChooseDelphiProject;
-    OpenDialog.Filter:=lisDelphiProject+' (*.dpr)|*.dpr|'+dlgAllFiles+' (*.*)|' + GetAllFilesMask;
+    OpenDialog.Filter:=lisDelphiProject+' (*.dpr)|*.dpr|'+dlgAllFiles+' ('+GetAllFilesMask+')|' + GetAllFilesMask;
     if InputHistories.LastConvertDelphiProject<>'' then begin
       OpenDialog.InitialDir:=
                        ExtractFilePath(InputHistories.LastConvertDelphiProject);
@@ -3764,7 +3764,7 @@ begin
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisChooseDelphiPackage;
-    OpenDialog.Filter:=lisDelphiProject+' (*.dpk)|*.dpk|'+dlgAllFiles+' (*.*)|' + GetAllFilesMask;
+    OpenDialog.Filter:=lisDelphiProject+' (*.dpk)|*.dpk|'+dlgAllFiles+' ('+GetAllFilesMask+')|' + GetAllFilesMask;
     if InputHistories.LastConvertDelphiPackage<>'' then begin
       OpenDialog.InitialDir:=
                        ExtractFilePath(InputHistories.LastConvertDelphiPackage);

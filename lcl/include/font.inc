@@ -603,6 +603,7 @@ begin
   FPixelsPerInch := ScreenInfo.PixelsPerInchY;
   FPitch := DefFontData.Pitch;
   FCharSet := DefFontData.CharSet;
+  FQuality := DefFontData.Quality;
   DelayAllocate := True;
   inherited SetName(DefFontData.Name);
   inherited SetFPColor(colBlack);
@@ -636,6 +637,7 @@ begin
           Name := TFont(Source).Name;
           Pitch := TFont(Source).Pitch;
           Style := TFont(Source).Style;
+          Quality := TFont(Source).Quality;
         finally
           EndUpdate;
         end;
@@ -683,6 +685,7 @@ begin
       else
         Pitch := fpDefault;
       Style := AStyle;
+      Quality := TFontQuality(ALogFont.lfQuality);
       Name := ALogFont.lfFaceName;
     end;
   finally
@@ -701,6 +704,7 @@ begin
   or (Height<>AFont.Height)
   or (Name<>AFont.Name)
   or (Pitch<>AFont.Pitch)
+  or (Quality<>AFont.Quality)
   or (Style<>AFont.Style) then
     Result := False
   else
@@ -742,6 +746,7 @@ begin
          and (not IsNameStored)
          and (Pitch=fpDefault)
          and (Size=0)
+         and (Quality=fqDefault)
          and (Style=[]);
 end;
 
@@ -758,6 +763,7 @@ begin
     Charset := DefFontData.CharSet;
     Height := DefFontData.Height;
     Pitch := DefFontData.Pitch;
+    Quality := DefFontData.Quality;
     Style := DefFontData.Style;
     Color := clWindowText;
   finally
@@ -925,6 +931,7 @@ begin
       SrcFont := TFont(From);
       Pitch := SrcFont.Pitch;
       CharSet := SrcFont.CharSet;
+      Quality := SrcFont.Quality;
       Style := SrcFont.Style;
     end;
   finally
@@ -1007,6 +1014,8 @@ procedure TFont.ReferenceNeeded;
 const
   LF_BOOL: array[Boolean] of Byte = (0, 255);
   LF_WEIGHT: array[Boolean] of Integer = (FW_NORMAL, FW_BOLD);
+  LF_QUALITY: array[TFontQuality] of Integer = (DEFAULT_QUALITY,
+    DRAFT_QUALITY, PROOF_QUALITY, NONANTIALIASED_QUALITY, ANTIALIASED_QUALITY);
 var
   ALogFont: TLogFont;
   CachedFont: TFontHandleCacheDescriptor;
@@ -1045,7 +1054,7 @@ begin
     lfCharSet := Byte(FCharset);
     SetLogFontName(Name);
 
-    lfQuality := DEFAULT_QUALITY;
+    lfQuality := LF_QUALITY[FQuality];
     lfOutPrecision := OUT_DEFAULT_PRECIS;
     lfClipPrecision := CLIP_DEFAULT_PRECIS;
     case Pitch of
@@ -1071,6 +1080,20 @@ begin
   FFontHandleCached := True;
   FCanUTF8Valid := False;
   FIsMonoSpaceValid := False;
+end;
+
+procedure TFont.SetQuality(const AValue: TFontQuality);
+begin
+  if FQuality <> AValue then
+  begin
+    BeginUpdate;
+    FreeReference;
+    FQuality := AValue;
+    if IsFontNameXLogicalFontDesc(Name) then
+      Name := ClearXLFDStyle(Name);
+    Changed;
+    EndUpdate;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1141,6 +1164,7 @@ begin
   FontData.Pitch := Pitch;
   FontData.Style := Style;
   FontData.CharSet := CharSet;
+  FontData.Quality := Quality;
   FontData.Name := LeftStr(Name, SizeOf(FontData.Name) - 1);
 end;
 
@@ -1179,6 +1203,7 @@ begin
     FPitch := FontData.Pitch;
     FStyle := FontData.Style;
     FCharSet := FontData.CharSet;
+    FQuality := FontData.Quality;
     inherited SetName(FontData.Name);
     Bold; // it calls GetFlags
     if (fsBold in OldStyle)<>(fsBold in FStyle) then

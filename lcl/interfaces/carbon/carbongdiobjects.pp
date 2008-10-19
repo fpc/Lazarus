@@ -848,6 +848,10 @@ begin
   
   FDC := nil;
   FWidget := nil;
+
+  // allow font substitution for exotic glyphs
+  OSError(ATSUSetTransientFontMatching(FLayout, True), Self, SCreate,
+    'ATSUSetTransientFontMatching');
 end;
 
 {------------------------------------------------------------------------------
@@ -1036,6 +1040,7 @@ function TCarbonFont.CreateStyle(ALogFont: TLogFont; const AFaceName: String): A
 var
   Attr: ATSUAttributeTag;
   M: ATSUTextMeasurement;
+  O: ATSStyleRenderingOptions;
   B: Boolean;
   S: ByteCount;
   A: ATSUAttributeValuePtr;
@@ -1043,6 +1048,8 @@ var
 const
   SSetAttrs = 'ATSUSetAttributes';
   SName = 'CreateStyle';
+  ATSStyleRenderingOption: Array [NONANTIALIASED_QUALITY..ANTIALIASED_QUALITY] of
+    ATSStyleRenderingOptions = (kATSStyleNoAntiAliasing, kATSStyleApplyAntiAliasing);
 begin
   inherited Create(False);
 
@@ -1107,6 +1114,17 @@ begin
     S := SizeOf(B);
     OSError(ATSUSetAttributes(Result, 1, @Attr, @S, @A), Self, SName,
       SSetAttrs, 'kATSUStyleStrikeThroughTag');
+  end;
+
+  if (ALogFont.lfQuality >= NONANTIALIASED_QUALITY) and
+    (ALogFont.lfQuality <= ANTIALIASED_QUALITY) then
+  begin
+    Attr := kATSUStyleRenderingOptionsTag;
+    O := ATSStyleRenderingOption[ALogFont.lfQuality];
+    A := @O;
+    S := SizeOf(O);
+    OSError(ATSUSetAttributes(Result, 1, @Attr, @S, @A), Self, SName,
+      SSetAttrs, 'kATSUStyleRenderingOptionsTag');
   end;
 end;
 
