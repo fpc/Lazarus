@@ -345,6 +345,7 @@ end;
 
 initialization
   {$I options_files.lrs}
+  RegisterEnvironmentOptionsEditor(TFilesOptionsFrame);
 
 end.
 

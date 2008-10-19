@@ -124,7 +124,10 @@ uses
   EmptyMethodsDlg, CleanDirDlg, CodeContextForm, AboutFrm, BuildManager,
   CompatibilityRestrictions, RestrictionBrowser, ProjectWizardDlg, IDECmdLine,
   // main ide
-  MainBar, MainIntf, MainBase;
+  MainBar, MainIntf, MainBase,
+  // options frames
+  options_files, options_desktop, options_window, options_formed, options_oi,
+  options_backup, options_naming, options_fpdoc;
 
 type
   TIDEProjectItem =
@@ -336,7 +339,7 @@ type
       TheEnvironmentOptions: TEnvironmentOptions);
     procedure OnSaveEnvironmentSettings(Sender: TObject;
       TheEnvironmentOptions: TEnvironmentOptions);
-    procedure DoShowEnvGeneralOptions(StartPage: TEnvOptsDialogPage);
+    procedure DoShowEnvGeneralOptions(AEditor: TAbstractOptionsFrameClass);
 
     // SourceNotebook events
     procedure OnSrcNoteBookActivated(Sender: TObject);
@@ -1285,7 +1288,7 @@ end;
 
 procedure TMainIDE.OIOnShowOptions(Sender: TObject);
 begin
-  DoShowEnvGeneralOptions(eodpObjectInspector);
+  DoShowEnvGeneralOptions(TOIOptionsFrame);
 end;
 
 procedure TMainIDE.OIOnViewRestricted(Sender: TObject);
@@ -3801,7 +3804,7 @@ end;
 
 procedure TMainIDE.mnuEnvGeneralOptionsClicked(Sender: TObject);
 begin
-  DoShowEnvGeneralOptions(eodpFiles);
+  DoShowEnvGeneralOptions(nil);
 end;
 
 //------------------------------------------------------------------------------
@@ -3858,7 +3861,7 @@ begin
   SaveDesktopSettings(TheEnvironmentOptions);
 end;
 
-procedure TMainIDE.DoShowEnvGeneralOptions(StartPage: TEnvOptsDialogPage);
+procedure TMainIDE.DoShowEnvGeneralOptions(AEditor: TAbstractOptionsFrameClass);
 var
   EnvironmentOptionsDialog: TEnvironmentOptionsDialog;
   MacroValueChanged,
@@ -3911,7 +3914,7 @@ var
 Begin
   EnvironmentOptionsDialog:=TEnvironmentOptionsDialog.Create(nil);
   try
-    EnvironmentOptionsDialog.CategoryPage:=StartPage;
+    EnvironmentOptionsDialog.OpenEditor(AEditor);
     // update EnvironmentOptions (save current window positions)
     SaveDesktopSettings(EnvironmentOptions);
     with EnvironmentOptionsDialog do 
@@ -3971,7 +3974,7 @@ Begin
   finally
     EnvironmentOptionsDialog.Free;
   end;
-End;
+end;
 
 procedure TMainIDE.mnuEnvEditorOptionsClicked(Sender: TObject);
 var EditorOptionsForm: TEditorOptionsForm;
@@ -11340,7 +11343,7 @@ end;
 
 procedure TMainIDE.OnDesignerShowOptions(Sender: TObject);
 begin
-  DoShowEnvGeneralOptions(eodpFormEditor);
+  DoShowEnvGeneralOptions(TFormEditorOptionsFrame);
 end;
 
 procedure TMainIDE.OnDesignerPasteComponent(Sender: TObject;

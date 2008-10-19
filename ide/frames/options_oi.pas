@@ -146,6 +146,7 @@ end;
 
 initialization
   {$I options_oi.lrs}
+  RegisterEnvironmentOptionsEditor(TOIOptionsFrame);
 
 end.
 

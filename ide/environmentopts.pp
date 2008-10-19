@@ -460,6 +460,8 @@ type
     property OnLoadEnvironmentSettings: TOnLoadEnvironmentSettings
       read FOnLoadEnvironmentSettings write FOnLoadEnvironmentSettings;
   end;
+  TAbstractOptionsFrameClass = class of TAbstractOptionsFrame;
+  TEnvironmentOptionsEditorGetProc = procedure(AEditor: TAbstractOptionsFrameClass) of object;
 
 var
   EnvironmentOptions: TEnvironmentOptions = nil;
@@ -481,6 +483,9 @@ procedure SetComboBoxText(AComboBox:TComboBox; const AText:AnsiString);
 procedure SetComboBoxText(AComboBox:TComboBox; const AText:AnsiString;
                           MaxCount: integer);
 
+procedure RegisterEnvironmentOptionsEditor(AEditor: TAbstractOptionsFrameClass);
+procedure EnumEnvironmentOptionsEditors(ACallBack: TEnvironmentOptionsEditorGetProc);
+
 const
   DefaultLazDocPath = '$(LazarusDir)/docs/xml/lcl';
   DefaultMsgViewFocus = {$IFDEF Windows}true{$ELSE}false{$ENDIF};
@@ -491,7 +496,35 @@ const
 implementation
 
 uses
-  IDEContextHelpEdit, options_oi;
+  IDEContextHelpEdit;
+
+type
+  { TEnvironmentOptionsEditorList }
+
+  TEnvironmentOptionsEditorList = class(TList)
+  private
+    function GetItem(AIndex: Integer): TAbstractOptionsFrameClass;
+    procedure SetItem(AIndex: Integer; const AValue: TAbstractOptionsFrameClass);
+  public
+    property Items[AIndex: Integer]: TAbstractOptionsFrameClass read GetItem write SetItem; default;
+  end;
+
+{ TEnvironmentOptionsEditorList }
+
+function TEnvironmentOptionsEditorList.GetItem(AIndex: Integer
+  ): TAbstractOptionsFrameClass;
+begin
+  Result := TAbstractOptionsFrameClass(inherited Get(AIndex));
+end;
+
+procedure TEnvironmentOptionsEditorList.SetItem(AIndex: Integer;
+  const AValue: TAbstractOptionsFrameClass);
+begin
+  inherited Put(AIndex, AValue);
+end;
+
+var
+  RegisteredEditors: TEnvironmentOptionsEditorList = nil;
 
 function DebuggerNameToType(const s: string): TDebuggerType;
 begin
@@ -1494,6 +1527,27 @@ begin
   FDebuggerFilename:=Trim(copy(FDebuggerFilename,1,SpacePos-1))+
     copy(FDebuggerFilename,SpacePos,length(FDebuggerFilename)-SpacePos+1);
 end;
+
+procedure RegisterEnvironmentOptionsEditor(AEditor: TAbstractOptionsFrameClass);
+begin
+  if RegisteredEditors = nil then
+    RegisteredEditors := TEnvironmentOptionsEditorList.Create;
+  if RegisteredEditors.IndexOf(AEditor) = -1 then
+    RegisteredEditors.Add(AEditor);
+end;
+
+procedure EnumEnvironmentOptionsEditors(ACallBack: TEnvironmentOptionsEditorGetProc);
+var
+  i: integer;
+begin
+  if RegisteredEditors = nil then
+    Exit;
+  for i := 0 to RegisteredEditors.Count - 1 do
+    ACallBack(RegisteredEditors[i]);
+end;
+
+finalization
+  RegisteredEditors.Free;
 
 end.
 

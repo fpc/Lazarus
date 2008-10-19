@@ -150,6 +150,7 @@ end;
 
 initialization
   {$I options_window.lrs}
+  RegisterEnvironmentOptionsEditor(TWindowOptionsFrame);
 
 end.
 

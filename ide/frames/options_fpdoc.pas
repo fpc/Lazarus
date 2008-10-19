@@ -106,6 +106,7 @@ end;
 
 initialization
   {$I options_fpdoc.lrs}
+  RegisterEnvironmentOptionsEditor(TFpDocOptionsFrame);
 
 end.
 

@@ -136,6 +136,7 @@ end;
 
 initialization
   {$I options_naming.lrs}
+  RegisterEnvironmentOptionsEditor(TNamingOptionsFrame);
 
 end.
 

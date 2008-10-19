@@ -3,14 +3,23 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
   Height = 535
   Top = 199
   Width = 542
-  ActiveControl = Notebook
   Caption = 'EnvironmentOptionsDialog'
   ClientHeight = 535
   ClientWidth = 542
   ParentFont = False
   Position = poScreenCenter
   LCLVersion = '0.9.27'
-  object Notebook: TNotebook
+  object ButtonPanel: TButtonPanel
+    Left = 6
+    Height = 40
+    Top = 495
+    Width = 530
+    Align = alBottom
+    AutoSize = True
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+  object Notebook: TPageControl
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
@@ -21,41 +30,6 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Bottom = 6
-    PageIndex = 0
-    TabOrder = 0
-    object FilesPage: TPage
-      Caption = 'FilesPage'
-    end
-    object DesktopPage: TPage
-      Caption = 'DesktopPage'
-    end
-    object WindowsPage: TPage
-      Caption = 'WindowsPage'
-    end
-    object FormEditorPage: TPage
-      Caption = 'FormEditorPage'
-    end
-    object ObjectInspectorPage: TPage
-      Caption = 'ObjectInspectorPage'
-    end
-    object BackupPage: TPage
-      Caption = 'BackupPage'
-    end
-    object NamingPage: TPage
-      Caption = 'NamingPage'
-    end
-    object LazDocPage: TPage
-      Caption = 'LazDocPage'
-    end
-  end
-  object ButtonPanel: TButtonPanel
-    Left = 6
-    Height = 40
-    Top = 495
-    Width = 530
-    Align = alBottom
-    AutoSize = True
     TabOrder = 1
-    ShowButtons = [pbOK, pbCancel, pbHelp]
   end
 end

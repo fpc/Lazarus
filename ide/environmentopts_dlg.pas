@@ -34,40 +34,15 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, Controls, Forms, ExtCtrls, LResources, ButtonPanel, 
-  EnvironmentOpts, LazarusIDEStrConsts, IDEWindowIntf,
-  options_files, options_desktop, options_window, options_formed, options_oi,
-  options_backup, options_naming, options_fpdoc;
+  Classes, SysUtils, Controls, Forms, LResources, ComCtrls, ButtonPanel,
+  EnvironmentOpts, LazarusIDEStrConsts, IDEWindowIntf;
 
 type
-  { TEnvironmentOptionsDialog: EnvironmentOptionsDialog for environment options }
-  
-  TEnvOptsDialogPage = (
-    eodpLanguage,
-    eodpAutoSave,
-    eodpDesktop,
-    eodpMainHints,
-    eodpWindowPositions,
-    eodpFormEditor,
-    eodpObjectInspector,
-    eodpFiles,
-    eodpBackup,
-    eodpNaming
-  );
-  
   { TEnvironmentOptionsDialog }
 
   TEnvironmentOptionsDialog = class(TForm)
     ButtonPanel: TButtonPanel;
-    NoteBook: TNoteBook;
-    FilesPage: TPage;
-    DesktopPage: TPage;
-    WindowsPage: TPage;
-    FormEditorPage: TPage;
-    ObjectInspectorPage: TPage;
-    BackupPage: TPage;
-    NamingPage: TPage;
-    LazDocPage: TPage;
+    Notebook: TPageControl;
 
     procedure HelpButtonClick(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
@@ -75,43 +50,26 @@ type
   private
     FOnLoadEnvironmentSettings: TOnLoadEnvironmentSettings;
     FOnSaveEnvironmentSettings: TOnSaveEnvironmentSettings;
-    FilesOptionsFrame: TFilesOptionsFrame;
-    DesktopOptionsFrame: TDesktopOptionsFrame;
-    WindowOptionsFrame: TWindowOptionsFrame;
-    FormEditorOptionsFrame: TFormEditorOptionsFrame;
-    OIOptionsFrame: TOIOptionsFrame;
-    BackupOptionsFrame: TBackupOptionsFrame;
-    NamingOptionsFrame: TNamingOptionsFrame;
-    FpDocOptionsFrame: TFpDocOptionsFrame;
+    FEditors: TList;
 
-    procedure SetupFrame(AFrame: TAbstractOptionsFrame; APage: TPage);
-
-    procedure SetCategoryPage(const AValue: TEnvOptsDialogPage);
-    procedure SetupFilesPage(Page: integer);
-    procedure SetupDesktopPage(Page: integer);
-    procedure SetupWindowsPage(Page: integer);
-    procedure SetupFormEditorPage(Page: integer);
-    procedure SetupObjectInspectorPage(Page: integer);
-    procedure SetupBackupPage(Page: integer);
-    procedure SetupNamingPage(Page: integer);
-    procedure SetupLazDocPage(Page: integer);
+    procedure SetupFrame(AFrame: TAbstractOptionsFrame; APage: TTabSheet);
     function CheckValues: boolean;
-
     procedure LoadEnvironmentSettings(Sender: TObject; AOptions: TEnvironmentOptions);
     procedure SaveEnvironmentSettings(Sender: TObject; AOptions: TEnvironmentOptions);
+    procedure CreateEditors(AEditor: TAbstractOptionsFrameClass);
   published
     property OnSaveEnvironmentSettings: TOnSaveEnvironmentSettings
       read FOnSaveEnvironmentSettings write FOnSaveEnvironmentSettings;
     property OnLoadEnvironmentSettings: TOnLoadEnvironmentSettings
       read FOnLoadEnvironmentSettings write FOnLoadEnvironmentSettings;
-    property CategoryPage: TEnvOptsDialogPage write SetCategoryPage;
   public
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure OpenEditor(AEditor: TAbstractOptionsFrameClass);
     procedure ReadSettings(AnEnvironmentOptions: TEnvironmentOptions);
     procedure WriteSettings(AnEnvironmentOptions: TEnvironmentOptions);
-    constructor Create(TheOwner: TComponent); override;
   end;
 
- 
 implementation
 
 uses
@@ -125,41 +83,20 @@ begin
   IDEDialogLayoutList.ApplyLayout(Self,Width,Height);
   Caption := lisMenuGeneralOptions;
 
-  NoteBook.PageIndex:=0;
-
-  SetupFilesPage(0);
-  SetupDesktopPage(1);
-  SetupWindowsPage(2);
-  SetupFormEditorPage(3);
-  SetupObjectInspectorPage(4);
-  SetupBackupPage(5);
-  SetupNamingPage(6);
-  SetupLazDocPage(7);
-
+  FEditors := TList.Create;
+  EnumEnvironmentOptionsEditors(@CreateEditors);
   ButtonPanel.OKButton.OnClick := @OKButtonClick;
   ButtonPanel.CancelButton.OnClick := @CancelButtonClick;
   ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
 end;
 
-procedure TEnvironmentOptionsDialog.SetupDesktopPage(Page: integer);
+destructor TEnvironmentOptionsDialog.Destroy;
 begin
-  DesktopOptionsFrame := TDesktopOptionsFrame.Create(Self);
-  SetupFrame(DesktopOptionsFrame, NoteBook.Page[Page]);
+  FEditors.Free;
+  inherited Destroy;
 end;
 
-procedure TEnvironmentOptionsDialog.SetupWindowsPage(Page: integer);
-begin
-  WindowOptionsFrame := TWindowOptionsFrame.Create(Self);
-  SetupFrame(WindowOptionsFrame, NoteBook.Page[Page]);
-end;
-
-procedure TEnvironmentOptionsDialog.SetupBackupPage(Page: integer);
-begin
-  BackupOptionsFrame := TBackupOptionsFrame.Create(Self);
-  SetupFrame(BackupOptionsFrame, NoteBook.Page[Page]);
-end;
-
-procedure TEnvironmentOptionsDialog.SetupFrame(AFrame: TAbstractOptionsFrame; APage: TPage);
+procedure TEnvironmentOptionsDialog.SetupFrame(AFrame: TAbstractOptionsFrame; APage: TTabSheet);
 begin
   AFrame.Parent := APage;
 
@@ -179,46 +116,6 @@ begin
   AFrame.Visible := True;
 
   APage.Caption := AFrame.GetTitle;
-end;
-
-procedure TEnvironmentOptionsDialog.SetupFilesPage(Page: integer);
-begin
-  FilesOptionsFrame := TFilesOptionsFrame.Create(Self);
-  SetupFrame(FilesOptionsFrame, NoteBook.Page[Page]);
-end;
-
-procedure TEnvironmentOptionsDialog.SetCategoryPage(const AValue: TEnvOptsDialogPage);
-var
-  p: Integer;
-begin
-  case AValue of
-    eodpFiles: p:=0;
-    eodpLanguage, eodpAutoSave, eodpDesktop, eodpMainHints,
-    eodpWindowPositions: p:=2;
-    eodpFormEditor: p:=3;
-    eodpObjectInspector: p:=4;
-    eodpBackup: p:=5;
-    eodpNaming: p:=6;
-  end;
-  Notebook.PageIndex:=p;
-end;
-
-procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
-begin
-  FormEditorOptionsFrame := TFormEditorOptionsFrame.Create(Self);
-  SetupFrame(FormEditorOptionsFrame, NoteBook.Page[Page]);
-end;
-
-procedure TEnvironmentOptionsDialog.SetupNamingPage(Page: integer);
-begin
-  NamingOptionsFrame := TNamingOptionsFrame.Create(Self);
-  SetupFrame(NamingOptionsFrame, NoteBook.Page[Page]);
-end;
-
-procedure TEnvironmentOptionsDialog.SetupLazDocPage(Page: integer);
-begin
-  FpDocOptionsFrame := TFpDocOptionsFrame .Create(Self);
-  SetupFrame(FpDocOptionsFrame, NoteBook.Page[Page]);
 end;
 
 procedure TEnvironmentOptionsDialog.HelpButtonClick(Sender: TObject);
@@ -241,74 +138,32 @@ begin
 end;
 
 procedure TEnvironmentOptionsDialog.ReadSettings(AnEnvironmentOptions: TEnvironmentOptions);
+var
+  i: integer;
 begin
-  with AnEnvironmentOptions do 
-  begin
-    // Files
-    FilesOptionsFrame.ReadSettings(AnEnvironmentOptions);
-
-    // Desktop
-    DesktopOptionsFrame.ReadSettings(AnEnvironmentOptions);
-
-    // Window
-    WindowOptionsFrame.ReadSettings(AnEnvironmentOptions);
-
-    // Object inspector
-    OIOptionsFrame.ReadSettings(AnEnvironmentOptions);
-
-    // Form editor
-    FormEditorOptionsFrame.ReadSettings(AnEnvironmentOptions);
-
-    // Backup
-    BackupOptionsFrame.ReadSettings(AnEnvironmentOptions);
-
-    // naming
-    NamingOptionsFrame.ReadSettings(AnEnvironmentOptions);
-
-    //lazdoc
-    FpDocOptionsFrame.ReadSettings(AnEnvironmentOptions);
-  end;
+  for i := 0 to FEditors.Count - 1 do
+    TAbstractOptionsFrame(FEditors[i]).ReadSettings(AnEnvironmentOptions);
 end;
 
 procedure TEnvironmentOptionsDialog.WriteSettings(AnEnvironmentOptions: TEnvironmentOptions);
+var
+  i: integer;
 begin
-  with AnEnvironmentOptions do 
-  begin
-    // Files
-    FilesOptionsFrame.WriteSettings(AnEnvironmentOptions);
-
-    // Desktop
-    DesktopOptionsFrame.WriteSettings(AnEnvironmentOptions);
-
-    // Window
-    WindowOptionsFrame.WriteSettings(AnEnvironmentOptions);
-
-    // Object inspector
-    OIOptionsFrame.WriteSettings(AnEnvironmentOptions);
-
-    // Form editor
-    FormEditorOptionsFrame.WriteSettings(AnEnvironmentOptions);
-
-    // Backup
-    BackupOptionsFrame.WriteSettings(AnEnvironmentOptions);
-
-    // naming
-    NamingOptionsFrame.WriteSettings(AnEnvironmentOptions);
-
-    //lazdoc
-    FpDocOptionsFrame.WriteSettings(AnEnvironmentOptions);
-  end;
-end;
-
-procedure TEnvironmentOptionsDialog.SetupObjectInspectorPage(Page: integer);
-begin
-  OIOptionsFrame := TOIOptionsFrame.Create(Self);
-  SetupFrame(OIOptionsFrame, NoteBook.Page[Page]);
+  for i := 0 to FEditors.Count - 1 do
+    TAbstractOptionsFrame(FEditors[i]).WriteSettings(AnEnvironmentOptions);
 end;
 
 function TEnvironmentOptionsDialog.CheckValues: boolean;
+var
+  i: integer;
 begin
-  Result := FilesOptionsFrame.Check;
+  Result := True;
+  for i := 0 to FEditors.Count - 1 do
+  begin
+    Result := TAbstractOptionsFrame(FEditors[i]).Check;
+    if not Result then
+      break;
+  end;
 end;
 
 procedure TEnvironmentOptionsDialog.LoadEnvironmentSettings(Sender: TObject;
@@ -325,6 +180,33 @@ begin
   WriteSettings(AOptions);
   if Assigned(OnSaveEnvironmentSettings) then
     OnSaveEnvironmentSettings(Self, AOptions);
+end;
+
+procedure TEnvironmentOptionsDialog.CreateEditors(AEditor: TAbstractOptionsFrameClass);
+var
+  Instance: TAbstractOptionsFrame;
+  NewPage: TTabSheet;
+begin
+  Instance := AEditor.Create(Self);
+  FEditors.Add(Instance);
+  NewPage := TTabSheet.Create(Self);
+  NewPage.Parent := Notebook;
+  SetupFrame(Instance, NewPage);
+end;
+
+procedure TEnvironmentOptionsDialog.OpenEditor(AEditor: TAbstractOptionsFrameClass);
+var
+  i, AIndex: Integer;
+begin
+  AIndex := -1;
+  for i := 0 to FEditors.Count - 1 do
+    if TAbstractOptionsFrame(FEditors[i]).ClassType = AEditor then
+    begin 
+      AIndex := i;
+      break;
+    end;
+  if AIndex <> -1 then
+    NoteBook.ActivePageIndex := AIndex;
 end;
 
 initialization

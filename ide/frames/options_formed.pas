@@ -76,9 +76,6 @@ type
     procedure WriteSettings(AOptions: TEnvironmentOptions); override;
   end;
 
-var
-  FormEditorOptionsFrame: TFormEditorOptionsFrame;
-
 implementation
 
 { TFormEditorOptionsFrame }
@@ -211,6 +208,7 @@ end;
 
 initialization
   {$I options_formed.lrs}
+  RegisterEnvironmentOptionsEditor(TFormEditorOptionsFrame);
 
 end.
 

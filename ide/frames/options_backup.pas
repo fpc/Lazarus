@@ -298,6 +298,7 @@ end;
 
 initialization
   {$I options_backup.lrs}
+  RegisterEnvironmentOptionsEditor(TBackupOptionsFrame);
 
 end.
 

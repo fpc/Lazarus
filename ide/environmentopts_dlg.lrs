@@ -2,22 +2,15 @@
 
 LazarusResources.Add('TEnvironmentOptionsDialog','FORMDATA',[
   'TPF0'#25'TEnvironmentOptionsDialog'#24'EnvironmentOptionsDialog'#4'Left'#3
-  +#162#2#6'Height'#3#23#2#3'Top'#3#199#0#5'Width'#3#30#2#13'ActiveControl'#7#8
-  +'Notebook'#7'Caption'#6#24'EnvironmentOptionsDialog'#12'ClientHeight'#3#23#2
-  +#11'ClientWidth'#3#30#2#10'ParentFont'#8#8'Position'#7#14'poScreenCenter'#10
-  +'LCLVersion'#6#6'0.9.27'#0#9'TNotebook'#8'Notebook'#22'AnchorSideLeft.Contro'
-  +'l'#7#5'Owner'#21'AnchorSideTop.Control'#7#5'Owner'#23'AnchorSideRight.Contr'
-  +'ol'#7#5'Owner'#20'AnchorSideRight.Side'#7#9'asrBottom'#24'AnchorSideBottom.'
-  +'Control'#7#11'ButtonPanel'#6'Height'#3#233#1#5'Width'#3#30#2#5'Align'#7#5'a'
-  +'lTop'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#20'BorderSp'
-  +'acing.Bottom'#2#6#9'PageIndex'#2#0#8'TabOrder'#2#0#0#5'TPage'#9'FilesPage'#7
-  +'Caption'#6#9'FilesPage'#0#0#5'TPage'#11'DesktopPage'#7'Caption'#6#11'Deskto'
-  +'pPage'#0#0#5'TPage'#11'WindowsPage'#7'Caption'#6#11'WindowsPage'#0#0#5'TPag'
-  +'e'#14'FormEditorPage'#7'Caption'#6#14'FormEditorPage'#0#0#5'TPage'#19'Objec'
-  +'tInspectorPage'#7'Caption'#6#19'ObjectInspectorPage'#0#0#5'TPage'#10'Backup'
-  +'Page'#7'Caption'#6#10'BackupPage'#0#0#5'TPage'#10'NamingPage'#7'Caption'#6
-  +#10'NamingPage'#0#0#5'TPage'#10'LazDocPage'#7'Caption'#6#10'LazDocPage'#0#0#0
-  +#12'TButtonPanel'#11'ButtonPanel'#4'Left'#2#6#6'Height'#2'('#3'Top'#3#239#1#5
-  +'Width'#3#18#2#5'Align'#7#8'alBottom'#8'AutoSize'#9#8'TabOrder'#2#1#11'ShowB'
-  +'uttons'#11#4'pbOK'#8'pbCancel'#6'pbHelp'#0#0#0#0
+  +#162#2#6'Height'#3#23#2#3'Top'#3#199#0#5'Width'#3#30#2#7'Caption'#6#24'Envir'
+  +'onmentOptionsDialog'#12'ClientHeight'#3#23#2#11'ClientWidth'#3#30#2#10'Pare'
+  +'ntFont'#8#8'Position'#7#14'poScreenCenter'#10'LCLVersion'#6#6'0.9.27'#0#12
+  +'TButtonPanel'#11'ButtonPanel'#4'Left'#2#6#6'Height'#2'('#3'Top'#3#239#1#5'W'
+  +'idth'#3#18#2#5'Align'#7#8'alBottom'#8'AutoSize'#9#8'TabOrder'#2#0#11'ShowBu'
+  +'ttons'#11#4'pbOK'#8'pbCancel'#6'pbHelp'#0#0#0#12'TPageControl'#8'Notebook'
+  +#22'AnchorSideLeft.Control'#7#5'Owner'#21'AnchorSideTop.Control'#7#5'Owner'
+  +#23'AnchorSideRight.Control'#7#5'Owner'#20'AnchorSideRight.Side'#7#9'asrBott'
+  +'om'#24'AnchorSideBottom.Control'#7#11'ButtonPanel'#6'Height'#3#233#1#5'Widt'
+  +'h'#3#30#2#5'Align'#7#5'alTop'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8
+  +'akBottom'#0#20'BorderSpacing.Bottom'#2#6#8'TabOrder'#2#1#0#0#0
 ]);

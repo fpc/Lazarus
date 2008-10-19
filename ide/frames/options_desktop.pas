@@ -284,6 +284,7 @@ end;
 
 initialization
   {$I options_desktop.lrs}
+  RegisterEnvironmentOptionsEditor(TDesktopOptionsFrame);
 
 end.
 
