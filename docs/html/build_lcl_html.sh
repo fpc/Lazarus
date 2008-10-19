@@ -3,6 +3,8 @@
 # Author: Mattias Gaertner
 #
 # Creates the fpdoc HTML output for the LCL
+# Creates an chm file, if HTMLFMT is set to chm,
+# otherwise it create html docs
 
 #set -x
 set -e
@@ -42,7 +44,14 @@ for unit in $UnitList; do
   echo ../${PasSrcDir}$unit -Fi../${PasSrcDir}include >> $CurInputFileList
 done
 
-FPDocParams="--content=lcl.xct --package=lcl --descr=../${XMLSrcDir}lcl.xml --format=html"
+if [ -z "$HTMLFMT" ]; then
+  HTMLFMT=html
+fi
+
+FPDocParams="--content=lcl.xct --package=lcl --descr=../${XMLSrcDir}lcl.xml --format=$HTMLFMT --css-file=../fpdoc.css"
+if [ "$HTMLFMT"=="chm" ]; then
+  FPDocParams="$FPDocParams --output=lcl.chm"
+fi
 if [ -n "$FPDocFooter" ]; then
   FPDocParams="$FPDocParams --footer=$FPDocFooter"
 fi
@@ -50,12 +59,9 @@ if [ -n "$FPCDocDir" ]; then
   FPDocParams="$FPDocParams --import=$FPCDocDir/rtl.xct,../rtl/ --import=$FPCDocDir/fcl.xct,../fcl/"
 fi
 
-
 cd $PackageName
 $FPDoc $DescrFiles --input=@$InputFileList $FPDocParams
 cd -
    
-# --output=lcl
-
 # end.
 
