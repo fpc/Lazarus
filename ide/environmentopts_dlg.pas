@@ -41,19 +41,23 @@ uses
   LazarusIDEStrConsts, TransferMacros, LazConf, ExtToolDialog, IDEProcs,
   IDEOptionDefs, InputHistory, EditorOptions, IDETranslations, ButtonPanel,
   EnvironmentOpts,
-  options_oi, options_files;
+  options_files, options_desktop, options_oi;
 
 type
-  TOnLoadEnvironmentSettings = procedure (Sender: TObject;
-        EnvironmentOptions: TEnvironmentOptions) of object;
-  TOnSaveEnvironmentSettings = procedure (Sender: TObject;
-        EnvironmentOptions: TEnvironmentOptions) of object;
-
   { TEnvironmentOptionsDialog: EnvironmentOptionsDialog for environment options }
   
-  TEnvOptsDialogPage = (eodpLanguage, eodpAutoSave, eodpDesktop, eodpMainHints,
-    eodpWindowPositions, eodpFormEditor, eodpObjectInspector, eodpFiles,
-    eodpBackup, eodpNaming);
+  TEnvOptsDialogPage = (
+    eodpLanguage,
+    eodpAutoSave,
+    eodpDesktop,
+    eodpMainHints,
+    eodpWindowPositions,
+    eodpFormEditor,
+    eodpObjectInspector,
+    eodpFiles,
+    eodpBackup,
+    eodpNaming
+  );
   
   { TEnvironmentOptionsDialog }
 
@@ -77,29 +81,6 @@ type
     LazDocAddPathButton: TButton;
     LazDocPathsGroupBox: TGroupBox;
     LazDocListBox: TListBox;
-
-    // language
-    LanguageGroupBox: TGroupBox;
-    LanguageComboBox: TComboBox;
-    AutoSaveGroupBox: TGroupBox;
-    AutoSaveEditorFilesCheckBox: TCheckBox;
-    AutoSaveProjectCheckBox: TCheckBox;
-    AutoSaveIntervalInSecsLabel: TLabel;
-    AutoSaveIntervalInSecsComboBox: TComboBox;
-    
-    // desktop files
-    DesktopFilesGroupBox: TGroupBox;
-    SaveDesktopSettingsToFileButton: TButton;
-    LoadDesktopSettingsFromFileButton: TButton;
-
-    // hints
-    CheckDiskChangesWithLoadingCheckBox: TCheckBox;
-    ShowHintsForComponentPaletteCheckBox: TCheckBox;
-    ShowHintsForMainSpeedButtonsCheckBox: TCheckBox;
-    
-    // messages view
-    MsgViewDblClickJumpsCheckBox: TCheckBox;
-    MsgViewFocusCheckBox: TCheckBox;
 
     // window layout
     WindowPositionsGroupBox: TGroupBox;
@@ -178,8 +159,6 @@ type
     procedure NotebookChangeBounds(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
-    procedure SaveDesktopSettingsToFileButtonClick(Sender: TObject);
-    procedure LoadDesktopSettingsFromFileButtonClick(Sender: TObject);
     procedure WindowPositionsListBoxSelectionChange(Sender: TObject;
       User: boolean);
   private
@@ -188,6 +167,9 @@ type
     FLayouts: TIDEWindowLayoutList;
     OIOptionsFrame: TOIOptionsFrame;
     FilesOptionsFrame: TFilesOptionsFrame;
+    DesktopOptionsFrame: TDesktopOptionsFrame;
+
+    procedure SetupFrame(AFrame: TAbstractOptionsFrame; APage: TPage);
 
     procedure SetCategoryPage(const AValue: TEnvOptsDialogPage);
     procedure SetupFilesPage(Page: integer);
@@ -200,8 +182,9 @@ type
     procedure SetupLazDocPage(Page: integer);
     procedure SetWindowPositionsItem(Index: integer);
     function CheckValues: boolean;
-    function LangIDToCaption(const LangID: string): string;
-    function CaptionToLangID(const ACaption: string): string;
+
+    procedure LoadEnvironmentSettings(Sender: TObject; AOptions: TEnvironmentOptions);
+    procedure SaveEnvironmentSettings(Sender: TObject; AOptions: TEnvironmentOptions);
   published
     property OnSaveEnvironmentSettings: TOnSaveEnvironmentSettings
       read FOnSaveEnvironmentSettings write FOnSaveEnvironmentSettings;
@@ -252,47 +235,9 @@ begin
 end;
 
 procedure TEnvironmentOptionsDialog.SetupDesktopPage(Page: integer);
-var
-  i: Integer;
-  LangID: String;
-  sl: TStringList;
 begin
-  NoteBook.Page[Page].Caption := dlgDesktop;
-  
-  // language
-  LanguageGroupBox.Caption:=dlgEnvLanguage;
-
-  // languages: first the automatic, then sorted the rest
-  sl:=TStringList.Create;
-  for i:=0 to LazarusTranslations.Count-1 do begin
-    LangID:=LazarusTranslations[i].ID;
-    if LangID<>'' then
-      sl.Add(LangIDToCaption(LangID));
-  end;
-  sl.Sort;
-  sl.Insert(0,GetLazarusLanguageLocalizedName(''));
-  LanguageComboBox.Items.Assign(sl);
-  sl.Free;
-
-  // auto save
-  AutoSaveGroupBox.Caption:=dlgAutoSave;
-  AutoSaveEditorFilesCheckBox.Caption:=dlgEdFiles;
-  AutoSaveProjectCheckBox.Caption:=dlgEnvProject;
-  AutoSaveIntervalInSecsLabel.Caption:=dlgIntvInSec;
-
-  // desktop files
-  DesktopFilesGroupBox.Caption:=dlgDesktopFiles;
-  SaveDesktopSettingsToFileButton.Caption:=dlgSaveDFile;
-  LoadDesktopSettingsFromFileButton.Caption:=dlgLoadDFile;
-
-  // hints
-  CheckDiskChangesWithLoadingCheckBox.Caption:=lisCheckChangesOnDiskWithLoading;
-  ShowHintsForComponentPaletteCheckBox.Caption:=dlgPalHints;
-  ShowHintsForMainSpeedButtonsCheckBox.Caption:=dlgSpBHints;
-
-  // messages view
-  MsgViewDblClickJumpsCheckBox.Caption:=lisEnvDoubleClickOnMessagesJumpsOtherwiseSingleClick;
-  MsgViewFocusCheckBox.Caption:=dlgEOFocusMessagesAfterCompilation;
+  DesktopOptionsFrame := TDesktopOptionsFrame.Create(Self);
+  SetupFrame(DesktopOptionsFrame, DesktopPage);
 end;
 
 procedure TEnvironmentOptionsDialog.SetupWindowsPage(Page: integer);
@@ -435,26 +380,33 @@ begin
   end;
 end;
 
+procedure TEnvironmentOptionsDialog.SetupFrame(AFrame: TAbstractOptionsFrame; APage: TPage);
+begin
+  AFrame.Parent := APage;
+
+  AFrame.Anchors := [akLeft, akTop, akRight];
+  AFrame.AnchorSideLeft.Control := APage;
+  AFrame.AnchorSideTop.Control := APage;
+  AFrame.AnchorSideRight.Side := asrBottom;
+  AFrame.AnchorSideRight.Control := APage;
+  AFrame.BorderSpacing.Around := 6;
+
+  AFrame.OnLoadEnvironmentSettings := @LoadEnvironmentSettings;
+  AFrame.OnSaveEnvironmentSettings := @SaveEnvironmentSettings;
+
+  AFrame.Setup;
+  AFrame.Visible := True;
+
+  APage.Caption := AFrame.GetTitle;
+end;
+
 procedure TEnvironmentOptionsDialog.SetupFilesPage(Page: integer);
 begin
   FilesOptionsFrame := TFilesOptionsFrame.Create(Self);
-  FilesOptionsFrame.Parent := FilesPage;
-
-  FilesOptionsFrame.Anchors := [akLeft, akTop, akRight];
-  FilesOptionsFrame.AnchorSideLeft.Control := FilesPage;
-  FilesOptionsFrame.AnchorSideTop.Control := FilesPage;
-  FilesOptionsFrame.AnchorSideRight.Side := asrBottom;
-  FilesOptionsFrame.AnchorSideRight.Control := FilesPage;
-  FilesOptionsFrame.BorderSpacing.Around := 6;
-
-  FilesOptionsFrame.Setup;
-  FilesOptionsFrame.Visible := True;
-
-  FilesPage.Caption := FilesOptionsFrame.GetTitle;
+  SetupFrame(FilesOptionsFrame, FilesPage);
 end;
 
-procedure TEnvironmentOptionsDialog.SetCategoryPage(
-  const AValue: TEnvOptsDialogPage);
+procedure TEnvironmentOptionsDialog.SetCategoryPage(const AValue: TEnvOptsDialogPage);
 var
   p: Integer;
 begin
@@ -656,94 +608,16 @@ begin
   ModalResult:=mrCancel;
 end;
 
-procedure TEnvironmentOptionsDialog.SaveDesktopSettingsToFileButtonClick(
-  Sender: TObject);
-var AnEnvironmentOptions: TEnvironmentOptions;
-  SaveDialog: TSaveDialog;
-begin
-  debugln('TEnvironmentOptionsDialog.SaveDesktopSettingsToFileButtonClick A');
-  SaveDialog:=TSaveDialog.Create(nil);
-  try
-    try
-      InputHistories.ApplyFileDialogSettings(SaveDialog);
-      SaveDialog.Filter:=lisLazarusDesktopSettings+' (*.lds)|*.lds'
-           +'|'+lisXMLFiles+' (*.xml)|*.xml'
-           +'|'+dlgAllFiles+' ('+GetAllFilesMask+')|' + GetAllFilesMask;
-      if SaveDialog.Execute then begin
-        AnEnvironmentOptions:=TEnvironmentOptions.Create;
-        try
-          WriteSettings(AnEnvironmentOptions);
-          AnEnvironmentOptions.Filename:=SaveDialog.Filename;
-          if Assigned(OnSaveEnvironmentSettings) then
-            OnSaveEnvironmentSettings(Self,AnEnvironmentOptions);
-          AnEnvironmentOptions.Save(true);
-        finally
-          AnEnvironmentOptions.Free;
-        end;
-      end;
-      InputHistories.StoreFileDialogSettings(SaveDialog);
-    except
-      on E: Exception do begin
-        DebugLn('ERROR: [TEnvironmentOptionsDialog.SaveDesktopSettingsToFileButtonClick] ',E.Message);
-      end;
-    end;
-  finally
-    SaveDialog.Free;
-  end;
-end;
-
-procedure TEnvironmentOptionsDialog.LoadDesktopSettingsFromFileButtonClick(
-  Sender: TObject);
-var AnEnvironmentOptions: TEnvironmentOptions;
-  OpenDialog: TOpenDialog;
-begin
-  debugln('TEnvironmentOptionsDialog.LoadDesktopSettingsFromFileButtonClick A');
-  OpenDialog:=TOpenDialog.Create(nil);
-  try
-    try
-      InputHistories.ApplyFileDialogSettings(OpenDialog);
-      OpenDialog.Filter:=lisLazarusDesktopSettings+' (*.lds)|*.lds'
-           +'|'+lisXMLFiles+' (*.xml)|*.xml'
-           +'|'+dlgAllFiles+' ('+GetAllFilesMask+')|' + GetAllFilesMask;
-      if OpenDialog.Execute then begin
-        AnEnvironmentOptions:=TEnvironmentOptions.Create;
-        try
-          AnEnvironmentOptions.Filename:=OpenDialog.Filename;
-          AnEnvironmentOptions.Load(true);
-          if Assigned(OnLoadEnvironmentSettings) then
-            OnLoadEnvironmentSettings(Self,AnEnvironmentOptions);
-          ReadSettings(AnEnvironmentOptions);
-        finally
-          AnEnvironmentOptions.Free;
-        end;
-      end;
-      InputHistories.StoreFileDialogSettings(OpenDialog);
-    except
-      // ToDo
-      DebugLn('ERROR: [TEnvironmentOptionsDialog.SaveDesktopSettingsToFileButtonClick]');
-    end;
-  finally
-    OpenDialog.Free;
-  end;
-end;
-
 procedure TEnvironmentOptionsDialog.ReadSettings(AnEnvironmentOptions: TEnvironmentOptions);
 var 
   i: integer;
 begin
   with AnEnvironmentOptions do 
   begin
-    // language
-    LanguageComboBox.Text:=LangIDToCaption(LanguageID);
-    //debugln('TEnvironmentOptionsDialog.ReadSettings LanguageComboBox.ItemIndex=',dbgs(LanguageComboBox.ItemIndex),' LanguageID="',LanguageID,'" LanguageComboBox.Text="',LanguageComboBox.Text,'"');
+    // Desktop
+    DesktopOptionsFrame.ReadSettings(AnEnvironmentOptions);
 
-    // auto save
-    AutoSaveEditorFilesCheckBox.Checked:=AutoSaveEditorFiles;
-    AutoSaveProjectCheckBox.Checked:=AutoSaveProject;
-    SetComboBoxText(AutoSaveIntervalInSecsComboBox
-       ,IntToStr(AutoSaveIntervalInSecs));
-
-    // desktop
+    // Window
     FLayouts:=IDEWindowLayoutList;
     SetWindowPositionsItem(0);
 
@@ -753,18 +627,6 @@ begin
     // window minimizing and hiding
     MinimizeAllOnMinimizeMainCheckBox.Checked:=MinimizeAllOnMinimizeMain;
     HideIDEOnRunCheckBox.Checked:=HideIDEOnRun;
-
-    // hints
-    CheckDiskChangesWithLoadingCheckBox.Checked:=
-      CheckDiskChangesWithLoading;
-    ShowHintsForComponentPaletteCheckBox.Checked:=
-      ShowHintsForComponentPalette;
-    ShowHintsForMainSpeedButtonsCheckBox.Checked:=
-      ShowHintsForMainSpeedButtons;
-      
-    // messages view
-    MsgViewDblClickJumpsCheckBox.Checked:=MsgViewDblClickJumps;
-    MsgViewFocusCheckBox.Checked:=MsgViewFocus;
 
     // EnvironmentOptionsDialog editor
     ShowBorderSpaceCheckBox.Checked:=ShowBorderSpacing;
@@ -850,17 +712,10 @@ procedure TEnvironmentOptionsDialog.WriteSettings(AnEnvironmentOptions: TEnviron
 begin
   with AnEnvironmentOptions do 
   begin
-    // language
-    LanguageID:=CaptionToLangID(LanguageComboBox.Text);
-    //debugln('TEnvironmentOptionsDialog.WriteSettings A LanguageID="',LanguageID,'" LanguageComboBox.ItemIndex=',dbgs(LanguageComboBox.ItemIndex),' LanguageComboBox.Text=',LanguageComboBox.Text);
+    // Desktop
+    DesktopOptionsFrame.WriteSettings(AnEnvironmentOptions);
 
-    // auto save
-    AutoSaveEditorFiles:=AutoSaveEditorFilesCheckBox.Checked;
-    AutoSaveProject:=AutoSaveProjectCheckBox.Checked;
-    AutoSaveIntervalInSecs:=StrToIntDef(
-      AutoSaveIntervalInSecsComboBox.Text,AutoSaveIntervalInSecs);
-
-    // desktop
+    // Window
     WindowPositionsBox.Save;
 
     // Object inspector
@@ -869,15 +724,6 @@ begin
     // window minimizing
     MinimizeAllOnMinimizeMain:=MinimizeAllOnMinimizeMainCheckBox.Checked;
     HideIDEOnRun:=HideIDEOnRunCheckBox.Checked;
-
-    // hints
-    CheckDiskChangesWithLoading:=CheckDiskChangesWithLoadingCheckBox.Checked;
-    ShowHintsForComponentPalette:=ShowHintsForComponentPaletteCheckBox.Checked;
-    ShowHintsForMainSpeedButtons:=ShowHintsForMainSpeedButtonsCheckBox.Checked;
-    
-    // messages view
-    MsgViewDblClickJumps:=MsgViewDblClickJumpsCheckBox.Checked;
-    MsgViewFocus:=MsgViewFocusCheckBox.Checked;
 
     // EnvironmentOptionsDialog editor
     ShowBorderSpacing:=ShowBorderSpaceCheckBox.Checked;
@@ -961,19 +807,7 @@ end;
 procedure TEnvironmentOptionsDialog.SetupObjectInspectorPage(Page: integer);
 begin
   OIOptionsFrame := TOIOptionsFrame.Create(Self);
-  OIOptionsFrame.Parent := ObjectInspectorPage;
-
-  OIOptionsFrame.Anchors := [akLeft, akTop, akRight];
-  OIOptionsFrame.AnchorSideLeft.Control := ObjectInspectorPage;
-  OIOptionsFrame.AnchorSideTop.Control := ObjectInspectorPage;
-  OIOptionsFrame.AnchorSideRight.Side := asrBottom;
-  OIOptionsFrame.AnchorSideRight.Control := ObjectInspectorPage;
-  OIOptionsFrame.BorderSpacing.Around := 6;
-
-  OIOptionsFrame.Setup;
-  OIOptionsFrame.Visible := True;
-
-  ObjectInspectorPage.Caption := OIOptionsFrame.GetTitle;
+  SetupFrame(OIOptionsFrame, ObjectInspectorPage);
 end;
 
 procedure TEnvironmentOptionsDialog.WindowPositionsListBoxSelectionChange(
@@ -1003,34 +837,28 @@ begin
     WindowPositionsBox.Caption:=WindowPositionsListBox.Items[Index];
 end;
 
-function TEnvironmentOptionsDialog.LangIDToCaption(const LangID: string
-  ): string;
-begin
-  if LangID<>'' then
-    Result:=GetLazarusLanguageLocalizedName(LangID)+' ['+LangID+']'
-  else
-    //No [] if automatic
-    Result:=GetLazarusLanguageLocalizedName(LangID);
-end;
-
-function TEnvironmentOptionsDialog.CaptionToLangID(const ACaption: string
-  ): string;
-var
-  i: Integer;
-begin
-  for i:=0 to LazarusTranslations.Count-1 do begin
-    Result:=LazarusTranslations[i].ID;
-    if ACaption=LangIDToCaption(Result) then exit;
-  end;
-  Result:='';
-end;
-
 function TEnvironmentOptionsDialog.CheckValues: boolean;
 begin
   Result:=false;
   if not FilesOptionsFrame.Check then
     Exit;  
   Result:=true;
+end;
+
+procedure TEnvironmentOptionsDialog.LoadEnvironmentSettings(Sender: TObject;
+  AOptions: TEnvironmentOptions);
+begin
+  if Assigned(OnLoadEnvironmentSettings) then
+    OnLoadEnvironmentSettings(Self, AOptions);
+  ReadSettings(AOptions);
+end;
+
+procedure TEnvironmentOptionsDialog.SaveEnvironmentSettings(Sender: TObject;
+  AOptions: TEnvironmentOptions);
+begin
+  WriteSettings(AOptions);
+  if Assigned(OnSaveEnvironmentSettings) then
+    OnSaveEnvironmentSettings(Self, AOptions);
 end;
 
 initialization

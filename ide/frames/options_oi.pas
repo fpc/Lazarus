@@ -32,7 +32,7 @@ type
 
   { TOIOptionsFrame }
 
-  TOIOptionsFrame = class(TFrame)
+  TOIOptionsFrame = class(TAbstractOptionsFrame)
     ObjectInspectorColorsGroupBox: TGroupBox;
     OIAutoShowCheckBox: TCheckBox;
     OIBackgroundColorButton: TColorButton;
@@ -55,11 +55,11 @@ type
     OIValueColorLabel: TLabel;
   private
   public
-    function Check: Boolean;
-    function GetTitle: String;
-    procedure Setup;
-    procedure ReadSettings(AOptions: TEnvironmentOptions);
-    procedure WriteSettings(AOptions: TEnvironmentOptions);
+    function Check: Boolean; override;
+    function GetTitle: String; override;
+    procedure Setup; override;
+    procedure ReadSettings(AOptions: TEnvironmentOptions); override;
+    procedure WriteSettings(AOptions: TEnvironmentOptions); override;
   end; 
 
 implementation

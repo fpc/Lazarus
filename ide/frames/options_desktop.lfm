@@ -1,0 +1,216 @@
+inherited DesktopOptionsFrame: TDesktopOptionsFrame
+  Height = 382
+  Width = 597
+  ClientHeight = 382
+  ClientWidth = 597
+  TabOrder = 0
+  Visible = False
+  DesignLeft = 44
+  DesignTop = 58
+  object LanguageGroupBox: TGroupBox[0]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Height = 51
+    Width = 597
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    Caption = 'LanguageGroupBox'
+    ClientHeight = 33
+    ClientWidth = 593
+    TabOrder = 0
+    object LanguageComboBox: TComboBox
+      AnchorSideLeft.Control = LanguageGroupBox
+      AnchorSideRight.Control = LanguageGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 21
+      Top = 6
+      Width = 581
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 6
+      ItemHeight = 13
+      MaxLength = -1
+      Style = csDropDownList
+      TabOrder = 0
+    end
+  end
+  object AutoSaveGroupBox: TGroupBox[1]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = LanguageGroupBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Height = 112
+    Top = 57
+    Width = 597
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+    Caption = 'AutoSaveGroupBox'
+    ClientHeight = 94
+    ClientWidth = 593
+    TabOrder = 1
+    object AutoSaveIntervalInSecsLabel: TLabel
+      AnchorSideLeft.Control = AutoSaveGroupBox
+      AnchorSideTop.Control = AutoSaveProjectCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 14
+      Top = 50
+      Width = 143
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      Caption = 'AutoSaveIntervalInSecsLabel'
+      Enabled = False
+      ParentColor = False
+    end
+    object AutoSaveEditorFilesCheckBox: TCheckBox
+      AnchorSideLeft.Control = AutoSaveGroupBox
+      AnchorSideTop.Control = AutoSaveGroupBox
+      Left = 6
+      Height = 19
+      Top = 6
+      Width = 169
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      Caption = 'AutoSaveEditorFilesCheckBox'
+      Enabled = False
+      TabOrder = 0
+    end
+    object AutoSaveProjectCheckBox: TCheckBox
+      AnchorSideLeft.Control = AutoSaveGroupBox
+      AnchorSideTop.Control = AutoSaveEditorFilesCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 19
+      Top = 25
+      Width = 154
+      BorderSpacing.Left = 6
+      Caption = 'AutoSaveProjectCheckBox'
+      Enabled = False
+      TabOrder = 1
+    end
+    object AutoSaveIntervalInSecsComboBox: TComboBox
+      AnchorSideLeft.Control = AutoSaveGroupBox
+      AnchorSideTop.Control = AutoSaveIntervalInSecsLabel
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = AutoSaveGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 21
+      Top = 64
+      Width = 581
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Right = 6
+      Enabled = False
+      ItemHeight = 13
+      Items.Strings = (
+        '1200'
+        '600'
+        '300'
+        '120'
+      )
+      MaxLength = -1
+      TabOrder = 2
+    end
+  end
+  object DesktopFilesGroupBox: TGroupBox[2]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = AutoSaveGroupBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Height = 97
+    Top = 175
+    Width = 597
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+    Caption = 'DesktopFilesGroupBox'
+    ClientHeight = 79
+    ClientWidth = 593
+    TabOrder = 2
+    object SaveDesktopSettingsToFileButton: TButton
+      AnchorSideLeft.Control = DesktopFilesGroupBox
+      AnchorSideRight.Control = DesktopFilesGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 23
+      Top = 8
+      Width = 581
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'SaveDesktopSettingsToFileButton'
+      OnClick = SaveDesktopSettingsToFileButtonClick
+      TabOrder = 0
+    end
+    object LoadDesktopSettingsFromFileButton: TButton
+      AnchorSideLeft.Control = DesktopFilesGroupBox
+      AnchorSideRight.Control = DesktopFilesGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 23
+      Top = 43
+      Width = 581
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'LoadDesktopSettingsFromFileButton'
+      OnClick = LoadDesktopSettingsFromFileButtonClick
+      TabOrder = 1
+    end
+  end
+  object CheckDiskChangesWithLoadingCheckBox: TCheckBox[3]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = DesktopFilesGroupBox
+    AnchorSideTop.Side = asrBottom
+    Height = 19
+    Top = 278
+    Width = 222
+    BorderSpacing.Top = 6
+    Caption = 'CheckDiskChangesWithLoadingCheckBox'
+    TabOrder = 3
+  end
+  object ShowHintsForComponentPaletteCheckBox: TCheckBox[4]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = CheckDiskChangesWithLoadingCheckBox
+    AnchorSideTop.Side = asrBottom
+    Height = 19
+    Top = 297
+    Width = 228
+    Caption = 'ShowHintsForComponentPaletteCheckBox'
+    TabOrder = 4
+  end
+  object ShowHintsForMainSpeedButtonsCheckBox: TCheckBox[5]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ShowHintsForComponentPaletteCheckBox
+    AnchorSideTop.Side = asrBottom
+    Height = 19
+    Top = 316
+    Width = 228
+    Caption = 'ShowHintsForMainSpeedButtonsCheckBox'
+    TabOrder = 5
+  end
+  object MsgViewDblClickJumpsCheckBox: TCheckBox[6]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ShowHintsForMainSpeedButtonsCheckBox
+    AnchorSideTop.Side = asrBottom
+    Height = 19
+    Top = 335
+    Width = 180
+    Caption = 'MsgViewDblClickJumpsCheckBox'
+    TabOrder = 6
+  end
+  object MsgViewFocusCheckBox: TCheckBox[7]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = MsgViewDblClickJumpsCheckBox
+    AnchorSideTop.Side = asrBottom
+    Height = 19
+    Top = 354
+    Width = 142
+    Caption = 'MsgViewFocusCheckBox'
+    TabOrder = 7
+  end
+end

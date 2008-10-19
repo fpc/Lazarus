@@ -22,233 +22,13 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Bottom = 6
     OnChangeBounds = NotebookChangeBounds
-    PageIndex = 0
+    PageIndex = 1
     TabOrder = 0
     object FilesPage: TPage
       Caption = 'FilesPage'
     end
     object DesktopPage: TPage
       Caption = 'DesktopPage'
-      ClientWidth = 534
-      ClientHeight = 463
-      object LanguageGroupBox: TGroupBox
-        AnchorSideLeft.Control = DesktopPage
-        AnchorSideTop.Control = DesktopPage
-        AnchorSideRight.Control = DesktopPage
-        AnchorSideRight.Side = asrBottom
-        Left = 6
-        Height = 51
-        Top = 6
-        Width = 522
-        Anchors = [akTop, akLeft, akRight]
-        AutoSize = True
-        BorderSpacing.Left = 6
-        BorderSpacing.Top = 6
-        BorderSpacing.Right = 6
-        Caption = 'LanguageGroupBox'
-        ClientHeight = 51
-        ClientWidth = 522
-        TabOrder = 0
-        object LanguageComboBox: TComboBox
-          AnchorSideLeft.Control = LanguageGroupBox
-          AnchorSideRight.Control = LanguageGroupBox
-          AnchorSideRight.Side = asrBottom
-          Left = 6
-          Height = 21
-          Top = 6
-          Width = 506
-          Anchors = [akTop, akLeft, akRight]
-          BorderSpacing.Around = 6
-          ItemHeight = 13
-          MaxLength = -1
-          Style = csDropDownList
-          TabOrder = 0
-        end
-      end
-      object CheckDiskChangesWithLoadingCheckBox: TCheckBox
-        AnchorSideLeft.Control = DesktopPage
-        AnchorSideTop.Control = DesktopFilesGroupBox
-        AnchorSideTop.Side = asrBottom
-        Left = 6
-        Height = 19
-        Top = 308
-        Width = 222
-        BorderSpacing.Left = 6
-        BorderSpacing.Top = 6
-        Caption = 'CheckDiskChangesWithLoadingCheckBox'
-        TabOrder = 1
-      end
-      object ShowHintsForComponentPaletteCheckBox: TCheckBox
-        AnchorSideLeft.Control = DesktopPage
-        AnchorSideTop.Control = CheckDiskChangesWithLoadingCheckBox
-        AnchorSideTop.Side = asrBottom
-        Left = 6
-        Height = 19
-        Top = 333
-        Width = 228
-        BorderSpacing.Left = 6
-        BorderSpacing.Top = 6
-        Caption = 'ShowHintsForComponentPaletteCheckBox'
-        TabOrder = 2
-      end
-      object AutoSaveGroupBox: TGroupBox
-        AnchorSideLeft.Control = DesktopPage
-        AnchorSideTop.Control = LanguageGroupBox
-        AnchorSideTop.Side = asrBottom
-        AnchorSideRight.Control = DesktopPage
-        AnchorSideRight.Side = asrBottom
-        Left = 6
-        Height = 136
-        Top = 63
-        Width = 522
-        Anchors = [akTop, akLeft, akRight]
-        BorderSpacing.Left = 6
-        BorderSpacing.Top = 6
-        BorderSpacing.Right = 6
-        Caption = 'AutoSaveGroupBox'
-        ClientHeight = 136
-        ClientWidth = 522
-        TabOrder = 6
-        object AutoSaveIntervalInSecsLabel: TLabel
-          Left = 6
-          Height = 14
-          Top = 67
-          Width = 451
-          Anchors = [akTop, akLeft, akRight]
-          Caption = 'AutoSaveIntervalInSecsLabel'
-          Enabled = False
-          ParentColor = False
-        end
-        object AutoSaveEditorFilesCheckBox: TCheckBox
-          Left = 6
-          Height = 19
-          Top = 4
-          Width = 460
-          Anchors = [akTop, akLeft, akRight]
-          Caption = 'AutoSaveEditorFilesCheckBox'
-          Enabled = False
-          TabOrder = 0
-        end
-        object AutoSaveProjectCheckBox: TCheckBox
-          Left = 6
-          Height = 19
-          Top = 30
-          Width = 460
-          Anchors = [akTop, akLeft, akRight]
-          Caption = 'AutoSaveProjectCheckBox'
-          Enabled = False
-          TabOrder = 1
-        end
-        object AutoSaveIntervalInSecsComboBox: TComboBox
-          AnchorSideLeft.Control = AutoSaveGroupBox
-          AnchorSideRight.Control = AutoSaveGroupBox
-          AnchorSideRight.Side = asrBottom
-          Left = 6
-          Height = 21
-          Top = 87
-          Width = 506
-          Anchors = [akTop, akLeft, akRight]
-          BorderSpacing.Around = 6
-          Enabled = False
-          ItemHeight = 13
-          Items.Strings = (
-            '1200'
-            '600'
-            '300'
-            '120'
-          )
-          MaxLength = -1
-          TabOrder = 2
-        end
-      end
-      object DesktopFilesGroupBox: TGroupBox
-        AnchorSideLeft.Control = DesktopPage
-        AnchorSideTop.Control = AutoSaveGroupBox
-        AnchorSideTop.Side = asrBottom
-        AnchorSideRight.Control = DesktopPage
-        AnchorSideRight.Side = asrBottom
-        Left = 6
-        Height = 97
-        Top = 205
-        Width = 522
-        Anchors = [akTop, akLeft, akRight]
-        BorderSpacing.Left = 6
-        BorderSpacing.Top = 6
-        BorderSpacing.Right = 6
-        Caption = 'DesktopFilesGroupBox'
-        ClientHeight = 97
-        ClientWidth = 522
-        TabOrder = 3
-        object SaveDesktopSettingsToFileButton: TButton
-          AnchorSideLeft.Control = DesktopFilesGroupBox
-          AnchorSideRight.Control = DesktopFilesGroupBox
-          AnchorSideRight.Side = asrBottom
-          Left = 6
-          Height = 23
-          Top = 8
-          Width = 506
-          Anchors = [akTop, akLeft, akRight]
-          AutoSize = True
-          BorderSpacing.Around = 6
-          Caption = 'SaveDesktopSettingsToFileButton'
-          OnClick = SaveDesktopSettingsToFileButtonClick
-          TabOrder = 0
-        end
-        object LoadDesktopSettingsFromFileButton: TButton
-          AnchorSideLeft.Control = DesktopFilesGroupBox
-          AnchorSideRight.Control = DesktopFilesGroupBox
-          AnchorSideRight.Side = asrBottom
-          Left = 6
-          Height = 23
-          Top = 43
-          Width = 506
-          Anchors = [akTop, akLeft, akRight]
-          AutoSize = True
-          BorderSpacing.Around = 6
-          Caption = 'LoadDesktopSettingsFromFileButton'
-          OnClick = LoadDesktopSettingsFromFileButtonClick
-          TabOrder = 1
-        end
-      end
-      object ShowHintsForMainSpeedButtonsCheckBox: TCheckBox
-        AnchorSideLeft.Control = DesktopPage
-        AnchorSideTop.Control = ShowHintsForComponentPaletteCheckBox
-        AnchorSideTop.Side = asrBottom
-        Left = 6
-        Height = 19
-        Top = 358
-        Width = 228
-        BorderSpacing.Left = 6
-        BorderSpacing.Top = 6
-        Caption = 'ShowHintsForMainSpeedButtonsCheckBox'
-        TabOrder = 4
-      end
-      object MsgViewDblClickJumpsCheckBox: TCheckBox
-        AnchorSideLeft.Control = DesktopPage
-        AnchorSideTop.Control = ShowHintsForMainSpeedButtonsCheckBox
-        AnchorSideTop.Side = asrBottom
-        Left = 6
-        Height = 19
-        Top = 383
-        Width = 180
-        BorderSpacing.Left = 6
-        BorderSpacing.Top = 6
-        Caption = 'MsgViewDblClickJumpsCheckBox'
-        TabOrder = 5
-      end
-      object MsgViewFocusCheckBox: TCheckBox
-        AnchorSideLeft.Control = DesktopPage
-        AnchorSideTop.Control = MsgViewDblClickJumpsCheckBox
-        AnchorSideTop.Side = asrBottom
-        Left = 6
-        Height = 19
-        Top = 408
-        Width = 142
-        BorderSpacing.Left = 6
-        BorderSpacing.Top = 6
-        Caption = 'MsgViewFocusCheckBox'
-        TabOrder = 7
-      end
     end
     object WindowsPage: TPage
       Caption = 'WindowsPage'
@@ -420,7 +200,6 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
             '25'
             '30'
           )
-          MaxLength = -1
           ParentShowHint = False
           ShowHint = True
           TabOrder = 2
@@ -446,7 +225,6 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
             '25'
             '30'
           )
-          MaxLength = -1
           ParentShowHint = False
           ShowHint = True
           TabOrder = 3
@@ -916,7 +694,6 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AutoSelect = True
           BorderSpacing.Around = 6
           ItemHeight = 13
-          MaxLength = -1
           TabOrder = 1
           Text = 'BakProjAddExtComboBox'
         end
@@ -930,7 +707,6 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AutoSelect = True
           BorderSpacing.Around = 6
           ItemHeight = 13
-          MaxLength = -1
           TabOrder = 2
           Text = 'BakProjMaxCounterComboBox'
         end
@@ -944,7 +720,6 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           AutoSelect = True
           BorderSpacing.Around = 6
           ItemHeight = 13
-          MaxLength = -1
           TabOrder = 3
           Text = 'BakProjSubDirComboBox'
         end
@@ -1047,7 +822,6 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Width = 100
           BorderSpacing.Around = 6
           ItemHeight = 13
-          MaxLength = -1
           TabOrder = 1
           Text = 'BakOtherAddExtComboBox'
         end
@@ -1060,7 +834,6 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Width = 100
           BorderSpacing.Around = 6
           ItemHeight = 13
-          MaxLength = -1
           TabOrder = 2
           Text = 'BakOtherMaxCounterComboBox'
         end
@@ -1073,7 +846,6 @@ object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
           Width = 100
           BorderSpacing.Around = 6
           ItemHeight = 13
-          MaxLength = -1
           TabOrder = 3
           Text = 'BakOtherSubDirComboBox'
         end

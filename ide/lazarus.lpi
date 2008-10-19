@@ -41,7 +41,7 @@
         <PackageName Value="SynEdit"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="4">
+    <Units Count="5">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -69,6 +69,14 @@
         <ResourceFilename Value="frames\options_files.lrs"/>
         <UnitName Value="options_files"/>
       </Unit3>
+      <Unit4>
+        <Filename Value="frames\options_desktop.pas"/>
+        <ComponentName Value="DesktopOptionsFrame"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="frames\options_desktop.lrs"/>
+        <UnitName Value="options_desktop"/>
+      </Unit4>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

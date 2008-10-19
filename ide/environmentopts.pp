@@ -437,6 +437,30 @@ type
     property MsgViewFocus: boolean read fMsgViewFocus write fMsgViewFocus;
   end;
 
+  TOnLoadEnvironmentSettings = procedure (Sender: TObject;
+    EnvironmentOptions: TEnvironmentOptions) of object;
+  TOnSaveEnvironmentSettings = procedure (Sender: TObject;
+    EnvironmentOptions: TEnvironmentOptions) of object;
+
+  { TAbstractOptionsFrame }
+
+  TAbstractOptionsFrame = class(TFrame)
+  private
+    FOnLoadEnvironmentSettings: TOnLoadEnvironmentSettings;
+    FOnSaveEnvironmentSettings: TOnSaveEnvironmentSettings;
+  public
+    function Check: Boolean; virtual; abstract;
+    function GetTitle: String; virtual; abstract;
+    procedure Setup; virtual; abstract;
+    procedure ReadSettings(AOptions: TEnvironmentOptions); virtual; abstract;
+    procedure WriteSettings(AOptions: TEnvironmentOptions); virtual; abstract;
+
+    property OnSaveEnvironmentSettings: TOnSaveEnvironmentSettings
+      read FOnSaveEnvironmentSettings write FOnSaveEnvironmentSettings;
+    property OnLoadEnvironmentSettings: TOnLoadEnvironmentSettings
+      read FOnLoadEnvironmentSettings write FOnLoadEnvironmentSettings;
+  end;
+
 var
   EnvironmentOptions: TEnvironmentOptions = nil;
 
