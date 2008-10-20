@@ -48,9 +48,9 @@ if [ -z "$HTMLFMT" ]; then
   HTMLFMT=html
 fi
 
-FPDocParams="--content=lcl.xct --package=lcl --descr=../${XMLSrcDir}lcl.xml --format=$HTMLFMT --css-file=../fpdoc.css"
-if [ "$HTMLFMT"=="chm" ]; then
-  FPDocParams="$FPDocParams --output=lcl.chm"
+FPDocParams="--content=lcl.xct --package=lcl --descr=../${XMLSrcDir}lcl.xml --format=$HTMLFMT"
+if [ "$HTMLFMT" == "chm" ]; then
+  FPDocParams="$FPDocParams --css-file=../fpdoc.css --output=lcl.chm"
 fi
 if [ -n "$FPDocFooter" ]; then
   FPDocParams="$FPDocParams --footer=$FPDocFooter"
