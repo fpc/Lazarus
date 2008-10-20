@@ -155,6 +155,8 @@ begin
     Picture.Graphic.Transparent := FTransparent;
   end;
   invalidate;
+  if Assigned(OnPictureChanged) then
+    OnPictureChanged(Self);
 end;
 
 function TCustomImage.DestRect: TRect;
