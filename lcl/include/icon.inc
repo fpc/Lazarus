@@ -996,7 +996,9 @@ procedure TCustomIcon.WriteStream(AStream: TMemoryStream);
     SrcDesc: TRawImageDescription absolute SrcRawImg.Description;
     DstDesc: TRawImageDescription absolute DstRawImg.Description;
     SrcImage, DstImage: TLazIntfImage;
+    NeedFreeData: Boolean;
   begin
+    NeedFreeData := True;
     if (AIconImage.MaskHandle = 0)
     or not RawImage_FromBitmap(SrcRawImg, AIconImage.MaskHandle, 0)
     then begin
@@ -1004,6 +1006,7 @@ procedure TCustomIcon.WriteStream(AStream: TMemoryStream);
       SrcRawImg.Description := ARawImg.Description.GetDescriptionFromMask;
       SrcRawImg.Data := ARawImg.Mask;
       SrcRawImg.DataSize := ARawImg.MaskSize;
+      NeedFreeData := False;
     end;
 
     DstRawImg.Init;
@@ -1034,6 +1037,8 @@ procedure TCustomIcon.WriteStream(AStream: TMemoryStream);
 
     SrcImage.Free;
     DstImage.Free;
+    if NeedFreeData then
+      SrcRawImg.FreeData;
   end;
 
 var
