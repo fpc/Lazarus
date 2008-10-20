@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, Dialogs,
-  EnvironmentOpts, LazarusIDEStrConsts;
+  EnvironmentOpts, LazarusIDEStrConsts, IDEProcs;
 
 type
 

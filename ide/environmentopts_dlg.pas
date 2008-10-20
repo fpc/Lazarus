@@ -31,9 +31,6 @@ unit EnvironmentOpts_Dlg;
 interface
 
 uses
-{$IFDEF IDE_MEM_CHECK}
-  MemCheck,
-{$ENDIF}
   Classes, SysUtils, Controls, Forms, LResources, ComCtrls, ButtonPanel,
   EnvironmentOpts, LazarusIDEStrConsts, IDEWindowIntf;
 

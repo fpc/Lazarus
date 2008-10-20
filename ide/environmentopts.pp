@@ -34,12 +34,9 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, LCLProc, Forms, Controls, Buttons, GraphType,
-  Graphics, ExtCtrls, StdCtrls, Spin, FileUtil, LResources, Dialogs,
-  Laz_XMLCfg,
-  ObjectInspector, IDEWindowIntf,
-  LazarusIDEStrConsts, TransferMacros, LazConf, ExtToolDialog, IDEProcs,
-  IDEOptionDefs, InputHistory, EditorOptions, IDETranslations, ButtonPanel;
+  Classes, SysUtils, Graphics, Controls, Forms, LCLProc, FileUtil, Dialogs,
+  Laz_XMLCfg, IDEProcs, LazarusIDEStrConsts, IDETranslations, LazConf,
+  ObjectInspector, IDEOptionDefs, IDEWindowIntf, ExtToolDialog, TransferMacros;
 
 const
   EnvOptsVersion: integer = 106;
@@ -479,10 +476,6 @@ function CheckDirPathExists(const Dir,
 function SimpleDirectoryCheck(const OldDir, NewDir,
   NotFoundErrMsg: string; out StopChecking: boolean): boolean;
 
-procedure SetComboBoxText(AComboBox:TComboBox; const AText:AnsiString);
-procedure SetComboBoxText(AComboBox:TComboBox; const AText:AnsiString;
-                          MaxCount: integer);
-
 procedure RegisterEnvironmentOptionsEditor(AEditor: TAbstractOptionsFrameClass);
 procedure EnumEnvironmentOptionsEditors(ACallBack: TEnvironmentOptionsEditorGetProc);
 
@@ -614,36 +607,6 @@ begin
   end;
   StopChecking:=false;
   Result:=true;
-end;
-
-procedure SetComboBoxText(AComboBox:TComboBox; const AText: String);
-var a:integer;
-begin
-  a:=AComboBox.Items.IndexOf(AText);
-  if a>=0 then
-    AComboBox.ItemIndex:=a
-  else begin
-    AComboBox.Items.Add(AText);
-    AComboBox.ItemIndex:=AComboBox.Items.IndexOf(AText);
-  end;
-  AComboBox.Text:=AText;
-end;
-
-procedure SetComboBoxText(AComboBox:TComboBox; const AText: String;
-  MaxCount: integer);
-var a:integer;
-begin
-  a:=AComboBox.Items.IndexOf(AText);
-  if a>=0 then
-    AComboBox.ItemIndex:=a
-  else begin
-    AComboBox.Items.Insert(0,AText);
-    AComboBox.ItemIndex:=AComboBox.Items.IndexOf(AText);
-    if MaxCount<2 then MaxCount:=2;
-    while AComboBox.Items.Count>MaxCount do
-      AComboBox.Items.Delete(AComboBox.Items.Count-1);
-  end;
-  AComboBox.Text:=AText;
 end;
 
 { TEnvironmentOptions }

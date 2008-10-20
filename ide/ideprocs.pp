@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, Laz_XMLCfg, FileUtil, LCLProc, AvgLvlTree,
-  FileProcs, LazConf;
+  FileProcs, LazConf, StdCtrls;
 
 type
   // comments
@@ -232,6 +232,9 @@ function CompareStringToStringItemsFilename(Data1, Data2: Pointer): integer;
 function ComparePAnsiStringWithStrToStrItemFilename(Key, Data: Pointer): Integer;
 function CreateFilenameToStringTree: TStringToStringTree;
 
+procedure SetComboBoxText(AComboBox:TComboBox; const AText:AnsiString);
+procedure SetComboBoxText(AComboBox:TComboBox; const AText:AnsiString;
+                          MaxCount: integer);
 
 implementation
 
@@ -2569,6 +2572,40 @@ function CreateFilenameToStringTree: TStringToStringTree;
 begin
   Result:=TStringToStringTree.Create(@CompareStringToStringItemsFilename,
                                    @ComparePAnsiStringWithStrToStrItemFilename);
+end;
+
+procedure SetComboBoxText(AComboBox: TComboBox; const AText: String);
+var 
+  a: integer;
+begin
+  a:=AComboBox.Items.IndexOf(AText);
+  if a>=0 then
+    AComboBox.ItemIndex:=a
+  else 
+  begin
+    AComboBox.Items.Add(AText);
+    AComboBox.ItemIndex := AComboBox.Items.IndexOf(AText);
+  end;
+  AComboBox.Text := AText;
+end;
+
+procedure SetComboBoxText(AComboBox:TComboBox; const AText: String;
+  MaxCount: integer);
+var 
+  a: integer;
+begin
+  a := AComboBox.Items.IndexOf(AText);
+  if a >= 0 then
+    AComboBox.ItemIndex := a
+  else 
+  begin
+    AComboBox.Items.Insert(0,AText);
+    AComboBox.ItemIndex:=AComboBox.Items.IndexOf(AText);
+    if MaxCount<2 then MaxCount:=2;
+    while AComboBox.Items.Count>MaxCount do
+      AComboBox.Items.Delete(AComboBox.Items.Count-1);
+  end;
+  AComboBox.Text := AText;
 end;
 
 end.
