@@ -1,7 +1,0 @@
-object AbstractOptionsFrame: TAbstractOptionsFrame
-  Height = 240
-  Width = 320
-  TabOrder = 0
-  DesignLeft = 44
-  DesignTop = 58
-end

@@ -1,6 +1,0 @@
-{ This is an automatically generated lazarus resource file }
-
-LazarusResources.Add('TAbstractOptionsFrame','FORMDATA',[
-  'TPF0'#21'TAbstractOptionsFrame'#20'AbstractOptionsFrame'#6'Height'#3#240#0#5
-  +'Width'#3'@'#1#8'TabOrder'#2#0#10'DesignLeft'#2','#9'DesignTop'#2':'#0#0
-]);
