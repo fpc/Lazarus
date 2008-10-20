@@ -39,17 +39,18 @@ type
 
   TEnvironmentOptionsDialog = class(TForm)
     ButtonPanel: TButtonPanel;
-    Notebook: TPageControl;
+    CategoryTree: TTreeView;
 
+    procedure CategoryTreeChange(Sender: TObject; Node: TTreeNode);
     procedure HelpButtonClick(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
   private
     FOnLoadEnvironmentSettings: TOnLoadEnvironmentSettings;
     FOnSaveEnvironmentSettings: TOnSaveEnvironmentSettings;
+    PrevNode: TTreeNode;
     FEditors: TList;
 
-    procedure SetupFrame(AFrame: TAbstractOptionsFrame; APage: TTabSheet);
     function CheckValues: boolean;
     procedure LoadEnvironmentSettings(Sender: TObject; AOptions: TEnvironmentOptions);
     procedure SaveEnvironmentSettings(Sender: TObject; AOptions: TEnvironmentOptions);
@@ -77,7 +78,9 @@ uses
 constructor TEnvironmentOptionsDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  IDEDialogLayoutList.ApplyLayout(Self,Width,Height);
+  PrevNode := nil;
+
+  IDEDialogLayoutList.ApplyLayout(Self, Width, Height);
   Caption := lisMenuGeneralOptions;
 
   FEditors := TList.Create;
@@ -85,6 +88,9 @@ begin
   ButtonPanel.OKButton.OnClick := @OKButtonClick;
   ButtonPanel.CancelButton.OnClick := @CancelButtonClick;
   ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
+
+  if CategoryTree.Items.Count > 0 then
+    CategoryTree.Selected := CategoryTree.Items.GetFirstNode;
 end;
 
 destructor TEnvironmentOptionsDialog.Destroy;
@@ -93,31 +99,36 @@ begin
   inherited Destroy;
 end;
 
-procedure TEnvironmentOptionsDialog.SetupFrame(AFrame: TAbstractOptionsFrame; APage: TTabSheet);
-begin
-  AFrame.Parent := APage;
-
-  AFrame.Anchors := [akLeft, akTop, akRight, akBottom];
-  AFrame.AnchorSideLeft.Control := APage;
-  AFrame.AnchorSideTop.Control := APage;
-  AFrame.AnchorSideRight.Side := asrBottom;
-  AFrame.AnchorSideRight.Control := APage;
-  AFrame.AnchorSideBottom.Side := asrBottom;
-  AFrame.AnchorSideBottom.Control := APage;
-  AFrame.BorderSpacing.Around := 6;
-
-  AFrame.OnLoadEnvironmentSettings := @LoadEnvironmentSettings;
-  AFrame.OnSaveEnvironmentSettings := @SaveEnvironmentSettings;
-
-  AFrame.Setup;
-  AFrame.Visible := True;
-
-  APage.Caption := AFrame.GetTitle;
-end;
-
 procedure TEnvironmentOptionsDialog.HelpButtonClick(Sender: TObject);
 begin
   ShowContextHelpForIDE(Self);
+end;
+
+procedure TEnvironmentOptionsDialog.CategoryTreeChange(Sender: TObject;
+  Node: TTreeNode);
+var
+  AFrame: TAbstractOptionsFrame;
+begin
+  if PrevNode <> nil then
+    TAbstractOptionsFrame(PrevNode.Data).Parent := nil;
+
+  if Node <> nil then
+  begin
+    AFrame := TAbstractOptionsFrame(Node.Data);
+
+    AFrame.Parent := Self;
+    AFrame.Anchors := [akLeft, akTop, akRight, akBottom];
+    AFrame.AnchorSideLeft.Side := asrBottom;
+    AFrame.AnchorSideLeft.Control := CategoryTree;
+    AFrame.AnchorSideTop.Control := Self;
+    AFrame.AnchorSideRight.Side := asrBottom;
+    AFrame.AnchorSideRight.Control := Self;
+    AFrame.AnchorSideBottom.Side := asrTop;
+    AFrame.AnchorSideBottom.Control := ButtonPanel;
+    AFrame.BorderSpacing.Around := 6;
+    AFrame.Visible := True;
+  end;
+  PrevNode := Node;
 end;
 
 procedure TEnvironmentOptionsDialog.OkButtonClick(Sender: TObject);
@@ -182,28 +193,38 @@ end;
 procedure TEnvironmentOptionsDialog.CreateEditors(AEditor: TAbstractOptionsFrameClass);
 var
   Instance: TAbstractOptionsFrame;
-  NewPage: TTabSheet;
+  ANode: TTreeNode;
 begin
   Instance := AEditor.Create(Self);
+  Instance.OnLoadEnvironmentSettings := @LoadEnvironmentSettings;
+  Instance.OnSaveEnvironmentSettings := @SaveEnvironmentSettings;
+  Instance.Setup;
   FEditors.Add(Instance);
-  NewPage := TTabSheet.Create(Self);
-  NewPage.Parent := Notebook;
-  SetupFrame(Instance, NewPage);
+
+  ANode := CategoryTree.Items.AddChild(nil, Instance.GetTitle);
+  ANode.Data := Instance;
 end;
 
 procedure TEnvironmentOptionsDialog.OpenEditor(AEditor: TAbstractOptionsFrameClass);
-var
-  i, AIndex: Integer;
-begin
-  AIndex := -1;
-  for i := 0 to FEditors.Count - 1 do
-    if TAbstractOptionsFrame(FEditors[i]).ClassType = AEditor then
-    begin 
-      AIndex := i;
-      break;
+  function Traverse(ANode: TTreeNode): TTreeNode;
+  begin
+    Result := nil;
+    if ANode <> nil then
+    begin
+      if (ANode.Data <> nil) and (TObject(ANode.Data).ClassType = AEditor) then
+        Result := ANode;
+      if Result = nil then
+        Result := Traverse(ANode.GetFirstChild);
+      if Result = nil then
+        Result := Traverse(ANode.GetNextSibling);
     end;
-  if AIndex <> -1 then
-    NoteBook.ActivePageIndex := AIndex;
+  end;
+var
+  Node: TTreeNode;
+begin
+  Node := Traverse(CategoryTree.Items.GetFirstNode);
+  if Node <> nil then
+    CategoryTree.Selected := Node;
 end;
 
 initialization

@@ -1,35 +1,39 @@
 object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
-  Left = 674
-  Height = 535
-  Top = 199
-  Width = 542
+  Left = 317
+  Height = 500
+  Top = 304
+  Width = 659
   Caption = 'EnvironmentOptionsDialog'
-  ClientHeight = 535
-  ClientWidth = 542
+  ClientHeight = 500
+  ClientWidth = 659
   ParentFont = False
   Position = poScreenCenter
   LCLVersion = '0.9.27'
   object ButtonPanel: TButtonPanel
     Left = 6
     Height = 40
-    Top = 495
-    Width = 530
+    Top = 460
+    Width = 647
     Align = alBottom
     AutoSize = True
     TabOrder = 0
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end
-  object Notebook: TPageControl
+  object CategoryTree: TTreeView
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel
-    Height = 489
-    Width = 542
-    Align = alTop
-    Anchors = [akTop, akLeft, akRight, akBottom]
+    Left = 6
+    Height = 448
+    Top = 6
+    Width = 206
+    Anchors = [akTop, akLeft, akBottom]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
     BorderSpacing.Bottom = 6
+    Constraints.MinWidth = 206
+    DefaultItemHeight = 15
     TabOrder = 1
+    OnChange = CategoryTreeChange
   end
 end
