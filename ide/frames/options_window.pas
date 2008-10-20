@@ -26,13 +26,13 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, StdCtrls,
-  EnvironmentOpts, LazarusIDEStrConsts, IDEOptionDefs, ObjectInspector;
+  EnvironmentOpts, LazarusIDEStrConsts, IDEOptionDefs, ObjectInspector, IDEOptionsIntf;
 
 type
 
   { TWindowOptionsFrame }
 
-  TWindowOptionsFrame = class(TAbstractOptionsFrame)
+  TWindowOptionsFrame = class(TAbstractIDEOptionsEditor)
     HideIDEOnRunCheckBox: TCheckBox;
     MinimizeAllOnMinimizeMainCheckBox: TCheckBox;
     WindowPositionsGroupBox: TGroupBox;
@@ -43,21 +43,15 @@ type
     WindowPositionsBox: TIDEWindowSetupLayoutComponent;
     procedure SetWindowPositionsItem(Index: integer);
   public
-    function Check: Boolean; override;
     function GetTitle: String; override;
     procedure Setup; override;
-    procedure ReadSettings(AOptions: TEnvironmentOptions); override;
-    procedure WriteSettings(AOptions: TEnvironmentOptions); override;
+    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
   end;
 
 implementation
 
 { TWindowOptionsFrame }
-
-function TWindowOptionsFrame.Check: Boolean;
-begin
-  Result := True;
-end;
 
 function TWindowOptionsFrame.GetTitle: String;
 begin
@@ -97,9 +91,9 @@ begin
   end;
 end;
 
-procedure TWindowOptionsFrame.ReadSettings(AOptions: TEnvironmentOptions);
+procedure TWindowOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  with AOptions do
+  with AOptions as TEnvironmentOptions do
   begin
     FLayouts := IDEWindowLayoutList;
     SetWindowPositionsItem(0);
@@ -110,9 +104,9 @@ begin
   end;
 end;
 
-procedure TWindowOptionsFrame.WriteSettings(AOptions: TEnvironmentOptions);
+procedure TWindowOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  with AOptions do
+  with AOptions as TEnvironmentOptions do
   begin
     WindowPositionsBox.Save;
     // window minimizing
@@ -149,8 +143,7 @@ begin
 end;
 
 initialization
-  {$I options_window.lrs}
-  RegisterEnvironmentOptionsEditor(TWindowOptionsFrame);
-
+  {$I options_window.lrs}                                                              
+  RegisterIDEOptionsEditor(GroupEnvironment, TWindowOptionsFrame, TEnvironmentOptions, EnvOptionsWindow);
 end.
 

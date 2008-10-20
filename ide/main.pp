@@ -115,7 +115,7 @@ uses
   // rest of the ide
   Splash, IDEDefs, LazarusIDEStrConsts, LazConf, MsgView, SearchResultView,
   CodeTemplatesDlg, CodeBrowser,
-  PublishModule, EnvironmentOpts, EnvironmentOpts_Dlg, TransferMacros, KeyMapping, 
+  PublishModule, EnvironmentOpts, TransferMacros, KeyMapping, 
   IDETranslations, IDEProcs, ExtToolDialog, ExtToolEditDlg, OutputFilter, JumpHistoryView,
   BuildLazDialog, MiscOptions, InputHistory, UnitDependencies, ClipBoardHistory,
   ProcessList, InitialSetupDlgs, NewDialog, MakeResStrDlg, ToDoList,
@@ -126,6 +126,7 @@ uses
   // main ide
   MainBar, MainIntf, MainBase,
   // options frames
+  IDEOptionsIntf, IDEOptionsDlg,
   options_files, options_desktop, options_window, options_formed, options_oi,
   options_backup, options_naming, options_fpdoc;
 
@@ -335,11 +336,9 @@ type
                                  const HelpKeyword: string): Integer;
 
     // Environment options dialog events
-    procedure OnLoadEnvironmentSettings(Sender: TObject;
-      TheEnvironmentOptions: TEnvironmentOptions);
-    procedure OnSaveEnvironmentSettings(Sender: TObject;
-      TheEnvironmentOptions: TEnvironmentOptions);
-    procedure DoShowEnvGeneralOptions(AEditor: TAbstractOptionsFrameClass);
+    procedure OnLoadIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
+    procedure OnSaveIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
+    procedure DoShowEnvGeneralOptions(AEditor: TAbstractIDEOptionsEditorClass);
 
     // SourceNotebook events
     procedure OnSrcNoteBookActivated(Sender: TObject);
@@ -3855,21 +3854,21 @@ begin
   Result:=SourceNoteBook.FindUniquePageName(Result,IgnorePageIndex);
 end;
 
-procedure TMainIDE.OnLoadEnvironmentSettings(Sender: TObject;
-  TheEnvironmentOptions: TEnvironmentOptions);
+procedure TMainIDE.OnLoadIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
 begin
-  LoadDesktopSettings(TheEnvironmentOptions);
+  if AOptions is TEnvironmentOptions then
+    LoadDesktopSettings(AOptions as TEnvironmentOptions);
 end;
 
-procedure TMainIDE.OnSaveEnvironmentSettings(Sender: TObject;
-  TheEnvironmentOptions: TEnvironmentOptions);
+procedure TMainIDE.OnSaveIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
 begin
-  SaveDesktopSettings(TheEnvironmentOptions);
+  if AOptions is TEnvironmentOptions then
+    SaveDesktopSettings(AOptions as TEnvironmentOptions);
 end;
 
-procedure TMainIDE.DoShowEnvGeneralOptions(AEditor: TAbstractOptionsFrameClass);
+procedure TMainIDE.DoShowEnvGeneralOptions(AEditor: TAbstractIDEOptionsEditorClass);
 var
-  EnvironmentOptionsDialog: TEnvironmentOptionsDialog;
+  IDEOptionsDialog: TIDEOptionsDialog;
   MacroValueChanged,
   FPCSrcDirChanged, FPCCompilerChanged,
   LazarusSrcDirChanged: boolean;
@@ -3922,28 +3921,28 @@ var
   end;
 
 Begin
-  EnvironmentOptionsDialog:=TEnvironmentOptionsDialog.Create(nil);
+  IDEOptionsDialog:=TIDEOptionsDialog.Create(nil);
   try
-    EnvironmentOptionsDialog.OpenEditor(AEditor);
+    IDEOptionsDialog.OpenEditor(AEditor);
     // update EnvironmentOptions (save current window positions)
     SaveDesktopSettings(EnvironmentOptions);
-    with EnvironmentOptionsDialog do 
+    with IDEOptionsDialog do 
     begin
-      OnLoadEnvironmentSettings:=@Self.OnLoadEnvironmentSettings;
-      OnSaveEnvironmentSettings:=@Self.OnSaveEnvironmentSettings;
-      // load settings from EnvironmentOptions to EnvironmentOptionsDialog
+      OnLoadIDEOptions:=@Self.OnLoadIDEOptions;
+      OnSaveIDEOptions:=@Self.OnSaveIDEOptions;
+      // load settings from EnvironmentOptions to IDEOptionsDialog
       ReadSettings(EnvironmentOptions);
     end;
-    if EnvironmentOptionsDialog.ShowModal = mrOk then 
+    if IDEOptionsDialog.ShowModal = mrOk then 
     begin
 
       // invalidate cached substituted macros
       IncreaseCompilerParseStamp;
 
-      // load settings from EnvironmentOptionsDialog to EnvironmentOptions
+      // load settings from IDEOptionsDialog to EnvironmentOptions
       OldCompilerFilename:=EnvironmentOptions.CompilerFilename;
       OldLanguage:=EnvironmentOptions.LanguageID;
-      EnvironmentOptionsDialog.WriteSettings(EnvironmentOptions);
+      IDEOptionsDialog.WriteSettings(EnvironmentOptions);
       ShowCompileDialog:=EnvironmentOptions.ShowCompileDialog;
 
       UpdateDefaultPascalFileExtensions;
@@ -3982,7 +3981,7 @@ Begin
         PkgBoss.LazarusSrcDirChanged;
     end;
   finally
-    EnvironmentOptionsDialog.Free;
+    IDEOptionsDialog.Free;
   end;
 end;
 

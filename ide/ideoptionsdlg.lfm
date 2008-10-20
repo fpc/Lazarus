@@ -1,9 +1,9 @@
-object EnvironmentOptionsDialog: TEnvironmentOptionsDialog
+object IDEOptionsDialog: TIDEOptionsDialog
   Left = 317
   Height = 500
   Top = 304
   Width = 659
-  Caption = 'EnvironmentOptionsDialog'
+  Caption = 'IDEOptionsDialog'
   ClientHeight = 500
   ClientWidth = 659
   ParentFont = False

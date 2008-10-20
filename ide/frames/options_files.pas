@@ -26,13 +26,13 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, Dialogs, Controls,
-  EnvironmentOpts, LazarusIDEStrConsts, InputHistory, LazConf, IDEProcs;
+  EnvironmentOpts, LazarusIDEStrConsts, InputHistory, LazConf, IDEProcs, IDEOptionsIntf;
 
 type
 
   { TFilesOptionsFrame }
 
-  TFilesOptionsFrame = class(TAbstractOptionsFrame)
+  TFilesOptionsFrame = class(TAbstractIDEOptionsEditor)
     CompilerPathButton: TButton;
     CompilerPathComboBox: TComboBox;
     CompilerPathGroupBox: TGroupBox;
@@ -69,8 +69,8 @@ type
     function Check: Boolean; override;
     function GetTitle: String; override;
     procedure Setup; override;
-    procedure ReadSettings(AOptions: TEnvironmentOptions); override;
-    procedure WriteSettings(AOptions: TEnvironmentOptions); override;
+    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
   end;
 
 implementation
@@ -228,9 +228,9 @@ begin
   Result := True;
 end;
 
-procedure TFilesOptionsFrame.ReadSettings(AOptions: TEnvironmentOptions);
+procedure TFilesOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  with AOptions do
+  with AOptions as TEnvironmentOptions do
   begin
     LazarusDirComboBox.Items.Assign(LazarusDirHistory);
     FOldLazarusDir:=LazarusDirectory;
@@ -265,9 +265,9 @@ begin
   end;
 end;
 
-procedure TFilesOptionsFrame.WriteSettings(AOptions: TEnvironmentOptions);
+procedure TFilesOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  with AOptions do
+  with AOptions as TEnvironmentOptions do
   begin
     LazarusDirectory:=LazarusDirComboBox.Text;
     LazarusDirHistory.Assign(LazarusDirComboBox.Items);
@@ -345,7 +345,6 @@ end;
 
 initialization
   {$I options_files.lrs}
-  RegisterEnvironmentOptionsEditor(TFilesOptionsFrame);
-
+  RegisterIDEOptionsEditor(GroupEnvironment, TFilesOptionsFrame, TEnvironmentOptions, EnvOptionsFiles);
 end.
 

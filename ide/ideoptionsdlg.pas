@@ -24,7 +24,7 @@
     This unit defines a dialog for the lazarus environment options.
 
 }
-unit EnvironmentOpts_Dlg;
+unit IdeOptionsDlg;
 
 {$mode objfpc}{$H+}
 
@@ -32,12 +32,12 @@ interface
 
 uses
   Classes, SysUtils, Controls, Forms, LResources, ComCtrls, ButtonPanel,
-  EnvironmentOpts, LazarusIDEStrConsts, IDEWindowIntf;
+  EnvironmentOpts, LazarusIDEStrConsts, IDEWindowIntf, IDEOptionsIntf;
 
 type
-  { TEnvironmentOptionsDialog }
+  { TIDEOptionsDialog }
 
-  TEnvironmentOptionsDialog = class(TForm)
+  TIDEOptionsDialog = class(TForm)
     ButtonPanel: TButtonPanel;
     CategoryTree: TTreeView;
 
@@ -46,26 +46,24 @@ type
     procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
   private
-    FOnLoadEnvironmentSettings: TOnLoadEnvironmentSettings;
-    FOnSaveEnvironmentSettings: TOnSaveEnvironmentSettings;
+    FOnLoadOptions: TOnLoadIDEOptions;
+    FOnSaveOptions: TOnSaveIDEOptions;
     PrevNode: TTreeNode;
     FEditors: TList;
 
     function CheckValues: boolean;
-    procedure LoadEnvironmentSettings(Sender: TObject; AOptions: TEnvironmentOptions);
-    procedure SaveEnvironmentSettings(Sender: TObject; AOptions: TEnvironmentOptions);
-    procedure CreateEditors(AEditor: TAbstractOptionsFrameClass);
+    procedure LoadIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
+    procedure SaveIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
+    procedure CreateEditors;
   published
-    property OnSaveEnvironmentSettings: TOnSaveEnvironmentSettings
-      read FOnSaveEnvironmentSettings write FOnSaveEnvironmentSettings;
-    property OnLoadEnvironmentSettings: TOnLoadEnvironmentSettings
-      read FOnLoadEnvironmentSettings write FOnLoadEnvironmentSettings;
+    property OnLoadIDEOptions: TOnLoadIDEOptions read FOnLoadOptions write FOnLoadOptions;
+    property OnSaveIDEOptions: TOnSaveIDEOptions read FOnSaveOptions write FOnSaveOptions;
   public
-    constructor Create(TheOwner: TComponent); override;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure OpenEditor(AEditor: TAbstractOptionsFrameClass);
-    procedure ReadSettings(AnEnvironmentOptions: TEnvironmentOptions);
-    procedure WriteSettings(AnEnvironmentOptions: TEnvironmentOptions);
+    procedure OpenEditor(AEditor: TAbstractIDEOptionsEditorClass);
+    procedure ReadSettings(AOptions: TAbstractIDEOptions);
+    procedure WriteSettings(AOptions: TAbstractIDEOptions);
   end;
 
 implementation
@@ -73,18 +71,19 @@ implementation
 uses
   IDEContextHelpEdit;
 
-{ TEnvironmentOptionsDialog }
+{ TIDEOptionsDialog }
 
-constructor TEnvironmentOptionsDialog.Create(TheOwner: TComponent);
+constructor TIDEOptionsDialog.Create(AOwner: TComponent);
 begin
-  inherited Create(TheOwner);
+  inherited Create(AOwner);
   PrevNode := nil;
 
   IDEDialogLayoutList.ApplyLayout(Self, Width, Height);
   Caption := lisMenuGeneralOptions;
 
   FEditors := TList.Create;
-  EnumEnvironmentOptionsEditors(@CreateEditors);
+  CreateEditors;
+
   ButtonPanel.OKButton.OnClick := @OKButtonClick;
   ButtonPanel.CancelButton.OnClick := @CancelButtonClick;
   ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
@@ -93,45 +92,45 @@ begin
     CategoryTree.Selected := CategoryTree.Items.GetFirstNode;
 end;
 
-destructor TEnvironmentOptionsDialog.Destroy;
+destructor TIDEOptionsDialog.Destroy;
 begin
   FEditors.Free;
   inherited Destroy;
 end;
 
-procedure TEnvironmentOptionsDialog.HelpButtonClick(Sender: TObject);
+procedure TIDEOptionsDialog.HelpButtonClick(Sender: TObject);
 begin
   ShowContextHelpForIDE(Self);
 end;
 
-procedure TEnvironmentOptionsDialog.CategoryTreeChange(Sender: TObject;
+procedure TIDEOptionsDialog.CategoryTreeChange(Sender: TObject;
   Node: TTreeNode);
 var
-  AFrame: TAbstractOptionsFrame;
+  AEditor: TAbstractIDEOptionsEditor;
 begin
   if PrevNode <> nil then
-    TAbstractOptionsFrame(PrevNode.Data).Parent := nil;
+    TAbstractIDEOptionsEditor(PrevNode.Data).Parent := nil;
 
   if Node <> nil then
   begin
-    AFrame := TAbstractOptionsFrame(Node.Data);
+    AEditor := TAbstractIDEOptionsEditor(Node.Data);
 
-    AFrame.Parent := Self;
-    AFrame.Anchors := [akLeft, akTop, akRight, akBottom];
-    AFrame.AnchorSideLeft.Side := asrBottom;
-    AFrame.AnchorSideLeft.Control := CategoryTree;
-    AFrame.AnchorSideTop.Control := Self;
-    AFrame.AnchorSideRight.Side := asrBottom;
-    AFrame.AnchorSideRight.Control := Self;
-    AFrame.AnchorSideBottom.Side := asrTop;
-    AFrame.AnchorSideBottom.Control := ButtonPanel;
-    AFrame.BorderSpacing.Around := 6;
-    AFrame.Visible := True;
+    AEditor.Parent := Self;
+    AEditor.Anchors := [akLeft, akTop, akRight, akBottom];
+    AEditor.AnchorSideLeft.Side := asrBottom;
+    AEditor.AnchorSideLeft.Control := CategoryTree;
+    AEditor.AnchorSideTop.Control := Self;
+    AEditor.AnchorSideRight.Side := asrBottom;
+    AEditor.AnchorSideRight.Control := Self;
+    AEditor.AnchorSideBottom.Side := asrTop;
+    AEditor.AnchorSideBottom.Control := ButtonPanel;
+    AEditor.BorderSpacing.Around := 6;
+    AEditor.Visible := True;
   end;
   PrevNode := Node;
 end;
 
-procedure TEnvironmentOptionsDialog.OkButtonClick(Sender: TObject);
+procedure TIDEOptionsDialog.OkButtonClick(Sender: TObject);
 begin
   if not CheckValues then
     Exit;
@@ -139,73 +138,75 @@ begin
   ModalResult := mrOk;
 end;
 
-procedure TEnvironmentOptionsDialog.CancelButtonClick(Sender: TObject);
+procedure TIDEOptionsDialog.CancelButtonClick(Sender: TObject);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
   ModalResult := mrCancel;
 end;
 
-procedure TEnvironmentOptionsDialog.ReadSettings(AnEnvironmentOptions: TEnvironmentOptions);
+procedure TIDEOptionsDialog.ReadSettings(AOptions: TAbstractIDEOptions);
 var
   i: integer;
 begin
   for i := 0 to FEditors.Count - 1 do
-    TAbstractOptionsFrame(FEditors[i]).ReadSettings(AnEnvironmentOptions);
+    TAbstractIDEOptionsEditor(FEditors[i]).ReadSettings(AOptions);
 end;
 
-procedure TEnvironmentOptionsDialog.WriteSettings(AnEnvironmentOptions: TEnvironmentOptions);
+procedure TIDEOptionsDialog.WriteSettings(AOptions: TAbstractIDEOptions);
 var
   i: integer;
 begin
   for i := 0 to FEditors.Count - 1 do
-    TAbstractOptionsFrame(FEditors[i]).WriteSettings(AnEnvironmentOptions);
+    TAbstractIDEOptionsEditor(FEditors[i]).WriteSettings(AOptions);
 end;
 
-function TEnvironmentOptionsDialog.CheckValues: boolean;
+function TIDEOptionsDialog.CheckValues: boolean;
 var
   i: integer;
 begin
   Result := True;
   for i := 0 to FEditors.Count - 1 do
   begin
-    Result := TAbstractOptionsFrame(FEditors[i]).Check;
+    Result := TAbstractIDEOptionsEditor(FEditors[i]).Check;
     if not Result then
       break;
   end;
 end;
 
-procedure TEnvironmentOptionsDialog.LoadEnvironmentSettings(Sender: TObject;
-  AOptions: TEnvironmentOptions);
+procedure TIDEOptionsDialog.LoadIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
 begin
-  if Assigned(OnLoadEnvironmentSettings) then
-    OnLoadEnvironmentSettings(Self, AOptions);
+  if Assigned(OnLoadIDEOptions) then
+    OnLoadIDEOptions(Self, AOptions);
   ReadSettings(AOptions);
 end;
 
-procedure TEnvironmentOptionsDialog.SaveEnvironmentSettings(Sender: TObject;
-  AOptions: TEnvironmentOptions);
+procedure TIDEOptionsDialog.SaveIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
 begin
   WriteSettings(AOptions);
-  if Assigned(OnSaveEnvironmentSettings) then
-    OnSaveEnvironmentSettings(Self, AOptions);
+  if Assigned(OnSaveIDEOptions) then
+    OnSaveIDEOptions(Self, AOptions);
 end;
 
-procedure TEnvironmentOptionsDialog.CreateEditors(AEditor: TAbstractOptionsFrameClass);
+procedure TIDEOptionsDialog.CreateEditors;
 var
-  Instance: TAbstractOptionsFrame;
+  Instance: TAbstractIDEOptionsEditor;
   ANode: TTreeNode;
+  i: integer;
 begin
-  Instance := AEditor.Create(Self);
-  Instance.OnLoadEnvironmentSettings := @LoadEnvironmentSettings;
-  Instance.OnSaveEnvironmentSettings := @SaveEnvironmentSettings;
-  Instance.Setup;
-  FEditors.Add(Instance);
+  for i := 0 to IDEEditors.Count - 1 do
+  begin
+    Instance := IDEEditors[i].Create(Self);
+    Instance.OnLoadIDEOptions := @LoadIDEOptions;
+    Instance.OnSaveIDEOptions := @SaveIDEOptions;
+    Instance.Setup;
+    FEditors.Add(Instance);
 
-  ANode := CategoryTree.Items.AddChild(nil, Instance.GetTitle);
-  ANode.Data := Instance;
+    ANode := CategoryTree.Items.AddChild(nil, Instance.GetTitle);
+    ANode.Data := Instance;
+  end;
 end;
 
-procedure TEnvironmentOptionsDialog.OpenEditor(AEditor: TAbstractOptionsFrameClass);
+procedure TIDEOptionsDialog.OpenEditor(AEditor: TAbstractIDEOptionsEditorClass);
   function Traverse(ANode: TTreeNode): TTreeNode;
   begin
     Result := nil;
@@ -228,7 +229,7 @@ begin
 end;
 
 initialization
-  {$I environmentopts_dlg.lrs}
+  {$I ideoptionsdlg.lrs}
 
 end.
 
