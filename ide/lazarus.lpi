@@ -41,7 +41,7 @@
         <PackageName Value="SynEdit"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="10">
+    <Units Count="11">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -117,6 +117,11 @@
         <ResourceFilename Value="frames\options_fpdoc.lrs"/>
         <UnitName Value="options_fpdoc"/>
       </Unit9>
+      <Unit10>
+        <Filename Value="..\ideintf\ideoptionsintf.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="IDEOptionsIntf"/>
+      </Unit10>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
