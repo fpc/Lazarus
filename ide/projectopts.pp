@@ -42,7 +42,7 @@ uses
   IDEWindowIntf, IDEImagesIntf, ProjectIntf, IDEDialogs,
   IDEOptionDefs, LazarusIDEStrConsts, Project, IDEProcs, W32VersionInfo,
   VersionInfoAdditionalInfo, W32Manifest, ApplicationBundle, ExtDlgs,
-  ButtonPanel;
+  ButtonPanel, ComCtrls;
 
 type
 
@@ -53,6 +53,7 @@ type
     Bevel1: TBevel;
     ButtonPanel: TButtonPanel;
     ClearIconButton: TBitBtn;
+    IconTrackLabel: TLabel;
     SaveIconButton: TBitBtn;
     LoadIconButton: TBitBtn;
     CopyrightLabel: TLabel;
@@ -76,6 +77,7 @@ type
     SavePage: TPage;
     SavePictureDialog1: TSavePictureDialog;
     TitleLabel: TLabel;
+    IconTrack: TTrackBar;
     VersionInfoPage: TPage;
     i18nPage: TPage;
 
@@ -145,7 +147,6 @@ type
     I18NGroupBox: TGroupBox;
     PoOutDirLabel: TLabel;
 
-
     procedure AdditionalInfoButtonClick(Sender: TObject);
     procedure ClearIconButtonClick(Sender: TObject);
     procedure CreateAppBundleButtonClick(Sender: TObject);
@@ -153,6 +154,8 @@ type
     procedure FormsPageContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
     procedure FormsPageResize(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
+    procedure IconImagePictureChanged(Sender: TObject);
+    procedure IconTrackChange(Sender: TObject);
     procedure LazDocAddPathButtonClick(Sender: TObject);
     procedure LazDocBrowseButtonClick(Sender: TObject);
     procedure LazDocDeletePathButtonClick(Sender: TObject);
@@ -303,6 +306,7 @@ begin
   LoadIconButton.LoadGlyphFromLazarusResource('open');
   SaveIconButton.LoadGlyphFromLazarusResource('menu_save');
   ClearIconButton.LoadGlyphFromLazarusResource('menu_clean');
+  IconImagePictureChanged(nil);
 end;
 
 procedure TProjectOptionsDialog.SetupLazDocPage(PageIndex: Integer);
@@ -573,6 +577,31 @@ end;
 procedure TProjectOptionsDialog.HelpButtonClick(Sender: TObject);
 begin
   ShowContextHelpForIDE(Self);
+end;
+
+procedure TProjectOptionsDialog.IconImagePictureChanged(Sender: TObject);
+var
+  HasIcon: Boolean;
+  cx, cy: integer;
+begin
+  HasIcon := (IconImage.Picture.Graphic <> nil) and
+             (not IconImage.Picture.Graphic.Empty);
+  IconTrack.Enabled := HasIcon;
+  if HasIcon then
+  begin
+    IconTrack.Min := 0;
+    IconTrack.Max := IconImage.Picture.Icon.Count - 1;
+    IconTrack.Position := IconImage.Picture.Icon.Current;
+    IconImage.Picture.Icon.GetSize(cx, cy);
+    IconTrackLabel.Caption := Format(dlgPOIconDesc, [cx, cy, PIXELFORMAT_BPP[IconImage.Picture.Icon.PixelFormat]]);
+  end
+  else
+    IconTrackLabel.Caption := dlgPOIconDescNone;
+end;
+
+procedure TProjectOptionsDialog.IconTrackChange(Sender: TObject);
+begin
+  IconImage.Picture.Icon.Current := IconTrack.Position;
 end;
 
 procedure TProjectOptionsDialog.FormsPageResize(Sender: TObject);

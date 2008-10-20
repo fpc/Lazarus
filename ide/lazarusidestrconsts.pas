@@ -1484,6 +1484,8 @@ resourcestring
   dlgPOLoadIcon = 'Load Icon';
   dlgPOSaveIcon = 'Save Icon';
   dlgPOClearIcon = 'Clear Icon';
+  dlgPOIconDesc = '(size: %d:%d, bpp: %d)';
+  dlgPOIconDescNone = '(none)';
 
   dlgAutoCreateForms = 'Auto-create forms:';
   dlgAvailableForms = 'Available forms:';
