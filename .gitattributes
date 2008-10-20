@@ -2902,6 +2902,7 @@ images/designer/scale.png -text
 images/designer/size.png -text
 images/folder.png -text
 images/icon-naming-spec.xml svneol=native#text/plain
+images/icons/aqua.ico -text
 images/icons/blue.ico -text svneol=unset#image/ico
 images/icons/blue_roundrect.ico -text svneol=unset#image/ico
 images/icons/brown.ico -text svneol=unset#image/ico
