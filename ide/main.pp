@@ -3895,19 +3895,23 @@ var
     AnUnitInfo: TUnitInfo;
     ADesigner: TDesigner;
   begin
-    AnUnitInfo:=Project1.FirstUnitWithComponent;
-    while AnUnitInfo<>nil do begin
-      if (AnUnitInfo.Component<>nil)
-      then begin
-        AForm:=FormEditor1.GetDesignerForm(AnUnitInfo.Component);
-        ADesigner:=TDesigner(AForm.Designer);
-        if ADesigner<>nil then begin
-          ADesigner.ShowEditorHints:=EnvironmentOptions.ShowEditorHints;
-          ADesigner.ShowComponentCaptionHints:=
-            EnvironmentOptions.ShowComponentCaptions;
+    AnUnitInfo := Project1.FirstUnitWithComponent;
+    while AnUnitInfo <> nil do
+    begin
+      if (AnUnitInfo.Component<>nil) then
+      begin
+        AForm := FormEditor1.GetDesignerForm(AnUnitInfo.Component);
+        if AForm <> nil then
+        begin
+          ADesigner := TDesigner(AForm.Designer);
+          if ADesigner <> nil then
+          begin
+            ADesigner.ShowEditorHints := EnvironmentOptions.ShowEditorHints;
+            ADesigner.ShowComponentCaptionHints := EnvironmentOptions.ShowComponentCaptions;
+          end;
         end;
       end;
-      AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
+      AnUnitInfo := AnUnitInfo.NextUnitWithComponent;
     end;
     InvalidateAllDesignerForms;
   end;
