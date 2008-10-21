@@ -1435,5 +1435,7 @@ begin
     copy(FDebuggerFilename,SpacePos,length(FDebuggerFilename)-SpacePos+1);
 end;
 
+initialization
+  RegisterIDEOptionsGroup(GroupEnvironment, dlgGroupEnvironment);
 end.
 

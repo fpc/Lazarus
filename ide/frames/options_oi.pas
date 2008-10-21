@@ -59,6 +59,7 @@ type
     procedure Setup; override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end; 
 
 implementation
@@ -138,8 +139,13 @@ begin
   end;
 end;
 
+class function TOIOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
+begin
+  Result := TEnvironmentOptions;
+end;
+
 initialization
   {$I options_oi.lrs}
-  RegisterIDEOptionsEditor(GroupEnvironment, TOIOptionsFrame, TEnvironmentOptions, EnvOptionsOI);
+  RegisterIDEOptionsEditor(GroupEnvironment, TOIOptionsFrame, EnvOptionsOI);
 end.
 

@@ -73,6 +73,7 @@ type
     procedure Setup; override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
 implementation
@@ -200,8 +201,13 @@ begin
   FormEditMiscGroupBox.Width := GridGroupBox.Width;
 end;
 
+class function TFormEditorOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
+begin
+  Result := TEnvironmentOptions;
+end;
+
 initialization
   {$I options_formed.lrs}
-  RegisterIDEOptionsEditor(GroupEnvironment, TFormEditorOptionsFrame, TEnvironmentOptions, EnvOptionsFormEd);
+  RegisterIDEOptionsEditor(GroupEnvironment, TFormEditorOptionsFrame, EnvOptionsFormEd);
 end.
 

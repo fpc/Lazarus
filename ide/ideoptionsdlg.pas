@@ -21,8 +21,9 @@
   Author: Mattias Gaertner
   
   Abstract:
-    This unit defines a dialog for the lazarus environment options.
+    This unit defines a dialog for the lazarus options.
 
+  TODO: remove FEditors
 }
 unit IdeOptionsDlg;
 
@@ -48,7 +49,7 @@ type
   private
     FOnLoadOptions: TOnLoadIDEOptions;
     FOnSaveOptions: TOnSaveIDEOptions;
-    PrevNode: TTreeNode;
+    PrevEditor: TAbstractIDEOptionsEditor;
     FEditors: TList;
 
     function CheckValues: boolean;
@@ -76,7 +77,7 @@ uses
 constructor TIDEOptionsDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  PrevNode := nil;
+  PrevEditor := nil;
 
   IDEDialogLayoutList.ApplyLayout(Self, Width, Height);
   Caption := lisMenuGeneralOptions;
@@ -108,12 +109,18 @@ procedure TIDEOptionsDialog.CategoryTreeChange(Sender: TObject;
 var
   AEditor: TAbstractIDEOptionsEditor;
 begin
-  if PrevNode <> nil then
-    TAbstractIDEOptionsEditor(PrevNode.Data).Parent := nil;
-
-  if Node <> nil then
+  while Node <> nil do
   begin
-    AEditor := TAbstractIDEOptionsEditor(Node.Data);
+    if Node.Data <> nil then
+      break;
+    Node := Node.GetFirstChild;
+  end;
+
+  AEditor := TAbstractIDEOptionsEditor(Node.Data);
+  if (AEditor <> nil) and (AEditor <> PrevEditor) then
+  begin
+    if PrevEditor <> nil then
+      PrevEditor.Parent := nil;
 
     AEditor.Parent := Self;
     AEditor.Anchors := [akLeft, akTop, akRight, akBottom];
@@ -126,8 +133,9 @@ begin
     AEditor.AnchorSideBottom.Control := ButtonPanel;
     AEditor.BorderSpacing.Around := 6;
     AEditor.Visible := True;
+
+    PrevEditor := AEditor;
   end;
-  PrevNode := Node;
 end;
 
 procedure TIDEOptionsDialog.OkButtonClick(Sender: TObject);
@@ -190,19 +198,31 @@ end;
 procedure TIDEOptionsDialog.CreateEditors;
 var
   Instance: TAbstractIDEOptionsEditor;
-  ANode: TTreeNode;
-  i: integer;
+  GroupNode, ItemNode: TTreeNode;
+  i, j: integer;
+  Rec: PIDEOptionsGroupRec;
 begin
-  for i := 0 to IDEEditors.Count - 1 do
-  begin
-    Instance := IDEEditors[i].Create(Self);
-    Instance.OnLoadIDEOptions := @LoadIDEOptions;
-    Instance.OnSaveIDEOptions := @SaveIDEOptions;
-    Instance.Setup;
-    FEditors.Add(Instance);
+  IDEEditorGroups.Resort;
 
-    ANode := CategoryTree.Items.AddChild(nil, Instance.GetTitle);
-    ANode.Data := Instance;
+  for i := 0 to IDEEditorGroups.Count - 1 do
+  begin
+    Rec := IDEEditorGroups[i];
+    if Rec^.Items <> nil then
+    begin
+      GroupNode := CategoryTree.Items.AddChild(nil, Rec^.Caption);
+      for j := 0 to Rec^.Items.Count - 1 do
+      begin
+        Instance := Rec^.Items[j]^.EditorClass.Create(Self);
+        Instance.OnLoadIDEOptions := @LoadIDEOptions;
+        Instance.OnSaveIDEOptions := @SaveIDEOptions;
+        Instance.Setup;
+        FEditors.Add(Instance);
+
+        ItemNode := CategoryTree.Items.AddChild(GroupNode, Instance.GetTitle);
+        ItemNode.Data := Instance;
+      end;
+      GroupNode.Expanded := True;
+    end;
   end;
 end;
 

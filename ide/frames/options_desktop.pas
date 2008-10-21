@@ -61,6 +61,7 @@ type
     procedure Setup; override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
 implementation
@@ -276,8 +277,13 @@ begin
     OnSaveIDEOptions(Self, AOptions);
 end;
 
+class function TDesktopOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
+begin
+  Result := TEnvironmentOptions;
+end;
+
 initialization
   {$I options_desktop.lrs}
-  RegisterIDEOptionsEditor(GroupEnvironment, TDesktopOptionsFrame, TEnvironmentOptions, EnvOptionsDesktop);
+  RegisterIDEOptionsEditor(GroupEnvironment, TDesktopOptionsFrame, EnvOptionsDesktop);
 end.
 

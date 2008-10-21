@@ -49,6 +49,7 @@ type
     procedure Setup; override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
 implementation
@@ -98,8 +99,13 @@ begin
   LazDocListBox.Items.Delete(LazDocListBox.ItemIndex);
 end;
 
+class function TFpDocOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
+begin
+  Result := TEnvironmentOptions;
+end;
+
 initialization
   {$I options_fpdoc.lrs}
-  RegisterIDEOptionsEditor(GroupEnvironment, TFpDocOptionsFrame, TEnvironmentOptions, EnvOptionsFpDoc);
+  RegisterIDEOptionsEditor(GroupEnvironment, TFpDocOptionsFrame, EnvOptionsFpDoc);
 end.
 

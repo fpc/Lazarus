@@ -49,7 +49,7 @@ uses
   // codetools
   LinkScanner, CodeToolManager, Laz_XMLCfg,
   // IDEIntf
-  IDECommands, IDEWindowIntf, SrcEditorIntf, IDEImagesIntf,
+  IDECommands, IDEWindowIntf, SrcEditorIntf, IDEImagesIntf, IDEOptionsIntf,
   // IDE
   LazarusIDEStrConsts, IDEOptionDefs, IDEProcs, InputHistory, KeyMapping,
   KeymapSchemeDlg, KeyMapShortCutDlg, LazConf, ButtonPanel;
@@ -357,7 +357,7 @@ type
 
   { TEditorOptions - Editor Options object used to hold the editor options }
 
-  TEditorOptions = class(TPersistent)
+  TEditorOptions = class(TAbstractIDEOptions)
   private
     xmlconfig: TXMLConfig;
 

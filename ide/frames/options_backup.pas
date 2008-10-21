@@ -57,6 +57,7 @@ type
     procedure Setup; override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
 implementation
@@ -290,8 +291,13 @@ begin
   end;
 end;
 
+class function TBackupOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
+begin
+  Result := TEnvironmentOptions;
+end;
+
 initialization
   {$I options_backup.lrs}
-  RegisterIDEOptionsEditor(GroupEnvironment, TBackupOptionsFrame, TEnvironmentOptions, EnvOptionsBackup);
+  RegisterIDEOptionsEditor(GroupEnvironment, TBackupOptionsFrame, EnvOptionsBackup);
 end.
 
