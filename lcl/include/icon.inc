@@ -637,6 +637,10 @@ begin
   MaskImage.DataSize := ImagePtr^.MaskSize;
   MaskImage.Data := ImagePtr^.Mask;
 
+  // CreateCompatibleBitmaps cannot work with empty Data => create dummy data
+  if ImagePtr^.Mask = nil then
+    MaskImage.CreateData(True);
+
   if CreateCompatibleBitmaps(MaskImage, ImgHandle, Dummy, True)
   then begin
     if BitmapHandleAllocated
@@ -644,6 +648,9 @@ begin
     else UpdateHandles(0, ImgHandle);
   end
   else DebugLn('TCustomIcon.MaskHandleNeeded: Unable to create makshandle');
+
+  if ImagePtr^.Mask = nil then
+    MaskImage.FreeData;
 end;
 
 function TCustomIcon.PaletteAllocated: boolean;
