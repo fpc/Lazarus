@@ -27,7 +27,6 @@ object AboutForm: TAboutForm
   Font.Style = []
   FormStyle = fsNormal
   OnCreate = AboutFormCreate
-  OnResize = FormResize
   ParentBiDiMode = True
   ParentFont = False
   PopupMenu = PopupMenu1
@@ -287,7 +286,7 @@ object AboutForm: TAboutForm
     Enabled = True
     OnPageChanged = NotebookPageChanged
     Options = []
-    PageIndex = 2
+    PageIndex = 3
     ParentFont = True
     ShowTabs = True
     TabOrder = 0
@@ -562,8 +561,6 @@ object AboutForm: TAboutForm
         ParentFont = True
         ParentShowHint = True
         Visible = True
-        OnMouseDown = AcknowledgementsPaintBoxMouseDown
-        OnMouseMove = AcknowledgementsPaintBoxMouseMove
       end
     end
     object LogoPage: TPage
@@ -615,12 +612,5 @@ object AboutForm: TAboutForm
       ShowAlwaysCheckable = False
       OnClick = miVerToClipboardClick
     end
-  end
-  object Timer: TTimer
-    Enabled = False
-    Interval = 30
-    OnTimer = TimerTimer
-    left = 17
-    top = 264
   end
 end
