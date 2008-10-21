@@ -1,7 +1,7 @@
 object frmCompilerOptions: TfrmCompilerOptions
-  Left = 339
+  Left = 389
   Height = 528
-  Top = 186
+  Top = 163
   Width = 669
   HelpContext = 0
   ActiveControl = MainNotebook
@@ -39,7 +39,7 @@ object frmCompilerOptions: TfrmCompilerOptions
   object MainNotebook: TNotebook
     AnchorSideBottom.Control = BtnPanel
     Left = 0
-    Height = 478
+    Height = 490
     Top = 0
     Width = 669
     HelpContext = 0
@@ -698,8 +698,8 @@ object frmCompilerOptions: TfrmCompilerOptions
         ChildSizing.HorizontalSpacing = 0
         ChildSizing.VerticalSpacing = 0
         ChildSizing.ControlsPerLine = 0
-        ClientHeight = 56
-        ClientWidth = 649
+        ClientHeight = 60
+        ClientWidth = 653
         Ctl3D = False
         DockSite = False
         DragCursor = crDrag
@@ -799,8 +799,8 @@ object frmCompilerOptions: TfrmCompilerOptions
         ChildSizing.HorizontalSpacing = 0
         ChildSizing.VerticalSpacing = 0
         ChildSizing.ControlsPerLine = 0
-        ClientHeight = 49
-        ClientWidth = 454
+        ClientHeight = 53
+        ClientWidth = 458
         Ctl3D = False
         DockSite = False
         DragCursor = crDrag
@@ -873,8 +873,8 @@ object frmCompilerOptions: TfrmCompilerOptions
         ChildSizing.VerticalSpacing = 0
         ChildSizing.Layout = cclLeftToRightThenTopToBottom
         ChildSizing.ControlsPerLine = 1
-        ClientHeight = 140
-        ClientWidth = 185
+        ClientHeight = 159
+        ClientWidth = 189
         Ctl3D = False
         DockSite = False
         DragCursor = crDrag
@@ -1078,8 +1078,8 @@ object frmCompilerOptions: TfrmCompilerOptions
         ChildSizing.HorizontalSpacing = 0
         ChildSizing.VerticalSpacing = 0
         ChildSizing.ControlsPerLine = 0
-        ClientHeight = 50
-        ClientWidth = 454
+        ClientHeight = 54
+        ClientWidth = 458
         Ctl3D = False
         DockSite = False
         DragCursor = crDrag
@@ -1155,8 +1155,8 @@ object frmCompilerOptions: TfrmCompilerOptions
         ChildSizing.HorizontalSpacing = 0
         ChildSizing.VerticalSpacing = 0
         ChildSizing.ControlsPerLine = 0
-        ClientHeight = 126
-        ClientWidth = 454
+        ClientHeight = 130
+        ClientWidth = 458
         Ctl3D = False
         DockSite = False
         DragCursor = crDrag
@@ -1449,8 +1449,8 @@ object frmCompilerOptions: TfrmCompilerOptions
         ChildSizing.HorizontalSpacing = 0
         ChildSizing.VerticalSpacing = 0
         ChildSizing.ControlsPerLine = 0
-        ClientHeight = 178
-        ClientWidth = 649
+        ClientHeight = 182
+        ClientWidth = 653
         Ctl3D = False
         DockSite = False
         DragCursor = crDrag
@@ -1710,16 +1710,16 @@ object frmCompilerOptions: TfrmCompilerOptions
       ChildSizing.HorizontalSpacing = 0
       ChildSizing.VerticalSpacing = 0
       ChildSizing.ControlsPerLine = 0
-      ClientWidth = 665
-      ClientHeight = 447
+      ClientWidth = 661
+      ClientHeight = 464
       ImageIndex = -1
       ParentFont = True
       ParentShowHint = True
       object grpLinkLibraries: TGroupBox
         Left = 6
-        Height = 53
-        Top = 190
-        Width = 653
+        Height = 49
+        Top = 211
+        Width = 649
         HelpContext = 0
         Align = alTop
         AutoSize = True
@@ -1736,8 +1736,8 @@ object frmCompilerOptions: TfrmCompilerOptions
         ChildSizing.HorizontalSpacing = 0
         ChildSizing.VerticalSpacing = 0
         ChildSizing.ControlsPerLine = 0
-        ClientHeight = 34
-        ClientWidth = 649
+        ClientHeight = 31
+        ClientWidth = 645
         Ctl3D = False
         DockSite = False
         DragCursor = crDrag
@@ -1754,9 +1754,9 @@ object frmCompilerOptions: TfrmCompilerOptions
         Visible = True
         object chkLinkSmart: TCheckBox
           Left = 6
-          Height = 22
+          Height = 19
           Top = 6
-          Width = 637
+          Width = 633
           HelpContext = 0
           Align = alTop
           AllowGrayed = False
@@ -1787,9 +1787,9 @@ object frmCompilerOptions: TfrmCompilerOptions
       end
       object TargetSpecificsGrpBox: TGroupBox
         Left = 6
-        Height = 53
-        Top = 249
-        Width = 653
+        Height = 49
+        Top = 266
+        Width = 649
         HelpContext = 0
         Align = alTop
         AutoSize = True
@@ -1806,8 +1806,8 @@ object frmCompilerOptions: TfrmCompilerOptions
         ChildSizing.HorizontalSpacing = 0
         ChildSizing.VerticalSpacing = 0
         ChildSizing.ControlsPerLine = 0
-        ClientHeight = 34
-        ClientWidth = 649
+        ClientHeight = 31
+        ClientWidth = 645
         Ctl3D = False
         DockSite = False
         DragCursor = crDrag
@@ -1824,9 +1824,9 @@ object frmCompilerOptions: TfrmCompilerOptions
         Visible = True
         object chkWin32GraphicApp: TCheckBox
           Left = 6
-          Height = 22
+          Height = 19
           Top = 6
-          Width = 637
+          Width = 633
           HelpContext = 0
           Align = alTop
           AllowGrayed = False
@@ -1857,9 +1857,9 @@ object frmCompilerOptions: TfrmCompilerOptions
       end
       object grpOptions: TGroupBox
         Left = 6
-        Height = 82
-        Top = 308
-        Width = 653
+        Height = 78
+        Top = 321
+        Width = 649
         HelpContext = 0
         Align = alTop
         AutoSize = True
@@ -1876,8 +1876,8 @@ object frmCompilerOptions: TfrmCompilerOptions
         ChildSizing.HorizontalSpacing = 0
         ChildSizing.VerticalSpacing = 0
         ChildSizing.ControlsPerLine = 0
-        ClientHeight = 63
-        ClientWidth = 649
+        ClientHeight = 60
+        ClientWidth = 645
         Ctl3D = False
         DockSite = False
         DragCursor = crDrag
@@ -1894,9 +1894,9 @@ object frmCompilerOptions: TfrmCompilerOptions
         Visible = True
         object chkOptionsLinkOpt: TCheckBox
           Left = 6
-          Height = 22
+          Height = 19
           Top = 6
-          Width = 637
+          Width = 633
           HelpContext = 0
           Align = alTop
           AllowGrayed = False
@@ -1927,8 +1927,8 @@ object frmCompilerOptions: TfrmCompilerOptions
         object edtOptionsLinkOpt: TEdit
           Left = 6
           Height = 23
-          Top = 34
-          Width = 637
+          Top = 31
+          Width = 633
           HelpContext = 0
           Align = alTop
           AutoSize = False
@@ -1959,9 +1959,9 @@ object frmCompilerOptions: TfrmCompilerOptions
       end
       object grpDebugging: TGroupBox
         Left = 6
-        Height = 178
+        Height = 199
         Top = 6
-        Width = 653
+        Width = 649
         HelpContext = 0
         Align = alTop
         AutoSize = True
@@ -1978,8 +1978,8 @@ object frmCompilerOptions: TfrmCompilerOptions
         ChildSizing.HorizontalSpacing = 0
         ChildSizing.VerticalSpacing = 0
         ChildSizing.ControlsPerLine = 0
-        ClientHeight = 159
-        ClientWidth = 649
+        ClientHeight = 181
+        ClientWidth = 645
         Ctl3D = False
         DockSite = False
         DragCursor = crDrag
@@ -1996,9 +1996,9 @@ object frmCompilerOptions: TfrmCompilerOptions
         Visible = True
         object chkDebugGDB: TCheckBox
           Left = 6
-          Height = 22
+          Height = 19
           Top = 6
-          Width = 637
+          Width = 633
           HelpContext = 0
           Align = alTop
           AllowGrayed = False
@@ -2028,9 +2028,9 @@ object frmCompilerOptions: TfrmCompilerOptions
         end
         object chkUseLineInfoUnit: TCheckBox
           Left = 6
-          Height = 22
-          Top = 34
-          Width = 637
+          Height = 19
+          Top = 31
+          Width = 633
           HelpContext = 0
           Align = alTop
           AllowGrayed = False
@@ -2060,9 +2060,9 @@ object frmCompilerOptions: TfrmCompilerOptions
         end
         object chkUseHeaptrc: TCheckBox
           Left = 6
-          Height = 22
-          Top = 62
-          Width = 637
+          Height = 19
+          Top = 56
+          Width = 633
           HelpContext = 0
           Align = alTop
           AllowGrayed = False
@@ -2092,9 +2092,9 @@ object frmCompilerOptions: TfrmCompilerOptions
         end
         object chkUseValgrind: TCheckBox
           Left = 6
-          Height = 22
-          Top = 90
-          Width = 637
+          Height = 19
+          Top = 81
+          Width = 633
           HelpContext = 0
           Align = alTop
           AllowGrayed = False
@@ -2124,9 +2124,9 @@ object frmCompilerOptions: TfrmCompilerOptions
         end
         object chkGenGProfCode: TCheckBox
           Left = 6
-          Height = 22
-          Top = 118
-          Width = 637
+          Height = 19
+          Top = 106
+          Width = 633
           HelpContext = 0
           Align = alTop
           AllowGrayed = False
@@ -2156,9 +2156,9 @@ object frmCompilerOptions: TfrmCompilerOptions
         end
         object chkSymbolsStrip: TCheckBox
           Left = 6
-          Height = 22
-          Top = 146
-          Width = 637
+          Height = 19
+          Top = 131
+          Width = 633
           HelpContext = 0
           Align = alTop
           AllowGrayed = False
@@ -2182,6 +2182,38 @@ object frmCompilerOptions: TfrmCompilerOptions
           ParentBidiMode = True
           State = cbUnchecked
           TabOrder = 5
+          TabStop = True
+          UseOnChange = False
+          Visible = True
+        end
+        object chkUseExternalDbgSyms: TCheckBox
+          Left = 6
+          Height = 19
+          Top = 156
+          Width = 633
+          HelpContext = 0
+          Align = alTop
+          AllowGrayed = False
+          AutoSize = True
+          BorderSpacing.Left = 0
+          BorderSpacing.Top = 0
+          BorderSpacing.Right = 0
+          BorderSpacing.Bottom = 0
+          BorderSpacing.Around = 6
+          BorderSpacing.CellAlignHorizontal = ccaFill
+          BorderSpacing.CellAlignVertical = ccaFill
+          Caption = 'chkUseExternalDbgSyms'
+          Checked = False
+          DragCursor = crDrag
+          DragKind = dkDrag
+          DragMode = dmManual
+          Enabled = True
+          ParentColor = True
+          ParentFont = True
+          ParentShowHint = True
+          ParentBidiMode = True
+          State = cbUnchecked
+          TabOrder = 6
           TabStop = True
           UseOnChange = False
           Visible = True
@@ -2260,8 +2292,8 @@ object frmCompilerOptions: TfrmCompilerOptions
         ChildSizing.HorizontalSpacing = 0
         ChildSizing.VerticalSpacing = 0
         ChildSizing.ControlsPerLine = 0
-        ClientHeight = 50
-        ClientWidth = 649
+        ClientHeight = 54
+        ClientWidth = 653
         Ctl3D = False
         DockSite = False
         DragCursor = crDrag
@@ -2344,8 +2376,8 @@ object frmCompilerOptions: TfrmCompilerOptions
         ChildSizing.HorizontalSpacing = 0
         ChildSizing.VerticalSpacing = 0
         ChildSizing.ControlsPerLine = 0
-        ClientHeight = 106
-        ClientWidth = 649
+        ClientHeight = 110
+        ClientWidth = 653
         Ctl3D = False
         DockSite = False
         DragCursor = crDrag
@@ -2479,8 +2511,8 @@ object frmCompilerOptions: TfrmCompilerOptions
         ChildSizing.HorizontalSpacing = 0
         ChildSizing.VerticalSpacing = 0
         ChildSizing.ControlsPerLine = 0
-        ClientHeight = 317
-        ClientWidth = 649
+        ClientHeight = 321
+        ClientWidth = 653
         Ctl3D = False
         DockSite = False
         DragCursor = crDrag
@@ -2732,8 +2764,8 @@ object frmCompilerOptions: TfrmCompilerOptions
         ChildSizing.HorizontalSpacing = 0
         ChildSizing.VerticalSpacing = 0
         ChildSizing.ControlsPerLine = 0
-        ClientHeight = 104
-        ClientWidth = 649
+        ClientHeight = 108
+        ClientWidth = 653
         Ctl3D = False
         DockSite = False
         DragCursor = crDrag
@@ -3088,8 +3120,8 @@ object frmCompilerOptions: TfrmCompilerOptions
         ChildSizing.HorizontalSpacing = 0
         ChildSizing.VerticalSpacing = 0
         ChildSizing.ControlsPerLine = 0
-        ClientHeight = 75
-        ClientWidth = 649
+        ClientHeight = 79
+        ClientWidth = 653
         Ctl3D = False
         DockSite = False
         DragCursor = crDrag
@@ -3337,8 +3369,8 @@ object frmCompilerOptions: TfrmCompilerOptions
         ChildSizing.HorizontalSpacing = 0
         ChildSizing.VerticalSpacing = 0
         ChildSizing.ControlsPerLine = 0
-        ClientHeight = 104
-        ClientWidth = 649
+        ClientHeight = 108
+        ClientWidth = 653
         Ctl3D = False
         DockSite = False
         DragCursor = crDrag
@@ -3676,8 +3708,8 @@ object frmCompilerOptions: TfrmCompilerOptions
   end
   object BtnPanel: TPanel
     Left = 0
-    Height = 50
-    Top = 478
+    Height = 38
+    Top = 490
     Width = 669
     HelpContext = 0
     Align = alBottom
@@ -3700,8 +3732,8 @@ object frmCompilerOptions: TfrmCompilerOptions
     ChildSizing.HorizontalSpacing = 0
     ChildSizing.VerticalSpacing = 0
     ChildSizing.ControlsPerLine = 0
-    ClientHeight = 46
-    ClientWidth = 665
+    ClientHeight = 38
+    ClientWidth = 669
     DockSite = False
     DragCursor = crDrag
     DragKind = dkDrag
@@ -3717,7 +3749,7 @@ object frmCompilerOptions: TfrmCompilerOptions
     object HelpButton: TBitBtn
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 34
+      Height = 26
       Top = 6
       Width = 75
       HelpContext = 0
@@ -3751,10 +3783,10 @@ object frmCompilerOptions: TfrmCompilerOptions
     end
     object btnShowOptions: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = 135
-      Height = 34
+      Left = 165
+      Height = 26
       Top = 6
-      Width = 135
+      Width = 124
       HelpContext = 0
       Align = alRight
       AutoSize = True
@@ -3822,10 +3854,10 @@ object frmCompilerOptions: TfrmCompilerOptions
     end
     object btnCheck: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = 276
-      Height = 34
+      Left = 295
+      Height = 26
       Top = 6
-      Width = 95
+      Width = 90
       HelpContext = 0
       Align = alRight
       AutoSize = True
@@ -3857,10 +3889,10 @@ object frmCompilerOptions: TfrmCompilerOptions
     end
     object btnLoadSave: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = 377
-      Height = 34
+      Left = 391
+      Height = 26
       Top = 6
-      Width = 115
+      Width = 108
       HelpContext = 0
       Align = alRight
       AutoSize = True
@@ -3927,8 +3959,8 @@ object frmCompilerOptions: TfrmCompilerOptions
     end
     object btnOK: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = 498
-      Height = 34
+      Left = 505
+      Height = 26
       Top = 6
       Width = 75
       HelpContext = 0
@@ -3963,10 +3995,10 @@ object frmCompilerOptions: TfrmCompilerOptions
     object btnCancel: TBitBtn
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
-      Left = 579
-      Height = 34
+      Left = 586
+      Height = 26
       Top = 6
-      Width = 80
+      Width = 77
       HelpContext = 0
       Align = alRight
       AutoSize = True

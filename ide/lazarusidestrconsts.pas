@@ -1287,6 +1287,7 @@ resourcestring
   dlgCOValgrind = 'Generate code for valgrind';
   dlgGPROF = 'Generate code for gprof';
   dlgCOStrip = 'Strip Symbols From Executable';
+  dlgExtSymb = 'Use external gdb debug symbols file';
   dlgLinkLibraries = 'Link Style:';
   dlgLinkSmart = 'Link Smart';
   dlgPassOptsLinker = 'Pass Options To The Linker (Delimiter is space)';

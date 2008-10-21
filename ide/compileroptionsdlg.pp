@@ -59,6 +59,7 @@ type
   { TfrmCompilerOptions }
 
   TfrmCompilerOptions = class(TForm)
+    chkUseExternalDbgSyms: TCheckBox;
     MainNoteBook: TNoteBook;
     BtnPanel: TPanel;
 
@@ -623,6 +624,7 @@ begin
     chkGenGProfCode.Checked := Options.GenGProfCode;
     chkSymbolsStrip.Checked := Options.StripSymbols;
     chkSymbolsStrip.Enabled:=EnabledLinkerOpts;
+    chkUseExternalDbgSyms.Checked := Options.UseExternalDbgSyms;
 
     chkLinkSmart.Checked := Options.LinkSmart;
     grpLinkLibraries.Enabled:=EnabledLinkerOpts;
@@ -929,6 +931,7 @@ begin
     Options.UseValgrind := chkUseValgrind.Checked;
     Options.GenGProfCode := chkGenGProfCode.Checked;
     Options.StripSymbols := chkSymbolsStrip.Checked;
+    Options.UseExternalDbgSyms := chkUseExternalDbgSyms.Checked;
 
     Options.PassLinkerOptions := chkOptionsLinkOpt.Checked;
     Options.LinkerOptions := edtOptionsLinkOpt.Text;
@@ -1319,6 +1322,7 @@ begin
   chkUseValgrind.Caption := dlgCOValgrind+' (-gv)';
   chkGenGProfCode.Caption := dlgGPROF+' (-pg)';
   chkSymbolsStrip.Caption := dlgCOStrip+' (-Xs)';
+  chkUseExternalDbgSyms.Caption := dlgExtSymb +' (-Xg)';
 
   grpLinkLibraries.Caption := dlgLinkLibraries;
   chkLinkSmart.Caption := dlgLinkSmart+' (-XX)';
