@@ -218,8 +218,8 @@ end;
 function TProjectResources.Regenerate(const MainFileName: String;
   UpdateSource, PerformSave: Boolean): Boolean;
 begin
-  DebugLn(['TProjectResources.Regenerate MainFilename=',MainFilename,' UpdateSource=',UpdateSource,' PerformSave=',PerformSave]);
-  DumpStack;
+  //DebugLn(['TProjectResources.Regenerate MainFilename=',MainFilename,' UpdateSource=',UpdateSource,' PerformSave=',PerformSave]);
+  //DumpStack;
   Result := False;
 
   if (MainFileName = '') then
