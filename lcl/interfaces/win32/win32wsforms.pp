@@ -414,11 +414,17 @@ begin
 end;
 
 class procedure TWin32WSCustomForm.SetIcon(const AForm: TCustomForm; const Small, Big: HICON);
+var
+  Wnd: HWND;
 begin
   if not WSCheckHandleAllocated(AForm, 'SetIcon') then
     Exit;
-  SendMessage(AForm.Handle, WM_SETICON, ICON_SMALL, LPARAM(Small));
-  SendMessage(AForm.Handle, WM_SETICON, ICON_BIG, LPARAM(Big));
+  Wnd := AForm.Handle;
+  SendMessage(Wnd, WM_SETICON, ICON_SMALL, LPARAM(Small));
+  SetClassLong(Wnd, GCL_HICONSM, LONG(Small));
+
+  SendMessage(Wnd, WM_SETICON, ICON_BIG, LPARAM(Big));
+  SetClassLong(Wnd, GCL_HICON, LONG(Big));
 end;
 
 class procedure TWin32WSCustomForm.SetShowInTaskbar(const AForm: TCustomForm;

@@ -1265,7 +1265,7 @@ begin
   if HandleAllocated then
   begin
     TWSCustomFormClass(WidgetSetClass).SetFormBorderStyle(Self, NewStyle);
-    TWSCustomFormClass(WidgetSetClass).SetIcon(Self, 0, 0);
+    Perform(CM_ICONCHANGED, 0, 0);
   end;
 end;
 
