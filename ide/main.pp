@@ -8264,6 +8264,17 @@ begin
   // save main source
   if (MainUnitInfo<>nil) and (not (sfDoNotSaveVirtualFiles in flags)) then 
   begin
+    if not (sfSaveToTestDir in Flags) then 
+      DestFilename := MainUnitInfo.Filename
+    else
+      DestFilename := MainBuildBoss.GetTestUnitFilename(MainUnitInfo);
+
+    // if we are saving a project to a temporary folder then we also need to save resources
+    // or compilation will be broken   
+    if sfSaveToTestDir in Flags then
+      if not Project1.Resources.Regenerate(DestFileName, False, True) then
+        DebugLn('TMainIDE.DoSaveProject Project1.Resources.Regenerate failed');
+
     if MainUnitInfo.Loaded then
     begin
       // loaded in source editor
@@ -8273,12 +8284,8 @@ begin
     end else 
     begin
       // not loaded in source editor (hidden)
-      if not (sfSaveToTestDir in Flags) then begin
-        DestFilename:=MainUnitInfo.Filename;
-        if not MainUnitInfo.NeedsSaveToDisk then
-          SkipSavingMainSource:=true;
-      end else
-        DestFilename:=MainBuildBoss.GetTestUnitFilename(MainUnitInfo);
+      if not (sfSaveToTestDir in Flags) and not MainUnitInfo.NeedsSaveToDisk then 
+        SkipSavingMainSource := true;
       if (not SkipSavingMainSource) and (MainUnitInfo.Source<>nil) then 
       begin
         Result:=SaveCodeBufferToFile(MainUnitInfo.Source, DestFilename);

@@ -51,6 +51,7 @@ type
     FModified: Boolean;
     FOnModified: TNotifyEvent;
     FInModified: Boolean;
+    FCanHasLrsInclude: Boolean;
 
     FSystemResources: TStringList;
     FLazarusResources: TStringList;
@@ -68,10 +69,10 @@ type
     procedure SetModified(const AValue: Boolean);
     procedure EmbeddedObjectModified(Sender: TObject);
     function Update: Boolean;
-    function UpdateMainSourceFile(const AFileName: string; const CanHasLrs: Boolean): Boolean;
-    function CanHasLrsInclude(const AFileName: string): Boolean;
+    function UpdateMainSourceFile(const AFileName: string): Boolean;
+    procedure UpdateCanHasLrsInclude(const AFileName: string);
     function Save: Boolean;
-    procedure UpdateCodeBuffers(const CanHasLrs: Boolean);
+    procedure UpdateCodeBuffers;
     procedure DeleteLastCodeBuffers;
   public
     constructor Create; override;
@@ -161,6 +162,7 @@ begin
   inherited Create;
 
   FInModified := False;
+  FCanHasLrsInclude := False;
 
   FSystemResources := TStringList.Create;
   FLazarusResources := TStringList.Create;
@@ -215,10 +217,9 @@ end;
 
 function TProjectResources.Regenerate(const MainFileName: String;
   UpdateSource, PerformSave: Boolean): Boolean;
-var
-  ACanHasLrsInclude: Boolean;
 begin
-  //DebugLn(['TProjectResources.Regenerate MainFilename=',MainFilename,' UpdateSource=',UpdateSource,' PerformSave=',PerformSave]);
+  DebugLn(['TProjectResources.Regenerate MainFilename=',MainFilename,' UpdateSource=',UpdateSource,' PerformSave=',PerformSave]);
+  DumpStack;
   Result := False;
 
   if (MainFileName = '') then
@@ -229,16 +230,17 @@ begin
   LastLrsFileName := lrsFileName;
   SetFileNames(MainFileName);
 
-  ACanHasLrsInclude := CanHasLrsInclude(MainFileName);
+  if UpdateSource then
+    UpdateCanHasLrsInclude(MainFileName);
 
   try
     // update resources (FLazarusResources, FSystemResources, ...)
     if not Update then
       Exit;
     // create codebuffers of new .lrs and .rc files
-    UpdateCodeBuffers(ACanHasLrsInclude);
+    UpdateCodeBuffers;
     // update .lpr file (old and new include files exist, so parsing should work without errors)
-    if UpdateSource and not UpdateMainSourceFile(MainFileName, ACanHasLrsInclude) then
+    if UpdateSource and not UpdateMainSourceFile(MainFileName) then
       Exit;
 
     if PerformSave and not Save then
@@ -314,7 +316,7 @@ begin
   end;
 end;
 
-function TProjectResources.UpdateMainSourceFile(const AFileName: string; const CanHasLrs: Boolean): Boolean;
+function TProjectResources.UpdateMainSourceFile(const AFileName: string): Boolean;
 var
   NewX, NewY, NewTopLine: integer;
   CodeBuf, NewCode: TCodeBuffer;
@@ -333,7 +335,7 @@ begin
     // update LResources uses
     if CodeToolBoss.FindUnitInAllUsesSections(CodeBuf, LazResourcesUnit, NamePos, InPos) then
     begin
-      if not (CanHasLrs and HasLazarusResources) then
+      if not (FCanHasLrsInclude and HasLazarusResources) then
       begin
         if not CodeToolBoss.RemoveUnitFromAllUsesSections(CodeBuf, LazResourcesUnit) then
         begin
@@ -344,7 +346,7 @@ begin
       end;
     end
     else
-    if CanHasLrs and HasLazarusResources then
+    if FCanHasLrsInclude and HasLazarusResources then
     begin
       if not CodeToolBoss.AddUnitToMainUsesSection(CodeBuf, LazResourcesUnit,'') then
       begin
@@ -390,7 +392,7 @@ begin
     begin
       // there is a resource directive in the source
       //debugln(['TProjectResources.UpdateMainSourceFile include directive found']);
-      if not (CanHasLrs and HasLazarusResources) then
+      if not (FCanHasLrsInclude and HasLazarusResources) then
       begin
         if not CodeToolBoss.RemoveDirective(NewCode, NewX, NewY, true) then
         begin
@@ -402,7 +404,7 @@ begin
       end;
     end
     else
-    if CanHasLrs and HasLazarusResources then
+    if FCanHasLrsInclude and HasLazarusResources then
     begin
       //debugln(['TProjectResources.UpdateMainSourceFile include directive not found']);
       if not CodeToolBoss.AddIncludeDirective(CodeBuf,
@@ -417,12 +419,12 @@ begin
   end;
 end;
 
-function TProjectResources.CanHasLrsInclude(const AFileName: string): Boolean;
+procedure TProjectResources.UpdateCanHasLrsInclude(const AFileName: string);
 var
   CodeBuf: TCodeBuffer;
   NamePos, InPos: Integer;
 begin
-  Result := False;
+  FCanHasLrsInclude := False;
 
   CodeBuf := CodeToolBoss.LoadFile(AFileName, False, False);
   if CodeBuf = nil then
@@ -430,7 +432,7 @@ begin
 
   // Check that .lrs contains Forms and Interfaces in the uses section. If it does not
   // we cannot add LResources (it is not lazarus application)
-  Result :=
+  FCanHasLrsInclude :=
     CodeToolBoss.FindUnitInAllUsesSections(CodeBuf, 'Forms', NamePos, InPos) and
     CodeToolBoss.FindUnitInAllUsesSections(CodeBuf, 'Interfaces', NamePos, InPos);
 end;
@@ -465,7 +467,7 @@ begin
     if not Update then
       Exit;
     // update codebuffers of new .lrs and .rc files
-    UpdateCodeBuffers(CanHasLrsInclude(CurFileName));
+    UpdateCodeBuffers;
 
     // update {$R filename} directive
     if CodeToolBoss.FindResourceDirective(CodeBuf, 1, 1,
@@ -552,7 +554,7 @@ begin
   Result := True;
 end;
 
-procedure TProjectResources.UpdateCodeBuffers(const CanHasLrs: Boolean);
+procedure TProjectResources.UpdateCodeBuffers;
 
   procedure UpdateCodeBuffer(NewFilename, Source: string);
   var
@@ -565,7 +567,7 @@ procedure TProjectResources.UpdateCodeBuffers(const CanHasLrs: Boolean);
 begin
   if HasSystemResources then
     UpdateCodeBuffer(rcFileName, FSystemResources.Text);
-  if CanHasLrs and HasLazarusResources then
+  if FCanHasLrsInclude and HasLazarusResources then
     UpdateCodeBuffer(lrsFileName, FLazarusResources.Text);
 end;
 
