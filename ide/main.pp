@@ -126,7 +126,7 @@ uses
   // main ide
   MainBar, MainIntf, MainBase,
   // options frames
-  IDEOptionsIntf, IDEOptionsDlg,
+  IDEOptionsIntf, IDEOptionsDlg, EditorOptionsDlg {temporary},
   options_files, options_desktop, options_window, options_formed, options_oi,
   options_backup, options_naming, options_fpdoc;
 
