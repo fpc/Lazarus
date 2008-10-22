@@ -22,8 +22,6 @@
   
   Abstract:
     This unit defines a dialog for the lazarus options.
-
-  TODO: remove FEditors
 }
 unit IdeOptionsDlg;
 
@@ -50,7 +48,6 @@ type
     FOnLoadOptions: TOnLoadIDEOptions;
     FOnSaveOptions: TOnSaveIDEOptions;
     PrevEditor: TAbstractIDEOptionsEditor;
-    FEditors: TList;
 
     function CheckValues: boolean;
     procedure LoadIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
@@ -61,7 +58,6 @@ type
     property OnSaveIDEOptions: TOnSaveIDEOptions read FOnSaveOptions write FOnSaveOptions;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     procedure OpenEditor(AEditor: TAbstractIDEOptionsEditorClass);
     procedure ReadSettings(AOptions: TAbstractIDEOptions);
     procedure WriteSettings(AOptions: TAbstractIDEOptions);
@@ -82,7 +78,6 @@ begin
   IDEDialogLayoutList.ApplyLayout(Self, Width, Height);
   Caption := lisMenuGeneralOptions;
 
-  FEditors := TList.Create;
   CreateEditors;
 
   ButtonPanel.OKButton.OnClick := @OKButtonClick;
@@ -91,12 +86,6 @@ begin
 
   if CategoryTree.Items.Count > 0 then
     CategoryTree.Selected := CategoryTree.Items.GetFirstNode;
-end;
-
-destructor TIDEOptionsDialog.Destroy;
-begin
-  FEditors.Free;
-  inherited Destroy;
 end;
 
 procedure TIDEOptionsDialog.HelpButtonClick(Sender: TObject);
@@ -153,32 +142,64 @@ begin
 end;
 
 procedure TIDEOptionsDialog.ReadSettings(AOptions: TAbstractIDEOptions);
-var
-  i: integer;
+
+  procedure Traverse(Node: TTreeNode);
+  begin
+    if Node <> nil then
+    begin
+      if Node.Data <> nil then
+        with TAbstractIDEOptionsEditor(Node.Data) do
+          if SupportedOptionsClass = AOptions.ClassType then
+            ReadSettings(AOptions);
+      Traverse(Node.GetFirstChild);
+      Traverse(Node.GetNextSibling);
+    end;
+  end;
+
 begin
-  for i := 0 to FEditors.Count - 1 do
-    TAbstractIDEOptionsEditor(FEditors[i]).ReadSettings(AOptions);
+  Traverse(CategoryTree.Items.GetFirstNode);
 end;
 
 procedure TIDEOptionsDialog.WriteSettings(AOptions: TAbstractIDEOptions);
-var
-  i: integer;
+
+  procedure Traverse(Node: TTreeNode);
+  begin
+    if Node <> nil then
+    begin
+      if Node.Data <> nil then
+        with TAbstractIDEOptionsEditor(Node.Data) do
+          if SupportedOptionsClass = AOptions.ClassType then
+            WriteSettings(AOptions);
+      Traverse(Node.GetFirstChild);
+      Traverse(Node.GetNextSibling);
+    end;
+  end;
+
 begin
-  for i := 0 to FEditors.Count - 1 do
-    TAbstractIDEOptionsEditor(FEditors[i]).WriteSettings(AOptions);
+  Traverse(CategoryTree.Items.GetFirstNode);
 end;
 
 function TIDEOptionsDialog.CheckValues: boolean;
-var
-  i: integer;
-begin
-  Result := True;
-  for i := 0 to FEditors.Count - 1 do
+
+  function Traverse(Node: TTreeNode): Boolean;
   begin
-    Result := TAbstractIDEOptionsEditor(FEditors[i]).Check;
-    if not Result then
-      break;
+    if Node <> nil then
+    begin
+      if Node.Data <> nil then
+        Result := TAbstractIDEOptionsEditor(Node.Data).Check
+      else
+        Result := True;
+
+      Result := Result and
+                Traverse(Node.GetFirstChild) and
+                Traverse(Node.GetNextSibling);
+    end
+    else
+      Result := True;
   end;
+
+begin
+  Result := Traverse(CategoryTree.Items.GetFirstNode);
 end;
 
 procedure TIDEOptionsDialog.LoadIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
@@ -216,7 +237,6 @@ begin
         Instance.OnLoadIDEOptions := @LoadIDEOptions;
         Instance.OnSaveIDEOptions := @SaveIDEOptions;
         Instance.Setup;
-        FEditors.Add(Instance);
 
         ItemNode := CategoryTree.Items.AddChild(GroupNode, Instance.GetTitle);
         ItemNode.Data := Instance;
@@ -227,6 +247,7 @@ begin
 end;
 
 procedure TIDEOptionsDialog.OpenEditor(AEditor: TAbstractIDEOptionsEditorClass);
+
   function Traverse(ANode: TTreeNode): TTreeNode;
   begin
     Result := nil;
@@ -240,6 +261,7 @@ procedure TIDEOptionsDialog.OpenEditor(AEditor: TAbstractIDEOptionsEditorClass);
         Result := Traverse(ANode.GetNextSibling);
     end;
   end;
+
 var
   Node: TTreeNode;
 begin
