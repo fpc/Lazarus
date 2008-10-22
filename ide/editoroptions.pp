@@ -388,6 +388,7 @@ type
     fEditorFontHeight: Integer;
     fExtraCharSpacing: Integer;
     fExtraLineSpacing: Integer;
+    fDisableAntialiasing: Boolean;
     FDoNotWarnForFont: string;
 
     // Key Mappings options
@@ -492,6 +493,8 @@ type
       read fExtraCharSpacing write fExtraCharSpacing default 0;
     property ExtraLineSpacing: Integer
       read fExtraLineSpacing write fExtraLineSpacing default 1;
+    property DisableAntialiasing: Boolean
+      read fDisableAntialiasing write fDisableAntialiasing default True;
     property DoNotWarnForFont: string
       read FDoNotWarnForFont write FDoNotWarnForFont;
 
@@ -531,6 +534,7 @@ type
 
   TEditorOptionsForm = class(TForm)
     CancelButton: TBitBtn;
+    DisableAntialiasingCheckBox: TCheckBox;
     MainNoteBook: TNoteBook;
 
     // general options
@@ -1534,6 +1538,7 @@ begin
   // Display options
   fEditorFont := SynDefaultFontName;
   fEditorFontHeight := SynDefaultFontHeight;
+  fDisableAntialiasing := True;
 
   // Key Mappings
   fKeyMappingScheme := KeyMapSchemeNames[kmsLazarus];
@@ -1675,6 +1680,8 @@ begin
       XMLConfig.GetValue('EditorOptions/Display/ExtraCharSpacing', 0);
     fExtraLineSpacing :=
       XMLConfig.GetValue('EditorOptions/Display/ExtraLineSpacing', 1);
+    fDisableAntialiasing :=
+      XMLConfig.GetValue('EditorOptions/Display/DisableAntialiasing', True);
     FDoNotWarnForFont :=
       XMLConfig.GetValue('EditorOptions/Display/DoNotWarnForFont', '');
 
@@ -1808,6 +1815,8 @@ begin
       ,fExtraCharSpacing, 1);
     XMLConfig.SetDeleteValue('EditorOptions/Display/ExtraLineSpacing'
       ,fExtraLineSpacing, 1);
+    XMLConfig.SetDeleteValue('EditorOptions/Display/DisableAntialiasing'
+      ,fDisableAntialiasing, True);
     XMLConfig.SetDeleteValue('EditorOptions/Display/DoNotWarnForFont'
       ,FDoNotWarnForFont, '');
 
@@ -2367,6 +2376,10 @@ begin
   ASynEdit.RightEdgeColor := fRightMarginColor;
   ASynEdit.Font.Height := fEditorFontHeight;// set height before name for XLFD !
   ASynEdit.Font.Name := fEditorFont;
+  if fDisableAntialiasing then
+    ASynEdit.Font.Quality := fqNonAntialiased
+  else
+    ASynEdit.Font.Quality := fqDefault;
   //debugln(['TEditorOptions.GetSynEditSettings ',ASynEdit.font.height]);
   
   ASynEdit.ExtraCharSpacing := fExtraCharSpacing;
@@ -2404,6 +2417,7 @@ begin
   fEditorFontHeight := ASynEdit.Font.Height;
   fExtraCharSpacing := ASynEdit.ExtraCharSpacing;
   fExtraLineSpacing := ASynEdit.ExtraLineSpacing;
+  fDisableAntialiasing := (ASynEdit.Font.Quality = fqNonAntialiased);
   fUndoLimit     := ASynEdit.MaxUndo;
 end;
 
@@ -2647,6 +2661,10 @@ begin
         PreviewEdits[a].RightEdge:=StrToIntDef(RightMarginComboBox.Text,80)
       else
         PreviewEdits[a].RightEdge:=0;
+      if DisableAntialiasingCheckBox.Checked then
+        PreviewEdits[a].Font.Quality:=fqNonAntialiased
+      else
+        PreviewEdits[a].Font.Quality:=fqDefault;
     end;
   if CurHighlightElement <> Nil then
   begin
@@ -3886,6 +3904,8 @@ begin
   ExtraCharSpacingLabel.Caption := dlgExtraCharSpacing;
   SetComboBoxText(ExtraLineSpacingComboBox,IntToStr(EditorOpts.ExtraLineSpacing));
   ExtraLineSpacingLabel.Caption := dlgExtraLineSpacing;
+  DisableAntialiasingCheckBox.Checked := EditorOpts.DisableAntialiasing;
+  DisableAntialiasingCheckBox.Caption := dlgDisableAntialiasing;
 end;
 
 procedure TEditorOptionsForm.SetupKeyMappingsPage(Page: Integer);

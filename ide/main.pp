@@ -956,6 +956,42 @@ var
 class procedure TMainIDE.ParseCmdLineOptions;
 const
   space = '                      ';
+var
+  AHelp: TStringList;
+
+  procedure AddHelp(Args: array of const);
+  var
+    i: Integer;
+  begin
+    for i := Low(Args) to High(Args) do
+    begin
+      case Args[i].VType of
+        vtInteger: AHelp.Add(dbgs(Args[i].vinteger));
+        vtInt64: AHelp.Add(dbgs(Args[i].VInt64^));
+        vtQWord: AHelp.Add(dbgs(Args[i].VQWord^));
+        vtBoolean: AHelp.Add(dbgs(Args[i].vboolean));
+        vtExtended: AHelp.Add(dbgs(Args[i].VExtended^));
+{$ifdef FPC_CURRENCY_IS_INT64}
+        // fpc 2.x has troubles in choosing the right dbgs()
+        // so we convert here
+        vtCurrency: AHelp.Add(dbgs(int64(Args[i].vCurrency^)/10000, 4));
+{$else}
+        vtCurrency: AHelp.Add(dbgs(Args[i].vCurrency^));
+{$endif}
+        vtString: AHelp.Add(Args[i].VString^);
+        vtAnsiString: AHelp.Add(AnsiString(Args[i].VAnsiString));
+        vtChar: AHelp.Add(Args[i].VChar);
+        vtPChar: AHelp.Add(Args[i].VPChar);
+        vtPWideChar: AHelp.Add(Args[i].VPWideChar);
+        vtWideChar: AHelp.Add(Args[i].VWideChar);
+        vtWidestring: AHelp.Add(WideString(Args[i].VWideString));
+        vtObject: AHelp.Add(DbgSName(Args[i].VObject));
+        vtClass: AHelp.Add(DbgSName(Args[i].VClass));
+        vtPointer: AHelp.Add(Dbgs(Args[i].VPointer));
+      end;
+    end;
+  end;
+
 begin
   StartedByStartLazarus:=false;
   SkipAutoLoadingLastProject:=false;
@@ -964,40 +1000,44 @@ begin
   begin
     TranslateResourceStrings(ProgramDirectory,'');
 
-    writeln(lislazarusOptionsProjectFilename);
-    writeln('');
-    writeln(lisIDEOptions);
-    writeln('');
-    writeln('--help or -?             ', listhisHelpMessage);
-    writeln('');
-    writeln(PrimaryConfPathOptLong,' <path>');
-    writeln('or ',PrimaryConfPathOptShort,' <path>');
-    writeln(BreakString(space+lisprimaryConfigDirectoryWhereLazarusStoresItsConfig,
-                        75, 22), LazConf.GetPrimaryConfigPath);
-    writeln('');
-    writeln(SecondaryConfPathOptLong,' <path>');
-    writeln('or ',SecondaryConfPathOptShort,' <path>');
-    writeln(BreakString(space+lissecondaryConfigDirectoryWhereLazarusSearchesFor,
-                        75, 22), LazConf.GetSecondaryConfigPath);
-    writeln('');
-    writeln(DebugLogOpt,' <file>');
-    writeln(BreakString(space+lisFileWhereDebugOutputIsWritten, 75, 22));
-    writeln('');
-    writeln(NoSplashScreenOptLong);
-    writeln('or ',NoSplashScreenOptShort);
-    writeln(BreakString(space+lisDoNotShowSplashScreen,75, 22));
-    writeln('');
-    writeln(SkipLastProjectOpt);
-    writeln(BreakString(space+lisSkipLoadingLastProject, 75, 22));
-    writeln('');
-    writeln(LanguageOpt);
-    writeln(BreakString(space+lisOverrideLanguage,75, 22));
-    writeln('');
-    writeln('');
-    writeln('');
-    writeln(lisCmdLineLCLInterfaceSpecificOptions);
-    writeln('');
-    writeln(GetCmdLineParamDescForInterface);
+    AHelp := TStringList.Create;
+    AddHelp([lislazarusOptionsProjectFilename]);
+    AddHelp(['']);
+    AddHelp([lisIDEOptions]);
+    AddHelp(['']);
+    AddHelp(['--help or -?             ', listhisHelpMessage]);
+    AddHelp(['']);
+    AddHelp([PrimaryConfPathOptLong, ' <path>']);
+    AddHelp(['or ', PrimaryConfPathOptShort, ' <path>']);
+    AddHelp([BreakString(space+lisprimaryConfigDirectoryWhereLazarusStoresItsConfig,
+                        75, 22), LazConf.GetPrimaryConfigPath]);
+    AddHelp(['']);
+    AddHelp([SecondaryConfPathOptLong,' <path>']);
+    AddHelp(['or ',SecondaryConfPathOptShort,' <path>']);
+    AddHelp([BreakString(space+lissecondaryConfigDirectoryWhereLazarusSearchesFor,
+                        75, 22), LazConf.GetSecondaryConfigPath]);
+    AddHelp(['']);
+    AddHelp([DebugLogOpt,' <file>']);
+    AddHelp([BreakString(space+lisFileWhereDebugOutputIsWritten, 75, 22)]);
+    AddHelp(['']);
+    AddHelp([NoSplashScreenOptLong]);
+    AddHelp(['or ',NoSplashScreenOptShort]);
+    AddHelp([BreakString(space+lisDoNotShowSplashScreen,75, 22)]);
+    AddHelp(['']);
+    AddHelp([SkipLastProjectOpt]);
+    AddHelp([BreakString(space+lisSkipLoadingLastProject, 75, 22)]);
+    AddHelp(['']);
+    AddHelp([LanguageOpt]);
+    AddHelp([BreakString(space+lisOverrideLanguage,75, 22)]);
+    AddHelp(['']);
+    AddHelp([lisCmdLineLCLInterfaceSpecificOptions]);
+    AddHelp(['']);
+    AddHelp([GetCmdLineParamDescForInterface]);
+    if TextRec(Output).Mode = fmClosed then
+      MessageDlg(AHelp.Text, mtInformation, [mbOk], 0)
+    else
+      WriteLn(UTF8ToConsole(AHelp.Text));
+    AHelp.Free;
     Application.Terminate;
     exit;
   end;

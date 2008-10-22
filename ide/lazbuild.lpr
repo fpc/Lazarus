@@ -1112,53 +1112,53 @@ begin
   writeln('');
   writeln('lazbuild [options] <project or package-filename>');
   writeln('');
-  writeln(lisEdtExtToolParameters);
+  writeln(UTF8ToConsole(lisEdtExtToolParameters));
   writeln('');
-  writeln('--help or -?              ', listhisHelpMessage);
+  writeln('--help or -?              ', UTF8ToConsole(listhisHelpMessage));
   writeln('');
-  writeln('-B or --build-all         ', lisBuildAllFilesOfProjectPackageIDE);
-  writeln('-r or --recursive         ', lisApplyBuildFlagsBToDependenciesToo);
-  writeln('-d or --skip-dependencies ', lisDoNotCompileDependencies);
-  writeln('--build-ide=<options>     ', lisBuildIDEWithPackages);
-  writeln('-v or --version           ', lisShowVersionAndExit);
+  writeln('-B or --build-all         ', UTF8ToConsole(lisBuildAllFilesOfProjectPackageIDE));
+  writeln('-r or --recursive         ', UTF8ToConsole(lisApplyBuildFlagsBToDependenciesToo));
+  writeln('-d or --skip-dependencies ', UTF8ToConsole(lisDoNotCompileDependencies));
+  writeln('--build-ide=<options>     ', UTF8ToConsole(lisBuildIDEWithPackages));
+  writeln('-v or --version           ', UTF8ToConsole(lisShowVersionAndExit));
   writeln('');
   writeln(PrimaryConfPathOptLong,'<path>');
   writeln('or ',PrimaryConfPathOptShort,'<path>');
-  writeln(BreakString(space+lisprimaryConfigDirectoryWhereLazarusStoresItsConfig,
-                      75, 22), LazConf.GetPrimaryConfigPath);
+  writeln(UTF8ToConsole(BreakString(space+lisprimaryConfigDirectoryWhereLazarusStoresItsConfig,
+                      75, 22)), LazConf.GetPrimaryConfigPath);
   writeln('');
   writeln(SecondaryConfPathOptLong,'<path>');
   writeln('or ',SecondaryConfPathOptShort,'<path>');
-  writeln(BreakString(space+lissecondaryConfigDirectoryWhereLazarusSearchesFor,
-                      75, 22), LazConf.GetSecondaryConfigPath);
+  writeln(UTF8ToConsole(BreakString(space+lissecondaryConfigDirectoryWhereLazarusSearchesFor,
+                      75, 22)), LazConf.GetSecondaryConfigPath);
   writeln('');
   writeln('--operating-system=<operating-system>');
   writeln('or --os=<operating-system>');
-  writeln(BreakString(Format(
+  writeln(UTF8ToConsole(BreakString(Format(
     lisOverrideTheProjectOperatingSystemEGWin32LinuxDefau, [space,
     LazConf.GetDefaultTargetOS]),
-                      75, 22));
+                      75, 22)));
   writeln('');
   writeln('--widgetset=<widgetset>');
   writeln('or --ws=<widgetset>');
-  writeln(BreakString(Format(
+  writeln(UTF8ToConsole(BreakString(Format(
     lisOverrideTheProjectWidgetsetEGGtkGtk2QtWin32CarbonD, [space,
     LCLPlatformDirNames[LazConf.GetDefaultLCLWidgetType]]) ,
-                      75, 22));
+                      75, 22)));
   writeln('');
   writeln('--cpu=<cpu>');
-  writeln(BreakString(Format(
+  writeln(UTF8ToConsole(BreakString(Format(
     lisOverrideTheProjectCpuEGI386X86_64PowerpcPowerpc_64, [space,
     LazConf.GetDefaultTargetCPU]),
-                      75, 22));
+                      75, 22)));
   writeln('');
   writeln('--compiler=<ppcXXX>');
-  writeln(BreakString(Format(
+  writeln(UTF8ToConsole(BreakString(Format(
     lisOverrideTheDefaultCompilerEGPpc386Ppcx64PpcppcEtcD, [space]),
-                      75, 22));
+                      75, 22)));
   writeln('');
   writeln(LanguageOpt);
-  writeln(BreakString(space+lisOverrideLanguage,75, 22));
+  writeln(UTF8ToConsole(BreakString(space+lisOverrideLanguage,75, 22)));
 end;
 
 procedure TLazBuildApplication.Error(ErrorCode: Byte; const ErrorMsg: string);

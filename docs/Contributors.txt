@@ -3,6 +3,7 @@ The following people contributed to Lazarus:
 A. J. Venter
 Aleksey Lagunov
 Alexander Grau
+Alexander Klenin
 Alexander Shiyan
 Alexandr Gridnev
 Alexandre Leclerc

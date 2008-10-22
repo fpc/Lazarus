@@ -344,7 +344,7 @@ type
       property Rows[Row: Integer]: PColRowProps read GetRows write SetRows;
   end;
 
-  { TColumnTitle }
+  { TGridColumnTitle }
 
   TGridColumnTitle = class(TPersistent)
   private
@@ -353,6 +353,8 @@ type
     FColor: ^TColor;
     FAlignment: ^TAlignment;
     FFont: TFont;
+    FImageIndex: Integer;
+    FImageLayout: TButtonLayout;
     FIsDefaultTitleFont: boolean;
     FLayout: ^TTextLayout;
     procedure FontChanged(Sender: TObject);
@@ -369,6 +371,8 @@ type
     procedure SetAlignment(const AValue: TAlignment);
     procedure SetColor(const AValue: TColor);
     procedure SetFont(const AValue: TFont);
+    procedure SetImageIndex(const AValue: Integer);
+    procedure SetImageLayout(const AValue: TButtonLayout);
     procedure SetLayout(const AValue: TTextLayout);
     property IsDefaultFont: boolean read FIsDefaultTitleFont;
   protected
@@ -386,10 +390,12 @@ type
     property Column: TGridColumn read FColumn;
   published
     property Alignment: TAlignment read GetAlignment write SetAlignment stored IsAlignmentStored;
-    property Layout: TTextLayout read GetLayout write SetLayout stored IsLayoutStored;
     property Caption: TCaption read GetCaption write SetCaption stored IsCaptionStored;
     property Color: TColor read GetColor write SetColor stored IsColorStored;
     property Font: TFont read GetFont write SetFont stored IsFontStored;
+    property ImageIndex: Integer read FImageIndex write SetImageIndex default 0;
+    property ImageLayout: TButtonLayout read FImageLayout write SetImageLayout default blGlyphRight;
+    property Layout: TTextLayout read GetLayout write SetLayout stored IsLayoutStored;
   end;
 
   { TGridColumn }
@@ -422,7 +428,6 @@ type
     function GetMaxSize: Integer;
     function GetMinSize: Integer;
     function GetSizePriority: Integer;
-    function GetPickList: TStrings;
     function GetReadOnly: Boolean;
     function GetVisible: Boolean;
     function GetWidth: Integer;
@@ -462,6 +467,7 @@ type
     function  GetDefaultSizePriority: Integer;
     function  GetDefaultVisible: boolean; virtual;
     function  GetDefaultWidth: Integer; virtual;
+    function GetPickList: TStrings; virtual;
     procedure ColumnChanged; virtual;
     procedure AllColumnsChange;
     function  CreateTitle: TGridColumnTitle; virtual;
@@ -586,6 +592,7 @@ type
     FAltColorStartNormal: boolean;
     FFlat: Boolean;
     FSortOrder: TSortOrder;
+    FTitleImageList: TImageList;
     FTitleStyle: TTitleStyle;
     FOnCompareCells: TOnCompareCells;
     FGridLineStyle: TPenStyle;
@@ -649,6 +656,7 @@ type
     function  CheckTopLeft(aCol,aRow: Integer; CheckCols,CheckRows: boolean): boolean;
     function  GetSelectedColumn: TGridColumn;
     function IsDefRowHeightStored: boolean;
+    function IsTitleImageListStored: boolean;
     procedure SetAlternateColor(const AValue: TColor);
     procedure SetAutoFillColumns(const AValue: boolean);
     procedure SetBorderColor(const AValue: TColor);
@@ -658,6 +666,7 @@ type
     procedure SetAltColorStartNormal(const AValue: boolean);
     procedure SetFlat(const AValue: Boolean);
     procedure SetFocusRectVisible(const AValue: Boolean);
+    procedure SetTitleImageList(const AValue: TImageList);
     procedure SetTitleFont(const AValue: TFont);
     procedure SetTitleStyle(const AValue: TTitleStyle);
     procedure SetUseXorFeatures(const AValue: boolean);
@@ -796,6 +805,7 @@ type
     procedure DrawCellText(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState; aText: String); virtual;
     procedure DrawColRowMoving;
     procedure DrawColumnText(aCol,aRow: Integer; aRect: TRect; aState:TGridDrawState); virtual;
+    procedure DrawColumnTitleImage(var ARect: TRect; AColumnIndex: Integer);
     procedure DrawEdges;
     procedure DrawFocusRect(aCol,aRow:Integer; ARect:TRect); virtual;
     procedure DrawRow(aRow: Integer); virtual;
@@ -946,6 +956,7 @@ type
     property GridWidth: Integer read FGCache.GridWidth;
     property HeaderHotZones: TGridZoneSet read FHeaderHotZones write FHeaderHotZones default [gzFixedCols];
     property HeaderPushZones: TGridZoneSet read FHeaderPushZones write FHeaderPushZones default [gzFixedCols];
+    property TitleImageList: TImageList read FTitleImageList write SetTitleImageList;
     property InplaceEditor: TWinControl read FEditor;
     property IsCellSelected[aCol,aRow: Integer]: boolean read GetIsCellSelected;
     property LeftCol:Integer read GetLeftCol write SetLeftCol;
@@ -1228,6 +1239,7 @@ type
     property TabOrder;
     property TabStop;
     property TitleFont;
+    property TitleImageList;
     property TitleStyle;
     property UseXORFeatures;
     property Visible;
@@ -1417,6 +1429,7 @@ type
     property TabOrder;
     property TabStop;
     property TitleFont;
+    property TitleImageList;
     property TitleStyle;
     property UseXORFeatures;
     property Visible;
@@ -1966,6 +1979,11 @@ function TCustomGrid.IsPushCellActive: boolean;
 begin
   with FGCache do
     result := (PushedCell.X<>-1) and (PushedCell.Y<>-1);
+end;
+
+function TCustomGrid.IsTitleImageListStored: boolean;
+begin
+  Result := FTitleImageList <> nil;
 end;
 
 function TCustomGrid.GetLeftCol: Integer;
@@ -3046,8 +3064,72 @@ end;
 procedure TCustomGrid.DrawColumnText(aCol, aRow: Integer; aRect: TRect;
   aState: TGridDrawState);
 begin
-  if (gdFixed in aState) and (aRow=0) and (aCol>=FixedCols) then
+  if (gdFixed in aState) and (aRow=0) and (aCol>=FixedCols) then begin
+    DrawColumnTitleImage(aRect, aCol);
     DrawCellText(aCol,aRow,aRect,aState,GetColumnTitle(aCol));
+  end;
+end;
+
+procedure TCustomGrid.DrawColumnTitleImage(
+  var ARect: TRect; AColumnIndex: Integer);
+const
+  BORDER = 2;
+var
+  c: TGridColumn;
+  w, h, rw, rh: Integer;
+  needStretch: Boolean;
+  r: TRect;
+begin
+  if TitleImageList = nil then exit;
+  c := ColumnFromGridColumn(AColumnIndex);
+  if
+    (c = nil) or
+    not InRange(c.Title.ImageIndex, 0, TitleImageList.Count - 1)
+  then
+    exit;
+  w := TitleImageList.Width;
+  h := TitleImageList.Height;
+  rw := ARect.Right - ARect.Left - BORDER * 2;
+  rh := ARect.Bottom - ARect.Top - BORDER * 2;
+  if rw < w then begin
+    w := rw;
+    needStretch := true;
+  end;
+  if rh < h then begin
+    h := rh;
+    needStretch := true;
+  end;
+  case c.Title.ImageLayout of
+    blGlyphRight, blGlyphLeft:
+      r.Top := ARect.Top + (rh - h) div 2 + BORDER;
+    blGlyphTop, blGlyphBottom:
+      r.Left := ARect.Left + (rw - w) div 2 + BORDER;
+  end;
+  case c.Title.ImageLayout of
+    blGlyphRight: begin
+      Dec(ARect.Right, w + BORDER * 2);
+      r.Left := ARect.Right + BORDER;
+    end;
+    blGlyphLeft: begin
+      r.Left := ARect.Left + BORDER;
+      Inc(ARect.Left, w + BORDER * 2);
+    end;
+    blGlyphTop: begin
+      r.Top := ARect.Top + BORDER;
+      Inc(ARect.Top, w + BORDER * 2);
+    end;
+    blGlyphBottom: begin
+      Dec(ARect.Bottom, w + BORDER * 2);
+      r.Top := ARect.Bottom + BORDER;
+    end;
+  end;
+  if needStretch then begin
+    r.Right := r.Left + w;
+    r.Bottom := r.Top + h;
+    TitleImageList.StretchDraw(Canvas, c.Title.ImageIndex, r);
+  end
+  else
+    TitleImageList.Draw(Canvas, r.Left, r.Top, c.Title.ImageIndex);
 end;
 
 procedure TCustomGrid.DrawCell(aCol, aRow: Integer; aRect: TRect;
@@ -4078,6 +4160,13 @@ end;
 procedure TCustomGrid.SetTitleFont(const AValue: TFont);
 begin
   FTitleFont.Assign(AValue);
+  VisualChange;
+end;
+
+procedure TCustomGrid.SetTitleImageList(const AValue: TImageList);
+begin
+  if FTitleImageList = AValue then exit;
+  FTitleImageList := AValue;
   VisualChange;
 end;
 
@@ -8486,6 +8575,20 @@ begin
     FFont.Assign(AValue);
 end;
 
+procedure TGridColumnTitle.SetImageIndex(const AValue: Integer);
+begin
+  if FImageIndex = AValue then exit;
+  FImageIndex := AValue;
+  FColumn.ColumnChanged;
+end;
+
+procedure TGridColumnTitle.SetImageLayout(const AValue: TButtonLayout);
+begin
+  if FImageLayout = AValue then exit;
+  FImageLayout := AValue;
+  FColumn.ColumnChanged;
+end;
+
 procedure TGridColumnTitle.SetLayout(const AValue: TTextLayout);
 begin
   if FLayout = nil then begin
@@ -8506,6 +8609,7 @@ begin
     Caption := TGridColumnTitle(Source).Caption;
     Color := TGridColumnTitle(Source).Color;
     Font := TGridColumnTitle(Source).Font;
+    ImageIndex := TGridColumnTitle(Source).ImageIndex;
   end else
     inherited Assign(Source);
 end;
@@ -8541,6 +8645,7 @@ begin
   FFont := TFont.Create;
   FillTitleDefaultFont;
   FFont.OnChange := @FontChanged;
+  FImageLayout := blGlyphRight;
 end;
 
 destructor TGridColumnTitle.Destroy;
@@ -8555,8 +8660,9 @@ end;
 
 function TGridColumnTitle.IsDefault: boolean;
 begin
-  result :=  (FAlignment=nil) and (FColor=nil) and (FCaption=nil) and
-    IsDefaultFont and (FLayout=nil);
+  Result :=  (FAlignment = nil) and (FColor = nil) and (FCaption = nil) and
+    IsDefaultFont and (FLayout = nil) and
+    (FImageIndex = 0) and (FImageLayout = blGlyphRight);
 end;
 
 { TGridColumn }
@@ -8572,7 +8678,7 @@ begin
   if FAlignment=nil then
     Result := GetDefaultAlignment
   else
-    result := FAlignment^;
+    Result := FAlignment^;
 end;
 
 function TGridColumn.GetColor: TColor;
