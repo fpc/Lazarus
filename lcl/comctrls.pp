@@ -2210,6 +2210,7 @@ type
     FStates: TTreeViewStates;
     FTopItem: TTreeNode;
     FTreeLineColor: TColor;
+    FTreeLinePenStyle: TPenStyle;
     FExpandSignColor : TColor;
     FTreeNodes: TTreeNodes;
     procedure CanvasChanged(Sender: TObject);
@@ -2434,6 +2435,7 @@ type
     property SeparatorColor: TColor read fSeparatorColor write SetSeparatorColor default clGray;
     property TopItem: TTreeNode read GetTopItem write SetTopItem;
     property TreeLineColor: TColor read FTreeLineColor write FTreeLineColor default clWindowFrame;
+    property TreeLinePenStyle: TPenStyle read FTreeLinePenStyle write FTreeLinePenStyle default psDot;
     property ExpandSignColor: TColor read FExpandSignColor write FExpandSignColor default clWindowFrame;
   published
     property TabStop default true;
@@ -2528,6 +2530,7 @@ type
     property Options;
     property Items;
     property TreeLineColor;
+    property TreeLinePenStyle;
     property ExpandSignColor;
   end;
 
