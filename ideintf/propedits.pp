@@ -5176,7 +5176,7 @@ var
   BtnPanel: TPanel;
 begin
   inherited Create(AOwner);
-  Caption:='Filter editor';
+  Caption:=peFilterEditor;
   Height:=295;
   Width:=417;
   Position:=poScreenCenter;

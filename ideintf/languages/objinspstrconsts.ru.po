@@ -533,6 +533,10 @@ msgstr "Файл"
 msgid "Filter"
 msgstr "Фильтр"
 
+#: objinspstrconsts:pefiltereditor
+msgid "Filter editor"
+msgstr ""
+
 #: objinspstrconsts:pefiltername
 msgid "Filter name"
 msgstr "Имя фильтра"
