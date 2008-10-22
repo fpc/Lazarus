@@ -1978,11 +1978,6 @@ begin
                     end;
                     CDDS_ITEMPREPAINT:
                     begin
-                      case PNMCustomDraw(LParam)^.dwItemSpec of
-                        TBCD_TICS, TBCD_CHANNEL:
-                          SendParentPaintMessage(Window, Windows.GetParent(Window),
-                            PNMCustomDraw(LParam)^.hDC);
-                      end;
                       Result := CDRF_DODEFAULT;
                       WinProcess := false;
                     end;

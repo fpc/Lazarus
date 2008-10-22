@@ -1663,7 +1663,6 @@ type
     procedure UpdateSelection;
   protected
     procedure ApplyChanges;
-    procedure CNNotify(var Message: TLMessage); message CN_NOTIFY;
     procedure DoChange(var msg); message LM_CHANGED;
     class function GetControlClassDefaultSize: TPoint; override;
     procedure InitializeWnd; override;

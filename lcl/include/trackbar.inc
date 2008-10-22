@@ -297,16 +297,6 @@ begin
     TWSTrackBarClass(WidgetSetClass).ApplyChanges(Self);
 end;
 
-procedure TCustomTrackBar.CNNotify(var Message: TLMessage);
-begin
-  if ThemeServices.ThemesEnabled then
-  begin
-    // dont call default handler
-  end
-  else
-    inherited;
-end;
-
 {------------------------------------------------------------------------------
   Method: TCustomTrackBar.DoChange
   Params:  Msg  (longint = LM_CHANGE)
