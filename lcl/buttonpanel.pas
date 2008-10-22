@@ -66,6 +66,7 @@ type
     procedure ButtonOrderCloseOKCancel;
     procedure DoButtonOrder;
     procedure DoDefaultButton;
+    procedure DoRestoreCancel;
     procedure DoShowButtons;
     procedure DoShowGlyphs;
     procedure SetButtonOrder(Value: TButtonOrder);
@@ -74,20 +75,20 @@ type
     procedure SetShowGlyphs(Value: TPanelButtons);
   protected
     procedure Loaded; override;
-    procedure Notification(AComponent: TComponent; Operation: TOperation
-            ); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    property OKButton: TPanelBitBtn Read FOKButton stored False;
-    property HelpButton: TPanelBitBtn Read FHelpButton stored False;
-    property CloseButton: TPanelBitBtn Read FCloseButton stored False;
-    property CancelButton: TPanelBitBtn Read FCancelButton stored False;
-    property ButtonOrder: TButtonOrder Read FButtonOrder Write SetButtonOrder;
-    property DefaultButton: TPanelButton Read FDefaultButton Write SetDefaultButton;
-    property ShowButtons: TPanelButtons Read FShowButtons Write SetShowButtons default DefShowButtons;
-    property ShowGlyphs: TPanelButtons Read FShowGlyphs Write SetShowGlyphs default DefShowGlyphs;
+    property OKButton: TPanelBitBtn read FOKButton stored False;
+    property HelpButton: TPanelBitBtn read FHelpButton stored False;
+    property CloseButton: TPanelBitBtn read FCloseButton stored False;
+    property CancelButton: TPanelBitBtn read FCancelButton stored False;
+    property ButtonOrder: TButtonOrder read FButtonOrder write SetButtonOrder;
+
+    property DefaultButton: TPanelButton read FDefaultButton write SetDefaultButton;
+    property ShowButtons: TPanelButtons read FShowButtons write SetShowButtons default DefShowButtons;
+    property ShowGlyphs: TPanelButtons read FShowGlyphs write SetShowGlyphs default DefShowGlyphs;
   published
   end;
 
@@ -323,6 +324,16 @@ begin
     FHelpButton.Default   := FDefaultButton = pbHelp;
 end;
 
+procedure TCustomButtonPanel.DoRestoreCancel;
+begin
+  if FCancelButton <> nil then
+  begin
+    // to restore cancel button we need to do this hack
+    FCancelButton.Cancel := False;
+    FCancelButton.Cancel := True;
+  end;
+end;
+
 procedure TCustomButtonPanel.SetDefaultButton(Value: TPanelButton);
 begin
   if FDefaultButton = Value then
@@ -336,6 +347,7 @@ end;
 procedure TCustomButtonPanel.Loaded;
 begin
   inherited Loaded;
+  DoRestoreCancel;
   DoDefaultButton;
   DoShowGlyphs;
   DoShowButtons;
