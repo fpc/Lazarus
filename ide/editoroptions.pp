@@ -37,8 +37,7 @@ uses
   // RTL, FCL
   Classes, SysUtils,
   // LCL
-  Buttons, ComCtrls, Controls, Dialogs, ExtCtrls, Forms, Graphics, FileUtil,
-  GraphType, LCLIntf, LCLProc, LCLType, LResources, StdCtrls, Spin,
+  Controls, Graphics, LCLProc, FileUtil, LResources,
   // synedit
   SynEdit, SynEditAutoComplete, SynEditHighlighter, SynEditKeyCmds,
   SynEditStrConst,
@@ -49,10 +48,10 @@ uses
   // codetools
   LinkScanner, CodeToolManager, Laz_XMLCfg,
   // IDEIntf
-  IDECommands, IDEWindowIntf, SrcEditorIntf, IDEImagesIntf, IDEOptionsIntf,
+  IDECommands, IDEWindowIntf, SrcEditorIntf, IDEOptionsIntf,
   // IDE
   LazarusIDEStrConsts, IDEOptionDefs, IDEProcs, InputHistory, KeyMapping,
-  KeymapSchemeDlg, KeyMapShortCutDlg, LazConf, ButtonPanel;
+  KeymapSchemeDlg, KeyMapShortCutDlg, LazConf;
 
 type
   TPreviewPasSyn = TSynFreePascalSyn;
@@ -563,9 +562,6 @@ implementation
 
 uses
   IDEContextHelpEdit;
-
-var
-  imgKeyCategory, imgKeyItem: Integer;
 
 const
   ValidAttribChars = ['a'..'z', 'A'..'Z', '_', '0'..'9'];
