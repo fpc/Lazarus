@@ -4078,44 +4078,65 @@ var
       Result := clHighlightText;
   end;
 
+  procedure DrawVertLine(X, Y1, Y2: Integer);
+  begin
+    Canvas.MoveTo(X, Y1);
+    Canvas.LineTo(X, Y2);
+  end;
+
+  procedure DrawHorzLine(Y, X1, X2: Integer);
+  begin
+    Canvas.MoveTo(X1, Y);
+    Canvas.LineTo(X2, Y);
+  end;
+
   function DrawTreeLines(CurNode: TTreeNode): integer;
   // paints tree lines, returns indent
-  var CurMid: integer;
+  var
+    CurMid: integer;
   begin
-    if CurNode<>nil then begin
-      Result:=DrawTreeLines(CurNode.Parent);
-      if ShowLines then begin
-        CurMid:=Result+(Indent shr 1);
-        if CurNode=Node then begin
+    if CurNode <> nil then
+    begin
+      Result := DrawTreeLines(CurNode.Parent);
+      if ShowLines then
+      begin
+        CurMid := Result + (Indent shr 1);
+        if CurNode = Node then
+        begin
           // draw horizontal line
-          Canvas.MoveTo(CurMid,VertMid);
-          Canvas.LineTo(Result+Indent,VertMid);
+          DrawHorzLine(VertMid, CurMid, Result + Indent);
         end;
-        if (CurNode.GetNextSibling<>nil) then begin
+
+        if (CurNode.GetNextSibling <> nil) then
+        begin
           // draw vertical line to next brother
-          Canvas.MoveTo(CurMid,NodeRect.Top);
-          Canvas.LineTo(CurMid,NodeRect.Bottom);
-        end else if CurNode=Node then begin
-          // draw vertical line from top to horizontal line
-          Canvas.MoveTo(CurMid,NodeRect.Top);
-          if ((InsertMarkNode=Node) and (InsertMarkType=tvimAsNextSibling)) then
-            Canvas.LineTo(CurMid,NodeRect.Bottom-1)
+          if Node.HasChildren then
+            DrawVertLine(CurMid, VertMid + fExpandSignSize shr 1, NodeRect.Bottom)
           else
-            Canvas.LineTo(CurMid,VertMid);
+            DrawVertLine(CurMid, NodeRect.Top, NodeRect.Bottom);
+        end else
+        if (CurNode = Node) then
+        begin
+          // draw vertical line from top to horizontal line
+          if ((InsertMarkNode = Node) and (InsertMarkType=tvimAsNextSibling)) then
+            DrawVertLine(CurMid, NodeRect.Top, NodeRect.Bottom-1)
+          else
+            DrawVertLine(CurMid, NodeRect.Top, VertMid);
         end;
       end;
-      inc(Result,Indent);
-    end else begin
-      Result:=BorderWidth-FScrolledLeft;
-    end;
+      inc(Result, Indent);
+    end else
+      Result := BorderWidth - FScrolledLeft;
   end;
 
   procedure DrawExpandSign(MidX,MidY: integer; CollapseSign: boolean);
-  var HalfSize, ALeft, ATop, ARight, ABottom: integer;
+  var
+    HalfSize, ALeft, ATop, ARight, ABottom: integer;
     Points: PPoint;
   begin
     if not ShowButtons then exit;
-    with Canvas do begin
+    with Canvas do
+    begin
       Brush.Color:=BackgroundColor;
       Pen.Color:=FExpandSignColor;
       Pen.Style:=psSolid;
@@ -4132,7 +4153,8 @@ var
           Rectangle(ALeft, ATop, ARight+1, ABottom+1);
           MoveTo(ALeft+2,MidY);
           LineTo(ARight-2+1,MidY);
-          if not CollapseSign then begin
+          if not CollapseSign then
+          begin
             MoveTo(MidX,ATop+2);
             LineTo(MidX,ABottom-2+1);
           end;
@@ -4141,12 +4163,14 @@ var
         begin
           // draw an arrow. down for collapse and right for expand
           GetMem(Points,SizeOf(TPoint)*3);
-          if CollapseSign then begin
+          if CollapseSign then
+          begin
             // draw an arrow down
             Points[0]:=Point(ALeft,MidY);
             Points[1]:=Point(ARight,MidY);
             Points[2]:=Point(MidX,ABottom);
-          end else begin
+          end else
+          begin
             // draw an arrow right
             Points[0]:=Point(MidX-1,ATop);
             Points[1]:=Point(ARight-1,MidY);
@@ -4237,18 +4261,20 @@ var
     end;
   end;
 
-var x, ImgIndex: integer;
+var
+  x, ImgIndex: integer;
   CurBackgroundColor, OldFontColor: TColor;
   CurTextRect: TRect;
   DrawState: TCustomDrawState;
   PaintImages: boolean;
   TextY: Integer;
 begin
-  NodeRect:=Node.DisplayRect(false);
+  NodeRect := Node.DisplayRect(false);
   if (NodeRect.Bottom<0) or (NodeRect.Top>=(ClientHeight-ScrollBarWidth)) then
     exit;
   NodeSelected:=(Node.Selected) or (Node.MultiSelected);
-  if Assigned(OnCustomDrawItem) or Assigned(FOnAdvancedCustomDrawItem) then begin
+  if Assigned(OnCustomDrawItem) or Assigned(FOnAdvancedCustomDrawItem) then
+  begin
     DrawState:=[];
     if NodeSelected then
       Include(DrawState,cdsSelected);
@@ -4257,32 +4283,38 @@ begin
     if Node.MultiSelected then
       Include(DrawState,cdsMarked);
     if not CustomDrawItem(Node,DrawState,cdPrePaint,PaintImages) then exit;
-  end else begin
+  end
+  else
     PaintImages:=true;
-  end;
-  VertMid:=(NodeRect.Top+NodeRect.Bottom) div 2;
+
+  VertMid:=(NodeRect.Top + NodeRect.Bottom) div 2;
   //DebugLn(['[TCustomTreeView.DoPaintNode] Node=',DbgS(Node),' Node.Text=',Node.Text,' NodeRect=',NodeRect.Left,',',NodeRect.Top,',',NodeRect.Right,',',NodeRect.Bottom,' VertMid=',VertMid]);
-  with Canvas do begin
+  with Canvas do
+  begin
     // draw background
     if (tvoRowSelect in FOptions) and NodeSelected then
       CurBackgroundColor:=FSelectedColor
     else
       CurBackgroundColor:=FBackgroundColor;
-    if CurBackgroundColor<>clNone then begin
+    if CurBackgroundColor<>clNone then
+    begin
       Brush.Color:=CurBackgroundColor;
       FillRect(NodeRect);
     end;
+
     // draw tree lines
     Pen.Color:=TreeLineColor;
     Pen.Style:=TreeLinePenStyle;
     x:=DrawTreeLines(Node);
     Pen.Style:=psSolid;
+
     // draw expand sign
-    if Node.HasChildren then begin
-      DrawExpandSign(x-Indent+(Indent shr 1),VertMid,Node.Expanded);
-    end;
+    if Node.HasChildren then
+      DrawExpandSign(x - Indent + (Indent shr 1), VertMid, Node.Expanded);
+
     // draw icon
-    if (Images<>nil) and PaintImages then begin
+    if (Images<>nil) and PaintImages then
+    begin
       if FSelectedNode<>Node then
         ImgIndex:=Node.ImageIndex
       else
@@ -4291,14 +4323,18 @@ begin
         Images.Draw(Canvas,x+1,NodeRect.Top,ImgIndex,true);
       inc(x,Images.Width+2);
     end;
+
     // draw state icon
-    if (StateImages<>nil) and PaintImages then begin
+    if (StateImages<>nil) and PaintImages then
+    begin
       if (Node.StateIndex>=0) and (Node.StateIndex<StateImages.Count) then
         StateImages.Draw(Canvas,x+1,NodeRect.Top,Node.StateIndex,true);
       inc(x,StateImages.Width+2);
     end;
+
     // draw text
-    if Node.Text<>'' then begin
+    if Node.Text <> '' then
+    begin
       TextY:=NodeRect.Top+
          ((NodeRect.Bottom-NodeRect.Top-TextHeight(Node.Text)) div 2);
       if NodeSelected and (FSelectedColor<>clNone) then begin
@@ -4311,16 +4347,19 @@ begin
         FillRect(CurTextRect);
         TextOut(x,TextY,Node.Text);
         Font.Color:=OldFontColor;
-      end else begin
+      end
+      else
         TextOut(x,TextY,Node.Text);
-      end;
     end;
+
     // draw separator
-    if (tvoShowSeparators in FOptions) then begin
+    if (tvoShowSeparators in FOptions) then
+    begin
       Pen.Color:=SeparatorColor;
       MoveTo(NodeRect.Left,NodeRect.Bottom-1);
       LineTo(NodeRect.Right,NodeRect.Bottom-1);
     end;
+
     // draw insert mark
     DrawInsertMark;
   end;
@@ -4334,9 +4373,9 @@ begin
     if Node.MultiSelected then
       Include(DrawState,cdsMarked);
     if not CustomDrawItem(Node,DrawState,cdPostPaint,PaintImages) then exit;
-  end else begin
-    PaintImages:=true;
-  end;
+  end
+  else
+    PaintImages := true;
 end;
 
 procedure TCustomTreeView.GetImageIndex(Node: TTreeNode);
