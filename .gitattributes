@@ -2354,6 +2354,7 @@ ide/editmsgscannersdlg.pas svneol=native#text/plain
 ide/editoroptions.pp svneol=native#text/pascal
 ide/editoroptionsdlg.lfm svneol=native#text/plain
 ide/editoroptionsdlg.lrs svneol=native#text/pascal
+ide/editoroptionsdlg.pas svneol=native#text/pascal
 ide/emptymethodsdlg.lfm svneol=native#text/plain
 ide/emptymethodsdlg.lrs svneol=native#text/plain
 ide/emptymethodsdlg.pas svneol=native#text/plain
