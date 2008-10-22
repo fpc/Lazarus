@@ -264,7 +264,7 @@ msgstr ""
 msgid "Custom"
 msgstr "Спеціальний"
 
-#: lclstrconsts:ifsvk_delete
+#: lclstrconsts:rsdeleterecordhint
 msgid "Delete"
 msgstr "Видалити"
 
@@ -299,6 +299,10 @@ msgstr "Повторювані меню"
 #: lclstrconsts:rserrorinlcl
 msgid "ERROR in LCL: "
 msgstr "ПОМИЛКА в LCL:"
+
+#: lclstrconsts:rseditrecordhint
+msgid "Edit"
+msgstr ""
 
 #: lclstrconsts:ifsvk_end
 msgid "End"
@@ -374,6 +378,10 @@ msgstr ""
 
 #: lclstrconsts:rsfindmore
 msgid "Find more"
+msgstr ""
+
+#: lclstrconsts:rsfirstrecordhint
+msgid "First"
 msgstr ""
 
 #: lclstrconsts:rsfixedcolstoobig
@@ -504,7 +512,7 @@ msgstr "Індекс поза діапазоном Cell[Col=%d Row=%d]"
 msgid "Information"
 msgstr "Відомості"
 
-#: lclstrconsts:ifsvk_insert
+#: lclstrconsts:rsinsertrecordhint
 msgid "Insert"
 msgstr "Вставка"
 
@@ -568,6 +576,10 @@ msgstr "Кенійська"
 msgid "Kana"
 msgstr "Японська"
 
+#: lclstrconsts:rslastrecordhint
+msgid "Last"
+msgstr ""
+
 #: lclstrconsts:ifsvk_left
 msgid "Left"
 msgstr "Вліво"
@@ -608,7 +620,7 @@ msgstr "Середня кнопка мишки"
 msgid "Mouse Button Right"
 msgstr "Права кнопка мишки"
 
-#: lclstrconsts:ifsvk_next
+#: lclstrconsts:rsnextrecordhint
 msgid "Next"
 msgstr "Наступний"
 
@@ -696,17 +708,25 @@ msgstr "Портативна мережева графіка PNG"
 msgid "Portable PixMap"
 msgstr ""
 
+#: lclstrconsts:rspostrecordhint
+msgid "Post"
+msgstr ""
+
 #: lclstrconsts:ifsvk_print
 msgid "Print"
 msgstr "Друкувати"
 
-#: lclstrconsts:ifsvk_prior
+#: lclstrconsts:rspriorrecordhint
 msgid "Prior"
 msgstr "Попередній"
 
 #: lclstrconsts:rspropertydoesnotexist
 msgid "Property %s does not exist"
 msgstr "Властивості %s не існує"
+
+#: lclstrconsts:rsrefreshrecordshint
+msgid "Refresh"
+msgstr ""
 
 #: lclstrconsts:rsreplace
 msgid "Replace"

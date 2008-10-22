@@ -270,7 +270,7 @@ msgstr "Žymeklis"
 msgid "Custom"
 msgstr "Naudotojo"
 
-#: lclstrconsts:ifsvk_delete
+#: lclstrconsts:rsdeleterecordhint
 msgid "Delete"
 msgstr "Delete"
 
@@ -305,6 +305,10 @@ msgstr "Meniu dubliuojasi"
 #: lclstrconsts:rserrorinlcl
 msgid "ERROR in LCL: "
 msgstr "LCL klaida:"
+
+#: lclstrconsts:rseditrecordhint
+msgid "Edit"
+msgstr ""
 
 #: lclstrconsts:ifsvk_end
 msgid "End"
@@ -381,6 +385,10 @@ msgstr "Ieškoti"
 #: lclstrconsts:rsfindmore
 msgid "Find more"
 msgstr "Ieškoti toliau"
+
+#: lclstrconsts:rsfirstrecordhint
+msgid "First"
+msgstr ""
 
 #: lclstrconsts:rsfixedcolstoobig
 msgid "FixedCols can't be >= ColCount"
@@ -510,7 +518,7 @@ msgstr "Langelio [stulpelis = %d, eilutė = %d] indeksas peržengia ribas"
 msgid "Information"
 msgstr "Informacija"
 
-#: lclstrconsts:ifsvk_insert
+#: lclstrconsts:rsinsertrecordhint
 msgid "Insert"
 msgstr "Insert"
 
@@ -574,6 +582,10 @@ msgstr "Junja"
 msgid "Kana"
 msgstr "Kana"
 
+#: lclstrconsts:rslastrecordhint
+msgid "Last"
+msgstr ""
+
 #: lclstrconsts:ifsvk_left
 msgid "Left"
 msgstr "Left"
@@ -614,7 +626,7 @@ msgstr "Vidurinis pelės klavišas"
 msgid "Mouse Button Right"
 msgstr "Dešinys pelės klavišas"
 
-#: lclstrconsts:ifsvk_next
+#: lclstrconsts:rsnextrecordhint
 msgid "Next"
 msgstr "Next"
 
@@ -702,17 +714,25 @@ msgstr "Portable Network Graphic"
 msgid "Portable PixMap"
 msgstr "Portatyvus PixMap"
 
+#: lclstrconsts:rspostrecordhint
+msgid "Post"
+msgstr ""
+
 #: lclstrconsts:ifsvk_print
 msgid "Print"
 msgstr "Print"
 
-#: lclstrconsts:ifsvk_prior
+#: lclstrconsts:rspriorrecordhint
 msgid "Prior"
 msgstr "Prior"
 
 #: lclstrconsts:rspropertydoesnotexist
 msgid "Property %s does not exist"
 msgstr "Savybė %s neegzistuoja"
+
+#: lclstrconsts:rsrefreshrecordshint
+msgid "Refresh"
+msgstr ""
 
 #: lclstrconsts:rsreplace
 msgid "Replace"

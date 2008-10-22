@@ -101,6 +101,10 @@ msgstr "%s%s%s - некорректный идентификатор."
 msgid "%s%s%s is not a valid unit name."
 msgstr "%s%s%s - некорректное название модуля"
 
+#: lazarusidestrconsts:lislazbuildisnoninteractiveabortingnow
+msgid "%s%s%s%slazbuild is non interactive, aborting now."
+msgstr ""
+
 #: lazarusidestrconsts:liscoclickokifaresuretodothat
 msgid "%s%sClick OK if you are sure to do that."
 msgstr "%s%sНажмите OK если уверены."
@@ -405,9 +409,13 @@ msgstr "(не найдено унаследованного описания)"
 msgid "(no subdirectory)"
 msgstr "(нет подкаталога)"
 
-#: lazarusidestrconsts:liscodehelpnodocumentation
+#: lazarusidestrconsts:dlgpoicondescnone
 msgid "(none)"
 msgstr "(нет)"
+
+#: lazarusidestrconsts:dlgpoicondesc
+msgid "(size: %d:%d, bpp: %d)"
+msgstr ""
 
 #: lazarusidestrconsts:listmunknownmacro
 msgid "(unknown macro: %s)"
@@ -1101,6 +1109,10 @@ msgstr "Отступ блока"
 msgid "Bold"
 msgstr "Жирный"
 
+#: lazarusidestrconsts:lisboldnondefaultobjectinspector
+msgid "Bold non default values"
+msgstr ""
+
 #: lazarusidestrconsts:uembookmarkn
 msgid "Bookmark"
 msgstr "Закладка"
@@ -1644,6 +1656,10 @@ msgstr "Очистить"
 #: lazarusidestrconsts:liscleardirectory
 msgid "Clear Directory?"
 msgstr "Очистить каталог?"
+
+#: lazarusidestrconsts:dlgpoclearicon
+msgid "Clear Icon"
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditcleardependencydefaultfilename
 msgid "Clear dependency filename"
@@ -2861,6 +2877,10 @@ msgstr "Отключить все в том же файле исходного �
 msgid "Disable Group"
 msgstr "Отключить группу"
 
+#: lazarusidestrconsts:dlgdisableantialiasing
+msgid "Disable anti-aliasing"
+msgstr ""
+
 #: lazarusidestrconsts:lisdisabled
 msgid "Disabled"
 msgstr "Отключено"
@@ -2960,6 +2980,10 @@ msgstr "Вниз"
 #: lazarusidestrconsts:dlgdragdroped
 msgid "Drag Drop editing"
 msgstr "Редактирование Drag and Drop"
+
+#: lazarusidestrconsts:lisdrawgridlinesobjectinspector
+msgid "Draw grid lines"
+msgstr ""
 
 #: lazarusidestrconsts:dlgdropfiles
 msgid "Drop files"
@@ -3149,17 +3173,13 @@ msgstr "Введите параметры запуска"
 msgid "Enter translation language"
 msgstr "Введите язык перевода"
 
-#: lazarusidestrconsts:dlgrunoenvironment
+#: lazarusidestrconsts:dlggroupenvironment
 msgid "Environment"
 msgstr "Окружение"
 
 #: lazarusidestrconsts:srkmcatenvmenu
 msgid "Environment menu commands"
 msgstr "Команды меню Окружение"
-
-#: lazarusidestrconsts:lismenugeneraloptions
-msgid "Environment options ..."
-msgstr "Параметры окружения ..."
 
 #: lazarusidestrconsts:lisccoerrorcaption
 msgid "Error"
@@ -4389,6 +4409,10 @@ msgstr "IDE занята"
 msgid "INS"
 msgstr "ВСТ"
 
+#: lazarusidestrconsts:dlgpoicon
+msgid "Icon:"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsoptsidentifier
 msgid "Identifier"
 msgstr "Идентификатор"
@@ -5561,6 +5585,10 @@ msgstr "Список"
 msgid "Lithuanian"
 msgstr "Литовский"
 
+#: lazarusidestrconsts:dlgpoloadicon
+msgid "Load Icon"
+msgstr ""
+
 #: lazarusidestrconsts:dlgloaddfile
 msgid "Load desktop settings from file"
 msgstr "Загрузить рабочий стол из файла"
@@ -6560,6 +6588,10 @@ msgstr "Параметр: Выровнять по линиям позицион�
 #: lazarusidestrconsts:dlgfropts
 msgid "Options"
 msgstr "Параметры"
+
+#: lazarusidestrconsts:lismenugeneraloptions
+msgid "Options ..."
+msgstr ""
 
 #: lazarusidestrconsts:lislazbuildoptions
 msgid "Options:"
@@ -7785,6 +7817,10 @@ msgstr "Сохранить как шаблон..."
 msgid "Save Changes?"
 msgstr "Сохранить изменения?"
 
+#: lazarusidestrconsts:dlgposaveicon
+msgid "Save Icon"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangsavepackagelpk
 msgid "Save Package %s (*.lpk)"
 msgstr "Сохранить пакет %s (*.lpk)"
@@ -8853,9 +8889,9 @@ msgstr "Подпроцедура того же уровня"
 msgid "Sub directory"
 msgstr "Подкаталог"
 
-#: lazarusidestrconsts:dlgsubpropkcolor
-msgid "Subpropertes"
-msgstr "Подсвойства"
+#: lazarusidestrconsts:dlgsubpropcolor
+msgid "SubProperties"
+msgstr ""
 
 #: lazarusidestrconsts:lissuccess
 msgid "Success"
@@ -9370,8 +9406,8 @@ msgid "The file %s%s%s%sseems to be a program. Close current project and create 
 msgstr "Файл %s%s%s%sвыглядит как программа. Закрыть текущий проект и создать новый проект lazarus для этой программы?%s\"Нет\" откроет файл как обычный исходный код."
 
 #: lazarusidestrconsts:listhefilewasfoundinoneofthesourcedirectoriesofthepac
-msgid "The file %s%s%s%swas found in one of the source directories of the package %s and looks like a compiled unit.Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%s%sDelete ambiguous file?"
-msgstr "Файл %s%s%s%sнайден в одном из каталогов исходного кода пакета %s, и он выглядит как откомпилированный модуль. Такие модули должны быть в каталоге вывода пакета, иначе другие пакеты не смогут правильно использовать пакет.%s%sУдалить такие файлы?"
+msgid "The file %s%s%s%swas found in one of the source directories of the package %s and looks like a compiled unit. Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%s%sDelete ambiguous file?"
+msgstr ""
 
 #: lazarusidestrconsts:listhefilewasnotfounddoyouwanttolocateityourself
 msgid "The file %s%s%s%swas not found.%sDo you want to locate it yourself ?%s"
@@ -10620,6 +10656,10 @@ msgstr "Цвет по умолчанию"
 #: lazarusidestrconsts:dlgrunousedisplay
 msgid "Use display"
 msgstr "Использовать дисплей"
+
+#: lazarusidestrconsts:dlgextsymb
+msgid "Use external gdb debug symbols file"
+msgstr ""
 
 #: lazarusidestrconsts:dlguselaunchingapp
 msgid "Use launching application"

@@ -268,7 +268,7 @@ msgstr ""
 msgid "Custom"
 msgstr "Personalizado"
 
-#: lclstrconsts:ifsvk_delete
+#: lclstrconsts:rsdeleterecordhint
 msgid "Delete"
 msgstr "Suprimir"
 
@@ -303,6 +303,10 @@ msgstr "Duplicar menús"
 #: lclstrconsts:rserrorinlcl
 msgid "ERROR in LCL: "
 msgstr "ERROR en LCL"
+
+#: lclstrconsts:rseditrecordhint
+msgid "Edit"
+msgstr ""
 
 #: lclstrconsts:ifsvk_end
 msgid "End"
@@ -379,6 +383,10 @@ msgstr "Buscar"
 #: lclstrconsts:rsfindmore
 msgid "Find more"
 msgstr "Buscar más"
+
+#: lclstrconsts:rsfirstrecordhint
+msgid "First"
+msgstr ""
 
 #: lclstrconsts:rsfixedcolstoobig
 msgid "FixedCols can't be >= ColCount"
@@ -508,7 +516,7 @@ msgstr "Índice fuera de rango Celda[Col=%s Línea=%d]"
 msgid "Information"
 msgstr "Información"
 
-#: lclstrconsts:ifsvk_insert
+#: lclstrconsts:rsinsertrecordhint
 msgid "Insert"
 msgstr "Insertar"
 
@@ -572,6 +580,10 @@ msgstr "Junja"
 msgid "Kana"
 msgstr "Kana"
 
+#: lclstrconsts:rslastrecordhint
+msgid "Last"
+msgstr ""
+
 #: lclstrconsts:ifsvk_left
 msgid "Left"
 msgstr "Izquierdo"
@@ -612,7 +624,7 @@ msgstr "Botón del Medio del Ratón"
 msgid "Mouse Button Right"
 msgstr "Botón Derecho del Ratón"
 
-#: lclstrconsts:ifsvk_next
+#: lclstrconsts:rsnextrecordhint
 msgid "Next"
 msgstr "Siguiente"
 
@@ -700,17 +712,25 @@ msgstr "Portable Network Graphic"
 msgid "Portable PixMap"
 msgstr "Portable PixMap"
 
+#: lclstrconsts:rspostrecordhint
+msgid "Post"
+msgstr ""
+
 #: lclstrconsts:ifsvk_print
 msgid "Print"
 msgstr "Imprimir"
 
-#: lclstrconsts:ifsvk_prior
+#: lclstrconsts:rspriorrecordhint
 msgid "Prior"
 msgstr "Prioridad"
 
 #: lclstrconsts:rspropertydoesnotexist
 msgid "Property %s does not exist"
 msgstr "La propiedad %s no existe"
+
+#: lclstrconsts:rsrefreshrecordshint
+msgid "Refresh"
+msgstr ""
 
 #: lclstrconsts:rsreplace
 msgid "Replace"

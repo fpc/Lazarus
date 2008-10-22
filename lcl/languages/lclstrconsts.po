@@ -164,6 +164,46 @@ msgstr ""
 msgid "Delete record?"
 msgstr ""
 
+#: lclstrconsts:rsfirstrecordhint
+msgid "First"
+msgstr ""
+
+#: lclstrconsts:rspriorrecordhint
+msgid "Prior"
+msgstr ""
+
+#: lclstrconsts:rsnextrecordhint
+msgid "Next"
+msgstr ""
+
+#: lclstrconsts:rslastrecordhint
+msgid "Last"
+msgstr ""
+
+#: lclstrconsts:rsinsertrecordhint
+msgid "Insert"
+msgstr ""
+
+#: lclstrconsts:rsdeleterecordhint
+msgid "Delete"
+msgstr ""
+
+#: lclstrconsts:rseditrecordhint
+msgid "Edit"
+msgstr ""
+
+#: lclstrconsts:rspostrecordhint
+msgid "Post"
+msgstr ""
+
+#: lclstrconsts:rscancelrecordhint
+msgid "Cancel"
+msgstr ""
+
+#: lclstrconsts:rsrefreshrecordshint
+msgid "Refresh"
+msgstr ""
+
 #: lclstrconsts:rswarningunremovedpaintmessages
 msgid " WARNING: There are %s unremoved LM_PAINT/LM_GtkPAINT message links left."
 msgstr ""

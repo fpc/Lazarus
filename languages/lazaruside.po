@@ -132,6 +132,10 @@ msgstr ""
 msgid "Target OS"
 msgstr ""
 
+#: lazarusidestrconsts:lissrcos
+msgid "Src OS"
+msgstr ""
+
 #: lazarusidestrconsts:liscommandlineparamsofprogram
 msgid "Command line parameters of program"
 msgstr ""
@@ -354,6 +358,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuclose
 msgid "Close"
+msgstr ""
+
+#: lazarusidestrconsts:lisconvert
+msgid "Convert"
 msgstr ""
 
 #: lazarusidestrconsts:lispldonlyexistingfiles
@@ -1120,6 +1128,10 @@ msgstr ""
 msgid "Convert Delphi package to Lazarus package ..."
 msgstr ""
 
+#: lazarusidestrconsts:lismenuconvertencoding
+msgid "Convert encoding of projects/packages ..."
+msgstr ""
+
 #: lazarusidestrconsts:lismenubuildlazarus
 msgid "Build Lazarus"
 msgstr ""
@@ -1129,7 +1141,7 @@ msgid "Configure \"Build Lazarus\" ..."
 msgstr ""
 
 #: lazarusidestrconsts:lismenugeneraloptions
-msgid "Environment options ..."
+msgid "Options ..."
 msgstr ""
 
 #: lazarusidestrconsts:lismenueditoroptions
@@ -1772,8 +1784,8 @@ msgstr ""
 msgid "File not lowercase"
 msgstr ""
 
-#: lazarusidestrconsts:listheunitisnotlowercasethefreepascalcompiler10xneeds
-msgid "The unit %s%s%s is not lowercase.%sThe FreePascal compiler 1.0.x needs lowercase filenames. If you do not use the fpc 1.0.x to compile this unit, you can ignore this message.%s%sRename file?"
+#: lazarusidestrconsts:listheunitisnotlowercasethefreepascalcompiler
+msgid "The unit filename %s%s%s is not lowercase.%sThe FreePascal compiler does not search for all cases. It is recommended to use lowercase filename.%s%sRename file lowercase?"
 msgstr ""
 
 #: lazarusidestrconsts:lisdeleteambiguousfile
@@ -2340,6 +2352,10 @@ msgstr ""
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr ""
 
+#: lazarusidestrconsts:dlggroupenvironment
+msgid "Environment"
+msgstr ""
+
 #: lazarusidestrconsts:dlgbaknosubdirectory
 msgid "(no subdirectory)"
 msgstr ""
@@ -2456,8 +2472,16 @@ msgstr ""
 msgid "Classic"
 msgstr ""
 
-#: lazarusidestrconsts:liskmmacosx
-msgid "Mac OS X"
+#: lazarusidestrconsts:liskmlazarusdefault
+msgid "Lazarus (default)"
+msgstr ""
+
+#: lazarusidestrconsts:liskmmacosxapple
+msgid "Mac OS X (Apple style)"
+msgstr ""
+
+#: lazarusidestrconsts:liskmmacosxlaz
+msgid "Mac OS X (Lazarus style)"
 msgstr ""
 
 #: lazarusidestrconsts:lispefilename
@@ -2550,6 +2574,34 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgenvproject
 msgid "Project"
+msgstr ""
+
+#: lazarusidestrconsts:lisnumberoffilestoconvert
+msgid "Number of files to convert: %s"
+msgstr ""
+
+#: lazarusidestrconsts:lisconvertencoding
+msgid "Convert encoding"
+msgstr ""
+
+#: lazarusidestrconsts:lisconvertprojectorpackage
+msgid "Convert project or package"
+msgstr ""
+
+#: lazarusidestrconsts:lisnewencoding
+msgid "New encoding:"
+msgstr ""
+
+#: lazarusidestrconsts:lisfilefilter
+msgid "File filter"
+msgstr ""
+
+#: lazarusidestrconsts:lisfilesinasciiorutf8encoding
+msgid "Files in ASCII or UTF-8 encoding"
+msgstr ""
+
+#: lazarusidestrconsts:lisfilesnotinasciinorutf8encoding
+msgid "Files not in ASCII nor UTF-8 encoding"
 msgstr ""
 
 #: lazarusidestrconsts:podaddpackageunittousessection
@@ -2860,8 +2912,8 @@ msgstr ""
 msgid "Background"
 msgstr ""
 
-#: lazarusidestrconsts:dlgsubpropkcolor
-msgid "Subpropertes"
+#: lazarusidestrconsts:dlgsubpropcolor
+msgid "SubProperties"
 msgstr ""
 
 #: lazarusidestrconsts:dlgreferencecolor
@@ -2922,6 +2974,14 @@ msgstr ""
 
 #: lazarusidestrconsts:lisautoshowobjectinspector
 msgid "Auto show Object Inspector"
+msgstr ""
+
+#: lazarusidestrconsts:lisboldnondefaultobjectinspector
+msgid "Bold non default values"
+msgstr ""
+
+#: lazarusidestrconsts:lisdrawgridlinesobjectinspector
+msgid "Draw grid lines"
 msgstr ""
 
 #: lazarusidestrconsts:dlgenvcolors
@@ -3278,6 +3338,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgextralinespacing
 msgid "Extra line spacing"
+msgstr ""
+
+#: lazarusidestrconsts:dlgdisableantialiasing
+msgid "Disable anti-aliasing"
 msgstr ""
 
 #: lazarusidestrconsts:dlgkeymappingscheme
@@ -3836,8 +3900,8 @@ msgstr ""
 msgid "Target OS"
 msgstr ""
 
-#: lazarusidestrconsts:dlgtargetcpu
-msgid "Target CPU"
+#: lazarusidestrconsts:dlgtargetcpufamily
+msgid "Target CPU family"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcodebugging
@@ -3870,6 +3934,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgcostrip
 msgid "Strip Symbols From Executable"
+msgstr ""
+
+#: lazarusidestrconsts:dlgextsymb
+msgid "Use external gdb debug symbols file"
 msgstr ""
 
 #: lazarusidestrconsts:dlglinklibraries
@@ -4504,6 +4572,30 @@ msgstr ""
 msgid "Use manifest file to enable themes (windows only)"
 msgstr ""
 
+#: lazarusidestrconsts:dlgpoicon
+msgid "Icon:"
+msgstr ""
+
+#: lazarusidestrconsts:dlgpoloadicon
+msgid "Load Icon"
+msgstr ""
+
+#: lazarusidestrconsts:dlgposaveicon
+msgid "Save Icon"
+msgstr ""
+
+#: lazarusidestrconsts:dlgpoclearicon
+msgid "Clear Icon"
+msgstr ""
+
+#: lazarusidestrconsts:dlgpoicondesc
+msgid "(size: %d:%d, bpp: %d)"
+msgstr ""
+
+#: lazarusidestrconsts:dlgpoicondescnone
+msgid "(none)"
+msgstr ""
+
 #: lazarusidestrconsts:dlgautocreateforms
 msgid "Auto-create forms:"
 msgstr ""
@@ -4742,6 +4834,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisregularexpression
 msgid "Regular expression"
+msgstr ""
+
+#: lazarusidestrconsts:lisupdatepreview
+msgid "Update preview"
 msgstr ""
 
 #: lazarusidestrconsts:lisinvalidfilter
@@ -6434,6 +6530,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liskmconvertdelphipackagetolazaruspackage
 msgid "Convert Delphi package to Lazarus package"
+msgstr ""
+
+#: lazarusidestrconsts:lisconvertencodingofprojectspackages
+msgid "Convert encoding of projects/packages"
 msgstr ""
 
 #: lazarusidestrconsts:srkmcarhelpmenu
@@ -8621,7 +8721,7 @@ msgid "Ambiguous Unit found"
 msgstr ""
 
 #: lazarusidestrconsts:listhefilewasfoundinoneofthesourcedirectoriesofthepac
-msgid "The file %s%s%s%swas found in one of the source directories of the package %s and looks like a compiled unit.Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%s%sDelete ambiguous file?"
+msgid "The file %s%s%s%swas found in one of the source directories of the package %s and looks like a compiled unit. Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%s%sDelete ambiguous file?"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangunabletodeletefile
@@ -8758,6 +8858,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthepackagenameofthefileisinvalid
 msgid "The package name %s%s%s of%sthe file %s%s%s is invalid."
+msgstr ""
+
+#: lazarusidestrconsts:lislazbuildisnoninteractiveabortingnow
+msgid "%s%s%s%slazbuild is non interactive, aborting now."
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangpackageconflicts
@@ -11730,5 +11834,173 @@ msgstr ""
 
 #: lazarusidestrconsts:lisunabletocreatelinkwithtarget
 msgid "Unable to create link %s%s%s with target %s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:lisbuildallfilesofprojectpackageide
+msgid "build all files of project/package/IDE"
+msgstr ""
+
+#: lazarusidestrconsts:lisapplybuildflagsbtodependenciestoo
+msgid "apply build flags (-B) to dependencies too"
+msgstr ""
+
+#: lazarusidestrconsts:lisdonotcompiledependencies
+msgid "do not compile dependencies"
+msgstr ""
+
+#: lazarusidestrconsts:lisbuildidewithpackages
+msgid "build IDE with packages"
+msgstr ""
+
+#: lazarusidestrconsts:lisshowversionandexit
+msgid "show version and exit"
+msgstr ""
+
+#: lazarusidestrconsts:lisoverridetheprojectoperatingsystemegwin32linuxdefau
+msgid "%soverride the project operating system. e.g. win32 linux. default: %s"
+msgstr ""
+
+#: lazarusidestrconsts:lisoverridetheprojectwidgetseteggtkgtk2qtwin32carbond
+msgid "%soverride the project widgetset. e.g. gtk gtk2 qt win32 carbon. default: %s"
+msgstr ""
+
+#: lazarusidestrconsts:lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
+msgid "%soverride the project cpu. e.g. i386 x86_64 powerpc powerpc_64 etc. default: %s"
+msgstr ""
+
+#: lazarusidestrconsts:lisoverridethedefaultcompileregppc386ppcx64ppcppcetcd
+msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in environmentoptions.xml"
+msgstr ""
+
+#: lazarusidestrconsts:lisno
+msgid "No"
+msgstr ""
+
+#: lazarusidestrconsts:rsok
+msgid "ok"
+msgstr ""
+
+#: lazarusidestrconsts:rsscanners
+msgid "Scanners"
+msgstr ""
+
+#: lazarusidestrconsts:rsavailablescanners
+msgid "Available scanners"
+msgstr ""
+
+#: lazarusidestrconsts:rsselectaninheritedentry
+msgid "Select an inherited entry"
+msgstr ""
+
+#: lazarusidestrconsts:lisapplicationclassname
+msgid "&Application class name"
+msgstr ""
+
+#: lazarusidestrconsts:listitle
+msgid "&Title"
+msgstr ""
+
+#: lazarusidestrconsts:liscodegenerationoptions
+msgid "Code generation options"
+msgstr ""
+
+#: lazarusidestrconsts:lisusagemessagehoption
+msgid "Usage message (-h option)"
+msgstr ""
+
+#: lazarusidestrconsts:lisstoponexception
+msgid "Stop on exception"
+msgstr ""
+
+#: lazarusidestrconsts:lisconstructorcode
+msgid "Constructor code"
+msgstr ""
+
+#: lazarusidestrconsts:lisdestructorcode
+msgid "Destructor code"
+msgstr ""
+
+#: lazarusidestrconsts:lischeckoptions
+msgid "Check options"
+msgstr ""
+
+#: lazarusidestrconsts:lisnewconsoleapplication
+msgid "New console application"
+msgstr ""
+
+#: lazarusidestrconsts:lishelpentries
+msgid "Help entries"
+msgstr ""
+
+#: lazarusidestrconsts:lispath
+msgid "Path"
+msgstr ""
+
+#: lazarusidestrconsts:lishashelp
+msgid "Has Help"
+msgstr ""
+
+#: lazarusidestrconsts:liscreatehelpnode
+msgid "Create Help node"
+msgstr ""
+
+#: lazarusidestrconsts:liseditcontexthelp
+msgid "Edit context help"
+msgstr ""
+
+#: lazarusidestrconsts:lisnonodeselected
+msgid "no node selected"
+msgstr ""
+
+#: lazarusidestrconsts:lisnoidewindowselected
+msgid "No IDE window selected"
+msgstr ""
+
+#: lazarusidestrconsts:lisaddnewset
+msgid "Add new set"
+msgstr ""
+
+#: lazarusidestrconsts:lisactivefilter
+msgid "Active Filter"
+msgstr ""
+
+#: lazarusidestrconsts:lisfiltersets
+msgid "Filter Sets"
+msgstr ""
+
+#: lazarusidestrconsts:lismessageseditor
+msgid "Messages Editor"
+msgstr ""
+
+#: lazarusidestrconsts:liscomments
+msgid "Comments:"
+msgstr ""
+
+#: lazarusidestrconsts:lisadditionalinformation
+msgid "Additional Information"
+msgstr ""
+
+#: lazarusidestrconsts:liscompany
+msgid "Company:"
+msgstr ""
+
+#: lazarusidestrconsts:lisinternalname
+msgid "Internal Name:"
+msgstr ""
+
+#: lazarusidestrconsts:lislegaltrademarks
+msgid "Legal Trademarks:"
+msgstr ""
+
+#: lazarusidestrconsts:lisoriginalfilename
+msgid "Original File Name:"
+msgstr ""
+
+#: lazarusidestrconsts:lisproductname
+msgid "Product Name:"
+msgstr ""
+
+#: lazarusidestrconsts:lisproductversion
+msgid "Product Version:"
 msgstr ""
 

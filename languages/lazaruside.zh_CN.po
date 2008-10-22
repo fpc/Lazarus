@@ -104,6 +104,10 @@ msgstr "%s%s%s 无效的标识符"
 msgid "%s%s%s is not a valid unit name."
 msgstr "%s%s%s 不是合法的单元名"
 
+#: lazarusidestrconsts:lislazbuildisnoninteractiveabortingnow
+msgid "%s%s%s%slazbuild is non interactive, aborting now."
+msgstr ""
+
 #: lazarusidestrconsts:liscoclickokifaresuretodothat
 msgid "%s%sClick OK if you are sure to do that."
 msgstr "%s%s请点击以确认."
@@ -180,6 +184,22 @@ msgstr "%s包已经自动创建 "
 msgid "%snone"
 msgstr "%s 没有"
 
+#: lazarusidestrconsts:lisoverridethedefaultcompileregppc386ppcx64ppcppcetcd
+msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in environmentoptions.xml"
+msgstr ""
+
+#: lazarusidestrconsts:lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
+msgid "%soverride the project cpu. e.g. i386 x86_64 powerpc powerpc_64 etc. default: %s"
+msgstr ""
+
+#: lazarusidestrconsts:lisoverridetheprojectoperatingsystemegwin32linuxdefau
+msgid "%soverride the project operating system. e.g. win32 linux. default: %s"
+msgstr ""
+
+#: lazarusidestrconsts:lisoverridetheprojectwidgetseteggtkgtk2qtwin32carbond
+msgid "%soverride the project widgetset. e.g. gtk gtk2 qt win32 carbon. default: %s"
+msgstr ""
+
 #: lazarusidestrconsts:liswladd
 msgid "&Add"
 msgstr "添加(&A)"
@@ -187,6 +207,10 @@ msgstr "添加(&A)"
 #: lazarusidestrconsts:uemaddbreakpoint
 msgid "&Add Breakpoint"
 msgstr "添加断点(&A)"
+
+#: lazarusidestrconsts:lisapplicationclassname
+msgid "&Application class name"
+msgstr ""
 
 #: lazarusidestrconsts:lisfrbackwardsearch
 msgid "&Backward search"
@@ -344,6 +368,10 @@ msgstr "源码断点(&S)"
 msgid "&Text to Find"
 msgstr "查找文本(&T)"
 
+#: lazarusidestrconsts:listitle
+msgid "&Title"
+msgstr ""
+
 #: lazarusidestrconsts:lismenutools
 msgid "&Tools"
 msgstr "工具(&T)"
@@ -384,8 +412,12 @@ msgstr ""
 msgid "(no subdirectory)"
 msgstr "(没有子目录)"
 
-#: lazarusidestrconsts:liscodehelpnodocumentation
+#: lazarusidestrconsts:dlgpoicondescnone
 msgid "(none)"
+msgstr ""
+
+#: lazarusidestrconsts:dlgpoicondesc
+msgid "(size: %d:%d, bpp: %d)"
 msgstr ""
 
 #: lazarusidestrconsts:listmunknownmacro
@@ -528,6 +560,10 @@ msgstr "动作: %s"
 msgid "Activate regular expression syntax for text and replacement (pretty much like perl)"
 msgstr "使用正则表达式进行文本替换 (类似 perl 语言的语法) "
 
+#: lazarusidestrconsts:lisactivefilter
+msgid "Active Filter"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetempladd
 msgid "Add"
 msgstr "添加"
@@ -636,6 +672,10 @@ msgstr "添加链接"
 msgid "Add link to inherited"
 msgstr ""
 
+#: lazarusidestrconsts:lisaddnewset
+msgid "Add new set"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsaddoptionstodependentpackagesandprojects
 msgid "Add options to dependent packages and projects"
 msgstr "添加选项到依赖的包和工程"
@@ -687,6 +727,10 @@ msgstr "添加观察点..."
 #: lazarusidestrconsts:dlgedadd
 msgid "Add..."
 msgstr "添加..."
+
+#: lazarusidestrconsts:lisadditionalinformation
+msgid "Additional Information"
+msgstr ""
 
 #: lazarusidestrconsts:dlgadditionalsrcpath
 msgid "Additional Source search path for all projects (.pp;.pas)"
@@ -1024,6 +1068,10 @@ msgstr "可用的窗体:"
 msgid "Available packages"
 msgstr "可用的包"
 
+#: lazarusidestrconsts:rsavailablescanners
+msgid "Available scanners"
+msgstr ""
+
 #: lazarusidestrconsts:dlgedback
 msgid "Back"
 msgstr "后退"
@@ -1063,6 +1111,10 @@ msgstr "块缩进"
 #: lazarusidestrconsts:dlgedbold
 msgid "Bold"
 msgstr "粗体"
+
+#: lazarusidestrconsts:lisboldnondefaultobjectinspector
+msgid "Bold non default values"
+msgstr ""
 
 #: lazarusidestrconsts:uembookmarkn
 msgid "Bookmark"
@@ -1408,6 +1460,10 @@ msgstr "检测磁盘文件的更改并装载"
 msgid "Check consistency"
 msgstr "检测按键冲突"
 
+#: lazarusidestrconsts:lischeckoptions
+msgid "Check options"
+msgstr ""
+
 #: lazarusidestrconsts:dlgccocaption
 msgid "Checking compiler options"
 msgstr "检查编译选项"
@@ -1604,6 +1660,10 @@ msgstr "清除"
 msgid "Clear Directory?"
 msgstr ""
 
+#: lazarusidestrconsts:dlgpoclearicon
+msgid "Clear Icon"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditcleardependencydefaultfilename
 msgid "Clear dependency filename"
 msgstr "清除有依赖关系的文件名"
@@ -1679,6 +1739,10 @@ msgstr "代码浏览"
 #: lazarusidestrconsts:dlgusecodefolding
 msgid "Code folding"
 msgstr "代码折叠"
+
+#: lazarusidestrconsts:liscodegenerationoptions
+msgid "Code generation options"
+msgstr ""
 
 #: lazarusidestrconsts:dlgedcodeparams
 msgid "Code parameters"
@@ -1827,6 +1891,14 @@ msgstr "注释所选"
 #: lazarusidestrconsts:liscodetemplcomment
 msgid "Comment:"
 msgstr "注释:"
+
+#: lazarusidestrconsts:liscomments
+msgid "Comments:"
+msgstr ""
+
+#: lazarusidestrconsts:liscompany
+msgid "Company:"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcocompilation
 msgid "Compilation"
@@ -2028,6 +2100,10 @@ msgstr "控制台应用程序"
 msgid "Constants"
 msgstr "常量"
 
+#: lazarusidestrconsts:lisconstructorcode
+msgid "Constructor code"
+msgstr ""
+
 #: lazarusidestrconsts:dlginitdoneonly
 msgid "Constructor name must be 'init' (destructor must be 'done')"
 msgstr "构造函数名必须是 'init' (析构函数名必须是 'done')"
@@ -2068,6 +2144,10 @@ msgstr "转换选项"
 msgid "Conversion error"
 msgstr "转换错误"
 
+#: lazarusidestrconsts:lisconvert
+msgid "Convert"
+msgstr ""
+
 #: lazarusidestrconsts:liskmconvertdfmfiletolfm
 msgid "Convert DFM file to LFM"
 msgstr "转换 DFM 文件为 LFM"
@@ -2104,9 +2184,25 @@ msgstr "转换 Delphi 单元为 Lazarus 单元"
 msgid "Convert Delphi unit to Lazarus unit ..."
 msgstr "转换 Delphi 单元为 Lazarus 单元 ..."
 
+#: lazarusidestrconsts:lisconvertencoding
+msgid "Convert encoding"
+msgstr ""
+
+#: lazarusidestrconsts:lisconvertencodingofprojectspackages
+msgid "Convert encoding of projects/packages"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuconvertencoding
+msgid "Convert encoding of projects/packages ..."
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsconvertnode
 msgid "Convert node"
 msgstr "转换节点"
+
+#: lazarusidestrconsts:lisconvertprojectorpackage
+msgid "Convert project or package"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecselectiontabs2spaces
 msgid "Convert tabs to spaces in selection"
@@ -2227,6 +2323,10 @@ msgstr "创建 FPC 宏和 fpc 工程的目录"
 #: lazarusidestrconsts:lismenucreatefpdocfiles
 msgid "Create FPDoc files"
 msgstr "创建 FPDoc 文件"
+
+#: lazarusidestrconsts:liscreatehelpnode
+msgid "Create Help node"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcocreatemakefile
 msgid "Create Makefile"
@@ -2728,6 +2828,10 @@ msgstr "目标目录"
 msgid "Destination directory %s%s%s is invalid.%sPlease choose a complete path."
 msgstr "目标目录 %s%s%s 无效.%s请选择一个完整路径."
 
+#: lazarusidestrconsts:lisdestructorcode
+msgid "Destructor code"
+msgstr ""
+
 #: lazarusidestrconsts:lismenudiff
 msgid "Diff"
 msgstr "比较"
@@ -2775,6 +2879,10 @@ msgstr "在相同代码中禁用所有"
 #: lazarusidestrconsts:lisdisablegroup
 msgid "Disable Group"
 msgstr "禁用组"
+
+#: lazarusidestrconsts:dlgdisableantialiasing
+msgid "Disable anti-aliasing"
+msgstr ""
 
 #: lazarusidestrconsts:lisdisabled
 msgid "Disabled"
@@ -2876,6 +2984,10 @@ msgstr "下移"
 msgid "Drag Drop editing"
 msgstr "拖放文件编辑"
 
+#: lazarusidestrconsts:lisdrawgridlinesobjectinspector
+msgid "Draw grid lines"
+msgstr ""
+
 #: lazarusidestrconsts:dlgdropfiles
 msgid "Drop files"
 msgstr "丢失文件"
@@ -2931,6 +3043,10 @@ msgstr "编辑虚拟单元"
 #: lazarusidestrconsts:liscodetempleditcodetemplate
 msgid "Edit code template"
 msgstr "编辑代码模板"
+
+#: lazarusidestrconsts:liseditcontexthelp
+msgid "Edit context help"
+msgstr ""
 
 #: lazarusidestrconsts:lismenueditcontexthelp
 msgid "Edit context sensitive Help"
@@ -3060,17 +3176,13 @@ msgstr "输入运行参数"
 msgid "Enter translation language"
 msgstr "输入翻译的语言"
 
-#: lazarusidestrconsts:dlgrunoenvironment
+#: lazarusidestrconsts:dlggroupenvironment
 msgid "Environment"
 msgstr "环境"
 
 #: lazarusidestrconsts:srkmcatenvmenu
 msgid "Environment menu commands"
 msgstr "环境菜单命令"
-
-#: lazarusidestrconsts:lismenugeneraloptions
-msgid "Environment options ..."
-msgstr "环境选项 ..."
 
 #: lazarusidestrconsts:lisccoerrorcaption
 msgid "Error"
@@ -3500,6 +3612,10 @@ msgstr ""
 msgid "File extensions"
 msgstr "文件后缀:"
 
+#: lazarusidestrconsts:lisfilefilter
+msgid "File filter"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangfileisalreadyinpackage
 msgid "File is already in package"
 msgstr "文件已经存在包中"
@@ -3596,9 +3712,21 @@ msgstr "文件名: %s"
 msgid "Files"
 msgstr "文件"
 
+#: lazarusidestrconsts:lisfilesinasciiorutf8encoding
+msgid "Files in ASCII or UTF-8 encoding"
+msgstr ""
+
+#: lazarusidestrconsts:lisfilesnotinasciinorutf8encoding
+msgid "Files not in ASCII nor UTF-8 encoding"
+msgstr ""
+
 #: lazarusidestrconsts:lisfilter
 msgid "Filter"
 msgstr "过滤"
+
+#: lazarusidestrconsts:lisfiltersets
+msgid "Filter Sets"
+msgstr ""
 
 #: lazarusidestrconsts:lisplistfilterany
 msgid "Filter by matching any part of method"
@@ -4140,6 +4268,10 @@ msgstr "使用调试器处理 "
 msgid "Handled by Program"
 msgstr "使用程序处理 "
 
+#: lazarusidestrconsts:lishashelp
+msgid "Has Help"
+msgstr ""
+
 #: lazarusidestrconsts:lisaf2phasregisterprocedure
 msgid "Has Register procedure"
 msgstr "已经注册的过程函数"
@@ -4167,6 +4299,10 @@ msgstr "帮助"
 #: lazarusidestrconsts:lishlpoptshelpoptions
 msgid "Help Options"
 msgstr "帮助选项"
+
+#: lazarusidestrconsts:lishelpentries
+msgid "Help entries"
+msgstr ""
 
 #: lazarusidestrconsts:lishfmhelpforfreepascalcompilermessage
 msgid "Help for FreePascal Compiler message"
@@ -4275,6 +4411,10 @@ msgstr "IDE 忙"
 #: lazarusidestrconsts:uepins
 msgid "INS"
 msgstr "插入"
+
+#: lazarusidestrconsts:dlgpoicon
+msgid "Icon:"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsoptsidentifier
 msgid "Identifier"
@@ -4780,6 +4920,10 @@ msgstr "安装包 %s 将自动安装这些包:"
 msgid "Interface"
 msgstr "接口"
 
+#: lazarusidestrconsts:lisinternalname
+msgid "Internal Name:"
+msgstr ""
+
 #: lazarusidestrconsts:listcompilerinternalerror
 msgid "Internal compiler error! (%d)"
 msgstr "内部编译错误! (%d)"
@@ -5232,6 +5376,10 @@ msgstr "运行目标命令行命令"
 msgid "Lazarus"
 msgstr "Lazarus"
 
+#: lazarusidestrconsts:liskmlazarusdefault
+msgid "Lazarus (default)"
+msgstr ""
+
 #: lazarusidestrconsts:lislazarusdesktopsettings
 msgid "Lazarus Desktop Settings"
 msgstr "Lazarus 工作区域设置"
@@ -5336,6 +5484,10 @@ msgstr "左边空白相等"
 msgid "Left:"
 msgstr "左:"
 
+#: lazarusidestrconsts:lislegaltrademarks
+msgid "Legal Trademarks:"
+msgstr ""
+
 #: lazarusidestrconsts:dlglevelnoneopt
 msgid "Level 0 (no extra Optimizations)"
 msgstr "Level 0 (没有扩展优化)"
@@ -5436,6 +5588,10 @@ msgstr "列表"
 msgid "Lithuanian"
 msgstr "立陶宛"
 
+#: lazarusidestrconsts:dlgpoloadicon
+msgid "Load Icon"
+msgstr ""
+
 #: lazarusidestrconsts:dlgloaddfile
 msgid "Load desktop settings from file"
 msgstr "从文件载入 Lazarus 工作区域设置"
@@ -5484,8 +5640,12 @@ msgstr "转换选区为小写"
 msgid "Lowercase, first letter up"
 msgstr "转换为小写, 首字母大写"
 
-#: lazarusidestrconsts:liskmmacosx
-msgid "Mac OS X"
+#: lazarusidestrconsts:liskmmacosxapple
+msgid "Mac OS X (Apple style)"
+msgstr ""
+
+#: lazarusidestrconsts:liskmmacosxlaz
+msgid "Mac OS X (Lazarus style)"
 msgstr ""
 
 #: lazarusidestrconsts:lismacpascal
@@ -5607,6 +5767,10 @@ msgstr "菜单编辑器"
 #: lazarusidestrconsts:lismenuviewmessages
 msgid "Messages"
 msgstr "消息"
+
+#: lazarusidestrconsts:lismessageseditor
+msgid "Messages Editor"
+msgstr ""
 
 #: lazarusidestrconsts:lismethodclassnotfound
 msgid "Method class not found"
@@ -5964,6 +6128,14 @@ msgstr "新建单元"
 msgid "New class name:"
 msgstr "新建类:"
 
+#: lazarusidestrconsts:lisnewconsoleapplication
+msgid "New console application"
+msgstr ""
+
+#: lazarusidestrconsts:lisnewencoding
+msgid "New encoding:"
+msgstr ""
+
 #: lazarusidestrconsts:liskmnewpackage
 msgid "New package"
 msgstr ""
@@ -5999,6 +6171,14 @@ msgstr "新行"
 #: lazarusidestrconsts:srkmecnextbookmark
 msgid "Next Bookmark"
 msgstr "下一个书签"
+
+#: lazarusidestrconsts:lisno
+msgid "No"
+msgstr ""
+
+#: lazarusidestrconsts:lisnoidewindowselected
+msgid "No IDE window selected"
+msgstr ""
 
 #: lazarusidestrconsts:lisnoresourcestringsectionfound
 msgid "No ResourceString Section found"
@@ -6127,6 +6307,10 @@ msgstr "注意: 工程文件是所有文件在一个工程目录下"
 #: lazarusidestrconsts:liscodetoolsoptsnumber
 msgid "Number"
 msgstr "数字"
+
+#: lazarusidestrconsts:lisnumberoffilestoconvert
+msgid "Number of files to convert: %s"
+msgstr ""
 
 #: lazarusidestrconsts:lisifdok
 msgid "OK"
@@ -6408,6 +6592,10 @@ msgstr "选项: 对齐指导线"
 msgid "Options"
 msgstr "选项"
 
+#: lazarusidestrconsts:lismenugeneraloptions
+msgid "Options ..."
+msgstr ""
+
 #: lazarusidestrconsts:lislazbuildoptions
 msgid "Options:"
 msgstr "选项:"
@@ -6423,6 +6611,10 @@ msgstr "次序"
 #: lazarusidestrconsts:dlgsrorigin
 msgid "Origin"
 msgstr "起点"
+
+#: lazarusidestrconsts:lisoriginalfilename
+msgid "Original File Name:"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcoother
 msgid "Other"
@@ -6712,6 +6904,10 @@ msgstr "粘贴剪切板到当前位置"
 msgid "Paste selected components from clipboard"
 msgstr "从剪切板粘贴组件"
 
+#: lazarusidestrconsts:lispath
+msgid "Path"
+msgstr ""
+
 #: lazarusidestrconsts:dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
 msgstr "路径编辑器"
@@ -6887,6 +7083,14 @@ msgstr "过程"
 #: lazarusidestrconsts:lisdebugoptionsfrmprocess
 msgid "Process"
 msgstr "步骤"
+
+#: lazarusidestrconsts:lisproductname
+msgid "Product Name:"
+msgstr ""
+
+#: lazarusidestrconsts:lisproductversion
+msgid "Product Version:"
+msgstr ""
 
 #: lazarusidestrconsts:lisprogram
 msgid "Program"
@@ -7616,6 +7820,10 @@ msgstr "保存为模板..."
 msgid "Save Changes?"
 msgstr "保存更改?"
 
+#: lazarusidestrconsts:dlgposaveicon
+msgid "Save Icon"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangsavepackagelpk
 msgid "Save Package %s (*.lpk)"
 msgstr "保存包 %s (*.lpk)"
@@ -7787,6 +7995,10 @@ msgstr "扫描 Free Pascal 编译器输出信息"
 #: lazarusidestrconsts:lisedtexttoolscanoutputformakemessages
 msgid "Scan output for make messages"
 msgstr "扫描 make 的输出信息"
+
+#: lazarusidestrconsts:rsscanners
+msgid "Scanners"
+msgstr ""
 
 #: lazarusidestrconsts:dlgscope
 msgid "Scope"
@@ -7983,6 +8195,10 @@ msgstr "选择工程类型"
 #: lazarusidestrconsts:lismenuselectall
 msgid "Select all"
 msgstr "选择所有"
+
+#: lazarusidestrconsts:rsselectaninheritedentry
+msgid "Select an inherited entry"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuselectcodeblock
 msgid "Select code block"
@@ -8544,6 +8760,10 @@ msgstr "西班牙语"
 msgid "Src"
 msgstr "源代码"
 
+#: lazarusidestrconsts:lissrcos
+msgid "Src OS"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcostack
 msgid "Stack"
 msgstr "栈"
@@ -8608,6 +8828,10 @@ msgstr "停止调试程序并重新编译?"
 msgid "Stop debugging?"
 msgstr "停止调试?"
 
+#: lazarusidestrconsts:lisstoponexception
+msgid "Stop on exception"
+msgstr ""
+
 #: lazarusidestrconsts:liskmstopprogram
 msgid "Stop program"
 msgstr "停止程序"
@@ -8668,9 +8892,9 @@ msgstr "子程序相同的等级"
 msgid "Sub directory"
 msgstr "子目录"
 
-#: lazarusidestrconsts:dlgsubpropkcolor
-msgid "Subpropertes"
-msgstr "子属性"
+#: lazarusidestrconsts:dlgsubpropcolor
+msgid "SubProperties"
+msgstr ""
 
 #: lazarusidestrconsts:lissuccess
 msgid "Success"
@@ -8763,6 +8987,10 @@ msgstr "目标"
 #: lazarusidestrconsts:listargetcpu
 msgid "Target CPU"
 msgstr "目标 CPU"
+
+#: lazarusidestrconsts:dlgtargetcpufamily
+msgid "Target CPU family"
+msgstr ""
 
 #: lazarusidestrconsts:lislazbuildtargetcpu
 msgid "Target CPU:"
@@ -9181,8 +9409,8 @@ msgid "The file %s%s%s%sseems to be a program. Close current project and create 
 msgstr "文件 %s%s%s%s看起来是一个程序. 关闭当前工程并为此创建一个工程?%s\"No\" 将以一个正常的源代码文件装载."
 
 #: lazarusidestrconsts:listhefilewasfoundinoneofthesourcedirectoriesofthepac
-msgid "The file %s%s%s%swas found in one of the source directories of the package %s and looks like a compiled unit.Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%s%sDelete ambiguous file?"
-msgstr "文件 %s%s%s%s在包的源代码目录中找到 %s 看起来是一个已经编译的单元.编译的单元应该在包的输出目录下, 否则其余的包将在使用此包时发生问题.%s%s删除这个文件?"
+msgid "The file %s%s%s%swas found in one of the source directories of the package %s and looks like a compiled unit. Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%s%sDelete ambiguous file?"
+msgstr ""
 
 #: lazarusidestrconsts:listhefilewasnotfounddoyouwanttolocateityourself
 msgid "The file %s%s%s%swas not found.%sDo you want to locate it yourself ?%s"
@@ -9412,9 +9640,9 @@ msgstr "单元文件 %s 不属于任何包或工程.%s请添加单元文件到�
 msgid "The unit %s%s%s already exists.%sIgnore will force the renaming,%sCancel will cancel the saving of this source and%sAbort will abort the whole saving."
 msgstr "单元 %s%s%s 已存在.忽略将强制重命名,取消将取消保存源代码,中断将停止保存所有."
 
-#: lazarusidestrconsts:listheunitisnotlowercasethefreepascalcompiler10xneeds
-msgid "The unit %s%s%s is not lowercase.%sThe FreePascal compiler 1.0.x needs lowercase filenames. If you do not use the fpc 1.0.x to compile this unit, you can ignore this message.%s%sRename file?"
-msgstr "单元 %s%s%s 没有小写.%s FreePascal 编译器 1.0.x 使用小写文件名. 如果你不是使用 fpc 1.0.x 编译单元, 你可以忽略这条信息.%s%s重命名文件?"
+#: lazarusidestrconsts:listheunitisnotlowercasethefreepascalcompiler
+msgid "The unit filename %s%s%s is not lowercase.%sThe FreePascal compiler does not search for all cases. It is recommended to use lowercase filename.%s%sRename file lowercase?"
+msgstr ""
 
 #: lazarusidestrconsts:listheunititselfhasalreadythenamepascalidentifiersmus
 msgid "The unit itself has already the name %s%s%s. Pascal identifiers must be unique."
@@ -10380,6 +10608,10 @@ msgstr "上移"
 msgid "Update"
 msgstr "更新"
 
+#: lazarusidestrconsts:lisupdatepreview
+msgid "Update preview"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsupdaterebuild
 msgid "Update/Rebuild"
 msgstr "更新/重新编译"
@@ -10391,6 +10623,10 @@ msgstr "转换所选为大写"
 #: lazarusidestrconsts:lispckoptsusage
 msgid "Usage"
 msgstr "用法"
+
+#: lazarusidestrconsts:lisusagemessagehoption
+msgid "Usage message (-h option)"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcoansistr
 msgid "Use Ansi Strings"
@@ -10423,6 +10659,10 @@ msgstr "使用默认颜色"
 #: lazarusidestrconsts:dlgrunousedisplay
 msgid "Use display"
 msgstr "使用显示"
+
+#: lazarusidestrconsts:dlgextsymb
+msgid "Use external gdb debug symbols file"
+msgstr ""
 
 #: lazarusidestrconsts:dlguselaunchingapp
 msgid "Use launching application"
@@ -10908,6 +11148,10 @@ msgstr "添加断点"
 msgid "add watch"
 msgstr "添加查看"
 
+#: lazarusidestrconsts:lisapplybuildflagsbtodependenciestoo
+msgid "apply build flags (-B) to dependencies too"
+msgstr ""
+
 #: lazarusidestrconsts:lisoipautoinstalldynamic
 msgid "auto install dynamic"
 msgstr "自动动态安装"
@@ -10920,9 +11164,17 @@ msgstr "自动静态安装"
 msgid "begins"
 msgstr ""
 
+#: lazarusidestrconsts:lisbuildidewithpackages
+msgid "build IDE with packages"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecbuildall
 msgid "build all files of program/project"
 msgstr "构建程序或单元的所有文件"
+
+#: lazarusidestrconsts:lisbuildallfilesofprojectpackageide
+msgid "build all files of project/package/IDE"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecbuildfile
 msgid "build file"
@@ -10975,6 +11227,10 @@ msgstr "默认 (%s)"
 #: lazarusidestrconsts:lisautomaticallyremovecharacter
 msgid "do not add character"
 msgstr "不要增加字符"
+
+#: lazarusidestrconsts:lisdonotcompiledependencies
+msgid "do not compile dependencies"
+msgstr ""
 
 #: lazarusidestrconsts:lisccoenglishmessagefilemissing
 msgid "english message file for fpc is missing:components/codetools/fpc.errore.msg"
@@ -11108,6 +11364,10 @@ msgstr ""
 msgid "no fpc.cfg found"
 msgstr "没有找到 fpc.cfg"
 
+#: lazarusidestrconsts:lisnonodeselected
+msgid "no node selected"
+msgstr ""
+
 #: lazarusidestrconsts:lisccononascii
 msgid "non ASCII"
 msgstr ""
@@ -11127,6 +11387,10 @@ msgstr "没有选择任何东西"
 #: lazarusidestrconsts:lisobjectpath
 msgid "object path"
 msgstr "对象文件(obj)路径"
+
+#: lazarusidestrconsts:rsok
+msgid "ok"
+msgstr ""
 
 #: lazarusidestrconsts:lisold
 msgid "old"
@@ -11255,6 +11519,10 @@ msgstr "设置检查溢出 OVERFLOWCHECKS"
 #: lazarusidestrconsts:lisedtdefsetrangecheckson
 msgid "set RANGECHECKS on"
 msgstr "设置检查范围 RANGECHECKS"
+
+#: lazarusidestrconsts:lisshowversionandexit
+msgid "show version and exit"
+msgstr ""
 
 #: lazarusidestrconsts:lissmallerratherthanfaster
 msgid "smaller rather than faster"
