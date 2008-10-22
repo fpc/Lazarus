@@ -1627,17 +1627,6 @@ begin
       LMessage.Result := DLGC_WANTALLKEYS;
       WinProcess := false;
     end;
-{
-    * TODO: make it work... icon does not show up yet, so better disable it
-    WM_GETICON:
-    begin
-      if WindowInfo^.WinControl is TCustomForm then
-      begin
-        LMessage.Result := TCustomForm(WindowInfo^.WinControl).GetIconHandle;
-        WinProcess := false;
-      end;
-    end;
-}
     WM_GETMINMAXINFO:
       SetMinMaxInfo(PMINMAXINFO(LParam)^);
     WM_HSCROLL:
