@@ -343,9 +343,11 @@ begin
     end;
 
     CN_NOTIFY:
-      if Sender is TCustomTrackBar then
-        with TLMessage(Message) do
-          Result := SendMessage(Handle, Msg, WParam, LParam);
+      with TLMessage(Message) do
+        if (Sender is TCustomTrackBar) then
+            Result := SendMessage(Handle, Msg, WParam, LParam)
+        else
+          Result := CallDefaultWindowProc(Handle, Msg, WParam, LParam);
   else
     if TLMessage(Message).Msg >= WM_USER then
       with TLMessage(Message) do

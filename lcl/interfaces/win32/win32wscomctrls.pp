@@ -613,93 +613,91 @@ var
   Details: TThemedElementDetails;
   NMHdr: PNMHDR;
 begin
-  if ThemeServices.ThemesEnabled then
-  begin
-    // Paul: next is a slightly modified code of TThemeManager.TrackBarWindowProc
-    // of Mike Lischke Theme manager library (Mike granted us permition to use his code)
-    case Msg of
-      CN_NOTIFY:
+  // Paul: next is a slightly modified code of TThemeManager.TrackBarWindowProc
+  // of Mike Lischke Theme manager library (Mike granted us permition to use his code)
+  case Msg of
+    CN_NOTIFY:
+      if ThemeServices.ThemesEnabled then
+      begin
+        NMHdr := PNMHDR(LParam);
+        if NMHdr^.code = NM_CUSTOMDRAW then
         begin
-          NMHdr := PNMHDR(LParam);
-          if NMHdr^.code = NM_CUSTOMDRAW then
-          begin
-            WindowInfo := GetWindowInfo(PNMHdr(LParam)^.hwndFrom);
-            Control := WindowInfo^.WinControl;
-            case PNMCustomDraw(LParam)^.dwDrawStage of
-              CDDS_PREPAINT:
-              begin
-                Result := CDRF_NOTIFYITEMDRAW;
-              end;
-              CDDS_ITEMPREPAINT:
-              begin
-                case PNMCustomDraw(LParam)^.dwItemSpec of
-                  TBCD_TICS: // Before re-painting ticks redo whole background.
+          WindowInfo := GetWindowInfo(PNMHdr(LParam)^.hwndFrom);
+          Control := WindowInfo^.WinControl;
+          case PNMCustomDraw(LParam)^.dwDrawStage of
+            CDDS_PREPAINT:
+            begin
+              Result := CDRF_NOTIFYITEMDRAW;
+            end;
+            CDDS_ITEMPREPAINT:
+            begin
+              case PNMCustomDraw(LParam)^.dwItemSpec of
+                TBCD_TICS: // Before re-painting ticks redo whole background.
+                  begin
+                    R := Control.ClientRect;
+                    // Leave room for the focus rectangle if there is one.
+                    if Control.Focused and
+                       ((Control.Perform(WM_QUERYUISTATE, 0, 0) and UISF_HIDEFOCUS) = 0) then
                     begin
-                      R := Control.ClientRect;
+                      SystemParametersInfo(SPI_GETFOCUSBORDERWIDTH, 0, @FocusBorderWidth, 0);
+                      SystemParametersInfo(SPI_GETFOCUSBORDERHEIGHT, 0, @FocusBorderHeight, 0);
+                      InflateRect(R, -FocusBorderWidth, -FocusBorderHeight);
+                    end;
+                    ThemeServices.DrawParentBackground(Window, PNMCustomDraw(LParam)^.hDC, nil, False, @R);
+                  end;
+                TBCD_CHANNEL:
+                  begin
+                    // Retrieve the bounding box for the thumb.
+                    SendMessage(Window, TBM_GETTHUMBRECT, 0, Integer(@R));
+                    // Extend this rectangle to the top/bottom or left/right border, respectively.
+                    Offset := 0;
+                    if TCustomTrackBar(Control).Orientation = trHorizontal then
+                    begin
                       // Leave room for the focus rectangle if there is one.
-                      if Control.Focused and
-                         ((Control.Perform(WM_QUERYUISTATE, 0, 0) and UISF_HIDEFOCUS) = 0) then
+                      if Control.Focused then
                       begin
                         SystemParametersInfo(SPI_GETFOCUSBORDERWIDTH, 0, @FocusBorderWidth, 0);
-                        SystemParametersInfo(SPI_GETFOCUSBORDERHEIGHT, 0, @FocusBorderHeight, 0);
-                        InflateRect(R, -FocusBorderWidth, -FocusBorderHeight);
+                        Inc(Offset, FocusBorderWidth);
                       end;
-                      ThemeServices.DrawParentBackground(Window, PNMCustomDraw(LParam)^.hDC, nil, False, @R);
-                    end;
-                  TBCD_CHANNEL:
+                      with Control.ClientRect do
+                      begin
+                        R.Left := Left + Offset;
+                        R.Right := Right - Offset;
+                      end;
+                    end
+                    else
                     begin
-                      // Retrieve the bounding box for the thumb.
-                      SendMessage(Window, TBM_GETTHUMBRECT, 0, Integer(@R));
-                      // Extend this rectangle to the top/bottom or left/right border, respectively.
-                      Offset := 0;
-                      if TCustomTrackBar(Control).Orientation = trHorizontal then
+                      // Leave room for the focus rectangle if there is one.
+                      if Control.Focused then
                       begin
-                        // Leave room for the focus rectangle if there is one.
-                        if Control.Focused then
-                        begin
-                          SystemParametersInfo(SPI_GETFOCUSBORDERWIDTH, 0, @FocusBorderWidth, 0);
-                          Inc(Offset, FocusBorderWidth);
-                        end;
-                        with Control.ClientRect do
-                        begin
-                          R.Left := Left + Offset;
-                          R.Right := Right - Offset;
-                        end;
-                      end
-                      else
-                      begin
-                        // Leave room for the focus rectangle if there is one.
-                        if Control.Focused then
-                        begin
-                          SystemParametersInfo(SPI_GETFOCUSBORDERHEIGHT, 0, @FocusBorderHeight, 0);
-                          Inc(Offset, FocusBorderWidth);
-                        end;
-                        with Control.ClientRect do
-                        begin
-                          R.Top := Top + Offset;
-                          R.Bottom := Bottom - Offset;
-                        end;
+                        SystemParametersInfo(SPI_GETFOCUSBORDERHEIGHT, 0, @FocusBorderHeight, 0);
+                        Inc(Offset, FocusBorderWidth);
                       end;
-                      with R do
-                        Rgn := CreateRectRgn(Left, Top, Right, Bottom);
-                      SelectClipRgn(PNMCustomDraw(LParam)^.hDC, Rgn);
-                      Details := ThemeServices.GetElementDetails(ttbThumbTics);
-                      ThemeServices.DrawParentBackground(Window, PNMCustomDraw(LParam)^.hDC, @Details, False);
-                      DeleteObject(Rgn);
-                      SelectClipRgn(PNMCustomDraw(LParam)^.hDC, 0);
+                      with Control.ClientRect do
+                      begin
+                        R.Top := Top + Offset;
+                        R.Bottom := Bottom - Offset;
+                      end;
                     end;
-                end;
-                Result := CDRF_DODEFAULT;
+                    with R do
+                      Rgn := CreateRectRgn(Left, Top, Right, Bottom);
+                    SelectClipRgn(PNMCustomDraw(LParam)^.hDC, Rgn);
+                    Details := ThemeServices.GetElementDetails(ttbThumbTics);
+                    ThemeServices.DrawParentBackground(Window, PNMCustomDraw(LParam)^.hDC, @Details, False);
+                    DeleteObject(Rgn);
+                    SelectClipRgn(PNMCustomDraw(LParam)^.hDC, 0);
+                  end;
               end;
+              Result := CDRF_DODEFAULT;
             end;
           end;
         end;
+      end
       else
-        Result := WindowProc(Window, Msg, WParam, LParam);
-    end;
-  end
-  else
-    Result := WindowProc(Window, Msg, WParam, LParam);
+        Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
+    else
+      Result := WindowProc(Window, Msg, WParam, LParam);
+  end;
 end;
 
 { TWin32WSTrackBar }
