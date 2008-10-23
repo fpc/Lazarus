@@ -327,9 +327,15 @@ begin
     // min >= max cause s crash
     Adjustment^.lower := Min;
     if Min < Max then
-      Adjustment^.upper := Max
+    begin
+      Adjustment^.upper := Max;
+      gtk_widget_set_sensitive(PgtkWidget(wHandle), ATrackBar.Enabled);
+    end
     else
+    begin
       Adjustment^.upper := Min + 1;
+      gtk_widget_set_sensitive(PgtkWidget(wHandle), False);
+    end;
     Adjustment^.step_increment := LineSize;
     Adjustment^.page_increment := PageSize;
     Adjustment^.value := Position;
