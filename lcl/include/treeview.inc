@@ -4110,10 +4110,7 @@ var
         if (CurNode.GetNextSibling <> nil) then
         begin
           // draw vertical line to next brother
-          if Node.HasChildren then
-            DrawVertLine(CurMid, VertMid + fExpandSignSize shr 1, NodeRect.Bottom)
-          else
-            DrawVertLine(CurMid, NodeRect.Top, NodeRect.Bottom);
+          DrawVertLine(CurMid, NodeRect.Top, NodeRect.Bottom);
         end else
         if (CurNode = Node) then
         begin
