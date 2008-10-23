@@ -2772,7 +2772,7 @@ begin
   FStateChangeLink.OnChange := @ImageListChange;
   FStates:=[tvsMaxLvlNeedsUpdate,tvsMaxRightNeedsUpdate,tvsScrollbarChanged];
   FTreeLineColor := clWindowFrame;
-  FTreeLinePenStyle := psDot;
+  FTreeLinePenStyle := psPattern;
   FExpandSignColor := clWindowFrame;
 end;
 
@@ -4080,14 +4080,38 @@ var
 
   procedure DrawVertLine(X, Y1, Y2: Integer);
   begin
-    Canvas.MoveTo(X, Y1);
-    Canvas.LineTo(X, Y2);
+    if TreeLinePenStyle = psPattern then
+    begin
+      // TODO: implement psPattern support in the LCL
+      while Y1 < Y2 do
+      begin
+        Canvas.Pixels[X, Y1] := TreeLineColor;
+        inc(Y1, 2);
+      end;
+    end
+    else
+    begin
+      Canvas.MoveTo(X, Y1);
+      Canvas.LineTo(X, Y2);
+    end;
   end;
 
   procedure DrawHorzLine(Y, X1, X2: Integer);
   begin
-    Canvas.MoveTo(X1, Y);
-    Canvas.LineTo(X2, Y);
+    if TreeLinePenStyle = psPattern then
+    begin
+      // TODO: implement psPattern support in the LCL
+      while X1 < X2 do
+      begin
+        Canvas.Pixels[X1, Y] := TreeLineColor;
+        inc(X1, 2);
+      end;
+    end
+    else
+    begin
+      Canvas.MoveTo(X1, Y);
+      Canvas.LineTo(X2, Y);
+    end;
   end;
 
   function DrawTreeLines(CurNode: TTreeNode): integer;

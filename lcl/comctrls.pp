@@ -2435,7 +2435,7 @@ type
     property SeparatorColor: TColor read fSeparatorColor write SetSeparatorColor default clGray;
     property TopItem: TTreeNode read GetTopItem write SetTopItem;
     property TreeLineColor: TColor read FTreeLineColor write FTreeLineColor default clWindowFrame;
-    property TreeLinePenStyle: TPenStyle read FTreeLinePenStyle write FTreeLinePenStyle default psDot;
+    property TreeLinePenStyle: TPenStyle read FTreeLinePenStyle write FTreeLinePenStyle default psPattern;
     property ExpandSignColor: TColor read FExpandSignColor write FExpandSignColor default clWindowFrame;
   published
     property TabStop default true;
