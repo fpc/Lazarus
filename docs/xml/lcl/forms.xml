@@ -1905,7 +1905,9 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomForm">
-        <short>TCustomForm - the base type for TForm</short>
+        <short>
+          <var>TCustomForm </var>- the base type for <var>TForm</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2546,19 +2548,22 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- variable Visibility: protected -->
       <element name="TCustomForm.FFormBorderStyle">
-        <short/>
+        <short>
+          <var>FFormBorderStyle</var> - local variable to hold style of border</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: protected -->
       <element name="TCustomForm.FActionLists">
-        <short/>
+        <short>
+          <var>FActionLists</var> - local variable holding lists of actions asociated with the Form</short>
         <descr/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.CMShowingChanged">
-        <short/>
+        <short>
+          <var>CMShowingChanged</var> - system message method for showing if the form has changed</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2569,27 +2574,30 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.Activate">
-        <short/>
+        <short>
+          <var>Activate</var> - method for rendering the Form active</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.ActiveChanged">
-        <short/>
+        <short>
+          <var>ActiveChanged</var> - method for a form that is active and changed</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.BeginFormUpdate">
-        <short/>
+        <short>
+          <var>BeginFormUpdate</var> - start updating the Form</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.CreateParams">
+      <element name="TCustomForm.CreateParams" link="#LCL.Controls.TWinControl.CreateParams">
         <short/>
         <descr/>
         <errors/>
@@ -2600,7 +2608,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.CreateWnd">
+      <element name="TCustomForm.CreateWnd" link="#LCL.Controls.TWinControl.CreateWnd">
         <short/>
         <descr/>
         <errors/>
@@ -2608,13 +2616,14 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.Deactivate">
-        <short/>
+        <short>
+          <var>Deactivate</var> - method for rendering the Form inactive</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.DestroyWnd">
+      <element name="TCustomForm.DestroyWnd" link="#LCL.Controls.TWinControl.DestroyWnd">
         <short/>
         <descr/>
         <errors/>
@@ -2622,7 +2631,9 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.DoClose">
-        <short/>
+        <short>
+          <var>DoClose</var> - close the Form using the specified <var>CloseAction</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2633,41 +2644,46 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.DoCreate">
-        <short/>
+        <short>
+          <var>DoCreate</var> - perform the Create action</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.DoDestroy">
-        <short/>
+        <short>
+          <var>DoDestroy</var>- perform the Destroy action</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.DoHide">
-        <short/>
+        <short>
+          <var>DoHide</var> - method for hiding a previously visible object</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.DoShow">
-        <short/>
+        <short>
+          <var>DoShow</var> - method to redender visible a previously hidden form</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.EndFormUpdate">
-        <short/>
+        <short>
+          <var>EndFormUpdate</var> - finish updating the Form</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.GetChildren">
+      <element name="TCustomForm.GetChildren" link="#rtl.Classes.TComponent.GetChildren">
         <short/>
         <descr/>
         <errors/>
@@ -2682,7 +2698,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.Loaded">
+      <element name="TCustomForm.Loaded" link="#rtl.Classes.TComponent.Loaded">
         <short/>
         <descr/>
         <errors/>
@@ -2690,13 +2706,14 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.ChildHandlesCreated">
-        <short/>
+        <short>
+          <var>ChildHandlesCreated</var> - method for use when handles have been created for descendants</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.Notification">
+      <element name="TCustomForm.Notification" link="#rtl.Classes.TComponent.Notification">
         <short/>
         <descr/>
         <errors/>
@@ -2711,7 +2728,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.PaintWindow">
+      <element name="TCustomForm.PaintWindow" link="#LCL.Controls.TCustomControl.PaintWindow">
         <short/>
         <descr/>
         <errors/>
@@ -2722,7 +2739,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.RequestAlign">
+      <element name="TCustomForm.RequestAlign" link="#LCL.Controls.TControl.RequestAlign">
         <short/>
         <descr/>
         <errors/>
@@ -2730,7 +2747,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.SetZOrder">
-        <short/>
+        <short>
+          <var>SetZOrder</var> - set the Z order for the Form; if <var>Topmost </var>is True, Form is on top of all other objects</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2740,7 +2758,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.SetParent">
+      <element name="TCustomForm.SetParent" link="#LCL.Controls.TControl.SetParent">
         <short/>
         <descr/>
         <errors/>
@@ -2752,13 +2770,14 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.UpdateShowing">
-        <short/>
+        <short>
+          <var>UpdateShowing</var> - method to update the <var>Visible</var> property</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.SetVisible">
+      <element name="TCustomForm.SetVisible" link="#LCL.Controls.TControl.SetVisible">
         <short/>
         <descr/>
         <errors/>
@@ -2770,27 +2789,30 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.DoFirstShow">
-        <short/>
+        <short>
+          <var>DoFirstShow</var> - perform the first Show action since creation of the Form</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.UpdateWindowState">
-        <short/>
+        <short>
+          <var>UpdateWindowState</var> - update the state of the Window displaying the Form</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.VisibleChanging">
-        <short/>
+        <short>
+          <var>VisibleChanging</var> - method for dealing with a Form whose Visible property is changing</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.WndProc">
+      <element name="TCustomForm.WndProc" link="#LCL.Controls.TControl.WndProc">
         <short/>
         <descr/>
         <errors/>
@@ -2801,7 +2823,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomForm.FormIsUpdating">
+      <element name="TCustomForm.FormIsUpdating" link="#LCL.Controls.TControl.FormIsUpdating">
         <short/>
         <descr/>
         <errors/>
@@ -2813,7 +2835,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomForm.VisibleIsStored">
-        <short/>
+        <short>
+          <var>VisibleIsStored</var> - True if the Visible property has been stored</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2823,7 +2846,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomForm.ColorIsStored">
+      <element name="TCustomForm.ColorIsStored" link="#LCL.Controls.TControl.ColorIsStored">
         <short/>
         <descr/>
         <errors/>
@@ -2834,21 +2857,21 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.DoSendBoundsToInterface">
+      <element name="TCustomForm.DoSendBoundsToInterface" link="#LCL.Controls.TWinControl.DoSendBoundsToInterface">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.DoAutoSize">
+      <element name="TCustomForm.DoAutoSize" link="#LCL.Controls.TControl.DoAutoSize">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.SetAutoSize">
+      <element name="TCustomForm.SetAutoSize" link="#LCL.Controls.TControl.SetAutoSize">
         <short/>
         <descr/>
         <errors/>
@@ -2859,7 +2882,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomForm.GetControlClassDefaultSize">
+      <element name="TCustomForm.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize">
         <short/>
         <descr/>
         <errors/>
@@ -2870,7 +2893,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.DoDock">
+      <element name="TCustomForm.DoDock" link="#LCL.Controls.TControl.DoDock">
         <short/>
         <descr/>
         <errors/>
@@ -2885,7 +2908,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomForm.GetFloating">
+      <element name="TCustomForm.GetFloating" link="#LCL.Controls.TControl.GetFloating">
         <short/>
         <descr/>
         <errors/>
@@ -2897,7 +2920,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomForm.GetDefaultDockCaption">
-        <short/>
+        <short>
+          <var>GetDefaultDockCaption</var> - returns the default caption to be used for docking</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2908,7 +2932,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.CMActionExecute">
-        <short/>
+        <short>
+          <var>CMActionExecute</var> - system message method for executing action</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2919,7 +2944,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.CMActionUpdate">
-        <short/>
+        <short>
+          <var>CMActionUpdate</var> - system message method for updating action</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2953,10 +2979,13 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomForm.DoUpdateAction">
-        <short/>
+        <short>
+          <var>DoUpdateAction</var> - asks all visible controls to update the specified action</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#LCL.Forms.TCustomForm.DoExecuteAction">DoExecuteAction</link>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="TCustomForm.DoUpdateAction.Result">
@@ -2968,13 +2997,14 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.UpdateActions">
-        <short/>
+        <short>
+          <var>UpdateActions</var> - method for updating actions</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomForm.Create">
+      <element name="TCustomForm.Create" link="#rtl.Classes.TComponent.Create">
         <short/>
         <descr>This constructor can override the constructor of an ancestor class
 </descr>
@@ -2987,7 +3017,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- constructor Visibility: public -->
       <element name="TCustomForm.CreateNew">
-        <short/>
+        <short>
+          <var>CreateNew</var> - constructor for creating a completely new form</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3002,7 +3033,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.BeforeDestruction">
-        <short/>
+        <short>
+          <var>BeforeDestruction</var> - method to be applied before Form is destroyed (usually involves clean-up)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3019,7 +3051,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomForm.Destroy">
+      <element name="TCustomForm.Destroy" link="#rtl.Classes.TComponent.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -3051,15 +3083,14 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomForm.Hide">
+      <element name="TCustomForm.Hide" link="#LCL.Controls.TControl.Hide">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomForm.Show">
-        <short>Shows, brings to front and activates the form</short>
+      <element name="TCustomForm.Show" link="#LCL.Controls.TControl.Show">
         <descr/>
         <errors/>
         <seealso/>
@@ -3083,7 +3114,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TCustomForm.NeedParentForAutoSize">
+      <element name="TCustomForm.NeedParentForAutoSize" link="#LCL.Controls.TControl.NeedParentForAutoSize">
         <short/>
         <descr/>
         <errors/>
@@ -3095,7 +3126,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomForm.WantChildKey">
-        <short/>
+        <short>
+          <var>WantChildKey</var> - returns True if the specified child control requires a key (Message)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3114,7 +3146,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.DefocusControl">
-        <short/>
+        <short>
+          <var>DefocusControl</var> - withdraws focus from the specified control, removing it if required</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3128,7 +3161,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomForm.SetFocus">
+      <element name="TCustomForm.SetFocus" link="#LCL.Controls.TWinControl.SetFocus">
         <short/>
         <descr/>
         <errors/>
@@ -3136,7 +3169,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomForm.SetFocusedControl">
-        <short/>
+        <short>
+          <var>SetFocusedControl</var> - method for giving focus to specified control; returns True if successful</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3151,7 +3185,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.FocusControl">
-        <short/>
+        <short>
+          <var>FocusControl</var> - method for giving focus to specified control</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3173,7 +3208,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.SetRestoredBounds">
-        <short/>
+        <short>
+          <var>SetRestoredBounds</var> - set the bounds defining the position of the restored control</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3196,7 +3232,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomForm.GetRolesForControl">
-        <short/>
+        <short>
+          <var>GetRolesForControl</var> - returns a set of roles (default, cancel) for the Form </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3210,7 +3247,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomForm.RemoveAllHandlersOfObject">
+      <element name="TCustomForm.RemoveAllHandlersOfObject" link="#LCL.LCLClasses.TLCLComponent.RemoveAllHandlersOfObject">
         <short/>
         <descr/>
         <errors/>
@@ -3222,7 +3259,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.AddHandlerFirstShow">
-        <short/>
+        <short>
+          <var>AddHandlerFirstShow</var> - perform the action for adding a handler at the time of first showing</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3237,7 +3275,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.RemoveHandlerFirstShow">
-        <short/>
+        <short>
+          <var>RemoveHandlerFirstShow</var> - perform the action for removing the handler on the first showing</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3248,7 +3287,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.AddHandlerClose">
-        <short/>
+        <short>
+          <var>AddHandlerClose</var> - adds a handler for closing Form</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3263,7 +3303,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.RemoveHandlerClose">
-        <short/>
+        <short>
+          <var>RemoveHandlerClose</var> - removes handler for closing form</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3274,7 +3315,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.AddHandlerCreate">
-        <short/>
+        <short>
+          <var>AddHandlerCreate</var> - performs the OnCreateHandler event</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3289,7 +3331,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.RemoveHandlerCreate">
-        <short/>
+        <short>
+          <var>RemoveHandlerCreate</var> - removes the handler for the Create event</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3316,7 +3359,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.IntfDropFiles">
-        <short/>
+        <short>
+          <var>IntfDropFiles</var> - Invokes <var>OnDropFilesEvent</var> of the form. This function is called by the interface. </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3327,7 +3371,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.IntfHelp">
-        <short/>
+        <short>
+          <var>IntfHelp</var> - Show help for control or menu item. This function is called by the interface.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3337,7 +3382,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomForm.Dock">
+      <element name="TCustomForm.Dock" link="#LCL.Controls.TControl.Dock">
         <short/>
         <descr/>
         <errors/>
@@ -3414,14 +3459,13 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomForm.Caption">
+      <element name="TCustomForm.Caption" link="#LCL.Controls.TControl.Caption">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomForm.Color">
-        <short>The form's colour; by default it is the same as the colour specified for button faces.</short>
+      <element name="TCustomForm.Color" link="#LCL.Controls.TControl.Color">
         <descr>The form's colour; by default it is the same as the colour specified for button faces.
 </descr>
         <seealso/>
@@ -3484,7 +3528,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.KeyPreview">
-        <short/>
+        <short>
+          <var>KeyPreview</var> - if True, Key Preview is possible</short>
         <descr/>
         <seealso/>
       </element>
@@ -3562,7 +3607,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomForm.OnResize">
+      <element name="TCustomForm.OnResize" link="#LCL.Controls.TControl.OnResize">
         <short/>
         <descr/>
         <seealso/>
@@ -3642,9 +3687,9 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomForm.Visible">
-        <short>Indicates if the form is visible</short>
-        <descr>Set or get this to set the form visible/hidden or get the status of the form</descr>
+      <element name="TCustomForm.Visible" link="#LCL.Controls.TControl.Visible">
+        <descr>Set or get this to set the form visible/hidden or get the status of the form
+</descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
@@ -3688,8 +3733,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TForm.CreateWnd">
-        <short>Create a Window Control to contain the Form</short>
+      <element name="TForm.CreateWnd" link="#LCL.Controls.TWinControl.CreateWnd">
         <descr/>
         <errors/>
         <seealso/>
@@ -3701,386 +3745,386 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TForm.DockManager">
+      <element name="TForm.DockManager" link="#LCL.Controls.TWinControl.DockManager">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.Action">
+      <element name="TForm.Action" link="#LCL.Controls.TControl.Action">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.ActiveControl">
+      <element name="TForm.ActiveControl" link="#LCL.Forms.TCustomForm.ActiveControl">
         <short/>
         <descr>Use active control to set or get the control that has the focus on this form
 </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.Align">
+      <element name="TForm.Align" link="#LCL.Controls.TControl.Align">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.AllowDropFiles">
+      <element name="TForm.AllowDropFiles" link="#LCL.Forms.TCustomForm.AllowDropFiles">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.AutoSize">
+      <element name="TForm.AutoSize" link="#LCL.Controls.TControl.AutoSize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.BiDiMode">
+      <element name="TForm.BiDiMode" link="#LCL.Controls.TControl.BiDiMode">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.BorderIcons">
+      <element name="TForm.BorderIcons" link="#LCL.Forms.TCustomForm.BorderIcons">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.BorderStyle">
+      <element name="TForm.BorderStyle" link="#LCL.Forms.TCustomForm.BorderStyle">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.Caption">
+      <element name="TForm.Caption" link="#LCL.Controls.TControl.Caption">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.ChildSizing">
+      <element name="TForm.ChildSizing" link="#LCL.Controls.TWinControl.ChildSizing">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.ClientHeight">
+      <element name="TForm.ClientHeight" link="#LCL.Controls.TControl.ClientHeight">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.ClientWidth">
+      <element name="TForm.ClientWidth" link="#LCL.Controls.TControl.ClientWidth">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.Color">
+      <element name="TForm.Color" link="#LCL.Controls.TControl.Color">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.Constraints">
+      <element name="TForm.Constraints" link="#LCL.Controls.TControl.Constraints">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.DragKind">
+      <element name="TForm.DragKind" link="#LCL.Controls.TControl.DragKind">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.DragMode">
+      <element name="TForm.DragMode" link="#LCL.Controls.TControl.DragMode">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.DockSite">
+      <element name="TForm.DockSite" link="#LCL.Controls.TWinControl.DockSite">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.Enabled">
+      <element name="TForm.Enabled" link="#LCL.Controls.TControl.Enabled">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.Font">
+      <element name="TForm.Font" link="#LCL.Controls.TControl.Font">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.FormStyle">
+      <element name="TForm.FormStyle" link="#LCL.Forms.TCustomForm.FormStyle">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.HelpFile">
+      <element name="TForm.HelpFile" link="#LCL.Forms.TCustomForm.HelpFile">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.Icon">
+      <element name="TForm.Icon" link="#LCL.Forms.TCustomForm.Icon">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.KeyPreview">
+      <element name="TForm.KeyPreview" link="#LCL.Forms.TCustomForm.KeyPreview">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.Menu">
+      <element name="TForm.Menu" link="#LCL.Forms.TCustomForm.Menu">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnActivate">
+      <element name="TForm.OnActivate" link="#LCL.Forms.TCustomForm.OnActivate">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnClick">
+      <element name="TForm.OnClick" link="#LCL.Controls.TControl.OnClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnClose">
+      <element name="TForm.OnClose" link="#LCL.Forms.TCustomForm.OnClose">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnCloseQuery">
+      <element name="TForm.OnCloseQuery" link="#LCL.Forms.TCustomForm.OnCloseQuery">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnChangeBounds">
+      <element name="TForm.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnCreate">
+      <element name="TForm.OnCreate" link="#LCL.Forms.TCustomForm.OnCreate">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnDblClick">
+      <element name="TForm.OnDblClick" link="#LCL.Controls.TControl.OnDblClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnDeactivate">
+      <element name="TForm.OnDeactivate" link="#LCL.Forms.TCustomForm.OnDeactivate">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnDestroy">
+      <element name="TForm.OnDestroy" link="#LCL.Forms.TCustomForm.OnDestroy">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnDockDrop">
+      <element name="TForm.OnDockDrop" link="#LCL.Controls.TWinControl.OnDockDrop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnDockOver">
+      <element name="TForm.OnDockOver" link="#LCL.Controls.TWinControl.OnDockOver">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnDragDrop">
+      <element name="TForm.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnDragOver">
+      <element name="TForm.OnDragOver" link="#LCL.Controls.TControl.OnDragOver">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnEndDock">
+      <element name="TForm.OnEndDock" link="#LCL.Controls.TControl.OnEndDock">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnDropFiles">
+      <element name="TForm.OnDropFiles" link="#LCL.Forms.TCustomForm.OnDropFiles">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnGetSiteInfo">
+      <element name="TForm.OnGetSiteInfo" link="#LCL.Controls.TWinControl.OnGetSiteInfo">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnHide">
+      <element name="TForm.OnHide" link="#LCL.Forms.TCustomForm.OnHide">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnKeyDown">
+      <element name="TForm.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnKeyPress">
+      <element name="TForm.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnKeyUp">
+      <element name="TForm.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnHelp">
+      <element name="TForm.OnHelp" link="#LCL.Forms.TCustomForm.OnHelp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnMouseDown">
+      <element name="TForm.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnMouseMove">
+      <element name="TForm.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnMouseUp">
+      <element name="TForm.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnPaint">
+      <element name="TForm.OnPaint" link="#LCL.Controls.TCustomControl.OnPaint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnResize">
+      <element name="TForm.OnResize" link="#LCL.Controls.TControl.OnResize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnShortCut">
+      <element name="TForm.OnShortCut" link="#LCL.Forms.TCustomForm.OnShortcut">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnShow">
+      <element name="TForm.OnShow" link="#LCL.Forms.TCustomForm.OnShow">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnStartDock">
+      <element name="TForm.OnStartDock" link="#LCL.Controls.TControl.OnStartDock">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnUnDock">
+      <element name="TForm.OnUnDock" link="#LCL.Controls.TWinControl.OnUnDock">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnUTF8KeyPress">
+      <element name="TForm.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.ParentBiDiMode">
+      <element name="TForm.ParentBiDiMode" link="#LCL.Controls.TControl.ParentBiDiMode">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.ParentFont">
+      <element name="TForm.ParentFont" link="#LCL.Controls.TControl.ParentFont">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.PixelsPerInch">
+      <element name="TForm.PixelsPerInch" link="#LCL.Forms.TCustomForm.PixelsPerInch">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.PopupMenu">
+      <element name="TForm.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.Position">
+      <element name="TForm.Position" link="#LCL.Forms.TCustomForm.Position">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.SessionProperties">
+      <element name="TForm.SessionProperties" link="#LCL.Controls.TControl.SessionProperties">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.ShowHint">
+      <element name="TForm.ShowHint" link="#LCL.Controls.TControl.ShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.ShowInTaskBar">
+      <element name="TForm.ShowInTaskBar" link="#LCL.Forms.TCustomForm.ShowInTaskBar">
         <short/>
         <descr/>
         <seealso/>
@@ -4092,25 +4136,25 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.UseDockManager">
+      <element name="TForm.UseDockManager" link="#LCL.Controls.TWinControl.UseDockManager">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.Visible">
+      <element name="TForm.Visible" link="#LCL.Controls.TControl.Visible">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.WindowState">
+      <element name="TForm.WindowState" link="#LCL.Forms.TCustomForm.WindowState">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnWindowStateChange">
+      <element name="TForm.OnWindowStateChange" link="#LCL.Forms.TCustomForm.OnWindowStateChange">
         <short/>
         <descr/>
         <seealso/>
@@ -4130,7 +4174,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomDockForm.DoAddDockClient">
-        <short/>
+        <short>
+          <var>DoAddDockClient</var> - add the specified control as a client for docking in the specified location (Arect)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4144,7 +4189,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomDockForm.DoRemoveDockClient">
+      <element name="TCustomDockForm.DoRemoveDockClient" link="#LCL.Controls.TWinControl.DoRemoveDockClient">
         <short/>
         <descr/>
         <errors/>
@@ -4155,7 +4200,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomDockForm.GetSiteInfo">
+      <element name="TCustomDockForm.GetSiteInfo" link="#LCL.Controls.TWinControl.GetSiteInfo">
         <short/>
         <descr/>
         <errors/>
@@ -4178,14 +4223,14 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomDockForm.Loaded">
+      <element name="TCustomDockForm.Loaded" link="#rtl.Classes.TComponent.Loaded">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomDockForm.Create">
+      <element name="TCustomDockForm.Create" link="#rtl.Classes.TComponent.Create">
         <short/>
         <descr/>
         <errors/>
@@ -4196,25 +4241,25 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomDockForm.AutoScroll">
+      <element name="TCustomDockForm.AutoScroll" link="#LCL.Forms.TScrollingWinControl.AutoScroll">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomDockForm.BorderStyle">
+      <element name="TCustomDockForm.BorderStyle" link="#LCL.Forms.TCustomForm.BorderStyle">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomDockForm.FormStyle">
+      <element name="TCustomDockForm.FormStyle" link="#LCL.Forms.TCustomForm.FormStyle">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCustomDockForm.PixelsPerInch">
+      <element name="TCustomDockForm.PixelsPerInch" link="#LCL.Forms.TCustomForm.PixelsPerInch">
         <short/>
         <descr/>
         <seealso/>
@@ -4284,14 +4329,14 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="THintWindow.Paint">
+      <element name="THintWindow.Paint" link="#LCL.Controls.TCustomControl.Paint">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="THintWindow.GetControlClassDefaultSize">
+      <element name="THintWindow.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize">
         <short/>
         <descr/>
         <errors/>
@@ -4302,7 +4347,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="THintWindow.Create">
+      <element name="THintWindow.Create" link="#rtl.Classes.TComponent.Create">
         <short/>
         <descr/>
         <errors/>
@@ -4313,7 +4358,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="THintWindow.Destroy">
+      <element name="THintWindow.Destroy" link="#rtl.Classes.TComponent.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -9150,8 +9195,8 @@ Navigation Options is a set, so can take zero or more of the available values</d
       <element name="TForm.LCLVersion">
         <short>The version of the LCL as string. Used to distinguish form streams of different versions.</short>
       </element>
-      <element name="TForm.Loaded"/>
-      <element name="TForm.Create"/>
+      <element name="TForm.Loaded" link="#rtl.Classes.TComponent.Loaded"/>
+      <element name="TForm.Create" link="#rtl.Classes.TComponent.Create"/>
       <element name="TScreen.DataModuleCount">
         <short>The number of data modules on the screen</short>
       </element>
@@ -9171,7 +9216,24 @@ Navigation Options is a set, so can take zero or more of the available values</d
       <element name="TFrame.Create" link="#rtl.Classes.TComponent.Create"/>
       <element name="TFrame.ClientHeight" link="#LCL.Controls.TControl.ClientHeight"/>
       <element name="TFrame.ClientWidth" link="#LCL.Controls.TControl.ClientWidth"/>
-      <element name="TFrame.LCLVersion"/>
+      <element name="TFrame.LCLVersion" link="#LCL.LCLVersion.lcl_version"/>
+      <element name="TCustomForm.BigIconHandle">
+        <short>
+          <var>BigIconHandle</var> - returns system Handle for large Icon</short>
+      </element>
+      <element name="TCustomForm.SmallIconHandle">
+        <short>
+          <var>SmallIconHandle</var> - returns system Handle for small Icon</short>
+      </element>
+      <element name="TCustomForm.GetFormImage">
+        <short>
+          <var>GetFormImage</var> - gets a Bitmap image for the Form</short>
+      </element>
+      <element name="TForm.AutoScroll" link="#LCL.Forms.TScrollingWinControl.AutoScroll"/>
+      <element name="TForm.OnMouseWheel" link="#LCL.Controls.TControl.OnMouseWheel"/>
+      <element name="TForm.OnMouseWheelDown" link="#LCL.Controls.TControl.OnMouseWheelDown"/>
+      <element name="TForm.OnMouseWheelUp" link="#LCL.Controls.TControl.OnMouseWheelUp"/>
+      <element name="TForm.OnShowHint" link="#LCL.Controls.TControl.OnShowHint"/>
     </module>
     <!-- Forms -->
   </package>
