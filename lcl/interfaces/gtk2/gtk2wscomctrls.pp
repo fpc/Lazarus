@@ -323,12 +323,16 @@ begin
   with ATrackBar do
   begin
     wHandle := Handle;
-    Adjustment := gtk_range_get_adjustment (GTK_RANGE(Pointer(wHandle)));
+    Adjustment := gtk_range_get_adjustment(GTK_RANGE(Pointer(wHandle)));
+    // min >= max cause s crash
     Adjustment^.lower := Min;
-    Adjustment^.upper := Max;
-    Adjustment^.value := Position;
+    if Min < Max then
+      Adjustment^.upper := Max
+    else
+      Adjustment^.upper := Min + 1;
     Adjustment^.step_increment := LineSize;
     Adjustment^.page_increment := PageSize;
+    Adjustment^.value := Position;
     { now do some of the more sophisticated features }
     { Hint: For some unknown reason we have to disable the draw_value first,
       otherwise it's set always to true }
