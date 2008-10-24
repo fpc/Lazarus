@@ -894,6 +894,12 @@ begin
   Result := COMPLEXREGION;
 end;
 
+function TCarbonWidgetSet.ExtCreatePen(dwPenStyle, dwWidth: DWord;
+  const lplb: TLogBrush; dwStyleCount: DWord; lpStyle: PDWord): HPEN;
+begin
+  Result := HPEN(TCarbonPen.Create(dwPenStyle, dwWidth, lplb, dwStyleCount, lpStyle));
+end;
+
 {------------------------------------------------------------------------------
   Method:  ExtTextOut
   Params:  DC      - Handle to device context

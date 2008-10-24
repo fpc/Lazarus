@@ -204,13 +204,21 @@ type
   private
     FWidth: Integer;
     FStyle: LongWord;
+    FIsExtPen: Boolean;
+    FIsGeometric: Boolean;
+    FEndCap: CGLineCap;
+    FJoinStyle: CGLineJoin;
    public
+    Dashes: array of Float32;
     constructor Create(AGlobal: Boolean); // create default pen
     constructor Create(ALogPen: TLogPen);
+    constructor Create(dwPenStyle, dwWidth: DWord; const lplb: TLogBrush; dwStyleCount: DWord; lpStyle: PDWord);
     procedure Apply(ADC: TCarbonContext; UseROP2: Boolean = True);
     
     property Width: Integer read FWidth;
     property Style: LongWord read FStyle;
+    property IsExtPen: Boolean read FIsExtPen;
+    property IsGeometric: Boolean read FIsGeometric;
   end;
 
   { TCarbonBitmap }
@@ -1494,6 +1502,8 @@ begin
   inherited Create(clBlack, True, AGlobal);
   FStyle := PS_SOLID;
   FWidth := 1;
+  FIsExtPen := False;
+  Dashes := nil;
 end;
 
 {------------------------------------------------------------------------------
@@ -1519,6 +1529,52 @@ begin
   end;
 
   FStyle := ALogPen.lopnStyle;
+end;
+
+constructor TCarbonPen.Create(dwPenStyle, dwWidth: DWord; const lplb: TLogBrush; dwStyleCount: DWord; lpStyle: PDWord);
+var
+  i: integer;
+begin
+  case dwPenStyle and PS_STYLE_MASK of
+    PS_SOLID..PS_DASHDOTDOT,
+    PS_USERSTYLE:
+      begin
+        inherited Create(ColorToRGB(lplb.lbColor), True, False);
+        FWidth := Max(1, dwWidth);
+      end;
+    else
+    begin
+      inherited Create(ColorToRGB(lplb.lbColor), False, False);
+      FWidth := 1;
+    end;
+  end;
+
+  FIsExtPen := True;
+  FIsGeometric := (dwPenStyle and PS_TYPE_MASK) = PS_GEOMETRIC;
+
+  if IsGeometric then
+  begin
+    case dwPenStyle and PS_JOIN_MASK of
+      PS_JOIN_ROUND: FJoinStyle := kCGLineJoinRound;
+      PS_JOIN_BEVEL: FJoinStyle := kCGLineJoinBevel;
+      PS_JOIN_MITER: FJoinStyle := kCGLineJoinMiter;
+    end;
+
+    case dwPenStyle and PS_ENDCAP_MASK of
+      PS_ENDCAP_ROUND: FEndCap := kCGLineCapRound;
+      PS_ENDCAP_SQUARE: FEndCap := kCGLineCapSquare;
+      PS_ENDCAP_FLAT: FEndCap := kCGLineCapButt;
+    end;
+  end;
+
+  if (dwPenStyle and PS_STYLE_MASK) = PS_USERSTYLE then
+  begin
+    SetLength(Dashes, dwStyleCount);
+    for i := 0 to dwStyleCount - 1 do
+      Dashes[i] := lpStyle[i];
+  end;
+
+  FStyle := dwPenStyle and PS_STYLE_MASK;
 end;
 
 {------------------------------------------------------------------------------
@@ -1549,6 +1605,15 @@ begin
   CGContextSetRGBStrokeColor(ADC.CGContext, AR, AG, AB, AA);
   CGContextSetLineWidth(ADC.CGContext, FWidth);
 
+  if IsExtPen then
+  begin
+    if IsGeometric then
+    begin
+      CGContextSetLineCap(ADC.CGContext, FEndCap);
+      CGContextSetLineJoin(ADC.CGContext, FJoinStyle);
+    end;
+  end;
+
   case FStyle of
     PS_DASH: CGContextSetLineDash(ADC.CGContext, 0, @CarbonDashStyle[0],
       Length(CarbonDashStyle));
@@ -1558,6 +1623,8 @@ begin
       Length(CarbonDashDotStyle));
     PS_DASHDOTDOT: CGContextSetLineDash(ADC.CGContext, 0, @CarbonDashDotDotStyle[0],
       Length(CarbonDashDotDotStyle));
+    PS_USERSTYLE: CGContextSetLineDash(ADC.CGContext, 0, @Dashes[0],
+      Length(Dashes));
   else
     CGContextSetLineDash(ADC.CGContext, 0, nil, 0);
   end;
