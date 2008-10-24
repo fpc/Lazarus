@@ -111,11 +111,18 @@ type
 
 type
 
+  { TBMStringList }
+
+  TBMStringList = class (TStringList)
+  protected
+    function DoCompareText(const s1,s2 : string) : PtrInt; override;
+  end;
+
   { TBookmarkList }
 
   TBookmarkList=class
   private
-    FList: TStringlist;
+    FList: TBMStringList;
     FGrid: TCustomDbGrid;
     function GetCount: integer;
     function GetCurrentRowSelected: boolean;
@@ -3463,7 +3470,7 @@ constructor TBookmarkList.Create(AGrid: TCustomDBGrid);
 begin
   inherited Create;
   FGrid := AGrid;
-  FList := TStringList.Create;
+  FList := TBMStringList.Create;
   FList.CaseSensitive:=True;
   FList.Sorted:=True;
 end;
@@ -3526,6 +3533,19 @@ begin
     end;
   if Result then
     FGrid.Invalidate;
+end;
+
+{ TBMStringList }
+
+function TBMStringList.DoCompareText(const s1, s2: string): PtrInt;
+begin
+  if Length(s1)<Length(s2) then
+    result := -1
+  else
+  if Length(s1)>Length(s2) then
+    result := 1
+  else
+    result := CompareMemRange(@s1[1],@s2[1], Length(s1));
 end;
 
 initialization
