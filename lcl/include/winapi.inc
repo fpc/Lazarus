@@ -258,6 +258,11 @@ begin
   Result := WidgetSet.ExcludeClipRect(DC,Left,Top,Right,Bottom);
 end;
 
+function ExtCreatePen(dwPenStyle, dwWidth: DWord; const lplb: TLogBrush; dwStyleCount: DWord; lpStyle: PDWord): HPEN;
+begin
+  Result := WidgetSet.ExtCreatePen(dwPenStyle, dwWidth, lplb, dwStyleCount, lpStyle);
+end;
+
 function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 begin
   Result := WidgetSet.ExtTextOut(DC, X, Y, Options, Rect, Str, Count, Dx);

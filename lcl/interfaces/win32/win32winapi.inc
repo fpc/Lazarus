@@ -1326,6 +1326,12 @@ begin
   Result := Windows.ExcludeClipRect(dc, Left, Top, Right, Bottom);
 end;
 
+function TWin32WidgetSet.ExtCreatePen(dwPenStyle, dwWidth: DWord;
+  const lplb: TLogBrush; dwStyleCount: DWord; lpStyle: PDWord): HPEN;
+begin
+  Result := Windows.ExtCreatePen(dwPenStyle, dwWidth, Windows.TLOGBRUSH(lplb), dwStyleCount, lpStyle);
+end;
+
 {------------------------------------------------------------------------------
   Method:  ExtTextOut
   Params:  DC      - handle to device context

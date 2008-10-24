@@ -770,6 +770,18 @@ begin
     Result:=ERROR;
 end;
 
+function TWidgetSet.ExtCreatePen(dwPenStyle, dwWidth: DWord;
+  const lplb: TLogBrush; dwStyleCount: DWord; lpStyle: PDWord): HPEN;
+var
+  ALogPen: TLogPen;
+begin
+  // if there is no widgetset implementation use this best match
+  ALogPen.lopnColor := lplb.lbColor;
+  ALogPen.lopnStyle := dwPenStyle;
+  ALogPen.lopnWidth := Point(dwWidth, 0);
+  Result := CreatePenIndirect(ALogPen);
+end;
+
 function TWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 begin
   Result := False;

@@ -209,20 +209,28 @@ type
 
   TQtPen = class(TQtResource)
   private
+    FIsExtPen: Boolean;
   public
     Widget: QPenH;
-    constructor Create(CreateHandle: Boolean; Const AShared: Boolean = False); virtual;
+    constructor Create(CreateHandle: Boolean; const AShared: Boolean = False); virtual;
     destructor Destroy; override;
   public
-    function getWidth: Integer;
-    function getStyle: QtPenStyle;
+    function getCapStyle: QtPenCapStyle;
     function getColor: TQColor;
     function getCosmetic: Boolean;
+    function getJoinStyle: QtPenJoinStyle;
+    function getWidth: Integer;
+    function getStyle: QtPenStyle;
+
+    procedure setCapStyle(pcs: QtPenCapStyle);
+    procedure setColor(p1: TQColor);
+    procedure setCosmetic(b: Boolean);
+    procedure setJoinStyle(pcs: QtPenJoinStyle);
     procedure setStyle(AStyle: QtPenStyle);
     procedure setBrush(brush: QBrushH);
     procedure setWidth(p1: Integer);
-    procedure setColor(p1: TQColor);
-    procedure setCosmetic(b: Boolean);
+
+    property IsExtPen: Boolean read FIsExtPen write FIsExtPen;
   end;
 
 
@@ -1406,7 +1414,7 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-constructor TQtPen.Create(CreateHandle: Boolean; Const AShared: Boolean = False);
+constructor TQtPen.Create(CreateHandle: Boolean; const AShared: Boolean = False);
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtPen.Create CreateHandle: ', dbgs(CreateHandle));
@@ -1415,6 +1423,7 @@ begin
   if CreateHandle then
     Widget := QPen_create;
   FShared := AShared;
+  FIsExtPen := False;
 end;
 
 {------------------------------------------------------------------------------
@@ -1432,6 +1441,11 @@ begin
     QPen_destroy(Widget);
 
   inherited Destroy;
+end;
+
+function TQtPen.getCapStyle: QtPenCapStyle;
+begin
+  Result := QPen_capStyle(Widget);
 end;
 
 function TQtPen.getWidth: Integer;
@@ -1475,6 +1489,11 @@ begin
   QPen_setWidth(Widget, p1);
 end;
 
+procedure TQtPen.setJoinStyle(pcs: QtPenJoinStyle);
+begin
+  QPen_setJoinStyle(Widget, pcs);
+end;
+
 function TQtPen.getColor: TQColor;
 begin
   QPen_color(Widget, @Result);
@@ -1483,6 +1502,16 @@ end;
 function TQtPen.getCosmetic: Boolean;
 begin
   Result := QPen_isCosmetic(Widget);
+end;
+
+function TQtPen.getJoinStyle: QtPenJoinStyle;
+begin
+  Result := QPen_joinStyle(Widget);
+end;
+
+procedure TQtPen.setCapStyle(pcs: QtPenCapStyle);
+begin
+  QPen_setCapStyle(Widget, pcs);
 end;
 
 

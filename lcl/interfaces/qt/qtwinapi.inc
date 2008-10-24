@@ -1470,6 +1470,55 @@ begin
   end;
 end;
 
+function TQtWidgetSet.ExtCreatePen(dwPenStyle, dwWidth: DWord;
+  const lplb: TLogBrush; dwStyleCount: DWord; lpStyle: PDWord): HPEN;
+var
+  QtPen: TQtPen;
+  color: TQColor;
+begin
+  Result := 0;
+  QtPen := TQtPen.Create(True);
+  QtPen.IsExtPen := True;
+
+  case dwPenStyle and PS_STYLE_MASK of
+    PS_SOLID: QtPen.setStyle(QtSolidLine);
+    PS_DASH: QtPen.setStyle(QtDashLine);
+    PS_DOT: QtPen.setStyle(QtDotLine);
+    PS_DASHDOT: QtPen.setStyle(QtDashDotLine);
+    PS_DASHDOTDOT: QtPen.setStyle(QtDashDotDotLine);
+    PS_USERSTYLE: QtPen.setStyle(QtCustomDashLine);
+    PS_NULL: QtPen.setStyle(QtNoPen);
+  end;
+
+  QtPen.setCosmetic((dwPenStyle and PS_TYPE_MASK) = PS_COSMETIC);
+  if (dwPenStyle and PS_TYPE_MASK) = PS_GEOMETRIC then
+  begin
+    QtPen.setWidth(dwWidth);
+    case dwPenStyle and PS_JOIN_MASK of
+      PS_JOIN_ROUND: QtPen.setJoinStyle(QtRoundJoin);
+      PS_JOIN_BEVEL: QtPen.setJoinStyle(QtBevelJoin);
+      PS_JOIN_MITER: QtPen.setJoinStyle(QtMiterJoin);
+    end;
+
+    case dwPenStyle and PS_ENDCAP_MASK of
+      PS_ENDCAP_ROUND: QtPen.setCapStyle(QtRoundCap);
+      PS_ENDCAP_SQUARE: QtPen.setCapStyle(QtSquareCap);
+      PS_ENDCAP_FLAT: QtPen.setCapStyle(QtFlatCap);
+    end;
+  end;
+
+  if (dwPenStyle and PS_STYLE_MASK) = PS_USERSTYLE then
+  begin
+    // TODO: use QPen_setDashPatten which are available since qt 4.1
+  end;
+
+  QPen_Color(QtPen.Widget, @Color);
+  ColorRefToTQColor(ColorToRGB(lplb.lbColor), Color);
+  QPen_setColor(QtPen.Widget, @Color);
+
+  Result := HPEN(QtPen);
+end;
+
 function TQtWidgetSet.ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer;
 var
   Clip,
