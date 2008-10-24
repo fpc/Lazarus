@@ -3937,7 +3937,6 @@ packager/globallinks/README.txt svneol=native#text/plain
 packager/globallinks/appforms-0.lpl svneol=native#text/plain
 packager/globallinks/cgilaz-0.lpl svneol=native#text/plain
 packager/globallinks/chmhelppkg-0.lpl svneol=native#text/plain
-packager/globallinks/chmpkg-0.lpl svneol=native#text/plain
 packager/globallinks/codetools1-0.lpl svneol=native#text/plain
 packager/globallinks/dbflaz-0.1.1.lpl svneol=native#text/plain
 packager/globallinks/demopackagewithhelp-0.lpl svneol=native#text/plain
