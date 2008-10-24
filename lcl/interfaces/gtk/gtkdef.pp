@@ -183,9 +183,12 @@ type
       );
       gdiPen: (
         IsNullPen : Boolean;//GDK will bomb with a NULL Pen Hatch
+        IsExtPen: Boolean;
         GDIPenColor: TGDIColor;
-        GDIPenWidth: Integer;
-        GDIPenStyle: Word;
+        GDIPenWidth: DWord;
+        GDIPenStyle: DWord;
+        GDIPenDashes: Pgint8;
+        GDIPenDashesCount: DWord;
       ); 
       gdiRegion: (
         GDIRegionObject: PGdkRegion;

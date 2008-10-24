@@ -2009,7 +2009,9 @@ begin
   Assert(False, 'trace:[TGtkWidgetSet.CreatePenIndirect]');
 //write('CreatePenIndirect->');
   GObject := NewGDIObject(gdiPen);
+  GObject^.GDIPenDashes := nil;
 
+  GObject^.IsExtPen := False;
   with LogPen do
   begin
     GObject^.GDIPenStyle := lopnStyle;
@@ -2484,6 +2486,7 @@ begin
       gdiPen:
         begin
           FreeGDIColor(@GDIPenColor);
+          FreeMem(GDIPenDashes);
         end;
       gdiRegion:
         begin
@@ -3909,6 +3912,26 @@ function TGtkWidgetSet.ExcludeClipRect(dc: hdc;
   Left, Top, Right, Bottom : Integer) : Integer;
 begin
   Result := Inherited ExcludeClipRect(DC, Left, Top, Right, Bottom);
+end;
+
+function TGTKWidgetSet.ExtCreatePen(dwPenStyle, dwWidth: DWord;
+  const lplb: TLogBrush; dwStyleCount: DWord; lpStyle: PDWord): HPEN;
+var
+  GObject: PGdiObject;
+  i: integer;
+begin
+  GObject := NewGDIObject(gdiPen);
+
+  GObject^.IsExtPen := True;
+  GObject^.GDIPenStyle := dwPenStyle;
+  GObject^.GDIPenWidth := dwWidth;
+  SetGDIColorRef(GObject^.GDIPenColor, lplb.lbColor);
+  GObject^.GDIPenDashesCount := dwStyleCount;
+  GetMem(GObject^.GDIPenDashes, dwStyleCount * SizeOf(gint8));
+  for i := 0 to dwStyleCount - 1 do
+    GObject^.GDIPenDashes[i] := lpStyle[i];
+
+  Result := HPEN(PtrUInt(GObject));
 end;
 
 {------------------------------------------------------------------------------
