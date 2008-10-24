@@ -63,7 +63,7 @@ type
     function GetDirsParents(ADir: String): TStringList;
     function DoGetStream(const URL: string): TStream; override;
   public
-    constructor Create(var AChm: TChmFileList); reintroduce;
+    constructor Create(AOwner: TComponent; AChm: TChmFileList);
     destructor Destroy; override;
     property Chm: TChmFileList read fChm write fChm;
     property OnHelpPopup: THelpPopupEvent read fOnHelpPopup write fOnHelpPopup;
@@ -237,9 +237,9 @@ begin
   Result := fChm.GetObject(NewURL);
 end;
 
-constructor TIpChmDataProvider.Create(var AChm: TChmFileList);
+constructor TIpChmDataProvider.Create(AOwner: TComponent; AChm: TChmFileList);
 begin
-  inherited Create(nil);
+  inherited Create(AOwner);
   fChm := AChm;
 end;
 

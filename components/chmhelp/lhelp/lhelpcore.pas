@@ -38,6 +38,7 @@ type
     fContentProvider: TBaseContentProvider;
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     property ContentProvider: TBaseContentProvider read fContentProvider write fContentProvider;
   end;
 
@@ -351,6 +352,12 @@ end;
 constructor TContentTab.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+end;
+
+destructor TContentTab.Destroy;
+begin
+  fContentProvider.Free;
+  inherited Destroy;
 end;
 
 initialization
