@@ -16,8 +16,6 @@ components/chmhelp/democontrol/units
 components/chmhelp/lhelp/*.bak
 components/chmhelp/lhelp/units
 components/chmhelp/packages/*.bak
-components/chmhelp/packages/chm/*.bak
-components/chmhelp/packages/chm/units
 components/chmhelp/packages/help/*.bak
 components/chmhelp/packages/help/units
 components/chmhelp/packages/idehelp/*.bak
