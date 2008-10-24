@@ -63,7 +63,7 @@ type
     function GetDirsParents(ADir: String): TStringList;
     function DoGetStream(const URL: string): TStream; override;
   public
-    constructor Create(var AChm: TChmFileList);
+    constructor Create(var AChm: TChmFileList); reintroduce;
     destructor Destroy; override;
     property Chm: TChmFileList read fChm write fChm;
     property OnHelpPopup: THelpPopupEvent read fOnHelpPopup write fOnHelpPopup;
@@ -122,55 +122,30 @@ end;
 procedure TIpChmDataProvider.DoGetImage(Sender: TIpHtmlNode; const URL: string;
   var Picture: TPicture);
 var
-Stream: TMemoryStream = nil;
-ImageClass: TFPCustomImageReaderClass;
-ImageReader: TFPCustomImageReader;
-OutImage: TFPWriterBMP= nil;
-Img : TFPMemoryImage = nil;
-FileExt: String;
+  Stream: TMemoryStream;
+  FileExt: String;
 begin
   //DebugLn('Getting Image ',(Url));
+  Picture := nil;
 
   FileExt := ExtractFileExt(URL);
-  if FileExt[1] = '.' then Delete(FileExt,1,1);
-  ImageClass := GetFPImageReaderForFileExtension(FileExt);
 
-  if ImageClass <> nil then begin
-    ImageReader := ImageClass.Create;
-    try
-      Picture := TPicture.Create;
-      Picture.Graphic := TBitmap.Create;
-      Stream := TMemoryStream(fChm.GetObject('/'+URL));
-      if Stream = nil then exit;
-      Img := TFPMemoryImage.Create(0,0);
-      Img.UsePalette:=False;
-      Img.LoadFromStream(Stream, ImageReader);
-      Stream.Free;
-      Stream := TMemoryStream.Create;
-      OutImage := TFPWriterBMP.Create;
-
-      Img.SaveToStream(Stream, OutImage);
-
+  Picture := TPicture.Create;
+  try
+    Stream := fChm.GetObject('/'+URL);
+    if Assigned(Stream) then
+    begin
       Stream.Position := 0;
-      Picture.Graphic.LoadFromStream(Stream);
-
-    finally
-      if Assigned(OutImage) then OutImage.Free;
-      if Assigned(Img) then Img.Free;
-      if Assigned(ImageReader) then ImageReader.Free;
-      if Assigned(Stream) then Stream.Free;
+      Picture.LoadFromStreamWithFileExt(Stream, FileExt);
     end;
-  end
-  else begin
-    // Couldn't find the picture we wanted.
-    Picture := nil;
+  finally
+    Stream.Free;
   end;
 end;
 
 function TIpChmDataProvider.CanHandle(const URL: string): Boolean;
 var
-  HelpFile,
-  Link: String;
+  HelpFile: String;
 begin
   Result := True;
   if Pos('Java', URL) =1  then Result := False;
@@ -188,10 +163,9 @@ end;
 
 function TIpChmDataProvider.BuildURL(const OldURL, NewURL: string): string;
 var
-tmp: String;
-X: LongInt;
-RelURL: String = '';
-fOldUrl: String;
+  tmp: String;
+  X: LongInt;
+  fOldUrl: String;
 begin
 
    if Pos('ms-its:', OldURL) > 0 then begin

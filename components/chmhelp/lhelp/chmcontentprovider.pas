@@ -5,7 +5,8 @@ unit chmcontentprovider;
 interface
 
 uses
-  Classes, SysUtils, StdCtrls, ExtCtrls, ComCtrls, Controls, Buttons, Menus,
+  Classes, SysUtils,
+  FileUtil, StdCtrls, ExtCtrls, ComCtrls, Controls, Buttons, Menus,
   BaseContentProvider, FileContentProvider, IpHtml, ChmReader, ChmDataProvider;
   
 type
@@ -95,9 +96,6 @@ begin
 end;
 
 procedure TChmContentProvider.DoOpenChm(AFile: String);
-var
-Stream: TStream;
-Timer: TTimer;
 begin
   if (fChms <> nil) and fChms.IsAnOpenFile(AFile) then Exit;
   DoCloseChm;
@@ -350,7 +348,7 @@ end;
 
 function TChmContentProvider.GetHistory: TStrings;
 begin
-  //Result:=inherited GetHistory;
+  Result:= fHistory;
 end;
 
 function TChmContentProvider.LoadURL(const AURL: String; const AContext: THelpContext=-1): Boolean;

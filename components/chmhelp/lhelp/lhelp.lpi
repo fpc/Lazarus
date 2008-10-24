@@ -1,23 +1,23 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="/"/>
+    <PathDelim Value="\"/>
     <Version Value="6"/>
     <General>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
-      <IconPath Value="./"/>
       <TargetFileExt Value=""/>
     </General>
     <PublishOptions>
       <Version Value="2"/>
+      <DestinationDirectory Value="$(TestDir)\publishedproject\"/>
       <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
       <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
     </PublishOptions>
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <LaunchingApplication PathPlusParams="/usr/bin/gnome-terminal -t 'Lazarus Run Output' -e '$(LazarusDir)/tools/runwait.sh $(TargetCmdLine)'"/>
+        <LaunchingApplication PathPlusParams="\usr\bin\gnome-terminal -t 'Lazarus Run Output' -e '$(LazarusDir)\tools\runwait.sh $(TargetCmdLine)'"/>
         <Display Value="192.168.0.250:0"/>
       </local>
     </RunParams>
@@ -33,7 +33,7 @@
         <PackageName Value="LCL"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="10">
+    <Units Count="9">
       <Unit0>
         <Filename Value="lhelp.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -84,21 +84,16 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="HTTPContentProvider"/>
       </Unit8>
-      <Unit9>
-        <Filename Value="../packages/chm/chmpkg.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="chmpkg"/>
-      </Unit9>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="5"/>
+    <Version Value="8"/>
+    <PathDelim Value="\"/>
     <SearchPaths>
-      <Libraries Value="/emul/linux/x86/lib/;/emul/linux/x86/usr/lib32/"/>
-      <SrcPath Value="$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)/"/>
+      <Libraries Value="\emul\linux\x86\lib\;\emul\linux\x86\usr\lib32\"/>
+      <SrcPath Value="$(LazarusDir)\lcl\;$(LazarusDir)\lcl\interfaces\$(LCLWidgetType)\"/>
     </SearchPaths>
     <CodeGeneration>
-      <Generate Value="Faster"/>
       <Optimizations>
         <OptimizationLevel Value="3"/>
       </Optimizations>

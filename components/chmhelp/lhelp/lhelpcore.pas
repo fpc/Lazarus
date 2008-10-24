@@ -22,9 +22,10 @@ unit lhelpcore;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs,
-  Buttons, LCLProc, StdCtrls, IpHtml, ComCtrls, ExtCtrls,
-  Menus, SimpleIPC, BaseContentProvider, FileContentProvider, ChmContentProvider;
+  Classes, SysUtils, SimpleIPC,
+  FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  Buttons, LCLProc, StdCtrls, IpHtml, ComCtrls, ExtCtrls, Menus,
+  BaseContentProvider, FileContentProvider, ChmContentProvider;
 
 type
 
