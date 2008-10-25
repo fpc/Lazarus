@@ -26,6 +26,7 @@ object AboutForm: TAboutForm
   Font.Height = 0
   Font.Style = []
   FormStyle = fsNormal
+  OnClose = FormClose
   OnCreate = AboutFormCreate
   ParentBiDiMode = True
   ParentFont = False

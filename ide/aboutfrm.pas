@@ -88,6 +88,7 @@ type
     ContributorsPage:TPage;
     AcknowledgementsPage:TPage;
     procedure AboutFormCreate(Sender:TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure miVerToClipboardClick(Sender: TObject);
     procedure NotebookPageChanged(Sender: TObject);
     procedure URLLabelMouseDown(Sender: TObject; Button: TMouseButton;
@@ -195,6 +196,12 @@ begin
   CloseButton.Caption:=lisClose;
 end;
 
+procedure TAboutForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  Acknowledgements.Active := False;
+  Contributors.Active     := False;
+end;
+
 procedure TAboutForm.miVerToClipboardClick(Sender: TObject);
 begin
   Clipboard.AsText := 'v' + LazarusVersionStr + ' r' + LazarusRevisionStr +
@@ -295,6 +302,9 @@ var
   s: string;
   i: integer;
 begin
+  if not Active then
+    Exit;
+
   Dec(FOffset, FStepSize);
 
   if FOffSet < 0 then
