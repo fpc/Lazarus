@@ -42,7 +42,7 @@ type
   TFPCMemStreamSeekType = integer;
   PCharZ = Pointer;
 
-{$ifdef Windows}
+{$if defined(Windows) or defined(darwin)}
 {$define CaseInsensitiveFilenames}
 {$endif}
 {$IF defined(CaseInsensitiveFilenames) or defined(darwin)}
@@ -779,7 +779,8 @@ begin
     exit(length(Filename2)-length(Filename1));
   F1:=CFStringCreateWithCString(nil,Pointer(Filename1),kCFStringEncodingUTF8);
   F2:=CFStringCreateWithCString(nil,Pointer(Filename2),kCFStringEncodingUTF8);
-  Result:=CFStringCompare(F1,F2,kCFCompareNonliteral);
+  Result:=CFStringCompare(F1,F2,kCFCompareNonliteral
+          {$IFDEF CaseInsensitiveFilenames}+kCFCompareCaseInsensitive{$ENDIF});
   CFRelease(F1);
   CFRelease(F2);
   {$ELSE}
