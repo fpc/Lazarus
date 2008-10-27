@@ -1328,8 +1328,13 @@ end;
 
 function TWin32WidgetSet.ExtCreatePen(dwPenStyle, dwWidth: DWord;
   const lplb: TLogBrush; dwStyleCount: DWord; lpStyle: PDWord): HPEN;
+var
+  LB: Windows.LogBrush;
 begin
-  Result := Windows.ExtCreatePen(dwPenStyle, dwWidth, Windows.TLOGBRUSH(lplb), dwStyleCount, lpStyle);
+  LB.lbStyle := lplb.lbStyle;
+  LB.lbColor := Windows.COLORREF(ColorToRGB(lplb.lbColor));
+  LB.lbHatch := lplb.lbHatch;
+  Result := Windows.ExtCreatePen(dwPenStyle, dwWidth, LB, dwStyleCount, lpStyle);
 end;
 
 {------------------------------------------------------------------------------
