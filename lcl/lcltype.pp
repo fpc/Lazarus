@@ -2037,6 +2037,20 @@ type
   TLogPen = tagLOGPEN;
   LOGPEN = tagLOGPEN;
 
+  PExtLogPen = ^TExtLogPen;
+  tagEXTLOGPEN = record
+    elpPenStyle: LongWord;
+    elpWidth: LongWord;
+    elpBrushStyle: LongWord;
+    elpColor: TColorRef;
+    elpHatch: PtrInt;
+    elpNumEntries: DWORD;
+    elpStyleEntry: array[0..0] of DWORD;
+  end;
+  TExtLogPen = tagEXTLOGPEN;
+  EXTLOGPEN = tagEXTLOGPEN;
+
+
 type
 
   PTextMetricA = ^TTextMetricA;

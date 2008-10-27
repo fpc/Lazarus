@@ -627,7 +627,7 @@ begin
   
   with LogPen do
   begin
-    case lopnStyle of
+    case lopnStyle and PS_STYLE_MASK of
       PS_SOLID: QtPen.setStyle(QtSolidLine);
       PS_DASH: QtPen.setStyle(QtDashLine);
       PS_DOT: QtPen.setStyle(QtDotLine);
@@ -2241,6 +2241,7 @@ var
   BitmapSection : TDIBSECTION;
   ALogFont: PLogFont absolute Buf;
   ALogPen: PLogPen absolute Buf;
+  AExtLogPen: PExtLogPen absolute Buf;
   {$ifdef VerboseQtWinAPI}
     ObjType: string;
   {$endif}
@@ -2311,18 +2312,61 @@ begin
   else
   if aObject is TQtPen then
   begin
-    if Buf = nil then
-      Result := SizeOf(TLogPen)
-    else
-    if BufSize >= SizeOf(TLogPen) then
+    if not APen.IsExtPen then
     begin
-      Result := SizeOf(TLogPen);
-      TQColorToColorRef(APen.getColor, ALogPen^.lopnColor);
-      if APen.getCosmetic then
-        ALogPen^.lopnWidth := Point(0, 0)
+      if Buf = nil then
+        Result := SizeOf(TLogPen)
       else
-        ALogPen^.lopnWidth := Point(APen.getWidth, 0);
-      ALogPen^.lopnStyle := QtPenStyleToWinStyleMap[APen.getStyle];
+      if BufSize >= SizeOf(TLogPen) then
+      begin
+        Result := SizeOf(TLogPen);
+        TQColorToColorRef(APen.getColor, ALogPen^.lopnColor);
+        if APen.getCosmetic then
+          ALogPen^.lopnWidth := Point(1, 0)
+        else
+          ALogPen^.lopnWidth := Point(APen.getWidth, 0);
+        ALogPen^.lopnStyle := QtPenStyleToWinStyleMap[APen.getStyle];
+      end;
+    end
+    else
+    begin
+      if Buf = nil then
+        Result := SizeOf(TExtLogPen)
+      else
+      if BufSize >= SizeOf(TExtLogPen) then
+      begin
+        Result := SizeOf(TExtLogPen);
+        AExtLogPen^.elpPenStyle := QtPenStyleToWinStyleMap[APen.getStyle];
+
+        if not APen.getCosmetic then
+        begin
+          AExtLogPen^.elpPenStyle := AExtLogPen^.elpPenStyle or PS_GEOMETRIC;
+
+          case APen.getJoinStyle of
+            QtMiterJoin: AExtLogPen^.elpPenStyle := AExtLogPen^.elpPenStyle or PS_JOIN_MITER;
+            QtBevelJoin: AExtLogPen^.elpPenStyle := AExtLogPen^.elpPenStyle or PS_JOIN_BEVEL;
+            QtRoundJoin: AExtLogPen^.elpPenStyle := AExtLogPen^.elpPenStyle or PS_JOIN_ROUND;
+          end;
+
+          case APen.getCapStyle of
+            QtFlatCap: AExtLogPen^.elpPenStyle := AExtLogPen^.elpPenStyle or PS_ENDCAP_FLAT;
+            QtSquareCap: AExtLogPen^.elpPenStyle := AExtLogPen^.elpPenStyle or PS_ENDCAP_SQUARE;
+            QtRoundCap: AExtLogPen^.elpPenStyle := AExtLogPen^.elpPenStyle or PS_ENDCAP_ROUND;
+          end;
+
+          AExtLogPen^.elpWidth := APen.getWidth;
+        end
+        else
+          AExtLogPen^.elpWidth := 1;
+
+        AExtLogPen^.elpBrushStyle := BS_SOLID;
+        TQColorToColorRef(APen.getColor, AExtLogPen^.elpColor);
+        AExtLogPen^.elpHatch := 0;
+{ TODO: PS_USERSTYLE
+    elpNumEntries: DWORD;
+    elpStyleEntry: array[0..0] of DWORD;
+}
+      end;
     end;
   end
   {------------------------------------------------------------------------------
