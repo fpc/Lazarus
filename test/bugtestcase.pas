@@ -23,8 +23,9 @@ unit BugTestCase;
 interface
 
 uses
-  Classes, SysUtils, Math, process, FileUtil, AsyncProcess, fpcunit,
-  testregistry, TestGlobals;
+  Classes, SysUtils, Math, process, fpcunit, testregistry,
+  FileUtil, AsyncProcess, InterfaceBase,
+  TestGlobals;
 
 type
 
@@ -95,6 +96,7 @@ begin
       CmdLine := CmdLine + ' --compiler='+Compiler;
     if PrimaryConfigPath<>'' then
       CmdLine := CmdLine + ' --pcp='+PrimaryConfigPath;
+    Cmdline := Cmdline + ' --ws=' + LCLPlatformDirNames[WidgetSet.LCLPlatform];
     CmdLine:=CmdLine + ' ' + FProjectFile;
     LazBuild.CommandLine := CmdLine;
     LazBuild.CurrentDirectory := FPath;

@@ -6,7 +6,6 @@
     <General>
       <SessionStorage Value="InIDEConfig"/>
       <MainUnit Value="0"/>
-      <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
     </General>
     <VersionInfo>

@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, SysUtils, strutils, fpcunit, testregistry, process, AsyncProcess,
-  FileUtil,
+  InterfaceBase, FileUtil,
   TestGlobals;
 
 type
@@ -152,6 +152,7 @@ begin
       CmdLine:=Cmdline + ' --compiler='+Compiler;
     if PrimaryConfigPath<>'' then
       CmdLine := CmdLine + ' --pcp='+PrimaryConfigPath;
+    Cmdline := Cmdline + ' --ws=' + LCLPlatformDirNames[WidgetSet.LCLPlatform];
     Cmdline := Cmdline + ' -B ' + FPath;
     LazBuild.CommandLine := CmdLine;
     LazBuild.CurrentDirectory := ExtractFileDir(FPath);
@@ -176,8 +177,10 @@ end;
 
 class function TLpiTest.CreateSuiteFromFile(const AName,
   APath: string): TTestSuite;
+{$IFDEF win32}
 var
   AhkFileName: String;
+{$ENDIF}
 begin
   Result := inherited CreateSuiteFromFile(AName, APath);
 {$IFDEF win32}
