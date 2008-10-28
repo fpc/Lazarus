@@ -500,7 +500,7 @@ begin
   if not WSCheckHandleAllocated(ALV, 'BeginUpdate')
   then Exit;
 
-  inherited BeginUpdate(ALV);
+  SendMessage(ALV.Handle,WM_SETREDRAW,WPARAM(False),0);
 end;
 
 class procedure TWin32WSCustomListView.EndUpdate(const ALV: TCustomListView);
@@ -508,7 +508,7 @@ begin
   if not WSCheckHandleAllocated(ALV, 'EndUpdate')
   then Exit;
 
-  inherited EndUpdate(ALV);
+  SendMessage(ALV.Handle,WM_SETREDRAW,WPARAM(True),0);
 end;
 
 class function TWin32WSCustomListView.GetBoundingRect(const ALV: TCustomListView): TRect;
