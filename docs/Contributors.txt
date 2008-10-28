@@ -1,4 +1,4 @@
-The following people contributed to Lazarus:
+#The following people contributed to Lazarus:
 
 A. J. Venter
 Aleksey Lagunov
@@ -132,5 +132,4 @@ Zaenal Mutaqin
 Zaher Dirkey
 Zeljan Rikalo
 
-and special thanks to the FPC team.
-
+#and special thanks to the FPC team.
