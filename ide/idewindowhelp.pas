@@ -470,7 +470,7 @@ begin
   if HelpNode=nil then begin
     Result:='';
   end else begin
-    Result:='http://wiki.lazarus.freepascal.org/index.php/'+HelpNode.GetFullPath;
+    Result:='http://wiki.lazarus.freepascal.org/'+HelpNode.GetFullPath;
   end;
 end;
 

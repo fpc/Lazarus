@@ -189,7 +189,7 @@ begin
   OfficialLabel.Caption := 'Official:';
   OfficialURLLabel.Caption := 'http://lazarus.freepascal.org';
   DocumentationLabel.Caption := 'Documentation:';
-  DocumentationURLLabel.Caption := 'http://wiki.lazarus.freepascal.org/index.php/Main_Page';
+  DocumentationURLLabel.Caption := 'http://wiki.lazarus.freepascal.org';
 
   LoadContributors;
   LoadAcknowledgements;
@@ -329,7 +329,7 @@ begin
     //skip empty lines
     if Length(s) > 0 then
     begin
-      //check for bold makeup token
+      //check for bold format token
       if s[1] = '#' then
       begin
         s := copy(s, 2, Length(s) - 1);
