@@ -1733,9 +1733,10 @@ begin
     end;
     
     if DebuggerClass = TProcessDebugger then
-    begin // set open command for running Application Bundle (darwin only)
-      LaunchingApplication := 'open';
-      LaunchingParams := LaunchingCmdLine;
+    begin // use executable path inside Application Bundle (darwin only)
+      LaunchingApplication := LaunchingApplication + '/Contents/MacOS/' +
+        ExtractFileNameOnly(LaunchingApplication);
+      LaunchingParams := LaunchingParams;
     end;
   end
   else

@@ -7,7 +7,7 @@ Windows XP Theme Manager
 http://www.soft-gems.net/
 
 
-Icon sets:
+#Icon sets:
 
 Silk icon set 1.3 by Mark James 
 http://www.famfamfam.com/lab/icons/silk/

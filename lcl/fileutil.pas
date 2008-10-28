@@ -29,7 +29,7 @@ uses
   // For Smart Linking: Do not use the LCL!
   Classes, SysUtils, LCLStrConsts, Masks;
   
-{$ifdef Windows}
+{$if defined(Windows) or defined(darwin)}
 {$define CaseInsensitiveFilenames}
 {$endif}
 {$IF defined(CaseInsensitiveFilenames) or defined(darwin)}

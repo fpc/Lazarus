@@ -2772,6 +2772,7 @@ begin
   FStateChangeLink.OnChange := @ImageListChange;
   FStates:=[tvsMaxLvlNeedsUpdate,tvsMaxRightNeedsUpdate,tvsScrollbarChanged];
   FTreeLineColor := clWindowFrame;
+  FTreeLinePenStyle := psDot;
   FExpandSignColor := clWindowFrame;
 end;
 
@@ -4273,7 +4274,7 @@ begin
     end;
     // draw tree lines
     Pen.Color:=TreeLineColor;
-    Pen.Style:=psDot;
+    Pen.Style:=TreeLinePenStyle;
     x:=DrawTreeLines(Node);
     Pen.Style:=psSolid;
     // draw expand sign

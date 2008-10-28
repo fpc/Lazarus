@@ -86,6 +86,7 @@ type
     procedure BoundsChanged; virtual;
     procedure ControlAdded; dynamic;
     function FilterKeyPress(SysKey: Boolean; const Char: TUTF8Char): Boolean; dynamic;
+    procedure ProcessKeyEvent(const msg: TLMKey; var Result: OSStatus); virtual;
   public
     constructor Create(const AObject: TWinControl; const AParams: TCreateParams);
     destructor Destroy; override;
@@ -591,6 +592,19 @@ end;
 function TCarbonWidget.FilterKeyPress(SysKey: Boolean; const Char: TUTF8Char): Boolean;
 begin
   Result := False;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidget.ProcessKeyEvent
+  Params:  msg    - LCL keyboard message
+           Result - returned value, must be noErr if key is handled
+  Returns: The Carbon widget
+
+  Widget can perform it's own necessary actions if user has not processed the key.
+  It's required to emulate Command driven Carbon controls
+ ------------------------------------------------------------------------------}
+procedure TCarbonWidget.ProcessKeyEvent(const msg: TLMKey; var Result: OSStatus);
+begin
 end;
 
 {------------------------------------------------------------------------------

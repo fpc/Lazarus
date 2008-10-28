@@ -666,6 +666,8 @@ begin
   else
     for I := 0 to GetFrameCount - 1 do
       OSError(MacOSAll.DisableControl(Frames[I]), Self, SEnable, SDisableControl);
+
+  Invalidate;
 end;
 
 {------------------------------------------------------------------------------

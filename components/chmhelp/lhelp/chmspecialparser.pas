@@ -177,7 +177,12 @@ var
  fPos: Integer;
  Line: String;
 begin
-  FillChar(Result, SizeOf(Result), 0);
+  // Don't use fillchar to initialize the result.
+  // The caller passes a pointer a record which may already contain strings and
+  // those will not be freed when we clean it with FillChar
+  Result.Name:='';
+  Result.Url:='';
+  Result.LineCount:= 0;
   for X := StartLine to fText.Count-1 do begin
     Line := fText.Strings[X];
     fPos := Pos('<param name="name" value="', LowerCase(Line));

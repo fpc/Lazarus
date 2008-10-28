@@ -5,7 +5,8 @@ unit chmcontentprovider;
 interface
 
 uses
-  Classes, SysUtils, StdCtrls, ExtCtrls, ComCtrls, Controls, Buttons, Menus,
+  Classes, SysUtils,
+  FileUtil, StdCtrls, ExtCtrls, ComCtrls, Controls, Buttons, Menus,
   BaseContentProvider, FileContentProvider, IpHtml, ChmReader, ChmDataProvider;
   
 type
@@ -30,7 +31,6 @@ type
     fSplitter: TSplitter;
     fHtml: TIpHtmlPanel;
     fPopUp: TPopUpMenu;
-    fChmDataProvider: TIpChmDataProvider;
     fStatusBar: TStatusBar;
     fContext: THelpContext;
   protected
@@ -95,9 +95,6 @@ begin
 end;
 
 procedure TChmContentProvider.DoOpenChm(AFile: String);
-var
-Stream: TStream;
-Timer: TTimer;
 begin
   if (fChms <> nil) and fChms.IsAnOpenFile(AFile) then Exit;
   DoCloseChm;
@@ -130,11 +127,16 @@ begin
 end;
 
 procedure TChmContentProvider.DoCloseChm;
+var
+  i : integer;
 begin
   fStopTimer := True;
-  if fChms<>nil then begin
-    FreeAndNil(fChms);
+  if assigned(fChms) then
+  begin
+    for i := 0 to fChms.Count -1 do
+      fChms.Chm[i].Free;
   end;
+  FreeAndNil(fChms);
 end;
 
 procedure TChmContentProvider.DoLoadContext(Context: THelpContext);
@@ -350,7 +352,7 @@ end;
 
 function TChmContentProvider.GetHistory: TStrings;
 begin
-  //Result:=inherited GetHistory;
+  Result:= fHistory;
 end;
 
 function TChmContentProvider.LoadURL(const AURL: String; const AContext: THelpContext=-1): Boolean;
@@ -528,24 +530,23 @@ begin
     Parent := AParent
   end;
   
+  fHtml := TIpHtmlPanel.Create(Parent);
+  with fHtml do begin
+    DataProvider := TIpChmDataProvider.Create(fHtml, fChms);
+    OnDocumentOpen := @IpHtmlPanelDocumentOpen;
+    OnHotChange := @IpHtmlPanelHotChange;
+    Parent := AParent;
+    Align := alClient;
+  end;
+  
   fPopUp := TPopupMenu.Create(fHtml);
   fPopUp.Items.Add(TMenuItem.Create(fPopup));
   with fPopUp.Items.Items[0] do begin
     Caption := 'Copy';
     OnClick := @PopupCopyClick;
   end;
-  
-  fChmDataProvider := TIpChmDataProvider.Create(fChms);
-  fHtml := TIpHtmlPanel.Create(Parent);
-  with fHtml do begin
-    DataProvider := fChmDataProvider;
-    OnDocumentOpen := @IpHtmlPanelDocumentOpen;
-    OnHotChange := @IpHtmlPanelHotChange;
-    PopupMenu := fPopUp;
-    Parent := AParent;
-    Align := alClient;
-  end;
-  
+  fHtml.PopupMenu := fPopUp;
+
   fStatusBar := TStatusBar.Create(AParent);
   with fStatusBar do begin
     Parent := AParent;
@@ -557,6 +558,7 @@ end;
 destructor TChmContentProvider.Destroy;
 begin
   DoCloseChm;
+  fHistory.Free;
   inherited Destroy;
 end;
 

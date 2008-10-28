@@ -206,7 +206,7 @@ begin
     Result:= lpCarbon;
     {$ENDIF}
     {$IFNDEF WidgetSetDefined}
-    Result:= lpGtk;
+    Result:= lpGtk2;
     {$ENDIF}
   end;
 end;

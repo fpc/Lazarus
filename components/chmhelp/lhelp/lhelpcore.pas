@@ -22,9 +22,10 @@ unit lhelpcore;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs,
-  Buttons, LCLProc, StdCtrls, IpHtml, ComCtrls, ExtCtrls,
-  Menus, SimpleIPC, BaseContentProvider, FileContentProvider, ChmContentProvider;
+  Classes, SysUtils, SimpleIPC,
+  FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  Buttons, LCLProc, StdCtrls, IpHtml, ComCtrls, ExtCtrls, Menus,
+  BaseContentProvider, FileContentProvider, ChmContentProvider;
 
 type
 
@@ -37,6 +38,7 @@ type
     fContentProvider: TBaseContentProvider;
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     property ContentProvider: TBaseContentProvider read fContentProvider write fContentProvider;
   end;
 
@@ -350,6 +352,12 @@ end;
 constructor TContentTab.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+end;
+
+destructor TContentTab.Destroy;
+begin
+  fContentProvider.Free;
+  inherited Destroy;
 end;
 
 initialization

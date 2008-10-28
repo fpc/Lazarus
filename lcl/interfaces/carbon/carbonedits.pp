@@ -175,7 +175,9 @@ type
     procedure GetLineOffset(AIndex: Integer; out AStart, AEnd: TXNOffset);
   public
     procedure TextDidChange; override;
+    function GetTextObject: TXNObject;
     function FilterKeyPress(SysKey: Boolean; const Char: TUTF8Char): Boolean; override;
+    procedure ProcessKeyEvent(const msg: TLMKey; var Result: OSStatus); override;
     
     function SetTXNControl(Tag: TXNControlTag; const Data: TXNControlData): Boolean;
   public
@@ -1505,6 +1507,12 @@ begin
   DeliverMessage(LCLObject, Msg);
 end;
 
+function TCarbonMemo.GetTextObject: TXNObject;
+begin
+  if not Assigned(Content) then Result := nil
+  else Result := HITextViewGetTXNObject(Content);
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCarbonMemo.SetTXNControl
   Params:  Tag  - Tag
@@ -1775,6 +1783,45 @@ end;
 function TCarbonMemo.FilterKeyPress(SysKey: Boolean; const Char: TUTF8Char): Boolean;
 begin
   Result := False;
+end;
+
+procedure TCarbonMemo.ProcessKeyEvent(const msg: TLMKey; var Result: OSStatus);
+var
+  txn : TXNObject;
+begin
+  // CarbonEdit does action on every LM_SYSKEYDOWN
+  // But text view does copy/paste action only on LM_SYSUPDOWN (because HICommand is generated on KeyUp event)
+  // to avoid double processing (on HICommand and KeyUP event), copy/paste operations should be done on KeyDown event...
+  if (msg.Msg = CN_SYSKEYDOWN) then begin
+    case msg.CharCode of
+      VK_C:
+        if (msg.KeyData and (MK_Shift or MK_Control) = 0) then begin
+          txn := GetTextObject;
+          if Assigned(txn) then TXNCopy(txn);
+          Result := noErr;
+        end;
+      VK_V:
+        if (msg.KeyData and (MK_Shift or MK_Control) = 0) then begin
+          txn := GetTextObject;
+          if Assigned(txn) then TXNPaste(txn);
+          Result := noErr;
+        end;
+      VK_X:
+        if (msg.KeyData and (MK_Shift or MK_Control) = 0) then begin
+          txn := GetTextObject;
+          if Assigned(txn) then TXNCut(txn);
+          Result := noErr;
+        end;
+      VK_Z:
+        if ((msg.KeyData and MK_Control) = 0) then begin
+          txn := GetTextObject;
+          if Assigned(txn) then
+            if msg.KeyData and MK_Shift > 0 then TXNRedo(txn)
+            else TXNUndo(txn);
+          Result := noErr;
+        end;
+    end; {of case}
+  end;
 end;
 
 

@@ -553,6 +553,7 @@ type
 
   TCustomImage = class(TGraphicControl)
   private
+    FOnPictureChanged: TNotifyEvent;
     FPicture: TPicture;
     FCenter: Boolean;
     FProportional: Boolean;
@@ -592,6 +593,7 @@ type
     property Stretch: Boolean read FStretch write SetStretch default False;
     property Transparent: Boolean read FTransparent write SetTransparent default False;
     property Proportional: Boolean read FProportional write SetProportional default False;
+    property OnPictureChanged: TNotifyEvent read FOnPictureChanged write FOnPictureChanged;
   end;
 
 
@@ -620,6 +622,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnPaint;
+    property OnPictureChanged;
     property OnResize;
     property OnStartDrag;
     property ParentShowHint;
