@@ -389,7 +389,13 @@ end;
 
 function TCustomListBox.GetItemHeight: Integer;
 begin
-  Result := FItemHeight;
+  if HandleAllocated and (Style <> lbOwnerDrawVariable) then
+  begin
+    with ItemRect(TopIndex) do
+      Result := Bottom - Top;
+  end
+  else
+    Result := FItemHeight;
 end;
 
 procedure TCustomListBox.SetItemHeight(Value: Integer);
@@ -696,17 +702,16 @@ end;
 ------------------------------------------------------------------------------}
 function TCustomListBox.ItemRect(Index: Integer): TRect;
 begin
-  if (Index>=0) and (Index<Items.Count) then
-  begin
-    TWSCustomListBoxClass(WidgetSetClass).GetItemRect(Self, Index, Result);
-  end else
+  FillChar(Result, SizeOf(Result), 0);
+  if not HandleAllocated then
+    Exit;
+  if (Index >= 0) and (Index < Items.Count) then
+    TWSCustomListBoxClass(WidgetSetClass).GetItemRect(Self, Index, Result)
+  else
   if (Index=Items.Count) and (Index>0) then
   begin
     TWSCustomListBoxClass(WidgetSetClass).GetItemRect(Self, Index - 1, Result);
-    OffsetRect(Result,0,Result.Bottom-Result.Top);
-  end else
-  begin
-    FillChar(Result,SizeOf(Result),0);
+    OffsetRect(Result, 0, Result.Bottom - Result.Top);
   end;
 end;
 

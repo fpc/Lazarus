@@ -464,11 +464,19 @@ const LCLWidgetLinkerAddition: array[TLCLPlatform] of string = (
     '', // gtk2
     '', // win32
     '', // wince
+{$IFDEF DARWIN}
     ' -k-framework -kCarbon -k-framework -kOpenGL -k''-dylib_file'' -k''/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib:/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib''', // carbon
+{$ELSE}
+    '', //carbon
+{$ENDIF}
     '', // qt
     '', // fpGUI
     '',  // noGUI
+{$IFDEF DARWIN}
     ' -k-framework -kCocoa' // Cocoa
+{$ELSE}
+    '' // Cocoa
+{$ENDIF}
   );
 
 type

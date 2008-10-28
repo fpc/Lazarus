@@ -828,7 +828,8 @@ begin
 
   // create sub components
   ValueEdit:=TEdit.Create(Self);
-  with ValueEdit do begin
+  with ValueEdit do
+  begin
     Name:='ValueEdit';
     Visible:=false;
     Enabled:=false;
@@ -846,7 +847,8 @@ begin
   end;
 
   ValueComboBox:=TComboBox.Create(Self);
-  with ValueComboBox do begin
+  with ValueComboBox do
+  begin
     Name:='ValueComboBox';
     Sorted:=true;
     AutoSelect:=true;
@@ -855,6 +857,7 @@ begin
     Enabled:=false;
     AutoSize:=false;
     SetBounds(0,-30,Width,Height); // hidden
+    DropDownCount:=20;
     Parent:=Self;
     OnMouseDown := @ValueControlMouseDown;
     OnMouseMove := @ValueControlMouseMove;
@@ -871,7 +874,8 @@ begin
   end;
 
   ValueCheckBox:=TCheckBox.Create(Self);
-  with ValueCheckBox do begin
+  with ValueCheckBox do
+  begin
     Name:='ValueCheckBox';
     Visible:=false;
     AutoSize:=false;
@@ -886,7 +890,8 @@ begin
   end;
 
   ValueButton:=TSpeedButton.Create(Self);
-  with ValueButton do begin
+  with ValueButton do
+  begin
     Name:='ValueButton';
     Visible:=false;
     Enabled:=false;
