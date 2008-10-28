@@ -1742,6 +1742,7 @@ function CreateBitmapFromLazarusResource(AHandle: TLResource; AMinimumClass: TCu
 
 function CreateCompatibleBitmaps(const ARawImage: TRawImage; out ABitmap, AMask: HBitmap; ASkipMask: Boolean = False): Boolean;
 
+function CreateBitmapFromFPImage(Img: TFPCustomImage): TBitmap;
 
 var
   { Stores information about the current screen
@@ -1983,6 +1984,26 @@ begin
   end;
 end;
 
+function CreateBitmapFromFPImage(Img: TFPCustomImage): TBitmap;
+var
+  IntfImg: TLazIntfImage;
+  ok: Boolean;
+begin
+  Result:=nil;
+  IntfImg:=nil;
+  ok:=false;
+  try
+    Result:=TBitmap.Create;
+    IntfImg:=Result.CreateIntfImage;
+    IntfImg.SetSize(Img.Width,Img.Height);
+    IntfImg.CopyPixels(Img);
+    Result.LoadFromIntfImage(IntfImg);
+    ok:=true;
+  finally
+    if not ok then FreeAndNil(Result);
+    IntfImg.Free;
+  end;
+end;
 
 procedure Register;
 begin
