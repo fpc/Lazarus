@@ -140,11 +140,11 @@ procedure TOpenDialog.DereferenceLinks;
 var i: integer;
 begin
   if Filename<>'' then
-    FileName := ReadAllLinks(FileName, false);
+    Filename:=TryReadAllLinks(FileName);
   if Files<>nil then begin
     for i:=0 to Files.Count-1 do begin
       if Files[i]<>'' then
-        Files[i]:=ReadAllLinks(Files[i], false);
+        Files[i]:=TryReadAllLinks(Files[i]);
     end;
   end;
 end;

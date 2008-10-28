@@ -1018,6 +1018,13 @@ begin
   {$ENDIF}
 end;
 
+function TryReadAllLinks(const Filename: string): string;
+begin
+  Result:=ReadAllLinks(Filename,false);
+  if Result='' then
+    Result:=Filename;
+end;
+
 {------------------------------------------------------------------------------
   function ExtractFileNameOnly(const AFilename: string): string;
  ------------------------------------------------------------------------------}

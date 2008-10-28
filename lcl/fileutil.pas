@@ -63,6 +63,7 @@ function FileSize(const Filename: string): int64;
 function GetFileDescription(const AFilename: string): string;
 function ReadAllLinks(const Filename: string;
                       ExceptionOnError: boolean): string;
+function TryReadAllLinks(const Filename: string): string;
 
 // directories
 function DirPathExists(const FileName: String): Boolean;
