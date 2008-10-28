@@ -264,6 +264,7 @@ begin
   with MacrosInsertButton do
     Caption:=lisCodeTemplAdd;
     
+  ButtonPanel.OKButton.OnClick := @OKButtonClick;
   ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
 
   fOptions:=TExternalToolOptions.Create;
