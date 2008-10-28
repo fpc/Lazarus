@@ -50,13 +50,17 @@ fi
 
 FPDocParams="--content=lcl.xct --package=lcl --descr=../${XMLSrcDir}lcl.xml --format=$HTMLFMT"
 if [ "$HTMLFMT" == "chm" ]; then
-  FPDocParams="$FPDocParams --css-file=../fpdoc.css --output=lcl.chm"
+  FPDocParams="$FPDocParams --css-file=../fpdoc.css --auto-toc --auto-index --output=lcl.chm"
 fi
 if [ -n "$FPDocFooter" ]; then
   FPDocParams="$FPDocParams --footer=$FPDocFooter"
 fi
 if [ -n "$FPCDocDir" ]; then
-  FPDocParams="$FPDocParams --import=$FPCDocDir/rtl.xct,../rtl/ --import=$FPCDocDir/fcl.xct,../fcl/"
+  if [ "$HTMLFMT" == "chm" ]; then
+    FPDocParams="$FPDocParams --import=$FPCDocDir/rtl.xct,ms-its:rtl.chm::/ --import=$FPCDocDir/fcl.xct,ms-its:fcl.chm::/"
+  else
+    FPDocParams="$FPDocParams --import=$FPCDocDir/rtl.xct,../rtl/ --import=$FPCDocDir/fcl.xct,../fcl/"
+  fi
 fi
 
 cd $PackageName

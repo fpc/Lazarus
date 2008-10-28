@@ -2904,11 +2904,12 @@ var
         inc(CurPos);
         if CurPos > len then Exit;
       until line[CurPos] = ']';
-      Inc(CurPos, 2); //skip space also
+      Inc(CurPos, 2); // skip space too
       if len - CurPos < 6 then Exit; // shortest match
     end;
 
     UpLine:=UpperCaseStr(Line);
+    //DebugLn(['ProcessOutputLine ',Line]);
     
     case UpLine[CurPos] of
       'M':
