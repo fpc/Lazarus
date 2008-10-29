@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils,
-  FileUtil, StdCtrls, ExtCtrls, ComCtrls, Controls, Buttons, Menus,
+  FileUtil, Forms, StdCtrls, ExtCtrls, ComCtrls, Controls, Buttons, Menus,
   BaseContentProvider, FileContentProvider, IpHtml, ChmReader, ChmDataProvider;
   
 type
@@ -33,6 +33,7 @@ type
     fPopUp: TPopUpMenu;
     fStatusBar: TStatusBar;
     fContext: THelpContext;
+    fPendingChm: TChmReader;
   protected
     fIsUsingHistory: Boolean;
     fChms: TChmFileList;
@@ -49,7 +50,7 @@ type
     procedure DoError(Error: Integer);
     procedure NewChmOpened(ChmFileList: TChmFileList; Index: Integer);
     
-    procedure FillTOCTimer(Sender: TObject);
+    procedure FillTOC(Data: PtrInt);
     procedure IpHtmlPanelDocumentOpen(Sender: TObject);
     procedure IpHtmlPanelHotChange(Sender: TObject);
     procedure PopupCopyClick(Sender: TObject);
@@ -72,12 +73,6 @@ type
     destructor Destroy; override;
   end;
   
-  TTocTimer = class(TIdleTimer)
-  private
-    fChm: TChmReader;
-  end;
-
-
 implementation
 
 uses ChmSpecialParser;
@@ -159,7 +154,6 @@ begin
   fHtml.OpenURL(Url);
   TIpChmDataProvider(fHtml.DataProvider).CurrentPath := ExtractFileDir(URL)+'/';
   AddHistory(Url);
-
 end;
 
 
@@ -171,11 +165,10 @@ end;
 
 procedure TChmContentProvider.NewChmOpened(ChmFileList: TChmFileList;
   Index: Integer);
-var
-TImer: TTocTimer;
 begin
   if Index = 0 then begin
     fContentsTree.Items.Clear;
+    fPendingChm := ChmFileList.Chm[Index];
     if fContext > -1 then begin
       DoLoadContext(fContext);
       fContext := -1;
@@ -187,37 +180,29 @@ begin
   if ChmFileList.Chm[Index].Title = '' then
     ChmFileList.Chm[Index].Title := ExtractFileName(ChmFileList.FileName[Index]);
   // Fill the table of contents. This actually works very well
-  Timer := TTocTimer.Create(fHtml);
-  if ChmFileList.ObjectExists(ChmFileList.Chm[Index].TOCFile) + ChmFileList.ObjectExists(ChmFileList.Chm[Index].IndexFile)> 25000 then
-    Timer.Interval := 500
-  else
-    Timer.Interval := 5;
-  Timer.OnTimer := @FillTOCTimer;
-  Timer.fChm := ChmFileList.Chm[Index];
-  Timer.Enabled := True;
   fContentsTree.Visible := False;
 end;
 
-procedure TChmContentProvider.FillTOCTimer(Sender: TObject);
+procedure TChmContentProvider.FillTOC(Data: PtrInt);
 var
  Stream: TMemoryStream;
  fChm: TChmReader;
  ParentNode: TTreeNode;
 begin
   if fFillingToc = True then begin
-    TTimer(Sender).Interval := 40;
+    Application.QueueAsyncCall(@FillToc, Data);
     exit;
   end;
   fFillingToc := True;
-  fStopTimer := False;
   fContentsTree.Visible := False;
-  fChm := TTocTimer(Sender).fChm;
-  TTocTimer(Sender).Free;
+  fChm := TChmReader(Data);
+  writeln('Start: ',FormatDateTime('hh:nn:ss.zzz', Now));
   if fChm <> nil then begin
     ParentNode := fContentsTree.Items.AddChildObject(nil, fChm.Title, fChm);
     Stream := TMemoryStream(fchm.GetObject(fChm.TOCFile));
     if Stream <> nil then begin
       Stream.position := 0;
+      writeln('Stream read: ',FormatDateTime('hh:nn:ss.zzz', Now));
       with TContentsFiller.Create(fContentsTree, Stream, @fStopTimer) do begin
         DoFill(ParentNode);
         Free;
@@ -240,17 +225,24 @@ begin
 
 
   fContentsTree.Visible := True;
+  writeln('Eind: ',FormatDateTime('hh:nn:ss.zzz', Now));
   fFillingToc := False;
-  fStopTimer := False;
 end;
 
 procedure TChmContentProvider.IpHtmlPanelDocumentOpen(Sender: TObject);
+var
+  AChm: TChmReader;
 begin
    // StatusBar1.Panels.Items[1] := fHtml.DataProvider.;
  if fIsUsingHistory = False then
    AddHistory(TIpChmDataProvider(fHtml.DataProvider).CurrentPage)
  else fIsUsingHistory := False;
-
+ if fPendingChm<>nil then
+ begin
+   AChm := fPendingChm;
+   fPendingChm := nil;
+   Application.QueueAsyncCall(@FillToc, PtrInt(AChm));
+ end;
 end;
 
 procedure TChmContentProvider.IpHtmlPanelHotChange(Sender: TObject);
