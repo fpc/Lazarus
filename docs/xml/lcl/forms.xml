@@ -6993,7 +6993,8 @@ These constants are declared on the LCLType unit.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.Idle">
-        <short/>
+        <short>
+          <var>Idle</var> - method for rendering the Application Idle if <var>Wait</var> is True</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7250,7 +7251,8 @@ These constants are declared on the LCLType unit.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.AddOnKeyDownHandler">
-        <short/>
+        <short>
+          <var>AddOnKeyDownHandler</var> - method for adding a handler for the Key Down state</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7265,7 +7267,8 @@ These constants are declared on the LCLType unit.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.RemoveOnKeyDownHandler">
-        <short/>
+        <short>
+          <var>RemoveOnKeyDownHandler</var> - method for removing handler for the Key Down state</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7389,7 +7392,7 @@ These constants are declared on the LCLType unit.
       <!-- procedure Visibility: public -->
       <element name="TApplication.AddOnQueryEndSessionHandler">
         <short>
-          <var>RemoveOnEndSessionHandler</var> - method for adding handler for a query at the end of a session</short>
+          <var>AddOnQueryEndSessionHandler</var> - method for adding handler for a query at the end of a session</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7404,7 +7407,8 @@ These constants are declared on the LCLType unit.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.RemoveOnQueryEndSessionHandler">
-        <short/>
+        <short>
+          <var>RemoveOnQueryEndSessionHandler</var> - method for removing handler for a query at the end of a session</short>
         <descr/>
         <errors/>
         <seealso/>
