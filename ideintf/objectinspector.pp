@@ -43,7 +43,7 @@ uses
   ComponentTreeView, ComponentEditors, IDEImagesIntf;
 
 const
-  OIOptionsFileVersion = 2;
+  OIOptionsFileVersion = 3;
 
 type
   EObjectInspectorException = class(Exception);
@@ -3285,8 +3285,9 @@ begin
     FPropertyNameColor:=ConfigStore.GetValue(
          Path+'Color/PropertyName',clWindowText);
 
+
     FShowHints:=ConfigStore.GetValue(
-         Path+'ShowHints',false);
+         Path+'ShowHints',FileVersion>=3);
     FAutoShow := ConfigStore.GetValue(
          Path+'AutoShow',true);
     FBoldNonDefaultValues := ConfigStore.GetValue(
@@ -3349,7 +3350,7 @@ begin
                               FPropertyNameColor,clWindowText);
 
     ConfigStore.SetDeleteValue(Path+'ShowHints',FShowHints,
-                             false);
+                             true);
     ConfigStore.SetDeleteValue(Path+'AutoShow',FAutoShow, True);
     ConfigStore.SetDeleteValue(Path+'BoldNonDefaultValues',FBoldNonDefaultValues, True);
     ConfigStore.SetDeleteValue(Path+'DrawGridLines',FDrawGridLines, True);
