@@ -1608,9 +1608,11 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TGraphicsObject">
-        <short>Primitive ancestor class, mainly for Delphi compatibility</short>
+        <short>
+          <var>TGraphicsObject</var> - Primitive ancestor class, mainly for Delphi compatibility</short>
         <descr>TGraphicsObject - In Delphi VCL this is the ancestor of TFont, TPen and TBrush.<br/>
-Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.</descr>
+Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
+</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TGraphicsObject.FOnChanging">
@@ -1637,41 +1639,47 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TGraphicsObject.Changing">
-        <short/>
+        <short>
+          <var>Changing</var> - software emulation of <var>OnChanging</var> event</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TGraphicsObject.Changed">
-        <short/>
+        <short>
+          <var>Changed</var> - software emulation of <var>OnChange</var> event</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TGraphicsObject.Lock">
-        <short/>
+        <short>
+          <var>Lock</var> - method for locking the object, making it unavailable for changes</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TGraphicsObject.UnLock">
-        <short/>
+        <short>
+          <var>UnLock</var> - method for releasing locked object</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TGraphicsObject.OnChanging">
-        <short/>
+        <short>
+          <var>OnChanging</var> - event handler for changing object</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TGraphicsObject.OnChange">
-        <short/>
+        <short>
+          <var>OnChange</var> - event handler for changed object</short>
         <descr/>
         <seealso/>
       </element>
@@ -2116,26 +2124,14 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.</descr>
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TFont.Create">
-        <short>
-          <var>Font</var> constructor</short>
-        <descr>Opens a new instance of the class and sets defaults for character set, colour, size etc</descr>
+      <element name="TFont.Create" link="#rtl.System.TObject.Create">
+        <descr>Opens a new instance of the class and sets defaults for character set, colour, size etc
+</descr>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TFont.Destroy">
-        <short>
-          <var>Font</var> destructor</short>
-      </element>
+      <element name="TFont.Destroy" link="#rtl.Classes.TPersistent.Destroy"/>
       <!-- procedure Visibility: public -->
-      <element name="TFont.Assign">
-        <short>
-          <var>Assign</var>   - copies the 
-          
-          
-          <var>LogFont</var> or 
-          
-          
-          <var>Source</var> settings to itself</short>
+      <element name="TFont.Assign" link="#rtl.Classes.TPersistent.Assign">
         <descr>
           <p>Method: <var>TFont.Assign</var>
           </p>
@@ -2165,21 +2161,24 @@ Copies the logfont or source settings to itself
       </element>
       <!-- procedure Visibility: public -->
       <element name="TFont.BeginUpdate">
-        <short/>
+        <short>
+          <var>BeginUpdate</var> - start the update process</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TFont.EndUpdate">
-        <short/>
+        <short>
+          <var>EndUpdate</var> - finish the update process</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
       <element name="TFont.HandleAllocated">
-        <short/>
+        <short>
+          <var>HandleAllocated</var> - returns True if a handle has been allocated</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2190,7 +2189,8 @@ Copies the logfont or source settings to itself
       </element>
       <!-- function Visibility: public -->
       <element name="TFont.IsDefault">
-        <short/>
+        <short>
+          <var>IsDefault</var> - returns True if this is the default Font</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2201,19 +2201,21 @@ Copies the logfont or source settings to itself
       </element>
       <!-- property Visibility: public -->
       <element name="TFont.Handle">
-        <short/>
+        <short>Operataing system <var>Handle</var> for this Font</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TFont.PixelsPerInch">
-        <short/>
+        <short>
+          <var>PixelsPerInch</var> - scaling factor for drawing Font</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TFont.CanUTF8">
-        <short/>
+        <short>
+          <var>CanUTF8</var> - returns True if Font can be used for UTF8</short>
         <descr/>
         <seealso/>
       </element>
@@ -8994,7 +8996,8 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- function Visibility: public -->
       <element name="TFont.IsEqual">
-        <short/>
+        <short>
+          <var>IsEqual</var> - returns True if this Font is the same as the specified Font</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9009,20 +9012,23 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- property Visibility: public -->
       <element name="TFont.IsMonoSpace">
-        <short/>
+        <short>
+          <var>IsMonoSpace</var> - returns True if this is a MonoSpace Font</short>
         <descr/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TFont.SetDefault">
-        <short/>
+        <short>
+          <var>SetDefault</var> - method for setting the default Font</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TFont.Reference">
-        <short/>
+        <short>
+          <var>Reference</var> - References made to this Font</short>
         <descr/>
         <seealso/>
       </element>
