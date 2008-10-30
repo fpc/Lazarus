@@ -4076,6 +4076,8 @@ begin
   Result:=ifrProceedSearch;
   // if proc is a method body, search in class
   // -> find class name
+  if ProcContextNode.FirstChild=nil then
+    exit(ifrProceedSearch);
   MoveCursorToNodeStart(ProcContextNode.FirstChild);
   ReadNextAtom; // read name
   if not AtomIsIdentifier(false) then exit; // ignore operator procs
