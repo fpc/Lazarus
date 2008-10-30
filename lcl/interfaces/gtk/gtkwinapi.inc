@@ -5494,6 +5494,8 @@ function TGtkWidgetSet.GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer
 var
   GDIObject: PGDIObject absolute GDIObj;
   ALogPen: PLogPen absolute Buf;
+  AExtLogPen: PExtLogPen absolute Buf;
+  i, RequiredSize: Integer;
 begin
   Assert(False, 'trace:[TGtkWidgetSet.GetObject]');
   Result := 0;
@@ -5526,18 +5528,47 @@ begin
       end;
     gdiPen:
       begin
-        if Buf = nil then
-          Result := SizeOf(TLogPen)
-        else
-        if BufSize >= SizeOf(TLogPen) then
+        if GDIObject^.IsExtPen then
         begin
-          Result := SizeOf(TLogPen);
-          ALogPen^.lopnColor := GDIObject^.GDIPenColor.ColorRef;
-          ALogPen^.lopnWidth := Point(GDIObject^.GDIPenWidth, 0);
-          ALogPen^.lopnStyle := GDIObject^.GDIPenStyle;
+          RequiredSize := SizeOf(TExtLogPen);
+          if GDIObject^.GDIPenDashesCount > 1 then
+            RequiredSize := RequiredSize + (GDIObject^.GDIPenDashesCount - 1) * SizeOf(DWord);
+
+          if Buf = nil then
+            Result := RequiredSize
+          else
+          if BufSize >= RequiredSize then
+          begin
+            Result := RequiredSize;
+
+            AExtLogPen^.elpPenStyle := GDIObject^.GDIPenStyle;
+            AExtLogPen^.elpWidth := GDIObject^.GDIPenWidth;
+            AExtLogPen^.elpBrushStyle := BS_SOLID;
+            AExtLogPen^.elpColor := GDIObject^.GDIPenColor.ColorRef;
+            AExtLogPen^.elpHatch := 0;
+            AExtLogPen^.elpNumEntries := GDIObject^.GDIPenDashesCount;
+            if GDIObject^.GDIPenDashesCount > 0 then
+            begin
+              for i := 0 to GDIObject^.GDIPenDashesCount - 1 do
+                PDWord(AExtLogPen^.elpStyleEntry)[i] := GDIObject^.GDIPenDashes[i];
+            end
+            else
+              AExtLogPen^.elpStyleEntry[0] := 0;
+          end;
         end
         else
-          Result := 0;
+        begin
+          if Buf = nil then
+            Result := SizeOf(TLogPen)
+          else
+          if BufSize >= SizeOf(TLogPen) then
+          begin
+            Result := SizeOf(TLogPen);
+            ALogPen^.lopnColor := GDIObject^.GDIPenColor.ColorRef;
+            ALogPen^.lopnWidth := Point(GDIObject^.GDIPenWidth, 0);
+            ALogPen^.lopnStyle := GDIObject^.GDIPenStyle;
+          end;
+        end;
       end;
     gdiRegion:
       begin
