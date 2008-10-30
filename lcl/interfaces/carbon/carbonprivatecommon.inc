@@ -379,7 +379,6 @@ begin
   {$IFDEF VerboseCommonEvent}
     DebugLn('CarbonCommon_GetNextFocusCandidate: ', DbgSName(AWidget.LCLObject));
   {$ENDIF}
-  //Result := CallNextEventHandler(ANextHandler, AEvent);
 
   StartControl := nil;
   if OSError(GetEventParameter(AEvent, kEventParamStartControl, typeControlRef,
@@ -392,10 +391,15 @@ begin
   
   NextControl := AWidget.GetNextFocus(GetCarbonWidget(StartControl), FocusPart = kControlFocusNextPart);
     
-  OSError(SetEventParameter(AEvent, kEventParamNextControl, typeControlRef,
-    SizeOf(ControlRef), @NextControl), SName, SSetEvent, 'kEventParamNextControl');
+  if NextControl = nil then
+    Result := CallNextEventHandler(ANextHandler, AEvent)
+  else
+  begin
+    OSError(SetEventParameter(AEvent, kEventParamNextControl, typeControlRef,
+      SizeOf(ControlRef), @NextControl), SName, SSetEvent, 'kEventParamNextControl');
   
-  Result := noErr;
+    Result := noErr;
+  end;
 end;
 
 {------------------------------------------------------------------------------
