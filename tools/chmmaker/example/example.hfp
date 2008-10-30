@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Files>
+    <Count Value="3"/>
+    <FileName0 Value="AboutLazarus.html"/>
+    <FileName1 Value="MainPage.html"/>
+    <FileName2 Value="SecondPage.html"/>
+    <IndexFile Value="/home/andrew/programming/lazarus/tools/chmmaker/example/_index.hhk"/>
+    <TOCFile Value="/home/andrew/programming/lazarus/tools/chmmaker/example/_table_of_contents.hhc"/>
+  </Files>
+  <Settings>
+    <AutoFollowLinks Value="False"/>
+    <MakeSearchable Value="False"/>
+    <DefaultPage Value="MainPage.html"/>
+    <Title Value=""/>
+    <OutputFileName Value="/home/andrew/programming/lazarus/tools/chmmaker/example/example.chm"/>
+    <DefaultFont Value=""/>
+  </Settings>
+</CONFIG>
