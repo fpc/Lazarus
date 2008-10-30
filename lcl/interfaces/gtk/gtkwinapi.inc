@@ -5550,7 +5550,7 @@ begin
             if GDIObject^.GDIPenDashesCount > 0 then
             begin
               for i := 0 to GDIObject^.GDIPenDashesCount - 1 do
-                PDWord(AExtLogPen^.elpStyleEntry)[i] := GDIObject^.GDIPenDashes[i];
+                PDWord(@AExtLogPen^.elpStyleEntry)[i] := GDIObject^.GDIPenDashes[i];
             end
             else
               AExtLogPen^.elpStyleEntry[0] := 0;
