@@ -38,11 +38,9 @@ menu/menu_close_all.png
 menu/menu_codetoolsdefineseditor.png
 menu/menu_codetoolsoptions.png
 menu/menu_comment.png
-menu/menu_commit.png
 menu/menu_compiler_options.png
 menu/menu_configure_build_lazarus.png
 menu/menu_configure_help.png
-menu/menu_diff.png
 menu/menu_editor_options.png
 menu/menu_edit_lowercase.png
 menu/menu_edit_sort.png
@@ -55,7 +53,6 @@ menu/menu_goto_line.png
 menu/menu_help.png
 menu/menu_indent.png
 menu/menu_information.png
-menu/menu_log.png
 menu/menu_new.png
 menu/menu_pause.png
 menu/menu_project_add.png

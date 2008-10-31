@@ -47,7 +47,7 @@ uses
   LCLClasses, AsyncProcess, FileCtrl, Maps, HelpIntfs, LazHelpIntf, LazHelpHTML,
   StdActns, Buttons, Extctrls, Calendar, Clipbrd, Forms, LCLIntf, Spin,
   Comctrls, Graphics, StdCtrls, Arrow, Controls, ImgList, Menus, Toolwin,
-  Dialogs, Messages, ActnList, Grids, MaskEdit, ButtonPanel, bp,
+  Dialogs, Messages, ActnList, Grids, MaskEdit, ButtonPanel,
   Printers, PostScriptPrinter, PostScriptCanvas, CheckLst, PairSplitter,
   ExtDlgs, DBCtrls, DBGrids, DBActns, EditBtn, ExtGraphics, ColorBox,
   PropertyStorage, IniPropStorage, XMLPropStorage, Chart, LDockTree, LDockCtrl,

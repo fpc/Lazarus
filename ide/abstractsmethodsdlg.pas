@@ -37,7 +37,7 @@ uses
   CheckLst, StdCtrls, ExtCtrls, Buttons,
   CodeAtom, CodeTree, PascalParserTool, CodeCache, CodeToolManager,
   LazIDEIntf, SrcEditorIntf,
-  LazarusIDEStrConsts, ButtonPanel, IDEContextHelpEdit;
+  LazarusIDEStrConsts;
 
 type
 
@@ -53,19 +53,19 @@ type
   { TAbstractMethodsDialog }
 
   TAbstractMethodsDialog = class(TForm)
-    AddFirstButton: TBitBtn;
-    AddAllButton: TBitBtn;
-    ButtonPanel: TButtonPanel;
+    AddAllBitBtn: TBitBtn;
     NoteLabel: TLabel;
     SelectNoneButton: TButton;
     SelectAllButton: TButton;
+    CancelBitBtn: TBitBtn;
+    AddFirstBitBtn: TBitBtn;
     MethodsCheckListBox: TCheckListBox;
     MethodsGroupBox: TGroupBox;
-    procedure AddAllButtonClick(Sender: TObject);
-    procedure AddFirstButtonClick(Sender: TObject);
+    BtnPanel: TPanel;
+    procedure AddAllBitBtnClick(Sender: TObject);
+    procedure AddFirstBitBtnClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure HelpButtonClick(Sender: TObject);
     procedure MethodsCheckListBoxClickCheck(Sender: TObject);
     procedure SelectAllButtonClick(Sender: TObject);
     procedure SelectNoneButtonClick(Sender: TObject);
@@ -156,22 +156,25 @@ procedure TAbstractMethodsDialog.FormCreate(Sender: TObject);
 begin
   FItems:=TFPList.Create;
 
-  ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
-  AddFirstButton.Caption:=lisSAMOverrideFirstSelected;
-  AddAllButton.Caption:=lisSAMOverrideAllSelected;
+  AddFirstBitBtn.Caption:=lisSAMOverrideFirstSelected;
+  AddAllBitBtn.Caption:=lisSAMOverrideAllSelected;
+  CancelBitBtn.Caption:=dlgCancel;
 
   SelectNoneButton.Caption:=lisSAMSelectNone;
   SelectAllButton.Caption:=lisMenuSelectAll;
   MethodsGroupBox.Caption:=lisSAMAbstractMethodsNotYetOverridden;
+  CancelBitBtn.LoadGlyphFromLazarusResource('btn_cancel');
+  AddFirstBitBtn.LoadGlyphFromLazarusResource('btn_ok');
+  AddAllBitBtn.LoadGlyphFromLazarusResource('btn_all');
 end;
 
-procedure TAbstractMethodsDialog.AddFirstButtonClick(Sender: TObject);
+procedure TAbstractMethodsDialog.AddFirstBitBtnClick(Sender: TObject);
 begin
   if not AddOverrides(true) then exit;
   ModalResult:=mrOk;
 end;
 
-procedure TAbstractMethodsDialog.AddAllButtonClick(Sender: TObject);
+procedure TAbstractMethodsDialog.AddAllBitBtnClick(Sender: TObject);
 begin
   if not AddOverrides(false) then exit;
   ModalResult:=mrOk;
@@ -180,11 +183,6 @@ end;
 procedure TAbstractMethodsDialog.FormDestroy(Sender: TObject);
 begin
   ClearItems;
-end;
-
-procedure TAbstractMethodsDialog.HelpButtonClick(Sender: TObject);
-begin
-  ShowContextHelpForIDE(Self);
 end;
 
 procedure TAbstractMethodsDialog.MethodsCheckListBoxClickCheck(Sender: TObject);
@@ -226,8 +224,8 @@ var
 begin
   i:=MethodsCheckListBox.Items.Count-1;
   while (i>=0) and (not MethodsCheckListBox.Checked[i]) do dec(i);
-  AddFirstButton.Enabled:=i>=0;
-  AddAllButton.Enabled:=AddFirstButton.Enabled;
+  AddFirstBitBtn.Enabled:=i>=0;
+  AddAllBitBtn.Enabled:=AddFirstBitBtn.Enabled;
 end;
 
 function TAbstractMethodsDialog.CheckSelection: boolean;

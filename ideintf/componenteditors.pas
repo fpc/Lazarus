@@ -28,7 +28,7 @@ uses
   Classes, SysUtils, LResources, TypInfo, LCLProc, Forms, Controls, Menus,
   ExtCtrls, StdCtrls, Graphics, Grids, CheckLst, Buttons, ComCtrls, Dialogs,
   LazStringGridEdit, CheckListboxEditorDlg, CheckGroupEditorDlg, GraphType, PropEdits,
-  ObjInspStrConsts, bp;
+  ObjInspStrConsts;
 
 type
   { TComponentEditorDesigner }
@@ -326,17 +326,6 @@ type
     function ToolBar: TToolBar; virtual;
   end;
 
-{ TButtonPanelComponentEditor
-  The default componenteditor for TButtonPanelComponentEditor }
-
-  TButtonPanelComponentEditor = class(TDefaultComponentEditor)
-  protected
-  public
-    procedure ExecuteVerb(Index: Integer); override;
-    function GetVerb(Index: Integer): string; override;
-    function GetVerbCount: Integer; override;
-    function ButtonPanel: TCustomButtonPanel2; virtual;
-  end;
 
 { TFileDialogComponentEditor
   The default componenteditor for TFileDialog }
@@ -1006,61 +995,6 @@ begin
   Result := TToolBar(GetComponent);
 end;
 
-{ TButtonPanelComponentEditor }
-
-procedure TButtonPanelComponentEditor.ExecuteVerb(Index: Integer);
-var
-  Hook: TPropertyEditorHook;
-  NewPanelButton: TPanelBitBtn2;
-  NewName: string;
-  CurButtonPanel: TCustomButtonPanel2;
-begin
-  Hook:=nil;
-  if not GetHook(Hook) then exit;
-  CurButtonPanel := ButtonPanel;
-
-  case Index of
-    //0: default button
-    0: NewPanelButton := CurButtonPanel.AddNewButton;
-    //1: OK button
-    1: NewPanelButton := CurButtonPanel.AddOKButton;
-    //2: Cancel button
-    2: NewPanelButton := CurButtonPanel.AddCancelButton;
-    //3: Help button
-    3: NewPanelButton := CurButtonPanel.AddHelpButton;
-    //4: Apply button
-    4: NewPanelButton := CurButtonPanel.AddApplyButton;
-  else
-    exit;
-  end;
-
-  Hook.PersistentAdded(NewPanelButton, True);
-  Modified;
-end;
-
-function TButtonPanelComponentEditor.GetVerb(Index: Integer): string;
-begin
-  case Index of
-    0: Result := 'New button';
-    1: Result := 'New OK button';
-    2: Result := 'New Cancel button';
-    3: Result := 'New Help button';
-    4: Result := 'New Apply button';
-  else
-    Result := '';
-  end;
-end;
-
-function TButtonPanelComponentEditor.GetVerbCount: Integer;
-begin
-  Result := 5;
-end;
-
-function TButtonPanelComponentEditor.ButtonPanel: TCustomButtonPanel2;
-begin
-  Result := TCustomButtonPanel2(GetComponent);
-end;
-
 { TCommonDialogComponentEditor }
 
 procedure TCommonDialogComponentEditor.TestDialog;
@@ -1252,7 +1186,6 @@ initialization
   RegisterComponentEditor(TCheckListBox,TCheckListBoxComponentEditor);
   RegisterComponentEditor(TCheckGroup,TCheckGroupComponentEditor);
   RegisterComponentEditor(TToolBar,TToolBarComponentEditor);
-  RegisterComponentEditor(TButtonPanel2,TButtonPanelComponentEditor);
   RegisterComponentEditor(TCommonDialog, TCommonDialogComponentEditor);
 
 finalization
