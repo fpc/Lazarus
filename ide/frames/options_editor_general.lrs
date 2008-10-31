@@ -1,0 +1,55 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TEditorGeneralOptionsFrame','FORMDATA',[
+  'TPF0'#241#26'TEditorGeneralOptionsFrame'#25'EditorGeneralOptionsFrame'#6'Hei'
+  +'ght'#3#248#1#5'Width'#3#198#1#12'ClientHeight'#3#248#1#11'ClientWidth'#3#198
+  +#1#7'Visible'#8#10'DesignLeft'#3#176#0#9'DesignTop'#3#232#0#0#242#2#0#6'TLab'
+  +'el'#16'BlockIndentLabel'#22'AnchorSideLeft.Control'#7#19'BlockIndentComboBo'
+  +'x'#19'AnchorSideLeft.Side'#7#9'asrBottom'#24'AnchorSideBottom.Control'#7#19
+  +'BlockIndentComboBox'#21'AnchorSideBottom.Side'#7#9'asrCenter'#4'Left'#2'j'#6
+  +'Height'#2#14#3'Top'#3#179#1#5'Width'#2'R'#7'Anchors'#11#6'akLeft'#8'akBotto'
+  +'m'#0#20'BorderSpacing.Around'#2#6#7'Caption'#6#16'BlockIndentLabel'#11'Pare'
+  +'ntColor'#8#0#0#242#2#1#6'TLabel'#14'UndoLimitLabel'#22'AnchorSideLeft.Contr'
+  +'ol'#7#17'UndoLimitComboBox'#19'AnchorSideLeft.Side'#7#9'asrBottom'#24'Ancho'
+  +'rSideBottom.Control'#7#17'UndoLimitComboBox'#21'AnchorSideBottom.Side'#7#9
+  +'asrCenter'#4'Left'#2'j'#6'Height'#2#14#3'Top'#3#206#1#5'Width'#2'H'#7'Ancho'
+  +'rs'#11#6'akLeft'#8'akBottom'#0#20'BorderSpacing.Around'#2#6#7'Caption'#6#14
+  +'UndoLimitLabel'#11'ParentColor'#8#0#0#242#2#2#6'TLabel'#14'TabWidthsLabel'
+  +#22'AnchorSideLeft.Control'#7#17'TabWidthsComboBox'#19'AnchorSideLeft.Side'#7
+  +#9'asrBottom'#24'AnchorSideBottom.Control'#7#17'TabWidthsComboBox'#21'Anchor'
+  +'SideBottom.Side'#7#9'asrCenter'#4'Left'#2'j'#6'Height'#2#14#3'Top'#3#230#1#5
+  +'Width'#2'M'#7'Anchors'#11#6'akLeft'#8'akBottom'#0#20'BorderSpacing.Around'#2
+  +#6#7'Caption'#6#14'TabWidthsLabel'#11'ParentColor'#8#0#0#242#2#3#11'TCheckGr'
+  +'oup'#21'EditorOptionsGroupBox'#22'AnchorSideLeft.Control'#7#5'Owner'#21'Anc'
+  +'horSideTop.Control'#7#5'Owner'#23'AnchorSideRight.Control'#7#5'Owner'#20'An'
+  +'chorSideRight.Side'#7#9'asrBottom'#24'AnchorSideBottom.Control'#7#19'BlockI'
+  +'ndentComboBox'#6'Height'#3#170#1#5'Width'#3#198#1#5'Align'#7#5'alTop'#7'Anc'
+  +'hors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#8'AutoFill'#9#20'Borde'
+  +'rSpacing.Bottom'#2#6#7'Caption'#6#21'EditorOptionsGroupBox'#28'ChildSizing.'
+  +'LeftRightSpacing'#2#6#28'ChildSizing.TopBottomSpacing'#2#6#29'ChildSizing.E'
+  +'nlargeHorizontal'#7#24'crsHomogenousChildResize'#27'ChildSizing.EnlargeVert'
+  +'ical'#7#24'crsHomogenousChildResize'#28'ChildSizing.ShrinkHorizontal'#7#14
+  +'crsScaleChilds'#26'ChildSizing.ShrinkVertical'#7#14'crsScaleChilds'#18'Chil'
+  +'dSizing.Layout'#7#29'cclTopToBottomThenLeftToRight'#27'ChildSizing.Controls'
+  +'PerLine'#2#1#12'ColumnLayout'#7#24'clVerticalThenHorizontal'#7'Columns'#2#2
+  +#11'OnItemClick'#7#30'EditorOptionsGroupBoxItemClick'#8'TabOrder'#2#0#0#0#242
+  +#2#4#9'TComboBox'#19'BlockIndentComboBox'#22'AnchorSideLeft.Control'#7#5'Own'
+  +'er'#24'AnchorSideBottom.Control'#7#17'UndoLimitComboBox'#6'Height'#2#21#3'T'
+  +'op'#3#176#1#5'Width'#2'd'#7'Anchors'#11#6'akLeft'#8'akBottom'#0#20'BorderSp'
+  +'acing.Bottom'#2#6#10'ItemHeight'#2#13#13'Items.Strings'#1#6#1'1'#6#1'2'#6#1
+  +'4'#6#1'8'#0#9'MaxLength'#2#255#8'OnChange'#7#16'ComboboxOnChange'#6'OnExit'
+  +#7#14'ComboBoxOnExit'#9'OnKeyDown'#7#17'ComboboxOnKeyDown'#8'TabOrder'#2#1#0
+  +#0#242#2#5#9'TComboBox'#17'UndoLimitComboBox'#22'AnchorSideLeft.Control'#7#5
+  +'Owner'#24'AnchorSideBottom.Control'#7#14'TabWidthsLabel'#6'Height'#2#21#3'T'
+  +'op'#3#203#1#5'Width'#2'd'#7'Anchors'#11#6'akLeft'#8'akBottom'#0#17'BorderSp'
+  +'acing.Top'#2#6#20'BorderSpacing.Bottom'#2#6#10'ItemHeight'#2#13#13'Items.St'
+  +'rings'#1#6#5'32767'#6#4'4096'#6#3'512'#0#9'MaxLength'#2#255#8'OnChange'#7#16
+  +'ComboboxOnChange'#6'OnExit'#7#14'ComboBoxOnExit'#9'OnKeyDown'#7#17'Combobox'
+  +'OnKeyDown'#8'TabOrder'#2#2#0#0#242#2#6#9'TComboBox'#17'TabWidthsComboBox'#22
+  +'AnchorSideLeft.Control'#7#5'Owner'#24'AnchorSideBottom.Control'#7#5'Owner'
+  +#21'AnchorSideBottom.Side'#7#9'asrBottom'#6'Height'#2#21#3'Top'#3#227#1#5'Wi'
+  +'dth'#2'd'#7'Anchors'#11#6'akLeft'#8'akBottom'#0#17'BorderSpacing.Top'#2#6#10
+  +'ItemHeight'#2#13#13'Items.Strings'#1#6#1'1'#6#1'2'#6#1'4'#6#1'8'#0#9'MaxLen'
+  +'gth'#2#255#8'OnChange'#7#16'ComboboxOnChange'#6'OnExit'#7#14'ComboBoxOnExit'
+  +#9'OnKeyDown'#7#17'ComboboxOnKeyDown'#8'TabOrder'#2#3#0#0#0
+]);

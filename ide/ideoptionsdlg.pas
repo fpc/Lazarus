@@ -36,7 +36,7 @@ uses
 type
   { TIDEOptionsDialog }
 
-  TIDEOptionsDialog = class(TForm)
+  TIDEOptionsDialog = class(TAbstractOptionsEditorDialog)
     ButtonPanel: TButtonPanel;
     CategoryTree: TTreeView;
 
@@ -53,12 +53,14 @@ type
     procedure LoadIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
     procedure SaveIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
     procedure CreateEditors;
+    function SearchEditorNode(AEditor: TAbstractIDEOptionsEditorClass): TTreeNode;
   published
     property OnLoadIDEOptions: TOnLoadIDEOptions read FOnLoadOptions write FOnLoadOptions;
     property OnSaveIDEOptions: TOnSaveIDEOptions read FOnSaveOptions write FOnSaveOptions;
   public
     constructor Create(AOwner: TComponent); override;
     procedure OpenEditor(AEditor: TAbstractIDEOptionsEditorClass);
+    function FindEditor(AEditor: TAbstractIDEOptionsEditorClass): TAbstractIDEOptionsEditor; override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions);
     procedure WriteSettings(AOptions: TAbstractIDEOptions);
   end;
@@ -236,7 +238,7 @@ begin
         Instance := Rec^.Items[j]^.EditorClass.Create(Self);
         Instance.OnLoadIDEOptions := @LoadIDEOptions;
         Instance.OnSaveIDEOptions := @SaveIDEOptions;
-        Instance.Setup;
+        Instance.Setup(Self);
 
         ItemNode := CategoryTree.Items.AddChild(GroupNode, Instance.GetTitle);
         ItemNode.Data := Instance;
@@ -246,7 +248,7 @@ begin
   end;
 end;
 
-procedure TIDEOptionsDialog.OpenEditor(AEditor: TAbstractIDEOptionsEditorClass);
+function TIDEOptionsDialog.SearchEditorNode(AEditor: TAbstractIDEOptionsEditorClass): TTreeNode;
 
   function Traverse(ANode: TTreeNode): TTreeNode;
   begin
@@ -262,12 +264,28 @@ procedure TIDEOptionsDialog.OpenEditor(AEditor: TAbstractIDEOptionsEditorClass);
     end;
   end;
 
+begin
+  Result := Traverse(CategoryTree.Items.GetFirstNode);
+end;
+
+procedure TIDEOptionsDialog.OpenEditor(AEditor: TAbstractIDEOptionsEditorClass);
 var
   Node: TTreeNode;
 begin
-  Node := Traverse(CategoryTree.Items.GetFirstNode);
+  Node := SearchEditorNode(AEditor);
   if Node <> nil then
     CategoryTree.Selected := Node;
+end;
+
+function TIDEOptionsDialog.FindEditor(AEditor: TAbstractIDEOptionsEditorClass): TAbstractIDEOptionsEditor;
+var
+  Node: TTreeNode;
+begin
+  Node := SearchEditorNode(AEditor);
+  if Node <> nil then
+    Result := TAbstractIDEOptionsEditor(Node.Data)
+  else
+    Result := nil;
 end;
 
 initialization

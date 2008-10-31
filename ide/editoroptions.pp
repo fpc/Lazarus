@@ -2225,6 +2225,6 @@ end;
 
 
 initialization
+  RegisterIDEOptionsGroup(GroupEditor, dlgGroupEditor);
   {$I lazarus_dci.lrs}
-
 end.

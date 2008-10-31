@@ -44,7 +44,7 @@ type
     procedure SetWindowPositionsItem(Index: integer);
   public
     function GetTitle: String; override;
-    procedure Setup; override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
@@ -59,7 +59,7 @@ begin
   Result := dlgWindow;
 end;
 
-procedure TWindowOptionsFrame.Setup;
+procedure TWindowOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   // windows
   MinimizeAllOnMinimizeMainCheckBox.Caption := dlgMinimizeAllOnMinimizeMain;

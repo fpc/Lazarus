@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, Laz_XMLCfg, FileUtil, LCLProc, AvgLvlTree,
-  FileProcs, LazConf, StdCtrls;
+  FileProcs, LazConf, StdCtrls, ExtCtrls;
 
 type
   // comments
@@ -235,6 +235,7 @@ function CreateFilenameToStringTree: TStringToStringTree;
 procedure SetComboBoxText(AComboBox:TComboBox; const AText:AnsiString);
 procedure SetComboBoxText(AComboBox:TComboBox; const AText:AnsiString;
                           MaxCount: integer);
+function CheckGroupItemChecked(CheckGroup: TCheckGroup; const Caption: string): Boolean;
 
 implementation
 
@@ -2606,6 +2607,11 @@ begin
       AComboBox.Items.Delete(AComboBox.Items.Count-1);
   end;
   AComboBox.Text := AText;
+end;
+
+function CheckGroupItemChecked(CheckGroup: TCheckGroup; const Caption: string): Boolean;
+begin
+  Result := CheckGroup.Checked[CheckGroup.Items.IndexOf(Caption)];
 end;
 
 end.

@@ -1,0 +1,141 @@
+inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
+  Height = 504
+  Width = 454
+  ClientHeight = 504
+  ClientWidth = 454
+  Visible = False
+  DesignLeft = 176
+  DesignTop = 232
+  object BlockIndentLabel: TLabel[0]
+    AnchorSideLeft.Control = BlockIndentComboBox
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideBottom.Control = BlockIndentComboBox
+    AnchorSideBottom.Side = asrCenter
+    Left = 106
+    Height = 14
+    Top = 435
+    Width = 82
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Around = 6
+    Caption = 'BlockIndentLabel'
+    ParentColor = False
+  end
+  object UndoLimitLabel: TLabel[1]
+    AnchorSideLeft.Control = UndoLimitComboBox
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideBottom.Control = UndoLimitComboBox
+    AnchorSideBottom.Side = asrCenter
+    Left = 106
+    Height = 14
+    Top = 462
+    Width = 72
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Around = 6
+    Caption = 'UndoLimitLabel'
+    ParentColor = False
+  end
+  object TabWidthsLabel: TLabel[2]
+    AnchorSideLeft.Control = TabWidthsComboBox
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideBottom.Control = TabWidthsComboBox
+    AnchorSideBottom.Side = asrCenter
+    Left = 106
+    Height = 14
+    Top = 486
+    Width = 77
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Around = 6
+    Caption = 'TabWidthsLabel'
+    ParentColor = False
+  end
+  object EditorOptionsGroupBox: TCheckGroup[3]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = BlockIndentComboBox
+    Height = 426
+    Width = 454
+    Align = alTop
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoFill = True
+    BorderSpacing.Bottom = 6
+    Caption = 'EditorOptionsGroupBox'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclTopToBottomThenLeftToRight
+    ChildSizing.ControlsPerLine = 1
+    ColumnLayout = clVerticalThenHorizontal
+    Columns = 2
+    OnItemClick = EditorOptionsGroupBoxItemClick
+    TabOrder = 0
+  end
+  object BlockIndentComboBox: TComboBox[4]
+    AnchorSideLeft.Control = Owner
+    AnchorSideBottom.Control = UndoLimitComboBox
+    Height = 21
+    Top = 432
+    Width = 100
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Bottom = 6
+    ItemHeight = 13
+    Items.Strings = (
+      '1'
+      '2'
+      '4'
+      '8'
+    )
+    MaxLength = -1
+    OnChange = ComboboxOnChange
+    OnExit = ComboBoxOnExit
+    OnKeyDown = ComboboxOnKeyDown
+    TabOrder = 1
+  end
+  object UndoLimitComboBox: TComboBox[5]
+    AnchorSideLeft.Control = Owner
+    AnchorSideBottom.Control = TabWidthsLabel
+    Height = 21
+    Top = 459
+    Width = 100
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Top = 6
+    BorderSpacing.Bottom = 6
+    ItemHeight = 13
+    Items.Strings = (
+      '32767'
+      '4096'
+      '512'
+    )
+    MaxLength = -1
+    OnChange = ComboboxOnChange
+    OnExit = ComboBoxOnExit
+    OnKeyDown = ComboboxOnKeyDown
+    TabOrder = 2
+  end
+  object TabWidthsComboBox: TComboBox[6]
+    AnchorSideLeft.Control = Owner
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Height = 21
+    Top = 483
+    Width = 100
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Top = 6
+    ItemHeight = 13
+    Items.Strings = (
+      '1'
+      '2'
+      '4'
+      '8'
+    )
+    MaxLength = -1
+    OnChange = ComboboxOnChange
+    OnExit = ComboBoxOnExit
+    OnKeyDown = ComboboxOnKeyDown
+    TabOrder = 3
+  end
+end

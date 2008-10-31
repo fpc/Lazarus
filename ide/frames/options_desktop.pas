@@ -58,7 +58,7 @@ type
     procedure DoSaveSettings(AOptions: TAbstractIDEOptions);
   public
     function GetTitle: String; override;
-    procedure Setup; override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
@@ -73,7 +73,7 @@ begin
   Result := dlgDesktop;
 end;
 
-procedure TDesktopOptionsFrame.Setup;
+procedure TDesktopOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 var
   i: Integer;
   LangID: String;

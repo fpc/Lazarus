@@ -28,6 +28,10 @@ uses
   Classes, SysUtils, Forms;
 
 type
+  // forward
+  TAbstractOptionsEditorDialog = class;
+
+  // types
   TAbstractIDEOptions = class(TPersistent)
   end;
   TAbstractIDEOptionsClass = class of TAbstractIDEOptions;
@@ -44,7 +48,7 @@ type
   public
     function Check: Boolean; virtual;
     function GetTitle: String; virtual; abstract;
-    procedure Setup; virtual; abstract;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); virtual; abstract;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); virtual; abstract;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); virtual; abstract;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; virtual; abstract;
@@ -97,6 +101,11 @@ type
     property Items[AIndex: Integer]: PIDEOptionsGroupRec read GetItem write SetItem; default;
   end;
 
+  TAbstractOptionsEditorDialog = class(TForm)
+  public
+    function FindEditor(AEditor: TAbstractIDEOptionsEditorClass): TAbstractIDEOptionsEditor; virtual; abstract;
+  end;
+
 procedure RegisterIDEOptionsGroup(AGroupIndex: Integer; ACaption: String);
 procedure RegisterIDEOptionsEditor(AGroupIndex: Integer; AEditorClass: TAbstractIDEOptionsEditorClass; AIndex: Integer);
 
@@ -105,14 +114,22 @@ function IDEEditorGroups: TIDEOptionsGroupList;
 const
   // options groups
   GroupEnvironment = 100;
-    EnvOptionsFiles   = 100;
-    EnvOptionsDesktop = 200;
-    EnvOptionsWindow  = 300;
-    EnvOptionsFormEd  = 400;
-    EnvOptionsOI      = 500;
-    EnvOptionsBackup  = 600; 
-    EnvOptionsNaming  = 700; 
-    EnvOptionsFpDoc   = 800;
+    EnvOptionsFiles      = 100;
+    EnvOptionsDesktop    = 200;
+    EnvOptionsWindow     = 300;
+    EnvOptionsFormEd     = 400;
+    EnvOptionsOI         = 500;
+    EnvOptionsBackup     = 600;
+    EnvOptionsNaming     = 700;
+    EnvOptionsFpDoc      = 800;
+
+  GroupEditor      = 200;
+    EdtOptionsGeneral     = 100;
+    EdtOptionsDisplay     = 200;
+    EdtOptionsKeys        = 300;
+    EdtOptionsColors      = 400;
+    EdtOptionsCodetools   = 500;
+    EdtOptionsCodeFolding = 600;
 
 implementation
 var

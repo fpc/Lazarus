@@ -54,7 +54,7 @@ type
   private
   public
     function GetTitle: String; override;
-    procedure Setup; override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
@@ -89,7 +89,7 @@ begin
   Result := dlgEnvBckup;
 end;
 
-procedure TBackupOptionsFrame.Setup;
+procedure TBackupOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   BackupHelpLabel.Caption := dlgEnvBackupHelpNote;
   BackupProjectGroupBox.Caption := dlgProjFiles;

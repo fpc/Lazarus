@@ -5,8 +5,8 @@ inherited DesktopOptionsFrame: TDesktopOptionsFrame
   ClientWidth = 597
   TabOrder = 0
   Visible = False
-  DesignLeft = 44
-  DesignTop = 58
+  DesignLeft = 88
+  DesignTop = 116
   object LanguageGroupBox: TGroupBox[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -31,7 +31,6 @@ inherited DesktopOptionsFrame: TDesktopOptionsFrame
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
       ItemHeight = 13
-      MaxLength = -1
       Style = csDropDownList
       TabOrder = 0
     end
@@ -112,7 +111,6 @@ inherited DesktopOptionsFrame: TDesktopOptionsFrame
         '300'
         '120'
       )
-      MaxLength = -1
       TabOrder = 2
     end
   end

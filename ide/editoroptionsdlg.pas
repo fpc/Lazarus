@@ -210,7 +210,7 @@ type
     procedure TextStyleRadioOnChange(Sender : TObject);
   private
     FormCreating: Boolean;
-    PreviewSyn:   TSrcIDEHighlighter;
+    PreviewSyn: TSrcIDEHighlighter;
     // 3 is used to hold the true (non-preview) options, it is not displayed
     PreviewEdits: array[1..3] of TPreviewEditor;
     CurLanguageID: Integer;
@@ -271,11 +271,6 @@ type
     destructor Destroy; override;
   end;
 
-var
-  EditorOptionsForm: TEditorOptionsForm;
-
-function ShowEditorOptionsDialog: TModalResult;
-
 implementation
 
 uses
@@ -283,25 +278,6 @@ uses
 
 var
   imgKeyCategory, imgKeyItem: Integer;
-
-function ShowEditorOptionsDialog: TModalResult;
-var
-  EditorOptionsForm: TEditorOptionsForm;
-begin
-  Result := mrCancel;
-  EditorOptionsForm := TEditorOptionsForm.Create(Nil);
-  try
-    Result := EditorOptionsForm.ShowModal;
-  finally
-    EditorOptionsForm.Free;
-  end;
-end;
-
-function CheckGroupItemChecked(CheckGroup: TCheckGroup;
-  const Caption: string): Boolean;
-begin
-  Result:=CheckGroup.Checked[CheckGroup.Items.IndexOf(Caption)];
-end;
 
 { TEditorOptionsForm }
 
@@ -581,7 +557,6 @@ begin
       end;
   end;
 end;
-
 procedure TEditorOptionsForm.ColorElementListBoxClick(Sender: TObject);
 begin
   FindCurHighlightElement;
@@ -1259,8 +1234,7 @@ begin
   end;
 end;
 
-procedure TEditorOptionsForm.RightMarginColorButtonColorChanged(Sender: TObject
-  );
+procedure TEditorOptionsForm.RightMarginColorButtonColorChanged(Sender: TObject);
 var
   a: Integer;
 begin

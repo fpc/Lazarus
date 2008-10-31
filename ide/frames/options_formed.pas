@@ -70,7 +70,7 @@ type
   private
   public
     function GetTitle: String; override;
-    procedure Setup; override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
@@ -85,7 +85,7 @@ begin
   Result := dlgFrmEditor;
 end;
 
-procedure TFormEditorOptionsFrame.Setup;
+procedure TFormEditorOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
   procedure SetupGridGroupBox;
   begin
     ShowBorderSpaceCheckBox.Caption:=dlgQShowBorderSpacing;

@@ -56,7 +56,7 @@ type
   private
   public
     function GetTitle: String; override;
-    procedure Setup; override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
@@ -66,7 +66,7 @@ implementation
 
 { TOIOptionsFrame }
 
-procedure TOIOptionsFrame.Setup;
+procedure TOIOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   ObjectInspectorColorsGroupBox.Caption := dlgEnvColors;
   OIBackgroundColorLabel.Caption := dlgBackColor;

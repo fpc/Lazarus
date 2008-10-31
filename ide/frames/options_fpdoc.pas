@@ -46,7 +46,7 @@ type
   private
   public
     function GetTitle: String; override;
-    procedure Setup; override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
@@ -61,7 +61,7 @@ begin
   Result := lisFPDocEditor;
 end;
 
-procedure TFpDocOptionsFrame.Setup;
+procedure TFpDocOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   LazDocPathsGroupBox.Caption := lisCodeHelpPathsGroupBox;
   LazDocAddPathButton.Caption := lisCodeHelpAddPathButton;

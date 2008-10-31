@@ -68,7 +68,7 @@ type
   public
     function Check: Boolean; override;
     function GetTitle: String; override;
-    procedure Setup; override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
@@ -162,7 +162,7 @@ begin
   end;
 end;
 
-procedure TFilesOptionsFrame.Setup;
+procedure TFilesOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   MaxRecentOpenFilesLabel.Caption:=dlgMaxRecentFiles;
   MaxRecentProjectFilesLabel.Caption:=dlgMaxRecentProjs;
