@@ -1,0 +1,330 @@
+object SVNLogFrm: TSVNLogFrm
+  Left = 290
+  Height = 566
+  Top = 175
+  Width = 726
+  HelpContext = 0
+  ActiveControl = LogListView
+  Align = alNone
+  AllowDropFiles = False
+  AutoScroll = True
+  AutoSize = False
+  BorderIcons = [biSystemMenu, biMinimize, biMaximize]
+  BorderStyle = bsSizeable
+  Caption = 'SVNLogFrm'
+  ChildSizing.LeftRightSpacing = 0
+  ChildSizing.TopBottomSpacing = 0
+  ChildSizing.HorizontalSpacing = 0
+  ChildSizing.VerticalSpacing = 0
+  ChildSizing.ControlsPerLine = 0
+  ClientHeight = 566
+  ClientWidth = 726
+  DockSite = False
+  DragKind = dkDrag
+  DragMode = dmManual
+  Enabled = True
+  Font.Height = 0
+  Font.Style = []
+  FormStyle = fsNormal
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnShow = FormShow
+  ParentBiDiMode = True
+  ParentFont = False
+  Position = poScreenCenter
+  ShowInTaskBar = stDefault
+  UseDockManager = False
+  LCLVersion = '0.9.27'
+  WindowState = wsNormal
+  object Label1: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = SVNLogLimit
+    Left = 6
+    Height = 14
+    Top = 497
+    Width = 97
+    HelpContext = 0
+    Align = alNone
+    Alignment = taLeftJustify
+    AutoSize = True
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 0
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 0
+    BorderSpacing.Around = 0
+    BorderSpacing.CellAlignHorizontal = ccaFill
+    BorderSpacing.CellAlignVertical = ccaFill
+    Caption = 'Show last X commits'
+    DragCursor = crDrag
+    DragMode = dmManual
+    Enabled = True
+    Layout = tlTop
+    ParentBidiMode = True
+    ParentColor = False
+    ParentFont = True
+    ParentShowHint = True
+    ShowAccelChar = True
+    Transparent = True
+    Visible = True
+    WordWrap = False
+    OptimalFill = False
+  end
+  object LogListView: TListView
+    Left = 6
+    Height = 159
+    Top = 6
+    Width = 714
+    HelpContext = 0
+    Align = alTop
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 0
+    BorderSpacing.Around = 0
+    BorderSpacing.CellAlignHorizontal = ccaFill
+    BorderSpacing.CellAlignVertical = ccaFill
+    BorderWidth = 0
+    Checkboxes = False
+    Columns = <    
+      item
+        AutoSize = False
+      end    
+      item
+        AutoSize = False
+      end    
+      item
+        AutoSize = False
+      end    
+      item
+        AutoSize = False
+        Width = 546
+      end>
+    ColumnClick = True
+    DragCursor = crDrag
+    DragMode = dmManual
+    Enabled = True
+    HideSelection = True
+    MultiSelect = False
+    ParentShowHint = True
+    ReadOnly = False
+    RowSelect = True
+    ScrollBars = ssBoth
+    ShowColumnHeaders = True
+    SortColumn = 0
+    SortType = stNone
+    TabStop = True
+    TabOrder = 0
+    ToolTips = True
+    Visible = True
+    ViewStyle = vsReport
+    OnSelectItem = LogListViewSelectItem
+  end
+  object SVNLogMsgMemo: TMemo
+    Left = 6
+    Height = 151
+    Top = 170
+    Width = 714
+    HelpContext = 0
+    Align = alTop
+    Alignment = taLeftJustify
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 0
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 0
+    BorderSpacing.Around = 0
+    BorderSpacing.CellAlignHorizontal = ccaFill
+    BorderSpacing.CellAlignVertical = ccaFill
+    DragCursor = crDrag
+    DragMode = dmManual
+    Enabled = True
+    Font.Height = 0
+    Font.Style = []
+    MaxLength = -1
+    ParentBidiMode = True
+    ParentFont = False
+    ReadOnly = False
+    ScrollBars = ssNone
+    TabOrder = 1
+    TabStop = True
+    Visible = True
+    WantReturns = True
+    WantTabs = False
+  end
+  object SVNActionsListView: TListView
+    AnchorSideBottom.Control = RefreshButton
+    Left = 6
+    Height = 163
+    Top = 326
+    Width = 714
+    HelpContext = 0
+    Align = alTop
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 0
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
+    BorderSpacing.Around = 0
+    BorderSpacing.CellAlignHorizontal = ccaFill
+    BorderSpacing.CellAlignVertical = ccaFill
+    BorderWidth = 0
+    Checkboxes = False
+    Columns = <    
+      item
+        AutoSize = False
+      end    
+      item
+        AutoSize = False
+      end    
+      item
+        AutoSize = False
+      end    
+      item
+        AutoSize = False
+        Width = 546
+      end>
+    ColumnClick = True
+    DragCursor = crDrag
+    DragMode = dmManual
+    Enabled = True
+    HideSelection = True
+    MultiSelect = False
+    ParentShowHint = True
+    PopupMenu = SVNActionsPopupMenu
+    ReadOnly = False
+    RowSelect = True
+    ScrollBars = ssBoth
+    ShowColumnHeaders = True
+    SortColumn = 0
+    SortType = stNone
+    TabStop = True
+    TabOrder = 2
+    ToolTips = True
+    Visible = True
+    ViewStyle = vsReport
+  end
+  object ButtonPanel: TButtonPanel
+    Left = 6
+    Height = 40
+    Top = 526
+    Width = 714
+    HelpContext = 0
+    Align = alBottom
+    AutoSize = True
+    ButtonOrder = boDefault
+    TabOrder = 3
+    DefaultButton = pbOK
+    ShowButtons = [pbOK]
+    ShowGlyphs = [pbOK, pbCancel, pbClose, pbHelp]
+    Visible = True
+  end
+  object Splitter1: TSplitter
+    Cursor = crVSplit
+    Left = 0
+    Height = 5
+    Top = 165
+    Width = 726
+    HelpContext = 0
+    Align = alTop
+    AutoSnap = True
+    Beveled = False
+    MinSize = 30
+    ParentColor = True
+    ParentShowHint = True
+    ResizeAnchor = akTop
+    ResizeStyle = rsUpdate
+    Visible = True
+  end
+  object Splitter2: TSplitter
+    Cursor = crVSplit
+    Left = 0
+    Height = 5
+    Top = 321
+    Width = 726
+    HelpContext = 0
+    Align = alTop
+    AutoSnap = True
+    Beveled = False
+    MinSize = 30
+    ParentColor = True
+    ParentShowHint = True
+    ResizeAnchor = akTop
+    ResizeStyle = rsUpdate
+    Visible = True
+  end
+  object SVNLogLimit: TSpinEdit
+    AnchorSideLeft.Control = Label1
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideBottom.Control = ButtonPanel
+    Left = 109
+    Height = 23
+    Top = 497
+    Width = 94
+    HelpContext = 0
+    Align = alNone
+    Anchors = [akLeft, akBottom]
+    AutoSelect = False
+    AutoSize = False
+    BorderSpacing.Left = 0
+    BorderSpacing.Top = 0
+    BorderSpacing.Right = 0
+    BorderSpacing.Bottom = 0
+    BorderSpacing.Around = 6
+    BorderSpacing.CellAlignHorizontal = ccaFill
+    BorderSpacing.CellAlignVertical = ccaFill
+    Enabled = True
+    Increment = 1
+    MaxValue = 100000
+    MinValue = 0
+    ParentFont = True
+    ParentShowHint = True
+    ReadOnly = False
+    TabStop = True
+    TabOrder = 6
+    Value = 100
+    Visible = True
+  end
+  object RefreshButton: TButton
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ButtonPanel
+    Left = 645
+    Height = 25
+    Top = 495
+    Width = 75
+    HelpContext = 0
+    Align = alNone
+    Anchors = [akRight, akBottom]
+    AutoSize = False
+    BorderSpacing.Left = 0
+    BorderSpacing.Top = 0
+    BorderSpacing.Right = 0
+    BorderSpacing.Bottom = 0
+    BorderSpacing.Around = 6
+    BorderSpacing.CellAlignHorizontal = ccaFill
+    BorderSpacing.CellAlignVertical = ccaFill
+    Cancel = False
+    Caption = 'Refresh'
+    Default = False
+    DragCursor = crDrag
+    DragMode = dmManual
+    Enabled = True
+    ParentBidiMode = True
+    ModalResult = 0
+    OnClick = RefreshButtonClick
+    ParentFont = True
+    ParentShowHint = True
+    TabOrder = 7
+    TabStop = True
+    Visible = True
+  end
+  object SVNActionsPopupMenu: TPopupMenu
+    left = 37
+    top = 369
+    object mnuShowDiff: TMenuItem
+      Caption = 'New Item1'
+      RightJustify = False
+      ShowAlwaysCheckable = False
+      OnClick = mnuShowDiffClick
+    end
+  end
+end
