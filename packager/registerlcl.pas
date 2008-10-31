@@ -41,7 +41,7 @@ uses
   LazarusPackageIntf,
   Menus, Buttons, StdCtrls, ExtCtrls, ComCtrls, Forms, Grids, Controls,
   Dialogs, Spin, Arrow, Calendar, MaskEdit, CheckLst, PairSplitter, ExtDlgs,
-  StdActns, DBCtrls, DBGrids, DBActns, EditBtn, ActnList, FileCtrl, ButtonPanel,
+  StdActns, DBCtrls, DBGrids, DBActns, EditBtn, ActnList, FileCtrl, ButtonPanel, bp,
   LResources, XMLPropStorage, IniPropStorage, Graphics, Chart, ColorBox,
   LazHelpHTML, PopupNotifier, AsyncProcess;
   
@@ -80,6 +80,7 @@ begin
   RegisterUnit('Chart',@Chart.Register);
   RegisterUnit('ColorBox',@ColorBox.Register);
   RegisterUnit('ButtonPanel',@ButtonPanel.Register);
+  RegisterUnit('bp',@bp.Register);
   RegisterUnit('LResources',@LResources.Register);
   RegisterUnit('LazHelpHTML',@LazHelpHTML.Register);
   RegisterUnit('PopupNotifier', @PopupNotifier.Register);

@@ -1203,7 +1203,7 @@ begin
 end;
 
 initialization
-  {$I lazdoc.lrs}
+  {$I fpdoceditwindow.lrs}
   {$I fpdoceditwindow.lrs}
 
 end.

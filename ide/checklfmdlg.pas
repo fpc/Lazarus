@@ -41,21 +41,20 @@ uses
   // IDE
   PropEdits, IDEDialogs, ComponentReg, PackageIntf, IDEWindowIntf,
   CustomFormEditor, LazarusIDEStrConsts, OutputFilter, IDEProcs, IDEOptionDefs,
-  EditorOptions, ExtCtrls;
+  EditorOptions, ExtCtrls, ButtonPanel;
 
 type
 
   { TCheckLFMDialog }
 
   TCheckLFMDialog = class(TForm)
-    CancelButton: TBitBtn;
+    ButtonPanel: TButtonPanel;
     ErrorsGroupBox: TGroupBox;
     ErrorsListBox: TListBox;
     NoteLabel: TLabel;
     LFMGroupBox: TGroupBox;
     LFMSynEdit: TSynEdit;
-    BtnPanel: TPanel;
-    RemoveAllButton: TBitBtn;
+    Splitter1: TSplitter;
     SynLFMSyn1: TSynLFMSyn;
     procedure ErrorsListBoxClick(Sender: TObject);
     procedure LFMSynEditSpecialLineMarkup(Sender: TObject; Line: integer;
@@ -550,18 +549,16 @@ procedure TCheckLFMDialog.SetLFMTree(const AValue: TLFMTree);
 begin
   if FLFMTree=AValue then exit;
   FLFMTree:=AValue;
-  RemoveAllButton.Enabled:=AutomaticFixIsPossible;
+  ButtonPanel.OKButton.Enabled:=AutomaticFixIsPossible;
 end;
 
 procedure TCheckLFMDialog.SetupComponents;
 begin
   NoteLabel.Caption:=lisTheLFMLazarusFormFileContainsInvalidPropertiesThis;
-  CancelButton.Caption:=dlgCancel;
-  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
   ErrorsGroupBox.Caption:=lisErrors;
   LFMGroupBox.Caption:=lisLFMFile;
-  RemoveAllButton.Caption:=lisRemoveAllInvalidProperties;
-  RemoveAllButton.LoadGlyphFromLazarusResource('delete');
+  ButtonPanel.OKButton.Caption:=lisRemoveAllInvalidProperties;
+  ButtonPanel.OKButton.LoadGlyphFromLazarusResource('delete');
   EditorOpts.GetHighlighterSettings(SynLFMSyn1);
   EditorOpts.GetSynEditSettings(LFMSynEdit);
 end;
