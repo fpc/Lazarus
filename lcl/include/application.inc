@@ -89,6 +89,17 @@ end;
        TApplication Constructor
 ------------------------------------------------------------------------------}
 constructor TApplication.Create(AOwner: TComponent);
+const
+  BidiModeMap: array[Boolean] of TBiDiMode = (bdLeftToRight, bdRightToLeft);
+
+  function IsRTLLang(ALang: String): Boolean;
+  begin
+    Result := (ALang = 'ar') or
+              (ALang = 'he');
+  end;
+
+var
+  LangDefault, LangFallback: String;
 begin
   LCLProc.SendApplicationMessageFunction:=@SendApplicationMsg;
 
@@ -113,6 +124,12 @@ begin
 
   FFindGlobalComponentEnabled:=true;
   RegisterFindGlobalComponentProc(@FindApplicationComponent);
+
+  GetLanguageIDs(LangDefault, LangFallback);
+  if LangDefault <> '' then
+    FBidiMode := BidiModeMap[IsRTLLang(LangDefault)]
+  else
+    FBidiMode := BidiModeMap[IsRTLLang(LangFallback)];
 
   inherited Create(AOwner);
   CaptureExceptions:=true;
@@ -448,6 +465,12 @@ begin
     FLastMousePos:=p;
     FLastMouseControl:=Result;
   end;
+end;
+
+procedure TApplication.SetBidiMode ( const AValue : TBiDiMode ) ;
+begin
+  if AValue <> FBidiMode then
+    FBidiMode := AValue;
 end;
 
 procedure TApplication.SetFlags(const AValue: TApplicationFlags);
