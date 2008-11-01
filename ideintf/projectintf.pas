@@ -396,12 +396,18 @@ type
   { TFileDescPascalUnitWithResource }
 
   TFileDescPascalUnitWithResource = class(TFileDescPascalUnit)
+  private
+    FDeclareClassVariable: Boolean;
   public
+    constructor Create; override;
+
     function GetInterfaceUsesSection: string; override;
     function GetInterfaceSource(const Filename, SourceName,
                                 ResourceName: string): string; override;
     function GetImplementationSource(const Filename, SourceName,
                                      ResourceName: string): string; override;
+
+    property DeclareClassVariable: Boolean read FDeclareClassVariable write FDeclareClassVariable;
   end;
 
 
@@ -972,6 +978,12 @@ end;
 
 { TFileDescPascalUnitWithResource }
 
+constructor TFileDescPascalUnitWithResource.Create;
+begin
+  inherited Create;
+  FDeclareClassVariable := True;
+end;
+
 function TFileDescPascalUnitWithResource.GetInterfaceUsesSection: string;
 begin
   Result:=inherited GetInterfaceUsesSection;
@@ -992,8 +1004,11 @@ begin
     +'  public'+LE
     +'    { public declarations }'+LE
     +'  end;'+LE
-    +LE
-    +'var'+LE
+    +LE;
+
+  if DeclareClassVariable then
+    Result := Result +
+     'var'+LE
     +'  '+ResourceName+': T'+ResourceName+';'+LE
     +LE;
 end;

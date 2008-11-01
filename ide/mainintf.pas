@@ -502,6 +502,7 @@ begin
   Name := FileDescNameFrame;
   ResourceClass := TFrame;
   UseCreateFormStatements := False;
+  DeclareClassVariable := False;
 end;
 
 function TFileDescPascalUnitWithFrame.GetInterfaceUsesSection: string;
