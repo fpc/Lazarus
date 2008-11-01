@@ -2938,7 +2938,7 @@ end;
            SBStyle    - scroll bar flag
            ScrollInfo - record with scroll parameters
            BRedraw    - is the scroll bar is redrawn?
-  Returns: The old position value
+  Returns: The new position value
 
   Sets the parameters of a scroll bar.
  ------------------------------------------------------------------------------}

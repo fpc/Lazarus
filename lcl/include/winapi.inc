@@ -1334,9 +1334,11 @@ function SetScrollPos(Handle: HWND; nBar, nPos: Integer; bRedraw: Boolean): Inte
 var
   Info: TScrollInfo;
 begin
+  Result := GetScrollPos(Handle, nBar);
+
   Info.fMask := SIF_POS;
   Info.nPos := nPos;
-  Result := SetScrollInfo(Handle, nBar, Info, bRedraw);
+  SetScrollInfo(Handle, nBar, Info, bRedraw);
 end;
 
 {------------------------------------------------------------------------------

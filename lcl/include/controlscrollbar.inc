@@ -25,6 +25,7 @@ const
 procedure TControlScrollBar.SetPosition(const Value: Integer);
 var
   OldPosition: Integer;
+  ScrollInfo: TScrollInfo;
 begin
   if Value < 0 then
   begin
@@ -80,7 +81,12 @@ begin
       DebugLn(['TControlScrollBar.SetPosition FPosition=',FPosition]);
     {$ENDIF}
     // send position to interface and store it back to FPosition (this way LCL will have actual position value)
-    FPosition := SetScrollPos(ControlHandle, IntfBarKind[Kind], FPosition, Visible);
+    FillChar(ScrollInfo,SizeOf(ScrollInfo), 0);
+    ScrollInfo.cbSize := SizeOf(ScrollInfo);
+    ScrollInfo.fMask := SIF_POS;
+    ScrollInfo.nPos := FPosition;
+
+    FPosition := SetScrollInfo(ControlHandle, IntfBarKind[Kind], ScrollInfo, FVisible);
   end;
 end;
 
