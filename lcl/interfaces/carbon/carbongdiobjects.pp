@@ -219,6 +219,8 @@ type
     property Style: LongWord read FStyle;
     property IsExtPen: Boolean read FIsExtPen;
     property IsGeometric: Boolean read FIsGeometric;
+    property JoinStyle: CGLineJoin read FJoinStyle;
+    property CapStyle: CGLineCap read FEndCap;
   end;
 
   { TCarbonBitmap }
@@ -1540,12 +1542,10 @@ begin
     PS_USERSTYLE:
       begin
         inherited Create(ColorToRGB(lplb.lbColor), True, False);
-        FWidth := Max(1, dwWidth);
       end;
     else
     begin
       inherited Create(ColorToRGB(lplb.lbColor), False, False);
-      FWidth := 1;
     end;
   end;
 
@@ -1565,7 +1565,10 @@ begin
       PS_ENDCAP_SQUARE: FEndCap := kCGLineCapSquare;
       PS_ENDCAP_FLAT: FEndCap := kCGLineCapButt;
     end;
-  end;
+    FWidth := Max(1, dwWidth);
+  end
+  else
+    FWidth := 1;
 
   if (dwPenStyle and PS_STYLE_MASK) = PS_USERSTYLE then
   begin
