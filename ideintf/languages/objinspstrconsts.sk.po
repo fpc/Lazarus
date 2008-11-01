@@ -1,8 +1,10 @@
+# translation of objinspstrconsts.po to Slovenský
+# Slavko <slavino@slavino.sk>, 2008.
 msgid ""
 msgstr ""
 "Project-Id-Version: objinspstrconsts\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-09-20 11:58+0200\n"
+"PO-Revision-Date: 2008-10-31 10:51+0100\n"
 "Last-Translator: Slavko <slavino@slavino.sk>\n"
 "Language-Team: Slovenský <sk@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -537,7 +539,7 @@ msgstr "Filter"
 
 #: objinspstrconsts:pefiltereditor
 msgid "Filter editor"
-msgstr ""
+msgstr "Editor filtra"
 
 #: objinspstrconsts:pefiltername
 msgid "Filter name"

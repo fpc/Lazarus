@@ -1,9 +1,11 @@
+# translation of lazaruside.po to Slovenský
+# Slavko <slavino@slavino.sk>, 2008.
 msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-12-26 15:21+0100\n"
-"PO-Revision-Date: 2008-09-20 13:05+0200\n"
+"PO-Revision-Date: 2008-10-31 11:27+0100\n"
 "Last-Translator: Slavko <slavino@slavino.sk>\n"
 "Language-Team: Slovenský <sk@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -106,7 +108,7 @@ msgstr "%s%s%s nie je platné meno jednotky."
 
 #: lazarusidestrconsts:lislazbuildisnoninteractiveabortingnow
 msgid "%s%s%s%slazbuild is non interactive, aborting now."
-msgstr ""
+msgstr "%s%s%s%slazbuild nie je interaktívny, ruším."
 
 #: lazarusidestrconsts:liscoclickokifaresuretodothat
 msgid "%s%sClick OK if you are sure to do that."
@@ -186,19 +188,19 @@ msgstr "%sžiadne"
 
 #: lazarusidestrconsts:lisoverridethedefaultcompileregppc386ppcx64ppcppcetcd
 msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in environmentoptions.xml"
-msgstr ""
+msgstr "%sprepíše predvolený prekladač. napr. ppc386 ppcx64 ppcppc atď. predvolené je uloženév environmentoptions.xml"
 
 #: lazarusidestrconsts:lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
 msgid "%soverride the project cpu. e.g. i386 x86_64 powerpc powerpc_64 etc. default: %s"
-msgstr ""
+msgstr "%sprepisuje CPU projektu. napr. i386 x86_64 powerpc powerpc_64 atď. predvolené: %s"
 
 #: lazarusidestrconsts:lisoverridetheprojectoperatingsystemegwin32linuxdefau
 msgid "%soverride the project operating system. e.g. win32 linux. default: %s"
-msgstr ""
+msgstr "%sprepisuje operačný systém projektu. napr. win32 linux. predvolené: %s"
 
 #: lazarusidestrconsts:lisoverridetheprojectwidgetseteggtkgtk2qtwin32carbond
 msgid "%soverride the project widgetset. e.g. gtk gtk2 qt win32 carbon. default: %s"
-msgstr ""
+msgstr "%sprepisuje widgetset projektu. napr. gtk gtk2 qt win32 carbon. predvolené: %s"
 
 #: lazarusidestrconsts:liswladd
 msgid "&Add"
@@ -210,7 +212,7 @@ msgstr "&Pridať bod prerušenia"
 
 #: lazarusidestrconsts:lisapplicationclassname
 msgid "&Application class name"
-msgstr ""
+msgstr "Meno triedy &Aplikácie"
 
 #: lazarusidestrconsts:lisfrbackwardsearch
 msgid "&Backward search"
@@ -370,7 +372,7 @@ msgstr "&Hľadaný text"
 
 #: lazarusidestrconsts:listitle
 msgid "&Title"
-msgstr ""
+msgstr "&Nadpis"
 
 #: lazarusidestrconsts:lismenutools
 msgid "&Tools"
@@ -418,7 +420,7 @@ msgstr "(žiadne)"
 
 #: lazarusidestrconsts:dlgpoicondesc
 msgid "(size: %d:%d, bpp: %d)"
-msgstr ""
+msgstr "(veľkosť: %d:%d, bpp: %d)"
 
 #: lazarusidestrconsts:listmunknownmacro
 msgid "(unknown macro: %s)"
@@ -442,11 +444,11 @@ msgstr "<zvoľte existujúci súbor>"
 
 #: lazarusidestrconsts:lismodifiedlgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
-msgstr ""
+msgstr "<description>%sCopyright (C) <year> <meno autora> <contact>%sTáto knižnica je slobodný softvér; môžete ju distribuovať a/alebo upravovať podľa ustanovení GNU Library General Public License tak ako ju zverenila Free Software Foundation; buď verzie 2 Licencie alebo (podľa vašej voľby) akoukoľvek novšej verzie s nasledujúcimi úpravami:%sAko špeciálny výnimka, vlastníci autorského práva tejto knižnice Vám dovoľujú prepojiť túto knižnicu s nezávislými modulmi za účelom vytvorenia programov, pričom nezávisí na licencii týchto nezávislých modulov, a kopírovať a distribuovať výsledné programy za podmienok poskytnutých podľa Vášho rozhodnutia, ktoré sa môžu líšiť pre každý nezávislý modul. Nezávislý modul je modul, ktorý nie je odvodený alebo založený na tejto knižnici. Ak upravujete túto knižnicu, môžete rozšíriť túto výnimku pre svoju verziu knižnice, ale nie je to vaša povinnosť. Ak to nechcete urobiť, zmažte túto výnimku zo svojej verzie. %sTento program je distribuovaný v nádeji, že bude užitočný, ale BEZ AKEJKOĽVEK ZÁRUKY; dokonca aj bbez záruky MERCHANTABILITY alebo FITNESS FOR A PARTICULAR PURPOSE. Ďalšie podrobnosti hľadajte v GNU Library General Public License. %sKópi GNU Library General Public License máte získať spolu s touto knižnicou, ak nie napíšte Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
 #: lazarusidestrconsts:lislgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
-msgstr ""
+msgstr "<popis>%sCopyright (C) <rok> <meno autora> <kontakt>%sToto je slobodný program;môžete ho distribuovať a/alebo upravovať za podmienok GNU Library General Public License, tak ako ju zverejnila Free Software Foundation; buď verzie 2 Licencie alebo (podľa Vašej voľby) akejkoľvek novšej verzie. %sTento program je distribuovaný v nádeji, že bude užitočný, ale BEZ AKEJKOĽVEK ZÁRUKY; dokonca aj bbez záruky MERCHANTABILITY alebo FITNESS FOR A PARTICULAR PURPOSE. Ďalšie podrobnosti hľadajte v GNU Library General Public License. %sKópi GNU Library General Public License máte získať spolu s touto knižnicou, ak nie napíšte Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
 #: lazarusidestrconsts:lisgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -562,7 +564,7 @@ msgstr "Aktivuje syntax regulárnych výrazov pre text a nahradzovanie (presne a
 
 #: lazarusidestrconsts:lisactivefilter
 msgid "Active Filter"
-msgstr ""
+msgstr "Aktívny filter"
 
 #: lazarusidestrconsts:liscodetempladd
 msgid "Add"
@@ -674,7 +676,7 @@ msgstr "Pridať odkaz k zdedeným"
 
 #: lazarusidestrconsts:lisaddnewset
 msgid "Add new set"
-msgstr ""
+msgstr "Pridať novú množinu"
 
 #: lazarusidestrconsts:lispckoptsaddoptionstodependentpackagesandprojects
 msgid "Add options to dependent packages and projects"
@@ -730,7 +732,7 @@ msgstr "Pridať..."
 
 #: lazarusidestrconsts:lisadditionalinformation
 msgid "Additional Information"
-msgstr ""
+msgstr "Ďalšie informácie"
 
 #: lazarusidestrconsts:dlgadditionalsrcpath
 msgid "Additional Source search path for all projects (.pp;.pas)"
@@ -982,7 +984,7 @@ msgstr "Štýl Assembleru:"
 
 #: lazarusidestrconsts:liscodetoolsoptsat
 msgid "At"
-msgstr ""
+msgstr "na"
 
 #: lazarusidestrconsts:lispckoptsauthor
 msgid "Author:"
@@ -1070,7 +1072,7 @@ msgstr "Dostupné balíčky"
 
 #: lazarusidestrconsts:rsavailablescanners
 msgid "Available scanners"
-msgstr ""
+msgstr "Dostupné skenery"
 
 #: lazarusidestrconsts:dlgedback
 msgid "Back"
@@ -1114,7 +1116,7 @@ msgstr "Tučné"
 
 #: lazarusidestrconsts:lisboldnondefaultobjectinspector
 msgid "Bold non default values"
-msgstr ""
+msgstr "Zmenené hodnoty tučne"
 
 #: lazarusidestrconsts:uembookmarkn
 msgid "Bookmark"
@@ -1294,7 +1296,7 @@ msgstr "Operátory v štýle C (*=, +=, /= and -=)"
 
 #: lazarusidestrconsts:dlgcppinline
 msgid "C++ Styled INLINE"
-msgstr ""
+msgstr "INLINE v štýle C++"
 
 #: lazarusidestrconsts:lismenuinsertcvskeyword
 msgid "CVS keyword"
@@ -1374,7 +1376,7 @@ msgstr "Kategória"
 
 #: lazarusidestrconsts:dlgcentercursorline
 msgid "Center Cursor Line"
-msgstr ""
+msgstr "Kurzor do stredu riadku"
 
 #: lazarusidestrconsts:liscentercontrolhorizontallyrelativetosibling
 msgid "Center control horizontally relative to the given sibling"
@@ -1462,7 +1464,7 @@ msgstr "Skontrolovať správnosť"
 
 #: lazarusidestrconsts:lischeckoptions
 msgid "Check options"
-msgstr ""
+msgstr "Skontrolovať voľby"
 
 #: lazarusidestrconsts:dlgccocaption
 msgid "Checking compiler options"
@@ -1618,7 +1620,7 @@ msgstr "Pravidlá vkaldania časti Class"
 
 #: lazarusidestrconsts:liskmclassic
 msgid "Classic"
-msgstr ""
+msgstr "Klasický"
 
 #: lazarusidestrconsts:liscldircleandirectory
 msgid "Clean Directory"
@@ -1662,7 +1664,7 @@ msgstr "Vyčistiť adresár?"
 
 #: lazarusidestrconsts:dlgpoclearicon
 msgid "Clear Icon"
-msgstr ""
+msgstr "Zamzať ikonu"
 
 #: lazarusidestrconsts:lispckeditcleardependencydefaultfilename
 msgid "Clear dependency filename"
@@ -1738,15 +1740,15 @@ msgstr "Prehliadač kódu"
 
 #: lazarusidestrconsts:dlgusecodefolding
 msgid "Code folding"
-msgstr ""
+msgstr "Skladanie kódu"
 
 #: lazarusidestrconsts:liscodegenerationoptions
 msgid "Code generation options"
-msgstr ""
+msgstr "Voľby generovania kódu"
 
 #: lazarusidestrconsts:dlgedcodeparams
 msgid "Code parameters"
-msgstr ""
+msgstr "Parametre kódu"
 
 #: lazarusidestrconsts:srkmecautocompletion
 msgid "Code template completion"
@@ -1894,11 +1896,11 @@ msgstr "Komentár:"
 
 #: lazarusidestrconsts:liscomments
 msgid "Comments:"
-msgstr ""
+msgstr "Komentáre:"
 
 #: lazarusidestrconsts:liscompany
 msgid "Company:"
-msgstr ""
+msgstr "Spoločnosť:"
 
 #: lazarusidestrconsts:dlgcocompilation
 msgid "Compilation"
@@ -1926,7 +1928,7 @@ msgstr "Preložiť balíček"
 
 #: lazarusidestrconsts:lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
-msgstr ""
+msgstr "Doplnenie CompiledSrcPath"
 
 #: lazarusidestrconsts:liscompiler
 msgid "Compiler"
@@ -2102,7 +2104,7 @@ msgstr "Konštanty"
 
 #: lazarusidestrconsts:lisconstructorcode
 msgid "Constructor code"
-msgstr ""
+msgstr "Kód konštruktora"
 
 #: lazarusidestrconsts:dlginitdoneonly
 msgid "Constructor name must be 'init' (destructor must be 'done')"
@@ -2146,7 +2148,7 @@ msgstr "Chyba konverzie"
 
 #: lazarusidestrconsts:lisconvert
 msgid "Convert"
-msgstr ""
+msgstr "Konvertovať"
 
 #: lazarusidestrconsts:liskmconvertdfmfiletolfm
 msgid "Convert DFM file to LFM"
@@ -2186,15 +2188,15 @@ msgstr "Konvertovať jednotku Deplhi na Lazarus ..."
 
 #: lazarusidestrconsts:lisconvertencoding
 msgid "Convert encoding"
-msgstr ""
+msgstr "Konvertovať kódovanie"
 
 #: lazarusidestrconsts:lisconvertencodingofprojectspackages
 msgid "Convert encoding of projects/packages"
-msgstr ""
+msgstr "Konvertovať kódovanie projektov/balíčkov"
 
 #: lazarusidestrconsts:lismenuconvertencoding
 msgid "Convert encoding of projects/packages ..."
-msgstr ""
+msgstr "Konvertovať kódovanie projektov/balíčkov ..."
 
 #: lazarusidestrconsts:liscodetoolsdefsconvertnode
 msgid "Convert node"
@@ -2202,7 +2204,7 @@ msgstr "Konvertovať uzol"
 
 #: lazarusidestrconsts:lisconvertprojectorpackage
 msgid "Convert project or package"
-msgstr ""
+msgstr "Konvertovať projekt alebo balíček"
 
 #: lazarusidestrconsts:srkmecselectiontabs2spaces
 msgid "Convert tabs to spaces in selection"
@@ -2270,7 +2272,7 @@ msgstr "Kopírovať informácie o verzii do schránky"
 
 #: lazarusidestrconsts:dlgcopywordatcursoroncopynone
 msgid "Copy word on copy none"
-msgstr ""
+msgstr "Ak nie je vybraté, kopírovať slovo"
 
 #: lazarusidestrconsts:liscopyingawholeformisnotimplemented
 msgid "Copying a whole form is not implemented."
@@ -2326,7 +2328,7 @@ msgstr "Vytvoriť súbory FPDoc"
 
 #: lazarusidestrconsts:liscreatehelpnode
 msgid "Create Help node"
-msgstr ""
+msgstr "Vytvoriť uzol Pomoci"
 
 #: lazarusidestrconsts:dlgcocreatemakefile
 msgid "Create Makefile"
@@ -2830,7 +2832,7 @@ msgstr "Cieľový adresár %s%s%s nie je platný.%sProsím zvoľte úplnú cestu
 
 #: lazarusidestrconsts:lisdestructorcode
 msgid "Destructor code"
-msgstr ""
+msgstr "Kód deštruktora"
 
 #: lazarusidestrconsts:lismenudiff
 msgid "Diff"
@@ -2882,7 +2884,7 @@ msgstr "Zakázať skupinu"
 
 #: lazarusidestrconsts:dlgdisableantialiasing
 msgid "Disable anti-aliasing"
-msgstr ""
+msgstr "Vypnúť anti-aliasing"
 
 #: lazarusidestrconsts:lisdisabled
 msgid "Disabled"
@@ -2910,7 +2912,7 @@ msgstr "Rozoznávať veľké a malé písmená, napr. C a c"
 
 #: lazarusidestrconsts:dlgcfdividerdrawlevel
 msgid "Divider Draw Level"
-msgstr ""
+msgstr "Úroveň kreslenia oddeľovačov"
 
 #: lazarusidestrconsts:lisdonotclosetheide
 msgid "Do not close the IDE"
@@ -2986,7 +2988,7 @@ msgstr "Editovanie Drag&Drop"
 
 #: lazarusidestrconsts:lisdrawgridlinesobjectinspector
 msgid "Draw grid lines"
-msgstr ""
+msgstr "Kresliť mriežku"
 
 #: lazarusidestrconsts:dlgdropfiles
 msgid "Drop files"
@@ -3046,7 +3048,7 @@ msgstr "Upraviť šablónu kódu"
 
 #: lazarusidestrconsts:liseditcontexthelp
 msgid "Edit context help"
-msgstr ""
+msgstr "Upraviť kontextovú pomoc"
 
 #: lazarusidestrconsts:lismenueditcontexthelp
 msgid "Edit context sensitive Help"
@@ -3058,7 +3060,7 @@ msgstr "Upraviť kontextovo závislú pomoc"
 
 #: lazarusidestrconsts:liseteditcustomscanners
 msgid "Edit custom scanners (%s)"
-msgstr ""
+msgstr "Upraviť vlastné skenery (%s)"
 
 #: lazarusidestrconsts:srkmeditforcmd
 msgid "Edit keys of command"
@@ -3102,11 +3104,11 @@ msgstr "Prvok"
 
 #: lazarusidestrconsts:liscodetoolsdefselse
 msgid "Else"
-msgstr ""
+msgstr "Else"
 
 #: lazarusidestrconsts:liscodetoolsdefselseif
 msgid "ElseIf"
-msgstr ""
+msgstr "ElseIf"
 
 #: lazarusidestrconsts:lisemdemtpymethods
 msgid "Emtpy Methods"
@@ -3614,7 +3616,7 @@ msgstr "Prípony súborov"
 
 #: lazarusidestrconsts:lisfilefilter
 msgid "File filter"
-msgstr ""
+msgstr "Súborový filter"
 
 #: lazarusidestrconsts:lispkgmangfileisalreadyinpackage
 msgid "File is already in package"
@@ -3714,11 +3716,11 @@ msgstr "Súbory"
 
 #: lazarusidestrconsts:lisfilesinasciiorutf8encoding
 msgid "Files in ASCII or UTF-8 encoding"
-msgstr ""
+msgstr "Súbory v kódovaní ASCII alebo UTF-8"
 
 #: lazarusidestrconsts:lisfilesnotinasciinorutf8encoding
 msgid "Files not in ASCII nor UTF-8 encoding"
-msgstr ""
+msgstr "Súbory nie sú v kódovaní ASCII ani UTF-8"
 
 #: lazarusidestrconsts:lisfilter
 msgid "Filter"
@@ -3726,7 +3728,7 @@ msgstr "Filter"
 
 #: lazarusidestrconsts:lisfiltersets
 msgid "Filter Sets"
-msgstr ""
+msgstr "Množiny filtrov"
 
 #: lazarusidestrconsts:lisplistfilterany
 msgid "Filter by matching any part of method"
@@ -3958,7 +3960,7 @@ msgstr "Francúzsky"
 
 #: lazarusidestrconsts:lisfunction
 msgid "Function"
-msgstr ""
+msgstr "Funkcia"
 
 #: lazarusidestrconsts:listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
@@ -3966,7 +3968,7 @@ msgstr "Funkcia: pripojiť oddeľovač cesty"
 
 #: lazarusidestrconsts:listmfunctionchomppathdelimiter
 msgid "Function: chomp path delimiter"
-msgstr ""
+msgstr "Funkcia: odstrániť oddeľovač cesty"
 
 #: lazarusidestrconsts:listmfunctionextractfileextension
 msgid "Function: extract file extension"
@@ -4270,7 +4272,7 @@ msgstr "Obslúžené programom"
 
 #: lazarusidestrconsts:lishashelp
 msgid "Has Help"
-msgstr ""
+msgstr "Má pomoc"
 
 #: lazarusidestrconsts:lisaf2phasregisterprocedure
 msgid "Has Register procedure"
@@ -4302,7 +4304,7 @@ msgstr "Voľby pomoci"
 
 #: lazarusidestrconsts:lishelpentries
 msgid "Help entries"
-msgstr ""
+msgstr "Položky pomoci"
 
 #: lazarusidestrconsts:lishfmhelpforfreepascalcompilermessage
 msgid "Help for FreePascal Compiler message"
@@ -4410,11 +4412,11 @@ msgstr "IDE pracuje"
 
 #: lazarusidestrconsts:uepins
 msgid "INS"
-msgstr ""
+msgstr "INS"
 
 #: lazarusidestrconsts:dlgpoicon
 msgid "Icon:"
-msgstr ""
+msgstr "Ikona:"
 
 #: lazarusidestrconsts:liscodetoolsoptsidentifier
 msgid "Identifier"
@@ -4450,7 +4452,7 @@ msgstr "Identifikátor: %s"
 
 #: lazarusidestrconsts:liscodetoolsdefsif
 msgid "If"
-msgstr ""
+msgstr "If"
 
 #: lazarusidestrconsts:uenotimpltext
 msgid "If You can help us to implement this feature, mail to lazarus@miraclec.com"
@@ -4458,11 +4460,11 @@ msgstr "Ak nám chcete pomôcť implementovať túto vlastnosť, pošlite email 
 
 #: lazarusidestrconsts:liscodetoolsdefsifdef
 msgid "IfDef"
-msgstr ""
+msgstr "IfDef"
 
 #: lazarusidestrconsts:liscodetoolsdefsifndef
 msgid "IfNDef"
-msgstr ""
+msgstr "IfNDef"
 
 #: lazarusidestrconsts:dlgignoreverb
 msgid "Ignore"
@@ -4546,7 +4548,7 @@ msgstr "Pred vytvorením čistej kópie projektu/balíčka, budú zmazané všet
 
 #: lazarusidestrconsts:lispckoptsinclude
 msgid "Include"
-msgstr ""
+msgstr "Zahrnúť"
 
 #: lazarusidestrconsts:dlgassertcode
 msgid "Include Assertion Code"
@@ -4922,7 +4924,7 @@ msgstr "Rozhranie"
 
 #: lazarusidestrconsts:lisinternalname
 msgid "Internal Name:"
-msgstr ""
+msgstr "Interné meno:"
 
 #: lazarusidestrconsts:listcompilerinternalerror
 msgid "Internal compiler error! (%d)"
@@ -5158,7 +5160,7 @@ msgstr "Neplatná verzia"
 
 #: lazarusidestrconsts:dlgedinvert
 msgid "Invert"
-msgstr ""
+msgstr "Otočiť"
 
 #: lazarusidestrconsts:ueminvertassignment
 msgid "Invert Assignment"
@@ -5170,7 +5172,7 @@ msgstr "Otočiť priradenie"
 
 #: lazarusidestrconsts:lispkgfiletypeissues
 msgid "Issues xml file"
-msgstr ""
+msgstr "Spravoanie súboru XML"
 
 #: lazarusidestrconsts:rslanguageitalian
 msgid "Italian"
@@ -5238,7 +5240,7 @@ msgstr "Ponechať niektoré premenné v registroch"
 
 #: lazarusidestrconsts:dlgkeepcursorx
 msgid "Keep cursor X position"
-msgstr ""
+msgstr "Ponechať X pozíciu kurzora"
 
 #: lazarusidestrconsts:liscldirkeepfilesmatchingfilter
 msgid "Keep files matching filter"
@@ -5378,7 +5380,7 @@ msgstr "Lazarus"
 
 #: lazarusidestrconsts:liskmlazarusdefault
 msgid "Lazarus (default)"
-msgstr ""
+msgstr "Lazarus (predvolené)"
 
 #: lazarusidestrconsts:lislazarusdesktopsettings
 msgid "Lazarus Desktop Settings"
@@ -5486,7 +5488,7 @@ msgstr "Vľavo:"
 
 #: lazarusidestrconsts:lislegaltrademarks
 msgid "Legal Trademarks:"
-msgstr ""
+msgstr "Ochranná známka:"
 
 #: lazarusidestrconsts:dlglevelnoneopt
 msgid "Level 0 (no extra Optimizations)"
@@ -5526,7 +5528,7 @@ msgstr "Licencia:"
 
 #: lazarusidestrconsts:lisaboutlazarusmsg
 msgid "License: GPL/LGPL%sLazarus is an IDE to create (graphical and console) applications with Free Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
-msgstr ""
+msgstr "Licencia: GPL/LGPL%sLazarus je IDE pre tvorbu (grafických a konzolových) aplikácií pomocou Free Pascal. Free Pascal je (L)GPL Pascal a Object Pascal prekladač, ktorý beží vo Windows, Linux, Mac OS X, FreeBSD a iných.%sLazarus je chýbajúca časť skladačky, ktorá umožní vyvýjať programy pre všetky vyššie spomínané platformy v prostredí podobnom Delphi. IDE je RAD nástroj, ktorý zahŕňa návrhára formulárov.%sKeďže Lazarus narastá, potrebujeme viac vývojárov."
 
 #: lazarusidestrconsts:lisdebugoptionsfrmlimitlinecountto
 msgid "Limit linecount to"
@@ -5570,7 +5572,7 @@ msgstr "Cieľ linkovania"
 
 #: lazarusidestrconsts:lislink
 msgid "Link:"
-msgstr ""
+msgstr "Odkaz:"
 
 #: lazarusidestrconsts:lispckoptslinker
 msgid "Linker"
@@ -5590,7 +5592,7 @@ msgstr "Litovsky"
 
 #: lazarusidestrconsts:dlgpoloadicon
 msgid "Load Icon"
-msgstr ""
+msgstr "Načítať ikonu"
 
 #: lazarusidestrconsts:dlgloaddfile
 msgid "Load desktop settings from file"
@@ -5643,10 +5645,12 @@ msgstr "Malé písmená, prvé veľké"
 #: lazarusidestrconsts:liskmmacosxapple
 msgid "Mac OS X (Apple style)"
 msgstr ""
+"Mac OS X (štýl Apple "
+")"
 
 #: lazarusidestrconsts:liskmmacosxlaz
 msgid "Mac OS X (Lazarus style)"
-msgstr ""
+msgstr "Mac OS X (štýl Lazarus)"
 
 #: lazarusidestrconsts:lismacpascal
 msgid "Mac Pascal"
@@ -5770,7 +5774,7 @@ msgstr "Správy"
 
 #: lazarusidestrconsts:lismessageseditor
 msgid "Messages Editor"
-msgstr ""
+msgstr "Editor správ"
 
 #: lazarusidestrconsts:lismethodclassnotfound
 msgid "Method class not found"
@@ -6130,11 +6134,11 @@ msgstr "Meno novej triedy:"
 
 #: lazarusidestrconsts:lisnewconsoleapplication
 msgid "New console application"
-msgstr ""
+msgstr "Nová konzolová aplikácia"
 
 #: lazarusidestrconsts:lisnewencoding
 msgid "New encoding:"
-msgstr ""
+msgstr "Nové kódovanie:"
 
 #: lazarusidestrconsts:liskmnewpackage
 msgid "New package"
@@ -6174,11 +6178,11 @@ msgstr "Nasledujúca záložka"
 
 #: lazarusidestrconsts:lisno
 msgid "No"
-msgstr ""
+msgstr "Nie"
 
 #: lazarusidestrconsts:lisnoidewindowselected
 msgid "No IDE window selected"
-msgstr ""
+msgstr "6iadne vybrané okno IDE"
 
 #: lazarusidestrconsts:lisnoresourcestringsectionfound
 msgid "No ResourceString Section found"
@@ -6310,7 +6314,7 @@ msgstr "Číslo"
 
 #: lazarusidestrconsts:lisnumberoffilestoconvert
 msgid "Number of files to convert: %s"
-msgstr ""
+msgstr "Počet konvertovaných súborov: %s"
 
 #: lazarusidestrconsts:lisifdok
 msgid "OK"
@@ -6322,7 +6326,7 @@ msgstr "Výnimky OS"
 
 #: lazarusidestrconsts:uepovr
 msgid "OVR"
-msgstr ""
+msgstr "OVR"
 
 #: lazarusidestrconsts:lispckoptsobject
 msgid "Object"
@@ -6594,7 +6598,7 @@ msgstr "Voľby"
 
 #: lazarusidestrconsts:lismenugeneraloptions
 msgid "Options ..."
-msgstr ""
+msgstr "Voľby ..."
 
 #: lazarusidestrconsts:lislazbuildoptions
 msgid "Options:"
@@ -6610,11 +6614,11 @@ msgstr "Poradie"
 
 #: lazarusidestrconsts:dlgsrorigin
 msgid "Origin"
-msgstr ""
+msgstr "Originál"
 
 #: lazarusidestrconsts:lisoriginalfilename
 msgid "Original File Name:"
-msgstr ""
+msgstr "Pôvodné meno súboru:"
 
 #: lazarusidestrconsts:dlgcoother
 msgid "Other"
@@ -6746,7 +6750,7 @@ msgstr "Registrácia balíčka"
 
 #: lazarusidestrconsts:lispkgdefssrcdirmark
 msgid "Package Source Directory Mark"
-msgstr ""
+msgstr "Značka zdrojového adresára balíčka"
 
 #: lazarusidestrconsts:lispkgmangpackageconflicts
 msgid "Package conflicts"
@@ -6906,7 +6910,7 @@ msgstr "Vložiť vybraté komponenty zo schránky"
 
 #: lazarusidestrconsts:lispath
 msgid "Path"
-msgstr ""
+msgstr "Cesta"
 
 #: lazarusidestrconsts:dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
@@ -7014,7 +7018,7 @@ msgstr "Portugalsky"
 
 #: lazarusidestrconsts:lisceomode
 msgid "Preferred Exhibition Mode"
-msgstr ""
+msgstr "Preferovaný ukážkový režim"
 
 #: lazarusidestrconsts:dlgwrdpreview
 msgid "Preview"
@@ -7086,11 +7090,11 @@ msgstr "Proces"
 
 #: lazarusidestrconsts:lisproductname
 msgid "Product Name:"
-msgstr ""
+msgstr "Názov produktu:"
 
 #: lazarusidestrconsts:lisproductversion
 msgid "Product Version:"
-msgstr ""
+msgstr "Verzia produktu:"
 
 #: lazarusidestrconsts:lisprogram
 msgid "Program"
@@ -7158,7 +7162,7 @@ msgstr "Voľby projektu ..."
 
 #: lazarusidestrconsts:lisprojprojectsourcedirectorymark
 msgid "Project Source Directory Mark"
-msgstr ""
+msgstr "Značka zdrojového adresára projektu"
 
 #: lazarusidestrconsts:lisprojectsrcpath
 msgid "Project Src Path"
@@ -7730,7 +7734,7 @@ msgstr "Rovnaká pravá vzdialenosť"
 
 #: lazarusidestrconsts:dlgrubberbandgroup
 msgid "Rubber band"
-msgstr ""
+msgstr "Rubber band"
 
 #: lazarusidestrconsts:lismenuprojectrun
 msgid "Run"
@@ -7822,7 +7826,7 @@ msgstr "Uložiť zmeny?"
 
 #: lazarusidestrconsts:dlgposaveicon
 msgid "Save Icon"
-msgstr ""
+msgstr "Uložiť ikonu"
 
 #: lazarusidestrconsts:lispkgmangsavepackagelpk
 msgid "Save Package %s (*.lpk)"
@@ -7998,7 +8002,7 @@ msgstr "Vo výstupe hľadať správy make"
 
 #: lazarusidestrconsts:rsscanners
 msgid "Scanners"
-msgstr ""
+msgstr "Skenery"
 
 #: lazarusidestrconsts:dlgscope
 msgid "Scope"
@@ -8198,7 +8202,7 @@ msgstr "Vybrať všetko"
 
 #: lazarusidestrconsts:rsselectaninheritedentry
 msgid "Select an inherited entry"
-msgstr ""
+msgstr "Vybrať zdedenú položku"
 
 #: lazarusidestrconsts:lismenuselectcodeblock
 msgid "Select code block"
@@ -8546,7 +8550,7 @@ msgstr "Zobraziť mriežku"
 
 #: lazarusidestrconsts:dlgshowgutterhints
 msgid "Show gutter hints"
-msgstr ""
+msgstr "Zobraziť panel pokynov"
 
 #: lazarusidestrconsts:lisshowhintsinobjectinspector
 msgid "Show hints in Object Inspector"
@@ -8758,11 +8762,11 @@ msgstr "Španielsky"
 
 #: lazarusidestrconsts:lisuidsrc
 msgid "Src"
-msgstr ""
+msgstr "Zdroj"
 
 #: lazarusidestrconsts:lissrcos
 msgid "Src OS"
-msgstr ""
+msgstr "Zdrojový OS"
 
 #: lazarusidestrconsts:dlgcostack
 msgid "Stack"
@@ -8830,7 +8834,7 @@ msgstr "Zastaviť ladenie?"
 
 #: lazarusidestrconsts:lisstoponexception
 msgid "Stop on exception"
-msgstr ""
+msgstr "Zastaviť pri výnimke"
 
 #: lazarusidestrconsts:liskmstopprogram
 msgid "Stop program"
@@ -8858,7 +8862,7 @@ msgstr "Chyba streamovania"
 
 #: lazarusidestrconsts:lisstring
 msgid "String"
-msgstr ""
+msgstr "Reťazec"
 
 #: lazarusidestrconsts:liscodetoolsoptsstringconst
 msgid "String constant"
@@ -8878,7 +8882,7 @@ msgstr "Odstrániť symboly zo spustiteľného súboru"
 
 #: lazarusidestrconsts:lisstyle
 msgid "Style"
-msgstr ""
+msgstr "Štýl"
 
 #: lazarusidestrconsts:lissubprocedure
 msgid "Sub Procedure"
@@ -8990,7 +8994,7 @@ msgstr "Cieľový CPU"
 
 #: lazarusidestrconsts:dlgtargetcpufamily
 msgid "Target CPU family"
-msgstr ""
+msgstr "Cieľová rodina CPU"
 
 #: lazarusidestrconsts:lislazbuildtargetcpu
 msgid "Target CPU:"
@@ -9410,7 +9414,7 @@ msgstr "Súbor %s%s%s%svyzerá byť programom. Zatvoriť aktuálny projekt a vyt
 
 #: lazarusidestrconsts:listhefilewasfoundinoneofthesourcedirectoriesofthepac
 msgid "The file %s%s%s%swas found in one of the source directories of the package %s and looks like a compiled unit. Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%s%sDelete ambiguous file?"
-msgstr ""
+msgstr "Súbor %s%s%s%sbol nájdený v jednom zo zdrojových adresárov balíčka %s a vyzerá ako preložená jednotka. Preložené jednotky musia byť vo výstupnom adresári balíčka, inak môžu mať iné balíčky problémy s použitím tohoto balíčka.%s%sZmazať tento súbor?"
 
 #: lazarusidestrconsts:listhefilewasnotfounddoyouwanttolocateityourself
 msgid "The file %s%s%s%swas not found.%sDo you want to locate it yourself ?%s"
@@ -9642,7 +9646,7 @@ msgstr "Jednotka %s%s%s už existuje.%sIgnorovať vynúti premenovanie,%sCancel 
 
 #: lazarusidestrconsts:listheunitisnotlowercasethefreepascalcompiler
 msgid "The unit filename %s%s%s is not lowercase.%sThe FreePascal compiler does not search for all cases. It is recommended to use lowercase filename.%s%sRename file lowercase?"
-msgstr ""
+msgstr "Meno súboru jednotky %s%s%s nie je malými písmenami.%sPrekladač FreePascal nehľadá všetky veľkosti. Je lepšie použiť mena súborov s malými písmenami.%s%sPremenovať súbor malými písmenami?"
 
 #: lazarusidestrconsts:listheunititselfhasalreadythenamepascalidentifiersmus
 msgid "The unit itself has already the name %s%s%s. Pascal identifiers must be unique."
@@ -10606,11 +10610,11 @@ msgstr ""
 
 #: lazarusidestrconsts:lisceoupdate
 msgid "Update"
-msgstr "Aktualizoavť"
+msgstr "Aktualizovať"
 
 #: lazarusidestrconsts:lisupdatepreview
 msgid "Update preview"
-msgstr ""
+msgstr "Ukáža aktualizácie"
 
 #: lazarusidestrconsts:lispckoptsupdaterebuild
 msgid "Update/Rebuild"
@@ -10626,7 +10630,7 @@ msgstr "Použitie"
 
 #: lazarusidestrconsts:lisusagemessagehoption
 msgid "Usage message (-h option)"
-msgstr ""
+msgstr "Správa o použití (voľba -h)"
 
 #: lazarusidestrconsts:dlgcoansistr
 msgid "Use Ansi Strings"
@@ -10662,7 +10666,7 @@ msgstr "Použiť displej"
 
 #: lazarusidestrconsts:dlgextsymb
 msgid "Use external gdb debug symbols file"
-msgstr ""
+msgstr "Použiť externý súbor ladiacich symbolov gdb"
 
 #: lazarusidestrconsts:dlguselaunchingapp
 msgid "Use launching application"
@@ -10714,7 +10718,7 @@ msgstr "Domovský adresár používateľa"
 
 #: lazarusidestrconsts:lisceuses
 msgid "Uses"
-msgstr ""
+msgstr "Uses"
 
 #: lazarusidestrconsts:dlgvaluecolor
 msgid "Value"
@@ -11150,7 +11154,7 @@ msgstr "pridať pozorovanie"
 
 #: lazarusidestrconsts:lisapplybuildflagsbtodependenciestoo
 msgid "apply build flags (-B) to dependencies too"
-msgstr ""
+msgstr "použiť príznaky budovania (-B) aj pre závislosti"
 
 #: lazarusidestrconsts:lisoipautoinstalldynamic
 msgid "auto install dynamic"
@@ -11166,7 +11170,7 @@ msgstr "začína"
 
 #: lazarusidestrconsts:lisbuildidewithpackages
 msgid "build IDE with packages"
-msgstr ""
+msgstr "vybudovať IDE aj s balíčkami"
 
 #: lazarusidestrconsts:srkmecbuildall
 msgid "build all files of program/project"
@@ -11174,7 +11178,7 @@ msgstr "vybudovať všetky súbory programu/projektu"
 
 #: lazarusidestrconsts:lisbuildallfilesofprojectpackageide
 msgid "build all files of project/package/IDE"
-msgstr ""
+msgstr "vybudovať všetky súbory projektu/balíčka/IDE"
 
 #: lazarusidestrconsts:srkmecbuildfile
 msgid "build file"
@@ -11230,7 +11234,7 @@ msgstr "nepridávať znak"
 
 #: lazarusidestrconsts:lisdonotcompiledependencies
 msgid "do not compile dependencies"
-msgstr ""
+msgstr "neprekladať závislosti"
 
 #: lazarusidestrconsts:lisccoenglishmessagefilemissing
 msgid "english message file for fpc is missing:components/codetools/fpc.errore.msg"
@@ -11366,7 +11370,7 @@ msgstr "fpc.cfg nenájdený"
 
 #: lazarusidestrconsts:lisnonodeselected
 msgid "no node selected"
-msgstr ""
+msgstr "nie je vybratý žiadny uzol"
 
 #: lazarusidestrconsts:lisccononascii
 msgid "non ASCII"
@@ -11390,11 +11394,11 @@ msgstr "cesta objektov"
 
 #: lazarusidestrconsts:rsok
 msgid "ok"
-msgstr ""
+msgstr "OK"
 
 #: lazarusidestrconsts:lisold
 msgid "old"
-msgstr ""
+msgstr "starý"
 
 #: lazarusidestrconsts:lisor
 msgid "or"
@@ -11522,7 +11526,7 @@ msgstr "zapnúť RANGECHECKS"
 
 #: lazarusidestrconsts:lisshowversionandexit
 msgid "show version and exit"
-msgstr ""
+msgstr "zobrazí verziu a skončí"
 
 #: lazarusidestrconsts:lissmallerratherthanfaster
 msgid "smaller rather than faster"
