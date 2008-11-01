@@ -83,13 +83,15 @@ type
     procedure LogListViewSelectItem(Sender: TObject; Item: TListItem;
       Selected: Boolean);
   private
+    FRepositoryPath: string;
     { private declarations }
-    FRepoPath: string;
     LogList: TFPList;
     procedure UpdateLogListView;
   public
     { public declarations }
     procedure Execute(Data: PtrInt);
+
+    property RepositoryPath: string read FRepositoryPath write FrepositoryPath;
   end;
 
 procedure ShowSVNLogFrm(ARepoPath: string);
@@ -105,7 +107,7 @@ var
 begin
   SVNLogFrm := TSVNLogFrm.Create(nil);
 
-  SVNLogFrm.FRepoPath:=ARepoPath;
+  SVNLogFrm.RepositoryPath:=ARepoPath;
   SVNLogFrm.ShowModal;
 
   SVNLogFrm.Free;
@@ -181,7 +183,7 @@ end;
 
 procedure TSVNLogFrm.FormShow(Sender: TObject);
 begin
-  Caption := Format(rsLazarusSVNLog, [FRepoPath]);
+  Caption := Format(rsLazarusSVNLog, [RepositoryPath]);
   Application.QueueAsyncCall(@Execute, 0);
 end;
 
@@ -258,7 +260,7 @@ begin
     path := SVNActionsListView.Selected.SubItems[0];
     Delete(path, 1, 1);
     i := pos('/', path);
-    ShowSVNDiffFrm('-r PREV', FRepoPath + Copy(path, i, length(path) - i + 1));
+    ShowSVNDiffFrm('-r PREV', RepositoryPath + Copy(path, i, length(path) - i + 1));
   end;
 end;
 
@@ -308,10 +310,10 @@ var
     end;
   end;
 begin
-  debugln('TSVNLogFrm.Execute FRepoPath=' ,FRepoPath);
+  debugln('TSVNLogFrm.Execute RepositoryPath=' ,RepositoryPath);
 
   AProcess := TProcess.Create(nil);
-  AProcess.CommandLine := SVNExecutable + ' log --xml --verbose --limit ' + IntToStr(SVNLogLimit.Value) + ' ' + FRepoPath  + ' --non-interactive';
+  AProcess.CommandLine := SVNExecutable + ' log --xml --verbose --limit ' + IntToStr(SVNLogLimit.Value) + ' ' + RepositoryPath  + ' --non-interactive';
   debugln('TSVNLogFrm.Execute CommandLine ' + AProcess.CommandLine);
   AProcess.Options := AProcess.Options + [poUsePipes, poStdErrToOutput];
   AProcess.ShowWindow := swoHIDE;

@@ -14,7 +14,7 @@ LazarusResources.Add('TSVNUpdateFrm','FORMDATA',[
   +'how'#14'ParentBiDiMode'#9#10'ParentFont'#8#8'Position'#7#14'poScreenCenter'
   +#13'ShowInTaskBar'#7#9'stDefault'#14'UseDockManager'#8#10'LCLVersion'#6#6'0.'
   +'9.27'#11'WindowState'#7#8'wsNormal'#0#9'TListView'#17'SVNUpdateListView'#4
-  +'Left'#2#6#6'Height'#3#248#0#3'Top'#2#6#5'Width'#3't'#2#11'HelpContext'#2#0#5
+  +'Left'#2#6#6'Height'#3#240#0#3'Top'#2#6#5'Width'#3't'#2#11'HelpContext'#2#0#5
   +'Align'#7#8'alClient'#18'BorderSpacing.Left'#2#0#17'BorderSpacing.Top'#2#0#19
   +'BorderSpacing.Right'#2#0#20'BorderSpacing.Bottom'#2#0#20'BorderSpacing.Arou'
   +'nd'#2#6'!BorderSpacing.CellAlignHorizontal'#7#7'ccaFill'#31'BorderSpacing.C'
@@ -25,13 +25,13 @@ LazarusResources.Add('TSVNUpdateFrm','FORMDATA',[
   +'Menu'#7#15'UpdatePopupMenu'#8'ReadOnly'#8#9'RowSelect'#9#10'ScrollBars'#7#10
   +'ssAutoBoth'#17'ShowColumnHeaders'#9#10'SortColumn'#2#0#8'SortType'#7#6'stNo'
   +'ne'#7'TabStop'#9#8'TabOrder'#2#0#8'ToolTips'#9#7'Visible'#9#9'ViewStyle'#7#8
-  +'vsReport'#0#0#12'TButtonPanel'#11'ButtonPanel'#4'Left'#2#6#6'Height'#2'('#3
-  +'Top'#3#4#1#5'Width'#3't'#2#11'HelpContext'#2#0#5'Align'#7#8'alBottom'#8'Aut'
-  +'oSize'#9#11'ButtonOrder'#7#9'boDefault'#8'TabOrder'#2#1#13'DefaultButton'#7
-  +#4'pbOK'#11'ShowButtons'#11#4'pbOK'#0#10'ShowGlyphs'#11#4'pbOK'#8'pbCancel'#7
-  +'pbClose'#6'pbHelp'#0#7'Visible'#9#0#7'TBitBtn'#13'ShowLogButton'#4'Left'#2
-  +'N'#6'Height'#2#26#3'Top'#2#8#5'Width'#2'x'#11'HelpContext'#2#0#5'Align'#7#6
-  +'alLeft'#8'AutoSize'#9#18'BorderSpacing.Left'#2#0#17'BorderSpacing.Top'#2#0
+  +'vsReport'#0#0#12'TButtonPanel'#11'ButtonPanel'#4'Left'#2#6#6'Height'#2'0'#3
+  +'Top'#3#252#0#5'Width'#3't'#2#11'HelpContext'#2#0#5'Align'#7#8'alBottom'#8'A'
+  +'utoSize'#9#11'ButtonOrder'#7#9'boDefault'#8'TabOrder'#2#1#13'DefaultButton'
+  +#7#4'pbOK'#11'ShowButtons'#11#4'pbOK'#0#10'ShowGlyphs'#11#4'pbOK'#8'pbCancel'
+  +#7'pbClose'#6'pbHelp'#0#7'Visible'#9#0#7'TBitBtn'#13'ShowLogButton'#4'Left'#2
+  +'N'#6'Height'#2'"'#3'Top'#2#8#5'Width'#3#131#0#11'HelpContext'#2#0#5'Align'#7
+  +#6'alLeft'#8'AutoSize'#9#18'BorderSpacing.Left'#2#0#17'BorderSpacing.Top'#2#0
   +#19'BorderSpacing.Right'#2#0#20'BorderSpacing.Bottom'#2#0#20'BorderSpacing.A'
   +'round'#2#6'!BorderSpacing.CellAlignHorizontal'#7#7'ccaFill'#31'BorderSpacin'
   +'g.CellAlignVertical'#7#7'ccaFill'#6'Cancel'#8#7'Caption'#6#13'ShowLogButton'

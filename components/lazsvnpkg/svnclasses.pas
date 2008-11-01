@@ -72,10 +72,6 @@ const
 
 type
   TSortDirection  = (sdAscending, sdDescending);
-  //TColumnSortInfo = record
-    //Index: integer;
-    //SortOrder: TSortOrder;
-  //end;
 
   { TSVNSettings }
 
@@ -127,7 +123,7 @@ type
 
   TSVNStatus = class(TObject)
   private
-    FRepository: string;
+    FRepositoryPath: string;
     FSortDirection: TSortDirection;
     FSortItem: TStatusItemName;
   public
@@ -136,7 +132,7 @@ type
     constructor Create(const ARepoPath: string);
     destructor Destroy; override;
 
-    property Repository: string read FRepository write FRepository;
+    property RepositoryPath: string read FRepositoryPath write FrepositoryPath;
     procedure Sort(ASortItem: TStatusItemName; ADirection: TSortDirection);
     procedure ReverseSort(ASortItem: TStatusItemName);
     property SortDirection: TSortDirection read FSortDirection write FSortDirection;
@@ -476,13 +472,13 @@ var
   NodeValue: string;
 begin
   List := TFPList.Create;
-  Repository := ARepoPath;
+  RepositoryPath := ARepoPath;
 
   M := TMemoryStream.Create;
   BytesRead := 0;
 
   AProcess := TProcess.Create(nil);
-  AProcess.CommandLine := SVNExecutable + ' stat --verbose --xml ' + Repository  + ' --non-interactive';
+  AProcess.CommandLine := SVNExecutable + ' stat --verbose --xml ' + RepositoryPath  + ' --non-interactive';
   debugln('TSVNStatus.Create CommandLine ' + AProcess.CommandLine);
   AProcess.Options := AProcess.Options + [poUsePipes, poStdErrToOutput];
   AProcess.ShowWindow := swoHIDE;

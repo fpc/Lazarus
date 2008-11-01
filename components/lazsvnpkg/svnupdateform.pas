@@ -42,13 +42,15 @@ type
     procedure OKButtonClick(Sender: TObject);
     procedure ShowLogButtonClick(Sender: TObject);
   private
+    FRepositoryPath: string;
     { private declarations }
-    FRepoPath: string;
     procedure ProcessSVNUpdateOutput(var MemStream: TMemoryStream; var BytesRead: LongInt);
   public
     { public declarations }
     procedure Execute(Data: PtrInt);
-  end; 
+
+    property RepositoryPath: string read FRepositoryPath write FrepositoryPath;
+  end;
 
 procedure ShowSVNUpdateFrm(ARepoPath: string);
 
@@ -65,7 +67,7 @@ var
 begin
   SVNUpdateFrm := TSVNUpdateFrm.Create(nil);
 
-  SVNUpdateFrm.FRepoPath:=ARepoPath;
+  SVNUpdateFrm.RepositoryPath:=ARepoPath;
   SVNUpdateFrm.ShowModal;
 
   SVNUpdateFrm.Free;
@@ -84,7 +86,7 @@ end;
 
 procedure TSVNUpdateFrm.FormShow(Sender: TObject);
 begin
-  Caption := Format(rsLazarusSVNUpdate, [FRepoPath]);
+  Caption := Format(rsLazarusSVNUpdate, [RepositoryPath]);
   Application.QueueAsyncCall(@Execute, 0);
 end;
 
@@ -112,7 +114,7 @@ end;
 
 procedure TSVNUpdateFrm.ShowLogButtonClick(Sender: TObject);
 begin
-  ShowSVNLogFrm(FRepoPath);
+  ShowSVNLogFrm(RepositoryPath);
 end;
 
 procedure TSVNUpdateFrm.ProcessSVNUpdateOutput(var MemStream: TMemoryStream; var BytesRead: LongInt);
@@ -165,7 +167,7 @@ begin
   BytesRead := 0;
 
   AProcess := TProcess.Create(nil);
-  AProcess.CommandLine := SVNExecutable + ' update ' + FRepoPath + ' --non-interactive';
+  AProcess.CommandLine := SVNExecutable + ' update ' + RepositoryPath + ' --non-interactive';
   debugln('TSVNUpdateFrm.Execute CommandLine ' + AProcess.CommandLine);
   AProcess.Options := [poUsePipes, poStdErrToOutput];
   AProcess.ShowWindow := swoHIDE;

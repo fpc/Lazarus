@@ -39,12 +39,13 @@ type
     procedure FormShow(Sender: TObject);
     procedure SaveButtonClick(Sender: TObject);
   private
+    FRepositoryPath: string;
     { private declarations }
     FSwitches: string;
-    FRepoPath: string;
   public
     { public declarations }
     procedure Execute(Data: PtrInt);
+    property RepositoryPath: string read FRepositoryPath write FrepositoryPath;
   end;
 
 procedure ShowSVNDiffFrm(ASwitches, ARepoPath: string);
@@ -60,7 +61,7 @@ var
 begin
   SVNDiffFrm := TSVNDiffFrm.Create(nil);
 
-  SVNDiffFrm.FRepoPath:=ARepoPath;
+  SVNDiffFrm.RepositoryPath:=ARepoPath;
   SVNDiffFrm.FSwitches:=ASwitches;
   SVNDiffFrm.ShowModal;
 
@@ -71,7 +72,7 @@ end;
 
 procedure TSVNDiffFrm.FormShow(Sender: TObject);
 begin
-  Caption := Format(rsLazarusSVNDiff, [FRepoPath]);
+  Caption := Format(rsLazarusSVNDiff, [RepositoryPath]);
   Application.QueueAsyncCall(@Execute, 0);
 end;
 
@@ -94,7 +95,7 @@ var
   M: TMemoryStream;
 begin
   AProcess := TProcess.Create(nil);
-  AProcess.CommandLine := SVNExecutable + ' diff ' + FSwitches + ' ' + FRepoPath + ' --non-interactive';
+  AProcess.CommandLine := SVNExecutable + ' diff ' + FSwitches + ' ' + RepositoryPath + ' --non-interactive';
   debugln('TSVNDiffFrm.Execute commandline=', AProcess.CommandLine);
   AProcess.Options := AProcess.Options + [poUsePipes, poStdErrToOutput];
   AProcess.ShowWindow := swoHIDE;

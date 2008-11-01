@@ -46,12 +46,13 @@ type
     procedure SVNFileListViewSelectItem(Sender: TObject; Item: TListItem;
       Selected: Boolean);
   private
+    FRepositoryPath: string;
     { private declarations }
-    FRepoPath: string;
     SVNStatus: TSVNStatus;
     procedure UpdateFilesListView(Data: PtrInt);
   public
     { public declarations }
+    property RepositoryPath: string read FRepositoryPath write FrepositoryPath;
   end;
 
 procedure ShowSVNStatusFrm(ARepoPath: string);
@@ -67,7 +68,7 @@ var
 begin
   SVNStatusFrm := TSVNStatusFrm.Create(nil);
 
-  SVNStatusFrm.FRepoPath:=ARepoPath;
+  SVNStatusFrm.RepositoryPath:=ARepoPath;
   SVNStatusFrm.ShowModal;
 
   SVNStatusFrm.Free;
@@ -77,10 +78,10 @@ end;
 
 procedure TSVNStatusFrm.FormShow(Sender: TObject);
 begin
-  SVNStatus := TSVNStatus.Create(FRepoPath);
+  SVNStatus := TSVNStatus.Create(RepositoryPath);
   SVNStatus.Sort(siChecked, sdAscending);
 
-  Caption := Format('%s - %s...', [FRepoPath, rsLazarusSVNCommit]);
+  Caption := Format('%s - %s...', [RepositoryPath, rsLazarusSVNCommit]);
   Application.QueueAsyncCall(@UpdateFilesListView, 0);
 end;
 
@@ -91,10 +92,10 @@ begin
   begin
     debugln('TSVNStatusFrm.mnuShowDiffClick Path=' ,SVNFileListView.Selected.SubItems[0]);
 
-    if pos(FRepoPath,SVNFileListView.Selected.SubItems[0]) <> 0 then
+    if pos(RepositoryPath,SVNFileListView.Selected.SubItems[0]) <> 0 then
       ShowSVNDiffFrm('-r HEAD', SVNFileListView.Selected.SubItems[0])
     else
-      ShowSVNDiffFrm('-r HEAD', AppendPathDelim(FRepoPath) + SVNFileListView.Selected.SubItems[0]);
+      ShowSVNDiffFrm('-r HEAD', AppendPathDelim(RepositoryPath) + SVNFileListView.Selected.SubItems[0]);
   end;
 end;
 
@@ -112,8 +113,8 @@ begin
     StatusItem := PSVNStatusItem(SVNStatus.List.Items[i]);
 
     if StatusItem^.Checked then
-      if pos(FRepoPath,StatusItem^.Path) = 0 then
-        CmdLine := CmdLine + ' ' + AppendPathDelim(FRepoPath) + StatusItem^.Path
+      if pos(RepositoryPath,StatusItem^.Path) = 0 then
+        CmdLine := CmdLine + ' ' + AppendPathDelim(RepositoryPath) + StatusItem^.Path
       else
         CmdLine := CmdLine + ' ' + StatusItem^.Path;
   end;

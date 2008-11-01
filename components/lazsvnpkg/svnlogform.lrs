@@ -15,17 +15,17 @@ LazarusResources.Add('TSVNLogFrm','FORMDATA',[
   +'de'#9#10'ParentFont'#8#8'Position'#7#14'poScreenCenter'#13'ShowInTaskBar'#7
   +#9'stDefault'#14'UseDockManager'#8#10'LCLVersion'#6#6'0.9.27'#11'WindowState'
   +#7#8'wsNormal'#0#6'TLabel'#6'Label1'#22'AnchorSideLeft.Control'#7#5'Owner'#21
-  +'AnchorSideTop.Control'#7#11'SVNLogLimit'#4'Left'#2#6#6'Height'#2#14#3'Top'#3
-  +#241#1#5'Width'#2'a'#11'HelpContext'#2#0#5'Align'#7#6'alNone'#9'Alignment'#7
-  +#13'taLeftJustify'#8'AutoSize'#9#18'BorderSpacing.Left'#2#6#17'BorderSpacing'
-  +'.Top'#2#0#19'BorderSpacing.Right'#2#6#20'BorderSpacing.Bottom'#2#0#20'Borde'
-  +'rSpacing.Around'#2#0'!BorderSpacing.CellAlignHorizontal'#7#7'ccaFill'#31'Bo'
-  +'rderSpacing.CellAlignVertical'#7#7'ccaFill'#7'Caption'#6#19'Show last X com'
-  +'mits'#10'DragCursor'#7#6'crDrag'#8'DragMode'#7#8'dmManual'#7'Enabled'#9#6'L'
-  +'ayout'#7#5'tlTop'#14'ParentBidiMode'#9#11'ParentColor'#8#10'ParentFont'#9#14
-  +'ParentShowHint'#9#13'ShowAccelChar'#9#11'Transparent'#9#7'Visible'#9#8'Word'
-  +'Wrap'#8#11'OptimalFill'#8#0#0#9'TListView'#11'LogListView'#4'Left'#2#6#6'He'
-  +'ight'#3#159#0#3'Top'#2#6#5'Width'#3#202#2#11'HelpContext'#2#0#5'Align'#7#5
+  +'AnchorSideTop.Control'#7#11'SVNLogLimit'#4'Left'#2#6#6'Height'#2#18#3'Top'#3
+  +#233#1#5'Width'#3#134#0#11'HelpContext'#2#0#5'Align'#7#6'alNone'#9'Alignment'
+  +#7#13'taLeftJustify'#8'AutoSize'#9#18'BorderSpacing.Left'#2#6#17'BorderSpaci'
+  +'ng.Top'#2#0#19'BorderSpacing.Right'#2#6#20'BorderSpacing.Bottom'#2#0#20'Bor'
+  +'derSpacing.Around'#2#0'!BorderSpacing.CellAlignHorizontal'#7#7'ccaFill'#31
+  +'BorderSpacing.CellAlignVertical'#7#7'ccaFill'#7'Caption'#6#19'Show last X c'
+  +'ommits'#10'DragCursor'#7#6'crDrag'#8'DragMode'#7#8'dmManual'#7'Enabled'#9#6
+  +'Layout'#7#5'tlTop'#14'ParentBidiMode'#9#11'ParentColor'#8#10'ParentFont'#9
+  +#14'ParentShowHint'#9#13'ShowAccelChar'#9#11'Transparent'#9#7'Visible'#9#8'W'
+  +'ordWrap'#8#11'OptimalFill'#8#0#0#9'TListView'#11'LogListView'#4'Left'#2#6#6
+  +'Height'#3#159#0#3'Top'#2#6#5'Width'#3#202#2#11'HelpContext'#2#0#5'Align'#7#5
   +'alTop'#18'BorderSpacing.Left'#2#6#17'BorderSpacing.Top'#2#6#19'BorderSpacin'
   +'g.Right'#2#6#20'BorderSpacing.Bottom'#2#0#20'BorderSpacing.Around'#2#0'!Bor'
   +'derSpacing.CellAlignHorizontal'#7#7'ccaFill'#31'BorderSpacing.CellAlignVert'
@@ -46,7 +46,7 @@ LazarusResources.Add('TSVNLogFrm','FORMDATA',[
   +#0#9'MaxLength'#2#255#14'ParentBidiMode'#9#10'ParentFont'#8#8'ReadOnly'#8#10
   +'ScrollBars'#7#6'ssNone'#8'TabOrder'#2#1#7'TabStop'#9#7'Visible'#9#11'WantRe'
   +'turns'#9#8'WantTabs'#8#0#0#9'TListView'#18'SVNActionsListView'#24'AnchorSid'
-  +'eBottom.Control'#7#13'RefreshButton'#4'Left'#2#6#6'Height'#3#163#0#3'Top'#3
+  +'eBottom.Control'#7#13'RefreshButton'#4'Left'#2#6#6'Height'#3#155#0#3'Top'#3
   +'F'#1#5'Width'#3#202#2#11'HelpContext'#2#0#5'Align'#7#5'alTop'#7'Anchors'#11
   +#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#18'BorderSpacing.Left'#2#6#17'B'
   +'orderSpacing.Top'#2#0#19'BorderSpacing.Right'#2#6#20'BorderSpacing.Bottom'#2
@@ -59,12 +59,12 @@ LazarusResources.Add('TSVNLogFrm','FORMDATA',[
   +'ReadOnly'#8#9'RowSelect'#9#10'ScrollBars'#7#6'ssBoth'#17'ShowColumnHeaders'
   +#9#10'SortColumn'#2#0#8'SortType'#7#6'stNone'#7'TabStop'#9#8'TabOrder'#2#2#8
   +'ToolTips'#9#7'Visible'#9#9'ViewStyle'#7#8'vsReport'#0#0#12'TButtonPanel'#11
-  +'ButtonPanel'#4'Left'#2#6#6'Height'#2'('#3'Top'#3#14#2#5'Width'#3#202#2#11'H'
-  +'elpContext'#2#0#5'Align'#7#8'alBottom'#8'AutoSize'#9#11'ButtonOrder'#7#9'bo'
-  +'Default'#8'TabOrder'#2#3#13'DefaultButton'#7#4'pbOK'#11'ShowButtons'#11#4'p'
-  +'bOK'#0#10'ShowGlyphs'#11#4'pbOK'#8'pbCancel'#7'pbClose'#6'pbHelp'#0#7'Visib'
-  +'le'#9#0#0#9'TSplitter'#9'Splitter1'#6'Cursor'#7#8'crVSplit'#4'Left'#2#0#6'H'
-  +'eight'#2#5#3'Top'#3#165#0#5'Width'#3#214#2#11'HelpContext'#2#0#5'Align'#7#5
+  +'ButtonPanel'#4'Left'#2#6#6'Height'#2'0'#3'Top'#3#6#2#5'Width'#3#202#2#11'He'
+  +'lpContext'#2#0#5'Align'#7#8'alBottom'#8'AutoSize'#9#11'ButtonOrder'#7#9'boD'
+  +'efault'#8'TabOrder'#2#3#13'DefaultButton'#7#4'pbOK'#11'ShowButtons'#11#4'pb'
+  +'OK'#0#10'ShowGlyphs'#11#4'pbOK'#8'pbCancel'#7'pbClose'#6'pbHelp'#0#7'Visibl'
+  +'e'#9#0#0#9'TSplitter'#9'Splitter1'#6'Cursor'#7#8'crVSplit'#4'Left'#2#0#6'He'
+  +'ight'#2#5#3'Top'#3#165#0#5'Width'#3#214#2#11'HelpContext'#2#0#5'Align'#7#5
   ,'alTop'#8'AutoSnap'#9#7'Beveled'#8#7'MinSize'#2#30#11'ParentColor'#9#14'Pare'
   +'ntShowHint'#9#12'ResizeAnchor'#7#5'akTop'#11'ResizeStyle'#7#8'rsUpdate'#7'V'
   +'isible'#9#0#0#9'TSplitter'#9'Splitter2'#6'Cursor'#7#8'crVSplit'#4'Left'#2#0
@@ -73,25 +73,25 @@ LazarusResources.Add('TSVNLogFrm','FORMDATA',[
   +'rentShowHint'#9#12'ResizeAnchor'#7#5'akTop'#11'ResizeStyle'#7#8'rsUpdate'#7
   +'Visible'#9#0#0#9'TSpinEdit'#11'SVNLogLimit'#22'AnchorSideLeft.Control'#7#6
   +'Label1'#19'AnchorSideLeft.Side'#7#9'asrBottom'#24'AnchorSideBottom.Control'
-  +#7#11'ButtonPanel'#4'Left'#2'm'#6'Height'#2#23#3'Top'#3#241#1#5'Width'#2'^'
-  +#11'HelpContext'#2#0#5'Align'#7#6'alNone'#7'Anchors'#11#6'akLeft'#8'akBottom'
-  +#0#10'AutoSelect'#8#8'AutoSize'#8#18'BorderSpacing.Left'#2#0#17'BorderSpacin'
-  +'g.Top'#2#0#19'BorderSpacing.Right'#2#0#20'BorderSpacing.Bottom'#2#0#20'Bord'
-  +'erSpacing.Around'#2#6'!BorderSpacing.CellAlignHorizontal'#7#7'ccaFill'#31'B'
-  +'orderSpacing.CellAlignVertical'#7#7'ccaFill'#7'Enabled'#9#9'Increment'#2#1#8
-  +'MaxValue'#4#160#134#1#0#8'MinValue'#2#0#10'ParentFont'#9#14'ParentShowHint'
-  +#9#8'ReadOnly'#8#7'TabStop'#9#8'TabOrder'#2#6#5'Value'#2'd'#7'Visible'#9#0#0
-  +#7'TButton'#13'RefreshButton'#23'AnchorSideRight.Control'#7#5'Owner'#20'Anch'
-  +'orSideRight.Side'#7#9'asrBottom'#24'AnchorSideBottom.Control'#7#11'ButtonPa'
-  +'nel'#4'Left'#3#133#2#6'Height'#2#25#3'Top'#3#239#1#5'Width'#2'K'#11'HelpCon'
-  +'text'#2#0#5'Align'#7#6'alNone'#7'Anchors'#11#7'akRight'#8'akBottom'#0#8'Aut'
-  +'oSize'#8#18'BorderSpacing.Left'#2#0#17'BorderSpacing.Top'#2#0#19'BorderSpac'
-  +'ing.Right'#2#0#20'BorderSpacing.Bottom'#2#0#20'BorderSpacing.Around'#2#6'!B'
-  +'orderSpacing.CellAlignHorizontal'#7#7'ccaFill'#31'BorderSpacing.CellAlignVe'
-  +'rtical'#7#7'ccaFill'#6'Cancel'#8#7'Caption'#6#7'Refresh'#7'Default'#8#10'Dr'
-  +'agCursor'#7#6'crDrag'#8'DragMode'#7#8'dmManual'#7'Enabled'#9#14'ParentBidiM'
-  +'ode'#9#11'ModalResult'#2#0#7'OnClick'#7#18'RefreshButtonClick'#10'ParentFon'
-  +'t'#9#14'ParentShowHint'#9#8'TabOrder'#2#7#7'TabStop'#9#7'Visible'#9#0#0#10
+  +#7#11'ButtonPanel'#4'Left'#3#146#0#6'Height'#2#23#3'Top'#3#233#1#5'Width'#2
+  +'^'#11'HelpContext'#2#0#5'Align'#7#6'alNone'#7'Anchors'#11#6'akLeft'#8'akBot'
+  +'tom'#0#10'AutoSelect'#8#8'AutoSize'#8#18'BorderSpacing.Left'#2#0#17'BorderS'
+  +'pacing.Top'#2#0#19'BorderSpacing.Right'#2#0#20'BorderSpacing.Bottom'#2#0#20
+  +'BorderSpacing.Around'#2#6'!BorderSpacing.CellAlignHorizontal'#7#7'ccaFill'
+  +#31'BorderSpacing.CellAlignVertical'#7#7'ccaFill'#7'Enabled'#9#9'Increment'#2
+  +#1#8'MaxValue'#4#160#134#1#0#8'MinValue'#2#0#10'ParentFont'#9#14'ParentShowH'
+  +'int'#9#8'ReadOnly'#8#7'TabStop'#9#8'TabOrder'#2#6#5'Value'#2'd'#7'Visible'#9
+  +#0#0#7'TButton'#13'RefreshButton'#23'AnchorSideRight.Control'#7#5'Owner'#20
+  +'AnchorSideRight.Side'#7#9'asrBottom'#24'AnchorSideBottom.Control'#7#11'Butt'
+  +'onPanel'#4'Left'#3#133#2#6'Height'#2#25#3'Top'#3#231#1#5'Width'#2'K'#11'Hel'
+  +'pContext'#2#0#5'Align'#7#6'alNone'#7'Anchors'#11#7'akRight'#8'akBottom'#0#8
+  +'AutoSize'#8#18'BorderSpacing.Left'#2#0#17'BorderSpacing.Top'#2#0#19'BorderS'
+  +'pacing.Right'#2#0#20'BorderSpacing.Bottom'#2#0#20'BorderSpacing.Around'#2#6
+  +'!BorderSpacing.CellAlignHorizontal'#7#7'ccaFill'#31'BorderSpacing.CellAlign'
+  +'Vertical'#7#7'ccaFill'#6'Cancel'#8#7'Caption'#6#7'Refresh'#7'Default'#8#10
+  +'DragCursor'#7#6'crDrag'#8'DragMode'#7#8'dmManual'#7'Enabled'#9#14'ParentBid'
+  +'iMode'#9#11'ModalResult'#2#0#7'OnClick'#7#18'RefreshButtonClick'#10'ParentF'
+  +'ont'#9#14'ParentShowHint'#9#8'TabOrder'#2#7#7'TabStop'#9#7'Visible'#9#0#0#10
   +'TPopupMenu'#19'SVNActionsPopupMenu'#4'left'#2'%'#3'top'#3'q'#1#0#9'TMenuIte'
   +'m'#11'mnuShowDiff'#7'Caption'#6#9'New Item1'#12'RightJustify'#8#19'ShowAlwa'
   +'ysCheckable'#8#7'OnClick'#7#16'mnuShowDiffClick'#0#0#0#0

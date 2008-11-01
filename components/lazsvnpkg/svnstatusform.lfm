@@ -1,7 +1,7 @@
 object SVNStatusFrm: TSVNStatusFrm
-  Left = 150
+  Left = 310
   Height = 408
-  Top = 200
+  Top = 174
   Width = 738
   HelpContext = 0
   ActiveControl = SVNFileListView
@@ -37,7 +37,7 @@ object SVNStatusFrm: TSVNStatusFrm
   WindowState = wsNormal
   object SVNFileListView: TListView
     Left = 6
-    Height = 274
+    Height = 266
     Top = 88
     Width = 726
     HelpContext = 0
@@ -106,7 +106,7 @@ object SVNStatusFrm: TSVNStatusFrm
   object SVNCommitMsgMemo: TMemo
     Left = 6
     Height = 77
-    Top = 6
+    Top = 11
     Width = 726
     HelpContext = 0
     Align = alTop
@@ -121,12 +121,7 @@ object SVNStatusFrm: TSVNStatusFrm
     DragCursor = crDrag
     DragMode = dmManual
     Enabled = True
-    Font.CharSet = ANSI_CHARSET
-    Font.Color = clBlack
-    Font.Height = -13
-    Font.Name = 'Courier'
-    Font.Pitch = fpFixed
-    Font.Quality = fqDraft
+    Font.Height = 0
     Font.Style = []
     MaxLength = -1
     ParentBidiMode = True
@@ -141,8 +136,8 @@ object SVNStatusFrm: TSVNStatusFrm
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 40
-    Top = 368
+    Height = 48
+    Top = 360
     Width = 726
     HelpContext = 0
     Align = alBottom
@@ -158,7 +153,7 @@ object SVNStatusFrm: TSVNStatusFrm
     Cursor = crVSplit
     Left = 0
     Height = 5
-    Top = 83
+    Top = 0
     Width = 738
     HelpContext = 0
     Align = alTop
