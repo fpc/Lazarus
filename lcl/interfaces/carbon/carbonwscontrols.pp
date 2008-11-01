@@ -332,7 +332,8 @@ begin
       Result := True
     else
       Result := (TCarbonWidget(AWincontrol.Handle) is TCarbonControlWithEdit) or
-        (TCarbonWidget(AWincontrol.Handle) is TCarbonDataBrowser);
+        (TCarbonWidget(AWincontrol.Handle) is TCarbonDataBrowser) or
+          (TCarbonWidget(AWincontrol.Handle) is TCarbonCustomControl);
   end;
 end;
 
