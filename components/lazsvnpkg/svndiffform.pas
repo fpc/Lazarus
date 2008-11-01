@@ -44,7 +44,7 @@ type
     FRepoPath: string;
   public
     { public declarations }
-    procedure Execute;
+    procedure Execute(Data: PtrInt);
   end;
 
 procedure ShowSVNDiffFrm(ASwitches, ARepoPath: string);
@@ -72,7 +72,7 @@ end;
 procedure TSVNDiffFrm.FormShow(Sender: TObject);
 begin
   Caption := Format(rsLazarusSVNDiff, [FRepoPath]);
-  Execute;
+  Application.QueueAsyncCall(@Execute, 0);
 end;
 
 procedure TSVNDiffFrm.FormCreate(Sender: TObject);
@@ -86,7 +86,7 @@ begin
     SVNDiffMemo.Lines.SaveToFile(SaveDialog.FileName);
 end;
 
-procedure TSVNDiffFrm.Execute;
+procedure TSVNDiffFrm.Execute(Data: PtrInt);
 var
   AProcess: TProcess;
   BytesRead: LongInt;

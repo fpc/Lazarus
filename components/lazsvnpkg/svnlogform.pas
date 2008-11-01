@@ -89,7 +89,7 @@ type
     procedure UpdateLogListView;
   public
     { public declarations }
-    procedure Execute;
+    procedure Execute(Data: PtrInt);
   end;
 
 procedure ShowSVNLogFrm(ARepoPath: string);
@@ -182,7 +182,7 @@ end;
 procedure TSVNLogFrm.FormShow(Sender: TObject);
 begin
   Caption := Format(rsLazarusSVNLog, [FRepoPath]);
-  Execute;
+  Application.QueueAsyncCall(@Execute, 0);
 end;
 
 procedure TSVNLogFrm.LogListViewSelectItem(Sender: TObject; Item: TListItem;
@@ -243,7 +243,7 @@ end;
 
 procedure TSVNLogFrm.RefreshButtonClick(Sender: TObject);
 begin
-  Execute;
+  Execute(0);
 end;
 
 procedure TSVNLogFrm.mnuShowDiffClick(Sender: TObject);
@@ -284,7 +284,7 @@ begin
   LogList.Free;
 end;
 
-procedure TSVNLogFrm.Execute;
+procedure TSVNLogFrm.Execute(Data: PtrInt);
 var
   M: TMemoryStream;
   Doc: TXMLDocument;

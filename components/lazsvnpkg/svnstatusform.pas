@@ -49,7 +49,7 @@ type
     { private declarations }
     FRepoPath: string;
     SVNStatus: TSVNStatus;
-    procedure UpdateFilesListView;
+    procedure UpdateFilesListView(Data: PtrInt);
   public
     { public declarations }
   end;
@@ -81,7 +81,7 @@ begin
   SVNStatus.Sort(siChecked, sdAscending);
 
   Caption := Format('%s - %s...', [FRepoPath, rsLazarusSVNCommit]);
-  UpdateFilesListView;
+  Application.QueueAsyncCall(@UpdateFilesListView, 0);
 end;
 
 procedure TSVNStatusFrm.mnuShowDiffClick(Sender: TObject);
@@ -138,7 +138,7 @@ begin
     8: SVNStatus.ReverseSort(siDate);
   end;
 
-  UpdateFilesListView;
+  UpdateFilesListView(0);
 end;
 
 procedure TSVNStatusFrm.SVNFileListViewSelectItem(Sender: TObject;
@@ -147,7 +147,7 @@ begin
   PSVNStatusItem(SVNStatus.List.Items[Item.Index])^.Checked:=Item.Checked;
 end;
 
-procedure TSVNStatusFrm.UpdateFilesListView;
+procedure TSVNStatusFrm.UpdateFilesListView(Data: PtrInt);
 var
   i: integer;
   StatusItem : PSVNStatusItem;

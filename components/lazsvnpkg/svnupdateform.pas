@@ -47,7 +47,7 @@ type
     procedure ProcessSVNUpdateOutput(var MemStream: TMemoryStream; var BytesRead: LongInt);
   public
     { public declarations }
-    procedure Execute;
+    procedure Execute(Data: PtrInt);
   end; 
 
 procedure ShowSVNUpdateFrm(ARepoPath: string);
@@ -85,7 +85,7 @@ end;
 procedure TSVNUpdateFrm.FormShow(Sender: TObject);
 begin
   Caption := Format(rsLazarusSVNUpdate, [FRepoPath]);
-  Execute;
+  Application.QueueAsyncCall(@Execute, 0);
 end;
 
 procedure TSVNUpdateFrm.mnuShowDiffClick(Sender: TObject);
@@ -152,36 +152,36 @@ begin
   Invalidate;
 end;
 
-procedure TSVNUpdateFrm.Execute;
+procedure TSVNUpdateFrm.Execute(Data: PtrInt);
 var
-  M: TMemoryStream;
-  P: TProcess;
+  AProcess: TProcess;
   n: LongInt;
+  MemStream: TMemoryStream;
   BytesRead: LongInt;
 begin
   SVNUpdateListView.Clear;
 
-  M := TMemoryStream.Create;
+  MemStream := TMemoryStream.Create;
   BytesRead := 0;
 
-  P := TProcess.Create(nil);
-  P.CommandLine := SVNExecutable + ' update ' + FRepoPath + ' --non-interactive';
-  debugln('TSVNUpdateFrm.Execute CommandLine ' + P.CommandLine);
-  P.Options := [poUsePipes, poStdErrToOutput];
-  P.ShowWindow := swoHIDE;
-  P.Execute;
+  AProcess := TProcess.Create(nil);
+  AProcess.CommandLine := SVNExecutable + ' update ' + FRepoPath + ' --non-interactive';
+  debugln('TSVNUpdateFrm.Execute CommandLine ' + AProcess.CommandLine);
+  AProcess.Options := [poUsePipes, poStdErrToOutput];
+  AProcess.ShowWindow := swoHIDE;
+  AProcess.Execute;
 
-  while P.Running do
+  while AProcess.Running do
   begin
     // make sure we have room
-    M.SetSize(BytesRead + READ_BYTES);
+    MemStream.SetSize(BytesRead + READ_BYTES);
 
     // try reading it
-    n := P.Output.Read((M.Memory + BytesRead)^, READ_BYTES);
+    n := AProcess.Output.Read((MemStream.Memory + BytesRead)^, READ_BYTES);
     if n > 0
     then begin
       Inc(BytesRead, n);
-      ProcessSVNUpdateOutput(m, BytesRead);
+      ProcessSVNUpdateOutput(MemStream, BytesRead);
     end
     else begin
       // no data, wait 100 ms
@@ -192,18 +192,18 @@ begin
   // read last part
   repeat
     // make sure we have room
-    M.SetSize(BytesRead + READ_BYTES);
+    MemStream.SetSize(BytesRead + READ_BYTES);
     // try reading it
-    n := P.Output.Read((M.Memory + BytesRead)^, READ_BYTES);
+    n := AProcess.Output.Read((MemStream.Memory + BytesRead)^, READ_BYTES);
     if n > 0
     then begin
       Inc(BytesRead, n);
-      ProcessSVNUpdateOutput(m, BytesRead);
+      ProcessSVNUpdateOutput(MemStream, BytesRead);
     end;
   until n <= 0;
 
-  P.Free;
-  M.Free;
+  AProcess.Free;
+  MemStream.Free;
 end;
 
 initialization
