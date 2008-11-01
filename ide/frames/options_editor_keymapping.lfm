@@ -1,0 +1,98 @@
+inherited EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
+  Height = 510
+  Width = 461
+  ClientHeight = 510
+  ClientWidth = 461
+  TabOrder = 0
+  Visible = False
+  DesignLeft = 154
+  DesignTop = 203
+  object KeyMappingHelpLabel: TLabel[0]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Height = 14
+    Width = 105
+    Caption = 'KeyMappingHelpLabel'
+    ParentColor = False
+  end
+  object KeyMappingFilterEdit: TEdit[1]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = KeyMappingHelpLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Height = 27
+    Top = 20
+    Width = 461
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Top = 6
+    OnChange = KeyMappingFilterEditChange
+    OnEnter = KeyMappingFilterEditEnter
+    OnExit = KeyMappingFilterEditExit
+    TabOrder = 0
+    Text = 'KeyMappingFilterEdit'
+  end
+  object KeyMappingTreeView: TTreeView[2]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = KeyMappingFilterEdit
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = KeyMappingFindKeyButton
+    Height = 399
+    Top = 53
+    Width = 461
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Top = 6
+    BorderSpacing.Bottom = 6
+    DefaultItemHeight = 15
+    ReadOnly = True
+    RowSelect = True
+    TabOrder = 1
+    OnMouseUp = KeyMappingTreeViewMouseUp
+    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoShowSeparators, tvoToolTips]
+  end
+  object KeyMappingFindKeyButton: TButton[3]
+    AnchorSideLeft.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = KeyMappingChooseSchemeButton
+    Height = 23
+    Top = 458
+    Width = 154
+    Anchors = [akLeft, akBottom]
+    AutoSize = True
+    BorderSpacing.Bottom = 6
+    Caption = 'KeyMappingFindKeyButton'
+    OnClick = KeyMappingFindKeyButtonClick
+    TabOrder = 2
+  end
+  object KeyMappingChooseSchemeButton: TButton[4]
+    AnchorSideLeft.Control = Owner
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Height = 23
+    Top = 487
+    Width = 189
+    Anchors = [akLeft, akBottom]
+    AutoSize = True
+    Caption = 'KeyMappingChooseSchemeButton'
+    OnClick = KeyMappingChooseSchemeButtonClick
+    TabOrder = 3
+  end
+  object KeyMappingConsistencyCheckButton: TButton[5]
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 258
+    Height = 23
+    Top = 487
+    Width = 203
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    Caption = 'KeyMappingConsistencyCheckButton'
+    OnClick = KeyMappingConsistencyCheckButtonClick
+    TabOrder = 4
+  end
+end

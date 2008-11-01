@@ -41,7 +41,7 @@
         <PackageName Value="SynEdit"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="13">
+    <Units Count="14">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -143,6 +143,14 @@
         <ResourceFilename Value="frames\options_editor_display.lrs"/>
         <UnitName Value="options_editor_display"/>
       </Unit12>
+      <Unit13>
+        <Filename Value="frames\options_editor_keymapping.pas"/>
+        <ComponentName Value="EditorKeymappingOptionsFrame"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="frames\options_editor_keymapping.lrs"/>
+        <UnitName Value="options_editor_keymapping"/>
+      </Unit13>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

@@ -129,7 +129,7 @@ uses
   IDEOptionsIntf, IDEOptionsDlg, EditorOptionsDlg {temporary},
   options_files, options_desktop, options_window, options_formed, options_oi,
   options_backup, options_naming, options_fpdoc,
-  options_editor_general, options_editor_display;
+  options_editor_general, options_editor_display, options_editor_keymapping;
 
 type
   TIDEProjectItem =

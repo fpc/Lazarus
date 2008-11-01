@@ -27,8 +27,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Graphics, LCLProc, LCLType,
   StdCtrls, SynEdit, Controls, ExtCtrls,
-  EditorOptions, LazarusIDEStrConsts, IDEProcs, IDEOptionsIntf, SrcEditorIntf,
-  KeyMapping;
+  EditorOptions, LazarusIDEStrConsts, IDEProcs, IDEOptionsIntf;
 
 type
   TPreviewEditor = TSynEdit;
@@ -55,7 +54,6 @@ type
     PreviewEdits: array of TPreviewEditor;
     PreviewSyn: TSrcIDEHighlighter;
     CurLanguageID: Integer;
-    EditingKeyMap: TKeyCommandRelationList;
 
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -176,7 +174,6 @@ begin
 
     PreviewSyn := GetHighlighter(TPreviewPasSyn, GetCurColorScheme(TPreviewPasSyn.GetLanguageName), True);
     CurLanguageID := HighlighterList.FindByClass(TCustomSynClass(PreviewSyn.ClassType));
-    EditingKeyMap.Assign(KeyMap);
 
     for i := Low(PreviewEdits) to High(PreviewEdits) do
       if PreviewEdits[i] <> nil then
@@ -185,7 +182,6 @@ begin
           if UseSyntaxHighlight then
             Highlighter := PreviewSyn;
           GetSynEditPreviewSettings(PreviewEdits[i]);
-          EditingKeyMap.AssignTo(PreviewEdits[i].KeyStrokes, TSourceEditorWindowInterface);
           Lines.Text := HighlighterList[CurLanguageID].SampleSource;
           CaretXY := HighlighterList[CurLanguageID].CaretXY;
           TopLine := 1;
@@ -450,14 +446,12 @@ constructor TEditorGeneralOptionsFrame.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   PreviewEdits := nil;
-  EditingKeyMap := TKeyCommandRelationList.Create;
 end;
 
 destructor TEditorGeneralOptionsFrame.Destroy;
 begin
   ClearHighlighters;
   FColorSchemes.Free;
-  EditingKeyMap.Free;
   inherited Destroy;
 end;
 
