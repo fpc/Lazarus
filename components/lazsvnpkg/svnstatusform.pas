@@ -106,6 +106,11 @@ var
   StatusItem : PSVNStatusItem;
   FileName: string;
 begin
+  if SVNCommitMsgMemo.Text = '' then
+    if MessageDlg ('No message set.', 'Do you wish to continue?', mtConfirmation,
+                  [mbYes, mbNo],0) <> mrYes then
+      exit;
+
   //commit the checked files
   CmdLine := SVNExecutable + ' commit --force-log ';
 

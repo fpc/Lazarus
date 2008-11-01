@@ -396,11 +396,12 @@ begin
 
           //message
           if NodeName = 'msg' then
-            LogItem.Msg:=ReplaceLineEndings(tmpNode.FirstChild.NodeValue, LineEnding);
+            if Assigned(tmpNode.FirstChild) then
+              LogItem.Msg:=ReplaceLineEndings(tmpNode.FirstChild.NodeValue, LineEnding);
         end;
 
         ActionNode := tmpNode.FirstChild;
-        if Assigned(ActionNode.Attributes) then
+        if Assigned(ActionNode) and Assigned(ActionNode.Attributes) then
         repeat
 
           //attributes
