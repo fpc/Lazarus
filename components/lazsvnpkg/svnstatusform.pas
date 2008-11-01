@@ -119,7 +119,7 @@ begin
         CmdLine := CmdLine + ' ' + StatusItem^.Path;
   end;
 
-  CmdLine := CmdLine + ' -m"' + SVNCommitMsgMemo.Text + '"';
+  CmdLine := CmdLine + ' -m ' + SVNCommitMsgMemo.Text;
 
   ShowSVNCommitFrm(CmdLine);
 end;
