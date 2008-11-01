@@ -106,7 +106,7 @@ object SVNStatusFrm: TSVNStatusFrm
   object SVNCommitMsgMemo: TMemo
     Left = 6
     Height = 77
-    Top = 11
+    Top = 6
     Width = 726
     HelpContext = 0
     Align = alTop
@@ -153,7 +153,7 @@ object SVNStatusFrm: TSVNStatusFrm
     Cursor = crVSplit
     Left = 0
     Height = 5
-    Top = 0
+    Top = 83
     Width = 738
     HelpContext = 0
     Align = alTop

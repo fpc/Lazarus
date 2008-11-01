@@ -29,7 +29,7 @@ LazarusResources.Add('TSVNStatusFrm','FORMDATA',[
   +'stText'#7'TabStop'#9#8'TabOrder'#2#0#8'ToolTips'#9#7'Visible'#9#9'ViewStyle'
   +#7#8'vsReport'#13'OnColumnClick'#7#26'SVNFileListViewColumnClick'#12'OnSelec'
   +'tItem'#7#25'SVNFileListViewSelectItem'#0#0#5'TMemo'#16'SVNCommitMsgMemo'#4
-  +'Left'#2#6#6'Height'#2'M'#3'Top'#2#11#5'Width'#3#214#2#11'HelpContext'#2#0#5
+  +'Left'#2#6#6'Height'#2'M'#3'Top'#2#6#5'Width'#3#214#2#11'HelpContext'#2#0#5
   +'Align'#7#5'alTop'#9'Alignment'#7#13'taLeftJustify'#18'BorderSpacing.Left'#2
   +#6#17'BorderSpacing.Top'#2#6#19'BorderSpacing.Right'#2#6#20'BorderSpacing.Bo'
   +'ttom'#2#0#20'BorderSpacing.Around'#2#0'!BorderSpacing.CellAlignHorizontal'#7
@@ -43,8 +43,8 @@ LazarusResources.Add('TSVNStatusFrm','FORMDATA',[
   +'r'#2#2#13'DefaultButton'#7#4'pbOK'#11'ShowButtons'#11#4'pbOK'#8'pbCancel'#0
   +#10'ShowGlyphs'#11#4'pbOK'#8'pbCancel'#7'pbClose'#6'pbHelp'#0#7'Visible'#9#0
   +#0#9'TSplitter'#8'Splitter'#6'Cursor'#7#8'crVSplit'#4'Left'#2#0#6'Height'#2#5
-  +#3'Top'#2#0#5'Width'#3#226#2#11'HelpContext'#2#0#5'Align'#7#5'alTop'#8'AutoS'
-  +'nap'#9#7'Beveled'#8#7'MinSize'#2#30#11'ParentColor'#9#14'ParentShowHint'#9
+  +#3'Top'#2'S'#5'Width'#3#226#2#11'HelpContext'#2#0#5'Align'#7#5'alTop'#8'Auto'
+  +'Snap'#9#7'Beveled'#8#7'MinSize'#2#30#11'ParentColor'#9#14'ParentShowHint'#9
   +#12'ResizeAnchor'#7#5'akTop'#11'ResizeStyle'#7#8'rsUpdate'#7'Visible'#9#0#0
   +#10'TPopupMenu'#10'PopupMenu1'#4'left'#2'5'#3'top'#3#213#0#0#9'TMenuItem'#11
   +'mnuShowDiff'#7'Caption'#6#9'New Item1'#12'RightJustify'#8#19'ShowAlwaysChec'

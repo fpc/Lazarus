@@ -11,20 +11,20 @@ LazarusResources.Add('TSVNCommitFrm','FORMDATA',[
   +'ng.ControlsPerLine'#2#0#12'ClientHeight'#3','#1#11'ClientWidth'#3#144#1#8'D'
   +'ockSite'#8#8'DragKind'#7#6'dkDrag'#8'DragMode'#7#8'dmManual'#7'Enabled'#9#11
   +'Font.Height'#2#0#10'Font.Style'#11#0#9'FormStyle'#7#8'fsNormal'#6'OnShow'#7
-  +#8'FormShow'#14'ParentBiDiMode'#9#10'ParentFont'#8#8'Position'#7#10'poDesign'
-  +'ed'#13'ShowInTaskBar'#7#9'stDefault'#14'UseDockManager'#8#10'LCLVersion'#6#6
-  +'0.9.27'#11'WindowState'#7#8'wsNormal'#0#12'TButtonPanel'#11'ButtonPanel'#4
-  +'Left'#2#6#6'Height'#2'0'#3'Top'#3#252#0#5'Width'#3#132#1#11'HelpContext'#2#0
-  +#5'Align'#7#8'alBottom'#8'AutoSize'#9#11'ButtonOrder'#7#9'boDefault'#8'TabOr'
-  +'der'#2#0#13'DefaultButton'#7#4'pbOK'#11'ShowButtons'#11#4'pbOK'#0#10'ShowGl'
-  +'yphs'#11#4'pbOK'#8'pbCancel'#7'pbClose'#6'pbHelp'#0#7'Visible'#9#0#0#5'TMem'
-  +'o'#13'SVNCommitMemo'#4'Left'#2#6#6'Height'#3#240#0#3'Top'#2#6#5'Width'#3#132
-  +#1#11'HelpContext'#2#0#5'Align'#7#8'alClient'#9'Alignment'#7#13'taLeftJustif'
-  +'y'#18'BorderSpacing.Left'#2#0#17'BorderSpacing.Top'#2#0#19'BorderSpacing.Ri'
-  +'ght'#2#0#20'BorderSpacing.Bottom'#2#0#20'BorderSpacing.Around'#2#6'!BorderS'
-  +'pacing.CellAlignHorizontal'#7#7'ccaFill'#31'BorderSpacing.CellAlignVertical'
-  +#7#7'ccaFill'#10'DragCursor'#7#6'crDrag'#8'DragMode'#7#8'dmManual'#7'Enabled'
-  +#9#9'MaxLength'#2#255#14'ParentBidiMode'#9#10'ParentFont'#9#8'ReadOnly'#9#10
-  +'ScrollBars'#7#6'ssNone'#8'TabOrder'#2#1#7'TabStop'#9#7'Visible'#9#11'WantRe'
-  +'turns'#9#8'WantTabs'#8#0#0#0
+  +#8'FormShow'#14'ParentBiDiMode'#9#10'ParentFont'#8#8'Position'#7#14'poScreen'
+  +'Center'#13'ShowInTaskBar'#7#9'stDefault'#14'UseDockManager'#8#10'LCLVersion'
+  +#6#6'0.9.27'#11'WindowState'#7#8'wsNormal'#0#12'TButtonPanel'#11'ButtonPanel'
+  +#4'Left'#2#6#6'Height'#2'0'#3'Top'#3#252#0#5'Width'#3#132#1#11'HelpContext'#2
+  +#0#5'Align'#7#8'alBottom'#8'AutoSize'#9#11'ButtonOrder'#7#9'boDefault'#8'Tab'
+  +'Order'#2#0#13'DefaultButton'#7#4'pbOK'#11'ShowButtons'#11#4'pbOK'#0#10'Show'
+  +'Glyphs'#11#4'pbOK'#8'pbCancel'#7'pbClose'#6'pbHelp'#0#7'Visible'#9#0#0#5'TM'
+  +'emo'#13'SVNCommitMemo'#4'Left'#2#6#6'Height'#3#240#0#3'Top'#2#6#5'Width'#3
+  +#132#1#11'HelpContext'#2#0#5'Align'#7#8'alClient'#9'Alignment'#7#13'taLeftJu'
+  +'stify'#18'BorderSpacing.Left'#2#0#17'BorderSpacing.Top'#2#0#19'BorderSpacin'
+  +'g.Right'#2#0#20'BorderSpacing.Bottom'#2#0#20'BorderSpacing.Around'#2#6'!Bor'
+  +'derSpacing.CellAlignHorizontal'#7#7'ccaFill'#31'BorderSpacing.CellAlignVert'
+  +'ical'#7#7'ccaFill'#10'DragCursor'#7#6'crDrag'#8'DragMode'#7#8'dmManual'#7'E'
+  +'nabled'#9#9'MaxLength'#2#255#14'ParentBidiMode'#9#10'ParentFont'#9#8'ReadOn'
+  +'ly'#9#10'ScrollBars'#7#6'ssNone'#8'TabOrder'#2#1#7'TabStop'#9#7'Visible'#9
+  +#11'WantReturns'#9#8'WantTabs'#8#0#0#0
 ]);

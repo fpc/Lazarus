@@ -29,7 +29,7 @@ object SVNCommitFrm: TSVNCommitFrm
   OnShow = FormShow
   ParentBiDiMode = True
   ParentFont = False
-  Position = poDesigned
+  Position = poScreenCenter
   ShowInTaskBar = stDefault
   UseDockManager = False
   LCLVersion = '0.9.27'
