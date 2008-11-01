@@ -38,6 +38,8 @@ type
     procedure EditButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure ProjectsListViewChange(Sender: TObject; Item: TListItem;
+      Change: TItemChange);
   private
     { private declarations }
   public
@@ -62,6 +64,12 @@ end;
 procedure TSVNSettingsFrm.FormShow(Sender: TObject);
 begin
   UpdateProjectListView;
+end;
+
+procedure TSVNSettingsFrm.ProjectsListViewChange(Sender: TObject;
+  Item: TListItem; Change: TItemChange);
+begin
+  SVNSettings.Active[Item.Index] := Item.Checked;
 end;
 
 procedure TSVNSettingsFrm.UpdateProjectListView;

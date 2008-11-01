@@ -1,15 +1,13 @@
 <?xml version="1.0"?>
 <CONFIG>
   <Package Version="3">
-    <PathDelim Value="\"/>
     <Name Value="lazsvnpkg"/>
     <Author Value="Darius Blaszyk"/>
     <CompilerOptions>
       <Version Value="8"/>
-      <PathDelim Value="\"/>
       <SearchPaths>
-        <OtherUnitFiles Value="$(LazarusDir)\lcl\units\$(TargetCPU)-$(TargetOS)\;$(LazarusDir)\ideintf\units\$(TargetCPU)-$(TargetOS)\;$(LazarusDir)\components\lazsvnpkg\lib\$(TargetCPU)-$(TargetOS)\;$(LazarusDir)\units\$(TargetCPU)-$(TargetOS)\;$(LazarusDir)\components\codetools\units\$(TargetCPU)-$(TargetOS)\;$(LazarusDir)\components\synedit\units\$(TargetCPU)-$(TargetOS)\"/>
-        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+        <OtherUnitFiles Value="$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/;$(LazarusDir)/ideintf/units/$(TargetCPU)-$(TargetOS)/;$(LazarusDir)/components/lazsvnpkg/lib/$(TargetCPU)-$(TargetOS)/;$(LazarusDir)/units/$(TargetCPU)-$(TargetOS)/;$(LazarusDir)/components/codetools/units/$(TargetCPU)-$(TargetOS)/;$(LazarusDir)/components/synedit/units/$(TargetCPU)-$(TargetOS)/"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Parsing>
         <SyntaxOptions>
@@ -23,7 +21,7 @@
     <Description Value="A Lazarus SVN IDE plugin"/>
     <License Value="GPL"/>
     <Version Release="1"/>
-    <Files Count="20">
+    <Files Count="23">
       <Item1>
         <Filename Value="svnlogform.lfm"/>
         <Type Value="LFM"/>
@@ -105,6 +103,18 @@
         <HasRegisterProc Value="True"/>
         <UnitName Value="LazSVNIntf"/>
       </Item20>
+      <Item21>
+        <Filename Value="svnaddprojectform.lfm"/>
+        <Type Value="LFM"/>
+      </Item21>
+      <Item22>
+        <Filename Value="svnaddprojectform.lrs"/>
+        <Type Value="LRS"/>
+      </Item22>
+      <Item23>
+        <Filename Value="svnaddprojectform.pas"/>
+        <UnitName Value="SVNAddProjectForm"/>
+      </Item23>
     </Files>
     <Type Value="DesignTime"/>
     <RequiredPkgs Count="5">
@@ -126,11 +136,10 @@
       </Item5>
     </RequiredPkgs>
     <UsageOptions>
-      <UnitPath Value="$(PkgOutDir)\"/>
+      <UnitPath Value="$(PkgOutDir)/"/>
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>
-      <DestinationDirectory Value="$(TestDir)\publishedpackage\"/>
       <IgnoreBinaries Value="False"/>
     </PublishOptions>
   </Package>

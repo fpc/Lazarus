@@ -146,5 +146,5 @@ LazarusResources.Add('TSVNSettingsFrm','FORMDATA',[
   +'Select'#8#14'ParentShowHint'#9#8'ReadOnly'#8#9'RowSelect'#9#10'ScrollBars'#7
   +#6'ssBoth'#17'ShowColumnHeaders'#9#10'SortColumn'#2#0#8'SortType'#7#6'stNone'
   +#7'TabStop'#9#8'TabOrder'#2#1#8'ToolTips'#9#7'Visible'#9#9'ViewStyle'#7#8'vs'
-  +'Report'#0#0#0
+  +'Report'#8'OnChange'#7#22'ProjectsListViewChange'#0#0#0
 ]);

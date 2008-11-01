@@ -228,5 +228,6 @@ object SVNSettingsFrm: TSVNSettingsFrm
     ToolTips = True
     Visible = True
     ViewStyle = vsReport
+    OnChange = ProjectsListViewChange
   end
 end

@@ -48,6 +48,7 @@ resourcestring
   rsLazarusSVNUpdate = '%s - LazarusSVN Update...';
   rsMerged = 'Merged';
   rsMessage = 'Message';
+  rsNoAuthor = '(no author)';
   rsPath = 'Path';
   rsProjectFilename = 'Project filename';
   rsProjectIsActive = 'Project is active';
@@ -145,7 +146,7 @@ var
 procedure SetColumn(ListView: TListView; ColNo, DefaultWidth: integer; AName: string; AutoSize: boolean = true);
 function SVNExecutable: string;
 function ReplaceLineEndings(const s, NewLineEnds: string): string;
-function ISO8601ToDateTime(DateTime: string): TDateTime;
+function ISO8601ToDateTime(ADateTime: string): TDateTime;
 
 implementation
 
@@ -187,16 +188,16 @@ begin
   end;
 end;
 
-function ISO8601ToDateTime(DateTime: string): TDateTime;
+function ISO8601ToDateTime(ADateTime: string): TDateTime;
 var
   y, m, d, h, n, s: word;
 begin
-  y := StrToInt(Copy(DateTime, 1, 4));
-  m := StrToInt(Copy(DateTime, 6, 2));
-  d := StrToInt(Copy(DateTime, 9, 2));
-  h := StrToInt(Copy(DateTime, 12, 2));
-  n := StrToInt(Copy(DateTime, 15, 2));
-  s := StrToInt(Copy(DateTime, 18, 2));
+  y := StrToInt(Copy(ADateTime, 1, 4));
+  m := StrToInt(Copy(ADateTime, 6, 2));
+  d := StrToInt(Copy(ADateTime, 9, 2));
+  h := StrToInt(Copy(ADateTime, 12, 2));
+  n := StrToInt(Copy(ADateTime, 15, 2));
+  s := StrToInt(Copy(ADateTime, 18, 2));
 
   Result := EncodeDate(y,m,d) + EncodeTime(h,n,s,0);
 end;
@@ -457,19 +458,20 @@ end;
 
 constructor TSVNStatus.Create(const ARepoPath: string);
 var
-  Doc: TXMLDocument;
-  Node: TDOMNode;
-  SubNode: TDOMNode;
-  ListItem: PSVNStatusItem;
+  ActNode: TDOMNode;
   AProcess: TProcess;
+  BytesRead: LongInt;
+  Doc: TXMLDocument;
+  F: LongInt;
   i: integer;
+  ListItem: PSVNStatusItem;
   M: TMemoryStream;
   n: LongInt;
-  BytesRead: LongInt;
-  F: LongInt;
-  Path: string;
+  Node: TDOMNode;
   NodeName: string;
   NodeValue: string;
+  Path: string;
+  SubNode: TDOMNode;
 begin
   List := TFPList.Create;
   RepositoryPath := ARepoPath;
@@ -526,6 +528,9 @@ begin
     If F<>-1 then
       If (F and faDirectory)=0 then
       begin
+        //initialize author (anonymous repositories)
+        ListItem^.Author := rsNoAuthor;
+
         //path
         ListItem^.Path := Path;
 
@@ -560,17 +565,28 @@ begin
         end;
 
         //get the commit attributes
-        if Assigned(SubNode.ChildNodes.Item[0].ChildNodes.Item[0]) then
+        SubNode := SubNode.ChildNodes.Item[0].ChildNodes.Item[0];
+        if Assigned(SubNode) then
         begin
           //CommitRevision
-          ListItem^.CommitRevision:=StrToInt(SubNode.ChildNodes.Item[0].ChildNodes.Item[0].Attributes.Item[0].NodeValue);
+          ListItem^.CommitRevision:=StrToInt(SubNode.Attributes.Item[0].NodeValue);
 
-          if Assigned(SubNode.ChildNodes.Item[0].ChildNodes.Item[0].ChildNodes.Item[0]) then
+          for i := 0 to SubNode.ChildNodes.Length - 1 do
           begin
-            //Author
-            ListItem^.Author:=SubNode.ChildNodes.Item[0].ChildNodes.Item[0].ChildNodes.Item[0].FirstChild.NodeValue;
-            //Date
-            ListItem^.Date:=ISO8601ToDateTime(SubNode.ChildNodes.Item[0].ChildNodes.Item[0].ChildNodes.Item[0].NextSibling.FirstChild.NodeValue);
+            ActNode := SubNode.ChildNodes.Item[i];
+
+            if Assigned(ActNode) then
+            begin
+              NodeName := ActNode.NodeName;
+
+              //Author
+              if NodeName = 'author' then
+                ListItem^.Author := ActNode.FirstChild.NodeValue;
+
+              //Date
+              if NodeName = 'date' then
+                ListItem^.Date := ISO8601ToDateTime(ActNode.FirstChild.NodeValue);
+            end;
           end;
         end;
 

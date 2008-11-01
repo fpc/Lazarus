@@ -104,9 +104,10 @@ var
   i: integer;
   CmdLine: string;
   StatusItem : PSVNStatusItem;
+  FileName: string;
 begin
   //commit the checked files
-  CmdLine := SVNExecutable + ' commit';
+  CmdLine := SVNExecutable + ' commit --force-log ';
 
   for i := 0 to SVNStatus.List.Count - 1 do
   begin
@@ -119,9 +120,12 @@ begin
         CmdLine := CmdLine + ' ' + StatusItem^.Path;
   end;
 
-  CmdLine := CmdLine + ' -m ' + SVNCommitMsgMemo.Text;
+  FileName := GetTempFileName('','');
+  SVNCommitMsgMemo.Lines.SaveToFile(FileName);
+  CmdLine := CmdLine + ' --file ' + FileName;
 
   ShowSVNCommitFrm(CmdLine);
+  DeleteFile(FileName);
 end;
 
 procedure TSVNStatusFrm.SVNFileListViewColumnClick(Sender: TObject;

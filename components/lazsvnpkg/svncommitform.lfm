@@ -4,6 +4,7 @@ object SVNCommitFrm: TSVNCommitFrm
   Top = 316
   Width = 400
   HelpContext = 0
+  ActiveControl = SVNCommitMemo
   Align = alNone
   AllowDropFiles = False
   AutoScroll = True
@@ -35,8 +36,8 @@ object SVNCommitFrm: TSVNCommitFrm
   WindowState = wsNormal
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 40
-    Top = 260
+    Height = 48
+    Top = 252
     Width = 388
     HelpContext = 0
     Align = alBottom
@@ -50,7 +51,7 @@ object SVNCommitFrm: TSVNCommitFrm
   end
   object SVNCommitMemo: TMemo
     Left = 6
-    Height = 248
+    Height = 240
     Top = 6
     Width = 388
     HelpContext = 0
@@ -69,7 +70,7 @@ object SVNCommitFrm: TSVNCommitFrm
     MaxLength = -1
     ParentBidiMode = True
     ParentFont = True
-    ReadOnly = False
+    ReadOnly = True
     ScrollBars = ssNone
     TabOrder = 1
     TabStop = True

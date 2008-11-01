@@ -25,7 +25,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
   ComCtrls, StdCtrls, ButtonPanel, ExtCtrls, Process, Spin, XMLRead, DOM,
-  SrcEditorIntf, Menus, LCLProc;
+  Menus, LCLProc;
 
 type
   TActionItem = record
@@ -125,7 +125,8 @@ end;
 
 constructor TSVNLogItem.Create;
 begin
-
+  //initialize author to unknown, beacuse in anonymous repositories this really happens
+  Author := rsNoAuthor;
 end;
 
 destructor TSVNLogItem.Destroy;
@@ -288,19 +289,21 @@ end;
 
 procedure TSVNLogFrm.Execute(Data: PtrInt);
 var
-  M: TMemoryStream;
-  Doc: TXMLDocument;
-  Node: TDOMNode;
-  SubNode: TDOMNode;
-  ActionNode: TDOMNode;
-  LogItem: TSVNLogItem;
-  AProcess: TProcess;
-  temp: TDomNode;
   ActionItem: TActionItem;
-  i: integer;
-  t: string;
+  ActionNode: TDOMNode;
+  AProcess: TProcess;
   BytesRead: LongInt;
+  Doc: TXMLDocument;
+  i: integer;
+  j: integer;
+  LogItem: TSVNLogItem;
+  M: TMemoryStream;
   n: LongInt;
+  Node: TDOMNode;
+  NodeName: string;
+  SubNode: TDOMNode;
+  t: string;
+  tmpNode: TDOMNode;
 
   procedure AddItem(Node: TDomNode);
   begin
@@ -371,42 +374,60 @@ begin
       //revision
       LogItem.Revision := StrToInt(SubNode.Attributes.Item[0].NodeValue);
 
-      //author
-      LogItem.Author:=SubNode.ChildNodes.Item[0].FirstChild.NodeValue;
-
-      //date
-      LogItem.Date:=ISO8601ToDateTime(SubNode.ChildNodes.Item[1].FirstChild.NodeValue);
-
       //action
       ActionItem.CopyRev := '';
       ActionItem.CopyPath := '';
-      ActionNode := SubNode.ChildNodes.Item[2].FirstChild;
-      repeat
-        //attributes
-        for i := 0 to ActionNode.Attributes.Length-1 do
-        begin
-          t := ActionNode.Attributes.Item[i].NodeName;
 
-          if t = 'action' then
-            ActionItem.Action := ActionNode.Attributes.Item[i].NodeValue
-          else
-            if t = 'copyfrom-rev' then
-              ActionItem.CopyRev := ActionNode.Attributes.Item[i].NodeValue
-            else
-              if t = 'copyfrom-path' then
-                ActionItem.CopyPath := ActionNode.Attributes.Item[i].NodeValue;
+      for j := 0 to SubNode.ChildNodes.Length - 1 do
+      begin
+        tmpNode := SubNode.ChildNodes.Item[j];
+
+        if Assigned(tmpNode) then
+        begin
+          NodeName := tmpNode.NodeName;
+
+          //Author
+          if NodeName = 'author' then
+            LogItem.Author := tmpNode.FirstChild.NodeValue;
+
+          //Date
+          if NodeName = 'date' then
+            LogItem.Date := ISO8601ToDateTime(tmpNode.FirstChild.NodeValue);
+
+          //message
+          if NodeName = 'msg' then
+            LogItem.Msg:=ReplaceLineEndings(tmpNode.FirstChild.NodeValue, LineEnding);
         end;
 
-        //paths
-        ActionItem.Path:=ActionNode.FirstChild.NodeValue;
+        ActionNode := tmpNode.FirstChild;
+        if Assigned(ActionNode.Attributes) then
+        repeat
 
-        LogItem.AddAction(ActionItem);
+          //attributes
+          for i := 0 to ActionNode.Attributes.Length-1 do
+          begin
+            t := ActionNode.Attributes.Item[i].NodeName;
 
-        ActionNode := ActionNode.NextSibling;
-      until not Assigned(ActionNode);
+            if t = 'action' then
+              ActionItem.Action := ActionNode.Attributes.Item[i].NodeValue
+            else
+              if t = 'copyfrom-rev' then
+                ActionItem.CopyRev := ActionNode.Attributes.Item[i].NodeValue
+              else
+                if t = 'copyfrom-path' then
+                  ActionItem.CopyPath := ActionNode.Attributes.Item[i].NodeValue;
+          end;
 
-      //message
-      LogItem.Msg:=ReplaceLineEndings(SubNode.ChildNodes.Item[3].FirstChild.NodeValue, LineEnding);
+          //paths
+          ActionItem.Path:=ActionNode.FirstChild.NodeValue;
+
+          LogItem.AddAction(ActionItem);
+
+          ActionNode := ActionNode.NextSibling;
+        until not Assigned(ActionNode);
+
+      end;
+
 
       LogList.Add(LogItem);
 
