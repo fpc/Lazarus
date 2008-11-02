@@ -2464,23 +2464,18 @@ psSolid, psDash, psDot, psDashDot, psDashDotDot, psinsideFrame, psPattern,psClea
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TPen.Create">
-        <short>
-          <var>Pen</var>  Constructor</short>
+      <element name="TPen.Create" link="#rtl.System.TObject.Create">
         <descr>Most of its properties are <b>inherited</b>
- from the parent class</descr>
+ from the parent class
+</descr>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TPen.Destroy">
-        <short>
-          <var>Pen</var> Destructor</short>
-        <descr>Most of its properties are <b>inherited</b> from the parent class</descr>
+      <element name="TPen.Destroy" link="#rtl.Classes.TPersistent.Destroy">
+        <descr>Most of its properties are <b>inherited</b> from the parent class
+</descr>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TPen.Assign">
-        <short>Copies the <var>Source</var>
-          <var>Pen</var> to itself</short>
-      </element>
+      <element name="TPen.Assign" link="#rtl.Classes.TPersistent.Assign"/>
       <!-- argument Visibility: default -->
       <element name="TPen.Assign.Source">
         <short/>
@@ -2673,22 +2668,13 @@ Default is psSolid</descr>
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TBrush.Assign">
-        <short>
-          <var>Assign</var> - copies a 
-          
-          
-          
-          
-          
-          
-          <var>Source</var>
-          <var>Brush</var> to itself</short>
+      <element name="TBrush.Assign" link="#rtlClasses.TPersistent.Assign">
         <descr>Method: TBrush.Assign<br/>
   Params: Source: Another brush<br/>
   Returns:  nothing<br/>
 
-  Copies the source brush to itself</descr>
+  Copies the source brush to itself
+</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TBrush.Assign.Source">
@@ -2704,16 +2690,13 @@ Default is psSolid</descr>
         </short>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TBrush.Create">
-        <short>
-          <var>Brush</var> constructor</short>
+      <element name="TBrush.Create" link="#rtl.System.TObject.Create">
         <descr>
-          <b>Inherits</b> most of its properties from ancestor Classes</descr>
+          <b>Inherits</b> most of its properties from ancestor Classes
+</descr>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TBrush.Destroy">
-        <short>
-          <var>Brush</var> destructor</short>
+      <element name="TBrush.Destroy" link="#rtl.Classes.TPersistent.Destroy">
         <descr>
           <b>Inherits</b> properties to remove 
           
@@ -2779,26 +2762,29 @@ Default is psSolid</descr>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
-      <element name="TRegionData.Rect">
+      <element name="TRegionData.Rect" link="#rtl.Classes.Rect">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TRegionData.Polygon">
-        <short/>
+        <short>
+          <var>Polygon</var> - a list of points defining a polygon</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TRegionData.NumPoints">
-        <short/>
+        <short>
+          <var>NumPoints</var> - the number of points in the polygon list</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TRegionData.Winding">
-        <short/>
+        <short>If True, use <var>Winding</var>
+          <var/> mode to construct the Polygon</short>
         <descr/>
         <seealso/>
       </element>
@@ -2867,27 +2853,14 @@ Default is psSolid</descr>
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TRegion.Create">
-        <short>
-          <var>TRegion</var> constructor</short>
-      </element>
+      <element name="TRegion.Create" link="#rtl.System.TObject.Create"/>
       <!-- destructor Visibility: public -->
-      <element name="TRegion.Destroy">
+      <element name="TRegion.Destroy" link="#rtl.Classes.TPersistent.Destroy">
         <short>
           <var>TRegion</var> destructor</short>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TRegion.Assign">
-        <short>
-          <var>Assign</var> - copies 
-          
-          
-          
-          
-          
-          
-          <var>Source</var> to itself</short>
-      </element>
+      <element name="TRegion.Assign" link="#rtl.Classes.TPersistent.Assign"/>
       <!-- argument Visibility: default -->
       <element name="TRegion.Assign.Source">
         <short/>
@@ -2903,11 +2876,13 @@ Default is psSolid</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TRegion.ClipRect">
-        <short>The rectangle to be used for clipping text</short>
+        <short>
+          <var>ClipRect</var> - The rectangle to be used for clipping text</short>
       </element>
       <!-- object Visibility: default -->
       <element name="TGraphic">
-        <short>Base class for dealing with <var>Graphic</var>   images</short>
+        <short>
+          <var>TGraphic</var> - Base class for dealing with <var>Graphic</var>   images</short>
         <descr>The <var>TGraphic</var> class is an <b>abstract</b> base class for dealing with graphic images such as bitmaps, pixmaps, icons, and other image formats. It does not contain an actual area for displaying the image; this is provided by the descendant classes eg <var>BitMap</var>, <var>Icon</var> etc which have a <var>Canvas</var> element defined <br/>
           <var>LoadFromFile</var> - Read the graphic from the file system.  The old contents of the graphic are lost.  If the file is not of the right format, an exception will be generated.<br/>
           <var>SaveToFile</var> - Writes the graphic to disk in the file provided.<br/>
@@ -2962,7 +2937,8 @@ Default is psSolid</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TGraphic.Changed">
-        <short/>
+        <short>
+          <var>Changed</var> - software emulation of a call to the <var>OnChange</var> event</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2973,7 +2949,8 @@ Default is psSolid</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TGraphic.Equals">
-        <short/>
+        <short>
+          <var>Equals</var> - returns True if the current Graphic is the same as the specified Graphic</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2987,7 +2964,7 @@ Default is psSolid</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TGraphic.DefineProperties">
+      <element name="TGraphic.DefineProperties" link="#rtl.Classes.TPersistent.DefineProperties">
         <short/>
         <descr/>
         <errors/>
@@ -2999,7 +2976,7 @@ Default is psSolid</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TGraphic.Draw">
-        <short/>
+        <short>Method to <var>Draw</var> the Graphic on th e specified Canvas, in the specified Rectangle</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3014,7 +2991,8 @@ Default is psSolid</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TGraphic.GetEmpty">
-        <short/>
+        <short>
+          <var>GetEmpty</var> - returns True if the Graphic is empty</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3025,7 +3003,8 @@ Default is psSolid</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TGraphic.GetHeight">
-        <short/>
+        <short>
+          <var>GetHeight</var> - - returns the height of the Graphic</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3036,7 +3015,8 @@ Default is psSolid</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TGraphic.GetMimeType">
-        <short/>
+        <short>
+          <var>GetMimeType</var> - returns the MIME type of the Graphic</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3047,7 +3027,8 @@ Default is psSolid</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TGraphic.GetPalette">
-        <short/>
+        <short>
+          <var>GetPalette</var> - returns a Handle for the Palette</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3058,7 +3039,8 @@ Default is psSolid</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TGraphic.GetTransparent">
-        <short/>
+        <short>
+          <var>GetTransparent</var> - returns True if the graphic is transparent</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3069,7 +3051,8 @@ Default is psSolid</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TGraphic.GetWidth">
-        <short/>
+        <short>
+          <var>GetWidth</var> - returns the width of the Graphic</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3080,7 +3063,7 @@ Default is psSolid</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TGraphic.Progress">
-        <short>Monitor the progress of the drawing</short>
+        <short>Monitor the <var>Progress</var> of the drawing</short>
         <seealso>
           <link id="Graphics.Progress"/>
         </seealso>
@@ -3115,7 +3098,8 @@ Default is psSolid</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TGraphic.ReadData">
-        <short/>
+        <short>
+          <var>ReadData</var> - reads data for the Graphic from a stream</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3126,7 +3110,8 @@ Default is psSolid</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TGraphic.SetHeight">
-        <short/>
+        <short>
+          <var>SetHeight</var> - defines the height for the Graphic</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3137,7 +3122,8 @@ Default is psSolid</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TGraphic.SetPalette">
-        <short/>
+        <short>
+          <var>SetPalette</var> - deefines the Palette Handle to be used</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3148,7 +3134,8 @@ Default is psSolid</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TGraphic.SetTransparent">
-        <short/>
+        <short>
+          <var>SetTransparent</var> - defines whether the graphic is to be transparent</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3159,7 +3146,8 @@ Default is psSolid</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TGraphic.SetWidth">
-        <short/>
+        <short>
+          <var>SetWidth</var> - defines the width for the Graphic</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3170,7 +3158,8 @@ Default is psSolid</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TGraphic.SetModified">
-        <short/>
+        <short>
+          <var>SetModified</var> - defines whether the graphic has been modified</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3181,7 +3170,8 @@ Default is psSolid</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TGraphic.WriteData">
-        <short/>
+        <short>
+          <var>WriteData</var> - writes Graphic data to a stream</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3191,7 +3181,7 @@ Default is psSolid</descr>
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TGraphic.Assign">
+      <element name="TGraphic.Assign" link="#rtl.Classes.TPersistent.Assign">
         <short/>
         <descr/>
         <errors/>
@@ -3203,15 +3193,14 @@ Default is psSolid</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TGraphic.Clear">
-        <short/>
+        <short>
+          <var>Clear</var> the resources used by the Graphic, leaving a blank Graphic</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TGraphic.Create">
-        <short>
-          <var>TGraphic</var> constructor</short>
+      <element name="TGraphic.Create" link="#rtl.System.TObject.Create">
         <descr>
           <b>Virtual</b> method, so recommend that a constructor be supplied to 
           
@@ -3220,7 +3209,8 @@ Default is psSolid</descr>
           
           
           
-          <b>override</b> this method in descendant classes</descr>
+          <b>override</b> this method in descendant classes
+</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TGraphic.LoadFromFile">
@@ -3306,7 +3296,8 @@ If the file is not of the right format, an exception will be generated.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TGraphic.MimeType">
-        <short/>
+        <short>
+          <var>MimeType</var> - the MIME type of the graphic</short>
         <descr/>
         <seealso/>
       </element>
@@ -3409,7 +3400,8 @@ If the file is not of the right format, an exception will be generated.</descr>
       </element>
       <!-- function Visibility: public -->
       <element name="TGraphic.GetFileExtensions">
-        <short/>
+        <short>
+          <var>GetFileExtensions</var> - returns a list of the file extensions available</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3828,7 +3820,7 @@ If the file is not of the right format, an exception will be generated.</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TPicture.AssignTo">
+      <element name="TPicture.AssignTo" link="#rtl.Classes.TPersistent.AssignTo">
         <short/>
         <descr/>
         <errors/>
@@ -3840,7 +3832,8 @@ If the file is not of the right format, an exception will be generated.</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TPicture.Changed">
-        <short/>
+        <short>
+          <var>Changed</var> - software emulation of a call to the <var>OnChange</var> event</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3850,7 +3843,7 @@ If the file is not of the right format, an exception will be generated.</descr>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TPicture.DefineProperties">
+      <element name="TPicture.DefineProperties" link="#rtl.Classes.TPersistent.DefineProperties">
         <short/>
         <descr/>
         <errors/>
@@ -3896,15 +3889,11 @@ If the file is not of the right format, an exception will be generated.</descr>
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TPicture.Create">
-        <short>
-          <var>TPicture</var> constructor</short>
-      </element>
+      <element name="TPicture.Create" link="#rtl.System.TObject.Create"/>
       <!-- destructor Visibility: public -->
-      <element name="TPicture.Destroy">
-        <short>
-          <var>TPicture</var> destructor</short>
-        <descr>Any destructor method defined here will <b>override</b> destructors defined in ancestor classes</descr>
+      <element name="TPicture.Destroy" link="#rtl.Classes.TPersistent.Destroy">
+        <descr>Any destructor method defined here will <b>override</b> destructors defined in ancestor classes
+</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TPicture.LoadFromFile">
@@ -4147,13 +4136,15 @@ If the file is not of the right format, an exception will be generated.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TPicture.OnChange">
-        <short>Event handler for any change in the picture</short>
+        <short>
+          <var>OnChange</var> - Event handler for any change in the picture</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TPicture.OnProgress">
-        <short>Event handler for monitoring progress in drawing the picture</short>
+        <short>
+          <var>OnProgress</var> - Event handler for monitoring progress in drawing the picture</short>
         <seealso>
           <link id="Graphics.Progress"/>
         </seealso>
@@ -4587,9 +4578,7 @@ If the file is not of the right format, an exception will be generated.</descr>
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCanvas.Create">
-        <short>
-          <var>Canvas</var>  constructor</short>
+      <element name="TCanvas.Create" link="#rtl.System.TObject.Create">
         <descr>
           <var>Canvas</var>  constructor: creates a new instance of the class 
           
@@ -4602,9 +4591,7 @@ If the file is not of the right format, an exception will be generated.</descr>
         </descr>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCanvas.Destroy">
-        <short>
-          <var>Canvas</var> destructor</short>
+      <element name="TCanvas.Destroy" link="#rtl.Classes.TPersistent.Destroy">
         <descr>
           <var>Canvas</var> destructor: removes this instance of 
           
@@ -4613,39 +4600,45 @@ If the file is not of the right format, an exception will be generated.</descr>
           
           
           
-          <var>TCanvas</var> and makes its resources available</descr>
+          <var>TCanvas</var> and makes its resources available
+</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Lock">
-        <short/>
+        <short>
+          <var>Lock</var>  the canvas, making it unavailble for drawing</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Unlock">
-        <short/>
+        <short>
+          <var>Unlock</var> or release a previously locked Canvas</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Refresh">
-        <short/>
+        <short>
+          <var>Refresh</var> the drawing of the Canvas</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Changing">
-        <short/>
+        <short>
+          <var>Changing</var> - software emulation of a call to the <var>OnChanging</var> event</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Changed">
-        <short/>
+        <short>
+          <var>Changed</var> - software emulation of a call to the <var>OnChange</var> event</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4929,7 +4922,8 @@ Zero degrees is at the 3 o'clock position.</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Ellipse">
-        <short/>
+        <short>
+          <var>Ellipse</var> - draw an ellipse in the specified rectangular coordinate space</short>
         <descr/>
       </element>
       <!-- argument Visibility: default -->
@@ -4967,7 +4961,8 @@ Use <var>Ellipse</var>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.FillRect">
-        <short/>
+        <short>
+          <var>FillRect</var> - draw a filled rectangle in the specified coordinate space</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5001,7 +4996,8 @@ Use <var>Ellipse</var>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.FloodFill">
-        <short/>
+        <short>
+          <var>FloodFill</var> a rectangle at the specified positin using th espeified colour and style</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5024,7 +5020,8 @@ Use <var>Ellipse</var>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Frame3d">
-        <short/>
+        <short>
+          <var>Frame3d</var> - produce a frame with 3-D effect (with bevelled edges etc) in the specified rectangle</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5043,7 +5040,7 @@ Use <var>Ellipse</var>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Frame">
-        <short/>
+        <short>Produce a <var>Frame</var> or border in the specified rectangle using a Pen</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5077,7 +5074,8 @@ Use <var>Ellipse</var>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.FrameRect">
-        <short/>
+        <short>
+          <var>FrameRect</var> - produce a border in th especified rectangle using a Brush</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5777,7 +5775,7 @@ Calling the <var>MoveTo</var>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Rectangle">
-        <short/>
+        <short>Draws a <var>Rectangle</var> at the specified coordinates</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5811,7 +5809,8 @@ Calling the <var>MoveTo</var>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.RoundRect">
-        <short/>
+        <short>
+          <var>RoundRect</var> - draws a rectangle at the specified position, with corners rounded by the factors RX, RY</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5877,7 +5876,8 @@ Calling the <var>MoveTo</var>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.TextRect">
-        <short/>
+        <short>
+          <var>TextRect</var> - writes the specified text string in the rectangle at specified position, with optionally specified style</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5931,7 +5931,8 @@ The boundaries of the rectangle are specified in <var>ARect</var>
       </element>
       <!-- function Visibility: public -->
       <element name="TCanvas.TextExtent">
-        <short/>
+        <short>
+          <var>TextExtent</var> - returns the total size of the specified text</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5946,7 +5947,8 @@ The boundaries of the rectangle are specified in <var>ARect</var>
       </element>
       <!-- function Visibility: public -->
       <element name="TCanvas.TextHeight">
-        <short/>
+        <short>
+          <var>TextHeight</var> - returns the height of the specified text</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5961,7 +5963,8 @@ The boundaries of the rectangle are specified in <var>ARect</var>
       </element>
       <!-- function Visibility: public -->
       <element name="TCanvas.TextWidth">
-        <short/>
+        <short>
+          <var>TextWidth</var> - returns the width of the specified text</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5976,7 +5979,8 @@ The boundaries of the rectangle are specified in <var>ARect</var>
       </element>
       <!-- function Visibility: public -->
       <element name="TCanvas.HandleAllocated">
-        <short/>
+        <short>
+          <var>HandleAllocated</var> - returns True if a handle has been allocated</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5987,7 +5991,8 @@ The boundaries of the rectangle are specified in <var>ARect</var>
       </element>
       <!-- function Visibility: public -->
       <element name="TCanvas.GetUpdatedHandle">
-        <short/>
+        <short>
+          <var>GetUpdatedHandle</var> - returns the value of the updated Handle</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6014,7 +6019,7 @@ The boundaries of the rectangle are specified in <var>ARect</var>
       </element>
       <!-- property Visibility: public -->
       <element name="TCanvas.Pixels">
-        <short/>
+        <short>The colour of the <var>Pixels</var> located at the specified position</short>
         <descr/>
         <seealso/>
       </element>
@@ -6028,13 +6033,13 @@ The boundaries of the rectangle are specified in <var>ARect</var>
       </element>
       <!-- property Visibility: public -->
       <element name="TCanvas.Handle">
-        <short/>
+        <short>The operating system <var>Handle</var> for this object</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCanvas.TextStyle">
-        <short/>
+        <short>The <var>TextStyle</var> to be used in this Canvas</short>
         <descr/>
         <seealso/>
       </element>
@@ -6046,37 +6051,38 @@ The boundaries of the rectangle are specified in <var>ARect</var>
       </element>
       <!-- property Visibility: published -->
       <element name="TCanvas.AutoRedraw">
-        <short/>
+        <short>
+          <var>AutoRedraw</var> - if True, the Canvas is to be redrawn automatically after each change or update</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TCanvas.Brush">
-        <short/>
+        <short>The <var>Brush</var> to be used for painting this Canvas</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TCanvas.CopyMode">
-        <short/>
+        <short>The <var>CopyMode</var> to be used (arbitrary number)</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TCanvas.Font">
-        <short/>
+        <short>The <var>Font</var> to be used for text in this Canvas</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TCanvas.Pen">
-        <short/>
+        <short>The <var>Pen</var> to be used for writing in this Canvas</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TCanvas.Region">
-        <short/>
+        <short>The <var>Region</var>where the Canvas is located</short>
         <descr/>
         <seealso/>
       </element>
@@ -9109,7 +9115,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- property Visibility: public -->
       <element name="TPen.Reference">
-        <short/>
+        <short>A <var>Reference</var> made to this Pen</short>
         <descr/>
         <seealso/>
       </element>
@@ -9207,13 +9213,13 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- property Visibility: public -->
       <element name="TBrush.Reference">
-        <short/>
+        <short>A <var>Reference</var> made to the current Brush</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TRegionData.Reference">
-        <short/>
+        <short>A <var>Reference</var> made to the current Region</short>
         <descr/>
         <seealso/>
       </element>
@@ -9244,7 +9250,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- property Visibility: public -->
       <element name="TRegion.Reference">
-        <short/>
+        <short>A <var>Reference</var> to the current Region</short>
         <descr/>
         <seealso/>
       </element>
@@ -9270,7 +9276,8 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- function Visibility: public -->
       <element name="TGraphic.GetResourceType">
-        <short/>
+        <short>
+          <var>GetResourceType</var> - returns the type of a resource to be used in the graphic</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9874,14 +9881,16 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.SaveHandleState">
-        <short/>
+        <short>
+          <var>SaveHandleState</var> - stores the state of the Handle</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.RestoreHandleState">
-        <short/>
+        <short>
+          <var>RestoreHandleState</var> - retrieves the save state of the Handle</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9931,7 +9940,8 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.GradientFill">
-        <short/>
+        <short>
+          <var>GradientFill</var> - fill th especified rectangle with the specified colours in a gradient with the specified direction</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9986,13 +9996,13 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- property Visibility: published -->
       <element name="TCanvas.Height">
-        <short/>
+        <short>The <var>Height</var> of the Canvas</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TCanvas.Width">
-        <short/>
+        <short>The <var>Width</var> of the Canvas</short>
         <descr/>
         <seealso/>
       </element>
