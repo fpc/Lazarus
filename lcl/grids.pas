@@ -7739,7 +7739,8 @@ var
   OldPenMode: TFPPenMode;
 begin
   // Draw focused cell if we have the focus
-  if Self.Focused or (EditorAlwaysShown and ((Feditor=nil) or not Feditor.Focused)) then
+  if DefaultDrawing and (Self.Focused or
+    (EditorAlwaysShown and ((Feditor=nil) or not Feditor.Focused))) then
   begin
     CalcFocusRect(aRect);
     if FUseXORFeatures then begin
