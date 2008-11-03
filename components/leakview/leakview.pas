@@ -7,7 +7,7 @@ unit leakview;
 interface
 
 uses
-HeapTrcView, LeakInfo, LazarusPackageIntf;
+HeapTrcView, leakinfo, LazarusPackageIntf;
 
 implementation
 

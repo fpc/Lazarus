@@ -219,16 +219,21 @@ var
   info  : TLeakInfo;
   data  : TLeakStatus;
 begin
-  ClearItems;
-  trvTraceInfo.Items.Clear;
-  if not FileExists(edtTrcFileName.Text) then Exit;
-
-  info := AllocHeapTraceInfo(edtTrcFileName.Text);
+  trvTraceInfo.BeginUpdate;
   try
-    if info.GetLeakInfo(data, fItems) then ItemsToTree
-    else trvTraceInfo.Items.Add(nil, 'Error while parsing trace file');
+    ClearItems;
+    trvTraceInfo.Items.Clear;
+    if not FileExists(edtTrcFileName.Text) then Exit;
+
+    info := AllocHeapTraceInfo(edtTrcFileName.Text);
+    try
+      if info.GetLeakInfo(data, fItems) then ItemsToTree
+      else trvTraceInfo.Items.Add(nil, 'Error while parsing trace file');
+    finally
+      info.Free;
+    end;
   finally
-    info.Free;
+    trvTraceInfo.EndUpdate;
   end;
 end;
 
