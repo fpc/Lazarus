@@ -647,7 +647,7 @@ begin
           //CommitRevision
           ListItem^.CommitRevision:=StrToInt(SubNode.Attributes.Item[0].NodeValue);
 
-          for i := 0 to SubNode.ChildNodes.Length - 1 do
+          for i := 0 to SubNode.ChildNodes.Count - 1 do
           begin
             ActNode := SubNode.ChildNodes.Item[i];
 

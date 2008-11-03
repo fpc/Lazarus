@@ -378,7 +378,7 @@ begin
       ActionItem.CopyRev := '';
       ActionItem.CopyPath := '';
 
-      for j := 0 to SubNode.ChildNodes.Length - 1 do
+      for j := 0 to SubNode.ChildNodes.Count - 1 do
       begin
         tmpNode := SubNode.ChildNodes.Item[j];
 
