@@ -26,9 +26,9 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, StdCtrls, SynEdit, ExtCtrls,
-  Dialogs, Graphics, LCLProc, SynEditMiscClasses, LCLType,
+  Dialogs, Graphics, LCLProc, SynEditMiscClasses, LCLType, Controls,
   EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, options_editor_general,
-  IDEProcs, Controls;
+  IDEProcs;
 
 type
 

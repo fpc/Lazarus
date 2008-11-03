@@ -41,7 +41,7 @@
         <PackageName Value="SynEdit"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="15">
+    <Units Count="17">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -159,6 +159,22 @@
         <ResourceFilename Value="frames\options_editor_color.lrs"/>
         <UnitName Value="options_editor_color"/>
       </Unit14>
+      <Unit15>
+        <Filename Value="frames\options_editor_codetools.pas"/>
+        <ComponentName Value="EditorCodetoolsOptionsFrame"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="frames\options_editor_codetools.lrs"/>
+        <UnitName Value="options_editor_codetools"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="frames\options_editor_codefolding.pas"/>
+        <ComponentName Value="EditorCodefoldingOptionsFrame"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="frames\options_editor_codefolding.lrs"/>
+        <UnitName Value="options_editor_codefolding"/>
+      </Unit16>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

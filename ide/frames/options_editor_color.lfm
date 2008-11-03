@@ -66,7 +66,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     Width = 200
     BorderSpacing.Top = 6
     ItemHeight = 13
-    MaxLength = -1
     OnChange = ComboBoxOnChange
     OnExit = ComboBoxOnExit
     OnKeyDown = ComboBoxOnKeyDown
@@ -82,7 +81,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     Width = 200
     BorderSpacing.Top = 6
     ItemHeight = 13
-    MaxLength = -1
     OnChange = ComboBoxOnChange
     OnExit = ComboBoxOnExit
     OnKeyDown = ComboBoxOnKeyDown
@@ -103,7 +101,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       'pp;pas;inc;lpr;lrs'
       'pp;pas;inc'
     )
-    MaxLength = -1
     OnChange = ComboBoxOnChange
     OnExit = ComboBoxOnExit
     OnKeyDown = ComboBoxOnKeyDown
@@ -462,6 +459,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     ParentColor = False
     ParentFont = False
     TabOrder = 7
+    BookMarkOptions.OnChange = nil
     Keystrokes = <    
       item
         Command = 3
@@ -787,7 +785,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       'ColorPreview'
     )
     ReadOnly = True
-    SelectedColor.OnChange = nil
   end
   object UseSyntaxHighlightCheckBox: TCheckBox[12]
     AnchorSideLeft.Control = Owner
