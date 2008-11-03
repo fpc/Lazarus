@@ -9042,7 +9042,11 @@ end;
 
 procedure TQtFileDialog.setFilter(const AFilter: WideString);
 begin
+  {$IFDEF USE_QT_44}
+  QFileDialog_setNameFilter(QFileDialogH(Widget), @AFilter);
+  {$ELSE}
   QFileDialog_setFilter(QFileDialogH(Widget), @AFilter);
+  {$ENDIF}
 end;
 
 procedure TQtFileDialog.setLabelText(const ALabel: QFileDialogDialogLabel; const AText: WideString);
@@ -9093,7 +9097,11 @@ end;
 
 procedure TQtFileDialog.getFilters(const retval: QStringListH);
 begin
+  {$IFDEF USE_QT_44}
+  QFileDialog_nameFilters(QFileDialogH(Widget), retval);
+  {$ELSE}
   QFileDialog_filters(QFileDialogH(Widget), retval);
+  {$ENDIF}
 end;
 
 { TQtGraphicView }
