@@ -5051,7 +5051,7 @@ Use <var>Ellipse</var>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Frame">
-        <short/>
+        <short>Produce a <var>Frame</var> or border in the specified rectangle using a Pen</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5075,7 +5075,7 @@ Use <var>Ellipse</var>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.FrameRect">
         <short>
-          <var>FrameRect</var> - produce a border in th especified rectangle using a Brush</short>
+          <var>FrameRect</var> - produce a border in the specified rectangle using a Brush</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5086,7 +5086,8 @@ Use <var>Ellipse</var>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.FrameRect">
-        <short/>
+        <short>
+          <var>FrameRect</var> - produce a border in the specified rectangle using a Brush</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5163,6 +5164,8 @@ Use <var>Ellipse</var>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.RadialPie">
+        <short>
+          <var>RadialPie</var> - draw a filled pie-shaped wedge on the canvas with specified start and end coordinates, and starting and ending angular positions</short>
         <seealso>
           <link id="TCanvas.Pie"/>
         </seealso>
@@ -5340,7 +5343,10 @@ Use <var>Pie</var>
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCanvas.PolyBezier"/>
+      <element name="TCanvas.PolyBezier">
+        <short>
+          <var>Polybezier</var>    draws cubic Bezier curves</short>
+      </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.PolyBezier.Points">
         <short/>
@@ -5416,7 +5422,8 @@ If the Filled Flag is set to TRUE then the resulting Poly-Bezier will be drawn a
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Polygon">
-        <short/>
+        <short>
+          <var>Polygon</var>    draws a closed, many-sided shape on the canvas, using the value   of Pen</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5610,7 +5617,8 @@ To draw a polygon on the canvas, without filling it, use the <var>Polyline</var>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Polyline">
-        <short/>
+        <short>
+          <var>Polyline</var>    connects a set of points on the canvas</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5628,7 +5636,10 @@ To draw a polygon on the canvas, without filling it, use the <var>Polyline</var>
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCanvas.Polyline"/>
+      <element name="TCanvas.Polyline">
+        <short>
+          <var>Polyline</var>    connects a set of points on the canvas</short>
+      </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.Polyline.Points">
         <short/>
@@ -5798,7 +5809,7 @@ Calling the <var>MoveTo</var>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Rectangle">
-        <short/>
+        <short>Draws a <var>Rectangle</var> at the specified coordinates</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5841,7 +5852,8 @@ Calling the <var>MoveTo</var>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.RoundRect">
-        <short/>
+        <short>
+          <var>RoundRect</var> - draws a rectangle at the specified position, with corners rounded by the factors RX, RY</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6971,25 +6983,7 @@ The boundaries of the rectangle are specified in <var>ARect</var>
         <short>The target resource type specified as a string</short>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TBitmap.LoadFromStream">
-        <short>
-          <var>LoadFromStream</var>: obtains 
-          
-          
-          
-          
-          
-          
-          <var>BitMap</var> data from a 
-          
-          
-          
-          
-          
-          
-          <var>Stream</var>
-        </short>
-      </element>
+      <element name="TBitmap.LoadFromStream" link="#LCL.Graphics.TRasterImage.LoadFromStream"/>
       <!-- argument Visibility: default -->
       <element name="TBitmap.LoadFromStream.Stream">
         <short/>
@@ -7097,8 +7091,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TBitmap.GetFileExtensions">
-        <short>Finds the available file extensions</short>
+      <element name="TBitmap.GetFileExtensions" link="#LCL.Graphics.TGraphic.GetFileExtensions">
         <descr/>
         <errors/>
         <seealso/>
@@ -7370,10 +7363,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
 </descr>
       </element>
       <!-- function Visibility: public -->
-      <element name="TPixmap.LazarusResourceTypeValid">
-        <short>
-          <var>LazarusResourceTypeValid</var> - checks that specified resource has correct format</short>
-      </element>
+      <element name="TPixmap.LazarusResourceTypeValid" link="#LCL.Graphics.TGraphic.LazarusResourceTypeValid"/>
       <!-- function result Visibility: default -->
       <element name="TPixmap.LazarusResourceTypeValid.Result">
         <short>Returns True if resource type is 'XPM'</short>
@@ -7422,8 +7412,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <seealso/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TFPImageBitmap.GetFileExtensions">
-        <short>Find the file extensions for valid bitmap image files</short>
+      <element name="TFPImageBitmap.GetFileExtensions" link="#LCL.Graphics.TGraphic.GetFileExtensions">
         <descr/>
         <errors/>
         <seealso/>
@@ -7500,7 +7489,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TFPImageBitmap.LazarusResourceTypeValid">
+      <element name="TFPImageBitmap.LazarusResourceTypeValid" link="#LCL.Graphics.TGraphic.LazarusResourceTypeValid">
         <short/>
         <descr/>
         <errors/>
@@ -7568,7 +7557,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <seealso/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TPortableNetworkGraphic.GetFileExtensions">
+      <element name="TPortableNetworkGraphic.GetFileExtensions" link="#LCL.Graphics.TGraphic.GetFileExtensions">
         <short/>
         <descr/>
         <errors/>
@@ -8571,8 +8560,8 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <element name="TBitmapImage.SaveStreamClass">
         <short>The class of stream for saving data</short>
       </element>
-      <element name="TJPEGImage.Create"/>
-      <element name="TJPEGImage.GetFileExtensions"/>
+      <element name="TJPEGImage.Create" link="#rtl.System.TObject.Create"/>
+      <element name="TJPEGImage.GetFileExtensions" link="#LCL.Graphics.TGraphic.GetFileExtensions"/>
       <element name="TJPEGImage.GetDefaultFPReader"/>
       <element name="TJPEGImage.GetDefaultFPWriter"/>
       <topic name="Progress">
@@ -10677,23 +10666,21 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomBitmap.Create">
-        <short>
-          <var>BitMap</var> constructor</short>
+      <element name="TCustomBitmap.Create" link="#rtl.System.TObject.Create">
         <descr>
           <var>BitMap</var> constructor. The supplied code can 
           
-          <b>override</b> the definition from ancestor classes</descr>
+          <b>override</b> the definition from ancestor classes
+</descr>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomBitmap.Destroy">
-        <short>
-          <var>BitMap</var> destructor</short>
+      <element name="TCustomBitmap.Destroy" link="#rtl.Classes.TPersistent.Destroy">
         <descr>
           <var>BitMap</var> destructor. The supplied code can
 
           
-          <b>override</b> the method defined for ancestor classes</descr>
+          <b>override</b> the method defined for ancestor classes
+</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomBitmap.Assign">
@@ -10727,17 +10714,13 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short>Returns True if a handle is allocated</short>
       </element>
       <!-- function Visibility: public -->
-      <element name="TCustomBitmap.MaskHandleAllocated">
-        <short>Is a handle allocated for the bitmap mask?</short>
-      </element>
+      <element name="TCustomBitmap.MaskHandleAllocated" link="#LCL.Graphics.TRasterImage.MaskHandleAllocated"/>
       <!-- function result Visibility: default -->
       <element name="TCustomBitmap.MaskHandleAllocated.Result">
         <short>Returns True is a mask handle has been allocated</short>
       </element>
       <!-- function Visibility: public -->
-      <element name="TCustomBitmap.PaletteAllocated">
-        <short>Has a colour palette been allocated for this bitmap?</short>
-      </element>
+      <element name="TCustomBitmap.PaletteAllocated" link="#LCL.Graphics.TRasterImage.PaletteAllocated"/>
       <!-- function result Visibility: default -->
       <element name="TCustomBitmap.PaletteAllocated.Result">
         <short>Returns True if a palette has been allocated</short>
@@ -10759,9 +10742,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TCustomBitmap.LazarusResourceTypeValid">
-        <short>Checks that the Resource Type specified in the string argument is a valid Lazarus type</short>
-      </element>
+      <element name="TCustomBitmap.LazarusResourceTypeValid" link="#LCL.Graphics.TGraphic.LazarusResourceTypeValid"/>
       <!-- function result Visibility: default -->
       <element name="TCustomBitmap.LazarusResourceTypeValid.Result">
         <short>Returns TRUE if a valid resource type is found</short>
@@ -10839,9 +10820,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TCustomBitmap.GetResourceType">
-        <short>Finds the type of resource for the bitmap</short>
-      </element>
+      <element name="TCustomBitmap.GetResourceType" link="#LCL.Graphics.TGraphic.GetResourceType"/>
       <!-- function result Visibility: default -->
       <element name="TCustomBitmap.GetResourceType.Result">
         <short/>
@@ -10863,9 +10842,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomBitmap.SetHandles">
-        <short>Sets handles for the bitmap and its mask</short>
-      </element>
+      <element name="TCustomBitmap.SetHandles" link="#LCL.Graphics.TRasterImage.SetHandles"/>
       <!-- argument Visibility: default -->
       <element name="TCustomBitmap.SetHandles.ABitmap">
         <short/>
@@ -11103,7 +11080,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TPortableAnyMapGraphic.GetFileExtensions">
+      <element name="TPortableAnyMapGraphic.GetFileExtensions" link="#LCL.Graphics.TGraphic.GetFileExtensions">
         <short/>
         <descr/>
         <errors/>
@@ -11235,7 +11212,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <seealso/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TCursorImage.GetFileExtensions">
+      <element name="TCursorImage.GetFileExtensions" link="#LCL.Graphics.TGraphic.GetFileExtensions">
         <short/>
         <descr/>
         <errors/>
@@ -11246,7 +11223,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TCursorImage.LazarusResourceTypeValid">
+      <element name="TCursorImage.LazarusResourceTypeValid" link="#LCL.Graphics.TGraphic.LazarusResourceTypeValid">
         <short/>
         <descr/>
         <errors/>
@@ -11629,7 +11606,7 @@ This function checks that the value in
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TSharedRasterImage.Create">
+      <element name="TSharedRasterImage.Create" link="#rtl.System.TObject.Create">
         <short/>
         <descr/>
         <errors/>
@@ -11656,14 +11633,14 @@ This function checks that the value in
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TSharedRasterImage.Destroy">
+      <element name="TSharedRasterImage.Destroy" link="#rtl.System.TObject.Destroy">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TSharedRasterImage.HandleAllocated">
+      <element name="TSharedRasterImage.HandleAllocated" link="#LCL.Graphics.TSharedImage.HandleAllocated">
         <short/>
         <descr/>
         <errors/>
@@ -12223,21 +12200,21 @@ This function checks that the value in
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TRasterImage.Create">
+      <element name="TRasterImage.Create" link="#rtl.System.TObject.Create">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TRasterImage.Destroy">
+      <element name="TRasterImage.Destroy" link="#rtl.Classes.TPersistent.Destroy">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TRasterImage.Assign">
+      <element name="TRasterImage.Assign" link="#rtl.Classes.TPersistent.Assign">
         <short/>
         <descr/>
         <errors/>
@@ -12248,7 +12225,7 @@ This function checks that the value in
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TRasterImage.Clear">
+      <element name="TRasterImage.Clear" link="#LCL.Graphics.TGraphic.Clear">
         <short/>
         <descr/>
         <errors/>
@@ -12256,14 +12233,16 @@ This function checks that the value in
       </element>
       <!-- procedure Visibility: public -->
       <element name="TRasterImage.FreeImage">
-        <short/>
+        <short>
+          <var>FreeImage</var> - method for freeing or detaching image from the Raster</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
       <element name="TRasterImage.BitmapHandleAllocated">
-        <short/>
+        <short>
+          <var>BitmapHandleAllocated</var> - returns True if a handle has been allocated for the Bitmap</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12274,7 +12253,8 @@ This function checks that the value in
       </element>
       <!-- function Visibility: public -->
       <element name="TRasterImage.MaskHandleAllocated">
-        <short/>
+        <short>
+          <var>MaskHandleAllocated</var> - returns True if a handle has been allocated for the Mask</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12285,7 +12265,8 @@ This function checks that the value in
       </element>
       <!-- function Visibility: public -->
       <element name="TRasterImage.PaletteAllocated">
-        <short/>
+        <short>
+          <var>PaletteAllocated</var> - returns True if a Palette has been allocated</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12296,7 +12277,8 @@ This function checks that the value in
       </element>
       <!-- procedure Visibility: public -->
       <element name="TRasterImage.LoadFromBitmapHandles">
-        <short/>
+        <short>
+          <var>LoadFromBitmapHandles</var> - loads the data from the Bitmap and Mask specified by their handles</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12315,7 +12297,8 @@ This function checks that the value in
       </element>
       <!-- procedure Visibility: public -->
       <element name="TRasterImage.LoadFromDevice">
-        <short/>
+        <short>
+          <var>LoadFromDevice</var> - loads data from the device specified by its handle DC</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12326,7 +12309,8 @@ This function checks that the value in
       </element>
       <!-- procedure Visibility: public -->
       <element name="TRasterImage.LoadFromStream">
-        <short/>
+        <short>
+          <var>LoadFromStream</var> - loads data for the image from a specified data stream, optionally supplying its size</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12341,7 +12325,8 @@ This function checks that the value in
       </element>
       <!-- procedure Visibility: public -->
       <element name="TRasterImage.LoadFromMimeStream">
-        <short/>
+        <short>
+          <var>LoadFromMimeStream</var> - loads data for the image from a specified MIME stream</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12356,7 +12341,8 @@ This function checks that the value in
       </element>
       <!-- procedure Visibility: public -->
       <element name="TRasterImage.LoadFromIntfImage">
-        <short/>
+        <short>
+          <var>LoadFromIntfImage</var> - loads image data from an Interface stream</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12366,8 +12352,7 @@ This function checks that the value in
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TRasterImage.SaveToStream">
-        <short/>
+      <element name="TRasterImage.SaveToStream" link="#LCL.Graphics.TGraphic.SaveToStream">
         <descr/>
         <errors/>
         <seealso/>
@@ -12377,7 +12362,7 @@ This function checks that the value in
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TRasterImage.GetSupportedSourceMimeTypes">
+      <element name="TRasterImage.GetSupportedSourceMimeTypes" link="#LCL.Graphics.TGraphic.GetSupportedSourceMimeTypes">
         <short/>
         <descr/>
         <errors/>
@@ -12389,7 +12374,7 @@ This function checks that the value in
       </element>
       <!-- procedure Visibility: public -->
       <element name="TRasterImage.Mask">
-        <short/>
+        <short>The <var>Mask</var> to be used with the Image</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12400,7 +12385,8 @@ This function checks that the value in
       </element>
       <!-- procedure Visibility: public -->
       <element name="TRasterImage.SetHandles">
-        <short/>
+        <short>
+          <var>SetHandles</var> - allows the user to specify handles</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12415,7 +12401,8 @@ This function checks that the value in
       </element>
       <!-- function Visibility: public -->
       <element name="TRasterImage.ReleaseBitmapHandle">
-        <short/>
+        <short>
+          <var>ReleaseBitmapHandle</var> - releases the handle used by the Bitmap</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12426,7 +12413,8 @@ This function checks that the value in
       </element>
       <!-- function Visibility: public -->
       <element name="TRasterImage.ReleaseMaskHandle">
-        <short/>
+        <short>
+          <var>ReleaseMaskHandle</var> - releases the Handle used for the Mask</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12437,7 +12425,8 @@ This function checks that the value in
       </element>
       <!-- function Visibility: public -->
       <element name="TRasterImage.ReleasePalette">
-        <short/>
+        <short>
+          <var>ReleasePalette</var> - release the Handle used for the Palettte</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12448,7 +12437,8 @@ This function checks that the value in
       </element>
       <!-- function Visibility: public -->
       <element name="TRasterImage.CreateIntfImage">
-        <short/>
+        <short>
+          <var>CreateIntfImage</var> - creates an image on the Interface</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12491,7 +12481,8 @@ This function checks that the value in
       </element>
       <!-- property Visibility: public -->
       <element name="TRasterImage.PixelFormat">
-        <short/>
+        <short>
+          <var>PixelFormat</var> - the format of the Pixels in this Image</short>
         <descr/>
         <seealso/>
       </element>
@@ -12606,21 +12597,21 @@ This function checks that the value in
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TSharedCustomBitmap.Create">
+      <element name="TSharedCustomBitmap.Create" link="#rtl.System.TObject.Create">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TSharedCustomBitmap.Destroy">
+      <element name="TSharedCustomBitmap.Destroy" link="#rtl.System.TObject.Destroy">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TSharedCustomBitmap.HandleAllocated">
+      <element name="TSharedCustomBitmap.HandleAllocated" link="#LCL.Graphics.TSharedImage.HandleAllocated">
         <short/>
         <descr/>
         <errors/>
@@ -12824,7 +12815,7 @@ This function checks that the value in
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TCustomBitmap.BitmapHandleAllocated">
+      <element name="TCustomBitmap.BitmapHandleAllocated" link="#LCL.Graphics.TRasterImage.BitmapHandleAllocated">
         <short/>
         <descr/>
         <errors/>
@@ -12836,7 +12827,8 @@ This function checks that the value in
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomBitmap.SetSize">
-        <short/>
+        <short>
+          <var>SetSize</var> - allows the user to specify the size of the Bitmap</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13070,7 +13062,7 @@ This function checks that the value in
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TPixmap.GetFileExtensions">
+      <element name="TPixmap.GetFileExtensions" link="#LCL.Graphics.TGraphic.GetFileExtensions">
         <short/>
         <descr/>
         <errors/>
@@ -13225,14 +13217,14 @@ This function checks that the value in
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TSharedIcon.Create">
+      <element name="TSharedIcon.Create" link="#rtl.System.TObject.Create">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TSharedIcon.Destroy">
+      <element name="TSharedIcon.Destroy" link="#rtl.System.TObject.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -13336,8 +13328,9 @@ This function checks that the value in
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TIconImage.Create">
-        <short/>
+      <element name="TIconImage.Create" link="#rtl.System.TObject.Create">
+        <short>
+          <var>Create</var> - Specifies a Raw image to be used, then used Inherited Create</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13359,7 +13352,7 @@ This function checks that the value in
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TIconImage.Destroy">
+      <element name="TIconImage.Destroy" link="#rtl.System.TObject.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -13423,19 +13416,20 @@ This function checks that the value in
       </element>
       <!-- property Visibility: public -->
       <element name="TIconImage.Height">
-        <short/>
+        <short>The <var>Height</var> of the Icon</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TIconImage.Width">
-        <short/>
+        <short>The <var>Width</var> of the Icon</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TIconImage.PixelFormat">
-        <short/>
+        <short>
+          <var>PixelFormat</var> - the format of the Pixels in the Image</short>
         <descr/>
         <seealso/>
       </element>
@@ -13736,7 +13730,7 @@ This function checks that the value in
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomIcon.Create">
+      <element name="TCustomIcon.Create" link="#rtl.System.TObject.Create">
         <short/>
         <descr/>
         <errors/>
@@ -13764,7 +13758,7 @@ This function checks that the value in
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomIcon.Assign">
+      <element name="TCustomIcon.Assign" link="#rtl.Classes.TPersistent.Assign">
         <short/>
         <descr/>
         <errors/>
@@ -13860,9 +13854,7 @@ This function checks that the value in
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TCustomIcon.GetFileExtensions">
-        <short>
-          <var>GetFileExtensions</var> - returns a list of valid file extensions associated with the Icon</short>
+      <element name="TCustomIcon.GetFileExtensions" link="#LCL.Graphics.TGraphic.GetFileExtensions">
         <descr/>
         <errors/>
         <seealso/>
@@ -13872,9 +13864,7 @@ This function checks that the value in
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TCustomIcon.LazarusResourceTypeValid">
-        <short>
-          <var>LazarusResourceTypeValid</var> - returns True if the specified <var>ResourceType</var> is valid</short>
+      <element name="TCustomIcon.LazarusResourceTypeValid" link="#LCL.Graphics.TGraphic.LazarusResourceTypeValid">
         <descr/>
         <errors/>
         <seealso/>
@@ -13888,9 +13878,7 @@ This function checks that the value in
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TCustomIcon.BitmapHandleAllocated">
-        <short>
-          <var>BitmapHandleAllocated</var> - returns True if a Bitmap Handle has been allocated</short>
+      <element name="TCustomIcon.BitmapHandleAllocated" link="#LCL.Graphics.TRasterImage.BitmapHandleAllocated">
         <descr/>
         <errors/>
         <seealso/>
@@ -13900,9 +13888,7 @@ This function checks that the value in
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TCustomIcon.MaskHandleAllocated">
-        <short>
-          <var>MaskHandleAllocated</var> - returns True if a Mask Bitmap handle has been allocated</short>
+      <element name="TCustomIcon.MaskHandleAllocated" link="#LCL.Graphics.TRasterImage.MaskHandleAllocated">
         <descr/>
         <errors/>
         <seealso/>
@@ -13912,9 +13898,7 @@ This function checks that the value in
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TCustomIcon.PaletteAllocated">
-        <short>
-          <var>PaletteAllocated</var> - returns True if a Palette handle has been allocated</short>
+      <element name="TCustomIcon.PaletteAllocated" link="#LCL.Graphics.TRasterImage.PaletteAllocated">
         <descr/>
         <errors/>
         <seealso/>
@@ -13924,9 +13908,7 @@ This function checks that the value in
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomIcon.SetHandles">
-        <short>
-          <var>SetHandles</var> - writes the values of the Bitmap and Mask handles</short>
+      <element name="TCustomIcon.SetHandles" link="#LCL.Graphics.TRasterImage.SetHandles">
         <descr/>
         <errors/>
         <seealso/>
@@ -13984,7 +13966,8 @@ This function checks that the value in
       </element>
       <!-- function Visibility: public -->
       <element name="TIcon.ReleaseHandle">
-        <short/>
+        <short>
+          <var>ReleaseHandle</var> - frees the handle that was iused for the Icon</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13995,7 +13978,7 @@ This function checks that the value in
       </element>
       <!-- property Visibility: public -->
       <element name="TIcon.Handle">
-        <short/>
+        <short>The Operating System <var>Handle</var> used for the Icon</short>
         <descr/>
         <seealso/>
       </element>
@@ -14015,7 +13998,7 @@ This function checks that the value in
         <seealso/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TSharedCursorImage.GetImagesClass">
+      <element name="TSharedCursorImage.GetImagesClass" link="#LCL.Graphics.TSharedIcon.GetImagesClass">
         <short/>
         <descr/>
         <errors/>
@@ -14088,7 +14071,8 @@ This function checks that the value in
       </element>
       <!-- function Visibility: public -->
       <element name="TCursorImage.ReleaseHandle">
-        <short/>
+        <short>
+          <var>ReleaseHandle</var> - free the handle used for the cursor Image</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14192,6 +14176,51 @@ This function checks that the value in
       <element name="TSharedIcon.Count">
         <short>
           <var>Count</var> - returns the number of references to the shared icon</short>
+      </element>
+      <element name="TRasterImage.BeginUpdate">
+        <short>
+          <var>BeginUpdate</var> - start the update process</short>
+        <descr>
+          <var>BeginUpdate</var> - start the update process; by default the boolean argument <var>ACanvasOnly</var> is False, ie more than just the Canvas is to be updated
+</descr>
+      </element>
+      <element name="TRasterImage.EndUpdate">
+        <short>
+          <var>EndUpdate</var> - finishes the update process</short>
+        <descr>
+          <var>EndUpdate</var> - finishes the update process. By default the boolean argument <var>AStreamIsValid</var> is False, ie no stream is valid at the end of the process.
+be carefull with this, modify only within a begin/endupdate</descr>
+      </element>
+      <element name="TRasterImage.GetSize">
+        <short>
+          <var>GetSize</var> - finds the size of the Image</short>
+      </element>
+      <element name="TRasterImage.Masked">
+        <short>
+          <var>Masked</var> - returns True if a Mask is being applied</short>
+      </element>
+      <element name="TRasterImage.RawImage">
+        <short>
+          <var>RawImage</var> - allows the user to access the Raw Image: CAUTION!</short>
+        <descr>
+          <var>RawImage</var> - allows the user to access the Raw Image: CAUTION! Modify only within a begin/endupdate.</descr>
+      </element>
+      <element name="TSharedCustomBitmap.PixelFormat">
+        <short>
+          <var>PixelFormat</var> - the format for the Pixels in this Bitmap</short>
+      </element>
+      <element name="TCustomBitmap.Clear" link="#LCL.Graphics.TGraphic.Clear"/>
+      <element name="TIconImage.RawImageNeeded">
+        <short>
+          <var>RawImageNeeded</var> - if <var>ADescOnly</var> is True (descriptor only), then we need a Raw Image</short>
+      </element>
+      <element name="TCustomIcon.AssignImage">
+        <short>
+          <var>AssignImage</var> - assign the source image to the current one</short>
+      </element>
+      <element name="TCustomIcon.GetBestIndexForSize">
+        <short>
+          <var>GetBestIndexForSize</var> - returns the best estimate of the index value for size</short>
       </element>
     </module>
     <!-- Graphics -->
