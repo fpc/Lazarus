@@ -142,7 +142,7 @@ object SVNLogFrm: TSVNLogFrm
     MaxLength = -1
     ParentBidiMode = True
     ParentFont = False
-    ReadOnly = False
+    ReadOnly = True
     ScrollBars = ssNone
     TabOrder = 1
     TabStop = True

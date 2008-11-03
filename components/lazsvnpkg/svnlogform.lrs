@@ -43,7 +43,7 @@ LazarusResources.Add('TSVNLogFrm','FORMDATA',[
   +'BorderSpacing.Around'#2#0'!BorderSpacing.CellAlignHorizontal'#7#7'ccaFill'
   +#31'BorderSpacing.CellAlignVertical'#7#7'ccaFill'#10'DragCursor'#7#6'crDrag'
   +#8'DragMode'#7#8'dmManual'#7'Enabled'#9#11'Font.Height'#2#0#10'Font.Style'#11
-  +#0#9'MaxLength'#2#255#14'ParentBidiMode'#9#10'ParentFont'#8#8'ReadOnly'#8#10
+  +#0#9'MaxLength'#2#255#14'ParentBidiMode'#9#10'ParentFont'#8#8'ReadOnly'#9#10
   +'ScrollBars'#7#6'ssNone'#8'TabOrder'#2#1#7'TabStop'#9#7'Visible'#9#11'WantRe'
   +'turns'#9#8'WantTabs'#8#0#0#9'TListView'#18'SVNActionsListView'#24'AnchorSid'
   +'eBottom.Control'#7#13'RefreshButton'#4'Left'#2#6#6'Height'#3#155#0#3'Top'#3
