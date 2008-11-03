@@ -2043,9 +2043,9 @@ msgstr "Configurar componentes personalizados"
 msgid "Configure custom components ..."
 msgstr "Configurar componentes personalizados ..."
 
-#: lazarusidestrconsts:lismenusettings
-msgid "Configure custom tools ..."
-msgstr "Configurar herramientas personalizadas ..."
+#: lazarusidestrconsts:lismenuconfigexternaltools
+msgid "Configure external tools ..."
+msgstr ""
 
 #: lazarusidestrconsts:liskmconfigureinstalledpackages
 msgid "Configure installed packages"
@@ -3066,6 +3066,10 @@ msgstr "Editar unidad virtual"
 #: lazarusidestrconsts:dlgededit
 msgid "Edit..."
 msgstr "Editar..."
+
+#: lazarusidestrconsts:dlggroupeditor
+msgid "Editor"
+msgstr ""
 
 #: lazarusidestrconsts:dlgedfiles
 msgid "Editor files"

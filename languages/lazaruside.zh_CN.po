@@ -2048,9 +2048,9 @@ msgstr "配置用户组件"
 msgid "Configure custom components ..."
 msgstr "配置自定义组件 ..."
 
-#: lazarusidestrconsts:lismenusettings
-msgid "Configure custom tools ..."
-msgstr "配置工具..."
+#: lazarusidestrconsts:lismenuconfigexternaltools
+msgid "Configure external tools ..."
+msgstr ""
 
 #: lazarusidestrconsts:liskmconfigureinstalledpackages
 msgid "Configure installed packages"
@@ -3071,6 +3071,10 @@ msgstr "编辑虚单元"
 #: lazarusidestrconsts:dlgededit
 msgid "Edit..."
 msgstr "编辑..."
+
+#: lazarusidestrconsts:dlggroupeditor
+msgid "Editor"
+msgstr ""
 
 #: lazarusidestrconsts:dlgedfiles
 msgid "Editor files"

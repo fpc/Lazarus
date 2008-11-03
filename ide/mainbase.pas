@@ -691,7 +691,7 @@ begin
     CreateMenuSeparatorSection(mnuTools,itmCustomTools,'itmCustomTools');
     ParentMI:=itmCustomTools;
 
-    CreateMenuItem(ParentMI,itmToolConfigure,'itmToolConfigure',lisMenuSettings);
+    CreateMenuItem(ParentMI,itmToolConfigure,'itmToolConfigure',lisMenuConfigExternalTools);
 
     CreateMenuSeparatorSection(mnuTools,itmCodeToolChecks,'itmCodeToolChecks');
     ParentMI:=itmCodeToolChecks;

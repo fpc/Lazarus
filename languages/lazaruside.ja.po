@@ -2044,9 +2044,9 @@ msgstr "カスタムコンポーネントを設定"
 msgid "Configure custom components ..."
 msgstr "カスタムコンポーネントを設定 ..."
 
-#: lazarusidestrconsts:lismenusettings
-msgid "Configure custom tools ..."
-msgstr "カスタムツールを設定 ..."
+#: lazarusidestrconsts:lismenuconfigexternaltools
+msgid "Configure external tools ..."
+msgstr ""
 
 #: lazarusidestrconsts:liskmconfigureinstalledpackages
 msgid "Configure installed packages"
@@ -3067,6 +3067,10 @@ msgstr "仮想ユニットを編集"
 #: lazarusidestrconsts:dlgededit
 msgid "Edit..."
 msgstr "編集..."
+
+#: lazarusidestrconsts:dlggroupeditor
+msgid "Editor"
+msgstr ""
 
 #: lazarusidestrconsts:dlgedfiles
 msgid "Editor files"

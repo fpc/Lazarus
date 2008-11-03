@@ -2045,9 +2045,9 @@ msgstr "Seçimlik bileşenleri yapılandır"
 msgid "Configure custom components ..."
 msgstr "Seçimlik bileşenleri yapılandır ..."
 
-#: lazarusidestrconsts:lismenusettings
-msgid "Configure custom tools ..."
-msgstr "Seçimlik araçları yapılandır ..."
+#: lazarusidestrconsts:lismenuconfigexternaltools
+msgid "Configure external tools ..."
+msgstr ""
 
 #: lazarusidestrconsts:liskmconfigureinstalledpackages
 msgid "Configure installed packages"
@@ -3067,6 +3067,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgededit
 msgid "Edit..."
+msgstr ""
+
+#: lazarusidestrconsts:dlggroupeditor
+msgid "Editor"
 msgstr ""
 
 #: lazarusidestrconsts:dlgedfiles

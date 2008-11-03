@@ -2046,9 +2046,9 @@ msgstr "Derinti naudotojo komponentes"
 msgid "Configure custom components ..."
 msgstr "Derinti naudotojo komponentes..."
 
-#: lazarusidestrconsts:lismenusettings
-msgid "Configure custom tools ..."
-msgstr "Derinti naudotojo įrankius..."
+#: lazarusidestrconsts:lismenuconfigexternaltools
+msgid "Configure external tools ..."
+msgstr ""
 
 #: lazarusidestrconsts:liskmconfigureinstalledpackages
 msgid "Configure installed packages"
@@ -3069,6 +3069,10 @@ msgstr "Keisti virtualų modulį"
 #: lazarusidestrconsts:dlgededit
 msgid "Edit..."
 msgstr "Keisti..."
+
+#: lazarusidestrconsts:dlggroupeditor
+msgid "Editor"
+msgstr ""
 
 #: lazarusidestrconsts:dlgedfiles
 msgid "Editor files"

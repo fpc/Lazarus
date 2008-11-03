@@ -2040,9 +2040,9 @@ msgstr "Налаштувати нетипові компонети"
 msgid "Configure custom components ..."
 msgstr "Налаштувати компоненти користувача ..."
 
-#: lazarusidestrconsts:lismenusettings
-msgid "Configure custom tools ..."
-msgstr "Налаштувати інструменти користувача"
+#: lazarusidestrconsts:lismenuconfigexternaltools
+msgid "Configure external tools ..."
+msgstr ""
 
 #: lazarusidestrconsts:liskmconfigureinstalledpackages
 msgid "Configure installed packages"
@@ -3063,6 +3063,10 @@ msgstr "Редагувати віртуальний модуль"
 #: lazarusidestrconsts:dlgededit
 msgid "Edit..."
 msgstr "Редагувати..."
+
+#: lazarusidestrconsts:dlggroupeditor
+msgid "Editor"
+msgstr ""
 
 #: lazarusidestrconsts:dlgedfiles
 msgid "Editor files"

@@ -2045,9 +2045,9 @@ msgstr "Konfigurasi komponen kustom"
 msgid "Configure custom components ..."
 msgstr "Konfigurasi komponen kustom ..."
 
-#: lazarusidestrconsts:lismenusettings
-msgid "Configure custom tools ..."
-msgstr "Konfigurasi piranti kustom ..."
+#: lazarusidestrconsts:lismenuconfigexternaltools
+msgid "Configure external tools ..."
+msgstr ""
 
 #: lazarusidestrconsts:liskmconfigureinstalledpackages
 msgid "Configure installed packages"
@@ -3068,6 +3068,10 @@ msgstr "Edit unit virtual"
 #: lazarusidestrconsts:dlgededit
 msgid "Edit..."
 msgstr "Edit..."
+
+#: lazarusidestrconsts:dlggroupeditor
+msgid "Editor"
+msgstr ""
 
 #: lazarusidestrconsts:dlgedfiles
 msgid "Editor files"

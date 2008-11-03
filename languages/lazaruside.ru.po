@@ -2045,9 +2045,9 @@ msgstr "Настройка пользовательских компоненто
 msgid "Configure custom components ..."
 msgstr "Настройка пользовательских компонентов ..."
 
-#: lazarusidestrconsts:lismenusettings
-msgid "Configure custom tools ..."
-msgstr "Настройка пользовательских средств ..."
+#: lazarusidestrconsts:lismenuconfigexternaltools
+msgid "Configure external tools ..."
+msgstr ""
 
 #: lazarusidestrconsts:liskmconfigureinstalledpackages
 msgid "Configure installed packages"
@@ -3068,6 +3068,10 @@ msgstr "Редактировать виртуальный модуль"
 #: lazarusidestrconsts:dlgededit
 msgid "Edit..."
 msgstr "Правка"
+
+#: lazarusidestrconsts:dlggroupeditor
+msgid "Editor"
+msgstr ""
 
 #: lazarusidestrconsts:dlgedfiles
 msgid "Editor files"

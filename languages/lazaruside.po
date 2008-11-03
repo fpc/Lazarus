@@ -1084,8 +1084,8 @@ msgstr ""
 msgid "Configure custom components ..."
 msgstr ""
 
-#: lazarusidestrconsts:lismenusettings
-msgid "Configure custom tools ..."
+#: lazarusidestrconsts:lismenuconfigexternaltools
+msgid "Configure external tools ..."
 msgstr ""
 
 #: lazarusidestrconsts:lismenuquicksyntaxcheck
@@ -2354,6 +2354,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlggroupenvironment
 msgid "Environment"
+msgstr ""
+
+#: lazarusidestrconsts:dlggroupeditor
+msgid "Editor"
 msgstr ""
 
 #: lazarusidestrconsts:dlgbaknosubdirectory

@@ -2049,9 +2049,9 @@ msgstr ""
 msgid "Configure custom components ..."
 msgstr "Konfiguruj dodatkowe komponenty..."
 
-#: lazarusidestrconsts:lismenusettings
-msgid "Configure custom tools ..."
-msgstr "Konfiguruj zewnętrzne narzędzia"
+#: lazarusidestrconsts:lismenuconfigexternaltools
+msgid "Configure external tools ..."
+msgstr ""
 
 #: lazarusidestrconsts:liskmconfigureinstalledpackages
 msgid "Configure installed packages"
@@ -3072,6 +3072,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgededit
 msgid "Edit..."
 msgstr "Edytuj..."
+
+#: lazarusidestrconsts:dlggroupeditor
+msgid "Editor"
+msgstr ""
 
 #: lazarusidestrconsts:dlgedfiles
 msgid "Editor files"
