@@ -5,8 +5,8 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
   ClientWidth = 531
   TabOrder = 0
   Visible = False
-  DesignLeft = 110
-  DesignTop = 145
+  DesignLeft = 678
+  DesignTop = 258
   object FileExtensionsLabel: TLabel[0]
     AnchorSideLeft.Control = FileExtensionsComboBox
     AnchorSideLeft.Side = asrBottom
@@ -14,7 +14,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     AnchorSideTop.Side = asrCenter
     Left = 206
     Height = 14
-    Top = 82
+    Top = 51
     Width = 94
     BorderSpacing.Left = 6
     Caption = 'FileExtensionsLabel'
@@ -27,7 +27,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     AnchorSideTop.Side = asrCenter
     Left = 206
     Height = 14
-    Top = 55
+    Top = 27
     Width = 88
     BorderSpacing.Left = 6
     Caption = 'ColorSchemeLabel'
@@ -40,9 +40,10 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     AnchorSideTop.Side = asrCenter
     Left = 206
     Height = 14
-    Top = 28
+    Top = 3
     Width = 73
     BorderSpacing.Left = 6
+    BorderSpacing.Right = 6
     Caption = 'LanguageLabel'
     ParentColor = False
   end
@@ -51,7 +52,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     AnchorSideTop.Control = FileExtensionsComboBox
     AnchorSideTop.Side = asrBottom
     Height = 14
-    Top = 106
+    Top = 75
     Width = 89
     BorderSpacing.Top = 6
     Caption = 'ColorElementLabel'
@@ -59,13 +60,11 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
   end
   object LanguageComboBox: TComboBox[4]
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = UseSyntaxHighlightCheckBox
-    AnchorSideTop.Side = asrBottom
+    AnchorSideTop.Control = Owner
     Height = 21
-    Top = 25
     Width = 200
-    BorderSpacing.Top = 6
     ItemHeight = 13
+    MaxLength = -1
     OnChange = ComboBoxOnChange
     OnExit = ComboBoxOnExit
     OnKeyDown = ComboBoxOnKeyDown
@@ -77,10 +76,11 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     AnchorSideTop.Control = LanguageComboBox
     AnchorSideTop.Side = asrBottom
     Height = 21
-    Top = 52
+    Top = 24
     Width = 200
-    BorderSpacing.Top = 6
+    BorderSpacing.Top = 3
     ItemHeight = 13
+    MaxLength = -1
     OnChange = ComboBoxOnChange
     OnExit = ComboBoxOnExit
     OnKeyDown = ComboBoxOnKeyDown
@@ -92,15 +92,16 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     AnchorSideTop.Control = ColorSchemeComboBox
     AnchorSideTop.Side = asrBottom
     Height = 21
-    Top = 79
+    Top = 48
     Width = 200
-    BorderSpacing.Top = 6
+    BorderSpacing.Top = 3
     ItemHeight = 13
     Items.Strings = (
       'pp;pas;inc;lpr;lrs;dpr;dpk'
       'pp;pas;inc;lpr;lrs'
       'pp;pas;inc'
     )
+    MaxLength = -1
     OnChange = ComboBoxOnChange
     OnExit = ComboBoxOnExit
     OnKeyDown = ComboBoxOnKeyDown
@@ -111,7 +112,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     AnchorSideTop.Control = ColorElementLabel
     AnchorSideTop.Side = asrBottom
     Height = 264
-    Top = 126
+    Top = 95
     Width = 200
     BorderSpacing.Top = 6
     ClickOnSelChange = False
@@ -127,7 +128,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 206
     Height = 25
-    Top = 126
+    Top = 95
     Width = 325
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
@@ -143,7 +144,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 206
     Height = 25
-    Top = 157
+    Top = 126
     Width = 325
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
@@ -162,7 +163,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     AnchorSideBottom.Side = asrBottom
     Left = 206
     Height = 202
-    Top = 188
+    Top = 157
     Width = 325
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Left = 6
@@ -447,8 +448,8 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Height = 181
-    Top = 396
+    Height = 212
+    Top = 365
     Width = 531
     BorderSpacing.Top = 6
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -459,7 +460,6 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     ParentColor = False
     ParentFont = False
     TabOrder = 7
-    BookMarkOptions.OnChange = nil
     Keystrokes = <    
       item
         Command = 3
@@ -785,12 +785,17 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       'ColorPreview'
     )
     ReadOnly = True
+    SelectedColor.OnChange = nil
   end
   object UseSyntaxHighlightCheckBox: TCheckBox[12]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 365
     Height = 19
     Width = 166
+    Anchors = [akTop, akRight]
     Caption = 'UseSyntaxHighlightCheckBox'
     OnChange = GeneralCheckBoxOnChange
     TabOrder = 8
