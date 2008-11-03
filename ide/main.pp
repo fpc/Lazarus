@@ -126,7 +126,7 @@ uses
   // main ide
   MainBar, MainIntf, MainBase,
   // options frames
-  IDEOptionsIntf, IDEOptionsDlg, EditorOptionsDlg {temporary},
+  IDEOptionsIntf, IDEOptionsDlg, 
   options_files, options_desktop, options_window, options_formed, options_oi,
   options_backup, options_naming, options_fpdoc,
   options_editor_general, options_editor_display, options_editor_keymapping,
@@ -2243,9 +2243,9 @@ end;
 procedure TMainIDE.SetupEnvironmentMenu;
 begin
   inherited SetupEnvironmentMenu;
-  with MainIDEBar do begin
+  with MainIDEBar do 
+  begin
     itmEnvGeneralOptions.OnClick := @mnuEnvGeneralOptionsClicked;
-    itmEnvEditorOptions.OnClick := @mnuEnvEditorOptionsClicked;
     itmEnvCodeTemplates.OnClick := @mnuEnvCodeTemplatesClicked;
     itmEnvCodeToolsOptions.OnClick := @mnuEnvCodeToolsOptionsClicked;
     itmEnvCodeToolsDefinesEditor.OnClick := @mnuEnvCodeToolsDefinesEditorClicked;
@@ -4006,22 +4006,9 @@ begin
 end;
 
 procedure TMainIDE.mnuEnvEditorOptionsClicked(Sender: TObject);
-var
-  EditorOptionsForm: TEditorOptionsForm;
-Begin
-  EditorOptionsForm:=TEditorOptionsForm.Create(nil);
-  try
-    Project1.UpdateAllCustomHighlighter;
-    if EditorOptionsForm.ShowModal = mrOk then
-    begin
-      Project1.UpdateAllSyntaxHighlighter;
-      SourceNotebook.ReloadEditorOptions;
-      ReloadMenuShortCuts;
-    end;
-  finally
-    EditorOptionsForm.Free;
-  end;
-End;
+begin
+  DoShowEnvGeneralOptions(TEditorGeneralOptionsFrame);
+end;
 
 procedure TMainIDE.mnuEnvCodeTemplatesClicked(Sender: TObject);
 begin

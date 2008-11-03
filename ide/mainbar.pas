@@ -300,7 +300,7 @@ type
     //mnuEnvironment: TIDEMenuSection;
       //itmOptionsDialogs: TIDEMenuSection;
         itmEnvGeneralOptions: TIDEMenuCommand;
-        itmEnvEditorOptions: TIDEMenuCommand;
+      //itmEnvEditorOptions: TIDEMenuCommand;
         itmEnvCodeTemplates: TIDEMenuCommand;
         itmEnvDebuggerOptions: TIDEMenuCommand;
         itmEnvCodeToolsOptions: TIDEMenuCommand;
