@@ -149,9 +149,10 @@ begin
   BytesRead := 0;
   MemStream.Clear;
 
+  SVNUpdateListView.Items[SVNUpdateListView.Items.Count - 1].MakeVisible(True);
+
   //repaint the listview
-  SVNUpdateListView.Invalidate;
-  Invalidate;
+  Application.ProcessMessages;
 end;
 
 procedure TSVNUpdateFrm.Execute(Data: PtrInt);
@@ -185,11 +186,9 @@ begin
       Inc(BytesRead, n);
       ProcessSVNUpdateOutput(MemStream, BytesRead);
     end
-    else begin
+    else
       // no data, wait 100 ms
       Sleep(100);
-      Invalidate;
-    end;
   end;
   // read last part
   repeat
