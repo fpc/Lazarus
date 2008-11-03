@@ -1,5 +1,3 @@
-{ This is an automatically generated lazarus resource file }
-
 LazarusResources.Add('TSVNDiffFrm','FORMDATA',[
   'TPF0'#11'TSVNDiffFrm'#10'SVNDiffFrm'#4'Left'#3#154#0#6'Height'#3#160#1#3'Top'
   +#3#200#0#5'Width'#3#219#2#11'HelpContext'#2#0#13'ActiveControl'#7#11'SVNDiff'
@@ -79,16 +77,16 @@ LazarusResources.Add('TSVNDiffFrm','FORMDATA',[
   +'yout'#7#11'blGlyphLeft'#6'Margin'#2#255#11'ModalResult'#2#0#9'NumGlyphs'#2#0
   +#7'OnClick'#7#15'SaveButtonClick'#10'ParentFont'#9#14'ParentShowHint'#9#7'Sp'
   +'acing'#2#3#8'TabOrder'#2#4#7'TabStop'#9#7'Visible'#9#0#0#0#5'TMemo'#11'SVND'
-  +'iffMemo'#4'Left'#2#6#6'Height'#3'd'#1#3'Top'#2#6#5'Width'#3#207#2#11'HelpCo'
-  +'ntext'#2#0#5'Align'#7#8'alClient'#9'Alignment'#7#13'taLeftJustify'#18'Borde'
-  +'rSpacing.Left'#2#0#17'BorderSpacing.Top'#2#0#19'BorderSpacing.Right'#2#0#20
-  +'BorderSpacing.Bottom'#2#0#20'BorderSpacing.Around'#2#6'!BorderSpacing.CellA'
-  +'lignHorizontal'#7#7'ccaFill'#31'BorderSpacing.CellAlignVertical'#7#7'ccaFil'
-  +'l'#10'DragCursor'#7#6'crDrag'#8'DragMode'#7#8'dmManual'#7'Enabled'#9#11'Fon'
-  +'t.Height'#2#243#9'Font.Name'#6#7'Courier'#10'Font.Style'#11#0#9'MaxLength'#2
-  +#255#14'ParentBidiMode'#9#10'ParentFont'#8#8'ReadOnly'#8#10'ScrollBars'#7#10
-  +'ssAutoBoth'#8'TabOrder'#2#1#7'TabStop'#9#7'Visible'#9#11'WantReturns'#9#8'W'
-  +'antTabs'#8#0#0#11'TSaveDialog'#10'SaveDialog'#5'Width'#2#0#6'Height'#2#0#10
-  +'DefaultExt'#6#5'.diff'#6'Filter'#6#18'Patch|.diff;.patch'#4'left'#2#21#3'to'
-  +'p'#3'='#1#0#0#0
+  +'iffMemo'#6'Cursor'#7#11'crHourGlass'#4'Left'#2#6#6'Height'#3'd'#1#3'Top'#2#6
+  +#5'Width'#3#207#2#11'HelpContext'#2#0#5'Align'#7#8'alClient'#9'Alignment'#7
+  +#13'taLeftJustify'#18'BorderSpacing.Left'#2#0#17'BorderSpacing.Top'#2#0#19'B'
+  +'orderSpacing.Right'#2#0#20'BorderSpacing.Bottom'#2#0#20'BorderSpacing.Aroun'
+  +'d'#2#6'!BorderSpacing.CellAlignHorizontal'#7#7'ccaFill'#31'BorderSpacing.Ce'
+  +'llAlignVertical'#7#7'ccaFill'#10'DragCursor'#7#6'crDrag'#8'DragMode'#7#8'dm'
+  +'Manual'#7'Enabled'#9#11'Font.Height'#2#243#9'Font.Name'#6#7'Courier'#10'Fon'
+  +'t.Style'#11#0#9'MaxLength'#2#255#14'ParentBidiMode'#9#10'ParentFont'#8#8'Re'
+  +'adOnly'#8#10'ScrollBars'#7#10'ssAutoBoth'#8'TabOrder'#2#1#7'TabStop'#9#7'Vi'
+  +'sible'#9#11'WantReturns'#9#8'WantTabs'#8#0#0#11'TSaveDialog'#10'SaveDialog'
+  +#5'Width'#2#0#6'Height'#2#0#10'DefaultExt'#6#5'.diff'#6'Filter'#6#18'Patch|.'
+  +'diff;.patch'#4'left'#2#21#3'top'#3'='#1#0#0#0
 ]);

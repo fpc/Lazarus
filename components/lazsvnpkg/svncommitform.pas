@@ -15,12 +15,14 @@ type
   TSVNCommitFrm = class(TForm)
     ButtonPanel: TButtonPanel;
     SVNCommitMemo: TMemo;
+    procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
   private
     { private declarations }
     FSVNCommandLine: string;
   public
     { public declarations }
+    procedure Execute(Data: PtrInt);
     property SVNCommandLine: string read FSVNCommandLine write FSVNCommandLine;
   end; 
 
@@ -46,51 +48,18 @@ end;
 { TSVNCommitFrm }
 
 procedure TSVNCommitFrm.FormShow(Sender: TObject);
-var
-  AProcess: TProcess;
-  M: TMemoryStream;
-  BytesRead: LongInt;
-  n: LongInt;
+begin
+  Application.QueueAsyncCall(@Execute, 0);
+end;
+
+procedure TSVNCommitFrm.Execute(Data: PtrInt);
+begin
+  CmdLineToMemo(SVNCommandLine, SVNCommitMemo);
+end;
+
+procedure TSVNCommitFrm.FormCreate(Sender: TObject);
 begin
   Caption := rsLazarusSVNCommit;
-
-  //commit the checked files
-  AProcess := TProcess.Create(nil);
-  AProcess.CommandLine := SVNCommandLine;
-  debugln('TSVNCommitFrm.FormShow CommandLine ' + AProcess.CommandLine);
-  AProcess.Options := AProcess.Options + [poUsePipes, poStdErrToOutput];
-  AProcess.ShowWindow := swoHIDE;
-  AProcess.Execute;
-
-  M := TMemoryStream.Create;
-  BytesRead := 0;
-
-  while AProcess.Running do
-  begin
-    // make sure we have room
-    M.SetSize(BytesRead + READ_BYTES);
-
-    // try reading it
-    n := AProcess.Output.Read((M.Memory + BytesRead)^, READ_BYTES);
-    if n > 0 then
-      Inc(BytesRead, n)
-    else
-      // no data, wait 100 ms
-      Sleep(100);
-  end;
-  // read last part
-  repeat
-    // make sure we have room
-    M.SetSize(BytesRead + READ_BYTES);
-    // try reading it
-    n := AProcess.Output.Read((M.Memory + BytesRead)^, READ_BYTES);
-    if n > 0 then
-      Inc(BytesRead, n);
-  until n <= 0;
-  M.SetSize(BytesRead);
-
-  SVNCommitMemo.Lines.LoadFromStream(M);
-  M.Free;
 end;
 
 initialization

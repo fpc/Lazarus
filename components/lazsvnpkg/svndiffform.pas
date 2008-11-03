@@ -88,55 +88,9 @@ begin
 end;
 
 procedure TSVNDiffFrm.Execute(Data: PtrInt);
-var
-  AProcess: TProcess;
-  BytesRead: LongInt;
-  n: LongInt;
-  M: TMemoryStream;
 begin
-  AProcess := TProcess.Create(nil);
-  AProcess.CommandLine := SVNExecutable + ' diff ' + FSwitches + ' ' + RepositoryPath + ' --non-interactive';
-  debugln('TSVNDiffFrm.Execute commandline=', AProcess.CommandLine);
-  AProcess.Options := AProcess.Options + [poUsePipes, poStdErrToOutput];
-  AProcess.ShowWindow := swoHIDE;
-  AProcess.Execute;
-
-  M := TMemoryStream.Create;
-  BytesRead := 0;
-
-  while AProcess.Running do
-  begin
-    // make sure we have room
-    M.SetSize(BytesRead + READ_BYTES);
-
-    // try reading it
-    n := AProcess.Output.Read((M.Memory + BytesRead)^, READ_BYTES);
-    if n > 0
-    then begin
-      Inc(BytesRead, n);
-    end
-    else begin
-      // no data, wait 100 ms
-      Sleep(100);
-    end;
-  end;
-  // read last part
-  repeat
-    // make sure we have room
-    M.SetSize(BytesRead + READ_BYTES);
-    // try reading it
-    n := AProcess.Output.Read((M.Memory + BytesRead)^, READ_BYTES);
-    if n > 0
-    then begin
-      Inc(BytesRead, n);
-    end;
-  until n <= 0;
-  M.SetSize(BytesRead);
-
-  SVNDiffMemo.Lines.LoadFromStream(M);
-  SVNDiffMemo.Lines.Text := ReplaceLineEndings(SVNDiffMemo.Lines.Text, LineEnding);
-
-  AProcess.Free;
+  CmdLineToMemo(SVNExecutable + ' diff ' + FSwitches + ' ' + RepositoryPath + ' --non-interactive',
+                SVNDiffMemo);
 end;
 
 initialization

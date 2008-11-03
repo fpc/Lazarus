@@ -120,9 +120,9 @@ begin
 
     if StatusItem^.Checked then
       if pos(RepositoryPath,StatusItem^.Path) = 0 then
-        CmdLine := CmdLine + ' ' + AppendPathDelim(RepositoryPath) + StatusItem^.Path
+        CmdLine := CmdLine + ' ''' + AppendPathDelim(RepositoryPath) + StatusItem^.Path + ''''
       else
-        CmdLine := CmdLine + ' ' + StatusItem^.Path;
+        CmdLine := CmdLine + ' ''' + StatusItem^.Path + '''';
   end;
 
   FileName := GetTempFileName('','');
@@ -189,7 +189,8 @@ begin
       SubItems.Add(StatusItem^.PropStatus);
 
       //check if file is versioned
-      if LowerCase(StatusItem^.ItemStatus) <> 'unversioned' then
+      if (LowerCase(StatusItem^.ItemStatus) <> 'unversioned') and
+         (LowerCase(StatusItem^.ItemStatus) <> 'added') then
       begin
         //revision
         SubItems.Add(IntToStr(StatusItem^.Revision));

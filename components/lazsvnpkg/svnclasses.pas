@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, SysUtils, ComCtrls, FileUtil, XMLCfg, LCLProc, Dialogs, Controls,
-  XMLRead, DOM, Process;
+  XMLRead, DOM, Process, StdCtrls, Forms;
 
 resourcestring
   rsAction = 'Action';
@@ -143,6 +143,7 @@ type
 var
   SVNSettings: TSVNSettings;
 
+procedure CmdLineToMemo(CmdLine: string; Memo: TMemo);
 procedure SetColumn(ListView: TListView; ColNo, DefaultWidth: integer; AName: string; AutoSize: boolean = true);
 function SVNExecutable: string;
 function ReplaceLineEndings(const s, NewLineEnds: string): string;
@@ -152,6 +153,81 @@ implementation
 
 uses
   SVNAddProjectForm;
+
+procedure CmdLineToMemo(CmdLine: string; Memo: TMemo);
+var
+  AProcess: TProcess;
+  BytesRead: LongInt;
+  n: LongInt;
+  M: TMemoryStream;
+  ProcessMsg: string;
+
+  procedure UpdateStringsFromStream(Strings: TStrings; var M: TMemoryStream; var BytesRead: LongInt);
+  var
+    s: string;
+  begin
+    SetLength(s, BytesRead);
+    M.Read(s[1], BytesRead);
+
+    ProcessMsg := ProcessMsg + ReplaceLineEndings(s, LineEnding);
+    Strings.Text := ProcessMsg;
+
+    M.SetSize(0);
+    BytesRead:=0;
+  end;
+
+begin
+  ProcessMsg := '';
+
+  AProcess := TProcess.Create(nil);
+  AProcess.CommandLine := CmdLine;
+  debugln('CmdLineToMemo commandline=', AProcess.CommandLine);
+  AProcess.Options := AProcess.Options + [poUsePipes, poStdErrToOutput];
+  AProcess.ShowWindow := swoHIDE;
+  AProcess.Execute;
+
+  M := TMemoryStream.Create;
+  BytesRead := 0;
+
+  while AProcess.Running do
+  begin
+    // make sure we have room
+    M.SetSize(BytesRead + READ_BYTES);
+
+    // try reading it
+    n := AProcess.Output.Read((M.Memory + BytesRead)^, READ_BYTES);
+    if n > 0
+    then begin
+      Inc(BytesRead, n);
+      UpdateStringsFromStream(Memo.Lines, M, BytesRead);
+      Application.ProcessMessages;
+    end
+    else
+      // no data, wait 100 ms
+      Sleep(100);
+  end;
+  // read last part
+  repeat
+    // make sure we have room
+    M.SetSize(BytesRead + READ_BYTES);
+    // try reading it
+    n := AProcess.Output.Read((M.Memory + BytesRead)^, READ_BYTES);
+    if n > 0
+    then begin
+      Inc(BytesRead, n);
+      UpdateStringsFromStream(Memo.Lines, M, BytesRead);
+      Application.ProcessMessages;
+    end;
+  until n <= 0;
+  M.SetSize(BytesRead);
+
+  UpdateStringsFromStream(Memo.Lines, M, BytesRead);
+
+  AProcess.Free;
+  M.Free;
+
+  Memo.Cursor:=crDefault;
+end;
 
 procedure SetColumn(ListView: TListView; ColNo, DefaultWidth: integer; AName: string; AutoSize: boolean = true);
 begin

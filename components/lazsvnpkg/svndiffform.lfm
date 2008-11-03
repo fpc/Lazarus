@@ -119,6 +119,7 @@ object SVNDiffFrm: TSVNDiffFrm
     end
   end
   object SVNDiffMemo: TMemo
+    Cursor = crHourGlass
     Left = 6
     Height = 356
     Top = 6
