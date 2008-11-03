@@ -888,7 +888,7 @@ resourcestring
   lisIncludeFilter = 'Include Filter';
   dlgEnvBckup = 'Backup';
   dlgNaming = 'Naming';
-  lisFPDocEditor = 'FPDoc editor';
+  lisFPDocEditor = 'FPDoc Editor';
   lisOkBtn = 'Ok';
   dlgCancel = 'Cancel';
   lisSAMSelectNone = 'Select none';
