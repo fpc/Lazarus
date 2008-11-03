@@ -287,7 +287,7 @@ object AboutForm: TAboutForm
     Enabled = True
     OnPageChanged = NotebookPageChanged
     Options = []
-    PageIndex = 3
+    PageIndex = 2
     ParentFont = True
     ShowTabs = True
     TabOrder = 0
@@ -500,33 +500,9 @@ object AboutForm: TAboutForm
       ChildSizing.HorizontalSpacing = 0
       ChildSizing.VerticalSpacing = 0
       ChildSizing.ControlsPerLine = 0
-      ClientWidth = 385
-      ClientHeight = 261
       ImageIndex = -1
       ParentFont = True
       ParentShowHint = True
-      object ContributorsPaintBox: TPaintBox
-        Left = 0
-        Height = 261
-        Top = 0
-        Width = 385
-        HelpContext = 0
-        Align = alClient
-        BorderSpacing.Left = 0
-        BorderSpacing.Top = 0
-        BorderSpacing.Right = 0
-        BorderSpacing.Bottom = 0
-        BorderSpacing.Around = 0
-        BorderSpacing.CellAlignHorizontal = ccaFill
-        BorderSpacing.CellAlignVertical = ccaFill
-        DragCursor = crDrag
-        DragMode = dmManual
-        Enabled = True
-        ParentColor = True
-        ParentFont = True
-        ParentShowHint = True
-        Visible = True
-      end
     end
     object AcknowledgementsPage: TPage
       HelpContext = 0
@@ -536,33 +512,9 @@ object AboutForm: TAboutForm
       ChildSizing.HorizontalSpacing = 0
       ChildSizing.VerticalSpacing = 0
       ChildSizing.ControlsPerLine = 0
-      ClientWidth = 385
-      ClientHeight = 261
       ImageIndex = -1
       ParentFont = True
       ParentShowHint = True
-      object AcknowledgementsPaintBox: TPaintBox
-        Left = 0
-        Height = 261
-        Top = 0
-        Width = 385
-        HelpContext = 0
-        Align = alClient
-        BorderSpacing.Left = 0
-        BorderSpacing.Top = 0
-        BorderSpacing.Right = 0
-        BorderSpacing.Bottom = 0
-        BorderSpacing.Around = 0
-        BorderSpacing.CellAlignHorizontal = ccaFill
-        BorderSpacing.CellAlignVertical = ccaFill
-        DragCursor = crDrag
-        DragMode = dmManual
-        Enabled = True
-        ParentColor = True
-        ParentFont = True
-        ParentShowHint = True
-        Visible = True
-      end
     end
     object LogoPage: TPage
       HelpContext = 0

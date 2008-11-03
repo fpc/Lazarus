@@ -75,8 +75,6 @@ type
     LogoImage: TImage;
     LogoPage: TPage;
     miVerToClipboard: TMenuItem;
-    AcknowledgementsPaintBox: TPaintBox;
-    ContributorsPaintBox: TPaintBox;
     OfficialLabel: TLabel;
     OfficialURLLabel: TLabel;
     PlatformLabel: TLabel;
@@ -100,8 +98,7 @@ type
     Contributors: TScrollingText;
     procedure LoadContributors;
     procedure LoadAcknowledgements;
- public
-    constructor Create(TheOwner: TComponent); override;
+  public
   end;
 
 function ShowAboutForm: TModalResult;
@@ -130,14 +127,6 @@ begin
 end;
 
 { TAboutForm }
-
-constructor TAboutForm.Create(TheOwner: TComponent);
-begin
-  inherited Create(TheOwner);
-
-  ContributorsPaintBox.ControlStyle:=ContributorsPaintBox.ControlStyle+[csOpaque];
-  AcknowledgementsPaintBox.ControlStyle:=AcknowledgementsPaintBox.ControlStyle+[csOpaque];
-end;
 
 procedure TAboutForm.AboutFormCreate(Sender:TObject);
 const
@@ -364,7 +353,10 @@ end;
 
 function TScrollingText.ActiveLineIsURL: boolean;
 begin
-  Result := Pos('http://', FLines[FActiveLine]) = 1;
+  if (FActiveLine > 0) and (FActiveLine < FLines.Count -1) then
+    Result := Pos('http://', FLines[FActiveLine]) = 1
+  else
+    Result := False;
 end;
 
 procedure TScrollingText.DoOnChangeBounds;
