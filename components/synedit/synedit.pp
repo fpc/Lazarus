@@ -536,6 +536,7 @@ type
     function GetSelText: string;
     function SynGetText: string;
     {$IFDEF SYN_LAZARUS}
+    function IsBackwardSel: Boolean; // SelStart < SelEnd ?
     procedure SetTabChar(const AValue: Char);
     function RealGetText: TCaption; override;
     {$ENDIF}
@@ -2055,6 +2056,12 @@ begin
 end;
 
 {$IFDEF SYN_LAZARUS}
+function TCustomSynEdit.IsBackwardSel: Boolean;
+begin
+  Result := (fBlockBegin.Y > fBlockEnd.Y)
+    or ((fBlockBegin.Y = fBlockEnd.Y) and (fBlockBegin.X > fBlockEnd.X));
+end;
+
 procedure TCustomSynEdit.SetTabChar(const AValue: Char);
 begin
   if FTabChar=AValue then exit;
@@ -6596,14 +6603,22 @@ begin
 {end}                                                                           //sbs 2000-11-20
       crIndent:
         begin // re-insert the column
+          {$IFDEF SYN_LAZARUS}
+          SetCaretAndSelection(LogicalToPhysicalPos(Item.fChangeEndPos),
+            Item.fChangeStartPos, Item.fChangeEndPos);
+          x := fBlockIndent;
+          fBlockIndent := ord(Item.fChangeStr[1]);
+          SelectionMode := smNormal;
+          DoBlockIndent;
+          fBlockIndent := x;
+          {$ELSE}
           if (Item.fChangeEndPos.X = 1) then
           begin
             e := Item.fChangeEndPos.y - 1;
             x := 1;
           end else begin
             e := Item.fChangeEndPos.y;
-            x := Item.fChangeEndPos.x
-                      + {$IFDEF SYN_LAZARUS}fBlockIndent{$ELSE}fTabWidth{$ENDIF};
+            x := Item.fChangeEndPos.x + fTabWidth;
           end;
           InsertBlock(Point(1, Item.fChangeStartPos.y),
             Point(1, e), PChar(Item.fChangeStr));
@@ -6612,13 +6627,10 @@ begin
             Item.fChangeEndPos, Item.fChangeStr, Item.fChangeSelMode);
           // restore the selection
           SetCaretAndSelection(
-            {$IFDEF SYN_LAZARUS}
-            LogicalToPhysicalPos(Point(1, Item.fChangeEndPos.Y + 1)),
-            {$ELSE}
             Point(1, Item.fChangeEndPos.Y + 1),
-            {$ENDIF}
             Point(Item.fChangeStartPos.x + fTabWidth,Item.fChangeStartPos.y),
             Point(x, Item.fChangeEndPos.y));
+          {$ENDIF}
         end;
       crUnindent :
         begin // re-delete the (raggered) column
@@ -6627,18 +6639,23 @@ begin
             Item.fChangeEndPos, Item.fChangeStr, smColumn);
           // Delete string
           StrToDelete := PChar(Item.fChangeStr);
+          {$IFDEF SYN_LAZARUS}
+          CaretY := Item.ChangeStartPos.Y;
+          x := -1;
+          {$ELSE}
           CaretY := Item.fChangeStartPos.Y;
+          {$ENDIF}
           repeat
             Run := GetEOL(StrToDelete);
-            if Run <> StrToDelete then begin
-              Len := Run - StrToDelete;
-              TempString := Lines[CaretY - 1];
-              if Len > 0 then
-                Delete(TempString, 1, Len);
-              Lines[CaretY - 1] := TempString;
-            end else
-              Len := 0;
             {$IFDEF SYN_LAZARUS}
+            Len := Run - StrToDelete;
+            if x < 0 then
+              x:= Len;
+            if Len > 0 then begin
+              TempString := Lines[CaretY - 1];
+              Delete(TempString, 1, Len);
+              Lines[CaretY - 1] := TempString;
+            end;
             if Run^ in [#10,#13] then begin
               if (Run[1] in [#10,#13]) and (Run^<>Run[1]) then
                 Inc(Run,2)
@@ -6647,6 +6664,14 @@ begin
               Inc(fCaretY);
             end;
             {$ELSE}
+            if Run <> StrToDelete then begin
+              Len := Run - StrToDelete;
+              TempString := Lines[CaretY - 1];
+              if Len > 0 then
+                Delete(TempString, 1, Len);
+              Lines[CaretY - 1] := TempString;
+            end else
+              Len := 0;
             if Run^ = #13 then begin
               Inc(Run);
               if Run^ = #10 then
@@ -6657,17 +6682,21 @@ begin
             StrToDelete := Run;
           until Run^ = #0;
           // restore selection
+          {$IFDEF SYN_LAZARUS}
+          if (Item.fChangeStartPos.y > Item.fChangeEndPos.y)
+            or ((Item.fChangeStartPos.y = Item.fChangeEndPos.y) and (Item.fChangeStartPos.x > Item.fChangeEndPos.x))
+          then SwapInt(Len, x);
+          CaretPt := Point(Item.fChangeEndPos.x - Len, Item.fChangeEndPos.y);
+          SetCaretAndSelection(LogicalToPhysicalPos(CaretPt),
+            Point(Item.fChangeStartPos.x - x, Item.fChangeStartPos.y), CaretPt
+            );
+          {$ELSE}
           CaretPt := Point(Item.fChangeStartPos.x - fTabWidth,
                            Item.fChangeStartPos.y);
-          SetCaretAndSelection(
-            {$IFDEF SYN_LAZARUS}
-            LogicalToPhysicalPos(CaretPt),
-            {$ELSE}
-            CaretPt,
-            {$ENDIF}
-            CaretPt,
+          SetCaretAndSelection(CaretPt, CaretPt,
             Point(Item.fChangeEndPos.x - Len, Item.fChangeEndPos.y)
             );
+          {$ENDIF}
         end;
     end;
   finally
@@ -6826,15 +6855,24 @@ begin
       crIndent: // remove the column that was inserted
         begin
           // select the inserted column
+          {$IFDEF SYN_LAZARUS}
+          BlockBegin := Point(1, Item.ChangeStartPos.y);
+          TmpPos := Item.ChangeEndPos;
+          if TmpPos.x = 1 then
+            Dec(TmpPos.y);
+          TmpPos.x := ord(Item.fChangeStr[1])+1;
+          BlockEnd := TmpPos;
+          {$ELSE}
           BlockBegin := Point(1, Item.fChangeStartPos.y);
           TmpPos := Item.fChangeEndPos;
           if TmpPos.x = 1 then
             Dec(TmpPos.y);
-          TmpPos.x := {$IFDEF SYN_LAZARUS}fBlockIndent{$ELSE}fTabWidth{$ENDIF}+1;
+          TmpPos.x := fTabWidth+1;
           BlockEnd := TmpPos;
+          {$ENDIF}
           // add to redo list
           fRedoList.AddChange(Item.fChangeReason, Item.fChangeStartPos,
-            Item.fChangeEndPos, GetSelText, Item.fChangeSelMode);
+            Item.fChangeEndPos, {$IFDEF SYN_LAZARUS}Item.fChangeStr{$ELSE}GetSelText{$ENDIF}, Item.fChangeSelMode);
           // remove the column
           SetSelTextPrimitive(Item.fChangeSelMode, nil, nil);
           // restore the selection
@@ -6851,15 +6889,17 @@ begin
          fRedoList.AddChange(Item.fChangeReason, Item.fChangeStartPos,
             Item.fChangeEndPos, Item.fChangeStr, Item.fChangeSelMode);
           // reinsert the string
+          {$IFDEF SYN_LAZARUS}
+          InsertBlock(Point(1, Item.ChangeStartPos.y),
+            Point(1, Item.ChangeEndPos.y), PChar(Item.fChangeStr));
+          SetCaretAndSelection(LogicalToPhysicalPos(Item.fChangeEndPos),
+            Item.fChangeStartPos, Item.fChangeEndPos);
+          {$ELSE}
           InsertBlock(Point(1, Item.fChangeStartPos.y),
             Point(1, Item.fChangeEndPos.y), PChar(Item.fChangeStr));
-          SetCaretAndSelection(
-            {$IFDEF SYN_LAZARUS}
-            LogicalToPhysicalPos(Item.fChangeStartPos),
-            {$ELSE}
-            Item.fChangeStartPos,
-            {$ENDIF}
+          SetCaretAndSelection(Item.fChangeStartPos,
             Item.fChangeStartPos, Item.fChangeEndPos);
+          {$ENDIF}
         end;
     end;
   finally
@@ -7549,8 +7589,12 @@ var
 {begin}                                                                         //mh 2000-10-30
   procedure SetSelectedTextEmpty;
   begin
+    {$IFDEF SYN_LAZARUS}
+    if IsBackwardSel
+    {$ELSE}
     if (fBlockBegin.Y < fBlockEnd.Y)
       or ((fBlockBegin.Y = fBlockEnd.Y) and (fBlockBegin.X < fBlockEnd.X))
+    {$ENDIF}
     then
       fUndoList.AddChange(crDelete, fBlockBegin, fBlockEnd, SelText,
         SelectionMode)
@@ -9933,10 +9977,14 @@ var
   i,InsertStrLen   : integer;
   Spaces           : String;
   OrgSelectionMode : TSynSelectionMode;
+  {$IFDEF SYN_LAZARUS}BlockBackward : Boolean;{$ENDIF}
 begin
   if not SelAvail then exit;
   OrgSelectionMode := fSelectionMode;
   OrgCaretPos := CaretXY;
+  {$IFDEF SYN_LAZARUS}
+  BlockBackward:= IsBackwardSel;
+  {$ENDIF}
   x := 1;
   StrToInsert := nil;
   fSelectionMode := smColumn;
@@ -9974,16 +10022,29 @@ begin
       StrPCopy(Run, Spaces);
 
       InsertBlock(Point(1,BB.y),Point(1,BB.y),StrToInsert);
-      fUndoList.AddChange(crIndent, BB, BE, '', smColumn);
+      {$IFDEF SYN_LAZARUS}
+      if BlockBackward then
+        SwapPoint(BB, BE);
+      {$ENDIF}
+      fUndoList.AddChange(crIndent, BB, BE, {$IFDEF SYN_LAZARUS}chr(fBlockIndent){$ELSE}''{$ENDIF}, smColumn);
     finally
       StrDispose(StrToInsert);
     end;
   finally
     fSelectionMode := OrgSelectionMode;
+    {$IFDEF SYN_LAZARUS}
+    if BlockBackward then Begin
+      inc(BE.x, fBlockIndent);
+      BB.x := x;
+    end else begin
+      inc(BB.x, fBlockIndent);
+      BE.x := x;
+    end;
+    SetCaretAndSelection(LogicalToPhysicalPos(BE), BB, BE);
+    {$ELSE}
     SetCaretAndSelection(OrgCaretPos,
-      Point(BB.x + {$IFDEF SYN_LAZARUS}fBlockIndent{$ELSE}fTabWidth{$ENDIF},
-            BB.y),
-      Point(x, BE.y));
+      Point(BB.x + fTabWidth, BB.y), Point(x, BE.y));
+    {$ENDIF}
   end;
 end;
 
@@ -10002,6 +10063,7 @@ var
   TempString: AnsiString;
   OrgSelectionMode : TSynSelectionMode;
   SomethingToDelete : Boolean;
+  {$IFDEF SYN_LAZARUS}BlockBackward : Boolean;{$ENDIF}
 
   function GetDelLen : integer;
   var
@@ -10028,6 +10090,9 @@ begin
     BB := BlockBegin;
     BE := BlockEnd;
     OrgCaretPos := CaretXY;
+    {$IFDEF SYN_LAZARUS}
+    BlockBackward:=  IsBackwardSel;
+    {$ENDIF}
 
     // convert selection to complete lines
     if BE.X = 1 then
@@ -10038,8 +10103,7 @@ begin
     // build string to delete
     StrToDeleteLen :=
       {$IFDEF SYN_LAZARUS}
-       (fBlockIndent+length(LineEnding)) * (e - BB.y)
-      + fBlockIndent
+       (fBlockIndent+length(LineEnding)) * (e - BB.y + 1)
       + 1;
       {$ELSE}
        (fTabWidth+2) * (e - BB.y)
@@ -10051,7 +10115,7 @@ begin
     try
       FullStrToDelete[0] := #0;
       SomethingToDelete := False;
-      for x := BB.Y to e-1 do
+      for x := BB.Y to e{$IFNDEF SYN_LAZARUS}-1{$ENDIF} do
       begin
         Line := PChar(Lines[x-1]);
         TempString:=StringOfChar(' ', GetDelLen);
@@ -10059,9 +10123,11 @@ begin
         StrCat(FullStrToDelete,
                     PChar({$IFDEF SYN_LAZARUS}LineEnding{$ELSE}#13#10{$ENDIF}));
       end;
+      {$IFNDEF SYN_LAZARUS}
       Line := PChar(Lines[e-1]);
       TempString:=StringOfChar(' ', GetDelLen);
       StrCat(FullStrToDelete,PChar(TempString));
+      {$ENDIF}
 
       FirstIndent := -1;
       // Delete string
@@ -10071,16 +10137,21 @@ begin
         CaretY := BB.Y;
         repeat
           Run := GetEOL(StrToDelete);
+          {$IFNDEF SYN_LAZARUS}
           if Run <> StrToDelete then
           begin
+          {$ENDIF}
             Len := Run - StrToDelete;
             if FirstIndent = -1 then
               FirstIndent := Len;
-            TempString := Lines[CaretY - 1];
-            if Len > 0 then
+            if Len > 0 then begin
+              TempString := Lines[CaretY - 1];
               Delete(TempString, 1, Len);
-            Lines[CaretY - 1] := TempString;
+              Lines[CaretY - 1] := TempString;
+            end;
+          {$IFNDEF SYN_LAZARUS}
           end;
+          {$ENDIF}
           {$IFDEF SYN_LAZARUS}
           if Run^ in [#10,#13] then  begin
             if (Run[1] in [#10,#13]) and (Run^<>Run[1]) then
@@ -10101,14 +10172,32 @@ begin
           StrToDelete := Run;
         until Run^ = #0;
         LastIndent := Len;
-        fUndoList.AddChange(crUnindent, BB, BE, StrToDelete, smColumn);
+        {$IFDEF SYN_LAZARUS}
+        if BlockBackward then Begin
+          SwapPoint(BB, BE);
+          SwapInt(FirstIndent, LastIndent);
+        end;
+        {$ENDIF}
+        fUndoList.AddChange(crUnindent, BB, BE, {$IFDEF SYN_LAZARUS}FullStrToDelete{$ELSE}StrToDelete{$ENDIF}, smColumn);
       end;
       // restore selection
       fSelectionMode := OrgSelectionMode;
+      {$IFDEF SYN_LAZARUS}
+      if FirstIndent = -1 then begin
+        // Nothing changed; ensure correct restore
+        if BlockBackward then
+          SwapPoint(BB, BE);
+      end else begin
+        dec(BB.x, FirstIndent);
+        dec(BE.x, LastIndent);
+      end;
+      SetCaretAndSelection(LogicalToPhysicalPos(BE), BB, BE);
+      {$ELSE}
       if FirstIndent = -1 then
         FirstIndent := 0;
       SetCaretAndSelection(OrgCaretPos, Point(BB.x - FirstIndent, BB.Y),
         Point(BE.x - LastIndent, BE.y));
+      {$ENDIF}
     finally
       StrDispose(FullStrToDelete);
     end;

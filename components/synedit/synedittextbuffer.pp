@@ -229,6 +229,8 @@ type
     crSilentDelete, crSilentDeleteAfterCursor,                                  //mh 2000-10-30
     crNothing);
 
+  { TSynEditUndoItem }
+
   TSynEditUndoItem = class(TObject)
   public
     fChangeReason: TSynChangeReason;
@@ -237,6 +239,10 @@ type
     fChangeEndPos: TPoint; // logical position (byte)
     fChangeStr: string;
     fChangeNumber: integer;                                                     //sbs 2000-11-19
+    {$IFDEF SYN_LAZARUS}
+    function ChangeStartPos: TPoint; // logical position (byte)
+    function ChangeEndPos: TPoint; // logical position (byte)
+    {$ENDIF}
   end;
 
   TSynEditUndoList = class(TObject)
@@ -1456,6 +1462,26 @@ begin
   Result:=fUnModifiedItem>=0;
 end;
 
+{$ENDIF}
+
+{ TSynEditUndoItem }
+
+{$IFDEF SYN_LAZARUS}
+function TSynEditUndoItem.ChangeStartPos: TPoint;
+begin
+  if (fChangeStartPos.Y < fChangeEndPos.Y)
+    or ((fChangeStartPos.Y = fChangeEndPos.Y) and (fChangeStartPos.X < fChangeEndPos.X))
+  then result := fChangeStartPos
+  else result := fChangeEndPos;
+end;
+
+function TSynEditUndoItem.ChangeEndPos: TPoint;
+begin
+  if (fChangeStartPos.Y < fChangeEndPos.Y)
+    or ((fChangeStartPos.Y = fChangeEndPos.Y) and (fChangeStartPos.X < fChangeEndPos.X))
+  then result := fChangeEndPos
+  else result := fChangeStartPos;
+end;
 {$ENDIF}
 
 end.

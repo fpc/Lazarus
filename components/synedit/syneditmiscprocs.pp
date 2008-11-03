@@ -62,6 +62,10 @@ function MinMax(x, mi, ma: integer): integer;{$IFDEF HasInline}inline;{$ENDIF}
 procedure SwapInt(var l, r: integer);{$IFDEF HasInline}inline;{$ENDIF}
 function maxPoint(P1, P2: TPoint): TPoint;
 function minPoint(P1, P2: TPoint): TPoint;
+{$IFDEF SYN_LAZARUS}
+function eqPoint(P1, P2: TPoint): Boolean;
+procedure SwapPoint(var P1, P2: TPoint);
+{$ENDIF}
 
 function GetIntArray(Count: Cardinal; InitialValue: integer): PIntArray;
 
@@ -190,6 +194,22 @@ begin
   if (P2.y < P1.y) or ((P2.y = P1.y) and (P2.x < P1.x)) then
     Result := P2;
 end;
+
+{$IFDEF SYN_LAZARUS}
+function eqPoint(P1, P2: TPoint): Boolean;
+begin
+  Result := (P2.y = P1.y) and (P2.x = P1.x);
+end;
+
+procedure SwapPoint(var P1, P2: TPoint);
+var
+  tmp : TPoint;
+begin
+  tmp := P1;
+  P1 := P2;
+  P2 := tmp;
+end;
+{$ENDIF}
 
 {***}
 
