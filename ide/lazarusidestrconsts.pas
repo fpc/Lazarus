@@ -856,6 +856,8 @@ resourcestring
   // Options dialog groups
   dlgGroupEnvironment = 'Environment';
   dlgGroupEditor = 'Editor';
+  dlgGroupCodetools = 'Codetools';
+
   // Options dialog
   dlgBakNoSubDirectory = '(no subdirectory)';
   dlgEOFocusMessagesAfterCompilation = 'Focus messages after compilation';

@@ -1,0 +1,50 @@
+object CodetoolsWordPolicyOptionsFrame: TCodetoolsWordPolicyOptionsFrame
+  Height = 229
+  Width = 483
+  ClientHeight = 229
+  ClientWidth = 483
+  TabOrder = 0
+  Visible = False
+  DesignLeft = 419
+  DesignTop = 205
+  object KeyWordPolicyRadioGroup: TRadioGroup
+    AnchorSideRight.Side = asrBottom
+    Height = 100
+    Top = 6
+    Width = 540
+    Anchors = [akTop, akLeft, akRight]
+    AutoFill = True
+    BorderSpacing.Around = 6
+    Caption = 'KeyWordPolicyRadioGroup'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    TabOrder = 0
+  end
+  object IdentifierPolicyRadioGroup: TRadioGroup
+    AnchorSideTop.Control = KeyWordPolicyRadioGroup
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Height = 100
+    Top = 112
+    Width = 540
+    Anchors = [akTop, akLeft, akRight]
+    AutoFill = True
+    BorderSpacing.Around = 6
+    Caption = 'IdentifierPolicyRadioGroup'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    TabOrder = 1
+  end
+end

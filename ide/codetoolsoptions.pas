@@ -38,14 +38,14 @@ uses
   Classes, SysUtils, LazConf, Laz_XMLCfg, FileUtil,
   LResources, Forms, Controls, Buttons, LclProc, ExtCtrls, StdCtrls, ComCtrls,
   Dialogs, CodeToolManager, DefineTemplates, SourceChanger, SynEdit,
-  IDEWindowIntf, IDEContextHelpEdit,
+  IDEWindowIntf, IDEOptionsIntf, IDEContextHelpEdit,
   IDEOptionDefs, EditDefineTree, LazarusIDEStrConsts, IDEProcs, ButtonPanel;
 
 type
 
   { TCodeToolsOptions }
 
-  TCodeToolsOptions = class
+  TCodeToolsOptions = class(TAbstractIDEOptions)
   private
     FClassHeaderComments: boolean;
     FFilename: string;
@@ -1366,7 +1366,7 @@ begin
 end;
 
 initialization
+  RegisterIDEOptionsGroup(GroupCodetools, dlgGroupCodetools);
   {$I codetoolsoptions.lrs}
-
 end.
 

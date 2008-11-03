@@ -41,7 +41,7 @@
         <PackageName Value="SynEdit"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="17">
+    <Units Count="20">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -175,6 +175,30 @@
         <ResourceFilename Value="frames\options_editor_codefolding.lrs"/>
         <UnitName Value="options_editor_codefolding"/>
       </Unit16>
+      <Unit17>
+        <Filename Value="frames\options_codetools_general.pas"/>
+        <ComponentName Value="CodetoolsGeneralOptionsFrame"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="frames\options_codetools_general.lrs"/>
+        <UnitName Value="options_codetools_general"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="frames\options_codetools_codecreation.pas"/>
+        <ComponentName Value="CodetoolsCodeCreationOptionsFrame"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="frames\options_codetools_codecreation.lrs"/>
+        <UnitName Value="options_codetools_codecreation"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="frames\options_codetools_wordpolicy.pas"/>
+        <ComponentName Value="CodetoolsWordPolicyOptionsFrame"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="frames\options_codetools_wordpolicy.lrs"/>
+        <UnitName Value="options_codetools_wordpolicy"/>
+      </Unit19>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

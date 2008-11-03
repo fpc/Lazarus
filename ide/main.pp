@@ -130,7 +130,8 @@ uses
   options_files, options_desktop, options_window, options_formed, options_oi,
   options_backup, options_naming, options_fpdoc,
   options_editor_general, options_editor_display, options_editor_keymapping,
-  options_editor_color, options_editor_codetools, options_editor_codefolding;
+  options_editor_color, options_editor_codetools, options_editor_codefolding,
+  options_codetools_general, options_codetools_codecreation, options_codetools_wordpolicy;
 
 type
   TIDEProjectItem =
@@ -3949,6 +3950,8 @@ begin
       ReadSettings(EnvironmentOptions);
       // load settings from EditorOptions to IDEOptionsDialog
       ReadSettings(EditorOpts);
+      // load settings from CodetoolsOption to IDEOptionsDialog
+      ReadSettings(CodeToolsOpts);
     end;
     if IDEOptionsDialog.ShowModal = mrOk then 
     begin
@@ -3960,6 +3963,7 @@ begin
       OldLanguage:=EnvironmentOptions.LanguageID;
       IDEOptionsDialog.WriteSettings(EnvironmentOptions);
       IDEOptionsDialog.WriteSettings(EditorOpts);
+      IDEOptionsDialog.WriteSettings(CodeToolsOpts);
       ShowCompileDialog := EnvironmentOptions.ShowCompileDialog;
 
       UpdateDefaultPascalFileExtensions;
@@ -3990,6 +3994,8 @@ begin
       // save to disk
       EnvironmentOptions.Save(False);
       EditorOpts.Save;
+      CodeToolsOpts.AssignTo(CodeToolBoss);
+      CodeToolsOpts.Save;
 
       // update environment
       UpdateDesigners;
