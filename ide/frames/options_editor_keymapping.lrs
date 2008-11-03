@@ -3,8 +3,8 @@
 LazarusResources.Add('TEditorKeymappingOptionsFrame','FORMDATA',[
   'TPF0'#241#29'TEditorKeymappingOptionsFrame'#28'EditorKeymappingOptionsFrame'
   +#6'Height'#3#254#1#5'Width'#3#205#1#12'ClientHeight'#3#254#1#11'ClientWidth'
-  +#3#205#1#8'TabOrder'#2#0#7'Visible'#8#10'DesignLeft'#3#154#0#9'DesignTop'#3
-  +#203#0#0#242#2#0#6'TLabel'#19'KeyMappingHelpLabel'#22'AnchorSideLeft.Control'
+  +#3#205#1#8'TabOrder'#2#0#7'Visible'#8#10'DesignLeft'#3#176#0#9'DesignTop'#3
+  +#232#0#0#242#2#0#6'TLabel'#19'KeyMappingHelpLabel'#22'AnchorSideLeft.Control'
   +#7#5'Owner'#21'AnchorSideTop.Control'#7#5'Owner'#6'Height'#2#14#5'Width'#2'i'
   +#7'Caption'#6#19'KeyMappingHelpLabel'#11'ParentColor'#8#0#0#242#2#1#5'TEdit'
   +#20'KeyMappingFilterEdit'#22'AnchorSideLeft.Control'#7#5'Owner'#21'AnchorSid'

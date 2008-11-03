@@ -26,9 +26,9 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Graphics, Dialogs, StdCtrls,
-  Spin, LCLType, SynEdit,
+  Spin, LCLType, SynEdit, Controls,
   EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, SynEditMiscClasses,
-  options_editor_general, IDEProcs, Controls;
+  options_editor_general, IDEProcs;
 
 type
   { TEditorDisplayOptionsFrame }
@@ -57,14 +57,10 @@ type
     ShowOnlyLineNumbersMultiplesOfSpinEdit: TSpinEdit;
     VisibleGutterCheckBox: TCheckBox;
     VisibleRightMarginCheckBox: TCheckBox;
-    procedure DisplayPreviewStatusChange(Sender: TObject;
-      Changes: TSynStatusChanges);
     procedure EditorFontButtonClick(Sender: TObject);
     procedure EditorFontComboBoxEditingDone(Sender: TObject);
     procedure ComboboxOnExit(Sender: TObject);
     procedure GutterColorButtonColorChanged(Sender: TObject);
-    procedure OnSpecialLineColors(Sender: TObject; Line: Integer;
-      var Special: boolean; aMarkup: TSynSelectedColor);
     procedure ComboBoxOnKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure RightMarginColorButtonColorChanged(Sender: TObject);
@@ -85,37 +81,6 @@ type
   end;
 
 implementation
-
-type
-  // This is only needed until SynEdit does the ScrollWindowEx in Paint, instead of SetTopline
-  TSynEditAccess = class(TSynEdit);
-procedure TEditorDisplayOptionsFrame.DisplayPreviewStatusChange(Sender : TObject; Changes : TSynStatusChanges);
-var
-  Syn: TSynEditAccess;
-  p: TPoint;
-  tl, lc: Integer;
-  AGeneralPage: TEditorGeneralOptionsFrame;
-begin
-  AGeneralPage := GeneralPage;
-
-  if AGeneralPage = nil then
-    Exit;
-
-  p := EditorOpts.HighlighterList[AGeneralPage.CurLanguageID].CaretXY;
-  Syn := TSynEditAccess(Pointer(Sender as TSynEdit));
-  if p.y > Syn.Lines.Count then exit;
-  if (Syn.CaretX = p.x) and (Syn.Carety = p.y) then exit;
-  try
-    Syn.IncPaintLock;
-    tl := Syn.TopLine;
-    lc := Syn.LeftChar;
-    Syn.CaretXY:= p;
-    Syn.TopLine := tl;
-    Syn.LeftChar := lc;
-  finally
-    Syn.DecPaintLock;
-  end;
-end;
 
 procedure TEditorDisplayOptionsFrame.FontDialogApplyClicked(Sender: TObject);
 var
@@ -226,41 +191,6 @@ begin
         PreviewEdits[a].Gutter.Color := GutterColorButton.ButtonColor;
         PreviewEdits[a].Invalidate;
       end;
-end;
-
-procedure TEditorDisplayOptionsFrame.OnSpecialLineColors(Sender: TObject;
-  Line: Integer; var Special: boolean; aMarkup: TSynSelectedColor);
-var
-  e: TSynHighlightElement;
-  AddAttr: TAdditionalHilightAttribute;
-  i: Integer;
-  AGeneralPage: TEditorGeneralOptionsFrame;
-begin
-  AGeneralPage := GeneralPage;
-  if AGeneralPage = nil then
-    Exit;
-
-  if AGeneralPage.CurLanguageID >= 0 then
-  begin
-    AddAttr := EditorOpts.HighlighterList[AGeneralPage.CurLanguageID].SampleLineToAddAttr(Line);
-    if AddAttr <> ahaNone then
-    begin
-      i := AGeneralPage.PreviewSyn.AttrCount - 1;
-      while (i >= 0) do
-      begin
-        e := AGeneralPage.PreviewSyn.Attribute[i];
-        if e.Name = '' then
-          continue;
-        if e.Name = AdditionalHighlightAttributes[AddAttr] then
-        begin
-          Special := True;
-          EditorOpts.SetMarkupColor(AGeneralPage.PreviewSyn, AddAttr, aMarkup);
-          exit;
-        end;
-        dec(i);
-      end;
-    end;
-  end;
 end;
 
 procedure TEditorDisplayOptionsFrame.ComboBoxOnKeyDown(Sender: TObject; var Key: Word;

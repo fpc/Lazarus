@@ -3,9 +3,10 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
   Width = 501
   ClientHeight = 441
   ClientWidth = 501
+  TabOrder = 0
   Visible = False
-  DesignLeft = 545
-  DesignTop = 226
+  DesignLeft = 176
+  DesignTop = 232
   object MarginAndGutterGroupBox: TGroupBox[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -688,7 +689,5 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       'DisplayPreview'
     )
     ReadOnly = True
-    OnSpecialLineMarkup = OnSpecialLineColors
-    OnStatusChange = DisplayPreviewStatusChange
   end
 end

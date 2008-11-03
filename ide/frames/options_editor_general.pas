@@ -49,24 +49,14 @@ type
   private
     { private declarations }
   public
-    FHighlighterList: TStringList; // list of "ColorScheme" Data=TSrcIDEHighlighter
-    FColorSchemes: TStringList;    // list of LanguageName=ColorScheme
     PreviewEdits: array of TPreviewEditor;
-    PreviewSyn: TSrcIDEHighlighter;
-    CurLanguageID: Integer;
 
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     function GetTitle: String; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
-
-    function GetCurColorScheme(const LanguageName: String): String;
-    function GetHighlighter(SynClass: TCustomSynClass;
-      const ColorScheme: String; CreateIfNotExists: Boolean): TSrcIDEHighlighter;
-    procedure ClearHighlighters;
   end;
 
 implementation
@@ -91,7 +81,7 @@ begin
     Items.Add(dlgShowGutterHints);
     //Items.Add(dlgShowScrollHint);
     Items.Add(lisShowSpecialCharacters);
-    Items.Add(dlgUseSyntaxHighlight);
+    //Items.Add(dlgUseSyntaxHighlight);
     // drag&drop
     Items.Add(dlgDragDropEd);
     Items.Add(dlgDropFiles);
@@ -164,7 +154,7 @@ begin
       Checked[Items.IndexOf(dlgMouseLinks)]   := CtrlMouseLinks;
       Checked[Items.IndexOf(dlgShowGutterHints)] := ShowGutterHints;
       Checked[Items.IndexOf(dlgFindTextatCursor)] := FindTextAtCursor;
-      Checked[Items.IndexOf(dlgUseSyntaxHighlight)] := UseSyntaxHighlight;
+      //Checked[Items.IndexOf(dlgUseSyntaxHighlight)] := UseSyntaxHighlight;
       Checked[Items.IndexOf(dlgCopyWordAtCursorOnCopyNone)] := CopyWordAtCursorOnCopyNone;
     end;
 
@@ -172,21 +162,9 @@ begin
     SetComboBoxText(UndoLimitComboBox, IntToStr(UndoLimit));
     SetComboBoxText(TabWidthsComboBox, IntToStr(TabWidth));
 
-    PreviewSyn := GetHighlighter(TPreviewPasSyn, GetCurColorScheme(TPreviewPasSyn.GetLanguageName), True);
-    CurLanguageID := HighlighterList.FindByClass(TCustomSynClass(PreviewSyn.ClassType));
-
     for i := Low(PreviewEdits) to High(PreviewEdits) do
       if PreviewEdits[i] <> nil then
-        with PreviewEdits[i] do
-        begin
-          if UseSyntaxHighlight then
-            Highlighter := PreviewSyn;
-          GetSynEditPreviewSettings(PreviewEdits[i]);
-          Lines.Text := HighlighterList[CurLanguageID].SampleSource;
-          CaretXY := HighlighterList[CurLanguageID].CaretXY;
-          TopLine := 1;
-          LeftChar := 1;
-        end;
+        GetSynEditPreviewSettings(PreviewEdits[i]);
   end;
 end;
 
@@ -249,7 +227,7 @@ begin
     CopyWordAtCursorOnCopyNone := CheckGroupItemChecked(EditorOptionsGroupBox, dlgCopyWordAtCursorOnCopyNone);
     ShowGutterHints := CheckGroupItemChecked(EditorOptionsGroupBox, dlgShowGutterHints);
     FindTextAtCursor := CheckGroupItemChecked(EditorOptionsGroupBox, dlgFindTextatCursor);
-    UseSyntaxHighlight := CheckGroupItemChecked(EditorOptionsGroupBox, dlgUseSyntaxHighlight);
+    //UseSyntaxHighlight := CheckGroupItemChecked(EditorOptionsGroupBox, dlgUseSyntaxHighlight);
     CtrlMouseLinks := CheckGroupItemChecked(EditorOptionsGroupBox, dlgMouseLinks);
 
     i := StrToIntDef(UndoLimitComboBox.Text, 32767);
@@ -278,51 +256,6 @@ end;
 class function TEditorGeneralOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
   Result := TEditorOptions;
-end;
-
-function TEditorGeneralOptionsFrame.GetCurColorScheme(const LanguageName: String): String;
-begin
-  if FColorSchemes = nil then
-    Result := ''
-  else
-    Result := FColorSchemes.Values[LanguageName];
-  if Result = '' then
-    Result := EditorOpts.ReadColorScheme(LanguageName);
-end;
-
-function TEditorGeneralOptionsFrame.GetHighlighter(SynClass: TCustomSynClass;
-  const ColorScheme: String; CreateIfNotExists: Boolean): TSrcIDEHighlighter;
-var
-  i: Integer;
-begin
-  if FHighlighterList = nil then
-    FHighlighterList := TStringList.Create;
-  for i := 0 to FHighlighterList.Count - 1 do
-    if (FHighlighterList[i] = ColorScheme) and
-      (TCustomSynClass(TSrcIDEHighlighter(fHighlighterList.Objects[i]).ClassType) =
-      SynClass) then
-    begin
-      Result := TSrcIDEHighlighter(FHighlighterList.Objects[i]);
-      exit;
-    end;
-  if CreateIfNotExists then
-  begin
-    Result := SynClass.Create(nil);
-    EditorOpts.AddSpecialHilightAttribsToHighlighter(Result);
-    FHighlighterList.AddObject(ColorScheme, Result);
-    EditorOpts.ReadHighlighterSettings(Result, ColorScheme);
-  end;
-end;
-
-procedure TEditorGeneralOptionsFrame.ClearHighlighters;
-var
-  i: Integer;
-begin
-  if FHighlighterList = nil then
-    Exit;
-  for i := 0 to FHighlighterList.Count - 1 do
-    TSrcIDEHighlighter(FHighlighterList.Objects[i]).Free;
-  FHighlighterList.Free;
 end;
 
 procedure TEditorGeneralOptionsFrame.EditorOptionsGroupBoxItemClick(
@@ -365,9 +298,6 @@ procedure TEditorGeneralOptionsFrame.EditorOptionsGroupBoxItemClick(
     end;
   end;
 
-var
-  a: Integer;
-  i: LongInt;
 begin
   SetOption(dlgAltSetClMode, eoAltSetsColumnMode);
   SetOption(dlgAutoIdent, eoAutoIndent);
@@ -394,14 +324,6 @@ begin
 
   SetOption2(dlgCursorSkipsSelection, eoCaretSkipsSelection);
   SetOption2(dlgAlwaysVisibleCursor, eoAlwaysVisibleCaret);
-
-  i := EditorOptionsGroupBox.Items.IndexOf(dlgUseSyntaxHighlight);
-  for a := Low(PreviewEdits) to High(PreviewEdits) do
-    if PreviewEdits[a] <> nil then
-      if EditorOptionsGroupBox.Checked[i] then
-        PreviewEdits[a].Highlighter := PreviewSyn
-      else
-        PreviewEdits[a].Highlighter := nil;
 end;
 
 procedure TEditorGeneralOptionsFrame.ComboboxOnChange(Sender: TObject);
@@ -446,13 +368,6 @@ constructor TEditorGeneralOptionsFrame.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   PreviewEdits := nil;
-end;
-
-destructor TEditorGeneralOptionsFrame.Destroy;
-begin
-  ClearHighlighters;
-  FColorSchemes.Free;
-  inherited Destroy;
 end;
 
 initialization

@@ -5,8 +5,8 @@ inherited EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
   ClientWidth = 461
   TabOrder = 0
   Visible = False
-  DesignLeft = 154
-  DesignTop = 203
+  DesignLeft = 176
+  DesignTop = 232
   object KeyMappingHelpLabel: TLabel[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
