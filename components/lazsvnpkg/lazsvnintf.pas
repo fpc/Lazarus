@@ -23,7 +23,7 @@ unit LazSVNIntf;
 interface
 
 uses
-  Classes, SysUtils, LCLtype, LResources, ProjectIntf;
+  Classes, SysUtils, LCLtype, LResources, ProjectIntf, LCLProc;
 
 procedure ProcSVNLog(Sender: TObject);
 procedure ProcSVNCommit(Sender: TObject);
@@ -37,7 +37,7 @@ implementation
 uses
   MenuIntf, IDECommands, Controls, Forms, Dialogs,
   SVNLogForm, SVNUpdateForm, SVNDiffForm, SVNStatusForm, LazIDEIntf, SVNClasses,
-  SVNSettingsForm, SrcEditorIntf;
+  SVNAddProjectForm, SrcEditorIntf;
 
 var
   CmdSVNLog : TIDECommand;
@@ -81,21 +81,24 @@ begin
     CmdSVNDiff, 'menu_svn_diff');
   RegisterIDEMenuCommand(mnuSVNSection, 'SVNSettings', rsSettings, nil, nil,
     CmdSVNSettings, 'menu_environment_options');
-
-  SVNSettingsFrm := TSVNSettingsFrm.Create(nil);
 end;
 
 procedure ProcSVNLog(Sender: TObject);
 var
   Repo: string;
   IsActive: boolean;
+  sBool: string;
 begin
   If Assigned(LazarusIDE) and Assigned(LazarusIDE.ActiveProject) then
   begin
-    Repo := ExtractFilePath(LazarusIDE.ActiveProject.ProjectInfoFile);
-    IsActive := SVNSettings.RepositoryByPath(LazarusIDE.ActiveProject.ProjectInfoFile, Repo);
+    Repo := LazarusIDE.ActiveProject.CustomSessionData.Values[SVN_REPOSITORY];
+    sBool := LazarusIDE.ActiveProject.CustomSessionData.Values[SVN_ACTIVE];
+    if sBool <> '' then
+      IsActive := StrToBool(sBool)
+    else
+      IsActive := False;
 
-    if IsActive then
+    if IsActive and (Repo <> '') then
       ShowSVNLogFrm(Repo)
     else
       ShowMessage(rsProjectIsNotActiveInSVNSettingsPleaseActivateFirst);
@@ -106,13 +109,18 @@ procedure ProcSVNCommit(Sender: TObject);
 var
   Repo: string;
   IsActive: boolean;
+  sBool: string;
 begin
   If Assigned(LazarusIDE) and Assigned(LazarusIDE.ActiveProject) then
   begin
-    Repo := ExtractFilePath(LazarusIDE.ActiveProject.ProjectInfoFile);
-    IsActive := SVNSettings.RepositoryByPath(LazarusIDE.ActiveProject.ProjectInfoFile, Repo);
+    Repo := LazarusIDE.ActiveProject.CustomSessionData.Values[SVN_REPOSITORY];
+    sBool := LazarusIDE.ActiveProject.CustomSessionData.Values[SVN_ACTIVE];
+    if sBool <> '' then
+      IsActive := StrToBool(sBool)
+    else
+      IsActive := False;
 
-    if IsActive then
+    if IsActive and (Repo <> '') then
       ShowSVNStatusFrm(Repo)
     else
       ShowMessage(rsProjectIsNotActiveInSVNSettingsPleaseActivateFirst);
@@ -123,13 +131,20 @@ procedure ProcSVNUpdate(Sender: TObject);
 var
   Repo: string;
   IsActive: boolean;
+  sBool: string;
 begin
   If Assigned(LazarusIDE) and Assigned(LazarusIDE.ActiveProject) then
   begin
-    Repo := ExtractFilePath(LazarusIDE.ActiveProject.ProjectInfoFile);
-    IsActive := SVNSettings.RepositoryByPath(LazarusIDE.ActiveProject.ProjectInfoFile, Repo);
+    Repo := LazarusIDE.ActiveProject.CustomSessionData.Values[SVN_REPOSITORY];
+    sBool := LazarusIDE.ActiveProject.CustomSessionData.Values[SVN_ACTIVE];
+    if sBool <> '' then
+      IsActive := StrToBool(sBool)
+    else
+      IsActive := False;
 
-    if IsActive then
+    debugln('ProcSVNUpdate repo='+Repo+' isactive='+sBool);
+
+    if IsActive and (Repo <> '') then
       ShowSVNUpdateFrm(Repo)
     else
       ShowMessage(rsProjectIsNotActiveInSVNSettingsPleaseActivateFirst);
@@ -141,12 +156,18 @@ var
   Repo: string;
   IsActive: boolean;
   SrcFile: string;
+  sBool: string;
 begin
   If Assigned(LazarusIDE) and Assigned(LazarusIDE.ActiveProject) then
   begin
-    Repo := ExtractFilePath(LazarusIDE.ActiveProject.ProjectInfoFile);
-    IsActive := SVNSettings.RepositoryByPath(LazarusIDE.ActiveProject.ProjectInfoFile, Repo);
-    if IsActive then
+    Repo := LazarusIDE.ActiveProject.CustomSessionData.Values[SVN_REPOSITORY];
+    sBool := LazarusIDE.ActiveProject.CustomSessionData.Values[SVN_ACTIVE];
+    if sBool <> '' then
+      IsActive := StrToBool(sBool)
+    else
+      IsActive := False;
+
+    if IsActive and (Repo <> '') then
     begin
       SrcFile := SourceEditorWindow.ActiveEditor.FileName;
 
@@ -162,7 +183,7 @@ end;
 
 procedure ProcSVNSettings(Sender: TObject);
 begin
-  ShowSVNSettingsFrm;
+  ShowSVNAddProjectFrm;
 end;
 
 initialization

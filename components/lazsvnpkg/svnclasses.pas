@@ -23,7 +23,7 @@ unit SVNClasses;
 interface
 
 uses
-  Classes, SysUtils, ComCtrls, FileUtil, XMLCfg, LCLProc, Dialogs, Controls,
+  Classes, SysUtils, ComCtrls, FileUtil, LCLProc, Dialogs, Controls,
   XMLRead, DOM, Process, StdCtrls, Forms;
 
 resourcestring
@@ -70,39 +70,11 @@ resourcestring
 
 const
    READ_BYTES = 2048;
+   SVN_REPOSITORY = 'SVN repository';
+   SVN_ACTIVE = 'SVN active';
 
 type
   TSortDirection  = (sdAscending, sdDescending);
-
-  { TSVNSettings }
-
-  TSVNSettings = class(TObject)
-  private
-    { private declarations }
-    XML: TXMLConfig;
-    function GetActive(Index: integer): boolean;
-    function GetPath(Index: integer): string;
-    function GetProjectCount: integer;
-    function GetRepository(Index: integer): string;
-    procedure SetActive(Index: integer; const AValue: boolean);
-    procedure SetPath(Index: integer; const AValue: string);
-    procedure SetProjectCount(const AValue: integer);
-    procedure SetRepository(Index: integer; const AValue: string);
-  public
-    { public declarations }
-    constructor Create(const AFileName: string);
-    destructor Destroy; override;
-
-    function RepositoryByPath(APath: string; var ARepo: string): boolean;
-    procedure AddProject(APath, ARepo: string; AActive: boolean = False);
-    procedure UpdateProject(APath, ARepo: string; AActive: boolean);
-    procedure DeleteProjectByIndex(Index: integer);
-
-    property ProjectCount: integer read GetProjectCount write SetProjectCount;
-    property Path[Index: integer]: string read GetPath write SetPath;
-    property Repository[Index: integer]: string read GetRepository write SetRepository;
-    property Active[Index: integer]: boolean read GetActive write SetActive;
-  end;
 
   TStatusItemName = (siChecked, siPath, siExtension, siPropStatus, siItemStatus,
                      siRevision, siCommitRevision, siAuthor, siDate);
@@ -139,9 +111,6 @@ type
     property SortDirection: TSortDirection read FSortDirection write FSortDirection;
     property SortItem: TStatusItemName read FSortItem write FSortItem;
   end;
-
-var
-  SVNSettings: TSVNSettings;
 
 procedure CmdLineToMemo(CmdLine: string; Memo: TMemo);
 procedure SetColumn(ListView: TListView; ColNo, DefaultWidth: integer; AName: string; AutoSize: boolean = true);
@@ -276,144 +245,6 @@ begin
   s := StrToInt(Copy(ADateTime, 18, 2));
 
   Result := EncodeDate(y,m,d) + EncodeTime(h,n,s,0);
-end;
-
-{ TSVNSettings }
-
-function TSVNSettings.GetActive(Index: integer): boolean;
-begin
-  Result := XML.GetValue('projects/item' + IntToStr(Index) + '/active', False);
-end;
-
-function TSVNSettings.GetPath(Index: integer): string;
-begin
-  Result := XML.GetValue('projects/item' + IntToStr(Index) + '/path', '');
-end;
-
-function TSVNSettings.GetProjectCount: integer;
-begin
-  Result := XML.GetValue('projects/count', 0);
-end;
-
-function TSVNSettings.GetRepository(Index: integer): string;
-begin
-  Result := XML.GetValue('projects/item' + IntToStr(Index) + '/repository', '');
-end;
-
-procedure TSVNSettings.SetActive(Index: integer; const AValue: boolean);
-begin
-  XML.SetValue('projects/item' + IntToStr(Index) + '/active', AValue);
-end;
-
-procedure TSVNSettings.SetPath(Index: integer; const AValue: string);
-begin
-  XML.SetValue('projects/item' + IntToStr(Index) + '/path', AValue);
-end;
-
-procedure TSVNSettings.SetProjectCount(const AValue: integer);
-begin
-  XML.SetValue('projects/count', AValue);
-end;
-
-procedure TSVNSettings.SetRepository(Index: integer; const AValue: string);
-begin
-  XML.SetValue('projects/item' + IntToStr(Index) + '/repository', AValue);
-end;
-
-constructor TSVNSettings.Create(const AFileName: string);
-begin
-  XML := TXMLConfig.Create(nil);
-  XML.Filename:=AFileName;
-end;
-
-destructor TSVNSettings.Destroy;
-begin
-  XML.Flush;
-  XML.Free;
-
-  inherited Destroy;
-end;
-
-procedure TSVNSettings.AddProject(APath, ARepo: string; AActive: boolean);
-var
-  count: integer;
-begin
-  count := ProjectCount;
-  Inc(Count);
-
-  ProjectCount := count;
-  Path[Count - 1] := APath;
-  Active[Count - 1] := AActive;
-  Repository[Count - 1] := ARepo;
-end;
-
-procedure TSVNSettings.UpdateProject(APath, ARepo: string; AActive: boolean);
-var
-  count: integer;
-  i: integer;
-begin
-  debugln('TSVNSettings.UpdateProject searching for project');
-  count := ProjectCount;
-
-  for i := 0 to Count - 1 do
-    if Path[i] = APath then
-    begin
-      Active[i] := AActive;
-      Repository[i] := ARepo;
-      exit;
-    end;
-
-  //project not found, so add it as new
-  debugln('TSVNSettings.UpdateProject project not found adding a new one');
-  AddProject(APath, ARepo, AActive);
-end;
-
-procedure TSVNSettings.DeleteProjectByIndex(Index: integer);
-var
-  i: integer;
-  count: integer;
-begin
-  count := ProjectCount;
-  ProjectCount := count - 1;
-  for i := Index to count - 1 do
-  begin
-    Active[i] := Active[i + 1];
-    Path[i] := Path[i + 1];
-    Repository[i] := Repository[i + 1];
-  end;
-
-  XML.DeletePath('projects/item' + IntToStr(count - 1) + '/active');
-  XML.DeletePath('projects/item' + IntToStr(count - 1) + '/path');
-  XML.DeletePath('projects/item' + IntToStr(count - 1) + '/repository');
-end;
-
-function TSVNSettings.RepositoryByPath(APath: string; var ARepo: string
-  ): boolean;
-var
-  count: integer;
-  i: integer;
-begin
-  debugln('TSVNSettingsFrm.GetRepository APath=' + APath);
-
-  count := ProjectCount;
-
-  for i := 0 to Count - 1 do
-    if Path[i] = APath then
-    begin
-      Result := Active[i];
-      ARepo := Repository[i];
-      exit;
-    end;
-
-  if QuestionDlg('Project not found',
-                 'Current project not in project list. Would you like to add it?',
-                 mtWarning,
-                 [mrYes, mrNo],
-                 0) = mrYes then
-  begin
-    ShowSVNAddProjectFrm(APath, ARepo, True);
-    Result := True;
-  end;
 end;
 
 function SortSelectedAscending(Item1, Item2: Pointer): Integer;
@@ -723,13 +554,6 @@ begin
   else
     Sort(ASortItem, sdAscending);
 end;
-
-initialization
-  //GetAppConfigDir(False) + 'lazsvnsettings.xml';
-  SVNSettings := TSVNSettings.Create('lazsvnsettings.xml');
-
-finalization
-  SVNSettings.Free;
 
 end.
 

@@ -47,31 +47,36 @@ type
     { public declarations }
   end; 
 
-function ShowSVNAddProjectFrm(AProject: string; var ARepository: string; AActive: boolean = true): TModalResult;
+function ShowSVNAddProjectFrm: TModalResult;
 
 implementation
 
 uses
-  SVNClasses;
+  SVNClasses, LazIDEIntf;
 
-function ShowSVNAddProjectFrm(AProject: string; var ARepository: string; AActive: boolean = true): TModalResult;
+function ShowSVNAddProjectFrm: TModalResult;
 var
   SVNAddProjectFrm: TSVNAddProjectFrm;
 begin
   SVNAddProjectFrm := TSVNAddProjectFrm.Create(nil);
 
-  SVNAddProjectFrm.ProjectEdit.Text:=AProject;
-  SVNAddProjectFrm.RepositoryEdit.Text:=ARepository;
-  SVNAddProjectFrm.ActiveCheckBox.Checked:=AActive;
+  SVNAddProjectFrm.ProjectEdit.Text:=LazarusIDE.ActiveProject.ProjectInfoFile;
+  SVNAddProjectFrm.RepositoryEdit.Text:=LazarusIDE.ActiveProject.CustomSessionData.Values[SVN_REPOSITORY];
+
+  try
+    SVNAddProjectFrm.ActiveCheckBox.Checked:=StrToBool(LazarusIDE.ActiveProject.CustomSessionData.Values[SVN_ACTIVE]);
+  except
+    SVNAddProjectFrm.ActiveCheckBox.Checked:=False;
+  end;
 
   Result := SVNAddProjectFrm.ShowModal;
 
-  ARepository := SVNAddProjectFrm.RepositoryEdit.Text;
-
   if Result = mrOK then
-    SVNSettings.UpdateProject(SVNAddProjectFrm.ProjectEdit.Text,
-                              SVNAddProjectFrm.RepositoryEdit.Text,
-                              SVNAddProjectFrm.ActiveCheckBox.Checked);
+  begin
+    LazarusIDE.ActiveProject.CustomSessionData.Values[SVN_REPOSITORY] := SVNAddProjectFrm.RepositoryEdit.Text;
+    LazarusIDE.ActiveProject.CustomSessionData.Values[SVN_ACTIVE] := BoolToStr(SVNAddProjectFrm.ActiveCheckBox.Checked);
+    LazarusIDE.ActiveProject.Modified:=True;
+  end;
 
   SVNAddProjectFrm.Free;
 end;
