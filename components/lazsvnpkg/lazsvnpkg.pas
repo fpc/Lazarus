@@ -7,9 +7,8 @@ unit lazsvnpkg;
 interface
 
 uses
-  SVNLogForm, SVNUpdateForm, SVNDiffForm, SVNSettingsForm, SVNClasses, 
-  SVNStatusForm, SVNCommitForm, LazSVNIntf, SVNAddProjectForm, 
-  LazarusPackageIntf;
+  SVNLogForm, SVNUpdateForm, SVNDiffForm, SVNClasses, SVNStatusForm, 
+  SVNCommitForm, LazSVNIntf, SVNAddProjectForm, LazarusPackageIntf;
 
 implementation
 

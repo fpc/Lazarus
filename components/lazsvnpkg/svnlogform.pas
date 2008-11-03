@@ -47,7 +47,6 @@ type
 
     function GetAction(Index: Integer): TActionItem;
   private
-
   public
     constructor Create;
     destructor Destroy; override;
@@ -87,6 +86,7 @@ type
     { private declarations }
     LogList: TFPList;
     procedure UpdateLogListView;
+    procedure ChangeCursor(ACursor: TCursor);
   public
     { public declarations }
     procedure Execute(Data: PtrInt);
@@ -184,6 +184,7 @@ end;
 
 procedure TSVNLogFrm.FormShow(Sender: TObject);
 begin
+  ChangeCursor(crHourGlass);
   Caption := Format(rsLazarusSVNLog, [RepositoryPath]);
   Application.QueueAsyncCall(@Execute, 0);
 end;
@@ -242,6 +243,13 @@ begin
       //message
       SubItems.Add(LogItem.Msg);
     end;
+end;
+
+procedure TSVNLogFrm.ChangeCursor(ACursor: TCursor);
+begin
+  LogListView.Cursor:=ACursor;
+  SVNLogMsgMemo.Cursor:=ACursor;
+  SVNActionsListView.Cursor:=ACursor;
 end;
 
 procedure TSVNLogFrm.RefreshButtonClick(Sender: TObject);
@@ -436,6 +444,7 @@ begin
     until not Assigned(Node);
   end;
   UpdateLogListView;
+  ChangeCursor(crDefault);
 end;
 
 initialization

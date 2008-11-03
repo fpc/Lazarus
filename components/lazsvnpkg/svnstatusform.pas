@@ -50,6 +50,7 @@ type
     { private declarations }
     SVNStatus: TSVNStatus;
     procedure UpdateFilesListView(Data: PtrInt);
+    procedure ChangeCursor(ACursor: TCursor);
   public
     { public declarations }
     property RepositoryPath: string read FRepositoryPath write FrepositoryPath;
@@ -207,10 +208,20 @@ begin
     end;
   end;
   SVNFileListView.EndUpdate;
+
+  ChangeCursor(crDefault);
+end;
+
+procedure TSVNStatusFrm.ChangeCursor(ACursor: TCursor);
+begin
+  SVNCommitMsgMemo.Cursor := ACursor;
+  SVNFileListView.Cursor := ACursor;
 end;
 
 procedure TSVNStatusFrm.FormCreate(Sender: TObject);
 begin
+  ChangeCursor(crHourGlass);
+
   mnuShowDiff.Caption:=rsShowDiff;
 
   ButtonPanel.OKButton.OnClick:=@OKButtonClick;
