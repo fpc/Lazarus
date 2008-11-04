@@ -4373,9 +4373,8 @@ begin
     if OldPoint <> nil then
       OldPoint^ := P;
     TQtDeviceContext(DC).translate(-NewX, -NewY);
+    Result := True;
   end;
-
-  Result := True;
 end;
 
 function TQtWidgetSet.ShowCaret(hWnd: HWND): Boolean;
