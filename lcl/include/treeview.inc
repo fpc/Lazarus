@@ -4082,6 +4082,12 @@ var
   begin
     if TreeLinePenStyle = psPattern then
     begin
+      // since we draw node by node and always add 2 pixels we need to start always
+      // only from odd or only from even points. Let's choose to start from odd
+
+      if not Odd(Y1) then
+        inc(Y1);
+
       // TODO: implement psPattern support in the LCL
       while Y1 < Y2 do
       begin
@@ -4100,6 +4106,10 @@ var
   begin
     if TreeLinePenStyle = psPattern then
     begin
+      // to match our DrawVertLine rules
+      if not Odd(Y) then
+        inc(Y);
+
       // TODO: implement psPattern support in the LCL
       while X1 < X2 do
       begin
@@ -4134,7 +4144,10 @@ var
         if (CurNode.GetNextSibling <> nil) then
         begin
           // draw vertical line to next brother
-          DrawVertLine(CurMid, NodeRect.Top, NodeRect.Bottom);
+          if (Node.Parent = nil) and (Node.GetPrevSibling = nil) then
+            DrawVertLine(CurMid, VertMid, NodeRect.Bottom)
+          else
+            DrawVertLine(CurMid, NodeRect.Top, NodeRect.Bottom);
         end else
         if (CurNode = Node) then
         begin
@@ -4324,10 +4337,10 @@ begin
     end;
 
     // draw tree lines
-    Pen.Color:=TreeLineColor;
-    Pen.Style:=TreeLinePenStyle;
-    x:=DrawTreeLines(Node);
-    Pen.Style:=psSolid;
+    Pen.Color := TreeLineColor;
+    Pen.Style := TreeLinePenStyle;
+    x := DrawTreeLines(Node);
+    Pen.Style := psSolid;
 
     // draw expand sign
     if Node.HasChildren then
