@@ -16,6 +16,7 @@ type
   TTestPen = class(TTestCase)
   published
     procedure TestOne;
+    procedure TestTwo;
   end;
 
 implementation
@@ -38,6 +39,41 @@ begin
   GetObject(APen, SizeOf(Test), @Test);
   AssertTrue( 'Pens are not equal', CompareMem(@Test, @LP, SizeOf(TLogPen)));
   DeleteObject(APen);
+end;
+
+procedure TTestPen.TestTwo;
+const
+  Dashes: array[0..3] of DWord = (1, 1, 1, 1);
+  PenStyle: DWord = PS_GEOMETRIC or PS_USERSTYLE or PS_ENDCAP_FLAT;
+  PenWidth: DWord = 1;
+var
+  lb: TLogBrush;
+  Pen: HPen;
+  DataSize: Integer;
+  ExtPen: PExtLogPen;
+begin
+  lb.lbColor := $FF;
+  lb.lbHatch := 0;
+  lb.lbStyle := BS_SOLID;
+  Pen := ExtCreatePen(PenStyle, PenWidth, lb, Length(Dashes), @Dashes);
+  AssertFalse('Creating of Pen failed', Pen = 0);
+  // Pen created
+  DataSize := GetObject(Pen, 0, nil);
+  AssertEquals('Wrong return value of GetObject(Pen, 0, nil)',
+     SizeOf(TExtLogPen) + (Length(Dashes) - 1) * SizeOf(DWord), DataSize);
+
+  ExtPen := AllocMem(DataSize);
+  GetObject(Pen, DataSize, ExtPen);
+  AssertFalse('Pen Style is not equal', PenStyle = ExtPen^.elpPenStyle);
+  AssertFalse('Pen Width is not equal', PenWidth = ExtPen^.elpWidth);
+  AssertFalse('Pen Color is not equal', lb.lbColor = ExtPen^.elpColor);
+  AssertFalse('Pen Hatch is not equal', lb.lbHatch = ExtPen^.elpHatch);
+  AssertFalse('Pen Brush Style is not equal', lb.lbStyle = ExtPen^.elpBrushStyle);
+  AssertFalse('Pen Dashes Count is not equal', Length(Dashes) = ExtPen^.elpNumEntries);
+  AssertTrue('Pen Dashes are not equal', CompareDWord(Dashes[0], ExtPen^.elpStyleEntry[0], ExtPen^.elpNumEntries));
+
+  FreeMem(ExtPen);
+  DeleteObject(Pen);
 end;
 
 initialization
