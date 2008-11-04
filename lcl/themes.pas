@@ -1847,6 +1847,7 @@ var
   ADrawFlags: DWord;
   Bevel: TGraphicsBevelCut;
   ARect: TRect;
+  Tmp: Integer;
 begin
   // default painting
   ARect := R; // in order to pass by reference
@@ -1964,6 +1965,22 @@ begin
       begin
         if Details.Part in [TABP_PANE, TABP_BODY] then
           FillWithColor(ARect, clBackground);
+      end;
+    teTreeView:
+      begin
+        if Details.Part = TVP_GLYPH then
+        begin
+          Rectangle(DC, ARect.Left, ARect.Top, ARect.Right, ARect.Bottom);
+          Tmp := (ARect.Bottom + ARect.Top) shr 1;
+          MoveToEx(DC, ARect.Left + 2, Tmp, nil);
+          LineTo(DC, ARect.Right - 2, Tmp);
+          if Details.State = 1 then
+          begin
+            Tmp := (ARect.Left + ARect.Right) shr 1;
+            MoveToEx(DC, Tmp, ARect.Top + 2, nil);
+            LineTo(DC, Tmp, ARect.Bottom - 2);
+          end;
+        end;
       end;
   end;
 end;

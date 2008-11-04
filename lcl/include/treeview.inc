@@ -4163,10 +4163,17 @@ var
       Result := BorderWidth - FScrolledLeft;
   end;
 
-  procedure DrawExpandSign(MidX,MidY: integer; CollapseSign: boolean);
+  procedure DrawExpandSign(MidX, MidY: integer; CollapseSign: boolean);
+  const
+    PlusMinusDetail: array[Boolean] of TThemedTreeview =
+    (
+      ttGlyphClosed,
+      ttGlyphOpened
+    );
   var
     HalfSize, ALeft, ATop, ARight, ABottom: integer;
     Points: PPoint;
+    Details: TThemedElementDetails;
   begin
     if not ShowButtons then exit;
     with Canvas do
@@ -4184,14 +4191,8 @@ var
       tvestPlusMinus:
         begin
           // draw a plus or a minus sign
-          Rectangle(ALeft, ATop, ARight+1, ABottom+1);
-          MoveTo(ALeft+2,MidY);
-          LineTo(ARight-2+1,MidY);
-          if not CollapseSign then
-          begin
-            MoveTo(MidX,ATop+2);
-            LineTo(MidX,ABottom-2+1);
-          end;
+          Details := ThemeServices.GetElementDetails(PlusMinusDetail[CollapseSign]);
+          ThemeServices.DrawElement(Canvas.Handle, Details, Rect(ALeft, ATop, ARight + 1, ABottom + 1), nil);
         end;
       tvestArrow:
         begin
