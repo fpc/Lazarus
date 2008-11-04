@@ -1,4 +1,4 @@
-unit qt43;
+unit qt4;
 
 { Version : 1.62 }
 
