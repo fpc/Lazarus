@@ -41,7 +41,7 @@
         <PackageName Value="SynEdit"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="21">
+    <Units Count="23">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -207,6 +207,22 @@
         <ResourceFilename Value="frames\options_codetools_linesplitting.lrs"/>
         <UnitName Value="options_codetools_linesplitting"/>
       </Unit20>
+      <Unit21>
+        <Filename Value="frames\options_codetools_space.pas"/>
+        <ComponentName Value="CodetoolsSpaceOptionsFrame"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="frames\options_codetools_space.lrs"/>
+        <UnitName Value="options_codetools_space"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="frames\options_codetools_identifiercompletion.pas"/>
+        <ComponentName Value="CodetoolsIndentifierComplietionOptionsFrame"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="frames\options_codetools_identifiercompletion.lrs"/>
+        <UnitName Value="options_codetools_identifiercompletion"/>
+      </Unit22>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

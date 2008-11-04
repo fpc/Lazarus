@@ -303,7 +303,7 @@ type
       //itmEnvEditorOptions: TIDEMenuCommand;
         itmEnvCodeTemplates: TIDEMenuCommand;
         itmEnvDebuggerOptions: TIDEMenuCommand;
-        itmEnvCodeToolsOptions: TIDEMenuCommand;
+      //itmEnvCodeToolsOptions: TIDEMenuCommand;
         itmEnvCodeToolsDefinesEditor: TIDEMenuCommand;
       //itmIDECacheSection: TIDEMenuSection;
         itmEnvRescanFPCSrcDir: TIDEMenuCommand;

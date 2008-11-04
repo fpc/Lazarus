@@ -24,7 +24,7 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
     Width = 560
     Align = alClient
     BorderSpacing.Bottom = 6
-    PageIndex = 3
+    PageIndex = 5
     TabOrder = 0
     object GeneralPage: TPage
       AnchorSideTop.Control = CodeCreationPage
@@ -529,7 +529,6 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
         ParentFont = False
         TabOrder = 3
         BookMarkOptions.Xoffset = -18
-        BookMarkOptions.OnChange = nil
         Gutter.Visible = False
         Keystrokes = <        
           item
@@ -855,21 +854,20 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
         Lines.Strings = (
           'SplitPreviewSynEdit'
         )
-        SelectedColor.OnChange = nil
       end
     end
     object SpaceNotCosmosPage: TPage
       Caption = 'SpaceNotCosmosPage'
-      ClientWidth = 556
-      ClientHeight = 367
+      ClientWidth = 552
+      ClientHeight = 363
       object SpacePreviewLabel: TLabel
         AnchorSideLeft.Control = SpaceNotCosmosPage
         AnchorSideTop.Control = DoInsertSpaceInFrontGroupBox
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 20
+        Height = 14
         Top = 162
-        Width = 123
+        Width = 93
         BorderSpacing.Left = 6
         BorderSpacing.Top = 6
         BorderSpacing.Right = 6
@@ -897,7 +895,7 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
         Left = 278
         Height = 150
         Top = 6
-        Width = 272
+        Width = 268
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
         Caption = 'DoInsertSpaceAfterGroupBox'
@@ -913,9 +911,9 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
         AnchorSideBottom.Control = SpaceNotCosmosPage
         AnchorSideBottom.Side = asrBottom
         Left = 6
-        Height = 179
-        Top = 182
-        Width = 544
+        Height = 181
+        Top = 176
+        Width = 540
         BorderSpacing.Left = 6
         BorderSpacing.Right = 6
         BorderSpacing.Bottom = 6
@@ -928,7 +926,6 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
         ParentFont = False
         TabOrder = 2
         BookMarkOptions.Xoffset = -18
-        BookMarkOptions.OnChange = nil
         Gutter.Visible = False
         Keystrokes = <        
           item
@@ -1254,20 +1251,19 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
         Lines.Strings = (
           'SpacePreviewSynEdit'
         )
-        SelectedColor.OnChange = nil
       end
     end
     object IdentifierCompletionPage: TPage
       Caption = 'IdentifierCompletionPage'
-      ClientWidth = 556
-      ClientHeight = 367
+      ClientWidth = 552
+      ClientHeight = 363
       object ICAddSemicolonCheckBox: TCheckBox
         AnchorSideLeft.Control = IdentifierCompletionPage
         AnchorSideTop.Control = IdentifierCompletionPage
         Left = 6
-        Height = 22
+        Height = 19
         Top = 6
-        Width = 190
+        Width = 150
         BorderSpacing.Around = 6
         Caption = 'ICAddSemicolonCheckBox'
         TabOrder = 0
@@ -1277,9 +1273,9 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
         AnchorSideTop.Control = ICAddSemicolonCheckBox
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 23
-        Top = 34
-        Width = 90
+        Height = 19
+        Top = 31
+        Width = 178
         BorderSpacing.Around = 6
         Caption = 'ICAddAssignOperatorCheckBox'
         TabOrder = 1

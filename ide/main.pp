@@ -132,7 +132,8 @@ uses
   options_editor_general, options_editor_display, options_editor_keymapping,
   options_editor_color, options_editor_codetools, options_editor_codefolding,
   options_codetools_general, options_codetools_codecreation,
-  options_codetools_wordpolicy, options_codetools_linesplitting;
+  options_codetools_wordpolicy, options_codetools_linesplitting,
+  options_codetools_space, options_codetools_identifiercompletion;
 
 type
   TIDEProjectItem =
@@ -310,7 +311,6 @@ type
     procedure mnuEnvGeneralOptionsClicked(Sender: TObject);
     procedure mnuEnvEditorOptionsClicked(Sender: TObject);
     procedure mnuEnvCodeTemplatesClicked(Sender: TObject);
-    procedure mnuEnvCodeToolsOptionsClicked(Sender: TObject);
     procedure mnuEnvCodeToolsDefinesEditorClicked(Sender: TObject);
     procedure mnuEnvRescanFPCSrcDirClicked(Sender: TObject);
 
@@ -2249,7 +2249,6 @@ begin
   begin
     itmEnvGeneralOptions.OnClick := @mnuEnvGeneralOptionsClicked;
     itmEnvCodeTemplates.OnClick := @mnuEnvCodeTemplatesClicked;
-    itmEnvCodeToolsOptions.OnClick := @mnuEnvCodeToolsOptionsClicked;
     itmEnvCodeToolsDefinesEditor.OnClick := @mnuEnvCodeToolsDefinesEditorClicked;
     itmEnvRescanFPCSrcDir.OnClick := @mnuEnvRescanFPCSrcDirClicked;
   end;
@@ -4021,11 +4020,6 @@ procedure TMainIDE.mnuEnvCodeTemplatesClicked(Sender: TObject);
 begin
   if ShowCodeTemplateDialog=mrOk then
     SourceNotebook.ReloadEditorOptions;
-end;
-
-procedure TMainIDE.mnuEnvCodeToolsOptionsClicked(Sender: TObject);
-begin
-  ShowCodeToolsOptions(CodeToolsOpts,@SourceNoteBook.GetSynEditPreviewSettings);
 end;
 
 procedure TMainIDE.mnuEnvCodeToolsDefinesEditorClicked(Sender: TObject);
