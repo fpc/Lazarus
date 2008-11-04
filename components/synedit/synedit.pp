@@ -820,7 +820,7 @@ type
     {$ELSE}
     function LogicalToPhysicalPos(p: TPoint): TPoint;
     {$ENDIF}
-    function NextWordPos: TPoint; virtual;
+    function NextWordPos{$IFDEF SYN_LAZARUS}(EndOfWord : Boolean = false){$ENDIF}: TPoint; virtual;
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
     procedure PasteFromClipboard;
@@ -7996,11 +7996,7 @@ begin
           if Command = ecDeleteWord then begin
             if CaretX > Len + 1 then
               CaretX := Len + 1;
-            {$IFDEF SYN_LAZARUS}
-            WP := NextTokenPos;
-            {$ELSE}
-            WP := NextWordPos;
-            {$ENDIF}
+            WP := NextWordPos{$IFDEF SYN_LAZARUS}(True){$ENDIF};
           end else
             WP := Point(Len + 1, CaretY);
           if (WP.X <> CaretX) or (WP.Y <> CaretY) then begin
@@ -8628,7 +8624,7 @@ begin
 end;
 {$ENDIF}
 
-function TCustomSynEdit.NextWordPos: TPoint;
+function TCustomSynEdit.NextWordPos{$IFDEF SYN_LAZARUS}(EndOfWord : Boolean = false){$ENDIF}: TPoint;
 var
   CX, CY, LineLen: integer;
   Line: string;
@@ -8669,12 +8665,25 @@ begin
         CX := Max(1, StrScanForCharInSet(Line, 1, CurIdentChars));
       end;
     end else begin
+      {$IFDEF SYN_LAZARUS}
+      if EndOfWord then begin
+        // find first "IdentChar" if next char is an "whitespace"
+        if Line[CX] in WhiteChars then
+          CX := StrScanForCharInSet(Line, CX, CurIdentChars);
+        // if "IdentChar" found find the first "WhiteSpave" behind
+        if CX > 0 then
+          CX := StrScanForCharInSet(Line, CX, WhiteChars);
+      end else begin
+      {$ENDIF}
       // find first "whitespace" if next char is an IdentChar
       if Line[CX] in CurIdentChars then
         CX := StrScanForCharInSet(Line, CX, WhiteChars);
       // if "whitespace" found find the first IdentChar behind
       if CX > 0 then
         CX := StrScanForCharInSet(Line, CX, CurIdentChars);
+      {$IFDEF SYN_LAZARUS}
+      end;
+      {$ENDIF}
       // if one of those failed just position at the end of the line
       if CX = 0 then
         CX := LineLen + 1;
