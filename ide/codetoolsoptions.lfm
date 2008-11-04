@@ -24,7 +24,7 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
     Width = 560
     Align = alClient
     BorderSpacing.Bottom = 6
-    PageIndex = 2
+    PageIndex = 1
     TabOrder = 0
     object GeneralPage: TPage
       AnchorSideTop.Control = CodeCreationPage
@@ -529,6 +529,7 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
         ParentFont = False
         TabOrder = 3
         BookMarkOptions.Xoffset = -18
+        BookMarkOptions.OnChange = nil
         Gutter.Visible = False
         Keystrokes = <        
           item
@@ -854,6 +855,7 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
         Lines.Strings = (
           'SplitPreviewSynEdit'
         )
+        SelectedColor.OnChange = nil
       end
     end
     object SpaceNotCosmosPage: TPage
@@ -926,6 +928,7 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
         ParentFont = False
         TabOrder = 2
         BookMarkOptions.Xoffset = -18
+        BookMarkOptions.OnChange = nil
         Gutter.Visible = False
         Keystrokes = <        
           item
@@ -1251,6 +1254,7 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
         Lines.Strings = (
           'SpacePreviewSynEdit'
         )
+        SelectedColor.OnChange = nil
       end
     end
     object IdentifierCompletionPage: TPage

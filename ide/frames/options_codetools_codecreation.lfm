@@ -1,13 +1,13 @@
-object CodetoolsCodeCreationOptionsFrame: TCodetoolsCodeCreationOptionsFrame
+inherited CodetoolsCodeCreationOptionsFrame: TCodetoolsCodeCreationOptionsFrame
   Height = 377
   Width = 572
   ClientHeight = 377
   ClientWidth = 572
   TabOrder = 0
   Visible = False
-  DesignLeft = 404
-  DesignTop = 209
-  object ClassPartInsertPolicyRadioGroup: TRadioGroup
+  DesignLeft = 44
+  DesignTop = 58
+  object ClassPartInsertPolicyRadioGroup: TRadioGroup[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideRight.Side = asrBottom
@@ -25,7 +25,7 @@ object CodetoolsCodeCreationOptionsFrame: TCodetoolsCodeCreationOptionsFrame
     ChildSizing.ControlsPerLine = 1
     TabOrder = 0
   end
-  object MethodInsertPolicyRadioGroup: TRadioGroup
+  object MethodInsertPolicyRadioGroup: TRadioGroup[1]
     AnchorSideLeft.Control = ClassPartInsertPolicyRadioGroup
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = Owner
@@ -48,7 +48,7 @@ object CodetoolsCodeCreationOptionsFrame: TCodetoolsCodeCreationOptionsFrame
     ChildSizing.ControlsPerLine = 1
     TabOrder = 1
   end
-  object MixMethodsAndPropertiesCheckBox: TCheckBox
+  object MixMethodsAndPropertiesCheckBox: TCheckBox[2]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = ClassPartInsertPolicyRadioGroup
     AnchorSideTop.Side = asrBottom
@@ -59,7 +59,7 @@ object CodetoolsCodeCreationOptionsFrame: TCodetoolsCodeCreationOptionsFrame
     Caption = 'MixMethodsAndPropertiesCheckBox'
     TabOrder = 2
   end
-  object ForwardProcsInsertPolicyRadioGroup: TRadioGroup
+  object ForwardProcsInsertPolicyRadioGroup: TRadioGroup[3]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = MixMethodsAndPropertiesCheckBox
     AnchorSideTop.Side = asrBottom
@@ -82,7 +82,7 @@ object CodetoolsCodeCreationOptionsFrame: TCodetoolsCodeCreationOptionsFrame
     ChildSizing.ControlsPerLine = 1
     TabOrder = 3
   end
-  object ForwardProcsKeepOrderCheckBox: TCheckBox
+  object ForwardProcsKeepOrderCheckBox: TCheckBox[4]
     AnchorSideLeft.Control = ForwardProcsInsertPolicyRadioGroup
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = ForwardProcsInsertPolicyRadioGroup
@@ -94,7 +94,7 @@ object CodetoolsCodeCreationOptionsFrame: TCodetoolsCodeCreationOptionsFrame
     Caption = 'ForwardProcsKeepOrderCheckBox'
     TabOrder = 4
   end
-  object ClassHeaderCommentsCheckBox: TCheckBox
+  object ClassHeaderCommentsCheckBox: TCheckBox[5]
     AnchorSideLeft.Control = ForwardProcsInsertPolicyRadioGroup
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = ForwardProcsKeepOrderCheckBox
@@ -107,7 +107,7 @@ object CodetoolsCodeCreationOptionsFrame: TCodetoolsCodeCreationOptionsFrame
     Caption = 'ClassHeaderCommentsCheckBox'
     TabOrder = 5
   end
-  object PropertyCompletionGroupBox: TGroupBox
+  object PropertyCompletionGroupBox: TGroupBox[6]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = ForwardProcsInsertPolicyRadioGroup
     AnchorSideTop.Side = asrBottom

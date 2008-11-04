@@ -169,6 +169,13 @@ begin
       // mipClassOrder
       MethodInsertPolicyRadioGroup.ItemIndex:=2;
     end;
+
+    PropertyCompletionCheckBox.Checked := CompleteProperties;
+    PropertyReadIdentPrefixEdit.Text := PropertyReadIdentPrefix;
+    PropertyWriteIdentPrefixEdit.Text := PropertyWriteIdentPrefix;
+    PropertyStoredIdentPostfixEdit.Text := PropertyStoredIdentPostfix;
+    PrivateVariablePrefixEdit.Text := PrivateVariablePrefix;
+    SetPropertyVariablenameEdit.Text := SetPropertyVariablename;
   end;
 end;
 
@@ -195,6 +202,18 @@ begin
       1: MethodInsertPolicy := mipLast;
       2: MethodInsertPolicy := mipClassOrder;
     end;
+
+    CompleteProperties:=PropertyCompletionCheckBox.Checked;
+    PropertyReadIdentPrefix :=
+      ReadIdentifier(PropertyReadIdentPrefixEdit.Text,'Get');
+    PropertyWriteIdentPrefix :=
+      ReadIdentifier(PropertyWriteIdentPrefixEdit.Text,'Set');
+    PropertyStoredIdentPostfix :=
+      ReadIdentifier(PropertyStoredIdentPostfixEdit.Text,'IsStored');
+    PrivateVariablePrefix :=
+      ReadIdentifier(PrivateVariablePrefixEdit.Text,'F');
+    SetPropertyVariablename :=
+      ReadIdentifier(SetPropertyVariablenameEdit.Text,'AValue');
   end;
 end;
 

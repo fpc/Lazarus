@@ -271,7 +271,7 @@ function ShowCodeToolsOptions(Options: TCodeToolsOptions;
                         const OnGetSynEditSettings: TNotifyEvent): TModalResult;
 function GetTranslatedAtomTypes(a: TAtomType): string;
 function TranslatedAtomToType(const s: string): TAtomType;
-
+function ReadIdentifier(const s, DefaultIdent: string): string;
 
 implementation
 
@@ -363,8 +363,7 @@ begin
   Result:=true;
 end;
 
-function ReadIdentifier(
-  const s, DefaultIdent: string): string;
+function ReadIdentifier(const s, DefaultIdent: string): string;
 begin
   if IsIdentifier(s) then
     Result:=s
