@@ -87,6 +87,10 @@ type
     FHasPaint: Boolean;
     FOwner: TQtWidget;
 
+    {TQtWidget.scroll() info}
+    FScrollX: Integer;
+    FScrollY: Integer;
+
     function GetProps(const AnIndex: String): pointer;
     function GetWidget: QWidgetH;
     function LCLKeyToQtKey(AKey: Word): Integer;
@@ -1342,6 +1346,9 @@ begin
   move(FParams.X, FParams.Y);
   resize(FParams.Width, FParams.Height);
   
+  FScrollX := 0;
+  FScrollY := 0;
+
   {$ifdef VerboseQt}
   DebugLn('TQtWidget.InitializeWidget: Self:%x Widget:%x was created for control %s',
     [ptrint(Self), ptrint(Widget), LCLObject.Name]);
@@ -2789,7 +2796,7 @@ begin
   else
     P := QtPoint(0, 0);
   R := getClientBounds;
-  Result := Point(P.x + R.Left, P.y + R.Top);
+  Result := Point(P.x + R.Left + FScrollX, P.y + R.Top + FScrollY);
 end;
 
 procedure TQtWidget.grabMouse;
@@ -2869,6 +2876,8 @@ end;
 procedure TQtWidget.scroll(dx, dy: integer);
 begin
   QWidget_scroll(Widget, dx, dy);
+  FScrollX := FScrollX + dx;
+  FScrollY := FScrollY + dy;
 end;
 
 procedure TQtWidget.setAutoFillBackground(const AValue: Boolean);
@@ -8300,7 +8309,7 @@ end;
 function TQtAbstractScrollArea.getClientOffset: TPoint;
 begin
   with getClientBounds do
-    Result := Point(Left, Top);
+    Result := Point(Left + FScrollX, Top + FScrollY);
 end;
 
 function TQtAbstractScrollArea.getClientBounds: TRect;
