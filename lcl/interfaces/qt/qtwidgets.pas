@@ -2542,8 +2542,8 @@ procedure TQtWidget.OffsetMousePos(APoint: PQtPoint);
 begin
   with getClientOffset do
   begin
-    dec(APoint^.x, x);
-    dec(APoint^.y, y);
+    dec(APoint^.x, x - FScrollX);
+    dec(APoint^.y, y - FScrollY);
   end;
 end;
 
