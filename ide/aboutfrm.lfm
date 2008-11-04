@@ -38,9 +38,9 @@ object AboutForm: TAboutForm
   WindowState = wsNormal
   object VersionLabel: TLabel
     Left = 14
-    Height = 18
+    Height = 17
     Top = 6
-    Width = 67
+    Width = 73
     HelpContext = 0
     Align = alNone
     Alignment = taCenter
@@ -71,9 +71,9 @@ object AboutForm: TAboutForm
     AnchorSideTop.Control = VersionLabel
     AnchorSideTop.Side = asrBottom
     Left = 14
-    Height = 18
-    Top = 24
-    Width = 36
+    Height = 17
+    Top = 23
+    Width = 40
     HelpContext = 0
     Align = alNone
     Alignment = taCenter
@@ -105,9 +105,9 @@ object AboutForm: TAboutForm
     AnchorSideTop.Control = FPCVersionLabel
     AnchorSideTop.Side = asrBottom
     Left = 14
-    Height = 18
-    Top = 60
-    Width = 86
+    Height = 17
+    Top = 57
+    Width = 101
     HelpContext = 0
     Align = alNone
     Alignment = taLeftJustify
@@ -139,9 +139,9 @@ object AboutForm: TAboutForm
     AnchorSideTop.Control = RevisionLabel
     AnchorSideTop.Side = asrBottom
     Left = 14
-    Height = 18
-    Top = 78
-    Width = 89
+    Height = 17
+    Top = 74
+    Width = 101
     HelpContext = 0
     Align = alNone
     Alignment = taLeftJustify
@@ -175,7 +175,7 @@ object AboutForm: TAboutForm
     AnchorSideRight.Control = Notebook
     Left = 6
     Height = 113
-    Top = 102
+    Top = 97
     Width = 203
     HelpContext = 0
     Align = alNone
@@ -203,9 +203,9 @@ object AboutForm: TAboutForm
     AnchorSideTop.Control = BuildDateLabel
     AnchorSideTop.Side = asrBottom
     Left = 14
-    Height = 18
-    Top = 42
-    Width = 106
+    Height = 17
+    Top = 40
+    Width = 127
     HelpContext = 0
     Align = alNone
     Alignment = taLeftJustify
@@ -236,9 +236,9 @@ object AboutForm: TAboutForm
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 70
-    Height = 34
-    Top = 261
-    Width = 72
+    Height = 32
+    Top = 263
+    Width = 66
     HelpContext = 0
     Align = alNone
     Anchors = [akLeft, akBottom]
@@ -299,8 +299,8 @@ object AboutForm: TAboutForm
       ChildSizing.HorizontalSpacing = 0
       ChildSizing.VerticalSpacing = 0
       ChildSizing.ControlsPerLine = 0
-      ClientWidth = 385
-      ClientHeight = 261
+      ClientWidth = 389
+      ClientHeight = 292
       ImageIndex = -1
       ParentFont = True
       ParentShowHint = True
@@ -309,7 +309,7 @@ object AboutForm: TAboutForm
         AnchorSideBottom.Control = DocumentationLabel
         Left = 6
         Height = 18
-        Top = 213
+        Top = 244
         Width = 77
         HelpContext = 0
         Align = alNone
@@ -344,7 +344,7 @@ object AboutForm: TAboutForm
         AnchorSideBottom.Control = DocumentationLabel
         Left = 89
         Height = 18
-        Top = 213
+        Top = 244
         Width = 102
         HelpContext = 0
         Align = alNone
@@ -385,7 +385,7 @@ object AboutForm: TAboutForm
         AnchorSideBottom.Side = asrBottom
         Left = 6
         Height = 18
-        Top = 237
+        Top = 268
         Width = 134
         HelpContext = 0
         Align = alNone
@@ -421,7 +421,7 @@ object AboutForm: TAboutForm
         AnchorSideBottom.Side = asrBottom
         Left = 146
         Height = 18
-        Top = 237
+        Top = 268
         Width = 159
         HelpContext = 0
         Align = alNone
@@ -463,9 +463,9 @@ object AboutForm: TAboutForm
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = OfficialLabel
         Left = 0
-        Height = 207
+        Height = 238
         Top = 0
-        Width = 385
+        Width = 389
         HelpContext = 0
         Align = alNone
         Alignment = taLeftJustify
@@ -524,16 +524,16 @@ object AboutForm: TAboutForm
       ChildSizing.HorizontalSpacing = 0
       ChildSizing.VerticalSpacing = 0
       ChildSizing.ControlsPerLine = 0
-      ClientWidth = 385
-      ClientHeight = 261
+      ClientWidth = 389
+      ClientHeight = 292
       ImageIndex = -1
       ParentFont = True
       ParentShowHint = True
       object LogoImage: TImage
         Left = 0
-        Height = 261
+        Height = 292
         Top = 0
-        Width = 385
+        Width = 389
         HelpContext = 0
         Align = alClient
         AutoSize = False

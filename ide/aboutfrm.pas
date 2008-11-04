@@ -50,6 +50,7 @@ type
     procedure DoTimer(Sender: TObject);
     procedure SetActive(const AValue: boolean);
     procedure Initialise;
+    procedure DrawScrollingText(Sender: TObject);
   protected
     procedure DoOnChangeBounds; override;
     procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
@@ -285,6 +286,12 @@ begin
     FOffset := FBuffer.Height;
 end;
 
+procedure TScrollingText.DrawScrollingText(Sender: TObject);
+begin
+  if Active then
+    Canvas.Draw(0,0,FBuffer);
+end;
+
 procedure TScrollingText.DoTimer(Sender: TObject);
 var
   w: integer;
@@ -347,8 +354,7 @@ begin
   //start showing the list from the start
   if FStartLine > FLines.Count - 1 then
     FOffset := FBuffer.Height;
-
-  Canvas.Draw(0,0,FBuffer);
+  Repaint;
 end;
 
 function TScrollingText.ActiveLineIsURL: boolean;
@@ -395,6 +401,9 @@ constructor TScrollingText.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
+  ControlStyle := ControlStyle + [csOpaque];
+
+  OnPaint := @DrawScrollingText;
   FLines := TStringList.Create;
   FTimer := TTimer.Create(nil);
   FTimer.OnTimer:=@DoTimer;
