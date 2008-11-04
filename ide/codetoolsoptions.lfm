@@ -24,7 +24,7 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
     Width = 560
     Align = alClient
     BorderSpacing.Bottom = 6
-    PageIndex = 1
+    PageIndex = 3
     TabOrder = 0
     object GeneralPage: TPage
       AnchorSideTop.Control = CodeCreationPage
@@ -241,8 +241,8 @@ object CodeToolsOptsDlg: TCodeToolsOptsDlg
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
         Caption = 'PropertyCompletionGroupBox'
-        ClientHeight = 105
-        ClientWidth = 536
+        ClientHeight = 123
+        ClientWidth = 540
         TabOrder = 6
         object PropertyReadIdentPrefixLabel: TLabel
           AnchorSideTop.Control = PropertyReadIdentPrefixEdit

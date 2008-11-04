@@ -41,7 +41,7 @@
         <PackageName Value="SynEdit"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="20">
+    <Units Count="21">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -199,6 +199,14 @@
         <ResourceFilename Value="frames\options_codetools_wordpolicy.lrs"/>
         <UnitName Value="options_codetools_wordpolicy"/>
       </Unit19>
+      <Unit20>
+        <Filename Value="frames\options_codetools_linesplitting.pas"/>
+        <ComponentName Value="CodetoolsLineSplittingOptionsFrame"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceFilename Value="frames\options_codetools_linesplitting.lrs"/>
+        <UnitName Value="options_codetools_linesplitting"/>
+      </Unit20>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

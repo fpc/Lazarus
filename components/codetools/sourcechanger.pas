@@ -83,7 +83,7 @@ type
   TBeautifyCodeFlags = set of TBeautifyCodeFlag;
 
 
-  TBeautifyCodeOptions = class
+  TBeautifyCodeOptions = class(TPersistent)
   private
     CurLineLen: integer;
     LastSplitPos: integer; // last position where splitting is allowed

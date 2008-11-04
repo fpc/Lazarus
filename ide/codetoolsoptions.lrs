@@ -10,7 +10,7 @@ LazarusResources.Add('TCodeToolsOptsDlg','FORMDATA',[
   +#6#6'0.9.27'#0#9'TNotebook'#8'Notebook'#22'AnchorSideLeft.Control'#7#5'Owner'
   +#21'AnchorSideTop.Control'#7#5'Owner'#23'AnchorSideRight.Control'#7#5'Owner'
   +#20'AnchorSideRight.Side'#7#9'asrBottom'#6'Height'#3#133#1#5'Width'#3'0'#2#5
-  +'Align'#7#8'alClient'#20'BorderSpacing.Bottom'#2#6#9'PageIndex'#2#1#8'TabOrd'
+  +'Align'#7#8'alClient'#20'BorderSpacing.Bottom'#2#6#9'PageIndex'#2#3#8'TabOrd'
   +'er'#2#0#0#5'TPage'#11'GeneralPage'#21'AnchorSideTop.Control'#7#16'CodeCreat'
   +'ionPage'#7'Caption'#6#11'GeneralPage'#11'ClientWidth'#3'('#2#12'ClientHeigh'
   +'t'#3'k'#1#0#9'TGroupBox'#15'SrcPathGroupBox'#22'AnchorSideLeft.Control'#7#11
@@ -101,7 +101,7 @@ LazarusResources.Add('TCodeToolsOptsDlg','FORMDATA',[
   +#20'AnchorSideRight.Side'#7#9'asrBottom'#21'AnchorSideBottom.Side'#7#9'asrBo'
   +'ttom'#4'Left'#2#6#6'Height'#2'{'#3'Top'#3#249#0#5'Width'#3#28#2#7'Anchors'
   +#11#5'akTop'#6'akLeft'#7'akRight'#0#20'BorderSpacing.Around'#2#6#7'Caption'#6
-  +#26'PropertyCompletionGroupBox'#12'ClientHeight'#2'i'#11'ClientWidth'#3#24#2
+  +#26'PropertyCompletionGroupBox'#12'ClientHeight'#2'{'#11'ClientWidth'#3#28#2
   +#8'TabOrder'#2#6#0#6'TLabel'#28'PropertyReadIdentPrefixLabel'#21'AnchorSideT'
   +'op.Control'#7#27'PropertyReadIdentPrefixEdit'#18'AnchorSideTop.Side'#7#9'as'
   +'rCenter'#23'AnchorSideRight.Control'#7#27'PropertyReadIdentPrefixEdit'#4'Le'

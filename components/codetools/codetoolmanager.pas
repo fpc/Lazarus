@@ -71,7 +71,7 @@ type
 
   { TCodeToolManager }
 
-  TCodeToolManager = class
+  TCodeToolManager = class(TPersistent)
   private
     FAbortable: boolean;
     FAddInheritedCodeToOverrideMethod: boolean;

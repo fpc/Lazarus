@@ -94,11 +94,11 @@ type
     procedure ClearGlobalDefineTemplates;
     procedure Load;
     procedure Save;
-    procedure AssignTo(Boss: TCodeToolManager);
     procedure AssignGlobalDefineTemplatesToTree(Tree: TDefineTree);
     property Filename: string read FFilename write SetFilename;
     procedure SetLazarusDefaultFilename;
-    procedure Assign(CodeToolsOpts: TCodeToolsOptions);
+    procedure Assign(Source: TPersistent); override;
+    procedure AssignTo(Dest: TPersistent); override;
     function IsEqual(CodeToolsOpts: TCodeToolsOptions): boolean;
     function CreateCopy: TCodeToolsOptions;
     procedure ReadGlobalDefinesTemplatesFromTree(Tree: TDefineTree);
@@ -614,9 +614,18 @@ begin
   FFilename:=ConfFilename;
 end;
 
-procedure TCodeToolsOptions.Assign(CodeToolsOpts: TCodeToolsOptions);
+procedure TCodeToolsOptions.Assign(Source: TPersistent);
+var
+  CodeToolsOpts: TCodeToolsOptions absolute Source;
 begin
-  if CodeToolsOpts<>nil then begin
+  if not ((Source = nil) or (Source is TCodeToolsOptions)) then
+  begin
+    inherited Assign(Source);
+    Exit;
+  end;
+
+  if CodeToolsOpts <> nil then
+  begin
     // General
     FSrcPath:=CodeToolsOpts.FSrcPath;
     FAdjustTopLineDueToComment:=CodeToolsOpts.FAdjustTopLineDueToComment;
@@ -658,9 +667,9 @@ begin
     // identifier completion
     FIdentComplAddSemicolon:=CodeToolsOpts.FIdentComplAddSemicolon;
     FIdentComplAddAssignOperator:=CodeToolsOpts.FIdentComplAddAssignOperator;
-  end else begin
+  end
+  else
     Clear;
-  end;
 end;
 
 procedure TCodeToolsOptions.Clear;
@@ -772,18 +781,28 @@ begin
   end;
 end;
 
-procedure TCodeToolsOptions.AssignTo(Boss: TCodeToolManager);
+procedure TCodeToolsOptions.AssignTo(Dest: TPersistent);
+var
+  Boss: TCodeToolManager absolute Dest;
+  BeautifyCodeOptions: TBeautifyCodeOptions absolute Dest;
 begin
-  // General - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  SetAdditionalGlobalSrcPathToCodeToolBoss(SrcPath);
-  Boss.AdjustTopLineDueToComment:=AdjustTopLineDueToComment;
-  Boss.JumpCentered:=JumpCentered;
-  Boss.CursorBeyondEOL:=CursorBeyondEOL;
-  Boss.AddInheritedCodeToOverrideMethod:=AddInheritedCodeToOverrideMethod;
-  Boss.CompleteProperties:=CompleteProperties;
-  
-  // CreateCode - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  with Boss.SourceChangeCache do begin
+  if Dest is TCodeToolManager then
+  begin
+    // General - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    SetAdditionalGlobalSrcPathToCodeToolBoss(SrcPath);
+    Boss.AdjustTopLineDueToComment:=AdjustTopLineDueToComment;
+    Boss.JumpCentered:=JumpCentered;
+    Boss.CursorBeyondEOL:=CursorBeyondEOL;
+    Boss.AddInheritedCodeToOverrideMethod:=AddInheritedCodeToOverrideMethod;
+    Boss.CompleteProperties:=CompleteProperties;
+
+    // CreateCode - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    AssignTo(Boss.SourceChangeCache.BeautifyCodeOptions);
+    Boss.SetPropertyVariablename:=SetPropertyVariablename;
+  end
+  else
+  if Dest is TBeautifyCodeOptions then
+  begin
     BeautifyCodeOptions.LineLength:=LineLength;
     BeautifyCodeOptions.ClassPartInsertPolicy:=ClassPartInsertPolicy;
     BeautifyCodeOptions.MixMethodsAndProperties:=MixMethodsAndProperties;
@@ -801,8 +820,9 @@ begin
     BeautifyCodeOptions.PropertyWriteIdentPrefix:=PropertyWriteIdentPrefix;
     BeautifyCodeOptions.PropertyStoredIdentPostfix:=PropertyStoredIdentPostfix;
     BeautifyCodeOptions.PrivateVariablePrefix:=PrivateVariablePrefix;
-  end;
-  Boss.SetPropertyVariablename:=SetPropertyVariablename;
+  end
+  else
+    inherited AssignTo(Dest);
 end;
 
 procedure TCodeToolsOptions.AssignGlobalDefineTemplatesToTree(Tree: TDefineTree
