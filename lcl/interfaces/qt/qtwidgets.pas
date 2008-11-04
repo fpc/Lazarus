@@ -2391,7 +2391,7 @@ begin
       Msg.DC := Msg.DC;
 
     with getClientOffset do
-      SetWindowOrgEx(Msg.DC, -X, -Y, nil);
+      SetWindowOrgEx(Msg.DC, -(X + FScrollX), -(Y + FScrollY), nil);
 
     // send paint message
     try
@@ -2542,8 +2542,8 @@ procedure TQtWidget.OffsetMousePos(APoint: PQtPoint);
 begin
   with getClientOffset do
   begin
-    dec(APoint^.x, x - FScrollX);
-    dec(APoint^.y, y - FScrollY);
+    dec(APoint^.x, x);
+    dec(APoint^.y, y);
   end;
 end;
 
@@ -2796,7 +2796,7 @@ begin
   else
     P := QtPoint(0, 0);
   R := getClientBounds;
-  Result := Point(P.x + R.Left + FScrollX, P.y + R.Top + FScrollY);
+  Result := Point(P.x + R.Left, P.y + R.Top);
 end;
 
 procedure TQtWidget.grabMouse;
@@ -8309,7 +8309,7 @@ end;
 function TQtAbstractScrollArea.getClientOffset: TPoint;
 begin
   with getClientBounds do
-    Result := Point(Left + FScrollX, Top + FScrollY);
+    Result := Point(Left, Top);
 end;
 
 function TQtAbstractScrollArea.getClientBounds: TRect;
@@ -9180,7 +9180,7 @@ begin
 
 
     with getClientOffset do
-      SetWindowOrgEx(Msg.DC, -X, -Y, nil);
+      SetWindowOrgEx(Msg.DC, -(X + FScrollX), -(Y + FScrollY), nil);
 
     // send paint message
     try
