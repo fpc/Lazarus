@@ -452,8 +452,9 @@ begin
       with StyleParams do
       begin
         case Painter of
-          gptBox,
-          gptDefault: gtk_paint_box(
+          gptDefault: inherited DrawElement(DC, Details, R, ClipRect);
+          gptBox:
+            gtk_paint_box(
               Style, Window,
               State, Shadow,
               @Area, Widget, PChar(Detail),

@@ -355,6 +355,8 @@ begin
       teHeader: DrawHeaderElement(Context, Details, R, ClipRect);
       teRebar: DrawRebarElement(Context, Details, R, ClipRect);
       teToolBar: DrawToolBarElement(Context, Details, R, ClipRect);
+    else
+      inherited DrawElement(DC, Details, R, ClipRect);
     end;
   end;
 end;
