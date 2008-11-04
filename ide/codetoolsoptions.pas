@@ -720,6 +720,5 @@ end;
 
 initialization
   RegisterIDEOptionsGroup(GroupCodetools, dlgGroupCodetools);
-  {$I codetoolsoptions.lrs}
 end.
 
