@@ -44,8 +44,6 @@ end;
 
 function TGtk2ThemeServices.GetGtkStyleParams(DC: HDC;
   Details: TThemedElementDetails; AIndex: Integer): TGtkStyleParams;
-var
-  AValue: TGValue;
 begin
   Result := inherited GetGtkStyleParams(DC, Details, AIndex);
   
@@ -112,18 +110,25 @@ begin
             else
               Result.Expander := GTK_EXPANDER_EXPANDED;
 
-            FillChar(AValue, SizeOf(AValue), 0);
-            g_value_init(@AValue, G_TYPE_INT);
-            gtk_widget_style_get_property(Result.Widget, 'expander-size', @AValue);
-            Result.ExpanderSize := AValue.data[0].v_int;
+            Result.ExpanderSize := GetDetailSize(Details);
           end;
         end;
     end;
 end;
 
 function TGtk2ThemeServices.GetDetailSize(Details: TThemedElementDetails): Integer;
+var
+  AValue: TGValue;
 begin
-  Result := GetBaseDetailsSize(Details);
+  if (Details.Element = teTreeView) and (Details.Part = TVP_GLYPH) then
+  begin
+    FillChar(AValue, SizeOf(AValue), 0);
+    g_value_init(@AValue, G_TYPE_INT);
+    gtk_widget_style_get_property(GetStyleWidget(lgsTreeView), 'expander-size', @AValue);
+    Result := AValue.data[0].v_int;
+  end
+  else
+    Result := GetBaseDetailsSize(Details);
 end;
 
 end.
