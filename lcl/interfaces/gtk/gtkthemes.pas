@@ -58,6 +58,7 @@ type
     GapWidth   : gint;
 {$ifdef gtk2}
     Expander   : TGtkExpanderStyle; // treeview expander
+    ExpanderSize: Integer;
     Edge       : TGdkWindowEdge;
 {$endif}
     IsHot      : Boolean;
@@ -448,9 +449,16 @@ begin
       // move to origin
       inc(Area.x, StyleParams.Origin.x);
       inc(Area.y, StyleParams.Origin.y);
-      
+
       with StyleParams do
       begin
+        {$ifndef gtk1}
+        if Painter = gptExpander then
+        begin
+          Area.width := ExpanderSize;
+          Area.height := ExpanderSize;
+        end;
+        {$endif}
         case Painter of
           gptDefault: inherited DrawElement(DC, Details, R, ClipRect);
           gptBox:
@@ -526,7 +534,7 @@ begin
           gptExpander: gtk_paint_expander(
               Style, Window, State,
               @Area, Widget, PChar(Detail),
-              Area.x, Area.y,
+              Area.x + Area.width shr 1, Area.y + Area.height shr 1,
               Expander);
           gptResizeGrip: gtk_paint_resize_grip(
               Style, Window, State,
