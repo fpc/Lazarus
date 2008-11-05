@@ -1750,6 +1750,9 @@ begin
     teToolBar:
       if Details.Part = TP_SPLITBUTTONDROPDOWN then
         Result := 10;
+    teTreeView:
+      if Details.Part = TVP_GLYPH then
+        Result := 9;
   end;
 end;
 
