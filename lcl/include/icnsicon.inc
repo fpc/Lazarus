@@ -145,6 +145,11 @@ begin
   FCurrent := GetBestIndexForSize(FRequestedSize);
 end;
 
+class function TIcnsIcon.GetSharedImageClass: TSharedRasterImageClass;
+begin
+  Result := TSharedIcnsIcon;
+end;
+
 constructor TIcnsIcon.Create;
 begin
   inherited Create;

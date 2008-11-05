@@ -49,7 +49,7 @@ begin
   if Assigned(ALoop) then ALoop;
 end;
 
-procedure TWidgetSet.AppSetIcon(const AIcon: HICON);
+procedure TWidgetSet.AppSetIcon(const Small, Big: HICON);
 begin
 end;
 

@@ -149,6 +149,7 @@ begin
   // destroying
   ApplicationActionComponent:=nil;
   FreeThenNil(FIcon);
+  FreeIconHandles;
   FreeThenNil(FFormList);
 
   for HandlerType:=Low(TApplicationHandlerType) to High(TApplicationHandlerType) do
@@ -878,25 +879,51 @@ procedure TApplication.IconChanged(Sender: TObject);
 var
   i: integer;
 begin
-  Icon.OnChange := nil;
-  
-  Icon.Current := Icon.GetBestIndexForSize(Size(GetSystemMetrics(SM_CXICON), GetSystemMetrics(SM_CYICON)));
-  Widgetset.AppSetIcon(GetIconHandle);
-  if FFormList<>nil then
-    for i :=0 to FFormList.Count - 1 do
+  FreeIconHandles;
+  Widgetset.AppSetIcon(SmallIconHandle, BigIconHandle);
+  if FFormList <> nil then
+    for i := 0 to FFormList.Count - 1 do
       TForm(FFormList[i]).Perform(CM_ICONCHANGED, 0, 0);
-
-  Icon.OnChange := @IconChanged;
 end;
 
 {------------------------------------------------------------------------------
-  Method: TApplication.GetIconHandle
-  Returns: handle of default form icon
+  Method: TApplication.SmallIconHandle
+  Returns: handle of application icon
  ------------------------------------------------------------------------------}
-function TApplication.GetIconHandle: HICON;
+function TApplication.SmallIconHandle: HIcon;
 begin
   if not Icon.Empty then
-    Result := Icon.Handle
+  begin
+    if FSmallIconHandle = 0 then
+    begin
+      Icon.OnChange := nil;
+      Icon.Current := Icon.GetBestIndexForSize(Size(GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON)));
+      FSmallIconHandle := Icon.ReleaseHandle;
+      Icon.OnChange := @IconChanged;
+    end;
+    Result := FSmallIconHandle;
+  end
+  else
+    Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TApplication.BigIconHandle
+  Returns: handle of application icon
+ ------------------------------------------------------------------------------}
+function TApplication.BigIconHandle: HIcon;
+begin
+  if not Icon.Empty then
+  begin
+    if FBigIconHandle = 0 then
+    begin
+      Icon.OnChange := nil;
+      Icon.Current := Icon.GetBestIndexForSize(Size(GetSystemMetrics(SM_CXICON), GetSystemMetrics(SM_CYICON)));
+      FBigIconHandle := Icon.ReleaseHandle;
+      Icon.OnChange := @IconChanged;
+    end;
+    Result := FBigIconHandle;
+  end
   else
     Result := 0;
 end;
@@ -915,6 +942,21 @@ begin
     Ext := ExtractFileExt(Result);
     If Ext <> '' then
       Delete(Result, Length(Result) - Length(Ext) + 1, Length(Ext));
+  end;
+end;
+
+procedure TApplication.FreeIconHandles;
+begin
+  if FSmallIconHandle <> 0 then
+  begin
+    DestroyIcon(FSmallIconHandle);
+    FSmallIconHandle := 0;
+  end;
+
+  if FBigIconHandle <> 0 then
+  begin
+    DestroyIcon(FBigIconHandle);
+    FBigIconHandle := 0;
   end;
 end;
 

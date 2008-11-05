@@ -80,7 +80,7 @@ type
     class procedure SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); override;
   public
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-    class procedure SetIcon(const AForm: TCustomForm; const AIcon: HICON); override;
+    class procedure SetIcon(const AForm: TCustomForm; const Small, Big: HICON); override;
 
 {    class function GetDefaultClientRect(const AWinControl: TWinControl;
              const aLeft, aTop, aWidth, aHeight: integer; var aClientRect: TRect
@@ -238,14 +238,20 @@ begin
 end;
 
 class procedure TGtk2WSCustomForm.SetIcon(const AForm: TCustomForm;
-  const AIcon: HICON);
+  const Small, Big: HICON);
+var
+  List: PGList;
 begin
   if not WSCheckHandleAllocated(AForm, 'SetIcon')
   then Exit;
 
   if AForm.Parent <> nil then Exit;
 
-  gtk_window_set_icon(PGtkWindow(AForm.Handle), PGdkPixbuf(AIcon));
+  List := g_list_alloc;
+  g_list_append(List, PGdkPixbuf(Small));
+  g_list_append(List, PGdkPixbuf(Big));
+  gtk_window_set_icon_list(PGtkWindow(AForm.Handle), List);
+  g_list_free(List);
 end;
 
 {class function TGtk2WSCustomForm.GetDefaultClientRect(

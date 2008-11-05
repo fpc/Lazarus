@@ -304,6 +304,7 @@ end;
 
 procedure TCustomIcon.Assign(Source: TPersistent);
 begin
+  BeginUpdate;
   if Source is TCustomIcon
   then begin
     FCurrent := -1;
@@ -311,7 +312,6 @@ begin
   else
   if Source is TRasterImage
   then begin
-    BeginUpdate;
     Clear;
     
     with TRasterImage(Source) do
@@ -326,8 +326,13 @@ begin
 
   if Source is TCustomIcon
   then begin
-    FCurrent := TCustomIcon(Source).Current;
+    FCurrent := TCustomIcon(Source).Current
   end;
+
+  // temporary hack since TRasterImage assign cannot handle multiply rawimages
+  if (Source is TCustomIcon) and (TCustomIcon(Source).GetSharedImageClass <> GetSharedImageClass) then
+    UnshareImage(True);
+  EndUpdate;
 end;
 
 procedure TCustomIcon.AssignImage(ASource: TRasterImage);
@@ -649,6 +654,12 @@ end;
 procedure TCustomIcon.PaletteNeeded;
 begin
   // nothing to do, handled by image itself
+end;
+
+function TCustomIcon.CanShareImage(AClass: TSharedRasterImageClass): Boolean;
+begin
+  // temporary hack to make Assign work between cursors, icons and icnsicons
+  Result := AClass.InheritsFrom(TSharedIcon);
 end;
 
 procedure TCustomIcon.CheckRequestedSize;

@@ -91,7 +91,7 @@ type
     class procedure CloseModal(const ACustomForm: TCustomForm); override;
     class procedure SetFormBorderStyle(const AForm: TCustomForm; const AFormBorderStyle: TFormBorderStyle); override;
     class procedure SetFormStyle(const AForm: TCustomform; const AFormStyle: TFormStyle); override;
-    class procedure SetIcon(const AForm: TCustomForm; const AIcon: HICON); override;
+    class procedure SetIcon(const AForm: TCustomForm; const Small, Big: HICON); override;
     class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); override;
     class procedure ShowModal(const ACustomForm: TCustomForm); override;
     class procedure SetBorderIcons(const AForm: TCustomForm; const ABorderIcons: TBorderIcons); override;
@@ -232,11 +232,11 @@ end;
   Params:
   Returns: Nothing
  ------------------------------------------------------------------------------}
-class procedure TQtWSCustomForm.SetIcon(const AForm: TCustomForm; const AIcon: HICON);
+class procedure TQtWSCustomForm.SetIcon(const AForm: TCustomForm; const Small, Big: HICON);
 var
   Icon: TQtIcon;
 begin
-  Icon := TQtIcon(AIcon);
+  Icon := TQtIcon(Big);
   if Icon <> nil then
     TQtWidget(AForm.Handle).setWindowIcon(Icon.Handle)
   else

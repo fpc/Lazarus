@@ -98,6 +98,7 @@ var
   SysMenu: HMENU;
   Handle: HWND;
   DC: HDC;
+  AIcon: HICON;
 begin
   Assert(False, 'Trace:Win32Object.Init - Start');
   if not WinRegister then
@@ -147,8 +148,8 @@ begin
   AllocWindowInfo(FAppHandle);
 
   // set nice main icon
-  Windows.SendMessage(FAppHandle, WM_SETICON, ICON_BIG,
-    LParam(Windows.LoadIcon(MainInstance, 'MAINICON')));
+  AIcon := Windows.LoadIcon(MainInstance, 'MAINICON');
+  AppSetIcon(AIcon, AIcon);
   // remove useless menuitems from sysmenu
   SysMenu := Windows.GetSystemMenu(FAppHandle, False);
   Windows.DeleteMenu(SysMenu, SC_MAXIMIZE, MF_BYCOMMAND);
@@ -411,9 +412,13 @@ begin
   Assert(False, 'Trace:TWin32WidgetSet.AppTerminate - Start');
 end;
 
-procedure TWin32WidgetSet.AppSetIcon(const AIcon: HICON);
+procedure TWin32WidgetSet.AppSetIcon(const Small, Big: HICON);
 begin
-  Windows.SendMessage(Win32Widgetset.AppHandle, WM_SETICON, ICON_BIG, LPARAM(AIcon));
+  Windows.SendMessage(Win32Widgetset.AppHandle, WM_SETICON, ICON_SMALL, LPARAM(Small));
+  SetClassLong(Win32Widgetset.AppHandle, GCL_HICONSM, LONG(Small));
+
+  Windows.SendMessage(Win32Widgetset.AppHandle, WM_SETICON, ICON_BIG, LPARAM(Big));
+  SetClassLong(Win32Widgetset.AppHandle, GCL_HICON, LONG(Big));
 end;
 
 procedure TWin32WidgetSet.AppSetTitle(const ATitle: string);
@@ -638,8 +643,6 @@ begin
       if Flags = SW_SHOWMAXIMIZED then
         Windows.SendMessage(Handle, WM_SHOWWINDOW, 1, 0);
     end;
-    if (Sender Is TCustomForm) then
-      SetClassLong(Handle, GCL_HICON, LONG(TCustomForm(Sender).GetIconHandle));
   end
   else
   begin

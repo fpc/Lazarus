@@ -260,7 +260,7 @@ begin
   NumButtons := ButtonCount;
   Buttons := TheButtons;
 
-  If (DefaultIndex >= ButtonCount) or
+  if (DefaultIndex >= ButtonCount) or
     (DefaultIndex < 0)
   then
     TheDefaultIndex := 0
@@ -268,12 +268,12 @@ begin
     theDefaultIndex := DefaultIndex;
 
   // Assures a minimum text size
-  If MSG = '' then MSG := '   ';
+  if MSG = '' then MSG := '   ';
 
   // Initialize TextStyle
   FillChar(TextStyle, SizeOf(TTextStyle), 0);
 
-  With TextStyle do
+  with TextStyle do
   begin
     Clipping   := True;
     Wordbreak  := True;
@@ -534,7 +534,7 @@ begin
         Top := Y;
       end;
       theModalResult := ShowModal;
-      Case theModalResult of
+      case theModalResult of
         -1 : Result := EscapeResult
         else
           Result := DialogResult[theModalResult];

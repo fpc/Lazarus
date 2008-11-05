@@ -87,7 +87,7 @@ type
     class procedure SetAllowDropFiles(const AForm: TCustomForm; AValue: Boolean); override;
     class procedure SetFormBorderStyle(const AForm: TCustomForm;
                              const AFormBorderStyle: TFormBorderStyle); override;
-    class procedure SetIcon(const AForm: TCustomForm; const AIcon: HICON); override;
+    class procedure SetIcon(const AForm: TCustomForm; const Small, Big: HICON); override;
     class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); override;
     class procedure ShowModal(const AForm: TCustomForm); override;
     class procedure SetBorderIcons(const AForm: TCustomForm;
@@ -406,7 +406,7 @@ begin
     RecreateWnd(AForm);
 end;
 
-class procedure TGtkWSCustomForm.SetIcon(const AForm: TCustomForm; const AIcon: HICON);
+class procedure TGtkWSCustomForm.SetIcon(const AForm: TCustomForm; const Small, Big: HICON);
 var
   APixbuf: PGdkPixbuf;
   Window: PGdkWindow;
@@ -421,11 +421,12 @@ begin
   Window := GetControlWindow(PGtkWidget(AForm.Handle));
   if Window = nil then Exit;
 
-  APixbuf := PGdkPixbuf(AIcon);
+  APixbuf := PGdkPixbuf(Big);
   Image := nil;
   Mask := nil;
   if APixbuf <> nil then
     gdk_pixbuf_render_pixmap_and_mask(APixbuf, Image, Mask, $80);
+
   gdk_window_set_icon(Window, nil, Image, Mask);
 end;
 

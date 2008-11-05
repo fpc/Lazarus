@@ -92,7 +92,7 @@ type
           AWidth, AHeight: Integer); override;
     class procedure SetFormBorderStyle(const AForm: TCustomForm;
                              const AFormBorderStyle: TFormBorderStyle); override;
-    class procedure SetIcon(const AForm: TCustomForm; const AIcon: HICON); override;
+    class procedure SetIcon(const AForm: TCustomForm; const Small, Big: HICON); override;
     class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); override;
     class procedure ShowModal(const ACustomForm: TCustomForm); override;
   end;
@@ -355,7 +355,6 @@ class procedure TWin32WSCustomForm.SetBorderIcons(const AForm: TCustomForm;
 begin
   UpdateWindowStyle(AForm.Handle, CalcBorderIconsFlags(AForm), 
     WS_SYSMENU or WS_MINIMIZEBOX or WS_MAXIMIZEBOX);
-  SetIcon(AForm, 0);
 end;
 
 class procedure TWin32WSCustomForm.SetFormBorderStyle(const AForm: TCustomForm;
@@ -414,11 +413,21 @@ begin
   TWin32WSWinControl.SetBounds(AWinControl, L, T, W, H);
 end;
 
-class procedure TWin32WSCustomForm.SetIcon(const AForm: TCustomForm; const AIcon: HICON);
+class procedure TWin32WSCustomForm.SetIcon(const AForm: TCustomForm; const Small, Big: HICON);
+var
+  Wnd: HWND;
 begin
   if not WSCheckHandleAllocated(AForm, 'SetIcon') then
     Exit;
-  SendMessage(AForm.Handle, WM_SETICON, ICON_BIG, LPARAM(AIcon));
+  Wnd := AForm.Handle;
+  SendMessage(Wnd, WM_SETICON, ICON_SMALL, LPARAM(Small));
+  SetClassLong(Wnd, GCL_HICONSM, LONG(Small));
+
+  SendMessage(Wnd, WM_SETICON, ICON_BIG, LPARAM(Big));
+  SetClassLong(Wnd, GCL_HICON, LONG(Big));
+  // for some reason sometimes frame does not invalidate itself. lets ask it to invalidate always
+  Windows.RedrawWindow(Wnd, nil, 0,
+    RDW_INVALIDATE or RDW_FRAME or RDW_NOCHILDREN or RDW_ERASE);
 end;
 
 class procedure TWin32WSCustomForm.SetShowInTaskbar(const AForm: TCustomForm;

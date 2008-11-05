@@ -48,6 +48,21 @@ begin
   end;
 end;
 
+procedure TCustomForm.FreeIconHandles;
+begin
+  if FSmallIconHandle <> 0 then
+  begin
+    DestroyIcon(FSmallIconHandle);
+    FSmallIconHandle := 0;
+  end;
+
+  if FBigIconHandle <> 0 then
+  begin
+    DestroyIcon(FBigIconHandle);
+    FBigIconHandle := 0;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method: TCustomForm.BeforeDestruction
   Params:  None
@@ -83,6 +98,7 @@ begin
   try
     FreeThenNil(FMenu);
     FreeThenNil(FIcon);
+    FreeIconHandles;
     Screen.RemoveForm(Self);
     FreeThenNil(FActionLists);
     for HandlerType:=Low(FFormHandlers) to High(FFormHandlers) do
@@ -115,7 +131,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomForm.Notification(AComponent: TComponent;
   Operation: TOperation);
-Begin
+begin
   inherited Notification(AComponent,Operation);
 
   case Operation of
@@ -153,21 +169,22 @@ Begin
         FCancelControl:=nil;
     end;
   end;
-  if FDesigner<>nil then FDesigner.Notification(AComponent,Operation);
-End;
+  if FDesigner <> nil then FDesigner.Notification(AComponent,Operation);
+end;
 
 {------------------------------------------------------------------------------
   Method: TCustomForm.IconChanged
  ------------------------------------------------------------------------------}
 procedure TCustomForm.IconChanged(Sender: TObject);
 begin
-  Icon.OnChange := nil;
-
-  Icon.Current := Icon.GetBestIndexForSize(Size(GetSystemMetrics(SM_CXICON), GetSystemMetrics(SM_CYICON)));
   if HandleAllocated then
-    TWSCustomFormClass(WidgetSetClass).SetIcon(Self, GetIconHandle);
-    
-  Icon.OnChange := @IconChanged;
+  begin
+    FreeIconHandles;
+    if BorderStyle <> bsDialog then
+      TWSCustomFormClass(WidgetSetClass).SetIcon(Self, SmallIconHandle, BigIconHandle)
+    else
+      TWSCustomFormClass(WidgetSetClass).SetIcon(Self, 0, 0);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -244,19 +261,49 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomForm.IsIconStored: Boolean;
 begin
-  Result := IsForm and (Icon<>nil);
+  Result := IsForm and (Icon <> nil);
 end;
 
 {------------------------------------------------------------------------------
-  Method: TCustomForm.GetIconHandle
-  Returns: handle of form icon
+  Method: TCustomForm.BigIconHandle
+  Returns: HICON
  ------------------------------------------------------------------------------}
-function TCustomForm.GetIconHandle: HICON;
+function TCustomForm.BigIconHandle: HICON;
 begin
   if not FIcon.Empty then
-    Result := FIcon.Handle
+  begin
+    if FBigIconHandle = 0 then
+    begin
+      FIcon.OnChange := nil;
+      FIcon.Current := Icon.GetBestIndexForSize(Size(GetSystemMetrics(SM_CXICON), GetSystemMetrics(SM_CYICON)));
+      FBigIconHandle := FIcon.ReleaseHandle;
+      FIcon.OnChange := @IconChanged;
+    end;
+    Result := FBigIconHandle;
+  end
   else
-    Result := Application.GetIconHandle;
+    Result := Application.BigIconHandle;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCustomForm.SmallIconHandle
+  Returns: HICON
+ ------------------------------------------------------------------------------}
+function TCustomForm.SmallIconHandle: HICON;
+begin
+  if not FIcon.Empty then
+  begin
+    if FSmallIconHandle = 0 then
+    begin
+      FIcon.OnChange := nil;
+      FIcon.Current := Icon.GetBestIndexForSize(Size(GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON)));
+      FSmallIconHandle := FIcon.ReleaseHandle;
+      FIcon.OnChange := @IconChanged;
+    end;
+    Result := FSmallIconHandle;
+  end
+  else
+    Result := Application.SmallIconHandle;
 end;
 
 {------------------------------------------------------------------------------
@@ -1216,7 +1263,10 @@ begin
   // We can not use inherited SetBorderStyle(NewStyle),
   // because TBorderStyle <> TFormBorderStyle;
   if HandleAllocated then
+  begin
     TWSCustomFormClass(WidgetSetClass).SetFormBorderStyle(Self, NewStyle);
+    Perform(CM_ICONCHANGED, 0, 0);
+  end;
 end;
 
 {------------------------------------------------------------------------------

@@ -385,6 +385,8 @@ type
     FFormHandlers: array[TFormHandlerType] of TMethodList;
     FHelpFile: string;
     FIcon: TIcon;
+    FSmallIconHandle: HICON;
+    FBigIconHandle: HICON;
     FKeyPreview: Boolean;
     FMenu: TMainMenu;
     FModalResult: TModalResult;
@@ -416,6 +418,7 @@ type
     function IsHelpFileStored: boolean;
     function IsIconStored: Boolean;
     procedure CloseModal;
+    procedure FreeIconHandles;
     procedure IconChanged(Sender: TObject);
     function IsKeyPreviewStored: boolean;
     procedure SetActive(AValue: Boolean);
@@ -457,7 +460,7 @@ type
     procedure BeginFormUpdate;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
-    procedure Deactivate;dynamic;
+    procedure Deactivate; dynamic;
     procedure DestroyWnd; override;
     procedure DoClose(var CloseAction: TCloseAction); dynamic;
     procedure DoCreate; virtual;
@@ -502,7 +505,8 @@ type
     constructor Create(AOwner: TComponent); override;
     constructor CreateNew(AOwner: TComponent; Num : Integer{=0}); virtual;
     procedure BeforeDestruction; override;
-    function GetIconHandle: HICON;
+    function BigIconHandle: HICON;
+    function SmallIconHandle: HICON;
     destructor Destroy; override;
     procedure Close;
     function CloseQuery: boolean; virtual;
@@ -976,6 +980,8 @@ type
     FHintTimerType: TAppHintTimerType;
     FHintWindow: THintWindow;
     FIcon: TIcon;
+    FBigIconHandle: HICON;
+    FSmallIconHandle: HICON;
     FIdleLockCount: Integer;
     FFormList: TList;
     FLastKeyDownSender: TWinControl;
@@ -1014,8 +1020,8 @@ type
     function GetActive: boolean;
     function GetCurrentHelpFile: string;
     function GetExename: String;
-    function GetIconHandle: HICON;
     function GetTitle: string;
+    procedure FreeIconHandles;
     procedure IconChanged(Sender: TObject);
     function InvokeHelp(Command: Word; Data: Longint): Boolean;
     function GetControlAtMouse: TControl;
@@ -1062,6 +1068,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure ControlDestroyed(AControl: TControl);
+    function BigIconHandle: HIcon;
+    function SmallIconHandle: HIcon;
     procedure BringToFront;
     procedure CreateForm(InstanceClass: TComponentClass; out Reference);
     procedure UpdateMainForm(AForm: TForm);
@@ -1083,7 +1091,6 @@ type
     procedure CancelHint;
     procedure HideHint;
     procedure HintMouseMessage(Control : TControl; var AMessage: TLMessage);
-    property Icon: TIcon read FIcon write SetIcon;
     procedure Initialize; override;
     function MessageBox(Text, Caption: PChar; Flags: Longint): Integer;
     procedure Minimize;
@@ -1165,6 +1172,7 @@ type
     property HintPause: Integer read FHintPause write FHintPause;
     property HintShortCuts: Boolean read FHintShortCuts write FHintShortCuts;
     property HintShortPause: Integer read FHintShortPause write FHintShortPause;
+    property Icon: TIcon read FIcon write SetIcon;
     property Navigation: TApplicationNavigationOptions read FNavigation write SetNavigation;
     property MainForm: TForm read FMainForm;
     property OnActionExecute: TActionEvent read FOnActionExecute write FOnActionExecute;
