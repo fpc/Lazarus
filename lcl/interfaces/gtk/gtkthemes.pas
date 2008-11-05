@@ -455,8 +455,22 @@ begin
         {$ifndef gtk1}
         if Painter = gptExpander then
         begin
-          Area.width := ExpanderSize;
-          Area.height := ExpanderSize;
+          // Better to draw expander with the ExpanderSize, but sometimes it
+          // will not look very well. The best can we do is to use the same odd/even
+          // amount of pixels => expand/shrink area.width and area.height a bit
+
+          // Area.width := ExpanderSize;
+          if Odd(Area.width) <> Odd(ExpanderSize) then
+            if Area.width < ExpanderSize then
+              inc(Area.width)
+            else
+              dec(Area.width);
+          // Area.height := ExpanderSize;
+          if Odd(Area.height) <> Odd(ExpanderSize) then
+            if Area.height < ExpanderSize then
+              inc(Area.height)
+            else
+              dec(Area.height);
         end;
         {$endif}
         case Painter of
