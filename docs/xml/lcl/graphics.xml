@@ -1685,32 +1685,36 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
       </element>
       <!-- object Visibility: default -->
       <element name="TFontHandleCacheDescriptor">
-        <short/>
+        <short>
+          <var>TFontHandleCacheDescriptor</var> - descriptor for items in Font Handle Cache</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- variable Visibility: public -->
       <element name="TFontHandleCacheDescriptor.LogFont">
-        <short/>
+        <short>
+          <var>LogFont</var> - a font used (especially in Windows) for logs</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: public -->
       <element name="TFontHandleCacheDescriptor.LongFontName">
-        <short/>
+        <short>
+          <var>LongFontName</var> - he long name for the Font</short>
         <descr/>
         <seealso/>
       </element>
       <!-- object Visibility: default -->
       <element name="TFontHandleCache">
-        <short/>
+        <short>
+          <var>TFontHandleCache</var> - a resource cache for font handles</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TFontHandleCache.RemoveItem">
+      <element name="TFontHandleCache.RemoveItem" link="#LCL.LCLResCache.TResourceCache.RemoveItem">
         <short/>
         <descr/>
         <errors/>
@@ -1721,14 +1725,14 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TFontHandleCache.Create">
+      <element name="TFontHandleCache.Create" link="#rtl.System.TObject.Create">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TFontHandleCache.CompareDescriptors">
+      <element name="TFontHandleCache.CompareDescriptors" link="#LCL.LCLResCache.TResourceCache.CompareDescriptors">
         <short/>
         <descr/>
         <errors/>
@@ -1752,7 +1756,8 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
       </element>
       <!-- function Visibility: public -->
       <element name="TFontHandleCache.FindFont">
-        <short/>
+        <short>
+          <var>FindFont</var> - returns the Font specified by its handle as a cache item from the FontHandleCache</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1767,7 +1772,9 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
       </element>
       <!-- function Visibility: public -->
       <element name="TFontHandleCache.FindFontDesc">
-        <short/>
+        <short>
+          <var>FindFontDesc</var> - returns the descriptor for the FontHandle using its <var>LogName</var> and its <var>LongFontName</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1786,7 +1793,8 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
       </element>
       <!-- function Visibility: public -->
       <element name="TFontHandleCache.Add">
-        <short/>
+        <short>
+          <var>Add</var> the Font specified by its handle, <var>LogFont</var> and <var>LongFontName</var>, and returns a descriptor</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1942,7 +1950,8 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TFont.SetName">
-        <short/>
+        <short>
+          <var>SetName</var> - specify the name of the Font</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1953,7 +1962,8 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TFont.SetSize">
-        <short/>
+        <short>
+          <var>SetSize</var> - specify the size of Font</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1964,14 +1974,16 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TFont.Changed">
-        <short/>
+        <short>
+          <var>Changed</var> - method to signify that a change has occurred</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: protected -->
       <element name="TFont.GetCharSet">
-        <short/>
+        <short>
+          <var>GetCharSet</var> - returns the Character Set to be used for this Font</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1993,7 +2005,8 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
       </element>
       <!-- function Visibility: protected -->
       <element name="TFont.GetHeight">
-        <short/>
+        <short>
+          <var>GetHeight</var> - returns the height of the Font</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2004,7 +2017,8 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
       </element>
       <!-- function Visibility: protected -->
       <element name="TFont.GetName">
-        <short/>
+        <short>
+          <var>GetName</var> - returns the name of the Font</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2015,7 +2029,8 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
       </element>
       <!-- function Visibility: protected -->
       <element name="TFont.GetPitch">
-        <short/>
+        <short>
+          <var>GetPitch</var> - returns the pitch of the Font</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2026,7 +2041,8 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
       </element>
       <!-- function Visibility: protected -->
       <element name="TFont.GetSize">
-        <short/>
+        <short>
+          <var>GetSize</var> - returns the size of the Font</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2037,8 +2053,9 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
       </element>
       <!-- function Visibility: protected -->
       <element name="TFont.GetStyle">
-        <short/>
-        <descr/>
+        <short>
+          <var>GetStyle</var> - returns the style of the Font</short>
+        <descr>Bold, Italic, StrikeOut, Underline</descr>
         <errors/>
         <seealso/>
       </element>
@@ -2048,7 +2065,8 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TFont.SetCharSet">
-        <short/>
+        <short>
+          <var>SetCharSet</var> - specify the character set</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2059,7 +2077,8 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TFont.SetColor">
-        <short/>
+        <short>
+          <var>SetColor</var> - specify the colour for the font</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2081,7 +2100,8 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TFont.SetHeight">
-        <short/>
+        <short>
+          <var>SetHeight</var> - specify the height of the Font</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2092,7 +2112,8 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TFont.SetPitch">
-        <short/>
+        <short>
+          <var>SetPitch</var> - specify the pitch for the Font</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2103,7 +2124,8 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TFont.SetStyle">
-        <short/>
+        <short>
+          <var>SetStyle</var> - specify which style to use</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2114,8 +2136,9 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TFont.SetQuality">
-        <short/>
-        <descr/>
+        <short>
+          <var>SetQuality</var> - specify the quality</short>
+        <descr>Default, Draft, Proof, NonAntialiased, Antialiased</descr>
         <errors/>
         <seealso/>
       </element>
@@ -2326,13 +2349,14 @@ psSolid, psDash, psDot, psDashDot, psDashDotDot, psinsideFrame, psPattern,psClea
       </element>
       <!-- object Visibility: default -->
       <element name="TPenHandleCache">
-        <short/>
+        <short>
+          <var>TPenHandleCache</var> - Resource Cache for Pen Handles</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TPenHandleCache.RemoveItem">
+      <element name="TPenHandleCache.RemoveItem" link="#LCL.LCLResCache.TResourceCache.RemoveItem">
         <short/>
         <descr/>
         <errors/>
@@ -2343,7 +2367,7 @@ psSolid, psDash, psDot, psDashDot, psDashDotDot, psinsideFrame, psPattern,psClea
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TPenHandleCache.Create">
+      <element name="TPenHandleCache.Create" link="#rtl.System.TObject.Create">
         <short/>
         <descr/>
         <errors/>
@@ -8934,14 +8958,16 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TFont.DoAllocateResources">
-        <short/>
+        <short>
+          <var>DoAllocateResources</var> - method for allocating resources </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TFont.DoCopyProps">
-        <short/>
+        <short>
+          <var>DoCopyProps</var> - method for copying property data from another Font</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8952,7 +8978,8 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TFont.DoDeAllocateResources">
-        <short/>
+        <short>
+          <var>DoDeAllocateResources</var> - method for freeing resources</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8967,7 +8994,8 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TFont.SetFlags">
-        <short/>
+        <short>
+          <var>SetFlags</var> - specify which (Indexed) flags are to be set</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8982,7 +9010,8 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TFont.SetFPColor">
-        <short/>
+        <short>
+          <var>SetFPColor</var> - specify the colour using the FreePascal list</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11937,7 +11966,8 @@ This function checks that the value in
       </element>
       <!-- function Visibility: protected -->
       <element name="TRasterImage.GetSharedImageClass">
-        <short/>
+        <short>
+          <var>GetSharedImageClass</var> - returns the class of Shared Raster Image</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13056,9 +13086,7 @@ This function checks that the value in
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TBitmap.GetSharedImageClass">
-        <short>
-          <var>GetSharedImageClass</var> - returns the class of Shared Raster Image</short>
+      <element name="TBitmap.GetSharedImageClass" link="#LCL.Graphics.TRasterImage.GetSharedImageClass">
         <descr/>
         <errors/>
         <seealso/>
@@ -13098,9 +13126,7 @@ This function checks that the value in
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TPixmap.GetSharedImageClass">
-        <short>
-          <var>GetSharedImageClass</var> - returns the class of Shared Raster Image</short>
+      <element name="TPixmap.GetSharedImageClass" link="#LCL.Graphics.TRasterImage.GetSharedImageClass">
         <descr/>
         <errors/>
         <seealso/>
@@ -13166,9 +13192,7 @@ This function checks that the value in
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TPortableNetworkGraphic.GetSharedImageClass">
-        <short>
-          <var>GetSharedImageClass</var> - returns the class of Shared Raster Image</short>
+      <element name="TPortableNetworkGraphic.GetSharedImageClass" link="#LCL.Graphics.TRasterImage.GetSharedImageClass">
         <descr/>
         <errors/>
         <seealso/>
@@ -13208,9 +13232,7 @@ This function checks that the value in
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TPortableAnyMapGraphic.GetSharedImageClass">
-        <short>
-          <var>GetSharedImageClass</var> - returns the class of Shared Raster Image</short>
+      <element name="TPortableAnyMapGraphic.GetSharedImageClass" link="#LCL.Graphics.TRasterImage.GetSharedImageClass">
         <descr/>
         <errors/>
         <seealso/>
@@ -13646,9 +13668,7 @@ This function checks that the value in
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomIcon.GetSharedImageClass">
-        <short>
-          <var>GetSharedImageClass</var> - returns the class of Shared Raster Image</short>
+      <element name="TCustomIcon.GetSharedImageClass" link="#LCL.Graphics.TRasterImage.GetSharedImageClass">
         <descr/>
         <errors/>
         <seealso/>
@@ -14113,7 +14133,7 @@ This function checks that the value in
         <seealso/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCursorImage.GetSharedImageClass" link="#LCL.Graphics.TCustomIcon.GetSharedImageClass">
+      <element name="TCursorImage.GetSharedImageClass" link="#LCL.Graphics.TRasterImage.GetSharedImageClass">
         <short/>
         <descr/>
         <errors/>
@@ -14213,9 +14233,7 @@ This function checks that the value in
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TJPEGImage.GetSharedImageClass">
-        <short>
-          <var>GetSharedImageClass</var> - returns the class of Shared Raster Image</short>
+      <element name="TJPEGImage.GetSharedImageClass" link="#LCL.Graphics.TRasterImage.GetSharedImageClass">
         <descr/>
         <errors/>
         <seealso/>
@@ -14336,6 +14354,7 @@ be carefull with this, modify only within a begin/endupdate</descr>
       <element name="TIcon.GetTypeID" link="#LCL.Graphics.TCustomIcon.GetTypeID"/>
       <element name="TCursorImage.GetDefaultSize" link="#LCL.Graphics.TCustomIcon.GetDefaultSize"/>
       <element name="TCursorImage.GetTypeID" link="#LCL.Graphics.TCustomIcon.GetTypeID"/>
+      <element name="TIcnsIcon.GetSharedImageClass" link="#LCL.Graphics.TRasterImage.GetSharedImageClass"/>
     </module>
     <!-- Graphics -->
   </package>
