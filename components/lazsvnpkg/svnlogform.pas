@@ -250,10 +250,12 @@ begin
   LogListView.Cursor:=ACursor;
   SVNLogMsgMemo.Cursor:=ACursor;
   SVNActionsListView.Cursor:=ACursor;
+  Application.ProcessMessages;
 end;
 
 procedure TSVNLogFrm.RefreshButtonClick(Sender: TObject);
 begin
+  ChangeCursor(crHourGlass);
   Execute(0);
 end;
 
