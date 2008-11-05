@@ -2359,6 +2359,7 @@ procedure TQtWidget.SlotPaint(Sender: QObjectH; Event: QEventH); cdecl;
 var
   Msg: TLMPaint;
   AStruct: PPaintStruct;
+  P: TPoint;
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtWidget.SlotPaint ', dbgsName(LCLObject));
@@ -2390,8 +2391,10 @@ begin
     if LCLObject is THintWindow then
       Msg.DC := Msg.DC;
 
-    with getClientOffset do
-      SetWindowOrgEx(Msg.DC, -(X + FScrollX), -(Y + FScrollY), nil);
+    P := getClientOffset;
+    inc(P.X, FScrollX);
+    inc(P.Y, FScrollY);
+    TQtDeviceContext(Msg.DC).translate(P.X, P.Y);
 
     // send paint message
     try
@@ -9149,6 +9152,7 @@ procedure TQtDesignWidget.SlotDesignControlPaint(Sender: QObjectH; Event: QEvent
 var
   Msg: TLMPaint;
   AStruct: PPaintStruct;
+  P: TPoint;
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtWidget.SlotPaint ', dbgsName(LCLObject));
@@ -9178,9 +9182,10 @@ begin
     Msg.PaintStruct^.rcPaint := PaintData.ClipRect^;
     Msg.PaintStruct^.hdc := FDesignContext;
 
-
-    with getClientOffset do
-      SetWindowOrgEx(Msg.DC, -(X + FScrollX), -(Y + FScrollY), nil);
+    P := getClientOffset;
+    inc(P.X, FScrollX);
+    inc(P.Y, FScrollY);
+    TQtDeviceContext(Msg.DC).translate(P.X, P.Y);
 
     // send paint message
     try
