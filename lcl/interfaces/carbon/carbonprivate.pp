@@ -665,7 +665,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonCustomControl.CreateWidget(const AParams: TCreateParams);
 begin
-  Widget := CreateCustomHIView(ParamsToHIRect(AParams));
+  Widget := CreateCustomHIView(ParamsToHIRect(AParams), LCLObject.ControlStyle);
   if Widget = nil then RaiseCreateWidgetError(LCLObject);
   
   FScrollView := EmbedInScrollView(AParams);

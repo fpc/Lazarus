@@ -25,7 +25,7 @@ begin
   fImageIndex:=-1;
   fCompStyle := csPage;
   fTabVisible := True;
-  ControlStyle := ControlStyle + [csAcceptsControls,csDesignFixedBounds,csNoDesignVisible];
+  ControlStyle := ControlStyle + [csAcceptsControls,csDesignFixedBounds,csNoDesignVisible,csNoFocus];
 
   // height and width depends on parent, align to client rect
   Align := alClient;
