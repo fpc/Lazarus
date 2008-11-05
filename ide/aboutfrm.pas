@@ -420,6 +420,7 @@ begin
   FLines.Free;
   FTimer.Free;
   FBuffer.Free;
+  inherited Destroy;
 end;
 
 initialization
