@@ -1974,7 +1974,7 @@ begin
           Tmp := (ARect.Bottom + ARect.Top) shr 1;
           MoveToEx(DC, ARect.Left + 2, Tmp, nil);
           LineTo(DC, ARect.Right - 2, Tmp);
-          if Details.State = 1 then
+          if Details.State = GLPS_CLOSED then
           begin
             Tmp := (ARect.Left + ARect.Right) shr 1;
             MoveToEx(DC, Tmp, ARect.Top + 2, nil);

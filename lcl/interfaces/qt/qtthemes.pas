@@ -290,6 +290,13 @@ begin
      ((Details.Element = teToolBar) and (Details.Part = TP_SEPARATOR)) or
      ((Details.Element = teScrollBar) and (Details.Part in [SBP_UPPERTRACKHORZ, SBP_LOWERTRACKHORZ, SBP_THUMBBTNHORZ, SBP_GRIPPERHORZ])) then
     Result := Result or QStyleState_Horizontal;
+
+  if (Details.Element = teTreeview) and (Details.Part = TVP_GLYPH) then
+  begin
+    Result := Result or QStyleState_Children;
+    if Details.State = GLPS_OPENED then
+      Result := Result or QStyleState_Open;
+  end;
 end;
 
 function TQtThemeServices.GetDetailSize(Details: TThemedElementDetails): Integer;
@@ -447,6 +454,14 @@ begin
           SBP_UPPERTRACKVERT: Result.SubControls := QStyleSC_ScrollBarSubPage;
         else
           Result.SubControls := QStyleSC_None;
+        end;
+      end;
+    teTreeView:
+      begin
+        if Details.Part = TVP_GLYPH then
+        begin
+          Result.DrawVariant := qdvPrimitive;
+          Result.PrimitiveElement := QStylePE_IndicatorBranch
         end;
       end;
   end;
