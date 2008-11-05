@@ -48,7 +48,8 @@ type
   end;
   PChartCoord = ^ChartCoord;
 
-  TSeriesPointerStyle=(psRectangle,psCircle,psCross,psDiagCross,psStar);
+  TSeriesPointerStyle=(
+    psRectangle,psCircle,psCross,psDiagCross,psStar,psLowBracket,psHighBracket);
 
   BarException=class(Exception);
 
@@ -522,6 +523,20 @@ begin
             psCircle: begin
                ACanvas.Brush.Color := SeriesColor;
                ACanvas.Ellipse(px-FHorizSize,py-FVertSize,px+FHorizSize+1,py+FVertSize+1);
+            end;
+            psLowBracket: begin
+               ACanvas.Pen.Color := SeriesColor;
+               ACanvas.MoveTo(px-FHorizSize,py);
+               ACanvas.LineTo(px-FHorizSize,py+FVertSize+1);
+               ACanvas.LineTo(px+FHorizSize+1,py+FVertSize+1);
+               ACanvas.LineTo(px+FHorizSize+1,py-1);
+            end;
+            psHighBracket: begin
+               ACanvas.Pen.Color := SeriesColor;
+               ACanvas.MoveTo(px-FHorizSize,py);
+               ACanvas.LineTo(px-FHorizSize,py-FVertSize);
+               ACanvas.LineTo(px+FHorizSize+1,py-FVertSize);
+               ACanvas.LineTo(px+FHorizSize+1,py+1);
             end;
         end;
      end;
