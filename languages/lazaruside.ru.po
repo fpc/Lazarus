@@ -5,25 +5,25 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-10-01 02:29+0300\n"
+"PO-Revision-Date: 2008-11-04 04:11+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
 #: lazarusidestrconsts:srkmcommand1
 msgid "    command1 \""
-msgstr "   команда1 \""
+msgstr "    команда1 \""
 
 #: lazarusidestrconsts:srkmcommand2
 msgid "    command2 \""
-msgstr "   команда2 \""
+msgstr "    команда2 \""
 
 #: lazarusidestrconsts:liscodetemplatokenalreadyexists
 msgid " A token %s%s%s already exists! "
-msgstr "Элемент %s%s%s уже существует! "
+msgstr " Элемент %s%s%s уже существует! "
 
 #: lazarusidestrconsts:srkmalreadyconnected
 msgid " The key \"%s\" is already connected to \"%s\"."
-msgstr "Клавиша \"%s\" уже сопоставлена с \"%s\"."
+msgstr " Клавиша \"%s\" уже сопоставлена с \"%s\"."
 
 #: lazarusidestrconsts:listheoutputdirectoryshouldbeaseparatedirectoryandnot
 msgid " The output directory should be a separate directory and not contain any source files."
@@ -103,7 +103,7 @@ msgstr "%s%s%s - некорректное название модуля"
 
 #: lazarusidestrconsts:lislazbuildisnoninteractiveabortingnow
 msgid "%s%s%s%slazbuild is non interactive, aborting now."
-msgstr ""
+msgstr "%s%s%s%slazbuild неинтерактивен, остановка."
 
 #: lazarusidestrconsts:liscoclickokifaresuretodothat
 msgid "%s%sClick OK if you are sure to do that."
@@ -415,7 +415,7 @@ msgstr "(нет)"
 
 #: lazarusidestrconsts:dlgpoicondesc
 msgid "(size: %d:%d, bpp: %d)"
-msgstr ""
+msgstr "(размер: %d:%d, бит/пиксель: %d)"
 
 #: lazarusidestrconsts:listmunknownmacro
 msgid "(unknown macro: %s)"
@@ -1111,7 +1111,7 @@ msgstr "Жирный"
 
 #: lazarusidestrconsts:lisboldnondefaultobjectinspector
 msgid "Bold non default values"
-msgstr ""
+msgstr "Выделять значения не по умолчанию жирным"
 
 #: lazarusidestrconsts:uembookmarkn
 msgid "Bookmark"
@@ -1659,7 +1659,7 @@ msgstr "Очистить каталог?"
 
 #: lazarusidestrconsts:dlgpoclearicon
 msgid "Clear Icon"
-msgstr ""
+msgstr "Очистить значок"
 
 #: lazarusidestrconsts:lispckeditcleardependencydefaultfilename
 msgid "Clear dependency filename"
@@ -1800,6 +1800,10 @@ msgstr "Редактор определений CodeTools ..."
 #: lazarusidestrconsts:liskmcodetoolsoptions
 msgid "CodeTools options"
 msgstr "Параметры CodeTools"
+
+#: lazarusidestrconsts:dlggroupcodetools
+msgid "Codetools"
+msgstr "CodeTools"
 
 #: lazarusidestrconsts:srkmeccodetoolsdefinesed
 msgid "Codetools defines editor"
@@ -2047,7 +2051,7 @@ msgstr "Настройка пользовательских компоненто
 
 #: lazarusidestrconsts:lismenuconfigexternaltools
 msgid "Configure external tools ..."
-msgstr ""
+msgstr "Настроить внешние средства ..."
 
 #: lazarusidestrconsts:liskmconfigureinstalledpackages
 msgid "Configure installed packages"
@@ -2879,7 +2883,7 @@ msgstr "Отключить группу"
 
 #: lazarusidestrconsts:dlgdisableantialiasing
 msgid "Disable anti-aliasing"
-msgstr ""
+msgstr "Отключить сглаживание"
 
 #: lazarusidestrconsts:lisdisabled
 msgid "Disabled"
@@ -2899,7 +2903,7 @@ msgstr "Дисплей (не для win32, напр., 198.112.45.11:0, x.org:1, 
 
 #: lazarusidestrconsts:dlglnumsbct
 msgid "Display Line Numbers in Run-time Error Backtraces"
-msgstr "Выдать номера строк в ошибках времени исполнения"
+msgstr "Выдавать номера строк в ошибках времени исполнения"
 
 #: lazarusidestrconsts:lisdistinguishbigandsmalllettersegaanda
 msgid "Distinguish big and small letters e.g. A and a"
@@ -2983,7 +2987,7 @@ msgstr "Редактирование Drag and Drop"
 
 #: lazarusidestrconsts:lisdrawgridlinesobjectinspector
 msgid "Draw grid lines"
-msgstr ""
+msgstr "Отображать линии сетки"
 
 #: lazarusidestrconsts:dlgdropfiles
 msgid "Drop files"
@@ -3071,7 +3075,7 @@ msgstr "Правка"
 
 #: lazarusidestrconsts:dlggroupeditor
 msgid "Editor"
-msgstr ""
+msgstr "Редактор"
 
 #: lazarusidestrconsts:dlgedfiles
 msgid "Editor files"
@@ -3533,11 +3537,11 @@ msgstr "Каталог исходного кода FPC \"%s\" не найден.
 msgid "FPC unit path contains a source: "
 msgstr "путь к модулям FPC содержит файлы исходного кода: "
 
-#: lazarusidestrconsts:lismenufpdoceditor
+#: lazarusidestrconsts:lisfpdoceditor
 msgid "FPDoc Editor"
 msgstr "Редактор FPDoc"
 
-#: lazarusidestrconsts:lisfpdoceditor
+#: lazarusidestrconsts:liscodehelpmainformcaption
 msgid "FPDoc editor"
 msgstr "Редактор FPDoc"
 
@@ -4015,11 +4019,11 @@ msgstr "Генерировать информацию для GDB (замедля
 
 #: lazarusidestrconsts:dlggprof
 msgid "Generate code for gprof"
-msgstr "Создать код для gprof"
+msgstr "Генерировать код для gprof"
 
 #: lazarusidestrconsts:dlgcovalgrind
 msgid "Generate code for valgrind"
-msgstr "Создать код для valgrind"
+msgstr "Генерировать код для valgrind"
 
 #: lazarusidestrconsts:dlgcogenerate
 msgid "Generate:"
@@ -4415,7 +4419,7 @@ msgstr "ВСТ"
 
 #: lazarusidestrconsts:dlgpoicon
 msgid "Icon:"
-msgstr ""
+msgstr "Значок:"
 
 #: lazarusidestrconsts:liscodetoolsoptsidentifier
 msgid "Identifier"
@@ -5591,7 +5595,7 @@ msgstr "Литовский"
 
 #: lazarusidestrconsts:dlgpoloadicon
 msgid "Load Icon"
-msgstr ""
+msgstr "Загрузить значок"
 
 #: lazarusidestrconsts:dlgloaddfile
 msgid "Load desktop settings from file"
@@ -6595,7 +6599,7 @@ msgstr "Параметры"
 
 #: lazarusidestrconsts:lismenugeneraloptions
 msgid "Options ..."
-msgstr ""
+msgstr "Параметры ..."
 
 #: lazarusidestrconsts:lislazbuildoptions
 msgid "Options:"
@@ -7823,7 +7827,7 @@ msgstr "Сохранить изменения?"
 
 #: lazarusidestrconsts:dlgposaveicon
 msgid "Save Icon"
-msgstr ""
+msgstr "Сохранить значок"
 
 #: lazarusidestrconsts:lispkgmangsavepackagelpk
 msgid "Save Package %s (*.lpk)"
@@ -8875,7 +8879,7 @@ msgstr "Строки с тем же значением:"
 
 #: lazarusidestrconsts:dlgcostrip
 msgid "Strip Symbols From Executable"
-msgstr "Вырезать символы из бинарника"
+msgstr "Вырезать символы из исполнимого файла"
 
 #: lazarusidestrconsts:lisstyle
 msgid "Style"
@@ -8895,7 +8899,7 @@ msgstr "Подкаталог"
 
 #: lazarusidestrconsts:dlgsubpropcolor
 msgid "SubProperties"
-msgstr ""
+msgstr "Подсвойства"
 
 #: lazarusidestrconsts:lissuccess
 msgid "Success"
@@ -9411,7 +9415,7 @@ msgstr "Файл %s%s%s%sвыглядит как программа. Закры�
 
 #: lazarusidestrconsts:listhefilewasfoundinoneofthesourcedirectoriesofthepac
 msgid "The file %s%s%s%swas found in one of the source directories of the package %s and looks like a compiled unit. Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%s%sDelete ambiguous file?"
-msgstr ""
+msgstr "Файл %s%s%s%sнайден в одном из каталогов исходного кода пакета %s, и он выглядит как откомпилированный модуль. Такие модули должны быть в каталоге вывода пакета, иначе другие пакеты не смогут правильно использовать пакет.%s%sУдалить такие файлы?"
 
 #: lazarusidestrconsts:listhefilewasnotfounddoyouwanttolocateityourself
 msgid "The file %s%s%s%swas not found.%sDo you want to locate it yourself ?%s"
@@ -9791,7 +9795,7 @@ msgstr "Произошла ошибка при записи выбранных �
 
 #: lazarusidestrconsts:listherewasanerrorwhileconvertingthebinarystreamofthe
 msgid "There was an error while converting the binary stream of the selected component %s:%s:%s%s"
-msgstr "Произошла ошибка при преобразовании бинарного потока выбранного компонента %s:%s:%s%s"
+msgstr "Произошла ошибка при преобразовании двоичного потока выбранного компонента %s:%s:%s%s"
 
 #: lazarusidestrconsts:listherewasanerrorwhilecopyingthecomponentstreamtocli
 msgid "There was an error while copying the component stream to clipboard:%s%s"
@@ -10663,7 +10667,7 @@ msgstr "Использовать дисплей"
 
 #: lazarusidestrconsts:dlgextsymb
 msgid "Use external gdb debug symbols file"
-msgstr ""
+msgstr "Использовать внешний файл отладочных символов GDB"
 
 #: lazarusidestrconsts:dlguselaunchingapp
 msgid "Use launching application"
