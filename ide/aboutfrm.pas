@@ -50,6 +50,7 @@ type
     procedure DoTimer(Sender: TObject);
     procedure SetActive(const AValue: boolean);
     procedure Initialise;
+    procedure DrawScrollingText(Sender: TObject);
   protected
     procedure DoOnChangeBounds; override;
     procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
@@ -75,8 +76,6 @@ type
     LogoImage: TImage;
     LogoPage: TPage;
     miVerToClipboard: TMenuItem;
-    AcknowledgementsPaintBox: TPaintBox;
-    ContributorsPaintBox: TPaintBox;
     OfficialLabel: TLabel;
     OfficialURLLabel: TLabel;
     PlatformLabel: TLabel;
@@ -100,8 +99,7 @@ type
     Contributors: TScrollingText;
     procedure LoadContributors;
     procedure LoadAcknowledgements;
- public
-    constructor Create(TheOwner: TComponent); override;
+  public
   end;
 
 function ShowAboutForm: TModalResult;
@@ -130,14 +128,6 @@ begin
 end;
 
 { TAboutForm }
-
-constructor TAboutForm.Create(TheOwner: TComponent);
-begin
-  inherited Create(TheOwner);
-
-  ContributorsPaintBox.ControlStyle:=ContributorsPaintBox.ControlStyle+[csOpaque];
-  AcknowledgementsPaintBox.ControlStyle:=AcknowledgementsPaintBox.ControlStyle+[csOpaque];
-end;
 
 procedure TAboutForm.AboutFormCreate(Sender:TObject);
 const
@@ -189,7 +179,7 @@ begin
   OfficialLabel.Caption := 'Official:';
   OfficialURLLabel.Caption := 'http://lazarus.freepascal.org';
   DocumentationLabel.Caption := 'Documentation:';
-  DocumentationURLLabel.Caption := 'http://wiki.lazarus.freepascal.org/index.php/Main_Page';
+  DocumentationURLLabel.Caption := 'http://wiki.lazarus.freepascal.org';
 
   LoadContributors;
   LoadAcknowledgements;
@@ -296,6 +286,12 @@ begin
     FOffset := FBuffer.Height;
 end;
 
+procedure TScrollingText.DrawScrollingText(Sender: TObject);
+begin
+  if Active then
+    Canvas.Draw(0,0,FBuffer);
+end;
+
 procedure TScrollingText.DoTimer(Sender: TObject);
 var
   w: integer;
@@ -329,7 +325,7 @@ begin
     //skip empty lines
     if Length(s) > 0 then
     begin
-      //check for bold makeup token
+      //check for bold format token
       if s[1] = '#' then
       begin
         s := copy(s, 2, Length(s) - 1);
@@ -358,13 +354,15 @@ begin
   //start showing the list from the start
   if FStartLine > FLines.Count - 1 then
     FOffset := FBuffer.Height;
-
-  Canvas.Draw(0,0,FBuffer);
+  Repaint;
 end;
 
 function TScrollingText.ActiveLineIsURL: boolean;
 begin
-  Result := Pos('http://', FLines[FActiveLine]) = 1;
+  if (FActiveLine > 0) and (FActiveLine < FLines.Count -1) then
+    Result := Pos('http://', FLines[FActiveLine]) = 1
+  else
+    Result := False;
 end;
 
 procedure TScrollingText.DoOnChangeBounds;
@@ -403,6 +401,9 @@ constructor TScrollingText.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
+  ControlStyle := ControlStyle + [csOpaque];
+
+  OnPaint := @DrawScrollingText;
   FLines := TStringList.Create;
   FTimer := TTimer.Create(nil);
   FTimer.OnTimer:=@DoTimer;
@@ -419,6 +420,7 @@ begin
   FLines.Free;
   FTimer.Free;
   FBuffer.Free;
+  inherited Destroy;
 end;
 
 initialization

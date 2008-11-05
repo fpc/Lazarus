@@ -43,7 +43,7 @@ uses
   
 const
   lihcFPCMessages = 'FreePascal Compiler messages';
-  lihFPCMessagesURL = 'http://wiki.lazarus.freepascal.org/index.php/';
+  lihFPCMessagesURL = 'http://wiki.lazarus.freepascal.org/';
 
 type
 

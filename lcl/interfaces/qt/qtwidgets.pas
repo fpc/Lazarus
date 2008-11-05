@@ -87,6 +87,10 @@ type
     FHasPaint: Boolean;
     FOwner: TQtWidget;
 
+    {TQtWidget.scroll() info}
+    FScrollX: Integer;
+    FScrollY: Integer;
+
     function GetProps(const AnIndex: String): pointer;
     function GetWidget: QWidgetH;
     function LCLKeyToQtKey(AKey: Word): Integer;
@@ -1342,6 +1346,9 @@ begin
   move(FParams.X, FParams.Y);
   resize(FParams.Width, FParams.Height);
   
+  FScrollX := 0;
+  FScrollY := 0;
+
   {$ifdef VerboseQt}
   DebugLn('TQtWidget.InitializeWidget: Self:%x Widget:%x was created for control %s',
     [ptrint(Self), ptrint(Widget), LCLObject.Name]);
@@ -2384,7 +2391,7 @@ begin
       Msg.DC := Msg.DC;
 
     with getClientOffset do
-      SetWindowOrgEx(Msg.DC, -X, -Y, nil);
+      SetWindowOrgEx(Msg.DC, -(X + FScrollX), -(Y + FScrollY), nil);
 
     // send paint message
     try
@@ -2869,6 +2876,8 @@ end;
 procedure TQtWidget.scroll(dx, dy: integer);
 begin
   QWidget_scroll(Widget, dx, dy);
+  FScrollX := FScrollX + dx;
+  FScrollY := FScrollY + dy;
 end;
 
 procedure TQtWidget.setAutoFillBackground(const AValue: Boolean);
@@ -9163,7 +9172,7 @@ begin
 
 
     with getClientOffset do
-      SetWindowOrgEx(Msg.DC, -X, -Y, nil);
+      SetWindowOrgEx(Msg.DC, -(X + FScrollX), -(Y + FScrollY), nil);
 
     // send paint message
     try
