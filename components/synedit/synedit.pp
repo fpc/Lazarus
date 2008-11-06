@@ -9795,7 +9795,8 @@ begin
     //debugln('TCustomSynEdit.RecalcCharExtent B CharHeight=',dbgs(CharHeight));
     fTextHeight := CharHeight + fExtraLineSpacing;
     BaseStyle := BoldStyles[UsesFontStyle(fsBold)];
-    fCharWidth := CharWidth {$IFDEF SYN_LAZARUS}+fExtraCharSpacing{$ENDIF};
+     {$IFDEF SYN_LAZARUS}CharExtra := fExtraCharSpacing;{$ENDIF}
+    fCharWidth := CharWidth;
   end;
   {$IFDEF SYN_LAZARUS}
   FUseUTF8:=fTextDrawer.UseUTF8;

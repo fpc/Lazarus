@@ -217,7 +217,9 @@ type
   protected
     procedure ReleaseETODist; virtual;
     procedure AfterStyleSet; virtual;
+    {$IFNDEF SYN_LAZARUS}
     procedure DoSetCharExtra(Value: Integer); virtual;
+    {$ENDIF}
     {$IFDEF SYN_LAZARUS}
     function GetUseUTF8: boolean;
     function GetMonoSpace: boolean;
@@ -279,7 +281,9 @@ type
     FExtTextOutProc: TheExtTextOutProc;
   protected
     procedure AfterStyleSet; override;
+    {$IFNDEF SYN_LAZARUS}
     procedure DoSetCharExtra(Value: Integer); override;
+    {$ENDIF}
     procedure TextOutOrExtTextOut(X, Y: Integer; fuOptions: UINT;
       const ARect: TRect; Text: PChar; Length: Integer); virtual;
     procedure ExtTextOutFixed(X, Y: Integer; fuOptions: UINT;
@@ -985,12 +989,12 @@ begin
     SelectObject(DC, FCrntFont);
     Windows.SetTextColor(DC, ColorToRGB(FColor));
     Windows.SetBkColor(DC, ColorToRGB(FBkColor));
+    DoSetCharExtra(FCharExtra);
     {$ELSE}
     FSavedFont := SelectObject(DC, FCrntFont);
     LCLIntf.SetTextColor(DC, FColor);
     LCLIntf.SetBkColor(DC, FBkColor);
     {$ENDIF}
-    DoSetCharExtra(FCharExtra);
   end;
   Inc(FDrawingCount);
 end;
@@ -1107,15 +1111,21 @@ begin
   if FCharExtra <> Value then
   begin
     FCharExtra := Value;
+    {$IFDEF SYN_LAZARUS}
+    FETOSizeInChar := 0;
+    {$ELSE}
     DoSetCharExtra(FCharExtra);
+    {$ENDIF}
   end;
 end;
 
+{$IFNDEF SYN_LAZARUS}
 procedure TheTextDrawer.DoSetCharExtra(Value: Integer);
 begin
   if FDC <> 0 then
     SetTextCharacterExtra(FDC, Value);
 end;
+{$ENDIF}
 
 procedure TheTextDrawer.TextOut(X, Y: Integer; Text: PChar;
   Length: Integer);
@@ -1160,7 +1170,7 @@ var
   DistArray: PInteger;
 begin
   {$IFDEF SYN_LAZARUS}
-  NeedDistArray:=not MonoSpace;
+  NeedDistArray:= (FCharExtra > 0) or not MonoSpace;
   //DebugLn(['TheTextDrawer.ExtTextOut NeedDistArray=',NeedDistArray]);
   if NeedDistArray then begin
     if (FETOSizeInChar < Length) then
@@ -1244,6 +1254,7 @@ begin
   end;
 end;
 
+{$IFNDEF SYN_LAZARUS}
 procedure TheTextDrawerEx.DoSetCharExtra(Value: Integer);
 begin
   if not FontStock.IsDBCSFont then
@@ -1254,6 +1265,7 @@ begin
   else if FCrntDBDx = DBCHAR_CALCULATION_FALED then
     SetTextCharacterExtra(StockDC, Value);
 end;
+{$ENDIF}
 
 procedure TheTextDrawerEx.ExtTextOut(X, Y: Integer; fuOptions: UINT;
   const ARect: TRect; Text: PChar; Length: Integer);
