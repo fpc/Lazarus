@@ -1796,6 +1796,10 @@ msgstr ""
 msgid "CodeTools options"
 msgstr ""
 
+#: lazarusidestrconsts:dlggroupcodetools
+msgid "Codetools"
+msgstr ""
+
 #: lazarusidestrconsts:srkmeccodetoolsdefinesed
 msgid "Codetools defines editor"
 msgstr ""
@@ -2952,6 +2956,10 @@ msgstr ""
 msgid "Documentation Editor"
 msgstr ""
 
+#: lazarusidestrconsts:lisaboutdocumentation
+msgid "Documentation:"
+msgstr ""
+
 #: lazarusidestrconsts:lissortseldomain
 msgid "Domain"
 msgstr "Lajittelu peruste"
@@ -3528,11 +3536,11 @@ msgstr "FPC:n (FreePascal:n) lähdekoodin kansiota \"%s\" ei löytynyt."
 msgid "FPC unit path contains a source: "
 msgstr ""
 
-#: lazarusidestrconsts:lismenufpdoceditor
+#: lazarusidestrconsts:lisfpdoceditor
 msgid "FPDoc Editor"
 msgstr ""
 
-#: lazarusidestrconsts:lisfpdoceditor
+#: lazarusidestrconsts:liscodehelpmainformcaption
 msgid "FPDoc editor"
 msgstr ""
 
@@ -6338,6 +6346,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgedoff
 msgid "Off"
+msgstr ""
+
+#: lazarusidestrconsts:lisaboutofficial
+msgid "Official:"
 msgstr ""
 
 #: lazarusidestrconsts:lisokbtn

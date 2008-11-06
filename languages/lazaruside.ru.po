@@ -2961,6 +2961,10 @@ msgstr "Стыковка"
 msgid "Documentation Editor"
 msgstr "Редактор документации"
 
+#: lazarusidestrconsts:lisaboutdocumentation
+msgid "Documentation:"
+msgstr ""
+
 #: lazarusidestrconsts:lissortseldomain
 msgid "Domain"
 msgstr "Домен"
@@ -6348,6 +6352,10 @@ msgstr "Object Pascal - по умолчанию"
 #: lazarusidestrconsts:dlgedoff
 msgid "Off"
 msgstr "Выкл."
+
+#: lazarusidestrconsts:lisaboutofficial
+msgid "Official:"
+msgstr ""
 
 #: lazarusidestrconsts:lisokbtn
 msgid "Ok"

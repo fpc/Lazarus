@@ -1804,6 +1804,10 @@ msgstr "Editor für CodeTools-Eigenschaften ..."
 msgid "CodeTools options"
 msgstr "CodeTools-Eigenschaften"
 
+#: lazarusidestrconsts:dlggroupcodetools
+msgid "Codetools"
+msgstr ""
+
 #: lazarusidestrconsts:srkmeccodetoolsdefinesed
 msgid "Codetools defines editor"
 msgstr "Editor für CodeTools-Einstellungen"
@@ -2960,6 +2964,10 @@ msgstr "Docking"
 msgid "Documentation Editor"
 msgstr "Dokumentationseditor"
 
+#: lazarusidestrconsts:lisaboutdocumentation
+msgid "Documentation:"
+msgstr ""
+
 #: lazarusidestrconsts:lissortseldomain
 msgid "Domain"
 msgstr "Domain"
@@ -3536,11 +3544,11 @@ msgstr "FPC-Quelltextverzeichnis \"%s\" nicht gefunden."
 msgid "FPC unit path contains a source: "
 msgstr "FPC-Unitpfad enthält eine Quelle:"
 
-#: lazarusidestrconsts:lismenufpdoceditor
+#: lazarusidestrconsts:lisfpdoceditor
 msgid "FPDoc Editor"
 msgstr "FPDoc-Editor"
 
-#: lazarusidestrconsts:lisfpdoceditor
+#: lazarusidestrconsts:liscodehelpmainformcaption
 msgid "FPDoc editor"
 msgstr "FPDoc-Editor"
 
@@ -6347,6 +6355,10 @@ msgstr "Object Pascal - Voreinst."
 #: lazarusidestrconsts:dlgedoff
 msgid "Off"
 msgstr "Aus"
+
+#: lazarusidestrconsts:lisaboutofficial
+msgid "Official:"
+msgstr ""
 
 #: lazarusidestrconsts:lisokbtn
 msgid "Ok"

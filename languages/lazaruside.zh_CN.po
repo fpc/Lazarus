@@ -1804,6 +1804,10 @@ msgstr "CodeTools 自定义编辑器 ..."
 msgid "CodeTools options"
 msgstr "CodeTools 选项"
 
+#: lazarusidestrconsts:dlggroupcodetools
+msgid "Codetools"
+msgstr ""
+
 #: lazarusidestrconsts:srkmeccodetoolsdefinesed
 msgid "Codetools defines editor"
 msgstr "Codetools 自定义编辑器"
@@ -2960,6 +2964,10 @@ msgstr "停靠"
 msgid "Documentation Editor"
 msgstr "文件编辑器"
 
+#: lazarusidestrconsts:lisaboutdocumentation
+msgid "Documentation:"
+msgstr ""
+
 #: lazarusidestrconsts:lissortseldomain
 msgid "Domain"
 msgstr "域"
@@ -3536,11 +3544,11 @@ msgstr "FPC 源代码目录 \"%s\" 未找到."
 msgid "FPC unit path contains a source: "
 msgstr "FPC 单元路径包含源文件: "
 
-#: lazarusidestrconsts:lismenufpdoceditor
+#: lazarusidestrconsts:lisfpdoceditor
 msgid "FPDoc Editor"
 msgstr "FPDoc 编辑器"
 
-#: lazarusidestrconsts:lisfpdoceditor
+#: lazarusidestrconsts:liscodehelpmainformcaption
 msgid "FPDoc editor"
 msgstr "FPDoc 编辑器"
 
@@ -6346,6 +6354,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgedoff
 msgid "Off"
+msgstr ""
+
+#: lazarusidestrconsts:lisaboutofficial
+msgid "Official:"
 msgstr ""
 
 #: lazarusidestrconsts:lisokbtn

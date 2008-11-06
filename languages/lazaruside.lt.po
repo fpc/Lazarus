@@ -1802,6 +1802,10 @@ msgstr "CodeTools apibrėžčių rengyklė..."
 msgid "CodeTools options"
 msgstr "CodeTools parinktys"
 
+#: lazarusidestrconsts:dlggroupcodetools
+msgid "Codetools"
+msgstr ""
+
 #: lazarusidestrconsts:srkmeccodetoolsdefinesed
 msgid "Codetools defines editor"
 msgstr "CodeTools apibrėžčių rengyklė"
@@ -2958,6 +2962,10 @@ msgstr "Lango pritvirtinimas"
 msgid "Documentation Editor"
 msgstr "Dokumentacijos rengyklė"
 
+#: lazarusidestrconsts:lisaboutdocumentation
+msgid "Documentation:"
+msgstr ""
+
 #: lazarusidestrconsts:lissortseldomain
 msgid "Domain"
 msgstr "Sritis"
@@ -3534,11 +3542,11 @@ msgstr "Nerastas FPC pirminio kodo aplankas „%s“."
 msgid "FPC unit path contains a source: "
 msgstr "FPC modulių aplanke yra pirminio kodo failas:"
 
-#: lazarusidestrconsts:lismenufpdoceditor
+#: lazarusidestrconsts:lisfpdoceditor
 msgid "FPDoc Editor"
 msgstr "FPDoc rengyklė"
 
-#: lazarusidestrconsts:lisfpdoceditor
+#: lazarusidestrconsts:liscodehelpmainformcaption
 msgid "FPDoc editor"
 msgstr "FPDoc rengyklė"
 
@@ -6345,6 +6353,10 @@ msgstr "Object Pascal - numatyta"
 #: lazarusidestrconsts:dlgedoff
 msgid "Off"
 msgstr "Išj."
+
+#: lazarusidestrconsts:lisaboutofficial
+msgid "Official:"
+msgstr ""
 
 #: lazarusidestrconsts:lisokbtn
 msgid "Ok"
