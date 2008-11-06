@@ -13,7 +13,7 @@ interface
 
 uses
   // rtl
-  Types, Classes, SysUtils,
+  Types, Classes, SysUtils, Math,
   // carbon bindings
   MacOSAll,
   // lcl
@@ -37,6 +37,7 @@ type
     function DrawHeaderElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; ClipRect: PRect): TRect;
     function DrawRebarElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; ClipRect: PRect): TRect;
     function DrawToolBarElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; ClipRect: PRect): TRect;
+    function DrawTreeviewElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; ClipRect: PRect): TRect;
   public
     procedure DrawElement(DC: HDC; Details: TThemedElementDetails; const R: TRect; ClipRect: PRect); override;
     procedure DrawEdge(DC: HDC; Details: TThemedElementDetails; const R: TRect; Edge, Flags: Cardinal; AContentRect: PRect); override;
@@ -45,6 +46,7 @@ type
 
     function ContentRect(DC: HDC; Details: TThemedElementDetails; BoundingRect: TRect): TRect; override;
     function HasTransparentParts(Details: TThemedElementDetails): Boolean; override;
+    function GetDetailSize(Details: TThemedElementDetails): Integer; override;
   end;
 
 implementation
@@ -269,6 +271,34 @@ begin
   end;
 end;
 
+function TCarbonThemeServices.DrawTreeviewElement(DC: TCarbonDeviceContext;
+  Details: TThemedElementDetails; R: TRect; ClipRect: PRect): TRect;
+var
+  ButtonDrawInfo: HIThemeButtonDrawInfo;
+  LabelRect: HIRect;
+begin
+  if Details.Part = TVP_GLYPH then
+  begin
+    ButtonDrawInfo.version := 0;
+    ButtonDrawInfo.State := GetDrawState(Details);
+    ButtonDrawInfo.kind := kThemeDisclosureTriangle;
+    if Details.State = GLPS_CLOSED then
+      ButtonDrawInfo.value := kThemeDisclosureRight
+    else
+      ButtonDrawInfo.value := kThemeDisclosureDown;
+
+    ButtonDrawInfo.adornment := kThemeAdornmentNone;
+    LabelRect := RectToCGRect(R);
+
+    OSError(
+      HIThemeDrawButton(LabelRect, ButtonDrawInfo, DC.CGContext,
+        kHIThemeOrientationNormal, @LabelRect),
+      Self, 'DrawTreeviewElement', 'HIThemeDrawButton');
+
+    Result := CGRectToRect(LabelRect);
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCarbonThemeServices.InitThemes
   Returns: If the themes are initialized
@@ -306,15 +336,12 @@ end;
 function TCarbonThemeServices.ContentRect(DC: HDC;
   Details: TThemedElementDetails; BoundingRect: TRect): TRect;
 begin
-  Result := BoundingRect;
-{
   case Details.Element of
     teHeader: Result := DrawHeaderElement(DefaultContext, Details, BoundingRect, nil);
     teButton: Result := DrawButtonElement(DefaultContext, Details, BoundingRect, nil);
     teRebar: Result := DrawRebarElement(DefaultContext, Details, BoundingRect, nil);
     teToolBar: Result := DrawToolBarElement(DefaultContext, Details, BoundingRect, nil);
   end;
-}
 end;
 
 {------------------------------------------------------------------------------
@@ -355,6 +382,7 @@ begin
       teHeader: DrawHeaderElement(Context, Details, R, ClipRect);
       teRebar: DrawRebarElement(Context, Details, R, ClipRect);
       teToolBar: DrawToolBarElement(Context, Details, R, ClipRect);
+      teTreeview: DrawTreeviewElement(Context, Details, R, ClipRect);
     else
       inherited DrawElement(DC, Details, R, ClipRect);
     end;
@@ -386,6 +414,18 @@ end;
 function TCarbonThemeServices.HasTransparentParts(Details: TThemedElementDetails): Boolean;
 begin
   Result := True;
+end;
+
+function TCarbonThemeServices.GetDetailSize(Details: TThemedElementDetails
+  ): Integer;
+begin
+  if (Details.Element = teTreeView) and (Details.Part = TVP_GLYPH) then
+  begin
+    Result := Max(GetCarbonThemeMetric(kThemeMetricDisclosureTriangleWidth),
+      GetCarbonThemeMetric(kThemeMetricDisclosureTriangleHeight));
+  end
+  else
+    Result := inherited GetDetailSize(Details);
 end;
 
 {------------------------------------------------------------------------------
