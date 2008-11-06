@@ -1,0 +1,326 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="fcl">
+    <module name="FPImage">
+      <element name="TFPMemoryImage">
+        <short>
+          <var>TFPMemoryImage</var> - FreePascal base class for an image held in memory</short>
+      </element>
+      <element name="TFPPalette">
+        <short>
+          <var>TFPPalette</var> - FreePascal Palette definition: base for LCL TPalette etc</short>
+      </element>
+      <element name="TFPCustomImage">
+        <short>
+          <var>TFPCustomImage</var> - FreePascal base definition for all Image classes</short>
+      </element>
+      <element name="TFPMemoryImage"/>
+      <element name="TFPCustomImageHandler">
+        <short>
+          <var>TFPCustomImageHandler</var> FreePascal base class for handling images</short>
+      </element>
+      <element name="TFPCustomImageReader">
+        <short>
+          <var>TFPCustomImageReader</var> - FreePascal base class for Image reading</short>
+      </element>
+      <element name="TFPCustomImageWriter">
+        <short>
+          <var>TFPCustomImageWriter</var> - FreePascal base class for writing image data</short>
+      </element>
+      <element name="TFPPalette.FData">
+        <short>
+          <var>FData</var> - local variable to hold data as a Colour Array</short>
+      </element>
+      <element name="TFPPalette.FCount">
+        <short>
+          <var>FCount</var> - local variable to hold number of colours in array</short>
+      </element>
+      <element name="TFPPalette.FCapacity">
+        <short>
+          <var>FCapacity</var> - local variable to hold total capacity of array</short>
+      </element>
+      <element name="TFPPalette.SetCount">
+        <short>
+          <var>SetCount</var> - specify the number of colours in the palette</short>
+      </element>
+      <element name="TFPPalette.GetCount">
+        <short>
+          <var>GetCount</var> - returns the number of colours in the palette</short>
+      </element>
+      <element name="TFPPalette.SetColor">
+        <short>
+          <var>SetColor</var> - specifies the value of colour to be associated with the specified index</short>
+      </element>
+      <element name="TFPPalette.GetColor">
+        <short>
+          <var>GetColor</var> - returns the colour value for the specified index</short>
+      </element>
+      <element name="TFPPalette.CheckIndex">
+        <short>
+          <var>CheckIndex</var> - checks validity of supplied index</short>
+      </element>
+      <element name="TFPPalette.EnlargeData">
+        <short>
+          <var>EnlargeData</var> - makes room in the array for more data</short>
+      </element>
+      <element name="TFPPalette.Create" link="#rtl.System.TObject.Create"/>
+      <element name="TFPPalette.Destroy" link="#rtl.System.TObject.Destroy"/>
+      <element name="TFPPalette.Build">
+        <short>
+          <var>Build</var> an Image</short>
+      </element>
+      <element name="TFPPalette.Copy">
+        <short>
+          <var>Copy</var> from the source (<var>APalette</var>) to the current Palette</short>
+      </element>
+      <element name="TFPPalette.Merge">
+        <short>
+          <var>Merge</var> the contents of another palette (<var>pal</var>) with the current palette</short>
+      </element>
+      <element name="TFPPalette.IndexOf">
+        <short>
+          <var>IndexOf</var> - returns the index value for the specified colour</short>
+      </element>
+      <element name="TFPPalette.Add">
+        <short>
+          <var>Add</var> the specified colour to the palette and return the number of entries</short>
+      </element>
+      <element name="TFPPalette.Clear">
+        <short>
+          <var>Clear</var> - empties the palette</short>
+      </element>
+      <element name="TFPPalette.Color">
+        <short>The current <var>Color</var> from the palette</short>
+      </element>
+      <element name="TFPPalette.Count">
+        <short>
+          <var>Count</var> - the total number of entries for colours in the palette</short>
+      </element>
+      <element name="TFPCustomImage.SetInternalColor">
+        <short>
+          <var>SetInternalColor</var> - specify the internal colour</short>
+      </element>
+      <element name="TFPCustomImage.GetInternalColor">
+        <short>
+          <var>GetInternalColor</var> - finds the internal colour from local store</short>
+      </element>
+      <element name="TFPCustomImage.SetInternalPixel">
+        <short>
+          <var>SetInternalPixel</var> - specifies the integer location of a pixel described by its coordinates</short>
+      </element>
+      <element name="TFPCustomImage.GetInternalPixel">
+        <short>
+          <var>GetInternalPixel</var> - returns the integer location of the specified pixel</short>
+      </element>
+      <element name="TFPCustomImage.SetUsePalette">
+        <short>
+          <var>SetUsePalette</var> - specifies whether a palette is to be used in painting the Image</short>
+      </element>
+      <element name="TFPCustomImage.Progress">
+        <short>
+          <var>Progress</var> - method for displaying the progress of a drawing or painting action</short>
+        <descr>
+          <printshort id="TFPCustomImage.Progress"/>
+          <p>Sender: calling routine</p>
+          <p>Stage: Starting, Running or Ending</p>
+          <p>PercentDone: how much has been accomplished</p>
+          <p>RedrawNow: whether to refresh the Image</p>
+          <p>R: the rectangle in which drawing progress is being monitored</p>
+          <p>Msg: a message to show in the progress display</p>
+          <p>Continue: whether to keep on drawing</p>
+        </descr>
+      </element>
+      <element name="TFPCustomImage.create" link="#rtl.System.TObject.Create"/>
+      <element name="TFPCustomImage.destroy" link="#rtl.Classes.TPersistent.Destroy"/>
+      <element name="TFPCustomImage.Assign" link="#rtl.Classes.TPersistent.Assign"/>
+      <element name="TFPCustomImage.LoadFromStream">
+        <short>
+          <var>LoadFromStream</var> loads data from the specified stream, optionally using the specified reader</short>
+      </element>
+      <element name="TFPCustomImage.LoadFromFile">
+        <short>
+          <var>LoadFromFile</var> - reads data from the specified file, optionally using the specified reader</short>
+      </element>
+      <element name="TFPCustomImage.SaveToStream">
+        <short>
+          <var>SaveToStream</var> - writes the data to the specified stream, using the specified writer</short>
+      </element>
+      <element name="TFPCustomImage.SaveToFile">
+        <short>
+          <var>SaveToFile</var> - writes image data to the specifed file, using the specified writer</short>
+      </element>
+      <element name="TFPCustomImage.SetSize">
+        <short>
+          <var>SetSize</var> - specify the size of the Image</short>
+      </element>
+      <element name="TFPCustomImage.Height">
+        <short>The <var>Height</var> of the image</short>
+      </element>
+      <element name="TFPCustomImage.Width">
+        <short>The <var>Width</var> of the image</short>
+      </element>
+      <element name="TFPCustomImage.Colors">
+        <short>The <var>Colors</var> to be used at the nominated position</short>
+      </element>
+      <element name="TFPCustomImage.UsePalette">
+        <short>
+          <var>UsePalette</var> - Use of palette for colors</short>
+      </element>
+      <element name="TFPCustomImage.Palette">
+        <short>The <var>Palette</var> to be used in painting the Image</short>
+      </element>
+      <element name="TFPCustomImage.Pixels">
+        <short>The <var>Pixels</var> (integer value) found at the specified location</short>
+      </element>
+      <element name="TFPCustomImage.Extra">
+        <short>
+          <var>Extra</var> - Info unrelated with the image representation</short>
+      </element>
+      <element name="TFPCustomImage.ExtraValue">
+        <short>
+          <var>ExtraValue</var> - additional information stored with the image</short>
+      </element>
+      <element name="TFPCustomImage.ExtraKey">
+        <short>
+          <var>ExtraKey</var> - an additional key stored with the image</short>
+      </element>
+      <element name="TFPCustomImage.RemoveExtra">
+        <short>
+          <var>RemoveExtra</var> - ge rid of the ExtraKey</short>
+      </element>
+      <element name="TFPCustomImage.ExtraCount">
+        <short>
+          <var>ExtraCount</var> - the number of additional (non-image) items stored with the Image</short>
+      </element>
+      <element name="TFPCustomImage.OnProgress">
+        <short>
+          <var>OnProgress</var> - event handler for displaying progress of the painting process</short>
+      </element>
+      <element name="TFPCustomImageClass">
+        <short>
+          <var>TFPCustomImageClass</var> - class of <var>TFPCustomImage</var>
+        </short>
+      </element>
+      <element name="PFPIntegerArray">
+        <short>
+          <var>PFPIntegerArray</var> - pointer to an integer array</short>
+      </element>
+      <element name="TFPIntegerArray">
+        <short>
+          <var>TFPIntegerArray</var> - definition of integer array for use in images</short>
+      </element>
+      <element name="TFPMemoryImage.SetInternalPixel" link="#fcl.FPimage.TFPCustomImage.SetInternalPixel"/>
+      <element name="TFPMemoryImage.GetInternalPixel" link="#fcl.FPimage.TFPCustomImage.GetInternalPixel"/>
+      <element name="TFPMemoryImage.create" link="#rtl.System.TObject.Create"/>
+      <element name="TFPMemoryImage.destroy" link="#rtl.Classes.TPersistent.Destroy"/>
+      <element name="TFPMemoryImage.SetSize" link="#fcl.FPimage.TFPCustomImage.SetSize"/>
+      <element name="TFPCustomImageHandler.Progress">
+        <short>
+          <var>Progress</var> - method for displaying the progress of a drawing or painting action</short>
+        <descr>
+          <printshort id="TFPCustomImageHandler.Progress"/>
+          <p>Sender: calling routine</p>
+          <p>Stage: Starting, Running or Ending</p>
+          <p>PercentDone: how much has been accomplished</p>
+          <p>RedrawNow: whether to refresh the Image</p>
+          <p>R: the rectangle in which drawing progress is being monitored</p>
+          <p>Msg: a message to show in the progress display</p>
+          <p>Continue: whether to keep on drawing</p>
+        </descr>
+      </element>
+      <element name="TFPCustomImageHandler.TheStream">
+        <short>
+          <var>TheStream</var> from or to which the image is being read or written</short>
+      </element>
+      <element name="TFPCustomImageHandler.TheImage">
+        <short>
+          <var>TheImage</var> which is being read or written</short>
+      </element>
+      <element name="TFPCustomImageHandler.Create" link="#rtl.System.TObject.Create"/>
+      <element name="TFPCustomImageHandler.OnProgress">
+        <short>
+          <var>OnProgress</var> event handler for showing progress of drawing or painting</short>
+      </element>
+      <element name="TFPCustomImageReader.InternalRead">
+        <short>
+          <var>InternalRead</var> - read specified image from nominated stream</short>
+      </element>
+      <element name="TFPCustomImageReader.InternalCheck">
+        <short>
+          <var>InternalCheck</var> - performs check on validity of stream, returns True if OK</short>
+      </element>
+      <element name="TFPCustomImageReader.Create" link="#rtl.System.TObject.Create"/>
+      <element name="TFPCustomImageReader.ImageRead">
+        <short>
+          <var>ImageRead</var> read specified image from nominated stream; returns the image</short>
+      </element>
+      <element name="TFPCustomImageReader.CheckContents">
+        <short>
+          <var>CheckContents</var> - Gives True if contents are readable</short>
+      </element>
+      <element name="TFPCustomImageReader.DefaultImageClass">
+        <short>
+          <var>DefaultImageClass</var> - Image Class to create when no img is given for reading</short>
+      </element>
+      <element name="TFPCustomImageReaderClass">
+        <short>
+          <var>TFPCustomImageReaderClass</var> - class of <var>TFPCustomImageReader</var>
+        </short>
+      </element>
+      <element name="TFPCustomImageWriter.InternalWrite">
+        <short>
+          <var>InternalWrite</var> - write specified image to nominated stream</short>
+      </element>
+      <element name="TFPCustomImageWriter.ImageWrite">
+        <short>
+          <var>ImageWrite</var> - writes given image to stream</short>
+      </element>
+      <element name="TFPCustomImageWriterClass">
+        <short>
+          <var>TFPCustomImageWriterClass</var> - class of <var>TFPCustomImageWriter</var>
+        </short>
+      </element>
+      <element name="TIHData">
+        <short>
+          <var>TIHData</var> - data for Image Handler</short>
+      </element>
+      <element name="TImageHandlersManager">
+        <short>
+          <var>TImageHandlersManager</var> - class for managing image handlers</short>
+      </element>
+      <element name="TImageHandlersManager.Create" link="#rtl.System.TObject.Create"/>
+      <element name="TImageHandlersManager.Destroy" link="#rtl.System.TObject.Destroy"/>
+      <element name="TImageHandlersManager.RegisterImageHandlers">
+        <short>
+          <var>RegisterImageHandlers</var> - method for registering Image Handlers</short>
+      </element>
+      <element name="TImageHandlersManager.RegisterImageReader">
+        <short>
+          <var>RegisterImageReader</var> - method to register an Image Reader</short>
+      </element>
+      <element name="TImageHandlersManager.RegisterImageWriter">
+        <short>
+          <var>RegisterImageWriter</var> - method to register an Image Writer</short>
+      </element>
+      <element name="TImageHandlersManager.Count">
+        <short>
+          <var>Count</var> - the number of Image Handlers</short>
+      </element>
+      <element name="TImageHandlersManager.ImageReader">
+        <short>The <var>ImageReader</var> being used</short>
+      </element>
+      <element name="TImageHandlersManager.ImageWriter">
+        <short>The <var>ImageWriter</var> being used</short>
+      </element>
+      <element name="TImageHandlersManager.Extentions">
+        <short>The filename <var>Extentions</var> for the image handlers</short>
+      </element>
+      <element name="TImageHandlersManager.DefaultExtention">
+        <short>The <var>DefaultExtention</var> to be used if no extention is supplied</short>
+      </element>
+      <element name="TImageHandlersManager.TypeNames">
+        <short>A list of <var>TypeNames</var> to be used with the handler files</short>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>
