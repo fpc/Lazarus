@@ -24,7 +24,7 @@ const
 
 procedure TControlScrollBar.SetPosition(const Value: Integer);
 var
-  OldPosition: Integer;
+  OldPosition, MaxPos: Integer;
   ScrollInfo: TScrollInfo;
 begin
   if Value < 0 then
@@ -49,13 +49,14 @@ begin
     end;
   end;
 
-  if Value > Range then
+  MaxPos := Range - Page;
+  if (MaxPos >= 0) and (Value > MaxPos) then
   begin
     {$IFDEF VerboseScrollingWinControl}
     if DebugCondition then
       DebugLn(['TControlScrollBar.SetPosition Range Value=',Value,' > Range=',Range]);
     {$ENDIF}
-    SetPosition(Range);
+    SetPosition(MaxPos);
     exit;
   end;
 
@@ -137,7 +138,7 @@ begin
     ScrollInfo.fMask := SIF_Range + SIF_Page;
     GetScrollInfo(ControlHandle, IntfBarKind[Kind], ScrollInfo);
     InvalidateScrollInfo;
-    FRange := ScrollInfo.nMax - ScrollInfo.nMin - integer(ScrollInfo.nPage);
+    FRange := ScrollInfo.nMax - ScrollInfo.nMin;
   end;
   Result := FRange;
 end;
