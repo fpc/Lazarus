@@ -939,10 +939,13 @@ end;
   Updates control
  ------------------------------------------------------------------------------}
 function TCarbonControl.Update: Boolean;
+var
+  I: Integer;
 begin
-  Result := False;
-  if OSError(HIViewRender(HIViewRef(Widget)), Self, 'Update', 'HIViewRender') then Exit;
   Result := True;
+  for I := 0 to GetFrameCount - 1 do
+    if OSError(HIViewRender(HIViewRef(Frames[I])), Self, 'Update', 'HIViewRender') then
+      Result := False;
 end;
 
 {------------------------------------------------------------------------------
