@@ -2,26 +2,38 @@ lazarus (0.9.27-0) unstable; urgency=low
 
   * Snapshot building.
 
- -- Mazen Neifer <mazen@freepascal.org>  Fri, 26 Sep 2008 13:47:00 +0200
+ -- Mazen Neifer <mazen@freepascal.org>  Thu, 06 Nov 2008 13:45:00 +0100
 
-lazarus (0.9.26-0) unstable; urgency=low
+lazarus (0.9.26-2) unstable; urgency=low
 
+  * Removed leading "Lazarus is a" from Description field. (Closes: #502786)
+  * Put system wide configuration file in conffiles to avoid loosing user's
+    customizations.
+  * Added svn2revision to packaged binaries needed by Lazarus when rebuilding
+    itself after installation of new components. (Closes: #501049)
+  * Added contributers list to lazarus-ide packages as they are needed by the
+    about dialog.
+  * Fixed dependencies in rules file speeding package generation by avoiding
+    rebuilding binaries up to four times.
+
+ -- Mazen Neifer <mazen@freepascal.org>  Sun, 04 Nov 2008 00:22:00 +0100
+
+lazarus (0.9.26-1) unstable; urgency=low
+
+  [ Mazen Neifer ]
   * New upstream version.
-
- -- Mazen Neifer <mazen@freepascal.org>  Fri, 26 Sep 2008 13:47:00 +0200
-
-lazarus (0.9.25-0) unstable; urgency=low
-
-  * Merged debian rules with official debian svn.
-
- -- Mazen Neifer <mazen@freepascal.org>  Fri, 09 May 2008 00:58:40 +0200
-
-lazarus (0.9.24-0-13) unstable; urgency=low
- 
-  * Fixed linitian error due to initial sources containing debian/files.
+  * Fixed lintian error due to initial sources containing debian/files.
   * Fixed find expression precedence in clean target.
+  * About dialog box will display version with Debian build number and the
+    upstream svn revision.
 
- -- Mazen Neifer <mazen@freepascal.org>  Mon, 31 Aug 2008 16:29:00 +0200
+  [ Torsten Werner ]
+  * Add Build-Depends: fp-utils (ships fpcmake).
+  * Bump up Standards-Version: 3.8.0 (no changes).
+  * Build orig tarball from subversion export because the files at sourceforge
+    are broken.
+
+ -- Torsten Werner <twerner@debian.org>  Sun, 12 Oct 2008 12:09:58 +0200
 
 lazarus (0.9.24-0-12) unstable; urgency=low
  

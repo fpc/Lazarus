@@ -2,6 +2,12 @@
 # debian/rules for Lazarus
 
 DEB_DH_BUILDDEB_ARGS := -- -Z bzip2
+export LANG:=C
+
+# copied from cdbs:
+DEB_VERSION := $(shell dpkg-parsechangelog | egrep '^Version:' | cut -f 2 -d ' ')
+DEB_NOEPOCH_VERSION := $(shell echo $(DEB_VERSION) | cut -d: -f2-)
+DEB_UPSTREAM_VERSION := $(shell echo $(DEB_NOEPOCH_VERSION) | sed 's/-[^-]*$$//')
 
 # Define FPC
 ifndef FPC
@@ -69,8 +75,8 @@ unpatch:
 # Debian files
 #
 
-debian-files: debian-files-stamp
-debian-files-stamp: patch
+debian-files: patch debian-files-stamp
+debian-files-stamp:
 	@echo "--- Creating/fixing *.install files"
 	#/bin/bash debian/fixdeb debian $(FPCTARGET) $(PPNEW)
 	touch debian-files-stamp
@@ -86,10 +92,13 @@ configure-stamp:
 	find -name Makefile.fpc -execdir 'sh' '-c' '${RM} $$(basename {} .fpc)' ';'
 	# Regenrate make files using fpcmake.
 	${FPCMAKE} -r -Tall
+	# Add version.inc:
+	${RM} ide/version.inc
+	echo \'$(DEB_VERSION)\' > ide/version.inc
 	touch configure-stamp
 
-build-arch: build-arch-stamp
-build-arch-stamp: debian-files-stamp configure-stamp
+build-arch: debian-files configure build-arch-stamp
+build-arch-stamp:
 	@echo "--- Building"
 	dh_testdir
 	$(MAKE) lcl packager/registration ideintf bigidecomponents examples $(BUILDOPTS)
@@ -99,8 +108,8 @@ build-arch-stamp: debian-files-stamp configure-stamp
 	$(MAKE) tools $(BUILDOPTS)
 	touch build-arch-stamp
 
-install-arch: install-arch-stamp
-install-arch-stamp: build-arch-stamp debian-files-stamp
+install-arch: build-arch install-arch-stamp
+install-arch-stamp:
 	@echo "--- Installing"
 	dh_testdir
 	dh_testroot
@@ -108,11 +117,18 @@ install-arch-stamp: build-arch-stamp debian-files-stamp
 	dh_installdirs
 	# create all necessary directories
 	install -d $(INSTALL_DIR)/usr/bin
-	install -d $(INSTALL_DIR)/usr/lib/lazarus
+	install -d $(INSTALL_DIR)/usr/lib/lazarus/tools
 	# Install the IDE & its accessories
 	cp -Rfpl -t $(INSTALL_DIR)/usr/lib/lazarus \
-		lazarus lazbuild startlazarus \
+		$(CURDIR)/lazarus \
+		$(CURDIR)/lazbuild \
+		$(CURDIR)/startlazarus \
 		$(CURDIR)/languages
+	cp -Rfpl -t $(INSTALL_DIR)/usr/lib/lazarus/tools \
+		$(CURDIR)/tools/lazres \
+		$(CURDIR)/tools/lrstolfm \
+		$(CURDIR)/tools/svn2revisioninc \
+		$(CURDIR)/tools/updatepofiles
 	# Install the library files
 	find -name '*.ppu' -or -name '*.[oa]' -or -name '*.so*' | xargs cp -Rfpl --parents -t $(INSTALL_DIR)/usr/lib/lazarus
 	# copy icons and menu entries for the GNOME menu
@@ -123,17 +139,22 @@ install-arch-stamp: build-arch-stamp debian-files-stamp
 	install -m 644 $(CURDIR)/install/lazarus.desktop $(INSTALL_DIR)/usr/share/applications/lazarus.desktop
 	# Install man pages
 	$(MAKE) -C install/man installman $(INSTALLOPTS) INSTALL_PREFIX=$(INSTALL_DIR)/usr/share
-	touch install-arch-stamp
 	# Install configuration files
 	${MKDIR} $(INSTALL_DIR)/etc/lazarus
 	fpcsubst -d FPCVER=${FPCVER} -i ${CURDIR}/tools/install/linux/environmentoptions.xml -o $(INSTALL_DIR)/etc/lazarus/environmentoptions.xml
+	# Install contributer list
+	install -d $(INSTALL_DIR)/usr/lib/lazarus/docs
+	cp -Rfpl -t $(INSTALL_DIR)/usr/lib/lazarus/docs \
+		$(CURDIR)/docs/Contributors.txt \
+		$(CURDIR)/docs/contributors.utf8 \
+		$(CURDIR)/docs/acknowledgements.txt
+	touch install-arch-stamp
 
-arrange-arch: arrange-arch-stamp
-arrange-arch-stamp: install-arch-stamp debian-files-stamp
+arrange-arch: install-arch arrange-arch-stamp
+arrange-arch-stamp:
 	dh_testdir
 	dh_testroot
 	dh_install -s --sourcedir=debian/tmp --list-missing
-
 	touch arrange-arch-stamp
 
 build-indep: patch
@@ -144,15 +165,15 @@ install-indep:
 # Documentation
 #
 
-build-doc: patch build-doc-stamp
-build-doc-stamp: debian-files-stamp
+build-doc: patch debian-files build-doc-stamp
+build-doc-stamp:
 	@echo "--- Building Documentation"
 	dh_testdir
 	#$(MAKE) -C docs $(CONVERTER) $(BUILDOPTS) FPDOC=$(NEWFPDOC)
 	touch build-indep-stamp
 
-install-doc: install-doc-stamp
-install-doc-stamp: build-doc-stamp debian-files-stamp
+install-doc: build-doc install-doc-stamp
+install-doc-stamp:
 	@echo "--- Installing Documentation"
 	dh_testdir
 	dh_testroot
@@ -172,9 +193,7 @@ install-source-stamp:
 	dh_testroot
 	install -d $(INSTALL_DIR)/usr/lib/lazarus/
 	cp -Rfpl -t $(INSTALL_DIR)/usr/lib/lazarus \
-		$(CURDIR)/COPYING* \
 		$(CURDIR)/Makefile* \
-		$(CURDIR)/README* \
 		$(CURDIR)/components \
 		$(CURDIR)/converter \
 		$(CURDIR)/debugger \
@@ -212,8 +231,8 @@ binary-indep: clean-patched build-doc install-doc install-source debian-files
 	dh_installdocs -i
 	dh_installchangelogs -i
 	dh_install -i --sourcedir=debian/tmp --list-missing
-#	install -m644 -D debian/overrides/lazarus-src \
-#	  debian/lazarus-src/usr/share/lintian/overrides/lazarus-src
+	install -m644 -D debian/overrides/lazarus-src \
+	  debian/lazarus-src/usr/share/lintian/overrides/lazarus-src
 	dh_compress -i -X.pdf
 	dh_fixperms -i
 	dh_installdeb -i
@@ -221,7 +240,7 @@ binary-indep: clean-patched build-doc install-doc install-source debian-files
 	dh_md5sums -i
 	dh_builddeb -i $(DEB_DH_BUILDDEB_ARGS)
 
-binary-arch: build-arch arrange-arch  debian-files
+binary-arch: arrange-arch
 	@echo "--- Building: arch packages"
 	dh_testdir
 	dh_testroot
@@ -247,4 +266,4 @@ binary-arch: build-arch arrange-arch  debian-files
 	configure
 
 get-orig-source:
-	-uscan --upstream-version=0 --rename
+	sh debian/orig-tar.sh $(DEB_UPSTREAM_VERSION)
