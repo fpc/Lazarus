@@ -3274,7 +3274,8 @@ procedure TSourceNotebook.OnSourceCompletionTimer(Sender: TObject);
     
     // check if in a comment
     Token:='';
-    Attri:=nil; 
+    Attri:=nil;
+    dec(LogCaret.X);
     if SrcEdit.EditorComponent.GetHighlighterAttriAtRowCol(LogCaret,Token,Attri)
     and (Attri<>nil) and (Attri.Name=SYNS_AttrComment) then 
     begin

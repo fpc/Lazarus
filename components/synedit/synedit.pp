@@ -10710,7 +10710,7 @@ begin
     Highlighter.SetRange(TSynEditStringList(Lines).Ranges[PosY]);
     Highlighter.SetLine(Line, PosY);
     PosX := XY.X;
-    if (PosX > 0) and (PosX <= Length(Line)) then
+    if (PosX > 0) and (PosX <= Length(Line)) then begin
       while not Highlighter.GetEol do begin
         Start := Highlighter.GetTokenPos + 1;
         Token := Highlighter.GetToken;
@@ -10722,6 +10722,7 @@ begin
         end;
         Highlighter.Next;
       end;
+    end;
   end;
   Token := '';
   Attri := nil;
