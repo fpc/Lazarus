@@ -3364,6 +3364,8 @@ resourcestring
   lisMenuTemplateAbout = 'About';
   lisContributors = 'Contributors';
   lisAcknowledgements = 'Acknowledgements';
+  lisAboutOfficial = 'Official:';
+  lisAboutDocumentation = 'Documentation:';
 
   // character map
   lisCharacterMap = 'Character Map';
