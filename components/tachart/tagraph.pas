@@ -306,9 +306,9 @@ type
     procedure SetAutoYMin(Auto:Boolean);
     procedure SetAutoYMax(Auto:Boolean);
 
-    procedure XGraphToImage(Xin:Double;var XOut:Integer);
-    procedure YGraphToImage(Yin:Double;var YOut:Integer);
-    procedure GraphToImage(Xin,Yin:Double;var XOut,YOut:Integer);
+    procedure XGraphToImage(Xin: Double; out XOut: Integer);
+    procedure YGraphToImage(Yin: Double; out YOut: Integer);
+    procedure GraphToImage(Xin, Yin: Double; out XOut, YOut: Integer);
     procedure XImageToGraph(XIn:Integer;var XOut:Double);
     procedure YImageToGraph(YIn:Integer;var YOut:Double);
     procedure ImageToGraph(XIn,YIn:Integer;var XOut,YOut:Double);
@@ -1782,20 +1782,20 @@ begin
    if FShowReticule then DrawReticule(ACanvas,XMarkOld,YMarkOld);
 end;
 
-procedure TChart.XGraphToImage(Xin:Double;var XOut:Integer);
+procedure TChart.XGraphToImage(Xin: Double; out XOut: Integer);
 begin
-     XOut:=Round(ax*XIn+bx);
+  XOut := Round(ax * XIn + bx);
 end;
 
-procedure TChart.YGraphToImage(Yin:Double;var YOut:Integer);
+procedure TChart.YGraphToImage(Yin: Double; out YOut: Integer);
 begin
-     YOut:=Round(ay*YIn+by);
+  YOut := Round(ay * YIn + by);
 end;
 
-procedure TChart.GraphToImage(Xin,Yin:Double;var XOut,YOut:Integer);
+procedure TChart.GraphToImage(Xin, Yin: Double; out XOut, YOut: Integer);
 begin
-     XGraphToImage(Xin,XOut);
-     YGraphToImage(Yin,YOut);
+  XGraphToImage(Xin, XOut);
+  YGraphToImage(Yin, YOut);
 end;
 
 procedure TChart.XImageToGraph(XIn:Integer;var XOut:Double);
