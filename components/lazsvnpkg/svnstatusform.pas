@@ -49,11 +49,12 @@ type
     FRepositoryPath: string;
     { private declarations }
     SVNStatus: TSVNStatus;
+    procedure SetRepositoryPath(const AValue: string);
     procedure UpdateFilesListView(Data: PtrInt);
     procedure ChangeCursor(ACursor: TCursor);
   public
     { public declarations }
-    property RepositoryPath: string read FRepositoryPath write FrepositoryPath;
+    property RepositoryPath: string read FRepositoryPath write SetRepositoryPath;
   end;
 
 procedure ShowSVNStatusFrm(ARepoPath: string);
@@ -162,6 +163,7 @@ procedure TSVNStatusFrm.UpdateFilesListView(Data: PtrInt);
 var
   i: integer;
   StatusItem : PSVNStatusItem;
+  Path: string;
 begin
   SVNFileListView.BeginUpdate;
   SVNFileListView.Clear;
@@ -178,7 +180,10 @@ begin
       Checked := StatusItem^.Checked;
 
       //path
-      SubItems.Add(StatusItem^.Path);
+      Path := StatusItem^.Path;
+      if pos(RepositoryPath, Path) = 1 then
+        System.Delete(Path, 1, Length(RepositoryPath) - 1);
+      SubItems.Add(Path);
 
       //extension
       SubItems.Add(StatusItem^.Extension);
@@ -210,6 +215,11 @@ begin
   SVNFileListView.EndUpdate;
 
   ChangeCursor(crDefault);
+end;
+
+procedure TSVNStatusFrm.SetRepositoryPath(const AValue: string);
+begin
+  FRepositoryPath := AppendPathDelim(AValue);
 end;
 
 procedure TSVNStatusFrm.ChangeCursor(ACursor: TCursor);
