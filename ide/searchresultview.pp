@@ -90,7 +90,7 @@ type
 
   { TLazSearchResultLB }
 
-  TLazSearchResultLB = class(TCustomListBox)
+  TLazSearchResultLB = class(TCustomTreeView)
   private
     fSearchObject: TLazSearch;
     FSkipped: integer;
@@ -109,6 +109,7 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
     procedure ShortenPaths;
+    procedure FreeObjectsTN(tnItems: TTreeNodes);
     procedure FreeObjects(slItems: TStrings);
     function BeautifyLine(const Filename: string; X, Y: integer;
                           const Line: string): string;
@@ -119,6 +120,8 @@ type
     property UpdateItems: TStrings read fUpdateStrings write fUpdateStrings;
     property UpdateState: boolean read fUpdating;
     property Skipped: integer read FSkipped write SetSkipped;
+    property Items;
+    function ItemsAsStrings: TStrings;
   end;
 
 
@@ -139,8 +142,9 @@ type
     procedure ResultsNoteBookClosetabclicked(Sender: TObject);
     procedure SearchResultsViewDestroy(Sender: TObject);
     procedure btnSearchAgainClick(Sender: TObject);
-    procedure ListboxDrawitem(Control: TWinControl; Index: Integer;
-                              ARect: TRect; State: TOwnerDrawState);
+    procedure TreeViewAdvancedCustomDrawItem(Sender: TCustomTreeView;
+      Node: TTreeNode; State: TCustomDrawState; Stage: TCustomDrawStage;
+      var PaintImages, DefaultDraw: Boolean);
     procedure LazLBShowHint(Sender: TObject; HintInfo: PHintInfo);
     procedure LazLBMousemove(Sender: TObject; Shift: TShiftState;
                              X, Y: Integer);
@@ -263,9 +267,12 @@ begin
   begin
     with Sender as TLazSearchResultLB do
     begin
-      fMouseOverIndex:= ItemAtPos(Point(X,Y),true);
+      if Assigned(GetNodeAt(X, Y)) then
+        fMouseOverIndex:=GetNodeAt(X, Y).Index
+      else
+        fMouseOverIndex:=-1;
       if (fMouseOverIndex > -1) and (fMouseOverIndex < Items.Count)
-      and (Canvas.TextWidth(Items[fMouseOverIndex]) > Width) then
+      and (Canvas.TextWidth(Items[fMouseOverIndex].Text) > Width) then
         ShowHint:= True
       else
         ShowHint:= False;
@@ -313,7 +320,10 @@ begin
    if (CurrentLB.Items.Count <= 0) then Exit;
    slPhrases := TStringList.Create;
    try
-    iCurrentIndex := CurrentLB.ItemIndex + 1;
+     if Assigned(CurrentLB.Selected) then
+      iCurrentIndex := CurrentLB.Selected.Index + 1
+    else
+      iCurrentIndex := 0;
     if (iCurrentIndex > CurrentLB.Items.Count) then iCurrentIndex := CurrentLB.Items.Count;
     if (iCurrentIndex < 0) then iCurrentIndex := 0;//Set to 1st list-item if none are selected
     //Parse Phrases
@@ -322,13 +332,16 @@ begin
      begin
       for i:=iCurrentIndex to CurrentLB.Items.Count-1 do
        begin
-        S := UpperCase(CurrentLB.Items[i]);//for case-insensitive search
+        S := UpperCase(CurrentLB.Items[i].Text);//for case-insensitive search
         for j:=0 to slPhrases.Count-1 do
          begin
           if (Pos(slPhrases[j], S) <> 0) then
            begin
-            CurrentLB.ItemIndex := i;//Set listbox's itemindex
-            CurrentLB.MakeCurrentVisible;
+            CurrentLB.Items[i].Selected:=True;//Set listbox's itemindex
+
+            {$note find equivalent in treeview from listbox}
+            //CurrentLB.MakeCurrentVisible;
+
             Exit;//Found what we looking for, exit
            end;//End if (Pos(slPhrases[j], CurrentLB.Items[i]) <> 0)
          end;//End for-loop j
@@ -346,6 +359,7 @@ var i: Integer;
     oObject: TObject;
     CurrentLB: TLazSearchResultLB;
     mpMatchPos, mpOrgMatchPos: TLazSearchMatchPos;
+    Node: TTreeNode;
 begin
  CurrentLB := GetListBox(ResultsNoteBook.PageIndex);
  try
@@ -353,7 +367,7 @@ begin
    begin
     if (CurrentLB.Items.Count > 0) then
      begin
-      CurrentLB.FreeObjects(CurrentLB.Items);//Free the objects
+      CurrentLB.FreeObjectsTN(CurrentLB.Items);//Free the objects
       CurrentLB.Items.Clear;
      end;//End if (CurrentLB.Items.Count > 0)
 
@@ -368,7 +382,10 @@ begin
          begin
           mpMatchPos := TLazSearchMatchPos.Create;
           if CopySearchMatchPos(mpOrgMatchPos, mpMatchPos) then
-           CurrentLB.Items.AddObject(CurrentLB.BackUpStrings[i], mpMatchPos);
+          begin
+            Node := CurrentLB.Items.AddFirst(nil, CurrentLB.BackUpStrings[i]);
+            Node.Data:=mpMatchPos;
+          end;
          end;//End if Assigned(mpOrgMatchPos)
        end;//End for-loop i
      end;//End if (CurrentLB.BackUpStrings.Count > 0)
@@ -393,6 +410,7 @@ var CurrentLB: TLazSearchResultLB;
     i, j: Integer;
     S: string;
     oObject: TObject;
+    Node: TTreeNode;
 begin
  CurrentLB := GetListBox(ResultsNoteBook.PageIndex);
  if Assigned(CurrentLB) then
@@ -408,14 +426,14 @@ begin
       if (CurrentLB.Items.Count <= 1) then Exit;
       for i:=0 to CurrentLB.Items.Count-1 do
        begin
-        oObject := CurrentLB.Items.Objects[i];
+        oObject := TLazSearchMatchPos(CurrentLB.Items[i].Data);
         if not (oObject is TLazSearchMatchPos) then Continue;
-        mpOrgMatchPos := TLazSearchMatchPos(CurrentLB.Items.Objects[i]);
+        mpOrgMatchPos := TLazSearchMatchPos(CurrentLB.Items[i].Data);
         if Assigned(mpOrgMatchPos) then
          begin
           mpMatchPos := TLazSearchMatchPos.Create;
           if CopySearchMatchPos(mpOrgMatchPos, mpMatchPos) then
-           CurrentLB.BackUpStrings.AddObject(CurrentLB.Items[i], mpMatchPos);
+            CurrentLB.BackUpStrings.AddObject(CurrentLB.Items[i].Text, mpMatchPos);
          end;//End if Assigned(mpOrgMatchPos)
        end;//End for-loop i
      end;//End if not (CurrentLB.Filtered or (CurrentLB.BackUpStrings.Count > 0))
@@ -424,7 +442,7 @@ begin
 
     if (CurrentLB.Items.Count > 0) then
      begin
-      CurrentLB.FreeObjects(CurrentLB.Items);//Free the objects
+      CurrentLB.FreeObjectsTN(CurrentLB.Items);//Free the objects
       CurrentLB.Items.Clear;//Clear the list
       //Clear update items as their objects are freed together with CurrentLB.Items
       CurrentLB.UpdateItems.Clear;
@@ -446,7 +464,10 @@ begin
              begin
               mpMatchPos := TLazSearchMatchPos.Create;
               if CopySearchMatchPos(mpOrgMatchPos, mpMatchPos) then
-               CurrentLB.Items.AddObject(CurrentLB.BackUpStrings[i], mpMatchPos);
+              begin
+                Node := CurrentLB.Items.AddFirst(nil, CurrentLB.BackUpStrings[i]);
+                Node.Data:=mpMatchPos;
+              end;
              end;//End if Assigned(mpOrgMatchPos)
             Break;
            end;//End if (Pos(slPhrases[j], S) <> 0)
@@ -457,7 +478,7 @@ begin
    finally
     FreeAndNil(slPhrases);
     edSearchInList.SetFocus;
-    if (CurrentLB.Items.Count > 0) then CurrentLB.ItemIndex := 0;//Goto first item
+    if (CurrentLB.Items.Count > 0) then CurrentLB.Items[0].Selected:=True;//Goto first item
    end;//End try-finally
   end;//End if Assigned(CurrentLB)
 end;
@@ -480,6 +501,7 @@ var
   SearchPos: TLazSearchMatchPos;
   ShownText: String;
   LastPos: TLazSearchMatchPos;
+  Node: TTreeNode;
 begin
   CurrentLB:=GetListBox(APageIndex);
   if Assigned(CurrentLB) then
@@ -510,8 +532,8 @@ begin
       if (CurrentLB.UpdateItems.Count>0) and (CurrentLB.UpdateItems.Objects[CurrentLB.UpdateItems.Count-1] is TLazSearchMatchPos) then
         LastPos:=TLazSearchMatchPos(CurrentLB.UpdateItems.Objects[CurrentLB.UpdateItems.Count-1]);
     end else
-      if (CurrentLB.Items.Count>0) and (CurrentLB.Items.Objects[CurrentLB.Items.Count-1] is TLazSearchMatchPos) then
-        LastPos:=TLazSearchMatchPos(CurrentLB.Items.Objects[CurrentLB.Items.Count-1]);
+      if (CurrentLB.Items.Count>0) and Assigned(CurrentLB.Items[CurrentLB.Items.Count-1].Data) then
+        LastPos:=TLazSearchMatchPos(CurrentLB.Items[CurrentLB.Items.Count-1].Data);
     if (LastPos<>nil) and (LastPos.Filename=SearchPos.Filename) and
        (LastPos.FFileStartPos.Y=SearchPos.FFileStartPos.Y) and
        (LastPos.FFileEndPos.Y=SearchPos.FFileEndPos.Y) then
@@ -523,7 +545,10 @@ begin
     else if CurrentLB.UpdateState then
       CurrentLB.UpdateItems.AddObject(ShownText, SearchPos)
     else
-      CurrentLB.Items.AddObject(ShownText, SearchPos);
+    begin
+      Node := CurrentLB.Items.AddFirst(nil, ShownText);
+      Node.Data:=SearchPos;
+    end;
     CurrentLB.ShortenPaths;
   end;//if
 end;//AddMatch
@@ -551,8 +576,10 @@ begin
   begin
     CurrentLB.EndUpdate;
     if CurrentLB.Items.Count>0 then begin
-      CurrentLB.ItemIndex:= 0;
-      CurrentLB.TopIndex:= 0;
+      CurrentLB.Items[0].Selected:=True;
+
+      {$note find alternative in treeview from listview}
+      //CurrentLB.TopIndex:= 0;
     end;
   end;
 end;
@@ -631,7 +658,7 @@ begin
     if CurrentLB.UpdateState then
       result:= CurrentLB.UpdateItems
     else
-      result:= CurrentLB.Items;
+      result:= CurrentLB.ItemsAsStrings;
   end;//if
 end;//GetItems
 
@@ -755,12 +782,12 @@ begin
             Parent:= Page[NewPage];
             Align:= alClient;
             BorderSpacing.Around := 0;
-            ClickOnSelChange:=false;
+            //ClickOnSelChange:=false;
             OnClick:= @ListBoxClicked;
             OnDblClick:= @ListBoxDoubleClicked;
             OnKeyDown := @ListBoxKeyDown;
-            Style:= lbOwnerDrawFixed;
-            OnDrawItem:= @ListBoxDrawItem;
+            //Style:= lbOwnerDrawFixed;
+            OnAdvancedCustomDrawItem:= @TreeViewAdvancedCustomDrawItem;
             OnShowHint:= @LazLBShowHint;
             OnMouseMove:= @LazLBMousemove;
             OnMouseWheel:= @LazLBMouseWheel;
@@ -798,8 +825,8 @@ begin
     begin
       if (fMouseOverIndex >= 0) and (fMouseOverIndex < Items.Count) then
       begin
-        if Items.Objects[fMouseOverIndex] is TLazSearchMatchPos then
-          MatchPos:= TLazSearchMatchPos(Items.Objects[fMouseOverIndex])
+        if Assigned(Items[fMouseOverIndex].Data) then
+          MatchPos:= TLazSearchMatchPos(Items[fMouseOverIndex].Data)
         else
           MatchPos:= nil;
         if MatchPos<>nil then
@@ -808,16 +835,16 @@ begin
                    +','+IntToStr(MatchPos.FileStartPos.X)+')'
                    +' '+MatchPos.TheText
         else
-          HintStr:=Items[fMouseOverIndex];
+          HintStr:=Items[fMouseOverIndex].Text;
         Hint:= HintStr;
       end;//if
     end;//with
   end;//if
 end;//LazLBShowHint
 
-procedure TSearchResultsView.ListboxDrawitem(Control: TWinControl;
-                                             Index: Integer; ARect: TRect;
-                                             State: TOwnerDrawState);
+procedure TSearchResultsView.TreeViewAdvancedCustomDrawItem(
+  Sender: TCustomTreeView; Node: TTreeNode; State: TCustomDrawState;
+  Stage: TCustomDrawStage; var PaintImages, DefaultDraw: Boolean);
 var
   CurPart: string;
   TheText: string;
@@ -826,13 +853,15 @@ var
   MatchPos,FirstMatchPos: TLazSearchMatchPos;
 
   TextEnd, DrawnTextLength: integer;
+  ARect: TRect;
 begin
-  With Control as TLazSearchResultLB do
+  With Sender as TLazSearchResultLB do
   begin
+    ARect:=Node.DisplayRect(true);
     Canvas.FillRect(ARect);
-    MatchObj := Items.Objects[Index];
+    MatchObj := TLazSearchMatchPos(Node.Data);
     if assigned(MatchObj) and (MatchObj is TLazSearchMatchPos) then
-      MatchPos:= TLazSearchMatchPos(Items.Objects[Index])
+      MatchPos:= TLazSearchMatchPos(Node.Data)
     else
       MatchPos:= nil;
 
@@ -879,7 +908,7 @@ begin
     end//if
     else
     begin
-      TheText:=Items[Index];
+      TheText:=Node.Text;
       Canvas.TextOut(ARect.Left, ARect.Top, TheText);
     end;//else
   end;//with
@@ -939,11 +968,11 @@ begin
     if Assigned(ThePage) then
     begin
       TheListBox:= GetListBox(ThePage.PageIndex);
-      if Assigned(TheListBox) then
+      if Assigned(TheListBox.Selected) then
       begin
-        i:= TheListBox.ItemIndex;
+        i:= TheListBox.Selected.Index;
         if i > -1 then
-          result:= TheListBox.Items[i];
+          result:= TheListBox.Items[i].Text;
       end;//if
     end;//if
   end;//if
@@ -964,13 +993,11 @@ begin
     if Assigned(ThePage) then
     begin
       TheListBox:= GetListBox(ThePage.PageIndex);
-      if Assigned(TheListBox) then
+      if Assigned(TheListBox.Selected) then
       begin
-        i:= TheListBox.ItemIndex;
+        i:= TheListBox.Selected.Index;
         if i > -1 then begin
-          AnObject:=TheListBox.Items.Objects[i];
-          if AnObject is TLazSearchMatchPos then
-            Result:=TLazSearchMatchPos(AnObject);
+          Result:=TLazSearchMatchPos(TheListBox.Items[i].Data);
         end;
       end;//if
     end;//if
@@ -1032,7 +1059,7 @@ begin
   if fUpdating then
     SrcList:=fUpdateStrings
   else
-    SrcList:=Items;
+    SrcList:=ItemsAsStrings;
   if (SrcList.Count>0) and (copy(SrcList[SrcList.Count-1],1,length(s))=s) then
     HasSkippedLine:=true
   else
@@ -1073,7 +1100,7 @@ begin
   //means the objects are stored in Items due to filtering
   //filtering clears UpdateStrings
   if (fUpdateStrings.Count = 0) then
-   FreeObjects(Items);
+   FreeObjectsTN(Items);
   if Assigned(fUpdateStrings) then
   begin
     FreeObjects(fUpdateStrings);
@@ -1093,12 +1120,15 @@ begin
   if (fUpdateCount = 1) then
   begin
     if Assigned(Items) then
-      fUpdateStrings.Assign(Items);
+      fUpdateStrings.Assign(ItemsAsStrings);
     fUpdating:= true;
   end;//if
 end;//BeginUpdate
 
 procedure TLazSearchResultLB.EndUpdate;
+var
+  i: integer;
+  Node: TTreeNode;
 begin
   if (fUpdateCount = 0) then
     RaiseGDBException('TLazSearchResultLB.EndUpdate');
@@ -1107,8 +1137,13 @@ begin
   begin
     ShortenPaths;
     fUpdating:= false;
-    FreeObjects(Items);
-    Items.Assign(fUpdateStrings);
+    FreeObjectsTN(Items);
+
+    for i := 0 to fUpdateStrings.Count - 1 do
+    begin
+      Node := Items.AddFirst(nil, fUpdateStrings[i]);
+      Node.Data:=fUpdateStrings.Objects[i];
+    end;
   end;//if
 end;//EndUpdate
 
@@ -1131,7 +1166,7 @@ begin
   if fUpdating then
     SrcList:=fUpdateStrings
   else
-    SrcList:=Items;
+    SrcList:=ItemsAsStrings;
   
   // find shared path (the path of all filenames, that is the same)
   SharedPath:='';
@@ -1171,6 +1206,17 @@ begin
   end;
 end;
 
+procedure TLazSearchResultLB.FreeObjectsTN(tnItems: TTreeNodes);
+var i: Integer;
+begin
+ if (tnItems.Count <= 0) then Exit;
+ for i:=0 to tnItems.Count-1 do
+  begin
+   if Assigned(tnItems[i].Data) then
+    TLazSearchMatchPos(tnItems[i].Data).Free;
+  end;//End for-loop
+end;
+
 procedure TLazSearchResultLB.FreeObjects(slItems: TStrings);
 var i: Integer;
 begin
@@ -1199,6 +1245,16 @@ function TLazSearchResultLB.BeautifyLine(SearchPos: TLazSearchMatchPos
 begin
   Result:=BeautifyLine(SearchPos.ShownFilename,SearchPos.FileStartPos.X,
                        SearchPos.FileStartPos.Y,SearchPos.TheText);
+end;
+
+function TLazSearchResultLB.ItemsAsStrings: TStrings;
+var
+  i: integer;
+begin
+  Result := TStringList.Create;
+
+  for i := 0 to Items.Count - 1 do
+    Result.Add(Items[i].Text);
 end;
 
 { TLazSearchMatchPos }
