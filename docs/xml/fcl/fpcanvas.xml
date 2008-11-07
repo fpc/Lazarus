@@ -189,7 +189,7 @@
       <!-- procedure Visibility: protected -->
       <element name="TFPCanvasHelper.DoAllocateResources">
         <short>
-          <var>DoAllocateResources</var> - dummy (virtual) procedure for allocating resources</short>
+          <var>DoAllocateResources</var> - procedure for allocating resources</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -197,7 +197,7 @@
       <!-- procedure Visibility: protected -->
       <element name="TFPCanvasHelper.DoDeAllocateResources">
         <short>
-          <var>DoDeAllocateResources</var> - dummy (virtual) procedure for deallocationg resources</short>
+          <var>DoDeAllocateResources</var> - procedure for deallocationg resources</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -217,7 +217,7 @@
       <!-- procedure Visibility: protected -->
       <element name="TFPCanvasHelper.SetFPColor">
         <short>
-          <var>SetFPColor</var> - specifies colour</short>
+          <var>SetFPColor</var> - specify the colour using the FreePascal list</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -743,7 +743,8 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TFPCustomPen.Width">
-        <short>The <var>Width</var> of the Pen</short>
+        <short>The <var>Width</var> in pixels of the current <var>Pen</var>
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -1603,7 +1604,7 @@
       <!-- procedure Visibility: protected -->
       <element name="TFPCustomCanvas.DoLockCanvas">
         <short>
-          <var>DoLockCanvas</var> - method for locking the Canvas, meking it impossible to change</short>
+          <var>DoLockCanvas</var> - method for locking the Canvas, making it impossible to change</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2028,8 +2029,7 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TFPCustomCanvas.TextOut">
-        <short>
-          <var>TextOut</var> - writes the nominated text string at the specified location</short>
+        <short>Writes the <var>Text</var> string at the position <var>X, Y</var> on the canvas and leaves the pen at the end of the text</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2222,9 +2222,8 @@
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TFPCustomCanvas.MoveTo">
-        <short>
-          <var>MoveTo</var> - move the pen to the specified point</short>
+      <element name="TFPCustomCanvas.MoveTo" link="FPCanvas.TFPCustomCanvas.MoveTo">
+        <short>Moves cursor to new position <var>X1, Y1</var> without drawing anything</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2378,13 +2377,13 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TFPCustomCanvas.Font">
-        <short>The <var>Font</var> for the current Canvas</short>
+        <short>The <var>Font</var> to be used for text in this Canvas</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TFPCustomCanvas.Pen">
-        <short>The <var>Pen</var> for the current Canvas</short>
+        <short>The <var>Pen</var> to be used for writing in this Canvas</short>
         <descr/>
         <seealso/>
       </element>
