@@ -221,6 +221,7 @@ type
     function getJoinStyle: QtPenJoinStyle;
     function getWidth: Integer;
     function getStyle: QtPenStyle;
+    function getDashPattern: TQRealArray;
 
     procedure setCapStyle(pcs: QtPenCapStyle);
     procedure setColor(p1: TQColor);
@@ -229,6 +230,7 @@ type
     procedure setStyle(AStyle: QtPenStyle);
     procedure setBrush(brush: QBrushH);
     procedure setWidth(p1: Integer);
+    procedure setDashPattern(APattern: PDWord; ALength: DWord);
 
     property IsExtPen: Boolean read FIsExtPen write FIsExtPen;
   end;
@@ -1458,6 +1460,15 @@ begin
   Result := QPen_style(Widget);
 end;
 
+function TQtPen.getDashPattern: TQRealArray;
+begin
+{$ifdef USE_QT_44}
+  QPen_dashPattern(Widget, @Result);
+{$else}
+  Result := nil;
+{$endif}
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtPen.setBrush
   Params:  None
@@ -1487,6 +1498,21 @@ end;
 procedure TQtPen.setWidth(p1: Integer);
 begin
   QPen_setWidth(Widget, p1);
+end;
+
+procedure TQtPen.setDashPattern(APattern: PDWord; ALength: DWord);
+{$ifdef USE_QT_44}
+var
+  QtPattern: TQRealArray;
+  i: integer;
+{$endif}
+begin
+{$ifdef USE_QT_44}
+  SetLength(QtPattern, ALength);
+  for i := 0 to ALength - 1 do
+    QtPattern[i] := APattern[i];
+  QPen_setDashPattern(Widget, @QtPattern);
+{$endif}
 end;
 
 procedure TQtPen.setJoinStyle(pcs: QtPenJoinStyle);

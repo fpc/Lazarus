@@ -1508,9 +1508,7 @@ begin
   end;
 
   if (dwPenStyle and PS_STYLE_MASK) = PS_USERSTYLE then
-  begin
-    // TODO: use QPen_setDashPatten which are available since qt 4.1
-  end;
+    QtPen.setDashPattern(lpStyle, dwStyleCount);
 
   QPen_Color(QtPen.Widget, @Color);
   ColorRefToTQColor(ColorToRGB(lplb.lbColor), Color);
@@ -2242,6 +2240,8 @@ var
   ALogFont: PLogFont absolute Buf;
   ALogPen: PLogPen absolute Buf;
   AExtLogPen: PExtLogPen absolute Buf;
+  Dashes: TQRealArray;
+  i: integer;
   {$ifdef VerboseQtWinAPI}
     ObjType: string;
   {$endif}
@@ -2330,12 +2330,20 @@ begin
     end
     else
     begin
-      if Buf = nil then
-        Result := SizeOf(TExtLogPen)
-      else
-      if BufSize >= SizeOf(TExtLogPen) then
+      i := SizeOf(TExtLogPen);
+      if APen.getStyle = QtCustomDashLine then
       begin
-        Result := SizeOf(TExtLogPen);
+        Dashes := APen.getDashPattern;
+        inc(i, (Length(Dashes) - 1) * SizeOf(DWord));
+      end
+      else
+        Dashes := nil;
+      if Buf = nil then
+        Result := i
+      else
+      if BufSize >= i then
+      begin
+        Result := i;
         AExtLogPen^.elpPenStyle := QtPenStyleToWinStyleMap[APen.getStyle];
 
         if not APen.getCosmetic then
@@ -2362,10 +2370,15 @@ begin
         AExtLogPen^.elpBrushStyle := BS_SOLID;
         TQColorToColorRef(APen.getColor, AExtLogPen^.elpColor);
         AExtLogPen^.elpHatch := 0;
-{ TODO: PS_USERSTYLE
-    elpNumEntries: DWORD;
-    elpStyleEntry: array[0..0] of DWORD;
-}
+
+        AExtLogPen^.elpNumEntries := Length(Dashes);
+        if AExtLogPen^.elpNumEntries > 0 then
+        begin
+          for i := 0 to AExtLogPen^.elpNumEntries - 1 do
+            PDword(@AExtLogPen^.elpStyleEntry)[i] := Trunc(Dashes[i]);
+        end
+        else
+          AExtLogPen^.elpStyleEntry[0] := 0;
       end;
     end;
   end
