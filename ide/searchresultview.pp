@@ -102,6 +102,7 @@ type
     FSearchInListPhrases: string;
     fFiltered: Boolean;
     procedure SetSkipped(const AValue: integer);
+    procedure AddNode(Line: string; MatchPos: TLazSearchMatchPos);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -348,7 +349,6 @@ var i: Integer;
     oObject: TObject;
     CurrentTV: TLazSearchResultTV;
     mpMatchPos, mpOrgMatchPos: TLazSearchMatchPos;
-    Node: TTreeNode;
 begin
  CurrentTV := GetTreeView(ResultsNoteBook.PageIndex);
  try
@@ -372,8 +372,7 @@ begin
           mpMatchPos := TLazSearchMatchPos.Create;
           if CopySearchMatchPos(mpOrgMatchPos, mpMatchPos) then
           begin
-            Node := CurrentTV.Items.AddFirst(nil, CurrentTV.BackUpStrings[i]);
-            Node.Data:=mpMatchPos;
+            CurrentTV.AddNode(CurrentTV.BackUpStrings[i], mpMatchPos);
           end;
          end;//End if Assigned(mpOrgMatchPos)
        end;//End for-loop i
@@ -399,7 +398,6 @@ var CurrentTV: TLazSearchResultTV;
     i, j: Integer;
     S: string;
     oObject: TObject;
-    Node: TTreeNode;
 begin
  CurrentTV := GetTreeView(ResultsNoteBook.PageIndex);
  if Assigned(CurrentTV) then
@@ -454,8 +452,7 @@ begin
               mpMatchPos := TLazSearchMatchPos.Create;
               if CopySearchMatchPos(mpOrgMatchPos, mpMatchPos) then
               begin
-                Node := CurrentTV.Items.AddFirst(nil, CurrentTV.BackUpStrings[i]);
-                Node.Data:=mpMatchPos;
+                CurrentTV.AddNode(CurrentTV.BackUpStrings[i], mpMatchPos);
               end;
              end;//End if Assigned(mpOrgMatchPos)
             Break;
@@ -490,7 +487,6 @@ var
   SearchPos: TLazSearchMatchPos;
   ShownText: String;
   LastPos: TLazSearchMatchPos;
-  Node: TTreeNode;
 begin
   CurrentTV:=GetTreeView(APageIndex);
   if Assigned(CurrentTV) then
@@ -535,8 +531,7 @@ begin
       CurrentTV.UpdateItems.AddObject(ShownText, SearchPos)
     else
     begin
-      Node := CurrentTV.Items.AddFirst(nil, ShownText);
-      Node.Data:=SearchPos;
+      CurrentTV.AddNode(ShownText, SearchPos);
     end;
     CurrentTV.ShortenPaths;
   end;//if
@@ -771,6 +766,7 @@ begin
             OnMouseMove:= @LazTVMousemove;
             OnMouseWheel:= @LazTVMouseWheel;
             ShowHint:= true;
+            RowSelect := True;
             NewTreeView.Canvas.Brush.Color:= clWhite;
           end;//with
         end;//if
@@ -946,11 +942,7 @@ begin
     begin
       TheTreeView:= GetTreeView(ThePage.PageIndex);
       if Assigned(TheTreeView.Selected) then
-      begin
-        i:= TheTreeView.Selected.Index;
-        if i > -1 then
-          result:= TheTreeView.Items[i].Text;
-      end;//if
+        Result:= TheTreeView.Selected.Text;
     end;//if
   end;//if
 end;//GetSelectedText
@@ -970,12 +962,7 @@ begin
     begin
       TheTreeView:= GetTreeView(ThePage.PageIndex);
       if Assigned(TheTreeView.Selected) then
-      begin
-        i:= TheTreeView.Selected.Index;
-        if i > -1 then begin
-          Result:=TLazSearchMatchPos(TheTreeView.Items[i].Data);
-        end;
-      end;//if
+        Result := TLazSearchMatchPos(TheTreeView.Selected.Data);
     end;//if
   end;//if
 end;
@@ -1053,6 +1040,20 @@ begin
   end;
 end;
 
+procedure TLazSearchResultTV.AddNode(Line: string; MatchPos: TLazSearchMatchPos);
+var
+  Node: TTreeNode;
+begin
+  Node := Items.FindNodeWithText(MatchPos.FileName);
+
+  //enter a new file entry
+  if not Assigned(Node) then
+    Node := Items.AddFirst(Node, MatchPos.FileName);
+
+  Node := Items.AddChildFirst(Node, Line);
+  Node.Data := MatchPos;
+end;
+
 {******************************************************************************
   TLazSearchResultTV
 ******************************************************************************}
@@ -1104,7 +1105,6 @@ end;//BeginUpdate
 procedure TLazSearchResultTV.EndUpdate;
 var
   i: integer;
-  Node: TTreeNode;
 begin
   if (fUpdateCount = 0) then
     RaiseGDBException('TLazSearchResultTV.EndUpdate');
@@ -1117,8 +1117,7 @@ begin
 
     for i := 0 to fUpdateStrings.Count - 1 do
     begin
-      Node := Items.AddFirst(nil, fUpdateStrings[i]);
-      Node.Data:=fUpdateStrings.Objects[i];
+      AddNode(fUpdateStrings[i], TLazSearchMatchPos(fUpdateStrings.Objects[i]));
     end;
   end;//if
 end;//EndUpdate
@@ -1185,12 +1184,9 @@ end;
 procedure TLazSearchResultTV.FreeObjectsTN(tnItems: TTreeNodes);
 var i: Integer;
 begin
- if (tnItems.Count <= 0) then Exit;
  for i:=0 to tnItems.Count-1 do
-  begin
    if Assigned(tnItems[i].Data) then
     TLazSearchMatchPos(tnItems[i].Data).Free;
-  end;//End for-loop
 end;
 
 procedure TLazSearchResultTV.FreeObjects(slItems: TStrings);
