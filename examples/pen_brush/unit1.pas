@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ExtCtrls, Buttons, LCLIntf;
+  StdCtrls, ExtCtrls, Buttons, ColorBox, LCLIntf;
 
 type
 
@@ -14,8 +14,17 @@ type
 
   TForm1 = class(TForm)
     Button1: TBitBtn;
+    PenColorBox: TColorBox;
+    GeometricCheck: TCheckBox;
+    Label6: TLabel;
+    WidthCombo: TComboBox;
+    CapsCombo: TComboBox;
+    JoinCombo: TComboBox;
     Label1: TLabel;
     Label2: TLabel;
+    Label3: TLabel;
+    Label4: TLabel;
+    Label5: TLabel;
     PenBox: TPaintBox;
     BrushBox: TPaintBox;
     procedure BrushBoxPaint(Sender: TObject);
@@ -23,8 +32,10 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure PenBoxPaint(Sender: TObject);
+    procedure WidthComboChange(Sender: TObject);
   private
     FPattern: TBitmap;
+    procedure PenChange;
   public
     { public declarations }
   end; 
@@ -98,6 +109,28 @@ begin
   PenBox.Canvas.Pen.Style := psClear;
   PenBox.Canvas.Line(120, y, PenBox.Width - 10, y);
   inc(y, 15);
+
+  PenBox.Canvas.TextOut(10, y - 7, GetEnumName(TypeInfo(TPenStyle), Ord(psPattern)));
+  PenBox.Canvas.Pen.Style := psPattern;
+  PenBox.Canvas.Line(120, y, PenBox.Width - 10, y);
+end;
+
+procedure TForm1.PenChange;
+var
+  Dashes: array[0..3] of DWord = (1, 1, 1, 1);
+begin
+  PenBox.Canvas.Pen.Color := PenColorBox.Selected;
+  PenBox.Canvas.Pen.Width := StrToInt(WidthCombo.Text);
+  PenBox.Canvas.Pen.Geometric := GeometricCheck.Checked;
+  PenBox.Canvas.Pen.EndCap := TPenEndCap(CapsCombo.ItemIndex);
+  PenBox.Canvas.Pen.JoinStyle := TPenJoinStyle(JoinCombo.ItemIndex);
+  PenBox.Canvas.Pen.SetPattern(Dashes);
+  PenBox.Invalidate;
+end;
+
+procedure TForm1.WidthComboChange(Sender: TObject);
+begin
+  PenChange;
 end;
 
 initialization

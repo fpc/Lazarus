@@ -1,11 +1,11 @@
 object Form1: TForm1
   Left = 350
-  Height = 473
+  Height = 525
   Top = 215
-  Width = 400
+  Width = 442
   Caption = 'Pen & Brush'
-  ClientHeight = 473
-  ClientWidth = 400
+  ClientHeight = 525
+  ClientWidth = 442
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   ParentFont = False
@@ -32,7 +32,7 @@ object Form1: TForm1
     Left = 11
     Height = 153
     Top = 32
-    Width = 378
+    Width = 420
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 11
     BorderSpacing.Top = 7
@@ -41,11 +41,11 @@ object Form1: TForm1
   end
   object Label2: TLabel
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = PenBox
+    AnchorSideTop.Control = CapsCombo
     AnchorSideTop.Side = asrBottom
     Left = 11
     Height = 14
-    Top = 196
+    Top = 252
     Width = 43
     BorderSpacing.Left = 11
     BorderSpacing.Top = 11
@@ -60,31 +60,187 @@ object Form1: TForm1
     AnchorSideRight.Side = asrBottom
     Left = 11
     Height = 207
-    Top = 217
-    Width = 378
+    Top = 273
+    Width = 420
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 11
     BorderSpacing.Top = 7
     BorderSpacing.Right = 11
     OnPaint = BrushBoxPaint
   end
+  object Label3: TLabel
+    AnchorSideTop.Control = WidthCombo
+    AnchorSideTop.Side = asrCenter
+    Left = 152
+    Height = 14
+    Top = 195
+    Width = 33
+    Caption = 'Width:'
+    ParentColor = False
+  end
+  object Label4: TLabel
+    AnchorSideLeft.Control = PenBox
+    AnchorSideTop.Control = CapsCombo
+    AnchorSideTop.Side = asrCenter
+    Left = 11
+    Height = 14
+    Top = 223
+    Width = 50
+    Caption = 'End Caps:'
+    ParentColor = False
+  end
+  object Label5: TLabel
+    AnchorSideTop.Control = JoinCombo
+    AnchorSideTop.Side = asrCenter
+    Left = 152
+    Height = 14
+    Top = 223
+    Width = 51
+    Caption = 'Join Style:'
+    ParentColor = False
+  end
+  object Label6: TLabel
+    AnchorSideTop.Control = PenColorBox
+    AnchorSideTop.Side = asrCenter
+    Left = 296
+    Height = 14
+    Top = 196
+    Width = 30
+    Caption = 'Color:'
+    ParentColor = False
+  end
   object Button1: TBitBtn
     AnchorSideTop.Control = BrushBox
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 307
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 342
     Height = 26
-    Top = 435
-    Width = 82
-    Anchors = [akTop, akLeft, akRight]
+    Top = 488
+    Width = 89
+    Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Top = 11
     BorderSpacing.Right = 11
+    BorderSpacing.Bottom = 11
     Caption = '&Закрыть'
     Kind = bkClose
     NumGlyphs = 0
     OnClick = Button1Click
     TabOrder = 0
+  end
+  object WidthCombo: TComboBox
+    AnchorSideTop.Control = PenBox
+    AnchorSideTop.Side = asrBottom
+    Left = 216
+    Height = 21
+    Top = 192
+    Width = 70
+    BorderSpacing.Top = 7
+    ItemHeight = 13
+    ItemIndex = 0
+    Items.Strings = (
+      '1'
+      '2'
+      '3'
+      '4'
+      '5'
+      '6'
+      '7'
+    )
+    OnChange = WidthComboChange
+    Style = csDropDownList
+    TabOrder = 1
+    Text = '1'
+  end
+  object CapsCombo: TComboBox
+    AnchorSideTop.Control = WidthCombo
+    AnchorSideTop.Side = asrBottom
+    Left = 75
+    Height = 21
+    Top = 220
+    Width = 70
+    BorderSpacing.Top = 7
+    ItemHeight = 13
+    ItemIndex = 0
+    Items.Strings = (
+      'Round'
+      'Square'
+      'Flat'
+    )
+    OnChange = WidthComboChange
+    Style = csDropDownList
+    TabOrder = 2
+    Text = 'Round'
+  end
+  object JoinCombo: TComboBox
+    AnchorSideTop.Control = CapsCombo
+    Left = 216
+    Height = 21
+    Top = 220
+    Width = 70
+    ItemHeight = 13
+    ItemIndex = 0
+    Items.Strings = (
+      'Round'
+      'Bevel'
+      'Mitter'
+    )
+    OnChange = WidthComboChange
+    Style = csDropDownList
+    TabOrder = 3
+    Text = 'Round'
+  end
+  object GeometricCheck: TCheckBox
+    AnchorSideLeft.Control = PenBox
+    AnchorSideTop.Control = WidthCombo
+    AnchorSideTop.Side = asrCenter
+    Left = 11
+    Height = 19
+    Top = 193
+    Width = 74
+    Caption = 'Geometric'
+    OnChange = WidthComboChange
+    ParentBidiMode = False
+    TabOrder = 4
+  end
+  object PenColorBox: TColorBox
+    AnchorSideTop.Control = PenBox
+    AnchorSideTop.Side = asrBottom
+    Left = 336
+    Height = 22
+    Top = 192
+    Width = 96
+    BorderSpacing.Top = 7
+    ItemHeight = 16
+    ItemIndex = 0
+    Items.Strings = (
+      'clBlack'
+      'clMaroon'
+      'clGreen'
+      'clOlive'
+      'clNavy'
+      'clPurple'
+      'clTeal'
+      'clGray'
+      'clSilver'
+      'clRed'
+      'clLime'
+      'clYellow'
+      'clBlue'
+      'clFuchsia'
+      'clAqua'
+      'clSilver'
+      'clGray'
+      'clWhite'
+      'clCream'
+      'clNone'
+      'clDefault'
+    )
+    TabOrder = 5
+    Text = 'clBlack'
+    OnChange = WidthComboChange
   end
 end
