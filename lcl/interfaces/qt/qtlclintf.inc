@@ -228,57 +228,56 @@ function TQtWidgetSet.PromptUser(const DialogCaption : string;
                                        DefaultIndex  : LongInt;
                                        EscapeResult  : LongInt) : LongInt;
 var
-  QBtns      : QMessageBoxStandardButtons;
-  DefQBtn    : QMessageBoxStandardButton;
-  CurQBtn    : QMessageBoxStandardButton;
   BtnIdx     : LongInt;
-  CaptionStr : WideString;
-  MessageStr : WideString;
   QResult    : QMessageBoxStandardButton;
+  QtMessageBox: TQtMessageBox;
 begin
-  QBtns := 0;
-  DefQBtn := QMessageBoxNoButton;
-   {Convert LCL "id" button values to Qt values}
-  for BtnIdx := 0 to ButtonCount-1 do
+  QtMessageBox := TQtMessageBox.Create(nil);
+  QtMessageBox.AttachEvents;
+  try
+    {Convert LCL "id" button values to Qt values}
+    for BtnIdx := 0 to ButtonCount-1 do
     begin
-    case Buttons[BtnIdx] of
-      idButtonYes      : CurQBtn := QMessageBoxYes;
-      idButtonNo       : CurQBtn := QMessageBoxNo;
-      idButtonOK       : CurQBtn := QMessageBoxOk;
-      idButtonCancel   : CurQBtn := QMessageBoxCancel;
-      idButtonAbort    : CurQBtn := QMessageBoxAbort;
-      idButtonRetry    : CurQBtn := QMessageBoxRetry;
-      idButtonIgnore   : CurQBtn := QMessageBoxIgnore;
-//      idButtonAll      : no equivalent
-      idButtonNoToAll  : CurQBtn := QMessageBoxNoToAll;
-      idButtonYesToAll : CurQBtn := QMessageBoxYesToAll;
-      idButtonHelp     : CurQBtn := QMessageBoxHelp;
-      idButtonClose    : CurQBtn := QMessageBoxClose;
-      else
-        CurQBtn := QMessageBoxNoButton;
+      case Buttons[BtnIdx] of
+        idButtonYes      : QtMessageBox.AddButton(QMessageBoxYes, rsMbYes, BtnIdx = DefaultIndex, BtnIdx = EscapeResult); //CurQBtn := QMessageBoxYes;
+        idButtonNo       : QtMessageBox.AddButton(QMessageBoxNo, rsMbNo, BtnIdx = DefaultIndex, BtnIdx = EscapeResult); // CurQBtn := QMessageBoxNo;
+        idButtonOK       : QtMessageBox.AddButton(QMessageBoxOk, rsMbOk, BtnIdx = DefaultIndex, BtnIdx = EscapeResult); // CurQBtn := CurQBtn := QMessageBoxOk;
+        idButtonCancel   : QtMessageBox.AddButton(QMessageBoxCancel, rsMbCancel, BtnIdx = DefaultIndex, BtnIdx = EscapeResult); // CurQBtn := QMessageBoxCancel;
+        idButtonAbort    : QtMessageBox.AddButton(QMessageBoxAbort, rsMbAbort, BtnIdx = DefaultIndex, BtnIdx = EscapeResult); // CurQBtn := QMessageBoxAbort;
+        idButtonRetry    : QtMessageBox.AddButton(QMessageBoxRetry, rsMbRetry, BtnIdx = DefaultIndex, BtnIdx = EscapeResult); // CurQBtn := QMessageBoxRetry;
+        idButtonIgnore   : QtMessageBox.AddButton(QMessageBoxIgnore, rsMbIgnore, BtnIdx = DefaultIndex, BtnIdx = EscapeResult); // CurQBtn := QMessageBoxIgnore;
+        idButtonNoToAll  : QtMessageBox.AddButton(QMessageBoxNoToAll, rsMbNoToAll, BtnIdx = DefaultIndex, BtnIdx = EscapeResult); // CurQBtn := QMessageBoxNoToAll;
+        idButtonYesToAll : QtMessageBox.AddButton(QMessageBoxYesToAll, rsMbYesToAll, BtnIdx = DefaultIndex, BtnIdx = EscapeResult); // CurQBtn := QMessageBoxYesToAll;
+        idButtonHelp     : QtMessageBox.AddButton(QMessageBoxHelp, rsMbHelp, BtnIdx = DefaultIndex, BtnIdx = EscapeResult); // CurQBtn := QMessageBoxHelp;
+        idButtonClose    : QtMessageBox.AddButton(QMessageBoxClose, rsMbClose, BtnIdx = DefaultIndex, BtnIdx = EscapeResult); // CurQBtn := QMessageBoxClose;
       end;
-    QBtns := QBtns or CurQBtn;
-    if BtnIdx = DefaultIndex then  {Default button?}
-      DefQBtn := CurQBtn;
     end;
 
-  CaptionStr := GetUtf8String(DialogCaption);
-  MessageStr := GetUtf8String(DialogMessage);
-
-  case DialogType of
-    idDialogWarning : 
-     QResult := QMessageBox_warning(nil, @CaptionStr, @MessageStr, QBtns, DefQBtn);
-    idDialogError : 
-     QResult := QMessageBox_critical(nil, @CaptionStr, @MessageStr, QBtns, DefQBtn);
-    idDialogInfo : 
-     QResult := QMessageBox_information(nil, @CaptionStr, @MessageStr, QBtns, DefQBtn);
-    idDialogConfirm : 
-     QResult := QMessageBox_question(nil, @CaptionStr, @MessageStr, QBtns, DefQBtn);
+    if DialogCaption <> '' then
+      QtMessageBox.Title := DialogCaption
     else
-      // simple show message
-      QResult := QMessageBox_information(nil, @CaptionStr, @MessageStr, QBtns, DefQBtn);
+      case DialogType of
+        idDialogWarning: QtMessageBox.Title := rsMtWarning;
+        idDialogError: QtMessageBox.Title := rsMtError;
+        idDialogInfo : QtMessageBox.Title := rsMtInformation;
+        idDialogConfirm : QtMessageBox.Title := rsMtConfirmation;
+      end;
+
+    QtMessageBox.MessageStr := DialogMessage;
+
+    case DialogType of
+      idDialogWarning: QtMessageBox.MsgBoxType := QMessageBoxWarning;
+      idDialogError: QtMessageBox.MsgBoxType := QMessageBoxCritical;
+      idDialogInfo : QtMessageBox.MsgBoxType := QMessageBoxInformation;
+      idDialogConfirm : QtMessageBox.MsgBoxType := QMessageBoxQuestion;
+      else
+        QtMessageBox.MsgBoxType := QMessageBoxNoIcon;
     end;
 
+    QResult := QtMessageBox.exec;
+  finally
+    QtMessageBox.Free;
+  end;
    {Convert Qt result to LCL "id" dialog result}
   case QResult of
     QMessageBoxOk       : Result := idButtonOK;
@@ -288,12 +287,12 @@ begin
     QMessageBoxIgnore   : Result := idButtonIgnore;
     QMessageBoxYes      : Result := idButtonYes;
     QMessageBoxNo       : Result := idButtonNo;
-//    QMessageBoxAll      : no equivalent
+    // QMessageBoxAll      : no equivalent
     QMessageBoxNoToAll  : Result := idButtonNoToAll;
     QMessageBoxYesToAll : Result := idButtonYesToAll;
     else
       Result := -1;
-    end;
+  end;
 end;  {TQtWidgetSet.PromptUser}
 
 {------------------------------------------------------------------------------

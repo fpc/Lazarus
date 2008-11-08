@@ -1156,6 +1156,38 @@ type
     procedure setReadOnly(const AReadOnly: Boolean);
     procedure setViewMode(const AMode: QFileDialogViewMode);
   end;
+
+  { TQtMessageBox }
+
+  TQtMessageBox = class(TQtWidget)
+  private
+    FMBEventHook: QObject_hookH;
+    FButtons: Array of QPushButtonH;
+    FTitle: WideString;
+    function getDetailText: WideString;
+    function getMessageStr: WideString;
+    function getMsgBoxType: QMessageBoxIcon;
+    procedure setDetailText(const AValue: WideString);
+    procedure setMessageStr(const AValue: WideString);
+    procedure setMsgBoxType(const AValue: QMessageBoxIcon);
+    procedure setTitle(const AValue: WideString);
+  protected
+    function CreateWidget(AParent: QWidgetH):QWidgetH; overload;
+  public
+    constructor Create(AParent: QWidgetH); overload;
+    destructor Destroy; override;
+    procedure AttachEvents; override;
+    procedure DetachEvents; override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
+  public
+    procedure AddButton(ABtnType: QMessageBoxStandardButton; ACaption: WideString;
+      AIsDefaultBtn: Boolean; Const AEscapeBtn: Boolean = False);
+    function exec: QMessageBoxStandardButton;
+    property DetailText: WideString read getDetailText write setDetailText;
+    property MessageStr: WideString read getMessageStr write setMessageStr;
+    property MsgBoxType:QMessageBoxIcon read getMsgBoxType write setMsgBoxType;
+    property Title: WideString read FTitle write setTitle;
+  end;
   
   { TQtCalendar }
 
@@ -5073,10 +5105,11 @@ begin
         begin
           // it would be better if we have AutoSelect published from TCustomEdit
           // then TMaskEdit also belongs here.
-          if ((LCLObject is TEdit) and
-             (getEnabled) and
-             (TEdit(LCLObject).AutoSelect)) then
-            QLineEdit_selectAll(QLineEditH(Widget));
+          if (LCLObject is TEdit) and
+             getEnabled and
+             TEdit(LCLObject).AutoSelect and not
+             TEdit(LCLObject).ReadOnly then
+               QLineEdit_selectAll(QLineEditH(Widget));
         end;
       end;
     end;
@@ -9297,6 +9330,175 @@ procedure TQtDesignWidget.raiseWidget;
 begin
   inherited raiseWidget;
   BringDesignerToFront;
+end;
+
+{ TQtMessageBox }
+
+function TQtMessageBox.getMsgBoxType: QMessageBoxIcon;
+begin
+  Result := QMessageBox_icon(QMessageBoxH(Widget));
+end;
+
+procedure TQtMessageBox.setDetailText(const AValue: WideString);
+var
+  Str: WideString;
+begin
+  Str := GetUTF8String(AValue);
+  QMessageBox_setDetailedText(QMessageBoxH(Widget), @Str);
+end;
+
+function TQtMessageBox.getMessageStr: WideString;
+var
+  Str: WideString;
+begin
+  QMessageBox_text(QMessageBoxH(Widget), @Str);
+  Result := UTF8Encode(Str);
+end;
+
+function TQtMessageBox.getDetailText: WideString;
+var
+  Str: WideString;
+begin
+  QMessageBox_detailedText(QMessageBoxH(Widget), @Str);
+  Result := UTF8Encode(Str);
+end;
+
+procedure TQtMessageBox.setMessageStr(const AValue: WideString);
+var
+  Str: WideString;
+begin
+  Str := GetUTF8String(AValue);
+  QMessageBox_setText(QMessageBoxH(Widget), @Str);
+end;
+
+procedure TQtMessageBox.setMsgBoxType(const AValue: QMessageBoxIcon);
+begin
+  QMessageBox_setIcon(QMessageBoxH(Widget), AValue);
+end;
+
+procedure TQtMessageBox.setTitle(const AValue: WideString);
+begin
+  if AValue <> FTitle then
+  begin
+    FTitle := GetUTF8String(AValue);
+    QMessageBox_setWindowTitle(QMessageBoxH(Widget), @FTitle);
+  end;
+end;
+
+function TQtMessageBox.CreateWidget(AParent: QWidgetH): QWidgetH;
+begin
+  Initialize(FButtons);
+  FHasPaint := False;
+  Result := QMessageBox_create(AParent);
+  QMessageBox_setWindowModality(QMessageBoxH(Result), QtApplicationModal);
+end;
+
+constructor TQtMessageBox.Create(AParent: QWidgetH);
+begin
+  FOwner := nil;
+  FCentralWidget := nil;
+  FOwnWidget := True;
+  FProps := nil;
+  LCLObject := nil;
+  FKeysToEat := [];
+  FHasPaint := False;
+  Widget := CreateWidget(AParent);
+end;
+
+destructor TQtMessageBox.Destroy;
+var
+  i: Integer;
+begin
+  for i := 0 to High(FButtons) do
+  begin
+    QMessageBox_removeButton(QMessageBoxH(Widget), FButtons[i]);
+    FButtons[i] := nil;
+  end;
+  Finalize(FButtons);
+  FButtons := nil;
+  inherited Destroy;
+end;
+
+procedure TQtMessageBox.AttachEvents;
+var
+  Method: TMethod;
+begin
+  inherited AttachEvents;
+  FMBEventHook := QObject_hook_create(Widget);
+  TEventFilterMethod(Method) := @EventFilter;
+  QObject_hook_hook_events(FMBEventHook, Method);
+end;
+
+procedure TQtMessageBox.DetachEvents;
+begin
+  QObject_hook_destroy(FMBEventHook);
+  inherited DetachEvents;
+end;
+
+function TQtMessageBox.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
+  cdecl;
+begin
+  {we'll need it later. QMessageBox uses it's own eventLoop !}
+  Result := False;
+  QEvent_accept(Event);
+end;
+
+procedure TQtMessageBox.AddButton(ABtnType: QMessageBoxStandardButton;
+  ACaption: WideString; AIsDefaultBtn: Boolean; const AEscapeBtn: Boolean);
+var
+  ABtn: QPushButtonH;
+  Str: WideString;
+  i: Integer;
+  v: QVariantH;
+begin
+  ABtn := QMessageBox_addButton(QMessageBoxH(Widget), ABtnType);
+  Str := GetUTF8String(ACaption);
+  QAbstractButton_setText(ABtn, @Str);
+
+  if AIsDefaultBtn then
+    QMessageBox_setDefaultButton(QMessageBoxH(Widget), ABtn);
+
+  if AEscapeBtn then
+    QMessageBox_setEscapeButton(QMessageBoxH(Widget), ABtn);
+
+  i := length(FButtons);
+  SetLength(FButtons, i + 1);
+
+  v := QVariant_create(Int64(PtrUInt(ABtnType)));
+  try
+    QObject_setProperty(ABtn, 'lclmsgboxbutton', v);
+  finally
+    QVariant_destroy(v);
+  end;
+
+  FButtons[i] := ABtn;
+end;
+
+function TQtMessageBox.exec: QMessageBoxStandardButton;
+var
+  ABtn: QPushButtonH;
+  v: QVariantH;
+  ok: Boolean;
+  QResult: QMessageBoxStandardButton;
+begin
+  Result := QMessageBoxNoButton;
+  QDialog_exec(QMessageBoxH(Widget));
+  ABtn := QPushButtonH(QMessageBox_clickedButton(QMessageBoxH(Widget)));
+  if ABtn <> nil then
+  begin
+    v := QVariant_create();
+    try
+      QObject_property(ABtn, v, 'lclmsgboxbutton');
+      if QVariant_isValid(v) then
+      begin
+        QResult := QVariant_toULongLong(v, @Ok);
+        if Ok then
+          Result := QResult;
+      end;
+    finally
+      QVariant_destroy(v);
+    end;
+  end;
 end;
 
 end.
