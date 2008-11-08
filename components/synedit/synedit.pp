@@ -826,7 +826,7 @@ type
     {$ELSE}
     function LogicalToPhysicalPos(p: TPoint): TPoint;
     {$ENDIF}
-    function NextWordPos{$IFDEF SYN_LAZARUS}(EndOfWord : Boolean = false){$ENDIF}: TPoint; virtual;
+    function NextWordPos{$IFDEF SYN_LAZARUS}(WordEndForDelete : Boolean = false){$ENDIF}: TPoint; virtual;
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
     procedure PasteFromClipboard;
@@ -8634,13 +8634,15 @@ begin
 end;
 {$ENDIF}
 
-function TCustomSynEdit.NextWordPos{$IFDEF SYN_LAZARUS}(EndOfWord : Boolean = false){$ENDIF}: TPoint;
+function TCustomSynEdit.NextWordPos{$IFDEF SYN_LAZARUS}(WordEndForDelete : Boolean = false){$ENDIF}: TPoint;
 var
   CX, CY, LineLen: integer;
   Line: string;
   CurIdentChars, WhiteChars: TSynIdentChars;
   {$IFDEF SYN_LAZARUS}
   LogCaret: TPoint;
+  WordBrkChars: TSynIdentChars;
+  bow : Boolean;
   {$ENDIF}
 begin
   {$IFDEF SYN_LAZARUS}
@@ -8657,9 +8659,10 @@ begin
 
     {$IFDEF SYN_LAZARUS}
     if Assigned(Highlighter) then
-      CurIdentChars := [#1..#255] - (Highlighter.WordBreakChars + TSynWhiteChars)
+      WordBrkChars := Highlighter.WordBreakChars
     else
-      CurIdentChars := [#1..#255] - (TSynWordBreakChars + TSynWhiteChars);
+      WordBrkChars := TSynWordBreakChars;
+    CurIdentChars := [#1..#255] - (WordBrkChars + TSynWhiteChars);
     WhiteChars := TSynWhiteChars + ([#1..#255] - CurIdentChars);
     {$ELSE}
     CurIdentChars:=IdentChars;
@@ -8672,17 +8675,28 @@ begin
       if CY < Lines.Count then begin
         Line := Lines[CY];
         Inc(CY);
+        {$IFDEF SYN_LAZARUS}
+        if WordEndForDelete then
+          CX := Max(1, StrScanForCharInSet(Line, 1, [#1..#255] - TSynWhiteChars))
+        else
+        {$ENDIF}
         CX := Max(1, StrScanForCharInSet(Line, 1, CurIdentChars));
       end;
     end else begin
       {$IFDEF SYN_LAZARUS}
-      if EndOfWord then begin
-        // find first "IdentChar" if next char is an "whitespace"
-        if Line[CX] in WhiteChars then
-          CX := StrScanForCharInSet(Line, CX, CurIdentChars);
-        // if "IdentChar" found find the first "WhiteSpave" behind
-        if CX > 0 then
-          CX := StrScanForCharInSet(Line, CX, WhiteChars);
+      if WordEndForDelete then begin
+        if Line[CX] in TSynWhiteChars then
+          CX := StrScanForCharInSet(Line, CX, [#1..#255] - TSynWhiteChars)
+        else begin
+          bow := (CX = 1) OR (Line[CX-1] in WhiteChars); // Cursor at BeginOfWord
+          if Line[CX] in WordBrkChars then
+            CX := StrScanForCharInSet(Line, CX, [#1..#255] - WordBrkChars)
+          else
+            CX := StrScanForCharInSet(Line, CX, [#1..#255] - CurIdentChars);
+          // Remove WitheSpaces, if Cursor was at BeginOfWord or in WordBrkchars
+          if bow and(cx > 0) then
+            CX := StrScanForCharInSet(Line, CX, [#1..#255] - TSynWhiteChars);
+        end;
       end else begin
       {$ENDIF}
       // find first "whitespace" if next char is an IdentChar
