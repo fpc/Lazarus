@@ -325,7 +325,6 @@ begin
   Bit := CFPreferencesGetAppIntegerValue(CFSTR('AppleKeyboardUIMode'),
     kCFPreferencesCurrentApplication, Valid);
 
-  DebugLn(DbgS(Bit));
   if Valid then
   begin
     if (Bit <> 0) then
