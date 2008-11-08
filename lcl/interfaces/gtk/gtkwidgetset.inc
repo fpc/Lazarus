@@ -5055,11 +5055,16 @@ const
     while (CurSelList<>nil) do begin
       TargetSelList := CurSelList^.Data;
       gtk_target_list_unref(TargetSelList^.List);
+      {$ifndef gtk1}
+      if (gtk_major_version = 2) and (gtk_minor_version > 12) and (@g_slice_free1 <> nil) then
+        g_slice_free1(SizeOf(TGtkTargetSelectionList), TargetSelList)
+      else
+      {$endif}
       g_free(TargetSelList);
       CurSelList := CurSelList^.Next;
     end;
     g_list_free(SelectionLists);
-    gtk_object_set_data (PGtkObject(Widget),gtk_selection_handler_key,GtkNil);
+    gtk_object_set_data (PGtkObject(Widget), gtk_selection_handler_key, GtkNil);
     {$IFDEF DEBUG_CLIPBOARD}
     DebugLn('  ClearTargetLists WWW END');
     {$ENDIF}

@@ -23,7 +23,7 @@ uses
   {$ifdef HasGdk2X}
   gdk2x,
   {$endif}
-  Pango;
+  Pango, dynlibs;
 
 const
   gdkdll = gdklib;
@@ -190,3 +190,6 @@ procedure gtk_file_chooser_set_do_overwrite_confirmation(chooser:PGtkFileChooser
 {$ifdef GTK_2_10}
 function gdk_screen_is_composited(screen: PGdkScreen): gboolean; cdecl; external gdklib;
 {$endif}
+var
+  glibhandle: PtrUInt = 0;
+  g_slice_free1: procedure(block_size:gsize; mem_block:gpointer); cdecl;

@@ -53,3 +53,16 @@ begin
 end;
 {$endif}
 
+procedure Initialize;
+begin
+  Pointer(g_slice_free1) := nil;
+  glibhandle := LoadLibrary(gliblib);
+  if glibhandle <> 0 then
+    Pointer(g_slice_free1) := GetProcAddress(glibhandle, 'g_slice_free1');
+end;
+
+procedure Finalize;
+begin
+  if glibhandle <> 0 then
+    FreeLibrary(glibhandle);
+end;
