@@ -239,17 +239,17 @@ begin
     for BtnIdx := 0 to ButtonCount-1 do
     begin
       case Buttons[BtnIdx] of
-        idButtonYes      : QtMessageBox.AddButton(QMessageBoxYes, rsMbYes, BtnIdx = DefaultIndex, BtnIdx = EscapeResult); //CurQBtn := QMessageBoxYes;
-        idButtonNo       : QtMessageBox.AddButton(QMessageBoxNo, rsMbNo, BtnIdx = DefaultIndex, BtnIdx = EscapeResult); // CurQBtn := QMessageBoxNo;
-        idButtonOK       : QtMessageBox.AddButton(QMessageBoxOk, rsMbOk, BtnIdx = DefaultIndex, BtnIdx = EscapeResult); // CurQBtn := CurQBtn := QMessageBoxOk;
-        idButtonCancel   : QtMessageBox.AddButton(QMessageBoxCancel, rsMbCancel, BtnIdx = DefaultIndex, BtnIdx = EscapeResult); // CurQBtn := QMessageBoxCancel;
-        idButtonAbort    : QtMessageBox.AddButton(QMessageBoxAbort, rsMbAbort, BtnIdx = DefaultIndex, BtnIdx = EscapeResult); // CurQBtn := QMessageBoxAbort;
-        idButtonRetry    : QtMessageBox.AddButton(QMessageBoxRetry, rsMbRetry, BtnIdx = DefaultIndex, BtnIdx = EscapeResult); // CurQBtn := QMessageBoxRetry;
-        idButtonIgnore   : QtMessageBox.AddButton(QMessageBoxIgnore, rsMbIgnore, BtnIdx = DefaultIndex, BtnIdx = EscapeResult); // CurQBtn := QMessageBoxIgnore;
-        idButtonNoToAll  : QtMessageBox.AddButton(QMessageBoxNoToAll, rsMbNoToAll, BtnIdx = DefaultIndex, BtnIdx = EscapeResult); // CurQBtn := QMessageBoxNoToAll;
-        idButtonYesToAll : QtMessageBox.AddButton(QMessageBoxYesToAll, rsMbYesToAll, BtnIdx = DefaultIndex, BtnIdx = EscapeResult); // CurQBtn := QMessageBoxYesToAll;
-        idButtonHelp     : QtMessageBox.AddButton(QMessageBoxHelp, rsMbHelp, BtnIdx = DefaultIndex, BtnIdx = EscapeResult); // CurQBtn := QMessageBoxHelp;
-        idButtonClose    : QtMessageBox.AddButton(QMessageBoxClose, rsMbClose, BtnIdx = DefaultIndex, BtnIdx = EscapeResult); // CurQBtn := QMessageBoxClose;
+        idButtonYes      : QtMessageBox.AddButton(QMessageBoxYes, rsMbYes, BtnIdx = DefaultIndex, BtnIdx = EscapeResult);
+        idButtonNo       : QtMessageBox.AddButton(QMessageBoxNo, rsMbNo, BtnIdx = DefaultIndex, BtnIdx = EscapeResult);
+        idButtonOK       : QtMessageBox.AddButton(QMessageBoxOk, rsMbOk, BtnIdx = DefaultIndex, BtnIdx = EscapeResult);
+        idButtonCancel   : QtMessageBox.AddButton(QMessageBoxCancel, rsMbCancel, BtnIdx = DefaultIndex, BtnIdx = EscapeResult);
+        idButtonAbort    : QtMessageBox.AddButton(QMessageBoxAbort, rsMbAbort, BtnIdx = DefaultIndex, BtnIdx = EscapeResult);
+        idButtonRetry    : QtMessageBox.AddButton(QMessageBoxRetry, rsMbRetry, BtnIdx = DefaultIndex, BtnIdx = EscapeResult);
+        idButtonIgnore   : QtMessageBox.AddButton(QMessageBoxIgnore, rsMbIgnore, BtnIdx = DefaultIndex, BtnIdx = EscapeResult);
+        idButtonNoToAll  : QtMessageBox.AddButton(QMessageBoxNoToAll, rsMbNoToAll, BtnIdx = DefaultIndex, BtnIdx = EscapeResult);
+        idButtonYesToAll : QtMessageBox.AddButton(QMessageBoxYesToAll, rsMbYesToAll, BtnIdx = DefaultIndex, BtnIdx = EscapeResult);
+        idButtonHelp     : QtMessageBox.AddButton(QMessageBoxHelp, rsMbHelp, BtnIdx = DefaultIndex, BtnIdx = EscapeResult);
+        idButtonClose    : QtMessageBox.AddButton(QMessageBoxClose, rsMbClose, BtnIdx = DefaultIndex, BtnIdx = EscapeResult);
       end;
     end;
 
