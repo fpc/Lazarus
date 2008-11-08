@@ -8,7 +8,6 @@
         <SaveClosedFiles Value="False"/>
       </Flags>
       <MainUnit Value="0"/>
-      <IconPath Value="./"/>
       <TargetFileExt Value=""/>
       <Title Value="LazReport Designer"/>
       <ActiveEditorIndexAtStart Value="2"/>
@@ -48,12 +47,12 @@
         <MinVersion Minor="1" Release="1" Valid="True"/>
       </Item5>
     </RequiredPackages>
-    <Units Count="4">
+    <Units Count="19">
       <Unit0>
         <Filename Value="calleditorwithpkg.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="calleditorwithpkg"/>
-        <CursorPos X="29" Y="10"/>
+        <CursorPos X="35" Y="6"/>
         <TopLine Value="1"/>
         <UsageCount Value="200"/>
       </Unit0>
@@ -64,53 +63,304 @@
         <ResourceBaseClass Value="Form"/>
         <ResourceFilename Value="maincalleditor.lrs"/>
         <UnitName Value="maincalleditor"/>
-        <CursorPos X="59" Y="262"/>
-        <TopLine Value="232"/>
+        <CursorPos X="21" Y="59"/>
+        <TopLine Value="46"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
       </Unit1>
       <Unit2>
-        <Filename Value="../../../printers/unix/cupsprinters.inc"/>
-        <CursorPos X="31" Y="501"/>
-        <TopLine Value="483"/>
-        <EditorIndex Value="1"/>
-        <UsageCount Value="14"/>
+        <Filename Value="../../source/lr_class.pas"/>
+        <ComponentName Value="frReportDesigner"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <ResourceFilename Value="../../source/lr_class.lrs"/>
+        <UnitName Value="LR_Class"/>
+        <CursorPos X="18" Y="8210"/>
+        <TopLine Value="8184"/>
+        <EditorIndex Value="7"/>
+        <UsageCount Value="20"/>
         <Loaded Value="True"/>
       </Unit2>
       <Unit3>
-        <Filename Value="../../../../lcl/postscriptcanvas.pas"/>
-        <UnitName Value="PostScriptCanvas"/>
-        <CursorPos X="1" Y="554"/>
-        <TopLine Value="554"/>
-        <EditorIndex Value="2"/>
-        <UsageCount Value="14"/>
+        <Filename Value="../../../../lcl/lclproc.pas"/>
+        <UnitName Value="LCLProc"/>
+        <CursorPos X="10" Y="337"/>
+        <TopLine Value="315"/>
+        <EditorIndex Value="10"/>
+        <UsageCount Value="20"/>
         <Loaded Value="True"/>
       </Unit3>
+      <Unit4>
+        <Filename Value="../../../../lcl/2/gtkwinapi.inc"/>
+        <CursorPos X="62" Y="5623"/>
+        <TopLine Value="5605"/>
+        <EditorIndex Value="11"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="../../../../lcl/include/fileutil.inc"/>
+        <CursorPos X="18" Y="80"/>
+        <TopLine Value="77"/>
+        <EditorIndex Value="12"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="../../../../lcl/postscriptcanvas.pas"/>
+        <UnitName Value="PostScriptCanvas"/>
+        <CursorPos X="27" Y="921"/>
+        <TopLine Value="902"/>
+        <EditorIndex Value="16"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="../../../../lcl/fileutil.pas"/>
+        <UnitName Value="FileUtil"/>
+        <CursorPos X="18" Y="185"/>
+        <TopLine Value="166"/>
+        <EditorIndex Value="17"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="../../../../../fpc/rtl/inc/ustringh.inc"/>
+        <CursorPos X="10" Y="99"/>
+        <TopLine Value="66"/>
+        <EditorIndex Value="13"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="../../../../../fpc/rtl/inc/systemh.inc"/>
+        <CursorPos X="3" Y="355"/>
+        <TopLine Value="344"/>
+        <EditorIndex Value="15"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="../../../../../fpc/rtl/inc/ustrings.inc"/>
+        <CursorPos X="22" Y="1954"/>
+        <TopLine Value="1946"/>
+        <EditorIndex Value="14"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="../../../../lcl/interfaces/gtk/gtkproc.inc"/>
+        <CursorPos X="39" Y="2314"/>
+        <TopLine Value="2305"/>
+        <EditorIndex Value="8"/>
+        <UsageCount Value="19"/>
+        <Loaded Value="True"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="../../../../lcl/lresources.pp"/>
+        <UnitName Value="LResources"/>
+        <CursorPos X="43" Y="5011"/>
+        <TopLine Value="4993"/>
+        <EditorIndex Value="9"/>
+        <UsageCount Value="19"/>
+        <Loaded Value="True"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="../../source/lr_view.pas"/>
+        <ComponentName Value="frPreviewForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <ResourceFilename Value="../../source/lr_view.lrs"/>
+        <UnitName Value="LR_View"/>
+        <CursorPos X="40" Y="29"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="5"/>
+        <UsageCount Value="15"/>
+        <Bookmarks Count="3">
+          <Item0 X="29" Y="485" ID="0"/>
+          <Item1 X="32" Y="853" ID="8"/>
+          <Item2 X="38" Y="370" ID="9"/>
+        </Bookmarks>
+        <Loaded Value="True"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="../../../../lcl/include/winapih.inc"/>
+        <CursorPos X="10" Y="188"/>
+        <TopLine Value="164"/>
+        <EditorIndex Value="6"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="../../../../lcl/dbgrids.pas"/>
+        <UnitName Value="DBGrids"/>
+        <CursorPos X="26" Y="278"/>
+        <TopLine Value="258"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="../../../../lcl/grids.pas"/>
+        <UnitName Value="Grids"/>
+        <CursorPos X="29" Y="1001"/>
+        <TopLine Value="981"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="../../../../lcl/controls.pp"/>
+        <UnitName Value="Controls"/>
+        <CursorPos X="66" Y="1095"/>
+        <TopLine Value="1075"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="../../../../lcl/include/control.inc"/>
+        <CursorPos X="3" Y="3153"/>
+        <TopLine Value="3148"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit18>
     </Units>
-    <JumpHistory Count="3" HistoryIndex="2">
+    <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="../../../printers/unix/cupsprinters.inc"/>
-        <Caret Line="10" Column="28" TopLine="1"/>
+        <Filename Value="../../../../lcl/grids.pas"/>
+        <Caret Line="5832" Column="17" TopLine="5811"/>
       </Position1>
       <Position2>
-        <Filename Value="../../../printers/unix/cupsprinters.inc"/>
-        <Caret Line="13" Column="39" TopLine="1"/>
+        <Filename Value="../../../../lcl/grids.pas"/>
+        <Caret Line="5835" Column="37" TopLine="5814"/>
       </Position2>
       <Position3>
-        <Filename Value="../../../printers/unix/cupsprinters.inc"/>
-        <Caret Line="501" Column="31" TopLine="483"/>
+        <Filename Value="../../../../lcl/grids.pas"/>
+        <Caret Line="5840" Column="29" TopLine="5819"/>
       </Position3>
+      <Position4>
+        <Filename Value="../../../../lcl/grids.pas"/>
+        <Caret Line="7943" Column="19" TopLine="7924"/>
+      </Position4>
+      <Position5>
+        <Filename Value="../../../../lcl/grids.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position5>
+      <Position6>
+        <Filename Value="../../../../lcl/grids.pas"/>
+        <Caret Line="845" Column="29" TopLine="824"/>
+      </Position6>
+      <Position7>
+        <Filename Value="../../../../lcl/grids.pas"/>
+        <Caret Line="1003" Column="29" TopLine="982"/>
+      </Position7>
+      <Position8>
+        <Filename Value="../../../../lcl/grids.pas"/>
+        <Caret Line="1691" Column="23" TopLine="1670"/>
+      </Position8>
+      <Position9>
+        <Filename Value="../../../../lcl/grids.pas"/>
+        <Caret Line="1704" Column="25" TopLine="1683"/>
+      </Position9>
+      <Position10>
+        <Filename Value="../../../../lcl/grids.pas"/>
+        <Caret Line="1949" Column="21" TopLine="1928"/>
+      </Position10>
+      <Position11>
+        <Filename Value="../../../../lcl/grids.pas"/>
+        <Caret Line="1955" Column="21" TopLine="1934"/>
+      </Position11>
+      <Position12>
+        <Filename Value="../../../../lcl/grids.pas"/>
+        <Caret Line="2899" Column="21" TopLine="2878"/>
+      </Position12>
+      <Position13>
+        <Filename Value="../../../../lcl/grids.pas"/>
+        <Caret Line="2910" Column="21" TopLine="2889"/>
+      </Position13>
+      <Position14>
+        <Filename Value="../../../../lcl/grids.pas"/>
+        <Caret Line="4150" Column="17" TopLine="4129"/>
+      </Position14>
+      <Position15>
+        <Filename Value="../../../../lcl/grids.pas"/>
+        <Caret Line="4739" Column="21" TopLine="4718"/>
+      </Position15>
+      <Position16>
+        <Filename Value="../../../../lcl/grids.pas"/>
+        <Caret Line="5142" Column="17" TopLine="5121"/>
+      </Position16>
+      <Position17>
+        <Filename Value="../../../../lcl/grids.pas"/>
+        <Caret Line="5518" Column="21" TopLine="5497"/>
+      </Position17>
+      <Position18>
+        <Filename Value="../../../../lcl/grids.pas"/>
+        <Caret Line="5830" Column="37" TopLine="5809"/>
+      </Position18>
+      <Position19>
+        <Filename Value="../../../../lcl/grids.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position19>
+      <Position20>
+        <Filename Value="../../../../lcl/grids.pas"/>
+        <Caret Line="844" Column="29" TopLine="824"/>
+      </Position20>
+      <Position21>
+        <Filename Value="../../../../lcl/grids.pas"/>
+        <Caret Line="1003" Column="29" TopLine="982"/>
+      </Position21>
+      <Position22>
+        <Filename Value="../../../../lcl/grids.pas"/>
+        <Caret Line="1691" Column="23" TopLine="1670"/>
+      </Position22>
+      <Position23>
+        <Filename Value="../../../../lcl/grids.pas"/>
+        <Caret Line="1704" Column="25" TopLine="1683"/>
+      </Position23>
+      <Position24>
+        <Filename Value="../../../../lcl/grids.pas"/>
+        <Caret Line="1949" Column="21" TopLine="1928"/>
+      </Position24>
+      <Position25>
+        <Filename Value="../../../../lcl/grids.pas"/>
+        <Caret Line="1955" Column="21" TopLine="1934"/>
+      </Position25>
+      <Position26>
+        <Filename Value="../../../../lcl/grids.pas"/>
+        <Caret Line="2898" Column="21" TopLine="2878"/>
+      </Position26>
+      <Position27>
+        <Filename Value="../../../../lcl/grids.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position27>
+      <Position28>
+        <Filename Value="../../../../lcl/grids.pas"/>
+        <Caret Line="846" Column="30" TopLine="826"/>
+      </Position28>
+      <Position29>
+        <Filename Value="../../../../lcl/grids.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position29>
+      <Position30>
+        <Filename Value="../../../../lcl/grids.pas"/>
+        <Caret Line="849" Column="49" TopLine="824"/>
+      </Position30>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="5"/>
+    <Version Value="8"/>
     <SearchPaths>
       <SrcPath Value="$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)/"/>
     </SearchPaths>
-    <CodeGeneration>
-      <Generate Value="Faster"/>
-    </CodeGeneration>
+    <Parsing>
+      <SyntaxOptions>
+        <CStyleOperator Value="False"/>
+      </SyntaxOptions>
+    </Parsing>
     <Other>
       <CompilerPath Value="$(CompPath)"/>
     </Other>

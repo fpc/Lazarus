@@ -7399,7 +7399,7 @@ begin
       {$IFDEF EnabledGtkThreading}
       g_idle_add_full(G_PRIORITY_DEFAULT,TGSourceFunc(@DummyFuncToWakeUpGtkLoop),nil,nil);
       {$ELSE}
-      DebugLn(['TGtkWidgetSet.PostMessage ToDo: wake up gtk']);
+      //DebugLn(['TGtkWidgetSet.PostMessage ToDo: wake up gtk']);
       {$ENDIF}
     end;
   finally

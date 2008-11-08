@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for DBFLaz 0.1.1
 #
-#   This file was generated on 25-9-2008
+#   This file was generated on 07-10-08
 
 [package]
 name=dbflaz

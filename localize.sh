@@ -30,16 +30,8 @@ fi
 RSTFILES=(
   ". lazarusidestrconsts lazaruside"
   "ideintf objinspstrconsts"
-  "components/codetools codetoolsstrconsts"
   "components/synedit syneditstrconst synedit"
   "components/synedit synmacrorecorder"
-  "components/synedit synhighlighterunixshellscript"
-  "components/cgi cgimodules"
-  "components/messagecomposer messagecomposer"  
-  "components/printers/design ideprinting"
-  "components/projecttemplates projecttemplates"
-  "components/projecttemplates frmtemplatevariables"
-  "components/projecttemplates idetemplateproject"
   "lcl lclstrconsts"
 )  
 
