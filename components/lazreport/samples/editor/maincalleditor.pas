@@ -108,7 +108,7 @@ var
 
 implementation
 
-uses gettext,translations,lclproc;
+uses gettext,translations;
 
 resourcestring
   cerOpenReport     = 'Open report';
@@ -223,9 +223,7 @@ end;
 
 procedure TfrmMain.accPreviewReportExecute(Sender: TObject);
 begin
-  DataSource1.Enabled:=false;
   TheReport.ShowReport;
-  DataSource1.Enabled:=true;
 end;
 
 procedure TfrmMain.accPrintGridExecute(Sender: TObject);
@@ -267,32 +265,9 @@ begin
     SetIndex('');
 end;
 
-function dbgwstr(w: widestring):string;
-var
-  p: pchar;
-  i: integer;
-begin
-  p := @w[1];
-  i := length(w)*2;
-
-  result := '';
-
-  while i>0 do begin
-    if p^ in [#0..#31,#128..#255] then
-      result := result + '#'+IntToStr(ord(p^))
-    else
-      result := result + p^;
-
-    inc(p);
-    dec(i);
-  end;
-end;
-
 procedure TfrmMain.frmMainCreate(Sender: TObject);
 var
   i: integer;
-  w: widestring;
-  s: string;
 begin
 
   UpdateAppTranslation;
@@ -310,12 +285,6 @@ begin
   
   if FileExistsUTF8(ExtractFilePath(ParamStrUTF8(0))+'salida.lrf') then
     OpenReport(ExtractFilePath(ParamStrUTF8(0))+'salida.lrf');
-
-  s := 'LazReport/Title/Value';
-  SetLength(W, UTF8Length(s));
-  UTF8ToUnicode(PUnicodeChar(w), pchar(s), UTF8Length(s)+1);
-
-  WriteLn('W Len=',Length(W),' data="',dbgwstr(w),'"');
 end;
 
 procedure TfrmMain.SetIndex(const aIndexName: string);

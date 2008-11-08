@@ -1,16 +1,13 @@
-# translation of calleditorwithpkg.po to Español
-# Jesus Reyes Aguilar <jesusrmx@yahoo.com.mx>, 2008.
 msgid ""
 msgstr ""
-"Project-Id-Version: calleditorwithpkg\n"
+"Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-10-08 16:07-0500\n"
-"Last-Translator: Jesus Reyes Aguilar <jesusrmx@yahoo.com.mx>\n"
-"Language-Team: Español <es@li.org>\n"
+"PO-Revision-Date: 2008-04-22 03:05-0600\n"
+"Last-Translator: Jesus Reyes A. <jesusrmx@yahoo.com.mx>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
 
 #: maincalleditor.ceractivereport
 msgid "Active report: %s"

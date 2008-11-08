@@ -10,11 +10,11 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: cgimodules.serrnomainmodule
-msgid "No CGI datamodule to handle CGI request."
-msgstr "Nėra CGI „DataModule“ kad būtų galima apdoroti CGI užklausą."
-
-#: cgimodules.serrnorequesthandler
+#: cgimodules:serrnorequesthandler
 msgid "%s: No CGI request handler set."
 msgstr "%s: nenurodyta CGI užklausų tvarkyklė."
+
+#: cgimodules:serrnomainmodule
+msgid "No CGI datamodule to handle CGI request."
+msgstr "Nėra CGI „DataModule“ kad būtų galima apdoroti CGI užklausą."
 

@@ -3,27 +3,28 @@ object frmMain: TfrmMain
   Height = 405
   Top = 127
   Width = 573
+  HorzScrollBar.Page = 572
+  VertScrollBar.Page = 384
   ActiveControl = btnCallEditor
   Caption = 'LazReport Test Suite'
-  ClientHeight = 386
+  ClientHeight = 385
   ClientWidth = 573
   Menu = MainMenu1
   OnCreate = frmMainCreate
-  ParentFont = False
   ShowHint = True
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.25'
   object lblIndex: TLabel
     Left = 12
-    Height = 19
+    Height = 14
     Top = 44
-    Width = 6
+    Width = 1
     ParentColor = False
   end
   object lblExpr: TLabel
     Left = 235
-    Height = 19
+    Height = 14
     Top = 44
-    Width = 6
+    Width = 1
     ParentColor = False
   end
   object btnCallEditor: TButton
@@ -36,30 +37,16 @@ object frmMain: TfrmMain
     TabOrder = 0
   end
   object dbGrid1: TDBGrid
-    Height = 299
+    Height = 294
     Top = 68
     Width = 573
     Align = alBottom
     Anchors = [akTop, akLeft, akRight, akBottom]
     Color = clWhite
-    Columns = <    
-      item
-        FieldName = 'AUTHOR'
-      end    
-      item
-        FieldName = 'COMPANY'
-      end    
-      item
-        ReadOnly = True
-        FieldName = 'PRICE'
-      end    
-      item
-        FieldName = 'COUNTRY'
-      end>
     DataSource = Datasource1
     FixedColor = clBtnFace
     FixedHotColor = cl3DLight
-    Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit, dgMultiselect]
+    Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
     OptionsExtra = [dgeAutoColumns, dgeCheckboxColumn]
     ParentColor = False
     TabOrder = 5
@@ -84,8 +71,8 @@ object frmMain: TfrmMain
     TabOrder = 2
   end
   object sbar: TStatusBar
-    Height = 19
-    Top = 367
+    Height = 23
+    Top = 362
     Width = 573
     Panels = <    
       item
@@ -122,10 +109,11 @@ object frmMain: TfrmMain
   end
   object comboIndex: TComboBox
     Left = 76
-    Height = 23
+    Height = 21
     Top = 40
     Width = 148
-    MaxLength = 65535
+    AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+    ItemHeight = 13
     OnSelect = comboIndexSelect
     TabOrder = 8
   end
@@ -139,36 +127,8 @@ object frmMain: TfrmMain
     }
   end
   object Dbf1: TDbf
-    FilePath = '/home/prog/lazarus/components/lazreport/samples/editor/db/'
-    IndexDefs = <    
-      item
-        IndexFile = 'BYCOMPANY'
-        SortField = 'COMPANY'
-        Options = [ixExpression]
-      end    
-      item
-        IndexFile = 'BYCOUNTRY'
-        SortField = 'COUNTRY'
-        Options = [ixExpression]
-      end    
-      item
-        IndexFile = 'BYYEAR'
-        SortField = 'YEAR'
-        Options = [ixExpression]
-      end    
-      item
-        IndexFile = 'BYAUTHORYE'
-        SortField = 'AUTHOR+STR(YEAR,10)'
-        Options = [ixExpression]
-      end    
-      item
-        IndexFile = 'BYCNTYEAR'
-        SortField = 'COUNTRY+STR(YEAR,10)'
-        Options = [ixExpression]
-      end>
-    TableName = 'disco.dbf'
+    IndexDefs = <>
     TableLevel = 3
-    Active = True
     left = 128
     top = 72
   end
