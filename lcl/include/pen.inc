@@ -112,6 +112,7 @@ begin
   FEndCap := pecRound;
   FJoinStyle := pjsRound;
   FGeometric := False;
+  FPattern := nil;
   inherited SetWidth(1);
   inherited SetStyle(psSolid);
   inherited SetMode(pmCopy);
@@ -155,6 +156,33 @@ begin
   end
   else
     inherited Assign(Source);
+end;
+
+function TPen.GetPattern: TPenPattern;
+begin
+  Result := FPattern;
+end;
+
+procedure TPen.SetPattern(APattern: TPenPattern);
+
+  function PatternsDiffer: Boolean;
+  var
+    l1, l2, m: integer;
+  begin
+    l1 := Length(FPattern);
+    l2 := Length(APattern);
+    m := min(l1, l2);
+    Result := (l1 <> l2) or
+              ((m > 0) and not CompareMem(@APattern[0], @FPattern[0], m * SizeOf(LongWord)));
+  end;
+
+begin
+  if PatternsDiffer then
+  begin
+    FreeReference;
+    FPattern := APattern;
+    Changed;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -271,7 +299,10 @@ begin
       ALogBrush.lbStyle := AExtPen.elpBrushStyle;
       ALogBrush.lbColor := AExtPen.elpColor;
       ALogBrush.lbHatch := AExtPen.elpHatch;
-      FReference._lclHandle := TLCLHandle(ExtCreatePen(AExtPen.elpPenStyle, AExtPen.elpWidth, ALogBrush, 0, nil));
+      if (Style = psPattern) and (Length(FPattern) > 0) then
+        FReference._lclHandle := TLCLHandle(ExtCreatePen(AExtPen.elpPenStyle, AExtPen.elpWidth, ALogBrush, Length(FPattern), @FPattern[0]))
+      else
+        FReference._lclHandle := TLCLHandle(ExtCreatePen(AExtPen.elpPenStyle, AExtPen.elpWidth, ALogBrush, 0, nil));
     end;
     PenResourceCache.AddResource(FReference.Handle, @AExtPen);
   end;

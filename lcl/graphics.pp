@@ -550,6 +550,8 @@ type
     pjsMiter
   );
 
+  TPenPattern = array of LongWord;
+
   TPenHandleCache = class(TBlockResourceCache)
   protected
     procedure RemoveItem(Item: TResourceCacheItem); override;
@@ -563,6 +565,7 @@ type
     FEndCap: TPenEndCap;
     FGeometric: Boolean;
     FJoinStyle: TPenJoinStyle;
+    FPattern: TPenPattern;
     FPenHandleCached: boolean;
     FReference: TWSPenReference;
     procedure FreeReference;
@@ -589,6 +592,9 @@ type
     procedure Assign(Source: TPersistent); override;
     property Handle: HPEN read GetHandle write SetHandle; deprecated;
     property Reference: TWSPenReference read GetReference;
+
+    function GetPattern: TPenPattern;
+    procedure SetPattern(APattern: TPenPattern); reintroduce;
   published
     property Color: TColor read FColor write SetColor default clBlack;
     property Geometric: Boolean read FGeometric write SetGeometric default False;
