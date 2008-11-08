@@ -116,11 +116,6 @@ type
     RightToLeft: Boolean;    //For RightToLeft text reading (Text Direction)
   end;
 
-type
-  TPenStyle = TFPPenStyle;
-  TPenMode = TFPPenMode;
-  TBrushStyle = TFPBrushStyle;
-
 const
   psSolid = FPCanvas.psSolid;
   psDash = FPCanvas.psDash;
@@ -538,6 +533,23 @@ type
 
   { TPen }
 
+  TPenStyle = TFPPenStyle;
+  TPenMode = TFPPenMode;
+
+  // pen end caps. valid only for geometric pens
+  TPenEndCap = (
+    pecRound,
+    pecSquare,
+    pecFlat
+  );
+
+  // join style. valid only for geometric pens
+  TPenJoinStyle = (
+    pjsRound,
+    pjsBevel,
+    pjsMiter
+  );
+
   TPenHandleCache = class(TBlockResourceCache)
   protected
     procedure RemoveItem(Item: TResourceCacheItem); override;
@@ -548,6 +560,9 @@ type
   TPen = class(TFPCustomPen)
   private
     FColor: TColor;
+    FEndCap: TPenEndCap;
+    FGeometric: Boolean;
+    FJoinStyle: TPenJoinStyle;
     FPenHandleCached: boolean;
     FReference: TWSPenReference;
     procedure FreeReference;
@@ -562,6 +577,9 @@ type
     procedure SetColor(const NewColor: TColor; const NewFPColor: TFPColor); virtual;
     procedure SetFPColor(const AValue: TFPColor); override;
     procedure SetColor(Value: TColor);
+    procedure SetEndCap(const AValue: TPenEndCap);
+    procedure SetGeometric(const AValue: Boolean);
+    procedure SetJoinStyle(const AValue: TPenJoinStyle);
     procedure SetMode(Value: TPenMode); override;
     procedure SetStyle(Value: TPenStyle); override;
     procedure SetWidth(value: Integer); override;
@@ -573,12 +591,17 @@ type
     property Reference: TWSPenReference read GetReference;
   published
     property Color: TColor read FColor write SetColor default clBlack;
+    property Geometric: Boolean read FGeometric write SetGeometric default False;
+    property EndCap: TPenEndCap read FEndCap write SetEndCap default pecRound;
+    property JoinStyle: TPenJoinStyle read FJoinStyle write SetJoinStyle default pjsRound;
     property Mode default pmCopy;
     property Style default psSolid;
     property Width default 1;
   end;
 
   { TBrush }
+
+  TBrushStyle = TFPBrushStyle;
 
   TBrushHandleCache = class(TBlockResourceCache)
   protected

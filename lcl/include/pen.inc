@@ -29,7 +29,7 @@ end;
 
 constructor TPenHandleCache.Create;
 begin
-  inherited Create(SizeOf(TLogPen));
+  inherited Create(SizeOf(TExtLogPen));
 end;
 
 { TPen }
@@ -109,6 +109,9 @@ constructor TPen.Create;
 begin
   inherited Create;
   DelayAllocate := True;
+  FEndCap := pecRound;
+  FJoinStyle := pjsRound;
+  FGeometric := False;
   inherited SetWidth(1);
   inherited SetStyle(psSolid);
   inherited SetMode(pmCopy);
@@ -137,13 +140,18 @@ end;
   Copies the source pen to itself
  ------------------------------------------------------------------------------}
 procedure TPen.Assign(Source : Tpersistent);
+var
+  APen: TPen absolute Source;
 begin
   if Source is TPen then
   begin
-    Width := TPen(Source).Width;
-    SetColor(TPen(Source).Color, TFPCanvasHelper(Source).FPColor);
-    Style := TPen(Source).Style;
-    Mode := TPen(Source).Mode;
+    Width := APen.Width;
+    SetColor(APen.Color, TFPCanvasHelper(Source).FPColor);
+    Style := APen.Style;
+    Mode := APen.Mode;
+    Geometric := APen.Geometric;
+    JoinStyle := APen.JoinStyle;
+    EndCap := APen.EndCap;
   end
   else
     inherited Assign(Source);
@@ -163,6 +171,16 @@ begin
   FreeReference;
   FReference._lclHandle := TLCLHandle(Value);
   Changed;
+end;
+
+procedure TPen.SetJoinStyle(const AValue: TPenJoinStyle);
+begin
+  if JoinStyle <> AValue then
+  begin
+    FreeReference;
+    FJoinStyle := AValue;
+    Changed;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -185,36 +203,99 @@ end;
 
 procedure TPen.ReferenceNeeded;
 const
-  PEN_STYLES: array[TPenStyle] of Word = (
-    ps_Solid, ps_Dash, ps_Dot, ps_DashDot, ps_DashDotDot, ps_insideFrame,
-    ps_Solid,{ ToDo ps_Pattern,}
-    ps_NULL
-    );
+  PEN_STYLES: array[TPenStyle] of DWord = (
+ { psSolid       } PS_SOLID,
+ { psDash        } PS_DASH,
+ { psDot         } PS_DOT,
+ { psDashDot     } PS_DASHDOT,
+ { psDashDotDot  } PS_DASHDOTDOT,
+ { psinsideFrame } PS_INSIDEFRAME,
+ { psPattern     } PS_USERSTYLE,
+ { psClear       } PS_NULL
+  );
+
+  PEN_GEOMETRIC: array[Boolean] of DWord = (
+  { false }  PS_COSMETIC,
+  { true  }  PS_GEOMETRIC
+  );
+
+  PEN_ENDCAP: array[TPenEndCap] of DWord = (
+  { pecRound  } PS_ENDCAP_ROUND,
+  { pecSquare } PS_ENDCAP_SQUARE,
+  { pecFlat   } PS_ENDCAP_FLAT
+  );
+
+  PEN_JOIN: array[TPenJoinStyle] of DWord = (
+  { pjsRound } PS_JOIN_ROUND,
+  { pjsBevel } PS_JOIN_BEVEL,
+  { pjsMiter } PS_JOIN_MITER
+  );
 var
-  LogPen: TLogPen;
+  ALogPen: TLogPen;
+  AExtPen: TExtLogPen;
+  ALogBrush: TLogBrush;
   CachedPen: TBlockResourceCacheDescriptor;
 begin
   if FReference.Allocated then Exit;
 
-  FillChar(LogPen, SizeOf(LogPen), 0);
-  with LogPen do
+  FillChar(AExtPen, SizeOf(AExtPen), 0);
+  with AExtPen do
   begin
-    lopnStyle := PEN_STYLES[Style];
-    lopnWidth.X := Width;
-    lopnColor := FColor;
+    elpPenStyle := PEN_STYLES[Style] or PEN_GEOMETRIC[Geometric];
+    if Geometric then
+      elpPenStyle := elpPenStyle or PEN_ENDCAP[EndCap] or PEN_JOIN[JoinStyle];
+    elpWidth := Width;
+    elpBrushStyle := BS_SOLID;
+    elpColor := FColor;
   end;
 
-  CachedPen := PenResourceCache.FindDescriptor(@LogPen);
+  CachedPen := PenResourceCache.FindDescriptor(@AExtPen);
   if CachedPen <> nil then
   begin
     CachedPen.Item.IncreaseRefCount;
     FReference._lclHandle := CachedPen.Item.Handle;
   end else
   begin
-    FReference._lclHandle := TLCLHandle(CreatePenIndirect(LogPen));
-    PenResourceCache.AddResource(FReference.Handle, @LogPen);
+    // choose which function to use: CreatePenIndirect or ExtCreatePen
+    if ((AExtPen.elpPenStyle and PS_STYLE_MASK) = AExtPen.elpPenStyle) and (AExtPen.elpPenStyle <> PS_USERSTYLE) then
+    begin
+      // simple pen
+      ALogPen.lopnStyle := AExtPen.elpPenStyle;
+      ALogPen.lopnWidth := Point(AExtPen.elpWidth, 0);
+      ALogPen.lopnColor := AExtPen.elpColor;
+      FReference._lclHandle := TLCLHandle(CreatePenIndirect(ALogPen));
+    end
+    else
+    begin
+      // extended pen
+      ALogBrush.lbStyle := AExtPen.elpBrushStyle;
+      ALogBrush.lbColor := AExtPen.elpColor;
+      ALogBrush.lbHatch := AExtPen.elpHatch;
+      FReference._lclHandle := TLCLHandle(ExtCreatePen(AExtPen.elpPenStyle, AExtPen.elpWidth, ALogBrush, 0, nil));
+    end;
+    PenResourceCache.AddResource(FReference.Handle, @AExtPen);
   end;
   FPenHandleCached := True;
+end;
+
+procedure TPen.SetEndCap(const AValue: TPenEndCap);
+begin
+  if EndCap <> AValue then
+  begin
+    FreeReference;
+    FEndCap := AValue;
+    Changed;
+  end;
+end;
+
+procedure TPen.SetGeometric(const AValue: Boolean);
+begin
+  if Geometric <> AValue then
+  begin
+    FreeReference;
+    FGeometric := AValue;
+    Changed;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -252,11 +333,16 @@ begin
 end;
 
 procedure TPen.DoCopyProps(From: TFPCanvasHelper);
+var
+  APen: TPen absolute From;
 begin
   if From is TPen then
   begin
     FreeReference;
     inherited DoCopyProps(From);
+    FGeometric := APen.Geometric;
+    FEndCap := APen.EndCap;
+    FJoinStyle := APen.JoinStyle;
     //TODO: query new parameters
     Changed;
   end else
