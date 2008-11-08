@@ -32,9 +32,9 @@ uses
 type
   TColorPalette = (cpDefault, cpFull);
 
-  { TColorBox }
+  { TCustomColorBox }
 
-  TColorBox = class(TCustomComboBox)
+  TCustomColorBox = class(TCustomComboBox)
   private
     FPalette: TColorPalette;
     function GetColor(Index : Integer): TColor;
@@ -47,7 +47,15 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     procedure SetColorList;
+
     property Colors[Index : Integer] : TColor Read GetColor;
+    property Palette: TColorPalette read FPalette write SetPalette;
+    property Selected: TColor read GetSelected write SetSelected;
+  end;
+
+  { TColorBox }
+
+  TColorBox = class(TCustomColorBox)
   published
     property Align;
     property Anchors;
@@ -69,14 +77,14 @@ type
     property Items;
     property ItemWidth;
     property MaxLength;
-    property Palette: TColorPalette read FPalette write SetPalette;
+    property Palette;
     property ParentColor;
     property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
     property ReadOnly;
-    property Selected: TColor read GetSelected write SetSelected;
+    property Selected;
     property ShowHint;
     property Sorted;
     property TabOrder;
@@ -108,9 +116,9 @@ type
     property OnUTF8KeyPress;
   end;
 
-  { TColorListBox }
+  { TCustomColorListBox }
 
-  TColorListBox = class(TCustomListBox)
+  TCustomColorListBox = class(TCustomListBox)
   private
     FPalette: TColorPalette;
     function GetColor(Index : Integer): TColor;
@@ -123,8 +131,15 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     procedure SetColorList;
+
     property Colors[Index : Integer] : TColor Read GetColor;
     property Selected: TColor read GetSelected write SetSelected;
+    property Palette: TColorPalette read FPalette write SetPalette;
+  end;
+
+  { TColorListBox }
+
+  TColorListBox = class(TCustomColorListBox)
   published
     property Align;
     property Anchors;
@@ -142,7 +157,7 @@ type
     property ItemHeight;
     property Items;
     property MultiSelect;
-    property Palette: TColorPalette read FPalette write SetPalette;
+    property Palette;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -197,16 +212,17 @@ procedure Register;
 begin
   RegisterComponents('Additional', [TColorBox, TColorListBox]);
 end;
+
 {------------------------------------------------------------------------------
-  Method:   TColorBox.Create
+  Method:   TCustomColorBox.Create
   Params:   AOwner
   Returns:  Nothing
 
-  Use Create to create an instance of TColorBox and initialize all properties
+  Use Create to create an instance of TCustomColorBox and initialize all properties
   and variables.
 
  ------------------------------------------------------------------------------}
-constructor TColorBox.Create(AOwner: TComponent);
+constructor TCustomColorBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
@@ -217,14 +233,14 @@ begin
   Style := csOwnerDrawFixed;
 end;
 {------------------------------------------------------------------------------
-  Method:   TColorBox.GetSelected
+  Method:   TCustomColorBox.GetSelected
   Params:   None
   Returns:  TColor
 
   Use GetSelected to convert the item selected into a system color.
 
  ------------------------------------------------------------------------------}
-function TColorBox.GetSelected: TColor;
+function TCustomColorBox.GetSelected: TColor;
 begin
   Result := 0;
   if ItemIndex >= 0 then
@@ -232,7 +248,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:   TColorBox.GetColor
+  Method:   TCustomColorBox.GetColor
   Params:   Index
   Returns:  Color at position Index
 
@@ -240,14 +256,14 @@ end;
 
  ------------------------------------------------------------------------------}
 
-function TColorBox.GetColor(Index : Integer): TColor;
+function TCustomColorBox.GetColor(Index : Integer): TColor;
 begin
   if not IdentToColor(Items[Index], Result) then
     Result := clNone;
 end;
 
 {------------------------------------------------------------------------------
-  Method:   TColorBox.SetSelected
+  Method:   TCustomColorBox.SetSelected
   Params:   Value
   Returns:  Nothing
 
@@ -255,7 +271,7 @@ end;
   from code.
 
  ------------------------------------------------------------------------------}
-procedure TColorBox.SetSelected(Value: TColor);
+procedure TCustomColorBox.SetSelected(Value: TColor);
 var
   c: integer;
   selColor: TColor;
@@ -270,7 +286,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:   TColorBox.SetPalette
+  Method:   TCustomColorBox.SetPalette
   Params:   Value
   Returns:  Nothing
 
@@ -278,7 +294,7 @@ end;
   based on the type of palette.
 
  ------------------------------------------------------------------------------}
-procedure TColorBox.SetPalette(Value: TColorPalette);
+procedure TCustomColorBox.SetPalette(Value: TColorPalette);
 begin
   if Value <> FPalette then
   begin
@@ -287,7 +303,7 @@ begin
   end;
 end;
 {------------------------------------------------------------------------------
-  Method:   TColorBox.SetStyle
+  Method:   TCustomColorBox.SetStyle
   Params:   Value
   Returns:  Nothing
 
@@ -295,12 +311,12 @@ end;
   csOwnerDrawFixed.
 
  ------------------------------------------------------------------------------}
-procedure TColorBox.SetStyle(Value: TComboBoxStyle);
+procedure TCustomColorBox.SetStyle(Value: TComboBoxStyle);
 begin
   inherited SetStyle(csOwnerDrawFixed);
 end;
 {------------------------------------------------------------------------------
-  Method:   TColorBox.DrawItem
+  Method:   TCustomColorBox.DrawItem
   Params:   Index, Rect, State
   Returns:  Nothing
 
@@ -310,7 +326,7 @@ end;
   reset to their original values.
 
  ------------------------------------------------------------------------------}
-procedure TColorBox.DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState);
+procedure TCustomColorBox.DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState);
 var
   r: TRect;
   BrushColor: TColor;
@@ -341,11 +357,11 @@ begin
   r := Rect;
   r.left := r.left + 20;
   
-  //DebugLn('TColorBox.DrawItem ',dbgs(Index),' ',dbgs(r),' ',dbgs(odPainted in State),' ',dbgs(Assigned(OndrawItem)));
+  //DebugLn('TCustomColorBox.DrawItem ',dbgs(Index),' ',dbgs(r),' ',dbgs(odPainted in State),' ',dbgs(Assigned(OndrawItem)));
   inherited DrawItem(Index, r, State);
 end;
 {------------------------------------------------------------------------------
-  Method:   TColorBox.SetColorList
+  Method:   TCustomColorBox.SetColorList
   Params:   None
   Returns:  Nothing
 
@@ -353,10 +369,10 @@ end;
   entries. Based on the value of the Palette property.
 
  ------------------------------------------------------------------------------}
-procedure TColorBox.SetColorList;
+procedure TCustomColorBox.SetColorList;
 var
   c: Longint;
-  s: ANSIString;
+  s: AnsiString;
   m: TIdentMapEntry;
 begin
   with Items do
@@ -365,14 +381,15 @@ begin
 
     //add palettes as desired
     case Palette of
-      cpFull : begin
-                 c := 0;
-                 while IdentEntry(c, m) do
-                 begin
-                   Add(m.Name);
-                   Inc(c);
-                 end;
-               end;
+      cpFull :
+        begin
+          c := 0;
+          while IdentEntry(c, m) do
+          begin
+            Add(m.Name);
+            Inc(c);
+          end;
+        end;
       else
       begin
         for c := 0 to High(ColorDefault) do
@@ -383,15 +400,15 @@ begin
 end;
 {------------------------------------------------------------------------------}
 {------------------------------------------------------------------------------
-  Method:   TColorListBox.Create
+  Method:   TCustomColorListBox.Create
   Params:   AOwner
   Returns:  Nothing
 
-  Use Create to create an instance of TColorListBox and initialize all properties
+  Use Create to create an instance of TCustomColorListBox and initialize all properties
   and variables.
 
  ------------------------------------------------------------------------------}
-constructor TColorListBox.Create(AOwner: TComponent);
+constructor TCustomColorListBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
@@ -402,14 +419,14 @@ begin
   Style := lbOwnerDrawFixed;
 end;
 {------------------------------------------------------------------------------
-  Method:   TColorListBox.GetSelected
+  Method:   TCustomColorListBox.GetSelected
   Params:   None
   Returns:  TColor
 
   Use GetSelected to convert the item selected into a system color.
 
  ------------------------------------------------------------------------------}
-function TColorListBox.GetSelected: TColor;
+function TCustomColorListBox.GetSelected: TColor;
 begin
   Result := 0;
   if ItemIndex >= 0 then
@@ -418,21 +435,21 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:   TColorListBox.GetColor
+  Method:   TCustomColorListBox.GetColor
   Params:   Index
   Returns:  Color at position Index
 
   Used as read procedure from Colors property.
 
  ------------------------------------------------------------------------------}
-function TColorListBox.GetColor(Index : Integer): TColor;
+function TCustomColorListBox.GetColor(Index : Integer): TColor;
 begin
-  if Not IdentToColor(Items[Index],Result) then
+  if not IdentToColor(Items[Index],Result) then
     Result:=clNone;
 end;
 
 {------------------------------------------------------------------------------
-  Method:   TColorListBox.SetSelected
+  Method:   TCustomColorListBox.SetSelected
   Params:   Value
   Returns:  Nothing
 
@@ -440,7 +457,7 @@ end;
   from code.
 
  ------------------------------------------------------------------------------}
-procedure TColorListBox.SetSelected(Value: TColor);
+procedure TCustomColorListBox.SetSelected(Value: TColor);
 var
   c: integer;
   i: Longint;
@@ -453,7 +470,7 @@ begin
         ItemIndex := c;
 end;
 {------------------------------------------------------------------------------
-  Method:   TColorListBox.SetPalette
+  Method:   TCustomColorListBox.SetPalette
   Params:   Value
   Returns:  Nothing
 
@@ -461,7 +478,7 @@ end;
   based on the type of palette.
 
  ------------------------------------------------------------------------------}
-procedure TColorListBox.SetPalette(Value: TColorPalette);
+procedure TCustomColorListBox.SetPalette(Value: TColorPalette);
 begin
   if Value <> FPalette then
   begin
@@ -470,7 +487,7 @@ begin
   end;
 end;
 {------------------------------------------------------------------------------
-  Method:   TColorListBox.SetStyle
+  Method:   TCustomColorListBox.SetStyle
   Params:   Value
   Returns:  Nothing
 
@@ -478,12 +495,12 @@ end;
   lbOwnerDrawFixed.
 
  ------------------------------------------------------------------------------}
-procedure TColorListBox.SetStyle(Value: TListBoxStyle);
+procedure TCustomColorListBox.SetStyle(Value: TListBoxStyle);
 begin
   inherited SetStyle(lbOwnerDrawFixed);
 end;
 {------------------------------------------------------------------------------
-  Method:   TColorListBox.DrawItem
+  Method:   TCustomColorListBox.DrawItem
   Params:   Index, Rect, State
   Returns:  Nothing
 
@@ -493,7 +510,7 @@ end;
   reset to their original values.
 
  ------------------------------------------------------------------------------}
-procedure TColorListBox.DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState);
+procedure TCustomColorListBox.DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState);
 var
   r: TRect;
   ItemColor: TColor;
@@ -526,11 +543,11 @@ begin
   r := Rect;
   r.left := r.left + 20;
   
-  //DebugLn('TColorListBox.DrawItem ',dbgs(Index),' ',dbgs(r),' ',dbgs(odPainted in State),' ',dbgs(Assigned(OndrawItem)));
+  //DebugLn('TCustomColorListBox.DrawItem ',dbgs(Index),' ',dbgs(r),' ',dbgs(odPainted in State),' ',dbgs(Assigned(OndrawItem)));
   inherited DrawItem(Index, r, State);
 end;
 {------------------------------------------------------------------------------
-  Method:   TColorListBox.SetColorList
+  Method:   TCustomColorListBox.SetColorList
   Params:   None
   Returns:  Nothing
 
@@ -538,10 +555,10 @@ end;
   entries. Based on the value of the Palette property.
 
  ------------------------------------------------------------------------------}
-procedure TColorListBox.SetColorList;
+procedure TCustomColorListBox.SetColorList;
 var
   c: Longint;
-  s: ANSIString;
+  s: AnsiString;
   m: TIdentMapEntry;
 begin
   with Items do
@@ -550,14 +567,15 @@ begin
 
     //add palettes as desired
     case Palette of
-      cpFull : begin
-                 c := 0;
-                 while IdentEntry(c, m) do
-                 begin
-                   Add(m.Name);
-                   Inc(c);
-                 end;
-               end;
+      cpFull :
+        begin
+          c := 0;
+          while IdentEntry(c, m) do
+          begin
+            Add(m.Name);
+            Inc(c);
+          end;
+        end;
       else
       begin
         for c := 0 to High(ColorDefault) do
