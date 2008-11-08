@@ -171,7 +171,6 @@ type
     fOnFoldChanged : TFoldChangedEvent;
     fCFDividerDrawLevel: Integer;
 
-    procedure debug;
     function GetCount : integer;
     function GetDrawDivider(Index : integer) : Boolean;
     function GetLines(index : Integer) : String;
@@ -203,6 +202,7 @@ type
     constructor Create(aTextBuffer : TSynEditStringList);
     destructor Destroy; override;
     
+    // Converting between Folded and Unfolded Lines/Indexes
     function TextIndexToViewPos(aTextIndex : Integer) : Integer;    (* Convert TextIndex (0-based) to ViewPos (1-based) *)
     function TextIndexToScreenLine(aTextIndex : Integer) : Integer; (* Convert TextIndex (0-based) to Screen (0-based) *)
     function ViewPosToTextIndex(aViewPos : Integer) : Integer;      (* Convert ViewPos (1-based) to TextIndex (0-based) *)
@@ -211,6 +211,7 @@ type
     function TextIndexAddLines(aTextIndex, LineOffset : Integer) : Integer;     (* Add/Sub to/from TextIndex (0-based) skipping folded *)
     function TextPosAddLines(aTextpos, LineOffset : Integer) : Integer;     (* Add/Sub to/from TextPos (1-based) skipping folded *)
 
+    // Attributes for Visible-Lines-On-screen
     property Lines[index : Integer] : String            (* Lines on screen / 0 = TopLine *)
       read GetLines; default;
     property Ranges[Index: integer]: TSynEditRange
@@ -224,6 +225,7 @@ type
     property TextIndex[index : Integer] : Integer       (* Position in SynTextBuffer / result is 0-based *)
       read GetTextIndex; // maybe writable
 
+    // Define Visible Area
     property TopLine : integer                          (* refers to visible (unfolded) lines / 1-based *)
       read fTopLine write SetTopLine;
     property TopTextIndex : integer                     (* refers to TextIndex (folded + unfolded lines) / 1-based *)
@@ -236,6 +238,8 @@ type
     property CFDividerDrawLevel: Integer read fCFDividerDrawLevel write fCFDividerDrawLevel;
 
   public
+    procedure debug;
+    // Action Fold/Unfold
     procedure FoldAtLine(AStartLine: Integer);       (* Folds at ScreenLine / 0-based *)
     procedure FoldAtViewPos(AStartPos: Integer);     (* Folds at nth visible/unfolded Line / 1-based *)
     procedure FoldAtTextIndex(AStartIndex: Integer); (* Folds at nth TextIndex (all lines in buffer) / 1-based *)
@@ -244,11 +248,17 @@ type
     procedure UnFoldAtTextIndex(AStartIndex: Integer; IgnoreFirst : Boolean = False); (* UnFolds at nth TextIndex (all lines in buffer) / 1-based *)
 
     procedure UnfoldAll;
+    procedure FoldAll(StartLevel : Integer = 0; IgnoreNested : Boolean = False);
     procedure FixFoldingAtTextIndex(AStartIndex: Integer; AMinEndLine: Integer = 0); // Real/All lines
     
+    // Find the visible first line of the fold at ALine. Returns -1 if Aline is not folded
+    function CollapsedLineForFoldAtLine(ALine : Integer) : Integer;
+    function ExpandedLineForBlockAtLine(ALine : Integer) : Integer;
+
+    property FoldedAtTextIndex [index : integer] : Boolean read IsFolded;
+
     property OnFoldChanged: TFoldChangedEvent  (* reports 1-based line *) {TODO: synedit expects 0 based }
       read fOnFoldChanged write fOnFoldChanged;
-    property FoldedAtTextIndex [index : integer] : Boolean read IsFolded;
   end;
 
   
@@ -902,11 +912,17 @@ begin
 
     rFoldedBefore := rFoldedBefore + current.LeftCount;
     if ALine = rStartLine then begin
-      if ACount < current.LineCount
-      (* *** New Block will be nested in current *** *)
-      then NestNewBlockIntoCurrent
-      (* *** current will be nested in New Block *** *)
-      else NestCurrentIntoNewBlock;
+      if ACount < current.LineCount then
+        (* *** New Block will be nested in current *** *)
+        NestNewBlockIntoCurrent
+      else
+      if ACount > current.LineCount then
+        (* *** current will be nested in New Block *** *)
+        NestCurrentIntoNewBlock
+      else begin
+        debugln(['Droping Foldnode / Already exists. Startline=', rStartLine,' LineCount=',ACount]);
+        ANode.Free;
+      end;
     end
     else begin
       If ALine <= rStartLine + current.LineCount - 1
@@ -1598,6 +1614,31 @@ begin
     fOnFoldChanged(0);
 end;
 
+procedure TSynEditFoldedView.FoldAll(StartLevel : Integer = 0; IgnoreNested : Boolean = False);
+var
+  i, l, top: Integer;
+begin
+  top := TopTextIndex;
+  fFoldTree.Clear;
+  i := 0;
+  while i < fLines.Count do begin
+    if (fLines.FoldEndLevel[i] > fLines.FoldMinLevel[i])
+    and (fLines.FoldEndLevel[i] > StartLevel) then begin
+      l := LengthForFoldAtTextIndex(i);
+      // i is 0-based
+      // FoldTree is 1-based AND first line remains visble
+      fFoldTree.InsertNewFold(i+2, l);
+      if IgnoreNested then
+        i := i + l;
+    end;
+    inc(i);
+  end;
+  fTopLine := -1;
+  TopTextIndex := top;
+  if Assigned(fOnFoldChanged) then
+    fOnFoldChanged(0);
+end;
+
 function TSynEditFoldedView.FixFolding(AStart : Integer; AMinEnd : Integer; aFoldTree : TSynTextFoldAVLTree) : Boolean;
 var
   line, a : Integer;
@@ -1659,6 +1700,52 @@ end;
 procedure TSynEditFoldedView.FixFoldingAtTextIndex(AStartIndex: Integer; AMinEndLine : Integer);
 begin
   FixFolding(AStartIndex + 1, AMinEndLine, fFoldTree);
+end;
+
+function TSynEditFoldedView.ExpandedLineForBlockAtLine(ALine : Integer) : Integer;
+var
+  i, l : Integer;
+  node: TSynTextFoldAVLNode;
+begin
+  Result := -1;
+  i := ALine-1;
+
+  if (i>0) and (fLines.FoldMinLevel[i] < fLines.FoldEndLevel[i-1])then begin
+    if fLines.FoldMinLevel[i] < fLines.FoldEndLevel[i] then begin
+      // this is a combined "end begin" line
+      node := fFoldTree.FindFoldForLine(ALine, true);
+      if node.IsInFold and (node.StartLine = ALine +1) then
+        dec(i);
+      if i < 0 then exit;
+    end else begin
+      // this is a "end" line
+      dec(i);
+    end;
+    l := fLines.FoldEndLevel[i];
+  end else if fLines.FoldEndLevel[i] = 0 then
+    exit
+  else begin
+    // check if current line is cfCollapsed
+    node := fFoldTree.FindFoldForLine(ALine, true);
+    if node.IsInFold and (node.StartLine = ALine +1) then
+      dec(i);
+    if i < 0 then exit;
+    l := fLines.FoldEndLevel[i]
+  end;
+
+  while (i > 0) and (fLines.FoldMinLevel[i] >= l) do
+    dec(i);
+  if (fLines.FoldEndLevel[i] > 0) then // TODO, check for collapsed at index = 0
+    Result := i + 1;
+end;
+
+function TSynEditFoldedView.CollapsedLineForFoldAtLine(ALine : Integer) : Integer;
+var
+  node: TSynTextFoldAVLNode;
+begin
+  Result := -1;
+  node := fFoldTree.FindFoldForLine(ALine, false);
+  if node.IsInFold then Result := node.StartLine-1;
 end;
 
 procedure TSynEditFoldedView.debug;

@@ -754,6 +754,7 @@ type
     procedure CodeFoldAction(iLine: integer);
     function FindNextUnfoldedLine(iLine: integer; Down: boolean): Integer;
     procedure UnfoldAll;
+    procedure FoldAll(StartLevel : Integer = 0; IgnoreNested : Boolean = False);
     {$ENDIF}
 
     procedure AddKey(Command: TSynEditorCommand; Key1: word; SS1: TShiftState;
@@ -2929,6 +2930,11 @@ begin
   Invalidate;
 end;
 
+procedure TCustomSynEdit.FoldAll(StartLevel : Integer = 0; IgnoreNested : Boolean = False);
+begin
+  fTextView.FoldAll(StartLevel, IgnoreNested);
+  Invalidate;
+end;
 {$ENDIF}
 
 procedure TCustomSynEdit.PaintGutter(AClip: TRect; FirstLine, LastLine: integer);
@@ -6078,13 +6084,20 @@ end;
 
 {$IFDEF SYN_LAZARUS}
 procedure TCustomSynEdit.FoldChanged(Index : integer);
+var
+  i: Integer;
 begin
+  TopLine := TopLine;
+  i := fTextView.CollapsedLineForFoldAtLine(CaretY);
+  if i > 0 then
+    SetCaretXY(Point(1, i))
+  else
+    EnsureCursorPosVisible;
+  UpdateScrollBars;
   if Index + 1 > ScreenRowToRow(LinesInWindow + 1) then exit;
   if Index + 1 < TopLine then Index := TopLine;
-  TopLine := TopLine;
   InvalidateLines(Index + 1, ScreenRowToRow(LinesInWindow + 1));
   InvalidateGutterLines(Index + 1, ScreenRowToRow(LinesInWindow + 1));
-  UpdateScrollBars;
 end;
 
 procedure TCustomSynEdit.SetTopView(const AValue : Integer);
