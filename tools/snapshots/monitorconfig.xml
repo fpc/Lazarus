@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <CONFIG>
     <Version
-        Lazarus="0.9.25"
+        Lazarus="0.9.27"
         FPC_Release="2.2.2"
         FPC_Fixes="2.2.3"
         FPC_Devel="2.3.1"
@@ -16,35 +16,35 @@
             Description="Lazarus source bzip2"
         />
         <File
-            Mask="Lazarus-$LAZVER-fpc-$FPCRELEASEVER-????????-win32.exe"
+            Mask="Lazarus-$LAZVER-?????-fpc-$FPCRELEASEVER-????????-win32.exe"
             Description="Lazarus win32 with fpc release ($FPCRELEASEVER)"
         />
         <File
-            Mask="Lazarus-$LAZVER-fpc-$FPCRELEASEVER-????????-cross-arm-wince-win32.exe"
+            Mask="Lazarus-$LAZVER-?????-fpc-$FPCRELEASEVER-????????-cross-arm-wince-win32.exe"
             Description="Lazarus win32 cross arm-wince with fpc release ($FPCRELEASEVER)"
         />
         <File
-            Mask="Lazarus-$LAZVER-fpc-$FPCFIXESVER-????????-win32.exe"
+            Mask="Lazarus-$LAZVER-?????-fpc-$FPCFIXESVER-????????-win32.exe"
             Description="Lazarus win32 with fpc fixes branch ($FPCFIXESVER)"
         />
         <File
-            Mask="Lazarus-$LAZVER-fpc-$FPCFIXESVER-????????-cross-arm-wince-win32.exe"
+            Mask="Lazarus-$LAZVER-?????-fpc-$FPCFIXESVER-????????-cross-arm-wince-win32.exe"
             Description="Lazarus win32 cross arm-wince with fpc fixes branch ($FPCFIXESVER)"
         />
         <File
-            Mask="Lazarus-$LAZVER-fpc-$FPCDEVELVER-????????-win32.exe"
+            Mask="Lazarus-$LAZVER-?????-fpc-$FPCDEVELVER-????????-win32.exe"
             Description="Lazarus win32 with fpc development branch ($FPCDEVELVER)"
         />
         <File
-            Mask="Lazarus-$LAZVER-fpc-$FPCRELEASEVER-*-win64.exe"
+            Mask="Lazarus-$LAZVER-?????-fpc-$FPCRELEASEVER-*-win64.exe"
             Description="Lazarus win64 with fpc release ($FPCRELEASEVER)"
         />
         <File
-            Mask="Lazarus-$LAZVER-fpc-$FPCFIXESVER-*-win64.exe"
+            Mask="Lazarus-$LAZVER-?????-fpc-$FPCFIXESVER-*-win64.exe"
             Description="Lazarus win64 with fpc development branch ($FPCFIXESVER)"
         />
         <File
-            Mask="Lazarus-$LAZVER-fpc-$FPCDEVELVER-*-win64.exe"
+            Mask="Lazarus-$LAZVER-?????-fpc-$FPCDEVELVER-*-win64.exe"
             Description="Lazarus win64 with fpc fixes branch ($FPCDEVELVER)"
         />
         <File
@@ -56,7 +56,7 @@
             Description="fpc source $FPCRELEASEVER Mac OS X powerpc"
         />
         <File
-            Mask="lazarus-$LAZVER-*-powerpc-macosx.dmg"
+            Mask="lazarus-$LAZVER.?????-*-powerpc-macosx.dmg"
             Description="lazarus Mac OS X powerpc"
         />
         <File
@@ -68,7 +68,7 @@
             Description="fpc source $FPCRELEASEVER Mac OS X i386"
         />
         <File
-            Mask="lazarus-$LAZVER-*-i386-macosx.dmg"
+            Mask="lazarus-$LAZVER.?????-*-i386-macosx.dmg"
             Description="lazarus Mac OS X i386"
         />
         <File
