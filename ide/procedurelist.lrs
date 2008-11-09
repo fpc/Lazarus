@@ -1,7 +1,7 @@
 { This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TProcedureListForm','FORMDATA',[
-  'TPF0'#18'TProcedureListForm'#17'ProcedureListForm'#4'Left'#3'T'#1#6'Height'#3
+  'TPF0'#18'TProcedureListForm'#17'ProcedureListForm'#4'Left'#3'U'#1#6'Height'#3
   +'G'#1#3'Top'#3#186#0#5'Width'#3'~'#2#11'HelpContext'#2#0#13'ActiveControl'#7
   +#9'cbObjects'#5'Align'#7#6'alNone'#14'AllowDropFiles'#8#10'AutoScroll'#9#8'A'
   +'utoSize'#8#11'BorderIcons'#11#12'biSystemMenu'#10'biMinimize'#10'biMaximize'
@@ -116,38 +116,40 @@ LazarusResources.Add('TProcedureListForm','FORMDATA',[
   +'orizontal'#7#7'ccaFill'#31'BorderSpacing.CellAlignVertical'#7#7'ccaFill'#8
   +'CharCase'#7#8'ecNormal'#10'DragCursor'#7#6'crDrag'#8'DragMode'#7#8'dmManual'
   +#8'EchoMode'#7#8'emNormal'#7'Enabled'#9#9'MaxLength'#2#255#14'ParentBidiMode'
-  +#9#10'ParentFont'#9#14'ParentShowHint'#9#12'PasswordChar'#6#1#0#8'ReadOnly'#8
-  +#7'TabStop'#9#8'TabOrder'#2#0#7'Visible'#9#0#0#9'TComboBox'#9'cbObjects'#22
-  +'AnchorSideLeft.Control'#7#10'lblObjects'#19'AnchorSideLeft.Side'#7#9'asrBot'
-  +'tom'#21'AnchorSideTop.Control'#7#9'pnlHeader'#23'AnchorSideRight.Control'#7
-  +#9'pnlHeader'#20'AnchorSideRight.Side'#7#9'asrBottom'#4'Left'#3'M'#1#6'Heigh'
-  +'t'#2#31#3'Top'#2#6#5'Width'#3'+'#1#11'HelpContext'#2#0#7'TabStop'#9#5'Align'
-  +#7#6'alNone'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#21'ArrowKeysTrave'
-  +'rseList'#9#12'AutoComplete'#8#16'AutoCompleteText'#11#22'cbactEndOfLineComp'
-  +'lete'#20'cbactSearchAscending'#0#12'AutoDropDown'#8#10'AutoSelect'#8#8'Auto'
-  +'Size'#9#18'BorderSpacing.Left'#2#0#17'BorderSpacing.Top'#2#0#19'BorderSpaci'
-  +'ng.Right'#2#0#20'BorderSpacing.Bottom'#2#0#20'BorderSpacing.Around'#2#6'!Bo'
-  +'rderSpacing.CellAlignHorizontal'#7#7'ccaFill'#31'BorderSpacing.CellAlignVer'
-  +'tical'#7#7'ccaFill'#8'CharCase'#7#8'ecNormal'#5'Ctl3D'#8#10'DragCursor'#7#6
-  ,'crDrag'#8'DragMode'#7#8'dmManual'#13'DropDownCount'#2#8#7'Enabled'#9#10'Ite'
-  +'mHeight'#2#0#9'ItemIndex'#2#255#9'ItemWidth'#2#0#9'MaxLength'#2#0#14'Parent'
-  +'BidiMode'#9#11'ParentColor'#8#11'ParentCtl3D'#9#10'ParentFont'#9#14'ParentS'
-  +'howHint'#9#6'Sorted'#9#5'Style'#7#14'csDropDownList'#8'TabOrder'#2#1#7'Visi'
-  +'ble'#9#0#0#0#9'TListView'#2'LV'#4'Left'#2#0#6'Height'#3#237#0#3'Top'#2'E'#5
-  +'Width'#3'~'#2#11'HelpContext'#2#0#5'Align'#7#8'alClient'#18'BorderSpacing.L'
-  +'eft'#2#0#17'BorderSpacing.Top'#2#0#19'BorderSpacing.Right'#2#0#20'BorderSpa'
-  +'cing.Bottom'#2#0#20'BorderSpacing.Around'#2#0'!BorderSpacing.CellAlignHoriz'
-  +'ontal'#7#7'ccaFill'#31'BorderSpacing.CellAlignVertical'#7#7'ccaFill'#11'Bor'
-  +'derWidth'#2#0#10'Checkboxes'#8#7'Columns'#14#1#8'AutoSize'#8#0#1#8'AutoSize'
-  +#8#7'Caption'#6#9'Procedure'#5'Width'#3','#1#0#1#8'AutoSize'#8#7'Caption'#6#4
-  +'Type'#0#1#8'AutoSize'#8#7'Caption'#6#4'Line'#5'Width'#3#238#0#0#0#11'Column'
-  +'Click'#9#10'DragCursor'#7#6'crDrag'#8'DragMode'#7#8'dmManual'#7'Enabled'#9
-  +#13'HideSelection'#8#13'Items.LazData'#10'L'#0#0#0'L'#0#0#0#1#0#0#0#0#0#0#0
-  +#255#255#255#255#255#255#255#255#3#0#0#0#0#0#0#0#14#0#0#0'TForm.TestFour'#8#0
-  +#0#0'Function'#2#0#0#0'24'#255#255#255#255#255#255#255#255#255#255#255#255#11
-  +'MultiSelect'#8#14'ParentShowHint'#9#8'ReadOnly'#9#9'RowSelect'#9#10'ScrollB'
-  +'ars'#7#10'ssAutoBoth'#17'ShowColumnHeaders'#9#10'SortColumn'#2#0#8'SortType'
-  +#7#6'stNone'#7'TabStop'#9#8'TabOrder'#2#0#8'ToolTips'#9#7'Visible'#9#9'ViewS'
-  +'tyle'#7#8'vsReport'#10'OnDblClick'#7#10'LVDblClick'#10'OnKeyPress'#7#17'edM'
-  +'ethodsKeyPress'#12'OnSelectItem'#7#12'LVSelectItem'#0#0#0
+  +#9#8'OnChange'#7#15'edMethodsChange'#9'OnKeyDown'#7#16'edMethodsKeyDown'#10
+  +'OnKeyPress'#7#17'edMethodsKeyPress'#10'ParentFont'#9#14'ParentShowHint'#9#12
+  +'PasswordChar'#6#1#0#8'ReadOnly'#8#7'TabStop'#9#8'TabOrder'#2#0#7'Visible'#9
+  +#0#0#9'TComboBox'#9'cbObjects'#22'AnchorSideLeft.Control'#7#10'lblObjects'#19
+  +'AnchorSideLeft.Side'#7#9'asrBottom'#21'AnchorSideTop.Control'#7#9'pnlHeader'
+  +#23'AnchorSideRight.Control'#7#9'pnlHeader'#20'AnchorSideRight.Side'#7#9'asr'
+  +'Bottom'#4'Left'#3'M'#1#6'Height'#2#31#3'Top'#2#6#5'Width'#3'+'#1#11'HelpCon'
+  +'text'#2#0#7'TabStop'#9#5'Align'#7#6'alNone'#7'Anchors'#11#5'akTop'#6'akLeft'
+  +#7'akRight'#0#21'ArrowKeysTraverseList'#9#12'AutoComplete'#8#16'AutoComplete'
+  +'Text'#11#22'cbactEndOfLineComplete'#20'cbactSearchAscending'#0#12'AutoDropD'
+  +'own'#8#10'AutoSelect'#8#8'AutoSize'#9#18'BorderSpacing.Left'#2#0#17'BorderS'
+  +'pacing.Top'#2#0#19'BorderSpacing.Right'#2#0#20'BorderSpacing.Bottom'#2#0#20
+  +'BorderSpacing.Around'#2#6'!BorderSpacing.CellAlignHorizontal'#7#7'ccaFill'
+  ,#31'BorderSpacing.CellAlignVertical'#7#7'ccaFill'#8'CharCase'#7#8'ecNormal'#5
+  +'Ctl3D'#8#10'DragCursor'#7#6'crDrag'#8'DragMode'#7#8'dmManual'#13'DropDownCo'
+  +'unt'#2#8#7'Enabled'#9#10'ItemHeight'#2#0#9'ItemIndex'#2#255#9'ItemWidth'#2#0
+  +#9'MaxLength'#2#0#8'OnChange'#7#15'cbObjectsChange'#14'ParentBidiMode'#9#11
+  +'ParentColor'#8#11'ParentCtl3D'#9#10'ParentFont'#9#14'ParentShowHint'#9#6'So'
+  +'rted'#9#5'Style'#7#14'csDropDownList'#8'TabOrder'#2#1#7'Visible'#9#0#0#0#9
+  +'TListView'#2'LV'#4'Left'#2#0#6'Height'#3#237#0#3'Top'#2'E'#5'Width'#3'~'#2
+  +#11'HelpContext'#2#0#5'Align'#7#8'alClient'#18'BorderSpacing.Left'#2#0#17'Bo'
+  +'rderSpacing.Top'#2#0#19'BorderSpacing.Right'#2#0#20'BorderSpacing.Bottom'#2
+  +#0#20'BorderSpacing.Around'#2#0'!BorderSpacing.CellAlignHorizontal'#7#7'ccaF'
+  +'ill'#31'BorderSpacing.CellAlignVertical'#7#7'ccaFill'#11'BorderWidth'#2#0#10
+  +'Checkboxes'#8#7'Columns'#14#1#8'AutoSize'#8#0#1#8'AutoSize'#8#7'Caption'#6#9
+  +'Procedure'#5'Width'#3','#1#0#1#8'AutoSize'#8#7'Caption'#6#4'Type'#0#1#8'Aut'
+  +'oSize'#8#7'Caption'#6#4'Line'#5'Width'#3#238#0#0#0#11'ColumnClick'#9#10'Dra'
+  +'gCursor'#7#6'crDrag'#8'DragMode'#7#8'dmManual'#7'Enabled'#9#13'HideSelectio'
+  +'n'#8#13'Items.LazData'#10'L'#0#0#0'L'#0#0#0#1#0#0#0#0#0#0#0#255#255#255#255
+  +#255#255#255#255#3#0#0#0#0#0#0#0#14#0#0#0'TForm.TestFour'#8#0#0#0'Function'#2
+  +#0#0#0'24'#255#255#255#255#255#255#255#255#255#255#255#255#11'MultiSelect'#8
+  +#14'ParentShowHint'#9#8'ReadOnly'#9#9'RowSelect'#9#10'ScrollBars'#7#10'ssAut'
+  +'oBoth'#17'ShowColumnHeaders'#9#10'SortColumn'#2#0#8'SortType'#7#6'stNone'#7
+  +'TabStop'#9#8'TabOrder'#2#0#8'ToolTips'#9#7'Visible'#9#9'ViewStyle'#7#8'vsRe'
+  +'port'#10'OnDblClick'#7#10'LVDblClick'#10'OnKeyPress'#7#17'edMethodsKeyPress'
+  +#12'OnSelectItem'#7#12'LVSelectItem'#0#0#0
 ]);

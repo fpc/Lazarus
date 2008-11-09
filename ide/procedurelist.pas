@@ -600,10 +600,11 @@ begin
     LV.ItemFocused := LV.Items[LV.Items.Count - 1];
   end;
 
-  if LV.ItemFocused <> nil then
+  if LV.ItemFocused<>nil then
   begin
     LV.Selected := LV.ItemFocused;
-    LV.Selected.MakeVisible(True);
+    if Assigned(LV.Selected) then
+      LV.Selected.MakeVisible(True);
   end;
 end;
 

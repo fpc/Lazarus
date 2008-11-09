@@ -1,5 +1,5 @@
 object ProcedureListForm: TProcedureListForm
-  Left = 340
+  Left = 341
   Height = 327
   Top = 186
   Width = 638
@@ -387,6 +387,9 @@ object ProcedureListForm: TProcedureListForm
       Enabled = True
       MaxLength = -1
       ParentBidiMode = True
+      OnChange = edMethodsChange
+      OnKeyDown = edMethodsKeyDown
+      OnKeyPress = edMethodsKeyPress
       ParentFont = True
       ParentShowHint = True
       PasswordChar = #0
@@ -432,6 +435,7 @@ object ProcedureListForm: TProcedureListForm
       ItemIndex = -1
       ItemWidth = 0
       MaxLength = 0
+      OnChange = cbObjectsChange
       ParentBidiMode = True
       ParentColor = False
       ParentCtl3D = True
