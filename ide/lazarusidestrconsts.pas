@@ -3724,6 +3724,7 @@ resourcestring
   lisVSRSearchOrFilterPhrasesInList = 'Search or Filter Phrases In List';
   lisVSRForwardSearch = 'Forward Search';
   lisVSRResetResultList = 'Reset Result List';
+  rsFoundButNotListedHere = 'Found, but not listed here: ';
   lisTDDInsertToDo = 'Insert ToDo';
 
   // Application Bundle

@@ -3942,6 +3942,10 @@ msgstr "Vienu pirmyn"
 msgid "Found empty methods:"
 msgstr "Rasti tušti metodai:"
 
+#: lazarusidestrconsts:rsfoundbutnotlistedhere
+msgid "Found, but not listed here: "
+msgstr ""
+
 #: lazarusidestrconsts:lisfreepascal
 msgid "Free Pascal"
 msgstr "Free Pascal"

@@ -3939,6 +3939,10 @@ msgstr "Avanzar uno"
 msgid "Found empty methods:"
 msgstr ""
 
+#: lazarusidestrconsts:rsfoundbutnotlistedhere
+msgid "Found, but not listed here: "
+msgstr ""
+
 #: lazarusidestrconsts:lisfreepascal
 msgid "Free Pascal"
 msgstr ""

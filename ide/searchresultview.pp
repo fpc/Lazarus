@@ -1018,7 +1018,7 @@ var
 begin
   if FSkipped=AValue then exit;
   FSkipped:=AValue;
-  s:='Found, but not listed here: ';
+  s:=rsFoundButNotListedHere;
   if fUpdating then
     SrcList:=fUpdateStrings
   else

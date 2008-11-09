@@ -11400,6 +11400,10 @@ msgstr ""
 msgid "Reset Result List"
 msgstr ""
 
+#: lazarusidestrconsts:rsfoundbutnotlistedhere
+msgid "Found, but not listed here: "
+msgstr ""
+
 #: lazarusidestrconsts:listddinserttodo
 msgid "Insert ToDo"
 msgstr ""

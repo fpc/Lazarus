@@ -3942,6 +3942,10 @@ msgstr "Suivant"
 msgid "Found empty methods:"
 msgstr "Trouvé les méthodes vide :"
 
+#: lazarusidestrconsts:rsfoundbutnotlistedhere
+msgid "Found, but not listed here: "
+msgstr ""
+
 #: lazarusidestrconsts:lisfreepascal
 msgid "Free Pascal"
 msgstr "Free Pascal"

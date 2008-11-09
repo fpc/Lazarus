@@ -3940,6 +3940,10 @@ msgstr "前方に一つ進む"
 msgid "Found empty methods:"
 msgstr "空のメソッドが見つかりました。"
 
+#: lazarusidestrconsts:rsfoundbutnotlistedhere
+msgid "Found, but not listed here: "
+msgstr ""
+
 #: lazarusidestrconsts:lisfreepascal
 msgid "Free Pascal"
 msgstr ""

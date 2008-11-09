@@ -3944,6 +3944,10 @@ msgstr "Dopredu o jedno"
 msgid "Found empty methods:"
 msgstr "Nájdené prázdne metódy:"
 
+#: lazarusidestrconsts:rsfoundbutnotlistedhere
+msgid "Found, but not listed here: "
+msgstr ""
+
 #: lazarusidestrconsts:lisfreepascal
 msgid "Free Pascal"
 msgstr "Free Pascal"
