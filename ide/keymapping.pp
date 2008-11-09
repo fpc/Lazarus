@@ -400,6 +400,19 @@ begin
   ecGotoEditor9: SetResult(VK_9,[ssAlt],VK_UNKNOWN,[]);
   ecGotoEditor0: SetResult(VK_0,[ssAlt],VK_UNKNOWN,[]);
 
+  EcFoldLevel1: SetResult(VK_1,[ssAlt,ssShift],VK_UNKNOWN,[]);
+  EcFoldLevel2: SetResult(VK_2,[ssAlt,ssShift],VK_UNKNOWN,[]);
+  EcFoldLevel3: SetResult(VK_3,[ssAlt,ssShift],VK_UNKNOWN,[]);
+  EcFoldLevel4: SetResult(VK_4,[ssAlt,ssShift],VK_UNKNOWN,[]);
+  EcFoldLevel5: SetResult(VK_5,[ssAlt,ssShift],VK_UNKNOWN,[]);
+  EcFoldLevel6: SetResult(VK_6,[ssAlt,ssShift],VK_UNKNOWN,[]);
+  EcFoldLevel7: SetResult(VK_7,[ssAlt,ssShift],VK_UNKNOWN,[]);
+  EcFoldLevel8: SetResult(VK_8,[ssAlt,ssShift],VK_UNKNOWN,[]);
+  EcFoldLevel9: SetResult(VK_9,[ssAlt,ssShift],VK_UNKNOWN,[]);
+  EcFoldLevel0: SetResult(VK_0,[ssAlt,ssShift],VK_UNKNOWN,[]);
+  EcFoldCurrent: SetResult(VK_OEM_MINUS,[ssAlt,ssShift],VK_UNKNOWN,[]);
+  EcUnFoldCurrent: SetResult(VK_OEM_PLUS,[ssAlt,ssShift],VK_UNKNOWN,[]);
+
   // file menu
   ecNew: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecNewUnit: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -725,6 +738,19 @@ begin
   ecGotoEditor8: SetResult(VK_8,[ssAlt],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecGotoEditor9: SetResult(VK_9,[ssAlt],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecGotoEditor0: SetResult(VK_0,[ssAlt],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
+  EcFoldLevel1: SetResult(VK_1,[ssAlt,ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  EcFoldLevel2: SetResult(VK_2,[ssAlt,ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  EcFoldLevel3: SetResult(VK_3,[ssAlt,ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  EcFoldLevel4: SetResult(VK_4,[ssAlt,ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  EcFoldLevel5: SetResult(VK_5,[ssAlt,ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  EcFoldLevel6: SetResult(VK_6,[ssAlt,ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  EcFoldLevel7: SetResult(VK_7,[ssAlt,ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  EcFoldLevel8: SetResult(VK_8,[ssAlt,ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  EcFoldLevel9: SetResult(VK_9,[ssAlt,ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  EcFoldLevel0: SetResult(VK_0,[ssAlt,ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  EcFoldCurrent: SetResult(VK_OEM_PLUS,[ssAlt,ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  EcUnFoldCurrent: SetResult(VK_OEM_MINUS,[ssAlt,ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // file menu
   ecNew: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1231,6 +1257,19 @@ begin
   ecGotoEditor9: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecGotoEditor0: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
+  EcFoldLevel1: SetResult(VK_1,[ssAlt,ssShift],VK_UNKNOWN,[]);
+  EcFoldLevel2: SetResult(VK_2,[ssAlt,ssShift],VK_UNKNOWN,[]);
+  EcFoldLevel3: SetResult(VK_3,[ssAlt,ssShift],VK_UNKNOWN,[]);
+  EcFoldLevel4: SetResult(VK_4,[ssAlt,ssShift],VK_UNKNOWN,[]);
+  EcFoldLevel5: SetResult(VK_5,[ssAlt,ssShift],VK_UNKNOWN,[]);
+  EcFoldLevel6: SetResult(VK_6,[ssAlt,ssShift],VK_UNKNOWN,[]);
+  EcFoldLevel7: SetResult(VK_7,[ssAlt,ssShift],VK_UNKNOWN,[]);
+  EcFoldLevel8: SetResult(VK_8,[ssAlt,ssShift],VK_UNKNOWN,[]);
+  EcFoldLevel9: SetResult(VK_9,[ssAlt,ssShift],VK_UNKNOWN,[]);
+  EcFoldLevel0: SetResult(VK_0,[ssAlt,ssShift],VK_UNKNOWN,[]);
+  EcFoldCurrent: SetResult(VK_OEM_PLUS,[ssAlt,ssShift],VK_UNKNOWN,[]);
+  EcUnFoldCurrent: SetResult(VK_OEM_MINUS,[ssAlt,ssShift],VK_UNKNOWN,[]);
+
   // file menu
   ecNew: SetResult(VK_N,[ssMeta],VK_UNKNOWN,[]);
   ecNewUnit: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1538,6 +1577,11 @@ begin
     ecRemoveBreakPoint        : Result:= srkmecRemoveBreakPoint;
     ecGotoEditor1..
     ecGotoEditor0             : Result:= Format(srkmecGotoEditor,[cmd-ecGotoEditor1]);
+    EcFoldLevel1..
+    EcFoldLevel9             : Result:= Format(srkmEcFoldLevel,[cmd-EcFoldLevel1]);
+    EcFoldLevel0             : Result:= srkmecUnFoldAll;
+    EcFoldCurrent            : Result:= srkmecFoldCurrent;
+    EcUnFoldCurrent          : Result:= srkmecUnFoldCurrent;
 
     // file menu
     ecNew                     : Result:= lisMenuNewOther;
@@ -2016,6 +2060,21 @@ begin
     ecOpenFileAtCursor);
   AddDefault(C,'Procedure List ...',srkmecProcedureList,ecProcedureList);
 
+  // folding
+  C:=Categories[AddCategory('Folding',srkmCatFold,IDECmdScopeSrcEditOnly)];
+  AddDefault(C, 'Fold to Level 1',  Format(srkmEcFoldLevel,[1]), EcFoldLevel1);
+  AddDefault(C, 'Fold to Level 2',  Format(srkmEcFoldLevel,[2]), EcFoldLevel2);
+  AddDefault(C, 'Fold to Level 3',  Format(srkmEcFoldLevel,[3]), EcFoldLevel3);
+  AddDefault(C, 'Fold to Level 4',  Format(srkmEcFoldLevel,[4]), EcFoldLevel4);
+  AddDefault(C, 'Fold to Level 5',  Format(srkmEcFoldLevel,[5]), EcFoldLevel5);
+  AddDefault(C, 'Fold to Level 6',  Format(srkmEcFoldLevel,[6]), EcFoldLevel6);
+  AddDefault(C, 'Fold to Level 7',  Format(srkmEcFoldLevel,[7]), EcFoldLevel7);
+  AddDefault(C, 'Fold to Level 8',  Format(srkmEcFoldLevel,[8]), EcFoldLevel8);
+  AddDefault(C, 'Fold to Level 9',  Format(srkmEcFoldLevel,[9]), EcFoldLevel9);
+  AddDefault(C, 'Unfold all', srkmecUnFoldAll, EcFoldLevel0);
+  AddDefault(C, 'Fold at Cursor', srkmecFoldCurrent, EcFoldCurrent);
+  AddDefault(C, 'Unfold at Cursor', srkmecUnFoldCurrent, EcUnFoldCurrent);
+
   // marker - without menu items in the IDE bar
   C:=Categories[AddCategory('Marker',srkmCatMarker,IDECmdScopeSrcEditOnly)];
   AddDefault(C, 'Set free Bookmark', lisKMSetFreeBookmark, ecSetFreeBookmark);
@@ -2097,9 +2156,8 @@ begin
   AddDefault(C, 'Go to source editor 7', lisKMGoToSourceEditor7, ecGotoEditor7);
   AddDefault(C, 'Go to source editor 8', lisKMGoToSourceEditor8, ecGotoEditor8);
   AddDefault(C, 'Go to source editor 9', lisKMGoToSourceEditor9, ecGotoEditor9);
-  AddDefault(C, 'Go to source editor 10', lisKMGoToSourceEditor10, ecGotoEditor0
-    );
-
+  AddDefault(C, 'Go to source editor 10', lisKMGoToSourceEditor10, ecGotoEditor0);
+  
   // file menu
   C:=Categories[AddCategory('FileMenu',srkmCatFileMenu,nil)];
   AddDefault(C, 'New', lisMenuTemplateNew, ecNew);

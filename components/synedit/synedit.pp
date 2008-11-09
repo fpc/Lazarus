@@ -8546,6 +8546,22 @@ begin
           end;
         end;
 {$ENDIF}
+      {$IFDEF SYN_LAZARUS}
+      EcFoldLevel1..EcFoldLevel9:
+        FoldAll(Command - EcFoldLevel1);
+      EcFoldLevel0:
+        UnfoldAll;
+      EcFoldCurrent:
+        begin
+          CY := fTextView.ExpandedLineForBlockAtLine(CaretY);
+          if CY > 0 then begin
+            fTextView.FoldAtTextIndex(CY-1);
+            SetCaretXY(Point(1, CY));
+          end;
+        end;
+      EcUnFoldCurrent:
+          fTextView.UnFoldAtTextIndex(CaretY-1);
+      {$ENDIF}
     end;
   finally
     DecPaintLock;
