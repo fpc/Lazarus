@@ -348,10 +348,10 @@ begin
 end;
 
 procedure TSearchResultsView.ResetResultsButtonClick (Sender: TObject );
-var i: Integer;
-    oObject: TObject;
-    CurrentTV: TLazSearchResultTV;
-    mpMatchPos, mpOrgMatchPos: TLazSearchMatchPos;
+var
+  i: Integer;
+  CurrentTV: TLazSearchResultTV;
+  mpMatchPos, mpOrgMatchPos: TLazSearchMatchPos;
 begin
  CurrentTV := GetTreeView(ResultsNoteBook.PageIndex);
  try
@@ -367,18 +367,16 @@ begin
      begin
       CurrentTV.Items.BeginUpdate;
       for i:=0 to CurrentTV.BackUpStrings.Count-1 do
-       begin
-        oObject := CurrentTV.BackUpStrings.Objects[i];
-        if not (oObject is TLazSearchMatchPos) then Continue;
-        mpOrgMatchPos := TLazSearchMatchPos(oObject);
+      begin
+        mpOrgMatchPos := TLazSearchMatchPos(CurrentTV.BackUpStrings.Objects[i]);
         if Assigned(mpOrgMatchPos) then
-         begin
+        begin
           mpMatchPos := TLazSearchMatchPos.Create;
           if CopySearchMatchPos(mpOrgMatchPos, mpMatchPos) then
             CurrentTV.AddNode(CurrentTV.BackUpStrings[i], mpMatchPos);
-         end;//End if Assigned(mpOrgMatchPos)
-       end;//End for-loop i
-     end;//End if (CurrentTV.BackUpStrings.Count > 0)
+        end;//End if Assigned(mpOrgMatchPos)
+      end;//End for-loop i
+    end;//End if (CurrentTV.BackUpStrings.Count > 0)
     CurrentTV.Items.EndUpdate;
     CurrentTV.Filtered := False;
    end;//End if CurrentTV.Filtered
@@ -395,12 +393,12 @@ begin
 end;
 
 procedure TSearchResultsView.FilterButtonClick (Sender: TObject );
-var CurrentTV: TLazSearchResultTV;
-    mpMatchPos, mpOrgMatchPos: TLazSearchMatchPos;
-    slPhrases: TStrings;
-    i, j: Integer;
-    S: string;
-    oObject: TObject;
+var
+  CurrentTV: TLazSearchResultTV;
+  mpMatchPos, mpOrgMatchPos: TLazSearchMatchPos;
+  slPhrases: TStrings;
+  i, j: Integer;
+  S: string;
 begin
  CurrentTV := GetTreeView(ResultsNoteBook.PageIndex);
  if Assigned(CurrentTV) then
@@ -416,8 +414,6 @@ begin
       if (CurrentTV.Items.Count <= 1) then Exit;
       for i:=0 to CurrentTV.Items.Count-1 do
        begin
-        oObject := TLazSearchMatchPos(CurrentTV.Items[i].Data);
-        if not (oObject is TLazSearchMatchPos) then Continue;
         mpOrgMatchPos := TLazSearchMatchPos(CurrentTV.Items[i].Data);
         if Assigned(mpOrgMatchPos) then
          begin
@@ -445,11 +441,9 @@ begin
        begin
         S := UpperCase(CurrentTV.BackUpStrings[i]);//for case-insensitive search
         for j:=0 to slPhrases.Count-1 do
-         begin
+        begin
           if (Pos(slPhrases[j], S) <> 0) then
-           begin
-            oObject := CurrentTV.BackUpStrings.Objects[i];
-            if not (oObject is TLazSearchMatchPos) then Continue;
+          begin
             mpOrgMatchPos := TLazSearchMatchPos(CurrentTV.BackUpStrings.Objects[i]);
             if Assigned(mpOrgMatchPos) then
             begin
@@ -457,9 +451,8 @@ begin
               if CopySearchMatchPos(mpOrgMatchPos, mpMatchPos) then
                 CurrentTV.AddNode(CurrentTV.BackUpStrings[i], mpMatchPos);
             end;//End if Assigned(mpOrgMatchPos)
-            Break;
-           end;//End if (Pos(slPhrases[j], S) <> 0)
-         end;//End for-loop j
+          end;//End if (Pos(slPhrases[j], S) <> 0)
+        end;//End for-loop j
       end;//End for-loop i
       CurrentTV.Items.EndUpdate;
       CurrentTV.Filtered := True;
