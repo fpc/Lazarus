@@ -365,6 +365,7 @@ begin
 
     if (CurrentTV.BackUpStrings.Count > 0) then
      begin
+      CurrentTV.Items.BeginUpdate;
       for i:=0 to CurrentTV.BackUpStrings.Count-1 do
        begin
         oObject := CurrentTV.BackUpStrings.Objects[i];
@@ -374,12 +375,11 @@ begin
          begin
           mpMatchPos := TLazSearchMatchPos.Create;
           if CopySearchMatchPos(mpOrgMatchPos, mpMatchPos) then
-          begin
             CurrentTV.AddNode(CurrentTV.BackUpStrings[i], mpMatchPos);
-          end;
          end;//End if Assigned(mpOrgMatchPos)
        end;//End for-loop i
      end;//End if (CurrentTV.BackUpStrings.Count > 0)
+    CurrentTV.Items.EndUpdate;
     CurrentTV.Filtered := False;
    end;//End if CurrentTV.Filtered
  finally
@@ -439,7 +439,8 @@ begin
      end;//End if (CurrentTV.Items.Count > 0)
 
     if (slPhrases.Count > 0) then
-     begin
+    begin
+      CurrentTV.Items.BeginUpdate;
       for i:=0 to CurrentTV.BackUpStrings.Count-1 do
        begin
         S := UpperCase(CurrentTV.BackUpStrings[i]);//for case-insensitive search
@@ -451,17 +452,16 @@ begin
             if not (oObject is TLazSearchMatchPos) then Continue;
             mpOrgMatchPos := TLazSearchMatchPos(CurrentTV.BackUpStrings.Objects[i]);
             if Assigned(mpOrgMatchPos) then
-             begin
+            begin
               mpMatchPos := TLazSearchMatchPos.Create;
               if CopySearchMatchPos(mpOrgMatchPos, mpMatchPos) then
-              begin
                 CurrentTV.AddNode(CurrentTV.BackUpStrings[i], mpMatchPos);
-              end;
-             end;//End if Assigned(mpOrgMatchPos)
+            end;//End if Assigned(mpOrgMatchPos)
             Break;
            end;//End if (Pos(slPhrases[j], S) <> 0)
          end;//End for-loop j
-       end;//End for-loop i
+      end;//End for-loop i
+      CurrentTV.Items.EndUpdate;
       CurrentTV.Filtered := True;
      end;//End if if (slPhrases.Count > 0)
    finally
@@ -533,9 +533,7 @@ begin
     else if CurrentTV.UpdateState then
       CurrentTV.UpdateItems.AddObject(ShownText, SearchPos)
     else
-    begin
       CurrentTV.AddNode(ShownText, SearchPos);
-    end;
     CurrentTV.ShortenPaths;
   end;//if
 end;//AddMatch
@@ -1117,17 +1115,20 @@ var
 begin
   if (fUpdateCount = 0) then
     RaiseGDBException('TLazSearchResultTV.EndUpdate');
-  dec(fUpdateCount);
+
+  Dec(fUpdateCount);
   if (fUpdateCount = 0) then
   begin
     ShortenPaths;
     fUpdating:= false;
     FreeObjectsTN(Items);
 
+    Items.BeginUpdate;
+
     for i := 0 to fUpdateStrings.Count - 1 do
-    begin
       AddNode(fUpdateStrings[i], TLazSearchMatchPos(fUpdateStrings.Objects[i]));
-    end;
+
+    Items.EndUpdate;
   end;//if
 end;//EndUpdate
 
