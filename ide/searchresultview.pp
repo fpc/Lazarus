@@ -634,7 +634,7 @@ begin
     if CurrentTV.UpdateState then
       result:= CurrentTV.UpdateItems
     else
-      result:= CurrentTV.ItemsAsStrings;
+      Result := CurrentTV.ItemsAsStrings;
   end;//if
 end;//GetItems
 
@@ -1092,12 +1092,18 @@ begin
 end;//Destroy
 
 procedure TLazSearchResultTV.BeginUpdate;
+var
+  s: TStrings;
 begin
   inc(fUpdateCount);
   if (fUpdateCount = 1) then
   begin
     if Assigned(Items) then
-      fUpdateStrings.Assign(ItemsAsStrings);
+    begin
+      s := ItemsAsStrings;
+      fUpdateStrings.Assign(s);
+      s.Free;
+    end;
     fUpdating:= true;
   end;//if
 end;//BeginUpdate
