@@ -47,12 +47,10 @@ type
   TProcedureListForm = class(TForm)
     cbObjects: TComboBox;
     edMethods: TEdit;
-    lblSearch: TLabel;
     lblObjects: TLabel;
+    lblSearch: TLabel;
     LV: TListView;
     pnlHeader: TPanel;
-    pnlSearch: TPanel;
-    pnlObjects: TPanel;
     StatusBar: TStatusBar;
     TB: TToolBar;
     tbAbout: TToolButton;
