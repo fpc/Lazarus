@@ -1695,9 +1695,9 @@ msgstr "Cerrar Proyecto"
 msgid "Close all editor files"
 msgstr "Cerrar todos los archivos del editor"
 
-#: lazarusidestrconsts:lissrclosepage
-msgid "Close page"
-msgstr "Cerrar página"
+#: lazarusidestrconsts:rsclosecurrentpage
+msgid "Close current page"
+msgstr ""
 
 #: lazarusidestrconsts:liskmcloseproject
 msgid "Close project"
@@ -3175,6 +3175,10 @@ msgstr "Inglés"
 msgid "Enter data"
 msgstr "Introducir datos"
 
+#: lazarusidestrconsts:rsenteroneormorephrasesthatyouwanttosearchorfilterin
+msgid "Enter one or more phrases that you want to Search or Filter in the list, seperated by space, or comma"
+msgstr ""
+
 #: lazarusidestrconsts:lismacropromptenterrunparameters
 msgid "Enter run parameters"
 msgstr "Introducir parámetros de ejecución"
@@ -3743,6 +3747,10 @@ msgstr "Filtrar por cualquier coincidencia en el método"
 msgid "Filter by matching with start of method"
 msgstr "Filtar por coincidencia en el comienzo del método"
 
+#: lazarusidestrconsts:rsfilterthelistwiththecurrentfilterexpression
+msgid "Filter the list with the current filter expression"
+msgstr ""
+
 #: lazarusidestrconsts:lismenufind
 msgid "Find"
 msgstr "Buscar"
@@ -3882,6 +3890,14 @@ msgstr ""
 #: lazarusidestrconsts:srkmecjumptoeditor
 msgid "Focus to source editor"
 msgstr "Establecer foco en editor de código"
+
+#: lazarusidestrconsts:srkmecfoldcurrent
+msgid "Fold at Cursor"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecfoldlevel
+msgid "Fold to Level %d"
+msgstr ""
 
 #: lazarusidestrconsts:liscefollowcursor
 msgid "Follow cursor"
@@ -4154,6 +4170,10 @@ msgstr "Ir a editor de código 8"
 #: lazarusidestrconsts:liskmgotosourceeditor9
 msgid "Go to source editor 9"
 msgstr "Ir a editor de código 9"
+
+#: lazarusidestrconsts:rsgotothenextiteminthesearchlist
+msgid "Go to the next item in the search list"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecgotoincludedirective
 msgid "Go to to include directive of current include file"
@@ -7639,6 +7659,10 @@ msgstr "Reiniciar lista de resultados"
 msgid "Reset debugger"
 msgstr "Reiniciar depurador"
 
+#: lazarusidestrconsts:rsresetfilter
+msgid "Reset filter"
+msgstr ""
+
 #: lazarusidestrconsts:lisresourceloaderror
 msgid "Resource load error"
 msgstr "Error al cargar recurso"
@@ -8055,10 +8079,6 @@ msgstr "Buscar por "
 msgid "Search Results"
 msgstr "Buscar Resultados"
 
-#: lazarusidestrconsts:lissearchagain
-msgid "Search again"
-msgstr "Buscar otra vez"
-
 #: lazarusidestrconsts:lisfrisearchincommentstoo
 msgid "Search in comments too"
 msgstr "Buscar también en los comentarios"
@@ -8066,10 +8086,6 @@ msgstr "Buscar también en los comentarios"
 #: lazarusidestrconsts:lisemdsearchintheseclasssections
 msgid "Search in these class sections:"
 msgstr ""
-
-#: lazarusidestrconsts:lisvsrsearchorfilterphrasesinlist
-msgid "Search or Filter Phrases In List"
-msgstr "Buscar o filtrar frases en la lista"
 
 #: lazarusidestrconsts:lispatheditsearchpaths
 msgid "Search paths:"
@@ -8795,6 +8811,10 @@ msgstr "Menú de Archivo estándar"
 msgid "Standard Help Menu"
 msgstr "Menú de Ayuda estándar"
 
+#: lazarusidestrconsts:rsstartanewsearch
+msgid "Start a new search"
+msgstr ""
+
 #: lazarusidestrconsts:lisstartwithanewproject
 msgid "Start with a new project"
 msgstr "Empezar con un proyecto nuevo"
@@ -9114,6 +9134,10 @@ msgstr "Atributos de texto"
 #: lazarusidestrconsts:srkmcatediting
 msgid "Text editing commands"
 msgstr "Comandos de edición de texto"
+
+#: lazarusidestrconsts:srkmcatfold
+msgid "Text folding commands"
+msgstr ""
 
 #: lazarusidestrconsts:srkmcatmarker
 msgid "Text marker commands"
@@ -10470,6 +10494,14 @@ msgstr "Deshacer después de guardar"
 #: lazarusidestrconsts:dlgundolimit
 msgid "Undo limit"
 msgstr "Límite para deshacer"
+
+#: lazarusidestrconsts:srkmecunfoldall
+msgid "Unfold all"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecunfoldcurrent
+msgid "Unfold at Cursor"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecblockunindent
 msgid "Unindent block"

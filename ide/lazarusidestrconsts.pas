@@ -273,8 +273,6 @@ resourcestring
   lisSaveAllMessagesToFile = 'Save all messages to file';
   lisMVDocking = 'Docking';
   lisMenuViewSearchResults = 'Search Results';
-  lisSearchAgain = 'Search again';
-  lisSRClosePage = 'Close page';
   lisMenuViewAnchorEditor = 'View Anchor Editor';
   lisKMToggleViewComponentPalette = 'Toggle view component palette';
   lisMenuViewComponentPalette = 'View Component Palette';
@@ -3726,10 +3724,18 @@ resourcestring
   lisCCDChangeClassOf = 'Change Class of %s';
 
   // View Search Results dialog
-  lisVSRSearchOrFilterPhrasesInList = 'Search or Filter Phrases In List';
   lisVSRForwardSearch = 'Forward Search';
   lisVSRResetResultList = 'Reset Result List';
   rsFoundButNotListedHere = 'Found, but not listed here: ';
+  rsStartANewSearch = 'Start a new search';
+  rsCloseCurrentPage = 'Close current page';
+  rsFilterTheListWithTheCurrentFilterExpression = 'Filter the list with the '
+    +'current filter expression';
+  rsGoToTheNextItemInTheSearchList = 'Go to the next item in the search list';
+  rsResetFilter = 'Reset filter';
+  rsEnterOneOrMorePhrasesThatYouWantToSearchOrFilterIn = 'Enter one or more '
+    +'phrases that you want to Search or Filter in the list, seperated by '
+    +'space, or comma';
   lisTDDInsertToDo = 'Insert ToDo';
 
   // Application Bundle

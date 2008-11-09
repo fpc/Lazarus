@@ -129,19 +129,21 @@ type
   { TSearchResultsView }
 
   TSearchResultsView = class(TForm)
-    btnSearchAgain: TButton;
-    ClosePageButton: TButton;
+    SearchInListEdit: TEdit;
+    ImageList: TImageList;
     ResultsNoteBook: TNotebook;
-    gbSearchPhraseInList: TGroupBox;
-    edSearchInList: TEdit;
-    bnForwardSearch: TButton;
-    bnResetResults: TButton;
-    bnFilter: TButton;
+    ToolBar: TToolBar;
+    SearchAgainButton: TToolButton;
+    ToolButton3: TToolButton;
+    FilterButton: TToolButton;
+    ClosePageButton: TToolButton;
+    ForwardSearchButton: TToolButton;
+    ResetResultsButton: TToolButton;
     procedure ClosePageButtonClick(Sender: TObject);
     procedure Form1Create(Sender: TObject);
     procedure TreeViewKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ResultsNoteBookClosetabclicked(Sender: TObject);
-    procedure btnSearchAgainClick(Sender: TObject);
+    procedure SearchAgainButtonClick(Sender: TObject);
     procedure TreeViewAdvancedCustomDrawItem(Sender: TCustomTreeView;
       Node: TTreeNode; State: TCustomDrawState; Stage: TCustomDrawStage;
       var PaintImages, DefaultDraw: Boolean);
@@ -152,11 +154,11 @@ type
                    WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
     procedure edSearchInListChange(Sender: TObject );
     procedure ResultsNoteBookPageChanged (Sender: TObject );
-    procedure bnForwardSearchClick(Sender: TObject );
-    procedure bnResetResultsClick(Sender: TObject );
-    procedure edSearchInListKeyDown(Sender: TObject; var Key: Word;
+    procedure ForwardSearchButtonClick(Sender: TObject );
+    procedure ResetResultsButtonClick(Sender: TObject );
+    procedure SearchInListEditKeyDown(Sender: TObject; var Key: Word;
                                     Shift: TShiftState );
-    procedure bnFilterClick (Sender: TObject );
+    procedure FilterButtonClick (Sender: TObject );
   private
     FMaxItems: integer;
     FOnSelectionChanged: TNotifyEvent;
@@ -230,12 +232,13 @@ begin
   ResultsNoteBook.Update;
 
   Caption:=lisMenuViewSearchResults;
-  gbSearchPhraseInList.Caption:=lisVSRSearchOrFilterPhrasesInList;
-  btnSearchAgain.Caption:=lisSearchAgain;
-  ClosePageButton.Caption:=lisSRClosePage;
-  bnFilter.Caption:=lisFilter;
-  bnForwardSearch.Caption:=lisVSRForwardSearch;
-  bnResetResults.Caption:=lisVSRResetResultList;
+
+  SearchAgainButton.Hint:=rsStartANewSearch;
+  ClosePageButton.Hint := rsCloseCurrentPage;
+  FilterButton.Hint:=rsFilterTheListWithTheCurrentFilterExpression;
+  ForwardSearchButton.Hint:=rsGoToTheNextItemInTheSearchList;
+  ResetResultsButton.Hint:=rsResetFilter;
+  SearchInListEdit.Hint:=rsEnterOneOrMorePhrasesThatYouWantToSearchOrFilterIn;
 
   Name := NonModalIDEWindowNames[nmiwSearchResultsViewName];
   ALayout:=EnvironmentOptions.IDEWindowLayoutList.
@@ -290,7 +293,7 @@ var CurrentTV: TLazSearchResultTV;
 begin
  CurrentTV := GetTreeView(ResultsNoteBook.PageIndex);
  if Assigned(CurrentTV) then
-  CurrentTV.SearchInListPhrases := edSearchInList.Text;
+  CurrentTV.SearchInListPhrases := SearchInListEdit.Text;
 end;
 
 procedure TSearchResultsView.ResultsNoteBookPageChanged (Sender: TObject );
@@ -298,10 +301,10 @@ var CurrentTV: TLazSearchResultTV;
 begin
  CurrentTV := GetTreeView(ResultsNoteBook.PageIndex);
  if Assigned(CurrentTV) then
-  edSearchInList.Text := CurrentTV.SearchInListPhrases;
+  SearchInListEdit.Text := CurrentTV.SearchInListPhrases;
 end;
 
-procedure TSearchResultsView.bnForwardSearchClick (Sender: TObject );
+procedure TSearchResultsView.ForwardSearchButtonClick (Sender: TObject );
 var CurrentTV: TLazSearchResultTV;
     slPhrases: TStrings;
     i, j, iCurrentIndex: Integer;
@@ -310,7 +313,7 @@ begin
  CurrentTV := GetTreeView(ResultsNoteBook.PageIndex);
  if Assigned(CurrentTV) then
   begin
-   if (Length(edSearchInList.Text) = 0) then Exit;//No Search Phrases specified.
+   if (Length(SearchInListEdit.Text) = 0) then Exit;//No Search Phrases specified.
    if (CurrentTV.Items.Count <= 0) then Exit;
    slPhrases := TStringList.Create;
    try
@@ -339,12 +342,12 @@ begin
      end;//End if if (slPhrases.Count > 0)
    finally
     FreeAndNil(slPhrases);
-    edSearchInList.SetFocus;
+    SearchInListEdit.SetFocus;
    end;//End try-finally
   end;//End if Assigned(CurrentTV)
 end;
 
-procedure TSearchResultsView.bnResetResultsClick (Sender: TObject );
+procedure TSearchResultsView.ResetResultsButtonClick (Sender: TObject );
 var i: Integer;
     oObject: TObject;
     CurrentTV: TLazSearchResultTV;
@@ -380,18 +383,18 @@ begin
     CurrentTV.Filtered := False;
    end;//End if CurrentTV.Filtered
  finally
-  edSearchInList.SetFocus;
+  SearchInListEdit.SetFocus;
  end;//End try-finally
 end;
 
-procedure TSearchResultsView.edSearchInListKeyDown (Sender: TObject;
+procedure TSearchResultsView.SearchInListEditKeyDown (Sender: TObject;
  var Key: Word; Shift: TShiftState );
 begin
  if (Key = VK_RETURN) then
-  bnForwardSearchClick(bnForwardSearch);
+  ForwardSearchButtonClick(ForwardSearchButton);
 end;
 
-procedure TSearchResultsView.bnFilterClick (Sender: TObject );
+procedure TSearchResultsView.FilterButtonClick (Sender: TObject );
 var CurrentTV: TLazSearchResultTV;
     mpMatchPos, mpOrgMatchPos: TLazSearchMatchPos;
     slPhrases: TStrings;
@@ -402,7 +405,7 @@ begin
  CurrentTV := GetTreeView(ResultsNoteBook.PageIndex);
  if Assigned(CurrentTV) then
   begin
-   if (Length(edSearchInList.Text) = 0) then Exit;//No Filter Phrases specified.
+   if (Length(SearchInListEdit.Text) = 0) then Exit;//No Filter Phrases specified.
    slPhrases := TStringList.Create;
    try
     //Parse Phrases
@@ -463,7 +466,7 @@ begin
      end;//End if if (slPhrases.Count > 0)
    finally
     FreeAndNil(slPhrases);
-    edSearchInList.SetFocus;
+    SearchInListEdit.SetFocus;
     if (CurrentTV.Items.Count > 0) then CurrentTV.Items[0].Selected:=True;//Goto first item
    end;//End try-finally
   end;//End if Assigned(CurrentTV)
@@ -565,7 +568,7 @@ var i, iLength: Integer;
     sPhrases, sPhrase: string;
 begin
  //Parse Phrases
- sPhrases := edSearchInList.Text;
+ sPhrases := SearchInListEdit.Text;
  iLength := Length(sPhrases);
  sPhrase := '';
  for i:=1 to iLength do
@@ -655,7 +658,7 @@ begin
   end;//if
 end;//ResultsNoteBookClosetabclicked
 
-procedure TSearchResultsView.btnSearchAgainClick(Sender: TObject);
+procedure TSearchResultsView.SearchAgainButtonClick(Sender: TObject);
 var
   CurrentTV: TLazSearchResultTV;
   SearchObj: TLazSearch;
@@ -782,7 +785,7 @@ begin
     end;
     NewTreeView.Skipped:=0;
     Result:= ResultsNoteBook.PageIndex;
-    edSearchInList.Clear;
+    SearchInListEdit.Clear;
   end;//if
 end;//AddResult
 

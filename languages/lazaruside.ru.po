@@ -1697,9 +1697,9 @@ msgstr "Закрыть проект"
 msgid "Close all editor files"
 msgstr "Закрыть все файлы редактора"
 
-#: lazarusidestrconsts:lissrclosepage
-msgid "Close page"
-msgstr "Закрыть страницу"
+#: lazarusidestrconsts:rsclosecurrentpage
+msgid "Close current page"
+msgstr ""
 
 #: lazarusidestrconsts:liskmcloseproject
 msgid "Close project"
@@ -3177,6 +3177,10 @@ msgstr "Английский"
 msgid "Enter data"
 msgstr "Введите данные"
 
+#: lazarusidestrconsts:rsenteroneormorephrasesthatyouwanttosearchorfilterin
+msgid "Enter one or more phrases that you want to Search or Filter in the list, seperated by space, or comma"
+msgstr ""
+
 #: lazarusidestrconsts:lismacropromptenterrunparameters
 msgid "Enter run parameters"
 msgstr "Введите параметры запуска"
@@ -3745,6 +3749,10 @@ msgstr "Фильтровать по любой части метода"
 msgid "Filter by matching with start of method"
 msgstr "Фильтровать по началу метода"
 
+#: lazarusidestrconsts:rsfilterthelistwiththecurrentfilterexpression
+msgid "Filter the list with the current filter expression"
+msgstr ""
+
 #: lazarusidestrconsts:lismenufind
 msgid "Find"
 msgstr "Найти"
@@ -3884,6 +3892,14 @@ msgstr "Перевести фокус в окно сообщений после 
 #: lazarusidestrconsts:srkmecjumptoeditor
 msgid "Focus to source editor"
 msgstr "Перевести фокус в редактор исходного кода"
+
+#: lazarusidestrconsts:srkmecfoldcurrent
+msgid "Fold at Cursor"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecfoldlevel
+msgid "Fold to Level %d"
+msgstr ""
 
 #: lazarusidestrconsts:liscefollowcursor
 msgid "Follow cursor"
@@ -4156,6 +4172,10 @@ msgstr "Переход к редактору исходного кода 8"
 #: lazarusidestrconsts:liskmgotosourceeditor9
 msgid "Go to source editor 9"
 msgstr "Переход к редактору исходного кода 9"
+
+#: lazarusidestrconsts:rsgotothenextiteminthesearchlist
+msgid "Go to the next item in the search list"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecgotoincludedirective
 msgid "Go to to include directive of current include file"
@@ -7641,6 +7661,10 @@ msgstr "Сброс результатов"
 msgid "Reset debugger"
 msgstr "Сброс отладчика"
 
+#: lazarusidestrconsts:rsresetfilter
+msgid "Reset filter"
+msgstr ""
+
 #: lazarusidestrconsts:lisresourceloaderror
 msgid "Resource load error"
 msgstr "Ошибка загрузки ресурса"
@@ -8057,10 +8081,6 @@ msgstr "Искать "
 msgid "Search Results"
 msgstr "Результаты поиска"
 
-#: lazarusidestrconsts:lissearchagain
-msgid "Search again"
-msgstr "Искать снова"
-
 #: lazarusidestrconsts:lisfrisearchincommentstoo
 msgid "Search in comments too"
 msgstr "Искать и в комментариях"
@@ -8068,10 +8088,6 @@ msgstr "Искать и в комментариях"
 #: lazarusidestrconsts:lisemdsearchintheseclasssections
 msgid "Search in these class sections:"
 msgstr "Искать в следующих секциях класса"
-
-#: lazarusidestrconsts:lisvsrsearchorfilterphrasesinlist
-msgid "Search or Filter Phrases In List"
-msgstr "Поиск или фильтрация фраз в списке"
 
 #: lazarusidestrconsts:lispatheditsearchpaths
 msgid "Search paths:"
@@ -8797,6 +8813,10 @@ msgstr "Стандартное меню Файл"
 msgid "Standard Help Menu"
 msgstr "Стандартное меню Справка"
 
+#: lazarusidestrconsts:rsstartanewsearch
+msgid "Start a new search"
+msgstr ""
+
 #: lazarusidestrconsts:lisstartwithanewproject
 msgid "Start with a new project"
 msgstr "При запуске начинать новый проект"
@@ -9116,6 +9136,10 @@ msgstr "Параметры текста"
 #: lazarusidestrconsts:srkmcatediting
 msgid "Text editing commands"
 msgstr "Команды редактирования текста"
+
+#: lazarusidestrconsts:srkmcatfold
+msgid "Text folding commands"
+msgstr ""
 
 #: lazarusidestrconsts:srkmcatmarker
 msgid "Text marker commands"
@@ -10472,6 +10496,14 @@ msgstr "Список отмен после сохранения"
 #: lazarusidestrconsts:dlgundolimit
 msgid "Undo limit"
 msgstr "Лимит отмен"
+
+#: lazarusidestrconsts:srkmecunfoldall
+msgid "Unfold all"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecunfoldcurrent
+msgid "Unfold at Cursor"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecblockunindent
 msgid "Unindent block"

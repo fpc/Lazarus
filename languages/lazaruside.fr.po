@@ -1698,9 +1698,9 @@ msgstr "Fermer le projet"
 msgid "Close all editor files"
 msgstr "Fermer tous les fichiers"
 
-#: lazarusidestrconsts:lissrclosepage
-msgid "Close page"
-msgstr "Fermer la page"
+#: lazarusidestrconsts:rsclosecurrentpage
+msgid "Close current page"
+msgstr ""
 
 #: lazarusidestrconsts:liskmcloseproject
 msgid "Close project"
@@ -3178,6 +3178,10 @@ msgstr "Anglais"
 msgid "Enter data"
 msgstr "Entrez les données"
 
+#: lazarusidestrconsts:rsenteroneormorephrasesthatyouwanttosearchorfilterin
+msgid "Enter one or more phrases that you want to Search or Filter in the list, seperated by space, or comma"
+msgstr ""
+
 #: lazarusidestrconsts:lismacropromptenterrunparameters
 msgid "Enter run parameters"
 msgstr "Entrez les paramètres d'exécution"
@@ -3746,6 +3750,10 @@ msgstr "Filtrer en associant n'importe quelle partie de la méthode"
 msgid "Filter by matching with start of method"
 msgstr "Filtrer en associant avec le début de la méthode"
 
+#: lazarusidestrconsts:rsfilterthelistwiththecurrentfilterexpression
+msgid "Filter the list with the current filter expression"
+msgstr ""
+
 #: lazarusidestrconsts:lismenufind
 msgid "Find"
 msgstr "Chercher"
@@ -3885,6 +3893,14 @@ msgstr "Focus messages après compilation"
 #: lazarusidestrconsts:srkmecjumptoeditor
 msgid "Focus to source editor"
 msgstr "Aller à l'éditeur de source"
+
+#: lazarusidestrconsts:srkmecfoldcurrent
+msgid "Fold at Cursor"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecfoldlevel
+msgid "Fold to Level %d"
+msgstr ""
 
 #: lazarusidestrconsts:liscefollowcursor
 msgid "Follow cursor"
@@ -4157,6 +4173,10 @@ msgstr "Aller à éditeur de source 8"
 #: lazarusidestrconsts:liskmgotosourceeditor9
 msgid "Go to source editor 9"
 msgstr "Aller à éditeur de source 9"
+
+#: lazarusidestrconsts:rsgotothenextiteminthesearchlist
+msgid "Go to the next item in the search list"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecgotoincludedirective
 msgid "Go to to include directive of current include file"
@@ -7642,6 +7662,10 @@ msgstr "Réinitialiser la liste des résultats"
 msgid "Reset debugger"
 msgstr "Réinitialiser le débogueur"
 
+#: lazarusidestrconsts:rsresetfilter
+msgid "Reset filter"
+msgstr ""
+
 #: lazarusidestrconsts:lisresourceloaderror
 msgid "Resource load error"
 msgstr "Erreur de lecture de ressource"
@@ -8058,10 +8082,6 @@ msgstr "Rechercher "
 msgid "Search Results"
 msgstr "Résultats de la recherche"
 
-#: lazarusidestrconsts:lissearchagain
-msgid "Search again"
-msgstr "Répéter la recherche"
-
 #: lazarusidestrconsts:lisfrisearchincommentstoo
 msgid "Search in comments too"
 msgstr "Chercher aussi dans les commentaires"
@@ -8069,10 +8089,6 @@ msgstr "Chercher aussi dans les commentaires"
 #: lazarusidestrconsts:lisemdsearchintheseclasssections
 msgid "Search in these class sections:"
 msgstr "Rechercher dans ces classes :"
-
-#: lazarusidestrconsts:lisvsrsearchorfilterphrasesinlist
-msgid "Search or Filter Phrases In List"
-msgstr "Rechercher ou filtrer les expressions dans la liste"
 
 #: lazarusidestrconsts:lispatheditsearchpaths
 msgid "Search paths:"
@@ -8798,6 +8814,10 @@ msgstr "Menu Fichier standard"
 msgid "Standard Help Menu"
 msgstr "Menu Aide standard"
 
+#: lazarusidestrconsts:rsstartanewsearch
+msgid "Start a new search"
+msgstr ""
+
 #: lazarusidestrconsts:lisstartwithanewproject
 msgid "Start with a new project"
 msgstr "Démarrer avec un nouveau projet"
@@ -9117,6 +9137,10 @@ msgstr "Attributs du texte"
 #: lazarusidestrconsts:srkmcatediting
 msgid "Text editing commands"
 msgstr "Commandes d'édition de texte"
+
+#: lazarusidestrconsts:srkmcatfold
+msgid "Text folding commands"
+msgstr ""
 
 #: lazarusidestrconsts:srkmcatmarker
 msgid "Text marker commands"
@@ -10473,6 +10497,14 @@ msgstr "Défaire après enregistrement"
 #: lazarusidestrconsts:dlgundolimit
 msgid "Undo limit"
 msgstr "Mémoire maximale pour l'annulation"
+
+#: lazarusidestrconsts:srkmecunfoldall
+msgid "Unfold all"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecunfoldcurrent
+msgid "Unfold at Cursor"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecblockunindent
 msgid "Unindent block"
