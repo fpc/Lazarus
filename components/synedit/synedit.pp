@@ -1606,7 +1606,6 @@ end;
 procedure TCustomSynEdit.DecPaintLock;
 var
   LastLineChanged: LongInt;
-  StartY: Integer;
 begin
   if (fPaintLock=1) and HandleAllocated then begin
     {$IFDEF SYN_LAZARUS}
@@ -1616,21 +1615,12 @@ begin
         if fHighlighterNeedsUpdateEndLine>Lines.Count then
           fHighlighterNeedsUpdateEndLine:=Lines.Count;
         LastLineChanged:=fHighlighterNeedsUpdateEndLine;
-        if Assigned(fHighlighter) then begin
-          // rescan all lines in range
-          // Note: The highlighter range of the line can be invalid as well,
-          //       so start scan one line earlier
-          StartY:=fHighlighterNeedsUpdateStartLine-2;
-          if StartY<=0 then begin
-            StartY:=0;
-            fHighlighter.ReSetRange;
-          end else begin
-            fHighlighter.SetRange(TSynEditStringList(Lines).Ranges[StartY]);
-          end;
-          LastLineChanged:=ScanFrom(StartY,
-                                    fHighlighterNeedsUpdateEndLine-1);
-          //DebugLn('TCustomSynEdit.DecPaintLock ',dbgs(fHighlighterNeedsUpdateStartLine),'-',dbgs(fHighlighterNeedsUpdateEndLine),' LastLineChanged=',dbgs(LastLineChanged));
-        end;
+        // rescan all lines in range
+        // Note: The highlighter range of the line can be invalid as well,
+        //       so start scan one line earlier
+        LastLineChanged:=ScanFrom(fHighlighterNeedsUpdateStartLine-2,
+                                  fHighlighterNeedsUpdateEndLine-1);
+        //DebugLn('TCustomSynEdit.DecPaintLock ',dbgs(fHighlighterNeedsUpdateStartLine),'-',dbgs(fHighlighterNeedsUpdateEndLine),' LastLineChanged=',dbgs(LastLineChanged));
         InvalidateLines(fHighlighterNeedsUpdateStartLine,LastLineChanged+1);
         InvalidateGutterLines(fHighlighterNeedsUpdateStartLine,LastLineChanged+1);
       end;
@@ -1659,7 +1649,6 @@ begin
   {$IFDEF SYN_LAZARUS}
   if HandleAllocated then LCLIntf.DestroyCaret(Handle);
   Beautifier:=nil;
-  FreeAndNil(fTextView);
   {$ENDIF}
   Highlighter := nil;
   // free listeners while other fields are still valid
@@ -1703,6 +1692,7 @@ begin
   FreeAndNil(fTextDrawer);
   FreeAndNil(fInternalImage);
   FreeAndNil(fFontDummy);
+  FreeAndNil(fTextView);
   FreeAndNil(fLines);
   {$ENDIF}
   inherited Destroy;
@@ -5897,12 +5887,29 @@ function TCustomSynEdit.ScanFrom(Index: integer
 {$ENDIF}
 
 begin
+  {$IFDEF SYN_LAZARUS}
+  if Index < 0 then Index := 0;
+  {$ENDIF}
   Result := Index;
+  {$IFDEF SYN_LAZARUS}
+  if Index > Lines.Count - 1 then Exit;
+  if not assigned(fHighlighter) then begin
+    fTextView.FixFoldingAtTextIndex(Index);
+    if fTextView.FoldedAtTextIndex[fCaretY - 1] then
+      fTextView.UnFoldAtTextIndex(fCaretY - 1);
+    Topline := TopLine;
+    exit;
+  end;
+  FixFStart := Index;
+  if Result > 0 then
+    fHighlighter.SetRange(TSynEditStringList(Lines).Ranges[Result])
+  else begin
+    fHighlighter.ReSetRange;
+    TSynEditStringList(Lines).Ranges[0] := fHighlighter.GetRange;
+  end;
+  {$ENDIF}
   if Index >= Lines.Count - 1 then Exit;
   //debugln('TCustomSynEdit.ScanFrom A Index=',dbgs(Index),' Line="',Lines[Index],'"');
-  {$IFDEF SYN_LAZARUS}
-  FixFStart := Index;
-  {$ENDIF}
   fHighlighter.SetLine(Lines[Result], Result);
   inc(Result);
   fHighlighter.NextToEol;
@@ -5932,7 +5939,7 @@ begin
   //  => update code fold attributes of last scanned line
   if (Result>Index+1) and (Result<=Lines.Count) then
     SetCodeFoldAttributes;
-  fTextView.FixFoldingAtTextIndex(FixFStart, Result);
+  fTextView.FixFoldingAtTextIndex(Index, Result);
   if fTextView.FoldedAtTextIndex[fCaretY - 1] then
     fTextView.UnFoldAtTextIndex(fCaretY - 1);
   Topline := TopLine;
@@ -5966,6 +5973,9 @@ procedure TCustomSynEdit.ListAdded(Index: integer);
 // Index is 0 based
 begin
   //debugln('TCustomSynEdit.ListAdded ',dbgs(Index),' ',dbgs(Assigned(fHighlighter)));
+  {$IFDEF SYN_LAZARUS}
+  ScanFrom(Index - 1);
+  {$ELSE}
   if Assigned(fHighlighter) then begin
     if (Index > 0) then begin
       // the current line was added, start scanning from the prior line
@@ -5978,6 +5988,7 @@ begin
         ScanFrom(0);
     end;
   end;
+  {$ENDIF}
   InvalidateLines(Index + 1, MaxInt);
   InvalidateGutterLines(Index + 1, MaxInt);
 end;
@@ -6001,23 +6012,26 @@ end;
 procedure TCustomSynEdit.ListDeleted(Index: Integer);
 // Index is 0 based
 begin
-  if Assigned(fHighlighter) and (Lines.Count >= 1) then
+  {$IFDEF SYN_LAZARUS}
+  ScanFrom(Index - 1);
+  {$ELSE}
+  if Assigned(fHighlighter) and (Lines.Count >= 1) then begin
     if (Index > 0) then begin
       // start scanning from prior line
 {begin}                                                                         //mh 2000-10-10
-//      fHighlighter.SetRange(Lines.Objects[Index - 1]);
       //DebugLn(['TCustomSynEdit.ListDeleted A Index=',Index]);
       fHighlighter.SetRange(TSynEditStringList(Lines).Ranges[Index - 1]);
       ScanFrom(Index - 1);
     end else begin
       //DebugLn(['TCustomSynEdit.ListDeleted B Index=',Index]);
       fHighlighter.ResetRange;
-//      Lines.Objects[0] := fHighlighter.GetRange;
       TSynEditStringList(Lines).Ranges[0] := fHighlighter.GetRange;
 {end}                                                                           //mh 2000-10-10
       if (Lines.Count > 1) then
         ScanFrom(0);
     end;
+  end;
+  {$ENDIF}
   InvalidateLines(Index + 1, MaxInt);
   InvalidateGutterLines(Index + 1, MaxInt);
 end;
@@ -6025,11 +6039,13 @@ end;
 procedure TCustomSynEdit.ListInserted(Index: Integer);
 // Index is 0 based
 begin
-  if Assigned(fHighlighter) and (Lines.Count >= 1) then
+  {$IFDEF SYN_LAZARUS}
+  ScanFrom(Index - 1);
+  {$ELSE}
+  if Assigned(fHighlighter) and (Lines.Count >= 1) then begin
     if (Index > 0) then begin
       // start scanning from prior line
 {begin}                                                                         //mh 2000-10-10
-//      fHighlighter.SetRange(Lines.Objects[Index - 1]);
       // the line and the range of the line
       //DebugLn(['TCustomSynEdit.ListInserted A Index=',Index]);
       fHighlighter.SetRange(TSynEditStringList(Lines).Ranges[Index - 1]);
@@ -6037,12 +6053,13 @@ begin
     end else begin
       //DebugLn(['TCustomSynEdit.ListInserted B Index=',Index]);
       fHighlighter.ReSetRange;
-//      Lines.Objects[0] := fHighlighter.GetRange;
       TSynEditStringList(Lines).Ranges[0] := fHighlighter.GetRange;
 {end}                                                                           //mh 2000-10-10
       if (Lines.Count > 1) then
         ScanFrom(0);
     end;
+  end;
+  {$ENDIF}
   InvalidateLines(Index + 1, {$IFDEF SYN_LAZARUS}ScreenRowToRow(LinesInWindow+1){$ELSE}TopLine + LinesInWindow{$ENDIF});
   InvalidateGutterLines(Index + 1, {$IFDEF SYN_LAZARUS}ScreenRowToRow(LinesInWindow+1){$ELSE}TopLine + LinesInWindow{$ENDIF});
 end;
@@ -6065,13 +6082,9 @@ begin
       fHighlighterNeedsUpdateEndLine:=Index+1;
     exit;
   end;
-  if Assigned(fHighlighter) then begin
-    fHighlighter.SetRange(TSynEditStringList(Lines).Ranges[Index]);             //mh 2000-10-10
-    EndIndex:=ScanFrom(Index) + 1;
-    InvalidateLines(Index + 1, EndIndex);
-    InvalidateGutterLines(Index + 1, EndIndex);
-  end else
-    InvalidateLines(Index + 1, Index + 1);
+  EndIndex:=ScanFrom(Index) + 1;
+  InvalidateLines(Index + 1, EndIndex);
+  InvalidateGutterLines(Index + 1, EndIndex);
   {$ELSE}
   if Assigned(fHighlighter) then begin
 //    fHighlighter.SetRange(Lines.Objects[Index]);
@@ -6117,10 +6130,10 @@ var
   i: integer;
 {$ENDIF}
 begin
+  {$IFDEF SYN_LAZARUS}
+  ScanFrom(0,Lines.Count-1);
+  {$ELSE}
   if Assigned(fHighlighter) and (Lines.Count > 0) then begin
-    {$IFDEF SYN_LAZARUS}
-    ScanFrom(0,Lines.Count-1);
-    {$ELSE}
     fHighlighter.ResetRange;
 {begin}                                                                         //mh 2000-10-10
 (*
@@ -6142,8 +6155,8 @@ begin
       Inc(i);
     until i >= Lines.Count;
 {end}                                                                           //mh 2000-10-10
-    {$ENDIF}
   end;
+  {$ENDIF}
 end;
 
 {$IFDEF SYN_MBCSSUPPORT}
