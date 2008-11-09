@@ -6889,9 +6889,7 @@ begin
   ToY:=Y+DCOrigin.Y;
   
   {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-  DevCtx.SetLineSkipLastPoint;
   gdk_draw_line(DevCtx.Drawable, DevCtx.GC, FromX, FromY, ToX, ToY);
-  DevCtx.UnsetLineSkipLastPoint;
   {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
 
   DevCtx.PenPos:= Point(X, Y);
@@ -7257,9 +7255,7 @@ begin
   if Result and not DevCtx.IsNullPen
   then begin
     {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-    DevCtx.SetLineSkipLastPoint;
     gdk_draw_lines(DevCtx.Drawable, DevCtx.GC, PointArray, NumPts);
-    DevCtx.UnsetLineSkipLastPoint;
     {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
   end;
 

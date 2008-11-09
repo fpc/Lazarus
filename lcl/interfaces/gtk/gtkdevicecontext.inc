@@ -652,24 +652,6 @@ begin
   SelectRegion;
 end;
 
-procedure TGtkDeviceContext.SetLineSkipLastPoint;
-begin
-  gdk_gc_get_values(GC, @FCurValues);
-  FLineSkipLastPoint :=
-    (FCurValues.line_width = 1) or
-    (FCurValues.cap_style <> GDK_CAP_NOT_LAST);
-  if FLineSkipLastPoint then
-    gdk_gc_set_line_attributes(GC, 0, FCurValues.line_style,
-                               GDK_CAP_NOT_LAST, FCurValues.join_style);
-end;
-
-procedure TGtkDeviceContext.UnsetLineSkipLastPoint;
-begin
-  if FLineSkipLastPoint then
-    gdk_gc_set_line_attributes(GC, FCurValues.line_width, FCurValues.line_style,
-                               FCurValues.cap_style, FCurValues.join_style);
-end;
-
 function TGtkDeviceContext.SelectBitmap(AGdiObject: PGdiObject): PGdiObject;
 var
   NewDrawable: PGdkPixmap;
