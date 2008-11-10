@@ -389,7 +389,7 @@ end;
 
 function TCustomListBox.GetItemHeight: Integer;
 begin
-  if HandleAllocated and (Style <> lbOwnerDrawVariable) then
+  if HandleAllocated and (Style = lbStandard) then
   begin
     with ItemRect(TopIndex) do
       Result := Bottom - Top;

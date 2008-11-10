@@ -665,7 +665,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonCustomControl.CreateWidget(const AParams: TCreateParams);
 begin
-  Widget := CreateCustomHIView(ParamsToHIRect(AParams));
+  Widget := CreateCustomHIView(ParamsToHIRect(AParams), LCLObject.ControlStyle);
   if Widget = nil then RaiseCreateWidgetError(LCLObject);
   
   FScrollView := EmbedInScrollView(AParams);
@@ -877,7 +877,7 @@ end;
   Method:  TCarbonCustomControl.SetScrollInfo
   Params:  SBStyle    - Scrollbar type (SB_VERT, SB_HORZ)
            ScrollInfo - Scrolling info
-  Returns: The old scroll bar position
+  Returns: The new scroll bar position
 
   Sets the scrolling info of the specified scroll bar
  ------------------------------------------------------------------------------}
@@ -892,11 +892,6 @@ begin
     DebugLn('TCarbonCustomControl.SetScrollInfo ' + LCLObject.Name +
       ' SBStyle: ' + DbgS(SBStyle) + ' ' + DbgS(ScrollInfo));
   {$ENDIF}
-
-  if SBStyle = SB_HORZ then
-    Result := Round(FScrollOrigin.X);
-  if SBStyle = SB_VERT then
-    Result := Round(FScrollOrigin.Y);
 
   if (SIF_RANGE and ScrollInfo.fMask) > 0 then
   begin
@@ -927,6 +922,11 @@ begin
     if SBStyle = SB_VERT then
       FScrollPageSize.Y := ScrollInfo.nPage;
   end;
+
+  if SBStyle = SB_HORZ then
+    Result := Round(FScrollOrigin.X);
+  if SBStyle = SB_VERT then
+    Result := Round(FScrollOrigin.Y);
   
   if (SBStyle in [SB_HORZ, SB_VERT]) and
     ((ScrollInfo.fMask and (SIF_RANGE or SIF_POS or SIF_PAGE)) > 0) then

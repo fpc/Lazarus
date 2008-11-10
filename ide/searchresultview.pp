@@ -64,6 +64,7 @@ type
     property TheText: string read FTheText write FTheText;
     property ShownFilename: string read FShownFilename write FShownFilename;
     property NextInThisLine: TLazSearchMatchPos read FNextInThisLine write FNextInThisLine;
+    destructor Destroy; override;
   end;//TLazSearchMatchPos
 
 
@@ -514,11 +515,15 @@ begin
     if (LastPos<>nil) and (LastPos.Filename=SearchPos.Filename) and
        (LastPos.FFileStartPos.Y=SearchPos.FFileStartPos.Y) and
        (LastPos.FFileEndPos.Y=SearchPos.FFileEndPos.Y) then
+    begin
+      while (LastPos.NextInThisLine<>nil) do
+        LastPos := LastPos.NextInThisLine;
       LastPos.NextInThisLine:=SearchPos
-     else if CurrentLB.UpdateState then
-       CurrentLB.UpdateItems.AddObject(ShownText, SearchPos)
-      else
-       CurrentLB.Items.AddObject(ShownText, SearchPos);
+    end
+    else if CurrentLB.UpdateState then
+      CurrentLB.UpdateItems.AddObject(ShownText, SearchPos)
+    else
+      CurrentLB.Items.AddObject(ShownText, SearchPos);
     CurrentLB.ShortenPaths;
   end;//if
 end;//AddMatch
@@ -1194,6 +1199,14 @@ function TLazSearchResultLB.BeautifyLine(SearchPos: TLazSearchMatchPos
 begin
   Result:=BeautifyLine(SearchPos.ShownFilename,SearchPos.FileStartPos.X,
                        SearchPos.FileStartPos.Y,SearchPos.TheText);
+end;
+
+{ TLazSearchMatchPos }
+
+destructor TLazSearchMatchPos.Destroy;
+begin
+  FreeAndNil(FNextInThisLine);
+  inherited Destroy;
 end;
 
 initialization

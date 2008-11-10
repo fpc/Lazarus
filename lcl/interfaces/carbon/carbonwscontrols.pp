@@ -38,7 +38,7 @@ uses
   // widgetset
   WSControls, WSLCLClasses, WSProc,
   // LCL Carbon
-  CarbonDef, CarbonPrivate;
+  CarbonDef, CarbonPrivate, CarbonEdits, CarbonListViews;
 
 type
 
@@ -66,6 +66,8 @@ type
   protected
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+
+    class function  CanFocus(const AWincontrol: TWinControl): Boolean; override;
 
     class procedure AddControl(const AControl: TControl); override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
@@ -310,6 +312,29 @@ begin
     [AWinControl.Name, AWinControl.ClassName]);
     
   Result := TLCLIntfHandle(nil);
+end;
+
+class function TCarbonWSWinControl.CanFocus(const AWincontrol: TWinControl): Boolean;
+var
+  Bit: CFIndex;
+  Valid: Boolean;
+begin
+  Result := inherited;
+  if not CheckHandle(AWincontrol, Self, 'CanFocus') then Exit;
+
+  Bit := CFPreferencesGetAppIntegerValue(CFSTR('AppleKeyboardUIMode'),
+    kCFPreferencesCurrentApplication, Valid);
+
+  DebugLn(DbgS(Bit));
+  if Valid then
+  begin
+    if (Bit <> 0) then
+      Result := True
+    else
+      Result := (TCarbonWidget(AWincontrol.Handle) is TCarbonControlWithEdit) or
+        (TCarbonWidget(AWincontrol.Handle) is TCarbonDataBrowser) or
+          (TCarbonWidget(AWincontrol.Handle) is TCarbonCustomControl);
+  end;
 end;
 
 {------------------------------------------------------------------------------

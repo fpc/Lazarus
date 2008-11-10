@@ -50,7 +50,8 @@ uses
   Classes, SysUtils, LCLProc, Controls, Forms, Buttons, StdCtrls, ComCtrls,
   Dialogs, ExtCtrls, LResources, Laz_XMLCfg,
   BaseIDEIntf, IDEContextHelpEdit,
-  IDEProcs, SysVarUserOverrideDlg, InputHistory, LazarusIDEStrConsts, FileUtil;
+  IDEProcs, SysVarUserOverrideDlg, InputHistory, LazarusIDEStrConsts, FileUtil,
+  ButtonPanel;
 
 { The xml format version:
     When the format changes (new values, changed formats) we can distinguish old
@@ -111,10 +112,8 @@ type
   { TRunParamsOptsDlg }
 
   TRunParamsOptsDlg = class(TForm)
-    HelpButton: TBitBtn;
-    CancelButton: TBitBtn;
+    ButtonPanel: TButtonPanel;
     CmdLineParametersComboBox: TComboBox;
-    OkButton: TBitBtn;
     UseDisplayCheckBox: TCheckBox;
     DisplayEdit: TEdit;
     DisplayGroupBox: TGroupBox;
@@ -343,12 +342,9 @@ begin
 
   Caption := dlgRunParameters;
   SetupNotebook;
-  OkButton.Caption := lisOkBtn;
-  CancelButton.Caption := dlgCancel;
-  CancelControl := CancelButton;
-  OkButton.LoadGlyphFromLazarusResource('btn_ok');
-  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
-  HelpButton.LoadGlyphFromLazarusResource('btn_help');
+
+  ButtonPanel.OKButton.OnClick := @OKButtonClick;
+  ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
 end;
 
 procedure TRunParamsOptsDlg.SetupNotebook;

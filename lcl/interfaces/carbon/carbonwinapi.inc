@@ -3030,7 +3030,7 @@ end;
            SBStyle    - Scroll bar flag
            ScrollInfo - Scrolling info
            bRedraw    - Redraw the scroll bar?
-  Returns: The old position value
+  Returns: The new position value
 
   Sets the parameters of a scroll bar
  ------------------------------------------------------------------------------}
@@ -3051,7 +3051,6 @@ begin
     if not CheckWidget(Handle, 'SetScrollInfo', TCarbonControl) then Exit;
 
     CarbonControl := TCarbonControl(Handle);
-    Result := CarbonControl.GetValue;
     
     if (SIF_RANGE and ScrollInfo.fMask) > 0 then
     begin
@@ -3062,6 +3061,8 @@ begin
       CarbonControl.SetValue(ScrollInfo.nPos);
     if (SIF_PAGE and ScrollInfo.fMask) > 0 then
       CarbonControl.SetViewSize(ScrollInfo.nPage);
+
+    Result := CarbonControl.GetValue;
   end
   else
   begin

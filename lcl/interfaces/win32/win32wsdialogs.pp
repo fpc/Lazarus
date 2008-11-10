@@ -345,17 +345,15 @@ begin
   {$ifdef WindowsUnicodeSupport}
   if UnicodeEnabledOS then
   begin
-    FolderSize := CommDlg_OpenSave_GetFolderPathW(GetParent(Wnd), nil, 0);
-    FilesSize := CommDlg_OpenSave_GetSpecW(GetParent(Wnd), nil, 0);
+    FolderSize := SendMessageW(GetParent(Wnd), CDM_GETFOLDERPATH, 0, LPARAM(nil));
+    FilesSize := SendMessageW(GetParent(Wnd), CDM_GETSPEC, 0, LPARAM(nil));
     SetLength(DialogRec^.UnicodeFolderName, FolderSize - 1);
-    CommDlg_OpenSave_GetFolderPathW(GetParent(Wnd),
-                              PWideChar(DialogRec^.UnicodeFolderName),
-                              FolderSize);
+    SendMessageW(GetParent(Wnd), CDM_GETFOLDERPATH, FolderSize,
+                 LPARAM(PWideChar(DialogRec^.UnicodeFolderName)));
 
     SetLength(DialogRec^.UnicodeFileNames, FilesSize - 1);
-    CommDlg_OpenSave_GetSpecW(GetParent(Wnd),
-                              PWideChar(DialogRec^.UnicodeFileNames),
-                              FilesSize);
+    SendMessageW(GetParent(Wnd), CDM_GETSPEC, FilesSize,
+                 LPARAM(PWideChar(DialogRec^.UnicodeFileNames)));
   end else
   {$endif}
   begin

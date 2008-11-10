@@ -8777,7 +8777,7 @@ end;
 {------------------------------------------------------------------------------
   Function: SetScrollInfo
   Params:  none
-  Returns: The old position value
+  Returns: The new position value
 
 
  ------------------------------------------------------------------------------}
@@ -8925,8 +8925,6 @@ begin
 
   if Adjustment = nil then exit;
 
-  Result := Round(Adjustment^.value);
-
   if (ScrollInfo.fMask and SIF_POS) <> 0
   then begin
     Adjustment^.value := ScrollInfo.nPos;
@@ -8941,6 +8939,8 @@ begin
     Adjustment^.page_size := ScrollInfo.nPage;
     Adjustment^.page_increment := (ScrollInfo.nPage div 6)+1;
   end;
+
+  Result := Round(Adjustment^.value);
 
   {DebugLn('');
   DebugLn('[TGtkWidgetSet.SetScrollInfo] Result=',Result,
@@ -8968,7 +8968,7 @@ begin
       and GtkWidgetIsA(PGtkWidget(Scroll),gtk_widget_get_type) then
         gtk_widget_show(PGTKWidget(Scroll))
       else
-        gtk_widget_hide(PGTKWidget(Scroll))
+        gtk_widget_hide(PGTKWidget(Scroll));
     end;
 
 (*

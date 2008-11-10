@@ -1220,7 +1220,8 @@ begin
   FHint := AValue;
   if Assigned(FOnHint) or (FApplicationHandlers[ahtHint].Count > 0) then
   begin
-    FOnHint(Self);
+    if Assigned(FOnHint) then
+      FOnHint(Self);
     FApplicationHandlers[ahtHint].CallNotifyEvents(Self);
   end else
   begin

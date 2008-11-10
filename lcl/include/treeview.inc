@@ -4172,7 +4172,7 @@ var
         with Canvas do begin
           // draw virtual tree line
           Pen.Color:=TreeLineColor;
-          Pen.Style:=psDot;
+          Pen.Style:=TreeLinePenStyle;
           x:=Node.DisplayExpandSignRight+Indent div 2;
           MoveTo(x,NodeRect.Bottom-3);
           LineTo(x,NodeRect.Bottom-2);
@@ -4195,7 +4195,7 @@ var
         with Canvas do begin
           // draw virtual tree line
           Pen.Color:=TreeLineColor;
-          Pen.Style:=psDot;
+          Pen.Style:=TreeLinePenStyle;
           x:=Node.DisplayExpandSignLeft+Indent div 2;
           MoveTo(x,NodeRect.Top+1);
           x:=Node.DisplayExpandSignRight;
@@ -4217,7 +4217,7 @@ var
         with Canvas do begin
           // draw virtual tree line
           Pen.Color:=TreeLineColor;
-          Pen.Style:=psDot;
+          Pen.Style:=TreeLinePenStyle;
           x:=Node.DisplayExpandSignLeft+Indent div 2;
           MoveTo(x,NodeRect.Bottom-3);
           LineTo(x,NodeRect.Bottom-2);

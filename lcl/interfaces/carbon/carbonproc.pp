@@ -78,7 +78,7 @@ procedure FillStandardDescription(out Desc: TRawImageDescription);
 
 function GetCarbonThemeMetric(Metric: ThemeMetric; DefaultValue: Integer = 0): Integer;
 
-function CreateCustomHIView(const ARect: HIRect): HIViewRef;
+function CreateCustomHIView(const ARect: HIRect; ControlStyle: TControlStyle = []): HIViewRef;
 
 procedure SetControlViewStyle(Control: ControlRef; TinySize, SmallSize, NormalSize: Integer; ControlHeight: Boolean = True);
 
@@ -584,9 +584,12 @@ end;
 {------------------------------------------------------------------------------
   Name:    CreateCustomHIView
   Params:  ARect - Bounds rect
+           ControlStyle
   Returns: New custom HIView
  ------------------------------------------------------------------------------}
-function CreateCustomHIView(const ARect: HIRect): HIViewRef;
+function CreateCustomHIView(const ARect: HIRect; ControlStyle: TControlStyle): HIViewRef;
+var
+  Features: HIViewFeatures;
 const
   SName = 'CreateCustomHIView';
 begin
@@ -596,9 +599,12 @@ begin
     HIObjectCreate(CustomControlClassID, nil, Result),
     SName, 'HIObjectCreate') then Exit;
 
+  Features := kHIViewFeatureAllowsSubviews;
+  if not (csNoFocus in ControlStyle) then
+    Features := Features or kHIViewFeatureGetsFocusOnClick;
+
   OSError(
-    HIViewChangeFeatures(Result, kHIViewFeatureAllowsSubviews or
-      kHIViewFeatureGetsFocusOnClick, 0),
+    HIViewChangeFeatures(Result, Features, 0),
     SName, 'HIViewChangeFeatures');
     
   OSError(HIViewSetVisible(Result, True), SName, SViewVisible);

@@ -1296,7 +1296,8 @@ begin
       if not UpAtomIs('OF') then
         if ExceptionOnError then
           RaiseStringExpectedButAtomFound('"of"')
-        else exit;
+        else
+          exit;
       if not Extract then ReadNextAtom else ExtractNextAtom(copying,Attr);
       if UpAtomIs('CONST') then begin
         if (phpCreateNodes in Attr) then begin
@@ -1353,10 +1354,14 @@ begin
         EndChildNode;
     end;
     if (phpCreateNodes in Attr) then begin
-      if IsFileType then
+      if IsFileType then begin
+        CurNode.EndPos:=CurPos.EndPos;
         EndChildNode;
-      if IsArrayType then
+      end;
+      if IsArrayType then begin
+        CurNode.EndPos:=CurPos.EndPos;
         EndChildNode;
+      end;
     end;
   end else begin
     if ExceptionOnError then

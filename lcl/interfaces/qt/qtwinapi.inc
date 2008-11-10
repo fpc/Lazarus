@@ -4302,7 +4302,7 @@ end;
 {------------------------------------------------------------------------------
   Function: SetScrollInfo
   Params:  none
-  Returns: The old position value
+  Returns: The new position value
 
 
  ------------------------------------------------------------------------------}

@@ -1241,7 +1241,7 @@ type
     function CreateMethod(const Name: ShortString; ATypeInfo:PTypeInfo;
                           APersistent: TPersistent;
                           const APropertyPath: string): TMethod;
-    function GetMethodName(const Method: TMethod; CheckOwner: TObject): String;
+    function GetMethodName(const Method: TMethod; PropOwner: TObject): String;
     procedure GetMethods(TypeData: PTypeData; Proc: TGetStringProc);
     function MethodExists(const Name: String; TypeData: PTypeData;
       var MethodIsCompatible,MethodIsPublished,IdentIsMethod: boolean):boolean;
@@ -5432,24 +5432,20 @@ begin
 end;
 
 function TPropertyEditorHook.GetMethodName(const Method: TMethod;
-  CheckOwner: TObject): String;
+  PropOwner: TObject): String;
 var
   i: Integer;
 begin
   i:=GetHandlerCount(htGetMethodName);
   if GetNextHandlerIndex(htGetMethodName,i) then begin
-    Result:=TPropHookGetMethodName(FHandlers[htGetMethodName][i])(Method,CheckOwner);
+    Result:=TPropHookGetMethodName(FHandlers[htGetMethodName][i])(Method,PropOwner);
   end else begin
     // search the method name with the given code pointer
     if Assigned(Method.Code) then begin
       if Method.Data<>nil then begin
-        if (CheckOwner<>nil) and (TObject(Method.Data)<>CheckOwner) then
-          Result:=''
-        else begin
-          Result:=TObject(Method.Data).MethodName(Method.Code);
-          if Result='' then
-            Result:='<Unpublished>';
-        end;
+        Result:=TObject(Method.Data).MethodName(Method.Code);
+        if Result='' then
+          Result:='<Unpublished>';
       end else
         Result:='<No LookupRoot>';
     end else

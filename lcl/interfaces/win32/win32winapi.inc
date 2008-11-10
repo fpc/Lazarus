@@ -341,10 +341,17 @@ begin
     begin
       TLMessage(Message).Result := CallDefaultWindowProc(Handle, WM_GETDLGCODE, 0, 0);
     end;
+
+    CN_NOTIFY:
+      with TLMessage(Message) do
+        if (Sender is TCustomTrackBar) then
+            Result := SendMessage(Handle, Msg, WParam, LParam)
+        else
+          Result := CallDefaultWindowProc(Handle, Msg, WParam, LParam);
   else
     if TLMessage(Message).Msg >= WM_USER then
-    with TLMessage(Message) do
-      Result := CallDefaultWindowProc(Handle, Msg, WParam, LParam);
+      with TLMessage(Message) do
+        Result := CallDefaultWindowProc(Handle, Msg, WParam, LParam);
   end;
 end;
 
@@ -2920,7 +2927,7 @@ end;
            SBStyle    - scroll bar flag
            ScrollInfo - record with scroll parameters
            BRedraw    - is the scroll bar is redrawn?
-  Returns: The old position value
+  Returns: The new position value
 
   Sets the parameters of a scroll bar.
  ------------------------------------------------------------------------------}
