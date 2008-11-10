@@ -191,5 +191,5 @@ procedure gtk_file_chooser_set_do_overwrite_confirmation(chooser:PGtkFileChooser
 function gdk_screen_is_composited(screen: PGdkScreen): gboolean; cdecl; external gdklib;
 {$endif}
 var
-  glibhandle: PtrUInt = 0;
+  glibhandle: TLibHandle = NilHandle;
   g_slice_free1: procedure(block_size:gsize; mem_block:gpointer); cdecl;

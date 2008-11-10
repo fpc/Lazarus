@@ -63,6 +63,6 @@ end;
 
 procedure Finalize;
 begin
-  if glibhandle <> 0 then
+  if glibhandle <> NilHandle then
     FreeLibrary(glibhandle);
 end;
