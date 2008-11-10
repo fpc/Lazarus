@@ -371,24 +371,26 @@ end;
 { TGtk2WSMenu }
 
 class procedure TGtk2WSMenu.SetBiDiMode(const AMenu : TMenu;
-  UseRightToLeftAlign, UseRightToLeftReading : Boolean
-  );
+  UseRightToLeftAlign, UseRightToLeftReading : Boolean);
 {$ifdef GTK_2_8}
 const
-  MenuDirection : array[Boolean] of Longint = (GTK_PACK_DIRECTION_LTR, GTK_PACK_DIRECTION_RTL);
+  MenuDirection : array[Boolean] of Longint = (
+    GTK_PACK_DIRECTION_LTR,
+    GTK_PACK_DIRECTION_RTL);
+{$endif}
+begin
+{$ifdef GTK_2_8}
+  gtk_menu_bar_set_pack_direction(PGtkMenuBar(AMenu.Handle), MenuDirection[UseRightToLeftAlign]);
 {$endif}
 
-begin
-  {$ifdef GTK_2_8}
-     gtk_menu_bar_set_pack_direction(PGtkMenuBar(AMenu.Handle), MenuDirection[UseRightToLeftAlign]);
-  {$endif}
-
   if UseRightToLeftReading then
-   begin
-   end
-  else begin
-       end;
-
+  begin
+    // ?
+  end
+  else
+  begin
+    // ?
+  end;
 end;
 
 initialization

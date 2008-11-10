@@ -79,7 +79,6 @@
     // not supported
     {$fatal X is required for GTK1}
   {$endif}
-  {$define GTK_2_8}
   {$define GTK_2_10}
 {$endif}
 
@@ -87,4 +86,5 @@
 {$IFDEF Gtk2}
 // see http://bugs.freepascal.org/view.php?id=12145
 {off $DEFINE EnabledGtkThreading}
+{$define GTK_2_8}
 {$ENDIF}
