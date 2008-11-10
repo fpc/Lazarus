@@ -552,11 +552,27 @@ type
 
   TPenPattern = array of LongWord;
 
-  TPenHandleCache = class(TBlockResourceCache)
+  { TPenHandleCacheDescriptor }
+
+  TPenHandleCacheDescriptor = class(TResourceCacheDescriptor)
+  public
+    ExtPen: TExtLogPen;
+    Pattern: TPenPattern;
+  end;
+
+  { TPenHandleCache }
+
+  TPenHandleCache = class(TResourceCache)
   protected
     procedure RemoveItem(Item: TResourceCacheItem); override;
   public
     constructor Create;
+    function CompareDescriptors(Tree: TAvgLvlTree; Desc1, Desc2: Pointer): integer; override;
+    function FindPen(APen: TLCLHandle): TResourceCacheItem;
+    function FindPenDesc(const AExtPen: TExtLogPen;
+                         const APattern: TPenPattern): TPenHandleCacheDescriptor;
+    function Add(APen: TLCLHandle; const AExtPen: TExtLogPen;
+                 const APattern: TPenPattern): TPenHandleCacheDescriptor;
   end;
 
   TPen = class(TFPCustomPen)
@@ -2398,7 +2414,6 @@ begin
   FreeAndNil(PenResourceCache);
   FreeAndNil(BrushResourceCache);
 end;
-
 
 initialization
   UpdateLock := TCriticalSection.Create;

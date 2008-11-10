@@ -29,10 +29,10 @@ type
 
 function CompareLogFontAndNameWithResDesc(Key: PLogFontAndName; Desc: TFontHandleCacheDescriptor): integer;
 begin
-  Result:=CompareStr(Key^.LongFontName,Desc.LongFontName);
+  Result := CompareStr(Key^.LongFontName, Desc.LongFontName);
   //debugln('CompareLogFontAndNameWithResDesc A ',Key^.LongFontName,' ',Desc.LongFontName,' ',DbgS(Desc),' Result=',Result);
-  if Result=0 then
-    Result:=CompareMemRange(@Key^.LogFont,@Desc.LogFont,SizeOf(Desc.LogFont));
+  if Result = 0 then
+    Result := CompareMemRange(@Key^.LogFont, @Desc.LogFont, SizeOf(Desc.LogFont));
   //debugln('CompareLogFontAndNameWithResDesc END Result=',Result);
 end;
 
@@ -51,14 +51,13 @@ end;
 function TFontHandleCache.CompareDescriptors(Tree: TAvgLvlTree; Desc1,
   Desc2: Pointer): integer;
 var
-  Descriptor1: TFontHandleCacheDescriptor;
-  Descriptor2: TFontHandleCacheDescriptor;
+  Descriptor1: TFontHandleCacheDescriptor absolute Desc1;
+  Descriptor2: TFontHandleCacheDescriptor absolute Desc2;
 begin
-  Descriptor1:=TFontHandleCacheDescriptor(Desc1);
-  Descriptor2:=TFontHandleCacheDescriptor(Desc2);
-  Result:=CompareStr(Descriptor1.LongFontName,Descriptor2.LongFontName);
-  if Result<>0 then exit;
-  Result:=CompareMemRange(@Descriptor1.LogFont,@Descriptor2.LogFont,
+  Result := CompareStr(Descriptor1.LongFontName, Descriptor2.LongFontName);
+  if Result <> 0 then
+    Exit;
+  Result := CompareMemRange(@Descriptor1.LogFont, @Descriptor2.LogFont,
                           SizeOf(Descriptor1.LogFont));
 end;
 
@@ -66,12 +65,12 @@ function TFontHandleCache.FindFont(TheFont: TLCLHandle): TResourceCacheItem;
 var
   ANode: TAvgLvlTreeNode;
 begin
-  ANode:=FItems.FindKey(@TheFont,
-                        TListSortCompare(@ComparePHandleWithResourceCacheItem));
-  if ANode<>nil then
-    Result:=TResourceCacheItem(ANode.Data)
+  ANode := FItems.FindKey(@TheFont,
+                          TListSortCompare(@ComparePHandleWithResourceCacheItem));
+  if ANode <> nil then
+    Result := TResourceCacheItem(ANode.Data)
   else
-    Result:=nil;
+    Result := nil;
 end;
 
 function TFontHandleCache.FindFontDesc(const LogFont: TLogFont;
@@ -80,14 +79,14 @@ var
   LogFontAndName: TLogFontAndName;
   ANode: TAvgLvlTreeNode;
 begin
-  LogFontAndName.LogFont:=LogFont;
-  LogFontAndName.LongFontName:=LongFontName;
-  ANode:=FDescriptors.Findkey(@LogFontAndName,
+  LogFontAndName.LogFont := LogFont;
+  LogFontAndName.LongFontName := LongFontName;
+  ANode := FDescriptors.Findkey(@LogFontAndName,
                            TListSortCompare(@CompareLogFontAndNameWithResDesc));
-  if ANode<>nil then
-    Result:=TFontHandleCacheDescriptor(ANode.Data)
+  if ANode <> nil then
+    Result := TFontHandleCacheDescriptor(ANode.Data)
   else
-    Result:=nil;
+    Result := nil;
 end;
 
 function TFontHandleCache.Add(TheFont: TLCLHandle; const LogFont: TLogFont;
@@ -95,28 +94,29 @@ function TFontHandleCache.Add(TheFont: TLCLHandle; const LogFont: TLogFont;
 var
   Item: TResourceCacheItem;
 begin
-  if FindFontDesc(LogFont,LongFontName)<>nil then
+  if FindFontDesc(LogFont, LongFontName) <> nil then
     RaiseGDBException('TFontHandleCache.Add font desc added twice');
 
   // find cache item with TheFont
-  Item:=FindFont(TheFont);
-  if Item=nil then begin
+  Item := FindFont(TheFont);
+  if Item = nil then
+  begin
     // create new item
-    Item:=TResourceCacheItem.Create(Self,TheFont);
+    Item := TResourceCacheItem.Create(Self, TheFont);
     FItems.Add(Item);
   end;
 
   // create descriptor
-  Result:=TFontHandleCacheDescriptor.Create(Self,Item);
-  Result.LongFontName:=LongFontName;
-  Result.LogFont:=LogFont;
+  Result := TFontHandleCacheDescriptor.Create(Self, Item);
+  Result.LongFontName := LongFontName;
+  Result.LogFont := LogFont;
   FDescriptors.Add(Result);
-  if FindFontDesc(LogFont,LongFontName)=nil then begin
-    DebugLn('TFontHandleCache.Add Added: %p LongFontName=%s',[Pointer(Result), Result.LongFontName]);
+  if FindFontDesc(LogFont, LongFontName) = nil then
+  begin
+    DebugLn('TFontHandleCache.Add Added: %p LongFontName=%s', [Pointer(Result), Result.LongFontName]);
     RaiseGDBException('');
   end;
 end;
-
 
 { TFont }
 
