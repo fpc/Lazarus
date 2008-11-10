@@ -10,23 +10,23 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: ideprinting.sdescrpfselection
-msgid "Print..."
-msgstr "Spausdinti..."
-
-#: ideprinting.sprintfile
+#: ideprinting:sprintfile
 msgid "Complete file"
 msgstr ""
 
-#: ideprinting.sprintselection
-msgid "Selected text"
-msgstr ""
-
-#: ideprinting.sprintsources
+#: ideprinting:sprintsources
 msgid "Print sources"
 msgstr ""
 
-#: ideprinting.sprintwhat
+#: ideprinting:sdescrpfselection
+msgid "Print..."
+msgstr "Spausdinti..."
+
+#: ideprinting:sprintselection
+msgid "Selected text"
+msgstr ""
+
+#: ideprinting:sprintwhat
 msgid "What would you like to print ?"
 msgstr ""
 

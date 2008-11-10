@@ -271,7 +271,7 @@ msgstr ""
 msgid "Custom"
 msgstr "Vlastné"
 
-#: lclstrconsts:ifsvk_delete
+#: lclstrconsts:rsdeleterecordhint
 msgid "Delete"
 msgstr "Delete"
 
@@ -306,6 +306,10 @@ msgstr "Duplikované menu"
 #: lclstrconsts:rserrorinlcl
 msgid "ERROR in LCL: "
 msgstr "Chyba v LCL:"
+
+#: lclstrconsts:rseditrecordhint
+msgid "Edit"
+msgstr ""
 
 #: lclstrconsts:ifsvk_end
 msgid "End"
@@ -382,6 +386,10 @@ msgstr "Hľadať"
 #: lclstrconsts:rsfindmore
 msgid "Find more"
 msgstr "Hľadať ďalej"
+
+#: lclstrconsts:rsfirstrecordhint
+msgid "First"
+msgstr ""
 
 #: lclstrconsts:rsfixedcolstoobig
 msgid "FixedCols can't be >= ColCount"
@@ -511,7 +519,7 @@ msgstr ""
 msgid "Information"
 msgstr "Informácia"
 
-#: lclstrconsts:ifsvk_insert
+#: lclstrconsts:rsinsertrecordhint
 msgid "Insert"
 msgstr ""
 
@@ -575,6 +583,10 @@ msgstr "Junja"
 msgid "Kana"
 msgstr "Kana"
 
+#: lclstrconsts:rslastrecordhint
+msgid "Last"
+msgstr ""
+
 #: lclstrconsts:ifsvk_left
 msgid "Left"
 msgstr ""
@@ -615,7 +627,7 @@ msgstr "Stredné tlačítko·myši"
 msgid "Mouse Button Right"
 msgstr "Pravé tlačítko·myši"
 
-#: lclstrconsts:ifsvk_next
+#: lclstrconsts:rsnextrecordhint
 msgid "Next"
 msgstr ""
 
@@ -703,17 +715,25 @@ msgstr ""
 msgid "Portable PixMap"
 msgstr ""
 
+#: lclstrconsts:rspostrecordhint
+msgid "Post"
+msgstr ""
+
 #: lclstrconsts:ifsvk_print
 msgid "Print"
 msgstr "Tlačiť"
 
-#: lclstrconsts:ifsvk_prior
+#: lclstrconsts:rspriorrecordhint
 msgid "Prior"
 msgstr "Pred"
 
 #: lclstrconsts:rspropertydoesnotexist
 msgid "Property %s does not exist"
 msgstr "Vlastnosť %s neexistuje"
+
+#: lclstrconsts:rsrefreshrecordshint
+msgid "Refresh"
+msgstr ""
 
 #: lclstrconsts:rsreplace
 msgid "Replace"

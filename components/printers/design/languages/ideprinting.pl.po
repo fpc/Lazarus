@@ -11,23 +11,23 @@ msgstr ""
 "X-Poedit-Language: Polish\n"
 "X-Poedit-Country: POLAND\n"
 
-#: ideprinting.sdescrpfselection
-msgid "Print..."
-msgstr "Drukuj..."
-
-#: ideprinting.sprintfile
+#: ideprinting:sprintfile
 msgid "Complete file"
 msgstr ""
 
-#: ideprinting.sprintselection
-msgid "Selected text"
-msgstr ""
-
-#: ideprinting.sprintsources
+#: ideprinting:sprintsources
 msgid "Print sources"
 msgstr ""
 
-#: ideprinting.sprintwhat
+#: ideprinting:sdescrpfselection
+msgid "Print..."
+msgstr "Drukuj..."
+
+#: ideprinting:sprintselection
+msgid "Selected text"
+msgstr ""
+
+#: ideprinting:sprintwhat
 msgid "What would you like to print ?"
 msgstr ""
 

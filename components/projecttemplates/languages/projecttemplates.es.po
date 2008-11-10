@@ -9,15 +9,15 @@ msgstr ""
 "Last-Translator: javivf <javivf@gmail.com>\n"
 "Language-Team: \n"
 
-#: projecttemplates.serrcouldnotcreatedir
+#: projecttemplates:serrcouldnotcreatedir
 msgid "Could not create directory \"%s\""
 msgstr "No se puede crear el directorio \"%s\""
 
-#: projecttemplates.serrfailedtocopyfile
+#: projecttemplates:serrfailedtocopyfile
 msgid "Failed to copy file \"%s\" to \"%s\""
 msgstr "Ha fallado la copia del archivo \"%s\" a \"%s\""
 
-#: projecttemplates.serrnosuchtemplate
+#: projecttemplates:serrnosuchtemplate
 msgid "\"%s\": No such template."
 msgstr "\"%s\": No existe plantilla."
 

@@ -9,19 +9,19 @@ msgstr ""
 "Last-Translator: javivf <javivf@gmail.com>\n"
 "Language-Team: \n"
 
-#: frmtemplatevariables.sdescription
+#: frmtemplatevariables:sdescription
 msgid "Description"
 msgstr "Descripcion"
 
-#: frmtemplatevariables.snoadditionalvars
+#: frmtemplatevariables:snoadditionalvars
 msgid "This project has no additional variables."
 msgstr ""
 
-#: frmtemplatevariables.svalue
+#: frmtemplatevariables:svalue
 msgid "Value"
 msgstr "Valor"
 
-#: frmtemplatevariables.svariable
+#: frmtemplatevariables:svariable
 msgid "Variable"
 msgstr "Variable"
 

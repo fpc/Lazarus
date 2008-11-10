@@ -269,7 +269,7 @@ msgstr ""
 msgid "Custom"
 msgstr "Özel"
 
-#: lclstrconsts:ifsvk_delete
+#: lclstrconsts:rsdeleterecordhint
 msgid "Delete"
 msgstr "Sil"
 
@@ -304,6 +304,10 @@ msgstr "Birbirinin aynı menüler"
 #: lclstrconsts:rserrorinlcl
 msgid "ERROR in LCL: "
 msgstr "LCL'de HATA:"
+
+#: lclstrconsts:rseditrecordhint
+msgid "Edit"
+msgstr ""
 
 #: lclstrconsts:ifsvk_end
 msgid "End"
@@ -380,6 +384,10 @@ msgstr "Ara"
 #: lclstrconsts:rsfindmore
 msgid "Find more"
 msgstr "Daha fazla ara"
+
+#: lclstrconsts:rsfirstrecordhint
+msgid "First"
+msgstr ""
 
 #: lclstrconsts:rsfixedcolstoobig
 msgid "FixedCols can't be >= ColCount"
@@ -509,7 +517,7 @@ msgstr "Tanımlayıcı sınırın dışında Cell[Col=%d Row=%d]"
 msgid "Information"
 msgstr "Bilgi"
 
-#: lclstrconsts:ifsvk_insert
+#: lclstrconsts:rsinsertrecordhint
 msgid "Insert"
 msgstr "Ekle"
 
@@ -573,6 +581,10 @@ msgstr "Junja"
 msgid "Kana"
 msgstr "Kana"
 
+#: lclstrconsts:rslastrecordhint
+msgid "Last"
+msgstr ""
+
 #: lclstrconsts:ifsvk_left
 msgid "Left"
 msgstr "Sol"
@@ -613,7 +625,7 @@ msgstr "Orta fare düğmesi"
 msgid "Mouse Button Right"
 msgstr "Sağ fare düğmesi"
 
-#: lclstrconsts:ifsvk_next
+#: lclstrconsts:rsnextrecordhint
 msgid "Next"
 msgstr "Sonraki"
 
@@ -701,17 +713,25 @@ msgstr "Taşınabilir ağ grafiği"
 msgid "Portable PixMap"
 msgstr "Taşınabilir PixMap"
 
+#: lclstrconsts:rspostrecordhint
+msgid "Post"
+msgstr ""
+
 #: lclstrconsts:ifsvk_print
 msgid "Print"
 msgstr "Yazdır"
 
-#: lclstrconsts:ifsvk_prior
+#: lclstrconsts:rspriorrecordhint
 msgid "Prior"
 msgstr "Önceki"
 
 #: lclstrconsts:rspropertydoesnotexist
 msgid "Property %s does not exist"
 msgstr "%s özelliği mevcut değil"
+
+#: lclstrconsts:rsrefreshrecordshint
+msgid "Refresh"
+msgstr ""
 
 #: lclstrconsts:rsreplace
 msgid "Replace"

@@ -100,6 +100,10 @@ msgstr "%s%s%s は無効な識別子です"
 msgid "%s%s%s is not a valid unit name."
 msgstr "%s%s%s は無効なユニット名です"
 
+#: lazarusidestrconsts:lislazbuildisnoninteractiveabortingnow
+msgid "%s%s%s%slazbuild is non interactive, aborting now."
+msgstr ""
+
 #: lazarusidestrconsts:liscoclickokifaresuretodothat
 msgid "%s%sClick OK if you are sure to do that."
 msgstr "これでよろしければOKを押してください"
@@ -176,6 +180,22 @@ msgstr "%sこのパッケージは自動的に作成されました"
 msgid "%snone"
 msgstr "なし"
 
+#: lazarusidestrconsts:lisoverridethedefaultcompileregppc386ppcx64ppcppcetcd
+msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in environmentoptions.xml"
+msgstr ""
+
+#: lazarusidestrconsts:lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
+msgid "%soverride the project cpu. e.g. i386 x86_64 powerpc powerpc_64 etc. default: %s"
+msgstr ""
+
+#: lazarusidestrconsts:lisoverridetheprojectoperatingsystemegwin32linuxdefau
+msgid "%soverride the project operating system. e.g. win32 linux. default: %s"
+msgstr ""
+
+#: lazarusidestrconsts:lisoverridetheprojectwidgetseteggtkgtk2qtwin32carbond
+msgid "%soverride the project widgetset. e.g. gtk gtk2 qt win32 carbon. default: %s"
+msgstr ""
+
 #: lazarusidestrconsts:liswladd
 msgid "&Add"
 msgstr "追加(&A)"
@@ -183,6 +203,10 @@ msgstr "追加(&A)"
 #: lazarusidestrconsts:uemaddbreakpoint
 msgid "&Add Breakpoint"
 msgstr "ブレークポイント追加"
+
+#: lazarusidestrconsts:lisapplicationclassname
+msgid "&Application class name"
+msgstr ""
 
 #: lazarusidestrconsts:lisfrbackwardsearch
 msgid "&Backward search"
@@ -340,6 +364,10 @@ msgstr "ソースのブレークポイント(&S)"
 msgid "&Text to Find"
 msgstr "検索テキスト(&T)"
 
+#: lazarusidestrconsts:listitle
+msgid "&Title"
+msgstr ""
+
 #: lazarusidestrconsts:lismenutools
 msgid "&Tools"
 msgstr "ツール(&T)"
@@ -380,9 +408,13 @@ msgstr "（継承された記述が見つかりません）"
 msgid "(no subdirectory)"
 msgstr "(サブディレクトリ無し)"
 
-#: lazarusidestrconsts:liscodehelpnodocumentation
+#: lazarusidestrconsts:dlgpoicondescnone
 msgid "(none)"
 msgstr "（なし）"
+
+#: lazarusidestrconsts:dlgpoicondesc
+msgid "(size: %d:%d, bpp: %d)"
+msgstr ""
 
 #: lazarusidestrconsts:listmunknownmacro
 msgid "(unknown macro: %s)"
@@ -405,10 +437,8 @@ msgid "<choose an existing file>"
 msgstr "存在するファイルを選択してください"
 
 #: lazarusidestrconsts:lismodifiedlgplnotice
-msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do!
-  not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
-msgstr "著作権(C)<年><作者名>%sこのライブラリはフリーソフトです。あなたは、Free Software Foundation  が公表したGNU一般公有使用許諾の「バージョン2」或いはそれ以降の各バージョンの中からいずれかを選択し、そのバージョンが定める条項に従って本プログラムを再頒布または変更することができます。%s特殊な例外として、このライブラリの著作権保有者は、もしそれぞれのリンクされたモジュールについて、それらのモジュールのライセンス条件および条項を満たしていれば、実行ファイルを作成するための独立モジュールを、それらの独立モジュールのライセンス条項にかかわらず、このライブラリにリンクし、生成された実行ファイルをあなたが選んだ条項の下で複製し、配布することを許可します。もしこのライブラリを修正�!
- ��た場合、この例外をあなたのバージョンのライブラリに拡張できますが、それをしなければならないということではありません。もしそうしたければ、この例外文をあなたのバージョンから削除してください。%s本プログラムは有用とは思いますが、頒布にあたっては、市場性及び特定目的適合性についての暗黙の保証を含めて、いかなる保証も行ないません。詳細についてはGNU一般公衆使用許諾書をお読みください。%sGNU一般公衆使用許諾書のコピーはインターネット上の<http://www.gnu.org/copyleft/gpl.html>.。次の住所に手紙でリクエストすることによっても入手できます：Free Software Foundation Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA"
+msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
+msgstr ""
 
 #: lazarusidestrconsts:lislgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -526,6 +556,10 @@ msgstr "アクション: %s"
 msgid "Activate regular expression syntax for text and replacement (pretty much like perl)"
 msgstr "テキストと置換のためのアクティブな正規表現語法(perlと類似)"
 
+#: lazarusidestrconsts:lisactivefilter
+msgid "Active Filter"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetempladd
 msgid "Add"
 msgstr "追加"
@@ -634,6 +668,10 @@ msgstr "リンク追加"
 msgid "Add link to inherited"
 msgstr "継承へのリンクを挿入"
 
+#: lazarusidestrconsts:lisaddnewset
+msgid "Add new set"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsaddoptionstodependentpackagesandprojects
 msgid "Add options to dependent packages and projects"
 msgstr "単独パッケージとプロジェクトのオプションを追加"
@@ -685,6 +723,10 @@ msgstr "監視追加"
 #: lazarusidestrconsts:dlgedadd
 msgid "Add..."
 msgstr "追加..."
+
+#: lazarusidestrconsts:lisadditionalinformation
+msgid "Additional Information"
+msgstr ""
 
 #: lazarusidestrconsts:dlgadditionalsrcpath
 msgid "Additional Source search path for all projects (.pp;.pas)"
@@ -1022,6 +1064,10 @@ msgstr "利用可フォーム"
 msgid "Available packages"
 msgstr "利用可能パッケージ"
 
+#: lazarusidestrconsts:rsavailablescanners
+msgid "Available scanners"
+msgstr ""
+
 #: lazarusidestrconsts:dlgedback
 msgid "Back"
 msgstr "戻る"
@@ -1061,6 +1107,10 @@ msgstr "ブロックインデント"
 #: lazarusidestrconsts:dlgedbold
 msgid "Bold"
 msgstr "ボルド"
+
+#: lazarusidestrconsts:lisboldnondefaultobjectinspector
+msgid "Bold non default values"
+msgstr ""
 
 #: lazarusidestrconsts:uembookmarkn
 msgid "Bookmark"
@@ -1406,6 +1456,10 @@ msgstr "読み込み時にディスクの変更をチェック"
 msgid "Check consistency"
 msgstr "整合性をチェック"
 
+#: lazarusidestrconsts:lischeckoptions
+msgid "Check options"
+msgstr ""
+
 #: lazarusidestrconsts:dlgccocaption
 msgid "Checking compiler options"
 msgstr "コンパイラオプションをチェック中"
@@ -1602,6 +1656,10 @@ msgstr "消去"
 msgid "Clear Directory?"
 msgstr "ディレクトリ内を消去しますか？"
 
+#: lazarusidestrconsts:dlgpoclearicon
+msgid "Clear Icon"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditcleardependencydefaultfilename
 msgid "Clear dependency filename"
 msgstr "依存性ファイル名を消去"
@@ -1678,6 +1736,10 @@ msgstr "コードブラウザ"
 msgid "Code folding"
 msgstr "コードの折り畳み"
 
+#: lazarusidestrconsts:liscodegenerationoptions
+msgid "Code generation options"
+msgstr ""
+
 #: lazarusidestrconsts:dlgedcodeparams
 msgid "Code parameters"
 msgstr "コード引数"
@@ -1737,6 +1799,10 @@ msgstr "コードツール定義エディタ ..."
 #: lazarusidestrconsts:liskmcodetoolsoptions
 msgid "CodeTools options"
 msgstr "コードツールオプション"
+
+#: lazarusidestrconsts:dlggroupcodetools
+msgid "Codetools"
+msgstr ""
 
 #: lazarusidestrconsts:srkmeccodetoolsdefinesed
 msgid "Codetools defines editor"
@@ -1825,6 +1891,14 @@ msgstr "選択部分を注釈にする"
 #: lazarusidestrconsts:liscodetemplcomment
 msgid "Comment:"
 msgstr "注釈"
+
+#: lazarusidestrconsts:liscomments
+msgid "Comments:"
+msgstr ""
+
+#: lazarusidestrconsts:liscompany
+msgid "Company:"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcocompilation
 msgid "Compilation"
@@ -1974,9 +2048,9 @@ msgstr "カスタムコンポーネントを設定"
 msgid "Configure custom components ..."
 msgstr "カスタムコンポーネントを設定 ..."
 
-#: lazarusidestrconsts:lismenusettings
-msgid "Configure custom tools ..."
-msgstr "カスタムツールを設定 ..."
+#: lazarusidestrconsts:lismenuconfigexternaltools
+msgid "Configure external tools ..."
+msgstr ""
 
 #: lazarusidestrconsts:liskmconfigureinstalledpackages
 msgid "Configure installed packages"
@@ -2026,6 +2100,10 @@ msgstr "コンソールアプリケーション"
 msgid "Constants"
 msgstr "定数"
 
+#: lazarusidestrconsts:lisconstructorcode
+msgid "Constructor code"
+msgstr ""
+
 #: lazarusidestrconsts:dlginitdoneonly
 msgid "Constructor name must be 'init' (destructor must be 'done')"
 msgstr "コンストラクタの名前は'init'（デストラクタは'done'）でなければならない"
@@ -2066,6 +2144,10 @@ msgstr "変換オプション"
 msgid "Conversion error"
 msgstr "変換エラー"
 
+#: lazarusidestrconsts:lisconvert
+msgid "Convert"
+msgstr ""
+
 #: lazarusidestrconsts:liskmconvertdfmfiletolfm
 msgid "Convert DFM file to LFM"
 msgstr "DFMファイルをLFMに変換"
@@ -2102,9 +2184,25 @@ msgstr "DelphiユニットをLazarusユニットへ変換"
 msgid "Convert Delphi unit to Lazarus unit ..."
 msgstr "DelphiユニットをLazarusユニットへ変換 ..."
 
+#: lazarusidestrconsts:lisconvertencoding
+msgid "Convert encoding"
+msgstr ""
+
+#: lazarusidestrconsts:lisconvertencodingofprojectspackages
+msgid "Convert encoding of projects/packages"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuconvertencoding
+msgid "Convert encoding of projects/packages ..."
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsconvertnode
 msgid "Convert node"
 msgstr "ノードを変換"
+
+#: lazarusidestrconsts:lisconvertprojectorpackage
+msgid "Convert project or package"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecselectiontabs2spaces
 msgid "Convert tabs to spaces in selection"
@@ -2225,6 +2323,10 @@ msgstr "FPCのマクロとfpcプロジェクトディレクトリのパスを作
 #: lazarusidestrconsts:lismenucreatefpdocfiles
 msgid "Create FPDoc files"
 msgstr "FPDocファイルを作成"
+
+#: lazarusidestrconsts:liscreatehelpnode
+msgid "Create Help node"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcocreatemakefile
 msgid "Create Makefile"
@@ -2726,6 +2828,10 @@ msgstr "行き先のディレクトリ"
 msgid "Destination directory %s%s%s is invalid.%sPlease choose a complete path."
 msgstr "行き先のディレクトリ %s%s%s は無効です。%s完全なパスを選んでください。"
 
+#: lazarusidestrconsts:lisdestructorcode
+msgid "Destructor code"
+msgstr ""
+
 #: lazarusidestrconsts:lismenudiff
 msgid "Diff"
 msgstr "差分"
@@ -2773,6 +2879,10 @@ msgstr "同じソースですべてを無効化"
 #: lazarusidestrconsts:lisdisablegroup
 msgid "Disable Group"
 msgstr "グループを無効化"
+
+#: lazarusidestrconsts:dlgdisableantialiasing
+msgid "Disable anti-aliasing"
+msgstr ""
 
 #: lazarusidestrconsts:lisdisabled
 msgid "Disabled"
@@ -2850,6 +2960,10 @@ msgstr "ドック中"
 msgid "Documentation Editor"
 msgstr "ドキュメントエディター"
 
+#: lazarusidestrconsts:lisaboutdocumentation
+msgid "Documentation:"
+msgstr ""
+
 #: lazarusidestrconsts:lissortseldomain
 msgid "Domain"
 msgstr "領域"
@@ -2873,6 +2987,10 @@ msgstr "下へ"
 #: lazarusidestrconsts:dlgdragdroped
 msgid "Drag Drop editing"
 msgstr "編集をドラッグ＆ドロップ"
+
+#: lazarusidestrconsts:lisdrawgridlinesobjectinspector
+msgid "Draw grid lines"
+msgstr ""
 
 #: lazarusidestrconsts:dlgdropfiles
 msgid "Drop files"
@@ -2930,6 +3048,10 @@ msgstr "仮想ユニットを編集"
 msgid "Edit code template"
 msgstr "コードテンプレートを編集"
 
+#: lazarusidestrconsts:liseditcontexthelp
+msgid "Edit context help"
+msgstr ""
+
 #: lazarusidestrconsts:lismenueditcontexthelp
 msgid "Edit context sensitive Help"
 msgstr "状況感知型ヘルプを編集"
@@ -2953,6 +3075,10 @@ msgstr "仮想ユニットを編集"
 #: lazarusidestrconsts:dlgededit
 msgid "Edit..."
 msgstr "編集..."
+
+#: lazarusidestrconsts:dlggroupeditor
+msgid "Editor"
+msgstr ""
 
 #: lazarusidestrconsts:dlgedfiles
 msgid "Editor files"
@@ -3058,17 +3184,13 @@ msgstr "実行時引数を入力してください"
 msgid "Enter translation language"
 msgstr "翻訳言語を入力してください"
 
-#: lazarusidestrconsts:dlgrunoenvironment
+#: lazarusidestrconsts:dlggroupenvironment
 msgid "Environment"
 msgstr "環境"
 
 #: lazarusidestrconsts:srkmcatenvmenu
 msgid "Environment menu commands"
 msgstr "環境メニューコマンド"
-
-#: lazarusidestrconsts:lismenugeneraloptions
-msgid "Environment options ..."
-msgstr "環境オプション ..."
 
 #: lazarusidestrconsts:lisccoerrorcaption
 msgid "Error"
@@ -3418,11 +3540,11 @@ msgstr "FPCソースディレクトリ \"%s\" が見つかりません"
 msgid "FPC unit path contains a source: "
 msgstr "ソースを含むFPCユニットパス"
 
-#: lazarusidestrconsts:lismenufpdoceditor
+#: lazarusidestrconsts:lisfpdoceditor
 msgid "FPDoc Editor"
 msgstr "FPDocエディタ"
 
-#: lazarusidestrconsts:lisfpdoceditor
+#: lazarusidestrconsts:liscodehelpmainformcaption
 msgid "FPDoc editor"
 msgstr "FPDocエディタ"
 
@@ -3497,6 +3619,10 @@ msgstr "プログラムのファイル拡張子"
 #: lazarusidestrconsts:dlgfileexts
 msgid "File extensions"
 msgstr "ファイルの拡張子"
+
+#: lazarusidestrconsts:lisfilefilter
+msgid "File filter"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangfileisalreadyinpackage
 msgid "File is already in package"
@@ -3594,9 +3720,21 @@ msgstr "ファイル名: %s"
 msgid "Files"
 msgstr "ファイル"
 
+#: lazarusidestrconsts:lisfilesinasciiorutf8encoding
+msgid "Files in ASCII or UTF-8 encoding"
+msgstr ""
+
+#: lazarusidestrconsts:lisfilesnotinasciinorutf8encoding
+msgid "Files not in ASCII nor UTF-8 encoding"
+msgstr ""
+
 #: lazarusidestrconsts:lisfilter
 msgid "Filter"
 msgstr "フィルタ"
+
+#: lazarusidestrconsts:lisfiltersets
+msgid "Filter Sets"
+msgstr ""
 
 #: lazarusidestrconsts:lisplistfilterany
 msgid "Filter by matching any part of method"
@@ -4138,6 +4276,10 @@ msgstr "デバッガに扱われました"
 msgid "Handled by Program"
 msgstr "プログラムに扱われました"
 
+#: lazarusidestrconsts:lishashelp
+msgid "Has Help"
+msgstr ""
+
 #: lazarusidestrconsts:lisaf2phasregisterprocedure
 msgid "Has Register procedure"
 msgstr "Register手続きを保有"
@@ -4165,6 +4307,10 @@ msgstr "ヘルプ"
 #: lazarusidestrconsts:lishlpoptshelpoptions
 msgid "Help Options"
 msgstr "ヘルプオプション"
+
+#: lazarusidestrconsts:lishelpentries
+msgid "Help entries"
+msgstr ""
 
 #: lazarusidestrconsts:lishfmhelpforfreepascalcompilermessage
 msgid "Help for FreePascal Compiler message"
@@ -4272,6 +4418,10 @@ msgstr "IDEはお取り込み中"
 
 #: lazarusidestrconsts:uepins
 msgid "INS"
+msgstr ""
+
+#: lazarusidestrconsts:dlgpoicon
+msgid "Icon:"
 msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsoptsidentifier
@@ -4778,6 +4928,10 @@ msgstr " %sは自動的に次のパッケージをインストールします：
 msgid "Interface"
 msgstr "インターフェース"
 
+#: lazarusidestrconsts:lisinternalname
+msgid "Internal Name:"
+msgstr ""
+
 #: lazarusidestrconsts:listcompilerinternalerror
 msgid "Internal compiler error! (%d)"
 msgstr "内部コンパイラエラーです！ (%d)"
@@ -5230,6 +5384,10 @@ msgstr "対象となるコマンドラインを実行"
 msgid "Lazarus"
 msgstr ""
 
+#: lazarusidestrconsts:liskmlazarusdefault
+msgid "Lazarus (default)"
+msgstr ""
+
 #: lazarusidestrconsts:lislazarusdesktopsettings
 msgid "Lazarus Desktop Settings"
 msgstr "Lazarusデスクトップ設定"
@@ -5334,6 +5492,10 @@ msgstr "左側の間隔を均等に"
 msgid "Left:"
 msgstr "左："
 
+#: lazarusidestrconsts:lislegaltrademarks
+msgid "Legal Trademarks:"
+msgstr ""
+
 #: lazarusidestrconsts:dlglevelnoneopt
 msgid "Level 0 (no extra Optimizations)"
 msgstr "レベル 0(それ以外の最適化なし)"
@@ -5434,6 +5596,10 @@ msgstr "リスト"
 msgid "Lithuanian"
 msgstr "リトアニア語"
 
+#: lazarusidestrconsts:dlgpoloadicon
+msgid "Load Icon"
+msgstr ""
+
 #: lazarusidestrconsts:dlgloaddfile
 msgid "Load desktop settings from file"
 msgstr "ファイルからデスクトップの設定を読み込み"
@@ -5482,8 +5648,12 @@ msgstr "選択部を小文字化"
 msgid "Lowercase, first letter up"
 msgstr "頭文字以外を小文字に"
 
-#: lazarusidestrconsts:liskmmacosx
-msgid "Mac OS X"
+#: lazarusidestrconsts:liskmmacosxapple
+msgid "Mac OS X (Apple style)"
+msgstr ""
+
+#: lazarusidestrconsts:liskmmacosxlaz
+msgid "Mac OS X (Lazarus style)"
 msgstr ""
 
 #: lazarusidestrconsts:lismacpascal
@@ -5605,6 +5775,10 @@ msgstr "メニューエディター"
 #: lazarusidestrconsts:lismenuviewmessages
 msgid "Messages"
 msgstr "メッセージ"
+
+#: lazarusidestrconsts:lismessageseditor
+msgid "Messages Editor"
+msgstr ""
 
 #: lazarusidestrconsts:lismethodclassnotfound
 msgid "Method class not found"
@@ -5962,6 +6136,14 @@ msgstr "新規ユニット"
 msgid "New class name:"
 msgstr "新規クラス名:"
 
+#: lazarusidestrconsts:lisnewconsoleapplication
+msgid "New console application"
+msgstr ""
+
+#: lazarusidestrconsts:lisnewencoding
+msgid "New encoding:"
+msgstr ""
+
 #: lazarusidestrconsts:liskmnewpackage
 msgid "New package"
 msgstr "新規パッケージ"
@@ -5997,6 +6179,14 @@ msgstr "新しい行"
 #: lazarusidestrconsts:srkmecnextbookmark
 msgid "Next Bookmark"
 msgstr "次のブックマーク"
+
+#: lazarusidestrconsts:lisno
+msgid "No"
+msgstr ""
+
+#: lazarusidestrconsts:lisnoidewindowselected
+msgid "No IDE window selected"
+msgstr ""
 
 #: lazarusidestrconsts:lisnoresourcestringsectionfound
 msgid "No ResourceString Section found"
@@ -6126,6 +6316,10 @@ msgstr "注意:プロジェクトファイルはプロジェクトディレク�
 msgid "Number"
 msgstr "数値"
 
+#: lazarusidestrconsts:lisnumberoffilestoconvert
+msgid "Number of files to convert: %s"
+msgstr ""
+
 #: lazarusidestrconsts:lisifdok
 msgid "OK"
 msgstr ""
@@ -6156,6 +6350,10 @@ msgstr "Object Pascal - デフォルト"
 
 #: lazarusidestrconsts:dlgedoff
 msgid "Off"
+msgstr ""
+
+#: lazarusidestrconsts:lisaboutofficial
+msgid "Official:"
 msgstr ""
 
 #: lazarusidestrconsts:lisokbtn
@@ -6406,6 +6604,10 @@ msgstr "オプション：ガイドラインに留まる"
 msgid "Options"
 msgstr "オプション"
 
+#: lazarusidestrconsts:lismenugeneraloptions
+msgid "Options ..."
+msgstr ""
+
 #: lazarusidestrconsts:lislazbuildoptions
 msgid "Options:"
 msgstr "オプション"
@@ -6421,6 +6623,10 @@ msgstr "オーダー"
 #: lazarusidestrconsts:dlgsrorigin
 msgid "Origin"
 msgstr "起点"
+
+#: lazarusidestrconsts:lisoriginalfilename
+msgid "Original File Name:"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcoother
 msgid "Other"
@@ -6710,6 +6916,10 @@ msgstr "クリップボードから現在の位置に貼り付け"
 msgid "Paste selected components from clipboard"
 msgstr "クリップボードから選択されたコンポーネントを貼り付け"
 
+#: lazarusidestrconsts:lispath
+msgid "Path"
+msgstr ""
+
 #: lazarusidestrconsts:dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
 msgstr "パスエディタ"
@@ -6856,8 +7066,7 @@ msgstr "privateメソッド"
 
 #: lazarusidestrconsts:lisprobablyyouneedtoinstallsomepackagesforbeforeconti
 msgid "Probably you need to install some packages for before continuing.%s%sWarning:%sThe project depends on some packages, which contain units with the Register procedure. The Register procedure is normally used to install components in the IDE. But the following units belong to packages which are not yet installed in the IDE. If you try to open a form in the IDE, that uses such components, you will get errors about missing components and the form loading will probably create very unpleasant results.%s%sThis has no impact on opening the project or any of its sources.%s%sIt only means: It is a bad idea to open the forms for designing, before installing the missing packages.%s%s"
-msgstr "おそらく続行する前にいくつかのパッケージをインストールする必要があります。%s%s警告:%sプロジェクトは Register手続きを持つユニットを含むいくつかのパッケージに依存します。Register手続きはふつう、コンポーネントをIDEにインストールするために用いられます。しかし以下のユニットはまだIDEにインストールされていないパッケージに属しています。もしIDEでそのようなコンポーネントを用いているフォームを開こうとすると、コンポーネントが見付からないというエラーが表示され、フォーム読み込みがおそらく非常に不快な結果をもたらします。%s%sこれはプロジェクトを開くことやそのソースに対しては影響を与えません。%s%sただ、見つからないパッケージをインストールする前に、設計のためフォームを開くこと�!
- �� ¿½"
+msgstr "おそらく続行する前にいくつかのパッケージをインストールする必要があります。%s%s警告:%sプロジェクトは Register手続きを持つユニットを含むいくつかのパッケージに依存します。Register手続きはふつう、コンポーネントをIDEにインストールするために用いられます。しかし以下のユニットはまだIDEにインストールされていないパッケージに属しています。もしIDEでそのようなコンポーネントを用いているフォームを開こうとすると、コンポーネントが見付からないというエラーが表示され、フォーム読み込みがおそらく非常に不快な結果をもたらします。%s%sこれはプロジェクトを開くことやそのソースに対しては影響を与えません。%s%sただ、見つからないパッケージをインストールする前に、設計のためフォームを開くこと�"
 
 #: lazarusidestrconsts:lisprocedure
 msgid "Procedure"
@@ -6886,6 +7095,14 @@ msgstr ""
 #: lazarusidestrconsts:lisdebugoptionsfrmprocess
 msgid "Process"
 msgstr "プロセス"
+
+#: lazarusidestrconsts:lisproductname
+msgid "Product Name:"
+msgstr ""
+
+#: lazarusidestrconsts:lisproductversion
+msgid "Product Version:"
+msgstr ""
 
 #: lazarusidestrconsts:lisprogram
 msgid "Program"
@@ -7615,6 +7832,10 @@ msgstr "テンプレートとして保存"
 msgid "Save Changes?"
 msgstr "変更を保存しますか？"
 
+#: lazarusidestrconsts:dlgposaveicon
+msgid "Save Icon"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangsavepackagelpk
 msgid "Save Package %s (*.lpk)"
 msgstr "パッケージ %s (*.lpk)を保存しますか？"
@@ -7786,6 +8007,10 @@ msgstr "Free Pascalコンパイラメッセージの出力をスキャン"
 #: lazarusidestrconsts:lisedtexttoolscanoutputformakemessages
 msgid "Scan output for make messages"
 msgstr "makeメッセージの出力をスキャン"
+
+#: lazarusidestrconsts:rsscanners
+msgid "Scanners"
+msgstr ""
 
 #: lazarusidestrconsts:dlgscope
 msgid "Scope"
@@ -7982,6 +8207,10 @@ msgstr "プロジェクトのタイプを選択"
 #: lazarusidestrconsts:lismenuselectall
 msgid "Select all"
 msgstr "すべて選択"
+
+#: lazarusidestrconsts:rsselectaninheritedentry
+msgid "Select an inherited entry"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuselectcodeblock
 msgid "Select code block"
@@ -8543,6 +8772,10 @@ msgstr "スペイン語"
 msgid "Src"
 msgstr "ソース"
 
+#: lazarusidestrconsts:lissrcos
+msgid "Src OS"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcostack
 msgid "Stack"
 msgstr "スタック"
@@ -8607,6 +8840,10 @@ msgstr "現在のデバッグを停止しプロジェクトを再構築します
 msgid "Stop debugging?"
 msgstr "デバッグを停止してよろしいですか?"
 
+#: lazarusidestrconsts:lisstoponexception
+msgid "Stop on exception"
+msgstr ""
+
 #: lazarusidestrconsts:liskmstopprogram
 msgid "Stop program"
 msgstr "プログラムを停止"
@@ -8667,9 +8904,9 @@ msgstr "同じレベルのサブ手続き"
 msgid "Sub directory"
 msgstr "サブディレクトリ"
 
-#: lazarusidestrconsts:dlgsubpropkcolor
-msgid "Subpropertes"
-msgstr "サブプロパティ"
+#: lazarusidestrconsts:dlgsubpropcolor
+msgid "SubProperties"
+msgstr ""
 
 #: lazarusidestrconsts:lissuccess
 msgid "Success"
@@ -8762,6 +8999,10 @@ msgstr "ターゲット"
 #: lazarusidestrconsts:listargetcpu
 msgid "Target CPU"
 msgstr "対象CPU"
+
+#: lazarusidestrconsts:dlgtargetcpufamily
+msgid "Target CPU family"
+msgstr ""
 
 #: lazarusidestrconsts:lislazbuildtargetcpu
 msgid "Target CPU:"
@@ -9180,8 +9421,8 @@ msgid "The file %s%s%s%sseems to be a program. Close current project and create 
 msgstr "ファイル %s%s%sはプログラムのようです。現在のプロジェクトを閉じ、このプログラムについての新しいlazarusプロジェクトを作成しますか？%s\"いいえ\"を選択するとファイルを通常のソースとして読み込みます。"
 
 #: lazarusidestrconsts:listhefilewasfoundinoneofthesourcedirectoriesofthepac
-msgid "The file %s%s%s%swas found in one of the source directories of the package %s and looks like a compiled unit.Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%s%sDelete ambiguous file?"
-msgstr "ファイル %s%s%sはパッケージ %s のソースディレクトリの一つに見つかりました。コンパイル済みのユニットのようです。コンパイル済みのユニットはパッケージの出力ディレクトリになければならず、さもなければ他のパッケージがこのパッケージ用いる際に問題が生じます。%s%s紛らわしいファイルを削除しますか？"
+msgid "The file %s%s%s%swas found in one of the source directories of the package %s and looks like a compiled unit. Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%s%sDelete ambiguous file?"
+msgstr ""
 
 #: lazarusidestrconsts:listhefilewasnotfounddoyouwanttolocateityourself
 msgid "The file %s%s%s%swas not found.%sDo you want to locate it yourself ?%s"
@@ -9411,9 +9652,9 @@ msgstr "ユニット%sはどのパッケージもしくはプロジェクトに�
 msgid "The unit %s%s%s already exists.%sIgnore will force the renaming,%sCancel will cancel the saving of this source and%sAbort will abort the whole saving."
 msgstr "ユニット%s%s%sは既に存在しています。%s[無視]すると強制的に名称変更します。%s[キャンセル]するとこのソースの保存をキャンセルします。%s[中止]すると全ての保存を中止します。"
 
-#: lazarusidestrconsts:listheunitisnotlowercasethefreepascalcompiler10xneeds
-msgid "The unit %s%s%s is not lowercase.%sThe FreePascal compiler 1.0.x needs lowercase filenames. If you do not use the fpc 1.0.x to compile this unit, you can ignore this message.%s%sRename file?"
-msgstr "ユニット %s%s%sが小文字ではありません。%sFreePascalコンパイラ1.0.xは小文字ファイル名を必要とします。このユニットをコンパイルするのにfpc 1.0.xを用いないのであれば、このメッセージを無視できます。%s%sファイル名を変更しますか？"
+#: lazarusidestrconsts:listheunitisnotlowercasethefreepascalcompiler
+msgid "The unit filename %s%s%s is not lowercase.%sThe FreePascal compiler does not search for all cases. It is recommended to use lowercase filename.%s%sRename file lowercase?"
+msgstr ""
 
 #: lazarusidestrconsts:listheunititselfhasalreadythenamepascalidentifiersmus
 msgid "The unit itself has already the name %s%s%s. Pascal identifiers must be unique."
@@ -10379,6 +10620,10 @@ msgstr "上へ"
 msgid "Update"
 msgstr "アップデート"
 
+#: lazarusidestrconsts:lisupdatepreview
+msgid "Update preview"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsupdaterebuild
 msgid "Update/Rebuild"
 msgstr "アップデート/再構築"
@@ -10390,6 +10635,10 @@ msgstr "選択部を大文字化"
 #: lazarusidestrconsts:lispckoptsusage
 msgid "Usage"
 msgstr "使用"
+
+#: lazarusidestrconsts:lisusagemessagehoption
+msgid "Usage message (-h option)"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcoansistr
 msgid "Use Ansi Strings"
@@ -10422,6 +10671,10 @@ msgstr "デフォルト色を使用"
 #: lazarusidestrconsts:dlgrunousedisplay
 msgid "Use display"
 msgstr "ディスプレイを使用"
+
+#: lazarusidestrconsts:dlgextsymb
+msgid "Use external gdb debug symbols file"
+msgstr ""
 
 #: lazarusidestrconsts:dlguselaunchingapp
 msgid "Use launching application"
@@ -10907,6 +11160,10 @@ msgstr "ブレークポイントを追加"
 msgid "add watch"
 msgstr "監視を追加"
 
+#: lazarusidestrconsts:lisapplybuildflagsbtodependenciestoo
+msgid "apply build flags (-B) to dependencies too"
+msgstr ""
+
 #: lazarusidestrconsts:lisoipautoinstalldynamic
 msgid "auto install dynamic"
 msgstr "動的な自動インストール"
@@ -10919,9 +11176,17 @@ msgstr "静的な自動インストール"
 msgid "begins"
 msgstr ""
 
+#: lazarusidestrconsts:lisbuildidewithpackages
+msgid "build IDE with packages"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecbuildall
 msgid "build all files of program/project"
 msgstr "すべてのプログラム/プロジェクトファイルを構築"
+
+#: lazarusidestrconsts:lisbuildallfilesofprojectpackageide
+msgid "build all files of project/package/IDE"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecbuildfile
 msgid "build file"
@@ -10974,6 +11239,10 @@ msgstr "デフォルト(%s)"
 #: lazarusidestrconsts:lisautomaticallyremovecharacter
 msgid "do not add character"
 msgstr "文字を追加しない"
+
+#: lazarusidestrconsts:lisdonotcompiledependencies
+msgid "do not compile dependencies"
+msgstr ""
 
 #: lazarusidestrconsts:lisccoenglishmessagefilemissing
 msgid "english message file for fpc is missing:components/codetools/fpc.errore.msg"
@@ -11107,6 +11376,10 @@ msgstr "クラスなし"
 msgid "no fpc.cfg found"
 msgstr "fpc.cfgが見つかりません"
 
+#: lazarusidestrconsts:lisnonodeselected
+msgid "no node selected"
+msgstr ""
+
 #: lazarusidestrconsts:lisccononascii
 msgid "non ASCII"
 msgstr ""
@@ -11126,6 +11399,10 @@ msgstr "選択されていません"
 #: lazarusidestrconsts:lisobjectpath
 msgid "object path"
 msgstr "オブジェクトパス"
+
+#: lazarusidestrconsts:rsok
+msgid "ok"
+msgstr ""
 
 #: lazarusidestrconsts:lisold
 msgid "old"
@@ -11254,6 +11531,10 @@ msgstr "OVERFLOWCHECKSをonに設定"
 #: lazarusidestrconsts:lisedtdefsetrangecheckson
 msgid "set RANGECHECKS on"
 msgstr "RANGECHECKSをonに設定"
+
+#: lazarusidestrconsts:lisshowversionandexit
+msgid "show version and exit"
+msgstr ""
 
 #: lazarusidestrconsts:lissmallerratherthanfaster
 msgid "smaller rather than faster"

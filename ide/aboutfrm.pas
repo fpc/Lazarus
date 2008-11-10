@@ -176,9 +176,9 @@ begin
   AboutMemo.Lines.Text:=
     Format(lisAboutLazarusMsg,[DoubleLineEnding,DoubleLineEnding,DoubleLineEnding]);
 
-  OfficialLabel.Caption := 'Official:';
+  OfficialLabel.Caption := lisAboutOfficial;
   OfficialURLLabel.Caption := 'http://lazarus.freepascal.org';
-  DocumentationLabel.Caption := 'Documentation:';
+  DocumentationLabel.Caption := lisAboutDocumentation;
   DocumentationURLLabel.Caption := 'http://wiki.lazarus.freepascal.org';
 
   LoadContributors;

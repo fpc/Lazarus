@@ -355,7 +355,7 @@ resourcestring
   lisMenuEditInstallPkgs = 'Configure installed packages ...';
   lisMenuConfigCustomComps = 'Configure custom components ...';
 
-  lisMenuSettings = 'Configure custom tools ...';
+  lisMenuConfigExternalTools = 'Configure external tools ...';
   lisMenuQuickSyntaxCheck = 'Quick syntax check';
   lisMenuGuessUnclosedBlock = 'Guess unclosed block';
   lisMenuGuessMisplacedIFDEF = 'Guess misplaced IFDEF/ENDIF';
@@ -3350,6 +3350,8 @@ resourcestring
   lisMenuTemplateAbout = 'About';
   lisContributors = 'Contributors';
   lisAcknowledgements = 'Acknowledgements';
+  lisAboutOfficial = 'Official:';
+  lisAboutDocumentation = 'Documentation:';
 
   // character map
   lisCharacterMap = 'Character Map';

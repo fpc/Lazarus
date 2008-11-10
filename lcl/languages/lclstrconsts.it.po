@@ -268,7 +268,7 @@ msgstr ""
 msgid "Custom"
 msgstr "Personalizza"
 
-#: lclstrconsts:ifsvk_delete
+#: lclstrconsts:rsdeleterecordhint
 msgid "Delete"
 msgstr "Elimina"
 
@@ -303,6 +303,10 @@ msgstr "Menu dupicati"
 #: lclstrconsts:rserrorinlcl
 msgid "ERROR in LCL: "
 msgstr "Errore nell'LCL:"
+
+#: lclstrconsts:rseditrecordhint
+msgid "Edit"
+msgstr ""
 
 #: lclstrconsts:ifsvk_end
 msgid "End"
@@ -379,6 +383,10 @@ msgstr "Trova"
 #: lclstrconsts:rsfindmore
 msgid "Find more"
 msgstr "Trova successivo"
+
+#: lclstrconsts:rsfirstrecordhint
+msgid "First"
+msgstr ""
 
 #: lclstrconsts:rsfixedcolstoobig
 msgid "FixedCols can't be >= ColCount"
@@ -508,7 +516,7 @@ msgstr "Indice fuori dall'ampiezza massima Cell[Col=%d Row=%d]"
 msgid "Information"
 msgstr "Informazioni"
 
-#: lclstrconsts:ifsvk_insert
+#: lclstrconsts:rsinsertrecordhint
 msgid "Insert"
 msgstr "Inserimento"
 
@@ -572,6 +580,10 @@ msgstr "Junja"
 msgid "Kana"
 msgstr "Kana"
 
+#: lclstrconsts:rslastrecordhint
+msgid "Last"
+msgstr ""
+
 #: lclstrconsts:ifsvk_left
 msgid "Left"
 msgstr "Sinistra"
@@ -612,7 +624,7 @@ msgstr "Tasto centrale del mouse"
 msgid "Mouse Button Right"
 msgstr "Tasto destro del mouse"
 
-#: lclstrconsts:ifsvk_next
+#: lclstrconsts:rsnextrecordhint
 msgid "Next"
 msgstr "Successivo"
 
@@ -700,17 +712,25 @@ msgstr "Portable Network Graphic"
 msgid "Portable PixMap"
 msgstr ""
 
+#: lclstrconsts:rspostrecordhint
+msgid "Post"
+msgstr ""
+
 #: lclstrconsts:ifsvk_print
 msgid "Print"
 msgstr "Stampa"
 
-#: lclstrconsts:ifsvk_prior
+#: lclstrconsts:rspriorrecordhint
 msgid "Prior"
 msgstr "Precedente"
 
 #: lclstrconsts:rspropertydoesnotexist
 msgid "Property %s does not exist"
 msgstr "La proprietà %s non esiste"
+
+#: lclstrconsts:rsrefreshrecordshint
+msgid "Refresh"
+msgstr ""
 
 #: lclstrconsts:rsreplace
 msgid "Replace"

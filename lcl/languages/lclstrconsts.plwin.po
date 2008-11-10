@@ -269,7 +269,7 @@ msgstr ""
 msgid "Custom"
 msgstr "Inny"
 
-#: lclstrconsts:ifsvk_delete
+#: lclstrconsts:rsdeleterecordhint
 msgid "Delete"
 msgstr ""
 
@@ -304,6 +304,10 @@ msgstr "Zdublowane menu"
 #: lclstrconsts:rserrorinlcl
 msgid "ERROR in LCL: "
 msgstr "B£¥D w LCL: "
+
+#: lclstrconsts:rseditrecordhint
+msgid "Edit"
+msgstr ""
 
 #: lclstrconsts:ifsvk_end
 msgid "End"
@@ -379,6 +383,10 @@ msgstr ""
 
 #: lclstrconsts:rsfindmore
 msgid "Find more"
+msgstr ""
+
+#: lclstrconsts:rsfirstrecordhint
+msgid "First"
 msgstr ""
 
 #: lclstrconsts:rsfixedcolstoobig
@@ -509,7 +517,7 @@ msgstr "Indeks poza zakresem Cell[Col=%d Row=%d]"
 msgid "Information"
 msgstr "Informacja"
 
-#: lclstrconsts:ifsvk_insert
+#: lclstrconsts:rsinsertrecordhint
 msgid "Insert"
 msgstr ""
 
@@ -573,6 +581,10 @@ msgstr ""
 msgid "Kana"
 msgstr ""
 
+#: lclstrconsts:rslastrecordhint
+msgid "Last"
+msgstr ""
+
 #: lclstrconsts:ifsvk_left
 msgid "Left"
 msgstr ""
@@ -613,7 +625,7 @@ msgstr ""
 msgid "Mouse Button Right"
 msgstr ""
 
-#: lclstrconsts:ifsvk_next
+#: lclstrconsts:rsnextrecordhint
 msgid "Next"
 msgstr ""
 
@@ -701,17 +713,25 @@ msgstr ""
 msgid "Portable PixMap"
 msgstr ""
 
+#: lclstrconsts:rspostrecordhint
+msgid "Post"
+msgstr ""
+
 #: lclstrconsts:ifsvk_print
 msgid "Print"
 msgstr ""
 
-#: lclstrconsts:ifsvk_prior
+#: lclstrconsts:rspriorrecordhint
 msgid "Prior"
 msgstr ""
 
 #: lclstrconsts:rspropertydoesnotexist
 msgid "Property %s does not exist"
 msgstr "W³aœciwoœæ %s nie istnieje"
+
+#: lclstrconsts:rsrefreshrecordshint
+msgid "Refresh"
+msgstr ""
 
 #: lclstrconsts:rsreplace
 msgid "Replace"

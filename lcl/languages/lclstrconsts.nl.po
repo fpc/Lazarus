@@ -269,7 +269,7 @@ msgstr ""
 msgid "Custom"
 msgstr "Eigen"
 
-#: lclstrconsts:ifsvk_delete
+#: lclstrconsts:rsdeleterecordhint
 msgid "Delete"
 msgstr "Verwijder"
 
@@ -304,6 +304,10 @@ msgstr "Dubbele menus"
 #: lclstrconsts:rserrorinlcl
 msgid "ERROR in LCL: "
 msgstr "FOUT in LCL"
+
+#: lclstrconsts:rseditrecordhint
+msgid "Edit"
+msgstr ""
 
 #: lclstrconsts:ifsvk_end
 msgid "End"
@@ -380,6 +384,10 @@ msgstr "Zoek"
 #: lclstrconsts:rsfindmore
 msgid "Find more"
 msgstr "Zoek meer"
+
+#: lclstrconsts:rsfirstrecordhint
+msgid "First"
+msgstr ""
 
 #: lclstrconsts:rsfixedcolstoobig
 msgid "FixedCols can't be >= ColCount"
@@ -509,7 +517,7 @@ msgstr "Index buiten de grenzen Cell[Col=%d Ro=%d]"
 msgid "Information"
 msgstr "Informatie"
 
-#: lclstrconsts:ifsvk_insert
+#: lclstrconsts:rsinsertrecordhint
 msgid "Insert"
 msgstr "Invoegen"
 
@@ -573,6 +581,10 @@ msgstr "Junja"
 msgid "Kana"
 msgstr "Kana"
 
+#: lclstrconsts:rslastrecordhint
+msgid "Last"
+msgstr ""
+
 #: lclstrconsts:ifsvk_left
 msgid "Left"
 msgstr "Links"
@@ -613,7 +625,7 @@ msgstr "Muisknop Midden"
 msgid "Mouse Button Right"
 msgstr "Muisknop Rechts"
 
-#: lclstrconsts:ifsvk_next
+#: lclstrconsts:rsnextrecordhint
 msgid "Next"
 msgstr "Volgende"
 
@@ -701,17 +713,25 @@ msgstr "Portable Network Graphic"
 msgid "Portable PixMap"
 msgstr ""
 
+#: lclstrconsts:rspostrecordhint
+msgid "Post"
+msgstr ""
+
 #: lclstrconsts:ifsvk_print
 msgid "Print"
 msgstr "Druk af"
 
-#: lclstrconsts:ifsvk_prior
+#: lclstrconsts:rspriorrecordhint
 msgid "Prior"
 msgstr "Vorige"
 
 #: lclstrconsts:rspropertydoesnotexist
 msgid "Property %s does not exist"
 msgstr "Eigenschap %s bestaat niet"
+
+#: lclstrconsts:rsrefreshrecordshint
+msgid "Refresh"
+msgstr ""
 
 #: lclstrconsts:rsreplace
 msgid "Replace"

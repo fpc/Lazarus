@@ -4,19 +4,19 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: frmtemplatevariables.sdescription
-msgid "Description"
+#: frmtemplatevariables:svariable
+msgid "Variable"
 msgstr ""
 
-#: frmtemplatevariables.snoadditionalvars
-msgid "This project has no additional variables."
-msgstr ""
-
-#: frmtemplatevariables.svalue
+#: frmtemplatevariables:svalue
 msgid "Value"
 msgstr ""
 
-#: frmtemplatevariables.svariable
-msgid "Variable"
+#: frmtemplatevariables:sdescription
+msgid "Description"
+msgstr ""
+
+#: frmtemplatevariables:snoadditionalvars
+msgid "This project has no additional variables."
 msgstr ""
 

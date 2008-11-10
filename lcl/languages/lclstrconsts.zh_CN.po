@@ -271,7 +271,7 @@ msgstr ""
 msgid "Custom"
 msgstr "自定义"
 
-#: lclstrconsts:ifsvk_delete
+#: lclstrconsts:rsdeleterecordhint
 msgid "Delete"
 msgstr "删除"
 
@@ -305,6 +305,10 @@ msgstr "重复的菜单"
 
 #: lclstrconsts:rserrorinlcl
 msgid "ERROR in LCL: "
+msgstr ""
+
+#: lclstrconsts:rseditrecordhint
+msgid "Edit"
 msgstr ""
 
 #: lclstrconsts:ifsvk_end
@@ -382,6 +386,10 @@ msgstr "查找"
 #: lclstrconsts:rsfindmore
 msgid "Find more"
 msgstr "查找更多"
+
+#: lclstrconsts:rsfirstrecordhint
+msgid "First"
+msgstr ""
 
 #: lclstrconsts:rsfixedcolstoobig
 msgid "FixedCols can't be >= ColCount"
@@ -511,7 +519,7 @@ msgstr "单元格索引超过范围[列=%d 行=%d]"
 msgid "Information"
 msgstr "信息"
 
-#: lclstrconsts:ifsvk_insert
+#: lclstrconsts:rsinsertrecordhint
 msgid "Insert"
 msgstr "插入"
 
@@ -575,6 +583,10 @@ msgstr ""
 msgid "Kana"
 msgstr ""
 
+#: lclstrconsts:rslastrecordhint
+msgid "Last"
+msgstr ""
+
 #: lclstrconsts:ifsvk_left
 msgid "Left"
 msgstr "左"
@@ -615,7 +627,7 @@ msgstr "鼠标中键"
 msgid "Mouse Button Right"
 msgstr "鼠标右键"
 
-#: lclstrconsts:ifsvk_next
+#: lclstrconsts:rsnextrecordhint
 msgid "Next"
 msgstr "下一个"
 
@@ -703,17 +715,25 @@ msgstr "便携网络图片(PNG)"
 msgid "Portable PixMap"
 msgstr "便携位图"
 
+#: lclstrconsts:rspostrecordhint
+msgid "Post"
+msgstr ""
+
 #: lclstrconsts:ifsvk_print
 msgid "Print"
 msgstr "打印"
 
-#: lclstrconsts:ifsvk_prior
+#: lclstrconsts:rspriorrecordhint
 msgid "Prior"
 msgstr "优先"
 
 #: lclstrconsts:rspropertydoesnotexist
 msgid "Property %s does not exist"
 msgstr "属性 %s 不存在"
+
+#: lclstrconsts:rsrefreshrecordshint
+msgid "Refresh"
+msgstr ""
 
 #: lclstrconsts:rsreplace
 msgid "Replace"
