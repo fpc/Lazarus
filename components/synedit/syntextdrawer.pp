@@ -395,6 +395,18 @@ end;
 {$ENDIF}
 {$ENDIF}
 
+{$IFDEF SYN_LAZARUS}
+function GetStyleIndex(Value: TFontStyles): Integer;
+var
+  item: TFontStyle;
+begin
+  result := 0;
+  for item := low (TFontStyle) to high(TFontStyle) do
+    if item in Value then
+      result := result + 1 shr ord(item);
+end;
+{$ENDIF}
+
 { TheFontsInfoManager }
 
 procedure TheFontsInfoManager.LockFontsInfo(
@@ -873,7 +885,11 @@ begin
   {$ELSE}
   ASSERT(SizeOf(TFontStyles) = 1);
   {$ENDIF}
+  {$IFDEF SYN_LAZARUS}
+  idx := GetStyleIndex(Value);
+  {$ELSE}
   idx := PByte(@Value)^;
+  {$ENDIF}
   ASSERT(idx <= High(TheStockFontPatterns));
 
   UseFontHandles;
@@ -1202,7 +1218,11 @@ procedure TheTextDrawer2.SetStyle(Value: TFontStyles);
 var
   idx: Integer;
 begin
+  {$IFDEF SYN_LAZARUS}
+  idx := GetStyleIndex(Value);
+  {$ELSE}
   idx := PByte(@Value)^;
+  {$ENDIF}
   if FFonts[idx] <> 0 then
   begin
     FCrntFont := FFonts[idx];
