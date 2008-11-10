@@ -181,6 +181,7 @@ begin
         SizeOf(ActionUPP), @ActionUPP), SName, SSetEvent, SControlAction) then Exit;
 
     // this does not return until the mouse is released
+    LastMousePos := AWidget.GetMousePos;
     Result := CallNextEventHandler(ANextHandler, AEvent);
 
     if OSError(
