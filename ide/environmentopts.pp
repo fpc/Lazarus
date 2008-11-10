@@ -41,7 +41,7 @@ uses
   Laz_XMLCfg,
   ObjectInspector, IDEWindowIntf,
   LazarusIDEStrConsts, TransferMacros, LazConf, ExtToolDialog, IDEProcs,
-  IDEOptionDefs, InputHistory, EditorOptions, IDETranslations;
+  IDEOptionDefs, InputHistory, EditorOptions, IDETranslations, ButtonPanel;
 
 const
   EnvOptsVersion: integer = 106;
@@ -455,12 +455,10 @@ type
   { TEnvironmentOptionsDialog }
 
   TEnvironmentOptionsDialog = class(TForm)
-    CancelButton: TBitBtn;
+    ButtonPanel: TButtonPanel;
     NoteBook: TNoteBook;
     FilesPage: TPage;
     DesktopPage: TPage;
-    EODBtnPanel: TPanel;
-    OkButton: TBitBtn;
     WindowsPage: TPage;
     FormEditorPage: TPage;
     ObjectInspectorPage: TPage;
@@ -615,6 +613,7 @@ type
     procedure FilesButtonClick(Sender: TObject);
     procedure DirectoriesButtonClick(Sender: TObject);
     procedure FormEditorPageResize(Sender: TObject);
+    procedure HelpButtonClick(Sender: TObject);
     procedure LazDocAddPathButtonClick(Sender: TObject);
     procedure LazDocBrowseButtonClick(Sender: TObject);
     procedure LazDocDeletePathButtonClick(Sender: TObject);
@@ -691,6 +690,8 @@ const
   
 implementation
 
+uses
+  IDEContextHelpEdit;
 
 const MaxComboBoxCount: integer = 20;
 
@@ -1722,11 +1723,9 @@ begin
   SetupNamingPage(6);
   SetupLazDocPage(7);
 
-  CancelButton.Caption:=dlgCancel;
-  CancelControl:=CancelButton;
-  OkButton.Caption:= lisOkBtn;
-  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
-  OkButton.LoadGlyphFromLazarusResource('btn_ok');
+  ButtonPanel.OKButton.OnClick := @OKButtonClick;
+  ButtonPanel.CancelButton.OnClick := @CancelButtonClick;
+  ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
 end;
 
 destructor TEnvironmentOptionsDialog.Destroy;
@@ -2206,6 +2205,11 @@ begin
   w:=((FormEditorPage.ClientWidth-3*5)*5) div 10;
   GridGroupBox.Width:=w;
   FormEditMiscGroupBox.Width:=GridGroupBox.Width;
+end;
+
+procedure TEnvironmentOptionsDialog.HelpButtonClick(Sender: TObject);
+begin
+  ShowContextHelpForIDE(Self);
 end;
 
 procedure TEnvironmentOptionsDialog.LazDocAddPathButtonClick(Sender: TObject);

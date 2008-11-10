@@ -33,7 +33,8 @@ uses
   ProjectIntf, MacroIntf, IDEExternToolIntf,
   // IDE
   Project, PackageSystem, ExtToolEditDlg, IDEProcs, EnvironmentOpts,
-  LazarusIDEStrConsts, PackageDefs, CompilerOptions, TransferMacros, LazConf;
+  LazarusIDEStrConsts, PackageDefs, CompilerOptions, TransferMacros, LazConf,
+  ButtonPanel;
 
 type
   TCompilerOptionsTest = (
@@ -57,7 +58,7 @@ type
   { TCheckCompilerOptsDlg }
 
   TCheckCompilerOptsDlg = class(TForm)
-    CloseButton1: TBitBtn;
+    ButtonPanel: TButtonPanel;
     CopyOutputMenuItem: TMenuItem;
     OutputPopupMenu: TPopupMenu;
     Splitter1: TSplitter;
@@ -1112,8 +1113,6 @@ begin
   inherited Create(TheOwner);
   Application.AddOnIdleHandler(@ApplicationOnIdle,true);
   Caption:=dlgCCOCaption;
-  CloseButton1.Caption:=lisClose;
-  CloseButton1.LoadGlyphFromLazarusResource('btn_close');
   TestGroupbox.Caption:=dlgCCOTest;
   OutputGroupBox.Caption:=dlgCCOResults;
   CopyOutputMenuItem.Caption:=lisCCOCopyOutputToCliboard;

@@ -41,7 +41,7 @@ interface
 uses
   SysUtils, Classes, Math, Controls, Forms, Dialogs, LResources, Buttons, StdCtrls,
   LazarusIdeStrConsts, LCLType, LCLIntf, LMessages, IDEWindowIntf, IDEContextHelpEdit,
-  ExtCtrls;
+  ExtCtrls, ButtonPanel;
 
 type
   TViewUnitsEntry = class
@@ -55,20 +55,16 @@ type
   { TViewUnitDialog }
 
   TViewUnitDialog = class(TForm)
-    HelpButton: TBitBtn;
+    ButtonPanel: TButtonPanel;
     Edit: TEdit;
     ListBox: TListBox;
-    btnOK: TBitBtn;
-    btnCancel: TBitBtn;
     MultiSelectCheckBox: TCheckBox;
-    BtnPanel: TPanel;
     procedure EditChange(Sender: TObject);
     procedure EditEnter(Sender: TObject);
     procedure EditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure FormCreate(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
-    Procedure btnOKClick(Sender :TObject);
-    Procedure btnCancelClick(Sender :TObject);
+    Procedure OKButtonClick(Sender :TObject);
+    Procedure CancelButtonClick(Sender :TObject);
     procedure ListboxClick(Sender: TObject);
     procedure ListboxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure MultiselectCheckBoxClick(Sender :TObject);
@@ -149,16 +145,14 @@ constructor TViewUnitDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   IDEDialogLayoutList.ApplyLayout(Self,450,300);
-  btnOK.Caption := lisOkBtn;
-  btnCancel.Caption := dlgCancel;
-  HelpButton.Caption := lisPckEditHelp;
   MultiSelectCheckBox.Caption := dlgMultiSelect;
-  btnOK.LoadGlyphFromLazarusResource('btn_ok');
-  btnCancel.LoadGlyphFromLazarusResource('btn_cancel');
-  HelpButton.LoadGlyphFromLazarusResource('btn_help');
+
+  ButtonPanel.OKButton.OnClick := @OKButtonClick;
+  ButtonPanel.CancelButton.OnClick := @CancelButtonClick;
+  ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
 end;
 
-Procedure TViewUnitDialog.btnOKClick(Sender : TOBject);
+Procedure TViewUnitDialog.OKButtonClick(Sender : TOBject);
 Begin
   IDEDialogLayoutList.SaveLayout(Self);
   ModalResult := mrOK;
@@ -195,13 +189,8 @@ begin
     VK_DOWN: MoveItemIndex(1);
     VK_NEXT: MoveItemIndex(PageCount);
     VK_PRIOR: MoveItemIndex(-PageCount);
-    VK_RETURN: btnOKClick(nil);
+    VK_RETURN: OKButtonClick(nil);
   end;
-end;
-
-procedure TViewUnitDialog.FormCreate(Sender: TObject);
-begin
-
 end;
 
 procedure TViewUnitDialog.EditChange(Sender: TObject);
@@ -229,7 +218,7 @@ begin
   FocusEdit;
 end;
 
-Procedure TViewUnitDialog.btnCancelClick(Sender : TOBject);
+Procedure TViewUnitDialog.CancelButtonClick(Sender : TOBject);
 Begin
   IDEDialogLayoutList.SaveLayout(Self);
   ModalResult := mrCancel;
@@ -250,7 +239,7 @@ procedure TViewUnitDialog.ListboxKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_RETURN then
-    btnOKClick(nil);
+    OKButtonClick(nil);
 end;
 
 procedure TViewUnitDialog.MultiselectCheckBoxClick(Sender :TObject);

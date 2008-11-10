@@ -52,7 +52,7 @@ uses
   IDECommands, IDEWindowIntf, SrcEditorIntf, IDEImagesIntf,
   // IDE
   LazarusIDEStrConsts, IDEOptionDefs, IDEProcs, InputHistory, KeyMapping,
-  KeymapSchemeDlg, KeyMapShortCutDlg, LazConf;
+  KeymapSchemeDlg, KeyMapShortCutDlg, LazConf, ButtonPanel;
 
 type
   TPreviewEditor = TSynEdit;
@@ -533,7 +533,7 @@ type
   { TEditorOptionsForm }
 
   TEditorOptionsForm = class(TForm)
-    CancelButton: TBitBtn;
+    ButtonPanel: TButtonPanel;
     DisableAntialiasingCheckBox: TCheckBox;
     MainNoteBook: TNoteBook;
 
@@ -547,8 +547,6 @@ type
     BlockIndentComboBox: TComboBox;
     BlockIndentLabel: TLabel;
     CodeFolding: TPage;
-    BtnPanel: TPanel;
-    OkButton: TBitBtn;
     TextBoldRadioOn : TRadioButton;
     TextBoldRadioOff : TRadioButton;
     TextBoldRadioInvert : TRadioButton;
@@ -585,7 +583,6 @@ type
     EditorFontGroupBox: TGroupBox;
     EditorFontComboBox: TComboBox;
     EditorFontButton: TButton;
-    EditorFontLabel: TLabel;
     EditorFontHeightLabel: TLabel;
     EditorFontHeightComboBox: TComboBox;
     ExtraLineSpacingLabel: TLabel;
@@ -644,7 +641,6 @@ type
     lblDividerDrawLevel: TLabel;
     edDividerDrawLevel: TSpinEdit;
 
-
     // general
     procedure ColorElementListBoxClick(Sender: TObject);
     procedure DisplayPreviewStatusChange(Sender : TObject; Changes : TSynStatusChanges);
@@ -659,6 +655,7 @@ type
     procedure FontDialogApplyClicked(Sender: TObject);
     procedure EditorFontComboBoxEditingDone(Sender: TObject);
     procedure EditorFontButtonClick(Sender: TObject);
+    procedure HelpButtonClick(Sender: TObject);
     procedure KeyMappingFilterEditExit(Sender: TObject);
     procedure RightMarginColorButtonColorChanged(Sender: TObject);
 
@@ -785,6 +782,9 @@ function BuildBorlandDCIFile(
   ACustomSynAutoComplete: TCustomSynAutoComplete): Boolean;
 
 implementation
+
+uses
+  IDEContextHelpEdit;
 
 var
   imgKeyCategory, imgKeyItem: Integer;
@@ -2898,6 +2898,11 @@ begin
   end;
 end;
 
+procedure TEditorOptionsForm.HelpButtonClick(Sender: TObject);
+begin
+  ShowContextHelpForIDE(Self);
+end;
+
 procedure TEditorOptionsForm.KeyMappingFilterEditExit(Sender: TObject);
 begin
   if KeyMappingFilterEdit.Text='' then
@@ -3893,8 +3898,6 @@ begin
   with EditorFontComboBox do
     SetComboBoxText(EditorFontComboBox, EditorOpts.EditorFont);
 
-  EditorFontLabel.Caption := dlgEditorFont;
-
   with EditorFontHeightComboBox do
     SetComboBoxText(EditorFontHeightComboBox,IntToStr(EditorOpts.EditorFontHeight));
 
@@ -4051,11 +4054,9 @@ end;
 
 procedure TEditorOptionsForm.SetupButtonBar;
 begin
-  CancelButton.Caption := dlgCancel;
-  CancelControl := CancelButton;
-  OkButton.Caption := lisOk;
-  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
-  OkButton.LoadGlyphFromLazarusResource('btn_ok');
+  ButtonPanel.OKButton.OnClick := @OKButtonClick;
+  ButtonPanel.CancelButton.OnClick := @CancelButtonClick;
+  ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
 end;
 
 procedure TEditorOptionsForm.OkButtonClick(Sender: TObject);

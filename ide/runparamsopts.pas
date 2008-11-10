@@ -49,7 +49,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, LCLProc, Controls, Forms, Buttons, StdCtrls, ComCtrls,
   Dialogs, ExtCtrls, LResources, Laz_XMLCfg,
-  BaseIDEIntf,
+  BaseIDEIntf, IDEContextHelpEdit,
   IDEProcs, SysVarUserOverrideDlg, InputHistory, LazarusIDEStrConsts, FileUtil;
 
 { The xml format version:
@@ -111,6 +111,7 @@ type
   { TRunParamsOptsDlg }
 
   TRunParamsOptsDlg = class(TForm)
+    HelpButton: TBitBtn;
     CancelButton: TBitBtn;
     CmdLineParametersComboBox: TComboBox;
     OkButton: TBitBtn;
@@ -139,6 +140,7 @@ type
     GeneralPage:    TPage;
     EnvVarsPage:    TPage;
     procedure EnvVarsPageResize(Sender: TObject);
+    procedure HelpButtonClick(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure HostApplicationBrowseBtnClick(Sender: TObject);
     procedure WorkingDirectoryBtnClick(Sender: TObject);
@@ -346,6 +348,7 @@ begin
   CancelControl := CancelButton;
   OkButton.LoadGlyphFromLazarusResource('btn_ok');
   CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
+  HelpButton.LoadGlyphFromLazarusResource('btn_help');
 end;
 
 procedure TRunParamsOptsDlg.SetupNotebook;
@@ -445,6 +448,11 @@ begin
 
   UserOverridesListView.Column[0].Width := UserOverridesListView.Width div 2;
   UserOverridesListView.Column[1].Width := UserOverridesListView.Column[0].Width;
+end;
+
+procedure TRunParamsOptsDlg.HelpButtonClick(Sender: TObject);
+begin
+  ShowContextHelpForIDE(Self);
 end;
 
 procedure TRunParamsOptsDlg.HostApplicationBrowseBtnClick(Sender: TObject);

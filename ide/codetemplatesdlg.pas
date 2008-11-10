@@ -41,7 +41,8 @@ uses
   // IDEIntf
   IDECommands, TextTools, SrcEditorIntf, MenuIntf, IDEWindowIntf, LazIDEIntf,
   // IDE
-  IDEProcs, InputHistory, LazarusIDEStrConsts, EditorOptions, CodeMacroSelect;
+  IDEProcs, InputHistory, LazarusIDEStrConsts, EditorOptions, CodeMacroSelect,
+  IDEContextHelpEdit, ButtonPanel;
 
 type
   TAutoCompleteOption = (
@@ -67,11 +68,9 @@ type
     AddButton: TButton;
     ASynPasSyn: TSynFreePascalSyn;
     AutoOnOptionsCheckGroup: TCheckGroup;
+    ButtonPanel: TButtonPanel;
     EditTemplateGroupBox: TGroupBox;
-    OkButton: TBitBtn;
-    CancelButton: TBitBtn;
     InsertMacroButton: TButton;
-    BtnPanel: TPanel;
     UseMacrosCheckBox: TCheckBox;
     EditButton: TButton;
     DeleteButton: TButton;
@@ -88,6 +87,7 @@ type
     procedure FilenameButtonClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
+    procedure HelpButtonClick(Sender: TObject);
     procedure InsertMacroButtonClick(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure OnCopyMenuItem(Sender: TObject);
@@ -690,11 +690,11 @@ begin
   AddButton.Caption:=lisCodeTemplAdd;
   EditButton.Caption:=lisCodeToolsDefsEdit;
   DeleteButton.Caption:=dlgEdDelete;
-  CancelButton.Caption:=dlgCancel;
   TemplatesGroupBox.Caption:=lisCTDTemplates;
-  OkButton.Caption:=lisLazBuildOk;
-  OkButton.LoadGlyphFromLazarusResource('btn_ok');
-  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
+
+  ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
+  ButtonPanel.OKButton.OnClick := @OKButtonClick;
+
   FilenameGroupBox.Caption:=lisToDoLFile;
   UseMacrosCheckBox.Caption:=lisEnableMacros;
   InsertMacroButton.Caption:=lisCTInsertMacro;
@@ -739,6 +739,11 @@ begin
     end;
     
   BuildPopupMenu;
+end;
+
+procedure TCodeTemplateDialog.HelpButtonClick(Sender: TObject);
+begin
+  ShowContextHelpForIDE(Self);
 end;
 
 procedure TCodeTemplateDialog.InsertMacroButtonClick(Sender: TObject);

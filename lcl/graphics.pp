@@ -129,6 +129,7 @@ const
   psDashDotDot = FPCanvas.psDashDotDot;
   psClear = FPCanvas.psClear;
   psInsideframe = FPCanvas.psInsideframe;
+  psPattern = FPCanvas.psPattern;
 
   pmBlack = FPCanvas.pmBlack;
   pmWhite = FPCanvas.pmWhite;
@@ -1535,7 +1536,7 @@ type
   
   TIcon = class(TCustomIcon)
   private
-    function  GetIconHandle: HICON;
+    function GetIconHandle: HICON;
     procedure SetIconHandle(const AValue: HICON);
   protected
     class function GetTypeID: Word; override;

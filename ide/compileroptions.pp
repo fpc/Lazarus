@@ -1120,6 +1120,7 @@ begin
   UseValgrind := XMLConfigFile.GetValue(p+'Debugging/UseValgrind/Value', false);
   GenGProfCode := XMLConfigFile.GetValue(p+'Debugging/GenGProfCode/Value', false);
   StripSymbols := XMLConfigFile.GetValue(p+'Debugging/StripSymbols/Value', false);
+  UseExternalDbgSyms := XMLConfigFile.GetValue(p+'Debugging/UseExternalDbgSyms/Value', false);
   ReadLinkSmart;
   PassLinkerOptions := XMLConfigFile.GetValue(p+'Options/PassLinkerOptions/Value', false);
   LinkerOptions := LineBreaksToSystemLineBreaks(
@@ -1267,6 +1268,7 @@ begin
   XMLConfigFile.SetDeleteValue(p+'Debugging/UseValgrind/Value', UseValgrind,false);
   XMLConfigFile.SetDeleteValue(p+'Debugging/GenGProfCode/Value', GenGProfCode,false);
   XMLConfigFile.SetDeleteValue(p+'Debugging/StripSymbols/Value', StripSymbols,false);
+  XMLConfigFile.SetDeleteValue(p+'Debugging/UseExternalDbgSyms/Value', UseExternalDbgSyms,false);
   XMLConfigFile.SetDeleteValue(p+'LinkSmart/Value', LinkSmart,false);
   XMLConfigFile.SetDeleteValue(p+'Options/PassLinkerOptions/Value', PassLinkerOptions,false);
   XMLConfigFile.SetDeleteValue(p+'Options/LinkerOptions/Value',
@@ -2097,6 +2099,9 @@ begin
   { Generate code gprof }
   if (GenGProfCode) then
     switches := switches + ' -pg';
+
+  if (UseExternalDbgSyms) then
+    switches := switches + ' -Xg';
 
   { Strip Symbols }
   if (StripSymbols) and (not (ccloNoLinkerOpts in Flags)) then

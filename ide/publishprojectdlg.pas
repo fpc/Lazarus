@@ -41,12 +41,13 @@ uses
   StdCtrls, Dialogs,
   IDEWindowIntf,
   ProjectDefs, PackageDefs, PublishModule, IDEOptionDefs, InputHistory,
-  LazarusIDEStrConsts, ExtCtrls;
+  LazarusIDEStrConsts, ExtCtrls, IDEContextHelpEdit;
 
 type
   { TPublishProjectDialog }
 
   TPublishProjectDialog = class(TForm)
+    HelpButton: TBitBtn;
     OkButton: TBitBtn;
     CancelButton: TBitBtn;
     DestDirGroupBox: TGroupBox;
@@ -77,6 +78,7 @@ type
     procedure BrowseDestDirBitBtnCLICK(Sender: TObject);
     procedure DestDirGroupBoxRESIZE(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure HelpButtonClick(Sender: TObject);
     procedure OkButtonCLICK(Sender: TObject);
     procedure SaveSettingsButtonClick(Sender: TObject);
   private
@@ -174,6 +176,12 @@ begin
   OkButton.LoadGlyphFromLazarusResource('btn_ok');
   CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
   SaveSettingsButton.LoadGlyphFromLazarusResource('menu_save');
+  HelpButton.LoadGlyphFromLazarusResource('btn_help');
+end;
+
+procedure TPublishProjectDialog.HelpButtonClick(Sender: TObject);
+begin
+  ShowContextHelpForIDE(Self);
 end;
 
 procedure TPublishProjectDialog.OkButtonCLICK(Sender: TObject);

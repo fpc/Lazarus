@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, LCLProc, LResources, LCLType, Forms, Controls, Graphics,
   Dialogs, Buttons, ExtCtrls, StdCtrls, BasicCodeTools, FileUtil, IDEProcs,
   InputHistory, LazarusIDEStrConsts, EnvironmentOpts, TransferMacros,
-  IDEContextHelpEdit;
+  IDEContextHelpEdit, ButtonPanel;
 
 type
   TIDEDirective = (
@@ -65,9 +65,6 @@ type
 
   TBuildFileDialog = class(TForm)
     AlwaysCompileFirstCheckbox: TCHECKBOX;
-    HelpButton: TBitBtn;
-    CancelButton: TBitBtn;
-    OKButton: TBitBtn;
     BuildBrowseWorkDirButton: TBUTTON;
     BuildCommandGroupbox: TGROUPBOX;
     BuildCommandMemo: TMEMO;
@@ -76,11 +73,11 @@ type
     BuildWorkDirCombobox: TCOMBOBOX;
     BuildWorkingDirGroupbox: TGROUPBOX;
     BuildPage: TPAGE;
+    ButtonPanel: TButtonPanel;
     GeneralPage: TPAGE;
     Notebook1: TNOTEBOOK;
     OverrideBuildProjectCheckbox: TCHECKBOX;
     OverrideRunProjectCheckbox: TCHECKBOX;
-    BtnPanel: TPanel;
     RunBrowseWorkDirButton: TBUTTON;
     RunCommandGroupbox: TGROUPBOX;
     RunCommandMemo: TMEMO;
@@ -96,7 +93,7 @@ type
                                      Shift: TShiftState);
     procedure BuildMacroSelectionBoxAddMacro(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
-    procedure OkButtonCLICK(Sender: TObject);
+    procedure OkButtonClick(Sender: TObject);
     procedure RunMacroSelectionBoxAddMacro(Sender: TObject);
   private
     FDirectiveList: TStrings;
@@ -500,7 +497,7 @@ begin
   ShowContextHelpForIDE(Self);
 end;
 
-procedure TBuildFileDialog.OkButtonCLICK(Sender: TObject);
+procedure TBuildFileDialog.OkButtonClick(Sender: TObject);
 begin
   WriteDirectiveList;
   ModalResult:=mrOk;
@@ -525,8 +522,8 @@ begin
     Name:='BuildMacroSelectionBox';
     Caption:=lisEdtExtToolMacros;
     OnAddMacro:=@BuildMacroSelectionBoxAddMacro;
-    AnchorToNeighbour(akTop,5,BuildScanForMakeMsgCheckbox);
-    BorderSpacing.Around:=3;
+    AnchorToNeighbour(akTop,0,BuildScanForMakeMsgCheckbox);
+    BorderSpacing.Around:=6;
     Align:=alClient;
     Parent:=BuildPage;
   end;
@@ -536,8 +533,8 @@ begin
     Name:='RunMacroSelectionBox';
     Caption:=lisEdtExtToolMacros;
     OnAddMacro:=@RunMacroSelectionBoxAddMacro;
-    AnchorToNeighbour(akTop,5,RunCommandGroupbox);
-    BorderSpacing.Around:=3;
+    AnchorToNeighbour(akTop,0,RunCommandGroupbox);
+    BorderSpacing.Around:=6;
     Align:=alClient;
     Parent:=RunPage;
   end;
@@ -560,12 +557,8 @@ begin
   RunWorkDirGroupbox.Caption:=lisBFWorkingDirectoryLeaveEmptyForFilePath2;
   RunCommandGroupbox.Caption:=lisBFRunCommand;
 
-  CancelButton.Caption:= dlgCancel;
-  OKButton.Caption:= rsOk;
-  HelpButton.Caption:= lisPckEditHelp;
-  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
-  OKButton.LoadGlyphFromLazarusResource('btn_ok');
-  HelpButton.LoadGlyphFromLazarusResource('btn_help');
+  ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
+  ButtonPanel.OKButton.OnClick := @OKButtonClick;
 end;
 
 procedure TBuildFileDialog.BuildBrowseWorkDirButtonCLICK(Sender: TObject);

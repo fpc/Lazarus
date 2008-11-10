@@ -32,11 +32,11 @@ type
   { TTreeViewItemsEditorForm }
 
   TTreeViewItemsEditorForm = class(TForm)
-    BtnSave: TButton;
-    BtnOK: TBitBtn;
-    BtnCancel: TBitBtn;
     BtnApply: TBitBtn;
+    BtnCancel: TBitBtn;
     BtnHelp: TBitBtn;
+    BtnOK: TBitBtn;
+    BtnSave: TButton;
     BtnNewItem: TButton;
     BtnNewSubItem: TButton;
     BtnDelete: TButton;
@@ -52,7 +52,6 @@ type
     LabelSelectedIndex: TLabel;
     LabelStateIndex: TLabel;
     OpenDialog1: TOpenDialog;
-    BtnPanel: TPanel;
     SaveDialog1: TSaveDialog;
     TreeView1: TTreeView;
     procedure BtnNewItemClick(Sender: TObject);

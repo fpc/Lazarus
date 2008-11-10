@@ -37,7 +37,7 @@ uses
   CodeCache, CodeToolsStructs, CodeToolManager, AVL_Tree,
   // IDE
   IDEProcs, CodeBrowser, PackageDefs, PackageSystem, Project,
-  LazarusIDEStrConsts, Buttons;
+  LazarusIDEStrConsts, Buttons, IDEContextHelpEdit;
 
 type
 
@@ -45,6 +45,7 @@ type
 
   TChgEncodingDialog = class(TForm)
     ApplyButton: TBitBtn;
+    HelpButton: TBitBtn;
     BtnPanel: TPanel;
     CloseButton: TBitBtn;
     NewEncodingComboBox: TComboBox;
@@ -63,6 +64,7 @@ type
     procedure ApplyButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure HelpButtonClick(Sender: TObject);
     procedure PreviewButtonClick(Sender: TObject);
   private
     procedure GetFiles(out Tree: TFilenameToStringTree);
@@ -109,6 +111,7 @@ begin
   PreviewButton.LoadGlyphFromLazarusResource('refresh');
   CloseButton.LoadGlyphFromLazarusResource('btn_close');
   ApplyButton.LoadGlyphFromLazarusResource('btn_ok');
+  HelpButton.LoadGlyphFromLazarusResource('btn_help');
 
   PreviewGroupBox.Caption:=dlgWRDPreview;
   PreviewListView.Column[0].Caption:=dlgEnvFiles;
@@ -217,6 +220,11 @@ end;
 procedure TChgEncodingDialog.FormDestroy(Sender: TObject);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
+end;
+
+procedure TChgEncodingDialog.HelpButtonClick(Sender: TObject);
+begin
+  ShowContextHelpForIDE(Self);
 end;
 
 procedure TChgEncodingDialog.PreviewButtonClick(Sender: TObject);

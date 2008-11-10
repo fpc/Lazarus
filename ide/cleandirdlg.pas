@@ -32,17 +32,16 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
   StdCtrls, FileUtil, LCLProc, Laz_XMLCfg, SynRegExpr, IDEContextHelpEdit,
-  LazarusIDEStrConsts, LazConf, IDEProcs, TransferMacros, InputHistory;
+  LazarusIDEStrConsts, LazConf, IDEProcs, TransferMacros, InputHistory,
+  ButtonPanel, ShowDeletingFilesDlg;
 
 type
 
   { TCleanDirectoryDialog }
 
   TCleanDirectoryDialog = class(TForm)
-    HelpButton: TBitBtn;
+    ButtonPanel: TButtonPanel;
     DirBrowseButton: TButton;
-    OkButton: TBitBtn;
-    CancelButton: TBitBtn;
     KeepTextFilesCheckbox: TCHECKBOX;
     SubDirsCheckbox: TCHECKBOX;
     SimpleSyntaxKeepCheckbox: TCHECKBOX;
@@ -70,19 +69,8 @@ type
     property Macros: TTransferMacroList read FMacros write SetMacros;
   end;
   
-  { TShowDeletingFilesDialog }
-
-  TShowDeletingFilesDialog = class(TForm)
-    FilesListBox: TListBox;
-    OkButton: TBUTTON;
-    CancelButton: TBUTTON;
-  public
-    constructor Create(TheOwner: TComponent); override;
-  end;
-
 function ShowCleanDirectoryDialog(const DefaultDirectory: string;
   Macros: TTransferMacroList): TModalResult;
-
 
 implementation
 
@@ -135,12 +123,9 @@ begin
   KeepGroupbox.Caption:=lisClDirKeepFilesMatchingFilter;
   SimpleSyntaxKeepCheckbox.Caption:=lisClDirSimpleSyntaxEGInsteadOf;
   KeepTextFilesCheckbox.Caption:=lisClDirKeepAllTextFiles;
-  OkButton.Caption:=lisLazBuildOk;
-  CancelButton.Caption:=dlgCancel;
-  HelpButton.Caption:=lisPckEditHelp;
-  OkButton.LoadGlyphFromLazarusResource('btn_ok');
-  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
-  HelpButton.LoadGlyphFromLazarusResource('btn_help');
+
+  ButtonPanel.OKButton.OnClick := @OKButtonClick;
+  ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
 end;
 
 procedure TCleanDirectoryDialog.HelpButtonClick(Sender: TObject);
@@ -406,82 +391,44 @@ begin
   // ask user for confirmation
   ShowDeletingFilesDialog:=TShowDeletingFilesDialog.Create(Self);
   try
-    ShowDeletingFilesDialog.FilesListBox.Items.Assign(List);
+    ShowDeletingFilesDialog.FileList.Items.AddStrings(List);
+    for i := 0 to ShowDeletingFilesDialog.FileList.Count - 1 do
+      ShowDeletingFilesDialog.FileList.Checked[i] := True;
+
     if ShowDeletingFilesDialog.ShowModal<>mrOk then exit;
+
+    // delete all checked files
+    for i:=0 to ShowDeletingFilesDialog.FileList.Count-1 do begin
+      if ShowDeletingFilesDialog.FileList.Checked[i] then
+      begin
+        Filename:=ShowDeletingFilesDialog.FileList.Items[i];
+        DebugLn('TCleanDirectoryDialog: Deleting file ',Filename);
+        if FileExistsUTF8(Filename) then begin
+          repeat
+            if DeleteFileUTF8(Filename) then begin
+              break;
+            end else begin
+              MsgResult:=MessageDlg(lisErrorDeletingFile,
+                Format(lisPkgMangUnableToDeleteFile, ['"', Filename, '"']),
+                mtError,[mbAbort,mbIgnore,mbRetry],0);
+              if (MsgResult=mrIgnore) then break;
+              if MsgResult=mrAbort then exit;
+            end;
+          until false;
+        end;
+      end;
+    end;
+
   finally
     ShowDeletingFilesDialog.Free;
   end;
 
-  // delete them all
-  for i:=0 to List.Count-1 do begin
-    Filename:=List[i];
-    DebugLn('TCleanDirectoryDialog: Deleting file ',Filename);
-    if FileExistsUTF8(Filename) then begin
-      repeat
-        if DeleteFileUTF8(Filename) then begin
-          break;
-        end else begin
-          MsgResult:=MessageDlg(lisErrorDeletingFile,
-            Format(lisPkgMangUnableToDeleteFile, ['"', Filename, '"']),
-            mtError,[mbAbort,mbIgnore,mbRetry],0);
-          if (MsgResult=mrIgnore) then break;
-          if MsgResult=mrAbort then exit;
-        end;
-      until false;
-    end;
-  end;
   Result:=true;
 end;
 
 procedure TCleanDirectoryDialog.AddDirectory(const Directory: string);
 begin
   AddToRecentList(Directory,DirCombobox.Items,20);
-end;
-
-{ TShowDeletingFilesDialog }
-
-constructor TShowDeletingFilesDialog.Create(TheOwner: TComponent);
-begin
-  inherited Create(TheOwner);
-  Caption:=lisDeleteAllTheseFiles;
-  Width:=400;
-  Height:=350;
-  Position:=poScreenCenter;
-  
-  FilesListBox:=TListBox.Create(Self);
-  with FilesListBox do begin
-    Name:='FilesListBox';
-    Parent:=Self;
-    Height:=Self.ClientHeight-40;
-    Align:=alTop;
-    Anchors:=[akLeft,akTop,akBottom,akRight];
-  end;
-  
-  OkButton:=TButton.Create(Self);
-  with OkButton do begin
-    Name:='OkButton';
-    Parent:=Self;
-    Left:=20;
-    Top:=Self.ClientHeight-35;
-    Width:=100;
-    Height:=25;
-    Anchors:=[akLeft,akBottom];
-    Caption:=dlgEdDelete;
-    ModalResult:=mrOk;
-  end;
-  
-  CancelButton:=TButton.Create(Self);
-  with CancelButton do begin
-    Name:='CancelButton';
-    Parent:=Self;
-    Left:=150;
-    Top:=Self.ClientHeight-35;
-    Width:=100;
-    Height:=25;
-    Anchors:=[akLeft,akBottom];
-    Caption:=dlgCancel;
-    ModalResult:=mrCancel;
-  end;
 end;
 
 initialization

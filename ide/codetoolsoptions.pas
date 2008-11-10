@@ -38,8 +38,8 @@ uses
   Classes, SysUtils, LazConf, Laz_XMLCfg, FileUtil,
   LResources, Forms, Controls, Buttons, LclProc, ExtCtrls, StdCtrls, ComCtrls,
   Dialogs, CodeToolManager, DefineTemplates, SourceChanger, SynEdit,
-  IDEWindowIntf,
-  IDEOptionDefs, EditDefineTree, LazarusIDEStrConsts, IDEProcs;
+  IDEWindowIntf, IDEContextHelpEdit,
+  IDEOptionDefs, EditDefineTree, LazarusIDEStrConsts, IDEProcs, ButtonPanel;
 
 type
 
@@ -172,11 +172,10 @@ type
   { TCodeToolsOptsDlg }
 
   TCodeToolsOptsDlg = class(TForm)
-    CancelButton: TBitBtn;
+    ButtonPanel: TButtonPanel;
     Notebook: TNotebook;
     GeneralPage: TPage;
     CodeCreationPage: TPage;
-    OKButton: TBitBtn;
     WordsPoliciesPage: TPage;
     LineSplittingPage: TPage;
     SpaceNotCosmosPage: TPage;
@@ -235,6 +234,7 @@ type
     
     procedure FormCreate(Sender: TObject);
     procedure FormResize(Sender: TObject);
+    procedure HelpButtonClick(Sender: TObject);
     procedure UpdateExamples(Sender: TObject);
   private
     FOnGetSynEditSettings: TNotifyEvent;
@@ -1044,6 +1044,11 @@ begin
   ResizeSpacePage;
 end;
 
+procedure TCodeToolsOptsDlg.HelpButtonClick(Sender: TObject);
+begin
+  ShowContextHelpForIDE(Self);
+end;
+
 procedure TCodeToolsOptsDlg.FormCreate(Sender: TObject);
 begin
 //  inherited Create(Sender);
@@ -1067,16 +1072,9 @@ begin
     SetupLineSplittingPage(3);
     SetupSpacePage(4);
     SetupIdentifierCompletionPage(5);
-    CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
-    OkButton.LoadGlyphFromLazarusResource('btn_ok');
 
-    with CancelButton do
-      Caption:=dlgCancel;
-    CancelControl:=CancelButton;
+    ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
 
-    with OkButton do begin
-      Caption:=lisCodeToolsOptsOk;
-    end;
 //  end;
   BeautifyCodeOptions:=TBeautifyCodeOptions.Create;
 //  FormResize(nil);

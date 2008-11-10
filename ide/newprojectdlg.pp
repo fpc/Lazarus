@@ -19,7 +19,7 @@
  *   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.        *
  *                                                                         *
  ***************************************************************************
- 
+
   Abstract:
     The new project dialog for lazarus.
 
@@ -32,18 +32,22 @@ interface
 
 uses
   Classes, SysUtils, Forms, Graphics, Controls, LResources, Project, Buttons,
-  StdCtrls, ProjectIntf, ExtCtrls, LazarusIDEStrConsts;
+  StdCtrls, ProjectIntf, ExtCtrls, LazarusIDEStrConsts, IDEContextHelpEdit;
 
 type
 
 { TNewProjectDialog }
 
   TNewProjectDialog = class(TForm)
-    CreateButton: TButton;
-    CancelButton: TButton;
-    ListBox: TListBox;
+    HelpButton: TBitBtn;
+    CreateButton: TBitBtn;
+    CancelButton: TBitBtn;
+    DescriptionGroupBox: TGroupBox;
     HelpLabel: TLabel;
-    NPDBtnPanel: TPanel;
+    ListBox: TListBox;
+    Panel1: TPanel;
+    Splitter1: TSplitter;
+    procedure HelpButtonClick(Sender: TObject);
     procedure CreateButtonClick(Sender:TObject);
     procedure CancelButtonClick(Sender:TObject);
     procedure ListBoxDblClick(Sender: TObject);
@@ -80,9 +84,6 @@ end;
 constructor TNewProjectDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  Width:=390;
-  Height:=240;
-  Position:=poScreenCenter;
   Caption:=lisNPCreateANewProject;
   SetupComponents;
   FillHelpLabel;
@@ -111,19 +112,8 @@ end;
 procedure TNewProjectDialog.SetupComponents;
 var
   i: integer;
-  MaxX, MaxY: integer;
 begin
-  MaxX:=386;
-  MaxY:=238;
-
-  ListBox:=TListBox.Create(Self);
   with ListBox do begin
-    Name:='ListBox';
-    Left:=5;
-    Top:=5;
-    Width:=MaxX-200;
-    Height:=MaxY-50;
-    Anchors := [akTop,akLeft,akRight,akBottom];
     with Items do begin
       BeginUpdate;
       for i:=0 to ProjectDescriptors.Count-1 do begin
@@ -133,69 +123,26 @@ begin
       EndUpdate;
     end;
     ItemIndex:=0;
-    OnDblClick:=@ListBoxDblClick;
     OnSelectionChange:=@ListBoxSelectionChange;
-    Parent:=Self;
   end;
 
-  HelpLabel:=TLabel.Create(Self);
-  with HelpLabel do begin
-    Name:='HelpLabel';
-    Anchors := [akTop,akRight,akBottom];
-    WordWrap:=true;
-    Caption:=lisNPSelectAProjectType;
-    AnchorToCompanion(akLeft,6,ListBox);
-    AnchorParallel(akRight,6,Parent);
-    Parent:=Self;
-  end;
-
-  NPDBtnPanel:=TPanel.Create(Self);
-  with NPDBtnPanel do begin
-    Name:='NPDBtnPanel';
-    AutoSize:=true;
-    Align:=alBottom;
-    Caption:='';
-    BevelOuter:=bvNone;
-    Parent:=Self;
-  end;
-
-  CreateButton:=TButton.Create(Self);
-  with CreateButton do begin
-    Name:='CreateButton';
-    Width:=80;
-    Height:=23;
-    Left:=1;
-    OnClick:=@CreateButtonClick;
-    Caption:=lisNPCreate;
-    Default:=true;
-    AutoSize:=true;
-    BorderSpacing.Around:=6;
-    Parent:=NPDBtnPanel;
-    Align:=alRight;
-  end;
-
-  CancelButton:=TButton.Create(Self);
-  with CancelButton do begin
-    Name:='CancelButton';
-    Width:=80;
-    Height:=23;
-    Left:=2;
-    OnClick:=@CancelButtonClick;
-    Caption:=dlgCancel;
-    Cancel:=true;
-    AutoSize:=true;
-    BorderSpacing.Around:=6;
-    Parent:=NPDBtnPanel;
-    Align:=alRight;
-  end;
-
-  ListBox.AnchorToNeighbour(akBottom,6,NPDBtnPanel);
-  HelpLabel.AnchorToNeighbour(akBottom,6,NPDBtnPanel);
+  CancelButton.Caption:=dlgCancel;
+  CancelButton.LoadGlyphFromLazarusResource('btn_cancel');
+  CreateButton.Caption:=lisNPCreate;
+  CreateButton.LoadGlyphFromLazarusResource('btn_ok');
+  DescriptionGroupBox.Caption := lisToDoLDescription;
+  HelpButton.LoadGlyphFromLazarusResource('btn_help');
+  HelpLabel.Caption:=lisNPSelectAProjectType;
 end;
 
 procedure TNewProjectDialog.CreateButtonClick(Sender:TObject);
 begin
   ModalResult:=mrOk;
+end;
+
+procedure TNewProjectDialog.HelpButtonClick(Sender: TObject);
+begin
+  ShowContextHelpForIDE(Self);
 end;
 
 procedure TNewProjectDialog.CancelButtonClick(Sender:TObject);
@@ -215,4 +162,8 @@ begin
   FillHelpLabel;
 end;
 
+initialization
+  {$I newprojectdlg.lrs}
+
 end.
+

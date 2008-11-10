@@ -125,6 +125,7 @@ type
     fLinkerOptions: String;
     FWin32GraphicApp: boolean;
     FExecutableType: TCompilationExecutableType;
+    FUseExternalDbgSyms : Boolean;
 
     // Messages:
     fShowErrors: Boolean;
@@ -232,6 +233,7 @@ type
     property Win32GraphicApp: boolean read FWin32GraphicApp write FWin32GraphicApp;
     property ExecutableType: TCompilationExecutableType
                                      read FExecutableType write FExecutableType;
+    property UseExternalDbgSyms: Boolean read FUseExternalDbgSyms write FUseExternalDbgSyms;
 
     // messages:
     property ShowErrors: Boolean read fShowErrors write fShowErrors;
