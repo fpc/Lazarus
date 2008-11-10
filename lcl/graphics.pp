@@ -230,6 +230,8 @@ type
 
 const
   // The following colors match the predefined Delphi Colors
+
+  // standard colors
   clBlack   = TColor($000000);
   clMaroon  = TColor($000080);
   clGreen   = TColor($008000);
@@ -248,15 +250,20 @@ const
   clLtGray  = TColor($C0C0C0);
   clDkGray  = TColor($808080);
   clWhite   = TColor($FFFFFF);
+  StandardColorsCount = 16;
+
+  // extended colors
   clMoneyGreen = TColor($C0DCC0);
   clSkyBlue = TColor($F0CAA6);
   clCream   = TColor($F0FBFF);
   clMedGray = TColor($A4A0A0);
+  ExtendedColorCount = 4;
 
+  // special colors
   clNone    = TColor($1FFFFFFF);
   clDefault = TColor($20000000);
 
-  //System colors
+  // system colors
   clScrollBar               = TColor(SYS_COLOR_BASE or COLOR_SCROLLBAR);
   clBackground              = TColor(SYS_COLOR_BASE or COLOR_BACKGROUND);
   clActiveCaption           = TColor(SYS_COLOR_BASE or COLOR_ACTIVECAPTION);
@@ -1717,6 +1724,7 @@ type
 function IdentEntry(Entry: Longint; var MapEntry: TIdentMapEntry): boolean;
 function ColorToIdent(Color: Longint; var Ident: String): Boolean;
 function IdentToColor(const Ident: string; var Color: Longint): Boolean;
+function ColorIndex(Color: Longint; var Index: Integer): Boolean;
 function SysColorToSysColorIndex(Color: TColor): integer;
 function ColorToRGB(Color: TColor): TColor;
 function ColorToString(Color: TColor): AnsiString;
@@ -2079,7 +2087,7 @@ type
 
 const
   Colors: array[0..112] of TIdentMapEntry = (
-    // The following colors match the predefined Delphi Colors
+    // standard colors
     (Value: clBlack; Name: 'clBlack'),
     (Value: clMaroon; Name: 'clMaroon'),
     (Value: clGreen; Name: 'clGreen'),
@@ -2098,14 +2106,18 @@ const
     (Value: clLtGray; Name: 'clLtGray'),
     (Value: clDkGray; Name: 'clDkGray'),
     (Value: clWhite; Name: 'clWhite'),
+
+    // extended colors
     (Value: clMoneyGreen; Name: 'clMoneyGreen'),
     (Value: clSkyBlue; Name: 'clSkyBlue'),
     (Value: clCream; Name: 'clCream'),
     (Value: clMedGray; Name: 'clMedGray'),
+
+    // special colors
     (Value: clNone; Name: 'clNone'),
     (Value: clDefault; Name: 'clDefault'),
 
-    //System colors
+    // system colors
     (Value: clScrollBar; Name: 'clScrollBar'),
     (Value: clBackground; Name: 'clBackground'),
     (Value: clActiveCaption; Name: 'clActiveCaption'),
@@ -2227,6 +2239,20 @@ end;
 function IdentToColor(const Ident: string; var Color: Longint): Boolean;
 begin
   Result := IdentToInt(Ident, Color, Colors);
+end;
+
+function ColorIndex(Color: Longint; var Index: Integer): Boolean;
+var
+  i: integer;
+begin
+  for i := Low(Colors) to High(Colors) do
+    if Colors[i].Value = Color then
+    begin
+      Result := True;
+      Index := i;
+      exit;
+    end;
+  Result := False;
 end;
 
 function SysColorToSysColorIndex(Color: TColor): integer;
